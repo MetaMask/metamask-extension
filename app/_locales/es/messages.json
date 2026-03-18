@@ -181,9 +181,6 @@
   "activityEmptyDescription": {
     "message": "Aún no hay nada que ver. Canjea tu primer token hoy."
   },
-  "activityLog": {
-    "message": "Registro de actividad"
-  },
   "add": {
     "message": "Añadir"
   },
@@ -279,9 +276,6 @@
   "addIPFSGateway": {
     "message": "Agregue su puerta de enlace de IPFS preferida"
   },
-  "addImportAccount": {
-    "message": "Añadir una cuenta o un monedero físico"
-  },
   "addMemo": {
     "message": "Añadir memo"
   },
@@ -338,10 +332,6 @@
   },
   "addToken": {
     "message": "Agregar token"
-  },
-  "addTokenByContractAddress": {
-    "message": "¿No encuentra un token? Puede agregar cualquier token si copia su dirección. Puede encontrar la dirección de contrato del token en $1",
-    "description": "$1 is a blockchain explorer for a specific network, e.g. Etherscan for Ethereum"
   },
   "addUrl": {
     "message": "Agregar URL"
@@ -653,10 +643,6 @@
   },
   "allowNotifications": {
     "message": "Permitir notificaciones"
-  },
-  "allowWithdrawAndSpend": {
-    "message": "Permitir que se retire $1 y gastar hasta el siguiente importe:",
-    "description": "The url of the site that requested permission to 'withdraw and spend'"
   },
   "amount": {
     "message": "Cantidad"
@@ -995,9 +981,6 @@
   "bridgeBlockExplorerLinkCopied": {
     "message": "Se copió el enlace del explorador de bloques"
   },
-  "bridgeCalculatingAmount": {
-    "message": "Calculando..."
-  },
   "bridgeConfirmTwoTransactions": {
     "message": "Deberá confirmar 2 transacciones en su monedero físico:"
   },
@@ -1033,9 +1016,6 @@
   "bridgeGasFeesSplit": {
     "message": "Cualquier tarifa de red indicada en la pantalla anterior incluye ambas transacciones y se dividirá."
   },
-  "bridgeNetCost": {
-    "message": "Costo neto"
-  },
   "bridgeNoMMFee": {
     "message": "Sin tarifa de MM"
   },
@@ -1069,9 +1049,6 @@
   },
   "bridgePriceImpact": {
     "message": "Impacto sobre el precio"
-  },
-  "bridgePriceImpactNormalWarning": {
-    "message": "El impacto en el precio refleja cómo tu canje afecta el precio de mercado. Si no tienes suficiente para gas, algunos de tus tokens se usan para cubrir tarifas, lo que aumenta el impacto en el precio. MetaMask no lo establece ni lo controla."
   },
   "bridgePriceImpactTooltipTitle": {
     "message": "Impacto sobre el precio"
@@ -1141,10 +1118,6 @@
   "bridgeStepActionSwapPending": {
     "message": "Intercambiando $1 por $2",
     "description": "$1 is the amount of the source asset, $2 is the amount of the destination asset"
-  },
-  "bridgeTimingMinutes": {
-    "message": "$1 min",
-    "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
   },
   "bridgeTo": {
     "message": "Puentear a"
@@ -1219,9 +1192,6 @@
   },
   "browserNotSupported": {
     "message": "Su explorador no es compatible..."
-  },
-  "buildContactList": {
-    "message": "Cree su lista de contactos"
   },
   "builtAroundTheWorld": {
     "message": "MetaMask está diseñado y construido en todo el mundo."
@@ -1616,9 +1586,6 @@
   "connectAccount": {
     "message": "Conectar cuenta"
   },
-  "connectAccountOrCreate": {
-    "message": "Conectar cuenta o crear nueva"
-  },
   "connectAccounts": {
     "message": "Conectar cuentas"
   },
@@ -1817,7 +1784,8 @@
     "message": "Desbloquea MetaMask solo en este dispositivo."
   },
   "createPasswordDetailsSocial": {
-    "message": "Perder esta contraseña significa perder el acceso a la billetera en todos los dispositivos. "
+    "message": "Perder esta contraseña significa perder el acceso a la billetera en todos los dispositivos. ",
+    "description": "$1 is the text 'MetaMask can't reset it.'"
   },
   "createPasswordDetailsSocialReset": {
     "message": "MetaMask no puede restablecerla."
@@ -1911,9 +1879,6 @@
   },
   "customSlippage": {
     "message": "Personalizado"
-  },
-  "customSpendLimit": {
-    "message": "Límite de gastos personalizado"
   },
   "customToken": {
     "message": "Token personalizado"
@@ -2150,9 +2115,6 @@
   "delete": {
     "message": "Eliminar"
   },
-  "deleteContact": {
-    "message": "Eliminar contacto"
-  },
   "deleteMetaMetricsData": {
     "message": "Eliminar datos de MetaMetrics"
   },
@@ -2201,9 +2163,6 @@
   "descriptionFromSnap": {
     "message": "Descripción de $1",
     "description": "$1 represents the name of the snap"
-  },
-  "deselectAll": {
-    "message": "Deseleccionar todo"
   },
   "destinationAccountPickerNoEligible": {
     "message": "No se encontraron cuentas elegibles"
@@ -2285,12 +2244,6 @@
   },
   "dismissReminderField": {
     "message": "Ignorar el recordatorio de respaldo de la frase de recuperación"
-  },
-  "dismissSmartAccountSuggestionEnabledDescription": {
-    "message": "Active esta opción para que ya no aparezca la sugerencia \"Cambiar a cuenta inteligente\" en ninguna cuenta. Las cuentas inteligentes permiten transacciones más rápidas, tarifas de red más bajas y mayor flexibilidad de pago."
-  },
-  "dismissSmartAccountSuggestionEnabledTitle": {
-    "message": "Descartar la sugerencia \"Cambiar a cuenta inteligente\""
   },
   "displayNftMedia": {
     "message": "Mostrar medios NFT"
@@ -2387,9 +2340,6 @@
   "editANickname": {
     "message": "Editar apodo"
   },
-  "editAccountName": {
-    "message": "Editar el nombre de la cuenta"
-  },
   "editAccounts": {
     "message": "Editar cuentas"
   },
@@ -2484,9 +2434,6 @@
   "editNonceMessage": {
     "message": "Esta es una función avanzada, úsela con precaución."
   },
-  "editPermission": {
-    "message": "Editar permiso"
-  },
   "editPermissions": {
     "message": "Editar permisos"
   },
@@ -2570,9 +2517,6 @@
   },
   "enterChainId": {
     "message": "Ingrese el ID de cadena"
-  },
-  "enterMaxSpendLimit": {
-    "message": "Escribir límite máximo de gastos"
   },
   "enterNetworkName": {
     "message": "Ingrese el nombre de la red"
@@ -3157,9 +3101,6 @@
   "hidden": {
     "message": "Oculto"
   },
-  "hiddenAccounts": {
-    "message": "Cuentas ocultas"
-  },
   "hide": {
     "message": "Ocultar"
   },
@@ -3365,9 +3306,6 @@
     "message": "MetaMask no se pudo conectar al host de la cadena de bloques. Revise las razones posibles $1.",
     "description": "$1 is a clickable link with with text defined by the 'here' key"
   },
-  "initialTransactionConfirmed": {
-    "message": "La red confirmó la transacción inicial. Haga clic en Aceptar para volver."
-  },
   "insights": {
     "message": "Perspectivas"
   },
@@ -3550,9 +3488,6 @@
   },
   "l2FeeTooltip": {
     "message": "Tarifa de gas L2"
-  },
-  "lastConnected": {
-    "message": "Última conexión"
   },
   "lastSold": {
     "message": "Última venta"
@@ -3786,13 +3721,6 @@
   },
   "makeAnotherSwap": {
     "message": "Crear un nuevo swap"
-  },
-  "makeSureNoOneWatching": {
-    "message": "Asegúrese de que nadie esté mirando",
-    "description": "Warning to users to be care while creating and saving their new Secret Recovery Phrase"
-  },
-  "manage": {
-    "message": "Gestionar"
   },
   "manageDefaultSettings": {
     "message": "Gestionar la configuración por defecto"
@@ -4037,10 +3965,12 @@
     "description": "Label for the account row in the mUSD claim confirmation screen"
   },
   "musdConversionActivityTitle": {
-    "message": "Conversión de mUSD"
+    "message": "Convertir $1 a mUSD",
+    "description": "$1 is the source token symbol (e.g., USDC)"
   },
   "musdConversionTitle": {
-    "message": "Conversión de mUSD"
+    "message": "Convertido a mUSD",
+    "description": "Title shown in the transaction details modal for mUSD conversion transactions"
   },
   "mustSelectOne": {
     "message": "Debe seleccionar al menos 1 token."
@@ -4308,9 +4238,6 @@
   "newAccountNumberName": {
     "message": "Cuenta $1",
     "description": "Default name of next account to be created on create account screen"
-  },
-  "newContact": {
-    "message": "Contacto nuevo"
   },
   "newContract": {
     "message": "Contrato nuevo"
@@ -5309,12 +5236,6 @@
   "perpsEntryPrice": {
     "message": "Precio de entrada"
   },
-  "perpsExploreCrypto": {
-    "message": "Explora criptomonedas"
-  },
-  "perpsExploreStocksAndCommodities": {
-    "message": "Explora acciones y materias primas"
-  },
   "perpsFees": {
     "message": "Tarifas"
   },
@@ -5434,9 +5355,6 @@
   },
   "perpsOraclePriceTooltip": {
     "message": "La mediana de los precios externos informados por los validadores, utilizada para calcular la tasa de financiación"
-  },
-  "perpsOrderAmount": {
-    "message": "Monto de la orden"
   },
   "perpsOrders": {
     "message": "Órdenes"
@@ -5585,12 +5503,6 @@
   "perpsWithdraw": {
     "message": "Retirar"
   },
-  "perpsYourOrders": {
-    "message": "Tus órdenes"
-  },
-  "perpsYourPositions": {
-    "message": "Tus posiciones"
-  },
   "personalAddressDetected": {
     "message": "Se detectó una dirección personal. Ingrese la dirección de contrato del token."
   },
@@ -5704,9 +5616,6 @@
   },
   "productAnnouncements": {
     "message": "Anuncios de producto"
-  },
-  "proposedApprovalLimit": {
-    "message": "Límite de aprobación propuesto"
   },
   "provide": {
     "message": "Proporcionar"
@@ -5864,12 +5773,6 @@
   "queued": {
     "message": "En cola"
   },
-  "quotedReceiveAmount": {
-    "message": "Monto recibido de $1"
-  },
-  "quotedTotalCost": {
-    "message": "Costo total de $1"
-  },
   "rank": {
     "message": "Rango"
   },
@@ -5928,18 +5831,6 @@
   "rejectAll": {
     "message": "Rechazar todo"
   },
-  "rejectRequestsDescription": {
-    "message": "Está a punto de rechazar $1 solicitudes en lote."
-  },
-  "rejectRequestsN": {
-    "message": "Rechazar $1 solicitudes"
-  },
-  "rejectTxsDescription": {
-    "message": "Está a punto de rechazar $1 transacciones en lote."
-  },
-  "rejectTxsN": {
-    "message": "Rechazar $1 transacciones"
-  },
   "rejected": {
     "message": "Rechazada"
   },
@@ -5948,9 +5839,6 @@
   },
   "removeAccount": {
     "message": "Eliminar cuenta"
-  },
-  "removeAccountDescription": {
-    "message": "Esta cuenta se eliminará de su billetera. Antes de continuar, asegúrese de que dispone de la frase secreta de recuperación original o de la clave privada de esta cuenta importada. Puede importar o volver a crear cuentas desde el menú desplegable de cuentas. "
   },
   "removeAccountModalBannerDescription": {
     "message": "Asegúrate de tener la frase secreta de recuperación o la clave privada de esta cuenta antes de eliminarla.",
@@ -6113,17 +6001,7 @@
   },
   "revealSeedWordsDescription1": {
     "message": "La $1 proporciona la $2",
-    "description": "This is a sentence consisting of link using 'revealSeedWordsSRPName' as $1 and bolded text using 'revealSeedWordsDescription3' as $2."
-  },
-  "revealSeedWordsDescription2": {
-    "message": "MetaMask es un $1. Eso significa que usted es el propietario de su SRP.",
-    "description": "$1 is text link with the message from 'revealSeedWordsNonCustodialWallet'"
-  },
-  "revealSeedWordsDescription3": {
-    "message": "acceso completo a su monedero y fondos.\n"
-  },
-  "revealSeedWordsNonCustodialWallet": {
-    "message": "monedero no custodiado"
+    "description": "This is a sentence consisting of link using 'revealSeedWordsSRPName' as $1."
   },
   "revealSeedWordsQR": {
     "message": "QR"
@@ -6137,10 +6015,6 @@
   "revealSeedWordsWarning": {
     "message": "Asegúrese de que nadie esté mirando su pantalla. $1",
     "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
-  },
-  "revealSeedWordsWarning2": {
-    "message": "El soporte técnico de MetaMask nunca se lo solicitará.",
-    "description": "The bolded texted in the second part of 'revealSeedWordsWarning'"
   },
   "revealSensitiveContent": {
     "message": "Revelar contenido sensible"
@@ -6346,9 +6220,6 @@
   "search": {
     "message": "Buscar"
   },
-  "searchAccounts": {
-    "message": "Buscar cuentas"
-  },
   "searchAnAcccountOrContact": {
     "message": "Buscar una cuenta o contacto"
   },
@@ -6490,12 +6361,6 @@
   "selectAccountToConnect": {
     "message": "Seleccione una cuenta para conectarse"
   },
-  "selectAccounts": {
-    "message": "Seleccione la(s) cuenta(s) a usar en este sitio"
-  },
-  "selectAccountsForSnap": {
-    "message": "Seleccione la(s) cuenta(s) para usar con este snap"
-  },
   "selectAll": {
     "message": "Seleccionar todo"
   },
@@ -6534,9 +6399,6 @@
   },
   "selectedAccountMismatch": {
     "message": "Se seleccionó una cuenta distinta"
-  },
-  "selectingAllWillAllow": {
-    "message": "Seleccionar todo permitirá que este sitio vea todas las cuentas actuales. Asegúrese de que este sitio sea de confianza."
   },
   "send": {
     "message": "Enviar"
@@ -7677,25 +7539,6 @@
   "speedUpTooltipText": {
     "message": "Nueva tarifa de gas"
   },
-  "speedUpTransaction": {
-    "message": "Acelerar esta transacción"
-  },
-  "spendLimitInsufficient": {
-    "message": "Límite de gastos insuficiente"
-  },
-  "spendLimitInvalid": {
-    "message": "El límite de gastos no es válido, debe ser un número positivo"
-  },
-  "spendLimitPermission": {
-    "message": "Permiso de límite de gastos"
-  },
-  "spendLimitRequestedBy": {
-    "message": "Límite de gastos solicitado por $1",
-    "description": "Origin of the site requesting the spend limit"
-  },
-  "spendLimitTooLarge": {
-    "message": "El límite de gastos es demasiado alto"
-  },
   "spender": {
     "message": "Gastador"
   },
@@ -8189,10 +8032,6 @@
     "message": "$1 cotizaciones.",
     "description": "$1 is the number of quotes that the user can select from when opening the list of quotes on the 'view quote' screen"
   },
-  "swapNoTokensAvailable": {
-    "message": "No hay tokens disponibles que coincidan con $1",
-    "description": "Tells the user that a given search string does not match any tokens in our token lists. $1 can be any string of text"
-  },
   "swapOnceTransactionHasProcess": {
     "message": "Su $1 se agregará a la cuenta una vez que se procese esta transacción.",
     "description": "This message communicates the token that is being transferred. It is shown on the awaiting swap screen. The $1 will be a token symbol."
@@ -8530,18 +8369,6 @@
   "transaction": {
     "message": "transacción"
   },
-  "transactionCancelAttempted": {
-    "message": "Se intentó cancelar la transacción con una tarifa de gas de $1 en $2"
-  },
-  "transactionCancelSuccess": {
-    "message": "La transacción se canceló correctamente en $2"
-  },
-  "transactionConfirmed": {
-    "message": "La transacción se confirmó en $2."
-  },
-  "transactionCreated": {
-    "message": "La transacción se creó con un valor de $1 en $2."
-  },
   "transactionDataFunction": {
     "message": "Función"
   },
@@ -8551,17 +8378,11 @@
   "transactionDetailMultiLayerTotalSubtitle": {
     "message": "Monto + cargos"
   },
-  "transactionDropped": {
-    "message": "La transacción se abandonó en $2."
-  },
   "transactionError": {
     "message": "Error de transacción. Excepción generada en el código de contrato."
   },
   "transactionErrorNoContract": {
     "message": "Intentando llamar a una función en una dirección sin contrato."
-  },
-  "transactionErrored": {
-    "message": "La transacción encontró un error."
   },
   "transactionFee": {
     "message": "Tarifa de transacción"
@@ -8597,24 +8418,15 @@
   "transactionIncludesTypes": {
     "message": "Esta transacción incluye: $1."
   },
-  "transactionResubmitted": {
-    "message": "Transacción reenviada con la tarifa de gas aumentada a $1 en $2"
-  },
   "transactionSettings": {
     "message": "Configuración de la transacción"
   },
   "transactionShield": {
     "message": "Protección de transacciones"
   },
-  "transactionSubmitted": {
-    "message": "Transacción enviada con una tarifa de gas de $1 en $2."
-  },
   "transactionTotalGasFee": {
     "message": "Tarifa de gas total",
     "description": "Label for the total gas fee incurred in the transaction."
-  },
-  "transactionUpdated": {
-    "message": "La transacción se actualizó en $2."
   },
   "transactions": {
     "message": "Transacciones"
@@ -8904,9 +8716,6 @@
   "usedByClients": {
     "message": "Usado por una variedad de clientes distintos"
   },
-  "userName": {
-    "message": "Nombre de usuario"
-  },
   "userOpContractDeployError": {
     "message": "No se admite la implementación de contratos desde una cuenta inteligente"
   },
@@ -8926,14 +8735,8 @@
     "message": "Ver en $1",
     "description": "$1 is the block explorer name"
   },
-  "viewContact": {
-    "message": "Ver contacto"
-  },
   "viewDetails": {
     "message": "Ver detalles"
-  },
-  "viewMore": {
-    "message": "Ver más"
   },
   "viewOnBlockExplorer": {
     "message": "Ver en el explorador de bloques"
@@ -9100,9 +8903,6 @@
   },
   "yourNFTmayBeAtRisk": {
     "message": "Sus NFT podrían estar en riesgo"
-  },
-  "yourPrivateSeedPhrase": {
-    "message": "Su frase secreta de recuperación"
   },
   "yourTransactionConfirmed": {
     "message": "Transacción ya confirmada"

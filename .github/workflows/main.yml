@@ -35,6 +35,7 @@ env:
   # For a `pull_request` event, the head commit hash is `github.event.pull_request.head.sha`.
   # For a `push` event, the head commit hash is `github.sha`.
   HEAD_COMMIT_HASH: ${{ github.event.pull_request.head.sha || github.sha }}
+  RUN_ID: ${{ github.run_id }}
 
 permissions:
   contents: write # required for releases
@@ -125,6 +126,10 @@ jobs:
       - get-requirements
       - prep-deps
     if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
+    permissions:
+      contents: read
+      issues: write
+      pull-requests: write
     uses: ./.github/workflows/repository-health-checks.yml
 
   test-storybook:
@@ -149,7 +154,7 @@ jobs:
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-dist-browserify
-      build-command: ${{ (github.head_ref || github.ref_name) == 'stable' && 'yarn build prod' || 'yarn build dist' }}
+      build-command: yarn build dist
       builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
     secrets: inherit
 
@@ -160,9 +165,7 @@ jobs:
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-dist-mv2-browserify
-      build-command: ${{ (github.head_ref || github.ref_name) == 'stable' && 'yarn build prod' || 'yarn build dist' }}
-      mozilla-lint: true
-      enable-mv3: false
+      build-command: yarn build dist
       builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
     secrets: inherit
 
@@ -185,8 +188,6 @@ jobs:
     with:
       build-name: build-beta-mv2-browserify
       build-command: yarn build --build-type beta dist
-      mozilla-lint: false # Disabled as it is failing for some reason
-      enable-mv3: false
       builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
     secrets: inherit
 
@@ -197,7 +198,7 @@ jobs:
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-flask-browserify
-      build-command: ${{ (github.head_ref || github.ref_name) == 'stable' && 'yarn build --build-type flask prod' || 'yarn build --build-type flask dist' }}
+      build-command: yarn build --build-type flask dist
       builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
     secrets: inherit
 
@@ -208,9 +209,7 @@ jobs:
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-flask-mv2-browserify
-      build-command: ${{ (github.head_ref || github.ref_name) == 'stable' && 'yarn build --build-type flask prod' || 'yarn build --build-type flask dist' }}
-      mozilla-lint: true
-      enable-mv3: false
+      build-command: yarn build --build-type flask dist
       builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
     secrets: inherit
 
@@ -233,8 +232,6 @@ jobs:
     with:
       build-name: build-test-mv2-browserify
       build-command: yarn build:test:mv2
-      mozilla-lint: false # Disabled as it is failing for some reason
-      enable-mv3: false
       builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
     secrets: inherit
 
@@ -257,9 +254,85 @@ jobs:
     with:
       build-name: build-test-flask-mv2-browserify
       build-command: yarn build:test:flask:mv2
-      mozilla-lint: false # Disabled as it is failing for some reason
-      enable-mv3: false
       builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
+    secrets: inherit
+
+  build-dist-webpack:
+    needs:
+      - get-requirements
+    if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
+    uses: ./.github/workflows/run-build.yml
+    with:
+      is-high-risk-environment: false
+      build-name: build-dist-webpack
+      build-command: yarn webpack:lavamoat:build
+      builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
+      zip: true
+    secrets: inherit
+
+  build-dist-mv2-webpack:
+    needs:
+      - get-requirements
+    if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
+    uses: ./.github/workflows/run-build.yml
+    with:
+      is-high-risk-environment: false
+      build-name: build-dist-mv2-webpack
+      build-command: yarn webpack:lavamoat:build:mv2
+      builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
+      zip: true
+    secrets: inherit
+
+  build-beta-webpack:
+    needs:
+      - get-requirements
+    if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
+    uses: ./.github/workflows/run-build.yml
+    with:
+      is-high-risk-environment: false
+      build-name: build-beta-webpack
+      build-command: yarn webpack:lavamoat:build --type beta
+      builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
+      zip: true
+    secrets: inherit
+
+  build-beta-mv2-webpack:
+    needs:
+      - get-requirements
+    if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
+    uses: ./.github/workflows/run-build.yml
+    with:
+      is-high-risk-environment: false
+      build-name: build-beta-mv2-webpack
+      build-command: yarn webpack:lavamoat:build:mv2 --type beta
+      builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
+      zip: true
+    secrets: inherit
+
+  build-flask-webpack:
+    needs:
+      - get-requirements
+    if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
+    uses: ./.github/workflows/run-build.yml
+    with:
+      is-high-risk-environment: false
+      build-name: build-flask-webpack
+      build-command: yarn webpack:lavamoat:build --type flask
+      builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
+      zip: true
+    secrets: inherit
+
+  build-flask-mv2-webpack:
+    needs:
+      - get-requirements
+    if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
+    uses: ./.github/workflows/run-build.yml
+    with:
+      is-high-risk-environment: false
+      build-name: build-flask-mv2-webpack
+      build-command: yarn webpack:lavamoat:build:mv2 --type flask
+      builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
+      zip: true
     secrets: inherit
 
   build-test-webpack:
@@ -268,10 +341,11 @@ jobs:
     if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
     uses: ./.github/workflows/run-build.yml
     with:
+      is-high-risk-environment: false
       build-name: build-test-webpack
       build-command: yarn build:test:webpack
-      validate-source-maps: false # Disabled as webpack outputs are not supported by validate-source-maps
       builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
+      zip: true
     secrets: inherit
 
   build-test-mv2-webpack:
@@ -280,10 +354,37 @@ jobs:
     if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
     uses: ./.github/workflows/run-build.yml
     with:
+      is-high-risk-environment: false
       build-name: build-test-mv2-webpack
       build-command: yarn build:test:webpack:mv2
-      validate-source-maps: false # Disabled as webpack outputs are not supported by validate-source-maps
       builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
+      zip: true
+    secrets: inherit
+
+  build-test-flask-webpack:
+    needs:
+      - get-requirements
+    if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
+    uses: ./.github/workflows/run-build.yml
+    with:
+      is-high-risk-environment: false
+      build-name: build-test-flask-webpack
+      build-command: yarn build:test:flask:webpack
+      builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
+      zip: true
+    secrets: inherit
+
+  build-test-flask-mv2-webpack:
+    needs:
+      - get-requirements
+    if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
+    uses: ./.github/workflows/run-build.yml
+    with:
+      is-high-risk-environment: false
+      build-name: build-test-flask-mv2-webpack
+      build-command: yarn build:test:flask:webpack:mv2
+      builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
+      zip: true
     secrets: inherit
 
   run-benchmarks:
@@ -377,21 +478,77 @@ jobs:
         with:
           aws-region: ${{ vars.AWS_REGION }}
           role-to-assume: ${{ vars.AWS_IAM_ROLE }}
-          s3-bucket: ${{ vars.AWS_S3_BUCKET }}/${{ github.event.repository.name }}/${{ github.run_id }}/bundle-size
+          s3-bucket: ${{ vars.AWS_S3_BUCKET }}/${{ github.event.repository.name }}/${{ env.RUN_ID }}/bundle-size
           path: test-artifacts/chrome
 
-  page-load-benchmark:
+  dapp-page-load-benchmark:
     needs:
       - get-requirements
       - build-test-browserify
     if: ${{ needs.get-requirements.outputs.needs-benchmarks == 'true' }}
-    uses: ./.github/workflows/page-load-benchmark.yml
-    secrets:
-      EXTENSION_BENCHMARK_STATS_TOKEN: ${{ secrets.EXTENSION_BENCHMARK_STATS_TOKEN }}
+    uses: ./.github/workflows/dapp-page-load-benchmark.yml
     with:
       browser-loads: 10
       page-loads: 10
       builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
+
+  # Pushes benchmark results (dapp page-load + performance) to extension_benchmark_stats
+  # for historical comparison in PR comments. Runs on main/release/* pushes only.
+  store-benchmark-stats:
+    needs:
+      - get-requirements
+      - run-benchmarks
+      - dapp-page-load-benchmark
+    if: >-
+      ${{
+        !cancelled() &&
+        github.event_name == 'push' &&
+        (github.ref_name == 'main' || startsWith(github.ref, 'refs/heads/release/')) &&
+        needs.get-requirements.outputs.needs-benchmarks == 'true' &&
+        !(github.event.pull_request.head.repo.fork || github.event.repository.fork)
+      }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      EXTENSION_BENCHMARK_STATS_TOKEN: ${{ secrets.EXTENSION_BENCHMARK_STATS_TOKEN }}
+      HEAD_COMMIT_HASH: ${{ github.sha }}
+      OWNER: ${{ github.repository_owner }}
+      BRANCH_NAME: ${{ github.ref_name }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Download all performance benchmark artifacts
+        id: download-perf-benchmark
+        uses: actions/download-artifact@v7
+        continue-on-error: true
+        with:
+          pattern: benchmark-*.json
+          path: benchmark-results/
+          merge-multiple: true
+
+      - name: Commit performance stats to extension_benchmark_stats
+        if: steps.download-perf-benchmark.outcome == 'success'
+        continue-on-error: true
+        run: .github/scripts/benchmark-stats-commit.sh
+        env:
+          BENCHMARK_DATA_TYPE: performance
+          BENCHMARK_RESULTS_DIR: benchmark-results
+
+      - name: Download dapp page-load benchmark artifact
+        id: download-dapp-benchmark
+        uses: actions/download-artifact@v7
+        continue-on-error: true
+        with:
+          name: dapp-page-load-benchmark-results
+          path: test-artifacts/benchmarks/
+
+      - name: Commit dapp page-load stats to extension_benchmark_stats
+        if: steps.download-dapp-benchmark.outcome == 'success'
+        run: .github/scripts/benchmark-stats-commit.sh
+        env:
+          BENCHMARK_DATA_TYPE: dapp-page-load
+          BENCHMARK_FILE: test-artifacts/benchmarks/dapp-page-load-benchmark-results.json
 
   prep-e2e:
     needs:
@@ -405,14 +562,17 @@ jobs:
       - get-requirements
       - prep-e2e
       - build-test-browserify
-      - build-test-webpack
       - build-dist-browserify
       - build-test-flask-browserify
+      - build-test-webpack
+      - build-dist-webpack
+      - build-test-flask-webpack
     uses: ./.github/workflows/e2e-chrome.yml
     # Without this `if`, when builds-from-run is activated, the build jobs are considered skipped, and the downstream E2E tests won't run
     if: ${{ !cancelled() && needs.get-requirements.outputs.needs-e2e == 'true' && !contains(needs.*.result, 'failure') }}
     with:
       builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
+      use-matrix: ${{ needs.prep-e2e.outputs.use-matrix }}
     secrets: inherit
 
   e2e-firefox:
@@ -421,13 +581,16 @@ jobs:
       - prep-e2e
       - build-dist-mv2-browserify
       - build-test-mv2-browserify
-      - build-test-mv2-webpack
       - build-test-flask-mv2-browserify
+      - build-dist-mv2-webpack
+      - build-test-mv2-webpack
+      - build-test-flask-mv2-webpack
     uses: ./.github/workflows/e2e-firefox.yml
     # Without this `if`, when builds-from-run is activated, the build jobs are considered skipped, and the downstream E2E tests won't run
     if: ${{ !cancelled() && needs.get-requirements.outputs.needs-e2e == 'true' && !contains(needs.*.result, 'failure') }}
     with:
       builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
+      use-matrix: ${{ needs.prep-e2e.outputs.use-matrix }}
     secrets:
       INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
 
@@ -479,7 +642,7 @@ jobs:
         with:
           aws-region: ${{ vars.AWS_REGION }}
           role-to-assume: ${{ vars.AWS_IAM_ROLE }}
-          s3-bucket: ${{ vars.AWS_S3_BUCKET }}/${{ github.event.repository.name }}/${{ github.run_id }}/source-map-explorer
+          s3-bucket: ${{ vars.AWS_S3_BUCKET }}/${{ github.event.repository.name }}/${{ env.RUN_ID }}/source-map-explorer
           path: build-artifacts/source-map-explorer
 
   build-lavamoat-viz:
@@ -557,7 +720,7 @@ jobs:
         with:
           aws-region: ${{ vars.AWS_REGION }}
           role-to-assume: ${{ vars.AWS_IAM_ROLE }}
-          s3-bucket: ${{ vars.AWS_S3_BUCKET }}/${{ github.event.repository.name }}/${{ github.run_id }}/lavamoat-viz
+          s3-bucket: ${{ vars.AWS_S3_BUCKET }}/${{ github.event.repository.name }}/${{ env.RUN_ID }}/lavamoat-viz
           path: build-artifacts/build-viz
 
   publish-prerelease:
@@ -583,6 +746,16 @@ jobs:
         contains(fromJson('["success","skipped"]'), needs.build-test-mv2-browserify.result) &&
         contains(fromJson('["success","skipped"]'), needs.build-test-flask-browserify.result) &&
         contains(fromJson('["success","skipped"]'), needs.build-test-flask-mv2-browserify.result) &&
+        contains(fromJson('["success","skipped"]'), needs.build-dist-webpack.result) &&
+        contains(fromJson('["success","skipped"]'), needs.build-dist-mv2-webpack.result) &&
+        contains(fromJson('["success","skipped"]'), needs.build-beta-webpack.result) &&
+        contains(fromJson('["success","skipped"]'), needs.build-beta-mv2-webpack.result) &&
+        contains(fromJson('["success","skipped"]'), needs.build-flask-webpack.result) &&
+        contains(fromJson('["success","skipped"]'), needs.build-flask-mv2-webpack.result) &&
+        contains(fromJson('["success","skipped"]'), needs.build-test-webpack.result) &&
+        contains(fromJson('["success","skipped"]'), needs.build-test-mv2-webpack.result) &&
+        contains(fromJson('["success","skipped"]'), needs.build-test-flask-webpack.result) &&
+        contains(fromJson('["success","skipped"]'), needs.build-test-flask-mv2-webpack.result) &&
         contains(fromJson('["success","skipped"]'), needs.bundle-size.result) &&
         contains(fromJson('["success","skipped"]'), needs.build-storybook.result) &&
         contains(fromJson('["success","skipped"]'), needs.build-ts-migration-dashboard.result) &&
@@ -601,8 +774,18 @@ jobs:
       - build-test-mv2-browserify
       - build-test-flask-browserify
       - build-test-flask-mv2-browserify
+      - build-dist-webpack
+      - build-dist-mv2-webpack
+      - build-beta-webpack
+      - build-beta-mv2-webpack
+      - build-flask-webpack
+      - build-flask-mv2-webpack
+      - build-test-webpack
+      - build-test-mv2-webpack
+      - build-test-flask-webpack
+      - build-test-flask-mv2-webpack
       - run-benchmarks
-      - page-load-benchmark
+      - dapp-page-load-benchmark
       - bundle-size
       - build-storybook
       - build-ts-migration-dashboard
@@ -612,7 +795,11 @@ jobs:
     with:
       lavamoat-policy-changed: ${{ needs.build-lavamoat-viz.outputs.lavamoat-policy-changed == 'true' }}
       post-new-builds: ${{ needs.get-requirements.outputs.builds-from-run == github.run_id }}
-    secrets: inherit
+    secrets:
+      PR_COMMENT_TOKEN: ${{ secrets.PR_COMMENT_TOKEN }}
+      E2E_OPENAI_API_KEY: ${{ secrets.E2E_OPENAI_API_KEY }}
+      E2E_CLAUDE_API_KEY: ${{ secrets.E2E_CLAUDE_API_KEY }}
+      E2E_GEMINI_API_KEY: ${{ secrets.E2E_GEMINI_API_KEY }}
 
   trigger-regression-validation:
     name: Trigger Regression Validation
@@ -622,12 +809,11 @@ jobs:
       - build-dist-browserify
     runs-on: ubuntu-latest
     timeout-minutes: 5
-    environment: release-branch
+    environment: release-ci
     steps:
       - name: Trigger regression validation in external repo
         env:
           DISPATCH_TOKEN: ${{ secrets.METAMASK_REGRESSION_TRIGGER_TEST }}
-          RUN_ID: ${{ github.run_id }}
         run: |
           # Extract version from branch name (e.g., release/12.5.0 -> 12.5.0)
           # Use BRANCH env var which correctly handles both push and pull_request events
@@ -688,12 +874,20 @@ jobs:
       - build-test-mv2-browserify
       - build-test-flask-browserify
       - build-test-flask-mv2-browserify
+      - build-dist-webpack
+      - build-dist-mv2-webpack
+      - build-beta-webpack
+      - build-beta-mv2-webpack
+      - build-flask-webpack
+      - build-flask-mv2-webpack
       - build-test-webpack
       - build-test-mv2-webpack
+      - build-test-flask-webpack
+      - build-test-flask-mv2-webpack
       - run-benchmarks
       - run-tests
       - bundle-size
-      - page-load-benchmark
+      - dapp-page-load-benchmark
       - prep-e2e
       - e2e-chrome
       - e2e-firefox
@@ -707,7 +901,6 @@ jobs:
         env:
           NEEDS_JSON: ${{ toJson(needs) }} # This is required for the the job_result lookup and the job_id loop
           BUILDS_FROM_RUN: ${{ needs.get-requirements.outputs.builds-from-run }}
-          RUN_ID: ${{ github.run_id }}
         run: |
           # Function to ensure a job's result is either 'success' or 'skipped'
           requireJobSuccessOrSkipped() {
@@ -751,11 +944,42 @@ jobs:
           spreadsheet-id: ${{ secrets.GOOGLE_MERGE_QUEUE_SPREADSHEET_ID }}
           sheet-name: ${{ secrets.GOOGLE_MERGE_QUEUE_SHEET_NAME }}
 
-  publish-release:
-    name: Publish release
-    if: ${{ !cancelled() && needs.all-jobs-pass.result == 'success' && github.event_name == 'push' && github.ref_name == 'stable' && needs.get-requirements.outputs.needs-releases == 'true' }}
+  check-retry-ci:
+    name: Check for retry-ci label and retry
+    if: >-
+      ${{
+        !cancelled() &&
+        needs.all-jobs-pass.result == 'failure' &&
+        github.event_name == 'pull_request' &&
+        !(github.event.pull_request.head.repo.fork || github.event.repository.fork)
+      }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
     needs:
-      - get-requirements
       - all-jobs-pass
-    uses: ./.github/workflows/publish-release.yml
-    secrets: inherit
+      - publish-prerelease
+    env:
+      GH_TOKEN: ${{ github.token }}
+      PR_NUMBER: ${{ github.event.pull_request.number }}
+      REPO: ${{ github.repository }}
+    permissions:
+      actions: write
+      pull-requests: write
+    steps:
+      - name: Check if this PR has a retry-ci label
+        run: |
+          # We cannot use github.event.pull_request.labels here, because it will be stale on a re-run
+          CURRENT_LABELS=$(gh pr view "$PR_NUMBER" --repo "$REPO" --json labels --jq '.labels[].name' | tr '\n' ',')
+
+          if [[ "${CURRENT_LABELS}" == *"retry-ci"* ]]; then
+            echo "This PR has a retry-ci label, removing the label..."
+            gh pr edit "$PR_NUMBER" --repo "$REPO" --remove-label "retry-ci"
+
+            echo "Retrying failed jobs..."
+
+            # We cannot use `gh run rerun` here, because this workflow is still running,
+            # so we must run main-retry.yml, which in turn runs `gh run rerun`
+            gh workflow run main-retry.yml --repo "$REPO" -f run-id="$RUN_ID" -f pr-number="$PR_NUMBER"
+          else
+            echo "This PR does not have a retry-ci label, not retrying."
+          fi

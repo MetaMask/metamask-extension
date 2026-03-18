@@ -13,12 +13,13 @@ import ToggleButton from '../../components/ui/toggle-button';
 
 export type SettingsToggleItemProps = {
   title: string;
-  description?: React.ReactNode;
+  description?: string | React.ReactNode;
   value: boolean;
   onToggle: (value: boolean) => void;
   containerDataTestId?: string;
   dataTestId: string;
   sectionRef?: React.RefObject<HTMLDivElement>;
+  disabled?: boolean;
 };
 
 export const SettingsToggleItem = ({
@@ -29,12 +30,13 @@ export const SettingsToggleItem = ({
   containerDataTestId,
   dataTestId,
   sectionRef,
+  disabled,
 }: SettingsToggleItemProps) => (
   <Box
     ref={sectionRef}
     flexDirection={BoxFlexDirection.Column}
     gap={1}
-    marginTop={4}
+    paddingVertical={3}
   >
     <Box
       flexDirection={BoxFlexDirection.Row}
@@ -49,13 +51,24 @@ export const SettingsToggleItem = ({
           value={value}
           onToggle={onToggle}
           dataTestId={dataTestId}
+          containerStyle={{ width: '40px' }}
+          disabled={disabled}
         />
       </div>
     </Box>
-    {description && (
-      <Text variant={TextVariant.BodyMd} color={TextColor.TextAlternative}>
-        {description}
-      </Text>
-    )}
+    {description &&
+      (typeof description === 'string' ? (
+        <Text variant={TextVariant.BodyMd} color={TextColor.TextAlternative}>
+          {description}
+        </Text>
+      ) : (
+        <Text
+          variant={TextVariant.BodyMd}
+          color={TextColor.TextAlternative}
+          asChild
+        >
+          <div>{description}</div>
+        </Text>
+      ))}
   </Box>
 );

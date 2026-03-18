@@ -35,8 +35,7 @@ class TransactionConfirmation extends Confirmation {
     '[data-testid="custom-nonce-input"]';
 
   private readonly dappInitiatedHeadingTitle: RawLocator = {
-    css: 'h4',
-    text: tEn('transferRequest'),
+    text: tEn('confirmTitleSending'),
   };
 
   private readonly editGasFeeIcon: RawLocator =
@@ -90,8 +89,7 @@ class TransactionConfirmation extends Confirmation {
   });
 
   private readonly walletInitiatedHeadingTitle: RawLocator = {
-    css: 'h4',
-    text: tEn('review'),
+    text: tEn('confirmTitleSending'),
   };
 
   private readonly tokenGasFeeDropdown =
@@ -584,7 +582,7 @@ class TransactionConfirmation extends Confirmation {
   async selectTokenFee(tokenSymbol: string): Promise<void> {
     console.log(`Select token ${tokenSymbol} to pay for the fees`);
     await this.driver.clickElement(this.tokenGasFeeDropdown);
-    await this.driver.clickElement({
+    await this.driver.clickElementAndWaitToDisappear({
       css: this.tokenGasFeeSymbol,
       text: tokenSymbol,
     });

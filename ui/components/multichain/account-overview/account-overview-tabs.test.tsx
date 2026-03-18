@@ -22,10 +22,12 @@ jest.mock('../../app/assets/asset-list', () => ({
   default: () => null,
 }));
 
-jest.mock('../../app/transaction-list', () => ({
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  __esModule: true,
-  default: () => null,
+jest.mock('../activity-v2/activity-list', () => ({
+  ActivityList: () => null,
+}));
+
+jest.mock('../activity-v2/hooks', () => ({
+  usePrefetchTransactions: () => jest.fn(),
 }));
 
 jest.mock('../../app/assets/nfts/nfts-tab', () => ({
@@ -34,23 +36,10 @@ jest.mock('../../app/assets/nfts/nfts-tab', () => ({
   default: () => null,
 }));
 
-jest.mock(
-  '../../app/transaction-list/unified-transaction-list.component',
-  () => ({
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    __esModule: true,
-    default: () => null,
-  }),
-);
-
 jest.mock('../../app/assets/defi-list/defi-tab', () => ({
   // eslint-disable-next-line @typescript-eslint/naming-convention
   __esModule: true,
   default: () => null,
-}));
-
-jest.mock('../activity-v2/activity-list', () => ({
-  ActivityList: () => null,
 }));
 
 describe('AccountOverviewTabs - event metrics', () => {

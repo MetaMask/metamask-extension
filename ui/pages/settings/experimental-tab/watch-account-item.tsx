@@ -1,4 +1,3 @@
-///: BEGIN:ONLY_INCLUDE_IF(build-flask,build-experimental)
 import React, { useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -49,4 +48,3 @@ export const WatchAccountItem = ({ sectionRef }: WatchAccountItemProps) => {
     />
   );
 };
-///: END:ONLY_INCLUDE_IF

@@ -1,8 +1,8 @@
 import { Suite } from 'mocha';
-import { mockNetworkStateOld } from '../../../stub/networks';
+import { NetworkStatus, RpcEndpointType } from '@metamask/network-controller';
 import { withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixtures/fixture-builder';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
+import { LOCALHOST_NETWORK_CLIENT_ID } from '../../constants';
 import AddEditNetworkModal from '../../page-objects/pages/dialog/add-edit-network';
 import AddNetworkRpcUrlModal from '../../page-objects/pages/dialog/add-network-rpc-url';
 import Homepage from '../../page-objects/pages/home/homepage';
@@ -145,29 +145,41 @@ describe('Custom RPC history', function (this: Suite) {
   });
 
   it('finds all recent RPCs in history', async function () {
-    const networkState = mockNetworkStateOld(
-      {
-        rpcUrl: 'http://127.0.0.1:8545/1',
-        chainId: '0x539',
-        ticker: 'ETH',
-        nickname: 'http://127.0.0.1:8545/1',
-      },
-      {
-        rpcUrl: 'http://127.0.0.1:8545/2',
-        chainId: '0x539',
-        ticker: 'ETH',
-        nickname: 'http://127.0.0.1:8545/2',
-      },
-    );
-    // Use type assertion to make selectedNetworkClientId optional
-    (
-      networkState as { selectedNetworkClientId?: string }
-    ).selectedNetworkClientId = undefined;
-
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
-          .withNetworkController(networkState)
+        fixtures: new FixtureBuilderV2()
+          .withNetworkController({
+            networkConfigurationsByChainId: {
+              '0x539': {
+                blockExplorerUrls: [],
+                chainId: '0x539',
+                defaultRpcEndpointIndex: 0,
+                name: 'Localhost 8545',
+                nativeCurrency: 'ETH',
+                rpcEndpoints: [
+                  {
+                    networkClientId: LOCALHOST_NETWORK_CLIENT_ID,
+                    type: RpcEndpointType.Custom,
+                    url: 'http://localhost:8545',
+                  },
+                  {
+                    networkClientId: 'rpc-id-1',
+                    type: RpcEndpointType.Custom,
+                    url: 'http://127.0.0.1:8545/1',
+                  },
+                  {
+                    networkClientId: 'rpc-id-2',
+                    type: RpcEndpointType.Custom,
+                    url: 'http://127.0.0.1:8545/2',
+                  },
+                ],
+              },
+            },
+            networksMetadata: {
+              'rpc-id-1': { EIPS: {}, status: NetworkStatus.Available },
+              'rpc-id-2': { EIPS: {}, status: NetworkStatus.Available },
+            },
+          })
           .build(),
         title: this.test?.fullTitle(),
       },
@@ -191,29 +203,50 @@ describe('Custom RPC history', function (this: Suite) {
   });
 
   it('deletes a custom RPC', async function () {
-    const networkState = mockNetworkStateOld(
-      {
-        rpcUrl: 'http://127.0.0.1:8545/1',
-        chainId: '0x539',
-        ticker: 'ETH',
-        nickname: 'http://127.0.0.1:8545/1',
-      },
-      {
-        rpcUrl: 'http://127.0.0.1:8545/2',
-        chainId: '0x540',
-        ticker: 'ETH',
-        nickname: 'http://127.0.0.1:8545/2',
-      },
-    );
-    // Use type assertion to make selectedNetworkClientId optional
-    (
-      networkState as { selectedNetworkClientId?: string }
-    ).selectedNetworkClientId = undefined;
-
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
-          .withNetworkController(networkState)
+        fixtures: new FixtureBuilderV2()
+          .withNetworkController({
+            networkConfigurationsByChainId: {
+              '0x539': {
+                blockExplorerUrls: [],
+                chainId: '0x539',
+                defaultRpcEndpointIndex: 0,
+                name: 'Localhost 8545',
+                nativeCurrency: 'ETH',
+                rpcEndpoints: [
+                  {
+                    networkClientId: LOCALHOST_NETWORK_CLIENT_ID,
+                    type: RpcEndpointType.Custom,
+                    url: 'http://localhost:8545',
+                  },
+                  {
+                    networkClientId: 'rpc-id-1',
+                    type: RpcEndpointType.Custom,
+                    url: 'http://127.0.0.1:8545/1',
+                  },
+                ],
+              },
+              '0x540': {
+                blockExplorerUrls: [],
+                chainId: '0x540',
+                defaultRpcEndpointIndex: 0,
+                name: 'http://127.0.0.1:8545/2',
+                nativeCurrency: 'ETH',
+                rpcEndpoints: [
+                  {
+                    networkClientId: 'rpc-id-2',
+                    type: RpcEndpointType.Custom,
+                    url: 'http://127.0.0.1:8545/2',
+                  },
+                ],
+              },
+            },
+            networksMetadata: {
+              'rpc-id-1': { EIPS: {}, status: NetworkStatus.Available },
+              'rpc-id-2': { EIPS: {}, status: NetworkStatus.Available },
+            },
+          })
           .build(),
         title: this.test?.fullTitle(),
       },

@@ -303,6 +303,15 @@ export const GlobalMenuDrawer = ({
   const panelTransform =
     isExiting || isEntering ? 'translateX(100%)' : 'translateX(0)';
 
+  const drawerPanelBaseClass =
+    'overflow-hidden pointer-events-none flex transition-[transform] ease-in-out motion-reduce:transition-none';
+  let drawerPanelClass = `${drawerPanelBaseClass} absolute inset-y-0 right-0 pl-10`;
+  if (isFullscreen) {
+    drawerPanelClass = `${drawerPanelBaseClass} absolute right-0`;
+  } else if (isSidepanel) {
+    drawerPanelClass = `${drawerPanelBaseClass} absolute inset-0`;
+  }
+
   const dialogContent = isDrawerMounted ? (
     <div
       aria-labelledby={title ? titleId : undefined}
@@ -312,26 +321,24 @@ export const GlobalMenuDrawer = ({
       role="dialog"
       style={dialogPositionStyle}
     >
-      <div
-        className="absolute inset-0 bg-[var(--color-overlay-default)] motion-reduce:transition-none transition-opacity ease-linear"
-        style={{
-          ...(isFullscreen && Object.keys(backdropStyle).length > 0
-            ? { ...backdropStyle, zIndex: 0 }
-            : { zIndex: 0 }),
-          opacity: backdropOpacity,
-          transitionDuration: `${DRAWER_TRANSITION_MS}ms`,
-        }}
-        aria-hidden="true"
-        onClick={onClickOutside ? onClose : undefined}
-      />
+      {!isSidepanel && (
+        <div
+          className="absolute inset-0 bg-[var(--color-overlay-default)] motion-reduce:transition-none transition-opacity ease-linear"
+          style={{
+            ...(isFullscreen && Object.keys(backdropStyle).length > 0
+              ? { ...backdropStyle, zIndex: 0 }
+              : { zIndex: 0 }),
+            opacity: backdropOpacity,
+            transitionDuration: `${DRAWER_TRANSITION_MS}ms`,
+          }}
+          aria-hidden="true"
+          onClick={onClickOutside ? onClose : undefined}
+        />
+      )}
 
       {/* Drawer panel */}
       <div
-        className={
-          isFullscreen
-            ? 'overflow-hidden pointer-events-none absolute right-0 flex transition-[transform] ease-in-out motion-reduce:transition-none'
-            : 'overflow-hidden pointer-events-none absolute inset-y-0 right-0 flex pl-10 h-full transition-[transform] ease-in-out motion-reduce:transition-none'
-        }
+        className={drawerPanelClass}
         style={{
           zIndex: 1,
           ...(contentTopOffset
@@ -343,7 +350,11 @@ export const GlobalMenuDrawer = ({
       >
         <div
           className="w-screen max-w-full pointer-events-auto h-full min-h-0"
-          style={{ maxWidth: width }}
+          style={
+            isSidepanel
+              ? { width: '100%', maxWidth: '100%' }
+              : { maxWidth: width }
+          }
         >
           <Box
             className="h-full min-h-0 flex flex-col overflow-hidden bg-[var(--color-background-default)] shadow-[var(--shadow-size-lg)_var(--color-shadow-default)]"

@@ -17,7 +17,7 @@ import {
   twMerge,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
+import { getCurrentChainId } from '../../../../shared/lib/selectors/networks';
 import { getMultichainCurrentNetwork } from '../../../selectors/multichain';
 import {
   MetaMetricsEventCategory,

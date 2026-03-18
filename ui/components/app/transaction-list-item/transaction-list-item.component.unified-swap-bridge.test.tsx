@@ -76,6 +76,9 @@ describe('TransactionListItem for Unified Swap and Bridge', () => {
       />,
       configureStore()(
         createBridgeMockStore({
+          metamaskStateOverrides: {
+            transactions: [mockUnifiedSwapTxGroup.primaryTransaction],
+          },
           bridgeStatusStateOverrides: {
             txHistory: {
               [mockUnifiedSwapTxGroup.primaryTransaction.id]: {
@@ -93,6 +96,57 @@ describe('TransactionListItem for Unified Swap and Bridge', () => {
     expect(getByText(messages.failed.message)).toBeInTheDocument();
   });
 
+  it('should render pending for submitted unified swap tx even when not earliest nonce', () => {
+    const { getByText, queryByText, queryByTestId } = renderWithProvider(
+      <TransactionListItem
+        transactionGroup={{
+          ...mockUnifiedSwapTxGroup,
+          primaryTransaction: {
+            ...mockUnifiedSwapTxGroup.primaryTransaction,
+            status: TransactionStatus.submitted,
+          },
+        }}
+        isEarliestNonce={false}
+      />,
+      configureStore()(
+        createBridgeMockStore({
+          metamaskStateOverrides: {
+            transactions: [
+              {
+                ...mockUnifiedSwapTxGroup.primaryTransaction,
+                status: TransactionStatus.submitted,
+              },
+            ],
+          },
+          bridgeStatusStateOverrides: {
+            txHistory: {
+              intentOrderUid: {
+                ...mockBridgeTxData.bridgeHistoryItem,
+                quote: {
+                  ...mockBridgeTxData.bridgeHistoryItem.quote,
+                  intent: {
+                    protocol: 'cowswap',
+                  },
+                },
+                originalTransactionId:
+                  mockUnifiedSwapTxGroup.initialTransaction.id,
+                status: {
+                  ...mockBridgeTxData.bridgeHistoryItem.status,
+                  destChain: {},
+                  status: StatusTypes.PENDING,
+                },
+              },
+            },
+          },
+        }),
+      ),
+    );
+
+    expect(getByText(messages.pending.message)).toBeInTheDocument();
+    expect(queryByText(messages.queued.message)).not.toBeInTheDocument();
+    expect(queryByTestId('cancel-button')).not.toBeInTheDocument();
+  });
+
   it('should render pending confirmed bridge tx summary', () => {
     const { bridgeHistoryItem, srcTxMetaId } = mockBridgeTxData;
     const { queryByTestId } = renderWithProvider(
@@ -107,6 +161,11 @@ describe('TransactionListItem for Unified Swap and Bridge', () => {
       />,
       configureStore()(
         createBridgeMockStore({
+          metamaskStateOverrides: {
+            transactions: [
+              mockBridgeTxData.transactionGroup.primaryTransaction,
+            ],
+          },
           bridgeStatusStateOverrides: {
             txHistory: {
               [srcTxMetaId]: {
@@ -141,6 +200,11 @@ describe('TransactionListItem for Unified Swap and Bridge', () => {
       />,
       configureStore()(
         createBridgeMockStore({
+          metamaskStateOverrides: {
+            transactions: [
+              mockBridgeTxData.transactionGroup.primaryTransaction,
+            ],
+          },
           bridgeStatusStateOverrides: {
             txHistory: {
               [srcTxMetaId]: {
@@ -175,6 +239,11 @@ describe('TransactionListItem for Unified Swap and Bridge', () => {
               [srcTxMetaId]: bridgeHistoryItem,
             },
           },
+          metamaskStateOverrides: {
+            transactions: [
+              mockBridgeTxData.transactionGroup.primaryTransaction,
+            ],
+          },
         }),
       ),
     );
@@ -185,13 +254,8 @@ describe('TransactionListItem for Unified Swap and Bridge', () => {
 
     fireEvent.click(getByTestId('activity-list-item'));
     expect(mockUseNavigate).toHaveBeenCalledWith(
-      '/cross-chain/tx-details/ba5f53b0-4e38-11f0-88dc-53f7e315d450',
-      {
-        state: {
-          transactionGroup: mockBridgeTxData.transactionGroup,
-          isEarliestNonce: false,
-        },
-      },
+      '/cross-chain/tx-details/0x1e9c69458ea78bb5b3a815763c8d505d09d8017cdf955f7c7ae3c2f7ba7243b0',
+      expect.any(Object),
     );
   });
 
@@ -213,6 +277,11 @@ describe('TransactionListItem for Unified Swap and Bridge', () => {
               [srcTxMetaId]: bridgeHistoryItem,
             },
           },
+          metamaskStateOverrides: {
+            transactions: [
+              mockBridgeTxData.transactionGroup.primaryTransaction,
+            ],
+          },
         }),
       ),
     );
@@ -224,13 +293,8 @@ describe('TransactionListItem for Unified Swap and Bridge', () => {
 
     fireEvent.click(getByTestId('activity-list-item'));
     expect(mockUseNavigate).toHaveBeenCalledWith(
-      '/cross-chain/tx-details/ba5f53b0-4e38-11f0-88dc-53f7e315d450',
-      {
-        state: {
-          transactionGroup: failedTransactionGroup,
-          isEarliestNonce: false,
-        },
-      },
+      '/cross-chain/tx-details/0x1e9c69458ea78bb5b3a815763c8d505d09d8017cdf955f7c7ae3c2f7ba7243b0',
+      expect.any(Object),
     );
   });
 });

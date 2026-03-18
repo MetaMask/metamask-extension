@@ -1,6 +1,6 @@
 import { renderHook, act } from '@testing-library/react-hooks';
-import { usePerpsTransactionHistory } from './usePerpsTransactionHistory';
 import type { Order, OrderFill, Funding } from '@metamask/perps-controller';
+import { usePerpsTransactionHistory } from './usePerpsTransactionHistory';
 
 // Mock responses
 const mockFills: OrderFill[] = [

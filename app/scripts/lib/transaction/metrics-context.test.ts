@@ -3,8 +3,8 @@ import { TransactionType } from '@metamask/transaction-controller';
 import { TransactionApprovalAmountType } from '../../../../shared/constants/transaction';
 import { buildTransactionMetricsContext } from './metrics-context';
 
-jest.mock('../../../../shared/modules/transaction.utils', () => ({
-  ...jest.requireActual('../../../../shared/modules/transaction.utils'),
+jest.mock('../../../../shared/lib/transaction.utils', () => ({
+  ...jest.requireActual('../../../../shared/lib/transaction.utils'),
   determineTransactionAssetType: jest.fn().mockResolvedValue({
     assetType: 'native',
     tokenStandard: 'ERC20',

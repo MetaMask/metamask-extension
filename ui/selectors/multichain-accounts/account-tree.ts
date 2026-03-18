@@ -19,7 +19,7 @@ import {
 import { type MultichainNetworkConfiguration } from '@metamask/multichain-network-controller';
 import { type NetworkConfiguration } from '@metamask/network-controller';
 
-import { createDeepEqualSelector } from '../../../shared/modules/selectors/util';
+import { createDeepEqualSelector } from '../../../shared/lib/selectors/util';
 import {
   getMetaMaskAccountsOrdered,
   getOrderedConnectedAccountsForActiveTab,
@@ -882,6 +882,42 @@ export const getWalletIdsByType = createSelector(
       .map(([walletId]) => walletId) as AccountWalletId[];
   },
 );
+
+/**
+ * Get the account group display name for a given address.
+ * Returns the account group name (e.g., "Account 3") rather than
+ * the internal account name (e.g., "Snap Account 11").
+ *
+ * @param state - Redux state.
+ * @param address - The address to look up.
+ * @returns The account group name, internal account name, or undefined.
+ */
+export function selectAccountGroupNameByAddress(
+  state: unknown,
+  address?: string,
+) {
+  if (!address) {
+    return undefined;
+  }
+
+  const typedState = state as MultichainAccountsState;
+  const internalAccounts = getInternalAccounts(typedState);
+  const accountGroups = getAllAccountGroups(typedState);
+
+  const internalAccount = internalAccounts.find(
+    (acc) => acc.address.toLowerCase() === address.toLowerCase(),
+  );
+
+  if (!internalAccount) {
+    return undefined;
+  }
+
+  const accountGroup = accountGroups.find((group) =>
+    group.accounts.includes(internalAccount.id),
+  );
+
+  return accountGroup?.metadata.name ?? internalAccount.metadata.name;
+}
 
 /**
  * Get account list statistics (pinned count, hidden count, total accounts).

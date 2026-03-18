@@ -37,8 +37,8 @@ import {
   getAssetsBySelectedAccountGroup,
   getAsset,
   getAllIgnoredAssets,
-  getAssetsBySelectedAccountGroupWithTronResources,
   selectAggregatedBalanceForSelectedAccount,
+  getAssetsBySelectedAccountGroupWithTronSpecialAssets,
 } from './assets';
 
 /**
@@ -947,6 +947,8 @@ describe('Aggregated balance adapters/selectors', () => {
     expect(args[6]).toHaveProperty('accountsAssets');
     expect(args[7]).toHaveProperty('allTokens');
     expect(args[8]).toEqual({ currentCurrency: 'usd', currencyRates: {} });
+    // args[9] = enabledNetworkMap, args[10] = networkConfigurationsByChainId
+    expect(args[10]).toBeDefined();
   });
 
   it('memoizes aggregate output for identical state', () => {
@@ -1026,6 +1028,7 @@ describe('Aggregated balance recomputation behavior', () => {
     const accountsAssets = {};
     const assetsMetadata = {};
     const allIgnoredAssets = {};
+    const networkConfigurationsByChainId = {};
 
     const baseState: BalanceCalculationState = {
       metamask: {
@@ -1043,6 +1046,7 @@ describe('Aggregated balance recomputation behavior', () => {
         accountsAssets,
         assetsMetadata,
         allIgnoredAssets,
+        networkConfigurationsByChainId,
       } as unknown as BalanceCalculationState['metamask'],
     };
 
@@ -1065,6 +1069,7 @@ describe('Aggregated balance recomputation behavior', () => {
         accountsAssets,
         assetsMetadata,
         allIgnoredAssets,
+        networkConfigurationsByChainId,
         // unrelated field
         remoteFeatureFlags: { foo: true },
       } as unknown as BalanceCalculationState['metamask'],
@@ -1081,7 +1086,7 @@ describe('Aggregated balance recomputation behavior', () => {
 
   it('recomputes when a relevant slice reference changes (e.g., tokenBalances)', () => {
     const tokenBalancesA = {};
-    const tokenBalancesB = {}; // new reference
+    const tokenBalancesB = { newProperty: 'newProperty' }; // different references with different values so that selector does not memoize them
 
     const stateA: BalanceCalculationState = {
       metamask: {
@@ -1098,6 +1103,7 @@ describe('Aggregated balance recomputation behavior', () => {
         accountsAssets: {},
         assetsMetadata: {},
         allIgnoredAssets: {},
+        networkConfigurationsByChainId: {},
       } as unknown as BalanceCalculationState['metamask'],
     };
 
@@ -1299,7 +1305,6 @@ describe('selectAccountGroupBalanceForEmptyState', () => {
     state.metamask.accountsByChainId = {
       '0x1': {
         '0x0': {
-          address: '0x0',
           balance: '0x8ac7230489e80000', // 10 ETH
         },
       },
@@ -1335,7 +1340,6 @@ describe('selectAccountGroupBalanceForEmptyState', () => {
     state.metamask.accountsByChainId = {
       '0x1': {
         '0x0': {
-          address: '0x0',
           balance: '0x0',
         },
       },
@@ -1353,7 +1357,6 @@ describe('selectAccountGroupBalanceForEmptyState', () => {
     state.metamask.accountsByChainId = {
       '0x1': {
         '0x0': {
-          address: '0x0',
           balance: '0x2386f26fc10000', // 0.01 ETH
         },
       },
@@ -1384,14 +1387,12 @@ describe('selectAccountGroupBalanceForEmptyState', () => {
       '0x1': {
         // Ethereum mainnet
         '0x0': {
-          address: '0x0',
           balance: '0x0', // Zero on mainnet
         },
       },
       '0xaa36a7': {
         // Sepolia testnet (should be ignored)
         '0x0': {
-          address: '0x0',
           balance: '0x8ac7230489e80000', // 10 ETH on testnet
         },
       },
@@ -1436,7 +1437,6 @@ describe('selectAccountGroupBalanceForEmptyState', () => {
       state.metamask.accountsByChainId = {
         '0x1': {
           '0x0': {
-            address: '0x0',
             balance: '0x8ac7230489e80000', // 10 ETH
           },
         },
@@ -1472,7 +1472,6 @@ describe('selectAccountGroupBalanceForEmptyState', () => {
       state.metamask.accountsByChainId = {
         '0x1': {
           '0x0': {
-            address: '0x0',
             balance: '0x0',
           },
         },
@@ -1511,7 +1510,6 @@ describe('selectAccountGroupBalanceForEmptyState', () => {
       state.metamask.accountsByChainId = {
         '0x1': {
           '0x0': {
-            address: '0x0',
             balance: '0x0', // No ETH
           },
         },
@@ -1574,10 +1572,10 @@ describe('getAssetsBySelectedAccountGroup', () => {
   });
 });
 
-describe('getAssetsBySelectedAccountGroupWithTronResources', () => {
+describe('getAssetsBySelectedAccountGroupWithTronSpecialAssets', () => {
   beforeEach(() => {
-    getAssetsBySelectedAccountGroupWithTronResources.clearCache();
-    getAssetsBySelectedAccountGroupWithTronResources.memoizedResultFunc.clearCache();
+    getAssetsBySelectedAccountGroupWithTronSpecialAssets.clearCache();
+    getAssetsBySelectedAccountGroupWithTronSpecialAssets.memoizedResultFunc.clearCache();
   });
 
   const mockState = {
@@ -1600,12 +1598,13 @@ describe('getAssetsBySelectedAccountGroupWithTronResources', () => {
     },
   };
 
-  it('calls selector with option to not filter tron resources', () => {
+  it('calls selector with option to not filter tron special assets', () => {
     const selectorMock = jest
       .mocked(selectAssetsBySelectedAccountGroup)
       .mockReturnValue({});
 
-    const result = getAssetsBySelectedAccountGroupWithTronResources(mockState);
+    const result =
+      getAssetsBySelectedAccountGroupWithTronSpecialAssets(mockState);
 
     expect(selectorMock).toHaveBeenCalledWith(mockState.metamask, {
       filterTronStakedTokens: false,

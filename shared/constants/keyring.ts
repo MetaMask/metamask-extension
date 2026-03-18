@@ -29,6 +29,10 @@ export const KeyringType = {
   ...SnapKeyringType,
 };
 
+/**
+ * Keyring types that support EIP-7702 (Setup Smart Account).
+ * Only HD (entropy) and simple (private key) accounts support this; hardware and snap do not.
+ */
 export const KEYRING_TYPES_SUPPORTING_7702 = [
   KeyringTypes.hd,
   KeyringTypes.simple,

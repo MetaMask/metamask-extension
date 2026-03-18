@@ -25,7 +25,7 @@ import {
   getAllNetworkConfigurationsByCaipChainId,
   getCurrentChainId,
   getNetworkConfigurationsByChainId,
-} from '../../../../shared/modules/selectors/networks';
+} from '../../../../shared/lib/selectors/networks';
 import {
   getInternalAccounts,
   getSelectedInternalAccount,
@@ -87,7 +87,7 @@ import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import {
   isValidHexAddress,
   toChecksumHexAddress,
-} from '../../../../shared/modules/hexstring-utils';
+} from '../../../../shared/lib/hexstring-utils';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { addHexPrefix } from '../../../../app/scripts/lib/util';
@@ -211,7 +211,7 @@ export const ImportTokensModal = ({ onClose }) => {
   const selectedAccount = useSelector(getSelectedInternalAccount);
   const accounts = useSelector(getInternalAccounts);
   const allTokens = useSelector(getAllTokens);
-  const tokens = allTokens?.[chainId]?.[selectedAccount.address] || [];
+  const tokens = allTokens?.[selectedNetwork]?.[selectedAccount.address] || [];
   const contractExchangeRates = useSelector(getTokenExchangeRates);
 
   // Use the new useTokensWithFiltering hook for getting token data

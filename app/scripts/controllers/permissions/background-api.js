@@ -14,7 +14,7 @@ import {
 } from '@metamask/chain-agnostic-permission';
 import { isSnapId } from '@metamask/snaps-utils';
 import { parseCaipAccountId, parseCaipChainId } from '@metamask/utils';
-import { getNetworkConfigurationsByCaipChainId } from '../../../../shared/modules/selectors/networks';
+import { getNetworkConfigurationsByCaipChainId } from '../../../../shared/lib/selectors/networks';
 
 export function getPermissionBackgroundApiMethods({
   permissionController,

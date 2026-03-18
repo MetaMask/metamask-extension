@@ -23,6 +23,11 @@ import {
   ButtonVariant,
   ButtonSize,
 } from '@metamask/design-system-react';
+import type {
+  OrderType,
+  OrderParams,
+  PriceUpdate,
+} from '@metamask/perps-controller';
 import { getIsPerpsEnabled } from '../../selectors/perps/feature-flags';
 import { getSelectedInternalAccount } from '../../selectors/accounts';
 import { useI18nContext } from '../../hooks/useI18nContext';
@@ -35,7 +40,7 @@ import {
   usePerpsLiveAccount,
   usePerpsLiveMarketData,
 } from '../../hooks/perps/stream';
-import { usePerpsEligibility } from '../../hooks/perps';
+import { usePerpsEligibility, usePerpsDeposit } from '../../hooks/perps';
 import { getPerpsController } from '../../providers/perps';
 import {
   getDisplayName,
@@ -51,11 +56,6 @@ import {
   type OrderMode,
   type OrderCalculations,
 } from '../../components/app/perps/order-entry';
-import type {
-  OrderType,
-  OrderParams,
-  PriceUpdate,
-} from '@metamask/perps-controller';
 
 /**
  * Convert UI OrderFormState to PerpsController OrderParams
@@ -121,6 +121,7 @@ const PerpsOrderEntryPage: React.FC = () => {
   const selectedAccount = useSelector(getSelectedInternalAccount);
   const selectedAddress = selectedAccount?.address;
   const { isEligible } = usePerpsEligibility();
+  const { triggerDeposit } = usePerpsDeposit();
 
   const { positions: allPositions } = usePerpsLivePositions();
   const { account } = usePerpsLiveAccount();
@@ -577,6 +578,7 @@ const PerpsOrderEntryPage: React.FC = () => {
           existingPosition={existingPositionForOrder}
           midPrice={topOfBook?.midPrice}
           onOrderTypeChange={setOrderType}
+          onAddFunds={triggerDeposit}
         />
       </Box>
 

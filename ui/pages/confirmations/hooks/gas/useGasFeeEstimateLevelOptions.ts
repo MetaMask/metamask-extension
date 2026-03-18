@@ -17,7 +17,7 @@ import { type GasOption } from '../../types/gas';
 import { EMPTY_VALUE_STRING } from '../../constants/gas';
 import { toHumanEstimatedTimeRange } from '../../utils/time';
 import { useTransactionNativeTicker } from '../transactions/useTransactionNativeTicker';
-import { hexWEIToDecGWEI } from '../../../../../shared/modules/conversion.utils';
+import { hexWEIToDecGWEI } from '../../../../../shared/lib/conversion.utils';
 
 const HEX_ZERO = '0x0';
 

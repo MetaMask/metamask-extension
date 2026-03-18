@@ -1,10 +1,6 @@
 import { createSelector } from 'reselect';
 import { getRemoteFeatureFlags } from '../remote-feature-flags';
 
-export type AdditionalNetworksBlacklistFeatureFlag = {
-  additionalNetworksBlacklist: string[];
-};
-
 /**
  * Selector to get the additional networks blacklist feature flag from remote feature flags.
  * Allows to remove a network from the additional network selection.

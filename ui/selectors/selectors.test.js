@@ -16,12 +16,12 @@ import { CHAIN_IDS, NETWORK_TYPES } from '../../shared/constants/network';
 import { createMockInternalAccount } from '../../test/jest/mocks';
 import { mockNetworkState } from '../../test/stub/networks';
 import { DeleteRegulationStatus } from '../../shared/constants/metametrics';
-import * as networkSelectors from '../../shared/modules/selectors/networks';
+import * as networkSelectors from '../../shared/lib/selectors/networks';
 import { MultichainNetworks } from '../../shared/constants/multichain/networks';
 import {
   DEFAULT_FEATURE_FLAG_VALUES,
   FeatureFlagNames,
-} from '../../shared/modules/feature-flags';
+} from '../../shared/lib/feature-flags';
 
 import {
   SOLANA_WALLET_NAME,
@@ -29,8 +29,8 @@ import {
 } from '../../shared/lib/accounts';
 import * as selectors from './selectors';
 
-jest.mock('../../shared/modules/selectors/networks', () => ({
-  ...jest.requireActual('../../shared/modules/selectors/networks'),
+jest.mock('../../shared/lib/selectors/networks', () => ({
+  ...jest.requireActual('../../shared/lib/selectors/networks'),
 }));
 
 jest.mock('../../app/scripts/lib/util', () => ({
@@ -38,8 +38,8 @@ jest.mock('../../app/scripts/lib/util', () => ({
   getEnvironmentType: jest.fn().mockReturnValue('popup'),
 }));
 
-jest.mock('../../shared/modules/network.utils', () => {
-  const actual = jest.requireActual('../../shared/modules/network.utils');
+jest.mock('../../shared/lib/network.utils', () => {
+  const actual = jest.requireActual('../../shared/lib/network.utils');
   return {
     ...actual,
     shouldShowLineaMainnet: jest.fn().mockResolvedValue(true),
@@ -4378,6 +4378,32 @@ describe('getShowUpdateModal', () => {
       },
     };
     expect(selectors.getShowUpdateModal(state)).toBe(false);
+  });
+});
+
+describe('getPendingRedirectRoute', () => {
+  it('returns the route when set', () => {
+    const route = { path: '/shield-plan' };
+    const state = {
+      metamask: {
+        pendingRedirectRoute: route,
+      },
+    };
+    expect(selectors.getPendingRedirectRoute(state)).toStrictEqual(route);
+  });
+
+  it('returns null when not set', () => {
+    const state = {
+      metamask: {
+        pendingRedirectRoute: null,
+      },
+    };
+    expect(selectors.getPendingRedirectRoute(state)).toBeNull();
+  });
+
+  it('returns null when metamask is undefined', () => {
+    const state = {};
+    expect(selectors.getPendingRedirectRoute(state)).toBeNull();
   });
 });
 

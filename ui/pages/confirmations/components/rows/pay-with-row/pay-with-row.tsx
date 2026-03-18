@@ -12,10 +12,9 @@ import {
   Text,
 } from '../../../../../components/component-library';
 import { Skeleton } from '../../../../../components/component-library/skeleton';
-import {
-  ConfirmInfoRow,
-  ConfirmInfoRowSize,
-} from '../../../../../components/app/confirm/info/row/row';
+import { ConfirmInfoRowSize } from '../../../../../components/app/confirm/info/row/row';
+import { ConfirmInfoAlertRow } from '../../../../../components/app/confirm/info/row/alert-row/alert-row';
+import { RowAlertKey } from '../../../../../components/app/confirm/info/row/constants';
 import {
   AlignItems,
   BackgroundColor,
@@ -51,7 +50,7 @@ type PayWithRowContentProps = {
   onOpenModal: () => void;
 };
 
-type PayWithRowSmallProps = PayWithRowContentProps & {
+type PayWithRowPillProps = PayWithRowContentProps & {
   balanceUsdFormatted: string;
 };
 
@@ -142,81 +141,85 @@ export function PayWithRow({
         <PayWithModal isOpen={isModalOpen} onClose={handleCloseModal} />
       )}
       {isSmall ? (
-        <PayWithRowSmall
+        <PayWithRowPill
           {...contentProps}
           balanceUsdFormatted={balanceUsdFormatted}
         />
       ) : (
-        <PayWithRowDefault
+        <PayWithRowInline
           {...contentProps}
-          balanceUsdFormatted={balanceUsdFormatted}
+          ownerId={currentConfirmation?.id ?? ''}
         />
       )}
     </>
   );
 }
 
-function PayWithRowSmall({
+function PayWithRowInline({
   displayToken,
-  balanceUsdFormatted,
   canEdit,
   from,
   onOpenModal,
-}: PayWithRowSmallProps) {
+  ownerId,
+}: PayWithRowContentProps & { ownerId: string }) {
   const t = useI18nContext();
 
   return (
-    <ConfirmInfoRow
+    <ConfirmInfoAlertRow
+      alertKey={RowAlertKey.PayWith}
+      ownerId={ownerId}
       data-testid="pay-with-row"
       label={t('payWith')}
-      rowVariant={ConfirmInfoRowSize.Small}
+      rowVariant={ConfirmInfoRowSize.Default}
     >
       <Box
-        display={Display.Flex}
-        flexDirection={FlexDirection.Row}
-        alignItems={AlignItems.center}
-        gap={2}
+        data-testid="pay-with-pill"
         onClick={canEdit ? onOpenModal : undefined}
-        style={{ cursor: canEdit ? 'pointer' : 'default' }}
+        backgroundColor={
+          canEdit
+            ? BackgroundColor.backgroundMuted
+            : BackgroundColor.transparent
+        }
+        borderRadius={BorderRadius.pill}
+        display={Display.InlineFlex}
+        alignItems={AlignItems.center}
+        gap={1}
+        style={{
+          cursor: canEdit ? 'pointer' : 'default',
+          padding: canEdit ? '4px 8px' : '0px',
+        }}
       >
-        <TokenIcon
-          chainId={displayToken.chainId as `0x${string}`}
-          tokenAddress={displayToken.address as `0x${string}`}
-          size="sm"
-        />
-        <Text
-          variant={TextVariant.bodyMd}
-          color={TextColor.textDefault}
-          data-testid="pay-with-symbol"
+        <Box
+          display={Display.Flex}
+          alignItems={AlignItems.center}
+          marginRight={1}
         >
-          {displayToken.symbol}
-        </Text>
-        <Text
-          variant={TextVariant.bodyMd}
-          color={TextColor.textAlternative}
-          data-testid="pay-with-balance"
-        >
-          {balanceUsdFormatted}
-        </Text>
+          <TokenIcon
+            chainId={displayToken.chainId as `0x${string}`}
+            tokenAddress={displayToken.address as `0x${string}`}
+            size="xs"
+          />
+        </Box>
+        <Text data-testid="pay-with-symbol">{displayToken.symbol}</Text>
         {canEdit && from && (
           <Icon
+            data-testid="pay-with-arrow"
             name={IconName.ArrowDown}
             size={IconSize.Sm}
-            color={IconColor.iconAlternative}
           />
         )}
       </Box>
-    </ConfirmInfoRow>
+    </ConfirmInfoAlertRow>
   );
 }
 
-function PayWithRowDefault({
+function PayWithRowPill({
   displayToken,
   balanceUsdFormatted,
   canEdit,
   from,
   onOpenModal,
-}: PayWithRowContentProps & { balanceUsdFormatted: string }) {
+}: PayWithRowPillProps) {
   const t = useI18nContext();
 
   return (

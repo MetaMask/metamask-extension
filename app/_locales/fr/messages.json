@@ -181,9 +181,6 @@
   "activityEmptyDescription": {
     "message": "Rien à voir pour l’instant. Échangez votre premier jeton dès aujourd’hui."
   },
-  "activityLog": {
-    "message": "Log d’activité"
-  },
   "add": {
     "message": "Ajouter"
   },
@@ -279,9 +276,6 @@
   "addIPFSGateway": {
     "message": "Ajoutez votre passerelle IPFS préférée"
   },
-  "addImportAccount": {
-    "message": "Ajouter un compte ou un portefeuille matériel"
-  },
   "addMemo": {
     "message": "Ajouter un mémo"
   },
@@ -338,10 +332,6 @@
   },
   "addToken": {
     "message": "Ajouter le jeton"
-  },
-  "addTokenByContractAddress": {
-    "message": "Vous n’arrivez pas à trouver un jeton ? Vous pouvez ajouter manuellement n’importe quel jeton en copiant et collant son adresse. Les adresses des contrats de jetons sont disponibles sur $1",
-    "description": "$1 is a blockchain explorer for a specific network, e.g. Etherscan for Ethereum"
   },
   "addUrl": {
     "message": "Ajouter l'URL"
@@ -653,10 +643,6 @@
   },
   "allowNotifications": {
     "message": "Autoriser les notifications"
-  },
-  "allowWithdrawAndSpend": {
-    "message": "Permettre à $1 de retirer et de dépenser jusqu’au montant suivant :",
-    "description": "The url of the site that requested permission to 'withdraw and spend'"
   },
   "amount": {
     "message": "Montant"
@@ -995,9 +981,6 @@
   "bridgeBlockExplorerLinkCopied": {
     "message": "Le lien de l’explorateur de blocs a été copié"
   },
-  "bridgeCalculatingAmount": {
-    "message": "En train de calculer…"
-  },
   "bridgeConfirmTwoTransactions": {
     "message": "Vous devrez confirmer 2 transactions sur votre portefeuille matériel :"
   },
@@ -1033,9 +1016,6 @@
   "bridgeGasFeesSplit": {
     "message": "Les frais de réseau indiqués sur l’écran précédent comprennent les deux transactions et seront divisés."
   },
-  "bridgeNetCost": {
-    "message": "Coût net"
-  },
   "bridgeNoMMFee": {
     "message": "Pas de frais MM"
   },
@@ -1069,9 +1049,6 @@
   },
   "bridgePriceImpact": {
     "message": "Impact sur les prix"
-  },
-  "bridgePriceImpactNormalWarning": {
-    "message": "L’impact sur le prix reflète la manière dont votre swap affecte le prix du marché. Si vous n’avez pas assez de gaz, certains de vos jetons sont utilisés pour couvrir les frais, ce qui augmente l’impact sur le prix. MetaMask ne définit ni ne contrôle cet impact."
   },
   "bridgePriceImpactTooltipTitle": {
     "message": "Impact sur les prix"
@@ -1141,10 +1118,6 @@
   "bridgeStepActionSwapPending": {
     "message": "Échange de $1 contre $2",
     "description": "$1 is the amount of the source asset, $2 is the amount of the destination asset"
-  },
-  "bridgeTimingMinutes": {
-    "message": "$1 min",
-    "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
   },
   "bridgeTo": {
     "message": "Établir une passerelle vers"
@@ -1219,9 +1192,6 @@
   },
   "browserNotSupported": {
     "message": "Votre navigateur internet n’est pas compatible..."
-  },
-  "buildContactList": {
-    "message": "Créez votre liste de contacts"
   },
   "builtAroundTheWorld": {
     "message": "MetaMask est conçu et établi dans le monde entier."
@@ -1616,9 +1586,6 @@
   "connectAccount": {
     "message": "Connecter le compte"
   },
-  "connectAccountOrCreate": {
-    "message": "Connecter un compte ou en créer un nouveau"
-  },
   "connectAccounts": {
     "message": "Connecter les comptes"
   },
@@ -1817,7 +1784,8 @@
     "message": "Déverrouille MetaMask sur cet appareil uniquement."
   },
   "createPasswordDetailsSocial": {
-    "message": "La perte de ce mot de passe entraîne la perte de l’accès au portefeuille sur tous les appareils. "
+    "message": "La perte de ce mot de passe entraîne la perte de l’accès au portefeuille sur tous les appareils. ",
+    "description": "$1 is the text 'MetaMask can't reset it.'"
   },
   "createPasswordDetailsSocialReset": {
     "message": "MetaMask ne peut pas le réinitialiser."
@@ -1911,9 +1879,6 @@
   },
   "customSlippage": {
     "message": "Personnaliser"
-  },
-  "customSpendLimit": {
-    "message": "Limite de dépenses personnalisée"
   },
   "customToken": {
     "message": "Jeton personnalisé"
@@ -2150,9 +2115,6 @@
   "delete": {
     "message": "Supprimer"
   },
-  "deleteContact": {
-    "message": "Supprimer le contact"
-  },
   "deleteMetaMetricsData": {
     "message": "Supprimer les données MetaMetrics"
   },
@@ -2201,9 +2163,6 @@
   "descriptionFromSnap": {
     "message": "Description provenant de $1",
     "description": "$1 represents the name of the snap"
-  },
-  "deselectAll": {
-    "message": "Tout désélectionner"
   },
   "destinationAccountPickerNoEligible": {
     "message": "Aucun compte admissible n’a été trouvé"
@@ -2285,12 +2244,6 @@
   },
   "dismissReminderField": {
     "message": "Annuler le rappel de sauvegarde de la phrase secrète de récupération"
-  },
-  "dismissSmartAccountSuggestionEnabledDescription": {
-    "message": "Activez cette option si vous ne voulez plus voir la suggestion « Passez à un compte intelligent » apparaitre sur vos comptes. Les comptes intelligents vous permettent de bénéficier de transactions plus rapides, de frais de réseau moins élevés et de moyens de paiement flexibles."
-  },
-  "dismissSmartAccountSuggestionEnabledTitle": {
-    "message": "Désactiver la suggestion « Passez à un compte intelligent »"
   },
   "displayNftMedia": {
     "message": "Afficher les médias NFT"
@@ -2387,9 +2340,6 @@
   "editANickname": {
     "message": "Modifier le pseudonyme"
   },
-  "editAccountName": {
-    "message": "Modifier le nom du compte"
-  },
   "editAccounts": {
     "message": "Modifier les comptes"
   },
@@ -2484,9 +2434,6 @@
   "editNonceMessage": {
     "message": "Il s’agit d’une fonction avancée, à utiliser avec précaution."
   },
-  "editPermission": {
-    "message": "Modifier l’autorisation"
-  },
   "editPermissions": {
     "message": "Modifier les autorisations"
   },
@@ -2570,9 +2517,6 @@
   },
   "enterChainId": {
     "message": "Saisissez l’ID de chaîne"
-  },
-  "enterMaxSpendLimit": {
-    "message": "Saisissez la limite de dépenses maximale"
   },
   "enterNetworkName": {
     "message": "Saisissez le nom du réseau"
@@ -3157,9 +3101,6 @@
   "hidden": {
     "message": "Masqué"
   },
-  "hiddenAccounts": {
-    "message": "Comptes cachés"
-  },
   "hide": {
     "message": "Masquer"
   },
@@ -3365,9 +3306,6 @@
     "message": "MetaMask ne peut pas se connecter à l’hôte de la blockchain. Vérifiez les éventuelles raisons $1.",
     "description": "$1 is a clickable link with with text defined by the 'here' key"
   },
-  "initialTransactionConfirmed": {
-    "message": "Votre transaction initiale a été confirmée par le réseau. Cliquez sur OK pour retourner à l’écran précédent."
-  },
   "insights": {
     "message": "Aperçus"
   },
@@ -3550,9 +3488,6 @@
   },
   "l2FeeTooltip": {
     "message": "Frais de gaz L2"
-  },
-  "lastConnected": {
-    "message": "Dernière connexion"
   },
   "lastSold": {
     "message": "Dernière vente"
@@ -3786,13 +3721,6 @@
   },
   "makeAnotherSwap": {
     "message": "Créer un nouveau swap"
-  },
-  "makeSureNoOneWatching": {
-    "message": "Assurez-vous que personne ne regarde votre écran",
-    "description": "Warning to users to be care while creating and saving their new Secret Recovery Phrase"
-  },
-  "manage": {
-    "message": "Gérer"
   },
   "manageDefaultSettings": {
     "message": "Gérer les paramètres de confidentialité par défaut"
@@ -4037,10 +3965,12 @@
     "description": "Label for the account row in the mUSD claim confirmation screen"
   },
   "musdConversionActivityTitle": {
-    "message": "Conversion en mUSD"
+    "message": "Convertir $1 en mUSD",
+    "description": "$1 is the source token symbol (e.g., USDC)"
   },
   "musdConversionTitle": {
-    "message": "Conversion en mUSD"
+    "message": "Converti en mUSD",
+    "description": "Title shown in the transaction details modal for mUSD conversion transactions"
   },
   "mustSelectOne": {
     "message": "Vous devez sélectionner au moins 1 jeton."
@@ -4308,9 +4238,6 @@
   "newAccountNumberName": {
     "message": "Compte $1",
     "description": "Default name of next account to be created on create account screen"
-  },
-  "newContact": {
-    "message": "Nouveau contact"
   },
   "newContract": {
     "message": "Nouveau contrat"
@@ -5309,12 +5236,6 @@
   "perpsEntryPrice": {
     "message": "Prix d’ouverture"
   },
-  "perpsExploreCrypto": {
-    "message": "Découvrez les cryptomonnaies"
-  },
-  "perpsExploreStocksAndCommodities": {
-    "message": "Découvrez les actions et les matières premières"
-  },
   "perpsFees": {
     "message": "Frais"
   },
@@ -5431,9 +5352,6 @@
   },
   "perpsOraclePriceTooltip": {
     "message": "Médiane des prix externes communiqués par les validateurs, utilisée pour calculer le taux de financement"
-  },
-  "perpsOrderAmount": {
-    "message": "Montant de l’ordre"
   },
   "perpsOrders": {
     "message": "Ordres"
@@ -5582,12 +5500,6 @@
   "perpsWithdraw": {
     "message": "Retirer"
   },
-  "perpsYourOrders": {
-    "message": "Vos ordres"
-  },
-  "perpsYourPositions": {
-    "message": "Vos positions"
-  },
   "personalAddressDetected": {
     "message": "Votre adresse personnelle a été détectée. Veuillez saisir à la place l’adresse du contrat du jeton."
   },
@@ -5701,9 +5613,6 @@
   },
   "productAnnouncements": {
     "message": "Annonces de produits"
-  },
-  "proposedApprovalLimit": {
-    "message": "Limite d’approbation proposée"
   },
   "provide": {
     "message": "Fournir"
@@ -5861,12 +5770,6 @@
   "queued": {
     "message": "En attente"
   },
-  "quotedReceiveAmount": {
-    "message": "$1 reçoit le montant"
-  },
-  "quotedTotalCost": {
-    "message": "Coût total de $1"
-  },
   "rank": {
     "message": "Rang"
   },
@@ -5925,18 +5828,6 @@
   "rejectAll": {
     "message": "Refuser tout"
   },
-  "rejectRequestsDescription": {
-    "message": "Vous êtes sur le point de rejeter une série de demandes de $1."
-  },
-  "rejectRequestsN": {
-    "message": "Rejeter les demandes de $1"
-  },
-  "rejectTxsDescription": {
-    "message": "Vous êtes sur le point de rejeter en groupe les transactions $1."
-  },
-  "rejectTxsN": {
-    "message": "Rejeter les transactions $1"
-  },
   "rejected": {
     "message": "Refusé"
   },
@@ -5945,9 +5836,6 @@
   },
   "removeAccount": {
     "message": "Suprimer le compte"
-  },
-  "removeAccountDescription": {
-    "message": "Ce compte sera supprimé de votre portefeuille. Veuillez vous assurer que vous disposez de la phrase secrète de récupération ou de la clé privée d’origine pour ce compte importé avant de continuer. Vous pouvez importer ou créer à nouveau des comptes à partir du menu déroulant des comptes. "
   },
   "removeAccountModalBannerDescription": {
     "message": "Veuillez vous assurer que vous disposez de la phrase secrète de récupération ou de la clé privée de ce compte avant de le supprimer.",
@@ -6110,17 +5998,7 @@
   },
   "revealSeedWordsDescription1": {
     "message": "La $1 donne $2",
-    "description": "This is a sentence consisting of link using 'revealSeedWordsSRPName' as $1 and bolded text using 'revealSeedWordsDescription3' as $2."
-  },
-  "revealSeedWordsDescription2": {
-    "message": "MetaMask est un $1. Cela signifie que vous êtes le seul à connaître votre PSR.",
-    "description": "$1 is text link with the message from 'revealSeedWordsNonCustodialWallet'"
-  },
-  "revealSeedWordsDescription3": {
-    "message": "un accès complet à votre portefeuille et à vos fonds.\n"
-  },
-  "revealSeedWordsNonCustodialWallet": {
-    "message": "portefeuille non dépositaire"
+    "description": "This is a sentence consisting of link using 'revealSeedWordsSRPName' as $1."
   },
   "revealSeedWordsQR": {
     "message": "QR"
@@ -6134,10 +6012,6 @@
   "revealSeedWordsWarning": {
     "message": "Assurez-vous que personne ne regarde votre écran. $1",
     "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
-  },
-  "revealSeedWordsWarning2": {
-    "message": "Le service d’assistance de MetaMask ne vous la demandera jamais.",
-    "description": "The bolded texted in the second part of 'revealSeedWordsWarning'"
   },
   "revealSensitiveContent": {
     "message": "Révéler un contenu sensible"
@@ -6343,9 +6217,6 @@
   "search": {
     "message": "Rechercher"
   },
-  "searchAccounts": {
-    "message": "Rechercher des comptes"
-  },
   "searchAnAcccountOrContact": {
     "message": "Rechercher un compte ou un contact"
   },
@@ -6487,12 +6358,6 @@
   "selectAccountToConnect": {
     "message": "Sélectionner un compte à connecter"
   },
-  "selectAccounts": {
-    "message": "Sélectionnez le(s) compte(s) à utiliser sur ce site"
-  },
-  "selectAccountsForSnap": {
-    "message": "Sélectionnez le(s) compte(s) à utiliser avec ce snap"
-  },
   "selectAll": {
     "message": "Tout sélectionner"
   },
@@ -6531,9 +6396,6 @@
   },
   "selectedAccountMismatch": {
     "message": "Compte différent sélectionné"
-  },
-  "selectingAllWillAllow": {
-    "message": "En sélectionnant tout, vous autorisez ce site à voir tous vos comptes actuels. Assurez-vous de bien avoir confiance en ce site."
   },
   "send": {
     "message": "Envoyer"
@@ -7674,25 +7536,6 @@
   "speedUpTooltipText": {
     "message": "Nouveaux frais de gaz"
   },
-  "speedUpTransaction": {
-    "message": "Accélérez cette transaction"
-  },
-  "spendLimitInsufficient": {
-    "message": "Limite de dépenses insuffisante"
-  },
-  "spendLimitInvalid": {
-    "message": "Limite de dépenses invalide ; cela doit être une valeur positive"
-  },
-  "spendLimitPermission": {
-    "message": "Autorisation de limite de dépenses"
-  },
-  "spendLimitRequestedBy": {
-    "message": "Limite de dépenses demandée par $1",
-    "description": "Origin of the site requesting the spend limit"
-  },
-  "spendLimitTooLarge": {
-    "message": "Limite de dépenses trop élevée"
-  },
   "spender": {
     "message": "Dépenseur"
   },
@@ -8186,10 +8029,6 @@
     "message": "$1 cotations.",
     "description": "$1 is the number of quotes that the user can select from when opening the list of quotes on the 'view quote' screen"
   },
-  "swapNoTokensAvailable": {
-    "message": "Aucun jeton disponible correspondant à $1",
-    "description": "Tells the user that a given search string does not match any tokens in our token lists. $1 can be any string of text"
-  },
   "swapOnceTransactionHasProcess": {
     "message": "Vos $1 seront ajoutés à votre compte une fois que cette transaction sera traitée.",
     "description": "This message communicates the token that is being transferred. It is shown on the awaiting swap screen. The $1 will be a token symbol."
@@ -8527,18 +8366,6 @@
   "transaction": {
     "message": "transaction"
   },
-  "transactionCancelAttempted": {
-    "message": "Tentative d’annulation de la transaction avec un prix de carburant de $1 à $2"
-  },
-  "transactionCancelSuccess": {
-    "message": "Transaction annulée avec succès à $2"
-  },
-  "transactionConfirmed": {
-    "message": "Transaction confirmée sur $2."
-  },
-  "transactionCreated": {
-    "message": "Transaction créée avec une valeur de $1 sur $2."
-  },
   "transactionDataFunction": {
     "message": "Fonction"
   },
@@ -8548,17 +8375,11 @@
   "transactionDetailMultiLayerTotalSubtitle": {
     "message": "Montant + frais"
   },
-  "transactionDropped": {
-    "message": "Transaction abandonnée sur $2."
-  },
   "transactionError": {
     "message": "Erreur de transaction. Une exception a été rencontrée dans l’exécution du code du contrat."
   },
   "transactionErrorNoContract": {
     "message": "Tentative d’appel de fonction sur une adresse qui n’apparaît pas dans le contrat."
-  },
-  "transactionErrored": {
-    "message": "La transaction a rencontré une erreur."
   },
   "transactionFee": {
     "message": "Frais de transaction"
@@ -8594,24 +8415,15 @@
   "transactionIncludesTypes": {
     "message": "Cette transaction comprend : $1."
   },
-  "transactionResubmitted": {
-    "message": "La transaction a été soumise à nouveau avec une augmentation du prix du gaz, désormais de $1 à $2"
-  },
   "transactionSettings": {
     "message": "Paramètres de la transaction"
   },
   "transactionShield": {
     "message": "Protection des transactions"
   },
-  "transactionSubmitted": {
-    "message": "Transaction envoyée sur $2."
-  },
   "transactionTotalGasFee": {
     "message": "Montant total des frais de gaz",
     "description": "Label for the total gas fee incurred in the transaction."
-  },
-  "transactionUpdated": {
-    "message": "Transaction mise à jour sur $2."
   },
   "transactions": {
     "message": "Transactions"
@@ -8901,9 +8713,6 @@
   "usedByClients": {
     "message": "Utilisé par plusieurs clients différents"
   },
-  "userName": {
-    "message": "Nom d’utilisateur"
-  },
   "userOpContractDeployError": {
     "message": "Le déploiement de contrats à partir d’un compte de contrat intelligent n’est pas pris en charge"
   },
@@ -8923,14 +8732,8 @@
     "message": "Consulter sur $1",
     "description": "$1 is the block explorer name"
   },
-  "viewContact": {
-    "message": "Voir le contact"
-  },
   "viewDetails": {
     "message": "Afficher les détails"
-  },
-  "viewMore": {
-    "message": "Afficher plus"
   },
   "viewOnBlockExplorer": {
     "message": "Afficher sur l’explorateur de blocs"
@@ -9097,9 +8900,6 @@
   },
   "yourNFTmayBeAtRisk": {
     "message": "Il peut y avoir des risques associés à votre NFT"
-  },
-  "yourPrivateSeedPhrase": {
-    "message": "Votre phrase secrète de récupération"
   },
   "yourTransactionConfirmed": {
     "message": "Transaction déjà confirmée"

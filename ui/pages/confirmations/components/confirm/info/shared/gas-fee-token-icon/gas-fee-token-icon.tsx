@@ -1,4 +1,9 @@
-import { AvatarAccountSize } from '@metamask/design-system-react';
+import {
+  AvatarToken,
+  AvatarTokenSize,
+  AvatarAccountSize,
+  Box,
+} from '@metamask/design-system-react';
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { Hex } from '@metamask/utils';
 import React from 'react';
@@ -6,13 +11,6 @@ import { useSelector } from 'react-redux';
 import { CHAIN_ID_TOKEN_IMAGE_MAP } from '../../../../../../../../shared/constants/network';
 import { NATIVE_TOKEN_ADDRESS } from '../../../../../../../../shared/constants/transaction';
 import { PreferredAvatar } from '../../../../../../../components/app/preferred-avatar';
-import {
-  AvatarToken,
-  AvatarTokenSize,
-  Box,
-} from '../../../../../../../components/component-library';
-import Identicon from '../../../../../../../components/ui/identicon';
-import { BackgroundColor } from '../../../../../../../helpers/constants/design-system';
 import {
   selectERC20TokensByChain,
   selectNetworkConfigurationByChainId,
@@ -54,10 +52,13 @@ export function GasFeeTokenIcon({
     return (
       <Box data-testid="token-icon">
         {image ? (
-          <Identicon
-            address={tokenAddress}
-            diameter={size === GasFeeTokenIconSize.Md ? 32 : 12}
-            image={image}
+          <AvatarToken
+            src={image}
+            size={
+              size === GasFeeTokenIconSize.Md
+                ? AvatarTokenSize.Md
+                : AvatarTokenSize.Xs
+            }
           />
         ) : (
           <PreferredAvatar
@@ -88,7 +89,6 @@ export function GasFeeTokenIcon({
             ? AvatarTokenSize.Md
             : AvatarTokenSize.Xs
         }
-        backgroundColor={BackgroundColor.backgroundDefault}
       />
     </Box>
   );

@@ -9,7 +9,7 @@ import {
   REWARDS_ERROR_MESSAGES,
 } from '../../../../shared/constants/rewards';
 import type { RewardsDataServiceMessenger } from '../../controller-init/messengers/reward-data-service-messenger';
-import { FALLBACK_LOCALE } from '../../../../shared/modules/i18n';
+import { FALLBACK_LOCALE } from '../../../../shared/lib/i18n';
 import {
   EstimatePointsDto,
   EstimatedPointsDto,
@@ -276,6 +276,13 @@ export class RewardsDataService {
       });
 
       clearTimeout(timeoutId);
+
+      if (response.status === 403 && subscriptionToken) {
+        throw new AuthorizationFailedError(
+          `Authorization failed: ${response.status}`,
+        );
+      }
+
       return response;
     } catch (error) {
       clearTimeout(timeoutId);
@@ -449,9 +456,6 @@ export class RewardsDataService {
 
     if (!response.ok) {
       const errorData = await response.json();
-      if (errorData?.message?.includes('Rewards authorization failed')) {
-        throw new AuthorizationFailedError();
-      }
 
       if (errorData?.message?.includes('Season not found')) {
         throw new SeasonNotFoundError();

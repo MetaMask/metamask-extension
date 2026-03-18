@@ -41,9 +41,7 @@ import {
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import {
   getIsAddSnapAccountEnabled,
-  ///: BEGIN:ONLY_INCLUDE_IF(build-flask,build-experimental)
   getIsWatchEthereumAccountEnabled,
-  ///: END:ONLY_INCLUDE_IF
   getManageInstitutionalWallets,
 } from '../../../selectors';
 import { INSTITUTIONAL_WALLET_SNAP_ID } from '../../../../shared/lib/accounts';
@@ -54,13 +52,12 @@ import {
   type MetaMetricsEventPayload,
 } from '../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-///: BEGIN:ONLY_INCLUDE_IF(build-flask,build-experimental)
 import {
   ACCOUNT_WATCHER_NAME,
   ACCOUNT_WATCHER_SNAP_ID,
   // eslint-disable-next-line import/no-restricted-paths
 } from '../../../../app/scripts/lib/snap-keyring/account-watcher-snap';
-///: END:ONLY_INCLUDE_IF
+import { getSnapRoute } from '../../../helpers/utils/util';
 
 export type AddWalletModalProps = Omit<
   ModalProps,
@@ -90,11 +87,9 @@ export const AddWalletModal: React.FC<AddWalletModalProps> = ({
   );
   const { trackEvent } = useContext(MetaMetricsContext);
   const addSnapAccountEnabled = useSelector(getIsAddSnapAccountEnabled);
-  ///: BEGIN:ONLY_INCLUDE_IF(build-flask,build-experimental)
   const isAddWatchEthereumAccountEnabled = useSelector(
     getIsWatchEthereumAccountEnabled,
   );
-  ///: END:ONLY_INCLUDE_IF
 
   const walletOptions: WalletOption[] = [
     {
@@ -125,9 +120,7 @@ export const AddWalletModal: React.FC<AddWalletModalProps> = ({
             id: 'institutional-wallet',
             titleKey: 'manageInstitutionalWallets',
             iconName: IconName.Add,
-            route: `/snaps/view/${encodeURIComponent(
-              INSTITUTIONAL_WALLET_SNAP_ID,
-            )}`,
+            route: getSnapRoute(INSTITUTIONAL_WALLET_SNAP_ID),
           },
         ]
       : []),
@@ -193,7 +186,6 @@ export const AddWalletModal: React.FC<AddWalletModalProps> = ({
     });
   }, [trackEvent]);
 
-  ///: BEGIN:ONLY_INCLUDE_IF(build-flask,build-experimental)
   const handleAddWatchAccount = useCallback(async () => {
     await trackEvent({
       category: MetaMetricsEventCategory.Navigation,
@@ -215,9 +207,8 @@ export const AddWalletModal: React.FC<AddWalletModalProps> = ({
       },
     });
     onClose();
-    navigate(`/snaps/view/${encodeURIComponent(ACCOUNT_WATCHER_SNAP_ID)}`);
+    navigate(getSnapRoute(ACCOUNT_WATCHER_SNAP_ID));
   }, [trackEvent, onClose, navigate]);
-  ///: END:ONLY_INCLUDE_IF
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} {...props}>
@@ -302,46 +293,42 @@ export const AddWalletModal: React.FC<AddWalletModalProps> = ({
               <Icon name={IconName.ArrowRight} size={IconSize.Sm} />
             </Box>
           )}
-          {
-            ///: BEGIN:ONLY_INCLUDE_IF(build-flask,build-experimental)
-            isAddWatchEthereumAccountEnabled && (
-              <Box
-                key="watch-ethereum-account"
-                onClick={() => handleAddWatchAccount()}
-                onKeyDown={(e: React.KeyboardEvent) => {
-                  if (e.key === 'Enter' || e.key === ' ') {
-                    e.preventDefault();
-                    handleAddWatchAccount();
-                  }
-                }}
-                alignItems={BoxAlignItems.Center}
-                padding={4}
-                gap={3}
-                backgroundColor={BoxBackgroundColor.BackgroundDefault}
-                flexDirection={BoxFlexDirection.Row}
-                borderColor={BoxBorderColor.BorderMuted}
-                className="hover:bg-background-default-hover cursor-pointer transition-all duration-200 w-full text-left outline-none focus:outline-none focus:shadow-none focus-visible:shadow-[inset_0_0_0_2px_var(--color-primary-default)]"
-                tabIndex={0}
-                data-testid={`add-wallet-modal-watch-ethereum-account`}
+          {isAddWatchEthereumAccountEnabled && (
+            <Box
+              key="watch-ethereum-account"
+              onClick={() => handleAddWatchAccount()}
+              onKeyDown={(e: React.KeyboardEvent) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  handleAddWatchAccount();
+                }
+              }}
+              alignItems={BoxAlignItems.Center}
+              padding={4}
+              gap={3}
+              backgroundColor={BoxBackgroundColor.BackgroundDefault}
+              flexDirection={BoxFlexDirection.Row}
+              borderColor={BoxBorderColor.BorderMuted}
+              className="hover:bg-background-default-hover cursor-pointer transition-all duration-200 w-full text-left outline-none focus:outline-none focus:shadow-none focus-visible:shadow-[inset_0_0_0_2px_var(--color-primary-default)]"
+              tabIndex={0}
+              data-testid={`add-wallet-modal-watch-ethereum-account`}
+            >
+              <Icon
+                name={IconName.Eye}
+                size={IconSize.Md}
+                color={IconColor.IconAlternative}
+              />
+              <Text
+                variant={TextVariant.BodyMd}
+                fontWeight={FontWeight.Medium}
+                color={TextColor.TextDefault}
+                className="flex-1"
               >
-                <Icon
-                  name={IconName.Eye}
-                  size={IconSize.Md}
-                  color={IconColor.IconAlternative}
-                />
-                <Text
-                  variant={TextVariant.BodyMd}
-                  fontWeight={FontWeight.Medium}
-                  color={TextColor.TextDefault}
-                  className="flex-1"
-                >
-                  {t('addEthereumWatchOnlyAccount')}
-                </Text>
-                <Icon name={IconName.ArrowRight} size={IconSize.Sm} />
-              </Box>
-            )
-            ///: END:ONLY_INCLUDE_IF
-          }
+                {t('addEthereumWatchOnlyAccount')}
+              </Text>
+              <Icon name={IconName.ArrowRight} size={IconSize.Sm} />
+            </Box>
+          )}
         </ModalBody>
       </ModalContent>
     </Modal>

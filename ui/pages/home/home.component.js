@@ -17,7 +17,7 @@ import Button from '../../components/ui/button';
 import Popover from '../../components/ui/popover';
 import ConnectedSites from '../connected-sites';
 import ConnectedAccounts from '../connected-accounts';
-import { isMv3ButOffscreenDocIsMissing } from '../../../shared/modules/mv3.utils';
+import { isMv3ButOffscreenDocIsMissing } from '../../../shared/lib/mv3.utils';
 import ActionableMessage from '../../components/ui/actionable-message/actionable-message';
 import { ScrollContainer } from '../../contexts/scroll-container';
 import {
@@ -92,6 +92,8 @@ export default class Home extends PureComponent {
   static propTypes = {
     navigate: PropTypes.func,
     forgottenPassword: PropTypes.bool,
+    isNotification: PropTypes.bool,
+    hasApprovalFlows: PropTypes.bool,
     setConnectedStatusPopoverHasBeenShown: PropTypes.func,
     shouldShowSeedPhraseReminder: PropTypes.bool.isRequired,
     isPopup: PropTypes.bool,
@@ -104,8 +106,6 @@ export default class Home extends PureComponent {
     showMultiRpcModal: PropTypes.bool.isRequired,
     showUpdateModal: PropTypes.bool.isRequired,
     newNetworkAddedConfigurationId: PropTypes.string,
-    // This prop is used in the `shouldCloseNotificationPopup` function
-    // eslint-disable-next-line react/no-unused-prop-types
     totalUnapprovedCount: PropTypes.number.isRequired,
     participateInMetaMetrics: PropTypes.bool.isRequired,
     setDataCollectionForMarketing: PropTypes.func.isRequired,
@@ -123,11 +123,7 @@ export default class Home extends PureComponent {
     setOutdatedBrowserWarningLastShown: PropTypes.func.isRequired,
     newNetworkAddedName: PropTypes.string,
     editedNetwork: PropTypes.object,
-    // This prop is used in the `shouldCloseNotificationPopup` function
-    // eslint-disable-next-line react/no-unused-prop-types
     isSigningQRHardwareTransaction: PropTypes.bool,
-    // This prop is used in the `shouldCloseNotificationPopup` function
-    // eslint-disable-next-line react/no-unused-prop-types
     isHardwareWalletErrorModalVisible: PropTypes.bool,
     newNftAddedMessage: PropTypes.string,
     setNewNftAddedMessage: PropTypes.func.isRequired,
@@ -145,6 +141,7 @@ export default class Home extends PureComponent {
     setBasicFunctionalityModalOpen: PropTypes.func,
     fetchBuyableChains: PropTypes.func.isRequired,
     redirectAfterDefaultPage: PropTypes.object,
+    setRedirectAfterDefaultPage: PropTypes.func,
     clearRedirectAfterDefaultPage: PropTypes.func,
     isSeedlessPasswordOutdated: PropTypes.bool,
     isPrimarySeedPhraseBackedUp: PropTypes.bool,
@@ -159,6 +156,9 @@ export default class Home extends PureComponent {
     rewardsOnboardingEnabled: PropTypes.bool,
     rewardsOnboardingModalOpen: PropTypes.bool,
     showPna25Modal: PropTypes.bool.isRequired,
+    envType: PropTypes.string,
+    pendingRedirectRoute: PropTypes.object,
+    clearPendingRedirectRoute: PropTypes.func,
   };
 
   state = {
@@ -170,8 +170,23 @@ export default class Home extends PureComponent {
   constructor(props) {
     super(props);
 
-    const { attemptCloseNotificationPopup } = this.props;
-    if (shouldCloseNotificationPopup(props)) {
+    const {
+      attemptCloseNotificationPopup,
+      isNotification,
+      totalUnapprovedCount,
+      hasApprovalFlows,
+      isSigningQRHardwareTransaction,
+      isHardwareWalletErrorModalVisible,
+    } = this.props;
+    if (
+      shouldCloseNotificationPopup({
+        isNotification,
+        totalUnapprovedCount,
+        hasApprovalFlows,
+        isSigningQRHardwareTransaction,
+        isHardwareWalletErrorModalVisible,
+      })
+    ) {
       this.state.notificationClosing = true;
       attemptCloseNotificationPopup();
     }
@@ -193,10 +208,32 @@ export default class Home extends PureComponent {
     }
   }
 
+  /**
+   * Hydrate history duck from persisted pendingRedirectRoute (cross-session redirect).
+   * Must only be called once per arrival of a new pendingRedirectRoute, because
+   * clearPendingRedirectRoute is an async thunk — the prop stays non-null across
+   * several render cycles, so calling this unconditionally in componentDidUpdate
+   * would create a re-render loop.
+   */
+  checkPendingRedirectRoute() {
+    if (this.props.pendingRedirectRoute) {
+      const { path, search, environmentType } = this.props.pendingRedirectRoute;
+      const shouldRedirect =
+        !environmentType || environmentType === this.props.envType;
+
+      if (shouldRedirect) {
+        this.props.setRedirectAfterDefaultPage({
+          path: search ? `${path}${search}` : path,
+        });
+      }
+      this.props.clearPendingRedirectRoute();
+    }
+  }
+
   componentDidMount() {
     this.props.fetchBuyableChains();
 
-    // Check for redirect after default page
+    this.checkPendingRedirectRoute();
     this.checkRedirectAfterDefaultPage();
 
     // Ensure we have up-to-date connectivity statuses for all enabled networks
@@ -208,15 +245,27 @@ export default class Home extends PureComponent {
     }
   }
 
-  static getDerivedStateFromProps(props) {
-    const shouldClose = shouldCloseNotificationPopup(props);
+  static getDerivedStateFromProps({
+    isNotification,
+    totalUnapprovedCount,
+    hasApprovalFlows,
+    isSigningQRHardwareTransaction,
+    isHardwareWalletErrorModalVisible,
+  }) {
+    const shouldClose = shouldCloseNotificationPopup({
+      isNotification,
+      totalUnapprovedCount,
+      hasApprovalFlows,
+      isSigningQRHardwareTransaction,
+      isHardwareWalletErrorModalVisible,
+    });
     if (shouldClose) {
       return { notificationClosing: true };
     }
     return null;
   }
 
-  componentDidUpdate(_prevProps, prevState) {
+  componentDidUpdate(prevProps, prevState) {
     const {
       attemptCloseNotificationPopup,
       newNetworkAddedConfigurationId,
@@ -231,7 +280,7 @@ export default class Home extends PureComponent {
 
     const {
       newNetworkAddedConfigurationId: prevNewNetworkAddedConfigurationId,
-    } = _prevProps;
+    } = prevProps;
     const { notificationClosing } = this.state;
 
     if (
@@ -257,7 +306,12 @@ export default class Home extends PureComponent {
       this.setState({ shouldEvaluateCohortEligibility: false });
     }
 
-    // Check for redirect after default page on updates
+    // Only process pendingRedirectRoute when the prop first transitions from null to non-null
+    if (this.props.pendingRedirectRoute && !prevProps.pendingRedirectRoute) {
+      this.checkPendingRedirectRoute();
+    }
+
+    // clearRedirectAfterDefaultPage is a synchronous Redux action, so the guard condition flips before the next render.
     this.checkRedirectAfterDefaultPage();
   }
 

@@ -1,0 +1,39 @@
+.musd-asset-cta-inline {
+  cursor: pointer;
+}
+
+.musd-asset-cta {
+  border-width: 1px;
+  border-style: solid;
+  border-radius: 8px;
+  padding-left: 16px;
+  padding-right: 12px;
+  gap: 16px;
+  cursor: pointer;
+
+  &__icon {
+    width: 60px;
+    height: 60px;
+    min-width: 60px;
+    overflow: hidden;
+    border-radius: 8px;
+
+    img {
+      width: 60px;
+      height: 60px;
+      object-fit: cover;
+    }
+  }
+
+  &__content {
+    flex: 1;
+    gap: 4px;
+    padding-top: 16px;
+    padding-bottom: 16px;
+  }
+
+  &__dismiss {
+    align-self: flex-start;
+    margin-top: 16px;
+  }
+}

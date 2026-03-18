@@ -770,6 +770,7 @@ export enum MetaMetricsEventName {
   ActivityDetailsOpened = 'Activity Details Opened',
   ActivityDetailsClosed = 'Activity Details Closed',
   AnalyticsPreferenceSelected = 'Analytics Preference Selected',
+  ExperimentViewed = 'Experiment Viewed',
   AppInstalled = 'App Installed',
   AppOpened = 'App Opened',
   AppUnlocked = 'App Unlocked',
@@ -794,6 +795,7 @@ export enum MetaMetricsEventName {
   EmptyReceiveBannerDisplayed = 'Empty Receive Banner Displayed',
   EmptyReceiveBannerClicked = 'Empty Receive Banner Clicked',
   EmptyNftsBannerClicked = 'Empty NFTs Banner Clicked',
+  EnabledDisabledOpenSea = 'Enabled/Disable OpenSea',
   EncryptionPublicKeyApproved = 'Encryption Approved',
   EncryptionPublicKeyRejected = 'Encryption Rejected',
   EncryptionPublicKeyRequested = 'Encryption Requested',
@@ -857,6 +859,7 @@ export enum MetaMetricsEventName {
   NavSwapButtonClicked = 'Swap Button Clicked',
   NavReceiveButtonClicked = 'Receive Button Clicked',
   NftAdded = 'NFT Added',
+  NftDetected = 'NFT Detected',
   NoticeUpdateDisplayed = 'Notice Update Displayed',
   OnboardingWalletSecurityStarted = 'SRP Backup Selected',
   OnboardingWalletSecuritySkipInitiated = 'SRP Skip Backup Selected',
@@ -923,6 +926,7 @@ export enum MetaMetricsEventName {
   SupportLinkClicked = 'Support Link Clicked',
   TermsOfUseShown = 'Terms of Use Shown',
   TermsOfUseAccepted = 'Terms of Use Accepted',
+  ThemeChanged = 'Theme Changed',
   TokenImportButtonClicked = 'Import Token Button Clicked',
   TokenScreenOpened = 'Token Screen Opened',
   TokenAdded = 'Token Added',
@@ -951,9 +955,7 @@ export enum MetaMetricsEventName {
   RehydrationCompleted = 'Rehydration Completed',
   RehydrationPasswordFailed = 'Rehydration Password Failed',
   UseDifferentLoginMethodClicked = 'Use Different Login Method Clicked',
-  // BEGIN:ONLY_INCLUDE_IF(build-flask,build-experimental)
   WatchEthereumAccountsToggled = 'Watch Ethereum Accounts Toggled',
-  // END:ONLY_INCLUDE_IF
   AccountDetailMenuOpened = 'Account Details Menu Opened',
   BlockExplorerLinkClicked = 'Block Explorer Clicked',
   AccountRemoved = 'Account Removed',
@@ -1084,6 +1086,16 @@ export enum MetaMetricsEventName {
   ShieldEligibilityCohortTimeout = 'Shield Eligibility Cohort Timeout',
   ShieldSubscriptionUnexpectedErrorEvent = 'Shield Subscription Unexpected Error',
   ShieldOptInRewards = 'Shield Opt In Rewards',
+  // Contacts (address book)
+  ContactsPageViewed = 'Contacts Page Viewed',
+  ContactDetailsViewed = 'Contact Details Viewed',
+  AddContactClicked = 'Add Contact Clicked',
+  ContactAddQrScannerClicked = 'Contact Add QR Scanner Clicked',
+  ContactAdded = 'Contact Added',
+  EditContactClicked = 'Edit Contact Clicked',
+  ContactUpdated = 'Contact Updated',
+  DeleteContactClicked = 'Delete Contact Clicked',
+  ContactDeleted = 'Contact Deleted',
 }
 
 export enum MetaMetricsEventAccountType {
@@ -1106,6 +1118,7 @@ export enum MetaMetricsEventAccountImportType {
 
 export enum MetaMetricsEventCategory {
   Accounts = 'Accounts',
+  Analytics = 'Analytics',
   App = 'App',
   Auth = 'Auth',
   Background = 'Background',
@@ -1146,6 +1159,7 @@ export enum MetaMetricsEventCategory {
   Transactions = 'Transactions',
   Wallet = 'Wallet',
   Confirmations = 'Confirmations',
+  Contacts = 'Contacts',
   CrossChainSwaps = 'Cross Chain Swaps',
   PortStream = 'Port Stream',
   Rewards = 'Rewards',
@@ -1246,6 +1260,12 @@ export enum DeleteRegulationStatus {
   Running = 'RUNNING',
   Unknown = 'UNKNOWN',
 }
+
+export const DATA_DELETION_REQUESTED_STATUSES: DeleteRegulationStatus[] = [
+  DeleteRegulationStatus.Initialized,
+  DeleteRegulationStatus.Running,
+  DeleteRegulationStatus.Finished,
+];
 
 export enum MetaMetricsEventTransactionEstimateType {
   DappProposed = 'dapp_proposed',

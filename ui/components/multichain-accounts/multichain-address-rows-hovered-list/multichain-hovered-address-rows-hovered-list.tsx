@@ -107,7 +107,7 @@ const ViewAllButton = ({
     </Button>
   ) : (
     <>
-      <div className="my-1 -mx-4 border-t border-border-muted" />
+      <div className="my-1 -mx-1 border-t border-border-muted" />
       <Button
         size={ButtonSize.Sm}
         variant={ButtonVariant.Tertiary}
@@ -322,7 +322,7 @@ export const MultichainHoveredAddressRowsList = ({
       e.stopPropagation();
       onViewAllClick?.();
       navigate(
-        `${MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE}/${encodeURIComponent(groupId)}`,
+        `${MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE}?accountGroupId=${encodeURIComponent(groupId)}`,
       );
     },
     [groupId, navigate, onViewAllClick],

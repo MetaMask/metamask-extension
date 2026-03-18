@@ -1,3 +1,9 @@
+import type {
+  Persona,
+  BenchmarkType,
+  ThresholdViolation,
+} from '../../../../shared/constants/benchmarks';
+
 export type TimerResult = {
   id: string;
   duration: number;
@@ -26,26 +32,6 @@ export type Metrics = {
   'Load Scripts': number;
   'Setup Store': number;
   numNetworkReqs: number;
-};
-
-export type StatisticalResult = {
-  [key: string]: number;
-};
-
-export type Persona = 'standard' | 'powerUser';
-
-export type BenchmarkType = 'benchmark' | 'performance' | 'userAction';
-
-export type BenchmarkResults = {
-  testTitle: string;
-  persona: Persona;
-  benchmarkType?: BenchmarkType;
-  mean: StatisticalResult;
-  min: StatisticalResult;
-  max: StatisticalResult;
-  stdDev: StatisticalResult;
-  p75: StatisticalResult;
-  p95: StatisticalResult;
 };
 
 /** User action result with testTitle, persona and numeric timing metrics. */
@@ -92,39 +78,6 @@ export type TimerStatistics = {
   dataQuality: 'good' | 'poor' | 'unreliable';
 };
 
-/**
- * Threshold limits for a single percentile
- */
-export type PercentileThreshold = {
-  /** Threshold (ms) that triggers a warning */
-  warn: number;
-  /** Threshold (ms) that triggers a failure */
-  fail: number;
-};
-
-/**
- * Configuration for performance thresholds
- * Each metric can have thresholds for P75 and/or P95 values
- */
-export type ThresholdConfig = {
-  [metricName: string]: {
-    /** P75 thresholds - typical user experience */
-    p75?: PercentileThreshold;
-    /** P95 thresholds - worst-case guardrail */
-    p95?: PercentileThreshold;
-    /** Multiplier for CI environments (e.g., 1.5 for slower CI machines) */
-    ciMultiplier?: number;
-  };
-};
-
-export type ThresholdViolation = {
-  metricId: string;
-  percentile: 'p75' | 'p95';
-  value: number;
-  threshold: number;
-  severity: 'warn' | 'fail';
-};
-
 export type BenchmarkSummary = {
   name: string;
   iterations: number;
@@ -137,10 +90,8 @@ export type BenchmarkSummary = {
   exclusionRatePassed: boolean;
   /** Percentage of runs that were excluded (0-1) */
   exclusionRate: number;
-  /** List of threshold violations (if any thresholds configured) */
-  thresholdViolations?: ThresholdViolation[];
-  /** Whether all thresholds passed (no 'fail' violations) */
-  thresholdsPassed?: boolean;
+  thresholdViolations: ThresholdViolation[];
+  thresholdsPassed: boolean;
   /** Benchmark type extracted from the first successful run */
   benchmarkType?: BenchmarkType;
 };

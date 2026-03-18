@@ -1,19 +1,18 @@
 import React from 'react';
 
-import Box from '../box';
-import { Text } from '../../component-library';
-import {
-  Color,
-  DISPLAY,
-  FLEX_WRAP,
-} from '../../../helpers/constants/design-system';
-import { typeHash } from './actionable-message';
 import ActionableMessage from '.';
 
 export default {
-  title: 'Components/UI/ActionableMessage',
-
+  title: 'Components/UI/ActionableMessage (deprecated)',
   component: ActionableMessage,
+  parameters: {
+    docs: {
+      description: {
+        component:
+          '**Deprecated**: This component is deprecated and will be removed in a future release.',
+      },
+    },
+  },
   argTypes: {
     message: { control: 'text' },
     'primaryAction.label': { control: 'text' },
@@ -56,91 +55,3 @@ export const DefaultStory = (args) => (
 );
 
 DefaultStory.storyName = 'Default';
-
-export const Type = (args) => (
-  <>
-    {Object.keys(typeHash).map((type) => (
-      <ActionableMessage
-        {...args}
-        message={args.message || type}
-        key={type}
-        type={type}
-      />
-    ))}
-  </>
-);
-
-Type.args = {
-  message: '',
-};
-
-export const OneAction = (args) => <ActionableMessage {...args} />;
-
-OneAction.args = {
-  primaryAction: {
-    label: 'Dismiss',
-  },
-};
-
-export const TwoActions = (args) => <ActionableMessage {...args} />;
-
-TwoActions.args = {
-  primaryAction: {
-    label: 'Dismiss',
-  },
-  secondaryAction: {
-    label: 'Okay',
-  },
-  className: 'actionable-message--warning',
-};
-
-export const LeftAligned = (args) => <ActionableMessage {...args} />;
-
-LeftAligned.args = {
-  primaryAction: {
-    label: 'Dismiss',
-  },
-  className: 'actionable-message--left-aligned',
-};
-
-export const WithIcon = (args) => <ActionableMessage {...args} />;
-
-WithIcon.args = {
-  className: 'actionable-message--left-aligned actionable-message--warning',
-  useIcon: true,
-  iconFillColor: 'var(--color-waring-default)',
-};
-
-export const PrimaryV2Action = (args) => <ActionableMessage {...args} />;
-
-PrimaryV2Action.args = {
-  message:
-    'We were not able to estimate gas. There might be an error in the contract and this transaction may fail.',
-  useIcon: true,
-  iconFillColor: 'var(--color-error-default)',
-  type: 'danger',
-  primaryActionV2: {
-    label: 'I want to proceed anyway',
-  },
-};
-
-export const OnTopOfContent = (args) => {
-  return (
-    <div>
-      <Box display={DISPLAY.FLEX} gap={4} flexWrap={FLEX_WRAP.WRAP}>
-        <Box padding={6} backgroundColor={Color.backgroundAlternative}>
-          <Text>Lorem ipsum dolor sit amet consectetur adipisicing elit.</Text>
-        </Box>
-        <Box padding={6} backgroundColor={Color.backgroundAlternative}>
-          <Text>Lorem ipsum dolor sit amet consectetur adipisicing elit.</Text>
-        </Box>
-        <Box padding={6} backgroundColor={Color.backgroundAlternative}>
-          <Text>Lorem ipsum dolor sit amet consectetur adipisicing elit.</Text>
-        </Box>
-      </Box>
-      <div style={{ position: 'absolute', top: 16, left: 16, right: 16 }}>
-        <ActionableMessage {...args} />
-      </div>
-    </div>
-  );
-};

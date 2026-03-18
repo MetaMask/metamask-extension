@@ -5,7 +5,16 @@ import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
 import { LegacyMetaMetricsProvider } from '../../../contexts/metametrics';
 import * as storeActions from '../../../store/actions';
+import { isFlask } from '../../../../shared/lib/build-types';
 import ExperimentalTab from './experimental-tab';
+
+// Allow each test to set whether it's Flask or not
+jest.mock('../../../../shared/lib/build-types', () => ({
+  ...jest.requireActual('../../../../shared/lib/build-types'),
+  isFlask: jest.fn(),
+}));
+
+const mockIsFlask = jest.mocked(isFlask);
 
 jest.mock('../../../store/actions', () => ({
   ...jest.requireActual('../../../store/actions'),
@@ -29,12 +38,22 @@ const render = (overrideMetaMaskState = {}) => {
 
 describe('ExperimentalTab', () => {
   it('renders ExperimentalTab component without error', () => {
+    mockIsFlask.mockReturnValue(false);
     expect(() => {
       render();
     }).not.toThrow();
   });
 
-  it('renders multiple toggle options', () => {
+  it('renders one toggle option when build type is main', () => {
+    mockIsFlask.mockReturnValue(false);
+    const { getAllByRole } = render();
+    const toggle = getAllByRole('checkbox');
+
+    expect(toggle).toHaveLength(1);
+  });
+
+  it('renders two toggle options when build type is flask', () => {
+    mockIsFlask.mockReturnValue(true);
     const { getAllByRole } = render();
     const toggle = getAllByRole('checkbox');
 
@@ -42,6 +61,7 @@ describe('ExperimentalTab', () => {
   });
 
   it('enables add account snap', async () => {
+    mockIsFlask.mockReturnValue(true);
     const { getByTestId } = render();
 
     const toggle = getByTestId('add-account-snap-toggle-button');

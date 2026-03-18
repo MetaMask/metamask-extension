@@ -103,11 +103,17 @@ describe('NativeTokenStreamDetails', () => {
         expiry: null,
       });
       expect(detailsSection).toBeInTheDocument();
-      expect(detailsSection?.textContent?.includes('Expiration')).toBe(false);
+      expect(detailsSection?.textContent?.includes('Expiration')).toBe(true);
+      expect(detailsSection?.textContent?.includes('Never expires')).toBe(true);
     });
   });
 
   describe('data display', () => {
+    it('displays total exposure in stream rate section', () => {
+      const { streamRateSection } = renderAndGetSections(defaultProps);
+      expect(streamRateSection?.textContent).toContain('Total exposure');
+    });
+
     it('displays correct test IDs', () => {
       const { detailsSection, streamRateSection } =
         renderAndGetSections(defaultProps);

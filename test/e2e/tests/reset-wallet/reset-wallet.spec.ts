@@ -1,4 +1,4 @@
-import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import {
@@ -6,14 +6,14 @@ import {
   completeImportSRPOnboardingFlow,
 } from '../../page-objects/flows/onboarding.flow';
 import HomePage from '../../page-objects/pages/home/homepage';
-import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import LoginPage from '../../page-objects/pages/login-page';
+import { lockAndWaitForLoginPage } from '../../page-objects/flows/login.flow';
 
 describe('Reset Wallet - ', function () {
   it('creates a new wallet with SRP and completes the onboarding process after resetting the wallet', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder({ onboarding: true }).build(),
+        fixtures: new FixtureBuilderV2({ onboarding: true }).build(),
         title: this.test?.fullTitle(),
         ignoredConsoleErrors: [
           'unable to proceed, wallet is locked',
@@ -31,11 +31,8 @@ describe('Reset Wallet - ', function () {
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
 
-        const headerNavbar = new HeaderNavbar(driver);
-        await headerNavbar.lockMetaMask();
-
+        await lockAndWaitForLoginPage(driver);
         const loginPage = new LoginPage(driver);
-        await loginPage.checkPageIsLoaded();
 
         // Reset wallet via forgot password -> "I don't know my Recovery Phrase"
         await loginPage.resetWalletFromForgotPassword();
@@ -55,7 +52,7 @@ describe('Reset Wallet - ', function () {
   it('imports an SRP and completes the onboarding process after resetting the wallet', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder({ onboarding: true }).build(),
+        fixtures: new FixtureBuilderV2({ onboarding: true }).build(),
         title: this.test?.fullTitle(),
         ignoredConsoleErrors: [
           'unable to proceed, wallet is locked',
@@ -73,11 +70,8 @@ describe('Reset Wallet - ', function () {
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
 
-        const headerNavbar = new HeaderNavbar(driver);
-        await headerNavbar.lockMetaMask();
-
+        await lockAndWaitForLoginPage(driver);
         const loginPage = new LoginPage(driver);
-        await loginPage.checkPageIsLoaded();
 
         // Reset wallet via forgot password -> "I don't know my Recovery Phrase"
         await loginPage.resetWalletFromForgotPassword();

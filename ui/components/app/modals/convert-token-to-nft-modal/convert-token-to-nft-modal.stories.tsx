@@ -27,12 +27,6 @@ const storeMock = configureStore({
         tokenId: '1',
       },
     ],
-    identities: {
-      '0x1234567890abcdef1234567890abcdef12345678': {
-        address: '0x1234567890abcdef1234567890abcdef12345678',
-        name: 'Test Account',
-      },
-    },
     internalAccounts: {
       accounts: {
         'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {

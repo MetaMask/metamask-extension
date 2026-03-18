@@ -1,11 +1,20 @@
-import React, { useState } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { IconName, BannerAlert } from '../../component-library';
 import { Severity } from '../../../helpers/constants/design-system';
 import { Menu, MenuItem } from '.';
 
 export default {
-  title: 'Components/UI/Menu',
+  title: 'Components/UI/Menu (deprecated)',
+  component: Menu,
+  parameters: {
+    docs: {
+      description: {
+        component:
+          '**Deprecated**: This component is deprecated and will be removed in a future release. Please use the `<Popover />` component instead.',
+      },
+    },
+  },
 };
 
 const Deprecated = ({ children }) => (
@@ -61,50 +70,3 @@ export const DefaultStory = () => {
 };
 
 DefaultStory.storyName = 'Default';
-
-export const Anchored = () => {
-  const [anchorElement, setAnchorElement] = useState(null);
-  return (
-    <Deprecated>
-      <button ref={setAnchorElement}>Menu</button>
-      <Menu
-        anchorElement={anchorElement}
-        onHide={() => {
-          /* no-op */
-        }}
-      >
-        <MenuItem
-          iconName={IconName.Export}
-          onClick={() => {
-            /* no-op */
-          }}
-        >
-          Menu Item 1
-        </MenuItem>
-        <MenuItem
-          onClick={() => {
-            /* no-op */
-          }}
-        >
-          Menu Item 2
-        </MenuItem>
-        <MenuItem
-          iconName={IconName.EyeSlash}
-          onClick={() => {
-            /* no-op */
-          }}
-        >
-          Menu Item 3
-        </MenuItem>
-        <MenuItem
-          iconName={IconName.AddSquare}
-          onClick={() => {
-            /* no-op */
-          }}
-        >
-          Disabled Item
-        </MenuItem>
-      </Menu>
-    </Deprecated>
-  );
-};

@@ -40,10 +40,12 @@ import {
   getEthAccounts,
 } from '@metamask/chain-agnostic-permission';
 import { PermissionDoesNotExistError } from '@metamask/permission-controller';
-
 import log from 'loglevel';
 import browser from 'webextension-polyfill';
+import { JsonRpcEngine } from '@metamask/json-rpc-engine';
+import { errorCodes } from '@metamask/rpc-errors';
 import { parseCaipAccountId } from '@metamask/utils';
+
 import { createTestProviderTools } from '../../test/stub/provider';
 import {
   HardwareDeviceNames,
@@ -63,18 +65,21 @@ import { withResolvers } from '../../shared/lib/promise-with-resolvers';
 import { flushPromises } from '../../test/lib/timer-helpers';
 import { FirstTimeFlowType } from '../../shared/constants/onboarding';
 import { MultichainNetworks } from '../../shared/constants/multichain/networks';
-import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
+import { toChecksumHexAddress } from '../../shared/lib/hexstring-utils';
 import { HYPERLIQUID_APPROVAL_TYPE } from '../../shared/constants/app';
 import {
   DEFI_REFERRAL_PARTNERS,
   DefiReferralPartner,
 } from '../../shared/constants/defi-referrals';
+import { getEnabledAdvancedPermissions } from '../../shared/lib/environment';
+import * as metamaskControllerUtils from '../../shared/lib/metamask-controller-utils';
 import { ReferralStatus } from './controllers/preferences-controller';
 import { METAMASK_COOKIE_HANDLER } from './constants/stream';
 import {
   getOriginsWithSessionProperty,
   getPermittedAccountsForScopesByOrigin,
 } from './controllers/permissions';
+import { forwardRequestToSnap } from './lib/forwardRequestToSnap';
 import MetaMaskController from './metamask-controller';
 
 jest.mock('webextension-polyfill', () => ({
@@ -283,7 +288,7 @@ jest.mock('@metamask/eth-ledger-bridge-keyring', () => ({
 }));
 
 const mockIsManifestV3 = jest.fn().mockReturnValue(false);
-jest.mock('../../shared/modules/mv3.utils', () => ({
+jest.mock('../../shared/lib/mv3.utils', () => ({
   get isManifestV3() {
     return mockIsManifestV3();
   },
@@ -308,6 +313,15 @@ jest.mock('@metamask/chain-agnostic-permission', () => ({
 jest.mock('@metamask/core-backend', () => ({
   ...jest.requireActual('@metamask/core-backend'),
   createApiPlatformClient: jest.fn().mockReturnValue({ mockApiClient: true }),
+}));
+
+jest.mock('../../shared/lib/environment', () => ({
+  ...jest.requireActual('../../shared/lib/environment'),
+  getEnabledAdvancedPermissions: jest.fn(() => []),
+}));
+
+jest.mock('./lib/forwardRequestToSnap', () => ({
+  forwardRequestToSnap: jest.fn().mockResolvedValue({}),
 }));
 
 const TEST_SEED =
@@ -472,6 +486,34 @@ describe('MetaMaskController', () => {
       expect(METAMASK_HOTLIST_DIFF_URL).toStrictEqual(
         'https://phishing-detection.api.cx.metamask.io/v2/diffsSince',
       );
+    });
+  });
+
+  describe('createEnsureOnboardingCompleteCallback (integration)', () => {
+    it('controller uses shared createEnsureOnboardingCompleteCallback when building initRequest', () => {
+      const createEnsureOnboardingCompleteCallbackSpy = jest.spyOn(
+        metamaskControllerUtils,
+        'createEnsureOnboardingCompleteCallback',
+      );
+      const controllerMessenger = new Messenger({
+        namespace: MOCK_ANY_NAMESPACE,
+      });
+
+      const _controller = new MetaMaskController({
+        initLangCode: 'en_US',
+        browser: browserPolyfillMock,
+        infuraProjectId: 'foo',
+        platform: { _showNotification: jest.fn() },
+        cronjobControllerStorageManager:
+          createMockCronjobControllerStorageManager(),
+        controllerMessenger,
+      });
+      expect(_controller).toBeDefined();
+
+      expect(createEnsureOnboardingCompleteCallbackSpy).toHaveBeenCalledWith(
+        controllerMessenger,
+      );
+      createEnsureOnboardingCompleteCallbackSpy.mockRestore();
     });
   });
 
@@ -717,8 +759,6 @@ describe('MetaMaskController', () => {
 
     describe('submitPassword', () => {
       it('removes any identities that do not correspond to known accounts.', async () => {
-        const fakeAddress = '0xbad0';
-
         const localMetaMaskController = new MetaMaskController({
           showUserConfirmation: noop,
           encryptor: mockEncryptor,
@@ -727,13 +767,6 @@ describe('MetaMaskController', () => {
             KeyringController: {
               keyrings: [{ type: KeyringType.trezor, accounts: ['0x123'] }],
               isUnlocked: true,
-            },
-            PreferencesController: {
-              identities: {
-                '0x123': { name: 'Trezor 1', address: '0x123' },
-                [fakeAddress]: { name: 'fake', address: fakeAddress },
-              },
-              selectedAddress: '0x123',
             },
           },
           initLangCode: 'en_US',
@@ -761,19 +794,8 @@ describe('MetaMaskController', () => {
 
         await localMetaMaskController.submitPassword(password);
 
-        const identities = Object.keys(
-          localMetaMaskController.preferencesController.state.identities,
-        );
         const addresses =
           await localMetaMaskController.keyringController.getAccounts();
-
-        identities.forEach((identity) => {
-          expect(addresses).toContain(identity);
-        });
-
-        addresses.forEach((address) => {
-          expect(identities).toContain(address);
-        });
 
         const internalAccounts =
           localMetaMaskController.accountsController.listAccounts();
@@ -1308,6 +1330,143 @@ describe('MetaMaskController', () => {
       });
     });
 
+    describe('wallet_requestExecutionPermissions (processRequestExecutionPermissions)', () => {
+      beforeEach(() => {
+        jest
+          .mocked(getEnabledAdvancedPermissions)
+          .mockReturnValue(['erc20-token-revocation']);
+        jest.mocked(forwardRequestToSnap).mockResolvedValue({});
+      });
+
+      /**
+       * Run wallet_requestExecutionPermissions through the controller's
+       * metamask middleware and return the JSON-RPC response.
+       * @param params - The parameters for the wallet_requestExecutionPermissions request.
+       * @returns The JSON-RPC response.
+       */
+      async function requestExecutionPermissions(params) {
+        const engine = new JsonRpcEngine();
+        engine.push(metamaskController.metamaskMiddleware);
+        const request = {
+          jsonrpc: '2.0',
+          id: 1,
+          method: 'wallet_requestExecutionPermissions',
+          params,
+        };
+        return await engine.handle(request);
+      }
+
+      const createWalletRequestExecutionPermissionsParamsForChains = (
+        chainIds,
+      ) => {
+        return chainIds.map((chainId) => ({
+          chainId,
+          to: '0x0000000000000000000000000000000000000000',
+          permission: {
+            type: 'erc20-token-revocation',
+            data: {
+              justification: 'A test permission request',
+            },
+            isAdjustmentAllowed: true,
+          },
+        }));
+      };
+
+      it('rejects when a requested chain is not in EIP-7702 supportedChains', async () => {
+        jest
+          .spyOn(metamaskController.remoteFeatureFlagController, 'state', 'get')
+          .mockReturnValue({
+            remoteFeatureFlags: {
+              confirmations_eip_7702: {
+                supportedChains: ['0x1', '0x5'],
+              },
+            },
+            cacheTimestamp: 0,
+          });
+
+        const params = createWalletRequestExecutionPermissionsParamsForChains([
+          '0x99',
+        ]);
+        const response = await requestExecutionPermissions(params);
+
+        expect(response.error).toBeDefined();
+        expect(response.error.code).toStrictEqual(
+          errorCodes.rpc.methodNotSupported,
+        );
+        expect(response.error.message).toMatch(
+          /wallet_requestExecutionPermissions is not supported on chains '0x99'/u,
+        );
+      });
+
+      it('rejects when any of multiple requested chains are unsupported', async () => {
+        jest
+          .spyOn(metamaskController.remoteFeatureFlagController, 'state', 'get')
+          .mockReturnValue({
+            remoteFeatureFlags: {
+              confirmations_eip_7702: {
+                supportedChains: ['0x1'],
+              },
+            },
+            cacheTimestamp: 0,
+          });
+
+        const params = createWalletRequestExecutionPermissionsParamsForChains([
+          '0x1',
+          '0x5',
+        ]);
+        const response = await requestExecutionPermissions(params);
+
+        expect(response.error).toBeDefined();
+        expect(response.error.code).toStrictEqual(
+          errorCodes.rpc.methodNotSupported,
+        );
+        expect(response.error.message).toMatch(
+          /wallet_requestExecutionPermissions is not supported on chains .*0x5/u,
+        );
+      });
+
+      it('does not reject when all requested chains are supported', async () => {
+        jest
+          .spyOn(metamaskController.remoteFeatureFlagController, 'state', 'get')
+          .mockReturnValue({
+            remoteFeatureFlags: {
+              confirmations_eip_7702: {
+                supportedChains: ['0x1', '0x5', '0x539'],
+              },
+            },
+            cacheTimestamp: 0,
+          });
+
+        const params = createWalletRequestExecutionPermissionsParamsForChains([
+          '0x1',
+          '0x539',
+        ]);
+        const response = await requestExecutionPermissions(params);
+
+        expect(response.error).toBeUndefined();
+      });
+
+      it('does not reject when chainId matches supported chain (case-insensitive)', async () => {
+        jest
+          .spyOn(metamaskController.remoteFeatureFlagController, 'state', 'get')
+          .mockReturnValue({
+            remoteFeatureFlags: {
+              confirmations_eip_7702: {
+                supportedChains: ['0xaa'],
+              },
+            },
+            cacheTimestamp: 0,
+          });
+
+        const params = createWalletRequestExecutionPermissionsParamsForChains([
+          '0xAA',
+        ]);
+        const response = await requestExecutionPermissions(params);
+
+        expect(response.error).toBeUndefined();
+      });
+    });
+
     describe('requestApprovalPermittedChainsPermission', () => {
       it('requests approval', async () => {
         jest
@@ -1837,11 +1996,6 @@ describe('MetaMaskController', () => {
           await metamaskController.forgetDevice(HardwareDeviceNames.trezor);
 
           expect(
-            Object.keys(
-              metamaskController.preferencesController.state.identities,
-            ),
-          ).not.toContain(hardwareKeyringAccount);
-          expect(
             metamaskController.accountsController
               .listAccounts()
               .some((account) => account.address === hardwareKeyringAccount),
@@ -1907,10 +2061,10 @@ describe('MetaMaskController', () => {
                 ]);
               });
 
-              it('should call preferencesController.setSelectedAddress', async () => {
+              it('should call accountsController.setSelectedAccount', async () => {
                 jest.spyOn(
-                  metamaskController.preferencesController,
-                  'setSelectedAddress',
+                  metamaskController.accountsController,
+                  'setSelectedAccount',
                 );
 
                 await metamaskController.unlockHardwareWalletAccount(
@@ -1919,7 +2073,7 @@ describe('MetaMaskController', () => {
                 );
 
                 expect(
-                  metamaskController.preferencesController.setSelectedAddress,
+                  metamaskController.accountsController.setSelectedAccount,
                 ).toHaveBeenCalledTimes(1);
               });
             });
@@ -3510,6 +3664,8 @@ describe('MetaMaskController', () => {
         expect(preferencesController.state.useExternalServices).toBe(false);
         expect(remoteFeatureFlagController.state).toStrictEqual({
           remoteFeatureFlags: {},
+          localOverrides: {},
+          rawRemoteFeatureFlags: {},
           cacheTimestamp: 0,
         });
       });
@@ -3529,6 +3685,8 @@ describe('MetaMaskController', () => {
 
         expect(remoteFeatureFlagController.state).toStrictEqual({
           remoteFeatureFlags: {},
+          localOverrides: {},
+          rawRemoteFeatureFlags: {},
           cacheTimestamp: 0,
         });
       });
@@ -3553,6 +3711,8 @@ describe('MetaMaskController', () => {
         // Verify the controller state remains unchanged after error
         expect(remoteFeatureFlagController.state).toStrictEqual({
           remoteFeatureFlags: {},
+          localOverrides: {},
+          rawRemoteFeatureFlags: {},
           cacheTimestamp: 0,
         });
       });
@@ -3578,6 +3738,8 @@ describe('MetaMaskController', () => {
         // Verify state is cleared
         expect(remoteFeatureFlagController.state).toStrictEqual({
           remoteFeatureFlags: {},
+          localOverrides: {},
+          rawRemoteFeatureFlags: {},
           cacheTimestamp: 0,
         });
       });

@@ -17,7 +17,7 @@ import { isLegacyTransaction } from '../../../helpers/utils/transactions.util';
 import { useGasFeeEstimates } from '../../../hooks/useGasFeeEstimates';
 
 import { editGasModeIsSpeedUpOrCancel } from '../../../helpers/utils/gas';
-import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
+import { hexToDecimal } from '../../../../shared/lib/conversion.utils';
 import { useGasFeeErrors } from './useGasFeeErrors';
 import { useGasPriceInput } from './useGasPriceInput';
 import { useMaxFeePerGasInput } from './useMaxFeePerGasInput';
@@ -104,6 +104,7 @@ export function useGasFeeInputs(
     userFeeLevel: _transaction?.userFeeLevel,
     originalGasEstimate: _transaction?.originalGasEstimate,
     userEditedGasLimit: _transaction?.userEditedGasLimit,
+    chainId: _transaction?.chainId,
   };
 
   if (_transaction?.previousGas) {

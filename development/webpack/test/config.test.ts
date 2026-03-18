@@ -1,5 +1,6 @@
 import fs from 'node:fs';
-import { describe, it, afterEach, mock } from 'node:test';
+import process from 'node:process';
+import { describe, it, afterEach, beforeEach, mock } from 'node:test';
 import assert from 'node:assert';
 import { resolve } from 'node:path';
 import { version } from '../../../package.json';
@@ -13,6 +14,7 @@ describe('./utils/config.ts', () => {
   // system, so we don't check for everything, just that the interface is
   // behaving
   describe('variables', () => {
+    const originalEnv = { ...process.env };
     const originalReadFileSync = fs.readFileSync;
     function mockRc(
       env: Record<string, string> = {},
@@ -36,7 +38,14 @@ describe('./utils/config.ts', () => {
         return originalReadFileSync(path, options);
       });
     }
-    afterEach(() => mock.restoreAll());
+    beforeEach(() => {
+      process.env = {};
+    });
+
+    afterEach(() => {
+      process.env = { ...originalEnv };
+      mock.restoreAll();
+    });
 
     it('should return valid build variables for the default build', () => {
       const buildTypes = loadBuildTypesConfig();
@@ -127,6 +136,31 @@ describe('./utils/config.ts', () => {
       assert.strictEqual(variables.get('TESTING_NULL'), null);
       assert.strictEqual(variables.get('TESTING_MISC'), 'MISC');
       assert.strictEqual(variables.get('TESTING_EMPTY_STRING'), null);
+    });
+
+    it('includes null values and omits undefined values in safeVariables', () => {
+      const buildTypes = loadBuildTypesConfig();
+      const { args } = parseArgv(['--mode', 'production'], buildTypes);
+
+      mockRc({
+        TESTING_NULL: 'null',
+        TESTING_EMPTY_STRING: '',
+      });
+
+      const { variables, safeVariables } = config.getVariables(
+        args,
+        buildTypes,
+      );
+
+      assert.strictEqual(variables.get('TESTING_NULL'), null);
+      assert.strictEqual(variables.get('TESTING_EMPTY_STRING'), null);
+      assert.strictEqual(variables.get('DEBUG'), undefined);
+      assert.strictEqual(safeVariables.TESTING_NULL, 'null');
+      assert.strictEqual(safeVariables.TESTING_EMPTY_STRING, 'null');
+      assert.strictEqual(
+        Object.prototype.hasOwnProperty.call(safeVariables, 'DEBUG'),
+        false,
+      );
     });
 
     it('should return buildEnvVarDeclarations with keys from activeBuild.env and buildConfig.env', () => {

@@ -14,6 +14,7 @@ import {
 import { getBooleanFlag } from '../../lib/util';
 import { OnboardingControllerState } from '../../controllers/onboarding';
 import { getMnemonicSeed } from '../../controllers/permissions/snaps/utils';
+import { isFlask } from '../../../../shared/lib/build-types';
 
 // Copied from `@metamask/snaps-controllers`, since it is not exported.
 type TrackingEventPayload = {
@@ -54,12 +55,8 @@ export const SnapControllerInit: ControllerInitFunction<
   const autoUpdatePreinstalledSnaps = getBooleanFlag(
     process.env.AUTO_UPDATE_PREINSTALLED_SNAPS,
   );
-
-  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
-  const forcePreinstalledSnaps = getBooleanFlag(
-    process.env.FORCE_PREINSTALLED_SNAPS,
-  );
-  ///: END:ONLY_INCLUDE_IF
+  const forcePreinstalledSnaps =
+    isFlask() && getBooleanFlag(process.env.FORCE_PREINSTALLED_SNAPS);
 
   /**
    * Get the feature flags for the `SnapController.
@@ -123,9 +120,7 @@ export const SnapControllerInit: ControllerInitFunction<
       requireAllowlist,
       rejectInvalidPlatformVersion,
       autoUpdatePreinstalledSnaps,
-      ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
       forcePreinstalledSnaps,
-      ///: END:ONLY_INCLUDE_IF
     },
 
     // @ts-expect-error: `encryptorFactory` is not compatible with the expected

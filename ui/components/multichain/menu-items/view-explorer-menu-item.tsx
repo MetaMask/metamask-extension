@@ -32,7 +32,7 @@ import {
   TEST_NETWORK_IDS,
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
 } from '../../../../shared/constants/network';
-import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
+import { getCurrentChainId } from '../../../../shared/lib/selectors/networks';
 
 export type ViewExplorerMenuItemProps = {
   /**

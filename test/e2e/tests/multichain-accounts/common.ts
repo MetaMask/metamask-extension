@@ -1,16 +1,14 @@
 import { Mockttp } from 'mockttp';
 import { Driver } from '../../webdriver/driver';
 import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { withFixtures } from '../../helpers';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import HomePage from '../../page-objects/pages/home/homepage';
-import {
-  loginWithBalanceValidation,
-  loginWithoutBalanceValidation,
-} from '../../page-objects/flows/login.flow';
+import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import { MockedEndpoint } from '../../mock-e2e';
-import { mockPriceApi } from '../tokens/utils/mocks';
+import { MOCK_ETH_CONVERSION_RATE, mockPriceApi } from '../tokens/utils/mocks';
 
 export enum AccountType {
   MultiSRP = 'multi-srp',
@@ -38,10 +36,19 @@ export async function withMultichainAccountsDesignEnabled(
 
   switch (accountType) {
     case AccountType.HardwareWallet:
-      fixture = new FixtureBuilder()
+      fixture = new FixtureBuilderV2()
         .withLedgerAccount()
-        .withPreferencesControllerShowNativeTokenAsMainBalanceDisabled()
+        .withShowNativeTokenAsMainBalanceDisabled()
         .withEnabledNetworks({ eip155: { '0x1': true } })
+        .withCurrencyController({
+          currencyRates: {
+            ETH: {
+              conversionDate: Date.now(),
+              conversionRate: MOCK_ETH_CONVERSION_RATE,
+              usdConversionRate: MOCK_ETH_CONVERSION_RATE,
+            },
+          },
+        })
         .build();
       break;
     default:
@@ -49,6 +56,15 @@ export async function withMultichainAccountsDesignEnabled(
         .withKeyringControllerMultiSRP()
         .withPreferencesControllerShowNativeTokenAsMainBalanceDisabled()
         .withEnabledNetworks({ eip155: { '0x1': true } })
+        .withCurrencyController({
+          currencyRates: {
+            ETH: {
+              conversionDate: Date.now(),
+              conversionRate: MOCK_ETH_CONVERSION_RATE,
+              usdConversionRate: MOCK_ETH_CONVERSION_RATE,
+            },
+          },
+        })
         .build();
       break;
   }
@@ -66,9 +82,8 @@ export async function withMultichainAccountsDesignEnabled(
       dappOptions,
     },
     async ({ driver }: { driver: Driver; mockServer: Mockttp }) => {
-      // Skip strict balance validation for hardware wallets
       if (accountType === AccountType.HardwareWallet) {
-        await loginWithoutBalanceValidation(driver);
+        await loginWithBalanceValidation(driver, undefined, undefined, '0');
       } else {
         await loginWithBalanceValidation(
           driver,

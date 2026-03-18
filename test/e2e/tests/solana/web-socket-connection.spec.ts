@@ -1,9 +1,10 @@
 import { Suite } from 'mocha';
 import { Driver } from '../../webdriver/driver';
-import LocalWebSocketServer from '../../websocket-server';
+import WebSocketRegistry from '../../websocket/registry';
 import { withFixtures } from '../../helpers';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
+import { WEBSOCKET_SERVICES } from '../../websocket/constants';
 
 async function waitForWebsocketConnections(
   driver: Driver,
@@ -11,8 +12,9 @@ async function waitForWebsocketConnections(
 ) {
   let connectionCount;
   await driver.wait(async () => {
-    connectionCount =
-      LocalWebSocketServer.getServerInstance().getWebsocketConnectionCount();
+    connectionCount = WebSocketRegistry.getServer(
+      WEBSOCKET_SERVICES.solana,
+    ).getWebsocketConnectionCount();
     return connectionCount === expectedCount;
   }, 10000);
 }
