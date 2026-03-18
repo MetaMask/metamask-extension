@@ -3,21 +3,171 @@ import {
   removeUrlsFromBreadCrumb,
   rewriteReport,
   makeTransport,
+  getMetaMetricsStateFromAppState,
+  getMetaMetricsStateFromPersistedState,
+  getMetaMetricsStateFromBackupState,
 } from './setupSentry';
 
 const defaultMetaMetricsState = {
   participateInMetaMetrics: true,
-  metaMetricsId: undefined,
+  metaMetricsId: 'test-metrics-id',
 };
 
 describe('Setup Sentry', () => {
+  describe('getMetaMetricsStateFromAppState', () => {
+    it('returns null when appState has no state or persistedState', () => {
+      expect(getMetaMetricsStateFromAppState({})).toBeNull();
+    });
+
+    it('delegates to getMetaMetricsStateFromPersistedState when persistedState is present', () => {
+      const persistedState = {
+        data: {
+          MetaMetricsController: {
+            participateInMetaMetrics: true,
+            metaMetricsId: 'persisted-id',
+          },
+        },
+      };
+      expect(getMetaMetricsStateFromAppState({ persistedState })).toStrictEqual(
+        {
+          participateInMetaMetrics: true,
+          metaMetricsId: 'persisted-id',
+        },
+      );
+    });
+
+    it('returns state from appState.state.metamask when present', () => {
+      expect(
+        getMetaMetricsStateFromAppState({
+          state: {
+            metamask: {
+              participateInMetaMetrics: true,
+              metaMetricsId: 'metamask-id',
+            },
+          },
+        }),
+      ).toStrictEqual({
+        participateInMetaMetrics: true,
+        metaMetricsId: 'metamask-id',
+      });
+    });
+
+    it('returns state from appState.state.MetaMetricsController when state has no metamask', () => {
+      expect(
+        getMetaMetricsStateFromAppState({
+          state: {
+            MetaMetricsController: {
+              participateInMetaMetrics: true,
+              metaMetricsId: 'controller-id',
+            },
+          },
+        }),
+      ).toStrictEqual({
+        participateInMetaMetrics: true,
+        metaMetricsId: 'controller-id',
+      });
+    });
+
+    it('returns participateInMetaMetrics false and no metaMetricsId when not opted in', () => {
+      expect(
+        getMetaMetricsStateFromAppState({
+          state: {
+            MetaMetricsController: { participateInMetaMetrics: false },
+          },
+        }),
+      ).toStrictEqual({
+        participateInMetaMetrics: false,
+        metaMetricsId: undefined,
+      });
+    });
+  });
+
+  describe('getMetaMetricsStateFromPersistedState', () => {
+    it('returns participateInMetaMetrics and metaMetricsId when opted in', () => {
+      expect(
+        getMetaMetricsStateFromPersistedState({
+          data: {
+            MetaMetricsController: {
+              participateInMetaMetrics: true,
+              metaMetricsId: 'id-123',
+            },
+          },
+        }),
+      ).toStrictEqual({
+        participateInMetaMetrics: true,
+        metaMetricsId: 'id-123',
+      });
+    });
+
+    it('returns participateInMetaMetrics false and no metaMetricsId when not opted in', () => {
+      expect(
+        getMetaMetricsStateFromPersistedState({
+          data: {
+            MetaMetricsController: { participateInMetaMetrics: false },
+          },
+        }),
+      ).toStrictEqual({
+        participateInMetaMetrics: false,
+        metaMetricsId: undefined,
+      });
+    });
+
+    it('handles missing or malformed persisted state', () => {
+      expect(getMetaMetricsStateFromPersistedState(undefined)).toStrictEqual({
+        participateInMetaMetrics: false,
+        metaMetricsId: undefined,
+      });
+      expect(getMetaMetricsStateFromPersistedState({ data: {} })).toStrictEqual(
+        {
+          participateInMetaMetrics: false,
+          metaMetricsId: undefined,
+        },
+      );
+    });
+  });
+
+  describe('getMetaMetricsStateFromBackupState', () => {
+    it('returns participateInMetaMetrics and metaMetricsId when opted in', () => {
+      expect(
+        getMetaMetricsStateFromBackupState({
+          MetaMetricsController: {
+            participateInMetaMetrics: true,
+            metaMetricsId: 'backup-id',
+          },
+        }),
+      ).toStrictEqual({
+        participateInMetaMetrics: true,
+        metaMetricsId: 'backup-id',
+      });
+    });
+
+    it('returns participateInMetaMetrics false when not opted in', () => {
+      expect(
+        getMetaMetricsStateFromBackupState({
+          MetaMetricsController: { participateInMetaMetrics: false },
+        }),
+      ).toStrictEqual({
+        participateInMetaMetrics: false,
+        metaMetricsId: undefined,
+      });
+    });
+
+    it('handles missing or malformed backup state', () => {
+      expect(getMetaMetricsStateFromBackupState(undefined)).toStrictEqual({
+        participateInMetaMetrics: false,
+        metaMetricsId: undefined,
+      });
+      expect(getMetaMetricsStateFromBackupState({})).toStrictEqual({
+        participateInMetaMetrics: false,
+        metaMetricsId: undefined,
+      });
+    });
+  });
+
   describe('rewriteReport', () => {
     it('sets event.user.id when metaMetricsState has metaMetricsId', () => {
       const event = { message: 'test', request: {} };
-      rewriteReport(event, {
-        participateInMetaMetrics: true,
-        metaMetricsId: 'test-metrics-id',
-      });
+      rewriteReport(event, defaultMetaMetricsState);
       expect(event.user).toStrictEqual({ id: 'test-metrics-id' });
     });
 
@@ -350,6 +500,80 @@ describe('Setup Sentry', () => {
       const defaultTransport = makeFetchTransportSpy.mock.results[0].value;
       expect(defaultTransport.send).toHaveBeenCalledTimes(1);
       expect(defaultTransport.send).toHaveBeenCalledWith(envelope);
+    });
+
+    it('uses app state from getSentryState when available', async () => {
+      globalThis.stateHooks = {
+        getSentryState: () => ({
+          state: {
+            MetaMetricsController: {
+              participateInMetaMetrics: true,
+              metaMetricsId: 'app-state-id',
+            },
+          },
+        }),
+        getPersistedState: async () => ({}),
+        getBackupState: async () => ({}),
+      };
+
+      const transport = makeTransport({});
+      const eventPayload = { message: 'test' };
+      const envelope = [{}, [[{ type: 'event' }, eventPayload]]];
+
+      await transport.send(envelope);
+
+      expect(eventPayload.user).toStrictEqual({ id: 'app-state-id' });
+      expect(
+        makeFetchTransportSpy.mock.results[0].value.send,
+      ).toHaveBeenCalledWith(envelope);
+    });
+
+    it('falls back to backup state when getPersistedState throws', async () => {
+      globalThis.stateHooks = {
+        getSentryState: () => ({}),
+        getPersistedState: async () => {
+          throw new Error('persisted unavailable');
+        },
+        getBackupState: async () => ({
+          MetaMetricsController: {
+            participateInMetaMetrics: true,
+            metaMetricsId: 'backup-id',
+          },
+        }),
+      };
+
+      const transport = makeTransport({});
+      const eventPayload = { message: 'test' };
+      const envelope = [{}, [[{ type: 'event' }, eventPayload]]];
+
+      await transport.send(envelope);
+
+      expect(eventPayload.user).toStrictEqual({ id: 'backup-id' });
+      expect(
+        makeFetchTransportSpy.mock.results[0].value.send,
+      ).toHaveBeenCalledWith(envelope);
+    });
+
+    it('throws when both getPersistedState and getBackupState fail', async () => {
+      globalThis.stateHooks = {
+        getSentryState: () => ({}),
+        getPersistedState: async () => {
+          throw new Error('persisted failed');
+        },
+        getBackupState: async () => {
+          throw new Error('backup failed');
+        },
+      };
+
+      const transport = makeTransport({});
+      const envelope = [{}, [[{ type: 'event' }, { message: 'test' }]]];
+
+      await expect(transport.send(envelope)).rejects.toThrow(
+        'Network request skipped as metrics disabled',
+      );
+      expect(
+        makeFetchTransportSpy.mock.results[0].value.send,
+      ).not.toHaveBeenCalled();
     });
   });
 });

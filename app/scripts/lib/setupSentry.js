@@ -159,7 +159,7 @@ function setCITags() {
  * @param {{ state: unknown} | { persistedState: unknown }} appState - Application state
  * @returns {{ participateInMetaMetrics: boolean, metaMetricsId?: string } | null}
  */
-function getMetaMetricsStateFromAppState(appState) {
+export function getMetaMetricsStateFromAppState(appState) {
   if (appState.persistedState) {
     return getMetaMetricsStateFromPersistedState(appState.persistedState);
   }
@@ -189,7 +189,7 @@ function getMetaMetricsStateFromAppState(appState) {
  * @param {unknown} persistedState - Application persisted state
  * @returns {{ participateInMetaMetrics: boolean, metaMetricsId?: string } | null}
  */
-function getMetaMetricsStateFromPersistedState(persistedState) {
+export function getMetaMetricsStateFromPersistedState(persistedState) {
   const controller = persistedState?.data?.MetaMetricsController;
   const enabled = Boolean(controller?.participateInMetaMetrics);
   return {
@@ -204,7 +204,7 @@ function getMetaMetricsStateFromPersistedState(persistedState) {
  * @param {unknown} backupState - Backup state from IndexedDB
  * @returns {{ participateInMetaMetrics: boolean, metaMetricsId?: string } | null}
  */
-function getMetaMetricsStateFromBackupState(backupState) {
+export function getMetaMetricsStateFromBackupState(backupState) {
   const controller = backupState?.MetaMetricsController;
   const enabled = Boolean(controller?.participateInMetaMetrics);
   return {
