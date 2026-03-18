@@ -18,6 +18,7 @@ const KiB = 1024;
 const MiB = 1024 * KiB;
 const GiB = 1024 * MiB;
 const FAST_MACHINE_ASYNC_COMPRESSION_SIZE = 48 * KiB;
+const CI_ASYNC_COMPRESSION_SIZE = 216 * KiB;
 const MIN_COMPRESSIBLE_ASSET_SIZE = 24 * KiB;
 const MIN_ASYNC_COMPRESSION_SIZE = 64 * KiB;
 const LOW_PARALLELISM_ASYNC_COMPRESSION_SIZE = 96 * KiB;
@@ -110,6 +111,12 @@ export type BrowserZipBuilder = {
 export function createZipCompressionController(): ZipCompressionController {
   const parallelism = availableParallelism();
   const totalMemory = totalmem();
+  let asyncSizeThreshold = MIN_ASYNC_COMPRESSION_SIZE;
+  if (IS_CI) {
+    asyncSizeThreshold = CI_ASYNC_COMPRESSION_SIZE;
+  } else if (parallelism <= 4) {
+    asyncSizeThreshold = LOW_PARALLELISM_ASYNC_COMPRESSION_SIZE;
+  }
   if (!shouldUseAdaptiveController(parallelism, totalMemory)) {
     return createStaticZipCompressionController(
       IS_CI
@@ -119,10 +126,7 @@ export function createZipCompressionController(): ZipCompressionController {
   }
 
   return createAdaptiveZipCompressionController({
-    asyncSizeThreshold:
-      IS_CI || parallelism <= 4
-        ? LOW_PARALLELISM_ASYNC_COMPRESSION_SIZE
-        : MIN_ASYNC_COMPRESSION_SIZE,
+    asyncSizeThreshold,
     maxAsyncBytes: clamp(Math.floor(totalMemory / 64), 32 * MiB, 512 * MiB),
     maxAsyncJobs: IS_CI
       ? CI_MAX_ASYNC_JOBS
