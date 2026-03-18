@@ -2245,12 +2245,6 @@
   "dismissReminderField": {
     "message": "Gizli Kurtarma İfadesi yedekleme hatırlatma uyarısını yoksay"
   },
-  "dismissSmartAccountSuggestionEnabledDescription": {
-    "message": "Artık herhangi bir hesapta \"Akıllı Hesaba Geç\" önerisini görmemek için bunu açın. Akıllı hesaplar daha hızlı işlemlerin, daha düşük ağ ücretlerinin ve bunlarda ödeme esnekliğinin kilidini açar."
-  },
-  "dismissSmartAccountSuggestionEnabledTitle": {
-    "message": "\"Akıllı Hesaba Geç\" önerisini yoksay"
-  },
   "displayNftMedia": {
     "message": "NFT medyasını göster"
   },

@@ -2245,12 +2245,6 @@
   "dismissReminderField": {
     "message": "Descartar o lembrete de backup da Frase de Recuperação Secreta"
   },
-  "dismissSmartAccountSuggestionEnabledDescription": {
-    "message": "Ative esta opção para não ver mais a sugestão \"Mudar para conta inteligente\" em nenhuma conta. Contas inteligentes permitem transações mais rápidas, taxas de rede mais baixas e maior flexibilidade em seu pagamento."
-  },
-  "dismissSmartAccountSuggestionEnabledTitle": {
-    "message": "Ignorar sugestão \"Mudar para conta inteligente\""
-  },
   "displayNftMedia": {
     "message": "Exibir mídias de NFTs"
   },
