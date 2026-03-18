@@ -16,7 +16,7 @@ import HomePage from '../../../page-objects/pages/home/homepage';
 import { Driver } from '../../../webdriver/driver';
 import { mockSmartTransactionBatchRequests } from '../../smart-transactions/mocks';
 import { mockSpotPrices } from '../../tokens/utils/mocks';
-import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
+import { login } from '../../../page-objects/flows/login.flow';
 import { mockSmartTransactionsRemoteFlags } from '../../smart-transactions/remote-flags';
 
 const TRANSACTION_HASH =
@@ -70,7 +70,7 @@ describe('Gas Fee Tokens - Smart Transactions', function (this: Suite) {
         ],
       },
       async ({ driver }: { driver: Driver; localNodes: Anvil }) => {
-        await loginWithBalanceValidation(
+        await login(
           driver,
           undefined,
           undefined,
@@ -136,7 +136,7 @@ describe('Gas Fee Tokens - Smart Transactions', function (this: Suite) {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver; localNodes: Anvil }) => {
-        await loginWithBalanceValidation(
+        await login(
           driver,
           undefined,
           undefined,

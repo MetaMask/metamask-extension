@@ -1,5 +1,5 @@
 import { withFixtures } from '../../helpers';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 import {
   bridgeTransaction,
   getBridgeFixtures,
@@ -41,7 +41,7 @@ describe('Swap', function () {
       await withFixtures(
         getBridgeFixtures(this.test?.fullTitle(), DEFAULT_BRIDGE_FEATURE_FLAGS),
         async ({ driver }) => {
-          await loginWithBalanceValidation(
+          await login(
             driver,
             undefined,
             undefined,

@@ -1,7 +1,7 @@
 const { strict: assert } = require('assert');
 const { default: FixtureBuilderV2 } = require('../fixtures/fixture-builder-v2');
 const {
-  loginWithBalanceValidation,
+  login,
 } = require('../page-objects/flows/login.flow');
 const { withFixtures } = require('../helpers');
 const { DAPP_URL } = require('../constants');
@@ -23,7 +23,7 @@ describe('EIP-6963 Provider', function () {
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         await driver.openNewPage(DAPP_URL);
         await driver.executeScript(`

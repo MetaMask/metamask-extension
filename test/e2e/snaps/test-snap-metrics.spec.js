@@ -1,6 +1,6 @@
 const { strict: assert } = require('assert');
 const {
-  loginWithBalanceValidation,
+  login,
 } = require('../page-objects/flows/login.flow');
 const { withFixtures, getEventPayloads } = require('../helpers');
 const FixtureBuilder = require('../fixtures/fixture-builder');
@@ -206,7 +206,7 @@ describe('Test Snap Metrics', function () {
       },
 
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         // open a new tab and navigate to test snaps page and connect
         await driver.openNewPage(DAPP_URL);
@@ -321,7 +321,7 @@ describe('Test Snap Metrics', function () {
       },
 
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         // open a new tab and navigate to test snaps page and connect
         await driver.openNewPage(DAPP_URL);
@@ -412,7 +412,7 @@ describe('Test Snap Metrics', function () {
       },
 
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         // open a new tab and navigate to test snaps page and connect
         await driver.openNewPage(DAPP_URL);
@@ -499,7 +499,7 @@ describe('Test Snap Metrics', function () {
       },
 
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         // open a new tab and navigate to test snaps page and connect
         await driver.openNewPage(DAPP_URL);
@@ -633,7 +633,7 @@ describe('Test Snap Metrics', function () {
         testSpecificMock: mockSegment,
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         // open a new tab and navigate to test snaps page and connect
         await driver.driver.get(DAPP_URL);
@@ -798,7 +798,7 @@ describe('Test Snap Metrics', function () {
         ],
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         // open a new tab and navigate to test snaps page and connect
         await driver.driver.get(DAPP_URL);
@@ -951,7 +951,7 @@ describe('Test Snap Metrics', function () {
         ],
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         // open a new tab and navigate to test snaps page and connect
         await driver.driver.get(DAPP_URL);

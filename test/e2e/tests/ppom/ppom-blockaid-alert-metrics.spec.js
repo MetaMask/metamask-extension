@@ -2,7 +2,7 @@ const { strict: assert } = require('assert');
 const FixtureBuilder = require('../../fixtures/fixture-builder');
 const { withFixtures, getEventPayloads } = require('../../helpers');
 const {
-  loginWithBalanceValidation,
+  login,
 } = require('../../page-objects/flows/login.flow');
 const { DAPP_URL, WINDOW_TITLES } = require('../../constants');
 const { mockServerJsonRpc } = require('./mocks/mock-server-json-rpc');
@@ -271,7 +271,7 @@ describe('Confirmation Security Alert - Blockaid', function () {
       },
 
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
         await driver.openNewPage(DAPP_URL);
 
         // Click TestDapp button for transaction

@@ -1,7 +1,7 @@
 import { strict as assert } from 'assert';
 import { MockedEndpoint, Mockttp } from 'mockttp';
 import { withFixtures } from '../../helpers';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 import HomePage from '../../page-objects/pages/home/homepage';
 import BridgeQuotePage from '../../page-objects/pages/bridge/quote-page';
 import {
@@ -59,7 +59,7 @@ describe('Swaps - notifications', function () {
     await withFixtures(
       getBridgeFixturesWithTokenAlertWarning(this.test?.fullTitle()),
       async ({ driver, mockedEndpoint }) => {
-        await loginWithBalanceValidation(
+        await login(
           driver,
           undefined,
           undefined,
@@ -104,7 +104,7 @@ describe('Swaps - notifications', function () {
         this.test?.fullTitle(),
       ),
       async ({ driver, localNodes }) => {
-        await loginWithBalanceValidation(driver, localNodes[0]);
+        await login(driver, { localNode: localNodes[0] });
         const homePage = new HomePage(driver);
         await homePage.startSwapFlow();
 
@@ -135,7 +135,7 @@ describe('Swaps - notifications', function () {
         ),
       },
       async ({ driver, localNodes }) => {
-        await loginWithBalanceValidation(driver, localNodes[0]);
+        await login(driver, { localNode: localNodes[0] });
         const homePage = new HomePage(driver);
         await homePage.startSwapFlow();
 
@@ -159,7 +159,7 @@ describe('Swaps - notifications', function () {
         BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
       ),
       async ({ driver }) => {
-        await loginWithBalanceValidation(
+        await login(
           driver,
           undefined,
           undefined,

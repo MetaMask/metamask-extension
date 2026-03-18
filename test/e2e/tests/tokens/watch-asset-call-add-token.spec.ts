@@ -5,7 +5,7 @@ import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
 import AddTokenConfirmation from '../../page-objects/pages/confirmations/add-token-confirmations';
 import AssetListPage from '../../page-objects/pages/home/asset-list';
 import TestDapp from '../../page-objects/pages/test-dapp';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 
 describe('Add token using wallet_watchAsset', function () {
   const smartContract = SMART_CONTRACTS.HST;
@@ -23,7 +23,7 @@ describe('Add token using wallet_watchAsset', function () {
       async ({ driver, localNodes, contractRegistry }) => {
         const contractAddress =
           await contractRegistry.getContractAddress(smartContract);
-        await loginWithBalanceValidation(driver, localNodes[0]);
+        await login(driver, { localNode: localNodes[0] });
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
         await testDapp.checkPageIsLoaded();
@@ -69,7 +69,7 @@ describe('Add token using wallet_watchAsset', function () {
       async ({ driver, localNodes, contractRegistry }) => {
         const contractAddress =
           await contractRegistry.getContractAddress(smartContract);
-        await loginWithBalanceValidation(driver, localNodes[0]);
+        await login(driver, { localNode: localNodes[0] });
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
         await testDapp.checkPageIsLoaded();

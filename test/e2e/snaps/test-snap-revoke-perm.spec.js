@@ -1,6 +1,6 @@
 const { withFixtures } = require('../helpers');
 const {
-  loginWithBalanceValidation,
+  login,
 } = require('../page-objects/flows/login.flow');
 const { DAPP_PATH, DAPP_URL, WINDOW_TITLES } = require('../constants');
 const FixtureBuilder = require('../fixtures/fixture-builder');
@@ -20,7 +20,7 @@ describe('Test Snap revoke permission', function () {
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         // navigate to test snaps page and connect to ethereum-provider snap
         await driver.openNewPage(DAPP_URL);

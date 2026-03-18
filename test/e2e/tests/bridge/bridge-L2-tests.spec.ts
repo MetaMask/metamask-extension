@@ -1,6 +1,6 @@
 import { Suite } from 'mocha';
 import { withFixtures } from '../../helpers';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 import { DEFAULT_BRIDGE_FEATURE_FLAGS } from './constants';
 import { bridgeTransaction, getBridgeL2Fixtures } from './bridge-test-utils';
 
@@ -10,7 +10,7 @@ describe('Bridge tests', function (this: Suite) {
     await withFixtures(
       getBridgeL2Fixtures(this.test?.fullTitle(), DEFAULT_BRIDGE_FEATURE_FLAGS),
       async ({ driver }) => {
-        await loginWithBalanceValidation(
+        await login(
           driver,
           undefined,
           undefined,

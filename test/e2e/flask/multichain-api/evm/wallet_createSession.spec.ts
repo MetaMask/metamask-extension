@@ -15,8 +15,8 @@ import HomePage from '../../../page-objects/pages/home/homepage';
 import NetworkPermissionSelectModal from '../../../page-objects/pages/dialog/network-permission-select-modal';
 import TestDappMultichain from '../../../page-objects/pages/test-dapp-multichain';
 import {
-  loginWithBalanceValidation,
-  loginWithoutBalanceValidation,
+  login,
+  login,
 } from '../../../page-objects/flows/login.flow';
 import {
   DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
@@ -43,7 +43,7 @@ describe('Multichain API', function () {
         async ({ driver, extensionId }: FixtureCallbackArgs) => {
           const scopesToIgnore = ['eip155:1338', 'eip155:1000'];
 
-          await loginWithBalanceValidation(driver);
+          await login(driver);
 
           const testDapp = new TestDappMultichain(driver);
           await testDapp.openTestDappPage();
@@ -101,7 +101,7 @@ describe('Multichain API', function () {
           const ACCOUNT_NOT_IN_WALLET =
             '0x9999999999999999999999999999999999999999';
 
-          await loginWithoutBalanceValidation(driver);
+          await login(driver);
           await new HomePage(driver).checkExpectedBalanceIsDisplayed('0');
 
           const testDapp = new TestDappMultichain(driver);
@@ -160,7 +160,7 @@ describe('Multichain API', function () {
         const requestScopes = Object.keys(requestScopesToNetworkMap);
         const networksToRequest = Object.values(requestScopesToNetworkMap);
 
-        await loginWithBalanceValidation(driver);
+        await login(driver);
         const testDapp = new TestDappMultichain(driver);
         await testDapp.openTestDappPage();
         await testDapp.checkPageIsLoaded();
@@ -198,7 +198,7 @@ describe('Multichain API', function () {
             ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
           },
           async ({ driver, extensionId }: FixtureCallbackArgs) => {
-            await loginWithBalanceValidation(driver);
+            await login(driver);
 
             const testDapp = new TestDappMultichain(driver);
             await testDapp.openTestDappPage();
@@ -271,7 +271,7 @@ describe('Multichain API', function () {
           ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
         },
         async ({ driver, extensionId }: FixtureCallbackArgs) => {
-          await loginWithBalanceValidation(driver);
+          await login(driver);
 
           const testDapp = new TestDappMultichain(driver);
           await testDapp.openTestDappPage();
@@ -319,7 +319,7 @@ describe('Multichain API', function () {
             ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
           },
           async ({ driver, extensionId }: FixtureCallbackArgs) => {
-            await loginWithBalanceValidation(driver);
+            await login(driver);
 
             const testDapp = new TestDappMultichain(driver);
             await testDapp.openTestDappPage();
@@ -383,7 +383,7 @@ describe('Multichain API', function () {
             ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
           },
           async ({ driver, extensionId }: FixtureCallbackArgs) => {
-            await loginWithBalanceValidation(driver);
+            await login(driver);
 
             const testDapp = new TestDappMultichain(driver);
             await testDapp.openTestDappPage();
@@ -436,7 +436,7 @@ describe('Multichain API', function () {
           ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
         },
         async ({ driver, extensionId }: FixtureCallbackArgs) => {
-          await loginWithoutBalanceValidation(driver);
+          await login(driver);
           new HomePage(driver).checkExpectedBalanceIsDisplayed('0');
 
           const testDapp = new TestDappMultichain(driver);

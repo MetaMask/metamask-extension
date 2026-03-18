@@ -4,7 +4,7 @@ import FixtureBuilder from '../../fixtures/fixture-builder';
 import { WINDOW_TITLES } from '../../constants';
 import { withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 import {
   createDappTransaction,
   createInternalTransaction,
@@ -58,7 +58,7 @@ async function withFixturesForSmartTransactions(
       ignoredConsoleErrors,
     },
     async ({ driver }) => {
-      await loginWithBalanceValidation(driver, undefined, undefined, '20 ETH');
+      await login(driver, { expectedBalance: '20 ETH' });
       await runTestWithFixtures({ driver });
     },
   );

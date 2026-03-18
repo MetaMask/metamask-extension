@@ -1,7 +1,7 @@
 const { emptyHtmlPage } = require('../mock-e2e');
 const { withFixtures } = require('../helpers');
 const {
-  loginWithBalanceValidation,
+  login,
 } = require('../page-objects/flows/login.flow');
 const { DAPP_PATH, DAPP_URL, WINDOW_TITLES } = require('../constants');
 const FixtureBuilder = require('../fixtures/fixture-builder');
@@ -37,7 +37,7 @@ describe('Test Snap UI Links', function () {
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         // navigate to test snaps page
         await driver.openNewPage(DAPP_URL);

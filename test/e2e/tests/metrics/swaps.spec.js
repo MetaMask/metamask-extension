@@ -8,7 +8,7 @@ const {
   assertInAnyOrder,
 } = require('../../helpers');
 const {
-  loginWithBalanceValidation,
+  login,
 } = require('../../page-objects/flows/login.flow');
 const {
   buildQuote,
@@ -111,7 +111,7 @@ describe.skip('Swap Eth for another Token', function () {
         testSpecificMock: mockSegmentAndMetaswapRequests,
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         await getQuoteAndSwapTokens(driver);
 

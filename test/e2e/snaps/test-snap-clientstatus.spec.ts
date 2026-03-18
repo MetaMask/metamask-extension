@@ -7,7 +7,7 @@ import { TestSnaps } from '../page-objects/pages/test-snaps';
 import HeaderNavbar from '../page-objects/pages/header-navbar';
 import FixtureBuilder from '../fixtures/fixture-builder';
 import {
-  loginWithoutBalanceValidation,
+  login,
   lockAndWaitForLoginPage,
 } from '../page-objects/flows/login.flow';
 import { withFixtures } from '../helpers';
@@ -26,7 +26,7 @@ describe('Test Snap Client Status', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithoutBalanceValidation(driver);
+        await login(driver);
 
         const testSnaps = new TestSnaps(driver);
         const headerNavbar = new HeaderNavbar(driver);

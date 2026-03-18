@@ -1,6 +1,6 @@
 const { withFixtures } = require('../helpers');
 const {
-  loginWithBalanceValidation,
+  login,
 } = require('../page-objects/flows/login.flow');
 const {
   DAPP_ONE_URL,
@@ -29,7 +29,7 @@ describe('Test Snap Signature Insights', function () {
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         // navigate to test snaps page and connect
         await driver.openNewPage(DAPP_ONE_URL);

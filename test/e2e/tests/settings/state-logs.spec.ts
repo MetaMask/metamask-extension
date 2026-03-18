@@ -9,8 +9,8 @@ import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import AdvancedSettings from '../../page-objects/pages/settings/advanced-settings';
 import {
-  loginWithBalanceValidation,
-  loginWithoutBalanceValidation,
+  login,
+  login,
 } from '../../page-objects/flows/login.flow';
 import { mockPriceApi } from '../tokens/utils/mocks';
 
@@ -95,7 +95,7 @@ describe('State logs', function () {
       },
       async ({ driver }: { driver: Driver }) => {
         await createDownloadFolder(downloadsFolder);
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         // Download state logs
         await new HeaderNavbar(driver).openSettingsPage();
@@ -149,7 +149,7 @@ describe('State logs', function () {
       },
       async ({ driver }: { driver: Driver }) => {
         await createDownloadFolder(downloadsFolder);
-        await loginWithoutBalanceValidation(driver);
+        await login(driver);
 
         // Add hardcoded delay to stabilize the test and ensure values for properties are loaded
         await driver.delay(15000);

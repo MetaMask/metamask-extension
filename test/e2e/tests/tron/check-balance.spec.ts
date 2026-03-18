@@ -4,8 +4,8 @@ import { withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixtures/fixture-builder';
 import { Driver } from '../../webdriver/driver';
 import {
-  loginWithBalanceValidation,
-  loginWithoutBalanceValidation,
+  login,
+  login,
 } from '../../page-objects/flows/login.flow';
 import NonEvmHomepage from '../../page-objects/pages/home/non-evm-homepage';
 import NetworkManager from '../../page-objects/pages/network-manager';
@@ -26,7 +26,7 @@ describe('Check balance', function (this: Suite) {
         },
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         const networkManager = new NetworkManager(driver);
         await networkManager.openNetworkManager();
@@ -54,7 +54,7 @@ describe('Check balance', function (this: Suite) {
         },
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithoutBalanceValidation(driver);
+        await login(driver);
 
         const networkManager = new NetworkManager(driver);
         await networkManager.openNetworkManager();
@@ -81,7 +81,7 @@ describe('Check balance', function (this: Suite) {
         },
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         const networkManager = new NetworkManager(driver);
         await networkManager.openNetworkManager();

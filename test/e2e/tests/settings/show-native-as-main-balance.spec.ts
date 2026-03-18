@@ -8,8 +8,8 @@ import AssetListPage from '../../page-objects/pages/home/asset-list';
 import HomePage from '../../page-objects/pages/home/homepage';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import {
-  loginWithBalanceValidation,
-  loginWithoutBalanceValidation,
+  login,
+  login,
 } from '../../page-objects/flows/login.flow';
 
 async function mockPriceApi(mockServer: Mockttp) {
@@ -66,7 +66,7 @@ describe('Settings: Show native token as main balance', function () {
         },
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
         const assetListPage = new AssetListPage(driver);
         await assetListPage.checkTokenAmountIsDisplayed('25 ETH');
       },
@@ -87,7 +87,7 @@ describe('Settings: Show native token as main balance', function () {
         },
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithoutBalanceValidation(driver);
+        await login(driver);
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
         await homePage.checkExpectedBalanceIsDisplayed('$42,500.00', 'USD');
@@ -122,7 +122,7 @@ describe('Settings: Show native token as main balance', function () {
         },
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithoutBalanceValidation(driver);
+        await login(driver);
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
         await homePage.checkExpectedBalanceIsDisplayed('$42,500.00', 'USD');

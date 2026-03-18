@@ -3,7 +3,7 @@ import { Driver } from '../webdriver/driver';
 import { DAPP_PATH, WINDOW_TITLES } from '../constants';
 import { withFixtures } from '../helpers';
 import FixtureBuilder from '../fixtures/fixture-builder';
-import { loginWithBalanceValidation } from '../page-objects/flows/login.flow';
+import { login } from '../page-objects/flows/login.flow';
 import { TestSnaps } from '../page-objects/pages/test-snaps';
 import SnapInstall from '../page-objects/pages/dialog/snap-install';
 import { switchAndApproveDialogSwitchToTestSnap } from '../page-objects/flows/snap-permission.flow';
@@ -30,7 +30,7 @@ describe('Test Snap getEntropy', function (this: Suite) {
       },
       async ({ driver }: { driver: Driver }) => {
         // We explicitly choose to await balances to prevent flakiness due to long login times.
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         const testSnaps = new TestSnaps(driver);
 

@@ -1,7 +1,7 @@
 const { strict: assert } = require('assert');
 const { withFixtures } = require('../../helpers');
 const {
-  loginWithBalanceValidation,
+  login,
 } = require('../../page-objects/flows/login.flow');
 const { DAPP_URL, WINDOW_TITLES } = require('../../constants');
 const FixtureBuilder = require('../../fixtures/fixture-builder');
@@ -19,7 +19,7 @@ describe('PPOM Settings', function () {
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         await driver.clickElement(
           '[data-testid="account-options-menu-button"]',
@@ -56,7 +56,7 @@ describe('PPOM Settings', function () {
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         await driver.openNewPage(DAPP_URL);
         await driver.clickElement('#maliciousPermit');

@@ -1,6 +1,6 @@
 const { withFixtures } = require('../helpers');
 const {
-  loginWithBalanceValidation,
+  login,
 } = require('../page-objects/flows/login.flow');
 const {
   DAPP_PATH,
@@ -24,7 +24,7 @@ describe('Test Snap Dialog', function () {
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         // navigate to test snaps page and connect to dialog snap
         await driver.openNewPage(DAPP_URL_LOCALHOST);

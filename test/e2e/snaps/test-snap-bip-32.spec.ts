@@ -1,6 +1,6 @@
 import { TestSnaps } from '../page-objects/pages/test-snaps';
 import { Driver } from '../webdriver/driver';
-import { loginWithBalanceValidation } from '../page-objects/flows/login.flow';
+import { login } from '../page-objects/flows/login.flow';
 import FixtureBuilder from '../fixtures/fixture-builder';
 import { DAPP_PATH, WINDOW_TITLES } from '../constants';
 import { withFixtures } from '../helpers';
@@ -36,7 +36,7 @@ describe('Test Snap bip-32', function () {
       },
       async ({ driver }: { driver: Driver }) => {
         // We explicitly choose to await balances to prevent flakiness due to long login times.
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         const testSnaps = new TestSnaps(driver);
 

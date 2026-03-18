@@ -6,7 +6,7 @@ import { withFixtures } from '../../helpers';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import HomePage from '../../page-objects/pages/home/homepage';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 import { MockedEndpoint } from '../../mock-e2e';
 import { MOCK_ETH_CONVERSION_RATE, mockPriceApi } from '../tokens/utils/mocks';
 
@@ -83,9 +83,9 @@ export async function withMultichainAccountsDesignEnabled(
     },
     async ({ driver }: { driver: Driver; mockServer: Mockttp }) => {
       if (accountType === AccountType.HardwareWallet) {
-        await loginWithBalanceValidation(driver, undefined, undefined, '0');
+        await login(driver, { expectedBalance: '0' });
       } else {
-        await loginWithBalanceValidation(
+        await login(
           driver,
           undefined,
           undefined,

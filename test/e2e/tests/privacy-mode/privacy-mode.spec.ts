@@ -6,8 +6,8 @@ import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import HomePage from '../../page-objects/pages/home/homepage';
 import { mockPriceApi } from '../tokens/utils/mocks';
 import {
-  loginWithBalanceValidation,
-  loginWithoutBalanceValidation,
+  login,
+  login,
 } from '../../page-objects/flows/login.flow';
 
 describe('Privacy Mode', function () {
@@ -19,7 +19,7 @@ describe('Privacy Mode', function () {
         testSpecificMock: mockPriceApi,
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
         await homePage.togglePrivacyBalance();
@@ -51,7 +51,7 @@ describe('Privacy Mode', function () {
         testSpecificMock: mockPriceApi,
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithoutBalanceValidation(driver);
+        await login(driver);
 
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();

@@ -1,6 +1,6 @@
 import { Suite } from 'mocha';
 import { veryLargeDelayMs, withFixtures } from '../../helpers';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 import HomePage from '../../page-objects/pages/home/homepage';
 import BridgeQuotePage from '../../page-objects/pages/bridge/quote-page';
 import NetworkManager from '../../page-objects/pages/network-manager';
@@ -21,7 +21,7 @@ describe('Bridge tests', function (this: Suite) {
       ),
       async ({ driver }) => {
         // the balance has been fixed now , we show native balance when currency controller is set
-        await loginWithBalanceValidation(
+        await login(
           driver,
           undefined,
           undefined,
@@ -98,7 +98,7 @@ describe('Bridge tests', function (this: Suite) {
         false,
       ),
       async ({ driver }) => {
-        await loginWithBalanceValidation(
+        await login(
           driver,
           undefined,
           undefined,
@@ -138,7 +138,7 @@ describe('Bridge tests', function (this: Suite) {
         false,
       ),
       async ({ driver }) => {
-        await loginWithBalanceValidation(
+        await login(
           driver,
           undefined,
           undefined,
