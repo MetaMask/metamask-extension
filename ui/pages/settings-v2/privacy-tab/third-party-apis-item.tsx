@@ -1,5 +1,5 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import {
   Box,
   Text,
@@ -9,20 +9,15 @@ import {
   BoxJustifyContent,
   BoxAlignItems,
   FontWeight,
-  ButtonIcon,
+  Icon,
   IconName,
-  ButtonIconSize,
+  IconSize,
 } from '@metamask/design-system-react';
 import { THIRD_PARTY_APIS_ROUTE } from '../../../helpers/constants/routes';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 
 export const ThirdPartyApisItem = () => {
-  const navigate = useNavigate();
   const t = useI18nContext();
-
-  const handlePress = () => {
-    navigate(THIRD_PARTY_APIS_ROUTE);
-  };
 
   return (
     <Box flexDirection={BoxFlexDirection.Column} paddingVertical={3} gap={1}>
@@ -34,13 +29,13 @@ export const ThirdPartyApisItem = () => {
         <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
           {t('thirdPartyApis')}
         </Text>
-        <ButtonIcon
-          iconName={IconName.ArrowRight}
-          size={ButtonIconSize.Sm}
-          className="text-icon-alternative"
-          onClick={handlePress}
-          ariaLabel={`${t('select')} ${t('thirdPartyApis')}`}
-        />
+        <Link to={THIRD_PARTY_APIS_ROUTE}>
+          <Icon
+            name={IconName.ArrowRight}
+            size={IconSize.Sm}
+            className="text-icon-alternative"
+          />
+        </Link>
       </Box>
       <Text variant={TextVariant.BodyMd} color={TextColor.TextAlternative}>
         {t('thirdPartyApisDescription')}
