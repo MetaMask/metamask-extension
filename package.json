@@ -153,6 +153,12 @@
     "yarn-binary:download": "corepack pack -o .yarn/yarn-corepack.tgz",
     "yarn-binary:hydrate": "corepack hydrate .yarn/yarn-corepack.tgz --activate"
   },
+  "previewBuilds": {
+    "@metamask/assets-controllers": {
+      "type": "breaking",
+      "previewVersion": "101.0.0-preview-152e02d"
+    }
+  },
   "resolutions": {
     "jest-clean-console-reporter/chalk": "^4.1.2",
     "chokidar": "^3.6.0",
