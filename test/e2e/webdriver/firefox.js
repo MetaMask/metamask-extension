@@ -133,21 +133,13 @@ class FirefoxDriver {
       .slice(0, 12);
     const xpiPath = path.join(os.tmpdir(), `metamask-e2e-${dirHash}.xpi`);
 
-    let needsRebuild = !fs.existsSync(xpiPath);
-
-    if (!needsRebuild) {
+    let needsRebuild = true;
+    try {
       // Rebuild if any file in the source directory is newer than the cached XPI.
-      // `find -newer` exits on first match, so this is fast even for large dirs.
-      try {
-        const result = execFileSync(
-          'find',
-          [absDir, '-newer', xpiPath, '-type', 'f', '-print', '-quit'],
-          { encoding: 'utf8' },
-        ).trim();
-        needsRebuild = result.length > 0;
-      } catch (_) {
-        needsRebuild = true;
-      }
+      const xpiMtime = fs.statSync(xpiPath).mtimeMs;
+      needsRebuild = FirefoxDriver._hasNewerFile(absDir, xpiMtime);
+    } catch (_) {
+      // XPI doesn't exist yet
     }
 
     if (needsRebuild) {
@@ -167,6 +159,28 @@ class FirefoxDriver {
     }
 
     return xpiPath;
+  }
+
+  /**
+   * Checks whether any file inside `dir` has an mtime newer than `thresholdMs`.
+   * Returns early on the first match for speed.
+   *
+   * @param {string} dir - Directory to scan
+   * @param {number} thresholdMs - mtime threshold in milliseconds
+   * @returns {boolean} true if at least one file is newer
+   */
+  static _hasNewerFile(dir, thresholdMs) {
+    for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+      const fullPath = path.join(dir, entry.name);
+      if (entry.isDirectory()) {
+        if (FirefoxDriver._hasNewerFile(fullPath, thresholdMs)) {
+          return true;
+        }
+      } else if (fs.statSync(fullPath).mtimeMs > thresholdMs) {
+        return true;
+      }
+    }
+    return false;
   }
 
   /**
