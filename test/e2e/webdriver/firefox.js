@@ -1,4 +1,5 @@
 const fs = require('fs');
+const { execSync } = require('child_process');
 const os = require('os');
 const path = require('path');
 const {
@@ -95,7 +96,11 @@ class FirefoxDriver {
     const driver = builder.build();
     const fxDriver = new FirefoxDriver(driver);
 
-    const extensionId = await fxDriver.installExtension('dist/firefox');
+    // Pre-build a compressed XPI and cache it across test runs.
+    // Without this, installAddon() zips the 348MB unpacked dir on every call,
+    // adding ~10s of overhead per test.
+    const xpiPath = FirefoxDriver._getOrBuildXpi('dist/firefox');
+    const installedExtensionId = await fxDriver.installExtension(xpiPath);
     const internalExtensionId = await fxDriver.getInternalId();
 
     if (responsive || constrainWindowSize) {
@@ -104,9 +109,52 @@ class FirefoxDriver {
 
     return {
       driver,
-      extensionId,
+      extensionId: installedExtensionId,
       extensionUrl: `moz-extension://${internalExtensionId}`,
     };
+  }
+
+  /**
+   * Returns the path to a cached XPI for the given unpacked extension directory.
+   * Builds the XPI on first call; reuses it when manifest.json content is unchanged.
+   * Uses a content hash because setManifestFlags rewrites the file (changing mtime)
+   * even when the content is identical.
+   *
+   * @param {string} addonDir - Path to the unpacked extension directory
+   * @returns {string} Path to the XPI file
+   */
+  static _getOrBuildXpi(addonDir) {
+    const absDir = path.resolve(addonDir);
+    const xpiPath = path.join(os.tmpdir(), 'metamask-e2e-cached.xpi');
+    const hashPath = `${xpiPath}.sha256`;
+
+    const manifestContent = fs.readFileSync(path.join(absDir, 'manifest.json'));
+    const currentHash = crypto
+      .createHash('sha256')
+      .update(manifestContent)
+      .digest('hex');
+
+    let needsRebuild = true;
+    try {
+      const cachedHash = fs.readFileSync(hashPath, 'utf8').trim();
+      if (cachedHash === currentHash && fs.existsSync(xpiPath)) {
+        needsRebuild = false;
+      }
+    } catch (_) {
+      // hash file doesn't exist yet
+    }
+
+    if (needsRebuild) {
+      try {
+        fs.unlinkSync(xpiPath);
+      } catch (_) {
+        // file didn't exist
+      }
+      execSync(`cd "${absDir}" && zip -r -1 -q "${xpiPath}" .`);
+      fs.writeFileSync(hashPath, currentHash);
+    }
+
+    return xpiPath;
   }
 
   /**
