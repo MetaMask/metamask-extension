@@ -79,7 +79,7 @@ describe('compareLocalesForUnexpectedReplacementKeys', () => {
     ).toStrictEqual([]);
   });
 
-  it('does not treat invalid multi-digit placeholders as replacement keys', () => {
+  it('skips replacement-key parity checks when a translation uses invalid placeholders', () => {
     expect(
       compareLocalesForUnexpectedReplacementKeys({
         englishLocale: {
@@ -95,6 +95,30 @@ describe('compareLocalesForUnexpectedReplacementKeys', () => {
       }),
     ).toStrictEqual([]);
   });
+
+  it('matches the runtime parser for single-digit placeholders inside larger strings', () => {
+    expect(
+      compareLocalesForUnexpectedReplacementKeys({
+        englishLocale: {
+          shieldTxDetails2Title: {
+            message: 'Shield details: $1',
+          },
+        },
+        targetLocale: {
+          shieldTxDetails2Title: {
+            message: 'Shield details: $$2',
+          },
+        },
+      }),
+    ).toStrictEqual([
+      {
+        englishReplacementKeys: ['$1'],
+        key: 'shieldTxDetails2Title',
+        targetReplacementKeys: ['$2'],
+        unexpectedReplacementKeys: ['$2'],
+      },
+    ]);
+  });
 });
 
 describe('getMessagesWithInvalidReplacementKeys', () => {
@@ -108,16 +132,16 @@ describe('getMessagesWithInvalidReplacementKeys', () => {
     ).toStrictEqual([]);
   });
 
-  it('returns invalid multi-digit replacement keys used by a locale', () => {
+  it('returns invalid replacement keys used by a locale', () => {
     expect(
       getMessagesWithInvalidReplacementKeys({
         shieldTxDetails1Title: {
-          message: 'Shield details $10 $10 $12',
+          message: 'Shield details $0 $10 $10 $12',
         },
       }),
     ).toStrictEqual([
       {
-        invalidReplacementKeys: ['$10', '$12'],
+        invalidReplacementKeys: ['$0', '$10', '$12'],
         key: 'shieldTxDetails1Title',
       },
     ]);

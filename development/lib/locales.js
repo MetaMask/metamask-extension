@@ -5,8 +5,9 @@ const { promisify } = require('util');
 const log = require('loglevel');
 
 const readFile = promisify(fs.readFile);
-const INVALID_REPLACEMENT_KEY_REGEX = /\$\d{2,}/gu;
-const REPLACEMENT_KEY_REGEX = /\$\d(?!\d)/gu;
+// Keep these patterns in sync with shared/lib/i18n.ts applySubstitutions().
+const RUNTIME_REPLACEMENT_KEY_REGEX = /\$\d/gu;
+const INVALID_REPLACEMENT_KEY_REGEX = /\$0|\$\d{2,}/gu;
 
 function getLocalePath(code) {
   return path.resolve(
@@ -58,12 +59,24 @@ function compareLocalesForUnexpectedReplacementKeys({
       return [];
     }
 
-    const englishReplacementKeys = getReplacementKeys(
-      englishLocale[key]?.message,
-    );
-    const targetReplacementKeys = getReplacementKeys(
-      targetLocale[key]?.message,
-    );
+    const englishMessage = englishLocale[key]?.message;
+    const targetMessage = targetLocale[key]?.message;
+    const englishInvalidReplacementKeys =
+      getInvalidReplacementKeys(englishMessage);
+    const targetInvalidReplacementKeys =
+      getInvalidReplacementKeys(targetMessage);
+
+    // Invalid placeholder syntax is reported separately, so skip parity checks
+    // here to avoid duplicate or misleading errors for the same message.
+    if (
+      englishInvalidReplacementKeys.length > 0 ||
+      targetInvalidReplacementKeys.length > 0
+    ) {
+      return [];
+    }
+
+    const englishReplacementKeys = getReplacementKeys(englishMessage);
+    const targetReplacementKeys = getReplacementKeys(targetMessage);
     const unexpectedReplacementKeys = targetReplacementKeys.filter(
       (replacementKey) => !englishReplacementKeys.includes(replacementKey),
     );
@@ -103,7 +116,7 @@ function getMessagesWithInvalidReplacementKeys(locale) {
 }
 
 function getReplacementKeys(message = '') {
-  return [...new Set(message.match(REPLACEMENT_KEY_REGEX) ?? [])].sort(
+  return [...new Set(message.match(RUNTIME_REPLACEMENT_KEY_REGEX) ?? [])].sort(
     (firstKey, secondKey) =>
       Number(firstKey.slice(1)) - Number(secondKey.slice(1)),
   );
