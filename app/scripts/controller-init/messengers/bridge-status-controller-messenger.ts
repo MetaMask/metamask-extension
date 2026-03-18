@@ -10,6 +10,7 @@ import type {
 import type { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
 import {
   type TransactionControllerGetStateAction,
+  type TransactionControllerIsAtomicBatchSupportedAction,
   TransactionControllerTransactionConfirmedEvent,
   TransactionControllerTransactionFailedEvent,
 } from '@metamask/transaction-controller';
@@ -28,6 +29,7 @@ type AllowedActions =
   | NetworkControllerGetNetworkClientByIdAction
   | HandleSnapRequest
   | TransactionControllerGetStateAction
+  | TransactionControllerIsAtomicBatchSupportedAction
   | BridgeControllerAction<BridgeBackgroundAction.TRACK_METAMETRICS_EVENT>
   | BridgeControllerAction<BridgeBackgroundAction.STOP_POLLING_FOR_QUOTES>
   | GetGasFeeState
@@ -77,6 +79,7 @@ export function getBridgeStatusControllerMessenger(
       'GasFeeController:getState',
       'SnapController:handleRequest',
       'TransactionController:getState',
+      'TransactionController:isAtomicBatchSupported',
       'RemoteFeatureFlagController:getState',
       'AuthenticationController:getBearerToken',
     ],
