@@ -21,9 +21,6 @@ package
 # LLMs
 .claude/*.local.*
 
-# Cursor IDE hook state (session-specific, varies per developer)
-.cursor/hooks
-
 *.bak
 
 # VIM
