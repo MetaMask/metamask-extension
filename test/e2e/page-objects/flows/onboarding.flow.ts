@@ -577,13 +577,16 @@ export const addCustomNetworkInOnboardingPrivacySettings = async ({
  * @param options - The options object.
  * @param options.driver - The WebDriver instance.
  * @param options.password - The password to use. Defaults to WALLET_PASSWORD.
+ * @param options.participateInMetaMetrics - Whether to opt into MetaMetrics during onboarding.
  */
 export const completeVaultRecoveryOnboardingFlow = async ({
   driver,
   password = WALLET_PASSWORD,
+  participateInMetaMetrics = false,
 }: {
   driver: Driver;
   password?: string;
+  participateInMetaMetrics?: boolean;
 }): Promise<void> => {
   // after a vault recovery the Login page is displayed before the normal
   // onboarding flow.
@@ -593,7 +596,7 @@ export const completeVaultRecoveryOnboardingFlow = async ({
 
   // complete metrics onboarding flow
   await onboardingMetricsFlow(driver, {
-    participateInMetaMetrics: false,
+    participateInMetaMetrics,
     dataCollectionForMarketing: false,
   });
 

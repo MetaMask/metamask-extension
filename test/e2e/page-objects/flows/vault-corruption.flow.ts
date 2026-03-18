@@ -163,15 +163,23 @@ export async function onboardThenTriggerCorruptionFlow(
  * @param options - Additional options.
  * @param options.timeoutMs - How long to wait for the critical error page (must allow for
  * phase timeouts: init ~31s, state sync ~47s). Default 60s.
+ * @param options.participateInMetaMetrics - Whether to opt into MetaMetrics during onboarding.
  * @returns The initial first account's address (before reload).
  */
 export async function onboardThenTriggerTimeOutFlow(
   driver: Driver,
-  { timeoutMs = 60_000 } = {},
+  {
+    timeoutMs = 60_000,
+    participateInMetaMetrics = false,
+  }: {
+    timeoutMs?: number;
+    participateInMetaMetrics?: boolean;
+  } = {},
 ): Promise<string> {
   const firstAddress = await onboardThenExecuteScript(
     driver,
     simpleReloadScript,
+    { participateInMetaMetrics },
   );
 
   const criticalErrorPage = new CriticalErrorPage(driver);
