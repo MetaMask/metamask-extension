@@ -227,7 +227,11 @@ describe('Critical errors', function (this: Suite) {
         testSpecificMock: mockServices,
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
-        await onboardThenTriggerTimeOutFlow(driver);
+        await onboardThenTriggerTimeOutFlow(driver, {
+          // Opt into MetaMetrics before the timeout so the pre-restore controller
+          // can also emit, which makes duplicate phishing listeners observable.
+          participateInMetaMetrics: true,
+        });
 
         const criticalErrorPage = new CriticalErrorPage(driver);
         await criticalErrorPage.checkPageIsLoaded();
