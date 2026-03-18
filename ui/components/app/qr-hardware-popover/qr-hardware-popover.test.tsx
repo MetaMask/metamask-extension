@@ -1,20 +1,20 @@
 import React from 'react';
-import { screen } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
+import { Provider } from 'react-redux';
 import { QrScanRequestType } from '@metamask/eth-qr-keyring';
-import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
-// TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
-import { getEnvironmentType } from '../../../../app/scripts/lib/util';
+import { getEnvironmentType } from '../../../../shared/lib/environment-type';
 import {
   ENVIRONMENT_TYPE_FULLSCREEN,
   ENVIRONMENT_TYPE_POPUP,
   ENVIRONMENT_TYPE_SIDEPANEL,
 } from '../../../../shared/constants/app';
+import { I18nProvider } from '../../../../test/lib/render-helpers';
+import * as en from '../../../../app/_locales/en/messages.json';
 import QRHardwarePopover from './qr-hardware-popover';
 
-jest.mock('../../../../app/scripts/lib/util', () => ({
+jest.mock('../../../../shared/lib/environment-type', () => ({
   getEnvironmentType: jest.fn(),
 }));
 
@@ -47,6 +47,18 @@ function buildStore(
   });
 }
 
+function renderPopover(
+  store: ReturnType<typeof buildStore>,
+) {
+  return render(
+    <Provider store={store}>
+      <I18nProvider currentLocale="en" current={en} en={en}>
+        <QRHardwarePopover />
+      </I18nProvider>
+    </Provider>,
+  );
+}
+
 describe('QRHardwarePopover', () => {
   beforeEach(() => {
     jest.resetAllMocks();
@@ -54,26 +66,19 @@ describe('QRHardwarePopover', () => {
   });
 
   it('renders nothing when there is no active scan request', () => {
-    const { container } = renderWithProvider(
-      <QRHardwarePopover />,
-      buildStore(null),
-    );
+    const { container } = renderPopover(buildStore(null));
     expect(container.firstChild).toBeNull();
   });
 
   it('renders the PAIR popover in fullscreen mode', () => {
-    renderWithProvider(
-      <QRHardwarePopover />,
-      buildStore({ type: QrScanRequestType.PAIR }),
-    );
+    renderPopover(buildStore({ type: QrScanRequestType.PAIR }));
     expect(
       screen.getByTestId('qr-hardware-wallet-importer'),
     ).toBeInTheDocument();
   });
 
   it('renders the SIGN popover in fullscreen mode', () => {
-    renderWithProvider(
-      <QRHardwarePopover />,
+    renderPopover(
       buildStore({
         type: QrScanRequestType.SIGN,
         request: { requestId: 'req-1', payload: {} },
@@ -84,8 +89,7 @@ describe('QRHardwarePopover', () => {
 
   it('does not render the PAIR popover in sidepanel mode', () => {
     mockGetEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_SIDEPANEL);
-    const { container } = renderWithProvider(
-      <QRHardwarePopover />,
+    const { container } = renderPopover(
       buildStore({ type: QrScanRequestType.PAIR }),
     );
     expect(container.firstChild).toBeNull();
@@ -93,8 +97,7 @@ describe('QRHardwarePopover', () => {
 
   it('does not render the PAIR popover in popup mode', () => {
     mockGetEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_POPUP);
-    const { container } = renderWithProvider(
-      <QRHardwarePopover />,
+    const { container } = renderPopover(
       buildStore({ type: QrScanRequestType.PAIR }),
     );
     expect(container.firstChild).toBeNull();
@@ -102,8 +105,7 @@ describe('QRHardwarePopover', () => {
 
   it('still renders the SIGN popover in sidepanel mode', () => {
     mockGetEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_SIDEPANEL);
-    renderWithProvider(
-      <QRHardwarePopover />,
+    renderPopover(
       buildStore({
         type: QrScanRequestType.SIGN,
         request: { requestId: 'req-1', payload: {} },
@@ -114,8 +116,7 @@ describe('QRHardwarePopover', () => {
 
   it('still renders the SIGN popover in popup mode', () => {
     mockGetEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_POPUP);
-    renderWithProvider(
-      <QRHardwarePopover />,
+    renderPopover(
       buildStore({
         type: QrScanRequestType.SIGN,
         request: { requestId: 'req-1', payload: {} },

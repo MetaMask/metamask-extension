@@ -21,8 +21,8 @@ package
 # LLMs
 .claude/*.local.*
 
-# Cursor IDE internal hook state (session-specific, varies per developer)
-.cursor/hooks/state/
+# Cursor IDE hook state (session-specific, varies per developer)
+.cursor/hooks
 
 *.bak
 
@@ -106,7 +106,6 @@ test/integration/config/assets
 # webpack
 development/.webpack
 
-# git worktrees
-.worktrees/
+
 # llm workflow playwright temp files
 temp-llm-workflow-*
