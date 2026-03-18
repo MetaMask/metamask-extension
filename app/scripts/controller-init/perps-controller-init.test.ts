@@ -178,7 +178,7 @@ describe('PerpsControllerInit', () => {
       expect(constructorCall.deferEligibilityCheck).toBe(true);
     });
 
-    it('passes deferEligibilityCheck false when onboarding is complete', () => {
+    it('passes deferEligibilityCheck true when onboarding is complete', () => {
       const request = getInitRequestMock();
       request.persistedState.OnboardingController = {
         completedOnboarding: true,
