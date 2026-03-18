@@ -44,7 +44,6 @@ development/ts-migration-dashboard/build
 test-artifacts
 test-builds
 build-artifacts
-.bundle-size-compare
 
 #ignore css output and sourcemaps
 ui/css/output/
