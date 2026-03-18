@@ -15,6 +15,7 @@ import { sell } from './sell';
 import { shield } from './shield';
 import { swap } from './swap';
 import { trending } from './trending';
+import { gatorPermissions } from './gator-permissions';
 
 export type { Route } from './route';
 
@@ -60,3 +61,4 @@ addRoute(rewards);
 addRoute(shield);
 addRoute(asset);
 addRoute(trending);
+addRoute(gatorPermissions);
