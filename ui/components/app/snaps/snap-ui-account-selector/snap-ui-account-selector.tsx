@@ -81,7 +81,7 @@ export const SnapUIAccountSelector: FunctionComponent<
         accountGroups.find(({ accounts: accountGroup }) =>
           accountGroup.includes(account.id),
         )?.metadata.name ?? account.metadata.name;
-      console.log(name);
+
       return {
         ...account,
         metadata: {
