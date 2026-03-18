@@ -27,7 +27,7 @@ type JsonRpcApiRequest<
   jsonrpc?: typeof JSON_RPC_VERSION;
   id?: number;
   method: MethodName;
-  params: Parameters<Api[keyof Api]>;
+  params: Parameters<Api[MethodName]>;
 };
 
 /**
