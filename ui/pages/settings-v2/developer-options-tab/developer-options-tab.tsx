@@ -8,16 +8,14 @@ import {
 import { getShowFiatInTestnets } from '../../../selectors';
 import { setShowFiatConversionOnTestnetsPreference } from '../../../store/actions';
 import { AutoResetAccountItem } from './auto-reset-account-item';
-
-const SHOW_CONVERSION_IN_TESTNETS_LEARN_MORE_LINK =
-  'https://support.metamask.io/stay-safe/protect-yourself/tokens-and-transactions/testnet-eth-scams/';
+import { TESTNET_ETH_SCAMS_LEARN_MORE_LINK } from 'shared/lib/ui-utils';
 
 const ShowConversionInTestnetsItem = createToggleItem({
   name: 'ShowConversionInTestnetsItem',
   titleKey: 'showFiatConversionInTestnets',
   formatDescription: createDescriptionWithLearnMore(
     'showFiatConversionInTestnetsDescriptionV2',
-    SHOW_CONVERSION_IN_TESTNETS_LEARN_MORE_LINK,
+    TESTNET_ETH_SCAMS_LEARN_MORE_LINK,
   ),
   selector: getShowFiatInTestnets,
   action: setShowFiatConversionOnTestnetsPreference,
