@@ -50,11 +50,11 @@ export default function Pna25Modal() {
 
       // Only acknowledge and close on user actions, not on initial view
       if (action !== Pna25NoticeAction.Viewed) {
-        const shouldSkipDelay = [
+        const disableDelay = [
           Pna25NoticeAction.Close,
           Pna25NoticeAction.AcceptAndClose,
         ].includes(action);
-        dispatch(setPna25Acknowledged(true, shouldSkipDelay));
+        dispatch(setPna25Acknowledged(true, disableDelay));
       }
 
       if (action === Pna25NoticeAction.OpenSettings) {
