@@ -582,7 +582,7 @@ class TransactionConfirmation extends Confirmation {
   async selectTokenFee(tokenSymbol: string): Promise<void> {
     console.log(`Select token ${tokenSymbol} to pay for the fees`);
     await this.driver.clickElement(this.tokenGasFeeDropdown);
-    await this.driver.clickElement({
+    await this.driver.clickElementAndWaitToDisappear({
       css: this.tokenGasFeeSymbol,
       text: tokenSymbol,
     });
