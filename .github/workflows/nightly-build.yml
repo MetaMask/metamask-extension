@@ -24,8 +24,6 @@ jobs:
     with:
       build-name: build-dist-mv2-browserify
       build-command: yarn build dist
-      mozilla-lint: true
-      enable-mv3: false
       builds-from-run: ${{ github.run_id }}
     secrets: inherit
 
@@ -42,8 +40,6 @@ jobs:
     with:
       build-name: build-experimental-mv2-browserify
       build-command: yarn build --build-type experimental dist
-      mozilla-lint: true
-      enable-mv3: false
       builds-from-run: ${{ github.run_id }}
     secrets: inherit
 
