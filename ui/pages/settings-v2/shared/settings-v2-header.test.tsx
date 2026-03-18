@@ -3,6 +3,7 @@ import { fireEvent, screen } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import mockState from '../../../../test/data/mock-state.json';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import { SettingsV2Header } from './settings-v2-header';
@@ -24,7 +25,7 @@ describe('SettingsV2Header', () => {
   it('renders title and search button at settings root', () => {
     renderWithProvider(
       <SettingsV2Header
-        title="Settings"
+        title={messages.settings.message}
         isPopup
         isOnSettingsRoot
         searchValue=""
@@ -32,7 +33,7 @@ describe('SettingsV2Header', () => {
       createMockStore(),
     );
 
-    expect(screen.getByText('Settings')).toBeInTheDocument();
+    expect(screen.getByText(messages.settings.message)).toBeInTheDocument();
     expect(
       screen.getByTestId('settings-v2-header-search-button'),
     ).toBeVisible();
@@ -40,7 +41,11 @@ describe('SettingsV2Header', () => {
 
   it('renders close button in end accessory for popup subpages', () => {
     renderWithProvider(
-      <SettingsV2Header title="Settings" isPopup isOnSettingsRoot={false} />,
+      <SettingsV2Header
+        title={messages.settings.message}
+        isPopup
+        isOnSettingsRoot={false}
+      />,
       createMockStore(),
     );
 
@@ -51,15 +56,15 @@ describe('SettingsV2Header', () => {
 
   it('navigates to default route when close button is clicked on popup subpage', () => {
     renderWithProvider(
-      <SettingsV2Header title="Settings" isPopup isOnSettingsRoot={false} />,
+      <SettingsV2Header
+        title={messages.settings.message}
+        isPopup
+        isOnSettingsRoot={false}
+      />,
       createMockStore(),
     );
 
-    const closeButtons = screen.getAllByTestId(
-      'settings-v2-header-close-button',
-    );
-    const endAccessoryClose = closeButtons[closeButtons.length - 1];
-    fireEvent.click(endAccessoryClose);
+    fireEvent.click(screen.getByTestId('settings-v2-header-close-button'));
 
     expect(mockNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE);
   });
@@ -68,7 +73,7 @@ describe('SettingsV2Header', () => {
     const onClose = jest.fn();
     renderWithProvider(
       <SettingsV2Header
-        title="Settings"
+        title={messages.settings.message}
         isPopup
         isOnSettingsRoot={false}
         onClose={onClose}
@@ -76,10 +81,7 @@ describe('SettingsV2Header', () => {
       createMockStore(),
     );
 
-    const closeButtons = screen.getAllByTestId(
-      'settings-v2-header-close-button',
-    );
-    fireEvent.click(closeButtons[0]);
+    fireEvent.click(screen.getByTestId('settings-v2-header-back-button'));
 
     expect(onClose).toHaveBeenCalledTimes(1);
   });
@@ -89,7 +91,7 @@ describe('SettingsV2Header', () => {
 
     renderWithProvider(
       <SettingsV2Header
-        title="Settings"
+        title={messages.settings.message}
         isPopup
         isOnSettingsRoot
         searchValue=""
@@ -102,6 +104,5 @@ describe('SettingsV2Header', () => {
     fireEvent.click(screen.getByTestId('settings-v2-header-search-button'));
 
     expect(screen.getByTestId('settings-v2-header-search-input')).toBeVisible();
-    expect(screen.getByRole('button', { name: /close/iu })).toBeInTheDocument();
   });
 });

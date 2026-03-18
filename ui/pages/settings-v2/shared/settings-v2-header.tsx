@@ -101,7 +101,7 @@ export const SettingsV2Header = ({
         ariaLabel={t('back')}
         size={ButtonIconSize.Md}
         onClick={onClose}
-        data-testid="settings-v2-header-close-button"
+        data-testid="settings-v2-header-back-button"
       />
     </Box>
   );

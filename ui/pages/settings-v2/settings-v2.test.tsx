@@ -81,10 +81,7 @@ describe('SettingsV2', () => {
     it('navigates to default route when back is clicked at settings root', () => {
       renderSettingsV2(mockStore);
 
-      const backButtons = screen.getAllByTestId(
-        'settings-v2-header-close-button',
-      );
-      fireEvent.click(backButtons[0]);
+      fireEvent.click(screen.getByTestId('settings-v2-header-back-button'));
 
       expect(mockNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE);
     });
@@ -107,10 +104,7 @@ describe('SettingsV2', () => {
     it('navigates to parent route when back is clicked on a sub-route', () => {
       renderSettingsV2(mockStore);
 
-      const backButtons = screen.getAllByTestId(
-        'settings-v2-header-close-button',
-      );
-      fireEvent.click(backButtons[0]);
+      fireEvent.click(screen.getByTestId('settings-v2-header-back-button'));
 
       expect(mockNavigate).toHaveBeenCalledWith(ASSETS_ROUTE);
     });
