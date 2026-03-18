@@ -153,7 +153,9 @@ class ChromeDriver {
         .digest('hex');
       return hash
         .slice(0, 32)
-        .replace(/[0-9a-f]/gu, c => String.fromCharCode(97 + parseInt(c, 16)))
+        .replace(/[0-9a-f]/gu, (c) =>
+          String.fromCharCode(97 + parseInt(c, 16)),
+        );
     } catch {
       return null;
     }
