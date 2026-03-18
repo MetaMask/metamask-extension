@@ -234,7 +234,7 @@ describe('compare-benchmarks', () => {
   describe('loadBaseline', () => {
     it('returns empty object when fetch returns null', async () => {
       jest
-        .spyOn(historicalComparison, 'fetchHistoricalPerformanceData')
+        .spyOn(historicalComparison, 'fetchHistoricalPerformanceDataFromMain')
         .mockResolvedValue(null);
 
       const result = await loadBaseline();
@@ -251,7 +251,7 @@ describe('compare-benchmarks', () => {
         },
       };
       jest
-        .spyOn(historicalComparison, 'fetchHistoricalPerformanceData')
+        .spyOn(historicalComparison, 'fetchHistoricalPerformanceDataFromMain')
         .mockResolvedValue(mockBaseline);
 
       const result = await loadBaseline();

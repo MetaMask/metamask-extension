@@ -16,7 +16,7 @@ import {
   USER_JOURNEY_PRESETS,
 } from '../../test/e2e/benchmarks/utils/constants';
 import type { HistoricalBaselineReference } from './historical-comparison';
-import { fetchHistoricalPerformanceData } from './historical-comparison';
+import { fetchHistoricalPerformanceDataFromMain } from './historical-comparison';
 import {
   compareBenchmarkEntries,
   getTrafficLightIndication,
@@ -187,8 +187,6 @@ function resolveEntryBaseline(
     return baseline[qualified];
   }
 
-  // Startup: stored as "pageLoad/chrome-browserify-{presetName}".
-  // Guard against empty presetName — includes('') is always true.
   if (presetName) {
     const presetKey = Object.keys(baseline).find((k) => k.includes(presetName));
     if (presetKey) {
@@ -480,7 +478,7 @@ export async function buildPerformanceBenchmarksSection(
       fetchBenchmarkEntries(hostUrl, Object.values(INTERACTION_PRESETS)),
       fetchBenchmarkEntries(hostUrl, Object.values(STARTUP_PRESETS)),
       fetchBenchmarkEntries(hostUrl, Object.values(USER_JOURNEY_PRESETS)),
-      fetchHistoricalPerformanceData(),
+      fetchHistoricalPerformanceDataFromMain(),
     ]);
 
   const resolvedBaseline = baseline ?? undefined;

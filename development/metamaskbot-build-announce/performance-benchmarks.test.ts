@@ -800,7 +800,7 @@ describe('buildPerformanceBenchmarksSection', () => {
 
   it('fetches historical baseline and passes it to section builders', async () => {
     const fetchHistoricalSpy = jest
-      .spyOn(historicalComparison, 'fetchHistoricalPerformanceData')
+      .spyOn(historicalComparison, 'fetchHistoricalPerformanceDataFromMain')
       .mockResolvedValue({
         'interactionUserActions/confirmTx': {
           // mean=1000 baseline vs payload mean=1000 → 0% → neutral ➡️
@@ -822,7 +822,7 @@ describe('buildPerformanceBenchmarksSection', () => {
 
   it('renders section without indicators when historical baseline returns null', async () => {
     jest
-      .spyOn(historicalComparison, 'fetchHistoricalPerformanceData')
+      .spyOn(historicalComparison, 'fetchHistoricalPerformanceDataFromMain')
       .mockResolvedValue(null);
 
     mockFetch.mockResolvedValue({

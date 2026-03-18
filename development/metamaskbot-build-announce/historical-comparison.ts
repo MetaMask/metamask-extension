@@ -11,19 +11,6 @@ import type {
   HistoricalBaselineMetrics,
 } from '../../shared/constants/benchmarks';
 
-const STATS_REPO_BASE =
-  'https://raw.githubusercontent.com/MetaMask/extension_benchmark_stats/main/stats';
-
-/**
- * All presets in performance_data.json share the same nested shape:
- * preset name → benchmark name → benchmark result.
- *
- * - startupStandardHome:        { "uiStartup": { "mean": {...} }, ... }
- * - startupPowerUserHome:       { "uiStartup": { "mean": {...} }, ... }
- * - interactionUserActions:     { "loadNewAccount": { "mean": {...} }, "confirmTx": { "mean": {...} } }
- * - userJourneyAssets:          { "assetClickToPriceChart": { "mean": {...} }, ... }
- * - pageLoad (legacy group):    { "chrome-browserify-standardHome": { "mean": {...} }, ... }
- */
 type NestedPresetEntry = Record<string, Partial<BenchmarkResults>>;
 
 type HistoricalCommitEntry = {
@@ -39,52 +26,28 @@ export type HistoricalBaselineReference = Record<
 >;
 
 /**
- * Fetches and parses performance_data.json for a given branch slug.
- * Returns null if the file does not exist or cannot be parsed.
+ * Fetches historical performance data from the `main` branch of
+ * extension_benchmark_stats.
  *
- * @param branch - Branch name as stored in the stats repo (e.g. "main").
- * @returns Parsed file contents or null.
+ * @returns Reference map (benchmarkName -> metric -> baseline), or null if unavailable.
  */
-async function fetchPerformanceFile(
-  branch: string,
-): Promise<HistoricalPerformanceFile | null> {
+export async function fetchHistoricalPerformanceDataFromMain(): Promise<HistoricalBaselineReference | null> {
   try {
-    const response = await fetch(
-      `${STATS_REPO_BASE}/${branch}/performance_data.json`,
-    );
+    const STATS_PERFORMANCE_DATA_URL =
+      'https://raw.githubusercontent.com/MetaMask/extension_benchmark_stats/main/stats/main/performance_data.json';
+    const response = await fetch(STATS_PERFORMANCE_DATA_URL);
     if (!response.ok) {
       return null;
     }
-    return (await response.json()) as HistoricalPerformanceFile;
+    const data = (await response.json()) as HistoricalPerformanceFile;
+    if (Object.keys(data).length === 0) {
+      return null;
+    }
+    const result = aggregateHistoricalData(data);
+    return Object.keys(result).length > 0 ? result : null;
   } catch {
     return null;
   }
-}
-
-/**
- * Fetches historical performance data from extension_benchmark_stats.
- * Uses GITHUB_BASE_REF (the PR target branch) first, falling back to `main`.
- * Forward slashes in the branch name are replaced with hyphens to match
- * the stats repo directory structure (e.g. "release/13.23.0" → "release-13.23.0").
- *
- * @returns Reference map (benchmarkName → metric → baseline), or null if unavailable.
- */
-export async function fetchHistoricalPerformanceData(): Promise<HistoricalBaselineReference | null> {
-  const releaseBranch = process.env.GITHUB_BASE_REF?.replace(/\//gu, '-');
-  let data = releaseBranch ? await fetchPerformanceFile(releaseBranch) : null;
-  if (data) {
-    console.log(`[benchmarks] Using historical data from release branch: ${releaseBranch}`);
-  } else {
-    data = await fetchPerformanceFile('main');
-    if (data) {
-      console.log(`[benchmarks] Using historical data from: main`);
-    } else {
-      console.log('[benchmarks] No historical baseline data found');
-    }
-  }
-
-  const result = data ? aggregateHistoricalData(data) : null;
-  return result && Object.keys(result).length > 0 ? result : null;
 }
 
 type CollectedMetricValues = {

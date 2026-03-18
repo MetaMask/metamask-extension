@@ -37,7 +37,7 @@ import {
   type BenchmarkEntryComparison,
 } from './comparison-utils';
 import type { HistoricalBaselineReference } from './historical-comparison';
-import { fetchHistoricalPerformanceData } from './historical-comparison';
+import { fetchHistoricalPerformanceDataFromMain } from './historical-comparison';
 
 type LoadedBenchmark = {
   name: string;
@@ -113,7 +113,7 @@ export function resolveThresholdConfig(
  * Loads the historical baseline.
  */
 export async function loadBaseline(): Promise<HistoricalBaselineReference> {
-  const result = await fetchHistoricalPerformanceData();
+  const result = await fetchHistoricalPerformanceDataFromMain();
   return result ?? {};
 }
 
