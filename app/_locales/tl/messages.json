@@ -697,6 +697,10 @@
     "message": "Aprubahan ang limitasyon sa paggastos ng $1",
     "description": "The token symbol that is being approved"
   },
+  "approveToken": {
+    "message": "Aprubahan ang $1",
+    "description": "Used in the transaction details summary to describe an approval transaction. $1 is the symbol of the token being approved."
+  },
   "approved": {
     "message": "Inaprubahan"
   },
@@ -726,6 +730,10 @@
   "assetsDescription": {
     "message": "I-autodetect ang mga token sa wallet mo, ipakita ang mga NFT, at kumuha ng naka-batch na mga update sa balanse ng account"
   },
+  "asterdexReferralSubtitle": {
+    "message": "Makakuha ng 4% sa mga trade na gumagamit ng referral code ng MetaMask.",
+    "description": "The subtitle of the AsterDEX referral confirmation screen"
+  },
   "attemptToCancelSwapForFree": {
     "message": "Subukang kanselahin ang swap nang libre"
   },
@@ -744,6 +752,9 @@
   "autoDetectTokensDescription": {
     "message": "Gumagamit kami ng mga third-party na API para tumuklas at magpakita ng mga bagong token na ipinadala sa iyong wallet. I-off kung ayaw mong awtomatikong kunin ng app ang datos mula sa mga serbisyong iyon. $1",
     "description": "$1 is a link to a support article"
+  },
+  "autoDetectTokensDescriptionV2": {
+    "message": "Ipinapakita ang mga bagong token na ipinadala sa wallet mo."
   },
   "autoLockTimeLimit": {
     "message": "Timer sa Awtomatikong Pag-lock (minuto)"
@@ -833,14 +844,15 @@
     "message": "Nag-aalok ang MetaMask ng mga batayang tampok tulad ng mga detalye ng token at mga setting ng gas sa pamamagitan ng serbisyo sa internet. Kapag gumamit ka ng serbisyo sa internet, ibabahagi ang iyong IP address, sa kasong ito sa MetaMask. Tulad ito ng pagbisita mo sa anumang website. Ang MetaMask ay pansamantalang ginagamit ang datos na ito at hindi ibebenta ang iyong datos. Maaari kang gumamit ng VPN o i-off ang mga serbisyon ito, ngunit maaari itong makaapekto sa iyong karanasan sa MetaMask. Upang matuto pa basahin ang aming $1.",
     "description": "$1 is to be replaced by the message for privacyMsg, and will link to https://consensys.io/privacy-policy"
   },
+  "basicConfigurationDescriptionV2": {
+    "message": "Kabilang ang mga basic na feature gaya ng mga detalye ng token at setting ng gas. Panatilihin ang feature na ito para sa pinakamagandang karanasan. Basahin ang aming $1 para matuto pa.",
+    "description": "$1 is to be replaced by the message for privacyMsg, and will link to https://consensys.io/privacy-policy"
+  },
   "basicConfigurationLabel": {
     "message": "Batayang kapakinabangan"
   },
   "basicConfigurationModalCheckbox": {
     "message": "Nauunawaan ko at nais kong magpatuloy"
-  },
-  "basicConfigurationModalDisclaimerOffPart1": {
-    "message": "Ibig sabihin nito hindi mo lubos na mao-optimize ang iyong oras sa MetaMask. Ang mga batayang tampok (tulad ng mga detalye ng token, optimal na settings ng gas, at iba pa) ay hindi magiging available para sa iyo."
   },
   "basicConfigurationModalDisclaimerOn": {
     "message": "Upang ma-optimize ang iyong oras sa MetaMask, kailangan mong i-on ang tampok na ito. Ang mga batayang function (tulad ng mga detalye ng token, optimal na settings ng gas, at iba pa) ay mahalaga sa karanasan sa web3."
@@ -850,6 +862,48 @@
   },
   "basicConfigurationModalHeadingOn": {
     "message": "I-on ang batayang kapakinabangan"
+  },
+  "basicFunctionalityRequired_description": {
+    "message": "Hindi available ang feature na ito kapag naka-off ang basic functionality. Gamitin ang toggle sa ibaba para i-on ito."
+  },
+  "basicFunctionalityRequired_goToHome": {
+    "message": "Pumunta sa home page"
+  },
+  "basicFunctionalityRequired_openCreateSnapAccountPage": {
+    "message": "Buksan ang page ng Gumawa ng Account"
+  },
+  "basicFunctionalityRequired_openDefiPage": {
+    "message": "Buksan ang page ng DeFi"
+  },
+  "basicFunctionalityRequired_openMusdConversionPage": {
+    "message": "Buksan ang Page ng pag-convert ng mUSD"
+  },
+  "basicFunctionalityRequired_openNotificationsPage": {
+    "message": "Buksan ang page ng Mga notipikasyon"
+  },
+  "basicFunctionalityRequired_openPerpsPage": {
+    "message": "Buksan ang page ng Perps"
+  },
+  "basicFunctionalityRequired_openRewardsPage": {
+    "message": "Buksan ang page ng Mga reward"
+  },
+  "basicFunctionalityRequired_openSnapsPage": {
+    "message": "Buksan ang page ng Snaps"
+  },
+  "basicFunctionalityRequired_openSwapsPage": {
+    "message": "Buksan ang page ng Swap"
+  },
+  "basicFunctionalityRequired_openTransactionShieldPage": {
+    "message": "Buksan ang page ng Transaction Shield"
+  },
+  "basicFunctionalityRequired_reviewInSettings": {
+    "message": "Suriin sa mga setting"
+  },
+  "basicFunctionalityRequired_title": {
+    "message": "Naka-off ang batayang kapakinabangan"
+  },
+  "basicFunctionalityRequired_toggleLabel": {
+    "message": "Batayang kapakinabangan"
   },
   "bestQuote": {
     "message": "Pinakamagandang quote"
@@ -1006,6 +1060,24 @@
   "bridgeGasFeesSplit": {
     "message": "Saklaw ng anumang na-quote na bayad sa network sa nakaraang screen ang parehong transaksyon at hahatiin ito."
   },
+  "bridgeLowestCost": {
+    "message": "Pinakamababang halaga"
+  },
+  "bridgeMarketClosedAction": {
+    "message": "Sarado ang market"
+  },
+  "bridgeMarketClosedModalDescription": {
+    "message": "Ang market na sumusuporta sa token na ito ay kasalukuyang sarado. Maaaring i-transfer ang mga token na nasa chain anumang oras."
+  },
+  "bridgeMarketClosedModalLearnMore": {
+    "message": "Matuto pa."
+  },
+  "bridgeMarketClosedModalTitle": {
+    "message": "Sarado ang market"
+  },
+  "bridgeMarketClosedTitle": {
+    "message": "Sarado ang market"
+  },
   "bridgeNoMMFee": {
     "message": "Walang bayad sa MM"
   },
@@ -1040,14 +1112,35 @@
   "bridgePriceImpact": {
     "message": "Epekto ng presyo"
   },
+  "bridgePriceImpactHigh": {
+    "message": "Matinding epekto sa presyo"
+  },
+  "bridgePriceImpactHighDescription": {
+    "message": "Dahil sa laki ng trade at available na liquidity mo, mas mababa nang $1 sa market price ang makukuha mo. Naibilang na ito sa quote mo. "
+  },
+  "bridgePriceImpactNormalDescription": {
+    "message": "Sa ganitong paraan nababago ng trade mo ang market pirce ng isang token. Nakadepende ito sa laki ng trade, available na liquidity, at mga bayarin sa provider. Hindi kinokontrol ng MetaMask ang epekto sa presyo."
+  },
   "bridgePriceImpactTooltipTitle": {
     "message": "Epekto ng presyo"
+  },
+  "bridgePriceImpactVeryHigh": {
+    "message": "Napakatinding epekto sa presyo"
+  },
+  "bridgePriceImpactVeryHighDescription": {
+    "message": "Mawawalan ka ng humigit-kumulang $1 ng market price ng token mo sa swap na ito. Subukan ang mas maliit na trade o mas liquid na ruta para mapahusay ang rate mo."
+  },
+  "bridgePriceImpactWarningAriaLabel": {
+    "message": "Basahin ang mga detalye ng babala sa epekto sa presyo"
   },
   "bridgePriceImpactWarningTitle": {
     "message": "Babala sa epekto ng presyo"
   },
   "bridgeQuoteExpired": {
     "message": "Nag-time out ang quote mo."
+  },
+  "bridgeQuotesSortedByCost": {
+    "message": "Nakaayos ang mga quote ayon sa tinatayang kabuuang halaga, kasama ang rate ng palitan at bayad sa network."
   },
   "bridgeReceive": {
     "message": "Tumanggap ng $1 sa $2",
@@ -1227,6 +1320,12 @@
     "message": "Para $1 ang transaksyon, dapat itaas ang bayad sa gas nang kahit 10% man lang para matukoy ito ng network.",
     "description": "$1 is string 'cancel' or 'speed up'"
   },
+  "cancelTransactionDescription": {
+    "message": "Makakansela ang transaksyong ito at papalitan ng bayad sa network na ito ang orihinal."
+  },
+  "cancelTransactionTitle": {
+    "message": "Kanselahin ang transaksyon"
+  },
   "cancelled": {
     "message": "Nakansela"
   },
@@ -1245,6 +1344,9 @@
   },
   "chainListReturnedDifferentTickerSymbol": {
     "message": "Ang simbolo ng token na ito ay hindi tugma sa pangalan ng network o chain ID na inilagay. Maraming popular na token ang gumagamit ng magkakatulad ng simbolo, na maaaring gamitin ng mga scammer para lokohin ka na magpadala ka ng mas mahalagang token bilang kapalit. Beripikahin ang lahat bago ka magpatuloy."
+  },
+  "changeInSettings": {
+    "message": "Pagbabago sa Mga setting"
   },
   "changePasswordDetailsSocial": {
     "message": "Nangangahulugan ang pagkawala ng password ng pagkawala ng access sa lahat ng device."
@@ -1382,6 +1484,9 @@
   },
   "confirmFieldMaxAllowance": {
     "message": "Max na allowance"
+  },
+  "confirmFieldNeverExpires": {
+    "message": "Hindi nag-e-expire"
   },
   "confirmFieldPaymaster": {
     "message": "Ang bayarin ay binayaran ni"
@@ -1540,6 +1645,9 @@
   "confirmTitleSIWESignature": {
     "message": "Kahilingan sa pag-sign in"
   },
+  "confirmTitleSending": {
+    "message": "Ipinapadala"
+  },
   "confirmTitleSetApprovalForAllRevokeTransaction": {
     "message": "Alisin ang pahintulot"
   },
@@ -1695,6 +1803,12 @@
   "connectionsRemovedModalTitle": {
     "message": "Inalis ang mga koneksyon"
   },
+  "contactDeleted": {
+    "message": "Na-delete ang contact"
+  },
+  "contactDetails": {
+    "message": "Mga detalye ng contact"
+  },
   "contactUs": {
     "message": "Makipag-ugnayan sa amin"
   },
@@ -1735,6 +1849,9 @@
   "copiedExclamation": {
     "message": "Nakopya na."
   },
+  "copiedToClipboard": {
+    "message": "Nakopya sa clipboard"
+  },
   "copyAddress": {
     "message": "Kopyahin ang address sa clipboard"
   },
@@ -1749,6 +1866,9 @@
   },
   "copyTransactionId": {
     "message": "Kopyahin ang ID ng transaksyon"
+  },
+  "correct": {
+    "message": "Tama"
   },
   "create": {
     "message": "Gumawa"
@@ -1772,10 +1892,6 @@
   },
   "createPasswordDetails": {
     "message": "I-unlock ang MetaMask sa device lang na ito."
-  },
-  "createPasswordDetailsSocial": {
-    "message": "Nangangahulugan ang pagkawala ng password ng pagkawala ng access sa lahat ng device, ",
-    "description": "$1 is the text 'MetaMask can't reset it.'"
   },
   "createPasswordDetailsSocialReset": {
     "message": "Hindi ito maire-reset ng MetaMask."
@@ -1841,6 +1957,9 @@
   "currentNetwork": {
     "message": "Kasalukuyang network",
     "description": "Speicifies to token network filter to filter by current Network. Will render when network nickname is not available"
+  },
+  "currentQuestion": {
+    "message": "Tanong $1 sa 2"
   },
   "currentTitle": {
     "message": "Current:"
@@ -2043,6 +2162,9 @@
   "deepLink_theHomePage": {
     "message": "ang home page"
   },
+  "deepLink_theMusdEducationPage": {
+    "message": "ang page ng pag-aaral tungkol sa pag-convert ng MUSD"
+  },
   "deepLink_theNFTsPage": {
     "message": "ang page ng mga NFT"
   },
@@ -2060,6 +2182,9 @@
   },
   "deepLink_theRewardsPage": {
     "message": "ang page ng Mga Reward sa MetaMask"
+  },
+  "deepLink_theSellPage": {
+    "message": "ang page ng pagbebenta"
   },
   "deepLink_theSwapsPage": {
     "message": "ang pahina ng mga swap"
@@ -2113,7 +2238,7 @@
     "description": "$1 will have text saying Privacy Policy "
   },
   "deleteMetaMetricsDataErrorDesc": {
-    "message": "Hindi makumpleto ang kahilingang ito sa ngayon dahil sa isang isyu sa server ng analytics system, pakisubukang muli mamaya"
+    "message": "Hindi makumpleto ang kahilingang ito sa ngayon dahil sa isang isyu sa server ng analytics system, pakisubukang muli mamaya."
   },
   "deleteMetaMetricsDataErrorTitle": {
     "message": "Hindi namin matanggal ang data na ito sa ngayon"
@@ -2123,10 +2248,6 @@
   },
   "deleteMetaMetricsDataModalTitle": {
     "message": "Tanggalin ang data ng MetaMetrics?"
-  },
-  "deleteMetaMetricsDataRequestedDescription": {
-    "message": "Pinasimulan mo ang aksyon na ito sa $1. Ang prosesong ito ay maaaring tumagal nang hanggang 30 araw. Tingnan ang $2",
-    "description": "$1 will be the date on which teh deletion is requested and $2 will have text saying Privacy Policy "
   },
   "deleteNetworkIntro": {
     "message": "Kapag tinanggal mo ang network na ito, kakailanganin mo itong idagdag muli para makita ang mga asset mo sa network na ito"
@@ -2241,6 +2362,9 @@
   "displayNftMediaDescription": {
     "message": "Ang pagpapakita ng NFT media at data ay naglalantad sa iyong IP address sa OpenSea o sa ibang mga third party. Maaari nitong payagan ang mga umaatake na iugnay ang iyong IP address sa iyong Ethereum address. Umaasa ang awtomatikong pagtuklas ng NFT sa setting na ito, at hindi magagamit kapag naka-off ito."
   },
+  "displayNftMediaDescriptionV2": {
+    "message": "nakadepende ang awtomatikong pagtuklas ng NFT sa feature na ito."
+  },
   "doNotShare": {
     "message": "Huwag itong ibahagi kahit kanino"
   },
@@ -2255,6 +2379,9 @@
   },
   "downArrow": {
     "message": "arrow pababa"
+  },
+  "download": {
+    "message": "I-download"
   },
   "downloadAppDescription": {
     "message": "Dalhin ang MetaMask saan ka man magpunta. Paganahin ang Face ID para lagi kang may access, kahit makalimutan mo ang iyong password."
@@ -2633,6 +2760,9 @@
   },
   "ethGasPriceFetchWarning": {
     "message": "Ang backup na presyo ng gas ay ibinigay dahil ang pangunahing serbisyo ng pagtantya ng gas ay hindi available sa ngayon."
+  },
+  "ethereumAndEvms": {
+    "message": "Ethereum at mga EVM"
   },
   "ethereumProviderAccess": {
     "message": "Payagan ang pag-access sa Ethereum provider sa $1",
@@ -3292,6 +3422,9 @@
   "includesXTransactions": {
     "message": "Kabilang ang $1 (na) transaksyon"
   },
+  "incorrect": {
+    "message": "Mali"
+  },
   "infuraBlockedNotification": {
     "message": "Hindi makakonekta ang MetaMask sa blockchain host. I-review ang posibleng mga dahilan $1.",
     "description": "$1 is a clickable link with with text defined by the 'here' key"
@@ -3479,6 +3612,9 @@
   "l2FeeTooltip": {
     "message": "L2 na bayad sa gas"
   },
+  "language": {
+    "message": "Wika"
+  },
   "lastSold": {
     "message": "Huling naibenta"
   },
@@ -3639,6 +3775,9 @@
   "loadingTokenList": {
     "message": "Nilo-load ang listahan ng token"
   },
+  "localCurrency": {
+    "message": "Lokal na currency"
+  },
   "localhost": {
     "message": "Localhost 8545"
   },
@@ -3712,6 +3851,9 @@
   "makeAnotherSwap": {
     "message": "Gumawa ng bagong pag-swap"
   },
+  "manage": {
+    "message": "Pamahalaan"
+  },
   "manageDefaultSettings": {
     "message": "Pamahalaan ang mga default na setting sa pagkapribado"
   },
@@ -3769,6 +3911,10 @@
   },
   "memo": {
     "message": "memo"
+  },
+  "merklRewardsClaimBonus": {
+    "message": "I-claim ang bonus",
+    "description": "Short label shown in token list for tokens with claimable Merkl rewards"
   },
   "merklRewardsToastFailed": {
     "message": "Nabigo ang pag-claim ng iyong mUSD bonus",
@@ -3950,9 +4096,28 @@
     "message": "Si $1 ay gustong gumamit ng $2 Snaps",
     "description": "$1 is the dapp and $2 is the number of snaps it wants to connect to."
   },
+  "musdBoostDescription": {
+    "message": "I-convert ang mga stablecoin mo sa mUSD at makatanggap ng hanggang $1% bonus.",
+    "description": "$1 is the bonus percentage (e.g., 3)"
+  },
+  "musdBoostTitle": {
+    "message": "Makakuha ng $1% sa mga stablecoin mo",
+    "description": "$1 is the bonus percentage (e.g., 3)"
+  },
+  "musdBuyMusd": {
+    "message": "Bumili ng mUSD"
+  },
   "musdClaimClaimingTo": {
     "message": "Ikini-claim sa",
     "description": "Label for the account row in the mUSD claim confirmation screen"
+  },
+  "musdClaimTitle": {
+    "message": "I-claim ang bonus",
+    "description": "Title for the mUSD bonus claim confirmation screen"
+  },
+  "musdClaimableBonus": {
+    "message": "Naki-claim na bonus",
+    "description": "Label for the claimable bonus row in the mUSD conversion confirmation screen"
   },
   "musdConversionActivityTitle": {
     "message": "I-convert ang $1 sa mUSD",
@@ -3961,6 +4126,39 @@
   "musdConversionTitle": {
     "message": "Na-convert sa mUSD",
     "description": "Title shown in the transaction details modal for mUSD conversion transactions"
+  },
+  "musdConversionToastFailed": {
+    "message": "Nabigong palitan ang mUSD"
+  },
+  "musdConversionToastInProgress": {
+    "message": "Ikino-convert ang $1 → mUSD",
+    "description": "$1 is the source token symbol (e.g., USDC)"
+  },
+  "musdConversionToastSuccess": {
+    "message": "Ang mUSD mo ay narito na!"
+  },
+  "musdConvert": {
+    "message": "I-convert"
+  },
+  "musdEarnBonusPercentage": {
+    "message": "Kumita ng $1% bonus",
+    "description": "$1 is the bonus percentage (e.g., 3)"
+  },
+  "musdEducationGetStarted": {
+    "message": "Magsimula"
+  },
+  "musdEducationHeadline": {
+    "message": "MAKAKUHA NG $1% SA MGA STABLECOIN",
+    "description": "$1 is the bonus APY percentage"
+  },
+  "musdEducationNotNow": {
+    "message": "Hindi sa ngayon"
+  },
+  "musdGetMusd": {
+    "message": "Kumuha ng mUSD"
+  },
+  "musdTermsApply": {
+    "message": "Nalalapat ang mga tuntunin."
   },
   "mustSelectOne": {
     "message": "Dapat pumili ng kahit 1 token lang."
@@ -4292,8 +4490,14 @@
   "nftAutoDetectionEnabled": {
     "message": "Pinagana ang autodetection ng NFT"
   },
+  "nftBought": {
+    "message": "Bumili ng $1"
+  },
   "nftEmptyDescription": {
     "message": "Malawak ang mundo ng mga NFT. Simulan mo na ang iyong koleksyon ngayon."
+  },
+  "nftMinted": {
+    "message": "Nag-mint ng $1"
   },
   "nftOptions": {
     "message": "Mga Pagpipilian sa NFT"
@@ -4542,10 +4746,10 @@
     "message": "Nagkaproblema. Subukang muli."
   },
   "notificationsSettingsPageAllowNotifications": {
-    "message": "Manatiling may-alam sa nangyayari sa iyong wallet gamit ang mga notipikasyon. Para gamitin ang mga notipikasyon, gumagamit kami ng profile para i-sync ang ilang mga setting sa lahat ng iyong mga device. $1"
+    "message": "Manatiling may-alam sa nangyayari sa iyong wallet sa pamamagitan ng mga notipikasyon. Para gamitin ang mga notipikasyon, gumagamit kami ng profile para i-sync ang ilang setting sa lahat ng iyong device. $1 namin pinoprotektahan ang iyong pagkapribado habang ginagamit ang feature na ito."
   },
   "notificationsSettingsPageAllowNotificationsLink": {
-    "message": "Matuto kung paano namin pinoprotektahan ang iyong privacy habang ginagamit ang feature na ito."
+    "message": "Alamin kung paano"
   },
   "numberOfNewTokensDetectedPlural": {
     "message": "$1 bagong token ang nakita sa account na ito",
@@ -5147,6 +5351,15 @@
   "perpsActivity": {
     "message": "Aktibidad"
   },
+  "perpsAddExposure": {
+    "message": "Magdagdag ng exposure"
+  },
+  "perpsAddExposureDescriptionLong": {
+    "message": "Dagdagan ang laki ng long na posisyon mo"
+  },
+  "perpsAddExposureDescriptionShort": {
+    "message": "Dagdagan ang laki ng short na posisyon mo"
+  },
   "perpsAddFunds": {
     "message": "Magdagdag ng pondo"
   },
@@ -5154,7 +5367,10 @@
     "message": "Magdagdag ng mga pondo para simulan ang pagti-trade ng perpetual na mga kontrata na may leverage"
   },
   "perpsAddMargin": {
-    "message": "Magdagdag ng Margin"
+    "message": "Magdagdag ng margin"
+  },
+  "perpsAddMarginDescription": {
+    "message": "Dagdagan ang margin para mabawasan ang panganib ng liquidation"
   },
   "perpsAddToFavorites": {
     "message": "Idagdag sa mga paborito"
@@ -5169,6 +5385,13 @@
   "perpsAvailableBalance": {
     "message": "Available na balanse"
   },
+  "perpsAvailableToClose": {
+    "message": "Available para isara"
+  },
+  "perpsAvailableToTrade": {
+    "message": "Available para i-trade",
+    "description": "Label for the available balance that can be used for trading"
+  },
   "perpsCancelAllOrders": {
     "message": "Kanselahin lahat"
   },
@@ -5180,6 +5403,9 @@
   },
   "perpsCloseLong": {
     "message": "Isara ang Long"
+  },
+  "perpsClosePosition": {
+    "message": "Isara ang posisyon"
   },
   "perpsCloseShort": {
     "message": "Isara ang Short"
@@ -5226,6 +5452,12 @@
   "perpsEntryPrice": {
     "message": "Entry price"
   },
+  "perpsEstSize": {
+    "message": "Tinatayang laki"
+  },
+  "perpsExploreMarkets": {
+    "message": "Suriin ang mga market"
+  },
   "perpsFees": {
     "message": "Mga Bayarin"
   },
@@ -5259,8 +5491,14 @@
   "perpsFundingRateTooltip": {
     "message": "Bayad kada oras na ibinabayad ng mga trader para mapanatiling naaayon ang mga presyo sa market. Kung positibo ang rate, magbabayad ang mga nag-long sa mga nag-short. Kung negatibo, magbabayad ang mga nag-short sa mga nag-long."
   },
+  "perpsGeoBlockedTooltip": {
+    "message": "Hindi available ang perpetual trading sa rehiyon mo"
+  },
   "perpsGiveFeedback": {
     "message": "Bigyan kami ng feedback"
+  },
+  "perpsIncludesPnl": {
+    "message": "kasama ang P&L $1"
   },
   "perpsIncreasedPosition": {
     "message": "Dinagdagan ang posisyon"
@@ -5280,6 +5518,9 @@
   "perpsLimitPrice": {
     "message": "Limit Price"
   },
+  "perpsLiquidationDistance": {
+    "message": "Distansya ng liq."
+  },
   "perpsLiquidationPrice": {
     "message": "Liquidation price"
   },
@@ -5288,6 +5529,9 @@
   },
   "perpsMargin": {
     "message": "Margin"
+  },
+  "perpsMarginRiskWarning": {
+    "message": "Kapag inalis mo ang margin, mas mapapalapit ka sa liquidation price. Tiyaking may sapat kang buffer."
   },
   "perpsMarket": {
     "message": "Market"
@@ -5304,6 +5548,9 @@
   },
   "perpsMax": {
     "message": "Pinakamataas"
+  },
+  "perpsMaxRemovable": {
+    "message": "Max na puwedeng alisin"
   },
   "perpsMid": {
     "message": "Mid"
@@ -5343,6 +5590,9 @@
   "perpsOpenedLong": {
     "message": "Bukas na long"
   },
+  "perpsOraclePrice": {
+    "message": "Oracle Price"
+  },
   "perpsOraclePriceTooltip": {
     "message": "Ang panggitna ng mga panlabas na presyong iniulat ng mga nagpapatibay, na ginagamit para sa pagkukuwenta ng rate ng pagpopondo"
   },
@@ -5355,6 +5605,9 @@
   "perpsPosition": {
     "message": "Posisyon"
   },
+  "perpsPositionClosedReverseOrderFailed": {
+    "message": "Isinara ang posisyon mo pero pumalya ang reverse order. Posibleng kailanganin mong manu-manong magbukas ng bagong posisyon"
+  },
   "perpsPositionSize": {
     "message": "Laki ng Posisyon"
   },
@@ -5364,11 +5617,36 @@
   "perpsRecentActivity": {
     "message": "Kamakailang Aktibidad"
   },
+  "perpsReduceExposure": {
+    "message": "Bawasan ang exposure"
+  },
+  "perpsReduceExposureDescriptionLong": {
+    "message": "Bawasan ang laki ng long na posisyon mo"
+  },
+  "perpsReduceExposureDescriptionShort": {
+    "message": "Bawasan ang laki ng short na posisyon mo"
+  },
   "perpsRemoveMargin": {
-    "message": "Alisin ang Margin"
+    "message": "Alisin ang margin"
+  },
+  "perpsRemoveMarginDescription": {
+    "message": "I-withdraw ang sobrang margin sa posisyon"
   },
   "perpsReturn": {
     "message": "Tutubuin"
+  },
+  "perpsReversePosition": {
+    "message": "Ibalik ang posisyon"
+  },
+  "perpsReversePositionDescriptionLong": {
+    "message": "Gawing short ang long na posisyon mo"
+  },
+  "perpsReversePositionDescriptionShort": {
+    "message": "Gawing long ang short na posisyon mo"
+  },
+  "perpsSaveChanges": {
+    "message": "I-save ang Mga pagbabago",
+    "description": "Button text for saving TP/SL changes"
   },
   "perpsSearchMarkets": {
     "message": "Maghanap ng mga market"
@@ -5382,11 +5660,29 @@
   "perpsSize": {
     "message": "Laki"
   },
+  "perpsSortFundingRateHighToLow": {
+    "message": "Rate ng pagpopondo: mataas pababa"
+  },
+  "perpsSortFundingRateLowToHigh": {
+    "message": "Rate ng pagpopondo: mababa pataas"
+  },
+  "perpsSortOpenInterestHighToLow": {
+    "message": "Open na interes: mataas pababa"
+  },
+  "perpsSortOpenInterestLowToHigh": {
+    "message": "Open na interes: mababa pataas"
+  },
   "perpsSortPriceChangeHighToLow": {
     "message": "Pagbabago ng presyo: mataas pababa"
   },
   "perpsSortPriceChangeLowToHigh": {
     "message": "Pagbabago ng presyo: mababa pataas"
+  },
+  "perpsSortVolumeHighToLow": {
+    "message": "Dami: mataas pababa"
+  },
+  "perpsSortVolumeLowToHigh": {
+    "message": "Dami: mababa pataas"
   },
   "perpsStartNewTrade": {
     "message": "Magsimula ng bagong trade"
@@ -5481,6 +5777,9 @@
   "perpsTutorialWatchLiquidationTitle": {
     "message": "Bantayan ang liquidation"
   },
+  "perpsTutorialWhatArePerpsDescription": {
+    "message": "Nakakasuporta na ngayon ang MetaMask sa mga perpetual future na tinatawag ding perps. Nagbibigay-daan ito sa iyong mag-trade sa paggalaw ng presyo ng isang token nang hindi ito binibili."
+  },
   "perpsTutorialWhatArePerpsSubtitle": {
     "message": "Narito kung paano ito gumagana."
   },
@@ -5490,8 +5789,14 @@
   "perpsUnrealizedPnl": {
     "message": "Unrealized P&L"
   },
+  "perpsWatchlist": {
+    "message": "Watchlist"
+  },
   "perpsWithdraw": {
     "message": "Mag-withdraw"
+  },
+  "perpsYouWillReceive": {
+    "message": "Makakatanggap ka ng"
   },
   "personalAddressDetected": {
     "message": "Natukoy ang personal na address. Ilagay ang address ng kontrata ng token."
@@ -5540,6 +5845,9 @@
   },
   "popularNetworks": {
     "message": "Mga popular na network"
+  },
+  "preferencesAndDisplay": {
+    "message": "Mga kagustuhan at display"
   },
   "prev": {
     "message": "Nakaraan"
@@ -5600,6 +5908,9 @@
   },
   "privateNetwork": {
     "message": "Pribadong Network"
+  },
+  "proceed": {
+    "message": "Magpatuloy"
   },
   "proceedWithTransaction": {
     "message": "Gusto ko pa ring magpatuloy"
@@ -5762,6 +6073,9 @@
   },
   "queued": {
     "message": "Naka-queue"
+  },
+  "quizIntroduction": {
+    "message": "Upang ibunyag ang iyong Lihim na Parirala sa Pagbawi, kailangan mong sagutin nang tama ang dalawang tanong."
   },
   "rank": {
     "message": "Rank"
@@ -5986,25 +6300,27 @@
   "revealSecretRecoveryPhrase": {
     "message": "I-back up ang Lihim na Parirala sa Pagbawi (Secret Recovery Phrase)"
   },
+  "revealSecretRecoveryPhraseSettings": {
+    "message": "Ihayag ang Lihim na Parirala sa Pagbawi"
+  },
   "revealSeedWords": {
     "message": "Ihayag ang Lihim na Parirala sa Pagbawi"
   },
   "revealSeedWordsDescription1": {
-    "message": "Ang $1 ay nagbibigay ng $2",
+    "message": "Nagbibigay sa iyo ang $1 mo ng buong access sa iyong wallet, mga pondo, at mga account.",
     "description": "This is a sentence consisting of link using 'revealSeedWordsSRPName' as $1."
   },
   "revealSeedWordsQR": {
     "message": "QR"
   },
   "revealSeedWordsSRPName": {
-    "message": "Lihim na Parirala sa Pagbawi (Secret Recovery Phrase o SRP)"
+    "message": "Lihim na Parirala sa Pagbawi (Secret Recovery Phrase)"
   },
   "revealSeedWordsText": {
     "message": "Text"
   },
   "revealSeedWordsWarning": {
-    "message": "Tiyaking walang tumitingin sa iyong screen. $1",
-    "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
+    "message": "Siguraduhing walang nakatingin sa screen mo. Hindi ito kailanman hihingin ng Suporta ng MetaMask."
   },
   "revealSensitiveContent": {
     "message": "Ipakita ang sensitibong nilalaman"
@@ -6183,8 +6499,20 @@
   "rewardsQRCodeTitle": {
     "message": "I-download ang mobile app"
   },
+  "rewardsSignInFailed": {
+    "message": "Hindi nakapag-sign in",
+    "description": "Text shown when the opt-in sign attempt failed, with a retry affordance"
+  },
+  "rewardsSignInToViewPoints": {
+    "message": "Mag-sign in para tumingin ng mga point",
+    "description": "Text shown when user needs to sign in to view their rewards points"
+  },
   "rewardsSignUp": {
     "message": "Mag-sign up para sa Mga Reward"
+  },
+  "rewardsSigningIn": {
+    "message": "Nagsa-sign in...",
+    "description": "Text shown while the user is signing in to view their rewards points"
   },
   "rpcNameOptional": {
     "message": "Pangalan ng RPC (Opsyonal)"
@@ -6260,6 +6588,9 @@
   "securityAlertsDescription": {
     "message": "Inaalertuhan ka ng feature na ito kapag may mapaminsala o hindi pangkaraniwang aktibidad sa pamamagitan ng aktibong pagsusuri ng mga kahilingan sa transaksyon at lagda. $1",
     "description": "Link to learn more about security alerts"
+  },
+  "securityAlertsDescriptionV2": {
+    "message": "Ang tampok na ito ay nag-aalerto sa iyo ng masamang aktibidad sa pamamagitan ng aktibong pagsusuri ng mga hiling na transaksyon at pirma. $1"
   },
   "securityAndPrivacy": {
     "message": "Seguridad at pagkapribado"
@@ -7067,6 +7398,12 @@
   "showAdvancedDetails": {
     "message": "Ipakita ang mga advanced na detalye"
   },
+  "showDefaultAddress": {
+    "message": "Ipakita ang default na address"
+  },
+  "showDefaultAddressDescription": {
+    "message": "Magtakda ng default na address na laging nakikita sa home screen at listahan ng account mo."
+  },
   "showExtensionInFullSizeView": {
     "message": "Ipakit ang extension sa full-size na view"
   },
@@ -7235,6 +7572,12 @@
   },
   "skipDeepLinkInterstitialDescription": {
     "message": "Lalaktawan ng pagpapagana sa opsyon na ito ang interstitial screen na ipinapakita kapag binubuksan ang mga deep link sa MetaMask. Ang \"deep link\" ay isang link gaya ng https://link.metamask.io/home na magbubukas sa MetaMask; ang mga link na ito ay maaaring guluhin ng iba. Ang interstitial screen ay idinisenyo para protektahan ka mula sa aksidenteng pagbubukas ng mga pahina sa loob ng MetaMask na maaaring magpakita ng iyong mga account, token, talaan, balanse, setting, o iba pang potensyal na sensitibong impormasyon. Ang setting na ito ay inilalapat lamang sa mga link na nilagdaan ng MetaMask."
+  },
+  "skipLinkConfirmationScreens": {
+    "message": "Laktawan ang pag-link ng mga screen ng kumpirmasyon"
+  },
+  "skipLinkConfirmationScreensDescription": {
+    "message": "Kapag nagbukas ka ng link mula sa MetaMask, nagpapakita kami ng screen ng kumpirmasyon para hindi mo aksidenteng makita ang mga sensitibong impormasyon gaya ng iyong mga account, balanse, o history ng transaksyon. I-on ito para laktawan ang screen na iyon para sa mga link na nagmumula sa MetaMask."
   },
   "slippage": {
     "message": "Slippage"
@@ -7526,6 +7869,12 @@
   "speedUpTooltipText": {
     "message": "Bagong bayad sa gas"
   },
+  "speedUpTransactionDescription": {
+    "message": "Papalitan ng bayad sa network na ito ang orihinal."
+  },
+  "speedUpTransactionTitle": {
+    "message": "Pabilisin ang transaksyon"
+  },
   "spender": {
     "message": "Gumagastos"
   },
@@ -7723,9 +8072,6 @@
   },
   "stateCorruptionTheseInstructionsLinkTitle": {
     "message": "Paano makuha ulit ang iyong Lihim na Parirala sa Pagbawi"
-  },
-  "stateLogError": {
-    "message": "Error sa pagkuha ng mga log ng estado."
   },
   "stateLogFileName": {
     "message": "Mga log ng estado ng MetaMask"
@@ -8249,6 +8595,9 @@
     "message": "Paunawa ng third-party na software",
     "description": "Title of a popup modal displayed when installing a snap for the first time."
   },
+  "thisContactWillBeDeleted": {
+    "message": "Tatanggalin ang contact na ito."
+  },
   "time": {
     "message": "Oras"
   },
@@ -8311,6 +8660,9 @@
   },
   "tokenStandard": {
     "message": "Pamantayan ng token"
+  },
+  "tokenStock": {
+    "message": "Stock"
   },
   "tokenStream": {
     "message": "Stream ng token"
@@ -8486,6 +8838,15 @@
   },
   "troubleStartingTitle": {
     "message": "Nagkakaproblema ang MetaMask sa pagsisimula."
+  },
+  "trustSignalBlockDescription": {
+    "message": "Kapag kumonekta ka sa site na ito, maaaring mawala sa iyo ang lahat ng asset mo."
+  },
+  "trustSignalBlockTitle": {
+    "message": "Natukoy ang mapanganib na site"
+  },
+  "trustSignalContinueAnyway": {
+    "message": "Kumonekta Pa Rin"
   },
   "tryAgain": {
     "message": "Subukang muli"
@@ -8675,8 +9036,14 @@
   "useMultiAccountBalanceCheckerSettingDescription": {
     "message": "Makakuha ng mas mabibilis na update sa balanse sa pamamagitan ng maramihang paghiling sa balanse ng account. Nagpapahintulot ito sa amin na makuha nang sama-sama ang iyong mga balanse ng account, para makakuha ka ng mas mabibilis na update para sa inaprubahang kasanayan. Kapag naka-off ang feature na ito, posibleng hindi maiugnay ng mga third party ang iyong mga account sa isa't isa."
   },
+  "useMultiAccountBalanceCheckerSettingDescriptionV2": {
+    "message": "Ipinapadala nang sabay-sabay ang mga update sa balanse sa lahat ng account mo. Nagbibigay-daan ito sa mas mabilis at mas magandang karanasan, sa pangkalahatan, sa pangangasiwa ng maraming account."
+  },
   "useNftDetection": {
     "message": "Awtomatikong tuklasin and mga NFT"
+  },
+  "useNftDetectionDescription": {
+    "message": "Ipinapakita ang lahat ng NFT, kabilang ang mga pekeng NFT na in-airdrop ng mga scammer."
   },
   "useNftDetectionDescriptionText": {
     "message": "Hayaan ang MetaMask na magdagdag ng mga NFT na iyong pag-aari gamit ang mga third-party na serbisyo. Ang awtomatikong pagtuklas ng mga NFT ay naglalantad sa iyong IP at address ng account sa mga serbisyong ito. Ang pag-enable sa tampok na ito ay maaaring mag-ugnay sa iyong IP sa iyong Ethereum address at magpakita ng pekeng NFT na in-airdrop ng mga scammer. Maaari kang magdagdag ng token sa manu-manong paraan para iwasan ang panganib na ito."
