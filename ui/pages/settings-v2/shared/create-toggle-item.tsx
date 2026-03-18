@@ -30,6 +30,7 @@ export type ToggleItemConfig = {
   selector: (state: MetaMaskReduxState) => boolean;
   action: (value: boolean) => unknown;
   dataTestId: string;
+  containerDataTestId?: string;
   disabledSelector?: (state: MetaMaskReduxState) => boolean;
   trackEvent?: ToggleEventConfig;
 };
@@ -75,6 +76,7 @@ export const createToggleItem = (
         value={value}
         onToggle={handleToggle}
         dataTestId={config.dataTestId}
+        containerDataTestId={config.containerDataTestId}
         disabled={disabled}
         sectionRef={sectionRef}
       />

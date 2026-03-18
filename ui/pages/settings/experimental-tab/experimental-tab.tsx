@@ -30,6 +30,7 @@ const KeyringSnapsItem = createToggleItem({
   selector: getIsAddSnapAccountEnabled,
   action: setAddSnapAccountEnabled,
   dataTestId: 'add-account-snap-toggle-button',
+  containerDataTestId: 'add-account-snap-toggle-div',
   trackEvent: {
     event: MetaMetricsEventName.AddSnapAccountEnabled,
     properties: (newValue) => ({ enabled: newValue }),
@@ -53,6 +54,7 @@ const WatchAccountItem = createToggleItem({
   selector: getIsWatchEthereumAccountEnabled,
   action: setWatchEthereumAccountEnabled,
   dataTestId: 'watch-account-toggle',
+  containerDataTestId: 'watch-account-toggle-div',
   trackEvent: {
     event: MetaMetricsEventName.WatchEthereumAccountsToggled,
     properties: (newValue) => ({ enabled: newValue }),
