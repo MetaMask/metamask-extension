@@ -3,6 +3,10 @@ name: Run build
 on:
   workflow_call:
     inputs:
+      is-high-risk-environment:
+        type: boolean
+        default: true
+        description: Whether the build is running in a high-risk environment (e.g. production) or not.
       build-name:
         required: true
         type: string
@@ -11,22 +15,14 @@ on:
         type: string
         required: true
         description: The build command to run
-      validate-source-maps:
-        type: boolean
-        default: true
-        description: Whether to validate source maps
-      mozilla-lint:
-        type: boolean
-        default: false
-        description: Whether to run mozilla-lint
-      enable-mv3:
-        type: boolean
-        default: true
-        description: Whether to enable MV3 or not
       builds-from-run:
         required: true
         type: string
         description: The run ID to get builds from
+      zip:
+        type: boolean
+        default: false
+        description: Whether to zip the build output. Only compatible with webpack builds. This bash-based zipping is more performant than the built-in zip option of webpack.
 
 jobs:
   run-build:
@@ -36,7 +32,10 @@ jobs:
     timeout-minutes: 30
     env:
       # Build parameter
-      ENABLE_MV3: ${{ inputs.enable-mv3 }}
+      ENABLE_MV3: ${{ !contains(inputs.build-name, 'mv2') }}
+      IS_FLASK_BUILD: ${{ contains(inputs.build-name, 'flask') }}
+      IS_BETA_BUILD: ${{ contains(inputs.build-name, 'beta') }}
+      IS_EXPERIMENTAL_BUILD: ${{ contains(inputs.build-name, 'experimental') }}
       # Environment variables not used in production builds
       APPLE_CLIENT_ID_FLASK_UAT: ${{ secrets.APPLE_CLIENT_ID_FLASK_UAT }}
       APPLE_CLIENT_ID_UAT: ${{ secrets.APPLE_CLIENT_ID_UAT }}
@@ -96,18 +95,41 @@ jobs:
       - name: Checkout and setup environment
         uses: MetaMask/action-checkout-and-setup@v3
         with:
-          is-high-risk-environment: true
+          is-high-risk-environment: ${{ inputs.is-high-risk-environment }}
           skip-allow-scripts: true
+
+      # Running tsc is only needed for webpack builds. Webpack uses typescript, but lavamoat node
+      # can only run javascript, so we need a transpilation step before building.
+      - name: Run tsc
+        if: ${{ contains(inputs.build-name, 'webpack') }}
+        run: yarn webpack:tsc
 
       - name: Run build
         run: ${{ inputs.build-command }}
 
+      - name: Zip build
+        if: ${{ inputs.zip }}
+        run: |
+          mkdir -p builds
+          version_name=$(jq -r '.version' package.json)
+          if [ "${IS_FLASK_BUILD}" = "true" ]; then
+            version_name="${version_name}-flask.0"
+          elif [ "${IS_BETA_BUILD}" = "true" ]; then
+            version_name="${version_name}-beta.0"
+          elif [ "${IS_EXPERIMENTAL_BUILD}" = "true" ]; then
+            version_name="${version_name}-experimental.0"
+          fi
+          for browser in chrome firefox; do
+            if [ -d "dist/${browser}" ]; then
+              (cd "dist/${browser}" && zip -9 -r "../../builds/metamask-${browser}-${version_name}.zip" .)
+            fi
+          done
+
       - name: Validate source maps
-        if: ${{ inputs.validate-source-maps }}
         run: ${{ contains(inputs.build-name, 'webpack') && 'yarn validate-source-maps:webpack' || 'yarn validate-source-maps' }}
 
       - name: Run mozilla-lint
-        if: ${{ inputs.mozilla-lint }}
+        if: ${{ contains(inputs.build-name, 'mv2') }}
         run: yarn mozilla-lint
 
       - name: Upload artifact '${{ inputs.build-name }}'

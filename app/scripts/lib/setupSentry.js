@@ -78,8 +78,17 @@ function getClientOptions() {
       Sentry.extraErrorDataIntegration(),
       Sentry.browserTracingIntegration({
         shouldCreateSpanForRequest: (url) => {
-          // Do not create spans for outgoing requests to a 'sentry.io' domain.
-          return !url.match(/^https?:\/\/([\w\d.@-]+\.)?sentry\.io(\/|$)/u);
+          if (url.match(/^https?:\/\/([\w\d.@-]+\.)?sentry\.io(\/|$)/u)) {
+            return false;
+          }
+          // Skip auto-spans for extension internal URLs (manually instrumented)
+          if (
+            url.startsWith('chrome-extension://') ||
+            url.startsWith('moz-extension://')
+          ) {
+            return false;
+          }
+          return true;
         },
       }),
       filterEvents({ getMetaMetricsEnabled, log }),
