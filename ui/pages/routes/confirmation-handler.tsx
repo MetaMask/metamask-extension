@@ -119,15 +119,15 @@ export const ConfirmationHandler = () => {
   const hasSwapRelatedNavigation = hasBridgeQuotes;
 
   const isMerklTransaction = pendingApprovals.some((approval) =>
-    merklClaims.some((mc) => mc.id === approval.requestData.txId),
+    merklClaims.some((mc) => mc.id === approval?.requestData?.txId),
   );
 
   const isMUSDConversionTransaction = pendingApprovals.some(
     (approval) =>
       transactions.find(
         (tx) =>
-          tx.id === approval.requestData.txId &&
-          isMusdConversionTransaction(tx),
+          isMusdConversionTransaction(tx) &&
+          tx.id === approval?.requestData?.txId,
       ),
     [transactions, pendingApprovals],
   );
