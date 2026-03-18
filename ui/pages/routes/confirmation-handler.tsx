@@ -1,7 +1,7 @@
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-
+import { type TransactionMeta } from '@metamask/transaction-controller';
 import {
   PREPARE_SWAP_ROUTE,
   CROSS_CHAIN_SWAP_ROUTE,
@@ -24,11 +24,14 @@ import {
   SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES,
 } from '../../../shared/constants/app';
 import {
+  getTransactions,
   selectHasApprovalFlows,
   selectHasBridgeQuotes,
   selectPendingApprovalsForNavigation,
 } from '../../selectors';
 import { useModalState } from '../../hooks/useModalState';
+import { isMerklClaimTransaction } from '../../hooks/musd';
+import { isMusdConversionTransaction } from '../../components/app/musd/utils';
 
 const EXEMPTED_ROUTES = [
   CROSS_CHAIN_SWAP_ROUTE,
@@ -67,6 +70,11 @@ export const ConfirmationHandler = () => {
   const stayOnHomePage = Boolean(location.state?.stayOnHomePage);
 
   const canRedirect = !isNotification && !stayOnHomePage;
+  const transactions = useSelector(getTransactions) as TransactionMeta[];
+  const merklClaims = useMemo(
+    () => transactions.filter(isMerklClaimTransaction),
+    [transactions],
+  );
 
   // Ported from home.component - checkStatusAndNavigate()
   const checkStatusAndNavigate = useCallback(() => {
@@ -108,10 +116,26 @@ export const ConfirmationHandler = () => {
 
   const hasSwapRelatedNavigation = hasBridgeQuotes;
 
+  const isMerklTransaction = pendingApprovals.some((approval) =>
+    merklClaims.some((mc) => mc.id === approval?.requestData?.txId),
+  );
+
+  const isMUSDConversionTransaction = pendingApprovals.some(
+    (approval) =>
+      transactions.find(
+        (tx) =>
+          isMusdConversionTransaction(tx) &&
+          tx.id === approval?.requestData?.txId,
+      ),
+    [transactions, pendingApprovals],
+  );
+
   const isFullscreenExemption =
     isFullscreen &&
     !hasAllowedPopupRedirectApprovals &&
-    !hasSwapRelatedNavigation;
+    !hasSwapRelatedNavigation &&
+    !isMerklTransaction &&
+    !isMUSDConversionTransaction;
 
   // Ported from home.component - componentDidUpdate()
   useEffect(() => {

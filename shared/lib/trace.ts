@@ -84,6 +84,10 @@ export enum TraceName {
   CreateMultichainAccount = 'Create Multichain Account',
   DiscoverAccounts = 'Discover Accounts',
   EvmDiscoverAccounts = 'EVM Discover Accounts',
+  // mUSD / 1-Click Convert
+  MusdConversionNavigation = 'mUSD Conversion Navigation',
+  MusdConversionQuote = 'mUSD Conversion Quote',
+  MusdConversionConfirm = 'mUSD Conversion Confirm',
 }
 
 /**
@@ -98,6 +102,9 @@ export enum TraceOperation {
   AccountCreate = 'account.create',
   AccountUi = 'account.ui',
   AccountDiscover = 'account.discover',
+  // mUSD Conversion
+  MusdConversionOperation = 'musd.conversion.operation',
+  MusdConversionDataFetch = 'musd.conversion.data_fetch',
 }
 
 const log = createModuleLogger(sentryLogger, 'trace');
