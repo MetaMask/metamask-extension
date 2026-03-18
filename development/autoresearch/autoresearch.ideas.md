@@ -27,7 +27,7 @@ This file is maintained by the autoresearch agent. It tracks ideas to try, what 
 
 ### Browserify Pipeline
 
-- [ ] Increase `bify-module-groups` size limit from 2MB — fewer, larger chunks means less factoring overhead and fewer separate minification passes
+- [x] Increase `bify-module-groups` size limit from 2MB to 4MB — fewer, larger chunks means less factoring overhead and fewer separate minification passes (experiment 9)
 - [ ] Decrease `bify-module-groups` size limit — smaller chunks might parallelize better
 - [ ] Test different `browserify` options: `noParse` for known pre-built modules (lodash, moment, etc.) that don't need AST parsing
 - [ ] Add `browserify` `extensions` option tuning — currently `.js, .ts, .tsx`. Removing `.tsx` from non-UI bundles might speed up resolution
