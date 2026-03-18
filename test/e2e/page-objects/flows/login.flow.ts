@@ -7,20 +7,23 @@ import { Ganache } from '../../seeder/ganache';
 
 /**
  * Unlocks the wallet and lands the user on the homepage.
- * Optionally validates the displayed balance via {@link localNode} or {@link expectedBalance}.
+ * By default, validates the displayed balance. Use {@link localNode} or {@link expectedBalance}
+ * for specific checks, or set {@link validateBalance} to false to skip validation entirely.
  *
  * @param driver - The webdriver instance.
  * @param options - Optional configuration for the login flow.
- * @param options.password - The password used to unlock the wallet.
- * @param options.localNode - A local node instance whose balance should be verified.
  * @param options.expectedBalance - An expected balance string to verify on the homepage.
+ * @param options.localNode - A local node instance whose balance should be verified.
+ * @param options.password - The password used to unlock the wallet.
+ * @param options.validateBalance - Whether to verify the balance is displayed. Defaults to true.
  */
 export const login = async (
   driver: Driver,
   options?: {
-    password?: string;
-    localNode?: Ganache | Anvil;
     expectedBalance?: string;
+    localNode?: Ganache | Anvil;
+    password?: string;
+    validateBalance?: boolean;
   },
 ) => {
   console.log('Navigate to unlock page and try to login with password');
@@ -36,6 +39,8 @@ export const login = async (
     await homePage.checkLocalNodeBalanceIsDisplayed(options.localNode);
   } else if (options?.expectedBalance !== undefined) {
     await homePage.checkExpectedBalanceIsDisplayed(options.expectedBalance);
+  } else if (options?.validateBalance !== false) {
+    await homePage.checkExpectedBalanceIsDisplayed();
   }
 };
 

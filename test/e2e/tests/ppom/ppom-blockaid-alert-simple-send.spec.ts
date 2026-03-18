@@ -159,7 +159,7 @@ describe('Simple Send Security Alert - Blockaid', function (this: Suite) {
       },
 
       async ({ driver }) => {
-        await login(driver);
+        await login(driver, { validateBalance: false });
         const homePage = new HomePage(driver);
 
         // We validate custom balance as it doesn't come from the local node but it's mocked
@@ -209,7 +209,7 @@ describe('Simple Send Security Alert - Blockaid', function (this: Suite) {
       },
 
       async ({ driver }) => {
-        await login(driver);
+        await login(driver, { validateBalance: false });
 
         // We validate custom balance as it doesn't come from the local node but it's mocked
         await new HomePage(driver).checkExpectedBalanceIsDisplayed('20 ETH');
@@ -251,7 +251,7 @@ describe('Simple Send Security Alert - Blockaid', function (this: Suite) {
       },
 
       async ({ driver }) => {
-        await login(driver);
+        await login(driver, { validateBalance: false });
         const homePage = new HomePage(driver);
 
         // We validate custom balance as it doesn't come from the local node but it's mocked

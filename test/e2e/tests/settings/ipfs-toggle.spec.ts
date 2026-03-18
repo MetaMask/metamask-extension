@@ -32,7 +32,7 @@ describe('Settings', function () {
         testSpecificMock: mockIPFSRequest,
       },
       async ({ driver }) => {
-        await login(driver);
+        await login(driver, { validateBalance: false });
 
         await new HeaderNavbar(driver).openSettingsPage();
         const settingsPage = new SettingsPage(driver);

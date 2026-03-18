@@ -130,7 +130,7 @@ describe('Add wallet', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await login(driver);
+        await login(driver, { validateBalance: false });
 
         // Wait until account list is loaded to mitigate race condition
         const headerNavbar = new HeaderNavbar(driver);
@@ -191,7 +191,7 @@ describe('Add wallet', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await login(driver);
+        await login(driver, { validateBalance: false });
 
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.checkAccountLabel('Account 1');

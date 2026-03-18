@@ -45,7 +45,7 @@ async function main() {
       const server = mockServer(port, parsedDoc);
       server.start();
 
-      await login(driver);
+      await login(driver, { validateBalance: false });
       const homePage = new HomePage(driver);
       await homePage.checkPageIsLoaded();
       // We don't have balance so we expect to see Fund Your Wallet

@@ -19,7 +19,7 @@ describe('Permissions Page', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await login(driver);
+        await login(driver, { validateBalance: false });
         await openPermissionsPageFlow(driver);
         const permissionListPage = new PermissionListPage(driver);
         await permissionListPage.checkPageIsLoaded();
@@ -42,7 +42,7 @@ describe('Permissions Page', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await login(driver);
+        await login(driver, { validateBalance: false });
         await openPermissionsPageFlow(driver);
         const permissionListPage = new PermissionListPage(driver);
         const gatorPermissionsPage = new GatorPermissionsPage(driver);

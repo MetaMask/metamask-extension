@@ -27,7 +27,7 @@ describe('Name lookup', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await login(driver);
+        await login(driver, { validateBalance: false });
 
         const homePage = new HomePage(driver);
         const sendPage = new SendPage(driver);

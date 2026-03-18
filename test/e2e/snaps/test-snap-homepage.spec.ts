@@ -21,7 +21,7 @@ describe('Test Snap Homepage', function (this: Suite) {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await login(driver);
+        await login(driver, { validateBalance: false });
 
         const headerNavbar = new HeaderNavbar(driver);
         const snapListPage = new SnapListPage(driver);

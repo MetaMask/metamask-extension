@@ -48,7 +48,7 @@ export async function runAssetDetailsBenchmark(): Promise<BenchmarkRunResult> {
         const timer = new TimerHelper('assetClickToPriceChart');
 
         // Login flow
-        await login(driver);
+        await login(driver, { validateBalance: false });
 
         // Verify power user accounts are loaded correctly
         const headerNavbar = new HeaderNavbar(driver);

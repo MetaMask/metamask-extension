@@ -31,7 +31,7 @@ describe('Alert for insufficient funds', function () {
         const contractAddress =
           await contractRegistry?.getContractAddress(nftSmartContract);
 
-        await login(driver);
+        await login(driver, { validateBalance: false });
 
         await testDapp.openTestDappPage({ contractAddress });
         await testDapp.checkPageIsLoaded();

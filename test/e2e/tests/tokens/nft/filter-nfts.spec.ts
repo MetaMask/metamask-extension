@@ -95,7 +95,7 @@ describe('View NFT details', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await login(driver);
+        await login(driver, { validateBalance: false });
 
         const networkManager = new NetworkManager(driver);
 

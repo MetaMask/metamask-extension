@@ -112,7 +112,7 @@ describe('Add existing token using search', function () {
         testSpecificMock: mockBscApis,
       },
       async ({ driver }) => {
-        await login(driver);
+        await login(driver, { validateBalance: false });
         const assetListPage = new AssetListPage(driver);
         await assetListPage.checkTokenAmountIsDisplayed('25 BNB');
         await assetListPage.importTokenBySearch('BAT');

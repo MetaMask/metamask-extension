@@ -91,7 +91,7 @@ describe('ENS', function (this: Suite) {
         testSpecificMock: mockInfura,
       },
       async ({ driver }: { driver: Driver }) => {
-        await login(driver);
+        await login(driver, { validateBalance: false });
 
         // click send button on homepage to start send flow
         const homepage = new HomePage(driver);

@@ -72,7 +72,7 @@ describe('Multichain Asset List', function (this: Suite) {
     await withFixtures(
       buildFixtures(this.test?.fullTitle() as string),
       async ({ driver }) => {
-        await login(driver);
+        await login(driver, { validateBalance: false });
         const assetListPage = new AssetListPage(driver);
         await switchToNetworkFromNetworkSelect(
           driver,
@@ -91,7 +91,7 @@ describe('Multichain Asset List', function (this: Suite) {
     await withFixtures(
       buildFixtures(this.test?.fullTitle() as string),
       async ({ driver }) => {
-        await login(driver);
+        await login(driver, { validateBalance: false });
         const homePage = new HomePage(driver);
         const assetListPage = new AssetListPage(driver);
         const sendPage = new SendPage(driver);

@@ -110,7 +110,7 @@ describe('Localization', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await login(driver);
+        await login(driver, { validateBalance: false });
 
         // After the removal of displaying secondary currency in coin-overview.tsx, we will test localization on main balance with showNativeTokenAsMainBalance = false
         await new HomePage(driver).checkExpectedBalanceIsDisplayed(

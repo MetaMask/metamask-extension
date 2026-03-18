@@ -219,7 +219,7 @@ describe('Add account', function () {
 
         // Lock and unlock wallet
         await lockAndWaitForLoginPage(driver);
-        await login(driver);
+        await login(driver, { validateBalance: false });
 
         // Verify both account labels persist after unlock
         await headerNavbar.checkAccountLabel(CUSTOM_ACCOUNT_NAME);

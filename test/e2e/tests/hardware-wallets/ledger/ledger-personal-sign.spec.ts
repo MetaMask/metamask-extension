@@ -22,7 +22,7 @@ describe('Ledger Hardware Signatures', function (this: Suite) {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await login(driver);
+        await login(driver, { validateBalance: false });
         const testDappPage = new TestDappPage(driver);
         await testDappPage.openTestDappPage();
         await testDappPage.checkPageIsLoaded();

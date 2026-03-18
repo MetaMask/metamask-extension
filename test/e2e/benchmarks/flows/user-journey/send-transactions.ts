@@ -59,7 +59,7 @@ export async function runSendTransactionsBenchmark(): Promise<BenchmarkRunResult
         );
 
         // Login flow
-        await login(driver);
+        await login(driver, { validateBalance: false });
         const homePage = new HomePage(driver);
         const assetListPage = new AssetListPage(driver);
         await assetListPage.checkTokenListIsDisplayed();

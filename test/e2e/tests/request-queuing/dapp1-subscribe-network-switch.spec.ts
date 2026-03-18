@@ -33,7 +33,7 @@ describe('Request Queueing', function () {
       },
 
       async ({ driver, localNodes }) => {
-        await login(driver);
+        await login(driver, { validateBalance: false });
 
         // Connect to dapp
         const testDapp = new TestDapp(driver);

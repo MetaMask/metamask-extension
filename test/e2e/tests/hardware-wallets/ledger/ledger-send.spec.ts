@@ -25,7 +25,7 @@ describe('Ledger Hardware', function (this: Suite) {
           KNOWN_PUBLIC_KEY_ADDRESSES[0].address,
           '0x100000000000000000000',
         )) ?? console.error('localNodes is undefined or empty');
-        await login(driver);
+        await login(driver, { validateBalance: false });
         const homePage = new HomePage(driver);
         await homePage.checkExpectedBalanceIsDisplayed('1.21M');
         await sendRedesignedTransactionToAddress({
@@ -55,7 +55,7 @@ describe('Ledger Hardware', function (this: Suite) {
           KNOWN_PUBLIC_KEY_ADDRESSES[0].address,
           '0x100000000000000000000',
         )) ?? console.error('localNodes is undefined or empty');
-        await login(driver);
+        await login(driver, { validateBalance: false });
         const homePage = new HomePage(driver);
         await homePage.checkExpectedBalanceIsDisplayed('1.21M');
         await sendRedesignedTransactionToAddress({

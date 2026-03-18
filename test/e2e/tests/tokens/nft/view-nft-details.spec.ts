@@ -19,7 +19,7 @@ describe('View NFT details', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await login(driver);
+        await login(driver, { validateBalance: false });
 
         // Click to open the NFT details page and check title
         await new Homepage(driver).goToNftTab();

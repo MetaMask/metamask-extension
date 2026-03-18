@@ -26,7 +26,7 @@ describe('Test Snap get preferences', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await login(driver);
+        await login(driver, { validateBalance: false });
 
         // Navigate to test snaps page, connect get preferences, complete installation and validate
         const testSnaps = new TestSnaps(driver);

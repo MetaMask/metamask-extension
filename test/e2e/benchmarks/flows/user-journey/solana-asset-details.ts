@@ -50,7 +50,7 @@ export async function runSolanaAssetDetailsBenchmark(): Promise<BenchmarkRunResu
         const timer = new TimerHelper('assetClickToPriceChart');
 
         // Login flow
-        await login(driver);
+        await login(driver, { validateBalance: false });
         const assetListPage = new AssetListPage(driver);
         await assetListPage.checkTokenListIsDisplayed();
 

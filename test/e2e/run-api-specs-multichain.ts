@@ -112,7 +112,7 @@ async function main() {
       driver: Driver;
       extensionId: string;
     }) => {
-      await login(driver);
+      await login(driver, { validateBalance: false });
       const homePage = new HomePage(driver);
       await homePage.checkPageIsLoaded();
       // We don't have balance so we expect to see Fund Your Wallet
@@ -191,7 +191,7 @@ async function main() {
       driver: Driver;
       extensionId: string;
     }) => {
-      await login(driver);
+      await login(driver, { validateBalance: false });
 
       const homePage = new HomePage(driver);
       await homePage.checkPageIsLoaded();

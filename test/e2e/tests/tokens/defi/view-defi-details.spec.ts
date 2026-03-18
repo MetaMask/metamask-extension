@@ -28,7 +28,7 @@ describe('View DeFi details', function () {
         testSpecificMock: mockDeFiPositionFeatureFlag,
       },
       async ({ driver }: { driver: Driver }) => {
-        await login(driver);
+        await login(driver, { validateBalance: false });
 
         await new Homepage(driver).goToDeFiTab();
 

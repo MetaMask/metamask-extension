@@ -58,7 +58,7 @@ describe('Account syncing - Unsupported Account types', function () {
         testSpecificMock: sharedMockSetup,
       },
       async ({ driver }) => {
-        await login(driver);
+        await login(driver, { validateBalance: false });
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
         await homePage.checkExpectedTokenBalanceIsDisplayed('25', 'ETH');
@@ -132,7 +132,7 @@ describe('Account syncing - Unsupported Account types', function () {
         testSpecificMock: sharedMockSetup,
       },
       async ({ driver }) => {
-        await login(driver);
+        await login(driver, { validateBalance: false });
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
         await homePage.checkExpectedTokenBalanceIsDisplayed('25', 'ETH');

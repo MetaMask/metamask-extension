@@ -20,7 +20,7 @@ describe('Sort By Networks Icon', function (this: Suite) {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await login(driver);
+        await login(driver, { validateBalance: false });
         const assetListPage = new AssetListPage(driver);
 
         // Wait for the sort-by-networks button to be present
@@ -73,7 +73,7 @@ describe('Sort By Networks Icon', function (this: Suite) {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await login(driver);
+        await login(driver, { validateBalance: false });
         const assetListPage = new AssetListPage(driver);
 
         // Wait for the sort-by-networks button to be present
@@ -122,7 +122,7 @@ describe('Sort By Networks Icon', function (this: Suite) {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await login(driver);
+        await login(driver, { validateBalance: false });
         const assetListPage = new AssetListPage(driver);
 
         // Wait for the sort-by-networks button to be present

@@ -17,7 +17,7 @@ describe('Terms of use', function (this: Suite) {
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await login(driver);
+        await login(driver, { validateBalance: false });
 
         // Delay click to mitigate flakiness
         await driver.delay(1_000);

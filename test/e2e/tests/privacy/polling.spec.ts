@@ -292,7 +292,7 @@ describe('Account Tracker API polling', function () {
         testSpecificMock: mockInfura,
       },
       async ({ driver, mockedEndpoint }) => {
-        await login(driver);
+        await login(driver, { validateBalance: false });
         const homepage = new HomePage(driver);
         await homepage.checkPageIsLoaded();
         // Want to wait long enough  to pull requests relevant to a single loop cycle
@@ -377,7 +377,7 @@ describe('Account Tracker API polling', function () {
           testSpecificMock: mockAccountApiForPortfolioView,
         },
         async ({ driver, mockedEndpoint: mockedEndpoints }) => {
-          await login(driver);
+          await login(driver, { validateBalance: false });
           const homepage = new HomePage(driver);
           await homepage.checkPageIsLoaded();
           await driver.delay(DELAY_UNTIL_NEXT_POLL);

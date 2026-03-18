@@ -57,7 +57,7 @@ describe('Notification List - View Items and Details', function () {
         },
       },
       async ({ driver }) => {
-        await login(driver);
+        await login(driver, { validateBalance: false });
         await enableNotificationsThroughGlobalMenu(driver, false);
         await visitEachWalletNotificationItemAndDetailsPage(driver);
         await visitEachFeatureAnnouncementNotificationItemAndDetailsPage(

@@ -29,7 +29,7 @@ describe('NFT full', function () {
         testSpecificMock: setupAutoDetectMocking,
       },
       async ({ driver }) => {
-        await login(driver);
+        await login(driver, { validateBalance: false });
 
         // navigate to security & privacy settings and toggle on NFT autodetection
         await new HeaderNavbar(driver).openSettingsPage();

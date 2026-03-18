@@ -69,7 +69,7 @@ export async function runSwapBenchmark(): Promise<BenchmarkRunResult> {
         const timerQuoteFetching = new TimerHelper('fetchAndDisplaySwapQuotes');
 
         // Login flow
-        await login(driver);
+        await login(driver, { validateBalance: false });
         const homePage = new HomePage(driver);
         const assetListPage = new AssetListPage(driver);
         await assetListPage.checkTokenListIsDisplayed();

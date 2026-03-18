@@ -24,7 +24,7 @@ describe('Permissions Page', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await login(driver);
+        await login(driver, { validateBalance: false });
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
         await connectAccountToTestDapp(driver, {
@@ -57,7 +57,7 @@ describe('Permissions Page', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await login(driver);
+        await login(driver, { validateBalance: false });
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.openSettingsPage();
 

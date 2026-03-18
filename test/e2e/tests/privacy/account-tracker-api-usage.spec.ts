@@ -142,7 +142,7 @@ describe('Account Tracker API Usage', function () {
           )} request has been made to infura before opening the UI`,
         );
 
-        await login(driver);
+        await login(driver, { validateBalance: false });
         const homepage = new HomePage(driver);
         await homepage.checkPageIsLoaded();
         await driver.delay(veryLargeDelayMs);
@@ -178,7 +178,7 @@ describe('Account Tracker API Usage', function () {
         testSpecificMock: mockInfura,
       },
       async ({ driver, mockedEndpoint }) => {
-        await login(driver);
+        await login(driver, { validateBalance: false });
         const homepage = new HomePage(driver);
         await homepage.checkPageIsLoaded();
         await driver.delay(veryLargeDelayMs);

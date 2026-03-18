@@ -45,7 +45,7 @@ async function measurePagePowerUser(
       },
     },
     async ({ driver, getNetworkReport, clearNetworkReport }) => {
-      await login(driver);
+      await login(driver, { validateBalance: false });
 
       for (let i = 0; i < pageLoads; i++) {
         clearNetworkReport();

@@ -27,7 +27,7 @@ describe('Test Snap TxInsights', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await login(driver);
+        await login(driver, { validateBalance: false });
         const testDapp = new TestDapp(driver);
         const snapTxInsights = new SnapTxInsights(driver);
 
@@ -66,7 +66,7 @@ describe('Test Snap TxInsights', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver, contractRegistry }: TestSuiteArguments) => {
-        await login(driver);
+        await login(driver, { validateBalance: false });
         const testDapp = new TestDapp(driver);
         const snapTxInsights = new SnapTxInsights(driver);
         const contractAddress = await (
@@ -115,7 +115,7 @@ describe('Test Snap TxInsights', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver, contractRegistry }: TestSuiteArguments) => {
-        await login(driver);
+        await login(driver, { validateBalance: false });
         const testDapp = new TestDapp(driver);
         const snapTxInsights = new SnapTxInsights(driver);
         const contractAddress = await (

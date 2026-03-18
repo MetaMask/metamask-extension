@@ -220,7 +220,7 @@ async function withAccountSnap(
       bundlerServer: Bundler;
     }) => {
       // Todo: use POM and consolidate balance check when balance is 0 ('fund your wallet' is displayed)
-      await login(driver);
+      await login(driver, { validateBalance: false });
       await installExampleSnap(driver);
 
       await setSnapConfig(driver, {

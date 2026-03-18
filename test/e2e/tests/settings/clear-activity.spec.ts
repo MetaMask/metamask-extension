@@ -22,7 +22,7 @@ describe('Clear account activity', function (this: Suite) {
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await login(driver);
+        await login(driver, { validateBalance: false });
 
         // Check local "Sent" transaction history is displayed
         const homePage = new HomePage(driver);

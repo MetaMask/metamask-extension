@@ -24,7 +24,7 @@ describe('Perps', function (this: Suite) {
         ...getConfig(this.test?.fullTitle()),
       },
       async ({ driver }: { driver: Driver }) => {
-        await login(driver);
+        await login(driver, { validateBalance: false });
 
         const perpsHomePage = new PerpsHomePage(driver);
         await perpsHomePage.navigateToPerpsHome();
@@ -43,7 +43,7 @@ describe('Perps', function (this: Suite) {
         ...getConfig(this.test?.fullTitle()),
       },
       async ({ driver }: { driver: Driver }) => {
-        await login(driver);
+        await login(driver, { validateBalance: false });
 
         const perpsHomePage = new PerpsHomePage(driver);
         await perpsHomePage.navigateToPerpsHome();
@@ -70,7 +70,7 @@ describe('Perps', function (this: Suite) {
         ...getConfig(this.test?.fullTitle()),
       },
       async ({ driver }: { driver: Driver }) => {
-        await login(driver);
+        await login(driver, { validateBalance: false });
 
         const perpsHomePage = new PerpsHomePage(driver);
         await perpsHomePage.navigateToPerpsHome();
@@ -89,7 +89,7 @@ describe('Perps', function (this: Suite) {
         ...getConfig(this.test?.fullTitle()),
       },
       async ({ driver }: { driver: Driver }) => {
-        await login(driver);
+        await login(driver, { validateBalance: false });
 
         const perpsHomePage = new PerpsHomePage(driver);
         await perpsHomePage.navigateToPerpsHome();
@@ -108,7 +108,7 @@ describe('Perps', function (this: Suite) {
         ...getConfig(this.test?.fullTitle()),
       },
       async ({ driver }: { driver: Driver }) => {
-        await login(driver);
+        await login(driver, { validateBalance: false });
 
         const perpsHomePage = new PerpsHomePage(driver);
         await perpsHomePage.navigateToPerpsHome();
@@ -131,7 +131,7 @@ describe('Perps', function (this: Suite) {
         ...getConfig(this.test?.fullTitle()),
       },
       async ({ driver }: { driver: Driver }) => {
-        await login(driver);
+        await login(driver, { validateBalance: false });
 
         const perpsHomePage = new PerpsHomePage(driver);
         await perpsHomePage.navigateToPerpsHome();
@@ -149,7 +149,7 @@ describe('Perps', function (this: Suite) {
         ...getConfig(this.test?.fullTitle()),
       },
       async ({ driver }: { driver: Driver }) => {
-        await login(driver);
+        await login(driver, { validateBalance: false });
 
         const perpsHomePage = new PerpsHomePage(driver);
         await perpsHomePage.navigateToPerpsHome();
