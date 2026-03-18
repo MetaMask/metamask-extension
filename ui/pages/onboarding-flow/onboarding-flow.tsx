@@ -56,16 +56,7 @@ import {
 } from '../../selectors';
 import { MetaMetricsContext } from '../../contexts/metametrics';
 import { submitRequestToBackgroundAndCatch } from '../../components/app/toast-master/utils';
-import { Box } from '../../components/component-library';
-import {
-  AlignItems,
-  BackgroundColor,
-  BlockSize,
-  BorderRadius,
-  Display,
-  FlexDirection,
-  JustifyContent,
-} from '../../helpers/constants/design-system';
+
 // eslint-disable-next-line import-x/no-restricted-paths
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
 import {

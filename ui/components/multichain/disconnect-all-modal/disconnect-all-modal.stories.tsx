@@ -1,19 +1,14 @@
 import React from 'react';
-import { DisconnectType } from './disconnect-all-modal';
 import { DisconnectAllModal } from '.';
 
 export default {
   title: 'Components/Multichain/DisconnectAllModal',
   component: DisconnectAllModal,
   argTypes: {
-    type: { control: 'string' },
-    hostname: { control: 'string' },
     onClose: { action: 'onClose' },
-    onClick: { action: 'onClose' },
+    onClick: { action: 'onClick' },
   },
   args: {
-    type: DisconnectType.Account,
-    hostname: 'app.metamask.io',
     onClick: () => undefined,
     onClose: () => undefined,
   },
