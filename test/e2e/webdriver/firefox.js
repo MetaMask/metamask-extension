@@ -1,4 +1,4 @@
-const crypto = require('crypto');
+const nodeCrypto = require('crypto');
 const fs = require('fs');
 const { execSync } = require('child_process');
 const os = require('os');
@@ -130,7 +130,7 @@ class FirefoxDriver {
     const hashPath = `${xpiPath}.sha256`;
 
     const manifestContent = fs.readFileSync(path.join(absDir, 'manifest.json'));
-    const currentHash = crypto
+    const currentHash = nodeCrypto
       .createHash('sha256')
       .update(manifestContent)
       .digest('hex');
