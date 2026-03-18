@@ -7,9 +7,7 @@ const {
   getEventPayloads,
   assertInAnyOrder,
 } = require('../../helpers');
-const {
-  login,
-} = require('../../page-objects/flows/login.flow');
+const { login } = require('../../page-objects/flows/login.flow');
 const {
   buildQuote,
   reviewQuote,

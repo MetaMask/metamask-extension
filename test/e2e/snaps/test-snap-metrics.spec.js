@@ -1,7 +1,5 @@
 const { strict: assert } = require('assert');
-const {
-  login,
-} = require('../page-objects/flows/login.flow');
+const { login } = require('../page-objects/flows/login.flow');
 const { withFixtures, getEventPayloads } = require('../helpers');
 const FixtureBuilder = require('../fixtures/fixture-builder');
 const {

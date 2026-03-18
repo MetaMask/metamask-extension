@@ -1,8 +1,6 @@
 const { strict: assert } = require('assert');
 const { default: FixtureBuilderV2 } = require('../fixtures/fixture-builder-v2');
-const {
-  login,
-} = require('../page-objects/flows/login.flow');
+const { login } = require('../page-objects/flows/login.flow');
 const { withFixtures } = require('../helpers');
 const { DAPP_URL } = require('../constants');
 

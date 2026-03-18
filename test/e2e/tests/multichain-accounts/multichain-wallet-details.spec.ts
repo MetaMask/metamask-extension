@@ -23,12 +23,7 @@ describe('Multichain Accounts - Wallet Details', function (this: Suite) {
         },
       },
       async ({ driver }: { driver: Driver }) => {
-        await login(
-          driver,
-          undefined,
-          undefined,
-          '$85,025.00',
-        );
+        await login(driver, { expectedBalance: '$85,025.00' });
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.openAccountMenu();
 

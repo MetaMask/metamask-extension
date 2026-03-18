@@ -85,12 +85,7 @@ export async function withMultichainAccountsDesignEnabled(
       if (accountType === AccountType.HardwareWallet) {
         await login(driver, { expectedBalance: '0' });
       } else {
-        await login(
-          driver,
-          undefined,
-          undefined,
-          '$85,025.00',
-        );
+        await login(driver, { expectedBalance: '$85,025.00' });
       }
       const homePage = new HomePage(driver);
       await homePage.checkPageIsLoaded();

@@ -59,12 +59,7 @@ describe('Swaps - notifications', function () {
     await withFixtures(
       getBridgeFixturesWithTokenAlertWarning(this.test?.fullTitle()),
       async ({ driver, mockedEndpoint }) => {
-        await login(
-          driver,
-          undefined,
-          undefined,
-          '$225,730.11',
-        );
+        await login(driver, { expectedBalance: '$225,730.11' });
         const homePage = new HomePage(driver);
         await homePage.startSwapFlow();
 
@@ -159,12 +154,7 @@ describe('Swaps - notifications', function () {
         BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
       ),
       async ({ driver }) => {
-        await login(
-          driver,
-          undefined,
-          undefined,
-          '$225,730.11',
-        );
+        await login(driver, { expectedBalance: '$225,730.11' });
         const homePage = new HomePage(driver);
         await homePage.startSwapFlow();
 

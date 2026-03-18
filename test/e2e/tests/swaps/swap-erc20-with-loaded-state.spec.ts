@@ -41,12 +41,7 @@ describe('Swap', function () {
       await withFixtures(
         getBridgeFixtures(this.test?.fullTitle(), DEFAULT_BRIDGE_FEATURE_FLAGS),
         async ({ driver }) => {
-          await login(
-            driver,
-            undefined,
-            undefined,
-            '$225,730.11',
-          );
+          await login(driver, { expectedBalance: '$225,730.11' });
 
           await bridgeTransaction({
             driver,

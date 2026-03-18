@@ -1,6 +1,4 @@
-const {
-  login,
-} = require('../page-objects/flows/login.flow');
+const { login } = require('../page-objects/flows/login.flow');
 
 const { DAPP_PATH, DAPP_URL, WINDOW_TITLES } = require('../constants');
 const { withFixtures } = require('../helpers');

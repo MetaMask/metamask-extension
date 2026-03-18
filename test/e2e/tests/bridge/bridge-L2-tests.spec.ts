@@ -10,12 +10,7 @@ describe('Bridge tests', function (this: Suite) {
     await withFixtures(
       getBridgeL2Fixtures(this.test?.fullTitle(), DEFAULT_BRIDGE_FEATURE_FLAGS),
       async ({ driver }) => {
-        await login(
-          driver,
-          undefined,
-          undefined,
-          '$225,750.00',
-        );
+        await login(driver, { expectedBalance: '$225,750.00' });
 
         await bridgeTransaction({
           driver,

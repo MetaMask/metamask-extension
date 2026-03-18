@@ -98,12 +98,7 @@ describe('Settings', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await login(
-          driver,
-          undefined,
-          undefined,
-          '$42,500.00',
-        );
+        await login(driver, { expectedBalance: '$42,500.00' });
         await new HeaderNavbar(driver).openAccountMenu();
         await new AccountListPage(
           driver,

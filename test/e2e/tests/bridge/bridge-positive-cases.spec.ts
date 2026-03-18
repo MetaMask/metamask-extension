@@ -21,12 +21,7 @@ describe('Bridge tests', function (this: Suite) {
       ),
       async ({ driver }) => {
         // the balance has been fixed now , we show native balance when currency controller is set
-        await login(
-          driver,
-          undefined,
-          undefined,
-          '$225,730.11',
-        );
+        await login(driver, { expectedBalance: '$225,730.11' });
 
         const homePage = new HomePage(driver);
 
@@ -98,12 +93,7 @@ describe('Bridge tests', function (this: Suite) {
         false,
       ),
       async ({ driver }) => {
-        await login(
-          driver,
-          undefined,
-          undefined,
-          '$225,730.11',
-        );
+        await login(driver, { expectedBalance: '$225,730.11' });
         const networkManager = new NetworkManager(driver);
 
         // Navigate to Bridge page
@@ -138,12 +128,7 @@ describe('Bridge tests', function (this: Suite) {
         false,
       ),
       async ({ driver }) => {
-        await login(
-          driver,
-          undefined,
-          undefined,
-          '$225,730.11',
-        );
+        await login(driver, { expectedBalance: '$225,730.11' });
 
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();

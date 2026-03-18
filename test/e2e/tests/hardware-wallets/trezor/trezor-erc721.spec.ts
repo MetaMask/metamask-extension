@@ -135,12 +135,9 @@ describe('Trezor Hardware', function (this: Suite) {
         const balance = await localNodes?.[0]?.getBalance(
           KNOWN_PUBLIC_KEY_ADDRESSES[0].address as `0x${string}`,
         );
-        await login(
-          driver,
-          undefined,
-          undefined,
-          `${((balance ?? 0) / 1_000_000).toFixed(2)}M`.toString(),
-        );
+        await login(driver, {
+          expectedBalance: `${((balance ?? 0) / 1_000_000).toFixed(2)}M`.toString(),
+        });
 
         const contractAddress =
           await contractRegistry?.getContractAddress(smartContract);
@@ -191,12 +188,9 @@ describe('Trezor Hardware', function (this: Suite) {
         const balance = await localNodes?.[0]?.getBalance(
           KNOWN_PUBLIC_KEY_ADDRESSES[0].address as `0x${string}`,
         );
-        await login(
-          driver,
-          undefined,
-          undefined,
-          `${((balance ?? 0) / 1_000_000).toFixed(2)}M`.toString(),
-        );
+        await login(driver, {
+          expectedBalance: `${((balance ?? 0) / 1_000_000).toFixed(2)}M`.toString(),
+        });
         const contractAddress = await (
           contractRegistry as ContractAddressRegistry
         ).getContractAddress(smartContract);

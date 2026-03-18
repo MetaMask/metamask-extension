@@ -1,9 +1,7 @@
 const { strict: assert } = require('assert');
 const FixtureBuilder = require('../../fixtures/fixture-builder');
 const { withFixtures } = require('../../helpers');
-const {
-  login,
-} = require('../../page-objects/flows/login.flow');
+const { login } = require('../../page-objects/flows/login.flow');
 const { DAPP_URL, WINDOW_TITLES } = require('../../constants');
 const { mockServerJsonRpc } = require('./mocks/mock-server-json-rpc');
 

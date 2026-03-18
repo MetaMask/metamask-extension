@@ -1,7 +1,5 @@
 const { withFixtures } = require('../helpers');
-const {
-  login,
-} = require('../page-objects/flows/login.flow');
+const { login } = require('../page-objects/flows/login.flow');
 const {
   DAPP_ONE_URL,
   DAPP_PATH,

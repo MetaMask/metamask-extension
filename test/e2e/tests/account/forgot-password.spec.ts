@@ -57,7 +57,10 @@ describe('Forgot password', function () {
         await lockAndWaitForLoginPage(driver);
 
         // Check user can log in with new password
-        await login(driver, { localNode: localNodes[0], password: newPassword });
+        await login(driver, {
+          localNode: localNodes[0],
+          password: newPassword,
+        });
       },
     );
   });
