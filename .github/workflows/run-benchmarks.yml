@@ -11,6 +11,9 @@ on:
       TEST_SRP_2:
         required: false
         description: Required for userJourneyAccountManagement (import-srp-home). 12-word seed phrase.
+      EXTENSION_BENCHMARK_STATS_TOKEN:
+        required: false
+        description: Required for committing benchmark stats to extension_benchmark_stats on main.
 
 env:
   COMMANDS: |
@@ -107,10 +110,6 @@ jobs:
       - name: Configure Xvfb
         run: Xvfb -ac :99 -screen 0 1280x1024x16 &
 
-      # TODO: Pre-install this in the container image
-      - name: Install AWS CLI (needed in the container)
-        run: sudo apt-get update && sudo apt-get install python3-pip && sudo pip install awscli --break-system-packages
-
       - name: Run the benchmark
         # Choose a benchmark command from env.COMMANDS
         # Then replace the {0} placeholder with the browser, and the {1} placeholder with the buildType
@@ -127,15 +126,6 @@ jobs:
             --results test-artifacts/benchmarks/${{ env.OUTPUT_NAME }} \
             --browser ${{ matrix.browser }} \
             --buildType ${{ matrix.buildType }}
-
-      - name: Upload '${{ env.OUTPUT_NAME }}' to S3
-        if: ${{ vars.AWS_REGION && vars.AWS_IAM_ROLE && vars.AWS_S3_BUCKET }}
-        uses: MetaMask/github-tools/.github/actions/upload-s3@v1
-        with:
-          aws-region: ${{ vars.AWS_REGION }}
-          role-to-assume: ${{ vars.AWS_IAM_ROLE }}
-          s3-bucket: ${{ vars.AWS_S3_BUCKET }}/${{ github.event.repository.name }}/${{ github.run_id }}/benchmarks/${{ env.OUTPUT_NAME }}
-          path: test-artifacts/benchmarks/${{ env.OUTPUT_NAME }}
 
       - name: Upload benchmark result as artifact
         if: ${{ always() }}
@@ -208,9 +198,6 @@ jobs:
       - name: Configure Xvfb
         run: Xvfb -ac :99 -screen 0 1280x1024x16 &
 
-      - name: Install AWS CLI (needed in the container)
-        run: sudo apt-get update && sudo apt-get install python3-pip && sudo pip install awscli --break-system-packages
-
       - name: Run the benchmark
         run: ${{ format(fromJson(env.COMMANDS)[matrix.pageType], 'chrome', 'webpack') }}
 
@@ -226,11 +213,59 @@ jobs:
             --browser chrome \
             --buildType webpack
 
-      - name: Upload '${{ env.OUTPUT_NAME }}' to S3
-        if: ${{ vars.AWS_REGION && vars.AWS_IAM_ROLE && vars.AWS_S3_BUCKET }}
-        uses: MetaMask/github-tools/.github/actions/upload-s3@v1
+  # Pushes benchmark results (performance + dapp page-load) to extension_benchmark_stats
+  # for historical comparison in PR comments. Runs on main branch pushes only.
+  store-benchmark-stats (main only):
+    needs:
+      - benchmarks
+      - benchmarks-webpack-perf
+    if: >-
+      ${{
+        !cancelled() &&
+        github.event_name == 'push' &&
+        github.ref_name == 'main' &&
+        !(github.event.pull_request.head.repo.fork || github.event.repository.fork)
+      }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      EXTENSION_BENCHMARK_STATS_TOKEN: ${{ secrets.EXTENSION_BENCHMARK_STATS_TOKEN }}
+      HEAD_COMMIT_HASH: ${{ github.sha }}
+      OWNER: ${{ github.repository_owner }}
+      BRANCH_NAME: ${{ github.ref_name }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Download all performance benchmark artifacts
+        id: download-perf-benchmark
+        uses: actions/download-artifact@v7
+        continue-on-error: true
         with:
-          aws-region: ${{ vars.AWS_REGION }}
-          role-to-assume: ${{ vars.AWS_IAM_ROLE }}
-          s3-bucket: ${{ vars.AWS_S3_BUCKET }}/${{ github.event.repository.name }}/${{ github.run_id }}/benchmarks/${{ env.OUTPUT_NAME }}
-          path: test-artifacts/benchmarks/${{ env.OUTPUT_NAME }}
+          pattern: benchmark-*.json
+          path: benchmark-results/
+          merge-multiple: true
+
+      - name: Commit performance stats to extension_benchmark_stats
+        if: steps.download-perf-benchmark.outcome == 'success'
+        continue-on-error: true
+        run: .github/scripts/benchmark-stats-commit.sh
+        env:
+          BENCHMARK_DATA_TYPE: performance
+          BENCHMARK_RESULTS_DIR: benchmark-results
+
+      - name: Download dapp page-load benchmark artifact
+        id: download-dapp-benchmark
+        uses: actions/download-artifact@v7
+        continue-on-error: true
+        with:
+          name: dapp-page-load-benchmark-results
+          path: test-artifacts/benchmarks/
+
+      - name: Commit dapp page-load stats to extension_benchmark_stats
+        if: steps.download-dapp-benchmark.outcome == 'success'
+        run: .github/scripts/benchmark-stats-commit.sh
+        env:
+          BENCHMARK_DATA_TYPE: dapp-page-load
+          BENCHMARK_FILE: test-artifacts/benchmarks/dapp-page-load-benchmark-results.json
+
