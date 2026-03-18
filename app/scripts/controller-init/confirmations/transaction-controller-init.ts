@@ -366,11 +366,7 @@ export async function publishHook({
 }: {
   flatState: ControllerFlatState;
   initMessenger: TransactionControllerInitMessenger;
-  keyringController: () => {
-    getKeyringForAccount: (
-      address: string,
-    ) => Promise<{ type?: string } | undefined>;
-  };
+  keyringController: Parameters<typeof accountSupports7702>[1];
   signedTx: string;
   smartTransactionsController: SmartTransactionsController;
   transactionController: TransactionController;

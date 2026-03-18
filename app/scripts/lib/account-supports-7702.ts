@@ -1,9 +1,8 @@
 import { KEYRING_TYPES_SUPPORTING_7702 } from '../../../shared/constants/keyring';
 
+/** Minimal shape; KeyringController.getKeyringForAccount is typed as Promise<unknown>. */
 type KeyringControllerLike = {
-  getKeyringForAccount: (
-    address: string,
-  ) => Promise<{ type?: string } | undefined>;
+  getKeyringForAccount: (address: string) => Promise<unknown>;
 };
 
 /**
@@ -29,7 +28,13 @@ export async function accountSupports7702(
       : keyringControllerOrGetter;
   try {
     const keyring = await keyringController.getKeyringForAccount(address);
-    const keyringType = keyring?.type ?? '';
+    const keyringType =
+      keyring &&
+      typeof keyring === 'object' &&
+      'type' in keyring &&
+      typeof (keyring as { type: unknown }).type === 'string'
+        ? (keyring as { type: string }).type
+        : '';
     return KEYRING_TYPES_SUPPORTING_7702.includes(keyringType as never);
   } catch {
     return true;
