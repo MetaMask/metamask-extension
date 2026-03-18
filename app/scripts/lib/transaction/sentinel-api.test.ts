@@ -87,19 +87,11 @@ describe('sentinel-api', () => {
       });
     });
 
-    it('adds Bearer prefix when getter returns raw token', async () => {
+    it('adds Bearer prefix to the raw token', async () => {
       setSentinelApiAuth(async () => 'raw-token');
       const headers = await getSentinelApiHeadersAsync();
       expect((headers as Record<string, string>).Authorization).toBe(
         'Bearer raw-token',
-      );
-    });
-
-    it('keeps Bearer when getter already returns Bearer token', async () => {
-      setSentinelApiAuth(async () => 'Bearer existing');
-      const headers = await getSentinelApiHeadersAsync();
-      expect((headers as Record<string, string>).Authorization).toBe(
-        'Bearer existing',
       );
     });
 
