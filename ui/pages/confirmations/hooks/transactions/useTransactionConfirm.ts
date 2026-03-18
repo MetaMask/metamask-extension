@@ -94,10 +94,6 @@ export function useTransactionConfirm() {
 
     updateSwapWithQuoteDetailsIfRequired(newTransactionMeta);
 
-    if (!isGaslessSupported) {
-      newTransactionMeta.isGasFeeSponsored = false;
-    }
-
     if (isGaslessSupportedSTX) {
       handleSmartTransaction();
     } else if (isGaslessSupported && selectedGasFeeToken) {

@@ -252,4 +252,30 @@ describe('useTransactionCustomAmountAlerts', () => {
       hideResults: false,
     });
   });
+
+  it('sets hideResults and disableUpdate to true when PayHardwareAccount alert is blocking', () => {
+    useAlertsMock.mockReturnValue(
+      createMockUseAlertsReturnValue({
+        alerts: [
+          createMockAlert({
+            key: AlertsName.PayHardwareAccount,
+            message: 'Hardware wallets not supported',
+            isBlocking: true,
+            severity: Severity.Danger,
+          }),
+        ],
+        hasDangerAlerts: true,
+        hasAlerts: true,
+        hasUnconfirmedDangerAlerts: true,
+      }),
+    );
+
+    const { result } = runHook();
+
+    expect(result.current).toStrictEqual({
+      alertMessage: 'Hardware wallets not supported',
+      disableUpdate: true,
+      hideResults: true,
+    });
+  });
 });

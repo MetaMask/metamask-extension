@@ -16,10 +16,9 @@ export function usePayHardwareAccountAlert(): Alert[] {
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
 
   const isHardwareWalletAccount = useSelector(isHardwareWalletSelector);
-  const hasConfirmation = Boolean(currentConfirmation?.txParams?.from);
 
   return useMemo(() => {
-    if (!hasConfirmation || !isHardwareWalletAccount) {
+    if (!currentConfirmation || !isHardwareWalletAccount) {
       return [];
     }
 
@@ -33,5 +32,5 @@ export function usePayHardwareAccountAlert(): Alert[] {
         isBlocking: false,
       },
     ];
-  }, [hasConfirmation, isHardwareWalletAccount, t]);
+  }, [currentConfirmation, isHardwareWalletAccount, t]);
 }
