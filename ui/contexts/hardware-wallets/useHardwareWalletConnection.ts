@@ -380,11 +380,7 @@ export const useHardwareWalletConnection = ({
             const result = await adapter.ensureDeviceReady({
               requireBlindSigning,
             });
-            console.log('[Trezor] result', result);
-            console.log('[Trezor] abortSignal?.aborted', abortSignal?.aborted);
-            console.log('[Trezor] isEnsureStale()', isEnsureStale());
             if (abortSignal?.aborted || isEnsureStale()) {
-              console.log('[Trezor] because aborted or stale');
               return false;
             }
             if (result) {
