@@ -13,8 +13,8 @@
   - **Cursor**: Reads AGENTS.md files at the repo root and in subdirectories.
     Same discovery behavior as Claude Code for this pattern.
   - **VS Code Copilot**: Loads the root AGENTS.md (attached to the system
-    prompt). The root file references this one, so agents can `read_file`
-    it when working on CI tasks.
+    prompt). The root file references this one, so agents can open/read it
+    using their available file-reading tools when working on CI tasks.
 
   The root `AGENTS.md` includes a reference to this file under
   "Comprehensive Guidelines Location" so that all agent frameworks can
