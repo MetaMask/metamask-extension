@@ -84,7 +84,7 @@ describe('Notifications Toggle', () => {
   });
 
   afterEach(() => {
-    window.history.pushState({}, '', '/'); // return to homescreen
+    window.location.hash = '#/'; // return to homescreen
   });
 
   it('disabling notifications from settings', async () => {

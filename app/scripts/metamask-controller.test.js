@@ -65,13 +65,14 @@ import { withResolvers } from '../../shared/lib/promise-with-resolvers';
 import { flushPromises } from '../../test/lib/timer-helpers';
 import { FirstTimeFlowType } from '../../shared/constants/onboarding';
 import { MultichainNetworks } from '../../shared/constants/multichain/networks';
-import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
+import { toChecksumHexAddress } from '../../shared/lib/hexstring-utils';
 import { HYPERLIQUID_APPROVAL_TYPE } from '../../shared/constants/app';
 import {
   DEFI_REFERRAL_PARTNERS,
   DefiReferralPartner,
 } from '../../shared/constants/defi-referrals';
-import { getEnabledAdvancedPermissions } from '../../shared/modules/environment';
+import { getEnabledAdvancedPermissions } from '../../shared/lib/environment';
+import * as metamaskControllerUtils from '../../shared/lib/metamask-controller-utils';
 import { ReferralStatus } from './controllers/preferences-controller';
 import { METAMASK_COOKIE_HANDLER } from './constants/stream';
 import {
@@ -287,7 +288,7 @@ jest.mock('@metamask/eth-ledger-bridge-keyring', () => ({
 }));
 
 const mockIsManifestV3 = jest.fn().mockReturnValue(false);
-jest.mock('../../shared/modules/mv3.utils', () => ({
+jest.mock('../../shared/lib/mv3.utils', () => ({
   get isManifestV3() {
     return mockIsManifestV3();
   },
@@ -314,8 +315,8 @@ jest.mock('@metamask/core-backend', () => ({
   createApiPlatformClient: jest.fn().mockReturnValue({ mockApiClient: true }),
 }));
 
-jest.mock('../../shared/modules/environment', () => ({
-  ...jest.requireActual('../../shared/modules/environment'),
+jest.mock('../../shared/lib/environment', () => ({
+  ...jest.requireActual('../../shared/lib/environment'),
   getEnabledAdvancedPermissions: jest.fn(() => []),
 }));
 
@@ -485,6 +486,34 @@ describe('MetaMaskController', () => {
       expect(METAMASK_HOTLIST_DIFF_URL).toStrictEqual(
         'https://phishing-detection.api.cx.metamask.io/v2/diffsSince',
       );
+    });
+  });
+
+  describe('createEnsureOnboardingCompleteCallback (integration)', () => {
+    it('controller uses shared createEnsureOnboardingCompleteCallback when building initRequest', () => {
+      const createEnsureOnboardingCompleteCallbackSpy = jest.spyOn(
+        metamaskControllerUtils,
+        'createEnsureOnboardingCompleteCallback',
+      );
+      const controllerMessenger = new Messenger({
+        namespace: MOCK_ANY_NAMESPACE,
+      });
+
+      const _controller = new MetaMaskController({
+        initLangCode: 'en_US',
+        browser: browserPolyfillMock,
+        infuraProjectId: 'foo',
+        platform: { _showNotification: jest.fn() },
+        cronjobControllerStorageManager:
+          createMockCronjobControllerStorageManager(),
+        controllerMessenger,
+      });
+      expect(_controller).toBeDefined();
+
+      expect(createEnsureOnboardingCompleteCallbackSpy).toHaveBeenCalledWith(
+        controllerMessenger,
+      );
+      createEnsureOnboardingCompleteCallbackSpy.mockRestore();
     });
   });
 

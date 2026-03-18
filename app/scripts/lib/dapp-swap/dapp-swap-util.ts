@@ -14,11 +14,11 @@ import {
   checkValidSingleOrBatchTransaction,
   getDataFromSwap,
   parseTransactionData,
-} from '../../../../shared/modules/dapp-swap-comparison/dapp-swap-comparison-utils';
+} from '../../../../shared/lib/dapp-swap-comparison/dapp-swap-comparison-utils';
 import { DappSwapComparisonData } from '../../controllers/app-state-controller';
 import { SecurityAlertResponse } from '../ppom/types';
-import { DappSwapDecodingError } from '../../../../shared/modules/dapp-swap-comparison/dapp-swap-command-utils';
-import { createSentryError } from '../../../../shared/modules/error';
+import { DappSwapDecodingError } from '../../../../shared/lib/dapp-swap-comparison/dapp-swap-command-utils';
+import { createSentryError } from '../../../../shared/lib/error';
 
 export type DappSwapMiddlewareRequest<
   Params extends JsonRpcParams = JsonRpcParams,

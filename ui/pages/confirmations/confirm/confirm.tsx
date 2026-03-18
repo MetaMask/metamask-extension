@@ -9,7 +9,6 @@ import { ConfirmAlerts } from '../components/confirm/confirm-alerts';
 import { Footer } from '../components/confirm/footer';
 import { Header } from '../components/confirm/header';
 import { Info } from '../components/confirm/info';
-import { LedgerInfo } from '../components/confirm/ledger-info';
 import { SmartTransactionsBannerAlert } from '../components/smart-transactions-banner-alert';
 import { PluggableSection } from '../components/confirm/pluggable-section';
 import ScrollToBottom from '../components/confirm/scroll-to-bottom';
@@ -48,7 +47,6 @@ const Confirm: React.FC<{ confirmationId?: string }> = ({ confirmationId }) => (
                   <SmartTransactionsBannerAlert marginType="noTop" />
                   <ScrollToBottom>
                     <BlockaidLoadingIndicator />
-                    <LedgerInfo />
                     <Title />
                     <Info />
                     <PluggableSection />

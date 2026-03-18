@@ -17,7 +17,7 @@ import {
   getSelectedInternalAccount,
   getIsDefaultAddressEnabled,
 } from '../../../selectors';
-import { getProviderConfig } from '../../../../shared/modules/selectors/networks';
+import { getProviderConfig } from '../../../../shared/lib/selectors/networks';
 import SettingsTab from './settings-tab.component';
 
 const mapStateToProps = (state) => {

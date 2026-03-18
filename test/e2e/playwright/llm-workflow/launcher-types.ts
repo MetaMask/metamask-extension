@@ -27,6 +27,7 @@ export type LaunchOptions = {
   viewportWidth?: number;
   viewportHeight?: number;
   slowMo?: number;
+  headless?: boolean;
   /**
    * Whether to automatically build the extension before launching.
    * This option is handled by the MCP session manager (BuildCapability) and is ignored by the launcher.
@@ -74,6 +75,8 @@ export type ScreenName =
   | 'send'
   | 'swap'
   | 'bridge'
+  | 'connect'
+  | 'confirmation'
   | 'confirm-transaction'
   | 'confirm-signature'
   | 'notification'

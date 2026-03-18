@@ -14,7 +14,7 @@ import { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { TransactionType } from '@metamask/transaction-controller';
 import { isMusdSupportedChain } from '../../components/app/musd/constants';
-import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
+import { toChecksumHexAddress } from '../../../shared/lib/hexstring-utils';
 import type { TokenWithFiatAmount } from '../../components/app/assets/types';
 import {
   type Asset,

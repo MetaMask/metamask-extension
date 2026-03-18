@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import { TransactionStatus } from '@metamask/transaction-controller';
 import { Button, ButtonVariant } from '@metamask/design-system-react';
-import { getMaximumGasTotalInHexWei } from '../../../../shared/modules/gas.utils';
+import { getMaximumGasTotalInHexWei } from '../../../../shared/lib/gas.utils';
 import { getConversionRate } from '../../../ducks/metamask/metamask';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useIncrementedGasFees } from '../../../pages/confirmations/hooks/useIncrementedGasFees';

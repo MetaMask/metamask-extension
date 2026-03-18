@@ -38,8 +38,8 @@ import { useNavigate } from 'react-router-dom';
 import { AssetType } from '../../../../shared/constants/transaction';
 import { isEvmChainId } from '../../../../shared/lib/asset-utils';
 import { endTrace, TraceName } from '../../../../shared/lib/trace';
-import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
-import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
+import { hexToDecimal } from '../../../../shared/lib/conversion.utils';
+import { toChecksumHexAddress } from '../../../../shared/lib/hexstring-utils';
 import TokenCell from '../../../components/app/assets/token-cell';
 import { MarketClosedModal } from '../../../components/app/assets/market-closed-modal';
 import {

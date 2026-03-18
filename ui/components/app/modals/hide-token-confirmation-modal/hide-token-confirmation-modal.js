@@ -18,7 +18,7 @@ import { DEFAULT_ROUTE } from '../../../../helpers/constants/routes';
 import {
   getCurrentChainId,
   getNetworkConfigurationsByChainId,
-} from '../../../../../shared/modules/selectors/networks';
+} from '../../../../../shared/lib/selectors/networks';
 import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../../../selectors/multichain-accounts/account-tree';
 import { toAssetId } from '../../../../../shared/lib/asset-utils';
 import { getIsAssetsUnifyStateEnabled } from '../../../../selectors/assets-unify-state/feature-flags';

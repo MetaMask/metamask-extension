@@ -20,13 +20,14 @@ import { trace } from '../../../../shared/lib/trace';
  * @param request - The request object.
  * @param request.controllerMessenger - The messenger to use for the controller.
  * @param request.initMessenger - The messenger to use for initialization.
+ * @param request.ensureOnboardingComplete - Ensure onboarding is complete before initializing.
  * @returns The initialized service.
  */
 export const MultichainAccountServiceInit: ControllerInitFunction<
   MultichainAccountService,
   MultichainAccountServiceMessenger,
   MultichainAccountServiceInitMessenger
-> = ({ controllerMessenger, initMessenger }) => {
+> = ({ controllerMessenger, initMessenger, ensureOnboardingComplete }) => {
   const snapAccountProviderConfig = {
     // READ THIS CAREFULLY:
     // We are using 1 to prevent any concurrent `keyring_createAccount` requests. This ensures
@@ -63,6 +64,7 @@ export const MultichainAccountServiceInit: ControllerInitFunction<
       // @ts-expect-error Controller uses string for names rather than enum
       trace,
     },
+    ensureOnboardingComplete,
   });
 
   const preferencesState = initMessenger.call('PreferencesController:getState');

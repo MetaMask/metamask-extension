@@ -11,7 +11,7 @@ import {
 } from '@metamask/bridge-controller';
 import { zeroAddress } from 'ethereumjs-util';
 import type { CaipAssetType, CaipChainId } from '@metamask/utils';
-import { fetchTxAlerts } from '../../../shared/modules/bridge-utils/security-alerts-api.util';
+import { fetchTxAlerts } from '../../../shared/lib/bridge-utils/security-alerts-api.util';
 import { trace, TraceName } from '../../../shared/lib/trace';
 import { SlippageValue } from '../../pages/bridge/utils/slippage-service';
 import { getTokenExchangeRate, toBridgeToken } from './utils';

@@ -7,7 +7,7 @@ import {
 import { Hex } from '@metamask/utils';
 import { isSnapId } from '@metamask/snaps-utils';
 import { SubjectType } from '@metamask/permission-controller';
-import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
+import { isEqualCaseInsensitive } from '../../../shared/lib/string-utils';
 import { safeDecodeURIComponent } from '../../components/multichain/pages/gator-permissions/helper';
 import {
   getConnectedSitesListWithNetworkInfo,

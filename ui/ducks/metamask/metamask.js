@@ -11,12 +11,12 @@ import {
   getCurrencyRateControllerCurrencyRates,
   getCurrencyRateControllerCurrentCurrency,
   getTokenBalancesControllerTokenBalances,
-} from '../../../shared/modules/selectors/assets-migration';
+} from '../../../shared/lib/selectors/assets-migration';
 import { KeyringType } from '../../../shared/constants/keyring';
 import { DEFAULT_AUTO_LOCK_TIME_LIMIT } from '../../../shared/constants/preferences';
-import { decGWEIToHexWEI } from '../../../shared/modules/conversion.utils';
-import { stripHexPrefix } from '../../../shared/modules/hexstring-utils';
-import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
+import { decGWEIToHexWEI } from '../../../shared/lib/conversion.utils';
+import { stripHexPrefix } from '../../../shared/lib/hexstring-utils';
+import { isEqualCaseInsensitive } from '../../../shared/lib/string-utils';
 import {
   accountsWithSendEtherInfoSelector,
   checkNetworkAndAccountSupports1559,
@@ -25,7 +25,7 @@ import {
 import {
   getProviderConfig,
   getSelectedNetworkClientId,
-} from '../../../shared/modules/selectors/networks';
+} from '../../../shared/lib/selectors/networks';
 import { getSelectedInternalAccount } from '../../selectors/accounts';
 import * as actionConstants from '../../store/actionConstants';
 import { updateTransactionGasFees } from '../../store/actions';

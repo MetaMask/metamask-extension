@@ -51,7 +51,7 @@ export type UseMusdConversionResult = {
   /** Whether the geolocation check is still in progress */
   isGeoLoading: boolean;
 
-  startConversionFlow: (options?: StartConversionOptions) => Promise<void>;
+  startConversionFlow: (options: StartConversionOptions) => Promise<void>;
   cancelConversion: () => void;
   markEducationSeen: () => void;
 
@@ -60,7 +60,7 @@ export type UseMusdConversionResult = {
 
 export type StartConversionOptions = {
   /** Preferred payment token to pre-select */
-  preferredToken?: { address: string; chainId: Hex };
+  preferredToken: { address: string; chainId: Hex };
   /** Skip education screen even if not seen */
   skipEducation?: boolean;
   /** Entry point for analytics */
@@ -172,16 +172,11 @@ export function useMusdConversion(): UseMusdConversionResult {
    * to the education screen first.
    */
   const startConversionFlow = useCallback(
-    async (options: StartConversionOptions = {}): Promise<void> => {
+    async (options: StartConversionOptions): Promise<void> => {
       const { preferredToken, skipEducation } = options;
 
       if (!isFeatureEnabled) {
         console.warn('[MUSD] Conversion flow not enabled');
-        return;
-      }
-
-      if (isGeoLoading) {
-        console.warn('[MUSD] Geo-blocking check still in progress');
         return;
       }
 
@@ -200,7 +195,7 @@ export function useMusdConversion(): UseMusdConversionResult {
       }
 
       const chainId =
-        (preferredToken?.chainId as Hex) ?? MUSD_CONVERSION_DEFAULT_CHAIN_ID;
+        preferredToken?.chainId ?? MUSD_CONVERSION_DEFAULT_CHAIN_ID;
 
       try {
         setError(null);
@@ -259,21 +254,6 @@ export function useMusdConversion(): UseMusdConversionResult {
           }
         }
 
-        if (preferredToken?.address) {
-          try {
-            await updateTransactionPaymentToken({
-              transactionId: txId,
-              tokenAddress: preferredToken.address as `0x${string}`,
-              chainId,
-            });
-          } catch (payTokenError) {
-            console.warn(
-              '[MUSD] Failed to pre-select payment token, proceeding to confirmation:',
-              payTokenError,
-            );
-          }
-        }
-
         navigate({
           pathname: `${CONFIRM_TRANSACTION_ROUTE}/${txId}`,
           search: new URLSearchParams({
@@ -281,6 +261,19 @@ export function useMusdConversion(): UseMusdConversionResult {
             returnTo: location.pathname + location.search,
           }).toString(),
         });
+
+        if (preferredToken?.address) {
+          updateTransactionPaymentToken({
+            transactionId: txId,
+            tokenAddress: preferredToken.address as `0x${string}`,
+            chainId,
+          }).catch((payTokenError) => {
+            console.warn(
+              '[MUSD] Failed to pre-select payment token:',
+              payTokenError,
+            );
+          });
+        }
       } catch (flowError) {
         const errorMessage =
           flowError instanceof Error
@@ -292,7 +285,6 @@ export function useMusdConversion(): UseMusdConversionResult {
     },
     [
       isFeatureEnabled,
-      isGeoLoading,
       isUserGeoBlocked,
       educationSeen,
       selectedAddress,

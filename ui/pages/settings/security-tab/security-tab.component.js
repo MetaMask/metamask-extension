@@ -14,7 +14,10 @@ import {
   MetaMetricsEventKeyType,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import { IPFS_DEFAULT_GATEWAY_URL } from '../../../../shared/constants/network';
+import {
+  IPFS_DEFAULT_GATEWAY_URL,
+  IPFS_FORBIDDEN_GATEWAY,
+} from '../../../../shared/constants/network';
 import {
   AUTO_DETECT_TOKEN_LEARN_MORE_LINK,
   COINGECKO_LINK,
@@ -61,7 +64,7 @@ import {
 
 import { updateDataDeletionTaskStatus } from '../../../store/actions';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
-import { getIsSeedlessOnboardingFeatureEnabled } from '../../../../shared/modules/environment';
+import { getIsSeedlessOnboardingFeatureEnabled } from '../../../../shared/lib/environment';
 import MetametricsToggle from './metametrics-toggle';
 import DeleteMetametricsDataButton from './delete-metametrics-data-button';
 
@@ -664,7 +667,7 @@ export default class SecurityTab extends PureComponent {
           const urlObj = new URL(validUrl);
 
           // don't allow the use of this gateway
-          if (urlObj.host === 'gateway.ipfs.io') {
+          if (urlObj.host === IPFS_FORBIDDEN_GATEWAY) {
             ipfsError = t('forbiddenIpfsGateway');
           }
 
