@@ -26,7 +26,7 @@ const RSS_SAMPLE_INTERVAL_MS = 250;
 const THROUGHPUT_SMOOTHING_FACTOR = 0.25;
 const MAX_ASYNC_JOBS = 4;
 const CI_MAX_ASYNC_JOBS = 3;
-const CI_MEMORY_SOFT_LIMIT = 4 * GiB;
+const CI_MEMORY_SOFT_LIMIT = 6 * GiB;
 const FAST_MACHINE_PARALLELISM_THRESHOLD = 8;
 const FAST_MACHINE_MEMORY_THRESHOLD = 16 * GiB;
 const IS_CI = process.env.CI === '1' || process.env.CI === 'true';
