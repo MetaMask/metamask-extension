@@ -10,7 +10,7 @@ import { setShowFiatConversionOnTestnetsPreference } from '../../../store/action
 import { AutoResetAccountItem } from './auto-reset-account-item';
 
 const SHOW_CONVERSION_IN_TESTNETS_LEARN_MORE_LINK =
-  "https://support.metamask.io/stay-safe/protect-yourself/tokens-and-transactions/testnet-eth-scams/";
+  'https://support.metamask.io/stay-safe/protect-yourself/tokens-and-transactions/testnet-eth-scams/';
 
 const ShowConversionInTestnetsItem = createToggleItem({
   name: 'ShowConversionInTestnetsItem',
