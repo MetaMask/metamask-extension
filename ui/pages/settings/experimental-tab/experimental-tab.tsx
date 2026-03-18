@@ -78,7 +78,7 @@ const ExperimentalTab = () => {
     return result;
   }, []);
 
-  return <SettingsTab items={items} />;
+  return <SettingsTab items={items} tabMessageKey="experimental" />;
 };
 
 export default ExperimentalTab;
