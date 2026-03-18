@@ -75,6 +75,13 @@ class OnboardingMetricsPage {
     );
   }
 
+  async isParticipateInMetaMetricsChecked(): Promise<boolean> {
+    return await this.driver.executeScript(
+      'return document.querySelector(arguments[0])?.checked ?? false;',
+      '#metametrics-opt-in',
+    );
+  }
+
   async skipMetricAndContinue(): Promise<void> {
     await this.driver.clickElement(this.dataParticipateInMetaMetricsCheckbox);
     await this.driver.clickElement(this.continueButton);

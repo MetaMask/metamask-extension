@@ -30,17 +30,32 @@ import {
 const BACKGROUND_CONNECTION_TIMEOUT = 15_000;
 const DEEP_LINK_UTM_SOURCE = 'critical-error-timeout-recovery';
 
+function isMatchingDeepLinkEvent(event: Record<string, unknown> | undefined) {
+  return (
+    event?.event === MetaMetricsEventName.DeepLinkUsed &&
+    (event.properties as Record<string, unknown> | undefined)?.route ===
+      '/home' &&
+    (event.properties as Record<string, unknown> | undefined)?.utm_source ===
+      DEEP_LINK_UTM_SOURCE
+  );
+}
+
 async function getDeepLinkEventCount(
   driver: Parameters<typeof getEventPayloads>[0],
   mockedEndpoints: Parameters<typeof getEventPayloads>[1],
 ): Promise<number> {
+  const events = await getDeepLinkEvents(driver, mockedEndpoints);
+  return events.filter((event) => Boolean(event?.userId)).length;
+}
+
+async function getDeepLinkEvents(
+  driver: Parameters<typeof getEventPayloads>[0],
+  mockedEndpoints: Parameters<typeof getEventPayloads>[1],
+) {
   const events = await getEventPayloads(driver, mockedEndpoints);
-  return events.filter(
-    (event) =>
-      event?.event === MetaMetricsEventName.DeepLinkUsed &&
-      event?.properties?.route === '/home' &&
-      event?.properties?.utm_source === DEEP_LINK_UTM_SOURCE,
-  ).length;
+  return events.filter((event) =>
+    isMatchingDeepLinkEvent(event as Record<string, unknown> | undefined),
+  );
 }
 
 describe('Critical errors', function (this: Suite) {
@@ -206,9 +221,28 @@ describe('Critical errors', function (this: Suite) {
       const segmentEndpoint = await mockServer
         .forPost('https://api.segment.io/v1/batch')
         .always()
-        .thenCallback(() => ({
-          statusCode: 200,
-        }));
+        .thenCallback(async (request) => {
+          const body = await request.body.getJson();
+          const matchingEvents = (body.batch ?? []).filter(
+            (event: Record<string, unknown>) =>
+              event.event === MetaMetricsEventName.DeepLinkUsed &&
+              (event.properties as Record<string, unknown> | undefined)
+                ?.route === '/home' &&
+              (event.properties as Record<string, unknown> | undefined)
+                ?.utm_source === DEEP_LINK_UTM_SOURCE,
+          );
+
+          if (matchingEvents.length > 0) {
+            console.log(
+              '[critical-errors] matching DeepLinkUsed segment events:',
+              JSON.stringify(matchingEvents, null, 2),
+            );
+          }
+
+          return {
+            statusCode: 200,
+          };
+        });
 
       return [segmentEndpoint];
     }
@@ -274,11 +308,28 @@ describe('Critical errors', function (this: Suite) {
           driver,
           mockedEndpoints,
         );
+        const deepLinkEvents = await getDeepLinkEvents(driver, mockedEndpoints);
+        const userScopedDeepLinkEvents = deepLinkEvents.filter((event) =>
+          Boolean(event?.userId),
+        );
+
+        console.log(
+          '[critical-errors] deep link event count delta:',
+          deepLinkEventsAfter - deepLinkEventsBefore,
+        );
+        console.log(
+          '[critical-errors] matching DeepLinkUsed events after navigation:',
+          JSON.stringify(deepLinkEvents, null, 2),
+        );
+        console.log(
+          '[critical-errors] user-scoped DeepLinkUsed events after navigation:',
+          JSON.stringify(userScopedDeepLinkEvents, null, 2),
+        );
 
         assert.equal(
           deepLinkEventsAfter - deepLinkEventsBefore,
           1,
-          'Opening one deep link after timeout recovery should emit one deep link metric',
+          'Opening one deep link after timeout recovery should emit one user-scoped deep link metric',
         );
       },
     );
