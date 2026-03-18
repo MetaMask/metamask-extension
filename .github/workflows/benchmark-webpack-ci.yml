@@ -15,9 +15,22 @@ permissions:
 
 jobs:
   benchmark-webpack-build:
-    name: current-defaults
+    name: ${{ matrix.name }}
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: webpack-built-in-zip
+            build_command: >-
+              BLOCKAID_FILE_CDN=static.cx.metamask.io/api/v1/confirmations/ppom
+              yarn env:e2e webpack --mode production --no-cache --zip --no-progress
+          - name: webpack-then-system-zip
+            build_command: >-
+              BLOCKAID_FILE_CDN=static.cx.metamask.io/api/v1/confirmations/ppom
+              yarn env:e2e webpack --mode production --no-cache --no-progress
+              && cd dist && zip -9 -rq chrome-external.zip chrome
     env:
       APPLE_CLIENT_ID_FLASK_UAT: ${{ secrets.APPLE_CLIENT_ID_FLASK_UAT }}
       APPLE_CLIENT_ID_UAT: ${{ secrets.APPLE_CLIENT_ID_UAT }}
@@ -83,10 +96,10 @@ jobs:
           set +e
 
           mkdir -p benchmark-results
-          log_file="benchmark-results/current-defaults.log"
-          time_file="benchmark-results/current-defaults.time"
-          result_file="benchmark-results/current-defaults.json"
-          build_command="BLOCKAID_FILE_CDN=static.cx.metamask.io/api/v1/confirmations/ppom yarn env:e2e webpack --mode production --test --browser=chrome --browser=firefox --no-cache --zip --no-progress"
+          log_file="benchmark-results/${{ matrix.name }}.log"
+          time_file="benchmark-results/${{ matrix.name }}.time"
+          result_file="benchmark-results/${{ matrix.name }}.json"
+          build_command="${{ matrix.build_command }}"
 
           /usr/bin/time -f '%e' -o "$time_file" bash -lc "$build_command" > "$log_file" 2>&1
           exit_code=$?
@@ -95,12 +108,14 @@ jobs:
           elapsed_seconds=$(cat "$time_file")
 
           jq -n \
-            --arg name "current-defaults" \
+            --arg name "${{ matrix.name }}" \
+            --arg build_command "$build_command" \
             --arg elapsed_seconds "$elapsed_seconds" \
             --arg compile_ms "${compile_ms:-}" \
             --argjson exit_code "$exit_code" \
             '{
               name: $name,
+              build_command: $build_command,
               elapsed_seconds: ($elapsed_seconds | tonumber),
               compile_ms: (if $compile_ms == "" then null else ($compile_ms | tonumber) end),
               exit_code: $exit_code
@@ -109,8 +124,9 @@ jobs:
           cat "$result_file"
 
           {
-            echo "## current-defaults"
+            echo "## ${{ matrix.name }}"
             echo ""
+            echo "- build_command: \`${build_command}\`"
             echo "- elapsed_seconds: $elapsed_seconds"
             echo "- compile_ms: ${compile_ms:-missing}"
             echo "- exit_code: $exit_code"
@@ -122,7 +138,7 @@ jobs:
         if: ${{ always() }}
         uses: actions/upload-artifact@v6
         with:
-          name: benchmark-current-defaults
+          name: benchmark-${{ matrix.name }}
           path: benchmark-results
           retention-days: 7
 
