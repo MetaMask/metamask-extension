@@ -15,7 +15,6 @@ import {
   subscribeToWebUsbEvents,
 } from '../webConnectionUtils';
 
-const LOG_TAG = '[TrezorAdapter]';
 const TREZOR_MODEL_ONE_MAX_MESSAGE_BYTES = 1024;
 const REQUIRED_TREZOR_CAPABILITIES = [
   'Capability_Bitcoin',
@@ -108,7 +107,6 @@ export class TrezorAdapter implements HardwareWalletAdapter {
         );
       }
 
-      // Mark as connected - device is present
       this.connected = true;
     } catch (error) {
       // Clean up on error
@@ -130,8 +128,6 @@ export class TrezorAdapter implements HardwareWalletAdapter {
    * Disconnect from Trezor device
    */
   async disconnect(): Promise<void> {
-    console.log(LOG_TAG, 'Disconnecting');
-
     try {
       this.connected = false;
 
@@ -139,7 +135,6 @@ export class TrezorAdapter implements HardwareWalletAdapter {
         event: DeviceEvent.Disconnected,
       });
     } catch (error) {
-      console.error(LOG_TAG, 'Disconnect error:', error);
       this.options.onDisconnect(error);
     }
   }
@@ -155,8 +150,6 @@ export class TrezorAdapter implements HardwareWalletAdapter {
    * Clean up resources
    */
   destroy(): void {
-    console.log(LOG_TAG, 'Destroying adapter');
-
     // Unsubscribe from WebUSB events
     this.unsubscribeUsbEvents?.();
     this.unsubscribeUsbEvents = null;
@@ -183,8 +176,6 @@ export class TrezorAdapter implements HardwareWalletAdapter {
     }
 
     try {
-      console.log(LOG_TAG, 'Verifying device is ready');
-
       // Check if the Trezor Connect session has been established.
       // This doesn't open a popup - it just checks internal session state.
       // The actual PIN/passphrase prompts happen during signing operations.
@@ -198,8 +189,6 @@ export class TrezorAdapter implements HardwareWalletAdapter {
           unlocked,
         },
       } = features;
-
-      console.log(LOG_TAG, 'Trezor device status:', features);
 
       // For Trezor 5 and below, the usb will not be active until it is unlocked.
       if (!unlocked) {
@@ -265,12 +254,8 @@ export class TrezorAdapter implements HardwareWalletAdapter {
         );
       }
 
-      console.log(LOG_TAG, 'Device is ready');
-
       return true;
     } catch (error) {
-      console.error(LOG_TAG, 'Error verifying device ready:', error);
-
       if (error instanceof HardwareWalletError && error.code !== undefined) {
         // Emit appropriate device events with the properly reconstructed error
         const deviceEvent = getDeviceEventForError(
