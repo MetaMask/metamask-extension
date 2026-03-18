@@ -839,18 +839,8 @@
   "basicConfigurationModalCheckbox": {
     "message": "이해했습니다. 계속 진행하겠습니다"
   },
-  "basicConfigurationModalDisclaimerOff": {
+  "basicConfigurationModalDisclaimerOffPart1": {
     "message": "이렇게 하면 MetaMask에서 시간을 완전히 최적화할 수 없습니다. 기본 기능(토큰 세부 정보, 최적의 가스 설정 등)을 사용할 수 없게 됩니다."
-  },
-  "basicConfigurationModalDisclaimerOffAdditionalText": {
-    "message": "이 기능을 끄면 $1 및 $2에 포함된 모든 기능도 함께 비활성화됩니다.",
-    "description": "$1 and $2 are bold text for basicConfigurationModalDisclaimerOffAdditionalTextFeaturesFirst and basicConfigurationModalDisclaimerOffAdditionalTextFeaturesLast respectively"
-  },
-  "basicConfigurationModalDisclaimerOffAdditionalTextFeaturesFirst": {
-    "message": "보안 및 개인정보 보호, 백업 및 동기화"
-  },
-  "basicConfigurationModalDisclaimerOffAdditionalTextFeaturesLast": {
-    "message": "알림"
   },
   "basicConfigurationModalDisclaimerOn": {
     "message": "MetaMask에서 시간을 최적화하려면 이 기능을 켜야 합니다. 기본 기능(토큰 세부 정보, 최적의 가스 설정 등)은 웹3 경험에 중요한 요소입니다."
@@ -2244,12 +2234,6 @@
   },
   "dismissReminderField": {
     "message": "비밀복구구문 백업 알림 해지"
-  },
-  "dismissSmartAccountSuggestionEnabledDescription": {
-    "message": "이 옵션을 켜면 어떤 계정에서도 '스마트 계정으로 전환' 제안이 더 이상 표시되지 않습니다. 스마트 계정을 사용하면 더 빠른 트랜잭션을 더 낮은 네트워크 수수료로 이용할 수 있으며, 수수료 지불 방식도 더욱 유연해집니다."
-  },
-  "dismissSmartAccountSuggestionEnabledTitle": {
-    "message": "'스마트 계정으로 전환' 제안 끄기"
   },
   "displayNftMedia": {
     "message": "NFT 미디어 표시"

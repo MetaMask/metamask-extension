@@ -6,7 +6,37 @@ import { fireEvent, screen } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import configureStore from '../../../store/store';
+import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
 import MusdEducationScreen from './education';
+
+// Mock MetaMetricsContext so we can verify trackEvent calls
+jest.mock('../../../contexts/metametrics', () => {
+  const ReactActual = jest.requireActual<typeof import('react')>('react');
+  const _trackEvent = jest.fn().mockResolvedValue(undefined);
+  const ctx = ReactActual.createContext({
+    trackEvent: _trackEvent,
+    bufferedTrace: jest.fn().mockResolvedValue(undefined),
+    bufferedEndTrace: jest.fn().mockResolvedValue(undefined),
+    onboardingParentContext: { current: null },
+  });
+  ctx.Provider = (({ children }: { children: React.ReactNode }) =>
+    ReactActual.createElement(
+      ReactActual.Fragment,
+      null,
+      children,
+    )) as unknown as typeof ctx.Provider;
+  return {
+    MetaMetricsContext: ctx,
+    LegacyMetaMetricsProvider: ({ children }: { children: React.ReactNode }) =>
+      ReactActual.createElement(ReactActual.Fragment, null, children),
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    __mockTrackEvent: _trackEvent,
+  };
+});
+const { __mockTrackEvent: mockTrackEvent } = jest.requireMock<{
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  __mockTrackEvent: jest.Mock;
+}>('../../../contexts/metametrics');
 
 // Mock useMusdConversion hook
 const mockStartConversionFlow = jest.fn().mockResolvedValue(undefined);
@@ -92,6 +122,7 @@ const createMockStore = () => {
 describe('MusdEducationScreen', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockTrackEvent.mockResolvedValue(undefined);
     const { useTheme } = jest.requireMock('../../../hooks/useTheme');
     useTheme.mockReturnValue('light');
     mockSearchParamsGet.mockReturnValue(null);
@@ -210,6 +241,40 @@ describe('MusdEducationScreen', () => {
 
     expect(mockDispatch).toHaveBeenCalled();
     expect(mockNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE);
+  });
+
+  it('fires MusdBonusTermsOfUsePressed event when terms of use link is clicked', () => {
+    const store = createMockStore();
+    const { container } = renderWithProvider(<MusdEducationScreen />, store);
+
+    const termsLink = container.querySelector(
+      'a[href="https://metamask.io/musd-bonus-terms-of-use"]',
+    ) as HTMLElement;
+    expect(termsLink).not.toBeNull();
+    fireEvent.click(termsLink);
+
+    expect(mockTrackEvent).toHaveBeenCalledWith(
+      expect.objectContaining({
+        event: MetaMetricsEventName.MusdBonusTermsOfUsePressed,
+        properties: expect.objectContaining({
+          location: 'conversion_education_screen',
+        }),
+      }),
+    );
+  });
+
+  it('fires MusdFullscreenAnnouncementDisplayed on mount', () => {
+    const store = createMockStore();
+    renderWithProvider(<MusdEducationScreen />, store);
+
+    expect(mockTrackEvent).toHaveBeenCalledWith(
+      expect.objectContaining({
+        event: MetaMetricsEventName.MusdFullscreenAnnouncementDisplayed,
+        properties: expect.objectContaining({
+          location: 'conversion_education_screen',
+        }),
+      }),
+    );
   });
 
   it('shows "Continue" when geo-blocked (non-deeplink) and navigates home on click', () => {

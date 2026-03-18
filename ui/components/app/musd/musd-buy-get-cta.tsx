@@ -11,10 +11,6 @@ import React, { useCallback, useContext, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import type { Hex } from '@metamask/utils';
 import {
-  AvatarNetwork,
-  AvatarNetworkSize,
-  AvatarToken,
-  BadgeWrapper,
   Box,
   BoxAlignItems,
   BoxFlexDirection,
@@ -26,6 +22,13 @@ import {
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
+import {
+  AvatarNetwork,
+  AvatarNetworkSize,
+  AvatarToken,
+  BadgeWrapper,
+} from '../../component-library';
+import { BackgroundColor } from '../../../helpers/constants/design-system';
 import type { ChainId } from '../../../../shared/constants/network';
 import {
   MetaMetricsEventCategory,
@@ -149,18 +152,20 @@ export const MusdBuyGetCta: React.FC<MusdBuyGetCtaProps> = ({
       redirectsTo = REDIRECT_DESTINATIONS.CONVERSION_EDUCATION_SCREEN;
     }
 
+    const eventProperties = createMusdCtaClickedEventProperties({
+      location: MUSD_EVENTS_CONSTANTS.EVENT_LOCATIONS.HOME_SCREEN,
+      redirectsTo,
+      ctaType: MUSD_EVENTS_CONSTANTS.MUSD_CTA_TYPES.PRIMARY,
+      ctaText,
+      chainId: selectedChainId,
+      chainName: networkName,
+      clickTarget: MUSD_EVENTS_CONSTANTS.CTA_CLICK_TARGETS.CTA_BUTTON,
+    });
+
     trackEvent({
       event: MetaMetricsEventName.MusdConversionCtaClicked,
       category: MetaMetricsEventCategory.Tokens,
-      properties: createMusdCtaClickedEventProperties({
-        location: MUSD_EVENTS_CONSTANTS.EVENT_LOCATIONS.HOME_SCREEN,
-        redirectsTo,
-        ctaType: MUSD_EVENTS_CONSTANTS.MUSD_CTA_TYPES.PRIMARY,
-        ctaText,
-        chainId: selectedChainId,
-        chainName: networkName,
-        clickTarget: MUSD_EVENTS_CONSTANTS.CTA_CLICK_TARGETS.CTA_BUTTON,
-      }),
+      properties: eventProperties,
     });
 
     if (variant === BuyGetMusdCtaVariant.BUY) {
@@ -220,11 +225,13 @@ export const MusdBuyGetCta: React.FC<MusdBuyGetCtaProps> = ({
               size={AvatarNetworkSize.Xs}
               name={networkName}
               src={networkIcon}
-              className="musd-buy-get-cta__avatar-network"
+              backgroundColor={BackgroundColor.backgroundDefault}
+              borderWidth={2}
             />
           ) : undefined
         }
-        className="musd-buy-get-cta__badge"
+        marginRight={4}
+        style={{ alignSelf: 'center' }}
         data-testid="musd-buy-get-cta-icon"
       >
         <AvatarToken name="mUSD" src={musdIconUrl} />

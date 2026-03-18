@@ -392,12 +392,7 @@ export const getTokenBalancesControllerTokenBalances = createDeepEqualSelector(
           continue;
         }
 
-        let assetType;
-        try {
-          assetType = parseCaipAssetType(assetId);
-        } catch {
-          continue;
-        }
+        const assetType = parseCaipAssetType(assetId);
 
         if (assetType.chain.namespace !== KnownCaipNamespace.Eip155) {
           continue;

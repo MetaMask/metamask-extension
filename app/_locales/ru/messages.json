@@ -839,18 +839,8 @@
   "basicConfigurationModalCheckbox": {
     "message": "Я понимаю и хочу продолжить"
   },
-  "basicConfigurationModalDisclaimerOff": {
+  "basicConfigurationModalDisclaimerOffPart1": {
     "message": "Это означает, что вы не сможете полностью оптимизировать свое время в MetaMask. Вам будут недоступны базовые функции (например, сведения о токенах, оптимальные настройки газа и т. д.)."
-  },
-  "basicConfigurationModalDisclaimerOffAdditionalText": {
-    "message": "Отключение этого параметра также отключает все функции в разделах $1 и $2.",
-    "description": "$1 and $2 are bold text for basicConfigurationModalDisclaimerOffAdditionalTextFeaturesFirst and basicConfigurationModalDisclaimerOffAdditionalTextFeaturesLast respectively"
-  },
-  "basicConfigurationModalDisclaimerOffAdditionalTextFeaturesFirst": {
-    "message": "безопасность и конфиденциальность, резервное копирование и синхронизация"
-  },
-  "basicConfigurationModalDisclaimerOffAdditionalTextFeaturesLast": {
-    "message": "уведомления"
   },
   "basicConfigurationModalDisclaimerOn": {
     "message": "Чтобы оптимизировать свое время в MetaMask, вам необходимо включить эту функцию. Базовые функции (например, сведения о токенах, оптимальные настройки газа и другие) важны для работы с web3."
@@ -2244,12 +2234,6 @@
   },
   "dismissReminderField": {
     "message": "Отклонить напоминание о необходимости создать резервную копию секретной фразы для восстановления"
-  },
-  "dismissSmartAccountSuggestionEnabledDescription": {
-    "message": "Включите этот параметр, чтобы больше не видеть предложение «Перейдите на смарт-счет» ни в одном из счетов. Смарт-счета дают доступ к более быстрым транзакциям, более низким комиссиям сети и большей гибкости при их оплате."
-  },
-  "dismissSmartAccountSuggestionEnabledTitle": {
-    "message": "Отклонить предложение «Перейдите на смарт-счет»"
   },
   "displayNftMedia": {
     "message": "Показать NFT-носитель"

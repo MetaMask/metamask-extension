@@ -59,6 +59,13 @@ jobs:
         if: ${{ !cancelled() }}
         run: yarn allow-scripts auto
 
+      - name: Check feature flag registry
+        if: ${{ !cancelled() }}
+        env:
+          GITHUB_BASE_REF: ${{ github.base_ref }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: yarn tsx .github/scripts/check-feature-flag-registry.ts
+
       - name: Check working tree
         if: ${{ !cancelled() }}
         run: |
