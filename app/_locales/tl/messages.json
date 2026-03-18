@@ -839,18 +839,8 @@
   "basicConfigurationModalCheckbox": {
     "message": "Nauunawaan ko at nais kong magpatuloy"
   },
-  "basicConfigurationModalDisclaimerOff": {
+  "basicConfigurationModalDisclaimerOffPart1": {
     "message": "Ibig sabihin nito hindi mo lubos na mao-optimize ang iyong oras sa MetaMask. Ang mga batayang tampok (tulad ng mga detalye ng token, optimal na settings ng gas, at iba pa) ay hindi magiging available para sa iyo."
-  },
-  "basicConfigurationModalDisclaimerOffAdditionalText": {
-    "message": "Kapag in-off ito, madi-disable ang lahat ng feature sa loob ng $1 at $2.",
-    "description": "$1 and $2 are bold text for basicConfigurationModalDisclaimerOffAdditionalTextFeaturesFirst and basicConfigurationModalDisclaimerOffAdditionalTextFeaturesLast respectively"
-  },
-  "basicConfigurationModalDisclaimerOffAdditionalTextFeaturesFirst": {
-    "message": "seguridad at pagkapribado, backup at sync"
-  },
-  "basicConfigurationModalDisclaimerOffAdditionalTextFeaturesLast": {
-    "message": "mga notipikasyon"
   },
   "basicConfigurationModalDisclaimerOn": {
     "message": "Upang ma-optimize ang iyong oras sa MetaMask, kailangan mong i-on ang tampok na ito. Ang mga batayang function (tulad ng mga detalye ng token, optimal na settings ng gas, at iba pa) ay mahalaga sa karanasan sa web3."

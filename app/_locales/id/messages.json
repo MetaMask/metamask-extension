@@ -839,18 +839,8 @@
   "basicConfigurationModalCheckbox": {
     "message": "Saya memahami dan ingin melanjutkan"
   },
-  "basicConfigurationModalDisclaimerOff": {
+  "basicConfigurationModalDisclaimerOffPart1": {
     "message": "Artinya, Anda tidak akan benar-benar mengoptimalkan waktu di MetaMask. Fitur dasar (seperti detail token, pengaturan gas optimal, dan lainnya) tidak akan tersedia untuk Anda."
-  },
-  "basicConfigurationModalDisclaimerOffAdditionalText": {
-    "message": "Dengan menonaktifkan ini, Anda juga akan menonaktifkan semua fitur di $1 dan $2.",
-    "description": "$1 and $2 are bold text for basicConfigurationModalDisclaimerOffAdditionalTextFeaturesFirst and basicConfigurationModalDisclaimerOffAdditionalTextFeaturesLast respectively"
-  },
-  "basicConfigurationModalDisclaimerOffAdditionalTextFeaturesFirst": {
-    "message": "keamanan dan privasi, pencadangan dan sinkronisasi"
-  },
-  "basicConfigurationModalDisclaimerOffAdditionalTextFeaturesLast": {
-    "message": "notifikasi"
   },
   "basicConfigurationModalDisclaimerOn": {
     "message": "Untuk mengoptimalkan waktu di MetaMask, Anda perlu mengaktifkan fitur ini. Fungsi dasar (seperti detail token, pengaturan gas optimal, dan lainnya) penting untuk pengalaman web3."

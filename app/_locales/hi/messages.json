@@ -839,18 +839,8 @@
   "basicConfigurationModalCheckbox": {
     "message": "मैं समझता/समझती हूं और जारी रखना चाहता/चाहती हूं"
   },
-  "basicConfigurationModalDisclaimerOff": {
+  "basicConfigurationModalDisclaimerOffPart1": {
     "message": "इसका मतलब यह है कि आप MetaMask पर अपना समय सबसे अच्छे तरीके से इस्तेमाल नहीं कर पाएंगे। बेसिक फीचर्स (जैसे, टोकन विवरण, ऑप्टीमल गैस सेटिंग्स और अन्य) आपके लिए उपलब्ध नहीं होंगे।"
-  },
-  "basicConfigurationModalDisclaimerOffAdditionalText": {
-    "message": "इसे बंद करने से $1 और $2 के अंतर्गत आने वाले सभी फीचर्स भी बंद हो जाते हैं।",
-    "description": "$1 and $2 are bold text for basicConfigurationModalDisclaimerOffAdditionalTextFeaturesFirst and basicConfigurationModalDisclaimerOffAdditionalTextFeaturesLast respectively"
-  },
-  "basicConfigurationModalDisclaimerOffAdditionalTextFeaturesFirst": {
-    "message": "सुरक्षा और गोपनीयता, बैकअप और सिंक"
-  },
-  "basicConfigurationModalDisclaimerOffAdditionalTextFeaturesLast": {
-    "message": "नोटिफिकेशंस"
   },
   "basicConfigurationModalDisclaimerOn": {
     "message": "MetaMask पर अपना समय अच्छे तरीके से इस्तेमाल करने के लिए, आपको इस फीचर को चालू करना होगा। बुनियादी कार्य (जैसे, टोकन विवरण, ऑप्टीमल गैस सेटिंग्स और अन्य) Web3 अनुभव के लिए महत्वपूर्ण हैं।"

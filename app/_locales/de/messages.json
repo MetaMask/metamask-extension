@@ -839,18 +839,8 @@
   "basicConfigurationModalCheckbox": {
     "message": "Ich verstehe und möchte fortfahren"
   },
-  "basicConfigurationModalDisclaimerOff": {
+  "basicConfigurationModalDisclaimerOffPart1": {
     "message": "Dies bedeutet, dass Sie Ihre Zeit auf MetaMask nicht vollständig optimieren können. Grundlegende Funktionen (wie Token-Details, optimale Gas-Einstellungen und andere) stehen Ihnen nicht zur Verfügung."
-  },
-  "basicConfigurationModalDisclaimerOffAdditionalText": {
-    "message": "Durch Ausschalten dieser Funktion werden auch alle Funktionen innerhalb von $1 und $2 deaktiviert.",
-    "description": "$1 and $2 are bold text for basicConfigurationModalDisclaimerOffAdditionalTextFeaturesFirst and basicConfigurationModalDisclaimerOffAdditionalTextFeaturesLast respectively"
-  },
-  "basicConfigurationModalDisclaimerOffAdditionalTextFeaturesFirst": {
-    "message": "Sicherheit und Datenschutz, Backup und Synchronisierung"
-  },
-  "basicConfigurationModalDisclaimerOffAdditionalTextFeaturesLast": {
-    "message": "Benachrichtigungen"
   },
   "basicConfigurationModalDisclaimerOn": {
     "message": "Um Ihre Zeit auf MetaMask zu optimieren, müssen Sie diese Funktion einschalten. Grundlegende Funktionen (wie Token-Details, optimale Gas-Einstellungen und andere) sind für das Web3-Erlebnis wichtig."
