@@ -12,7 +12,7 @@ function assertPathDestination(
 
 describe('gatorPermissionsRoute', () => {
   describe('handler with valid parameters', () => {
-    it('should return path and query with valid type and site', () => {
+    it('should return encoded path with valid type and site', () => {
       const params = new URLSearchParams({
         [GatorPermissionsQueryParams.Type]: 'token-transfer',
         [GatorPermissionsQueryParams.Site]: 'https://example.com',
@@ -21,13 +21,10 @@ describe('gatorPermissionsRoute', () => {
       const result = gatorPermissions.handler(params);
 
       assertPathDestination(result);
-      expect(result.path).toBe('/');
-      expect(result.query.get(GatorPermissionsQueryParams.Type)).toBe(
-        'token-transfer',
+      expect(result.path).toBe(
+        '/gator-permissions/token-transfer/https%3A%2F%2Fexample.com',
       );
-      expect(result.query.get(GatorPermissionsQueryParams.Site)).toBe(
-        'https://example.com',
-      );
+      expect(result.query.toString()).toBe('');
     });
 
     it('should handle http protocol in site parameter', () => {
@@ -39,8 +36,8 @@ describe('gatorPermissionsRoute', () => {
       const result = gatorPermissions.handler(params);
 
       assertPathDestination(result);
-      expect(result.query.get(GatorPermissionsQueryParams.Site)).toBe(
-        'http://example.com',
+      expect(result.path).toBe(
+        '/gator-permissions/token-transfer/http%3A%2F%2Fexample.com',
       );
     });
 
@@ -53,8 +50,8 @@ describe('gatorPermissionsRoute', () => {
       const result = gatorPermissions.handler(params);
 
       assertPathDestination(result);
-      expect(result.query.get(GatorPermissionsQueryParams.Site)).toBe(
-        'https://example.com:8080',
+      expect(result.path).toBe(
+        '/gator-permissions/token-transfer/https%3A%2F%2Fexample.com%3A8080',
       );
     });
   });
@@ -108,7 +105,7 @@ describe('gatorPermissionsRoute', () => {
       });
 
       expect(() => gatorPermissions.handler(params)).toThrow(
-        'Invalid type parameter',
+        'Missing type parameter',
       );
     });
   });
@@ -142,17 +139,16 @@ describe('gatorPermissionsRoute', () => {
 
     // @ts-expect-error This function is missing from the Mocha type definitions
     it.each(invalidSiteCases)(
-      'should not include invalid site in query: $description',
+      'should throw error for invalid site: $description',
       ({ site }: InvalidSiteTestCase) => {
         const params = new URLSearchParams({
           [GatorPermissionsQueryParams.Type]: 'token-transfer',
           [GatorPermissionsQueryParams.Site]: site,
         });
 
-        const result = gatorPermissions.handler(params);
-
-        assertPathDestination(result);
-        expect(result.query.has(GatorPermissionsQueryParams.Site)).toBe(false);
+        expect(() => gatorPermissions.handler(params)).toThrow(
+          'Invalid site parameter',
+        );
       },
     );
   });

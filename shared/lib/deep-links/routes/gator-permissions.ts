@@ -1,4 +1,4 @@
-import { DEFAULT_ROUTE, Route } from './route';
+import { Route } from './route';
 
 export enum GatorPermissionsQueryParams {
   Type = 'type',
@@ -38,13 +38,14 @@ export const gatorPermissions = new Route({
       throw new Error('Missing site parameter');
     }
 
-    if (isValidOrigin(site)) {
-      const encodedSite = encodeURIComponent(site);
-      return {
-        path: `/gator-permissions/token-transfer/${encodedSite}`,
-        query,
-      };
+    if (!isValidOrigin(site)) {
+      throw new Error('Invalid site parameter');
     }
-    return { path: DEFAULT_ROUTE, query };
+
+    const encodedSite = encodeURIComponent(site);
+    return {
+      path: `/gator-permissions/token-transfer/${encodedSite}`,
+      query,
+    };
   },
 });
