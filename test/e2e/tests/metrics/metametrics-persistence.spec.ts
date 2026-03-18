@@ -1,5 +1,5 @@
 import { strict as assert } from 'assert';
-import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { getCleanAppState, withFixtures } from '../../helpers';
 import { MOCK_META_METRICS_ID } from '../../constants';
 import HomePage from '../../page-objects/pages/home/homepage';
@@ -11,7 +11,7 @@ describe('MetaMetrics ID persistence', function () {
   it('MetaMetrics ID should persist when the user opts-out and then opts-in again of MetaMetrics collection', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withMetaMetricsController({
             metaMetricsId: MOCK_META_METRICS_ID,
             participateInMetaMetrics: true,
@@ -33,7 +33,9 @@ describe('MetaMetrics ID persistence', function () {
         await settingsPage.goToPrivacySettings();
         const privacySettings = new PrivacySettings(driver);
         await privacySettings.checkPageIsLoaded();
-        await privacySettings.toggleParticipateInMetaMetrics();
+        await privacySettings.toggleParticipateInMetaMetrics({
+          targetState: 'off',
+        });
 
         // wait for state to update
         await driver.delay(500);

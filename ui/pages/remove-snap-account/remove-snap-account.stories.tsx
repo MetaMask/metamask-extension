@@ -15,7 +15,6 @@ export default {
 export const DefaultStory = () => (
   <RemoveSnapAccount
     snapId="npm:@metamask/test-snap-bip44"
-    snapName="BIP-44"
     publicAddress="0xde939393DDe455081fFb3Dfd027E189919F04BD0"
     onCancel={() => {}}
   />

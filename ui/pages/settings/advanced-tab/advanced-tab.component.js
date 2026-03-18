@@ -139,22 +139,17 @@ export default class AdvancedTab extends PureComponent {
             <Button
               variant={ButtonVariant.Secondary}
               data-testid="advanced-setting-state-logs-button"
-              onClick={() => {
-                window.logStateString(async (err, result) => {
-                  if (err) {
-                    displayErrorInSettings(t('stateLogError'));
-                  } else {
-                    try {
-                      await exportAsFile(
-                        `${t('stateLogFileName')}.json`,
-                        result,
-                        ExportableContentType.JSON,
-                      );
-                    } catch (error) {
-                      displayErrorInSettings(error.message);
-                    }
-                  }
-                });
+              onClick={async () => {
+                try {
+                  const result = await window.logStateString();
+                  await exportAsFile(
+                    `${t('stateLogFileName')}.json`,
+                    result,
+                    ExportableContentType.JSON,
+                  );
+                } catch (error) {
+                  displayErrorInSettings(error.message || t('stateLogError'));
+                }
               }}
             >
               {t('downloadStateLogs')}
