@@ -238,6 +238,8 @@ export class ManifestPlugin<Z extends boolean> {
         development: true,
       });
     }
+
+    compressionController.finalize();
   }
 
   /**
