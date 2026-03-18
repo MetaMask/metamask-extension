@@ -15,6 +15,17 @@ const fsAsync = pify(fs);
 // if not working it may error or print minified garbage
 //
 
+// Sources to skip during source map validation. The perps controller uses a
+// dynamic import() for the MYX provider that is intentionally stripped from
+// the published package. Webpack emits `new Error` chunk-loading stubs for
+// that import, and their source maps point back to the `import()` expression
+// rather than a real `new Error` in the original source, which causes a false
+// validation failure.
+// TODO: Remove this skip once the MYX provider is included in the published
+// @metamask/perps-controller package (i.e. the dynamic import resolves to a
+// real module and the source maps align correctly).
+const SOURCEMAP_SKIP_SOURCES = ['node_modules/@metamask/perps-controller/'];
+
 start().catch((error) => {
   console.error(error);
   process.exit(1);
@@ -142,6 +153,11 @@ async function validateSourcemapForFile({ buildName, optional = false }) {
         console.error(
           `missing source for position, in bundle "${buildName}"\n${codeSample}`,
         );
+        return;
+      }
+      if (
+        SOURCEMAP_SKIP_SOURCES.some((prefix) => result.source.includes(prefix))
+      ) {
         return;
       }
       const sourceContent = consumer.sourceContentFor(result.source);
