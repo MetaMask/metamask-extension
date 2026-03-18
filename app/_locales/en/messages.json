@@ -774,9 +774,6 @@
   "autoLockAfterMinutes": {
     "message": "After $1 minutes"
   },
-  "autoLockImmediately": {
-    "message": "Immediately"
-  },
   "autoLockNever": {
     "message": "Never"
   },
