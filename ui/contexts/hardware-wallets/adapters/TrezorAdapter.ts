@@ -56,9 +56,8 @@ export class TrezorAdapter implements HardwareWalletAdapter {
     this.unsubscribeUsbEvents = subscribeToWebUsbEvents(
       HardwareWalletType.Trezor,
       // onConnect - device plugged in (could be used for auto-reconnect in the future)
-      () => {
-        // Currently no-op: we don't auto-reconnect when device is plugged in
-        // The user will trigger connect through UI action
+      async () => {
+        await this.connect();
       },
       // onDisconnect - device unplugged
       () => {

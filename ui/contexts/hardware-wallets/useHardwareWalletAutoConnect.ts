@@ -61,7 +61,6 @@ export const useHardwareWalletAutoConnect = ({
   useEffect(
     () => {
       if (
-        !isOnAutoConnectRoute ||
         !isHardwareWalletAccount ||
         !walletType ||
         hardwareConnectionPermissionState ===
@@ -105,14 +104,20 @@ export const useHardwareWalletAutoConnect = ({
           return;
         }
 
-        updateConnectionState(ConnectionState.connected());
         setHardwareConnectionPermissionState(currentPermissionState);
 
         if (
-          currentPermissionState ===
-            HardwareConnectionPermissionState.Granted &&
-          !adapterRef.current?.isConnected()
+          currentPermissionState !== HardwareConnectionPermissionState.Granted
         ) {
+          return;
+        }
+
+        if (adapterRef.current?.isConnected()) {
+          updateConnectionState(ConnectionState.connected());
+          return;
+        }
+
+        if (!adapterRef.current?.isConnected()) {
           // Synchronous check-and-set to prevent race condition
           // This must happen atomically before any async work
           if (isConnectingRef.current) {
@@ -124,12 +129,16 @@ export const useHardwareWalletAutoConnect = ({
           if (connect) {
             try {
               await connect();
-              if (!abortSignal.aborted) {
+              if (!abortSignal.aborted && adapterRef.current?.isConnected()) {
+                updateConnectionState(ConnectionState.connected());
                 setAutoConnected(effectAccountAddress);
+              } else if (!abortSignal.aborted && !isOnAutoConnectRoute) {
+                updateConnectionState(ConnectionState.disconnected());
               }
             } catch {
-              // Connection failed, don't mark as connected
-              // Error is already handled by connectRef implementation
+              if (!abortSignal.aborted && !isOnAutoConnectRoute) {
+                updateConnectionState(ConnectionState.disconnected());
+              }
             } finally {
               // Reset connecting state when done (success or failure)
               isConnectingRef.current = false;
@@ -208,13 +217,13 @@ export const useHardwareWalletAutoConnect = ({
     // eslint-disable-next-line react-compiler/react-compiler
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [
-      isOnAutoConnectRoute,
       isHardwareWalletAccount,
       walletType,
       hardwareConnectionPermissionState,
       isWebHidAvailable,
       isWebUsbAvailable,
       handleDisconnect,
+      isOnAutoConnectRoute,
       setHardwareConnectionPermissionState,
       updateConnectionState,
       setAutoConnected,
@@ -225,7 +234,6 @@ export const useHardwareWalletAutoConnect = ({
   useEffect(
     () => {
       if (
-        !isOnAutoConnectRoute ||
         !isHardwareWalletAccount ||
         !walletType ||
         hardwareConnectionPermissionState !==
@@ -269,13 +277,15 @@ export const useHardwareWalletAutoConnect = ({
             const connect = connectRef.current;
             try {
               await connect();
-              // Check cancellation again after async connect completes
-              if (!abortSignal.aborted) {
+              if (!abortSignal.aborted && adapterRef.current?.isConnected()) {
                 setAutoConnected(effectAccountAddress ?? null);
+              } else if (!abortSignal.aborted && !isOnAutoConnectRoute) {
+                updateConnectionState(ConnectionState.disconnected());
               }
             } catch {
-              // Connection failed, don't mark as auto-connected
-              // Error is already handled by connectRef implementation
+              if (!abortSignal.aborted && !isOnAutoConnectRoute) {
+                updateConnectionState(ConnectionState.disconnected());
+              }
             } finally {
               // Reset connecting state when done (success or failure)
               isConnectingRef.current = false;
@@ -294,13 +304,14 @@ export const useHardwareWalletAutoConnect = ({
     // eslint-disable-next-line react-compiler/react-compiler
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [
-      isOnAutoConnectRoute,
       isHardwareWalletAccount,
       accountAddress,
       walletType,
       hardwareConnectionPermissionState,
+      isOnAutoConnectRoute,
       resetAutoConnectState,
       setAutoConnected,
+      updateConnectionState,
     ],
   );
 };

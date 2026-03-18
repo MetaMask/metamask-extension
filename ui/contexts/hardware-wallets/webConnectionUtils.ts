@@ -333,7 +333,7 @@ export function subscribeToWebHidEvents(
  */
 export function subscribeToWebUsbEvents(
   walletType: HardwareWalletType,
-  onConnect: (device: USBDevice) => void,
+  onConnect: (device: USBDevice) => Promise<void>,
   onDisconnect: (device: USBDevice) => void,
 ): () => void {
   if (!isWebUsbAvailable()) {

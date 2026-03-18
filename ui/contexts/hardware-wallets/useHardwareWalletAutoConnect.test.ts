@@ -74,6 +74,11 @@ describe('useHardwareWalletAutoConnect', () => {
     mockConnectRef = jest.fn();
     mockResetAutoConnectState = jest.fn();
     mockSetAutoConnected = jest.fn();
+
+    (
+      webConnectionUtils.checkHardwareWalletPermission as jest.Mock
+    ).mockResolvedValue(HardwareConnectionPermissionState.Granted);
+    (webConnectionUtils.getConnectedDevices as jest.Mock).mockResolvedValue([]);
   });
 
   const setupHook = (
@@ -198,7 +203,11 @@ describe('useHardwareWalletAutoConnect', () => {
       const mockAdapter = {
         connect: jest.fn().mockResolvedValue(undefined),
         disconnect: jest.fn().mockResolvedValue(undefined),
-        isConnected: jest.fn().mockReturnValue(false),
+        isConnected: jest
+          .fn()
+          .mockReturnValueOnce(false)
+          .mockReturnValueOnce(false)
+          .mockReturnValue(true),
         destroy: jest.fn(),
       };
 
@@ -262,6 +271,41 @@ describe('useHardwareWalletAutoConnect', () => {
         webConnectionUtils.checkHardwareWalletPermission,
       ).toHaveBeenCalledWith(HardwareWalletType.Ledger);
       expect(mockConnectRefWithError).toHaveBeenCalled();
+      expect(mockSetAutoConnected).not.toHaveBeenCalled();
+    });
+
+    it('clears silent native connect failures outside hardware routes', async () => {
+      const mockAdapter = {
+        connect: jest.fn().mockResolvedValue(undefined),
+        disconnect: jest.fn().mockResolvedValue(undefined),
+        isConnected: jest
+          .fn()
+          .mockReturnValueOnce(false)
+          .mockReturnValueOnce(false)
+          .mockReturnValue(false),
+        destroy: jest.fn(),
+      };
+
+      setupHook(
+        {},
+        {
+          adapterRef: { current: mockAdapter },
+          connectRef: { current: mockConnectRef },
+        },
+        [DEFAULT_ROUTE],
+      );
+
+      const subscribeCall = (
+        webConnectionUtils.subscribeToWebHidEvents as jest.Mock
+      ).mock.calls[0];
+      const connectCallback = subscribeCall[1];
+
+      await connectCallback({ productId: 123 } as HIDDevice);
+
+      expect(mockConnectRef).toHaveBeenCalled();
+      expect(mockUpdateConnectionState).toHaveBeenCalledWith(
+        ConnectionState.disconnected(),
+      );
       expect(mockSetAutoConnected).not.toHaveBeenCalled();
     });
 
@@ -444,7 +488,11 @@ describe('useHardwareWalletAutoConnect', () => {
     it('does not subscribe outside confirmation routes', () => {
       setupHook({}, {}, [DEFAULT_ROUTE]);
 
-      expect(webConnectionUtils.subscribeToWebHidEvents).not.toHaveBeenCalled();
+      expect(webConnectionUtils.subscribeToWebHidEvents).toHaveBeenCalledWith(
+        HardwareWalletType.Ledger,
+        expect.any(Function),
+        expect.any(Function),
+      );
       expect(webConnectionUtils.subscribeToWebUsbEvents).not.toHaveBeenCalled();
     });
   });
@@ -455,7 +503,17 @@ describe('useHardwareWalletAutoConnect', () => {
       refsOverrides: Partial<HardwareWalletRefs> = {},
       initialEntries: string[] = [CONFIRM_TRANSACTION_ROUTE],
     ) => {
+      const defaultAdapter = {
+        connect: jest.fn().mockResolvedValue(undefined),
+        disconnect: jest.fn().mockResolvedValue(undefined),
+        isConnected: jest
+          .fn()
+          .mockReturnValueOnce(false)
+          .mockReturnValue(true),
+        destroy: jest.fn(),
+      };
       const refs = createMockRefs({
+        adapterRef: { current: defaultAdapter },
         connectRef: { current: mockConnectRef },
         ...refsOverrides,
       });
@@ -540,18 +598,66 @@ describe('useHardwareWalletAutoConnect', () => {
       expect(mockConnectRef).not.toHaveBeenCalled();
     });
 
-    it('does not auto-connect outside confirmation routes', async () => {
+    it('auto-connects outside confirmation routes', async () => {
+      const mockAdapter = {
+        connect: jest.fn().mockResolvedValue(undefined),
+        disconnect: jest.fn().mockResolvedValue(undefined),
+        isConnected: jest
+          .fn()
+          .mockReturnValueOnce(false)
+          .mockReturnValue(true),
+        destroy: jest.fn(),
+      };
+
       (webConnectionUtils.getConnectedDevices as jest.Mock).mockResolvedValue([
         { productId: 123 },
       ]);
 
-      setupAutoConnectHook({}, {}, [DEFAULT_ROUTE]);
+      setupAutoConnectHook(
+        {},
+        {
+          adapterRef: { current: mockAdapter },
+        },
+        [DEFAULT_ROUTE],
+      );
 
       await waitFor(() => {
-        expect(webConnectionUtils.getConnectedDevices).not.toHaveBeenCalled();
+        expect(mockSetAutoConnected).toHaveBeenCalledWith('0x123');
       });
 
-      expect(mockConnectRef).not.toHaveBeenCalled();
+      expect(webConnectionUtils.getConnectedDevices).toHaveBeenCalledWith(
+        HardwareWalletType.Ledger,
+      );
+      expect(mockConnectRef).toHaveBeenCalled();
+    });
+
+    it('clears silent auto-connect failures outside hardware routes', async () => {
+      const mockAdapter = {
+        connect: jest.fn().mockResolvedValue(undefined),
+        disconnect: jest.fn().mockResolvedValue(undefined),
+        isConnected: jest.fn().mockReturnValue(false),
+        destroy: jest.fn(),
+      };
+
+      (webConnectionUtils.getConnectedDevices as jest.Mock).mockResolvedValue([
+        { productId: 123 },
+      ]);
+
+      setupAutoConnectHook(
+        {},
+        {
+          adapterRef: { current: mockAdapter },
+        },
+        [DEFAULT_ROUTE],
+      );
+
+      await waitFor(() => {
+        expect(mockConnectRef).toHaveBeenCalled();
+      });
+
+      expect(mockUpdateConnectionState).toHaveBeenCalledWith(
+        ConnectionState.disconnected(),
+      );
       expect(mockSetAutoConnected).not.toHaveBeenCalled();
     });
 
