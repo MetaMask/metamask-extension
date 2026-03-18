@@ -2245,12 +2245,6 @@
   "dismissReminderField": {
     "message": "Erinnerung an die Sicherung der geheimen Wiederherstellungsphrase ignorieren"
   },
-  "dismissSmartAccountSuggestionEnabledDescription": {
-    "message": "Schalten Sie dies ein, um den Vorschlag „Zum Smart-Konto wechseln“ für kein Konto mehr zu sehen. Smart-Konten ermöglichen schnellere Transaktionen, niedrigere Netzwerkgebühren und mehr Flexibilität bei der Zahlung."
-  },
-  "dismissSmartAccountSuggestionEnabledTitle": {
-    "message": "Vorschlag „Zum Smart-Konto wechseln“ ausblenden"
-  },
   "displayNftMedia": {
     "message": "NFT-Medien anzeigen"
   },

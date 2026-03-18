@@ -2245,12 +2245,6 @@
   "dismissReminderField": {
     "message": "I-dismiss ang back up na paalala ng Lihim na Parirala sa Pagbawi"
   },
-  "dismissSmartAccountSuggestionEnabledDescription": {
-    "message": "I-on ito para hindi na makita ang mungkahing \"Lumipat sa Smart Account\" sa anumang account. Sa mga smart account, mas mabilis ang mga transaksyon, mas mababa ang bayarin sa network, at mas flexible ang pagbabayad."
-  },
-  "dismissSmartAccountSuggestionEnabledTitle": {
-    "message": "I-dismiss ang mungkahing \"Lumipat sa Smart Account\""
-  },
   "displayNftMedia": {
     "message": "Ipakita ang NFT media"
   },

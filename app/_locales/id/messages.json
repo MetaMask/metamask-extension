@@ -2245,12 +2245,6 @@
   "dismissReminderField": {
     "message": "Lewatkan pengingat pencadangan Frasa Pemulihan Rahasia"
   },
-  "dismissSmartAccountSuggestionEnabledDescription": {
-    "message": "Aktifkan ini agar saran \"Beralih ke Akun Cerdas\" tidak muncul lagi di akun mana pun. Akun cerdas memungkinkan transaksi yang lebih cepat, biaya jaringan yang lebih rendah, serta fleksibilitas pembayaran yang lebih besar untuk akun tersebut."
-  },
-  "dismissSmartAccountSuggestionEnabledTitle": {
-    "message": "Tolak saran \"Beralih ke Akun Cerdas\""
-  },
   "displayNftMedia": {
     "message": "Tampilkan media NFT"
   },

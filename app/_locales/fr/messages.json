@@ -2245,12 +2245,6 @@
   "dismissReminderField": {
     "message": "Annuler le rappel de sauvegarde de la phrase secrète de récupération"
   },
-  "dismissSmartAccountSuggestionEnabledDescription": {
-    "message": "Activez cette option si vous ne voulez plus voir la suggestion « Passez à un compte intelligent » apparaitre sur vos comptes. Les comptes intelligents vous permettent de bénéficier de transactions plus rapides, de frais de réseau moins élevés et de moyens de paiement flexibles."
-  },
-  "dismissSmartAccountSuggestionEnabledTitle": {
-    "message": "Désactiver la suggestion « Passez à un compte intelligent »"
-  },
   "displayNftMedia": {
     "message": "Afficher les médias NFT"
   },
