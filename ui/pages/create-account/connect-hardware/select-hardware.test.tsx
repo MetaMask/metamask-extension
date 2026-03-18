@@ -14,7 +14,7 @@ jest.mock('../../../helpers/utils/window', () => ({
   openWindow: jest.fn(),
 }));
 
-jest.mock('../../../../shared/modules/browser-runtime.utils', () => ({
+jest.mock('../../../../shared/lib/browser-runtime.utils', () => ({
   getBrowserName: () => 'chrome',
 }));
 
