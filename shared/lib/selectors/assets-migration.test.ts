@@ -51,7 +51,6 @@ const enabledFlags = {
     [ASSETS_UNIFY_STATE_FLAG]: {
       enabled: true,
       featureVersion: ASSETS_UNIFY_STATE_VERSION_1,
-      minimumVersion: null,
     },
   },
 };
@@ -698,6 +697,27 @@ describe('getTokensControllerAllIgnoredTokens', () => {
 });
 
 describe('getTokenBalancesControllerTokenBalances', () => {
+  const enabledFeatureFlags = {
+    [ASSETS_UNIFY_STATE_FLAG]: {
+      enabled: true,
+      featureVersion: ASSETS_UNIFY_STATE_VERSION_1,
+    },
+  };
+
+  const baseInternalAccounts = {
+    accounts: {
+      [mockAccountId]: {
+        id: mockAccountId,
+        address: mockAccountAddressLowercase,
+        type: 'eip155:eoa',
+      },
+      [mockAccountId2]: {
+        id: mockAccountId2,
+        type: 'solana:data-account',
+      },
+    },
+  };
+
   describe('when assets unify state feature is disabled', () => {
     it('returns tokenBalances from state unchanged', () => {
       const legacyTokenBalances = {
@@ -723,12 +743,7 @@ describe('getTokenBalancesControllerTokenBalances', () => {
     it('derives tokenBalances from new state structure', () => {
       const state = {
         metamask: {
-          remoteFeatureFlags: {
-            [ASSETS_UNIFY_STATE_FLAG]: {
-              enabled: true,
-              featureVersion: ASSETS_UNIFY_STATE_VERSION_1,
-            },
-          },
+          remoteFeatureFlags: enabledFeatureFlags,
           tokenBalances: {},
           assetsInfo: {
             [nativeEthAssetId]: { type: 'native', decimals: 18 },
@@ -740,19 +755,8 @@ describe('getTokenBalancesControllerTokenBalances', () => {
               [erc20AssetId]: { amount: '1' },
             },
           },
-          internalAccounts: {
-            accounts: {
-              [mockAccountId]: {
-                id: mockAccountId,
-                address: mockAccountAddressLowercase,
-                type: 'eip155:eoa',
-              },
-              [mockAccountId2]: {
-                id: mockAccountId2,
-                type: 'solana:data-account',
-              },
-            },
-          },
+          customAssets: {},
+          internalAccounts: baseInternalAccounts,
         },
       };
       const result = getTokenBalancesControllerTokenBalances(state);
@@ -766,6 +770,94 @@ describe('getTokenBalancesControllerTokenBalances', () => {
           },
         },
       });
+    });
+
+    it('adds zero-balance placeholder for custom EVM token not yet in assetsBalance', () => {
+      const customTokenAddress: Hex =
+        '0x4d5f47fa6a74757f35c14fd3a6ef8e3c9bc514e8';
+      const customTokenAssetId = `eip155:1/erc20:${customTokenAddress}`;
+      const customTokenAddressChecksummed = toChecksumHexAddress(
+        customTokenAddress,
+      ) as Hex;
+
+      const state = {
+        metamask: {
+          remoteFeatureFlags: enabledFeatureFlags,
+          tokenBalances: {},
+          assetsInfo: {
+            [customTokenAssetId]: {
+              type: 'erc20',
+              decimals: 18,
+              symbol: 'aEthWETH',
+              name: 'Aave Ethereum WETH',
+            },
+          },
+          assetsBalance: {},
+          customAssets: {
+            [mockAccountId]: [customTokenAssetId],
+          },
+          internalAccounts: baseInternalAccounts,
+        },
+      };
+      const result = getTokenBalancesControllerTokenBalances(state);
+
+      expect(result).toStrictEqual({
+        [mockAccountAddressLowercase]: {
+          '0x1': {
+            [customTokenAddressChecksummed]: '0x0',
+          },
+        },
+      });
+    });
+
+    it('does not overwrite real balance with zero placeholder', () => {
+      const state = {
+        metamask: {
+          remoteFeatureFlags: enabledFeatureFlags,
+          tokenBalances: {},
+          assetsInfo: {
+            [erc20AssetId]: { type: 'erc20', decimals: 6 },
+          },
+          assetsBalance: {
+            [mockAccountId]: {
+              [erc20AssetId]: { amount: '1' },
+            },
+          },
+          customAssets: {
+            [mockAccountId]: [erc20AssetId],
+          },
+          internalAccounts: baseInternalAccounts,
+        },
+      };
+      const result = getTokenBalancesControllerTokenBalances(state);
+
+      expect(result[mockAccountAddressLowercase]['0x1']).toStrictEqual({
+        [erc20AssetAddressChecksummed]: '0xf4240', // real balance, not 0x0
+      });
+    });
+
+    it('skips custom non-EVM tokens', () => {
+      const state = {
+        metamask: {
+          remoteFeatureFlags: enabledFeatureFlags,
+          tokenBalances: {},
+          assetsInfo: {
+            [solanaTokenAssetId]: {
+              type: 'token',
+              decimals: 6,
+              symbol: 'USDC',
+            },
+          },
+          assetsBalance: {},
+          customAssets: {
+            [mockAccountId2]: [solanaTokenAssetId],
+          },
+          internalAccounts: baseInternalAccounts,
+        },
+      };
+      const result = getTokenBalancesControllerTokenBalances(state);
+
+      expect(result).toStrictEqual({});
     });
   });
 
@@ -1463,7 +1555,6 @@ describe('getCurrencyRateControllerCurrencyRates', () => {
             [ASSETS_UNIFY_STATE_FLAG]: {
               enabled: true,
               featureVersion: ASSETS_UNIFY_STATE_VERSION_1,
-              minimumVersion: null,
             },
           },
           currentCurrency: 'usd',
@@ -1521,7 +1612,6 @@ describe('getCurrencyRateControllerCurrencyRates', () => {
             [ASSETS_UNIFY_STATE_FLAG]: {
               enabled: true,
               featureVersion: ASSETS_UNIFY_STATE_VERSION_1,
-              minimumVersion: null,
             },
           },
           currentCurrency: 'eur',
@@ -1710,7 +1800,6 @@ describe('getTokenRatesControllerMarketData', () => {
             [ASSETS_UNIFY_STATE_FLAG]: {
               enabled: true,
               featureVersion: ASSETS_UNIFY_STATE_VERSION_1,
-              minimumVersion: null,
             },
           },
           marketData: {},

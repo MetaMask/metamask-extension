@@ -9,7 +9,7 @@ import { getNativeTokenAddress } from '@metamask/assets-controllers';
 import { BigNumber } from 'bignumber.js';
 import type { TransactionPaymentToken } from '@metamask/transaction-pay-controller';
 import { useConfirmContext } from '../../context/confirm';
-import { hasTransactionType } from '../../utils/transaction-pay';
+import { hasTransactionType } from '../../../../../shared/lib/transactions.utils';
 import { updateEventFragment } from '../../../../store/actions';
 import { useTransactionPayToken } from './useTransactionPayToken';
 import {
