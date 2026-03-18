@@ -1,6 +1,6 @@
 const nodeCrypto = require('crypto');
 const fs = require('fs');
-const { execSync } = require('child_process');
+const { execFileSync } = require('child_process');
 const os = require('os');
 const path = require('path');
 const {
@@ -117,32 +117,37 @@ class FirefoxDriver {
 
   /**
    * Returns the path to a cached XPI for the given unpacked extension directory.
-   * Builds the XPI on first call; reuses it when manifest.json content is unchanged.
-   * Uses a content hash because setManifestFlags rewrites the file (changing mtime)
-   * even when the content is identical.
+   * Builds the XPI on first call; reuses it as long as no file in the directory
+   * is newer than the cached XPI. The cache filename is derived from the
+   * directory path so different addon dirs get independent caches.
    *
    * @param {string} addonDir - Path to the unpacked extension directory
    * @returns {string} Path to the XPI file
    */
   static _getOrBuildXpi(addonDir) {
     const absDir = path.resolve(addonDir);
-    const xpiPath = path.join(os.tmpdir(), 'metamask-e2e-cached.xpi');
-    const hashPath = `${xpiPath}.sha256`;
-
-    const manifestContent = fs.readFileSync(path.join(absDir, 'manifest.json'));
-    const currentHash = nodeCrypto
+    const dirHash = nodeCrypto
       .createHash('sha256')
-      .update(manifestContent)
-      .digest('hex');
+      .update(absDir)
+      .digest('hex')
+      .slice(0, 12);
+    const xpiPath = path.join(os.tmpdir(), `metamask-e2e-${dirHash}.xpi`);
 
-    let needsRebuild = true;
-    try {
-      const cachedHash = fs.readFileSync(hashPath, 'utf8').trim();
-      if (cachedHash === currentHash && fs.existsSync(xpiPath)) {
-        needsRebuild = false;
+    let needsRebuild = !fs.existsSync(xpiPath);
+
+    if (!needsRebuild) {
+      // Rebuild if any file in the source directory is newer than the cached XPI.
+      // `find -newer` exits on first match, so this is fast even for large dirs.
+      try {
+        const result = execFileSync(
+          'find',
+          [absDir, '-newer', xpiPath, '-type', 'f', '-print', '-quit'],
+          { encoding: 'utf8' },
+        ).trim();
+        needsRebuild = result.length > 0;
+      } catch (_) {
+        needsRebuild = true;
       }
-    } catch (_) {
-      // hash file doesn't exist yet
     }
 
     if (needsRebuild) {
@@ -151,8 +156,14 @@ class FirefoxDriver {
       } catch (_) {
         // file didn't exist
       }
-      execSync(`cd "${absDir}" && zip -r -1 -q "${xpiPath}" .`);
-      fs.writeFileSync(hashPath, currentHash);
+      try {
+        execFileSync('zip', ['-r', '-1', '-q', xpiPath, '.'], { cwd: absDir });
+      } catch (e) {
+        throw new Error(
+          `Failed to build XPI from ${absDir}. ` +
+            `Ensure the extension has been built (e.g. yarn build:test:mv2): ${e.message}`,
+        );
+      }
     }
 
     return xpiPath;
