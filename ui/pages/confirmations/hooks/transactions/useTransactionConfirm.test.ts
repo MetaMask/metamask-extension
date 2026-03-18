@@ -13,7 +13,11 @@ import {
 import { GAS_FEE_TOKEN_MOCK } from '../../../../../test/data/confirmations/gas';
 import { getMockConfirmStateForTransaction } from '../../../../../test/data/confirmations/helper';
 import { renderHookWithConfirmContextProvider } from '../../../../../test/lib/confirmations/render-helpers';
-import { ENVIRONMENT_TYPE_NOTIFICATION } from '../../../../../shared/constants/app';
+import {
+  ENVIRONMENT_TYPE_NOTIFICATION,
+  ENVIRONMENT_TYPE_POPUP,
+  ENVIRONMENT_TYPE_SIDEPANEL,
+} from '../../../../../shared/constants/app';
 import {
   attemptCloseNotificationPopup,
   updateAndApproveTx,
@@ -587,5 +591,89 @@ describe('useTransactionConfirm', () => {
     expect(actual.isGasFeeSponsored).toBe(
       TRANSACTION_META_MOCK.isGasFeeSponsored,
     );
+  });
+
+  it('returns true after successful transaction in popup environment', async () => {
+    mockGetEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_POPUP);
+
+    const { onTransactionConfirm } = runHook();
+
+    const result = await onTransactionConfirm();
+
+    expect(result).toBe(true);
+    expect(updateAndApproveTxMock).toHaveBeenCalledTimes(1);
+  });
+
+  it('returns true after successful transaction in sidepanel', async () => {
+    mockGetEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_SIDEPANEL);
+
+    const { onTransactionConfirm } = runHook();
+
+    const result = await onTransactionConfirm();
+
+    expect(result).toBe(true);
+    expect(updateAndApproveTxMock).toHaveBeenCalledTimes(1);
+  });
+
+  it('returns true on successful transaction confirm', async () => {
+    const { onTransactionConfirm } = runHook();
+
+    const result = await onTransactionConfirm();
+
+    expect(result).toBe(true);
+  });
+
+  it('returns false and shows error modal on hardware wallet error', async () => {
+    const hwError = new Error('Ledger error');
+    mockIsHardwareWalletError.mockReturnValue(true);
+    mockIsUserRejectedHardwareWalletError.mockReturnValue(false);
+    updateAndApproveTxMock.mockReturnValue(() => Promise.reject(hwError));
+
+    const showErrorModalMock = jest.fn();
+    useHardwareWalletErrorMock.mockReturnValue({
+      showErrorModal: showErrorModalMock,
+      dismissErrorModal: jest.fn(),
+      isErrorModalVisible: false,
+      setErrorModalSuppressed: jest.fn(),
+    });
+
+    const { onTransactionConfirm } = runHook();
+
+    const result = await onTransactionConfirm();
+
+    expect(result).toBe(false);
+    expect(showErrorModalMock).toHaveBeenCalledWith(hwError);
+  });
+
+  it('returns false and does not show error modal on hardware wallet user rejection', async () => {
+    const hwError = new Error('User rejected on device');
+    mockIsHardwareWalletError.mockReturnValue(true);
+    mockIsUserRejectedHardwareWalletError.mockReturnValue(true);
+    updateAndApproveTxMock.mockReturnValue(() => Promise.reject(hwError));
+
+    const showErrorModalMock = jest.fn();
+    useHardwareWalletErrorMock.mockReturnValue({
+      showErrorModal: showErrorModalMock,
+      dismissErrorModal: jest.fn(),
+      isErrorModalVisible: false,
+      setErrorModalSuppressed: jest.fn(),
+    });
+
+    const { onTransactionConfirm } = runHook();
+
+    const result = await onTransactionConfirm();
+
+    expect(result).toBe(false);
+    expect(showErrorModalMock).not.toHaveBeenCalled();
+  });
+
+  it('rethrows non-hardware wallet errors', async () => {
+    const genericError = new Error('Network error');
+    mockIsHardwareWalletError.mockReturnValue(false);
+    updateAndApproveTxMock.mockReturnValue(() => Promise.reject(genericError));
+
+    const { onTransactionConfirm } = runHook();
+
+    await expect(onTransactionConfirm()).rejects.toThrow('Network error');
   });
 });
