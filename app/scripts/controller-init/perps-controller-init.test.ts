@@ -220,7 +220,7 @@ describe('PerpsControllerInit', () => {
       expect(constructorCall.deferEligibilityCheck).toBe(false);
     });
 
-    it('uses only completedOnboarding for deferEligibilityCheck when PreferencesController is undefined', () => {
+    it('defers eligibility check when PreferencesController is undefined (conservative: assume opt-out)', () => {
       const request = getInitRequestMock();
       request.persistedState.OnboardingController = {
         completedOnboarding: true,
@@ -230,7 +230,7 @@ describe('PerpsControllerInit', () => {
       PerpsControllerInit(request);
 
       const constructorCall = PerpsControllerMock.mock.calls[0][0];
-      expect(constructorCall.deferEligibilityCheck).toBe(false);
+      expect(constructorCall.deferEligibilityCheck).toBe(true);
     });
 
     it('passes persisted state directly to the controller', () => {
