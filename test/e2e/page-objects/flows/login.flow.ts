@@ -40,6 +40,7 @@ export const login = async (
   } else if (options?.expectedBalance !== undefined) {
     await homePage.checkExpectedBalanceIsDisplayed(options.expectedBalance);
   } else if (options?.validateBalance !== false) {
+    // defaults to 25 ETH
     await homePage.checkExpectedBalanceIsDisplayed();
   }
 };
