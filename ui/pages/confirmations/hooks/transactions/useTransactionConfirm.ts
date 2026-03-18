@@ -96,7 +96,7 @@ export function useTransactionConfirm() {
 
     if (isGaslessSupportedSTX) {
       handleSmartTransaction();
-    } else if (isGaslessSupported && selectedGasFeeToken) {
+    } else if (selectedGasFeeToken) {
       handleGasless7702();
     }
 
@@ -126,7 +126,6 @@ export function useTransactionConfirm() {
   }, [
     newTransactionMeta,
     customNonceValue,
-    isGaslessSupported,
     isGaslessSupportedSTX,
     dispatch,
     showErrorModal,
