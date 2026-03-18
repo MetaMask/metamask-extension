@@ -26,6 +26,7 @@ export function getTransactionPayControllerMessenger(
     messenger: controllerMessenger,
     actions: [
       'AccountTrackerController:getState',
+      'AssetsController:getStateForTransactionPay',
       'BridgeController:fetchQuotes',
       'BridgeStatusController:submitTx',
       'CurrencyRateController:getState',
