@@ -2,8 +2,7 @@ name: QA Stats
 
 on:
   schedule:
-    - cron: '0 3 * * *'
-    - cron: '0 15 * * *'
+    - cron: '0 4 * * *'
 
 jobs:
   collect-qa-stats:
