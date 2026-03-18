@@ -61,7 +61,7 @@ import { getSanitizedChainId, extractWalletIdFromGroupId } from './utils';
 const ACCOUNT_LRU_CACHE_SIZE = 20; // one entry per address (worst case: simulation details with ~20 balance-change addresses)
 const GROUP_LRU_CACHE_SIZE = 20; // one entry per visible account group (multichain-account-list renders all groups simultaneously)
 const CHAIN_LRU_CACHE_SIZE = 10; // one entry per unique chain/scope (max ~8 chains active simultaneously across all consumers)
-export const SINGLE_LOOKUP_LRU_CACHE_SIZE = 5; // selectors used for individual lookups, never rendered in a list
+const SINGLE_LOOKUP_LRU_CACHE_SIZE = 5; // selectors used for individual lookups, never rendered in a list
 
 /**
  * Retrieve account tree state.

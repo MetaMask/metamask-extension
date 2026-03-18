@@ -187,7 +187,8 @@ import {
   getCurrentNetworkTransactions,
 } from './transactions';
 import { EMPTY_ARRAY, EMPTY_OBJECT } from './shared';
-import { SINGLE_LOOKUP_LRU_CACHE_SIZE } from './multichain-accounts/account-tree';
+
+const PERMITTED_ACCOUNTS_LRU_CACHE_SIZE = 5;
 
 /**
  * @typedef {import('../../ui/store/store').MetaMaskReduxState} MetaMaskReduxState
@@ -3561,7 +3562,7 @@ function getPermittedEVMChains(state, origin) {
 }
 
 export const getAllPermittedAccounts = createParameterizedSelector(
-  SINGLE_LOOKUP_LRU_CACHE_SIZE,
+  PERMITTED_ACCOUNTS_LRU_CACHE_SIZE,
 )(
   subjectSelector,
   (_state, origin) => origin,
