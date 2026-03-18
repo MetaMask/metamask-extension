@@ -1,8 +1,12 @@
 import { DecodedPermission } from '@metamask/gator-permissions-controller';
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
+
 import { getMockTypedSignPermissionConfirmState } from '../../../../../../../../test/data/confirmations/helper';
-import { renderWithConfirmContextProvider, renderWithConfirmContext } from '../../../../../../../../test/lib/confirmations/render-helpers';
+import {
+  renderWithConfirmContextProvider,
+  renderWithConfirmContext,
+} from '../../../../../../../../test/lib/confirmations/render-helpers';
 import { enLocale as messages } from '../../../../../../../../test/lib/i18n-helpers';
 import TypedSignPermissionInfo from './typed-sign-permission';
 
@@ -15,7 +19,7 @@ jest.mock(
   }),
 );
 
-jest.mock('../../../../..//utils/token', () => ({
+jest.mock('../../../../../utils/token', () => ({
   ...jest.requireActual('../../../../../utils/token'),
   fetchErc20DecimalsOrThrow: jest.fn().mockResolvedValue(18),
 }));
