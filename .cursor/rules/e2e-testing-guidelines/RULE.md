@@ -117,6 +117,8 @@ For new test code, use `FixtureBuilderV2` by default.
 - `withShowNativeTokenAsMainBalanceDisabled`
 - `withShowNativeTokenAsMainBalanceEnabled`
 - `withSmartTransactionsOptedOut`
+- `withStorageServiceData` — inject arbitrary StorageService data by namespace/key/value
+- `withTokenListControllerStorageServiceData` — inject token list data for a chain into StorageService
 - `withTokensControllerERC20`
 - `withTrezorAccount`
 - `withTransactionControllerApprovedTransaction`

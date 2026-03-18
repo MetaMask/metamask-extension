@@ -101,7 +101,7 @@ type FixtureBuildResult = FixtureType & {
 class FixtureBuilderV2 {
   fixture: FixtureType;
 
-  #storageServiceData: Record<string, unknown> = {};
+  storageServiceData: Record<string, unknown> = {};
 
   /**
    * Constructs a new instance of the FixtureBuilder class.
@@ -709,7 +709,7 @@ class FixtureBuilderV2 {
     key: StorageServiceNamespaceMap[Namespace]['key'];
     value: StorageServiceNamespaceMap[Namespace]['value'];
   }): this {
-    this.#storageServiceData[`storageService:${namespace}:${key}`] = value;
+    this.storageServiceData[`storageService:${namespace}:${key}`] = value;
     return this;
   }
 
@@ -725,11 +725,10 @@ class FixtureBuilderV2 {
   }
 
   build(): FixtureBuildResult {
-    const result: FixtureBuildResult = { ...this.fixture };
-    if (Object.keys(this.#storageServiceData).length > 0) {
-      result.storageServiceData = { ...this.#storageServiceData };
-    }
-    return result;
+    return {
+      ...this.fixture,
+      storageServiceData: this.storageServiceData,
+    };
   }
 }
 
