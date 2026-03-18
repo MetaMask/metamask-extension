@@ -3,15 +3,10 @@ import type { Mockttp } from 'mockttp';
 import { Suite } from 'mocha';
 import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
 import { WALLET_PASSWORD } from '../../constants';
-import {
-  getEventPayloads,
-  veryLargeDelayMs,
-  withFixtures,
-} from '../../helpers';
+import { getEventPayloads, withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import CriticalErrorPage from '../../page-objects/pages/critical-error-page';
-import PhishingWarningPage from '../../page-objects/pages/phishing-warning-page';
-import TestDapp from '../../page-objects/pages/test-dapp';
+import DeepLink from '../../page-objects/pages/deep-link-page';
 import { PAGES } from '../../webdriver/driver';
 import LoginPage from '../../page-objects/pages/login-page';
 import { getManifestVersion } from '../../set-manifest-flags';
@@ -24,21 +19,28 @@ import {
   getConfig,
   mockFeatureFlagsWithoutNonEvmAccounts,
 } from '../vault-corruption/helpers';
-import { BlockProvider } from '../phishing-controller/helpers';
-import { setupPhishingDetectionMocks } from '../phishing-controller/mocks';
+import {
+  bytesToB64,
+  generateECDSAKeyPair,
+  mockDeepLinkPages,
+  prepareDeepLinkUrl,
+} from '../deep-link/helpers';
 
 // Match timeout values in critical-startup-error-handler.ts
 const BACKGROUND_CONNECTION_TIMEOUT = 15_000;
-const DEFAULT_BLOCKED_DOMAIN =
-  'a379a6f6eeafb9a55e378c118034e2751e682fab9f2d30ab13d2125586ce1947';
+const DEEP_LINK_UTM_SOURCE = 'critical-error-timeout-recovery';
 
-async function getTrackedEventCount(
+async function getDeepLinkEventCount(
   driver: Parameters<typeof getEventPayloads>[0],
   mockedEndpoints: Parameters<typeof getEventPayloads>[1],
-  eventName: MetaMetricsEventName,
 ): Promise<number> {
   const events = await getEventPayloads(driver, mockedEndpoints);
-  return events.filter((event) => event?.event === eventName).length;
+  return events.filter(
+    (event) =>
+      event?.event === MetaMetricsEventName.DeepLinkUsed &&
+      event?.properties?.route === '/home' &&
+      event?.properties?.utm_source === DEEP_LINK_UTM_SOURCE,
+  ).length;
 }
 
 describe('Critical errors', function (this: Suite) {
@@ -185,22 +187,21 @@ describe('Critical errors', function (this: Suite) {
     );
   });
 
-  it('emits PhishingPageDisplayed only once after restoring from a background state sync timeout', async function () {
+  it('emits DeepLinkUsed only once after restoring from a background state sync timeout', async function () {
     if (process.env.SELENIUM_BROWSER === 'firefox') {
       this.skip();
     }
 
     this.timeout(150_000);
 
+    const keyPair = await generateECDSAKeyPair();
+    const deepLinkPublicKey = bytesToB64(
+      await crypto.subtle.exportKey('raw', keyPair.publicKey),
+    );
+
     async function mockServices(mockServer: Mockttp) {
       await mockFeatureFlagsWithoutNonEvmAccounts(mockServer);
-      await setupPhishingDetectionMocks(mockServer, {
-        statusCode: 200,
-        blockProvider: BlockProvider.MetaMask,
-        blocklist: ['127.0.0.1'],
-        c2DomainBlocklist: [DEFAULT_BLOCKED_DOMAIN],
-        blocklistPaths: [],
-      });
+      await mockDeepLinkPages(mockServer);
 
       const segmentEndpoint = await mockServer
         .forPost('https://api.segment.io/v1/batch')
@@ -218,20 +219,16 @@ describe('Critical errors', function (this: Suite) {
           additionalIgnoredErrors: ['Background state sync timeout'],
           additionalManifestFlags: {
             testing: {
+              deepLinkPublicKey,
               simulateBackgroundStateSyncHang: true,
             },
           },
         }),
         disableServerMochaToBackground: true,
-        dappOptions: { numberOfTestDapps: 1 },
         testSpecificMock: mockServices,
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
-        await onboardThenTriggerTimeOutFlow(driver, {
-          // Opt into MetaMetrics before the timeout so the pre-restore controller
-          // can also emit, which makes duplicate phishing listeners observable.
-          participateInMetaMetrics: true,
-        });
+        await onboardThenTriggerTimeOutFlow(driver);
 
         const criticalErrorPage = new CriticalErrorPage(driver);
         await criticalErrorPage.checkPageIsLoaded();
@@ -248,33 +245,40 @@ describe('Critical errors', function (this: Suite) {
           participateInMetaMetrics: true,
         });
 
-        const phishingEventsBefore = await getTrackedEventCount(
+        const deepLinkEventsBefore = await getDeepLinkEventCount(
           driver,
           mockedEndpoints,
-          MetaMetricsEventName.PhishingPageDisplayed,
         );
 
-        const testDapp = new TestDapp(driver);
-        await testDapp.openTestDappPage();
+        const preparedUrl = await prepareDeepLinkUrl({
+          route: `/home?utm_source=${DEEP_LINK_UTM_SOURCE}`,
+          signed: 'signed with sig_params',
+          privateKey: keyPair.privateKey,
+        });
 
-        // This mitigates a race where the initial blocked navigation refreshes before
-        // the phishing warning tab is fully attached.
-        await driver.delay(veryLargeDelayMs);
-        await driver.switchToWindowWithTitle('MetaMask Phishing Detection');
+        await driver.openNewURL(preparedUrl);
 
-        const phishingWarningPage = new PhishingWarningPage(driver);
-        await phishingWarningPage.checkPageIsLoaded();
+        const deepLinkPage = new DeepLink(driver);
+        await deepLinkPage.checkPageIsLoaded();
 
-        const phishingEventsAfter = await getTrackedEventCount(
+        await driver.wait(async () => {
+          const deepLinkEventsCurrent = await getDeepLinkEventCount(
+            driver,
+            mockedEndpoints,
+          );
+
+          return deepLinkEventsCurrent >= deepLinkEventsBefore + 1;
+        }, 10_000);
+
+        const deepLinkEventsAfter = await getDeepLinkEventCount(
           driver,
           mockedEndpoints,
-          MetaMetricsEventName.PhishingPageDisplayed,
         );
 
         assert.equal(
-          phishingEventsAfter - phishingEventsBefore,
+          deepLinkEventsAfter - deepLinkEventsBefore,
           1,
-          'Opening a blocked page after timeout recovery should emit one phishing metric',
+          'Opening one deep link after timeout recovery should emit one deep link metric',
         );
       },
     );
