@@ -160,6 +160,7 @@
     "glob-parent": "^6.0.2",
     "js-sha3": "^0.9.2",
     "@metamask/keyring-internal-api": "^10.0.0",
+    "@metamask/perps-controller": "npm:@metamask-previews/perps-controller@1.2.0-preview-e0f8f1907",
     "ast-types": "^0.14.2",
     "acorn@^7.0.0": "patch:acorn@npm:7.4.1#.yarn/patches/acorn-npm-7.4.1-f450b4646c.patch",
     "acorn@^7.4.1": "patch:acorn@npm:7.4.1#.yarn/patches/acorn-npm-7.4.1-f450b4646c.patch",
@@ -260,7 +261,6 @@
     "fast-xml-parser": "^5.3.6",
     "minimatch@npm:^10.1.1": "10.2.4",
     "@metamask/snaps-controllers": "^18.0.4",
-    "@myx-trade/sdk@npm:^0.1.265": "npm:0.1.267",
     "@metamask/multichain-account-service@npm:^7.0.0": "patch:@metamask/multichain-account-service@npm%3A7.1.0#~/.yarn/patches/@metamask-multichain-account-service-npm-7.1.0-4b0ce989c3.patch",
     "@metamask/multichain-account-service@npm:^7.1.0": "patch:@metamask/multichain-account-service@npm%3A7.1.0#~/.yarn/patches/@metamask-multichain-account-service-npm-7.1.0-4b0ce989c3.patch"
   },
