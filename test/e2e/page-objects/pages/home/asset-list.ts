@@ -605,7 +605,9 @@ class AssetListPage {
   }
 
   /**
-   * Waits until the token at the given position matches the expected name.
+   * Waits until the token at the given 1-based position matches the expected
+   * name. Uses findElements + index because each token-list-button lives in
+   * its own wrapper, so :nth-child cannot address position across siblings.
    *
    * @param options - The options object.
    * @param options.position - 1-based position in the token list.
@@ -621,10 +623,18 @@ class AssetListPage {
     console.log(
       `Waiting for token at position ${position} to be "${tokenName}"`,
     );
-    await this.driver.waitForSelector({
-      css: `${this.tokenListItem}:nth-child(${position})`,
-      text: tokenName,
-    });
+    const index = position - 1;
+    await this.driver.waitUntil(
+      async () => {
+        const elements = await this.driver.findElements(this.tokenListItem);
+        if (elements.length <= index) {
+          return false;
+        }
+        const text = await elements[index].getText();
+        return text.includes(tokenName);
+      },
+      { timeout: this.driver.timeout, interval: 100 },
+    );
   }
 
   /**

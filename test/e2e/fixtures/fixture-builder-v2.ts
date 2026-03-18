@@ -741,7 +741,6 @@ class FixtureBuilderV2 {
       storageServiceData: this.storageServiceData,
     };
   }
-  }
 }
 
 export default FixtureBuilderV2;
