@@ -431,7 +431,7 @@ describe('PerpsOrderEntryPage', () => {
       );
     });
 
-    it('calls updatePositionTPSL when in modify mode', async () => {
+    it('calls updatePositionTPSL when in modify mode with amount 0', async () => {
       mockSearchParams.set('mode', 'modify');
       mockLivePositions.mockReturnValue({
         positions: mockPositions,
@@ -450,6 +450,38 @@ describe('PerpsOrderEntryPage', () => {
         [
           expect.objectContaining({
             symbol: 'ETH',
+          }),
+        ],
+      );
+    });
+
+    it('calls perpsPlaceOrder when in modify mode with amount > 0', async () => {
+      mockSearchParams.set('mode', 'modify');
+      mockLivePositions.mockReturnValue({
+        positions: mockPositions,
+        isInitialLoading: false,
+      });
+
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      const amountContainer = screen.getByTestId('amount-input-field');
+      const input = amountContainer.querySelector('input');
+      fireEvent.change(input as HTMLInputElement, {
+        target: { value: '500' },
+      });
+
+      await act(async () => {
+        fireEvent.click(screen.getByTestId('submit-order-button'));
+      });
+
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'perpsPlaceOrder',
+        [
+          expect.objectContaining({
+            symbol: 'ETH',
+            isBuy: true,
+            orderType: 'market',
           }),
         ],
       );

@@ -110,6 +110,21 @@ describe('usePerpsOrderForm', () => {
 
       expect(result.current.formState.autoCloseEnabled).toBe(true);
     });
+
+    it('initializes amount empty so user enters size increase, not total', () => {
+      const { result } = renderHookWithProvider(
+        () =>
+          usePerpsOrderForm({
+            ...defaultOptions,
+            mode: 'modify',
+            existingPosition,
+          }),
+        mockStateWithLocale,
+      );
+
+      expect(result.current.formState.amount).toBe('');
+      expect(result.current.formState.balancePercent).toBe(0);
+    });
   });
 
   describe('handlers', () => {

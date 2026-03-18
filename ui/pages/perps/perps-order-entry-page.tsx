@@ -366,6 +366,34 @@ const PerpsOrderEntryPage: React.FC = () => {
           throw new Error(result.error || 'Failed to close position');
         }
       } else if (orderMode === 'modify' && position) {
+        const marginAmount =
+          parseFloat(orderFormState.amount.replace(/,/gu, '')) || 0;
+
+        if (marginAmount > 0) {
+          // Add to position: place order with additional size + TP/SL
+          const orderParams = formStateToOrderParams(
+            orderFormState,
+            currentPrice,
+            orderMode,
+            position?.size,
+          );
+          const result = await submitRequestToBackground<{
+            success: boolean;
+            error?: string;
+          }>('perpsPlaceOrder', [orderParams]);
+          if (!result.success) {
+            throw new Error(result.error || 'Failed to add to position');
+          }
+
+          if (orderFormState.type === 'limit') {
+            handleBackClick();
+            return;
+          }
+          setPendingOrderSymbol(orderFormState.asset);
+          return;
+        }
+
+        // Amount is 0: only update TP/SL
         const cleanTp =
           orderFormState.autoCloseEnabled && orderFormState.takeProfitPrice
             ? orderFormState.takeProfitPrice.replace(/,/gu, '')
