@@ -7614,9 +7614,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/perps-controller@npm:^1.2.0":
-  version: 1.2.0
-  resolution: "@metamask/perps-controller@npm:1.2.0"
+"@metamask/perps-controller@npm:@metamask-previews/perps-controller@1.2.0-preview-e0f8f1907":
+  version: 1.2.0-preview-e0f8f1907
+  resolution: "@metamask-previews/perps-controller@npm:1.2.0-preview-e0f8f1907"
   dependencies:
     "@metamask/abi-utils": "npm:^2.0.3"
     "@metamask/base-controller": "npm:^9.0.0"
@@ -7628,7 +7628,7 @@ __metadata:
     bignumber.js: "npm:^9.1.2"
     reselect: "npm:^5.1.1"
     uuid: "npm:^8.3.2"
-  checksum: 10/124aba93298d4784135ca09166e87544c37d1b52630268ff3e8e56c03d39862cb19cbe53be252651d6e6b635b187b69e1cbefc4eeaeb698f6019ce5a092eecff
+  checksum: 10/4a8be2c3c865588cf199c5341349cc47c52df27afc27bea1c30ab3f43f82470a7bbb7e8fc27f64c89d04f5fc780be73a079c718bddc696ca4909f8141a177f40
   languageName: node
   linkType: hard
 
@@ -8842,9 +8842,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@myx-trade/sdk@npm:0.1.267":
-  version: 0.1.267
-  resolution: "@myx-trade/sdk@npm:0.1.267"
+"@myx-trade/sdk@npm:^0.1.265":
+  version: 0.1.271
+  resolution: "@myx-trade/sdk@npm:0.1.271"
   dependencies:
     "@ethersproject/bytes": "npm:^5.8.0"
     "@ethersproject/providers": "npm:^5.8.0"
@@ -8859,7 +8859,7 @@ __metadata:
     viem: "npm:^2.36.0"
     wretch: "npm:^2.11.0"
     ws: "npm:^8.18.3"
-  checksum: 10/c6b90329ea6c71e317403a37c9c8de4811fa80bebc862422c7aea29bb1a5fdb22dd367e24cc0cb4c5387e792dcc9dc3e7ebb5be441e8f6a3e4a1df8181a2ed60
+  checksum: 10/c787840f4dfa8e30ac7c2b40fba5e6e3fa3f30c633377e19331c6f50a2d331de3be4bf33520f2e0d3e9eb5c92daa57033f28fdad76c5ba8d78600f537a60462d
   languageName: node
   linkType: hard
 
