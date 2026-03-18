@@ -137,7 +137,6 @@ export const TransactionControllerInit: ControllerInitFunction<
         return false;
       }
 
-      const { chainId } = transactionMeta;
       const { chainId, isExternalSign } = transactionMeta;
       const uiState = getUIState(getFlatState());
 
