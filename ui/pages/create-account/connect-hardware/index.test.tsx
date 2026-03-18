@@ -16,10 +16,14 @@ import { CHAIN_IDS } from '../../../../shared/constants/network';
 import ConnectHardwareForm from '.';
 
 const mockConnectHardware = jest.fn();
+const mockConnectHardwareAction = jest.fn();
 const mockCheckHardwareStatus = jest.fn().mockResolvedValue(false);
 
 jest.mock('../../../store/actions', () => ({
-  connectHardware: () => mockConnectHardware,
+  connectHardware: (...args: unknown[]) => {
+    mockConnectHardwareAction(...args);
+    return mockConnectHardware;
+  },
   checkHardwareStatus: () => mockCheckHardwareStatus,
 }));
 
@@ -594,6 +598,7 @@ describe('ConnectHardwareForm', () => {
       mockConnectHardware
         .mockReset()
         .mockResolvedValue([{ address: '0xLedger1', balance: null, index: 0 }]);
+      mockConnectHardwareAction.mockClear();
 
       await simulateScanCompletion(store);
 
@@ -607,7 +612,7 @@ describe('ConnectHardwareForm', () => {
       });
 
       await waitFor(() => {
-        const qrCalls = mockConnectHardware.mock.calls.filter(
+        const qrCalls = mockConnectHardwareAction.mock.calls.filter(
           (call: unknown[]) => call[0] === HardwareDeviceNames.qr,
         );
         expect(qrCalls).toHaveLength(0);
