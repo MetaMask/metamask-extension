@@ -7,8 +7,8 @@ import {
   KeyringControllerSignUserOperationAction,
 } from '@metamask/keyring-controller';
 import type {
-  TransactionControllerEmulateNewTransaction,
-  TransactionControllerEmulateTransactionUpdate,
+  TransactionControllerEmulateNewTransactionAction,
+  TransactionControllerEmulateTransactionUpdateAction,
 } from '@metamask/transaction-controller';
 import { RootMessenger } from '../../lib/messenger';
 
@@ -60,8 +60,8 @@ export function getUserOperationControllerMessenger(
 }
 
 type InitMessengerActions =
-  | TransactionControllerEmulateNewTransaction
-  | TransactionControllerEmulateTransactionUpdate;
+  | TransactionControllerEmulateNewTransactionAction
+  | TransactionControllerEmulateTransactionUpdateAction;
 
 type InitMessengerEvents = never;
 
