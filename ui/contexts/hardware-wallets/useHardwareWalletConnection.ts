@@ -323,6 +323,8 @@ export const useHardwareWalletConnection = ({
       }
 
       const ensurePromise = (async (): Promise<boolean> => {
+        refs.isEnsuringDeviceReadyRef.current = true;
+
         const abortSignalAtStart = refs.abortControllerRef.current?.signal;
         if (abortSignalAtStart?.aborted) {
           return false;
@@ -378,7 +380,11 @@ export const useHardwareWalletConnection = ({
             const result = await adapter.ensureDeviceReady({
               requireBlindSigning,
             });
+            console.log('[Trezor] result', result);
+            console.log('[Trezor] abortSignal?.aborted', abortSignal?.aborted);
+            console.log('[Trezor] isEnsureStale()', isEnsureStale());
             if (abortSignal?.aborted || isEnsureStale()) {
+              console.log('[Trezor] because aborted or stale');
               return false;
             }
             if (result) {
@@ -416,6 +422,8 @@ export const useHardwareWalletConnection = ({
         if (trackedPromise === ensurePromise) {
           refs.ensureDeviceReadyPromiseRef.current.delete(requireBlindSigning);
         }
+        refs.isEnsuringDeviceReadyRef.current =
+          refs.ensureDeviceReadyPromiseRef.current.size > 0;
       });
 
       return ensurePromise;

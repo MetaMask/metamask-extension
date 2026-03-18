@@ -41,8 +41,6 @@ export class TrezorAdapter implements HardwareWalletAdapter {
 
   private connected = false;
 
-  private pendingOperation = false;
-
   private unsubscribeUsbEvents: (() => void) | null = null;
 
   constructor(options: HardwareWalletAdapterOptions) {
@@ -90,8 +88,6 @@ export class TrezorAdapter implements HardwareWalletAdapter {
    *
    */
   async connect(): Promise<void> {
-    console.log(LOG_TAG, 'Connecting to device');
-
     try {
       // Step 1: Check WebUSB availability
       if (!isWebUsbAvailable()) {
@@ -115,8 +111,6 @@ export class TrezorAdapter implements HardwareWalletAdapter {
       // Mark as connected - device is present
       this.connected = true;
     } catch (error) {
-      console.error(LOG_TAG, 'Connection error:', error);
-
       // Clean up on error
       this.connected = false;
 
@@ -168,16 +162,6 @@ export class TrezorAdapter implements HardwareWalletAdapter {
     this.unsubscribeUsbEvents = null;
 
     this.connected = false;
-    this.pendingOperation = false;
-  }
-
-  /**
-   * Set pending operation state
-   *
-   * @param pending - Whether an operation is pending
-   */
-  setPendingOperation(pending: boolean): void {
-    this.pendingOperation = pending;
   }
 
   /**
