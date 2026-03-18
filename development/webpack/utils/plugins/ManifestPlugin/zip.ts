@@ -26,6 +26,7 @@ const RSS_SAMPLE_INTERVAL_MS = 250;
 const THROUGHPUT_SMOOTHING_FACTOR = 0.25;
 const MAX_ASYNC_JOBS = 4;
 const CI_MAX_ASYNC_JOBS = 3;
+const CI_MEMORY_SOFT_LIMIT = 4 * GiB;
 const FAST_MACHINE_PARALLELISM_THRESHOLD = 8;
 const FAST_MACHINE_MEMORY_THRESHOLD = 16 * GiB;
 const IS_CI = process.env.CI === '1' || process.env.CI === 'true';
@@ -126,7 +127,9 @@ export function createZipCompressionController(): ZipCompressionController {
     maxAsyncJobs: IS_CI
       ? CI_MAX_ASYNC_JOBS
       : clamp(parallelism - 1, 1, MAX_ASYNC_JOBS),
-    memorySoftLimit: clamp(Math.floor(totalMemory / 4), 512 * MiB, 2 * GiB),
+    memorySoftLimit: IS_CI
+      ? CI_MEMORY_SOFT_LIMIT
+      : clamp(Math.floor(totalMemory / 4), 512 * MiB, 2 * GiB),
   });
 }
 
@@ -200,7 +203,7 @@ function createAdaptiveZipCompressionController({
 
   if (shouldLogDiagnostics) {
     console.log(
-      `[zip-adaptive] start threshold_kib=${toKiB(asyncSizeThreshold)} max_async_jobs=${maxAsyncJobs} max_async_bytes=${maxAsyncBytes} memory_soft_limit=${memorySoftLimit}`,
+      `[zip-adaptive] start threshold_kib=${toKiB(asyncSizeThreshold)} max_async_jobs=${maxAsyncJobs} max_async_bytes=${maxAsyncBytes} memory_soft_limit=${memorySoftLimit} rss=${process.memoryUsage.rss()}`,
     );
   }
 
@@ -237,7 +240,7 @@ function createAdaptiveZipCompressionController({
 
     didLogSummary = true;
     console.log(
-      `[zip-adaptive] summary final_threshold_kib=${toKiB(asyncSizeThreshold)} sync_samples=${syncSamples} async_samples=${asyncSamples} retunes=${retuneCount} below_threshold=${fallbackCounts.belowThreshold} max_jobs=${fallbackCounts.maxAsyncJobs} max_async_bytes=${fallbackCounts.maxAsyncBytes} memory_soft_limit_hits=${fallbackCounts.memorySoftLimit}`,
+      `[zip-adaptive] summary final_threshold_kib=${toKiB(asyncSizeThreshold)} sync_samples=${syncSamples} async_samples=${asyncSamples} retunes=${retuneCount} below_threshold=${fallbackCounts.belowThreshold} max_jobs=${fallbackCounts.maxAsyncJobs} max_async_bytes=${fallbackCounts.maxAsyncBytes} memory_soft_limit_hits=${fallbackCounts.memorySoftLimit} rss=${process.memoryUsage.rss()}`,
     );
   }
 
