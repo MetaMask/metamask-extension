@@ -4763,9 +4763,7 @@ describe('Actions', () => {
       await store.dispatch(actions.setPna25Acknowledged(true));
 
       expect(background.setPna25Acknowledged.callCount).toStrictEqual(1);
-      expect(
-        background.setPna25Acknowledged.getCall(0).args,
-      ).toStrictEqual([
+      expect(background.setPna25Acknowledged.getCall(0).args).toStrictEqual([
         true,
         false,
       ]);
@@ -4780,9 +4778,7 @@ describe('Actions', () => {
       await store.dispatch(actions.setPna25Acknowledged(true, true));
 
       expect(background.setPna25Acknowledged.callCount).toStrictEqual(1);
-      expect(
-        background.setPna25Acknowledged.getCall(0).args,
-      ).toStrictEqual([
+      expect(background.setPna25Acknowledged.getCall(0).args).toStrictEqual([
         true,
         true,
       ]);
