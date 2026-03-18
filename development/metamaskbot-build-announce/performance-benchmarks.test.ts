@@ -304,16 +304,16 @@ describe('buildBenchmarkSection', () => {
       expect(html).toContain('</details>');
     });
 
-    it('uses 7-column headers: Metric | Mean | Min | Max | Std Dev | P75 | P95 (ms)', () => {
+    it('uses 7-column headers: Metric (ms) | Mean | Min | Max | Std Dev | P75 | P95', () => {
       const html = buildBenchmarkSection(result, '👆 Interaction Benchmarks');
 
-      expect(html).toContain('>Metric<');
-      expect(html).toContain('>Mean (ms)<');
-      expect(html).toContain('>Min (ms)<');
-      expect(html).toContain('>Max (ms)<');
-      expect(html).toContain('>Std Dev (ms)<');
-      expect(html).toContain('>P75 (ms)<');
-      expect(html).toContain('>P95 (ms)<');
+      expect(html).toContain('>Metric (ms)<');
+      expect(html).toContain('>Mean<');
+      expect(html).toContain('>Min<');
+      expect(html).toContain('>Max<');
+      expect(html).toContain('>Std Dev<');
+      expect(html).toContain('>P75<');
+      expect(html).toContain('>P95<');
       // No combined Result column or old Benchmark / Metric column
       expect(html).not.toContain('>Result<');
       expect(html).not.toContain('>Benchmark / Metric<');

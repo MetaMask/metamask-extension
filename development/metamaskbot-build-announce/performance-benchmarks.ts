@@ -293,7 +293,7 @@ function isSignificantImprovementIndicator(indicator: string): boolean {
 
 /**
  * Builds table rows for a single benchmark entry in the 7-column format:
- * Metric | Mean (ms) | Min (ms) | Max (ms) | Std Dev (ms) | P75 (ms) | P95 (ms).
+ * Metric (ms) | Mean | Min | Max | Std Dev | P75 | P95.
  *
  * Mean, Std Dev, P75, and P95 cells each show their own traffic-light indicator
  * when a baseline is available. Min and Max are raw extremes without comparison.
@@ -360,7 +360,7 @@ export function buildTableRows(
  * Builds an h4-headed sub-section for a single benchmark entry.
  *
  * Structure: h4 header, optional regression/improvement summary paragraphs,
- * then a 7-column table (Metric | Mean | Min | Max | Std Dev | P75 | P95 ms)
+ * then a 7-column table (Metric (ms) | Mean | Min | Max | Std Dev | P75 | P95)
  * where Mean, Std Dev, P75, and P95 each carry their own traffic-light indicator.
  *
  * @param entry - A single benchmark entry.
@@ -407,13 +407,13 @@ function buildEntrySection(
 
   const rows = buildTableRows(entry, baselineMetrics);
   const columns = [
-    'Metric',
-    'Mean (ms)',
-    'Min (ms)',
-    'Max (ms)',
-    'Std Dev (ms)',
-    'P75 (ms)',
-    'P95 (ms)',
+    'Metric (ms)',
+    'Mean',
+    'Min',
+    'Max',
+    'Std Dev',
+    'P75',
+    'P95',
   ];
   const tableHeader = `<thead><tr>${columns.map((c) => `<th>${c}</th>`).join('')}</tr></thead>`;
   const table = `<table>${tableHeader}<tbody>${rows.join('')}</tbody></table>\n`;
