@@ -118,7 +118,6 @@ class ChromeDriver {
 
     // When the manifest has a `key`, the extension ID is deterministic and can
     // be computed locally — skipping the chrome://extensions round-trip (~880ms).
-    // MULTIPROVIDER mode strips the key, so we fall back to scraping.
     let extensionId = ChromeDriver._computeExtensionId('dist/chrome');
     if (!extensionId) {
       const chromeDriver = new ChromeDriver(driver);
@@ -134,7 +133,7 @@ class ChromeDriver {
 
   /**
    * Computes the deterministic Chrome extension ID from the manifest's `key` field.
-   * Returns null if the key is absent (e.g. MULTIPROVIDER mode).
+   * Returns null if the key is absent.
    *
    * @param {string} extensionDir - Path to the unpacked extension directory
    * @returns {string|null} The 32-char extension ID, or null
