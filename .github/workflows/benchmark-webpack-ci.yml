@@ -15,9 +15,28 @@ permissions:
 
 jobs:
   benchmark-webpack-build:
-    name: current-defaults
+    name: ${{ matrix.name }}
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: ci-216k-j3
+            ci_async_kib: 216
+            ci_max_async_jobs: 3
+          - name: ci-192k-j3
+            ci_async_kib: 192
+            ci_max_async_jobs: 3
+          - name: ci-240k-j3
+            ci_async_kib: 240
+            ci_max_async_jobs: 3
+          - name: ci-216k-j2
+            ci_async_kib: 216
+            ci_max_async_jobs: 2
+          - name: ci-216k-j4
+            ci_async_kib: 216
+            ci_max_async_jobs: 4
     env:
       APPLE_CLIENT_ID_FLASK_UAT: ${{ secrets.APPLE_CLIENT_ID_FLASK_UAT }}
       APPLE_CLIENT_ID_UAT: ${{ secrets.APPLE_CLIENT_ID_UAT }}
@@ -82,10 +101,13 @@ jobs:
         run: |
           set +e
 
+          perl -0pi -e 's/const CI_ASYNC_COMPRESSION_SIZE = \d+ \* KiB;/const CI_ASYNC_COMPRESSION_SIZE = ${{ matrix.ci_async_kib }} * KiB;/' development/webpack/utils/plugins/ManifestPlugin/zip.ts
+          perl -0pi -e 's/const CI_MAX_ASYNC_JOBS = \d+;/const CI_MAX_ASYNC_JOBS = ${{ matrix.ci_max_async_jobs }};/' development/webpack/utils/plugins/ManifestPlugin/zip.ts
+
           mkdir -p benchmark-results
-          log_file="benchmark-results/current-defaults.log"
-          time_file="benchmark-results/current-defaults.time"
-          result_file="benchmark-results/current-defaults.json"
+          log_file="benchmark-results/${{ matrix.name }}.log"
+          time_file="benchmark-results/${{ matrix.name }}.time"
+          result_file="benchmark-results/${{ matrix.name }}.json"
           build_command="BLOCKAID_FILE_CDN=static.cx.metamask.io/api/v1/confirmations/ppom yarn env:e2e webpack --mode production --test --browser=chrome --browser=firefox --no-cache --zip --no-progress"
 
           /usr/bin/time -f '%e' -o "$time_file" bash -lc "$build_command" > "$log_file" 2>&1
@@ -95,7 +117,7 @@ jobs:
           elapsed_seconds=$(cat "$time_file")
 
           jq -n \
-            --arg name "current-defaults" \
+            --arg name "${{ matrix.name }}" \
             --arg elapsed_seconds "$elapsed_seconds" \
             --arg compile_ms "${compile_ms:-}" \
             --argjson exit_code "$exit_code" \
@@ -109,8 +131,10 @@ jobs:
           cat "$result_file"
 
           {
-            echo "## current-defaults"
+            echo "## ${{ matrix.name }}"
             echo ""
+            echo "- ci_async_kib: ${{ matrix.ci_async_kib }}"
+            echo "- ci_max_async_jobs: ${{ matrix.ci_max_async_jobs }}"
             echo "- elapsed_seconds: $elapsed_seconds"
             echo "- compile_ms: ${compile_ms:-missing}"
             echo "- exit_code: $exit_code"
@@ -122,7 +146,7 @@ jobs:
         if: ${{ always() }}
         uses: actions/upload-artifact@v6
         with:
-          name: benchmark-current-defaults
+          name: benchmark-${{ matrix.name }}
           path: benchmark-results
           retention-days: 7
 
