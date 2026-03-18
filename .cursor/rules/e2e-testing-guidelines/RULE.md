@@ -117,9 +117,12 @@ For new test code, use `FixtureBuilderV2` by default.
 - `withShowNativeTokenAsMainBalanceDisabled`
 - `withShowNativeTokenAsMainBalanceEnabled`
 - `withSmartTransactionsOptedOut`
+- `withSnapController`
+- `withSnapControllerOnStartLifecycleSnap`
+- `withSnapsPrivacyWarningAlreadyShown`
 - `withStorageServiceData`
-- `withTokenListControllerStorageServiceData`
 - `withTokensControllerERC20`
+- `withTokenListControllerStorageServiceData`
 - `withTransactionControllerApprovedTransaction`
 - `withTransactionControllerCompletedAndIncomingTransaction`
 - `withTransactionControllerCompletedTransaction`

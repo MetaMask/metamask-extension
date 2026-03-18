@@ -1,5 +1,5 @@
 // TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
+// eslint-disable-next-line import-x/no-restricted-paths
 import enTranslations from '../../app/_locales/en/messages.json';
 import {
   FALLBACK_LOCALE,

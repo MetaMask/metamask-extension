@@ -12,6 +12,7 @@ import type {
 } from '@metamask/assets-controllers';
 import type { KeyringControllerState } from '@metamask/keyring-controller';
 import { type NameControllerState, NameType } from '@metamask/name-controller';
+import type { PersistedSnapControllerState } from '@metamask/snaps-controllers';
 import type { NetworkEnablementControllerState } from '@metamask/network-enablement-controller';
 import type { SelectedNetworkControllerState } from '@metamask/selected-network-controller';
 import type {
@@ -46,6 +47,7 @@ import {
   HARDWARE_WALLET_ACCOUNT_ID,
   LEDGER_FIXTURE_VAULT,
   LOCALHOST_NETWORK_CLIENT_ID,
+  MULTI_SRP_FIXTURE_VAULT,
   NETWORK_CLIENT_ID,
   SECOND_NODE_NETWORK_CLIENT_ID,
   THIRD_NODE_NETWORK_CLIENT_ID,
@@ -197,6 +199,12 @@ class FixtureBuilderV2 {
     return this;
   }
 
+  withSnapController(data: Partial<PersistedSnapControllerState>): this {
+    (this.fixture.data as Record<string, unknown>).SnapController ??= {};
+    merge(this.fixture.data.SnapController, data);
+    return this;
+  }
+
   withTokenBalancesController(
     data: Partial<TokenBalancesControllerState>,
   ): this {
@@ -260,6 +268,12 @@ class FixtureBuilderV2 {
     this.fixture.data.NetworkEnablementController.enabledNetworkMap =
       data as FixtureType['data']['NetworkEnablementController']['enabledNetworkMap'];
     return this;
+  }
+
+  withKeyringControllerMultiSRP(): this {
+    return this.withKeyringController({
+      vault: MULTI_SRP_FIXTURE_VAULT,
+    });
   }
 
   withLedgerAccount(): this {
@@ -523,6 +537,12 @@ class FixtureBuilderV2 {
     });
   }
 
+  withSnapsPrivacyWarningAlreadyShown(): this {
+    return this.withAppStateController({
+      snapsInstallPrivacyWarningShown: true,
+    });
+  }
+
   withSmartTransactionsOptedOut(): this {
     return this.withPreferencesController({
       preferences: {
@@ -640,10 +660,6 @@ class FixtureBuilderV2 {
       type: TransactionType.simpleSend,
     };
     return this.withTransactionController({ transactions: [approvedTx] });
-  }
-
-  withTransactionControllerCompletedAndIncomingTransaction(): this {
-    return this.withTransactionControllerCompletedTransaction().withTransactionControllerIncomingTransaction();
   }
 
   withTransactionControllerCompletedTransaction(): this {

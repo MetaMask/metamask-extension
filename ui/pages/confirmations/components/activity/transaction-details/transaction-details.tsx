@@ -14,9 +14,13 @@ import { TransactionDetailsNetworkFeeRow } from '../transaction-details-network-
 import { TransactionDetailsBridgeFeeRow } from '../transaction-details-bridge-fee-row';
 import { TransactionDetailsTotalRow } from '../transaction-details-total-row';
 import { TransactionDetailsSummary } from '../transaction-details-summary';
+import { useTransactionDetails } from '../transaction-details-context';
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export function TransactionDetails() {
+  const { transactionMeta } = useTransactionDetails();
+  const hasPaymentDetails = Boolean(transactionMeta.metamaskPay);
+
   return (
     <Box
       display={Display.Flex}
@@ -39,20 +43,24 @@ export function TransactionDetails() {
         <TransactionDetailsAccountRow />
       </Box>
 
-      <ConfirmInfoRowDivider />
+      {hasPaymentDetails && (
+        <>
+          <ConfirmInfoRowDivider />
 
-      <Box
-        display={Display.Flex}
-        flexDirection={FlexDirection.Column}
-        gap={3}
-        paddingTop={2}
-        paddingBottom={2}
-      >
-        <TransactionDetailsPaidWithRow />
-        <TransactionDetailsNetworkFeeRow />
-        <TransactionDetailsBridgeFeeRow />
-        <TransactionDetailsTotalRow />
-      </Box>
+          <Box
+            display={Display.Flex}
+            flexDirection={FlexDirection.Column}
+            gap={3}
+            paddingTop={2}
+            paddingBottom={2}
+          >
+            <TransactionDetailsPaidWithRow />
+            <TransactionDetailsNetworkFeeRow />
+            <TransactionDetailsBridgeFeeRow />
+            <TransactionDetailsTotalRow />
+          </Box>
+        </>
+      )}
 
       <ConfirmInfoRowDivider />
 
