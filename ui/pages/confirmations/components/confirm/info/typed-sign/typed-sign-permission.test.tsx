@@ -18,6 +18,11 @@ jest.mock(
   }),
 );
 
+jest.mock('../../../../utils/token', () => ({
+  ...jest.requireActual('../../../../utils/token'),
+  fetchErc20DecimalsOrThrow: jest.fn().mockResolvedValue(18),
+}));
+
 describe('TypedSignPermissionInfo', () => {
   describe('permission section fields', () => {
     const permission = {

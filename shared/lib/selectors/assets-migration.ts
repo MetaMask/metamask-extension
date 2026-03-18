@@ -659,14 +659,30 @@ export const getCurrencyRateControllerCurrencyRates = createDeepEqualSelector(
       }
 
       const assetType = parseCaipAssetType(assetId as CaipAssetType);
-      const price = assetsPrice[assetId];
 
-      // Skip if not a native asset, not evm or no price for that asset
+      // Skip if not a native asset or not evm
       if (
         metadata.type !== 'native' ||
-        assetType.chain.namespace !== KnownCaipNamespace.Eip155 ||
-        !price
+        assetType.chain.namespace !== KnownCaipNamespace.Eip155
       ) {
+        continue;
+      }
+
+      // assetsInfo may use slip44:60 (EVM standard) for native tokens while assetsPrice
+      // uses the chain-specific slip44 (e.g., slip44:9005 for AVAX on eip155:43114).
+      // Fall back to any slip44 key for the same chain when the direct lookup misses.
+      let price = assetsPrice[assetId];
+      if (!price) {
+        const chainNativePrefix = `${assetType.chain.namespace}:${assetType.chain.reference}/slip44:`;
+        const fallbackKey = Object.keys(assetsPrice).find((key) =>
+          key.startsWith(chainNativePrefix),
+        );
+        if (fallbackKey) {
+          price = assetsPrice[fallbackKey];
+        }
+      }
+
+      if (!price) {
         continue;
       }
 
@@ -715,11 +731,27 @@ export const getTokenRatesControllerMarketData = createDeepEqualSelector(
       FungibleAssetPrice, // TODO: A type discriminator to AssetPrice is needed to be added to avoid this cast, but it is safe for now
     ][]) {
       const assetType = parseCaipAssetType(assetId);
-      const metadata = assetsInfo[assetId];
-      if (
-        !metadata ||
-        assetType.chain.namespace !== KnownCaipNamespace.Eip155
-      ) {
+
+      if (assetType.chain.namespace !== KnownCaipNamespace.Eip155) {
+        continue;
+      }
+
+      // assetsPrice may use a chain-specific slip44 (e.g., slip44:9005 for AVAX)
+      // while assetsInfo uses slip44:60 (EVM standard). Fall back to any slip44
+      // key for the same chain when the direct lookup misses.
+      // Guard: only attempt fallback for slip44 (native) assets to avoid
+      // misattributing an ERC-20 price entry to the native token address.
+      let metadata = assetsInfo[assetId];
+      if (!metadata && assetType.assetNamespace === 'slip44') {
+        const chainNativePrefix = `${assetType.chain.namespace}:${assetType.chain.reference}/slip44:`;
+        const fallbackKey = Object.keys(assetsInfo).find((key) =>
+          key.startsWith(chainNativePrefix),
+        );
+        if (fallbackKey) {
+          metadata = assetsInfo[fallbackKey];
+        }
+      }
+      if (!metadata) {
         continue;
       }
 

@@ -17,6 +17,7 @@ import {
 } from '../render-helpers-navigate';
 import { DEFAULT_ROUTE } from '../../../ui/helpers/constants/routes';
 import { GasFeeModalContextProvider } from '../../../ui/pages/confirmations/context/gas-fee-modal';
+import { HardwareWalletErrorProvider } from '../../../ui/contexts/hardware-wallets';
 
 export function renderWithConfirmContextProvider(
   component: ReactElement,
@@ -25,11 +26,13 @@ export function renderWithConfirmContextProvider(
   confirmationId?: string,
 ) {
   return renderWithProvider(
-    <ConfirmContextProvider confirmationId={confirmationId}>
-      <DappSwapContextProvider>
-        <GasFeeModalContextProvider>{component}</GasFeeModalContextProvider>
-      </DappSwapContextProvider>
-    </ConfirmContextProvider>,
+    <HardwareWalletErrorProvider>
+      <ConfirmContextProvider confirmationId={confirmationId}>
+        <DappSwapContextProvider>
+          <GasFeeModalContextProvider>{component}</GasFeeModalContextProvider>
+        </DappSwapContextProvider>
+      </ConfirmContextProvider>
+    </HardwareWalletErrorProvider>,
     store,
     pathname,
   );
@@ -91,22 +94,26 @@ export function renderHookWithConfirmContextProvider(
 ) {
   const contextContainer = Container
     ? ({ children }: { children: ReactChildren }) => (
-        <ConfirmContextProvider confirmationId={confirmationId}>
-          <DappSwapContextProvider>
-            <GasFeeModalContextProvider>
-              <Container>{children}</Container>
-            </GasFeeModalContextProvider>
-          </DappSwapContextProvider>
-        </ConfirmContextProvider>
+        <HardwareWalletErrorProvider>
+          <ConfirmContextProvider confirmationId={confirmationId}>
+            <DappSwapContextProvider>
+              <GasFeeModalContextProvider>
+                <Container>{children}</Container>
+              </GasFeeModalContextProvider>
+            </DappSwapContextProvider>
+          </ConfirmContextProvider>
+        </HardwareWalletErrorProvider>
       )
     : ({ children }: { children: ReactElement }) => (
-        <ConfirmContextProvider confirmationId={confirmationId}>
-          <DappSwapContextProvider>
-            <GasFeeModalContextProvider>
-              {children as ReactElement}
-            </GasFeeModalContextProvider>
-          </DappSwapContextProvider>
-        </ConfirmContextProvider>
+        <HardwareWalletErrorProvider>
+          <ConfirmContextProvider confirmationId={confirmationId}>
+            <DappSwapContextProvider>
+              <GasFeeModalContextProvider>
+                {children as ReactElement}
+              </GasFeeModalContextProvider>
+            </DappSwapContextProvider>
+          </ConfirmContextProvider>
+        </HardwareWalletErrorProvider>
       );
 
   return renderHookWithProvider(hook, state, pathname, contextContainer);
