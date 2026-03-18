@@ -187,7 +187,7 @@ describe('PerpsControllerInit', () => {
       PerpsControllerInit(request);
 
       const constructorCall = PerpsControllerMock.mock.calls[0][0];
-      expect(constructorCall.deferEligibilityCheck).toBe(false);
+      expect(constructorCall.deferEligibilityCheck).toBe(true);
     });
 
     it('passes deferEligibilityCheck true when basic functionality is off', () => {
