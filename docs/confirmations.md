@@ -315,13 +315,13 @@ A default success or error message can be displayed simply by calling the `Appro
 
 No options are required but both success and error approvals can be configured with the following:
 
-| Name    | Description                                                                                                                | Example Value      |
-| ------- | -------------------------------------------------------------------------------------------------------------------------- | ------------------ |
+| Name    | Description                                                                                                                    | Example Value      |
+| ------- | ------------------------------------------------------------------------------------------------------------------------------ | ------------------ |
 | error   | The text of the error message in the center of the window.<br>Also supports templates.<br>Used only by the `showError` method. | See example below. |
-| header  | The text or template to optionally display above the message at the top of the window.                                     | See example below. |
-| icon    | The name of the icon to display above the message.<br>Can be hidden with `null`.                                           | `"confirmation"`   |
+| header  | The text or template to optionally display above the message at the top of the window.                                         | See example below. |
+| icon    | The name of the icon to display above the message.<br>Can be hidden with `null`.                                               | `"confirmation"`   |
 | message | The text of message in the center of the window.<br>Also supports templates.<br>Used only by the `showSuccess` method.         | See example below. |
-| title   | The title text in the center of the page.<br>Can be hidden with `null`.                                                    | `"Success"`        |
+| title   | The title text in the center of the page.<br>Can be hidden with `null`.                                                        | `"Success"`        |
 
 #### Example
 
