@@ -17420,10 +17420,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@unrs/resolver-binding-wasm32-wasi@file:./development/empty-package::locator=metamask-crx%40workspace%3A.":
-  version: 0.0.0
-  resolution: "@unrs/resolver-binding-wasm32-wasi@file:./development/empty-package#./development/empty-package::hash=5813cc&locator=metamask-crx%40workspace%3A."
-  checksum: 10/194cc36f399dbe94d4c50f43991d60818cecc4500923356a1d54c771984ca0d3d38029a1a3abd57fb8282fdbf292d2209ee84c337279f509a27e20a8c83dbcfe
+"@unrs/resolver-binding-wasm32-wasi@npm:npm-empty-package@1.0.0, napi-postinstall@npm:npm-empty-package@1.0.0":
+  version: 1.0.0
+  resolution: "npm-empty-package@npm:1.0.0"
+  checksum: 10/a8c1a51365b2edbe4ac6532f60f19a994293c88dca891f69cd8d744fc6ab462c34caec258f00da1c35b46900cef5a6308f4a0cddccfb08955cae5e75c46e2afb
   languageName: node
   linkType: hard
 
@@ -35325,13 +35325,6 @@ __metadata:
   version: 2.0.0
   resolution: "napi-macros@npm:2.0.0"
   checksum: 10/6ffa499356a09727d4a622bc68a9c22996adfb9b95e0d4426be9084b73dd1f0dc8f78adf7e86b560ac463e3ce1707a57dd2644f858dcbb303c36fb8bb3d915b2
-  languageName: node
-  linkType: hard
-
-"napi-postinstall@file:./development/empty-package::locator=metamask-crx%40workspace%3A.":
-  version: 0.0.0
-  resolution: "napi-postinstall@file:./development/empty-package#./development/empty-package::hash=8b3bfb&locator=metamask-crx%40workspace%3A."
-  checksum: 10/97c60a8643083500e539d9423b5725892bf4d48ad48af9ad2ddf6eaf18f3c624bcb8d771b3e1a7d37ffb929b142a17d012c5948e33e954e1ddec3fe10b68a04d
   languageName: node
   linkType: hard
 
