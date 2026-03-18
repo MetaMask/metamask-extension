@@ -216,7 +216,20 @@ async function main() {
   process.on('SIGTERM', shutdown);
 }
 
-main().catch((error) => {
-  console.error(error);
-  process.exit(1);
-});
+if (require.main === module) {
+  main().catch((error) => {
+    console.error(error);
+    process.exit(1);
+  });
+}
+
+module.exports = {
+  events,
+  FILTER_PREDICATES,
+  handleGetEvents,
+  handleGetSummary,
+  handleDeleteEvents,
+  onBeforeRequest,
+  onBatchRequest,
+  main,
+};
