@@ -32,6 +32,7 @@ const MAX_ASYNC_JOBS_OVERRIDE = getThresholdFromEnvironment(
 const MAX_ASYNC_COMPRESSION_SIZE = 16 * MiB;
 const RSS_SAMPLE_INTERVAL_MS = 250;
 const THROUGHPUT_SMOOTHING_FACTOR = 0.25;
+const IS_CI = getBooleanFromEnvironment('CI');
 const DISABLE_ADAPTIVE_RETUNING = getBooleanFromEnvironment(
   'METAMASK_ZIP_DISABLE_ADAPTIVE_RETUNING',
 );
@@ -106,19 +107,24 @@ export function createZipCompressionController(): ZipCompressionController {
   const totalMemory = totalmem();
   const useAdaptiveRetuning =
     !DISABLE_ADAPTIVE_RETUNING &&
-    (parallelism <= 8 || totalMemory <= 16 * 1024 * MiB);
+    (IS_CI || parallelism <= 8 || totalMemory <= 16 * 1024 * MiB);
 
   if (!useAdaptiveRetuning) {
+    const staticAsyncCompressionSize = IS_CI
+      ? LOW_PARALLELISM_ASYNC_COMPRESSION_SIZE
+      : FAST_MACHINE_ASYNC_COMPRESSION_SIZE;
+
     return {
       trackAsyncCompression: false,
       beginAsyncCompression: () => () => undefined,
       recordSyncCompression: () => undefined,
       shouldUseAsyncCompression: (assetSize) =>
-        assetSize >= FAST_MACHINE_ASYNC_COMPRESSION_SIZE,
+        assetSize >= staticAsyncCompressionSize,
     };
   }
 
-  const maxAsyncJobs = MAX_ASYNC_JOBS_OVERRIDE || clamp(parallelism - 1, 1, 4);
+  const maxAsyncJobs =
+    MAX_ASYNC_JOBS_OVERRIDE || (IS_CI ? 3 : clamp(parallelism - 1, 1, 4));
   const maxAsyncBytes = clamp(
     Math.floor(totalMemory / (useAdaptiveRetuning ? 64 : 16)),
     useAdaptiveRetuning ? 32 * MiB : 64 * MiB,
@@ -128,7 +134,7 @@ export function createZipCompressionController(): ZipCompressionController {
     ? clamp(Math.floor(totalMemory / 4), 512 * MiB, 2 * 1024 * MiB)
     : Number.POSITIVE_INFINITY;
   let asyncSizeThreshold =
-    parallelism <= 4
+    IS_CI || parallelism <= 4
       ? LOW_PARALLELISM_ASYNC_COMPRESSION_SIZE
       : MIN_ASYNC_COMPRESSION_SIZE;
   let inflightAsyncJobs = 0;
