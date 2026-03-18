@@ -18,7 +18,7 @@ const KiB = 1024;
 const MiB = 1024 * KiB;
 const GiB = 1024 * MiB;
 const FAST_MACHINE_ASYNC_COMPRESSION_SIZE = 48 * KiB;
-const CI_ASYNC_COMPRESSION_SIZE = 324 * KiB;
+const CI_ASYNC_COMPRESSION_SIZE = 216 * KiB;
 const MIN_COMPRESSIBLE_ASSET_SIZE = 24 * KiB;
 const MIN_ASYNC_COMPRESSION_SIZE = 64 * KiB;
 const LOW_PARALLELISM_ASYNC_COMPRESSION_SIZE = 96 * KiB;
@@ -68,7 +68,6 @@ type CreateBrowserZipBuilderOptions = {
 type ZipCompressionController = {
   trackAsyncCompression: boolean;
   beginAsyncCompression: (assetSize: number) => () => void;
-  finalize: () => void;
   recordSyncCompression: (assetSize: number, durationMs: number) => void;
   shouldUseAsyncCompression: (assetSize: number) => boolean;
 };
@@ -165,7 +164,6 @@ function createStaticZipCompressionController(
   return {
     trackAsyncCompression: false,
     beginAsyncCompression: () => () => undefined,
-    finalize: () => undefined,
     recordSyncCompression: () => undefined,
     shouldUseAsyncCompression: (assetSize) => assetSize >= asyncSizeThreshold,
   };
@@ -186,13 +184,6 @@ function createAdaptiveZipCompressionController({
   maxAsyncJobs,
   memorySoftLimit,
 }: AdaptiveZipCompressionPolicy): ZipCompressionController {
-  const shouldLogDiagnostics = IS_CI;
-  const fallbackCounts = {
-    belowThreshold: 0,
-    maxAsyncBytes: 0,
-    maxAsyncJobs: 0,
-    memorySoftLimit: 0,
-  };
   let asyncSizeThreshold = initialAsyncSizeThreshold;
   let inflightAsyncJobs = 0;
   let inflightAsyncBytes = 0;
@@ -200,16 +191,8 @@ function createAdaptiveZipCompressionController({
   let asyncSamples = 0;
   let syncThroughput = 0;
   let asyncThroughput = 0;
-  let retuneCount = 0;
   let lastRssSampleAt = -Infinity;
   let cachedRss = 0;
-  let didLogSummary = false;
-
-  if (shouldLogDiagnostics) {
-    console.log(
-      `[zip-adaptive] start threshold_kib=${toKiB(asyncSizeThreshold)} max_async_jobs=${maxAsyncJobs} max_async_bytes=${maxAsyncBytes} memory_soft_limit=${memorySoftLimit} rss=${process.memoryUsage.rss()}`,
-    );
-  }
 
   function beginAsyncCompression(assetSize: number): () => void {
     inflightAsyncJobs += 1;
@@ -237,17 +220,6 @@ function createAdaptiveZipCompressionController({
     };
   }
 
-  function finalize(): void {
-    if (!shouldLogDiagnostics || didLogSummary) {
-      return;
-    }
-
-    didLogSummary = true;
-    console.log(
-      `[zip-adaptive] summary final_threshold_kib=${toKiB(asyncSizeThreshold)} sync_samples=${syncSamples} async_samples=${asyncSamples} retunes=${retuneCount} below_threshold=${fallbackCounts.belowThreshold} max_jobs=${fallbackCounts.maxAsyncJobs} max_async_bytes=${fallbackCounts.maxAsyncBytes} memory_soft_limit_hits=${fallbackCounts.memorySoftLimit} rss=${process.memoryUsage.rss()}`,
-    );
-  }
-
   function recordSyncCompression(assetSize: number, durationMs: number): void {
     syncSamples += 1;
     syncThroughput = updateAverageThroughput(
@@ -262,22 +234,18 @@ function createAdaptiveZipCompressionController({
   function shouldUseAsyncCompression(assetSize: number): boolean {
     const rss = getRss();
     if (assetSize < asyncSizeThreshold) {
-      fallbackCounts.belowThreshold += 1;
       return false;
     }
 
     if (inflightAsyncJobs >= maxAsyncJobs) {
-      fallbackCounts.maxAsyncJobs += 1;
       return false;
     }
 
     if (inflightAsyncBytes + assetSize > maxAsyncBytes) {
-      fallbackCounts.maxAsyncBytes += 1;
       return false;
     }
 
     if (rss + inflightAsyncBytes + assetSize > memorySoftLimit) {
-      fallbackCounts.memorySoftLimit += 1;
       return false;
     }
 
@@ -295,32 +263,16 @@ function createAdaptiveZipCompressionController({
       inflightAsyncJobs >= maxAsyncJobs ||
       inflightAsyncBytes >= maxAsyncBytes * 0.75 ||
       getRss() >= memorySoftLimit;
-    const previousAsyncSizeThreshold = asyncSizeThreshold;
-    let retuneReason: 'async_better' | 'sync_better' | 'under_pressure' | null =
-      null;
 
     if (syncIsClearlyBetter || underPressure) {
       asyncSizeThreshold = Math.min(
         MAX_ASYNC_COMPRESSION_SIZE,
         Math.floor(asyncSizeThreshold * 1.5),
       );
-      retuneReason = underPressure ? 'under_pressure' : 'sync_better';
     } else if (asyncIsClearlyBetter) {
       asyncSizeThreshold = Math.max(
         MIN_ASYNC_COMPRESSION_SIZE,
         Math.floor(asyncSizeThreshold / 1.25),
-      );
-      retuneReason = 'async_better';
-    }
-
-    if (
-      shouldLogDiagnostics &&
-      retuneReason &&
-      asyncSizeThreshold !== previousAsyncSizeThreshold
-    ) {
-      retuneCount += 1;
-      console.log(
-        `[zip-adaptive] retune from_kib=${toKiB(previousAsyncSizeThreshold)} to_kib=${toKiB(asyncSizeThreshold)} reason=${retuneReason} sync_throughput=${Math.round(syncThroughput)} async_throughput=${Math.round(asyncThroughput)} inflight_jobs=${inflightAsyncJobs} inflight_async_bytes=${inflightAsyncBytes}`,
       );
     }
   }
@@ -338,7 +290,6 @@ function createAdaptiveZipCompressionController({
   return {
     trackAsyncCompression: true,
     beginAsyncCompression,
-    finalize,
     recordSyncCompression,
     shouldUseAsyncCompression,
   };
@@ -539,8 +490,4 @@ function updateAverageThroughput(
     ? throughput
     : currentAverage * (1 - THROUGHPUT_SMOOTHING_FACTOR) +
         throughput * THROUGHPUT_SMOOTHING_FACTOR;
-}
-
-function toKiB(bytes: number): number {
-  return Math.round(bytes / KiB);
 }
