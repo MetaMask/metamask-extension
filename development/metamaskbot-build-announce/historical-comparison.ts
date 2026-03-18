@@ -82,9 +82,10 @@ function sanitizeBranch(branch: string): string {
  */
 export async function fetchHistoricalPerformanceData(): Promise<HistoricalBaselineReference | null> {
   const branch = sanitizeBranch(process.env.GITHUB_BASE_REF ?? 'main');
+  const isFallbackNeeded = branch !== 'main';
   const data =
     (await fetchPerformanceFile(branch)) ??
-    (await fetchPerformanceFile('main'));
+    (isFallbackNeeded ? await fetchPerformanceFile('main') : null);
   if (!data || Object.keys(data).length === 0) {
     return null;
   }
