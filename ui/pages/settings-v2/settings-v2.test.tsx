@@ -1,4 +1,4 @@
-import { screen, render } from '@testing-library/react';
+import { screen, render, fireEvent } from '@testing-library/react';
 import React from 'react';
 import { Provider } from 'react-redux';
 import { MemoryRouter } from 'react-router-dom';
@@ -10,10 +10,19 @@ import { I18nProvider, en } from '../../../test/lib/render-helpers-navigate';
 import { setBackgroundConnection } from '../../store/background-connection';
 import { LegacyMetaMetricsProvider } from '../../contexts/metametrics';
 import {
+  ASSETS_ROUTE,
   CURRENCY_ROUTE,
+  DEFAULT_ROUTE,
   SETTINGS_V2_ROUTE,
 } from '../../helpers/constants/routes';
 import SettingsV2 from './settings-v2';
+
+const mockNavigate = jest.fn();
+
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useNavigate: () => mockNavigate,
+}));
 
 let mockPathname = SETTINGS_V2_ROUTE;
 
@@ -54,11 +63,11 @@ describe('SettingsV2', () => {
       expect(screen.getByText(messages.settings.message)).toBeInTheDocument();
     });
 
-    it('renders the close button', () => {
+    it('renders the search button', () => {
       renderSettingsV2(mockStore);
 
       expect(
-        screen.getByRole('button', { name: messages.close.message }),
+        screen.getByRole('button', { name: messages.search.message }),
       ).toBeInTheDocument();
     });
 
@@ -67,6 +76,17 @@ describe('SettingsV2', () => {
 
       const assetElements = screen.getAllByText(messages.assets.message);
       expect(assetElements.length).toBeGreaterThan(0);
+    });
+
+    it('navigates to default route when back is clicked at settings root', () => {
+      renderSettingsV2(mockStore);
+
+      const backButtons = screen.getAllByTestId(
+        'settings-v2-header-close-button',
+      );
+      fireEvent.click(backButtons[0]);
+
+      expect(mockNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE);
     });
   });
 
@@ -82,6 +102,17 @@ describe('SettingsV2', () => {
         messages.localCurrency.message,
       );
       expect(localCurrencyTexts.length).toBeGreaterThan(0);
+    });
+
+    it('navigates to parent route when back is clicked on a sub-route', () => {
+      renderSettingsV2(mockStore);
+
+      const backButtons = screen.getAllByTestId(
+        'settings-v2-header-close-button',
+      );
+      fireEvent.click(backButtons[0]);
+
+      expect(mockNavigate).toHaveBeenCalledWith(ASSETS_ROUTE);
     });
   });
 });
