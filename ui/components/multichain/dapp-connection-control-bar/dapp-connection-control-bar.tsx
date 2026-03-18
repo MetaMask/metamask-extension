@@ -151,12 +151,6 @@ export const DappConnectionControlBar: React.FC = () => {
     connectedAccountGroups.length > 0
       ? connectedAccountGroups[0].metadata.name
       : '';
-  const selectedAccountLabel = useMemo(() => {
-    if (!selectedAccountName) {
-      return '';
-    }
-    return selectedAccountName;
-  }, [selectedAccountName]);
 
   const connectedSubjectsMetadata = activeTabOrigin
     ? subjectMetadata[activeTabOrigin]
@@ -275,14 +269,14 @@ export const DappConnectionControlBar: React.FC = () => {
             >
               {siteName}
             </Text>
-            {selectedAccountLabel && (
+            {selectedAccountName && (
               <Text
                 variant={TextVariant.BodyXs}
                 color={TextColor.TextAlternative}
                 ellipsis
                 data-testid="dapp-connection-control-bar__account-name"
               >
-                {selectedAccountLabel}
+                {selectedAccountName}
               </Text>
             )}
           </Box>
