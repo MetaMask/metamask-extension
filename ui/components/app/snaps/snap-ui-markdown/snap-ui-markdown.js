@@ -52,7 +52,7 @@ const isMetaMaskUrl = (href) => href.startsWith('metamask:');
 
 export const SnapUIMarkdown = ({ children, markdown }) => {
   const [redirectUrl, setRedirectUrl] = useState(undefined);
-  const { navigate } = useSnapNavigation();
+  const { handleSnapNavigate } = useSnapNavigation();
 
   if (markdown === false) {
     return <Paragraph>{children}</Paragraph>;
@@ -91,7 +91,7 @@ export const SnapUIMarkdown = ({ children, markdown }) => {
                 onClick={(e) => {
                   e.stopPropagation();
                   if (isMetaMaskUrl(href)) {
-                    navigate(href);
+                    handleSnapNavigate(href);
                   } else {
                     handleLinkClick(href);
                   }

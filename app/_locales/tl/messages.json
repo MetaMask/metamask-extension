@@ -839,18 +839,8 @@
   "basicConfigurationModalCheckbox": {
     "message": "Nauunawaan ko at nais kong magpatuloy"
   },
-  "basicConfigurationModalDisclaimerOff": {
+  "basicConfigurationModalDisclaimerOffPart1": {
     "message": "Ibig sabihin nito hindi mo lubos na mao-optimize ang iyong oras sa MetaMask. Ang mga batayang tampok (tulad ng mga detalye ng token, optimal na settings ng gas, at iba pa) ay hindi magiging available para sa iyo."
-  },
-  "basicConfigurationModalDisclaimerOffAdditionalText": {
-    "message": "Kapag in-off ito, madi-disable ang lahat ng feature sa loob ng $1 at $2.",
-    "description": "$1 and $2 are bold text for basicConfigurationModalDisclaimerOffAdditionalTextFeaturesFirst and basicConfigurationModalDisclaimerOffAdditionalTextFeaturesLast respectively"
-  },
-  "basicConfigurationModalDisclaimerOffAdditionalTextFeaturesFirst": {
-    "message": "seguridad at pagkapribado, backup at sync"
-  },
-  "basicConfigurationModalDisclaimerOffAdditionalTextFeaturesLast": {
-    "message": "mga notipikasyon"
   },
   "basicConfigurationModalDisclaimerOn": {
     "message": "Upang ma-optimize ang iyong oras sa MetaMask, kailangan mong i-on ang tampok na ito. Ang mga batayang function (tulad ng mga detalye ng token, optimal na settings ng gas, at iba pa) ay mahalaga sa karanasan sa web3."
@@ -2244,12 +2234,6 @@
   },
   "dismissReminderField": {
     "message": "I-dismiss ang back up na paalala ng Lihim na Parirala sa Pagbawi"
-  },
-  "dismissSmartAccountSuggestionEnabledDescription": {
-    "message": "I-on ito para hindi na makita ang mungkahing \"Lumipat sa Smart Account\" sa anumang account. Sa mga smart account, mas mabilis ang mga transaksyon, mas mababa ang bayarin sa network, at mas flexible ang pagbabayad."
-  },
-  "dismissSmartAccountSuggestionEnabledTitle": {
-    "message": "I-dismiss ang mungkahing \"Lumipat sa Smart Account\""
   },
   "displayNftMedia": {
     "message": "Ipakita ang NFT media"

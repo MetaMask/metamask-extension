@@ -10,24 +10,22 @@ import {
   IconName,
   IconSize,
   Text,
+  TextVariant,
+  TextColor,
+  FontWeight,
+  BoxFlexDirection,
+  BoxJustifyContent,
+  BoxAlignItems,
+  IconColor,
+  BoxBackgroundColor,
+  BoxBorderColor,
+} from '@metamask/design-system-react';
+import {
   TextField,
   TextFieldType,
 } from '../../../components/component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import {
-  TextVariant,
-  Display,
-  TextColor,
-  FontWeight,
-  FlexDirection,
-  BlockSize,
-  BorderRadius,
-  IconColor,
-  JustifyContent,
-  AlignItems,
-  BackgroundColor,
-  BorderColor,
-} from '../../../helpers/constants/design-system';
+import { BackgroundColor } from '../../../helpers/constants/design-system';
 
 type RecoveryPhraseChipsProps = {
   secretRecoveryPhrase: string[];
@@ -158,26 +156,22 @@ export default function RecoveryPhraseChips({
       });
 
   return (
-    <Box display={Display.Flex} flexDirection={FlexDirection.Column} gap={4}>
+    <Box flexDirection={BoxFlexDirection.Column} gap={4}>
       <Box
-        borderRadius={BorderRadius.LG}
-        display={Display.Grid}
-        width={BlockSize.Full}
-        backgroundColor={BackgroundColor.backgroundSection}
+        backgroundColor={BoxBackgroundColor.BackgroundSection}
         className={classnames(
-          'recovery-phrase__secret',
+          'recovery-phrase__secret rounded-lg w-full',
           recoveryPhraseChipsContainerClassName,
         )}
       >
         <Box
           key="recovery-phrase-chips"
-          display={Display.Grid}
-          justifyContent={JustifyContent.center}
-          alignItems={AlignItems.center}
+          justifyContent={BoxJustifyContent.Center}
+          alignItems={BoxAlignItems.Center}
           data-testid="recovery-phrase-chips"
           data-recovery-phrase={secretRecoveryPhrase.join(':')}
           data-quiz-words={JSON.stringify(quizWords)}
-          className={classnames('recovery-phrase__chips', {
+          className={classnames('recovery-phrase__chips grid', {
             'recovery-phrase__chips--hidden': !phraseRevealed,
           })}
         >
@@ -190,24 +184,21 @@ export default function RecoveryPhraseChips({
             return isQuizWord || !confirmPhase ? (
               <Box
                 key={index}
-                as={isQuizWord ? 'button' : 'div'}
                 data-testid={`recovery-phrase-chip-${index}`}
-                className="recovery-phrase__text"
-                display={Display.Flex}
-                alignItems={AlignItems.center}
+                className="recovery-phrase__text rounded-lg px-2"
+                flexDirection={BoxFlexDirection.Row}
+                alignItems={BoxAlignItems.Center}
                 backgroundColor={
                   isQuizWord
-                    ? BackgroundColor.backgroundDefault
-                    : BackgroundColor.backgroundMuted
+                    ? BoxBackgroundColor.BackgroundDefault
+                    : BoxBackgroundColor.BackgroundMuted
                 }
                 borderColor={
                   isTargetIndex
-                    ? BorderColor.primaryDefault
-                    : BorderColor.borderMuted
+                    ? BoxBorderColor.PrimaryDefault
+                    : BoxBorderColor.BorderMuted
                 }
                 borderWidth={isTargetIndex ? 2 : 1}
-                borderRadius={BorderRadius.LG}
-                paddingInline={2}
                 paddingTop={1}
                 paddingBottom={1}
                 gap={1}
@@ -223,13 +214,13 @@ export default function RecoveryPhraseChips({
                 }}
               >
                 <Text
-                  variant={TextVariant.inherit}
-                  color={TextColor.textAlternative}
+                  variant={TextVariant.BodyMd}
+                  color={TextColor.TextAlternative}
                   className="recovery-phrase__word-index"
                 >
                   {index + 1}.
                 </Text>
-                <Text variant={TextVariant.inherit}>
+                <Text variant={TextVariant.BodyMd}>
                   {isQuizWord ? wordToDisplay : word}
                 </Text>
               </Box>
@@ -238,13 +229,10 @@ export default function RecoveryPhraseChips({
                 testId={`recovery-phrase-chip-${index}`}
                 key={index}
                 value={wordToDisplay}
-                inputProps={{
-                  textVariant: TextVariant.inherit,
-                }}
                 startAccessory={
                   <Text
-                    variant={TextVariant.inherit}
-                    color={TextColor.textAlternative}
+                    variant={TextVariant.BodyMd}
+                    color={TextColor.TextAlternative}
                     className="recovery-phrase__word-index"
                   >
                     {index + 1}.
@@ -262,33 +250,23 @@ export default function RecoveryPhraseChips({
         {!phraseRevealed && (
           <Box
             key="recovery-phrase__secret-blocker-container"
-            width={BlockSize.Full}
-            height={BlockSize.Full}
-            className="recovery-phrase__secret-blocker-container"
+            className="recovery-phrase__secret-blocker-container w-full h-full"
           >
             <Box
-              display={Display.Flex}
-              alignItems={AlignItems.center}
-              justifyContent={JustifyContent.center}
-              borderRadius={BorderRadius.SM}
-              width={BlockSize.Full}
-              height={BlockSize.Full}
+              flexDirection={BoxFlexDirection.Column}
+              alignItems={BoxAlignItems.Center}
+              justifyContent={BoxJustifyContent.Center}
               paddingTop={2}
               paddingBottom={9}
-              paddingInline={0}
-              className="recovery-phrase__secret-blocker"
+              className="recovery-phrase__secret-blocker rounded-sm w-full h-full px-0"
             />
             <Box
-              as="button"
-              display={Display.Flex}
-              flexDirection={FlexDirection.Column}
-              alignItems={AlignItems.center}
-              justifyContent={JustifyContent.center}
-              backgroundColor={BackgroundColor.transparent}
-              height={BlockSize.Full}
-              width={BlockSize.Full}
+              flexDirection={BoxFlexDirection.Column}
+              alignItems={BoxAlignItems.Center}
+              justifyContent={BoxJustifyContent.Center}
+              backgroundColor={BoxBackgroundColor.Transparent}
               gap={2}
-              className="recovery-phrase__secret-blocker-text"
+              className="recovery-phrase__secret-blocker-text w-full h-full"
               onClick={() => {
                 revealPhrase?.();
               }}
@@ -296,17 +274,17 @@ export default function RecoveryPhraseChips({
             >
               <Icon
                 name={IconName.EyeSlash}
-                color={IconColor.iconDefault}
+                color={IconColor.IconDefault}
                 size={IconSize.Md}
               />
               <Text
-                variant={TextVariant.bodyMd}
-                color={TextColor.textDefault}
+                variant={TextVariant.BodyMd}
+                color={TextColor.TextDefault}
                 fontWeight={FontWeight.Medium}
               >
                 {t('tapToReveal')}
               </Text>
-              <Text variant={TextVariant.bodySm} color={TextColor.textDefault}>
+              <Text variant={TextVariant.BodySm} color={TextColor.TextDefault}>
                 {t('tapToRevealNote')}
               </Text>
             </Box>
@@ -314,7 +292,7 @@ export default function RecoveryPhraseChips({
         )}
       </Box>
       {quizWords.length === 3 && (
-        <Box display={Display.Flex} gap={2} width={BlockSize.Full}>
+        <Box flexDirection={BoxFlexDirection.Row} gap={2} className="w-full">
           {quizWords.map((quizWord) => {
             const actualIdxInSrp = quizWord.index;
             // check if the quiz word has been added to the quizAnswers array
@@ -328,13 +306,11 @@ export default function RecoveryPhraseChips({
               <ButtonBase
                 data-testid={`recovery-phrase-quiz-answered-${actualIdxInSrp}`}
                 key={quizWord.index}
-                color={TextColor.textAlternative}
-                borderRadius={BorderRadius.LG}
-                block
+                color={TextColor.TextAlternative}
+                className="rounded-lg w-full bg-muted"
                 onClick={() => {
                   removeQuizWord(quizWord.word);
                 }}
-                backgroundColor={BackgroundColor.backgroundMuted}
               >
                 {secretRecoveryPhrase[actualIdxInSrp]}
               </ButtonBase>
@@ -343,10 +319,7 @@ export default function RecoveryPhraseChips({
                 data-testid={`recovery-phrase-quiz-unanswered-${actualIdxInSrp}`}
                 key={quizWord.index}
                 variant={ButtonVariant.Secondary}
-                borderRadius={BorderRadius.LG}
-                block
-                borderColor={BorderColor.primaryDefault}
-                color={TextColor.primaryDefault}
+                className="rounded-lg w-full bg-muted border-primary-default border text-primary-default"
                 onClick={() => {
                   addQuizWord(quizWord.word, actualIdxInSrp);
                 }}

@@ -82,6 +82,8 @@ For new test code, use `FixtureBuilderV2` by default.
 
 `FixtureBuilderV2` currently supports:
 
+**General controller methods**:
+
 - `withAccountsController`
 - `withAddressBookController`
 - `withAppStateController`
@@ -90,11 +92,18 @@ For new test code, use `FixtureBuilderV2` by default.
 - `withMetaMetricsController`
 - `withNameController`
 - `withNetworkController`
+- `withNetworkEnablementController`
 - `withOnboardingController`
 - `withPermissionController`
 - `withPreferencesController`
 - `withSelectedNetworkController`
+- `withTokenBalancesController`
+- `withTokenListController`
+- `withTokensController`
 - `withTransactionController`
+
+**Custom convenience methods**:
+
 - `withConversionRateDisabled`
 - `withEnabledNetworks`
 - `withLedgerAccount`
@@ -102,15 +111,22 @@ For new test code, use `FixtureBuilderV2` by default.
 - `withNetworkControllerTripleNode`
 - `withNoNames`
 - `withPermissionControllerConnectedToTestDapp`
+- `withPetnamesDisabled`
 - `withSelectedNetwork`
 - `withSelectedNetworkControllerPerDomain`
 - `withShowNativeTokenAsMainBalanceDisabled`
 - `withShowNativeTokenAsMainBalanceEnabled`
 - `withSmartTransactionsOptedOut`
+- `withSnapController`
+- `withSnapControllerOnStartLifecycleSnap`
+- `withSnapsPrivacyWarningAlreadyShown`
+- `withTokensControllerERC20`
 - `withTransactionControllerApprovedTransaction`
 - `withTransactionControllerCompletedAndIncomingTransaction`
 - `withTransactionControllerCompletedTransaction`
 - `withTransactionControllerIncomingTransaction`
+- `withTrezorAccount`
+- `withUseBasicFunctionalityDisabled`
 
 If your test only needs these methods (or just `.build()`), prefer `FixtureBuilderV2` instead of the legacy builder.
 

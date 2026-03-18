@@ -60,6 +60,17 @@ export class PerpsMarketDetailPage {
   }
 
   /**
+   * Waits for the market detail page to be loaded.
+   * Uses multiple selectors for robustness (convention).
+   */
+  async checkPageIsLoaded(): Promise<void> {
+    await this.driver.waitForMultipleSelectors([
+      this.marketDetailBackButton,
+      this.marketDetailPage,
+    ]);
+  }
+
+  /**
    * Waits for the Long/Short trade buttons (visible when user has no position in this market).
    *
    * @param timeout

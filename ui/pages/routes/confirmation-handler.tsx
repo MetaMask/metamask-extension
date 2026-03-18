@@ -32,6 +32,7 @@ import {
 } from '../../selectors';
 import { useModalState } from '../../hooks/useModalState';
 import { isMerklClaimTransaction } from '../../hooks/musd';
+import { isMusdConversionTransaction } from '../../components/app/musd/utils';
 
 const EXEMPTED_ROUTES = [
   CROSS_CHAIN_SWAP_ROUTE,
@@ -118,14 +119,25 @@ export const ConfirmationHandler = () => {
   const hasSwapRelatedNavigation = hasBridgeQuotes;
 
   const isMerklTransaction = pendingApprovals.some((approval) =>
-    merklClaims.some((mc) => mc.id === approval.requestData.txId),
+    merklClaims.some((mc) => mc.id === approval?.requestData?.txId),
+  );
+
+  const isMUSDConversionTransaction = pendingApprovals.some(
+    (approval) =>
+      transactions.find(
+        (tx) =>
+          isMusdConversionTransaction(tx) &&
+          tx.id === approval?.requestData?.txId,
+      ),
+    [transactions, pendingApprovals],
   );
 
   const isFullscreenExemption =
     isFullscreen &&
     !hasAllowedPopupRedirectApprovals &&
     !hasSwapRelatedNavigation &&
-    !isMerklTransaction;
+    !isMerklTransaction &&
+    !isMUSDConversionTransaction;
 
   // Ported from home.component - componentDidUpdate()
   useEffect(() => {

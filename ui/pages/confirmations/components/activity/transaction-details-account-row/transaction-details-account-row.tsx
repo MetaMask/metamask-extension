@@ -13,6 +13,7 @@ import { useTransactionDetails } from '../transaction-details-context';
 export function TransactionDetailsAccountRow() {
   const t = useI18nContext();
   const { transactionMeta } = useTransactionDetails();
+  const hasPaymentDetails = Boolean(transactionMeta.metamaskPay);
   const internalAccounts = useSelector(getInternalAccounts);
 
   const {
@@ -21,13 +22,19 @@ export function TransactionDetailsAccountRow() {
 
   const accountName = getAccountName(internalAccounts, from);
 
+  const displayName = accountName ?? from;
+
+  if (!hasPaymentDetails) {
+    return null;
+  }
+
   return (
     <TransactionDetailsRow
       label={t('account')}
       data-testid="transaction-details-account-row"
     >
       <Text variant={TextVariant.bodyMd} color={TextColor.textAlternative}>
-        {accountName ?? from}
+        {displayName}
       </Text>
     </TransactionDetailsRow>
   );

@@ -9,7 +9,12 @@ import React, {
 } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { Box } from '../../../components/component-library';
+import {
+  Box,
+  BoxFlexDirection,
+  BoxAlignItems,
+  BoxJustifyContent,
+} from '@metamask/design-system-react';
 import {
   ONBOARDING_COMPLETION_ROUTE,
   ONBOARDING_CREATE_PASSWORD_ROUTE,
@@ -49,13 +54,6 @@ import {
   OAuthErrorMessages,
 } from '../../../../shared/lib/error';
 import { TraceName, TraceOperation } from '../../../../shared/lib/trace';
-import {
-  AlignItems,
-  Display,
-  FlexDirection,
-  JustifyContent,
-  BlockSize,
-} from '../../../helpers/constants/design-system';
 import { useRiveWasmContext } from '../../../contexts/rive-wasm';
 import { getIsWalletResetInProgress } from '../../../ducks/metamask/metamask';
 import WelcomeLogin from './welcome-login';
@@ -468,13 +466,10 @@ export default function OnboardingWelcome() {
 
   return (
     <Box
-      display={Display.Flex}
-      flexDirection={FlexDirection.Column}
-      justifyContent={JustifyContent.center}
-      alignItems={AlignItems.center}
-      height={BlockSize.Full}
-      width={BlockSize.Full}
-      className="welcome-container"
+      flexDirection={BoxFlexDirection.Column}
+      justifyContent={BoxJustifyContent.Center}
+      alignItems={BoxAlignItems.Center}
+      className="welcome-container h-full w-full"
     >
       {!isLoggingIn && (
         <Suspense fallback={<Box />}>

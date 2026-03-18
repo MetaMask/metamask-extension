@@ -93,4 +93,15 @@ export class PerpsMarketListPage {
       testId: 'sort-dropdown-option-volumeLow',
     });
   }
+
+  /**
+   * Waits for the market list view to be visible.
+   * Uses multiple selectors for robustness (convention).
+   */
+  async checkPageIsLoaded(): Promise<void> {
+    await this.driver.waitForMultipleSelectors([
+      this.filterSortRow,
+      this.marketListView,
+    ]);
+  }
 }

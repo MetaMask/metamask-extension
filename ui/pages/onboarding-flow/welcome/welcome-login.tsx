@@ -3,15 +3,11 @@ import { useDispatch } from 'react-redux';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import {
   Box,
+  BoxFlexDirection,
   Button,
   ButtonSize,
   ButtonVariant,
-} from '../../../components/component-library';
-import {
-  Display,
-  FlexDirection,
-  BlockSize,
-} from '../../../helpers/constants/design-system';
+} from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getIsSeedlessOnboardingFeatureEnabled } from '../../../../shared/lib/environment';
 import { ThemeType } from '../../../../shared/constants/preferences';
@@ -129,11 +125,9 @@ export default function WelcomeLogin({
           </Box>
         ) : (
           <Box
-            display={Display.Flex}
-            flexDirection={FlexDirection.Column}
-            width={BlockSize.Full}
+            flexDirection={BoxFlexDirection.Column}
             gap={4}
-            className={`${
+            className={`w-full ${
               isTransitioning ? 'welcome-login__cta--fade-out' : ''
             }`}
           >
@@ -141,7 +135,7 @@ export default function WelcomeLogin({
               data-testid="onboarding-create-wallet"
               variant={ButtonVariant.Primary}
               size={ButtonSize.Lg}
-              block
+              className="w-full"
               onClick={() =>
                 handleButtonClick(LOGIN_OPTION.NEW, LOGIN_TYPE.SRP)
               }
@@ -155,7 +149,7 @@ export default function WelcomeLogin({
               data-testid="onboarding-import-wallet"
               variant={ButtonVariant.Primary}
               size={ButtonSize.Lg}
-              block
+              className="w-full"
               onClick={() =>
                 handleButtonClick(LOGIN_OPTION.EXISTING, LOGIN_TYPE.SRP)
               }

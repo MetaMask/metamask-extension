@@ -8,6 +8,13 @@ import React, {
 import { Routes, Route, useNavigate, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import classnames from 'clsx';
+import {
+  Box,
+  BoxBackgroundColor,
+  BoxFlexDirection,
+  BoxAlignItems,
+  BoxJustifyContent,
+} from '@metamask/design-system-react';
 import Unlock from '../unlock-page';
 import {
   ONBOARDING_EXPERIMENTAL_AREA,
@@ -291,18 +298,15 @@ export default function OnboardingFlow() {
 
   return (
     <Box
-      backgroundColor={BackgroundColor.backgroundDefault}
-      width={BlockSize.Full}
-      height={BlockSize.Full}
-      display={Display.Flex}
-      flexDirection={FlexDirection.Column}
+      backgroundColor={BoxBackgroundColor.BackgroundDefault}
+      flexDirection={BoxFlexDirection.Column}
       alignItems={
         pathname === ONBOARDING_WELCOME_ROUTE
-          ? AlignItems.flexStart
-          : AlignItems.center
+          ? BoxAlignItems.Start
+          : BoxAlignItems.Center
       }
-      justifyContent={JustifyContent.flexStart}
-      className="onboarding-flow"
+      justifyContent={BoxJustifyContent.Start}
+      className="onboarding-flow h-full w-full"
       style={{
         backgroundColor: backgroundColorForWelcomePage,
       }}
@@ -314,20 +318,20 @@ export default function OnboardingFlow() {
         />
       )}
       <Box
-        className={classnames('onboarding-flow__container', {
-          'onboarding-flow__container--full': isFullPage,
-          'onboarding-flow__container--popup': isPopup,
-          'onboarding-flow__container--sidepanel': isSidepanel,
-        })}
-        width={BlockSize.Full}
-        borderRadius={BorderRadius.LG}
+        className={classnames(
+          'onboarding-flow__container w-full rounded-lg mx-auto',
+          {
+            'onboarding-flow__container--full': isFullPage,
+            'onboarding-flow__container--popup': isPopup,
+            'onboarding-flow__container--sidepanel': isSidepanel,
+          },
+        )}
         marginTop={
           pathname === ONBOARDING_WELCOME_ROUTE || isPopup || isSidepanel
             ? 0
             : 3
         }
         marginBottom={pathname === ONBOARDING_EXPERIMENTAL_AREA ? 6 : 0}
-        marginInline="auto"
         style={{
           backgroundColor:
             [ONBOARDING_WELCOME_ROUTE, ONBOARDING_UNLOCK_ROUTE].includes(

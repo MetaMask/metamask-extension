@@ -45,10 +45,7 @@ import { NoConnectionContent } from '../../../multichain/pages/connections/compo
 import { Content, Footer, Page } from '../../../multichain/pages/page';
 import { SubjectsType } from '../../../multichain/pages/connections/components/connections.types';
 import { CONNECT_ROUTE } from '../../../../helpers/constants/routes';
-import {
-  DisconnectAllModal,
-  DisconnectType,
-} from '../../../multichain/disconnect-all-modal/disconnect-all-modal';
+import { DisconnectAllModal } from '../../../multichain/disconnect-all-modal/disconnect-all-modal';
 import { DisconnectPermissionsModal } from '../../../multichain/disconnect-permissions-modal/disconnect-permissions-modal';
 import { PermissionsHeader } from '../../../multichain/permissions-header/permissions-header';
 import { EvmAndMultichainNetworkConfigurationsWithCaipChainId } from '../../../../selectors/selectors.types';
@@ -382,8 +379,6 @@ export const MultichainReviewPermissions = () => {
 
           {showDisconnectAllModal ? (
             <DisconnectAllModal
-              type={DisconnectType.Account}
-              hostname={activeTabOrigin}
               onClose={() => setShowDisconnectAllModal(false)}
               onClick={() => {
                 setShowDisconnectAllModal(false);
