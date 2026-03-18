@@ -5,7 +5,7 @@ import thunk from 'redux-thunk';
 import mockState from '../../../../test/data/mock-state.json';
 import { enLocale as messages, tEn } from '../../../../test/lib/i18n-helpers';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
-import AutoLockItem from './auto-lock-item';
+import { AutoLockItem } from './security-and-password-tab';
 
 const createMockStore = (autoLockTimeLimit?: number) =>
   configureMockStore([thunk])({
@@ -34,11 +34,11 @@ describe('AutoLockItem', () => {
     ).toBeInTheDocument();
   });
 
-  it('displays "Immediately" when autoLockTimeLimit is 0.01', () => {
+  it('displays custom label when autoLockTimeLimit is 0.01', () => {
     renderWithProvider(<AutoLockItem />, createMockStore(0.01));
 
     expect(
-      screen.getByText(messages.autoLockImmediately.message),
+      screen.getByText(tEn('autoLockAfterMinutes', ['0.01'])),
     ).toBeInTheDocument();
   });
 
@@ -55,6 +55,14 @@ describe('AutoLockItem', () => {
 
     expect(
       screen.getByText(tEn('autoLockAfterMinutes', ['10'])),
+    ).toBeInTheDocument();
+  });
+
+  it('rounds long decimal custom label values', () => {
+    renderWithProvider(<AutoLockItem />, createMockStore(0.1234242423));
+
+    expect(
+      screen.getByText(tEn('autoLockAfterMinutes', ['0.12'])),
     ).toBeInTheDocument();
   });
 

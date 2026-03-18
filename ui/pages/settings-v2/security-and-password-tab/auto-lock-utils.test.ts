@@ -6,7 +6,6 @@ import {
 
 const mockT = (key: string, subs?: string[]) => {
   const map: Record<string, string> = {
-    autoLockImmediately: 'Immediately',
     autoLockAfter15Seconds: 'After 15 seconds',
     autoLockAfter30Seconds: 'After 30 seconds',
     autoLockAfter1Minute: 'After 1 minute',
@@ -35,6 +34,12 @@ describe('formatAutoLockLabel', () => {
   it('returns custom label for decimal non-preset value', () => {
     expect(formatAutoLockLabel(2.5, mockT)).toBe(
       mockT('autoLockAfterMinutes', ['2.5']),
+    );
+  });
+
+  it('rounds long decimal non-preset values for readability', () => {
+    expect(formatAutoLockLabel(0.1234242423, mockT)).toBe(
+      mockT('autoLockAfterMinutes', ['0.12']),
     );
   });
 });

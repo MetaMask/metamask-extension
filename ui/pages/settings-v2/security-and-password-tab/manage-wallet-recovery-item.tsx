@@ -69,6 +69,4 @@ const ManageWalletRecoveryItem = () => {
   );
 };
 
-ManageWalletRecoveryItem.displayName = 'ManageWalletRecoveryItem';
-
 export default ManageWalletRecoveryItem;

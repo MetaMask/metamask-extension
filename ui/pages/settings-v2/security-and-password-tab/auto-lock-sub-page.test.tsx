@@ -51,9 +51,6 @@ describe('AutoLockSubPage', () => {
     renderWithProvider(<AutoLockSubPage />, createMockStore());
 
     expect(
-      screen.getByText(messages.autoLockImmediately.message),
-    ).toBeInTheDocument();
-    expect(
       screen.getByText(messages.autoLockAfter15Seconds.message),
     ).toBeInTheDocument();
     expect(

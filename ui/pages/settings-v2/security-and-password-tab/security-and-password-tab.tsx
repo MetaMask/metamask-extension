@@ -1,11 +1,15 @@
 import React from 'react';
 import { SettingItemConfig } from '../types';
-import { SettingsTab, createToggleItem } from '../shared';
-import { getUsePhishDetect } from '../../../selectors';
+import { SettingsTab, createSelectItem, createToggleItem } from '../shared';
+import { getPreferences, getUsePhishDetect } from '../../../selectors';
 import { setUsePhishDetect } from '../../../store/actions';
+import {
+  AUTO_LOCK_ROUTE,
+  SECURITY_PASSWORD_CHANGE_ROUTE,
+} from '../../../helpers/constants/routes';
+import { DEFAULT_AUTO_LOCK_TIME_LIMIT } from '../../../../shared/constants/preferences';
 import ManageWalletRecoveryItem from './manage-wallet-recovery-item';
-import PasswordItem from './password-item';
-import AutoLockItem from './auto-lock-item';
+import { formatAutoLockLabel } from './auto-lock-utils';
 
 const PhishingDetectionItem = createToggleItem({
   name: 'PhishingDetectionItem',
@@ -14,6 +18,29 @@ const PhishingDetectionItem = createToggleItem({
   selector: (state) => Boolean(getUsePhishDetect(state)),
   action: setUsePhishDetect,
   dataTestId: 'security-phishing-detection-toggle',
+});
+
+const PasswordItem = createSelectItem({
+  name: 'PasswordItem',
+  titleKey: 'password',
+  valueSelector: () => '',
+  route: SECURITY_PASSWORD_CHANGE_ROUTE,
+});
+
+export const AutoLockItem = createSelectItem({
+  name: 'AutoLockItem',
+  titleKey: 'autoLock',
+  valueSelector: (state) => {
+    const { autoLockTimeLimit = DEFAULT_AUTO_LOCK_TIME_LIMIT } =
+      getPreferences(state);
+    return String(autoLockTimeLimit);
+  },
+  formatValue: (autoLockTimeLimit, t) =>
+    formatAutoLockLabel(
+      Number(autoLockTimeLimit),
+      t as (key: string, substitutions?: string[]) => string,
+    ),
+  route: AUTO_LOCK_ROUTE,
 });
 
 const SECURITY_AND_PASSWORD_SETTING_ITEMS: SettingItemConfig[] = [

@@ -5,7 +5,6 @@ export type AutoLockOption = {
 };
 
 export const AUTO_LOCK_OPTIONS: AutoLockOption[] = [
-  { labelKey: 'autoLockImmediately', value: 0.01 },
   { labelKey: 'autoLockAfter15Seconds', value: 0.25 },
   { labelKey: 'autoLockAfter30Seconds', value: 0.5 },
   { labelKey: 'autoLockAfter1Minute', value: 1 },
@@ -21,5 +20,8 @@ export function formatAutoLockLabel(
   if (option) {
     return t(option.labelKey);
   }
-  return t('autoLockAfterMinutes', [`${minutes}`]);
+
+  // Round custom values to keep labels readable. 2 is what we used in other places.
+  const roundedMinutes = Number(minutes.toFixed(2));
+  return t('autoLockAfterMinutes', [`${roundedMinutes}`]);
 }

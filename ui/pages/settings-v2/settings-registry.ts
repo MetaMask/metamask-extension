@@ -81,6 +81,7 @@ export const SETTINGS_V2_ROUTE_META: Record<string, SettingsV2RouteMeta> = {
     labelKey: 'thirdPartyApis',
     parentPath: PRIVACY_ROUTE,
   },
+  // TODO: Update route after screen is updated
   // Security and password tab
   [SECURITY_AND_PASSWORD_ROUTE]: {
     labelKey: 'securityAndPassword',
