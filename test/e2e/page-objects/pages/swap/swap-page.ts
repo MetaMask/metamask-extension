@@ -113,6 +113,16 @@ class SwapPage {
   private readonly quotesModalRow =
     '.quotes-modal [style*="position: relative"]';
 
+  private readonly viewActivityButton = {
+    tag: 'button',
+    text: 'View activity',
+  };
+
+  private readonly transactionCompleteHeader = {
+    tag: 'h4',
+    text: 'Your transaction is complete',
+  };
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
@@ -252,22 +262,14 @@ class SwapPage {
   }
 
   async clickViewActivity(): Promise<void> {
-    await this.driver.clickElement({
-      tag: 'button',
-      text: 'View activity',
-    });
+    await this.driver.clickElement(this.viewActivityButton);
   }
 
   async waitForSmartTransactionToComplete(): Promise<void> {
     console.log('Wait for Smart Transaction to complete');
-
-    await this.driver.waitForSelector(
-      {
-        tag: 'h4',
-        text: 'Your transaction is complete',
-      },
-      { timeout: 30000 },
-    );
+    await this.driver.waitForSelector(this.transactionCompleteHeader, {
+      timeout: 30000,
+    });
   }
 
   async fillSwapAmount(amount: string): Promise<void> {

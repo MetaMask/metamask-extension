@@ -16,7 +16,6 @@ import SwapPage from '../../page-objects/pages/swap/swap-page';
 import { BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED } from '../bridge/constants';
 import { mockGetTxStatus } from '../bridge/bridge-test-utils';
 import { mockSpotPrices } from '../tokens/utils/mocks';
-import { mockSmartTransactionsRemoteFlags } from './remote-flags';
 import {
   mockSmartTransactionRequests,
   mockGasIncludedTransactionRequests,
@@ -61,10 +60,7 @@ async function withFixturesForSmartTransactions(
           bridgeConfig: BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
         },
       },
-      testSpecificMock: async (mockServer: MockttpServer) => {
-        await mockSmartTransactionsRemoteFlags(mockServer);
-        await testSpecificMock(mockServer);
-      },
+      testSpecificMock,
       ignoredConsoleErrors,
     },
     async ({ driver }) => {
