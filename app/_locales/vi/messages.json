@@ -2245,12 +2245,6 @@
   "dismissReminderField": {
     "message": "Tắt lời nhắc sao lưu Cụm từ khôi phục bí mật"
   },
-  "dismissSmartAccountSuggestionEnabledDescription": {
-    "message": "Bật tùy chọn này để không còn thấy gợi ý \"Chuyển sang Tài khoản thông minh\" trên bất kỳ tài khoản nào. Tài khoản thông minh mở khóa giao dịch nhanh hơn, phí mạng thấp hơn và linh hoạt hơn trong việc thanh toán."
-  },
-  "dismissSmartAccountSuggestionEnabledTitle": {
-    "message": "Tắt gợi ý \"Chuyển sang Tài khoản thông minh\""
-  },
   "displayNftMedia": {
     "message": "Hiển thị phương tiện NFT"
   },
