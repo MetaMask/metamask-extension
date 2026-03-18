@@ -81,7 +81,8 @@ describe('Ledger Hardware', function (this: Suite) {
           KNOWN_PUBLIC_KEY_ADDRESSES[0].address as `0x${string}`,
         );
         await login(driver, {
-          expectedBalance: `${((balance ?? 0) / 1_000_000).toFixed(2)}M`.toString(),
+          expectedBalance:
+            `${((balance ?? 0) / 1_000_000).toFixed(2)}M`.toString(),
         });
 
         const contractAddress =
@@ -142,7 +143,8 @@ describe('Ledger Hardware', function (this: Suite) {
           KNOWN_PUBLIC_KEY_ADDRESSES[0].address as `0x${string}`,
         );
         await login(driver, {
-          expectedBalance: `${((balance ?? 0) / 1_000_000).toFixed(2)}M`.toString(),
+          expectedBalance:
+            `${((balance ?? 0) / 1_000_000).toFixed(2)}M`.toString(),
         });
 
         const contractAddress =
@@ -200,7 +202,8 @@ describe('Ledger Hardware', function (this: Suite) {
           KNOWN_PUBLIC_KEY_ADDRESSES[0].address as `0x${string}`,
         );
         await login(driver, {
-          expectedBalance: `${((balance ?? 0) / 1_000_000).toFixed(2)}M`.toString(),
+          expectedBalance:
+            `${((balance ?? 0) / 1_000_000).toFixed(2)}M`.toString(),
         });
 
         const contractAddress =
