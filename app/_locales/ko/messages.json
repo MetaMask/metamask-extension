@@ -2245,12 +2245,6 @@
   "dismissReminderField": {
     "message": "비밀복구구문 백업 알림 해지"
   },
-  "dismissSmartAccountSuggestionEnabledDescription": {
-    "message": "이 옵션을 켜면 어떤 계정에서도 '스마트 계정으로 전환' 제안이 더 이상 표시되지 않습니다. 스마트 계정을 사용하면 더 빠른 트랜잭션을 더 낮은 네트워크 수수료로 이용할 수 있으며, 수수료 지불 방식도 더욱 유연해집니다."
-  },
-  "dismissSmartAccountSuggestionEnabledTitle": {
-    "message": "'스마트 계정으로 전환' 제안 끄기"
-  },
   "displayNftMedia": {
     "message": "NFT 미디어 표시"
   },
