@@ -13,8 +13,8 @@ import {
   LedgerAction,
   OffscreenCommunicationEvents,
   OffscreenCommunicationTarget,
-} from '../../shared/constants/offscreen-communication';
-import { LEDGER_USB_VENDOR_ID } from '../../shared/constants/hardware-wallets';
+} from '../../../shared/constants/offscreen-communication';
+import { LEDGER_USB_VENDOR_ID } from '../../../shared/constants/hardware-wallets';
 
 type EIP712Message = Parameters<LedgerEth['signEIP712Message']>[1];
 
