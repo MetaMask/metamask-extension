@@ -45,20 +45,18 @@
  *       "other_tests_run": 450
  *     },
  *     "e2e": {
- *       "total_tests_run": 1200,
+ *       "total_tests_run": 1400,
  *       "total_tests_skipped": 5,
- *       "total_tests_defined": 1100,
+ *       "total_tests_defined": 1280,
+ *       "main_tests_run": 1200,
+ *       "main_chrome_tests_run": 1200,
+ *       "main_firefox_tests_run": 1185,
+ *       "flask_tests_run": 200,
+ *       "flask_chrome_tests_run": 200,
+ *       "flask_firefox_tests_run": 195,
  *       "confirmations_tests_run": 300,
  *       "send_tests_run": 120,
  *       "other_tests_run": 780
- *     },
- *     "e2e_flask": {
- *       "total_tests_run": 200,
- *       "total_tests_skipped": 0,
- *       "total_tests_defined": 180,
- *       "snaps_tests_run": 80,
- *       "accounts_tests_run": 60,
- *       "other_tests_run": 60
  *     },
  *     "benchmark": {
  *       "total_tests_defined": 8,
@@ -636,81 +634,147 @@ async function getE2eReport() {
   return _e2eReportCache;
 }
 
-/**
- * Shared E2E collector logic. Parses test-runs-chrome.json, filters to a
- * specific job name, aggregates test counts, and runs a static scan for
- * total_tests_defined and total_tests_skipped.
- *
- * @param {string} jobName - Value of TestRun.name to filter on
- * @param {string[]} staticDirs - Directories to scan for static test definitions
- * @returns {Promise<Record<string, number>>}
- */
-async function collectE2eFromReport(jobName, staticDirs) {
-  const testRuns = await getE2eReport();
+/** Cached parsed content of test-runs-firefox.json, shared across collectors. */
+let _e2eFirefoxReportCache = null;
 
-  const matchingRuns = testRuns.filter((run) => run.name === jobName);
-  if (matchingRuns.length === 0) {
-    console.log(`[e2e] no runs found for job "${jobName}", skipping`);
-    return {};
+/**
+ * Downloads the test-e2e-firefox-report artifact (once, cached) and returns
+ * the parsed TestRun[] array from test-runs-firefox.json.
+ *
+ * @returns {Promise<Array>}
+ */
+async function getE2eFirefoxReport() {
+  if (_e2eFirefoxReportCache) return _e2eFirefoxReportCache;
+
+  const artifactName = 'test-e2e-firefox-report';
+  console.log(`[e2e] downloading ${artifactName}...`);
+  const destDir = await downloadArtifact(artifactName);
+
+  let raw;
+  try {
+    raw = await readFile(join(destDir, 'test-runs-firefox.json'), 'utf8');
+  } catch {
+    raw = await readFile(
+      join(destDir, 'test', 'test-results', 'test-runs-firefox.json'),
+      'utf8',
+    );
   }
 
-  let total = 0;
+  _e2eFirefoxReportCache = JSON.parse(raw);
+  return _e2eFirefoxReportCache;
+}
+
+/**
+ * Collects all E2E test counts — both main and flask channels — into a single
+ * namespace. Mirrors the mobile reference pattern where Chrome is the canonical
+ * platform and Firefox is a browser health signal.
+ *
+ * Channel breakdown:
+ *   main  = standard browserify tests (core wallet features, MV3)
+ *   flask = Flask build tests (Snaps, experimental features)
+ *
+ * Browser breakdown (within each channel):
+ *   chrome  = canonical unique count (MV3)
+ *   firefox = health signal — drops if Firefox MV2 infrastructure is broken
+ *
+ * Per-feature keys come from Chrome main only (canonical, like Android in mobile).
+ * Static analysis covers both main + flask directories combined.
+ *
+ * @returns {Promise<Record<string, number>>}
+ */
+async function collectE2eTestCount() {
+  console.log('[e2e] collecting counts from e2e reports...');
+
+  const chromeRuns = await getE2eReport();
+
+  // --- Main channel (Chrome, canonical) ---
+  let mainChromeTotal = 0;
   const folderCounts = {};
 
-  for (const run of matchingRuns) {
+  for (const run of chromeRuns.filter(
+    (r) => r.name === 'test-e2e-chrome-browserify',
+  )) {
     for (const file of run.testFiles ?? []) {
-      total += file.tests ?? 0;
-
+      mainChromeTotal += file.tests ?? 0;
       const folder = getE2eFeatureFolder(file.path ?? '');
       folderCounts[folder] = (folderCounts[folder] ?? 0) + (file.tests ?? 0);
     }
   }
+  console.log(`[e2e/main/chrome] total: ${mainChromeTotal}`);
 
-  console.log(`[e2e/${jobName}] total: ${total}`);
+  // --- Flask channel (Chrome, canonical) ---
+  let flaskChromeTotal = 0;
 
+  for (const run of chromeRuns.filter(
+    (r) => r.name === 'test-e2e-chrome-flask',
+  )) {
+    for (const file of run.testFiles ?? []) {
+      flaskChromeTotal += file.tests ?? 0;
+    }
+  }
+  console.log(`[e2e/flask/chrome] total: ${flaskChromeTotal}`);
+
+  // --- Firefox health signals (both channels) ---
+  let mainFirefoxTotal = 0;
+  let flaskFirefoxTotal = 0;
+  try {
+    const firefoxRuns = await getE2eFirefoxReport();
+
+    for (const run of firefoxRuns.filter(
+      (r) => r.name === 'test-e2e-firefox-browserify',
+    )) {
+      for (const file of run.testFiles ?? []) {
+        mainFirefoxTotal += file.tests ?? 0;
+      }
+    }
+    console.log(`[e2e/main/firefox] total: ${mainFirefoxTotal}`);
+
+    for (const run of firefoxRuns.filter(
+      (r) => r.name === 'test-e2e-firefox-flask',
+    )) {
+      for (const file of run.testFiles ?? []) {
+        flaskFirefoxTotal += file.tests ?? 0;
+      }
+    }
+    console.log(`[e2e/flask/firefox] total: ${flaskFirefoxTotal}`);
+  } catch (err) {
+    console.warn(`[e2e] firefox report not available, skipping: ${err.message}`);
+  }
+
+  // --- Static analysis across both main and flask dirs ---
+  const allE2eDirs = [...new Set([...SCAN_E2E_DIRS, ...SCAN_E2E_FLASK_DIRS])];
   const { defined, skipped } = await scanTestFiles(
-    staticDirs,
+    allE2eDirs,
     PATTERN_E2E_SPEC_FILE,
   );
-  console.log(
-    `[e2e/${jobName}] defined: ${defined}, skipped (static): ${skipped}`,
-  );
+  console.log(`[e2e] defined: ${defined}, skipped (static): ${skipped}`);
 
   const result = {
-    total_tests_run: total,
+    total_tests_run: mainChromeTotal + flaskChromeTotal,
     total_tests_skipped: skipped,
     total_tests_defined: defined,
   };
+
+  // Main channel counts (omit if main tests did not run)
+  if (mainChromeTotal > 0 || mainFirefoxTotal > 0) {
+    result.main_tests_run = mainChromeTotal;
+    result.main_chrome_tests_run = mainChromeTotal;
+    if (mainFirefoxTotal > 0) result.main_firefox_tests_run = mainFirefoxTotal;
+  }
+
+  // Flask channel counts (omit if flask tests did not run)
+  if (flaskChromeTotal > 0 || flaskFirefoxTotal > 0) {
+    result.flask_tests_run = flaskChromeTotal;
+    result.flask_chrome_tests_run = flaskChromeTotal;
+    if (flaskFirefoxTotal > 0) result.flask_firefox_tests_run = flaskFirefoxTotal;
+  }
+
+  // Per-feature breakdown from Chrome main only (canonical, like Android in mobile)
   for (const [folder, count] of Object.entries(folderCounts)) {
     result[`${folder}_tests_run`] = count;
   }
 
   return result;
-}
-
-/**
- * Collects E2E test counts for the standard (non-flask) Chrome build.
- * Source: test-e2e-chrome-report → job "test-e2e-chrome-browserify"
- *
- * @returns {Promise<Record<string, number>>}
- */
-async function collectE2eTestCount() {
-  console.log('[e2e] collecting counts from test-e2e-chrome-report...');
-  return collectE2eFromReport('test-e2e-chrome-browserify', SCAN_E2E_DIRS);
-}
-
-/**
- * Collects E2E test counts for the Flask Chrome build.
- * Source: test-e2e-chrome-report → job "test-e2e-chrome-flask"
- *
- * @returns {Promise<Record<string, number>>}
- */
-async function collectE2eFlaskTestCount() {
-  console.log('[e2e_flask] collecting counts from test-e2e-chrome-report...');
-  return collectE2eFromReport(
-    'test-e2e-chrome-flask',
-    SCAN_E2E_FLASK_DIRS,
-  );
 }
 
 // ---------------------------------------------------------------------------
@@ -778,7 +842,6 @@ async function main() {
     { namespace: 'unit', collect: collectUnitTestCount },
     { namespace: 'integration', collect: collectIntegrationTestCount },
     { namespace: 'e2e', collect: collectE2eTestCount },
-    { namespace: 'e2e_flask', collect: collectE2eFlaskTestCount },
     { namespace: 'benchmark', collect: collectBenchmarkScenarioCount },
   ];
 
