@@ -1,9 +1,8 @@
 import { Mockttp } from 'mockttp';
 
-import { CHAIN_IDS } from '../../../shared/constants/network';
 import { Driver } from '../webdriver/driver';
 import HomePage from '../page-objects/pages/home/homepage';
-import FixtureBuilder from '../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../fixtures/fixture-builder-v2';
 import { loginWithoutBalanceValidation } from '../page-objects/flows/login.flow';
 import { DAPP_PATH, WINDOW_TITLES } from '../constants';
 import { withFixtures } from '../helpers';
@@ -18,9 +17,10 @@ describe('Name lookup', function () {
         dappOptions: {
           customDappPaths: [DAPP_PATH.TEST_SNAPS],
         },
-        fixtures: new FixtureBuilder({
-          inputChainId: CHAIN_IDS.MAINNET,
-        }).build(),
+        fixtures: new FixtureBuilderV2()
+          .withSelectedNetwork()
+          .withSnapsPrivacyWarningAlreadyShown()
+          .build(),
         testSpecificMock: async (mockServer: Mockttp) => [
           await mockLookupSnap(mockServer),
         ],

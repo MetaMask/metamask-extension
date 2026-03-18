@@ -65,8 +65,10 @@ export default function TransactionIcon({ status, category }) {
     );
     return (
       <AvatarIcon
-        backgroundColor={BackgroundColor.backgroundAlternative}
+        backgroundColor={backgroundColor}
+        iconName={IconName.Question}
         size={AvatarIconSize.Md}
+        color={color}
       />
     );
   }
