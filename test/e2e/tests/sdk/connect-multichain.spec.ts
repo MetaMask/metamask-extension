@@ -175,11 +175,7 @@ describe('MM Connect — Multichain E2E', function (this: Suite) {
         const testDapp = new TestDapp(driver);
         await testDapp.openPage();
 
-        await testDapp.selectNetworks([
-          EVM_CHAINS.ETHEREUM,
-          EVM_CHAINS.POLYGON,
-          EVM_CHAINS.LINEA,
-        ]);
+        await testDapp.selectNetworks(Object.values(EVM_CHAINS));
         await testDapp.clickConnect();
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
@@ -221,11 +217,7 @@ describe('MM Connect — Multichain E2E', function (this: Suite) {
         const testDapp = new TestDapp(driver);
         await testDapp.openPage();
 
-        await testDapp.selectNetworks([
-          EVM_CHAINS.ETHEREUM,
-          EVM_CHAINS.POLYGON,
-          EVM_CHAINS.LINEA,
-        ]);
+        await testDapp.selectNetworks(Object.values(EVM_CHAINS));
         await testDapp.clickConnect();
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
@@ -274,11 +266,7 @@ describe('MM Connect — Multichain E2E', function (this: Suite) {
         const testDapp = new TestDapp(driver);
         await testDapp.openPage();
 
-        await testDapp.selectNetworks([
-          EVM_CHAINS.ETHEREUM,
-          EVM_CHAINS.POLYGON,
-          EVM_CHAINS.LINEA,
-        ]);
+        await testDapp.selectNetworks(Object.values(EVM_CHAINS));
         await testDapp.clickConnect();
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
