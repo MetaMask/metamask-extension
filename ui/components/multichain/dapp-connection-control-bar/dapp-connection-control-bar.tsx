@@ -42,10 +42,7 @@ import {
 import { REVIEW_PERMISSIONS } from '../../../helpers/constants/routes';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../shared/constants/network';
 import { getURLHost } from '../../../helpers/utils/util';
-import {
-  DisconnectAllModal,
-  DisconnectType,
-} from '../disconnect-all-modal/disconnect-all-modal';
+import { DisconnectAllModal } from '../disconnect-all-modal/disconnect-all-modal';
 
 /**
  * DappConnectionControlBar - A contextual bar shown only during active dapp
@@ -150,7 +147,6 @@ export const DappConnectionControlBar: React.FC = () => {
 
   const isConnected = permittedAccounts.length > 0;
 
-  const selectedAccountAddress = activePermittedAddress ?? '';
   const selectedAccountName =
     connectedAccountGroups.length > 0
       ? connectedAccountGroups[0].metadata.name
@@ -159,12 +155,8 @@ export const DappConnectionControlBar: React.FC = () => {
     if (!selectedAccountName) {
       return '';
     }
-    if (selectedAccountAddress) {
-      const truncated = `${selectedAccountAddress.slice(0, 6)}...${selectedAccountAddress.slice(-4)}`;
-      return `${selectedAccountName} (${truncated})`;
-    }
     return selectedAccountName;
-  }, [selectedAccountName, selectedAccountAddress]);
+  }, [selectedAccountName]);
 
   const connectedSubjectsMetadata = activeTabOrigin
     ? subjectMetadata[activeTabOrigin]
@@ -373,8 +365,6 @@ export const DappConnectionControlBar: React.FC = () => {
       {/* Disconnect confirmation modal */}
       {showDisconnectModal && (
         <DisconnectAllModal
-          type={DisconnectType.Account}
-          hostname={activeTabOrigin}
           onClose={handleCloseDisconnectModal}
           onClick={handleDisconnect}
         />

@@ -218,14 +218,13 @@ describe('DappConnectionControlBar', () => {
       expect(getByTestId('disconnect-all-modal')).toBeInTheDocument();
     });
 
-    it('displays the account label with truncated address', () => {
+    it('displays the account label', () => {
       const { getByTestId } = renderConnected();
       const accountEl = getByTestId(
         'dapp-connection-control-bar__account-name',
       );
       expect(accountEl).toBeInTheDocument();
-      const truncated = `${ACCOUNT_1_ADDRESS.slice(0, 6)}...${ACCOUNT_1_ADDRESS.slice(-4)}`;
-      expect(accountEl.textContent).toContain(truncated);
+      expect(accountEl.textContent).toContain('Account 1');
     });
 
     it('dispatches removePermissionsFor when disconnect is confirmed', async () => {
@@ -296,8 +295,7 @@ describe('DappConnectionControlBar', () => {
       const accountEl = getByTestId(
         'dapp-connection-control-bar__account-name',
       );
-      const truncated = `${ACCOUNT_1_ADDRESS.slice(0, 6)}...${ACCOUNT_1_ADDRESS.slice(-4)}`;
-      expect(accountEl.textContent).toContain(truncated);
+      expect(accountEl.textContent).toContain('Account 1');
     });
   });
 
