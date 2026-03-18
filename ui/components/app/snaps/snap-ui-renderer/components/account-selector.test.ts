@@ -59,7 +59,7 @@ describe('SnapUIAccountSelector', () => {
 
     fireEvent.click(accountOptions[1]);
 
-    expect(getByText('Test Account 2')).toBeInTheDocument();
+    expect(getByText('Account 1')).toBeInTheDocument();
   });
 
   it('can filter accounts owned by the snap', () => {
