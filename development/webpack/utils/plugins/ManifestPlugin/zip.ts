@@ -16,26 +16,19 @@ const { RawSource } = sources;
 const BROWSER_TEMPLATE_RE = /\[browser\]/gu;
 const KiB = 1024;
 const MiB = 1024 * KiB;
-const FAST_MACHINE_ASYNC_COMPRESSION_SIZE =
-  getThresholdFromEnvironment('METAMASK_ZIP_FAST_MACHINE_ASYNC_KIB', 48) * KiB;
-const MIN_COMPRESSIBLE_ASSET_SIZE =
-  getThresholdFromEnvironment('METAMASK_ZIP_MIN_COMPRESSIBLE_KIB', 24) * KiB;
-const MIN_ASYNC_COMPRESSION_SIZE =
-  getThresholdFromEnvironment('METAMASK_ZIP_MIN_ASYNC_KIB', 64) * KiB;
-const LOW_PARALLELISM_ASYNC_COMPRESSION_SIZE =
-  getThresholdFromEnvironment('METAMASK_ZIP_LOW_PARALLELISM_ASYNC_KIB', 96) *
-  KiB;
-const MAX_ASYNC_JOBS_OVERRIDE = getThresholdFromEnvironment(
-  'METAMASK_ZIP_MAX_ASYNC_JOBS',
-  0,
-);
+const GiB = 1024 * MiB;
+const FAST_MACHINE_ASYNC_COMPRESSION_SIZE = 48 * KiB;
+const MIN_COMPRESSIBLE_ASSET_SIZE = 24 * KiB;
+const MIN_ASYNC_COMPRESSION_SIZE = 64 * KiB;
+const LOW_PARALLELISM_ASYNC_COMPRESSION_SIZE = 96 * KiB;
 const MAX_ASYNC_COMPRESSION_SIZE = 16 * MiB;
 const RSS_SAMPLE_INTERVAL_MS = 250;
 const THROUGHPUT_SMOOTHING_FACTOR = 0.25;
-const IS_CI = getBooleanFromEnvironment('CI');
-const DISABLE_ADAPTIVE_RETUNING = getBooleanFromEnvironment(
-  'METAMASK_ZIP_DISABLE_ADAPTIVE_RETUNING',
-);
+const MAX_ASYNC_JOBS = 4;
+const CI_MAX_ASYNC_JOBS = 3;
+const FAST_MACHINE_PARALLELISM_THRESHOLD = 8;
+const FAST_MACHINE_MEMORY_THRESHOLD = 16 * GiB;
+const IS_CI = process.env.CI === '1' || process.env.CI === 'true';
 
 /**
  * File types that can be compressed well using DEFLATE compression.
@@ -78,6 +71,17 @@ type ZipCompressionController = {
 };
 
 /**
+ * Fixed limits for the adaptive controller after environment detection has
+ * already selected the "adaptive" path.
+ */
+type AdaptiveZipCompressionPolicy = {
+  asyncSizeThreshold: number;
+  maxAsyncBytes: number;
+  maxAsyncJobs: number;
+  memorySoftLimit: number;
+};
+
+/**
  * Incrementally builds a browser zip asset.
  */
 export type BrowserZipBuilder = {
@@ -93,50 +97,87 @@ export type BrowserZipBuilder = {
 };
 
 /**
- * Creates a shared controller that adaptively decides when async ZIP
- * compression is worthwhile for the current machine and build.
+ * Creates the ZIP compression controller for the current process.
  *
- * This first pass keeps the policy intentionally conservative:
- * it caps in-flight async work using machine heuristics, then nudges the async
- * size threshold up or down based on observed sync vs async throughput.
+ * Large local machines use a fixed threshold to avoid the bookkeeping cost of
+ * live tuning. CI and smaller machines use the adaptive controller so they can
+ * react to memory pressure and the observed sync-vs-async tradeoff at runtime.
  *
- * @returns The adaptive compression controller for a single zip run.
+ * @returns The compression controller for a single zip run.
  */
 export function createZipCompressionController(): ZipCompressionController {
   const parallelism = availableParallelism();
   const totalMemory = totalmem();
-  const useAdaptiveRetuning =
-    !DISABLE_ADAPTIVE_RETUNING &&
-    (IS_CI || parallelism <= 8 || totalMemory <= 16 * 1024 * MiB);
-
-  if (!useAdaptiveRetuning) {
-    const staticAsyncCompressionSize = IS_CI
-      ? LOW_PARALLELISM_ASYNC_COMPRESSION_SIZE
-      : FAST_MACHINE_ASYNC_COMPRESSION_SIZE;
-
-    return {
-      trackAsyncCompression: false,
-      beginAsyncCompression: () => () => undefined,
-      recordSyncCompression: () => undefined,
-      shouldUseAsyncCompression: (assetSize) =>
-        assetSize >= staticAsyncCompressionSize,
-    };
+  if (!shouldUseAdaptiveController(parallelism, totalMemory)) {
+    return createStaticZipCompressionController(
+      IS_CI
+        ? LOW_PARALLELISM_ASYNC_COMPRESSION_SIZE
+        : FAST_MACHINE_ASYNC_COMPRESSION_SIZE,
+    );
   }
 
-  const maxAsyncJobs =
-    MAX_ASYNC_JOBS_OVERRIDE || (IS_CI ? 3 : clamp(parallelism - 1, 1, 4));
-  const maxAsyncBytes = clamp(
-    Math.floor(totalMemory / (useAdaptiveRetuning ? 64 : 16)),
-    useAdaptiveRetuning ? 32 * MiB : 64 * MiB,
-    useAdaptiveRetuning ? 512 * MiB : 2 * 1024 * MiB,
+  return createAdaptiveZipCompressionController({
+    asyncSizeThreshold:
+      IS_CI || parallelism <= 4
+        ? LOW_PARALLELISM_ASYNC_COMPRESSION_SIZE
+        : MIN_ASYNC_COMPRESSION_SIZE,
+    maxAsyncBytes: clamp(Math.floor(totalMemory / 64), 32 * MiB, 512 * MiB),
+    maxAsyncJobs: IS_CI
+      ? CI_MAX_ASYNC_JOBS
+      : clamp(parallelism - 1, 1, MAX_ASYNC_JOBS),
+    memorySoftLimit: clamp(Math.floor(totalMemory / 4), 512 * MiB, 2 * GiB),
+  });
+}
+
+/**
+ * Uses the adaptive controller for CI and for machines that look constrained
+ * enough to benefit from live tuning. Large local machines stay on the simpler
+ * fixed-threshold path.
+ * @param parallelism
+ * @param totalMemory
+ */
+function shouldUseAdaptiveController(
+  parallelism: number,
+  totalMemory: number,
+): boolean {
+  return (
+    IS_CI ||
+    parallelism <= FAST_MACHINE_PARALLELISM_THRESHOLD ||
+    totalMemory <= FAST_MACHINE_MEMORY_THRESHOLD
   );
-  const memorySoftLimit = useAdaptiveRetuning
-    ? clamp(Math.floor(totalMemory / 4), 512 * MiB, 2 * 1024 * MiB)
-    : Number.POSITIVE_INFINITY;
-  let asyncSizeThreshold =
-    IS_CI || parallelism <= 4
-      ? LOW_PARALLELISM_ASYNC_COMPRESSION_SIZE
-      : MIN_ASYNC_COMPRESSION_SIZE;
+}
+
+/**
+ * Creates a fixed-threshold controller with no runtime tuning.
+ * @param asyncSizeThreshold
+ */
+function createStaticZipCompressionController(
+  asyncSizeThreshold: number,
+): ZipCompressionController {
+  return {
+    trackAsyncCompression: false,
+    beginAsyncCompression: () => () => undefined,
+    recordSyncCompression: () => undefined,
+    shouldUseAsyncCompression: (assetSize) => assetSize >= asyncSizeThreshold,
+  };
+}
+
+/**
+ * Creates the adaptive controller that bounds worker usage and retunes the
+ * async threshold based on measured throughput and memory pressure.
+ * @param options0
+ * @param options0.asyncSizeThreshold
+ * @param options0.maxAsyncBytes
+ * @param options0.maxAsyncJobs
+ * @param options0.memorySoftLimit
+ */
+function createAdaptiveZipCompressionController({
+  asyncSizeThreshold: initialAsyncSizeThreshold,
+  maxAsyncBytes,
+  maxAsyncJobs,
+  memorySoftLimit,
+}: AdaptiveZipCompressionPolicy): ZipCompressionController {
+  let asyncSizeThreshold = initialAsyncSizeThreshold;
   let inflightAsyncJobs = 0;
   let inflightAsyncBytes = 0;
   let syncSamples = 0;
@@ -149,13 +190,6 @@ export function createZipCompressionController(): ZipCompressionController {
   function beginAsyncCompression(assetSize: number): () => void {
     inflightAsyncJobs += 1;
     inflightAsyncBytes += assetSize;
-
-    if (!useAdaptiveRetuning) {
-      return () => {
-        inflightAsyncJobs = Math.max(0, inflightAsyncJobs - 1);
-        inflightAsyncBytes = Math.max(0, inflightAsyncBytes - assetSize);
-      };
-    }
 
     const startedAt = performance.now();
     let completed = false;
@@ -180,10 +214,6 @@ export function createZipCompressionController(): ZipCompressionController {
   }
 
   function recordSyncCompression(assetSize: number, durationMs: number): void {
-    if (!useAdaptiveRetuning) {
-      return;
-    }
-
     syncSamples += 1;
     syncThroughput = updateAverageThroughput(
       syncThroughput,
@@ -195,7 +225,7 @@ export function createZipCompressionController(): ZipCompressionController {
   }
 
   function shouldUseAsyncCompression(assetSize: number): boolean {
-    const rss = useAdaptiveRetuning ? getRss() : 0;
+    const rss = getRss();
     return (
       assetSize >= asyncSizeThreshold &&
       inflightAsyncJobs < maxAsyncJobs &&
@@ -205,10 +235,6 @@ export function createZipCompressionController(): ZipCompressionController {
   }
 
   function retuneAsyncThreshold(): void {
-    if (!useAdaptiveRetuning) {
-      return;
-    }
-
     if (syncSamples < 2 || asyncSamples < 2) {
       return;
     }
@@ -446,24 +472,4 @@ function updateAverageThroughput(
     ? throughput
     : currentAverage * (1 - THROUGHPUT_SMOOTHING_FACTOR) +
         throughput * THROUGHPUT_SMOOTHING_FACTOR;
-}
-
-function getThresholdFromEnvironment(
-  environmentVariable: string,
-  defaultValue: number,
-): number {
-  const rawValue = process.env[environmentVariable];
-  if (!rawValue) {
-    return defaultValue;
-  }
-
-  const parsedValue = Number.parseInt(rawValue, 10);
-  return Number.isSafeInteger(parsedValue) && parsedValue > 0
-    ? parsedValue
-    : defaultValue;
-}
-
-function getBooleanFromEnvironment(environmentVariable: string): boolean {
-  const rawValue = process.env[environmentVariable];
-  return rawValue === '1' || rawValue === 'true';
 }

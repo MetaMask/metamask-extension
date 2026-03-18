@@ -15,19 +15,9 @@ permissions:
 
 jobs:
   benchmark-webpack-build:
-    name: ${{ matrix.name }}
+    name: current-defaults
     runs-on: ubuntu-latest
     timeout-minutes: 30
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - name: adaptive-low-96-j3
-            fast_machine_async_kib: 48
-            min_compress_kib: 24
-            low_parallelism_async_kib: 96
-            max_async_jobs: 3
-            disable_adaptive_retuning: false
     env:
       APPLE_CLIENT_ID_FLASK_UAT: ${{ secrets.APPLE_CLIENT_ID_FLASK_UAT }}
       APPLE_CLIENT_ID_UAT: ${{ secrets.APPLE_CLIENT_ID_UAT }}
@@ -58,11 +48,6 @@ jobs:
       INFURA_FLASK_PROJECT_ID: ${{ secrets.INFURA_FLASK_PROJECT_ID }}
       INFURA_PROD_PROJECT_ID: ${{ secrets.INFURA_PROD_PROJECT_ID }}
       INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
-      METAMASK_ZIP_DISABLE_ADAPTIVE_RETUNING: ${{ matrix.disable_adaptive_retuning && 'true' || 'false' }}
-      METAMASK_ZIP_FAST_MACHINE_ASYNC_KIB: ${{ matrix.fast_machine_async_kib }}
-      METAMASK_ZIP_LOW_PARALLELISM_ASYNC_KIB: ${{ matrix.low_parallelism_async_kib }}
-      METAMASK_ZIP_MAX_ASYNC_JOBS: ${{ matrix.max_async_jobs }}
-      METAMASK_ZIP_MIN_COMPRESSIBLE_KIB: ${{ matrix.min_compress_kib }}
       QUICKNODE_ARBITRUM_URL: ${{ secrets.QUICKNODE_ARBITRUM_URL }}
       QUICKNODE_AVALANCHE_URL: ${{ secrets.QUICKNODE_AVALANCHE_URL }}
       QUICKNODE_BASE_URL: ${{ secrets.QUICKNODE_BASE_URL }}
@@ -98,9 +83,9 @@ jobs:
           set +e
 
           mkdir -p benchmark-results
-          log_file="benchmark-results/${{ matrix.name }}.log"
-          time_file="benchmark-results/${{ matrix.name }}.time"
-          result_file="benchmark-results/${{ matrix.name }}.json"
+          log_file="benchmark-results/current-defaults.log"
+          time_file="benchmark-results/current-defaults.time"
+          result_file="benchmark-results/current-defaults.json"
           build_command="BLOCKAID_FILE_CDN=static.cx.metamask.io/api/v1/confirmations/ppom yarn env:e2e webpack --mode production --test --browser=chrome --browser=firefox --no-cache --zip --no-progress"
 
           /usr/bin/time -f '%e' -o "$time_file" bash -lc "$build_command" > "$log_file" 2>&1
@@ -110,39 +95,24 @@ jobs:
           elapsed_seconds=$(cat "$time_file")
 
           jq -n \
-            --arg name "${{ matrix.name }}" \
+            --arg name "current-defaults" \
             --arg elapsed_seconds "$elapsed_seconds" \
             --arg compile_ms "${compile_ms:-}" \
-            --argjson fast_machine_async_kib ${{ matrix.fast_machine_async_kib }} \
-            --argjson min_compress_kib ${{ matrix.min_compress_kib }} \
-            --argjson low_parallelism_async_kib ${{ matrix.low_parallelism_async_kib }} \
-            --argjson max_async_jobs ${{ matrix.max_async_jobs }} \
-            --argjson disable_adaptive_retuning ${{ matrix.disable_adaptive_retuning && 'true' || 'false' }} \
             --argjson exit_code "$exit_code" \
             '{
               name: $name,
               elapsed_seconds: ($elapsed_seconds | tonumber),
               compile_ms: (if $compile_ms == "" then null else ($compile_ms | tonumber) end),
-              fast_machine_async_kib: $fast_machine_async_kib,
-              min_compress_kib: $min_compress_kib,
-              low_parallelism_async_kib: $low_parallelism_async_kib,
-              max_async_jobs: $max_async_jobs,
-              disable_adaptive_retuning: $disable_adaptive_retuning,
               exit_code: $exit_code
             }' > "$result_file"
 
           cat "$result_file"
 
           {
-            echo "## ${{ matrix.name }}"
+            echo "## current-defaults"
             echo ""
             echo "- elapsed_seconds: $elapsed_seconds"
             echo "- compile_ms: ${compile_ms:-missing}"
-            echo "- fast_machine_async_kib: ${{ matrix.fast_machine_async_kib }}"
-            echo "- min_compress_kib: ${{ matrix.min_compress_kib }}"
-            echo "- low_parallelism_async_kib: ${{ matrix.low_parallelism_async_kib }}"
-            echo "- max_async_jobs: ${{ matrix.max_async_jobs }}"
-            echo "- disable_adaptive_retuning: ${{ matrix.disable_adaptive_retuning }}"
             echo "- exit_code: $exit_code"
           } >> "$GITHUB_STEP_SUMMARY"
 
@@ -152,7 +122,7 @@ jobs:
         if: ${{ always() }}
         uses: actions/upload-artifact@v6
         with:
-          name: benchmark-${{ matrix.name }}
+          name: benchmark-current-defaults
           path: benchmark-results
           retention-days: 7
 
