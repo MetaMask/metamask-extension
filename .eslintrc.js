@@ -389,7 +389,7 @@ module.exports = {
       plugins: ['react', 'react-compiler'],
       rules: {
         'react-compiler/react-compiler': 'error',
-        'react/no-unused-prop-types': 'warn',
+        'react/no-unused-prop-types': 'error',
         'react/no-unused-state': 'warn',
         'react/jsx-boolean-value': 'off',
         'react/jsx-curly-brace-presence': 'off',
@@ -623,6 +623,7 @@ module.exports = {
         ],
         // Static hex values are only discouraged in application code, using them in stories is OK.
         '@metamask/design-tokens/color-no-hex': 'off',
+        'storybook/no-redundant-story-name': 'error',
       },
     },
     /**
