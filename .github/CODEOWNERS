@@ -215,3 +215,10 @@ app/scripts/lib/createTracingMiddleware.ts                            @MetaMask/
 # mUSD
 **/musd/** @MetaMask/metamask-earn
 shared/lib/deep-links/routes/musd.ts @MetaMask/metamask-earn
+
+# Delegation Team
+shared/lib/deep-links/routes/gator-permissions.ts @MetaMask/delegation
+shared/lib/gator-permissions/                     @MetaMask/delegation
+app/scripts/controller-init/gator-permissions/    @MetaMask/delegation
+ui/hooks/gator-permissions/                       @MetaMask/delegation
+ui/components/multichain/pages/gator-permissions/ @MetaMask/delegation
