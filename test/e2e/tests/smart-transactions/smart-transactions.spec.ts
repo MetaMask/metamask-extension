@@ -99,10 +99,10 @@ describe('Smart Transactions', function () {
         });
 
         await transactionConfirmation.selectTokenFee('USDC');
-        await driver.delay(1000);
-        await transactionConfirmation.clickFooterConfirmButton();
+        await transactionConfirmation.clickFooterConfirmButtonAndWaitToDisappear();
 
         const activityList = new ActivityListPage(driver);
+        await activityList.checkCompletedTxNumberDisplayedInActivity(1);
         await activityList.checkNoFailedTransactions();
         await activityList.checkTxAmountInActivity(`-0.01 ETH`, 1);
       },

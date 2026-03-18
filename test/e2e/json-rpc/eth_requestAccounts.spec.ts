@@ -53,6 +53,9 @@ describe('eth_requestAccounts', function () {
       },
       async ({ driver }: { driver: Driver }) => {
         // eth_requestAccounts
+        await driver.navigate();
+        const loginPage = new LoginPage(driver);
+        await loginPage.checkPageIsLoaded();
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
         await testDapp.checkPageIsLoaded();
@@ -81,6 +84,9 @@ describe('eth_requestAccounts', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
+        await driver.navigate();
+        const loginPage = new LoginPage(driver);
+        await loginPage.checkPageIsLoaded();
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
         await testDapp.checkPageIsLoaded();
@@ -96,7 +102,6 @@ describe('eth_requestAccounts', function () {
 
         await driver.waitUntilXWindowHandles(3);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        const loginPage = new LoginPage(driver);
         await loginPage.checkPageIsLoaded();
         await loginPage.loginToHomepage();
 

@@ -1,6 +1,7 @@
 import { NetworkController } from '@metamask/network-controller';
 // Mocha type definitions are conflicting with Jest
 import { it as jestIt } from '@jest/globals';
+import { ORIGIN_METAMASK } from '@metamask/controller-utils';
 import {
   TransactionMeta,
   TransactionType,
@@ -21,6 +22,7 @@ import { buildControllerInitRequestMock, CHAIN_ID_MOCK } from '../test/utils';
 import { ControllerInitRequest } from '../types';
 import * as smartTransactionsModule from '../../lib/smart-transaction/smart-transactions';
 import * as sentinelApiModule from '../../lib/transaction/sentinel-api';
+import * as selectorsModule from '../../../../shared/lib/selectors';
 import { Delegation7702PublishHook } from '../../lib/transaction/hooks/delegation-7702-publish';
 import { TransactionControllerInit } from './transaction-controller-init';
 
@@ -29,6 +31,7 @@ jest.mock('@metamask/transaction-pay-controller');
 jest.mock('../../lib/smart-transaction/smart-transactions');
 jest.mock('../../lib/transaction/sentinel-api');
 jest.mock('../../lib/transaction/hooks/delegation-7702-publish');
+jest.mock('../../../../shared/lib/selectors');
 
 /**
  * Build a mock NetworkController.
@@ -242,22 +245,13 @@ describe('Transaction Controller Init', () => {
     expect(pendingTransactions?.isResubmitEnabled?.()).toBe(false);
   });
 
-  jestIt.each([
-    ['swap', TransactionType.swap, false],
-    ['swapApproval', TransactionType.swapApproval, false],
-    ['bridge', TransactionType.bridge, false],
-    ['bridgeApproval', TransactionType.bridgeApproval, false],
-    ['contractInteraction', TransactionType.contractInteraction, true],
-  ])(
-    'disables automatic gas fee updates for %s transactions',
-    (_label, type, gasFeeUpdateEnabled) => {
-      const isAutomaticGasFeeUpdateEnabled = testConstructorOption(
-        'isAutomaticGasFeeUpdateEnabled',
-      );
-
-      const tx: TransactionMeta = {
+  describe('isAutomaticGasFeeUpdateEnabled', () => {
+    function buildTransactionMeta(
+      overrides: Partial<TransactionMeta> = {},
+    ): TransactionMeta {
+      return {
         id: '1',
-        type,
+        type: TransactionType.contractInteraction,
         chainId: CHAIN_ID_MOCK,
         networkClientId: 'test-network',
         status: TransactionStatus.unapproved,
@@ -265,11 +259,145 @@ describe('Transaction Controller Init', () => {
         txParams: {
           from: '0x0000000000000000000000000000000000000000',
         },
+        ...overrides,
       };
+    }
 
-      expect(isAutomaticGasFeeUpdateEnabled?.(tx)).toBe(gasFeeUpdateEnabled);
-    },
-  );
+    jestIt.each([
+      ['swap', TransactionType.swap, false],
+      ['swapApproval', TransactionType.swapApproval, false],
+      ['bridge', TransactionType.bridge, false],
+      ['bridgeApproval', TransactionType.bridgeApproval, false],
+      ['relayDeposit', TransactionType.relayDeposit, false],
+      ['perpsRelayDeposit', TransactionType.perpsRelayDeposit, false],
+      ['predictRelayDeposit', TransactionType.predictRelayDeposit, false],
+      ['contractInteraction', TransactionType.contractInteraction, true],
+    ])('returns %s for %s transactions', (_label, type, expected) => {
+      const isAutomaticGasFeeUpdateEnabled = testConstructorOption(
+        'isAutomaticGasFeeUpdateEnabled',
+      );
+
+      expect(
+        isAutomaticGasFeeUpdateEnabled?.(buildTransactionMeta({ type })),
+      ).toBe(expected);
+    });
+
+    it('returns false for transactions with nested relayDeposit type', () => {
+      const isAutomaticGasFeeUpdateEnabled = testConstructorOption(
+        'isAutomaticGasFeeUpdateEnabled',
+      );
+
+      expect(
+        isAutomaticGasFeeUpdateEnabled?.(
+          buildTransactionMeta({
+            type: TransactionType.contractInteraction,
+            nestedTransactions: [{ type: TransactionType.relayDeposit }],
+          }),
+        ),
+      ).toBe(false);
+    });
+
+    it('returns false for tokenMethodApprove with ORIGIN_METAMASK', () => {
+      const isAutomaticGasFeeUpdateEnabled = testConstructorOption(
+        'isAutomaticGasFeeUpdateEnabled',
+      );
+
+      expect(
+        isAutomaticGasFeeUpdateEnabled?.(
+          buildTransactionMeta({
+            type: TransactionType.tokenMethodApprove,
+            origin: ORIGIN_METAMASK,
+          }),
+        ),
+      ).toBe(false);
+    });
+
+    it('returns true for tokenMethodApprove with non-MetaMask origin', () => {
+      const isAutomaticGasFeeUpdateEnabled = testConstructorOption(
+        'isAutomaticGasFeeUpdateEnabled',
+      );
+
+      expect(
+        isAutomaticGasFeeUpdateEnabled?.(
+          buildTransactionMeta({
+            type: TransactionType.tokenMethodApprove,
+            origin: 'https://external-dapp.com',
+          }),
+        ),
+      ).toBe(true);
+    });
+  });
+
+  describe('isEIP7702GasFeeTokensEnabled', () => {
+    const getIsSmartTransactionMock = jest.mocked(
+      selectorsModule.getIsSmartTransaction,
+    );
+
+    const isSendBundleSupportedMock = jest.mocked(
+      sentinelApiModule.isSendBundleSupported,
+    );
+
+    const mockTransactionMeta = {
+      id: '1',
+      status: TransactionStatus.unapproved,
+      chainId: CHAIN_ID_MOCK,
+      networkClientId: 'test-network',
+      time: Date.now(),
+      txParams: {
+        from: '0x0000000000000000000000000000000000000000',
+      },
+    } as TransactionMeta;
+
+    it('returns true when smart transactions disabled and send bundle not supported', async () => {
+      getIsSmartTransactionMock.mockReturnValue(false);
+      isSendBundleSupportedMock.mockResolvedValue(false);
+
+      const optionFn = testConstructorOption('isEIP7702GasFeeTokensEnabled');
+
+      expect(await optionFn?.(mockTransactionMeta)).toBe(true);
+    });
+
+    it('returns false when smart transactions enabled and send bundle supported', async () => {
+      getIsSmartTransactionMock.mockReturnValue(true);
+      isSendBundleSupportedMock.mockResolvedValue(true);
+
+      const optionFn = testConstructorOption('isEIP7702GasFeeTokensEnabled');
+
+      expect(await optionFn?.(mockTransactionMeta)).toBe(false);
+    });
+
+    it('returns true when smart transactions disabled and send bundle supported', async () => {
+      getIsSmartTransactionMock.mockReturnValue(false);
+      isSendBundleSupportedMock.mockResolvedValue(true);
+
+      const optionFn = testConstructorOption('isEIP7702GasFeeTokensEnabled');
+
+      expect(await optionFn?.(mockTransactionMeta)).toBe(true);
+    });
+
+    it('returns true when smart transactions enabled and send bundle not supported', async () => {
+      getIsSmartTransactionMock.mockReturnValue(true);
+      isSendBundleSupportedMock.mockResolvedValue(false);
+
+      const optionFn = testConstructorOption('isEIP7702GasFeeTokensEnabled');
+
+      expect(await optionFn?.(mockTransactionMeta)).toBe(true);
+    });
+
+    it('returns true when isExternalSign is true', async () => {
+      getIsSmartTransactionMock.mockReturnValue(true);
+      isSendBundleSupportedMock.mockResolvedValue(true);
+
+      const optionFn = testConstructorOption('isEIP7702GasFeeTokensEnabled');
+
+      expect(
+        await optionFn?.({
+          ...mockTransactionMeta,
+          isExternalSign: true,
+        }),
+      ).toBe(true);
+    });
+  });
 
   describe('publish hook', () => {
     const mockTransactionMeta: TransactionMeta = {
