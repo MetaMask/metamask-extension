@@ -73,7 +73,7 @@ describe('MM Connect — Multichain E2E', function (this: Suite) {
     );
   });
 
-  it.only('routes personal_sign requests to the correct chain and handles Solana signMessage', async function () {
+  it('routes personal_sign requests to the correct chain and handles Solana signMessage', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilderV2().build(),
