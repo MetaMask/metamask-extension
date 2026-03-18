@@ -35,23 +35,6 @@ jobs:
       matrix-index: ${{ matrix.index }}
       matrix-total: ${{ strategy.job-total }}
 
-  test-e2e-firefox-webpack:
-    uses: ./.github/workflows/run-e2e.yml
-    if: ${{ github.event_name != 'merge_group' }}
-    secrets:
-      INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
-    strategy:
-      fail-fast: ${{ github.event_name == 'merge_group' }}
-      matrix: ${{ fromJson(inputs.use-matrix)['test-e2e-firefox-webpack'] }}
-    with:
-      test-suite-name: test-e2e-firefox-webpack
-      build-artifact: build-test-mv2-webpack
-      build-command: yarn build:test:webpack:mv2
-      test-command: yarn test:e2e:firefox
-      builds-from-run: ${{ inputs.builds-from-run }}
-      matrix-index: ${{ matrix.index }}
-      matrix-total: ${{ strategy.job-total }}
-
   test-e2e-firefox-flask:
     uses: ./.github/workflows/run-e2e.yml
     strategy:
@@ -76,12 +59,55 @@ jobs:
       test-command: yarn test:e2e:firefox:dist
       builds-from-run: ${{ inputs.builds-from-run }}
 
+  test-e2e-firefox-webpack:
+    uses: ./.github/workflows/run-e2e.yml
+    if: ${{ github.event_name != 'merge_group' }}
+    secrets:
+      INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
+    strategy:
+      fail-fast: ${{ github.event_name == 'merge_group' }}
+      matrix: ${{ fromJson(inputs.use-matrix)['test-e2e-firefox-webpack'] }}
+    with:
+      test-suite-name: test-e2e-firefox-webpack
+      build-artifact: build-test-mv2-webpack
+      build-command: yarn build:test:webpack:mv2
+      test-command: yarn test:e2e:firefox
+      builds-from-run: ${{ inputs.builds-from-run }}
+      matrix-index: ${{ matrix.index }}
+      matrix-total: ${{ strategy.job-total }}
+
+  test-e2e-firefox-flask-webpack:
+    uses: ./.github/workflows/run-e2e.yml
+    if: ${{ github.event_name != 'merge_group' }}
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJson(inputs.use-matrix)['test-e2e-firefox-flask-webpack'] }}
+    with:
+      test-suite-name: test-e2e-firefox-flask-webpack
+      build-artifact: build-test-flask-mv2-webpack
+      build-command: yarn build:test:flask:webpack:mv2
+      test-command: yarn test:e2e:firefox:flask
+      builds-from-run: ${{ inputs.builds-from-run }}
+      matrix-index: ${{ matrix.index }}
+      matrix-total: ${{ strategy.job-total }}
+
+  test-e2e-firefox-dist-webpack:
+    if: ${{ github.event_name != 'merge_group' && !(github.event.pull_request.head.repo.fork || github.event.repository.fork) }}
+    uses: ./.github/workflows/run-e2e.yml
+    with:
+      test-suite-name: test-e2e-firefox-dist-webpack
+      build-artifact: build-dist-mv2-webpack
+      test-command: yarn test:e2e:firefox:dist
+      builds-from-run: ${{ inputs.builds-from-run }}
+
   test-e2e-firefox-report:
     needs:
       - test-e2e-firefox-browserify
-      - test-e2e-firefox-webpack
       - test-e2e-firefox-flask
       - test-e2e-firefox-dist
+      - test-e2e-firefox-webpack
+      - test-e2e-firefox-flask-webpack
+      - test-e2e-firefox-dist-webpack
     runs-on: ubuntu-latest
     timeout-minutes: 30
     if: ${{ !cancelled() }}

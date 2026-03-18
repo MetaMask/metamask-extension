@@ -839,18 +839,8 @@
   "basicConfigurationModalCheckbox": {
     "message": "我理解并想继续"
   },
-  "basicConfigurationModalDisclaimerOff": {
+  "basicConfigurationModalDisclaimerOffPart1": {
     "message": "这意味着您不能充分优化您在 MetaMask 上的时间。您将无法使用基本功能（例如代币详情、最优燃料设置等）。"
-  },
-  "basicConfigurationModalDisclaimerOffAdditionalText": {
-    "message": "关闭此功能将同时禁用 $1 和 $2 中的所有功能。",
-    "description": "$1 and $2 are bold text for basicConfigurationModalDisclaimerOffAdditionalTextFeaturesFirst and basicConfigurationModalDisclaimerOffAdditionalTextFeaturesLast respectively"
-  },
-  "basicConfigurationModalDisclaimerOffAdditionalTextFeaturesFirst": {
-    "message": "安全与隐私，备份与同步"
-  },
-  "basicConfigurationModalDisclaimerOffAdditionalTextFeaturesLast": {
-    "message": "通知"
   },
   "basicConfigurationModalDisclaimerOn": {
     "message": "如需优化您在 MetaMask 上的时间，您将需要开启此功能。基本功能（例如代币详情、最优燃料设置等）对于 Web3 体验至关重要。"
@@ -2244,12 +2234,6 @@
   },
   "dismissReminderField": {
     "message": "关闭账户私钥助记词备份提醒"
-  },
-  "dismissSmartAccountSuggestionEnabledDescription": {
-    "message": "启用此功能后，您将不再在任何账户上看到“切换至智能账户”的提示。智能账户可解锁更快速的交易、更低的网络费用，并为账户持有者提供更高的支付灵活性。"
-  },
-  "dismissSmartAccountSuggestionEnabledTitle": {
-    "message": "关闭“切换至智能账户”的提示"
   },
   "displayNftMedia": {
     "message": "显示NFT媒体"

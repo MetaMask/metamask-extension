@@ -117,12 +117,16 @@ For new test code, use `FixtureBuilderV2` by default.
 - `withShowNativeTokenAsMainBalanceDisabled`
 - `withShowNativeTokenAsMainBalanceEnabled`
 - `withSmartTransactionsOptedOut`
+- `withSnapController`
+- `withSnapControllerOnStartLifecycleSnap`
+- `withSnapsPrivacyWarningAlreadyShown`
 - `withTokensControllerERC20`
-- `withTrezorAccount`
 - `withTransactionControllerApprovedTransaction`
 - `withTransactionControllerCompletedAndIncomingTransaction`
 - `withTransactionControllerCompletedTransaction`
 - `withTransactionControllerIncomingTransaction`
+- `withTrezorAccount`
+- `withUseBasicFunctionalityDisabled`
 
 If your test only needs these methods (or just `.build()`), prefer `FixtureBuilderV2` instead of the legacy builder.
 

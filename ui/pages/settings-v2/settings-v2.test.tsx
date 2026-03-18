@@ -1,14 +1,11 @@
 import { screen, render } from '@testing-library/react';
 import React from 'react';
-import { Provider } from 'react-redux';
-import { MemoryRouter } from 'react-router-dom';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import mockState from '../../../test/data/mock-state.json';
 import { enLocale as messages } from '../../../test/lib/i18n-helpers';
-import { I18nProvider, en } from '../../../test/lib/render-helpers-navigate';
+import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
 import { setBackgroundConnection } from '../../store/background-connection';
-import { LegacyMetaMetricsProvider } from '../../contexts/metametrics';
 import {
   CURRENCY_ROUTE,
   SETTINGS_V2_ROUTE,
@@ -25,17 +22,7 @@ const backgroundConnectionMock = new Proxy(
 const renderSettingsV2 = (
   store: ReturnType<ReturnType<typeof configureMockStore>>,
 ) => {
-  return render(
-    <Provider store={store}>
-      <MemoryRouter initialEntries={[mockPathname]}>
-        <I18nProvider currentLocale="en" current={en} en={en}>
-          <LegacyMetaMetricsProvider>
-            <SettingsV2 />
-          </LegacyMetaMetricsProvider>
-        </I18nProvider>
-      </MemoryRouter>
-    </Provider>,
-  );
+  return renderWithProvider(<SettingsV2 />, store, mockPathname, render);
 };
 
 describe('SettingsV2', () => {
