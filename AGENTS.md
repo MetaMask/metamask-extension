@@ -29,6 +29,7 @@ Instructions for AI coding agents working on MetaMask Browser Extension.
 11. **WHEN asked to open a PR, use a Conventional Commits title** unless user specifies otherwise
 12. **WHEN asked to open a PR, open it as DRAFT** unless user specifies otherwise
 13. **WHEN using `.github/pull-request-template.md`, comment out non-applicable sections including the section title**
+14. **BEFORE modifying any `.github/workflows/` file**, read `.github/AGENTS.md` for CI-specific rules (consolidation patterns, required job wiring, merge queue considerations)
 
 ### Comprehensive Guidelines Location
 
