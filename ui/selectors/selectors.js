@@ -384,6 +384,10 @@ export function getActiveQrCodeScanRequest(state) {
   return state.metamask.activeQrCodeScanRequest;
 }
 
+export function getLastQrScanCompletedSuccessfully(state) {
+  return state.metamask.lastQrScanCompletedSuccessfully;
+}
+
 export function getIsSigningQRHardwareTransaction(state) {
   const activeQrCodeScanRequest = getActiveQrCodeScanRequest(state);
   return (

@@ -85,6 +85,8 @@ export type DappSwapComparisonData = {
 
 export type AppStateControllerState = {
   activeQrCodeScanRequest: QrScanRequest | null;
+  /** True when QR scan completed successfully, false when cancelled/rejected, null when no recent completion. Used to avoid navigating to activity on rejection. */
+  lastQrScanCompletedSuccessfully: boolean | null;
   addressSecurityAlertResponses: Record<string, CachedScanAddressResponse>;
   appActiveTab?: {
     id: number;
@@ -270,6 +272,7 @@ export type AppStateControllerOptions = {
 
 const getDefaultAppStateControllerState = (): AppStateControllerState => ({
   activeQrCodeScanRequest: null,
+  lastQrScanCompletedSuccessfully: null,
   appActiveTab: undefined,
   browserEnvironment: {},
   connectedStatusPopoverHasBeenShown: true,
@@ -345,6 +348,12 @@ function getInitialStateOverrides() {
 
 const controllerMetadata: StateMetadata<AppStateControllerState> = {
   activeQrCodeScanRequest: {
+    includeInStateLogs: false,
+    persist: false,
+    includeInDebugSnapshot: true,
+    usedInUi: true,
+  },
+  lastQrScanCompletedSuccessfully: {
     includeInStateLogs: false,
     persist: false,
     includeInDebugSnapshot: true,
@@ -1647,6 +1656,7 @@ export class AppStateController extends BaseController<
 
     this.update((state) => {
       state.activeQrCodeScanRequest = null;
+      state.lastQrScanCompletedSuccessfully = true;
     });
 
     this.#qrCodeScanPromise.resolve(scannedData);
@@ -1667,6 +1677,7 @@ export class AppStateController extends BaseController<
 
     this.update((state) => {
       state.activeQrCodeScanRequest = null;
+      state.lastQrScanCompletedSuccessfully = false;
     });
 
     this.#qrCodeScanPromise.reject(error || new Error('Scan cancelled'));
@@ -1690,6 +1701,7 @@ export class AppStateController extends BaseController<
 
     this.update((state) => {
       state.activeQrCodeScanRequest = request;
+      state.lastQrScanCompletedSuccessfully = null;
     });
 
     return deferredPromise.promise;
