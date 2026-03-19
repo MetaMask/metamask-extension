@@ -105,7 +105,7 @@ describe('AccountList', () => {
   it('calls onAccountChange when an unconnected account checkbox is clicked', () => {
     const { props } = render();
 
-    fireEvent.click(screen.getByRole('checkbox', { name: /0x1B.*F917/i }));
+    fireEvent.click(screen.getByRole('checkbox', { name: /0x1B.*F917/iu }));
 
     expect(props.onAccountChange).toHaveBeenCalledWith(4);
   });
@@ -113,7 +113,11 @@ describe('AccountList', () => {
   it('disables checkboxes for already connected accounts', () => {
     render();
 
-    expect(screen.getByRole('checkbox', { name: /0x5E.*417b/i })).toBeDisabled();
-    expect(screen.getByRole('checkbox', { name: /0x27.*B52E/i })).toBeDisabled();
+    expect(
+      screen.getByRole('checkbox', { name: /0x5E.*417b/iu }),
+    ).toBeDisabled();
+    expect(
+      screen.getByRole('checkbox', { name: /0x27.*B52E/iu }),
+    ).toBeDisabled();
   });
 });
