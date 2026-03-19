@@ -9,7 +9,7 @@
   "scripts": {
     "webpack": "tsx ./development/webpack/launch.ts",
     "webpack:clearcache": "./development/clear-webpack-cache.js",
-    "webpack:tsc": "tsc -p ./development/webpack/tsconfig.webpack.json",
+    "webpack:tsc": "tsc -p ./development/webpack/tsconfig.webpack.json && sed -i'' -e 's/import\\.meta\\.url/__filename/g' ./development/.webpack/utils/loaders/reactCompilerLoaderWrapper.js",
     "webpack:lavamoat": "NODE_OPTIONS=--no-deprecation lavamoat --policy lavamoat/webpack/build/policy.json --override lavamoat/webpack/build/policy-override.json ./development/.webpack/launch.js",
     "webpack:lavamoat:build": "yarn webpack:lavamoat -- --mode production --no-cache",
     "webpack:lavamoat:build:mv2": "yarn webpack:lavamoat:build --browser firefox -v 2",

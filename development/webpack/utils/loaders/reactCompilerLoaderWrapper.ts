@@ -18,10 +18,11 @@ import { createRequire } from 'node:module';
 import type { Schema } from 'schema-utils';
 import type { LoaderDefinitionFunction } from 'webpack';
 
-// Thread-loader workers may load this file as either CJS or ESM depending on
-// Node.js version and registered loaders. createRequire(import.meta.url) works
-// in both: tsx shims import.meta.url in CJS, and it's native in ESM.
-// @ts-expect-error import.meta.url is valid at runtime in both CJS (tsx shim) and ESM contexts
+// Thread-loader workers load this .ts file as ESM (via tsx), where only
+// import.meta.url is available. The compiled .js is loaded by LavaMoat as CJS,
+// where import.meta is a SyntaxError — the webpack:tsc script patches the .js
+// output to use __filename instead (see sed in package.json "webpack:tsc").
+// @ts-expect-error import.meta.url is valid at runtime
 const esmRequire = createRequire(import.meta.url);
 const reactCompilerModule = esmRequire(
   'react-compiler-webpack/dist/react-compiler-loader.js',
