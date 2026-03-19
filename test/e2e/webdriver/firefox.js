@@ -172,11 +172,10 @@ class FirefoxDriver {
       }
       try {
         execFileSync('zip', ['-r', '-1', '-q', xpiPath, '.'], { cwd: absDir });
-      } catch (e) {
-        throw new Error(
-          `Failed to build XPI from ${absDir}. ` +
-            `Ensure the extension has been built (e.g. yarn build:test:mv2): ${e.message}`,
-        );
+      } catch (_) {
+        // `zip` not installed — fall back to the unpacked directory.
+        // Selenium's installAddon() will zip it on every call (~10s slower).
+        return addonDir;
       }
 
       const manifestContent = fs.readFileSync(
