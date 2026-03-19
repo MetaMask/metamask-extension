@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import {
   FontWeight,
   IconName,
@@ -22,6 +22,11 @@ import {
   MUSD_CONVERSION_APY,
   MUSD_CONVERSION_BONUS_TERMS_OF_USE,
 } from '../../../../../components/app/musd/constants';
+import { MetaMetricsContext } from '../../../../../contexts/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../../../shared/constants/metametrics';
 
 export type ClaimableBonusRowProps = {
   rowVariant?: ConfirmInfoRowSize;
@@ -31,6 +36,7 @@ export function ClaimableBonusRow({
   rowVariant = ConfirmInfoRowSize.Default,
 }: Readonly<ClaimableBonusRowProps>) {
   const t = useI18nContext();
+  const { trackEvent } = useContext(MetaMetricsContext);
   const isLoading = useIsTransactionPayLoading();
 
   const isSmall = rowVariant === ConfirmInfoRowSize.Small;
@@ -73,6 +79,18 @@ export function ClaimableBonusRow({
                   target="_blank"
                   rel="noopener noreferrer"
                   style={{ textDecoration: 'underline' }}
+                  onClick={() => {
+                    const properties = {
+                      location: 'percentage_row',
+                      url: MUSD_CONVERSION_BONUS_TERMS_OF_USE,
+                    };
+
+                    trackEvent({
+                      event: MetaMetricsEventName.MusdBonusTermsOfUsePressed,
+                      category: MetaMetricsEventCategory.MusdConversion,
+                      properties,
+                    });
+                  }}
                 >
                   {t('musdTermsApply')}
                 </a>

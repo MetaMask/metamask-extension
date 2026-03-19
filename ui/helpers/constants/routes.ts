@@ -28,6 +28,7 @@ export const PRIVACY_ROUTE = '/settings-v2/privacy';
 export const THIRD_PARTY_APIS_ROUTE = '/settings-v2/privacy/third-party-apis';
 export const SECURITY_AND_PASSWORD_ROUTE = '/settings-v2/security-and-password';
 export const AUTO_LOCK_ROUTE = '/settings-v2/security-and-password/auto-lock';
+export const DEVELOPER_OPTIONS_V2_ROUTE = '/settings-v2/developer-options';
 export const GENERAL_ROUTE = '/settings/general';
 export const ADVANCED_ROUTE = '/settings/advanced';
 export const DEVELOPER_OPTIONS_ROUTE = '/settings/developer-options';

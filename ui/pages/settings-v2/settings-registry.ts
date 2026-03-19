@@ -1,11 +1,12 @@
-/* eslint-disable import/no-useless-path-segments */
-/* eslint-disable import/extensions */
+/* eslint-disable import-x/no-useless-path-segments */
+/* eslint-disable import-x/extensions */
 import { type ComponentType } from 'react';
 import {
   ACCOUNT_IDENTICON_ROUTE,
   ASSETS_ROUTE,
   AUTO_LOCK_ROUTE,
   CURRENCY_ROUTE,
+  DEVELOPER_OPTIONS_V2_ROUTE,
   LANGUAGE_ROUTE,
   PREFERENCES_AND_DISPLAY_ROUTE,
   SETTINGS_V2_ROUTE,
@@ -91,6 +92,11 @@ export const SETTINGS_V2_ROUTE_META: Record<string, SettingsV2RouteMeta> = {
     labelKey: 'autoLock',
     parentPath: SECURITY_AND_PASSWORD_ROUTE,
   },
+  // Developer options tab
+  [DEVELOPER_OPTIONS_V2_ROUTE]: {
+    labelKey: 'developerOptions',
+    parentPath: SETTINGS_V2_ROUTE,
+  },
 };
 
 /**
@@ -139,5 +145,12 @@ export const SETTINGS_V2_MENU_LIST_ITEM_REGISTRY: SettingsV2MenuListItem[] = [
     labelKey: 'securityAndPassword',
     iconName: IconName.SecuritySearch,
     component: mmLazy(() => import('./security-and-password-tab/index.ts')),
+  },
+  {
+    id: 'developer-options',
+    path: DEVELOPER_OPTIONS_V2_ROUTE,
+    labelKey: 'developerOptions',
+    iconName: IconName.Code,
+    component: mmLazy(() => import('./developer-options-tab/index.ts')),
   },
 ];
