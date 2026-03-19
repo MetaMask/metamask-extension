@@ -201,6 +201,13 @@ class FirefoxDriver {
         } catch (err) {
           console.warn('[Firefox E2E] Cleanup of manifest hash failed:', err.message);
         }
+        // If unlink failed, overwrite with sentinel so next run won't treat
+        // a corrupted XPI as valid (manifestHash will never match '').
+        try {
+          fs.writeFileSync(manifestHashPath, '');
+        } catch (err) {
+          console.warn('[Firefox E2E] Failed to invalidate manifest hash:', err.message);
+        }
         console.warn(
           '[Firefox E2E] zip not installed or failed, using unpacked directory (slower)',
         );
