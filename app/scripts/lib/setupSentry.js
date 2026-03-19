@@ -610,7 +610,8 @@ export function makeTransport(options) {
       }
 
       forEachEnvelopeItem(envelope, (item, type) => {
-        if (type === 'event' || type === 'transaction') {
+        // Only for 'event' items (i.e. errors/messages), not 'transaction' items (i.e. performance traces).
+        if (type === 'event') {
           const eventPayload = Array.isArray(item) ? item[1] : undefined;
           if (eventPayload) {
             rewriteReport(eventPayload, state);
