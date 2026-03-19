@@ -18,7 +18,7 @@ import {
   ModalHeader,
   Modal,
 } from '../../../components/component-library';
-import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/networks';
+import { getNetworkConfigurationsByChainId } from '../../../../shared/lib/selectors/networks';
 import { TEST_CHAINS } from '../../../../shared/constants/network';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../../../shared/constants/bridge';
@@ -82,7 +82,7 @@ export const ContactNetworks = ({
           size={AvatarNetworkSize.Sm}
           name={displayName}
           src={iconSrc}
-          className="rounded-xl"
+          className="rounded-md"
         />
         <Text
           variant={TextVariant.BodyMd}

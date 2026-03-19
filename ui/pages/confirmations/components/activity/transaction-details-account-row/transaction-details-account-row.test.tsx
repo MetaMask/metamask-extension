@@ -11,16 +11,28 @@ const ACCOUNT_NAME = 'Test Account';
 
 const mockStore = configureMockStore([]);
 
-const mockTransactionMeta = {
-  id: 'test-id',
-  chainId: '0x1',
-  status: TransactionStatus.confirmed,
-  time: Date.now(),
-  txParams: {
-    from: FROM_ADDRESS,
-    to: '0x456',
-  },
-};
+function createMockTransactionMeta(includeMetamaskPay = false) {
+  return {
+    id: 'test-id',
+    chainId: '0x1',
+    status: TransactionStatus.confirmed,
+    time: Date.now(),
+    txParams: {
+      from: FROM_ADDRESS,
+      to: '0x456',
+    },
+    ...(includeMetamaskPay && {
+      metamaskPay: {
+        chainId: '0x1',
+        tokenAddress: '0xtoken',
+        targetFiat: '100',
+        networkFeeFiat: '5',
+        bridgeFeeFiat: '2',
+        totalFiat: '107',
+      },
+    }),
+  };
+}
 
 const mockState = {
   metamask: {
@@ -37,9 +49,14 @@ const mockState = {
   },
 };
 
-function render(state: Record<string, unknown> = mockState) {
+function render(
+  state: Record<string, unknown> = mockState,
+  includeMetamaskPay = true,
+) {
   return renderWithProvider(
-    <TransactionDetailsProvider transactionMeta={mockTransactionMeta as never}>
+    <TransactionDetailsProvider
+      transactionMeta={createMockTransactionMeta(includeMetamaskPay) as never}
+    >
       <TransactionDetailsAccountRow />
     </TransactionDetailsProvider>,
     mockStore(state),
@@ -47,18 +64,27 @@ function render(state: Record<string, unknown> = mockState) {
 }
 
 describe('TransactionDetailsAccountRow', () => {
-  it('renders account name when available', () => {
-    const { getByText } = render();
-    expect(getByText(ACCOUNT_NAME)).toBeInTheDocument();
+  it('returns null when metamaskPay is absent', () => {
+    const { container } = render(mockState, false);
+    expect(container).toBeEmptyDOMElement();
   });
 
-  it('renders with correct test id', () => {
-    const { getByTestId } = render();
-    expect(getByTestId('transaction-details-account-row')).toBeInTheDocument();
-  });
+  describe('with metamaskPay data', () => {
+    it('renders account name when available', () => {
+      const { getByText } = render();
+      expect(getByText(ACCOUNT_NAME)).toBeInTheDocument();
+    });
 
-  it('renders Account label', () => {
-    const { getByText } = render();
-    expect(getByText(messages.account.message)).toBeInTheDocument();
+    it('renders with correct test id', () => {
+      const { getByTestId } = render();
+      expect(
+        getByTestId('transaction-details-account-row'),
+      ).toBeInTheDocument();
+    });
+
+    it('renders Account label', () => {
+      const { getByText } = render();
+      expect(getByText(messages.account.message)).toBeInTheDocument();
+    });
   });
 });

@@ -8,7 +8,7 @@ import {
 import {
   convertCaipToHexChainId,
   getRpcDataByChainId,
-} from '../../../../../shared/modules/network.utils';
+} from '../../../../../shared/lib/network.utils';
 import {
   detectNfts,
   setActiveNetwork,

@@ -29,7 +29,7 @@ const terser = require('terser');
 const bifyModuleGroups = require('bify-module-groups');
 
 const { streamFlatMap } = require('../stream-flat-map');
-const { isManifestV3 } = require('../../shared/modules/mv3.utils');
+const { isManifestV3 } = require('../../shared/lib/mv3.utils');
 const { setEnvironmentVariables } = require('./set-environment-variables');
 const { BUILD_TARGETS } = require('./constants');
 const { getConfig, getActiveFeatures } = require('./config');

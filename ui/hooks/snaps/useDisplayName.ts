@@ -10,8 +10,8 @@ import {
   AccountsMetaMaskState,
   getAccountNameFromState,
 } from '../../selectors/snaps';
-import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
-import { decimalToHex } from '../../../shared/modules/conversion.utils';
+import { toChecksumHexAddress } from '../../../shared/lib/hexstring-utils';
+import { decimalToHex } from '../../../shared/lib/conversion.utils';
 import { getAccountGroupsByAddress } from '../../selectors/multichain-accounts/account-tree';
 import { MultichainAccountsState } from '../../selectors/multichain-accounts/account-tree.types';
 

@@ -8,8 +8,8 @@ import {
   StateMetadata,
 } from '@metamask/base-controller';
 import {
-  AcceptRequest,
-  AddApprovalRequest,
+  ApprovalControllerAcceptRequestAction,
+  ApprovalControllerAddRequestAction,
 } from '@metamask/approval-controller';
 import {
   DeferredPromise,
@@ -29,7 +29,7 @@ import { ProfileMetricsControllerSkipInitialDelayAction } from '@metamask/profil
 
 import { MINUTE } from '../../../shared/constants/time';
 import { AUTO_LOCK_TIMEOUT_ALARM } from '../../../shared/constants/alarms';
-import { isManifestV3 } from '../../../shared/modules/mv3.utils';
+import { isManifestV3 } from '../../../shared/lib/mv3.utils';
 import { isBeta } from '../../../shared/lib/build-types';
 import {
   ENVIRONMENT_TYPE_BACKGROUND,
@@ -61,7 +61,7 @@ import {
   ShieldSubscriptionMetricsPropsFromUI,
 } from '../../../shared/types';
 import { PendingRedirectRoute } from '../../../shared/lib/pending-redirect-state';
-import { ShieldSubscriptionError } from '../../../shared/modules/shield';
+import { ShieldSubscriptionError } from '../../../shared/lib/shield';
 import type { DeferredDeepLink } from '../../../shared/lib/deep-links/types';
 import type {
   Preferences,
@@ -239,8 +239,8 @@ export type AppStateControllerActions =
  * Actions that this controller is allowed to call.
  */
 export type AllowedActions =
-  | AddApprovalRequest
-  | AcceptRequest
+  | ApprovalControllerAddRequestAction
+  | ApprovalControllerAcceptRequestAction
   | KeyringControllerGetStateAction
   | PreferencesControllerGetStateAction
   | ProfileMetricsControllerSkipInitialDelayAction;

@@ -10,7 +10,7 @@ import { ButtonVariant } from '../../../../components/component-library';
 import {
   getShieldInAppNavigationFromExternalLink,
   SHIELD_ANNOUNCEMENT_NOTIFICATION_ID,
-} from '../../../../../shared/modules/shield';
+} from '../../../../../shared/lib/shield';
 import { FeatureAnnouncementNotification } from './types';
 
 const useAnalyticEventCallback = (props: {

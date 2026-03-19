@@ -13,7 +13,7 @@ import { ConfirmInfoAlertRow } from '../../../../../../components/app/confirm/in
 import { RowAlertKey } from '../../../../../../components/app/confirm/info/row/constants';
 import { ConfirmInfoRowAddressDisplay } from '../../../../../../components/app/confirm/info/row/address-display';
 import { PreferredAvatar } from '../../../../../../components/app/preferred-avatar';
-import { toChecksumHexAddress } from '../../../../../../../shared/modules/hexstring-utils';
+import { toChecksumHexAddress } from '../../../../../../../shared/lib/hexstring-utils';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
 import { useDisplayName } from '../../../../../../hooks/useDisplayName';
 import { useConfirmContext } from '../../../../context/confirm';

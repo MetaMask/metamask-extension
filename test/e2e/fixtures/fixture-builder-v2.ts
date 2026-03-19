@@ -1,8 +1,18 @@
 import { merge, cloneDeep } from 'lodash';
+import { toHex } from '@metamask/controller-utils';
+import type { Hex } from '@metamask/utils';
 import type { AccountsControllerState } from '@metamask/accounts-controller';
 import type { AddressBookControllerState } from '@metamask/address-book-controller';
-import type { CurrencyRateState } from '@metamask/assets-controllers';
+import type {
+  CurrencyRateState,
+  TokenBalancesControllerState,
+  TokenListMap,
+  TokenListState,
+  TokensControllerState,
+} from '@metamask/assets-controllers';
 import type { KeyringControllerState } from '@metamask/keyring-controller';
+import { type NameControllerState, NameType } from '@metamask/name-controller';
+import type { PersistedSnapControllerState } from '@metamask/snaps-controllers';
 import type { NetworkEnablementControllerState } from '@metamask/network-enablement-controller';
 import type { SelectedNetworkControllerState } from '@metamask/selected-network-controller';
 import type {
@@ -37,6 +47,7 @@ import {
   HARDWARE_WALLET_ACCOUNT_ID,
   LEDGER_FIXTURE_VAULT,
   LOCALHOST_NETWORK_CLIENT_ID,
+  MULTI_SRP_FIXTURE_VAULT,
   NETWORK_CLIENT_ID,
   SECOND_NODE_NETWORK_CLIENT_ID,
   THIRD_NODE_NETWORK_CLIENT_ID,
@@ -44,8 +55,14 @@ import {
   TREZOR_VAULT,
 } from '../constants';
 import { KNOWN_PUBLIC_KEY_ADDRESSES } from '../../stub/keyring-bridge';
+import { SMART_CONTRACTS } from '../seeder/smart-contracts';
 import defaultFixtureJson from './default-fixture.json';
 import onboardingFixtureJson from './onboarding-fixture.json';
+
+const STORAGE_SERVICE_NAMESPACE = Object.freeze({
+  SNAP_CONTROLLER: 'SnapController',
+  TOKEN_LIST_CONTROLLER: 'TokenListController',
+} as const);
 
 function defaultFixture() {
   return cloneDeep(defaultFixtureJson);
@@ -66,8 +83,27 @@ type TransactionControllerFixtureInput = Partial<
   transactions?: TransactionMeta[];
 };
 
+type StorageServiceNamespaceMap = {
+  [STORAGE_SERVICE_NAMESPACE.SNAP_CONTROLLER]: {
+    key: string;
+    value: { sourceCode: string };
+  };
+  [STORAGE_SERVICE_NAMESPACE.TOKEN_LIST_CONTROLLER]: {
+    key: `tokensChainsCache:${Hex}`;
+    value: { timestamp: number; data: TokenListMap };
+  };
+};
+
+type StorageServiceNamespace = keyof StorageServiceNamespaceMap;
+
+type FixtureBuildResult = FixtureType & {
+  storageServiceData?: Record<string, unknown>;
+};
+
 class FixtureBuilderV2 {
   fixture: FixtureType;
+
+  storageServiceData: Record<string, unknown> = {};
 
   /**
    * Constructs a new instance of the FixtureBuilder class.
@@ -118,6 +154,11 @@ class FixtureBuilderV2 {
     return this;
   }
 
+  withNameController(data: Partial<NameControllerState>): this {
+    merge(this.fixture.data.NameController, data);
+    return this;
+  }
+
   withNetworkController(data: Partial<NetworkState>): this {
     merge(this.fixture.data.NetworkController, data);
     return this;
@@ -158,6 +199,33 @@ class FixtureBuilderV2 {
     return this;
   }
 
+  withSnapController(data: Partial<PersistedSnapControllerState>): this {
+    (this.fixture.data as Record<string, unknown>).SnapController ??= {};
+    merge(this.fixture.data.SnapController, data);
+    return this;
+  }
+
+  withTokenBalancesController(
+    data: Partial<TokenBalancesControllerState>,
+  ): this {
+    merge(this.fixture.data.TokenBalancesController, data);
+    return this;
+  }
+
+  withTokenListController(data: Partial<TokenListState>): this {
+    (this.fixture.data as Record<string, unknown>).TokenListController ??= {};
+    merge(
+      (this.fixture.data as Record<string, unknown>).TokenListController,
+      data,
+    );
+    return this;
+  }
+
+  withTokensController(data: Partial<TokensControllerState>): this {
+    merge(this.fixture.data.TokensController, data);
+    return this;
+  }
+
   withTransactionController(data: TransactionControllerFixtureInput): this {
     const transactionController = this.fixture.data.TransactionController ?? {};
     merge(this.fixture.data, { TransactionController: transactionController });
@@ -183,6 +251,11 @@ class FixtureBuilderV2 {
                               CUSTOM METHODS
      ==================================================================
   */
+  withBadPreferencesControllerState(): this {
+    (this.fixture.data as Record<string, unknown>).PreferencesController = 5;
+    return this;
+  }
+
   withConversionRateDisabled(): this {
     return this.withPreferencesController({
       useCurrencyRateCheck: false,
@@ -195,6 +268,12 @@ class FixtureBuilderV2 {
     this.fixture.data.NetworkEnablementController.enabledNetworkMap =
       data as FixtureType['data']['NetworkEnablementController']['enabledNetworkMap'];
     return this;
+  }
+
+  withKeyringControllerMultiSRP(): this {
+    return this.withKeyringController({
+      vault: MULTI_SRP_FIXTURE_VAULT,
+    });
   }
 
   withLedgerAccount(): this {
@@ -329,13 +408,21 @@ class FixtureBuilderV2 {
     });
   }
 
+  withNoNames(): this {
+    // Direct assignment instead of merge so existing petname entries are cleared if any
+    this.fixture.data.NameController.names = {
+      [NameType.ETHEREUM_ADDRESS]: {},
+    };
+    return this;
+  }
+
   withPermissionControllerConnectedToTestDapp({
     account = DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
     useLocalhostHostname = false,
     numberOfDapps = 1,
     chainIds = [1337],
   }: {
-    account?: string;
+    account?: string | string[];
     useLocalhostHostname?: boolean;
     numberOfDapps?: number;
     chainIds?: number[];
@@ -347,7 +434,9 @@ class FixtureBuilderV2 {
       );
     }
 
-    const selectedAccount = account.toLowerCase();
+    const resolvedAccounts = (Array.isArray(account) ? account : [account]).map(
+      (a) => a.toLowerCase(),
+    );
 
     const dappUrls = [
       useLocalhostHostname ? DAPP_URL_LOCALHOST : DAPP_URL,
@@ -360,11 +449,11 @@ class FixtureBuilderV2 {
     for (const chainId of chainIds) {
       const scopeKey = `eip155:${chainId}`;
       optionalScopes[scopeKey] = {
-        accounts: [`${scopeKey}:${selectedAccount}`],
+        accounts: resolvedAccounts.map((a) => `${scopeKey}:${a}`),
       };
     }
     optionalScopes['wallet:eip155'] = {
-      accounts: [`wallet:eip155:${selectedAccount}`],
+      accounts: resolvedAccounts.map((a) => `wallet:eip155:${a}`),
     };
 
     // Unique random IDs for each dapp subject's permission
@@ -404,6 +493,9 @@ class FixtureBuilderV2 {
     return this.withPermissionController({ subjects });
   }
 
+  // NOTE: This method should only be used with EVM networks. Non-EVM networks (Bitcoin, Tron...) rely on Snaps that may not be ready at startup;
+  // Selecting one of them via fixtures may cause the extension to switch back to default network.
+  // For non-EVM networks, switch manually in the test after the Snap is ready.
   withSelectedNetwork(
     networkClientId: NetworkClientIdValue = NETWORK_CLIENT_ID.MAINNET,
   ): this {
@@ -426,6 +518,50 @@ class FixtureBuilderV2 {
       preferences: {
         showNativeTokenAsMainBalance: false,
       },
+    });
+  }
+
+  withShowNativeTokenAsMainBalanceEnabled(): this {
+    return this.withPreferencesController({
+      preferences: {
+        showNativeTokenAsMainBalance: true,
+      },
+    });
+  }
+
+  withSnapsPrivacyWarningAlreadyShown(): this {
+    return this.withAppStateController({
+      snapsInstallPrivacyWarningShown: true,
+    });
+  }
+
+  withSmartTransactionsOptedOut(): this {
+    return this.withPreferencesController({
+      preferences: {
+        smartTransactionsOptInStatus: false,
+      },
+    });
+  }
+
+  withTokensControllerERC20({ chainId = 1337 } = {}): this {
+    return this.withTokensController({
+      allTokens: {
+        [toHex(chainId)]: {
+          '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': [
+            {
+              address: `__FIXTURE_SUBSTITUTION__CONTRACT${SMART_CONTRACTS.HST}`,
+              symbol: 'TST',
+              image: `https://static.cx.metamask.io/api/v1/tokenIcons/${chainId}/0x581c3c1a2a4ebde2a0df29b5cf4c116e42945947.png`,
+              isERC721: false,
+              decimals: 4,
+              aggregators: ['Metamask', 'Aave'],
+              name: 'test',
+            },
+          ],
+        },
+      },
+      allIgnoredTokens: {},
+      allDetectedTokens: {},
     });
   }
 
@@ -495,22 +631,6 @@ class FixtureBuilderV2 {
     }).withKeyringController({ vault: TREZOR_VAULT });
   }
 
-  withShowNativeTokenAsMainBalanceEnabled(): this {
-    return this.withPreferencesController({
-      preferences: {
-        showNativeTokenAsMainBalance: true,
-      },
-    });
-  }
-
-  withSmartTransactionsOptedOut(): this {
-    return this.withPreferencesController({
-      preferences: {
-        smartTransactionsOptInStatus: false,
-      },
-    });
-  }
-
   withTransactionControllerApprovedTransaction(): this {
     const txId = '13a01e77-a368-4bb9-aba9-e7435580e3b9';
     const approvedTx: TransactionMeta = {
@@ -532,10 +652,6 @@ class FixtureBuilderV2 {
       type: TransactionType.simpleSend,
     };
     return this.withTransactionController({ transactions: [approvedTx] });
-  }
-
-  withTransactionControllerCompletedAndIncomingTransaction(): this {
-    return this.withTransactionControllerCompletedTransaction().withTransactionControllerIncomingTransaction();
   }
 
   withTransactionControllerCompletedTransaction(): this {
@@ -592,8 +708,48 @@ class FixtureBuilderV2 {
     return this.withTransactionController({ transactions: [incomingTx] });
   }
 
-  build() {
-    return this.fixture;
+  withUseBasicFunctionalityDisabled(): this {
+    return this.withPreferencesController({
+      useExternalServices: false,
+    });
+  }
+
+  /* ==================================================================
+                        STORAGE SERVICE DATA
+     ==================================================================
+  */
+
+  withStorageServiceData<Namespace extends StorageServiceNamespace>({
+    namespace,
+    key,
+    value,
+  }: {
+    namespace: Namespace;
+    key: StorageServiceNamespaceMap[Namespace]['key'];
+    value: StorageServiceNamespaceMap[Namespace]['value'];
+  }): this {
+    this.storageServiceData[`storageService:${namespace}:${key}`] = value;
+    return this;
+  }
+
+  withTokenListControllerStorageServiceData(
+    entries: { chainId: Hex; data: TokenListMap }[],
+  ): this {
+    for (const { chainId, data } of entries) {
+      this.withStorageServiceData({
+        namespace: STORAGE_SERVICE_NAMESPACE.TOKEN_LIST_CONTROLLER,
+        key: `tokensChainsCache:${chainId}`,
+        value: { timestamp: Date.now(), data },
+      });
+    }
+    return this;
+  }
+
+  build(): FixtureBuildResult {
+    return {
+      ...this.fixture,
+      storageServiceData: this.storageServiceData,
+    };
   }
 }
 

@@ -1,18 +1,7 @@
 import React, { useContext } from 'react';
 import { useSelector } from 'react-redux';
 import {
-  AlignItems,
-  IconColor,
-  TextAlign,
-  TextVariant,
-} from '../../../helpers/constants/design-system';
-import { useI18nContext } from '../../../hooks/useI18nContext';
-import {
   Box,
-  Modal,
-  ModalContent,
-  ModalHeader,
-  ModalOverlay,
   Text,
   ButtonSize,
   Button,
@@ -20,9 +9,20 @@ import {
   Icon,
   IconSize,
   IconName,
-  ButtonLinkSize,
-  ButtonLink,
+  IconColor,
+  TextAlign,
+  TextVariant,
+  TextButton,
+  TextButtonSize,
+} from '@metamask/design-system-react';
+import {
+  Modal,
+  ModalContent,
+  ModalHeader,
+  ModalOverlay,
 } from '../../../components/component-library';
+import { AlignItems } from '../../../helpers/constants/design-system';
+import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   MetaMetricsContextProp,
   MetaMetricsEventCategory,
@@ -70,11 +70,9 @@ export default function LoginErrorModal({
     }
 
     return t('loginErrorGenericDescription', [
-      <ButtonLink
+      <TextButton
         key="loginErrorGenericDescription"
-        size={ButtonLinkSize.Inherit}
-        externalLink
-        href={SUPPORT_LINK}
+        size={TextButtonSize.BodyMd}
         onClick={() => {
           trackEvent(
             {
@@ -92,9 +90,13 @@ export default function LoginErrorModal({
             },
           );
         }}
+        asChild
+        className="hover:bg-transparent active:bg-transparent w-fit"
       >
-        {t('loginErrorGenericSupport')}
-      </ButtonLink>,
+        <a href={SUPPORT_LINK} target="_blank" rel="noopener noreferrer">
+          {t('loginErrorGenericSupport')}
+        </a>
+      </TextButton>,
     ]);
   };
 
@@ -113,30 +115,30 @@ export default function LoginErrorModal({
       <ModalOverlay />
       <ModalContent alignItems={AlignItems.center}>
         <ModalHeader onClose={onDone}>
-          <Box textAlign={TextAlign.Center}>
+          <Box className="text-center">
             <Icon
               name={IconName.Danger}
               size={IconSize.Xl}
-              color={IconColor.warningDefault}
+              color={IconColor.WarningDefault}
             />
             <Text
-              variant={TextVariant.headingMd}
+              variant={TextVariant.HeadingMd}
               textAlign={TextAlign.Center}
-              marginTop={4}
+              className="mt-4"
             >
               {getTitle()}
             </Text>
           </Box>
         </ModalHeader>
         <Box paddingLeft={4} paddingRight={4}>
-          <Text variant={TextVariant.bodyMd}>{getDescription()}</Text>
+          <Text variant={TextVariant.BodyMd}>{getDescription()}</Text>
           <Box marginTop={6}>
             <Button
               data-testid="login-error-modal-button"
               variant={ButtonVariant.Primary}
               size={ButtonSize.Lg}
               onClick={onDone}
-              block
+              className="w-full"
             >
               {getButtonText()}
             </Button>

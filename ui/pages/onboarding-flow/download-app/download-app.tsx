@@ -1,27 +1,22 @@
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   TextVariant,
-  Display,
-  JustifyContent,
-  BlockSize,
-  FlexDirection,
-  AlignItems,
+  BoxFlexDirection,
+  BoxJustifyContent,
   TextColor,
-} from '../../../helpers/constants/design-system';
-import {
-  ONBOARDING_COMPLETION_ROUTE,
-  ONBOARDING_WELCOME_ROUTE,
-} from '../../../helpers/constants/routes';
-import {
   Box,
   Button,
   ButtonSize,
   ButtonVariant,
   Text,
-} from '../../../components/component-library';
+} from '@metamask/design-system-react';
+import { useI18nContext } from '../../../hooks/useI18nContext';
+import {
+  ONBOARDING_COMPLETION_ROUTE,
+  ONBOARDING_WELCOME_ROUTE,
+} from '../../../helpers/constants/routes';
 import { getCurrentKeyring } from '../../../selectors';
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
@@ -44,30 +39,23 @@ export default function OnboardingDownloadApp() {
 
   return (
     <Box
-      display={Display.Flex}
-      flexDirection={FlexDirection.Column}
-      justifyContent={JustifyContent.spaceBetween}
-      height={BlockSize.Full}
+      flexDirection={BoxFlexDirection.Column}
+      justifyContent={BoxJustifyContent.Between}
       gap={6}
-      className="onboarding-download-app"
+      className="onboarding-download-app h-full"
       data-testid="onboarding-download-app"
     >
       <Box>
-        <Text variant={TextVariant.headingLg} marginBottom={4}>
+        <Text variant={TextVariant.HeadingLg} className="mb-4">
           {t('downloadAppTitle')}
         </Text>
-        <Box
-          display={Display.Flex}
-          alignItems={AlignItems.flexStart}
-          justifyContent={JustifyContent.center}
-          marginBottom={4}
-        >
+        <Box className="mb-4">
           <img
             src="/images/onboarding-download-app.png"
             alt="Download the app"
           />
         </Box>
-        <Text variant={TextVariant.bodyMd} color={TextColor.textAlternative}>
+        <Text variant={TextVariant.BodyMd} color={TextColor.TextAlternative}>
           {t('downloadAppDescription')}
         </Text>
       </Box>
@@ -75,7 +63,7 @@ export default function OnboardingDownloadApp() {
         <Button
           variant={ButtonVariant.Primary}
           size={ButtonSize.Lg}
-          block
+          className="w-full"
           data-testid="download-app-continue"
           onClick={handleClick}
         >

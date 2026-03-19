@@ -64,7 +64,10 @@ describe('Privacy Mode', function () {
         const accountList = new AccountListPage(driver);
         await accountList.checkPageIsLoaded();
 
-        await accountList.checkMultichainAccountBalanceDisplayed('$85,025');
+        await accountList.checkMultichainAccountBalanceDisplayed({
+          account: 'Account 1',
+          balance: '$85,025',
+        });
       },
     );
   });

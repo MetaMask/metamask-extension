@@ -1,9 +1,9 @@
 import {
-  AcceptRequest,
-  AddApprovalRequest,
-  EndFlow,
-  StartFlow,
-  UpdateRequestState,
+  ApprovalControllerAcceptRequestAction,
+  ApprovalControllerAddRequestAction,
+  ApprovalControllerEndFlowAction,
+  ApprovalControllerStartFlowAction,
+  ApprovalControllerUpdateRequestStateAction,
 } from '@metamask/approval-controller';
 import {
   SmartTransactionsController,
@@ -30,14 +30,14 @@ import {
   SMART_TRANSACTION_CONFIRMATION_TYPES,
 } from '../../../../shared/constants/app';
 import { CANCEL_GAS_LIMIT_DEC } from '../../../../shared/constants/smartTransactions';
-import { decimalToHex } from '../../../../shared/modules/conversion.utils';
+import { decimalToHex } from '../../../../shared/lib/conversion.utils';
 import {
   getIsSmartTransaction,
   isHardwareWallet,
   getSmartTransactionsFeatureFlagsForChain,
-} from '../../../../shared/modules/selectors';
-import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
-import { isLegacyTransaction } from '../../../../shared/modules/transaction.utils';
+} from '../../../../shared/lib/selectors';
+import { getCurrentChainId } from '../../../../shared/lib/selectors/networks';
+import { isLegacyTransaction } from '../../../../shared/lib/transaction.utils';
 import { ControllerFlatState } from '../../controller-init/controller-list';
 import { getTransactionById } from '../transaction/util';
 import { getClientForTransactionMetadata, sanitizeOrigin } from './utils';
@@ -45,11 +45,11 @@ import { getClientForTransactionMetadata, sanitizeOrigin } from './utils';
 const namespace = 'SmartTransactions';
 
 export type AllowedActions =
-  | AddApprovalRequest
-  | UpdateRequestState
-  | StartFlow
-  | AcceptRequest
-  | EndFlow;
+  | ApprovalControllerAddRequestAction
+  | ApprovalControllerUpdateRequestStateAction
+  | ApprovalControllerStartFlowAction
+  | ApprovalControllerAcceptRequestAction
+  | ApprovalControllerEndFlowAction;
 export type AllowedEvents = SmartTransactionsControllerSmartTransactionEvent;
 
 export type SmartTransactionHookMessenger = Messenger<

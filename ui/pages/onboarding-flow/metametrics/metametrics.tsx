@@ -50,7 +50,7 @@ import {
   ButtonSize,
 } from '../../../components/component-library';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
-import { getBrowserName } from '../../../../shared/modules/browser-runtime.utils';
+import { getBrowserName } from '../../../../shared/lib/browser-runtime.utils';
 
 const isFirefox = getBrowserName() === PLATFORM_FIREFOX;
 

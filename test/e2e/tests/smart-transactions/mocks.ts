@@ -1,7 +1,11 @@
+import { ReadableStream as ReadableStreamWeb } from 'stream/web';
+import { Readable } from 'stream';
 import { MockttpServer } from 'mockttp';
 import { mockEthDaiTrade, mockEthUsdcGasIncludedTrade } from '../swaps/shared';
 import { mockMultiNetworkBalancePolling } from '../../mock-balance-polling/mock-balance-polling';
 import { mockServerJsonRpc } from '../ppom/mocks/mock-server-json-rpc';
+import { SSE_RESPONSE_HEADER } from '../bridge/constants';
+import { TX_SENTINEL_URL } from '../../../../shared/constants/transaction';
 
 const STX_UUID = '0d506aaa-5e38-4cab-ad09-2039cb7a0f33';
 
@@ -498,7 +502,7 @@ export async function mockSmartTransactionRequests(mockServer: MockttpServer) {
       'https://transaction.api.cx.metamask.io/networks/1/submitTransactions',
     )
     .once()
-    .thenJson(200, { uuid: STX_UUID });
+    .thenJson(200, { uuid: STX_UUID, txHashes: [TRANSACTION_HASH] });
 }
 
 export async function mockChooseGasFeeTokenRequests(mockServer: MockttpServer) {
@@ -537,6 +541,101 @@ export async function mockChooseGasFeeTokenRequests(mockServer: MockttpServer) {
     .thenJson(200, { uuid: STX_UUID });
 }
 
+/**
+ * Single quote payload for getQuoteStream (SSE data: field).
+ * ETH 20 -> MUSD, pancakeswap. Used by "should Swap with gas included fee" test.
+ */
+const MOCK_ETH_MUSD_QUOTE_STREAM = [
+  {
+    quote: {
+      requestId:
+        '0x862b0cc5ecc6cbe511bedd5dfffaffbd68400255965c6594acb893c3df331964',
+      bridgeId: 'pancakeswap',
+      srcChainId: 1,
+      destChainId: 1,
+      aggregator: 'pancakeswap',
+      aggregatorType: 'AGG',
+      srcAsset: {
+        address: '0x0000000000000000000000000000000000000000',
+        chainId: 1,
+        assetId: 'eip155:1/slip44:60',
+        symbol: 'ETH',
+        decimals: 18,
+        name: 'Ether',
+        coingeckoId: 'ethereum',
+        aggregators: [],
+        occurrences: 100,
+        iconUrl:
+          'https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/slip44/60.png',
+        metadata: {},
+      },
+      srcTokenAmount: '20000000000000000000',
+      destAsset: {
+        address: '0xaca92e438df0b2401ff60da7e4337b687a2435da',
+        chainId: 1,
+        assetId: 'eip155:1/erc20:0xaca92e438df0b2401ff60da7e4337b687a2435da',
+        symbol: 'MUSD',
+        decimals: 6,
+        name: 'MetaMask USD',
+        coingeckoId: 'metamask-usd',
+        aggregators: ['metamask', 'liFi', 'socket', 'rubic', 'rango'],
+        occurrences: 5,
+        iconUrl:
+          'https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0xaca92e438df0b2401ff60da7e4337b687a2435da.png',
+        metadata: {},
+      },
+      destTokenAmount: '267044',
+      minDestTokenAmount: '261703',
+      walletAddress: '0x5CfE73b6021E818B776b421B1c4Db2474086a7e1',
+      destWalletAddress: '0x5CfE73b6021E818B776b421B1c4Db2474086a7e1',
+      feeData: {
+        metabridge: {
+          amount: '0',
+          asset: {
+            address: '0x0000000000000000000000000000000000000000',
+            chainId: 1,
+            assetId: 'eip155:1/slip44:60',
+            symbol: 'ETH',
+            decimals: 18,
+            name: 'Ether',
+            coingeckoId: 'ethereum',
+            aggregators: [],
+            occurrences: 100,
+            iconUrl:
+              'https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/slip44/60.png',
+            metadata: {},
+          },
+          quoteBpsFee: 0,
+          baseBpsFee: 87.5,
+        },
+      },
+      bridges: ['pancakeswap'],
+      protocols: ['pancakeswap'],
+      steps: [],
+      slippage: 2,
+      gasSponsored: false,
+      gasIncluded: true,
+      gasIncluded7702: false,
+      priceData: {
+        totalFromAmountUsd: '46957',
+        totalToAmountUsd: '0.26697990944',
+        priceImpact: '0.007135438233346954',
+        totalFeeAmountUsd: '0',
+      },
+    },
+    trade: {
+      chainId: 1,
+      to: '0x881D40237659C251811CEC9c364ef91dC08D300C',
+      from: '0x5CfE73b6021E818B776b421B1c4Db2474086a7e1',
+      value: '0x1158e460913d00000',
+      data: '0x5f57552900000000000000000000000000000000000000000000000000000000000000800000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001158e460913d0000000000000000000000000000000000000000000000000000000000000000000c0000000000000000000000000000000000000000000000000000000000000001b70616e63616b6553776170526f7574657246656544796e616d6963000000000000000000000000000000000000000000000000000000000000000000000002200000000000000000000000000000000000000000000000000000000000000000000000000000000000000000aca92e438df0b2401ff60da7e4337b687a2435da000000000000000000000000000000000000000000000001158e460913d00000000000000000000000000000000000000000000000000000000000000003fe4700000000000000000000000000000000000000000000000000000000000001200000000000000000000000000000000000000000000000000000000000000000000000000000000000000000f326e4de8f66a0bdc0970b79e0924e33c79f1915000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000e4472b43f3000000000000000000000000000000000000000000000001158e460913d00000000000000000000000000000000000000000000000000000000000003feaf000000000000000000000000000000000000000000000000000000000000008000000000000000000000000074de5d4fcbf63e00296fd95d33236b97940166310000000000000000000000000000000000000000000000000000000000000002000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2000000000000000000000000aca92e438df0b2401ff60da7e4337b687a2435da00000000000000000000000000000000000000000000000000000000060',
+      gasLimit: 284508,
+      effectiveGas: 204102,
+    },
+    estimatedProcessingTimeInSeconds: 0,
+  },
+];
+
 export async function mockGasIncludedTransactionRequests(
   mockServer: MockttpServer,
 ) {
@@ -544,12 +643,24 @@ export async function mockGasIncludedTransactionRequests(
 
   await mockEthUsdcGasIncludedTrade(mockServer);
 
+  // Sentinel /networks (sendBundle: true so quote request includes gasIncluded: true).
+  await mockSentinelNetworks(mockServer);
+
+  // Mock getQuoteStream (SSE) so the swap page receives a quote (ETH -> MUSD).
+  await mockServer
+    .forGet(/getQuoteStream/u)
+    .thenStream(
+      200,
+      mockSseEventSource(MOCK_ETH_MUSD_QUOTE_STREAM),
+      SSE_RESPONSE_HEADER,
+    );
+
   await mockServer
     .forPost(
       'https://transaction.api.cx.metamask.io/networks/1/submitTransactions',
     )
     .once()
-    .thenJson(200, { uuid: STX_UUID });
+    .thenJson(200, { uuid: STX_UUID, txHashes: [TRANSACTION_HASH] });
 }
 
 export async function mockSmartTransactionBatchRequests(
@@ -626,6 +737,31 @@ async function mockSmartTransactionRequestsBase(mockServer: MockttpServer) {
     })
     .thenJson(200, GET_TRANSACTION_RECEIPT_RESPONSE);
 
+  // Catch-all: return success receipt for any other hash so the local tx confirms
+  // when the extension polls (avoids duplicate Pending + API Confirmed in activity).
+  await mockServer
+    .forJsonRpcRequest({ method: 'eth_getTransactionReceipt' })
+    .thenCallback(async (req) => {
+      const body = (await req.body.getJson()) as { params?: [string] };
+      const hash = body?.params?.[0] ?? TRANSACTION_HASH;
+      const result = GET_TRANSACTION_RECEIPT_RESPONSE.result as {
+        logs?: { transactionHash: string }[];
+        [key: string]: unknown;
+      };
+      const resultWithHash = {
+        ...result,
+        transactionHash: hash,
+        logs: result.logs?.map((log) => ({ ...log, transactionHash: hash })),
+      };
+      return {
+        statusCode: 200,
+        json: {
+          ...GET_TRANSACTION_RECEIPT_RESPONSE,
+          result: resultWithHash,
+        },
+      };
+    });
+
   await mockServer
     .forJsonRpcRequest({
       method: 'eth_getTransactionByHash',
@@ -639,4 +775,292 @@ async function mockSmartTransactionRequestsBase(mockServer: MockttpServer) {
       params: [BLOCK_HASH],
     })
     .thenJson(200, GET_BLOCK_BY_HASH_RESPONSE);
+}
+
+export async function mockSentinelNetworks(mockServer: MockttpServer) {
+  await mockServer
+    .forGet(`${TX_SENTINEL_URL}/networks`)
+    .always()
+    .thenCallback(() => {
+      return {
+        ok: true,
+        statusCode: 200,
+        json: {
+          '1': {
+            network: 'ethereum-mainnet',
+            confirmations: true,
+            relayTransactions: true,
+            sendBundle: true,
+          },
+        },
+      };
+    });
+}
+
+const SWAP_DAI_TOKEN = {
+  assetId: 'eip155:1/erc20:0x6b175474e89094c44da98b954eedeac495271d0f',
+  symbol: 'DAI',
+  name: 'Dai Stablecoin',
+  decimals: 18,
+  iconUrl: null,
+};
+
+const SWAP_ETH_TOKEN = {
+  assetId: 'eip155:1/slip44:60',
+  symbol: 'ETH',
+  name: 'Ethereum',
+  decimals: 18,
+  iconUrl: null,
+};
+
+/** Quote payload sent via mockSseEventSource for getQuoteStream (SSE data: field). */
+const MOCK_ETH_DAI_QUOTE = [
+  {
+    quote: {
+      requestId:
+        '0xfc5d4833cfd92f7576d928d1d4ac7dc4a7f4d02099135b5bf1c80f4aa7cfe3ee',
+      bridgeId: 'okx',
+      srcChainId: 1,
+      destChainId: 1,
+      aggregator: 'okx',
+      aggregatorType: 'AGG',
+      srcAsset: {
+        address: '0x0000000000000000000000000000000000000000',
+        chainId: 1,
+        assetId: 'eip155:1/slip44:60',
+        symbol: 'ETH',
+        decimals: 18,
+        name: 'Ether',
+        coingeckoId: 'ethereum',
+        aggregators: [],
+        occurrences: 100,
+        iconUrl:
+          'https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/slip44/60.png',
+        metadata: {},
+      },
+      srcTokenAmount: '1976004763624560573',
+      destAsset: {
+        address: '0x6b175474e89094c44da98b954eedeac495271d0f',
+        chainId: 1,
+        assetId: 'eip155:1/erc20:0x6b175474e89094c44da98b954eedeac495271d0f',
+        symbol: 'DAI',
+        decimals: 18,
+        name: 'Dai Stablecoin',
+        coingeckoId: 'dai',
+        aggregators: [
+          'metamask',
+          'oneInch',
+          'liFi',
+          'socket',
+          'rubic',
+          'squid',
+          'rango',
+          'sonarwatch',
+          'sushiSwap',
+          'pmm',
+          'bancor',
+        ],
+        occurrences: 11,
+        iconUrl:
+          'https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0x6b175474e89094c44da98b954eedeac495271d0f.png',
+        metadata: { storage: { balance: 2, approval: 3 } },
+      },
+      destTokenAmount: '4625979906416670820458',
+      minDestTokenAmount: '4533460308288337404048',
+      walletAddress: '0x5CfE73b6021E818B776b421B1c4Db2474086a7e1',
+      destWalletAddress: '0x5CfE73b6021E818B776b421B1c4Db2474086a7e1',
+      feeData: {
+        txFee: {
+          amount: '6495236375439427',
+          maxFeePerGas: '2567253618',
+          maxPriorityFeePerGas: '2100000004',
+          asset: {
+            address: '0x0000000000000000000000000000000000000000',
+            chainId: 1,
+            assetId: 'eip155:1/slip44:60',
+            symbol: 'ETH',
+            decimals: 18,
+            name: 'Ether',
+            coingeckoId: 'ethereum',
+            aggregators: [],
+            occurrences: 100,
+            iconUrl:
+              'https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/slip44/60.png',
+            metadata: {},
+          },
+        },
+        metabridge: {
+          amount: '17500000000000000',
+          asset: {
+            address: '0x0000000000000000000000000000000000000000',
+            chainId: 1,
+            assetId: 'eip155:1/slip44:60',
+            symbol: 'ETH',
+            decimals: 18,
+            name: 'Ether',
+            coingeckoId: 'ethereum',
+            aggregators: [],
+            occurrences: 100,
+            iconUrl:
+              'https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/slip44/60.png',
+            metadata: {},
+          },
+          baseBpsFee: 87.5,
+        },
+      },
+      bridges: ['okx'],
+      protocols: ['okx'],
+      steps: [],
+      slippage: 2,
+      gasSponsored: false,
+      gasIncluded: true,
+      gasIncluded7702: false,
+      priceData: {
+        totalFromAmountUsd: '4674.28',
+        totalToAmountUsd: '4625.855004959198',
+        priceImpact: '0.007135438233346954',
+        totalFeeAmountUsd: '40.899950000000004',
+      },
+    },
+    trade: {
+      chainId: 1,
+      to: '0x881D40237659C251811CEC9c364ef91dC08D300C',
+      from: '0x5CfE73b6021E818B776b421B1c4Db2474086a7e1',
+      value: '0x1baa5a053de417bd',
+      data: '0x5f575529000000000000000000000000000000000000000000000000000000000000008000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001baa5a053de417bd00000000000000000000000000000000000000000000000000000000000000c000000000000000000000000000000000000000000000000000000000000000046f6b7836000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000d6000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000006b175474e89094c44da98b954eedeac495271d0f0000000000000000000000000000000000000000000000001b6c2ddcfa5257bd0000000000000000000000000000f5c26673160b38e0900000000000000000000000000000000000000000000000000000000000000120000000000000000000000000000000000000000000000000003e2c284391c000000000000000000000000000f326e4de8f66a0bdc0970b79e0924e33c79f191500000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000c24f2c42696000000000000000000000000000000000000000000000000000000000001b91d000000000000000000000000eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee0000000000000000000000006b175474e89094c44da98b954eedeac495271d0f0000000000000000000000000000000000000000000000001b6c2ddcfa5257bd0000000000000000000000000000f5c26673160b38e090000000000000000000000000000000000000000000069b8650f00000000000000000000000000000000000000000000000000000000000000e000000000000000000000000000000000000000000000000000000000000000030000000000000000000000000000000000000000000000000000000000000060000000000000000000000000000000000000000000000000000000000000064000000000000000000000000000000000000000000000000000000000000008e000000000000000000000000000000000000000000000000000000000000000a00000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000016000000000000000000000000000000000000000000000000000000000000001c0000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc20000000000000000000000000000000000000000000000000000000000000002000000000000000000ce937da1ffd21673aa1e063459873f30189a21930000000000000000000000006747bcaf9bd5a5f0758cbe08903490e45ddfacb50000000000000000000000000000000000000000000000000000000000000002000000000000000000ce937da1ffd21673aa1e063459873f30189a21930000000000000000000000006747bcaf9bd5a5f0758cbe08903490e45ddfacb50000000000000000000000000000000000000000000000000000000000000002000000000000000000125980bdf246b4aef9cfe4dd6eef153a1b645ac4bcbb6800000000000000000010178e0554a476a092703abdb3ef35c80e0d76d32939f00000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000040000000000000000000000000000000000000000000000000000000000000034000000000000000000000000000000000000000000000000000000000000002e0000000000000000000000000000000000000000000000000000000000000008000000000000000000000000000000000000000000000000000000000000002600000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000001c000000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000003c4ac6b89f0c13000000000000000000000000000000000000000000000000000000000069b85723000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2000000000000000000000000cd81502214d405f40ff14884f2b3962a2f822d670000000000000000000000000000000000000000000000000000000108c8dbe10000000000000000000000000000000000000000000000001a64386d3ebbca670000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000016000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000180000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000041735c24e3c53212b236bea2cde524c21dc77bf4cb7c915238d24714ff09b09cc7392fd2ebdeae435b832dad374f19bc6e3924dce8a736a084bae12f9dd9bcecc51b0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000a0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000040000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48000000000000000000000000cd81502214d405f40ff14884f2b3962a2f822d670000000000000000000000000000000000000000000000000000000108c8dbe10000000000000000000000000000000000000000000000001a64386d3ebbca670000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000016000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000180000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000041735c24e3c53212b236bea2cde524c21dc77bf4cb7c915238d24714ff09b09cc7392fd2ebdeae435b832dad374f19bc6e3924dce8a736a084bae12f9dd9bcecc51b0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000a0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000040000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48000000000000000000000000dc035d45d973e3ec169d2276ddab16f1e407384f00000000000000000000000000000000000000000000000000000000000000010000000000000000000000004e3bcce28caf98a143fd8bd9e4875ccab3e7bbe000000000000000000000000000000000000000000000000000000000000000010000000000000000000000004e3bcce28caf98a143fd8bd9e4875ccab3e7bbe000000000000000000000000000000000000000000000000000000000000000018000000000000000020327108f42901cd498d45646783e8ba4c87b780b5c2b1f000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000040000000000000000000000000000000000000000000000000000000000000080000000000000000000000000000000000000000000000000000000000000002000000000000000000000000dc035d45d973e3ec169d2276ddab16f1e407384f0000000000000000000000006b175474e89094c44da98b954eedeac495271d0f7777777711118000000000000000000000000000000000fac65e1764dc6e486a777777771111000000000064fa00a9ed787f3793db668bff3e6e6e7db0f92a1b000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000026',
+      gasLimit: 2530032,
+      effectiveGas: 774866,
+    },
+    estimatedProcessingTimeInSeconds: 0,
+  },
+];
+
+function mockSseEventSource(mockQuotes: unknown[], delay: number = 2000) {
+  let index = 0;
+  return Readable.fromWeb(
+    new ReadableStreamWeb({
+      async pull(controller) {
+        if (index === mockQuotes.length) {
+          controller.close();
+          return;
+        }
+        const quote = mockQuotes[index];
+        controller.enqueue(Buffer.from(`event: quote\n`));
+        controller.enqueue(
+          Buffer.from(`id: ${Date.now().toString()}-${index + 1}\n`),
+        );
+        controller.enqueue(Buffer.from(`data: ${JSON.stringify(quote)}\n\n`));
+        await new Promise((resolve) => setTimeout(resolve, delay));
+        index += 1;
+      },
+    }),
+  );
+}
+
+export async function mockSwapTokensMockApis(mockServer: MockttpServer) {
+  await mockServer.forPost(/getTokens\/popular/u).thenCallback(() => ({
+    statusCode: 200,
+    json: [SWAP_ETH_TOKEN, SWAP_DAI_TOKEN],
+  }));
+
+  await mockServer.forPost(/getTokens\/search/u).thenCallback(() => ({
+    statusCode: 200,
+    json: {
+      data: [SWAP_ETH_TOKEN, SWAP_DAI_TOKEN],
+      pageInfo: { hasNextPage: false, endCursor: null },
+    },
+  }));
+
+  // Mock getQuoteStream (SSE) for when SSE is enabled
+  await mockServer
+    .forGet(/getQuoteStream/u)
+    .once()
+    .withQuery({
+      srcTokenAddress: '0x0000000000000000000000000000000000000000',
+      destTokenAddress: '0x6B175474E89094C44Da98b954EedeAC495271d0F',
+    })
+    .thenStream(
+      200,
+      mockSseEventSource(MOCK_ETH_DAI_QUOTE),
+      SSE_RESPONSE_HEADER,
+    );
+
+  // Mock getQuote (non-SSE) so the test passes when the extension uses the non-SSE path
+  // (e.g. when client version fails sse.minimumVersion or default flags mock is used)
+  await mockServer
+    .forGet(/getQuote(?!Stream)/u)
+    .withQuery({
+      srcTokenAddress: '0x0000000000000000000000000000000000000000',
+      destTokenAddress: '0x6B175474E89094C44Da98b954EedeAC495271d0F',
+    })
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: MOCK_ETH_DAI_QUOTE,
+    }));
+}
+
+const SWAP_ACCOUNT_ADDRESS = '0x5cfe73b6021e818b776b421b1c4db2474086a7e1';
+
+/**
+ * One completed "Swap ETH to DAI" transaction in accounts API v4 format.
+ * Activity list uses this API; default mock returns empty data, so we override
+ * to show the swap as completed.
+ */
+const MOCK_ACCOUNTS_API_SWAP_TX = {
+  hash: TRANSACTION_HASH,
+  timestamp: new Date().toISOString(),
+  chainId: 1,
+  accountId: `eip155:1:${SWAP_ACCOUNT_ADDRESS}`,
+  blockNumber: 24384555,
+  blockHash: BLOCK_HASH,
+  gas: 2530032,
+  gasUsed: 774866,
+  gasPrice: '2657647800',
+  effectiveGasPrice: '2657647800',
+  nonce: 0,
+  cumulativeGasUsed: 19094274,
+  methodId: null,
+  value: '0',
+  to: '0x881D40237659C251811CEC9c364ef91dC08D300C',
+  from: SWAP_ACCOUNT_ADDRESS,
+  isError: false,
+  valueTransfers: [
+    {
+      from: SWAP_ACCOUNT_ADDRESS,
+      to: '0x6b175474e89094c44da98b954eedeac495271d0f',
+      amount: '2000000000000000000',
+      decimal: 18,
+      symbol: 'ETH',
+      name: 'Ether',
+      transferType: 'normal',
+    },
+    {
+      from: '0x6b175474e89094c44da98b954eedeac495271d0f',
+      to: SWAP_ACCOUNT_ADDRESS,
+      amount: '4625979906416670820458',
+      decimal: 18,
+      symbol: 'DAI',
+      name: 'Dai Stablecoin',
+      transferType: 'normal',
+    },
+  ],
+  logs: [],
+  transactionType: 'SWAP',
+  transactionCategory: 'SWAP',
+  readable: 'Swap ETH to DAI',
+};
+
+export async function mockAccountsApiSwapTransaction(
+  mockServer: MockttpServer,
+): Promise<void> {
+  await mockServer
+    .forGet('https://accounts.api.cx.metamask.io/v4/multiaccount/transactions')
+    .always()
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: {
+        data: [MOCK_ACCOUNTS_API_SWAP_TX],
+        pageInfo: { hasNextPage: false, count: 1 },
+      },
+    }));
 }

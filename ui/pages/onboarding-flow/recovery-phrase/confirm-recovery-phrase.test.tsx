@@ -10,7 +10,7 @@ import {
   ONBOARDING_METAMETRICS,
   REVEAL_SRP_LIST_ROUTE,
 } from '../../../helpers/constants/routes';
-import * as BrowserRuntimeUtils from '../../../../shared/modules/browser-runtime.utils';
+import * as BrowserRuntimeUtils from '../../../../shared/lib/browser-runtime.utils';
 import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
 import ConfirmRecoveryPhrase from './confirm-recovery-phrase';
 
