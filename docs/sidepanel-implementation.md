@@ -50,7 +50,7 @@ The `getIsSidePanelFeatureEnabled()` function (located in `shared/lib/environmen
 
 **Supported Browsers:**
 
-- ✅ Chrome 115+ (Manifest V3)
+- ✅ Chrome 123+ (Manifest V3)
 - ✅ Edge (Chromium-based)
 - ✅ Brave (Chromium-based)
 
@@ -75,7 +75,7 @@ The `useBrowserSupportsSidePanel()` hook (located in `ui/hooks/useBrowserSupport
 The sidepanel is configured in the Chrome Manifest V3 (`app/manifest/v3/chrome.json`) with `side_panel.default_path` set to `"sidepanel.html"`. This configuration:
 
 - Defines `sidepanel.html` as the entry point
-- Requires Chrome 115+ (specified by `minimum_chrome_version`)
+- Requires Chrome 123+ (specified by `minimum_chrome_version`)
 - Only applies to Manifest V3 builds (Chrome/Edge/Brave, not Opera)
 
 ### Sidepanel HTML Entry Point
