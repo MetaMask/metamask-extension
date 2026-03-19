@@ -2,6 +2,11 @@
  * Artifact link construction and PR "Builds ready" section builder.
  */
 
+import {
+  ENTRY_BENCHMARK_PLATFORMS,
+  ENTRY_BENCHMARK_BUILD_TYPES,
+} from '../../shared/constants/benchmarks';
+
 /**
  * Check whether an artifact exists.
  *
@@ -54,7 +59,7 @@ export function getArtifactLinks(
       label: 'Bundle Size Stats',
     },
     interactionStats: {
-      url: `${hostUrl}/benchmarks/benchmark-chrome-browserify-interactionUserActions.json`,
+      url: `${hostUrl}/benchmarks/benchmark-${ENTRY_BENCHMARK_PLATFORMS[0]}-${ENTRY_BENCHMARK_BUILD_TYPES[0]}-interactionUserActions.json`,
       label: 'Interaction Stats',
     },
     storybook: {

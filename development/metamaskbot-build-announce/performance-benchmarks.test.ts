@@ -1,689 +1,239 @@
+import { readFile } from 'fs/promises';
 import type { BenchmarkResults } from '../../shared/constants/benchmarks';
 import * as historicalComparison from './historical-comparison';
 import {
-  buildTableRows,
   buildBenchmarkSection,
   extractEntries,
+  fetchBenchmarkJson,
   fetchBenchmarkEntries,
   buildPerformanceBenchmarksSection,
+  computeEntryHealth,
+  EntryHealth,
   type FetchBenchmarkResult,
   type BenchmarkEntry,
 } from './performance-benchmarks';
 
-const mockUserActionsJson: Record<string, BenchmarkResults> = {
+jest.mock('fs/promises');
+
+const makeEntry = (
+  overrides: Partial<BenchmarkEntry> = {},
+): BenchmarkEntry => ({
+  benchmarkName: 'loadNewAccount',
+  presetName: 'interactionUserActions',
+  platform: 'chrome',
+  buildType: 'browserify',
+  mean: { loadNewAccount: 523 },
+  stdDev: { loadNewAccount: 45 },
+  p75: { loadNewAccount: 550 },
+  p95: { loadNewAccount: 612 },
+  ...overrides,
+});
+
+const noMissing = (entries: BenchmarkEntry[]): FetchBenchmarkResult => ({
+  entries,
+  missingPresets: [],
+});
+
+const BASELINE_METRICS_PASS = {
+  loadNewAccount: { mean: 540, stdDev: 45, p75: 560, p95: 620 },
+};
+const BASELINE_PASS = {
+  'interactionUserActions/loadNewAccount': BASELINE_METRICS_PASS,
+};
+
+const BASELINE_600 = {
+  'interactionUserActions/loadNewAccount': {
+    loadNewAccount: { mean: 540, stdDev: 30, p75: 540, p95: 600 },
+  },
+};
+
+const MOCK_PAYLOAD: Record<string, BenchmarkResults> = {
   loadNewAccount: {
-    testTitle: 'benchmark-user-actions-load-new-account',
+    testTitle: 'benchmark-load-new-account',
     persona: 'standard',
-    mean: { loadNewAccount: 523.4 },
-    min: { loadNewAccount: 480 },
-    max: { loadNewAccount: 620 },
-    stdDev: { loadNewAccount: 45.2 },
-    p75: { loadNewAccount: 550 },
-    p95: { loadNewAccount: 612 },
-  },
-  confirmTx: {
-    testTitle: 'benchmark-user-actions-confirm-tx',
-    persona: 'standard',
-    mean: { confirmTx: 3456.7 },
-    min: { confirmTx: 3100 },
-    max: { confirmTx: 3900 },
-    stdDev: { confirmTx: 210.3 },
-    p75: { confirmTx: 3600 },
-    p95: { confirmTx: 3812 },
-  },
-  bridgeUserActions: {
-    testTitle: 'benchmark-user-actions-bridge',
-    persona: 'standard',
-    mean: { bridgePageLoad: 200.1, bridgeTokenSwitch: 150.8 },
-    min: { bridgePageLoad: 180, bridgeTokenSwitch: 130 },
-    max: { bridgePageLoad: 260, bridgeTokenSwitch: 190 },
-    stdDev: { bridgePageLoad: 18.5, bridgeTokenSwitch: 12.3 },
-    p75: { bridgePageLoad: 215, bridgeTokenSwitch: 160 },
-    p95: { bridgePageLoad: 245, bridgeTokenSwitch: 178 },
-  },
-};
-
-const mockPerformanceOnboardingJson: Record<string, BenchmarkResults> = {
-  onboardingImportWallet: {
-    testTitle: 'benchmark-onboarding-import-wallet',
-    persona: 'standard',
-    mean: {
-      importWalletToSocialScreen: 209,
-      srpButtonToSrpForm: 53,
-      confirmSrpToPasswordForm: 150,
-      doneButtonToHomeScreen: 8500,
-    },
-    min: {
-      importWalletToSocialScreen: 170,
-      srpButtonToSrpForm: 40,
-      confirmSrpToPasswordForm: 120,
-      doneButtonToHomeScreen: 7500,
-    },
-    max: {
-      importWalletToSocialScreen: 310,
-      srpButtonToSrpForm: 80,
-      confirmSrpToPasswordForm: 210,
-      doneButtonToHomeScreen: 11000,
-    },
-    stdDev: {
-      importWalletToSocialScreen: 32,
-      srpButtonToSrpForm: 8,
-      confirmSrpToPasswordForm: 20,
-      doneButtonToHomeScreen: 600,
-    },
-    p75: {
-      importWalletToSocialScreen: 230,
-      srpButtonToSrpForm: 58,
-      confirmSrpToPasswordForm: 165,
-      doneButtonToHomeScreen: 9000,
-    },
-    p95: {
-      importWalletToSocialScreen: 280,
-      srpButtonToSrpForm: 70,
-      confirmSrpToPasswordForm: 195,
-      doneButtonToHomeScreen: 10200,
-    },
-  },
-};
-
-const mockPerformanceAssetsJson: Record<string, BenchmarkResults> = {
-  assetDetails: {
-    testTitle: 'benchmark-asset-details',
-    persona: 'powerUser',
-    mean: { assetClickToPriceChart: 4200 },
-    min: { assetClickToPriceChart: 3800 },
-    max: { assetClickToPriceChart: 5500 },
-    stdDev: { assetClickToPriceChart: 350 },
-    p75: { assetClickToPriceChart: 4500 },
-    p95: { assetClickToPriceChart: 5100 },
-  },
-};
-
-describe('extractEntries', () => {
-  it('maps all entries from the data object', () => {
-    const entries = extractEntries(mockUserActionsJson);
-    expect(entries).toHaveLength(Object.keys(mockUserActionsJson).length);
-    expect(entries.map((e) => e.benchmarkName)).toContain('loadNewAccount');
-    expect(entries.map((e) => e.benchmarkName)).toContain('confirmTx');
-  });
-
-  it('extracts all statistical fields', () => {
-    const entries = extractEntries({
-      loadNewAccount: mockUserActionsJson.loadNewAccount,
-    });
-
-    expect(entries).toHaveLength(1);
-    expect(entries[0].mean).toStrictEqual({ loadNewAccount: 523.4 });
-    expect(entries[0].min).toStrictEqual({ loadNewAccount: 480 });
-    expect(entries[0].max).toStrictEqual({ loadNewAccount: 620 });
-    expect(entries[0].stdDev).toStrictEqual({ loadNewAccount: 45.2 });
-    expect(entries[0].p75).toStrictEqual({ loadNewAccount: 550 });
-    expect(entries[0].p95).toStrictEqual({ loadNewAccount: 612 });
-  });
-
-  it('filters out entries with null mean', () => {
-    const entries = extractEntries({
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      nullMean: { ...mockUserActionsJson.loadNewAccount, mean: null as any },
-      loadNewAccount: mockUserActionsJson.loadNewAccount,
-    });
-
-    expect(entries).toHaveLength(1);
-    expect(entries[0].benchmarkName).toBe('loadNewAccount');
-  });
-
-  it('filters out entries with undefined mean', () => {
-    const entries = extractEntries({
-      undefinedMean: {
-        ...mockUserActionsJson.loadNewAccount,
-        mean: undefined as unknown as BenchmarkResults['mean'],
-      },
-      loadNewAccount: mockUserActionsJson.loadNewAccount,
-    });
-
-    expect(entries).toHaveLength(1);
-    expect(entries[0].benchmarkName).toBe('loadNewAccount');
-  });
-});
-
-describe('buildTableRows', () => {
-  it('produces one row per metric for a single entry', () => {
-    // loadNewAccount entry has one metric key: 'loadNewAccount'
-    const [entry] = extractEntries({
-      loadNewAccount: mockUserActionsJson.loadNewAccount,
-    });
-    const rows = buildTableRows(entry);
-
-    expect(rows).toHaveLength(1);
-  });
-
-  it('renders loadNewAccount row in 7-column format (Metric | Mean | Min | Max | Std Dev | P75 | P95)', () => {
-    const [entry] = extractEntries({
-      loadNewAccount: mockUserActionsJson.loadNewAccount,
-    });
-    const [row] = buildTableRows(entry);
-
-    // Metric cell: key only (no benchmark name in row)
-    expect(row).toContain('loadNewAccount');
-    expect(row).not.toContain('Load New Account');
-    // No separate Result column
-    expect(row).not.toContain('>Result<');
-    // Mean, Std Dev, P75, P95 all show plain value (no indicator when no baseline)
-    expect(row).toContain('523');
-    expect(row).toContain('45');
-    expect(row).toContain('550');
-    expect(row).toContain('612');
-    // Min and Max are raw numbers
-    expect(row).toContain('>480<');
-    expect(row).toContain('>620<');
-  });
-
-  it('renders confirmTx row with correct rounded values', () => {
-    const [entry] = extractEntries({
-      confirmTx: mockUserActionsJson.confirmTx,
-    });
-    const [row] = buildTableRows(entry);
-
-    expect(row).toContain('confirmTx');
-    expect(row).not.toContain('Confirm Tx');
-    // Mean, Std Dev, P75, P95 show plain value
-    expect(row).toContain('3457');
-    expect(row).toContain('210');
-    expect(row).toContain('3600');
-    expect(row).toContain('3812');
-    // Min and Max are raw numbers
-    expect(row).toContain('>3100<');
-    expect(row).toContain('>3900<');
-  });
-
-  it('renders multi-metric entry with one row per metric', () => {
-    const [entry] = extractEntries({
-      bridgeUserActions: mockUserActionsJson.bridgeUserActions,
-    });
-    const rows = buildTableRows(entry);
-
-    expect(rows).toHaveLength(2);
-    expect(rows[0]).toContain('bridgePageLoad');
-    // Mean, P75, P95 show plain value
-    expect(rows[0]).toContain('200');
-    expect(rows[0]).toContain('215');
-    expect(rows[0]).toContain('245');
-    expect(rows[0]).toContain('>180<');
-    expect(rows[0]).toContain('>260<');
-
-    expect(rows[1]).toContain('bridgeTokenSwitch');
-    // Mean, P75, P95 show plain value
-    expect(rows[1]).toContain('151');
-    expect(rows[1]).toContain('160');
-    expect(rows[1]).toContain('178');
-    expect(rows[1]).toContain('>130<');
-    expect(rows[1]).toContain('>190<');
-  });
-
-  it('renders onboarding metrics with correct step values', () => {
-    const [entry] = extractEntries(mockPerformanceOnboardingJson);
-    const rows = buildTableRows(entry);
-
-    expect(rows).toHaveLength(4);
-    expect(rows[0]).not.toContain('rowspan');
-    expect(rows[0]).toContain('importWalletToSocialScreen');
-    // Mean, P75, P95 show plain value
-    expect(rows[0]).toContain('209');
-    expect(rows[0]).toContain('230');
-    expect(rows[0]).toContain('280');
-    expect(rows[0]).toContain('>170<');
-    expect(rows[0]).toContain('>310<');
-    expect(rows[0]).toContain('32');
-
-    expect(rows[1]).toContain('srpButtonToSrpForm');
-    // Mean, P75, P95 show plain value
-    expect(rows[1]).toContain('53');
-    expect(rows[1]).toContain('58');
-    expect(rows[1]).toContain('70');
-    expect(rows[1]).toContain('>40<');
-    expect(rows[1]).toContain('>80<');
-  });
-
-  it('orders total metric last and bolds it', () => {
-    const entry: BenchmarkEntry = {
-      benchmarkName: 'loadNewAccount',
-      presetName: '',
-      mean: { total: 275, loadNewAccount: 275 },
-      min: { total: 271, loadNewAccount: 271 },
-      max: { total: 279, loadNewAccount: 279 },
-      stdDev: { total: 3, loadNewAccount: 3 },
-      p75: { total: 276, loadNewAccount: 276 },
-      p95: { total: 279, loadNewAccount: 279 },
-    };
-    const rows = buildTableRows(entry);
-
-    // total row should be last
-    expect(rows).toHaveLength(2);
-    expect(rows[rows.length - 1]).toContain('<b>total</b>');
-    expect(rows[0]).not.toContain('<b>total</b>');
-  });
-
-  it('renders dash in P75/P95 cells when those stats are missing; Mean still shows', () => {
-    const entry: BenchmarkEntry = {
-      benchmarkName: 'partialStats',
-      presetName: '',
-      mean: { myMetric: 100 },
-      min: {},
-      max: {},
-      stdDev: {},
-      p75: {},
-      p95: {},
-    };
-    const rows = buildTableRows(entry);
-
-    expect(rows).toHaveLength(1);
-    // Mean cell shows value
-    expect(rows[0]).toContain('100');
-    // P75 and P95 cells show '-'
-    expect(rows[0]).toContain('>-<');
-  });
-});
-
-describe('buildBenchmarkSection', () => {
-  const noMissing = (
-    entries: ReturnType<typeof extractEntries>,
-  ): FetchBenchmarkResult => ({
-    entries,
-    missingPresets: [],
-  });
-
-  describe('interaction benchmarks', () => {
-    const result = noMissing(extractEntries(mockUserActionsJson));
-
-    it('wraps content in a collapsible details section', () => {
-      const html = buildBenchmarkSection(result, '👆 Interaction Benchmarks');
-
-      expect(html).toContain('<details>');
-      expect(html).toContain('👆 Interaction Benchmarks');
-      expect(html).toContain('<table>');
-      expect(html).toContain('</details>');
-    });
-
-    it('uses 7-column headers: Metric (ms) | Mean | Min | Max | Std Dev | P75 | P95', () => {
-      const html = buildBenchmarkSection(result, '👆 Interaction Benchmarks');
-
-      expect(html).toContain('>Metric (ms)<');
-      expect(html).toContain('>Mean<');
-      expect(html).toContain('>Min<');
-      expect(html).toContain('>Max<');
-      expect(html).toContain('>Std Dev<');
-      expect(html).toContain('>P75<');
-      expect(html).toContain('>P95<');
-      // No combined Result column or old Benchmark / Metric column
-      expect(html).not.toContain('>Result<');
-      expect(html).not.toContain('>Benchmark / Metric<');
-    });
-
-    it('renders benchmark names as h4 section headers', () => {
-      const html = buildBenchmarkSection(result, '👆 Interaction Benchmarks');
-
-      expect(html).toContain('<h4>Load New Account</h4>');
-      expect(html).toContain('<h4>Confirm Tx</h4>');
-      expect(html).toContain('<h4>Bridge User Actions</h4>');
-    });
-
-    it('returns empty string when no entries and no missing presets', () => {
-      const empty: FetchBenchmarkResult = { entries: [], missingPresets: [] };
-      expect(buildBenchmarkSection(empty, '👆 Interaction Benchmarks')).toBe(
-        '',
-      );
-    });
-  });
-
-  describe('user journey benchmarks', () => {
-    const entries = [
-      ...extractEntries(mockPerformanceOnboardingJson),
-      ...extractEntries(mockPerformanceAssetsJson),
-    ];
-    const result = noMissing(entries);
-
-    it('wraps content in a collapsible details section', () => {
-      const html = buildBenchmarkSection(result, '🧭 User Journey Benchmarks');
-
-      expect(html).toContain('<details>');
-      expect(html).toContain('🧭 User Journey Benchmarks');
-      expect(html).toContain('<table>');
-      expect(html).toContain('</details>');
-    });
-
-    it('renders each benchmark as its own h4-headed sub-section', () => {
-      const html = buildBenchmarkSection(result, '🧭 User Journey Benchmarks');
-
-      expect(html).toContain('<h4>Onboarding Import Wallet</h4>');
-      expect(html).toContain('<h4>Asset Details</h4>');
-    });
-
-    it('returns empty string when no entries and no missing presets', () => {
-      const empty: FetchBenchmarkResult = { entries: [], missingPresets: [] };
-      expect(buildBenchmarkSection(empty, '🧭 User Journey Benchmarks')).toBe(
-        '',
-      );
-    });
-  });
-
-  describe('missing data warnings', () => {
-    it('renders warning when presets are missing', () => {
-      const result: FetchBenchmarkResult = {
-        entries: [],
-        missingPresets: ['chrome/browserify/interactionUserActions'],
-      };
-      const html = buildBenchmarkSection(result, '👆 Interaction Benchmarks');
-
-      expect(html).toContain('⚠️');
-      expect(html).toContain('Missing data');
-      expect(html).toContain('chrome/browserify/interactionUserActions');
-      expect(html).not.toContain('<table>');
-    });
-
-    it('renders both table and warning when some presets are missing', () => {
-      const result: FetchBenchmarkResult = {
-        entries: extractEntries(mockUserActionsJson),
-        missingPresets: ['firefox/browserify/interactionUserActions'],
-      };
-      const html = buildBenchmarkSection(result, '👆 Interaction Benchmarks');
-
-      expect(html).toContain('⚠️');
-      expect(html).toContain('firefox/browserify/interactionUserActions');
-      expect(html).toContain('<table>');
-      expect(html).toContain('<h4>Load New Account</h4>');
-    });
-  });
-});
-
-describe('extractEntries with presetName', () => {
-  it('propagates presetName to each extracted entry', () => {
-    const entries = extractEntries(
-      { loadNewAccount: mockUserActionsJson.loadNewAccount },
-      'interactionUserActions',
-    );
-
-    expect(entries).toHaveLength(1);
-    expect(entries[0].presetName).toBe('interactionUserActions');
-  });
-
-  it('defaults presetName to empty string when not provided', () => {
-    const entries = extractEntries({
-      loadNewAccount: mockUserActionsJson.loadNewAccount,
-    });
-
-    expect(entries[0].presetName).toBe('');
-  });
-});
-
-describe('buildTableRows with baseline', () => {
-  // buildTableRows now takes a single entry + already-resolved baselineMetrics
-  const makeEntry = (
-    overrides: Partial<BenchmarkEntry> = {},
-  ): BenchmarkEntry => ({
-    benchmarkName: 'loadNewAccount',
-    presetName: 'interactionUserActions',
     mean: { loadNewAccount: 523 },
     min: { loadNewAccount: 480 },
     max: { loadNewAccount: 620 },
     stdDev: { loadNewAccount: 45 },
     p75: { loadNewAccount: 550 },
     p95: { loadNewAccount: 612 },
-    ...overrides,
-  });
+  },
+};
 
-  const makeBaseline = (
-    mean: number,
-    stdDev: number,
-    p75: number,
-    p95: number,
-  ): NonNullable<Parameters<typeof buildTableRows>[1]> => ({
-    loadNewAccount: { mean, stdDev, p75, p95 },
-  });
-
-  it('renders no indicator when baseline is absent', () => {
-    const rows = buildTableRows(makeEntry());
-
-    // Mean, P75, P95 show plain value with no indicator
-    expect(rows[0]).toContain('523');
-    expect(rows[0]).toContain('550');
-    expect(rows[0]).toContain('612');
-    expect(rows[0]).not.toContain('🔺');
-    expect(rows[0]).not.toContain('🟡');
-    expect(rows[0]).not.toContain('🟢');
-  });
-
-  it('renders neutral indicator (➡️) on each percentile cell when all are within 5% of baseline', () => {
-    // mean=523 vs baseline_mean=540 → -3.1% → neutral
-    // stdDev=45 vs baseline_stdDev=45 → 0% → neutral
-    // p75=550 vs baseline_p75=540  → +1.9% → neutral
-    // p95=612 vs baseline_p95=600  → +2%   → neutral
-    const rows = buildTableRows(makeEntry(), makeBaseline(540, 45, 540, 600));
-
-    expect(rows[0]).toContain('➡️ · 523');
-    expect(rows[0]).toContain('➡️ · 45');
-    expect(rows[0]).toContain('➡️ · 550');
-    expect(rows[0]).toContain('➡️ · 612');
-  });
-
-  it('renders warn indicator (🟡⬆️) on P95 cell when p95 is 5–10% above baseline p95', () => {
-    // p95=636 vs baseline_p95=600 → +6% → warn on P95
-    // mean=523 vs baseline_mean=540 → -3.1% → neutral on Mean
-    const rows = buildTableRows(
-      makeEntry({ p95: { loadNewAccount: 636 } }),
-      makeBaseline(540, 45, 540, 600),
+describe('extractEntries', () => {
+  it('maps entries, propagating presetName, platform, and buildType', () => {
+    const [entry] = extractEntries(
+      MOCK_PAYLOAD,
+      'interactionUserActions',
+      'chrome',
+      'browserify',
     );
 
-    expect(rows[0]).toContain('🟡⬆️ +6% · 636');
-    expect(rows[0]).toContain('➡️ · 523');
+    expect(entry.benchmarkName).toBe('loadNewAccount');
+    expect(entry.presetName).toBe('interactionUserActions');
+    expect(entry.platform).toBe('chrome');
+    expect(entry.buildType).toBe('browserify');
   });
 
-  it('renders warn indicator (🟡⬆️) when p95 is >10% above baseline p95 (regression downgraded)', () => {
-    // p95=660 vs baseline_p95=600 → +10% → regression downgraded to warn in PR table
-    const rows = buildTableRows(
-      makeEntry({ p95: { loadNewAccount: 660 } }),
-      makeBaseline(540, 45, 540, 600),
-    );
+  it('includes mean/stdDev/p75/p95 and excludes min/max', () => {
+    const [entry] = extractEntries(MOCK_PAYLOAD);
 
-    expect(rows[0]).toContain('🟡⬆️');
-    expect(rows[0]).not.toContain('🔺');
+    expect(entry.mean).toStrictEqual({ loadNewAccount: 523 });
+    expect(entry.stdDev).toStrictEqual({ loadNewAccount: 45 });
+    expect(entry.p75).toStrictEqual({ loadNewAccount: 550 });
+    expect(entry.p95).toStrictEqual({ loadNewAccount: 612 });
+    expect(entry).not.toHaveProperty('min');
+    expect(entry).not.toHaveProperty('max');
   });
 
-  it('renders improvement indicator (🟢⬇️) on P95 cell when p95 is >10% below baseline p95', () => {
-    // p95=540 vs baseline_p95=600 → -10% → improvement
-    const rows = buildTableRows(
-      makeEntry({ p95: { loadNewAccount: 540 } }),
-      makeBaseline(540, 45, 540, 600),
-    );
+  it('defaults presetName, platform, and buildType to empty string', () => {
+    const [entry] = extractEntries(MOCK_PAYLOAD);
 
-    expect(rows[0]).toContain('🟢⬇️ -10% · 540');
+    expect(entry.presetName).toBe('');
+    expect(entry.platform).toBe('');
+    expect(entry.buildType).toBe('');
   });
 
-  it('renders no indicator when baseline exists but metric key is absent', () => {
-    const rows = buildTableRows(makeEntry(), {
-      differentMetric: { mean: 540, stdDev: 45, p75: 540, p95: 600 },
+  it('filters out null entries', () => {
+    const entries = extractEntries({
+      nullEntry: null,
+      valid: MOCK_PAYLOAD.loadNewAccount,
     });
 
-    expect(rows[0]).not.toContain('🟡');
-    expect(rows[0]).not.toContain('🟢');
-    expect(rows[0]).not.toContain('➡️');
-  });
-
-  it('p95 cell format is "indicator · value" when indicator exists', () => {
-    // p95=636 vs baseline_p95=600 → +6% → 🟡⬆️ +6%
-    const rows = buildTableRows(
-      makeEntry({ p95: { loadNewAccount: 636 } }),
-      makeBaseline(540, 45, 540, 600),
-    );
-
-    expect(rows[0]).toContain('🟡⬆️ +6% · 636');
+    expect(entries).toHaveLength(1);
+    expect(entries[0].benchmarkName).toBe('valid');
   });
 });
 
-describe('buildBenchmarkSection with baseline', () => {
-  const makeResult = (entries: BenchmarkEntry[]): FetchBenchmarkResult => ({
-    entries,
-    missingPresets: [],
+describe('computeEntryHealth', () => {
+  it('returns pass when no baseline is provided', () => {
+    expect(computeEntryHealth(makeEntry(), undefined)).toBe(EntryHealth.Pass);
   });
 
-  it('renders traffic-light indicators when baseline is provided', () => {
-    // mean=523 vs baseline mean=540 → ~3.1% faster → neutral ➡️
-    const entries = extractEntries(
-      { loadNewAccount: mockUserActionsJson.loadNewAccount },
-      'interactionUserActions',
+  it('returns pass when metrics are within threshold', () => {
+    // p95=612 vs baseline 620 → -1.3% → neutral
+    expect(computeEntryHealth(makeEntry(), BASELINE_METRICS_PASS)).toBe(
+      EntryHealth.Pass,
     );
-    const baseline = {
-      'interactionUserActions/loadNewAccount': {
-        loadNewAccount: { mean: 540, stdDev: 30, p75: 540, p95: 600 },
-      },
-    };
-
-    const html = buildBenchmarkSection(
-      makeResult(entries),
-      '👆 Interaction Benchmarks',
-      baseline,
-    );
-
-    expect(html).toContain('➡️');
   });
 
-  it('renders warn indicator in Result cell when p95 is 5–10% above baseline p95', () => {
-    // p95=636 vs baseline p95=600 → +6% → warn
-    const entries: BenchmarkEntry[] = [
-      {
-        benchmarkName: 'loadNewAccount',
-        presetName: 'interactionUserActions',
-        mean: { loadNewAccount: 580 },
-        min: { loadNewAccount: 480 },
-        max: { loadNewAccount: 620 },
-        stdDev: { loadNewAccount: 45 },
-        p75: { loadNewAccount: 580 },
-        p95: { loadNewAccount: 636 },
-      },
-    ];
-    const baseline = {
-      'interactionUserActions/loadNewAccount': {
-        loadNewAccount: { mean: 540, stdDev: 30, p75: 540, p95: 600 },
-      },
-    };
-
-    const html = buildBenchmarkSection(
-      makeResult(entries),
-      '👆 Interaction Benchmarks',
-      baseline,
-    );
-
-    expect(html).toContain('🟡⬆️');
+  it('returns warn when p95 is 5–10% above baseline (Layer 2 relative context)', () => {
+    // 636 vs 600 → +6% → relative warn, capped at Warn (no absolute threshold for this benchmark)
+    expect(
+      computeEntryHealth(
+        makeEntry({ p95: { loadNewAccount: 636 } }),
+        BASELINE_600['interactionUserActions/loadNewAccount'],
+      ),
+    ).toBe(EntryHealth.Warn);
   });
 
-  it('shows regressions summary when a metric p95 is significantly worse', () => {
-    // p95=636 vs baseline p95=600 → +6% → warn → ⚠️ Regressions
-    const entries: BenchmarkEntry[] = [
-      {
-        benchmarkName: 'loadNewAccount',
-        presetName: 'interactionUserActions',
-        mean: { loadNewAccount: 580 },
-        min: { loadNewAccount: 480 },
-        max: { loadNewAccount: 620 },
-        stdDev: { loadNewAccount: 45 },
-        p75: { loadNewAccount: 580 },
-        p95: { loadNewAccount: 636 },
-      },
-    ];
-    const baseline = {
-      'interactionUserActions/loadNewAccount': {
-        loadNewAccount: { mean: 540, stdDev: 30, p75: 540, p95: 600 },
-      },
-    };
-
-    const html = buildBenchmarkSection(
-      makeResult(entries),
-      '👆 Interaction Benchmarks',
-      baseline,
-    );
-
-    expect(html).toContain('⚠️');
-    expect(html).toContain('Regressions');
-    expect(html).toContain('loadNewAccount');
+  it('returns fail when p95 is >10% above baseline', () => {
+    // 672 vs 600 → +12%
+    expect(
+      computeEntryHealth(
+        makeEntry({ p95: { loadNewAccount: 672 } }),
+        BASELINE_600['interactionUserActions/loadNewAccount'],
+      ),
+    ).toBe(EntryHealth.Fail);
   });
 
-  it('shows improvements summary when a metric mean is significantly better', () => {
-    const entries: BenchmarkEntry[] = [
-      {
-        benchmarkName: 'loadNewAccount',
-        presetName: 'interactionUserActions',
-        mean: { loadNewAccount: 400 },
-        min: { loadNewAccount: 380 },
-        max: { loadNewAccount: 420 },
-        stdDev: { loadNewAccount: 15 },
-        p75: { loadNewAccount: 410 },
-        p95: { loadNewAccount: 420 },
-      },
-    ];
-    const baseline = {
-      'interactionUserActions/loadNewAccount': {
-        loadNewAccount: { mean: 540, stdDev: 30, p75: 540, p95: 600 },
-      },
-    };
-
-    const html = buildBenchmarkSection(
-      makeResult(entries),
-      '👆 Interaction Benchmarks',
-      baseline,
-    );
-
-    expect(html).toContain('🚀');
-    expect(html).toContain('Improvements');
-    expect(html).toContain('loadNewAccount');
+  it('returns pass when the metric key is absent from baseline', () => {
+    expect(
+      computeEntryHealth(makeEntry(), {
+        differentMetric: { mean: 600, stdDev: 44, p75: 620, p95: 680 },
+      }),
+    ).toBe(EntryHealth.Pass);
   });
 
-  it('resolves startup baseline via preset-name scan (pageLoad/* key format)', () => {
-    // Startup benchmarks are stored in historical data as "pageLoad/chrome-browserify-startupStandardHome"
-    // but entries have presetName='startupStandardHome' and benchmarkName='standardHome'.
-    const entries: BenchmarkEntry[] = [
-      {
-        benchmarkName: 'standardHome',
-        presetName: 'startupStandardHome',
-        mean: { uiStartup: 1400 },
-        min: { uiStartup: 1200 },
-        max: { uiStartup: 1700 },
-        stdDev: { uiStartup: 100 },
-        p75: { uiStartup: 1480 },
-        p95: { uiStartup: 1620 },
-      },
-    ];
-    // uiStartup mean=1400 vs baseline mean=1450 → ~3.4% faster → neutral ➡️
-    const baseline = {
-      'pageLoad/chrome-browserify-startupStandardHome': {
-        uiStartup: { mean: 1450, stdDev: 80, p75: 1490, p95: 1650 },
-      },
-    };
-
-    const html = buildBenchmarkSection(
-      makeResult(entries),
-      '🔌 Startup Benchmarks',
-      baseline,
-    );
-
-    expect(html).toContain('➡️');
-  });
-
-  it('renders section without indicators when no baseline is given', () => {
-    const entries = extractEntries(
-      { loadNewAccount: mockUserActionsJson.loadNewAccount },
-      'interactionUserActions',
-    );
-
-    const html = buildBenchmarkSection(
-      makeResult(entries),
-      '👆 Interaction Benchmarks',
-    );
-
-    expect(html).toContain('<h4>Load New Account</h4>');
-    expect(html).not.toContain('🟡');
-    expect(html).not.toContain('🟢');
-    expect(html).not.toContain('➡️');
+  it('skips a percentile when its value is absent from the entry', () => {
+    expect(
+      computeEntryHealth(makeEntry({ p75: {} }), BASELINE_METRICS_PASS),
+    ).toBe(EntryHealth.Pass);
   });
 });
+
+// ─── fetchBenchmarkJson ───────────────────────────────────────────────────────
+
+describe('fetchBenchmarkJson', () => {
+  const HOST = 'https://ci.example.com';
+  const mockFetch = jest.fn();
+
+  afterEach(() => {
+    mockFetch.mockReset();
+    (readFile as jest.Mock).mockReset();
+  });
+
+  describe('local filesystem (BENCHMARK_RESULTS_DIR set)', () => {
+    beforeEach(() => {
+      process.env.BENCHMARK_RESULTS_DIR = '/tmp/benchmarks';
+    });
+
+    afterEach(() => {
+      delete process.env.BENCHMARK_RESULTS_DIR;
+    });
+
+    it('reads and parses JSON from the correct local file path', async () => {
+      (readFile as jest.Mock).mockResolvedValue(JSON.stringify(MOCK_PAYLOAD));
+
+      const result = await fetchBenchmarkJson(
+        HOST,
+        'chrome',
+        'browserify',
+        'myPreset',
+      );
+
+      expect(readFile as jest.Mock).toHaveBeenCalledWith(
+        '/tmp/benchmarks/benchmark-chrome-browserify-myPreset.json',
+        'utf8',
+      );
+      expect(result).toStrictEqual(MOCK_PAYLOAD);
+    });
+
+    it('returns null when the local file does not exist', async () => {
+      (readFile as jest.Mock).mockRejectedValue(
+        Object.assign(new Error('ENOENT'), { code: 'ENOENT' }),
+      );
+
+      expect(
+        await fetchBenchmarkJson(HOST, 'chrome', 'browserify', 'missing'),
+      ).toBeNull();
+    });
+  });
+
+  describe('HTTP fetch fallback (BENCHMARK_RESULTS_DIR not set)', () => {
+    beforeEach(() => {
+      global.fetch = mockFetch;
+    });
+
+    it('returns parsed JSON when fetch succeeds', async () => {
+      mockFetch.mockResolvedValue({
+        ok: true,
+        json: () => Promise.resolve(MOCK_PAYLOAD),
+      } as unknown as Response);
+
+      expect(
+        await fetchBenchmarkJson(HOST, 'chrome', 'browserify', 'myPreset'),
+      ).toStrictEqual(MOCK_PAYLOAD);
+    });
+
+    it('returns null when fetch returns a non-ok response', async () => {
+      mockFetch.mockResolvedValue({ ok: false } as Response);
+
+      expect(
+        await fetchBenchmarkJson(HOST, 'chrome', 'browserify', 'myPreset'),
+      ).toBeNull();
+    });
+
+    it('returns null when fetch throws a network error', async () => {
+      mockFetch.mockRejectedValue(new Error('network error'));
+
+      expect(
+        await fetchBenchmarkJson(HOST, 'chrome', 'browserify', 'myPreset'),
+      ).toBeNull();
+    });
+  });
+});
+
 describe('fetchBenchmarkEntries', () => {
   const HOST = 'https://ci.example.com';
   const mockFetch = jest.fn();
@@ -696,35 +246,24 @@ describe('fetchBenchmarkEntries', () => {
     mockFetch.mockReset();
   });
 
-  it('returns entries when fetch succeeds', async () => {
-    const payload: Record<string, BenchmarkResults> = {
-      confirmTx: {
-        testTitle: 'benchmark-confirm-tx',
-        persona: 'standard',
-        mean: { confirmTx: 1000 },
-        min: { confirmTx: 900 },
-        max: { confirmTx: 1100 },
-        stdDev: { confirmTx: 50 },
-        p75: { confirmTx: 1050 },
-        p95: { confirmTx: 1090 },
-      },
-    };
+  it('returns entries with preset, platform, and buildType on success', async () => {
     mockFetch.mockResolvedValue({
       ok: true,
-      json: () => Promise.resolve(payload),
+      json: () => Promise.resolve(MOCK_PAYLOAD),
     } as unknown as Response);
 
     const { entries, missingPresets } = await fetchBenchmarkEntries(HOST, [
       'interactionUserActions',
     ]);
 
-    expect(entries.length).toBeGreaterThan(0);
-    expect(entries[0].benchmarkName).toBe('confirmTx');
+    expect(entries[0].benchmarkName).toBe('loadNewAccount');
     expect(entries[0].presetName).toBe('interactionUserActions');
+    expect(entries[0].platform).toBeTruthy();
+    expect(entries[0].buildType).toBeTruthy();
     expect(missingPresets).toHaveLength(0);
   });
 
-  it('records missing presets when fetch returns non-ok', async () => {
+  it('records missing presets when fetch fails', async () => {
     mockFetch.mockResolvedValue({ ok: false } as Response);
 
     const { entries, missingPresets } = await fetchBenchmarkEntries(HOST, [
@@ -732,19 +271,204 @@ describe('fetchBenchmarkEntries', () => {
     ]);
 
     expect(entries).toHaveLength(0);
-    expect(missingPresets.length).toBeGreaterThan(0);
     expect(missingPresets[0]).toContain('interactionUserActions');
   });
 
-  it('records missing presets when fetch throws', async () => {
-    mockFetch.mockRejectedValue(new Error('network error'));
+  it('uses custom platforms and buildTypes (2 × 2 × 1 = 4 combinations)', async () => {
+    mockFetch.mockResolvedValue({ ok: false } as Response);
 
-    const { entries, missingPresets } = await fetchBenchmarkEntries(HOST, [
-      'interactionUserActions',
-    ]);
+    const { missingPresets } = await fetchBenchmarkEntries(
+      HOST,
+      ['myPreset'],
+      ['chrome', 'firefox'],
+      ['browserify', 'webpack'],
+    );
 
-    expect(entries).toHaveLength(0);
-    expect(missingPresets.length).toBeGreaterThan(0);
+    expect(missingPresets).toHaveLength(4);
+    expect(missingPresets).toContain('chrome/browserify/myPreset');
+    expect(missingPresets).toContain('firefox/webpack/myPreset');
+  });
+});
+
+describe('buildBenchmarkSection', () => {
+  it('returns empty string when there are no entries and no missing presets', () => {
+    expect(
+      buildBenchmarkSection({ entries: [], missingPresets: [] }, 'Test'),
+    ).toBe('');
+  });
+
+  it('surfaces ⚠️ warning for missing presets', () => {
+    const html = buildBenchmarkSection(
+      { entries: [], missingPresets: ['chrome/browserify/foo'] },
+      'Test',
+    );
+
+    expect(html).toContain('⚠️');
+    expect(html).toContain('chrome/browserify/foo');
+  });
+
+  it('renders bullet header only when no baseline is given', () => {
+    const html = buildBenchmarkSection(
+      noMissing([makeEntry()]),
+      '👆 Interaction',
+    );
+
+    expect(html).toContain('• <b>👆 Interaction</b>');
+    expect(html).not.toContain('View all');
+    expect(html).not.toContain('✅');
+  });
+
+  it('shows ✅ no-regressions message when baseline is given and all metrics pass', () => {
+    const html = buildBenchmarkSection(
+      noMissing([makeEntry()]),
+      'Test',
+      BASELINE_PASS,
+    );
+
+    expect(html).toContain('✅ No regressions detected');
+    expect(html).not.toContain('View all');
+  });
+
+  it('shows inline regression item with 🔴 and failure badge when p95 is >10% above baseline', () => {
+    // 672 vs 600 → +12% → regression; single item shown inline (no collapsible)
+    const html = buildBenchmarkSection(
+      noMissing([makeEntry({ p95: { loadNewAccount: 672 } })]),
+      'Test',
+      BASELINE_600,
+    );
+
+    expect(html).toContain('chrome-browserify-loadNewAccount');
+    expect(html).toContain('🔴');
+    expect(html).toContain('🔴 1');
+    expect(html).toContain('View all'); // always present when there are regressions
+  });
+
+  it('shows inline regression item with 🟡 when p95 is 5–10% above baseline', () => {
+    // 636 vs 600 → +6% → warn (no failure badge since warnings do not increment failure count)
+    const html = buildBenchmarkSection(
+      noMissing([makeEntry({ p95: { loadNewAccount: 636 } })]),
+      'Test',
+      BASELINE_600,
+    );
+
+    expect(html).toContain('chrome-browserify-loadNewAccount');
+    expect(html).toContain('🟡');
+    expect(html).not.toContain('🔴 '); // no failure badge for warn-only
+  });
+
+  it('embeds runUrl as Show logs anchor in inline item; View all collapsible when multiple items', () => {
+    const RUN_URL = 'https://github.com/actions/runs/123';
+    const html = buildBenchmarkSection(
+      noMissing([
+        makeEntry({ p95: { loadNewAccount: 672 } }),
+        makeEntry({
+          benchmarkName: 'confirmTx',
+          p75: { confirmTx: 660 },
+          p95: { confirmTx: 720 },
+        }),
+      ]),
+      'Test',
+      {
+        'interactionUserActions/loadNewAccount': {
+          loadNewAccount: { mean: 540, stdDev: 30, p75: 540, p95: 600 },
+        },
+        'interactionUserActions/confirmTx': {
+          confirmTx: { mean: 540, stdDev: 30, p75: 600, p95: 600 },
+        },
+      },
+      RUN_URL,
+    );
+
+    expect(html).toContain(`<a href="${RUN_URL}">Show logs</a>`);
+    expect(html).toContain('View all');
+  });
+
+  it('resolves startup baseline via pageLoad/* substring key format', () => {
+    // p95=1980 vs chrome baseline 1750 → +13% → regression
+    const entry = makeEntry({
+      benchmarkName: 'standardHome',
+      presetName: 'startupStandardHome',
+      mean: { uiStartup: 1800 },
+      stdDev: { uiStartup: 100 },
+      p75: { uiStartup: 1850 },
+      p95: { uiStartup: 1980 },
+    });
+    const baseline = {
+      'pageLoad/chrome-browserify-startupStandardHome': {
+        uiStartup: { mean: 1600, stdDev: 80, p75: 1650, p95: 1750 },
+      },
+    };
+
+    const html = buildBenchmarkSection(
+      noMissing([entry]),
+      '🔌 Startup',
+      baseline,
+    );
+
+    expect(html).toContain('chrome-browserify-standardHome');
+    expect(html).toContain('🔴');
+    expect(html).toContain('View all');
+  });
+
+  it('matches startup baseline by platform and buildType, not just presetName', () => {
+    // Firefox p95=1600 vs its own baseline 1595 → +0.3% → neutral → ✅
+    // Without the fix, the scan returns the chrome key first → 1600 vs 1500 → +7% → 🟡 (wrong)
+    const firefoxEntry = makeEntry({
+      benchmarkName: 'standardHome',
+      presetName: 'startupStandardHome',
+      platform: 'firefox',
+      buildType: 'browserify',
+      mean: { uiStartup: 1490 },
+      stdDev: { uiStartup: 90 },
+      p75: { uiStartup: 1545 },
+      p95: { uiStartup: 1600 },
+    });
+    const baseline = {
+      'pageLoad/chrome-browserify-startupStandardHome': {
+        uiStartup: { mean: 1380, stdDev: 80, p75: 1430, p95: 1500 },
+      },
+      'pageLoad/firefox-browserify-startupStandardHome': {
+        uiStartup: { mean: 1480, stdDev: 90, p75: 1540, p95: 1595 },
+      },
+    };
+
+    const html = buildBenchmarkSection(
+      noMissing([firefoxEntry]),
+      '🔌 Startup',
+      baseline,
+    );
+
+    expect(html).toContain('✅ No regressions detected');
+    expect(html).not.toContain('View all');
+  });
+
+  it('skips metrics that are absent from the baseline (no false positives)', () => {
+    // entry has loadNewAccount + otherMetric; baseline only has loadNewAccount
+    // otherMetric hits the "!baselineMetrics[metric]" guard → skipped
+    const entry = makeEntry({
+      p95: { loadNewAccount: 612, otherMetric: 100 },
+      p75: { loadNewAccount: 550, otherMetric: 80 },
+    });
+
+    const html = buildBenchmarkSection(
+      noMissing([entry]),
+      'Test',
+      BASELINE_PASS,
+    );
+
+    expect(html).toContain('✅ No regressions detected');
+  });
+
+  it('skips a percentile comparison when the stat value is absent from the entry', () => {
+    // p75 is empty → P75 val=undefined → that iteration is skipped in both
+    // computeEntryHealth and getEntryRegressions; p95 still passes
+    const html = buildBenchmarkSection(
+      noMissing([makeEntry({ p75: {} })]),
+      'Test',
+      BASELINE_PASS,
+    );
+
+    expect(html).toContain('✅ No regressions detected');
   });
 });
 
@@ -754,88 +478,84 @@ describe('buildPerformanceBenchmarksSection', () => {
 
   beforeEach(() => {
     global.fetch = mockFetch;
-    jest.spyOn(console, 'log').mockImplementation();
-    jest.spyOn(console, 'warn').mockImplementation();
-  });
-
-  afterEach(() => {
-    jest.restoreAllMocks();
-    mockFetch.mockReset();
-  });
-
-  const mockPayload: Record<string, BenchmarkResults> = {
-    confirmTx: {
-      testTitle: 'benchmark-confirm-tx',
-      persona: 'standard',
-      mean: { confirmTx: 1000 },
-      min: { confirmTx: 900 },
-      max: { confirmTx: 1100 },
-      stdDev: { confirmTx: 50 },
-      p75: { confirmTx: 1050 },
-      p95: { confirmTx: 1090 },
-    },
-  };
-
-  it('returns a collapsible section with all three subsections when data is available', async () => {
-    mockFetch.mockResolvedValue({
-      ok: true,
-      json: () => Promise.resolve(mockPayload),
-    } as unknown as Response);
-
-    const result = await buildPerformanceBenchmarksSection(HOST);
-
-    expect(result).toContain('<details>');
-    expect(result).toContain('⚡ Performance Benchmarks');
-  });
-
-  it('returns a section with missing preset warnings when all fetches fail', async () => {
-    mockFetch.mockResolvedValue({ ok: false } as Response);
-
-    const result = await buildPerformanceBenchmarksSection(HOST);
-
-    // When all fetches fail, missing-preset warnings are shown instead of empty string
-    expect(result).toContain('⚡ Performance Benchmarks');
-    expect(result).toContain('Missing data');
-  });
-
-  it('fetches historical baseline and passes it to section builders', async () => {
-    const fetchHistoricalSpy = jest
-      .spyOn(historicalComparison, 'fetchHistoricalPerformanceDataFromMain')
-      .mockResolvedValue({
-        'interactionUserActions/confirmTx': {
-          // mean=1000 baseline vs payload mean=1000 → 0% → neutral ➡️
-          confirmTx: { mean: 800, stdDev: 40, p75: 900, p95: 980 },
-        },
-      });
-
-    mockFetch.mockResolvedValue({
-      ok: true,
-      json: () => Promise.resolve(mockPayload),
-    } as unknown as Response);
-
-    const result = await buildPerformanceBenchmarksSection(HOST);
-
-    expect(fetchHistoricalSpy).toHaveBeenCalledTimes(1);
-    // confirmTx mean=1000 vs baseline mean=800 → +25% → warn 🟡⬆️
-    expect(result).toContain('🟡⬆️');
-  });
-
-  it('renders section without indicators when historical baseline returns null', async () => {
     jest
       .spyOn(historicalComparison, 'fetchHistoricalPerformanceDataFromMain')
       .mockResolvedValue(null);
+  });
 
+  afterEach(() => {
+    mockFetch.mockReset();
+    jest.restoreAllMocks();
+  });
+
+  it('returns empty string when all fetches return empty data', async () => {
     mockFetch.mockResolvedValue({
       ok: true,
-      json: () => Promise.resolve(mockPayload),
+      json: () => Promise.resolve({}),
     } as unknown as Response);
 
-    const result = await buildPerformanceBenchmarksSection(HOST);
+    expect(await buildPerformanceBenchmarksSection(HOST)).toBe('');
+  });
 
-    expect(result).toContain('⚡ Performance Benchmarks');
-    // No baseline → no traffic-light icons in the table
-    expect(result).not.toContain('🟡');
-    expect(result).not.toContain('🟢');
-    expect(result).not.toContain('➡️');
+  it('returns section with ⚠️ warnings when fetches fail', async () => {
+    mockFetch.mockResolvedValue({ ok: false } as Response);
+
+    const html = await buildPerformanceBenchmarksSection(HOST);
+
+    expect(html).toContain('⚡ Performance Benchmarks');
+    expect(html).toContain('Missing data');
+  });
+
+  it('wraps content in an ⚡ Performance Benchmarks collapsible on success', async () => {
+    mockFetch.mockResolvedValue({
+      ok: true,
+      json: () => Promise.resolve(MOCK_PAYLOAD),
+    } as unknown as Response);
+
+    const html = await buildPerformanceBenchmarksSection(HOST);
+
+    expect(html).toContain('<details>');
+    expect(html).toContain('⚡ Performance Benchmarks');
+  });
+
+  it('includes the health legend badge in the outer <summary> tag', async () => {
+    mockFetch.mockResolvedValue({
+      ok: true,
+      json: () => Promise.resolve(MOCK_PAYLOAD),
+    } as unknown as Response);
+
+    const html = await buildPerformanceBenchmarksSection(HOST);
+
+    expect(html).toContain(
+      '<summary>⚡ Performance Benchmarks (🟢 pass · 🟡 warn · 🔴 fail)</summary>',
+    );
+  });
+
+  it('shows regression details when baseline has regressions', async () => {
+    // p95=672 vs baseline 600 → +12% → regression
+    mockFetch.mockResolvedValue({
+      ok: true,
+      json: () =>
+        Promise.resolve({
+          ...MOCK_PAYLOAD,
+          loadNewAccount: {
+            ...MOCK_PAYLOAD.loadNewAccount,
+            p95: { loadNewAccount: 672 },
+          },
+        }),
+    } as unknown as Response);
+
+    jest
+      .spyOn(historicalComparison, 'fetchHistoricalPerformanceDataFromMain')
+      .mockResolvedValue({
+        'interactionUserActions/loadNewAccount': {
+          loadNewAccount: { mean: 540, stdDev: 30, p75: 540, p95: 600 },
+        },
+      });
+
+    const html = await buildPerformanceBenchmarksSection(HOST);
+
+    expect(html).toContain('View all');
+    expect(html).toContain('loadNewAccount');
   });
 });

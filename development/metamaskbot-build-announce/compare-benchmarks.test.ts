@@ -332,9 +332,8 @@ describe('compare-benchmarks', () => {
                 baseline: 1000,
                 delta: 50,
                 deltaPercent: 0.05,
-                direction: 'slower',
                 severity: 'warn',
-                indication: '🟡⬆️',
+                indication: '🟡',
               },
               {
                 metric: 'uiStartup',
@@ -343,9 +342,8 @@ describe('compare-benchmarks', () => {
                 baseline: 1000,
                 delta: 100,
                 deltaPercent: 0.1,
-                direction: 'slower',
                 severity: 'regression',
-                indication: '🔺',
+                indication: '🔴',
               },
               {
                 metric: 'uiStartup',
@@ -354,9 +352,8 @@ describe('compare-benchmarks', () => {
                 baseline: 1200,
                 delta: 100,
                 deltaPercent: 0.083,
-                direction: 'slower',
                 severity: 'warn',
-                indication: '🟡⬆️',
+                indication: '🟡',
               },
             ],
             absoluteViolations: [],
@@ -370,12 +367,12 @@ describe('compare-benchmarks', () => {
 
       const output = logSpy.mock.calls.map((c: unknown[]) => c[0]).join('\n');
       expect(output).toContain('uiStartup:');
-      expect(output).toContain('🟡⬆️ mean: 1050ms');
-      expect(output).toContain('🟡⬆️ p75: 1100ms');
-      expect(output).toContain('🟡⬆️ p95: 1300ms');
+      expect(output).toContain('🟡 mean: 1050ms');
+      expect(output).toContain('🟡 p75: 1100ms');
+      expect(output).toContain('🟡 p95: 1300ms');
     });
 
-    it('uses 🔻 for absolute fail violations when metric is faster', () => {
+    it('uses 🔴 for absolute fail violations when metric is faster', () => {
       printReport({
         comparisons: [
           {
@@ -388,9 +385,8 @@ describe('compare-benchmarks', () => {
                 baseline: 11164,
                 delta: -3964,
                 deltaPercent: -0.355,
-                direction: 'faster',
-                severity: 'improvement',
-                indication: '🟢⬇️',
+                severity: 'pass',
+                indication: '🟢',
               },
             ],
             absoluteViolations: [
@@ -411,10 +407,10 @@ describe('compare-benchmarks', () => {
       });
 
       const output = logSpy.mock.calls.map((c: unknown[]) => c[0]).join('\n');
-      expect(output).toContain('🔻 p75: 7200ms (-36%)');
+      expect(output).toContain('🔴 p75: 7200ms (-36%)');
     });
 
-    it('overrides indication with 🔺 for absolute fail violations', () => {
+    it('overrides indication with 🔴 for absolute fail violations', () => {
       printReport({
         comparisons: [
           {
@@ -427,9 +423,8 @@ describe('compare-benchmarks', () => {
                 baseline: 1000,
                 delta: 98999,
                 deltaPercent: 98.999,
-                direction: 'slower',
                 severity: 'regression',
-                indication: '🔺',
+                indication: '🔴',
               },
               {
                 metric: 'uiStartup',
@@ -438,9 +433,8 @@ describe('compare-benchmarks', () => {
                 baseline: 1200,
                 delta: 98799,
                 deltaPercent: 82.33,
-                direction: 'slower',
                 severity: 'regression',
-                indication: '🔺',
+                indication: '🔴',
               },
             ],
             absoluteViolations: [
@@ -461,7 +455,7 @@ describe('compare-benchmarks', () => {
       });
 
       const output = logSpy.mock.calls.map((c: unknown[]) => c[0]).join('\n');
-      expect(output).toContain('🔺 p75: 99999ms');
+      expect(output).toContain('🔴 p75: 99999ms');
     });
 
     it('shows absolute violations when no baseline data is available', () => {
@@ -497,7 +491,7 @@ describe('compare-benchmarks', () => {
       const output = logSpy.mock.calls.map((c: unknown[]) => c[0]).join('\n');
       expect(output).toContain('FAIL  no-baseline-bench');
       expect(output).toContain(
-        'uiStartup: 🔺 p75: 9000ms (no baseline) | 🟡⬆️ p95: 6000ms (no baseline)',
+        'uiStartup: 🔴 p75: 9000ms (no baseline) | 🟡 p95: 6000ms (no baseline)',
       );
       expect(output).not.toContain('(no historical baseline data)');
     });
@@ -515,9 +509,8 @@ describe('compare-benchmarks', () => {
                 baseline: 1000,
                 delta: 100,
                 deltaPercent: 0.1,
-                direction: 'slower',
                 severity: 'regression',
-                indication: '🔺',
+                indication: '🔴',
               },
             ],
             absoluteViolations: [
@@ -539,7 +532,7 @@ describe('compare-benchmarks', () => {
 
       const output = logSpy.mock.calls.map((c: unknown[]) => c[0]).join('\n');
       expect(output).toContain('metricA:');
-      expect(output).toContain('metricB: 🔺 p75: 9000ms (no baseline)');
+      expect(output).toContain('metricB: 🔴 p75: 9000ms (no baseline)');
     });
 
     it('groups p75 and p95 violations on one line for metrics without baseline', () => {
@@ -574,7 +567,7 @@ describe('compare-benchmarks', () => {
 
       const output = logSpy.mock.calls.map((c: unknown[]) => c[0]).join('\n');
       expect(output).toContain(
-        'load: 🔺 p75: 8000ms (no baseline) | 🔺 p95: 12000ms (no baseline)',
+        'load: 🔴 p75: 8000ms (no baseline) | 🔴 p95: 12000ms (no baseline)',
       );
     });
 

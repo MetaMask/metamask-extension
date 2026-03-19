@@ -19,7 +19,11 @@
 import { promises as fs } from 'node:fs';
 import path from 'node:path';
 import { parseArgs } from 'node:util';
-import { THRESHOLD_SEVERITY } from '../../shared/constants/benchmarks';
+import {
+  THRESHOLD_SEVERITY,
+  BENCHMARK_PLATFORMS,
+  BENCHMARK_BUILD_TYPES,
+} from '../../shared/constants/benchmarks';
 import type {
   ThresholdSeverity,
   ComparisonKey,
@@ -31,9 +35,7 @@ import { THRESHOLD_REGISTRY } from '../../test/e2e/benchmarks/utils/constants';
 import {
   compareBenchmarkEntries,
   formatDeltaPercent,
-  getTrafficLightIndication,
   COMPARISON_SEVERITY,
-  COMPARISON_DIRECTION,
   type BenchmarkEntryComparison,
 } from './comparison-utils';
 import type { HistoricalBaselineReference } from './historical-comparison';
@@ -79,12 +81,11 @@ export function resolveThresholdConfig(
     return THRESHOLD_REGISTRY[benchmarkName];
   }
 
-  const prefixes = [
-    /^benchmark-chrome-browserify-/u,
-    /^benchmark-firefox-browserify-/u,
-    /^benchmark-chrome-webpack-/u,
-    /^benchmark-firefox-webpack-/u,
-  ];
+  const prefixes = Object.values(BENCHMARK_PLATFORMS).flatMap((platform) =>
+    Object.values(BENCHMARK_BUILD_TYPES).map(
+      (buildType) => new RegExp(`^benchmark-${platform}-${buildType}-`, 'u'),
+    ),
+  );
   for (const prefix of prefixes) {
     const stripped = benchmarkName.replace(prefix, '');
     if (stripped !== benchmarkName) {
@@ -197,11 +198,9 @@ export function runComparison(
 }
 
 function violationIcon(severity: ThresholdSeverity): string {
-  const mapped =
-    severity === THRESHOLD_SEVERITY.Fail
-      ? COMPARISON_SEVERITY.Regression
-      : COMPARISON_SEVERITY.Warn;
-  return getTrafficLightIndication(mapped, COMPARISON_DIRECTION.Slower);
+  return severity === THRESHOLD_SEVERITY.Fail
+    ? COMPARISON_SEVERITY.Regression.icon
+    : COMPARISON_SEVERITY.Warn.icon;
 }
 
 type MetricLine = { metric: string; parts: string[] };
@@ -244,24 +243,15 @@ function buildMetricLines(comparison: BenchmarkEntryComparison): MetricLine[] {
       const key = `${metric}:${pKey}`;
       const rel = relativeByKey.get(key);
       if (rel) {
-        const delta = formatDeltaPercent(rel.deltaPercent, rel.direction);
+        const delta = formatDeltaPercent(rel.deltaPercent);
         const absoluteSeverity = violationsByKey.get(key);
         let icon: string;
         if (absoluteSeverity === THRESHOLD_SEVERITY.Fail) {
-          icon = getTrafficLightIndication(
-            COMPARISON_SEVERITY.Regression,
-            rel.direction,
-          );
+          icon = COMPARISON_SEVERITY.Regression.icon;
         } else if (absoluteSeverity === THRESHOLD_SEVERITY.Warn) {
-          icon = getTrafficLightIndication(
-            COMPARISON_SEVERITY.Warn,
-            rel.direction,
-          );
-        } else if (rel.severity === COMPARISON_SEVERITY.Regression) {
-          icon = getTrafficLightIndication(
-            COMPARISON_SEVERITY.Warn,
-            rel.direction,
-          );
+          icon = COMPARISON_SEVERITY.Warn.icon;
+        } else if (rel.severity === COMPARISON_SEVERITY.Regression.value) {
+          icon = COMPARISON_SEVERITY.Warn.icon;
         } else {
           icon = rel.indication;
         }
@@ -272,10 +262,7 @@ function buildMetricLines(comparison: BenchmarkEntryComparison): MetricLine[] {
       );
       const icon = violation
         ? violationIcon(violation.severity)
-        : getTrafficLightIndication(
-            COMPARISON_SEVERITY.Neutral,
-            COMPARISON_DIRECTION.Same,
-          );
+        : COMPARISON_SEVERITY.Pass.icon;
       const value = violation?.value ?? 0;
       return `${icon} ${pKey}: ${value.toFixed(0)}ms (no baseline)`;
     });

@@ -8,10 +8,8 @@ import { BENCHMARK_PERSONA } from '../../test/e2e/benchmarks/utils/constants';
 import {
   compareMetric,
   compareBenchmarkEntries,
-  getTrafficLightIndication,
   formatDeltaPercent,
   COMPARISON_SEVERITY,
-  COMPARISON_DIRECTION,
 } from './comparison-utils';
 
 describe('benchmark-comparison', () => {
@@ -24,14 +22,13 @@ describe('benchmark-comparison', () => {
         1000,
         DEFAULT_RELATIVE_THRESHOLDS,
       );
-      expect(result.severity).toBe(COMPARISON_SEVERITY.Regression);
-      expect(result.direction).toBe(COMPARISON_DIRECTION.Slower);
-      expect(result.indication).toBe('🔺');
+      expect(result.severity).toBe(COMPARISON_SEVERITY.Regression.value);
+      expect(result.indication).toBe('🔴');
       expect(result.deltaPercent).toBeCloseTo(0.1);
       expect(result.percentile).toBe('p75');
     });
 
-    it('classifies a >10% improvement', () => {
+    it('classifies a >10% improvement as pass', () => {
       const result = compareMetric(
         'uiStartup',
         'p75',
@@ -39,9 +36,8 @@ describe('benchmark-comparison', () => {
         1000,
         DEFAULT_RELATIVE_THRESHOLDS,
       );
-      expect(result.severity).toBe(COMPARISON_SEVERITY.Improvement);
-      expect(result.direction).toBe(COMPARISON_DIRECTION.Faster);
-      expect(result.indication).toBe('🟢⬇️');
+      expect(result.severity).toBe(COMPARISON_SEVERITY.Pass.value);
+      expect(result.indication).toBe('🟢');
     });
 
     it('classifies 5-10% as warn', () => {
@@ -52,13 +48,12 @@ describe('benchmark-comparison', () => {
         1000,
         DEFAULT_RELATIVE_THRESHOLDS,
       );
-      expect(result.severity).toBe(COMPARISON_SEVERITY.Warn);
-      expect(result.direction).toBe(COMPARISON_DIRECTION.Slower);
-      expect(result.indication).toBe('🟡⬆️');
+      expect(result.severity).toBe(COMPARISON_SEVERITY.Warn.value);
+      expect(result.indication).toBe('🟡');
       expect(result.percentile).toBe('p95');
     });
 
-    it('classifies <5% as neutral', () => {
+    it('classifies <5% change as pass', () => {
       const result = compareMetric(
         'uiStartup',
         'p75',
@@ -66,8 +61,21 @@ describe('benchmark-comparison', () => {
         1000,
         DEFAULT_RELATIVE_THRESHOLDS,
       );
-      expect(result.severity).toBe(COMPARISON_SEVERITY.Neutral);
-      expect(result.indication).toBe('➡️');
+      expect(result.severity).toBe(COMPARISON_SEVERITY.Pass.value);
+      expect(result.indication).toBe('🟢');
+    });
+
+    it('classifies a 5-10% improvement as pass', () => {
+      // faster by 6% — previously Warn, now Pass (only slower changes warn)
+      const result = compareMetric(
+        'uiStartup',
+        'p75',
+        940,
+        1000,
+        DEFAULT_RELATIVE_THRESHOLDS,
+      );
+      expect(result.severity).toBe(COMPARISON_SEVERITY.Pass.value);
+      expect(result.indication).toBe('🟢');
     });
 
     it('handles identical values', () => {
@@ -78,8 +86,7 @@ describe('benchmark-comparison', () => {
         1000,
         DEFAULT_RELATIVE_THRESHOLDS,
       );
-      expect(result.severity).toBe(COMPARISON_SEVERITY.Neutral);
-      expect(result.direction).toBe(COMPARISON_DIRECTION.Same);
+      expect(result.severity).toBe(COMPARISON_SEVERITY.Pass.value);
       expect(result.delta).toBe(0);
     });
 
@@ -92,7 +99,7 @@ describe('benchmark-comparison', () => {
         DEFAULT_RELATIVE_THRESHOLDS,
       );
       expect(result.deltaPercent).toBe(0);
-      expect(result.severity).toBe(COMPARISON_SEVERITY.Neutral);
+      expect(result.severity).toBe(COMPARISON_SEVERITY.Pass.value);
     });
   });
 
@@ -169,7 +176,9 @@ describe('benchmark-comparison', () => {
 
       expect(comparison.absoluteFailed).toBe(false);
       expect(comparison.absoluteViolations.length).toBeGreaterThan(0);
-      expect(comparison.absoluteViolations[0].severity).toBe('warn');
+      expect(comparison.absoluteViolations[0].severity).toBe(
+        COMPARISON_SEVERITY.Warn.value,
+      );
     });
 
     it('includes relative metrics when baseline is provided', () => {
@@ -260,77 +269,17 @@ describe('benchmark-comparison', () => {
     });
   });
 
-  describe('getTrafficLightIndication', () => {
-    it('returns 🔺 for regression slower', () => {
-      expect(
-        getTrafficLightIndication(
-          COMPARISON_SEVERITY.Regression,
-          COMPARISON_DIRECTION.Slower,
-        ),
-      ).toBe('🔺');
-    });
-
-    it('returns 🔻 for regression faster', () => {
-      expect(
-        getTrafficLightIndication(
-          COMPARISON_SEVERITY.Regression,
-          COMPARISON_DIRECTION.Faster,
-        ),
-      ).toBe('🔻');
-    });
-
-    it('returns 🟡⬆️ for warn slower', () => {
-      expect(
-        getTrafficLightIndication(
-          COMPARISON_SEVERITY.Warn,
-          COMPARISON_DIRECTION.Slower,
-        ),
-      ).toBe('🟡⬆️');
-    });
-
-    it('returns 🟡⬇️ for warn faster', () => {
-      expect(
-        getTrafficLightIndication(
-          COMPARISON_SEVERITY.Warn,
-          COMPARISON_DIRECTION.Faster,
-        ),
-      ).toBe('🟡⬇️');
-    });
-
-    it('returns 🟢⬇️ for improvement faster', () => {
-      expect(
-        getTrafficLightIndication(
-          COMPARISON_SEVERITY.Improvement,
-          COMPARISON_DIRECTION.Faster,
-        ),
-      ).toBe('🟢⬇️');
-    });
-
-    it('returns ➡️ for neutral', () => {
-      expect(
-        getTrafficLightIndication(
-          COMPARISON_SEVERITY.Neutral,
-          COMPARISON_DIRECTION.Same,
-        ),
-      ).toBe('➡️');
-    });
-  });
-
   describe('formatDeltaPercent', () => {
-    it('formats slower as positive', () => {
-      expect(formatDeltaPercent(0.15, COMPARISON_DIRECTION.Slower)).toBe(
-        '+15%',
-      );
+    it('formats a positive delta as +X%', () => {
+      expect(formatDeltaPercent(0.15)).toBe('+15%');
     });
 
-    it('formats faster as negative', () => {
-      expect(formatDeltaPercent(-0.08, COMPARISON_DIRECTION.Faster)).toBe(
-        '-8%',
-      );
+    it('formats a negative delta as -X%', () => {
+      expect(formatDeltaPercent(-0.08)).toBe('-8%');
     });
 
-    it('formats same as 0%', () => {
-      expect(formatDeltaPercent(0, COMPARISON_DIRECTION.Same)).toBe('0%');
+    it('formats zero as 0%', () => {
+      expect(formatDeltaPercent(0)).toBe('0%');
     });
   });
 });

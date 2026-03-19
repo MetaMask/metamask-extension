@@ -29,21 +29,12 @@ import {
 import { validateResultThresholds } from '../../test/e2e/benchmarks/utils/statistics';
 
 export const COMPARISON_SEVERITY = {
-  Regression: 'regression',
-  Warn: 'warn',
-  Improvement: 'improvement',
-  Neutral: 'neutral',
+  Regression: { value: 'regression' as const, icon: '🔴' },
+  Warn: { value: 'warn' as const, icon: '🟡' },
+  Pass: { value: 'pass' as const, icon: '🟢' },
 } as const;
 export type ComparisonSeverity =
-  (typeof COMPARISON_SEVERITY)[keyof typeof COMPARISON_SEVERITY];
-
-export const COMPARISON_DIRECTION = {
-  Faster: 'faster',
-  Slower: 'slower',
-  Same: 'same',
-} as const;
-export type ComparisonDirection =
-  (typeof COMPARISON_DIRECTION)[keyof typeof COMPARISON_DIRECTION];
+  (typeof COMPARISON_SEVERITY)[keyof typeof COMPARISON_SEVERITY]['value'];
 
 export type MetricComparison = {
   metric: string;
@@ -52,7 +43,6 @@ export type MetricComparison = {
   baseline: number;
   delta: number;
   deltaPercent: number;
-  direction: ComparisonDirection;
   severity: ComparisonSeverity;
   indication: string;
 };
@@ -66,61 +56,24 @@ export type BenchmarkEntryComparison = {
   absoluteFailed: boolean;
 };
 
-/**
- * Returns a traffic-light indication based on comparison severity + direction.
- *
- * @param severity - The comparison severity.
- * @param direction - The comparison direction.
- */
-export function getTrafficLightIndication(
-  severity: ComparisonSeverity,
-  direction: ComparisonDirection,
-): string {
-  if (severity === COMPARISON_SEVERITY.Regression) {
-    return direction === COMPARISON_DIRECTION.Slower ? '🔺' : '🔻';
-  }
-  if (severity === COMPARISON_SEVERITY.Warn) {
-    return direction === COMPARISON_DIRECTION.Slower ? '🟡⬆️' : '🟡⬇️';
-  }
-  if (severity === COMPARISON_SEVERITY.Improvement) {
-    return direction === COMPARISON_DIRECTION.Faster ? '🟢⬇️' : '🟢⬆️';
-  }
-  return '➡️';
-}
+const SEVERITY_ICON: Record<ComparisonSeverity, string> = Object.fromEntries(
+  Object.values(COMPARISON_SEVERITY).map(({ value, icon }) => [value, icon]),
+) as Record<ComparisonSeverity, string>;
 
 /**
  * Formats a delta percentage as a human-readable string.
+ * Sign is derived from the value: positive = slower (+X%), negative = faster (-X%).
  *
- * @param deltaPercent - Delta as a fraction (0.1 = 10%).
- * @param direction - Direction of the change.
+ * @param deltaPercent - Delta as a fraction (0.1 = 10%, -0.08 = -8%).
  */
-export function formatDeltaPercent(
-  deltaPercent: number,
-  direction: ComparisonDirection,
-): string {
-  const pct = Math.abs(deltaPercent * 100).toFixed(0);
-  if (direction === COMPARISON_DIRECTION.Slower) {
-    return `+${pct}%`;
-  }
-  if (direction === COMPARISON_DIRECTION.Faster) {
-    return `-${pct}%`;
-  }
-  return '0%';
-}
-
-function deltaToDirection(delta: number): ComparisonDirection {
-  if (delta > 0) {
-    return COMPARISON_DIRECTION.Slower;
-  }
-  if (delta < 0) {
-    return COMPARISON_DIRECTION.Faster;
-  }
-  return COMPARISON_DIRECTION.Same;
+export function formatDeltaPercent(deltaPercent: number): string {
+  const pct = (deltaPercent * 100).toFixed(0);
+  return `${deltaPercent > 0 ? '+' : ''}${pct}%`;
 }
 
 /**
- * Compares a single metric value against a baseline and returns
- * severity, direction, and traffic-light indication.
+ * Compares a single metric value against a baseline and returns severity
+ * and traffic-light indication. delta > 0 means slower (regression direction).
  *
  * @param metric - Metric name.
  * @param percentile - Which stat key this comparison is for.
@@ -137,25 +90,15 @@ export function compareMetric(
 ): MetricComparison {
   const delta = current - baseline;
   const deltaPercent = baseline === 0 ? 0 : delta / baseline;
-
-  const direction = deltaToDirection(delta);
   const absDelta = Math.abs(deltaPercent);
 
-  let severity: ComparisonSeverity;
-  switch (true) {
-    case direction === COMPARISON_DIRECTION.Slower &&
-      absDelta >= thresholds.regressionPercent:
-      severity = COMPARISON_SEVERITY.Regression;
-      break;
-    case direction === COMPARISON_DIRECTION.Faster &&
-      absDelta >= thresholds.improvementPercent:
-      severity = COMPARISON_SEVERITY.Improvement;
-      break;
-    case absDelta >= thresholds.warnPercent:
-      severity = COMPARISON_SEVERITY.Warn;
-      break;
-    default:
-      severity = COMPARISON_SEVERITY.Neutral;
+  let severity: ComparisonSeverity = COMPARISON_SEVERITY.Pass.value;
+  if (delta > 0) {
+    if (absDelta >= thresholds.regressionPercent) {
+      severity = COMPARISON_SEVERITY.Regression.value;
+    } else if (absDelta >= thresholds.warnPercent) {
+      severity = COMPARISON_SEVERITY.Warn.value;
+    }
   }
 
   return {
@@ -165,9 +108,8 @@ export function compareMetric(
     baseline,
     delta,
     deltaPercent,
-    direction,
     severity,
-    indication: getTrafficLightIndication(severity, direction),
+    indication: SEVERITY_ICON[severity],
   };
 }
 
@@ -232,10 +174,12 @@ export function compareBenchmarkEntries(
     relativeMetrics,
     absoluteViolations: violations,
     hasRegression: relativeMetrics.some(
-      (m) => m.severity === COMPARISON_SEVERITY.Regression,
+      (m) => m.severity === COMPARISON_SEVERITY.Regression.value,
     ),
     hasWarning:
-      relativeMetrics.some((m) => m.severity === COMPARISON_SEVERITY.Warn) ||
+      relativeMetrics.some(
+        (m) => m.severity === COMPARISON_SEVERITY.Warn.value,
+      ) ||
       violations.some(
         (v: ThresholdViolation) => v.severity === THRESHOLD_SEVERITY.Warn,
       ),
