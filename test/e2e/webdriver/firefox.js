@@ -175,7 +175,7 @@ class FirefoxDriver {
       } catch (err) {
         console.warn('[Firefox E2E] Pre-rebuild unlink of XPI failed:', err.message);
       }
-        return absDir;
+      try {
         execFileSync('zip', ['-r', '-1', '-q', xpiPath, '.'], { cwd: absDir });
       } catch {
         // `zip` failed or not installed — fall back to unpacked directory.
