@@ -1,11 +1,5 @@
 import type * as Sentry from '@sentry/browser';
-import {
-  endTrace,
-  trace,
-  TraceName,
-  getSerializedTraceContext,
-  serializeTraceContext,
-} from './trace';
+import { endTrace, trace, TraceName } from './trace';
 
 jest.replaceProperty(global, 'sentry', {
   withIsolationScope: jest.fn(),
@@ -13,7 +7,6 @@ jest.replaceProperty(global, 'sentry', {
   startSpanManual: jest.fn(),
   setMeasurement: jest.fn(),
   getActiveSpan: jest.fn(),
-  continueTrace: jest.fn(),
 });
 
 const {
@@ -22,7 +15,6 @@ const {
   startSpanManual,
   withIsolationScope,
   getActiveSpan,
-  continueTrace,
 } = global.sentry as typeof Sentry;
 
 const NAME_MOCK = TraceName.Transaction;
@@ -49,7 +41,6 @@ describe('Trace', () => {
   const withIsolationScopeMock = jest.mocked(withIsolationScope);
   const setMeasurementMock = jest.mocked(setMeasurement);
   const getActiveSpanMock = jest.mocked(getActiveSpan);
-  const continueTraceMock = jest.mocked(continueTrace);
   const setTagMock = jest.fn();
 
   beforeEach(() => {
@@ -61,7 +52,6 @@ describe('Trace', () => {
       withIsolationScope: withIsolationScopeMock,
       setMeasurement: setMeasurementMock,
       getActiveSpan: getActiveSpanMock,
-      continueTrace: continueTraceMock,
     };
 
     startSpanMock.mockImplementation((_, fn) => fn({} as Sentry.Span));
@@ -435,162 +425,4 @@ describe('Trace', () => {
     });
   });
 
-  describe('cross-process trace context (continueTrace)', () => {
-    it('uses continueTrace when parentContext has _traceId and _spanId', () => {
-      continueTraceMock.mockImplementation((_opts, fn) => fn());
-
-      trace(
-        {
-          name: NAME_MOCK,
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          parentContext: { _traceId: 'trace123', _spanId: 'span456' },
-        },
-        () => true,
-      );
-
-      expect(continueTraceMock).toHaveBeenCalledTimes(1);
-      expect(continueTraceMock).toHaveBeenCalledWith(
-        { sentryTrace: 'trace123-span456-1', baggage: undefined },
-        expect.any(Function),
-      );
-    });
-
-    it('passes parentSpan as undefined inside continueTrace callback', () => {
-      continueTraceMock.mockImplementation((_opts, fn) => fn());
-
-      trace(
-        {
-          name: NAME_MOCK,
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          parentContext: { _traceId: 'trace123', _spanId: 'span456' },
-        },
-        () => true,
-      );
-
-      expect(startSpanMock).toHaveBeenCalledWith(
-        expect.objectContaining({
-          parentSpan: undefined,
-        }),
-        expect.any(Function),
-      );
-    });
-
-    it('falls back to map lookup when _name is also present', () => {
-      const spanEndMock = jest.fn();
-      const parentSpanMock = {
-        end: spanEndMock,
-        spanContext: jest.fn(),
-      } as unknown as Sentry.Span;
-
-      startSpanManualMock.mockImplementationOnce((_, fn) =>
-        fn(parentSpanMock, () => {
-          // Intentionally empty
-        }),
-      );
-
-      // Create a pending trace
-      trace({ name: TraceName.Transaction, id: 'parent-id' });
-
-      // Use serialized context with _name (for map lookup) and _traceId/_spanId
-      trace(
-        {
-          name: TraceName.Middleware,
-          parentContext: {
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            _name: TraceName.Transaction,
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            _id: 'parent-id',
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            _traceId: 'trace123',
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            _spanId: 'span456',
-          },
-        },
-        () => true,
-      );
-
-      // Should use map lookup result, not continueTrace
-      expect(continueTraceMock).not.toHaveBeenCalled();
-      expect(startSpanMock).toHaveBeenCalledWith(
-        expect.objectContaining({
-          parentSpan: parentSpanMock,
-        }),
-        expect.any(Function),
-      );
-    });
-  });
-
-  describe('getSerializedTraceContext', () => {
-    it('returns undefined when no active span', () => {
-      getActiveSpanMock.mockReturnValue(undefined);
-      expect(getSerializedTraceContext()).toBeUndefined();
-    });
-
-    it('returns traceId and spanId from active span', () => {
-      const activeSpanMock = {
-        spanContext: jest.fn().mockReturnValue({
-          traceId: 'abc123',
-          spanId: 'def456',
-        }),
-      } as unknown as Sentry.Span;
-
-      getActiveSpanMock.mockReturnValue(activeSpanMock);
-
-      /* eslint-disable @typescript-eslint/naming-convention */
-      expect(getSerializedTraceContext()).toStrictEqual({
-        _traceId: 'abc123',
-        _spanId: 'def456',
-      });
-      /* eslint-enable @typescript-eslint/naming-convention */
-    });
-
-    it('returns undefined when sentry is not initialized', () => {
-      globalThis.sentry = undefined;
-      expect(getSerializedTraceContext()).toBeUndefined();
-    });
-  });
-
-  describe('serializeTraceContext', () => {
-    it('includes name and id from request', () => {
-      const result = serializeTraceContext(null, {
-        name: 'Test',
-        id: 'test-id',
-      });
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      expect(result).toStrictEqual({ _name: 'Test', _id: 'test-id' });
-    });
-
-    it('includes traceId and spanId from span', () => {
-      const spanMock = {
-        spanContext: jest.fn().mockReturnValue({
-          traceId: 'trace789',
-          spanId: 'span012',
-        }),
-      } as unknown as Sentry.Span;
-
-      const result = serializeTraceContext(spanMock, { name: 'Test' });
-      expect(result).toStrictEqual({
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        _name: 'Test',
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        _id: undefined,
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        _traceId: 'trace789',
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        _spanId: 'span012',
-      });
-    });
-
-    it('handles span that throws on spanContext', () => {
-      const spanMock = {
-        spanContext: jest.fn().mockImplementation(() => {
-          throw new Error('span ended');
-        }),
-      } as unknown as Sentry.Span;
-
-      const result = serializeTraceContext(spanMock, { name: 'Test' });
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      expect(result).toStrictEqual({ _name: 'Test', _id: undefined });
-    });
-  });
 });
