@@ -1,0 +1,23 @@
+version: '3.8'
+services:
+  speculos:
+    image: ghcr.io/ledgerhq/speculos:latest
+    container_name: metamask-speculos
+    ports:
+      - '9999:9999'
+      - '5000:5000'
+    volumes:
+      - ./apps:/speculos/apps:ro
+    environment:
+      - DISPLAY=:99
+    command: >
+      --model nanosp /speculos/apps/ethereum.elf
+      --seed "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about"
+      --display headless
+      --apdu-port 9999
+      --api-port 5000
+    healthcheck:
+      test: ['CMD', 'curl', '-f', 'http://localhost:5000/']
+      interval: 2s
+      timeout: 3s
+      retries: 10
