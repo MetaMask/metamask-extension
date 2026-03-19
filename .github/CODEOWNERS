@@ -68,10 +68,8 @@ tailwind.config.js                   @MetaMask/design-system-engineers
 # Accounts team is responsible for code related with: Snap accounts,
 # Multichain accounts, Authentication, Backup and sync, Hardware Wallets
 # Slack handle: @accounts-team-devs | Slack channel: #metamask-accounts-team
-
 app/scripts/lib/snap-keyring                        @MetaMask/accounts-engineers
 app/scripts/lib/offscreen-bridge                    @MetaMask/accounts-engineers
-app/offscreen/hardware-wallets                      @MetaMask/accounts-engineers
 ui/pages/create-account                             @MetaMask/accounts-engineers
 **/multichain-accounts/**                           @MetaMask/accounts-engineers
 **/identity/**                                      @MetaMask/accounts-engineers
