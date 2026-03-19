@@ -67,7 +67,6 @@ import { abiERC1155, abiERC721 } from '@metamask/metamask-eth-abis';
 import {
   isEvmAccountType,
   SolAccountType,
-  EthScope,
   TrxAccountType,
   BtcAccountType,
 } from '@metamask/keyring-api';
@@ -178,7 +177,10 @@ import { isEqualCaseInsensitive } from '../../shared/lib/string-utils';
 import { parseStandardTokenTransactionData } from '../../shared/lib/transaction.utils';
 import { STATIC_MAINNET_TOKEN_LIST } from '../../shared/constants/tokens';
 import { START_UI_SYNC } from '../../shared/constants/ui-initialization';
-import { getTokenValueParam } from '../../shared/lib/metamask-controller-utils';
+import {
+  createEnsureOnboardingCompleteCallback,
+  getTokenValueParam,
+} from '../../shared/lib/metamask-controller-utils';
 import { isManifestV3 } from '../../shared/lib/mv3.utils';
 import { convertNetworkId } from '../../shared/lib/network.utils';
 import { getIsSmartTransaction } from '../../shared/lib/selectors';
@@ -219,7 +221,7 @@ import {
 import {
   isUserRejectedHardwareWalletError,
   toHardwareWalletError,
-  // eslint-disable-next-line import/no-restricted-paths
+  // eslint-disable-next-line import-x/no-restricted-paths
 } from '../../ui/contexts/hardware-wallets';
 import {
   isAssetsUnifyStateFeatureEnabled,
@@ -366,6 +368,7 @@ import { applyTransactionContainersExisting } from './lib/transaction/containers
 import {
   getSendBundleSupportedChains,
   isSendBundleSupported,
+  setSentinelApiAuth,
 } from './lib/transaction/sentinel-api';
 import { ShieldControllerInit } from './controller-init/shield/shield-controller-init';
 import { GatorPermissionsControllerInit } from './controller-init/gator-permissions/gator-permissions-controller-init';
@@ -906,6 +909,9 @@ export default class MetamaskController extends EventEmitter {
         );
       return getShieldGatewayConfig(getToken, getShieldSubscription, url);
     };
+
+    // Authenticate Sentinel and Transaction API calls via core-backend (AuthenticationController)
+    setSentinelApiAuth(() => this.authenticationController.getBearerToken());
 
     this.notificationServicesController.init();
     this.snapController.init();
@@ -5551,9 +5557,24 @@ export default class MetamaskController extends EventEmitter {
         return undefined;
       }
       const context = this.accountTreeController.getAccountContext(account.id);
-      // Get EOA account as it's the only account having lastSelected set
-      return context?.group?.get({ scopes: [EthScope.Eoa] })?.metadata
-        .lastSelected;
+      if (!context) {
+        return undefined;
+      }
+      // Get the group object to find the EOA account having lastSelected set
+      const group = this.accountTreeController.getAccountGroupObject(
+        context.groupId,
+      );
+      if (!group) {
+        return undefined;
+      }
+      // Find the EVM EOA account in this group, as it's the only one with lastSelected
+      for (const accountId of group.accounts) {
+        const groupAccount = this.accountsController.getAccount(accountId);
+        if (groupAccount && isEvmAccountType(groupAccount.type)) {
+          return groupAccount.metadata.lastSelected;
+        }
+      }
+      return undefined;
     };
 
     return addresses.sort(
@@ -9079,10 +9100,15 @@ export default class MetamaskController extends EventEmitter {
     return isDisabled;
   }
 
+  #createEnsureOnboardingCompleteCallback() {
+    return createEnsureOnboardingCompleteCallback(this.controllerMessenger);
+  }
+
   #initControllers({ existingControllers, initFunctions, initState }) {
     const initRequest = {
       currentMigrationVersion: this.opts.currentMigrationVersion,
       encryptor: this.opts.encryptor,
+      ensureOnboardingComplete: this.#createEnsureOnboardingCompleteCallback(),
       extension: this.extension,
       platform: this.platform,
       getCronjobControllerStorageManager: () =>

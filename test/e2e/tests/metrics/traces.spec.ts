@@ -1,5 +1,5 @@
 import { MockttpServer } from 'mockttp';
-import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { withFixtures } from '../../helpers';
 import {
   expectMockRequest,
@@ -39,7 +39,7 @@ describe('Traces', function () {
   it('sends custom trace when opening UI if metrics enabled', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withMetaMetricsController({
             participateInMetaMetrics: true,
           })
@@ -60,7 +60,7 @@ describe('Traces', function () {
   it('does not send custom trace when opening UI if metrics disabled', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withMetaMetricsController({
             participateInMetaMetrics: false,
           })
@@ -81,7 +81,7 @@ describe('Traces', function () {
   it('sends automated trace when opening UI if metrics enabled', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withMetaMetricsController({
             participateInMetaMetrics: true,
           })
@@ -102,7 +102,7 @@ describe('Traces', function () {
   it('does not send automated trace when opening UI if metrics disabled', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withMetaMetricsController({
             participateInMetaMetrics: false,
           })

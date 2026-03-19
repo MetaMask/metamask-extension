@@ -111,18 +111,23 @@ For new test code, use `FixtureBuilderV2` by default.
 - `withNetworkControllerTripleNode`
 - `withNoNames`
 - `withPermissionControllerConnectedToTestDapp`
-- `withPetnamesDisabled`
 - `withSelectedNetwork`
 - `withSelectedNetworkControllerPerDomain`
 - `withShowNativeTokenAsMainBalanceDisabled`
 - `withShowNativeTokenAsMainBalanceEnabled`
 - `withSmartTransactionsOptedOut`
+- `withSnapController`
+- `withSnapControllerOnStartLifecycleSnap`
+- `withSnapsPrivacyWarningAlreadyShown`
+- `withStorageServiceData`
 - `withTokensControllerERC20`
-- `withTrezorAccount`
+- `withTokenListControllerStorageServiceData`
 - `withTransactionControllerApprovedTransaction`
 - `withTransactionControllerCompletedAndIncomingTransaction`
 - `withTransactionControllerCompletedTransaction`
 - `withTransactionControllerIncomingTransaction`
+- `withTrezorAccount`
+- `withUseBasicFunctionalityDisabled`
 
 If your test only needs these methods (or just `.build()`), prefer `FixtureBuilderV2` instead of the legacy builder.
 

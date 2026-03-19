@@ -384,7 +384,7 @@ describe('replaceMusdConversionTransactionForPayToken', () => {
     findNetworkClientIdByChainId: jest.fn().mockResolvedValue('linea'),
     fetchGasFeeEstimates: jest.fn().mockResolvedValue(undefined),
     updatePaymentToken: jest.fn(),
-    rejectApproval: jest.fn(),
+    rejectApproval: jest.fn().mockResolvedValue(undefined),
   };
 
   beforeEach(() => {
@@ -423,10 +423,7 @@ describe('replaceMusdConversionTransactionForPayToken', () => {
       mockCallbacks,
     );
 
-    expect(mockCallbacks.rejectApproval).toHaveBeenCalledWith(
-      MOCK_TX_ID,
-      expect.any(Error),
-    );
+    expect(mockCallbacks.rejectApproval).toHaveBeenCalledWith(MOCK_TX_ID);
   });
 
   it('should throw if transaction meta is missing', async () => {

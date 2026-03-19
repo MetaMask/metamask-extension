@@ -94,7 +94,11 @@
     "addressScanCache": "object",
     "addressSecurityAlertResponses": "object",
     "advancedGasFee": {},
-    "alertEnabledness": { "unconnectedAccount": true, "web3ShimUsage": true },
+    "alertEnabledness": {
+      "smartTransactionsMigration": true,
+      "unconnectedAccount": true,
+      "web3ShimUsage": true
+    },
     "allDeFiPositions": "object",
     "allDeFiPositionsCount": "object",
     "allDetectedTokens": {},
@@ -104,7 +108,6 @@
     "allNfts": "object",
     "allTokens": {},
     "announcements": "object",
-    "appActiveTab": "undefined",
     "approvalFlows": "object",
     "assetExchangeRates": "object",
     "assetsMetadata": "object",
@@ -121,15 +124,20 @@
     "coverageResults": "object",
     "cryptocurrencies": ["btc", "sol"],
     "currencyRates": {
+      "BNB": {
+        "conversionDate": null,
+        "conversionRate": null,
+        "usdConversionRate": null
+      },
       "ETH": {
         "conversionDate": "number",
         "conversionRate": 1700,
         "usdConversionRate": 1700
       },
-      "MON": {
-        "conversionDate": "number",
-        "conversionRate": 0.2,
-        "usdConversionRate": 0.2
+      "POL": {
+        "conversionDate": null,
+        "conversionRate": null,
+        "usdConversionRate": null
       }
     },
     "currentAppVersion": "string",
@@ -143,7 +151,7 @@
     "databaseUnavailable": "boolean",
     "defaultHomeActiveTabName": null,
     "delegations": "object",
-    "dismissSeedBackUpReminder": true,
+    "dismissSeedBackUpReminder": false,
     "domains": "object",
     "drafts": "object",
     "enableMV3TimestampSave": true,
@@ -176,6 +184,7 @@
     "hiddenAccountList": {},
     "historicalPrices": "object",
     "ignoredNfts": "object",
+    "initialDelayEndTimestamp": "number",
     "initialEnqueueCompleted": "boolean",
     "insights": "object",
     "interfaces": "object",
@@ -239,7 +248,7 @@
     "networkConnectionBanner": "object",
     "networksMetadata": "object",
     "networksWithTransactionActivity": "object",
-    "newPrivacyPolicyToastClickedOrClosed": "boolean",
+    "newPrivacyPolicyToastClickedOrClosed": null,
     "newPrivacyPolicyToastShownDate": "number",
     "nftsDetectionNoticeDismissed": false,
     "nftsDropdownState": {},
@@ -248,7 +257,7 @@
     "notificationGasPollTokens": "object",
     "onboardingDate": null,
     "onboardingTabs": "object",
-    "openSeaEnabled": false,
+    "openSeaEnabled": true,
     "orderedNetworkList": {
       "0": "object",
       "1": "object",
@@ -256,8 +265,7 @@
       "3": "object",
       "4": "object",
       "5": "object",
-      "6": "object",
-      "7": "object"
+      "6": "object"
     },
     "orderedTransactionHistory": "object",
     "outdatedBrowserWarningLastShown": "object",
@@ -268,7 +276,7 @@
     "pendingExtensionVersion": null,
     "pendingRedirectRoute": null,
     "pendingRevocations": "object",
-    "pendingShieldCohort": "string",
+    "pendingShieldCohort": null,
     "pendingShieldCohortTxType": null,
     "permissionActivityLog": "object",
     "permissionHistory": "object",
@@ -280,15 +288,14 @@
       "dismissSmartAccountSuggestionEnabled": "boolean",
       "featureNotificationsEnabled": "boolean",
       "hideZeroBalanceTokens": false,
-      "petnamesEnabled": "boolean",
       "privacyMode": "boolean",
-      "shouldShowAggregatedBalancePopover": "boolean",
+      "showConfirmationAdvancedDetails": false,
       "showDefaultAddress": "boolean",
       "showExtensionInFullSizeView": false,
       "showFiatInTestnets": false,
       "showMultiRpcModal": "boolean",
       "showNativeTokenAsMainBalance": true,
-      "showTestNetworks": false,
+      "showTestNetworks": true,
       "skipDeepLinkInterstitial": "boolean",
       "smartTransactionsMigrationApplied": "boolean",
       "smartTransactionsOptInStatus": true,
@@ -314,7 +321,7 @@
       "sol": { "conversionDate": 0, "conversionRate": 0 }
     },
     "rawRemoteFeatureFlags": "object",
-    "recoveryPhraseReminderHasBeenShown": true,
+    "recoveryPhraseReminderHasBeenShown": false,
     "recoveryPhraseReminderLastShown": "number",
     "referrals": "object",
     "remoteFeatureFlags": {
@@ -329,7 +336,7 @@
     "rewardsSeasons": "object",
     "rewardsSubscriptions": "object",
     "securityAlertsEnabled": "boolean",
-    "seedPhraseBackedUp": true,
+    "seedPhraseBackedUp": null,
     "segmentApiCalls": "object",
     "selectedMultichainNetworkChainId": "string",
     "selectedNetworkClientId": "string",
@@ -341,7 +348,7 @@
     "showDownloadMobileAppSlide": "boolean",
     "showNetworkBanner": true,
     "showPermissionsTour": true,
-    "showShieldEntryModalOnce": "boolean",
+    "showShieldEntryModalOnce": null,
     "showTestnetMessageInDropdown": true,
     "sidePanelGasPollTokens": [],
     "signature": "string",
@@ -349,16 +356,17 @@
     "signatureSecurityAlertResponses": "object",
     "slides": "object",
     "smartTransactionsState": {
-      "fees": {},
+      "fees": { "approvalTxFees": null, "tradeTxFees": null },
       "feesByChainId": "object",
       "liveness": true,
       "livenessByChainId": "object",
-      "smartTransactions": "object"
+      "smartTransactions": "object",
+      "userOptIn": null,
+      "userOptInV2": null
     },
     "snapRegistryList": "object",
     "snaps": "object",
     "snapsAddSnapAccountModalDismissed": "boolean",
-    "snapsInstallPrivacyWarningShown": true,
     "socialBackupsMetadata": "object",
     "srpSessionData": "object",
     "storageMetadata": {},
@@ -371,7 +379,7 @@
     "surveyLinkLastClickedOrClosed": "object",
     "syncQueue": "object",
     "termsOfUseLastAgreed": "number",
-    "theme": "light",
+    "theme": "os",
     "thresholdCache": "object",
     "throttledOrigins": "object",
     "tokenBalances": "object",
@@ -403,7 +411,7 @@
     "useExternalNameSources": "boolean",
     "useExternalServices": "boolean",
     "useMultiAccountBalanceChecker": true,
-    "useNftDetection": false,
+    "useNftDetection": true,
     "usePhishDetect": true,
     "useSafeChainsListValidation": true,
     "useTokenDetection": true,

@@ -1,7 +1,7 @@
 import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
 import { getCleanAppState, withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { TestSuiteArguments } from '../confirmations/transactions/shared';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
@@ -12,7 +12,7 @@ import {
   MOCK_META_METRICS_ID,
   MOCK_REMOTE_FEATURE_FLAGS_RESPONSE,
 } from '../../constants';
-import { Mockttp } from '../../mock-e2e';
+import { type MockedEndpoint, Mockttp } from '../../mock-e2e';
 
 const FEATURE_FLAGS_URL = 'https://client-config.api.cx.metamask.io/v1/flags';
 
@@ -58,7 +58,7 @@ describe('Remote feature flag', function (this: Suite) {
   it('should be fetched with threshold value when basic functionality toggle is on', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withMetaMetricsController({
             metaMetricsId: MOCK_META_METRICS_ID,
             participateInMetaMetrics: true,
@@ -81,16 +81,26 @@ describe('Remote feature flag', function (this: Suite) {
   it('should not be fetched when basic functionality toggle is off', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withUseBasicFunctionalityDisabled()
           .build(),
         title: this.test?.fullTitle(),
+        testSpecificMock: mockRemoteFeatureFlags,
       },
 
-      async ({ driver }: TestSuiteArguments) => {
+      async ({ driver, mockedEndpoint }: TestSuiteArguments) => {
         await loginWithBalanceValidation(driver);
-        const uiState = await getCleanAppState(driver);
-        assert.deepStrictEqual(uiState.metamask.remoteFeatureFlags, {});
+
+        // Intended delay to wait for any potential requests to be made
+        await driver.delay(5_000);
+        const requests = await (
+          mockedEndpoint as MockedEndpoint[]
+        )[0].getSeenRequests();
+        assert.equal(
+          requests.length,
+          0,
+          'Feature flags endpoint should not be called when basic functionality is off',
+        );
       },
     );
   });
@@ -98,7 +108,7 @@ describe('Remote feature flag', function (this: Suite) {
   it('offers the option to pass into manifest file for developers along with original response', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withMetaMetricsController({
             metaMetricsId: MOCK_META_METRICS_ID,
             participateInMetaMetrics: true,
