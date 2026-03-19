@@ -1,6 +1,6 @@
-@import 'tailwindcss';
+@import 'tailwindcss' source(none);
 @import '@metamask/design-tokens/tailwind/theme.css';
 
-/* Scan UI source and design-system-react for tailwind class names */
-@source "..";
+/* Match prior tailwind.config content: only JS/TS templates under ui/ */
+@source "../**/*.{js,jsx,ts,tsx}";
 @source "../../node_modules/@metamask/design-system-react";
