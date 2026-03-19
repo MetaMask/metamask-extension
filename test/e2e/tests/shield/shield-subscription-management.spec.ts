@@ -791,8 +791,6 @@ describe('Shield Plan Stripe Integration', function () {
       async ({ driver, localNodes }) => {
         await loginWithBalanceValidation(driver, localNodes[0]);
 
-        await driver.delay(100000);
-
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
         await homePage.waitForNetworkAndDOMReady();

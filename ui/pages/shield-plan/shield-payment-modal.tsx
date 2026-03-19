@@ -62,6 +62,7 @@ export const ShieldPaymentModal = ({
   tokensSupported: string[];
   disableCardOption?: boolean;
 }) => {
+  console.log('availableTokenBalances +++++++++++', availableTokenBalances);
   const t = useI18nContext();
   const [showAssetPickerModal, setShowAssetPickerModal] = useState(false);
 
