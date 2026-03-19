@@ -296,6 +296,7 @@ jest.mock('../../shared/lib/mv3.utils', () => ({
 
 jest.mock('./controllers/permissions', () => ({
   ...jest.requireActual('./controllers/permissions'),
+  getAuthorizedScopesByOrigin: jest.fn(() => new Map()),
   getOriginsWithSessionProperty: jest.fn(),
   getPermittedAccountsForScopesByOrigin: jest.fn(() => new Map()),
 }));
@@ -1895,6 +1896,68 @@ describe('MetaMaskController', () => {
             'addr2',
           ]),
         ).toStrictEqual(['addr1', 'addr2']);
+      });
+    });
+
+    describe('#sortSessionScopesAccountsByLastSelected', () => {
+      it('sorts each scope accounts array using sortMultichainAccountsByLastSelected', () => {
+        jest
+          .spyOn(metamaskController, 'sortMultichainAccountsByLastSelected')
+          .mockImplementation((addresses) => [...addresses].reverse());
+
+        jest.mocked(parseCaipAccountId).mockImplementation((caipAccountId) => ({
+          address: caipAccountId.split(':').pop(),
+        }));
+
+        const sessionScopes = {
+          'eip155:1': {
+            methods: [],
+            notifications: [],
+            accounts: ['eip155:1:0x1111', 'eip155:1:0x2222', 'eip155:1:0x3333'],
+          },
+          'solana:4sGjMW1sUnHzSxGspuhpqLDx6wiyjNtZ': {
+            methods: [],
+            notifications: [],
+            accounts: [
+              'solana:4sGjMW1sUnHzSxGspuhpqLDx6wiyjNtZ:AddrA',
+              'solana:4sGjMW1sUnHzSxGspuhpqLDx6wiyjNtZ:AddrB',
+            ],
+          },
+          'eip155:137': {
+            methods: [],
+            notifications: [],
+            accounts: ['eip155:137:0x4444'],
+          },
+        };
+
+        expect(
+          metamaskController.sortSessionScopesAccountsByLastSelected(
+            sessionScopes,
+          ),
+        ).toStrictEqual({
+          'eip155:1': {
+            methods: [],
+            notifications: [],
+            accounts: ['eip155:1:0x3333', 'eip155:1:0x2222', 'eip155:1:0x1111'],
+          },
+          'solana:4sGjMW1sUnHzSxGspuhpqLDx6wiyjNtZ': {
+            methods: [],
+            notifications: [],
+            accounts: [
+              'solana:4sGjMW1sUnHzSxGspuhpqLDx6wiyjNtZ:AddrB',
+              'solana:4sGjMW1sUnHzSxGspuhpqLDx6wiyjNtZ:AddrA',
+            ],
+          },
+          'eip155:137': {
+            methods: [],
+            notifications: [],
+            accounts: ['eip155:137:0x4444'],
+          },
+        });
+
+        expect(
+          metamaskController.sortMultichainAccountsByLastSelected,
+        ).toHaveBeenCalledTimes(2);
       });
     });
 
@@ -5401,6 +5464,74 @@ describe('MetaMaskController', () => {
           metamaskController.discoverAndCreateAccounts,
         ).toHaveBeenCalledWith(id);
       });
+    });
+  });
+
+  describe('selectedAccountGroupChange subscription for wallet_sessionChanged', () => {
+    let metamaskController;
+
+    beforeEach(() => {
+      metamaskController = new MetaMaskController({
+        showUserConfirmation: noop,
+        encryptor: mockEncryptor,
+        initState: cloneDeep(firstTimeState),
+        initLangCode: 'en_US',
+        platform: {
+          showTransactionNotification: () => undefined,
+          getVersion: () => 'foo',
+          switchToAnotherURL: jest.fn(),
+        },
+        browser: browserPolyfillMock,
+        infuraProjectId: 'foo',
+        isFirstMetaMaskControllerSetup: true,
+        cronjobControllerStorageManager:
+          createMockCronjobControllerStorageManager(),
+        controllerMessenger: new Messenger({
+          namespace: MOCK_ANY_NAMESPACE,
+        }),
+      });
+    });
+
+    it('notifies wallet_sessionChanged for each authorized origin', () => {
+      const authA = {
+        requiredScopes: {},
+        optionalScopes: {},
+        sessionProperties: {},
+      };
+      const authB = {
+        requiredScopes: {},
+        optionalScopes: {},
+        sessionProperties: {},
+      };
+
+      jest
+        .mocked(getAuthorizedScopesByOrigin)
+        .mockReturnValue(
+          new Map([
+            ['https://a.example', authA],
+            ['https://b.example', authB],
+          ]),
+        );
+      jest
+        .spyOn(metamaskController, '_notifyAuthorizationChange')
+        .mockImplementation(() => undefined);
+
+      metamaskController.controllerMessenger.publish(
+        'AccountTreeController:selectedAccountGroupChange',
+        'group-1',
+      );
+
+      expect(metamaskController._notifyAuthorizationChange).toHaveBeenCalledWith(
+        'https://a.example',
+        authA,
+      );
+      expect(metamaskController._notifyAuthorizationChange).toHaveBeenCalledWith(
+        'https://b.example',
+        authB,
+      );
+      expect(metamaskController._notifyAuthorizationChange).toHaveBeenCalledTimes(
+        2,
+      );
     });
   });
 
