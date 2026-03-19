@@ -34,6 +34,8 @@ class ChromeDriver {
       '--disable-features=OptimizationGuideModelDownloading,OptimizationHintsFetching,OptimizationTargetPrediction,OptimizationHints,NetworkTimeServiceQuerying', // Stop chrome from calling home so much (auto-downloads of AI models; time sync)
       '--disable-component-update', // Stop chrome from calling home so much (auto-update)
       '--disable-dev-shm-usage',
+      '--no-first-run', // Skip first-run tasks for faster startup
+      '--disable-default-apps', // Don't install default apps
     ];
 
     if (process.env.MULTIPROVIDER) {
