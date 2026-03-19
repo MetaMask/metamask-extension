@@ -7,7 +7,6 @@ import type { ZipOptions } from './types';
 const { RawSource } = sources;
 
 const BROWSER_TEMPLATE_RE = /\[browser\]/gu;
-const MIN_COMPRESSIBLE_ASSET_SIZE = 24 * 1024;
 
 /**
  * File types that generally compress well with DEFLATE.
@@ -25,6 +24,7 @@ const compressibleFileTypes = new Set([
   '.map',
   '.md',
   '.mjs',
+  '.riv',
   '.svg',
   '.txt',
   '.wasm',
@@ -188,10 +188,7 @@ function addAssetToZip(
   mtime: Date,
   zipFile: ZipFile,
 ): void {
-  const shouldCompress =
-    compressionOptions.level > 0 &&
-    compress &&
-    asset.length >= MIN_COMPRESSIBLE_ASSET_SIZE;
+  const shouldCompress = compressionOptions.level > 0 && compress;
 
   zipFile.addBuffer(asset, assetName, {
     compress: shouldCompress,
