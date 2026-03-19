@@ -8,8 +8,7 @@ import React from 'react';
 import { isSnapId } from '@metamask/snaps-utils';
 
 import { Text, TextVariant } from '@metamask/design-system-react';
-import { SignatureRequestType } from '../../../../types/confirm';
-import { useConfirmContext } from '../../../../context/confirm';
+import { useSignatureRequest } from '../../../../hooks/useSignatureRequest';
 import { ConfirmInfoRow } from '../../../../../../components/app/confirm/info/row';
 import { ConfirmInfoRowAddress } from '../../../../../../components/app/confirm/info/row/address';
 import { ConfirmInfoSection } from '../../../../../../components/app/confirm/info/row/section';
@@ -35,9 +34,8 @@ import { Erc20TokenRevocationDetails } from './typed-sign-permission/erc20-token
  */
 const TypedSignPermissionInfo: React.FC = () => {
   const t = useI18nContext();
-  const {
-    currentConfirmation: { decodedPermission, id },
-  } = useConfirmContext<SignatureRequestType>();
+  const currentConfirmation = useSignatureRequest();
+  const { decodedPermission, id } = currentConfirmation;
 
   if (!decodedPermission) {
     throw new Error('Decoded permission is undefined');

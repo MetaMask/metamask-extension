@@ -1,6 +1,6 @@
 import React from 'react';
-import { TransactionMeta } from '@metamask/transaction-controller';
-import { useConfirmContext } from '../../../../context/confirm';
+
+import { useTransactionMetadataRequest } from '../../../../hooks/useTransactionMetadataRequest';
 import { SimulationDetails } from '../../../simulation-details';
 import { TransactionPaySection } from '../../../rows/transaction-pay-section/transaction-pay-section';
 import { AdvancedDetails } from '../shared/advanced-details/advanced-details';
@@ -11,8 +11,7 @@ import { TransactionFlowSection } from '../token-transfer/transaction-flow-secti
 import { useMaxValueRefresher } from '../hooks/useMaxValueRefresher';
 
 const NativeTransferInfo = () => {
-  const { currentConfirmation: transactionMeta } =
-    useConfirmContext<TransactionMeta>();
+  const transactionMeta = useTransactionMetadataRequest();
   useMaxValueRefresher();
 
   const isWalletInitiated = transactionMeta.origin === 'metamask';

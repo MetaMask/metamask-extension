@@ -33,9 +33,8 @@ import {
   sanitizeString,
 } from '../../../../../../helpers/utils/util';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
-import { useConfirmContext } from '../../../../context/confirm';
+import { useSignatureRequest } from '../../../../hooks/useSignatureRequest';
 import { selectUseTransactionSimulations } from '../../../../selectors/preferences';
-import { SignatureRequestType } from '../../../../types/confirm';
 import { isSIWESignatureRequest } from '../../../../utils';
 import { useIsBIP44 } from '../../../../hooks/useIsBIP44';
 import { NetworkRow } from '../shared/network-row/network-row';
@@ -53,7 +52,7 @@ const getMessageText = (hexString?: string) => {
 
 const PersonalSignInfo: React.FC = () => {
   const t = useI18nContext();
-  const { currentConfirmation } = useConfirmContext<SignatureRequestType>();
+  const currentConfirmation = useSignatureRequest();
   const useTransactionSimulations = useSelector(
     selectUseTransactionSimulations,
   );

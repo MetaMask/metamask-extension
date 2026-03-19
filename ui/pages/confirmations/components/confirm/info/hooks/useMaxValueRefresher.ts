@@ -17,7 +17,7 @@ import {
 } from '../../../../../../../shared/lib/conversion.utils';
 import { Numeric } from '../../../../../../../shared/lib/Numeric';
 import { updateEditableParams } from '../../../../../../store/actions';
-import { useConfirmContext } from '../../../../context/confirm';
+import { useTransactionMetadataRequest } from '../../../../hooks/useTransactionMetadataRequest';
 import { HEX_ZERO } from '../shared/constants';
 import { useTransactionEventFragment } from '../../../../hooks/useTransactionEventFragment';
 import { useSupportsEIP1559 } from './useSupportsEIP1559';
@@ -34,12 +34,11 @@ import { useSupportsEIP1559 } from './useSupportsEIP1559';
  * - Handles Layer 1 gas fees for Layer 2 network transactions
  * - Does not update the value if the remaining balance would be negative or zero
  *
- * @requires useConfirmContext - Must be used within a confirmation context
+ * @requires useTransactionMetadataRequest - Accesses the current transaction metadata
  * @requires Redux store - Requires access to account balance and transaction state
  */
 export const useMaxValueRefresher = () => {
-  const { currentConfirmation: transactionMeta } =
-    useConfirmContext<TransactionMeta>();
+  const transactionMeta = useTransactionMetadataRequest();
   const dispatch = useDispatch();
   const {
     chainId,

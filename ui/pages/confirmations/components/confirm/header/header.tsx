@@ -19,9 +19,10 @@ import {
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
 import { getAvatarNetworkColor } from '../../../../../helpers/utils/accounts';
-import { useConfirmContext } from '../../../context/confirm';
 import useConfirmationNetworkInfo from '../../../hooks/useConfirmationNetworkInfo';
 import useConfirmationRecipientInfo from '../../../hooks/useConfirmationRecipientInfo';
+import { useSignatureRequestOptional } from '../../../hooks/useSignatureRequest';
+import { useTransactionMetadataRequestOptional } from '../../../hooks/useTransactionMetadataRequest';
 import { Confirmation } from '../../../types/confirm';
 import { DAppInitiatedHeader } from './dapp-initiated-header';
 import HeaderInfo from './header-info';
@@ -50,7 +51,10 @@ const Header = () => {
     hasMoreThanOneWallet,
   } = useConfirmationRecipientInfo();
 
-  const { currentConfirmation } = useConfirmContext<Confirmation>();
+  const transactionMetadata = useTransactionMetadataRequestOptional();
+  const signatureRequest = useSignatureRequestOptional();
+  const currentConfirmation: Confirmation | undefined =
+    transactionMetadata ?? signatureRequest;
   let secondaryText;
 
   if (isBIP44) {

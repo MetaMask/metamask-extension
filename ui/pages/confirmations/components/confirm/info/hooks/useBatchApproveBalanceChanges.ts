@@ -8,7 +8,7 @@ import { add0x } from '@metamask/utils';
 import { useMemo } from 'react';
 
 import { useDeepMemo } from '../../../../hooks/useDeepMemo';
-import { useConfirmContext } from '../../../../context/confirm';
+import { useTransactionMetadataRequest } from '../../../../hooks/useTransactionMetadataRequest';
 import { useAsyncResult } from '../../../../../../hooks/useAsync';
 import { getTokenStandardAndDetails } from '../../../../../../store/actions';
 import { parseApprovalTransactionData } from '../../../../../../../shared/lib/transaction.utils';
@@ -27,7 +27,7 @@ export type ApprovalBalanceChange = BalanceChange & {
 };
 
 export function useBatchApproveBalanceChanges() {
-  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
+  const currentConfirmation = useTransactionMetadataRequest();
   const { chainId, nestedTransactions } = currentConfirmation ?? {};
 
   const { value: simulationBalanceChanges, pending: pendingSimulationChanges } =

@@ -5,13 +5,14 @@ import type { ThrottledOrigin } from '../../../../shared/types/origin-throttling
 import { updateThrottledOriginState } from '../../../store/actions';
 
 import { selectThrottledOrigins } from '../../../selectors';
-import useCurrentConfirmation from './useCurrentConfirmation';
+import { useTransactionMetadataRequestOptional } from './useTransactionMetadataRequest';
+import { useSignatureRequestOptional } from './useSignatureRequest';
 
 const NUMBER_OF_REJECTIONS_THRESHOLD = 3;
 const REJECTION_THRESHOLD_IN_MS = 30000;
 
 const willNextRejectionReachThreshold = (
-  originState: ThrottledOrigin,
+  originState?: ThrottledOrigin,
 ): boolean => {
   if (!originState) {
     return false;
@@ -27,19 +28,34 @@ const willNextRejectionReachThreshold = (
 export function useOriginThrottling() {
   const dispatch = useDispatch();
   const throttledOrigins = useSelector(selectThrottledOrigins);
-  const { currentConfirmation } = useCurrentConfirmation();
+
+  const transactionMetadata = useTransactionMetadataRequestOptional();
+  const signatureRequest = useSignatureRequestOptional();
+  const currentConfirmation = transactionMetadata ?? signatureRequest;
+  const currentConfirmationWithOrigin = currentConfirmation as
+    | {
+        origin?: string;
+        messageParams?: {
+          origin?: string;
+        };
+      }
+    | undefined;
+
   const origin =
-    currentConfirmation?.origin || currentConfirmation?.messageParams?.origin;
-  const originState = throttledOrigins[origin];
+    currentConfirmationWithOrigin?.origin ||
+    currentConfirmationWithOrigin?.messageParams?.origin;
+  const originState = origin ? throttledOrigins[origin] : undefined;
   const shouldThrottleOrigin = willNextRejectionReachThreshold(originState);
 
   const resetOrigin = useCallback(() => {
-    dispatch(
-      updateThrottledOriginState(origin, {
-        rejections: 0,
-        lastRejection: 0,
-      }),
-    );
+    if (origin) {
+      dispatch(
+        updateThrottledOriginState(origin, {
+          rejections: 0,
+          lastRejection: 0,
+        }),
+      );
+    }
   }, [dispatch, origin]);
 
   return {

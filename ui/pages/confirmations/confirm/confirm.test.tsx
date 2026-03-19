@@ -3,6 +3,7 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import {
+  getMockContractInteractionConfirmState,
   getMockPersonalSignConfirmState,
   getMockTypedSignConfirmState,
   getMockTypedSignConfirmStateForRequest,
@@ -13,10 +14,10 @@ import {
   permitSignatureMsg,
   permitSingleSignatureMsg,
 } from '../../../../test/data/confirmations/typed_sign';
-import mockState from '../../../../test/data/mock-state.json';
 import { renderWithConfirmContextProvider } from '../../../../test/lib/confirmations/render-helpers';
 import * as actions from '../../../store/actions';
 import { useAssetDetails } from '../hooks/useAssetDetails';
+import { useTransactionMetadataRequest } from '../hooks/useTransactionMetadataRequest';
 import { SignatureRequestType } from '../types/confirm';
 import { memoizedGetTokenStandardAndDetails } from '../utils/token';
 import Confirm from './confirm';
@@ -27,6 +28,8 @@ jest.mock('../hooks/useAssetDetails', () => ({
     decimals: '4',
   }),
 }));
+
+jest.mock('../hooks/useTransactionMetadataRequest');
 
 jest.mock('../hooks/gas/useIsGaslessLoading', () => ({
   useIsGaslessLoading: () => {
@@ -64,6 +67,9 @@ jest.mock('react-router-dom', () => {
 
 const middleware = [thunk];
 const mockedAssetDetails = jest.mocked(useAssetDetails);
+const useTransactionMetadataRequestMock = jest.mocked(
+  useTransactionMetadataRequest,
+);
 
 describe('Confirm', () => {
   afterEach(() => {
@@ -79,10 +85,14 @@ describe('Confirm', () => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       decimals: '4' as any,
     }));
+
+    useTransactionMetadataRequestMock.mockReturnValue(undefined as never);
   });
 
   it('should render', () => {
-    const mockStore = configureMockStore(middleware)(mockState);
+    const mockStore = configureMockStore(middleware)(
+      getMockPersonalSignConfirmState(),
+    );
 
     act(() => {
       const { container } = renderWithConfirmContextProvider(
@@ -244,11 +254,10 @@ describe('Confirm', () => {
   });
 
   it('should render SmartTransactionsBannerAlert for transaction types but not signature types', async () => {
-    // Test with a transaction type
     const mockStateTransaction = {
-      ...mockState,
+      ...getMockPersonalSignConfirmState(),
       metamask: {
-        ...mockState.metamask,
+        ...getMockPersonalSignConfirmState().metamask,
         alertEnabledness: {
           smartTransactionsMigration: true,
         },
@@ -261,6 +270,7 @@ describe('Confirm', () => {
 
     const mockStoreTransaction =
       configureMockStore(middleware)(mockStateTransaction);
+    useTransactionMetadataRequestMock.mockReturnValue(undefined as never);
 
     await act(async () => {
       const { container } = renderWithConfirmContextProvider(
@@ -270,9 +280,9 @@ describe('Confirm', () => {
       expect(container).toMatchSnapshot();
     });
 
-    // Test with a signature type (reuse existing mock)
     const mockStateTypedSign = getMockTypedSignConfirmState();
     const mockStoreSign = configureMockStore(middleware)(mockStateTypedSign);
+    useTransactionMetadataRequestMock.mockReturnValue(undefined as never);
 
     await act(async () => {
       const { container } = renderWithConfirmContextProvider(

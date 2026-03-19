@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from 'react';
-import { TransactionMeta } from '@metamask/transaction-controller';
+
 import { useSelector } from 'react-redux';
 
 import { NATIVE_TOKEN_ADDRESS } from '../../../../../../../../shared/constants/transaction';
@@ -16,7 +16,7 @@ import {
   BorderRadius,
   Display,
 } from '../../../../../../../helpers/constants/design-system';
-import { useConfirmContext } from '../../../../../context/confirm';
+import { useTransactionMetadataRequest } from '../../../../../hooks/useTransactionMetadataRequest';
 import { useDappSwapContext } from '../../../../../context/dapp-swap';
 import { getNetworkConfigurationsByChainId } from '../../../../../../../../shared/lib/selectors/networks';
 import { GasFeeTokenModal } from '../gas-fee-token-modal';
@@ -29,7 +29,7 @@ import { useIsInsufficientBalance } from '../../../../../hooks/useIsInsufficient
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export function SelectedGasFeeToken() {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
+  const currentConfirmation = useTransactionMetadataRequest();
   const { isQuotedSwapDisplayedInInfo } = useDappSwapContext();
   const { chainId, gasFeeTokens } = currentConfirmation;
 

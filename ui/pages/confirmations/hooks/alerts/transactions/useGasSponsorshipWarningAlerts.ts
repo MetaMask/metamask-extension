@@ -11,7 +11,7 @@ import { RowAlertKey } from '../../../../../components/app/confirm/info/row/cons
 import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
 import { Severity } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import { useConfirmContext } from '../../../context/confirm';
+import { useTransactionMetadataRequest } from '../../useTransactionMetadataRequest';
 import { useIsGaslessSupported } from '../../gas/useIsGaslessSupported';
 
 type SponsorshipWarningRule = {
@@ -75,7 +75,7 @@ function hasGasSponsorshipWarning(
  */
 export function useGasSponsorshipWarningAlerts(): Alert[] {
   const t = useI18nContext();
-  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
+  const currentConfirmation = useTransactionMetadataRequest();
   const { chainId, isGasFeeSponsored, simulationData } =
     currentConfirmation ?? {};
   const { isSupported: isGaslessSupported } = useIsGaslessSupported();

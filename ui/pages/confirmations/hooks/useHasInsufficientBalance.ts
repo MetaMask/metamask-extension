@@ -7,9 +7,9 @@ import {
   getMultichainNetworkConfigurationsByChainId,
   getNativeTokenCachedBalanceByChainIdSelector,
 } from '../../../selectors';
-import { useConfirmContext } from '../context/confirm';
 import { isBalanceSufficient } from '../send-utils/send.utils';
 import { useFeeCalculations } from '../components/confirm/info/hooks/useFeeCalculations';
+import { useTransactionMetadataRequest } from './useTransactionMetadataRequest';
 
 const ZERO_HEX_FALLBACK = '0x0';
 
@@ -17,7 +17,7 @@ export function useHasInsufficientBalance(): {
   hasInsufficientBalance: boolean;
   nativeCurrency?: string;
 } {
-  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
+  const currentConfirmation = useTransactionMetadataRequest();
   const {
     chainId,
     txParams: { value = ZERO_HEX_FALLBACK, from: fromAddress = '' } = {},

@@ -3,16 +3,16 @@ import { renderHookWithProvider } from '../../../../test/lib/render-helpers-navi
 import mockState from '../../../../test/data/mock-state.json';
 import { AlertActionKey } from '../../../components/app/confirm/info/row/constants';
 import { useGasFeeModalContext } from '../context/gas-fee-modal';
-import { useConfirmContext } from '../context/confirm';
 import { GasModalType } from '../constants/gas';
+import { useTransactionMetadataRequest } from './useTransactionMetadataRequest';
 import useConfirmationAlertActions from './useConfirmationAlertActions';
 
 jest.mock('../context/gas-fee-modal', () => ({
   useGasFeeModalContext: jest.fn(),
 }));
 
-jest.mock('../context/confirm', () => ({
-  useConfirmContext: jest.fn(),
+jest.mock('./useTransactionMetadataRequest', () => ({
+  useTransactionMetadataRequest: jest.fn(),
 }));
 
 const EXPECTED_BUY_URL =
@@ -31,7 +31,9 @@ describe('useConfirmationAlertActions', () => {
   const openGasFeeModalMock = jest.fn();
 
   const useGasFeeModalContextMock = jest.mocked(useGasFeeModalContext);
-  const useConfirmContextMock = jest.mocked(useConfirmContext);
+  const useTransactionMetadataRequestMock = jest.mocked(
+    useTransactionMetadataRequest,
+  );
 
   beforeEach(() => {
     jest.resetAllMocks();
@@ -43,15 +45,11 @@ describe('useConfirmationAlertActions', () => {
       initialModalType: GasModalType.EstimatesModal,
     });
 
-    useConfirmContextMock.mockReturnValue({
-      currentConfirmation: {
-        txParams: {
-          type: TransactionEnvelopeType.feeMarket,
-        },
+    useTransactionMetadataRequestMock.mockReturnValue({
+      txParams: {
+        type: TransactionEnvelopeType.feeMarket,
       },
-      isScrollToBottomCompleted: true,
-      setIsScrollToBottomCompleted: jest.fn(),
-    });
+    } as ReturnType<typeof useTransactionMetadataRequest>);
 
     // @ts-expect-error mocking platform
     global.platform = { openTab: jest.fn() };
@@ -76,15 +74,11 @@ describe('useConfirmationAlertActions', () => {
   });
 
   it('opens advanced gas price modal if action key is ShowAdvancedGasFeeModal for legacy transactions', () => {
-    useConfirmContextMock.mockReturnValue({
-      currentConfirmation: {
-        txParams: {
-          type: TransactionEnvelopeType.legacy,
-        },
+    useTransactionMetadataRequestMock.mockReturnValue({
+      txParams: {
+        type: TransactionEnvelopeType.legacy,
       },
-      isScrollToBottomCompleted: true,
-      setIsScrollToBottomCompleted: jest.fn(),
-    });
+    } as ReturnType<typeof useTransactionMetadataRequest>);
 
     processAlertActionKey(AlertActionKey.ShowAdvancedGasFeeModal);
 

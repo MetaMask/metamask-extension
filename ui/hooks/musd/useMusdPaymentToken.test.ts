@@ -5,7 +5,7 @@ import { TransactionType } from '@metamask/transaction-controller';
 import type { Hex } from '@metamask/utils';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { replaceMusdConversionTransactionForPayToken } from '../../components/app/musd/utils/transaction-utils';
-import { useConfirmContext } from '../../pages/confirmations/context/confirm';
+import { useTransactionMetadataRequest } from '../../pages/confirmations/hooks/useTransactionMetadataRequest';
 import { useTransactionPayToken } from '../../pages/confirmations/hooks/pay/useTransactionPayToken';
 import { rejectPendingApproval } from '../../store/actions';
 import { useMusdPaymentToken } from './useMusdPaymentToken';
@@ -30,9 +30,12 @@ jest.mock('@metamask/rpc-errors', () => ({
   serializeError: jest.fn((err) => ({ ...err, serialized: true })),
 }));
 
-jest.mock('../../pages/confirmations/context/confirm', () => ({
-  useConfirmContext: jest.fn(),
-}));
+jest.mock(
+  '../../pages/confirmations/hooks/useTransactionMetadataRequest',
+  () => ({
+    useTransactionMetadataRequest: jest.fn(),
+  }),
+);
 
 jest.mock('../../pages/confirmations/hooks/pay/useTransactionPayToken', () => ({
   useTransactionPayToken: jest.fn(),
@@ -53,7 +56,8 @@ jest.mock('../../store/controller-actions/transaction-pay-controller', () => ({
 }));
 
 const mockUseDispatch = useDispatch as jest.MockedFunction<typeof useDispatch>;
-const mockUseConfirmContext = useConfirmContext as jest.Mock;
+const mockUseTransactionMetadataRequest =
+  useTransactionMetadataRequest as jest.Mock;
 const mockUseTransactionPayToken = useTransactionPayToken as jest.Mock;
 const mockReplaceTransaction =
   replaceMusdConversionTransactionForPayToken as jest.Mock;
@@ -84,9 +88,7 @@ describe('useMusdPaymentToken', () => {
 
     mockUseDispatch.mockReturnValue(mockDispatch);
 
-    mockUseConfirmContext.mockReturnValue({
-      currentConfirmation: mockTransactionMeta,
-    });
+    mockUseTransactionMetadataRequest.mockReturnValue(mockTransactionMeta);
 
     mockUseTransactionPayToken.mockReturnValue({
       payToken: { address: '0xtoken1' as Hex, chainId: '0x1' as Hex },
@@ -116,11 +118,9 @@ describe('useMusdPaymentToken', () => {
     });
 
     it('handles case-insensitive chain comparison', async () => {
-      mockUseConfirmContext.mockReturnValue({
-        currentConfirmation: {
-          ...mockTransactionMeta,
-          chainId: '0xE708' as Hex,
-        },
+      mockUseTransactionMetadataRequest.mockReturnValue({
+        ...mockTransactionMeta,
+        chainId: '0xE708' as Hex,
       });
 
       const { result } = renderHook(() => useMusdPaymentToken());
@@ -371,9 +371,7 @@ describe('useMusdPaymentToken', () => {
 
   describe('edge cases', () => {
     it('calls setPayToken when currentConfirmation is null', async () => {
-      mockUseConfirmContext.mockReturnValue({
-        currentConfirmation: null,
-      });
+      mockUseTransactionMetadataRequest.mockReturnValue(null);
 
       const { result } = renderHook(() => useMusdPaymentToken());
 
@@ -391,11 +389,9 @@ describe('useMusdPaymentToken', () => {
     });
 
     it('calls setPayToken when transaction chainId is undefined', async () => {
-      mockUseConfirmContext.mockReturnValue({
-        currentConfirmation: {
-          ...mockTransactionMeta,
-          chainId: undefined,
-        },
+      mockUseTransactionMetadataRequest.mockReturnValue({
+        ...mockTransactionMeta,
+        chainId: undefined,
       });
 
       const { result } = renderHook(() => useMusdPaymentToken());

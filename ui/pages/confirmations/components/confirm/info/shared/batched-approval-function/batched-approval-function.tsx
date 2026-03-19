@@ -19,9 +19,9 @@ import { useAsyncResult } from '../../../../../../../hooks/useAsync';
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 import { Box } from '../../../../../../../components/component-library';
 import { ERC20_DEFAULT_DECIMALS } from '../../../../../utils/token';
-import { useConfirmContext } from '../../../../../context/confirm';
 import { useDappSwapContext } from '../../../../../context/dapp-swap';
 import { isSpendingCapUnlimited } from '../../approve/hooks/use-approve-token-simulation';
+import { useTransactionMetadataRequest } from '../../../../../hooks/useTransactionMetadataRequest';
 
 export type TranslateFunction = (arg: string) => string;
 
@@ -103,7 +103,7 @@ export function BatchedApprovalFunction({
   nestedTransactionIndex: number;
 }) {
   const t = useI18nContext();
-  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
+  const currentConfirmation = useTransactionMetadataRequest();
   const { isQuotedSwapDisplayedInInfo, selectedQuote } = useDappSwapContext();
 
   const { chainId } = currentConfirmation;

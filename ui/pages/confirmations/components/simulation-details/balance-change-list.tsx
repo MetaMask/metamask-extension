@@ -5,7 +5,8 @@ import {
   FlexDirection,
   TextColor,
 } from '../../../../helpers/constants/design-system';
-import { useConfirmContext } from '../../context/confirm';
+import { useSignatureRequestOptional } from '../../hooks/useSignatureRequest';
+import { useTransactionMetadataRequestOptional } from '../../hooks/useTransactionMetadataRequest';
 import { BalanceChangeRow } from './balance-change-row';
 import { BalanceChange } from './types';
 import { TotalFiatDisplay } from './fiat-display';
@@ -28,7 +29,9 @@ export const BalanceChangeList: React.FC<{
   testId?: string;
   labelColor?: TextColor;
 }> = ({ heading, balanceChanges, testId, labelColor }) => {
-  const { currentConfirmation } = useConfirmContext();
+  const transactionMetadata = useTransactionMetadataRequestOptional();
+  const signatureRequest = useSignatureRequestOptional();
+  const currentConfirmation = transactionMetadata ?? signatureRequest;
   const sortedBalanceChanges = useMemo(() => {
     return sortBalanceChanges(balanceChanges);
   }, [balanceChanges]);

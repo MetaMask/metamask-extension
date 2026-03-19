@@ -12,15 +12,18 @@ import {
 } from '../../../../store/actions';
 import { selectNetworkConfigurationByChainId } from '../../../../selectors';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { useConfirmContext } from '../../context/confirm';
 import { SignatureRequestType } from '../../types/confirm';
+import { useSignatureRequestOptional } from '../useSignatureRequest';
+import { useTransactionMetadataRequestOptional } from '../useTransactionMetadataRequest';
 
 const CHANGE_THRESHOLD_MS = 60 * 1000; // 1 Minute
 
 export const useNetworkAndOriginSwitchingAlerts = (): Alert[] => {
   const t = useI18nContext();
 
-  const { currentConfirmation } = useConfirmContext();
+  const transactionMetadata = useTransactionMetadataRequestOptional();
+  const signatureRequest = useSignatureRequestOptional();
+  const currentConfirmation = transactionMetadata ?? signatureRequest;
   const { chainId: newChainId = '', id: currentConfirmationId } =
     currentConfirmation ?? {};
   const newOrigin =

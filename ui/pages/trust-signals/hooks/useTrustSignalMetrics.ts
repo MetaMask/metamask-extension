@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux';
 import { TransactionMeta } from '@metamask/transaction-controller';
 
 import { getAddressSecurityAlertResponse } from '../../../selectors';
-import { useConfirmContext } from '../../confirmations/context/confirm';
 import { isSignatureTransactionType } from '../../confirmations/utils';
 import type {
   Confirmation,
@@ -16,6 +15,8 @@ import {
 } from '../../../../shared/lib/trust-signals';
 import { useTransactionEventFragment } from '../../confirmations/hooks/useTransactionEventFragment';
 import { useSignatureEventFragment } from '../../confirmations/hooks/useSignatureEventFragment';
+import { useSignatureRequestOptional } from '../../confirmations/hooks/useSignatureRequest';
+import { useTransactionMetadataRequestOptional } from '../../confirmations/hooks/useTransactionMetadataRequest';
 
 export type TrustSignalMetricsProperties = {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
@@ -30,7 +31,7 @@ export type TrustSignalMetricsAnonProperties = {
 };
 
 // For transactions, this is the 'to' address. For signatures, this is the verifying contract.
-function getTargetAddress(confirmation: Confirmation): string | null {
+function getTargetAddress(confirmation?: Confirmation): string | null {
   if (!confirmation) {
     return null;
   }
@@ -52,7 +53,9 @@ function getTargetAddress(confirmation: Confirmation): string | null {
 }
 
 export function useTrustSignalMetrics() {
-  const { currentConfirmation } = useConfirmContext();
+  const transactionMetadata = useTransactionMetadataRequestOptional();
+  const signatureRequest = useSignatureRequestOptional();
+  const currentConfirmation = transactionMetadata ?? signatureRequest;
   const { updateSignatureEventFragment } = useSignatureEventFragment();
   const { updateTransactionEventFragment } = useTransactionEventFragment();
 

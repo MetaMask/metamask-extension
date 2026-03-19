@@ -15,7 +15,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { providerErrors, serializeError } from '@metamask/rpc-errors';
 import type { TransactionMeta } from '@metamask/transaction-controller';
 import type { Hex } from '@metamask/utils';
-import { useConfirmContext } from '../../pages/confirmations/context/confirm';
+import { useTransactionMetadataRequest } from '../../pages/confirmations/hooks/useTransactionMetadataRequest';
 import { useTransactionPayToken } from '../../pages/confirmations/hooks/pay/useTransactionPayToken';
 import {
   replaceMusdConversionTransactionForPayToken,
@@ -59,7 +59,7 @@ export type UseMusdPaymentTokenResult = {
  * @returns Object with onPaymentTokenChange callback and isReplacing state
  */
 export function useMusdPaymentToken(): UseMusdPaymentTokenResult {
-  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
+  const currentConfirmation = useTransactionMetadataRequest();
   const { setPayToken } = useTransactionPayToken();
   const dispatch = useDispatch();
   const navigate = useNavigate();

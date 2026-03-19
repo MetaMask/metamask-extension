@@ -7,12 +7,15 @@ import {
 } from '../../../../shared/constants/network';
 
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { useConfirmContext } from '../context/confirm';
 import { selectNetworkConfigurationByChainId } from '../../../selectors';
+import { useSignatureRequestOptional } from './useSignatureRequest';
+import { useTransactionMetadataRequestOptional } from './useTransactionMetadataRequest';
 
 function useConfirmationNetworkInfo() {
   const t = useI18nContext();
-  const { currentConfirmation } = useConfirmContext();
+  const transactionMetadata = useTransactionMetadataRequestOptional();
+  const signatureRequest = useSignatureRequestOptional();
+  const currentConfirmation = transactionMetadata ?? signatureRequest;
   const chainId = currentConfirmation?.chainId as Hex;
 
   const networkConfiguration = useSelector((state) =>

@@ -14,10 +14,10 @@ import {
 import { Severity } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
-import { useConfirmContext } from '../../../context/confirm';
 import { isCorrectDeveloperTransactionType } from '../../../../../../shared/lib/confirmation.utils';
 import { AlertsName } from '../constants';
 import { useTransactionPayToken } from '../../pay/useTransactionPayToken';
+import { useTransactionMetadataRequest } from '../../useTransactionMetadataRequest';
 
 const PENDING_STATUSES = [
   TransactionStatus.approved,
@@ -27,7 +27,7 @@ const PENDING_STATUSES = [
 
 export function useSigningOrSubmittingAlerts(): Alert[] {
   const t = useI18nContext();
-  const { currentConfirmation } = useConfirmContext();
+  const currentConfirmation = useTransactionMetadataRequest();
   const { type, chainId, txParams } = (currentConfirmation ?? {}) as
     | TransactionMeta
     | Record<string, never>;

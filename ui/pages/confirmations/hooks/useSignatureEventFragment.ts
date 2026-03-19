@@ -1,11 +1,11 @@
 import { useCallback } from 'react';
 import { generateSignatureUniqueId } from '../../../helpers/utils/metrics';
 import { updateEventFragment } from '../../../store/actions';
-import { useConfirmContext } from '../context/confirm';
 import { SignatureRequestType } from '../types/confirm';
 import { isSignatureTransactionType } from '../utils';
-
 import type { MetaMetricsEventFragment } from '../../../../shared/constants/metametrics';
+import { useSignatureRequestOptional } from './useSignatureRequest';
+import { useTransactionMetadataRequestOptional } from './useTransactionMetadataRequest';
 
 /**
  * When a signature has been requested, there should be an event fragment created for it in
@@ -13,7 +13,9 @@ import type { MetaMetricsEventFragment } from '../../../../shared/constants/meta
  * This hook method is used to update an existing signature event fragment for a signature confirmation.
  */
 export const useSignatureEventFragment = () => {
-  const { currentConfirmation } = useConfirmContext();
+  const transactionMetadata = useTransactionMetadataRequestOptional();
+  const signatureRequest = useSignatureRequestOptional();
+  const currentConfirmation = transactionMetadata ?? signatureRequest;
 
   const requestId =
     isSignatureTransactionType(currentConfirmation) &&

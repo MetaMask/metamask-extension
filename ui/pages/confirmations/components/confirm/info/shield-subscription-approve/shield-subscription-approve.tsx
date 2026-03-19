@@ -9,7 +9,6 @@ import { BigNumber } from 'bignumber.js';
 import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { useUserSubscriptions } from '../../../../../../hooks/subscription/useSubscription';
-import { useConfirmContext } from '../../../../context/confirm';
 import { useAssetDetails } from '../../../../hooks/useAssetDetails';
 import { GasFeesSection } from '../shared/gas-fees-section/gas-fees-section';
 import {
@@ -19,6 +18,7 @@ import {
 } from '../../../../../../hooks/subscription/useSubscriptionPricing';
 import { useDecodedTransactionDataValue } from '../../../../../../hooks/useDecodedTransactionData';
 import { getLastUsedShieldSubscriptionPaymentDetails } from '../../../../../../selectors/subscription';
+import { useTransactionMetadataRequest } from '../../../../hooks/useTransactionMetadataRequest';
 import { AccountDetails } from './account-details';
 import { EstimatedChanges } from './estimated-changes';
 import ShieldSubscriptionApproveLoader from './shield-subscription-approve-loader';
@@ -52,8 +52,7 @@ const ShieldSubscriptionApproveInfo = () => {
     );
   }, [cryptoPaymentMethod, lastSelectedPaymentDetail]);
 
-  const { currentConfirmation: transactionMeta } =
-    useConfirmContext<TransactionMeta>();
+  const transactionMeta = useTransactionMetadataRequest();
   const { decodeResponse, value: decodedApprovalAmount } =
     useDecodedTransactionDataValue(transactionMeta);
   const { decimals } = useAssetDetails(

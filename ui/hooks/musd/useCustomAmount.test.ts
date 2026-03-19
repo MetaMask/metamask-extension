@@ -2,22 +2,25 @@ import { renderHook } from '@testing-library/react-hooks';
 import { TransactionType } from '@metamask/transaction-controller';
 
 import { useSelector } from 'react-redux';
-import { useConfirmContext } from '../../pages/confirmations/context/confirm';
+import { useTransactionMetadataRequest } from '../../pages/confirmations/hooks/useTransactionMetadataRequest';
 import { useCustomAmount } from './useCustomAmount';
 
-// Mock dependencies
 jest.mock('react-redux', () => ({
   useSelector: jest.fn(),
 }));
 
-jest.mock('../../pages/confirmations/context/confirm', () => ({
-  useConfirmContext: jest.fn(),
-}));
+jest.mock(
+  '../../pages/confirmations/hooks/useTransactionMetadataRequest',
+  () => ({
+    useTransactionMetadataRequest: jest.fn(),
+  }),
+);
 
 const mockUseSelector = useSelector as jest.MockedFunction<typeof useSelector>;
-const mockUseConfirmContext = useConfirmContext as jest.MockedFunction<
-  typeof useConfirmContext
->;
+const mockUseTransactionMetadataRequest =
+  useTransactionMetadataRequest as jest.MockedFunction<
+    typeof useTransactionMetadataRequest
+  >;
 
 describe('useCustomAmount', () => {
   beforeEach(() => {
@@ -26,12 +29,10 @@ describe('useCustomAmount', () => {
 
   describe('when mUSD conversion is enabled and transaction type is musdConversion', () => {
     beforeEach(() => {
-      mockUseSelector.mockReturnValue(true); // selectIsMusdConversionFlowEnabled
-      mockUseConfirmContext.mockReturnValue({
-        currentConfirmation: {
-          type: TransactionType.musdConversion,
-        },
-      } as ReturnType<typeof useConfirmContext>);
+      mockUseSelector.mockReturnValue(true);
+      mockUseTransactionMetadataRequest.mockReturnValue({
+        type: TransactionType.musdConversion,
+      } as ReturnType<typeof useTransactionMetadataRequest>);
     });
 
     it('should return shouldShowOutputAmountTag as true', () => {
@@ -99,12 +100,10 @@ describe('useCustomAmount', () => {
 
   describe('when mUSD conversion is disabled', () => {
     beforeEach(() => {
-      mockUseSelector.mockReturnValue(false); // selectIsMusdConversionFlowEnabled
-      mockUseConfirmContext.mockReturnValue({
-        currentConfirmation: {
-          type: TransactionType.musdConversion,
-        },
-      } as ReturnType<typeof useConfirmContext>);
+      mockUseSelector.mockReturnValue(false);
+      mockUseTransactionMetadataRequest.mockReturnValue({
+        type: TransactionType.musdConversion,
+      } as ReturnType<typeof useTransactionMetadataRequest>);
     });
 
     it('should return shouldShowOutputAmountTag as false', () => {
@@ -134,12 +133,10 @@ describe('useCustomAmount', () => {
 
   describe('when transaction type is not musdConversion', () => {
     beforeEach(() => {
-      mockUseSelector.mockReturnValue(true); // selectIsMusdConversionFlowEnabled
-      mockUseConfirmContext.mockReturnValue({
-        currentConfirmation: {
-          type: TransactionType.simpleSend,
-        },
-      } as ReturnType<typeof useConfirmContext>);
+      mockUseSelector.mockReturnValue(true);
+      mockUseTransactionMetadataRequest.mockReturnValue({
+        type: TransactionType.simpleSend,
+      } as ReturnType<typeof useTransactionMetadataRequest>);
     });
 
     it('should return shouldShowOutputAmountTag as false', () => {
@@ -167,12 +164,12 @@ describe('useCustomAmount', () => {
     });
   });
 
-  describe('when currentConfirmation is undefined', () => {
+  describe('when currentConfirmation is fallback', () => {
     beforeEach(() => {
-      mockUseSelector.mockReturnValue(true); // selectIsMusdConversionFlowEnabled
-      mockUseConfirmContext.mockReturnValue({
-        currentConfirmation: undefined,
-      } as ReturnType<typeof useConfirmContext>);
+      mockUseSelector.mockReturnValue(true);
+      mockUseTransactionMetadataRequest.mockReturnValue({
+        type: TransactionType.simpleSend,
+      } as ReturnType<typeof useTransactionMetadataRequest>);
     });
 
     it('should return shouldShowOutputAmountTag as false', () => {

@@ -27,7 +27,7 @@ import {
 import { GasModalType } from '../../../constants/gas';
 import { GasPriceInput } from '../../gas-price-input/gas-price-input';
 import { GasInput } from '../../gas-input/gas-input';
-import { useConfirmContext } from '../../../context/confirm';
+import { useTransactionMetadataRequest } from '../../../hooks/useTransactionMetadataRequest';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { updateTransactionGasFees } from '../../../../../store/actions';
 
@@ -40,8 +40,7 @@ export const AdvancedGasPriceModal = ({
 }) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
-  const { currentConfirmation: transactionMeta } =
-    useConfirmContext<TransactionMeta>();
+  const transactionMeta = useTransactionMetadataRequest();
 
   const [gasParams, setGasParams] = useState<{
     gas: Hex;

@@ -10,7 +10,7 @@ import { useDispatch } from 'react-redux';
 
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { updateTransactionGasFees } from '../../../../store/actions';
-import { useConfirmContext } from '../../context/confirm';
+import { useTransactionMetadataRequest } from '../useTransactionMetadataRequest';
 import { useGasFeeEstimates } from '../../../../hooks/useGasFeeEstimates';
 import { useFeeCalculations } from '../../components/confirm/info/hooks/useFeeCalculations';
 import { type GasOption } from '../../types/gas';
@@ -27,8 +27,7 @@ export const useGasPriceEstimateOption = ({
 }): GasOption[] => {
   const dispatch = useDispatch();
   const t = useI18nContext();
-  const { currentConfirmation: transactionMeta } =
-    useConfirmContext<TransactionMeta>();
+  const transactionMeta = useTransactionMetadataRequest();
   const { calculateGasEstimate } = useFeeCalculations(transactionMeta);
   const nativeTicker = useTransactionNativeTicker();
 

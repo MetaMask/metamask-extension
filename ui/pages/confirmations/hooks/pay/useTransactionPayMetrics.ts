@@ -8,7 +8,7 @@ import { TransactionPayStrategy } from '@metamask/transaction-pay-controller';
 import { getNativeTokenAddress } from '@metamask/assets-controllers';
 import { BigNumber } from 'bignumber.js';
 import type { TransactionPaymentToken } from '@metamask/transaction-pay-controller';
-import { useConfirmContext } from '../../context/confirm';
+import { useTransactionMetadataRequest } from '../useTransactionMetadataRequest';
 import { hasTransactionType } from '../../../../../shared/lib/transactions.utils';
 import { updateEventFragment } from '../../../../store/actions';
 import { useTransactionPayToken } from './useTransactionPayToken';
@@ -20,8 +20,7 @@ import {
 import { useTransactionPayAvailableTokens } from './useTransactionPayAvailableTokens';
 
 export function useTransactionPayMetrics() {
-  const { currentConfirmation: transactionMeta } =
-    useConfirmContext<TransactionMeta>();
+  const transactionMeta = useTransactionMetadataRequest();
   const { payToken } = useTransactionPayToken();
   const primaryRequiredToken = useTransactionPayPrimaryRequiredToken();
   const automaticPayToken = useRef<TransactionPaymentToken>();

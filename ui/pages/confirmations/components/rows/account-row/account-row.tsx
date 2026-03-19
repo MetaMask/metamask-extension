@@ -1,4 +1,3 @@
-import { TransactionMeta } from '@metamask/transaction-controller';
 import React from 'react';
 import {
   Icon,
@@ -11,7 +10,7 @@ import {
   Display,
   IconColor,
 } from '../../../../../helpers/constants/design-system';
-import { useConfirmContext } from '../../../context/confirm';
+import { useTransactionMetadataRequest } from '../../../hooks/useTransactionMetadataRequest';
 import {
   ConfirmInfoRow,
   ConfirmInfoRowAddress,
@@ -23,8 +22,7 @@ type AccountRowProps = {
 };
 
 export const AccountRow = ({ label, showChevron }: AccountRowProps) => {
-  const { currentConfirmation: transactionMeta } =
-    useConfirmContext<TransactionMeta>();
+  const transactionMeta = useTransactionMetadataRequest();
 
   return (
     <ConfirmInfoRow label={label}>

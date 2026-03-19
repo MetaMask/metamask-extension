@@ -1,9 +1,6 @@
 'use no memo';
 
-import {
-  TransactionMeta,
-  TransactionType,
-} from '@metamask/transaction-controller';
+import { TransactionType } from '@metamask/transaction-controller';
 import { useMemo } from 'react';
 
 import { RowAlertKey } from '../../../../../components/app/confirm/info/row/constants';
@@ -12,8 +9,8 @@ import { Severity } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useAsyncResult } from '../../../../../hooks/useAsync';
 import { getTokenStandardAndDetailsByChain } from '../../../../../store/actions';
-import { useConfirmContext } from '../../../context/confirm';
 import { useTransferRecipient } from '../../../components/confirm/info/hooks/useTransferRecipient';
+import { useTransactionMetadataRequest } from '../../useTransactionMetadataRequest';
 
 const TRANSFER_TRANSACTION_TYPES: TransactionType[] = [
   TransactionType.simpleSend,
@@ -23,7 +20,7 @@ const TRANSFER_TRANSACTION_TYPES: TransactionType[] = [
 
 export function useTokenContractAlert(): Alert[] {
   const t = useI18nContext();
-  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
+  const currentConfirmation = useTransactionMetadataRequest();
   const recipient = useTransferRecipient();
   const chainId = currentConfirmation?.chainId;
   const transactionType = currentConfirmation?.type;

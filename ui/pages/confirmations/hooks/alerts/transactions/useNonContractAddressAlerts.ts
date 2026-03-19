@@ -13,14 +13,14 @@ import { RowAlertKey } from '../../../../../components/app/confirm/info/row/cons
 import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
 import { Severity } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import { useConfirmContext } from '../../../context/confirm';
+import { useTransactionMetadataRequest } from '../../useTransactionMetadataRequest';
 import { useIsUpgradeTransaction } from '../../../components/confirm/info/hooks/useIsUpgradeTransaction';
 import { NonContractAddressAlertMessage } from './NonContractAddressAlertMessage';
 import { useContractCode } from './useContractCode';
 
 export function useNonContractAddressAlerts(): Alert[] {
   const t = useI18nContext();
-  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
+  const currentConfirmation = useTransactionMetadataRequest();
   const networkConfigurations = useSelector(getNetworkConfigurationsByChainId);
   const { isUpgrade } = useIsUpgradeTransaction();
   const { pending, value } = useContractCode(

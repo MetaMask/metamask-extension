@@ -16,7 +16,7 @@ import { getRemoteFeatureFlags } from '../../../../../selectors/remote-feature-f
 import { ConfirmMetamaskState } from '../../../types/confirm';
 import { getTokenValueFromRecord } from '../../../utils/token';
 import { selectDappSwapComparisonData } from '../../../selectors/confirm';
-import { useConfirmContext } from '../../../context/confirm';
+import { useTransactionMetadataRequest } from '../../useTransactionMetadataRequest';
 import { useDappSwapComparisonLatencyMetrics } from './useDappSwapComparisonLatencyMetrics';
 import { useDappSwapComparisonMetrics } from './useDappSwapComparisonMetrics';
 import { useDappSwapUSDValues } from './useDappSwapUSDValues';
@@ -36,7 +36,7 @@ export function useDappSwapComparisonInfo() {
     dappSwapQa: { enabled: boolean };
   };
 
-  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
+  const currentConfirmation = useTransactionMetadataRequest();
   const {
     quotes,
     latency: quoteResponseLatency,

@@ -3,8 +3,10 @@ import { ApprovalType } from '@metamask/controller-utils';
 import React, { useMemo } from 'react';
 import { getEnabledAdvancedPermissions } from '../../../../../../shared/lib/environment';
 import { useTrustSignalMetrics } from '../../../../trust-signals/hooks/useTrustSignalMetrics';
-import { useConfirmContext } from '../../../context/confirm';
+import { useApprovalRequest } from '../../../hooks/useApprovalRequest';
+import { useSignatureRequestOptional } from '../../../hooks/useSignatureRequest';
 import { useSmartTransactionFeatureFlags } from '../../../hooks/useSmartTransactionFeatureFlags';
+import { useTransactionMetadataRequestOptional } from '../../../hooks/useTransactionMetadataRequest';
 import { useTransactionFocusEffect } from '../../../hooks/useTransactionFocusEffect';
 import { SignatureRequestType } from '../../../types/confirm';
 import { AddEthereumChain } from '../../../external/add-ethereum-chain/add-ethereum-chain';
@@ -104,7 +106,11 @@ export const InfoSkeleton = ({
 );
 
 const Info = () => {
-  const { currentConfirmation } = useConfirmContext();
+  const transactionMetadata = useTransactionMetadataRequestOptional();
+  const signatureRequest = useSignatureRequestOptional();
+  const approvalRequest = useApprovalRequest();
+  const currentConfirmation = transactionMetadata ?? signatureRequest;
+  const confirmationType = currentConfirmation?.type ?? approvalRequest?.type;
   const { loader } = useConfirmationNavigationOptions();
 
   useSmartTransactionFeatureFlags();
@@ -123,15 +129,15 @@ const Info = () => {
       [TransactionType.shieldSubscriptionApprove]: () =>
         ShieldSubscriptionApproveInfo,
       [TransactionType.signTypedData]: () => {
-        const signatureRequest = currentConfirmation as SignatureRequestType;
+        const typedSignRequest = currentConfirmation as SignatureRequestType;
 
-        const { version } = signatureRequest?.msgParams ?? {};
+        const { version } = typedSignRequest?.msgParams ?? {};
         if (version === 'V1') {
           return TypedSignV1Info;
         }
-        if (signatureRequest?.decodedPermission) {
+        if (typedSignRequest?.decodedPermission) {
           const requestedPermissionType =
-            signatureRequest.decodedPermission.permission.type;
+            typedSignRequest.decodedPermission.permission.type;
 
           const enabledPermissions = getEnabledAdvancedPermissions();
 
@@ -166,7 +172,7 @@ const Info = () => {
     [currentConfirmation],
   );
 
-  if (!currentConfirmation?.type) {
+  if (!confirmationType) {
     if (loader === ConfirmationLoader.CustomAmount) {
       return <CustomAmountInfoSkeleton />;
     }
@@ -184,7 +190,7 @@ const Info = () => {
 
   const InfoComponent =
     ConfirmationInfoComponentMap[
-      currentConfirmation?.type as keyof typeof ConfirmationInfoComponentMap
+      confirmationType as keyof typeof ConfirmationInfoComponentMap
     ]();
 
   return <InfoComponent />;

@@ -23,11 +23,10 @@ export function renderWithConfirmContextProvider(
   component: ReactElement,
   store: unknown,
   pathname = DEFAULT_ROUTE,
-  confirmationId?: string,
 ) {
   return renderWithProvider(
     <HardwareWalletErrorProvider>
-      <ConfirmContextProvider confirmationId={confirmationId}>
+      <ConfirmContextProvider>
         <DappSwapContextProvider>
           <GasFeeModalContextProvider>{component}</GasFeeModalContextProvider>
         </DappSwapContextProvider>
@@ -62,21 +61,7 @@ export function renderWithConfirmContext(
   component: ReactElement,
   store: Store,
 ) {
-  const state = store.getState() as {
-    metamask: {
-      unapprovedTypedMessages: Record<
-        string,
-        ConfirmContextType['currentConfirmation']
-      >;
-    };
-  };
-
-  const currentConfirmation = Object.values(
-    state.metamask.unapprovedTypedMessages,
-  )[0];
-
   return renderWithContext(component, store, {
-    currentConfirmation,
     isScrollToBottomCompleted: true,
     setIsScrollToBottomCompleted: () => undefined,
   });
@@ -90,12 +75,11 @@ export function renderHookWithConfirmContextProvider(
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   Container?: any,
-  confirmationId?: string,
 ) {
   const contextContainer = Container
     ? ({ children }: { children: ReactChildren }) => (
         <HardwareWalletErrorProvider>
-          <ConfirmContextProvider confirmationId={confirmationId}>
+          <ConfirmContextProvider>
             <DappSwapContextProvider>
               <GasFeeModalContextProvider>
                 <Container>{children}</Container>
@@ -106,7 +90,7 @@ export function renderHookWithConfirmContextProvider(
       )
     : ({ children }: { children: ReactElement }) => (
         <HardwareWalletErrorProvider>
-          <ConfirmContextProvider confirmationId={confirmationId}>
+          <ConfirmContextProvider>
             <DappSwapContextProvider>
               <GasFeeModalContextProvider>
                 {children as ReactElement}

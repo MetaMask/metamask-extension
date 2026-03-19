@@ -4,14 +4,17 @@ import { Alert } from '../../../../ducks/confirm-alerts/confirm-alerts';
 import { RowAlertKey } from '../../../../components/app/confirm/info/row/constants';
 import { Severity } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { useConfirmContext } from '../../context/confirm';
 import { TrustSignalDisplayState } from '../../../../hooks/useTrustSignals';
 import { useOriginTrustSignals } from '../../../../hooks/useOriginTrustSignals';
 import { SignatureRequestType } from '../../types/confirm';
+import { useSignatureRequestOptional } from '../useSignatureRequest';
+import { useTransactionMetadataRequestOptional } from '../useTransactionMetadataRequest';
 
 export function useOriginTrustSignalAlerts(): Alert[] {
   const t = useI18nContext();
-  const { currentConfirmation } = useConfirmContext();
+  const transactionMetadata = useTransactionMetadataRequestOptional();
+  const signatureRequest = useSignatureRequestOptional();
+  const currentConfirmation = transactionMetadata ?? signatureRequest;
 
   const origin =
     (currentConfirmation as TransactionMeta)?.origin ??

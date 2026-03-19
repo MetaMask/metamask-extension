@@ -5,7 +5,7 @@ import {
 } from '@metamask/transaction-controller';
 
 import { useGasFeeEstimates } from '../../../../hooks/useGasFeeEstimates';
-import { useConfirmContext } from '../../context/confirm';
+import { useTransactionMetadataRequest } from '../useTransactionMetadataRequest';
 import { useFeeCalculations } from '../../components/confirm/info/hooks/useFeeCalculations';
 import { useGasPriceEstimateOption } from './useGasPriceEstimateOption';
 
@@ -15,8 +15,8 @@ jest.mock('../../../../hooks/useI18nContext', () => ({
   useI18nContext: () => (key: string) => key,
 }));
 
-jest.mock('../../context/confirm', () => ({
-  useConfirmContext: jest.fn(),
+jest.mock('../useTransactionMetadataRequest', () => ({
+  useTransactionMetadataRequest: jest.fn(),
 }));
 
 jest.mock('../../../../hooks/useGasFeeEstimates', () => ({
@@ -39,7 +39,9 @@ jest.mock('react-redux', () => ({
   useDispatch: () => jest.fn(),
 }));
 
-const mockUseConfirmContext = jest.mocked(useConfirmContext);
+const mockUseTransactionMetadataRequest = jest.mocked(
+  useTransactionMetadataRequest,
+);
 const mockUseGasFeeEstimates = jest.mocked(useGasFeeEstimates);
 const mockUseFeeCalculations = jest.mocked(useFeeCalculations);
 
@@ -58,19 +60,17 @@ describe('useGasPriceEstimateOption', () => {
   });
 
   it('returns empty array when gas fee estimate type is not GasPrice', () => {
-    mockUseConfirmContext.mockReturnValue({
-      currentConfirmation: {
-        id: '1',
-        networkClientId: 'mainnet',
-        userFeeLevel: 'medium',
-        gasFeeEstimates: {
-          type: GasFeeEstimateType.FeeMarket,
-        },
-        txParams: {
-          type: TransactionEnvelopeType.feeMarket,
-        },
+    mockUseTransactionMetadataRequest.mockReturnValue({
+      id: '1',
+      networkClientId: 'mainnet',
+      userFeeLevel: 'medium',
+      gasFeeEstimates: {
+        type: GasFeeEstimateType.FeeMarket,
       },
-    } as unknown as ReturnType<typeof useConfirmContext>);
+      txParams: {
+        type: TransactionEnvelopeType.feeMarket,
+      },
+    } as unknown as ReturnType<typeof useTransactionMetadataRequest>);
 
     mockUseGasFeeEstimates.mockReturnValue({
       gasFeeEstimates: {},
@@ -84,21 +84,19 @@ describe('useGasPriceEstimateOption', () => {
   });
 
   it('returns gas price option when gas fee estimate type is GasPrice', () => {
-    mockUseConfirmContext.mockReturnValue({
-      currentConfirmation: {
-        id: '1',
-        networkClientId: 'mainnet',
-        userFeeLevel: 'medium',
-        gasLimitNoBuffer: '0x5208',
-        gasFeeEstimates: {
-          type: GasFeeEstimateType.GasPrice,
-          gasPrice: MOCK_GAS_PRICE,
-        },
-        txParams: {
-          type: TransactionEnvelopeType.legacy,
-        },
+    mockUseTransactionMetadataRequest.mockReturnValue({
+      id: '1',
+      networkClientId: 'mainnet',
+      userFeeLevel: 'medium',
+      gasLimitNoBuffer: '0x5208',
+      gasFeeEstimates: {
+        type: GasFeeEstimateType.GasPrice,
+        gasPrice: MOCK_GAS_PRICE,
       },
-    } as unknown as ReturnType<typeof useConfirmContext>);
+      txParams: {
+        type: TransactionEnvelopeType.legacy,
+      },
+    } as unknown as ReturnType<typeof useTransactionMetadataRequest>);
 
     mockUseGasFeeEstimates.mockReturnValue({
       gasFeeEstimates: { gasPrice: '10' },

@@ -14,13 +14,13 @@ import {
 } from '../../../hooks/pay/useTransactionPayData';
 import { useTransactionPayToken } from '../../../hooks/pay/useTransactionPayToken';
 import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
-import { useConfirmContext } from '../../../context/confirm';
+import { useTransactionMetadataRequest } from '../../../hooks/useTransactionMetadataRequest';
 import { ConfirmInfoRowSize } from '../../../../../components/app/confirm/info/row/row';
 import { BridgeTimeRow, BridgeTimeRowProps } from './bridge-time-row';
 
 jest.mock('../../../hooks/pay/useTransactionPayData');
 jest.mock('../../../hooks/pay/useTransactionPayToken');
-jest.mock('../../../context/confirm');
+jest.mock('../../../hooks/useTransactionMetadataRequest');
 
 const mockStore = configureMockStore([]);
 
@@ -36,18 +36,16 @@ describe('BridgeTimeRow', () => {
   const useIsTransactionPayLoadingMock = jest.mocked(
     useIsTransactionPayLoading,
   );
-  const useConfirmContextMock = jest.mocked(useConfirmContext);
+  const useTransactionMetadataRequestMock = jest.mocked(
+    useTransactionMetadataRequest,
+  );
 
   beforeEach(() => {
     jest.resetAllMocks();
 
-    useConfirmContextMock.mockReturnValue({
-      currentConfirmation: {
-        chainId: '0x1' as Hex,
-      },
-      isScrollToBottomCompleted: true,
-      setIsScrollToBottomCompleted: jest.fn(),
-    } as ReturnType<typeof useConfirmContext>);
+    useTransactionMetadataRequestMock.mockReturnValue({
+      chainId: '0x1' as Hex,
+    } as ReturnType<typeof useTransactionMetadataRequest>);
 
     useIsTransactionPayLoadingMock.mockReturnValue(false);
 

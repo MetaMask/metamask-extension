@@ -4,7 +4,7 @@ import { useSearchParams } from 'react-router-dom';
 import { merge } from 'lodash';
 
 import { updateEditableParams } from '../../../../../../store/actions';
-import { useConfirmContext } from '../../../../context/confirm';
+import { useTransactionMetadataRequest } from '../../../../hooks/useTransactionMetadataRequest';
 import { useTransactionEventFragment } from '../../../../hooks/useTransactionEventFragment';
 import {
   getCrossChainMetaMaskCachedBalances,
@@ -36,8 +36,8 @@ jest.mock('../../../../../../selectors', () => ({
   selectMaxValueModeForTransaction: jest.fn(),
 }));
 
-jest.mock('../../../../context/confirm', () => ({
-  useConfirmContext: jest.fn(),
+jest.mock('../../../../hooks/useTransactionMetadataRequest', () => ({
+  useTransactionMetadataRequest: jest.fn(),
 }));
 
 jest.mock('../../../../hooks/useTransactionEventFragment');
@@ -47,7 +47,9 @@ jest.mock('./useSupportsEIP1559', () => ({
 }));
 
 describe('useMaxValueRefresher', () => {
-  const useConfirmContextMock = jest.mocked(useConfirmContext);
+  const useTransactionMetadataRequestMock = jest.mocked(
+    useTransactionMetadataRequest,
+  );
   const useSupportsEIP1559Mock = jest.mocked(useSupportsEIP1559);
   const updateTransactionEventFragmentMock = jest.fn();
   const useTransactionEventFragmentMock = jest.mocked(
@@ -79,9 +81,9 @@ describe('useMaxValueRefresher', () => {
   beforeEach(() => {
     jest.clearAllMocks();
 
-    useConfirmContextMock.mockReturnValue({
-      currentConfirmation: baseTransactionMeta,
-    } as unknown as ReturnType<typeof useConfirmContext>);
+    useTransactionMetadataRequestMock.mockReturnValue(
+      baseTransactionMeta as never,
+    );
 
     useSupportsEIP1559Mock.mockReturnValue({
       supportsEIP1559: true,
@@ -175,9 +177,9 @@ describe('useMaxValueRefresher', () => {
       type: TransactionType.contractInteraction,
     });
 
-    useConfirmContextMock.mockReturnValue({
-      currentConfirmation: contractInteractionMeta,
-    } as unknown as ReturnType<typeof useConfirmContext>);
+    useTransactionMetadataRequestMock.mockReturnValue(
+      contractInteractionMeta as never,
+    );
 
     renderHook(() => useMaxValueRefresher());
 
@@ -189,9 +191,9 @@ describe('useMaxValueRefresher', () => {
       type: TransactionType.tokenMethodTransfer,
     });
 
-    useConfirmContextMock.mockReturnValue({
-      currentConfirmation: tokenTransferMeta,
-    } as unknown as ReturnType<typeof useConfirmContext>);
+    useTransactionMetadataRequestMock.mockReturnValue(
+      tokenTransferMeta as never,
+    );
 
     renderHook(() => useMaxValueRefresher());
 
@@ -295,9 +297,9 @@ describe('useMaxValueRefresher', () => {
           },
         });
 
-        useConfirmContextMock.mockReturnValue({
-          currentConfirmation: transactionMeta,
-        } as unknown as ReturnType<typeof useConfirmContext>);
+        useTransactionMetadataRequestMock.mockReturnValue(
+          transactionMeta as never,
+        );
 
         renderHook(() => useMaxValueRefresher());
 
@@ -321,9 +323,9 @@ describe('useMaxValueRefresher', () => {
           },
         };
 
-        useConfirmContextMock.mockReturnValue({
-          currentConfirmation: transactionMeta,
-        } as unknown as ReturnType<typeof useConfirmContext>);
+        useTransactionMetadataRequestMock.mockReturnValue(
+          transactionMeta as never,
+        );
 
         renderHook(() => useMaxValueRefresher());
 
@@ -350,9 +352,9 @@ describe('useMaxValueRefresher', () => {
           },
         });
 
-        useConfirmContextMock.mockReturnValue({
-          currentConfirmation: transactionMeta,
-        } as unknown as ReturnType<typeof useConfirmContext>);
+        useTransactionMetadataRequestMock.mockReturnValue(
+          transactionMeta as never,
+        );
 
         renderHook(() => useMaxValueRefresher());
 
@@ -375,9 +377,9 @@ describe('useMaxValueRefresher', () => {
           },
         };
 
-        useConfirmContextMock.mockReturnValue({
-          currentConfirmation: transactionMeta,
-        } as unknown as ReturnType<typeof useConfirmContext>);
+        useTransactionMetadataRequestMock.mockReturnValue(
+          transactionMeta as never,
+        );
 
         renderHook(() => useMaxValueRefresher());
 
@@ -400,9 +402,9 @@ describe('useMaxValueRefresher', () => {
           layer1GasFee: '0x2540be400', // 10 gwei
         });
 
-        useConfirmContextMock.mockReturnValue({
-          currentConfirmation: transactionMeta,
-        } as unknown as ReturnType<typeof useConfirmContext>);
+        useTransactionMetadataRequestMock.mockReturnValue(
+          transactionMeta as never,
+        );
 
         renderHook(() => useMaxValueRefresher());
 
@@ -424,9 +426,9 @@ describe('useMaxValueRefresher', () => {
           },
         });
 
-        useConfirmContextMock.mockReturnValue({
-          currentConfirmation: transactionMeta,
-        } as unknown as ReturnType<typeof useConfirmContext>);
+        useTransactionMetadataRequestMock.mockReturnValue(
+          transactionMeta as never,
+        );
 
         renderHook(() => useMaxValueRefresher());
 
@@ -450,9 +452,9 @@ describe('useMaxValueRefresher', () => {
         },
       };
 
-      useConfirmContextMock.mockReturnValue({
-        currentConfirmation: transactionMeta,
-      } as unknown as ReturnType<typeof useConfirmContext>);
+      useTransactionMetadataRequestMock.mockReturnValue(
+        transactionMeta as never,
+      );
 
       renderHook(() => useMaxValueRefresher());
 
@@ -500,9 +502,9 @@ describe('useMaxValueRefresher', () => {
       },
     };
 
-    useConfirmContextMock.mockReturnValue({
-      currentConfirmation: updatedTransactionMeta,
-    } as unknown as ReturnType<typeof useConfirmContext>);
+    useTransactionMetadataRequestMock.mockReturnValue(
+      updatedTransactionMeta as never,
+    );
 
     rerender();
 
@@ -537,9 +539,7 @@ describe('useMaxValueRefresher', () => {
       id: customTransactionId,
     });
 
-    useConfirmContextMock.mockReturnValue({
-      currentConfirmation: transactionMeta,
-    } as unknown as ReturnType<typeof useConfirmContext>);
+    useTransactionMetadataRequestMock.mockReturnValue(transactionMeta as never);
 
     renderHook(() => useMaxValueRefresher());
 

@@ -18,13 +18,13 @@ import {
 } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { setConfirmationAdvancedDetailsOpen } from '../../../../../store/actions';
-import { useConfirmContext } from '../../../context/confirm';
+import { useTransactionMetadataRequest } from '../../../hooks/useTransactionMetadataRequest';
 import { selectConfirmationAdvancedDetailsOpen } from '../../../selectors/preferences';
 
 export const AdvancedDetailsButton = () => {
   const t = useI18nContext();
   const dispatch = useDispatch();
-  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
+  const currentConfirmation = useTransactionMetadataRequest();
 
   const showAdvancedDetails = useSelector(
     selectConfirmationAdvancedDetailsOpen,

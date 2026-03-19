@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { Hex } from '@metamask/utils';
-import { TransactionMeta } from '@metamask/transaction-controller';
+
 import {
   Box,
   BoxFlexDirection,
@@ -10,7 +10,7 @@ import {
 } from '@metamask/design-system-react';
 
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { useConfirmContext } from '../../context/confirm';
+import { useTransactionMetadataRequest } from '../../hooks/useTransactionMetadataRequest';
 import {
   hexWEIToDecGWEI,
   decGWEIToHexWEI,
@@ -26,7 +26,7 @@ export const GasPriceInput = ({
   onErrorChange: (error: string | undefined) => void;
 }) => {
   const t = useI18nContext();
-  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
+  const currentConfirmation = useTransactionMetadataRequest();
 
   const initialGasPrice = hexWEIToDecGWEI(
     currentConfirmation?.txParams?.gasPrice as string,

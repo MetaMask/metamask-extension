@@ -1,6 +1,5 @@
-import { TransactionMeta } from '@metamask/transaction-controller';
 import React from 'react';
-import { useConfirmContext } from '../../../../context/confirm';
+import { useTransactionMetadataRequest } from '../../../../hooks/useTransactionMetadataRequest';
 import { SimulationDetails } from '../../../simulation-details';
 import { TransactionPaySection } from '../../../rows/transaction-pay-section/transaction-pay-section';
 import { AdvancedDetails } from '../shared/advanced-details/advanced-details';
@@ -10,8 +9,7 @@ import { TokenDetailsSection } from './token-details-section';
 import { TransactionFlowSection } from './transaction-flow-section';
 
 const TokenTransferInfo = () => {
-  const { currentConfirmation: transactionMeta } =
-    useConfirmContext<TransactionMeta>();
+  const transactionMeta = useTransactionMetadataRequest();
 
   const isWalletInitiated = transactionMeta.origin === 'metamask';
 

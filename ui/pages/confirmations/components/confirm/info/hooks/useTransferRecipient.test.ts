@@ -4,7 +4,10 @@ import {
   NestedTransactionMetadata,
 } from '@metamask/transaction-controller';
 import { renderHookWithConfirmContextProvider } from '../../../../../../../test/lib/confirmations/render-helpers';
-import { getMockConfirmStateForTransaction } from '../../../../../../../test/data/confirmations/helper';
+import {
+  getMockConfirmState,
+  getMockConfirmStateForTransaction,
+} from '../../../../../../../test/data/confirmations/helper';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../../test/data/confirmations/contract-interaction';
 import { genUnapprovedTokenTransferConfirmation } from '../../../../../../../test/data/confirmations/token-transfer';
 import {
@@ -21,7 +24,12 @@ const TRANSACTION_METADATA_MOCK =
 function runHook(transaction?: TransactionMeta) {
   const state = transaction
     ? getMockConfirmStateForTransaction(transaction)
-    : {};
+    : getMockConfirmState({
+        metamask: {
+          pendingApprovals: {},
+          transactions: [],
+        },
+      });
 
   const { result } = renderHookWithConfirmContextProvider(
     useTransferRecipient,
@@ -34,7 +42,12 @@ function runHook(transaction?: TransactionMeta) {
 function runNestedHook(transaction?: TransactionMeta) {
   const state = transaction
     ? getMockConfirmStateForTransaction(transaction)
-    : {};
+    : getMockConfirmState({
+        metamask: {
+          pendingApprovals: {},
+          transactions: [],
+        },
+      });
 
   const { result } = renderHookWithConfirmContextProvider(
     useNestedTransactionTransferRecipients,
@@ -45,8 +58,8 @@ function runNestedHook(transaction?: TransactionMeta) {
 }
 
 describe('useTransferRecipient', () => {
-  it('returns undefined if no transaction', () => {
-    expect(runHook()).toBeUndefined();
+  it('returns empty string if no transaction', () => {
+    expect(runHook()).toBe('');
   });
 
   it('returns parameter to address if simple send', () => {

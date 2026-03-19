@@ -20,7 +20,8 @@ import {
 } from '../../../../helpers/constants/design-system';
 import useAlerts from '../../../../hooks/useAlerts';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { useConfirmContext } from '../../../../pages/confirmations/context/confirm';
+import { useTransactionMetadataRequestOptional } from '../../../../pages/confirmations/hooks/useTransactionMetadataRequest';
+import { useSignatureRequestOptional } from '../../../../pages/confirmations/hooks/useSignatureRequest';
 import {
   Box,
   Button,
@@ -159,8 +160,10 @@ function AlertHeader({
 // eslint-disable-next-line @typescript-eslint/naming-convention
 function BlockaidAlertDetails() {
   const t = useI18nContext();
-  const { currentConfirmation } = useConfirmContext();
-  const { securityAlertResponse } = currentConfirmation;
+  const transactionMetadata = useTransactionMetadataRequestOptional();
+  const signatureRequest = useSignatureRequestOptional();
+  const currentConfirmation = transactionMetadata ?? signatureRequest;
+  const { securityAlertResponse } = currentConfirmation ?? {};
   let copy;
   switch (securityAlertResponse?.reason) {
     case BlockaidReason.approvalFarming:

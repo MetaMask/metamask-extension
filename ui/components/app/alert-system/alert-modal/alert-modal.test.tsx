@@ -14,7 +14,8 @@ import { renderWithProvider } from '../../../../../test/lib/render-helpers-navig
 import { Alert } from '../../../../ducks/confirm-alerts/confirm-alerts';
 import { Severity } from '../../../../helpers/constants/design-system';
 import * as useAlertsModule from '../../../../hooks/useAlerts';
-import { useConfirmContext } from '../../../../pages/confirmations/context/confirm';
+import { useTransactionMetadataRequestOptional } from '../../../../pages/confirmations/hooks/useTransactionMetadataRequest';
+import { useSignatureRequestOptional } from '../../../../pages/confirmations/hooks/useSignatureRequest';
 import { AlertModal } from './alert-modal';
 
 const onProcessActionMock = jest.fn();
@@ -37,17 +38,29 @@ jest.mock('../contexts/alertMetricsContext', () => ({
   })),
 }));
 
-jest.mock('../../../../pages/confirmations/context/confirm', () => ({
-  useConfirmContext: jest.fn(() => ({
-    currentConfirmation: {
+jest.mock(
+  '../../../../pages/confirmations/hooks/useTransactionMetadataRequest',
+  () => ({
+    useTransactionMetadataRequestOptional: jest.fn(() => ({
       securityAlertResponse: {
         reason: '',
       },
-    },
-  })),
+    })),
+  }),
+);
+
+jest.mock('../../../../pages/confirmations/hooks/useSignatureRequest', () => ({
+  useSignatureRequestOptional: jest.fn(() => undefined),
 }));
 
 describe('AlertModal', () => {
+  const useTransactionMetadataRequestOptionalMock = jest.mocked(
+    useTransactionMetadataRequestOptional,
+  );
+  const useSignatureRequestOptionalMock = jest.mocked(
+    useSignatureRequestOptional,
+  );
+
   const OWNER_ID_MOCK = '123';
   const FROM_ALERT_KEY_MOCK = 'from';
   const CONTRACT_ALERT_KEY_MOCK = 'contract';
@@ -351,6 +364,7 @@ describe('AlertModal', () => {
   describe('BlockaidAlertDetails', () => {
     beforeEach(() => {
       jest.clearAllMocks();
+      useSignatureRequestOptionalMock.mockReturnValue(undefined);
     });
 
     const blockaidAlertMock: Alert = {
@@ -432,13 +446,11 @@ describe('AlertModal', () => {
 
     testCases.forEach(({ reason, expectedKey }) => {
       it(`displays correct message for ${reason}`, () => {
-        (useConfirmContext as jest.Mock).mockImplementation(() => ({
-          currentConfirmation: {
-            securityAlertResponse: {
-              reason,
-            },
+        useTransactionMetadataRequestOptionalMock.mockReturnValue({
+          securityAlertResponse: {
+            reason,
           },
-        }));
+        } as ReturnType<typeof useTransactionMetadataRequestOptional>);
 
         const { getByText } = renderWithProvider(
           <AlertModal
@@ -455,9 +467,9 @@ describe('AlertModal', () => {
     });
 
     it('handles undefined securityAlertResponse', () => {
-      (useConfirmContext as jest.Mock).mockImplementation(() => ({
-        currentConfirmation: {},
-      }));
+      useTransactionMetadataRequestOptionalMock.mockReturnValue(
+        {} as ReturnType<typeof useTransactionMetadataRequestOptional>,
+      );
 
       const { getByText } = renderWithProvider(
         <AlertModal

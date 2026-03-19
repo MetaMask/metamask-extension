@@ -58,7 +58,7 @@ const MultipleRequestContent = ({
       <ModalHeader endAccessory={<></>}>{t('spamModalTitle')}</ModalHeader>
       <OriginPill
         style={{ marginTop: 0, marginBottom: 20 }}
-        origin={origin}
+        origin={origin ?? ''}
         dataTestId="origin-pill"
       />
       <ModalBody>

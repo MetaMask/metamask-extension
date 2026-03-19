@@ -1,4 +1,3 @@
-import { TransactionMeta } from '@metamask/transaction-controller';
 import { NameType } from '@metamask/name-controller';
 import {
   AvatarAccountSize,
@@ -16,14 +15,13 @@ import { PreferredAvatar } from '../../../../../../components/app/preferred-avat
 import { toChecksumHexAddress } from '../../../../../../../shared/lib/hexstring-utils';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
 import { useDisplayName } from '../../../../../../hooks/useDisplayName';
-import { useConfirmContext } from '../../../../context/confirm';
+import { useTransactionMetadataRequest } from '../../../../hooks/useTransactionMetadataRequest';
 import { useTransferRecipient } from '../hooks/useTransferRecipient';
 
 export const TransactionFlowSection = () => {
   const t = useI18nContext();
 
-  const { currentConfirmation: transactionMeta } =
-    useConfirmContext<TransactionMeta>();
+  const transactionMeta = useTransactionMetadataRequest();
 
   const recipientAddress = useTransferRecipient();
 

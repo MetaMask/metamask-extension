@@ -14,7 +14,7 @@ import {
   useIsTransactionPayLoading,
   useTransactionPayIsMaxAmount,
 } from '../../hooks/pay/useTransactionPayData';
-import { useConfirmContext } from '../../context/confirm';
+import { useTransactionMetadataRequest } from '../../hooks/useTransactionMetadataRequest';
 import { formatAmount } from '../simulation-details/formatAmount';
 import { getTokenAddress } from '../../utils/transaction-pay';
 import { useTokenFiatRates } from '../../hooks/tokens/useTokenFiatRates';
@@ -28,7 +28,7 @@ export type PayTokenAmountProps = {
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export function PayTokenAmount({ amountHuman, disabled }: PayTokenAmountProps) {
   const locale = useSelector(getCurrentLocale) ?? 'en';
-  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
+  const currentConfirmation = useTransactionMetadataRequest();
   const { chainId } = currentConfirmation ?? { chainId: '0x0' as Hex };
   const { payToken } = useTransactionPayToken();
   const targetTokenAddress = getTokenAddress(currentConfirmation);

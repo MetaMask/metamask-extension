@@ -43,13 +43,23 @@ function runHook({
   currentConfirmation?: TransactionMeta;
   transactions?: TransactionMeta[];
 } = {}) {
-  let pendingApprovals = {};
+  let pendingApprovals: Record<
+    string,
+    { id: string; type: ApprovalType; time: number }
+  > = {
+    placeholder: {
+      id: 'placeholder',
+      type: ApprovalType.Transaction,
+      time: 1,
+    },
+  };
 
   if (currentConfirmation) {
     pendingApprovals = {
       [currentConfirmation.id as string]: {
         id: currentConfirmation.id,
         type: ApprovalType.Transaction,
+        time: Date.now(),
       },
     };
     transactions.push(currentConfirmation);
@@ -75,8 +85,16 @@ describe('usePendingTransactionAlerts', () => {
     jest.resetAllMocks();
   });
 
-  it('returns no alerts if no confirmation', () => {
-    expect(runHook({ transactions: [TRANSACTION_META_MOCK] })).toEqual([]);
+  it('returns alert for submitted transactions without an active confirmation', () => {
+    expect(runHook({ transactions: [TRANSACTION_META_MOCK] })).toEqual([
+      {
+        field: RowAlertKey.Speed,
+        key: 'pendingTransactions',
+        content: 'PendingTransactionAlertMessage',
+        reason: 'Pending transaction',
+        severity: Severity.Warning,
+      },
+    ]);
   });
 
   it('returns no alerts if no transactions', () => {

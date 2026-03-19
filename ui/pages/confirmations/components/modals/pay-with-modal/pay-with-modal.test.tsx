@@ -10,15 +10,15 @@ import {
   useMusdConversionTokens,
   useMusdPaymentToken,
 } from '../../../../../hooks/musd';
-import { useConfirmContext } from '../../../context/confirm';
+import { useTransactionMetadataRequest } from '../../../hooks/useTransactionMetadataRequest';
 import { PayWithModal } from './pay-with-modal';
 
 jest.mock('../../../hooks/pay/useTransactionPayToken');
 jest.mock('../../../hooks/pay/useTransactionPayData');
 jest.mock('../../../utils/transaction-pay');
 jest.mock('../../../../../hooks/musd');
-jest.mock('../../../context/confirm', () => ({
-  useConfirmContext: jest.fn(),
+jest.mock('../../../hooks/useTransactionMetadataRequest', () => ({
+  useTransactionMetadataRequest: jest.fn(),
 }));
 
 jest.mock('../../send/asset', () => ({
@@ -81,14 +81,16 @@ describe('PayWithModal', () => {
   const getAvailableTokensMock = jest.mocked(getAvailableTokens);
   const useMusdConversionTokensMock = jest.mocked(useMusdConversionTokens);
   const useMusdPaymentTokenMock = jest.mocked(useMusdPaymentToken);
-  const useConfirmContextMock = jest.mocked(useConfirmContext);
+  const useTransactionMetadataRequestMock = jest.mocked(
+    useTransactionMetadataRequest,
+  );
 
   beforeEach(() => {
     jest.resetAllMocks();
 
-    useConfirmContextMock.mockReturnValue({
-      currentConfirmation: {},
-    } as ReturnType<typeof useConfirmContext>);
+    useTransactionMetadataRequestMock.mockReturnValue(
+      {} as ReturnType<typeof useTransactionMetadataRequest>,
+    );
 
     getAvailableTokensMock.mockImplementation(({ tokens }) => tokens as never);
     useTransactionPayRequiredTokensMock.mockReturnValue([]);
@@ -195,11 +197,9 @@ describe('PayWithModal', () => {
 
   describe('mUSD conversion token selection', () => {
     beforeEach(() => {
-      useConfirmContextMock.mockReturnValue({
-        currentConfirmation: {
-          type: TransactionType.musdConversion,
-        },
-      } as ReturnType<typeof useConfirmContext>);
+      useTransactionMetadataRequestMock.mockReturnValue({
+        type: TransactionType.musdConversion,
+      } as ReturnType<typeof useTransactionMetadataRequest>);
     });
 
     it('calls onMusdPaymentTokenChange instead of setPayToken for mUSD conversions', () => {

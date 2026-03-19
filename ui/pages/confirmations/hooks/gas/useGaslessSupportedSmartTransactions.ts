@@ -1,6 +1,6 @@
 import { Hex } from '@metamask/utils';
 import { useSelector } from 'react-redux';
-import { TransactionMeta } from '@metamask/transaction-controller';
+
 import {
   getIsSmartTransaction,
   SmartTransactionsState,
@@ -8,15 +8,14 @@ import {
 import { useAsyncResult } from '../../../../hooks/useAsync';
 import { isSendBundleSupported } from '../../../../store/actions';
 import { isHardwareWallet } from '../../../../selectors';
-import { useConfirmContext } from '../../context/confirm';
+import { useTransactionMetadataRequest } from '../useTransactionMetadataRequest';
 
 export function useGaslessSupportedSmartTransactions(): {
   isSmartTransaction: boolean;
   isSupported: boolean;
   pending: boolean;
 } {
-  const { currentConfirmation: transactionMeta } =
-    useConfirmContext<TransactionMeta>();
+  const transactionMeta = useTransactionMetadataRequest();
 
   const { chainId } = transactionMeta ?? {};
   const isHardwareWalletAccount = useSelector(isHardwareWallet);

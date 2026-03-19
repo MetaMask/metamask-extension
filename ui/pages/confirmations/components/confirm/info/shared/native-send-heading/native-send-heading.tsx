@@ -1,4 +1,3 @@
-import { TransactionMeta } from '@metamask/transaction-controller';
 import {
   AvatarToken,
   AvatarTokenSize,
@@ -23,14 +22,13 @@ import {
   getPreferences,
   selectConversionRateByChainId,
 } from '../../../../../../../selectors';
-import { useConfirmContext } from '../../../../../context/confirm';
+import { useTransactionMetadataRequest } from '../../../../../hooks/useTransactionMetadataRequest';
 import { formatAmount } from '../../../../simulation-details/formatAmount';
 import { useSendingValueMetric } from '../../hooks/useSendingValueMetric';
 import SendHeadingLayout from '../send-heading-layout/send-heading-layout';
 
 const NativeSendHeading = () => {
-  const { currentConfirmation: transactionMeta } =
-    useConfirmContext<TransactionMeta>();
+  const transactionMeta = useTransactionMetadataRequest();
 
   const { chainId } = transactionMeta;
 

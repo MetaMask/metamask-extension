@@ -8,7 +8,7 @@ import React, {
 } from 'react';
 import { QuoteResponse } from '@metamask/bridge-controller';
 
-import useCurrentConfirmation from '../../hooks/useCurrentConfirmation';
+import { useConfirmationId } from '../../hooks/useConfirmationId';
 
 export type DappSwapContextType = {
   isQuotedSwapDisplayedInInfo: boolean;
@@ -25,7 +25,7 @@ export const DappSwapContext = createContext<DappSwapContextType | undefined>(
 export const DappSwapContextProvider: React.FC<{
   children: ReactElement;
 }> = ({ children }) => {
-  const { currentConfirmation } = useCurrentConfirmation();
+  const confirmationId = useConfirmationId();
   const [selectedQuote, setSelectedQuote] = useState<QuoteResponse | undefined>(
     undefined,
   );
@@ -35,7 +35,7 @@ export const DappSwapContextProvider: React.FC<{
   useEffect(() => {
     setSelectedQuote(undefined);
     setQuotedSwapDisplayedInInfo(false);
-  }, [currentConfirmation?.id, setSelectedQuote, setQuotedSwapDisplayedInInfo]);
+  }, [confirmationId, setSelectedQuote, setQuotedSwapDisplayedInInfo]);
 
   useEffect(() => {
     if (!selectedQuote) {

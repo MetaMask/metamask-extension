@@ -13,13 +13,12 @@ import {
 } from '../../../../../../components/app/confirm/info/row';
 import { ConfirmInfoSection } from '../../../../../../components/app/confirm/info/row/section';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
-import { SignatureRequestType } from '../../../../types/confirm';
 import { useGetTokenStandardAndDetails } from '../../../../hooks/useGetTokenStandardAndDetails';
 import {
   isOrderSignatureRequest,
   isPermitSignatureRequest,
 } from '../../../../utils';
-import { useConfirmContext } from '../../../../context/confirm';
+import { useSignatureRequest } from '../../../../hooks/useSignatureRequest';
 import { useIsBIP44 } from '../../../../hooks/useIsBIP44';
 import { useTypesSignSimulationEnabledInfo } from '../../../../hooks/useTypesSignSimulationEnabledInfo';
 import { ConfirmInfoRowTypedSignData } from '../../row/typed-sign-data/typedSignData';
@@ -28,7 +27,7 @@ import { SigningInWithRow } from '../shared/sign-in-with-row/sign-in-with-row';
 import { TypedSignV4Simulation } from './typed-sign-v4-simulation';
 
 const useTokenContract = () => {
-  const { currentConfirmation } = useConfirmContext<SignatureRequestType>();
+  const currentConfirmation = useSignatureRequest();
 
   if (!currentConfirmation?.msgParams) {
     return { chainId: '' };
@@ -58,7 +57,7 @@ const TypedSignInfo: React.FC = () => {
     chainId,
   );
 
-  const { currentConfirmation } = useConfirmContext<SignatureRequestType>();
+  const currentConfirmation = useSignatureRequest();
   if (!currentConfirmation?.msgParams) {
     return null;
   }

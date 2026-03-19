@@ -1,6 +1,5 @@
 'use no memo';
 
-import { TransactionMeta } from '@metamask/transaction-controller';
 import { Hex } from '@metamask/utils';
 import React from 'react';
 import { Text } from '../../../../../components/component-library';
@@ -9,7 +8,7 @@ import {
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import { useConfirmContext } from '../../../context/confirm';
+import { useTransactionMetadataRequest } from '../../useTransactionMetadataRequest';
 import { ellipsify } from '../../../send-utils/send.utils';
 
 export const NonContractAddressAlertMessage = (
@@ -17,7 +16,7 @@ export const NonContractAddressAlertMessage = (
 ) => {
   const t = useI18nContext();
 
-  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
+  const currentConfirmation = useTransactionMetadataRequest();
 
   const networkName =
     currentConfirmation?.chainId &&

@@ -1,15 +1,13 @@
-import { TransactionMeta } from '@metamask/transaction-controller';
 import { useRewardsWithQuote } from '../../../../../hooks/bridge/useRewards';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import { useConfirmContext } from '../../../context/confirm';
+import { useTransactionMetadataRequest } from '../../useTransactionMetadataRequest';
 import { useDappSwapContext } from '../../../context/dapp-swap';
 
 export const useDappSwapComparisonRewardText = (): {
   text: string;
   estimatedPoints: number;
 } | null => {
-  const { currentConfirmation: transactionMeta } =
-    useConfirmContext<TransactionMeta>();
+  const transactionMeta = useTransactionMetadataRequest();
   const { selectedQuote } = useDappSwapContext();
   const t = useI18nContext();
 

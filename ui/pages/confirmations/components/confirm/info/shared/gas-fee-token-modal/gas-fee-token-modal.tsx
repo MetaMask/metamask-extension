@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from 'react';
-import { GasFeeToken, TransactionMeta } from '@metamask/transaction-controller';
+import { GasFeeToken } from '@metamask/transaction-controller';
 import classnames from 'clsx';
 
 import { NATIVE_TOKEN_ADDRESS } from '../../../../../../../../shared/constants/transaction';
@@ -29,7 +29,7 @@ import {
   TextColor,
   TextVariant,
 } from '../../../../../../../helpers/constants/design-system';
-import { useConfirmContext } from '../../../../../context/confirm';
+import { useTransactionMetadataRequest } from '../../../../../hooks/useTransactionMetadataRequest';
 import { GasFeeTokenListItem } from '../gas-fee-token-list-item';
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 import { updateSelectedGasFeeToken } from '../../../../../../../store/controller-actions/transaction-controller';
@@ -41,7 +41,7 @@ import { useIsInsufficientBalance } from '../../../../../hooks/useIsInsufficient
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export function GasFeeTokenModal({ onClose }: { onClose?: () => void }) {
   const t = useI18nContext();
-  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
+  const currentConfirmation = useTransactionMetadataRequest();
   const { isSmartTransaction } = useIsGaslessSupported();
 
   const hasInsufficientNative = useIsInsufficientBalance();

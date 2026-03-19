@@ -1,5 +1,5 @@
 import { NameType } from '@metamask/name-controller';
-import { TransactionMeta } from '@metamask/transaction-controller';
+
 import React from 'react';
 import { ConfirmInfoRow } from '../../../../../../../components/app/confirm/info/row';
 import Name from '../../../../../../../components/app/name';
@@ -9,7 +9,7 @@ import {
   Display,
 } from '../../../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
-import { useConfirmContext } from '../../../../../context/confirm';
+import { useTransactionMetadataRequest } from '../../../../../hooks/useTransactionMetadataRequest';
 import StaticSimulation from '../../shared/static-simulation/static-simulation';
 
 export const RevokeSetApprovalForAllStaticSimulation = ({
@@ -19,8 +19,7 @@ export const RevokeSetApprovalForAllStaticSimulation = ({
 }) => {
   const t = useI18nContext();
 
-  const { currentConfirmation: transactionMeta } =
-    useConfirmContext<TransactionMeta>();
+  const transactionMeta = useTransactionMetadataRequest();
 
   const { chainId } = transactionMeta;
 

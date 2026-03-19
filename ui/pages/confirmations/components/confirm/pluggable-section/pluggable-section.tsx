@@ -1,14 +1,17 @@
 import React from 'react';
 import { ReactComponentLike } from 'prop-types';
 
-import { useConfirmContext } from '../../../context/confirm';
+import { useSignatureRequestOptional } from '../../../hooks/useSignatureRequest';
+import { useTransactionMetadataRequestOptional } from '../../../hooks/useTransactionMetadataRequest';
 import { SnapsSection } from '../snaps/snaps-section';
 
 // Components to be plugged into confirmation page can be added to the array below
 const pluggedInSections: ReactComponentLike[] = [SnapsSection];
 
 const PluggableSection = () => {
-  const { currentConfirmation } = useConfirmContext();
+  const transactionMetadata = useTransactionMetadataRequestOptional();
+  const signatureRequest = useSignatureRequestOptional();
+  const currentConfirmation = transactionMetadata ?? signatureRequest;
 
   return (
     <>

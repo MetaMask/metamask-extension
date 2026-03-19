@@ -6,10 +6,10 @@ import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
 import { getRemoteFeatureFlags } from '../../../../../selectors/remote-feature-flags';
-import { useConfirmContext } from '../../../context/confirm';
+import { useTransactionMetadataRequest } from '../../useTransactionMetadataRequest';
 
 export function useDappSwapCheck() {
-  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
+  const currentConfirmation = useTransactionMetadataRequest();
   const {
     dappSwapMetrics: { enabled: dappSwapMetricsEnabled, origins = [] } = {},
   } = useSelector(getRemoteFeatureFlags) as {

@@ -4,7 +4,7 @@ import configureStore from 'redux-mock-store';
 import React from 'react';
 import type { TransactionPaymentToken } from '@metamask/transaction-pay-controller';
 import * as controllerActions from '../../../../store/controller-actions/transaction-pay-controller';
-import { ConfirmContext } from '../../context/confirm';
+import { useTransactionMetadataRequest } from '../useTransactionMetadataRequest';
 import { useTransactionPayToken } from './useTransactionPayToken';
 
 jest.mock(
@@ -13,6 +13,10 @@ jest.mock(
     updateTransactionPaymentToken: jest.fn(),
   }),
 );
+
+jest.mock('../useTransactionMetadataRequest', () => ({
+  useTransactionMetadataRequest: jest.fn(),
+}));
 
 const TRANSACTION_ID_MOCK = 'transaction-id-mock';
 const TOKEN_ADDRESS_MOCK = '0x1234567890abcdef1234567890abcdef12345678';
@@ -30,6 +34,9 @@ const PAY_TOKEN_MOCK = {
 } as TransactionPaymentToken;
 
 const mockStore = configureStore([]);
+const mockUseTransactionMetadataRequest = jest.mocked(
+  useTransactionMetadataRequest,
+);
 
 function createMockState({
   payToken,
@@ -57,18 +64,12 @@ function renderHookWithProvider({
   const state = createMockState({ payToken });
   const store = mockStore(state);
 
-  const confirmContextValue = {
-    currentConfirmation: { id: TRANSACTION_ID_MOCK },
-    isScrollToBottomCompleted: true,
-    setIsScrollToBottomCompleted: jest.fn(),
-  };
+  mockUseTransactionMetadataRequest.mockReturnValue({
+    id: TRANSACTION_ID_MOCK,
+  } as never);
 
   const wrapper = ({ children }: { children: React.ReactNode }) => (
-    <Provider store={store}>
-      <ConfirmContext.Provider value={confirmContextValue as never}>
-        {children}
-      </ConfirmContext.Provider>
-    </Provider>
+    <Provider store={store}>{children}</Provider>
   );
 
   return renderHook(() => useTransactionPayToken(), { wrapper });

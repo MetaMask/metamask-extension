@@ -4,7 +4,7 @@ import {
   TransactionMeta,
 } from '@metamask/transaction-controller';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import { useConfirmContext } from '../../../context/confirm';
+import { useTransactionMetadataRequest } from '../../../hooks/useTransactionMetadataRequest';
 import { useNestedTransactionLabels } from '../../confirm/info/hooks/useNestedTransactionLabels';
 import {
   BackgroundColor,
@@ -65,7 +65,7 @@ const NestedTransactionTagContent = ({
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export function NestedTransactionTag() {
-  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
+  const currentConfirmation = useTransactionMetadataRequest();
   const { nestedTransactions } = currentConfirmation ?? {};
 
   const isBatch = isBatchTransaction(nestedTransactions);

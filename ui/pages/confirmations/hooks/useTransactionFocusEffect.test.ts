@@ -9,8 +9,8 @@ import {
 } from '../../../../shared/constants/app';
 import { useWindowFocus } from '../../../hooks/useWindowFocus';
 import { setTransactionActive } from '../../../store/actions';
-import { useConfirmContext } from '../context/confirm';
-import { type Confirmation } from '../types/confirm';
+import { useTransactionMetadataRequestOptional } from './useTransactionMetadataRequest';
+import { useSignatureRequestOptional } from './useSignatureRequest';
 import { useTransactionFocusEffect } from './useTransactionFocusEffect';
 
 jest.mock('react-redux', () => ({
@@ -18,8 +18,12 @@ jest.mock('react-redux', () => ({
   useDispatch: jest.fn(),
 }));
 
-jest.mock('../context/confirm', () => ({
-  useConfirmContext: jest.fn(),
+jest.mock('./useTransactionMetadataRequest', () => ({
+  useTransactionMetadataRequestOptional: jest.fn(),
+}));
+
+jest.mock('./useSignatureRequest', () => ({
+  useSignatureRequestOptional: jest.fn(),
 }));
 
 jest.mock('../../../hooks/useWindowFocus', () => ({
@@ -34,15 +38,9 @@ jest.mock('../../../../app/scripts/lib/util', () => ({
   getEnvironmentType: jest.fn(),
 }));
 
-const mockConfirmation: Confirmation = {
+const mockConfirmation = {
   id: '1',
   type: TransactionType.simpleSend,
-};
-
-const confirmContextMock = {
-  currentConfirmation: mockConfirmation,
-  isScrollToBottomCompleted: false,
-  setIsScrollToBottomCompleted: jest.fn(),
 };
 
 describe('useTransactionFocusEffect', () => {
@@ -50,9 +48,14 @@ describe('useTransactionFocusEffect', () => {
   const setTransactionActiveMock = setTransactionActive as jest.MockedFunction<
     typeof setTransactionActive
   >;
-  const useConfirmContextMock = useConfirmContext as jest.MockedFunction<
-    typeof useConfirmContext
-  >;
+  const useTransactionMetadataRequestOptionalMock =
+    useTransactionMetadataRequestOptional as jest.MockedFunction<
+      typeof useTransactionMetadataRequestOptional
+    >;
+  const useSignatureRequestOptionalMock =
+    useSignatureRequestOptional as jest.MockedFunction<
+      typeof useSignatureRequestOptional
+    >;
   const useWindowFocusMock = useWindowFocus as jest.MockedFunction<
     typeof useWindowFocus
   >;
@@ -67,11 +70,10 @@ describe('useTransactionFocusEffect', () => {
     useDispatchMock.mockReturnValue(dispatchMock);
     useWindowFocusMock.mockReturnValue(true);
     getEnvironmentTypeMock.mockReturnValue(ENVIRONMENT_TYPE_POPUP);
-    useConfirmContextMock.mockReturnValue(
-      confirmContextMock as unknown as ReturnType<
-        typeof useConfirmContext<Confirmation>
-      >,
+    useTransactionMetadataRequestOptionalMock.mockReturnValue(
+      mockConfirmation as never,
     );
+    useSignatureRequestOptionalMock.mockReturnValue(undefined);
 
     setTransactionActiveMock.mockClear();
     dispatchMock.mockClear();
@@ -91,10 +93,9 @@ describe('useTransactionFocusEffect', () => {
       type: TransactionType.simpleSend,
     };
 
-    useConfirmContextMock.mockReturnValue({
-      ...confirmContextMock,
-      currentConfirmation: simpleSendConfirmation,
-    } as unknown as ReturnType<typeof useConfirmContext>);
+    useTransactionMetadataRequestOptionalMock.mockReturnValue(
+      simpleSendConfirmation as never,
+    );
 
     rerender();
 
@@ -119,10 +120,11 @@ describe('useTransactionFocusEffect', () => {
         type: TransactionType.signTypedData,
       };
 
-      useConfirmContextMock.mockReturnValue({
-        ...confirmContextMock,
-        currentConfirmation: signatureConfirmation,
-      } as unknown as ReturnType<typeof useConfirmContext>);
+      useTransactionMetadataRequestOptionalMock.mockReturnValue(undefined);
+      useSignatureRequestOptionalMock.mockReturnValue(
+        signatureConfirmation as never,
+      );
+
       renderHook(() => useTransactionFocusEffect());
       expect(dispatchMock).not.toHaveBeenCalled();
     });
@@ -135,10 +137,10 @@ describe('useTransactionFocusEffect', () => {
         type: TransactionType.signTypedData,
       };
 
-      useConfirmContextMock.mockReturnValue({
-        ...confirmContextMock,
-        currentConfirmation: signatureConfirmation,
-      } as unknown as ReturnType<typeof useConfirmContext>);
+      useTransactionMetadataRequestOptionalMock.mockReturnValue(undefined);
+      useSignatureRequestOptionalMock.mockReturnValue(
+        signatureConfirmation as never,
+      );
 
       rerender();
 
@@ -192,10 +194,9 @@ describe('useTransactionFocusEffect', () => {
         type: TransactionType.simpleSend,
       };
 
-      useConfirmContextMock.mockReturnValue({
-        ...confirmContextMock,
-        currentConfirmation: simpleSendConfirmation,
-      } as unknown as ReturnType<typeof useConfirmContext>);
+      useTransactionMetadataRequestOptionalMock.mockReturnValue(
+        simpleSendConfirmation as never,
+      );
 
       rerender();
 

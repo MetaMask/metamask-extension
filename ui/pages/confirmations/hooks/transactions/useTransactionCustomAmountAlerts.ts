@@ -3,7 +3,7 @@
 import { useMemo } from 'react';
 import type { TransactionMeta } from '@metamask/transaction-controller';
 import useAlerts from '../../../../hooks/useAlerts';
-import { useConfirmContext } from '../../context/confirm';
+import { useTransactionMetadataRequest } from '../useTransactionMetadataRequest';
 import { AlertsName } from '../alerts/constants';
 
 const ALERTS_HIDE_RESULTS: string[] = [
@@ -22,7 +22,7 @@ export function useTransactionCustomAmountAlerts(): {
   hideResults: boolean;
   disableUpdate: boolean;
 } {
-  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
+  const currentConfirmation = useTransactionMetadataRequest();
   const transactionId = currentConfirmation?.id ?? '';
   const { alerts: confirmationAlerts } = useAlerts(transactionId);
 

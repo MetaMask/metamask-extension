@@ -1,7 +1,7 @@
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 /* eslint-disable @typescript-eslint/naming-convention */
 import React from 'react';
-import { TransactionMeta } from '@metamask/transaction-controller';
+
 import { hexStripZeros } from '@ethersproject/bytes';
 import _ from 'lodash';
 import { Hex, isHexString } from '@metamask/utils';
@@ -32,7 +32,7 @@ import {
 // TODO: Remove restricted import
 // eslint-disable-next-line import-x/no-restricted-paths
 import { UniswapPathPool } from '../../../../../../../../app/scripts/lib/transaction/decode/uniswap';
-import { useConfirmContext } from '../../../../../context/confirm';
+import { useTransactionMetadataRequest } from '../../../../../hooks/useTransactionMetadataRequest';
 import { useDappSwapContext } from '../../../../../context/dapp-swap';
 import { hasTransactionData } from '../../../../../../../../shared/lib/transaction.utils';
 import { renderShortTokenId } from '../../../../../../../components/app/assets/nfts/nft-details/utils';
@@ -49,7 +49,7 @@ export const TransactionData = ({
   to?: Hex;
   nestedTransactionIndex?: number;
 } = {}) => {
-  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
+  const currentConfirmation = useTransactionMetadataRequest();
   const { isQuotedSwapDisplayedInInfo } = useDappSwapContext();
   const { nestedTransactions, txParams } = currentConfirmation ?? {};
   const { data: currentData, to: currentTo } = txParams ?? {};

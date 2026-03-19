@@ -5,7 +5,7 @@ import {
 } from '@metamask/transaction-controller';
 
 import { useGasFeeEstimates } from '../../../../hooks/useGasFeeEstimates';
-import { useConfirmContext } from '../../context/confirm';
+import { useTransactionMetadataRequest } from '../useTransactionMetadataRequest';
 import { useFeeCalculations } from '../../components/confirm/info/hooks/useFeeCalculations';
 import { useGasFeeEstimateLevelOptions } from './useGasFeeEstimateLevelOptions';
 
@@ -13,8 +13,8 @@ jest.mock('../../../../hooks/useI18nContext', () => ({
   useI18nContext: () => (key: string) => key,
 }));
 
-jest.mock('../../context/confirm', () => ({
-  useConfirmContext: jest.fn(),
+jest.mock('../useTransactionMetadataRequest', () => ({
+  useTransactionMetadataRequest: jest.fn(),
 }));
 
 jest.mock('../../../../hooks/useGasFeeEstimates', () => ({
@@ -29,6 +29,10 @@ jest.mock('../../../../store/actions', () => ({
   updateTransactionGasFees: jest.fn(),
 }));
 
+jest.mock('../transactions/useTransactionNativeTicker', () => ({
+  useTransactionNativeTicker: jest.fn(),
+}));
+
 const mockState = {
   metamask: {
     networkConfigurationsByChainId: {},
@@ -41,7 +45,9 @@ jest.mock('react-redux', () => ({
     selector?.(mockState) ?? undefined,
 }));
 
-const mockUseConfirmContext = jest.mocked(useConfirmContext);
+const mockUseTransactionMetadataRequest = jest.mocked(
+  useTransactionMetadataRequest,
+);
 const mockUseGasFeeEstimates = jest.mocked(useGasFeeEstimates);
 const mockUseFeeCalculations = jest.mocked(useFeeCalculations);
 
@@ -59,10 +65,8 @@ describe('useGasFeeEstimateLevelOptions', () => {
     } as unknown as ReturnType<typeof useFeeCalculations>);
   });
 
-  it('returns empty array when currentConfirmation is undefined', () => {
-    mockUseConfirmContext.mockReturnValue({
-      currentConfirmation: undefined,
-    } as unknown as ReturnType<typeof useConfirmContext>);
+  it('returns empty array when transactionMeta is undefined', () => {
+    mockUseTransactionMetadataRequest.mockReturnValue(undefined as never);
 
     mockUseGasFeeEstimates.mockReturnValue({
       gasFeeEstimates: {},
@@ -78,16 +82,14 @@ describe('useGasFeeEstimateLevelOptions', () => {
   });
 
   it('returns empty array when gas fee estimate type is GasPrice', () => {
-    mockUseConfirmContext.mockReturnValue({
-      currentConfirmation: {
-        id: '1',
-        networkClientId: 'mainnet',
-        userFeeLevel: 'medium',
-        gasFeeEstimates: {
-          type: GasFeeEstimateType.GasPrice,
-        },
+    mockUseTransactionMetadataRequest.mockReturnValue({
+      id: '1',
+      networkClientId: 'mainnet',
+      userFeeLevel: 'medium',
+      gasFeeEstimates: {
+        type: GasFeeEstimateType.GasPrice,
       },
-    } as unknown as ReturnType<typeof useConfirmContext>);
+    } as unknown as ReturnType<typeof useTransactionMetadataRequest>);
 
     mockUseGasFeeEstimates.mockReturnValue({
       gasFeeEstimates: {},
@@ -103,29 +105,27 @@ describe('useGasFeeEstimateLevelOptions', () => {
   });
 
   it('returns options for low/medium/high when gas fee estimate type is FeeMarket', () => {
-    mockUseConfirmContext.mockReturnValue({
-      currentConfirmation: {
-        id: '1',
-        networkClientId: 'mainnet',
-        userFeeLevel: 'medium',
-        gasLimitNoBuffer: '0x5208',
-        gasFeeEstimates: {
-          type: GasFeeEstimateType.FeeMarket,
-          [GasFeeEstimateLevel.Low]: {
-            maxFeePerGas: '0x1',
-            maxPriorityFeePerGas: '0x1',
-          },
-          [GasFeeEstimateLevel.Medium]: {
-            maxFeePerGas: '0x2',
-            maxPriorityFeePerGas: '0x2',
-          },
-          [GasFeeEstimateLevel.High]: {
-            maxFeePerGas: '0x3',
-            maxPriorityFeePerGas: '0x3',
-          },
+    mockUseTransactionMetadataRequest.mockReturnValue({
+      id: '1',
+      networkClientId: 'mainnet',
+      userFeeLevel: 'medium',
+      gasLimitNoBuffer: '0x5208',
+      gasFeeEstimates: {
+        type: GasFeeEstimateType.FeeMarket,
+        [GasFeeEstimateLevel.Low]: {
+          maxFeePerGas: '0x1',
+          maxPriorityFeePerGas: '0x1',
+        },
+        [GasFeeEstimateLevel.Medium]: {
+          maxFeePerGas: '0x2',
+          maxPriorityFeePerGas: '0x2',
+        },
+        [GasFeeEstimateLevel.High]: {
+          maxFeePerGas: '0x3',
+          maxPriorityFeePerGas: '0x3',
         },
       },
-    } as unknown as ReturnType<typeof useConfirmContext>);
+    } as unknown as ReturnType<typeof useTransactionMetadataRequest>);
 
     mockUseGasFeeEstimates.mockReturnValue({
       gasFeeEstimates: {
@@ -158,29 +158,27 @@ describe('useGasFeeEstimateLevelOptions', () => {
   });
 
   it('skips high option when it has the same fees as medium for FeeMarket type', () => {
-    mockUseConfirmContext.mockReturnValue({
-      currentConfirmation: {
-        id: '1',
-        networkClientId: 'mainnet',
-        userFeeLevel: 'medium',
-        gasLimitNoBuffer: '0x5208',
-        gasFeeEstimates: {
-          type: GasFeeEstimateType.FeeMarket,
-          [GasFeeEstimateLevel.Low]: {
-            maxFeePerGas: '0x1',
-            maxPriorityFeePerGas: '0x1',
-          },
-          [GasFeeEstimateLevel.Medium]: {
-            maxFeePerGas: '0x2',
-            maxPriorityFeePerGas: '0x2',
-          },
-          [GasFeeEstimateLevel.High]: {
-            maxFeePerGas: '0x2',
-            maxPriorityFeePerGas: '0x2',
-          },
+    mockUseTransactionMetadataRequest.mockReturnValue({
+      id: '1',
+      networkClientId: 'mainnet',
+      userFeeLevel: 'medium',
+      gasLimitNoBuffer: '0x5208',
+      gasFeeEstimates: {
+        type: GasFeeEstimateType.FeeMarket,
+        [GasFeeEstimateLevel.Low]: {
+          maxFeePerGas: '0x1',
+          maxPriorityFeePerGas: '0x1',
+        },
+        [GasFeeEstimateLevel.Medium]: {
+          maxFeePerGas: '0x2',
+          maxPriorityFeePerGas: '0x2',
+        },
+        [GasFeeEstimateLevel.High]: {
+          maxFeePerGas: '0x2',
+          maxPriorityFeePerGas: '0x2',
         },
       },
-    } as unknown as ReturnType<typeof useConfirmContext>);
+    } as unknown as ReturnType<typeof useTransactionMetadataRequest>);
 
     mockUseGasFeeEstimates.mockReturnValue({
       gasFeeEstimates: {

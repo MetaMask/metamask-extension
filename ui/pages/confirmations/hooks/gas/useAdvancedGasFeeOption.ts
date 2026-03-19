@@ -9,7 +9,7 @@ import {
 import { useFeeCalculations } from '../../components/confirm/info/hooks/useFeeCalculations';
 import { EMPTY_VALUE_STRING, GasModalType } from '../../constants/gas';
 import { type GasOption } from '../../types/gas';
-import { useConfirmContext } from '../../context/confirm';
+import { useTransactionMetadataRequest } from '../useTransactionMetadataRequest';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useTransactionNativeTicker } from '../transactions/useTransactionNativeTicker';
 import { hexWEIToDecGWEI } from '../../../../../shared/lib/conversion.utils';
@@ -23,8 +23,7 @@ export const useAdvancedGasFeeOption = ({
 }): GasOption[] => {
   const t = useI18nContext();
   const nativeTicker = useTransactionNativeTicker();
-  const { currentConfirmation: transactionMeta } =
-    useConfirmContext<TransactionMeta>();
+  const transactionMeta = useTransactionMetadataRequest();
   const {
     gasFeeEstimates: transactionGasFeeEstimates,
     userFeeLevel,

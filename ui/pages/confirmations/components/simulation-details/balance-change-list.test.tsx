@@ -1,5 +1,7 @@
 import React from 'react';
 import { render } from '@testing-library/react';
+import { useTransactionMetadataRequestOptional } from '../../hooks/useTransactionMetadataRequest';
+import { useSignatureRequestOptional } from '../../hooks/useSignatureRequest';
 import { BalanceChangeList } from './balance-change-list';
 import { BalanceChangeRow } from './balance-change-row';
 import { TotalFiatDisplay } from './fiat-display';
@@ -16,17 +18,30 @@ jest.mock('./fiat-display', () => ({
   TotalFiatDisplay: jest.fn(() => null),
 }));
 
-jest.mock('../../context/confirm', () => ({
-  useConfirmContext: jest.fn(() => ({
-    currentConfirmation: {
-      id: 'testTransactionId',
-    },
+jest.mock('../../hooks/useTransactionMetadataRequest', () => ({
+  useTransactionMetadataRequestOptional: jest.fn(() => ({
+    id: 'testTransactionId',
   })),
 }));
 
+jest.mock('../../hooks/useSignatureRequest', () => ({
+  useSignatureRequestOptional: jest.fn(() => undefined),
+}));
+
 describe('BalanceChangeList', () => {
+  const useTransactionMetadataRequestOptionalMock = jest.mocked(
+    useTransactionMetadataRequestOptional,
+  );
+  const useSignatureRequestOptionalMock = jest.mocked(
+    useSignatureRequestOptional,
+  );
+
   beforeEach(() => {
     jest.clearAllMocks();
+    useTransactionMetadataRequestOptionalMock.mockReturnValue({
+      id: 'testTransactionId',
+    } as ReturnType<typeof useTransactionMetadataRequestOptional>);
+    useSignatureRequestOptionalMock.mockReturnValue(undefined);
   });
 
   it('renders null when there are no balance changes', () => {

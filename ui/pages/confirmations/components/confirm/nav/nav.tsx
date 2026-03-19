@@ -26,7 +26,8 @@ import {
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { rejectAllApprovals } from '../../../../../store/actions';
 import { useConfirmationNavigation } from '../../../hooks/useConfirmationNavigation';
-import { useConfirmContext } from '../../../context/confirm';
+import { useSignatureRequestOptional } from '../../../hooks/useSignatureRequest';
+import { useTransactionMetadataRequestOptional } from '../../../hooks/useTransactionMetadataRequest';
 
 export type NavProps = {
   confirmationId?: string;
@@ -123,6 +124,8 @@ export const Nav = ({ confirmationId }: NavProps) => {
 };
 
 export const ConfirmNav = () => {
-  const { currentConfirmation } = useConfirmContext();
+  const transactionMetadata = useTransactionMetadataRequestOptional();
+  const signatureRequest = useSignatureRequestOptional();
+  const currentConfirmation = transactionMetadata ?? signatureRequest;
   return <Nav confirmationId={currentConfirmation?.id} />;
 };

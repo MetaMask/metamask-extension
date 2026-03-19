@@ -1,4 +1,3 @@
-import { TransactionMeta } from '@metamask/transaction-controller';
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -20,7 +19,7 @@ import {
   showModal,
   updateCustomNonce,
 } from '../../../../../../../store/actions';
-import { useConfirmContext } from '../../../../../context/confirm';
+import { useTransactionMetadataRequest } from '../../../../../hooks/useTransactionMetadataRequest';
 import { selectConfirmationAdvancedDetailsOpen } from '../../../../../selectors/preferences';
 import { isSignatureTransactionType } from '../../../../../utils';
 import { NestedTransactionData } from '../../batch/nested-transaction-data/nested-transaction-data';
@@ -28,7 +27,7 @@ import { QuotedSwapTransactionData } from '../quote-transaction-data/quoted-tran
 import { TransactionData } from '../transaction-data/transaction-data';
 
 const NonceDetails = () => {
-  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
+  const currentConfirmation = useTransactionMetadataRequest();
   const t = useI18nContext();
   const dispatch = useDispatch();
 

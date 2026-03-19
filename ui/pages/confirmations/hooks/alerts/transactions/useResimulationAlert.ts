@@ -8,12 +8,12 @@ import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { Severity } from '../../../../../helpers/constants/design-system';
 import { RowAlertKey } from '../../../../../components/app/confirm/info/row/constants';
-import { useConfirmContext } from '../../../context/confirm';
 import { useDappSwapContext } from '../../../context/dapp-swap';
+import { useTransactionMetadataRequest } from '../../useTransactionMetadataRequest';
 
 export function useResimulationAlert(): Alert[] {
   const t = useI18nContext();
-  const { currentConfirmation } = useConfirmContext();
+  const currentConfirmation = useTransactionMetadataRequest();
   const { isQuotedSwapDisplayedInInfo } = useDappSwapContext();
 
   const transactionMeta = currentConfirmation as TransactionMeta;

@@ -19,7 +19,7 @@ import { useAsyncResult } from '../../../../../hooks/useAsync';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { getTokenStandardAndDetailsByChain } from '../../../../../store/actions';
 import { useBatchApproveBalanceChanges } from '../../../components/confirm/info/hooks/useBatchApproveBalanceChanges';
-import { useConfirmContext } from '../../../context/confirm';
+import { useTransactionMetadataRequest } from '../../useTransactionMetadataRequest';
 import {
   getUseTransactionSimulations,
   selectNonZeroUnusedApprovalsAllowList,
@@ -234,7 +234,7 @@ async function fetchTokenStandards(
 
 export function useMultipleApprovalsAlerts(): Alert[] {
   const t = useI18nContext();
-  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
+  const currentConfirmation = useTransactionMetadataRequest();
   const { value: approveBalanceChanges } =
     useBatchApproveBalanceChanges() ?? {};
 

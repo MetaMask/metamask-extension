@@ -6,7 +6,7 @@ import { renderWithProvider } from '../../../../../../test/lib/render-helpers-na
 import { useTransactionPayToken } from '../../../hooks/pay/useTransactionPayToken';
 import { useTransactionPayRequiredTokens } from '../../../hooks/pay/useTransactionPayData';
 import { useSendTokens } from '../../../hooks/send/useSendTokens';
-import { useConfirmContext } from '../../../context/confirm';
+import { useTransactionMetadataRequest } from '../../../hooks/useTransactionMetadataRequest';
 import { isHardwareAccount } from '../../../../multichain-accounts/account-details/account-type-utils';
 import { useFiatFormatter } from '../../../../../hooks/useFiatFormatter';
 import {
@@ -18,7 +18,7 @@ import {
 jest.mock('../../../hooks/pay/useTransactionPayToken');
 jest.mock('../../../hooks/pay/useTransactionPayData');
 jest.mock('../../../hooks/send/useSendTokens');
-jest.mock('../../../context/confirm');
+jest.mock('../../../hooks/useTransactionMetadataRequest');
 jest.mock('../../../../multichain-accounts/account-details/account-type-utils');
 jest.mock('../../../../../hooks/useFiatFormatter');
 
@@ -138,7 +138,9 @@ describe('PayWithRow', () => {
     useTransactionPayRequiredTokens,
   );
   const useSendTokensMock = jest.mocked(useSendTokens);
-  const useConfirmContextMock = jest.mocked(useConfirmContext);
+  const useTransactionMetadataRequestMock = jest.mocked(
+    useTransactionMetadataRequest,
+  );
   const isHardwareAccountMock = jest.mocked(isHardwareAccount);
   const useFiatFormatterMock = jest.mocked(useFiatFormatter);
 
@@ -158,13 +160,11 @@ describe('PayWithRow', () => {
       isNative: true,
     });
 
-    useConfirmContextMock.mockReturnValue({
-      currentConfirmation: {
-        id: 'test-id',
-        chainId: CHAIN_ID_MOCK,
-        txParams: {
-          from: FROM_ADDRESS_MOCK,
-        },
+    useTransactionMetadataRequestMock.mockReturnValue({
+      id: 'test-id',
+      chainId: CHAIN_ID_MOCK,
+      txParams: {
+        from: FROM_ADDRESS_MOCK,
       },
     } as never);
 

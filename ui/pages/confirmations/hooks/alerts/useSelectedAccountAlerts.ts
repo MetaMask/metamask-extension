@@ -11,12 +11,15 @@ import { RowAlertKey } from '../../../../components/app/confirm/info/row/constan
 import { Severity } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { SignatureRequestType } from '../../types/confirm';
-import { useConfirmContext } from '../../context/confirm';
+import { useSignatureRequestOptional } from '../useSignatureRequest';
+import { useTransactionMetadataRequestOptional } from '../useTransactionMetadataRequest';
 
 export const useSelectedAccountAlerts = (): Alert[] => {
   const t = useI18nContext();
 
-  const { currentConfirmation } = useConfirmContext();
+  const transactionMetadata = useTransactionMetadataRequestOptional();
+  const signatureRequest = useSignatureRequestOptional();
+  const currentConfirmation = transactionMetadata ?? signatureRequest;
   const selectedAccountGroupId = useSelector(getSelectedAccountGroup);
   const accountGroupWithInternalAccounts = useSelector(
     getAccountGroupWithInternalAccounts,

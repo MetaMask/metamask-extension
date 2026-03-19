@@ -1,5 +1,5 @@
 import { Nft } from '@metamask/assets-controllers';
-import { TransactionMeta } from '@metamask/transaction-controller';
+
 import {
   Box,
   Text,
@@ -17,7 +17,7 @@ import {
   getNftImage,
   getNftImageAlt,
 } from '../../../../../../../helpers/utils/nfts';
-import { useConfirmContext } from '../../../../../context/confirm';
+import { useTransactionMetadataRequest } from '../../../../../hooks/useTransactionMetadataRequest';
 import { useAssetDetails } from '../../../../../hooks/useAssetDetails';
 import { useNftImageUrl } from '../../../../../hooks/useNftImageUrl';
 import { ellipsify } from '../../../../../send-utils/send.utils';
@@ -33,8 +33,7 @@ export const generateTokenIdDisplay = (tokenId: string) => {
 };
 
 const NFTSendHeading = () => {
-  const { currentConfirmation: transactionMeta } =
-    useConfirmContext<TransactionMeta>();
+  const transactionMeta = useTransactionMetadataRequest();
 
   const tokenAddress = transactionMeta.txParams.to;
   const userAddress = transactionMeta.txParams.from;

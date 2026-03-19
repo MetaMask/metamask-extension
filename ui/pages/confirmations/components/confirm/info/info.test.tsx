@@ -77,20 +77,36 @@ jest.mock('../../../hooks/useConfirmationNavigation', () => ({
     mockUseConfirmationNavigationOptions(),
 }));
 
-let mockConfirmContextValue: ReturnType<
-  typeof import('../../../context/confirm').useConfirmContext
-> | null = null;
+let mockNoConfirmation = false;
 
-jest.mock('../../../context/confirm', () => {
-  const actual = jest.requireActual('../../../context/confirm');
+jest.mock('../../../hooks/useTransactionMetadataRequest', () => {
+  const actual = jest.requireActual(
+    '../../../hooks/useTransactionMetadataRequest',
+  );
   return {
     ...actual,
-    useConfirmContext: () => {
-      if (mockConfirmContextValue !== null) {
-        return mockConfirmContextValue;
-      }
-      return actual.useConfirmContext();
-    },
+    useTransactionMetadataRequestOptional: () =>
+      mockNoConfirmation
+        ? undefined
+        : actual.useTransactionMetadataRequestOptional(),
+  };
+});
+
+jest.mock('../../../hooks/useSignatureRequest', () => {
+  const actual = jest.requireActual('../../../hooks/useSignatureRequest');
+  return {
+    ...actual,
+    useSignatureRequestOptional: () =>
+      mockNoConfirmation ? undefined : actual.useSignatureRequestOptional(),
+  };
+});
+
+jest.mock('../../../hooks/useApprovalRequest', () => {
+  const actual = jest.requireActual('../../../hooks/useApprovalRequest');
+  return {
+    ...actual,
+    useApprovalRequest: () =>
+      mockNoConfirmation ? undefined : actual.useApprovalRequest(),
   };
 });
 
@@ -107,6 +123,7 @@ describe('Info', () => {
     }));
     mockedUseParams.mockReturnValue({});
     mockUseConfirmationNavigationOptions.mockReturnValue({ loader: null });
+    mockNoConfirmation = false;
   });
 
   it('renders info section for personal sign request', () => {
@@ -190,12 +207,7 @@ describe('Info', () => {
 
     const state = getMockAddEthereumChainConfirmState();
     const mockStore = configureMockStore([])(state);
-    renderWithConfirmContextProvider(
-      <Info />,
-      mockStore,
-      DEFAULT_ROUTE,
-      MOCK_CONFIRMATION_ID,
-    );
+    renderWithConfirmContextProvider(<Info />, mockStore, DEFAULT_ROUTE);
 
     expect(screen.getByText('Test Network')).toBeInTheDocument();
     expect(screen.getByText('example.com')).toBeInTheDocument();
@@ -205,15 +217,11 @@ describe('Info', () => {
 
   describe('when no confirmation type exists', () => {
     beforeEach(() => {
-      mockConfirmContextValue = {
-        currentConfirmation: undefined as never,
-        isScrollToBottomCompleted: true,
-        setIsScrollToBottomCompleted: jest.fn(),
-      };
+      mockNoConfirmation = true;
     });
 
     afterEach(() => {
-      mockConfirmContextValue = null;
+      mockNoConfirmation = false;
     });
 
     it('renders InfoSkeleton when loader is not set', () => {

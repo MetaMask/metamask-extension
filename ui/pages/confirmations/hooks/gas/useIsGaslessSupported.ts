@@ -1,8 +1,7 @@
-import { TransactionMeta } from '@metamask/transaction-controller';
 import { useSelector } from 'react-redux';
 import { useAsyncResult } from '../../../../hooks/useAsync';
 import { isHardwareWallet } from '../../../../selectors';
-import { useConfirmContext } from '../../context/confirm';
+import { useTransactionMetadataRequest } from '../useTransactionMetadataRequest';
 import { isRelaySupported } from '../../../../store/actions';
 import { useGaslessSupportedSmartTransactions } from './useGaslessSupportedSmartTransactions';
 
@@ -22,8 +21,7 @@ import { useGaslessSupportedSmartTransactions } from './useGaslessSupportedSmart
  * - `pending`: `true` if the support check is still in progress.
  */
 export function useIsGaslessSupported() {
-  const { currentConfirmation: transactionMeta } =
-    useConfirmContext<TransactionMeta>();
+  const transactionMeta = useTransactionMetadataRequest();
 
   const { chainId } = transactionMeta ?? {};
   const isHardwareWalletAccount = useSelector(isHardwareWallet);

@@ -6,7 +6,7 @@ import { Button, ButtonSize } from '@metamask/design-system-react';
 import { Footer as PageFooter } from '../../../../../components/multichain/pages/page';
 import useAlerts from '../../../../../hooks/useAlerts';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import { useConfirmContext } from '../../../context/confirm';
+import { useTransactionMetadataRequest } from '../../../hooks/useTransactionMetadataRequest';
 import {
   useIsTransactionPayLoading,
   useTransactionPayRequiredTokens,
@@ -25,7 +25,7 @@ const BUTTON_TEXT_BY_TYPE: Partial<Record<TransactionType, string>> = {
 
 function useSingleActionButtonState(isGaslessLoading: boolean): ButtonState {
   const t = useI18nContext();
-  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
+  const currentConfirmation = useTransactionMetadataRequest();
   const transactionId = currentConfirmation?.id ?? '';
   const transactionType = currentConfirmation?.type;
 

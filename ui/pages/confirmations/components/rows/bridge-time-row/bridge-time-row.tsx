@@ -19,7 +19,7 @@ import {
   useTransactionPayTotals,
 } from '../../../hooks/pay/useTransactionPayData';
 import { useTransactionPayToken } from '../../../hooks/pay/useTransactionPayToken';
-import { useConfirmContext } from '../../../context/confirm';
+import { useTransactionMetadataRequest } from '../../../hooks/useTransactionMetadataRequest';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { hasTransactionType } from '../../../../../../shared/lib/transactions.utils';
 
@@ -36,7 +36,7 @@ export function BridgeTimeRow({
   rowVariant = ConfirmInfoRowSize.Default,
 }: BridgeTimeRowProps) {
   const t = useI18nContext();
-  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
+  const currentConfirmation = useTransactionMetadataRequest();
   const isLoading = useIsTransactionPayLoading();
   const { estimatedDuration } = useTransactionPayTotals() ?? {};
   const quotes = useTransactionPayQuotes();

@@ -20,14 +20,13 @@ import {
   selectTransactionAvailableBalance,
 } from '../../../../../../selectors';
 import { formatAmount } from '../../../simulation-details/formatAmount';
-import { useConfirmContext } from '../../../../context/confirm';
+import { useTransactionMetadataRequest } from '../../../../hooks/useTransactionMetadataRequest';
 import { useFeeCalculations } from './useFeeCalculations';
 
 export const RATE_WEI_NATIVE = '0xDE0B6B3A7640000'; // 1x10^18
 
 export function useGasFeeToken({ tokenAddress }: { tokenAddress?: Hex }) {
-  const { currentConfirmation: transactionMeta } =
-    useConfirmContext<TransactionMeta>();
+  const transactionMeta = useTransactionMetadataRequest();
 
   const locale = useSelector(getIntlLocale);
   const nativeFeeToken = useNativeGasFeeToken();
@@ -89,8 +88,7 @@ export function useGasFeeToken({ tokenAddress }: { tokenAddress?: Hex }) {
 }
 
 export function useSelectedGasFeeToken() {
-  const { currentConfirmation: transactionMeta } =
-    useConfirmContext<TransactionMeta>();
+  const transactionMeta = useTransactionMetadataRequest();
 
   const { selectedGasFeeToken: tokenAddress } = transactionMeta ?? {};
   const selectedToken = useGasFeeToken({ tokenAddress });
@@ -99,8 +97,7 @@ export function useSelectedGasFeeToken() {
 }
 
 function useNativeGasFeeToken(): GasFeeToken {
-  const { currentConfirmation: transactionMeta } =
-    useConfirmContext<TransactionMeta>();
+  const transactionMeta = useTransactionMetadataRequest();
 
   const { id: transactionId, txParams } = transactionMeta ?? {};
 

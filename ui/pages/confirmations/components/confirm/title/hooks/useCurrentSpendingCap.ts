@@ -15,7 +15,7 @@ const isTransactionMeta = (
   );
 };
 
-export function useCurrentSpendingCap(currentConfirmation: Confirmation) {
+export function useCurrentSpendingCap(currentConfirmation?: Confirmation) {
   const isTxWithSpendingCap =
     isTransactionMeta(currentConfirmation) &&
     [

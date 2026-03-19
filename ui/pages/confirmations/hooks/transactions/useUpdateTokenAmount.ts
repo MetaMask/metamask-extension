@@ -4,7 +4,7 @@ import type { Hex } from '@metamask/utils';
 import type { TransactionMeta } from '@metamask/transaction-controller';
 import { BigNumber } from 'bignumber.js';
 import { Interface } from '@ethersproject/abi';
-import { useConfirmContext } from '../../context/confirm';
+import { useTransactionMetadataRequest } from '../useTransactionMetadataRequest';
 import { parseStandardTokenTransactionData } from '../../../../../shared/lib/transaction.utils';
 import { getTokenTransferData } from '../../utils/transaction-pay';
 import { updateEditableParams } from '../../../../store/actions';
@@ -28,8 +28,7 @@ function calcTokenValue(value: string, decimals: number): BigNumber {
 
 export function useUpdateTokenAmount() {
   const dispatch = useDispatch();
-  const { currentConfirmation: transactionMeta } =
-    useConfirmContext<TransactionMeta>();
+  const transactionMeta = useTransactionMetadataRequest();
 
   const transactionId = transactionMeta?.id ?? '';
   const [previousAmountRaw, setPreviousAmountRaw] = useState<string>();

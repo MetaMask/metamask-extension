@@ -7,7 +7,8 @@ import { ENVIRONMENT_TYPE_SIDEPANEL } from '../../../../shared/constants/app';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { setTransactionActive } from '../../../store/actions';
 import { useWindowFocus } from '../../../hooks/useWindowFocus';
-import { useConfirmContext } from '../context/confirm';
+import { useSignatureRequestOptional } from './useSignatureRequest';
+import { useTransactionMetadataRequestOptional } from './useTransactionMetadataRequest';
 
 const FOCUSABLE_TYPES: Set<TransactionType> = new Set([
   TransactionType.batch,
@@ -21,7 +22,9 @@ const FOCUSABLE_TYPES: Set<TransactionType> = new Set([
 ]);
 
 export const useTransactionFocusEffect = () => {
-  const { currentConfirmation } = useConfirmContext();
+  const transactionMetadata = useTransactionMetadataRequestOptional();
+  const signatureRequest = useSignatureRequestOptional();
+  const currentConfirmation = transactionMetadata ?? signatureRequest;
   const { id, type } = currentConfirmation ?? {};
   const isWindowFocused = useWindowFocus();
   const dispatch = useDispatch();
@@ -60,8 +63,8 @@ export const useTransactionFocusEffect = () => {
         setTransactionFocus(focusedConfirmationId, false);
       }
       // Set the focused confirmation to the current one
-      setFocusedConfirmationId(id);
-      setTransactionFocus(id, true);
+      setFocusedConfirmationId(id as string);
+      setTransactionFocus(id as string, true);
     } else if (!isFocused && focusedConfirmationId) {
       // If the window is not focused (and not sidepanel) and there is a focused confirmation,
       // we need to unfocus the focused confirmation

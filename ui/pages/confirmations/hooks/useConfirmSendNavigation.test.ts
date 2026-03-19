@@ -1,6 +1,6 @@
 import mockState from '../../../../test/data/mock-state.json';
 import { renderHookWithProvider } from '../../../../test/lib/render-helpers-navigate';
-import * as ConfirmContext from '../context/confirm';
+import * as transactionMetadataRequest from './useTransactionMetadataRequest';
 import { useConfirmSendNavigation } from './useConfirmSendNavigation';
 
 const mockUseNavigate = jest.fn();
@@ -35,8 +35,8 @@ describe('useConfirmSendNavigation', () => {
 
   it('returns navigateBackIfSend method', () => {
     jest
-      .spyOn(ConfirmContext, 'useConfirmContext')
-      .mockReturnValue({} as unknown as ConfirmContext.ConfirmContextType);
+      .spyOn(transactionMetadataRequest, 'useTransactionMetadataRequest')
+      .mockReturnValue({} as never);
 
     const result = renderHook();
 
@@ -44,9 +44,9 @@ describe('useConfirmSendNavigation', () => {
   });
 
   it('navigates back when confirmation is metamask simpleSend', () => {
-    jest.spyOn(ConfirmContext, 'useConfirmContext').mockReturnValue({
-      currentConfirmation: { origin: 'metamask', type: 'simpleSend' },
-    } as unknown as ConfirmContext.ConfirmContextType);
+    jest
+      .spyOn(transactionMetadataRequest, 'useTransactionMetadataRequest')
+      .mockReturnValue({ origin: 'metamask', type: 'simpleSend' } as never);
 
     const result = renderHook();
     result.navigateBackIfSend();
@@ -55,9 +55,9 @@ describe('useConfirmSendNavigation', () => {
   });
 
   it('does not navigate back when origin is not metamask', () => {
-    jest.spyOn(ConfirmContext, 'useConfirmContext').mockReturnValue({
-      currentConfirmation: { origin: 'dapp', type: 'simpleSend' },
-    } as unknown as ConfirmContext.ConfirmContextType);
+    jest
+      .spyOn(transactionMetadataRequest, 'useTransactionMetadataRequest')
+      .mockReturnValue({ origin: 'dapp', type: 'simpleSend' } as never);
 
     const result = renderHook();
     result.navigateBackIfSend();
@@ -66,9 +66,12 @@ describe('useConfirmSendNavigation', () => {
   });
 
   it('does not navigate back when type is not simpleSend', () => {
-    jest.spyOn(ConfirmContext, 'useConfirmContext').mockReturnValue({
-      currentConfirmation: { origin: 'metamask', type: 'contractInteraction' },
-    } as unknown as ConfirmContext.ConfirmContextType);
+    jest
+      .spyOn(transactionMetadataRequest, 'useTransactionMetadataRequest')
+      .mockReturnValue({
+        origin: 'metamask',
+        type: 'contractInteraction',
+      } as never);
 
     const result = renderHook();
     result.navigateBackIfSend();
@@ -77,9 +80,12 @@ describe('useConfirmSendNavigation', () => {
   });
 
   it('does not navigate back when both origin and type do not match', () => {
-    jest.spyOn(ConfirmContext, 'useConfirmContext').mockReturnValue({
-      currentConfirmation: { origin: 'dapp', type: 'contractInteraction' },
-    } as unknown as ConfirmContext.ConfirmContextType);
+    jest
+      .spyOn(transactionMetadataRequest, 'useTransactionMetadataRequest')
+      .mockReturnValue({
+        origin: 'dapp',
+        type: 'contractInteraction',
+      } as never);
 
     const result = renderHook();
     result.navigateBackIfSend();

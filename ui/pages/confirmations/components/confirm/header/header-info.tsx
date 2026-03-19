@@ -34,9 +34,10 @@ import {
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import { useConfirmContext } from '../../../context/confirm';
 import { useBalance } from '../../../hooks/useBalance';
 import useConfirmationRecipientInfo from '../../../hooks/useConfirmationRecipientInfo';
+import { useSignatureRequestOptional } from '../../../hooks/useSignatureRequest';
+import { useTransactionMetadataRequestOptional } from '../../../hooks/useTransactionMetadataRequest';
 import { SignatureRequestType } from '../../../types/confirm';
 import { isSignatureTransactionType } from '../../../utils/confirm';
 import { isCorrectDeveloperTransactionType } from '../../../../../../shared/lib/confirmation.utils';
@@ -50,7 +51,9 @@ const HeaderInfo = () => {
 
   const [showAccountInfo, setShowAccountInfo] = React.useState(false);
 
-  const { currentConfirmation } = useConfirmContext();
+  const transactionMetadata = useTransactionMetadataRequestOptional();
+  const signatureRequest = useSignatureRequestOptional();
+  const currentConfirmation = transactionMetadata ?? signatureRequest;
 
   const {
     senderAddress: fromAddress,

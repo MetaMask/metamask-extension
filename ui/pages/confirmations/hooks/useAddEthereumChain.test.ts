@@ -2,7 +2,7 @@ import { renderHook } from '@testing-library/react-hooks';
 import { useSelector } from 'react-redux';
 import { ApprovalType } from '@metamask/controller-utils';
 import * as actions from '../../../store/actions';
-import { useConfirmContext } from '../context/confirm';
+import { useAddEthereumChainRequest } from './useAddEthereumChainRequest';
 import { useAddEthereumChain } from './useAddEthereumChain';
 
 const mockDispatch = jest.fn();
@@ -12,8 +12,8 @@ jest.mock('react-redux', () => ({
   useDispatch: () => mockDispatch,
 }));
 
-jest.mock('../context/confirm', () => ({
-  useConfirmContext: jest.fn(),
+jest.mock('./useAddEthereumChainRequest', () => ({
+  useAddEthereumChainRequest: jest.fn(),
 }));
 
 jest.mock('../../../store/actions', () => ({
@@ -47,9 +47,7 @@ describe('useAddEthereumChain', () => {
   });
 
   it('returns onSubmit function', () => {
-    (useConfirmContext as jest.Mock).mockReturnValue({
-      currentConfirmation: mockConfirmation,
-    });
+    (useAddEthereumChainRequest as jest.Mock).mockReturnValue(mockConfirmation);
 
     const { result } = renderHook(() => useAddEthereumChain());
 
@@ -61,9 +59,7 @@ describe('useAddEthereumChain', () => {
     (actions.resolvePendingApproval as jest.Mock).mockReturnValue(
       Promise.resolve(),
     );
-    (useConfirmContext as jest.Mock).mockReturnValue({
-      currentConfirmation: mockConfirmation,
-    });
+    (useAddEthereumChainRequest as jest.Mock).mockReturnValue(mockConfirmation);
 
     const { result } = renderHook(() => useAddEthereumChain());
 

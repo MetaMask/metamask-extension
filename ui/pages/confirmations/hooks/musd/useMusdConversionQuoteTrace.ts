@@ -21,7 +21,7 @@ import {
   TraceName,
   TraceOperation,
 } from '../../../../../shared/lib/trace';
-import { useConfirmContext } from '../../context/confirm';
+import { useTransactionMetadataRequest } from '../useTransactionMetadataRequest';
 import {
   useIsTransactionPayLoading,
   useTransactionPayQuotes,
@@ -33,7 +33,7 @@ import { useTransactionPayToken } from '../pay/useTransactionPayToken';
  * Automatically tracks loading state changes to measure quote fetch duration.
  */
 export function useMusdConversionQuoteTrace(): void {
-  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
+  const currentConfirmation = useTransactionMetadataRequest();
   const transactionId = currentConfirmation?.id ?? '';
 
   const { payToken } = useTransactionPayToken();

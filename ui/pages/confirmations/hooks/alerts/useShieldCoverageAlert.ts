@@ -1,5 +1,3 @@
-import { SignatureRequest } from '@metamask/signature-controller';
-import { TransactionMeta } from '@metamask/transaction-controller';
 import { useCallback, useEffect, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
@@ -17,7 +15,8 @@ import {
   getCoverageStatus,
   ShieldState,
 } from '../../../../selectors/shield/coverage';
-import { useConfirmContext } from '../../context/confirm';
+import { useTransactionMetadataRequestOptional } from '../useTransactionMetadataRequest';
+import { useSignatureRequestOptional } from '../useSignatureRequest';
 import { useEnableShieldCoverageChecks } from '../transactions/useEnableShieldCoverageChecks';
 import { IconName } from '../../../../components/component-library';
 import { TRANSACTION_SHIELD_ROUTE } from '../../../../helpers/constants/routes';
@@ -184,18 +183,18 @@ const getShieldResult = (
 export function useShieldCoverageAlert(): Alert[] {
   const t = useI18nContext();
 
-  const { currentConfirmation } = useConfirmContext<
-    TransactionMeta | SignatureRequest
-  >();
+  const transactionMetadata = useTransactionMetadataRequestOptional();
+  const signatureRequest = useSignatureRequestOptional();
+  const currentConfirmation = transactionMetadata ?? signatureRequest;
 
   const { updateSignatureEventFragment } = useSignatureEventFragment();
   const { updateTransactionEventFragment } = useTransactionEventFragment();
   const { id } = currentConfirmation ?? {};
   const { reasonCode, status } = useSelector((state) =>
-    getCoverageStatus(state as ShieldState, id),
+    getCoverageStatus(state as ShieldState, id as string),
   );
   const metrics = useSelector((state) =>
-    getCoverageMetrics(state as ShieldState, id),
+    getCoverageMetrics(state as ShieldState, id as string),
   );
 
   const { isEnabled, isPaused } = useEnableShieldCoverageChecks();
@@ -241,7 +240,7 @@ export function useShieldCoverageAlert(): Alert[] {
           {
             properties,
           },
-          id,
+          id as string,
         );
       }
     }

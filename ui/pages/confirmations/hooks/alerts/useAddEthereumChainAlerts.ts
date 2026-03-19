@@ -1,10 +1,9 @@
 import { useEffect, useMemo, useState } from 'react';
 import { NETWORKS_BYPASSING_VALIDATION } from '@metamask/controller-utils';
 import { Severity } from '../../../../helpers/constants/design-system';
-import { useConfirmContext } from '../../context/confirm';
 import type { Alert } from '../../../../ducks/confirm-alerts/confirm-alerts';
+import { useAddEthereumChainRequest } from '../useAddEthereumChainRequest';
 import { DEPRECATED_NETWORKS } from '../../../../../shared/constants/network';
-import { AddEthereumChainContext } from '../../external/add-ethereum-chain/types';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useSafeChains } from '../../../settings/networks-tab/networks-form/use-safe-chains';
 import { jsonRpcRequest } from '../../../../../shared/lib/rpc.utils';
@@ -15,8 +14,7 @@ export function useAddEthereumChainAlerts() {
   const [alerts, setAlerts] = useState<Alert[]>([]);
   const t = useI18nContext();
   const { safeChains } = useSafeChains();
-  const { currentConfirmation } = useConfirmContext<AddEthereumChainContext>();
-  const pendingApproval = currentConfirmation;
+  const pendingApproval = useAddEthereumChainRequest();
   const chainId = pendingApproval?.requestData?.chainId;
 
   const matchedChain = useMemo(() => {

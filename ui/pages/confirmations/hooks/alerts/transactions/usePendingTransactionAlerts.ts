@@ -9,12 +9,12 @@ import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
 import { Severity } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { submittedPendingTransactionsSelector } from '../../../../../selectors';
-import { useConfirmContext } from '../../../context/confirm';
+import { useTransactionMetadataRequest } from '../../useTransactionMetadataRequest';
 import { PendingTransactionAlertMessage } from './PendingTransactionAlertMessage';
 
 export function usePendingTransactionAlerts(): Alert[] {
   const t = useI18nContext();
-  const { currentConfirmation } = useConfirmContext();
+  const currentConfirmation = useTransactionMetadataRequest();
   const { type } = currentConfirmation ?? ({} as TransactionMeta);
   const pendingTransactions = useSelector(submittedPendingTransactionsSelector);
 

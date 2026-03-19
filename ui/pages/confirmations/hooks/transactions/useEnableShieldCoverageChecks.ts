@@ -10,16 +10,16 @@ import {
   getIsShieldSubscriptionPaused,
 } from '../../../../../shared/lib/shield';
 import { getUseExternalServices } from '../../../../selectors';
-import { useConfirmContext } from '../../context/confirm';
 import { isSignatureTransactionType } from '../../utils';
 import { isCorrectDeveloperTransactionType } from '../../../../../shared/lib/confirmation.utils';
+import { useTransactionMetadataRequest } from '../useTransactionMetadataRequest';
 
 export const useEnableShieldCoverageChecks = () => {
   const { subscriptions } = useUserSubscriptions();
   // shield coverage use security alerts, phish detect and transaction simulations, which is only available when basic functionality is enabled
   const isBasicFunctionalityEnabled = useSelector(getUseExternalServices);
 
-  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
+  const currentConfirmation = useTransactionMetadataRequest();
   const isSignature = isSignatureTransactionType(currentConfirmation);
   const isTransactionConfirmation = isCorrectDeveloperTransactionType(
     currentConfirmation?.type,

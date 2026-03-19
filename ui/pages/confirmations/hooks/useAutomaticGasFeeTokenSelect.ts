@@ -6,17 +6,16 @@ import { NATIVE_TOKEN_ADDRESS } from '../../../../shared/constants/transaction';
 import { useAsyncResult } from '../../../hooks/useAsync';
 import { forceUpdateMetamaskState } from '../../../store/actions';
 import { updateSelectedGasFeeToken } from '../../../store/controller-actions/transaction-controller';
-import { useConfirmContext } from '../context/confirm';
 import { useIsGaslessSupported } from './gas/useIsGaslessSupported';
 import { useHasInsufficientBalance } from './useHasInsufficientBalance';
+import { useTransactionMetadataRequest } from './useTransactionMetadataRequest';
 
 export function useAutomaticGasFeeTokenSelect() {
   const dispatch = useDispatch();
   const { isSmartTransaction } = useIsGaslessSupported();
   const [firstCheck, setFirstCheck] = useState(true);
 
-  const { currentConfirmation: transactionMeta } =
-    useConfirmContext<TransactionMeta>();
+  const transactionMeta = useTransactionMetadataRequest();
 
   const { hasInsufficientBalance } = useHasInsufficientBalance();
 

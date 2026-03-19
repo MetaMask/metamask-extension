@@ -3,7 +3,6 @@ import { NameType } from '@metamask/name-controller';
 import { TransactionMeta } from '@metamask/transaction-controller';
 
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { useConfirmContext } from '../../context/confirm';
 import { isSignatureTransactionType } from '../../utils';
 import { SignatureRequestType } from '../../types/confirm';
 import {
@@ -23,6 +22,8 @@ import { DAI_CONTRACT_ADDRESS } from '../../components/confirm/info/shared/const
 import { useAsyncResult } from '../../../../hooks/useAsync';
 import { getTokenStandardAndDetailsByChain } from '../../../../store/actions';
 import { TokenStandard } from '../../../../../shared/constants/transaction';
+import { useSignatureRequestOptional } from '../useSignatureRequest';
+import { useTransactionMetadataRequestOptional } from '../useTransactionMetadataRequest';
 
 function isZeroAmount(amount: string | number | undefined): boolean {
   return amount === '0' || amount === 0;
@@ -96,7 +97,9 @@ function getAlertSkipReason(
  */
 export function useSpenderAlerts(): Alert[] {
   const t = useI18nContext();
-  const { currentConfirmation } = useConfirmContext();
+  const transactionMetadata = useTransactionMetadataRequestOptional();
+  const signatureRequest = useSignatureRequestOptional();
+  const currentConfirmation = transactionMetadata ?? signatureRequest;
 
   const { alertSkipReason, tokenAddressOverride } = useMemo(() => {
     const reason = getAlertSkipReason(currentConfirmation);
@@ -185,8 +188,8 @@ export function useSpenderAlerts(): Alert[] {
       isSignatureTransactionType(currentConfirmation) &&
       currentConfirmation.type === 'eth_signTypedData'
     ) {
-      const signatureRequest = currentConfirmation as SignatureRequestType;
-      const msgData = signatureRequest.msgParams?.data as string;
+      const permitRequest = currentConfirmation as SignatureRequestType;
+      const msgData = permitRequest.msgParams?.data as string;
 
       if (msgData) {
         const typedDataMessage = parseTypedDataMessage(msgData);

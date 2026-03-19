@@ -3,7 +3,7 @@ import {
   TransactionType,
 } from '@metamask/transaction-controller';
 import React, { useState } from 'react';
-import { useConfirmContext } from '../../../../context/confirm';
+import { useTransactionMetadataRequest } from '../../../../hooks/useTransactionMetadataRequest';
 import { useAssetDetails } from '../../../../hooks/useAssetDetails';
 import { AdvancedDetails } from '../shared/advanced-details/advanced-details';
 import { ConfirmLoader } from '../shared/confirm-loader/confirm-loader';
@@ -17,8 +17,7 @@ import { RevokeDetails } from './revoke-details/revoke-details';
 import { RevokeStaticSimulation } from './revoke-static-simulation/revoke-static-simulation';
 
 const ApproveInfo = () => {
-  const { currentConfirmation: transactionMeta } =
-    useConfirmContext<TransactionMeta>();
+  const transactionMeta = useTransactionMetadataRequest();
 
   const { isNFT } = useIsNFT(transactionMeta);
 

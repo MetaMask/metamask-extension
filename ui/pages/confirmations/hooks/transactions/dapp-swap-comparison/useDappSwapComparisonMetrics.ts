@@ -1,13 +1,13 @@
 /* eslint-disable @typescript-eslint/naming-convention */
-import { TransactionMeta } from '@metamask/transaction-controller';
+
 import { useCallback, useRef } from 'react';
 
-import { useConfirmContext } from '../../../context/confirm';
+import { useTransactionMetadataRequest } from '../../useTransactionMetadataRequest';
 import { useDappSwapContext } from '../../../context/dapp-swap';
 import { useTransactionEventFragment } from '../../useTransactionEventFragment';
 
 export function useDappSwapComparisonMetrics() {
-  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
+  const currentConfirmation = useTransactionMetadataRequest();
   const { isQuotedSwapDisplayedInInfo, isQuotedSwapPresent } =
     useDappSwapContext();
   const { updateTransactionEventFragment } = useTransactionEventFragment();

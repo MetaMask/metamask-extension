@@ -21,9 +21,9 @@ import {
   JustifyContent,
 } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import { useConfirmContext } from '../../../context/confirm';
 import { useConfirmActions } from '../../../hooks/useConfirmActions';
 import { useMusdConversionHeaderContent } from '../../info/musd-conversion-info';
+import { useTransactionMetadataRequest } from '../../../hooks/useTransactionMetadataRequest';
 import { AdvancedDetailsButton } from './advanced-details-button';
 
 const SimpleHeaderLayout = ({
@@ -98,7 +98,7 @@ const DefaultSimpleHeader = () => {
 };
 
 export const SimpleConfirmationHeader = () => {
-  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
+  const currentConfirmation = useTransactionMetadataRequest();
 
   if (currentConfirmation?.type === TransactionType.musdConversion) {
     return <MusdConversionSimpleHeader />;

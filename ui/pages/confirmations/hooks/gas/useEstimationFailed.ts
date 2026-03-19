@@ -2,7 +2,7 @@ import {
   TransactionMeta,
   UserFeeLevel,
 } from '@metamask/transaction-controller';
-import { useConfirmContext } from '../../context/confirm';
+import { useTransactionMetadataRequest } from '../useTransactionMetadataRequest';
 
 /**
  * Hook to determine if gas estimation has failed for the current transaction.
@@ -17,7 +17,7 @@ import { useConfirmContext } from '../../context/confirm';
  * @returns `true` if gas estimation has failed, `false` otherwise.
  */
 export function useEstimationFailed(): boolean {
-  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
+  const currentConfirmation = useTransactionMetadataRequest();
 
   return (
     Boolean(currentConfirmation?.simulationFails) &&

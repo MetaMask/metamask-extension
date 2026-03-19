@@ -14,8 +14,8 @@ import { IconName as LegacyIconName } from '../../../../components/component-lib
 import { TextColor } from '../../../../helpers/constants/design-system';
 import { ConfirmInfoSection } from '../../../../components/app/confirm/info/row/section';
 import { ConfirmInfoRow } from '../../../../components/app/confirm/info/row';
-import { useConfirmContext } from '../../context/confirm';
 import { ConfirmInfoAlertRow } from '../../../../components/app/confirm/info/row/alert-row/alert-row';
+import { useAddEthereumChainRequest } from '../../hooks/useAddEthereumChainRequest';
 import { getNetworkConfigurationsByChainId } from '../../../../../shared/lib/selectors/networks';
 import { getSubjectMetadata } from '../../../../selectors';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
@@ -27,11 +27,16 @@ import { AddEthereumChainContext } from './types';
 
 export const AddEthereumChain = () => {
   const t = useI18nContext();
-  const { currentConfirmation } = useConfirmContext<AddEthereumChainContext>();
-  const { requestData, origin } = currentConfirmation;
+  const currentConfirmation = useAddEthereumChainRequest();
   const networkConfigurations = useSelector(getNetworkConfigurationsByChainId);
-  const networkConfig = networkConfigurations[requestData.chainId as Hex];
   const subjectMetadata = useSelector(getSubjectMetadata);
+
+  if (!currentConfirmation) {
+    return null;
+  }
+
+  const { requestData, origin } = currentConfirmation;
+  const networkConfig = networkConfigurations[requestData.chainId as Hex];
 
   const title = networkConfig
     ? t('updateNetworkConfirmationTitle', [networkConfig.name])

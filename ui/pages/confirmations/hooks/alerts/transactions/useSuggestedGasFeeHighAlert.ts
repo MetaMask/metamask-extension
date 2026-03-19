@@ -1,7 +1,7 @@
 'use no memo';
 
 import { useMemo } from 'react';
-import { TransactionMeta } from '@metamask/transaction-controller';
+
 import { Severity } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
@@ -9,7 +9,7 @@ import {
   AlertActionKey,
   RowAlertKey,
 } from '../../../../../components/app/confirm/info/row/constants';
-import { useConfirmContext } from '../../../context/confirm';
+import { useTransactionMetadataRequest } from '../../useTransactionMetadataRequest';
 import { Numeric } from '../../../../../../shared/lib/Numeric';
 import { getMarketFeeFromEstimates } from '../../../../../../shared/lib/transaction.utils';
 import { areDappSuggestedAndTxParamGasFeesTheSame } from '../../../../../helpers/utils/confirm-tx.util';
@@ -19,7 +19,7 @@ const DAPP_GAS_FEE_HIGH_THRESHOLD = 0.2; // 20% higher than market estimation
 
 export function useSuggestedGasFeeHighAlert(): Alert[] {
   const t = useI18nContext();
-  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
+  const currentConfirmation = useTransactionMetadataRequest();
 
   const selectedGasFeeToken = currentConfirmation?.selectedGasFeeToken;
   // Use gasFeeEstimates from transactionMeta as it has more accurate

@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { Hex } from '@metamask/utils';
 import { GasFeeEstimates } from '@metamask/gas-fee-controller';
-import { TransactionMeta } from '@metamask/transaction-controller';
+
 import {
   Box,
   BoxFlexDirection,
@@ -13,7 +13,7 @@ import {
 
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useGasFeeEstimates } from '../../../../hooks/useGasFeeEstimates';
-import { useConfirmContext } from '../../context/confirm';
+import { useTransactionMetadataRequest } from '../../hooks/useTransactionMetadataRequest';
 import {
   hexWEIToDecGWEI,
   decGWEIToHexWEI,
@@ -32,7 +32,7 @@ export const PriorityFeeInput = ({
   onErrorChange: (error: string | undefined) => void;
 }) => {
   const t = useI18nContext();
-  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
+  const currentConfirmation = useTransactionMetadataRequest();
 
   const initialPriorityFee = hexWEIToDecGWEI(
     currentConfirmation?.txParams?.maxPriorityFeePerGas as string,

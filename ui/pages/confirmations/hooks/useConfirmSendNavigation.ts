@@ -5,8 +5,8 @@ import {
 import { useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { useConfirmContext } from '../context/confirm';
 import { PREVIOUS_ROUTE } from '../../../helpers/constants/routes';
+import { useTransactionMetadataRequest } from './useTransactionMetadataRequest';
 
 const SendTransactionTypes = [
   TransactionType.simpleSend,
@@ -17,7 +17,7 @@ const SendTransactionTypes = [
 
 export const useConfirmSendNavigation = () => {
   const navigate = useNavigate();
-  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
+  const currentConfirmation = useTransactionMetadataRequest();
 
   const navigateBackIfSend = useCallback(() => {
     const { origin, type } = currentConfirmation;

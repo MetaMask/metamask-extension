@@ -13,7 +13,7 @@ import { SmartTransactionsBannerAlert } from '../components/smart-transactions-b
 import { PluggableSection } from '../components/confirm/pluggable-section';
 import ScrollToBottom from '../components/confirm/scroll-to-bottom';
 import { Title } from '../components/confirm/title';
-import { ConfirmContextProvider, useConfirmContext } from '../context/confirm';
+import { ConfirmContextProvider } from '../context/confirm';
 import { ConfirmNav } from '../components/confirm/nav/nav';
 import { GasFeeTokenToast } from '../components/confirm/info/shared/gas-fee-token-toast/gas-fee-token-toast';
 import { DappSwapContextProvider } from '../context/dapp-swap';
@@ -21,11 +21,12 @@ import {
   GasFeeModalContextProvider,
   GasFeeModalWrapper,
 } from '../context/gas-fee-modal';
+import { useTransactionMetadataRequest } from '../hooks/useTransactionMetadataRequest';
 
 const GasFeeContextProviderWrapper: React.FC<{
   children: ReactNode;
 }> = ({ children }) => {
-  const { currentConfirmation } = useConfirmContext();
+  const currentConfirmation = useTransactionMetadataRequest();
   return (
     <GasFeeContextProvider transaction={currentConfirmation}>
       {children as NonNullable<ReactNodeLike>}
@@ -33,8 +34,8 @@ const GasFeeContextProviderWrapper: React.FC<{
   );
 };
 
-const Confirm: React.FC<{ confirmationId?: string }> = ({ confirmationId }) => (
-  <ConfirmContextProvider confirmationId={confirmationId}>
+const Confirm: React.FC = () => (
+  <ConfirmContextProvider>
     <DappSwapContextProvider>
       <GasFeeModalContextProvider>
         <TransactionModalContextProvider>

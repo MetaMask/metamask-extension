@@ -4,7 +4,6 @@ import { NameType } from '@metamask/name-controller';
 import { Alert } from '../../../../ducks/confirm-alerts/confirm-alerts';
 import { Severity } from '../../../../helpers/constants/design-system';
 import { RowAlertKey } from '../../../../components/app/confirm/info/row/constants';
-import { useConfirmContext } from '../../context/confirm';
 import {
   useTrustSignal,
   TrustSignalDisplayState,
@@ -13,9 +12,13 @@ import { SignatureRequestType } from '../../types/confirm';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 // eslint-disable-next-line import-x/no-restricted-paths
 import { isSecurityAlertsAPIEnabled } from '../../../../../app/scripts/lib/ppom/security-alerts-api';
+import { useSignatureRequestOptional } from '../useSignatureRequest';
+import { useTransactionMetadataRequestOptional } from '../useTransactionMetadataRequest';
 
 export function useAddressTrustSignalAlerts(): Alert[] {
-  const { currentConfirmation } = useConfirmContext();
+  const transactionMetadata = useTransactionMetadataRequestOptional();
+  const signatureRequest = useSignatureRequestOptional();
+  const currentConfirmation = transactionMetadata ?? signatureRequest;
   const t = useI18nContext();
 
   const addressToCheck = useMemo(() => {

@@ -14,7 +14,7 @@ import type { TransactionMeta } from '@metamask/transaction-controller';
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { selectIsMusdConversionFlowEnabled } from '../../selectors/musd';
-import { useConfirmContext } from '../../pages/confirmations/context/confirm';
+import { useTransactionMetadataRequest } from '../../pages/confirmations/hooks/useTransactionMetadataRequest';
 
 export type UseCustomAmountParams = {
   /**
@@ -61,7 +61,7 @@ export const useCustomAmount = ({
   const isMusdConversionFlowEnabled = useSelector(
     selectIsMusdConversionFlowEnabled,
   );
-  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
+  const currentConfirmation = useTransactionMetadataRequest();
 
   const isMusdConversion =
     isMusdConversionFlowEnabled &&

@@ -6,13 +6,13 @@ import {
 import { AlertActionKey } from '../../../components/app/confirm/info/row/constants';
 import useRamps from '../../../hooks/ramps/useRamps/useRamps';
 import { useGasFeeModalContext } from '../context/gas-fee-modal';
-import { useConfirmContext } from '../context/confirm';
 import { GasModalType } from '../constants/gas';
+import { useTransactionMetadataRequest } from './useTransactionMetadataRequest';
 
 const useConfirmationAlertActions = () => {
   const { openBuyCryptoInPdapp } = useRamps();
   const { openGasFeeModal } = useGasFeeModalContext();
-  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
+  const currentConfirmation = useTransactionMetadataRequest();
 
   const processAction = useCallback(
     (actionKey: string) => {

@@ -9,7 +9,7 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { updateTransactionGasFees } from '../../../../store/actions';
 import { type GasOption } from '../../types/gas';
 import { EMPTY_VALUE_STRING } from '../../constants/gas';
-import { useConfirmContext } from '../../context/confirm';
+import { useTransactionMetadataRequest } from '../useTransactionMetadataRequest';
 import { useFeeCalculations } from '../../components/confirm/info/hooks/useFeeCalculations';
 import { useTransactionNativeTicker } from '../transactions/useTransactionNativeTicker';
 import { hexWEIToDecGWEI } from '../../../../../shared/lib/conversion.utils';
@@ -23,8 +23,7 @@ export const useDappSuggestedGasFeeOption = ({
   handleCloseModals: () => void;
 }): GasOption[] => {
   const t = useI18nContext();
-  const { currentConfirmation: transactionMeta } =
-    useConfirmContext<TransactionMeta>();
+  const transactionMeta = useTransactionMetadataRequest();
   const nativeTicker = useTransactionNativeTicker();
   const { calculateGasEstimate } = useFeeCalculations(transactionMeta);
   const dispatch = useDispatch();

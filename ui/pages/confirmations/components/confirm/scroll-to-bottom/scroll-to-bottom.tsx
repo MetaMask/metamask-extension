@@ -21,6 +21,8 @@ import { useScrollRequired } from '../../../../../hooks/useScrollRequired';
 import { useConfirmContext } from '../../../context/confirm';
 import { selectConfirmationAdvancedDetailsOpen } from '../../../selectors/preferences';
 import { isCorrectDeveloperTransactionType } from '../../../../../../shared/lib/confirmation.utils';
+import { useTransactionMetadataRequestOptional } from '../../../hooks/useTransactionMetadataRequest';
+import { useSignatureRequestOptional } from '../../../hooks/useSignatureRequest';
 
 type ContentProps = {
   /**
@@ -31,8 +33,10 @@ type ContentProps = {
 
 const ScrollToBottom = ({ children }: ContentProps) => {
   const t = useContext(I18nContext);
-  const { currentConfirmation, setIsScrollToBottomCompleted } =
-    useConfirmContext();
+  const { setIsScrollToBottomCompleted } = useConfirmContext();
+  const transactionMetadata = useTransactionMetadataRequestOptional();
+  const signatureRequest = useSignatureRequestOptional();
+  const currentConfirmation = transactionMetadata ?? signatureRequest;
   const previousId = usePrevious(currentConfirmation?.id);
   const showAdvancedDetails = useSelector(
     selectConfirmationAdvancedDetailsOpen,

@@ -1,4 +1,5 @@
 import { renderHook } from '@testing-library/react-hooks';
+import { useTransactionMetadataRequest } from '../useTransactionMetadataRequest';
 import { useMusdConversionQuoteTrace } from './useMusdConversionQuoteTrace';
 
 const mockTrace = jest.fn();
@@ -11,9 +12,8 @@ jest.mock('../../../../../shared/lib/trace', () => ({
   TraceOperation: { MusdConversionDataFetch: 'musd.conversion.data_fetch' },
 }));
 
-const mockUseConfirmContext = jest.fn();
-jest.mock('../../context/confirm', () => ({
-  useConfirmContext: () => mockUseConfirmContext(),
+jest.mock('../useTransactionMetadataRequest', () => ({
+  useTransactionMetadataRequest: jest.fn(),
 }));
 
 const mockUseTransactionPayToken = jest.fn();
@@ -29,11 +29,13 @@ jest.mock('../pay/useTransactionPayData', () => ({
 }));
 
 describe('useMusdConversionQuoteTrace', () => {
+  const mockUseTransactionMetadataRequest = jest.mocked(
+    useTransactionMetadataRequest,
+  );
+
   beforeEach(() => {
     jest.clearAllMocks();
-    mockUseConfirmContext.mockReturnValue({
-      currentConfirmation: { id: 'tx-1' },
-    });
+    mockUseTransactionMetadataRequest.mockReturnValue({ id: 'tx-1' } as never);
     mockUseTransactionPayToken.mockReturnValue({
       payToken: { address: '0xUsdc', chainId: '0x1' },
     });
@@ -139,7 +141,7 @@ describe('useMusdConversionQuoteTrace', () => {
   });
 
   it('uses "unknown" when transaction ID is missing', () => {
-    mockUseConfirmContext.mockReturnValue({ currentConfirmation: undefined });
+    mockUseTransactionMetadataRequest.mockReturnValue(undefined as never);
     mockUseIsTransactionPayLoading.mockReturnValue(false);
 
     const { rerender } = renderHook(() => useMusdConversionQuoteTrace());

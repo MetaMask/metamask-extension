@@ -2,23 +2,16 @@ import React, {
   ReactElement,
   createContext,
   useContext,
-  useEffect,
   useMemo,
-  useRef,
   useState,
 } from 'react';
-import { useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
 
-import { DEFAULT_ROUTE } from '../../../../helpers/constants/routes';
-import { usePrevious } from '../../../../hooks/usePrevious';
-import { getIsHardwareWalletErrorModalVisible } from '../../../../selectors';
-import useCurrentConfirmation from '../../hooks/useCurrentConfirmation';
+import { useTransactionMetadataRequestOptional } from '../../hooks/useTransactionMetadataRequest';
+import { useSignatureRequestOptional } from '../../hooks/useSignatureRequest';
 import useSyncConfirmPath from '../../hooks/useSyncConfirmPath';
-import { Confirmation } from '../../types/confirm';
+import { useConfirmationNavigateHome } from '../../hooks/useConfirmationNavigateHome';
 
 export type ConfirmContextType = {
-  currentConfirmation: Confirmation;
   isScrollToBottomCompleted: boolean;
   setIsScrollToBottomCompleted: (isScrollToBottomCompleted: boolean) => void;
 };
@@ -29,63 +22,23 @@ export const ConfirmContext = createContext<ConfirmContextType | undefined>(
 
 export const ConfirmContextProvider: React.FC<{
   children: ReactElement;
-  confirmationId?: string;
-  /** When provided, injects this as currentConfirmation (e.g. for gas modal opened from cancel-speedup). Skips route sync and navigation. */
-  currentConfirmationOverride?: Confirmation;
-}> = ({ children, confirmationId, currentConfirmationOverride }) => {
+}> = ({ children }) => {
   const [isScrollToBottomCompleted, setIsScrollToBottomCompleted] =
     useState(true);
-  const { currentConfirmation: currentConfirmationFromHook } =
-    useCurrentConfirmation(confirmationId);
-  const currentConfirmation =
-    currentConfirmationOverride ?? currentConfirmationFromHook;
 
-  useSyncConfirmPath(
-    currentConfirmationOverride === undefined ? currentConfirmation : undefined,
-  );
-  const navigate = useNavigate();
-  const previousConfirmation = usePrevious(currentConfirmation);
-  const shouldNavigateHomeRef = useRef(false);
-  const isHardwareWalletErrorModalVisible = useSelector(
-    getIsHardwareWalletErrorModalVisible,
-  );
+  const transactionMetadata = useTransactionMetadataRequestOptional();
+  const signatureRequest = useSignatureRequestOptional();
+  const currentConfirmation = transactionMetadata ?? signatureRequest;
 
-  /**
-   * The hook below takes care of navigating to the home page when the confirmation not acted on by user
-   * but removed by us, this can happen in cases like when dapp changes network.
-   * We also skip navigation if the hardware wallet error modal is visible to allow for retry functionality.
-   */
-  useEffect(() => {
-    if (currentConfirmationOverride !== undefined) {
-      return;
-    }
-    if (previousConfirmation && !currentConfirmation) {
-      shouldNavigateHomeRef.current = true;
-    }
-
-    if (shouldNavigateHomeRef.current && !isHardwareWalletErrorModalVisible) {
-      shouldNavigateHomeRef.current = false;
-      navigate(`${DEFAULT_ROUTE}?tab=activity`, { replace: true });
-    }
-  }, [
-    currentConfirmationOverride,
-    previousConfirmation,
-    currentConfirmation,
-    navigate,
-    isHardwareWalletErrorModalVisible,
-  ]);
+  useSyncConfirmPath(currentConfirmation);
+  useConfirmationNavigateHome(currentConfirmation);
 
   const value = useMemo(
     () => ({
-      currentConfirmation,
       isScrollToBottomCompleted,
       setIsScrollToBottomCompleted,
     }),
-    [
-      currentConfirmation,
-      isScrollToBottomCompleted,
-      setIsScrollToBottomCompleted,
-    ],
+    [isScrollToBottomCompleted, setIsScrollToBottomCompleted],
   );
 
   return (
@@ -93,16 +46,12 @@ export const ConfirmContextProvider: React.FC<{
   );
 };
 
-export const useConfirmContext = <CurrentConfirmation = Confirmation,>() => {
+export const useConfirmContext = () => {
   const context = useContext(ConfirmContext);
   if (!context) {
     throw new Error(
       'useConfirmContext must be used within an ConfirmContextProvider',
     );
   }
-  return context as {
-    currentConfirmation: CurrentConfirmation;
-    isScrollToBottomCompleted: boolean;
-    setIsScrollToBottomCompleted: (isScrollToBottomCompleted: boolean) => void;
-  };
+  return context;
 };

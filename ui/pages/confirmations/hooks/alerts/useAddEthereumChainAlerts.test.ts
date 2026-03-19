@@ -1,6 +1,6 @@
 import { renderHook } from '@testing-library/react-hooks';
 import { Severity } from '../../../../helpers/constants/design-system';
-import * as confirmContext from '../../context/confirm';
+import { useAddEthereumChainRequest } from '../useAddEthereumChainRequest';
 import * as safeChains from '../../../settings/networks-tab/networks-form/use-safe-chains';
 import * as rpcUtils from '../../../../../shared/lib/rpc.utils';
 import { useAddEthereumChainAlerts } from './useAddEthereumChainAlerts';
@@ -20,8 +20,13 @@ const mockSafeChains = [
   },
 ];
 
-const mockUseConfirmContext = jest.fn();
 const mockJsonRpcRequest = jest.fn();
+
+jest.mock('../useAddEthereumChainRequest', () => ({
+  useAddEthereumChainRequest: jest.fn(),
+}));
+
+const mockUseAddEthereumChainRequest = jest.mocked(useAddEthereumChainRequest);
 
 const renderHookWithWait = async () => {
   const hookResult = renderHook(() => useAddEthereumChainAlerts());
@@ -31,10 +36,6 @@ const renderHookWithWait = async () => {
 
 describe('useAddEthereumChainAlerts', () => {
   beforeEach(() => {
-    jest
-      .spyOn(confirmContext, 'useConfirmContext')
-      .mockImplementation(mockUseConfirmContext);
-
     jest.spyOn(safeChains, 'useSafeChains').mockReturnValue({
       safeChains: mockSafeChains,
     });
@@ -46,7 +47,7 @@ describe('useAddEthereumChainAlerts', () => {
     mockJsonRpcRequest.mockImplementation(
       async (_url: string, method: string) => {
         if (method === 'eth_chainId') {
-          const confirmation = mockUseConfirmContext().currentConfirmation;
+          const confirmation = mockUseAddEthereumChainRequest();
           return confirmation?.requestData?.chainId || '0x1';
         }
         return null;
@@ -59,22 +60,18 @@ describe('useAddEthereumChainAlerts', () => {
   });
 
   it('returns empty array when there is no current confirmation', () => {
-    mockUseConfirmContext.mockReturnValue({
-      currentConfirmation: undefined,
-    });
+    mockUseAddEthereumChainRequest.mockReturnValue(undefined);
 
     const { result } = renderHook(() => useAddEthereumChainAlerts());
     expect(result.current).toEqual([]);
   });
 
   it('returns empty array when chain is not in safe list', async () => {
-    mockUseConfirmContext.mockReturnValue({
-      currentConfirmation: {
-        requestData: {
-          chainId: '0x1234',
-        },
+    mockUseAddEthereumChainRequest.mockReturnValue({
+      requestData: {
+        chainId: '0x1234',
       },
-    });
+    } as never);
 
     const { result } = renderHook(() => useAddEthereumChainAlerts());
 
@@ -82,15 +79,13 @@ describe('useAddEthereumChainAlerts', () => {
   });
 
   it('warns on mismatched network name', async () => {
-    mockUseConfirmContext.mockReturnValue({
-      currentConfirmation: {
-        requestData: {
-          chainId: '0x1',
-          chainName: 'Not Ethereum',
-          rpcUrl: 'https://mainnet.infura.io/v3/abc',
-        },
+    mockUseAddEthereumChainRequest.mockReturnValue({
+      requestData: {
+        chainId: '0x1',
+        chainName: 'Not Ethereum',
+        rpcUrl: 'https://mainnet.infura.io/v3/abc',
       },
-    });
+    } as never);
 
     const { result } = await renderHookWithWait();
 
@@ -105,16 +100,14 @@ describe('useAddEthereumChainAlerts', () => {
   });
 
   it('warns on mismatched ticker', async () => {
-    mockUseConfirmContext.mockReturnValue({
-      currentConfirmation: {
-        requestData: {
-          chainId: '0x1',
-          chainName: 'Ethereum',
-          rpcUrl: 'https://mainnet.infura.io/v3/abc',
-          ticker: 'WRONG',
-        },
+    mockUseAddEthereumChainRequest.mockReturnValue({
+      requestData: {
+        chainId: '0x1',
+        chainName: 'Ethereum',
+        rpcUrl: 'https://mainnet.infura.io/v3/abc',
+        ticker: 'WRONG',
       },
-    });
+    } as never);
 
     const { result } = await renderHookWithWait();
 
@@ -129,15 +122,13 @@ describe('useAddEthereumChainAlerts', () => {
   });
 
   it('warns on mismatched rpc origin', async () => {
-    mockUseConfirmContext.mockReturnValue({
-      currentConfirmation: {
-        requestData: {
-          chainId: '0x1',
-          chainName: 'Ethereum',
-          rpcUrl: 'https://example.com/rpc',
-        },
+    mockUseAddEthereumChainRequest.mockReturnValue({
+      requestData: {
+        chainId: '0x1',
+        chainName: 'Ethereum',
+        rpcUrl: 'https://example.com/rpc',
       },
-    });
+    } as never);
 
     const { result } = await renderHookWithWait();
 
@@ -152,15 +143,13 @@ describe('useAddEthereumChainAlerts', () => {
   });
 
   it('warns on deprecated networks', async () => {
-    mockUseConfirmContext.mockReturnValue({
-      currentConfirmation: {
-        requestData: {
-          chainId: '0x5',
-          chainName: 'Goerli',
-          rpcUrl: 'https://goerli.infura.io/v3/abc',
-        },
+    mockUseAddEthereumChainRequest.mockReturnValue({
+      requestData: {
+        chainId: '0x5',
+        chainName: 'Goerli',
+        rpcUrl: 'https://goerli.infura.io/v3/abc',
       },
-    });
+    } as never);
 
     const { result } = await renderHookWithWait();
 
@@ -176,15 +165,13 @@ describe('useAddEthereumChainAlerts', () => {
 
   it('shows error when RPC returns mismatched chain ID', async () => {
     mockJsonRpcRequest.mockResolvedValue('0x89'); // Polygon chain ID
-    mockUseConfirmContext.mockReturnValue({
-      currentConfirmation: {
-        requestData: {
-          chainId: '0x1', // Ethereum chain ID
-          chainName: 'Ethereum',
-          rpcUrl: 'https://polygon-rpc.com',
-        },
+    mockUseAddEthereumChainRequest.mockReturnValue({
+      requestData: {
+        chainId: '0x1', // Ethereum chain ID
+        chainName: 'Ethereum',
+        rpcUrl: 'https://polygon-rpc.com',
       },
-    });
+    } as never);
 
     const { result } = await renderHookWithWait();
 

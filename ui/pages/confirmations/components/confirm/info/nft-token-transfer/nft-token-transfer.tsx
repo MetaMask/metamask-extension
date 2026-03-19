@@ -1,6 +1,5 @@
-import { TransactionMeta } from '@metamask/transaction-controller';
 import React from 'react';
-import { useConfirmContext } from '../../../../context/confirm';
+import { useTransactionMetadataRequest } from '../../../../hooks/useTransactionMetadataRequest';
 import { SimulationDetails } from '../../../simulation-details';
 import { AdvancedDetails } from '../shared/advanced-details/advanced-details';
 import { GasFeesSection } from '../shared/gas-fees-section/gas-fees-section';
@@ -9,8 +8,7 @@ import { TokenDetailsSection } from '../token-transfer/token-details-section';
 import { TransactionFlowSection } from '../token-transfer/transaction-flow-section';
 
 const NFTTokenTransferInfo = () => {
-  const { currentConfirmation: transactionMeta } =
-    useConfirmContext<TransactionMeta>();
+  const transactionMeta = useTransactionMetadataRequest();
 
   const isWalletInitiated = transactionMeta.origin === 'metamask';
 

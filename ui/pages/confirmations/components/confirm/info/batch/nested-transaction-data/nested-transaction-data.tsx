@@ -3,7 +3,7 @@ import {
   BatchTransactionParams,
   TransactionMeta,
 } from '@metamask/transaction-controller';
-import { useConfirmContext } from '../../../../../context/confirm';
+import { useTransactionMetadataRequest } from '../../../../../hooks/useTransactionMetadataRequest';
 import { Box } from '../../../../../../../components/component-library';
 import { ConfirmInfoSection } from '../../../../../../../components/app/confirm/info/row/section';
 import { ConfirmInfoExpandableRow } from '../../../../../../../components/app/confirm/info/row/expandable-row';
@@ -21,7 +21,7 @@ import { useNestedTransactionLabels } from '../../hooks/useNestedTransactionLabe
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export function NestedTransactionData() {
-  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
+  const currentConfirmation = useTransactionMetadataRequest();
   const { nestedTransactions } = currentConfirmation ?? {};
   const { isQuotedSwapDisplayedInInfo } = useDappSwapContext();
 

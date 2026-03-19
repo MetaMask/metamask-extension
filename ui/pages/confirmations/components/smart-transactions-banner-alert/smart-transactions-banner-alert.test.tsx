@@ -2,21 +2,14 @@ import React from 'react';
 import type { Store } from '@reduxjs/toolkit';
 import { screen } from '@testing-library/react';
 import { TransactionType } from '@metamask/transaction-controller';
-import { ConfirmContext, ConfirmContextType } from '../../context/confirm';
-import type { Confirmation, SignatureRequestType } from '../../types/confirm';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../../store/store';
 import { AlertTypes } from '../../../../../shared/constants/alerts';
 import { setAlertEnabledness } from '../../../../store/actions';
 import { mockNetworkState } from '../../../../../test/stub/networks';
 import { CHAIN_IDS } from '../../../../../shared/constants/network';
+import { useTransactionMetadataRequest } from '../../hooks/useTransactionMetadataRequest';
 import { SmartTransactionsBannerAlert } from './smart-transactions-banner-alert';
-
-type TestConfirmContextValue = {
-  currentConfirmation: Confirmation;
-  isScrollToBottomCompleted: boolean;
-  setIsScrollToBottomCompleted: (isScrollToBottomCompleted: boolean) => void;
-};
 
 jest.mock('../../../../hooks/useI18nContext', () => ({
   useI18nContext: () => (key: string) => key,
@@ -30,29 +23,28 @@ jest.mock('../../../../store/actions', () => ({
   setAlertEnabledness: jest.fn(() => ({ type: 'mock-action' })),
 }));
 
-const renderWithConfirmContext = (
+jest.mock('../../hooks/useTransactionMetadataRequest');
+
+const renderWithConfirmation = (
   component: React.ReactElement,
   store: Store,
-  confirmationValue: TestConfirmContextValue = {
-    currentConfirmation: {
-      type: TransactionType.simpleSend,
-      id: '1',
-    } as SignatureRequestType,
-    isScrollToBottomCompleted: true,
-    setIsScrollToBottomCompleted: () => undefined,
-  },
+  confirmation = { type: TransactionType.simpleSend, id: '1' },
 ) => {
-  return renderWithProvider(
-    <ConfirmContext.Provider
-      value={confirmationValue as unknown as ConfirmContextType}
-    >
-      {component}
-    </ConfirmContext.Provider>,
-    store,
+  const useTransactionMetadataRequestMock = jest.mocked(
+    useTransactionMetadataRequest,
   );
+  useTransactionMetadataRequestMock.mockReturnValue(
+    confirmation as ReturnType<typeof useTransactionMetadataRequest>,
+  );
+
+  return renderWithProvider(component, store);
 };
 
 describe('SmartTransactionsBannerAlert', () => {
+  const useTransactionMetadataRequestMock = jest.mocked(
+    useTransactionMetadataRequest,
+  );
+
   const mockState = {
     metamask: {
       alertEnabledness: {
@@ -98,6 +90,7 @@ describe('SmartTransactionsBannerAlert', () => {
 
   it('renders banner when all conditions are met', () => {
     const store = configureStore(mockState);
+    useTransactionMetadataRequestMock.mockReturnValue(undefined as never);
     renderWithProvider(<SmartTransactionsBannerAlert />, store);
 
     expect(
@@ -125,6 +118,7 @@ describe('SmartTransactionsBannerAlert', () => {
       },
     };
     const store = configureStore(disabledState);
+    useTransactionMetadataRequestMock.mockReturnValue(undefined as never);
     renderWithProvider(<SmartTransactionsBannerAlert />, store);
 
     expect(
@@ -144,6 +138,7 @@ describe('SmartTransactionsBannerAlert', () => {
       },
     };
     const store = configureStore(noMigrationState);
+    useTransactionMetadataRequestMock.mockReturnValue(undefined as never);
     renderWithProvider(<SmartTransactionsBannerAlert />, store);
 
     expect(
@@ -164,6 +159,7 @@ describe('SmartTransactionsBannerAlert', () => {
       },
     };
     const store = configureStore(unsupportedChainState);
+    useTransactionMetadataRequestMock.mockReturnValue(undefined as never);
     renderWithProvider(<SmartTransactionsBannerAlert />, store);
 
     expect(
@@ -205,6 +201,7 @@ describe('SmartTransactionsBannerAlert', () => {
       },
     };
     const store = configureStore(disabledPreferenceState);
+    useTransactionMetadataRequestMock.mockReturnValue(undefined as never);
     renderWithProvider(<SmartTransactionsBannerAlert />, store);
 
     expect(
@@ -214,6 +211,7 @@ describe('SmartTransactionsBannerAlert', () => {
 
   it('dismisses banner when close button or link is clicked', () => {
     const store = configureStore(mockState);
+    useTransactionMetadataRequestMock.mockReturnValue(undefined as never);
 
     // Test close button
     const { unmount } = renderWithProvider(
@@ -239,9 +237,9 @@ describe('SmartTransactionsBannerAlert', () => {
     );
   });
 
-  it('renders banner when inside ConfirmContext with supported transaction type', () => {
+  it('renders banner when confirmation has supported transaction type', () => {
     const store = configureStore(mockState);
-    renderWithConfirmContext(<SmartTransactionsBannerAlert />, store);
+    renderWithConfirmation(<SmartTransactionsBannerAlert />, store);
 
     expect(
       screen.getByTestId('smart-transactions-banner-alert'),
@@ -259,20 +257,10 @@ describe('SmartTransactionsBannerAlert', () => {
 
   it('does not render banner for unsupported transaction types', () => {
     const store = configureStore(mockState);
-    const unsupportedConfirmation: TestConfirmContextValue = {
-      currentConfirmation: {
-        type: TransactionType.signTypedData,
-        id: '2',
-      } as SignatureRequestType,
-      isScrollToBottomCompleted: true,
-      setIsScrollToBottomCompleted: () => undefined,
-    };
-
-    renderWithConfirmContext(
-      <SmartTransactionsBannerAlert />,
-      store,
-      unsupportedConfirmation,
-    );
+    renderWithConfirmation(<SmartTransactionsBannerAlert />, store, {
+      type: TransactionType.signTypedData,
+      id: '2',
+    });
 
     expect(
       screen.queryByTestId('smart-transactions-banner-alert'),
@@ -283,14 +271,14 @@ describe('SmartTransactionsBannerAlert', () => {
     const store = configureStore(mockState);
 
     it('applies no styles with default margin type', () => {
-      renderWithConfirmContext(<SmartTransactionsBannerAlert />, store);
+      renderWithConfirmation(<SmartTransactionsBannerAlert />, store);
       const alert = screen.getByTestId('smart-transactions-banner-alert');
       expect(alert).not.toHaveStyle({ margin: 0 });
       expect(alert).not.toHaveStyle({ marginTop: 0 });
     });
 
     it('applies zero margin when marginType is "none"', () => {
-      renderWithConfirmContext(
+      renderWithConfirmation(
         <SmartTransactionsBannerAlert marginType="none" />,
         store,
       );
@@ -299,7 +287,7 @@ describe('SmartTransactionsBannerAlert', () => {
     });
 
     it('applies zero top margin when marginType is "noTop"', () => {
-      renderWithConfirmContext(
+      renderWithConfirmation(
         <SmartTransactionsBannerAlert marginType="noTop" />,
         store,
       );
@@ -308,7 +296,7 @@ describe('SmartTransactionsBannerAlert', () => {
     });
 
     it('applies only top margin when marginType is "onlyTop"', () => {
-      renderWithConfirmContext(
+      renderWithConfirmation(
         <SmartTransactionsBannerAlert marginType="onlyTop" />,
         store,
       );
@@ -319,6 +307,7 @@ describe('SmartTransactionsBannerAlert', () => {
 
   it('handles being outside of ConfirmContext correctly', () => {
     const store = configureStore(mockState);
+    useTransactionMetadataRequestMock.mockReturnValue(undefined as never);
     renderWithProvider(<SmartTransactionsBannerAlert />, store);
 
     expect(
@@ -339,7 +328,8 @@ describe('SmartTransactionsBannerAlert', () => {
 
     jest.clearAllMocks();
 
-    renderWithConfirmContext(<SmartTransactionsBannerAlert />, store);
+    useTransactionMetadataRequestMock.mockReturnValue(undefined as never);
+    renderWithProvider(<SmartTransactionsBannerAlert />, store);
 
     expect(setAlertEnabledness).toHaveBeenCalledTimes(1);
     expect(setAlertEnabledness).toHaveBeenCalledWith(

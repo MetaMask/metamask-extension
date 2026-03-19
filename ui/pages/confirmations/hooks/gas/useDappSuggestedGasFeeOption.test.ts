@@ -1,7 +1,7 @@
 import { renderHook } from '@testing-library/react-hooks';
 import { UserFeeLevel } from '@metamask/transaction-controller';
 
-import { useConfirmContext } from '../../context/confirm';
+import { useTransactionMetadataRequest } from '../useTransactionMetadataRequest';
 import { useFeeCalculations } from '../../components/confirm/info/hooks/useFeeCalculations';
 import { useDappSuggestedGasFeeOption } from './useDappSuggestedGasFeeOption';
 
@@ -9,8 +9,8 @@ jest.mock('../../../../hooks/useI18nContext', () => ({
   useI18nContext: () => (key: string) => key,
 }));
 
-jest.mock('../../context/confirm', () => ({
-  useConfirmContext: jest.fn(),
+jest.mock('../useTransactionMetadataRequest', () => ({
+  useTransactionMetadataRequest: jest.fn(),
 }));
 
 jest.mock('../../components/confirm/info/hooks/useFeeCalculations', () => ({
@@ -29,7 +29,9 @@ jest.mock('react-redux', () => ({
   useDispatch: () => jest.fn(),
 }));
 
-const mockUseConfirmContext = jest.mocked(useConfirmContext);
+const mockUseTransactionMetadataRequest = jest.mocked(
+  useTransactionMetadataRequest,
+);
 const mockUseFeeCalculations = jest.mocked(useFeeCalculations);
 
 describe('useDappSuggestedGasFeeOption', () => {
@@ -47,17 +49,15 @@ describe('useDappSuggestedGasFeeOption', () => {
   });
 
   it('returns empty array when origin is metamask', () => {
-    mockUseConfirmContext.mockReturnValue({
-      currentConfirmation: {
-        id: '1',
-        origin: 'metamask',
-        userFeeLevel: 'medium',
-        dappSuggestedGasFees: {
-          maxFeePerGas: '0x1',
-          maxPriorityFeePerGas: '0x1',
-        },
+    mockUseTransactionMetadataRequest.mockReturnValue({
+      id: '1',
+      origin: 'metamask',
+      userFeeLevel: 'medium',
+      dappSuggestedGasFees: {
+        maxFeePerGas: '0x1',
+        maxPriorityFeePerGas: '0x1',
       },
-    } as unknown as ReturnType<typeof useConfirmContext>);
+    } as unknown as ReturnType<typeof useTransactionMetadataRequest>);
 
     const { result } = renderHook(() =>
       useDappSuggestedGasFeeOption({
@@ -69,14 +69,12 @@ describe('useDappSuggestedGasFeeOption', () => {
   });
 
   it('returns empty array when dappSuggestedGasFees is not present', () => {
-    mockUseConfirmContext.mockReturnValue({
-      currentConfirmation: {
-        id: '1',
-        origin: 'https://example.com',
-        userFeeLevel: 'medium',
-        dappSuggestedGasFees: undefined,
-      },
-    } as unknown as ReturnType<typeof useConfirmContext>);
+    mockUseTransactionMetadataRequest.mockReturnValue({
+      id: '1',
+      origin: 'https://example.com',
+      userFeeLevel: 'medium',
+      dappSuggestedGasFees: undefined,
+    } as unknown as ReturnType<typeof useTransactionMetadataRequest>);
 
     const { result } = renderHook(() =>
       useDappSuggestedGasFeeOption({
@@ -88,18 +86,16 @@ describe('useDappSuggestedGasFeeOption', () => {
   });
 
   it('returns dapp suggested option when origin is external and dappSuggestedGasFees exists', () => {
-    mockUseConfirmContext.mockReturnValue({
-      currentConfirmation: {
-        id: '1',
-        origin: 'https://example.com',
-        userFeeLevel: UserFeeLevel.DAPP_SUGGESTED,
-        gasLimitNoBuffer: '0x5208',
-        dappSuggestedGasFees: {
-          maxFeePerGas: '0x2540be400',
-          maxPriorityFeePerGas: '0x3b9aca00',
-        },
+    mockUseTransactionMetadataRequest.mockReturnValue({
+      id: '1',
+      origin: 'https://example.com',
+      userFeeLevel: UserFeeLevel.DAPP_SUGGESTED,
+      gasLimitNoBuffer: '0x5208',
+      dappSuggestedGasFees: {
+        maxFeePerGas: '0x2540be400',
+        maxPriorityFeePerGas: '0x3b9aca00',
       },
-    } as unknown as ReturnType<typeof useConfirmContext>);
+    } as unknown as ReturnType<typeof useTransactionMetadataRequest>);
 
     const { result } = renderHook(() =>
       useDappSuggestedGasFeeOption({

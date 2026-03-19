@@ -1,6 +1,5 @@
-import { TransactionMeta } from '@metamask/transaction-controller';
 import React from 'react';
-import { useConfirmContext } from '../../../../context/confirm';
+import { useTransactionMetadataRequest } from '../../../../hooks/useTransactionMetadataRequest';
 import { ApproveDetails } from '../approve/approve-details/approve-details';
 import { AdvancedDetails } from '../shared/advanced-details/advanced-details';
 import { GasFeesSection } from '../shared/gas-fees-section/gas-fees-section';
@@ -10,8 +9,7 @@ import { RevokeSetApprovalForAllStaticSimulation } from './revoke-set-approval-f
 import { SetApprovalForAllStaticSimulation } from './set-approval-for-all-static-simulation/set-approval-for-all-static-simulation';
 
 const SetApprovalForAllInfo = () => {
-  const { currentConfirmation: transactionMeta } =
-    useConfirmContext<TransactionMeta>();
+  const transactionMeta = useTransactionMetadataRequest();
 
   const parsedTransactionData = useTokenTransactionData();
 

@@ -13,11 +13,11 @@ import {
 } from '@metamask/transaction-controller';
 import React from 'react';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import { useConfirmContext } from '../../../context/confirm';
+import { useTransactionMetadataRequest } from '../../../hooks/useTransactionMetadataRequest';
 import { SHIELD_TERMS_OF_USE_URL } from '../../../../../../shared/lib/ui-utils';
 
 const ShieldFooterAgreement = () => {
-  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
+  const currentConfirmation = useTransactionMetadataRequest();
   const t = useI18nContext();
 
   if (currentConfirmation?.type !== TransactionType.shieldSubscriptionApprove) {

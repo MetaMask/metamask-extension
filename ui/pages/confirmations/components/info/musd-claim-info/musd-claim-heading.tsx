@@ -1,4 +1,3 @@
-import { TransactionMeta } from '@metamask/transaction-controller';
 import React from 'react';
 import {
   AvatarToken,
@@ -18,7 +17,7 @@ import {
 } from '../../../../../components/component-library';
 import { BackgroundColor } from '../../../../../helpers/constants/design-system';
 import { Skeleton } from '../../../../../components/component-library/skeleton';
-import { useConfirmContext } from '../../../context/confirm';
+import { useTransactionMetadataRequest } from '../../../hooks/useTransactionMetadataRequest';
 import useConfirmationNetworkInfo from '../../../hooks/useConfirmationNetworkInfo';
 import { useMerklClaimAmount } from '../../../hooks/musd/useMerklClaimAmount';
 import { getAssetImageUrl } from '../../../../../../shared/lib/asset-utils';
@@ -27,8 +26,7 @@ import { MUSD_TOKEN_ADDRESS } from '../../../../../components/app/musd/constants
 const MUSD_SYMBOL = 'MUSD';
 
 const MusdClaimHeading = () => {
-  const { currentConfirmation: transactionMeta } =
-    useConfirmContext<TransactionMeta>();
+  const transactionMeta = useTransactionMetadataRequest();
 
   const { displayClaimAmount, fiatDisplayValue, pending } =
     useMerklClaimAmount(transactionMeta);

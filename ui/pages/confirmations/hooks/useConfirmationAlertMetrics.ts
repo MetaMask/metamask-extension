@@ -6,9 +6,10 @@ import { validate as isUuid } from 'uuid';
 import useAlerts from '../../../hooks/useAlerts';
 import { isSignatureTransactionType } from '../utils';
 import { Alert } from '../../../ducks/confirm-alerts/confirm-alerts';
-import { useConfirmContext } from '../context/confirm';
 import { AlertsName } from './alerts/constants';
+import { useSignatureRequestOptional } from './useSignatureRequest';
 import { useSignatureEventFragment } from './useSignatureEventFragment';
+import { useTransactionMetadataRequestOptional } from './useTransactionMetadataRequest';
 import { useTransactionEventFragment } from './useTransactionEventFragment';
 
 export type AlertMetricsProperties = {
@@ -45,7 +46,9 @@ function getAlertName(alertKey: string): string {
 }
 
 export function useConfirmationAlertMetrics() {
-  const { currentConfirmation } = useConfirmContext();
+  const transactionMetadata = useTransactionMetadataRequestOptional();
+  const signatureRequest = useSignatureRequestOptional();
+  const currentConfirmation = transactionMetadata ?? signatureRequest;
   const ownerId = currentConfirmation?.id ?? '';
 
   const { alerts, isAlertConfirmed } = useAlerts(ownerId);

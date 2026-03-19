@@ -1,11 +1,11 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { Hex } from '@metamask/utils';
-import { useConfirmContext } from '../../../../context/confirm';
+import { useTransactionMetadataRequest } from '../../../../hooks/useTransactionMetadataRequest';
 import { EIP_7702_REVOKE_ADDRESS } from '../../../../hooks/useEIP7702Account';
 
 export function useIsUpgradeTransaction() {
   const authorizationAddress = useTransactionAuthorizationAddress();
-  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
+  const currentConfirmation = useTransactionMetadataRequest();
   const { txParams } = currentConfirmation ?? { txParams: {} };
   const { data } = txParams ?? {};
   const isUpgrade =
@@ -27,7 +27,7 @@ export function useIsDowngradeTransaction(): boolean {
 }
 
 function useTransactionAuthorizationAddress(): Hex | undefined {
-  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
+  const currentConfirmation = useTransactionMetadataRequest();
   const { txParams } = currentConfirmation ?? {};
   const { authorizationList } = txParams ?? {};
   const authorization = authorizationList?.[0];

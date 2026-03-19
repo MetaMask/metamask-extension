@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect } from 'react';
-import { TransactionMeta } from '@metamask/transaction-controller';
+
 import log from 'loglevel';
 import { getAllowedSmartTransactionsChainIds } from '../../../../shared/constants/smartTransactions';
 import {
@@ -11,11 +11,11 @@ import {
   fetchSmartTransactionsLiveness,
   setSmartTransactionsRefreshInterval,
 } from '../../../store/actions';
-import { useConfirmContext } from '../context/confirm';
+import { useTransactionMetadataRequest } from './useTransactionMetadataRequest';
 
 export function useSmartTransactionFeatureFlags() {
   const dispatch = useDispatch();
-  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
+  const currentConfirmation = useTransactionMetadataRequest();
   const {
     id: transactionId,
     txParams,

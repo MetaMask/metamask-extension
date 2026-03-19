@@ -2,7 +2,7 @@ import { BigNumber } from 'bignumber.js';
 import { getNativeTokenAddress } from '@metamask/assets-controllers';
 import { Hex } from '@metamask/utils';
 import { getNativeAssetForChainId } from '@metamask/bridge-controller';
-import { CHAIN_IDS, TransactionMeta } from '@metamask/transaction-controller';
+import { CHAIN_IDS } from '@metamask/transaction-controller';
 import { useCallback } from 'react';
 
 import { TokenStandAndDetails } from '../../../../../store/actions';
@@ -13,7 +13,7 @@ import {
   fetchAllTokenDetails,
   getTokenValueFromRecord,
 } from '../../../utils/token';
-import { useConfirmContext } from '../../../context/confirm';
+import { useTransactionMetadataRequest } from '../../useTransactionMetadataRequest';
 import { POLYGON_NATIVE_TOKEN_ADDRESS } from '../../../../../../shared/constants/transaction';
 
 export function useDappSwapUSDValues({
@@ -23,7 +23,7 @@ export function useDappSwapUSDValues({
   tokenAddresses?: Hex[];
   destTokenAddress?: Hex;
 }) {
-  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
+  const currentConfirmation = useTransactionMetadataRequest();
   const { chainId, txParams } = currentConfirmation ?? {
     txParams: {},
   };

@@ -11,11 +11,11 @@ import {
   AlertActionKey,
   RowAlertKey,
 } from '../../../../../components/app/confirm/info/row/constants';
-import { useConfirmContext } from '../../../context/confirm';
+import { useTransactionMetadataRequest } from '../../useTransactionMetadataRequest';
 
 export function useGasFeeLowAlerts(): Alert[] {
   const t = useI18nContext();
-  const { currentConfirmation } = useConfirmContext();
+  const currentConfirmation = useTransactionMetadataRequest();
   const { id: transactionId } = (currentConfirmation ?? {}) as TransactionMeta;
 
   const { estimateUsed, transaction } = useGasFeeContext() as {

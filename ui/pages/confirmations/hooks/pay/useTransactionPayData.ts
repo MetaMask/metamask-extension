@@ -10,7 +10,7 @@ import {
   selectTransactionPayTotalsByTransactionId,
   TransactionPayState,
 } from '../../../../selectors/transactionPayController';
-import { useConfirmContext } from '../../context/confirm';
+import { useTransactionMetadataRequest } from '../useTransactionMetadataRequest';
 
 export function useTransactionPayQuotes() {
   return useTransactionPayData(selectTransactionPayQuotesByTransactionId);
@@ -50,7 +50,7 @@ export function useTransactionPayPrimaryRequiredToken() {
 function useTransactionPayData<ReturnType>(
   selector: (state: TransactionPayState, transactionId: string) => ReturnType,
 ) {
-  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
+  const currentConfirmation = useTransactionMetadataRequest();
   const transactionId = currentConfirmation?.id ?? '';
 
   return useSelector((state: TransactionPayState) =>

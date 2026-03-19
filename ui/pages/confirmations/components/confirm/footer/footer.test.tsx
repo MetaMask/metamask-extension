@@ -32,6 +32,7 @@ import {
   HardwareWalletType,
 } from '../../../../../contexts/hardware-wallets';
 import * as confirmContext from '../../../context/confirm';
+import * as transactionMetadataRequestHooks from '../../../hooks/useTransactionMetadataRequest';
 import { SignatureRequestType } from '../../../types/confirm';
 import { useOriginThrottling } from '../../../hooks/useOriginThrottling';
 import { useIsGaslessSupported } from '../../../hooks/gas/useIsGaslessSupported';
@@ -48,6 +49,7 @@ import Footer from './footer';
 jest.mock('../../../hooks/gas/useIsGaslessLoading');
 jest.mock('../../../hooks/alerts/transactions/useInsufficientBalanceAlerts');
 jest.mock('../../../hooks/gas/useIsGaslessSupported');
+jest.mock('../../../hooks/useTransactionMetadataRequest');
 jest.mock('../../../hooks/pay/useTransactionPayData', () => ({
   useIsTransactionPayLoading: jest.fn(() => false),
   useTransactionPayRequiredTokens: jest.fn(() => []),
@@ -185,8 +187,58 @@ jest.mock('react-router-dom', () => {
   };
 });
 
+let mockCurrentConfirmation: unknown;
+const useTransactionMetadataRequestMock = jest.mocked(
+  transactionMetadataRequestHooks.useTransactionMetadataRequest,
+);
+
+function getCurrentConfirmationFromState(state: Record<string, unknown>) {
+  const metamaskState = (state.metamask ?? {}) as Record<string, unknown>;
+  const pendingApprovals =
+    (metamaskState.pendingApprovals as Record<
+      string,
+      { id?: string; time?: number }
+    >) ?? {};
+  const oldestPendingApproval = Object.values(pendingApprovals).sort(
+    (first, second) => (first?.time ?? 0) - (second?.time ?? 0),
+  )[0];
+  const confirmationId = oldestPendingApproval?.id;
+
+  if (!confirmationId) {
+    return undefined;
+  }
+
+  const transactions = (metamaskState.transactions ?? []) as {
+    id?: string;
+  }[];
+
+  const transactionConfirmation = transactions.find(
+    (transaction) => transaction.id === confirmationId,
+  );
+
+  if (transactionConfirmation) {
+    return transactionConfirmation;
+  }
+
+  const unapprovedPersonalMsgs =
+    (metamaskState.unapprovedPersonalMsgs as Record<string, unknown>) ?? {};
+  const unapprovedTypedMessages =
+    (metamaskState.unapprovedTypedMessages as Record<string, unknown>) ?? {};
+
+  return (
+    unapprovedPersonalMsgs[confirmationId] ??
+    unapprovedTypedMessages[confirmationId] ??
+    pendingApprovals[confirmationId]
+  );
+}
+
 const render = (args?: Record<string, unknown>) => {
   const store = configureStore(args ?? getMockPersonalSignConfirmState());
+  if (!mockCurrentConfirmation) {
+    mockCurrentConfirmation = getCurrentConfirmationFromState(
+      (args ?? getMockPersonalSignConfirmState()) as Record<string, unknown>,
+    );
+  }
   mockStore = store;
 
   return renderWithConfirmContextProvider(<Footer />, store);
@@ -213,6 +265,13 @@ describe('ConfirmFooter', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    mockCurrentConfirmation = undefined;
+    useTransactionMetadataRequestMock.mockImplementation(
+      () =>
+        mockCurrentConfirmation as ReturnType<
+          typeof transactionMetadataRequestHooks.useTransactionMetadataRequest
+        >,
+    );
     mockDispatch.mockClear();
     mockStore = null;
 
@@ -308,8 +367,8 @@ describe('ConfirmFooter', () => {
     });
 
     it('when the confirmation is a Sign-in With Ethereum (SIWE) request', () => {
+      mockCurrentConfirmation = signatureRequestSIWE;
       jest.spyOn(confirmContext, 'useConfirmContext').mockReturnValue({
-        currentConfirmation: signatureRequestSIWE,
         isScrollToBottomCompleted: false,
         setIsScrollToBottomCompleted: () => undefined,
       } as unknown as ReturnType<typeof confirmContext.useConfirmContext>);
@@ -337,13 +396,13 @@ describe('ConfirmFooter', () => {
         pending: false,
       });
       useInsufficientBalanceAlertsMock.mockReturnValue(ALERT_MOCK);
-      jest.spyOn(confirmContext, 'useConfirmContext').mockReturnValue({
-        currentConfirmation: {
-          ...genUnapprovedContractInteractionConfirmation(),
-          simulationData: {
-            tokenBalanceChanges: [],
-          },
+      mockCurrentConfirmation = {
+        ...genUnapprovedContractInteractionConfirmation(),
+        simulationData: {
+          tokenBalanceChanges: [],
         },
+      };
+      jest.spyOn(confirmContext, 'useConfirmContext').mockReturnValue({
         isScrollToBottomCompleted: true,
         setIsScrollToBottomCompleted: () => undefined,
       } as unknown as ReturnType<typeof confirmContext.useConfirmContext>);
@@ -373,8 +432,8 @@ describe('ConfirmFooter', () => {
 
   describe('renders disabled "Confirm" Button', () => {
     it('when isScrollToBottomCompleted is false', () => {
+      mockCurrentConfirmation = genUnapprovedContractInteractionConfirmation();
       jest.spyOn(confirmContext, 'useConfirmContext').mockReturnValue({
-        currentConfirmation: genUnapprovedContractInteractionConfirmation(),
         isScrollToBottomCompleted: false,
         setIsScrollToBottomCompleted: () => undefined,
       } as unknown as ReturnType<typeof confirmContext.useConfirmContext>);
@@ -718,8 +777,8 @@ describe('ConfirmFooter', () => {
 
       const preflightState = getMockContractInteractionConfirmState();
       const preflightConfirmation = preflightState.metamask.transactions[0];
+      mockCurrentConfirmation = preflightConfirmation;
       jest.spyOn(confirmContext, 'useConfirmContext').mockReturnValue({
-        currentConfirmation: preflightConfirmation,
         isScrollToBottomCompleted: true,
         setIsScrollToBottomCompleted: () => undefined,
       } as unknown as ReturnType<typeof confirmContext.useConfirmContext>);
@@ -780,8 +839,8 @@ describe('ConfirmFooter', () => {
       useAddEthereumChainMock.mockReturnValue({
         onSubmit: addEthereumChainSubmitMock,
       });
+      mockCurrentConfirmation = addEthereumChainApproval;
       jest.spyOn(confirmContext, 'useConfirmContext').mockReturnValue({
-        currentConfirmation: addEthereumChainApproval,
         isScrollToBottomCompleted: true,
         setIsScrollToBottomCompleted: () => undefined,
       } as unknown as ReturnType<typeof confirmContext.useConfirmContext>);
@@ -1075,8 +1134,8 @@ describe('ConfirmFooter', () => {
           };
         mockStateWithContractInteractionConfirmation.metamask.pendingApprovalCount = 2;
 
+        mockCurrentConfirmation = contractInteractionConfirmation;
         jest.spyOn(confirmContext, 'useConfirmContext').mockReturnValue({
-          currentConfirmation: contractInteractionConfirmation,
           isScrollToBottomCompleted: true,
           setIsScrollToBottomCompleted: () => undefined,
         } as unknown as ReturnType<typeof confirmContext.useConfirmContext>);
@@ -1110,8 +1169,8 @@ describe('ConfirmFooter', () => {
           };
         mockStateWithContractInteractionConfirmation.metamask.pendingApprovalCount = 2;
 
+        mockCurrentConfirmation = contractInteractionConfirmation;
         jest.spyOn(confirmContext, 'useConfirmContext').mockReturnValue({
-          currentConfirmation: contractInteractionConfirmation,
           isScrollToBottomCompleted: true,
           setIsScrollToBottomCompleted: () => undefined,
         } as unknown as ReturnType<typeof confirmContext.useConfirmContext>);
@@ -1129,11 +1188,11 @@ describe('ConfirmFooter', () => {
   });
 
   it('renders SingleActionFooter for musdConversion transaction type', () => {
+    mockCurrentConfirmation = {
+      ...genUnapprovedContractInteractionConfirmation(),
+      type: TransactionType.musdConversion,
+    };
     jest.spyOn(confirmContext, 'useConfirmContext').mockReturnValue({
-      currentConfirmation: {
-        ...genUnapprovedContractInteractionConfirmation(),
-        type: TransactionType.musdConversion,
-      },
       isScrollToBottomCompleted: true,
       setIsScrollToBottomCompleted: () => undefined,
     } as unknown as ReturnType<typeof confirmContext.useConfirmContext>);

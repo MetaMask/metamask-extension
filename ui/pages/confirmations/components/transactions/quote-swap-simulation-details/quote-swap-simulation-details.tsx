@@ -10,7 +10,7 @@ import {
 } from '@metamask/design-system-react';
 import { Hex } from '@metamask/utils';
 import { isNativeAddress, QuoteResponse } from '@metamask/bridge-controller';
-import { TransactionMeta } from '@metamask/transaction-controller';
+
 import { toHex } from '@metamask/controller-utils';
 
 import { TokenStandard } from '../../../../../../shared/constants/transaction';
@@ -20,7 +20,7 @@ import {
   calculateTokenAmount,
   getTokenValueFromRecord,
 } from '../../../utils/token';
-import { useConfirmContext } from '../../../context/confirm';
+import { useTransactionMetadataRequest } from '../../../hooks/useTransactionMetadataRequest';
 import { AssetIdentifier } from '../../simulation-details/types';
 import { BalanceChangeRow } from '../../simulation-details/balance-change-row';
 import { SimulationDetailsLayout } from '../../simulation-details/simulation-details';
@@ -107,7 +107,7 @@ export const QuoteSwapSimulationDetails = ({
   minDestTokenAmountInUSD?: string;
 }) => {
   const t = useI18nContext();
-  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
+  const currentConfirmation = useTransactionMetadataRequest();
   const { id: transactionId } = currentConfirmation;
 
   const { srcAssetBalanceChange, destAssetBalanceChange } = useMemo(() => {

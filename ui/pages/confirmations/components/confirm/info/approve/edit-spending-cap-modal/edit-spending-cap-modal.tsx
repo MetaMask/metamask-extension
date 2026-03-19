@@ -1,4 +1,3 @@
-import { TransactionMeta } from '@metamask/transaction-controller';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { Hex } from '@metamask/utils';
@@ -28,7 +27,7 @@ import {
   estimateGas,
   updateEditableParams,
 } from '../../../../../../../store/actions';
-import { useConfirmContext } from '../../../../../context/confirm';
+import { useTransactionMetadataRequest } from '../../../../../hooks/useTransactionMetadataRequest';
 import { useAssetDetails } from '../../../../../hooks/useAssetDetails';
 import { useApproveTokenSimulation } from '../hooks/use-approve-token-simulation';
 import { ConfirmLoader } from '../../shared/confirm-loader/confirm-loader';
@@ -56,8 +55,7 @@ export const EditSpendingCapModal = ({
 
   const dispatch = useDispatch();
 
-  const { currentConfirmation: transactionMeta } =
-    useConfirmContext<TransactionMeta>();
+  const transactionMeta = useTransactionMetadataRequest();
 
   const currentTo = transactionMeta.txParams.to;
   const currentFrom = transactionMeta.txParams.from;

@@ -16,12 +16,12 @@ import {
 } from '../../../../../components/app/confirm/info/row/constants';
 import { getNoGasPriceFetched } from '../../../../../selectors';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import { useConfirmContext } from '../../../context/confirm';
+import { useTransactionMetadataRequest } from '../../useTransactionMetadataRequest';
 
 export function useNoGasPriceAlerts(): Alert[] {
   const t = useI18nContext();
   const isNoGasPriceFetched = useSelector(getNoGasPriceFetched);
-  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
+  const currentConfirmation = useTransactionMetadataRequest();
 
   const isNotCustomGasPrice =
     currentConfirmation?.userFeeLevel &&

@@ -4,7 +4,7 @@ import {
   AvatarAccountSize,
   Box,
 } from '@metamask/design-system-react';
-import { TransactionMeta } from '@metamask/transaction-controller';
+
 import { Hex } from '@metamask/utils';
 import React from 'react';
 import { useSelector } from 'react-redux';
@@ -15,7 +15,7 @@ import {
   selectERC20TokensByChain,
   selectNetworkConfigurationByChainId,
 } from '../../../../../../../selectors';
-import { useConfirmContext } from '../../../../../context/confirm';
+import { useTransactionMetadataRequest } from '../../../../../hooks/useTransactionMetadataRequest';
 
 export enum GasFeeTokenIconSize {
   Sm = 'sm',
@@ -31,7 +31,7 @@ export function GasFeeTokenIcon({
   size?: GasFeeTokenIconSize;
   tokenAddress: Hex;
 }) {
-  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
+  const currentConfirmation = useTransactionMetadataRequest();
   const { chainId } = currentConfirmation ?? {};
 
   const networkConfiguration = useSelector((state) =>

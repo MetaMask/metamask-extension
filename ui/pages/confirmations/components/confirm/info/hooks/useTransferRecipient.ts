@@ -3,12 +3,11 @@ import {
   TransactionType,
   NestedTransactionMetadata,
 } from '@metamask/transaction-controller';
-import { useConfirmContext } from '../../../../context/confirm';
+import { useTransactionMetadataRequest } from '../../../../hooks/useTransactionMetadataRequest';
 import { getTransactionDataRecipient } from '../../../../../../../shared/lib/transaction.utils';
 
 export function useTransferRecipient(): string | undefined {
-  const { currentConfirmation: transactionMetadata } =
-    useConfirmContext<TransactionMeta>();
+  const transactionMetadata = useTransactionMetadataRequest();
 
   if (!transactionMetadata) {
     return undefined;
@@ -18,8 +17,7 @@ export function useTransferRecipient(): string | undefined {
 }
 
 export function useNestedTransactionTransferRecipients(): string[] {
-  const { currentConfirmation: transactionMetadata } =
-    useConfirmContext<TransactionMeta>();
+  const transactionMetadata = useTransactionMetadataRequest();
 
   if (!transactionMetadata?.nestedTransactions?.length) {
     return [];

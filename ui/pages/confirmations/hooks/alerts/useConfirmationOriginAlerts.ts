@@ -8,12 +8,15 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { SignatureRequestType } from '../../types/confirm';
 import { isValidASCIIURL, toPunycodeURL } from '../../utils/confirm';
 import { isSignatureTransactionType } from '../../utils';
-import { useConfirmContext } from '../../context/confirm';
+import { useSignatureRequestOptional } from '../useSignatureRequest';
+import { useTransactionMetadataRequestOptional } from '../useTransactionMetadataRequest';
 
 const useConfirmationOriginAlerts = (): Alert[] => {
   const t = useI18nContext();
 
-  const { currentConfirmation } = useConfirmContext();
+  const transactionMetadata = useTransactionMetadataRequestOptional();
+  const signatureRequest = useSignatureRequestOptional();
+  const currentConfirmation = transactionMetadata ?? signatureRequest;
 
   const origin = isSignatureTransactionType(currentConfirmation)
     ? (currentConfirmation as SignatureRequestType)?.msgParams?.origin

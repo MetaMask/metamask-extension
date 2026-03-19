@@ -5,7 +5,7 @@ import { parseTypedDataMessage } from '../../../../shared/lib/transaction.utils'
 import { SignatureRequestType } from '../types/confirm';
 import { isPermitSignatureRequest } from '../utils';
 import { selectUseTransactionSimulations } from '../selectors/preferences';
-import { useConfirmContext } from '../context/confirm';
+import { useSignatureRequest } from './useSignatureRequest';
 
 const NON_PERMIT_SUPPORTED_TYPES_SIGNS = [
   {
@@ -40,7 +40,7 @@ const isNonPermitSupportedByDecodingAPI = (
 };
 
 export function useTypesSignSimulationEnabledInfo() {
-  const { currentConfirmation } = useConfirmContext<SignatureRequestType>();
+  const currentConfirmation = useSignatureRequest();
   const useTransactionSimulations = useSelector(
     selectUseTransactionSimulations,
   );

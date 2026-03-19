@@ -10,7 +10,7 @@ import {
   TransactionPaySourceAmount,
 } from '@metamask/transaction-pay-controller';
 import type { Json } from '@metamask/utils';
-import { ConfirmContext } from '../../context/confirm';
+import { useTransactionMetadataRequest } from '../useTransactionMetadataRequest';
 import {
   useIsTransactionPayLoading,
   useTransactionPayIsMaxAmount,
@@ -44,6 +44,14 @@ const TOTALS_MOCK = {
 } as unknown as TransactionPayTotals;
 
 const mockStore = configureStore([]);
+
+jest.mock('../useTransactionMetadataRequest', () => ({
+  useTransactionMetadataRequest: jest.fn(),
+}));
+
+const mockUseTransactionMetadataRequest = jest.mocked(
+  useTransactionMetadataRequest,
+);
 
 const STATE_MOCK = {
   metamask: {
@@ -80,18 +88,12 @@ function createWrapper(
 
   const store = mockStore(state);
 
-  const confirmContextValue = {
-    currentConfirmation: { id: TRANSACTION_ID_MOCK },
-    isScrollToBottomCompleted: true,
-    setIsScrollToBottomCompleted: jest.fn(),
-  };
+  mockUseTransactionMetadataRequest.mockReturnValue({
+    id: TRANSACTION_ID_MOCK,
+  } as never);
 
   return ({ children }: { children: React.ReactNode }) => (
-    <Provider store={store}>
-      <ConfirmContext.Provider value={confirmContextValue as never}>
-        {children}
-      </ConfirmContext.Provider>
-    </Provider>
+    <Provider store={store}>{children}</Provider>
   );
 }
 

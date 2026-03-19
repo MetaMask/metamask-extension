@@ -8,7 +8,6 @@ import {
   selectTransactionPaymentTokenByTransactionId,
   type TransactionPayState,
 } from '../../../../../selectors/transactionPayController';
-import { useConfirmContext } from '../../../context/confirm';
 import { CustomAmountInfo } from '../custom-amount-info';
 import { useTransactionCustomAmountAlerts } from '../../../hooks/transactions/useTransactionCustomAmountAlerts';
 import {
@@ -19,6 +18,7 @@ import { BridgeFeeRow } from '../../rows/bridge-fee-row/bridge-fee-row';
 import { ClaimableBonusRow } from '../../rows/claimable-bonus-row/claimable-bonus-row';
 import { TotalRow } from '../../rows/total-row/total-row';
 import { useMusdConversionQuoteTrace } from '../../../hooks/musd/useMusdConversionQuoteTrace';
+import { useTransactionMetadataRequest } from '../../../hooks/useTransactionMetadataRequest';
 import { MusdOverrideContent } from './musd-override-content';
 
 const MusdBottomContent = () => {
@@ -58,7 +58,7 @@ const MusdBottomContent = () => {
  * state, which survives extension popup restarts.
  */
 export const MusdConversionInfo = () => {
-  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
+  const currentConfirmation = useTransactionMetadataRequest();
   const transactionId = currentConfirmation?.id ?? '';
   const hasEndedNavigationTraceRef = useRef(false);
 

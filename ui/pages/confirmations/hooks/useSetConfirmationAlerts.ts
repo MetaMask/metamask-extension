@@ -5,12 +5,15 @@ import {
   clearAlerts,
   updateAlerts,
 } from '../../../ducks/confirm-alerts/confirm-alerts';
-import { useConfirmContext } from '../context/confirm';
+import { useSignatureRequestOptional } from './useSignatureRequest';
 import useConfirmationAlerts from './useConfirmationAlerts';
+import { useTransactionMetadataRequestOptional } from './useTransactionMetadataRequest';
 
 const useSetConfirmationAlerts = () => {
   const dispatch = useDispatch();
-  const { currentConfirmation } = useConfirmContext();
+  const transactionMetadata = useTransactionMetadataRequestOptional();
+  const signatureRequest = useSignatureRequestOptional();
+  const currentConfirmation = transactionMetadata ?? signatureRequest;
   const alerts = useConfirmationAlerts();
   const ownerId = currentConfirmation?.id as string;
 

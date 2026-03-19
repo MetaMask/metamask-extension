@@ -9,12 +9,12 @@ import { toHex } from '@metamask/controller-utils';
 import { useCallback } from 'react';
 
 import { deleteDappSwapComparisonData } from '../../../../../store/actions';
-import { useConfirmContext } from '../../../context/confirm';
+import { useTransactionMetadataRequest } from '../../useTransactionMetadataRequest';
 import { useDappSwapContext } from '../../../context/dapp-swap';
 import { useDappSwapComparisonMetrics } from './useDappSwapComparisonMetrics';
 
 export function useDappSwapActions() {
-  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
+  const currentConfirmation = useTransactionMetadataRequest();
   const { isQuotedSwapDisplayedInInfo, selectedQuote } = useDappSwapContext();
   const { captureSwapSubmit } = useDappSwapComparisonMetrics();
 

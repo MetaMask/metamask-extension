@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react';
-import { TransactionMeta } from '@metamask/transaction-controller';
+
 import {
   Button,
   ButtonSize,
@@ -8,12 +8,11 @@ import {
 } from '../../../../../../../components/component-library';
 import { IconColor } from '../../../../../../../helpers/constants/design-system';
 import { useTransactionEventFragment } from '../../../../../hooks/useTransactionEventFragment';
-import { useConfirmContext } from '../../../../../context/confirm';
+import { useTransactionMetadataRequest } from '../../../../../hooks/useTransactionMetadataRequest';
 import { useGasFeeModalContext } from '../../../../../context/gas-fee-modal';
 
 export const EditGasIconButton = (): JSX.Element => {
-  const { currentConfirmation: transactionMeta } =
-    useConfirmContext<TransactionMeta>();
+  const transactionMeta = useTransactionMetadataRequest();
   const { updateTransactionEventFragment } = useTransactionEventFragment();
   const { openGasFeeModal } = useGasFeeModalContext();
 

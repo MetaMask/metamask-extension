@@ -21,7 +21,8 @@ import {
 } from '../../../../../../../helpers/constants/design-system';
 import { ConfirmInfoAlertRow } from '../../../../../../../components/app/confirm/info/row/alert-row/alert-row';
 import { RowAlertKey } from '../../../../../../../components/app/confirm/info/row/constants';
-import { useConfirmContext } from '../../../../../context/confirm';
+import { useSignatureRequestOptional } from '../../../../../hooks/useSignatureRequest';
+import { useTransactionMetadataRequestOptional } from '../../../../../hooks/useTransactionMetadataRequest';
 
 export const NetworkRow = ({
   isShownWithAlertsOnly = false,
@@ -29,7 +30,9 @@ export const NetworkRow = ({
   isShownWithAlertsOnly?: boolean;
 }) => {
   const t = useI18nContext();
-  const { currentConfirmation } = useConfirmContext() ?? {};
+  const transactionMetadata = useTransactionMetadataRequestOptional();
+  const signatureRequest = useSignatureRequestOptional();
+  const currentConfirmation = transactionMetadata ?? signatureRequest;
   const networkConfigurations = useSelector(getNetworkConfigurationsByChainId);
 
   if (!currentConfirmation) {

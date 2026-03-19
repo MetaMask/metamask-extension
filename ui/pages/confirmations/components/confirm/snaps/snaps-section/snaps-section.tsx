@@ -5,11 +5,14 @@ import {
   Display,
   FlexDirection,
 } from '../../../../../../helpers/constants/design-system';
-import { useConfirmContext } from '../../../../context/confirm';
+import { useSignatureRequestOptional } from '../../../../hooks/useSignatureRequest';
+import { useTransactionMetadataRequestOptional } from '../../../../hooks/useTransactionMetadataRequest';
 import { SnapInsight } from './snap-insight';
 
 export const SnapsSection = () => {
-  const { currentConfirmation } = useConfirmContext();
+  const transactionMetadata = useTransactionMetadataRequestOptional();
+  const signatureRequest = useSignatureRequestOptional();
+  const currentConfirmation = transactionMetadata ?? signatureRequest;
   const { data } = useInsightSnaps(currentConfirmation?.id);
 
   if (data.length === 0) {

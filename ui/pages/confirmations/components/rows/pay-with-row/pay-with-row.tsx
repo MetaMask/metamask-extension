@@ -30,11 +30,11 @@ import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useFiatFormatter } from '../../../../../hooks/useFiatFormatter';
 import { getInternalAccountByAddress } from '../../../../../selectors/accounts';
 import { isHardwareAccount } from '../../../../multichain-accounts/account-details/account-type-utils';
-import { useConfirmContext } from '../../../context/confirm';
 import { useTransactionPayToken } from '../../../hooks/pay/useTransactionPayToken';
 import { useTransactionPayRequiredTokens } from '../../../hooks/pay/useTransactionPayData';
 import { PayWithModal } from '../../modals/pay-with-modal';
 import { TokenIcon } from '../../token-icon';
+import { useTransactionMetadataRequest } from '../../../hooks/useTransactionMetadataRequest';
 
 export { ConfirmInfoRowSize };
 
@@ -89,7 +89,7 @@ export function PayWithRow({
   const requiredTokens = useTransactionPayRequiredTokens();
   const fiatFormatter = useFiatFormatter();
 
-  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
+  const currentConfirmation = useTransactionMetadataRequest();
   const from = currentConfirmation?.txParams?.from;
 
   const fromAccount = useSelector((state) =>
