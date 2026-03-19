@@ -10,8 +10,9 @@ import {
   TextVariant,
   BoxAlignItems,
   BoxJustifyContent,
+  FontWeight,
 } from '@metamask/design-system-react';
-import MenuItem from '../../ui/menu/menu-item';
+import MenuItem from '../../components/ui/menu/menu-item';
 
 type TabItem = {
   key: string;
@@ -49,6 +50,7 @@ const TabBar = ({
             to={key}
             iconName={iconName}
             iconColor={IconColor.IconAlternative}
+            iconSize={IconSize.Lg}
             textVariant={TextVariant.BodyMd}
             className={`!rounded-none ${activeClass}`}
           >
@@ -58,7 +60,12 @@ const TabBar = ({
               justifyContent={BoxJustifyContent.Between}
               className="w-full"
             >
-              <Text className="whitespace-nowrap">{content}</Text>
+              <Text
+                fontWeight={FontWeight.Medium}
+                className="whitespace-nowrap"
+              >
+                {content}
+              </Text>
               <Icon
                 name={IconName.ArrowRight}
                 size={IconSize.Sm}

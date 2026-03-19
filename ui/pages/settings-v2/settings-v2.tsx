@@ -1,5 +1,5 @@
 /* eslint-disable import-x/extensions */
-import React, { Fragment, Suspense, useState } from 'react';
+import React, { Fragment, Suspense, useMemo, useState } from 'react';
 import {
   Routes as RouterRoutes,
   Route,
@@ -30,7 +30,6 @@ import {
   THEME_ROUTE,
   THIRD_PARTY_APIS_ROUTE,
 } from '../../helpers/constants/routes';
-import TabBar from '../../components/app/tab-bar/tab-bar.tsx';
 // TODO: Remove restricted import
 // eslint-disable-next-line import-x/no-restricted-paths
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
@@ -40,6 +39,7 @@ import {
 } from '../../../shared/constants/app';
 import { mmLazy } from '../../helpers/utils/mm-lazy';
 import { toRelativeRoutePath } from '../routes/utils';
+import TabBar from './tab-bar';
 import {
   SETTINGS_V2_MENU_LIST_ITEM_REGISTRY,
   getSettingsV2RouteMeta,
@@ -131,11 +131,15 @@ const SettingsV2Layout = ({ children }: { children: React.ReactNode }) => {
 
   const showBreadcrumbs = breadcrumbs.length > 1 && !isPopupOrSidepanel;
 
-  const itemTabs = SETTINGS_V2_MENU_LIST_ITEM_REGISTRY.map((item) => ({
-    key: item.path,
-    content: t(item.labelKey),
-    iconName: item.iconName,
-  }));
+  const itemTabs = useMemo(
+    () =>
+      SETTINGS_V2_MENU_LIST_ITEM_REGISTRY.map((item) => ({
+        key: item.path,
+        content: t(item.labelKey),
+        iconName: item.iconName,
+      })),
+    [t],
+  );
 
   return (
     <Box
@@ -152,7 +156,6 @@ const SettingsV2Layout = ({ children }: { children: React.ReactNode }) => {
         onSearchChange={setSearchValue}
         onSearchClear={() => setSearchValue('')}
       />
-
       <Box
         flexDirection={BoxFlexDirection.Row}
         className={classnames('h-full', {
