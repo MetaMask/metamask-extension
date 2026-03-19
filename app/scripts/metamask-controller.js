@@ -1555,11 +1555,8 @@ export default class MetamaskController extends EventEmitter {
     }
 
     // Start perps eligibility monitoring only when basic functionality is on (no external calls when off)
-    if (
-      this.preferencesController.state.useExternalServices &&
-      this.controllerApi.perpsStartEligibilityMonitoring
-    ) {
-      this.controllerApi.perpsStartEligibilityMonitoring().catch((error) => {
+    if (this.preferencesController.state.useExternalServices) {
+      this.controllerApi.perpsStartEligibilityMonitoring?.()?.catch((error) => {
         console.error(error);
       });
     }
@@ -1592,11 +1589,8 @@ export default class MetamaskController extends EventEmitter {
     ) {
       this.multichainRatesController.start();
     }
-    if (
-      this.preferencesController.state.useExternalServices &&
-      this.controllerApi.perpsStartEligibilityMonitoring
-    ) {
-      this.controllerApi.perpsStartEligibilityMonitoring().catch((error) => {
+    if (this.preferencesController.state.useExternalServices) {
+      this.controllerApi.perpsStartEligibilityMonitoring?.()?.catch((error) => {
         console.error(error);
       });
     }
@@ -1606,11 +1600,9 @@ export default class MetamaskController extends EventEmitter {
     this.txController.stopIncomingTransactionPolling();
     this.tokenDetectionController.disable();
     this.multichainRatesController.stop();
-    if (this.controllerApi.perpsStopEligibilityMonitoring) {
-      this.controllerApi.perpsStopEligibilityMonitoring().catch((error) => {
-        console.error(error);
-      });
-    }
+    this.controllerApi.perpsStopEligibilityMonitoring?.()?.catch((error) => {
+      console.error(error);
+    });
   }
 
   resetStates(resetMethods) {
@@ -1786,14 +1778,14 @@ export default class MetamaskController extends EventEmitter {
         ) {
           if (curr) {
             this.controllerApi
-              .perpsStartEligibilityMonitoring()
-              .catch((error) => {
+              .perpsStartEligibilityMonitoring?.()
+              ?.catch((error) => {
                 console.error(error);
               });
           } else {
             this.controllerApi
-              .perpsStopEligibilityMonitoring()
-              .catch((error) => {
+              .perpsStopEligibilityMonitoring?.()
+              ?.catch((error) => {
                 console.error(error);
               });
           }

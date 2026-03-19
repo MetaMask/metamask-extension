@@ -88,10 +88,7 @@ jest.mock('./controller-init/perps-controller-init', () => ({
       state: {},
       name: 'PerpsController',
     },
-    api: {
-      perpsStartEligibilityMonitoring: jest.fn().mockResolvedValue(undefined),
-      perpsStopEligibilityMonitoring: jest.fn().mockResolvedValue(undefined),
-    },
+    api: {},
   }),
 }));
 
