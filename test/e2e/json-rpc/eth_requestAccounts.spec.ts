@@ -82,7 +82,7 @@ describe('eth_requestAccounts', function () {
       await withFixtures(
         {
           dappOptions: { numberOfTestDapps: 1 },
-          fixtures: new FixtureBuilderV2().withEvmAccountsOnly().build(),
+          fixtures: new FixtureBuilderV2().build(),
           title: this.test?.fullTitle(),
         },
         async ({ driver }: { driver: Driver }) => {
@@ -106,6 +106,18 @@ describe('eth_requestAccounts', function () {
           await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
           await loginPage.checkPageIsLoaded();
           await loginPage.loginToHomepage();
+
+          // Wait for SnapController.isReady so the permission grant does not reject non-EVM accounts
+          await driver.wait(async () => {
+            const uiState = await driver.executeScript(() =>
+              (
+                window as {
+                  stateHooks?: { getCleanAppState?: () => Promise<unknown> };
+                }
+              ).stateHooks?.getCleanAppState?.(),
+            );
+            return uiState?.metamask?.isReady === true;
+          }, 30000);
 
           const connectAccountConfirmation = new ConnectAccountConfirmation(
             driver,
