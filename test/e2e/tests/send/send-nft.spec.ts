@@ -27,7 +27,6 @@ import {
   DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
   WINDOW_TITLES,
 } from '../../constants';
-import { veryLargeDelayMs } from '../../helpers';
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import ContractAddressRegistry from '../../seeder/contract-address-registry';
@@ -202,7 +201,6 @@ describe('Send NFT', function () {
             );
             await testDapp.clickERC721MintButton();
 
-            await driver.delay(veryLargeDelayMs);
             await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
             const mintConfirmation = new TransactionConfirmation(driver);
             await mintConfirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
