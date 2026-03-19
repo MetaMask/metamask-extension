@@ -175,7 +175,7 @@ class FirefoxDriver {
       } catch {
         // file didn't exist
       }
-      try {
+        return absDir;
         execFileSync('zip', ['-r', '-1', '-q', xpiPath, '.'], { cwd: absDir });
       } catch {
         // `zip` not installed — fall back to the unpacked directory.
