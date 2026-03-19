@@ -1,6 +1,5 @@
 import {
   AssetsController,
-  type AssetsControllerFirstInitFetchMetaMetricsPayload,
   type AssetsControllerOptions,
 } from '@metamask/assets-controller';
 import type { PreferencesState } from '@metamask/preferences-controller';
@@ -16,10 +15,6 @@ import {
   type AssetsControllerMessenger,
   type AssetsControllerInitMessenger,
 } from '../messengers/assets/assets-controller-messenger';
-import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-} from '../../../../shared/constants/metametrics';
 
 /**
  * Cached API client instance.
@@ -161,31 +156,6 @@ export const AssetsControllerInit: ControllerInitFunction<
     );
   };
 
-  // MetaMetrics: track first init fetch duration and per-data-source latency when AssetsController completes initial load after unlock.
-  // Uses initMessenger.call (same pattern as SmartTransactionsController and SubscriptionService).
-  // isOptIn: true so the event is sent even when user hasn't opted in (with anonymousId), so it appears in mock Segment during dev.
-  const trackMetaMetricsEvent = (
-    payload: AssetsControllerFirstInitFetchMetaMetricsPayload,
-  ): void => {
-    try {
-      initMessenger.call(
-        'MetaMetricsController:trackEvent',
-        {
-          event: MetaMetricsEventName.AssetsFirstInitFetchCompleted,
-          category: MetaMetricsEventCategory.Background,
-          properties: {
-            durationMs: payload.durationMs,
-            chainIds: payload.chainIds,
-            durationByDataSource: payload.durationByDataSource,
-          },
-        },
-        { isOptIn: true },
-      );
-    } catch {
-      // MetaMetricsController may not be available (e.g. init order); skip tracking.
-    }
-  };
-
   // Create the controller - it now creates all data sources internally.
   // queryApiClient is cast to the package's type to avoid duplicate @metamask/core-backend type conflicts.
   const options: AssetsControllerOptions = {
@@ -207,7 +177,6 @@ export const AssetsControllerInit: ControllerInitFunction<
       pollInterval: 30_000,
       enabled: false,
     },
-    trackMetaMetricsEvent,
   };
   const controller = new AssetsController(options);
 
