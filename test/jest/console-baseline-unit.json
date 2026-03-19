@@ -885,7 +885,7 @@
       "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/components/confirm/info/shared/edit-gas-fees-row/edit-gas-fees-row.test.tsx": {
-      "MetaMask: Background connection not initialized": 78,
+      "MetaMask: Background connection not initialized": 114,
       "Reselect: Identity function warnings": 4
     },
     "ui/pages/confirmations/components/confirm/info/shared/edit-gas-icon/edit-gas-icon-button.test.tsx": {
@@ -908,8 +908,7 @@
       "Reselect: Identity function warnings": 4
     },
     "ui/pages/confirmations/components/confirm/info/shared/gas-fees-details/gas-fees-details.test.tsx": {
-
-      "MetaMask: Background connection not initialized": 272,
+      "MetaMask: Background connection not initialized": 416,
       "Reselect: Identity function warnings": 5
     },
     "ui/pages/confirmations/components/confirm/info/shared/gas-fees-row/gas-fees-row.test.tsx": {
@@ -1202,6 +1201,7 @@
       "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/hooks/alerts/transactions/useInsufficientBalanceAlerts.test.ts": {
+      "MetaMask: Background connection not initialized": 84,
       "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/hooks/alerts/transactions/useInsufficientPayTokenBalanceAlert.test.ts": {
@@ -1368,6 +1368,7 @@
       "React: Act warnings (component updates not wrapped)": 1
     },
     "ui/pages/confirmations/hooks/useHasInsufficientBalance.test.ts": {
+      "MetaMask: Background connection not initialized": 30,
       "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/hooks/useLedgerConnection.test.ts": {
