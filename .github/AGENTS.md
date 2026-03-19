@@ -21,6 +21,12 @@
   find it.
 -->
 
+> **Scope:** Only follow the sections below when editing workflow files
+> under `.github/workflows/`, CI-related scripts in `.github/scripts/`,
+> or CI configuration (e.g., `.github/rules/`). For other `.github/`
+> changes (issue templates, CODEOWNERS, PR templates, etc.) this file
+> does not apply.
+
 ---
 
 ## Proactive CI Monitoring
@@ -29,6 +35,10 @@ When making changes to CI workflows — or any code that will be validated by
 CI — you should **proactively offer to monitor workflow runs** rather than
 asking the user to check GitHub manually. You have all the tools needed via
 the `gh` CLI.
+
+> **Prerequisite:** Ensure the `gh` CLI is authenticated and authorized for
+> the target repository (e.g., run `gh auth status`, or set
+> `GH_TOKEN`/`GITHUB_TOKEN` with at least `repo` and `workflow` scopes).
 
 ### Monitoring Workflow Runs
 
@@ -188,7 +198,7 @@ minutes as a standalone workflow.
 
 **When reviewing a PR** that adds a new workflow file, check whether it's
 just a single short check. If so, suggest folding it into
-`repository-health-checks.yml` instead.
+[`repository-health-checks.yml`](.github/workflows/repository-health-checks.yml) instead.
 
 **When authoring CI changes**, prefer adding steps to existing jobs over
 creating new workflow files.
@@ -196,7 +206,7 @@ creating new workflow files.
 **How to consolidate:**
 
 1. Identify the script or command the standalone workflow runs
-2. Add it as a new step in `repository-health-checks.yml` (with
+2. Add it as a new step in [`repository-health-checks.yml`](.github/workflows/repository-health-checks.yml) (with
    `if: ${{ !cancelled() }}` so it runs even if earlier steps fail)
 3. If the script needs extra permissions (e.g., `issues: write`), add
    them to the `permissions` block where `main.yml` calls the reusable
