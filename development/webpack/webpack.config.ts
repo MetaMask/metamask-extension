@@ -36,14 +36,9 @@ import { ManifestPlugin } from './utils/plugins/ManifestPlugin';
 import { getLatestCommit } from './utils/git';
 import { MODES } from './utils/constants';
 
-// LavaMoat uses `resolve@1`, which cannot resolve packages that only define
-// `package.json#exports` (no `main`). Load the CJS entry by path so policy
-// generation and lavamoat webpack builds succeed.
-const requireFromHere = createRequire(__filename);
+const requireWebpackConfig = createRequire(__filename);
 const tailwindcss: typeof import('@tailwindcss/postcss').default =
-  requireFromHere(
-    join(__dirname, '../../node_modules/@tailwindcss/postcss/dist/index.js'),
-  );
+  requireWebpackConfig(join(__dirname, '../lib/load-tailwind-postcss.cjs'));
 
 const buildTypes = loadBuildTypesConfig();
 const { args, cacheKey, features } = parseArgv(argv.slice(2), buildTypes);

@@ -1,5 +1,3 @@
-const { createRequire } = require('node:module');
-const { join } = require('node:path');
 const pify = require('pify');
 const gulp = require('gulp');
 const watch = require('gulp-watch');
@@ -7,15 +5,10 @@ const sourcemaps = require('gulp-sourcemaps');
 const rtlcss = require('postcss-rtlcss');
 const discardFonts = require('postcss-discard-font-face');
 const postcss = require('gulp-postcss');
-
-// Same as webpack.config: `resolve@1` / some tooling cannot resolve `@tailwindcss/postcss` (exports-only).
-const requireFromHere = createRequire(__filename);
-const tailwindcss = requireFromHere(
-  join(__dirname, '../../node_modules/@tailwindcss/postcss/dist/index.js'),
-);
 const pipeline = pify(require('readable-stream').pipeline);
 const sass = require('sass-embedded');
 const gulpSass = require('gulp-sass')(sass);
+const tailwindcss = require('../lib/load-tailwind-postcss.cjs');
 const { TASKS } = require('./constants');
 const { createTask } = require('./task');
 
