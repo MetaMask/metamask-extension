@@ -18,7 +18,7 @@ import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 
 type SettingsV2HeaderProps = {
   title: string;
-  isPopup?: boolean;
+  isPopupOrSidepanel?: boolean;
   isOnSettingsRoot?: boolean;
   onClose?: () => void;
   searchValue?: string;
@@ -29,7 +29,7 @@ type SettingsV2HeaderProps = {
 
 export const SettingsV2Header = ({
   title,
-  isPopup = false,
+  isPopupOrSidepanel = false,
   isOnSettingsRoot = false,
   onClose,
   searchValue = '',
@@ -40,7 +40,7 @@ export const SettingsV2Header = ({
   const t = useI18nContext();
   const navigate = useNavigate();
   const [isSearchOpen, setIsSearchOpen] = useState(false);
-  const showSearchButton = !isPopup || isOnSettingsRoot;
+  const showSearchButton = !isPopupOrSidepanel || isOnSettingsRoot;
 
   if (isSearchOpen) {
     return (

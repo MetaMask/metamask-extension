@@ -90,27 +90,25 @@ const SettingsV2Layout = ({ children }: { children: React.ReactNode }) => {
   const environmentType = getEnvironmentType();
   const [searchValue, setSearchValue] = useState('');
 
-  // Environments info
-  const isPopup =
+  const isPopupOrSidepanel =
     environmentType === ENVIRONMENT_TYPE_POPUP ||
     environmentType === ENVIRONMENT_TYPE_SIDEPANEL;
   const isSidepanel = environmentType === ENVIRONMENT_TYPE_SIDEPANEL;
 
-  // Routes info
   const isOnSettingsRoot = pathname === SETTINGS_V2_ROUTE;
   const backRoute = isOnSettingsRoot
     ? DEFAULT_ROUTE
     : (meta?.parentPath ?? SETTINGS_V2_ROUTE);
-  // Current page label - used for popup header title
+
   const currentPageLabelKey = meta?.labelKey;
 
   // Header: "Settings" on fullscreen; tab or sub-page name on popup/sidepanel
   const headerTitle =
-    isPopup && !isOnSettingsRoot && currentPageLabelKey
+    isPopupOrSidepanel && !isOnSettingsRoot && currentPageLabelKey
       ? t(currentPageLabelKey)
       : t('settings');
 
-  // Breadcrumbs: only shown on sub-pages (where parent is not the settings root)
+  // Breadcrumbs: these are shown on sub-pages (2 levels deep from settings root)
   const breadcrumbs = React.useMemo((): string[] => {
     if (!meta?.parentPath || meta.parentPath === SETTINGS_V2_ROUTE) {
       return [];
@@ -131,7 +129,7 @@ const SettingsV2Layout = ({ children }: { children: React.ReactNode }) => {
     return crumbs;
   }, [pathname, meta?.parentPath]);
 
-  const showBreadcrumbs = breadcrumbs.length > 1 && !isPopup;
+  const showBreadcrumbs = breadcrumbs.length > 1 && !isPopupOrSidepanel;
 
   const itemTabs = SETTINGS_V2_MENU_LIST_ITEM_REGISTRY.map((item) => ({
     key: item.path,
@@ -143,7 +141,7 @@ const SettingsV2Layout = ({ children }: { children: React.ReactNode }) => {
     <Box flexDirection={BoxFlexDirection.Column} backgroundColor={BoxBackgroundColor.BackgroundDefault} className="h-full w-full">
       <SettingsV2Header
         title={headerTitle}
-        isPopup={isPopup}
+        isPopupOrSidepanel={isPopupOrSidepanel}
         isOnSettingsRoot={isOnSettingsRoot}
         onClose={() => navigate(backRoute)}
         searchValue={searchValue}
@@ -153,7 +151,9 @@ const SettingsV2Layout = ({ children }: { children: React.ReactNode }) => {
 
       <Box
         flexDirection={BoxFlexDirection.Row}
-        className="h-full sm:border-t sm:border-border-muted"
+        className={classnames('h-full', {
+          'sm:border-t sm:border-border-muted': !isSidepanel,
+        })}
       >
         <Box
           className={classnames(
@@ -176,6 +176,7 @@ const SettingsV2Layout = ({ children }: { children: React.ReactNode }) => {
               return pathname === key || pathname.startsWith(`${key}/`);
             }}
             onSelect={(key) => navigate(key)}
+            removeFullscreenStyles={isPopupOrSidepanel}
           />
         </Box>
         <Box
