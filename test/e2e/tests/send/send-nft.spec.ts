@@ -22,7 +22,11 @@ import TransactionConfirmation from '../../page-objects/pages/confirmations/tran
 import WatchAssetConfirmation from '../../page-objects/pages/confirmations/watch-asset-confirmation';
 import { Driver } from '../../webdriver/driver';
 import { Anvil } from '../../seeder/anvil';
-import { DAPP_URL, WINDOW_TITLES } from '../../constants';
+import {
+  DAPP_URL,
+  DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
+  WINDOW_TITLES,
+} from '../../constants';
 import { veryLargeDelayMs } from '../../helpers';
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
@@ -126,7 +130,10 @@ describe('Send NFT', function () {
 
             // Mint NFT first
             await testDapp.openTestDappPage({ contractAddress, url: DAPP_URL });
-            await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
+            await testDapp.verifyAccountConnection(
+              DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
+              '0x539',
+            );
             await testDapp.clickERC721MintButton();
 
             await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
@@ -189,6 +196,10 @@ describe('Send NFT', function () {
 
             // Mint NFT first
             await testDapp.openTestDappPage({ contractAddress, url: DAPP_URL });
+            await testDapp.verifyAccountConnection(
+              DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
+              '0x539',
+            );
             await testDapp.clickERC721MintButton();
 
             await driver.delay(veryLargeDelayMs);
@@ -249,11 +260,14 @@ describe('Send NFT', function () {
 
             // Mint ERC1155
             await testDapp.openTestDappPage({ contractAddress, url: DAPP_URL });
+            await testDapp.verifyAccountConnection(
+              DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
+              '0x539',
+            );
             await testDapp.fillERC1155TokenID('1');
             await testDapp.fillERC1155TokenAmount('1');
             await testDapp.clickERC1155MintButton();
 
-            await driver.delay(veryLargeDelayMs);
             await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
             const mintConfirmation = new TransactionConfirmation(driver);
             await mintConfirmation.clickFooterConfirmButton();
