@@ -1,9 +1,9 @@
+import { LEDGER_USB_VENDOR_ID } from '../../shared/constants/hardware-wallets';
 import {
   LedgerAction,
   OffscreenCommunicationEvents,
   OffscreenCommunicationTarget,
 } from '../../shared/constants/offscreen-communication';
-import { LEDGER_USB_VENDOR_ID } from '../../shared/constants/hardware-wallets';
 import { LedgerOffscreenHandler } from './ledger';
 
 // Mock functions - defined before jest.mock calls
@@ -16,6 +16,7 @@ const mockGetAddress = jest.fn();
 const mockClearSignTransaction = jest.fn();
 const mockSignPersonalMessage = jest.fn();
 const mockSignEIP712Message = jest.fn();
+const mockSignEIP712HashedMessage = jest.fn();
 const mockParse = jest.fn();
 
 const mockTransport = {
@@ -42,6 +43,7 @@ jest.mock('@ledgerhq/hw-app-eth', () => {
       clearSignTransaction: mockClearSignTransaction,
       signPersonalMessage: mockSignPersonalMessage,
       signEIP712Message: mockSignEIP712Message,
+      signEIP712HashedMessage: mockSignEIP712HashedMessage,
     })),
   };
 });
@@ -391,19 +393,28 @@ describe('Ledger Offscreen', () => {
     });
 
     describe('signTypedData', () => {
-      it('signs EIP-712 typed data', async () => {
-        const typedDataMessage = {
-          domain: { name: 'Test', version: '1' },
-          types: { EIP712Domain: [], Test: [] },
-          primaryType: 'Test',
-          message: { value: 'test' },
-        };
+      const typedDataMessage = {
+        domain: { name: 'Test', version: '1', chainId: 1 },
+        types: {
+          EIP712Domain: [
+            { name: 'name', type: 'string' },
+            { name: 'version', type: 'string' },
+            { name: 'chainId', type: 'uint256' },
+          ],
+          Test: [{ name: 'value', type: 'string' }],
+        },
+        primaryType: 'Test',
+        message: { value: 'test' },
+      };
 
-        mockSignEIP712Message.mockResolvedValue({
-          v: 28,
-          r: 'abcd1234',
-          s: 'efgh5678',
-        });
+      const defaultSignature = {
+        v: 28,
+        r: 'abcd1234',
+        s: 'efgh5678',
+      };
+
+      it('signs EIP-712 typed data via clear signing', async () => {
+        mockSignEIP712Message.mockResolvedValue(defaultSignature);
 
         const response = await sendAction(LedgerAction.signTypedData, {
           hdPath: "m/44'/60'/0'/0/0",
@@ -415,6 +426,49 @@ describe('Ledger Offscreen', () => {
           "m/44'/60'/0'/0/0",
           typedDataMessage,
         );
+        expect(mockSignEIP712HashedMessage).not.toHaveBeenCalled();
+      });
+
+      it('falls back to hashed signing when device returns INS_NOT_SUPPORTED', async () => {
+        const insError = new Error('INS_NOT_SUPPORTED');
+        (insError as Error & { statusText: string }).statusText =
+          'INS_NOT_SUPPORTED';
+        mockSignEIP712Message.mockRejectedValue(insError);
+        mockSignEIP712HashedMessage.mockResolvedValue(defaultSignature);
+
+        const response = await sendAction(LedgerAction.signTypedData, {
+          hdPath: "m/44'/60'/0'/0/0",
+          message: typedDataMessage,
+        });
+
+        expect(response.success).toBe(true);
+        expect(response.payload).toEqual(defaultSignature);
+        expect(mockSignEIP712HashedMessage).toHaveBeenCalledWith(
+          "m/44'/60'/0'/0/0",
+          expect.any(String),
+          expect.any(String),
+        );
+      });
+
+      it('re-throws non-INS_NOT_SUPPORTED errors without falling back', async () => {
+        const consoleSpy = jest
+          .spyOn(console, 'error')
+          .mockImplementation(() => undefined);
+        mockSignEIP712Message.mockRejectedValue(new Error('Device locked'));
+
+        const response = await sendAction(LedgerAction.signTypedData, {
+          hdPath: "m/44'/60'/0'/0/0",
+          message: typedDataMessage,
+        });
+
+        expect(response.success).toBe(false);
+        expect(response.payload).toEqual({
+          error: expect.objectContaining({
+            message: 'Device locked',
+          }),
+        });
+        expect(mockSignEIP712HashedMessage).not.toHaveBeenCalled();
+        consoleSpy.mockRestore();
       });
     });
 

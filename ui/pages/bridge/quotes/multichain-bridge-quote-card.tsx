@@ -47,7 +47,10 @@ import { useRewards } from '../../../hooks/bridge/useRewards';
 import { RewardsBadge } from '../../../components/app/rewards/RewardsBadge';
 import AddRewardsAccount from '../../../components/app/rewards/AddRewardsAccount';
 import { Skeleton } from '../../../components/component-library/skeleton';
-import { getGasFeesSponsoredNetworkEnabled } from '../../../selectors/selectors';
+import {
+  getGasFeesSponsoredNetworkEnabled,
+  isHardwareWallet,
+} from '../../../selectors/selectors';
 import { BridgeQuotesModal } from './bridge-quotes-modal';
 
 export { MultichainBridgeQuoteCardSkeleton } from './multichain-bridge-quote-card-skeleton';
@@ -96,6 +99,7 @@ export const MultichainBridgeQuoteCard = ({
     useSelector(getValidationErrors, shallowEqual);
 
   const isToOrFromNonEvm = useSelector(getIsToOrFromNonEvm);
+  const isHardwareWalletAccount = useSelector(isHardwareWallet);
   const gasFeesSponsoredNetworkEnabled = useSelector(
     getGasFeesSponsoredNetworkEnabled,
   );
@@ -118,6 +122,10 @@ export const MultichainBridgeQuoteCard = ({
   }, [fromChain?.chainId, gasFeesSponsoredNetworkEnabled]);
 
   const shouldShowGasSponsored = useMemo(() => {
+    if (isHardwareWalletAccount) {
+      return false;
+    }
+
     if (gasSponsored) {
       return true;
     }
@@ -134,6 +142,7 @@ export const MultichainBridgeQuoteCard = ({
 
     return false;
   }, [
+    isHardwareWalletAccount,
     gasSponsored,
     insufficientBal,
     isCurrentNetworkGasSponsored,
@@ -287,8 +296,44 @@ export const MultichainBridgeQuoteCard = ({
                 <SuccessPill label={t('swapGasFeesSponsored')} />
               </Row>
             )}
-            {!shouldShowGasSponsored && activeQuote.quote.gasIncluded && (
-              <Row gap={1} data-testid="network-fees-included">
+            {!shouldShowGasSponsored &&
+              !isHardwareWalletAccount &&
+              activeQuote.quote.gasIncluded && (
+                <Row gap={1} data-testid="network-fees-included">
+                  <Text
+                    variant={TextVariant.bodySm}
+                    color={
+                      isEstimatedReturnLow
+                        ? TextColor.warningDefault
+                        : TextColor.textAlternative
+                    }
+                    style={{ textDecoration: 'line-through' }}
+                    data-testid="network-fees-included-original-amount"
+                  >
+                    {activeQuote.includedTxFees?.valueInCurrency
+                      ? formatNetworkFee(
+                          activeQuote.includedTxFees.valueInCurrency,
+                          currency,
+                        )
+                      : formatNetworkFee(
+                          activeQuote.gasFee.effective?.valueInCurrency,
+                          currency,
+                        )}
+                  </Text>
+                  <Text
+                    variant={TextVariant.bodySm}
+                    color={
+                      isEstimatedReturnLow
+                        ? TextColor.warningDefault
+                        : TextColor.textAlternative
+                    }
+                  >
+                    {t('swapGasFeesIncluded')}
+                  </Text>
+                </Row>
+              )}
+            {!shouldShowGasSponsored &&
+              (isHardwareWalletAccount || !activeQuote.quote.gasIncluded) && (
                 <Text
                   variant={TextVariant.bodySm}
                   color={
@@ -296,47 +341,14 @@ export const MultichainBridgeQuoteCard = ({
                       ? TextColor.warningDefault
                       : TextColor.textAlternative
                   }
-                  style={{ textDecoration: 'line-through' }}
-                  data-testid="network-fees-included-original-amount"
+                  data-testid="network-fees"
                 >
-                  {activeQuote.includedTxFees?.valueInCurrency
-                    ? formatNetworkFee(
-                        activeQuote.includedTxFees.valueInCurrency,
-                        currency,
-                      )
-                    : formatNetworkFee(
-                        activeQuote.gasFee.effective?.valueInCurrency,
-                        currency,
-                      )}
+                  {formatNetworkFee(
+                    activeQuote.gasFee.effective?.valueInCurrency,
+                    currency,
+                  )}
                 </Text>
-                <Text
-                  variant={TextVariant.bodySm}
-                  color={
-                    isEstimatedReturnLow
-                      ? TextColor.warningDefault
-                      : TextColor.textAlternative
-                  }
-                >
-                  {t('swapGasFeesIncluded')}
-                </Text>
-              </Row>
-            )}
-            {!shouldShowGasSponsored && !activeQuote.quote.gasIncluded && (
-              <Text
-                variant={TextVariant.bodySm}
-                color={
-                  isEstimatedReturnLow
-                    ? TextColor.warningDefault
-                    : TextColor.textAlternative
-                }
-                data-testid="network-fees"
-              >
-                {formatNetworkFee(
-                  activeQuote.gasFee.effective?.valueInCurrency,
-                  currency,
-                )}
-              </Text>
-            )}
+              )}
           </Row>
         )}
 
