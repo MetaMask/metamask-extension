@@ -218,7 +218,6 @@ describe('Send ETH - Advanced', function () {
                 sendHexData: true,
               },
             })
-            .withPreferencesControllerPetnamesDisabled()
             .build(),
           title: this.test?.fullTitle(),
         },
