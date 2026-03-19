@@ -30,7 +30,7 @@ const restoreContextAfterImports = () => {
 
 cleanContextForImports();
 
-/* eslint-disable import/first */
+/* eslint-disable import-x/first */
 import log from 'loglevel';
 import { v4 as uuid } from 'uuid';
 import { WindowPostMessageStream } from '@metamask/post-message-stream';

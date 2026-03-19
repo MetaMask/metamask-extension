@@ -19,7 +19,7 @@ import {
 } from '../messengers/transaction-controller-messenger';
 import { getRootMessenger } from '../../lib/messenger';
 import { buildControllerInitRequestMock, CHAIN_ID_MOCK } from '../test/utils';
-import { ControllerInitRequest } from '../types';
+import { ControllerInitRequest, ControllerName } from '../types';
 import * as smartTransactionsModule from '../../lib/smart-transaction/smart-transactions';
 import * as sentinelApiModule from '../../lib/transaction/sentinel-api';
 import * as selectorsModule from '../../../../shared/lib/selectors';
@@ -429,6 +429,59 @@ describe('Transaction Controller Init', () => {
       const result = await hooks?.publish?.(mockTransactionMeta);
 
       expect(result).toStrictEqual({ transactionHash: '0xpayHash' });
+    });
+
+    it('skips Delegation7702PublishHook for hardware wallet accounts', async () => {
+      const requestMock = buildInitRequestMock();
+      requestMock.getController.mockImplementation(((name: ControllerName) => {
+        if (name === 'KeyringController') {
+          return {
+            getKeyringForAccount: jest.fn().mockResolvedValue({
+              type: 'Ledger Hardware',
+            }),
+          };
+        }
+        return buildControllerMock();
+      }) as unknown as ControllerInitRequest<
+        TransactionControllerMessenger,
+        TransactionControllerInitMessenger
+      >['getController']);
+
+      TransactionControllerInit(requestMock);
+
+      const { hooks } = transactionControllerClassMock.mock.calls[0][0];
+
+      await hooks?.publish?.(mockTransactionMeta);
+
+      expect(jest.mocked(Delegation7702PublishHook)).not.toHaveBeenCalled();
+    });
+
+    it('calls Delegation7702PublishHook for HD keyring accounts', async () => {
+      const requestMock = buildInitRequestMock();
+      requestMock.getController.mockImplementation(((name: ControllerName) => {
+        if (name === 'KeyringController') {
+          return {
+            getKeyringForAccount: jest.fn().mockResolvedValue({
+              type: 'HD Key Tree',
+            }),
+          };
+        }
+        return buildControllerMock();
+      }) as unknown as ControllerInitRequest<
+        TransactionControllerMessenger,
+        TransactionControllerInitMessenger
+      >['getController']);
+
+      TransactionControllerInit(requestMock);
+
+      const { hooks } = transactionControllerClassMock.mock.calls[0][0];
+
+      await hooks?.publish?.({
+        ...mockTransactionMeta,
+        isExternalSign: true,
+      } as TransactionMeta);
+
+      expect(jest.mocked(Delegation7702PublishHook)).toHaveBeenCalled();
     });
   });
 });
