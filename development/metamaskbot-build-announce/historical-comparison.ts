@@ -142,7 +142,7 @@ function buildMetricBaselines(
     }
     result[metric] = {
       mean: meanVal,
-      stdDev: values.stdDev.length > 0 ? mean(values.stdDev) : 0,
+      ...(values.stdDev.length > 0 ? { stdDev: mean(values.stdDev) } : {}),
       p75: values.p75.length > 0 ? mean(values.p75) : meanVal,
       p95: values.p95.length > 0 ? mean(values.p95) : meanVal,
     };

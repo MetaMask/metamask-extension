@@ -563,8 +563,8 @@ export function buildBenchmarkSection(
       const inlineHtml = `<p>${innerIndent}${regressionItems[0]}</p>\n`;
       // "View all" always present when there are any regressions.
       const viewAllHtml =
-        `<p>${innerIndent}<details><summary>View all</summary>\n` +
-        `<ul>${regressionItems.map((i) => `<li>${i}</li>`).join('')}</ul></details></p>\n`;
+        `${innerIndent}<details><summary>View all</summary>\n` +
+        `<ul>${regressionItems.map((i) => `<li>${i}</li>`).join('')}</ul></details>\n`;
       regressionDetailsHtml = inlineHtml + viewAllHtml;
     } else if (baseline) {
       regressionDetailsHtml = `<p>${innerIndent}✅ No regressions detected</p>\n`;

@@ -82,7 +82,9 @@ export type ThresholdViolation = {
  * Aggregated historical baseline for a single metric,
  * with values for each stat key (mean, p75, p95).
  */
-export type HistoricalBaselineMetrics = Record<StatKey, number>;
+export type HistoricalBaselineMetrics = Omit<Record<StatKey, number>, 'stdDev'> & {
+  stdDev?: number;
+};
 
 export type RelativeThresholds = {
   regressionPercent: number;

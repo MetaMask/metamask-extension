@@ -67,8 +67,12 @@ const SEVERITY_ICON: Record<ComparisonSeverity, string> = Object.fromEntries(
  * @param deltaPercent - Delta as a fraction (0.1 = 10%, -0.08 = -8%).
  */
 export function formatDeltaPercent(deltaPercent: number): string {
-  const pct = (deltaPercent * 100).toFixed(0);
-  return `${deltaPercent > 0 ? '+' : ''}${pct}%`;
+  const pct = Number((deltaPercent * 100).toFixed(0));
+  if (pct === 0) {
+    return '0%';
+  }
+  const sign = pct > 0 ? '+' : '';
+  return `${sign}${pct}%`;
 }
 
 /**
