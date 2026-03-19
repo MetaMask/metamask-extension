@@ -1,0 +1,43 @@
+name: Check Feature Flag Registry
+
+on:
+  pull_request:
+    types:
+      - opened
+      - reopened
+      - synchronize
+    branches:
+      - main
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check-feature-flags:
+    name: Verify feature flags are registered
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      issues: write
+      pull-requests: write
+
+    steps:
+      - name: Checkout and setup environment
+        uses: MetaMask/action-checkout-and-setup@v1
+        with:
+          is-high-risk-environment: false
+          skip-allow-scripts: true
+          use-yarn-hydrate: true
+
+      - name: Fetch base branch for diff
+        run: git fetch origin "$BASE_REF"
+        env:
+          BASE_REF: ${{ github.base_ref }}
+
+      - name: Check feature flag registry
+        env:
+          GITHUB_BASE_REF: ${{ github.base_ref }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: yarn tsx .github/scripts/check-feature-flag-registry.ts

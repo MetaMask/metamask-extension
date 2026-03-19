@@ -1,0 +1,48 @@
+name: Main retry
+
+on:
+  workflow_dispatch:
+    inputs:
+      run-id:
+        required: true
+        type: number
+        description: The run-id to rerun
+      pr-number:
+        required: true
+        type: number
+        description: The PR number associated with the run-id to rerun
+
+jobs:
+  main-retry:
+    name: Main retry
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    env:
+      GH_TOKEN: ${{ github.token }}
+      RUN_ID: ${{ inputs.run-id }}
+      PR_NUMBER: ${{ inputs.pr-number }}
+      REPO: ${{ github.repository }}
+    permissions:
+      actions: write
+      pull-requests: read
+    steps:
+      - name: Retry
+        run: |
+          # Check the status of the workflow run to ensure it has completed before attempting to rerun.
+          # If this keeps going too long, it will hit the timeout-minutes and stop.
+          WORKFLOW_STATUS=$(gh run view "$RUN_ID" --repo "$REPO" --json status  --jq '.status')
+          while [[ "$WORKFLOW_STATUS" != "completed" ]]; do
+            sleep 3
+            echo "Workflow run status is '$WORKFLOW_STATUS'. Waiting for it to be 'completed' before rerunning."
+            WORKFLOW_STATUS=$(gh run view "$RUN_ID" --repo "$REPO" --json status  --jq '.status')
+          done
+
+          # If the PR still has a retry-ci label, do not retry to avoid a possible infinite loop.
+          # The label should have been removed by the workflow that triggered this one.
+          CURRENT_LABELS=$(gh pr view "$PR_NUMBER" --repo "$REPO" --json labels --jq '.labels[].name' | tr '\n' ',')
+          if [[ "${CURRENT_LABELS}" == *"retry-ci"* ]]; then
+            echo "PR still has a 'retry-ci' label. Exiting to avoid a possible infinite loop."
+            exit 1
+          fi
+
+          gh run rerun "$RUN_ID" --failed --repo "$REPO"

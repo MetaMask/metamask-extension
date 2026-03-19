@@ -1,0 +1,17 @@
+name: Release PR Approval
+
+on:
+  pull_request:
+    branches:
+      - release/*
+
+jobs:
+  release-pr-approval:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Require Release Team approval
+        uses: op5dev/require-team-approval@dfd7b8b9a88bf82a955c103f7e19642b0411aecd
+        with:
+          team: release-team
+          token: ${{ secrets.METAMASK_EXTENSION_ORG_READ_TOKEN }}

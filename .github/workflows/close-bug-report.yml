@@ -1,0 +1,26 @@
+name: Close release bug report issue when release branch gets merged
+
+on:
+  pull_request:
+    branches:
+      - stable
+    types:
+      - closed
+
+jobs:
+  close-bug-report:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    if: github.event.pull_request.merged == true && startsWith(github.event.pull_request.head.ref, 'release/')
+    steps:
+      - name: Checkout and setup environment
+        uses: MetaMask/action-checkout-and-setup@v3
+        with:
+          is-high-risk-environment: false
+          skip-allow-scripts: true
+
+      - name: Close release bug report issue
+        env:
+          BUG_REPORT_REPO: MetaMask-planning
+          BUG_REPORT_TOKEN: ${{ secrets.BUG_REPORT_TOKEN }}
+        run: yarn run close-release-bug-report-issue

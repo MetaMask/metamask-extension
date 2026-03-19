@@ -1,0 +1,34 @@
+name: Add release label to PR and linked issues when PR gets merged
+
+on:
+  pull_request:
+    branches:
+      - main
+    types:
+      - closed
+
+jobs:
+  add-release-label:
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.merged == true
+    steps:
+      - name: Checkout and setup environment
+        uses: MetaMask/action-checkout-and-setup@v3
+        with:
+          is-high-risk-environment: false
+          fetch-depth: 0 # This is needed to checkout all branches
+          skip-allow-scripts: true
+
+      - name: Get the next semver version
+        id: get-next-semver-version
+        env:
+          FORCE_NEXT_SEMVER_VERSION: ${{ vars.FORCE_NEXT_SEMVER_VERSION }}
+        run: ./get-next-semver-version.sh "$FORCE_NEXT_SEMVER_VERSION"
+        working-directory: '.github/scripts'
+
+      - name: Add release label to PR and linked issues
+        id: add-release-label-to-pr-and-linked-issues
+        env:
+          RELEASE_LABEL_TOKEN: ${{ secrets.RELEASE_LABEL_TOKEN }}
+          NEXT_SEMVER_VERSION: ${{ env.NEXT_SEMVER_VERSION }}
+        run: yarn run add-release-label-to-pr-and-linked-issues
