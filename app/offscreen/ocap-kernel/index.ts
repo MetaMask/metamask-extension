@@ -182,6 +182,23 @@ async function makeKernelWorker(): Promise<
   if (relayMultiaddr) {
     const relays = (relayMultiaddr as string).split(',').filter(Boolean);
     workerUrl.searchParams.set('relays', JSON.stringify(relays));
+
+    // Extract host IPs/names from relay multiaddrs and allow plain ws://
+    // connections to them. The kernel's connectionGater blocks ws:// to
+    // public IPs by default — this allowlist overrides that for relays.
+    const hosts = relays
+      .map((r: string) => {
+        const ip4 = r.match(/\/ip4\/([^/]+)/u);
+        if (ip4) {
+          return ip4[1];
+        }
+        const dns = r.match(/\/dns[46]?\/([^/]+)/u);
+        return dns ? dns[1] : null;
+      })
+      .filter(Boolean) as string[];
+    if (hosts.length > 0) {
+      workerUrl.searchParams.set('allowedWsHosts', JSON.stringify(hosts));
+    }
   }
 
   const worker = new Worker(workerUrl, { type: 'module' });
