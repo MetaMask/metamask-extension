@@ -1,13 +1,14 @@
 import { Suite } from 'mocha';
-import { withFixtures } from '../../helpers';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+
 import { DAPP_URL, NETWORK_CLIENT_ID, WINDOW_TITLES } from '../../constants';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
-import HeaderNavbar from '../../page-objects/pages/header-navbar';
-import SettingsPage from '../../page-objects/pages/settings/settings-page';
-import PrivacySettings from '../../page-objects/pages/settings/privacy-settings';
-import TestDapp from '../../page-objects/pages/test-dapp';
+import { withFixtures } from '../../helpers';
+import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import Confirmation from '../../page-objects/pages/confirmations/confirmation';
+import HeaderNavbar from '../../page-objects/pages/header-navbar';
+import PrivacySettings from '../../page-objects/pages/settings/privacy-settings';
+import SettingsPage from '../../page-objects/pages/settings/settings-page';
+import TestDapp from '../../page-objects/pages/test-dapp';
 
 describe('PPOM Settings', function (this: Suite) {
   // eslint-disable-next-line mocha/no-skipped-tests, mocha/handle-done-callback
@@ -18,7 +19,7 @@ describe('PPOM Settings', function (this: Suite) {
         fixtures: new FixtureBuilderV2()
           .withSelectedNetwork(NETWORK_CLIENT_ID.MAINNET)
           .withEnabledNetworks({ eip155: { '0x1': true } })
-          .withPermissionControllerConnectedToTestDapp()
+          .withPermissionControllerConnectedToTestDapp({ chainIds: [1] })
           .build(),
         title: this.test?.fullTitle(),
       },
@@ -55,7 +56,7 @@ describe('PPOM Settings', function (this: Suite) {
         fixtures: new FixtureBuilderV2()
           .withSelectedNetwork(NETWORK_CLIENT_ID.MAINNET)
           .withEnabledNetworks({ eip155: { '0x1': true } })
-          .withPermissionControllerConnectedToTestDapp()
+          .withPermissionControllerConnectedToTestDapp({ chainIds: [1] })
           .build(),
         title: this.test?.fullTitle(),
       },
