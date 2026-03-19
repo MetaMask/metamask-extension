@@ -750,18 +750,8 @@
   "basicConfigurationModalCheckbox": {
     "message": "Tuigim agus ba mhaith liom leanúint ar aghaidh"
   },
-  "basicConfigurationModalDisclaimerOff": {
+  "basicConfigurationModalDisclaimerOffPart1": {
     "message": "Ciallaíonn sé seo nach mbainfidh tú an leas is fearr as d’am ar MetaMask. Ní bheidh gnéithe bunúsacha (cosúil le sonraí comharthaí, socruithe gáis is fearr, agus eile) ar fáil duit."
-  },
-  "basicConfigurationModalDisclaimerOffAdditionalText": {
-    "message": "Má mhúchtar é seo, díchumasaítear gach gné laistigh de $1 agus $2 freisin.",
-    "description": "$1 and $2 are bold text for basicConfigurationModalDisclaimerOffAdditionalTextFeaturesFirst and basicConfigurationModalDisclaimerOffAdditionalTextFeaturesLast respectively"
-  },
-  "basicConfigurationModalDisclaimerOffAdditionalTextFeaturesFirst": {
-    "message": "slándáil agus príobháideacht, cúltaca agus sioncrónú"
-  },
-  "basicConfigurationModalDisclaimerOffAdditionalTextFeaturesLast": {
-    "message": "fógraí"
   },
   "basicConfigurationModalDisclaimerOn": {
     "message": "Chun d’am ar MetaMask a bharrfheabhsú, beidh ort an ghné seo a chasadh air. Tá feidhmeanna bunúsacha (cosúil le sonraí comharthaí, socruithe gáis is fearr, agus eile) tábhachtach don taithí web3."
@@ -1942,12 +1932,6 @@
   },
   "dismissReminderField": {
     "message": "Díbhe meabhrúchán cúltaca Frása Aisghabhála Rúnda"
-  },
-  "dismissSmartAccountSuggestionEnabledDescription": {
-    "message": "Cas air seo chun nach bhfeicfidh tú an moladh \"Athraigh go Cuntas Cliste\" ar aon chuntas a thuilleadh. Díghlasálann cuntais chliste idirbhearta níos tapúla, táillí líonra níos ísle agus níos mó solúbthachta maidir le híocaíocht dóibh sin."
-  },
-  "dismissSmartAccountSuggestionEnabledTitle": {
-    "message": "Diúltaigh an moladh \"Athraigh go Cuntas Cliste\""
   },
   "displayNftMedia": {
     "message": "Taispeáin meáin NFT"
@@ -5231,9 +5215,6 @@
   },
   "settingsSearchMatchingNotFound": {
     "message": "Ní bhfuarthas aon torthaí comhoiriúnacha."
-  },
-  "settingsSubHeadingSignaturesAndTransactions": {
-    "message": "Iarratais shínithe agus idirbhearta"
   },
   "shieldClaim": {
     "message": "Cuir éileamh isteach"

@@ -29,7 +29,7 @@ import {
 import { NFT } from '../asset-picker-amount/asset-picker-modal/types';
 import Tooltip from '../../ui/tooltip/tooltip';
 import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../shared/constants/app';
-// eslint-disable-next-line import/no-restricted-paths
+// eslint-disable-next-line import-x/no-restricted-paths
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 
 type NftItemProps = {
