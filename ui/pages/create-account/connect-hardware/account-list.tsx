@@ -17,13 +17,12 @@ import {
   ButtonIconSize,
   BoxAlignItems,
   BoxFlexDirection,
+  Checkbox,
   IconName,
   Text,
   TextButton,
   TextVariant,
 } from '@metamask/design-system-react';
-import { Label } from '../../../components/component-library';
-import Checkbox from '../../../components/ui/check-box';
 import Dropdown from '../../../components/ui/dropdown';
 
 import { getURLHostName } from '../../../helpers/utils/util';
@@ -200,34 +199,35 @@ const AccountList = ({
             >
               <Checkbox
                 id={`address-${idx}`}
-                checked={checked}
-                disabled={accountAlreadyConnected}
-                onClick={() => {
+                isSelected={checked}
+                isDisabled={accountAlreadyConnected}
+                onChange={() => {
                   onAccountChange(value);
                 }}
+                label={
+                  <Box asChild className="hw-account-list__item__label">
+                    <span>
+                      <Text
+                        asChild
+                        variant={TextVariant.BodySm}
+                        className="hw-account-list__item__index"
+                      >
+                        <span>{account.index + 1}</span>
+                      </Text>
+                      {`${account.address.slice(0, 4)}...${account.address.slice(
+                        -4,
+                      )}`}
+                      <Text
+                        asChild
+                        variant={TextVariant.BodySm}
+                        className="hw-account-list__item__balance"
+                      >
+                        <span>{account.balance}</span>
+                      </Text>
+                    </span>
+                  </Box>
+                }
               />
-              <Label
-                className="hw-account-list__item__label"
-                htmlFor={`address-${idx}`}
-              >
-                <Text
-                  asChild
-                  variant={TextVariant.BodySm}
-                  className="hw-account-list__item__index"
-                >
-                  <span>{account.index + 1}</span>
-                </Text>
-                {`${account.address.slice(0, 4)}...${account.address.slice(
-                  -4,
-                )}`}
-                <Text
-                  asChild
-                  variant={TextVariant.BodySm}
-                  className="hw-account-list__item__balance"
-                >
-                  <span>{account.balance}</span>
-                </Text>
-              </Label>
             </Box>
             <ButtonIcon
               className="hw-account-list__item__link"
