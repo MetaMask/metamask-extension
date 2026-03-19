@@ -20,15 +20,19 @@ type SettingsSelectItemProps = {
   value: string | ReactNode;
   /** Route to navigate to when the item is selected */
   to: string;
+  /** Ref for settings search scroll handling */
+  sectionRef?: React.RefObject<HTMLDivElement>;
 };
 
 export const SettingsSelectItem = ({
   label,
   value,
   to,
+  sectionRef,
 }: SettingsSelectItemProps) => {
   return (
     <Box
+      ref={sectionRef}
       flexDirection={BoxFlexDirection.Row}
       justifyContent={BoxJustifyContent.Between}
       alignItems={BoxAlignItems.Center}
