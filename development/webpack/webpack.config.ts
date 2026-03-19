@@ -15,6 +15,7 @@ import {
 } from 'webpack';
 import CopyPlugin from 'copy-webpack-plugin';
 import HtmlBundlerPlugin from 'html-bundler-webpack-plugin';
+import type { PluginCreator } from 'postcss';
 import rtlCss from 'postcss-rtlcss';
 import discardFonts from 'postcss-discard-font-face';
 import type ReactRefreshPluginType from '@pmmmwh/react-refresh-webpack-plugin';
@@ -36,9 +37,17 @@ import { ManifestPlugin } from './utils/plugins/ManifestPlugin';
 import { getLatestCommit } from './utils/git';
 import { MODES } from './utils/constants';
 
+/** Mirrors `@tailwindcss/postcss` — package uses `export =`, so no `.default` on `import()` types. */
+type TailwindPostcssPlugin = PluginCreator<{
+  base?: string;
+  optimize?: boolean | { minify?: boolean };
+  transformAssetUrls?: boolean;
+}>;
+
 const requireWebpackConfig = createRequire(__filename);
-const tailwindcss: typeof import('@tailwindcss/postcss').default =
-  requireWebpackConfig(join(__dirname, '../lib/load-tailwind-postcss.cjs'));
+const tailwindcss = requireWebpackConfig(
+  join(__dirname, '../lib/load-tailwind-postcss.cjs'),
+) as TailwindPostcssPlugin;
 
 const buildTypes = loadBuildTypesConfig();
 const { args, cacheKey, features } = parseArgv(argv.slice(2), buildTypes);

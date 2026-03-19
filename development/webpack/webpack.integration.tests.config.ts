@@ -11,11 +11,20 @@ import {
 } from 'webpack';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 import CopyPlugin from 'copy-webpack-plugin';
+import type { PluginCreator } from 'postcss';
 import rtlCss from 'postcss-rtlcss';
 
+/** Mirrors `@tailwindcss/postcss` — package uses `export =`, so no `.default` on `import()` types. */
+type TailwindPostcssPlugin = PluginCreator<{
+  base?: string;
+  optimize?: boolean | { minify?: boolean };
+  transformAssetUrls?: boolean;
+}>;
+
 const requireIntegrationConfig = createRequire(__filename);
-const tailwindcss: typeof import('@tailwindcss/postcss').default =
-  requireIntegrationConfig(join(__dirname, '../lib/load-tailwind-postcss.cjs'));
+const tailwindcss = requireIntegrationConfig(
+  join(__dirname, '../lib/load-tailwind-postcss.cjs'),
+) as TailwindPostcssPlugin;
 
 const context = join(__dirname, '../../app');
 const nodeModules = join(__dirname, '../../node_modules');

@@ -396,46 +396,6 @@
     "@lydell/node-pty>@lydell/node-pty-win32-x64": {
       "native": true
     },
-    "eslint>@nodelib/fs.walk>@nodelib/fs.scandir": {
-      "builtin": {
-        "fs.lstat": true,
-        "fs.lstatSync": true,
-        "fs.readdir": true,
-        "fs.readdirSync": true,
-        "fs.stat": true,
-        "fs.statSync": true,
-        "path.sep": true
-      },
-      "globals": {
-        "process.versions.node": true
-      },
-      "packages": {
-        "fast-glob>@nodelib/fs.stat": true,
-        "eslint>@nodelib/fs.walk>@nodelib/fs.scandir>run-parallel": true
-      }
-    },
-    "fast-glob>@nodelib/fs.stat": {
-      "builtin": {
-        "fs.lstat": true,
-        "fs.lstatSync": true,
-        "fs.stat": true,
-        "fs.statSync": true
-      }
-    },
-    "eslint>@nodelib/fs.walk": {
-      "builtin": {
-        "events.EventEmitter": true,
-        "path.sep": true,
-        "stream.Readable": true
-      },
-      "globals": {
-        "setImmediate": true
-      },
-      "packages": {
-        "eslint>@nodelib/fs.walk>@nodelib/fs.scandir": true,
-        "eslint>@nodelib/fs.walk>fastq": true
-      }
-    },
     "@pmmmwh/react-refresh-webpack-plugin": {
       "builtin": {
         "node:path.dirname": true,
@@ -646,24 +606,8 @@
     },
     "chokidar>anymatch": {
       "packages": {
-        "chokidar>normalize-path": true,
+        "chokidar>anymatch>normalize-path": true,
         "micromatch>picomatch": true
-      }
-    },
-    "autoprefixer": {
-      "globals": {
-        "console": true,
-        "process.cwd": true,
-        "process.env.AUTOPREFIXER_GRID": true
-      },
-      "packages": {
-        "browserslist": true,
-        "autoprefixer>caniuse-lite": true,
-        "autoprefixer>fraction.js": true,
-        "autoprefixer>normalize-range": true,
-        "postcss>picocolors": true,
-        "postcss": true,
-        "stylelint>postcss-value-parser": true
       }
     },
     "babel-plugin-react-compiler": {
@@ -797,7 +741,7 @@
       },
       "packages": {
         "browserslist>baseline-browser-mapping": true,
-        "autoprefixer>caniuse-lite": true,
+        "browserslist>caniuse-lite": true,
         "browserslist>electron-to-chromium": true,
         "browserslist>node-releases": true
       }
@@ -1037,7 +981,7 @@
       },
       "packages": {
         "eslint>glob-parent": true,
-        "chokidar>normalize-path": true,
+        "copy-webpack-plugin>normalize-path": true,
         "schema-utils": true,
         "copy-webpack-plugin>serialize-javascript": true,
         "mocha>serialize-javascript": true,
@@ -1218,11 +1162,6 @@
         "zlib.Inflate": true,
         "zlib.InflateRaw": true,
         "zlib.Unzip": true
-      }
-    },
-    "tailwindcss>didyoumean": {
-      "globals": {
-        "didYouMean": "write"
       }
     },
     "webpack-dev-server>bonjour-service>multicast-dns>dns-packet": {
@@ -1450,41 +1389,9 @@
         "koa>vary": true
       }
     },
-    "fast-glob": {
-      "builtin": {
-        "fs.lstat": true,
-        "fs.lstatSync": true,
-        "fs.readdir": true,
-        "fs.readdirSync": true,
-        "fs.stat": true,
-        "fs.statSync": true,
-        "os.cpus": true,
-        "os.platform": true,
-        "path.basename": true,
-        "path.isAbsolute": true,
-        "path.resolve": true,
-        "stream.PassThrough": true,
-        "stream.Readable": true
-      },
-      "globals": {
-        "process.cwd": true
-      },
-      "packages": {
-        "fast-glob>@nodelib/fs.stat": true,
-        "eslint>@nodelib/fs.walk": true,
-        "eslint>glob-parent": true,
-        "globby>merge2": true,
-        "micromatch": true
-      }
-    },
     "schema-utils>ajv>fast-uri": {
       "globals": {
         "URL.domainToASCII": true
-      }
-    },
-    "eslint>@nodelib/fs.walk>fastq": {
-      "packages": {
-        "eslint>@nodelib/fs.walk>fastq>reusify": true
       }
     },
     "webpack-dev-server>sockjs>faye-websocket": {
@@ -1895,7 +1802,7 @@
         "terser-webpack-plugin": true
       }
     },
-    "tailwindcss>jiti": {
+    "postcss-loader>jiti": {
       "builtin": {
         "assert": true,
         "crypto": true,
@@ -2097,14 +2004,6 @@
         "stream.PassThrough": true
       }
     },
-    "globby>merge2": {
-      "builtin": {
-        "stream.PassThrough": true
-      },
-      "globals": {
-        "process.nextTick": true
-      }
-    },
     "mockttp>express>methods": {
       "builtin": {
         "http.METHODS": true
@@ -2211,15 +2110,6 @@
         "process": true
       }
     },
-    "tailwindcss>object-hash": {
-      "builtin": {
-        "crypto.createHash": true,
-        "crypto.getHashes": true
-      },
-      "globals": {
-        "Buffer": true
-      }
-    },
     "string.prototype.matchall>es-abstract>object-inspect": {
       "builtin": {
         "util.inspect": true
@@ -2251,7 +2141,7 @@
         "@babel/code-frame": true,
         "depcheck>cosmiconfig>parse-json>error-ex": true,
         "webpack>json-parse-even-better-errors": true,
-        "tailwindcss>sucrase>lines-and-columns": true
+        "depcheck>cosmiconfig>parse-json>lines-and-columns": true
       }
     },
     "koa>parseurl": {
@@ -2325,15 +2215,6 @@
         "postcss-discard-font-face>postcss": true
       }
     },
-    "tailwindcss>postcss-js": {
-      "globals": {
-        "console": true
-      },
-      "packages": {
-        "tailwindcss>postcss-js>camelcase-css": true,
-        "postcss": true
-      }
-    },
     "postcss-loader": {
       "builtin": {
         "module": true,
@@ -2346,6 +2227,7 @@
       },
       "packages": {
         "postcss-loader>cosmiconfig": true,
+        "postcss-loader>jiti": true,
         "tailwindcss>jiti": true,
         "postcss": true,
         "semver": true
@@ -2366,12 +2248,6 @@
     "css-loader>postcss-modules-values": {
       "packages": {
         "css-loader>icss-utils": true
-      }
-    },
-    "tailwindcss>postcss-nested": {
-      "packages": {
-        "postcss": true,
-        "stylelint>postcss-selector-parser": true
       }
     },
     "postcss-rtlcss": {
@@ -2544,11 +2420,6 @@
     "postcss-rtlcss>rtlcss": {
       "packages": {
         "postcss": true
-      }
-    },
-    "eslint>@nodelib/fs.walk>@nodelib/fs.scandir>run-parallel": {
-      "globals": {
-        "process.nextTick": true
       }
     },
     "wait-on>rxjs": {
@@ -2862,13 +2733,6 @@
         "eslint>strip-ansi>ansi-regex": true
       }
     },
-    "tailwindcss>sucrase": {
-      "packages": {
-        "terser>@jridgewell/source-map>@jridgewell/gen-mapping": true,
-        "tailwindcss>sucrase>lines-and-columns": true,
-        "tailwindcss>sucrase>ts-interface-checker": true
-      }
-    },
     "postcss-discard-font-face>postcss>chalk>supports-color": {
       "globals": {
         "process.argv": true,
@@ -2896,42 +2760,6 @@
       },
       "packages": {
         "postcss-discard-font-face>postcss>supports-color>has-flag": true
-      }
-    },
-    "tailwindcss": {
-      "builtin": {
-        "crypto": true,
-        "fs": true,
-        "path": true,
-        "url": true
-      },
-      "globals": {
-        "URL": true,
-        "__dirname": true,
-        "__filename": true,
-        "console.log": true,
-        "console.time": true,
-        "console.timeEnd": true,
-        "console.warn": true,
-        "process": true
-      },
-      "packages": {
-        "tailwindcss>@alloc/quick-lru": true,
-        "tailwindcss>didyoumean": true,
-        "tailwindcss>dlv": true,
-        "fast-glob": true,
-        "eslint>glob-parent": true,
-        "del>is-glob": true,
-        "tailwindcss>jiti": true,
-        "micromatch": true,
-        "chokidar>normalize-path": true,
-        "tailwindcss>object-hash": true,
-        "postcss>picocolors": true,
-        "postcss": true,
-        "tailwindcss>postcss-js": true,
-        "tailwindcss>postcss-nested": true,
-        "stylelint>postcss-selector-parser": true,
-        "tailwindcss>sucrase": true
       }
     },
     "webpack>tapable": {
@@ -3005,11 +2833,6 @@
     "chokidar>braces>fill-range>to-regex-range": {
       "packages": {
         "chokidar>braces>fill-range>to-regex-range>is-number": true
-      }
-    },
-    "tailwindcss>sucrase>ts-interface-checker": {
-      "globals": {
-        "Buffer": true
       }
     },
     "webpack>chrome-trace-event>tslib": {
