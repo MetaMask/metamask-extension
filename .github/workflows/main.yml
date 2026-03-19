@@ -509,7 +509,7 @@ jobs:
       }}
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    environment: ${{ github.ref_name == 'main' && 'default-branch' || 'release-ci' }}
+    environment: ${{ github.ref_name == github.event.repository.default_branch && 'default-branch' || 'release-ci' }}
     env:
       EXTENSION_BENCHMARK_STATS_TOKEN: ${{ secrets.EXTENSION_BENCHMARK_STATS_TOKEN }}
       HEAD_COMMIT_HASH: ${{ github.sha }}
