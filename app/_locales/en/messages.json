@@ -1070,7 +1070,7 @@
     "message": "Lowest cost"
   },
   "bridgeMarketClosedAction": {
-    "message": "Market is closed"
+    "message": "Market closed"
   },
   "bridgeMarketClosedDescription": {
     "message": "This stock token is currently outside trading hours. Try again when the market reopens."
