@@ -47,7 +47,7 @@ This runs the first send-eth test and records `setup_time_seconds` in `results.t
 3. The agent will:
    - Read the objective and ideas backlog
    - Make ONE code change to one of the 5 allowed files
-   - Run `./development/autoresearch/run-experiment.sh` (benchmark + auto-commit/revert)
+   - Run `./development/autoresearch/run-experiment.sh chrome "description of change"` (benchmark + auto-commit with experiment number + description)
    - Update `autoresearch.ideas.md`
 
 4. Repeat step 2 for more iterations.

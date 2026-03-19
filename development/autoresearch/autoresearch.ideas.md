@@ -15,7 +15,6 @@ This file is maintained by the autoresearch agent. Track ideas to try and what h
 
 - [ ] Compute extension ID from manifest `key` when present — skip `chrome://extensions` scrape
 - [ ] Use `--load-extension` with pre-computed ID to avoid lookup
-- [ ] Reduce Chrome launch args (disable GPU, etc. — may already be done for CI)
 
 ### Shared (helpers, driver, index)
 
@@ -26,7 +25,7 @@ This file is maintained by the autoresearch agent. Track ideas to try and what h
 
 ## Tried — Successful
 
-_None yet. Baseline will be established on first run._
+- **Chrome: `--no-first-run` + `--disable-default-apps`** — 19s → 14s (-5s)
 
 ## Tried — Failed / No Improvement
 

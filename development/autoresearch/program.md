@@ -16,7 +16,7 @@ Each iteration, you will:
    - `test/e2e/webdriver/driver.js`
    - `test/e2e/webdriver/index.js`
 5. **Run** the benchmark (either option):
-   - **Option A**: `./development/autoresearch/run-experiment.sh` — runs benchmark, auto-commits if improved or reverts
+   - **Option A**: `./development/autoresearch/run-experiment.sh chrome "short description of change"` — runs benchmark, auto-commits if improved (with experiment number + description in title) or reverts
    - **Option B**: `./development/autoresearch/autoresearch.sh` — runs benchmark only; you commit or revert manually
 6. **Update** `autoresearch.ideas.md`: move the idea to "Tried — Successful" or "Tried — Failed" with a one-line summary
 
@@ -26,6 +26,7 @@ Each iteration, you will:
 - **Do NOT** modify `package.json`, `yarn.lock`, or frozen files
 - **Do NOT** create new test files — use send-eth only
 - **Always** update the ideas backlog after each experiment
+- **When using Option A**: pass the change description as 2nd arg, e.g. `run-experiment.sh chrome "Add --no-first-run to Chrome launch args"`
 
 ## Current Best
 
