@@ -12,7 +12,7 @@ import { getRootMessenger } from '../../lib/messenger';
 import { ExecutionServiceInit } from './execution-service-init';
 
 jest.mock('@metamask/snaps-controllers');
-jest.mock('../../../../shared/modules/mv3.utils', () => ({
+jest.mock('../../../../shared/lib/mv3.utils', () => ({
   isManifestV3: true,
 }));
 

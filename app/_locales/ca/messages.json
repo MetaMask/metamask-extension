@@ -383,9 +383,6 @@
     "message": "Compte $1",
     "description": "Default name of next account to be created on create account screen"
   },
-  "newContact": {
-    "message": "Nou Contacte"
-  },
   "newContract": {
     "message": "Nou Contracte"
   },
@@ -634,12 +631,6 @@
   },
   "usedByClients": {
     "message": "Utilitzat per tot tipus de clients"
-  },
-  "userName": {
-    "message": "Nom d'usuari"
-  },
-  "viewContact": {
-    "message": "Veure Contacte"
   },
   "visitWebSite": {
     "message": "Visita el nostre lloc web"

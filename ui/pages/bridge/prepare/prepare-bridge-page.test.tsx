@@ -1,9 +1,10 @@
 import React from 'react';
 import type { Provider } from '@metamask/network-controller';
-import { act } from '@testing-library/react';
+import { act, render } from '@testing-library/react';
 import { formatChainIdToCaip } from '@metamask/bridge-controller';
 import * as reactRouterUtils from 'react-router-dom';
 import { userEvent } from '@testing-library/user-event';
+import { Provider as ReduxProvider } from 'react-redux';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { toAssetId } from '../../../../shared/lib/asset-utils';
 import configureStore from '../../../store/store';
@@ -161,6 +162,7 @@ describe('PrepareBridgePage', () => {
         fromToken: {
           address: '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984',
           decimals: 6,
+          symbol: 'USDC',
           chainId: formatChainIdToCaip(CHAIN_IDS.MAINNET),
           assetId: toAssetId(
             '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984',
@@ -199,8 +201,8 @@ describe('PrepareBridgePage', () => {
 
     expect(container).toMatchSnapshot();
 
-    expect(getByRole('button', { name: /ETH/u })).toBeInTheDocument();
-    expect(getByRole('button', { name: /mUSD/u })).toBeInTheDocument();
+    expect(getByRole('button', { name: /USDC/u })).toBeInTheDocument();
+    expect(getByRole('button', { name: /UNI/u })).toBeInTheDocument();
 
     expect(getByTestId('from-amount')).toBeInTheDocument();
     expect(getByTestId('from-amount').closest('input')).not.toBeDisabled();
@@ -227,6 +229,14 @@ describe('PrepareBridgePage', () => {
   });
 
   it('should throw an error if token decimals are not defined', async () => {
+    jest
+      .spyOn(reactRouterUtils, 'useSearchParams')
+      .mockReturnValue([{ get: () => null }] as never);
+
+    const consoleSpy = jest
+      .spyOn(console, 'error')
+      .mockImplementation(() => undefined);
+
     const mockStore = createBridgeMockStore({
       featureFlagOverrides: {
         bridgeConfig: {
@@ -256,13 +266,16 @@ describe('PrepareBridgePage', () => {
     });
 
     expect(() =>
-      renderWithProvider(
-        <HardwareWalletProvider>
-          <PrepareBridgePage onOpenSettings={jest.fn()} />
-        </HardwareWalletProvider>,
-        configureStore(mockStore),
+      render(
+        <ReduxProvider store={configureStore(mockStore)}>
+          <HardwareWalletProvider>
+            <PrepareBridgePage onOpenSettings={jest.fn()} />
+          </HardwareWalletProvider>
+        </ReduxProvider>,
       ),
     ).toThrow();
+
+    consoleSpy.mockRestore();
   });
 
   it('should validate src amount on change', async () => {

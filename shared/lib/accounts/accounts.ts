@@ -13,7 +13,7 @@ import { Messenger } from '@metamask/messenger';
 import { SnapId } from '@metamask/snaps-sdk';
 import { HandleSnapRequest as SnapControllerHandleRequest } from '@metamask/snaps-controllers';
 import { MultichainNetworks } from '../../constants/multichain/networks';
-import { createSentryError } from '../../modules/error';
+import { createSentryError } from '../error';
 import { captureException } from '../sentry';
 import { HardwareDeviceNames } from '../../constants/hardware-wallets';
 import { BITCOIN_WALLET_SNAP_ID } from './bitcoin-wallet-snap';

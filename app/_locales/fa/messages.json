@@ -395,9 +395,6 @@
     "message": "حساب $1",
     "description": "Default name of next account to be created on create account screen"
   },
-  "newContact": {
-    "message": "تماس جدید"
-  },
   "newContract": {
     "message": "قرارداد جدید"
   },
@@ -655,12 +652,6 @@
   },
   "usedByClients": {
     "message": "استفاده شده توسط گروهی از مشتریان مختلف"
-  },
-  "userName": {
-    "message": "نام کاربری"
-  },
-  "viewContact": {
-    "message": "مشاهده تماس"
   },
   "visitWebSite": {
     "message": "از وب سایت ما دیدن نمایید"

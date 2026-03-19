@@ -395,9 +395,6 @@
     "message": "Tili $1",
     "description": "Default name of next account to be created on create account screen"
   },
-  "newContact": {
-    "message": "Uusi yhteys"
-  },
   "newContract": {
     "message": "Uusi sopimus"
   },
@@ -652,12 +649,6 @@
   },
   "usedByClients": {
     "message": "Lukuisien eri asiakkaiden käyttämä"
-  },
-  "userName": {
-    "message": "Käyttäjätunnus"
-  },
-  "viewContact": {
-    "message": "Näytä yhteyshenkilö"
   },
   "visitWebSite": {
     "message": "Vieraile verkkosivustollamme"

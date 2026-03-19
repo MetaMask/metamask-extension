@@ -15,7 +15,7 @@ import { UserStorageControllerInit } from './user-storage-controller-init';
 
 jest.mock('@metamask/profile-sync-controller/user-storage');
 
-jest.mock('../../../../shared/modules/environment', () => ({
+jest.mock('../../../../shared/lib/environment', () => ({
   isProduction: () => false,
 }));
 

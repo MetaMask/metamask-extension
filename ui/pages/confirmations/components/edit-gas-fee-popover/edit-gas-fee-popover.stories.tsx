@@ -11,7 +11,7 @@ import {
   EditGasModes,
   PriorityLevels,
 } from '../../../../../shared/constants/gas';
-import { decGWEIToHexWEI } from '../../../../../shared/modules/conversion.utils';
+import { decGWEIToHexWEI } from '../../../../../shared/lib/conversion.utils';
 import EditGasFeePopover from './edit-gas-fee-popover';
 
 const store = configureStore({

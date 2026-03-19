@@ -102,3 +102,9 @@ test/integration/config/assets
 
 # webpack
 development/.webpack
+
+# llm workflow playwright temp files
+temp-llm-workflow-*
+
+# Cursor IDE internal state
+.cursor/hooks/

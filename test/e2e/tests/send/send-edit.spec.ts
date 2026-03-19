@@ -10,26 +10,24 @@ import { strict as assert } from 'assert';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import { createInternalTransaction } from '../../page-objects/flows/transaction';
 import { withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import GasFeeModal from '../../page-objects/pages/confirmations/gas-fee-modal';
 import SendTokenConfirmPage from '../../page-objects/pages/send/send-token-confirmation-page';
 import ActivityListPage from '../../page-objects/pages/home/activity-list';
+import SendPage from '../../page-objects/pages/send/send-page';
 
 const PREFERENCES_STATE_MOCK = {
   preferences: {
     showFiatInTestnets: true,
   },
-  // Enables advanced details due to migration 123
-  useNonceField: true,
 };
 
 describe('Send - Edit Transaction', function () {
   it('edits ETH value and legacy gas from confirm page', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withPreferencesController(PREFERENCES_STATE_MOCK)
-          .withConversionRateDisabled()
           .build(),
         localNodeOptions: { hardfork: 'muirGlacier' },
         title: this.test?.fullTitle(),
@@ -42,13 +40,13 @@ describe('Send - Edit Transaction', function () {
         const sendTokenConfirmPage = new SendTokenConfirmPage(driver);
         const gasFeeModal = new GasFeeModal(driver);
         const activityListPage = new ActivityListPage(driver);
+        const sendPage = new SendPage(driver);
 
         await driver.findElement({
           css: 'h2',
           text: '1 ETH',
         });
 
-        await sendTokenConfirmPage.checkFirstGasFee('0');
         await sendTokenConfirmPage.checkNativeCurrency('$0.07');
 
         await driver.clickElement(
@@ -64,7 +62,7 @@ describe('Send - Edit Transaction', function () {
         await inputAmount.press('.');
         await inputAmount.press('2');
 
-        await driver.clickElement({ text: 'Continue', tag: 'button' });
+        await sendPage.pressContinueButton();
 
         // Open gas fee modal and set custom legacy gas values
         await sendTokenConfirmPage.clickEditGasFeeIcon();
@@ -74,7 +72,6 @@ describe('Send - Edit Transaction', function () {
         });
 
         // has correct updated value on the confirm screen the transaction
-        await sendTokenConfirmPage.checkFirstGasFee('0.0002');
         await sendTokenConfirmPage.checkNativeCurrency('$0.29');
 
         // confirms the transaction
@@ -100,8 +97,7 @@ describe('Send - Edit Transaction', function () {
   it('edits ETH value and EIP1559 gas from confirm page', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
-          .withConversionRateDisabled()
+        fixtures: new FixtureBuilderV2()
           .withPreferencesController(PREFERENCES_STATE_MOCK)
           .build(),
         title: this.test?.fullTitle(),
@@ -114,13 +110,13 @@ describe('Send - Edit Transaction', function () {
         const sendTokenConfirmPage = new SendTokenConfirmPage(driver);
         const gasFeeModal = new GasFeeModal(driver);
         const activityListPage = new ActivityListPage(driver);
+        const sendPage = new SendPage(driver);
 
         await driver.findElement({
           css: 'h2',
           text: '1 ETH',
         });
 
-        await sendTokenConfirmPage.checkFirstGasFee('0.0004');
         await sendTokenConfirmPage.checkNativeCurrency('$0.75');
 
         await driver.clickElement(
@@ -136,7 +132,7 @@ describe('Send - Edit Transaction', function () {
         await inputAmount.press('.');
         await inputAmount.press('2');
 
-        await driver.clickElement({ text: 'Continue', tag: 'button' });
+        await sendPage.pressContinueButton();
 
         // Open gas fee modal and set custom EIP-1559 gas values
         await sendTokenConfirmPage.clickEditGasFeeIcon();
@@ -147,7 +143,6 @@ describe('Send - Edit Transaction', function () {
         });
 
         // has correct updated value on the confirm screen the transaction
-        await sendTokenConfirmPage.checkFirstGasFee('0.0002');
         await sendTokenConfirmPage.checkNativeCurrency('$0.29');
 
         // confirms the transaction

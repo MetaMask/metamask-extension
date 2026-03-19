@@ -7,7 +7,7 @@ import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
 import { shortenAddress } from '../../../helpers/utils/util';
-import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
+import { toChecksumHexAddress } from '../../../../shared/lib/hexstring-utils';
 import {
   SEPOLIA_DISPLAY_NAME,
   CHAIN_IDS,

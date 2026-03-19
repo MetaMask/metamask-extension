@@ -11,6 +11,7 @@ import {
   completeCreateNewWalletOnboardingFlow,
   importWalletWithSocialLoginOnboardingFlow,
 } from '../../page-objects/flows/onboarding.flow';
+import { lockAndWaitForLoginPage } from '../../page-objects/flows/login.flow';
 import { OAuthMockttpService } from '../../helpers/seedless-onboarding/mocks';
 import { Driver } from '../../webdriver/driver';
 import { MOCK_GOOGLE_ACCOUNT, WALLET_PASSWORD } from '../../constants';
@@ -50,7 +51,7 @@ async function doPasswordChangeAndLockWallet(
   // Wait for the password change to be applied
   await driver.delay(2_000);
 
-  await headerNavbar.lockMetaMask();
+  await lockAndWaitForLoginPage(driver);
 }
 
 describe('Change wallet password', function () {

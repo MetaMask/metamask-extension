@@ -7,22 +7,28 @@ import {
   getNativeAssetForChainId,
 } from '@metamask/bridge-controller';
 import { zeroAddress } from 'ethereumjs-util';
-import { act, fireEvent } from '@testing-library/react';
+import { act, fireEvent, render } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import configureStore from '../../../store/store';
-import { createBridgeMockStore } from '../../../../test/data/bridge/mock-bridge-store';
+import {
+  createBridgeMockStore,
+  MOCK_LEDGER_ACCOUNT,
+} from '../../../../test/data/bridge/mock-bridge-store';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import mockBridgeQuotesErc20Erc20 from '../../../../test/data/bridge/mock-quotes-erc20-erc20.json';
 import mockBridgeQuotesNativeErc20 from '../../../../test/data/bridge/mock-quotes-native-erc20.json';
 import { mockNetworkState } from '../../../../test/stub/networks';
-import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
+import { toChecksumHexAddress } from '../../../../shared/lib/hexstring-utils';
 import { toAssetId } from '../../../../shared/lib/asset-utils';
 import { createMockInternalAccount } from '../../../../test/jest/mocks';
 import { useRewards } from '../../../hooks/bridge/useRewards';
 import { toBridgeToken } from '../../../ducks/bridge/utils';
 import { BridgeCTAInfoText } from '../prepare/bridge-cta-info-text';
-import { MultichainBridgeQuoteCard } from './multichain-bridge-quote-card';
+import {
+  MultichainBridgeQuoteCard,
+  MultichainBridgeQuoteCardSkeleton,
+} from './multichain-bridge-quote-card';
 
 jest.mock('../../../hooks/bridge/useRewards', () => ({
   useRewards: jest.fn(),
@@ -44,6 +50,19 @@ describe('MultichainBridgeQuoteCard', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockUseRewards.mockReturnValue(defaultUseRewardsReturn);
+  });
+
+  it('renders a four-row skeleton while the quote card is loading', () => {
+    const { getByTestId, getAllByTestId } = render(
+      <MultichainBridgeQuoteCardSkeleton />,
+    );
+
+    expect(
+      getByTestId('multichain-bridge-quote-card-loading'),
+    ).toBeInTheDocument();
+    expect(
+      getAllByTestId('multichain-bridge-quote-card-loading-row'),
+    ).toHaveLength(4);
   });
 
   it('should render the recommended quote (no MM fee)', async () => {
@@ -754,5 +773,91 @@ describe('MultichainBridgeQuoteCard', () => {
     expect(getByText(messages.paidByMetaMask.message)).toBeInTheDocument();
 
     expect(container).toMatchSnapshot();
+  });
+
+  it('should not render gas sponsored text for hardware wallet accounts even when gasSponsored is true', async () => {
+    const mockStore = createBridgeMockStore({
+      featureFlagOverrides: {
+        bridgeConfig: {
+          maxRefreshCount: 5,
+          refreshRate: 30000,
+          chainRanking: [
+            { chainId: formatChainIdToCaip(CHAIN_IDS.MAINNET) },
+            { chainId: formatChainIdToCaip(CHAIN_IDS.OPTIMISM) },
+            { chainId: formatChainIdToCaip(CHAIN_IDS.POLYGON) },
+          ],
+        },
+      },
+      bridgeSliceOverrides: {
+        fromTokenInputValue: '1',
+        toToken: toBridgeToken(getNativeAssetForChainId(CHAIN_IDS.POLYGON)),
+      },
+      bridgeStateOverrides: {
+        quoteRequest: {
+          insufficientBal: false,
+          srcChainId: 10,
+          destChainId: 137,
+          srcTokenAddress: '0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85',
+          destTokenAddress: '0x3c499c542cef5e3811e1192ce70d8cc03d5c3359',
+          srcTokenAmount: '14000000',
+        },
+        quotesRefreshCount: 1,
+        quotes: (mockBridgeQuotesErc20Erc20 as unknown as QuoteResponse[]).map(
+          (quote) => ({
+            ...quote,
+            quote: {
+              ...quote.quote,
+              gasSponsored: true,
+            },
+          }),
+        ),
+        quotesLastFetched: Date.now(),
+        quotesLoadingStatus: RequestStatus.FETCHED,
+      },
+      metamaskStateOverrides: {
+        marketData: {
+          '0xa': {
+            '0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85': {
+              currency: 'usd',
+              price: 1,
+            },
+          },
+          '0x89': {
+            '0x3c499c542cef5e3811e1192ce70d8cc03d5c3359': {
+              currency: 'usd',
+              price: 0.99,
+            },
+          },
+        },
+        currencyRates: {
+          ETH: {
+            conversionRate: 2524.25,
+          },
+          POL: {
+            conversionRate: 1,
+            usdConversionRate: 1,
+          },
+        },
+        ...mockNetworkState(
+          { chainId: CHAIN_IDS.OPTIMISM },
+          { chainId: CHAIN_IDS.POLYGON },
+        ),
+        internalAccounts: {
+          selectedAccount: MOCK_LEDGER_ACCOUNT.id,
+        },
+      },
+    });
+
+    const { queryByTestId } = renderWithProvider(
+      <MultichainBridgeQuoteCard
+        onOpenSlippageModal={() => {}}
+        onOpenRecipientModal={() => {}}
+        onOpenPriceImpactWarningModal={mockOnOpenPriceImpactWarningModal}
+        selectedDestinationAccount={null}
+      />,
+      configureStore(mockStore),
+    );
+
+    expect(queryByTestId('network-fees-sponsored')).not.toBeInTheDocument();
   });
 });

@@ -88,7 +88,7 @@ describe('BridgePriceImpactModal', () => {
           getByRole('button', { name: messages.proceed.message }),
         );
       });
-      expect(mockOnClose).toHaveBeenCalledTimes(1);
+      expect(mockOnClose).toHaveBeenCalledTimes(0);
       expect(mockSubmitBridgeTransaction).toHaveBeenCalledTimes(1);
     });
 

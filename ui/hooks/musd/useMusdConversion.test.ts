@@ -15,6 +15,7 @@ jest.mock('react-redux', () => ({
 
 jest.mock('react-router-dom', () => ({
   useNavigate: () => mockNavigate,
+  useLocation: () => ({ pathname: '/asset/0x1/0xtest', search: '' }),
 }));
 
 jest.mock('../../selectors/musd', () => ({
@@ -63,6 +64,13 @@ jest.mock('../../components/app/musd/constants', () => ({
   MUSD_CONVERSION_DEFAULT_CHAIN_ID: '0x1',
 }));
 
+const mockTrace = jest.fn();
+jest.mock('../../../shared/lib/trace', () => ({
+  trace: (...args: unknown[]) => mockTrace(...args),
+  TraceName: { MusdConversionNavigation: 'MusdConversionNavigation' },
+  TraceOperation: { MusdConversionOperation: 'musd.conversion.operation' },
+}));
+
 jest.mock('../../pages/confirmations/hooks/useConfirmationNavigation', () => ({
   ConfirmationLoader: { CustomAmount: 'customAmount' },
 }));
@@ -86,6 +94,7 @@ const { selectMusdConversionEducationSeen, selectIsMusdConversionFlowEnabled } =
 
 const MOCK_ADDRESS = '0x1234567890abcdef1234567890abcdef12345678';
 const MOCK_TX_ID = 'tx-abc-123';
+const MOCK_PREFERRED_TOKEN = { address: '0xusdc', chainId: '0x1' as const };
 
 type SelectorMap = {
   selectedAccount: { address: string } | null;
@@ -123,6 +132,7 @@ function setupSelectors(overrides: Partial<SelectorMap> = {}) {
 describe('useMusdConversion', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockTrace.mockClear();
     setupSelectors();
 
     mockFindNetworkClientIdByChainId.mockResolvedValue('mainnet');
@@ -161,14 +171,16 @@ describe('useMusdConversion', () => {
       const { result } = renderHook(() => useMusdConversion());
 
       await act(async () => {
-        await result.current.startConversionFlow();
+        await result.current.startConversionFlow({
+          preferredToken: MOCK_PREFERRED_TOKEN,
+        });
       });
 
       expect(mockNavigate).not.toHaveBeenCalled();
       expect(mockAddTransaction).not.toHaveBeenCalled();
     });
 
-    it('returns early when geo-blocking check is still loading', async () => {
+    it('proceeds with conversion flow even while geo-blocking check is loading', async () => {
       useMusdGeoBlocking.mockReturnValue({
         isBlocked: false,
         userCountry: null,
@@ -178,11 +190,17 @@ describe('useMusdConversion', () => {
       const { result } = renderHook(() => useMusdConversion());
 
       await act(async () => {
-        await result.current.startConversionFlow();
+        await result.current.startConversionFlow({
+          preferredToken: MOCK_PREFERRED_TOKEN,
+        });
       });
 
-      expect(mockNavigate).not.toHaveBeenCalled();
-      expect(mockAddTransaction).not.toHaveBeenCalled();
+      expect(mockAddTransaction).toHaveBeenCalled();
+      expect(mockNavigate).toHaveBeenCalledWith(
+        expect.objectContaining({
+          pathname: `/confirm-transaction/${MOCK_TX_ID}`,
+        }),
+      );
 
       useMusdGeoBlocking.mockReturnValue({
         isBlocked: false,
@@ -201,7 +219,9 @@ describe('useMusdConversion', () => {
       const { result } = renderHook(() => useMusdConversion());
 
       await act(async () => {
-        await result.current.startConversionFlow();
+        await result.current.startConversionFlow({
+          preferredToken: MOCK_PREFERRED_TOKEN,
+        });
       });
 
       expect(mockNavigate).not.toHaveBeenCalled();
@@ -220,7 +240,9 @@ describe('useMusdConversion', () => {
       const { result } = renderHook(() => useMusdConversion());
 
       await act(async () => {
-        await result.current.startConversionFlow();
+        await result.current.startConversionFlow({
+          preferredToken: MOCK_PREFERRED_TOKEN,
+        });
       });
 
       expect(mockNavigate).toHaveBeenCalledWith(
@@ -235,7 +257,10 @@ describe('useMusdConversion', () => {
       const { result } = renderHook(() => useMusdConversion());
 
       await act(async () => {
-        await result.current.startConversionFlow({ skipEducation: true });
+        await result.current.startConversionFlow({
+          preferredToken: MOCK_PREFERRED_TOKEN,
+          skipEducation: true,
+        });
       });
 
       expect(mockNavigate).not.toHaveBeenCalledWith('/musd/education');
@@ -248,7 +273,9 @@ describe('useMusdConversion', () => {
       const { result } = renderHook(() => useMusdConversion());
 
       await act(async () => {
-        await result.current.startConversionFlow();
+        await result.current.startConversionFlow({
+          preferredToken: MOCK_PREFERRED_TOKEN,
+        });
       });
 
       expect(mockAddTransaction).not.toHaveBeenCalled();
@@ -268,7 +295,9 @@ describe('useMusdConversion', () => {
       const { result } = renderHook(() => useMusdConversion());
 
       await act(async () => {
-        await result.current.startConversionFlow();
+        await result.current.startConversionFlow({
+          preferredToken: MOCK_PREFERRED_TOKEN,
+        });
       });
 
       expect(mockAddTransaction).not.toHaveBeenCalled();
@@ -283,7 +312,9 @@ describe('useMusdConversion', () => {
       const { result } = renderHook(() => useMusdConversion());
 
       await act(async () => {
-        await result.current.startConversionFlow();
+        await result.current.startConversionFlow({
+          preferredToken: MOCK_PREFERRED_TOKEN,
+        });
       });
 
       expect(mockFindNetworkClientIdByChainId).toHaveBeenCalledWith('0x1');
@@ -299,7 +330,7 @@ describe('useMusdConversion', () => {
       expect(mockNavigate).toHaveBeenCalledWith(
         expect.objectContaining({
           pathname: `/confirm-transaction/${MOCK_TX_ID}`,
-          search: 'loader=customAmount',
+          search: 'loader=customAmount&returnTo=%2Fasset%2F0x1%2F0xtest',
         }),
       );
     });
@@ -348,13 +379,51 @@ describe('useMusdConversion', () => {
       expect(mockFindNetworkClientIdByChainId).toHaveBeenCalledWith('0xe708');
     });
 
+    it('starts a navigation trace after creating a new transaction', async () => {
+      const { result } = renderHook(() => useMusdConversion());
+
+      await act(async () => {
+        await result.current.startConversionFlow({
+          preferredToken: MOCK_PREFERRED_TOKEN,
+        });
+      });
+
+      expect(mockAddTransaction).toHaveBeenCalled();
+      expect(mockTrace).toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: 'MusdConversionNavigation',
+          tags: expect.objectContaining({
+            paymentTokenAddress: MOCK_PREFERRED_TOKEN.address,
+            hasPreferredToken: true,
+          }),
+        }),
+      );
+    });
+
+    it('does not start navigation trace when transaction creation fails', async () => {
+      jest.spyOn(console, 'error').mockImplementation();
+      mockAddTransaction.mockRejectedValue(new Error('TX_FAILED'));
+
+      const { result } = renderHook(() => useMusdConversion());
+
+      await act(async () => {
+        await result.current.startConversionFlow({
+          preferredToken: MOCK_PREFERRED_TOKEN,
+        });
+      });
+
+      expect(mockTrace).not.toHaveBeenCalled();
+    });
+
     it('sets error when transaction creation fails', async () => {
       mockAddTransaction.mockRejectedValue(new Error('TX_FAILED'));
 
       const { result } = renderHook(() => useMusdConversion());
 
       await act(async () => {
-        await result.current.startConversionFlow();
+        await result.current.startConversionFlow({
+          preferredToken: MOCK_PREFERRED_TOKEN,
+        });
       });
 
       expect(result.current.error).toBe('Failed to start conversion');

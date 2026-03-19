@@ -17,7 +17,7 @@ import {
 import Dropdown from '../../../components/ui/dropdown';
 import ToggleButton from '../../../components/ui/toggle-button';
 // TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
+// eslint-disable-next-line import-x/no-restricted-paths
 import locales from '../../../../app/_locales/index.json';
 import {
   MetaMetricsEventCategory,
@@ -478,7 +478,7 @@ export default class SettingsTab extends PureComponent {
     const onChange = (newTheme) => {
       this.context.trackEvent({
         category: MetaMetricsEventCategory.Settings,
-        event: 'Theme Changed',
+        event: MetaMetricsEventName.ThemeChanged,
         properties: {
           theme_selected: newTheme,
         },

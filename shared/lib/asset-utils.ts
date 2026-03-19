@@ -20,13 +20,13 @@ import {
   isNonEvmChainId,
 } from '@metamask/bridge-controller';
 
-import getFetchWithTimeout from '../modules/fetch-with-timeout';
-import { decimalToPrefixedHex } from '../modules/conversion.utils';
 import { MultichainNetworks } from '../constants/multichain/networks';
 import {
   TRON_SPECIAL_ASSET_CAIP_TYPES_SET,
   type TronSpecialAssetCaipType,
 } from '../constants/multichain/assets';
+import getFetchWithTimeout from './fetch-with-timeout';
+import { decimalToPrefixedHex } from './conversion.utils';
 import { TEN_SECONDS_IN_MILLISECONDS } from './transactions-controller-utils';
 
 const TOKEN_API_V3_BASE_URL = 'https://tokens.api.cx.metamask.io/v3';
