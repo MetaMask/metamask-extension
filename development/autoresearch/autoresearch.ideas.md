@@ -37,6 +37,9 @@ This file is maintained by the autoresearch agent. Track ideas to try and what h
 - **helpers: parallelize fixtureServer + phishingPageServer** — mean 14s (16,13,13) vs 13s best
 - **helpers: parallelize mockServer.start + setManifestFlags** — mean 13s (13,14,13), no improvement
 - **Chrome: `--disable-software-rasterizer`** — mean 13s (13,14,13), no improvement
+- **Chrome: `--disable-domain-reliability`** — mean 13s (13,13,13), no improvement
+- **helpers: parallelize dapp server startup** — mean 13s (13,13,14), no improvement
+- **Chrome: getExtensionIdByName maxAttempts 5→4** — mean 13s (14,13,13), no improvement
 
 ## Tried — Crashed / Invalid
 
