@@ -1,10 +1,10 @@
-import { LedgerOffscreenHandler } from './ledger';
 import { LEDGER_USB_VENDOR_ID } from '../../shared/constants/hardware-wallets';
 import {
   LedgerAction,
   OffscreenCommunicationEvents,
   OffscreenCommunicationTarget,
 } from '../../shared/constants/offscreen-communication';
+import { LedgerOffscreenHandler } from './ledger';
 
 // Mock functions - defined before jest.mock calls
 const mockTransportClose = jest.fn();
