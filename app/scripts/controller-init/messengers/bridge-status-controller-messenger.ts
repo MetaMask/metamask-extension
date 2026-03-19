@@ -8,11 +8,14 @@ import type {
   NetworkControllerGetStateAction,
 } from '@metamask/network-controller';
 import type { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
-import {
-  type TransactionControllerGetStateAction,
-  type TransactionControllerIsAtomicBatchSupportedAction,
+import type {
+  TransactionControllerAddTransactionAction,
+  TransactionControllerGetStateAction,
+  TransactionControllerEstimateGasFeeAction,
+  TransactionControllerIsAtomicBatchSupportedAction,
   TransactionControllerTransactionConfirmedEvent,
   TransactionControllerTransactionFailedEvent,
+  TransactionControllerUpdateTransactionAction,
 } from '@metamask/transaction-controller';
 import type {
   BridgeBackgroundAction,
@@ -29,6 +32,9 @@ type AllowedActions =
   | HandleSnapRequest
   | TransactionControllerGetStateAction
   | TransactionControllerIsAtomicBatchSupportedAction
+  | TransactionControllerAddTransactionAction
+  | TransactionControllerEstimateGasFeeAction
+  | TransactionControllerUpdateTransactionAction
   | BridgeControllerAction<BridgeBackgroundAction.TRACK_METAMETRICS_EVENT>
   | BridgeControllerAction<BridgeBackgroundAction.STOP_POLLING_FOR_QUOTES>
   | GetGasFeeState
@@ -78,6 +84,9 @@ export function getBridgeStatusControllerMessenger(
       'SnapController:handleRequest',
       'TransactionController:getState',
       'TransactionController:isAtomicBatchSupported',
+      'TransactionController:addTransaction',
+      'TransactionController:estimateGasFee',
+      'TransactionController:updateTransaction',
       'RemoteFeatureFlagController:getState',
       'AuthenticationController:getBearerToken',
     ],

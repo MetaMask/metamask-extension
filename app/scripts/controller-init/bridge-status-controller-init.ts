@@ -33,8 +33,6 @@ export const BridgeStatusControllerInit: ControllerInitFunction<
         ...requestOptions,
       });
     },
-    addTransactionFn: (...args) =>
-      transactionController.addTransaction(...args),
     addTransactionBatchFn: async (request, ...rest) => {
       const supports7702 = await accountSupports7702(
         request.from,
@@ -54,10 +52,6 @@ export const BridgeStatusControllerInit: ControllerInitFunction<
       }
       return transactionController.addTransactionBatch(request, ...rest);
     },
-    estimateGasFeeFn: (...args) =>
-      transactionController.estimateGasFee(...args),
-    updateTransactionFn: (...args) =>
-      transactionController.updateTransaction(...args),
 
     config: {
       customBridgeApiBaseUrl: BRIDGE_API_BASE_URL,

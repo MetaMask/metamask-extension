@@ -43,10 +43,7 @@ describe('BridgeStatusControllerInit', () => {
       config: {
         customBridgeApiBaseUrl: BRIDGE_API_BASE_URL,
       },
-      addTransactionFn: expect.any(Function),
       addTransactionBatchFn: expect.any(Function),
-      updateTransactionFn: expect.any(Function),
-      estimateGasFeeFn: expect.any(Function),
       fetchFn: expect.any(Function),
       traceFn: expect.any(Function),
     });
