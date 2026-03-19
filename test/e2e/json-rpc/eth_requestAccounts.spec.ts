@@ -78,7 +78,7 @@ describe('eth_requestAccounts', function () {
 
   // eslint-disable-next-line mocha/no-setup-in-describe
   for (let i = 0; i < 5; i++) {
-    it.only(`prompts for login when there are no permitted accounts and the wallet is locked (run ${i + 1})`, async function () {
+    it(`prompts for login when there are no permitted accounts and the wallet is locked (run ${i + 1})`, async function () {
       await withFixtures(
         {
           dappOptions: { numberOfTestDapps: 1 },
@@ -108,7 +108,8 @@ describe('eth_requestAccounts', function () {
           await loginPage.loginToHomepage();
 
           // Wait for non-EVM snaps to load in persisted state (SnapController starts empty in fixture)
-          // so the permission grant does not reject non-EVM accounts
+          // so the permission grant does not reject non-EVM accounts. Ensure snaps exist and their
+          // snapStates/unencryptedSnapStates are populated before proceeding.
           const nonEvmSnapIds = [
             'npm:@metamask/bitcoin-wallet-snap',
             'npm:@metamask/solana-wallet-snap',
@@ -118,11 +119,25 @@ describe('eth_requestAccounts', function () {
             const persistedState = await driver.executeScript(
               'return window.stateHooks.getPersistedState()',
             );
-            const snaps = persistedState?.data?.SnapController?.snaps ?? {};
-            return nonEvmSnapIds.every((id) => id in snaps);
-          }, 30000);
+            const snapController = persistedState?.data?.SnapController ?? {};
+            const snaps = snapController.snaps ?? {};
+            const snapStates = snapController.snapStates ?? {};
+            const unencryptedSnapStates =
+              snapController.unencryptedSnapStates ?? {};
 
-          await driver.delay(5000)
+            const snapsRegistered = nonEvmSnapIds.every((id) => id in snaps);
+            const snapStatesNotEmpty =
+              Object.keys(snapStates).length > 0 &&
+              Object.keys(unencryptedSnapStates).length > 0;
+            const nonEvmSnapsHaveState = nonEvmSnapIds.every(
+              (id) =>
+                (snapStates[id] && String(snapStates[id]).length > 0) ||
+                (unencryptedSnapStates[id] &&
+                  String(unencryptedSnapStates[id]).length > 0),
+            );
+
+            return snapsRegistered && snapStatesNotEmpty && nonEvmSnapsHaveState;
+          }, 30000);
 
           const connectAccountConfirmation = new ConnectAccountConfirmation(
             driver,
