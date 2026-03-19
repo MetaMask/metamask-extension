@@ -1974,7 +1974,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@chainsafe/libp2p-noise@npm:^16.1.3":
+"@chainsafe/libp2p-noise@npm:16.1.5":
   version: 16.1.5
   resolution: "@chainsafe/libp2p-noise@npm:16.1.5"
   dependencies:
@@ -5892,21 +5892,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@libp2p/crypto@npm:^5.0.0, @libp2p/crypto@npm:^5.1.8":
-  version: 5.1.13
-  resolution: "@libp2p/crypto@npm:5.1.13"
-  dependencies:
-    "@libp2p/interface": "npm:^3.1.0"
-    "@noble/curves": "npm:^2.0.1"
-    "@noble/hashes": "npm:^2.0.1"
-    multiformats: "npm:^13.4.0"
-    protons-runtime: "npm:^5.6.0"
-    uint8arraylist: "npm:^2.4.8"
-    uint8arrays: "npm:^5.1.0"
-  checksum: 10/8e4a248ab34f668d2ad55e7c579df6043750e13ab2008e488a6ece7a6b3c4271728691da0f28eee52d134a6044fa8b8dc662af7c0a4a17fac8fc0a17b5bf19e3
-  languageName: node
-  linkType: hard
-
 "@libp2p/identify@npm:3.0.39":
   version: 3.0.39
   resolution: "@libp2p/identify@npm:3.0.39"
@@ -5942,7 +5927,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@libp2p/interface@npm:2.11.0, @libp2p/interface@npm:^2.0.0, @libp2p/interface@npm:^2.11.0, @libp2p/interface@npm:^2.9.0":
+"@libp2p/interface@npm:2.11.0":
   version: 2.11.0
   resolution: "@libp2p/interface@npm:2.11.0"
   dependencies:
@@ -5955,20 +5940,6 @@ __metadata:
     progress-events: "npm:^1.0.1"
     uint8arraylist: "npm:^2.4.8"
   checksum: 10/7609fc0f8f7bf1956370287d9e8764e8a80e004a1846071460295794a6d6c76c5a6c84502359017c2bdeda31eff20b2948def05e794a9c06135179a68311a4ee
-  languageName: node
-  linkType: hard
-
-"@libp2p/interface@npm:^3.1.0":
-  version: 3.1.0
-  resolution: "@libp2p/interface@npm:3.1.0"
-  dependencies:
-    "@multiformats/dns": "npm:^1.0.6"
-    "@multiformats/multiaddr": "npm:^13.0.1"
-    main-event: "npm:^1.0.1"
-    multiformats: "npm:^13.4.0"
-    progress-events: "npm:^1.0.1"
-    uint8arraylist: "npm:^2.4.8"
-  checksum: 10/6f787b6db806a758674af022ad64b6b7403a15eb553c5f5a191e38e663573d57f98f2271342fe3c2007d2f44b8dafc7b121811a408749f6aabb47a6a2bbe0008
   languageName: node
   linkType: hard
 
@@ -7229,6 +7200,34 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/design-system-react@npm:^0.9.0":
+  version: 0.9.0
+  resolution: "@metamask/design-system-react@npm:0.9.0"
+  dependencies:
+    "@metamask/design-system-shared": "npm:^0.2.0"
+    "@metamask/jazzicon": "npm:^2.0.0"
+    "@radix-ui/react-slot": "npm:^1.1.0"
+    blo: "npm:^2.0.0"
+    tailwind-merge: "npm:^2.0.0"
+  peerDependencies:
+    "@metamask/design-system-tailwind-preset": ^0.6.0
+    "@metamask/design-tokens": ^8.1.0
+    "@metamask/utils": ^11.10.0
+    react: ^17.0.0 || ^18.0.0
+    react-dom: ^17.0.0 || ^18.0.0
+  checksum: 10/344d16745f3924f8a9f10f4293e611238c16fe452eb151117ee6711565e081bc97d9a792047e50903a88a7f0bf1c64bb483bfe791b90fa0a7214646a519d8085
+  languageName: node
+  linkType: hard
+
+"@metamask/design-system-shared@npm:^0.2.0":
+  version: 0.2.0
+  resolution: "@metamask/design-system-shared@npm:0.2.0"
+  dependencies:
+    "@metamask/utils": "npm:^11.10.0"
+  checksum: 10/8b7436e4c1882495faa1ca402456dfb82247e517c718da0bed0c4daf7ec06ed0e6bfa7fa3c9fa6930b30e4e5f3f8576436f0de27d9a86f97169cab0423285612
+  languageName: node
+  linkType: hard
+
 "@metamask/design-system-shared@npm:^0.3.0":
   version: 0.3.0
   resolution: "@metamask/design-system-shared@npm:0.3.0"
@@ -8025,7 +8024,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@metamask/kernel-ui@portal:ocap-kernel/packages/kernel-ui::locator=metamask-crx%40workspace%3A."
   dependencies:
-    "@metamask/design-system-react": "npm:^0.10.0"
+    "@metamask/design-system-react": "npm:^0.9.0"
     "@metamask/design-system-tailwind-preset": "npm:^0.6.1"
     "@metamask/design-tokens": "npm:^8.1.1"
     "@metamask/kernel-browser-runtime": "workspace:^"
@@ -10116,18 +10115,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@multiformats/multiaddr@npm:^13.0.1":
-  version: 13.0.1
-  resolution: "@multiformats/multiaddr@npm:13.0.1"
-  dependencies:
-    "@chainsafe/is-ip": "npm:^2.0.1"
-    multiformats: "npm:^13.0.0"
-    uint8-varint: "npm:^2.0.1"
-    uint8arrays: "npm:^5.0.0"
-  checksum: 10/c142fc5b3f491877f6ec27b2983a1ace5a113a5052aadb87e2f9b9ebf2a29558dd1f9f28c00fef47cb27dbc25cb6f7c2bdf29d2d818041fb124ab588eccac91f
-  languageName: node
-  linkType: hard
-
 "@myx-trade/sdk@npm:0.1.267":
   version: 0.1.267
   resolution: "@myx-trade/sdk@npm:0.1.267"
@@ -10289,7 +10276,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@noble/curves@npm:^2.0.0, @noble/curves@npm:^2.0.1":
+"@noble/curves@npm:^2.0.0":
   version: 2.0.1
   resolution: "@noble/curves@npm:2.0.1"
   dependencies:
@@ -36988,7 +36975,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"multiformats@npm:^13.0.0, multiformats@npm:^13.3.6, multiformats@npm:^13.4.0":
+"multiformats@npm:^13.0.0, multiformats@npm:^13.3.6":
   version: 13.4.2
   resolution: "multiformats@npm:13.4.2"
   checksum: 10/b7185ea58d452445350780f9f09bc869d55d74310d66b0fb2cd8c84aa37f31693e556cb801ffc82c14b04bd87691066d549e85400a15a2ed9f6dfc22431d4c5b
@@ -40062,7 +40049,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"protons-runtime@npm:^5.5.0, protons-runtime@npm:^5.6.0":
+"protons-runtime@npm:^5.5.0":
   version: 5.6.0
   resolution: "protons-runtime@npm:5.6.0"
   dependencies:

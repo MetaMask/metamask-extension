@@ -194,19 +194,7 @@ reference (kref) for the remote object:
 "ko42"
 ```
 
-### Step 6: Discover the Capability's Interface
-
-If the remote object is a discoverable exo (created with
-`makeDiscoverableExo`), you can introspect its methods:
-
-```bash
-yarn ocap daemon exec queueMessage '["<kref>", "__getDescription__",[]]'
-```
-
-Returns CapData containing a `MethodSchema` record describing each method, its
-arguments, and return types.
-
-### Step 7: Call `requestCapability()` on the Vendor
+### Step 6: Call `requestCapability()` on the Vendor
 
 The vendor's public facet supports `requestCapability`. Call it to get a
 capability (currently hardcoded to return an `AccountMessageSigner`):
@@ -227,7 +215,7 @@ Returns CapData. If the result includes a new object reference, it appears in
 
 The kref `ko57` is the new capability object.
 
-### Step 8: Use the Capability
+### Step 7: Use the Capability
 
 Call methods on the returned capability:
 
@@ -318,12 +306,10 @@ Here `ko42` is the kref you use in subsequent `queueMessage` calls.
 6. **Away**: `registerLocationHints` with the peer ID and relay hints from the
    URL.
 7. **Away**: `redeemOcapURL`. Confirm a kref is returned (e.g., `"ko42"`).
-8. **Away**: `queueMessage` with `__getDescription__` (optional). Confirm
-   method schema returned.
-9. **Away**: `queueMessage` with `requestCapability`. Confirm new kref in
+8. **Away**: `queueMessage` with `requestCapability`. Confirm new kref in
    slots.
-10. **Away**: `queueMessage` with the desired method (e.g., `getAccounts`).
-    Confirm data returned.
+9. **Away**: `queueMessage` with the desired method (e.g., `getAccounts`).
+   Confirm data returned.
 
 ---
 

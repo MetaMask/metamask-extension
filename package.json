@@ -152,6 +152,9 @@
     "yarn-binary:hydrate": "corepack hydrate .yarn/yarn-corepack.tgz --activate"
   },
   "resolutions": {
+    "@chainsafe/libp2p-noise": "16.1.5",
+    "@libp2p/crypto": "5.1.8",
+    "@libp2p/interface": "2.11.0",
     "jest-clean-console-reporter/chalk": "^4.1.2",
     "chokidar": "^3.6.0",
     "@types/react": "^17.0.11",
