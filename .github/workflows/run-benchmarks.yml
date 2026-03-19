@@ -285,9 +285,10 @@ jobs:
           path: test-artifacts/benchmarks/dapp-page-load-benchmark-results.json
 
   # Pushes benchmark results (performance + dapp page-load) to extension_benchmark_stats
-  # for historical comparison in PR comments. Runs on main branch pushes only.
+  # for historical comparison in PR comments. Runs on main/release branch pushes only.
   store-benchmark-stats:
-    name: store-benchmark-stats (main only)
+    name: store-benchmark-stats (main/release only)
+    continue-on-error: true
     needs:
       - benchmarks
       - benchmarks-webpack-perf
@@ -296,7 +297,7 @@ jobs:
       ${{
         !cancelled() &&
         github.event_name == 'push' &&
-        github.ref_name == 'main' &&
+        (github.ref_name == 'main' || startsWith(github.ref, 'refs/heads/release/')) &&
         !(github.event.pull_request.head.repo.fork || github.event.repository.fork)
       }}
     runs-on: ubuntu-latest
@@ -337,6 +338,7 @@ jobs:
 
       - name: Commit dapp page-load stats to extension_benchmark_stats
         if: steps.download-dapp-benchmark.outcome == 'success'
+        continue-on-error: true
         run: .github/scripts/benchmark-stats-commit.sh
         env:
           BENCHMARK_DATA_TYPE: dapp-page-load
