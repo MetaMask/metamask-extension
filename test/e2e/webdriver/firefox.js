@@ -116,6 +116,22 @@ class FirefoxDriver {
   }
 
   /**
+   * Returns the SHA-256 hash of manifest.json content for cache invalidation.
+   *
+   * @param {string} absDir - Absolute path to the unpacked extension directory
+   * @returns {string} Hex-encoded SHA-256 hash
+   */
+  static _getManifestSha256(absDir) {
+    const manifestContent = fs.readFileSync(
+      path.join(absDir, 'manifest.json'),
+    );
+    return nodeCrypto
+      .createHash('sha256')
+      .update(manifestContent)
+      .digest('hex');
+  }
+
+  /**
    * Returns the path to a cached XPI for the given unpacked extension directory.
    * Builds the XPI on first call; reuses it as long as no file in the directory
    * is newer than the cached XPI. The cache filename is derived from the
@@ -143,13 +159,7 @@ class FirefoxDriver {
       // manifest.json is excluded from mtime checks because setManifestFlags()
       // rewrites it before every test even when content is identical. Instead
       // we compare its content hash to detect real changes.
-      const manifestContent = fs.readFileSync(
-        path.join(absDir, 'manifest.json'),
-      );
-      const manifestHash = nodeCrypto
-        .createHash('sha256')
-        .update(manifestContent)
-        .digest('hex');
+      const manifestHash = FirefoxDriver._getManifestSha256(absDir);
       manifestHashForStorage = manifestHash;
 
       const cachedManifestHash = fs
@@ -199,11 +209,7 @@ class FirefoxDriver {
       console.log('[Firefox E2E] Built cached XPI');
 
       const hashToStore =
-        manifestHashForStorage ??
-        nodeCrypto
-          .createHash('sha256')
-          .update(fs.readFileSync(path.join(absDir, 'manifest.json')))
-          .digest('hex');
+        manifestHashForStorage ?? FirefoxDriver._getManifestSha256(absDir);
       fs.writeFileSync(manifestHashPath, hashToStore);
     }
 
