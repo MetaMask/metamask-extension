@@ -2829,9 +2829,6 @@
   "fast": {
     "message": "Hızlı"
   },
-  "feeDetails": {
-    "message": "Ücret bilgileri"
-  },
   "fieldRequired": {
     "message": "$1 gereklidir"
   },
@@ -3600,18 +3597,6 @@
   "knownTokenWarning": {
     "message": "Bu eylem kimlik avı için kullanılabilecek şekilde cüzdanınızda zaten listelenmiş olan tokenları düzenleyecektir. Sadece bu tokenların neyi temsil ettiğini değiştirmek istediğinizden eminseniz onaylayın. $1 hakkında daha fazla bilgi edinin"
   },
-  "l1Fee": {
-    "message": "L1 ücreti"
-  },
-  "l1FeeTooltip": {
-    "message": "L1 gaz ücreti"
-  },
-  "l2Fee": {
-    "message": "L2 ücreti"
-  },
-  "l2FeeTooltip": {
-    "message": "L2 gaz ücreti"
-  },
   "language": {
     "message": "Dil"
   },
@@ -3624,12 +3609,6 @@
   },
   "lavaDomeCopyWarning": {
     "message": "Güvenliğiniz için bu metin şu anda seçilemez."
-  },
-  "layer1Fees": {
-    "message": "Katman 1 ücretleri"
-  },
-  "layer2Fees": {
-    "message": "Katman 2 ücretleri"
   },
   "learnHow": {
     "message": "Nasıl olduğunu öğrenin"
@@ -8713,9 +8692,6 @@
   },
   "transactionDetailGasHeading": {
     "message": "Tahmini gaz ücreti"
-  },
-  "transactionDetailMultiLayerTotalSubtitle": {
-    "message": "Tutar + ücretler"
   },
   "transactionError": {
     "message": "İşlem Hatası. Sözleşme kodundan istisna atıldı."

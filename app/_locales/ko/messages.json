@@ -2829,9 +2829,6 @@
   "fast": {
     "message": "빠름"
   },
-  "feeDetails": {
-    "message": "수수료 세부 정보"
-  },
   "fieldRequired": {
     "message": "$1은(는) 필수입니다"
   },
@@ -3600,18 +3597,6 @@
   "knownTokenWarning": {
     "message": "이 작업은 지갑에 목록에 등재되어 피싱에 사용될 수 있는 토큰을 편집합니다. 해당 토큰이 나타내는 내용을 변경하려는 경우에만 작업을 승인하세요. $1에 대해 알아보기"
   },
-  "l1Fee": {
-    "message": "L1 수수료"
-  },
-  "l1FeeTooltip": {
-    "message": "L1 가스비"
-  },
-  "l2Fee": {
-    "message": "L2 수수료"
-  },
-  "l2FeeTooltip": {
-    "message": "L2 가스비"
-  },
   "language": {
     "message": "언어"
   },
@@ -3624,12 +3609,6 @@
   },
   "lavaDomeCopyWarning": {
     "message": "안전을 위해 지금은 이 텍스트를 선택할 수 없습니다."
-  },
-  "layer1Fees": {
-    "message": "레이어 1 요금"
-  },
-  "layer2Fees": {
-    "message": "레이어 2 요금"
   },
   "learnHow": {
     "message": "방법 확인하기"
@@ -8713,9 +8692,6 @@
   },
   "transactionDetailGasHeading": {
     "message": "예상 가스비"
-  },
-  "transactionDetailMultiLayerTotalSubtitle": {
-    "message": "금액 + 요금"
   },
   "transactionError": {
     "message": "트랜잭션 오류입니다. 계약 코드에 예외가 발생했습니다."

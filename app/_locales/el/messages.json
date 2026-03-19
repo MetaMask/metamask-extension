@@ -2829,9 +2829,6 @@
   "fast": {
     "message": "Γρήγορα"
   },
-  "feeDetails": {
-    "message": "Λεπτομέρειες χρεώσεων"
-  },
   "fieldRequired": {
     "message": "Απαιτείται η $1"
   },
@@ -3600,18 +3597,6 @@
   "knownTokenWarning": {
     "message": "Αυτή η ενέργεια θα επεξεργαστεί τα tokens που είναι ήδη καταχωρημένα στο πορτοφόλι σας, τα οποία μπορούν να χρησιμοποιηθούν για να σας εξαπατήσουν. Εγκρίνετε μόνο αν είστε σίγουροι ότι θέλετε να αλλάξετε αυτό που αντιπροσωπεύουν αυτά τα tokens. Μάθετε περισσότερα στο $1"
   },
-  "l1Fee": {
-    "message": "Τέλη L1"
-  },
-  "l1FeeTooltip": {
-    "message": "Τέλη συναλλαγών L1"
-  },
-  "l2Fee": {
-    "message": "Τέλη L2"
-  },
-  "l2FeeTooltip": {
-    "message": "Τέλη συναλλαγών L2"
-  },
   "language": {
     "message": "Γλώσσα"
   },
@@ -3624,12 +3609,6 @@
   },
   "lavaDomeCopyWarning": {
     "message": "Για την ασφάλειά σας, η επιλογή αυτού του κειμένου δεν είναι διαθέσιμη αυτή τη στιγμή."
-  },
-  "layer1Fees": {
-    "message": "Τέλη επιπέδου 1"
-  },
-  "layer2Fees": {
-    "message": "Τέλη επιπέδου 2"
   },
   "learnHow": {
     "message": "Μάθετε πώς"
@@ -8713,9 +8692,6 @@
   },
   "transactionDetailGasHeading": {
     "message": "Εκτιμώμενα τέλη συναλλαγών"
-  },
-  "transactionDetailMultiLayerTotalSubtitle": {
-    "message": "Ποσά + τέλη"
   },
   "transactionError": {
     "message": "Σφάλμα συναλλαγής. Βρέθηκε εξαίρεση στον κωδικό του συμβολαίου."

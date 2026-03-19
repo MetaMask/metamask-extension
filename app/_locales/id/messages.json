@@ -2829,9 +2829,6 @@
   "fast": {
     "message": "Cepat"
   },
-  "feeDetails": {
-    "message": "Detail biaya"
-  },
   "fieldRequired": {
     "message": "$1 wajib diisi"
   },
@@ -3600,18 +3597,6 @@
   "knownTokenWarning": {
     "message": "Tindakan ini akan mengedit token yang telah terdaftar dalam dompet Anda, yang dapat digunakan untuk menipu Anda. Setujui hanya jika Anda yakin bahwa Anda ingin mengubah apa yang diwakili token ini. Pelajari selengkapnya seputar $1"
   },
-  "l1Fee": {
-    "message": "Biaya L1"
-  },
-  "l1FeeTooltip": {
-    "message": "Biaya gas L1"
-  },
-  "l2Fee": {
-    "message": "Biaya L2"
-  },
-  "l2FeeTooltip": {
-    "message": "Biaya gas L2"
-  },
   "language": {
     "message": "Bahasa"
   },
@@ -3624,12 +3609,6 @@
   },
   "lavaDomeCopyWarning": {
     "message": "Demi keamanan Anda, memilih teks ini tidak tersedia untuk saat ini."
-  },
-  "layer1Fees": {
-    "message": "Biaya layer 1"
-  },
-  "layer2Fees": {
-    "message": "Biaya layer 2"
   },
   "learnHow": {
     "message": "Pelajari caranya"
@@ -8713,9 +8692,6 @@
   },
   "transactionDetailGasHeading": {
     "message": "Estimasi biaya gas"
-  },
-  "transactionDetailMultiLayerTotalSubtitle": {
-    "message": "Jumlah + biaya"
   },
   "transactionError": {
     "message": "Kesalahan transaksi. Pengecualian diberikan dalam kode kontrak."

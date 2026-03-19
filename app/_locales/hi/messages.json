@@ -2829,9 +2829,6 @@
   "fast": {
     "message": "तेज़"
   },
-  "feeDetails": {
-    "message": "फ़ीस का ब्यौरा"
-  },
   "fieldRequired": {
     "message": "$1 ज़रूरी है"
   },
@@ -3600,18 +3597,6 @@
   "knownTokenWarning": {
     "message": "यह कार्रवाई उन टोकन को संपादित करेगी, जो पहले से ही आपके वॉलेट में लिस्टेड हैं, जिसका इस्तेमाल आपको फ़िश करने के लिए किया जा सकता है। केवल तभी एप्रूव करें, जब आप इस बात को लेकर सुनिश्चित हों कि आप इन टोकन का प्रतिनिधित्व बदलना चाहते हैं। $1 के बारे में और अधिक जानें"
   },
-  "l1Fee": {
-    "message": "L1 शुल्क"
-  },
-  "l1FeeTooltip": {
-    "message": "L1 गैस फीस"
-  },
-  "l2Fee": {
-    "message": "L2 शुल्क"
-  },
-  "l2FeeTooltip": {
-    "message": "L2 गैस फीस"
-  },
   "language": {
     "message": "भाषा"
   },
@@ -3624,12 +3609,6 @@
   },
   "lavaDomeCopyWarning": {
     "message": "सुरक्षा कारणों से, इस टेक्स्ट को चुनने का विकल्प अभी उपलब्ध नहीं है।"
-  },
-  "layer1Fees": {
-    "message": "लेयर 1 शुल्क"
-  },
-  "layer2Fees": {
-    "message": "परत 2 फ़ीस"
   },
   "learnHow": {
     "message": "अधिक जानें"
@@ -8713,9 +8692,6 @@
   },
   "transactionDetailGasHeading": {
     "message": "अनुमानित गैस फीस"
-  },
-  "transactionDetailMultiLayerTotalSubtitle": {
-    "message": "अमाउंट + फ़ीस"
   },
   "transactionError": {
     "message": "ट्रांसेक्शन में गड़बड़ी। कॉन्ट्रैक्ट कोड में अपवाद डाला गया।"

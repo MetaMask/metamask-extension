@@ -1750,9 +1750,6 @@
   "transactionDetailGasHeading": {
     "message": "Taxa de gás estimada"
   },
-  "transactionDetailMultiLayerTotalSubtitle": {
-    "message": "Valor + taxas"
-  },
   "transactionError": {
     "message": "Erro de transação. Exceção gerada no código do contrato."
   },

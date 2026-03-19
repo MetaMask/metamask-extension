@@ -2391,9 +2391,6 @@
   "fast": {
     "message": "Tapa"
   },
-  "feeDetails": {
-    "message": "Sonraí na táille"
-  },
   "fileImportFail": {
     "message": "Nach bhfuil allmhairiú comhaid ag obair? Cliceáil anseo!",
     "description": "Helps user import their account from a JSON file"
@@ -2974,29 +2971,11 @@
   "knownTokenWarning": {
     "message": "Cuirfidh an gníomh seo comharthaí in eagar atá liostaithe i do sparán cheana féin, ar féidir iad a úsáid chun fioscaireachta a dhéanamh ort. Ná ceadaigh ach amháin má tá tú cinnte go bhfuil sé i gceist agat athrú a dhéanamh ar a seasann na comharthaí seo dó. Foghlaim tuilleadh faoi $1"
   },
-  "l1Fee": {
-    "message": "Táille L1"
-  },
-  "l1FeeTooltip": {
-    "message": "Táille gáis L1"
-  },
-  "l2Fee": {
-    "message": "Táille L2"
-  },
-  "l2FeeTooltip": {
-    "message": "Táille gáis L2"
-  },
   "lastSold": {
     "message": "Díolta go deireanach"
   },
   "lavaDomeCopyWarning": {
     "message": "Ar mhaithe le do shábháilteacht, ní féidir an téacs seo a roghnú faoi láthair."
-  },
-  "layer1Fees": {
-    "message": "Táillí Sraith 1"
-  },
-  "layer2Fees": {
-    "message": "Táillí Sraith 2"
   },
   "learnHow": {
     "message": "Foghlaim conas"
@@ -6630,9 +6609,6 @@
   },
   "transactionDetailGasHeading": {
     "message": "Táille gáis measta"
-  },
-  "transactionDetailMultiLayerTotalSubtitle": {
-    "message": "Méid + táillí"
   },
   "transactionError": {
     "message": "Earráid idirbhirt. Caitheadh ​​eisceacht i gcód an chonartha."

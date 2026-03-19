@@ -2829,9 +2829,6 @@
   "fast": {
     "message": "高速"
   },
-  "feeDetails": {
-    "message": "手数料の詳細"
-  },
   "fieldRequired": {
     "message": "$1は必須項目です"
   },
@@ -3600,18 +3597,6 @@
   "knownTokenWarning": {
     "message": "このアクションは、ウォレットに既に一覧表示されているトークンを編集します。これは、フィッシングに使用される可能性があります。これらのトークンの表す内容を変更する意図が確実な場合にのみ承認します。$1に関する詳細をご覧ください"
   },
-  "l1Fee": {
-    "message": "L1手数料"
-  },
-  "l1FeeTooltip": {
-    "message": "L1ガス代"
-  },
-  "l2Fee": {
-    "message": "L2手数料"
-  },
-  "l2FeeTooltip": {
-    "message": "L2ガス代"
-  },
   "language": {
     "message": "言語"
   },
@@ -3624,12 +3609,6 @@
   },
   "lavaDomeCopyWarning": {
     "message": "安全上の理由により、現在このテキストは選択できません。"
-  },
-  "layer1Fees": {
-    "message": "レイヤー1手数料"
-  },
-  "layer2Fees": {
-    "message": "レイヤー 2 手数料"
   },
   "learnHow": {
     "message": "方法"
@@ -8713,9 +8692,6 @@
   },
   "transactionDetailGasHeading": {
     "message": "ガス代見積もり"
-  },
-  "transactionDetailMultiLayerTotalSubtitle": {
-    "message": "金額 + 手数料"
   },
   "transactionError": {
     "message": "トランザクションエラー。コントラクトコードで例外がスローされました。"

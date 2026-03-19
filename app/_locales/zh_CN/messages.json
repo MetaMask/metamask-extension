@@ -2829,9 +2829,6 @@
   "fast": {
     "message": "快"
   },
-  "feeDetails": {
-    "message": "费用详情"
-  },
   "fieldRequired": {
     "message": "$1 为必填项"
   },
@@ -3600,18 +3597,6 @@
   "knownTokenWarning": {
     "message": "此操作将编辑已经在您的钱包中列出的代币，有肯能被用来欺骗您。只有确定要更改这些代币的内容时，才通过此操作。了解更多关于 $1"
   },
-  "l1Fee": {
-    "message": "L1 费用"
-  },
-  "l1FeeTooltip": {
-    "message": "L1 燃料费"
-  },
-  "l2Fee": {
-    "message": "L2 费用"
-  },
-  "l2FeeTooltip": {
-    "message": "L2 燃料费"
-  },
   "language": {
     "message": "语言"
   },
@@ -3624,12 +3609,6 @@
   },
   "lavaDomeCopyWarning": {
     "message": "为了您的安全，现在无法选择此文本。"
-  },
-  "layer1Fees": {
-    "message": "一层公链费用"
-  },
-  "layer2Fees": {
-    "message": "二层公链费用"
   },
   "learnHow": {
     "message": "了解操作方法"
@@ -8713,9 +8692,6 @@
   },
   "transactionDetailGasHeading": {
     "message": "估算燃料费用"
-  },
-  "transactionDetailMultiLayerTotalSubtitle": {
-    "message": "金额 + 费用"
   },
   "transactionError": {
     "message": "交易出错。合约代码中抛出异常。"

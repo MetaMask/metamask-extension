@@ -2829,9 +2829,6 @@
   "fast": {
     "message": "Nhanh"
   },
-  "feeDetails": {
-    "message": "Chi tiết phí"
-  },
   "fieldRequired": {
     "message": "$1 là bắt buộc"
   },
@@ -3600,18 +3597,6 @@
   "knownTokenWarning": {
     "message": "Hành động này sẽ chỉnh sửa các token đã niêm yết trong ví của bạn, kẻ xấu có thể lợi dụng việc này để lừa đảo bạn. Chỉ chấp thuận nếu bạn chắc chắn rằng bạn muốn thay đổi giá trị mà những token này đại diện cho. Tìm hiểu thêm về $1"
   },
-  "l1Fee": {
-    "message": "Phí L1"
-  },
-  "l1FeeTooltip": {
-    "message": "Phí gas L1"
-  },
-  "l2Fee": {
-    "message": "Phí L2"
-  },
-  "l2FeeTooltip": {
-    "message": "Phí gas L2"
-  },
   "language": {
     "message": "Ngôn ngữ"
   },
@@ -3624,12 +3609,6 @@
   },
   "lavaDomeCopyWarning": {
     "message": "Vì sự an toàn của bạn, việc chọn văn bản này hiện không khả dụng."
-  },
-  "layer1Fees": {
-    "message": "Phí Lớp 1"
-  },
-  "layer2Fees": {
-    "message": "Phí Lớp 2"
   },
   "learnHow": {
     "message": "Tìm hiểu cách thức"
@@ -8713,9 +8692,6 @@
   },
   "transactionDetailGasHeading": {
     "message": "Phí gas ước tính"
-  },
-  "transactionDetailMultiLayerTotalSubtitle": {
-    "message": "Số lượng + phí"
   },
   "transactionError": {
     "message": "Lỗi giao dịch. Đã xảy ra ngoại lệ trong mã hợp đồng."
