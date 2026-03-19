@@ -320,6 +320,8 @@ export const getTokenBalancesControllerTokenBalances = createDeepEqualSelector(
       state.metamask?.assetsInfo ?? {},
     (state: { metamask: Pick<AssetsControllerState, 'assetsBalance'> }) =>
       state.metamask?.assetsBalance ?? {},
+    (state: { metamask: Pick<AssetsControllerState, 'customAssets'> }) =>
+      state.metamask?.customAssets ?? {},
     (state: { metamask: Pick<AccountsControllerState, 'internalAccounts'> }) =>
       state.metamask?.internalAccounts?.accounts ?? {},
   ],
@@ -328,6 +330,7 @@ export const getTokenBalancesControllerTokenBalances = createDeepEqualSelector(
     tokenBalances,
     assetsInfo,
     assetsBalance,
+    customAssets,
     internalAccountsById,
   ) => {
     if (!isAssetsUnifyStateEnabled) {
@@ -335,7 +338,6 @@ export const getTokenBalancesControllerTokenBalances = createDeepEqualSelector(
     }
 
     const result: TokenBalancesControllerState['tokenBalances'] = {};
-
     for (const [accountId, chainIdBalances] of Object.entries(assetsBalance)) {
       const internalAccount = internalAccountsById[accountId];
       if (!internalAccount || !isEvmAccountType(internalAccount.type)) {
@@ -353,7 +355,6 @@ export const getTokenBalancesControllerTokenBalances = createDeepEqualSelector(
 
         const assetType = parseCaipAssetType(assetId as CaipAssetType);
 
-        // No need to check if the chain is EVM, we already filtered out non-EVM accounts
         const hexChainId = decimalToPrefixedHex(assetType.chain.reference);
         const assetAddress = toChecksumHexAddress(
           metadata.type === 'native'
@@ -365,6 +366,48 @@ export const getTokenBalancesControllerTokenBalances = createDeepEqualSelector(
         result[accountAddress][hexChainId][assetAddress] =
           // TODO: Use raw value from state when available
           parseBalanceWithDecimals(assetBalance.amount, metadata.decimals);
+      }
+    }
+
+    // Custom EVM tokens may have metadata (assetsInfo) but no balance
+    // in assetsBalance yet (the async fetch hasn't completed).  Add a
+    // zero-balance placeholder so selectAllEvmAssets doesn't filter them out.
+    for (const [accountId, assetIds] of Object.entries(customAssets)) {
+      const internalAccount = internalAccountsById[accountId];
+      if (!internalAccount || !isEvmAccountType(internalAccount.type)) {
+        continue;
+      }
+
+      const accountAddress = internalAccount.address as Hex;
+      result[accountAddress] ??= {};
+      const accountBalances = assetsBalance[accountId] ?? {};
+
+      for (const assetId of assetIds) {
+        if (accountBalances[assetId]) {
+          continue;
+        }
+
+        const metadata = assetsInfo[assetId];
+        if (!metadata || metadata.type === 'native') {
+          continue;
+        }
+
+        const assetType = parseCaipAssetType(assetId);
+
+        if (assetType.chain.namespace !== KnownCaipNamespace.Eip155) {
+          continue;
+        }
+
+        const hexChainId = decimalToPrefixedHex(assetType.chain.reference);
+        const assetAddress = toChecksumHexAddress(
+          assetType.assetReference,
+        ) as Hex;
+
+        if (!result[accountAddress]?.[hexChainId]?.[assetAddress]) {
+          result[accountAddress][hexChainId] ??= {};
+          result[accountAddress][hexChainId][assetAddress] =
+            parseBalanceWithDecimals('0', metadata.decimals);
+        }
       }
     }
 
@@ -659,14 +702,30 @@ export const getCurrencyRateControllerCurrencyRates = createDeepEqualSelector(
       }
 
       const assetType = parseCaipAssetType(assetId as CaipAssetType);
-      const price = assetsPrice[assetId];
 
-      // Skip if not a native asset, not evm or no price for that asset
+      // Skip if not a native asset or not evm
       if (
         metadata.type !== 'native' ||
-        assetType.chain.namespace !== KnownCaipNamespace.Eip155 ||
-        !price
+        assetType.chain.namespace !== KnownCaipNamespace.Eip155
       ) {
+        continue;
+      }
+
+      // assetsInfo may use slip44:60 (EVM standard) for native tokens while assetsPrice
+      // uses the chain-specific slip44 (e.g., slip44:9005 for AVAX on eip155:43114).
+      // Fall back to any slip44 key for the same chain when the direct lookup misses.
+      let price = assetsPrice[assetId];
+      if (!price) {
+        const chainNativePrefix = `${assetType.chain.namespace}:${assetType.chain.reference}/slip44:`;
+        const fallbackKey = Object.keys(assetsPrice).find((key) =>
+          key.startsWith(chainNativePrefix),
+        );
+        if (fallbackKey) {
+          price = assetsPrice[fallbackKey];
+        }
+      }
+
+      if (!price) {
         continue;
       }
 
@@ -715,11 +774,27 @@ export const getTokenRatesControllerMarketData = createDeepEqualSelector(
       FungibleAssetPrice, // TODO: A type discriminator to AssetPrice is needed to be added to avoid this cast, but it is safe for now
     ][]) {
       const assetType = parseCaipAssetType(assetId);
-      const metadata = assetsInfo[assetId];
-      if (
-        !metadata ||
-        assetType.chain.namespace !== KnownCaipNamespace.Eip155
-      ) {
+
+      if (assetType.chain.namespace !== KnownCaipNamespace.Eip155) {
+        continue;
+      }
+
+      // assetsPrice may use a chain-specific slip44 (e.g., slip44:9005 for AVAX)
+      // while assetsInfo uses slip44:60 (EVM standard). Fall back to any slip44
+      // key for the same chain when the direct lookup misses.
+      // Guard: only attempt fallback for slip44 (native) assets to avoid
+      // misattributing an ERC-20 price entry to the native token address.
+      let metadata = assetsInfo[assetId];
+      if (!metadata && assetType.assetNamespace === 'slip44') {
+        const chainNativePrefix = `${assetType.chain.namespace}:${assetType.chain.reference}/slip44:`;
+        const fallbackKey = Object.keys(assetsInfo).find((key) =>
+          key.startsWith(chainNativePrefix),
+        );
+        if (fallbackKey) {
+          metadata = assetsInfo[fallbackKey];
+        }
+      }
+      if (!metadata) {
         continue;
       }
 

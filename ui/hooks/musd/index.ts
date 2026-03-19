@@ -54,4 +54,11 @@ export {
 
 export { useCanBuyMusd, type UseCanBuyMusdResult } from './useCanBuyMusd';
 
+export { useMusdConversionConfirmTrace } from './useMusdConversionConfirmTrace';
+
+export {
+  useMusdPaymentToken,
+  type UseMusdPaymentTokenResult,
+} from './useMusdPaymentToken';
+
 export { isMerklClaimTransaction } from './useMerklClaimStatus';

@@ -10,6 +10,7 @@ import type {
 } from '@metamask/assets-controllers';
 import type { KeyringControllerState } from '@metamask/keyring-controller';
 import { type NameControllerState, NameType } from '@metamask/name-controller';
+import type { PersistedSnapControllerState } from '@metamask/snaps-controllers';
 import type { NetworkEnablementControllerState } from '@metamask/network-enablement-controller';
 import type { SelectedNetworkControllerState } from '@metamask/selected-network-controller';
 import type {
@@ -44,6 +45,7 @@ import {
   HARDWARE_WALLET_ACCOUNT_ID,
   LEDGER_FIXTURE_VAULT,
   LOCALHOST_NETWORK_CLIENT_ID,
+  MULTI_SRP_FIXTURE_VAULT,
   NETWORK_CLIENT_ID,
   SECOND_NODE_NETWORK_CLIENT_ID,
   THIRD_NODE_NETWORK_CLIENT_ID,
@@ -171,6 +173,12 @@ class FixtureBuilderV2 {
     return this;
   }
 
+  withSnapController(data: Partial<PersistedSnapControllerState>): this {
+    (this.fixture.data as Record<string, unknown>).SnapController ??= {};
+    merge(this.fixture.data.SnapController, data);
+    return this;
+  }
+
   withTokenBalancesController(
     data: Partial<TokenBalancesControllerState>,
   ): this {
@@ -217,6 +225,11 @@ class FixtureBuilderV2 {
                               CUSTOM METHODS
      ==================================================================
   */
+  withBadPreferencesControllerState(): this {
+    (this.fixture.data as Record<string, unknown>).PreferencesController = 5;
+    return this;
+  }
+
   withConversionRateDisabled(): this {
     return this.withPreferencesController({
       useCurrencyRateCheck: false,
@@ -229,6 +242,12 @@ class FixtureBuilderV2 {
     this.fixture.data.NetworkEnablementController.enabledNetworkMap =
       data as FixtureType['data']['NetworkEnablementController']['enabledNetworkMap'];
     return this;
+  }
+
+  withKeyringControllerMultiSRP(): this {
+    return this.withKeyringController({
+      vault: MULTI_SRP_FIXTURE_VAULT,
+    });
   }
 
   withLedgerAccount(): this {
@@ -448,14 +467,6 @@ class FixtureBuilderV2 {
     return this.withPermissionController({ subjects });
   }
 
-  withPetnamesDisabled(): this {
-    return this.withPreferencesController({
-      preferences: {
-        petnamesEnabled: false,
-      },
-    });
-  }
-
   // NOTE: This method should only be used with EVM networks. Non-EVM networks (Bitcoin, Tron...) rely on Snaps that may not be ready at startup;
   // Selecting one of them via fixtures may cause the extension to switch back to default network.
   // For non-EVM networks, switch manually in the test after the Snap is ready.
@@ -489,6 +500,12 @@ class FixtureBuilderV2 {
       preferences: {
         showNativeTokenAsMainBalance: true,
       },
+    });
+  }
+
+  withSnapsPrivacyWarningAlreadyShown(): this {
+    return this.withAppStateController({
+      snapsInstallPrivacyWarningShown: true,
     });
   }
 
@@ -611,10 +628,6 @@ class FixtureBuilderV2 {
     return this.withTransactionController({ transactions: [approvedTx] });
   }
 
-  withTransactionControllerCompletedAndIncomingTransaction(): this {
-    return this.withTransactionControllerCompletedTransaction().withTransactionControllerIncomingTransaction();
-  }
-
   withTransactionControllerCompletedTransaction(): this {
     const txId = '0c9342ce-ef3f-4cab-9425-8e57144256a6';
     const completedTx: TransactionMeta = {
@@ -667,6 +680,12 @@ class FixtureBuilderV2 {
       type: TransactionType.incoming,
     };
     return this.withTransactionController({ transactions: [incomingTx] });
+  }
+
+  withUseBasicFunctionalityDisabled(): this {
+    return this.withPreferencesController({
+      useExternalServices: false,
+    });
   }
 
   build() {

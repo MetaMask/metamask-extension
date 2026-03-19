@@ -783,6 +783,10 @@ class TestDapp {
     );
   }
 
+  async verifySpanText(expectedText: string): Promise<void> {
+    await this.driver.waitForSelector({ text: expectedText, tag: 'span' });
+  }
+
   async checkEthSignErrorMessage(): Promise<void> {
     console.log('Check ETH sign error message');
     await this.driver.waitForSelector(this.ethSignErrorMessage);

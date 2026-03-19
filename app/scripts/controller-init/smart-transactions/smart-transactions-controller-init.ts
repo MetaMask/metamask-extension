@@ -9,7 +9,7 @@ import { getAllowedSmartTransactionsChainIds } from '../../../../shared/constant
 import { ControllerInitFunction, ControllerInitRequest } from '../types';
 import { SmartTransactionsControllerInitMessenger } from '../messengers/smart-transactions-controller-messenger';
 // This import is only used for the type.
-// eslint-disable-next-line import/no-restricted-paths
+// eslint-disable-next-line import-x/no-restricted-paths
 import type { MetaMaskReduxState } from '../../../../ui/store/store';
 
 type SmartTransactionsControllerInitRequest = ControllerInitRequest<
