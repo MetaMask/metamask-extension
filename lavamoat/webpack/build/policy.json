@@ -2228,7 +2228,6 @@
       "packages": {
         "postcss-loader>cosmiconfig": true,
         "postcss-loader>jiti": true,
-        "tailwindcss>jiti": true,
         "postcss": true,
         "semver": true
       }
