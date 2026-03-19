@@ -402,6 +402,7 @@ jobs:
     secrets:
       INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
       TEST_SRP_2: ${{ secrets.TEST_SRP_2 }}
+      EXTENSION_BENCHMARK_STATS_TOKEN: ${{ secrets.EXTENSION_BENCHMARK_STATS_TOKEN }}
 
   run-tests:
     name: Run tests
@@ -785,7 +786,6 @@ jobs:
       - build-test-flask-webpack
       - build-test-flask-mv2-webpack
       - run-benchmarks
-      - dapp-page-load-benchmark
       - bundle-size
       - build-storybook
       - build-ts-migration-dashboard
@@ -887,7 +887,6 @@ jobs:
       - run-benchmarks
       - run-tests
       - bundle-size
-      - dapp-page-load-benchmark
       - prep-e2e
       - e2e-chrome
       - e2e-firefox
