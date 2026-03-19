@@ -1,22 +1,23 @@
-import TransportWebHID from '@ledgerhq/hw-transport-webhid';
-import type Transport from '@ledgerhq/hw-transport';
-import LedgerEth from '@ledgerhq/hw-app-eth';
 import { parse } from '@ethersproject/transactions';
-import { add0x } from '@metamask/utils';
+import LedgerEth from '@ledgerhq/hw-app-eth';
+import type Transport from '@ledgerhq/hw-transport';
+import TransportWebHID from '@ledgerhq/hw-transport-webhid';
+import { LedgerSignTypedDataParams } from '@metamask/eth-ledger-bridge-keyring';
+import { TypedDataUtils, SignTypedDataVersion } from '@metamask/eth-sig-util';
 import {
   Category,
   ErrorCode,
   HardwareWalletError,
   Severity,
 } from '@metamask/hw-wallet-sdk';
+import { add0x } from '@metamask/utils';
+
+import { LEDGER_USB_VENDOR_ID } from '../../shared/constants/hardware-wallets';
 import {
   LedgerAction,
   OffscreenCommunicationEvents,
   OffscreenCommunicationTarget,
 } from '../../shared/constants/offscreen-communication';
-import { LEDGER_USB_VENDOR_ID } from '../../shared/constants/hardware-wallets';
-
-type EIP712Message = Parameters<LedgerEth['signEIP712Message']>[1];
 
 /**
  * Selectors that are used only by NFT standards (ERC721/ERC1155), not by ERC20.
@@ -295,46 +296,74 @@ export class LedgerOffscreenHandler {
   }
 
   /**
-   * Signs EIP-712 typed data using clear signing.
-   * Uses signEIP712Message which accepts the full typed data structure,
-   * allowing the Ledger device to display human-readable message contents.
+   * Signs EIP-712 typed data. Tries clear signing first (signEIP712Message), which
+   * shows human-readable data on the device. If that fails with INS_NOT_SUPPORTED (e.g.
+   * Ledger Nano S), falls back to hashed signing (signEIP712HashedMessage) which shows
+   * only the domain and message hashes.
    *
-   * Note: This method is not compatible with Ledger Nano S, which only supports
-   * signEIP712HashedMessage (blind signing). Ledger officially deprecated
-   * Nano S software support in 2025, so no fallback is implemented.
+   * Matches Ledger Live's approach:
+   * https://github.com/LedgerHQ/ledger-live/blob/c49f4d4d34f82ac74a4237cfe3b31ce3c0f73403/libs/coin-modules/coin-evm/src/hw-signMessage.ts#L80-L113
    *
    * @param params - The signing parameters.
    * @param params.hdPath - The HD derivation path.
    * @param params.message - The EIP-712 typed data message.
-   * @param params.message.domain - The EIP-712 domain.
-   * @param params.message.types - The EIP-712 types.
-   * @param params.message.primaryType - The primary type name.
-   * @param params.message.message - The message data.
    * @returns Signature components v, r, s.
    */
-  private async signTypedData(params: {
-    hdPath: string;
-    message: {
-      domain: Record<string, unknown>;
-      types: Record<string, unknown>;
-      primaryType: string;
-      message: Record<string, unknown>;
-    };
-  }): Promise<{
-    v: number;
-    r: string;
-    s: string;
-  }> {
+  private async signTypedData(
+    params: LedgerSignTypedDataParams,
+  ): Promise<{ v: number; r: string; s: string }> {
     const app = await this.ensureApp();
-    const result = await app.signEIP712Message(
-      params.hdPath,
-      params.message as EIP712Message,
+
+    try {
+      return await app.signEIP712Message(params.hdPath, params.message);
+    } catch (error) {
+      if (!this.#isInsNotSupported(error)) {
+        throw error;
+      }
+
+      const { domainSeparatorHex, hashStructMessageHex } =
+        this.#computeEIP712Hashes(params.message);
+
+      return app.signEIP712HashedMessage(
+        params.hdPath,
+        domainSeparatorHex,
+        hashStructMessageHex,
+      );
+    }
+  }
+
+  // Computes EIP-712 domain separator and message struct hashes.
+  #computeEIP712Hashes(message: LedgerSignTypedDataParams['message']): {
+    domainSeparatorHex: string;
+    hashStructMessageHex: string;
+  } {
+    const sanitizedMessage = TypedDataUtils.sanitizeData(
+      message as Parameters<typeof TypedDataUtils.sanitizeData>[0],
     );
-    return {
-      v: result.v,
-      r: result.r,
-      s: result.s,
-    };
+
+    const domainSeparatorHex = TypedDataUtils.hashStruct(
+      'EIP712Domain',
+      sanitizedMessage.domain,
+      sanitizedMessage.types,
+      SignTypedDataVersion.V4,
+    ).toString('hex');
+
+    const hashStructMessageHex = TypedDataUtils.hashStruct(
+      sanitizedMessage.primaryType as string,
+      sanitizedMessage.message,
+      sanitizedMessage.types,
+      SignTypedDataVersion.V4,
+    ).toString('hex');
+
+    return { domainSeparatorHex, hashStructMessageHex };
+  }
+
+  // Checks if an error is a Ledger 'INS_NOT_SUPPORTED' error.
+  #isInsNotSupported(error: unknown): boolean {
+    return (
+      error instanceof Error &&
+      (error as { statusText?: string }).statusText === 'INS_NOT_SUPPORTED'
+    );
   }
 
   /**
@@ -507,13 +536,8 @@ export class LedgerOffscreenHandler {
         }
         return this.signTypedData({
           hdPath: params.hdPath,
-          message: params.message as {
-            domain: Record<string, unknown>;
-            types: Record<string, unknown>;
-            primaryType: string;
-            message: Record<string, unknown>;
-          },
-        });
+          message: params.message,
+        } as LedgerSignTypedDataParams);
 
       default:
         throw new Error(`Unknown Ledger action: ${action as string}`);

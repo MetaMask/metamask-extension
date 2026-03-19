@@ -1114,7 +1114,7 @@
     },
     "ui/pages/confirmations/components/send/amount-recipient/amount-recipient.test.tsx": {
       "MetaMask: Background connection not initialized": 1,
-      "React: Act warnings (component updates not wrapped)": 6
+      "React: Act warnings (component updates not wrapped)": 9
     },
     "ui/pages/confirmations/components/send/amount/amount.test.tsx": {
       "React: Act warnings (component updates not wrapped)": 14
@@ -1230,6 +1230,11 @@
     },
     "ui/pages/confirmations/hooks/alerts/transactions/useSuggestedGasFeeHighAlert.test.ts": {
       "Reselect: Identity function warnings": 3
+    },
+    "ui/pages/confirmations/hooks/alerts/transactions/useTokenContractAlert.test.ts": {
+      "React: Act warnings (component updates not wrapped)": 7,
+      "Reselect: Identity function warnings": 3,
+      "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/confirmations/hooks/alerts/useAddressTrustSignalAlerts.test.ts": {
       "Reselect: Identity function warnings": 3
@@ -1573,6 +1578,9 @@
     },
     "ui/pages/settings-v2/shared/display-nft-media-item.test.tsx": {
       "React: componentWill* lifecycle deprecations": 1
+    },
+    "ui/pages/settings-v2/shared/settings-v2-header.test.tsx": {
+      "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/settings-v2/transactions-tab/transactions-tab.test.tsx": {
       "React: componentWill* lifecycle deprecations": 1,

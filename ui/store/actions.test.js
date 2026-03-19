@@ -4752,4 +4752,36 @@ describe('Actions', () => {
       expect(store.getActions()).toStrictEqual(expectedActions);
     });
   });
+
+  describe('#setPna25Acknowledged', () => {
+    it('calls setPna25Acknowledged with acknowledged and disableDelay defaulting to false', async () => {
+      const store = mockStore();
+      background.setPna25Acknowledged = sinon.stub().resolves();
+
+      setBackgroundConnection(background);
+
+      await store.dispatch(actions.setPna25Acknowledged(true));
+
+      expect(background.setPna25Acknowledged.callCount).toStrictEqual(1);
+      expect(background.setPna25Acknowledged.getCall(0).args).toStrictEqual([
+        true,
+        false,
+      ]);
+    });
+
+    it('calls setPna25Acknowledged with disableDelay set to true', async () => {
+      const store = mockStore();
+      background.setPna25Acknowledged = sinon.stub().resolves();
+
+      setBackgroundConnection(background);
+
+      await store.dispatch(actions.setPna25Acknowledged(true, true));
+
+      expect(background.setPna25Acknowledged.callCount).toStrictEqual(1);
+      expect(background.setPna25Acknowledged.getCall(0).args).toStrictEqual([
+        true,
+        true,
+      ]);
+    });
+  });
 });

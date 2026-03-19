@@ -14,6 +14,7 @@ import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import GasFeeModal from '../../page-objects/pages/confirmations/gas-fee-modal';
 import SendTokenConfirmPage from '../../page-objects/pages/send/send-token-confirmation-page';
 import ActivityListPage from '../../page-objects/pages/home/activity-list';
+import SendPage from '../../page-objects/pages/send/send-page';
 
 const PREFERENCES_STATE_MOCK = {
   preferences: {
@@ -39,6 +40,7 @@ describe('Send - Edit Transaction', function () {
         const sendTokenConfirmPage = new SendTokenConfirmPage(driver);
         const gasFeeModal = new GasFeeModal(driver);
         const activityListPage = new ActivityListPage(driver);
+        const sendPage = new SendPage(driver);
 
         await driver.findElement({
           css: 'h2',
@@ -60,7 +62,7 @@ describe('Send - Edit Transaction', function () {
         await inputAmount.press('.');
         await inputAmount.press('2');
 
-        await driver.clickElement({ text: 'Continue', tag: 'button' });
+        await sendPage.pressContinueButton();
 
         // Open gas fee modal and set custom legacy gas values
         await sendTokenConfirmPage.clickEditGasFeeIcon();
@@ -108,6 +110,7 @@ describe('Send - Edit Transaction', function () {
         const sendTokenConfirmPage = new SendTokenConfirmPage(driver);
         const gasFeeModal = new GasFeeModal(driver);
         const activityListPage = new ActivityListPage(driver);
+        const sendPage = new SendPage(driver);
 
         await driver.findElement({
           css: 'h2',
@@ -129,7 +132,7 @@ describe('Send - Edit Transaction', function () {
         await inputAmount.press('.');
         await inputAmount.press('2');
 
-        await driver.clickElement({ text: 'Continue', tag: 'button' });
+        await sendPage.pressContinueButton();
 
         // Open gas fee modal and set custom EIP-1559 gas values
         await sendTokenConfirmPage.clickEditGasFeeIcon();
