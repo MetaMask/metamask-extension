@@ -914,7 +914,7 @@
     "gulp-sourcemaps>@gulp-sourcemaps/identity-map": {
       "packages": {
         "gulp-sourcemaps>@gulp-sourcemaps/identity-map>acorn": true,
-        "chokidar>normalize-path": true,
+        "gulp-sourcemaps>@gulp-sourcemaps/identity-map>normalize-path": true,
         "gulp-sourcemaps>@gulp-sourcemaps/identity-map>postcss": true,
         "gulp-sourcemaps>@gulp-sourcemaps/identity-map>source-map": true,
         "gulp-sourcemaps>@gulp-sourcemaps/identity-map>through2": true
@@ -922,7 +922,7 @@
     },
     "gulp-sourcemaps>@gulp-sourcemaps/map-sources": {
       "packages": {
-        "gulp-sourcemaps>@gulp-sourcemaps/map-sources>normalize-path": true,
+        "gulp-watch>anymatch>normalize-path": true,
         "gulp-sourcemaps>@gulp-sourcemaps/map-sources>through2": true
       }
     },
@@ -1030,11 +1030,6 @@
     "@metamask/build-utils": {
       "packages": {
         "@metamask/build-utils>@metamask/utils": true
-      }
-    },
-    "@metamask/design-system-tailwind-preset": {
-      "packages": {
-        "tailwindcss": true
       }
     },
     "@metamask/eslint-config-typescript": {
@@ -1333,7 +1328,7 @@
     },
     "chokidar>anymatch": {
       "packages": {
-        "chokidar>normalize-path": true,
+        "chokidar>anymatch>normalize-path": true,
         "micromatch>picomatch": true
       }
     },
@@ -1343,7 +1338,7 @@
       },
       "packages": {
         "gulp>glob-watcher>anymatch>micromatch": true,
-        "gulp>glob-watcher>anymatch>normalize-path": true
+        "gulp-watch>anymatch>normalize-path": true
       }
     },
     "gulp-watch>anymatch": {
@@ -2372,11 +2367,6 @@
       "packages": {
         "browserify>syntax-error>acorn-node": true,
         "watchify>defined": true
-      }
-    },
-    "tailwindcss>didyoumean": {
-      "globals": {
-        "didYouMean": "write"
       }
     },
     "sinon>diff": {
@@ -4138,36 +4128,6 @@
         "string.prototype.matchall>set-function-name": true
       }
     },
-    "tailwindcss>jiti": {
-      "builtin": {
-        "assert": true,
-        "crypto": true,
-        "fs": true,
-        "module": true,
-        "os": true,
-        "path": true,
-        "perf_hooks.performance.now": true,
-        "process": true,
-        "tty": true,
-        "url": true,
-        "util": true,
-        "v8": true,
-        "vm": true
-      },
-      "globals": {
-        "Buffer": true,
-        "TextDecoder": true,
-        "URL": true,
-        "atob": true,
-        "btoa": true,
-        "console": true,
-        "document": true,
-        "localStorage": true,
-        "navigator": true,
-        "process": true,
-        "value": true
-      }
-    },
     "postcss-discard-font-face>postcss>js-base64": {
       "globals": {
         "Base64": "write",
@@ -4729,22 +4689,7 @@
         "gulp-watch>chokidar>fsevents>node-pre-gyp>nopt>osenv": true
       }
     },
-    "gulp-sourcemaps>@gulp-sourcemaps/map-sources>normalize-path": {
-      "packages": {
-        "vinyl>remove-trailing-separator": true
-      }
-    },
-    "gulp>glob-watcher>anymatch>normalize-path": {
-      "packages": {
-        "vinyl>remove-trailing-separator": true
-      }
-    },
     "gulp-watch>anymatch>normalize-path": {
-      "packages": {
-        "vinyl>remove-trailing-separator": true
-      }
-    },
-    "gulp>vinyl-fs>vinyl-sourcemap>normalize-path": {
       "packages": {
         "vinyl>remove-trailing-separator": true
       }
@@ -4775,15 +4720,6 @@
         "gulp>gulp-cli>matchdep>micromatch>snapdragon>base>class-utils>static-extend>object-copy>copy-descriptor": true,
         "gulp>gulp-cli>matchdep>micromatch>snapdragon>define-property": true,
         "gulp>gulp-cli>matchdep>micromatch>snapdragon>base>class-utils>static-extend>object-copy>kind-of": true
-      }
-    },
-    "tailwindcss>object-hash": {
-      "builtin": {
-        "crypto.createHash": true,
-        "crypto.getHashes": true
-      },
-      "globals": {
-        "Buffer": true
       }
     },
     "string.prototype.matchall>es-abstract>object-inspect": {
@@ -5080,15 +5016,6 @@
         "postcss-discard-font-face>postcss": true
       }
     },
-    "tailwindcss>postcss-js": {
-      "globals": {
-        "console": true
-      },
-      "packages": {
-        "tailwindcss>postcss-js>camelcase-css": true,
-        "postcss": true
-      }
-    },
     "gulp-postcss>postcss-load-config": {
       "builtin": {
         "module.createRequire": true,
@@ -5105,12 +5032,6 @@
         "gulp-postcss>postcss-load-config>yaml": true
       }
     },
-    "tailwindcss>postcss-nested": {
-      "packages": {
-        "postcss": true,
-        "stylelint>postcss-selector-parser": true
-      }
-    },
     "postcss-rtlcss": {
       "globals": {
         "SuppressedError": true
@@ -5118,12 +5039,6 @@
       "packages": {
         "postcss": true,
         "postcss-rtlcss>rtlcss": true
-      }
-    },
-    "stylelint>postcss-selector-parser": {
-      "packages": {
-        "stylelint>postcss-selector-parser>cssesc": true,
-        "@storybook/react>util-deprecate": true
       }
     },
     "gulp-sourcemaps>@gulp-sourcemaps/identity-map>postcss": {
@@ -7093,13 +7008,6 @@
         "gulp>vinyl-fs>remove-bom-buffer>is-utf8": true
       }
     },
-    "tailwindcss>sucrase": {
-      "packages": {
-        "terser>@jridgewell/source-map>@jridgewell/gen-mapping": true,
-        "tailwindcss>sucrase>lines-and-columns": true,
-        "tailwindcss>sucrase>ts-interface-checker": true
-      }
-    },
     "chalk>supports-color": {
       "builtin": {
         "os.release": true,
@@ -7179,42 +7087,6 @@
     "browserify>syntax-error": {
       "packages": {
         "browserify>syntax-error>acorn-node": true
-      }
-    },
-    "tailwindcss": {
-      "builtin": {
-        "crypto": true,
-        "fs": true,
-        "path": true,
-        "url": true
-      },
-      "globals": {
-        "URL": true,
-        "__dirname": true,
-        "__filename": true,
-        "console.log": true,
-        "console.time": true,
-        "console.timeEnd": true,
-        "console.warn": true,
-        "process": true
-      },
-      "packages": {
-        "tailwindcss>@alloc/quick-lru": true,
-        "tailwindcss>didyoumean": true,
-        "tailwindcss>dlv": true,
-        "fast-glob": true,
-        "eslint>glob-parent": true,
-        "del>is-glob": true,
-        "tailwindcss>jiti": true,
-        "micromatch": true,
-        "chokidar>normalize-path": true,
-        "tailwindcss>object-hash": true,
-        "postcss>picocolors": true,
-        "postcss": true,
-        "tailwindcss>postcss-js": true,
-        "tailwindcss>postcss-nested": true,
-        "stylelint>postcss-selector-parser": true,
-        "tailwindcss>sucrase": true
       }
     },
     "webpack>tapable": {
@@ -7565,11 +7437,6 @@
         "gulp>vinyl-fs>to-through>through2": true
       }
     },
-    "tailwindcss>sucrase>ts-interface-checker": {
-      "globals": {
-        "Buffer": true
-      }
-    },
     "ts-node": {
       "builtin": {
         "assert": true,
@@ -7916,7 +7783,7 @@
         "gulp>vinyl-fs>vinyl-sourcemap>append-buffer": true,
         "nyc>convert-source-map": true,
         "del>graceful-fs": true,
-        "gulp>vinyl-fs>vinyl-sourcemap>normalize-path": true,
+        "gulp-watch>anymatch>normalize-path": true,
         "gulp>vinyl-fs>vinyl-sourcemap>now-and-later": true,
         "gulp>vinyl-fs>remove-bom-buffer": true,
         "vinyl": true
