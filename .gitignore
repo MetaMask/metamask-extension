@@ -102,7 +102,9 @@ test/integration/config/assets
 
 # webpack
 development/.webpack
-.worktrees
 
 # llm workflow playwright temp files
 temp-llm-workflow-*
+
+# git worktrees
+.worktrees
