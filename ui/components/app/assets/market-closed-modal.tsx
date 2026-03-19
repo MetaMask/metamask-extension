@@ -20,9 +20,7 @@ import {
   ModalOverlay,
 } from '../../component-library';
 
-import {
-  AlignItems,
-} from '../../../helpers/constants/design-system';
+import { AlignItems } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 
 const MARKET_CLOSED_LEARN_MORE_URL = 'https://status.ondo.finance/market';
@@ -46,10 +44,7 @@ export const MarketClosedModal = ({
           {t('bridgeMarketClosedModalTitle')}
         </ModalHeader>
         <ModalBody>
-          <Box
-            flexDirection={BoxFlexDirection.Column}
-            gap={4}
-          >
+          <Box flexDirection={BoxFlexDirection.Column} gap={4}>
             <Text
               variant={TextVariant.BodyMd}
               color={TextColor.TextDefault}
