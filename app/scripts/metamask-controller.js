@@ -1555,7 +1555,10 @@ export default class MetamaskController extends EventEmitter {
     }
 
     // Start perps eligibility monitoring only when basic functionality is on (no external calls when off)
-    if (this.preferencesController.state.useExternalServices) {
+    if (
+      this.preferencesController.state.useExternalServices &&
+      this.controllerApi.perpsStartEligibilityMonitoring
+    ) {
       this.controllerApi.perpsStartEligibilityMonitoring().catch((error) => {
         console.error(error);
       });
@@ -1589,7 +1592,10 @@ export default class MetamaskController extends EventEmitter {
     ) {
       this.multichainRatesController.start();
     }
-    if (this.preferencesController.state.useExternalServices) {
+    if (
+      this.preferencesController.state.useExternalServices &&
+      this.controllerApi.perpsStartEligibilityMonitoring
+    ) {
       this.controllerApi.perpsStartEligibilityMonitoring().catch((error) => {
         console.error(error);
       });
@@ -1600,9 +1606,11 @@ export default class MetamaskController extends EventEmitter {
     this.txController.stopIncomingTransactionPolling();
     this.tokenDetectionController.disable();
     this.multichainRatesController.stop();
-    this.controllerApi.perpsStopEligibilityMonitoring().catch((error) => {
-      console.error(error);
-    });
+    if (this.controllerApi.perpsStopEligibilityMonitoring) {
+      this.controllerApi.perpsStopEligibilityMonitoring().catch((error) => {
+        console.error(error);
+      });
+    }
   }
 
   resetStates(resetMethods) {
@@ -1771,7 +1779,11 @@ export default class MetamaskController extends EventEmitter {
       previousValueComparator((prevState, currState) => {
         const { useExternalServices: prev } = prevState;
         const { useExternalServices: curr } = currState;
-        if (prev !== curr) {
+        if (
+          prev !== curr &&
+          this.controllerApi.perpsStartEligibilityMonitoring &&
+          this.controllerApi.perpsStopEligibilityMonitoring
+        ) {
           if (curr) {
             this.controllerApi
               .perpsStartEligibilityMonitoring()
