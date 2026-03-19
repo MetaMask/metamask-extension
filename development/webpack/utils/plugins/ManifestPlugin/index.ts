@@ -260,8 +260,6 @@ export class ManifestPlugin<Z extends boolean> {
     const { browsers } = options;
     const [primaryBrowser, ...additionalBrowsers] = browsers;
 
-    this.emitManifestAssets(compilation, browsers);
-
     for (const assetName of Object.keys(assets)) {
       const assetDetails = compilation.getAsset(assetName) as Readonly<Asset>;
 
@@ -304,6 +302,8 @@ export class ManifestPlugin<Z extends boolean> {
         );
       });
     }
+
+    this.emitManifestAssets(compilation, browsers);
   }
 
   /**
