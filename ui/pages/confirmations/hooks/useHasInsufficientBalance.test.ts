@@ -3,7 +3,11 @@ import {
   TransactionParams,
   TransactionType,
 } from '@metamask/transaction-controller';
-import { ApprovalType, toHex } from '@metamask/controller-utils';
+import {
+  ApprovalType,
+  toChecksumHexAddress,
+  toHex,
+} from '@metamask/controller-utils';
 import { renderHookWithConfirmContextProvider } from '../../../../test/lib/confirmations/render-helpers';
 import { getMockConfirmState } from '../../../../test/data/confirmations/helper';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../test/data/confirmations/contract-interaction';
@@ -55,7 +59,9 @@ function buildState({
       pendingApprovals,
       accountsByChainId: {
         [chainId ?? '0x5']: {
-          [accountAddress]: { balance: toHex(balance ?? 0) },
+          [toChecksumHexAddress(accountAddress)]: {
+            balance: toHex(balance ?? 0),
+          },
         },
       },
       transactions: transaction ? [transaction] : [],

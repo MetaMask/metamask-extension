@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux';
 import { sumHexes } from '../../../../shared/lib/conversion.utils';
 import {
   getMultichainNetworkConfigurationsByChainId,
-  selectTransactionAvailableBalance,
+  getNativeTokenCachedBalanceByChainIdSelector,
 } from '../../../selectors';
 import { useConfirmContext } from '../context/confirm';
 import { isBalanceSufficient } from '../send-utils/send.utils';
@@ -19,9 +19,8 @@ export function useHasInsufficientBalance(): {
 } {
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const {
-    id: transactionId,
     chainId,
-    txParams: { value = ZERO_HEX_FALLBACK } = {},
+    txParams: { value = ZERO_HEX_FALLBACK, from: fromAddress = '' } = {},
   } = currentConfirmation ?? {};
 
   const batchTransactionValues =
@@ -29,9 +28,11 @@ export function useHasInsufficientBalance(): {
       (trxn) => (trxn.value as Hex) ?? ZERO_HEX_FALLBACK,
     ) ?? [];
 
-  const balance = (useSelector((state) =>
-    selectTransactionAvailableBalance(state, transactionId, chainId),
-  ) ?? ZERO_HEX_FALLBACK) as Hex;
+  const chainBalances = useSelector((state) =>
+    getNativeTokenCachedBalanceByChainIdSelector(state, fromAddress ?? ''),
+  ) as Record<Hex, Hex>;
+
+  const balance = chainBalances?.[chainId as Hex] ?? ZERO_HEX_FALLBACK;
 
   const totalValue = sumHexes(value, ...batchTransactionValues);
 

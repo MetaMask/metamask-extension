@@ -1,4 +1,8 @@
-import { ApprovalType, toHex } from '@metamask/controller-utils';
+import {
+  ApprovalType,
+  toChecksumHexAddress,
+  toHex,
+} from '@metamask/controller-utils';
 import {
   GasFeeToken,
   TransactionMeta,
@@ -100,7 +104,9 @@ function buildState({
       pendingApprovals,
       accountsByChainId: {
         [chainId ?? '0x5']: {
-          [accountAddress]: { balance: toHex(balance ?? 0) },
+          [toChecksumHexAddress(accountAddress)]: {
+            balance: toHex(balance ?? 0),
+          },
         },
       },
       transactions: transaction ? [transaction] : [],
