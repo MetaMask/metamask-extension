@@ -1919,6 +1919,15 @@ export default class MetamaskController extends EventEmitter {
     this.controllerMessenger.subscribe(
       `${this.accountTreeController.name}:selectedAccountGroupChange`,
       (groupId) => {
+        const authorizationsByOrigin = getAuthorizedScopesByOrigin(
+          this.permissionController.state,
+        );
+
+        for (const [origin, authorization] of authorizationsByOrigin.entries()) {
+          // eslint-disable-next-line no-void
+          void this._notifyAuthorizationChange(origin, authorization);
+        }
+
         // TODO: Move this logic to the SnapKeyring directly.
         // Forward selected accounts to the Snap keyring, so each Snaps can fetch those accounts.
         // eslint-disable-next-line no-void
