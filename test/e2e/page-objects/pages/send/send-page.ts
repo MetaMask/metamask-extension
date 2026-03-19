@@ -5,10 +5,7 @@ class SendPage {
 
   private readonly amountInput = { testId: 'send-amount-input' };
 
-  private readonly continueButton = {
-    text: 'Continue',
-    tag: 'button',
-  };
+  private readonly continueButton = { testId: 'send-continue-button' };
 
   private readonly header = {
     tag: 'h4',
