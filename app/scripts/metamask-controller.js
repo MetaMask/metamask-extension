@@ -8622,18 +8622,76 @@ export default class MetamaskController extends EventEmitter {
   }
 
   async _notifyAuthorizationChange(origin, newAuthorization) {
+    const sessionScopes = getSessionScopes(newAuthorization, {
+      getNonEvmSupportedMethods: this.getNonEvmSupportedMethods.bind(this),
+    });
+
     this.notifyConnections(
       origin,
       {
         method: MultichainApiNotifications.sessionChanged,
         params: {
-          sessionScopes: getSessionScopes(newAuthorization, {
-            getNonEvmSupportedMethods:
-              this.getNonEvmSupportedMethods.bind(this),
-          }),
+          sessionScopes:
+            this.sortSessionScopesAccountsByLastSelected(sessionScopes),
         },
       },
       API_TYPE.CAIP_MULTICHAIN,
+    );
+  }
+
+
+
+  /**
+   * Sorts each session scope's CAIP account IDs by most-recently selected
+   * multichain account address.
+   *
+   * @param {Record<string, {accounts?: string[]}>} sessionScopes - Session scope objects keyed by scope string.
+   * @returns {Record<string, {accounts?: string[]}>} Session scopes with each accounts list sorted by lastSelected.
+   */
+  sortSessionScopesAccountsByLastSelected(sessionScopes) {
+    return Object.fromEntries(
+      Object.entries(sessionScopes).map(([scope, scopeObject]) => {
+        const accountIds = scopeObject.accounts ?? [];
+
+        return [
+          scope,
+          {
+            ...scopeObject,
+            accounts: this.sortAccountIdsByLastSelected(accountIds),
+          },
+        ];
+      }),
+    );
+  }
+
+  /**
+   * Sorts CAIP account IDs by the associated account address lastSelected value.
+   *
+   * @param {string[]} accountIds - CAIP account IDs to sort.
+   * @returns {string[]} Sorted CAIP account IDs.
+   */
+  sortAccountIdsByLastSelected(accountIds) {
+    if (accountIds.length < 2) {
+      return accountIds;
+    }
+
+    const addressByCaipAccountId = new Map(
+      accountIds.map((caipAccountId) => {
+        const { address } = parseCaipAccountId(caipAccountId);
+        return [caipAccountId, address];
+      }),
+    );
+
+    const addresses = [...new Set(addressByCaipAccountId.values())];
+    const sortedAddresses = this.sortMultichainAccountsByLastSelected(addresses);
+    const rankByAddress = new Map(
+      sortedAddresses.map((address, index) => [address, index]),
+    );
+
+    return [...accountIds].sort(
+      (firstAccountId, secondAccountId) =>
+        rankByAddress.get(addressByCaipAccountId.get(firstAccountId)) -
+        rankByAddress.get(addressByCaipAccountId.get(secondAccountId)),
     );
   }
 
