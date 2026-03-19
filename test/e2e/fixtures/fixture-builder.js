@@ -758,14 +758,6 @@ class FixtureBuilder {
     return this;
   }
 
-  withPreferencesControllerPetnamesDisabled() {
-    return this.withPreferencesController({
-      preferences: {
-        petnamesEnabled: false,
-      },
-    });
-  }
-
   withPreferencesControllerShowNativeTokenAsMainBalanceDisabled() {
     return this.withPreferencesController({
       preferences: {

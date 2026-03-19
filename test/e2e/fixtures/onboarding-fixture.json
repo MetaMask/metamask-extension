@@ -31,7 +31,7 @@
       "announcements": {}
     },
     "AppMetadataController": {
-      "currentMigrationVersion": 198,
+      "currentMigrationVersion": 199,
       "firstTimeInfo": {
         "date": 0,
         "version": "13.17.0"
@@ -1912,7 +1912,6 @@
         "dismissSmartAccountSuggestionEnabled": false,
         "featureNotificationsEnabled": false,
         "hideZeroBalanceTokens": false,
-        "petnamesEnabled": true,
         "privacyMode": false,
         "showConfirmationAdvancedDetails": false,
         "showDefaultAddress": false,
@@ -2146,6 +2145,6 @@
   },
   "meta": {
     "storageKind": "split",
-    "version": 198
+    "version": 199
   }
 }
