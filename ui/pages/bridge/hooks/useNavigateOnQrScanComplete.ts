@@ -41,9 +41,5 @@ export function useNavigateOnQrScanComplete(): void {
     }
 
     prevQrScanRequestRef.current = activeQrCodeScanRequest;
-  }, [
-    activeQrCodeScanRequest,
-    lastQrScanCompletedSuccessfully,
-    navigate,
-  ]);
+  }, [activeQrCodeScanRequest, lastQrScanCompletedSuccessfully, navigate]);
 }

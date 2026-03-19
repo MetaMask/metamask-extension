@@ -4463,8 +4463,6 @@ describe('getLastQrScanCompletedSuccessfully', () => {
 
   it('returns undefined when lastQrScanCompletedSuccessfully is not in state', () => {
     const state = { metamask: {} };
-    expect(
-      selectors.getLastQrScanCompletedSuccessfully(state),
-    ).toBeUndefined();
+    expect(selectors.getLastQrScanCompletedSuccessfully(state)).toBeUndefined();
   });
 });

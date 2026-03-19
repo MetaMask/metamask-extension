@@ -1215,13 +1215,19 @@ describe('AppStateController', () => {
             }
           ).call.bind(appStateMessenger);
 
-          void call('AppStateController:requestQrCodeScan', mockQrScanRequest);
+          const firstScanPromise = call(
+            'AppStateController:requestQrCodeScan',
+            mockQrScanRequest,
+          );
           await new Promise((r) => setTimeout(r, 0));
 
           expect(controller.state.lastQrScanCompletedSuccessfully).toBeNull();
 
           controller.completeQrCodeScan(mockScannedData);
           expect(controller.state.lastQrScanCompletedSuccessfully).toBe(true);
+          await expect(firstScanPromise).resolves.toStrictEqual(
+            mockScannedData,
+          );
 
           const secondScanPromise = call(
             'AppStateController:requestQrCodeScan',
