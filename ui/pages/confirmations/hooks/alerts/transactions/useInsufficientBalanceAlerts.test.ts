@@ -10,15 +10,29 @@ import { genUnapprovedContractInteractionConfirmation } from '../../../../../../
 import { renderHookWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
 import { useIsGaslessSupported } from '../../gas/useIsGaslessSupported';
 import { useTransactionPayHasSourceAmount } from '../../pay/useTransactionPayHasSourceAmount';
+import {
+  useTransactionPayPrimaryRequiredToken,
+  useTransactionPayRequiredTokens,
+} from '../../pay/useTransactionPayData';
+import { useTransactionPayToken } from '../../pay/useTransactionPayToken';
 import { useInsufficientBalanceAlerts } from './useInsufficientBalanceAlerts';
 
 jest.mock('../../gas/useIsGaslessSupported');
 jest.mock('../../pay/useTransactionPayHasSourceAmount');
+jest.mock('../../pay/useTransactionPayData');
+jest.mock('../../pay/useTransactionPayToken');
 
 const useIsGaslessSupportedMock = jest.mocked(useIsGaslessSupported);
 const useTransactionPayHasSourceAmountMock = jest.mocked(
   useTransactionPayHasSourceAmount,
 );
+const useTransactionPayPrimaryRequiredTokenMock = jest.mocked(
+  useTransactionPayPrimaryRequiredToken,
+);
+const useTransactionPayRequiredTokensMock = jest.mocked(
+  useTransactionPayRequiredTokens,
+);
+const useTransactionPayTokenMock = jest.mocked(useTransactionPayToken);
 
 const TRANSACTION_ID_MOCK = '123-456';
 const TRANSACTION_ID_MOCK_2 = '456-789';
@@ -115,6 +129,11 @@ describe('useInsufficientBalanceAlerts', () => {
       pending: false,
     });
     useTransactionPayHasSourceAmountMock.mockReturnValue(false);
+    useTransactionPayRequiredTokensMock.mockReturnValue([]);
+    useTransactionPayTokenMock.mockReturnValue({
+      payToken: undefined,
+      setPayToken: jest.fn(),
+    });
   });
 
   it('returns no alerts if no confirmation', () => {
@@ -185,6 +204,24 @@ describe('useInsufficientBalanceAlerts', () => {
     });
 
     expect(alerts).toEqual(ALERT);
+  });
+
+  it('returns no alerts when pay is active but required token amount is zero', () => {
+    useTransactionPayTokenMock.mockReturnValue({
+      payToken: { address: '0xabc', chainId: '0x1' } as never,
+      setPayToken: jest.fn(),
+    });
+    useTransactionPayPrimaryRequiredTokenMock.mockReturnValue({
+      amountRaw: '0',
+    } as never);
+
+    const alerts = runHook({
+      balance: 7,
+      currentConfirmation: TRANSACTION_MOCK,
+      transaction: TRANSACTION_MOCK,
+    });
+
+    expect(alerts).toEqual([]);
   });
 
   it('returns no alerts if no transaction matching confirmation', () => {

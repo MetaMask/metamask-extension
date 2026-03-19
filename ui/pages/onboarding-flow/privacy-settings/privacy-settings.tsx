@@ -20,7 +20,7 @@ import {
   FontWeight,
   TextButton,
 } from '@metamask/design-system-react';
-// eslint-disable-next-line import/no-restricted-paths
+// eslint-disable-next-line import-x/no-restricted-paths
 import { addUrlProtocolPrefix } from '../../../../app/scripts/lib/util';
 import { TextField } from '../../../components/component-library';
 import {
@@ -65,6 +65,7 @@ import {
 } from '../../../ducks/app/app';
 import {
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
+  IPFS_FORBIDDEN_GATEWAY,
   TEST_CHAINS,
 } from '../../../../shared/constants/network';
 import { selectIsBackupAndSyncEnabled } from '../../../selectors/identity/backup-and-sync';
@@ -185,7 +186,7 @@ export default function PrivacySettings() {
     setIPFSURL(url);
     try {
       const { host } = new URL(addUrlProtocolPrefix(url) as string);
-      if (!host || host === 'gateway.ipfs.io') {
+      if (!host || host === IPFS_FORBIDDEN_GATEWAY) {
         throw new Error();
       }
       setIPFSError(null);

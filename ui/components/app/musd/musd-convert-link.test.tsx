@@ -262,4 +262,35 @@ describe('MusdConvertLink', () => {
 
     expect(ctaButton).not.toBeDisabled();
   });
+
+  it('does not call setIsLoading after unmount (unmount guard)', async () => {
+    let resolveFlow!: () => void;
+    mockStartConversionFlow.mockReturnValue(
+      new Promise<void>((resolve) => {
+        resolveFlow = resolve;
+      }),
+    );
+
+    const { unmount } = renderWithProvider(
+      <MusdConvertLink
+        tokenAddress="0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
+        chainId="0x1"
+        tokenSymbol="USDC"
+      />,
+      mockStore,
+    );
+
+    const ctaButton = screen.getByTestId('musd-convert-link-0x1');
+
+    await act(async () => {
+      fireEvent.click(ctaButton);
+    });
+
+    unmount();
+
+    // Resolving after unmount should not throw or update state
+    await act(async () => {
+      resolveFlow();
+    });
+  });
 });

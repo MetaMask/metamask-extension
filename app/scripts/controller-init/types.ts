@@ -16,7 +16,7 @@ import type { CronjobControllerStorageManager } from '../lib/CronjobControllerSt
 import { HardwareTransportBridgeClass } from '../lib/hardware-keyring-builder-factory';
 import ExtensionPlatform from '../platforms/extension';
 // This import is only used for the type.
-// eslint-disable-next-line import/no-restricted-paths
+// eslint-disable-next-line import-x/no-restricted-paths
 import type { MetaMaskReduxState } from '../../../ui/store/store';
 import { Controller, ControllerFlatState } from './controller-list';
 
@@ -84,6 +84,11 @@ export type ControllerInitRequest<
    * sensitive data.
    */
   encryptor: Encryptor;
+
+  /**
+   * Returns a promise that resolves when onboarding has been completed.
+   */
+  ensureOnboardingComplete: () => Promise<void>;
 
   /**
    * The extension browser API.

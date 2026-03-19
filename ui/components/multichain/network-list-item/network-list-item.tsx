@@ -37,7 +37,10 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getAvatarNetworkColor } from '../../../helpers/utils/accounts';
 import Tooltip from '../../ui/tooltip/tooltip';
 import { NetworkListItemMenu } from '../network-list-item-menu';
-import { getGasFeesSponsoredNetworkEnabled } from '../../../selectors';
+import {
+  getGasFeesSponsoredNetworkEnabled,
+  isHardwareWallet,
+} from '../../../selectors';
 import { convertCaipToHexChainId } from '../../../../shared/lib/network.utils';
 
 const isIconSrc = (iconSrc?: string | IconName): iconSrc is IconName =>
@@ -122,11 +125,12 @@ export const NetworkListItem = ({
   const isGasFeesSponsoredNetworkEnabled = useSelector(
     getGasFeesSponsoredNetworkEnabled,
   );
+  const isHardwareWalletAccount = useSelector(isHardwareWallet);
 
   // Check if a network has gas sponsorship enabled
   const isNetworkGasSponsored = useCallback(
     (networkChainId: string | undefined): boolean => {
-      if (!networkChainId) {
+      if (!networkChainId || isHardwareWalletAccount) {
         return false;
       }
 
@@ -151,7 +155,7 @@ export const NetworkListItem = ({
         ],
       );
     },
-    [isGasFeesSponsoredNetworkEnabled],
+    [isGasFeesSponsoredNetworkEnabled, isHardwareWalletAccount],
   );
 
   const renderButton = useCallback(() => {
