@@ -1087,9 +1087,6 @@
     "ui/pages/confirmations/components/modals/advanced-gas-price-modal/advanced-gas-price-modal.test.tsx": {
       "Reselect: Identity function warnings": 3
     },
-    "ui/pages/confirmations/components/multilayer-fee-message/multi-layer-fee-message.test.js": {
-      "error: Warning: React does not recognize": 1
-    },
     "ui/pages/confirmations/components/pay-token-amount/pay-token-amount.test.tsx": {
       "Reselect: Identity function warnings": 3
     },
