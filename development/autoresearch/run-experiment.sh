@@ -26,40 +26,46 @@ else
 fi
 
 echo "Current best setup time: ${CURRENT_BEST}s"
+echo "Running benchmark 3 times for mean accuracy..."
 echo ""
 
-# Run benchmark
-BENCHMARK_OUTPUT=$(bash "$SCRIPT_DIR/autoresearch.sh" "$BROWSER" 2>&1) || {
+# Run benchmark 3 times and collect setup_time_seconds
+RUN_TIMES=()
+for i in 1 2 3; do
+    echo "=== Run $i/3 ==="
+    BENCHMARK_OUTPUT=$(bash "$SCRIPT_DIR/autoresearch.sh" "$BROWSER" 2>&1) || {
+        echo "$BENCHMARK_OUTPUT"
+        echo ""
+        echo "--- Benchmark failed. Reverting changes. ---"
+        git checkout -- test/e2e/webdriver/chrome.js test/e2e/webdriver/firefox.js \
+            test/e2e/helpers.js test/e2e/webdriver/driver.js test/e2e/webdriver/index.js 2>/dev/null || true
+        exit 1
+    }
     echo "$BENCHMARK_OUTPUT"
+    T=$(echo "$BENCHMARK_OUTPUT" | grep '^setup_time_seconds=' | cut -d= -f2)
+    if [ -z "$T" ]; then
+        echo "--- Could not parse setup_time_seconds. Reverting. ---"
+        git checkout -- test/e2e/webdriver/chrome.js test/e2e/webdriver/firefox.js \
+            test/e2e/helpers.js test/e2e/webdriver/driver.js test/e2e/webdriver/index.js 2>/dev/null || true
+        exit 1
+    fi
+    RUN_TIMES+=("$T")
     echo ""
-    echo "--- Benchmark failed. Reverting changes. ---"
-    git checkout -- test/e2e/webdriver/chrome.js test/e2e/webdriver/firefox.js \
-        test/e2e/helpers.js test/e2e/webdriver/driver.js test/e2e/webdriver/index.js 2>/dev/null || true
-    exit 1
-}
+done
 
-echo "$BENCHMARK_OUTPUT"
-
-SETUP_TIME=$(echo "$BENCHMARK_OUTPUT" | grep '^setup_time_seconds=' | cut -d= -f2)
-if [ -z "$SETUP_TIME" ]; then
-    echo "--- Could not parse setup_time_seconds. Reverting. ---"
-    git checkout -- test/e2e/webdriver/chrome.js test/e2e/webdriver/firefox.js \
-        test/e2e/helpers.js test/e2e/webdriver/driver.js test/e2e/webdriver/index.js 2>/dev/null || true
-    exit 1
-fi
-
-echo ""
-echo "--- Setup time: ${SETUP_TIME}s (best: ${CURRENT_BEST}s) ---"
+# Compute mean (rounded to nearest integer)
+SETUP_TIME=$(echo "${RUN_TIMES[0]} ${RUN_TIMES[1]} ${RUN_TIMES[2]}" | awk '{printf "%.0f", ($1+$2+$3)/3}')
+echo "--- Setup times: ${RUN_TIMES[0]}s, ${RUN_TIMES[1]}s, ${RUN_TIMES[2]}s → mean: ${SETUP_TIME}s (best: ${CURRENT_BEST}s) ---"
 
 if [ "$SETUP_TIME" -lt "$CURRENT_BEST" ]; then
     IMPROVEMENT=$((CURRENT_BEST - SETUP_TIME))
-    EXPERIMENT_NUM=$(($(git log --oneline --all --grep="autoresearch:" 2>/dev/null | wc -l) + 1))
+    EXPERIMENT_NUM=$(($(git log --oneline --all --grep="Experiment " 2>/dev/null | wc -l) + 1))
     CHANGED=$(git diff --name-only HEAD 2>/dev/null | head -1)
     COMMIT_DESC="${DESCRIPTION:-$CHANGED}"
     echo ""
     echo "*** IMPROVEMENT: -${IMPROVEMENT}s! Committing (experiment ${EXPERIMENT_NUM}). ***"
     git add -A
-    git commit -m "autoresearch: experiment ${EXPERIMENT_NUM} — ${SETUP_TIME}s (-${IMPROVEMENT}s) — ${COMMIT_DESC}" --no-verify
+    git commit -m "Experiment ${EXPERIMENT_NUM} - ${COMMIT_DESC}" --no-verify
     echo "--- Committed. New best: ${SETUP_TIME}s ---"
 else
     echo ""
