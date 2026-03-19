@@ -205,6 +205,7 @@ import { updateCurrentLocale } from '../../shared/lib/translate';
 import {
   getIsSeedlessOnboardingFeatureEnabled,
   getEnabledAdvancedPermissions,
+  getIsPerpsIncludedInBuild,
 } from '../../shared/lib/environment';
 import { isSnapPreinstalled } from '../../shared/lib/snaps/snaps';
 import { toChecksumHexAddress } from '../../shared/lib/hexstring-utils';
@@ -616,7 +617,9 @@ export default class MetamaskController extends EventEmitter {
       WebSocketService: WebSocketServiceInit,
       BackendWebSocketService: BackendWebSocketServiceInit,
       AccountActivityService: AccountActivityServiceInit,
-      PerpsController: PerpsControllerInit,
+      ...(getIsPerpsIncludedInBuild()
+        ? { PerpsController: PerpsControllerInit }
+        : {}),
       PPOMController: PPOMControllerInit,
       PhishingController: PhishingControllerInit,
       AccountTrackerController: AccountTrackerControllerInit,
@@ -1555,7 +1558,10 @@ export default class MetamaskController extends EventEmitter {
     }
 
     // Start perps eligibility monitoring only when basic functionality is on (no external calls when off)
-    if (this.preferencesController.state.useExternalServices) {
+    if (
+      getIsPerpsIncludedInBuild() &&
+      this.preferencesController.state.useExternalServices
+    ) {
       this.controllerApi.perpsStartEligibilityMonitoring?.()?.catch((error) => {
         console.error(error);
       });
@@ -1589,7 +1595,10 @@ export default class MetamaskController extends EventEmitter {
     ) {
       this.multichainRatesController.start();
     }
-    if (this.preferencesController.state.useExternalServices) {
+    if (
+      getIsPerpsIncludedInBuild() &&
+      this.preferencesController.state.useExternalServices
+    ) {
       this.controllerApi.perpsStartEligibilityMonitoring?.()?.catch((error) => {
         console.error(error);
       });
@@ -1600,9 +1609,11 @@ export default class MetamaskController extends EventEmitter {
     this.txController.stopIncomingTransactionPolling();
     this.tokenDetectionController.disable();
     this.multichainRatesController.stop();
-    this.controllerApi.perpsStopEligibilityMonitoring?.()?.catch((error) => {
-      console.error(error);
-    });
+    if (getIsPerpsIncludedInBuild()) {
+      this.controllerApi.perpsStopEligibilityMonitoring?.()?.catch((error) => {
+        console.error(error);
+      });
+    }
   }
 
   resetStates(resetMethods) {
@@ -1772,6 +1783,7 @@ export default class MetamaskController extends EventEmitter {
         const { useExternalServices: prev } = prevState;
         const { useExternalServices: curr } = currState;
         if (
+          getIsPerpsIncludedInBuild() &&
           prev !== curr &&
           this.controllerApi.perpsStartEligibilityMonitoring &&
           this.controllerApi.perpsStopEligibilityMonitoring
@@ -6627,28 +6639,31 @@ export default class MetamaskController extends EventEmitter {
       outStream,
     );
 
-    const perpsStream = new PerpsStreamBridge({
-      controller: this.controllersByName.PerpsController,
-      perpsInit: this.controllerApi.perpsInit,
-      perpsDisconnect: this.controllerApi.perpsDisconnect,
-      perpsToggleTestnet: this.controllerApi.perpsToggleTestnet,
-      isConnectionAlive: () => !outStream.mmFinished,
-      emit: (channel, data, extra) => {
-        if (!perpsStream.isActive || !isStreamWritable(outStream)) {
-          return;
-        }
-        outStream.write({
-          jsonrpc: '2.0',
-          method: 'perpsStreamUpdate',
-          params: [{ channel, data, ...extra }],
-        });
-      },
-    });
+    const perpsController = this.controllersByName.PerpsController;
+    const perpsStream = perpsController
+      ? new PerpsStreamBridge({
+          controller: perpsController,
+          perpsInit: this.controllerApi.perpsInit,
+          perpsDisconnect: this.controllerApi.perpsDisconnect,
+          perpsToggleTestnet: this.controllerApi.perpsToggleTestnet,
+          isConnectionAlive: () => !outStream.mmFinished,
+          emit: (channel, data, extra) => {
+            if (!perpsStream.isActive || !isStreamWritable(outStream)) {
+              return;
+            }
+            outStream.write({
+              jsonrpc: '2.0',
+              method: 'perpsStreamUpdate',
+              params: [{ channel, data, ...extra }],
+            });
+          },
+        })
+      : null;
 
     const api = {
       ...this.getApi(),
       ...this.controllerApi,
-      ...perpsStream.bridgeApi(),
+      ...(perpsStream ? perpsStream.bridgeApi() : {}),
       startSendingPatches: () => {
         uiReady = true;
         handleUpdate();
@@ -6707,7 +6722,7 @@ export default class MetamaskController extends EventEmitter {
         this.removeListener('update', handleUpdate);
         patchStore.destroy();
         messengerSubscriptions.clear();
-        perpsStream.destroy();
+        perpsStream?.destroy();
       }
     };
 
