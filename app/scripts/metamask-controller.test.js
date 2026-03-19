@@ -1899,68 +1899,6 @@ describe('MetaMaskController', () => {
       });
     });
 
-    describe('#sortSessionScopesAccountsByLastSelected', () => {
-      it('sorts each scope accounts array using sortMultichainAccountsByLastSelected', () => {
-        jest
-          .spyOn(metamaskController, 'sortMultichainAccountsByLastSelected')
-          .mockImplementation((addresses) => [...addresses].reverse());
-
-        jest.mocked(parseCaipAccountId).mockImplementation((caipAccountId) => ({
-          address: caipAccountId.split(':').pop(),
-        }));
-
-        const sessionScopes = {
-          'eip155:1': {
-            methods: [],
-            notifications: [],
-            accounts: ['eip155:1:0x1111', 'eip155:1:0x2222', 'eip155:1:0x3333'],
-          },
-          'solana:4sGjMW1sUnHzSxGspuhpqLDx6wiyjNtZ': {
-            methods: [],
-            notifications: [],
-            accounts: [
-              'solana:4sGjMW1sUnHzSxGspuhpqLDx6wiyjNtZ:AddrA',
-              'solana:4sGjMW1sUnHzSxGspuhpqLDx6wiyjNtZ:AddrB',
-            ],
-          },
-          'eip155:137': {
-            methods: [],
-            notifications: [],
-            accounts: ['eip155:137:0x4444'],
-          },
-        };
-
-        expect(
-          metamaskController.sortSessionScopesAccountsByLastSelected(
-            sessionScopes,
-          ),
-        ).toStrictEqual({
-          'eip155:1': {
-            methods: [],
-            notifications: [],
-            accounts: ['eip155:1:0x3333', 'eip155:1:0x2222', 'eip155:1:0x1111'],
-          },
-          'solana:4sGjMW1sUnHzSxGspuhpqLDx6wiyjNtZ': {
-            methods: [],
-            notifications: [],
-            accounts: [
-              'solana:4sGjMW1sUnHzSxGspuhpqLDx6wiyjNtZ:AddrB',
-              'solana:4sGjMW1sUnHzSxGspuhpqLDx6wiyjNtZ:AddrA',
-            ],
-          },
-          'eip155:137': {
-            methods: [],
-            notifications: [],
-            accounts: ['eip155:137:0x4444'],
-          },
-        });
-
-        expect(
-          metamaskController.sortMultichainAccountsByLastSelected,
-        ).toHaveBeenCalledTimes(2);
-      });
-    });
-
     describe('NetworkConfiguration is removed', () => {
       it('should remove the permitted chain from all existing permissions', () => {
         jest

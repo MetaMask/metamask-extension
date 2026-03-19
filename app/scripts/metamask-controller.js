@@ -1924,8 +1924,10 @@ export default class MetamaskController extends EventEmitter {
         );
 
         for (const [origin, authorization] of authorizationsByOrigin.entries()) {
-          // eslint-disable-next-line no-void
-          void this._notifyAuthorizationChange(origin, authorization);
+          // Is there a race condition here?
+          // First wallet_sessionChanged event from an account change doesn't seem
+          // to be ordered correctly. Subsequent seem fine.
+          this._notifyAuthorizationChange(origin, authorization);
         }
 
         // TODO: Move this logic to the SnapKeyring directly.
@@ -7568,6 +7570,7 @@ export default class MetamaskController extends EventEmitter {
               ),
             },
           }),
+        sortAccountIdsByLastSelected: this.sortAccountIdsByLastSelected.bind(this),
       }),
     );
 
@@ -8633,6 +8636,7 @@ export default class MetamaskController extends EventEmitter {
   async _notifyAuthorizationChange(origin, newAuthorization) {
     const sessionScopes = getSessionScopes(newAuthorization, {
       getNonEvmSupportedMethods: this.getNonEvmSupportedMethods.bind(this),
+      sortAccountIdsByLastSelected: this.sortAccountIdsByLastSelected.bind(this),
     });
 
     this.notifyConnections(
@@ -8640,38 +8644,13 @@ export default class MetamaskController extends EventEmitter {
       {
         method: MultichainApiNotifications.sessionChanged,
         params: {
-          sessionScopes:
-            this.sortSessionScopesAccountsByLastSelected(sessionScopes),
+          sessionScopes
         },
       },
       API_TYPE.CAIP_MULTICHAIN,
     );
   }
 
-
-
-  /**
-   * Sorts each session scope's CAIP account IDs by most-recently selected
-   * multichain account address.
-   *
-   * @param {Record<string, {accounts?: string[]}>} sessionScopes - Session scope objects keyed by scope string.
-   * @returns {Record<string, {accounts?: string[]}>} Session scopes with each accounts list sorted by lastSelected.
-   */
-  sortSessionScopesAccountsByLastSelected(sessionScopes) {
-    return Object.fromEntries(
-      Object.entries(sessionScopes).map(([scope, scopeObject]) => {
-        const accountIds = scopeObject.accounts ?? [];
-
-        return [
-          scope,
-          {
-            ...scopeObject,
-            accounts: this.sortAccountIdsByLastSelected(accountIds),
-          },
-        ];
-      }),
-    );
-  }
 
   /**
    * Sorts CAIP account IDs by the associated account address lastSelected value.
