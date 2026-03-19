@@ -915,7 +915,7 @@
       "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/components/confirm/info/shared/gas-fees-section/gas-fees-section.test.tsx": {
-      "MetaMask: Background connection not initialized": 34,
+      "MetaMask: Background connection not initialized": 52,
       "Reselect: Identity function warnings": 5
     },
     "ui/pages/confirmations/components/confirm/info/shared/network-row/network-row.test.tsx": {
