@@ -12,6 +12,7 @@ import { Box } from '@metamask/design-system-react';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import {
   ACCOUNT_IDENTICON_ROUTE,
+  AUTO_LOCK_ROUTE,
   CURRENCY_ROUTE,
   DEFAULT_ROUTE,
   LANGUAGE_ROUTE,
@@ -68,6 +69,10 @@ const AccountIdenticonSubPage = mmLazy(
 
 const ThirdPartyApisSubPage = mmLazy(
   () => import('./privacy-tab/third-party-apis-sub-page.tsx'),
+);
+
+const AutoLockSubPage = mmLazy(
+  () => import('./security-and-password-tab/auto-lock-sub-page.tsx'),
 );
 
 // Get the first tab's component for rendering at the settings root (like Settings V1)
@@ -274,6 +279,17 @@ const SettingsV2 = () => {
           <SettingsV2Layout>
             <Suspense fallback={null}>
               <ThirdPartyApisSubPage />
+            </Suspense>
+          </SettingsV2Layout>
+        }
+      />
+      {/* Auto-lock sub-page */}
+      <Route
+        path={toRelativeRoutePath(AUTO_LOCK_ROUTE, SETTINGS_V2_ROUTE)}
+        element={
+          <SettingsV2Layout>
+            <Suspense fallback={null}>
+              <AutoLockSubPage />
             </Suspense>
           </SettingsV2Layout>
         }
