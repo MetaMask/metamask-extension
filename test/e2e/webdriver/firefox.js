@@ -172,16 +172,27 @@ class FirefoxDriver {
     if (needsRebuild) {
       try {
         fs.unlinkSync(xpiPath);
-      } catch {
-        // file didn't exist
+      } catch (err) {
+        console.warn('[Firefox E2E] Pre-rebuild unlink of XPI failed:', err.message);
       }
         return absDir;
         execFileSync('zip', ['-r', '-1', '-q', xpiPath, '.'], { cwd: absDir });
       } catch {
-        // `zip` not installed — fall back to the unpacked directory.
-        // Selenium's installAddon() will zip it on every call (~10s slower).
+        // `zip` failed or not installed — fall back to unpacked directory.
+        // Clean up any partial/corrupted XPI and stale hash so we don't reuse
+        // them on the next run (which would cause hard-to-diagnose install failures).
+        try {
+          fs.unlinkSync(xpiPath);
+        } catch (err) {
+          console.warn('[Firefox E2E] Cleanup of partial XPI failed:', err.message);
+        }
+        try {
+          fs.unlinkSync(manifestHashPath);
+        } catch (err) {
+          console.warn('[Firefox E2E] Cleanup of manifest hash failed:', err.message);
+        }
         console.warn(
-          '[Firefox E2E] zip not installed, using unpacked directory (slower)',
+          '[Firefox E2E] zip not installed or failed, using unpacked directory (slower)',
         );
         return addonDir;
       }
