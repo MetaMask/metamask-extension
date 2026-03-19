@@ -756,6 +756,27 @@
   "autoDetectTokensDescriptionV2": {
     "message": "Displays new tokens sent to your wallet."
   },
+  "autoLock": {
+    "message": "Auto lock"
+  },
+  "autoLockAfter15Seconds": {
+    "message": "After 15 seconds"
+  },
+  "autoLockAfter1Minute": {
+    "message": "After 1 minute"
+  },
+  "autoLockAfter30Seconds": {
+    "message": "After 30 seconds"
+  },
+  "autoLockAfter5Minutes": {
+    "message": "After 5 minutes"
+  },
+  "autoLockAfterMinutes": {
+    "message": "After $1 minutes"
+  },
+  "autoLockNever": {
+    "message": "Never"
+  },
   "autoLockTimeLimit": {
     "message": "Auto-lock timer (minutes)"
   },
@@ -773,6 +794,9 @@
   },
   "backToHome": {
     "message": "Back to home"
+  },
+  "backUpIncomplete": {
+    "message": "Back up incomplete"
   },
   "backup": {
     "message": "Backup"
@@ -3923,6 +3947,9 @@
   "managePermissions": {
     "message": "Manage permissions"
   },
+  "manageWalletRecovery": {
+    "message": "Manage wallet recovery"
+  },
   "marketCap": {
     "message": "Market cap"
   },
@@ -6664,6 +6691,9 @@
   },
   "securityAlertsDescriptionV2": {
     "message": "This feature alerts you to malicious activity by actively reviewing transaction and signature requests. $1"
+  },
+  "securityAndPassword": {
+    "message": "Security and password"
   },
   "securityAndPrivacy": {
     "message": "Security & privacy"
