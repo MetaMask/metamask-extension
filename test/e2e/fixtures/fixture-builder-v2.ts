@@ -225,6 +225,40 @@ class FixtureBuilderV2 {
                               CUSTOM METHODS
      ==================================================================
   */
+  /**
+   * Restricts the fixture to EVM accounts only (removes Solana, Bitcoin, etc.).
+   * Use when the test must avoid Snap-based accounts, e.g. to prevent permission
+   * grant errors before Snaps are ready.
+   */
+  withEvmAccountsOnly(): this {
+    const evmAccountId = 'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4';
+    const accounts = (this.fixture.data.AccountsController.internalAccounts
+      ?.accounts ?? {}) as Record<string, unknown>;
+    const evmAccount = accounts[evmAccountId];
+    if (!evmAccount) {
+      throw new Error(
+        `EVM account ${evmAccountId} not found in fixture. Ensure default fixture includes it.`,
+      );
+    }
+    // Clear accounts first so merge replaces (merge doesn't remove keys)
+    (
+      this.fixture.data.AccountsController as Record<string, unknown>
+    ).internalAccounts = {
+      accounts: {} as AccountsControllerState['internalAccounts']['accounts'],
+      selectedAccount: evmAccountId,
+    };
+    return this.withAccountsController({
+      internalAccounts: {
+        accounts: {
+          [evmAccountId]: cloneDeep(
+            evmAccount,
+          ) as AccountsControllerState['internalAccounts']['accounts'][string],
+        },
+        selectedAccount: evmAccountId,
+      },
+    });
+  }
+
   withBadPreferencesControllerState(): this {
     (this.fixture.data as Record<string, unknown>).PreferencesController = 5;
     return this;

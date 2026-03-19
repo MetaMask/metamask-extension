@@ -78,64 +78,52 @@ describe('eth_requestAccounts', function () {
 
   // eslint-disable-next-line mocha/no-setup-in-describe
   for (let i = 0; i < 5; i++) {
-  it(`prompts for login when there are no permitted accounts and the wallet is locked (run ${i + 1})`, async function () {
-    await withFixtures(
-      {
-        dappOptions: { numberOfTestDapps: 1 },
-        fixtures: new FixtureBuilderV2().build(),
-        title: this.test?.fullTitle(),
-      },
-      async ({ driver }: { driver: Driver }) => {
-        await driver.navigate();
-        const loginPage = new LoginPage(driver);
-        await loginPage.checkPageIsLoaded();
-        const testDapp = new TestDapp(driver);
-        await testDapp.openTestDappPage();
-        await testDapp.checkPageIsLoaded();
+    it(`prompts for login when there are no permitted accounts and the wallet is locked (run ${i + 1})`, async function () {
+      await withFixtures(
+        {
+          dappOptions: { numberOfTestDapps: 1 },
+          fixtures: new FixtureBuilderV2().withEvmAccountsOnly().build(),
+          title: this.test?.fullTitle(),
+        },
+        async ({ driver }: { driver: Driver }) => {
+          await driver.navigate();
+          const loginPage = new LoginPage(driver);
+          await loginPage.checkPageIsLoaded();
+          const testDapp = new TestDapp(driver);
+          await testDapp.openTestDappPage();
+          await testDapp.checkPageIsLoaded();
 
-        const requestAccountRequest: string = JSON.stringify({
-          jsonrpc: '2.0',
-          method: 'eth_requestAccounts',
-        });
+          const requestAccountRequest: string = JSON.stringify({
+            jsonrpc: '2.0',
+            method: 'eth_requestAccounts',
+          });
 
-        await driver.executeScript(
-          `window.requestAccount = window.ethereum.request(${requestAccountRequest})`,
-        );
+          await driver.executeScript(
+            `window.requestAccount = window.ethereum.request(${requestAccountRequest})`,
+          );
 
-        await driver.waitUntilXWindowHandles(3);
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        await loginPage.checkPageIsLoaded();
-        await loginPage.loginToHomepage();
+          await driver.waitUntilXWindowHandles(3);
+          await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+          await loginPage.checkPageIsLoaded();
+          await loginPage.loginToHomepage();
 
-        // Wait for preinstalled Snaps (Solana, Bitcoin) to finish loading
-        // so the permission grant doesn't reject non-EVM accounts
-        await driver.waitUntil(
-          async () => {
-            const ready = await driver.executeScript(
-              `return window.stateHooks?.getCleanAppState?.()?.metamask?.isReady`,
-            );
-            return ready === true;
-          },
-          { timeout: 30000, interval: 500 },
-        );
+          const connectAccountConfirmation = new ConnectAccountConfirmation(
+            driver,
+          );
+          await connectAccountConfirmation.checkPageIsLoaded();
+          await connectAccountConfirmation.confirmConnect();
+          await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
+          await testDapp.checkPageIsLoaded();
 
-        const connectAccountConfirmation = new ConnectAccountConfirmation(
-          driver,
-        );
-        await connectAccountConfirmation.checkPageIsLoaded();
-        await connectAccountConfirmation.confirmConnect();
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
-        await testDapp.checkPageIsLoaded();
+          const requestAccount = await driver.executeScript(
+            `return window.requestAccount;`,
+          );
 
-        const requestAccount = await driver.executeScript(
-          `return window.requestAccount;`,
-        );
-
-        assert.deepStrictEqual(requestAccount, [
-          '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
-        ]);
-      },
-    );
-  });
+          assert.deepStrictEqual(requestAccount, [
+            '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
+          ]);
+        },
+      );
+    });
   }
 });
