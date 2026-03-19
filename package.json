@@ -490,8 +490,7 @@
     "unicode-confusables": "^0.1.1",
     "uri-js": "^4.4.1",
     "uuid": "^8.3.2",
-    "xml2js": "^0.6.2",
-    "yazl": "^3.3.1"
+    "xml2js": "^0.6.2"
   },
   "devDependencies": {
     "@actions/core": "^1.10.0",
@@ -665,7 +664,6 @@
     "fake-indexeddb": "^6.1.0",
     "fancy-log": "^1.3.3",
     "fast-glob": "^3.2.2",
-    "fflate": "^0.8.2",
     "fs-extra": "^8.1.0",
     "ganache": "patch:ganache@npm%3A7.9.2#~/.yarn/patches/ganache-npm-7.9.2-a70dc8da34.patch",
     "gh-pages": "^5.0.0",
@@ -773,7 +771,8 @@
     "ws": "^8.17.1",
     "yaml": "^2.4.1",
     "yargs": "^17.7.2",
-    "yargs-parser": "^21.1.1"
+    "yargs-parser": "^21.1.1",
+    "yazl": "^3.3.1"
   },
   "engines": {
     "node": ">=24.13.0",

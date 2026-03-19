@@ -1519,20 +1519,6 @@
         "copy-webpack-plugin>tinyglobby>picomatch": true
       }
     },
-    "fflate": {
-      "builtin": {
-        "worker_threads.Worker": true
-      },
-      "globals": {
-        "TextDecoder": true,
-        "TextEncoder": true,
-        "onmessage": "write",
-        "postMessage": true,
-        "queueMicrotask": true,
-        "setImmediate": true,
-        "setTimeout": true
-      }
-    },
     "chokidar>braces>fill-range": {
       "builtin": {
         "util.inspect": true
