@@ -2,6 +2,7 @@
  * @file The webpack configuration file to enable debug previewing for UI integration tests.
  */
 
+import { createRequire } from 'node:module';
 import { join } from 'node:path';
 import {
   type Configuration,
@@ -11,7 +12,13 @@ import {
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 import CopyPlugin from 'copy-webpack-plugin';
 import rtlCss from 'postcss-rtlcss';
-import tailwindcss from '@tailwindcss/postcss';
+
+// See webpack.config.ts — LavaMoat's resolver cannot load `@tailwindcss/postcss` by name.
+const requireFromHere = createRequire(__filename);
+const tailwindcss: typeof import('@tailwindcss/postcss').default =
+  requireFromHere(
+    join(__dirname, '../../node_modules/@tailwindcss/postcss/dist/index.js'),
+  );
 
 const context = join(__dirname, '../../app');
 const nodeModules = join(__dirname, '../../node_modules');

@@ -3,6 +3,7 @@
  */
 
 import { readFileSync } from 'node:fs';
+import { createRequire } from 'node:module';
 import { join } from 'node:path';
 import { argv, exit } from 'node:process';
 import {
@@ -17,7 +18,6 @@ import HtmlBundlerPlugin from 'html-bundler-webpack-plugin';
 import rtlCss from 'postcss-rtlcss';
 import discardFonts from 'postcss-discard-font-face';
 import type ReactRefreshPluginType from '@pmmmwh/react-refresh-webpack-plugin';
-import tailwindcss from '@tailwindcss/postcss';
 import { loadBuildTypesConfig } from '../lib/build-type';
 import {
   getMinimizers,
@@ -35,6 +35,15 @@ import { getReactCompilerLoader } from './utils/loaders/reactCompilerLoader';
 import { ManifestPlugin } from './utils/plugins/ManifestPlugin';
 import { getLatestCommit } from './utils/git';
 import { MODES } from './utils/constants';
+
+// LavaMoat uses `resolve@1`, which cannot resolve packages that only define
+// `package.json#exports` (no `main`). Load the CJS entry by path so policy
+// generation and lavamoat webpack builds succeed.
+const requireFromHere = createRequire(__filename);
+const tailwindcss: typeof import('@tailwindcss/postcss').default =
+  requireFromHere(
+    join(__dirname, '../../node_modules/@tailwindcss/postcss/dist/index.js'),
+  );
 
 const buildTypes = loadBuildTypesConfig();
 const { args, cacheKey, features } = parseArgv(argv.slice(2), buildTypes);
