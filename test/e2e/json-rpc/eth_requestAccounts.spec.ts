@@ -76,7 +76,9 @@ describe('eth_requestAccounts', function () {
     );
   });
 
-  it('prompts for login when there are no permitted accounts and the wallet is locked', async function () {
+  // eslint-disable-next-line mocha/no-setup-in-describe
+  for (let i = 0; i < 5; i++) {
+  it(`prompts for login when there are no permitted accounts and the wallet is locked (run ${i + 1})`, async function () {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
@@ -105,6 +107,18 @@ describe('eth_requestAccounts', function () {
         await loginPage.checkPageIsLoaded();
         await loginPage.loginToHomepage();
 
+        // Wait for preinstalled Snaps (Solana, Bitcoin) to finish loading
+        // so the permission grant doesn't reject non-EVM accounts
+        await driver.waitUntil(
+          async () => {
+            const ready = await driver.executeScript(
+              `return window.stateHooks?.getCleanAppState?.()?.metamask?.isReady`,
+            );
+            return ready === true;
+          },
+          { timeout: 30000, interval: 500 },
+        );
+
         const connectAccountConfirmation = new ConnectAccountConfirmation(
           driver,
         );
@@ -123,4 +137,5 @@ describe('eth_requestAccounts', function () {
       },
     );
   });
+  }
 });
