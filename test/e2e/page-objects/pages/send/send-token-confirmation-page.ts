@@ -167,7 +167,9 @@ class SendTokenConfirmPage {
    */
   async clickBackButton(): Promise<void> {
     console.log('Clicking wallet-initiated back button');
-    await this.driver.clickElement(this.walletInitiatedBackButton);
+    await this.driver.clickElementAndWaitToDisappear(
+      this.walletInitiatedBackButton,
+    );
   }
 
   /**

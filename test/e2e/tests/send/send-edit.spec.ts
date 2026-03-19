@@ -67,7 +67,7 @@ describe('Send - Edit Transaction', function () {
         await activityListPage.openActivityTab();
         await activityListPage.checkConfirmedTxNumberDisplayedInActivity(1);
 
-        await activityListPage.checkFirstTransactionAmountContains('-2.2');
+        await activityListPage.checkTxAmountInActivity('-2.2 ETH');
       },
     );
   });
@@ -117,7 +117,7 @@ describe('Send - Edit Transaction', function () {
         await activityListPage.openActivityTab();
         await activityListPage.checkConfirmedTxNumberDisplayedInActivity(1);
 
-        await activityListPage.checkFirstTransactionAmountContains('-2.2');
+        await activityListPage.checkTxAmountInActivity('-2.2 ETH');
       },
     );
   });
