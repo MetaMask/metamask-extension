@@ -24,6 +24,8 @@ export function captureException(
     console.warn('Sentry not initialized');
     return undefined;
   }
+  console.log('STACK TRACE:');
+  console.log((exception as Error).stack ?? '(undefined)');
   return globalThis.sentry.captureException(exception, ...(hint ? [hint] : []));
 }
 

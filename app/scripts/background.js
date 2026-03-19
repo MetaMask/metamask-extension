@@ -193,6 +193,42 @@ if (inTest || process.env.METAMASK_DEBUG) {
   );
 }
 
+if (process.env.METAMASK_DEBUG) {
+  /**
+   * Minimal repro for Sentry `dedupeIntegration` in the **background** client:
+   * calls `captureException` N times in a tight loop with the same error type,
+   * message, and (by default) **no stack**, so SDK dedupe should keep ~1 event.
+   *
+   * Run from the **service worker** console (not the popup):
+   * `globalThis.stateHooks.debugDedupeIntegrationBurst?.(10)`
+   *
+   * Pass `false` as the second argument to keep V8 stacks (often ~N events):
+   * `globalThis.stateHooks.debugDedupeIntegrationBurst?.(10, false)`
+   *
+   * @param {number} [attemptCount] - Defaults to 10.
+   * @param {boolean} [clearStack] - Defaults to true; when true, `delete err.stack` before each capture (stable dedupe).
+   */
+  global.stateHooks.debugDedupeIntegrationBurst = (
+    attemptCount = 10,
+    clearStack = false,
+  ) => {
+    const n = Math.max(1, Math.floor(Number(attemptCount)) || 10);
+    const message =
+      '[dedupe-test-bg-burst] identical Error for dedupeIntegration check';
+    log.warn(
+      `[debug] dedupeIntegration burst: ${n}× captureException in background (clearStack=${clearStack})`,
+    );
+    for (let i = 0; i < n; i += 1) {
+      const err = new Error(message);
+      err.name = 'DedupeIntegrationTestError';
+      if (clearStack) {
+        delete err.stack;
+      }
+      captureException(err);
+    }
+  };
+}
+
 const phishingPageUrl = new URL(process.env.PHISHING_WARNING_PAGE_URL);
 
 // normalized (adds a trailing slash to the end of the domain if it's missing)

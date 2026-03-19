@@ -281,6 +281,15 @@ type StateHooks = {
   captureBackgroundError?: (msg?: string) => Promise<void>;
 
   /**
+   * Debug-only (METAMASK_DEBUG): background-only minimal `dedupeIntegration` repro
+   * (see `background.js`).
+   */
+  debugDedupeIntegrationBurst?: (
+    attemptCount?: number,
+    clearStack?: boolean,
+  ) => void;
+
+  /**
    * This is initialized by the service worker in MV3. It is handled in `background.js`.
    */
   lazyListener?: ExtensionLazyListener<typeof globalThis.chrome>;
