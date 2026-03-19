@@ -386,9 +386,6 @@
   "advanced": {
     "message": "Дополнительные"
   },
-  "advancedBaseGasFeeToolTip": {
-    "message": "После включения вашей транзакции в блок возмещается любая разница между вашей максимальной базовой комиссией и фактической базовой комиссией. Общая сумма рассчитывается следующим образом: максимальная базовая комиссия (в Гвей) x лимит газа."
-  },
   "advancedDetailsDataDesc": {
     "message": "Данные"
   },
@@ -404,10 +401,6 @@
   "advancedEIP1559ModalTitle": {
     "message": "Дополнительная комиссия сети"
   },
-  "advancedGasFeeDefaultOptIn": {
-    "message": "Сохраните эти значения как значения по умолчанию для сети $1.",
-    "description": "$1 is the current network name."
-  },
   "advancedGasPriceModalTitle": {
     "message": "Дополнительная комиссия сети"
   },
@@ -419,9 +412,6 @@
   },
   "advancedPermissionsSmallCase": {
     "message": "расширенные разрешения"
-  },
-  "advancedPriorityFeeToolTip": {
-    "message": "Плата за приоритет (также известная как «чаевые» майнеру) направляется непосредственно майнерам, чтобы они уделили приоритетное внимание вашей транзакции."
   },
   "airDropPatternDescription": {
     "message": "В истории токена в блокчейне уже были случаи подозрительных аирдропов."
@@ -1838,9 +1828,6 @@
     "message": "Текущая сеть",
     "description": "Speicifies to token network filter to filter by current Network. Will render when network nickname is not available"
   },
-  "currentTitle": {
-    "message": "Текущая:"
-  },
   "currentlyUnavailable": {
     "message": "Недоступно в этой сети"
   },
@@ -1893,12 +1880,6 @@
   },
   "dappSuggestedHigh": {
     "message": "Рекомендовано сайтом"
-  },
-  "dappSuggestedHighShortLabel": {
-    "message": "Сайт (высокий)"
-  },
-  "dappSuggestedShortLabel": {
-    "message": "Сайт"
   },
   "dappSwapAdvantage": {
     "message": "Экономьте и зарабатывайте с MetaMask Swaps"
@@ -2251,9 +2232,6 @@
   "dontShowThisAgain": {
     "message": "Не показывать снова"
   },
-  "downArrow": {
-    "message": "стрелка «вниз»"
-  },
   "downloadAppDescription": {
     "message": "Берите MetaMask с собой куда угодно. Включите Face ID, чтобы у вас всегда был доступ, даже если вы забудете пароль."
   },
@@ -2343,19 +2321,6 @@
   "editGasLimitOutOfBounds": {
     "message": "Лимит газа должен быть не менее $1"
   },
-  "editGasLimitOutOfBoundsV2": {
-    "message": "Лимит газа должен быть больше $1 и меньше $2",
-    "description": "$1 is the minimum limit for gas and $2 is the maximum limit"
-  },
-  "editGasMaxBaseFeeGWEIImbalance": {
-    "message": "Максимальная базовая комиссия не может быть ниже платы за приоритет."
-  },
-  "editGasMaxBaseFeeHigh": {
-    "message": "Максимальная базовая комиссия выше необходимой"
-  },
-  "editGasMaxBaseFeeLow": {
-    "message": "Максимальная базовая комиссия низкая для текущих условий сети"
-  },
   "editGasMaxFeeHigh": {
     "message": "Максимальная комиссия выше, чем необходимо"
   },
@@ -2368,20 +2333,11 @@
   "editGasMaxPriorityFeeBelowMinimum": {
     "message": "Максимальная плата за приоритет должна быть больше 0 Гвей."
   },
-  "editGasMaxPriorityFeeBelowMinimumV2": {
-    "message": "Плата за приоритет должна быть больше 0."
-  },
   "editGasMaxPriorityFeeHigh": {
     "message": "Максимальная плата за приоритет выше необходимой. Вы можете заплатить больше, чем нужно."
   },
-  "editGasMaxPriorityFeeHighV2": {
-    "message": "Плата за приоритет выше необходимой. Вы можете заплатить больше, чем нужно"
-  },
   "editGasMaxPriorityFeeLow": {
     "message": "Максимальная плата за приоритет низкая для текущих условий сети"
-  },
-  "editGasMaxPriorityFeeLowV2": {
-    "message": "Плата за приоритет низкая для текущих условий сети"
   },
   "editGasPriceTooLow": {
     "message": "Цена газа должна быть больше 0"
@@ -2797,9 +2753,6 @@
   },
   "gasLimitTooLow": {
     "message": "Лимит газа должен быть не менее 21 000"
-  },
-  "gasLimitV2": {
-    "message": "Лимит газа"
   },
   "gasPrice": {
     "message": "Цена газа (Гвей)"
@@ -3557,9 +3510,6 @@
   "ledgerWebHIDNotConnectedErrorMessage": {
     "message": "Ledger не подключен. Если хотите подключить Ledger, нажмите «Продолжить» еще раз и одобрите HID-подключение",
     "description": "An error message shown to the user during the hardware connect flow."
-  },
-  "levelArrow": {
-    "message": "стрелка «уровень»"
   },
   "lightTheme": {
     "message": "Светлая"
@@ -8071,9 +8021,6 @@
   "swapSource": {
     "message": "Источник ликвидности"
   },
-  "swapSuggested": {
-    "message": "Рекомендуется своп"
-  },
   "swapSuggestedGasSettingToolTipMessage": {
     "message": "Своп — это сложная транзакция, выполнение которой зависят от имеющегося времени. Мы рекомендуем эту плату за газ для хорошего баланса между стоимостью и уверенностью в успехе свопа."
   },
@@ -8478,9 +8425,6 @@
   "tutorial": {
     "message": "Руководство"
   },
-  "twelveHrTitle": {
-    "message": "12 ч:"
-  },
   "txAlertTitle": {
     "message": "Эта транзакция будет отменена"
   },
@@ -8563,9 +8507,6 @@
   },
   "unstableTokenPriceTitle": {
     "message": "Нестабильная цена токена"
-  },
-  "upArrow": {
-    "message": "стрелка «вверх»"
   },
   "update": {
     "message": "Обновить"
