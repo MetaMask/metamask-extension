@@ -73,7 +73,7 @@ export const ConnectAccountsModalList: React.FC<ConnectAccountsListProps> = ({
               <Tooltip
                 distance={10}
                 html={t('connectedAccountsListTooltip', [
-                  <strong>{getURLHost(activeTabOrigin)}</strong>,
+                  <strong key="host">{getURLHost(activeTabOrigin)}</strong>,
                 ])}
                 position="top"
               >

@@ -27,3 +27,16 @@ export function isEqualCaseInsensitive(
 export function prependZero(num: number, maxLength: number): string {
   return num.toString().padStart(maxLength, '0');
 }
+
+/**
+ * Converts a camelCase or PascalCase string to kebab-case.
+ * Handles leading uppercase letters without creating a leading hyphen.
+ *
+ * @param str - Input string (e.g., "startupStandardHome" or "SwapPage").
+ * @returns Kebab-case string (e.g., "startup-standard-home" or "swap-page").
+ */
+export function toKebabCase(str: string): string {
+  return str
+    .replace(/([A-Z])/gu, (char) => `-${char.toLowerCase()}`)
+    .replace(/^-/u, '');
+}

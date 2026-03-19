@@ -9,7 +9,7 @@ import { parseStandardTokenTransactionData } from '../../../../../shared/lib/tra
 import { getTokenTransferData } from '../../utils/transaction-pay';
 import { updateEditableParams } from '../../../../store/actions';
 import { updateAtomicBatchData } from '../../../../store/controller-actions/transaction-controller';
-import { useTransactionPayRequiredTokens } from '../pay/useTransactionPayData';
+import { useTransactionPayPrimaryRequiredToken } from '../pay/useTransactionPayData';
 
 const ERC20_ABI = ['function transfer(address to, uint256 amount)'];
 let erc20Interface: Interface | null = null;
@@ -48,12 +48,7 @@ export function useUpdateTokenAmount() {
     [transactionMeta],
   );
 
-  const requiredTokens = useTransactionPayRequiredTokens();
-
-  const primaryRequiredToken = useMemo(
-    () => requiredTokens?.find((t) => !t.skipIfBalance),
-    [requiredTokens],
-  );
+  const primaryRequiredToken = useTransactionPayPrimaryRequiredToken();
 
   const decimals = primaryRequiredToken?.decimals ?? 18;
 

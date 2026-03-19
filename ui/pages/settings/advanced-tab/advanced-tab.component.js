@@ -139,22 +139,17 @@ export default class AdvancedTab extends PureComponent {
             <Button
               variant={ButtonVariant.Secondary}
               data-testid="advanced-setting-state-logs-button"
-              onClick={() => {
-                window.logStateString(async (err, result) => {
-                  if (err) {
-                    displayErrorInSettings(t('stateLogError'));
-                  } else {
-                    try {
-                      await exportAsFile(
-                        `${t('stateLogFileName')}.json`,
-                        result,
-                        ExportableContentType.JSON,
-                      );
-                    } catch (error) {
-                      displayErrorInSettings(error.message);
-                    }
-                  }
-                });
+              onClick={async () => {
+                try {
+                  const result = await window.logStateString();
+                  await exportAsFile(
+                    `${t('stateLogFileName')}.json`,
+                    result,
+                    ExportableContentType.JSON,
+                  );
+                } catch (error) {
+                  displayErrorInSettings(error.message || t('stateLogError'));
+                }
               }}
             >
               {t('downloadStateLogs')}
@@ -223,18 +218,18 @@ export default class AdvancedTab extends PureComponent {
         gap={[null, 4]}
       >
         <div className="settings-page__content-item">
-          <span> {t('dismissSmartAccountSuggestionEnabledTitle')}</span>
+          <span> {t('smartAccountDappRequestsTitle')}</span>
           <div className="settings-page__content-description">
-            {t('dismissSmartAccountSuggestionEnabledDescription')}
+            {t('smartAccountDappRequestsDescription')}
           </div>
         </div>
 
         <div className="settings-page__content-item-col">
           <ToggleButton
-            value={dismissSmartAccountSuggestionEnabled}
+            value={!dismissSmartAccountSuggestionEnabled}
             onToggle={(oldValue) => {
               const newValue = !oldValue;
-              setDismissSmartAccountSuggestionEnabled(newValue);
+              setDismissSmartAccountSuggestionEnabled(!newValue);
             }}
             offLabel={t('off')}
             onLabel={t('on')}

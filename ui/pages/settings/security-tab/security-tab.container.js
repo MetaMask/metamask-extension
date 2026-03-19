@@ -15,7 +15,6 @@ import {
   setUseNftDetection,
   setUse4ByteResolution,
   setUseSafeChainsListValidation,
-  setUseExternalNameSources,
   setUseTransactionSimulations,
   setSecurityAlertsEnabled,
   updateDataDeletionTaskStatus,
@@ -55,7 +54,6 @@ const mapStateToProps = (state) => {
     useNftDetection,
     use4ByteResolution,
     useExternalServices,
-    useExternalNameSources,
   } = metamask;
 
   const { skipDeepLinkInterstitial } = getPreferences(state);
@@ -64,7 +62,6 @@ const mapStateToProps = (state) => {
 
   return {
     networkConfigurations,
-    petnamesEnabled: Boolean(metamask.petnamesEnabled),
     participateInMetaMetrics: getParticipateInMetaMetrics(state),
     dataCollectionForMarketing: getDataCollectionForMarketing(state),
     usePhishDetect,
@@ -78,7 +75,6 @@ const mapStateToProps = (state) => {
     openSeaEnabled,
     useNftDetection,
     use4ByteResolution,
-    useExternalNameSources,
     useExternalServices,
     securityAlertsEnabled: getIsSecurityAlertsEnabled(state),
     useTransactionSimulations: metamask.useTransactionSimulations,
@@ -116,9 +112,6 @@ const mapDispatchToProps = (dispatch) => {
     setUseNftDetection: (val) => dispatch(setUseNftDetection(val)),
     setUse4ByteResolution: (value) => {
       return dispatch(setUse4ByteResolution(value));
-    },
-    setUseExternalNameSources: (value) => {
-      return dispatch(setUseExternalNameSources(value));
     },
     toggleExternalServices: (value) => {
       return dispatch(toggleExternalServices(value));

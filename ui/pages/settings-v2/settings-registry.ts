@@ -1,13 +1,15 @@
-/* eslint-disable import/no-useless-path-segments */
-/* eslint-disable import/extensions */
+/* eslint-disable import-x/no-useless-path-segments */
+/* eslint-disable import-x/extensions */
 import { type ComponentType } from 'react';
 import {
   ACCOUNT_IDENTICON_ROUTE,
   ASSETS_ROUTE,
   CURRENCY_ROUTE,
+  DEVELOPER_OPTIONS_V2_ROUTE,
   LANGUAGE_ROUTE,
   PREFERENCES_AND_DISPLAY_ROUTE,
   SETTINGS_V2_ROUTE,
+  TRANSACTIONS_ROUTE,
   THEME_ROUTE,
   PRIVACY_ROUTE,
   THIRD_PARTY_APIS_ROUTE,
@@ -48,6 +50,10 @@ export const SETTINGS_V2_ROUTE_META: Record<string, SettingsV2RouteMeta> = {
     labelKey: 'localCurrency',
     parentPath: ASSETS_ROUTE,
   },
+  [TRANSACTIONS_ROUTE]: {
+    labelKey: 'transactions',
+    parentPath: SETTINGS_V2_ROUTE,
+  },
   // Preferences and display tab
   [PREFERENCES_AND_DISPLAY_ROUTE]: {
     labelKey: 'preferencesAndDisplay',
@@ -74,6 +80,11 @@ export const SETTINGS_V2_ROUTE_META: Record<string, SettingsV2RouteMeta> = {
     labelKey: 'thirdPartyApis',
     parentPath: PRIVACY_ROUTE,
   },
+  // Developer options tab
+  [DEVELOPER_OPTIONS_V2_ROUTE]: {
+    labelKey: 'developerOptions',
+    parentPath: SETTINGS_V2_ROUTE,
+  },
 };
 
 /**
@@ -96,6 +107,13 @@ export const SETTINGS_V2_MENU_LIST_ITEM_REGISTRY: SettingsV2MenuListItem[] = [
     component: mmLazy(() => import('./assets-tab/index.ts')),
   },
   {
+    id: 'transactions',
+    path: TRANSACTIONS_ROUTE,
+    labelKey: 'transactions',
+    iconName: IconName.Setting,
+    component: mmLazy(() => import('./transactions-tab/index.ts')),
+  },
+  {
     id: 'preferences-and-display',
     path: PREFERENCES_AND_DISPLAY_ROUTE,
     labelKey: 'preferencesAndDisplay',
@@ -108,5 +126,12 @@ export const SETTINGS_V2_MENU_LIST_ITEM_REGISTRY: SettingsV2MenuListItem[] = [
     labelKey: 'privacy',
     iconName: IconName.Lock,
     component: mmLazy(() => import('./privacy-tab/index.ts')),
+  },
+  {
+    id: 'developer-options',
+    path: DEVELOPER_OPTIONS_V2_ROUTE,
+    labelKey: 'developerOptions',
+    iconName: IconName.Code,
+    component: mmLazy(() => import('./developer-options-tab/index.ts')),
   },
 ];

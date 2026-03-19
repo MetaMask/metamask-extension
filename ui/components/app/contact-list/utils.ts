@@ -1,15 +1,20 @@
 import { AddressBookEntry } from '@metamask/address-book-controller';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 
+const getAccountName = (account: InternalAccount): string =>
+  account?.metadata?.name ?? '';
+
 export const buildDuplicateContactMap = (
   addressBook: AddressBookEntry[],
   internalAccounts: InternalAccount[],
 ) => {
   const contactMap = new Map<string, string[]>(
-    internalAccounts.map((account) => [
-      account.metadata.name.trim().toLowerCase(),
-      [`account-id-${account.id}`],
-    ]),
+    internalAccounts
+      .filter((account) => getAccountName(account))
+      .map((account) => [
+        getAccountName(account).trim().toLowerCase(),
+        [`account-id-${account.id}`],
+      ]),
   );
 
   addressBook.forEach((entry) => {
@@ -34,9 +39,10 @@ export const hasDuplicateContacts = (
     new Set(addressBook.map(({ name }) => name.toLowerCase().trim())),
   );
 
-  const hasAccountNameCollision = internalAccounts.some((account) =>
-    uniqueContactNames.includes(account.metadata.name.toLowerCase().trim()),
-  );
+  const hasAccountNameCollision = internalAccounts.some((account) => {
+    const name = getAccountName(account);
+    return name && uniqueContactNames.includes(name.toLowerCase().trim());
+  });
 
   return (
     uniqueContactNames.length !== addressBook.length || hasAccountNameCollision
@@ -52,10 +58,10 @@ export const isDuplicateContact = (
     ({ name }) => name.toLowerCase().trim() === newName.toLowerCase().trim(),
   );
 
-  const nameExistsInAccountList = internalAccounts.some(
-    ({ metadata }) =>
-      metadata.name.toLowerCase().trim() === newName.toLowerCase().trim(),
-  );
+  const nameExistsInAccountList = internalAccounts.some((account) => {
+    const name = getAccountName(account);
+    return name && name.toLowerCase().trim() === newName.toLowerCase().trim();
+  });
 
   return nameExistsInAddressBook || nameExistsInAccountList;
 };

@@ -33,7 +33,7 @@ import { isEqualCaseInsensitive } from '../../../shared/lib/string-utils';
 import { hexToDecimal } from '../../../shared/lib/conversion.utils';
 import { SNAPS_VIEW_ROUTE } from '../constants/routes';
 // TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
+// eslint-disable-next-line import-x/no-restricted-paths
 import { normalizeSafeAddress } from '../../../app/scripts/lib/multichain/address';
 import { isMultichainWalletSnap } from '../../../shared/lib/accounts';
 
@@ -751,7 +751,7 @@ export const getSnapName = (snapsMetadata) => {
 };
 
 export const getSnapRoute = (snapId) => {
-  return `${SNAPS_VIEW_ROUTE}/${encodeURIComponent(snapId)}`;
+  return `${SNAPS_VIEW_ROUTE}?snapId=${encodeURIComponent(snapId)}`;
 };
 
 export const getDedupedSnaps = (request, permissions) => {

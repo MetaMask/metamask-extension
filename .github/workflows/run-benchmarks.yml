@@ -166,7 +166,7 @@ jobs:
           - userJourneyAssets
           - userJourneyTransactions
           - userJourneyAccountManagement
-    name: chrome-webpack-${{ matrix.pageType }}
+    name: chrome-webpack-${{ matrix.pageType }} (main/release only)
     env:
       SELENIUM_BROWSER: chrome
       HEADLESS: false

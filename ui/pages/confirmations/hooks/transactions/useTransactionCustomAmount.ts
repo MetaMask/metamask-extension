@@ -9,7 +9,7 @@ import { useConfirmContext } from '../../context/confirm';
 import { useTransactionPayToken } from '../pay/useTransactionPayToken';
 import {
   useTransactionPayIsMaxAmount,
-  useTransactionPayRequiredTokens,
+  useTransactionPayPrimaryRequiredToken,
 } from '../pay/useTransactionPayData';
 import { getTokenAddress } from '../../utils/transaction-pay';
 import { useUpdateTokenAmount } from './useUpdateTokenAmount';
@@ -21,11 +21,9 @@ export function useTransactionCustomAmount({
   currency,
   disableUpdate = false,
 }: { currency?: string; disableUpdate?: boolean } = {}) {
-  const [amountFiatState, setAmountFiat] = useState('0');
   const [isInputChanged, setInputChanged] = useState(false);
   const [hasInput, setHasInput] = useState(false);
   const [amountHumanDebounced, setAmountHumanDebounced] = useState('0');
-  const requiredTokens = useTransactionPayRequiredTokens();
 
   const { currentConfirmation: transactionMeta } =
     useConfirmContext<TransactionMeta>();
@@ -58,9 +56,12 @@ export function useTransactionCustomAmount({
     return debouncedFn;
   }, [disableUpdate, updateTokenAmountCallback]);
 
-  const primaryRequiredToken = useMemo(
-    () => requiredTokens?.find((t) => !t.skipIfBalance),
-    [requiredTokens],
+  const primaryRequiredToken = useTransactionPayPrimaryRequiredToken();
+
+  const [amountFiatState, setAmountFiat] = useState(
+    new BigNumber(primaryRequiredToken?.amountUsd ?? '0')
+      .round(2, BigNumber.ROUND_HALF_UP)
+      .toString(10),
   );
 
   const amountFiat = useMemo(() => {
