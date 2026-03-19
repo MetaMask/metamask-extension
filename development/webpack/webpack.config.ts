@@ -425,34 +425,10 @@ const config = {
         use: [jsxLoader, envValidationLoader],
       },
       // vendor javascript. We must transform all npm modules to ensure browser
-      // compatibility.
+      // compatibility. Keep `env.targets` enabled here; omitting it causes SWC
+      // to lower async generators and `for await` into helper code.
       {
         oneOf: [
-          // libp2p packages use async generators for stream multiplexing.
-          // SWC's env.targets downcompiles them to helper functions which
-          // breaks the yamux muxer's async iterable protocol, causing
-          // relay WebSocket connections to close after 7 frames.
-          // Process these with a pass-through SWC config (no env.targets).
-          {
-            test: /\.m?js$/u,
-            include: [
-              /[\\/]node_modules[\\/]@libp2p[\\/]/u,
-              /[\\/]node_modules[\\/]@chainsafe[\\/]/u,
-              /[\\/]node_modules[\\/]libp2p[\\/]/u,
-              /[\\/]node_modules[\\/]@multiformats[\\/]/u,
-              /[\\/]node_modules[\\/]it-/u,
-            ],
-            resolve: { fullySpecified: false },
-            use: {
-              loader: require.resolve('./utils/loaders/swcLoader'),
-              options: {
-                jsc: {
-                  parser: { syntax: 'ecmascript' as const },
-                },
-                module: { type: 'es6' as const },
-              },
-            },
-          },
           {
             test: /\.m?js$/u,
             include: NODE_MODULES_RE,
@@ -463,13 +439,6 @@ const config = {
               // these trezor libraries are .js files with CJS exports, they
               // must be processed with the CJS loader
               TREZOR_MODULE_RE,
-
-              // handled by the libp2p-specific rule above
-              /[\\/]node_modules[\\/]@libp2p[\\/]/u,
-              /[\\/]node_modules[\\/]@chainsafe[\\/]/u,
-              /[\\/]node_modules[\\/]libp2p[\\/]/u,
-              /[\\/]node_modules[\\/]@multiformats[\\/]/u,
-              /[\\/]node_modules[\\/]it-/u,
             ],
             use: npmLoader,
           },

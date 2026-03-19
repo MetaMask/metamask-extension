@@ -2,6 +2,7 @@ import { describe, it, afterEach } from 'node:test';
 import assert from 'node:assert';
 import { LoaderContext } from 'webpack';
 import swcLoader, {
+  getSwcLoader,
   type SwcLoaderOptions,
   type SwcConfig,
 } from '../utils/loaders/swcLoader';
@@ -43,6 +44,47 @@ describe('swcLoader', () => {
     return { context: mockContext, source, expected, deferredPromise: promise };
   }
 
+  function createContext(
+    options: SwcLoaderOptions,
+    resourcePath = 'node_modules/@libp2p/utils/dist/src/stream-utils.js',
+  ) {
+    // `withResolvers` is supported by Node.js LTS. It's optional in global type
+    // due to older browser support.
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const { promise, resolve } = Promise.withResolvers!<CallbackArgs>();
+    const mockContext = {
+      mode: 'production',
+      sourceMap: false,
+      getOptions: () => options,
+      resourcePath,
+      async: () => {
+        return (...args: CallbackArgs) => {
+          resolve(args);
+        };
+      },
+    } as unknown as LoaderContext<SwcLoaderOptions>;
+    mockContext.async = mockContext.async.bind(mockContext);
+    return { context: mockContext, deferredPromise: promise };
+  }
+
+  async function runLoader(
+    source: string,
+    options: SwcLoaderOptions,
+    resourcePath?: string,
+  ) {
+    const { context, deferredPromise } = createContext(options, resourcePath);
+    const returnValue = swcLoader.call(context, source);
+
+    assert.strictEqual(returnValue, undefined, 'should return undefined');
+
+    const [err, content, map] = await deferredPromise;
+    assert.strictEqual(err, null);
+    assert.strictEqual(typeof content, 'string');
+    assert.strictEqual(map, undefined);
+
+    return content as string;
+  }
+
   it('should transform code', async () => {
     const { context, source, deferredPromise, expected } = generateData();
     const returnValue = swcLoader.call(context, source);
@@ -77,6 +119,50 @@ describe('swcLoader', () => {
     assert.match(err.message, /Syntax Error/u);
     assert.strictEqual(content, undefined);
     assert.strictEqual(map, undefined);
+  });
+
+  it('preserves async generators when env.targets is set for vendor code', async () => {
+    const source = `export async function* forward(source) {
+  for await (const chunk of source) {
+    yield chunk;
+  }
+}
+`;
+    const swcConfig: SwcConfig = {
+      args: { watch: false },
+      browsersListQuery: 'chrome >= 89, firefox >= 89',
+      isDevelopment: false,
+    };
+
+    const normalVendorOutput = await runLoader(
+      source,
+      getSwcLoader('ecmascript', false, {}, swcConfig).options,
+    );
+
+    assert.match(normalVendorOutput, /async function\*/u);
+    assert.match(normalVendorOutput, /for await/u);
+    assert.doesNotMatch(
+      normalVendorOutput,
+      /_wrap_async_generator|_async_iterator|_async_to_generator|_ts_generator/u,
+    );
+
+    const noTargetsOutput = await runLoader(source, {
+      jsc: {
+        parser: {
+          syntax: 'ecmascript',
+        },
+      },
+      module: {
+        type: 'es6',
+      },
+    });
+
+    assert.doesNotMatch(noTargetsOutput, /async function\*/u);
+    assert.doesNotMatch(noTargetsOutput, /for await/u);
+    assert.match(
+      noTargetsOutput,
+      /_wrap_async_generator|_async_iterator|_async_to_generator|_ts_generator/u,
+    );
   });
 
   describe('getSwcLoader', () => {
