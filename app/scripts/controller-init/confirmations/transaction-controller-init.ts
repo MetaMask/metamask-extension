@@ -43,6 +43,7 @@ import {
 } from '../../lib/transaction/metrics';
 import { isSendBundleSupported } from '../../lib/transaction/sentinel-api';
 import { getTransactionById } from '../../lib/transaction/util';
+import { accountSupports7702 } from '../../lib/account-supports-7702';
 import { ControllerFlatState } from '../controller-list';
 import { TransactionControllerInitMessenger } from '../messengers/transaction-controller-messenger';
 import {
@@ -127,6 +128,15 @@ export const TransactionControllerInit: ControllerInitFunction<
     },
     isAutomaticGasFeeUpdateEnabled,
     isEIP7702GasFeeTokensEnabled: async (transactionMeta) => {
+      if (
+        !(await accountSupports7702(
+          transactionMeta.txParams?.from,
+          keyringController as Parameters<typeof accountSupports7702>[1],
+        ))
+      ) {
+        return false;
+      }
+
       const { chainId, isExternalSign } = transactionMeta;
       const uiState = getUIState(getFlatState());
 
@@ -196,6 +206,7 @@ export const TransactionControllerInit: ControllerInitFunction<
         publishHook({
           flatState: getFlatState(),
           initMessenger,
+          keyringController,
           signedTx,
           smartTransactionsController: smartTransactionsController(),
           transactionController: controller,
@@ -353,6 +364,7 @@ function getUIState(flatState: ControllerFlatState) {
 export async function publishHook({
   flatState,
   initMessenger,
+  keyringController,
   signedTx,
   smartTransactionsController,
   transactionController,
@@ -360,6 +372,7 @@ export async function publishHook({
 }: {
   flatState: ControllerFlatState;
   initMessenger: TransactionControllerInitMessenger;
+  keyringController: Parameters<typeof accountSupports7702>[1];
   signedTx: string;
   smartTransactionsController: SmartTransactionsController;
   transactionController: TransactionController;
@@ -384,7 +397,15 @@ export async function publishHook({
 
   const { isExternalSign } = transactionMeta;
 
-  if (!isSmartTransaction || !sendBundleSupport || isExternalSign) {
+  const keyringSupports7702 = await accountSupports7702(
+    transactionMeta.txParams?.from,
+    keyringController,
+  );
+
+  if (
+    keyringSupports7702 &&
+    (!isSmartTransaction || !sendBundleSupport || isExternalSign)
+  ) {
     const hook = new Delegation7702PublishHook({
       isAtomicBatchSupported: transactionController.isAtomicBatchSupported.bind(
         transactionController,

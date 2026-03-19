@@ -159,7 +159,10 @@ import { MULTICHAIN_PROVIDER_CONFIGS } from '../../shared/constants/multichain/n
 import { hasTransactionData } from '../../shared/lib/transaction.utils';
 import { toChecksumHexAddress } from '../../shared/lib/hexstring-utils';
 import { createDeepEqualSelector } from '../../shared/lib/selectors/util';
-import { createParameterizedShallowEqualSelector } from '../../shared/lib/selectors/selector-creators';
+import {
+  createParameterizedSelector,
+  createParameterizedShallowEqualSelector,
+} from '../../shared/lib/selectors/selector-creators';
 import { isSnapIgnoredInProd } from '../helpers/utils/snaps';
 import {
   FeatureFlagNames,
@@ -184,6 +187,8 @@ import {
   getCurrentNetworkTransactions,
 } from './transactions';
 import { EMPTY_ARRAY, EMPTY_OBJECT } from './shared';
+
+const PERMITTED_ACCOUNTS_LRU_CACHE_SIZE = 5;
 
 /**
  * @typedef {import('../../ui/store/store').MetaMaskReduxState} MetaMaskReduxState
@@ -763,11 +768,10 @@ export function getMetaMaskKeyrings(state) {
   return state.metamask.keyrings;
 }
 
-export function getMetaMaskHdKeyrings(state) {
-  return state.metamask.keyrings.filter(
-    (keyring) => keyring.type === KeyringTypes.hd,
-  );
-}
+export const getMetaMaskHdKeyrings = createSelector(
+  getMetaMaskKeyrings,
+  (keyrings) => keyrings.filter((keyring) => keyring.type === KeyringTypes.hd),
+);
 
 export function getHDEntropyIndex(state) {
   const selectedAddress = getSelectedAddress(state);
@@ -3216,7 +3220,7 @@ export function getUnconnectedAccounts(state, activeTab) {
   return unConnectedAccounts;
 }
 
-export const getOrderedConnectedAccountsForActiveTab = createDeepEqualSelector(
+export const getOrderedConnectedAccountsForActiveTab = createSelector(
   getOriginOfCurrentTab,
   (state) => state.metamask.permissionHistory,
   getMetaMaskAccountsOrderedWithoutBalance,
@@ -3351,8 +3355,9 @@ export const getUpdatedAndSortedAccounts = createSelector(
   },
 );
 
-export const getUpdatedAndSortedAccountsWithCaipAccountId =
-  createDeepEqualSelector(getUpdatedAndSortedAccounts, (accounts) => {
+export const getUpdatedAndSortedAccountsWithCaipAccountId = createSelector(
+  getUpdatedAndSortedAccounts,
+  (accounts) => {
     return accounts.map((account) => {
       const { namespace, reference } = parseCaipChainId(account.scopes[0]);
       return {
@@ -3360,7 +3365,8 @@ export const getUpdatedAndSortedAccountsWithCaipAccountId =
         caipAccountId: `${namespace}:${reference}:${account.address}`,
       };
     });
-  });
+  },
+);
 
 export const getUseSafeChainsListValidation = (state) => {
   return state.metamask.useSafeChainsListValidation;
@@ -3555,15 +3561,19 @@ function getPermittedEVMChains(state, origin) {
   );
 }
 
-export function getAllPermittedAccounts(state, origin) {
-  const caip25Permission = getCaip25PermissionFromSubject(
-    subjectSelector(state, origin),
-  );
-  const caip25Caveat = getCaip25CaveatFromPermission(caip25Permission);
-  return caip25Caveat
-    ? getCaipAccountIdsFromCaip25CaveatValue(caip25Caveat.value)
-    : [];
-}
+export const getAllPermittedAccounts = createParameterizedSelector(
+  PERMITTED_ACCOUNTS_LRU_CACHE_SIZE,
+)(
+  subjectSelector,
+  (_state, origin) => origin,
+  (subject) => {
+    const caip25Permission = getCaip25PermissionFromSubject(subject);
+    const caip25Caveat = getCaip25CaveatFromPermission(caip25Permission);
+    return caip25Caveat
+      ? getCaipAccountIdsFromCaip25CaveatValue(caip25Caveat.value)
+      : [];
+  },
+);
 
 function getAllPermittedScopes(state, origin) {
   const caip25Permission = getCaip25PermissionFromSubject(

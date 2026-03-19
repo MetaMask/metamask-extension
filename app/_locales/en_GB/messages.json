@@ -6853,9 +6853,6 @@
   "settingsSearchMatchingNotFound": {
     "message": "No matching results found."
   },
-  "settingsSubHeadingSignaturesAndTransactions": {
-    "message": "Signature and transaction requests"
-  },
   "shieldClaim": {
     "message": "Submit a claim"
   },
@@ -7491,6 +7488,10 @@
   },
   "showFiatConversionInTestnetsDescription": {
     "message": "Select this to show fiat conversion on test networks"
+  },
+  "showFiatConversionInTestnetsDescriptionV2": {
+    "message": "Shows network tokens as local currency on test networks. If you've been asked to turn this feature on, you might be getting scammed. For testing purposes only. $1",
+    "description": "$1 is the 'Learn more' link"
   },
   "showHexData": {
     "message": "Show hex data"

@@ -132,9 +132,7 @@ describe('Onboarding Flow', () => {
         { chainId: CHAIN_IDS.MAINNET },
         { chainId: CHAIN_IDS.LINEA_MAINNET },
       ),
-      preferences: {
-        petnamesEnabled: true,
-      },
+      preferences: {},
     },
     localeMessages: {
       currentLocale: 'en',

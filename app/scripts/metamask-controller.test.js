@@ -1724,39 +1724,79 @@ describe('MetaMaskController', () => {
     });
 
     describe('#sortMultichainAccountsByLastSelected', () => {
-      const mockGetAccountContext = (lastSelectedMap) => {
-        return jest
+      const EVM_EOA_TYPE = 'eip155:eoa';
+
+      const setupMocks = ({
+        addressToAccount,
+        accountIdToGroupId,
+        groups,
+        accountIdToAccount,
+      }) => {
+        jest
+          .spyOn(metamaskController.accountsController, 'getAccountByAddress')
+          .mockImplementation((address) => addressToAccount[address]);
+
+        jest
           .spyOn(metamaskController.accountTreeController, 'getAccountContext')
           .mockImplementation((accountId) => {
-            const lastSelected = lastSelectedMap[accountId];
-            return {
-              group: {
-                get: () => ({
-                  metadata: { lastSelected },
-                }),
-              },
-            };
+            const groupId = accountIdToGroupId[accountId];
+            return groupId === undefined ? undefined : { groupId };
           });
+
+        jest
+          .spyOn(
+            metamaskController.accountTreeController,
+            'getAccountGroupObject',
+          )
+          .mockImplementation((groupId) => groups[groupId]);
+
+        jest
+          .spyOn(metamaskController.accountsController, 'getAccount')
+          .mockImplementation((accountId) => accountIdToAccount[accountId]);
       };
 
       it('returns the accounts in lastSelected order', () => {
-        jest
-          .spyOn(metamaskController.accountsController, 'getAccountByAddress')
-          .mockImplementation((address) => {
-            const accounts = {
-              addr1: { id: 'id-1', address: 'addr1' },
-              addr2: { id: 'id-2', address: 'addr2' },
-              addr3: { id: 'id-3', address: 'addr3' },
-              addr4: { id: 'id-4', address: 'addr4' },
-            };
-            return accounts[address];
-          });
-
-        mockGetAccountContext({
-          'id-1': 1,
-          'id-2': undefined,
-          'id-3': 3,
-          'id-4': 3,
+        setupMocks({
+          addressToAccount: {
+            addr1: { id: 'id-1', address: 'addr1' },
+            addr2: { id: 'id-2', address: 'addr2' },
+            addr3: { id: 'id-3', address: 'addr3' },
+            addr4: { id: 'id-4', address: 'addr4' },
+          },
+          accountIdToGroupId: {
+            'id-1': 'group-1',
+            'id-2': 'group-2',
+            'id-3': 'group-3',
+            'id-4': 'group-4',
+          },
+          groups: {
+            'group-1': { accounts: ['id-1', 'id-1-evm'] },
+            'group-2': { accounts: ['id-2', 'id-2-evm'] },
+            'group-3': { accounts: ['id-3', 'id-3-evm'] },
+            'group-4': { accounts: ['id-4', 'id-4-evm'] },
+          },
+          accountIdToAccount: {
+            'id-1': { type: 'solana:data-account' },
+            'id-1-evm': {
+              type: EVM_EOA_TYPE,
+              metadata: { lastSelected: 1 },
+            },
+            'id-2': { type: 'solana:data-account' },
+            'id-2-evm': {
+              type: EVM_EOA_TYPE,
+              metadata: { lastSelected: undefined },
+            },
+            'id-3': { type: 'solana:data-account' },
+            'id-3-evm': {
+              type: EVM_EOA_TYPE,
+              metadata: { lastSelected: 3 },
+            },
+            'id-4': { type: 'solana:data-account' },
+            'id-4-evm': {
+              type: EVM_EOA_TYPE,
+              metadata: { lastSelected: 3 },
+            },
+          },
         });
 
         expect(
@@ -1770,17 +1810,24 @@ describe('MetaMaskController', () => {
       });
 
       it('handles missing account by treating lastSelected as 0', () => {
-        jest
-          .spyOn(metamaskController.accountsController, 'getAccountByAddress')
-          .mockImplementation((address) => {
-            if (address === 'addr1') {
-              return { id: 'id-1', address: 'addr1' };
-            }
-            return undefined;
-          });
-
-        mockGetAccountContext({
-          'id-1': 5,
+        setupMocks({
+          addressToAccount: {
+            addr1: { id: 'id-1', address: 'addr1' },
+            addr2: undefined,
+          },
+          accountIdToGroupId: {
+            'id-1': 'group-1',
+          },
+          groups: {
+            'group-1': { accounts: ['id-1', 'id-1-evm'] },
+          },
+          accountIdToAccount: {
+            'id-1': { type: 'solana:data-account' },
+            'id-1-evm': {
+              type: EVM_EOA_TYPE,
+              metadata: { lastSelected: 5 },
+            },
+          },
         });
 
         expect(
@@ -1792,30 +1839,55 @@ describe('MetaMaskController', () => {
       });
 
       it('handles missing context by treating lastSelected as 0', () => {
-        jest
-          .spyOn(metamaskController.accountsController, 'getAccountByAddress')
-          .mockImplementation((address) => {
-            const accounts = {
-              addr1: { id: 'id-1', address: 'addr1' },
-              addr2: { id: 'id-2', address: 'addr2' },
-            };
-            return accounts[address];
-          });
+        setupMocks({
+          addressToAccount: {
+            addr1: { id: 'id-1', address: 'addr1' },
+            addr2: { id: 'id-2', address: 'addr2' },
+          },
+          accountIdToGroupId: {
+            'id-1': 'group-1',
+            'id-2': undefined,
+          },
+          groups: {
+            'group-1': { accounts: ['id-1', 'id-1-evm'] },
+          },
+          accountIdToAccount: {
+            'id-1': { type: 'solana:data-account' },
+            'id-1-evm': {
+              type: EVM_EOA_TYPE,
+              metadata: { lastSelected: 10 },
+            },
+          },
+        });
 
-        jest
-          .spyOn(metamaskController.accountTreeController, 'getAccountContext')
-          .mockImplementation((accountId) => {
-            if (accountId === 'id-1') {
-              return {
-                group: {
-                  get: () => ({
-                    metadata: { lastSelected: 10 },
-                  }),
-                },
-              };
-            }
-            return undefined;
-          });
+        expect(
+          metamaskController.sortMultichainAccountsByLastSelected([
+            'addr1',
+            'addr2',
+          ]),
+        ).toStrictEqual(['addr1', 'addr2']);
+      });
+
+      it('handles missing group by treating lastSelected as 0', () => {
+        setupMocks({
+          addressToAccount: {
+            addr1: { id: 'id-1', address: 'addr1' },
+            addr2: { id: 'id-2', address: 'addr2' },
+          },
+          accountIdToGroupId: {
+            'id-1': 'group-1',
+            'id-2': 'group-unknown',
+          },
+          groups: {
+            'group-1': { accounts: ['id-1-evm'] },
+          },
+          accountIdToAccount: {
+            'id-1-evm': {
+              type: EVM_EOA_TYPE,
+              metadata: { lastSelected: 7 },
+            },
+          },
+        });
 
         expect(
           metamaskController.sortMultichainAccountsByLastSelected([
