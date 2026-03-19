@@ -5,6 +5,7 @@ import React, {
   useContext,
   useEffect,
   useMemo,
+  useRef,
   useState,
 } from 'react';
 import { upperFirst } from 'lodash';
@@ -12,6 +13,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { KeyringObject } from '@metamask/keyring-controller';
 import { ErrorCode } from '@metamask/hw-wallet-sdk';
+import { QrScanRequestType } from '@metamask/eth-qr-keyring';
 import {
   Box,
   Text,
@@ -25,6 +27,7 @@ import {
   getMetaMaskAccounts,
   getRpcPrefsForCurrentProvider,
   getMetaMaskAccountsConnected,
+  getActiveQrCodeScanRequest,
 } from '../../../selectors';
 import { formatBalance } from '../../../helpers/utils/util';
 import { getMostRecentOverviewPage } from '../../../ducks/history/history';
@@ -98,6 +101,10 @@ type HardwareAccount = {
   index: number;
 };
 
+type ActiveQrCodeScanRequest = {
+  type?: QrScanRequestType;
+} | null;
+
 const getErrorMessage = (
   errorCode: string,
   t: (key: string) => string,
@@ -141,6 +148,9 @@ const ConnectHardwareForm = () => {
     (state: { metamask: { keyrings: KeyringObject[] } }) =>
       state.metamask.keyrings,
   );
+  const activeQrCodeScanRequest = useSelector(
+    getActiveQrCodeScanRequest,
+  ) as ActiveQrCodeScanRequest;
 
   // Local state
   const [error, setError] = useState<string | null>(null);
@@ -152,6 +162,19 @@ const ConnectHardwareForm = () => {
   const [unlocked, setUnlocked] = useState(false);
   const [device, setDevice] = useState<string | null>(null);
   const [isFirefox, setIsFirefox] = useState(false);
+  const previousActiveQrCodeScanRequest = useRef<ActiveQrCodeScanRequest>(
+    activeQrCodeScanRequest,
+  );
+  const latestHardwareAccounts = useRef(hardwareAccounts);
+  const latestDevice = useRef(device);
+
+  useEffect(() => {
+    latestHardwareAccounts.current = hardwareAccounts;
+  }, [hardwareAccounts]);
+
+  useEffect(() => {
+    latestDevice.current = device;
+  }, [device]);
 
   const hardwareWalletKeyrings = useMemo(
     () =>
@@ -327,6 +350,36 @@ const ConnectHardwareForm = () => {
     // We only want this to run on mount
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    const previousScanRequest = previousActiveQrCodeScanRequest.current;
+
+    if (
+      previousScanRequest?.type === QrScanRequestType.PAIR &&
+      !activeQrCodeScanRequest &&
+      latestHardwareAccounts.current.length === 0 &&
+      !latestDevice.current
+    ) {
+      const hdPath = defaultHdPaths[HardwareDeviceNames.qr];
+
+      dispatch(actions.checkHardwareStatus(HardwareDeviceNames.qr, hdPath))
+        .then((isUnlocked) => {
+          if (
+            isUnlocked &&
+            latestHardwareAccounts.current.length === 0 &&
+            !latestDevice.current
+          ) {
+            setDevice(HardwareDeviceNames.qr);
+            getPage(HardwareDeviceNames.qr, 0, hdPath).catch(() => undefined);
+          }
+        })
+        .catch((errorResponse: unknown) => {
+          setError(toErrorMessage(errorResponse));
+        });
+    }
+
+    previousActiveQrCodeScanRequest.current = activeQrCodeScanRequest;
+  }, [activeQrCodeScanRequest, defaultHdPaths, dispatch, getPage]);
 
   const connectToHardwareWallet = useCallback(
     (nextDevice: string) => {

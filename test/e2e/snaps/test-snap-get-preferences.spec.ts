@@ -1,7 +1,7 @@
 import { TestSnaps } from '../page-objects/pages/test-snaps';
 import { Driver } from '../webdriver/driver';
 import { withFixtures } from '../helpers';
-import FixtureBuilder from '../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../fixtures/fixture-builder-v2';
 import { loginWithoutBalanceValidation } from '../page-objects/flows/login.flow';
 import { openTestSnapClickButtonAndInstall } from '../page-objects/flows/install-test-snap.flow';
 import { mockPreferencesSnap } from '../mock-response-data/snaps/snap-binary-mocks';
@@ -14,13 +14,16 @@ describe('Test Snap get preferences', function () {
         dappOptions: {
           customDappPaths: [DAPP_PATH.TEST_SNAPS],
         },
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withPreferencesController({
+            openSeaEnabled: false,
+            useNftDetection: false,
             preferences: {
               privacyMode: true,
               showTestNetworks: true,
             },
           })
+          .withSnapsPrivacyWarningAlreadyShown()
           .build(),
         testSpecificMock: mockPreferencesSnap,
         title: this.test?.fullTitle(),
