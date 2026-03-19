@@ -240,7 +240,10 @@ export function useFeeCalculations(transactionMeta: TransactionMeta) {
       return EMPTY_FEE;
     }
 
-    const originalGasLimit = transactionMeta?.txParamsOriginal?.gas || HEX_ZERO;
+    const originalGasLimit =
+      transactionMeta?.gasLimitNoBuffer ||
+      transactionMeta?.txParamsOriginal?.gas ||
+      HEX_ZERO;
 
     const enforcedGasLimit = transactionMeta?.txParams?.gas || HEX_ZERO;
 
@@ -282,6 +285,7 @@ export function useFeeCalculations(transactionMeta: TransactionMeta) {
     maxFeePerGas,
     maxPriorityFeePerGas,
     supportsEIP1559,
+    transactionMeta?.gasLimitNoBuffer,
     transactionMeta?.txParamsOriginal?.gas,
     transactionMeta?.txParams?.gas,
   ]);

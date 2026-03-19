@@ -118,6 +118,7 @@ export async function applyTransactionContainersExisting({
     maxFeePerGas: transactionMeta.txParams.maxFeePerGas,
     maxPriorityFeePerGas: transactionMeta.txParams.maxPriorityFeePerGas,
     to: newTransactionMeta.txParams.to,
+    updateType: false,
     value: newTransactionMeta.txParams.value,
   });
 }
