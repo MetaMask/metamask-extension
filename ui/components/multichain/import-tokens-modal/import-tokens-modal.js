@@ -375,11 +375,6 @@ export const ImportTokensModal = ({ onClose }) => {
       }
 
       if (assetsUnifyStateFeatureEnabled) {
-        console.log('assetsUnifyStateFeatureEnabled ........', assetsUnifyStateFeatureEnabled);
-        console.log('assetPreferences .....', assetPreferences);
-        console.log('selectedAccount.id ..........', selectedAccount.id);
-        console.log('assetsIds ..........', assetsIds);
-        console.log('pendingTokens ..........', pendingTokens);
         const assets = assetsIds.map((assetId) => ({
           assetId,
           isHidden: isAssetIdHiddenInPreferencesMap(assetPreferences, assetId),
@@ -402,12 +397,6 @@ export const ImportTokensModal = ({ onClose }) => {
               unlisted: token.unlisted,
             },
           ]),
-        );
-
-        console.log(
-          'pendingMetadataByAssetId ..........',
-          pendingMetadataByAssetId,
-          assets,
         );
 
         await dispatch(

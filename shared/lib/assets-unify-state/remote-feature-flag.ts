@@ -22,7 +22,6 @@ export const isAssetsUnifyStateFeatureEnabled = (
   featureFlag: AssetsUnifyStateFeatureFlag | undefined | null,
   featureVersion: string,
 ): boolean => {
-  return true;
   if (!featureFlag) {
     return false;
   }
