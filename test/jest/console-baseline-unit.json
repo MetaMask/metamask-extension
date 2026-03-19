@@ -1114,7 +1114,7 @@
     },
     "ui/pages/confirmations/components/send/amount-recipient/amount-recipient.test.tsx": {
       "MetaMask: Background connection not initialized": 1,
-      "React: Act warnings (component updates not wrapped)": 6
+      "React: Act warnings (component updates not wrapped)": 9
     },
     "ui/pages/confirmations/components/send/amount/amount.test.tsx": {
       "React: Act warnings (component updates not wrapped)": 14
