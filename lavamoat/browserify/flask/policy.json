@@ -2915,11 +2915,13 @@
         "crypto": true
       }
     },
-<<<<<<< HEAD
-    "@metamask/perps-controller>@nktkas/hyperliquid>micro-eth-signer>@noble/hashes": {
-=======
     "@metamask/assets-controllers>@metamask/phishing-controller>ethereum-cryptography>@noble/hashes": {
->>>>>>> main
+      "globals": {
+        "TextEncoder": true,
+        "crypto": true
+      }
+    },
+    "@metamask/perps-controller>@nktkas/hyperliquid>micro-eth-signer>@noble/hashes": {
       "globals": {
         "TextEncoder": true,
         "crypto": true
