@@ -30,7 +30,7 @@ import {
 } from '../../helpers/constants/design-system';
 import TabBar from '../../components/app/tab-bar';
 // TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
+// eslint-disable-next-line import-x/no-restricted-paths
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
 import {
   ENVIRONMENT_TYPE_POPUP,

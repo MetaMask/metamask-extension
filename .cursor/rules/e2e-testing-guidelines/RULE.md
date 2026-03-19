@@ -111,7 +111,6 @@ For new test code, use `FixtureBuilderV2` by default.
 - `withNetworkControllerTripleNode`
 - `withNoNames`
 - `withPermissionControllerConnectedToTestDapp`
-- `withPetnamesDisabled`
 - `withSelectedNetwork`
 - `withSelectedNetworkControllerPerDomain`
 - `withShowNativeTokenAsMainBalanceDisabled`

@@ -1,19 +1,44 @@
-import React from 'react';
+import React, { useEffect, useMemo } from 'react';
 import {
   Box,
   Text,
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
+import { useI18nContext } from '../../../hooks/useI18nContext';
+import { handleSettingsRefs } from '../../../helpers/utils/settings-search';
 import { SettingItemConfig } from '../types';
 import { Divider } from './divider';
 
 type SettingsTabProps = {
   items: SettingItemConfig[];
   subHeader?: string;
+  /** Tab message key for settings search (e.g., 'developerOptions'). If provided, handles scroll-to-setting automatically. */
+  tabMessageKey?: string;
 };
 
-export const SettingsTab = ({ items, subHeader }: SettingsTabProps) => {
+export const SettingsTab = ({
+  items,
+  subHeader,
+  tabMessageKey,
+}: SettingsTabProps) => {
+  const t = useI18nContext();
+
+  const itemCount = items.length;
+  const settingsRefs = useMemo(
+    () =>
+      Array.from({ length: itemCount }, () =>
+        React.createRef<HTMLDivElement>(),
+      ),
+    [itemCount],
+  );
+
+  useEffect(() => {
+    if (tabMessageKey) {
+      handleSettingsRefs(t, t(tabMessageKey), settingsRefs);
+    }
+  }, [t, tabMessageKey, settingsRefs]);
+
   return (
     <Box paddingHorizontal={4} paddingBottom={4}>
       {subHeader && (
@@ -25,10 +50,10 @@ export const SettingsTab = ({ items, subHeader }: SettingsTabProps) => {
           {subHeader}
         </Text>
       )}
-      {items.map(({ id, component: Component, hasDividerBefore }) => (
+      {items.map(({ id, component: Component, hasDividerBefore }, index) => (
         <React.Fragment key={id}>
           {hasDividerBefore && <Divider />}
-          <Component />
+          <Component sectionRef={settingsRefs[index]} />
         </React.Fragment>
       ))}
     </Box>
