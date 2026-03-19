@@ -831,6 +831,16 @@
         "nanoid": true
       }
     },
+    "@metamask/snaps-controllers>@metamask/approval-controller": {
+      "globals": {
+        "console.info": true
+      },
+      "packages": {
+        "@metamask/base-controller": true,
+        "@metamask/rpc-errors": true,
+        "nanoid": true
+      }
+    },
     "@metamask/assets-controller": {
       "globals": {
         "clearInterval": true,
@@ -841,6 +851,7 @@
         "@ethereumjs/tx>@ethereumjs/util": true,
         "@ethersproject/abi": true,
         "@ethersproject/providers": true,
+        "@metamask/assets-controllers": true,
         "@metamask/base-controller": true,
         "@metamask/client-controller": true,
         "@metamask/controller-utils": true,
@@ -884,7 +895,7 @@
         "@metamask/keyring-api": true,
         "@metamask/keyring-snap-client": true,
         "@metamask/metamask-eth-abis": true,
-        "@metamask/phishing-controller": true,
+        "@metamask/assets-controllers>@metamask/phishing-controller": true,
         "@metamask/polling-controller": true,
         "@metamask/rpc-errors": true,
         "@metamask/assets-controllers>@metamask/snaps-utils": true,
@@ -966,6 +977,25 @@
         "uuid": true
       }
     },
+    "@metamask/bridge-status-controller>@metamask/bridge-controller": {
+      "globals": {
+        "Buffer.from": true,
+        "URLSearchParams": true,
+        "console.warn": true
+      },
+      "packages": {
+        "ethers>@ethersproject/address": true,
+        "ethers>@ethersproject/constants": true,
+        "@ethersproject/contracts": true,
+        "@metamask/controller-utils": true,
+        "@metamask/keyring-api": true,
+        "@metamask/metamask-eth-abis": true,
+        "@metamask/multichain-network-controller": true,
+        "@metamask/superstruct": true,
+        "@metamask/utils": true,
+        "buffer": true
+      }
+    },
     "@metamask/transaction-pay-controller>@metamask/bridge-controller": {
       "packages": {
         "@metamask/controller-utils": true,
@@ -981,7 +1011,7 @@
         "setTimeout": true
       },
       "packages": {
-        "@metamask/bridge-controller": true,
+        "@metamask/bridge-status-controller>@metamask/bridge-controller": true,
         "@metamask/controller-utils": true,
         "@metamask/keyring-controller": true,
         "@metamask/polling-controller": true,
@@ -1114,7 +1144,7 @@
         "@metamask/keyring-controller": true,
         "@metamask/rpc-errors": true,
         "@metamask/superstruct": true,
-        "@metamask/transaction-controller": true,
+        "@metamask/eip-5792-middleware>@metamask/transaction-controller": true,
         "@metamask/utils": true,
         "lodash": true,
         "uuid": true
@@ -1429,20 +1459,6 @@
       }
     },
     "@metamask/gas-fee-controller": {
-      "globals": {
-        "clearInterval": true,
-        "console.error": true,
-        "setInterval": true
-      },
-      "packages": {
-        "@metamask/controller-utils": true,
-        "@metamask/controller-utils>@metamask/eth-query": true,
-        "@metamask/gas-fee-controller>@metamask/polling-controller": true,
-        "ethereumjs-util>bn.js": true,
-        "uuid": true
-      }
-    },
-    "@metamask/transaction-controller>@metamask/gas-fee-controller": {
       "globals": {
         "clearInterval": true,
         "console.error": true,
@@ -1847,31 +1863,12 @@
         "uuid": true
       }
     },
-    "@metamask/gas-fee-controller>@metamask/polling-controller": {
-      "globals": {
-        "clearTimeout": true,
-        "console.error": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@metamask/base-controller": true,
-        "fast-json-stable-stringify": true,
-        "uuid": true
-      }
-    },
     "@metamask/smart-transactions-controller>@metamask/polling-controller": {
       "globals": {
         "clearTimeout": true,
         "console.error": true,
         "setTimeout": true
       },
-      "packages": {
-        "@metamask/base-controller": true,
-        "fast-json-stable-stringify": true,
-        "uuid": true
-      }
-    },
-    "@metamask/user-operation-controller>@metamask/polling-controller": {
       "packages": {
         "@metamask/base-controller": true,
         "fast-json-stable-stringify": true,
@@ -2038,7 +2035,7 @@
         "@metamask/base-controller": true,
         "@metamask/controller-utils": true,
         "@metamask/signature-controller": true,
-        "@metamask/transaction-controller": true,
+        "@metamask/shield-controller>@metamask/transaction-controller": true,
         "@metamask/utils": true,
         "cockatiel": true,
         "lodash": true
@@ -2103,7 +2100,7 @@
         ]
       },
       "packages": {
-        "@metamask/approval-controller": true,
+        "@metamask/snaps-controllers>@metamask/approval-controller": true,
         "@metamask/base-controller": true,
         "@metamask/json-rpc-engine": true,
         "@metamask/json-rpc-middleware-stream": true,
@@ -2231,7 +2228,7 @@
       },
       "packages": {
         "@metamask/polling-controller": true,
-        "@metamask/transaction-controller": true,
+        "@metamask/subscription-controller>@metamask/transaction-controller": true,
         "@metamask/utils": true,
         "@metamask/subscription-controller>bignumber.js": true
       }
@@ -2273,7 +2270,7 @@
         "@metamask/base-controller": true,
         "@metamask/controller-utils": true,
         "@metamask/controller-utils>@metamask/eth-query": true,
-        "@metamask/transaction-controller>@metamask/gas-fee-controller": true,
+        "@metamask/gas-fee-controller": true,
         "@metamask/metamask-eth-abis": true,
         "@metamask/network-controller": true,
         "@metamask/transaction-controller>@metamask/nonce-tracker": true,
@@ -2291,11 +2288,14 @@
     },
     "@metamask/transaction-pay-controller": {
       "globals": {
+        "URLSearchParams": true,
         "clearTimeout": true,
         "setTimeout": true
       },
       "packages": {
         "@ethersproject/abi": true,
+        "@ethersproject/contracts": true,
+        "@ethersproject/providers": true,
         "@metamask/base-controller": true,
         "@metamask/transaction-pay-controller>@metamask/bridge-controller": true,
         "@metamask/controller-utils": true,
@@ -2315,7 +2315,7 @@
         "@metamask/controller-utils": true,
         "@metamask/controller-utils>@metamask/eth-query": true,
         "@metamask/gas-fee-controller": true,
-        "@metamask/user-operation-controller>@metamask/polling-controller": true,
+        "@metamask/polling-controller": true,
         "@metamask/rpc-errors": true,
         "@metamask/superstruct": true,
         "@metamask/transaction-controller": true,
