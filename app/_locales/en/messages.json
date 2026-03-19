@@ -854,18 +854,11 @@
   "basicConfigurationModalCheckbox": {
     "message": "I understand and want to continue"
   },
-  "basicConfigurationModalDisclaimerOff": {
+  "basicConfigurationModalDisclaimerOffPart1": {
     "message": "This means you won't fully optimize your time on MetaMask. Basic features (like token details, optimal gas settings, and others) won't be available to you."
   },
-  "basicConfigurationModalDisclaimerOffAdditionalText": {
-    "message": "Turning this off also disables all features within $1, and $2.",
-    "description": "$1 and $2 are bold text for basicConfigurationModalDisclaimerOffAdditionalTextFeaturesFirst and basicConfigurationModalDisclaimerOffAdditionalTextFeaturesLast respectively"
-  },
-  "basicConfigurationModalDisclaimerOffAdditionalTextFeaturesFirst": {
-    "message": "security and privacy, backup and sync"
-  },
-  "basicConfigurationModalDisclaimerOffAdditionalTextFeaturesLast": {
-    "message": "notifications"
+  "basicConfigurationModalDisclaimerOffPart2": {
+    "message": "Turning this off also disables some features within privacy, backup and sync, and notifications."
   },
   "basicConfigurationModalDisclaimerOn": {
     "message": "To optimize your time on MetaMask, you’ll need to turn on this feature. Basic functions (like token details, optimal gas settings, and others) are important to the web3 experience."
@@ -2398,12 +2391,6 @@
   },
   "dismissReminderField": {
     "message": "Dismiss Secret Recovery Phrase backup reminder"
-  },
-  "dismissSmartAccountSuggestionEnabledDescription": {
-    "message": "Turn this on to no longer see the \"Switch to Smart Account\" suggestion on any account. Smart accounts unlocks faster transactions, lower network fees and more flexibility on payment for those."
-  },
-  "dismissSmartAccountSuggestionEnabledTitle": {
-    "message": "Dismiss \"Switch to Smart Account\" suggestion"
   },
   "displayNftMedia": {
     "message": "Display NFT media"
@@ -6866,9 +6853,6 @@
   "settingsSearchMatchingNotFound": {
     "message": "No matching results found."
   },
-  "settingsSubHeadingSignaturesAndTransactions": {
-    "message": "Signature and transaction requests"
-  },
   "shieldClaim": {
     "message": "Submit a claim"
   },
@@ -7505,6 +7489,10 @@
   "showFiatConversionInTestnetsDescription": {
     "message": "Select this to show fiat conversion on test networks"
   },
+  "showFiatConversionInTestnetsDescriptionV2": {
+    "message": "Shows network tokens as local currency on test networks. If you've been asked to turn this feature on, you might be getting scammed. For testing purposes only. $1",
+    "description": "$1 is the 'Learn more' link"
+  },
   "showHexData": {
     "message": "Show hex data"
   },
@@ -7685,6 +7673,12 @@
   },
   "smartAccount": {
     "message": "Smart account"
+  },
+  "smartAccountDappRequestsDescription": {
+    "message": "Let dapps request smart account features for standard accounts. This won't affect accounts that are already smart accounts."
+  },
+  "smartAccountDappRequestsTitle": {
+    "message": "Smart account requests from dapps"
   },
   "smartAccountLabel": {
     "message": "Smart Account"

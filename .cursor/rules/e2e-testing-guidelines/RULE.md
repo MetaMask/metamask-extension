@@ -111,12 +111,14 @@ For new test code, use `FixtureBuilderV2` by default.
 - `withNetworkControllerTripleNode`
 - `withNoNames`
 - `withPermissionControllerConnectedToTestDapp`
-- `withPetnamesDisabled`
 - `withSelectedNetwork`
 - `withSelectedNetworkControllerPerDomain`
 - `withShowNativeTokenAsMainBalanceDisabled`
 - `withShowNativeTokenAsMainBalanceEnabled`
 - `withSmartTransactionsOptedOut`
+- `withSnapController`
+- `withSnapControllerOnStartLifecycleSnap`
+- `withSnapsPrivacyWarningAlreadyShown`
 - `withTokensControllerERC20`
 - `withTransactionControllerApprovedTransaction`
 - `withTransactionControllerCompletedAndIncomingTransaction`

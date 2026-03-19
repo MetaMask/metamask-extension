@@ -417,7 +417,6 @@
       "defaultAddressScope": "eip155",
       "showDefaultAddress": false,
       "hideZeroBalanceTokens": false,
-      "petnamesEnabled": false,
       "showExtensionInFullSizeView": false,
       "showFiatInTestnets": false,
       "showNativeTokenAsMainBalance": true,

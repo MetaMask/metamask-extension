@@ -38,6 +38,30 @@ export type UseBridgeTxHistoryDataProps = {
   transaction?: TransactionViewModel & { type: TransactionType };
 };
 
+// Helper to serialize for navigation.
+// TODO: Fetch details from CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE instead.
+function serialize(obj: unknown): unknown {
+  if (obj === null || obj === undefined) {
+    return obj;
+  }
+  if (typeof obj === 'bigint') {
+    return obj.toString();
+  }
+  if (Array.isArray(obj)) {
+    return obj.map(serialize);
+  }
+  if (typeof obj === 'object') {
+    const serialized: Record<string, unknown> = {};
+    for (const key in obj) {
+      if (Object.prototype.hasOwnProperty.call(obj, key)) {
+        serialized[key] = serialize((obj as Record<string, unknown>)[key]);
+      }
+    }
+    return serialized;
+  }
+  return obj;
+}
+
 export function useBridgeTxHistoryData({
   transactionGroup,
   transaction: transactionViewData,
@@ -84,9 +108,10 @@ export function useBridgeTxHistoryData({
       return;
     }
 
+    const serializedTxMeta = serialize(txMeta);
     navigate(`${CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE}/${txIdentifier}`, {
       state: {
-        transaction: txMeta,
+        transaction: serializedTxMeta,
       },
     });
   }, [navigate, txMeta]);
