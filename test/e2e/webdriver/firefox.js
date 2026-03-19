@@ -135,6 +135,8 @@ class FirefoxDriver {
     const manifestHashPath = `${xpiPath}.manifest-sha256`;
 
     let needsRebuild = true;
+    let manifestHashForStorage = null;
+
     try {
       const xpiMtime = fs.statSync(xpiPath).mtimeMs;
 
@@ -148,6 +150,8 @@ class FirefoxDriver {
         .createHash('sha256')
         .update(manifestContent)
         .digest('hex');
+      manifestHashForStorage = manifestHash;
+
       const cachedManifestHash = fs
         .readFileSync(manifestHashPath, 'utf8')
         .trim();
@@ -160,32 +164,36 @@ class FirefoxDriver {
       );
 
       needsRebuild = manifestChanged || filesChanged;
-    } catch (_) {
-      // XPI or hash file doesn't exist yet
+    } catch {
+      // XPI or hash file doesn't exist yet — first run or cache invalid
+      console.log('[Firefox E2E] Cache cold, building XPI');
     }
 
     if (needsRebuild) {
       try {
         fs.unlinkSync(xpiPath);
-      } catch (_) {
+      } catch {
         // file didn't exist
       }
       try {
         execFileSync('zip', ['-r', '-1', '-q', xpiPath, '.'], { cwd: absDir });
-      } catch (_) {
+      } catch {
         // `zip` not installed — fall back to the unpacked directory.
         // Selenium's installAddon() will zip it on every call (~10s slower).
+        console.warn(
+          '[Firefox E2E] zip not installed, using unpacked directory (slower)',
+        );
         return addonDir;
       }
+      console.log('[Firefox E2E] Built cached XPI');
 
-      const manifestContent = fs.readFileSync(
-        path.join(absDir, 'manifest.json'),
-      );
-      const manifestHash = nodeCrypto
-        .createHash('sha256')
-        .update(manifestContent)
-        .digest('hex');
-      fs.writeFileSync(manifestHashPath, manifestHash);
+      const hashToStore =
+        manifestHashForStorage ??
+        nodeCrypto
+          .createHash('sha256')
+          .update(fs.readFileSync(path.join(absDir, 'manifest.json')))
+          .digest('hex');
+      fs.writeFileSync(manifestHashPath, hashToStore);
     }
 
     return xpiPath;
