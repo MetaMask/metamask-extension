@@ -349,6 +349,21 @@
         "document.visibilityState": true,
         "addEventListener": false
       }
+    },
+    "@metamask/build-utils>@metamask/utils": {
+      "globals": {
+        "Buffer": true,
+        "TextDecoder": true,
+        "TextEncoder": true
+      },
+      "packages": {
+        "@metamask/superstruct": true,
+        "@noble/hashes": true,
+        "@scure/base": true,
+        "nock>debug": true,
+        "@metamask/utils>pony-cause": true,
+        "semver": true
+      }
     }
   }
 }
