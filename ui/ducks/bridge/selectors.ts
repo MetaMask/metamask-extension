@@ -49,12 +49,12 @@ import {
   ALL_ALLOWED_BRIDGE_CHAIN_IDS,
   ALLOWED_BRIDGE_CHAIN_IDS,
 } from '../../../shared/constants/bridge';
-import { createDeepEqualSelector } from '../../../shared/modules/selectors/util';
+import { createDeepEqualSelector } from '../../../shared/lib/selectors/util';
 import { CHAIN_IDS, FEATURED_RPCS } from '../../../shared/constants/network';
 import {
   getCurrencyRateControllerCurrencyRates,
   getTokenRatesControllerMarketData,
-} from '../../../shared/modules/selectors/assets-migration';
+} from '../../../shared/lib/selectors/assets-migration';
 import {
   getMultichainBalances,
   getMultichainCoinRates,
@@ -66,18 +66,19 @@ import {
   HardwareKeyringNames,
   HardwareKeyringType,
 } from '../../../shared/constants/hardware-wallets';
-import { Numeric } from '../../../shared/modules/Numeric';
+import { Numeric } from '../../../shared/lib/Numeric';
 import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
 import {
   getIsSmartTransaction,
   type SmartTransactionsMetaMaskState,
-} from '../../../shared/modules/selectors';
+} from '../../../shared/lib/selectors';
 import { calcTokenValue } from '../../../shared/lib/swaps-utils';
 import { safeAmountForCalc } from '../../pages/bridge/utils/quote';
 import {
   getInternalAccountsByScope,
   getSelectedInternalAccount,
 } from '../../selectors/accounts';
+import { isHardwareWallet } from '../../selectors';
 import { getRemoteFeatureFlags } from '../../selectors/remote-feature-flags';
 import {
   getAllAccountGroups,
@@ -617,11 +618,20 @@ export const getBridgeQuotes = createSelector(
     ({ bridge: { sortOrder } }: BridgeAppState) => sortOrder,
     ({ bridge: { selectedQuote } }: BridgeAppState) => selectedQuote,
   ],
-  (controllerStates, sortOrder, selectedQuote) =>
-    selectBridgeQuotes(controllerStates, {
+  (controllerStates, sortOrder, selectedQuote) => {
+    const quotes = selectBridgeQuotes(controllerStates, {
       sortOrder,
       selectedQuote,
-    }),
+    });
+    return {
+      ...quotes,
+      activeQuote:
+        // TODO move this to controller
+        quotes.sortedQuotes.find(
+          (q) => q.quote.requestId === selectedQuote?.quote.requestId,
+        ) ?? quotes.recommendedQuote,
+    };
+  },
 );
 
 export const getValidatedFromValue = createSelector(
@@ -717,6 +727,7 @@ const _getBaseValidationErrors = createDeepEqualSelector(
     ({ bridge: { txAlertStatus } }: BridgeAppState) => txAlertStatus,
     getPriceImpact,
     getPriceImpactThresholds,
+    (state: BridgeAppState) => isHardwareWallet(state as never),
   ],
   (
     { activeQuote, quotesLastFetchedMs, isLoading, quotesRefreshCount },
@@ -731,10 +742,13 @@ const _getBaseValidationErrors = createDeepEqualSelector(
     txAlertStatus,
     priceImpactNumber,
     { warning, error },
+    isHardwareWalletAccount,
   ) => {
     const { gasIncluded, gasIncluded7702, gasSponsored } =
       activeQuote?.quote ?? {};
-    const isGasless = gasIncluded7702 || gasIncluded || gasSponsored;
+    const isGasless =
+      !isHardwareWalletAccount &&
+      (gasIncluded7702 || gasIncluded || gasSponsored);
 
     const srcChainId =
       quoteRequest.srcChainId ?? activeQuote?.quote?.srcChainId;
@@ -967,3 +981,11 @@ export const getIsGasIncluded = createSelector(
     return isStxEnabled && isGasIncludedSwapSupported;
   },
 );
+
+export const getIsSrcAssetPickerOpen = (state: BridgeAppState) =>
+  state.bridge.isSrcAssetPickerOpen;
+
+export const getIsDestAssetPickerOpen = (state: BridgeAppState) =>
+  state.bridge.isDestAssetPickerOpen;
+
+export const getBridgeState = (state: BridgeAppState) => state.bridge;

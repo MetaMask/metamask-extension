@@ -1,4 +1,4 @@
-/* eslint-disable import/extensions */
+/* eslint-disable import-x/extensions */
 import React, { Suspense } from 'react';
 import {
   Routes as RouterRoutes,
@@ -17,6 +17,7 @@ import {
   LANGUAGE_ROUTE,
   SETTINGS_V2_ROUTE,
   THEME_ROUTE,
+  THIRD_PARTY_APIS_ROUTE,
 } from '../../helpers/constants/routes';
 import {
   Box as LegacyBox,
@@ -36,13 +37,13 @@ import TabBar from '../../components/app/tab-bar';
 import MetafoxLogo from '../../components/ui/metafox-logo';
 import { getMostRecentOverviewPage } from '../../ducks/history/history';
 // TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
+// eslint-disable-next-line import-x/no-restricted-paths
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
 import {
   ENVIRONMENT_TYPE_POPUP,
   ENVIRONMENT_TYPE_SIDEPANEL,
 } from '../../../shared/constants/app';
-import { DynamicImportType, mmLazy } from '../../helpers/utils/mm-lazy';
+import { mmLazy } from '../../helpers/utils/mm-lazy';
 import { toRelativeRoutePath } from '../routes/utils';
 import {
   SETTINGS_V2_MENU_LIST_ITEM_REGISTRY,
@@ -50,31 +51,23 @@ import {
 } from './settings-registry';
 
 const CurrencySubPage = mmLazy(
-  (() =>
-    import(
-      './assets-tab/currency-sub-page.tsx'
-    )) as unknown as DynamicImportType,
+  () => import('./assets-tab/currency-sub-page.tsx'),
 );
 
 const ThemeSubPage = mmLazy(
-  (() =>
-    import(
-      './preferences-and-display-tab/theme-sub-page.tsx'
-    )) as unknown as DynamicImportType,
+  () => import('./preferences-and-display-tab/theme-sub-page.tsx'),
 );
 
 const LanguageSubPage = mmLazy(
-  (() =>
-    import(
-      './preferences-and-display-tab/language-sub-page.tsx'
-    )) as unknown as DynamicImportType,
+  () => import('./preferences-and-display-tab/language-sub-page.tsx'),
 );
 
 const AccountIdenticonSubPage = mmLazy(
-  (() =>
-    import(
-      './preferences-and-display-tab/account-identicon-sub-page.tsx'
-    )) as unknown as DynamicImportType,
+  () => import('./preferences-and-display-tab/account-identicon-sub-page.tsx'),
+);
+
+const ThirdPartyApisSubPage = mmLazy(
+  () => import('./privacy-tab/third-party-apis-sub-page.tsx'),
 );
 
 // Get the first tab's component for rendering at the settings root (like Settings V1)
@@ -270,6 +263,17 @@ const SettingsV2 = () => {
           <SettingsV2Layout>
             <Suspense fallback={null}>
               <AccountIdenticonSubPage />
+            </Suspense>
+          </SettingsV2Layout>
+        }
+      />
+      {/* Third-party APIs sub-page */}
+      <Route
+        path={toRelativeRoutePath(THIRD_PARTY_APIS_ROUTE, SETTINGS_V2_ROUTE)}
+        element={
+          <SettingsV2Layout>
+            <Suspense fallback={null}>
+              <ThirdPartyApisSubPage />
             </Suspense>
           </SettingsV2Layout>
         }

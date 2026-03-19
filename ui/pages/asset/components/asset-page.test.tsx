@@ -20,6 +20,19 @@ import {
 import useMultiPolling from '../../../hooks/useMultiPolling';
 import AssetPage from './asset-page';
 
+jest.mock('../../../hooks/musd/useMusdGeoBlocking', () => ({
+  ...jest.requireActual('../../../hooks/musd/useMusdGeoBlocking'),
+  useMusdGeoBlocking: () => ({
+    isBlocked: false,
+    userCountry: 'US',
+    isLoading: false,
+    error: null,
+    blockedRegions: [],
+    blockedMessage: null,
+    refreshGeolocation: jest.fn(),
+  }),
+}));
+
 jest.mock('../../../store/actions', () => ({
   ...jest.requireActual('../../../store/actions'),
   tokenBalancesStartPolling: jest.fn().mockResolvedValue('pollingToken'),

@@ -152,7 +152,7 @@ exports[`SnapUIAccountSelector renders an account selector 1`] = `
                           <button
                             class="mm-box mm-text multichain-account-list-item__account-name__button mm-text--body-md-medium mm-text--ellipsis mm-text--text-align-left mm-box--padding-0 mm-box--width-full mm-box--color-text-default mm-box--background-color-transparent"
                           >
-                            Test Account
+                            Account 1
                           </button>
                         </div>
                         <div
@@ -463,7 +463,7 @@ exports[`SnapUIAccountSelector renders inside a field 1`] = `
                           <button
                             class="mm-box mm-text multichain-account-list-item__account-name__button mm-text--body-md-medium mm-text--ellipsis mm-text--text-align-left mm-box--padding-0 mm-box--width-full mm-box--color-text-default mm-box--background-color-transparent"
                           >
-                            Test Account
+                            Account 1
                           </button>
                         </div>
                         <div
@@ -511,7 +511,7 @@ exports[`SnapUIAccountSelector renders inside a field 1`] = `
                         >
                           <div>
                             <div
-                              aria-describedby="tippy-tooltip-13"
+                              aria-describedby="tippy-tooltip-14"
                               class=""
                               data-original-title="This can be changed in "Settings > Alerts""
                               data-tooltipped=""

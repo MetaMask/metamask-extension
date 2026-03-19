@@ -7,7 +7,7 @@ import {
 import {
   getMaximumGasTotalInHexWei,
   getMinimumGasTotalInHexWei,
-} from '../../../../shared/modules/gas.utils';
+} from '../../../../shared/lib/gas.utils';
 
 import { PRIMARY } from '../../../helpers/constants/common';
 import { checkNetworkAndAccountSupports1559 } from '../../../selectors';
@@ -18,7 +18,7 @@ import { useUserPreferencedCurrency } from '../../../hooks/useUserPreferencedCur
 import {
   decGWEIToHexWEI,
   decimalToHex,
-} from '../../../../shared/modules/conversion.utils';
+} from '../../../../shared/lib/conversion.utils';
 
 /**
  * @typedef {object} GasEstimatesReturnType

@@ -4,7 +4,7 @@ import {
   NestedTransactionMetadata,
 } from '@metamask/transaction-controller';
 import { useConfirmContext } from '../../../../context/confirm';
-import { getTransactionDataRecipient } from '../../../../../../../shared/modules/transaction.utils';
+import { getTransactionDataRecipient } from '../../../../../../../shared/lib/transaction.utils';
 
 export function useTransferRecipient(): string | undefined {
   const { currentConfirmation: transactionMetadata } =

@@ -8,7 +8,7 @@ import * as selectors from '../../selectors';
 import * as authSelectors from '../../selectors/identity/authentication';
 import * as subscriptionSelectors from '../../selectors/subscription';
 import * as metamaskDucks from '../../ducks/metamask/metamask';
-import * as environment from '../../../shared/modules/environment';
+import * as environment from '../../../shared/lib/environment';
 import {
   ShieldSubscriptionProvider,
   useShieldSubscriptionContext,

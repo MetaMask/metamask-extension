@@ -4,6 +4,7 @@ import React, {
   useCallback,
   useMemo,
   useRef,
+  useContext,
 } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { debounce } from 'lodash';
@@ -35,12 +36,11 @@ import {
   BorderRadius,
 } from '../../../helpers/constants/design-system';
 import { DomainInputResolutionCell } from '../../../components/multichain/domain-input-resolution-cell';
-import { ContactNetworks } from '../../settings/contact-list-tab/contact-networks';
 import { getImageForChainId } from '../../../selectors/multichain';
 import {
   getCurrentChainId,
   getNetworkConfigurationsByChainId,
-} from '../../../../shared/modules/selectors/networks';
+} from '../../../../shared/lib/selectors/networks';
 import {
   addToAddressBook,
   showQrScanner,
@@ -54,20 +54,30 @@ import {
   lookupDomainName,
   initializeDomainSlice,
 } from '../../../ducks/domains';
-import { getAddressBook, getInternalAccounts } from '../../../selectors';
+import {
+  getCompleteAddressBook,
+  getInternalAccounts,
+} from '../../../selectors';
 import { isDuplicateContact } from '../../../components/app/contact-list/utils';
 import {
   isBurnAddress,
   isValidHexAddress,
-} from '../../../../shared/modules/hexstring-utils';
+} from '../../../../shared/lib/hexstring-utils';
 import { INVALID_RECIPIENT_ADDRESS_ERROR } from '../../confirmations/send-utils/send.constants';
 import { isValidDomainName } from '../../../helpers/utils/util';
 import type { AddContactFormProps } from '../contacts.types';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
+import { ContactNetworks } from './contact-networks';
 
 export function AddContactForm({ onCancel, onSuccess }: AddContactFormProps) {
   const t = useI18nContext();
   const dispatch = useDispatch();
-  const addressBook = useSelector(getAddressBook);
+  const { trackEvent } = useContext(MetaMetricsContext);
+  const addressBook = useSelector(getCompleteAddressBook);
   const internalAccounts = useSelector(getInternalAccounts);
   const qrCodeData = useSelector(getQrCodeData);
   const domainError = useSelector(getDomainError);
@@ -146,12 +156,13 @@ export function AddContactForm({ onCancel, onSuccess }: AddContactFormProps) {
 
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const name = e.target.value;
-    const isValidName = !isDuplicateContact(
-      addressBook,
-      internalAccounts,
-      name,
-    );
-    setNameInputError(isValidName ? '' : t('nameAlreadyInUse'));
+    if (!name.trim()) {
+      setNameInputError(t('fieldRequired', [t('nickname')]));
+    } else if (isDuplicateContact(addressBook, internalAccounts, name)) {
+      setNameInputError(t('nameAlreadyInUse'));
+    } else {
+      setNameInputError('');
+    }
     setNewName(name);
   };
 
@@ -187,6 +198,11 @@ export function AddContactForm({ onCancel, onSuccess }: AddContactFormProps) {
       setSelectedAddress('');
       setEnteredDomainName('');
     } else {
+      trackEvent({
+        category: MetaMetricsEventCategory.Contacts,
+        event: MetaMetricsEventName.ContactAddQrScannerClicked,
+        properties: { location: 'add_contact_form' },
+      });
       dispatch(showQrScanner());
     }
   };
@@ -209,6 +225,18 @@ export function AddContactForm({ onCancel, onSuccess }: AddContactFormProps) {
         typeof selectedChainId === 'string' ? selectedChainId : '',
       ),
     );
+    trackEvent({
+      category: MetaMetricsEventCategory.Contacts,
+      event: MetaMetricsEventName.ContactAdded,
+      properties: {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        chain_id: typeof selectedChainId === 'string' ? selectedChainId : '',
+      },
+      sensitiveProperties: {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        contact_address: newAddress,
+      },
+    });
     onSuccess();
   };
 
@@ -241,6 +269,7 @@ export function AddContactForm({ onCancel, onSuccess }: AddContactFormProps) {
           helpText={nameInputError || undefined}
           size={FormTextFieldSize.Lg}
           labelProps={{ marginBottom: 1 }}
+          autoFocus
           textFieldProps={{
             backgroundColor: BackgroundColor.backgroundMuted,
             borderColor: BorderColor.borderDefault,
@@ -276,7 +305,6 @@ export function AddContactForm({ onCancel, onSuccess }: AddContactFormProps) {
               />
             }
             inputProps={{ onPaste: handleAddressPaste }}
-            autoFocus
           />
           {domainResolutions?.length > 0 && (
             <Box marginTop={2}>
@@ -297,11 +325,24 @@ export function AddContactForm({ onCancel, onSuccess }: AddContactFormProps) {
                       ''
                     }
                     onClick={() => {
-                      setNewName(resolution.domainName ?? '');
+                      const resolvedName = resolution.domainName ?? '';
+                      setNewName(resolvedName);
                       setInput(resolution.resolvedAddress);
                       setSelectedAddress(resolution.resolvedAddress);
-                      setEnteredDomainName(resolution.domainName ?? '');
+                      setEnteredDomainName(resolvedName);
                       dispatch(resetDomainResolution());
+
+                      const isValidName = !isDuplicateContact(
+                        addressBook,
+                        internalAccounts,
+                        resolvedName,
+                      );
+                      setNameInputError(
+                        resolvedName && !isValidName
+                          ? t('nameAlreadyInUse')
+                          : '',
+                      );
+                      setAddressInputError('');
                     }}
                     protocol={resolution.protocol}
                     resolvingSnap={resolution.resolvingSnap}
@@ -323,6 +364,7 @@ export function AddContactForm({ onCancel, onSuccess }: AddContactFormProps) {
             startAccessory={
               <AvatarNetwork
                 size={AvatarNetworkSize.Xs}
+                className="rounded-md"
                 src={
                   typeof selectedChainId === 'string'
                     ? getImageForChainId(selectedChainId) || undefined
@@ -352,6 +394,7 @@ export function AddContactForm({ onCancel, onSuccess }: AddContactFormProps) {
         flexDirection={BoxFlexDirection.Row}
         gap={4}
         padding={4}
+        paddingBottom={6}
         className="bg-background-default"
       >
         <Button

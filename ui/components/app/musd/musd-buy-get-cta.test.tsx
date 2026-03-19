@@ -57,10 +57,14 @@ const { __mockTrackEvent: mockTrackEvent } = jest.requireMock<{
 
 // Mock useMusdConversion
 const mockStartConversionFlow = jest.fn();
+const mockDefaultPaymentToken = { address: '0xUsdc', chainId: '0x1' };
 jest.mock('../../../hooks/musd', () => ({
   useMusdConversion: () => ({
     startConversionFlow: mockStartConversionFlow,
     educationSeen: false,
+  }),
+  useMusdConversionTokens: () => ({
+    defaultPaymentToken: mockDefaultPaymentToken,
   }),
   useMusdGeoBlocking: () => ({
     isBlocked: false,
@@ -155,6 +159,10 @@ describe('MusdBuyGetCta', () => {
 
       expect(mockStartConversionFlow).toHaveBeenCalledWith({
         entryPoint: 'home',
+        preferredToken: {
+          address: mockDefaultPaymentToken.address,
+          chainId: mockDefaultPaymentToken.chainId,
+        },
       });
     });
 
@@ -235,7 +243,7 @@ describe('MusdBuyGetCta', () => {
       );
 
       expect(screen.getByTestId('musd-buy-get-cta-icon')).toBeInTheDocument();
-      expect(screen.getByAltText('mUSD')).toBeInTheDocument();
+      expect(screen.getByAltText('mUSD logo')).toBeInTheDocument();
     });
 
     it('renders network badge when selectedChainId is provided', () => {
@@ -248,7 +256,7 @@ describe('MusdBuyGetCta', () => {
         store,
       );
 
-      expect(screen.getByAltText('Ethereum Mainnet')).toBeInTheDocument();
+      expect(screen.getByAltText('Ethereum Mainnet logo')).toBeInTheDocument();
     });
 
     it('does not render network badge when selectedChainId is null', () => {
@@ -262,7 +270,9 @@ describe('MusdBuyGetCta', () => {
       );
 
       expect(screen.getByTestId('musd-buy-get-cta-icon')).toBeInTheDocument();
-      expect(screen.queryByAltText('Ethereum Mainnet')).not.toBeInTheDocument();
+      expect(
+        screen.queryByAltText('Ethereum Mainnet logo'),
+      ).not.toBeInTheDocument();
     });
   });
 

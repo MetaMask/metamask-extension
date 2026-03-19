@@ -4,7 +4,7 @@ import {
   WINDOW_TITLES,
 } from '../../constants';
 import { withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import Homepage from '../../page-objects/pages/home/homepage';
 import { openPermissionsPageFlow } from '../../page-objects/flows/permissions.flow';
 import TestDapp from '../../page-objects/pages/test-dapp';
@@ -18,7 +18,7 @@ describe('Edit Networks Permissions', function () {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
@@ -46,8 +46,8 @@ describe('Edit Networks Permissions', function () {
         // Disconnect Mainnet
         await sitePermissionPage.editPermissionsForNetwork(['Ethereum']);
 
-        // Default Chains Connected: Ethereum, Linea, Base, Arbitrum, BSC, Optimism, Polygon, Solana, BTC, Tron, Sei
-        await sitePermissionPage.checkConnectedNetworksNumber(11);
+        // Default Chains Connected: Linea, Base, Arbitrum, BSC, Optimism, Polygon, Solana, BTC, Tron, Sei
+        await sitePermissionPage.checkConnectedNetworksNumber(10);
       },
     );
   });

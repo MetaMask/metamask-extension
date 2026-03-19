@@ -1,4 +1,4 @@
-/* eslint-disable import/no-duplicates */
+/* eslint-disable import-x/no-duplicates */
 import React, { useMemo, useState, useCallback, useContext } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'clsx';
@@ -62,7 +62,10 @@ import {
 import BridgeActivityItemTxSegments from '../../../pages/bridge/transaction-details/bridge-activity-item-tx-segments';
 import { PAY_TRANSACTION_TYPES } from '../../../pages/confirmations/constants/pay';
 import { ChainBadge } from '../chain-badge/chain-badge';
-import { mapTransactionTypeToCategory } from './helpers';
+import {
+  mapTransactionTypeToCategory,
+  resolveTransactionType,
+} from './helpers';
 
 function TransactionListItemInner({
   transactionGroup,
@@ -181,9 +184,13 @@ function TransactionListItemInner({
     isEarliestNonce,
   );
 
-  const category = mapTransactionTypeToCategory(
+  const resolvedType = resolveTransactionType(
     transactionGroup.initialTransaction.type,
+    transactionGroup.initialTransaction.txParams?.to,
+    transactionGroup.initialTransaction.txParams?.data,
   );
+
+  const category = mapTransactionTypeToCategory(resolvedType);
 
   const {
     title,
@@ -391,9 +398,7 @@ function TransactionListItemInner({
         )}
       </ActivityListItem>
       {showDetails &&
-        (PAY_TRANSACTION_TYPES.includes(
-          transactionGroup.initialTransaction.type,
-        ) ? (
+        (PAY_TRANSACTION_TYPES.includes(resolvedType) ? (
           <TransactionDetailsModal
             transactionMeta={transactionGroup.initialTransaction}
             onClose={toggleShowDetails}

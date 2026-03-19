@@ -1535,17 +1535,10 @@
         "@metamask/superstruct": true
       }
     },
-    "@metamask/keyring-internal-snap-client>@metamask/keyring-internal-api": {
-      "packages": {
-        "@metamask/keyring-api": true,
-        "@metamask/keyring-utils": true,
-        "@metamask/superstruct": true
-      }
-    },
     "@metamask/keyring-internal-snap-client": {
       "packages": {
         "@metamask/keyring-api": true,
-        "@metamask/keyring-internal-snap-client>@metamask/keyring-internal-api": true,
+        "@metamask/keyring-internal-api": true,
         "@metamask/keyring-snap-client": true,
         "@metamask/keyring-utils": true
       }
@@ -1920,6 +1913,8 @@
         "URL": true,
         "URLSearchParams": true,
         "addEventListener": true,
+        "atob": true,
+        "btoa": true,
         "console.error": true,
         "console.warn": true,
         "dispatchEvent": true,

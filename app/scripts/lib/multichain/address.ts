@@ -1,6 +1,6 @@
 import { Hex, isValidHexAddress } from '@metamask/utils';
 import { normalize as normalizeEthAddress } from '@metamask/eth-sig-util';
-import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
+import { toChecksumHexAddress } from '../../../../shared/lib/hexstring-utils';
 
 /**
  * Checks if an address is an ethereum one.

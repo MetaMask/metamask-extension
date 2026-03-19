@@ -11,48 +11,13 @@ exports[`Hide Token Confirmation Modal should match snapshot 1`] = `
       Hide token?
     </div>
     <div
-      class=""
+      class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-full h-12 w-12 hide-token-confirmation__identicon"
     >
-      <div
-        class="identicon hide-token-confirmation__identicon"
-        style="height: 45px; width: 45px; border-radius: 22.5px;"
+      <span
+        class="text-muted text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-medium font-default uppercase"
       >
-        <div
-          style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 45px; height: 45px; display: inline-block; background: rgb(24, 151, 242);"
-        >
-          <svg
-            height="45"
-            width="45"
-            x="0"
-            y="0"
-          >
-            <rect
-              fill="#2362E1"
-              height="45"
-              transform="translate(5.04749557236448 -7.50137431392214) rotate(458.4 22.50000000000000 22.50000000000000)"
-              width="45"
-              x="0"
-              y="0"
-            />
-            <rect
-              fill="#F94301"
-              height="45"
-              transform="translate(-21.60486462607061 11.23924448740308) rotate(268.8 22.50000000000000 22.50000000000000)"
-              width="45"
-              x="0"
-              y="0"
-            />
-            <rect
-              fill="#FA7900"
-              height="45"
-              transform="translate(-12.76348229901763 41.45627233221100) rotate(117.3 22.50000000000000 22.50000000000000)"
-              width="45"
-              x="0"
-              y="0"
-            />
-          </svg>
-        </div>
-      </div>
+        T
+      </span>
     </div>
     <div
       class="hide-token-confirmation__symbol"

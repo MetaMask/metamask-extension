@@ -6,7 +6,7 @@ import {
   PRIMARY_TYPES_ORDER,
   PRIMARY_TYPES_PERMIT,
 } from '../../../../../../shared/constants/signatures';
-import { isValidHexAddress } from '../../../../../../shared/modules/hexstring-utils';
+import { isValidHexAddress } from '../../../../../../shared/lib/hexstring-utils';
 
 import { sanitizeString } from '../../../../../helpers/utils/util';
 import { Box } from '../../../../../components/component-library';
