@@ -1,4 +1,4 @@
-/* eslint-disable import/extensions */
+/* eslint-disable import-x/extensions */
 import React, { Suspense, useState } from 'react';
 import {
   Routes as RouterRoutes,
