@@ -138,7 +138,7 @@ describe('Send NFT', function () {
 
             await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
             const mintConfirmation = new TransactionConfirmation(driver);
-            await mintConfirmation.clickFooterConfirmButton();
+            await mintConfirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
 
             // Wait for mint and navigate to NFT
             await driver.switchToWindowWithTitle(
@@ -205,20 +205,19 @@ describe('Send NFT', function () {
             await driver.delay(veryLargeDelayMs);
             await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
             const mintConfirmation = new TransactionConfirmation(driver);
-            await mintConfirmation.clickFooterConfirmButton();
+            await mintConfirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
 
             // Transfer via dApp
             await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
             await testDapp.clickERC721TransferFromButton();
 
-            await driver.delay(veryLargeDelayMs);
             await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
             const tokenTransferConfirmation =
               new TokenTransferTransactionConfirmation(driver);
             await tokenTransferConfirmation.checkDappInitiatedHeadingTitle();
             await tokenTransferConfirmation.clickScrollToBottomButton();
-            await tokenTransferConfirmation.clickFooterConfirmButton();
+            await tokenTransferConfirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
 
             await driver.switchToWindowWithTitle(
               WINDOW_TITLES.ExtensionInFullScreenView,
@@ -270,16 +269,15 @@ describe('Send NFT', function () {
 
             await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
             const mintConfirmation = new TransactionConfirmation(driver);
-            await mintConfirmation.clickFooterConfirmButton();
+            await mintConfirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
 
             // Watch the token
             await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
             await testDapp.clickERC1155WatchButton();
 
-            await driver.delay(veryLargeDelayMs);
             await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
             const watchAssetConfirmation = new WatchAssetConfirmation(driver);
-            await watchAssetConfirmation.clickFooterConfirmButton();
+            await watchAssetConfirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
 
             // Navigate to NFT and send
             await driver.switchToWindowWithTitle(
