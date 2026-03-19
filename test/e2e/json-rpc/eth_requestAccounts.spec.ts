@@ -122,6 +122,8 @@ describe('eth_requestAccounts', function () {
             return nonEvmSnapIds.every((id) => id in snaps);
           }, 30000);
 
+          await driver.delay(5000)
+
           const connectAccountConfirmation = new ConnectAccountConfirmation(
             driver,
           );
