@@ -6003,7 +6003,7 @@
     "message": "Révéler la phrase secrète de récupération"
   },
   "revealSeedWordsDescription1": {
-    "message": "La $1 donne $2",
+    "message": "Votre $1 donne un accès complet à votre portefeuille, vos fonds et vos comptes.",
     "description": "This is a sentence consisting of link using 'revealSeedWordsSRPName' as $1."
   },
   "revealSeedWordsQR": {

@@ -6006,7 +6006,7 @@
     "message": "Gizli Kurtarma İfadesini Açığa Çıkar"
   },
   "revealSeedWordsDescription1": {
-    "message": "$1 $2",
+    "message": "$1, cüzdanınıza, fonlarınıza ve hesaplarınıza tam erişim verir.",
     "description": "This is a sentence consisting of link using 'revealSeedWordsSRPName' as $1."
   },
   "revealSeedWordsQR": {

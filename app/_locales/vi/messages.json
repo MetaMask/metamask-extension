@@ -6006,7 +6006,7 @@
     "message": "Hiện Cụm từ khôi phục bí mật"
   },
   "revealSeedWordsDescription1": {
-    "message": "$1 cung cấp $2",
+    "message": "$1 của bạn cho phép toàn quyền truy cập vào ví, tiền và tài khoản của bạn.",
     "description": "This is a sentence consisting of link using 'revealSeedWordsSRPName' as $1."
   },
   "revealSeedWordsQR": {

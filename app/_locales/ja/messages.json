@@ -6000,7 +6000,7 @@
     "message": "シークレットリカバリーフレーズを確認"
   },
   "revealSeedWordsDescription1": {
-    "message": "$1は$2を提供します。",
+    "message": "$1があれば、ウォレット、資金、アカウントに自由にアクセスできます。",
     "description": "This is a sentence consisting of link using 'revealSeedWordsSRPName' as $1."
   },
   "revealSeedWordsQR": {

@@ -6006,7 +6006,7 @@
     "message": "Αποκάλυψη της Μυστικής Φράσης Ανάκτησης"
   },
   "revealSeedWordsDescription1": {
-    "message": "Το $1 παρέχει $2",
+    "message": "Το $1 σας δίνει πλήρη πρόσβαση στο πορτοφόλι, τα κεφάλαια και τους λογαριασμούς σας.",
     "description": "This is a sentence consisting of link using 'revealSeedWordsSRPName' as $1."
   },
   "revealSeedWordsQR": {

@@ -6006,7 +6006,7 @@
     "message": "Ihayag ang Lihim na Parirala sa Pagbawi"
   },
   "revealSeedWordsDescription1": {
-    "message": "Ang $1 ay nagbibigay ng $2",
+    "message": "Nagbibigay sa iyo ang $1 mo ng buong access sa iyong wallet, mga pondo, at mga account.",
     "description": "This is a sentence consisting of link using 'revealSeedWordsSRPName' as $1."
   },
   "revealSeedWordsQR": {

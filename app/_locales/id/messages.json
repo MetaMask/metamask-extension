@@ -6006,7 +6006,7 @@
     "message": "Tampilkan Frasa Pemulihan Rahasia"
   },
   "revealSeedWordsDescription1": {
-    "message": "$1 memberikan $2",
+    "message": "$1 memberikan akses penuh ke dompet, dana, dan akun Anda.",
     "description": "This is a sentence consisting of link using 'revealSeedWordsSRPName' as $1."
   },
   "revealSeedWordsQR": {

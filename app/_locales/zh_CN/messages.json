@@ -6000,7 +6000,7 @@
     "message": "显示私钥助记词"
   },
   "revealSeedWordsDescription1": {
-    "message": "$1 提供 $2",
+    "message": "您的 $1 可授予对您的钱包、资金和账户的完全访问权限。",
     "description": "This is a sentence consisting of link using 'revealSeedWordsSRPName' as $1."
   },
   "revealSeedWordsQR": {

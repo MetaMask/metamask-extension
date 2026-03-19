@@ -6006,7 +6006,7 @@
     "message": "Geheime Wiederherstellungsphrase anzeigen"
   },
   "revealSeedWordsDescription1": {
-    "message": "Die $1 bietet $2",
+    "message": "Ihr $1 gewährt Ihnen vollen Zugriff auf Ihre Wallet, Ihre Gelder und Ihre Konten.",
     "description": "This is a sentence consisting of link using 'revealSeedWordsSRPName' as $1."
   },
   "revealSeedWordsQR": {

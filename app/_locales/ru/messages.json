@@ -6006,7 +6006,7 @@
     "message": "Показать секретную фразу для восстановления"
   },
   "revealSeedWordsDescription1": {
-    "message": "$1 дает $2",
+    "message": "Ваша $1 дает полный доступ к вашему кошельку, средствам и счетам.",
     "description": "This is a sentence consisting of link using 'revealSeedWordsSRPName' as $1."
   },
   "revealSeedWordsQR": {
