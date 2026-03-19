@@ -14,6 +14,7 @@ import { ManifestPlugin } from '../utils/plugins/ManifestPlugin';
 import { getLatestCommit } from '../utils/git';
 import { ManifestPluginOptions } from '../utils/plugins/ManifestPlugin/types';
 import { MANIFEST_DEV_KEY } from '../../build/constants';
+import { version as packageVersion } from '../../../package.json';
 
 function getWebpackInstance(config: Configuration) {
   // webpack logs a warning if we pass config.watch to it without a callback
@@ -228,6 +229,10 @@ ${Object.entries(env)
     assert.deepStrictEqual(manifestPlugin.options.description, null);
     assert.deepStrictEqual(manifestPlugin.options.zip, true);
     assert(manifestPlugin.options.zipOptions, 'Zip options should be present');
+    assert.strictEqual(
+      manifestPlugin.options.zipOptions.outFilePath,
+      `../builds/metamask-[browser]-${packageVersion}.zip`,
+    );
     assert.deepStrictEqual(manifestPlugin.options.transform, undefined);
 
     const progressPlugin = instance.options.plugins.find(
