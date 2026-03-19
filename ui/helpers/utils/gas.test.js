@@ -36,6 +36,44 @@ describe('Gas utils', () => {
       });
       expect(result).toStrictEqual(false);
     });
+
+    it('returns false when txParams has no maxFeePerGas and no gasPrice', () => {
+      const result = gasEstimateGreaterThanGasUsedPlusTenPercent(
+        { gas: '0x5208' },
+        { medium: { suggestedMaxFeePerGas: '70' } },
+        PriorityLevels.medium,
+      );
+      expect(result).toBe(false);
+    });
+
+    describe('legacy (gasPrice) txParams', () => {
+      it('returns true when medium estimate > gasPrice + 10%', () => {
+        const result = gasEstimateGreaterThanGasUsedPlusTenPercent(
+          { gasPrice: '0x59682f10' },
+          { medium: '70' },
+          PriorityLevels.medium,
+        );
+        expect(result).toStrictEqual(true);
+      });
+
+      it('returns false when medium estimate < gasPrice + 10%', () => {
+        const result = gasEstimateGreaterThanGasUsedPlusTenPercent(
+          { gasPrice: '0x59682f10' },
+          { medium: '1' },
+          PriorityLevels.medium,
+        );
+        expect(result).toStrictEqual(false);
+      });
+
+      it('handles fee-market estimates with legacy txParams', () => {
+        const result = gasEstimateGreaterThanGasUsedPlusTenPercent(
+          { gasPrice: '0x59682f10' },
+          { medium: { suggestedMaxFeePerGas: '70' } },
+          PriorityLevels.medium,
+        );
+        expect(result).toStrictEqual(true);
+      });
+    });
   });
 
   describe('formatGasFeeOrFeeRange', () => {

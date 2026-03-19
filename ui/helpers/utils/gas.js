@@ -20,14 +20,19 @@ export const gasEstimateGreaterThanGasUsedPlusTenPercent = (
   gasFeeEstimates,
   estimate,
 ) => {
-  let { maxFeePerGas: maxFeePerGasInTransaction } = gasUsed;
-  maxFeePerGasInTransaction = new BigNumber(
-    hexWEIToDecGWEI(addTenPercentAndRound(maxFeePerGasInTransaction)),
-  );
+  const gasInTransaction = gasUsed?.maxFeePerGas ?? gasUsed?.gasPrice;
+  const bumped = addTenPercentAndRound(gasInTransaction);
+  if (!bumped) {
+    return false;
+  }
+  const bumpedGwei = new BigNumber(hexWEIToDecGWEI(bumped));
 
-  const maxFeePerGasFromEstimate =
-    gasFeeEstimates?.[estimate]?.suggestedMaxFeePerGas;
-  return bnGreaterThan(maxFeePerGasFromEstimate, maxFeePerGasInTransaction);
+  const levelEstimate = gasFeeEstimates?.[estimate];
+  const estimateGwei =
+    typeof levelEstimate === 'object'
+      ? levelEstimate?.suggestedMaxFeePerGas
+      : levelEstimate;
+  return bnGreaterThan(estimateGwei, bumpedGwei);
 };
 
 /**
