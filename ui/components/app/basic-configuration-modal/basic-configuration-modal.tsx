@@ -2,15 +2,22 @@ import React, { useContext, useMemo, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import {
-  Display,
-  FlexDirection,
-  AlignItems,
-  JustifyContent,
+  Box,
+  BoxFlexDirection,
+  BoxAlignItems,
+  BoxJustifyContent,
+  Text,
   TextVariant,
-  BlockSize,
+  Button,
+  ButtonSize,
+  ButtonVariant,
+  Icon,
+  IconSize,
+  IconName,
   IconColor,
-  FontWeight,
-} from '../../../helpers/constants/design-system';
+  TextColor,
+  Checkbox,
+} from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   setDataCollectionForMarketing,
@@ -22,18 +29,10 @@ import {
   ModalContent,
   ModalHeader,
   Modal,
-  Box,
-  Text,
+  ModalBody,
   ModalFooter,
-  Button,
-  IconName,
-  ButtonVariant,
-  Icon,
-  IconSize,
-  Checkbox,
-  ButtonSize,
-  Label,
 } from '../../component-library';
+import { Display } from '../../../helpers/constants/design-system';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -48,55 +47,94 @@ import {
 } from '../../../ducks/app/app';
 import { ONBOARDING_PRIVACY_SETTINGS_ROUTE } from '../../../helpers/constants/routes';
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export function BasicConfigurationModal() {
   const t = useI18nContext();
-  const [hasAgreed, setHasAgreed] = useState(false);
   const dispatch = useDispatch();
   const { trackEvent } = useContext(MetaMetricsContext);
+
   const isExternalServicesEnabled = useSelector(getUseExternalServices);
   const isBackupAndSyncEnabled = useSelector(selectIsBackupAndSyncEnabled);
   const isMetamaskNotificationsEnabled = useSelector(
     selectIsMetamaskNotificationsEnabled,
   );
+
   const { pathname } = useLocation();
   const onboardingFlow = useMemo(() => {
     return pathname === ONBOARDING_PRIVACY_SETTINGS_ROUTE;
   }, [pathname]);
 
-  function closeModal() {
+  const [hasAgreed, setHasAgreed] = useState(false);
+
+  const closeModal = () => {
     dispatch(hideBasicFunctionalityModal());
-  }
+  };
+
+  const handleCheckboxClick = () => {
+    setHasAgreed(!hasAgreed);
+  };
+
+  const handleToggle = () => {
+    const event = onboardingFlow
+      ? {
+          category: MetaMetricsEventCategory.Onboarding,
+          event: MetaMetricsEventName.SettingsUpdated,
+          properties: {
+            /* eslint-disable @typescript-eslint/naming-convention */
+            settings_group: 'onboarding_advanced_configuration',
+            settings_type: 'basic_functionality',
+            old_value: true,
+            new_value: false,
+            was_profile_syncing_on: isBackupAndSyncEnabled,
+            /* eslint-enable @typescript-eslint/naming-convention */
+          },
+        }
+      : {
+          category: MetaMetricsEventCategory.Settings,
+          event: MetaMetricsEventName.SettingsUpdated,
+          properties: {
+            /* eslint-disable @typescript-eslint/naming-convention */
+            settings_group: 'security_privacy',
+            settings_type: 'basic_functionality',
+            old_value: isExternalServicesEnabled,
+            new_value: !isExternalServicesEnabled,
+            was_notifications_on: isMetamaskNotificationsEnabled,
+            was_profile_syncing_on: isBackupAndSyncEnabled,
+            /* eslint-enable @typescript-eslint/naming-convention */
+          },
+        };
+
+    trackEvent(event);
+
+    if (isExternalServicesEnabled || onboardingFlow) {
+      dispatch(setParticipateInMetaMetrics(false));
+      dispatch(setDataCollectionForMarketing(false));
+    }
+
+    if (onboardingFlow) {
+      dispatch(onboardingToggleBasicFunctionalityOff());
+    } else {
+      dispatch(toggleExternalServices(!isExternalServicesEnabled));
+    }
+    closeModal();
+  };
 
   return (
     <Modal onClose={closeModal} data-testid="dapp-permission-modal" isOpen>
       <ModalOverlay />
-      <ModalContent
-        modalDialogProps={{
-          display: Display.Flex,
-          flexDirection: FlexDirection.Column,
-        }}
-      >
-        <ModalHeader
-          paddingBottom={4}
-          paddingRight={4}
-          paddingLeft={4}
-          onClose={closeModal}
-        >
+      <ModalContent>
+        <ModalHeader onClose={closeModal} paddingBottom={4}>
           <Box
-            display={Display.Flex}
-            flexDirection={FlexDirection.Column}
-            alignItems={AlignItems.center}
-            justifyContent={JustifyContent.center}
+            flexDirection={BoxFlexDirection.Column}
+            alignItems={BoxAlignItems.Center}
+            justifyContent={BoxJustifyContent.Center}
             gap={4}
           >
             <Icon
               size={IconSize.Xl}
               name={IconName.Danger}
-              color={IconColor.errorDefault}
+              color={IconColor.ErrorDefault}
             />
-            <Text variant={TextVariant.headingSm}>
+            <Text variant={TextVariant.HeadingSm}>
               {isExternalServicesEnabled
                 ? t('basicConfigurationModalHeadingOff')
                 : t('basicConfigurationModalHeadingOn')}
@@ -104,66 +142,40 @@ export function BasicConfigurationModal() {
           </Box>
         </ModalHeader>
 
-        <Box
-          marginLeft={4}
-          marginRight={4}
-          marginBottom={4}
+        <ModalBody
           display={Display.Flex}
-          gap={4}
-          flexDirection={FlexDirection.Column}
+          paddingBottom={2}
+          className="flex-col gap-6"
         >
-          <Text variant={TextVariant.bodySm}>
+          <Text variant={TextVariant.BodyMd} color={TextColor.TextAlternative}>
             {isExternalServicesEnabled
-              ? t('basicConfigurationModalDisclaimerOff')
+              ? t('basicConfigurationModalDisclaimerOffPart1')
               : t('basicConfigurationModalDisclaimerOn')}
           </Text>
-          {isExternalServicesEnabled ? (
-            <Text variant={TextVariant.bodySm}>
-              {t('basicConfigurationModalDisclaimerOffAdditionalText', [
-                <Text
-                  key="basic-functionality-related-features-1"
-                  variant={TextVariant.bodySmBold}
-                  as="span"
-                >
-                  {t(
-                    'basicConfigurationModalDisclaimerOffAdditionalTextFeaturesFirst',
-                  )}
-                </Text>,
-                <Text
-                  key="basic-functionality-related-features-2"
-                  variant={TextVariant.bodySmBold}
-                  as="span"
-                >
-                  {t(
-                    'basicConfigurationModalDisclaimerOffAdditionalTextFeaturesLast',
-                  )}
-                </Text>,
-              ])}
-            </Text>
-          ) : null}
           {isExternalServicesEnabled && (
-            <Box display={Display.Flex} alignItems={AlignItems.center} gap={2}>
-              <Checkbox
-                id="basic-configuration-checkbox"
-                isChecked={hasAgreed}
-                onClick={() => setHasAgreed((prevValue) => !prevValue)}
-              />
-              <Label
-                htmlFor="basic-configuration-checkbox"
-                fontWeight={FontWeight.Normal}
-                variant={TextVariant.bodySm}
-              >
-                {t('basicConfigurationModalCheckbox')}
-              </Label>
-            </Box>
+            <Text
+              variant={TextVariant.BodyMd}
+              color={TextColor.TextAlternative}
+            >
+              {t('basicConfigurationModalDisclaimerOffPart2')}
+            </Text>
           )}
-        </Box>
+          {isExternalServicesEnabled && (
+            <Checkbox
+              id="basic-configuration-checkbox"
+              data-testid="basic-configuration-checkbox"
+              isSelected={hasAgreed}
+              onChange={handleCheckboxClick}
+              label={t('basicConfigurationModalCheckbox')}
+            />
+          )}
+        </ModalBody>
 
         <ModalFooter>
-          <Box display={Display.Flex} gap={4}>
+          <Box className="flex gap-4">
             <Button
               size={ButtonSize.Lg}
-              width={BlockSize.Half}
+              className="w-full"
               variant={ButtonVariant.Secondary}
               data-testid="basic-configuration-modal-cancel-button"
               onClick={closeModal}
@@ -172,74 +184,12 @@ export function BasicConfigurationModal() {
             </Button>
             <Button
               size={ButtonSize.Lg}
-              disabled={!hasAgreed && isExternalServicesEnabled}
-              width={BlockSize.Half}
+              isDisabled={!hasAgreed && isExternalServicesEnabled}
+              className="w-full"
               variant={ButtonVariant.Primary}
               data-testid="basic-configuration-modal-toggle-button"
-              onClick={() => {
-                const event = onboardingFlow
-                  ? {
-                      category: MetaMetricsEventCategory.Onboarding,
-                      event: MetaMetricsEventName.SettingsUpdated,
-                      properties: {
-                        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-                        // eslint-disable-next-line @typescript-eslint/naming-convention
-                        settings_group: 'onboarding_advanced_configuration',
-                        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-                        // eslint-disable-next-line @typescript-eslint/naming-convention
-                        settings_type: 'basic_functionality',
-                        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-                        // eslint-disable-next-line @typescript-eslint/naming-convention
-                        old_value: true,
-                        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-                        // eslint-disable-next-line @typescript-eslint/naming-convention
-                        new_value: false,
-                        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-                        // eslint-disable-next-line @typescript-eslint/naming-convention
-                        was_profile_syncing_on: isBackupAndSyncEnabled,
-                      },
-                    }
-                  : {
-                      category: MetaMetricsEventCategory.Settings,
-                      event: MetaMetricsEventName.SettingsUpdated,
-                      properties: {
-                        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-                        // eslint-disable-next-line @typescript-eslint/naming-convention
-                        settings_group: 'security_privacy',
-                        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-                        // eslint-disable-next-line @typescript-eslint/naming-convention
-                        settings_type: 'basic_functionality',
-                        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-                        // eslint-disable-next-line @typescript-eslint/naming-convention
-                        old_value: isExternalServicesEnabled,
-                        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-                        // eslint-disable-next-line @typescript-eslint/naming-convention
-                        new_value: !isExternalServicesEnabled,
-                        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-                        // eslint-disable-next-line @typescript-eslint/naming-convention
-                        was_notifications_on: isMetamaskNotificationsEnabled,
-                        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-                        // eslint-disable-next-line @typescript-eslint/naming-convention
-                        was_profile_syncing_on: isBackupAndSyncEnabled,
-                      },
-                    };
-
-                trackEvent(event);
-
-                if (isExternalServicesEnabled || onboardingFlow) {
-                  dispatch(setParticipateInMetaMetrics(false));
-                  dispatch(setDataCollectionForMarketing(false));
-                }
-
-                if (onboardingFlow) {
-                  dispatch(hideBasicFunctionalityModal());
-                  dispatch(onboardingToggleBasicFunctionalityOff());
-                } else {
-                  closeModal();
-                  dispatch(toggleExternalServices(!isExternalServicesEnabled));
-                }
-              }}
-              danger={isExternalServicesEnabled}
+              onClick={handleToggle}
+              isDanger={isExternalServicesEnabled}
             >
               {isExternalServicesEnabled ? t('turnOff') : t('turnOn')}
             </Button>

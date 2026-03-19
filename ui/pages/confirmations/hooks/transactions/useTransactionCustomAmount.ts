@@ -9,7 +9,7 @@ import { useConfirmContext } from '../../context/confirm';
 import { useTransactionPayToken } from '../pay/useTransactionPayToken';
 import {
   useTransactionPayIsMaxAmount,
-  useTransactionPayRequiredTokens,
+  useTransactionPayPrimaryRequiredToken,
 } from '../pay/useTransactionPayData';
 import { getTokenAddress } from '../../utils/transaction-pay';
 import { useUpdateTokenAmount } from './useUpdateTokenAmount';
@@ -24,16 +24,6 @@ export function useTransactionCustomAmount({
   const [isInputChanged, setInputChanged] = useState(false);
   const [hasInput, setHasInput] = useState(false);
   const [amountHumanDebounced, setAmountHumanDebounced] = useState('0');
-  const requiredTokens = useTransactionPayRequiredTokens();
-  const primaryRequiredToken = useMemo(
-    () => requiredTokens?.find((t) => !t.skipIfBalance),
-    [requiredTokens],
-  );
-  const [amountFiatState, setAmountFiat] = useState(
-    new BigNumber(primaryRequiredToken?.amountUsd ?? '0')
-      .round(2, BigNumber.ROUND_HALF_UP)
-      .toString(10),
-  );
 
   const { currentConfirmation: transactionMeta } =
     useConfirmContext<TransactionMeta>();
@@ -65,6 +55,14 @@ export function useTransactionCustomAmount({
     debounceRef.current = debouncedFn;
     return debouncedFn;
   }, [disableUpdate, updateTokenAmountCallback]);
+
+  const primaryRequiredToken = useTransactionPayPrimaryRequiredToken();
+
+  const [amountFiatState, setAmountFiat] = useState(
+    new BigNumber(primaryRequiredToken?.amountUsd ?? '0')
+      .round(2, BigNumber.ROUND_HALF_UP)
+      .toString(10),
+  );
 
   const amountFiat = useMemo(() => {
     const targetAmountUsd = primaryRequiredToken?.amountUsd;
