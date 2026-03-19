@@ -436,6 +436,38 @@ describe('Setup Sentry', () => {
     });
   });
 
+  describe('makeTransport (construction)', () => {
+    it('does not call fetch when makeTransport is called', () => {
+      const fetchSpy = jest
+        .spyOn(globalThis, 'fetch')
+        .mockResolvedValue({ ok: true });
+
+      makeTransport({});
+
+      expect(fetchSpy).not.toHaveBeenCalled();
+
+      fetchSpy.mockRestore();
+    });
+
+    it('does not call send or flush on the default transport when makeTransport is called', () => {
+      const defaultTransportSend = jest.fn().mockResolvedValue({});
+      const defaultTransportFlush = jest.fn().mockResolvedValue(true);
+      const makeFetchTransportSpy = jest
+        .spyOn(Sentry, 'makeFetchTransport')
+        .mockReturnValue({
+          send: defaultTransportSend,
+          flush: defaultTransportFlush,
+        });
+
+      makeTransport({});
+
+      expect(defaultTransportSend).not.toHaveBeenCalled();
+      expect(defaultTransportFlush).not.toHaveBeenCalled();
+
+      makeFetchTransportSpy.mockRestore();
+    });
+  });
+
   describe('makeTransport', () => {
     let makeFetchTransportSpy;
 
