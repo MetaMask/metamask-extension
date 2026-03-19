@@ -160,9 +160,9 @@ const SettingsV2Layout = ({ children }: { children: React.ReactNode }) => {
             'w-full sm:max-w-[262px] sm:bg-background-muted',
             {
               flex: isOnSettingsRoot,
-              'hidden sm:flex': !isSidepanel && !isOnSettingsRoot,
-              'hidden': isSidepanel && !isOnSettingsRoot,
-              'sm:max-w-full sm:bg-background-default': isSidepanel && isOnSettingsRoot,
+              'hidden sm:flex': !isOnSettingsRoot && !isSidepanel,
+              hidden: !isOnSettingsRoot && isSidepanel,
+              'sm:max-w-full sm:bg-background-default': isOnSettingsRoot && isSidepanel,
             },
           )}
         >
@@ -181,11 +181,11 @@ const SettingsV2Layout = ({ children }: { children: React.ReactNode }) => {
         </Box>
         <Box
           className={classnames(
-            'flex-auto flex-col overflow-y-auto w-full',
+            'flex-auto flex-col w-full',
             {
-              'hidden sm:flex': isOnSettingsRoot,
               flex: !isOnSettingsRoot,
-              'sm:hidden': isOnSettingsRoot && isSidepanel,
+              'hidden sm:flex': isOnSettingsRoot && !isSidepanel,
+              hidden: isOnSettingsRoot && isSidepanel,
             },
           )}
         >
