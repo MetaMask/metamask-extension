@@ -171,13 +171,16 @@ const PrepareBridgePage = ({
     fromChain,
   });
 
-  const shouldShowMaxButton =
-    fromToken && isNativeAddress(fromToken.assetId)
-      ? gasIncluded || gasIncluded7702
-      : true;
-
   const keyring = useSelector(getCurrentKeyring);
   const isUsingHardwareWallet = isHardwareKeyring(keyring?.type);
+
+  const effectiveGasIncluded = !isUsingHardwareWallet && gasIncluded;
+  const effectiveGasIncluded7702 = !isUsingHardwareWallet && gasIncluded7702;
+
+  const shouldShowMaxButton =
+    fromToken && isNativeAddress(fromToken.assetId)
+      ? effectiveGasIncluded || effectiveGasIncluded7702
+      : true;
   const hardwareWalletName = useSelector(getHardwareWalletName);
   const isTxSubmittable = useIsTxSubmittable();
   const locale = useSelector(getIntlLocale);
@@ -291,8 +294,8 @@ const PrepareBridgePage = ({
       slippage,
       walletAddress: selectedAccount.address,
       destWalletAddress: selectedDestinationAccount?.address,
-      gasIncluded: gasIncluded || gasIncluded7702,
-      gasIncluded7702,
+      gasIncluded: effectiveGasIncluded || effectiveGasIncluded7702,
+      gasIncluded7702: effectiveGasIncluded7702,
     };
   }, [
     fromToken?.assetId,
@@ -304,8 +307,8 @@ const PrepareBridgePage = ({
     selectedAccount?.address,
     selectedDestinationAccount?.address,
     providerConfig?.rpcUrl,
-    gasIncluded,
-    gasIncluded7702,
+    effectiveGasIncluded,
+    effectiveGasIncluded7702,
     isInsufficientBalance,
   ]);
 

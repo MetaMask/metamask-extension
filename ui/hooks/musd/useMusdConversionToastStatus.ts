@@ -1,27 +1,32 @@
-import { useMemo, useEffect, useRef, useState, useCallback } from 'react';
+import {
+  useMemo,
+  useEffect,
+  useRef,
+  useState,
+  useCallback,
+  useContext,
+} from 'react';
 import { useSelector } from 'react-redux';
 import {
   TransactionStatus,
   TransactionType,
   type TransactionMeta,
 } from '@metamask/transaction-controller';
+import { BigNumber } from 'bignumber.js';
 import { getTransactions } from '../../selectors/transactions';
 import {
   selectTransactionPaymentTokenByTransactionId,
   type TransactionPayState,
 } from '../../selectors/transactionPayController';
-
-/**
- * Transaction statuses that indicate a conversion is "in flight":
- * - approved: User confirmed in wallet, waiting for submission
- * - signed: Transaction signed, waiting for broadcast
- * - submitted: Transaction submitted to network, waiting for confirmation
- */
-const IN_FLIGHT_STATUSES: string[] = [
-  TransactionStatus.approved,
-  TransactionStatus.signed,
-  TransactionStatus.submitted,
-];
+import { MetaMetricsContext } from '../../contexts/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../shared/constants/metametrics';
+import type { MusdConversionStatusUpdatedEventProperties } from '../../components/app/musd/musd-events';
+import { getMultichainNetworkConfigurationsByChainId } from '../../selectors/multichain';
+import { extractTransactionAmount } from './transaction-amount-utils';
+import { IN_FLIGHT_STATUSES } from './transaction-status-constants';
 
 /**
  * Check if a transaction is an mUSD conversion.
@@ -51,14 +56,20 @@ export type MusdConversionToastState =
  *
  * @returns An object containing `toastState` (current toast to display),
  * `sourceTokenSymbol` (the payment token symbol for the active conversion),
+ * `activeTransactionId` (the ID of the active mUSD conversion for tracing),
  * and `dismissToast` (function to dismiss the current toast).
  */
 export const useMusdConversionToastStatus = (): {
   toastState: MusdConversionToastState;
   sourceTokenSymbol: string | undefined;
+  activeTransactionId: string | undefined;
   dismissToast: () => void;
 } => {
   const transactions = useSelector(getTransactions) as TransactionMeta[];
+  const { trackEvent } = useContext(MetaMetricsContext);
+  const networkConfigurationsByChainId = useSelector(
+    getMultichainNetworkConfigurationsByChainId,
+  );
   const [completionState, setCompletionState] = useState<
     'success' | 'failed' | null
   >(null);
@@ -68,6 +79,8 @@ export const useMusdConversionToastStatus = (): {
   const pendingConversionIdsRef = useRef<Set<string>>(new Set());
   // Track IDs of conversions we've already shown completion toasts for
   const shownCompletionIdsRef = useRef<Set<string>>(new Set());
+  // Track IDs of conversions we've already tracked analytics for (by status)
+  const trackedAnalyticsRef = useRef<Map<string, Set<string>>>(new Map());
 
   const musdConversions = useMemo(
     () => transactions.filter(isMusdConversionTx),
@@ -119,12 +132,82 @@ export const useMusdConversionToastStatus = (): {
 
   const sourceTokenSymbol = paymentToken?.symbol ?? cachedSymbol;
 
-  // Detect transitions from pending → confirmed/failed
+  const extractTransferAmount = useCallback(
+    (tx: TransactionMeta): { amountHex: string; amountDecimal: string } => {
+      const decimal = extractTransactionAmount(tx);
+      if (decimal) {
+        return {
+          amountHex: `0x${new BigNumber(decimal).toString(16)}`,
+          amountDecimal: decimal,
+        };
+      }
+      return { amountHex: '0x0', amountDecimal: '0' };
+    },
+    [],
+  );
+
+  /**
+   * Track mUSD conversion status update analytics
+   */
+  const trackConversionStatusUpdate = useCallback(
+    (
+      tx: TransactionMeta,
+      status: 'approved' | 'confirmed' | 'failed' | 'dropped',
+      tokenSymbol: string | undefined,
+    ) => {
+      const { chainId } = tx;
+      const networkConfig = chainId
+        ? networkConfigurationsByChainId[chainId]
+        : null;
+      const networkName = networkConfig?.name ?? 'Unknown Network';
+      const { amountHex, amountDecimal } = extractTransferAmount(tx);
+
+      /* eslint-disable @typescript-eslint/naming-convention */
+      const properties: MusdConversionStatusUpdatedEventProperties = {
+        transaction_id: tx.id,
+        transaction_status: status,
+        transaction_type: 'musdConversion',
+        asset_symbol: tokenSymbol ?? 'Unknown',
+        network_chain_id: chainId ?? '',
+        network_name: networkName,
+        amount_decimal: amountDecimal,
+        amount_hex: amountHex,
+      };
+      /* eslint-enable @typescript-eslint/naming-convention */
+
+      trackEvent({
+        event: MetaMetricsEventName.MusdConversionStatusUpdated,
+        category: MetaMetricsEventCategory.MusdConversion,
+        properties,
+      });
+    },
+    [trackEvent, networkConfigurationsByChainId, extractTransferAmount],
+  );
+
+  // Detect transitions from pending → confirmed/failed and track analytics
   useEffect(() => {
     const currentPendingIds = new Set(pendingConversions.map((tx) => tx.id));
     let hasNewCompletion = false;
 
     for (const tx of musdConversions) {
+      // Track analytics for status changes
+      const trackedStatuses =
+        trackedAnalyticsRef.current.get(tx.id) ?? new Set();
+
+      // Track approved status when the transaction first appears in any
+      // in-flight state. The `approved` status is extremely transient
+      // (approved → signed → submitted within the same tick), so React
+      // almost never observes it directly. Matching any in-flight status
+      // ensures the event fires reliably.
+      if (
+        IN_FLIGHT_STATUSES.includes(tx.status) &&
+        !trackedStatuses.has('approved')
+      ) {
+        trackConversionStatusUpdate(tx, 'approved', sourceTokenSymbol);
+        trackedStatuses.add('approved');
+        trackedAnalyticsRef.current.set(tx.id, trackedStatuses);
+      }
+
       if (shownCompletionIdsRef.current.has(tx.id)) {
         continue;
       }
@@ -132,6 +215,12 @@ export const useMusdConversionToastStatus = (): {
       const wasPending = pendingConversionIdsRef.current.has(tx.id);
 
       if (tx.status === TransactionStatus.confirmed && wasPending) {
+        // Track confirmed status
+        if (!trackedStatuses.has('confirmed')) {
+          trackConversionStatusUpdate(tx, 'confirmed', sourceTokenSymbol);
+          trackedStatuses.add('confirmed');
+          trackedAnalyticsRef.current.set(tx.id, trackedStatuses);
+        }
         setCompletionState('success');
         setDismissed(false);
         shownCompletionIdsRef.current.add(tx.id);
@@ -141,6 +230,14 @@ export const useMusdConversionToastStatus = (): {
           tx.status === TransactionStatus.dropped) &&
         wasPending
       ) {
+        // Track failed/dropped status
+        const statusKey =
+          tx.status === TransactionStatus.failed ? 'failed' : 'dropped';
+        if (!trackedStatuses.has(statusKey)) {
+          trackConversionStatusUpdate(tx, statusKey, sourceTokenSymbol);
+          trackedStatuses.add(statusKey);
+          trackedAnalyticsRef.current.set(tx.id, trackedStatuses);
+        }
         setCompletionState('failed');
         setDismissed(false);
         shownCompletionIdsRef.current.add(tx.id);
@@ -163,7 +260,12 @@ export const useMusdConversionToastStatus = (): {
     }
 
     pendingConversionIdsRef.current = currentPendingIds;
-  }, [musdConversions, pendingConversions]);
+  }, [
+    musdConversions,
+    pendingConversions,
+    sourceTokenSymbol,
+    trackConversionStatusUpdate,
+  ]);
 
   const dismissToast = useCallback(() => {
     setCompletionState(null);
@@ -178,5 +280,10 @@ export const useMusdConversionToastStatus = (): {
       completionState ?? (hasPendingConversion ? 'in-progress' : null);
   }
 
-  return { toastState, sourceTokenSymbol, dismissToast };
+  return {
+    toastState,
+    sourceTokenSymbol,
+    activeTransactionId: activePendingTxId,
+    dismissToast,
+  };
 };
