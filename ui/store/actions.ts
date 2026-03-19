@@ -3140,17 +3140,23 @@ export function removeCustomAsset(
  *
  * @param accountId - The account ID to add custom assets for
  * @param assets - Array of asset descriptors with assetId and whether each was previously hidden in preferences
+ * @param pendingMetadataByAssetId - Optional map of assetId to PendingTokenMetadata, used to seed assetsInfo immediately on import
  */
 export function importCustomAssetsBatch(
   accountId: string,
   assets: { assetId: Caip19AssetId; isHidden: boolean }[],
+  pendingMetadataByAssetId?: Record<string, Record<string, unknown>>,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
     const results = await Promise.allSettled(
       assets.map(({ assetId, isHidden }) =>
         isHidden
           ? submitRequestToBackground('unhideAsset', [assetId])
-          : submitRequestToBackground('addCustomAsset', [accountId, assetId]),
+          : submitRequestToBackground('addCustomAsset', [
+              accountId,
+              assetId,
+              pendingMetadataByAssetId?.[assetId],
+            ]),
       ),
     );
     const firstError = results.find(

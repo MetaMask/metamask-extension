@@ -375,11 +375,48 @@ export const ImportTokensModal = ({ onClose }) => {
       }
 
       if (assetsUnifyStateFeatureEnabled) {
+        console.log('assetsUnifyStateFeatureEnabled ........', assetsUnifyStateFeatureEnabled);
+        console.log('assetPreferences .....', assetPreferences);
+        console.log('selectedAccount.id ..........', selectedAccount.id);
+        console.log('assetsIds ..........', assetsIds);
+        console.log('pendingTokens ..........', pendingTokens);
         const assets = assetsIds.map((assetId) => ({
           assetId,
           isHidden: isAssetIdHiddenInPreferencesMap(assetPreferences, assetId),
         }));
-        await dispatch(importCustomAssetsBatch(selectedAccount.id, assets));
+
+        // Build PendingTokenMetadata keyed by assetId for the batch call.
+        // Uses the same toAssetId call that produced assetsIds so keys match exactly.
+        const pendingMetadataByAssetId = Object.fromEntries(
+          Object.entries(pendingTokens).map(([tokenAddress, token]) => [
+            toAssetId(tokenAddress, selectedNetwork),
+            {
+              address: token.address,
+              symbol: token.symbol,
+              name: token.name ?? token.symbol,
+              decimals: token.decimals,
+              iconUrl: token.image,
+              aggregators: token.aggregators,
+              occurrences: token.occurrences,
+              chainId: token.chainId,
+              unlisted: token.unlisted,
+            },
+          ]),
+        );
+
+        console.log(
+          'pendingMetadataByAssetId ..........',
+          pendingMetadataByAssetId,
+          assets,
+        );
+
+        await dispatch(
+          importCustomAssetsBatch(
+            selectedAccount.id,
+            assets,
+            pendingMetadataByAssetId,
+          ),
+        );
       }
 
       addedTokenValues.forEach((pendingToken) => {
