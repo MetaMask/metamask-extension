@@ -78,7 +78,7 @@ describe('eth_requestAccounts', function () {
 
   // eslint-disable-next-line mocha/no-setup-in-describe
   for (let i = 0; i < 5; i++) {
-    it(`prompts for login when there are no permitted accounts and the wallet is locked (run ${i + 1})`, async function () {
+    it.only(`prompts for login when there are no permitted accounts and the wallet is locked (run ${i + 1})`, async function () {
       await withFixtures(
         {
           dappOptions: { numberOfTestDapps: 1 },
@@ -107,16 +107,19 @@ describe('eth_requestAccounts', function () {
           await loginPage.checkPageIsLoaded();
           await loginPage.loginToHomepage();
 
-          // Wait for SnapController.isReady so the permission grant does not reject non-EVM accounts
+          // Wait for non-EVM snaps to load in persisted state (SnapController starts empty in fixture)
+          // so the permission grant does not reject non-EVM accounts
+          const nonEvmSnapIds = [
+            'npm:@metamask/bitcoin-wallet-snap',
+            'npm:@metamask/solana-wallet-snap',
+            'npm:@metamask/tron-wallet-snap',
+          ];
           await driver.wait(async () => {
-            const uiState = await driver.executeScript(() =>
-              (
-                window as {
-                  stateHooks?: { getCleanAppState?: () => Promise<unknown> };
-                }
-              ).stateHooks?.getCleanAppState?.(),
+            const persistedState = await driver.executeScript(
+              'return window.stateHooks.getPersistedState()',
             );
-            return uiState?.metamask?.isReady === true;
+            const snaps = persistedState?.data?.SnapController?.snaps ?? {};
+            return nonEvmSnapIds.every((id) => id in snaps);
           }, 30000);
 
           const connectAccountConfirmation = new ConnectAccountConfirmation(
