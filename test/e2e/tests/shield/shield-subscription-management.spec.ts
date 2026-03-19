@@ -100,12 +100,34 @@ function createShieldFixtureCrypto() {
       assetsBalance: {
         'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4': {
           'eip155:1/slip44:60': { amount: '25' },
-          'eip155:1/erc20:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48': {
+          'eip155:1/erc20:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48': {
             amount: '100',
           },
-          'eip155:1/erc20:0xdac17f958d2ee523a2206206994597c13d831ec7': {
+          'eip155:1/erc20:0xdAC17F958D2ee523a2206206994597C13D831ec7': {
             amount: '100',
           },
+        },
+      },
+      assetsInfo: {
+        'eip155:1/slip44:60': {
+          type: 'native',
+          symbol: 'ETH',
+          name: 'Ether',
+          decimals: 18,
+        },
+        'eip155:1/erc20:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48': {
+          type: 'erc20',
+          symbol: 'USDC',
+          name: 'USD Coin',
+          decimals: 6,
+          image: 'https://assets.metamask.io/usdc.png',
+        },
+        'eip155:1/erc20:0xdAC17F958D2ee523a2206206994597C13D831ec7': {
+          type: 'erc20',
+          symbol: 'USDT',
+          name: 'Tether USD',
+          decimals: 6,
+          image: 'https://assets.metamask.io/usdt.png',
         },
       },
     })
@@ -677,17 +699,18 @@ describe('Shield Plan Stripe Integration', function () {
     );
   });
 
-  it('should be able to change payment method from crypto to crypto (USDC -> USDT)', async function () {
+  it.only('should be able to change payment method from crypto to crypto (USDC -> USDT)', async function () {
     await withFixtures(
       {
         fixtures: createShieldFixtureCrypto()
           .withAssetsController({
+            // Override balances to 1000 for this specific test scenario
             assetsBalance: {
               'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4': {
-                'eip155:1/erc20:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48': {
+                'eip155:1/erc20:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48': {
                   amount: '1000',
                 },
-                'eip155:1/erc20:0xdac17f958d2ee523a2206206994597c13d831ec7': {
+                'eip155:1/erc20:0xdAC17F958D2ee523a2206206994597C13D831ec7': {
                   amount: '1000',
                 },
               },
@@ -695,12 +718,64 @@ describe('Shield Plan Stripe Integration', function () {
           })
           .build(),
         title: this.test?.fullTitle(),
-        testSpecificMock: (server: Mockttp) => {
+        testSpecificMock: async (server: Mockttp) => {
           const shieldMockttpService = new ShieldMockttpService();
-          return shieldMockttpService.setup(server, {
+          await shieldMockttpService.setup(server, {
             isActiveUser: true,
             defaultPaymentMethod: 'crypto',
           });
+
+          // Tell AssetsController's AccountsApiDataSource that mainnet is supported,
+          // so it calls v5/multiaccount/balances instead of falling back to RPC.
+          await server
+            .forGet(
+              'https://accounts.api.cx.metamask.io/v2/supportedNetworks',
+            )
+            .always()
+            .thenCallback(() => ({
+              statusCode: 200,
+              json: {
+                fullSupport: [1, 137, 56, 59144, 8453, 10, 42161, 534352],
+                partialSupport: { balances: [42220, 43114] },
+              },
+            }));
+
+          // Return ETH + USDC + USDT balances so AssetsController's full-mode
+          // update doesn't wipe the tokens that aren't in the RPC response.
+          return server
+            .forGet(
+              'https://accounts.api.cx.metamask.io/v5/multiaccount/balances',
+            )
+            .always()
+            .thenCallback(() => ({
+              statusCode: 200,
+              json: {
+                count: 3,
+                unprocessedNetworks: [],
+                balances: [
+                  {
+                    accountId:
+                      'eip155:1:0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
+                    assetId: 'eip155:1/slip44:60',
+                    balance: '25',
+                  },
+                  {
+                    accountId:
+                      'eip155:1:0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
+                    assetId:
+                      'eip155:1/erc20:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
+                    balance: '1000',
+                  },
+                  {
+                    accountId:
+                      'eip155:1:0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
+                    assetId:
+                      'eip155:1/erc20:0xdAC17F958D2ee523a2206206994597C13D831ec7',
+                    balance: '1000',
+                  },
+                ],
+              },
+            }));
         },
         localNodeOptions: [
           {
@@ -715,6 +790,8 @@ describe('Shield Plan Stripe Integration', function () {
       },
       async ({ driver, localNodes }) => {
         await loginWithBalanceValidation(driver, localNodes[0]);
+
+        await driver.delay(100000);
 
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();

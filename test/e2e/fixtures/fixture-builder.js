@@ -1191,6 +1191,7 @@ class FixtureBuilder {
     assetsBalance = {},
     assetsPrice = {},
     assetsInfo = {},
+    customAssets = {},
   } = {}) {
     if (!this.fixture.data.AssetsController) {
       this.fixture.data.AssetsController = {};
@@ -1204,9 +1205,13 @@ class FixtureBuilder {
     if (!this.fixture.data.AssetsController.assetsInfo) {
       this.fixture.data.AssetsController.assetsInfo = {};
     }
+    if (!this.fixture.data.AssetsController.customAssets) {
+      this.fixture.data.AssetsController.customAssets = {};
+    }
     merge(this.fixture.data.AssetsController.assetsBalance, assetsBalance);
     merge(this.fixture.data.AssetsController.assetsPrice, assetsPrice);
     merge(this.fixture.data.AssetsController.assetsInfo, assetsInfo);
+    merge(this.fixture.data.AssetsController.customAssets, customAssets);
     return this;
   }
 
