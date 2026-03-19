@@ -54,7 +54,10 @@ import LoginErrorModal from '../onboarding-flow/welcome/login-error-modal';
 import { LOGIN_ERROR } from '../onboarding-flow/welcome/types';
 import ConnectionsRemovedModal from '../../components/app/connections-removed-modal';
 import { captureException } from '../../../shared/lib/sentry';
-import { getCaretCoordinates } from './unlock-page.util';
+import {
+  getCaretCoordinates,
+  resolvePostUnlockRoute,
+} from './unlock-page.util';
 import ResetPasswordModal from './reset-password-modal';
 import FormattedCounter from './formatted-counter';
 import { MetamaskWordmarkLogo } from './metamask-wordmark-logo';
@@ -226,14 +229,7 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
     const { isUnlocked, navigate, location } = this.props;
 
     if (isUnlocked) {
-      // Redirect to the intended route if available, otherwise DEFAULT_ROUTE
-      let redirectTo = DEFAULT_ROUTE;
-      const fromLocation = location.state?.from;
-      if (fromLocation?.pathname) {
-        const search = fromLocation.search || '';
-        redirectTo = fromLocation.pathname + search;
-      }
-      navigate(redirectTo);
+      navigate(resolvePostUnlockRoute(location));
     }
   }
 

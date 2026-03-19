@@ -6,10 +6,7 @@ import { Location as RouterLocation, NavigateFunction } from 'react-router-dom';
 // eslint-disable-next-line import/no-restricted-paths
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../shared/constants/app';
-import {
-  DEFAULT_ROUTE,
-  RESTORE_VAULT_ROUTE,
-} from '../../helpers/constants/routes';
+import { RESTORE_VAULT_ROUTE } from '../../helpers/constants/routes';
 import {
   tryUnlockMetamask,
   markPasswordForgotten,
@@ -27,6 +24,7 @@ import {
 import withRouterHooks from '../../helpers/higher-order-components/with-router-hooks/with-router-hooks';
 import { MetaMaskReduxDispatch, MetaMaskReduxState } from '../../store/store';
 import UnlockPage from './unlock-page.component';
+import { resolvePostUnlockRoute } from './unlock-page.util';
 
 type OwnProps = {
   navigate: NavigateFunction;
@@ -92,14 +90,7 @@ const mergeProps = (
 
   const onSubmit = async (password: string) => {
     await propsTryUnlockMetamask(password);
-    // Redirect to the intended route if available, otherwise DEFAULT_ROUTE
-    let redirectTo = DEFAULT_ROUTE;
-    const fromLocation = location.state?.from;
-    if (fromLocation?.pathname) {
-      const search = fromLocation.search || '';
-      redirectTo = fromLocation.pathname + search;
-    }
-    navigate(redirectTo);
+    navigate(resolvePostUnlockRoute(location));
   };
 
   return {

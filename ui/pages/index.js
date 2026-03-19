@@ -23,7 +23,8 @@ import { queryClient } from '../contexts/query-client';
 import { HardwareWalletErrorProvider } from '../contexts/hardware-wallets';
 import ErrorPageBase from './error-page/error-page.component';
 
-import Routes, { routeConfig } from './routes';
+import Routes from './routes';
+import { getRouteConfig } from './routes/routes.component';
 
 function AppProviders() {
   return (
@@ -74,13 +75,14 @@ function RouteErrorBoundary() {
   return <ErrorPage error={error} />;
 }
 
-const router = createHashRouter([
-  {
-    element: <AppProviders />,
-    errorElement: <RouteErrorBoundary />,
-    children: routeConfig,
-  },
-]);
+const getRouter = (store) =>
+  createHashRouter([
+    {
+      element: <AppProviders />,
+      errorElement: <RouteErrorBoundary />,
+      children: getRouteConfig(store),
+    },
+  ]);
 
 class Index extends PureComponent {
   state = {};
@@ -109,7 +111,7 @@ class Index extends PureComponent {
 
     return (
       <Provider store={store}>
-        <RouterProvider router={router} />
+        <RouterProvider router={getRouter(store)} />
       </Provider>
     );
   }
