@@ -1,13 +1,24 @@
 /* eslint-disable import-x/extensions */
-import React, { Suspense, useState } from 'react';
+import React, { Fragment, Suspense, useState } from 'react';
 import {
   Routes as RouterRoutes,
   Route,
   useNavigate,
   useLocation,
 } from 'react-router-dom';
+import {
+  Box,
+  BoxAlignItems,
+  BoxBackgroundColor,
+  BoxFlexDirection,
+  Icon,
+  IconName,
+  IconSize,
+  Text,
+  TextColor,
+  TextVariant,
+} from '@metamask/design-system-react';
 import classnames from 'clsx';
-import { Box } from '@metamask/design-system-react';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import {
   ACCOUNT_IDENTICON_ROUTE,
@@ -19,17 +30,7 @@ import {
   THEME_ROUTE,
   THIRD_PARTY_APIS_ROUTE,
 } from '../../helpers/constants/routes';
-import {
-  Box as LegacyBox,
-  Icon,
-  Text,
-} from '../../components/component-library';
-import {
-  AlignItems,
-  FlexDirection,
-  TextVariant,
-} from '../../helpers/constants/design-system';
-import TabBar from '../../components/app/tab-bar';
+import TabBar from '../../components/app/tab-bar/tab-bar.tsx';
 // TODO: Remove restricted import
 // eslint-disable-next-line import-x/no-restricted-paths
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
@@ -86,47 +87,60 @@ const SettingsV2Layout = ({ children }: { children: React.ReactNode }) => {
   const t = useI18nContext();
   const { pathname } = location;
   const meta = getSettingsV2RouteMeta(pathname);
-
   const environmentType = getEnvironmentType();
+  const [searchValue, setSearchValue] = useState('');
+
+  // Environments info
   const isPopup =
     environmentType === ENVIRONMENT_TYPE_POPUP ||
     environmentType === ENVIRONMENT_TYPE_SIDEPANEL;
   const isSidepanel = environmentType === ENVIRONMENT_TYPE_SIDEPANEL;
 
+  // Routes info
   const isOnSettingsRoot = pathname === SETTINGS_V2_ROUTE;
-  const [searchValue, setSearchValue] = useState('');
   const backRoute = isOnSettingsRoot
     ? DEFAULT_ROUTE
     : (meta?.parentPath ?? SETTINGS_V2_ROUTE);
+  // Current page label - used for popup header title
+  const currentPageLabelKey = meta?.labelKey;
 
-  // Subheader label - at root, use first tab's label since that's what's displayed
-  const subheaderLabelKey = isOnSettingsRoot
-    ? SETTINGS_V2_MENU_LIST_ITEM_REGISTRY[0]?.labelKey
-    : (meta?.labelKey ?? SETTINGS_V2_MENU_LIST_ITEM_REGISTRY[0]?.labelKey);
-
-  // Header: "Settings" on fullscreen or at root, section name on popup sub-routes
+  // Header: "Settings" on fullscreen; tab or sub-page name on popup/sidepanel
   const headerTitle =
-    isPopup && !isOnSettingsRoot ? t(subheaderLabelKey) : t('settings');
+    isPopup && !isOnSettingsRoot && currentPageLabelKey
+      ? t(currentPageLabelKey)
+      : t('settings');
 
-  // Subheader: always shows the current section name
-  const showSubheader = Boolean(subheaderLabelKey);
+  // Breadcrumbs: only shown on sub-pages (where parent is not the settings root)
+  const breadcrumbs = React.useMemo((): string[] => {
+    if (!meta?.parentPath || meta.parentPath === SETTINGS_V2_ROUTE) {
+      return [];
+    }
+    const crumbs: string[] = [];
+    let currentPath: string | undefined = pathname;
+
+    // Walk up the parent chain to build breadcrumbs
+    while (currentPath && currentPath !== SETTINGS_V2_ROUTE) {
+      const routeMeta = getSettingsV2RouteMeta(currentPath);
+      if (!routeMeta) {
+        break;
+      }
+      crumbs.unshift(routeMeta.labelKey);
+      currentPath = routeMeta.parentPath;
+    }
+
+    return crumbs;
+  }, [pathname, meta?.parentPath]);
+
+  const showBreadcrumbs = breadcrumbs.length > 1 && !isPopup;
 
   const itemTabs = SETTINGS_V2_MENU_LIST_ITEM_REGISTRY.map((item) => ({
     key: item.path,
     content: t(item.labelKey),
-    icon: <Icon name={item.iconName} />,
+    iconName: item.iconName,
   }));
 
   return (
-    <div
-      className={classnames(
-        'main-container main-container--has-shadow settings-page settings-v2',
-        {
-          'settings-page--selected': !isOnSettingsRoot,
-          'settings-page--sidepanel': isSidepanel,
-        },
-      )}
-    >
+    <Box flexDirection={BoxFlexDirection.Column} backgroundColor={BoxBackgroundColor.BackgroundDefault} className="h-full w-full">
       <SettingsV2Header
         title={headerTitle}
         isPopup={isPopup}
@@ -137,12 +151,25 @@ const SettingsV2Layout = ({ children }: { children: React.ReactNode }) => {
         onSearchClear={() => setSearchValue('')}
       />
 
-      <div className="settings-page__content">
-        <div className="settings-page__content__tabs">
+      <Box
+        flexDirection={BoxFlexDirection.Row}
+        className="h-full sm:border-t sm:border-border-muted"
+      >
+        <Box
+          className={classnames(
+            'w-full sm:max-w-[262px] sm:bg-background-muted',
+            {
+              flex: isOnSettingsRoot,
+              'hidden sm:flex': !isSidepanel && !isOnSettingsRoot,
+              'hidden': isSidepanel && !isOnSettingsRoot,
+              'sm:max-w-full sm:bg-background-default': isSidepanel && isOnSettingsRoot,
+            },
+          )}
+        >
           <TabBar
             tabs={itemTabs}
             isActive={(key) => {
-              // First tab is active when at settings root (like Settings V1)
+              // First tab is active when at settings root
               if (key === FIRST_TAB_PATH && pathname === SETTINGS_V2_ROUTE) {
                 return true;
               }
@@ -150,28 +177,58 @@ const SettingsV2Layout = ({ children }: { children: React.ReactNode }) => {
             }}
             onSelect={(key) => navigate(key)}
           />
-        </div>
-        <div className="settings-page__content__modules">
-          {showSubheader && (
-            <LegacyBox
-              className="settings-page__subheader"
-              padding={4}
-              paddingLeft={6}
-              paddingRight={6}
-              flexDirection={FlexDirection.Row}
-              alignItems={AlignItems.center}
+        </Box>
+        <Box
+          className={classnames(
+            'flex-auto flex-col overflow-y-auto w-full',
+            {
+              'hidden sm:flex': isOnSettingsRoot,
+              flex: !isOnSettingsRoot,
+              'sm:hidden': isOnSettingsRoot && isSidepanel,
+            },
+          )}
+        >
+          {showBreadcrumbs && (
+            <Box
+              className="hidden sm:flex"
+              flexDirection={BoxFlexDirection.Row}
+              alignItems={BoxAlignItems.Center}
+              gap={2}
+              paddingHorizontal={4}
+              paddingVertical={3}
             >
-              <Text variant={TextVariant.headingSm}>
-                {t(subheaderLabelKey)}
-              </Text>
-            </LegacyBox>
+              {breadcrumbs.map((crumb, index) => {
+                const isLast = index === breadcrumbs.length - 1;
+                return (
+                  <Fragment key={crumb}>
+                    {index > 0 && (
+                      <Icon
+                        name={IconName.ArrowRight}
+                        size={IconSize.Xs}
+                        className="text-icon-alternative"
+                      />
+                    )}
+                    <Text
+                      variant={TextVariant.BodyMd}
+                      color={
+                        isLast
+                          ? TextColor.TextDefault
+                          : TextColor.TextAlternative
+                      }
+                    >
+                      {t(crumb)}
+                    </Text>
+                  </Fragment>
+                );
+              })}
+            </Box>
           )}
           <Suspense fallback={null}>
             <Box>{children}</Box>
           </Suspense>
-        </div>
-      </div>
-    </div>
+        </Box>
+      </Box>
+    </Box>
   );
 };
 

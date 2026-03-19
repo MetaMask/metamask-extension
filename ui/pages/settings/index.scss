@@ -26,10 +26,10 @@
     &__title-container {
       display: grid;
       align-items: center;
-      grid-template-columns: 197px 1fr 40px;
+      grid-template-columns: 262px 1fr 40px;
 
       &--hide-search {
-        grid-template-columns: 197px 1fr;
+        grid-template-columns: 262px 1fr;
       }
 
       @include design-system.screen-sm-max {
@@ -238,7 +238,7 @@
 
       @include design-system.screen-sm-min {
         flex: 0 0 40%;
-        max-width: 197px;
+        max-width: 262px;
       }
     }
 

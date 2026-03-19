@@ -1,6 +1,7 @@
 /* eslint-disable import-x/no-useless-path-segments */
 /* eslint-disable import-x/extensions */
 import { type ComponentType } from 'react';
+import { IconName } from '@metamask/design-system-react';
 import {
   ACCOUNT_IDENTICON_ROUTE,
   ASSETS_ROUTE,
@@ -16,7 +17,6 @@ import {
   PRIVACY_ROUTE,
   THIRD_PARTY_APIS_ROUTE,
 } from '../../helpers/constants/routes';
-import { IconName } from '../../components/component-library';
 import { mmLazy } from '../../helpers/utils/mm-lazy';
 
 export type SettingsV2MenuListItem = {
@@ -112,24 +112,10 @@ export function getSettingsV2RouteMeta(
 // Registry of all Settings V2 menu list items. Order here defines menu order in the UI.
 export const SETTINGS_V2_MENU_LIST_ITEM_REGISTRY: SettingsV2MenuListItem[] = [
   {
-    id: 'assets',
-    path: ASSETS_ROUTE,
-    labelKey: 'assets',
-    iconName: IconName.Dollar,
-    component: mmLazy(() => import('./assets-tab/index.ts')),
-  },
-  {
-    id: 'transactions',
-    path: TRANSACTIONS_ROUTE,
-    labelKey: 'transactions',
-    iconName: IconName.Setting,
-    component: mmLazy(() => import('./transactions-tab/index.ts')),
-  },
-  {
     id: 'preferences-and-display',
     path: PREFERENCES_AND_DISPLAY_ROUTE,
     labelKey: 'preferencesAndDisplay',
-    iconName: IconName.Setting,
+    iconName: IconName.Customize,
     component: mmLazy(() => import('./preferences-and-display-tab/index.ts')),
   },
   {
@@ -143,8 +129,22 @@ export const SETTINGS_V2_MENU_LIST_ITEM_REGISTRY: SettingsV2MenuListItem[] = [
     id: 'security-and-password',
     path: SECURITY_AND_PASSWORD_ROUTE,
     labelKey: 'securityAndPassword',
-    iconName: IconName.SecuritySearch,
+    iconName: IconName.SecurityKey,
     component: mmLazy(() => import('./security-and-password-tab/index.ts')),
+  },
+  {
+    id: 'assets',
+    path: ASSETS_ROUTE,
+    labelKey: 'assets',
+    iconName: IconName.Coin,
+    component: mmLazy(() => import('./assets-tab/index.ts')),
+  },
+  {
+    id: 'transactions',
+    path: TRANSACTIONS_ROUTE,
+    labelKey: 'transactions',
+    iconName: IconName.SwapVertical,
+    component: mmLazy(() => import('./transactions-tab/index.ts')),
   },
   {
     id: 'developer-options',
