@@ -2,14 +2,16 @@ import React from 'react';
 import {
   Box,
   BoxFlexDirection,
-  BoxAlignItems,
   Icon,
   IconName,
   IconSize,
+  IconColor,
   Text,
   TextVariant,
-  IconColor,
+  BoxAlignItems,
+  BoxJustifyContent,
 } from '@metamask/design-system-react';
+import MenuItem from '../../ui/menu/menu-item';
 
 type TabItem = {
   key: string;
@@ -20,14 +22,12 @@ type TabItem = {
 type TabBarProps = {
   tabs: TabItem[];
   isActive: (key: string, content?: React.ReactNode) => boolean;
-  onSelect?: (key: string) => void;
   /** When true, disables fullscreen styles (active background, hidden caret) */
   removeFullscreenStyles?: boolean;
 };
 
 const TabBar = ({
   tabs = [],
-  onSelect,
   isActive,
   removeFullscreenStyles = false,
 }: TabBarProps) => {
@@ -36,41 +36,37 @@ const TabBar = ({
       {tabs.map(({ key, content, iconName }) => {
         const active = isActive(key, content);
 
-        const activeClass = active && !removeFullscreenStyles
-          ? 'sm:bg-background-muted'
-          : 'sm:bg-transparent';
+        const activeClass =
+          active && !removeFullscreenStyles ? 'sm:bg-background-muted' : '';
+
         const caretClass = removeFullscreenStyles
-          ? 'ml-auto rtl:rotate-180'
-          : 'sm:hidden ml-auto rtl:rotate-180';
+          ? 'rtl:rotate-180'
+          : 'sm:hidden rtl:rotate-180';
 
         return (
-          <Box
+          <MenuItem
             key={key}
-            flexDirection={BoxFlexDirection.Row}
-            alignItems={BoxAlignItems.Center}
-            onClick={() => onSelect?.(key)}
-            paddingVertical={3}
-            paddingHorizontal={4}
-            gap={4}
-            className={`cursor-pointer ${activeClass}`}
+            to={key}
+            iconName={iconName}
+            iconColor={IconColor.IconAlternative}
+            textVariant={TextVariant.BodyMd}
+            className={`!rounded-none ${activeClass}`}
           >
             <Box
               flexDirection={BoxFlexDirection.Row}
               alignItems={BoxAlignItems.Center}
-              gap={3}
+              justifyContent={BoxJustifyContent.Between}
+              className="w-full"
             >
-              <Icon name={iconName} color={IconColor.IconAlternative} />
-              <Text variant={TextVariant.BodyMd} className="whitespace-nowrap">
-                {content}
-              </Text>
+              <Text className="whitespace-nowrap">{content}</Text>
+              <Icon
+                name={IconName.ArrowRight}
+                size={IconSize.Sm}
+                color={IconColor.IconAlternative}
+                className={caretClass}
+              />
             </Box>
-            <Icon
-              name={IconName.ArrowRight}
-              size={IconSize.Sm}
-              color={IconColor.IconAlternative}
-              className={caretClass}
-            />
-          </Box>
+          </MenuItem>
         );
       })}
     </Box>

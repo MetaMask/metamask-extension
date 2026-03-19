@@ -138,7 +138,11 @@ const SettingsV2Layout = ({ children }: { children: React.ReactNode }) => {
   }));
 
   return (
-    <Box flexDirection={BoxFlexDirection.Column} backgroundColor={BoxBackgroundColor.BackgroundDefault} className="h-full w-full">
+    <Box
+      flexDirection={BoxFlexDirection.Column}
+      backgroundColor={BoxBackgroundColor.BackgroundDefault}
+      className="h-full w-full"
+    >
       <SettingsV2Header
         title={headerTitle}
         isPopupOrSidepanel={isPopupOrSidepanel}
@@ -162,7 +166,8 @@ const SettingsV2Layout = ({ children }: { children: React.ReactNode }) => {
               flex: isOnSettingsRoot,
               'hidden sm:flex': !isOnSettingsRoot && !isSidepanel,
               hidden: !isOnSettingsRoot && isSidepanel,
-              'sm:max-w-full sm:bg-background-default': isOnSettingsRoot && isSidepanel,
+              'sm:max-w-full sm:bg-background-default':
+                isOnSettingsRoot && isSidepanel,
             },
           )}
         >
@@ -175,19 +180,15 @@ const SettingsV2Layout = ({ children }: { children: React.ReactNode }) => {
               }
               return pathname === key || pathname.startsWith(`${key}/`);
             }}
-            onSelect={(key) => navigate(key)}
             removeFullscreenStyles={isPopupOrSidepanel}
           />
         </Box>
         <Box
-          className={classnames(
-            'flex-auto flex-col w-full',
-            {
-              flex: !isOnSettingsRoot,
-              'hidden sm:flex': isOnSettingsRoot && !isSidepanel,
-              hidden: isOnSettingsRoot && isSidepanel,
-            },
-          )}
+          className={classnames('flex-auto flex-col w-full', {
+            flex: !isOnSettingsRoot,
+            'hidden sm:flex': isOnSettingsRoot && !isSidepanel,
+            hidden: isOnSettingsRoot && isSidepanel,
+          })}
         >
           {showBreadcrumbs && (
             <Box
