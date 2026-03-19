@@ -8,37 +8,29 @@ import { RawLocator } from '../../common';
 export default class SpeedUpAndCancelModal {
   private driver: Driver;
 
-  private readonly modal: RawLocator =
-    '[data-testid="speed-up-and-cancel-modal"]';
-
   private readonly cancelTransactionTitle: RawLocator = {
     text: 'Cancel transaction',
-  };
-
-  private readonly speedUpTransactionTitle: RawLocator = {
-    text: 'Speed up transaction',
-  };
-
-  private readonly speedRow: RawLocator =
-    '[data-testid="gas-fee-details-speed"]';
-
-  private readonly siteSuggestedText: RawLocator = {
-    text: 'Site suggested',
   };
 
   private readonly confirmButton: RawLocator =
     '[data-testid="cancel-speedup-confirm-button"]';
 
+  private readonly modal: RawLocator =
+    '[data-testid="speed-up-and-cancel-modal"]';
+
+  private readonly siteSuggestedText: RawLocator = {
+    text: 'Site suggested',
+  };
+
+  private readonly speedRow: RawLocator =
+    '[data-testid="gas-fee-details-speed"]';
+
+  private readonly speedUpTransactionTitle: RawLocator = {
+    text: 'Speed up transaction',
+  };
+
   constructor(driver: Driver) {
     this.driver = driver;
-  }
-
-  /**
-   * Waits for the modal to be visible.
-   */
-  async waitForModal(): Promise<void> {
-    console.log('Waiting for Speed up / Cancel modal');
-    await this.driver.waitForSelector(this.modal);
   }
 
   /**
@@ -50,6 +42,15 @@ export default class SpeedUpAndCancelModal {
   }
 
   /**
+   * Checks that the Speed row in the modal displays "Site suggested".
+   */
+  async checkSpeedRowShowsSiteSuggested(): Promise<void> {
+    console.log('Checking Speed row shows Site suggested');
+    await this.driver.waitForSelector(this.speedRow);
+    await this.driver.waitForSelector(this.siteSuggestedText);
+  }
+
+  /**
    * Checks that the modal is showing the "Speed up transaction" title.
    */
   async checkSpeedUpTitleVisible(): Promise<void> {
@@ -58,12 +59,11 @@ export default class SpeedUpAndCancelModal {
   }
 
   /**
-   * Checks that the Speed row in the modal displays "Site suggested".
+   * Clicks the Confirm button to submit the speed up or cancel action.
    */
-  async checkSpeedRowShowsSiteSuggested(): Promise<void> {
-    console.log('Checking Speed row shows Site suggested');
-    await this.driver.waitForSelector(this.speedRow);
-    await this.driver.waitForSelector(this.siteSuggestedText);
+  async clickConfirm(): Promise<void> {
+    console.log('Clicking Confirm on Speed up / Cancel modal');
+    await this.driver.clickElementAndWaitToDisappear(this.confirmButton);
   }
 
   /**
@@ -78,10 +78,10 @@ export default class SpeedUpAndCancelModal {
   }
 
   /**
-   * Clicks the Confirm button to submit the speed up or cancel action.
+   * Waits for the modal to be visible.
    */
-  async clickConfirm(): Promise<void> {
-    console.log('Clicking Confirm on Speed up / Cancel modal');
-    await this.driver.clickElementAndWaitToDisappear(this.confirmButton);
+  async waitForModal(): Promise<void> {
+    console.log('Waiting for Speed up / Cancel modal');
+    await this.driver.waitForSelector(this.modal);
   }
 }
