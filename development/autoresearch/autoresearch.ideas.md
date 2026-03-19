@@ -18,7 +18,7 @@ This file is maintained by the autoresearch agent. Track ideas to try and what h
 
 ### Shared (helpers, driver, index)
 
-- [ ] Parallelize driver build and fixture server startup
+- [ ] Parallelize driver build and fixture server startup (other combinations)
 - [ ] Reduce `waitForControllers` polling interval or timeout
 - [ ] Lazy-initialize driver until first navigation
 - [ ] Cache driver across tests in same process (if applicable)
@@ -26,10 +26,17 @@ This file is maintained by the autoresearch agent. Track ideas to try and what h
 ## Tried — Successful
 
 - **Chrome: `--no-first-run` + `--disable-default-apps`** — 19s → 14s (-5s)
+- **Chrome: `--disable-gpu` always** — 14s → 13s (-1s)
 
 ## Tried — Failed / No Improvement
 
-_None yet._
+- **Chrome: getExtensionIdByName retry sleep 1000ms→500ms** — No improvement (13s)
+- **Chrome: `--disable-sync` + `--disable-translate`** — Regression (14s vs 13s best)
+- **Chrome: `--disable-background-networking`** — Regression (14s vs 13s best)
+- **Firefox: disable telemetry + checkDefaultBrowser** — 24s (no Chrome baseline to beat; reverted)
+- **helpers: parallelize fixtureServer + phishingPageServer** — mean 14s (16,13,13) vs 13s best
+- **helpers: parallelize mockServer.start + setManifestFlags** — mean 13s (13,14,13), no improvement
+- **Chrome: `--disable-software-rasterizer`** — mean 13s (13,14,13), no improvement
 
 ## Tried — Crashed / Invalid
 
