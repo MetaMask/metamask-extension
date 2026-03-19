@@ -1955,6 +1955,7 @@ describe('Actions', () => {
       expect(addCustomAssetStub.firstCall.args).toStrictEqual([
         accountId,
         'eip155:1/erc20:0xbbb',
+        undefined,
       ]);
 
       const actionTypes = store.getActions().map((a) => a.type);
