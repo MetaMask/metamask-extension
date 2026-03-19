@@ -122,9 +122,7 @@ class FirefoxDriver {
    * @returns {string} Hex-encoded SHA-256 hash
    */
   static _getManifestSha256(absDir) {
-    const manifestContent = fs.readFileSync(
-      path.join(absDir, 'manifest.json'),
-    );
+    const manifestContent = fs.readFileSync(path.join(absDir, 'manifest.json'));
     return nodeCrypto
       .createHash('sha256')
       .update(manifestContent)
@@ -183,7 +181,10 @@ class FirefoxDriver {
       try {
         fs.unlinkSync(xpiPath);
       } catch (err) {
-        console.warn('[Firefox E2E] Pre-rebuild unlink of XPI failed:', err.message);
+        console.warn(
+          '[Firefox E2E] Pre-rebuild unlink of XPI failed:',
+          err.message,
+        );
       }
       try {
         execFileSync('zip', ['-r', '-1', '-q', xpiPath, '.'], { cwd: absDir });
@@ -194,19 +195,28 @@ class FirefoxDriver {
         try {
           fs.unlinkSync(xpiPath);
         } catch (err) {
-          console.warn('[Firefox E2E] Cleanup of partial XPI failed:', err.message);
+          console.warn(
+            '[Firefox E2E] Cleanup of partial XPI failed:',
+            err.message,
+          );
         }
         try {
           fs.unlinkSync(manifestHashPath);
         } catch (err) {
-          console.warn('[Firefox E2E] Cleanup of manifest hash failed:', err.message);
+          console.warn(
+            '[Firefox E2E] Cleanup of manifest hash failed:',
+            err.message,
+          );
         }
         // If unlink failed, overwrite with sentinel so next run won't treat
         // a corrupted XPI as valid (manifestHash will never match '').
         try {
           fs.writeFileSync(manifestHashPath, '');
         } catch (err) {
-          console.warn('[Firefox E2E] Failed to invalidate manifest hash:', err.message);
+          console.warn(
+            '[Firefox E2E] Failed to invalidate manifest hash:',
+            err.message,
+          );
         }
         console.warn(
           '[Firefox E2E] zip not installed or failed, using unpacked directory (slower)',
