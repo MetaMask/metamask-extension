@@ -39,7 +39,7 @@ const erc20AssetId = `eip155:1/erc20:${erc20AssetAddressLowercase}`;
 const solanaTokenAssetId =
   'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v';
 
-const mockNftAsset = 'eip155:137/slip44:966';
+const nativePolygonAssetId = 'eip155:137/slip44:966';
 /* eslint-disable @typescript-eslint/no-unused-vars -- shared helpers for future tests */
 const bitcoinNativeAssetId = 'bip122:000000000019d6689c085ae165831e93/slip44:0';
 /* eslint-enable @typescript-eslint/no-unused-vars */
@@ -163,12 +163,12 @@ describe('getAccountTrackerControllerAccountsByChainId', () => {
           accountsByChainId: {},
           assetsInfo: {
             [nativeEthAssetId]: { type: 'native', decimals: 18 },
-            [mockNftAsset]: { type: 'native', decimals: 18 },
+            [nativePolygonAssetId]: { type: 'native', decimals: 18 },
           },
           assetsBalance: {
             [mockAccountId]: {
               [nativeEthAssetId]: { amount: '1' },
-              [mockNftAsset]: { amount: '2' },
+              [nativePolygonAssetId]: { amount: '2' },
             },
           },
           internalAccounts: {
@@ -1488,6 +1488,7 @@ describe('getCurrencyRateControllerCurrencyRates', () => {
   describe('when assets unify state feature is enabled (happy path)', () => {
     it('derives currencyRates from assetsInfo and assetsPrice for native EVM assets', () => {
       const lastUpdated = 1700000000000; // ms
+      const mockNonFungibleAssetId = 'eip155:137/slip44:987654321';
       const state = {
         metamask: {
           remoteFeatureFlags: {
@@ -1506,9 +1507,9 @@ describe('getCurrencyRateControllerCurrencyRates', () => {
               symbol: 'USDC',
               decimals: 6,
             },
-            [mockNftAsset]: {
-              type: 'nft',
-              symbol: 'NFT',
+            [mockNonFungibleAssetId]: {
+              type: 'something',
+              symbol: 'SMT',
             },
           },
           assetsPrice: {
@@ -1536,9 +1537,9 @@ describe('getCurrencyRateControllerCurrencyRates', () => {
               pricePercentChange200d: 20,
               pricePercentChange1y: 30,
             },
-            [mockNftAsset]: {
-              assetPriceType: 'nft',
-              id: 'pol-price',
+            [mockNonFungibleAssetId]: {
+              assetPriceType: 'something',
+              id: 'smt-price',
               price: 0.5,
               lastUpdated,
             },
