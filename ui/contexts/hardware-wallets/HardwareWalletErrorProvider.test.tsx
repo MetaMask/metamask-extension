@@ -1,11 +1,10 @@
 import React from 'react';
 import { render, act } from '@testing-library/react';
 import { renderHook } from '@testing-library/react-hooks';
-import { Provider } from 'react-redux';
-import { MemoryRouter } from 'react-router-dom';
 import configureStore from 'redux-mock-store';
 import { KeyringTypes } from '@metamask/keyring-controller';
 import { ErrorCode } from '@metamask/hw-wallet-sdk';
+import { createMemoryRouterWrapper } from '../../../test/lib/render-helpers-navigate';
 import {
   showModal,
   hideModal,
@@ -97,18 +96,21 @@ const createMockState = (
   },
 });
 
-const createWrapper =
-  (
-    store: ReturnType<typeof mockStore>,
-    initialRoute: string = CONFIRM_TRANSACTION_ROUTE,
-  ) =>
-  ({ children }: { children: React.ReactNode }) => (
-    <Provider store={store}>
-      <MemoryRouter initialEntries={[initialRoute]}>
-        <HardwareWalletErrorProvider>{children}</HardwareWalletErrorProvider>
-      </MemoryRouter>
-    </Provider>
+const createWrapper = (
+  store: ReturnType<typeof mockStore>,
+  initialRoute: string = CONFIRM_TRANSACTION_ROUTE,
+) => {
+  const MemoryRouter = createMemoryRouterWrapper({
+    initialEntries: [initialRoute],
+    store,
+  });
+
+  return ({ children }: { children: React.ReactNode }) => (
+    <MemoryRouter>
+      <HardwareWalletErrorProvider>{children}</HardwareWalletErrorProvider>
+    </MemoryRouter>
   );
+};
 
 const renderHardwareWalletErrorHook = (
   store: ReturnType<typeof mockStore>,
