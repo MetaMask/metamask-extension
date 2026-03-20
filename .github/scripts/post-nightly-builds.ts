@@ -196,6 +196,14 @@ async function postSuccessNotification(env: any, version: string) {
       chrome: `${env.HOST_URL}/build-experimental-browserify/builds/metamask-experimental-chrome-${experimentalVersion}.zip`,
       firefox: `${env.HOST_URL}/build-experimental-mv2-browserify/builds/metamask-experimental-firefox-${experimentalVersion}.zip`,
     },
+    'webpack builds': {
+      chrome: `${env.HOST_URL}/build-dist-webpack/builds/metamask-chrome-${version}.zip`,
+      firefox: `${env.HOST_URL}/build-dist-mv2-webpack/builds/metamask-firefox-${version}.zip`,
+    },
+    'webpack builds (experimental)': {
+      chrome: `${env.HOST_URL}/build-experimental-webpack/builds/metamask-chrome-${experimentalVersion}.zip`,
+      firefox: `${env.HOST_URL}/build-experimental-mv2-webpack/builds/metamask-firefox-${experimentalVersion}.zip`,
+    },
   };
 
   const webhook = new IncomingWebhook(env.SLACK_NIGHTLY_BUILDS_WEBHOOK_URL);
@@ -354,6 +362,98 @@ async function postSuccessNotification(env: any, version: string) {
             {
               type: 'link' as const,
               url: buildMap['builds (experimental)'].firefox,
+              text: 'Experimental Firefox Extension',
+            },
+            {
+              type: 'text' as const,
+              text: '\n',
+            },
+          ],
+        },
+      ],
+    },
+    {
+      type: 'divider',
+    },
+    {
+      type: 'rich_text',
+      elements: [
+        {
+          type: 'rich_text_section',
+          elements: [
+            {
+              type: 'emoji' as const,
+              name: 'package',
+            },
+            {
+              type: 'text' as const,
+              text: ' Webpack Download Links:\n',
+              style: {
+                bold: true,
+              },
+            },
+            {
+              type: 'emoji' as const,
+              name: 'chrome',
+            },
+            {
+              type: 'text' as const,
+              text: ' ',
+            },
+            {
+              type: 'link' as const,
+              url: buildMap['webpack builds'].chrome,
+              text: 'Main Chrome Extension',
+            },
+            {
+              type: 'text' as const,
+              text: '\n',
+            },
+            {
+              type: 'emoji' as const,
+              name: 'firefox',
+            },
+            {
+              type: 'text' as const,
+              text: ' ',
+            },
+            {
+              type: 'link' as const,
+              url: buildMap['webpack builds'].firefox,
+              text: 'Main Firefox Extension',
+            },
+            {
+              type: 'text' as const,
+              text: '\n',
+            },
+            {
+              type: 'emoji' as const,
+              name: 'test_tube',
+            },
+            {
+              type: 'text' as const,
+              text: ' ',
+            },
+            {
+              type: 'link' as const,
+              url: buildMap['webpack builds (experimental)'].chrome,
+              text: 'Experimental Chrome Extension',
+            },
+            {
+              type: 'text' as const,
+              text: '\n',
+            },
+            {
+              type: 'emoji' as const,
+              name: 'test_tube',
+            },
+            {
+              type: 'text' as const,
+              text: ' ',
+            },
+            {
+              type: 'link' as const,
+              url: buildMap['webpack builds (experimental)'].firefox,
               text: 'Experimental Firefox Extension',
             },
             {

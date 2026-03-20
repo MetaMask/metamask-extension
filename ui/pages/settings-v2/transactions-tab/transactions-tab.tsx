@@ -10,7 +10,7 @@ import { SettingItemConfig } from '../types';
 import {
   SettingsTab,
   createToggleItem,
-  type ToggleItemConfig,
+  createDescriptionWithLearnMore,
 } from '../shared';
 import {
   getIsSecurityAlertsEnabled,
@@ -33,28 +33,10 @@ const selectIsDisabledByShieldSubscription = (state: MetaMaskReduxState) =>
     state as unknown as Parameters<typeof getIsActiveShieldSubscription>[0],
   );
 
-const descriptionWithLearnMore =
-  (
-    descriptionKey: string,
-    href: string,
-  ): ToggleItemConfig['formatDescription'] =>
-  (t) =>
-    t(descriptionKey, [
-      <a
-        key="learn_more_link"
-        href={href}
-        rel="noopener noreferrer"
-        target="_blank"
-        className="font-medium text-primary-default"
-      >
-        {t('learnMoreUpperCase')}
-      </a>,
-    ]);
-
 const TransactionSimulationsItem = createToggleItem({
   name: 'TransactionSimulationsItem',
   titleKey: 'simulationsSettingSubHeader',
-  formatDescription: descriptionWithLearnMore(
+  formatDescription: createDescriptionWithLearnMore(
     'simulationsSettingDescriptionV2',
     TRANSACTION_SIMULATIONS_LEARN_MORE_LINK,
   ),
@@ -68,7 +50,7 @@ const TransactionSimulationsItem = createToggleItem({
 const SecurityAlertsItem = createToggleItem({
   name: 'SecurityAlertsItem',
   titleKey: 'securityAlerts',
-  formatDescription: descriptionWithLearnMore(
+  formatDescription: createDescriptionWithLearnMore(
     'securityAlertsDescriptionV2',
     SECURITY_ALERTS_LEARN_MORE_LINK,
   ),
@@ -89,7 +71,7 @@ const SecurityAlertsItem = createToggleItem({
 const SmartTransactionsItem = createToggleItem({
   name: 'SmartTransactionsItem',
   titleKey: 'smartTransactions',
-  formatDescription: descriptionWithLearnMore(
+  formatDescription: createDescriptionWithLearnMore(
     'stxOptInDescriptionV2',
     SMART_TRANSACTIONS_LEARN_MORE_URL,
   ),
