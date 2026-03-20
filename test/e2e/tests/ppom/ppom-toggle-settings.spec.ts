@@ -42,6 +42,7 @@ describe('PPOM Settings', function (this: Suite) {
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         const confirmation = new Confirmation(driver);
+        await confirmation.checkPageIsLoaded();
         await confirmation.checkSecurityProviderBannerAlertIsNotPresent();
       },
     );
