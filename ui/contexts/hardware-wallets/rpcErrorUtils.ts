@@ -680,25 +680,36 @@ export function toHardwareWalletError(
   }
 
   if (error instanceof KeyringControllerError) {
-    if (walletType === HardwareWalletType.Trezor) {
-      const trezorCauseCode = (error.cause as { code?: unknown })?.code;
-      if (typeof trezorCauseCode === 'string') {
-        const mappedTrezorCauseCode =
-          mapTrezorStructuredCodeToErrorCode(trezorCauseCode);
-        if (mappedTrezorCauseCode !== null) {
-          return createHardwareWalletError(
-            mappedTrezorCauseCode,
-            walletType,
-            getErrorMessage(error.cause),
-            {
-              cause: error?.cause instanceof Error ? error.cause : undefined,
-            },
-          );
-        }
+    const causeCode = getHardwareWalletErrorCode(error.cause);
+    if (
+      walletType === HardwareWalletType.Trezor &&
+      causeCode === ErrorCode.Unknown
+    ) {
+      const inferredCauseCode = mapTrezorErrorToErrorCode(error.cause);
+      if (inferredCauseCode !== ErrorCode.Unknown) {
+        return createHardwareWalletError(
+          inferredCauseCode,
+          walletType,
+          getErrorMessage(error.cause),
+          {
+            cause: error?.cause instanceof Error ? error.cause : undefined,
+          },
+        );
+      }
+
+      const inferredKeyringCode = mapTrezorErrorToErrorCode(error);
+      if (inferredKeyringCode !== ErrorCode.Unknown) {
+        return createHardwareWalletError(
+          inferredKeyringCode,
+          walletType,
+          error.message,
+          {
+            cause: error?.cause instanceof Error ? error.cause : undefined,
+          },
+        );
       }
     }
 
-    const causeCode = getHardwareWalletErrorCode(error.cause);
     if (causeCode !== null) {
       return createHardwareWalletError(
         causeCode,
