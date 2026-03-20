@@ -466,9 +466,9 @@ function getOptions(
       coerce: (v: string) => {
         if (v === 'auto') return 'auto' as const;
         const n = Number(v);
-        if (Number.isNaN(n) || n < 0 || !Number.isInteger(n)) {
+        if (Number.isNaN(n) || n <= 0 || !Number.isInteger(n)) {
           throw new Error(
-            `Invalid --jobsPerThread value "${v}": expected "auto" or a non-negative integer`,
+            `Invalid --jobsPerThread value "${v}": expected "auto" or a positive integer`,
           );
         }
         return n;
