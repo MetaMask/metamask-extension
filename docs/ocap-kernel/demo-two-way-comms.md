@@ -152,6 +152,9 @@ Use the same relay multiaddr that the home kernel is using. Example:
 yarn ocap daemon exec initRemoteComms '{"relays": ["/ip4/<VPS_IP>/tcp/9001/ws/p2p/<relay_peer_id>"]}'
 ```
 
+> **Note**: If the relay is running on the same machine as the away kernel,
+> you can use `127.0.0.1` instead of the external VPS IP.
+
 ### Step 3: Parse the OCAP URL
 
 The OCAP URL from Step 3 of Part 1 has this format:
