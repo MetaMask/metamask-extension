@@ -19,12 +19,26 @@ import { AssetPollingProvider } from '../contexts/assetPolling';
 import { MetamaskIdentityProvider } from '../contexts/identity';
 import { ShieldSubscriptionProvider } from '../contexts/shield/shield-subscription';
 import RiveWasmProvider from '../contexts/rive-wasm';
+import { Messenger } from '@metamask/messenger';
 import { queryClient } from '../contexts/query-client';
 import { HardwareWalletErrorProvider } from '../contexts/hardware-wallets';
+import { UIMessengerProvider } from '../contexts/ui-messenger';
 import ErrorPageBase from './error-page/error-page.component';
 
 import Routes, { routeConfig } from './routes';
 import { useBackgroundQuerySync } from '../hooks/useBackgroundQuerySync';
+
+/**
+ * UI messenger instance — parent for all route messengers.
+ *
+ * Production: created by `getUIMessenger(backgroundConnection)` which bridges
+ * actions and events over JSON-RPC to the background messenger. In this PoC,
+ * constructed as a local messenger to demonstrate the delegation/enforcement
+ * pattern without the bridge infrastructure.
+ *
+ * @see {@link https://github.com/MetaMask/metamask-extension/compare/main...messenger-ui-integration-prototype}
+ */
+const uiMessenger = new Messenger({ namespace: 'UI' });
 
 /**
  * Mounts inside QueryClientProvider to subscribe to background sync events
@@ -43,6 +57,7 @@ function AppProviders() {
           <LegacyI18nProvider>
             <QueryClientProvider client={queryClient}>
               <BackgroundQuerySyncBridge>
+              <UIMessengerProvider value={uiMessenger}>
               <AssetPollingProvider>
                 <MetamaskIdentityProvider>
                   <MetamaskNotificationsProvider>
@@ -56,6 +71,7 @@ function AppProviders() {
                   </MetamaskNotificationsProvider>
                 </MetamaskIdentityProvider>
               </AssetPollingProvider>
+              </UIMessengerProvider>
               </BackgroundQuerySyncBridge>
             </QueryClientProvider>
           </LegacyI18nProvider>

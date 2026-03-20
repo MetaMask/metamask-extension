@@ -5,6 +5,8 @@ import Initialized from '../helpers/higher-order-components/initialized';
 import BasicFunctionalityRequired from '../helpers/higher-order-components/require-basic-functionality/require-basic-functionality';
 import type { RootLayout } from './root-layout';
 import type { LegacyLayout } from './legacy-layout';
+import type { UIMessengerEvents } from '../messengers/ui-messenger';
+import { RouteWithMessenger } from './route-with-messenger';
 
 export type RouteWithLayoutConfig = {
   path: string;
@@ -17,6 +19,16 @@ export type RouteWithLayoutConfig = {
   authenticated?: boolean;
   initialized?: boolean;
   children?: ReactNode;
+  /**
+   * Messenger capabilities for this route. Routes that subscribe to background
+   * sync events must declare them here. Components using useMessenger() are
+   * validated against this list at compile time (types) and runtime (throws).
+   *
+   * @see {@link https://github.com/MetaMask/metamask-extension/compare/main...messenger-ui-integration-prototype}
+   */
+  messenger?: {
+    events?: UIMessengerEvents['type'][];
+  };
 } & (
   | {
       /** When true (default), redirects to the basic-functionality-off screen if Basic Functionality (useExternalServices) is off. */
@@ -59,18 +71,30 @@ export const createRouteWithLayout = (
     basicFunctionalityRequired = true,
     basicFunctionalityOpenPageCtaKey,
     children,
+    messenger,
   } = config;
 
   // Determine content: children > element > component
   let content: ReactNode =
     children || element || (Component ? <Component /> : null);
 
-  // Wrap with Initialized first (outermost guard)
+  // Wrap with RouteWithMessenger first (innermost — closest to the component).
+  // RouteWithMessenger reads the UIMessenger from UIMessengerProvider via
+  // useUIMessenger() and creates a child messenger with delegated capabilities.
+  if (messenger && content) {
+    content = (
+      <RouteWithMessenger events={messenger.events}>
+        {content}
+      </RouteWithMessenger>
+    );
+  }
+
+  // Wrap with Initialized
   if (initialized && content) {
     content = <Initialized>{content}</Initialized>;
   }
 
-  // Then wrap with Authenticated (inner guard)
+  // Then wrap with Authenticated
   if (authenticated && content) {
     content = <Authenticated>{content}</Authenticated>;
   }
