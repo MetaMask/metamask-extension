@@ -587,6 +587,28 @@ describe('rpcErrorUtils', () => {
       expect(result.message).toBe('Cancelled');
     });
 
+    it('maps Trezor wrapped cancellation without cause code from KeyringControllerError', () => {
+      const error = Object.assign(
+        Object.create(KeyringControllerError.prototype),
+        {
+          name: 'KeyringControllerError',
+          message:
+            'Keyring Controller signTypedMessage: HardwareWalletError: Cancelled',
+          cause: {
+            name: 'HardwareWalletError',
+            message: 'Cancelled',
+            stack: 'HardwareWalletError: Cancelled',
+          },
+        },
+      );
+
+      const result = toHardwareWalletError(error, HardwareWalletType.Trezor);
+
+      expect(result).toBeInstanceOf(HardwareWalletError);
+      expect(result.code).toBe(ErrorCode.UserCancelled);
+      expect(result.message).toBe('Cancelled');
+    });
+
     it('reconstructs from serialized RPC cause and preserves stack/metadata', () => {
       const serializedRpcError = {
         code: -32603,
@@ -966,6 +988,26 @@ describe('rpcErrorUtils', () => {
         message: 'Canceled',
       };
 
+      expect(isUserRejectedHardwareWalletError(error)).toBe(true);
+    });
+
+    it('returns true for KeyringControllerError wrapping unknown hardware wallet cancellation', () => {
+      const error = Object.assign(
+        Object.create(KeyringControllerError.prototype),
+        {
+          name: 'KeyringControllerError',
+          message:
+            'Keyring Controller signTypedMessage: HardwareWalletError: Cancelled',
+          cause: {
+            name: 'HardwareWalletError',
+            code: ErrorCode.Unknown,
+            message: 'Cancelled',
+            stack: 'HardwareWalletError [Unknown:99999]: Cancelled',
+          },
+        },
+      );
+
+      expect(isHardwareWalletError(error)).toBe(true);
       expect(isUserRejectedHardwareWalletError(error)).toBe(true);
     });
 
