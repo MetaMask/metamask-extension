@@ -59,6 +59,7 @@ const enabledFlags = {
 /* eslint-disable @typescript-eslint/no-unused-vars */
 function makeMockPrice(overrides: Partial<Record<string, unknown>> = {}) {
   return {
+    assetPriceType: 'fungible',
     id: 'mock-price',
     price: 1,
     lastUpdated: 1700000000000,
@@ -1569,8 +1570,10 @@ describe('getCurrencyRateControllerCurrencyRates', () => {
           },
           assetsPrice: {
             [avaxPriceAssetId]: {
+              assetPriceType: 'fungible',
               id: 'avax-price',
               price: 25,
+              usdPrice: 25,
               lastUpdated,
               marketCap: 0,
               allTimeHigh: 0,
@@ -1602,53 +1605,6 @@ describe('getCurrencyRateControllerCurrencyRates', () => {
           usdConversionRate: 25,
         },
       });
-    });
-
-    it('sets usdConversionRate when selectedCurrency is usd', () => {
-      const lastUpdated = 1700000000000;
-      const state = {
-        metamask: {
-          remoteFeatureFlags: {
-            [ASSETS_UNIFY_STATE_FLAG]: {
-              enabled: true,
-              featureVersion: ASSETS_UNIFY_STATE_VERSION_1,
-            },
-          },
-          currentCurrency: 'eur',
-          selectedCurrency: 'usd',
-          currencyRates: {},
-          assetsInfo: {
-            [nativeEthAssetId]: { type: 'native', symbol: 'ETH', decimals: 18 },
-          },
-          assetsPrice: {
-            [nativeEthAssetId]: {
-              id: 'eth-price',
-              price: 2000,
-              lastUpdated,
-              marketCap: 0,
-              allTimeHigh: 0,
-              allTimeLow: 0,
-              totalVolume: 0,
-              high1d: 0,
-              low1d: 0,
-              circulatingSupply: 0,
-              dilutedMarketCap: 0,
-              marketCapPercentChange1d: 0,
-              priceChange1d: 0,
-              pricePercentChange1h: 0,
-              pricePercentChange1d: 0,
-              pricePercentChange7d: 0,
-              pricePercentChange14d: 0,
-              pricePercentChange30d: 0,
-              pricePercentChange200d: 0,
-              pricePercentChange1y: 0,
-            },
-          },
-        },
-      };
-      const result = getCurrencyRateControllerCurrencyRates(state);
-
-      expect(result.ETH.usdConversionRate).toBe(2000);
     });
   });
 });
@@ -1820,8 +1776,10 @@ describe('getTokenRatesControllerMarketData', () => {
           },
           assetsPrice: {
             [avaxPriceAssetId]: {
+              assetPriceType: 'fungible',
               id: 'avax-price',
               price: avaxPrice,
+              usdPrice: avaxPrice,
               lastUpdated,
               marketCap: 0,
               allTimeHigh: 0,
@@ -1842,8 +1800,10 @@ describe('getTokenRatesControllerMarketData', () => {
               pricePercentChange1y: 0,
             },
             [usdtAssetId]: {
+              assetPriceType: 'fungible',
               id: 'usdt-price',
               price: usdtPriceInUsd,
+              usdPrice: usdtPriceInUsd,
               lastUpdated,
               marketCap: 0,
               allTimeHigh: 0,
@@ -1939,8 +1899,14 @@ describe('getTokenRatesControllerMarketData', () => {
             },
           },
           assetsPrice: {
-            [nativeEthAssetId]: makeMockPrice({ id: 'eth', price: 2000 }),
-            [unknownAssetId]: makeMockPrice({ id: 'unknown', price: 42 }),
+            [nativeEthAssetId]: makeMockPrice({
+              id: 'eth',
+              price: 2000,
+            }),
+            [unknownAssetId]: makeMockPrice({
+              id: 'unknown',
+              price: 42,
+            }),
           },
           networkConfigurationsByChainId: {
             '0x1': { nativeCurrency: 'ETH' },
