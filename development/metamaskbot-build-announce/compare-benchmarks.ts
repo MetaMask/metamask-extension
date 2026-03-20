@@ -16,13 +16,13 @@
  * 2 — usage error or fatal crash
  */
 
-import { promises as fs } from 'node:fs';
-import path from 'node:path';
-import { parseArgs } from 'node:util';
+import { promises as fs } from 'fs';
+import path from 'path';
+import { parseArgs } from 'util';
+
 import {
   THRESHOLD_SEVERITY,
-  BENCHMARK_PLATFORMS,
-  BENCHMARK_BUILD_TYPES,
+  ALL_BENCHMARK_COMBOS,
 } from '../../shared/constants/benchmarks';
 import type {
   ThresholdSeverity,
@@ -32,14 +32,14 @@ import type {
 } from '../../shared/constants/benchmarks';
 import { toKebabCase } from '../../shared/lib/string-utils';
 import { THRESHOLD_REGISTRY } from '../../test/e2e/benchmarks/utils/constants';
+import { fetchHistoricalPerformanceDataFromMain } from './historical-comparison';
+import type { HistoricalBaselineReference } from './historical-comparison';
 import {
   compareBenchmarkEntries,
   formatDeltaPercent,
   COMPARISON_SEVERITY,
   type BenchmarkEntryComparison,
 } from './comparison-utils';
-import type { HistoricalBaselineReference } from './historical-comparison';
-import { fetchHistoricalPerformanceDataFromMain } from './historical-comparison';
 
 type LoadedBenchmark = {
   name: string;
@@ -81,10 +81,8 @@ export function resolveThresholdConfig(
     return THRESHOLD_REGISTRY[benchmarkName];
   }
 
-  const prefixes = Object.values(BENCHMARK_PLATFORMS).flatMap((platform) =>
-    Object.values(BENCHMARK_BUILD_TYPES).map(
-      (buildType) => new RegExp(`^benchmark-${platform}-${buildType}-`, 'u'),
-    ),
+  const prefixes = ALL_BENCHMARK_COMBOS.map(
+    (combo) => new RegExp(`^benchmark-${combo}-`, 'u'),
   );
   for (const prefix of prefixes) {
     const stripped = benchmarkName.replace(prefix, '');

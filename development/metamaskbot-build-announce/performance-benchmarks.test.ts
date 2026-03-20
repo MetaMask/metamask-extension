@@ -29,7 +29,7 @@ const makeEntry = (
   ...overrides,
 });
 
-const noMissing = (entries: BenchmarkEntry[]): FetchBenchmarkResult => ({
+const withEntries = (entries: BenchmarkEntry[]): FetchBenchmarkResult => ({
   entries,
   missingPresets: [],
 });
@@ -302,89 +302,115 @@ describe('buildBenchmarkSection', () => {
       { entries: [], missingPresets: ['chrome/browserify/foo'] },
       'Test',
     );
-
     expect(html).toContain('⚠️');
     expect(html).toContain('chrome/browserify/foo');
   });
 
-  it('renders bullet header only when no baseline is given', () => {
+  it('renders a table with benchmark rows and combo columns', () => {
     const html = buildBenchmarkSection(
-      noMissing([makeEntry()]),
-      '👆 Interaction',
-    );
-
-    expect(html).toContain('• <b>👆 Interaction</b>');
-    expect(html).not.toContain('View all');
-    expect(html).not.toContain('✅');
-  });
-
-  it('shows ✅ no-regressions message when baseline is given and all metrics pass', () => {
-    const html = buildBenchmarkSection(
-      noMissing([makeEntry()]),
+      withEntries([
+        makeEntry({ benchmarkName: 'loadNewAccount' }),
+        makeEntry({
+          benchmarkName: 'confirmTx',
+          mean: { confirmTx: 500 },
+          stdDev: { confirmTx: 30 },
+          p75: { confirmTx: 520 },
+          p95: { confirmTx: 540 },
+        }),
+      ]),
       'Test',
       BASELINE_PASS,
     );
 
-    expect(html).toContain('✅ No regressions detected');
-    expect(html).not.toContain('View all');
+    expect(html).toContain('<table>');
+    expect(html).toContain('<th>chrome-browserify</th>');
+    expect(html).toContain('<td>loadNewAccount</td>');
+    expect(html).toContain('<td>confirmTx</td>');
   });
 
-  it('shows inline regression item with 🔴 and failure badge when p95 is >10% above baseline', () => {
-    // 672 vs 600 → +12% → regression; single item shown inline (no collapsible)
+  it('shows 🔴 in the cell and failure badge when p95 is >10% above baseline', () => {
+    // 672 vs 600 → +12% → regression
     const html = buildBenchmarkSection(
-      noMissing([makeEntry({ p95: { loadNewAccount: 672 } })]),
+      withEntries([makeEntry({ p95: { loadNewAccount: 672 } })]),
       'Test',
       BASELINE_600,
     );
 
-    expect(html).toContain('chrome-browserify-loadNewAccount');
-    expect(html).toContain('🔴');
     expect(html).toContain('🔴 1');
-    expect(html).toContain('View all'); // always present when there are regressions
   });
 
-  it('shows inline regression item with 🟡 when p95 is 5–10% above baseline', () => {
-    // 636 vs 600 → +6% → warn (no failure badge since warnings do not increment failure count)
+  it('shows 🟡 in the cell and no failure badge when p95 is 5–10% above baseline', () => {
+    // 636 vs 600 → +6% → warn
     const html = buildBenchmarkSection(
-      noMissing([makeEntry({ p95: { loadNewAccount: 636 } })]),
+      withEntries([makeEntry({ p95: { loadNewAccount: 636 } })]),
       'Test',
       BASELINE_600,
     );
 
-    expect(html).toContain('chrome-browserify-loadNewAccount');
     expect(html).toContain('🟡');
-    expect(html).not.toContain('🔴 '); // no failure badge for warn-only
+    expect(html).not.toContain('🔴 1');
   });
 
-  it('embeds runUrl as Show logs anchor in inline item; View all collapsible when multiple items', () => {
-    const RUN_URL = 'https://github.com/actions/runs/123';
+  it('shows 🟢 for passing entries even when no baseline is given', () => {
+    const html = buildBenchmarkSection(withEntries([makeEntry()]), 'Test');
+
+    expect(html).toContain('<table>');
+    expect(html).toContain('🟢');
+  });
+
+  it('shows – for combos where a benchmark has no data', () => {
     const html = buildBenchmarkSection(
-      noMissing([
-        makeEntry({ p95: { loadNewAccount: 672 } }),
+      withEntries([
+        makeEntry({
+          benchmarkName: 'loadNewAccount',
+          platform: 'chrome',
+          buildType: 'browserify',
+        }),
         makeEntry({
           benchmarkName: 'confirmTx',
-          p75: { confirmTx: 660 },
-          p95: { confirmTx: 720 },
+          platform: 'chrome',
+          buildType: 'webpack',
+          mean: { confirmTx: 500 },
+          stdDev: { confirmTx: 30 },
+          p75: { confirmTx: 520 },
+          p95: { confirmTx: 540 },
         }),
       ]),
       'Test',
-      {
-        'interactionUserActions/loadNewAccount': {
-          loadNewAccount: { mean: 540, stdDev: 30, p75: 540, p95: 600 },
-        },
-        'interactionUserActions/confirmTx': {
-          confirmTx: { mean: 540, stdDev: 30, p75: 600, p95: 600 },
-        },
-      },
+      BASELINE_PASS,
+    );
+
+    expect(html).toContain('–');
+  });
+
+  it('links each cell to the entry artifact URL as [Show logs]', () => {
+    const ARTIFACT =
+      'https://cdn.example.com/benchmark-chrome-browserify-foo.json';
+    const html = buildBenchmarkSection(
+      withEntries([makeEntry({ artifactUrl: ARTIFACT })]),
+      'Test',
+      BASELINE_PASS,
+    );
+
+    expect(html).toContain(`href="${ARTIFACT}"`);
+    expect(html).toContain('[Show logs]');
+  });
+
+  it('falls back to runUrl for [Show logs] when entry has no artifactUrl', () => {
+    const RUN_URL = 'https://github.com/actions/runs/123';
+    const html = buildBenchmarkSection(
+      withEntries([makeEntry({ p95: { loadNewAccount: 672 } })]),
+      'Test',
+      BASELINE_600,
       RUN_URL,
     );
 
-    expect(html).toContain(`<a href="${RUN_URL}">Show logs</a>`);
-    expect(html).toContain('View all');
+    expect(html).toContain(`href="${RUN_URL}"`);
+    expect(html).toContain('[Show logs]');
   });
 
   it('resolves startup baseline via pageLoad/* substring key format', () => {
-    // p95=1980 vs chrome baseline 1750 → +13% → regression
+    // p95=1980 vs baseline 1750 → +13% → regression → 🔴
     const entry = makeEntry({
       benchmarkName: 'standardHome',
       presetName: 'startupStandardHome',
@@ -393,26 +419,19 @@ describe('buildBenchmarkSection', () => {
       p75: { uiStartup: 1850 },
       p95: { uiStartup: 1980 },
     });
-    const baseline = {
+    const html = buildBenchmarkSection(withEntries([entry]), '🔌 Startup', {
       'pageLoad/chrome-browserify-startupStandardHome': {
         uiStartup: { mean: 1600, stdDev: 80, p75: 1650, p95: 1750 },
       },
-    };
+    });
 
-    const html = buildBenchmarkSection(
-      noMissing([entry]),
-      '🔌 Startup',
-      baseline,
-    );
-
-    expect(html).toContain('chrome-browserify-standardHome');
     expect(html).toContain('🔴');
-    expect(html).toContain('View all');
+    expect(html).toContain('standardHome');
   });
 
-  it('matches startup baseline by platform and buildType, not just presetName', () => {
-    // Firefox p95=1600 vs its own baseline 1595 → +0.3% → neutral → ✅
-    // Without the fix, the scan returns the chrome key first → 1600 vs 1500 → +7% → 🟡 (wrong)
+  it('uses the platform-specific baseline, not the first matching key', () => {
+    // Firefox p95=1600 vs its own baseline 1595 → +0.3% → 🟢
+    // Without the fix it would compare against chrome baseline 1500 → +7% → 🟡
     const firefoxEntry = makeEntry({
       benchmarkName: 'standardHome',
       presetName: 'startupStandardHome',
@@ -423,52 +442,47 @@ describe('buildBenchmarkSection', () => {
       p75: { uiStartup: 1545 },
       p95: { uiStartup: 1600 },
     });
-    const baseline = {
-      'pageLoad/chrome-browserify-startupStandardHome': {
-        uiStartup: { mean: 1380, stdDev: 80, p75: 1430, p95: 1500 },
-      },
-      'pageLoad/firefox-browserify-startupStandardHome': {
-        uiStartup: { mean: 1480, stdDev: 90, p75: 1540, p95: 1595 },
-      },
-    };
-
     const html = buildBenchmarkSection(
-      noMissing([firefoxEntry]),
+      withEntries([firefoxEntry]),
       '🔌 Startup',
-      baseline,
+      {
+        'pageLoad/chrome-browserify-startupStandardHome': {
+          uiStartup: { mean: 1380, stdDev: 80, p75: 1430, p95: 1500 },
+        },
+        'pageLoad/firefox-browserify-startupStandardHome': {
+          uiStartup: { mean: 1480, stdDev: 90, p75: 1540, p95: 1595 },
+        },
+      },
     );
 
-    expect(html).toContain('✅ No regressions detected');
-    expect(html).not.toContain('View all');
+    expect(html).toContain('🟢');
+    expect(html).not.toContain('🔴 1');
   });
 
-  it('skips metrics that are absent from the baseline (no false positives)', () => {
-    // entry has loadNewAccount + otherMetric; baseline only has loadNewAccount
-    // otherMetric hits the "!baselineMetrics[metric]" guard → skipped
+  it('skips metrics absent from the baseline (no false positives)', () => {
+    // otherMetric not in baseline → ignored, loadNewAccount passes → no failure badge
     const entry = makeEntry({
       p95: { loadNewAccount: 612, otherMetric: 100 },
       p75: { loadNewAccount: 550, otherMetric: 80 },
     });
-
     const html = buildBenchmarkSection(
-      noMissing([entry]),
+      withEntries([entry]),
       'Test',
       BASELINE_PASS,
     );
 
-    expect(html).toContain('✅ No regressions detected');
+    expect(html).not.toContain('🔴 1');
   });
 
-  it('skips a percentile comparison when the stat value is absent from the entry', () => {
-    // p75 is empty → P75 val=undefined → that iteration is skipped in both
-    // computeEntryHealth and getEntryRegressions; p95 still passes
+  it('skips a percentile when its value is absent from the entry', () => {
+    // p75={} → p75 skipped; p95 still within threshold → no failure
     const html = buildBenchmarkSection(
-      noMissing([makeEntry({ p75: {} })]),
+      withEntries([makeEntry({ p75: {} })]),
       'Test',
       BASELINE_PASS,
     );
 
-    expect(html).toContain('✅ No regressions detected');
+    expect(html).not.toContain('🔴 1');
   });
 });
 
@@ -554,8 +568,6 @@ describe('buildPerformanceBenchmarksSection', () => {
       });
 
     const html = await buildPerformanceBenchmarksSection(HOST);
-
-    expect(html).toContain('View all');
     expect(html).toContain('loadNewAccount');
   });
 });

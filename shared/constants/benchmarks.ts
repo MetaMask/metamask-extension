@@ -82,7 +82,10 @@ export type ThresholdViolation = {
  * Aggregated historical baseline for a single metric,
  * with values for each stat key (mean, p75, p95).
  */
-export type HistoricalBaselineMetrics = Omit<Record<StatKey, number>, 'stdDev'> & {
+export type HistoricalBaselineMetrics = Omit<
+  Record<StatKey, number>,
+  'stdDev'
+> & {
   stdDev?: number;
 };
 
@@ -116,12 +119,14 @@ export const BENCHMARK_BUILD_TYPES = {
   WEBPACK: 'webpack',
 } as const;
 
-/**
- * Platform and build-type combinations for which entry benchmarks
- * (interaction & user journey) are currently collected.
- * Extend these arrays here to automatically include more combos in
- * both the PR comment builder and the benchmark gate checks.
- */
+export const ALL_BENCHMARK_COMBOS: readonly string[] = Object.values(
+  BENCHMARK_PLATFORMS,
+).flatMap((platform) =>
+  Object.values(BENCHMARK_BUILD_TYPES).map(
+    (buildType) => `${platform}-${buildType}`,
+  ),
+);
+
 export const ENTRY_BENCHMARK_PLATFORMS: readonly (typeof BENCHMARK_PLATFORMS)[keyof typeof BENCHMARK_PLATFORMS][] =
   [BENCHMARK_PLATFORMS.CHROME];
 

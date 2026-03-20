@@ -159,12 +159,16 @@ export function compareBenchmarkEntries(
       for (const [metric, currentValue] of Object.entries(currentMap)) {
         const baselineEntry = baselineData[metric];
         if (baselineEntry !== undefined) {
+          const baselineVal = baselineEntry[key];
+          if (baselineVal === undefined) {
+            continue;
+          }
           relativeMetrics.push(
             compareMetric(
               metric,
               key,
               currentValue,
-              baselineEntry[key],
+              baselineVal,
               relativeThresholds,
             ),
           );
