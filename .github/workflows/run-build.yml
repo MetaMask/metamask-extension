@@ -23,6 +23,10 @@ on:
         type: boolean
         default: false
         description: Whether to zip the build output. Only compatible with webpack builds. This bash-based zipping is more performant than the built-in zip option of webpack.
+      skip-post-build-checks:
+        type: boolean
+        default: false
+        description: Whether to skip post-build checks like source map validation and mozilla-lint.
 
 jobs:
   run-build:
@@ -126,10 +130,11 @@ jobs:
           done
 
       - name: Validate source maps
+        if: ${{ !inputs.skip-post-build-checks }}
         run: ${{ contains(inputs.build-name, 'webpack') && 'yarn validate-source-maps:webpack' || 'yarn validate-source-maps' }}
 
       - name: Run mozilla-lint
-        if: ${{ contains(inputs.build-name, 'mv2') }}
+        if: ${{ !inputs.skip-post-build-checks && contains(inputs.build-name, 'mv2') }}
         run: yarn mozilla-lint
 
       - name: Upload artifact '${{ inputs.build-name }}'
