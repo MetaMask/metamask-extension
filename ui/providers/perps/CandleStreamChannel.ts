@@ -245,7 +245,7 @@ export class CandleStreamChannel {
       this.notifySubscribers(entry, mergedData);
     } catch (error) {
       console.error(
-        '[CandleStreamChannel] fetchHistoricalCandles failed for %s:',
+        '[CandleStreamChannel] fetchHistoricalCandles failed for key:',
         key,
         error,
       );
@@ -352,9 +352,9 @@ export class CandleStreamChannel {
     submitRequestToBackground('perpsActivateCandleStream', [
       { symbol, interval, duration: entry.duration },
     ]).catch((err) => {
-        '[CandleStreamChannel] Failed to activate streaming for %s:',
+      console.warn(
+        '[CandleStreamChannel] Failed to activate streaming for key:',
         key,
-        `[CandleStreamChannel] Failed to activate streaming for ${key}:`,
         err,
       );
       entry.isConnected = false;
