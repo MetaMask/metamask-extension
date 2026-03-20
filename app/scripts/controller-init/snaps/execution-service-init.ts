@@ -87,6 +87,7 @@ export const ExecutionServiceInit: ControllerInitFunction<
       messenger: controllerMessenger,
       iframeUrl: new URL(iframeUrl),
       setupSnapProvider,
+      pingTimeout: Infinity,
     }),
   };
 };
