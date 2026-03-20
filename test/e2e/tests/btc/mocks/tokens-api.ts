@@ -9,6 +9,9 @@ const SOL_CHAIN_CAIP_ID = 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp';
 const SOL_USDC_CAIP_ASSET_ID =
   'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v';
 
+const TRON_NATIVE_CAIP_ASSET_ID = 'tron:728126428/slip44:195';
+const TRON_CHAIN_CAIP_ID = 'tron:728126428';
+
 /**
  * Mock GET /v2/supportedNetworks for the Tokens API.
  *
@@ -28,6 +31,7 @@ export const mockTokensV2SupportedNetworks = (mockServer: Mockttp) =>
       fullSupport: [
         BTC_CHAIN_CAIP_ID,
         SOL_CHAIN_CAIP_ID,
+        TRON_CHAIN_CAIP_ID,
         'eip155:1',
         'eip155:137',
         'eip155:56',
@@ -44,7 +48,8 @@ export const mockTokensV2SupportedNetworks = (mockServer: Mockttp) =>
  *
  * The TokenDataSource calls this endpoint to fetch asset metadata
  * (assetsInfo) for assets whose metadata is missing. Provides symbol,
- * decimals, and name for BTC and SOL native assets, which are required by
+ * decimals, and name for a fixed set of chains (ETH 1337, BTC, SOL, Solana
+ * USDC, Tron native), which are required by
  * getMultiChainBalancesControllerBalances to include the balance in its
  * output when the assetsUnifyState feature flag is enabled.
  *
@@ -105,6 +110,18 @@ export const mockTokensV3Assets = (mockServer: Mockttp) =>
           iconUrl:
             'https://static.cx.metamask.io/api/v2/tokenIcons/assets/solana/5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token/EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v.png',
           coingeckoId: 'usd-coin',
+        });
+      }
+
+      if (assetIds.includes('tron:728126428')) {
+        results.push({
+          assetId: TRON_NATIVE_CAIP_ASSET_ID,
+          name: 'Tron',
+          symbol: 'TRX',
+          decimals: 6,
+          iconUrl:
+            'https://static.cx.metamask.io/api/v2/tokenIcons/assets/tron/728126428/slip44/195.png',
+          coingeckoId: 'tron',
         });
       }
 

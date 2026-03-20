@@ -7,6 +7,8 @@ import { DAPP_PATH } from '../../constants';
 import { mockProtocolSnap } from '../../mock-response-data/snaps/snap-binary-mocks';
 import { mockTokensV2SupportedNetworks } from '../btc/mocks/tokens-api';
 
+export { mockTokensV3Assets } from '../btc/mocks/tokens-api';
+
 /**
  * Holds the actual transaction signature captured from sendTransaction.
  * Shared between mock functions so that getSignaturesForAddress and
@@ -1889,28 +1891,99 @@ export async function mockGetTokenAccountBalance(mockServer: Mockttp) {
     }));
 }
 
+/** Tokens API v3/assets: only these CAIP assets are mocked (see btc/mocks/tokens-api). */
+const MOCK_TOKEN_API_BTC_CAIP_ASSET_ID =
+  'bip122:000000000019d6689c085ae165831e93/slip44:0';
+const MOCK_TOKEN_API_SOL_CAIP_ASSET_ID =
+  'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501';
+const MOCK_TOKEN_API_TRON_NATIVE_ASSET_ID = 'tron:728126428/slip44:195';
+
 /**
- * Mocks the Token API /v3/assets endpoint so the snap can resolve
- * USDC metadata (symbol, name, decimals) for the swap transaction display.
+ * Mocks GET /v3/assets for the Tokens API. Returns metadata only for Ethereum
+ * (chain 1337), Solana native, USD Coin on Solana, Bitcoin, and Tron native —
+ * matching requested `assetIds` query params.
  *
  * @param mockServer - The mockttp server instance.
  */
 export async function mockTokenApiAssets(mockServer: Mockttp) {
   return await mockServer
-    .forGet('https://tokens.api.cx.metamask.io/v3/assets')
-    .thenCallback(() => ({
-      statusCode: 200,
-      json: [
-        {
+    .forGet(/https:\/\/tokens\.api\.cx\.metamask\.io\/v3\/assets/u)
+    .always()
+    .thenCallback((request) => {
+      const url = new URL(request.url);
+      const assetIds = url.searchParams.getAll('assetIds').join(',');
+
+      const results: {
+        assetId: string;
+        name: string;
+        symbol: string;
+        decimals: number;
+        iconUrl: string;
+        coingeckoId: string;
+      }[] = [];
+
+      if (assetIds.includes('eip155:1337')) {
+        results.push({
+          assetId: 'eip155:1337/slip44:60',
+          name: 'Ethereum',
+          symbol: 'ETH',
+          decimals: 18,
+          iconUrl:
+            'https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1337/slip44/60.png',
+          coingeckoId: 'ethereum',
+        });
+      }
+
+      if (assetIds.includes('bip122:000000000019d6689c085ae165831e93')) {
+        results.push({
+          assetId: MOCK_TOKEN_API_BTC_CAIP_ASSET_ID,
+          name: 'Bitcoin',
+          symbol: 'BTC',
+          decimals: 8,
+          iconUrl:
+            'https://static.cx.metamask.io/api/v1/tokenIcons/bip122/000000000019d6689c085ae165831e93/slip44/0.png',
+          coingeckoId: 'bitcoin',
+        });
+      }
+
+      if (assetIds.includes('solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp')) {
+        results.push({
+          assetId: MOCK_TOKEN_API_SOL_CAIP_ASSET_ID,
+          name: 'Solana',
+          symbol: 'SOL',
+          decimals: 9,
+          iconUrl:
+            'https://static.cx.metamask.io/api/v2/tokenIcons/assets/solana/5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44/501.png',
+          coingeckoId: 'solana',
+        });
+      }
+
+      if (assetIds.includes('EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v')) {
+        results.push({
           assetId: USDC_CAIP19,
           name: 'USD Coin',
           symbol: 'USDC',
           decimals: 6,
           iconUrl:
             'https://static.cx.metamask.io/api/v2/tokenIcons/assets/solana/5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token/EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v.png',
-        },
-      ],
-    }));
+          coingeckoId: 'usd-coin',
+        });
+      }
+
+      if (assetIds.includes('tron:728126428')) {
+        results.push({
+          assetId: MOCK_TOKEN_API_TRON_NATIVE_ASSET_ID,
+          name: 'Tron',
+          symbol: 'TRX',
+          decimals: 6,
+          iconUrl:
+            'https://static.cx.metamask.io/api/v2/tokenIcons/assets/tron/728126428/slip44/195.png',
+          coingeckoId: 'tron',
+        });
+      }
+
+      return { statusCode: 200, json: results };
+    });
 }
 
 /**

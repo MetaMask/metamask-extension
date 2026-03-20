@@ -33,7 +33,9 @@ import {
   mockGetFailedTransaction,
   mockBridgeGetTokens,
   mockBridgeSearchTokens,
+  mockTokensV3Assets,
 } from './common-solana';
+import { mockTokensV2SupportedNetworks } from '../btc/mocks';
 
 async function mockSwapUSDCtoSOL(
   mockServer: Mockttp,
@@ -61,6 +63,8 @@ async function mockSwapUSDCtoSOL(
     await mockTokenApiAssets(mockServer),
     await mockBridgeGetTokens(mockServer),
     await mockBridgeSearchTokens(mockServer),
+    await mockTokensV3Assets(mockServer),
+    await mockTokensV2SupportedNetworks(mockServer),
   ];
 }
 
@@ -82,6 +86,8 @@ async function mockSwapNoQuotes(
     await mockTokenApiAssets(mockServer),
     await mockBridgeGetTokens(mockServer),
     await mockBridgeSearchTokens(mockServer),
+    await mockTokensV3Assets(mockServer),
+    await mockTokensV2SupportedNetworks(mockServer),
   ];
 }
 
@@ -109,6 +115,8 @@ async function mockSwapSOLtoUSDCFailed(
     await mockTokenApiAssets(mockServer),
     await mockBridgeGetTokens(mockServer),
     await mockBridgeSearchTokens(mockServer),
+    await mockTokensV2SupportedNetworks(mockServer),
+    await mockTokensV3Assets(mockServer),
   ];
 }
 
@@ -135,6 +143,8 @@ async function mockSwapSOLtoUSDC(
     await mockTokenApiAssets(mockServer),
     await mockBridgeGetTokens(mockServer),
     await mockBridgeSearchTokens(mockServer),
+    await mockTokensV2SupportedNetworks(mockServer),
+    await mockTokensV3Assets(mockServer),
   ];
 }
 
@@ -159,39 +169,39 @@ const SOLANA_SWAP_ASSETS_CONTROLLER_FIXTURE = {
       type: 'native',
     },
   },
-  // assetsBalance: {
-  //   'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4': {
-  //     'eip155:1337/slip44:60': {
-  //       amount: '25',
-  //     },
-  //   },
-  //   'd3d3a7c8-9a21-4606-93d9-b0e045cdaca2': {
-  //     'tron:728126428/slip44:195': {
-  //       amount: '0',
-  //     },
-  //     'tron:728126428/slip44:bandwidth': {
-  //       amount: '0',
-  //     },
-  //     'tron:728126428/slip44:maximum-bandwidth': {
-  //       amount: '0',
-  //     },
-  //     'tron:728126428/slip44:energy': {
-  //       amount: '0',
-  //     },
-  //     'tron:728126428/slip44:maximum-energy': {
-  //       amount: '0',
-  //     },
-  //   },
-  //   'fcaabb71-a0e3-4c2c-9292-972da4be2536': {
-  //     'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501': {
-  //       amount: '50',
-  //     },
-  //   },
-  // },
+  assetsBalance: {
+    'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4': {
+      'eip155:1337/slip44:60': {
+        amount: '25',
+      },
+    },
+    'd3d3a7c8-9a21-4606-93d9-b0e045cdaca2': {
+      'tron:728126428/slip44:195': {
+        amount: '0',
+      },
+      'tron:728126428/slip44:bandwidth': {
+        amount: '0',
+      },
+      'tron:728126428/slip44:maximum-bandwidth': {
+        amount: '0',
+      },
+      'tron:728126428/slip44:energy': {
+        amount: '0',
+      },
+      'tron:728126428/slip44:maximum-energy': {
+        amount: '0',
+      },
+    },
+    'fcaabb71-a0e3-4c2c-9292-972da4be2536': {
+      'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501': {
+        amount: '50',
+      },
+    },
+  },
 };
 
 describe('Swap on Solana', function () {
-  it('Completes a Swap between SOL and USDC', async function () {
+  it.only('Completes a Swap between SOL and USDC', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
@@ -213,13 +223,14 @@ describe('Swap on Solana', function () {
               usdConversionRate: 1932.163232734,
             },
           })
-          .withAssetsController(SOLANA_SWAP_ASSETS_CONTROLLER_FIXTURE)
+          // .withAssetsController(SOLANA_SWAP_ASSETS_CONTROLLER_FIXTURE)
           .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockSwapSOLtoUSDC,
       },
       async ({ driver }) => {
         await loginWithBalanceValidation(driver);
+        // await driver.delay(15000);
 
         // Switch to Solana network
         const networkManager = new NetworkManager(driver);
@@ -264,6 +275,8 @@ describe('Swap on Solana', function () {
           swapTo: 'USDC',
           swapFromAmount: '1',
         });
+
+        // await driver.delay(15000);
 
         const activityListPage = new ActivityListPage(driver);
         await activityListPage.checkTxAmountInActivity('-0.001 SOL', 1);
