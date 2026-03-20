@@ -21,8 +21,6 @@ describe('./utils/cli.ts', () => {
     test: false,
     reactCompilerVerbose: false,
     reactCompilerDebug: 'none',
-    threads: 'auto',
-    jobsPerThread: 'auto',
     zip: false,
     minify: false,
     browser: ['chrome'],
@@ -39,12 +37,12 @@ describe('./utils/cli.ts', () => {
 
   it('should return defaults', () => {
     const { args, cacheKey, features } = parseArgv([], loadBuildTypesConfig());
-    const { resolvedThreads, resolvedJobs, ...rest } = args;
+    const { threads, jobsPerThread, ...rest } = args;
     assert.deepStrictEqual(rest, defaultArgs);
-    assert.strictEqual(typeof resolvedThreads, 'number');
-    assert.strictEqual(typeof resolvedJobs, 'number');
-    assert(resolvedThreads >= 0, 'resolvedThreads should be non-negative');
-    assert(resolvedJobs >= 0, 'resolvedJobs should be non-negative');
+    assert.strictEqual(typeof threads, 'number');
+    assert.strictEqual(typeof jobsPerThread, 'number');
+    assert(threads >= 0, 'threads should be non-negative');
+    assert(jobsPerThread >= 0, 'jobsPerThread should be non-negative');
     assert.strictEqual(
       typeof cacheKey,
       'string',
@@ -240,7 +238,7 @@ describe('./utils/cli.ts', () => {
     it('parses --threads with explicit number', () => {
       const { args } = parseArgv(['--threads', '4'], loadBuildTypesConfig());
       assert.strictEqual(args.threads, 4);
-      assert.strictEqual(args.jobsPerThread, 'auto');
+      assert.strictEqual(args.jobsPerThread, 15);
     });
 
     it('parses --jobsPerThread with explicit number when threads enabled', () => {
@@ -332,7 +330,7 @@ describe('./utils/cli.ts', () => {
         loadBuildTypesConfig(),
       );
       assert.strictEqual(args.threads, 0);
-      assert.strictEqual(args.jobsPerThread, 'auto');
+      assert.strictEqual(args.jobsPerThread, 0);
     });
   });
 });

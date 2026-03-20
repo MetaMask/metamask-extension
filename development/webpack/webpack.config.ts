@@ -238,8 +238,8 @@ const jsxLoader = getSwcLoader('ecmascript', true, safeVariables, swcConfig);
 const npmLoader = getSwcLoader('ecmascript', false, {}, swcConfig);
 const cjsLoader = getSwcLoader('ecmascript', false, {}, swcConfig, 'commonjs');
 const threadLoaderConfig = getThreadLoader({
-  threads: args.resolvedThreads,
-  jobsPerThread: args.resolvedJobs,
+  threads: args.threads,
+  jobsPerThread: args.jobsPerThread,
   watch: args.watch,
 });
 const reactCompilerConfig = getReactCompilerLoader({
