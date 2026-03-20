@@ -73,6 +73,7 @@ export const ExecutionServiceInit: ControllerInitFunction<
         messenger: controllerMessenger,
         setupSnapProvider,
         offscreenPromise,
+        pingTimeout: Infinity,
       }),
     };
   }
