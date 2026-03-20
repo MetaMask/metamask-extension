@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import { Box, BoxFlexDirection } from '@metamask/design-system-react';
 import {
   usePerpsLivePositions,
@@ -18,7 +18,6 @@ import {
   PerpsSectionSkeleton,
 } from './perps-skeletons';
 import { getSelectedInternalAccount } from '../../../selectors';
-import { getPerpsStreamManager } from '../../../providers/perps';
 import { useSelector } from 'react-redux';
 
 /**
@@ -31,29 +30,12 @@ import { useSelector } from 'react-redux';
 export const PerpsView: React.FC = () => {
   const { trigger: triggerDeposit } = usePerpsDepositConfirmation();
 
-  // Get selected address for stream manager initialization
   const selectedAccount = useSelector(getSelectedInternalAccount);
-  const selectedAddress = selectedAccount?.address;
 
-  // Initialize stream manager and prewarm on mount
-  useEffect(() => {
-    if (!selectedAddress) {
-      return;
-    }
-
-    const streamManager = getPerpsStreamManager();
-
-    // Initialize and prewarm
-    streamManager.init(selectedAddress);
-    streamManager.prewarm();
-
-    // Cleanup prewarm on unmount (cache persists!)
-    return () => {
-      streamManager.cleanupPrewarm();
-    };
-  }, [selectedAddress]);
-
-  // Use stream hooks for real-time data
+  // Stream hooks must run before any effects that touch PerpsStreamManager.
+  // `usePerpsStreamManager` (inside these hooks) calls `perpsInit` then `init(address)`;
+  // prewarm/init in an effect above these hooks used to run first and triggered
+  // `perpsGetPositions` etc. before the background client existed (CLIENT_NOT_INITIALIZED).
   const { positions, isInitialLoading: positionsLoading } =
     usePerpsLivePositions();
   const { orders: allOrders, isInitialLoading: ordersLoading } =
