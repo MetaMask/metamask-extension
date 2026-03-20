@@ -15,16 +15,12 @@
  * resolution issues. Both values MUST stay in sync.
  */
 import { createRequire } from 'node:module';
+import { join } from 'node:path';
 import type { Schema } from 'schema-utils';
 import type { LoaderDefinitionFunction } from 'webpack';
 
-// Thread-loader workers load this .ts file as ESM (via tsx), where only
-// import.meta.url is available. The compiled .js is loaded by LavaMoat as CJS,
-// where import.meta is a SyntaxError — the webpack:tsc script patches the .js
-// output to use __filename instead (see sed in package.json "webpack:tsc").
-// @ts-expect-error import.meta.url is valid at runtime
-const esmRequire = createRequire(import.meta.url);
-const reactCompilerModule = esmRequire(
+const requireFromRepoRoot = createRequire(join(process.cwd(), 'package.json'));
+const reactCompilerModule = requireFromRepoRoot(
   'react-compiler-webpack/dist/react-compiler-loader.js',
 ) as { default: LoaderDefinitionFunction } | LoaderDefinitionFunction;
 
