@@ -1309,6 +1309,12 @@
   "cancelPopoverTitle": {
     "message": "Ακύρωση συναλλαγής"
   },
+  "cancelTransactionDescription": {
+    "message": "Αυτή η συναλλαγή θα ακυρωθεί και αυτά τα τέλη δικτύου θα αντικαταστήσουν τα αρχικά."
+  },
+  "cancelTransactionTitle": {
+    "message": "Ακύρωση συναλλαγής"
+  },
   "cancelled": {
     "message": "Ακυρώθηκε"
   },

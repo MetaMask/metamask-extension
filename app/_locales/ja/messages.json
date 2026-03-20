@@ -1309,6 +1309,12 @@
   "cancelPopoverTitle": {
     "message": "トランザクションのキャンセル"
   },
+  "cancelTransactionDescription": {
+    "message": "このトランザクションはキャンセルされ、このネットワーク手数料が元の手数料に代わって適用されます。"
+  },
+  "cancelTransactionTitle": {
+    "message": "トランザクションのキャンセル"
+  },
   "cancelled": {
     "message": "キャンセル済み"
   },

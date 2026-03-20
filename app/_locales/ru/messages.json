@@ -1309,6 +1309,12 @@
   "cancelPopoverTitle": {
     "message": "Отменить транзакцию"
   },
+  "cancelTransactionDescription": {
+    "message": "Эта транзакция будет отменена, и эта комиссия сети заменит исходную."
+  },
+  "cancelTransactionTitle": {
+    "message": "Отменить транзакцию"
+  },
   "cancelled": {
     "message": "Отменено"
   },

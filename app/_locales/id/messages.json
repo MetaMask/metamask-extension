@@ -1309,6 +1309,12 @@
   "cancelPopoverTitle": {
     "message": "Batalkan transaksi"
   },
+  "cancelTransactionDescription": {
+    "message": "Transaksi ini akan dibatalkan dan biaya jaringan ini akan menggantikan biaya awal."
+  },
+  "cancelTransactionTitle": {
+    "message": "Batalkan transaksi"
+  },
   "cancelled": {
     "message": "Dibatalkan"
   },

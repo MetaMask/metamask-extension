@@ -1309,6 +1309,12 @@
   "cancelPopoverTitle": {
     "message": "Hủy giao dịch"
   },
+  "cancelTransactionDescription": {
+    "message": "Giao dịch này sẽ bị hủy và phí mạng này sẽ thay thế phí ban đầu."
+  },
+  "cancelTransactionTitle": {
+    "message": "Hủy giao dịch"
+  },
   "cancelled": {
     "message": "Đã hủy"
   },

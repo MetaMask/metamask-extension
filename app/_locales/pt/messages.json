@@ -1309,6 +1309,12 @@
   "cancelPopoverTitle": {
     "message": "Cancelar transação"
   },
+  "cancelTransactionDescription": {
+    "message": "Esta transação será cancelada e esta taxa de rede substituirá a original."
+  },
+  "cancelTransactionTitle": {
+    "message": "Cancelar transação"
+  },
   "cancelled": {
     "message": "Cancelado"
   },

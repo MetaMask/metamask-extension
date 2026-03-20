@@ -1309,6 +1309,12 @@
   "cancelPopoverTitle": {
     "message": "ट्रांसेक्शन कैंसिल करें"
   },
+  "cancelTransactionDescription": {
+    "message": "यह ट्रांसेक्शन कैंसिल कर दिया जाएगा और यह नेटवर्क फीस ओरिजिनल फीस की जगह लेगी।"
+  },
+  "cancelTransactionTitle": {
+    "message": "ट्रांसेक्शन कैंसिल करें"
+  },
   "cancelled": {
     "message": "कैंसिल किया गया"
   },

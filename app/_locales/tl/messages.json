@@ -1309,6 +1309,12 @@
   "cancelPopoverTitle": {
     "message": "Kanselahin ang transaksyon"
   },
+  "cancelTransactionDescription": {
+    "message": "Makakansela ang transaksyong ito at papalitan ng bayad sa network na ito ang orihinal."
+  },
+  "cancelTransactionTitle": {
+    "message": "Kanselahin ang transaksyon"
+  },
   "cancelled": {
     "message": "Nakansela"
   },

@@ -1309,6 +1309,12 @@
   "cancelPopoverTitle": {
     "message": "트랜잭션 취소"
   },
+  "cancelTransactionDescription": {
+    "message": "거래는 취소되며 이 네트워크 수수료가 기존 수수료를 대신하게 됩니다."
+  },
+  "cancelTransactionTitle": {
+    "message": "트랜잭션 취소"
+  },
   "cancelled": {
     "message": "취소됨"
   },

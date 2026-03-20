@@ -1309,6 +1309,12 @@
   "cancelPopoverTitle": {
     "message": "取消交易"
   },
+  "cancelTransactionDescription": {
+    "message": "这笔交易将被取消，且此网络费用将取代原有费用。"
+  },
+  "cancelTransactionTitle": {
+    "message": "取消交易"
+  },
   "cancelled": {
     "message": "已取消"
   },

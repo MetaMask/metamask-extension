@@ -1309,6 +1309,12 @@
   "cancelPopoverTitle": {
     "message": "Transaktion stornieren"
   },
+  "cancelTransactionDescription": {
+    "message": "Diese Transaktion wird storniert und diese Netzwerkgebühr ersetzt die ursprüngliche Gebühr."
+  },
+  "cancelTransactionTitle": {
+    "message": "Transaktion storniert"
+  },
   "cancelled": {
     "message": "Storniert"
   },

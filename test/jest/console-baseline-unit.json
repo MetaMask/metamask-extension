@@ -241,17 +241,7 @@
       "React: DOM nesting violations": 1
     },
     "ui/components/app/basic-configuration-modal/basic-configuration-modal.test.tsx": {
-      "Reselect: Input stability warnings": 1,
-      "warn: ⚠️ React Router Future Flag": 2
-    },
-    "ui/components/app/clear-metametrics-data/clear-metametrics-data.test.tsx": {
-      "warn: ⚠️ React Router Future Flag": 2
-    },
-    "ui/components/app/configure-snap-popup/configure-snap-popup.test.tsx": {
-      "warn: ⚠️ React Router Future Flag": 2
-    },
-    "ui/components/app/confirm/info/row/address-display.test.tsx": {
-      "warn: ⚠️ React Router Future Flag": 2
+      "Reselect: Input stability warnings": 1
     },
     "ui/components/app/confirm/info/row/address.test.tsx": {
       "Reselect: Identity function warnings": 1
@@ -738,26 +728,7 @@
       "warn: No tokens found for chainId:": 6
     },
     "ui/pages/confirmations/components/activity/transaction-details/transaction-details.test.tsx": {
-      "warn: No tokens found for chainId:": 1,
-      "warn: ⚠️ React Router Future Flag": 2
-    },
-    "ui/pages/confirmations/components/advanced-gas-controls/advanced-gas-controls.test.js": {
-      "warn: ⚠️ React Router Future Flag": 2
-    },
-    "ui/pages/confirmations/components/advanced-gas-fee-popover/advanced-gas-fee-defaults/advanced-gas-fee-defaults.test.js": {
-      "warn: ⚠️ React Router Future Flag": 2
-    },
-    "ui/pages/confirmations/components/advanced-gas-fee-popover/advanced-gas-fee-gas-limit/advanced-gas-fee-gas-limit.test.js": {
-      "warn: ⚠️ React Router Future Flag": 2
-    },
-    "ui/pages/confirmations/components/advanced-gas-fee-popover/advanced-gas-fee-input-subtext/advanced-gas-fee-input-subtext.test.js": {
-      "warn: ⚠️ React Router Future Flag": 2
-    },
-    "ui/pages/confirmations/components/advanced-gas-fee-popover/advanced-gas-fee-inputs/base-fee-input/base-fee-input.test.js": {
-      "warn: ⚠️ React Router Future Flag": 2
-    },
-    "ui/pages/confirmations/components/advanced-gas-fee-popover/advanced-gas-fee-inputs/priority-fee-input/priority-fee-input.test.js": {
-      "warn: ⚠️ React Router Future Flag": 2
+      "warn: No tokens found for chainId:": 1
     },
     "ui/pages/confirmations/components/confirm/blockaid-loading-indicator/blockaid-loading-indicator.test.tsx": {
       "Reselect: Identity function warnings": 3
@@ -1084,26 +1055,7 @@
       "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/components/confirm/title/title.test.tsx": {
-      "Reselect: Identity function warnings": 3,
-      "warn: ⚠️ React Router Future Flag": 2
-    },
-    "ui/pages/confirmations/components/edit-gas-display/edit-gas-display.test.js": {
-      "warn: ⚠️ React Router Future Flag": 2
-    },
-    "ui/pages/confirmations/components/edit-gas-fee-popover/edit-gas-item/edit-gas-item.test.js": {
-      "warn: ⚠️ React Router Future Flag": 2
-    },
-    "ui/pages/confirmations/components/edit-gas-fee-popover/edit-gas-tooltip/edit-gas-tooltip.test.js": {
-      "warn: ⚠️ React Router Future Flag": 2
-    },
-    "ui/pages/confirmations/components/edit-gas-fee-popover/network-statistics/network-statistics.test.js": {
-      "warn: ⚠️ React Router Future Flag": 2
-    },
-    "ui/pages/confirmations/components/edit-gas-fee-popover/network-statistics/status-slider/status-slider.test.js": {
-      "warn: ⚠️ React Router Future Flag": 2
-    },
-    "ui/pages/confirmations/components/gas-estimate-list-item/gas-estimate-list-item.test.tsx": {
-      "warn: ⚠️ React Router Future Flag": 2
+      "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/components/gas-input/gas-input.test.tsx": {
       "Reselect: Identity function warnings": 3

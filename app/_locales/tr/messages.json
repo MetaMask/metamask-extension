@@ -1309,6 +1309,12 @@
   "cancelPopoverTitle": {
     "message": "İşlemi iptal et"
   },
+  "cancelTransactionDescription": {
+    "message": "Bu işlem iptal edilecek ve bu ağ ücreti orijinalinin yerine geçecektir."
+  },
+  "cancelTransactionTitle": {
+    "message": "İşlemi iptal et"
+  },
   "cancelled": {
     "message": "İptal edildi"
   },

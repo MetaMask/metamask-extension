@@ -1309,6 +1309,12 @@
   "cancelPopoverTitle": {
     "message": "Annuler la transaction"
   },
+  "cancelTransactionDescription": {
+    "message": "Cette transaction sera annulée et ces frais de réseau remplaceront les frais initiaux."
+  },
+  "cancelTransactionTitle": {
+    "message": "Annuler la transaction"
+  },
   "cancelled": {
     "message": "Annulé"
   },
