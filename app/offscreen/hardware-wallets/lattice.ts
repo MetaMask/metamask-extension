@@ -1,7 +1,7 @@
 import {
   KnownOrigins,
   OffscreenCommunicationTarget,
-} from '../../shared/constants/offscreen-communication';
+} from '../../../shared/constants/offscreen-communication';
 
 async function openConnectorTab(url: string) {
   const browserTab = window.open(url);

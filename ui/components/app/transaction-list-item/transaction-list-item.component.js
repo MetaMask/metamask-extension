@@ -111,8 +111,10 @@ function TransactionListItemInner({
 
   const {
     initialTransaction: { id, txParams, type, metamaskPay },
-    primaryTransaction: { error, status },
+    primaryTransaction: { error, status, selectedGasFeeToken },
   } = transactionGroup;
+
+  const hasGasFeeTokenSelected = Boolean(selectedGasFeeToken);
 
   const badgeChainId =
     type === TransactionType.perpsDeposit && metamaskPay?.chainId
@@ -263,13 +265,21 @@ function TransactionListItemInner({
       !isPending ||
       isUnapproved ||
       isSigning ||
-      isSubmitting
+      isSubmitting ||
+      hasGasFeeTokenSelected
     ) {
       return false;
     }
 
     return true;
-  }, [shouldShowSpeedUp, isUnapproved, isPending, isSigning, isSubmitting]);
+  }, [
+    shouldShowSpeedUp,
+    isUnapproved,
+    isPending,
+    isSigning,
+    isSubmitting,
+    hasGasFeeTokenSelected,
+  ]);
 
   const speedUpButton = useMemo(() => {
     if (!isSpeedUpButtonVisible) {
@@ -298,7 +308,8 @@ function TransactionListItemInner({
     !isUnapproved &&
     !isSubmitting &&
     !isBridgeTx &&
-    !isIntentBridgeActivity;
+    !isIntentBridgeActivity &&
+    !hasGasFeeTokenSelected;
 
   return (
     <>

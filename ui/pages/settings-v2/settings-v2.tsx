@@ -1,12 +1,11 @@
 /* eslint-disable import-x/extensions */
-import React, { Suspense } from 'react';
+import React, { Suspense, useState } from 'react';
 import {
   Routes as RouterRoutes,
   Route,
   useNavigate,
   useLocation,
 } from 'react-router-dom';
-import { useSelector } from 'react-redux';
 import classnames from 'clsx';
 import { Box } from '@metamask/design-system-react';
 import { useI18nContext } from '../../hooks/useI18nContext';
@@ -22,21 +21,15 @@ import {
 } from '../../helpers/constants/routes';
 import {
   Box as LegacyBox,
-  ButtonIcon,
-  ButtonIconSize,
   Icon,
-  IconName,
   Text,
 } from '../../components/component-library';
 import {
   AlignItems,
-  Display,
   FlexDirection,
   TextVariant,
 } from '../../helpers/constants/design-system';
 import TabBar from '../../components/app/tab-bar';
-import MetafoxLogo from '../../components/ui/metafox-logo';
-import { getMostRecentOverviewPage } from '../../ducks/history/history';
 // TODO: Remove restricted import
 // eslint-disable-next-line import-x/no-restricted-paths
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
@@ -50,6 +43,7 @@ import {
   SETTINGS_V2_MENU_LIST_ITEM_REGISTRY,
   getSettingsV2RouteMeta,
 } from './settings-registry';
+import { SettingsV2Header } from './shared';
 
 const CurrencySubPage = mmLazy(
   () => import('./assets-tab/currency-sub-page.tsx'),
@@ -93,8 +87,6 @@ const SettingsV2Layout = ({ children }: { children: React.ReactNode }) => {
   const { pathname } = location;
   const meta = getSettingsV2RouteMeta(pathname);
 
-  const mostRecentOverviewPage = useSelector(getMostRecentOverviewPage);
-
   const environmentType = getEnvironmentType();
   const isPopup =
     environmentType === ENVIRONMENT_TYPE_POPUP ||
@@ -102,9 +94,10 @@ const SettingsV2Layout = ({ children }: { children: React.ReactNode }) => {
   const isSidepanel = environmentType === ENVIRONMENT_TYPE_SIDEPANEL;
 
   const isOnSettingsRoot = pathname === SETTINGS_V2_ROUTE;
-
-  // Determine back route: sub-pages go to their parent, top-level tabs go to settings root
-  const backRoute = meta?.parentPath ?? SETTINGS_V2_ROUTE;
+  const [searchValue, setSearchValue] = useState('');
+  const backRoute = isOnSettingsRoot
+    ? DEFAULT_ROUTE
+    : (meta?.parentPath ?? SETTINGS_V2_ROUTE);
 
   // Subheader label - at root, use first tab's label since that's what's displayed
   const subheaderLabelKey = isOnSettingsRoot
@@ -134,48 +127,15 @@ const SettingsV2Layout = ({ children }: { children: React.ReactNode }) => {
         },
       )}
     >
-      <LegacyBox
-        className="settings-page__header"
-        padding={4}
-        paddingBottom={2}
-      >
-        <div className="settings-page__header__title-container">
-          {isPopup && (
-            <>
-              {isOnSettingsRoot ? (
-                <MetafoxLogo
-                  className="settings-page__header__title-container__metamask-logo"
-                  unsetIconHeight
-                  onClick={() => navigate(DEFAULT_ROUTE)}
-                  display={[Display.Flex, Display.None]}
-                />
-              ) : (
-                <ButtonIcon
-                  ariaLabel={t('back')}
-                  iconName={IconName.ArrowLeft}
-                  className="settings-page__header__title-container__back-button"
-                  onClick={() => navigate(backRoute)}
-                  size={ButtonIconSize.Md}
-                  display={[Display.Flex, Display.None]}
-                />
-              )}
-            </>
-          )}
-          <div className="settings-page__header__title-container__title">
-            <Text variant={TextVariant.headingMd} ellipsis>
-              {headerTitle}
-            </Text>
-          </div>
-          <ButtonIcon
-            className="settings-page__header__title-container__close-button"
-            iconName={IconName.Close}
-            ariaLabel={t('close')}
-            onClick={() => navigate(mostRecentOverviewPage)}
-            size={ButtonIconSize.Md}
-            marginLeft="auto"
-          />
-        </div>
-      </LegacyBox>
+      <SettingsV2Header
+        title={headerTitle}
+        isPopup={isPopup}
+        isOnSettingsRoot={isOnSettingsRoot}
+        onClose={() => navigate(backRoute)}
+        searchValue={searchValue}
+        onSearchChange={setSearchValue}
+        onSearchClear={() => setSearchValue('')}
+      />
 
       <div className="settings-page__content">
         <div className="settings-page__content__tabs">
