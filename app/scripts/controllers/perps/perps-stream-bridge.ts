@@ -32,8 +32,9 @@ type PerpsStreamBridgeOptions = {
  * Manages two categories of subscriptions:
  * Static (positions/orders/account): registered once via #activate() after
  * perpsInit resolves and the provider is ready.
- * Dynamic (prices/orderBook/candles): replaced on each streaming call so
- * navigating between markets doesn't leak subscriptions.
+ * Dynamic (prices/orderBook): single slot per channel; replaced on each call.
+ * Candles: multiplexed by symbol+interval so multiple chart keys can stream
+ * concurrently; each deactivate tears down only that key.
  *
  * Emission is gated by isActive, which requires both #activate() to have been
  * called and perpsViewActive(true) to be set. The UI calls perpsViewActive(true)
@@ -143,8 +144,17 @@ export class PerpsStreamBridge {
         }
         return 'ok';
       },
-      perpsDeactivateCandleStream: () => {
-        this.#tearDownChannel('candles');
+      perpsDeactivateCandleStream: ({
+        symbol,
+        interval,
+      }: {
+        symbol: string;
+        interval: CandlePeriod;
+      }) => {
+        if (!symbol || !interval) {
+          return;
+        }
+        this.#tearDownDynamicKey(this.#candleSubscriptionKey(symbol, interval));
       },
     };
   }
@@ -235,7 +245,11 @@ export class PerpsStreamBridge {
     }
 
     if (candle?.symbol && candle?.interval) {
-      this.#addDynamicSubscription('candles', () =>
+      const candleKey = this.#candleSubscriptionKey(
+        candle.symbol,
+        candle.interval,
+      );
+      this.#addDynamicSubscription(candleKey, () =>
         this.#controller.subscribeToCandles({
           ...candle,
           callback: (data: unknown) =>
@@ -277,18 +291,31 @@ export class PerpsStreamBridge {
     interval: CandlePeriod;
     duration?: TimeDuration;
   }): void {
-    this.#tearDownChannel('candles');
-    if (params.symbol && params.interval) {
-      this.#addDynamicSubscription('candles', () =>
-        this.#controller.subscribeToCandles({
-          ...params,
-          callback: (data: unknown) =>
-            this.#emit('candles', data, {
-              symbol: params.symbol,
-              interval: params.interval,
-            }),
-        }),
-      );
+    if (!params.symbol || !params.interval) {
+      return;
+    }
+    const key = this.#candleSubscriptionKey(params.symbol, params.interval);
+    this.#addDynamicSubscription(key, () =>
+      this.#controller.subscribeToCandles({
+        ...params,
+        callback: (data: unknown) =>
+          this.#emit('candles', data, {
+            symbol: params.symbol,
+            interval: params.interval,
+          }),
+      }),
+    );
+  }
+
+  #candleSubscriptionKey(symbol: string, interval: CandlePeriod): string {
+    return `candles:${symbol}:${interval}`;
+  }
+
+  #tearDownDynamicKey(key: string): void {
+    const unsub = this.#dynamicUnsubs[key];
+    if (unsub) {
+      this.#callAndClearUnsub(unsub);
+      delete this.#dynamicUnsubs[key];
     }
   }
 
@@ -309,7 +336,7 @@ export class PerpsStreamBridge {
     }
   }
 
-  #tearDownChannel(channel: 'prices' | 'orderBook' | 'candles'): void {
+  #tearDownChannel(channel: 'prices' | 'orderBook'): void {
     const unsub = this.#dynamicUnsubs[channel];
     if (unsub) {
       this.#callAndClearUnsub(unsub);
@@ -318,6 +345,7 @@ export class PerpsStreamBridge {
   }
 
   #addDynamicSubscription(key: string, subscribe: () => () => void): void {
+    this.#tearDownDynamicKey(key);
     this.#dynamicUnsubs[key] = subscribe();
   }
 }

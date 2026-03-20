@@ -100,6 +100,28 @@ describe('CandleStreamChannel', () => {
       expect(mockSubmitRequestToBackground).toHaveBeenCalledTimes(2);
     });
 
+    it('deactivates only the key whose last subscriber left', () => {
+      const unsubBtc = channel.subscribe({
+        symbol: 'BTC',
+        interval: CandlePeriod.OneHour,
+        callback: jest.fn(),
+      });
+      channel.subscribe({
+        symbol: 'ETH',
+        interval: CandlePeriod.OneHour,
+        callback: jest.fn(),
+      });
+      mockSubmitRequestToBackground.mockClear();
+
+      unsubBtc();
+
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledTimes(1);
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'perpsDeactivateCandleStream',
+        [{ symbol: 'BTC', interval: CandlePeriod.OneHour }],
+      );
+    });
+
     it('delivers cached data immediately to a new subscriber', () => {
       const cb1 = jest.fn();
       channel.subscribe({
@@ -169,7 +191,10 @@ describe('CandleStreamChannel', () => {
       mockSubmitRequestToBackground.mockClear();
 
       unsubscribe();
-      // disconnect() calls perpsDeactivateCandleStream (1 call)
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'perpsDeactivateCandleStream',
+        [{ symbol: 'BTC', interval: CandlePeriod.OneHour }],
+      );
 
       // Re-subscribe — should activate streaming again (1 call)
       channel.subscribe({
@@ -684,7 +709,8 @@ describe('CandleStreamChannel', () => {
       ).resolves.toBeUndefined();
 
       expect(consoleSpy).toHaveBeenCalledWith(
-        expect.stringContaining('fetchHistoricalCandles failed'),
+        '[CandleStreamChannel] fetchHistoricalCandles failed for key:',
+        'BTC-1h',
         expect.any(Error),
       );
       consoleSpy.mockRestore();

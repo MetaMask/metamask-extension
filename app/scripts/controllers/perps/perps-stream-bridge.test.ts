@@ -635,9 +635,49 @@ describe('PerpsStreamBridge', () => {
           p: Record<string, unknown>,
         ) => Promise<string>
       )({ symbol: 'ETH', interval: '1h' });
-      (api.perpsDeactivateCandleStream as () => void)();
+      (
+        api.perpsDeactivateCandleStream as (p: {
+          symbol: string;
+          interval: string;
+        }) => void
+      )({ symbol: 'ETH', interval: '1h' });
 
       expect(unsub).toHaveBeenCalledTimes(1);
+    });
+
+    it('keeps other candle streams when deactivating one symbol+interval', async () => {
+      const controller = createMockController();
+      const unsubBtc = jest.fn();
+      const unsubEth = jest.fn();
+      controller.subscribeToCandles
+        .mockReturnValueOnce(unsubBtc)
+        .mockReturnValueOnce(unsubEth);
+      const { bridge } = createBridge({
+        controller: controller as unknown as PerpsController,
+      });
+      const api = bridge.bridgeApi();
+      const deactivate = api.perpsDeactivateCandleStream as (p: {
+        symbol: string;
+        interval: string;
+      }) => void;
+
+      await (
+        api.perpsActivateCandleStream as (
+          p: Record<string, unknown>,
+        ) => Promise<string>
+      )({ symbol: 'BTC', interval: '1h' });
+      await (
+        api.perpsActivateCandleStream as (
+          p: Record<string, unknown>,
+        ) => Promise<string>
+      )({ symbol: 'ETH', interval: '4h' });
+
+      expect(controller.subscribeToCandles).toHaveBeenCalledTimes(2);
+
+      deactivate({ symbol: 'BTC', interval: '1h' });
+
+      expect(unsubBtc).toHaveBeenCalledTimes(1);
+      expect(unsubEth).not.toHaveBeenCalled();
     });
   });
 
