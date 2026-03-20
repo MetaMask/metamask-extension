@@ -1,6 +1,12 @@
 import { Box, BoxFlexDirection } from '@metamask/design-system-react';
 import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
+import {
+  usePerpsLivePositions,
+  usePerpsLiveOrders,
+  usePerpsLiveMarketData,
+} from '../../../hooks/perps/stream';
+import { getSelectedInternalAccount } from '../../../selectors';
 
 import { usePerpsDepositConfirmation } from './hooks/usePerpsDepositConfirmation';
 import { PerpsBalanceDropdown } from './perps-balance-dropdown';
@@ -14,12 +20,6 @@ import {
 import { PerpsSupportLearn } from './perps-support-learn';
 import { PerpsTutorialModal } from './perps-tutorial-modal';
 import { PerpsWatchlist } from './perps-watchlist';
-import {
-  usePerpsLivePositions,
-  usePerpsLiveOrders,
-  usePerpsLiveMarketData,
-} from '../../../hooks/perps/stream';
-import { getSelectedInternalAccount } from '../../../selectors';
 
 /**
  * PerpsView component displays the perpetuals trading view

@@ -2,9 +2,9 @@ import { render, waitFor } from '@testing-library/react';
 import React from 'react';
 import { useSelector } from 'react-redux';
 
-import { ConfirmContextProvider } from '.';
 import { DEFAULT_ROUTE } from '../../../../helpers/constants/routes';
 import useCurrentConfirmation from '../../hooks/useCurrentConfirmation';
+import { ConfirmContextProvider } from '.';
 
 const mockNavigate = jest.fn();
 
