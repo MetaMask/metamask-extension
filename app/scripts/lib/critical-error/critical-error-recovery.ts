@@ -6,14 +6,13 @@ import {
 } from '../../../../shared/constants/state-corruption';
 import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
 import { captureException } from '../../../../shared/lib/sentry';
-import { runRepairAndReloadPorts } from '../repair';
 import { trackCriticalErrorEvent } from './track-critical-error';
 
 type Message = Parameters<chrome.runtime.Port['postMessage']>[0];
 
 export type RegisterPortForCriticalErrorConfig = {
   port: chrome.runtime.Port;
-  repairCallback: (backup: Backup | null) => Promise<void>;
+  repairCallback: () => Promise<boolean>;
 };
 
 /**
@@ -47,7 +46,7 @@ export class CriticalErrorHandler {
    */
   connectedPorts = new Set<chrome.runtime.Port>();
 
-  #repairCallback: ((backup: Backup | null) => Promise<void>) | null = null;
+  #repairCallback: (() => Promise<boolean>) | null = null;
 
   #restoreListener = (message: Message): void => {
     this.#restoreVaultListener(message);
@@ -97,7 +96,7 @@ export class CriticalErrorHandler {
   /**
    * Handles a message from the UI to restore from backup (same role as
    * state-corruption's restoreVaultListener). Unregisters from all ports,
-   * runs repairCallback, then sends RELOAD_WINDOW to all.
+   * then runs repairCallback.
    * @param message
    */
   async #restoreVaultListener(message: Message): Promise<void> {
@@ -117,7 +116,6 @@ export class CriticalErrorHandler {
     });
 
     const criticalErrorType = getCriticalErrorType(params);
-    const repairCallback = this.#repairCallback;
 
     try {
       // Track that the user clicked the restore button.
@@ -127,11 +125,7 @@ export class CriticalErrorHandler {
         criticalErrorType,
       );
 
-      await runRepairAndReloadPorts(
-        params.backup as Backup | null,
-        repairCallback,
-        this.connectedPorts,
-      );
+      await this.#repairCallback();
     } catch (repairError) {
       captureException(repairError);
     }

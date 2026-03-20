@@ -44,7 +44,6 @@ import {
   ENVIRONMENT_TYPE_SIDEPANEL,
   PLATFORM_FIREFOX,
 } from '../../shared/constants/app';
-import { CriticalErrorType } from '../../shared/constants/state-corruption';
 import { isManifestV3 } from '../../shared/lib/mv3.utils';
 import { checkForLastErrorAndLog } from '../../shared/lib/browser-runtime.utils';
 import { endTrace, trace, TraceName } from '../../shared/lib/trace';
@@ -272,8 +271,6 @@ async function initializeUiWithTab(
       CriticalErrorTranslationKey.TroubleStarting,
       error,
       undefined,
-      undefined,
-      CriticalErrorType.TroubleStarting,
     );
   }
 }

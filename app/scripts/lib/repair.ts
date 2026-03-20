@@ -1,5 +1,6 @@
 import type { Backup } from '../../../shared/lib/backup';
 import { RELOAD_WINDOW } from '../../../shared/constants/start-up-errors';
+import { openRestoringTabAndReload } from './critical-error-restore';
 import { tryPostMessage } from './start-up-errors/start-up-errors';
 
 const REPAIR_LOCK_NAME = 'repairDatabase';
@@ -32,9 +33,17 @@ export async function requestRepair(
   );
 }
 
+export async function runRepairAndReloadExtension(
+  requestSafeReload: () => Promise<void>,
+): Promise<boolean> {
+  return requestRepair(async () => {
+    await openRestoringTabAndReload(requestSafeReload);
+  });
+}
+
 /**
  * Runs the repair callback under the repair lock, then sends RELOAD_WINDOW to
- * all given ports. Used by both state-corruption and critical-error restore flows.
+ * all given ports. Used by state-corruption restore (in-process repair).
  *
  * @param backup - Backup to pass to the repair callback.
  * @param repairCallback - Called with backup when the repair lock is acquired.

@@ -89,18 +89,41 @@ class CriticalErrorPage {
     if (confirm) {
       await alert.accept();
 
-      // delay needed to mitigate a race condition where the tab is closed and re-opened after confirming, causing to window to become stale
+      // runtime.reload() closes all extension pages, invalidating the current
+      // Selenium window handle. Wait for the extension to restart, then close
+      // all but one tab so downstream flows (terms-of-use, etc.) have the same
+      // single-tab context as vault-corruption tests.
       await this.driver.delay(3000);
+      let handles = await this.driver.driver.getAllWindowHandles();
+      await this.driver.driver.switchTo().window(handles[0]);
 
-      try {
-        await this.driver.switchToWindowWithTitle(
-          WINDOW_TITLES.ExtensionInFullScreenView,
-        );
-      } catch {
-        // to mitigate a race condition where the tab is closed after confirming (issue #36916)
-        await this.driver.openNewPage('about:blank');
-        await this.driver.navigate();
+      // Poll until the extension is available, then navigate to it.
+      await this.driver.waitUntil(
+        async () => {
+          try {
+            await this.driver.navigate(PAGES.HOME, {
+              waitForControllers: false,
+            });
+            const title = await this.driver.driver.getTitle();
+            return title === WINDOW_TITLES.ExtensionInFullScreenView;
+          } catch {
+            return false;
+          }
+        },
+        { interval: 500, timeout: 30000 },
+      );
+
+      // Close duplicate extension tabs left over from the restoring-tab handoff
+      // so only the current tab remains (mirrors vault-corruption test context).
+      handles = await this.driver.driver.getAllWindowHandles();
+      const current = await this.driver.driver.getWindowHandle();
+      for (const h of handles) {
+        if (h !== current) {
+          await this.driver.driver.switchTo().window(h);
+          await this.driver.driver.close();
+        }
       }
+      await this.driver.driver.switchTo().window(current);
     } else {
       await alert.dismiss();
     }
