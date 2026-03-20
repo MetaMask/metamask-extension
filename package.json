@@ -261,7 +261,7 @@
     "gridplus-sdk/@types/uuid@npm:^11.0.0": "^8.3.0",
     "@ledgerhq/hw-transport-webhid@npm:^6.31.0": "patch:@ledgerhq/hw-transport-webhid@npm%3A6.31.0#~/.yarn/patches/@ledgerhq-hw-transport-webhid-npm-6.31.0-efbecf27ab.patch",
     "@metamask/accounts-controller": "37.0.0",
-    "fast-xml-parser": "^5.5.6",
+    "fast-xml-parser": "^5.5.7",
     "minimatch@npm:^10.1.1": "10.2.4",
     "@metamask/snaps-controllers": "^18.0.4",
     "@myx-trade/sdk@npm:^0.1.265": "npm:0.1.267",
