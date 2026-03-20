@@ -1,40 +1,84 @@
-import React, { useEffect, useMemo } from 'react';
-import { Box } from '@metamask/design-system-react';
-import {
-  getNumberOfSettingRoutesInTab,
-  handleSettingsRefs,
-} from '../../../helpers/utils/settings-search';
-import { useI18nContext } from '../../../hooks/useI18nContext';
+import React, { useMemo } from 'react';
+import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
 import { isExperimental, isFlask } from '../../../../shared/lib/build-types';
-import { NotificationsItem } from './notifications-item';
-import { KeyringSnapsItem } from './keyring-snaps-item';
-import { WatchAccountItem } from './watch-account-item';
+import {
+  getFeatureNotificationsEnabled,
+  getIsAddSnapAccountEnabled,
+  getIsWatchEthereumAccountEnabled,
+} from '../../../selectors';
+import {
+  setAddSnapAccountEnabled,
+  setFeatureNotificationsEnabled,
+  setWatchEthereumAccountEnabled,
+} from '../../../store/actions';
+import { SettingItemConfig } from '../../settings-v2/types';
+import { SettingsTab, createToggleItem } from '../../settings-v2/shared';
+
+const NotificationsItem = createToggleItem({
+  name: 'NotificationsItem',
+  titleKey: 'notificationsFeatureToggle',
+  descriptionKey: 'notificationsFeatureToggleDescription',
+  selector: getFeatureNotificationsEnabled,
+  action: setFeatureNotificationsEnabled,
+  dataTestId: 'toggle-notifications',
+});
+
+const KeyringSnapsItem = createToggleItem({
+  name: 'KeyringSnapsItem',
+  titleKey: 'addSnapAccountToggle',
+  descriptionKey: 'addSnapAccountsDescription',
+  selector: getIsAddSnapAccountEnabled,
+  action: setAddSnapAccountEnabled,
+  dataTestId: 'add-account-snap-toggle-button',
+  containerDataTestId: 'add-account-snap-toggle-div',
+  trackEvent: {
+    event: MetaMetricsEventName.AddSnapAccountEnabled,
+    properties: (newValue) => ({ enabled: newValue }),
+  },
+});
+
+const WatchAccountItem = createToggleItem({
+  name: 'WatchAccountItem',
+  titleKey: 'watchEthereumAccountsToggle',
+  formatDescription: (t) =>
+    t('watchEthereumAccountsDescription', [
+      <a
+        key="watch-account-feedback-form__link-text"
+        href="https://www.getfeedback.com/r/7Je8ckkq"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        {t('form')}
+      </a>,
+    ]),
+  selector: getIsWatchEthereumAccountEnabled,
+  action: setWatchEthereumAccountEnabled,
+  dataTestId: 'watch-account-toggle',
+  containerDataTestId: 'watch-account-toggle-div',
+  trackEvent: {
+    event: MetaMetricsEventName.WatchEthereumAccountsToggled,
+    properties: (newValue) => ({ enabled: newValue }),
+  },
+});
 
 const ExperimentalTab = () => {
-  const t = useI18nContext();
+  const items = useMemo<SettingItemConfig[]>(() => {
+    const result: SettingItemConfig[] = [];
 
-  const settingsRefs = useMemo(() => {
-    const count = getNumberOfSettingRoutesInTab(t, t('experimental'));
-    return new Array(count)
-      .fill(undefined)
-      .map(() => React.createRef<HTMLDivElement>());
-  }, [t]);
+    if (process.env.NOTIFICATIONS) {
+      result.push({ id: 'notifications', component: NotificationsItem });
+    }
 
-  useEffect(() => {
-    handleSettingsRefs(t, t('experimental'), settingsRefs);
-  }, [t, settingsRefs]);
+    result.push({ id: 'keyring-snaps', component: KeyringSnapsItem });
 
-  return (
-    <Box paddingHorizontal={4} paddingBottom={4}>
-      {process.env.NOTIFICATIONS && (
-        <NotificationsItem sectionRef={settingsRefs[0]} />
-      )}
-      {<KeyringSnapsItem sectionRef={settingsRefs[0]} />}
-      {(isFlask() || isExperimental()) && (
-        <WatchAccountItem sectionRef={settingsRefs[0]} />
-      )}
-    </Box>
-  );
+    if (isFlask() || isExperimental()) {
+      result.push({ id: 'watch-account', component: WatchAccountItem });
+    }
+
+    return result;
+  }, []);
+
+  return <SettingsTab items={items} tabMessageKey="experimental" />;
 };
 
 export default ExperimentalTab;

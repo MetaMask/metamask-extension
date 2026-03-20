@@ -37,7 +37,13 @@ export const backupAndSyncToggleTestIds = {
   toggleButton: 'backup-and-sync-toggle-button',
 };
 
-export const BackupAndSyncToggle = () => {
+type BackupAndSyncToggleProps = {
+  sectionRef?: React.RefObject<HTMLDivElement>;
+};
+
+export const BackupAndSyncToggle = ({
+  sectionRef,
+}: BackupAndSyncToggleProps) => {
   const { trackEvent } = useContext(MetaMetricsContext);
 
   const t = useI18nContext();
@@ -190,6 +196,7 @@ export const BackupAndSyncToggle = () => {
 
   return (
     <Box
+      ref={sectionRef}
       marginTop={4}
       marginBottom={4}
       className="privacy-settings__setting__wrapper"

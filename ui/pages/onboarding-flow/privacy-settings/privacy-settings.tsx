@@ -20,7 +20,7 @@ import {
   FontWeight,
   TextButton,
 } from '@metamask/design-system-react';
-// eslint-disable-next-line import/no-restricted-paths
+// eslint-disable-next-line import-x/no-restricted-paths
 import { addUrlProtocolPrefix } from '../../../../app/scripts/lib/util';
 import { TextField } from '../../../components/component-library';
 import {

@@ -1834,6 +1834,29 @@ describe('Bridge selectors', () => {
         expect(result.isPriceImpactError).toBe(isPriceImpactError);
       },
     );
+
+    it('should treat gasless quote as non-gasless for hardware wallets', () => {
+      const state = createBridgeMockStore({
+        bridgeSliceOverrides: {
+          toToken: toBridgeToken(getNativeAssetForChainId('0x1')),
+          fromTokenInputValue: '0.001',
+          fromToken: toBridgeToken(getNativeAssetForChainId(CHAIN_IDS.MAINNET)),
+          fromNativeBalance: '10000000000000',
+        },
+        bridgeStateOverrides: {
+          quotesLastFetched: Date.now(),
+          quoteRequest: { srcTokenAmount: '10000000000000000' },
+        },
+        metamaskStateOverrides: {
+          internalAccounts: {
+            selectedAccount: MOCK_LEDGER_ACCOUNT.id,
+          },
+        },
+      });
+      const result = getValidationErrors(state as never);
+
+      expect(result.isInsufficientGasBalance).toStrictEqual(true);
+    });
   });
 
   describe('getFromTokenBalance', () => {

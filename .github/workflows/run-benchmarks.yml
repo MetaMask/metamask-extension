@@ -11,6 +11,9 @@ on:
       TEST_SRP_2:
         required: false
         description: Required for userJourneyAccountManagement (import-srp-home). 12-word seed phrase.
+      EXTENSION_BENCHMARK_STATS_TOKEN:
+        required: false
+        description: Required for committing benchmark stats to extension_benchmark_stats on main.
 
 env:
   COMMANDS: |
@@ -101,13 +104,12 @@ jobs:
         uses: actions/download-artifact@v7
         with:
           name: ${{ env.ARTIFACT_NAME }}
-          github-token: ${{ secrets.GITHUB_TOKEN }} # This is required when downloading artifacts from a different repository or from a different workflow run.
-          run-id: ${{ inputs.builds-from-run }} # Download from whatever run the identify-builds job said.
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          run-id: ${{ inputs.builds-from-run }}
 
       - name: Configure Xvfb
         run: Xvfb -ac :99 -screen 0 1280x1024x16 &
 
-      # TODO: Pre-install this in the container image
       - name: Install AWS CLI (needed in the container)
         run: sudo apt-get update && sudo apt-get install python3-pip && sudo pip install awscli --break-system-packages
 
@@ -116,8 +118,8 @@ jobs:
         # Then replace the {0} placeholder with the browser, and the {1} placeholder with the buildType
         run: ${{ format(fromJson(env.COMMANDS)[matrix.pageType], matrix.browser, matrix.buildType) }}
 
-      - name: Send benchmark results to Sentry
-        if: ${{ vars.SENTRY_DSN_PERFORMANCE }}
+      - name: Send benchmark results to Sentry (main/release only)
+        if: ${{ vars.SENTRY_DSN_PERFORMANCE && (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/heads/release/')) }}
         env:
           GH_HEAD_REF: ${{ github.head_ref }}
           GH_REF_NAME: ${{ github.ref_name }}
@@ -214,7 +216,7 @@ jobs:
       - name: Run the benchmark
         run: ${{ format(fromJson(env.COMMANDS)[matrix.pageType], 'chrome', 'webpack') }}
 
-      - name: Send benchmark results to Sentry
+      - name: Send benchmark results to Sentry (main/release only)
         if: ${{ vars.SENTRY_DSN_PERFORMANCE }}
         env:
           GH_HEAD_REF: ${{ github.head_ref }}
@@ -234,3 +236,110 @@ jobs:
           role-to-assume: ${{ vars.AWS_IAM_ROLE }}
           s3-bucket: ${{ vars.AWS_S3_BUCKET }}/${{ github.event.repository.name }}/${{ github.run_id }}/benchmarks/${{ env.OUTPUT_NAME }}
           path: test-artifacts/benchmarks/${{ env.OUTPUT_NAME }}
+
+      - name: Upload benchmark result as artifact
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v6
+        with:
+          name: ${{ env.OUTPUT_NAME }}
+          path: test-artifacts/benchmarks/${{ env.OUTPUT_NAME }}
+          retention-days: 7
+          if-no-files-found: ignore
+
+  dapp-page-load-benchmark:
+    if: ${{ github.event_name != 'merge_group' }} # Skip this job for the Merge Queue
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    environment: ${{ github.ref_name == 'main' && 'default-branch' || null }}
+    env:
+      OWNER: ${{ github.repository_owner }}
+      REPOSITORY: ${{ github.event.repository.name }}
+      PR_NUMBER: ${{ github.event.pull_request.number }}
+      HEAD_COMMIT_HASH: ${{ github.event.pull_request.head.sha || github.sha }}
+      BENCHMARK_BROWSER_LOADS: 10
+      BENCHMARK_PAGE_LOADS: 10
+    steps:
+      - name: Checkout and setup environment
+        uses: MetaMask/action-checkout-and-setup@v3
+        with:
+          is-high-risk-environment: false
+          skip-allow-scripts: true
+
+      - name: Download artifact 'build-test-browserify'
+        uses: actions/download-artifact@v7
+        with:
+          name: build-test-browserify
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          run-id: ${{ inputs.builds-from-run }}
+
+      - name: Install Playwright browsers
+        run: yarn playwright install chromium
+
+      - name: Run dapp page load benchmarks
+        run: yarn test:e2e:benchmark --preset=pageLoadBenchmark
+
+      - name: Upload benchmark results (github artifacts)
+        uses: actions/upload-artifact@v6
+        with:
+          name: dapp-page-load-benchmark-results
+          path: test-artifacts/benchmarks/dapp-page-load-benchmark-results.json
+
+  # Pushes benchmark results (performance + dapp page-load) to extension_benchmark_stats
+  # for historical comparison in PR comments. Runs on main/release branch pushes only.
+  store-benchmark-stats:
+    name: store-benchmark-stats (main/release only)
+    continue-on-error: true
+    needs:
+      - benchmarks
+      - benchmarks-webpack-perf
+      - dapp-page-load-benchmark
+    if: >-
+      ${{
+        !cancelled() &&
+        github.event_name == 'push' &&
+        (github.ref_name == 'main' || startsWith(github.ref, 'refs/heads/release/')) &&
+        !(github.event.pull_request.head.repo.fork || github.event.repository.fork)
+      }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      EXTENSION_BENCHMARK_STATS_TOKEN: ${{ secrets.EXTENSION_BENCHMARK_STATS_TOKEN }}
+      HEAD_COMMIT_HASH: ${{ github.sha }}
+      OWNER: ${{ github.repository_owner }}
+      BRANCH_NAME: ${{ github.ref_name }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Download all performance benchmark artifacts
+        id: download-perf-benchmark
+        uses: actions/download-artifact@v7
+        continue-on-error: true
+        with:
+          pattern: benchmark-*.json
+          path: benchmark-results/
+          merge-multiple: true
+
+      - name: Commit performance stats to extension_benchmark_stats
+        if: steps.download-perf-benchmark.outcome == 'success'
+        continue-on-error: true
+        run: .github/scripts/benchmark-stats-commit.sh
+        env:
+          BENCHMARK_DATA_TYPE: performance
+          BENCHMARK_RESULTS_DIR: benchmark-results
+
+      - name: Download dapp page-load benchmark artifact
+        id: download-dapp-benchmark
+        uses: actions/download-artifact@v7
+        continue-on-error: true
+        with:
+          name: dapp-page-load-benchmark-results
+          path: test-artifacts/benchmarks/
+
+      - name: Commit dapp page-load stats to extension_benchmark_stats
+        if: steps.download-dapp-benchmark.outcome == 'success'
+        continue-on-error: true
+        run: .github/scripts/benchmark-stats-commit.sh
+        env:
+          BENCHMARK_DATA_TYPE: dapp-page-load
+          BENCHMARK_FILE: test-artifacts/benchmarks/dapp-page-load-benchmark-results.json
