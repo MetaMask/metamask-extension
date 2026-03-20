@@ -1,7 +1,8 @@
-import React from 'react';
 import { render, waitFor } from '@testing-library/react';
+import React from 'react';
 import { useSelector } from 'react-redux';
 
+import { ConfirmContextProvider } from '.';
 import { DEFAULT_ROUTE } from '../../../../helpers/constants/routes';
 import useCurrentConfirmation from '../../hooks/useCurrentConfirmation';
 
@@ -20,9 +21,6 @@ jest.mock('react-redux', () => ({
 jest.mock('../../hooks/useCurrentConfirmation', () => jest.fn());
 
 jest.mock('../../hooks/useSyncConfirmPath', () => () => undefined);
-
-// eslint-disable-next-line import/first
-import { ConfirmContextProvider } from '.';
 
 describe('ConfirmContextProvider', () => {
   const mockUseSelector = jest.mocked(useSelector);

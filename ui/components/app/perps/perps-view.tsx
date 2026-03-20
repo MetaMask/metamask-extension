@@ -1,24 +1,25 @@
-import React, { useMemo } from 'react';
 import { Box, BoxFlexDirection } from '@metamask/design-system-react';
+import React, { useMemo } from 'react';
+import { useSelector } from 'react-redux';
+
+import { usePerpsDepositConfirmation } from './hooks/usePerpsDepositConfirmation';
+import { PerpsBalanceDropdown } from './perps-balance-dropdown';
+import { PerpsExploreMarkets } from './perps-explore-markets';
+import { PerpsPositionsOrders } from './perps-positions-orders';
+import { PerpsRecentActivity } from './perps-recent-activity';
+import {
+  PerpsControlBarSkeleton,
+  PerpsSectionSkeleton,
+} from './perps-skeletons';
+import { PerpsSupportLearn } from './perps-support-learn';
+import { PerpsTutorialModal } from './perps-tutorial-modal';
+import { PerpsWatchlist } from './perps-watchlist';
 import {
   usePerpsLivePositions,
   usePerpsLiveOrders,
   usePerpsLiveMarketData,
 } from '../../../hooks/perps/stream';
-import { usePerpsDepositConfirmation } from './hooks/usePerpsDepositConfirmation';
-import { PerpsBalanceDropdown } from './perps-balance-dropdown';
-import { PerpsPositionsOrders } from './perps-positions-orders';
-import { PerpsWatchlist } from './perps-watchlist';
-import { PerpsExploreMarkets } from './perps-explore-markets';
-import { PerpsRecentActivity } from './perps-recent-activity';
-import { PerpsSupportLearn } from './perps-support-learn';
-import { PerpsTutorialModal } from './perps-tutorial-modal';
-import {
-  PerpsControlBarSkeleton,
-  PerpsSectionSkeleton,
-} from './perps-skeletons';
 import { getSelectedInternalAccount } from '../../../selectors';
-import { useSelector } from 'react-redux';
 
 /**
  * PerpsView component displays the perpetuals trading view
