@@ -7,6 +7,7 @@
  */
 
 import { strict as assert } from 'assert';
+import { MockttpServer } from 'mockttp';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import { createInternalTransaction } from '../../page-objects/flows/transaction';
 import { withFixtures } from '../../helpers';
@@ -14,11 +15,26 @@ import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import GasFeeModal from '../../page-objects/pages/confirmations/gas-fee-modal';
 import SendTokenConfirmPage from '../../page-objects/pages/send/send-token-confirmation-page';
 import ActivityListPage from '../../page-objects/pages/home/activity-list';
+import { mockPriceApi } from '../tokens/utils/mocks';
+import { CHAIN_IDS } from '../../../../shared/constants/network';
 
 const PREFERENCES_STATE_MOCK = {
   preferences: {
     showFiatInTestnets: true,
   },
+};
+
+/**
+ * When assets-unify is on, `getCurrencyRateControllerCurrencyRates` maps `ETH` from the first
+ * native EVM row in `assetsInfo` (lexicographic CAIP id), i.e. mainnet `eip155:1/slip44:60`,
+ * not the active chain. Default fixture seeds ~2047 USD there, so fiat gas on localhost still
+ * follows mainnet unless we override both (and keep {@link mockPriceApi} in sync).
+ */
+const E2E_ETH_NATIVE_ASSETS_PRICE_USD_1700 = {
+  assetPriceType: 'fungible' as const,
+  id: 'ethereum',
+  price: 1700,
+  usdPrice: 1700,
 };
 
 describe('Send - Edit Transaction', function () {
@@ -27,9 +43,18 @@ describe('Send - Edit Transaction', function () {
       {
         fixtures: new FixtureBuilderV2()
           .withPreferencesController(PREFERENCES_STATE_MOCK)
+          .withAssetsController({
+            assetsPrice: {
+              'eip155:1/slip44:60': E2E_ETH_NATIVE_ASSETS_PRICE_USD_1700,
+              'eip155:1337/slip44:60': E2E_ETH_NATIVE_ASSETS_PRICE_USD_1700,
+            },
+          })
           .build(),
         localNodeOptions: { hardfork: 'muirGlacier' },
         title: this.test?.fullTitle(),
+        testSpecificMock: async (mockServer: MockttpServer) => {
+          await mockPriceApi(mockServer, 1700, CHAIN_IDS.LOCALHOST);
+        },
       },
       async ({ driver }) => {
         await loginWithBalanceValidation(driver);
@@ -97,8 +122,17 @@ describe('Send - Edit Transaction', function () {
       {
         fixtures: new FixtureBuilderV2()
           .withPreferencesController(PREFERENCES_STATE_MOCK)
+          .withAssetsController({
+            assetsPrice: {
+              'eip155:1/slip44:60': E2E_ETH_NATIVE_ASSETS_PRICE_USD_1700,
+              'eip155:1337/slip44:60': E2E_ETH_NATIVE_ASSETS_PRICE_USD_1700,
+            },
+          })
           .build(),
         title: this.test?.fullTitle(),
+        testSpecificMock: async (mockServer: MockttpServer) => {
+          await mockPriceApi(mockServer, 1700, CHAIN_IDS.LOCALHOST);
+        },
       },
       async ({ driver }) => {
         await loginWithBalanceValidation(driver);
