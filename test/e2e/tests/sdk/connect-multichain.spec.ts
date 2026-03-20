@@ -156,7 +156,7 @@ describe('MM Connect — Multichain E2E', function (this: Suite) {
         ];
 
         for (const [chainId, expectedHex] of expectedChainIds) {
-          await testDapp.invokeMethod(chainId, 'eth_chainId');
+          await testDapp.triggerMethod(chainId, 'eth_chainId');
           await testDapp.checkMethodResult(
             chainId,
             'eth_chainId',
