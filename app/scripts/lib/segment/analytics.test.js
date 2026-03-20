@@ -25,6 +25,10 @@ describe('Analytics', function () {
     analytics = new Analytics(DUMMY_KEY);
   });
 
+  afterEach(() => {
+    jest.useRealTimers();
+  });
+
   describe('#flush', function () {
     it('first message is immediately flushed', function () {
       const mock = jest.fn(analytics.flush);
@@ -86,6 +90,7 @@ describe('Analytics', function () {
       analytics.track(DUMMY_MESSAGE);
       analytics.track(DUMMY_MESSAGE, callback);
       await analytics.flush();
+      await new Promise((resolve) => setTimeout(resolve, 0));
       expect(callback).toHaveBeenCalledTimes(1);
     });
   });

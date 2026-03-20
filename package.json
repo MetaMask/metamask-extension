@@ -632,7 +632,6 @@
     "commander": "^14.0.0",
     "concurrently": "^8.2.2",
     "copy-webpack-plugin": "^13.0.1",
-    "core-js-pure": "^3.38.0",
     "crypto-browserify": "^3.12.0",
     "css-loader": "^6.10.0",
     "css-to-xpath": "^0.1.0",
@@ -789,7 +788,6 @@
       "@trezor/connect-web>@trezor/connect>@trezor/transport>usb": false,
       "@trezor/connect-web>@trezor/connect>@trezor/utxo-lib>blake-hash": false,
       "@trezor/connect-web>@trezor/connect>@trezor/utxo-lib>tiny-secp256k1": false,
-      "core-js-pure": true,
       "eth-lattice-keyring>gridplus-sdk": false,
       "ethereumjs-util>ethereum-cryptography>keccak": false,
       "ganache>@trufflesuite/bigint-buffer": false,
@@ -810,7 +808,8 @@
       "ws>utf-8-validate": false,
       "@google/genai>protobufjs": false,
       "eth-lattice-keyring>gridplus-sdk>secp256k1": false,
-      "eslint-import-resolver-typescript>unrs-resolver": false
+      "eslint-import-resolver-typescript>unrs-resolver": false,
+      "@pmmmwh/react-refresh-webpack-plugin>core-js-pure": false
     }
   },
   "packageManager": "yarn@4.12.0",

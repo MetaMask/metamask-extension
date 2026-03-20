@@ -68,12 +68,12 @@ export function onUpdate(
     log.info(
       `[onUpdate]: Requesting "safe reload" after update to ${platform.getVersion()}`,
     );
-    // use `setImmediate` to be absolutely sure the reload happens after
+    // use `setTimeout(..., 0)` to be absolutely sure the reload happens after
     // other "update" events triggered by the `setLastUpdatedFromVersion`
     // and `setLastUpdatedAt` calls above have been processed by storage.
     // I think there _is_ still a risk of a race condition here, mostly
     // due to the complexity of state storage's locks, debounce, and async
     // nature.
-    setImmediate(requestSafeReload);
+    setTimeout(requestSafeReload, 0);
   }
 }
