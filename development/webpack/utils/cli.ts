@@ -136,7 +136,7 @@ const prerequisites = {
  * dynamic defaults for other options.
  *
  * @param argv - The command line arguments to parse, typically `process.argv.slice(2)`
- * @returns Parsed values including effectiveThreads for dynamic CLI defaults
+ * @returns Parsed prerequisite values for dynamic CLI defaults
  */
 function preParse(argv: string[]) {
   const aliases: Record<string, string[]> = {};
@@ -181,11 +181,9 @@ function preParse(argv: string[]) {
   return {
     mode,
     test,
-    effectiveThreads: resolveEffectiveThreads({
-      generatePolicy,
-      reactCompilerVerbose,
-      threads,
-    }),
+    generatePolicy,
+    reactCompilerVerbose,
+    threads,
   } as const;
 }
 
@@ -384,11 +382,22 @@ function getCli<T extends YargsOptionsMap = Options>(options: T, name: string) {
 type Options = ReturnType<typeof getOptions>;
 
 function getOptions(
-  { mode, test, effectiveThreads }: ReturnType<typeof preParse>,
+  {
+    mode,
+    test,
+    generatePolicy,
+    reactCompilerVerbose,
+    threads,
+  }: ReturnType<typeof preParse>,
   buildTypes: string[],
   allFeatures: string[],
 ) {
   const isProduction = mode === 'production';
+  const effectiveThreads = resolveEffectiveThreads({
+    generatePolicy,
+    reactCompilerVerbose,
+    threads,
+  });
   const prodDefaultDesc =
     "If `mode` is 'production', `true`, otherwise `false`";
   const defaultJobsPerThread =
@@ -451,10 +460,10 @@ function getOptions(
       ...prerequisites.threads,
       default: effectiveThreads,
       coerce: (value: string) => {
-        const threads = coerceThreads(value);
-        return threads === 'auto' || effectiveThreads === 0
+        const coercedThreads = coerceThreads(value);
+        return coercedThreads === 'auto' || effectiveThreads === 0
           ? effectiveThreads
-          : threads;
+          : coercedThreads;
       },
     },
     jobsPerThread: {
