@@ -72,18 +72,20 @@ const ManageInstitutionalWalletItem = createToggleItem({
 });
 
 /** Registry of setting items for the Preferences and Display page. Add new items here */
-const PREFERENCES_AND_DISPLAY_SETTING_ITEMS: SettingItemConfig[] = [
-  { id: 'theme', component: ThemeItem },
-  { id: 'language', component: LanguageItem },
-  { id: 'account-identicon', component: AccountIdenticonItem },
-  { id: 'show-default-address', component: ShowDefaultAddressItem },
+export const PREFERENCES_AND_DISPLAY_SETTING_ITEMS: SettingItemConfig[] = [
+  { id: 'theme', titleKey: 'theme', component: ThemeItem },
+  { id: 'language', titleKey: 'language', component: LanguageItem },
+  { id: 'account-identicon', titleKey: 'accountIdenticon', component: AccountIdenticonItem },
+  { id: 'show-default-address', titleKey: 'showDefaultAddress', component: ShowDefaultAddressItem },
   {
     id: 'show-extension',
+    titleKey: 'showExtensionInFullSizeView',
     component: ShowExtensionItem,
     hasDividerBefore: true,
   },
   {
     id: 'manage-institutional-wallet',
+    titleKey: 'manageInstitutionalWallets',
     component: ManageInstitutionalWalletItem,
   },
 ];

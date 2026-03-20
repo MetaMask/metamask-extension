@@ -18,6 +18,13 @@ import {
 } from '../../helpers/constants/routes';
 import { IconName } from '../../components/component-library';
 import { mmLazy } from '../../helpers/utils/mm-lazy';
+import type { SettingItemConfig } from './types';
+import { ASSET_SETTING_ITEMS } from './assets-tab/assets-tab';
+import { TRANSACTION_SETTING_ITEMS } from './transactions-tab/transactions-tab';
+import { PREFERENCES_AND_DISPLAY_SETTING_ITEMS } from './preferences-and-display-tab/preferences-and-display-tab';
+import { PRIVACY_SETTING_ITEMS } from './privacy-tab/privacy-tab';
+import { SECURITY_AND_PASSWORD_SETTING_ITEMS } from './security-and-password-tab/security-and-password-tab';
+import { DEVELOPER_OPTIONS_SETTING_ITEMS } from './developer-options-tab/developer-options-tab';
 
 export type SettingsV2MenuListItem = {
   id: string;
@@ -28,6 +35,8 @@ export type SettingsV2MenuListItem = {
   iconName: IconName;
   /** Lazy-loaded menu list item content component */
   component: ComponentType;
+  /** Setting items within this tab, used for search indexing */
+  settingItems: SettingItemConfig[];
 };
 
 /**
@@ -117,6 +126,7 @@ export const SETTINGS_V2_MENU_LIST_ITEM_REGISTRY: SettingsV2MenuListItem[] = [
     labelKey: 'assets',
     iconName: IconName.Dollar,
     component: mmLazy(() => import('./assets-tab/index.ts')),
+    settingItems: ASSET_SETTING_ITEMS,
   },
   {
     id: 'transactions',
@@ -124,6 +134,7 @@ export const SETTINGS_V2_MENU_LIST_ITEM_REGISTRY: SettingsV2MenuListItem[] = [
     labelKey: 'transactions',
     iconName: IconName.Setting,
     component: mmLazy(() => import('./transactions-tab/index.ts')),
+    settingItems: TRANSACTION_SETTING_ITEMS,
   },
   {
     id: 'preferences-and-display',
@@ -131,6 +142,7 @@ export const SETTINGS_V2_MENU_LIST_ITEM_REGISTRY: SettingsV2MenuListItem[] = [
     labelKey: 'preferencesAndDisplay',
     iconName: IconName.Setting,
     component: mmLazy(() => import('./preferences-and-display-tab/index.ts')),
+    settingItems: PREFERENCES_AND_DISPLAY_SETTING_ITEMS,
   },
   {
     id: 'privacy',
@@ -138,6 +150,7 @@ export const SETTINGS_V2_MENU_LIST_ITEM_REGISTRY: SettingsV2MenuListItem[] = [
     labelKey: 'privacy',
     iconName: IconName.Lock,
     component: mmLazy(() => import('./privacy-tab/index.ts')),
+    settingItems: PRIVACY_SETTING_ITEMS,
   },
   {
     id: 'security-and-password',
@@ -145,6 +158,7 @@ export const SETTINGS_V2_MENU_LIST_ITEM_REGISTRY: SettingsV2MenuListItem[] = [
     labelKey: 'securityAndPassword',
     iconName: IconName.SecuritySearch,
     component: mmLazy(() => import('./security-and-password-tab/index.ts')),
+    settingItems: SECURITY_AND_PASSWORD_SETTING_ITEMS,
   },
   {
     id: 'developer-options',
@@ -152,5 +166,6 @@ export const SETTINGS_V2_MENU_LIST_ITEM_REGISTRY: SettingsV2MenuListItem[] = [
     labelKey: 'developerOptions',
     iconName: IconName.Code,
     component: mmLazy(() => import('./developer-options-tab/index.ts')),
+    settingItems: DEVELOPER_OPTIONS_SETTING_ITEMS,
   },
 ];

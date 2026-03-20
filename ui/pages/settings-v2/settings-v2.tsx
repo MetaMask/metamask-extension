@@ -43,7 +43,8 @@ import {
   SETTINGS_V2_MENU_LIST_ITEM_REGISTRY,
   getSettingsV2RouteMeta,
 } from './settings-registry';
-import { SettingsV2Header } from './shared';
+import { SettingsV2Header, SettingsV2SearchResults } from './shared';
+import { useSettingsV2Search } from './useSettingsV2Search';
 
 const CurrencySubPage = mmLazy(
   () => import('./assets-tab/currency-sub-page.tsx'),
@@ -95,6 +96,8 @@ const SettingsV2Layout = ({ children }: { children: React.ReactNode }) => {
 
   const isOnSettingsRoot = pathname === SETTINGS_V2_ROUTE;
   const [searchValue, setSearchValue] = useState('');
+  const searchResults = useSettingsV2Search(searchValue);
+  const isSearchActive = searchValue.trim().length >= 3;
   const backRoute = isOnSettingsRoot
     ? DEFAULT_ROUTE
     : (meta?.parentPath ?? SETTINGS_V2_ROUTE);
@@ -136,6 +139,16 @@ const SettingsV2Layout = ({ children }: { children: React.ReactNode }) => {
         onSearchChange={setSearchValue}
         onSearchClear={() => setSearchValue('')}
       />
+
+      {isSearchActive && (
+        <SettingsV2SearchResults
+          results={searchResults}
+          onClickResult={(item) => {
+            navigate(item.tabRoute);
+            setSearchValue('');
+          }}
+        />
+      )}
 
       <div className="settings-page__content">
         <div className="settings-page__content__tabs">
