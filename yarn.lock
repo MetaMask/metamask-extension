@@ -6201,11 +6201,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/design-system-react@npm:^0.10.0":
-  version: 0.10.0
-  resolution: "@metamask/design-system-react@npm:0.10.0"
+"@metamask/design-system-react@npm:^0.11.0":
+  version: 0.11.0
+  resolution: "@metamask/design-system-react@npm:0.11.0"
   dependencies:
-    "@metamask/design-system-shared": "npm:^0.3.0"
+    "@metamask/design-system-shared": "npm:^0.4.0"
     "@metamask/jazzicon": "npm:^2.0.0"
     "@radix-ui/react-slot": "npm:^1.1.0"
     blo: "npm:^2.0.0"
@@ -6216,16 +6216,16 @@ __metadata:
     "@metamask/utils": ^11.10.0
     react: ^17.0.0 || ^18.0.0
     react-dom: ^17.0.0 || ^18.0.0
-  checksum: 10/ffe596117c6928959daba460f51ae1747fa854566ce82c0c3ca6398b9dc37035844c33dc23f5212910258386e3277b87789d0722c508873b62746a1137a53994
+  checksum: 10/f73cc6d61d3997d7c6f6a4e922841802343b5328828bd6186a22d1ff1ee94ef780f8705329c3e3c9a69a46279ed964d6cf0bbb9f4a48a90a4fbb9fa9f9786e7a
   languageName: node
   linkType: hard
 
-"@metamask/design-system-shared@npm:^0.3.0":
-  version: 0.3.0
-  resolution: "@metamask/design-system-shared@npm:0.3.0"
+"@metamask/design-system-shared@npm:^0.4.0":
+  version: 0.4.0
+  resolution: "@metamask/design-system-shared@npm:0.4.0"
   dependencies:
     "@metamask/utils": "npm:^11.10.0"
-  checksum: 10/2be032b91b10d03ca4e02ba9ff5afc9db763fb865161add83a7e28ef83f165cc3c3edba03f5d600ec95e3014afd0077abcadd75e613792e77c709760813ff749
+  checksum: 10/e7799c011360295b6ae1cb458cd069e2df2ce27e836a6c604c3f2488ef7b76d00709afadc5c9462e47cb81a379751fd9da8684dcc704244e180870aa293cdd2b
   languageName: node
   linkType: hard
 
@@ -6372,10 +6372,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/eslint-plugin-design-tokens@npm:^1.1.0":
-  version: 1.1.0
-  resolution: "@metamask/eslint-plugin-design-tokens@npm:1.1.0"
-  checksum: 10/21ee903ed25eb1edb3b6f4fc4e426dc48bde0ad5d338618b5b820a11dc5f33a2706527063dca8b50e9049d3c6743781c5ae33d5860088deabc1f250659815a94
+"@metamask/eslint-plugin-design-tokens@npm:^1.1.1":
+  version: 1.1.1
+  resolution: "@metamask/eslint-plugin-design-tokens@npm:1.1.1"
+  checksum: 10/95b6d548c4d01601ebbd8f49d334bb48cea008abaee6330d29cef8953a93ab6f1de2d500be0c678908dba239bdeca97ed044a7eb549ba074f4a7fbfb453426a3
   languageName: node
   linkType: hard
 
@@ -33978,7 +33978,7 @@ __metadata:
     "@metamask/delegation-controller": "npm:^2.0.2"
     "@metamask/delegation-core": "npm:^0.2.0-rc.1"
     "@metamask/delegation-deployments": "npm:^0.15.0"
-    "@metamask/design-system-react": "npm:^0.10.0"
+    "@metamask/design-system-react": "npm:^0.11.0"
     "@metamask/design-system-tailwind-preset": "npm:^0.6.1"
     "@metamask/design-tokens": "npm:^8.2.2"
     "@metamask/eip-5792-middleware": "npm:3.0.0"
@@ -33991,7 +33991,7 @@ __metadata:
     "@metamask/eslint-config-mocha": "npm:^13.0.0"
     "@metamask/eslint-config-nodejs": "npm:^13.0.0"
     "@metamask/eslint-config-typescript": "npm:^13.0.0"
-    "@metamask/eslint-plugin-design-tokens": "npm:^1.1.0"
+    "@metamask/eslint-plugin-design-tokens": "npm:^1.1.1"
     "@metamask/eth-hd-keyring": "npm:^13.1.0"
     "@metamask/eth-json-rpc-filters": "npm:^9.0.0"
     "@metamask/eth-json-rpc-middleware": "npm:^23.1.0"

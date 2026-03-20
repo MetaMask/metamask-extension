@@ -5,7 +5,7 @@ import Homepage from '../../../page-objects/pages/home/homepage';
 import NFTListPage from '../../../page-objects/pages/home/nft-list';
 import PrivacySettings from '../../../page-objects/pages/settings/privacy-settings';
 import SettingsPage from '../../../page-objects/pages/settings/settings-page';
-import { loginWithoutBalanceValidation } from '../../../page-objects/flows/login.flow';
+import { login } from '../../../page-objects/flows/login.flow';
 import NFTDetailsPage from '../../../page-objects/pages/nft-details-page';
 import { CHAIN_IDS } from '../../../../../shared/constants/network';
 import { setupAutoDetectMocking } from './mocks';
@@ -29,7 +29,7 @@ describe('NFT full', function () {
         testSpecificMock: setupAutoDetectMocking,
       },
       async ({ driver }) => {
-        await loginWithoutBalanceValidation(driver);
+        await login(driver, { validateBalance: false });
 
         // navigate to security & privacy settings and toggle on NFT autodetection
         await new HeaderNavbar(driver).openSettingsPage();

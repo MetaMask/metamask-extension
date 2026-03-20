@@ -6,7 +6,7 @@ import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import LoginPage from '../../page-objects/pages/login-page';
 import PrivacySettings from '../../page-objects/pages/settings/privacy-settings';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 
 describe('Settings', function () {
   const ENS_NAME = 'metamask.eth';
@@ -94,7 +94,7 @@ describe('Settings', function () {
         testSpecificMock: ensDomainPassthrough,
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         // navigate to security & privacy settings screen
         await new HeaderNavbar(driver).openSettingsPage();

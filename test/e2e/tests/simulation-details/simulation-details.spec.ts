@@ -5,7 +5,7 @@ import { TX_SENTINEL_URL } from '../../../../shared/constants/transaction';
 import FixtureBuilder from '../../fixtures/fixture-builder';
 import { Fixtures, withFixtures } from '../../helpers';
 import { DAPP_URL, WINDOW_TITLES } from '../../constants';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 import TransactionConfirmation from '../../page-objects/pages/confirmations/transaction-confirmation';
 import {
   BUY_ERC1155_REQUEST_1_MOCK,
@@ -68,7 +68,7 @@ async function withFixturesForSimulationDetails(
       },
     },
     async ({ driver, mockServer }) => {
-      await loginWithBalanceValidation(driver);
+      await login(driver);
       await runTestWithFixtures({ driver, mockServer });
     },
   );
