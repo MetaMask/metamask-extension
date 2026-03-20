@@ -467,7 +467,7 @@ function buildHealthMap(
         )
       : undefined;
     const health = computeEntryHealth(entry, baselineMetrics);
-    const key = `${entry.presetName}|${entry.platform}-${entry.buildType}`;
+    const key = `${entry.benchmarkName}|${entry.platform}-${entry.buildType}`;
     const existing = map.get(key);
     if (!existing || HEALTH_ORDER[health] > HEALTH_ORDER[existing]) {
       map.set(key, health);
@@ -502,100 +502,7 @@ function countHealthEntries(
 }
 
 /**
- * Groups benchmark entries by preset name.
- *
- * @param entries - Flat list of benchmark entries.
- * @returns Map from presetName to its entries.
- */
-function groupEntriesByPreset(
-  entries: BenchmarkEntry[],
-): Map<string, BenchmarkEntry[]> {
-  const groups = new Map<string, BenchmarkEntry[]>();
-  for (const entry of entries) {
-    const group = groups.get(entry.presetName) ?? [];
-    group.push(entry);
-    groups.set(entry.presetName, group);
-  }
-  return groups;
-}
-
-type BenchmarkCombo = {
-  platform: string;
-  buildType: string;
-  artifactUrl: string | undefined;
-  regs: RegressionInfo[];
-  worstSeverity: ComparisonSeverity;
-};
-
-/**
- * Groups regression data by benchmarkName, each with a list of
- * platform/buildType combos that have at least one regression or warn.
- *
- * @param presetGroups - Entries grouped by preset.
- * @param baseline - Historical baseline (optional).
- * @returns Map from benchmarkName to list of regressing combos.
- */
-function collectBenchmarkGroups(
-  presetGroups: Map<string, BenchmarkEntry[]>,
-  baseline: HistoricalBaselineReference | undefined,
-): Map<string, BenchmarkCombo[]> {
-  const groups = new Map<string, BenchmarkCombo[]>();
-  for (const [presetName, presetEntries] of presetGroups) {
-    for (const entry of presetEntries) {
-      const baselineMetrics = baseline
-        ? resolveEntryBaseline(
-            baseline,
-            presetName,
-            entry.benchmarkName,
-            entry.platform,
-            entry.buildType,
-          )
-        : undefined;
-      const regs = getEntryRegressions(entry, baselineMetrics);
-      if (regs.length === 0) {
-        continue;
-      }
-      const worstSeverity = regs.some(
-        (r) => r.worstSeverity === COMPARISON_SEVERITY.Regression.value,
-      )
-        ? COMPARISON_SEVERITY.Regression.value
-        : COMPARISON_SEVERITY.Warn.value;
-
-      const existing = groups.get(entry.benchmarkName) ?? [];
-      existing.push({
-        platform: entry.platform,
-        buildType: entry.buildType,
-        artifactUrl: entry.artifactUrl,
-        regs,
-        worstSeverity,
-      });
-      groups.set(entry.benchmarkName, existing);
-    }
-  }
-  return groups;
-}
-
-/**
- * Formats metric rows: each metric on its own line with mean/p75/p95 stats.
- * @param regs
- */
-function formatMetricLines(regs: RegressionInfo[]): string {
-  return regs
-    .map((r) => {
-      const stats = [
-        r.mean ? `mean ${r.mean.icon}${r.mean.delta}` : null,
-        r.p75 ? `p75 ${r.p75.icon}${r.p75.delta}` : null,
-        r.p95 ? `p95 ${r.p95.icon}${r.p95.delta}` : null,
-      ]
-        .filter(Boolean)
-        .join('&nbsp; ');
-      return `&nbsp;&nbsp;${r.metric}: ${stats}`;
-    })
-    .join('<br>');
-}
-
-/**
- * Builds an outer collapsible section (e.g. '👆 Interaction Benchmarks').
+ * Builds an outer collapsible section (e.g. 'Interaction Benchmarks').
  *
  * @param result - Fetched entries and missing preset descriptions.
  * @param summary - The collapsible header text.
@@ -620,8 +527,6 @@ export function buildBenchmarkSection(
         ? `<p>⚠️ <b>Missing data:</b> ${missingPresets.join(', ')}</p>\n`
         : '';
 
-    const presetGroups = groupEntriesByPreset(entries);
-
     const sectionCounts = countHealthEntries(entries, baseline);
     const sectionBadge =
       sectionCounts.failures > 0
@@ -645,7 +550,7 @@ export function buildBenchmarkSection(
 
     let sectionBody = '';
     if (benchmarkNames.length > 0 && orderedCombos.length > 0) {
-      const headerRow = `<tr><th>Test</th>${orderedCombos
+      const headerRow = `<tr><th>Metrics</th>${orderedCombos
         .map((c) => `<th>${c}</th>`)
         .join('')}</tr>`;
 
@@ -743,7 +648,7 @@ function buildHealthMatrixHtml(
     return '';
   }
 
-  const headerRow = `<tr><th>Test</th>${orderedCombos
+  const headerRow = `<tr><th>Metrics</th>${orderedCombos
     .map((c) => `<th>${c}</th>`)
     .join('')}</tr>`;
 
@@ -825,19 +730,19 @@ export async function buildPerformanceBenchmarksSection(
 
   const interactionHtml = buildBenchmarkSection(
     interactionResult,
-    '👆 Interaction Benchmarks',
+    'Interaction Benchmarks',
     resolvedBaseline,
     runUrl,
   );
   const startupHtml = buildBenchmarkSection(
     startupResult,
-    '🔌 Startup Benchmarks',
+    'Startup Benchmarks',
     resolvedBaseline,
     runUrl,
   );
   const userJourneyHtml = buildBenchmarkSection(
     userJourneyResult,
-    '🧭 User Journey Benchmarks',
+    'User Journey Benchmarks',
     resolvedBaseline,
     runUrl,
   );
@@ -879,7 +784,10 @@ export async function buildPerformanceBenchmarksSection(
         return [];
       }
       const regs = getEntryRegressions(entry, baselineMetrics);
-      const statsStr = regs
+      const logHref = entry.artifactUrl ?? runUrl;
+      const logAnchor = logHref ? ` <a href="${logHref}">[Show logs]</a>` : '';
+      // [Show logs] on the header line; each metric on its own bullet below
+      const metricBullets = regs
         .map((r) => {
           const parts = [
             r.mean ? `mean ${r.mean.icon}${r.mean.delta}` : null,
@@ -888,22 +796,18 @@ export async function buildPerformanceBenchmarksSection(
           ]
             .filter(Boolean)
             .join(', ');
-          return `${r.metric}: ${parts}`;
+          return `&nbsp;&nbsp;• ${r.metric}: ${parts}`;
         })
-        .join(', ');
-      const logHref = entry.artifactUrl ?? runUrl;
-      const logAnchor = logHref ? ` <a href="${logHref}">[Show logs]</a>` : '';
+        .join('<br>');
       return [
-        `<li>${HEALTH_ICON[EntryHealth.Fail]} <b>${entry.benchmarkName}</b>` +
-          ` · ${entry.platform}-${entry.buildType}${
-            statsStr ? ` — ${statsStr}` : ''
-          }${logAnchor}</li>`,
+        `<li><b>${entry.benchmarkName}</b> · ${entry.platform}-${entry.buildType}${logAnchor}` +
+          `<br>${metricBullets}</li>`,
       ];
     })
     .join('');
 
   const regressionDetailsHtml = failingItems
-    ? `<details><summary>View regression details</summary>\n<ul>${failingItems}</ul></details>\n`
+    ? `&nbsp;&nbsp;<details><summary>View regression details</summary>\n<ul>${failingItems}</ul></details>\n`
     : '';
 
   const subsectionsHtml = interactionHtml + startupHtml + userJourneyHtml;

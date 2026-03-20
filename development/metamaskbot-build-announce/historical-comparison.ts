@@ -83,8 +83,9 @@ function collectMetrics(
       const raw = (result[statKey] as Record<string, unknown> | undefined)?.[
         metricName
       ];
-      if (typeof raw === 'number' && !Number.isNaN(raw)) {
-        bucket[statKey].push(raw);
+      const arr = bucket[statKey];
+      if (typeof raw === 'number' && !Number.isNaN(raw) && arr !== undefined) {
+        arr.push(raw);
       }
     }
   }
@@ -142,7 +143,7 @@ function buildMetricBaselines(
     }
     result[metric] = {
       mean: meanVal,
-      ...(values.stdDev.length > 0 ? { stdDev: mean(values.stdDev) } : {}),
+      ...(values.stdDev?.length ? { stdDev: mean(values.stdDev) } : {}),
       p75: values.p75.length > 0 ? mean(values.p75) : meanVal,
       p95: values.p95.length > 0 ? mean(values.p95) : meanVal,
     };
