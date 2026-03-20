@@ -274,44 +274,62 @@ describe('./utils/cli.ts', () => {
 
   describe('thread-loader option validation', () => {
     it('throws when --jobsPerThread is used with --threads 0', () => {
-      assert.throws(
-        () =>
-          parseArgv(
-            ['--threads', '0', '--jobsPerThread', '15'],
-            loadBuildTypesConfig(),
-          ),
-        {
-          message:
+      const exit = mock.method(process, 'exit', noop as () => never);
+      const error = mock.method(console, 'error', noop);
+
+      parseArgv(
+        ['--threads', '0', '--jobsPerThread', '15'],
+        loadBuildTypesConfig(),
+      );
+
+      assert.strictEqual(exit.mock.calls.length, 1);
+      assert.strictEqual(exit.mock.calls[0].arguments[0], 1);
+      assert.ok(
+        error.mock.calls.some((call) =>
+          String(call.arguments[0]).match(
             /Invalid combination.*jobsPerThread.*thread-loader is disabled/u,
-        },
+          ),
+        ),
       );
     });
 
     it('throws when --jobsPerThread is used with --generatePolicy', () => {
-      assert.throws(
-        () =>
-          parseArgv(
-            ['--generatePolicy', '--jobsPerThread', '20'],
-            loadBuildTypesConfig(),
-          ),
-        {
-          message:
+      const exit = mock.method(process, 'exit', noop as () => never);
+      const error = mock.method(console, 'error', noop);
+
+      parseArgv(
+        ['--generatePolicy', '--jobsPerThread', '20'],
+        loadBuildTypesConfig(),
+      );
+
+      assert.strictEqual(exit.mock.calls.length, 1);
+      assert.strictEqual(exit.mock.calls[0].arguments[0], 1);
+      assert.ok(
+        error.mock.calls.some((call) =>
+          String(call.arguments[0]).match(
             /Invalid combination.*jobsPerThread.*thread-loader is disabled/u,
-        },
+          ),
+        ),
       );
     });
 
     it('throws when --jobsPerThread is used with --reactCompilerVerbose', () => {
-      assert.throws(
-        () =>
-          parseArgv(
-            ['--reactCompilerVerbose', '--jobsPerThread', '10'],
-            loadBuildTypesConfig(),
-          ),
-        {
-          message:
+      const exit = mock.method(process, 'exit', noop as () => never);
+      const error = mock.method(console, 'error', noop);
+
+      parseArgv(
+        ['--reactCompilerVerbose', '--jobsPerThread', '10'],
+        loadBuildTypesConfig(),
+      );
+
+      assert.strictEqual(exit.mock.calls.length, 1);
+      assert.strictEqual(exit.mock.calls[0].arguments[0], 1);
+      assert.ok(
+        error.mock.calls.some((call) =>
+          String(call.arguments[0]).match(
             /Invalid combination.*jobsPerThread.*thread-loader is disabled/u,
-        },
+          ),
+        ),
       );
     });
 

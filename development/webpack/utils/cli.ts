@@ -278,12 +278,6 @@ export function parseArgv(
   // transform `add` and `omit`, so we also remove them from the config object.
   const { $0, _, addFeature: add, omitFeature: omit, ...config } = args;
 
-  if (config.threads === 0 && config.jobsPerThread !== 0) {
-    throw new Error(
-      'Invalid combination: --jobsPerThread is ignored when thread-loader is disabled (--threads 0, --generatePolicy, or --reactCompilerVerbose). Remove --jobsPerThread or enable thread-loader.',
-    );
-  }
-
   // set up feature flags
   const active = new Set<string>();
   const defaultFeaturesForBuildType = buildTypes[config.type].features ?? [];
@@ -372,6 +366,11 @@ function getCli<T extends YargsOptionsMap = Options>(options: T, name: string) {
         } else {
           throw new Error(message);
         }
+      }
+      if (args.threads === 0 && args.jobsPerThread !== 0) {
+        throw new Error(
+          'Invalid combination: --jobsPerThread is ignored when thread-loader is disabled (--threads 0, --generatePolicy, or --reactCompilerVerbose). Remove --jobsPerThread or enable thread-loader.',
+        );
       }
       return true;
     })
