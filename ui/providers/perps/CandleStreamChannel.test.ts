@@ -709,7 +709,8 @@ describe('CandleStreamChannel', () => {
       ).resolves.toBeUndefined();
 
       expect(consoleSpy).toHaveBeenCalledWith(
-        expect.stringContaining('fetchHistoricalCandles failed'),
+        '[CandleStreamChannel] fetchHistoricalCandles failed for key:',
+        'BTC-1h',
         expect.any(Error),
       );
       consoleSpy.mockRestore();
