@@ -449,6 +449,7 @@ jobs:
       - build-dist-browserify
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    environment: ${{ github.ref_name == 'main' && 'default-branch' || null }}
     env:
       EXTENSION_BUNDLESIZE_STATS_TOKEN: ${{ secrets.EXTENSION_BUNDLESIZE_STATS_TOKEN }}
       SELENIUM_BROWSER: chrome
@@ -532,8 +533,7 @@ jobs:
     needs:
       - get-requirements
     uses: ./.github/workflows/build-storybook.yml
-    secrets:
-      STORYBOOK_TOKEN: ${{ secrets.STORYBOOK_TOKEN }}
+    secrets: inherit
 
   build-ts-migration-dashboard:
     name: Build ts migration dashboard
