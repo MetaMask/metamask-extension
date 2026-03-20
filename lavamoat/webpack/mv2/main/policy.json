@@ -758,6 +758,13 @@
         "@babel/runtime": true
       }
     },
+    "@metamask-previews/base-data-service": {
+      "packages": {
+        "@metamask/messenger": true,
+        "@tanstack/react-query>@tanstack/query-core": true,
+        "eslint>fast-deep-equal": true
+      }
+    },
     "@metamask/abi-utils": {
       "packages": {
         "@metamask/superstruct": true,

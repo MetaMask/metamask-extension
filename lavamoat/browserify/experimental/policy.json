@@ -760,6 +760,15 @@
         "react-redux>react-is": true
       }
     },
+    "@metamask-previews/base-data-service": {
+      "packages": {
+        "@metamask/messenger": true,
+        "@metamask/utils": true,
+        "@tanstack/react-query>@tanstack/query-core": true,
+        "@tanstack/react-query": true,
+        "eslint>fast-deep-equal": true
+      }
+    },
     "@metamask/abi-utils": {
       "packages": {
         "@metamask/superstruct": true,
