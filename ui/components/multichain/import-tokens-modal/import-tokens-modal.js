@@ -324,7 +324,39 @@ export const ImportTokensModal = ({ onClose }) => {
       const { chainId: tokenChainId } = addedTokenValues[0];
       const isNonEvm = isNonEvmChainId(tokenChainId);
 
-      if (isNonEvm) {
+      if (assetsUnifyStateFeatureEnabled) {
+        const assets = assetsIds.map((assetId) => ({
+          assetId,
+          isHidden: isAssetIdHiddenInPreferencesMap(assetPreferences, assetId),
+        }));
+
+        // Build PendingTokenMetadata keyed by assetId for the batch call.
+        // Uses the same toAssetId call that produced assetsIds so keys match exactly.
+        const pendingMetadataByAssetId = Object.fromEntries(
+          Object.entries(pendingTokens).map(([tokenAddress, token]) => [
+            toAssetId(tokenAddress, selectedNetwork),
+            {
+              address: token.address,
+              symbol: token.symbol,
+              name: token.name ?? token.symbol,
+              decimals: token.decimals,
+              iconUrl: token.image,
+              aggregators: token.aggregators,
+              occurrences: token.occurrences,
+              chainId: token.chainId,
+              unlisted: token.unlisted,
+            },
+          ]),
+        );
+
+        await dispatch(
+          importCustomAssetsBatch(
+            selectedAccount.id,
+            assets,
+            pendingMetadataByAssetId,
+          ),
+        );
+      } else if (isNonEvm) {
         // Handle non-EVM tokens
         const accountForChain = getAccountForChain(tokenChainId);
 
@@ -372,40 +404,6 @@ export const ImportTokensModal = ({ onClose }) => {
         }
 
         await dispatch(addImportedTokens(addedTokenValues, clientId));
-      }
-
-      if (assetsUnifyStateFeatureEnabled) {
-        const assets = assetsIds.map((assetId) => ({
-          assetId,
-          isHidden: isAssetIdHiddenInPreferencesMap(assetPreferences, assetId),
-        }));
-
-        // Build PendingTokenMetadata keyed by assetId for the batch call.
-        // Uses the same toAssetId call that produced assetsIds so keys match exactly.
-        const pendingMetadataByAssetId = Object.fromEntries(
-          Object.entries(pendingTokens).map(([tokenAddress, token]) => [
-            toAssetId(tokenAddress, selectedNetwork),
-            {
-              address: token.address,
-              symbol: token.symbol,
-              name: token.name ?? token.symbol,
-              decimals: token.decimals,
-              iconUrl: token.image,
-              aggregators: token.aggregators,
-              occurrences: token.occurrences,
-              chainId: token.chainId,
-              unlisted: token.unlisted,
-            },
-          ]),
-        );
-
-        await dispatch(
-          importCustomAssetsBatch(
-            selectedAccount.id,
-            assets,
-            pendingMetadataByAssetId,
-          ),
-        );
       }
 
       addedTokenValues.forEach((pendingToken) => {

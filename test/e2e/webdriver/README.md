@@ -693,6 +693,28 @@ This organization helps provide a clear structure for understanding the various 
 > ```
 
 </details>
+<details><summary><b>clickElementAndWaitToDisappearWithRetry</b></summary>
+<br>
+
+> **`clickElementAndWaitToDisappearWithRetry`** repeats **click + wait for hidden** when the element is still visible after `disappearTimeout`. Waits `retryDelayMs` between attempts, up to `maxAttempts`.
+>
+> #### Arguments
+>
+> @param rawLocator - Element locator<br>
+> @param options.disappearTimeout - Max ms to wait for hidden after each click (default 3000).<br>
+> @param options.maxAttempts - Max attempts (default 3).<br>
+> @param options.retryDelayMs - Delay before retry (default 1000).<br>
+>
+> **Example**
+>
+> ```jsx
+> await driver.clickElementAndWaitToDisappearWithRetry(
+>   '[data-testid="import-tokens-modal-import-button"]',
+>   { disappearTimeout: 5000, maxAttempts: 3, retryDelayMs: 1000 },
+> );
+> ```
+
+</details>
 <details><summary><b>elementCountBecomesN</b></summary>
 
 > **`elementCountBecomesN`** function waits until the expected number of tokens to be rendered <br>
