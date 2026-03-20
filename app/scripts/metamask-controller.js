@@ -229,6 +229,7 @@ import {
 } from '../../shared/lib/assets-unify-state/remote-feature-flag';
 import { keyringSnapPermissionsBuilder } from './lib/snap-keyring/keyring-snaps-permissions';
 
+import { CurrencyRateDataService } from './lib/CurrencyRateDataService';
 import { AddressBookPetnamesBridge } from './lib/AddressBookPetnamesBridge';
 import { WalletFundsObtainedMonitor } from './lib/WalletFundsObtainedMonitor';
 import { createPPOMMiddleware } from './lib/ppom/ppom-middleware';
@@ -912,6 +913,32 @@ export default class MetamaskController extends EventEmitter {
     this.notificationServicesController.init();
     this.snapController.init();
     this.cronjobController.init();
+
+    // CurrencyRateDataService extends BaseDataService (core PR #8039).
+    // Subscribes to CurrencyRateController:stateChange — when the controller
+    // updates, fetchQuery stores state in the background QueryClient.
+    // BaseDataService auto-publishes cacheUpdate events; the UI subscribes
+    // via useBackgroundQuerySync and hydrates into the UI QueryClient.
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore CurrencyRateDataService not yet in RootMessenger event union
+    const currencyRateDataMessenger = new Messenger({
+      namespace: 'CurrencyRateDataService',
+      parent: this.controllerMessenger,
+    });
+    this.currencyRateDataService = new CurrencyRateDataService(
+      currencyRateDataMessenger,
+      (handler) => {
+        this.controllerMessenger.subscribe(
+          'CurrencyRateController:stateChange',
+          handler,
+        );
+        return () =>
+          this.controllerMessenger.unsubscribe(
+            'CurrencyRateController:stateChange',
+            handler,
+          );
+      },
+    );
 
     this.controllerMessenger.subscribe(
       'TransactionController:transactionStatusUpdated',
