@@ -7,8 +7,8 @@
  * LavaMoat's SES compartments (SyntaxError at parse time). This script
  * replaces it with `__filename` in the compiled CJS output.
  */
-const { readFileSync, writeFileSync } = require('fs');
-const { join } = require('path');
+import { readFileSync, writeFileSync } from 'fs';
+import { join } from 'path';
 
 const target = join(
   __dirname,
