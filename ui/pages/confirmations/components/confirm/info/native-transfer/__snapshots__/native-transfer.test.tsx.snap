@@ -173,7 +173,7 @@ exports[`NativeTransferInfo renders correctly 1`] = `
                 class="flex flex-row gap-2 items-center"
               >
                 <span
-                  class="address-display-no-name"
+                  class="address-display-clickable"
                 >
                   <button
                     class="inline-flex items-center justify-center font-medium min-w-20 overflow-hidden relative duration-100 ease-linear active:ease-[cubic-bezier(0.3,0.8,0.3,1)] h-auto rounded-none bg-transparent px-0 transform-none transition-none active:scale-100 text-primary-default hover:text-primary-default-hover hover:underline hover:decoration-primary-default-hover hover:decoration-2 hover:underline-offset-4 active:text-primary-default-pressed active:decoration-primary-default-pressed hover:bg-transparent active:bg-transparent whitespace-nowrap"

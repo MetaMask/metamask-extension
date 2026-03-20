@@ -15,6 +15,7 @@ import {
   OutboundResponse,
   SetClientActive,
   SnapsRegistryStateChangeEvent,
+  SnapInterfaceControllerSetInterfaceDisplayedAction,
 } from '@metamask/snaps-controllers';
 import {
   GetEndowments,
@@ -32,8 +33,8 @@ import {
   UpdateCaveat,
 } from '@metamask/permission-controller';
 import {
-  AddApprovalRequest,
-  UpdateRequestState,
+  ApprovalControllerAddRequestAction,
+  ApprovalControllerUpdateRequestStateAction,
 } from '@metamask/approval-controller';
 import {
   KeyringControllerLockEvent,
@@ -66,8 +67,8 @@ type Actions =
   | RevokePermissions
   | RevokePermissionForAllSubjects
   | GetSubjects
-  | AddApprovalRequest
-  | UpdateRequestState
+  | ApprovalControllerAddRequestAction
+  | ApprovalControllerUpdateRequestStateAction
   | GrantPermissions
   | GetSubjectMetadata
   | UpdateCaveat
@@ -82,6 +83,7 @@ type Actions =
   | ResolveVersion
   | CreateInterface
   | GetInterface
+  | SnapInterfaceControllerSetInterfaceDisplayedAction
   | SelectedNetworkControllerGetNetworkClientIdForDomainAction
   | NetworkControllerGetNetworkClientByIdAction
   | StorageServiceSetItemAction
@@ -156,6 +158,7 @@ export function getSnapControllerMessenger(
       'SnapsRegistry:resolveVersion',
       'SnapInterfaceController:createInterface',
       'SnapInterfaceController:getInterface',
+      'SnapInterfaceController:setInterfaceDisplayed',
       'StorageService:setItem',
       'StorageService:getItem',
       'StorageService:removeItem',

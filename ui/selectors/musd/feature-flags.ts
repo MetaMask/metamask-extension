@@ -4,9 +4,14 @@
  * Selectors for accessing mUSD-related feature flags from remote configuration.
  * Uses the shared getRemoteFeatureFlags selector which properly merges
  * manifest overrides with state flags.
+ *
+ * Supports version-gated flags in both direct and progressive rollout formats:
+ * - Direct: { enabled: true, minimumVersion: '12.0.0' }
+ * - Wrapped: { name: 'rollout', value: { enabled: true, minimumVersion: '12.0.0' } }
  */
 
 import { createSelector } from 'reselect';
+import { getBooleanFeatureFlag } from '../../../shared/lib/remote-feature-flag-utils';
 import { MUSD_BUYABLE_CHAIN_IDS } from '../../components/app/musd/constants';
 import type {
   MusdFeatureFlags,
@@ -42,61 +47,81 @@ const selectMusdRemoteFeatureFlags = createSelector(
 /**
  * Select whether the mUSD conversion flow is enabled
  * This is the master toggle for the entire feature
+ * Supports version-gated and progressive rollout flag formats
  */
 export const selectIsMusdConversionFlowEnabled = createSelector(
   selectMusdRemoteFeatureFlags,
   (flags): boolean =>
-    flags.earnMusdConversionFlowEnabled ?? DEFAULT_MUSD_BOOLEAN_FLAG,
+    getBooleanFeatureFlag(
+      flags.earnMusdConversionFlowEnabled,
+      DEFAULT_MUSD_BOOLEAN_FLAG,
+    ),
 );
 
 /**
  * Select whether the mUSD CTA (Call-to-Action) is enabled
  * Controls visibility of "Get mUSD" / "Buy mUSD" banners
+ * Supports version-gated and progressive rollout flag formats
  */
 export const selectIsMusdCtaEnabled = createSelector(
   selectMusdRemoteFeatureFlags,
-  (flags): boolean => flags.earnMusdCtaEnabled ?? DEFAULT_MUSD_BOOLEAN_FLAG,
+  (flags): boolean =>
+    getBooleanFeatureFlag(flags.earnMusdCtaEnabled, DEFAULT_MUSD_BOOLEAN_FLAG),
 );
 
 /**
  * Select whether the token list item CTA is enabled
  * Controls the "Convert to mUSD" link on token rows
+ * Supports version-gated and progressive rollout flag formats
  */
 export const selectIsMusdTokenListItemCtaEnabled = createSelector(
   selectMusdRemoteFeatureFlags,
   (flags): boolean =>
-    flags.earnMusdConversionTokenListItemCtaEnabled ??
-    DEFAULT_MUSD_BOOLEAN_FLAG,
+    getBooleanFeatureFlag(
+      flags.earnMusdConversionTokenListItemCtaEnabled,
+      DEFAULT_MUSD_BOOLEAN_FLAG,
+    ),
 );
 
 /**
  * Select whether the asset overview CTA is enabled
  * Controls the boost card on token detail pages
+ * Supports version-gated and progressive rollout flag formats
  */
 export const selectIsMusdAssetOverviewCtaEnabled = createSelector(
   selectMusdRemoteFeatureFlags,
   (flags): boolean =>
-    flags.earnMusdConversionAssetOverviewCtaEnabled ??
-    DEFAULT_MUSD_BOOLEAN_FLAG,
+    getBooleanFeatureFlag(
+      flags.earnMusdConversionAssetOverviewCtaEnabled,
+      DEFAULT_MUSD_BOOLEAN_FLAG,
+    ),
 );
 
 /**
  * Select whether the rewards UI is enabled
  * Controls Merkl rewards display elements
+ * Supports version-gated and progressive rollout flag formats
  */
 export const selectIsMusdRewardsUiEnabled = createSelector(
   selectMusdRemoteFeatureFlags,
   (flags): boolean =>
-    flags.earnMusdConversionRewardsUiEnabled ?? DEFAULT_MUSD_BOOLEAN_FLAG,
+    getBooleanFeatureFlag(
+      flags.earnMusdConversionRewardsUiEnabled,
+      DEFAULT_MUSD_BOOLEAN_FLAG,
+    ),
 );
 
 /**
  * Select whether Merkl campaign claiming is enabled
+ * Supports version-gated and progressive rollout flag formats
  */
 export const selectIsMerklClaimingEnabled = createSelector(
   selectMusdRemoteFeatureFlags,
   (flags): boolean =>
-    flags.earnMerklCampaignClaiming ?? DEFAULT_MUSD_BOOLEAN_FLAG,
+    getBooleanFeatureFlag(
+      flags.earnMerklCampaignClaiming,
+      DEFAULT_MUSD_BOOLEAN_FLAG,
+    ),
 );
 
 // ============================================================================
@@ -176,17 +201,31 @@ export const selectMusdMinAssetBalanceRequired = createSelector(
 // Composite Selectors
 // ============================================================================
 
+/** Valid mUSD feature flag keys from defaults */
+const MUSD_FLAG_KEYS = Object.keys(
+  DEFAULT_MUSD_REMOTE_FEATURE_FLAGS,
+) as (keyof MusdFeatureFlags)[];
+
 /**
- * Select all mUSD feature flags as a single object
+ * Select all mUSD feature flags as a single object.
+ * Only includes flags defined in MusdFeatureFlags type, not all remote flags.
  */
 export const selectAllMusdFeatureFlags = createSelector(
   selectMusdRemoteFeatureFlags,
-  (flags): MusdFeatureFlags => ({
-    ...DEFAULT_MUSD_REMOTE_FEATURE_FLAGS,
-    ...Object.fromEntries(
-      Object.entries(flags).filter(([, v]) => v !== undefined),
-    ),
-  }),
+  (flags): MusdFeatureFlags => {
+    // Filter to only include keys that are part of MusdFeatureFlags
+    const musdFlags = Object.fromEntries(
+      Object.entries(flags).filter(
+        ([key, value]) =>
+          MUSD_FLAG_KEYS.includes(key as keyof MusdFeatureFlags) &&
+          value !== undefined,
+      ),
+    );
+    return {
+      ...DEFAULT_MUSD_REMOTE_FEATURE_FLAGS,
+      ...musdFlags,
+    };
+  },
 );
 
 /**

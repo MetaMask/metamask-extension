@@ -1,16 +1,17 @@
+import {
+  Box,
+  BoxAlignItems,
+  BoxFlexDirection,
+  FontWeight,
+  Text,
+  TextColor,
+  TextVariant,
+} from '@metamask/design-system-react';
 import { TransactionMeta } from '@metamask/transaction-controller';
 import React, { useMemo } from 'react';
 import { ConfirmInfoAlertRow } from '../../../../../../components/app/confirm/info/row/alert-row/alert-row';
 import { RowAlertKey } from '../../../../../../components/app/confirm/info/row/constants';
-import { Box, Text } from '../../../../../../components/component-library';
-import {
-  AlignItems,
-  Display,
-  FlexDirection,
-  Severity,
-  TextColor,
-  TextVariant,
-} from '../../../../../../helpers/constants/design-system';
+import { Severity } from '../../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
 import { useConfirmContext } from '../../../../context/confirm';
 import { useEnableShieldCoverageChecks } from '../../../../hooks/transactions/useEnableShieldCoverageChecks';
@@ -40,9 +41,8 @@ const ShieldFooterCoverageIndicator = () => {
 
   return (
     <Box
-      display={Display.Flex}
-      flexDirection={FlexDirection.Row}
-      alignItems={AlignItems.center}
+      flexDirection={BoxFlexDirection.Row}
+      alignItems={BoxAlignItems.Center}
       paddingLeft={4}
       paddingRight={4}
       // box shadow to match the original var(--shadow-size-md) on the footer,
@@ -61,13 +61,17 @@ const ShieldFooterCoverageIndicator = () => {
         ownerId={currentConfirmation.id}
         label=""
         labelChildren={
-          <Text variant={TextVariant.bodyMdMedium} color={TextColor.inherit}>
+          <Text
+            variant={TextVariant.BodyMd}
+            fontWeight={FontWeight.Medium}
+            color={TextColor.Inherit}
+          >
             {t('transactionShield')}
           </Text>
         }
         style={{
           marginBottom: 0,
-          alignItems: AlignItems.center,
+          alignItems: 'center',
           width: '100%',
         }}
         showAlertLoader

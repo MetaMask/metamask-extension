@@ -1,23 +1,25 @@
 import { Context } from 'mocha';
 import { MockttpServer } from 'mockttp';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
-import FixtureBuilder from '../../fixtures/fixture-builder';
-import { withFixtures, largeDelayMs } from '../../helpers';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
+import { NETWORK_CLIENT_ID } from '../../constants';
+import { withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import HomePage from '../../page-objects/pages/home/homepage';
 import AssetListPage from '../../page-objects/pages/home/asset-list';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import { mockSpotPrices } from './utils/mocks';
 
-// Bug 37687 cannot sort tokens alphabetically in the wallet
-// eslint-disable-next-line mocha/no-skipped-tests
-describe.skip('Token List Sorting', function () {
+describe('Token List Sorting', function () {
   const mainnetChainId = CHAIN_IDS.MAINNET;
   const customTokenAddress = '0x2EFA2Cb29C2341d8E5Ba7D3262C9e9d6f1Bf3711';
   const customTokenSymbol = 'ABC';
 
   const testFixtures = {
-    fixtures: new FixtureBuilder({ inputChainId: mainnetChainId }).build(),
+    fixtures: new FixtureBuilderV2()
+      .withSelectedNetwork(NETWORK_CLIENT_ID.MAINNET)
+      .withEnabledNetworks({ eip155: { [mainnetChainId]: true } })
+      .build(),
     localNodeOptions: {
       chainId: parseInt(mainnetChainId, 16),
     },
@@ -53,24 +55,16 @@ describe.skip('Token List Sorting', function () {
 
         await assetListPage.checkTokenExistsInList('Ethereum');
         await assetListPage.sortTokenList('alphabetically');
-
-        await driver.waitUntil(
-          async () => {
-            const sortedTokenList = await assetListPage.getTokenListNames();
-            return sortedTokenList[0].includes(customTokenSymbol);
-          },
-          { timeout: largeDelayMs, interval: 100 },
-        );
+        await assetListPage.checkTokenPositionInList({
+          position: 1,
+          tokenName: customTokenSymbol,
+        });
 
         await assetListPage.sortTokenList('decliningBalance');
-        await driver.waitUntil(
-          async () => {
-            const sortedTokenListByBalance =
-              await assetListPage.getTokenListNames();
-            return sortedTokenListByBalance[0].includes('Ethereum');
-          },
-          { timeout: largeDelayMs, interval: 100 },
-        );
+        await assetListPage.checkTokenPositionInList({
+          position: 1,
+          tokenName: 'Ethereum',
+        });
       },
     );
   });

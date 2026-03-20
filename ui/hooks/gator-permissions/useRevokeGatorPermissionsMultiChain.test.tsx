@@ -352,7 +352,9 @@ describe('useRevokeGatorPermissionsMultiChain', () => {
     });
 
     it('should skip permissions when internal account is not found', async () => {
-      mockGetMemoizedInternalAccountByAddress.mockReturnValue(undefined);
+      mockGetMemoizedInternalAccountByAddress.mockReturnValue(
+        undefined as unknown as ReturnType<typeof getInternalAccountByAddress>,
+      );
 
       const { result } = renderHook(
         () => useRevokeGatorPermissionsMultiChain(),

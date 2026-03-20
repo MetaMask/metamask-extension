@@ -83,7 +83,6 @@ export type Preferences = {
   dismissSmartAccountSuggestionEnabled: boolean;
   featureNotificationsEnabled: boolean;
   hideZeroBalanceTokens: boolean;
-  petnamesEnabled: boolean;
   privacyMode: boolean;
   showConfirmationAdvancedDetails: boolean;
   showDefaultAddress: boolean;
@@ -117,13 +116,8 @@ export type PreferencesControllerState = Omit<
   | 'showMultiRpcModal'
   | 'dismissSmartAccountSuggestionEnabled'
   | 'smartAccountOptIn'
-  | 'smartAccountOptInForAccounts'
   | 'showIncomingTransactions'
   | 'tokenNetworkFilter'
-  // TODO: Remove identies, lostIdentities and selectedAddress from here once the state type is updated in core
-  | 'identities'
-  | 'lostIdentities'
-  | 'selectedAddress'
 > & {
   addSnapAccountEnabled?: boolean;
   advancedGasFee: Record<string, Record<string, string>>;
@@ -186,7 +180,6 @@ export const getDefaultPreferencesControllerState =
       dismissSmartAccountSuggestionEnabled: false,
       featureNotificationsEnabled: false,
       hideZeroBalanceTokens: false,
-      petnamesEnabled: true,
       privacyMode: false,
       showConfirmationAdvancedDetails: false,
       showDefaultAddress: false,
