@@ -17,6 +17,10 @@ import {
 } from '../../ui/contexts/metametrics';
 import { getMessage } from '../../ui/helpers/utils/i18n-helper';
 import * as enLocaleMessages from '../../app/_locales/en/messages.json';
+import {
+  LegacyRouteMessengerProvider,
+  RouteMessengerContext,
+} from '../../ui/contexts/route-messenger';
 import { UIMessengerProvider } from '../../ui/contexts/ui-messenger';
 import { createMockUIMessenger } from './mock-ui-messenger';
 
@@ -71,6 +75,7 @@ I18nProvider.defaultProps = {
  * @param {object|false} [options.metaMetrics] - MetaMetrics provider config. Default: enabled with default trackEvent mock
  * @param {object|false} [options.queryClient] - QueryClient provider config. Default: enabled using default QueryClient
  * @param {object|false} [options.uiMessenger] - UI messenger. Default: false (disabled)
+ * @param {object|false} [options.messenger] - Route messenger. Default: false (disabled)
  * @returns {Function} Wrapper component
  */
 export function createProviderWrapper({
@@ -80,11 +85,26 @@ export function createProviderWrapper({
   metaMetrics = {},
   queryClient: queryClientOption = {},
   uiMessenger = createMockUIMessenger(),
+  messenger = false,
 } = {}) {
   const Wrapper = ({ children }) => {
     let content = children;
 
-    // QueryClient (innermost)
+    //========
+    // We need a way to render a component or hook that uses `useMessenger`.
+    // With these changes, `messenger` can be passed to `renderWithProvider`
+    // or `renderHookWithProvider`.
+    //========
+    // Messenger (innermost)
+    if (messenger) {
+      content = (
+        <RouteMessengerContext.Provider value={messenger}>
+          <LegacyRouteMessengerProvider>{content}</LegacyRouteMessengerProvider>
+        </RouteMessengerContext.Provider>
+      );
+    }
+
+    // QueryClient
     if (queryClientOption !== false) {
       const queryClient =
         queryClientOption.queryClient ??
@@ -238,6 +258,7 @@ export function renderHookWithProvider(
       'metaMetrics' in stateOrOptions ||
       'Container' in stateOrOptions ||
       'uiMessenger' in stateOrOptions ||
+      'messenger' in stateOrOptions ||
       'i18n' in stateOrOptions);
 
   if (isOptionsObject) {
