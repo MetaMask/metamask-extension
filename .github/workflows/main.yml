@@ -399,10 +399,7 @@ jobs:
       - build-test-mv2-webpack
     with:
       builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
-    secrets:
-      INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
-      TEST_SRP_2: ${{ secrets.TEST_SRP_2 }}
-      EXTENSION_BENCHMARK_STATS_TOKEN: ${{ secrets.EXTENSION_BENCHMARK_STATS_TOKEN }}
+    secrets: inherit
 
   run-tests:
     name: Run tests
