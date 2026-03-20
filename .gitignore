@@ -106,5 +106,8 @@ development/.webpack
 # llm workflow playwright temp files
 temp-llm-workflow-*
 
+# git worktrees
+.worktrees
+
 # Cursor IDE internal state
 .cursor/hooks/
