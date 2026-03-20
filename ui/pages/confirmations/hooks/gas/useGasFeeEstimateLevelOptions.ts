@@ -19,7 +19,6 @@ import { toHumanEstimatedTimeRange } from '../../utils/time';
 import { hexWEIToDecGWEI } from '../../../../../shared/lib/conversion.utils';
 import { CURRENCY_SYMBOLS } from '../../../../../shared/constants/network';
 import { getNetworkConfigurationsByChainId } from '../../../../../shared/lib/selectors/networks';
-import { getNetworkConfigurationsByChainId } from '../../../../../shared/lib/selectors/networks';
 
 const HEX_ZERO = '0x0';
 
