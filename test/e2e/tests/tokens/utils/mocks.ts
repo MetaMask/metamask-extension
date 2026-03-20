@@ -51,14 +51,28 @@ export const mockSpotPrices = async (
     }));
 };
 
-export async function mockPriceApi(mockServer: Mockttp, ethPrice: number = 1) {
+/**
+ * Mocks Price API v3 spot-prices (native ETH for the given chain) and v1 exchange-rates.
+ *
+ * @param mockServer - Mockttp instance.
+ * @param ethPrice - Spot price for native ETH on that chain (USD).
+ * @param chainId - EVM chain id in hex (e.g. `0x1`, `0x539`); used to build `eip155:<n>/slip44:60`.
+ */
+export async function mockPriceApi(
+  mockServer: Mockttp,
+  ethPrice: number = 1,
+  chainId: `0x${string}` = '0x1',
+) {
+  const chainIdDecimal = Number.parseInt(chainId, 16);
+  const nativeAssetId = `eip155:${chainIdDecimal}/slip44:60`;
+
   const spotPricesMockEth = await mockServer
     .forGet(/^https:\/\/price\.api\.cx\.metamask\.io\/v3\/spot-prices/u)
     .always()
     .thenCallback(() => ({
       statusCode: 200,
       json: {
-        'eip155:1/slip44:60': {
+        [nativeAssetId]: {
           id: 'ethereum',
           price: ethPrice,
           marketCap: 112500000,

@@ -14,13 +14,15 @@ import {
   reviewTransaction,
 } from '../../page-objects/flows/transaction';
 import FixtureBuilder from '../../fixtures/fixture-builder';
+import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { GAS_API_BASE_URL } from '../../../../shared/constants/swaps';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import { validateTransaction } from '../../page-objects/flows/send-transaction.flow';
-import { mockSpotPrices } from '../tokens/utils/mocks';
+import { mockPriceApi, mockSpotPrices } from '../tokens/utils/mocks';
 import GasFeeModal from '../../page-objects/pages/confirmations/gas-fee-modal';
 import SendTokenConfirmPage from '../../page-objects/pages/send/send-token-confirmation-page';
 import SendPage from '../../page-objects/pages/send/send-page';
+import { mockTokensV3Assets } from '../solana/common-solana';
 
 const PREFERENCES_STATE_MOCK = {
   preferences: {
@@ -78,16 +80,18 @@ describe('Send ETH - Max Amount', function () {
           title: this.test?.fullTitle(),
           testSpecificMock: async (mockServer: MockttpServer) => {
             await mockSpotPrices(mockServer, {
-              'eip155:1/slip44:60': {
+              'eip155:1337/slip44:60': {
                 price: 1700,
                 marketCap: 382623505141,
                 pricePercentChange1d: 0,
               },
             });
+            return [await mockPriceApi(mockServer, 1700, CHAIN_IDS.LOCALHOST)];
           },
         },
         async ({ driver }) => {
           await loginWithBalanceValidation(driver);
+          // await driver.delay(1000000);
 
           await createInternalTransactionWithMaxAmount({ driver });
           await reviewTransaction(driver);
@@ -140,6 +144,7 @@ describe('Send ETH - Max Amount', function () {
                 pricePercentChange1d: 0,
               },
             });
+            return [await mockPriceApi(mockServer, 1700, CHAIN_IDS.LOCALHOST)];
           },
         },
         async ({ driver }) => {
@@ -195,6 +200,7 @@ describe('Send ETH - Max Amount', function () {
               pricePercentChange1d: 0,
             },
           });
+          return [await mockPriceApi(mockServer, 1700, CHAIN_IDS.LOCALHOST)];
         },
       },
       async ({ driver, mockServer }) => {

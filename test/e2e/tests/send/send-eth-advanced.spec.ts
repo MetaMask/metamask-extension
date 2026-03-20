@@ -14,7 +14,7 @@ import { WINDOW_TITLES } from '../../constants';
 import { withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixtures/fixture-builder';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
-import { mockSpotPrices } from '../tokens/utils/mocks';
+import { mockPriceApi, mockSpotPrices } from '../tokens/utils/mocks';
 import { Driver } from '../../webdriver/driver';
 import GasFeeModal from '../../page-objects/pages/confirmations/gas-fee-modal';
 import SendTokenConfirmPage from '../../page-objects/pages/send/send-token-confirmation-page';
@@ -24,6 +24,7 @@ import SendPage from '../../page-objects/pages/send/send-page';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import { Anvil } from '../../seeder/anvil';
 import { createInternalTransaction } from '../../page-objects/flows/transaction';
+import { CHAIN_IDS } from '../../../../shared/constants/network';
 
 const PREFERENCES_STATE_MOCK = {
   preferences: {
@@ -101,6 +102,7 @@ describe('Send ETH - Advanced', function () {
                 pricePercentChange1d: 0,
               },
             });
+            return [await mockPriceApi(mockServer, 1700, CHAIN_IDS.LOCALHOST)];
           },
         },
         async ({ driver }: { driver: Driver }) => {
@@ -160,6 +162,7 @@ describe('Send ETH - Advanced', function () {
                 pricePercentChange1d: 0,
               },
             });
+            return [await mockPriceApi(mockServer, 1700, CHAIN_IDS.LOCALHOST)];
           },
         },
         async ({ driver }: { driver: Driver }) => {
