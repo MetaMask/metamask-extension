@@ -3763,9 +3763,6 @@
   "links": {
     "message": "链接"
   },
-  "loadMore": {
-    "message": "加载更多"
-  },
   "loading": {
     "message": "正在加载..."
   },

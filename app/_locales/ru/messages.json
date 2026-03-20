@@ -3763,9 +3763,6 @@
   "links": {
     "message": "Ссылки"
   },
-  "loadMore": {
-    "message": "Загрузить еще"
-  },
   "loading": {
     "message": "Загрузка..."
   },
