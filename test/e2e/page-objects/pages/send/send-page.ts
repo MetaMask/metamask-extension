@@ -167,6 +167,13 @@ class SendPage {
     await this.pressContinueButton();
   }
 
+  async editAmountByKeys(keys: string[]): Promise<void> {
+    console.log('Editing amount value by key presses');
+    for (const key of keys) {
+      await this.driver.press(this.amountInput, key);
+    }
+  }
+
   async fillAmount(amount: string): Promise<void> {
     console.log(`Filling amount with ${amount}`);
     await this.driver.waitForSelector(this.amountInput);
