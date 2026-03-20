@@ -32,6 +32,15 @@ const EMPTY_FEES = {
   nativeCurrencyFee: EMPTY_FEE,
 };
 
+const MIN_NATIVE_FEE_THRESHOLD = 0.00001;
+
+function applySmallNativeFeeThreshold(nativeFee: string, hexFee: Hex): string {
+  if (nativeFee === '0' && new Numeric(hexFee, 16).greaterThan(0, 10)) {
+    return `< ${MIN_NATIVE_FEE_THRESHOLD}`;
+  }
+  return nativeFee;
+}
+
 export function useFeeCalculations(transactionMeta: TransactionMeta) {
   const currentCurrency = useSelector(getCurrentCurrency);
   const { chainId } = transactionMeta;
@@ -287,7 +296,10 @@ export function useFeeCalculations(transactionMeta: TransactionMeta) {
     estimatedFeeFiat: estimatedFees.currentCurrencyFee,
     estimatedFeeFiatWith18SignificantDigits:
       estimatedFees.currentCurrencyFeeWith18SignificantDigits,
-    estimatedFeeNative: estimatedFees.nativeCurrencyFee,
+    estimatedFeeNative: applySmallNativeFeeThreshold(
+      estimatedFees.nativeCurrencyFee,
+      estimatedFees.hexFee,
+    ),
     estimatedFeeNativeHex: add0x(estimatedFees.hexFee),
     l1FeeFiat: feesL1.currentCurrencyFee,
     l1FeeFiatWith18SignificantDigits:
@@ -300,6 +312,6 @@ export function useFeeCalculations(transactionMeta: TransactionMeta) {
     maxFeeFiat,
     maxFeeFiatWith18SignificantDigits,
     maxFeeHex: add0x(maxFeeHex),
-    maxFeeNative,
+    maxFeeNative: applySmallNativeFeeThreshold(maxFeeNative, maxFeeHex),
   };
 }
