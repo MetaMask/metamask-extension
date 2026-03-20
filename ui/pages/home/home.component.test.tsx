@@ -32,6 +32,10 @@ jest.mock(
 jest.mock('../../components/app/modals/pna25-modal', () => ({
   Pna25Modal: () => null,
 }));
+jest.mock(
+  '../../components/multichain/spot-prices-query/SpotPricesQueryPanel',
+  () => ({ SpotPricesQueryPanel: () => null }),
+);
 jest.mock('../connected-sites', () => () => null);
 jest.mock('../connected-accounts', () => () => null);
 jest.mock('./beta-and-flask-home-footer.component', () => () => null);
