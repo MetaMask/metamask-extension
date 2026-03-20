@@ -184,6 +184,27 @@ export const SOLANA_MAINNET_CHAIN_ID = '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp';
 /* Solana Mainnet scope in CAIP-2 format */
 export const SOLANA_MAINNET_SCOPE = `solana:${SOLANA_MAINNET_CHAIN_ID}`;
 
+/* CAIP-2 EVM chain scopes used in MM Connect Multichain tests */
+export const MM_CONNECT_EVM_CHAINS = {
+  ETHEREUM: 'eip155:1',
+  POLYGON: 'eip155:137',
+  LINEA: 'eip155:59144',
+} as const;
+
+/* All featured CAIP-2 chain IDs available in the MM Connect playground */
+export const MM_CONNECT_FEATURED_CHAIN_IDS = [
+  'eip155:1', // Ethereum Mainnet (pre-checked on page load)
+  'eip155:59144', // Linea Mainnet
+  'eip155:42161', // Arbitrum One
+  'eip155:43114', // Avalanche C-Chain
+  'eip155:56', // BNB Chain
+  'eip155:10', // OP Mainnet
+  'eip155:137', // Polygon Mainnet
+  'eip155:324', // zkSync Era
+  'eip155:8453', // Base Mainnet
+  `solana:${SOLANA_MAINNET_CHAIN_ID}`, // Solana Mainnet
+] as const;
+
 /* Default (mocked) SOLANA balance used by the Solana RPC provider */
 export const DEFAULT_SOLANA_BALANCE = 1; // SOL
 

@@ -1,15 +1,15 @@
-import assert from 'assert';
 import { Suite } from 'mocha';
 
 import {
   DAPP_HOST_ADDRESS,
   DAPP_PATH,
+  MM_CONNECT_EVM_CHAINS,
   SOLANA_MAINNET_SCOPE,
   WINDOW_TITLES,
 } from '../../constants';
 import { withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
-import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
+import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import { getPermissionsPageForHost } from '../../page-objects/flows/permissions.flow';
 import { Driver } from '../../webdriver/driver';
 import NonEvmHomepage from '../../page-objects/pages/home/non-evm-homepage';
@@ -17,13 +17,6 @@ import ConnectAccountConfirmation from '../../page-objects/pages/confirmations/c
 import Confirmation from '../../page-objects/pages/confirmations/confirmation';
 import SnapSignMessageConfirmation from '../../page-objects/pages/confirmations/snap-sign-message-confirmation';
 import { TestDappMmConnect as TestDapp } from '../../page-objects/pages/test-dapp-mm-connect';
-
-// CAIP-2 EVM chain IDs used across tests
-const EVM_CHAINS = {
-  ETHEREUM: 'eip155:1',
-  POLYGON: 'eip155:137',
-  LINEA: 'eip155:59144',
-} as const;
 
 const MM_CONNECT_TEST_DAPP_OPTIONS = {
   customDappPaths: [DAPP_PATH.TEST_DAPP_MM_CONNECT],
@@ -38,7 +31,7 @@ describe('MM Connect — Multichain E2E', function (this: Suite) {
         dappOptions: MM_CONNECT_TEST_DAPP_OPTIONS,
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithoutBalanceValidation(driver);
+        await loginWithBalanceValidation(driver);
 
         const homePage = new NonEvmHomepage(driver);
         await homePage.waitForNonEvmAccountsLoaded();
@@ -49,9 +42,9 @@ describe('MM Connect — Multichain E2E', function (this: Suite) {
         // Include Solana in the multichain session request (not the
         // wallet-standard adapter — just the Connect (Multichain) button).
         await testDapp.selectNetworks([
-          EVM_CHAINS.ETHEREUM,
-          EVM_CHAINS.POLYGON,
-          EVM_CHAINS.LINEA,
+          MM_CONNECT_EVM_CHAINS.ETHEREUM,
+          MM_CONNECT_EVM_CHAINS.POLYGON,
+          MM_CONNECT_EVM_CHAINS.LINEA,
           SOLANA_MAINNET_SCOPE,
         ]);
         await testDapp.clickConnect();
@@ -64,9 +57,9 @@ describe('MM Connect — Multichain E2E', function (this: Suite) {
 
         // All 4 ScopeCards should now be visible (3 EVM + Solana Mainnet)
         await testDapp.switchTo();
-        await testDapp.checkScopeCardVisible(EVM_CHAINS.ETHEREUM);
-        await testDapp.checkScopeCardVisible(EVM_CHAINS.POLYGON);
-        await testDapp.checkScopeCardVisible(EVM_CHAINS.LINEA);
+        await testDapp.checkScopeCardVisible(MM_CONNECT_EVM_CHAINS.ETHEREUM);
+        await testDapp.checkScopeCardVisible(MM_CONNECT_EVM_CHAINS.POLYGON);
+        await testDapp.checkScopeCardVisible(MM_CONNECT_EVM_CHAINS.LINEA);
         await testDapp.checkScopeCardVisible(SOLANA_MAINNET_SCOPE);
         await testDapp.checkConnectionStatus('connected');
       },
@@ -81,16 +74,16 @@ describe('MM Connect — Multichain E2E', function (this: Suite) {
         dappOptions: MM_CONNECT_TEST_DAPP_OPTIONS,
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithoutBalanceValidation(driver);
+        await loginWithBalanceValidation(driver);
 
         const testDapp = new TestDapp(driver);
         await testDapp.openPage();
 
         // Connect to 3 EVM chains + Solana
         await testDapp.selectNetworks([
-          EVM_CHAINS.ETHEREUM,
-          EVM_CHAINS.POLYGON,
-          EVM_CHAINS.LINEA,
+          MM_CONNECT_EVM_CHAINS.ETHEREUM,
+          MM_CONNECT_EVM_CHAINS.POLYGON,
+          MM_CONNECT_EVM_CHAINS.LINEA,
           SOLANA_MAINNET_SCOPE,
         ]);
         await testDapp.clickConnect();
@@ -102,7 +95,7 @@ describe('MM Connect — Multichain E2E', function (this: Suite) {
 
         await testDapp.switchTo();
 
-        for (const chainId of Object.values(EVM_CHAINS)) {
+        for (const chainId of Object.values(MM_CONNECT_EVM_CHAINS)) {
           // Fire the request without blocking on the result
           await testDapp.triggerMethod(chainId, 'personal_sign');
 
@@ -111,18 +104,9 @@ describe('MM Connect — Multichain E2E', function (this: Suite) {
           const signingConfirmation = new Confirmation(driver);
           await signingConfirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
 
-          // Back in test dapp: the result entry should now be visible
+          // Back in test dapp: validate result is a hex signature string
           await testDapp.switchTo();
-          const result = await testDapp.getMethodResult(
-            chainId,
-            'personal_sign',
-          );
-
-          // A successful personal_sign result is an hex string, where errors are returned as objects.
-          assert.ok(
-            result.startsWith('"0x'),
-            `Expected personal_sign result for ${chainId}, got: "${result}"`,
-          );
+          await testDapp.checkMethodResult(chainId, 'personal_sign', '"0x');
         }
 
         // Trigger signMessage for Solana
@@ -136,28 +120,7 @@ describe('MM Connect — Multichain E2E', function (this: Suite) {
         await solanaSigningConfirmation.clickFooterConfirmButton();
 
         await testDapp.switchTo();
-        const solanaSignMessageResult = await testDapp.getMethodResult(
-          SOLANA_MAINNET_SCOPE,
-          'signMessage',
-          true,
-        );
-
-        const parsedSolanaSignMessageResult = JSON.parse(
-          solanaSignMessageResult,
-        ) as Record<string, unknown>;
-
-        assert.ok(
-          typeof parsedSolanaSignMessageResult.signature === 'string',
-          `Expected signMessage result for ${SOLANA_MAINNET_SCOPE} to include string "signature", got: "${solanaSignMessageResult}"`,
-        );
-        assert.ok(
-          typeof parsedSolanaSignMessageResult.signedMessage === 'string',
-          `Expected signMessage result for ${SOLANA_MAINNET_SCOPE} to include string "signedMessage", got: "${solanaSignMessageResult}"`,
-        );
-        assert.ok(
-          typeof parsedSolanaSignMessageResult.signatureType === 'string',
-          `Expected signMessage result for ${SOLANA_MAINNET_SCOPE} to include string "signatureType", got: "${solanaSignMessageResult}"`,
-        );
+        await testDapp.checkSolanaSignMessageResult(SOLANA_MAINNET_SCOPE);
       },
     );
   });
@@ -170,12 +133,12 @@ describe('MM Connect — Multichain E2E', function (this: Suite) {
         dappOptions: MM_CONNECT_TEST_DAPP_OPTIONS,
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithoutBalanceValidation(driver);
+        await loginWithBalanceValidation(driver);
 
         const testDapp = new TestDapp(driver);
         await testDapp.openPage();
 
-        await testDapp.selectNetworks(Object.values(EVM_CHAINS));
+        await testDapp.selectNetworks(Object.values(MM_CONNECT_EVM_CHAINS));
         await testDapp.clickConnect();
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
@@ -187,17 +150,17 @@ describe('MM Connect — Multichain E2E', function (this: Suite) {
 
         // eth_chainId must return the hex chain ID specific to each scope
         const expectedChainIds: [string, string][] = [
-          [EVM_CHAINS.ETHEREUM, '0x1'],
-          [EVM_CHAINS.POLYGON, '0x89'],
-          [EVM_CHAINS.LINEA, '0xe708'],
+          [MM_CONNECT_EVM_CHAINS.ETHEREUM, '0x1'],
+          [MM_CONNECT_EVM_CHAINS.POLYGON, '0x89'],
+          [MM_CONNECT_EVM_CHAINS.LINEA, '0xe708'],
         ];
 
         for (const [chainId, expectedHex] of expectedChainIds) {
-          const result = await testDapp.invokeMethod(chainId, 'eth_chainId');
-          assert.strictEqual(
-            result,
+          await testDapp.invokeMethod(chainId, 'eth_chainId');
+          await testDapp.checkMethodResult(
+            chainId,
+            'eth_chainId',
             `"${expectedHex}"`,
-            `Expected eth_chainId for ${chainId} to equal "${expectedHex}", got: "${result}"`,
           );
         }
       },
@@ -212,12 +175,12 @@ describe('MM Connect — Multichain E2E', function (this: Suite) {
         dappOptions: MM_CONNECT_TEST_DAPP_OPTIONS,
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithoutBalanceValidation(driver);
+        await loginWithBalanceValidation(driver);
 
         const testDapp = new TestDapp(driver);
         await testDapp.openPage();
 
-        await testDapp.selectNetworks(Object.values(EVM_CHAINS));
+        await testDapp.selectNetworks(Object.values(MM_CONNECT_EVM_CHAINS));
         await testDapp.clickConnect();
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
@@ -227,9 +190,9 @@ describe('MM Connect — Multichain E2E', function (this: Suite) {
 
         // All 3 chains connected — verify
         await testDapp.switchTo();
-        await testDapp.checkScopeCardVisible(EVM_CHAINS.ETHEREUM);
-        await testDapp.checkScopeCardVisible(EVM_CHAINS.POLYGON);
-        await testDapp.checkScopeCardVisible(EVM_CHAINS.LINEA);
+        await testDapp.checkScopeCardVisible(MM_CONNECT_EVM_CHAINS.ETHEREUM);
+        await testDapp.checkScopeCardVisible(MM_CONNECT_EVM_CHAINS.POLYGON);
+        await testDapp.checkScopeCardVisible(MM_CONNECT_EVM_CHAINS.LINEA);
 
         // Remove Polygon from permitted networks via the extension
         await driver.switchToWindowWithTitle(
@@ -244,11 +207,11 @@ describe('MM Connect — Multichain E2E', function (this: Suite) {
 
         // Back in test dapp: Polygon ScopeCard should no longer be visible
         await testDapp.switchTo();
-        await testDapp.checkScopeCardNotVisible(EVM_CHAINS.POLYGON);
+        await testDapp.checkScopeCardNotVisible(MM_CONNECT_EVM_CHAINS.POLYGON);
 
         // Ethereum and Linea ScopeCards should still be present
-        await testDapp.checkScopeCardVisible(EVM_CHAINS.ETHEREUM);
-        await testDapp.checkScopeCardVisible(EVM_CHAINS.LINEA);
+        await testDapp.checkScopeCardVisible(MM_CONNECT_EVM_CHAINS.ETHEREUM);
+        await testDapp.checkScopeCardVisible(MM_CONNECT_EVM_CHAINS.LINEA);
       },
     );
   });
@@ -261,12 +224,12 @@ describe('MM Connect — Multichain E2E', function (this: Suite) {
         dappOptions: MM_CONNECT_TEST_DAPP_OPTIONS,
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithoutBalanceValidation(driver);
+        await loginWithBalanceValidation(driver);
 
         const testDapp = new TestDapp(driver);
         await testDapp.openPage();
 
-        await testDapp.selectNetworks(Object.values(EVM_CHAINS));
+        await testDapp.selectNetworks(Object.values(MM_CONNECT_EVM_CHAINS));
         await testDapp.clickConnect();
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);

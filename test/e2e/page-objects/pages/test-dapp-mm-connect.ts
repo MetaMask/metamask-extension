@@ -1,4 +1,5 @@
-import { DAPP_HOST_ADDRESS } from '../../constants';
+import assert from 'assert';
+import { DAPP_URL, MM_CONNECT_FEATURED_CHAIN_IDS } from '../../constants';
 import { Driver } from '../../webdriver/driver';
 
 /**
@@ -22,32 +23,12 @@ function createTestId(...parts: string[]): string {
   return parts.map(escapeTestId).filter(Boolean).join('-');
 }
 
-const TEST_DAPP_MM_CONNECT_URL = `http://${DAPP_HOST_ADDRESS}`;
-
-/**
- * All CAIP-2 chain IDs available as checkboxes in the playground.
- * Derived from @metamask/playground-ui FEATURED_NETWORKS.
- * Used by selectNetworks() to know which checkboxes exist on the page.
- */
-const ALL_FEATURED_CHAIN_IDS = [
-  'eip155:1', // Ethereum Mainnet (pre-checked on page load)
-  'eip155:59144', // Linea Mainnet
-  'eip155:42161', // Arbitrum One
-  'eip155:43114', // Avalanche C-Chain
-  'eip155:56', // BNB Chain
-  'eip155:10', // OP Mainnet
-  'eip155:137', // Polygon Mainnet
-  'eip155:324', // zkSync Era
-  'eip155:8453', // Base Mainnet
-  'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp', // Solana Mainnet
-] as const;
-
 /**
  * Page object for MM Connect Test Dapp
  * Package: @metamask/browser-playground | Repo: metamask/connect-monorepo
  *
- * The dapp is served at TEST_DAPP_MM_CONNECT_URL (port 8080 when no
- * default test-dapps are running alongside it).
+ * The dapp is served at DAPP_URL (port 8080 when no default test-dapps
+ * are running alongside it).
  *
  * Selector notes (from @metamask/playground-ui TEST_IDS + App.tsx):
  * - Network checkboxes live inside DynamicInputs, not FeaturedNetworks.
@@ -67,19 +48,53 @@ export class TestDappMmConnect {
   // ──────────────────────────────────────────────────────────────────────────
 
   /** "Connect (Multichain)" button — present while disconnected or connecting. */
-  private readonly connectButton = '[data-testid="app-btn-connect"]';
+  private readonly connectButton = { testId: 'app-btn-connect' };
 
   /** "Disconnect All" button — calls sdkDisconnect() on the mm-connect dapp. */
-  private readonly disconnectButton = '[data-testid="app-btn-disconnect"]';
+  private readonly disconnectButton = { testId: 'app-btn-disconnect' };
+
+  /**
+   * Section that is always in the DOM once the app mounts.
+   * Used together with connectButton in checkPageIsLoaded.
+   */
+  private readonly connectedSection = { testId: 'app-section-connected' };
 
   /**
    * Section that holds ScopeCards; only rendered when sessionScopes is
    * non-empty (i.e., a multichain session is active).
    */
-  private readonly scopesSection = '[data-testid="app-section-scopes"]';
+  private readonly scopesSection = { testId: 'app-section-scopes' };
 
   constructor(driver: Driver) {
     this.driver = driver;
+  }
+
+  // ──────────────────────────────────────────────────────────────────────────
+  // Private selector helpers (dynamic — depend on scope / method params)
+  // ──────────────────────────────────────────────────────────────────────────
+
+  private checkboxSelector(chainId: string): string {
+    return `[data-testid="${createTestId('dynamic-inputs', 'checkbox', chainId)}"]`;
+  }
+
+  private scopeCardSelector(scope: string): string {
+    return `[data-testid="${createTestId('scope-card', scope)}"]`;
+  }
+
+  private methodOptionSelector(scope: string, method: string): string {
+    return `[data-testid="${createTestId('scope-card', 'method-select', scope)}"] option[value="${method}"]`;
+  }
+
+  private invokeBtnSelector(scope: string): string {
+    return `[data-testid="${createTestId('scope-card', 'invoke-btn', scope)}"]`;
+  }
+
+  private resultCodeSelector(scope: string, method: string): string {
+    return `[data-testid="${createTestId('scope-card', 'result-code', scope, method, '0')}"]`;
+  }
+
+  private resultDetailsSelector(scope: string, method: string): string {
+    return `[data-testid="${createTestId('scope-card', 'result', scope, method, '0')}"] summary`;
   }
 
   // ──────────────────────────────────────────────────────────────────────────
@@ -87,16 +102,19 @@ export class TestDappMmConnect {
   // ──────────────────────────────────────────────────────────────────────────
 
   async openPage(): Promise<void> {
-    await this.driver.openNewPage(TEST_DAPP_MM_CONNECT_URL);
+    await this.driver.openNewPage(DAPP_URL);
     await this.checkPageIsLoaded();
   }
 
   async checkPageIsLoaded(): Promise<void> {
-    await this.driver.waitForSelector(this.connectButton);
+    await this.driver.waitForMultipleSelectors([
+      this.connectButton,
+      this.connectedSection,
+    ]);
   }
 
   async switchTo(): Promise<void> {
-    await this.driver.switchToWindowWithUrl(TEST_DAPP_MM_CONNECT_URL);
+    await this.driver.switchToWindowWithUrl(DAPP_URL);
   }
 
   // ──────────────────────────────────────────────────────────────────────────
@@ -114,13 +132,13 @@ export class TestDappMmConnect {
    * e.g. ['eip155:1', 'eip155:137', 'eip155:59144']
    */
   async selectNetworks(desiredChainIds: string[]): Promise<void> {
-    for (const chainId of ALL_FEATURED_CHAIN_IDS) {
-      const testId = createTestId('dynamic-inputs', 'checkbox', chainId);
-      const el = await this.driver.findElement(`[data-testid="${testId}"]`);
+    for (const chainId of MM_CONNECT_FEATURED_CHAIN_IDS) {
+      const selector = this.checkboxSelector(chainId);
+      const el = await this.driver.waitForSelector(selector);
       const isChecked = await el.isSelected();
       const shouldBeChecked = desiredChainIds.includes(chainId);
       if (isChecked !== shouldBeChecked) {
-        await el.click();
+        await this.driver.clickElement(selector);
       }
     }
   }
@@ -171,8 +189,7 @@ export class TestDappMmConnect {
    * @param scope - CAIP-2 chain ID, e.g. 'eip155:1'
    */
   async checkScopeCardVisible(scope: string): Promise<void> {
-    const testId = createTestId('scope-card', scope);
-    await this.driver.waitForSelector(`[data-testid="${testId}"]`);
+    await this.driver.waitForSelector(this.scopeCardSelector(scope));
   }
 
   /**
@@ -181,8 +198,7 @@ export class TestDappMmConnect {
    * @param scope - CAIP-2 chain ID, e.g. 'eip155:137'
    */
   async checkScopeCardNotVisible(scope: string): Promise<void> {
-    const testId = createTestId('scope-card', scope);
-    await this.driver.assertElementNotPresent(`[data-testid="${testId}"]`);
+    await this.driver.assertElementNotPresent(this.scopeCardSelector(scope));
   }
 
   // ──────────────────────────────────────────────────────────────────────────
@@ -190,23 +206,21 @@ export class TestDappMmConnect {
   // ──────────────────────────────────────────────────────────────────────────
 
   /**
-   * Select a JSON-RPC method in the named ScopeCard and click "Invoke Method",
-   * then wait for the first result entry to appear.
+   * Select a JSON-RPC method in the named ScopeCard and click "Invoke Method".
    *
    * Use this for read-only methods (eth_chainId, eth_blockNumber, etc.) that
-   * resolve without requiring user interaction in the extension.
+   * resolve without requiring user interaction in the extension. Follow with
+   * checkMethodResult() to validate the response.
    *
    * For methods that open a signing/approval dialog (personal_sign,
    * eth_sendTransaction), use triggerMethod() + handle the dialog + then
-   * await getMethodResult() instead.
+   * checkMethodResult() instead.
    *
    * @param scope  - CAIP-2 chain ID for the target ScopeCard, e.g. 'eip155:1'
    * @param method - JSON-RPC method name, e.g. 'eth_chainId'
-   * @returns The text content of the result code element (result[0])
    */
-  async invokeMethod(scope: string, method: string): Promise<string> {
+  async invokeMethod(scope: string, method: string): Promise<void> {
     await this.triggerMethod(scope, method);
-    return this.getMethodResult(scope, method);
   }
 
   /**
@@ -220,45 +234,61 @@ export class TestDappMmConnect {
     // Click the desired <option> inside the native HTML <select>.
     // Selenium's click on an <option> element selects it and fires the
     // browser's change event, which React's event system picks up.
-    const methodSelectId = createTestId('scope-card', 'method-select', scope);
-    const optionSelector = `[data-testid="${methodSelectId}"] option[value="${method}"]`;
-    await this.driver.clickElement(optionSelector);
-
-    const invokeBtnId = createTestId('scope-card', 'invoke-btn', scope);
-    await this.driver.clickElement(`[data-testid="${invokeBtnId}"]`);
+    await this.driver.clickElement(this.methodOptionSelector(scope, method));
+    await this.driver.clickElement(this.invokeBtnSelector(scope));
   }
 
   /**
-   * Wait for the first result entry from a previously triggered method call
-   * and return its text content.
+   * Wait for the result element to contain the expected text.
+   * Avoids the find-then-assert anti-pattern by using waitForSelector with text.
    *
-   * @param scope  - CAIP-2 chain ID for the target ScopeCard, e.g. 'eip155:1'
-   * @param method - JSON-RPC method name, e.g. 'eth_chainId'
-   * @param expandDetails - Expand result <details> before reading.
-   * @returns The text content of the result code element (result[0])
+   * @param scope        - CAIP-2 chain ID for the target ScopeCard, e.g. 'eip155:1'
+   * @param method       - JSON-RPC method name, e.g. 'eth_chainId'
+   * @param expectedText - Text that the result element must contain.
    */
-  async getMethodResult(
+  async checkMethodResult(
     scope: string,
     method: string,
-    expandDetails?: boolean,
-  ): Promise<string> {
-    const resultCodeId = createTestId(
-      'scope-card',
-      'result-code',
-      scope,
-      method,
-      '0',
-    );
-    await this.driver.waitForSelector(`[data-testid="${resultCodeId}"]`);
-    // Expand the result <details> before reading the text content so it won't return empty
-    if (expandDetails) {
-      const resultId = createTestId('scope-card', 'result', scope, method, '0');
-      await this.driver.clickElement(`[data-testid="${resultId}"] summary`);
-    }
+    expectedText: string,
+  ): Promise<void> {
+    await this.driver.waitForSelector({
+      css: this.resultCodeSelector(scope, method),
+      text: expectedText,
+    });
+  }
 
-    const resultEl = await this.driver.findElement(
-      `[data-testid="${resultCodeId}"]`,
+  /**
+   * Assert the Solana signMessage result contains the expected JSON fields.
+   * Expands the result <details> element before reading.
+   *
+   * @param scope - CAIP-2 scope for Solana, e.g. 'solana:5eykt4...'
+   */
+  async checkSolanaSignMessageResult(scope: string): Promise<void> {
+    // Expand the result <details> so the text content is readable
+    await this.driver.waitForSelector(
+      this.resultCodeSelector(scope, 'signMessage'),
     );
-    return resultEl.getText();
+    await this.driver.clickElement(
+      this.resultDetailsSelector(scope, 'signMessage'),
+    );
+
+    const resultEl = await this.driver.waitForSelector(
+      this.resultCodeSelector(scope, 'signMessage'),
+    );
+    const resultText = await resultEl.getText();
+    const parsed = JSON.parse(resultText) as Record<string, unknown>;
+
+    assert.ok(
+      typeof parsed.signature === 'string',
+      `Expected signMessage result for ${scope} to include string "signature", got: "${resultText}"`,
+    );
+    assert.ok(
+      typeof parsed.signedMessage === 'string',
+      `Expected signMessage result for ${scope} to include string "signedMessage", got: "${resultText}"`,
+    );
+    assert.ok(
+      typeof parsed.signatureType === 'string',
+      `Expected signMessage result for ${scope} to include string "signatureType", got: "${resultText}"`,
+    );
   }
 }
