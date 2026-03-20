@@ -4,17 +4,21 @@ on:
   schedule:
     - cron: '0 4 * * *'
 
+permissions:
+  contents: read
+  actions: read
+
 jobs:
   collect-qa-stats:
     name: Collect QA Stats
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v6
-
-      - uses: actions/setup-node@v6
+      - name: Checkout and setup environment
+        uses: MetaMask/action-checkout-and-setup@v3
         with:
-          node-version-file: .nvmrc
+          is-high-risk-environment: false
+          skip-allow-scripts: true
 
       - name: Collect QA stats
         run: node .github/scripts/collect-qa-stats.mjs
