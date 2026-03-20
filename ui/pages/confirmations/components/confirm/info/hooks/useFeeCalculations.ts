@@ -32,7 +32,7 @@ const EMPTY_FEES = {
   nativeCurrencyFee: EMPTY_FEE,
 };
 
-const MIN_NATIVE_FEE_THRESHOLD = 0.00001;
+const MIN_NATIVE_FEE_THRESHOLD = 0.0001;
 
 function applySmallNativeFeeThreshold(nativeFee: string, hexFee: Hex): string {
   if (nativeFee === '0' && new Numeric(hexFee, 16).greaterThan(0, 10)) {
