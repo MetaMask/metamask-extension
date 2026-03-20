@@ -7,7 +7,7 @@ import FixtureBuilder from '../../fixtures/fixture-builder';
 import { withFixtures } from '../../helpers';
 import { Mockttp } from '../../mock-e2e';
 import HomePage from '../../page-objects/pages/home/homepage';
-import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 import { ACCOUNTS_PROD_API_BASE_URL } from '../../../../shared/constants/accounts';
 
 const infuraMainnetUrl =
@@ -292,7 +292,7 @@ describe('Account Tracker API polling', function () {
         testSpecificMock: mockInfura,
       },
       async ({ driver, mockedEndpoint }) => {
-        await loginWithoutBalanceValidation(driver);
+        await login(driver, { validateBalance: false });
         const homepage = new HomePage(driver);
         await homepage.checkPageIsLoaded();
         // Want to wait long enough  to pull requests relevant to a single loop cycle
@@ -377,7 +377,7 @@ describe('Account Tracker API polling', function () {
           testSpecificMock: mockAccountApiForPortfolioView,
         },
         async ({ driver, mockedEndpoint: mockedEndpoints }) => {
-          await loginWithoutBalanceValidation(driver);
+          await login(driver, { validateBalance: false });
           const homepage = new HomePage(driver);
           await homepage.checkPageIsLoaded();
           await driver.delay(DELAY_UNTIL_NEXT_POLL);

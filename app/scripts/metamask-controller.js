@@ -205,6 +205,7 @@ import { updateCurrentLocale } from '../../shared/lib/translate';
 import {
   getIsSeedlessOnboardingFeatureEnabled,
   getEnabledAdvancedPermissions,
+  getIsPerpsIncludedInBuild,
 } from '../../shared/lib/environment';
 import { isSnapPreinstalled } from '../../shared/lib/snaps/snaps';
 import { toChecksumHexAddress } from '../../shared/lib/hexstring-utils';
@@ -331,6 +332,8 @@ import {
 } from './controller-init/assets';
 import { TransactionControllerInit } from './controller-init/confirmations/transaction-controller-init';
 import { TransactionPayControllerInit } from './controller-init/transaction-pay-controller-init';
+import { PerpsControllerInit } from './controller-init/perps-controller-init';
+import { PerpsStreamBridge } from './controllers/perps/perps-stream-bridge';
 import { PPOMControllerInit } from './controller-init/confirmations/ppom-controller-init';
 import { SmartTransactionsControllerInit } from './controller-init/smart-transactions/smart-transactions-controller-init';
 import { initControllers } from './controller-init/utils';
@@ -430,9 +433,9 @@ import {
   ClaimsControllerInit,
   ClaimsServiceInit,
 } from './controller-init/claims';
+import { MessengerSubscriptions } from './lib/MessengerSubscriptions';
 import { ProfileMetricsControllerInit } from './controller-init/profile-metrics-controller-init';
 import { ProfileMetricsServiceInit } from './controller-init/profile-metrics-service-init';
-import { MessengerSubscriptions } from './lib/MessengerSubscriptions';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -614,6 +617,9 @@ export default class MetamaskController extends EventEmitter {
       WebSocketService: WebSocketServiceInit,
       BackendWebSocketService: BackendWebSocketServiceInit,
       AccountActivityService: AccountActivityServiceInit,
+      ...(getIsPerpsIncludedInBuild()
+        ? { PerpsController: PerpsControllerInit }
+        : {}),
       PPOMController: PPOMControllerInit,
       PhishingController: PhishingControllerInit,
       AccountTrackerController: AccountTrackerControllerInit,
@@ -1550,6 +1556,16 @@ export default class MetamaskController extends EventEmitter {
         }
       });
     }
+
+    // Start perps eligibility monitoring only when basic functionality is on (no external calls when off)
+    if (
+      getIsPerpsIncludedInBuild() &&
+      this.preferencesController.state.useExternalServices
+    ) {
+      this.controllerApi.perpsStartEligibilityMonitoring?.()?.catch((error) => {
+        console.error(error);
+      });
+    }
   }
 
   /**
@@ -1579,12 +1595,25 @@ export default class MetamaskController extends EventEmitter {
     ) {
       this.multichainRatesController.start();
     }
+    if (
+      getIsPerpsIncludedInBuild() &&
+      this.preferencesController.state.useExternalServices
+    ) {
+      this.controllerApi.perpsStartEligibilityMonitoring?.()?.catch((error) => {
+        console.error(error);
+      });
+    }
   }
 
   stopNetworkRequests() {
     this.txController.stopIncomingTransactionPolling();
     this.tokenDetectionController.disable();
     this.multichainRatesController.stop();
+    if (getIsPerpsIncludedInBuild()) {
+      this.controllerApi.perpsStopEligibilityMonitoring?.()?.catch((error) => {
+        console.error(error);
+      });
+    }
   }
 
   resetStates(resetMethods) {
@@ -1745,6 +1774,35 @@ export default class MetamaskController extends EventEmitter {
         const { currentLocale } = currState;
 
         await updateCurrentLocale(currentLocale);
+      }, this.preferencesController.state),
+    );
+
+    this.controllerMessenger.subscribe(
+      'PreferencesController:stateChange',
+      previousValueComparator((prevState, currState) => {
+        const { useExternalServices: prev } = prevState;
+        const { useExternalServices: curr } = currState;
+        if (
+          getIsPerpsIncludedInBuild() &&
+          prev !== curr &&
+          this.controllerApi.perpsStartEligibilityMonitoring &&
+          this.controllerApi.perpsStopEligibilityMonitoring
+        ) {
+          if (curr) {
+            this.controllerApi
+              .perpsStartEligibilityMonitoring?.()
+              ?.catch((error) => {
+                console.error(error);
+              });
+          } else {
+            this.controllerApi
+              .perpsStopEligibilityMonitoring?.()
+              ?.catch((error) => {
+                console.error(error);
+              });
+          }
+        }
+        return true;
       }, this.preferencesController.state),
     );
 
@@ -6581,9 +6639,31 @@ export default class MetamaskController extends EventEmitter {
       outStream,
     );
 
+    const perpsController = this.controllersByName.PerpsController;
+    const perpsStream = perpsController
+      ? new PerpsStreamBridge({
+          controller: perpsController,
+          perpsInit: this.controllerApi.perpsInit,
+          perpsDisconnect: this.controllerApi.perpsDisconnect,
+          perpsToggleTestnet: this.controllerApi.perpsToggleTestnet,
+          isConnectionAlive: () => !outStream.mmFinished,
+          emit: (channel, data, extra) => {
+            if (!perpsStream.isActive || !isStreamWritable(outStream)) {
+              return;
+            }
+            outStream.write({
+              jsonrpc: '2.0',
+              method: 'perpsStreamUpdate',
+              params: [{ channel, data, ...extra }],
+            });
+          },
+        })
+      : null;
+
     const api = {
       ...this.getApi(),
       ...this.controllerApi,
+      ...(perpsStream ? perpsStream.bridgeApi() : {}),
       startSendingPatches: () => {
         uiReady = true;
         handleUpdate();
@@ -6642,6 +6722,7 @@ export default class MetamaskController extends EventEmitter {
         this.removeListener('update', handleUpdate);
         patchStore.destroy();
         messengerSubscriptions.clear();
+        perpsStream?.destroy();
       }
     };
 

@@ -8,7 +8,7 @@ import { createDappTransaction } from '../../../page-objects/flows/transaction';
 import ContractAddressRegistry from '../../../seeder/contract-address-registry';
 import { Driver } from '../../../webdriver/driver';
 import { MockedEndpoint } from '../../../mock-e2e';
-import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
+import { login } from '../../../page-objects/flows/login.flow';
 import TestDapp from '../../../page-objects/pages/test-dapp';
 import ActivityListPage from '../../../page-objects/pages/home/activity-list';
 import HomePage from '../../../page-objects/pages/home/homepage';
@@ -54,7 +54,7 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
         }: TestSuiteArguments) => {
           const contractAddress =
             await contractRegistry?.getContractAddress(smartContract);
-          await loginWithBalanceValidation(driver, localNodes?.[0]);
+          await login(driver, { localNode: localNodes?.[0] });
           const testDapp = new TestDapp(driver);
           await testDapp.openTestDappPage({ contractAddress });
           await testDapp.checkPageIsLoaded();
@@ -86,7 +86,7 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
           const contractAddress =
             await contractRegistry?.getContractAddress(smartContract);
 
-          await loginWithBalanceValidation(driver, localNodes?.[0]);
+          await login(driver, { localNode: localNodes?.[0] });
           const testDapp = new TestDapp(driver);
           await testDapp.openTestDappPage({ contractAddress });
           await testDapp.checkPageIsLoaded();
@@ -129,12 +129,7 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
           const contractAddress =
             await contractRegistry?.getContractAddress(smartContract);
 
-          await loginWithBalanceValidation(
-            driver,
-            undefined,
-            undefined,
-            '1.21M',
-          );
+          await login(driver, { expectedBalance: '1.21M' });
           const testDapp = new TestDapp(driver);
           await testDapp.openTestDappPage({ contractAddress });
           await testDapp.checkPageIsLoaded();
@@ -183,7 +178,7 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
           contractRegistry,
           localNodes,
         }: TestSuiteArguments) => {
-          await loginWithBalanceValidation(driver, localNodes?.[0]);
+          await login(driver, { localNode: localNodes?.[0] });
           await createLayer2Transaction(driver);
 
           const contractAddress = await (
@@ -221,7 +216,7 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
         }: TestSuiteArguments) => {
           const contractAddress =
             await contractRegistry?.getContractAddress(smartContract);
-          await loginWithBalanceValidation(driver, localNodes?.[0]);
+          await login(driver, { localNode: localNodes?.[0] });
           const testDapp = new TestDapp(driver);
           await testDapp.openTestDappPage({ contractAddress });
           await testDapp.checkPageIsLoaded();
@@ -251,7 +246,7 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
         }: TestSuiteArguments) => {
           const contractAddress =
             await contractRegistry?.getContractAddress(smartContract);
-          await loginWithBalanceValidation(driver, localNodes?.[0]);
+          await login(driver, { localNode: localNodes?.[0] });
           const testDapp = new TestDapp(driver);
           await testDapp.openTestDappPage({ contractAddress });
           await testDapp.checkPageIsLoaded();
@@ -285,7 +280,7 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
         }: TestSuiteArguments) => {
           const contractAddress =
             await contractRegistry?.getContractAddress(smartContract);
-          await loginWithBalanceValidation(driver, localNodes?.[0]);
+          await login(driver, { localNode: localNodes?.[0] });
           const testDapp = new TestDapp(driver);
           await testDapp.openTestDappPage({ contractAddress });
           await testDapp.checkPageIsLoaded();
@@ -317,7 +312,7 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
           const contractAddress =
             await contractRegistry?.getContractAddress(smartContract);
 
-          await loginWithBalanceValidation(driver, localNodes?.[0]);
+          await login(driver, { localNode: localNodes?.[0] });
           const homePage = new HomePage(driver);
           await homePage.headerNavbar.openSettingsPage();
           const settingsPage = new SettingsPage(driver);

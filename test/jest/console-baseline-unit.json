@@ -1691,6 +1691,9 @@
       "MetaMask: Background connection not initialized": 1,
       "error: Error: SeedlessOnboardingController - Authentication error": 1
     },
+    "ui/providers/perps/PerpsStreamManager.test.ts": {
+      "error: [PerpsStreamManager] Failed to fetch markets": 1
+    },
     "ui/selectors/assets.test.ts": {
       "Reselect: Identity function warnings": 1,
       "warn: No tokens found for chainId:": 1
