@@ -352,7 +352,8 @@ export class CandleStreamChannel {
     submitRequestToBackground('perpsActivateCandleStream', [
       { symbol, interval, duration: entry.duration },
     ]).catch((err) => {
-      console.warn(
+        '[CandleStreamChannel] Failed to activate streaming for %s:',
+        key,
         `[CandleStreamChannel] Failed to activate streaming for ${key}:`,
         err,
       );
