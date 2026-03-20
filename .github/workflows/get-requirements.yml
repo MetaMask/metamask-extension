@@ -34,6 +34,7 @@ env:
   HEAD_COMMIT_HASH: ${{ github.event.pull_request.head.sha || github.sha }}
   BRANCH: ${{ github.head_ref || github.ref_name }}
   IS_RUN_EVERYTHING_BRANCH: ${{ (github.head_ref || github.ref_name) == 'main' || (github.head_ref || github.ref_name) == 'stable' }}
+  IS_BENCHMARK_ONLY_BRANCH: ${{ startsWith(github.head_ref || github.ref_name, 'benchmark-ci-') }}
   RUN_ID: ${{ github.run_id }}
   IS_FORK: ${{ github.event.pull_request.head.repo.fork || github.event.repository.fork }}
   EVENT_NAME: ${{ github.event_name }}
@@ -116,10 +117,13 @@ jobs:
             echo "needs-locales=false" >> "$GITHUB_OUTPUT"
           fi
 
-      # skip-everything is a shortcut for up-to-date == 'true' || needs-locales == 'true'
+      # skip-everything is a shortcut for:
+      # - up-to-date merge queue runs
+      # - locales-only changes
+      # - benchmark-only branches, which opt into a dedicated reduced CI path
       - name: Compute skip-everything flag
         id: set-skip-everything
-        if: ${{ env.IS_RUN_EVERYTHING_BRANCH == 'false' && (steps.check-skip-merge-queue.outputs.up-to-date == 'true' || steps.set-needs-locales.outputs.needs-locales == 'true') }}
+        if: ${{ env.IS_RUN_EVERYTHING_BRANCH == 'false' && (env.IS_BENCHMARK_ONLY_BRANCH == 'true' || steps.check-skip-merge-queue.outputs.up-to-date == 'true' || steps.set-needs-locales.outputs.needs-locales == 'true') }}
         run: echo "skip-everything=true" >> "$GITHUB_OUTPUT"
 
       # This is very simple right now (and equivalent to !skip-everything)

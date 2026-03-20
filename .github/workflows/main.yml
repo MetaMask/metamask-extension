@@ -361,6 +361,34 @@ jobs:
       zip: true
     secrets: inherit
 
+  build-test-webpack-benchmark-only:
+    needs:
+      - get-requirements
+    if: ${{ startsWith(github.head_ref || github.ref_name, 'benchmark-ci-') }}
+    uses: ./.github/workflows/run-build.yml
+    with:
+      is-high-risk-environment: false
+      build-name: build-test-webpack
+      build-command: yarn build:test:webpack
+      builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
+      zip: false
+      skip-post-build-checks: true
+    secrets: inherit
+
+  build-test-mv2-webpack-benchmark-only:
+    needs:
+      - get-requirements
+    if: ${{ startsWith(github.head_ref || github.ref_name, 'benchmark-ci-') }}
+    uses: ./.github/workflows/run-build.yml
+    with:
+      is-high-risk-environment: false
+      build-name: build-test-mv2-webpack
+      build-command: yarn build:test:webpack:mv2
+      builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
+      zip: false
+      skip-post-build-checks: true
+    secrets: inherit
+
   build-test-flask-webpack:
     needs:
       - get-requirements
@@ -400,6 +428,21 @@ jobs:
     with:
       builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
     secrets: inherit
+
+  run-benchmarks-webpack-only:
+    if: ${{ startsWith(github.head_ref || github.ref_name, 'benchmark-ci-') }}
+    uses: ./.github/workflows/run-benchmarks.yml
+    needs:
+      - get-requirements
+      - build-test-webpack-benchmark-only
+      - build-test-mv2-webpack-benchmark-only
+    with:
+      builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
+      webpack-only: true
+    secrets:
+      INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
+      TEST_SRP_2: ${{ secrets.TEST_SRP_2 }}
+      EXTENSION_BENCHMARK_STATS_TOKEN: ${{ secrets.EXTENSION_BENCHMARK_STATS_TOKEN }}
 
   run-tests:
     name: Run tests
