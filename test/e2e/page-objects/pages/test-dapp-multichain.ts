@@ -157,6 +157,18 @@ class TestDappMultichain {
   }
 
   /**
+   * Clicks scope checkboxes on the multichain test dapp to deselect the given scopes.
+   *
+   * @param scopes - CAIP-2 scope strings matching `input[name]` on the dapp.
+   */
+  async deselectScopes(scopes: string[]): Promise<void> {
+    await this.driver.switchToWindowWithTitle(WINDOW_TITLES.MultichainTestDApp);
+    for (const scope of scopes) {
+      await this.driver.clickElement(`input[name="${scope}"]`);
+    }
+  }
+
+  /**
    * Initiates a request to wallet extension to create session for the passed scopes.
    *
    * @param scopes - scopes to create session for.
