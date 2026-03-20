@@ -6,7 +6,7 @@ import { TX_SENTINEL_URL } from '../../../../../shared/constants/transaction';
 import { DEFAULT_FIXTURE_ACCOUNT, WINDOW_TITLES } from '../../../constants';
 import FixtureBuilder from '../../../fixtures/fixture-builder';
 import { convertETHToHexGwei, withFixtures } from '../../../helpers';
-import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
+import { login } from '../../../page-objects/flows/login.flow';
 import { createDappTransaction } from '../../../page-objects/flows/transaction';
 import TransactionConfirmation from '../../../page-objects/pages/confirmations/transaction-confirmation';
 import ActivityListPage from '../../../page-objects/pages/home/activity-list';
@@ -56,7 +56,7 @@ describe('Gas Fee Tokens - EIP-7702 - Sponsored', function (this: Suite) {
           DEFAULT_FIXTURE_ACCOUNT,
           convertETHToHexGwei(1),
         );
-        await loginWithBalanceValidation(driver, localNodes?.[0]);
+        await login(driver, { localNode: localNodes?.[0] });
 
         await createDappTransaction(driver);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
@@ -116,7 +116,7 @@ describe('Gas Fee Tokens - EIP-7702 - Sponsored', function (this: Suite) {
           DEFAULT_FIXTURE_ACCOUNT,
           convertETHToHexGwei(1),
         );
-        await loginWithBalanceValidation(driver, localNodes?.[0]);
+        await login(driver, { localNode: localNodes?.[0] });
         await createDappTransaction(driver);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 

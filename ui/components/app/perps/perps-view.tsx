@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { Box, BoxFlexDirection } from '@metamask/design-system-react';
 import {
   usePerpsLivePositions,
@@ -17,6 +17,9 @@ import {
   PerpsControlBarSkeleton,
   PerpsSectionSkeleton,
 } from './perps-skeletons';
+import { getSelectedInternalAccount } from '../../../selectors';
+import { getPerpsStreamManager } from '../../../providers/perps';
+import { useSelector } from 'react-redux';
 
 /**
  * PerpsView component displays the perpetuals trading view
@@ -27,6 +30,28 @@ import {
  */
 export const PerpsView: React.FC = () => {
   const { trigger: triggerDeposit } = usePerpsDepositConfirmation();
+
+  // Get selected address for stream manager initialization
+  const selectedAccount = useSelector(getSelectedInternalAccount);
+  const selectedAddress = selectedAccount?.address;
+
+  // Initialize stream manager and prewarm on mount
+  useEffect(() => {
+    if (!selectedAddress) {
+      return;
+    }
+
+    const streamManager = getPerpsStreamManager();
+
+    // Initialize and prewarm
+    streamManager.init(selectedAddress);
+    streamManager.prewarm();
+
+    // Cleanup prewarm on unmount (cache persists!)
+    return () => {
+      streamManager.cleanupPrewarm();
+    };
+  }, [selectedAddress]);
 
   // Use stream hooks for real-time data
   const { positions, isInitialLoading: positionsLoading } =

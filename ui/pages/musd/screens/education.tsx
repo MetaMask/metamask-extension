@@ -263,7 +263,14 @@ const MusdEducationScreen: React.FC = () => {
   return (
     <Box
       className="musd-education-screen"
-      style={{ display: 'flex', flexDirection: 'column', height: '100%' }}
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        flex: 1,
+        minHeight: 0,
+        width: '100%',
+        overflow: 'hidden',
+      }}
       flexDirection={BoxFlexDirection.Column}
       backgroundColor={BoxBackgroundColor.BackgroundDefault}
     >
@@ -273,6 +280,7 @@ const MusdEducationScreen: React.FC = () => {
         justifyContent={BoxJustifyContent.End}
         paddingTop={3}
         paddingRight={4}
+        style={{ flexShrink: 0 }}
       >
         <ButtonIcon
           iconName={IconName.Close}
@@ -284,82 +292,101 @@ const MusdEducationScreen: React.FC = () => {
         />
       </Box>
 
-      {/* Main content – vertically centered */}
+      {/* Main content – scrolls on short viewports; CTAs stay pinned below */}
       <Box
         flexDirection={BoxFlexDirection.Column}
-        alignItems={BoxAlignItems.Center}
-        justifyContent={BoxJustifyContent.Center}
         paddingLeft={4}
         paddingRight={4}
-        style={{ flex: 1 }}
+        style={{ flex: 1, minHeight: 0, overflowY: 'auto' }}
       >
-        {/* Hero headline */}
-        <Box marginBottom={3}>
-          <Text
-            variant={TextVariant.DisplayMd}
-            fontFamily={FontFamily.Hero}
-            textAlign={TextAlign.Center}
-            color={TextColor.TextDefault}
-            textTransform={TextTransform.Uppercase}
-          >
-            {t('musdEducationHeadline', [String(MUSD_CONVERSION_APY)])}
-          </Text>
-        </Box>
-
-        {/* Body copy */}
-        <Box marginBottom={4}>
-          <Text
-            variant={TextVariant.BodyMd}
-            textAlign={TextAlign.Center}
-            color={TextColor.TextAlternative}
-          >
-            {t('musdBonusExplanation', [
-              String(MUSD_CONVERSION_APY),
-              <TextButton key="terms-link" size={TextButtonSize.BodyMd} asChild>
-                <a
-                  href={MUSD_CONVERSION_BONUS_TERMS_OF_USE}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  onClick={() => {
-                    const properties = {
-                      location: 'conversion_education_screen',
-                      url: MUSD_CONVERSION_BONUS_TERMS_OF_USE,
-                    };
-
-                    trackEvent({
-                      event: MetaMetricsEventName.MusdBonusTermsOfUsePressed,
-                      category: MetaMetricsEventCategory.MusdConversion,
-                      properties,
-                    });
-                  }}
-                >
-                  {t('musdTermsApply')}
-                </a>
-              </TextButton>,
-            ])}
-          </Text>
-        </Box>
-
-        {/* Central illustration */}
+        {/* Inner wrapper – safe center: vertically centers when content fits; start-aligns when it would overflow (Chromium). */}
         <Box
-          justifyContent={BoxJustifyContent.Center}
+          flexDirection={BoxFlexDirection.Column}
           alignItems={BoxAlignItems.Center}
+          style={{
+            minHeight: '100%',
+            // `safe center` avoids unsafe flex centering that clips the top of the hero when scrolling.
+            justifyContent: 'safe center',
+          }}
         >
-          <img
-            src={
-              theme === ThemeType.dark
-                ? MUSD_EDUCATION_COIN_IMAGE_DARK
-                : MUSD_EDUCATION_COIN_IMAGE_LIGHT
-            }
-            alt={t('musdGetMusd') as string}
-            width={252}
-            height={252}
-          />
+          {/* Hero headline */}
+          <Box marginBottom={3}>
+            <Text
+              variant={TextVariant.DisplayMd}
+              fontFamily={FontFamily.Hero}
+              textAlign={TextAlign.Center}
+              color={TextColor.TextDefault}
+              textTransform={TextTransform.Uppercase}
+            >
+              {t('musdEducationHeadline', [String(MUSD_CONVERSION_APY)])}
+            </Text>
+          </Box>
+
+          {/* Body copy */}
+          <Box marginBottom={4}>
+            <Text
+              variant={TextVariant.BodyMd}
+              textAlign={TextAlign.Center}
+              color={TextColor.TextAlternative}
+            >
+              {t('musdBonusExplanation', [
+                String(MUSD_CONVERSION_APY),
+                <TextButton
+                  key="terms-link"
+                  size={TextButtonSize.BodyMd}
+                  asChild
+                >
+                  <a
+                    href={MUSD_CONVERSION_BONUS_TERMS_OF_USE}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={() => {
+                      const properties = {
+                        location: 'conversion_education_screen',
+                        url: MUSD_CONVERSION_BONUS_TERMS_OF_USE,
+                      };
+
+                      trackEvent({
+                        event: MetaMetricsEventName.MusdBonusTermsOfUsePressed,
+                        category: MetaMetricsEventCategory.MusdConversion,
+                        properties,
+                      });
+                    }}
+                  >
+                    {t('musdTermsApply')}
+                  </a>
+                </TextButton>,
+              ])}
+            </Text>
+          </Box>
+
+          {/* Central illustration */}
+          <Box
+            justifyContent={BoxJustifyContent.Center}
+            alignItems={BoxAlignItems.Center}
+          >
+            <img
+              src={
+                theme === ThemeType.dark
+                  ? MUSD_EDUCATION_COIN_IMAGE_DARK
+                  : MUSD_EDUCATION_COIN_IMAGE_LIGHT
+              }
+              alt={t('musdGetMusd') as string}
+              width={252}
+              height={252}
+              style={{ maxWidth: '100%', height: 'auto' }}
+            />
+          </Box>
         </Box>
       </Box>
 
       {/* Footer actions – full-width buttons with padding to match Figma */}
-      <Box flexDirection={BoxFlexDirection.Column} gap={2} padding={4}>
+      <Box
+        flexDirection={BoxFlexDirection.Column}
+        gap={2}
+        padding={4}
+        style={{ flexShrink: 0 }}
+      >
         <Box style={{ width: '100%' }}>
           <Button
             variant={ButtonVariant.Primary}
