@@ -245,7 +245,8 @@ export class CandleStreamChannel {
       this.notifySubscribers(entry, mergedData);
     } catch (error) {
       console.error(
-        `[CandleStreamChannel] fetchHistoricalCandles failed for ${key}:`,
+        '[CandleStreamChannel] fetchHistoricalCandles failed for %s:',
+        key,
         error,
       );
     }
