@@ -1,7 +1,8 @@
-import { availableParallelism, freemem } from 'node:os';
+import { availableParallelism, arch, freemem } from 'node:os';
 import type { RuleSetUseItem } from 'webpack';
 
-const ESTIMATED_WORKER_MEMORY_MB = 250;
+// TODO: this architecture split seems to work right now, but come back to it when we have more data
+const ESTIMATED_WORKER_MEMORY_MB = arch() === 'x64' ? 750 : 250;
 const MEMORY_BUDGET_RATIO = 0.5;
 
 export type ThreadLoaderConfig = {
@@ -25,12 +26,15 @@ export function resolveAutoThreads(): number {
   const numCores = availableParallelism();
   const coreBasedWorkers = numCores <= 4 ? 1 : numCores - 2;
 
-  const availableMemMB = freemem() / (1024 * 1024);
   const memBasedWorkers = Math.floor(
-    (availableMemMB * MEMORY_BUDGET_RATIO) / ESTIMATED_WORKER_MEMORY_MB,
+    (getAvailableMemoryMB() * MEMORY_BUDGET_RATIO) / ESTIMATED_WORKER_MEMORY_MB,
   );
 
   return Math.max(1, Math.min(coreBasedWorkers, memBasedWorkers));
+}
+
+function getAvailableMemoryMB(): number {
+  return freemem() / (1024 * 1024);
 }
 
 /**
@@ -61,6 +65,10 @@ export function getThreadLoader(
   const resolvedThreads = threads === 'auto' ? resolveAutoThreads() : threads;
   const resolvedJobs =
     jobsPerThread === 'auto' ? resolveAutoJobs(resolvedThreads) : jobsPerThread;
+
+  console.log(
+    `Thread loader auto configuration: ${resolvedThreads} workers, ${resolvedJobs} jobs per worker, ${Math.floor(getAvailableMemoryMB())}MB free RAM`,
+  );
 
   return {
     loader: 'thread-loader',
