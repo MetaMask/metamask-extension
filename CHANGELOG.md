@@ -9,19 +9,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [13.24.0]
 
-### Uncategorized
-
-- Updates wording and styles in basic functionality modal (#40954)
-- Fix Sentry custom spans becoming root-level siblings of `pageload` spans instead of being nested under the correct (#39890)
-  `parentContext`.
-
 ### Added
 
 - Added check for hiding Cancel and Speed up in the activity list when the user has selected another token to pay for gas (#40804)
 - Added Security & Password page to the redesigned settings (#40959)
 - Authenticate transaction submission to sentinel and transaction API (#40667)
-- Use design-system-react components on shield confirmation screens (#40832)
 - Enable hardware wallet error management in send and dapp flow. (#40836)
+
+### Changed
+
+- Updates wording and styles in basic functionality modal (#40954)
+- Use design-system-react components on shield confirmation screens (#40832)
 
 ### Fixed
 
@@ -31,7 +29,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed non-EVM account changed notifications not selecting the correct account on page reload for Tron and Solana (#40927)
 - Fixed "Proposed nicknames" appearing as a non-functional result in Settings search (#40772)
 - Swap activity history details (#40993)
-- React router warnings in unit tests (#40891)
 - Refresh token list immediately after import when assetsUnifyState is enabled (#40919)
 - (import-tokens) validate duplicate token checks by selected network (#40969)
 - Resolve slip44 key mismatch for native tokens in assets-unify-state selectors (#40964)
