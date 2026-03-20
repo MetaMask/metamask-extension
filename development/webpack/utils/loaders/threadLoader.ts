@@ -1,10 +1,6 @@
 import { availableParallelism, arch, freemem } from 'node:os';
 import type { RuleSetUseItem } from 'webpack';
 
-// TODO: this architecture split seems to work right now, but come back to it when we have more data
-const ESTIMATED_WORKER_MEMORY_MB = arch() === 'x64' ? 750 : 250;
-const MEMORY_BUDGET_RATIO = 0.5;
-
 export type ThreadLoaderConfig = {
   threads: number | 'auto';
   jobsPerThread: number | 'auto';
@@ -23,6 +19,10 @@ export type ThreadLoaderConfig = {
 // TODO: Implement smarter memory-aware detection based on actual file count
 // and per-file memory cost. Current heuristic uses a fixed estimate.
 export function resolveAutoThreads(): number {
+  // TODO: this architecture split seems to work right now, but come back to it when we have more data
+  const ESTIMATED_WORKER_MEMORY_MB = arch() === 'x64' ? 750 : 250;
+  const MEMORY_BUDGET_RATIO = 0.5;
+
   const numCores = availableParallelism();
   const coreBasedWorkers = numCores <= 4 ? 1 : numCores - 2;
 

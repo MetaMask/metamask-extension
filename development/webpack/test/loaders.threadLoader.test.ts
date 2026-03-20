@@ -27,6 +27,7 @@ describe('resolveAutoThreads', () => {
     mock.method(require('node:os'), 'availableParallelism', () => 16);
     // 1 GB free -> floor(1024 * 0.5 / 250) = floor(2.048) = 2 workers
     mock.method(require('node:os'), 'freemem', () => 1 * 1024 * 1024 * 1024);
+    mock.method(require('node:os'), 'arch', () => 'arm64');
     const result = resolveAutoThreads();
     assert.strictEqual(result, 2);
     mock.restoreAll();
