@@ -47,13 +47,19 @@ export function useBackgroundQuerySync() {
       }),
     );
 
-    Promise.all(subscriptions).then((unsubs) => {
-      if (unmounted) {
-        unsubs.forEach((unsub) => unsub?.());
-      } else {
-        cleanups.push(...unsubs);
-      }
-    });
+    Promise.all(subscriptions)
+      .then((unsubs) => {
+        if (unmounted) {
+          unsubs.forEach((unsub) => unsub?.());
+        } else {
+          cleanups.push(...unsubs);
+        }
+      })
+      .catch((error) => {
+        // Background connection may not support messengerSubscribe yet
+        // (e.g., during initial load or in test environments).
+        console.warn('useBackgroundQuerySync: subscription failed:', error);
+      });
 
     return () => {
       unmounted = true;
