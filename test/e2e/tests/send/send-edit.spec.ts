@@ -6,7 +6,7 @@
  * - Legacy and EIP1559 gas editing
  */
 
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 import { createInternalTransaction } from '../../page-objects/flows/transaction';
 import { withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
@@ -32,7 +32,7 @@ describe('Send - Edit Transaction', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         await createInternalTransaction({ driver });
 
@@ -81,7 +81,7 @@ describe('Send - Edit Transaction', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         await createInternalTransaction({ driver });
 
