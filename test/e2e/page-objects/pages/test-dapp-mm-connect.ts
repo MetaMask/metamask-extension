@@ -206,24 +206,6 @@ export class TestDappMmConnect {
   // ──────────────────────────────────────────────────────────────────────────
 
   /**
-   * Select a JSON-RPC method in the named ScopeCard and click "Invoke Method".
-   *
-   * Use this for read-only methods (eth_chainId, eth_blockNumber, etc.) that
-   * resolve without requiring user interaction in the extension. Follow with
-   * checkMethodResult() to validate the response.
-   *
-   * For methods that open a signing/approval dialog (personal_sign,
-   * eth_sendTransaction), use triggerMethod() + handle the dialog + then
-   * checkMethodResult() instead.
-   *
-   * @param scope  - CAIP-2 chain ID for the target ScopeCard, e.g. 'eip155:1'
-   * @param method - JSON-RPC method name, e.g. 'eth_chainId'
-   */
-  async invokeMethod(scope: string, method: string): Promise<void> {
-    await this.triggerMethod(scope, method);
-  }
-
-  /**
    * Select a method and click Invoke, but do NOT wait for the result.
    * Use when the method opens an extension dialog that must be handled first.
    *
