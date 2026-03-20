@@ -14,7 +14,7 @@ import {
 import NetworkManager, {
   NetworkId,
 } from '../../page-objects/pages/network-manager';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 import FixtureBuilder from '../../fixtures/fixture-builder';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { withFixtures, veryLargeDelayMs } from '../../helpers';
@@ -216,7 +216,7 @@ describe('Request-queue UI changes', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         // Open the first dapp
         await openDappAndSwitchChain(driver, DAPP_URL, '0x539');
@@ -295,7 +295,7 @@ describe('Request-queue UI changes', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         // Open the first dapp
         await openDappAndSwitchChain(driver, DAPP_URL, '0x539');
@@ -427,7 +427,7 @@ describe('Request-queue UI changes', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         // Open the first dapp
         await openDappAndSwitchChain(driver, DAPP_URL, '0x539');
@@ -479,7 +479,7 @@ describe('Request-queue UI changes', function () {
       },
       async ({ driver }: { driver: Driver }) => {
         // Navigate to extension home screen
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         // Open the first dapp which starts on chain '0x539
         await openDappAndSwitchChain(driver, DAPP_URL, '0x539');
@@ -545,7 +545,7 @@ describe('Request-queue UI changes', function () {
         driver: Driver;
         localNodes: Anvil[];
       }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         // Open the first dapp
         await openDappAndSwitchChain(driver, DAPP_URL, '0x539');
@@ -620,12 +620,9 @@ describe('Request-queue UI changes', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver, localNodes }) => {
-        await loginWithBalanceValidation(
-          driver,
-          undefined,
-          undefined,
-          DEFAULT_LOCAL_NODE_ETH_BALANCE_DEC,
-        );
+        await login(driver, {
+          expectedBalance: DEFAULT_LOCAL_NODE_ETH_BALANCE_DEC,
+        });
 
         // Open the first dapp
         await openDappAndSwitchChain(driver, DAPP_URL, '0x539');
