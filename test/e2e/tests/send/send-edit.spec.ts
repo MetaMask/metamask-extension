@@ -6,15 +6,14 @@
  * - Legacy and EIP1559 gas editing
  */
 
-import { strict as assert } from 'assert';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import { createInternalTransaction } from '../../page-objects/flows/transaction';
 import { withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import GasFeeModal from '../../page-objects/pages/confirmations/gas-fee-modal';
 import SendTokenConfirmPage from '../../page-objects/pages/send/send-token-confirmation-page';
-import ActivityListPage from '../../page-objects/pages/home/activity-list';
 import SendPage from '../../page-objects/pages/send/send-page';
+import ActivityListPage from '../../page-objects/pages/home/activity-list';
 
 const PREFERENCES_STATE_MOCK = {
   preferences: {
@@ -42,25 +41,13 @@ describe('Send - Edit Transaction', function () {
         const activityListPage = new ActivityListPage(driver);
         const sendPage = new SendPage(driver);
 
-        await driver.findElement({
-          css: 'h2',
-          text: '1 ETH',
-        });
+        await sendTokenConfirmPage.checkTransactionAmount('1 ETH');
 
         await sendTokenConfirmPage.checkNativeCurrency('$0.07');
 
-        await driver.clickElement(
-          '[data-testid="wallet-initiated-header-back-button"]',
-        );
+        await sendTokenConfirmPage.clickBackButton();
 
-        const inputAmount = await driver.findElement(
-          '[data-testid="send-amount-input"]',
-        );
-
-        await inputAmount.press(driver.Key.BACK_SPACE);
-        await inputAmount.press('2');
-        await inputAmount.press('.');
-        await inputAmount.press('2');
+        await sendPage.editAmountByKeys([driver.Key.BACK_SPACE, '2', '.', '2']);
 
         await sendPage.pressContinueButton();
 
@@ -75,21 +62,12 @@ describe('Send - Edit Transaction', function () {
         await sendTokenConfirmPage.checkNativeCurrency('$0.29');
 
         // confirms the transaction
-        await driver.clickElement({ text: 'Confirm', tag: 'button' });
+        await sendTokenConfirmPage.clickOnConfirm();
 
         await activityListPage.openActivityTab();
-        await driver.wait(async () => {
-          const confirmedTxes = await driver.findElements(
-            '.transaction-status-label--confirmed',
-          );
-          return confirmedTxes.length === 1;
-        }, 10000);
+        await activityListPage.checkConfirmedTxNumberDisplayedInActivity(1);
 
-        const txValues = await driver.findElements(
-          '[data-testid="transaction-list-item-primary-currency"]',
-        );
-        assert.equal(txValues.length, 1);
-        assert.ok(/-2.2\s*ETH/u.test(await txValues[0].getText()));
+        await activityListPage.checkTxAmountInActivity('-2.2 ETH');
       },
     );
   });
@@ -112,25 +90,13 @@ describe('Send - Edit Transaction', function () {
         const activityListPage = new ActivityListPage(driver);
         const sendPage = new SendPage(driver);
 
-        await driver.findElement({
-          css: 'h2',
-          text: '1 ETH',
-        });
+        await sendTokenConfirmPage.checkTransactionAmount('1 ETH');
 
         await sendTokenConfirmPage.checkNativeCurrency('$0.75');
 
-        await driver.clickElement(
-          '[data-testid="wallet-initiated-header-back-button"]',
-        );
+        await sendTokenConfirmPage.clickBackButton();
 
-        const inputAmount = await driver.findElement(
-          '[data-testid="send-amount-input"]',
-        );
-
-        await inputAmount.press(driver.Key.BACK_SPACE);
-        await inputAmount.press('2');
-        await inputAmount.press('.');
-        await inputAmount.press('2');
+        await sendPage.editAmountByKeys([driver.Key.BACK_SPACE, '2', '.', '2']);
 
         await sendPage.pressContinueButton();
 
@@ -146,21 +112,12 @@ describe('Send - Edit Transaction', function () {
         await sendTokenConfirmPage.checkNativeCurrency('$0.29');
 
         // confirms the transaction
-        await driver.clickElement({ text: 'Confirm', tag: 'button' });
+        await sendTokenConfirmPage.clickOnConfirm();
 
         await activityListPage.openActivityTab();
-        await driver.wait(async () => {
-          const confirmedTxes = await driver.findElements(
-            '.transaction-status-label--confirmed',
-          );
-          return confirmedTxes.length === 1;
-        }, 10000);
+        await activityListPage.checkConfirmedTxNumberDisplayedInActivity(1);
 
-        const txValues = await driver.findElements(
-          '[data-testid="transaction-list-item-primary-currency"]',
-        );
-        assert.equal(txValues.length, 1);
-        assert.ok(/-2.2\s*ETH/u.test(await txValues[0].getText()));
+        await activityListPage.checkTxAmountInActivity('-2.2 ETH');
       },
     );
   });

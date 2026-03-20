@@ -6,14 +6,20 @@ import React, {
   useMemo,
   useState,
 } from 'react';
+import { TransactionMeta } from '@metamask/transaction-controller';
 import { GasModalType } from '../../constants/gas';
 import { GasFeeModal } from '../../components/modals/gas-fee-modal/gas-fee-modal';
+import { ConfirmContextProvider } from '../confirm';
+import { EditGasModes } from '../../../../../shared/constants/gas';
 
 export type GasFeeModalContextType = {
   isGasFeeModalVisible: boolean;
   initialModalType: GasModalType;
   openGasFeeModal: (modalType?: GasModalType) => void;
   closeGasFeeModal: () => void;
+  /** When provided (e.g. from cancel-speedup), gas modals use this instead of useConfirmContext. */
+  transactionMeta?: TransactionMeta;
+  editGasMode?: EditGasModes;
 };
 
 export const GasFeeModalContext = createContext<
@@ -22,7 +28,10 @@ export const GasFeeModalContext = createContext<
 
 export const GasFeeModalContextProvider: React.FC<{
   children: ReactElement;
-}> = ({ children }) => {
+  /** Optional transaction for gas editing when outside confirm flow (e.g. cancel/speedup). */
+  transactionMeta?: TransactionMeta;
+  editGasMode?: EditGasModes;
+}> = ({ children, transactionMeta, editGasMode }) => {
   const [isGasFeeModalVisible, setIsGasFeeModalVisible] = useState(false);
   const [initialModalType, setInitialModalType] = useState<GasModalType>(
     GasModalType.EstimatesModal,
@@ -43,8 +52,17 @@ export const GasFeeModalContextProvider: React.FC<{
       initialModalType,
       openGasFeeModal,
       closeGasFeeModal,
+      transactionMeta,
+      editGasMode,
     }),
-    [isGasFeeModalVisible, initialModalType, openGasFeeModal, closeGasFeeModal],
+    [
+      isGasFeeModalVisible,
+      initialModalType,
+      openGasFeeModal,
+      closeGasFeeModal,
+      transactionMeta,
+      editGasMode,
+    ],
   );
 
   return (
@@ -64,18 +82,43 @@ export const useGasFeeModalContext = () => {
   return context;
 };
 
+/**
+ * Optional getter for GasFeeModalContext. Returns undefined when outside
+ * GasFeeModalContextProvider (e.g. EditGasFeePopover on transaction list).
+ * Used by components that support both legacy useGasFeeContext and the
+ * GasFeeModalContextProvider flow (e.g. cancel-speedup).
+ */
+export const useGasFeeModalContextOptional = () =>
+  useContext(GasFeeModalContext);
+
 export const GasFeeModalWrapper = () => {
-  const { isGasFeeModalVisible, initialModalType, closeGasFeeModal } =
-    useGasFeeModalContext();
+  const {
+    isGasFeeModalVisible,
+    initialModalType,
+    closeGasFeeModal,
+    transactionMeta,
+  } = useGasFeeModalContext();
 
   if (!isGasFeeModalVisible) {
     return null;
   }
 
-  return (
+  const gasFeeModal = (
     <GasFeeModal
       setGasModalVisible={() => closeGasFeeModal()}
       initialModalType={initialModalType}
     />
   );
+
+  // When opened from cancel-speedup, inject transactionMeta into ConfirmContext
+  // so child modals (EstimatesModal, AdvancedEIP1559Modal, etc.) can use useConfirmContext().
+  if (transactionMeta) {
+    return (
+      <ConfirmContextProvider currentConfirmationOverride={transactionMeta}>
+        {gasFeeModal}
+      </ConfirmContextProvider>
+    );
+  }
+
+  return gasFeeModal;
 };
