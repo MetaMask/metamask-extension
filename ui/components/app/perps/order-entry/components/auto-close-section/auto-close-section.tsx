@@ -1,4 +1,5 @@
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { useSelector } from 'react-redux';
 import {
   Box,
   Text,
@@ -18,7 +19,13 @@ import {
 import ToggleButton from '../../../../../ui/toggle-button';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
 import { useFormatters } from '../../../../../../hooks/useFormatters';
+import { getIntlLocale } from '../../../../../../ducks/locale/locale';
 import type { AutoCloseSectionProps } from '../../order-entry.types';
+import {
+  normalizeLocalizedNumberInput,
+  parseLocalizedNumber,
+  toCanonicalFixedPrice,
+} from '../../../utils/localeNumber';
 
 /**
  * AutoCloseSection - Collapsible section for Take Profit and Stop Loss configuration
@@ -52,6 +59,11 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
 }) => {
   const t = useI18nContext();
   const { formatNumber } = useFormatters();
+  const locale = useSelector(getIntlLocale);
+  const [isTpFocused, setIsTpFocused] = useState(false);
+  const [isSlFocused, setIsSlFocused] = useState(false);
+  const [tpInputValue, setTpInputValue] = useState('');
+  const [slInputValue, setSlInputValue] = useState('');
 
   // In modify mode use position's entry price; otherwise use current price
   const entryPrice = entryPriceProp ?? currentPrice;
@@ -78,15 +90,52 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
     [formatNumber],
   );
 
+  const formatStoredPriceForDisplay = useCallback(
+    (value: string): string => {
+      if (!value) {
+        return '';
+      }
+
+      const parsed = parseLocalizedNumber(value, locale);
+      if (parsed === null || parsed <= 0) {
+        return '';
+      }
+
+      return formatPrice(parsed);
+    },
+    [formatPrice, locale],
+  );
+
+  const formattedTakeProfitPrice = useMemo(
+    () => formatStoredPriceForDisplay(takeProfitPrice),
+    [formatStoredPriceForDisplay, takeProfitPrice],
+  );
+
+  const formattedStopLossPrice = useMemo(
+    () => formatStoredPriceForDisplay(stopLossPrice),
+    [formatStoredPriceForDisplay, stopLossPrice],
+  );
+
+  useEffect(() => {
+    if (!isTpFocused) {
+      setTpInputValue(formattedTakeProfitPrice);
+    }
+  }, [formattedTakeProfitPrice, isTpFocused]);
+
+  useEffect(() => {
+    if (!isSlFocused) {
+      setSlInputValue(formattedStopLossPrice);
+    }
+  }, [formattedStopLossPrice, isSlFocused]);
+
   // Calculate percentage from price
   const priceToPercent = useCallback(
     (price: string, isTP: boolean): string => {
       if (!price || !entryPrice) {
         return '';
       }
-      const cleanPrice = price.replace(/,/gu, '');
-      const priceNum = parseFloat(cleanPrice);
-      if (isNaN(priceNum) || priceNum <= 0) {
+      const priceNum = parseLocalizedNumber(price, locale);
+      if (priceNum === null || priceNum <= 0) {
         return '';
       }
 
@@ -100,7 +149,7 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
       }
       return formatPercent(isTP ? -percentChange : percentChange);
     },
-    [entryPrice, direction, formatPercent],
+    [entryPrice, direction, formatPercent, locale],
   );
 
   // Calculate price from percentage
@@ -120,9 +169,9 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
       }
 
       const price = entryPrice * multiplier;
-      return formatPrice(price);
+      return price.toFixed(2);
     },
-    [entryPrice, direction, formatPrice],
+    [entryPrice, direction],
   );
 
   const handleToggle = useCallback(
@@ -136,22 +185,38 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
   const handleTpPriceChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       const { value } = event.target;
-      if (value === '' || /^[\d,]*\.?\d*$/u.test(value)) {
-        onTakeProfitPriceChange(value);
+      const canonicalDraft = normalizeLocalizedNumberInput(value, locale, {
+        allowTrailingDecimal: true,
+      });
+
+      if (canonicalDraft === null) {
+        return;
       }
+
+      setTpInputValue(value);
+      onTakeProfitPriceChange(canonicalDraft);
     },
-    [onTakeProfitPriceChange],
+    [locale, onTakeProfitPriceChange],
   );
 
-  // Handle TP price blur - format the value
+  const handleTpPriceFocus = useCallback(() => {
+    setIsTpFocused(true);
+    setTpInputValue(takeProfitPrice);
+  }, [takeProfitPrice]);
+
   const handleTpPriceBlur = useCallback(() => {
-    if (takeProfitPrice) {
-      const numValue = parseFloat(takeProfitPrice.replace(/,/gu, ''));
-      if (!isNaN(numValue) && numValue > 0) {
-        onTakeProfitPriceChange(formatPrice(numValue));
-      }
+    setIsTpFocused(false);
+
+    if (!takeProfitPrice) {
+      onTakeProfitPriceChange('');
+      return;
     }
-  }, [takeProfitPrice, onTakeProfitPriceChange, formatPrice]);
+
+    const canonical = toCanonicalFixedPrice(takeProfitPrice, locale);
+    if (canonical) {
+      onTakeProfitPriceChange(canonical);
+    }
+  }, [locale, onTakeProfitPriceChange, takeProfitPrice]);
 
   // Handle TP percentage input change
   const handleTpPercentChange = useCallback(
@@ -174,22 +239,39 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
   const handleSlPriceChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       const { value } = event.target;
-      if (value === '' || /^[\d,]*(?:\.\d*)?$/u.test(value)) {
-        onStopLossPriceChange(value);
+      const canonicalDraft = normalizeLocalizedNumberInput(value, locale, {
+        allowTrailingDecimal: true,
+      });
+
+      if (canonicalDraft === null) {
+        return;
       }
+
+      setSlInputValue(value);
+      onStopLossPriceChange(canonicalDraft);
     },
-    [onStopLossPriceChange],
+    [locale, onStopLossPriceChange],
   );
 
-  // Handle SL price blur - format the value
+  const handleSlPriceFocus = useCallback(() => {
+    setIsSlFocused(true);
+    setSlInputValue(stopLossPrice);
+  }, [stopLossPrice]);
+
+  // Handle SL price blur - commit canonical value
   const handleSlPriceBlur = useCallback(() => {
-    if (stopLossPrice) {
-      const numValue = parseFloat(stopLossPrice.replace(/,/gu, ''));
-      if (!isNaN(numValue) && numValue > 0) {
-        onStopLossPriceChange(formatPrice(numValue));
-      }
+    setIsSlFocused(false);
+
+    if (!stopLossPrice) {
+      onStopLossPriceChange('');
+      return;
     }
-  }, [stopLossPrice, onStopLossPriceChange, formatPrice]);
+
+    const canonical = toCanonicalFixedPrice(stopLossPrice, locale);
+    if (canonical) {
+      onStopLossPriceChange(canonical);
+    }
+  }, [locale, onStopLossPriceChange, stopLossPrice]);
 
   // Handle SL percentage input change
   const handleSlPercentChange = useCallback(
@@ -218,6 +300,8 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
     () => priceToPercent(stopLossPrice, false),
     [priceToPercent, stopLossPrice],
   );
+
+  const pricePlaceholder = useMemo(() => formatPrice(0), [formatPrice]);
 
   return (
     <Box flexDirection={BoxFlexDirection.Column} gap={3}>
@@ -260,16 +344,20 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
               <Box className="flex-1">
                 <TextField
                   size={TextFieldSize.Sm}
-                  value={takeProfitPrice}
+                  value={isTpFocused ? tpInputValue : formattedTakeProfitPrice}
                   onChange={handleTpPriceChange}
+                  onFocus={handleTpPriceFocus}
                   onBlur={handleTpPriceBlur}
-                  placeholder="0.00"
+                  placeholder={pricePlaceholder}
                   borderRadius={BorderRadius.MD}
                   borderWidth={0}
                   backgroundColor={BackgroundColor.backgroundMuted}
                   className="w-full"
                   data-testid="tp-price-input"
-                  inputProps={{ textVariant: TextVariantLegacy.bodySm }}
+                  inputProps={{
+                    textVariant: TextVariantLegacy.bodySm,
+                    inputMode: 'decimal',
+                  }}
                   startAccessory={
                     <Text
                       variant={TextVariant.BodySm}
@@ -327,16 +415,20 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
               <Box className="flex-1">
                 <TextField
                   size={TextFieldSize.Sm}
-                  value={stopLossPrice}
+                  value={isSlFocused ? slInputValue : formattedStopLossPrice}
                   onChange={handleSlPriceChange}
+                  onFocus={handleSlPriceFocus}
                   onBlur={handleSlPriceBlur}
-                  placeholder="0.00"
+                  placeholder={pricePlaceholder}
                   borderRadius={BorderRadius.MD}
                   borderWidth={0}
                   backgroundColor={BackgroundColor.backgroundMuted}
                   className="w-full"
                   data-testid="sl-price-input"
-                  inputProps={{ textVariant: TextVariantLegacy.bodySm }}
+                  inputProps={{
+                    textVariant: TextVariantLegacy.bodySm,
+                    inputMode: 'decimal',
+                  }}
                   startAccessory={
                     <Text
                       variant={TextVariant.BodySm}

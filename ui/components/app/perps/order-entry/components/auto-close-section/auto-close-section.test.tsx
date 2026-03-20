@@ -107,7 +107,7 @@ describe('AutoCloseSection', () => {
       // TextField wraps an input, query the actual input element
       const container = screen.getByTestId('tp-price-input');
       const input = container.querySelector('input');
-      expect(input).toHaveValue('50000');
+      expect(input).toHaveValue('50,000.00');
     });
 
     it('calls onTakeProfitPriceChange when input changes', () => {
@@ -164,7 +164,7 @@ describe('AutoCloseSection', () => {
 
       const container = screen.getByTestId('sl-price-input');
       const input = container.querySelector('input');
-      expect(input).toHaveValue('40000');
+      expect(input).toHaveValue('40,000.00');
     });
 
     it('calls onStopLossPriceChange when input changes', () => {
@@ -264,7 +264,7 @@ describe('AutoCloseSection', () => {
       });
 
       // For long +10%: 45000 * 1.10 = 49500
-      expect(onTakeProfitPriceChange).toHaveBeenCalledWith('49,500.00');
+      expect(onTakeProfitPriceChange).toHaveBeenCalledWith('49500.00');
     });
 
     it('updates price when percent is entered for SL', () => {
@@ -288,7 +288,41 @@ describe('AutoCloseSection', () => {
       });
 
       // For long -10%: 45000 * 0.90 = 40500
-      expect(onStopLossPriceChange).toHaveBeenCalledWith('40,500.00');
+      expect(onStopLossPriceChange).toHaveBeenCalledWith('40500.00');
+    });
+  });
+
+  describe('locale handling', () => {
+    it('normalizes de-DE TP input to canonical value', () => {
+      const onTakeProfitPriceChange = jest.fn();
+      const deStore = configureStore({
+        metamask: {
+          ...mockState.metamask,
+          currentLocale: 'de',
+        },
+      });
+
+      renderWithProvider(
+        <AutoCloseSection
+          {...defaultProps}
+          enabled={true}
+          takeProfitPrice="45050.00"
+          onTakeProfitPriceChange={onTakeProfitPriceChange}
+        />,
+        deStore,
+      );
+
+      const container = screen.getByTestId('tp-price-input');
+      const input = container.querySelector('input');
+      expect(input).not.toBeNull();
+
+      fireEvent.focus(input as HTMLInputElement);
+      fireEvent.change(input as HTMLInputElement, {
+        target: { value: '45.050,00' },
+      });
+      fireEvent.blur(input as HTMLInputElement);
+
+      expect(onTakeProfitPriceChange).toHaveBeenCalledWith('45050.00');
     });
   });
 });

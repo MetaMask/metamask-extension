@@ -1,4 +1,5 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { useSelector } from 'react-redux';
 import {
   Box,
   Text,
@@ -18,6 +19,12 @@ import {
 } from '../../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
 import { useFormatters } from '../../../../../../hooks/useFormatters';
+import { getIntlLocale } from '../../../../../../ducks/locale/locale';
+import {
+  normalizeLocalizedNumberInput,
+  parseLocalizedNumber,
+  toCanonicalFixedPrice,
+} from '../../../utils/localeNumber';
 
 /**
  * Props for LimitPriceInput component
@@ -49,6 +56,9 @@ export const LimitPriceInput: React.FC<LimitPriceInputProps> = ({
 }) => {
   const t = useI18nContext();
   const { formatNumber } = useFormatters();
+  const locale = useSelector(getIntlLocale);
+  const [isFocused, setIsFocused] = useState(false);
+  const [inputValue, setInputValue] = useState('');
 
   const formatPrice = useCallback(
     (value: number): string =>
@@ -61,30 +71,70 @@ export const LimitPriceInput: React.FC<LimitPriceInputProps> = ({
 
   const midPrice = midPriceProp ?? currentPrice;
 
+  const formattedLimitPrice = useMemo(() => {
+    if (!limitPrice) {
+      return '';
+    }
+
+    const parsed = parseLocalizedNumber(limitPrice, locale);
+    if (parsed === null || parsed <= 0) {
+      return '';
+    }
+
+    return formatPrice(parsed);
+  }, [formatPrice, limitPrice, locale]);
+
+  useEffect(() => {
+    if (!isFocused) {
+      setInputValue(formattedLimitPrice);
+    }
+  }, [isFocused, formattedLimitPrice]);
+
   const handlePriceChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       const { value } = event.target;
-      if (value === '' || /^[\d,]*\.?\d*$/u.test(value)) {
-        onLimitPriceChange(value);
+      const canonicalDraft = normalizeLocalizedNumberInput(value, locale, {
+        allowTrailingDecimal: true,
+      });
+
+      if (canonicalDraft === null) {
+        return;
       }
+
+      setInputValue(value);
+      onLimitPriceChange(canonicalDraft);
     },
-    [onLimitPriceChange],
+    [locale, onLimitPriceChange],
   );
 
+  const handlePriceFocus = useCallback(() => {
+    setIsFocused(true);
+    setInputValue(limitPrice);
+  }, [limitPrice]);
+
   const handlePriceBlur = useCallback(() => {
-    if (limitPrice) {
-      const numValue = parseFloat(limitPrice.replace(/,/gu, ''));
-      if (!isNaN(numValue) && numValue > 0) {
-        onLimitPriceChange(formatPrice(numValue));
-      }
+    setIsFocused(false);
+
+    if (!limitPrice) {
+      onLimitPriceChange('');
+      return;
     }
-  }, [limitPrice, onLimitPriceChange, formatPrice]);
+
+    const canonical = toCanonicalFixedPrice(limitPrice, locale);
+    if (canonical) {
+      onLimitPriceChange(canonical);
+    }
+  }, [limitPrice, locale, onLimitPriceChange]);
 
   const handleMidClick = useCallback(() => {
     if (midPrice > 0) {
-      onLimitPriceChange(formatPrice(midPrice));
+      onLimitPriceChange(midPrice.toFixed(2));
     }
-  }, [midPrice, onLimitPriceChange, formatPrice]);
+  }, [midPrice, onLimitPriceChange]);
+
+  const placeholderValue = useMemo(() => formatPrice(0), [formatPrice]);
+
+  const displayedValue = isFocused ? inputValue : formattedLimitPrice;
 
   return (
     <Box
@@ -102,15 +152,17 @@ export const LimitPriceInput: React.FC<LimitPriceInputProps> = ({
 
       <TextField
         size={TextFieldSize.Md}
-        value={limitPrice}
+        value={displayedValue}
         onChange={handlePriceChange}
+        onFocus={handlePriceFocus}
         onBlur={handlePriceBlur}
-        placeholder="0.00"
+        placeholder={placeholderValue}
         borderRadius={BorderRadius.MD}
         borderWidth={0}
         backgroundColor={BackgroundColor.backgroundMuted}
         className="w-full"
         data-testid="limit-price-input"
+        inputProps={{ inputMode: 'decimal' }}
         startAccessory={
           <Text variant={TextVariant.BodyMd} color={TextColor.TextAlternative}>
             $

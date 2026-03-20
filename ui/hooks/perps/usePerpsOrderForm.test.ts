@@ -316,6 +316,35 @@ describe('usePerpsOrderForm', () => {
         initialPositionSize,
       );
     });
+
+    it('uses locale-formatted limit price correctly in calculations', () => {
+      const deState = {
+        metamask: {
+          ...mockState.metamask,
+          currentLocale: 'de',
+        },
+      };
+
+      const { result } = renderHookWithProvider(
+        () =>
+          usePerpsOrderForm({
+            ...defaultOptions,
+            orderType: 'limit',
+          }),
+        deState,
+      );
+
+      act(() => {
+        result.current.handleAmountChange('1000');
+      });
+
+      act(() => {
+        result.current.handleLimitPriceChange('45.050,00');
+      });
+
+      expect(result.current.calculations.positionSize).toContain('BTC');
+      expect(result.current.calculations.orderValue).toBe('$1,000.00');
+    });
   });
 
   describe('form state change callback', () => {

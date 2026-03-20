@@ -138,6 +138,17 @@ describe('PerpsOrderEntryPage', () => {
     },
   });
 
+  const createMockStateWithLocale = (
+    locale: string,
+    perpsEnabled = true,
+  ): ReturnType<typeof createMockState> => ({
+    ...createMockState(perpsEnabled),
+    metamask: {
+      ...createMockState(perpsEnabled).metamask,
+      currentLocale: locale,
+    },
+  });
+
   beforeEach(() => {
     jest.clearAllMocks();
     mockUseParams.mockReturnValue({ symbol: 'ETH' });
@@ -772,6 +783,41 @@ describe('PerpsOrderEntryPage', () => {
         ],
       );
       expect(mockUseNavigate).toHaveBeenCalledWith('/perps/market/ETH');
+    });
+
+    it('submits canonical limit price when locale-formatted value is entered', async () => {
+      mockSearchParams.set('orderType', 'limit');
+
+      const store = mockStore(createMockStateWithLocale('de'));
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      const amountContainer = screen.getByTestId('amount-input-field');
+      const amountInput = amountContainer.querySelector('input');
+      fireEvent.change(amountInput as HTMLInputElement, {
+        target: { value: '500' },
+      });
+
+      const limitContainer = screen.getByTestId('limit-price-input');
+      const limitInput = limitContainer.querySelector('input');
+      fireEvent.focus(limitInput as HTMLInputElement);
+      fireEvent.change(limitInput as HTMLInputElement, {
+        target: { value: '45.050,00' },
+      });
+      fireEvent.blur(limitInput as HTMLInputElement);
+
+      await act(async () => {
+        fireEvent.click(screen.getByTestId('submit-order-button'));
+      });
+
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'perpsPlaceOrder',
+        [
+          expect.objectContaining({
+            orderType: 'limit',
+            price: '45050.00',
+          }),
+        ],
+      );
     });
   });
 

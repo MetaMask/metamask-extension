@@ -1,6 +1,8 @@
 import { useState, useCallback, useMemo, useEffect, useRef } from 'react';
 import type { OrderType } from '@metamask/perps-controller';
+import { useSelector } from 'react-redux';
 import { useFormatters } from '../useFormatters';
+import { getIntlLocale } from '../../ducks/locale/locale';
 import type {
   OrderFormState,
   OrderMode,
@@ -11,6 +13,7 @@ import {
   calculatePositionSize,
   estimateLiquidationPrice,
 } from '../../components/app/perps/order-entry/order-entry.mocks';
+import { parseLocalizedNumber } from '../../components/app/perps/utils/localeNumber';
 
 export type UsePerpsOrderFormOptions = {
   /** Asset symbol */
@@ -99,6 +102,7 @@ export function usePerpsOrderForm({
 }: UsePerpsOrderFormOptions): UsePerpsOrderFormReturn {
   const { formatCurrencyWithMinThreshold, formatTokenQuantity } =
     useFormatters();
+  const locale = useSelector(getIntlLocale);
 
   // Close percentage state (for 'close' mode, defaults to 100%)
   const [closePercent, setClosePercent] = useState<number>(100);
@@ -246,8 +250,9 @@ export function usePerpsOrderForm({
     // Fall back to current market price if limit price is empty/invalid.
     let effectivePrice = currentPrice;
     if (formState.type === 'limit' && formState.limitPrice) {
-      const parsedLimitPrice = Number.parseFloat(
-        formState.limitPrice.replaceAll(',', ''),
+      const parsedLimitPrice = parseLocalizedNumber(
+        formState.limitPrice,
+        locale,
       );
       if (!Number.isNaN(parsedLimitPrice) && parsedLimitPrice > 0) {
         effectivePrice = parsedLimitPrice;
@@ -286,6 +291,7 @@ export function usePerpsOrderForm({
     asset,
     formatCurrencyWithMinThreshold,
     formatTokenQuantity,
+    locale,
   ]);
 
   // Form state update handlers

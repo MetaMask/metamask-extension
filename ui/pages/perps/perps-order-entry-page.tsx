@@ -30,6 +30,7 @@ import type {
 } from '@metamask/perps-controller';
 import { getIsPerpsExperienceAvailable } from '../../selectors/perps/feature-flags';
 import { getSelectedInternalAccount } from '../../selectors/accounts';
+import { getIntlLocale } from '../../ducks/locale/locale';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import {
   DEFAULT_ROUTE,
@@ -58,6 +59,10 @@ import {
   type OrderMode,
   type OrderCalculations,
 } from '../../components/app/perps/order-entry';
+import {
+  normalizeLocalizedNumberInput,
+  parseLocalizedNumber,
+} from '../../components/app/perps/utils/localeNumber';
 
 /**
  * Convert UI OrderFormState to PerpsController OrderParams
@@ -65,12 +70,14 @@ import {
  * @param formState - Current order form state
  * @param currentPrice - Current asset price in USD
  * @param mode - Order mode (new, modify, close)
+ * @param locale
  * @param existingPositionSize - Size of existing position when closing
  */
 function formStateToOrderParams(
   formState: OrderFormState,
   currentPrice: number,
   mode: OrderMode,
+  locale: string,
   existingPositionSize?: string,
 ): OrderParams {
   const isBuy = formState.direction === 'long';
@@ -94,13 +101,31 @@ function formStateToOrderParams(
   };
 
   if (formState.type === 'limit' && formState.limitPrice) {
-    params.price = formState.limitPrice.replace(/,/gu, '');
+    const normalizedLimitPrice = normalizeLocalizedNumberInput(
+      formState.limitPrice,
+      locale,
+    );
+    if (normalizedLimitPrice) {
+      params.price = normalizedLimitPrice;
+    }
   }
   if (formState.autoCloseEnabled && formState.takeProfitPrice) {
-    params.takeProfitPrice = formState.takeProfitPrice.replace(/,/gu, '');
+    const normalizedTakeProfit = normalizeLocalizedNumberInput(
+      formState.takeProfitPrice,
+      locale,
+    );
+    if (normalizedTakeProfit) {
+      params.takeProfitPrice = normalizedTakeProfit;
+    }
   }
   if (formState.autoCloseEnabled && formState.stopLossPrice) {
-    params.stopLossPrice = formState.stopLossPrice.replace(/,/gu, '');
+    const normalizedStopLoss = normalizeLocalizedNumberInput(
+      formState.stopLossPrice,
+      locale,
+    );
+    if (normalizedStopLoss) {
+      params.stopLossPrice = normalizedStopLoss;
+    }
   }
   if (mode === 'close') {
     params.reduceOnly = true;
@@ -121,6 +146,7 @@ const PerpsOrderEntryPage: React.FC = () => {
   const [searchParams] = useSearchParams();
   const isPerpsExperienceAvailable = useSelector(getIsPerpsExperienceAvailable);
   const selectedAccount = useSelector(getSelectedInternalAccount);
+  const locale = useSelector(getIntlLocale);
   const selectedAddress = selectedAccount?.address;
   const { isEligible } = usePerpsEligibility();
   const { trigger: triggerDeposit } = usePerpsDepositConfirmation();
@@ -169,10 +195,12 @@ const PerpsOrderEntryPage: React.FC = () => {
     if (orderType !== 'limit' || !orderFormState) {
       return false;
     }
-    const cleaned = orderFormState.limitPrice?.replace(/,/gu, '') ?? '';
-    const parsed = parseFloat(cleaned);
-    return !cleaned || isNaN(parsed) || parsed <= 0;
-  }, [orderType, orderFormState]);
+    const parsed = parseLocalizedNumber(
+      orderFormState.limitPrice ?? '',
+      locale,
+    );
+    return parsed === null || parsed <= 0;
+  }, [locale, orderType, orderFormState]);
 
   const market = useMemo(() => {
     if (!decodedSymbol) {
@@ -368,11 +396,17 @@ const PerpsOrderEntryPage: React.FC = () => {
       } else if (orderMode === 'modify' && position) {
         const cleanTp =
           orderFormState.autoCloseEnabled && orderFormState.takeProfitPrice
-            ? orderFormState.takeProfitPrice.replace(/,/gu, '')
+            ? normalizeLocalizedNumberInput(
+                orderFormState.takeProfitPrice,
+                locale,
+              )
             : undefined;
         const cleanSl =
           orderFormState.autoCloseEnabled && orderFormState.stopLossPrice
-            ? orderFormState.stopLossPrice.replace(/,/gu, '')
+            ? normalizeLocalizedNumberInput(
+                orderFormState.stopLossPrice,
+                locale,
+              )
             : undefined;
         const result = await submitRequestToBackground<{
           success: boolean;
@@ -392,6 +426,7 @@ const PerpsOrderEntryPage: React.FC = () => {
           orderFormState,
           currentPrice,
           orderMode,
+          locale,
           position?.size,
         );
         const result = await submitRequestToBackground<{
@@ -424,6 +459,7 @@ const PerpsOrderEntryPage: React.FC = () => {
     orderMode,
     position,
     currentPrice,
+    locale,
     handleBackClick,
   ]);
 
