@@ -174,12 +174,9 @@ const PrepareBridgePage = ({
   const keyring = useSelector(getCurrentKeyring);
   const isUsingHardwareWallet = isHardwareKeyring(keyring?.type);
 
-  const effectiveGasIncluded = !isUsingHardwareWallet && gasIncluded;
-  const effectiveGasIncluded7702 = !isUsingHardwareWallet && gasIncluded7702;
-
   const shouldShowMaxButton =
     fromToken && isNativeAddress(fromToken.assetId)
-      ? effectiveGasIncluded || effectiveGasIncluded7702
+      ? gasIncluded || gasIncluded7702
       : true;
   const hardwareWalletName = useSelector(getHardwareWalletName);
   const isTxSubmittable = useIsTxSubmittable();
@@ -294,8 +291,8 @@ const PrepareBridgePage = ({
       slippage,
       walletAddress: selectedAccount.address,
       destWalletAddress: selectedDestinationAccount?.address,
-      gasIncluded: effectiveGasIncluded || effectiveGasIncluded7702,
-      gasIncluded7702: effectiveGasIncluded7702,
+      gasIncluded: gasIncluded || gasIncluded7702,
+      gasIncluded7702,
     };
   }, [
     fromToken?.assetId,
@@ -307,8 +304,8 @@ const PrepareBridgePage = ({
     selectedAccount?.address,
     selectedDestinationAccount?.address,
     providerConfig?.rpcUrl,
-    effectiveGasIncluded,
-    effectiveGasIncluded7702,
+    gasIncluded,
+    gasIncluded7702,
     isInsufficientBalance,
   ]);
 

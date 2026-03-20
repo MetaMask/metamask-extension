@@ -775,7 +775,7 @@ describe('MultichainBridgeQuoteCard', () => {
     expect(container).toMatchSnapshot();
   });
 
-  it('should not render gas sponsored text for hardware wallet accounts even when gasSponsored is true', async () => {
+  it('should not render gas sponsored text for hardware wallets because getBridgeQuotes strips gasSponsored', async () => {
     const mockStore = createBridgeMockStore({
       featureFlagOverrides: {
         bridgeConfig: {

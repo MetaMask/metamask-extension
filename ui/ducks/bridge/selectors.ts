@@ -612,24 +612,67 @@ export const getIsStockMarketClosed = (
   return isFromClosed || isToClosed;
 };
 
+/**
+ * Strips gasIncluded7702 and gasSponsored from a quote when the user is on a
+ * hardware wallet. HW wallets cannot sign 7702 upgrades, but the STX
+ * gasIncluded path still works, so that flag is left untouched.
+ * @param quote
+ * @param isHw
+ */
+function adjustQuoteForHardwareWallet<
+  Quote extends {
+    quote: { gasIncluded7702?: boolean; gasSponsored?: boolean };
+  },
+>(quote: Quote | null | undefined, isHw: boolean): Quote | null | undefined {
+  if (!isHw || !quote) {
+    return quote;
+  }
+  return {
+    ...quote,
+    quote: {
+      ...quote.quote,
+      gasIncluded7702: false,
+      gasSponsored: false,
+    },
+  };
+}
+
 export const getBridgeQuotes = createSelector(
   [
     ({ metamask }: BridgeAppState) => metamask,
     ({ bridge: { sortOrder } }: BridgeAppState) => sortOrder,
     ({ bridge: { selectedQuote } }: BridgeAppState) => selectedQuote,
+    (state: BridgeAppState) => isHardwareWallet(state as never),
   ],
-  (controllerStates, sortOrder, selectedQuote) => {
+  (controllerStates, sortOrder, selectedQuote, isHw) => {
     const quotes = selectBridgeQuotes(controllerStates, {
       sortOrder,
       selectedQuote,
     });
+
+    const adjustedSortedQuotes = isHw
+      ? quotes.sortedQuotes.map((q) => ({
+          ...q,
+          quote: { ...q.quote, gasIncluded7702: false, gasSponsored: false },
+        }))
+      : quotes.sortedQuotes;
+
+    const adjustedRecommended = adjustQuoteForHardwareWallet(
+      quotes.recommendedQuote,
+      isHw,
+    );
+
+    const activeQuote =
+      // TODO move this to controller
+      adjustedSortedQuotes.find(
+        (q) => q.quote.requestId === selectedQuote?.quote.requestId,
+      ) ?? adjustedRecommended;
+
     return {
       ...quotes,
-      activeQuote:
-        // TODO move this to controller
-        quotes.sortedQuotes.find(
-          (q) => q.quote.requestId === selectedQuote?.quote.requestId,
-        ) ?? quotes.recommendedQuote,
+      sortedQuotes: adjustedSortedQuotes,
+      recommendedQuote: adjustedRecommended,
+      activeQuote,
     };
   },
 );
@@ -727,7 +770,6 @@ const _getBaseValidationErrors = createDeepEqualSelector(
     ({ bridge: { txAlertStatus } }: BridgeAppState) => txAlertStatus,
     getPriceImpact,
     getPriceImpactThresholds,
-    (state: BridgeAppState) => isHardwareWallet(state as never),
   ],
   (
     { activeQuote, quotesLastFetchedMs, isLoading, quotesRefreshCount },
@@ -742,13 +784,12 @@ const _getBaseValidationErrors = createDeepEqualSelector(
     txAlertStatus,
     priceImpactNumber,
     { warning, error },
-    isHardwareWalletAccount,
   ) => {
     const { gasIncluded, gasIncluded7702, gasSponsored } =
       activeQuote?.quote ?? {};
-    const isGasless =
-      !isHardwareWalletAccount &&
-      (gasIncluded7702 || gasIncluded || gasSponsored);
+    // getBridgeQuotes already strips gasIncluded7702/gasSponsored for HW
+    // wallets, so no additional HW gate is needed here.
+    const isGasless = Boolean(gasIncluded7702 || gasIncluded || gasSponsored);
 
     const srcChainId =
       quoteRequest.srcChainId ?? activeQuote?.quote?.srcChainId;
@@ -756,6 +797,16 @@ const _getBaseValidationErrors = createDeepEqualSelector(
       srcChainId && isSolanaChainId(srcChainId)
         ? minimumBalanceForRentExemptionInSOL
         : '0';
+
+    // Monad requires >= 10 MON native reserve for 7702 sponsored txs.
+    // Without this balance the relay rejects the tx on-chain.
+    const MONAD_MIN_RESERVE = '10';
+    const srcHexChainId = srcChainId
+      ? getMaybeHexChainId(String(srcChainId))
+      : undefined;
+    const isMonad7702 =
+      srcHexChainId === CHAIN_IDS.MONAD &&
+      Boolean(gasIncluded7702 || quoteRequest.gasIncluded7702);
 
     return {
       isTxAlertPresent: Boolean(txAlert),
@@ -773,12 +824,18 @@ const _getBaseValidationErrors = createDeepEqualSelector(
           !activeQuote &&
           validatedSrcAmount &&
           fromToken &&
-          !isGasless &&
-          (isNativeAddress(fromToken.assetId)
-            ? new BigNumber(nativeBalance)
-                .sub(minimumBalanceToUse)
-                .lte(validatedSrcAmount)
-            : new BigNumber(nativeBalance).lte(0)),
+          ((!isGasless &&
+            (isNativeAddress(fromToken.assetId)
+              ? new BigNumber(nativeBalance)
+                  .sub(minimumBalanceToUse)
+                  .lte(validatedSrcAmount)
+              : new BigNumber(nativeBalance).lte(0))) ||
+            (isMonad7702 &&
+              (isNativeAddress(fromToken.assetId)
+                ? new BigNumber(nativeBalance)
+                    .sub(validatedSrcAmount)
+                    .lt(MONAD_MIN_RESERVE)
+                : new BigNumber(nativeBalance).lt(MONAD_MIN_RESERVE)))),
       ),
       // Shown after fetching quotes
       isInsufficientGasForQuote: Boolean(
@@ -786,16 +843,22 @@ const _getBaseValidationErrors = createDeepEqualSelector(
           activeQuote &&
           fromToken &&
           fromTokenInputValue &&
-          !isGasless &&
-          (isNativeAddress(fromToken.assetId)
-            ? new BigNumber(nativeBalance)
-                .sub(activeQuote.totalNetworkFee.amount)
-                .sub(activeQuote.sentAmount.amount)
-                .sub(minimumBalanceToUse)
-                .lte(0)
-            : new BigNumber(nativeBalance).lte(
-                activeQuote.totalNetworkFee.amount,
-              )),
+          ((!isGasless &&
+            (isNativeAddress(fromToken.assetId)
+              ? new BigNumber(nativeBalance)
+                  .sub(activeQuote.totalNetworkFee.amount)
+                  .sub(activeQuote.sentAmount.amount)
+                  .sub(minimumBalanceToUse)
+                  .lte(0)
+              : new BigNumber(nativeBalance).lte(
+                  activeQuote.totalNetworkFee.amount,
+                ))) ||
+            (isMonad7702 &&
+              (isNativeAddress(fromToken.assetId)
+                ? new BigNumber(nativeBalance)
+                    .sub(activeQuote.sentAmount.amount)
+                    .lt(MONAD_MIN_RESERVE)
+                : new BigNumber(nativeBalance).lt(MONAD_MIN_RESERVE)))),
       ),
       isInsufficientBalance:
         validatedSrcAmount &&
