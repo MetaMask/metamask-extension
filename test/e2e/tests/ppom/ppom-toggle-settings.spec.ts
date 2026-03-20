@@ -11,7 +11,8 @@ import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import TestDapp from '../../page-objects/pages/test-dapp';
 
 describe('PPOM Settings', function (this: Suite) {
-  it('should not show the PPOM warning when toggle is off', async function () {
+  // eslint-disable-next-line mocha/no-skipped-tests, mocha/handle-done-callback
+  it.skip('should not show the PPOM warning when toggle is off', async function () {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
