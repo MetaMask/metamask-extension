@@ -217,7 +217,6 @@
         "dismissSmartAccountSuggestionEnabled": "boolean",
         "featureNotificationsEnabled": "boolean",
         "hideZeroBalanceTokens": false,
-        "petnamesEnabled": "boolean",
         "privacyMode": "boolean",
         "showConfirmationAdvancedDetails": false,
         "showDefaultAddress": "boolean",
@@ -313,5 +312,5 @@
     },
     "config": "object"
   },
-  "meta": { "storageKind": "split", "version": 198 }
+  "meta": { "storageKind": "split", "version": 199 }
 }

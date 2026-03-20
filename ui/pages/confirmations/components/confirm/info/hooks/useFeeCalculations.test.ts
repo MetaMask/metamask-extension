@@ -40,6 +40,7 @@ describe('useFeeCalculations', () => {
         "l2FeeNative": "",
         "maxFeeFiat": "< $0.01",
         "maxFeeFiatWith18SignificantDigits": "0",
+        "maxFeeHex": "0x0",
         "maxFeeNative": "0",
       }
     `);
@@ -70,6 +71,7 @@ describe('useFeeCalculations', () => {
         "l2FeeNative": "",
         "maxFeeFiat": "$0.07",
         "maxFeeFiatWith18SignificantDigits": null,
+        "maxFeeHex": "0x720087dcfc95",
         "maxFeeNative": "0.0001",
       }
     `);
@@ -121,6 +123,7 @@ describe('useFeeCalculations', () => {
         "l2FeeNative": "",
         "maxFeeFiat": "",
         "maxFeeFiatWith18SignificantDigits": null,
+        "maxFeeHex": "0x720087dcfc95",
         "maxFeeNative": "0.0001",
       }
     `);

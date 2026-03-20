@@ -1,4 +1,4 @@
-import React, { type ReactNode } from 'react';
+import React, { useContext, type ReactNode } from 'react';
 import {
   Text,
   TextButton,
@@ -11,6 +11,11 @@ import {
   MUSD_CONVERSION_BONUS_TERMS_OF_USE,
 } from '../../../../../components/app/musd/constants';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
+import { MetaMetricsContext } from '../../../../../contexts/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../../../shared/constants/metametrics';
 import { InfoPopoverTooltip } from '../../info-popover-tooltip';
 
 type HeaderContent = {
@@ -20,6 +25,7 @@ type HeaderContent = {
 
 export function useMusdConversionHeaderContent(): HeaderContent {
   const t = useI18nContext();
+  const { trackEvent } = useContext(MetaMetricsContext);
 
   return {
     title: t('musdConvertAndGetBonus', [String(MUSD_CONVERSION_APY)]),
@@ -39,6 +45,18 @@ export function useMusdConversionHeaderContent(): HeaderContent {
                 target="_blank"
                 rel="noopener noreferrer"
                 style={{ textDecoration: 'underline' }}
+                onClick={() => {
+                  const properties = {
+                    location: 'custom_amount_navbar',
+                    url: MUSD_CONVERSION_BONUS_TERMS_OF_USE,
+                  };
+
+                  trackEvent({
+                    event: MetaMetricsEventName.MusdBonusTermsOfUsePressed,
+                    category: MetaMetricsEventCategory.MusdConversion,
+                    properties,
+                  });
+                }}
               >
                 {t('musdTermsApply')}
               </a>

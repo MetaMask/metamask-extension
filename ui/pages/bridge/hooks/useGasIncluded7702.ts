@@ -9,6 +9,7 @@ import {
   SmartTransactionsState,
 } from '../../../../shared/lib/selectors';
 import { isRelaySupported } from '../../../store/actions';
+import { isHardwareWallet } from '../../../selectors';
 import { getIsStxEnabled } from '../../../ducks/bridge/selectors';
 import { getMaybeHexChainId } from '../../../ducks/bridge/utils';
 
@@ -57,12 +58,14 @@ export function useGasIncluded7702({
   const [isGasIncluded7702Supported, setIsGasIncluded7702Supported] =
     useState(false);
   const isSmartTransaction = useSelector(getIsStxEnabled);
+  const isHardwareWalletAccount = useSelector(isHardwareWallet);
 
   useEffect(() => {
     let isCancelled = false;
 
     const checkGasIncluded7702Support = async () => {
       if (
+        isHardwareWalletAccount ||
         (isSendBundleSupportedForChain && isSmartTransaction) ||
         (!isSwap && !isGaslessBridgeWith7702Enabled) ||
         !selectedAccount?.address ||
@@ -101,6 +104,7 @@ export function useGasIncluded7702({
     };
   }, [
     fromChain?.chainId,
+    isHardwareWalletAccount,
     isSendBundleSupportedForChain,
     isSmartTransaction,
     isGaslessBridgeWith7702Enabled,
@@ -108,5 +112,9 @@ export function useGasIncluded7702({
     selectedAccount?.address,
   ]);
 
+  // Hardware wallets cannot use EIP-7702 gasless; do not request 7702 quotes.
+  if (isHardwareWalletAccount) {
+    return false;
+  }
   return isGasIncluded7702Supported;
 }
