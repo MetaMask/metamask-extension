@@ -136,7 +136,7 @@ const WalletHome: React.FC = () => {
             <Text
               asChild
               fontWeight={FontWeight.Medium}
-              className="flex-1 border-b-2 border-default pb-2 pt-1"
+              className="flex-1 border-b-2 border-default pt-1 pb-2"
             >
               <button>Tokens</button>
             </Text>
@@ -144,7 +144,7 @@ const WalletHome: React.FC = () => {
               asChild
               fontWeight={FontWeight.Medium}
               color={TextColor.TextAlternative}
-              className="flex flex-1 items-center justify-center gap-1 pb-2 pt-1 hover:text-default"
+              className="flex flex-1 items-center justify-center gap-1 pt-1 pb-2 hover:text-default"
             >
               <button>
                 <span className="pl-4">DeFi</span>
@@ -155,7 +155,7 @@ const WalletHome: React.FC = () => {
               asChild
               fontWeight={FontWeight.Medium}
               color={TextColor.TextAlternative}
-              className="flex-1 pb-2 pt-1 hover:text-default"
+              className="flex-1 pt-1 pb-2 hover:text-default"
             >
               <button>NFTs</button>
             </Text>
@@ -163,7 +163,7 @@ const WalletHome: React.FC = () => {
               asChild
               fontWeight={FontWeight.Medium}
               color={TextColor.TextAlternative}
-              className="flex-1 pb-2 pt-1 hover:text-default"
+              className="flex-1 pt-1 pb-2 hover:text-default"
             >
               <button>Activity</button>
             </Text>
