@@ -28,7 +28,7 @@ describe('verify', () => {
     // verify uses a singleton, and we have tests that need to test that the
     // singleton is singletoning; this means we need to import and reset the
     // module before each test to ensure that the singleton is reset.
-    // eslint-disable-next-line import/extensions
+    // eslint-disable-next-line import-x/extensions
     return import('./verify.ts').then((value) => {
       verify = value.verify;
       MISSING = value.MISSING;

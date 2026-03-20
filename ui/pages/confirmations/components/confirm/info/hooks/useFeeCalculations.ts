@@ -178,6 +178,7 @@ export function useFeeCalculations(transactionMeta: TransactionMeta) {
     currentCurrencyFeeWith18SignificantDigits:
       maxFeeFiatWith18SignificantDigits,
     nativeCurrencyFee: maxFeeNative,
+    hexFee: maxFeeHex,
   } = getFeesFromHex(maxFee);
 
   // Estimated fee
@@ -301,6 +302,7 @@ export function useFeeCalculations(transactionMeta: TransactionMeta) {
     l2FeeNative: feesL2.nativeCurrencyFee,
     maxFeeFiat,
     maxFeeFiatWith18SignificantDigits,
+    maxFeeHex: add0x(maxFeeHex),
     maxFeeNative,
   };
 }
