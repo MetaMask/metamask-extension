@@ -9,7 +9,7 @@ import {
 } from '../../constants';
 import { withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
-import { login } from '../../page-objects/flows/login.flow';
+import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import { getPermissionsPageForHost } from '../../page-objects/flows/permissions.flow';
 import { Driver } from '../../webdriver/driver';
 import NonEvmHomepage from '../../page-objects/pages/home/non-evm-homepage';
@@ -31,7 +31,7 @@ describe('MM Connect — Multichain E2E', function (this: Suite) {
         dappOptions: MM_CONNECT_TEST_DAPP_OPTIONS,
       },
       async ({ driver }: { driver: Driver }) => {
-        await login(driver);
+        await loginWithBalanceValidation(driver);
 
         const homePage = new NonEvmHomepage(driver);
         await homePage.waitForNonEvmAccountsLoaded();
@@ -74,7 +74,7 @@ describe('MM Connect — Multichain E2E', function (this: Suite) {
         dappOptions: MM_CONNECT_TEST_DAPP_OPTIONS,
       },
       async ({ driver }: { driver: Driver }) => {
-        await login(driver);
+        await loginWithBalanceValidation(driver);
 
         const testDapp = new TestDapp(driver);
         await testDapp.openPage();
@@ -133,7 +133,7 @@ describe('MM Connect — Multichain E2E', function (this: Suite) {
         dappOptions: MM_CONNECT_TEST_DAPP_OPTIONS,
       },
       async ({ driver }: { driver: Driver }) => {
-        await login(driver);
+        await loginWithBalanceValidation(driver);
 
         const testDapp = new TestDapp(driver);
         await testDapp.openPage();
@@ -156,7 +156,7 @@ describe('MM Connect — Multichain E2E', function (this: Suite) {
         ];
 
         for (const [chainId, expectedHex] of expectedChainIds) {
-          await testDapp.triggerMethod(chainId, 'eth_chainId');
+          await testDapp.invokeMethod(chainId, 'eth_chainId');
           await testDapp.checkMethodResult(
             chainId,
             'eth_chainId',
@@ -175,7 +175,7 @@ describe('MM Connect — Multichain E2E', function (this: Suite) {
         dappOptions: MM_CONNECT_TEST_DAPP_OPTIONS,
       },
       async ({ driver }: { driver: Driver }) => {
-        await login(driver);
+        await loginWithBalanceValidation(driver);
 
         const testDapp = new TestDapp(driver);
         await testDapp.openPage();
@@ -224,7 +224,7 @@ describe('MM Connect — Multichain E2E', function (this: Suite) {
         dappOptions: MM_CONNECT_TEST_DAPP_OPTIONS,
       },
       async ({ driver }: { driver: Driver }) => {
-        await login(driver);
+        await loginWithBalanceValidation(driver);
 
         const testDapp = new TestDapp(driver);
         await testDapp.openPage();

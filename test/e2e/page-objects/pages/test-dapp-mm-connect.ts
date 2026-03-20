@@ -3,6 +3,27 @@ import { DAPP_URL, MM_CONNECT_FEATURED_CHAIN_IDS } from '../../constants';
 import { Driver } from '../../webdriver/driver';
 
 /**
+ * Replicates @metamask/playground-ui createTestId / escapeTestId.
+ * Rules: lowercase, colon → dash, underscore → dash, spaces → dash,
+ * strip any non-[a-z0-9-] characters, join parts with dash.
+ *
+ * @param value - The string to escape.
+ * @returns The escaped string.
+ */
+function escapeTestId(value: string): string {
+  return value
+    .toLowerCase()
+    .replace(/:/gu, '-')
+    .replace(/\s+/gu, '-')
+    .replace(/_/gu, '-')
+    .replace(/[^a-z0-9-]/gu, '');
+}
+
+function createTestId(...parts: string[]): string {
+  return parts.map(escapeTestId).filter(Boolean).join('-');
+}
+
+/**
  * Page object for MM Connect Test Dapp
  * Package: @metamask/browser-playground | Repo: metamask/connect-monorepo
  *
@@ -49,63 +70,31 @@ export class TestDappMmConnect {
   }
 
   // ──────────────────────────────────────────────────────────────────────────
-  // Private static helpers — replicate @metamask/playground-ui test ID logic
-  // ──────────────────────────────────────────────────────────────────────────
-
-  /**
-   * Replicates @metamask/playground-ui escapeTestId.
-   * Rules: lowercase, colon → dash, underscore → dash, spaces → dash,
-   * strip any non-[a-z0-9-] characters.
-   *
-   * @param value - The string to escape.
-   * @returns The escaped string.
-   */
-  private static escapeTestId(value: string): string {
-    return value
-      .toLowerCase()
-      .replace(/:/gu, '-')
-      .replace(/\s+/gu, '-')
-      .replace(/_/gu, '-')
-      .replace(/[^a-z0-9-]/gu, '');
-  }
-
-  /**
-   * Replicates @metamask/playground-ui createTestId.
-   * Joins escaped parts with a dash.
-   *
-   * @param parts - Parts to join into a test ID.
-   * @returns The composed test ID string.
-   */
-  private static createTestId(...parts: string[]): string {
-    return parts.map(TestDappMmConnect.escapeTestId).filter(Boolean).join('-');
-  }
-
-  // ──────────────────────────────────────────────────────────────────────────
   // Private selector helpers (dynamic — depend on scope / method params)
   // ──────────────────────────────────────────────────────────────────────────
 
   private checkboxSelector(chainId: string): string {
-    return `[data-testid="${TestDappMmConnect.createTestId('dynamic-inputs', 'checkbox', chainId)}"]`;
+    return `[data-testid="${createTestId('dynamic-inputs', 'checkbox', chainId)}"]`;
   }
 
   private scopeCardSelector(scope: string): string {
-    return `[data-testid="${TestDappMmConnect.createTestId('scope-card', scope)}"]`;
+    return `[data-testid="${createTestId('scope-card', scope)}"]`;
   }
 
   private methodOptionSelector(scope: string, method: string): string {
-    return `[data-testid="${TestDappMmConnect.createTestId('scope-card', 'method-select', scope)}"] option[value="${method}"]`;
+    return `[data-testid="${createTestId('scope-card', 'method-select', scope)}"] option[value="${method}"]`;
   }
 
   private invokeBtnSelector(scope: string): string {
-    return `[data-testid="${TestDappMmConnect.createTestId('scope-card', 'invoke-btn', scope)}"]`;
+    return `[data-testid="${createTestId('scope-card', 'invoke-btn', scope)}"]`;
   }
 
   private resultCodeSelector(scope: string, method: string): string {
-    return `[data-testid="${TestDappMmConnect.createTestId('scope-card', 'result-code', scope, method, '0')}"]`;
+    return `[data-testid="${createTestId('scope-card', 'result-code', scope, method, '0')}"]`;
   }
 
   private resultDetailsSelector(scope: string, method: string): string {
-    return `[data-testid="${TestDappMmConnect.createTestId('scope-card', 'result', scope, method, '0')}"] summary`;
+    return `[data-testid="${createTestId('scope-card', 'result', scope, method, '0')}"] summary`;
   }
 
   // ──────────────────────────────────────────────────────────────────────────
@@ -145,23 +134,8 @@ export class TestDappMmConnect {
   async selectNetworks(desiredChainIds: string[]): Promise<void> {
     for (const chainId of MM_CONNECT_FEATURED_CHAIN_IDS) {
       const selector = this.checkboxSelector(chainId);
-      let isChecked = false;
-      await this.driver.waitUntil(
-        async () => {
-          try {
-            const element = await this.driver.findElement(selector);
-            isChecked = await element.isSelected();
-            return true;
-          } catch (error) {
-            const err = error as { name?: string };
-            if (err.name === 'StaleElementReferenceError') {
-              return false;
-            }
-            throw error;
-          }
-        },
-        { interval: 500, timeout: this.driver.timeout },
-      );
+      const el = await this.driver.waitForSelector(selector);
+      const isChecked = await el.isSelected();
       const shouldBeChecked = desiredChainIds.includes(chainId);
       if (isChecked !== shouldBeChecked) {
         await this.driver.clickElement(selector);
@@ -232,6 +206,24 @@ export class TestDappMmConnect {
   // ──────────────────────────────────────────────────────────────────────────
 
   /**
+   * Select a JSON-RPC method in the named ScopeCard and click "Invoke Method".
+   *
+   * Use this for read-only methods (eth_chainId, eth_blockNumber, etc.) that
+   * resolve without requiring user interaction in the extension. Follow with
+   * checkMethodResult() to validate the response.
+   *
+   * For methods that open a signing/approval dialog (personal_sign,
+   * eth_sendTransaction), use triggerMethod() + handle the dialog + then
+   * checkMethodResult() instead.
+   *
+   * @param scope  - CAIP-2 chain ID for the target ScopeCard, e.g. 'eip155:1'
+   * @param method - JSON-RPC method name, e.g. 'eth_chainId'
+   */
+  async invokeMethod(scope: string, method: string): Promise<void> {
+    await this.triggerMethod(scope, method);
+  }
+
+  /**
    * Select a method and click Invoke, but do NOT wait for the result.
    * Use when the method opens an extension dialog that must be handled first.
    *
@@ -280,42 +272,11 @@ export class TestDappMmConnect {
       this.resultDetailsSelector(scope, 'signMessage'),
     );
 
-    const cssSelector = this.resultCodeSelector(scope, 'signMessage');
-    let resultText = '';
-    let parsed: Record<string, unknown> = {};
-    // Both the emptiness check and JSON.parse are kept inside the polling
-    // callback so transient states are retried rather than surfaced as errors:
-    //  - Empty text: the <details> element may briefly have no text content
-    //    immediately after the <summary> is clicked to expand it.
-    //  - SyntaxError: the renderer may flush partial/incomplete JSON before
-    //    the full result string is available.
-    // Only when getText() returns a non-empty, fully parseable JSON string do
-    // we capture both `parsed` and `resultText` and exit the loop, ensuring
-    // the assert.ok calls below always operate on valid data.
-    await this.driver.waitUntil(
-      async () => {
-        try {
-          const element = await this.driver.findElement(cssSelector);
-          const text = await element.getText();
-          if (!text) {
-            return false;
-          }
-          parsed = JSON.parse(text) as Record<string, unknown>;
-          resultText = text;
-          return true;
-        } catch (error) {
-          const err = error as { name?: string };
-          if (
-            err.name === 'StaleElementReferenceError' ||
-            err.name === 'SyntaxError'
-          ) {
-            return false;
-          }
-          throw error;
-        }
-      },
-      { interval: 500, timeout: this.driver.timeout },
+    const resultEl = await this.driver.waitForSelector(
+      this.resultCodeSelector(scope, 'signMessage'),
     );
+    const resultText = await resultEl.getText();
+    const parsed = JSON.parse(resultText) as Record<string, unknown>;
 
     assert.ok(
       typeof parsed.signature === 'string',
