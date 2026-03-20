@@ -18,8 +18,17 @@ Use this skill when you need to:
 - Debug UI state issues
 
 ## Prerequisites
+**Validate that there's an Extension build** (required before any MCP tool will work):
 
-**Build the extension first** (required before any MCP tool will work):
+Extension build is on `dist/chrome/` folder.
+* If there is NO build, then proceed and build the Extension
+* If there is a build, then:
+ * if the user has asked to build proceed with rebuilding the Extension
+ * if the user has asked to NOT build, then proceed WITHOUT building the Extension and re-use the existing build
+ * if the  user was not explicit about it, then ASK the user how he wants to proceed. Use existing build or re-build the Extension.
+
+
+**Build the extension** (required before any MCP tool will work):
 
 ```bash
 yarn install      # Install dependencies (first time only)
