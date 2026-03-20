@@ -28,7 +28,7 @@ import {
   WINDOW_TITLES,
 } from '../../constants';
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 import ContractAddressRegistry from '../../seeder/contract-address-registry';
 import { withTransactionEnvelopeTypeFixtures } from '../confirmations/helpers';
 
@@ -119,7 +119,7 @@ describe('Send NFT', function () {
             contractRegistry?: ContractAddressRegistry;
             localNodes?: Anvil[];
           }) => {
-            await loginWithBalanceValidation(driver, localNodes?.[0]);
+            await login(driver, { localNode: localNodes?.[0] });
 
             const contractAddress =
               await contractRegistry?.getContractAddress(smartContract);
@@ -185,7 +185,7 @@ describe('Send NFT', function () {
             contractRegistry?: ContractAddressRegistry;
             localNodes?: Anvil[];
           }) => {
-            await loginWithBalanceValidation(driver, localNodes?.[0]);
+            await login(driver, { localNode: localNodes?.[0] });
 
             const contractAddress =
               await contractRegistry?.getContractAddress(smartContract);
@@ -247,7 +247,7 @@ describe('Send NFT', function () {
             contractRegistry?: ContractAddressRegistry;
             localNodes?: Anvil[];
           }) => {
-            await loginWithBalanceValidation(driver, localNodes?.[0]);
+            await login(driver, { localNode: localNodes?.[0] });
 
             const contractAddress =
               await contractRegistry?.getContractAddress(smartContract);

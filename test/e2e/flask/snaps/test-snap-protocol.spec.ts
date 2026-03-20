@@ -4,7 +4,7 @@ import { DAPP_ONE_URL, WINDOW_TITLES } from '../../constants';
 import { buildSolanaTestSpecificMock } from '../../tests/solana/common-solana';
 import { withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixtures/fixture-builder';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 import ConnectAccountConfirmation from '../../page-objects/pages/confirmations/connect-account-confirmation';
 import TestDappMultichain from '../../page-objects/pages/test-dapp-multichain';
 
@@ -20,7 +20,7 @@ describe('Test Protocol Snaps', function () {
         }),
       },
       async ({ driver, mockServer, extensionId }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
         const mockBlockHeight = 368556246;
         await mockServer
           .forPost('https://api.devnet.solana.com/')

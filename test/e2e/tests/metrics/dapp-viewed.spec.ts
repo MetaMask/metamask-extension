@@ -6,7 +6,7 @@ import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
 import { DEFAULT_FIXTURE_ACCOUNT } from '../../constants';
 import TestDapp from '../../page-objects/pages/test-dapp';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 import { connectAccountToTestDapp } from '../../page-objects/flows/test-dapp.flow';
 import { Driver } from '../../webdriver/driver';
 
@@ -105,7 +105,7 @@ describe('Dapp viewed Event', function () {
         testSpecificMock: mockSegment,
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
         await waitForAccountsToBeAligned(driver);
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
@@ -138,7 +138,7 @@ describe('Dapp viewed Event', function () {
         testSpecificMock: mockSegment,
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
         await waitForAccountsToBeAligned(driver);
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
@@ -181,7 +181,7 @@ describe('Dapp viewed Event', function () {
         testSpecificMock: mockSegment,
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
         await waitForAccountsToBeAligned(driver);
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
@@ -227,7 +227,7 @@ describe('Dapp viewed Event', function () {
         testSpecificMock: mockSegment,
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
         await waitForAccountsToBeAligned(driver);
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
@@ -276,7 +276,7 @@ describe('Dapp viewed Event', function () {
         testSpecificMock: mockSegment,
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
         await waitForAccountsToBeAligned(driver);
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
@@ -322,7 +322,7 @@ describe('Dapp viewed Event', function () {
         testSpecificMock: mockSegment,
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
         await waitForAccountsToBeAligned(driver);
         // connect to dapp and disconnect
         const testDapp = new TestDapp(driver);

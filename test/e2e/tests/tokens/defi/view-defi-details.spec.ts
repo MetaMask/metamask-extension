@@ -4,7 +4,7 @@ import FixtureBuilder from '../../../fixtures/fixture-builder';
 import Homepage from '../../../page-objects/pages/home/homepage';
 import DeFiDetailsPage from '../../../page-objects/pages/defi-details-page';
 import DeFiTab from '../../../page-objects/pages/defi-tab';
-import { loginWithoutBalanceValidation } from '../../../page-objects/flows/login.flow';
+import { login } from '../../../page-objects/flows/login.flow';
 import { Driver } from '../../../webdriver/driver';
 import { mockDeFiPositionFeatureFlag } from '../../confirmations/helpers';
 
@@ -28,7 +28,7 @@ describe('View DeFi details', function () {
         testSpecificMock: mockDeFiPositionFeatureFlag,
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithoutBalanceValidation(driver);
+        await login(driver, { validateBalance: false });
 
         await new Homepage(driver).goToDeFiTab();
 
