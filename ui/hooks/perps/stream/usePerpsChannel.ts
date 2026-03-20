@@ -25,7 +25,7 @@ export type UsePerpsChannelReturn<TData> = {
  * - Cleaning up subscriptions on unmount
  *
  * @param getChannel - Function to get the channel from the stream manager
- * @param emptyValue - The empty/default value when no data is available
+ * @param emptyValue - The empty/default value when no data is available (use a stable reference, e.g. module-level constant — not an inline `[]`/`{}` literal)
  * @param resetKey - When this value changes (e.g. order book symbol), the channel cache is cleared and loading state resets so stale data is not shown while new data streams in.
  * @returns Object containing data and loading state
  */
@@ -38,6 +38,9 @@ export function usePerpsChannel<TData>(
 
   const getChannelRef = useRef(getChannel);
   getChannelRef.current = getChannel;
+
+  const emptyValueRef = useRef(emptyValue);
+  emptyValueRef.current = emptyValue;
 
   const prevResetKeyRef = useRef<string | number | undefined>(undefined);
 
@@ -70,11 +73,11 @@ export function usePerpsChannel<TData>(
     if (prev !== undefined && prev !== resetKey) {
       getChannelRef.current(streamManager).clearCache();
       hasReceivedData.current = false;
-      setData(emptyValue);
+      setData(emptyValueRef.current);
       setIsInitialLoading(true);
     }
     prevResetKeyRef.current = resetKey;
-  }, [resetKey, streamManager, emptyValue]);
+  }, [resetKey, streamManager]);
 
   useEffect(() => {
     if (isInitializing || !streamManager) {

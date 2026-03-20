@@ -245,7 +245,10 @@ export class PerpsStreamBridge {
     }
 
     if (candle?.symbol && candle?.interval) {
-      const candleKey = this.#candleSubscriptionKey(candle.symbol, candle.interval);
+      const candleKey = this.#candleSubscriptionKey(
+        candle.symbol,
+        candle.interval,
+      );
       this.#addDynamicSubscription(candleKey, () =>
         this.#controller.subscribeToCandles({
           ...candle,
@@ -304,9 +307,6 @@ export class PerpsStreamBridge {
     );
   }
 
-  /**
-   * Unique key for a candle dynamic subscription in this bridge (symbol+interval).
-   */
   #candleSubscriptionKey(symbol: string, interval: CandlePeriod): string {
     return `candles:${symbol}:${interval}`;
   }
