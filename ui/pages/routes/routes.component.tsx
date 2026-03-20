@@ -678,6 +678,12 @@ export const routeConfig = [
     layout: RootLayout,
     authenticated: true,
     basicFunctionalityRequired: false,
+    // UIMessenger enforcement: declare which background sync events this route
+    // can subscribe to. Components using useMessenger({ events: [...] }) are
+    // validated against this list — subscribing to an undeclared event throws.
+    messenger: {
+      events: ['CurrencyRateDataService:cacheUpdate'],
+    },
   }),
 ];
 

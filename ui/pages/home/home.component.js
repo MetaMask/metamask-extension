@@ -83,6 +83,8 @@ function shouldCloseNotificationPopup({
   return shouldClose;
 }
 
+import { SpotPricesQueryPanel } from '../../components/multichain/spot-prices-query/SpotPricesQueryPanel';
+
 export default class Home extends PureComponent {
   static contextTypes = {
     t: PropTypes.func,
@@ -944,6 +946,7 @@ export default class Home extends PureComponent {
 
         {/* Ghost component that manages the useHomeDeepLinkEffects */}
         <HomeDeepLinkActions />
+        <SpotPricesQueryPanel />
       </ScrollContainer>
     );
   }
