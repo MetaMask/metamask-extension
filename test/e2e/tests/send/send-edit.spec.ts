@@ -14,7 +14,6 @@ import GasFeeModal from '../../page-objects/pages/confirmations/gas-fee-modal';
 import SendTokenConfirmPage from '../../page-objects/pages/send/send-token-confirmation-page';
 import SendPage from '../../page-objects/pages/send/send-page';
 import ActivityListPage from '../../page-objects/pages/home/activity-list';
-import SendPage from '../../page-objects/pages/send/send-page';
 
 const PREFERENCES_STATE_MOCK = {
   preferences: {
