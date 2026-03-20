@@ -38,7 +38,7 @@ const MusdConversionPage: React.FC = () => {
   }
 
   return (
-    <div className="musd-conversion-page" style={{ height: '100%', flex: 1 }}>
+    <div className="musd-conversion-page" style={{ minHeight: '100%', flex: 1, display: 'flex', flexDirection: 'column' }}>
       <Routes>
         {/* Education screen */}
         <Route

@@ -263,7 +263,12 @@ const MusdEducationScreen: React.FC = () => {
   return (
     <Box
       className="musd-education-screen"
-      style={{ display: 'flex', flexDirection: 'column', height: '100%' }}
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        minHeight: '100%',
+        flex: 1,
+      }}
       flexDirection={BoxFlexDirection.Column}
       backgroundColor={BoxBackgroundColor.BackgroundDefault}
     >
