@@ -2,7 +2,10 @@ import { execSync } from 'node:child_process';
 import unzipper from 'unzipper';
 import { version } from '../package.json';
 import { program, Option } from 'commander';
-import { getBuildLinks } from '../development/metamaskbot-build-announce/artifacts';
+import {
+  BuildType,
+  getBuildLinks,
+} from '../development/metamaskbot-build-announce/artifacts';
 
 const getBranch = () => {
   try {
@@ -17,7 +20,7 @@ interface DownloadBuildsArgs {
   repository: string;
   workflowId: string;
   branch: string;
-  buildType: 'main' | 'beta' | 'experimental' | 'flask' | 'test' | 'test-flask';
+  buildType: BuildType;
   githubToken: string;
   awsCloudfrontUrl: string;
 }
