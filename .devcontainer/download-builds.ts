@@ -2,10 +2,6 @@ import { execSync } from 'node:child_process';
 import unzipper from 'unzipper';
 import { version } from '../package.json';
 import { program, Option } from 'commander';
-import {
-  BuildType,
-  getBuildLinks,
-} from '../development/metamaskbot-build-announce/artifacts';
 
 const getBranch = () => {
   try {
@@ -20,7 +16,7 @@ interface DownloadBuildsArgs {
   repository: string;
   workflowId: string;
   branch: string;
-  buildType: BuildType;
+  buildType: string;
   githubToken: string;
   awsCloudfrontUrl: string;
 }
@@ -50,7 +46,7 @@ program
     new Option('-t, --build-type <string>', 'build type')
       .default('main')
       .env('BUILD_TYPE')
-      .choices(['main', 'beta', 'experimental', 'flask', 'test', 'test-flask']),
+      .choices(['main', 'beta', 'flask', 'test', 'test-flask']),
   )
   .addOption(
     new Option('-g, --github-token <string>', 'github token')
@@ -89,9 +85,34 @@ program
 
     const HOST_URL = `${args.awsCloudfrontUrl}/${args.repository}/${latestRun.id}`;
 
-    const buildLinks = getBuildLinks({ hostUrl: HOST_URL, version });
+    const buildMap = {
+      main: {
+        chrome: `${HOST_URL}/build-dist-browserify/builds/metamask-chrome-${version}.zip`,
+        firefox: `${HOST_URL}/build-dist-mv2-browserify/builds/metamask-firefox-${version}.zip`,
+      },
+      beta: {
+        chrome: `${HOST_URL}/build-beta-browserify/builds/metamask-beta-chrome-${version}-beta.0.zip`,
+        firefox: `${HOST_URL}/build-beta-mv2-browserify/builds/metamask-beta-firefox-${version}-beta.0.zip`,
+      },
+      flask: {
+        chrome: `${HOST_URL}/build-flask-browserify/builds/metamask-flask-chrome-${version}-flask.0.zip`,
+        firefox: `${HOST_URL}/build-flask-mv2-browserify/builds/metamask-flask-firefox-${version}-flask.0.zip`,
+      },
+      test: {
+        chrome: `${HOST_URL}/build-test-browserify/builds/metamask-chrome-${version}.zip`,
+        firefox: `${HOST_URL}/build-test-mv2-browserify/builds/metamask-firefox-${version}.zip`,
+      },
+      'test-flask': {
+        chrome: `${HOST_URL}/build-test-flask-browserify/builds/metamask-flask-chrome-${version}-flask.0.zip`,
+        firefox: `${HOST_URL}/build-test-flask-mv2-browserify/builds/metamask-flask-firefox-${version}-flask.0.zip`,
+      },
+    };
 
-    const builds = buildLinks.browserify[args.buildType];
+    const builds: { chrome: string; firefox: string } | undefined =
+      buildMap[args.buildType];
+
+    if (!builds)
+      throw new Error(`No builds found for build type '${args.buildType}'`);
 
     console.log(`Downloading build for chrome from ${builds.chrome}`);
     console.log(`Downloading build for firefox from ${builds.firefox}`);

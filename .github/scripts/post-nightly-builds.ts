@@ -1,7 +1,6 @@
 import { IncomingWebhook } from '@slack/webhook';
 import type { AnyBlock } from '@slack/types';
 import { version } from '../../package.json';
-import { getBuildLinks } from '../../development/metamaskbot-build-announce/artifacts';
 
 async function main() {
   const env = {
@@ -13,7 +12,7 @@ async function main() {
     SLACK_NIGHTLY_BUILDS_WEBHOOK_URL:
       process.env.SLACK_NIGHTLY_BUILDS_WEBHOOK_URL || '',
     BUILD_STATUS: process.env.BUILD_STATUS || 'unknown',
-    RELEASE_VERSION: process.env.RELEASE_VERSION || '0',
+    BUILD_VERSION: process.env.BUILD_VERSION || '0',
   };
 
   if (!env.RUN_ID) throw new Error('RUN_ID not found');
@@ -186,11 +185,26 @@ async function postFailureNotification(env: any, version: string) {
 }
 
 async function postSuccessNotification(env: any, version: string) {
-  const buildLinks = getBuildLinks({
-    hostUrl: env.HOST_URL,
-    version,
-    releaseVersion: env.RELEASE_VERSION,
-  });
+  const experimentalVersion = `${version}-experimental.${env.BUILD_VERSION}`;
+
+  const buildMap = {
+    builds: {
+      chrome: `${env.HOST_URL}/build-dist-browserify/builds/metamask-chrome-${version}.zip`,
+      firefox: `${env.HOST_URL}/build-dist-mv2-browserify/builds/metamask-firefox-${version}.zip`,
+    },
+    'builds (experimental)': {
+      chrome: `${env.HOST_URL}/build-experimental-browserify/builds/metamask-experimental-chrome-${experimentalVersion}.zip`,
+      firefox: `${env.HOST_URL}/build-experimental-mv2-browserify/builds/metamask-experimental-firefox-${experimentalVersion}.zip`,
+    },
+    'webpack builds': {
+      chrome: `${env.HOST_URL}/build-dist-webpack/builds/metamask-chrome-${version}.zip`,
+      firefox: `${env.HOST_URL}/build-dist-mv2-webpack/builds/metamask-firefox-${version}.zip`,
+    },
+    'webpack builds (experimental)': {
+      chrome: `${env.HOST_URL}/build-experimental-webpack/builds/metamask-chrome-${experimentalVersion}.zip`,
+      firefox: `${env.HOST_URL}/build-experimental-mv2-webpack/builds/metamask-firefox-${experimentalVersion}.zip`,
+    },
+  };
 
   const webhook = new IncomingWebhook(env.SLACK_NIGHTLY_BUILDS_WEBHOOK_URL);
 
@@ -296,7 +310,7 @@ async function postSuccessNotification(env: any, version: string) {
             },
             {
               type: 'link' as const,
-              url: buildLinks.browserify.main.chrome,
+              url: buildMap.builds.chrome,
               text: 'Main Chrome Extension',
             },
             {
@@ -313,7 +327,7 @@ async function postSuccessNotification(env: any, version: string) {
             },
             {
               type: 'link' as const,
-              url: buildLinks.browserify.main.firefox,
+              url: buildMap.builds.firefox,
               text: 'Main Firefox Extension',
             },
             {
@@ -330,7 +344,7 @@ async function postSuccessNotification(env: any, version: string) {
             },
             {
               type: 'link' as const,
-              url: buildLinks.browserify.experimental.chrome,
+              url: buildMap['builds (experimental)'].chrome,
               text: 'Experimental Chrome Extension',
             },
             {
@@ -347,7 +361,7 @@ async function postSuccessNotification(env: any, version: string) {
             },
             {
               type: 'link' as const,
-              url: buildLinks.browserify.experimental.firefox,
+              url: buildMap['builds (experimental)'].firefox,
               text: 'Experimental Firefox Extension',
             },
             {
@@ -388,7 +402,7 @@ async function postSuccessNotification(env: any, version: string) {
             },
             {
               type: 'link' as const,
-              url: buildLinks.webpack.main.chrome,
+              url: buildMap['webpack builds'].chrome,
               text: 'Main Chrome Extension',
             },
             {
@@ -405,7 +419,7 @@ async function postSuccessNotification(env: any, version: string) {
             },
             {
               type: 'link' as const,
-              url: buildLinks.webpack.main.firefox,
+              url: buildMap['webpack builds'].firefox,
               text: 'Main Firefox Extension',
             },
             {
@@ -422,7 +436,7 @@ async function postSuccessNotification(env: any, version: string) {
             },
             {
               type: 'link' as const,
-              url: buildLinks.webpack.experimental.chrome,
+              url: buildMap['webpack builds (experimental)'].chrome,
               text: 'Experimental Chrome Extension',
             },
             {
@@ -439,7 +453,7 @@ async function postSuccessNotification(env: any, version: string) {
             },
             {
               type: 'link' as const,
-              url: buildLinks.webpack.experimental.firefox,
+              url: buildMap['webpack builds (experimental)'].firefox,
               text: 'Experimental Firefox Extension',
             },
             {
