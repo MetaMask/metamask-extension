@@ -95,7 +95,8 @@ const loader: LoaderDefinitionFunction<LoaderOptions> = function loader(
     logEvent: (filename: string | null, event: CompilerEvent) => {
       if (!filename) return;
 
-      const detail = event.detail?.options ?? event.detail;
+      const category =
+        event.detail?.options?.category ?? event.detail?.category;
       let status: ReactCompilerStatus | undefined;
 
       switch (event.kind) {
@@ -109,13 +110,15 @@ const loader: LoaderDefinitionFunction<LoaderOptions> = function loader(
         case 'CompileError':
           // This error is thrown for syntax that is not yet supported by the React Compiler.
           // We count these separately as "unsupported" errors, since there's no actionable fix we can apply.
-          status = detail?.category === 'Todo' ? 'unsupported' : 'error';
+          status = category === 'Todo' ? 'unsupported' : 'error';
           if (verbose) {
             if (status === 'unsupported') {
               console.warn(`🔍 Unsupported: ${filename}`);
             }
             if (status === 'error') {
-              const errMsg = detail ? JSON.stringify(detail) : 'Unknown error';
+              const errMsg = event.detail
+                ? JSON.stringify(event.detail)
+                : 'Unknown error';
               console.error(
                 `❌ React Compiler error in ${filename}: ${errMsg}`,
               );
@@ -132,7 +135,7 @@ const loader: LoaderDefinitionFunction<LoaderOptions> = function loader(
           | undefined;
         const events = stored?.events ?? [];
         const loc = event.fnLoc?.start;
-        const message = extractMessage(detail);
+        const message = extractMessage(event.detail);
         const entry: Record<string, unknown> = {
           filename,
           status,
