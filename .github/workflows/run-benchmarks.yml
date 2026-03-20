@@ -26,7 +26,7 @@ env:
       "startupStandardHome": "yarn test:e2e:benchmark --preset startupStandardHome --out test-artifacts/benchmarks/benchmark-{0}-{1}-startupStandardHome.json --retries 2",
       "startupPowerUserHome": "yarn test:e2e:benchmark --preset startupPowerUserHome --browserLoads 10 --pageLoads 10 --out test-artifacts/benchmarks/benchmark-{0}-{1}-startupPowerUserHome.json --retries 2",
       "interactionUserActions": "yarn test:e2e:benchmark --preset interactionUserActions --out test-artifacts/benchmarks/benchmark-{0}-{1}-interactionUserActions.json --retries 2",
-      "userJourneyOnboardingImport": "yarn test:e2e:benchmark --preset userJourneyOnboardingImport --out test-artifacts/benchmarks/benchmark-{0}-{1}-userJourneyOnboardingImport.json --retries 2",
+      "userJourneyOnboardingImport": "yarn test:e2e:benchmark --preset userJourneyOnboardingImport --browserLoads 5 --pageLoads 5 --out test-artifacts/benchmarks/benchmark-{0}-{1}-userJourneyOnboardingImport.json --retries 2",
       "userJourneyOnboardingNew": "yarn test:e2e:benchmark --preset userJourneyOnboardingNew --out test-artifacts/benchmarks/benchmark-{0}-{1}-userJourneyOnboardingNew.json --retries 2",
       "userJourneyAssets": "yarn test:e2e:benchmark --preset userJourneyAssets --out test-artifacts/benchmarks/benchmark-{0}-{1}-userJourneyAssets.json --retries 2",
       "userJourneyTransactions": "yarn test:e2e:benchmark --preset userJourneyTransactions --out test-artifacts/benchmarks/benchmark-{0}-{1}-userJourneyTransactions.json --retries 2",
