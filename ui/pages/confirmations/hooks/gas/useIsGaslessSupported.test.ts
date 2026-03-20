@@ -3,6 +3,7 @@ import { genUnapprovedContractInteractionConfirmation } from '../../../../../tes
 import { getMockConfirmStateForTransaction } from '../../../../../test/data/confirmations/helper';
 import { renderHookWithConfirmContextProvider } from '../../../../../test/lib/confirmations/render-helpers';
 import { isRelaySupported } from '../../../../store/actions';
+import { isHardwareWallet } from '../../../../selectors';
 import { useIsGaslessSupported } from './useIsGaslessSupported';
 import { useGaslessSupportedSmartTransactions } from './useGaslessSupportedSmartTransactions';
 
@@ -12,6 +13,11 @@ jest.mock('../../../../store/controller-actions/transaction-controller');
 jest.mock('../../../../store/actions', () => ({
   ...jest.requireActual('../../../../store/actions'),
   isRelaySupported: jest.fn(),
+}));
+
+jest.mock('../../../../selectors', () => ({
+  ...jest.requireActual('../../../../selectors'),
+  isHardwareWallet: jest.fn(),
 }));
 
 jest.mock('./useGaslessSupportedSmartTransactions');
@@ -33,6 +39,7 @@ async function runHook() {
 
 describe('useIsGaslessSupported', () => {
   const isRelaySupportedMock = jest.mocked(isRelaySupported);
+  const isHardwareWalletMock = jest.mocked(isHardwareWallet);
   const useGaslessSupportedSmartTransactionsMock = jest.mocked(
     useGaslessSupportedSmartTransactions,
   );
@@ -41,6 +48,7 @@ describe('useIsGaslessSupported', () => {
     jest.resetAllMocks();
 
     isRelaySupportedMock.mockResolvedValue(false);
+    isHardwareWalletMock.mockReturnValue(false);
     useGaslessSupportedSmartTransactionsMock.mockReturnValue({
       isSmartTransaction: false,
       isSupported: false,
@@ -149,6 +157,38 @@ describe('useIsGaslessSupported', () => {
       isSupported: false,
       isSmartTransaction: true,
       pending: true,
+    });
+  });
+
+  it('returns isSupported false for hardware wallets even when smart transactions are supported', async () => {
+    isHardwareWalletMock.mockReturnValue(true);
+    useGaslessSupportedSmartTransactionsMock.mockReturnValue({
+      isSmartTransaction: true,
+      isSupported: true,
+      pending: false,
+    });
+
+    const result = await runHook();
+
+    expect(result).toStrictEqual({
+      isSupported: false,
+      isSmartTransaction: true,
+      pending: false,
+    });
+  });
+
+  it('returns isSupported false for hardware wallets even when relay is supported', async () => {
+    isHardwareWalletMock.mockReturnValue(true);
+    isRelaySupportedMock.mockResolvedValue(true);
+
+    const result = await runHook();
+
+    expect(isRelaySupportedMock).not.toHaveBeenCalled();
+
+    expect(result).toStrictEqual({
+      isSupported: false,
+      isSmartTransaction: false,
+      pending: false,
     });
   });
 });

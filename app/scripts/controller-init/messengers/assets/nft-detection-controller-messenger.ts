@@ -7,12 +7,12 @@ import {
 } from '@metamask/network-controller';
 import { AccountsControllerGetSelectedAccountAction } from '@metamask/accounts-controller';
 import { PreferencesControllerStateChangeEvent } from '@metamask/preferences-controller';
-import { AddApprovalRequest } from '@metamask/approval-controller';
+import { ApprovalControllerAddRequestAction } from '@metamask/approval-controller';
 import { PhishingControllerBulkScanUrlsAction } from '@metamask/phishing-controller';
 import { RootMessenger } from '../../../lib/messenger';
 
 type Actions =
-  | AddApprovalRequest
+  | ApprovalControllerAddRequestAction
   | NetworkControllerGetStateAction
   | AccountsControllerGetSelectedAccountAction
   | NetworkControllerGetNetworkClientByIdAction
