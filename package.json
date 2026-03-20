@@ -17,6 +17,7 @@
     "webpack:lavamoat:policy:mv2": "concurrently 'yarn webpack:lavamoat:build:mv2 --generatePolicy' 'yarn webpack:lavamoat:build:mv2 --generatePolicy --type flask' 'yarn webpack:lavamoat:build:mv2 --generatePolicy --type beta' 'yarn webpack:lavamoat:build:mv2 --generatePolicy --type experimental' --kill-others-on-fail",
     "webpack:lavamoat:policy:mv3": "concurrently 'yarn webpack:lavamoat:build --generatePolicy' 'yarn webpack:lavamoat:build --generatePolicy --type flask' 'yarn webpack:lavamoat:build --generatePolicy --type beta' 'yarn webpack:lavamoat:build --generatePolicy --type experimental' --kill-others-on-fail",
     "foundryup": "yarn mm-foundryup",
+    "postinstall": "yarn webpack:clearcache && yarn foundryup",
     "env:e2e": "SEGMENT_HOST='https://api.segment.io' SEGMENT_WRITE_KEY='FAKE' yarn",
     "start": "yarn build:dev dev --apply-lavamoat=false --snow=false",
     "start:with-state": "node ./app/scripts/start-with-wallet-state.mjs",
