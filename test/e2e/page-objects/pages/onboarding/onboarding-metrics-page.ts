@@ -69,6 +69,21 @@ class OnboardingMetricsPage {
     await this.driver.waitForSelector(this.participateUnchecked);
   }
 
+  /**
+   * Ensures the "Participate in MetaMetrics" checkbox is unchecked.
+   * If it is already unchecked (e.g. state restored from a previous session
+   * during vault recovery), the click is skipped to avoid toggling it back on.
+   */
+  async ensureParticipateInMetaMetricsIsUnchecked(): Promise<void> {
+    const isAlreadyUnchecked = await this.driver.isElementPresent(
+      this.participateUnchecked,
+    );
+    if (!isAlreadyUnchecked) {
+      await this.driver.clickElement(this.dataParticipateInMetaMetricsCheckbox);
+      await this.driver.waitForSelector(this.participateUnchecked);
+    }
+  }
+
   async skipMetricAndContinue(): Promise<void> {
     await this.driver.clickElement(this.dataParticipateInMetaMetricsCheckbox);
     await this.driver.clickElement(this.continueButton);
