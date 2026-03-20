@@ -24,6 +24,16 @@ import { HardwareWalletErrorProvider } from '../contexts/hardware-wallets';
 import ErrorPageBase from './error-page/error-page.component';
 
 import Routes, { routeConfig } from './routes';
+import { useBackgroundQuerySync } from '../hooks/useBackgroundQuerySync';
+
+/**
+ * Mounts inside QueryClientProvider to subscribe to background sync events
+ * and pipe them into the UI QueryClient via setQueryData.
+ */
+function BackgroundQuerySyncBridge({ children }) {
+  useBackgroundQuerySync();
+  return children;
+}
 
 function AppProviders() {
   return (
@@ -32,6 +42,7 @@ function AppProviders() {
         <I18nProvider>
           <LegacyI18nProvider>
             <QueryClientProvider client={queryClient}>
+              <BackgroundQuerySyncBridge>
               <AssetPollingProvider>
                 <MetamaskIdentityProvider>
                   <MetamaskNotificationsProvider>
@@ -45,6 +56,7 @@ function AppProviders() {
                   </MetamaskNotificationsProvider>
                 </MetamaskIdentityProvider>
               </AssetPollingProvider>
+              </BackgroundQuerySyncBridge>
             </QueryClientProvider>
           </LegacyI18nProvider>
         </I18nProvider>
