@@ -18,6 +18,7 @@ import {
 import { getMessage } from '../../ui/helpers/utils/i18n-helper';
 import * as enLocaleMessages from '../../app/_locales/en/messages.json';
 import { UIMessengerProvider } from '../../ui/contexts/ui-messenger';
+import { RouteMessengerContext } from '../../ui/contexts/route-messenger';
 import { createMockUIMessenger } from './mock-ui-messenger';
 
 // Re-export en messages for tests that need direct access
@@ -71,6 +72,8 @@ I18nProvider.defaultProps = {
  * @param {object|false} [options.metaMetrics] - MetaMetrics provider config. Default: enabled with default trackEvent mock
  * @param {object|false} [options.queryClient] - QueryClient provider config. Default: enabled using default QueryClient
  * @param {object|false} [options.uiMessenger] - UI messenger. Default: false (disabled)
+ * @param {object|false} [options.globalRouteMessenger] - Wraps the component in a context so accessing the global route messenger works. Default: false (disabled)
+ * @param {object|false} [options.localRouteMessenger] - Wraps the component in a context so accessing a messenger local to a route works. Pass `{ messenger, withMessenger }` where `messenger` is a mock messenger (e.g. from `createMockRouteMessenger`) and `withMessenger` is the HOC (e.g. from `createMessengerManager`). Default: false (disabled)
  * @returns {Function} Wrapper component
  */
 export function createProviderWrapper({
@@ -80,11 +83,40 @@ export function createProviderWrapper({
   metaMetrics = {},
   queryClient: queryClientOption = {},
   uiMessenger = createMockUIMessenger(),
+  globalRouteMessenger,
+  localRouteMessenger: localRouteMessengerOptions = false,
 } = {}) {
   const Wrapper = ({ children }) => {
     let content = children;
 
-    // QueryClient (innermost)
+    //========
+    // We need a way to render a component or hook that uses `useMessenger`.
+    // Pass `routeMessenger: { messenger, withMessenger }` to
+    // `renderWithProvider` or `renderHookWithProvider` to inject the messenger
+    // into both the global and local route messenger contexts via
+    // `withMessenger`.
+    //========
+
+    // Route messenger (innermost)
+    if (localRouteMessengerOptions) {
+      const { messenger: mockMessenger, withMessenger } =
+        localRouteMessengerOptions;
+      // eslint-disable-next-line react/no-unstable-nested-components
+      const Passthrough = ({ children: c }) => c;
+      const WrappedPassthrough = withMessenger(Passthrough, mockMessenger);
+      content = <WrappedPassthrough>{content}</WrappedPassthrough>;
+    }
+
+    // Global route messenger
+    if (globalRouteMessenger) {
+      content = (
+        <RouteMessengerContext.Provider value={globalRouteMessenger}>
+          {content}
+        </RouteMessengerContext.Provider>
+      );
+    }
+
+    // QueryClient
     if (queryClientOption !== false) {
       const queryClient =
         queryClientOption.queryClient ??
@@ -238,6 +270,7 @@ export function renderHookWithProvider(
       'metaMetrics' in stateOrOptions ||
       'Container' in stateOrOptions ||
       'uiMessenger' in stateOrOptions ||
+      'routeMessenger' in stateOrOptions ||
       'i18n' in stateOrOptions);
 
   if (isOptionsObject) {
