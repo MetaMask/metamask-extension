@@ -9,6 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [13.24.0]
 
+### Uncategorized
+
+- Fix Sentry custom spans becoming root-level siblings of `pageload` spans instead of being nested under the correct (#39890)
+  `parentContext`.
+
 ### Added
 
 - Added check for hiding Cancel and Speed up in the activity list when the user has selected another token to pay for gas (#40804)
@@ -23,6 +28,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- React router warnings in unit tests (#40891)
 - Fixed banner display in sidebar view (#40988)
 - Fixed EIP-712 typed data signing for Ledger Nano S devices (#41017)
 - Fixed MegaETH explorer button to display "View on Megaeth Explorer" instead of "View on MEGA Mainnet Explorer" (#41003)
