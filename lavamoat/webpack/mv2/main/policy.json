@@ -3298,7 +3298,6 @@
         "setImmediate": true
       },
       "packages": {
-        "core-js-pure": true,
         "process": true
       }
     },
@@ -3328,7 +3327,6 @@
       },
       "packages": {
         "buffer": true,
-        "core-js-pure": true,
         "process": true
       }
     },
@@ -3745,14 +3743,6 @@
       },
       "packages": {
         "copy-to-clipboard>toggle-selection": true
-      }
-    },
-    "core-js-pure": {
-      "globals": {
-        "Bun.version": true,
-        "Deno.version": true,
-        "document": true,
-        "setTimeout": true
       }
     },
     "readable-stream-2>core-util-is": {
@@ -5598,7 +5588,6 @@
         "setImmediate": true
       },
       "packages": {
-        "core-js-pure": true,
         "readable-stream-2>core-util-is": true,
         "webpack>events": true,
         "pumpify>inherits": true,
@@ -5904,9 +5893,6 @@
         "define": true,
         "setImmediate": true,
         "setTimeout": true
-      },
-      "packages": {
-        "core-js-pure": true
       }
     },
     "ganache>secp256k1": {
@@ -5949,9 +5935,6 @@
       "globals": {
         "setImmediate": true,
         "setTimeout.apply": true
-      },
-      "packages": {
-        "core-js-pure": true
       }
     },
     "@ngraveio/bc-ur>sha.js": {
