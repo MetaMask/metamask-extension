@@ -5,12 +5,6 @@ on:
         required: true
         type: string
         description: The run ID to get builds from
-    secrets:
-      INFURA_PROJECT_ID:
-        required: true
-      TEST_SRP_2:
-        required: false
-        description: Required for userJourneyAccountManagement (import-srp-home). 12-word seed phrase.
 env:
   COMMANDS: |
     {
