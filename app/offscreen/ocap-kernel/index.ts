@@ -14,6 +14,7 @@ import type { CapTPMessage } from '@metamask/kernel-browser-runtime';
 import { isJsonRpcMessage, stringify } from '@metamask/kernel-utils';
 import type { JsonRpcMessage } from '@metamask/kernel-utils';
 import { Logger } from '@metamask/logger';
+import type { KernelFacet } from '@metamask/ocap-kernel';
 import type { DuplexStream } from '@metamask/streams';
 import {
   initializeMessageChannel,
@@ -26,11 +27,17 @@ import { makeLlmService } from './services/llm-service';
 
 const logger = new Logger('offscreen');
 
+declare global {
+  // eslint-disable-next-line no-var
+  var kernel: Promise<KernelFacet>;
+}
+
 /**
  * Main function to run the kernel. Under normal operation the returned promise
  * never settles.
  */
 export async function runKernel(): Promise<never> {
+  defineGlobals();
   console.log('~~~ Initializing kernel... ~~~');
 
   const kernelStream = await makeKernelWorker();
@@ -45,6 +52,7 @@ export async function runKernel(): Promise<never> {
   });
 
   const kernelP = backgroundCapTP.getKernel();
+  globalThis.kernel = kernelP;
 
   const drainPromise = kernelStream.drain((message) => {
     if (isConsoleForwardMessage(message)) {
@@ -224,4 +232,23 @@ async function makeKernelWorker(): Promise<
   );
 
   return kernelStream;
+}
+
+/**
+ * Define globals accessible via the background console.
+ */
+function defineGlobals(): void {
+  Object.defineProperty(globalThis, 'kernel', {
+    configurable: false,
+    enumerable: true,
+    writable: true,
+    value: undefined,
+  });
+
+  Object.defineProperty(globalThis, 'E', {
+    value: E,
+    configurable: false,
+    enumerable: true,
+    writable: false,
+  });
 }

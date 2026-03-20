@@ -1,5 +1,6 @@
 // @ts-expect-error - ESM / CJS incompatibility
 import { E } from '@endo/eventual-send';
+import { makeDiscoverableExo } from '@metamask/kernel-utils/discoverable';
 import { makeDefaultExo } from '@metamask/kernel-utils/exo';
 import type { Baggage } from '@metamask/ocap-kernel';
 import type {
@@ -34,7 +35,7 @@ export function buildRootObject(
       const llmResponse: LlmResponse = await E(llmService).prompt(request);
 
       // Evaluate the LLM-produced source in a Compartment with limited endowments
-      const endowments = harden({ E, makeDefaultExo, hostApiProxy });
+      const endowments = harden({ E, makeDiscoverableExo, hostApiProxy });
       const compartment = new Compartment(endowments);
 
       const exo = compartment.evaluate(llmResponse.sourceCode);
