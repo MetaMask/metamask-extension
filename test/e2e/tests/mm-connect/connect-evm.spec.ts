@@ -20,6 +20,8 @@ import ReviewPermissionsConfirmation from '../../page-objects/pages/confirmation
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import { TestDappMmConnect as TestDapp } from '../../page-objects/pages/test-dapp-mm-connect';
 
+const OPTIMISM_CHAIN_ID = 10;
+
 // ── Shared fixture options ─────────────────────────────────────────────────
 
 const MM_CONNECT_TEST_DAPP_OPTIONS = {
@@ -102,7 +104,9 @@ describe('MM Connect-EVM', function (this: Suite) {
 
           // Account 1 should appear in the card after the connect event fires.
           await testDapp.checkLegacyCardVisible();
-          await testDapp.waitForLegacyActiveAccount(DEFAULT_FIXTURE_ACCOUNT_LOWERCASE);
+          await testDapp.waitForLegacyActiveAccount(
+            DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
+          );
 
           // Switch to Account 2 in the wallet and verify the dapp updates.
           await driver.switchToWindowWithTitle(
@@ -184,7 +188,9 @@ describe('MM Connect-EVM', function (this: Suite) {
 
           // Back on the dapp: the transaction should be rejected.
           await testDapp.switchTo();
-          await testDapp.checkLegacyResponse('User denied transaction signature');
+          await testDapp.checkLegacyResponse(
+            'User denied transaction signature',
+          );
         },
       );
     });
@@ -269,7 +275,7 @@ describe('MM Connect-EVM', function (this: Suite) {
     });
   });
 
-  describe('wagmi', function (this: Suite) {
+  describe('Wagmi', function (this: Suite) {
     it('reflects wallet account switch in the dapp via accountsChanged', async function () {
       await withFixtures(
         {
@@ -289,7 +295,9 @@ describe('MM Connect-EVM', function (this: Suite) {
 
           // Account 1 should appear in the wagmi card after the connect event fires.
           await testDapp.checkWagmiCardVisible();
-          await testDapp.waitForWagmiActiveAccount(DEFAULT_FIXTURE_ACCOUNT_LOWERCASE);
+          await testDapp.waitForWagmiActiveAccount(
+            DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
+          );
 
           // Switch to Account 2 in the wallet and verify the dapp updates.
           await driver.switchToWindowWithTitle(
@@ -369,7 +377,6 @@ describe('MM Connect-EVM', function (this: Suite) {
           const txConfirmation = new Confirmation(driver);
           await txConfirmation.clickFooterCancelButtonAndAndWaitForWindowToClose();
 
-          // Back on the dapp: the error element must appear and contain "User rejected".
           await testDapp.switchTo();
           await testDapp.checkWagmiTxError('unknown RPC error');
         },
@@ -402,10 +409,10 @@ describe('MM Connect-EVM', function (this: Suite) {
 
           // Back on the dapp: chain ID must update to 10 (Optimism).
           await testDapp.switchTo();
-          await testDapp.waitForWagmiChainId('10');
+          await testDapp.waitForWagmiChainId(String(OPTIMISM_CHAIN_ID));
           assert.notStrictEqual(
             initialChainId,
-            '10',
+            String(OPTIMISM_CHAIN_ID),
             'Initial chain should differ from Optimism so the switch is meaningful',
           );
         },
@@ -431,10 +438,10 @@ describe('MM Connect-EVM', function (this: Suite) {
 
           // Click the wagmi "Switch to Optimism" button (chain ID 10).
           // Triggers wallet_switchEthereumChain('0xa').
-          await testDapp.clickWagmiSwitchChain(10);
+          await testDapp.clickWagmiSwitchChain(OPTIMISM_CHAIN_ID);
 
           // Back on the dapp: chain-ID display must update to 10 (Optimism).
-          await testDapp.waitForWagmiChainId('10');
+          await testDapp.waitForWagmiChainId(String(OPTIMISM_CHAIN_ID));
 
           // Open the MetaMask popup from the dapp's context and verify the
           // connection menu popover shows Optimism — confirming the wallet's
