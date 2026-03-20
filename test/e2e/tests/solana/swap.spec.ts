@@ -6,6 +6,7 @@ import NetworkManager from '../../page-objects/pages/network-manager';
 import NonEvmHomepage from '../../page-objects/pages/home/non-evm-homepage';
 import ActivityListPage from '../../page-objects/pages/home/activity-list';
 import SwapPage from '../../page-objects/pages/swap/swap-page';
+import { mockTokensV2SupportedNetworks } from '../btc/mocks';
 import {
   mockGetMultipleAccounts,
   mockSolanaBalanceQuote,
@@ -35,7 +36,6 @@ import {
   mockBridgeSearchTokens,
   mockTokensV3Assets,
 } from './common-solana';
-import { mockTokensV2SupportedNetworks } from '../btc/mocks';
 
 async function mockSwapUSDCtoSOL(
   mockServer: Mockttp,
@@ -63,8 +63,8 @@ async function mockSwapUSDCtoSOL(
     await mockTokenApiAssets(mockServer),
     await mockBridgeGetTokens(mockServer),
     await mockBridgeSearchTokens(mockServer),
-    await mockTokensV3Assets(mockServer),
     await mockTokensV2SupportedNetworks(mockServer),
+    await mockTokensV3Assets(mockServer),
   ];
 }
 
@@ -86,8 +86,8 @@ async function mockSwapNoQuotes(
     await mockTokenApiAssets(mockServer),
     await mockBridgeGetTokens(mockServer),
     await mockBridgeSearchTokens(mockServer),
-    await mockTokensV3Assets(mockServer),
     await mockTokensV2SupportedNetworks(mockServer),
+    await mockTokensV3Assets(mockServer),
   ];
 }
 

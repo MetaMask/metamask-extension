@@ -699,7 +699,7 @@ describe('Shield Plan Stripe Integration', function () {
     );
   });
 
-  it.only('should be able to change payment method from crypto to crypto (USDC -> USDT)', async function () {
+  it('should be able to change payment method from crypto to crypto (USDC -> USDT)', async function () {
     await withFixtures(
       {
         fixtures: createShieldFixtureCrypto()
@@ -728,9 +728,7 @@ describe('Shield Plan Stripe Integration', function () {
           // Tell AssetsController's AccountsApiDataSource that mainnet is supported,
           // so it calls v5/multiaccount/balances instead of falling back to RPC.
           await server
-            .forGet(
-              'https://accounts.api.cx.metamask.io/v2/supportedNetworks',
-            )
+            .forGet('https://accounts.api.cx.metamask.io/v2/supportedNetworks')
             .always()
             .thenCallback(() => ({
               statusCode: 200,

@@ -65,6 +65,35 @@ export const mockTokensV3Assets = (mockServer: Mockttp) =>
 
       const results = [];
 
+      if(assetIds.includes('eip155:1/erc20:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48')) {
+        results.push({
+          assetId: 'eip155:1/erc20:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
+          name: 'USD Coin',
+          symbol: 'USDC',
+          decimals: 6,
+        });
+      }
+      if(assetIds.includes('eip155:1/erc20:0xdAC17F958D2ee523a2206206994597C13D831ec7')) {
+        results.push({
+          assetId: 'eip155:1/erc20:0xdAC17F958D2ee523a2206206994597C13D831ec7',
+          name: 'Tether USD',
+          symbol: 'USDT',
+          decimals: 6,
+        });
+      }
+
+      if (assetIds.includes('eip155:1')) {
+        results.push({
+          assetId: 'eip155:1/slip44:60',
+          name: 'Ethereum',
+          symbol: 'ETH',
+          decimals: 18,
+          iconUrl:
+            'https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1337/slip44/60.png',
+          coingeckoId: 'ethereum',
+        });
+      }
+
       if (assetIds.includes('eip155:1337')) {
         results.push({
           assetId: 'eip155:1337/slip44:60',
