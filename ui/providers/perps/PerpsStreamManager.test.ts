@@ -71,6 +71,35 @@ describe('PerpsStreamManager', () => {
     });
   });
 
+  describe('markets channel', () => {
+    beforeEach(() => {
+      jest.useRealTimers();
+    });
+
+    afterEach(() => {
+      mockSubmitRequestToBackground.mockReset();
+      mockSubmitRequestToBackground.mockResolvedValue(undefined);
+      jest.useFakeTimers();
+    });
+
+    it('notifies subscribers with empty markets when fetch fails', async () => {
+      mockSubmitRequestToBackground.mockImplementation((method: string) => {
+        if (method === 'perpsGetMarketDataWithPrices') {
+          return Promise.reject(new Error('network'));
+        }
+        return Promise.resolve(undefined);
+      });
+
+      const onData = jest.fn();
+      manager.markets.subscribe(onData);
+
+      await Promise.resolve();
+      await Promise.resolve();
+
+      expect(onData).toHaveBeenCalledWith([]);
+    });
+  });
+
   describe('init', () => {
     it('returns early when address is empty', () => {
       const consoleSpy = jest
