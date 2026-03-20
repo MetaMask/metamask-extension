@@ -38,7 +38,11 @@ export function useBackgroundQuerySync() {
       // @ts-expect-error CacheUpdatePayload tuple not assignable to Json constraint
       subscribeToMessengerEvent<[CacheUpdatePayload]>(event, ([payload]) => {
         if (!unmounted && payload.state) {
-          hydrate(queryClient, payload.state);
+          try {
+            hydrate(queryClient, payload.state);
+          } catch (error) {
+            console.error('Failed to hydrate UI QueryClient:', error);
+          }
         }
       }),
     );
