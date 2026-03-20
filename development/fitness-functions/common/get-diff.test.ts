@@ -1,56 +1,107 @@
-import { execSync } from 'child_process';
+import { execFileSync } from 'child_process';
+import fs from 'fs';
 import { AUTOMATION_TYPE } from './constants';
 import { getDiffByAutomationType } from './get-diff';
 
 jest.mock('child_process', () => ({
-  execSync: jest.fn(),
+  execFileSync: jest.fn(),
 }));
 
-const mockExecSync = jest.mocked(execSync);
-
-const GIT_EXEC_SYNC_OPTIONS = {
-  maxBuffer: 50 * 1024 * 1024,
-};
+const mockExecFileSync = jest.mocked(execFileSync);
 
 describe('getDiffByAutomationType()', (): void => {
   beforeEach((): void => {
-    mockExecSync.mockReset();
+    jest.restoreAllMocks();
+    mockExecFileSync.mockReset();
   });
 
-  it('gets the pre-commit diff with increased git buffer size', (): void => {
-    const fakeDiff = 'diff --git a/foo.ts b/foo.ts\n+added line';
-    mockExecSync.mockReturnValueOnce(Buffer.from(fakeDiff));
+  describe('when the automation type is the pre-commit hook', (): void => {
+    it('returns an empty string when a merge is in progress', (): void => {
+      jest.spyOn(fs, 'existsSync').mockReturnValue(true);
+      mockExecFileSync.mockReturnValueOnce('.git/MERGE_HEAD');
 
-    expect(
-      getDiffByAutomationType(AUTOMATION_TYPE.PRE_COMMIT_HOOK),
-    ).toStrictEqual(fakeDiff);
+      expect(
+        getDiffByAutomationType(AUTOMATION_TYPE.PRE_COMMIT_HOOK),
+      ).toStrictEqual('');
 
-    expect(mockExecSync).toHaveBeenCalledTimes(1);
-    expect(mockExecSync).toHaveBeenCalledWith(
-      'git diff --cached HEAD',
-      GIT_EXEC_SYNC_OPTIONS,
-    );
+      expect(mockExecFileSync).toHaveBeenCalledTimes(1);
+      expect(mockExecFileSync).toHaveBeenCalledWith(
+        'git',
+        ['rev-parse', '--git-path', 'MERGE_HEAD'],
+        expect.objectContaining({
+          encoding: 'utf8',
+          maxBuffer: 50 * 1024 * 1024,
+        }),
+      );
+    });
+
+    it('gets the pre-commit diff with the configured git options', (): void => {
+      const fakeDiff = 'diff --git a/foo.ts b/foo.ts\n+added line';
+      jest.spyOn(fs, 'existsSync').mockReturnValue(false);
+      mockExecFileSync.mockReturnValueOnce('.git/MERGE_HEAD');
+      mockExecFileSync.mockReturnValueOnce(fakeDiff);
+
+      expect(
+        getDiffByAutomationType(AUTOMATION_TYPE.PRE_COMMIT_HOOK),
+      ).toStrictEqual(fakeDiff);
+
+      expect(mockExecFileSync).toHaveBeenNthCalledWith(
+        1,
+        'git',
+        ['rev-parse', '--git-path', 'MERGE_HEAD'],
+        expect.objectContaining({
+          encoding: 'utf8',
+          maxBuffer: 50 * 1024 * 1024,
+        }),
+      );
+      expect(mockExecFileSync).toHaveBeenNthCalledWith(
+        2,
+        'git',
+        ['diff', '--cached', 'HEAD'],
+        expect.objectContaining({
+          encoding: 'utf8',
+          maxBuffer: 50 * 1024 * 1024,
+        }),
+      );
+    });
   });
 
-  it('gets the pre-push diff with increased git buffer size', (): void => {
-    const currentBranch = 'fix-fitness-merge';
-    const fakeDiff = 'diff --git a/foo.ts b/foo.ts\n+added line';
-    mockExecSync.mockReturnValueOnce(Buffer.from(currentBranch));
-    mockExecSync.mockReturnValueOnce(Buffer.from(fakeDiff));
+  describe('when the automation type is the pre-push hook', (): void => {
+    it('gets the pre-push diff with the configured git options', (): void => {
+      const currentBranch = 'fix-fitness-merge';
+      const fakeDiff = 'diff --git a/foo.ts b/foo.ts\n+added line';
+      mockExecFileSync.mockReturnValueOnce(currentBranch);
+      mockExecFileSync.mockReturnValueOnce(fakeDiff);
 
-    expect(
-      getDiffByAutomationType(AUTOMATION_TYPE.PRE_PUSH_HOOK),
-    ).toStrictEqual(fakeDiff);
+      expect(
+        getDiffByAutomationType(AUTOMATION_TYPE.PRE_PUSH_HOOK),
+      ).toStrictEqual(fakeDiff);
 
-    expect(mockExecSync).toHaveBeenNthCalledWith(
-      1,
-      'git rev-parse --abbrev-ref HEAD',
-      GIT_EXEC_SYNC_OPTIONS,
-    );
-    expect(mockExecSync).toHaveBeenNthCalledWith(
-      2,
-      `git diff ${currentBranch} origin/${currentBranch} -- . ':(exclude)development/fitness-functions/'`,
-      GIT_EXEC_SYNC_OPTIONS,
-    );
+      expect(mockExecFileSync).toHaveBeenNthCalledWith(
+        1,
+        'git',
+        ['rev-parse', '--abbrev-ref', 'HEAD'],
+        expect.objectContaining({
+          encoding: 'utf8',
+          maxBuffer: 50 * 1024 * 1024,
+        }),
+      );
+      expect(mockExecFileSync).toHaveBeenNthCalledWith(
+        2,
+        'git',
+        [
+          'diff',
+          currentBranch,
+          `origin/${currentBranch}`,
+          '--',
+          '.',
+          ':(exclude)development/fitness-functions/',
+        ],
+        expect.objectContaining({
+          encoding: 'utf8',
+          maxBuffer: 50 * 1024 * 1024,
+        }),
+      );
+    });
   });
 });
