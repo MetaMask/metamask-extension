@@ -718,7 +718,7 @@ export const getCurrencyRateControllerCurrencyRates = createDeepEqualSelector(
         }
       }
 
-      if (!price || price.assetPriceType !== 'fungible') {
+      if (price?.assetPriceType !== 'fungible') {
         continue;
       }
 
