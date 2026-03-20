@@ -4,11 +4,13 @@ import { type ComponentType } from 'react';
 import {
   ACCOUNT_IDENTICON_ROUTE,
   ASSETS_ROUTE,
+  AUTO_LOCK_ROUTE,
   CURRENCY_ROUTE,
   DEVELOPER_OPTIONS_V2_ROUTE,
   LANGUAGE_ROUTE,
   PREFERENCES_AND_DISPLAY_ROUTE,
   SETTINGS_V2_ROUTE,
+  SECURITY_AND_PASSWORD_ROUTE,
   TRANSACTIONS_ROUTE,
   THEME_ROUTE,
   PRIVACY_ROUTE,
@@ -80,6 +82,16 @@ export const SETTINGS_V2_ROUTE_META: Record<string, SettingsV2RouteMeta> = {
     labelKey: 'thirdPartyApis',
     parentPath: PRIVACY_ROUTE,
   },
+  // TODO: Update route after screen is updated
+  // Security and password tab
+  [SECURITY_AND_PASSWORD_ROUTE]: {
+    labelKey: 'securityAndPassword',
+    parentPath: SETTINGS_V2_ROUTE,
+  },
+  [AUTO_LOCK_ROUTE]: {
+    labelKey: 'autoLock',
+    parentPath: SECURITY_AND_PASSWORD_ROUTE,
+  },
   // Developer options tab
   [DEVELOPER_OPTIONS_V2_ROUTE]: {
     labelKey: 'developerOptions',
@@ -126,6 +138,13 @@ export const SETTINGS_V2_MENU_LIST_ITEM_REGISTRY: SettingsV2MenuListItem[] = [
     labelKey: 'privacy',
     iconName: IconName.Lock,
     component: mmLazy(() => import('./privacy-tab/index.ts')),
+  },
+  {
+    id: 'security-and-password',
+    path: SECURITY_AND_PASSWORD_ROUTE,
+    labelKey: 'securityAndPassword',
+    iconName: IconName.SecuritySearch,
+    component: mmLazy(() => import('./security-and-password-tab/index.ts')),
   },
   {
     id: 'developer-options',
