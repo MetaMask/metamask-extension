@@ -1149,17 +1149,7 @@
     "ui/pages/confirmations/confirm/confirm.test.tsx": {
       "MetaMask: Background connection not initialized": 181,
       "React: Act warnings (component updates not wrapped)": 3,
-      "Reselect: Identity function warnings": 7,
-      "warn: ⚠️ React Router Future Flag": 2
-    },
-    "ui/pages/confirmations/confirmation/alerts/useAlertActions.test.ts": {
-      "warn: ⚠️ React Router Future Flag": 2
-    },
-    "ui/pages/confirmations/confirmation/alerts/useTemplateConfirmationAlerts.test.ts": {
-      "warn: ⚠️ React Router Future Flag": 2
-    },
-    "ui/pages/confirmations/confirmation/alerts/useUpdateEthereumChainAlerts.test.ts": {
-      "warn: ⚠️ React Router Future Flag": 2
+      "Reselect: Identity function warnings": 7
     },
     "ui/pages/confirmations/confirmation/templates/create-snap-account.test.js": {
       "Reselect: Identity function warnings": 5
