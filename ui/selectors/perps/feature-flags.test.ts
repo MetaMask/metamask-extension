@@ -1,11 +1,20 @@
 import semver from 'semver';
 import { PerpsFeatureFlag } from '../../../shared/lib/perps-feature-flags';
-import { getIsPerpsEnabled } from './feature-flags';
+import { getIsPerpsIncludedInBuild } from '../../../shared/lib/environment';
+import { getIsPerpsExperienceAvailable } from './feature-flags';
 
 jest.mock('semver');
 jest.mock('../../../package.json', () => ({
   version: '12.5.0',
 }));
+jest.mock('../../../shared/lib/environment', () => ({
+  ...jest.requireActual<typeof import('../../../shared/lib/environment')>(
+    '../../../shared/lib/environment',
+  ),
+  getIsPerpsIncludedInBuild: jest.fn(),
+}));
+
+const getIsPerpsIncludedInBuildMock = jest.mocked(getIsPerpsIncludedInBuild);
 
 type MockState = {
   metamask: {
@@ -28,24 +37,53 @@ describe('Perps Feature Flags', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    getIsPerpsIncludedInBuildMock.mockReturnValue(true);
   });
 
-  describe('getIsPerpsEnabled', () => {
-    describe('undefined or missing flag', () => {
+  describe('getIsPerpsExperienceAvailable', () => {
+    describe('compile-time inclusion (PERPS_ENABLED)', () => {
+      it('returns false when getIsPerpsIncludedInBuild is false even if remote flag would pass', () => {
+        getIsPerpsIncludedInBuildMock.mockReturnValue(false);
+        semverGteMock.mockReturnValue(true);
+
+        const state = getMockState({
+          enabled: true,
+          minimumVersion: '12.0.0',
+        });
+
+        expect(getIsPerpsExperienceAvailable(state)).toBe(false);
+        expect(semverGteMock).not.toHaveBeenCalled();
+      });
+
+      it('returns true when getIsPerpsIncludedInBuild is true and remote flag passes', () => {
+        getIsPerpsIncludedInBuildMock.mockReturnValue(true);
+        semverGteMock.mockReturnValue(true);
+
+        const state = getMockState({
+          enabled: true,
+          minimumVersion: '12.0.0',
+        });
+
+        expect(getIsPerpsExperienceAvailable(state)).toBe(true);
+        expect(semverGteMock).toHaveBeenCalledTimes(1);
+      });
+    });
+
+    describe('undefined or missing remote flag', () => {
       it('returns false when perpsEnabledVersion flag is undefined', () => {
         const state = getMockState(undefined);
-        expect(getIsPerpsEnabled(state)).toBe(false);
+        expect(getIsPerpsExperienceAvailable(state)).toBe(false);
         expect(semverGteMock).not.toHaveBeenCalled();
       });
 
       it('returns false when remoteFeatureFlags is empty', () => {
         const state = { metamask: { remoteFeatureFlags: {} } };
-        expect(getIsPerpsEnabled(state)).toBe(false);
+        expect(getIsPerpsExperienceAvailable(state)).toBe(false);
         expect(semverGteMock).not.toHaveBeenCalled();
       });
     });
 
-    describe('JSON flags with version gating', () => {
+    describe('perpsEnabledVersion JSON with version gating', () => {
       it('returns true when enabled is true and version check passes', () => {
         semverGteMock.mockReturnValue(true);
 
@@ -54,7 +92,7 @@ describe('Perps Feature Flags', () => {
           minimumVersion: '12.0.0',
         });
 
-        expect(getIsPerpsEnabled(state)).toBe(true);
+        expect(getIsPerpsExperienceAvailable(state)).toBe(true);
         expect(semverGteMock).toHaveBeenCalledTimes(1);
         expect(semverGteMock).toHaveBeenCalledWith('12.5.0', '12.0.0');
       });
@@ -67,7 +105,7 @@ describe('Perps Feature Flags', () => {
           minimumVersion: '13.0.0',
         });
 
-        expect(getIsPerpsEnabled(state)).toBe(false);
+        expect(getIsPerpsExperienceAvailable(state)).toBe(false);
         expect(semverGteMock).toHaveBeenCalledTimes(1);
         expect(semverGteMock).toHaveBeenCalledWith('12.5.0', '13.0.0');
       });
@@ -78,7 +116,7 @@ describe('Perps Feature Flags', () => {
           minimumVersion: '12.0.0',
         });
 
-        expect(getIsPerpsEnabled(state)).toBe(false);
+        expect(getIsPerpsExperienceAvailable(state)).toBe(false);
         expect(semverGteMock).not.toHaveBeenCalled();
       });
 
@@ -87,7 +125,7 @@ describe('Perps Feature Flags', () => {
           enabled: true,
         } as PerpsFeatureFlag);
 
-        expect(getIsPerpsEnabled(state)).toBe(false);
+        expect(getIsPerpsExperienceAvailable(state)).toBe(false);
         expect(semverGteMock).not.toHaveBeenCalled();
       });
 
@@ -101,7 +139,7 @@ describe('Perps Feature Flags', () => {
           minimumVersion: 'invalid-version',
         });
 
-        expect(getIsPerpsEnabled(state)).toBe(false);
+        expect(getIsPerpsExperienceAvailable(state)).toBe(false);
         expect(semverGteMock).toHaveBeenCalledTimes(1);
       });
     });
@@ -115,7 +153,7 @@ describe('Perps Feature Flags', () => {
           minimumVersion: '12.5.0',
         });
 
-        expect(getIsPerpsEnabled(state)).toBe(true);
+        expect(getIsPerpsExperienceAvailable(state)).toBe(true);
         expect(semverGteMock).toHaveBeenCalledWith('12.5.0', '12.5.0');
       });
 
@@ -127,7 +165,7 @@ describe('Perps Feature Flags', () => {
           minimumVersion: '12.5.0-beta.1',
         });
 
-        expect(getIsPerpsEnabled(state)).toBe(true);
+        expect(getIsPerpsExperienceAvailable(state)).toBe(true);
         expect(semverGteMock).toHaveBeenCalledWith('12.5.0', '12.5.0-beta.1');
       });
     });

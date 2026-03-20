@@ -30,7 +30,6 @@ export function getSmartTransactionsControllerMessenger(
   rootMessenger.delegate({
     messenger: controllerMessenger,
     actions: [
-      'ErrorReportingService:captureException',
       'NetworkController:getNetworkClientById',
       'NetworkController:getState',
       'RemoteFeatureFlagController:getState',

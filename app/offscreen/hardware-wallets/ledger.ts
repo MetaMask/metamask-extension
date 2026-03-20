@@ -12,12 +12,12 @@ import {
 } from '@metamask/hw-wallet-sdk';
 import { add0x } from '@metamask/utils';
 
-import { LEDGER_USB_VENDOR_ID } from '../../shared/constants/hardware-wallets';
 import {
   LedgerAction,
   OffscreenCommunicationEvents,
   OffscreenCommunicationTarget,
-} from '../../shared/constants/offscreen-communication';
+} from '../../../shared/constants/offscreen-communication';
+import { LEDGER_USB_VENDOR_ID } from '../../../shared/constants/hardware-wallets';
 
 /**
  * Selectors that are used only by NFT standards (ERC721/ERC1155), not by ERC20.

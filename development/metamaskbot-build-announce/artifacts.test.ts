@@ -1,7 +1,6 @@
 import {
   getArtifactLinks,
   getBuildLinks,
-  getWebpackBuildLinks,
   formatBuildLinks,
   artifactExists,
   discoverBundleArtifacts,
@@ -9,6 +8,7 @@ import {
 } from './artifacts';
 
 const HOST = 'https://ci.example.com';
+const VERSION = '12.0.0';
 
 describe('getArtifactLinks', () => {
   it('returns URLs using the provided host, owner, repo, and runId', () => {
@@ -38,63 +38,65 @@ describe('getArtifactLinks', () => {
 });
 
 describe('getBuildLinks', () => {
-  it('returns chrome and firefox URLs for each build variant', () => {
-    const builds = getBuildLinks(HOST, '12.0.0');
+  it('returns browserify and webpack build URLs', () => {
+    const builds = getBuildLinks({ hostUrl: HOST, version: VERSION });
 
-    expect(builds.builds.chrome).toContain('metamask-chrome-12.0.0.zip');
-    expect(builds.builds.firefox).toContain('metamask-firefox-12.0.0.zip');
-    expect(builds['builds (flask)'].chrome).toContain('flask');
-  });
-
-  it('includes all five build variants', () => {
-    const builds = getBuildLinks(HOST, '1.0.0');
-    const keys = Object.keys(builds);
-
-    expect(keys).toHaveLength(5);
-    expect(keys).toContain('builds');
-    expect(keys).toContain('builds (beta)');
-    expect(keys).toContain('builds (flask)');
-    expect(keys).toContain('builds (test)');
-    expect(keys).toContain('builds (test-flask)');
-  });
-});
-
-describe('getWebpackBuildLinks', () => {
-  it('returns chrome and firefox URLs for each webpack build variant', () => {
-    const builds = getWebpackBuildLinks(HOST, '12.0.0');
-
-    expect(builds['webpack builds'].chrome).toContain('build-dist-webpack');
-    expect(builds['webpack builds'].chrome).toContain(
-      'metamask-chrome-12.0.0.zip',
+    expect(builds.browserify.main.chrome).toContain(
+      `metamask-chrome-${VERSION}.zip`,
     );
-    expect(builds['webpack builds'].firefox).toContain(
-      'build-dist-mv2-webpack',
+    expect(builds.browserify.main.firefox).toContain(
+      `metamask-firefox-${VERSION}.zip`,
     );
-    expect(builds['webpack builds (flask)'].chrome).toContain('flask');
+    expect(builds.browserify.flask.chrome).toContain('flask');
   });
 
-  it('includes all five webpack build variants', () => {
-    const builds = getWebpackBuildLinks(HOST, '1.0.0');
-    const keys = Object.keys(builds);
+  it('includes all six build variants for each bundler', () => {
+    const builds = getBuildLinks({ hostUrl: HOST, version: VERSION });
+    const expected = [
+      'main',
+      'beta',
+      'experimental',
+      'flask',
+      'test',
+      'test-flask',
+    ];
 
-    expect(keys).toHaveLength(5);
-    expect(keys).toContain('webpack builds');
-    expect(keys).toContain('webpack builds (beta)');
-    expect(keys).toContain('webpack builds (flask)');
-    expect(keys).toContain('webpack builds (test)');
-    expect(keys).toContain('webpack builds (test-flask)');
+    expect(Object.keys(builds.browserify)).toStrictEqual(expected);
+    expect(Object.keys(builds.webpack)).toStrictEqual(expected);
+  });
+
+  it('uses correct artifact names for webpack builds', () => {
+    const builds = getBuildLinks({ hostUrl: HOST, version: VERSION });
+
+    expect(builds.webpack.main.chrome).toContain('build-dist-webpack');
+    expect(builds.webpack.main.chrome).toContain(
+      `metamask-chrome-${VERSION}.zip`,
+    );
+    expect(builds.webpack.main.firefox).toContain('build-dist-mv2-webpack');
+    expect(builds.webpack.flask.chrome).toContain('flask');
   });
 });
 
 describe('formatBuildLinks', () => {
-  it('renders label: platform links for each variant', () => {
-    const builds = getBuildLinks(HOST, '1.0.0');
-    const rows = formatBuildLinks(builds);
+  it('renders rows for both browserify and webpack builds', () => {
+    const buildLinks = getBuildLinks({ hostUrl: HOST, version: VERSION });
+    const rows = formatBuildLinks(buildLinks);
 
-    expect(rows).toHaveLength(5);
+    // 5 build types (excluding experimental) × 2 bundlers = 10 rows
+    expect(rows).toHaveLength(10);
     expect(rows[0]).toMatch(
       /^builds: <a href=".*">chrome<\/a>, <a href=".*">firefox<\/a>$/u,
     );
+  });
+
+  it('uses "builds" prefix for browserify and "webpack builds" for webpack', () => {
+    const buildLinks = getBuildLinks({ hostUrl: HOST, version: VERSION });
+    const rows = formatBuildLinks(buildLinks);
+
+    expect(rows[0]).toContain('builds:');
+    expect(rows[1]).toContain('builds (beta):');
+    expect(rows[5]).toContain('webpack builds:');
+    expect(rows[6]).toContain('webpack builds (beta):');
   });
 });
 
@@ -188,34 +190,34 @@ describe('buildArtifactsBody', () => {
   it('includes build links when postNewBuilds is true', async () => {
     const result = await buildArtifactsBody({
       hostUrl: HOST,
-      version: '12.0.0',
+      version: VERSION,
       shortSha: 'abc1234',
       artifacts: makeArtifacts(),
       postNewBuilds: true,
       lavamoatPolicyChanged: false,
     });
 
-    expect(result).toContain('metamask-chrome-12.0.0.zip');
+    expect(result).toContain(`metamask-chrome-${VERSION}.zip`);
     expect(result).toContain('build-dist-webpack');
   });
 
   it('omits build links when postNewBuilds is false', async () => {
     const result = await buildArtifactsBody({
       hostUrl: HOST,
-      version: '12.0.0',
+      version: VERSION,
       shortSha: 'abc1234',
       artifacts: makeArtifacts(),
       postNewBuilds: false,
       lavamoatPolicyChanged: false,
     });
 
-    expect(result).not.toContain('metamask-chrome-12.0.0.zip');
+    expect(result).not.toContain(`metamask-chrome-${VERSION}.zip`);
   });
 
   it('includes lavamoat viz link when lavamoatPolicyChanged is true', async () => {
     const result = await buildArtifactsBody({
       hostUrl: HOST,
-      version: '12.0.0',
+      version: VERSION,
       shortSha: 'abc1234',
       artifacts: makeArtifacts(),
       postNewBuilds: false,
@@ -228,7 +230,7 @@ describe('buildArtifactsBody', () => {
   it('wraps everything in a collapsible details element with the sha', async () => {
     const result = await buildArtifactsBody({
       hostUrl: HOST,
-      version: '12.0.0',
+      version: VERSION,
       shortSha: 'abc1234',
       artifacts: makeArtifacts(),
       postNewBuilds: false,

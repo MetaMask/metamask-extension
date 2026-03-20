@@ -13,7 +13,7 @@ import HomePage from '../../page-objects/pages/home/homepage';
 import PrivacySettings from '../../page-objects/pages/settings/privacy-settings';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import TestDapp from '../../page-objects/pages/test-dapp';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 
 /**
  * mocks the segment api multiple times for specific payloads that we expect to
@@ -61,7 +61,7 @@ describe('Marketing cookieId', function (this: Suite) {
         driver,
         mockedEndpoint: mockedEndpoints,
       }: TestSuiteArguments) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
         const dappPage = new TestDapp(driver);
         await dappPage.openTestDappPage();
         await driver.switchToWindowWithTitle(
@@ -106,7 +106,7 @@ describe('Marketing cookieId', function (this: Suite) {
         driver,
         mockedEndpoint: mockedEndpoints,
       }: TestSuiteArguments) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
         const dappPage = new TestDapp(driver);
         await dappPage.openTestDappPage();
 
@@ -147,7 +147,7 @@ describe('Marketing cookieId', function (this: Suite) {
         driver,
         mockedEndpoint: mockedEndpoints,
       }: TestSuiteArguments) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
         const dappPage = new TestDapp(driver);
         await dappPage.openTestDappPage();
 
@@ -192,7 +192,7 @@ describe('Marketing cookieId', function (this: Suite) {
         driver,
         mockedEndpoint: mockedEndpoints,
       }: TestSuiteArguments) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
         const dappPage = new TestDapp(driver);
         await dappPage.openTestDappPage();
 
