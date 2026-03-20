@@ -1741,7 +1741,7 @@
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/confirmations/components/confirm/info/set-approval-for-all-info/set-approval-for-all-info.test.tsx": {
-      "MetaMask: Background connection not initialized": 27,
+      "MetaMask: Background connection not initialized": 39,
       "React: Act warnings (component updates not wrapped)": 15,
       "Reselect: Identity function warnings": 5,
       "warn: ⚠️ React Router Future Flag": 2
@@ -2279,6 +2279,7 @@
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/confirmations/hooks/alerts/transactions/useInsufficientBalanceAlerts.test.ts": {
+      "MetaMask: Background connection not initialized": 84,
       "Reselect: Identity function warnings": 3,
       "warn: ⚠️ React Router Future Flag": 2
     },
