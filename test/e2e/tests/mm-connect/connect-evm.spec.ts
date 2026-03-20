@@ -3,14 +3,14 @@ import { Suite } from 'mocha';
 
 import {
   ACCOUNT_2,
-  DEFAULT_FIXTURE_ACCOUNT,
+  DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
   DAPP_PATH,
   DAPP_URL,
   WINDOW_TITLES,
 } from '../../constants';
 import { withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
-import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
+import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import { Driver, PAGES } from '../../webdriver/driver';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import ConnectAccountConfirmation from '../../page-objects/pages/confirmations/connect-account-confirmation';
@@ -91,7 +91,7 @@ describe('MM Connect-EVM', function (this: Suite) {
           dappOptions: MM_CONNECT_TEST_DAPP_OPTIONS,
         },
         async ({ driver }: { driver: Driver }) => {
-          await loginWithoutBalanceValidation(driver);
+          await loginWithBalanceValidation(driver);
 
           const testDapp = new TestDapp(driver);
           await testDapp.openPage();
@@ -102,13 +102,7 @@ describe('MM Connect-EVM', function (this: Suite) {
 
           // Account 1 should appear in the card after the connect event fires.
           await testDapp.checkLegacyCardVisible();
-          const activeAccount = await testDapp.getLegacyActiveAccount();
-          assert.ok(
-            activeAccount
-              .toLowerCase()
-              .includes(DEFAULT_FIXTURE_ACCOUNT.toLowerCase()),
-            `Expected active account to include ${DEFAULT_FIXTURE_ACCOUNT}, got: "${activeAccount}"`,
-          );
+          await testDapp.waitForLegacyActiveAccount(DEFAULT_FIXTURE_ACCOUNT_LOWERCASE);
 
           // Switch to Account 2 in the wallet and verify the dapp updates.
           await driver.switchToWindowWithTitle(
@@ -121,12 +115,6 @@ describe('MM Connect-EVM', function (this: Suite) {
 
           await testDapp.switchTo();
           await testDapp.waitForLegacyActiveAccount(ACCOUNT_2);
-          const updatedAccount = await testDapp.getLegacyActiveAccount();
-
-          assert.ok(
-            updatedAccount.toLowerCase().includes(ACCOUNT_2.toLowerCase()),
-            `Expected active account to include ${ACCOUNT_2}, got: "${updatedAccount}"`,
-          );
         },
       );
     });
@@ -139,7 +127,7 @@ describe('MM Connect-EVM', function (this: Suite) {
           dappOptions: MM_CONNECT_TEST_DAPP_OPTIONS,
         },
         async ({ driver }: { driver: Driver }) => {
-          await loginWithoutBalanceValidation(driver);
+          await loginWithBalanceValidation(driver);
 
           const testDapp = new TestDapp(driver);
           await testDapp.openPage();
@@ -158,11 +146,7 @@ describe('MM Connect-EVM', function (this: Suite) {
 
           // Back on the dapp: verify the response is a hex signature.
           await testDapp.switchTo();
-          const response = await testDapp.getLegacyResponse();
-          assert.ok(
-            response.startsWith('0x'),
-            `Expected personal_sign response to start with "0x", got: "${response}"`,
-          );
+          await testDapp.checkLegacyResponse('0x');
         },
       );
     });
@@ -181,7 +165,7 @@ describe('MM Connect-EVM', function (this: Suite) {
           dappOptions: MM_CONNECT_TEST_DAPP_OPTIONS,
         },
         async ({ driver }: { driver: Driver }) => {
-          await loginWithoutBalanceValidation(driver);
+          await loginWithBalanceValidation(driver);
 
           const testDapp = new TestDapp(driver);
           await testDapp.openPage();
@@ -200,11 +184,7 @@ describe('MM Connect-EVM', function (this: Suite) {
 
           // Back on the dapp: the transaction should be rejected.
           await testDapp.switchTo();
-          const response = await testDapp.getLegacyResponse();
-          assert.ok(
-            response.includes('User denied transaction signature'),
-            `Expected eth_sendTransaction response to include "User rejected the transaction", got: "${response}"`,
-          );
+          await testDapp.checkLegacyResponse('User denied transaction signature');
         },
       );
     });
@@ -217,7 +197,7 @@ describe('MM Connect-EVM', function (this: Suite) {
           dappOptions: MM_CONNECT_TEST_DAPP_OPTIONS,
         },
         async ({ driver }: { driver: Driver }) => {
-          await loginWithoutBalanceValidation(driver);
+          await loginWithBalanceValidation(driver);
 
           const testDapp = new TestDapp(driver);
           await testDapp.openPage();
@@ -253,7 +233,7 @@ describe('MM Connect-EVM', function (this: Suite) {
           dappOptions: MM_CONNECT_TEST_DAPP_OPTIONS,
         },
         async ({ driver }: { driver: Driver }) => {
-          await loginWithoutBalanceValidation(driver);
+          await loginWithBalanceValidation(driver);
 
           const testDapp = new TestDapp(driver);
           await testDapp.openPage();
@@ -298,7 +278,7 @@ describe('MM Connect-EVM', function (this: Suite) {
           dappOptions: MM_CONNECT_TEST_DAPP_OPTIONS,
         },
         async ({ driver }: { driver: Driver }) => {
-          await loginWithoutBalanceValidation(driver);
+          await loginWithBalanceValidation(driver);
 
           const testDapp = new TestDapp(driver);
           await testDapp.openPage();
@@ -309,13 +289,7 @@ describe('MM Connect-EVM', function (this: Suite) {
 
           // Account 1 should appear in the wagmi card after the connect event fires.
           await testDapp.checkWagmiCardVisible();
-          const activeAccount = await testDapp.getWagmiActiveAccount();
-          assert.ok(
-            activeAccount
-              .toLowerCase()
-              .includes(DEFAULT_FIXTURE_ACCOUNT.toLowerCase()),
-            `Expected wagmi active account to include ${DEFAULT_FIXTURE_ACCOUNT}, got: "${activeAccount}"`,
-          );
+          await testDapp.waitForWagmiActiveAccount(DEFAULT_FIXTURE_ACCOUNT_LOWERCASE);
 
           // Switch to Account 2 in the wallet and verify the dapp updates.
           await driver.switchToWindowWithTitle(
@@ -328,11 +302,6 @@ describe('MM Connect-EVM', function (this: Suite) {
 
           await testDapp.switchTo();
           await testDapp.waitForWagmiActiveAccount(ACCOUNT_2);
-          const updatedAccount = await testDapp.getWagmiActiveAccount();
-          assert.ok(
-            updatedAccount.toLowerCase().includes(ACCOUNT_2.toLowerCase()),
-            `Expected wagmi active account to include ${ACCOUNT_2}, got: "${updatedAccount}"`,
-          );
         },
       );
     });
@@ -345,7 +314,7 @@ describe('MM Connect-EVM', function (this: Suite) {
           dappOptions: MM_CONNECT_TEST_DAPP_OPTIONS,
         },
         async ({ driver }: { driver: Driver }) => {
-          await loginWithoutBalanceValidation(driver);
+          await loginWithBalanceValidation(driver);
 
           const testDapp = new TestDapp(driver);
           await testDapp.openPage();
@@ -364,11 +333,7 @@ describe('MM Connect-EVM', function (this: Suite) {
 
           // Back on the dapp: verify the signature result element shows 0x...
           await testDapp.switchTo();
-          const signatureText = await testDapp.getWagmiSignatureResult();
-          assert.ok(
-            signatureText.includes('0x'),
-            `Expected wagmi signature result to contain "0x", got: "${signatureText}"`,
-          );
+          await testDapp.checkWagmiSignatureResult('0x');
         },
       );
     });
@@ -381,7 +346,7 @@ describe('MM Connect-EVM', function (this: Suite) {
           dappOptions: MM_CONNECT_TEST_DAPP_OPTIONS,
         },
         async ({ driver }: { driver: Driver }) => {
-          await loginWithoutBalanceValidation(driver);
+          await loginWithBalanceValidation(driver);
 
           const testDapp = new TestDapp(driver);
           await testDapp.openPage();
@@ -406,11 +371,7 @@ describe('MM Connect-EVM', function (this: Suite) {
 
           // Back on the dapp: the error element must appear and contain "User rejected".
           await testDapp.switchTo();
-          const errorText = await testDapp.getWagmiTxError();
-          assert.ok(
-            errorText.includes('unknown RPC error'),
-            `Expected wagmi tx error to include "unknown RPC error", got: "${errorText}"`,
-          );
+          await testDapp.checkWagmiTxError('unknown RPC error');
         },
       );
     });
@@ -423,7 +384,7 @@ describe('MM Connect-EVM', function (this: Suite) {
           dappOptions: MM_CONNECT_TEST_DAPP_OPTIONS,
         },
         async ({ driver }: { driver: Driver }) => {
-          await loginWithoutBalanceValidation(driver);
+          await loginWithBalanceValidation(driver);
 
           const testDapp = new TestDapp(driver);
           await testDapp.openPage();
@@ -459,7 +420,7 @@ describe('MM Connect-EVM', function (this: Suite) {
           dappOptions: MM_CONNECT_TEST_DAPP_OPTIONS,
         },
         async ({ driver }: { driver: Driver }) => {
-          await loginWithoutBalanceValidation(driver);
+          await loginWithBalanceValidation(driver);
 
           const testDapp = new TestDapp(driver);
           await testDapp.openPage();

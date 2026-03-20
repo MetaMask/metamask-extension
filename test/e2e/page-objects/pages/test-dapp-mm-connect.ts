@@ -51,11 +51,10 @@ export class TestDappMmConnect {
   private readonly connectButton = { testId: 'app-btn-connect' };
 
   /** "Connect (Legacy EVM)" button. */
-  private readonly connectLegacyButton =
-    '[data-testid="app-btn-connect-legacy"]';
+  private readonly connectLegacyButton = { testId: 'app-btn-connect-legacy' };
 
   /** "Connect (Wagmi)" button. */
-  private readonly connectWagmiButton = '[data-testid="app-btn-connect-wagmi"]';
+  private readonly connectWagmiButton = { testId: 'app-btn-connect-wagmi' };
 
   /** "Disconnect All" button — calls sdkDisconnect() on the mm-connect dapp. */
   private readonly disconnectButton = { testId: 'app-btn-disconnect' };
@@ -76,7 +75,7 @@ export class TestDappMmConnect {
   // Legacy EVM card selectors (TEST_IDS.legacyEvm.*)
   // ──────────────────────────────────────────────────────────────────────────
 
-  private readonly legacyCard = '[data-testid="legacy-evm-card"]';
+  private readonly legacyCard = { testId: 'legacy-evm-card' };
 
   private readonly legacyChainIdValue =
     '[data-testid="legacy-evm-chain-id-value"]';
@@ -87,23 +86,27 @@ export class TestDappMmConnect {
   private readonly legacyResponseText =
     '[data-testid="legacy-evm-response-text"]';
 
-  private readonly legacyBtnPersonalSign =
-    '[data-testid="legacy-evm-btn-personal-sign"]';
+  private readonly legacyBtnPersonalSign = {
+    testId: 'legacy-evm-btn-personal-sign',
+  };
 
-  private readonly legacyBtnSendTransaction =
-    '[data-testid="legacy-evm-btn-send-transaction"]';
+  private readonly legacyBtnSendTransaction = {
+    testId: 'legacy-evm-btn-send-transaction',
+  };
 
-  private readonly legacyBtnSwitchToPolygon =
-    '[data-testid="legacy-evm-btn-switch-polygon"]';
+  private readonly legacyBtnSwitchToPolygon = {
+    testId: 'legacy-evm-btn-switch-polygon',
+  };
 
-  private readonly legacyBtnSwitchToMainnet =
-    '[data-testid="legacy-evm-btn-switch-mainnet"]';
+  private readonly legacyBtnSwitchToMainnet = {
+    testId: 'legacy-evm-btn-switch-mainnet',
+  };
 
   // ──────────────────────────────────────────────────────────────────────────
   // Wagmi card selectors (TEST_IDS.wagmi.*)
   // ──────────────────────────────────────────────────────────────────────────
 
-  private readonly wagmiCard = '[data-testid="wagmi-card"]';
+  private readonly wagmiCard = { testId: 'wagmi-card' };
 
   private readonly wagmiChainIdValue = '[data-testid="wagmi-chain-id-value"]';
 
@@ -111,8 +114,7 @@ export class TestDappMmConnect {
 
   private readonly wagmiInputMessage = '[data-testid="wagmi-input-message"]';
 
-  private readonly wagmiBtnSignMessage =
-    '[data-testid="wagmi-btn-sign-message"]';
+  private readonly wagmiBtnSignMessage = { testId: 'wagmi-btn-sign-message' };
 
   private readonly wagmiSignatureResult =
     '[data-testid="wagmi-signature-result"]';
@@ -122,8 +124,9 @@ export class TestDappMmConnect {
 
   private readonly wagmiInputAmount = '[data-testid="wagmi-input-amount"]';
 
-  private readonly wagmiBtnSendTransaction =
-    '[data-testid="wagmi-btn-send-transaction"]';
+  private readonly wagmiBtnSendTransaction = {
+    testId: 'wagmi-btn-send-transaction',
+  };
 
   private readonly wagmiTxError = '[data-testid="wagmi-tx-error"]';
 
@@ -369,12 +372,6 @@ export class TestDappMmConnect {
     return el.getText();
   }
 
-  /** Return the active-account element text (the address box). */
-  async getLegacyActiveAccount(): Promise<string> {
-    const el = await this.driver.findElement(this.legacyActiveAccount);
-    return el.getText();
-  }
-
   /**
    * Poll until the legacy active-account element shows the expected address.
    * The comparison is case-insensitive to handle checksummed vs lowercase addresses.
@@ -402,13 +399,15 @@ export class TestDappMmConnect {
   }
 
   /**
-   * Wait for the legacy response text element to appear and return its content.
-   * The response shows the raw result of the last card action (signature, tx hash, etc.).
+   * Wait for the legacy response text element to contain the expected text.
+   *
+   * @param expectedText - Text that the response element must contain.
    */
-  async getLegacyResponse(): Promise<string> {
-    await this.driver.waitForSelector(this.legacyResponseText);
-    const el = await this.driver.findElement(this.legacyResponseText);
-    return el.getText();
+  async checkLegacyResponse(expectedText: string): Promise<void> {
+    await this.driver.waitForSelector({
+      css: this.legacyResponseText,
+      text: expectedText,
+    });
   }
 
   async clickLegacyPersonalSign(): Promise<void> {
@@ -467,12 +466,6 @@ export class TestDappMmConnect {
     return el.getText();
   }
 
-  /** Return the wagmi active-account element text (the address). */
-  async getWagmiActiveAccount(): Promise<string> {
-    const el = await this.driver.findElement(this.wagmiActiveAccount);
-    return el.getText();
-  }
-
   /**
    * Poll until the wagmi active-account element shows the expected address.
    * The comparison is case-insensitive to handle checksummed vs lowercase addresses.
@@ -511,13 +504,15 @@ export class TestDappMmConnect {
   }
 
   /**
-   * Wait for the wagmi signature result element and return its full text.
-   * Includes the "Signature: " prefix (e.g. "Signature: 0x...").
+   * Wait for the wagmi signature result element to contain the expected text.
+   *
+   * @param expectedText - Text that the signature result element must contain.
    */
-  async getWagmiSignatureResult(): Promise<string> {
-    await this.driver.waitForSelector(this.wagmiSignatureResult);
-    const el = await this.driver.findElement(this.wagmiSignatureResult);
-    return el.getText();
+  async checkWagmiSignatureResult(expectedText: string): Promise<void> {
+    await this.driver.waitForSelector({
+      css: this.wagmiSignatureResult,
+      text: expectedText,
+    });
   }
 
   /**
@@ -534,20 +529,27 @@ export class TestDappMmConnect {
   }
 
   /**
-   * Wait for the wagmi transaction hash element and return its full text.
-   * Includes the "Transaction Hash: " prefix (e.g. "Transaction Hash: 0x...").
+   * Wait for the wagmi transaction hash element to contain the expected text.
+   *
+   * @param expectedText - Text that the tx hash element must contain.
    */
-  async getWagmiTxHash(): Promise<string> {
-    await this.driver.waitForSelector(this.wagmiTxHashResult);
-    const el = await this.driver.findElement(this.wagmiTxHashResult);
-    return el.getText();
+  async checkWagmiTxHash(expectedText: string): Promise<void> {
+    await this.driver.waitForSelector({
+      css: this.wagmiTxHashResult,
+      text: expectedText,
+    });
   }
 
-  /** Wait for the wagmi tx error element to appear and return its text content. */
-  async getWagmiTxError(): Promise<string> {
-    await this.driver.waitForSelector(this.wagmiTxError);
-    const el = await this.driver.findElement(this.wagmiTxError);
-    return el.getText();
+  /**
+   * Wait for the wagmi tx error element to contain the expected text.
+   *
+   * @param expectedText - Text that the error element must contain.
+   */
+  async checkWagmiTxError(expectedText: string): Promise<void> {
+    await this.driver.waitForSelector({
+      css: this.wagmiTxError,
+      text: expectedText,
+    });
   }
 
   /**
