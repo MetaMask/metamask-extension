@@ -659,3 +659,317 @@ function findTokensArray(obj: any): Token[] {
 
   return [];
 }
+
+/**
+ * Token details verification result
+ */
+export type TokenDetailsValidationResult = {
+  symbol: string;
+  address: string;
+  name: string;
+  isNativeToken: boolean;
+  chartFound: boolean;
+  balanceDataFound: boolean;
+  tokenDetailsFound: boolean;
+  marketDetailsFound: boolean;
+  yourActivityFound: boolean;
+  balanceDetails?: {
+    currency?: string;
+    priceChangePercent?: string;
+    nativeCurrencyBalance?: string;
+    usdBalance?: string;
+  };
+  tokenDetails?: {
+    network?: string;
+  };
+  marketDetails?: {
+    marketCap?: string;
+    totalVolume?: string;
+    circulatingSupply?: string;
+    allTimeHigh?: string;
+    allTimeLow?: string;
+  };
+  chartDetails?: {
+    chartFound: boolean;
+    hasCandles?: boolean;
+    hasPriceAxis?: boolean;
+    hasTimeAxis?: boolean;
+  };
+  yourActivity?: {
+    sentCount: number;
+    receivedCount: number;
+  };
+};
+
+/**
+ * Network token details test result
+ */
+export type NetworkTokenDetailsResult = {
+  networkName: string;
+  chainId: number;
+  blockExplorerUrl?: string;
+  nativeTokenSymbol: string;
+  tokenlistUrl: string;
+  totalTokensTested: number;
+  results: TokenDetailsValidationResult[];
+  timestamp: Date;
+};
+
+/**
+ * Generate consolidated markdown report for token details verification
+ * @param networkResults
+ * @param outputPath
+ */
+export function generateTokenDetailsReport(
+  networkResults: NetworkTokenDetailsResult[],
+  outputPath: string,
+): void {
+  const fs = require('fs');
+  const path = require('path');
+
+  const reportTimestamp = new Date();
+
+  let markdown = `# Token Details Page Verification Report - All Networks\n\n`;
+  markdown += `**Generated:** ${reportTimestamp.toLocaleString()}\n`;
+  markdown += `**Total Networks Tested:** ${networkResults.length}\n\n`;
+  markdown += `---\n\n`;
+
+  // Table of Contents
+  markdown += `## 📑 Table of Contents\n\n`;
+  networkResults.forEach((network, index) => {
+    markdown += `${index + 1}. [${network.networkName}](#${network.networkName.toLowerCase().replace(/\s+/g, '-')})\n`;
+  });
+  markdown += `\n---\n\n`;
+
+  // Overall Summary
+  markdown += `## 📊 Overall Summary\n\n`;
+
+  const totalTokensAll = networkResults.reduce(
+    (sum, n) => sum + n.totalTokensTested,
+    0,
+  );
+
+  const totalWithAllSections = networkResults.reduce((sum, n) => {
+    return (
+      sum +
+      n.results.filter(
+        (t) =>
+          t.chartFound &&
+          t.balanceDataFound &&
+          t.tokenDetailsFound &&
+          t.marketDetailsFound &&
+          t.yourActivityFound,
+      ).length
+    );
+  }, 0);
+
+  const totalWithPartialSections = networkResults.reduce((sum, n) => {
+    return (
+      sum +
+      n.results.filter(
+        (t) =>
+          (t.chartFound ||
+            t.balanceDataFound ||
+            t.tokenDetailsFound ||
+            t.marketDetailsFound ||
+            t.yourActivityFound) &&
+          !(
+            t.chartFound &&
+            t.balanceDataFound &&
+            t.tokenDetailsFound &&
+            t.marketDetailsFound &&
+            t.yourActivityFound
+          ),
+      ).length
+    );
+  }, 0);
+
+  const totalWithNoSections = networkResults.reduce((sum, n) => {
+    return (
+      sum +
+      n.results.filter(
+        (t) =>
+          !t.chartFound &&
+          !t.balanceDataFound &&
+          !t.tokenDetailsFound &&
+          !t.marketDetailsFound &&
+          !t.yourActivityFound,
+      ).length
+    );
+  }, 0);
+
+  markdown += `| Metric | Value |\n`;
+  markdown += `|--------|-------|\n`;
+  markdown += `| **Networks Tested** | ${networkResults.length} |\n`;
+  markdown += `| **Total Tokens Verified** | ${totalTokensAll} |\n`;
+  markdown += `| **All 5 Sections Found** | ${totalWithAllSections} (${((totalWithAllSections / totalTokensAll) * 100).toFixed(1)}%) |\n`;
+  markdown += `| **Partial Sections Found** | ${totalWithPartialSections} (${((totalWithPartialSections / totalTokensAll) * 100).toFixed(1)}%) |\n`;
+  markdown += `| **No Sections Found** | ${totalWithNoSections} (${((totalWithNoSections / totalTokensAll) * 100).toFixed(1)}%) |\n\n`;
+
+  // Network Comparison Table
+  markdown += `## 📈 Network Comparison\n\n`;
+  markdown += `| Network | Chain ID | Tokens Tested | ✅ All Sections | ⚠️ Partial | ❌ None |\n`;
+  markdown += `|---------|----------|---------------|-----------------|-----------|----------|\n`;
+
+  networkResults.forEach((network) => {
+    const allSections = network.results.filter(
+      (t) =>
+        t.chartFound &&
+        t.balanceDataFound &&
+        t.tokenDetailsFound &&
+        t.marketDetailsFound &&
+        t.yourActivityFound,
+    ).length;
+    const partial = network.results.filter(
+      (t) =>
+        (t.chartFound ||
+          t.balanceDataFound ||
+          t.tokenDetailsFound ||
+          t.marketDetailsFound ||
+          t.yourActivityFound) &&
+        !(
+          t.chartFound &&
+          t.balanceDataFound &&
+          t.tokenDetailsFound &&
+          t.marketDetailsFound &&
+          t.yourActivityFound
+        ),
+    ).length;
+    const none = network.results.filter(
+      (t) =>
+        !t.chartFound &&
+        !t.balanceDataFound &&
+        !t.tokenDetailsFound &&
+        !t.marketDetailsFound &&
+        !t.yourActivityFound,
+    ).length;
+
+    markdown += `| **${network.networkName}** | ${network.chainId} | ${network.totalTokensTested} | ${allSections} | ${partial} | ${none} |\n`;
+  });
+  markdown += `\n---\n\n`;
+
+  // Detailed sections for each network
+  networkResults.forEach((network, networkIndex) => {
+    markdown += `## ${networkIndex + 1}. ${network.networkName}\n\n`;
+
+    // Network Information
+    markdown += `### 📊 Network Information\n\n`;
+    markdown += `| Property | Value |\n`;
+    markdown += `|----------|-------|\n`;
+    markdown += `| **Network Name** | ${network.networkName} |\n`;
+    markdown += `| **Chain ID** | ${network.chainId} |\n`;
+    markdown += `| **Native Token** | ${network.nativeTokenSymbol} |\n`;
+    markdown += `| **Tokenlist URL** | [View Tokenlist](${network.tokenlistUrl}) |\n`;
+    if (network.blockExplorerUrl) {
+      markdown += `| **Block Explorer** | [View Explorer](${network.blockExplorerUrl}) |\n`;
+    }
+    markdown += `| **Total Tokens Tested** | ${network.totalTokensTested} |\n`;
+    markdown += `| **Test Completed** | ${network.timestamp.toLocaleString()} |\n\n`;
+
+    // Summary Statistics
+    markdown += `### 📈 Summary Statistics\n\n`;
+
+    const allSections = network.results.filter(
+      (t) =>
+        t.chartFound &&
+        t.balanceDataFound &&
+        t.tokenDetailsFound &&
+        t.marketDetailsFound &&
+        t.yourActivityFound,
+    ).length;
+    const partial = network.results.filter(
+      (t) =>
+        (t.chartFound ||
+          t.balanceDataFound ||
+          t.tokenDetailsFound ||
+          t.marketDetailsFound ||
+          t.yourActivityFound) &&
+        !(
+          t.chartFound &&
+          t.balanceDataFound &&
+          t.tokenDetailsFound &&
+          t.marketDetailsFound &&
+          t.yourActivityFound
+        ),
+    ).length;
+    const none = network.results.filter(
+      (t) =>
+        !t.chartFound &&
+        !t.balanceDataFound &&
+        !t.tokenDetailsFound &&
+        !t.marketDetailsFound &&
+        !t.yourActivityFound,
+    ).length;
+
+    markdown += `| Category | Count | Percentage |\n`;
+    markdown += `|----------|-------|------------|\n`;
+    markdown += `| ✅ **All 5 Sections Found** | ${allSections} | ${((allSections / network.totalTokensTested) * 100).toFixed(1)}% |\n`;
+    markdown += `| ⚠️ **Partial Sections Found** | ${partial} | ${((partial / network.totalTokensTested) * 100).toFixed(1)}% |\n`;
+    markdown += `| ❌ **No Sections Found** | ${none} | ${((none / network.totalTokensTested) * 100).toFixed(1)}% |\n\n`;
+
+    // Section Breakdown
+    markdown += `### 📋 Section Coverage Details\n\n`;
+    markdown += `| Section | Found | Not Found | Coverage |\n`;
+    markdown += `|---------|-------|-----------|----------|\n`;
+
+    const chartFound = network.results.filter((t) => t.chartFound).length;
+    const balanceFound = network.results.filter((t) => t.balanceDataFound).length;
+    const tokenDetailsFound = network.results.filter((t) => t.tokenDetailsFound).length;
+    const marketDetailsFound = network.results.filter((t) => t.marketDetailsFound).length;
+    const activityFound = network.results.filter((t) => t.yourActivityFound).length;
+
+    markdown += `| **Price Chart** | ${chartFound} | ${network.totalTokensTested - chartFound} | ${((chartFound / network.totalTokensTested) * 100).toFixed(1)}% |\n`;
+    markdown += `| **Your Balance** | ${balanceFound} | ${network.totalTokensTested - balanceFound} | ${((balanceFound / network.totalTokensTested) * 100).toFixed(1)}% |\n`;
+    markdown += `| **Token Details** | ${tokenDetailsFound} | ${network.totalTokensTested - tokenDetailsFound} | ${((tokenDetailsFound / network.totalTokensTested) * 100).toFixed(1)}% |\n`;
+    markdown += `| **Market Details** | ${marketDetailsFound} | ${network.totalTokensTested - marketDetailsFound} | ${((marketDetailsFound / network.totalTokensTested) * 100).toFixed(1)}% |\n`;
+    markdown += `| **Your Activity** | ${activityFound} | ${network.totalTokensTested - activityFound} | ${((activityFound / network.totalTokensTested) * 100).toFixed(1)}% |\n\n`;
+
+    // Token Details Table
+    markdown += `### 📄 Token Details Page Verification Results\n\n`;
+    markdown += `<details>\n<summary>Click to expand token details</summary>\n\n`;
+    markdown += `| # | Token | Type | Chart | Balance | Details | Market | Activity |\n`;
+    markdown += `|---|-------|------|-------|---------|---------|--------|----------|\n`;
+
+    network.results.forEach((token, index) => {
+      const type = token.isNativeToken ? 'Native 🌟' : 'ERC-20';
+      const chartIcon = token.chartFound ? '✅' : '❌';
+      const balanceIcon = token.balanceDataFound ? '✅' : '❌';
+      const detailsIcon = token.tokenDetailsFound ? '✅' : '❌';
+      const marketIcon = token.marketDetailsFound ? '✅' : '❌';
+      const activityIcon = token.yourActivityFound ? '✅' : '❌';
+
+      markdown += `| ${index + 1} | **${token.symbol}** | ${type} | ${chartIcon} | ${balanceIcon} | ${detailsIcon} | ${marketIcon} | ${activityIcon} |\n`;
+    });
+
+    markdown += `\n</details>\n\n`;
+
+    // Native Token Details (if tested)
+    const nativeToken = network.results.find((t) => t.isNativeToken);
+    if (nativeToken) {
+      markdown += `### 🌟 Native Token Details\n\n`;
+      markdown += `| Property | Status | Details |\n`;
+      markdown += `|----------|--------|----------|\n`;
+      markdown += `| **Symbol** | — | ${nativeToken.symbol} |\n`;
+      markdown += `| **Price Chart** | ${nativeToken.chartFound ? '✅ Found' : '❌ Not Found'} | ${nativeToken.chartDetails?.chartFound ? `Canvas: ${nativeToken.chartDetails?.hasCandles ? '✅' : '❌'}, Price Axis: ${nativeToken.chartDetails?.hasPriceAxis ? '✅' : '❌'}, Time Axis: ${nativeToken.chartDetails?.hasTimeAxis ? '✅' : '❌'}` : 'N/A'} |\n`;
+      markdown += `| **Your Balance** | ${nativeToken.balanceDataFound ? '✅ Found' : '❌ Not Found'} | ${nativeToken.balanceDetails ? JSON.stringify(nativeToken.balanceDetails).substring(0, 50) + '...' : 'N/A'} |\n`;
+      markdown += `| **Token Details** | ${nativeToken.tokenDetailsFound ? '✅ Found' : '❌ Not Found'} | ${nativeToken.tokenDetails?.network || 'N/A'} |\n`;
+      markdown += `| **Market Details** | ${nativeToken.marketDetailsFound ? '✅ Found' : '❌ Not Found'} | ${nativeToken.marketDetails ? 'Available' : 'N/A'} |\n`;
+      markdown += `| **Your Activity** | ${nativeToken.yourActivityFound ? '✅ Found' : '❌ Not Found'} | Sent: ${nativeToken.yourActivity?.sentCount || 0}, Received: ${nativeToken.yourActivity?.receivedCount || 0} |\n\n`;
+    }
+
+    markdown += `---\n\n`;
+  });
+
+  // Footer
+  markdown += `## 📝 Report Information\n\n`;
+  markdown += `- **Report Generated:** ${reportTimestamp.toLocaleString()}\n`;
+  markdown += `- **Test Framework:** MetaMask E2E Production Tests (Token Details Verification)\n`;
+  markdown += `- **Networks Tested:** ${networkResults.length}\n`;
+  markdown += `- **Total Tokens Verified:** ${totalTokensAll}\n`;
+  markdown += `- **All 5 Sections Coverage:** ${((totalWithAllSections / totalTokensAll) * 100).toFixed(1)}%\n\n`;
+
+  // Write to file
+  const fullPath = path.resolve(outputPath);
+  fs.writeFileSync(fullPath, markdown, 'utf8');
+  console.log(`[REPORT] Token details verification report saved to: ${fullPath}`);
+}

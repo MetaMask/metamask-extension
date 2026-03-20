@@ -205,6 +205,68 @@ export async function getTokensForNetwork(
 }
 
 /**
+ * Network configuration for popular networks (already built-in to MetaMask)
+ * These networks do NOT require custom RPC setup
+ */
+export type NetworkConfigPopular = {
+  /**
+   * Unique identifier for the network (used in test names and reports)
+   */
+  networkId: string;
+
+  /**
+   * Display name of the network
+   */
+  networkName: string;
+
+  /**
+   * Chain ID (decimal number)
+   */
+  chainId: number;
+
+  /**
+   * URL to the tokenlist JSON file
+   */
+  tokenlistUrl: string;
+
+  /**
+   * Optional: Block explorer URL
+   */
+  blockExplorerUrl?: string;
+};
+
+/**
+ * Network configuration for additional networks (already built-in to MetaMask)
+ * These networks do NOT require custom RPC setup
+ */
+export type NetworkConfigAdditional = {
+  /**
+   * Unique identifier for the network (used in test names and reports)
+   */
+  networkId: string;
+
+  /**
+   * Display name of the network
+   */
+  networkName: string;
+
+  /**
+   * Chain ID (decimal number)
+   */
+  chainId: number;
+
+  /**
+   * URL to the tokenlist JSON file
+   */
+  tokenlistUrl: string;
+
+  /**
+   * Optional: Block explorer URL
+   */
+  blockExplorerUrl?: string;
+};
+
+/**
  * Network configurations for production token import tests
  *
  * Add new networks here to automatically include them in tests
@@ -440,7 +502,33 @@ export const NETWORK_CONFIGS: NetworkConfig[] = [
 ];
 
 /**
- * Get network config by network ID
+ * Popular network configurations (pre-built networks in MetaMask)
+ * These networks don't require custom RPC setup - they're already configured in MetaMask
+ */
+export const NETWORK_CONFIGS_POPULAR: NetworkConfigPopular[] = [
+  {
+    networkId: 'Base',
+    networkName: 'Ethereum',
+    chainId: 8453,
+    tokenlistUrl: 'https://raw.githubusercontent.com/etherlinkcom/Token-List/refs/heads/main/tokenlist.json',
+  },
+];
+
+/**
+ * Additional network configurations (pre-built networks in MetaMask)
+ * These networks don't require custom RPC setup - they're already configured in MetaMask
+ */
+export const NETWORK_CONFIGS_ADDITIONAL: NetworkConfigAdditional[] = [
+  {
+    networkId: 'Mon',
+    networkName: 'Monad',
+    chainId: 143,
+    tokenlistUrl: 'https://raw.githubusercontent.com/monad-crypto/token-list/refs/heads/main/tokenlist-mainnet.json',
+  },
+];
+
+/**
+ * Get network config by network ID (for custom networks)
  *
  * @param networkId - The unique identifier for the network
  * @returns The network configuration or undefined if not found
@@ -450,10 +538,52 @@ export function getNetworkConfig(networkId: string): NetworkConfig | undefined {
 }
 
 /**
- * Get all network IDs
+ * Get popular network config by network ID
+ *
+ * @param networkId - The unique identifier for the network
+ * @returns The network configuration or undefined if not found
+ */
+export function getPopularNetworkConfig(
+  networkId: string,
+): NetworkConfigPopular | undefined {
+  return NETWORK_CONFIGS_POPULAR.find((config) => config.networkId === networkId);
+}
+
+/**
+ * Get additional network config by network ID
+ *
+ * @param networkId - The unique identifier for the network
+ * @returns The network configuration or undefined if not found
+ */
+export function getAdditionalNetworkConfig(
+  networkId: string,
+): NetworkConfigAdditional | undefined {
+  return NETWORK_CONFIGS_ADDITIONAL.find((config) => config.networkId === networkId);
+}
+
+/**
+ * Get all network IDs (for custom networks)
  *
  * @returns Array of all network IDs
  */
 export function getAllNetworkIds(): string[] {
   return NETWORK_CONFIGS.map((config) => config.networkId);
+}
+
+/**
+ * Get all popular network IDs
+ *
+ * @returns Array of all popular network IDs
+ */
+export function getAllPopularNetworkIds(): string[] {
+  return NETWORK_CONFIGS_POPULAR.map((config) => config.networkId);
+}
+
+/**
+ * Get all additional network IDs
+ *
+ * @returns Array of all additional network IDs
+ */
+export function getAllAdditionalNetworkIds(): string[] {
+  return NETWORK_CONFIGS_ADDITIONAL.map((config) => config.networkId);
 }

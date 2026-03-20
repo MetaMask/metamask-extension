@@ -24,11 +24,7 @@ import AddEditNetworkModal from '../../../page-objects/pages/dialog/add-edit-net
 import AddNetworkRpcUrlModal from '../../../page-objects/pages/dialog/add-network-rpc-url';
 import HomePage from '../../../page-objects/pages/home/homepage';
 import AssetListPage from '../../../page-objects/pages/home/asset-list';
-import NetworkManager from '../../../page-objects/pages/network-manager';
-import {
-  NETWORK_CONFIGS_ADDITIONAL,
-  NetworkConfigAdditional,
-} from './network-configs';
+import { NETWORK_CONFIGS_POPULAR, NetworkConfigPopular } from './network-configs';
 import {
   downloadImage,
   isTransparentFallback,
@@ -48,7 +44,7 @@ import {
  * @param testContext
  */
 async function runTokenImportTest(
-  networkConfig: NetworkConfigAdditional,
+  networkConfig: NetworkConfigPopular,
   testContext: any,
 ): Promise<NetworkTestResult | null> {
   let testResult: NetworkTestResult | null = null;
@@ -117,41 +113,27 @@ async function runTokenImportTest(
       // Verify network was added
       const homepage = new HomePage(driver);
       await homepage.checkPageIsLoaded();
-      await driver.delay(PROD_DELAYS.API_RESPONSE); // Wait for network to stabilize
-
-      const symbol = 'MON';
-      const chainIdHex = '0x8f';
-
-      console.log('[PROD TEST] Opening all network list..');
-      const networkManager = new NetworkManager(driver);
-      await networkManager.openNetworkManager();
-      await networkManager.selectTab("Popular");
-      await networkManager.selectNetworkByNameWithWait("Monad");
-
-      // Wait for account to be imported
-      await driver.delay(PROD_DELAYS.API_RESPONSE * 2);
-
-      // await homepage.checkAddNetworkMessageIsDisplayed(
-      //   networkConfig.networkName,
-      // );
+      await homepage.checkAddNetworkMessageIsDisplayed(
+        networkConfig.networkName,
+      );
 
       console.log(
         `[PROD TEST] ✅ ${networkConfig.networkName} network added successfully`,
       );
 
-      // // Wait for RPC to connect
-      // await driver.delay(PROD_DELAYS.RPC_RESPONSE);
+      // Wait for RPC to connect
+      await driver.delay(PROD_DELAYS.RPC_RESPONSE);
 
-      // // Verify we're on the correct network
-      // try {
-      //   const networkDisplay = await driver.findElement(
-      //     '[data-testid="network-display"]',
-      //   );
-      //   const networkText = await networkDisplay.getText();
-      //   console.log(`[PROD TEST] Current network: ${networkText}`);
-      // } catch (error) {
-      //   console.log('[PROD TEST] Error:', error);
-      // }
+      // Verify we're on the correct network
+      try {
+        const networkDisplay = await driver.findElement(
+          '[data-testid="network-display"]',
+        );
+        const networkText = await networkDisplay.getText();
+        console.log(`[PROD TEST] Current network: ${networkText}`);
+      } catch (error) {
+        console.log('[PROD TEST] Error:', error);
+      }
 
       console.log(
         `[PROD TEST] Fetching ${networkConfig.networkName} tokenlist...`,
@@ -832,13 +814,13 @@ async function runTokenImportTest(
 const allNetworkResults: NetworkTestResult[] = [];
 
 /**
- * Generate tests for all configured additional networks
+ * Generate tests for all configured popular networks
  */
-describe('Production E2E: Import Tokens for Additional Networks', function (this: Suite) {
+describe('Production E2E: Import Tokens for Popular Networks', function (this: Suite) {
   this.timeout(14400000); // 4 hours for importing many tokens across all networks
 
-  // Generate a test for each additional network in the configuration
-  NETWORK_CONFIGS_ADDITIONAL.forEach((networkConfig: NetworkConfigAdditional) => {
+  // Generate a test for each popular network in the configuration
+  NETWORK_CONFIGS_POPULAR.forEach((networkConfig: NetworkConfigPopular) => {
     it(`imports all tokens from ${networkConfig.networkName} (Chain ID: ${networkConfig.chainId})`, async function () {
       // Set per-test timeout to 60 minutes per network
       this.timeout(3600000);
