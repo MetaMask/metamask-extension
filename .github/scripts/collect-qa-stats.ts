@@ -1,6 +1,4 @@
-#!/usr/bin/env node
 /**
- *
  * Collects QA metrics into a qa-stats.json file, key: value format.
  * Metrics that could not be collected (missing artifacts, tests did not run)
  * are omitted from the output, i.e., they will not appear in the output file.
@@ -68,14 +66,67 @@
  */
 
 import { readFile, writeFile, mkdir, readdir } from 'fs/promises';
+import type { Dirent } from 'fs';
 import { execSync } from 'child_process';
 import { join } from 'path';
 
-const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
+// ---------------------------------------------------------------------------
+// Types
+// ---------------------------------------------------------------------------
+
+type GitHubArtifact = {
+  id: number;
+  name: string;
+  archive_download_url: string;
+};
+
+type GitHubWorkflowRun = {
+  id: number;
+  run_number: number;
+  created_at: string;
+};
+
+type JUnitParseResult = {
+  total: number;
+  perFile: Record<string, number>;
+};
+
+type ScanResult = {
+  defined: number;
+  skipped: number;
+};
+
+type DescribeBlock = {
+  start: number;
+  end: number;
+  content: string;
+};
+
+type TestFile = {
+  path?: string;
+  tests?: number;
+};
+
+type TestRun = {
+  name: string;
+  testFiles?: TestFile[];
+};
+
+type Collector = {
+  namespace: string;
+  collect: () => Promise<Record<string, number>>;
+};
+
+// ---------------------------------------------------------------------------
+// Environment
+// ---------------------------------------------------------------------------
+
+const rawToken = process.env.GITHUB_TOKEN;
+if (!rawToken) throw new Error('Missing required GITHUB_TOKEN env var');
+const GITHUB_TOKEN: string = rawToken;
+
 const GITHUB_REPOSITORY =
   process.env.GITHUB_REPOSITORY ?? 'MetaMask/metamask-extension';
-
-if (!GITHUB_TOKEN) throw new Error('Missing required GITHUB_TOKEN env var');
 
 // ---------------------------------------------------------------------------
 // Static-scan targets
@@ -91,22 +142,20 @@ const SCAN_E2E_FLASK_DIRS = [
   'test/e2e/snaps',
 ];
 
-const PATTERN_UNIT_TEST_FILE = /\.test\.(ts|tsx|js|jsx)$/;
-const PATTERN_E2E_SPEC_FILE = /\.spec\.(ts|js)$/;
+const PATTERN_UNIT_TEST_FILE = /\.test\.(ts|tsx|js|jsx)$/u;
+const PATTERN_E2E_SPEC_FILE = /\.spec\.(ts|js)$/u;
 
 // ---------------------------------------------------------------------------
 // GitHub API helpers
 // ---------------------------------------------------------------------------
 
-let _runId = null;
-let _artifactList = null;
+let _runId: string | null = null;
+let _artifactList: GitHubArtifact[] | null = null;
 
 /**
  * Fetches the ID of the latest successful "Main" workflow run on `main`.
- *
- * @returns {Promise<string>}
  */
-async function getLatestMainRunId() {
+async function getLatestMainRunId(): Promise<string> {
   const url = `https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/workflows/main.yml/runs?branch=main&status=success&per_page=1`;
   const res = await fetch(url, {
     headers: {
@@ -121,7 +170,9 @@ async function getLatestMainRunId() {
     );
   }
 
-  const data = await res.json();
+  const data = (await res.json()) as {
+    workflow_runs?: GitHubWorkflowRun[];
+  };
   const run = data.workflow_runs?.[0];
   if (!run) {
     throw new Error('No successful Main workflow runs found on main');
@@ -133,7 +184,7 @@ async function getLatestMainRunId() {
   return String(run.id);
 }
 
-async function getRunId() {
+async function getRunId(): Promise<string> {
   if (_runId) return _runId;
   _runId = await getLatestMainRunId();
   return _runId;
@@ -142,17 +193,15 @@ async function getRunId() {
 /**
  * Fetches (and caches) the list of artifacts for the discovered CI run.
  * First call fetches and stores, every subsequent call returns the cached value.
- *
- * @returns {Promise<Array>}
  */
-async function getArtifactList() {
+async function getArtifactList(): Promise<GitHubArtifact[]> {
   if (_artifactList) return _artifactList;
 
   const runId = await getRunId();
-  const artifacts = [];
+  const artifacts: GitHubArtifact[] = [];
   let page = 1;
 
-  while (true) {
+  for (;;) {
     const url = `https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/runs/${runId}/artifacts?per_page=100&page=${page}`;
     const res = await fetch(url, {
       headers: {
@@ -167,7 +216,7 @@ async function getArtifactList() {
       );
     }
 
-    const data = await res.json();
+    const data = (await res.json()) as { artifacts: GitHubArtifact[] };
     artifacts.push(...data.artifacts);
 
     if (data.artifacts.length < 100) break;
@@ -182,18 +231,16 @@ async function getArtifactList() {
  * Downloads a named artifact from the discovered CI run, extracts it into a
  * local directory named after the artifact, and returns that directory path.
  *
- * @param {string} artifactName
- * @returns {Promise<string>} Path to the directory containing the extracted files
+ * @param artifactName - The name of the artifact to download.
+ * @returns Path to the directory containing the extracted files.
  */
-async function downloadArtifact(artifactName) {
+async function downloadArtifact(artifactName: string): Promise<string> {
   const artifacts = await getArtifactList();
   const artifact = artifacts.find((a) => a.name === artifactName);
   const runId = await getRunId();
 
   if (!artifact) {
-    throw new Error(
-      `Artifact "${artifactName}" not found in run ${runId}`,
-    );
+    throw new Error(`Artifact "${artifactName}" not found in run ${runId}`);
   }
 
   // GitHub redirects to a pre-signed S3 URL. Follow manually so the
@@ -231,31 +278,26 @@ async function downloadArtifact(artifactName) {
 // JUnit XML helpers
 // ---------------------------------------------------------------------------
 
-function getNumericAttribute(tag, name) {
-  const match = tag.match(new RegExp(`${name}="(\\d+)"`));
-  return match ? Number(match[1]) : 0;
-}
-
-function getStringAttribute(tag, name) {
-  const match = tag.match(new RegExp(`${name}="([^"]+)"`));
+function getStringAttribute(tag: string, name: string): string {
+  const match = tag.match(new RegExp(`${name}="([^"]+)"`, 'u'));
   return match ? match[1] : '';
 }
 
 /**
- * Parses JUnit XML and returns { total, perFile } where perFile maps
+ * Parses JUnit XML and returns `{ total, perFile }` where `perFile` maps
  * test file path to executed test count.
  *
  * Relies on jest-junit's `addFileAttribute: 'true'` option, which adds a
- * `file` attribute to each <testcase> element with the absolute path to the
- * test file. Skipped tests are identified by a <skipped> child element and
+ * `file` attribute to each `<testcase>` element with the absolute path to the
+ * test file. Skipped tests are identified by a `<skipped>` child element and
  * excluded from the count.
  *
- * @param {string} rawXml
- * @returns {{ total: number, perFile: Record<string, number> }}
+ * @param rawXml - Raw JUnit XML string.
  */
-function parseJUnitXml(rawXml) {
-  const testcasePattern = /<testcase\b([^>]*)(?:\/>|>([\s\S]*?)<\/testcase>)/g;
-  const perFile = {};
+function parseJUnitXml(rawXml: string): JUnitParseResult {
+  const testcasePattern =
+    /<testcase\b([^>]*)(?:\/>|>([\s\S]*?)<\/testcase>)/gu;
+  const perFile: Record<string, number> = {};
   let total = 0;
 
   for (const match of rawXml.matchAll(testcasePattern)) {
@@ -281,13 +323,15 @@ function parseJUnitXml(rawXml) {
 /**
  * Recursively collects file paths under `dir` that satisfy `predicate(filename)`.
  *
- * @param {string} dir
- * @param {(name: string) => boolean} predicate
- * @returns {Promise<string[]>}
+ * @param dir - Directory to walk.
+ * @param predicate - Returns true for filenames to include.
  */
-async function walkFiles(dir, predicate) {
-  const results = [];
-  let entries;
+async function walkFiles(
+  dir: string,
+  predicate: (name: string) => boolean,
+): Promise<string[]> {
+  const results: string[] = [];
+  let entries: Dirent[];
   try {
     entries = await readdir(dir, { withFileTypes: true });
   } catch {
@@ -306,19 +350,20 @@ async function walkFiles(dir, predicate) {
 
 /**
  * Counts all individual test definitions in a source string — both active and
- * skipped. Matches it(, it.skip(, it.each(, test(, test.skip(, test.each(, etc.
+ * skipped. Matches `it(`, `it.skip(`, `it.each(`, `test(`, `test.skip(`,
+ * `test.each(`, etc.
  *
- * Parameterized tests (it.each) are counted as one definition each, even
- * though they expand into multiple cases at runtime — so total_tests_defined
- * may be lower than total_tests_run.
+ * Parameterized tests (`it.each`) are counted as one definition each, even
+ * though they expand into multiple cases at runtime — so `total_tests_defined`
+ * may be lower than `total_tests_run`.
  *
- * @param {string} source
- * @returns {number}
+ * @param source - Source file content.
  */
-function countDefinedTests(source) {
+function countDefinedTests(source: string): number {
   return (
-    source.match(/\b(?:it|test)(?:\.(?:each|skip|only|concurrent))?\s*\(/g) ??
-    []
+    source.match(
+      /\b(?:it|test)(?:\.(?:each|skip|only|concurrent))?\s*\(/gu,
+    ) ?? []
   ).length;
 }
 
@@ -333,14 +378,13 @@ function countDefinedTests(source) {
  * `describe.skip` blocks are extracted via brace matching so their contents are
  * not double-counted against the explicit-skip pass.
  *
- * @param {string} source
- * @returns {number}
+ * @param source - Source file content.
  */
-function countSkips(source) {
+function countSkips(source: string): number {
   // Find all describe.skip blocks using brace matching.
-  const describeBlocks = [];
-  const re = /\bdescribe\.skip\s*\(/g;
-  let m;
+  const describeBlocks: DescribeBlock[] = [];
+  const re = /\bdescribe\.skip\s*\(/gu;
+  let m: RegExpExecArray | null;
   while ((m = re.exec(source)) !== null) {
     const braceStart = source.indexOf('{', m.index + m[0].length);
     if (braceStart === -1) continue;
@@ -367,12 +411,12 @@ function countSkips(source) {
   }
 
   // Part 1: it.skip / test.skip outside describe.skip blocks.
-  const explicit = (outside.match(/\b(?:it|test)\.skip\s*\(/g) ?? []).length;
+  const explicit = (outside.match(/\b(?:it|test)\.skip\s*\(/gu) ?? []).length;
 
   // Part 2: all it() / test() (including .skip) inside describe.skip blocks.
   const implicit = describeBlocks.reduce(
     (sum, { content }) =>
-      sum + (content.match(/\b(?:it|test)(?:\.skip)?\s*\(/g) ?? []).length,
+      sum + (content.match(/\b(?:it|test)(?:\.skip)?\s*\(/gu) ?? []).length,
     0,
   );
 
@@ -383,11 +427,13 @@ function countSkips(source) {
  * Scans one or more directories for test files matching `filePattern` and
  * returns aggregate defined + skipped counts in a single filesystem pass.
  *
- * @param {string[]} dirs - Directories to scan
- * @param {RegExp} filePattern - Filename pattern to include
- * @returns {Promise<{ defined: number, skipped: number }>}
+ * @param dirs - Directories to scan.
+ * @param filePattern - Filename pattern to include.
  */
-async function scanTestFiles(dirs, filePattern) {
+async function scanTestFiles(
+  dirs: string[],
+  filePattern: RegExp,
+): Promise<ScanResult> {
   let defined = 0,
     skipped = 0;
   for (const dir of dirs) {
@@ -409,33 +455,32 @@ async function scanTestFiles(dirs, filePattern) {
  * Maps a unit/integration test file path to a feature category.
  *
  * Rules (first match wins):
- *   ui/components/<group>/   → <group>         (e.g. multichain, app, component_library)
- *   ui/<folder>/             → <folder>         (e.g. ducks, hooks, selectors, pages)
- *   app/scripts/<folder>/    → <folder>         (e.g. controllers, lib, migrations)
- *   app/<folder>/            → <folder>         (e.g. offscreen)
- *   shared/<folder>/         → shared_<folder>  (e.g. shared_lib, shared_constants)
- *   Anything else            → other
+ *   `ui/components/<group>/`  → `<group>`          (e.g. multichain, app, component_library)
+ *   `ui/<folder>/`            → `<folder>`          (e.g. ducks, hooks, selectors, pages)
+ *   `app/scripts/<folder>/`   → `<folder>`          (e.g. controllers, lib, migrations)
+ *   `app/<folder>/`           → `<folder>`          (e.g. offscreen)
+ *   `shared/<folder>/`        → `shared_<folder>`   (e.g. shared_lib, shared_constants)
+ *   Anything else             → `other`
  *
- * @param {string} testFilePath
- * @returns {string}
+ * @param testFilePath - Absolute or relative test file path.
  */
-function getFeatureFolder(testFilePath) {
-  const normalize = (s) => s.toLowerCase().replace(/-/g, '_');
-  const p = testFilePath.replace(/\\/g, '/');
+function getFeatureFolder(testFilePath: string): string {
+  const normalize = (s: string) => s.toLowerCase().replace(/-/gu, '_');
+  const p = testFilePath.replace(/\\/gu, '/');
 
-  const uiComponentsMatch = p.match(/\bui\/components\/([^/]+)/);
+  const uiComponentsMatch = p.match(/\bui\/components\/([^/]+)/u);
   if (uiComponentsMatch) return normalize(uiComponentsMatch[1]);
 
-  const uiMatch = p.match(/\bui\/([^/]+)/);
+  const uiMatch = p.match(/\bui\/([^/]+)/u);
   if (uiMatch) return normalize(uiMatch[1]);
 
-  const appScriptsMatch = p.match(/\bapp\/scripts\/([^/]+)/);
+  const appScriptsMatch = p.match(/\bapp\/scripts\/([^/]+)/u);
   if (appScriptsMatch) return normalize(appScriptsMatch[1]);
 
-  const appMatch = p.match(/\bapp\/([^/]+)/);
+  const appMatch = p.match(/\bapp\/([^/]+)/u);
   if (appMatch) return normalize(appMatch[1]);
 
-  const sharedMatch = p.match(/\bshared\/([^/]+)/);
+  const sharedMatch = p.match(/\bshared\/([^/]+)/u);
   if (sharedMatch) return `shared_${normalize(sharedMatch[1])}`;
 
   return 'other';
@@ -444,13 +489,13 @@ function getFeatureFolder(testFilePath) {
 /**
  * Maps an integration test file path to a feature category.
  *
- * @param {string} testFilePath
- * @returns {string}
+ * @param testFilePath - Absolute or relative test file path.
  */
-function getIntegrationFeatureFolder(testFilePath) {
-  const normalize = (s) => s.toLowerCase().replace(/[^a-z0-9]+/g, '_');
-  const p = testFilePath.replace(/\\/g, '/');
-  const match = p.match(/\btest\/integration\/([^/]+)/);
+function getIntegrationFeatureFolder(testFilePath: string): string {
+  const normalize = (s: string) =>
+    s.toLowerCase().replace(/[^a-z0-9]+/gu, '_');
+  const p = testFilePath.replace(/\\/gu, '/');
+  const match = p.match(/\btest\/integration\/([^/]+)/u);
   return match ? normalize(match[1]) : 'other';
 }
 
@@ -458,22 +503,21 @@ function getIntegrationFeatureFolder(testFilePath) {
  * Maps an E2E test file path to a feature category.
  *
  * Rules (first match wins):
- *   test/e2e/tests/<feature>/  →  <feature>
- *   test/e2e/flask/<feature>/  →  <feature>
- *   test/e2e/<folder>/         →  <folder>  (e.g. accounts, snaps)
- *   Anything else              →  other
+ *   `test/e2e/tests/<feature>/`  →  `<feature>`
+ *   `test/e2e/flask/<feature>/`  →  `<feature>`
+ *   `test/e2e/<folder>/`         →  `<folder>`  (e.g. accounts, snaps)
+ *   Anything else                →  `other`
  *
- * @param {string} filePath
- * @returns {string}
+ * @param filePath - Absolute or relative test file path.
  */
-function getE2eFeatureFolder(filePath) {
-  const normalize = (s) => s.toLowerCase().replace(/-/g, '_');
-  const p = filePath.replace(/\\/g, '/');
+function getE2eFeatureFolder(filePath: string): string {
+  const normalize = (s: string) => s.toLowerCase().replace(/-/gu, '_');
+  const p = filePath.replace(/\\/gu, '/');
 
-  const m = p.match(/\btest\/e2e\/(?:tests|flask)\/([^/]+)/);
+  const m = p.match(/\btest\/e2e\/(?:tests|flask)\/([^/]+)/u);
   if (m) return normalize(m[1]);
 
-  const m2 = p.match(/\btest\/e2e\/([^/]+)/);
+  const m2 = p.match(/\btest\/e2e\/([^/]+)/u);
   if (m2) return normalize(m2[1]);
 
   return 'other';
@@ -484,29 +528,30 @@ function getE2eFeatureFolder(filePath) {
 // ---------------------------------------------------------------------------
 
 /**
- * Downloads all unit-test-results-* shard artifacts (JUnit XML), parses them,
+ * Downloads all `unit-test-results-*` shard artifacts (JUnit XML), parses them,
  * and returns test counts grouped by feature folder.
  *
  * Also counts test definitions and skipped tests via static source analysis.
  *
- * Folders whose total count is below minFolderCount are merged into `other`
+ * Folders whose total count is below `minFolderCount` are merged into `other`
  * to reduce noise.
  *
- * @param {number} [minFolderCount=200]
- * @returns {Promise<Record<string, number>>}
+ * @param minFolderCount - Folders below this threshold are folded into `other`.
  */
-async function collectUnitTestCount(minFolderCount = 200) {
+async function collectUnitTestCount(
+  minFolderCount = 200,
+): Promise<Record<string, number>> {
   console.log('[unit] collecting per-suite counts from shard artifacts...');
 
   const artifacts = await getArtifactList();
   const shardArtifacts = artifacts.filter((a) =>
-    /^unit-test-results-\d+$/.test(a.name),
+    /^unit-test-results-\d+$/u.test(a.name),
   );
   console.log(`[unit] found ${shardArtifacts.length} shard artifact(s)`);
 
   if (shardArtifacts.length === 0) return {};
 
-  const folderCounts = {};
+  const folderCounts: Record<string, number> = {};
   let total = 0;
 
   for (const artifact of shardArtifacts) {
@@ -529,7 +574,7 @@ async function collectUnitTestCount(minFolderCount = 200) {
   );
   console.log(`[unit] defined: ${defined}, skipped (static): ${skipped}`);
 
-  const result = {
+  const result: Record<string, number> = {
     total_tests_run: total,
     total_tests_skipped: skipped,
     total_tests_defined: defined,
@@ -546,14 +591,12 @@ async function collectUnitTestCount(minFolderCount = 200) {
 }
 
 /**
- * Downloads the integration-test-results artifact (single, no sharding),
+ * Downloads the `integration-test-results` artifact (single, no sharding),
  * parses the JUnit XML, and returns test counts grouped by feature folder.
  *
  * Also counts test definitions and skipped tests via static source analysis.
- *
- * @returns {Promise<Record<string, number>>}
  */
-async function collectIntegrationTestCount() {
+async function collectIntegrationTestCount(): Promise<Record<string, number>> {
   console.log('[integration] collecting per-suite counts from artifact...');
 
   const artifacts = await getArtifactList();
@@ -572,7 +615,7 @@ async function collectIntegrationTestCount() {
 
   console.log(`[integration] total: ${total}`);
 
-  const folderCounts = {};
+  const folderCounts: Record<string, number> = {};
   for (const [filePath, count] of Object.entries(perFile)) {
     const folder = getIntegrationFeatureFolder(filePath);
     folderCounts[folder] = (folderCounts[folder] ?? 0) + count;
@@ -586,7 +629,7 @@ async function collectIntegrationTestCount() {
     `[integration] defined: ${defined}, skipped (static): ${skipped}`,
   );
 
-  const result = {
+  const result: Record<string, number> = {
     total_tests_run: total,
     total_tests_skipped: skipped,
     total_tests_defined: defined,
@@ -603,15 +646,13 @@ async function collectIntegrationTestCount() {
 // ---------------------------------------------------------------------------
 
 /** Cached parsed content of test-runs-chrome.json, shared across collectors. */
-let _e2eReportCache = null;
+let _e2eReportCache: TestRun[] | null = null;
 
 /**
- * Downloads the test-e2e-chrome-report artifact (once, cached) and returns
- * the parsed TestRun[] array from test-runs-chrome.json.
- *
- * @returns {Promise<Array>}
+ * Downloads the `test-e2e-chrome-report` artifact (once, cached) and returns
+ * the parsed `TestRun[]` array from `test-runs-chrome.json`.
  */
-async function getE2eReport() {
+async function getE2eReport(): Promise<TestRun[]> {
   if (_e2eReportCache) return _e2eReportCache;
 
   const artifactName = 'test-e2e-chrome-report';
@@ -620,7 +661,7 @@ async function getE2eReport() {
 
   // The artifact ZIP contains test-runs-chrome.json at its root.
   // Fall back to the full path in case the upload preserves directory structure.
-  let raw;
+  let raw: string;
   try {
     raw = await readFile(join(destDir, 'test-runs-chrome.json'), 'utf8');
   } catch {
@@ -630,27 +671,25 @@ async function getE2eReport() {
     );
   }
 
-  _e2eReportCache = JSON.parse(raw);
+  _e2eReportCache = JSON.parse(raw) as TestRun[];
   return _e2eReportCache;
 }
 
 /** Cached parsed content of test-runs-firefox.json, shared across collectors. */
-let _e2eFirefoxReportCache = null;
+let _e2eFirefoxReportCache: TestRun[] | null = null;
 
 /**
- * Downloads the test-e2e-firefox-report artifact (once, cached) and returns
- * the parsed TestRun[] array from test-runs-firefox.json.
- *
- * @returns {Promise<Array>}
+ * Downloads the `test-e2e-firefox-report` artifact (once, cached) and returns
+ * the parsed `TestRun[]` array from `test-runs-firefox.json`.
  */
-async function getE2eFirefoxReport() {
+async function getE2eFirefoxReport(): Promise<TestRun[]> {
   if (_e2eFirefoxReportCache) return _e2eFirefoxReportCache;
 
   const artifactName = 'test-e2e-firefox-report';
   console.log(`[e2e] downloading ${artifactName}...`);
   const destDir = await downloadArtifact(artifactName);
 
-  let raw;
+  let raw: string;
   try {
     raw = await readFile(join(destDir, 'test-runs-firefox.json'), 'utf8');
   } catch {
@@ -660,7 +699,7 @@ async function getE2eFirefoxReport() {
     );
   }
 
-  _e2eFirefoxReportCache = JSON.parse(raw);
+  _e2eFirefoxReportCache = JSON.parse(raw) as TestRun[];
   return _e2eFirefoxReportCache;
 }
 
@@ -679,17 +718,15 @@ async function getE2eFirefoxReport() {
  *
  * Per-feature keys come from Chrome main only (canonical, like Android in mobile).
  * Static analysis covers both main + flask directories combined.
- *
- * @returns {Promise<Record<string, number>>}
  */
-async function collectE2eTestCount() {
+async function collectE2eTestCount(): Promise<Record<string, number>> {
   console.log('[e2e] collecting counts from e2e reports...');
 
   const chromeRuns = await getE2eReport();
 
   // --- Main channel (Chrome, canonical) ---
   let mainChromeTotal = 0;
-  const folderCounts = {};
+  const folderCounts: Record<string, number> = {};
 
   for (const run of chromeRuns.filter(
     (r) => r.name === 'test-e2e-chrome-browserify',
@@ -738,7 +775,8 @@ async function collectE2eTestCount() {
     }
     console.log(`[e2e/flask/firefox] total: ${flaskFirefoxTotal}`);
   } catch (err) {
-    console.warn(`[e2e] firefox report not available, skipping: ${err.message}`);
+    const message = err instanceof Error ? err.message : String(err);
+    console.warn(`[e2e] firefox report not available, skipping: ${message}`);
   }
 
   // --- Static analysis across both main and flask dirs ---
@@ -749,7 +787,7 @@ async function collectE2eTestCount() {
   );
   console.log(`[e2e] defined: ${defined}, skipped (static): ${skipped}`);
 
-  const result = {
+  const result: Record<string, number> = {
     total_tests_run: mainChromeTotal + flaskChromeTotal,
     total_tests_skipped: skipped,
     total_tests_defined: defined,
@@ -766,7 +804,8 @@ async function collectE2eTestCount() {
   if (flaskChromeTotal > 0 || flaskFirefoxTotal > 0) {
     result.flask_tests_run = flaskChromeTotal;
     result.flask_chrome_tests_run = flaskChromeTotal;
-    if (flaskFirefoxTotal > 0) result.flask_firefox_tests_run = flaskFirefoxTotal;
+    if (flaskFirefoxTotal > 0)
+      result.flask_firefox_tests_run = flaskFirefoxTotal;
   }
 
   // Per-feature breakdown from Chrome main only (canonical, like Android in mobile)
@@ -782,31 +821,31 @@ async function collectE2eTestCount() {
 // ---------------------------------------------------------------------------
 
 /**
- * Counts benchmark presets defined in test/e2e/benchmarks/utils/constants.ts.
+ * Counts benchmark presets defined in `test/e2e/benchmarks/utils/constants.ts`.
  *
- * Each preset (e.g. startupStandardHome, userJourneyAssets) is one benchmark
+ * Each preset (e.g. `startupStandardHome`, `userJourneyAssets`) is one benchmark
  * test. Presets are categorized by their camelCase prefix and reported as
- * {category}_tests_defined keys (static source analysis, no artifact downloads).
- *
- * @returns {Promise<Record<string, number>>}
+ * `{category}_tests_defined` keys (static source analysis, no artifact downloads).
  */
-async function collectBenchmarkScenarioCount() {
+async function collectBenchmarkScenarioCount(): Promise<
+  Record<string, number>
+> {
   const constantsFile = 'test/e2e/benchmarks/utils/constants.ts';
   console.log(`[benchmark] reading preset definitions from ${constantsFile}...`);
 
   const raw = await readFile(constantsFile, 'utf8');
 
   // Extract all preset string values by their camelCase naming convention.
-  const presets = new Set();
+  const presets = new Set<string>();
   for (const m of raw.matchAll(
-    /'((?:startup|interaction|userJourney)[A-Z][a-zA-Z]*)'/g,
+    /'((?:startup|interaction|userJourney)[A-Z][a-zA-Z]*)'/gu,
   )) {
     presets.add(m[1]);
   }
 
-  const categoryCounts = {};
+  const categoryCounts: Record<string, number> = {};
   for (const preset of presets) {
-    let category;
+    let category: string;
     if (preset.startsWith('startup')) {
       category = 'startup';
     } else if (preset.startsWith('interaction')) {
@@ -823,7 +862,7 @@ async function collectBenchmarkScenarioCount() {
   const total = presets.size;
   console.log(`[benchmark] total: ${total} unique presets`);
 
-  const result = { total_tests_defined: total };
+  const result: Record<string, number> = { total_tests_defined: total };
   for (const [category, count] of Object.entries(categoryCounts)) {
     result[`${category}_tests_defined`] = count;
   }
@@ -835,10 +874,10 @@ async function collectBenchmarkScenarioCount() {
 // Main
 // ---------------------------------------------------------------------------
 
-async function main() {
-  const stats = {};
+async function main(): Promise<void> {
+  const stats: Record<string, Record<string, number>> = {};
 
-  const collectors = [
+  const collectors: Collector[] = [
     { namespace: 'unit', collect: collectUnitTestCount },
     { namespace: 'integration', collect: collectIntegrationTestCount },
     { namespace: 'e2e', collect: collectE2eTestCount },
@@ -851,8 +890,8 @@ async function main() {
       if (Object.keys(nested).length === 0) continue;
       stats[namespace] = nested;
     } catch (err) {
-      // namespace will not be present in the output if the collector fails
-      console.error(`[${namespace}] collector failed, skipping:`, err.message);
+      const message = err instanceof Error ? err.message : String(err);
+      console.error(`[${namespace}] collector failed, skipping:`, message);
     }
   }
 

@@ -21,7 +21,7 @@ jobs:
           skip-allow-scripts: true
 
       - name: Collect QA stats
-        run: node .github/scripts/collect-qa-stats.mjs
+        run: yarn tsx .github/scripts/collect-qa-stats.ts
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_REPOSITORY: ${{ github.repository }}
