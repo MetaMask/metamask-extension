@@ -1346,16 +1346,16 @@
       "React: Act warnings (component updates not wrapped)": 2
     },
     "ui/hooks/useTokenListPolling.test.ts": {
+      "Test errors: Uncaught TypeErrors": 3,
       "error: Error handled by React Router": 3,
       "error: React Router caught the following": 3,
-      "Test errors: Uncaught TypeErrors": 3,
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/hooks/useTokenRatesPolling.test.ts": {
-      "error: Error handled by React Router": 4,
-      "error: React Router caught the following": 4,
       "Test errors: Uncaught Errors": 1,
       "Test errors: Uncaught TypeErrors": 3,
+      "error: Error handled by React Router": 4,
+      "error: React Router caught the following": 4,
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/hooks/useTransactionDisplayData.test.js": {
