@@ -1,6 +1,7 @@
 import { readFile } from 'fs/promises';
 import type { BenchmarkResults } from '../../shared/constants/benchmarks';
 import * as historicalComparison from './historical-comparison';
+import { COMPARISON_SEVERITY } from './comparison-utils';
 import {
   buildBenchmarkSection,
   extractEntries,
@@ -336,7 +337,7 @@ describe('buildBenchmarkSection', () => {
       BASELINE_600,
     );
 
-    expect(html).toContain('🔴 1');
+    expect(html).toContain(`${COMPARISON_SEVERITY.Regression.icon} 1`);
   });
 
   it('shows 🟡 in the cell and no failure badge when p95 is 5–10% above baseline', () => {
@@ -347,15 +348,15 @@ describe('buildBenchmarkSection', () => {
       BASELINE_600,
     );
 
-    expect(html).toContain('🟡');
-    expect(html).not.toContain('🔴 1');
+    expect(html).toContain(COMPARISON_SEVERITY.Warn.icon);
+    expect(html).not.toContain(`${COMPARISON_SEVERITY.Regression.icon} 1`);
   });
 
   it('shows 🟢 for passing entries even when no baseline is given', () => {
     const html = buildBenchmarkSection(withEntries([makeEntry()]), 'Test');
 
     expect(html).toContain('<table>');
-    expect(html).toContain('🟢');
+    expect(html).toContain(COMPARISON_SEVERITY.Pass.icon);
   });
 
   it('shows – for combos where a benchmark has no data', () => {
@@ -425,7 +426,7 @@ describe('buildBenchmarkSection', () => {
       },
     });
 
-    expect(html).toContain('🔴');
+    expect(html).toContain(COMPARISON_SEVERITY.Regression.icon);
     expect(html).toContain('standardHome');
   });
 
@@ -455,8 +456,8 @@ describe('buildBenchmarkSection', () => {
       },
     );
 
-    expect(html).toContain('🟢');
-    expect(html).not.toContain('🔴 1');
+    expect(html).toContain(COMPARISON_SEVERITY.Pass.icon);
+    expect(html).not.toContain(`${COMPARISON_SEVERITY.Regression.icon} 1`);
   });
 
   it('skips metrics absent from the baseline (no false positives)', () => {
@@ -471,7 +472,7 @@ describe('buildBenchmarkSection', () => {
       BASELINE_PASS,
     );
 
-    expect(html).not.toContain('🔴 1');
+    expect(html).not.toContain(`${COMPARISON_SEVERITY.Regression.icon} 1`);
   });
 
   it('skips a percentile when its value is absent from the entry', () => {
@@ -482,7 +483,7 @@ describe('buildBenchmarkSection', () => {
       BASELINE_PASS,
     );
 
-    expect(html).not.toContain('🔴 1');
+    expect(html).not.toContain(`${COMPARISON_SEVERITY.Regression.icon} 1`);
   });
 });
 
@@ -541,7 +542,7 @@ describe('buildPerformanceBenchmarksSection', () => {
     const html = await buildPerformanceBenchmarksSection(HOST);
 
     expect(html).toContain(
-      '<summary>⚡ Performance Benchmarks (🟢 pass · 🟡 warn · 🔴 fail)</summary>',
+      `<summary>⚡ Performance Benchmarks (${COMPARISON_SEVERITY.Pass.icon} pass · ${COMPARISON_SEVERITY.Warn.icon} warn · ${COMPARISON_SEVERITY.Regression.icon} fail)</summary>`,
     );
   });
 

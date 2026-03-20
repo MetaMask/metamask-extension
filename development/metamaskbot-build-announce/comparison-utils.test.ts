@@ -23,7 +23,7 @@ describe('benchmark-comparison', () => {
         DEFAULT_RELATIVE_THRESHOLDS,
       );
       expect(result.severity).toBe(COMPARISON_SEVERITY.Regression.value);
-      expect(result.indication).toBe('🔴');
+      expect(result.indication).toBe(COMPARISON_SEVERITY.Regression.icon);
       expect(result.deltaPercent).toBeCloseTo(0.1);
       expect(result.percentile).toBe('p75');
     });
@@ -37,7 +37,7 @@ describe('benchmark-comparison', () => {
         DEFAULT_RELATIVE_THRESHOLDS,
       );
       expect(result.severity).toBe(COMPARISON_SEVERITY.Pass.value);
-      expect(result.indication).toBe('🟢');
+      expect(result.indication).toBe(COMPARISON_SEVERITY.Pass.icon);
     });
 
     it('classifies 5-10% as warn', () => {
@@ -49,7 +49,7 @@ describe('benchmark-comparison', () => {
         DEFAULT_RELATIVE_THRESHOLDS,
       );
       expect(result.severity).toBe(COMPARISON_SEVERITY.Warn.value);
-      expect(result.indication).toBe('🟡');
+      expect(result.indication).toBe(COMPARISON_SEVERITY.Warn.icon);
       expect(result.percentile).toBe('p95');
     });
 
@@ -62,7 +62,7 @@ describe('benchmark-comparison', () => {
         DEFAULT_RELATIVE_THRESHOLDS,
       );
       expect(result.severity).toBe(COMPARISON_SEVERITY.Pass.value);
-      expect(result.indication).toBe('🟢');
+      expect(result.indication).toBe(COMPARISON_SEVERITY.Pass.icon);
     });
 
     it('classifies a 5-10% improvement as pass', () => {
@@ -75,7 +75,7 @@ describe('benchmark-comparison', () => {
         DEFAULT_RELATIVE_THRESHOLDS,
       );
       expect(result.severity).toBe(COMPARISON_SEVERITY.Pass.value);
-      expect(result.indication).toBe('🟢');
+      expect(result.indication).toBe(COMPARISON_SEVERITY.Pass.icon);
     });
 
     it('handles identical values', () => {

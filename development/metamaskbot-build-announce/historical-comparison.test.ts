@@ -66,13 +66,9 @@ describe('aggregateHistoricalData', () => {
   it('averages across the 3 most recent commits', () => {
     const result = aggregateHistoricalData(mockFile);
 
-    // Both commits contribute to pageLoad/standardHome.uiStartup:
-    // abc123: mean=1000, p75=1100, p95=1300
-    // def456: mean=2000, p75=2200, p95=2600
     expect(result['pageLoad/standardHome']?.uiStartup?.mean).toBe(1500);
     expect(result['pageLoad/standardHome']?.uiStartup?.p75).toBe(1650);
     expect(result['pageLoad/standardHome']?.uiStartup?.p95).toBe(1950);
-    // load: abc123 has (500,550,650), def456 has (600,660,780)
     expect(result['pageLoad/standardHome']?.load?.mean).toBe(550);
     expect(result['pageLoad/standardHome']?.load?.p75).toBe(605);
     expect(result['pageLoad/standardHome']?.load?.p95).toBe(715);
@@ -255,8 +251,6 @@ describe('fetchHistoricalPerformanceDataFromMain', () => {
 
     const result = await fetchHistoricalPerformanceDataFromMain();
 
-    expect(result).not.toBeNull();
-    // Averaged across both commits: (1000+2000)/2 = 1500
     expect(result?.['pageLoad/standardHome']?.uiStartup?.mean).toBe(1500);
     expect(mockFetch).toHaveBeenCalledWith(
       expect.stringContaining('stats/main/performance_data.json'),
