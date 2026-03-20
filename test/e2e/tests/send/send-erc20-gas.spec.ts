@@ -13,7 +13,7 @@ import { DAPP_URL, WINDOW_TITLES } from '../../constants';
 import { withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixtures/fixture-builder';
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 import ActivityListPage from '../../page-objects/pages/home/activity-list';
 import AssetListPage from '../../page-objects/pages/home/asset-list';
 import HomePage from '../../page-objects/pages/home/homepage';
@@ -48,7 +48,7 @@ describe('Send ERC20 - Gas Customization', function () {
         testSpecificMock: mocks,
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         const homePage = new HomePage(driver);
         const assetListPage = new AssetListPage(driver);
@@ -116,7 +116,7 @@ describe('Send ERC20 - Gas Customization', function () {
       async ({ driver, contractRegistry, localNodes }) => {
         const contractAddress =
           await contractRegistry.getContractAddress(smartContract);
-        await loginWithBalanceValidation(driver, localNodes[0]);
+        await login(driver, { localNode: localNodes[0] });
 
         const testDapp = new TestDapp(driver);
         const homePage = new HomePage(driver);
@@ -192,7 +192,7 @@ describe('Send ERC20 - Gas Customization', function () {
       async ({ driver, contractRegistry, localNodes }) => {
         const contractAddress =
           await contractRegistry.getContractAddress(smartContract);
-        await loginWithBalanceValidation(driver, localNodes[0]);
+        await login(driver, { localNode: localNodes[0] });
 
         const testDapp = new TestDapp(driver);
         const homePage = new HomePage(driver);

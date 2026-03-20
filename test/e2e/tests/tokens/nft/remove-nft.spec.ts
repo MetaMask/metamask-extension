@@ -5,7 +5,7 @@ import { MOCK_META_METRICS_ID } from '../../../constants';
 import Homepage from '../../../page-objects/pages/home/homepage';
 import NFTDetailsPage from '../../../page-objects/pages/nft-details-page';
 import NftListPage from '../../../page-objects/pages/home/nft-list';
-import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
+import { login } from '../../../page-objects/flows/login.flow';
 
 describe('Remove NFT', function () {
   const smartContract = SMART_CONTRACTS.NFTS;
@@ -25,7 +25,7 @@ describe('Remove NFT', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver, localNodes }) => {
-        await loginWithBalanceValidation(driver, localNodes[0]);
+        await login(driver, { localNode: localNodes[0] });
 
         // Open the NFT details page and click to remove NFT
         await new Homepage(driver).goToNftTab();

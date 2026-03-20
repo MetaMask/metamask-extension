@@ -1,7 +1,7 @@
 import { Mockttp, MockedEndpoint } from 'mockttp';
 import { withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixtures/fixture-builder';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 import NetworkManager from '../../page-objects/pages/network-manager';
 import NonEvmHomepage from '../../page-objects/pages/home/non-evm-homepage';
 import ActivityListPage from '../../page-objects/pages/home/activity-list';
@@ -201,7 +201,7 @@ const SOLANA_SWAP_ASSETS_CONTROLLER_FIXTURE = {
 };
 
 describe('Swap on Solana', function () {
-  it.only('Completes a Swap between SOL and USDC', async function () {
+  it('Completes a Swap between SOL and USDC', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
@@ -229,8 +229,7 @@ describe('Swap on Solana', function () {
         testSpecificMock: mockSwapSOLtoUSDC,
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
-        // await driver.delay(15000);
+        await login(driver);
 
         // Switch to Solana network
         const networkManager = new NetworkManager(driver);
@@ -297,7 +296,7 @@ describe('Swap on Solana', function () {
         testSpecificMock: mockSwapUSDCtoSOL,
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         // Switch to Solana network
         const networkManager = new NetworkManager(driver);
@@ -346,7 +345,7 @@ describe('Swap on Solana', function () {
         testSpecificMock: mockSwapNoQuotes,
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         // Switch to Solana network
         const networkManager = new NetworkManager(driver);
@@ -382,7 +381,7 @@ describe('Swap on Solana', function () {
         testSpecificMock: mockSwapSOLtoUSDCFailed,
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         // Switch to Solana network
         const networkManager = new NetworkManager(driver);

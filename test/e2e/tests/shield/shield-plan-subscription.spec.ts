@@ -1,7 +1,7 @@
 import { Mockttp } from 'mockttp';
 import { withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixtures/fixture-builder';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 import ShieldPlanPage from '../../page-objects/pages/settings/shield/shield-plan-page';
 import HomePage from '../../page-objects/pages/home/homepage';
 import ShieldSubscriptionApprovePage from '../../page-objects/pages/settings/shield/shield-subscription-approve-page';
@@ -162,7 +162,7 @@ describe('Shield Subscription Tests', function () {
             },
           },
           async ({ driver }) => {
-            await loginWithBalanceValidation(driver);
+            await login(driver);
 
             const homePage = new HomePage(driver);
 
@@ -192,7 +192,7 @@ describe('Shield Subscription Tests', function () {
             },
           },
           async ({ driver }) => {
-            await loginWithBalanceValidation(driver);
+            await login(driver);
 
             const homePage = new HomePage(driver);
 
@@ -226,7 +226,7 @@ describe('Shield Subscription Tests', function () {
             },
           },
           async ({ driver }) => {
-            await loginWithBalanceValidation(driver);
+            await login(driver);
 
             const homePage = new HomePage(driver);
             await homePage.headerNavbar.openSettingsPage();
@@ -263,7 +263,7 @@ describe('Shield Subscription Tests', function () {
             },
           },
           async ({ driver }) => {
-            await loginWithBalanceValidation(driver);
+            await login(driver);
 
             const homePage = new HomePage(driver);
             await homePage.headerNavbar.openSettingsPage();
@@ -318,7 +318,7 @@ describe('Shield Subscription Tests', function () {
             ],
           },
           async ({ driver, localNodes }) => {
-            await loginWithBalanceValidation(driver, localNodes[0]);
+            await login(driver, { localNode: localNodes[0] });
 
             const homePage = new HomePage(driver);
 
@@ -378,7 +378,7 @@ describe('Shield Subscription Tests', function () {
             ],
           },
           async ({ driver, localNodes }) => {
-            await loginWithBalanceValidation(driver, localNodes[0]);
+            await login(driver, { localNode: localNodes[0] });
 
             const homePage = new HomePage(driver);
             await homePage.headerNavbar.openSettingsPage();
@@ -426,7 +426,7 @@ describe('Shield Subscription Tests', function () {
           },
         },
         async ({ driver }) => {
-          await loginWithBalanceValidation(driver);
+          await login(driver);
 
           const homePage = new HomePage(driver);
           await homePage.checkShieldEntryModalIsDisplayed();
@@ -455,7 +455,7 @@ describe('Shield Subscription Tests', function () {
           },
         },
         async ({ driver }) => {
-          await loginWithBalanceValidation(driver);
+          await login(driver);
 
           const homePage = new HomePage(driver);
 

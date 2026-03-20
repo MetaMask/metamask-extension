@@ -4,7 +4,7 @@ import { TestDappSolana } from '../../page-objects/pages/test-dapp-solana';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { DAPP_PATH, WINDOW_TITLES } from '../../constants';
 import { withFixtures } from '../../helpers';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 import { buildSolanaTestSpecificMock } from '../../tests/solana/common-solana';
 import { connectSolanaTestDapp } from './testHelpers';
 
@@ -23,7 +23,7 @@ describe('Solana Wallet Standard - Transfer SOL', function () {
           }),
         },
         async ({ driver }) => {
-          await loginWithBalanceValidation(driver);
+          await login(driver);
           const testDapp = new TestDappSolana(driver);
           await testDapp.openTestDappPage();
           await testDapp.checkPageIsLoaded();
@@ -71,7 +71,7 @@ describe('Solana Wallet Standard - Transfer SOL', function () {
           }),
         },
         async ({ driver }) => {
-          await loginWithBalanceValidation(driver);
+          await login(driver);
           const testDapp = new TestDappSolana(driver);
           await testDapp.openTestDappPage();
           await testDapp.checkPageIsLoaded();
@@ -118,7 +118,7 @@ describe('Solana Wallet Standard - Transfer SOL', function () {
             }),
           },
           async ({ driver }) => {
-            await loginWithBalanceValidation(driver);
+            await login(driver);
             const testDapp = new TestDappSolana(driver);
             await testDapp.openTestDappPage();
             await testDapp.checkPageIsLoaded();

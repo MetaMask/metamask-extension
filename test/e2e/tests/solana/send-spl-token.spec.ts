@@ -3,7 +3,7 @@ import { Suite } from 'mocha';
 import { Mockttp, MockedEndpoint } from 'mockttp';
 import { withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixtures/fixture-builder';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 import NetworkManager from '../../page-objects/pages/network-manager';
 import NonEvmHomepage from '../../page-objects/pages/home/non-evm-homepage';
 import ActivityListPage from '../../page-objects/pages/home/activity-list';
@@ -86,7 +86,7 @@ describe('Send flow - SPL Token', function (this: Suite) {
         testSpecificMock: mockSendWithUSDCVisible,
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         const networkManager = new NetworkManager(driver);
         await networkManager.openNetworkManager();
@@ -140,7 +140,7 @@ describe('Send flow - SPL Token', function (this: Suite) {
         testSpecificMock: mockSendSPLTokenFailed,
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         const networkManager = new NetworkManager(driver);
         await networkManager.openNetworkManager();

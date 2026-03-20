@@ -4,11 +4,11 @@ import { withFixtures } from '../../helpers';
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import AssetListPage from '../../page-objects/pages/home/asset-list';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import {
   DEFAULT_FIXTURE_ACCOUNT_ID,
   DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
 } from '../../constants';
+import { login } from '../../page-objects/flows/login.flow';
 import {
   createBalanceUpdateNotification,
   waitForAccountActivitySubscription,
@@ -57,7 +57,7 @@ describe('Add hide token', function () {
         smartContract,
       },
       async ({ driver, localNodes }) => {
-        await loginWithBalanceValidation(driver, localNodes[0]);
+        await login(driver, { localNode: localNodes[0] });
         const assetListPage = new AssetListPage(driver);
         await assetListPage.checkTokenItemNumber(2);
         await assetListPage.checkTokenAmountIsDisplayed('10 TST');
@@ -113,7 +113,7 @@ describe('Add hide token', function () {
         // the subscribe handshake if auth completes quickly.
         const subscriptionPromise = waitForAccountActivitySubscription();
 
-        await loginWithBalanceValidation(driver, localNodes[0]);
+        await login(driver, { localNode: localNodes[0] });
 
         const assetListPage = new AssetListPage(driver);
         await assetListPage.checkTokenAmountIsDisplayed('10 TST');

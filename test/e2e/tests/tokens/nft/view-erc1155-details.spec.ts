@@ -5,7 +5,7 @@ import FixtureBuilder from '../../../fixtures/fixture-builder';
 import Homepage from '../../../page-objects/pages/home/homepage';
 import NFTDetailsPage from '../../../page-objects/pages/nft-details-page';
 import NftListPage from '../../../page-objects/pages/home/nft-list';
-import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
+import { login } from '../../../page-objects/flows/login.flow';
 
 async function mockIPFSRequest(mockServer: MockttpServer) {
   return [
@@ -30,7 +30,7 @@ describe('View ERC1155 NFT details', function () {
         testSpecificMock: mockIPFSRequest,
       },
       async ({ driver, localNodes }) => {
-        await loginWithBalanceValidation(driver, localNodes[0]);
+        await login(driver, { localNode: localNodes[0] });
 
         // Click to open the NFT details page and check displayed account
         await new Homepage(driver).goToNftTab();

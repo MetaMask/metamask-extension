@@ -205,6 +205,7 @@ import { updateCurrentLocale } from '../../shared/lib/translate';
 import {
   getIsSeedlessOnboardingFeatureEnabled,
   getEnabledAdvancedPermissions,
+  getIsPerpsIncludedInBuild,
 } from '../../shared/lib/environment';
 import { isSnapPreinstalled } from '../../shared/lib/snaps/snaps';
 import { toChecksumHexAddress } from '../../shared/lib/hexstring-utils';
@@ -331,6 +332,8 @@ import {
 } from './controller-init/assets';
 import { TransactionControllerInit } from './controller-init/confirmations/transaction-controller-init';
 import { TransactionPayControllerInit } from './controller-init/transaction-pay-controller-init';
+import { PerpsControllerInit } from './controller-init/perps-controller-init';
+import { PerpsStreamBridge } from './controllers/perps/perps-stream-bridge';
 import { PPOMControllerInit } from './controller-init/confirmations/ppom-controller-init';
 import { SmartTransactionsControllerInit } from './controller-init/smart-transactions/smart-transactions-controller-init';
 import { initControllers } from './controller-init/utils';
@@ -368,6 +371,7 @@ import { applyTransactionContainersExisting } from './lib/transaction/containers
 import {
   getSendBundleSupportedChains,
   isSendBundleSupported,
+  setSentinelApiAuth,
 } from './lib/transaction/sentinel-api';
 import { ShieldControllerInit } from './controller-init/shield/shield-controller-init';
 import { GatorPermissionsControllerInit } from './controller-init/gator-permissions/gator-permissions-controller-init';
@@ -429,9 +433,9 @@ import {
   ClaimsControllerInit,
   ClaimsServiceInit,
 } from './controller-init/claims';
+import { MessengerSubscriptions } from './lib/MessengerSubscriptions';
 import { ProfileMetricsControllerInit } from './controller-init/profile-metrics-controller-init';
 import { ProfileMetricsServiceInit } from './controller-init/profile-metrics-service-init';
-import { MessengerSubscriptions } from './lib/MessengerSubscriptions';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -613,6 +617,9 @@ export default class MetamaskController extends EventEmitter {
       WebSocketService: WebSocketServiceInit,
       BackendWebSocketService: BackendWebSocketServiceInit,
       AccountActivityService: AccountActivityServiceInit,
+      ...(getIsPerpsIncludedInBuild()
+        ? { PerpsController: PerpsControllerInit }
+        : {}),
       PPOMController: PPOMControllerInit,
       PhishingController: PhishingControllerInit,
       AccountTrackerController: AccountTrackerControllerInit,
@@ -908,6 +915,9 @@ export default class MetamaskController extends EventEmitter {
         );
       return getShieldGatewayConfig(getToken, getShieldSubscription, url);
     };
+
+    // Authenticate Sentinel and Transaction API calls via core-backend (AuthenticationController)
+    setSentinelApiAuth(() => this.authenticationController.getBearerToken());
 
     this.notificationServicesController.init();
     this.snapController.init();
@@ -1390,7 +1400,7 @@ export default class MetamaskController extends EventEmitter {
       this.signatureController.resetState.bind(this.signatureController),
       this.bridgeController.resetState.bind(this.bridgeController),
       this.ensController.resetState.bind(this.ensController),
-      this.approvalController.clear.bind(this.approvalController),
+      this.approvalController.clearRequests.bind(this.approvalController),
       // WE SHOULD ADD TokenListController.resetState here too. But it's not implemented yet.
     ];
 
@@ -1546,6 +1556,16 @@ export default class MetamaskController extends EventEmitter {
         }
       });
     }
+
+    // Start perps eligibility monitoring only when basic functionality is on (no external calls when off)
+    if (
+      getIsPerpsIncludedInBuild() &&
+      this.preferencesController.state.useExternalServices
+    ) {
+      this.controllerApi.perpsStartEligibilityMonitoring?.()?.catch((error) => {
+        console.error(error);
+      });
+    }
   }
 
   /**
@@ -1575,12 +1595,25 @@ export default class MetamaskController extends EventEmitter {
     ) {
       this.multichainRatesController.start();
     }
+    if (
+      getIsPerpsIncludedInBuild() &&
+      this.preferencesController.state.useExternalServices
+    ) {
+      this.controllerApi.perpsStartEligibilityMonitoring?.()?.catch((error) => {
+        console.error(error);
+      });
+    }
   }
 
   stopNetworkRequests() {
     this.txController.stopIncomingTransactionPolling();
     this.tokenDetectionController.disable();
     this.multichainRatesController.stop();
+    if (getIsPerpsIncludedInBuild()) {
+      this.controllerApi.perpsStopEligibilityMonitoring?.()?.catch((error) => {
+        console.error(error);
+      });
+    }
   }
 
   resetStates(resetMethods) {
@@ -1741,6 +1774,35 @@ export default class MetamaskController extends EventEmitter {
         const { currentLocale } = currState;
 
         await updateCurrentLocale(currentLocale);
+      }, this.preferencesController.state),
+    );
+
+    this.controllerMessenger.subscribe(
+      'PreferencesController:stateChange',
+      previousValueComparator((prevState, currState) => {
+        const { useExternalServices: prev } = prevState;
+        const { useExternalServices: curr } = currState;
+        if (
+          getIsPerpsIncludedInBuild() &&
+          prev !== curr &&
+          this.controllerApi.perpsStartEligibilityMonitoring &&
+          this.controllerApi.perpsStopEligibilityMonitoring
+        ) {
+          if (curr) {
+            this.controllerApi
+              .perpsStartEligibilityMonitoring?.()
+              ?.catch((error) => {
+                console.error(error);
+              });
+          } else {
+            this.controllerApi
+              .perpsStopEligibilityMonitoring?.()
+              ?.catch((error) => {
+                console.error(error);
+              });
+          }
+        }
+        return true;
       }, this.preferencesController.state),
     );
 
@@ -2151,7 +2213,7 @@ export default class MetamaskController extends EventEmitter {
             approval.type.startsWith(RestrictedMethods.snap_dialog),
         );
         for (const approval of approvals) {
-          this.approvalController.reject(
+          this.approvalController.rejectRequest(
             approval.id,
             new Error('Snap was terminated.'),
           );
@@ -5690,7 +5752,7 @@ export default class MetamaskController extends EventEmitter {
     }
 
     // Only continue if there is no pending approval
-    const hasPendingApproval = this.approvalController.has({
+    const hasPendingApproval = this.approvalController.hasRequest({
       origin: partner.origin,
       type: partner.approvalType,
     });
@@ -6586,9 +6648,31 @@ export default class MetamaskController extends EventEmitter {
       outStream,
     );
 
+    const perpsController = this.controllersByName.PerpsController;
+    const perpsStream = perpsController
+      ? new PerpsStreamBridge({
+          controller: perpsController,
+          perpsInit: this.controllerApi.perpsInit,
+          perpsDisconnect: this.controllerApi.perpsDisconnect,
+          perpsToggleTestnet: this.controllerApi.perpsToggleTestnet,
+          isConnectionAlive: () => !outStream.mmFinished,
+          emit: (channel, data, extra) => {
+            if (!perpsStream.isActive || !isStreamWritable(outStream)) {
+              return;
+            }
+            outStream.write({
+              jsonrpc: '2.0',
+              method: 'perpsStreamUpdate',
+              params: [{ channel, data, ...extra }],
+            });
+          },
+        })
+      : null;
+
     const api = {
       ...this.getApi(),
       ...this.controllerApi,
+      ...(perpsStream ? perpsStream.bridgeApi() : {}),
       startSendingPatches: () => {
         uiReady = true;
         handleUpdate();
@@ -6647,6 +6731,7 @@ export default class MetamaskController extends EventEmitter {
         this.removeListener('update', handleUpdate);
         patchStore.destroy();
         messengerSubscriptions.clear();
+        perpsStream?.destroy();
       }
     };
 
@@ -7200,7 +7285,7 @@ export default class MetamaskController extends EventEmitter {
           origin,
         ),
         hasApprovalRequestsForOrigin: () =>
-          this.approvalController.has({ origin }),
+          this.approvalController.hasRequest({ origin }),
       }),
     );
 
@@ -8486,7 +8571,7 @@ export default class MetamaskController extends EventEmitter {
       typeof waitForResult === 'boolean' ? { waitForResult } : undefined;
 
     try {
-      await this.approvalController.accept(id, value, approvalOptions);
+      await this.approvalController.acceptRequest(id, value, approvalOptions);
     } catch (error) {
       // Ignore if approval was already handled
       if (error instanceof ApprovalRequestNotFoundError) {
@@ -8504,7 +8589,7 @@ export default class MetamaskController extends EventEmitter {
 
   rejectPendingApproval = (id, error) => {
     try {
-      this.approvalController.reject(
+      this.approvalController.rejectRequest(
         id,
         new JsonRpcError(error.code, error.message, error.data),
       );
