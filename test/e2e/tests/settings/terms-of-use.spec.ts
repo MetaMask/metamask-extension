@@ -2,7 +2,7 @@ import { Suite } from 'mocha';
 import { withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import TermsOfUseUpdateModal from '../../page-objects/pages/dialog/terms-of-use-update-modal';
-import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 
 describe('Terms of use', function (this: Suite) {
   it('accepts the updated terms of use', async function () {
@@ -17,7 +17,7 @@ describe('Terms of use', function (this: Suite) {
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await loginWithoutBalanceValidation(driver);
+        await login(driver, { validateBalance: false });
 
         // Delay click to mitigate flakiness
         await driver.delay(1_000);

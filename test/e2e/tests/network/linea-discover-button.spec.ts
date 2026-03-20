@@ -4,7 +4,7 @@ import { emptyHtmlPage } from '../../mock-e2e';
 import { Driver } from '../../webdriver/driver';
 import { withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 import SelectNetwork from '../../page-objects/pages/dialog/select-network';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
@@ -37,7 +37,7 @@ describe('Linea Network Discover Button', function (this: Suite) {
         testSpecificMock: mockPortfolioPage,
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         // Open network dropdown
         const headerNavbar = new HeaderNavbar(driver);
