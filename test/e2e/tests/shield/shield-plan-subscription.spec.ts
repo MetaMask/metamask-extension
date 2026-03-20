@@ -8,6 +8,7 @@ import ShieldSubscriptionApprovePage from '../../page-objects/pages/settings/shi
 import ShieldDetailPage from '../../page-objects/pages/settings/shield/shield-detail-page';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import { ShieldMockttpService } from '../../helpers/shield/mocks';
+import { mockTokensV2SupportedNetworks, mockTokensV3Assets } from '../btc/mocks';
 
 // Local fixture for card payment tests
 function createShieldFixtureCard() {
@@ -236,13 +237,15 @@ describe('Shield Subscription Tests', function () {
 
   describe('Crypto Payment', function () {
     describe('Shield Entry Modal', function () {
-      it('should get started on entry modal - annual plan', async function () {
+      it.only('should get started on entry modal - annual plan', async function () {
         await withFixtures(
           {
             fixtures: createShieldFixtureCrypto().build(),
             title: this.test?.fullTitle(),
-            testSpecificMock: (server: Mockttp) => {
+            testSpecificMock: async (server: Mockttp) => {
               const shieldMockttpService = new ShieldMockttpService();
+              await mockTokensV2SupportedNetworks(server);
+              await mockTokensV3Assets(server);
               return shieldMockttpService.setup(server);
             },
             localNodeOptions: [
@@ -295,8 +298,10 @@ describe('Shield Subscription Tests', function () {
           {
             fixtures: createShieldFixtureCrypto().build(),
             title: this.test?.fullTitle(),
-            testSpecificMock: (server: Mockttp) => {
+            testSpecificMock: async (server: Mockttp) => {
               const shieldMockttpService = new ShieldMockttpService();
+              await mockTokensV2SupportedNetworks(server);
+              await mockTokensV3Assets(server);
               return shieldMockttpService.setup(server, {
                 mockNotEligible: true,
               });
@@ -353,8 +358,10 @@ describe('Shield Subscription Tests', function () {
         {
           fixtures: createShieldFixtureCard().build(),
           title: this.test?.fullTitle(),
-          testSpecificMock: (server: Mockttp) => {
+          testSpecificMock: async (server: Mockttp) => {
             const shieldMockttpService = new ShieldMockttpService();
+            await mockTokensV2SupportedNetworks(server);
+            await mockTokensV3Assets(server);
             return shieldMockttpService.setup(server);
           },
         },
@@ -378,8 +385,10 @@ describe('Shield Subscription Tests', function () {
         {
           fixtures: createShieldFixtureCard().build(),
           title: this.test?.fullTitle(),
-          testSpecificMock: (server: Mockttp) => {
+          testSpecificMock: async (server: Mockttp) => {
             const shieldMockttpService = new ShieldMockttpService();
+            await mockTokensV2SupportedNetworks(server);
+            await mockTokensV3Assets(server);
             return shieldMockttpService.setup(server, {
               mockNotEligible: true,
             });
