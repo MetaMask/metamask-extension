@@ -13,6 +13,8 @@ import {
   mockBtcSpotPrices,
   mockSupportedVsCurrencies,
   mockAllBridgeEndpoints,
+  mockTokensV2SupportedNetworks,
+  mockTokensV3Assets,
 } from './mocks';
 import { mockPriceMulti, mockPriceMultiBtcAndSol } from './mocks/min-api';
 
@@ -57,6 +59,8 @@ export async function withBtcAccountSnap(
           await mockSupportedVsCurrencies(mockServer),
           await mockPriceMulti(mockServer),
           await mockPriceMultiBtcAndSol(mockServer),
+          await mockTokensV2SupportedNetworks(mockServer),
+          await mockTokensV3Assets(mockServer),
         ];
 
         // Add bridge mocks for swap functionality if enabled

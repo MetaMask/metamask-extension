@@ -941,6 +941,9 @@
           "eip155:1337/slip44:60": { "amount": "25" },
           "eip155:42161/slip44:60": { "amount": "25" },
           "eip155:59144/slip44:60": { "amount": "25" }
+        },
+        "688e01b8-3134-4ef4-80e6-8772bab38ef7": {
+          "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501": { "amount": "0" }
         }
       },
       "assetsInfo": {
@@ -974,6 +977,13 @@
           "image": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/59144/slip44/60.png",
           "name": "Ether",
           "symbol": "ETH",
+          "type": "native"
+        },
+        "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501": {
+          "decimals": 9,
+          "image": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/solana/5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44/501.png",
+          "name": "Solana",
+          "symbol": "SOL",
           "type": "native"
         }
       },

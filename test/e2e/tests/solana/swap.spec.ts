@@ -138,6 +138,58 @@ async function mockSwapSOLtoUSDC(
   ];
 }
 
+/** Matches default multichain fixture account IDs + unified AssetsController state for Solana swap E2E. */
+const SOLANA_SWAP_ASSETS_CONTROLLER_FIXTURE = {
+  assetsInfo: {
+    'eip155:1337/slip44:60': {
+      aggregators: [],
+      decimals: 18,
+      image:
+        'https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/slip44/60.png',
+      name: 'Ethereum',
+      symbol: 'ETH',
+      type: 'native',
+    },
+    'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501': {
+      decimals: 9,
+      image:
+        'https://static.cx.metamask.io/api/v2/tokenIcons/assets/solana/5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44/501.png',
+      name: 'Solana',
+      symbol: 'SOL',
+      type: 'native',
+    },
+  },
+  // assetsBalance: {
+  //   'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4': {
+  //     'eip155:1337/slip44:60': {
+  //       amount: '25',
+  //     },
+  //   },
+  //   'd3d3a7c8-9a21-4606-93d9-b0e045cdaca2': {
+  //     'tron:728126428/slip44:195': {
+  //       amount: '0',
+  //     },
+  //     'tron:728126428/slip44:bandwidth': {
+  //       amount: '0',
+  //     },
+  //     'tron:728126428/slip44:maximum-bandwidth': {
+  //       amount: '0',
+  //     },
+  //     'tron:728126428/slip44:energy': {
+  //       amount: '0',
+  //     },
+  //     'tron:728126428/slip44:maximum-energy': {
+  //       amount: '0',
+  //     },
+  //   },
+  //   'fcaabb71-a0e3-4c2c-9292-972da4be2536': {
+  //     'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501': {
+  //       amount: '50',
+  //     },
+  //   },
+  // },
+};
+
 describe('Swap on Solana', function () {
   it('Completes a Swap between SOL and USDC', async function () {
     await withFixtures(
@@ -161,6 +213,7 @@ describe('Swap on Solana', function () {
               usdConversionRate: 1932.163232734,
             },
           })
+          .withAssetsController(SOLANA_SWAP_ASSETS_CONTROLLER_FIXTURE)
           .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockSwapSOLtoUSDC,
@@ -224,7 +277,9 @@ describe('Swap on Solana', function () {
   it('Completes a Swap between USDC and SOL', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilder()
+          .withAssetsController(SOLANA_SWAP_ASSETS_CONTROLLER_FIXTURE)
+          .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockSwapUSDCtoSOL,
       },
@@ -271,7 +326,9 @@ describe('Swap on Solana', function () {
   it('Swap has no quotes available', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilder()
+          .withAssetsController(SOLANA_SWAP_ASSETS_CONTROLLER_FIXTURE)
+          .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockSwapNoQuotes,
       },
@@ -305,7 +362,9 @@ describe('Swap on Solana', function () {
   it('Swap transaction fails gracefully', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilder()
+          .withAssetsController(SOLANA_SWAP_ASSETS_CONTROLLER_FIXTURE)
+          .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockSwapSOLtoUSDCFailed,
       },

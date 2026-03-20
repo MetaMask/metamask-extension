@@ -69,6 +69,8 @@ const DEFAULT_CHAINS_UP = [
   'eip155:42161',
   'eip155:59144',
   'eip155:999',
+  // Solana mainnet — activity / sync may treat chain as inactive if omitted
+  'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
 ];
 
 export const DEFAULT_ACCOUNT_ACTIVITY_WS_MOCKS: WebSocketMessageMock[] = [

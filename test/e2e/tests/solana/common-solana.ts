@@ -5,6 +5,7 @@ import * as fs from 'fs/promises';
 import { Mockttp, MockedEndpoint } from 'mockttp';
 import { DAPP_PATH } from '../../constants';
 import { mockProtocolSnap } from '../../mock-response-data/snaps/snap-binary-mocks';
+import { mockTokensV2SupportedNetworks } from '../btc/mocks/tokens-api';
 
 /**
  * Holds the actual transaction signature captured from sendTransaction.
@@ -1633,22 +1634,31 @@ export async function mockSecurityAlertSwap(mockServer: Mockttp) {
 }
 
 export async function mockPriceApiSpotPriceSwap(mockServer: Mockttp) {
-  return await mockServer.forGet(SPOT_PRICE_API).thenCallback(() => {
-    return {
-      statusCode: 200,
-      json: {
-        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v':
-          {
-            id: 'usd-coin',
-            price: 0.999761,
+  // BridgeController's fetchAssetPricesForCurrency expects each asset value to be
+  // `{ [vsCurrency]: number }` (e.g. `usd` matching CurrencyController currentCurrency),
+  // not `{ price }` alone — otherwise assetExchangeRates stay empty and fiat "Total cost"
+  // never renders. UI fetchTokenExchangeRates still reads `price`.
+  return await mockServer
+    .forGet(SPOT_PRICE_API)
+    .always()
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: {
+          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v':
+            {
+              id: 'usd-coin',
+              price: 0.999761,
+              usd: 0.999761,
+            },
+          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501': {
+            id: 'solana',
+            price: 168.88,
+            usd: 168.88,
           },
-        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501': {
-          id: 'solana',
-          price: 168.88,
         },
-      },
-    };
-  });
+      };
+    });
 }
 
 const SOLANA_BRIDGE_TOKENS = [
@@ -1706,11 +1716,6 @@ export async function mockBridgeSearchTokens(mockServer: Mockttp) {
   });
 }
 
-/**
- * Mocks the Bridge getTxStatus endpoint to return a COMPLETE status.
- *
- * @param mockServer - The mockttp server instance.
- */
 const SOL_TOKEN_INFO = {
   address: '0x0000000000000000000000000000000000000000',
   chainId: 1151111081099710,
@@ -1733,13 +1738,32 @@ const USDC_TOKEN_INFO = {
   priceUSD: '1.0',
 };
 
+/**
+ * Mocks the Bridge getTxStatus endpoint to return a COMPLETE status.
+ *
+ * `srcChain.txHash` must match the signature from `sendTransaction` (see
+ * {@link mockSendSwapSolanaTransaction}) or bridge activity will not merge with
+ * the snap transaction and the activity list can stay empty.
+ *
+ * @param mockServer - The mockttp server instance.
+ * @param direction - Swap direction (default SOL → USDC).
+ * @param signatureHolder - When non-empty after submit, used as `srcChain.txHash`.
+ */
 export async function mockBridgeTxStatus(
   mockServer: Mockttp,
   direction: 'SOL_TO_USDC' | 'USDC_TO_SOL' = 'SOL_TO_USDC',
+  signatureHolder?: SignatureHolder,
 ) {
   const isSolToUsdc = direction === 'SOL_TO_USDC';
   return await mockServer.forGet(BRIDGE_TX_STATUS).thenCallback(() => {
-    console.log('mockBridgeTxStatus', direction);
+    const fallbackHash = isSolToUsdc
+      ? SOL_TO_USDC_SWAP_SIGNATURE
+      : USDC_TO_SOL_SWAP_SIGNATURE;
+    const srcTxHash =
+      signatureHolder?.value && signatureHolder.value.length > 0
+        ? signatureHolder.value
+        : fallbackHash;
+    console.log('mockBridgeTxStatus', direction, { srcTxHash });
     return {
       statusCode: 200,
       json: {
@@ -1748,9 +1772,7 @@ export async function mockBridgeTxStatus(
         bridge: 'lifi',
         srcChain: {
           chainId: 1151111081099710,
-          txHash: isSolToUsdc
-            ? SOL_TO_USDC_SWAP_SIGNATURE
-            : USDC_TO_SOL_SWAP_SIGNATURE,
+          txHash: srcTxHash,
           amount: isSolToUsdc ? '1000000000' : '991250',
           token: isSolToUsdc ? SOL_TOKEN_INFO : USDC_TOKEN_INFO,
         },
@@ -2025,6 +2047,7 @@ export function buildSolanaTestSpecificMock(options: SolanaMockOptions = {}) {
     }
 
     mockList.push(
+      await mockTokensV2SupportedNetworks(mockServer),
       await mockTokenApiMainnetTest(mockServer),
       await mockAccountsApi(mockServer),
       await mockGetMultipleAccounts(mockServer),

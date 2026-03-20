@@ -10,6 +10,10 @@ export {
 } from './price-api';
 export { mockRampsDynamicFeatureFlag } from './ramps';
 export {
+  mockTokensV2SupportedNetworks,
+  mockTokensV3Assets,
+} from './tokens-api';
+export {
   mockAllBridgeEndpoints,
   mockBridgeFeatureFlags,
   mockBridgeGetQuote,
