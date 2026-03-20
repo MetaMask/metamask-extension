@@ -1,5 +1,4 @@
 import type { Position } from '@metamask/perps-controller';
-// eslint-disable-next-line import/order
 import { PerpsStreamManager } from './PerpsStreamManager';
 
 // Polyfill crypto.randomUUID for jsdom
