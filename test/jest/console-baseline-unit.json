@@ -846,7 +846,7 @@
       "Test errors: Uncaught Errors": 2
     },
     "ui/pages/confirmations/components/confirm/info/native-transfer/native-transfer.test.tsx": {
-      "MetaMask: Background connection not initialized": 41,
+      "MetaMask: Background connection not initialized": 47,
       "React: Act warnings (component updates not wrapped)": 14,
       "Reselect: Identity function warnings": 5
     },
