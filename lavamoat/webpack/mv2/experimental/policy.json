@@ -2427,23 +2427,18 @@
       "packages": {
         "@metamask/perps-controller>@nktkas/hyperliquid>@nktkas/rews": true,
         "@metamask/perps-controller>@nktkas/hyperliquid>@noble/hashes": true,
-        "@swc/helpers": true,
-        "@metamask/perps-controller>@nktkas/hyperliquid>micro-eth-signer": true,
         "@metamask/perps-controller>@nktkas/hyperliquid>valibot": true
       }
     },
     "@metamask/perps-controller>@nktkas/hyperliquid>@nktkas/rews": {
       "globals": {
         "AbortController": true,
-        "AbortSignal": true,
+        "AbortSignal.timeout": true,
         "CustomEvent": true,
         "DOMException": true,
         "WebSocket": true,
         "clearTimeout": true,
         "setTimeout": true
-      },
-      "packages": {
-        "@swc/helpers": true
       }
     },
     "@noble/ciphers": {
@@ -2515,9 +2510,6 @@
       "globals": {
         "TextEncoder": true,
         "crypto": true
-      },
-      "packages": {
-        "@swc/helpers": true
       }
     },
     "@ethereumjs/tx>ethereum-cryptography>@noble/hashes": {
