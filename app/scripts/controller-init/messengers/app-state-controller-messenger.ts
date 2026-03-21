@@ -1,13 +1,10 @@
-import { Messenger } from '@metamask/messenger';
 import {
-  AllowedActions,
-  AllowedEvents,
-} from '../../controllers/app-state-controller';
+  Messenger,
+  MessengerActions,
+  MessengerEvents,
+} from '@metamask/messenger';
+import { AppStateControllerMessenger } from '../../controllers/app-state-controller';
 import { RootMessenger } from '../../lib/messenger';
-
-export type AppStateControllerMessenger = ReturnType<
-  typeof getAppStateControllerMessenger
->;
 
 /**
  * Create a messenger restricted to the allowed actions and events of the
@@ -16,11 +13,13 @@ export type AppStateControllerMessenger = ReturnType<
  * @param messenger - The base messenger used to create the restricted
  * messenger.
  */
-export function getAppStateControllerMessenger(messenger: RootMessenger) {
+export function getAppStateControllerMessenger(
+  messenger: RootMessenger,
+): AppStateControllerMessenger {
   const appStateControllerMessenger = new Messenger<
     'AppStateController',
-    AllowedActions,
-    AllowedEvents,
+    MessengerActions<AppStateControllerMessenger>,
+    MessengerEvents<AppStateControllerMessenger>,
     RootMessenger
   >({
     namespace: 'AppStateController',

@@ -1,3 +1,8 @@
+//========
+// Changes to this file demonstrate how `useMessenger` is used in a non-shared
+// component.
+//========
+
 /**
  * MUSD Education Screen
  *
@@ -33,7 +38,6 @@ import {
 import { ThemeType } from '../../../../shared/constants/preferences';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useTheme } from '../../../hooks/useTheme';
-import { setMusdConversionEducationSeen } from '../../../store/actions';
 import {
   useMusdConversion,
   useMusdGeoBlocking,
@@ -48,6 +52,8 @@ import {
 } from '../../../components/app/musd/constants';
 import { MUSD_DEEPLINK_PARAM } from '../../../../shared/lib/deep-links/routes/musd';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
+import { useMessenger } from '../../../hooks/useMessenger';
+import { RouteMessengerInstance } from './education/messenger';
 
 const MUSD_EDUCATION_COIN_IMAGE_DARK = './images/musd-education-coin-dark.png';
 const MUSD_EDUCATION_COIN_IMAGE_LIGHT =
@@ -66,7 +72,6 @@ const MUSD_EDUCATION_COIN_IMAGE_LIGHT =
 const MusdEducationScreen: React.FC = () => {
   const t = useI18nContext();
   const navigate = useNavigate();
-  const dispatch = useDispatch();
   const theme = useTheme();
   const [searchParams] = useSearchParams();
 
@@ -79,6 +84,13 @@ const MusdEducationScreen: React.FC = () => {
   const { canBuyMusdInRegion } = useCanBuyMusd();
   const { openBuyCryptoInPdapp } = useRamps();
   const [isLoading, setIsLoading] = useState(false);
+  //========
+  // We first call `useMessenger` to get the messenger for the current route.
+  // This relies on the route having been wrapped via
+  // `RouteMessengerContext.Provider`. Note that since we are in a non-shared
+  // component we can pass a type parameter to narrow the type.
+  //========
+  const messenger = useMessenger<RouteMessengerInstance>();
 
   const hasEligibleConversionTokens = conversionTokens.length > 0;
 
@@ -100,7 +112,15 @@ const MusdEducationScreen: React.FC = () => {
    * - Otherwise (including deeplink + has tokens): start conversion flow ("Get started").
    */
   const handleContinue = useCallback(async () => {
-    dispatch(setMusdConversionEducationSeen(true));
+    //========
+    // Having retrieved the messenger, we can now call an action.
+    //========
+    await messenger.call(
+      // @ts-expect-error This action is not actually defined on UIMessenger,
+      // but we can certainly add it in the future.
+      'AppStateController:setMusdConversionEducationSeen',
+      true,
+    );
 
     if (isDeeplinkNoTokensGoToBuy) {
       openBuyCryptoInPdapp(MUSD_CONVERSION_DEFAULT_CHAIN_ID);
@@ -139,7 +159,7 @@ const MusdEducationScreen: React.FC = () => {
       setIsLoading(false);
     }
   }, [
-    dispatch,
+    messenger,
     navigate,
     isDeeplinkNoTokensGoToBuy,
     isDeeplinkNoTokensContinueHome,
@@ -154,10 +174,18 @@ const MusdEducationScreen: React.FC = () => {
    * Handle close / "Not now" button click.
    * Marks education as seen and navigates home.
    */
-  const handleSkip = useCallback(() => {
-    dispatch(setMusdConversionEducationSeen(true));
+  const handleSkip = useCallback(async () => {
+    //========
+    // Having retrieved the messenger, we can now call an action.
+    //========
+    await messenger.call(
+      // @ts-expect-error This action is not actually defined on UIMessenger,
+      // but we can certainly add it in the future.
+      'AppStateController:setMusdConversionEducationSeen',
+      true,
+    );
     navigate(DEFAULT_ROUTE);
-  }, [dispatch, navigate]);
+  }, [messenger, navigate]);
 
   let primaryButtonLabel = t('musdEducationGetStarted');
   if (isDeeplinkNoTokensGoToBuy) {

@@ -1,3 +1,8 @@
+//========
+// Changes to this file demonstrate how to define a messenger for a
+// route-within-a-route.
+//========
+
 /**
  * MUSD Conversion Page
  *
@@ -12,8 +17,10 @@ import { selectIsMusdConversionFlowEnabled } from '../../selectors/musd';
 import { useMusdGeoBlocking } from '../../hooks/musd';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import { MUSD_DEEPLINK_PARAM } from '../../../shared/lib/deep-links/routes/musd';
-import { MUSD_CONVERSION_ROUTES } from './constants/routes';
+import { RouteWithMessenger } from '../../layouts/route-with-messenger';
 import MusdEducationScreen from './screens/education';
+import { MUSD_CONVERSION_ROUTES } from './constants/routes';
+import { ALLOWED_CAPABILITIES as MUSD_EDUCATION_SCREEN_ALLOWED_CAPABILITIES } from './screens/education/messenger';
 
 /**
  * MUSD Conversion Page Component
@@ -43,7 +50,16 @@ const MusdConversionPage: React.FC = () => {
         {/* Education screen */}
         <Route
           path={MUSD_CONVERSION_ROUTES.EDUCATION.RELATIVE}
-          element={<MusdEducationScreen />}
+          element={
+            <RouteWithMessenger
+              // @ts-expect-error Some of these capabilities are not actually
+              // defined on UIMessenger, but we can certainly add them in the
+              // future.
+              capabilities={MUSD_EDUCATION_SCREEN_ALLOWED_CAPABILITIES}
+            >
+              <MusdEducationScreen />
+            </RouteWithMessenger>
+          }
         />
 
         {/* Default: redirect to education */}

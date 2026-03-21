@@ -1,11 +1,16 @@
+//========
+// Changes to this file demonstrate how to test a page with a
+// route-within-a-route that also has a messenger.
+//========
+
 /**
  * @jest-environment jsdom
  */
 import React from 'react';
 import { screen } from '@testing-library/react';
-import { Routes, Route } from 'react-router-dom';
 import configureStore from '../../store/store';
 import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
+import { createMockUIMessenger } from '../../../test/lib/mock-ui-messenger';
 import MusdConversionPage from '.';
 
 const mockUseMusdGeoBlocking = jest.fn().mockReturnValue({
@@ -54,17 +59,14 @@ const createMockStore = (overrides: Record<string, unknown> = {}) => {
   });
 };
 
-function renderPage(
-  store: ReturnType<typeof createMockStore>,
-  pathname = '/musd/education',
-) {
-  return renderWithProvider(
-    <Routes>
-      <Route path="/musd/*" element={<MusdConversionPage />} />
-    </Routes>,
-    store,
-    pathname,
-  );
+function renderPage({
+  store,
+  uiMessenger,
+}: {
+  store: ReturnType<typeof createMockStore>;
+  uiMessenger: ReturnType<typeof createMockUIMessenger>;
+}) {
+  return renderWithProvider(<MusdConversionPage />, { store, uiMessenger });
 }
 
 describe('MusdConversionPage', () => {
@@ -85,7 +87,7 @@ describe('MusdConversionPage', () => {
       },
     });
 
-    renderPage(store);
+    renderPage({ store });
 
     expect(
       screen.queryByTestId('musd-education-screen'),
@@ -100,7 +102,7 @@ describe('MusdConversionPage', () => {
     });
 
     const store = createMockStore();
-    renderPage(store);
+    renderPage({ store });
 
     expect(
       screen.queryByTestId('musd-education-screen'),
@@ -116,7 +118,8 @@ describe('MusdConversionPage', () => {
     mockSearchParamsGet.mockReturnValue('true');
 
     const store = createMockStore();
-    renderPage(store);
+    const uiMessenger = createMockUIMessenger();
+    renderPage({ store, uiMessenger });
 
     expect(screen.getByTestId('musd-education-screen')).toBeInTheDocument();
   });
@@ -129,21 +132,24 @@ describe('MusdConversionPage', () => {
     });
 
     const store = createMockStore();
-    renderPage(store);
+    const uiMessenger = createMockUIMessenger();
+    renderPage({ store, uiMessenger });
 
     expect(screen.getByTestId('musd-education-screen')).toBeInTheDocument();
   });
 
   it('renders education screen when feature is enabled and not blocked', () => {
     const store = createMockStore();
-    renderPage(store);
+    const uiMessenger = createMockUIMessenger();
+    renderPage({ store, uiMessenger });
 
     expect(screen.getByTestId('musd-education-screen')).toBeInTheDocument();
   });
 
   it('renders the page container', () => {
     const store = createMockStore();
-    const { container } = renderPage(store);
+    const uiMessenger = createMockUIMessenger();
+    const { container } = renderPage({ store, uiMessenger });
 
     expect(
       container.querySelector('.musd-conversion-page'),
