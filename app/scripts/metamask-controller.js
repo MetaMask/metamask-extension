@@ -15,7 +15,12 @@ import { debounce, uniq } from 'lodash';
 import { KeyringTypes } from '@metamask/keyring-controller';
 import createFilterMiddleware from '@metamask/eth-json-rpc-filters';
 import createSubscriptionManager from '@metamask/eth-json-rpc-filters/subscriptionManager';
-import { errorCodes, JsonRpcError, rpcErrors } from '@metamask/rpc-errors';
+import {
+  errorCodes,
+  JsonRpcError,
+  providerErrors,
+  rpcErrors,
+} from '@metamask/rpc-errors';
 import { Mutex } from 'await-semaphore';
 import log from 'loglevel';
 import { OneKeyKeyring, TrezorKeyring } from '@metamask/eth-trezor-keyring';
@@ -62,7 +67,6 @@ import { abiERC1155, abiERC721 } from '@metamask/metamask-eth-abis';
 import {
   isEvmAccountType,
   SolAccountType,
-  EthScope,
   TrxAccountType,
   BtcAccountType,
 } from '@metamask/keyring-api';
@@ -169,20 +173,23 @@ import {
   fetchTokenBalance,
   fetchERC1155Balance,
 } from '../../shared/lib/token-util';
-import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
-import { parseStandardTokenTransactionData } from '../../shared/modules/transaction.utils';
+import { isEqualCaseInsensitive } from '../../shared/lib/string-utils';
+import { parseStandardTokenTransactionData } from '../../shared/lib/transaction.utils';
 import { STATIC_MAINNET_TOKEN_LIST } from '../../shared/constants/tokens';
 import { START_UI_SYNC } from '../../shared/constants/ui-initialization';
-import { getTokenValueParam } from '../../shared/lib/metamask-controller-utils';
-import { isManifestV3 } from '../../shared/modules/mv3.utils';
-import { convertNetworkId } from '../../shared/modules/network.utils';
-import { getIsSmartTransaction } from '../../shared/modules/selectors';
+import {
+  createEnsureOnboardingCompleteCallback,
+  getTokenValueParam,
+} from '../../shared/lib/metamask-controller-utils';
+import { isManifestV3 } from '../../shared/lib/mv3.utils';
+import { convertNetworkId } from '../../shared/lib/network.utils';
+import { getIsSmartTransaction } from '../../shared/lib/selectors';
 import {
   TOKEN_TRANSFER_LOG_TOPIC_HASH,
   TRANSFER_SINFLE_LOG_TOPIC_HASH,
 } from '../../shared/lib/transactions-controller-utils';
-import { getProviderConfig } from '../../shared/modules/selectors/networks';
-import { selectAllEnabledNetworkClientIds } from '../../shared/modules/selectors/multichain';
+import { getProviderConfig } from '../../shared/lib/selectors/networks';
+import { selectAllEnabledNetworkClientIds } from '../../shared/lib/selectors/multichain';
 import {
   trace,
   endTrace,
@@ -198,22 +205,24 @@ import { updateCurrentLocale } from '../../shared/lib/translate';
 import {
   getIsSeedlessOnboardingFeatureEnabled,
   getEnabledAdvancedPermissions,
-} from '../../shared/modules/environment';
+  getIsPerpsIncludedInBuild,
+} from '../../shared/lib/environment';
 import { isSnapPreinstalled } from '../../shared/lib/snaps/snaps';
-import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
+import { toChecksumHexAddress } from '../../shared/lib/hexstring-utils';
 import {
   getShieldGatewayConfig,
   updatePreferencesAndMetricsForShieldSubscription,
-} from '../../shared/modules/shield';
-import { getIsShieldSubscriptionActive } from '../../shared/lib/shield';
-import { createSentryError } from '../../shared/modules/error';
+  getIsShieldSubscriptionActive,
+} from '../../shared/lib/shield';
+import { createSentryError } from '../../shared/lib/error';
 import {
   getAccountTrackerControllerAccountsByChainId,
   getTokensControllerAllTokens,
-} from '../../shared/modules/selectors/assets-migration';
+} from '../../shared/lib/selectors/assets-migration';
 import {
+  isUserRejectedHardwareWalletError,
   toHardwareWalletError,
-  // eslint-disable-next-line import/no-restricted-paths
+  // eslint-disable-next-line import-x/no-restricted-paths
 } from '../../ui/contexts/hardware-wallets';
 import {
   isAssetsUnifyStateFeatureEnabled,
@@ -323,6 +332,8 @@ import {
 } from './controller-init/assets';
 import { TransactionControllerInit } from './controller-init/confirmations/transaction-controller-init';
 import { TransactionPayControllerInit } from './controller-init/transaction-pay-controller-init';
+import { PerpsControllerInit } from './controller-init/perps-controller-init';
+import { PerpsStreamBridge } from './controllers/perps/perps-stream-bridge';
 import { PPOMControllerInit } from './controller-init/confirmations/ppom-controller-init';
 import { SmartTransactionsControllerInit } from './controller-init/smart-transactions/smart-transactions-controller-init';
 import { initControllers } from './controller-init/utils';
@@ -360,6 +371,7 @@ import { applyTransactionContainersExisting } from './lib/transaction/containers
 import {
   getSendBundleSupportedChains,
   isSendBundleSupported,
+  setSentinelApiAuth,
 } from './lib/transaction/sentinel-api';
 import { ShieldControllerInit } from './controller-init/shield/shield-controller-init';
 import { GatorPermissionsControllerInit } from './controller-init/gator-permissions/gator-permissions-controller-init';
@@ -421,9 +433,9 @@ import {
   ClaimsControllerInit,
   ClaimsServiceInit,
 } from './controller-init/claims';
+import { MessengerSubscriptions } from './lib/MessengerSubscriptions';
 import { ProfileMetricsControllerInit } from './controller-init/profile-metrics-controller-init';
 import { ProfileMetricsServiceInit } from './controller-init/profile-metrics-service-init';
-import { MessengerSubscriptions } from './lib/MessengerSubscriptions';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -471,6 +483,7 @@ export default class MetamaskController extends EventEmitter {
     this.sendUpdate = debounce(
       this.privateSendUpdate.bind(this),
       MILLISECOND * 200,
+      { maxWait: SECOND }, // Force flush to avoid indefinite sync starvation
     );
     this.opts = opts;
     this.requestSafeReload =
@@ -604,6 +617,9 @@ export default class MetamaskController extends EventEmitter {
       WebSocketService: WebSocketServiceInit,
       BackendWebSocketService: BackendWebSocketServiceInit,
       AccountActivityService: AccountActivityServiceInit,
+      ...(getIsPerpsIncludedInBuild()
+        ? { PerpsController: PerpsControllerInit }
+        : {}),
       PPOMController: PPOMControllerInit,
       PhishingController: PhishingControllerInit,
       AccountTrackerController: AccountTrackerControllerInit,
@@ -899,6 +915,9 @@ export default class MetamaskController extends EventEmitter {
         );
       return getShieldGatewayConfig(getToken, getShieldSubscription, url);
     };
+
+    // Authenticate Sentinel and Transaction API calls via core-backend (AuthenticationController)
+    setSentinelApiAuth(() => this.authenticationController.getBearerToken());
 
     this.notificationServicesController.init();
     this.snapController.init();
@@ -1381,7 +1400,7 @@ export default class MetamaskController extends EventEmitter {
       this.signatureController.resetState.bind(this.signatureController),
       this.bridgeController.resetState.bind(this.bridgeController),
       this.ensController.resetState.bind(this.ensController),
-      this.approvalController.clear.bind(this.approvalController),
+      this.approvalController.clearRequests.bind(this.approvalController),
       // WE SHOULD ADD TokenListController.resetState here too. But it's not implemented yet.
     ];
 
@@ -1537,6 +1556,16 @@ export default class MetamaskController extends EventEmitter {
         }
       });
     }
+
+    // Start perps eligibility monitoring only when basic functionality is on (no external calls when off)
+    if (
+      getIsPerpsIncludedInBuild() &&
+      this.preferencesController.state.useExternalServices
+    ) {
+      this.controllerApi.perpsStartEligibilityMonitoring?.()?.catch((error) => {
+        console.error(error);
+      });
+    }
   }
 
   /**
@@ -1566,12 +1595,25 @@ export default class MetamaskController extends EventEmitter {
     ) {
       this.multichainRatesController.start();
     }
+    if (
+      getIsPerpsIncludedInBuild() &&
+      this.preferencesController.state.useExternalServices
+    ) {
+      this.controllerApi.perpsStartEligibilityMonitoring?.()?.catch((error) => {
+        console.error(error);
+      });
+    }
   }
 
   stopNetworkRequests() {
     this.txController.stopIncomingTransactionPolling();
     this.tokenDetectionController.disable();
     this.multichainRatesController.stop();
+    if (getIsPerpsIncludedInBuild()) {
+      this.controllerApi.perpsStopEligibilityMonitoring?.()?.catch((error) => {
+        console.error(error);
+      });
+    }
   }
 
   resetStates(resetMethods) {
@@ -1732,6 +1774,35 @@ export default class MetamaskController extends EventEmitter {
         const { currentLocale } = currState;
 
         await updateCurrentLocale(currentLocale);
+      }, this.preferencesController.state),
+    );
+
+    this.controllerMessenger.subscribe(
+      'PreferencesController:stateChange',
+      previousValueComparator((prevState, currState) => {
+        const { useExternalServices: prev } = prevState;
+        const { useExternalServices: curr } = currState;
+        if (
+          getIsPerpsIncludedInBuild() &&
+          prev !== curr &&
+          this.controllerApi.perpsStartEligibilityMonitoring &&
+          this.controllerApi.perpsStopEligibilityMonitoring
+        ) {
+          if (curr) {
+            this.controllerApi
+              .perpsStartEligibilityMonitoring?.()
+              ?.catch((error) => {
+                console.error(error);
+              });
+          } else {
+            this.controllerApi
+              .perpsStopEligibilityMonitoring?.()
+              ?.catch((error) => {
+                console.error(error);
+              });
+          }
+        }
+        return true;
       }, this.preferencesController.state),
     );
 
@@ -2142,7 +2213,7 @@ export default class MetamaskController extends EventEmitter {
             approval.type.startsWith(RestrictedMethods.snap_dialog),
         );
         for (const approval of approvals) {
-          this.approvalController.reject(
+          this.approvalController.rejectRequest(
             approval.id,
             new Error('Snap was terminated.'),
           );
@@ -5544,9 +5615,24 @@ export default class MetamaskController extends EventEmitter {
         return undefined;
       }
       const context = this.accountTreeController.getAccountContext(account.id);
-      // Get EOA account as it's the only account having lastSelected set
-      return context?.group?.get({ scopes: [EthScope.Eoa] })?.metadata
-        .lastSelected;
+      if (!context) {
+        return undefined;
+      }
+      // Get the group object to find the EOA account having lastSelected set
+      const group = this.accountTreeController.getAccountGroupObject(
+        context.groupId,
+      );
+      if (!group) {
+        return undefined;
+      }
+      // Find the EVM EOA account in this group, as it's the only one with lastSelected
+      for (const accountId of group.accounts) {
+        const groupAccount = this.accountsController.getAccount(accountId);
+        if (groupAccount && isEvmAccountType(groupAccount.type)) {
+          return groupAccount.metadata.lastSelected;
+        }
+      }
+      return undefined;
     };
 
     return addresses.sort(
@@ -5657,7 +5743,7 @@ export default class MetamaskController extends EventEmitter {
     }
 
     // Only continue if there is no pending approval
-    const hasPendingApproval = this.approvalController.has({
+    const hasPendingApproval = this.approvalController.hasRequest({
       origin: partner.origin,
       type: partner.approvalType,
     });
@@ -6553,9 +6639,31 @@ export default class MetamaskController extends EventEmitter {
       outStream,
     );
 
+    const perpsController = this.controllersByName.PerpsController;
+    const perpsStream = perpsController
+      ? new PerpsStreamBridge({
+          controller: perpsController,
+          perpsInit: this.controllerApi.perpsInit,
+          perpsDisconnect: this.controllerApi.perpsDisconnect,
+          perpsToggleTestnet: this.controllerApi.perpsToggleTestnet,
+          isConnectionAlive: () => !outStream.mmFinished,
+          emit: (channel, data, extra) => {
+            if (!perpsStream.isActive || !isStreamWritable(outStream)) {
+              return;
+            }
+            outStream.write({
+              jsonrpc: '2.0',
+              method: 'perpsStreamUpdate',
+              params: [{ channel, data, ...extra }],
+            });
+          },
+        })
+      : null;
+
     const api = {
       ...this.getApi(),
       ...this.controllerApi,
+      ...(perpsStream ? perpsStream.bridgeApi() : {}),
       startSendingPatches: () => {
         uiReady = true;
         handleUpdate();
@@ -6614,6 +6722,7 @@ export default class MetamaskController extends EventEmitter {
         this.removeListener('update', handleUpdate);
         patchStore.destroy();
         messengerSubscriptions.clear();
+        perpsStream?.destroy();
       }
     };
 
@@ -7167,7 +7276,7 @@ export default class MetamaskController extends EventEmitter {
           origin,
         ),
         hasApprovalRequestsForOrigin: () =>
-          this.approvalController.has({ origin }),
+          this.approvalController.hasRequest({ origin }),
       }),
     );
 
@@ -7240,10 +7349,10 @@ export default class MetamaskController extends EventEmitter {
         },
         getInterfaceState: (...args) =>
           this.controllerMessenger.call(
-            'SnapInterfaceController:getInterface',
+            'SnapInterfaceController:getInterfaceState',
             origin,
             ...args,
-          ).state,
+          ),
         getInterfaceContext: (...args) =>
           this.controllerMessenger.call(
             'SnapInterfaceController:getInterface',
@@ -8453,7 +8562,7 @@ export default class MetamaskController extends EventEmitter {
       typeof waitForResult === 'boolean' ? { waitForResult } : undefined;
 
     try {
-      await this.approvalController.accept(id, value, approvalOptions);
+      await this.approvalController.acceptRequest(id, value, approvalOptions);
     } catch (error) {
       // Ignore if approval was already handled
       if (error instanceof ApprovalRequestNotFoundError) {
@@ -8471,7 +8580,7 @@ export default class MetamaskController extends EventEmitter {
 
   rejectPendingApproval = (id, error) => {
     try {
-      this.approvalController.reject(
+      this.approvalController.rejectRequest(
         id,
         new JsonRpcError(error.code, error.message, error.data),
       );
@@ -8494,9 +8603,12 @@ export default class MetamaskController extends EventEmitter {
    */
   async #handleHardwareWalletError(error, walletType) {
     const hwError = toHardwareWalletError(error, walletType);
+    const createRpcError = isUserRejectedHardwareWalletError(hwError)
+      ? providerErrors.userRejectedRequest
+      : rpcErrors.internal;
     // Throw a JsonRpcError with hardware wallet error data preserved
     // This ensures the error properties survive serialization across the RPC boundary
-    throw rpcErrors.internal({
+    throw createRpcError({
       message: hwError.message,
       data: {
         code: hwError.code,
@@ -9069,10 +9181,15 @@ export default class MetamaskController extends EventEmitter {
     return isDisabled;
   }
 
+  #createEnsureOnboardingCompleteCallback() {
+    return createEnsureOnboardingCompleteCallback(this.controllerMessenger);
+  }
+
   #initControllers({ existingControllers, initFunctions, initState }) {
     const initRequest = {
       currentMigrationVersion: this.opts.currentMigrationVersion,
       encryptor: this.opts.encryptor,
+      ensureOnboardingComplete: this.#createEnsureOnboardingCompleteCallback(),
       extension: this.extension,
       platform: this.platform,
       getCronjobControllerStorageManager: () =>

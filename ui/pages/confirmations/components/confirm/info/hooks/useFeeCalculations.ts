@@ -12,14 +12,14 @@ import {
   decimalToHex,
   getValueFromWeiHex,
   multiplyHexes,
-} from '../../../../../../../shared/modules/conversion.utils';
-import { Numeric } from '../../../../../../../shared/modules/Numeric';
+} from '../../../../../../../shared/lib/conversion.utils';
+import { Numeric } from '../../../../../../../shared/lib/Numeric';
 import { toHex } from '../../../../../../../shared/lib/delegation/utils';
 import { getCurrentCurrency } from '../../../../../../ducks/metamask/metamask';
 import { useFiatFormatter } from '../../../../../../hooks/useFiatFormatter';
 import { useGasFeeEstimates } from '../../../../../../hooks/useGasFeeEstimates';
 import { selectConversionRateByChainId } from '../../../../../../selectors';
-import { useDappSwapContext } from '../../../../context/dapp-swap';
+import { useDappSwapContextOptional } from '../../../../context/dapp-swap';
 import { HEX_ZERO } from '../shared/constants';
 import { useEIP1559TxFees } from './useEIP1559TxFees';
 import { useSupportsEIP1559 } from './useSupportsEIP1559';
@@ -36,7 +36,10 @@ export function useFeeCalculations(transactionMeta: TransactionMeta) {
   const currentCurrency = useSelector(getCurrentCurrency);
   const { chainId } = transactionMeta;
   const fiatFormatter = useFiatFormatter();
-  const { selectedQuote, isQuotedSwapDisplayedInInfo } = useDappSwapContext();
+  const dappSwapContext = useDappSwapContextOptional();
+  const selectedQuote = dappSwapContext?.selectedQuote;
+  const isQuotedSwapDisplayedInInfo =
+    dappSwapContext?.isQuotedSwapDisplayedInInfo ?? false;
 
   const conversionRate = useSelector((state) =>
     selectConversionRateByChainId(state, chainId),
@@ -175,6 +178,7 @@ export function useFeeCalculations(transactionMeta: TransactionMeta) {
     currentCurrencyFeeWith18SignificantDigits:
       maxFeeFiatWith18SignificantDigits,
     nativeCurrencyFee: maxFeeNative,
+    hexFee: maxFeeHex,
   } = getFeesFromHex(maxFee);
 
   // Estimated fee
@@ -298,6 +302,7 @@ export function useFeeCalculations(transactionMeta: TransactionMeta) {
     l2FeeNative: feesL2.nativeCurrencyFee,
     maxFeeFiat,
     maxFeeFiatWith18SignificantDigits,
+    maxFeeHex: add0x(maxFeeHex),
     maxFeeNative,
   };
 }

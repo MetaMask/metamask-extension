@@ -38,11 +38,11 @@ import {
 } from '@metamask/utils';
 import { toRelativeRoutePath } from '../routes/utils';
 // TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
+// eslint-disable-next-line import-x/no-restricted-paths
 import {
   isEthAddress,
   normalizeSafeAddress,
-  // eslint-disable-next-line import/no-restricted-paths
+  // eslint-disable-next-line import-x/no-restricted-paths
 } from '../../../app/scripts/lib/multichain/address';
 import { MILLISECOND } from '../../../shared/constants/time';
 import {
@@ -591,7 +591,6 @@ function PermissionsConnect() {
     const connectPageProps = {
       rejectPermissionsRequest: (requestId: string) =>
         cancelPermissionsRequest(requestId),
-      activeTabOrigin: origin,
       request: permissionsRequest || {},
       permissionsRequestId: permissionsRequestId || '',
       approveConnection,
@@ -601,7 +600,6 @@ function PermissionsConnect() {
     return <MultichainAccountsConnectPage {...connectPageProps} />;
   }, [
     cancelPermissionsRequest,
-    origin,
     permissionsRequest,
     permissionsRequestId,
     approveConnection,

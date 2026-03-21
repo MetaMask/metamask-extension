@@ -15,7 +15,7 @@ import {
   getInternalAccountListSpreadByScopesByGroupId,
   getAllAccountGroups,
 } from '../../../selectors/multichain-accounts/account-tree';
-import { getNetworksByScopes } from '../../../../shared/modules/selectors/networks';
+import { getNetworksByScopes } from '../../../../shared/lib/selectors/networks';
 import { selectBalanceForAllWallets } from '../../../selectors/assets';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import { MultichainHoveredAddressRowsList } from './multichain-hovered-address-rows-hovered-list';
@@ -35,8 +35,8 @@ jest.mock('../../../selectors/multichain-accounts/account-tree', () => ({
   getAllAccountGroups: jest.fn(),
 }));
 
-jest.mock('../../../../shared/modules/selectors/networks', () => ({
-  ...jest.requireActual('../../../../shared/modules/selectors/networks'),
+jest.mock('../../../../shared/lib/selectors/networks', () => ({
+  ...jest.requireActual('../../../../shared/lib/selectors/networks'),
   getNetworksByScopes: jest.fn(),
 }));
 

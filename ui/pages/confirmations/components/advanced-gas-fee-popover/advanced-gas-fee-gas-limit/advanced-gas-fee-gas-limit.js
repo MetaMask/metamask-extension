@@ -15,7 +15,7 @@ import {
   Text,
 } from '../../../../../components/component-library';
 import { IGNORE_GAS_LIMIT_CHAIN_IDS } from '../../../constants';
-import { hexToDecimal } from '../../../../../../shared/modules/conversion.utils';
+import { hexToDecimal } from '../../../../../../shared/lib/conversion.utils';
 
 const validateGasLimit = (gasLimit, minGasLimit, maxGasLimit) =>
   bnLessThan(gasLimit, minGasLimit) || bnGreaterThan(gasLimit, maxGasLimit)

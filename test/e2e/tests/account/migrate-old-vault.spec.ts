@@ -5,7 +5,7 @@ import { Driver } from '../../webdriver/driver';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import {
   lockAndWaitForLoginPage,
-  loginWithBalanceValidation,
+  login,
 } from '../../page-objects/flows/login.flow';
 
 describe('Migrate vault with old encryption', function (this: Suite) {
@@ -18,12 +18,12 @@ describe('Migrate vault with old encryption', function (this: Suite) {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.checkPageIsLoaded();
         await lockAndWaitForLoginPage(driver);
-        await loginWithBalanceValidation(driver);
+        await login(driver);
       },
     );
   });

@@ -5,14 +5,14 @@ import { mockNetworkState } from '../../../../test/stub/networks';
 import {
   parseApprovalTransactionData,
   parseTypedDataMessage,
-} from '../../../../shared/modules/transaction.utils';
+} from '../../../../shared/lib/transaction.utils';
 import { ResultType } from '../../../../shared/lib/trust-signals';
 import { createTrustSignalsMiddleware } from './trust-signals-middleware';
 import { scanAddressAndAddToCache } from './security-alerts-api';
 import { getChainId } from './trust-signals-util';
 
 jest.mock('./security-alerts-api');
-jest.mock('../../../../shared/modules/transaction.utils');
+jest.mock('../../../../shared/lib/transaction.utils');
 process.env.SECURITY_ALERTS_API_ENABLED = 'true';
 
 // Test constants

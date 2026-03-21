@@ -3,7 +3,7 @@ import log from 'loglevel';
 import { URDecoder } from '@ngraveio/bc-ur';
 import PropTypes from 'prop-types';
 // TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
+// eslint-disable-next-line import-x/no-restricted-paths
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../shared/constants/app';
 import WebcamUtils from '../../../helpers/utils/webcam-utils';
@@ -99,26 +99,29 @@ const BaseReader = ({
     return initCamera();
   }, [initCamera]);
 
-  const handleScan = (data) => {
-    try {
-      if (!data || urDecoder.isComplete()) {
-        return;
+  const handleScan = useCallback(
+    (data) => {
+      try {
+        if (!data || urDecoder.isComplete()) {
+          return;
+        }
+        urDecoder.receivePart(data);
+        setProgress(urDecoder.estimatedPercentComplete());
+        if (urDecoder.isComplete()) {
+          const result = urDecoder.resultUR();
+          handleSuccess(result).catch(setError);
+        }
+      } catch (e) {
+        if (isReadingWallet) {
+          setErrorTitle(t('QRHardwareUnknownQRCodeTitle'));
+        } else {
+          setErrorTitle(t('QRHardwareInvalidTransactionTitle'));
+        }
+        setError(new Error(t('unknownQrCode')));
       }
-      urDecoder.receivePart(data);
-      setProgress(urDecoder.estimatedPercentComplete());
-      if (urDecoder.isComplete()) {
-        const result = urDecoder.resultUR();
-        handleSuccess(result).catch(setError);
-      }
-    } catch (e) {
-      if (isReadingWallet) {
-        setErrorTitle(t('QRHardwareUnknownQRCodeTitle'));
-      } else {
-        setErrorTitle(t('QRHardwareInvalidTransactionTitle'));
-      }
-      setError(new Error(t('unknownQrCode')));
-    }
-  };
+    },
+    [handleSuccess, isReadingWallet, setErrorTitle, t, urDecoder],
+  );
 
   useEffect(() => {
     mounted.current = true;
@@ -128,7 +131,7 @@ const BaseReader = ({
       clearTimeout(permissionCheckerRef.current);
       permissionCheckerRef.current = null;
     };
-  }, []);
+  }, [checkEnvironment]);
 
   useEffect(() => {
     if (ready === READY_STATE.READY) {

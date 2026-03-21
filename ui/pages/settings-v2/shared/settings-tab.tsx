@@ -1,15 +1,59 @@
-import React from 'react';
-import { Box } from '@metamask/design-system-react';
+import React, { useEffect, useMemo } from 'react';
+import {
+  Box,
+  Text,
+  TextColor,
+  TextVariant,
+} from '@metamask/design-system-react';
+import { useI18nContext } from '../../../hooks/useI18nContext';
+import { handleSettingsRefs } from '../../../helpers/utils/settings-search';
 import { SettingItemConfig } from '../types';
 import { Divider } from './divider';
 
-export const SettingsTab = ({ items }: { items: SettingItemConfig[] }) => {
+type SettingsTabProps = {
+  items: SettingItemConfig[];
+  subHeader?: string;
+  /** Tab message key for settings search (e.g., 'developerOptions'). If provided, handles scroll-to-setting automatically. */
+  tabMessageKey?: string;
+};
+
+export const SettingsTab = ({
+  items,
+  subHeader,
+  tabMessageKey,
+}: SettingsTabProps) => {
+  const t = useI18nContext();
+
+  const itemCount = items.length;
+  const settingsRefs = useMemo(
+    () =>
+      Array.from({ length: itemCount }, () =>
+        React.createRef<HTMLDivElement>(),
+      ),
+    [itemCount],
+  );
+
+  useEffect(() => {
+    if (tabMessageKey) {
+      handleSettingsRefs(t, t(tabMessageKey), settingsRefs);
+    }
+  }, [t, tabMessageKey, settingsRefs]);
+
   return (
     <Box paddingHorizontal={4} paddingBottom={4}>
-      {items.map(({ id, component: Component, hasDividerBefore }) => (
+      {subHeader && (
+        <Text
+          variant={TextVariant.BodyMd}
+          color={TextColor.TextAlternative}
+          className="py-2"
+        >
+          {subHeader}
+        </Text>
+      )}
+      {items.map(({ id, component: Component, hasDividerBefore }, index) => (
         <React.Fragment key={id}>
           {hasDividerBefore && <Divider />}
-          <Component />
+          <Component sectionRef={settingsRefs[index]} />
         </React.Fragment>
       ))}
     </Box>

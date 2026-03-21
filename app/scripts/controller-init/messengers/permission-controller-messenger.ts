@@ -1,10 +1,10 @@
 import { Messenger } from '@metamask/messenger';
 import { NetworkControllerFindNetworkClientIdByChainIdAction } from '@metamask/network-controller';
 import type {
-  AddApprovalRequest,
-  HasApprovalRequest,
-  AcceptRequest,
-  RejectRequest,
+  ApprovalControllerAddRequestAction,
+  ApprovalControllerHasRequestAction,
+  ApprovalControllerAcceptRequestAction,
+  ApprovalControllerRejectRequestAction,
 } from '@metamask/approval-controller';
 import type { GetSubjectMetadata } from '@metamask/permission-controller';
 import { AccountsControllerListAccountsAction } from '@metamask/accounts-controller';
@@ -18,10 +18,10 @@ import { SnapPermissionSpecificationsActions } from '../../controllers/permissio
 import { RootMessenger } from '../../lib/messenger';
 
 type AllowedActions =
-  | AddApprovalRequest
-  | HasApprovalRequest
-  | AcceptRequest
-  | RejectRequest
+  | ApprovalControllerAddRequestAction
+  | ApprovalControllerHasRequestAction
+  | ApprovalControllerAcceptRequestAction
+  | ApprovalControllerRejectRequestAction
   | GetSubjectMetadata
   | GetPermittedSnaps
   | InstallSnaps;
@@ -116,6 +116,7 @@ export function getPermissionControllerInitMessenger(
       'SnapController:updateSnapState',
       'SnapInterfaceController:createInterface',
       'SnapInterfaceController:getInterface',
+      'SnapInterfaceController:setInterfaceDisplayed',
     ],
   });
   return controllerInitMessenger;

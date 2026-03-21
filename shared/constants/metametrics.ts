@@ -770,6 +770,7 @@ export enum MetaMetricsEventName {
   ActivityDetailsOpened = 'Activity Details Opened',
   ActivityDetailsClosed = 'Activity Details Closed',
   AnalyticsPreferenceSelected = 'Analytics Preference Selected',
+  ExperimentViewed = 'Experiment Viewed',
   AppInstalled = 'App Installed',
   AppOpened = 'App Opened',
   AppUnlocked = 'App Unlocked',
@@ -819,6 +820,7 @@ export enum MetaMetricsEventName {
   MetricsOptOut = 'Metrics Opt Out',
   MetricsDataDeletionRequest = 'Delete MetaMetrics Data Request Submitted',
   MusdClaimBonusButtonClicked = 'MUSD Claim Bonus Button Clicked',
+  MusdClaimBonusStatusUpdated = 'MUSD Claim Bonus Status Updated',
   MusdConversionCompleted = 'MUSD Conversion Completed',
   MusdConversionCtaClicked = 'MUSD Conversion CTA Clicked',
   MusdConversionFailed = 'MUSD Conversion Failed',
@@ -828,6 +830,7 @@ export enum MetaMetricsEventName {
   MusdConversionStarted = 'MUSD Conversion Started',
   MusdConversionStatusUpdated = 'MUSD Conversion Status Updated',
   MusdFullscreenAnnouncementButtonClicked = 'MUSD Fullscreen Announcement Button Clicked',
+  MusdBonusTermsOfUsePressed = 'MUSD Bonus Terms of Use Pressed',
   MusdFullscreenAnnouncementDisplayed = 'MUSD Fullscreen Announcement Displayed',
   NavAccountMenuOpened = 'Account Menu Opened',
   NavConnectedSitesOpened = 'Connected Sites Opened',
@@ -1117,6 +1120,7 @@ export enum MetaMetricsEventAccountImportType {
 
 export enum MetaMetricsEventCategory {
   Accounts = 'Accounts',
+  Analytics = 'Analytics',
   App = 'App',
   Auth = 'Auth',
   Background = 'Background',
@@ -1258,6 +1262,12 @@ export enum DeleteRegulationStatus {
   Running = 'RUNNING',
   Unknown = 'UNKNOWN',
 }
+
+export const DATA_DELETION_REQUESTED_STATUSES: DeleteRegulationStatus[] = [
+  DeleteRegulationStatus.Initialized,
+  DeleteRegulationStatus.Running,
+  DeleteRegulationStatus.Finished,
+];
 
 export enum MetaMetricsEventTransactionEstimateType {
   DappProposed = 'dapp_proposed',

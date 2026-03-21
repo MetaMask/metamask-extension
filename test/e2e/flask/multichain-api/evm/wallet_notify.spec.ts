@@ -1,7 +1,7 @@
 import { withFixtures } from '../../../helpers';
 import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
 import TestDappMultichain from '../../../page-objects/pages/test-dapp-multichain';
-import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
+import { login } from '../../../page-objects/flows/login.flow';
 import {
   DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
   type FixtureCallbackArgs,
@@ -18,7 +18,7 @@ describe('Calling `eth_subscribe` on a particular network event', function () {
         ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
       },
       async ({ driver, extensionId }: FixtureCallbackArgs) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         const testDapp = new TestDappMultichain(driver);
         await testDapp.openTestDappPage();

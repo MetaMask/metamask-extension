@@ -29,7 +29,7 @@ const terser = require('terser');
 const bifyModuleGroups = require('bify-module-groups');
 
 const { streamFlatMap } = require('../stream-flat-map');
-const { isManifestV3 } = require('../../shared/modules/mv3.utils');
+const { isManifestV3 } = require('../../shared/lib/mv3.utils');
 const { setEnvironmentVariables } = require('./set-environment-variables');
 const { BUILD_TARGETS } = require('./constants');
 const { getConfig, getActiveFeatures } = require('./config');
@@ -973,6 +973,7 @@ function setupBundlerDefaults(
             './**/node_modules/@myx-trade',
             './**/node_modules/lodash-es',
             './**/node_modules/wretch',
+            './**/node_modules/crypto-es',
             // Ledger WebHID transport
             './**/node_modules/@ledgerhq/hw-transport-webhid',
             './**/node_modules/@ledgerhq/hw-transport',

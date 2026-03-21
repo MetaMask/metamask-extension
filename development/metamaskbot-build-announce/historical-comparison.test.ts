@@ -22,11 +22,15 @@ const makeCommit = (
     pageLoad: {
       standardHome: {
         mean: { uiStartup: 1000, load: 500 },
+        p75: { uiStartup: 1100, load: 550 },
+        p95: { uiStartup: 1300, load: 650 },
       },
     },
     userActions: {
       loadNewAccount: {
         mean: { loadNewAccount: 300 },
+        p75: { loadNewAccount: 330 },
+        p95: { loadNewAccount: 380 },
       },
     },
   },
@@ -41,6 +45,8 @@ const mockFile: HistoricalPerformanceFile = {
       pageLoad: {
         standardHome: {
           mean: { uiStartup: 2000, load: 600 },
+          p75: { uiStartup: 2200, load: 660 },
+          p95: { uiStartup: 2600, load: 780 },
         },
       },
     },
@@ -50,6 +56,7 @@ const mockFile: HistoricalPerformanceFile = {
 describe('aggregateHistoricalData', () => {
   beforeEach(() => {
     jest.spyOn(console, 'log').mockImplementation();
+    jest.spyOn(console, 'warn').mockImplementation();
   });
 
   afterEach(() => {
@@ -60,8 +67,12 @@ describe('aggregateHistoricalData', () => {
     // def456 is the last key → most recent when reversed
     const result = aggregateHistoricalData(mockFile);
 
-    expect(result['pageLoad/standardHome']?.uiStartup).toBe(2000);
-    expect(result['pageLoad/standardHome']?.load).toBe(600);
+    expect(result['pageLoad/standardHome']?.uiStartup?.mean).toBe(2000);
+    expect(result['pageLoad/standardHome']?.uiStartup?.p75).toBe(2200);
+    expect(result['pageLoad/standardHome']?.uiStartup?.p95).toBe(2600);
+    expect(result['pageLoad/standardHome']?.load?.mean).toBe(600);
+    expect(result['pageLoad/standardHome']?.load?.p75).toBe(660);
+    expect(result['pageLoad/standardHome']?.load?.p95).toBe(780);
   });
 
   it('returns empty object when data has no commits', () => {
@@ -79,7 +90,7 @@ describe('aggregateHistoricalData', () => {
 
     const result = aggregateHistoricalData(data);
 
-    expect(result['pageLoad/standardHome']?.uiStartup).toBe(1000);
+    expect(result['pageLoad/standardHome']?.uiStartup?.mean).toBe(1000);
   });
 
   it('skips benchmark entries where mean is null or missing', () => {
@@ -89,7 +100,11 @@ describe('aggregateHistoricalData', () => {
         presets: {
           pageLoad: {
             badEntry: { mean: null },
-            goodEntry: { mean: { uiStartup: 800 } },
+            goodEntry: {
+              mean: { uiStartup: 800 },
+              p75: { uiStartup: 880 },
+              p95: { uiStartup: 1040 },
+            },
           },
         },
       },
@@ -98,7 +113,9 @@ describe('aggregateHistoricalData', () => {
     const result = aggregateHistoricalData(data);
 
     expect(result['pageLoad/badEntry']).toBeUndefined();
-    expect(result['pageLoad/goodEntry']?.uiStartup).toBe(800);
+    expect(result['pageLoad/goodEntry']?.uiStartup?.mean).toBe(800);
+    expect(result['pageLoad/goodEntry']?.uiStartup?.p75).toBe(880);
+    expect(result['pageLoad/goodEntry']?.uiStartup?.p95).toBe(1040);
   });
 
   it('skips NaN metric values', () => {
@@ -107,7 +124,11 @@ describe('aggregateHistoricalData', () => {
         timestamp: 1,
         presets: {
           pageLoad: {
-            entry: { mean: { good: 500, bad: NaN } },
+            entry: {
+              mean: { good: 500, bad: NaN },
+              p75: { good: 550, bad: NaN },
+              p95: { good: 650, bad: NaN },
+            },
           },
         },
       },
@@ -115,7 +136,9 @@ describe('aggregateHistoricalData', () => {
 
     const result = aggregateHistoricalData(data);
 
-    expect(result['pageLoad/entry']?.good).toBe(500);
+    expect(result['pageLoad/entry']?.good?.mean).toBe(500);
+    expect(result['pageLoad/entry']?.good?.p75).toBe(550);
+    expect(result['pageLoad/entry']?.good?.p95).toBe(650);
     expect(result['pageLoad/entry']?.bad).toBeUndefined();
   });
 
@@ -125,7 +148,11 @@ describe('aggregateHistoricalData', () => {
         timestamp: 1,
         presets: {
           pageLoad: {
-            entry: { mean: { uiStartup: '1234.5' } },
+            entry: {
+              mean: { uiStartup: '1234.5' },
+              p75: { uiStartup: '1350.0' },
+              p95: { uiStartup: '1600.0' },
+            },
           },
         },
       },
@@ -133,7 +160,65 @@ describe('aggregateHistoricalData', () => {
 
     const result = aggregateHistoricalData(data);
 
-    expect(result['pageLoad/entry']?.uiStartup).toBe(1234.5);
+    expect(result['pageLoad/entry']?.uiStartup?.mean).toBe(1234.5);
+    expect(result['pageLoad/entry']?.uiStartup?.p75).toBe(1350);
+    expect(result['pageLoad/entry']?.uiStartup?.p95).toBe(1600);
+  });
+
+  it('skips commits where presets is missing', () => {
+    const data = asHistoricalFile({
+      c1: { timestamp: 1 },
+    });
+
+    const result = aggregateHistoricalData(data);
+
+    expect(result).toStrictEqual({});
+  });
+
+  it('skips preset entries that are not objects', () => {
+    const data = asHistoricalFile({
+      c1: {
+        timestamp: 1,
+        presets: {
+          pageLoad: 'not-an-object',
+          userActions: makeCommit().presets.userActions,
+        },
+      },
+    });
+
+    const result = aggregateHistoricalData(data);
+
+    expect(result['pageLoad/standardHome']).toBeUndefined();
+    expect(result['userActions/loadNewAccount']?.loadNewAccount?.mean).toBe(
+      300,
+    );
+  });
+
+  it('falls back to mean when p75/p95 data is missing', () => {
+    const data = asHistoricalFile({
+      c1: {
+        timestamp: 1,
+        presets: {
+          pageLoad: {
+            entry: {
+              mean: { metric: 500 },
+            },
+          },
+        },
+      },
+    });
+
+    const result = aggregateHistoricalData(data);
+
+    expect(result['pageLoad/entry']?.metric?.mean).toBe(500);
+    expect(result['pageLoad/entry']?.metric?.p75).toBe(500);
+    expect(result['pageLoad/entry']?.metric?.p95).toBe(500);
+    expect(console.warn).toHaveBeenCalledWith(
+      expect.stringContaining('No p75 data'),
+    );
+    expect(console.warn).toHaveBeenCalledWith(
+      expect.stringContaining('No p95 data'),
+    );
   });
 });
 
@@ -165,7 +250,7 @@ describe('fetchHistoricalPerformanceData', () => {
     const result = await fetchHistoricalPerformanceData('main');
 
     expect(result).not.toBeNull();
-    expect(result?.['pageLoad/standardHome']?.uiStartup).toBe(2000);
+    expect(result?.['pageLoad/standardHome']?.uiStartup?.mean).toBe(2000);
     // Should fetch the target branch file directly
     expect(mockFetch).toHaveBeenCalledWith(
       expect.stringContaining('main/performance_data.json'),
@@ -404,7 +489,7 @@ describe('fetchHistoricalPerformanceData', () => {
     const result = await fetchHistoricalPerformanceData('main');
 
     expect(result).not.toBeNull();
-    expect(result?.['pageLoad/standardHome']?.uiStartup).toBe(2000);
+    expect(result?.['pageLoad/standardHome']?.uiStartup?.mean).toBe(2000);
   });
 
   it('returns null when all branches produce empty aggregation', async () => {
@@ -429,5 +514,28 @@ describe('fetchHistoricalPerformanceData', () => {
     const result = await fetchHistoricalPerformanceData('main');
 
     expect(result).toBeNull();
+  });
+
+  it('includes Authorization header when GITHUB_TOKEN is set', async () => {
+    process.env.GITHUB_TOKEN = 'test-token-123';
+    try {
+      mockFetch
+        .mockReturnValueOnce(makeNotFoundResponse())
+        .mockReturnValueOnce(makeOkResponse([]));
+
+      await fetchHistoricalPerformanceData('main');
+
+      const apiCall = mockFetch.mock.calls.find(
+        (c: [string, RequestInit?]) =>
+          typeof c[0] === 'string' && c[0].includes('api.github.com'),
+      );
+      expect(apiCall).toBeDefined();
+      expect((apiCall as [string, RequestInit])[1]?.headers).toHaveProperty(
+        'Authorization',
+        'token test-token-123',
+      );
+    } finally {
+      delete process.env.GITHUB_TOKEN;
+    }
   });
 });

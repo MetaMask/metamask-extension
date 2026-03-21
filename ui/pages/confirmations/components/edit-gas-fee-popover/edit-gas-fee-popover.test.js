@@ -36,6 +36,10 @@ jest.mock('../../../../contexts/transaction-modal', () => ({
   }),
 }));
 
+jest.mock('../../context/confirm', () => ({
+  useConfirmContext: () => ({ currentConfirmation: {} }),
+}));
+
 const MOCK_FEE_ESTIMATE = {
   low: {
     minWaitTimeEstimate: 360000,

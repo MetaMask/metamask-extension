@@ -1,25 +1,29 @@
-import { useMemo, useEffect, useRef, useState, useCallback } from 'react';
+import {
+  useMemo,
+  useEffect,
+  useRef,
+  useState,
+  useCallback,
+  useContext,
+} from 'react';
 import { useSelector } from 'react-redux';
 import {
   TransactionStatus,
   type TransactionMeta,
 } from '@metamask/transaction-controller';
 import { getTransactions } from '../../selectors/transactions';
+import { MetaMetricsContext } from '../../contexts/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../shared/constants/metametrics';
+import type { MusdClaimBonusStatusUpdatedEventProperties } from '../../components/app/musd/musd-events';
+import { getMultichainNetworkConfigurationsByChainId } from '../../selectors/multichain';
+import { resolveClaimAmount } from './transaction-amount-utils';
+import { IN_FLIGHT_STATUSES } from './transaction-status-constants';
 
 export const MERKL_DISTRIBUTOR_ADDRESS =
   '0x3Ef3D8bA38EBe18DB133cEc108f4D14CE00Dd9Ae' as const;
-
-/**
- * Transaction statuses that indicate a claim is "in flight":
- * - approved: User confirmed in wallet, waiting for submission
- * - signed: Transaction signed, waiting for broadcast
- * - submitted: Transaction submitted to network, waiting for confirmation
- */
-const IN_FLIGHT_STATUSES: string[] = [
-  TransactionStatus.approved,
-  TransactionStatus.signed,
-  TransactionStatus.submitted,
-];
 
 /**
  * Check if a transaction is a Merkl claim by matching the distributor address.
@@ -27,7 +31,7 @@ const IN_FLIGHT_STATUSES: string[] = [
  * @param tx - The transaction metadata
  * @returns Whether the transaction is a Merkl claim
  */
-const isMerklClaimTransaction = (tx: TransactionMeta): boolean =>
+export const isMerklClaimTransaction = (tx: TransactionMeta): boolean =>
   tx.txParams?.to?.toLowerCase() === MERKL_DISTRIBUTOR_ADDRESS.toLowerCase();
 
 export type MerklClaimToastState = 'in-progress' | 'success' | 'failed' | null;
@@ -50,6 +54,10 @@ export const useMerklClaimStatus = (): {
   dismissToast: () => void;
 } => {
   const transactions = useSelector(getTransactions) as TransactionMeta[];
+  const { trackEvent } = useContext(MetaMetricsContext);
+  const networkConfigurationsByChainId = useSelector(
+    getMultichainNetworkConfigurationsByChainId,
+  );
   const [completionState, setCompletionState] = useState<
     'success' | 'failed' | null
   >(null);
@@ -60,6 +68,61 @@ export const useMerklClaimStatus = (): {
   const pendingClaimIdsRef = useRef<Set<string>>(new Set());
   // Track IDs of claims we've already shown completion toasts for
   const shownCompletionIdsRef = useRef<Set<string>>(new Set());
+  // Track IDs of claims we've already tracked analytics for (by status)
+  const trackedAnalyticsRef = useRef<Map<string, Set<string>>>(new Map());
+
+  /**
+   * Track Merkl claim status update analytics.
+   * Async because claim amount resolution requires decoding calldata and
+   * potentially reading from the Merkl distributor contract.
+   */
+  const trackClaimStatusUpdate = useCallback(
+    async (
+      tx: TransactionMeta,
+      status: 'approved' | 'confirmed' | 'failed' | 'dropped',
+    ) => {
+      const { chainId } = tx;
+      const networkConfig = chainId
+        ? networkConfigurationsByChainId[chainId]
+        : null;
+      const networkName = networkConfig?.name ?? 'Unknown Network';
+
+      // Resolve claim amount asynchronously by decoding the Merkl claim
+      // calldata. For confirmed txs, receipt logs give the exact payout;
+      // otherwise falls back to contract call (total - already claimed).
+      let claimAmount: string | undefined;
+      try {
+        claimAmount = await resolveClaimAmount(tx);
+      } catch {
+        // Analytics should never block the UI; proceed without amount
+      }
+
+      /* eslint-disable @typescript-eslint/naming-convention */
+      const properties: MusdClaimBonusStatusUpdatedEventProperties = {
+        transaction_id: tx.id,
+        transaction_status: status,
+        transaction_type: 'merklClaim',
+        network_chain_id: chainId ?? '',
+        network_name: networkName,
+        ...(claimAmount ? { amount_claimed_decimal: claimAmount } : {}),
+      };
+      /* eslint-enable @typescript-eslint/naming-convention */
+
+      console.log('[useMerklClaimStatus] Firing MusdClaimBonusStatusUpdated', {
+        txId: tx.id,
+        status,
+        claimAmount,
+        properties,
+      });
+
+      trackEvent({
+        event: MetaMetricsEventName.MusdClaimBonusStatusUpdated,
+        category: MetaMetricsEventCategory.MusdConversion,
+        properties,
+      });
+    },
+    [trackEvent, networkConfigurationsByChainId],
+  );
 
   const merklClaims = useMemo(
     () => transactions.filter(isMerklClaimTransaction),
@@ -71,7 +134,7 @@ export const useMerklClaimStatus = (): {
     [merklClaims],
   );
 
-  // Detect transitions from pending → confirmed/failed
+  // Detect transitions from pending → confirmed/failed and track analytics
   useEffect(() => {
     const currentPendingIds = new Set(
       merklClaims
@@ -80,6 +143,24 @@ export const useMerklClaimStatus = (): {
     );
 
     for (const tx of merklClaims) {
+      // Track analytics for status changes
+      const trackedStatuses =
+        trackedAnalyticsRef.current.get(tx.id) ?? new Set();
+
+      // Track approved status when the transaction first appears in any
+      // in-flight state. The `approved` status is extremely transient
+      // (approved → signed → submitted within the same tick), so React
+      // almost never observes it directly. Matching any in-flight status
+      // ensures the event fires reliably.
+      if (
+        IN_FLIGHT_STATUSES.includes(tx.status) &&
+        !trackedStatuses.has('approved')
+      ) {
+        trackClaimStatusUpdate(tx, 'approved');
+        trackedStatuses.add('approved');
+        trackedAnalyticsRef.current.set(tx.id, trackedStatuses);
+      }
+
       if (shownCompletionIdsRef.current.has(tx.id)) {
         continue;
       }
@@ -87,6 +168,11 @@ export const useMerklClaimStatus = (): {
       const wasPending = pendingClaimIdsRef.current.has(tx.id);
 
       if (tx.status === TransactionStatus.confirmed && wasPending) {
+        if (!trackedStatuses.has('confirmed')) {
+          trackClaimStatusUpdate(tx, 'confirmed');
+          trackedStatuses.add('confirmed');
+          trackedAnalyticsRef.current.set(tx.id, trackedStatuses);
+        }
         setCompletionState('success');
         setDismissed(false);
         shownCompletionIdsRef.current.add(tx.id);
@@ -95,6 +181,13 @@ export const useMerklClaimStatus = (): {
           tx.status === TransactionStatus.dropped) &&
         wasPending
       ) {
+        const statusKey =
+          tx.status === TransactionStatus.failed ? 'failed' : 'dropped';
+        if (!trackedStatuses.has(statusKey)) {
+          trackClaimStatusUpdate(tx, statusKey);
+          trackedStatuses.add(statusKey);
+          trackedAnalyticsRef.current.set(tx.id, trackedStatuses);
+        }
         setCompletionState('failed');
         setDismissed(false);
         shownCompletionIdsRef.current.add(tx.id);
@@ -110,7 +203,7 @@ export const useMerklClaimStatus = (): {
     }
 
     pendingClaimIdsRef.current = currentPendingIds;
-  }, [merklClaims]);
+  }, [merklClaims, trackClaimStatusUpdate]);
 
   const dismissToast = useCallback(() => {
     setCompletionState(null);

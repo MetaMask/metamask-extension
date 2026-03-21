@@ -763,14 +763,6 @@ class FixtureBuilder {
     return this;
   }
 
-  withPreferencesControllerPetnamesDisabled() {
-    return this.withPreferencesController({
-      preferences: {
-        petnamesEnabled: false,
-      },
-    });
-  }
-
   withPreferencesControllerShowNativeTokenAsMainBalanceDisabled() {
     return this.withPreferencesController({
       preferences: {
@@ -1986,6 +1978,22 @@ class FixtureBuilder {
       this.fixture.data.RemoteFeatureFlagController.remoteFeatureFlags,
       remoteFeatureFlags,
     );
+    return this;
+  }
+
+  withConversionRates(conversionRates = {}) {
+    this.fixture.data.MultichainRatesController ??= {};
+    this.fixture.data.MultichainRatesController.conversionRates = {
+      ...conversionRates,
+    };
+    return this;
+  }
+
+  withCurrencyRates(currencyRates = {}) {
+    this.fixture.data.CurrencyController ??= {};
+    this.fixture.data.CurrencyController.currencyRates = {
+      ...currencyRates,
+    };
     return this;
   }
 
