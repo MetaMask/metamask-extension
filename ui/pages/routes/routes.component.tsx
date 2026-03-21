@@ -145,6 +145,9 @@ import { createRouteWithLayout } from '../../layouts/route-with-layout';
 import Authenticated from '../../helpers/higher-order-components/authenticated/authenticated.container';
 import { contactsRoutes } from '../contacts';
 import { getCurrencyRateControllerCurrentCurrency } from '../../../shared/lib/selectors/assets-migration';
+import { ALLOWED_CAPABILITIES as ASSET_DETAIL_ROUTE_ALLOWED_CAPABILITIES } from '../asset/messenger';
+import { ALLOWED_CAPABILITIES as CROSS_CHAIN_SWAP_ROUTE_ALLOWED_CAPABILITIES } from '../bridge/messenger';
+import { ALLOWED_CAPABILITIES as HOME_ROUTE_ALLOWED_CAPABILITIES } from '../home/messenger';
 import { ALLOWED_CAPABILITIES as NONEVM_BALANCE_CHECK_ROUTE_ALLOWED_CAPABILITIES } from '../nonevm-balance-check/messenger';
 import { ALLOWED_CAPABILITIES as SETTINGS_ROUTE_ALLOWED_CAPABILITIES } from '../settings/messenger';
 import { getConnectingLabel, setTheme } from './utils';
@@ -446,6 +449,7 @@ export const routeConfig = [
     authenticated: true,
     basicFunctionalityOpenPageCtaKey:
       'basicFunctionalityRequired_openSwapsPage',
+    messenger: CROSS_CHAIN_SWAP_ROUTE_ALLOWED_CAPABILITIES,
   }),
   createRouteWithLayout({
     path: CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE,
@@ -495,6 +499,7 @@ export const routeConfig = [
     layout: RootLayout,
     authenticated: true,
     basicFunctionalityRequired: false,
+    messenger: ASSET_DETAIL_ROUTE_ALLOWED_CAPABILITIES,
   }),
   createRouteWithLayout({
     path: `${ASSET_ROUTE}/:chainId/:asset/`,
@@ -502,6 +507,7 @@ export const routeConfig = [
     layout: RootLayout,
     authenticated: true,
     basicFunctionalityRequired: false,
+    messenger: ASSET_DETAIL_ROUTE_ALLOWED_CAPABILITIES,
   }),
   createRouteWithLayout({
     path: `${ASSET_ROUTE}/:chainId`,
@@ -524,6 +530,7 @@ export const routeConfig = [
     authenticated: true,
     basicFunctionalityOpenPageCtaKey:
       'basicFunctionalityRequired_openMusdConversionPage',
+    messenger: MUSD_ROUTE_ALLOWED_CAPABILITIES,
   }),
   createRouteWithLayout({
     path: PERMISSIONS,
@@ -686,6 +693,7 @@ export const routeConfig = [
     layout: RootLayout,
     authenticated: true,
     basicFunctionalityRequired: false,
+    messenger: HOME_ROUTE_ALLOWED_CAPABILITIES,
   }),
 ];
 
