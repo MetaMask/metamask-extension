@@ -39,6 +39,24 @@ const getPermittedChains = async (driver: Driver) => {
   return permittedChains;
 };
 
+const waitForPermittedChains = async (
+  driver: Driver,
+  expectedPermittedChains: string[],
+) => {
+  await driver.wait(async () => {
+    const permittedChains = await getPermittedChains(driver);
+
+    return (
+      permittedChains.length === expectedPermittedChains.length &&
+      expectedPermittedChains.every((chainId) =>
+        permittedChains.includes(chainId),
+      )
+    );
+  });
+
+  return await getPermittedChains(driver);
+};
+
 describe('Add Ethereum Chain', function () {
   describe('the dapp is not already permitted to use the chain being added and the dapp is on a different chain from the chain being added', function () {
     it('automatically permits and switches to the chain when the rpc endpoint is added and no rpc endpoint previously existed for the chain', async function () {
@@ -100,7 +118,9 @@ describe('Add Ethereum Chain', function () {
           await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
           await testDapp.checkPageIsLoaded();
 
-          const afterPermittedChains = await getPermittedChains(driver);
+          const afterPermittedChains = await waitForPermittedChains(driver, [
+            '0x53a',
+          ]);
           assert.deepEqual(afterPermittedChains, ['0x53a']);
         },
       );
@@ -170,7 +190,9 @@ describe('Add Ethereum Chain', function () {
           await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
           await testDapp.checkPageIsLoaded();
 
-          const afterPermittedChains = await getPermittedChains(driver);
+          const afterPermittedChains = await waitForPermittedChains(driver, [
+            '0x53a',
+          ]);
           assert.deepEqual(afterPermittedChains, ['0x53a']);
         },
       );
@@ -242,7 +264,9 @@ describe('Add Ethereum Chain', function () {
           await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
           await testDapp.checkPageIsLoaded();
 
-          const afterPermittedChains = await getPermittedChains(driver);
+          const afterPermittedChains = await waitForPermittedChains(driver, [
+            '0x53a',
+          ]);
           assert.deepEqual(afterPermittedChains, ['0x53a']);
         },
       );
@@ -300,7 +324,9 @@ describe('Add Ethereum Chain', function () {
           await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
           await testDapp.checkPageIsLoaded();
 
-          const afterPermittedChains = await getPermittedChains(driver);
+          const afterPermittedChains = await waitForPermittedChains(driver, [
+            '0x539',
+          ]);
           assert.deepEqual(afterPermittedChains, ['0x539']);
         },
       );
@@ -361,7 +387,9 @@ describe('Add Ethereum Chain', function () {
           await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
           await testDapp.checkPageIsLoaded();
 
-          const afterPermittedChains = await getPermittedChains(driver);
+          const afterPermittedChains = await waitForPermittedChains(driver, [
+            '0x539',
+          ]);
           assert.deepEqual(afterPermittedChains, ['0x539']);
         },
       );
@@ -438,7 +466,10 @@ describe('Add Ethereum Chain', function () {
           await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
           await testDapp.checkPageIsLoaded();
 
-          const afterPermittedChains = await getPermittedChains(driver);
+          const afterPermittedChains = await waitForPermittedChains(driver, [
+            '0x539',
+            '0x53a',
+          ]);
           assert.deepEqual(afterPermittedChains, ['0x539', '0x53a']);
 
           // should end on 1338
@@ -506,7 +537,10 @@ describe('Add Ethereum Chain', function () {
             `window.ethereum.request(${switchEthereumChainRequest})`,
           );
 
-          const afterPermittedChains = await getPermittedChains(driver);
+          const afterPermittedChains = await waitForPermittedChains(driver, [
+            '0x539',
+            '0x53a',
+          ]);
           assert.deepEqual(afterPermittedChains, ['0x539', '0x53a']);
 
           // should end on 1338
@@ -654,7 +688,10 @@ describe('Add Ethereum Chain', function () {
           await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
           await testDapp.checkPageIsLoaded();
 
-          const afterPermittedChains = await getPermittedChains(driver);
+          const afterPermittedChains = await waitForPermittedChains(driver, [
+            '0x539',
+            '0x53a',
+          ]);
           assert.deepEqual(afterPermittedChains, ['0x539', '0x53a']);
 
           // should end on 1338
