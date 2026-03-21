@@ -9,13 +9,13 @@ import {
   AccountsControllerSetSelectedAccountAction,
 } from '@metamask/accounts-controller';
 import type {
-  AcceptRequest,
-  AddApprovalRequest,
-  EndFlow,
-  RejectRequest,
-  ShowError,
-  ShowSuccess,
-  StartFlow,
+  ApprovalControllerAcceptRequestAction,
+  ApprovalControllerAddRequestAction,
+  ApprovalControllerEndFlowAction,
+  ApprovalControllerRejectRequestAction,
+  ApprovalControllerShowErrorAction,
+  ApprovalControllerShowSuccessAction,
+  ApprovalControllerStartFlowAction,
 } from '@metamask/approval-controller';
 import {
   GetSnap,
@@ -27,13 +27,13 @@ import { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feat
 import { PreferencesControllerGetStateAction } from '../../controllers/preferences-controller';
 
 export type SnapKeyringBuilderAllowActions =
-  | StartFlow
-  | EndFlow
-  | ShowSuccess
-  | ShowError
-  | AddApprovalRequest
-  | AcceptRequest
-  | RejectRequest
+  | ApprovalControllerStartFlowAction
+  | ApprovalControllerEndFlowAction
+  | ApprovalControllerShowSuccessAction
+  | ApprovalControllerShowErrorAction
+  | ApprovalControllerAddRequestAction
+  | ApprovalControllerAcceptRequestAction
+  | ApprovalControllerRejectRequestAction
   | MaybeUpdateState
   | TestOrigin
   | KeyringControllerGetAccountsAction

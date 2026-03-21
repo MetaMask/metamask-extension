@@ -84,6 +84,16 @@ import {
 import { forwardRequestToSnap } from './lib/forwardRequestToSnap';
 import MetaMaskController from './metamask-controller';
 
+jest.mock('./controller-init/perps-controller-init', () => ({
+  PerpsControllerInit: jest.fn().mockReturnValue({
+    controller: {
+      state: {},
+      name: 'PerpsController',
+    },
+    api: {},
+  }),
+}));
+
 jest.mock('webextension-polyfill', () => ({
   runtime: {
     id: 'fake-extension-id',
@@ -461,6 +471,14 @@ describe('MetaMaskController', () => {
           },
         ]),
       );
+    nock('https://on-ramp.uat-api.cx.metamask.io')
+      .get('/geolocation')
+      .reply(200, 'US')
+      .persist();
+    nock('https://on-ramp.api.cx.metamask.io')
+      .get('/geolocation')
+      .reply(200, 'US')
+      .persist();
 
     globalThis.sentry = {
       withIsolationScope: jest.fn(),
@@ -4776,7 +4794,7 @@ describe('MetaMaskController', () => {
           });
         jest.spyOn(metamaskController.approvalController, 'add');
         jest
-          .spyOn(metamaskController.approvalController, 'has')
+          .spyOn(metamaskController.approvalController, 'hasRequest')
           .mockReturnValue(false);
 
         // Initialize referral state
@@ -4818,7 +4836,7 @@ describe('MetaMaskController', () => {
           mockNewConnectionTriggerType,
         );
         expect(
-          metamaskController.approvalController.has,
+          metamaskController.approvalController.hasRequest,
         ).not.toHaveBeenCalled();
         expect(
           metamaskController.approvalController.add,
@@ -4833,7 +4851,7 @@ describe('MetaMaskController', () => {
           .spyOn(metamaskController, 'getPermittedAccounts')
           .mockReturnValueOnce(mockPermittedAccounts);
         jest
-          .spyOn(metamaskController.approvalController, 'has')
+          .spyOn(metamaskController.approvalController, 'hasRequest')
           .mockReturnValueOnce(true); // Pending approval exists
 
         await metamaskController.handleDefiReferral(
@@ -4842,7 +4860,9 @@ describe('MetaMaskController', () => {
           mockNewConnectionTriggerType,
         );
 
-        expect(metamaskController.approvalController.has).toHaveBeenCalledWith({
+        expect(
+          metamaskController.approvalController.hasRequest,
+        ).toHaveBeenCalledWith({
           origin: HYPERLIQUID_ORIGIN,
           type: HYPERLIQUID_APPROVAL_TYPE,
         });
@@ -4989,8 +5009,8 @@ describe('MetaMaskController', () => {
           .spyOn(metamaskController, 'getPermittedAccounts')
           .mockReturnValueOnce(mockPermittedAccounts);
         jest
-          .spyOn(metamaskController.approvalController, 'has')
-          .mockResolvedValueOnce(true); // Pending approval exists
+          .spyOn(metamaskController.approvalController, 'hasRequest')
+          .mockReturnValueOnce(true); // Pending approval exists
 
         await metamaskController.handleDefiReferral(
           DEFI_REFERRAL_PARTNERS[DefiReferralPartner.Hyperliquid],

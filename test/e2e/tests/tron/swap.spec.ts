@@ -2,7 +2,7 @@ import { formatChainIdToCaip } from '@metamask/bridge-controller';
 import { withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixtures/fixture-builder';
 import { Driver } from '../../webdriver/driver';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 import NonEvmHomepage from '../../page-objects/pages/home/non-evm-homepage';
 import NetworkManager from '../../page-objects/pages/network-manager';
 import SwapPage from '../../page-objects/pages/swap/swap-page';
@@ -55,7 +55,7 @@ describe('Swap on Tron', function () {
         ],
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         const networkManager = new NetworkManager(driver);
         await networkManager.openNetworkManager();
@@ -99,7 +99,7 @@ describe('Swap on Tron', function () {
         },
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         const networkManager = new NetworkManager(driver);
         await networkManager.openNetworkManager();
