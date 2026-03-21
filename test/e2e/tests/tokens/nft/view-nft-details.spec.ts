@@ -4,7 +4,7 @@ import FixtureBuilder from '../../../fixtures/fixture-builder';
 import Homepage from '../../../page-objects/pages/home/homepage';
 import NFTDetailsPage from '../../../page-objects/pages/nft-details-page';
 import NftListPage from '../../../page-objects/pages/home/nft-list';
-import { loginWithoutBalanceValidation } from '../../../page-objects/flows/login.flow';
+import { login } from '../../../page-objects/flows/login.flow';
 import { Driver } from '../../../webdriver/driver';
 
 describe('View NFT details', function () {
@@ -19,7 +19,7 @@ describe('View NFT details', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithoutBalanceValidation(driver);
+        await login(driver, { validateBalance: false });
 
         // Click to open the NFT details page and check title
         await new Homepage(driver).goToNftTab();

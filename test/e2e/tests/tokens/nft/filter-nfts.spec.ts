@@ -8,7 +8,7 @@ import NftListPage from '../../../page-objects/pages/home/nft-list';
 import NetworkManager, {
   NetworkId,
 } from '../../../page-objects/pages/network-manager';
-import { loginWithoutBalanceValidation } from '../../../page-objects/flows/login.flow';
+import { login } from '../../../page-objects/flows/login.flow';
 
 describe('View NFT details', function () {
   const smartContract = SMART_CONTRACTS.NFTS;
@@ -95,7 +95,7 @@ describe('View NFT details', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithoutBalanceValidation(driver);
+        await login(driver, { validateBalance: false });
 
         const networkManager = new NetworkManager(driver);
 

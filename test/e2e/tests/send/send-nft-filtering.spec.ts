@@ -13,7 +13,7 @@ import { Anvil } from '../../seeder/anvil';
 
 import Homepage from '../../page-objects/pages/home/homepage';
 import NftListPage from '../../page-objects/pages/home/nft-list';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 import SendPage from '../../page-objects/pages/send/send-page';
 
 describe('Send NFT - Filtering', function () {
@@ -34,7 +34,7 @@ describe('Send NFT - Filtering', function () {
         driver: Driver;
         localNodes: Anvil[];
       }) => {
-        await loginWithBalanceValidation(driver, localNodes[0]);
+        await login(driver, { localNode: localNodes[0] });
         const homepage = new Homepage(driver);
         await homepage.goToNftTab();
         const nftListPage = new NftListPage(driver);

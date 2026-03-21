@@ -3,7 +3,7 @@ import { withFixtures } from '../../../helpers';
 import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
 import { DEFAULT_FIXTURE_ACCOUNT } from '../../../constants';
 import TestDappMultichain from '../../../page-objects/pages/test-dapp-multichain';
-import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
+import { login } from '../../../page-objects/flows/login.flow';
 import {
   DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
   getExpectedSessionScope,
@@ -20,7 +20,7 @@ describe('Multichain API', function () {
           ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
         },
         async ({ driver, extensionId }: FixtureCallbackArgs) => {
-          await loginWithBalanceValidation(driver);
+          await login(driver);
 
           const testDapp = new TestDappMultichain(driver);
           await testDapp.openTestDappPage();
@@ -56,7 +56,7 @@ describe('Multichain API', function () {
            */
           const DEFAULT_SCOPE = 'eip155:1337';
 
-          await loginWithBalanceValidation(driver);
+          await login(driver);
 
           const testDapp = new TestDappMultichain(driver);
           await testDapp.openTestDappPage();

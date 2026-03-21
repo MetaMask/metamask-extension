@@ -8,7 +8,7 @@ import AddNetworkRpcUrlModal from '../../page-objects/pages/dialog/add-network-r
 import AddEditNetworkModal from '../../page-objects/pages/dialog/add-edit-network';
 import HomePage from '../../page-objects/pages/home/homepage';
 import SelectNetwork from '../../page-objects/pages/dialog/select-network';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 
 describe('Update Network:', function (this: Suite) {
@@ -23,7 +23,7 @@ describe('Update Network:', function (this: Suite) {
           networkName: 'Update Network',
           rpcUrl: 'test',
         };
-        await loginWithBalanceValidation(driver);
+        await login(driver);
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.openGlobalNetworksMenu();
 
@@ -135,7 +135,7 @@ describe('Update Network:', function (this: Suite) {
         testSpecificMock: mockRPCURLAndChainId,
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.openGlobalNetworksMenu();
 
@@ -224,7 +224,7 @@ describe('Update Network:', function (this: Suite) {
       },
 
       async ({ driver }: { driver: Driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.openGlobalNetworksMenu();
 
