@@ -28,7 +28,7 @@ import type {
   OrderParams,
   PriceUpdate,
 } from '@metamask/perps-controller';
-import { getIsPerpsEnabled } from '../../selectors/perps/feature-flags';
+import { getIsPerpsExperienceAvailable } from '../../selectors/perps/feature-flags';
 import { getSelectedInternalAccount } from '../../selectors/accounts';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import {
@@ -117,7 +117,7 @@ const PerpsOrderEntryPage: React.FC = () => {
   const navigate = useNavigate();
   const { symbol } = useParams<{ symbol: string }>();
   const [searchParams] = useSearchParams();
-  const isPerpsEnabled = useSelector(getIsPerpsEnabled);
+  const isPerpsExperienceAvailable = useSelector(getIsPerpsExperienceAvailable);
   const selectedAccount = useSelector(getSelectedInternalAccount);
   const selectedAddress = selectedAccount?.address;
   const { isEligible } = usePerpsEligibility();
@@ -456,7 +456,7 @@ const PerpsOrderEntryPage: React.FC = () => {
     return () => clearTimeout(timeout);
   }, [pendingOrderSymbol, handleBackClick]);
 
-  if (!isPerpsEnabled) {
+  if (!isPerpsExperienceAvailable) {
     return <Navigate to={DEFAULT_ROUTE} replace />;
   }
   if (!symbol || !decodedSymbol) {

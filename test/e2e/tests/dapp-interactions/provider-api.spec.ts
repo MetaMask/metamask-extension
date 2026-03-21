@@ -4,7 +4,7 @@ import { Suite } from 'mocha';
 import { withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import TestDapp from '../../page-objects/pages/test-dapp';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 
 describe('MetaMask', function (this: Suite) {
   it('should reject unsupported methods', async function () {
@@ -17,7 +17,7 @@ describe('MetaMask', function (this: Suite) {
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();

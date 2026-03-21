@@ -7,7 +7,7 @@ import GeneralSettings from '../../page-objects/pages/settings/general-settings'
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import PrivacySettings from '../../page-objects/pages/settings/privacy-settings';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 
 describe('Settings Search', function () {
   const settingsSearch = {
@@ -25,7 +25,7 @@ describe('Settings Search', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         await new HeaderNavbar(driver).openSettingsPage();
         const settingsPage = new SettingsPage(driver);
@@ -46,7 +46,7 @@ describe('Settings Search', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         await new HeaderNavbar(driver).openSettingsPage();
         const settingsPage = new SettingsPage(driver);
@@ -67,7 +67,7 @@ describe('Settings Search', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         await new HeaderNavbar(driver).openSettingsPage();
         const settingsPage = new SettingsPage(driver);
@@ -88,7 +88,7 @@ describe('Settings Search', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         await new HeaderNavbar(driver).openSettingsPage();
         const settingsPage = new SettingsPage(driver);
@@ -109,7 +109,7 @@ describe('Settings Search', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         await new HeaderNavbar(driver).openSettingsPage();
         const settingsPage = new SettingsPage(driver);
@@ -130,7 +130,7 @@ describe('Settings Search', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         await new HeaderNavbar(driver).openSettingsPage();
         const settingsPage = new SettingsPage(driver);

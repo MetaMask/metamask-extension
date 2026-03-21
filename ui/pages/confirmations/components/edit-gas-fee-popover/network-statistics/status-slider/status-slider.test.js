@@ -7,10 +7,14 @@ import { enLocale as messages } from '../../../../../../../test/lib/i18n-helpers
 
 import StatusSlider from './status-slider';
 
-const renderComponent = ({ networkCongestion }) => {
+const renderComponent = ({ networkCongestion, gasFeeEstimatesProp } = {}) => {
+  const contextValue =
+    networkCongestion === undefined
+      ? {}
+      : { gasFeeEstimates: { networkCongestion } };
   const component = (
-    <GasFeeContext.Provider value={{ gasFeeEstimates: { networkCongestion } }}>
-      <StatusSlider />
+    <GasFeeContext.Provider value={contextValue}>
+      <StatusSlider gasFeeEstimates={gasFeeEstimatesProp} />
     </GasFeeContext.Provider>
   );
 
@@ -86,5 +90,12 @@ describe('StatusSlider', () => {
       'border-top-color: #6D5C90',
     );
     expect(getByTestId('status-slider-label')).toHaveStyle('color: #6D5C90');
+  });
+
+  it('uses gasFeeEstimates prop for networkCongestion when provided (no context)', () => {
+    const { getByText } = renderComponent({
+      gasFeeEstimatesProp: { networkCongestion: 0.9 },
+    });
+    expect(getByText(messages.busy.message)).toBeInTheDocument();
   });
 });
