@@ -772,10 +772,10 @@
         "@metamask/assets-controllers>@metamask/abi-utils>@metamask/utils": true
       }
     },
-    "@metamask/assets-controller>@metamask/assets-controllers>@metamask/abi-utils": {
+    "@metamask/perps-controller>@metamask/abi-utils": {
       "packages": {
         "@metamask/superstruct": true,
-        "@metamask/assets-controller>@metamask/assets-controllers>@metamask/abi-utils>@metamask/utils": true
+        "@metamask/perps-controller>@metamask/abi-utils>@metamask/utils": true
       }
     },
     "@metamask/account-api": {
@@ -859,11 +859,11 @@
         "@ethereumjs/tx>@ethereumjs/util": true,
         "@ethersproject/abi": true,
         "@ethersproject/providers": true,
-        "@metamask/assets-controller>@metamask/assets-controllers": true,
+        "@metamask/assets-controllers": true,
         "@metamask/base-controller": true,
         "@metamask/client-controller": true,
         "@metamask/controller-utils": true,
-        "@metamask/assets-controller>@metamask/core-backend": true,
+        "@metamask/core-backend": true,
         "@metamask/keyring-snap-client": true,
         "@metamask/polling-controller": true,
         "@metamask/assets-controller>@metamask/snaps-utils": true,
@@ -907,50 +907,6 @@
         "@metamask/polling-controller": true,
         "@metamask/rpc-errors": true,
         "@metamask/assets-controllers>@metamask/snaps-utils": true,
-        "@metamask/utils": true,
-        "@metamask/keyring-api>async-mutex": true,
-        "ethereumjs-util>bn.js": true,
-        "immer": true,
-        "lodash": true,
-        "@metamask/assets-controllers>multiformats": true,
-        "reselect": true,
-        "@metamask/assets-controllers>single-call-balance-checker-abi": true,
-        "uuid": true
-      }
-    },
-    "@metamask/assets-controller>@metamask/assets-controllers": {
-      "globals": {
-        "AbortController": true,
-        "Intl.NumberFormat": true,
-        "URL": true,
-        "URLSearchParams": true,
-        "clearInterval": true,
-        "clearTimeout": true,
-        "console.error": true,
-        "console.log": true,
-        "console.warn": true,
-        "fetch": true,
-        "setInterval": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@ethereumjs/tx>@ethereumjs/util": true,
-        "ethers>@ethersproject/address": true,
-        "@ethersproject/contracts": true,
-        "@ethersproject/providers": true,
-        "@metamask/assets-controller>@metamask/assets-controllers>@metamask/abi-utils": true,
-        "@metamask/account-api": true,
-        "@metamask/base-controller": true,
-        "@metamask/contract-metadata": true,
-        "@metamask/controller-utils": true,
-        "@metamask/controller-utils>@metamask/eth-query": true,
-        "@metamask/keyring-api": true,
-        "@metamask/keyring-snap-client": true,
-        "@metamask/metamask-eth-abis": true,
-        "@metamask/assets-controller>@metamask/assets-controllers>@metamask/phishing-controller": true,
-        "@metamask/polling-controller": true,
-        "@metamask/rpc-errors": true,
-        "@metamask/assets-controller>@metamask/snaps-utils": true,
         "@metamask/utils": true,
         "@metamask/keyring-api>async-mutex": true,
         "ethereumjs-util>bn.js": true,
@@ -1167,21 +1123,6 @@
       }
     },
     "@metamask/core-backend": {
-      "globals": {
-        "URL": true,
-        "WebSocket": true,
-        "clearTimeout": true,
-        "fetch": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@metamask/controller-utils": true,
-        "@metamask/utils": true,
-        "@metamask/core-backend>@tanstack/query-core": true,
-        "uuid": true
-      }
-    },
-    "@metamask/assets-controller>@metamask/core-backend": {
       "globals": {
         "URL": true,
         "WebSocket": true,
@@ -1880,21 +1821,6 @@
         "nanoid": true
       }
     },
-    "@metamask/assets-controller>@metamask/snaps-utils>@metamask/permission-controller": {
-      "globals": {
-        "console.error": true
-      },
-      "packages": {
-        "@metamask/base-controller": true,
-        "@metamask/controller-utils": true,
-        "@metamask/json-rpc-engine": true,
-        "@metamask/rpc-errors": true,
-        "@metamask/utils": true,
-        "deep-freeze-strict": true,
-        "immer": true,
-        "nanoid": true
-      }
-    },
     "@metamask/permission-log-controller": {
       "packages": {
         "@metamask/base-controller": true,
@@ -1942,7 +1868,7 @@
         "punycode": true
       }
     },
-    "@metamask/assets-controller>@metamask/assets-controllers>@metamask/phishing-controller": {
+    "@metamask/assets-controllers>@metamask/phishing-controller": {
       "globals": {
         "TextEncoder": true,
         "URL": true,
@@ -1954,7 +1880,7 @@
         "@metamask/base-controller": true,
         "@metamask/controller-utils": true,
         "@noble/hashes": true,
-        "@metamask/assets-controller>@metamask/assets-controllers>@metamask/phishing-controller>ethereum-cryptography": true,
+        "@metamask/assets-controllers>@metamask/phishing-controller>ethereum-cryptography": true,
         "webpack-cli>fastest-levenshtein": true,
         "punycode": true
       }
@@ -2360,7 +2286,7 @@
       },
       "packages": {
         "@metamask/snaps-sdk>@metamask/key-tree": true,
-        "@metamask/assets-controller>@metamask/snaps-utils>@metamask/permission-controller": true,
+        "@metamask/permission-controller": true,
         "@metamask/rpc-errors": true,
         "@metamask/snaps-utils>@metamask/slip44": true,
         "@metamask/snaps-sdk": true,
@@ -2757,7 +2683,7 @@
         "semver": true
       }
     },
-    "@metamask/assets-controller>@metamask/assets-controllers>@metamask/abi-utils>@metamask/utils": {
+    "@metamask/perps-controller>@metamask/abi-utils>@metamask/utils": {
       "globals": {
         "TextDecoder": true,
         "TextEncoder": true
@@ -2977,7 +2903,13 @@
         "crypto": true
       }
     },
-    "@metamask/assets-controller>@metamask/assets-controllers>@metamask/phishing-controller>ethereum-cryptography>@noble/hashes": {
+    "@metamask/assets-controllers>@metamask/phishing-controller>ethereum-cryptography>@noble/hashes": {
+      "globals": {
+        "TextEncoder": true,
+        "crypto": true
+      }
+    },
+    "@metamask/perps-controller>@nktkas/hyperliquid>micro-eth-signer>@noble/hashes": {
       "globals": {
         "TextEncoder": true,
         "crypto": true
@@ -4470,13 +4402,13 @@
         "@metamask/phishing-controller>ethereum-cryptography>@noble/hashes": true
       }
     },
-    "@metamask/assets-controller>@metamask/assets-controllers>@metamask/phishing-controller>ethereum-cryptography": {
+    "@metamask/assets-controllers>@metamask/phishing-controller>ethereum-cryptography": {
       "globals": {
         "TextDecoder": true,
         "crypto": true
       },
       "packages": {
-        "@metamask/assets-controller>@metamask/assets-controllers>@metamask/phishing-controller>ethereum-cryptography>@noble/hashes": true
+        "@metamask/assets-controllers>@metamask/phishing-controller>ethereum-cryptography>@noble/hashes": true
       }
     },
     "ethereumjs-util>ethereum-cryptography": {
