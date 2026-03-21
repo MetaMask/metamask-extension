@@ -14,6 +14,7 @@
     "--ignore-revs-file .git-blame-ignore-revs"
   ],
   "js/ts.preferences.importModuleSpecifier": "relative",
+  "js/ts.tsdk.path": "node_modules/typescript/lib",
   "json.schemas": [
     {
       "fileMatch": ["app/manifest/*/*.json"],
@@ -27,6 +28,5 @@
   ],
   "tailwindCSS.classFunctions": ["classnames", "classNames"],
   "tailwindCSS.lint.cssConflict": "error",
-  "tailwindCSS.validate": true,
-  "js/ts.tsdk.path": "node_modules/typescript/lib"
+  "tailwindCSS.validate": true
 }
