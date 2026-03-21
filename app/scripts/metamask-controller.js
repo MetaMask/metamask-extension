@@ -173,6 +173,7 @@ import {
   fetchTokenBalance,
   fetchERC1155Balance,
 } from '../../shared/lib/token-util';
+import { toAssetId } from '../../shared/lib/asset-utils';
 import { isEqualCaseInsensitive } from '../../shared/lib/string-utils';
 import { parseStandardTokenTransactionData } from '../../shared/lib/transaction.utils';
 import { STATIC_MAINNET_TOKEN_LIST } from '../../shared/constants/tokens';
@@ -6335,14 +6336,81 @@ export default class MetamaskController extends EventEmitter {
     });
   }
 
-  handleWatchAssetRequest = ({ asset, type, origin, networkClientId }) => {
+  handleWatchAssetRequest = async ({
+    asset,
+    type,
+    origin,
+    networkClientId,
+  }) => {
     switch (type) {
-      case ERC20:
+      case ERC20: {
+        const assetsUnifyFlag =
+          this.initState?.RemoteFeatureFlagController?.remoteFeatureFlags
+            ?.assetsUnifyState;
+        if (
+          isAssetsUnifyStateFeatureEnabled(
+            assetsUnifyFlag,
+            ASSETS_UNIFY_STATE_VERSION_1,
+          )
+        ) {
+          if (!networkClientId) {
+            throw rpcErrors.invalidParams({
+              message:
+                'wallet_watchAsset requires a network context (networkClientId).',
+            });
+          }
+
+          const { chainId } =
+            this.networkController.getNetworkConfigurationByNetworkClientId(
+              networkClientId,
+            );
+
+          if (!chainId) {
+            throw rpcErrors.internal({
+              message: 'Active network configuration is missing chainId.',
+            });
+          }
+
+          // ERC-20 options from dapps do not include chainId; resolve CAIP asset id from the request network.
+          const assetId = toAssetId(asset.address, chainId);
+          if (!assetId) {
+            throw rpcErrors.invalidParams({
+              message:
+                'Invalid token address or unsupported chain for wallet_watchAsset.',
+            });
+          }
+
+          const decimals = Number.parseInt(String(asset.decimals), 10);
+          if (!Number.isInteger(decimals) || decimals < 0 || decimals > 255) {
+            throw rpcErrors.invalidParams({
+              message: `Invalid ERC-20 decimals: ${String(asset.decimals)}.`,
+            });
+          }
+
+          const accountId = this.accountsController.getSelectedAccount().id;
+          const iconUrl = asset.image ?? asset.iconUrl;
+          const pendingMetadata = {
+            address: assetId,
+            symbol: asset.symbol,
+            name: asset.name ?? asset.symbol,
+            decimals,
+            chainId,
+            unlisted: false,
+            ...(iconUrl ? { iconUrl } : {}),
+          };
+
+          await this.assetsController.addCustomAsset(
+            accountId,
+            assetId,
+            pendingMetadata,
+          );
+        }
         return this.tokensController.watchAsset({
           asset,
           type,
           networkClientId,
         });
+      }
       case ERC721:
       case ERC1155:
         return this.nftController.watchNft(
