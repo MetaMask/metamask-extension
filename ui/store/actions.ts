@@ -205,6 +205,7 @@ import { isHardwareAccount } from '../../shared/lib/accounts';
 import { SUBSCRIPTIONS_POLLING_INPUT } from '../../shared/constants/subscriptions';
 import { PendingRedirectRoute } from '../../shared/lib/pending-redirect-state';
 import { keyringTypeToHardwareWalletType } from '../contexts/hardware-wallets/utils';
+import type { RouteMessenger } from '../messengers/route-messenger';
 import * as actionConstants from './actionConstants';
 
 import {
@@ -4217,7 +4218,12 @@ type TemporaryPreferenceFlagDef = {
   [preference: string]: boolean | object;
 };
 
+//========
+// We add a `messenger` argument to this action so that we can call a messenger
+// action instead of a Redux action.
+//========
 export function setFeatureFlag(
+  messenger: RouteMessenger,
   feature: string,
   activated: boolean,
   notificationType: string,
@@ -4230,11 +4236,14 @@ export function setFeatureFlag(
   return async (dispatch: MetaMaskReduxDispatch) => {
     dispatch(showLoadingIndication());
     try {
-      const updatedFeatureFlags =
-        await submitRequestToBackground<TemporaryFeatureFlagDef>(
-          'setFeatureFlag',
-          [feature, activated],
-        );
+      //========
+      // This is an example of calling a messenger action inside of a Redux
+      // action. (We will probably need to do this quite a bit.)
+      //========
+      const updatedFeatureFlags = await messenger.call(
+        'PreferencesController:setFeatureFlag',
+        [feature, activated],
+      );
 
       if (notificationType) {
         dispatch(showModal({ name: notificationType }));

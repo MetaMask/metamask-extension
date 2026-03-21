@@ -146,6 +146,7 @@ import Authenticated from '../../helpers/higher-order-components/authenticated/a
 import { contactsRoutes } from '../contacts';
 import { getCurrencyRateControllerCurrentCurrency } from '../../../shared/lib/selectors/assets-migration';
 import { ALLOWED_CAPABILITIES as NONEVM_BALANCE_CHECK_ROUTE_ALLOWED_CAPABILITIES } from '../nonevm-balance-check/messenger';
+import { ALLOWED_CAPABILITIES as SETTINGS_ROUTE_ALLOWED_CAPABILITIES } from '../settings/messenger';
 import { getConnectingLabel, setTheme } from './utils';
 import { ConfirmationHandler } from './confirmation-handler';
 import { Modals } from './modals';
@@ -338,6 +339,11 @@ export const routeConfig = [
     layout: RootLayout,
     authenticated: true,
     basicFunctionalityRequired: false,
+    //========
+    // After defining the messenger capabilities for this route within its own
+    // directory, we associate those capabilities like this.
+    //========
+    messenger: SETTINGS_ROUTE_ALLOWED_CAPABILITIES,
   }),
   createRouteWithLayout({
     path: `${SETTINGS_V2_ROUTE}/*`,

@@ -1,3 +1,8 @@
+//========
+// Changes to this file demonstrate how `useMessenger` is used in a non-shared
+// component (that also happens to be a legacy class component).
+//========
+
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import {
@@ -35,6 +40,7 @@ export default class AdvancedTab extends PureComponent {
   static contextTypes = {
     t: PropTypes.func,
     trackEvent: PropTypes.func,
+    messenger: PropTypes.object,
   };
 
   static propTypes = {
@@ -48,19 +54,11 @@ export default class AdvancedTab extends PureComponent {
     showTestNetworks: PropTypes.bool,
     smartTransactionsEnabled: PropTypes.bool,
     autoLockTimeLimit: PropTypes.number,
-    setAutoLockTimeLimit: PropTypes.func.isRequired,
-    setShowFiatConversionOnTestnetsPreference: PropTypes.func.isRequired,
-    setShowTestNetworks: PropTypes.func.isRequired,
-    setSmartTransactionsEnabled: PropTypes.func.isRequired,
-    setDismissSeedBackUpReminder: PropTypes.func.isRequired,
     dismissSeedBackUpReminder: PropTypes.bool.isRequired,
     backupUserData: PropTypes.func.isRequired,
     showExtensionInFullSizeView: PropTypes.bool,
-    setShowExtensionInFullSizeView: PropTypes.func.isRequired,
     manageInstitutionalWallets: PropTypes.bool,
-    setManageInstitutionalWallets: PropTypes.func.isRequired,
     dismissSmartAccountSuggestionEnabled: PropTypes.bool.isRequired,
-    setDismissSmartAccountSuggestionEnabled: PropTypes.func.isRequired,
   };
 
   state = {
@@ -201,11 +199,13 @@ export default class AdvancedTab extends PureComponent {
   }
 
   renderToggleDismissSmartAccountSuggestion() {
-    const { t } = this.context;
-    const {
-      dismissSmartAccountSuggestionEnabled,
-      setDismissSmartAccountSuggestionEnabled,
-    } = this.props;
+    //========
+    // We first get the messenger for the current route from context. This
+    // relies on the route having been wrapped via
+    // `LegacyRouteMessengerProvider`.
+    //========
+    const { t, messenger } = this.context;
+    const { dismissSmartAccountSuggestionEnabled } = this.props;
 
     return (
       <Box
@@ -229,7 +229,13 @@ export default class AdvancedTab extends PureComponent {
             value={dismissSmartAccountSuggestionEnabled}
             onToggle={(oldValue) => {
               const newValue = !oldValue;
-              setDismissSmartAccountSuggestionEnabled(newValue);
+              //========
+              // Having retrieved the messenger, we can now call an action.
+              //========
+              messenger.call(
+                'PreferencesController:setDismissSmartAccountSuggestionEnabled',
+                newValue,
+              );
             }}
             offLabel={t('off')}
             onLabel={t('on')}
@@ -241,9 +247,8 @@ export default class AdvancedTab extends PureComponent {
   }
 
   renderToggleStxOptIn() {
-    const { t } = this.context;
-    const { smartTransactionsEnabled, setSmartTransactionsEnabled } =
-      this.props;
+    const { t, messenger } = this.context;
+    const { smartTransactionsEnabled } = this.props;
 
     const learMoreLink = (
       <ButtonLink
@@ -283,7 +288,10 @@ export default class AdvancedTab extends PureComponent {
             value={smartTransactionsEnabled}
             onToggle={(oldValue) => {
               const newValue = !oldValue;
-              setSmartTransactionsEnabled(newValue);
+              messenger.call(
+                'PreferencesController:setSmartTransactionsEnabled',
+                newValue,
+              );
             }}
             offLabel={t('off')}
             onLabel={t('on')}
@@ -295,7 +303,7 @@ export default class AdvancedTab extends PureComponent {
   }
 
   renderHexDataOptIn() {
-    const { t } = this.context;
+    const { t, messenger } = this.context;
     const { sendHexData, setHexDataFeatureFlag } = this.props;
 
     return (
@@ -317,7 +325,13 @@ export default class AdvancedTab extends PureComponent {
         <div className="settings-page__content-item-col">
           <ToggleButton
             value={sendHexData}
-            onToggle={(value) => setHexDataFeatureFlag(!value)}
+            //========
+            // Note that in this case we need to obtain the messenger from
+            // context and pass it to a Redux action. This Redux action
+            // is composed of multiple actions, only one of which is a messenger
+            // action.
+            //========
+            onToggle={(value) => setHexDataFeatureFlag(messenger, !value)}
             offLabel={t('off')}
             onLabel={t('on')}
             className="hex-data-toggle"
@@ -328,9 +342,8 @@ export default class AdvancedTab extends PureComponent {
   }
 
   renderShowConversionInTestnets() {
-    const { t } = this.context;
-    const { showFiatInTestnets, setShowFiatConversionOnTestnetsPreference } =
-      this.props;
+    const { t, messenger } = this.context;
+    const { showFiatInTestnets } = this.props;
 
     return (
       <Box
@@ -353,7 +366,10 @@ export default class AdvancedTab extends PureComponent {
           <ToggleButton
             value={showFiatInTestnets}
             onToggle={(value) =>
-              setShowFiatConversionOnTestnetsPreference(!value)
+              messenger.call(
+                'PreferencesController:setShowFiatConversionOnTestnetsPreference',
+                !value,
+              )
             }
             offLabel={t('off')}
             onLabel={t('on')}
@@ -365,8 +381,8 @@ export default class AdvancedTab extends PureComponent {
   }
 
   renderToggleTestNetworks() {
-    const { t } = this.context;
-    const { showTestNetworks, setShowTestNetworks } = this.props;
+    const { t, messenger } = this.context;
+    const { showTestNetworks } = this.props;
 
     return (
       <Box
@@ -388,7 +404,12 @@ export default class AdvancedTab extends PureComponent {
         <div className="settings-page__content-item-col">
           <ToggleButton
             value={showTestNetworks}
-            onToggle={(value) => setShowTestNetworks(!value)}
+            onToggle={(value) =>
+              messenger.call(
+                'PreferencesController:setShowTestNetworks',
+                !value,
+              )
+            }
             offLabel={t('off')}
             onLabel={t('on')}
           />
@@ -398,9 +419,8 @@ export default class AdvancedTab extends PureComponent {
   }
 
   renderToggleExtensionInFullSizeView() {
-    const { t } = this.context;
-    const { showExtensionInFullSizeView, setShowExtensionInFullSizeView } =
-      this.props;
+    const { t, messenger, trackEvent } = this.context;
+    const { showExtensionInFullSizeView } = this.props;
 
     return (
       <Box
@@ -422,9 +442,13 @@ export default class AdvancedTab extends PureComponent {
         <div className="settings-page__content-item-col">
           <ToggleButton
             value={showExtensionInFullSizeView}
-            onToggle={(value) => {
-              setShowExtensionInFullSizeView(!value);
-              this.context.trackEvent({
+            onToggle={async (value) => {
+              await messenger.call(
+                'PreferencesController:setShowExtensionInFullSizeView',
+                !value,
+              );
+
+              trackEvent({
                 event: MetaMetricsEventName.SettingsUpdated,
                 category: MetaMetricsEventCategory.Settings,
                 properties: {
@@ -446,9 +470,8 @@ export default class AdvancedTab extends PureComponent {
   }
 
   renderAutoLockTimeLimit() {
-    const { t } = this.context;
+    const { t, messenger } = this.context;
     const { lockTimeError } = this.state;
-    const { setAutoLockTimeLimit } = this.props;
 
     return (
       <Box
@@ -482,7 +505,10 @@ export default class AdvancedTab extends PureComponent {
               data-testid="auto-lockout-button"
               disabled={lockTimeError !== ''}
               onClick={() => {
-                setAutoLockTimeLimit(this.state.autoLockTimeLimit);
+                messenger.call(
+                  'PreferencesController:setAutoLockTimeLimit',
+                  this.state.autoLockTimeLimit,
+                );
               }}
             >
               {t('save')}
@@ -494,9 +520,8 @@ export default class AdvancedTab extends PureComponent {
   }
 
   renderDismissSeedBackupReminderControl() {
-    const { t } = this.context;
-    const { dismissSeedBackUpReminder, setDismissSeedBackUpReminder } =
-      this.props;
+    const { t, messenger } = this.context;
+    const { dismissSeedBackUpReminder } = this.props;
 
     return (
       <Box
@@ -518,7 +543,12 @@ export default class AdvancedTab extends PureComponent {
         <div className="settings-page__content-item-col">
           <ToggleButton
             value={dismissSeedBackUpReminder}
-            onToggle={(value) => setDismissSeedBackUpReminder(!value)}
+            onToggle={(value) => {
+              messenger.call(
+                'PreferencesController:setDismissSeedBackUpReminder',
+                !value,
+              );
+            }}
             offLabel={t('off')}
             onLabel={t('on')}
           />
@@ -598,9 +628,8 @@ export default class AdvancedTab extends PureComponent {
   }
 
   renderManageInstitutionalWallets() {
-    const { t } = this.context;
-    const { manageInstitutionalWallets, setManageInstitutionalWallets } =
-      this.props;
+    const { t, messenger } = this.context;
+    const { manageInstitutionalWallets } = this.props;
 
     return (
       <Box
@@ -622,7 +651,12 @@ export default class AdvancedTab extends PureComponent {
         <div className="settings-page__content-item-col">
           <ToggleButton
             value={manageInstitutionalWallets}
-            onToggle={(value) => setManageInstitutionalWallets(!value)}
+            onToggle={(value) => {
+              messenger.call(
+                'PreferencesController:setManageInstitutionalWallets',
+                !value,
+              );
+            }}
             offLabel={t('off')}
             onLabel={t('on')}
           />
