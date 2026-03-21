@@ -11,7 +11,10 @@ const {
   TOKEN_API_BASE_URL,
 } = require('../../shared/constants/swaps');
 const { TX_SENTINEL_URL } = require('../../shared/constants/transaction');
-const { DEFAULT_FIXTURE_ACCOUNT_LOWERCASE } = require('./constants');
+const {
+  DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
+  DEFAULT_BTC_CONVERSION_RATE,
+} = require('./constants');
 const { SECURITY_ALERTS_PROD_API_BASE_URL } = require('./tests/ppom/constants');
 const { SOLANA_WS_PORT } = require('./websocket/solana-mocks');
 const {
@@ -955,6 +958,104 @@ async function setupMocking(
         },
       };
     });
+
+  // Native SOL + BTC v3 spot (multichain portfolio / assets unify). Without these,
+  // Tron-only or default E2E flows still request these URLs but only ETH was mocked above.
+  await server
+    .forGet(`https://price.api.cx.metamask.io/v3/spot-prices`)
+    .withQuery({
+      assetIds: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
+      vsCurrency: 'usd',
+      includeMarketData: 'true',
+    })
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: {
+        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501': {
+          id: 'solana',
+          price: 112.87,
+          marketCap: 58245152246,
+          allTimeHigh: 293.31,
+          allTimeLow: 0.500801,
+          totalVolume: 6991628445,
+          high1d: 119.85,
+          low1d: 105.87,
+          circulatingSupply: 515615042.5147497,
+          dilutedMarketCap: 67566552200,
+          marketCapPercentChange1d: 6.43259,
+          priceChange1d: 6.91,
+          pricePercentChange1h: -0.10747351712871725,
+          pricePercentChange1d: 6.517062579985171,
+          pricePercentChange7d: -1.2651850097746231,
+          pricePercentChange14d: -17.42211401987578,
+          pricePercentChange30d: -7.317068682545842,
+          pricePercentChange200d: -22.09390252653303,
+          pricePercentChange1y: -31.856951873653344,
+        },
+      },
+    }));
+
+  await server
+    .forGet(`https://price.api.cx.metamask.io/v3/spot-prices`)
+    .withQuery({
+      assetIds: 'bip122:000000000019d6689c085ae165831e93/slip44:0',
+      vsCurrency: 'usd',
+      includeMarketData: 'true',
+    })
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: {
+        'bip122:000000000019d6689c085ae165831e93/slip44:0': {
+          id: 'bitcoin',
+          price: DEFAULT_BTC_CONVERSION_RATE,
+          marketCap: 1910000000000,
+          allTimeHigh: 124000,
+          allTimeLow: 67.81,
+          totalVolume: 45000000000,
+          high1d: 96500,
+          low1d: 94800,
+          circulatingSupply: 19800000,
+          dilutedMarketCap: 1910000000000,
+          marketCapPercentChange1d: 0.5,
+          priceChange1d: 120,
+          pricePercentChange1h: 0.01,
+          pricePercentChange1d: 0.12,
+          pricePercentChange7d: 2.1,
+          pricePercentChange14d: -1.2,
+          pricePercentChange30d: 5.3,
+          pricePercentChange200d: 40,
+          pricePercentChange1y: 85,
+        },
+      },
+    }));
+
+  await server
+    .forGet('https://price.api.cx.metamask.io/v1/spot-prices/bitcoin')
+    .withQuery({ vsCurrency: 'usd' })
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: {
+        id: 'bitcoin',
+        price: DEFAULT_BTC_CONVERSION_RATE,
+        marketCap: 1836592437357,
+        allTimeHigh: 126080,
+        allTimeLow: 67.81,
+        totalVolume: 45216146754,
+        high1d: 92435,
+        low1d: 90129,
+        circulatingSupply: 19975290,
+        dilutedMarketCap: 1836592437357,
+        marketCapPercentChange1d: 1.72888,
+        priceChange1d: 1535.29,
+        pricePercentChange1h: -0.09840133404969334,
+        pricePercentChange1d: 1.6980683447716627,
+        pricePercentChange7d: -1.6285705945180806,
+        pricePercentChange14d: 4.795747124043681,
+        pricePercentChange30d: 2.1388997840239408,
+        pricePercentChange200d: -14.088182161660676,
+        pricePercentChange1y: -1.0484081200296924,
+      },
+    }));
 
   const PPOM_VERSION = fs.readFileSync(PPOM_VERSION_PATH);
   const PPOM_VERSION_HEADERS = fs.readFileSync(PPOM_VERSION_HEADERS_PATH);

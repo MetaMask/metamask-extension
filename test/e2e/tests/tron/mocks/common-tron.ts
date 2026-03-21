@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import { Mockttp, MockedEndpoint } from 'mockttp';
+import { mockTokensV2SupportedNetworks, mockTokensV3Assets } from '../../btc/mocks/tokens-api';
 
 export const TRON_ACCOUNT_ADDRESS = 'TJ3QZbBREK1Xybe1jf4nR9Attb8i54vGS3';
 export const TRON_RECIPIENT_ADDRESS = 'TK3xRFq22eEiATz6kfamDeAAQrPdfdGPeq';
@@ -1056,6 +1057,8 @@ export async function mockTronApis(
     await mockTrxNativeSpotPrices(mockServer),
     await mockTronAssets(mockServer),
     await mockBroadTransaction(mockServer),
+    await mockTokensV2SupportedNetworks(mockServer),
+    await mockTokensV3Assets(mockServer),
   ];
 }
 
