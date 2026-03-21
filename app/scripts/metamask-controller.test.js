@@ -43,7 +43,8 @@ import { PermissionDoesNotExistError } from '@metamask/permission-controller';
 import log from 'loglevel';
 import browser from 'webextension-polyfill';
 import { JsonRpcEngine } from '@metamask/json-rpc-engine';
-import { errorCodes } from '@metamask/rpc-errors';
+import { errorCodes, rpcErrors } from '@metamask/rpc-errors';
+import { ERC20 } from '@metamask/controller-utils';
 import { parseCaipAccountId } from '@metamask/utils';
 
 import { createTestProviderTools } from '../../test/stub/provider';
@@ -66,6 +67,7 @@ import { flushPromises } from '../../test/lib/timer-helpers';
 import { FirstTimeFlowType } from '../../shared/constants/onboarding';
 import { MultichainNetworks } from '../../shared/constants/multichain/networks';
 import { toChecksumHexAddress } from '../../shared/lib/hexstring-utils';
+import { toAssetId } from '../../shared/lib/asset-utils';
 import { HYPERLIQUID_APPROVAL_TYPE } from '../../shared/constants/app';
 import {
   DEFI_REFERRAL_PARTNERS,
@@ -591,6 +593,247 @@ describe('MetaMaskController', () => {
       it('in mv2, it should reset state without attempting to call browser storage', () => {
         expect(metamaskController.resetStates).toHaveBeenCalledTimes(1);
         expect(browserPolyfillMock.storage.session.set).not.toHaveBeenCalled();
+      });
+    });
+
+    describe('#handleWatchAssetRequest', () => {
+      const watchAssetNetworkClientId = NETWORK_CONFIGURATION_ID_1;
+      const watchAssetTokenAddress =
+        '0x073Ec1fAd5cC742951e44Ae96680A7Ba13b8C668';
+
+      it('delegates ERC-20 to TokensController.watchAsset when assets-unify state is off', async () => {
+        const watchAssetSpy = jest
+          .spyOn(metamaskController.tokensController, 'watchAsset')
+          .mockResolvedValue(undefined);
+
+        const asset = {
+          address: watchAssetTokenAddress,
+          symbol: 'TST',
+          decimals: 4,
+        };
+
+        await metamaskController.handleWatchAssetRequest({
+          asset,
+          type: ERC20,
+          origin: 'https://example.com',
+          networkClientId: watchAssetNetworkClientId,
+        });
+
+        expect(watchAssetSpy).toHaveBeenCalledWith({
+          asset,
+          type: ERC20,
+          networkClientId: watchAssetNetworkClientId,
+        });
+      });
+
+      describe('with assets-unify state enabled', () => {
+        let unifyMetamaskController;
+
+        beforeEach(() => {
+          jest.spyOn(MetaMaskController.prototype, 'resetStates');
+          jest
+            .spyOn(
+              TransactionController.prototype,
+              'startIncomingTransactionPolling',
+            )
+            .mockReturnValue();
+          jest
+            .spyOn(
+              TransactionController.prototype,
+              'stopIncomingTransactionPolling',
+            )
+            .mockReturnValue();
+          jest.spyOn(Messenger.prototype, 'subscribe');
+          jest.spyOn(TokenListController.prototype, 'start');
+          jest.spyOn(TokenListController.prototype, 'stop');
+
+          const initState = {
+            ...cloneDeep(firstTimeState),
+            PreferencesController: {
+              useExternalServices: false,
+            },
+            RemoteFeatureFlagController: {
+              remoteFeatureFlags: {
+                assetsUnifyState: {
+                  enabled: true,
+                  featureVersion: '1',
+                  minimumVersion: null,
+                },
+              },
+            },
+          };
+
+          unifyMetamaskController = new MetaMaskController({
+            showUserConfirmation: noop,
+            encryptor: mockEncryptor,
+            initState,
+            initLangCode: 'en_US',
+            platform: {
+              showTransactionNotification: () => undefined,
+              getVersion: () => 'foo',
+              switchToAnotherURL: jest.fn(),
+            },
+            browser: browserPolyfillMock,
+            infuraProjectId: 'foo',
+            isFirstMetaMaskControllerSetup: true,
+            cronjobControllerStorageManager:
+              createMockCronjobControllerStorageManager(),
+            controllerMessenger: new Messenger({
+              namespace: MOCK_ANY_NAMESPACE,
+            }),
+          });
+
+          jest
+            .spyOn(
+              unifyMetamaskController.remoteFeatureFlagController,
+              'updateRemoteFeatureFlags',
+            )
+            .mockResolvedValue();
+          jest.spyOn(
+            unifyMetamaskController.multichainAccountService,
+            'createMultichainAccountWallet',
+          );
+          jest.spyOn(
+            unifyMetamaskController.seedlessOnboardingController,
+            'authenticate',
+          );
+
+          jest
+            .spyOn(
+              unifyMetamaskController.accountsController,
+              'getSelectedAccount',
+            )
+            .mockReturnValue({ id: 'test-internal-account-id' });
+
+          jest
+            .spyOn(unifyMetamaskController.assetsController, 'addCustomAsset')
+            .mockResolvedValue(undefined);
+
+          jest
+            .spyOn(unifyMetamaskController.tokensController, 'watchAsset')
+            .mockResolvedValue(undefined);
+        });
+
+        it('persists on AssetsController then delegates to TokensController.watchAsset', async () => {
+          const asset = {
+            address: watchAssetTokenAddress,
+            symbol: 'TST',
+            name: 'Test Token',
+            decimals: '4',
+            image: 'https://example.com/icon.svg',
+          };
+
+          await unifyMetamaskController.handleWatchAssetRequest({
+            asset,
+            type: ERC20,
+            origin: 'https://example.com',
+            networkClientId: watchAssetNetworkClientId,
+          });
+
+          const expectedAssetId = toAssetId(
+            watchAssetTokenAddress,
+            MAINNET_CHAIN_ID,
+          );
+
+          expect(
+            unifyMetamaskController.assetsController.addCustomAsset,
+          ).toHaveBeenCalledWith('test-internal-account-id', expectedAssetId, {
+            address: watchAssetTokenAddress,
+            symbol: 'TST',
+            name: 'Test Token',
+            decimals: 4,
+            chainId: MAINNET_CHAIN_ID,
+            unlisted: false,
+            iconUrl: 'https://example.com/icon.svg',
+          });
+
+          expect(
+            unifyMetamaskController.tokensController.watchAsset,
+          ).toHaveBeenCalledWith({
+            asset,
+            type: ERC20,
+            networkClientId: watchAssetNetworkClientId,
+          });
+
+          expect(
+            unifyMetamaskController.assetsController.addCustomAsset.mock
+              .invocationCallOrder[0],
+          ).toBeLessThan(
+            unifyMetamaskController.tokensController.watchAsset.mock
+              .invocationCallOrder[0],
+          );
+        });
+
+        it('throws invalid params when networkClientId is missing', async () => {
+          const asset = {
+            address: watchAssetTokenAddress,
+            symbol: 'TST',
+            decimals: 4,
+          };
+
+          await expect(
+            unifyMetamaskController.handleWatchAssetRequest({
+              asset,
+              type: ERC20,
+              origin: 'https://example.com',
+              networkClientId: '',
+            }),
+          ).rejects.toStrictEqual(
+            rpcErrors.invalidParams({
+              message:
+                'wallet_watchAsset requires a network context (networkClientId).',
+            }),
+          );
+        });
+
+        it('throws invalid params when decimals are invalid', async () => {
+          const asset = {
+            address: watchAssetTokenAddress,
+            symbol: 'TST',
+            decimals: 'not-a-number',
+          };
+
+          await expect(
+            unifyMetamaskController.handleWatchAssetRequest({
+              asset,
+              type: ERC20,
+              origin: 'https://example.com',
+              networkClientId: watchAssetNetworkClientId,
+            }),
+          ).rejects.toStrictEqual(
+            rpcErrors.invalidParams({
+              message: 'Invalid ERC-20 decimals: not-a-number.',
+            }),
+          );
+        });
+
+        it('throws internal error when network configuration has no chainId', async () => {
+          jest
+            .spyOn(
+              unifyMetamaskController.networkController,
+              'getNetworkConfigurationByNetworkClientId',
+            )
+            .mockReturnValue({});
+
+          const asset = {
+            address: watchAssetTokenAddress,
+            symbol: 'TST',
+            decimals: 4,
+          };
+
+          await expect(
+            unifyMetamaskController.handleWatchAssetRequest({
+              asset,
+              type: ERC20,
+              origin: 'https://example.com',
+              networkClientId: watchAssetNetworkClientId,
+            }),
+          ).rejects.toStrictEqual(
+            rpcErrors.internal({
+              message: 'Active network configuration is missing chainId.',
+            }),
+          );
+        });
       });
     });
 
