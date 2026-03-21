@@ -43,7 +43,7 @@ import { PermissionDoesNotExistError } from '@metamask/permission-controller';
 import log from 'loglevel';
 import browser from 'webextension-polyfill';
 import { JsonRpcEngine } from '@metamask/json-rpc-engine';
-import { errorCodes, rpcErrors } from '@metamask/rpc-errors';
+import { errorCodes } from '@metamask/rpc-errors';
 import { ERC20 } from '@metamask/controller-utils';
 import { parseCaipAccountId } from '@metamask/utils';
 
@@ -648,27 +648,11 @@ describe('MetaMaskController', () => {
         let unifyMetamaskController;
 
         beforeEach(() => {
-          jest.spyOn(MetaMaskController.prototype, 'resetStates');
-          jest
-            .spyOn(
-              TransactionController.prototype,
-              'startIncomingTransactionPolling',
-            )
-            .mockReturnValue();
-          jest
-            .spyOn(
-              TransactionController.prototype,
-              'stopIncomingTransactionPolling',
-            )
-            .mockReturnValue();
-          jest.spyOn(Messenger.prototype, 'subscribe');
-          jest.spyOn(TokenListController.prototype, 'start');
-          jest.spyOn(TokenListController.prototype, 'stop');
-
           const initState = {
             ...cloneDeep(firstTimeState),
             PreferencesController: {
-              useExternalServices: false,
+              useExternalServices: true,
+              useTokenDetection: true,
             },
             RemoteFeatureFlagController: {
               remoteFeatureFlags: {
@@ -752,6 +736,7 @@ describe('MetaMaskController', () => {
             watchAssetTokenAddress,
             MAINNET_CHAIN_ID,
           );
+          expect(expectedAssetId).toBeDefined();
 
           expect(
             unifyMetamaskController.assetsController.addCustomAsset,
@@ -773,13 +758,15 @@ describe('MetaMaskController', () => {
             networkClientId: watchAssetNetworkClientId,
           });
 
-          expect(
+          const addOrder =
             unifyMetamaskController.assetsController.addCustomAsset.mock
-              .invocationCallOrder[0],
-          ).toBeLessThan(
+              .invocationCallOrder[0];
+          const watchOrder =
             unifyMetamaskController.tokensController.watchAsset.mock
-              .invocationCallOrder[0],
-          );
+              .invocationCallOrder[0];
+          expect(addOrder).toBeDefined();
+          expect(watchOrder).toBeDefined();
+          expect(addOrder).toBeLessThan(watchOrder);
         });
 
         it('throws invalid params when networkClientId is missing', async () => {
@@ -796,12 +783,11 @@ describe('MetaMaskController', () => {
               origin: 'https://example.com',
               networkClientId: '',
             }),
-          ).rejects.toStrictEqual(
-            rpcErrors.invalidParams({
-              message:
-                'wallet_watchAsset requires a network context (networkClientId).',
-            }),
-          );
+          ).rejects.toMatchObject({
+            code: errorCodes.rpc.invalidParams,
+            message:
+              'wallet_watchAsset requires a network context (networkClientId).',
+          });
         });
 
         it('throws invalid params when decimals are invalid', async () => {
@@ -818,11 +804,10 @@ describe('MetaMaskController', () => {
               origin: 'https://example.com',
               networkClientId: watchAssetNetworkClientId,
             }),
-          ).rejects.toStrictEqual(
-            rpcErrors.invalidParams({
-              message: 'Invalid ERC-20 decimals: not-a-number.',
-            }),
-          );
+          ).rejects.toMatchObject({
+            code: errorCodes.rpc.invalidParams,
+            message: 'Invalid ERC-20 decimals: not-a-number.',
+          });
         });
 
         it('throws internal error when network configuration has no chainId', async () => {
@@ -846,11 +831,10 @@ describe('MetaMaskController', () => {
               origin: 'https://example.com',
               networkClientId: watchAssetNetworkClientId,
             }),
-          ).rejects.toStrictEqual(
-            rpcErrors.internal({
-              message: 'Active network configuration is missing chainId.',
-            }),
-          );
+          ).rejects.toMatchObject({
+            code: errorCodes.rpc.internal,
+            message: 'Active network configuration is missing chainId.',
+          });
         });
       });
     });

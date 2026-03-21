@@ -6355,7 +6355,8 @@ export default class MetamaskController extends EventEmitter {
         ) {
           if (!this.assetsController) {
             throw rpcErrors.internal({
-              message: 'AssetsController is not available for wallet_watchAsset.',
+              message:
+                'AssetsController is not available for wallet_watchAsset.',
             });
           }
 
