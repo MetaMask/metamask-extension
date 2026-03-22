@@ -843,55 +843,12 @@ export async function buildPerformanceBenchmarksSection(
   const matrixHtml = buildHealthMatrixHtml(allEntries, resolvedBaseline);
 
   const { failures } = countHealthEntries(allEntries, resolvedBaseline);
-
-  const failingItems = allEntries
-    .flatMap((entry) => {
-      const baselineMetrics = resolvedBaseline
-        ? resolveEntryBaseline(
-            resolvedBaseline,
-            entry.presetName,
-            entry.benchmarkName,
-            entry.platform,
-            entry.buildType,
-          )
-        : undefined;
-      if (computeEntryHealth(entry, baselineMetrics) !== EntryHealth.Fail) {
-        return [];
-      }
-      const regs = getEntryRegressions(entry, baselineMetrics);
-      const logHref = entry.artifactUrl ?? runUrl;
-      const logAnchor = logHref ? ` <a href="${logHref}">[Show logs]</a>` : '';
-      // [Show logs] on the header line; each metric on its own bullet below
-      const metricBullets = regs
-        .map((r) => {
-          const parts = [
-            r.mean ? `mean ${r.mean.icon}${r.mean.delta}` : null,
-            r.p75 ? `p75 ${r.p75.icon}${r.p75.delta}` : null,
-            r.p95 ? `p95 ${r.p95.icon}${r.p95.delta}` : null,
-          ]
-            .filter(Boolean)
-            .join(', ');
-          return `&nbsp;&nbsp;• ${r.metric}: ${parts}`;
-        })
-        .join('<br>');
-      return [
-        `<li><b>${entry.benchmarkName}</b> · ${entry.platform}-${entry.buildType}${logAnchor}` +
-          `<br>${metricBullets}</li>`,
-      ];
-    })
-    .join('');
-
-  const failureSuffix = failures === 1 ? 'failure' : 'failures';
-  const failureLabel =
-    failures > 0
-      ? `${HEALTH_ICON[EntryHealth.Fail]} ${failures} ${failureSuffix}`
-      : '';
-  let regressionDetailsHtml = '';
-  if (failingItems) {
-    regressionDetailsHtml = `<details><summary>${failureLabel} [View regression details]</summary>\n<ul>${failingItems}</ul></details>\n`;
-  } else if (failureLabel) {
-    regressionDetailsHtml = `<p>${failureLabel}</p>\n`;
-  }
+  const regressionDetailsHtml = buildFailingItemsHtml(
+    allEntries,
+    resolvedBaseline,
+    failures,
+    runUrl,
+  );
 
   const subsectionsHtml = interactionHtml + startupHtml + userJourneyHtml;
   const content = matrixHtml + regressionDetailsHtml + subsectionsHtml;
