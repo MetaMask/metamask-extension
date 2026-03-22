@@ -208,6 +208,11 @@ export type AppStateControllerSetCanTrackWalletFundsObtainedAction = {
   handler: AppStateController['setCanTrackWalletFundsObtained'];
 };
 
+export type AppStateControllerSetMusdConversionSeenAction = {
+  type: 'AppStateController:setMusdConversionEducationSeen';
+  handler: AppStateController['setMusdConversionEducationSeen'];
+};
+
 export type AppStateControllerSetPendingShieldCohortAction = {
   type: 'AppStateController:setPendingShieldCohort';
   handler: AppStateController['setPendingShieldCohort'];
@@ -231,6 +236,7 @@ export type AppStateControllerActions =
   | AppStateControllerGetUnlockPromiseAction
   | AppStateControllerRequestQrCodeScanAction
   | AppStateControllerSetCanTrackWalletFundsObtainedAction
+  | AppStateControllerSetMusdConversionSeenAction
   | AppStateControllerSetPendingShieldCohortAction
   | AppStateControllerSetPendingRedirectRouteAction
   | AppStateControllerSetShieldSubscriptionErrorAction;
