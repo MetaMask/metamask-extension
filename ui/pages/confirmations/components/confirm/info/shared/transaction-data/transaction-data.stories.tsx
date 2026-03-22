@@ -11,7 +11,6 @@ import {
 } from '../../../../../../../../test/data/confirmations/transaction-decode';
 import configureStore from '../../../../../../../store/store';
 import { getMockConfirmStateForTransaction } from '../../../../../../../../test/data/confirmations/helper';
-import { Confirmation } from '../../../../../types/confirm';
 import { TransactionData } from './transaction-data';
 import { ConfirmContextProvider } from '../../../../../context/confirm';
 import { DappSwapContextProvider } from '../../../../../context/dapp-swap';
@@ -33,7 +32,7 @@ function getStore(transactionData?: string, to?: string) {
   };
 
   return configureStore(
-    getMockConfirmStateForTransaction(confirmation as Confirmation, {
+    getMockConfirmStateForTransaction(confirmation, {
       metamask: {
         preferences: {},
       },

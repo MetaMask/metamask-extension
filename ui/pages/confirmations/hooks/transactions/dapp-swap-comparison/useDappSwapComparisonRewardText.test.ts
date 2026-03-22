@@ -1,10 +1,10 @@
+import { TransactionMeta } from '@metamask/transaction-controller';
 import { act } from '@testing-library/react';
 import { useRewardsWithQuote } from '../../../../../hooks/bridge/useRewards';
 
 import { getMockConfirmStateForTransaction } from '../../../../../../test/data/confirmations/helper';
 import { mockSwapConfirmation } from '../../../../../../test/data/confirmations/contract-interaction';
 import { renderHookWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
-import { Confirmation } from '../../../types/confirm';
 import * as DappSwapContext from '../../../context/dapp-swap';
 import { useDappSwapComparisonRewardText } from './useDappSwapComparisonRewardText';
 
@@ -13,7 +13,7 @@ jest.mock('../../../../../hooks/bridge/useRewards');
 async function runHook() {
   const response = renderHookWithConfirmContextProvider(
     useDappSwapComparisonRewardText,
-    getMockConfirmStateForTransaction(mockSwapConfirmation as Confirmation),
+    getMockConfirmStateForTransaction(mockSwapConfirmation as TransactionMeta),
   );
 
   await act(async () => {

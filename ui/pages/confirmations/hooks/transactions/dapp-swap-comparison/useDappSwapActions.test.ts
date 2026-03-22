@@ -1,3 +1,4 @@
+import { TransactionMeta } from '@metamask/transaction-controller';
 import { act } from '@testing-library/react';
 import { QuoteResponse } from '@metamask/bridge-controller';
 
@@ -8,7 +9,6 @@ import {
 } from '../../../../../../test/data/confirmations/contract-interaction';
 import { renderHookWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
 import { deleteDappSwapComparisonData } from '../../../../../store/actions';
-import { Confirmation } from '../../../types/confirm';
 import * as DappSwapContext from '../../../context/dapp-swap';
 import { useDappSwapActions } from './useDappSwapActions';
 
@@ -23,11 +23,11 @@ jest.mock('./useDappSwapComparisonMetrics', () => ({
   }),
 }));
 
-async function runHook(mockConfirmation?: Confirmation) {
+async function runHook(mockConfirmation?: TransactionMeta) {
   const response = renderHookWithConfirmContextProvider(
     useDappSwapActions,
     getMockConfirmStateForTransaction(
-      mockConfirmation ?? (mockSwapConfirmation as Confirmation),
+      mockConfirmation ?? (mockSwapConfirmation as TransactionMeta),
     ),
   );
 

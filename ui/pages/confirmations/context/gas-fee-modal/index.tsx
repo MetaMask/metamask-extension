@@ -113,11 +113,7 @@ export const GasFeeModalWrapper = () => {
   // When opened from cancel-speedup, inject transactionMeta into ConfirmContext
   // so child modals (EstimatesModal, AdvancedEIP1559Modal, etc.) can use useConfirmContext().
   if (transactionMeta) {
-    return (
-      <ConfirmContextProvider currentConfirmationOverride={transactionMeta}>
-        {gasFeeModal}
-      </ConfirmContextProvider>
-    );
+    return <ConfirmContextProvider>{gasFeeModal}</ConfirmContextProvider>;
   }
 
   return gasFeeModal;

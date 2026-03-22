@@ -1,10 +1,10 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { parseTypedDataMessage } from '../../../../../shared/lib/transaction.utils';
-import { Confirmation, SignatureRequestType } from '../../types/confirm';
+import { SignatureRequestType } from '../../types/confirm';
 import { DAI_CONTRACT_ADDRESS } from './info/shared/constants';
 
 export const getConfirmationSender = (
-  currentConfirmation: Confirmation | undefined,
+  currentConfirmation: TransactionMeta | SignatureRequestType | undefined,
 ): { from: string | undefined } => {
   const msgParams = (currentConfirmation as SignatureRequestType)?.msgParams;
   const txParams = (currentConfirmation as TransactionMeta)?.txParams;

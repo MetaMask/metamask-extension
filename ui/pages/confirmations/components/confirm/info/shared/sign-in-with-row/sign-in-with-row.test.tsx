@@ -1,7 +1,10 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { getMockContractInteractionConfirmState } from '../../../../../../../../test/data/confirmations/helper';
+import {
+  getMockContractInteractionConfirmState,
+  getMockPersonalSignConfirmState,
+} from '../../../../../../../../test/data/confirmations/helper';
 import { renderWithConfirmContextProvider } from '../../../../../../../../test/lib/confirmations/render-helpers';
 import { enLocale as messages } from '../../../../../../../../test/lib/i18n-helpers';
 import * as utils from '../../../../../utils';
@@ -40,7 +43,7 @@ describe('<TransactionDetails />', () => {
   it('renders component for SIWE transaction details', () => {
     (utils.isSIWESignatureRequest as jest.Mock).mockReturnValue(true);
 
-    const state = getMockContractInteractionConfirmState();
+    const state = getMockPersonalSignConfirmState();
     const mockStore = configureMockStore(middleware)(state);
     const { getByText } = renderWithConfirmContextProvider(
       <SigningInWithRow />,

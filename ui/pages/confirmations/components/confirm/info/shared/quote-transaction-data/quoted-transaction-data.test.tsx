@@ -1,4 +1,5 @@
 import React from 'react';
+import { TransactionMeta } from '@metamask/transaction-controller';
 
 import { renderWithConfirmContextProvider } from '../../../../../../../../test/lib/confirmations/render-helpers';
 import configureStore from '../../../../../../../store/store';
@@ -8,7 +9,6 @@ import {
   mockBridgeQuotes,
   mockSwapConfirmation,
 } from '../../../../../../../../test/data/confirmations/contract-interaction';
-import { Confirmation } from '../../../../../types/confirm';
 import { enLocale as messages } from '../../../../../../../../test/lib/i18n-helpers';
 import { QuotedSwapTransactionData } from './quoted-transaction-data';
 
@@ -32,7 +32,7 @@ jest.mock(
 
 function render() {
   const store = configureStore(
-    getMockConfirmStateForTransaction(mockSwapConfirmation as Confirmation),
+    getMockConfirmStateForTransaction(mockSwapConfirmation as TransactionMeta),
   );
 
   return renderWithConfirmContextProvider(<QuotedSwapTransactionData />, store);

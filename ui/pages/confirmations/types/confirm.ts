@@ -3,10 +3,7 @@ import { DecodingData } from '@metamask/signature-controller';
 import { SIWEMessage } from '@metamask/controller-utils';
 import { DecodedPermission } from '@metamask/gator-permissions-controller';
 import { QuoteResponse } from '@metamask/bridge-controller';
-import {
-  TransactionMeta,
-  TransactionType,
-} from '@metamask/transaction-controller';
+import { TransactionType } from '@metamask/transaction-controller';
 
 import { SecurityAlertSource } from '../../../../shared/constants/security-provider';
 
@@ -46,8 +43,6 @@ export type SignatureRequestType = {
   decodingData?: DecodingData;
   decodedPermission?: DecodedPermission;
 };
-
-export type Confirmation = SignatureRequestType | TransactionMeta;
 
 export type ConfirmMetamaskState = {
   metamask: {

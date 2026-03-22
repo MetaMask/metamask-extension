@@ -1,4 +1,7 @@
-import { AuthorizationList } from '@metamask/transaction-controller';
+import {
+  AuthorizationList,
+  TransactionMeta,
+} from '@metamask/transaction-controller';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../../test/data/confirmations/contract-interaction';
 import { getMockConfirmStateForTransaction } from '../../../../../../../test/data/confirmations/helper';
 import { renderHookWithConfirmContextProvider } from '../../../../../../../test/lib/confirmations/render-helpers';
@@ -6,7 +9,6 @@ import {
   upgradeAccountConfirmation,
   upgradeAccountConfirmationOnly,
 } from '../../../../../../../test/data/confirmations/batch-transaction';
-import { Confirmation } from '../../../../types/confirm';
 import { EIP_7702_REVOKE_ADDRESS } from '../../../../hooks/useEIP7702Account';
 import {
   useIsDowngradeTransaction,
@@ -28,7 +30,7 @@ function runUpgradeHook(authorizationList?: AuthorizationList) {
   return result.current;
 }
 
-function runUpgradeHookForConfirmation(confirmation: Confirmation) {
+function runUpgradeHookForConfirmation(confirmation: TransactionMeta) {
   const state = getMockConfirmStateForTransaction(confirmation);
 
   const { result } = renderHookWithConfirmContextProvider(

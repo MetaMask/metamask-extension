@@ -1,6 +1,9 @@
 import { waitFor } from '@testing-library/react';
 import React from 'react';
-import { TransactionType } from '@metamask/transaction-controller';
+import {
+  TransactionMeta,
+  TransactionType,
+} from '@metamask/transaction-controller';
 import configureMockStore from 'redux-mock-store';
 import {
   getMockApproveConfirmState,
@@ -25,7 +28,6 @@ import {
   ConfirmAlertsState,
 } from '../../../../../ducks/confirm-alerts/confirm-alerts';
 import { Severity } from '../../../../../helpers/constants/design-system';
-import { Confirmation } from '../../../types/confirm';
 import { useIsNFT } from '../info/approve/hooks/use-is-nft';
 import ConfirmTitle from './title';
 
@@ -137,7 +139,7 @@ describe('ConfirmTitle', () => {
   it('should render the title and description for smart account upgrade correctly', () => {
     const mockStore = configureMockStore([])(
       getMockConfirmStateForTransaction(
-        upgradeAccountConfirmationOnly as Confirmation,
+        upgradeAccountConfirmationOnly as TransactionMeta,
       ),
     );
     const { getByText } = renderWithConfirmContextProvider(
@@ -303,7 +305,7 @@ describe('ConfirmTitle', () => {
         txParams: { from: '0x123' },
         status: 'unapproved',
         time: Date.now(),
-      } as Confirmation;
+      } as unknown as TransactionMeta;
 
       const stateWithAlert = getMockConfirmStateForTransaction(transaction, {
         metamask: {},

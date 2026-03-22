@@ -1,5 +1,5 @@
 import { BigNumber } from 'bignumber.js';
-import { CHAIN_IDS } from '@metamask/transaction-controller';
+import { CHAIN_IDS, TransactionMeta } from '@metamask/transaction-controller';
 import { Hex } from '@metamask/utils';
 import { act } from '@testing-library/react';
 
@@ -9,12 +9,12 @@ import { renderHookWithConfirmContextProvider } from '../../../../../../test/lib
 import { TokenStandAndDetails } from '../../../../../store/actions';
 import * as Utils from '../../../../../helpers/utils/util';
 import * as TokenUtils from '../../../utils/token';
-import { Confirmation } from '../../../types/confirm';
+
 import { useDappSwapUSDValues } from './useDappSwapUSDValues';
 
 async function runHook(
   tokenAddresses?: Hex[],
-  mockConfirmation?: Confirmation,
+  mockConfirmation?: TransactionMeta,
 ) {
   const response = renderHookWithConfirmContextProvider(
     () =>
@@ -27,7 +27,7 @@ async function runHook(
         destTokenAddress: '0x833589fcd6edb6e08f4c7c32d4f71b54bda02913',
       }),
     getMockConfirmStateForTransaction(
-      mockConfirmation ?? (mockSwapConfirmation as Confirmation),
+      mockConfirmation ?? (mockSwapConfirmation as TransactionMeta),
     ),
   );
 
@@ -134,7 +134,10 @@ describe('useDappSwapUSDValues', () => {
         '0x0000000000000000000000000000000000000000',
         '0x833589fcd6edb6e08f4c7c32d4f71b54bda02913',
       ],
-      { ...mockSwapConfirmation, chainId: CHAIN_IDS.POLYGON } as Confirmation,
+      {
+        ...mockSwapConfirmation,
+        chainId: CHAIN_IDS.POLYGON,
+      } as TransactionMeta,
     );
 
     expect(result.fiatRates).toEqual({

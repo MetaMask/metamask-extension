@@ -130,7 +130,7 @@ import {
   isCorrectDeveloperTransactionType,
   isCorrectSignatureApprovalType,
 } from '../../../shared/lib/confirmation.utils';
-import { type Confirmation } from '../confirmations/types/confirm';
+
 import { MultichainAccountAddressListPage } from '../multichain-accounts/multichain-account-address-list-page';
 import { MultichainAccountPrivateKeyListPage } from '../multichain-accounts/multichain-account-private-key-list-page';
 import MultichainAccountIntroModalContainer from '../../components/app/modals/multichain-accounts/intro-modal';
@@ -880,7 +880,7 @@ export default function Routes() {
     isLoading &&
     completedOnboarding &&
     !pendingConfirmations.some(
-      (confirmation: Confirmation) =>
+      (confirmation: { type: string }) =>
         confirmation.type ===
         SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.showSnapAccountRedirect,
     ) &&

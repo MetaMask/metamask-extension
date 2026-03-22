@@ -2,12 +2,12 @@ import {
   TransactionMeta,
   TransactionType,
 } from '@metamask/transaction-controller';
-import { Confirmation } from '../../../../types/confirm';
+import { SignatureRequestType } from '../../../../types/confirm';
 import { useAssetDetails } from '../../../../hooks/useAssetDetails';
 import { useApproveTokenSimulation } from '../../info/approve/hooks/use-approve-token-simulation';
 
 const isTransactionMeta = (
-  confirmation: Confirmation | undefined,
+  confirmation: TransactionMeta | SignatureRequestType | undefined,
 ): confirmation is TransactionMeta => {
   return (
     confirmation !== undefined &&
@@ -15,7 +15,9 @@ const isTransactionMeta = (
   );
 };
 
-export function useCurrentSpendingCap(currentConfirmation?: Confirmation) {
+export function useCurrentSpendingCap(
+  currentConfirmation?: TransactionMeta | SignatureRequestType,
+) {
   const isTxWithSpendingCap =
     isTransactionMeta(currentConfirmation) &&
     [

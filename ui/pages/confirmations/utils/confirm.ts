@@ -5,7 +5,7 @@ import {
 } from '../../../../shared/constants/signatures';
 import { parseTypedDataMessage } from '../../../../shared/lib/transaction.utils';
 import { sanitizeMessage } from '../../../helpers/utils/util';
-import { Confirmation, SignatureRequestType } from '../types/confirm';
+import { SignatureRequestType } from '../types/confirm';
 import { TYPED_SIGNATURE_VERSIONS } from '../constants';
 
 export const SIGNATURE_TRANSACTION_TYPES = [
@@ -28,8 +28,8 @@ export const parseSanitizeTypedDataMessage = (dataToParse: string) => {
  *
  * @param request - The confirmation request to check
  */
-export const isSIWESignatureRequest = (request?: Confirmation) =>
-  Boolean((request as SignatureRequestType)?.msgParams?.siwe?.isSIWEMessage);
+export const isSIWESignatureRequest = (request?: SignatureRequestType) =>
+  Boolean(request?.msgParams?.siwe?.isSIWEMessage);
 
 export const isOrderSignatureRequest = (request: SignatureRequestType) => {
   if (
@@ -52,18 +52,17 @@ export const isOrderSignatureRequest = (request: SignatureRequestType) => {
  *
  * @param request - The confirmation request to check
  */
-export const isPermitSignatureRequest = (request?: Confirmation) => {
+export const isPermitSignatureRequest = (request?: SignatureRequestType) => {
   if (
     !request ||
     !isSignatureTransactionType(request) ||
     request.type !== 'eth_signTypedData' ||
-    (request as SignatureRequestType).msgParams?.version?.toUpperCase() ===
-      TYPED_SIGNATURE_VERSIONS.V1
+    request.msgParams?.version?.toUpperCase() === TYPED_SIGNATURE_VERSIONS.V1
   ) {
     return false;
   }
   const { primaryType } = parseTypedDataMessage(
-    (request as SignatureRequestType).msgParams?.data as string,
+    request.msgParams?.data as string,
   );
 
   return PRIMARY_TYPES_PERMIT.includes(primaryType);

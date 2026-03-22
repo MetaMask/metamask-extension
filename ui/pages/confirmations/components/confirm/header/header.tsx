@@ -23,7 +23,6 @@ import useConfirmationNetworkInfo from '../../../hooks/useConfirmationNetworkInf
 import useConfirmationRecipientInfo from '../../../hooks/useConfirmationRecipientInfo';
 import { useSignatureRequestOptional } from '../../../hooks/useSignatureRequest';
 import { useTransactionMetadataRequestOptional } from '../../../hooks/useTransactionMetadataRequest';
-import { Confirmation } from '../../../types/confirm';
 import { DAppInitiatedHeader } from './dapp-initiated-header';
 import HeaderInfo from './header-info';
 import { SimpleConfirmationHeader } from './simple-confirmation-header';
@@ -53,8 +52,6 @@ const Header = () => {
 
   const transactionMetadata = useTransactionMetadataRequestOptional();
   const signatureRequest = useSignatureRequestOptional();
-  const currentConfirmation: Confirmation | undefined =
-    transactionMetadata ?? signatureRequest;
   let secondaryText;
 
   if (isBIP44) {
@@ -114,15 +111,15 @@ const Header = () => {
   // back button if it's a wallet initiated confirmation. The default header is
   // the original header for the redesigns and includes the sender and recipient
   // addresses as well.
+  const confirmationType = transactionMetadata?.type ?? signatureRequest?.type;
+
   const isConfirmationWithNewHeader =
-    currentConfirmation?.type &&
-    CONFIRMATIONS_WITH_ALT_HEADER.includes(currentConfirmation.type);
-  const isWalletInitiated =
-    (currentConfirmation as TransactionMeta)?.origin === ORIGIN_METAMASK;
+    confirmationType &&
+    CONFIRMATIONS_WITH_ALT_HEADER.includes(confirmationType);
+  const isWalletInitiated = transactionMetadata?.origin === ORIGIN_METAMASK;
 
   const isSimpleHeader =
-    currentConfirmation?.type &&
-    SIMPLE_HEADER_TYPES.includes(currentConfirmation.type);
+    confirmationType && SIMPLE_HEADER_TYPES.includes(confirmationType);
 
   if (isSimpleHeader && isWalletInitiated) {
     return <SimpleConfirmationHeader />;

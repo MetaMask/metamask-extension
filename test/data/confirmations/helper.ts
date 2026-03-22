@@ -1,12 +1,10 @@
 import { ApprovalType } from '@metamask/controller-utils';
 import { merge } from 'lodash';
 
+import { TransactionMeta } from '@metamask/transaction-controller';
 import { DecodedPermission } from '@metamask/gator-permissions-controller';
 import { CHAIN_IDS } from '../../../shared/constants/network';
-import {
-  Confirmation,
-  SignatureRequestType,
-} from '../../../ui/pages/confirmations/types/confirm';
+import { SignatureRequestType } from '../../../ui/pages/confirmations/types/confirm';
 import mockState from '../mock-state.json';
 import { genUnapprovedContractInteractionConfirmation } from './contract-interaction';
 import { unapprovedPersonalSignMsg } from './personal_sign';
@@ -161,7 +159,7 @@ export const getMockConfirmState = (args: RootState = { metamask: {} }) => ({
 });
 
 export const getMockConfirmStateForTransaction = (
-  transaction: Confirmation,
+  transaction: TransactionMeta,
   args: RootState = { appState: {}, metamask: {} },
 ) =>
   getMockConfirmState(

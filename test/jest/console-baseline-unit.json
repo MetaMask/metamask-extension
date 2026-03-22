@@ -725,7 +725,7 @@
       "Reselect: Identity function warnings": 2
     },
     "ui/pages/confirmations/components/confirm/dapp-swap-comparison-banner/dapp-swap-comparison-banner.test.tsx": {
-      "Reselect: Identity function warnings": 2
+      "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/components/confirm/footer/footer.test.tsx": {
       "MetaMask: Background connection not initialized": 2,
@@ -750,7 +750,7 @@
       "Reselect: Identity function warnings": 2
     },
     "ui/pages/confirmations/components/confirm/header/header.test.tsx": {
-      "Reselect: Identity function warnings": 2
+      "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/components/confirm/header/simple-confirmation-header.test.tsx": {
       "React: Act warnings (component updates not wrapped)": 1,
@@ -793,7 +793,7 @@
     "ui/pages/confirmations/components/confirm/info/batch/batch-simulation-details/batch-simulation-details.test.tsx": {
       "MetaMask: Background connection not initialized": 14,
       "React: Act warnings (component updates not wrapped)": 2,
-      "Reselect: Identity function warnings": 3
+      "Reselect: Identity function warnings": 4
     },
     "ui/pages/confirmations/components/confirm/info/batch/nested-transaction-data/nested-transaction-data.test.tsx": {
       "Reselect: Identity function warnings": 3
@@ -1046,7 +1046,7 @@
       "Reselect: Identity function warnings": 2
     },
     "ui/pages/confirmations/components/confirm/title/title.test.tsx": {
-      "Reselect: Identity function warnings": 2
+      "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/components/gas-input/gas-input.test.tsx": {
       "Reselect: Identity function warnings": 2
@@ -1237,7 +1237,7 @@
       "Reselect: Identity function warnings": 2
     },
     "ui/pages/confirmations/hooks/alerts/useBlockaidAlerts.test.ts": {
-      "Reselect: Identity function warnings": 2
+      "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/hooks/alerts/useConfirmationOriginAlerts.test.ts": {
       "Reselect: Identity function warnings": 2

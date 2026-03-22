@@ -1,3 +1,4 @@
+import { TransactionMeta } from '@metamask/transaction-controller';
 /* eslint-disable @typescript-eslint/naming-convention */
 import { act } from '@testing-library/react';
 
@@ -11,7 +12,6 @@ import { TokenStandAndDetails } from '../../../../../store/actions';
 import { getRemoteFeatureFlags } from '../../../../../selectors/remote-feature-flags';
 import * as Utils from '../../../../../helpers/utils/util';
 import * as TokenUtils from '../../../utils/token';
-import { Confirmation } from '../../../types/confirm';
 import { useDappSwapComparisonInfo } from './useDappSwapComparisonInfo';
 
 jest.useFakeTimers();
@@ -48,7 +48,7 @@ const mockGetRemoteFeatureFlags = jest.mocked(getRemoteFeatureFlags);
 async function runHook(args: Record<string, unknown> = {}) {
   const response = renderHookWithConfirmContextProvider(
     () => useDappSwapComparisonInfo(),
-    getMockConfirmStateForTransaction(mockSwapConfirmation as Confirmation, {
+    getMockConfirmStateForTransaction(mockSwapConfirmation as TransactionMeta, {
       metamask: {
         dappSwapComparisonData: {
           '1234567': {

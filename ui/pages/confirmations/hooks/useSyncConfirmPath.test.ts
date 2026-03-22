@@ -58,7 +58,7 @@ describe('useSyncConfirmPath', () => {
 
   it('should execute correctly', () => {
     const result = renderHookWithConfirmContextProvider(
-      () => useSyncConfirmPath(unapprovedPersonalSignMsg),
+      () => useSyncConfirmPath(),
       STATE_MOCK,
     );
     expect(result).toBeDefined();
@@ -66,7 +66,7 @@ describe('useSyncConfirmPath', () => {
 
   it('should replace history route', () => {
     renderHookWithConfirmContextProvider(
-      () => useSyncConfirmPath(unapprovedPersonalSignMsg),
+      () => useSyncConfirmPath(),
       STATE_MOCK,
     );
     expect(mockUseNavigate).toHaveBeenCalledWith(

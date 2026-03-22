@@ -1,12 +1,12 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
+import { TransactionMeta } from '@metamask/transaction-controller';
 import { QuoteResponse } from '@metamask/bridge-controller';
 
 import { getMockConfirmStateForTransaction } from '../../../../../../test/data/confirmations/helper';
 import { mockSwapConfirmation } from '../../../../../../test/data/confirmations/contract-interaction';
 import { renderWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
 import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
-import { Confirmation } from '../../../types/confirm';
 import { QuoteSwapSimulationDetails } from './quote-swap-simulation-details';
 
 jest.mock(
@@ -52,7 +52,7 @@ function render(args: Record<string, string> = {}) {
   const state = getMockConfirmStateForTransaction({
     ...mockSwapConfirmation,
     ...args,
-  } as Confirmation);
+  } as TransactionMeta);
 
   const mockStore = configureMockStore()(state);
 

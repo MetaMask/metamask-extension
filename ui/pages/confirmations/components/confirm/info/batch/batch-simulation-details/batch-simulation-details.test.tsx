@@ -1,6 +1,9 @@
 import React from 'react';
+import {
+  TransactionMeta,
+  BatchTransactionParams,
+} from '@metamask/transaction-controller';
 import { BigNumber } from 'bignumber.js';
-import { BatchTransactionParams } from '@metamask/transaction-controller';
 import { act } from '@testing-library/react';
 import { renderWithConfirmContextProvider } from '../../../../../../../../test/lib/confirmations/render-helpers';
 import { enLocale as messages } from '../../../../../../../../test/lib/i18n-helpers';
@@ -20,7 +23,6 @@ import {
   upgradeAccountConfirmationOnly,
 } from '../../../../../../../../test/data/confirmations/batch-transaction';
 import { updateAtomicBatchData } from '../../../../../../../store/controller-actions/transaction-controller';
-import { Confirmation } from '../../../../../types/confirm';
 import { updateApprovalAmount } from '../../../../../../../../shared/lib/transactions/approvals';
 import { BatchSimulationDetails } from './batch-simulation-details';
 
@@ -97,7 +99,7 @@ const BALANCE_CHANGE_ERC1155_MOCK: ApprovalBalanceChange = {
   usdAmount: null,
 };
 
-function render(transaction?: Confirmation) {
+function render(transaction?: TransactionMeta) {
   const store = configureStore(
     getMockConfirmStateForTransaction(
       transaction ??

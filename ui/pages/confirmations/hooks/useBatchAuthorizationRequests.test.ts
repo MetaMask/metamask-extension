@@ -1,11 +1,13 @@
-import { TransactionStatus } from '@metamask/transaction-controller';
+import {
+  TransactionMeta,
+  TransactionStatus,
+} from '@metamask/transaction-controller';
 
 import { getMockConfirmStateForTransaction } from '../../../../test/data/confirmations/helper';
 import { renderHookWithProvider } from '../../../../test/lib/render-helpers-navigate';
-import { Confirmation } from '../types/confirm';
 import { useBatchAuthorizationRequests } from './useBatchAuthorizationRequests';
 
-function runHook(transactionParameters: Partial<Confirmation> = {}) {
+function runHook(transactionParameters: Partial<TransactionMeta> = {}) {
   const state = getMockConfirmStateForTransaction({
     chainId: '0x123',
     status: TransactionStatus.submitted,
@@ -14,7 +16,7 @@ function runHook(transactionParameters: Partial<Confirmation> = {}) {
       from: '0x0',
     },
     ...transactionParameters,
-  } as unknown as Confirmation);
+  } as unknown as TransactionMeta);
   const { result, rerender } = renderHookWithProvider(
     () => useBatchAuthorizationRequests('0x0', '0x123'),
     state,

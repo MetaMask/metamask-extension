@@ -1,20 +1,23 @@
-import { TransactionType } from '@metamask/transaction-controller';
+import {
+  TransactionMeta,
+  TransactionType,
+} from '@metamask/transaction-controller';
 import { act } from '@testing-library/react';
 
 import { getMockConfirmStateForTransaction } from '../../../../../../test/data/confirmations/helper';
 import { mockSwapConfirmation } from '../../../../../../test/data/confirmations/contract-interaction';
 import { renderHookWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
-import { Confirmation } from '../../../types/confirm';
+
 import { useDappSwapCheck } from './useDappSwapCheck';
 
 async function runHook(
-  mockConfirmation?: Confirmation,
+  mockConfirmation?: TransactionMeta,
   dappSwapMetrics: { enabled?: boolean; origins?: string[] } = {},
 ) {
   const response = renderHookWithConfirmContextProvider(
     useDappSwapCheck,
     getMockConfirmStateForTransaction(
-      mockConfirmation ?? (mockSwapConfirmation as Confirmation),
+      mockConfirmation ?? (mockSwapConfirmation as TransactionMeta),
       {
         metamask: {
           remoteFeatureFlags: {
@@ -44,7 +47,7 @@ describe('useDappSwapCheck', () => {
       type: TransactionType.contractInteraction,
     };
     const { isSwapToBeCompared } = await runHook(
-      mockConfirmation as Confirmation,
+      mockConfirmation as TransactionMeta,
     );
     expect(isSwapToBeCompared).toBe(true);
   });
@@ -56,7 +59,7 @@ describe('useDappSwapCheck', () => {
       type: TransactionType.contractInteraction,
     };
     const { isSwapToBeCompared } = await runHook(
-      mockConfirmation as Confirmation,
+      mockConfirmation as TransactionMeta,
       { enabled: false },
     );
     expect(isSwapToBeCompared).toBe(false);
@@ -69,7 +72,7 @@ describe('useDappSwapCheck', () => {
       type: TransactionType.contractInteraction,
     };
     const { isSwapToBeCompared } = await runHook(
-      mockConfirmation as Confirmation,
+      mockConfirmation as TransactionMeta,
       { origins: ['https://metamask.github.io'] },
     );
     expect(isSwapToBeCompared).toBe(false);
@@ -82,7 +85,7 @@ describe('useDappSwapCheck', () => {
       type: TransactionType.bridge,
     };
     const { isSwapToBeCompared } = await runHook(
-      mockConfirmation as Confirmation,
+      mockConfirmation as TransactionMeta,
     );
     expect(isSwapToBeCompared).toBe(false);
   });

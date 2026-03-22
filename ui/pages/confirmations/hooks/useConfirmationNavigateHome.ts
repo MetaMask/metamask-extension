@@ -5,20 +5,19 @@ import { useNavigate } from 'react-router-dom';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import { usePrevious } from '../../../hooks/usePrevious';
 import { getIsHardwareWalletErrorModalVisible } from '../../../selectors';
-import { Confirmation } from '../types/confirm';
+import { useApprovalRequest } from './useApprovalRequest';
 
-export function useConfirmationNavigateHome(
-  currentConfirmation: Confirmation | undefined,
-) {
+export function useConfirmationNavigateHome() {
   const navigate = useNavigate();
-  const previousConfirmation = usePrevious(currentConfirmation);
+  const approvalRequest = useApprovalRequest();
+  const previousApprovalRequest = usePrevious(approvalRequest);
   const shouldNavigateHomeRef = useRef(false);
   const isHardwareWalletErrorModalVisible = useSelector(
     getIsHardwareWalletErrorModalVisible,
   );
 
   useEffect(() => {
-    if (previousConfirmation && !currentConfirmation) {
+    if (previousApprovalRequest && !approvalRequest) {
       shouldNavigateHomeRef.current = true;
     }
 
@@ -27,8 +26,8 @@ export function useConfirmationNavigateHome(
       navigate(`${DEFAULT_ROUTE}?tab=activity`, { replace: true });
     }
   }, [
-    previousConfirmation,
-    currentConfirmation,
+    previousApprovalRequest,
+    approvalRequest,
     navigate,
     isHardwareWalletErrorModalVisible,
   ]);

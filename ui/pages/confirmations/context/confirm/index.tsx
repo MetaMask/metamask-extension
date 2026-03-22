@@ -6,8 +6,6 @@ import React, {
   useState,
 } from 'react';
 
-import { useTransactionMetadataRequestOptional } from '../../hooks/useTransactionMetadataRequest';
-import { useSignatureRequestOptional } from '../../hooks/useSignatureRequest';
 import useSyncConfirmPath from '../../hooks/useSyncConfirmPath';
 import { useConfirmationNavigateHome } from '../../hooks/useConfirmationNavigateHome';
 
@@ -26,12 +24,8 @@ export const ConfirmContextProvider: React.FC<{
   const [isScrollToBottomCompleted, setIsScrollToBottomCompleted] =
     useState(true);
 
-  const transactionMetadata = useTransactionMetadataRequestOptional();
-  const signatureRequest = useSignatureRequestOptional();
-  const currentConfirmation = transactionMetadata ?? signatureRequest;
-
-  useSyncConfirmPath(currentConfirmation);
-  useConfirmationNavigateHome(currentConfirmation);
+  useSyncConfirmPath();
+  useConfirmationNavigateHome();
 
   const value = useMemo(
     () => ({

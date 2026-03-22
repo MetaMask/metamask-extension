@@ -22,7 +22,7 @@ import { TypedSignSignaturePrimaryTypes } from '../../../constants';
 import { useSignatureRequestOptional } from '../../../hooks/useSignatureRequest';
 import { useTransactionMetadataRequestOptional } from '../../../hooks/useTransactionMetadataRequest';
 import { useTypedSignSignatureInfo } from '../../../hooks/useTypedSignSignatureInfo';
-import { Confirmation, SignatureRequestType } from '../../../types/confirm';
+import { SignatureRequestType } from '../../../types/confirm';
 import { isSIWESignatureRequest } from '../../../utils';
 import { useIsNFT } from '../info/approve/hooks/use-is-nft';
 import { useTokenTransactionData } from '../info/hooks/useTokenTransactionData';
@@ -101,7 +101,7 @@ type IntlFunction = (str: string) => string;
 
 const getTitle = (
   t: IntlFunction,
-  confirmation?: Confirmation,
+  confirmation?: TransactionMeta | SignatureRequestType,
   isNFT?: boolean,
   customSpendingCap?: string,
   isRevokeSetApprovalForAll?: boolean,
@@ -176,7 +176,7 @@ const getTitle = (
 
 const getDescription = (
   t: IntlFunction,
-  confirmation?: Confirmation,
+  confirmation?: TransactionMeta | SignatureRequestType,
   isNFT?: boolean,
   customSpendingCap?: string,
   isRevokeSetApprovalForAll?: boolean,

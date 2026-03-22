@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
+import { TransactionMeta } from '@metamask/transaction-controller';
 import { QuoteResponse } from '@metamask/bridge-controller';
 import { fireEvent } from '@testing-library/react';
 
@@ -9,7 +10,6 @@ import { mockSwapConfirmation } from '../../../../../../test/data/confirmations/
 import { renderWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
 import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
 import { getRemoteFeatureFlags } from '../../../../../selectors/remote-feature-flags';
-import { Confirmation } from '../../../types/confirm';
 import { useDappSwapComparisonInfo } from '../../../hooks/transactions/dapp-swap-comparison/useDappSwapComparisonInfo';
 import * as DappSwapContext from '../../../context/dapp-swap';
 import { useDappSwapComparisonRewardText } from '../../../hooks/transactions/dapp-swap-comparison/useDappSwapComparisonRewardText';
@@ -107,7 +107,7 @@ function render(args: Record<string, string> = {}) {
   const state = getMockConfirmStateForTransaction({
     ...mockSwapConfirmation,
     ...args,
-  } as Confirmation);
+  } as TransactionMeta);
 
   const mockStore = configureMockStore()(state);
 
