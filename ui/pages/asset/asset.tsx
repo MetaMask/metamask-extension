@@ -11,6 +11,7 @@ import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import { getTokenByAccountAndAddressAndChainId } from '../../selectors/assets';
 import NativeAsset from './components/native-asset';
 import TokenAsset from './components/token-asset';
+import { withMessenger } from './messenger';
 
 type LocationState = {
   token?: {
@@ -87,4 +88,8 @@ const Asset = () => {
   );
 };
 
-export default Asset;
+//========
+// This one line creates a messenger and a context for the route and its
+// children.
+//========
+export default withMessenger(Asset);
