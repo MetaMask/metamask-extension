@@ -250,6 +250,21 @@ async function downloadArtifact(artifactName: string): Promise<string> {
     throw new Error(`No redirect URL returned for artifact "${artifactName}"`);
   }
 
+  // Validate the redirect target is a trusted GitHub/AWS host before writing
+  // the response to disk. This guards against a malicious Location header
+  // pointing to an attacker-controlled server.
+  const downloadHost = new URL(downloadUrl).hostname;
+  if (
+    !downloadHost.endsWith('.amazonaws.com') &&
+    !downloadHost.endsWith('.blob.core.windows.net') &&
+    !downloadHost.endsWith('.github.com') &&
+    downloadHost !== 'github.com'
+  ) {
+    throw new Error(
+      `Untrusted redirect host "${downloadHost}" for artifact "${artifactName}"`,
+    );
+  }
+
   const zipRes = await fetch(downloadUrl);
   if (!zipRes.ok) {
     throw new Error(
