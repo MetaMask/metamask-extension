@@ -1,5 +1,5 @@
 import React from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   Box,
@@ -28,11 +28,23 @@ import ToggleButton from '../../components/ui/toggle-button';
 import { DEFAULT_ROUTE, SECURITY_ROUTE } from '../../helpers/constants/routes';
 import { getUseExternalServices } from '../../selectors';
 import { toggleExternalServices } from '../../store/actions';
-import type { BasicFunctionalityOffState } from '../../helpers/higher-order-components/require-basic-functionality/require-basic-functionality';
 
 const CONTAINER_STYLE = { marginTop: '111px' } as const;
 const CARD_BOX_STYLE = { width: '446px', minHeight: '592px' } as const;
 const LOGO_STYLE = { width: '160px', height: '160px' } as const;
+
+const SEGMENT_CTA_MAPPING: Record<string, string> = {
+  notifications: 'basicFunctionalityRequired_openNotificationsPage',
+  snaps: 'basicFunctionalityRequired_openSnapsPage',
+  swaps: 'basicFunctionalityRequired_openSwapsPage',
+  defi: 'basicFunctionalityRequired_openDefiPage',
+  musd: 'basicFunctionalityRequired_openMUSDPage',
+  'nonevm-balance-check':
+    'basicFunctionalityRequired_openCreateSnapAccountPage',
+  'shield-plan': 'basicFunctionalityRequired_openTransactionShieldPage',
+  rewards: 'basicFunctionalityRequired_openRewardsPage',
+  perps: 'basicFunctionalityRequired_openPerpsPage',
+};
 
 /**
  * Shown when Basic Functionality is off and the user opens a route that requires it (e.g. swap, rewards).
@@ -41,13 +53,12 @@ const LOGO_STYLE = { width: '160px', height: '160px' } as const;
 export const BasicFunctionalityOff = () => {
   const t = useI18nContext();
   const navigate = useNavigate();
-  const location = useLocation();
+  const searchParams = useSearchParams();
   const dispatch = useDispatch();
   const useExternalServices = useSelector(getUseExternalServices);
 
-  const state = location.state as BasicFunctionalityOffState | undefined;
-  const blockedRoutePath = state?.blockedRoutePath ?? '';
-  const openPageCtaMessageKey = state?.openPageCtaMessageKey ?? '';
+  const blockedRoutePath = searchParams[0].get('from') ?? '';
+  const openPageCtaMessageKey = SEGMENT_CTA_MAPPING[blockedRoutePath] ?? '';
   const hasFeatureContext = Boolean(blockedRoutePath && openPageCtaMessageKey);
 
   const handleToggleBasicFunctionality = (currentValue: boolean) => {
