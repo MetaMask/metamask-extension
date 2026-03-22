@@ -822,7 +822,7 @@
       "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/components/confirm/info/hooks/useFeeCalculations.test.ts": {
-      "MetaMask: Background connection not initialized": 48,
+      "MetaMask: Background connection not initialized": 42,
       "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/components/confirm/info/hooks/useGasFeeToken.test.ts": {
@@ -1108,8 +1108,7 @@
       "warn: \u26a0\ufe0f React Router Future Flag": 2
     },
     "ui/pages/confirmations/components/rows/enforced-simulations-row/enforced-simulations-row.test.tsx": {
-      "Reselect: Identity function warnings": 3,
-      "warn: \u26a0\ufe0f React Router Future Flag": 2
+      "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/components/rows/pay-with-row/pay-with-row.test.tsx": {
       "warn: \u26a0\ufe0f React Router Future Flag": 2

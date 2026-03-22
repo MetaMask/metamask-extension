@@ -1,8 +1,5 @@
 import { toHex } from '@metamask/controller-utils';
-import {
-  TransactionContainerType,
-  TransactionMeta,
-} from '@metamask/transaction-controller';
+import { TransactionMeta } from '@metamask/transaction-controller';
 import { QuoteResponse } from '@metamask/bridge-controller';
 import { merge } from 'lodash';
 
@@ -31,7 +28,6 @@ describe('useFeeCalculations', () => {
     expect(result.current).toMatchInlineSnapshot(`
       {
         "calculateGasEstimate": [Function],
-        "containerDiffFiat": "",
         "estimatedFeeFiat": "< $0.01",
         "estimatedFeeFiatWith18SignificantDigits": "0",
         "estimatedFeeNative": "0",
@@ -63,7 +59,6 @@ describe('useFeeCalculations', () => {
     expect(result.current).toMatchInlineSnapshot(`
       {
         "calculateGasEstimate": [Function],
-        "containerDiffFiat": "",
         "estimatedFeeFiat": "$0.04",
         "estimatedFeeFiatWith18SignificantDigits": null,
         "estimatedFeeNative": "0.0001",
@@ -116,7 +111,6 @@ describe('useFeeCalculations', () => {
     expect(resultOnBNB.current).toMatchInlineSnapshot(`
       {
         "calculateGasEstimate": [Function],
-        "containerDiffFiat": "",
         "estimatedFeeFiat": "",
         "estimatedFeeFiatWith18SignificantDigits": null,
         "estimatedFeeNative": "0.0001",
@@ -197,31 +191,6 @@ describe('useFeeCalculations', () => {
     expect(result.current.maxFeeFiat).toBe('$0.06');
     expect(result.current.maxFeeFiatWith18SignificantDigits).toBe(null);
     expect(result.current.maxFeeNative).toBe('0.0001');
-  });
-
-  it('returns positive containerDiffFiat when container gas exceeds original', () => {
-    const transactionMeta = genUnapprovedContractInteractionConfirmation({
-      address: CONTRACT_INTERACTION_SENDER_ADDRESS,
-      containerTypes: [TransactionContainerType.EnforcedSimulations],
-    }) as TransactionMeta;
-
-    // gasLimitNoBuffer is the original unbuffered gas estimate (set during
-    // initial gas estimation before container wrapping).
-    transactionMeta.gasLimitNoBuffer = toHex(40000);
-    // txParams.gas is the unbuffered container-wrapped gas (re-estimated by
-    // estimateGas in util.ts). It's higher because the wrapped tx has more
-    // calldata / delegation overhead.
-    transactionMeta.txParams.gas = toHex(50000);
-
-    const { result } = renderHookWithConfirmContextProvider(
-      () => useFeeCalculations(transactionMeta),
-      mockState,
-    );
-
-    expect(result.current.containerDiffFiat).not.toBe('');
-    expect(
-      Number(result.current.containerDiffFiat.replace(/[^0-9.]/gu, '')),
-    ).toBeGreaterThan(0);
   });
 
   it('returns the correct estimate for a transaction with layer1GasFee', () => {

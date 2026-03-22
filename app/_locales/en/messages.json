@@ -342,14 +342,14 @@
   "addedProtectionDescription": {
     "message": "You're interacting with an unknown address. This helps prevent malicious transactions."
   },
-  "addedProtectionFeeDescription": {
-    "message": "Add $1 in network fees to lock in your expected balance changes."
-  },
   "addedProtectionOptionalBadge": {
     "message": "Optional"
   },
   "addedProtectionTitle": {
     "message": "Added protection"
+  },
+  "addedProtectionTooltip": {
+    "message": "If the final transaction doesn't match this preview, it won't go through. You only pay the network fee."
   },
   "additionalNetworks": {
     "message": "Additional networks"

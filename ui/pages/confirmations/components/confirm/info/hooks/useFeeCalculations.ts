@@ -12,7 +12,6 @@ import {
   decimalToHex,
   getValueFromWeiHex,
   multiplyHexes,
-  subtractHexes,
 } from '../../../../../../../shared/lib/conversion.utils';
 import { Numeric } from '../../../../../../../shared/lib/Numeric';
 import { toHex } from '../../../../../../../shared/lib/delegation/utils';
@@ -232,64 +231,6 @@ export function useFeeCalculations(transactionMeta: TransactionMeta) {
     supportsEIP1559,
   ]);
 
-  // Fee delta when container types add gas overhead (e.g. enforced simulations).
-  // Compares the fee using the current container gas limit against the original
-  // pre-container gas limit to surface the extra cost to the user.
-  const containerDiffFiat = useMemo(() => {
-    if (!hasContainerTypes || hasLayer1GasFee) {
-      return EMPTY_FEE;
-    }
-
-    const originalGasLimit =
-      transactionMeta?.gasLimitNoBuffer ||
-      transactionMeta?.txParamsOriginal?.gas ||
-      HEX_ZERO;
-
-    const enforcedGasLimit = transactionMeta?.txParams?.gas || HEX_ZERO;
-
-    if (originalGasLimit === HEX_ZERO || enforcedGasLimit === HEX_ZERO) {
-      return EMPTY_FEE;
-    }
-
-    let minimumFeePerGas = addHexes(
-      decGWEIToHexWEI(estimatedBaseFee) || HEX_ZERO,
-      decimalToHex(maxPriorityFeePerGas),
-    );
-
-    if (
-      new Numeric(minimumFeePerGas, 16).greaterThan(
-        decimalToHex(maxFeePerGas),
-        16,
-      )
-    ) {
-      minimumFeePerGas = decimalToHex(maxFeePerGas);
-    }
-
-    const feePerGas = supportsEIP1559
-      ? (minimumFeePerGas as Hex)
-      : (gasPrice as Hex);
-
-    const enforcedFee = multiplyHexes(feePerGas, enforcedGasLimit as Hex);
-    const originalFee = multiplyHexes(feePerGas, originalGasLimit as Hex);
-    const diffHex = subtractHexes(enforcedFee, originalFee) as Hex;
-
-    const { currentCurrencyFee } = getFeesFromHex(diffHex);
-
-    return currentCurrencyFee;
-  }, [
-    estimatedBaseFee,
-    gasPrice,
-    getFeesFromHex,
-    hasContainerTypes,
-    hasLayer1GasFee,
-    maxFeePerGas,
-    maxPriorityFeePerGas,
-    supportsEIP1559,
-    transactionMeta?.gasLimitNoBuffer,
-    transactionMeta?.txParamsOriginal?.gas,
-    transactionMeta?.txParams?.gas,
-  ]);
-
   const calculateGasEstimateCallback = useCallback(
     ({
       feePerGas,
@@ -349,7 +290,6 @@ export function useFeeCalculations(transactionMeta: TransactionMeta) {
 
   return {
     calculateGasEstimate: calculateGasEstimateCallback,
-    containerDiffFiat,
     estimatedFeeFiat: estimatedFees.currentCurrencyFee,
     estimatedFeeFiatWith18SignificantDigits:
       estimatedFees.currentCurrencyFeeWith18SignificantDigits,

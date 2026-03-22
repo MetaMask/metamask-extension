@@ -8,7 +8,6 @@ import { renderWithConfirmContextProvider } from '../../../../../../test/lib/con
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { isEnforcedSimulationsEligible } from '../../../../../../shared/lib/transaction/enforced-simulations';
 import { applyTransactionContainersExisting } from '../../../../../store/actions';
-import { useFeeCalculations } from '../../confirm/info/hooks/useFeeCalculations';
 import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
 import { EnforcedSimulationsRow } from './enforced-simulations-row';
 
@@ -18,9 +17,6 @@ jest.mock('../../../../../store/actions', () => ({
   ...jest.requireActual('../../../../../store/actions'),
   applyTransactionContainersExisting: jest.fn().mockResolvedValue(undefined),
 }));
-jest.mock('../../confirm/info/hooks/useFeeCalculations', () => ({
-  useFeeCalculations: jest.fn(),
-}));
 
 const mockStore = configureMockStore([]);
 
@@ -28,38 +24,32 @@ const isEnforcedSimulationsEligibleMock = jest.mocked(
   isEnforcedSimulationsEligible,
 );
 const useI18nContextMock = jest.mocked(useI18nContext);
-const useFeeCalculationsMock = jest.mocked(useFeeCalculations);
 
 function render({
   isSupported = true,
   containerTypes,
-  containerDiffFiat = '',
   origin,
   delegationAddress,
 }: {
   isSupported?: boolean;
   containerTypes?: TransactionContainerType[];
-  containerDiffFiat?: string;
   origin?: string;
   delegationAddress?: string;
 } = {}) {
   isEnforcedSimulationsEligibleMock.mockReturnValue(isSupported);
 
-  useI18nContextMock.mockReturnValue(((key: string, args?: string[]) => {
+  useI18nContextMock.mockReturnValue(((key: string) => {
     const translations: Record<string, string> = {
       addedProtectionOptionalBadge:
         messages.addedProtectionOptionalBadge.message,
       addedProtectionTitle: messages.addedProtectionTitle.message,
       addedProtectionDescription: messages.addedProtectionDescription.message,
-      addedProtectionFeeDescription: `Add ${args?.[0] ?? ''} in network fees to lock in your expected balance changes.`,
+      addedProtectionTooltip:
+        "If the final transaction doesn't match this preview, it won't go through. You only pay the network fee.",
       learnMore: 'Learn more',
     };
     return translations[key] ?? key;
   }) as ReturnType<typeof useI18nContext>);
-
-  useFeeCalculationsMock.mockReturnValue({
-    containerDiffFiat,
-  } as unknown as ReturnType<typeof useFeeCalculations>);
 
   const transaction = genUnapprovedContractInteractionConfirmation({
     containerTypes,
@@ -124,9 +114,8 @@ describe('EnforcedSimulationsRow', () => {
       containerTypes: [TransactionContainerType.EnforcedSimulations],
     });
 
-    const toggle = getByTestId('enforced-simulations-toggle');
-    const input = toggle.querySelector(
-      'input[type="checkbox"]',
+    const input = getByTestId(
+      'enforced-simulations-toggle-input',
     ) as HTMLInputElement;
     expect(input).toBeChecked();
   });
@@ -134,9 +123,8 @@ describe('EnforcedSimulationsRow', () => {
   it('renders the checkbox as unchecked when disabled', () => {
     const { getByTestId } = render({ containerTypes: [] });
 
-    const toggle = getByTestId('enforced-simulations-toggle');
-    const input = toggle.querySelector(
-      'input[type="checkbox"]',
+    const input = getByTestId(
+      'enforced-simulations-toggle-input',
     ) as HTMLInputElement;
     expect(input).not.toBeChecked();
   });
@@ -146,9 +134,8 @@ describe('EnforcedSimulationsRow', () => {
       containerTypes: [TransactionContainerType.EnforcedSimulations],
     });
 
-    const toggle = getByTestId('enforced-simulations-toggle');
-    const input = toggle.querySelector(
-      'input[type="checkbox"]',
+    const input = getByTestId(
+      'enforced-simulations-toggle-input',
     ) as HTMLInputElement;
     input?.click();
 
@@ -163,9 +150,8 @@ describe('EnforcedSimulationsRow', () => {
       containerTypes: [TransactionContainerType.EnforcedSimulations],
     });
 
-    const toggle = getByTestId('enforced-simulations-toggle');
-    const input = toggle.querySelector(
-      'input[type="checkbox"]',
+    const input = getByTestId(
+      'enforced-simulations-toggle-input',
     ) as HTMLInputElement;
 
     // eslint-disable-next-line @typescript-eslint/require-await
@@ -179,20 +165,7 @@ describe('EnforcedSimulationsRow', () => {
     ).not.toBeInTheDocument();
   });
 
-  it('shows fee description when enabled and fee delta is available', () => {
-    const { getByText } = render({
-      containerTypes: [TransactionContainerType.EnforcedSimulations],
-      containerDiffFiat: '$6.21',
-    });
-
-    expect(
-      getByText(
-        'Add $6.21 in network fees to lock in your expected balance changes.',
-      ),
-    ).toBeInTheDocument();
-  });
-
-  it('shows default description when enabled but no fee delta', () => {
+  it('shows description text', () => {
     const { getByText } = render({
       containerTypes: [TransactionContainerType.EnforcedSimulations],
     });
