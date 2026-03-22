@@ -162,7 +162,7 @@ describe('Unlock Page', () => {
       });
     });
   });
-  it('should redirect to history location when unlocked (from state)', () => {
+  it('should redirect to history location when unlocked (from query param)', () => {
     const intendedPath = '/previous-route';
     const mockStateWithUnlock = {
       metamask: { isUnlocked: true },
@@ -170,18 +170,15 @@ describe('Unlock Page', () => {
     const store = configureMockStore([thunk])(mockStateWithUnlock);
 
     // Set up the router to have the location state that would come from a redirect
-    const locationState = { from: { pathname: intendedPath } };
+    const pathname = `/unlock?from=${encodeURIComponent(intendedPath)}`;
 
-    renderWithProvider(<UnlockPage />, store, {
-      pathname: '/unlock',
-      state: locationState,
-    } as unknown as string);
+    renderWithProvider(<UnlockPage />, store, pathname);
 
     expect(mockUseNavigate).toHaveBeenCalledTimes(1);
     expect(mockUseNavigate).toHaveBeenCalledWith(intendedPath);
   });
 
-  it('changes password, submits, and redirects to the specified route (from location.state)', async () => {
+  it('changes password, submits, and redirects to the specified route (from query param)', async () => {
     const intendedPath = '/intended-route';
     const intendedSearch = '?abc=123';
     const mockStateNonUnlocked = {
@@ -190,14 +187,14 @@ describe('Unlock Page', () => {
     const store = configureMockStore([thunk])(mockStateNonUnlocked);
 
     // Set up the router to have the location state that would come from a redirect
-    const locationState = {
-      from: { pathname: intendedPath, search: intendedSearch },
-    };
+    const fromParam = encodeURIComponent(`${intendedPath}${intendedSearch}`);
+    const pathname = `/unlock?from=${fromParam}`;
 
-    const { queryByTestId } = renderWithProvider(<UnlockPage />, store, {
-      pathname: '/unlock',
-      state: locationState,
-    } as unknown as string);
+    const { queryByTestId } = renderWithProvider(
+      <UnlockPage />,
+      store,
+      pathname,
+    );
 
     const passwordField = queryByTestId('unlock-password') as HTMLElement;
     const loginButton = queryByTestId('unlock-submit') as HTMLElement;

@@ -20,20 +20,12 @@ export function getCaretCoordinates(element: HTMLElement, position: number) {
   return coordinates;
 }
 
-export function resolvePostUnlockRoute(location: RouterLocation) {
+export function getIntendedRoute(location: RouterLocation) {
   const fromSearchParam = new URLSearchParams(location.search).get('from');
   const safeFrom = sanitizeRedirectUrl(fromSearchParam);
 
   if (safeFrom) {
     return safeFrom;
-  }
-
-  const fromLocation = location.state?.from as
-    | { pathname?: string; search?: string }
-    | undefined;
-  if (fromLocation?.pathname) {
-    const search = fromLocation.search || '';
-    return fromLocation.pathname + search;
   }
 
   return DEFAULT_ROUTE;

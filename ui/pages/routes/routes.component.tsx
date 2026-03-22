@@ -3,9 +3,9 @@
 /* eslint-disable import/extensions */
 import classnames from 'clsx';
 import React, { Suspense, useEffect, useRef } from 'react';
+import { Store } from 'redux';
 import { useDispatch } from 'react-redux';
 import {
-  useLoaderData,
   useLocation,
   useNavigationType,
   Navigate,
@@ -142,24 +142,16 @@ import { WalletDetailsPage } from '../multichain-accounts/wallet-details-page';
 import { MultichainReviewPermissions } from '../../components/multichain-accounts/permissions/permission-review-page/multichain-review-permissions-page';
 import { RootLayout } from '../../layouts/root-layout';
 import { LegacyLayout } from '../../layouts/legacy-layout';
-import Authenticated from '../../helpers/higher-order-components/authenticated/authenticated.container';
-import Initialized from '../../helpers/higher-order-components/initialized';
-import BasicFunctionalityRequired from '../../helpers/higher-order-components/require-basic-functionality/require-basic-functionality';
 import { contactsRoutes } from '../contacts';
 import { getCurrencyRateControllerCurrentCurrency } from '../../../shared/lib/selectors/assets-migration';
 import {
   createBasicFunctionalityLoader,
-  createCtaMessage,
   createProtectedLoader,
-  requireAuthenticated,
   requireInitialized,
 } from './loaders';
 import { getConnectingLabel, setTheme } from './utils';
 import { ConfirmationHandler } from './confirmation-handler';
 import { Modals } from './modals';
-import path from 'path';
-import { Store } from 'redux';
-import { element } from 'prop-types';
 
 // Begin Lazy Routes
 const OnboardingFlow = mmLazy(() => import('../onboarding-flow/index.ts'));
@@ -358,16 +350,14 @@ export const getRouteConfig = (store: Store) => [
         path: `${CONFIRM_TRANSACTION_ROUTE}/:id?/*`,
         element: <Confirm />,
       },
-      // TODO: LegacyLayout but see if RootLayout works
-      // {
-      //   path: CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE,
-      //   element: <ConfirmAddSuggestedTokenPage />,
-      // },
-      // TODO: LegacyLayout but see if RootLayout works
-      // {
-      //   path: CONFIRM_ADD_SUGGESTED_NFT_ROUTE,
-      //   element: <ConfirmAddSuggestedNftPage />,
-      // },
+      {
+        path: CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE,
+        element: <ConfirmAddSuggestedTokenPage />,
+      },
+      {
+        path: CONFIRM_ADD_SUGGESTED_NFT_ROUTE,
+        element: <ConfirmAddSuggestedNftPage />,
+      },
       {
         path: `${CONFIRMATION_V_NEXT_ROUTE}/:id?`,
         element: <ConfirmationPage />,
@@ -465,70 +455,67 @@ export const getRouteConfig = (store: Store) => [
         children: [
           {
             path: '/notifications/settings',
-            element: <NotificationsSettingsRedirect />, // openNotificationsPage
+            element: <NotificationsSettingsRedirect />,
           },
           {
             path: `${NOTIFICATIONS_ROUTE}/:uuid`,
-            element: <NotificationDetails />, // openNotificationsPage
+            element: <NotificationDetails />,
           },
           {
             path: NOTIFICATIONS_ROUTE,
-            element: <Notifications />, // openNotificationsPage
+            element: <Notifications />,
           },
           {
             path: SNAPS_ROUTE,
-            element: <SnapList />, // openSnapsPage
+            element: <SnapList />,
           },
           {
             path: SNAPS_VIEW_ROUTE,
-            element: <SnapView />, // openSnapsPage
+            element: <SnapView />,
           },
           {
             path: `${CROSS_CHAIN_SWAP_ROUTE}/*`,
-            element: <CrossChainSwap />, // openSwapsPage
+            element: <CrossChainSwap />,
           },
-          // TODO: LegacyLayout but see if RootLayout works
           {
             path: `${CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE}/:txHash`,
-            element: <CrossChainSwapTxDetails />, // openSwapsPage
+            element: <CrossChainSwapTxDetails />,
           },
           {
             path: `${DEFI_ROUTE}/:chainId/:protocolId`,
-            element: <DeFiPage />, // openDefiPage
+            element: <DeFiPage />,
           },
           {
             path: `${MUSD_CONVERSION_ROUTE}/*`,
-            element: <MusdConversionPage />, // openMusdConversionPage
+            element: <MusdConversionPage />,
           },
-          // TODO: LegacyLayout but see if RootLayout works
-          // {
-          //   path: NONEVM_BALANCE_CHECK_ROUTE,
-          //   element: <NonEvmBalanceCheck />, // openCreateSnapAccountPage
-          // }
-          // TODO: LegacyLayout but see if RootLayout works
-          // {
-          //   path: SHIELD_PLAN_ROUTE,
-          //   element: <ShieldPlan />, // openTransactionShieldPage
-          // },
+          {
+            path: NONEVM_BALANCE_CHECK_ROUTE,
+            element: <NonEvmBalanceCheck />, // openCreateSnapAccountPage
+          },
+          {
+            path: SHIELD_PLAN_ROUTE,
+            element: <ShieldPlan />,
+          },
           {
             path: REWARDS_ROUTE,
-            element: <RewardsPage />, // openRewardsPage
+            element: <RewardsPage />,
           },
           {
             path: `${PERPS_MARKET_DETAIL_ROUTE}/:symbol`,
-            element: <WrappedPerpsMarketDetailPage />, // openPerpsPage
+            element: <WrappedPerpsMarketDetailPage />,
           },
           {
             path: `${PERPS_ORDER_ENTRY_ROUTE}/:symbol`,
-            element: <WrappedPerpsOrderEntryPage />, // openPerpsPage
+            element: <WrappedPerpsOrderEntryPage />,
           },
           {
             path: PERPS_ACTIVITY_ROUTE,
-            element: <WrappedPerpsActivityPage />, // openPerpsPage
+            element: <WrappedPerpsActivityPage />,
           },
           {
             path: PERPS_MARKET_LIST_ROUTE,
-            element: <WrappedMarketListView />, // openPerpsPage
+            element: <WrappedMarketListView />,
           },
         ],
       },

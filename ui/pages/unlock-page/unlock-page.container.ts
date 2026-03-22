@@ -24,7 +24,7 @@ import {
 import withRouterHooks from '../../helpers/higher-order-components/with-router-hooks/with-router-hooks';
 import { MetaMaskReduxDispatch, MetaMaskReduxState } from '../../store/store';
 import UnlockPage from './unlock-page.component';
-import { resolvePostUnlockRoute } from './unlock-page.util';
+import { getIntendedRoute } from './unlock-page.util';
 
 type OwnProps = {
   navigate: NavigateFunction;
@@ -90,7 +90,8 @@ const mergeProps = (
 
   const onSubmit = async (password: string) => {
     await propsTryUnlockMetamask(password);
-    navigate(resolvePostUnlockRoute(location));
+    // Redirect to the intended route if available, otherwise DEFAULT_ROUTE
+    navigate(getIntendedRoute(location));
   };
 
   return {
