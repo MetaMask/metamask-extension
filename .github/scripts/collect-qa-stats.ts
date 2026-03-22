@@ -120,7 +120,7 @@ const GITHUB_REPOSITORY =
 // Update these if the repository directory structure or file-naming conventions
 // change — the collectors below rely on them for skip/defined counts.
 // ---------------------------------------------------------------------------
-const SCAN_UNIT_DIRS = ['ui', 'app', 'shared'];
+const SCAN_UNIT_DIRS = ['ui', 'app', 'shared', 'development', 'test/unit-global'];
 const SCAN_INTEGRATION_DIR = 'test/integration';
 const SCAN_E2E_DIRS = ['test/e2e/tests', 'test/e2e/accounts', 'test/e2e/snaps'];
 const SCAN_E2E_FLASK_DIRS = [
@@ -267,10 +267,23 @@ async function downloadArtifact(artifactName: string): Promise<string> {
     );
   }
 
+  const arrayBuffer = await zipRes.arrayBuffer();
+
+  // Verify the response is a ZIP file by checking magic bytes (PK signature).
+  // This catches cases where the server returns an unexpected content type
+  // (e.g. an HTML error page) before writing anything to disk.
+  const magic = new Uint8Array(arrayBuffer, 0, 2);
+  if (magic[0] !== 0x50 || magic[1] !== 0x4b) {
+    throw new Error(
+      `Downloaded artifact "${artifactName}" is not a valid ZIP file (unexpected magic bytes)`,
+    );
+  }
+
   const destDir = join('temp', artifactName);
   await mkdir(destDir, { recursive: true });
   const zipPath = join(destDir, `${artifactName}.zip`);
-  await writeFile(zipPath, Buffer.from(await zipRes.arrayBuffer()));
+  // Source URL host is validated above before this write.
+  await writeFile(zipPath, Buffer.from(arrayBuffer));
   execFileSync('unzip', ['-qo', zipPath, '-d', destDir]);
 
   return destDir;
@@ -280,9 +293,18 @@ async function downloadArtifact(artifactName: string): Promise<string> {
 // JUnit XML helpers
 // ---------------------------------------------------------------------------
 
+function decodeXmlEntities(s: string): string {
+  return s
+    .replace(/&amp;/gu, '&')
+    .replace(/&lt;/gu, '<')
+    .replace(/&gt;/gu, '>')
+    .replace(/&quot;/gu, '"')
+    .replace(/&apos;/gu, "'");
+}
+
 function getStringAttribute(tag: string, name: string): string {
   const match = tag.match(new RegExp(`${name}="([^"]+)"`, 'u'));
-  return match ? match[1] : '';
+  return match ? decodeXmlEntities(match[1]) : '';
 }
 
 /**
