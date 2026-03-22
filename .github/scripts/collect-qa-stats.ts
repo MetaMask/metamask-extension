@@ -58,7 +58,7 @@
 
 import { readFile, writeFile, mkdir, readdir } from 'fs/promises';
 import type { Dirent } from 'fs';
-import { execSync } from 'child_process';
+import { execFileSync } from 'child_process';
 import { join } from 'path';
 
 // ---------------------------------------------------------------------------
@@ -85,7 +85,6 @@ type JUnitParseResult = {
 
 type ScanResult = {
   defined: number;
-  skipped: number;
 };
 
 type DescribeBlock = {
@@ -262,7 +261,7 @@ async function downloadArtifact(artifactName: string): Promise<string> {
   await mkdir(destDir, { recursive: true });
   const zipPath = join(destDir, `${artifactName}.zip`);
   await writeFile(zipPath, Buffer.from(await zipRes.arrayBuffer()));
-  execSync(`unzip -qo "${zipPath}" -d "${destDir}"`);
+  execFileSync('unzip', ['-qo', zipPath, '-d', destDir]);
 
   return destDir;
 }
@@ -410,10 +409,13 @@ function countSkips(source: string): number {
   // Part 1: it.skip / test.skip outside describe.skip blocks.
   const explicit = (outside.match(/\b(?:it|test)\.skip\s*\(/gu) ?? []).length;
 
-  // Part 2: all it() / test() (including .skip) inside describe.skip blocks.
+  // Part 2: all it() / test() (including all modifiers) inside describe.skip blocks.
   const implicit = describeBlocks.reduce(
     (sum, { content }) =>
-      sum + (content.match(/\b(?:it|test)(?:\.skip)?\s*\(/gu) ?? []).length,
+      sum +
+      (content.match(
+        /\b(?:it|test)(?:\.(?:each|skip|only|concurrent))?\s*\(/gu,
+      ) ?? []).length,
     0,
   );
 
@@ -431,17 +433,15 @@ async function scanTestFiles(
   dirs: string[],
   filePattern: RegExp,
 ): Promise<ScanResult> {
-  let defined = 0,
-    skipped = 0;
+  let defined = 0;
   for (const dir of dirs) {
     const files = await walkFiles(dir, (name) => filePattern.test(name));
     for (const f of files) {
       const source = await readFile(f, 'utf8');
       defined += countDefinedTests(source);
-      skipped += countSkips(source);
     }
   }
-  return { defined, skipped };
+  return { defined };
 }
 
 // ---------------------------------------------------------------------------
@@ -511,10 +511,13 @@ function getE2eFeatureFolder(filePath: string): string {
   const normalize = (s: string) => s.toLowerCase().replace(/-/gu, '_');
   const p = filePath.replace(/\\/gu, '/');
 
-  const m = p.match(/\btest\/e2e\/(?:tests|flask)\/([^/]+)/u);
+  // Require a trailing slash so only subdirectory names are captured.
+  // Files placed directly under test/e2e/tests/ or test/e2e/flask/ (with no
+  // subdirectory) would otherwise produce keys containing ".spec.ts".
+  const m = p.match(/\btest\/e2e\/(?:tests|flask)\/([^/]+)\//u);
   if (m) return normalize(m[1]);
 
-  const m2 = p.match(/\btest\/e2e\/([^/]+)/u);
+  const m2 = p.match(/\btest\/e2e\/([^/]+)\//u);
   if (m2) return normalize(m2[1]);
 
   return 'other';
@@ -536,7 +539,7 @@ function getE2eFeatureFolder(filePath: string): string {
  * @param minFolderCount - Folders below this threshold are folded into `other`.
  */
 async function collectUnitTestCount(
-  minFolderCount = 200,
+  minFolderCount = 100,
 ): Promise<Record<string, number>> {
   console.log('[unit] collecting per-suite counts from shard artifacts...');
 
@@ -582,7 +585,8 @@ async function collectUnitTestCount(
     if (minFolderCount > 0 && count < minFolderCount) {
       result.other_tests_run = (result.other_tests_run ?? 0) + count;
     } else {
-      result[`${folder}_tests_run`] = count;
+      result[`${folder}_tests_run`] =
+        (result[`${folder}_tests_run`] ?? 0) + count;
     }
   }
 
@@ -854,9 +858,18 @@ async function collectE2eTestCount(): Promise<Record<string, number>> {
       result.flask_firefox_tests_run = flaskFirefoxTotal;
   }
 
-  // Per-feature breakdown from Chrome main only (canonical, like Android in mobile)
+  // Per-feature breakdown from Chrome main only (canonical, like Android in mobile).
+  // Guard against feature directory names that collide with aggregate keys.
+  const reservedKeys = new Set(Object.keys(result));
   for (const [folder, count] of Object.entries(folderCounts)) {
-    result[`${folder}_tests_run`] = count;
+    const key = `${folder}_tests_run`;
+    if (reservedKeys.has(key)) {
+      console.warn(
+        `[e2e] skipping per-feature key "${key}" — conflicts with aggregate metric`,
+      );
+      continue;
+    }
+    result[key] = count;
   }
 
   return result;
