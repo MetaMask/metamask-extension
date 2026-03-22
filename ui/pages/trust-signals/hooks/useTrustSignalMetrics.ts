@@ -4,10 +4,7 @@ import { TransactionMeta } from '@metamask/transaction-controller';
 
 import { getAddressSecurityAlertResponse } from '../../../selectors';
 import { isSignatureTransactionType } from '../../confirmations/utils';
-import type {
-  Confirmation,
-  SignatureRequestType,
-} from '../../confirmations/types/confirm';
+import type { SignatureRequestType } from '../../confirmations/types/confirm';
 import {
   ResultType,
   createCacheKey,
@@ -31,7 +28,9 @@ export type TrustSignalMetricsAnonProperties = {
 };
 
 // For transactions, this is the 'to' address. For signatures, this is the verifying contract.
-function getTargetAddress(confirmation?: Confirmation): string | null {
+function getTargetAddress(
+  confirmation?: TransactionMeta | SignatureRequestType,
+): string | null {
   if (!confirmation) {
     return null;
   }
