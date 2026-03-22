@@ -50,7 +50,7 @@ export const EntryHealth = {
 
 export type EntryHealth = (typeof EntryHealth)[keyof typeof EntryHealth];
 
-type MetricStat = { icon: string; delta: string };
+type MetricStat = { icon: string; delta: string; severity: ComparisonSeverity };
 
 /** One entry per metric that has at least one p75/p95 regression or warn. */
 type RegressionInfo = {
@@ -76,12 +76,6 @@ const HEALTH_ICON: Record<EntryHealth, string> = {
   [EntryHealth.Fail]: COMPARISON_SEVERITY.Regression.icon,
   [EntryHealth.Warn]: COMPARISON_SEVERITY.Warn.icon,
   [EntryHealth.Pass]: COMPARISON_SEVERITY.Pass.icon,
-};
-
-const INDICATION_ICON: Record<EntryHealth, string> = {
-  [EntryHealth.Fail]: '🔴',
-  [EntryHealth.Warn]: '🟡',
-  [EntryHealth.Pass]: '🟢',
 };
 
 /**
@@ -401,6 +395,7 @@ function getEntryRegressions(
       return {
         icon: sev?.icon ?? COMPARISON_SEVERITY.Pass.icon,
         delta: formatDeltaPercent(cmp.deltaPercent),
+        severity: cmp.severity,
       };
     };
 
@@ -409,25 +404,21 @@ function getEntryRegressions(
     const p95Stat = getStat(entry.p95, STAT_KEY.P95 as ComparisonKey);
 
     // Only include this metric if p75 or p95 has a regression or warn.
-    const issueIcons = [
-      COMPARISON_SEVERITY.Regression.icon,
-      COMPARISON_SEVERITY.Warn.icon,
-    ];
-    if (
-      ![p75Stat, p95Stat].some(
-        (s) => s && (issueIcons as string[]).includes(s.icon),
-      )
-    ) {
+    const hasIssue = (s: MetricStat | null) =>
+      s?.severity === COMPARISON_SEVERITY.Regression.value ||
+      s?.severity === COMPARISON_SEVERITY.Warn.value;
+
+    if (![p75Stat, p95Stat].some(hasIssue)) {
       continue;
     }
 
     let worstSeverity: ComparisonSeverity = COMPARISON_SEVERITY.Pass.value;
     for (const s of [p75Stat, p95Stat]) {
-      if (s?.icon === COMPARISON_SEVERITY.Regression.icon) {
+      if (s?.severity === COMPARISON_SEVERITY.Regression.value) {
         worstSeverity = COMPARISON_SEVERITY.Regression.value;
         break;
       }
-      if (s?.icon === COMPARISON_SEVERITY.Warn.icon) {
+      if (s?.severity === COMPARISON_SEVERITY.Warn.value) {
         worstSeverity = COMPARISON_SEVERITY.Warn.value;
       }
     }
@@ -530,7 +521,7 @@ export function buildBenchmarkSection(
     const sectionCounts = countHealthEntries(entries, baseline);
     const sectionBadge =
       sectionCounts.failures > 0
-        ? ` ${INDICATION_ICON[EntryHealth.Fail]} ${sectionCounts.failures}`
+        ? ` ${HEALTH_ICON[EntryHealth.Fail]} ${sectionCounts.failures}`
         : '';
 
     // Build entry lookup: benchmarkName|platform-buildType → entry
@@ -591,7 +582,7 @@ export function buildBenchmarkSection(
 
     const sectionContent = warningHtml + sectionBody;
     return sectionContent
-      ? `<details><summary>• <b>${summary}${sectionBadge}</b></summary>\n${sectionContent}</details>\n`
+      ? `<details><summary><b>${summary}${sectionBadge}</b></summary>\n${sectionContent}</details>\n`
       : '';
   } catch (error: unknown) {
     console.log(`Failed to build ${summary}: ${String(error)}`);
@@ -599,10 +590,16 @@ export function buildBenchmarkSection(
   }
 }
 
+type MatrixCellData = {
+  health: EntryHealth;
+  /** Worst offending metric and percentile, e.g. "uiStartup(p95)". Empty for Pass. */
+  label: string;
+};
+
 /**
- * Builds a summary health matrix table: test (benchmarkName) rows × platform-buildType columns.
- * Shows all rows that have at least one 🔴 or 🟡 result.
- * Cells show – when that combination was not tested.
+ * Builds a summary health matrix table: benchmarkName rows × platform-buildType columns.
+ * Each cell shows the health icon and the worst metric(percentile) that triggered it.
+ * Only rows with at least one 🔴 Fail are included.
  *
  * @param allEntries - All benchmark entries across all sections.
  * @param baseline - Historical baseline (optional).
@@ -612,7 +609,8 @@ function buildHealthMatrixHtml(
   allEntries: BenchmarkEntry[],
   baseline: HistoricalBaselineReference | undefined,
 ): string {
-  const healthMap = new Map<string, EntryHealth>();
+  // Build per-cell data in a single pass (health + worst label + artifact URL).
+  const cellMap = new Map<string, MatrixCellData>();
   for (const entry of allEntries) {
     const baselineMetrics = baseline
       ? resolveEntryBaseline(
@@ -625,10 +623,27 @@ function buildHealthMatrixHtml(
       : undefined;
     const health = computeEntryHealth(entry, baselineMetrics);
     const key = `${entry.benchmarkName}|${entry.platform}-${entry.buildType}`;
-    const existing = healthMap.get(key);
-    if (!existing || HEALTH_ORDER[health] > HEALTH_ORDER[existing]) {
-      healthMap.set(key, health);
+    const existing = cellMap.get(key);
+    if (existing && HEALTH_ORDER[health] <= HEALTH_ORDER[existing.health]) {
+      continue;
     }
+    const regs =
+      health === EntryHealth.Pass
+        ? []
+        : getEntryRegressions(entry, baselineMetrics);
+    const topReg =
+      regs.find(
+        (r) => r.worstSeverity === COMPARISON_SEVERITY.Regression.value,
+      ) ?? regs[0];
+    let label = '';
+    if (topReg) {
+      const p95IsTrigger =
+        topReg.p95?.severity === COMPARISON_SEVERITY.Regression.value ||
+        topReg.p95?.severity === COMPARISON_SEVERITY.Warn.value;
+      const percentile = p95IsTrigger ? 'p95' : 'p75';
+      label = `${topReg.metric}(${percentile})`;
+    }
+    cellMap.set(key, { health, label });
   }
 
   const usedCombos = new Set(
@@ -640,7 +655,8 @@ function buildHealthMatrixHtml(
   const allBenchmarks = [...new Set(allEntries.map((e) => e.benchmarkName))];
   const affectedBenchmarks = allBenchmarks.filter((benchmark) =>
     orderedCombos.some(
-      (combo) => healthMap.get(`${benchmark}|${combo}`) === EntryHealth.Fail,
+      (combo) =>
+        cellMap.get(`${benchmark}|${combo}`)?.health === EntryHealth.Fail,
     ),
   );
 
@@ -656,9 +672,13 @@ function buildHealthMatrixHtml(
     .map((benchmark) => {
       const cells = orderedCombos
         .map((combo) => {
-          const health = healthMap.get(`${benchmark}|${combo}`);
-          const icon = health ? HEALTH_ICON[health] : '–';
-          return `<td align="center">${icon}</td>`;
+          const data = cellMap.get(`${benchmark}|${combo}`);
+          if (!data) {
+            return `<td align="center">–</td>`;
+          }
+          const icon = HEALTH_ICON[data.health];
+          const cell = data.label ? `${icon} ${data.label}` : icon;
+          return `<td align="center">${cell}</td>`;
         })
         .join('');
       return `<tr><td>${benchmark}</td>${cells}</tr>`;
@@ -666,6 +686,75 @@ function buildHealthMatrixHtml(
     .join('');
 
   return `<table><thead>${headerRow}</thead><tbody>${dataRows}</tbody></table>\n`;
+}
+
+/**
+ * Builds the "View regression details" collapsible with one list item per failing entry.
+ * Baseline is resolved once per entry (single pass, no duplication with caller).
+ * Returns empty string when failures === 0.
+ *
+ * @param allEntries - All benchmark entries across all sections.
+ * @param baseline - Historical baseline (optional).
+ * @param failures - Pre-computed failure count (from countHealthEntries).
+ * @param runUrl - Fallback log URL when an entry has no artifactUrl.
+ */
+function buildFailingItemsHtml(
+  allEntries: BenchmarkEntry[],
+  baseline: HistoricalBaselineReference | undefined,
+  failures: number,
+  runUrl: string | undefined,
+): string {
+  if (failures === 0) {
+    return '';
+  }
+
+  const failureSuffix = failures === 1 ? 'failure' : 'failures';
+  const failureLabel = `${HEALTH_ICON[EntryHealth.Fail]} ${failures} ${failureSuffix}`;
+
+  const listItems = allEntries
+    .flatMap((entry) => {
+      const baselineMetrics = baseline
+        ? resolveEntryBaseline(
+            baseline,
+            entry.presetName,
+            entry.benchmarkName,
+            entry.platform,
+            entry.buildType,
+          )
+        : undefined;
+      if (computeEntryHealth(entry, baselineMetrics) !== EntryHealth.Fail) {
+        return [];
+      }
+      const regs = getEntryRegressions(entry, baselineMetrics);
+      const logHref = entry.artifactUrl ?? runUrl;
+      const logAnchor = logHref ? ` <a href="${logHref}">[Show logs]</a>` : '';
+      const metricBullets = regs
+        .map((r) => {
+          const parts = [
+            r.mean ? `mean ${r.mean.icon}${r.mean.delta}` : null,
+            r.p75 ? `p75 ${r.p75.icon}${r.p75.delta}` : null,
+            r.p95 ? `p95 ${r.p95.icon}${r.p95.delta}` : null,
+          ]
+            .filter(Boolean)
+            .join(', ');
+          return `&nbsp;&nbsp;• ${r.metric}: ${parts}`;
+        })
+        .join('<br>');
+      return [
+        `<li><b>${entry.benchmarkName}</b> · ${entry.platform}-${entry.buildType}${logAnchor}` +
+          `<br>${metricBullets}</li>`,
+      ];
+    })
+    .join('');
+
+  if (!listItems) {
+    return `<p>${failureLabel}</p>\n`;
+  }
+
+  return (
+    `<details><summary>View regression details - ${failureLabel}</summary>\n` +
+    `<ul>${listItems}</ul></details>\n`
+  );
 }
 
 /**
@@ -747,27 +836,13 @@ export async function buildPerformanceBenchmarksSection(
     runUrl,
   );
 
-  const healthBadge = `(${INDICATION_ICON[EntryHealth.Pass]} pass · ${INDICATION_ICON[EntryHealth.Warn]} warn · ${INDICATION_ICON[EntryHealth.Fail]} fail)`;
+  const healthBadge = `(${HEALTH_ICON[EntryHealth.Pass]} pass · ${HEALTH_ICON[EntryHealth.Warn]} warn · ${HEALTH_ICON[EntryHealth.Fail]} fail)`;
   const summaryText = `${sectionTitle} ${healthBadge}`;
 
   // Health matrix: preset × combo grid, only rows with at least one failure.
   const matrixHtml = buildHealthMatrixHtml(allEntries, resolvedBaseline);
 
-  // Summary count line.
-  const { failures, warnings } = countHealthEntries(
-    allEntries,
-    resolvedBaseline,
-  );
-  const summaryParts = [
-    failures > 0
-      ? `${INDICATION_ICON[EntryHealth.Fail]} ${failures} failure${failures > 1 ? 's' : ''}`
-      : '',
-    warnings > 0
-      ? `${INDICATION_ICON[EntryHealth.Warn]} ${warnings} warning${warnings > 1 ? 's' : ''}`
-      : '',
-  ].filter(Boolean);
-  const summaryLine =
-    summaryParts.length > 0 ? `<p>${summaryParts.join(' · ')}</p>\n` : '';
+  const { failures } = countHealthEntries(allEntries, resolvedBaseline);
 
   const failingItems = allEntries
     .flatMap((entry) => {
@@ -806,13 +881,20 @@ export async function buildPerformanceBenchmarksSection(
     })
     .join('');
 
-  const regressionDetailsHtml = failingItems
-    ? `&nbsp;&nbsp;<details><summary>View regression details</summary>\n<ul>${failingItems}</ul></details>\n`
-    : '';
+  const failureSuffix = failures === 1 ? 'failure' : 'failures';
+  const failureLabel =
+    failures > 0
+      ? `${HEALTH_ICON[EntryHealth.Fail]} ${failures} ${failureSuffix}`
+      : '';
+  let regressionDetailsHtml = '';
+  if (failingItems) {
+    regressionDetailsHtml = `<details><summary>${failureLabel} [View regression details]</summary>\n<ul>${failingItems}</ul></details>\n`;
+  } else if (failureLabel) {
+    regressionDetailsHtml = `<p>${failureLabel}</p>\n`;
+  }
 
   const subsectionsHtml = interactionHtml + startupHtml + userJourneyHtml;
-  const content =
-    matrixHtml + summaryLine + regressionDetailsHtml + subsectionsHtml;
+  const content = matrixHtml + regressionDetailsHtml + subsectionsHtml;
 
   return `<details><summary>${summaryText}</summary>\n<blockquote>\n${content}</blockquote>\n</details>\n\n`;
 }

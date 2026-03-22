@@ -203,15 +203,15 @@ describe('benchmark-comparison', () => {
         baseline,
       );
 
-      expect(comparison.relativeMetrics).toHaveLength(4);
+      // stdDev is intentionally excluded from relative metrics (item 18).
+      expect(comparison.relativeMetrics).toHaveLength(3);
       expect(comparison.relativeMetrics[0].metric).toBe('uiStartup');
       expect(comparison.relativeMetrics[0].percentile).toBe('mean');
       expect(comparison.relativeMetrics[0].delta).toBeCloseTo(100);
-      expect(comparison.relativeMetrics[1].percentile).toBe('stdDev');
-      expect(comparison.relativeMetrics[2].percentile).toBe('p75');
+      expect(comparison.relativeMetrics[1].percentile).toBe('p75');
+      expect(comparison.relativeMetrics[1].delta).toBeCloseTo(100);
+      expect(comparison.relativeMetrics[2].percentile).toBe('p95');
       expect(comparison.relativeMetrics[2].delta).toBeCloseTo(100);
-      expect(comparison.relativeMetrics[3].percentile).toBe('p95');
-      expect(comparison.relativeMetrics[3].delta).toBeCloseTo(100);
     });
 
     it('omits relative metrics when no baseline', () => {
@@ -262,10 +262,10 @@ describe('benchmark-comparison', () => {
         baseline,
       );
 
-      expect(comparison.relativeMetrics).toHaveLength(3);
+      // stdDev excluded; p95 absent because results.p95 is undefined.
+      expect(comparison.relativeMetrics).toHaveLength(2);
       expect(comparison.relativeMetrics[0].percentile).toBe('mean');
-      expect(comparison.relativeMetrics[1].percentile).toBe('stdDev');
-      expect(comparison.relativeMetrics[2].percentile).toBe('p75');
+      expect(comparison.relativeMetrics[1].percentile).toBe('p75');
     });
   });
 

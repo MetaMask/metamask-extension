@@ -56,9 +56,9 @@ export type BenchmarkEntryComparison = {
   absoluteFailed: boolean;
 };
 
-const SEVERITY_ICON: Record<ComparisonSeverity, string> = Object.fromEntries(
-  Object.values(COMPARISON_SEVERITY).map(({ value, icon }) => [value, icon]),
-) as Record<ComparisonSeverity, string>;
+const iconForSeverity = (severity: ComparisonSeverity): string =>
+  Object.values(COMPARISON_SEVERITY).find((s) => s.value === severity)?.icon ??
+  COMPARISON_SEVERITY.Pass.icon;
 
 /**
  * Formats a delta percentage as a human-readable string.
@@ -113,7 +113,7 @@ export function compareMetric(
     delta,
     deltaPercent,
     severity,
-    indication: SEVERITY_ICON[severity],
+    indication: iconForSeverity(severity),
   };
 }
 
@@ -147,7 +147,6 @@ export function compareBenchmarkEntries(
   if (baselineData && results.p75) {
     const comparisonKeys: ComparisonKey[] = [
       STAT_KEY.Mean,
-      STAT_KEY.StdDev,
       PERCENTILE_KEY.P75,
       PERCENTILE_KEY.P95,
     ];
