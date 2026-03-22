@@ -150,7 +150,11 @@ function TitleRow() {
   const t = useI18nContext();
 
   return (
-    <Box flexDirection={BoxFlexDirection.Row} alignItems={BoxAlignItems.Center} gap={1}>
+    <Box
+      flexDirection={BoxFlexDirection.Row}
+      alignItems={BoxAlignItems.Center}
+      gap={1}
+    >
       <Icon
         name={IconName.SecurityKey}
         size={IconSize.Sm}

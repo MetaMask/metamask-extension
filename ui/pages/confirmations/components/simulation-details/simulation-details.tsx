@@ -155,7 +155,6 @@ const HeaderWithAlert = ({
         label={label}
         ownerId={transactionId}
         tooltip={tooltip}
-
         style={{
           paddingLeft: 0,
           paddingRight: 0,
