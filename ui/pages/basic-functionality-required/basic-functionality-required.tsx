@@ -53,11 +53,11 @@ const SEGMENT_CTA_MAPPING: Record<string, string> = {
 export const BasicFunctionalityOff = () => {
   const t = useI18nContext();
   const navigate = useNavigate();
-  const searchParams = useSearchParams();
+  const [searchParams] = useSearchParams();
   const dispatch = useDispatch();
   const useExternalServices = useSelector(getUseExternalServices);
 
-  const blockedRoutePath = searchParams[0].get('from') ?? '';
+  const blockedRoutePath = searchParams.get('from') ?? '';
   const openPageCtaMessageKey = SEGMENT_CTA_MAPPING[blockedRoutePath] ?? '';
   const hasFeatureContext = Boolean(blockedRoutePath && openPageCtaMessageKey);
 
