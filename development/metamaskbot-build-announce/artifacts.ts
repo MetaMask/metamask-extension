@@ -13,7 +13,7 @@ import {
  * @param url - The URL of the artifact to check.
  * @returns True if the artifact exists, false if it doesn't.
  */
-export async function artifactExists(url: string): Promise<boolean> {
+async function artifactExists(url: string): Promise<boolean> {
   const response = await fetch(url, { method: 'HEAD' });
   return response.ok;
 }
@@ -113,7 +113,7 @@ export type BuildLinks = {
  * @param options.releaseVersion - The (pre)release version of the extension, e.g., the `6` in `18.7.25-flask.6`.
  * @returns `{ browserify, webpack }` each mapping BuildType → BuildBrowser URLs.
  */
-export function getBuildLinks({
+function getBuildLinks({
   hostUrl,
   version,
   releaseVersion = '0',
@@ -184,7 +184,7 @@ export function getBuildLinks({
  * @param buildLinks - BuildLinks from getBuildLinks.
  * @returns Array of HTML strings, one per bundler/build type combination.
  */
-export function formatBuildLinks(buildLinks: BuildLinks): string[] {
+function formatBuildLinks(buildLinks: BuildLinks): string[] {
   return Object.entries(buildLinks).flatMap(([bundler, types]) => {
     const prefix = bundler === 'browserify' ? 'builds' : 'webpack builds';
     return (
@@ -218,9 +218,7 @@ const FILE_ROOTS = [
  * @param hostUrl - Base URL for hosted artifacts.
  * @returns HTML `<ul>` string of discovered bundle links.
  */
-export async function discoverBundleArtifacts(
-  hostUrl: string,
-): Promise<string> {
+async function discoverBundleArtifacts(hostUrl: string): Promise<string> {
   const bundles: Record<string, string[]> = {};
 
   for (const fileRoot of FILE_ROOTS) {

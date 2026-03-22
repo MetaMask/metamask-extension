@@ -8,6 +8,7 @@ import { BENCHMARK_PERSONA } from '../../test/e2e/benchmarks/utils/constants';
 import {
   compareMetric,
   compareBenchmarkEntries,
+  resolveThresholdConfig,
   formatDeltaPercent,
   COMPARISON_SEVERITY,
 } from './comparison-utils';
@@ -281,5 +282,49 @@ describe('benchmark-comparison', () => {
     it('formats zero as 0%', () => {
       expect(formatDeltaPercent(0)).toBe('0%');
     });
+  });
+});
+
+describe('resolveThresholdConfig', () => {
+  it('resolves a direct kebab-case match', () => {
+    const config = resolveThresholdConfig('onboarding-import-wallet');
+    expect(config).toBeDefined();
+    expect(config).toHaveProperty('importWalletToSocialScreen');
+  });
+
+  it('strips platform/buildType prefix before matching', () => {
+    const config = resolveThresholdConfig('benchmark-chrome-browserify-swap');
+    expect(config).toBeDefined();
+    expect(config).toHaveProperty('openSwapPageFromHome');
+  });
+
+  it('strips firefox-browserify prefix', () => {
+    const config = resolveThresholdConfig('benchmark-firefox-browserify-swap');
+    expect(config).toBeDefined();
+    expect(config).toHaveProperty('openSwapPageFromHome');
+  });
+
+  it('strips chrome-webpack prefix', () => {
+    const config = resolveThresholdConfig('benchmark-chrome-webpack-swap');
+    expect(config).toBeDefined();
+    expect(config).toHaveProperty('openSwapPageFromHome');
+  });
+
+  it('resolves camelCase entry name via kebab conversion', () => {
+    const config = resolveThresholdConfig('onboardingImportWallet');
+    expect(config).toBeDefined();
+    expect(config).toHaveProperty('importWalletToSocialScreen');
+  });
+
+  it('strips prefix then converts to kebab-case', () => {
+    const config = resolveThresholdConfig(
+      'benchmark-chrome-browserify-onboardingImportWallet',
+    );
+    expect(config).toBeDefined();
+    expect(config).toHaveProperty('importWalletToSocialScreen');
+  });
+
+  it('returns undefined for unknown benchmarks', () => {
+    expect(resolveThresholdConfig('non-existent-benchmark')).toBeUndefined();
   });
 });

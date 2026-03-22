@@ -20,23 +20,18 @@ import { promises as fs } from 'fs';
 import path from 'path';
 import { parseArgs } from 'util';
 
-import {
-  THRESHOLD_SEVERITY,
-  ALL_BENCHMARK_COMBOS,
-} from '../../shared/constants/benchmarks';
+import { THRESHOLD_SEVERITY } from '../../shared/constants/benchmarks';
 import type {
   ThresholdSeverity,
   ComparisonKey,
   BenchmarkResults,
-  ThresholdConfig,
 } from '../../shared/constants/benchmarks';
-import { toKebabCase } from '../../shared/lib/string-utils';
-import { THRESHOLD_REGISTRY } from '../../test/e2e/benchmarks/utils/constants';
 import { fetchHistoricalPerformanceDataFromMain } from './historical-comparison';
 import type { HistoricalBaselineReference } from './historical-comparison';
 import {
   compareBenchmarkEntries,
   formatDeltaPercent,
+  resolveThresholdConfig,
   COMPARISON_SEVERITY,
   type BenchmarkEntryComparison,
 } from './comparison-utils';
@@ -51,7 +46,7 @@ type LoadedBenchmark = {
  *
  * @param dirPath - Path to directory containing benchmark JSON files.
  */
-export async function loadCurrentBenchmarks(
+async function loadCurrentBenchmarks(
   dirPath: string,
 ): Promise<LoadedBenchmark[]> {
   const entries = await fs.readdir(dirPath);
@@ -68,50 +63,9 @@ export async function loadCurrentBenchmarks(
 }
 
 /**
- * Resolves the ThresholdConfig for a benchmark.
- * Tries direct match, then strips common prefixes (and converts to kebab-case),
- * then converts original name to kebab-case.
- *
- * @param benchmarkName - Benchmark name (from JSON filename).
- */
-export function resolveThresholdConfig(
-  benchmarkName: string,
-): ThresholdConfig | undefined {
-  if (THRESHOLD_REGISTRY[benchmarkName]) {
-    return THRESHOLD_REGISTRY[benchmarkName];
-  }
-
-  const prefixes = ALL_BENCHMARK_COMBOS.map(
-    (combo) => new RegExp(`^benchmark-${combo}-`, 'u'),
-  );
-  for (const prefix of prefixes) {
-    const stripped = benchmarkName.replace(prefix, '');
-    if (stripped !== benchmarkName) {
-      // Try stripped name directly
-      if (THRESHOLD_REGISTRY[stripped]) {
-        return THRESHOLD_REGISTRY[stripped];
-      }
-      // Try stripped name converted to kebab-case
-      const strippedKebab = toKebabCase(stripped);
-      if (strippedKebab && THRESHOLD_REGISTRY[strippedKebab]) {
-        return THRESHOLD_REGISTRY[strippedKebab];
-      }
-    }
-  }
-
-  // Convert original name to kebab-case
-  const kebab = toKebabCase(benchmarkName);
-  if (kebab && THRESHOLD_REGISTRY[kebab]) {
-    return THRESHOLD_REGISTRY[kebab];
-  }
-
-  return undefined;
-}
-
-/**
  * Loads the historical baseline.
  */
-export async function loadBaseline(): Promise<HistoricalBaselineReference> {
+async function loadBaseline(): Promise<HistoricalBaselineReference> {
   const result = await fetchHistoricalPerformanceDataFromMain();
   return result ?? {};
 }
@@ -275,7 +229,7 @@ function buildMetricLines(comparison: BenchmarkEntryComparison): MetricLine[] {
  * @param result.comparisons
  * @param result.anyFailed
  */
-export function printReport(result: {
+function printReport(result: {
   comparisons: BenchmarkEntryComparison[];
   anyFailed: boolean;
 }): void {

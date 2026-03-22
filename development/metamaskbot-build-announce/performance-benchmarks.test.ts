@@ -128,14 +128,14 @@ describe('computeEntryHealth', () => {
     ).toBe(EntryHealth.Warn);
   });
 
-  it('returns fail when p95 is >10% above baseline', () => {
+  it('returns warn when p95 is >10% above baseline with no registered threshold', () => {
     // 672 vs 600 → +12%
     expect(
       computeEntryHealth(
         makeEntry({ p95: { loadNewAccount: 672 } }),
         BASELINE_600['interactionUserActions/loadNewAccount'],
       ),
-    ).toBe(EntryHealth.Fail);
+    ).toBe(EntryHealth.Warn); // Layer 1 not registered → capped at Warn by Layer 2
   });
 
   it('returns pass when the metric key is absent from baseline', () => {
@@ -329,15 +329,17 @@ describe('buildBenchmarkSection', () => {
     expect(html).toContain('<td>confirmTx</td>');
   });
 
-  it('shows 🔴 in the cell and failure badge when p95 is >10% above baseline', () => {
-    // 672 vs 600 → +12% → regression
+  it('shows 🟡 in the cell when p95 is >10% above baseline (no absolute threshold → Layer 2 caps at Warn)', () => {
+    // 672 vs 600 → +12% relative regression, but loadNewAccount has no THRESHOLD_REGISTRY entry
+    // → Layer 1 skipped, Layer 2 result capped at Warn
     const html = buildBenchmarkSection(
       withEntries([makeEntry({ p95: { loadNewAccount: 672 } })]),
       'Test',
       BASELINE_600,
     );
 
-    expect(html).toContain(`${COMPARISON_SEVERITY.Regression.icon} 1`);
+    expect(html).toContain(COMPARISON_SEVERITY.Warn.icon);
+    expect(html).not.toContain(`${COMPARISON_SEVERITY.Regression.icon} 1`);
   });
 
   it('shows 🟡 in the cell and no failure badge when p95 is 5–10% above baseline', () => {
@@ -411,7 +413,7 @@ describe('buildBenchmarkSection', () => {
   });
 
   it('resolves startup baseline via pageLoad/* substring key format', () => {
-    // p95=1980 vs baseline 1750 → +13% → regression → 🔴
+    // p95=1980 vs baseline 1750 → +13% → no absolute threshold → Layer 2 → 🟡 warn
     const entry = makeEntry({
       benchmarkName: 'standardHome',
       presetName: 'startupStandardHome',
@@ -426,7 +428,7 @@ describe('buildBenchmarkSection', () => {
       },
     });
 
-    expect(html).toContain(COMPARISON_SEVERITY.Regression.icon);
+    expect(html).toContain(COMPARISON_SEVERITY.Warn.icon);
     expect(html).toContain('standardHome');
   });
 

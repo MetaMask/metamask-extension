@@ -21,11 +21,14 @@ import type {
   ComparisonKey,
 } from '../../shared/constants/benchmarks';
 import {
+  ALL_BENCHMARK_COMBOS,
   PERCENTILE_KEY,
   STAT_KEY,
   THRESHOLD_SEVERITY,
   DEFAULT_RELATIVE_THRESHOLDS,
 } from '../../shared/constants/benchmarks';
+import { toKebabCase } from '../../shared/lib/string-utils';
+import { THRESHOLD_REGISTRY } from '../../test/e2e/benchmarks/utils/constants';
 import { validateResultThresholds } from '../../test/e2e/benchmarks/utils/statistics';
 
 export const COMPARISON_SEVERITY = {
@@ -192,4 +195,46 @@ export function compareBenchmarkEntries(
       ),
     absoluteFailed: !passed,
   };
+}
+
+/**
+ * Resolves the ThresholdConfig for a benchmark by name.
+ * Tries direct match, then strips platform/buildType prefixes and converts to
+ * kebab-case, then converts the original name to kebab-case.
+ *
+ * Moved here from compare-benchmarks.ts so library files (performance-benchmarks.ts)
+ * do not need to import from the CLI entry point.
+ *
+ * @param benchmarkName - Benchmark name (e.g. from a JSON filename).
+ * @returns The matching ThresholdConfig, or undefined if not registered.
+ */
+export function resolveThresholdConfig(
+  benchmarkName: string,
+): ThresholdConfig | undefined {
+  if (THRESHOLD_REGISTRY[benchmarkName]) {
+    return THRESHOLD_REGISTRY[benchmarkName];
+  }
+
+  const prefixes = ALL_BENCHMARK_COMBOS.map(
+    (combo) => new RegExp(`^benchmark-${combo}-`, 'u'),
+  );
+  for (const prefix of prefixes) {
+    const stripped = benchmarkName.replace(prefix, '');
+    if (stripped !== benchmarkName) {
+      if (THRESHOLD_REGISTRY[stripped]) {
+        return THRESHOLD_REGISTRY[stripped];
+      }
+      const strippedKebab = toKebabCase(stripped);
+      if (strippedKebab && THRESHOLD_REGISTRY[strippedKebab]) {
+        return THRESHOLD_REGISTRY[strippedKebab];
+      }
+    }
+  }
+
+  const kebab = toKebabCase(benchmarkName);
+  if (kebab && THRESHOLD_REGISTRY[kebab]) {
+    return THRESHOLD_REGISTRY[kebab];
+  }
+
+  return undefined;
 }

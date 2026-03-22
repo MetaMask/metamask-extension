@@ -8,6 +8,7 @@ import {
   ALL_BENCHMARK_COMBOS,
   STAT_KEY,
   DEFAULT_RELATIVE_THRESHOLDS,
+  THRESHOLD_SEVERITY,
 } from '../../shared/constants/benchmarks';
 import type {
   BenchmarkResults,
@@ -19,9 +20,11 @@ import {
   INTERACTION_PRESETS,
   USER_JOURNEY_PRESETS,
 } from '../../test/e2e/benchmarks/utils/constants';
+import { validateResultThresholds } from '../../test/e2e/benchmarks/utils/statistics';
 import {
   compareMetric,
   formatDeltaPercent,
+  resolveThresholdConfig,
   COMPARISON_SEVERITY,
 } from './comparison-utils';
 import type { ComparisonSeverity } from './comparison-utils';
@@ -310,21 +313,40 @@ function checkMetricPercentiles(
 }
 
 /**
- * Computes the worst EntryHealth for a benchmark entry vs its baseline,
- * checking P75 and P95 across all non-total metrics.
+ * Computes the worst EntryHealth for a benchmark entry using both layers:
  *
- * Currently uses Layer 2 (relative context) only.
- * Layer 1 (absolute gate via THRESHOLD_REGISTRY) is on hold until
- * the quality-gate benchmarks are agreed.
+ * Layer 1 (absolute gate — primary authority): validates P75/P95 against
+ * THRESHOLD_REGISTRY limits. Fail violation → EntryHealth.Fail; Warn → Warn.
+ * Falls through to Layer 2 when no threshold is registered.
+ *
+ * Layer 2 (relative context — informational, capped at Warn): compares P75/P95
+ * against the historical baseline. >10% or 5–10% slower → Warn.
+ * Never escalates to Fail (the absolute gate owns that).
  *
  * @param entry - The benchmark entry.
- * @param baselineMetrics - Resolved baseline metrics for this entry.
+ * @param baselineMetrics - Resolved baseline metrics for this entry (optional).
  * @returns `EntryHealth.Fail` | `EntryHealth.Warn` | `EntryHealth.Pass`.
  */
 export function computeEntryHealth(
   entry: BenchmarkEntry,
   baselineMetrics: HistoricalBaselineReference[string] | undefined,
 ): EntryHealth {
+  // Layer 1: absolute gate (primary authority).
+  const thresholdConfig = resolveThresholdConfig(entry.benchmarkName);
+  if (thresholdConfig) {
+    const { violations } = validateResultThresholds(
+      { p75: entry.p75, p95: entry.p95 } as BenchmarkResults,
+      thresholdConfig,
+    );
+    if (violations.some((v) => v.severity === THRESHOLD_SEVERITY.Fail)) {
+      return EntryHealth.Fail;
+    }
+    if (violations.some((v) => v.severity === THRESHOLD_SEVERITY.Warn)) {
+      return EntryHealth.Warn;
+    }
+  }
+
+  // Layer 2: relative context — informational, capped at Warn.
   if (!baselineMetrics) {
     return EntryHealth.Pass;
   }
@@ -338,10 +360,8 @@ export function computeEntryHealth(
       continue;
     }
     const health = checkMetricPercentiles(entry, metric, baselineMetric);
-    if (health === EntryHealth.Fail) {
-      return EntryHealth.Fail;
-    }
-    if (health === EntryHealth.Warn) {
+    // Layer 2 relative regression caps at Warn; Fail is owned by Layer 1.
+    if (health === EntryHealth.Fail || health === EntryHealth.Warn) {
       worst = EntryHealth.Warn;
     }
   }
