@@ -160,7 +160,14 @@ function EnforcedSimulationsCheckbox({
       newContainerTypes.push(TransactionContainerType.EnforcedSimulations);
     }
 
-    await applyTransactionContainersExisting(transactionId, newContainerTypes);
+    try {
+      await applyTransactionContainersExisting(
+        transactionId,
+        newContainerTypes,
+      );
+    } catch {
+      setPendingEnabled(null);
+    }
   }, [containerTypes, isEnabled, transactionId]);
 
   if (isToggling) {

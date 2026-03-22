@@ -50,18 +50,20 @@ export class EnforceSimulationHook {
       };
     }
 
-    if (containerTypes && !isFinal) {
+    if (containerTypes) {
       const hasEnforcedSimulations = containerTypes.includes(
         TransactionContainerType.EnforcedSimulations,
       );
 
-      if (hasEnforcedSimulations) {
+      if (!isFinal && hasEnforcedSimulations) {
         log('Skipping as simulation already enforced');
-      } else {
-        log('Skipping as user opted out of enforced simulations');
+        return {};
       }
 
-      return {};
+      if (!hasEnforcedSimulations) {
+        log('Skipping as user opted out of enforced simulations');
+        return {};
+      }
     }
 
     if (isFinal && !txParamsOriginal) {

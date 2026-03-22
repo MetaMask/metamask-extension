@@ -206,5 +206,22 @@ describe('EnforceSimulationHook', () => {
 
       expect(updateTransaction).toBeUndefined();
     });
+
+    it('before sign hook respects user opt-out (empty container types)', async () => {
+      const hook = new EnforceSimulationHook({
+        messenger,
+      }).getBeforeSignHook();
+
+      const { updateTransaction } =
+        (await hook({
+          transactionMeta: {
+            ...TRANSACTION_META_MOCK,
+            containerTypes: [],
+          },
+        })) ?? {};
+
+      expect(updateTransaction).toBeUndefined();
+      expect(applyTransactionContainersMock).not.toHaveBeenCalled();
+    });
   });
 });
