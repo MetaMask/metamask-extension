@@ -465,7 +465,7 @@ function getIntegrationFeatureFolder(testFilePath: string): string {
   const normalize = (s: string) =>
     s.toLowerCase().replace(/[^a-z0-9]+/gu, '_');
   const p = testFilePath.replace(/\\/gu, '/');
-  const match = p.match(/\btest\/integration\/([^/]+)/u);
+  const match = p.match(/\btest\/integration\/([^/]+)\//u);
   return match ? normalize(match[1]) : 'other';
 }
 
