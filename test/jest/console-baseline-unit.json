@@ -722,72 +722,72 @@
       "warn: No tokens found for chainId:": 1
     },
     "ui/pages/confirmations/components/confirm/blockaid-loading-indicator/blockaid-loading-indicator.test.tsx": {
-      "Reselect: Identity function warnings": 2
+      "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/components/confirm/dapp-swap-comparison-banner/dapp-swap-comparison-banner.test.tsx": {
       "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/components/confirm/footer/footer.test.tsx": {
       "MetaMask: Background connection not initialized": 2,
-      "Reselect: Identity function warnings": 2
+      "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/components/confirm/footer/shield-footer-agreement.test.tsx": {
-      "Reselect: Identity function warnings": 2
+      "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/components/confirm/footer/shield-footer-coverage-indicator/shield-footer-coverage-indicator.test.tsx": {
-      "Reselect: Identity function warnings": 2
+      "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/components/confirm/footer/single-action-footer.test.tsx": {
-      "Reselect: Identity function warnings": 2
+      "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/components/confirm/header/advanced-details-button.test.tsx": {
-      "Reselect: Identity function warnings": 2
+      "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/components/confirm/header/dapp-initiated-header.test.tsx": {
-      "Reselect: Identity function warnings": 2
+      "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/components/confirm/header/header-info.test.tsx": {
-      "Reselect: Identity function warnings": 2
+      "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/components/confirm/header/header.test.tsx": {
       "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/components/confirm/header/simple-confirmation-header.test.tsx": {
       "React: Act warnings (component updates not wrapped)": 1,
-      "Reselect: Identity function warnings": 2
+      "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/components/confirm/header/wallet-initiated-header.test.tsx": {
-      "Reselect: Identity function warnings": 2
+      "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/components/confirm/info/approve/approve-details/approve-details.test.tsx": {
       "MetaMask: Background connection not initialized": 3,
       "React: Act warnings (component updates not wrapped)": 3,
-      "Reselect: Identity function warnings": 3
+      "Reselect: Identity function warnings": 4
     },
     "ui/pages/confirmations/components/confirm/info/approve/approve-static-simulation/approve-static-simulation.test.tsx": {
-      "Reselect: Identity function warnings": 3
+      "Reselect: Identity function warnings": 4
     },
     "ui/pages/confirmations/components/confirm/info/approve/approve.test.tsx": {
       "MetaMask: Background connection not initialized": 39,
       "React: Act warnings (component updates not wrapped)": 14,
-      "Reselect: Identity function warnings": 4
+      "Reselect: Identity function warnings": 5
     },
     "ui/pages/confirmations/components/confirm/info/approve/edit-spending-cap-modal/edit-spending-cap-modal.test.tsx": {
-      "Reselect: Identity function warnings": 2
+      "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/components/confirm/info/approve/hooks/use-approve-token-simulation.test.ts": {
-      "Reselect: Identity function warnings": 2
+      "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/components/confirm/info/approve/hooks/use-received-token.test.ts": {
-      "Reselect: Identity function warnings": 2
+      "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/components/confirm/info/approve/revoke-static-simulation/revoke-static-simulation.test.tsx": {
-      "Reselect: Identity function warnings": 3
+      "Reselect: Identity function warnings": 4
     },
     "ui/pages/confirmations/components/confirm/info/base-transaction-info/base-transaction-info.test.tsx": {
       "MetaMask: Background connection not initialized": 77,
       "React: Act warnings (component updates not wrapped)": 14,
-      "Reselect: Identity function warnings": 4,
+      "Reselect: Identity function warnings": 5,
       "Reselect: Input stability warnings": 1
     },
     "ui/pages/confirmations/components/confirm/info/batch/batch-simulation-details/batch-simulation-details.test.tsx": {
@@ -796,120 +796,120 @@
       "Reselect: Identity function warnings": 4
     },
     "ui/pages/confirmations/components/confirm/info/batch/nested-transaction-data/nested-transaction-data.test.tsx": {
-      "Reselect: Identity function warnings": 3
+      "Reselect: Identity function warnings": 4
     },
     "ui/pages/confirmations/components/confirm/info/batch/transaction-account-details/transaction-account-details.test.tsx": {
-      "Reselect: Identity function warnings": 3
+      "Reselect: Identity function warnings": 4
     },
     "ui/pages/confirmations/components/confirm/info/hooks/use-token-values.test.ts": {
-      "Reselect: Identity function warnings": 2
+      "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/components/confirm/info/hooks/useBatchApproveBalanceChanges.test.ts": {
-      "Reselect: Identity function warnings": 2
+      "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/components/confirm/info/hooks/useDecodedTransactionData.test.ts": {
       "React: Act usage warnings (incorrect await)": 9,
       "React: Act warnings (component updates not wrapped)": 9,
-      "Reselect: Identity function warnings": 2
+      "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/components/confirm/info/hooks/useFeeCalculations.test.ts": {
       "MetaMask: Background connection not initialized": 42,
-      "Reselect: Identity function warnings": 2
+      "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/components/confirm/info/hooks/useGasFeeToken.test.ts": {
       "MetaMask: Background connection not initialized": 84,
-      "Reselect: Identity function warnings": 2
+      "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/components/confirm/info/hooks/useIsUpgradeTransaction.test.ts": {
-      "Reselect: Identity function warnings": 2
+      "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/components/confirm/info/hooks/useTokenTransactionData.test.ts": {
-      "Reselect: Identity function warnings": 2
+      "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/components/confirm/info/hooks/useTransferRecipient.test.ts": {
-      "Reselect: Identity function warnings": 2
+      "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/components/confirm/info/info.test.tsx": {
       "MetaMask: Background connection not initialized": 122,
       "React: Act warnings (component updates not wrapped)": 21,
-      "Reselect: Identity function warnings": 5,
+      "Reselect: Identity function warnings": 6,
       "Reselect: Input stability warnings": 1,
       "Test errors: Uncaught Errors": 2
     },
     "ui/pages/confirmations/components/confirm/info/native-transfer/native-transfer.test.tsx": {
       "MetaMask: Background connection not initialized": 41,
       "React: Act warnings (component updates not wrapped)": 14,
-      "Reselect: Identity function warnings": 4
+      "Reselect: Identity function warnings": 5
     },
     "ui/pages/confirmations/components/confirm/info/nft-token-transfer/nft-token-transfer.test.tsx": {
       "MetaMask: Background connection not initialized": 40,
       "React: Act warnings (component updates not wrapped)": 15,
-      "Reselect: Identity function warnings": 4
+      "Reselect: Identity function warnings": 5
     },
     "ui/pages/confirmations/components/confirm/info/personal-sign/personal-sign.test.tsx": {
-      "Reselect: Identity function warnings": 3
+      "Reselect: Identity function warnings": 4
     },
     "ui/pages/confirmations/components/confirm/info/personal-sign/siwe-sign/siwe-sign.test.tsx": {
-      "Reselect: Identity function warnings": 3
+      "Reselect: Identity function warnings": 4
     },
     "ui/pages/confirmations/components/confirm/info/set-approval-for-all-info/revoke-set-approval-for-all-static-simulation/revoke-set-approval-for-all-static-simulation.test.tsx": {
-      "Reselect: Identity function warnings": 3
+      "Reselect: Identity function warnings": 4
     },
     "ui/pages/confirmations/components/confirm/info/set-approval-for-all-info/set-approval-for-all-info.test.tsx": {
       "MetaMask: Background connection not initialized": 39,
       "React: Act warnings (component updates not wrapped)": 15,
-      "Reselect: Identity function warnings": 4
+      "Reselect: Identity function warnings": 5
     },
     "ui/pages/confirmations/components/confirm/info/set-approval-for-all-info/set-approval-for-all-static-simulation/set-approval-for-all-static-simulation.test.tsx": {
-      "Reselect: Identity function warnings": 3
+      "Reselect: Identity function warnings": 4
     },
     "ui/pages/confirmations/components/confirm/info/shared/advanced-details/advanced-details.test.tsx": {
       "MetaMask: Background connection not initialized": 2,
       "React: Act warnings (component updates not wrapped)": 2,
-      "Reselect: Identity function warnings": 3
+      "Reselect: Identity function warnings": 4
     },
     "ui/pages/confirmations/components/confirm/info/shared/batched-approval-function/batched-approval-function.test.tsx": {
       "React: Act usage warnings (incorrect await)": 4,
       "React: Act warnings (component updates not wrapped)": 4,
-      "Reselect: Identity function warnings": 3
+      "Reselect: Identity function warnings": 4
     },
     "ui/pages/confirmations/components/confirm/info/shared/confirm-loader/confirm-loader.test.tsx": {
-      "Reselect: Identity function warnings": 2
+      "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/components/confirm/info/shared/edit-gas-fees-row/edit-gas-fees-row.test.tsx": {
       "MetaMask: Background connection not initialized": 114,
-      "Reselect: Identity function warnings": 3
+      "Reselect: Identity function warnings": 4
     },
     "ui/pages/confirmations/components/confirm/info/shared/edit-gas-icon/edit-gas-icon-button.test.tsx": {
-      "Reselect: Identity function warnings": 1
+      "Reselect: Identity function warnings": 2
     },
     "ui/pages/confirmations/components/confirm/info/shared/gas-fee-token-icon/gas-fee-token-icon.test.tsx": {
-      "Reselect: Identity function warnings": 3
+      "Reselect: Identity function warnings": 4
     },
     "ui/pages/confirmations/components/confirm/info/shared/gas-fee-token-list-item/gas-fee-token-list-item.test.tsx": {
       "MetaMask: Background connection not initialized": 48,
-      "Reselect: Identity function warnings": 3
+      "Reselect: Identity function warnings": 4
     },
     "ui/pages/confirmations/components/confirm/info/shared/gas-fee-token-modal/gas-fee-token-modal.test.tsx": {
       "MetaMask: Background connection not initialized": 126,
-      "Reselect: Identity function warnings": 3
+      "Reselect: Identity function warnings": 4
     },
     "ui/pages/confirmations/components/confirm/info/shared/gas-fee-token-toast/gas-fee-token-toast.test.tsx": {
       "MetaMask: Background connection not initialized": 12,
       "React: Missing key props in lists": 1,
-      "Reselect: Identity function warnings": 3
+      "Reselect: Identity function warnings": 4
     },
     "ui/pages/confirmations/components/confirm/info/shared/gas-fees-details/gas-fees-details.test.tsx": {
       "MetaMask: Background connection not initialized": 416,
-      "Reselect: Identity function warnings": 4
+      "Reselect: Identity function warnings": 5
     },
     "ui/pages/confirmations/components/confirm/info/shared/gas-fees-row/gas-fees-row.test.tsx": {
-      "Reselect: Identity function warnings": 2
+      "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/components/confirm/info/shared/gas-fees-section/gas-fees-section.test.tsx": {
       "MetaMask: Background connection not initialized": 74,
       "React: Act warnings (component updates not wrapped)": 11,
-      "Reselect: Identity function warnings": 4
+      "Reselect: Identity function warnings": 5
     },
     "ui/pages/confirmations/components/confirm/info/shared/network-row/network-row.test.tsx": {
       "Reselect: Identity function warnings": 3
@@ -917,48 +917,48 @@
     "ui/pages/confirmations/components/confirm/info/shared/nft-send-heading/nft-send-heading.test.tsx": {
       "MetaMask: Background connection not initialized": 1,
       "React: Act warnings (component updates not wrapped)": 1,
-      "Reselect: Identity function warnings": 2
+      "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/components/confirm/info/shared/quote-transaction-data/quoted-transaction-data.test.tsx": {
       "React: Act warnings (component updates not wrapped)": 3,
-      "Reselect: Identity function warnings": 2
+      "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/components/confirm/info/shared/selected-gas-fee-token/selected-gas-fee-token.test.tsx": {
       "MetaMask: Background connection not initialized": 66,
-      "Reselect: Identity function warnings": 3
+      "Reselect: Identity function warnings": 4
     },
     "ui/pages/confirmations/components/confirm/info/shared/send-heading/send-heading.test.tsx": {
       "React: Act warnings (component updates not wrapped)": 1,
-      "Reselect: Identity function warnings": 3
+      "Reselect: Identity function warnings": 4
     },
     "ui/pages/confirmations/components/confirm/info/shared/sign-in-with-row/sign-in-with-row.test.tsx": {
-      "Reselect: Identity function warnings": 3
+      "Reselect: Identity function warnings": 4
     },
     "ui/pages/confirmations/components/confirm/info/shared/transaction-data/transaction-data.test.tsx": {
       "React: Act usage warnings (incorrect await)": 10,
       "React: Act warnings (component updates not wrapped)": 9,
       "React: Missing key props in lists": 1,
-      "Reselect: Identity function warnings": 3
+      "Reselect: Identity function warnings": 4
     },
     "ui/pages/confirmations/components/confirm/info/shared/transaction-details/transaction-details.test.tsx": {
-      "Reselect: Identity function warnings": 3,
+      "Reselect: Identity function warnings": 4,
       "Reselect: Input stability warnings": 1
     },
     "ui/pages/confirmations/components/confirm/info/shield-subscription-approve/shield-subscription-approve.test.tsx": {
       "MetaMask: Background connection not initialized": 52,
       "React: Act warnings (component updates not wrapped)": 19,
-      "Reselect: Identity function warnings": 4
+      "Reselect: Identity function warnings": 5
     },
     "ui/pages/confirmations/components/confirm/info/token-transfer/token-details-section.test.tsx": {
-      "Reselect: Identity function warnings": 3
+      "Reselect: Identity function warnings": 4
     },
     "ui/pages/confirmations/components/confirm/info/token-transfer/token-transfer.test.tsx": {
       "MetaMask: Background connection not initialized": 39,
       "React: Act warnings (component updates not wrapped)": 15,
-      "Reselect: Identity function warnings": 4
+      "Reselect: Identity function warnings": 5
     },
     "ui/pages/confirmations/components/confirm/info/token-transfer/transaction-flow-section.test.tsx": {
-      "Reselect: Identity function warnings": 2
+      "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/components/confirm/info/typed-sign-v1/typed-sign-v1.test.tsx": {
       "React: Act warnings (component updates not wrapped)": 2,
@@ -966,93 +966,93 @@
     },
     "ui/pages/confirmations/components/confirm/info/typed-sign/typed-sign-permission.test.tsx": {
       "React: Act warnings (component updates not wrapped)": 6,
-      "Reselect: Identity function warnings": 3,
+      "Reselect: Identity function warnings": 4,
       "Test errors: Uncaught Errors": 6
     },
     "ui/pages/confirmations/components/confirm/info/typed-sign/typed-sign-permission/erc20-token-periodic-details.test.tsx": {
       "React: Act warnings (component updates not wrapped)": 5,
-      "Reselect: Identity function warnings": 3,
+      "Reselect: Identity function warnings": 4,
       "Test errors: Uncaught Errors": 2
     },
     "ui/pages/confirmations/components/confirm/info/typed-sign/typed-sign-permission/erc20-token-revocation-details.test.tsx": {
-      "Reselect: Identity function warnings": 2
+      "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/components/confirm/info/typed-sign/typed-sign-permission/erc20-token-stream-details.test.tsx": {
-      "Reselect: Identity function warnings": 3,
+      "Reselect: Identity function warnings": 4,
       "Test errors: Uncaught Errors": 2
     },
     "ui/pages/confirmations/components/confirm/info/typed-sign/typed-sign-permission/expiry.test.tsx": {
-      "Reselect: Identity function warnings": 2
+      "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/components/confirm/info/typed-sign/typed-sign-permission/native-token-periodic-details.test.tsx": {
-      "Reselect: Identity function warnings": 2,
+      "Reselect: Identity function warnings": 3,
       "Test errors: Uncaught Errors": 2
     },
     "ui/pages/confirmations/components/confirm/info/typed-sign/typed-sign-permission/native-token-stream-details.test.tsx": {
-      "Reselect: Identity function warnings": 2
+      "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/components/confirm/info/typed-sign/typed-sign-permission/total-exposure.test.tsx": {
-      "Reselect: Identity function warnings": 3
+      "Reselect: Identity function warnings": 4
     },
     "ui/pages/confirmations/components/confirm/info/typed-sign/typed-sign-v4-simulation/decoded-simulation/decoded-simulation.test.tsx": {
       "MetaMask: Background connection not initialized": 4,
       "React: Act warnings (component updates not wrapped)": 4,
       "React: Missing key props in lists": 1,
-      "Reselect: Identity function warnings": 3
+      "Reselect: Identity function warnings": 4
     },
     "ui/pages/confirmations/components/confirm/info/typed-sign/typed-sign-v4-simulation/permit-simulation/permit-simulation.test.tsx": {
       "Reselect: Identity function warnings": 4
     },
     "ui/pages/confirmations/components/confirm/info/typed-sign/typed-sign-v4-simulation/typed-sign-v4-simulation.test.tsx": {
-      "Reselect: Identity function warnings": 3
+      "Reselect: Identity function warnings": 4
     },
     "ui/pages/confirmations/components/confirm/info/typed-sign/typed-sign-v4-simulation/value-display/value-display.test.tsx": {
-      "Reselect: Identity function warnings": 1
+      "Reselect: Identity function warnings": 2
     },
     "ui/pages/confirmations/components/confirm/info/typed-sign/typed-sign.test.tsx": {
       "React: Act warnings (component updates not wrapped)": 49,
-      "Reselect: Identity function warnings": 3
+      "Reselect: Identity function warnings": 4
     },
     "ui/pages/confirmations/components/confirm/ledger-info/ledger-info.test.tsx": {
-      "Reselect: Identity function warnings": 2
+      "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/components/confirm/nav/nav.test.tsx": {
-      "Reselect: Identity function warnings": 2
+      "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/components/confirm/pluggable-section/pluggable-section.test.tsx": {
-      "Reselect: Identity function warnings": 2
+      "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/components/confirm/row/dataTree.test.tsx": {
       "React: Act warnings (component updates not wrapped)": 10,
-      "Reselect: Identity function warnings": 1
+      "Reselect: Identity function warnings": 2
     },
     "ui/pages/confirmations/components/confirm/row/typed-sign-data-v1/typedSignDataV1.test.tsx": {
       "React: Act warnings (component updates not wrapped)": 1
     },
     "ui/pages/confirmations/components/confirm/row/typed-sign-data/typedSignData.test.tsx": {
       "React: Act warnings (component updates not wrapped)": 12,
-      "Reselect: Identity function warnings": 1
+      "Reselect: Identity function warnings": 2
     },
     "ui/pages/confirmations/components/confirm/scroll-to-bottom/scroll-to-bottom.test.tsx": {
-      "Reselect: Identity function warnings": 2
+      "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/components/confirm/snaps/snaps-section/snaps-section.test.tsx": {
       "React: Missing key props in lists": 1,
-      "Reselect: Identity function warnings": 4
+      "Reselect: Identity function warnings": 5
     },
     "ui/pages/confirmations/components/confirm/title/hooks/useCurrentSpendingCap.test.ts": {
       "MetaMask: Background connection not initialized": 2,
       "React: Act warnings (component updates not wrapped)": 2,
-      "Reselect: Identity function warnings": 2
+      "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/components/confirm/title/title.test.tsx": {
       "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/components/gas-input/gas-input.test.tsx": {
-      "Reselect: Identity function warnings": 2
+      "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/components/gas-price-input/gas-price-input.test.tsx": {
-      "Reselect: Identity function warnings": 2
+      "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/components/gas-timing/gas-timing.component.test.js": {
       "React: Act warnings (component updates not wrapped)": 1
@@ -1061,50 +1061,50 @@
       "React: Act warnings (component updates not wrapped)": 2
     },
     "ui/pages/confirmations/components/info/custom-amount-info/custom-amount-info.test.tsx": {
-      "Reselect: Identity function warnings": 2
+      "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/components/info/musd-claim-info/musd-claim-info.test.tsx": {
-      "Reselect: Identity function warnings": 4
+      "Reselect: Identity function warnings": 5
     },
     "ui/pages/confirmations/components/info/musd-conversion-info/musd-conversion-info.test.tsx": {
-      "Reselect: Identity function warnings": 2
+      "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/components/max-base-fee-input/max-base-fee-input.test.tsx": {
-      "Reselect: Identity function warnings": 2
+      "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/components/modals/advanced-eip1559-modal/advanced-eip1559-modal.test.tsx": {
-      "Reselect: Identity function warnings": 2
+      "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/components/modals/advanced-gas-price-modal/advanced-gas-price-modal.test.tsx": {
-      "Reselect: Identity function warnings": 2
+      "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/components/multilayer-fee-message/multi-layer-fee-message.test.js": {
       "error: Warning: React does not recognize": 1
     },
     "ui/pages/confirmations/components/pay-token-amount/pay-token-amount.test.tsx": {
-      "Reselect: Identity function warnings": 2
-    },
-    "ui/pages/confirmations/components/priority-fee-input/priority-fee-input.test.tsx": {
-      "Reselect: Identity function warnings": 2
-    },
-    "ui/pages/confirmations/components/rows/account-row/account-row.test.tsx": {
       "Reselect: Identity function warnings": 3
     },
+    "ui/pages/confirmations/components/priority-fee-input/priority-fee-input.test.tsx": {
+      "Reselect: Identity function warnings": 3
+    },
+    "ui/pages/confirmations/components/rows/account-row/account-row.test.tsx": {
+      "Reselect: Identity function warnings": 4
+    },
     "ui/pages/confirmations/components/rows/bridge-fee-row/bridge-fee-row.test.tsx": {
-      "Reselect: Identity function warnings": 2
+      "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/components/rows/claimable-bonus-row/claimable-bonus-row.test.tsx": {
       "React: Act warnings (component updates not wrapped)": 1,
-      "Reselect: Identity function warnings": 2
+      "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/components/rows/required-tokens-row/required-tokens-row.test.tsx": {
-      "Reselect: Identity function warnings": 2
+      "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/components/rows/total-row/total-row.test.tsx": {
-      "Reselect: Identity function warnings": 2
+      "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/components/rows/transaction-pay-section/transaction-pay-section.test.tsx": {
-      "Reselect: Identity function warnings": 2
+      "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/components/send/amount-recipient/amount-recipient.test.tsx": {
       "MetaMask: Background connection not initialized": 1,
@@ -1126,152 +1126,152 @@
       "error: Warning: Received `false` for a": 2
     },
     "ui/pages/confirmations/components/smart-transactions-banner-alert/smart-transactions-banner-alert.test.tsx": {
-      "Reselect: Identity function warnings": 1
-    },
-    "ui/pages/confirmations/components/snap-account-success-message/SnapAccountSuccessMessage.test.tsx": {
-      "Reselect: Identity function warnings": 1
-    },
-    "ui/pages/confirmations/components/transactions/nested-transaction-tag/nested-transaction-tag.test.tsx": {
       "Reselect: Identity function warnings": 2
     },
-    "ui/pages/confirmations/components/transactions/quote-swap-simulation-details/quote-swap-simulation-details.test.tsx": {
+    "ui/pages/confirmations/components/snap-account-success-message/SnapAccountSuccessMessage.test.tsx": {
+      "Reselect: Identity function warnings": 2
+    },
+    "ui/pages/confirmations/components/transactions/nested-transaction-tag/nested-transaction-tag.test.tsx": {
       "Reselect: Identity function warnings": 3
+    },
+    "ui/pages/confirmations/components/transactions/quote-swap-simulation-details/quote-swap-simulation-details.test.tsx": {
+      "Reselect: Identity function warnings": 4
     },
     "ui/pages/confirmations/confirm/confirm.test.tsx": {
       "MetaMask: Background connection not initialized": 264,
       "React: Act warnings (component updates not wrapped)": 4,
-      "Reselect: Identity function warnings": 7
+      "Reselect: Identity function warnings": 8
     },
     "ui/pages/confirmations/confirmation/templates/create-snap-account.test.js": {
-      "Reselect: Identity function warnings": 4
-    },
-    "ui/pages/confirmations/confirmation/templates/error.test.js": {
-      "Reselect: Identity function warnings": 4
-    },
-    "ui/pages/confirmations/confirmation/templates/remove-snap-account.test.js": {
       "Reselect: Identity function warnings": 5
     },
+    "ui/pages/confirmations/confirmation/templates/error.test.js": {
+      "Reselect: Identity function warnings": 5
+    },
+    "ui/pages/confirmations/confirmation/templates/remove-snap-account.test.js": {
+      "Reselect: Identity function warnings": 6
+    },
     "ui/pages/confirmations/confirmation/templates/snap-account-redirect.test.js": {
-      "Reselect: Identity function warnings": 4
+      "Reselect: Identity function warnings": 5
     },
     "ui/pages/confirmations/confirmation/templates/success.test.js": {
-      "Reselect: Identity function warnings": 4
+      "Reselect: Identity function warnings": 5
     },
     "ui/pages/confirmations/confirmation/templates/switch-ethereum-chain.test.js": {
-      "Reselect: Identity function warnings": 4
+      "Reselect: Identity function warnings": 5
     },
     "ui/pages/confirmations/context/gas-fee-modal/index.test.tsx": {
       "Test errors: Uncaught Errors": 1
     },
     "ui/pages/confirmations/external/add-ethereum-chain/add-ethereum-chain.test.tsx": {
-      "Reselect: Identity function warnings": 3
+      "Reselect: Identity function warnings": 4
     },
     "ui/pages/confirmations/hooks/alerts/signatures/useAccountMismatchAlerts.test.ts": {
-      "Reselect: Identity function warnings": 2
+      "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/hooks/alerts/signatures/useDomainMismatchAlerts.test.ts": {
-      "Reselect: Identity function warnings": 2
+      "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/hooks/alerts/transactions/useAccountTypeUpgrade.test.ts": {
-      "Reselect: Identity function warnings": 2
+      "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/hooks/alerts/transactions/useBurnAddressAlert.test.ts": {
-      "Reselect: Identity function warnings": 2
+      "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/hooks/alerts/transactions/useFirstTimeInteractionAlert.test.ts": {
-      "Reselect: Identity function warnings": 2
+      "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/hooks/alerts/transactions/useGasEstimateFailedAlerts.test.ts": {
-      "Reselect: Identity function warnings": 2
+      "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/hooks/alerts/transactions/useGasFeeLowAlerts.test.tsx": {
       "MetaMask: Background connection not initialized": 27,
-      "Reselect: Identity function warnings": 2
+      "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/hooks/alerts/transactions/useGasSponsorshipWarningAlerts.test.ts": {
-      "Reselect: Identity function warnings": 2
+      "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/hooks/alerts/transactions/useGasTooLowAlerts.test.ts": {
-      "Reselect: Identity function warnings": 2
+      "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/hooks/alerts/transactions/useInsufficientBalanceAlerts.test.ts": {
       "MetaMask: Background connection not initialized": 84,
-      "Reselect: Identity function warnings": 2
+      "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/hooks/alerts/transactions/useInsufficientPayTokenBalanceAlert.test.ts": {
-      "Reselect: Identity function warnings": 2
+      "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/hooks/alerts/transactions/useMultipleApprovalsAlerts.test.ts": {
-      "Reselect: Identity function warnings": 2
+      "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/hooks/alerts/transactions/useNoGasPriceAlerts.test.ts": {
-      "Reselect: Identity function warnings": 2
+      "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/hooks/alerts/transactions/useNoPayTokenQuotesAlert.test.ts": {
-      "Reselect: Identity function warnings": 2
+      "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/hooks/alerts/transactions/useNonContractAddressAlerts.test.ts": {
-      "Reselect: Identity function warnings": 2
+      "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/hooks/alerts/transactions/usePayHardwareAccountAlert.test.ts": {
-      "Reselect: Identity function warnings": 2
+      "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/hooks/alerts/transactions/usePendingTransactionAlerts.test.ts": {
-      "Reselect: Identity function warnings": 3
+      "Reselect: Identity function warnings": 4
     },
     "ui/pages/confirmations/hooks/alerts/transactions/useResimulationAlert.test.ts": {
-      "Reselect: Identity function warnings": 2
-    },
-    "ui/pages/confirmations/hooks/alerts/transactions/useSigningOrSubmittingAlerts.test.ts": {
       "Reselect: Identity function warnings": 3
     },
+    "ui/pages/confirmations/hooks/alerts/transactions/useSigningOrSubmittingAlerts.test.ts": {
+      "Reselect: Identity function warnings": 4
+    },
     "ui/pages/confirmations/hooks/alerts/transactions/useSuggestedGasFeeHighAlert.test.ts": {
-      "Reselect: Identity function warnings": 2
+      "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/hooks/alerts/transactions/useTokenContractAlert.test.ts": {
       "React: Act warnings (component updates not wrapped)": 7,
-      "Reselect: Identity function warnings": 2,
+      "Reselect: Identity function warnings": 3,
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/confirmations/hooks/alerts/useAddressTrustSignalAlerts.test.ts": {
-      "Reselect: Identity function warnings": 2
+      "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/hooks/alerts/useBlockaidAlerts.test.ts": {
       "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/hooks/alerts/useConfirmationOriginAlerts.test.ts": {
-      "Reselect: Identity function warnings": 2
+      "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/hooks/alerts/useNetworkAndOriginSwitchingAlerts.test.ts": {
       "MetaMask: Background connection not initialized": 6,
-      "Reselect: Identity function warnings": 2
+      "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/hooks/alerts/useOriginTrustSignalAlerts.test.ts": {
-      "Reselect: Identity function warnings": 2
+      "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/hooks/alerts/useSelectedAccountAlerts.test.ts": {
-      "Reselect: Identity function warnings": 2
+      "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/hooks/alerts/useShieldCoverageAlert.test.ts": {
-      "Reselect: Identity function warnings": 2
+      "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/hooks/alerts/useTokenTrustSignalAlerts.test.ts": {
-      "Reselect: Identity function warnings": 2
+      "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/hooks/gas/useEstimationFailed.test.ts": {
-      "Reselect: Identity function warnings": 2
+      "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/hooks/gas/useGaslessSupportedSmartTransactions.test.ts": {
-      "Reselect: Identity function warnings": 2
+      "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/hooks/gas/useIsGaslessLoading.test.ts": {
-      "Reselect: Identity function warnings": 2
+      "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/hooks/gas/useIsGaslessSupported.test.ts": {
-      "Reselect: Identity function warnings": 2
+      "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/hooks/pay/useTransactionPayMetrics.test.tsx": {
-      "Reselect: Identity function warnings": 1
+      "Reselect: Identity function warnings": 2
     },
     "ui/pages/confirmations/hooks/send/metrics/useRecipientSelectionMetrics.test.tsx": {
       "error: Unexpected key \"state\" found in": 1
@@ -1290,71 +1290,71 @@
       "React: Act warnings (component updates not wrapped)": 2
     },
     "ui/pages/confirmations/hooks/transactions/dapp-swap-comparison/useDappSwapActions.test.ts": {
-      "Reselect: Identity function warnings": 2
+      "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/hooks/transactions/dapp-swap-comparison/useDappSwapCheck.test.ts": {
-      "Reselect: Identity function warnings": 2
+      "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/hooks/transactions/dapp-swap-comparison/useDappSwapComparisonInfo.test.ts": {
       "MetaMask: Background connection not initialized": 2,
-      "Reselect: Identity function warnings": 2
+      "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/hooks/transactions/dapp-swap-comparison/useDappSwapComparisonLatencyMetrics.test.ts": {
-      "Reselect: Identity function warnings": 2
+      "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/hooks/transactions/dapp-swap-comparison/useDappSwapComparisonMetrics.test.ts": {
-      "Reselect: Identity function warnings": 2
+      "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/hooks/transactions/dapp-swap-comparison/useDappSwapComparisonRewardText.test.ts": {
-      "Reselect: Identity function warnings": 2
+      "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/hooks/transactions/dapp-swap-comparison/useDappSwapUSDValues.test.ts": {
-      "Reselect: Identity function warnings": 2
+      "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/hooks/transactions/useEnableShieldCoverageChecks.test.ts": {
-      "Reselect: Identity function warnings": 2
+      "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/hooks/transactions/useIsEnforcedSimulationsSupported.test.ts": {
-      "Reselect: Identity function warnings": 2
+      "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/hooks/transactions/useTransactionConfirm.test.ts": {
-      "Reselect: Identity function warnings": 2
+      "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/hooks/transactions/useTransactionCustomAmount.test.ts": {
-      "Reselect: Identity function warnings": 2
+      "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/hooks/transactions/useTransactionCustomAmountAlerts.test.ts": {
-      "Reselect: Identity function warnings": 2
+      "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/hooks/transactions/useUpdateTokenAmount.test.ts": {
-      "Reselect: Identity function warnings": 2
+      "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/hooks/useAutomaticGasFeeTokenSelect.test.ts": {
-      "Reselect: Identity function warnings": 2,
+      "Reselect: Identity function warnings": 3,
       "Test errors: Uncaught TypeErrors": 1
     },
     "ui/pages/confirmations/hooks/useConfirmActions.test.ts": {
-      "Reselect: Identity function warnings": 2
+      "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/hooks/useConfirmationAlertMetrics.test.ts": {
-      "Reselect: Identity function warnings": 2
+      "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/hooks/useConfirmationAlerts.test.ts": {
       "MetaMask: Background connection not initialized": 7,
       "React: Act warnings (component updates not wrapped)": 3,
-      "Reselect: Identity function warnings": 6
+      "Reselect: Identity function warnings": 7
     },
     "ui/pages/confirmations/hooks/useConfirmationNetworkInfo.test.ts": {
-      "Reselect: Identity function warnings": 2
+      "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/hooks/useConfirmationRecipientInfo.test.ts": {
-      "Reselect: Identity function warnings": 2
+      "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/hooks/useCurrentSignatureSecurityAlertResponse.test.ts": {
-      "Reselect: Identity function warnings": 2
+      "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/hooks/useDecodedSignatureMetrics.test.ts": {
-      "Reselect: Identity function warnings": 2
+      "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/hooks/useEIP7702Account.test.ts": {
       "React: Act warnings (component updates not wrapped)": 2
@@ -1367,28 +1367,28 @@
     },
     "ui/pages/confirmations/hooks/useHasInsufficientBalance.test.ts": {
       "MetaMask: Background connection not initialized": 30,
-      "Reselect: Identity function warnings": 2
-    },
-    "ui/pages/confirmations/hooks/useLedgerConnection.test.ts": {
-      "Reselect: Identity function warnings": 2
-    },
-    "ui/pages/confirmations/hooks/useSetConfirmationAlerts.test.ts": {
-      "Reselect: Identity function warnings": 2
-    },
-    "ui/pages/confirmations/hooks/useSignatureEventFragment.test.tsx": {
-      "Reselect: Identity function warnings": 2
-    },
-    "ui/pages/confirmations/hooks/useSmartTransactionFeatureFlags.test.ts": {
       "Reselect: Identity function warnings": 3
     },
+    "ui/pages/confirmations/hooks/useLedgerConnection.test.ts": {
+      "Reselect: Identity function warnings": 3
+    },
+    "ui/pages/confirmations/hooks/useSetConfirmationAlerts.test.ts": {
+      "Reselect: Identity function warnings": 3
+    },
+    "ui/pages/confirmations/hooks/useSignatureEventFragment.test.tsx": {
+      "Reselect: Identity function warnings": 3
+    },
+    "ui/pages/confirmations/hooks/useSmartTransactionFeatureFlags.test.ts": {
+      "Reselect: Identity function warnings": 4
+    },
     "ui/pages/confirmations/hooks/useSyncConfirmPath.test.ts": {
-      "Reselect: Identity function warnings": 2
+      "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/hooks/useTypesSignSimulationEnabledInfo.test.ts": {
-      "Reselect: Identity function warnings": 2
+      "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/selectors/confirm.test.ts": {
-      "Reselect: Identity function warnings": 1
+      "Reselect: Identity function warnings": 2
     },
     "ui/pages/confirmations/utils/confirm.test.ts": {
       "error: Failed to detect if URL": 1
