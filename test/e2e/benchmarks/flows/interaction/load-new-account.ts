@@ -4,6 +4,7 @@
  */
 
 import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
+import { DEFAULT_FIXTURE_ACCOUNT } from '../../../constants';
 import { withFixtures } from '../../../helpers';
 import { login } from '../../../page-objects/flows/login.flow';
 import HeaderNavbar from '../../../page-objects/pages/header-navbar';
@@ -19,10 +20,25 @@ export const persona = BENCHMARK_PERSONA.STANDARD;
 export async function run(): Promise<BenchmarkRunResult> {
   return runUserActionBenchmark(async () => {
     let loadingTimes: number = 0;
+    const fixtures = new FixtureBuilderV2()
+      .withAccountTreeController({
+        // Keep benchmark timing stable by starting after the first full sync.
+        hasAccountTreeSyncingSyncedAtLeastOnce: true,
+      })
+      .withPreferencesController({
+        pendingShieldCohort: null,
+      })
+      .withNotificationServicesController({
+        isFeatureAnnouncementsEnabled: true,
+        isMetamaskNotificationsFeatureSeen: true,
+        isNotificationServicesEnabled: true,
+        subscriptionAccountsSeen: [DEFAULT_FIXTURE_ACCOUNT],
+      })
+      .build();
 
     await withFixtures(
       {
-        fixtures: new FixtureBuilderV2().build(),
+        fixtures,
         disableServerMochaToBackground: true,
         localNodeOptions: {
           accounts: 1,
