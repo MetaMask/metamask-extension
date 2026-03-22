@@ -6,8 +6,8 @@
  * "Go to the home page".
  */
 import { withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixtures/fixture-builder';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
+import { login } from '../../page-objects/flows/login.flow';
 import { openSwapsPageAndWaitForRedirectToBasicFunctionalityOffPage } from '../../page-objects/flows/basic-functionality-off.flow';
 import BasicFunctionalityOffPage from '../../page-objects/pages/basic-functionality-off-page';
 import HomePage from '../../page-objects/pages/home/homepage';
@@ -18,13 +18,13 @@ describe('Basic functionality off', function () {
   it('redirects to basic-functionality-off when opening a protected route with Basic functionality off', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withUseBasicFunctionalityDisabled()
           .build(),
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
@@ -47,13 +47,13 @@ describe('Basic functionality off', function () {
   it('navigates to home when clicking Go to the home page', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withUseBasicFunctionalityDisabled()
           .build(),
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
@@ -73,13 +73,13 @@ describe('Basic functionality off', function () {
   it('navigates to swap route after enabling Basic functionality via inline toggle then opening feature', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withUseBasicFunctionalityDisabled()
           .build(),
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         await openSwapsPageAndWaitForRedirectToBasicFunctionalityOffPage(
           driver,

@@ -17,6 +17,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom';
 import type { Hex } from '@metamask/utils';
 import type { TransactionMeta } from '@metamask/transaction-controller';
+import { trace, TraceName, TraceOperation } from '../../../shared/lib/trace';
 import {
   selectIsMusdConversionFlowEnabled,
   selectMusdConversionEducationSeen,
@@ -51,7 +52,7 @@ export type UseMusdConversionResult = {
   /** Whether the geolocation check is still in progress */
   isGeoLoading: boolean;
 
-  startConversionFlow: (options?: StartConversionOptions) => Promise<void>;
+  startConversionFlow: (options: StartConversionOptions) => Promise<void>;
   cancelConversion: () => void;
   markEducationSeen: () => void;
 
@@ -60,7 +61,7 @@ export type UseMusdConversionResult = {
 
 export type StartConversionOptions = {
   /** Preferred payment token to pre-select */
-  preferredToken?: { address: string; chainId: Hex };
+  preferredToken: { address: string; chainId: Hex };
   /** Skip education screen even if not seen */
   skipEducation?: boolean;
   /** Entry point for analytics */
@@ -172,7 +173,7 @@ export function useMusdConversion(): UseMusdConversionResult {
    * to the education screen first.
    */
   const startConversionFlow = useCallback(
-    async (options: StartConversionOptions = {}): Promise<void> => {
+    async (options: StartConversionOptions): Promise<void> => {
       const { preferredToken, skipEducation } = options;
 
       if (!isFeatureEnabled) {
@@ -195,7 +196,7 @@ export function useMusdConversion(): UseMusdConversionResult {
       }
 
       const chainId =
-        (preferredToken?.chainId as Hex) ?? MUSD_CONVERSION_DEFAULT_CHAIN_ID;
+        preferredToken?.chainId ?? MUSD_CONVERSION_DEFAULT_CHAIN_ID;
 
       try {
         setError(null);
@@ -253,6 +254,19 @@ export function useMusdConversion(): UseMusdConversionResult {
             }
           }
         }
+
+        // Start navigation trace - measures time from CTA click to conversion screen render
+        const navTraceTags = {
+          paymentTokenChainId: chainId,
+          paymentTokenAddress: preferredToken?.address ?? 'unknown',
+          hasPreferredToken: Boolean(preferredToken),
+        };
+
+        trace({
+          name: TraceName.MusdConversionNavigation,
+          op: TraceOperation.MusdConversionOperation,
+          tags: navTraceTags,
+        });
 
         navigate({
           pathname: `${CONFIRM_TRANSACTION_ROUTE}/${txId}`,
