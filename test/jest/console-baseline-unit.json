@@ -794,7 +794,7 @@
       "Reselect: Identity function warnings": 4
     },
     "ui/pages/confirmations/components/confirm/info/base-transaction-info/base-transaction-info.test.tsx": {
-      "MetaMask: Background connection not initialized": 83,
+      "MetaMask: Background connection not initialized": 77,
       "React: Act warnings (component updates not wrapped)": 14,
       "Reselect: Identity function warnings": 5,
       "Reselect: Input stability warnings": 1
@@ -839,14 +839,14 @@
       "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/components/confirm/info/info.test.tsx": {
-      "MetaMask: Background connection not initialized": 128,
+      "MetaMask: Background connection not initialized": 122,
       "React: Act warnings (component updates not wrapped)": 21,
       "Reselect: Identity function warnings": 5,
       "Reselect: Input stability warnings": 1,
       "Test errors: Uncaught Errors": 2
     },
     "ui/pages/confirmations/components/confirm/info/native-transfer/native-transfer.test.tsx": {
-      "MetaMask: Background connection not initialized": 47,
+      "MetaMask: Background connection not initialized": 41,
       "React: Act warnings (component updates not wrapped)": 14,
       "Reselect: Identity function warnings": 5
     },
@@ -960,7 +960,7 @@
       "Reselect: Identity function warnings": 4
     },
     "ui/pages/confirmations/components/confirm/info/token-transfer/token-transfer.test.tsx": {
-      "MetaMask: Background connection not initialized": 45,
+      "MetaMask: Background connection not initialized": 39,
       "React: Act warnings (component updates not wrapped)": 15,
       "Reselect: Identity function warnings": 5
     },
