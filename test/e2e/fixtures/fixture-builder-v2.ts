@@ -1,6 +1,7 @@
 import { merge, cloneDeep } from 'lodash';
 import { toHex } from '@metamask/controller-utils';
 import type { Hex } from '@metamask/utils';
+import type { AccountTreeControllerState } from '@metamask/account-tree-controller';
 import type { AccountsControllerState } from '@metamask/accounts-controller';
 import type { AddressBookControllerState } from '@metamask/address-book-controller';
 import type {
@@ -12,6 +13,7 @@ import type {
 } from '@metamask/assets-controllers';
 import type { KeyringControllerState } from '@metamask/keyring-controller';
 import { type NameControllerState, NameType } from '@metamask/name-controller';
+import type { NotificationServicesControllerState } from '@metamask/notification-services-controller';
 import type { PersistedSnapControllerState } from '@metamask/snaps-controllers';
 import type { NetworkEnablementControllerState } from '@metamask/network-enablement-controller';
 import type { SelectedNetworkControllerState } from '@metamask/selected-network-controller';
@@ -139,6 +141,11 @@ class FixtureBuilderV2 {
     return this;
   }
 
+  withAccountTreeController(data: Partial<AccountTreeControllerState>): this {
+    merge(this.fixture.data.AccountTreeController, data);
+    return this;
+  }
+
   withCurrencyController(data: Partial<CurrencyRateState>): this {
     merge(this.fixture.data.CurrencyController, data);
     return this;
@@ -161,6 +168,13 @@ class FixtureBuilderV2 {
 
   withNetworkController(data: Partial<NetworkState>): this {
     merge(this.fixture.data.NetworkController, data);
+    return this;
+  }
+
+  withNotificationServicesController(
+    data: Partial<NotificationServicesControllerState>,
+  ): this {
+    merge(this.fixture.data.NotificationServicesController, data);
     return this;
   }
 
