@@ -875,9 +875,6 @@
   "basicFunctionalityRequired_openDefiPage": {
     "message": "Mở trang DeFi"
   },
-  "basicFunctionalityRequired_openMusdConversionPage": {
-    "message": "Mở trang Chuyển đổi mUSD"
-  },
   "basicFunctionalityRequired_openNotificationsPage": {
     "message": "Mở trang Thông báo"
   },

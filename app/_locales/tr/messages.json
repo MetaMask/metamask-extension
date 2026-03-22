@@ -875,9 +875,6 @@
   "basicFunctionalityRequired_openDefiPage": {
     "message": "DeFi sayfasını açın"
   },
-  "basicFunctionalityRequired_openMusdConversionPage": {
-    "message": "mUSD Dönüştürme sayfasını açın"
-  },
   "basicFunctionalityRequired_openNotificationsPage": {
     "message": "Bildirimler sayfasını açın"
   },
