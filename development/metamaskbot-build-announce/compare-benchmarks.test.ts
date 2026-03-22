@@ -1,7 +1,21 @@
 import { promises as fs } from 'fs';
 import type { BenchmarkResults } from '../../shared/constants/benchmarks';
-import { runComparison } from './compare-benchmarks';
+import { THRESHOLD_SEVERITY } from '../../shared/constants/benchmarks';
+import {
+  runComparison,
+  buildMetricLines,
+  loadCurrentBenchmarks,
+} from './compare-benchmarks';
+import { COMPARISON_SEVERITY } from './comparison-utils';
+import type { BenchmarkEntryComparison } from './comparison-utils';
 import * as historicalComparison from './historical-comparison';
+
+jest.mock('fs', () => ({
+  promises: {
+    readdir: jest.fn(),
+    readFile: jest.fn(),
+  },
+}));
 
 function makeBenchmarkResults(
   overrides: Partial<BenchmarkResults> = {},
@@ -152,5 +166,229 @@ describe('compare-benchmarks', () => {
       const result = runComparison(benchmarks, {});
       expect(result.comparisons).toHaveLength(0);
     });
+  });
+});
+
+describe('loadCurrentBenchmarks', () => {
+  const mockReaddir = fs.readdir as jest.Mock;
+  const mockReadFile = fs.readFile as jest.Mock;
+
+  afterEach(() => {
+    mockReaddir.mockReset();
+    mockReadFile.mockReset();
+  });
+
+  it('reads all JSON files in the directory and parses them', async () => {
+    const payload: Record<string, BenchmarkResults> = {
+      standardHome: {
+        testTitle: 'standard-home',
+        persona: 'standard',
+        mean: { uiStartup: 1500 },
+        min: { uiStartup: 1000 },
+        max: { uiStartup: 2000 },
+        stdDev: { uiStartup: 200 },
+        p75: { uiStartup: 1800 },
+        p95: { uiStartup: 2200 },
+      },
+    };
+
+    mockReaddir.mockResolvedValue(['benchmark-chrome.json', 'other.txt']);
+    mockReadFile.mockResolvedValue(JSON.stringify(payload));
+
+    const results = await loadCurrentBenchmarks('/tmp/benchmarks');
+
+    expect(results).toHaveLength(1);
+    expect(results[0].name).toBe('benchmark-chrome');
+    expect(results[0].data).toStrictEqual(payload);
+  });
+
+  it('returns an empty array when no JSON files are present', async () => {
+    mockReaddir.mockResolvedValue(['README.md', 'data.txt']);
+
+    const results = await loadCurrentBenchmarks('/tmp/benchmarks');
+    expect(results).toHaveLength(0);
+  });
+});
+
+const makeComparison = (
+  overrides: Partial<BenchmarkEntryComparison> = {},
+): BenchmarkEntryComparison => ({
+  benchmarkName: 'standardHome',
+  relativeMetrics: [],
+  absoluteViolations: [],
+  hasRegression: false,
+  hasWarning: false,
+  absoluteFailed: false,
+  ...overrides,
+});
+
+describe('buildMetricLines', () => {
+  it('returns empty array when comparison has no metrics or violations', () => {
+    expect(buildMetricLines(makeComparison())).toHaveLength(0);
+  });
+
+  it('formats a metric with baseline using relative delta and pass icon', () => {
+    const lines = buildMetricLines(
+      makeComparison({
+        relativeMetrics: [
+          {
+            metric: 'uiStartup',
+            percentile: 'p95',
+            current: 1500,
+            baseline: 1400,
+            delta: 100,
+            deltaPercent: 0.071,
+            severity: COMPARISON_SEVERITY.Warn.value,
+            indication: COMPARISON_SEVERITY.Warn.icon,
+          },
+        ],
+      }),
+    );
+
+    expect(lines).toHaveLength(1);
+    expect(lines[0].metric).toBe('uiStartup');
+    expect(lines[0].parts[0]).toContain('1500ms');
+    expect(lines[0].parts[0]).toContain('p95');
+  });
+
+  it('overrides icon with 🔴 when absolute Fail violation matches the metric', () => {
+    const lines = buildMetricLines(
+      makeComparison({
+        relativeMetrics: [
+          {
+            metric: 'uiStartup',
+            percentile: 'p95',
+            current: 6000,
+            baseline: 1400,
+            delta: 4600,
+            deltaPercent: 3.28,
+            severity: COMPARISON_SEVERITY.Regression.value,
+            indication: COMPARISON_SEVERITY.Regression.icon,
+          },
+        ],
+        absoluteViolations: [
+          {
+            metricId: 'uiStartup',
+            percentile: 'p95',
+            value: 6000,
+            threshold: 4800,
+            severity: THRESHOLD_SEVERITY.Fail,
+          },
+        ],
+      }),
+    );
+
+    expect(lines[0].parts[0]).toContain(COMPARISON_SEVERITY.Regression.icon);
+  });
+
+  it('overrides icon with 🟡 when absolute Warn violation matches the metric', () => {
+    const lines = buildMetricLines(
+      makeComparison({
+        relativeMetrics: [
+          {
+            metric: 'uiStartup',
+            percentile: 'p75',
+            current: 3200,
+            baseline: 1400,
+            delta: 1800,
+            deltaPercent: 1.28,
+            severity: COMPARISON_SEVERITY.Regression.value,
+            indication: COMPARISON_SEVERITY.Regression.icon,
+          },
+        ],
+        absoluteViolations: [
+          {
+            metricId: 'uiStartup',
+            percentile: 'p75',
+            value: 3200,
+            threshold: 3000,
+            severity: THRESHOLD_SEVERITY.Warn,
+          },
+        ],
+      }),
+    );
+
+    expect(lines[0].parts[0]).toContain(COMPARISON_SEVERITY.Warn.icon);
+  });
+
+  it('shows violation value with (no baseline) when no relative metric exists for the key', () => {
+    const lines = buildMetricLines(
+      makeComparison({
+        absoluteViolations: [
+          {
+            metricId: 'uiStartup',
+            percentile: 'p95',
+            value: 6000,
+            threshold: 4800,
+            severity: THRESHOLD_SEVERITY.Fail,
+          },
+        ],
+      }),
+    );
+
+    expect(lines).toHaveLength(1);
+    expect(lines[0].parts[0]).toContain('no baseline');
+    expect(lines[0].parts[0]).toContain('6000ms');
+    expect(lines[0].parts[0]).toContain(COMPARISON_SEVERITY.Regression.icon);
+  });
+
+  it('shows 🟢 with (no baseline) for a violation-free metric absent from relative metrics', () => {
+    const lines = buildMetricLines(
+      makeComparison({
+        relativeMetrics: [],
+        absoluteViolations: [],
+      }),
+    );
+    expect(lines).toHaveLength(0);
+  });
+
+  it('uses the relative indication icon when there is no absolute violation for the metric (line 210 else branch)', () => {
+    // rel.severity is Pass (< 5% delta) and no absolute violation → icon = rel.indication = 🟢
+    const lines = buildMetricLines(
+      makeComparison({
+        relativeMetrics: [
+          {
+            metric: 'uiStartup',
+            percentile: 'p95',
+            current: 1450,
+            baseline: 1400,
+            delta: 50,
+            deltaPercent: 0.036, // +3.6% → pass
+            severity: COMPARISON_SEVERITY.Pass.value,
+            indication: COMPARISON_SEVERITY.Pass.icon,
+          },
+        ],
+        absoluteViolations: [],
+      }),
+    );
+
+    expect(lines).toHaveLength(1);
+    expect(lines[0].parts[0]).toContain(COMPARISON_SEVERITY.Pass.icon);
+    expect(lines[0].parts[0]).toContain('1450ms');
+  });
+
+  it('shows 🟡 when relative regression exists but no absolute violation (line 208)', () => {
+    // rel.severity = Regression but absoluteSeverity is undefined → hits line 208
+    const lines = buildMetricLines(
+      makeComparison({
+        relativeMetrics: [
+          {
+            metric: 'uiStartup',
+            percentile: 'p95',
+            current: 1560,
+            baseline: 1400,
+            delta: 160,
+            deltaPercent: 0.114, // +11.4% → regression
+            severity: COMPARISON_SEVERITY.Regression.value,
+            indication: COMPARISON_SEVERITY.Regression.icon,
+          },
+        ],
+        absoluteViolations: [], // no absolute violation → not overridden by lines 203-206
+      }),
+    );
+
+    expect(lines).toHaveLength(1);
+    // Relative regression without absolute violation → downgraded to 🟡 (line 208)
+    expect(lines[0].parts[0]).toContain(COMPARISON_SEVERITY.Warn.icon);
   });
 });

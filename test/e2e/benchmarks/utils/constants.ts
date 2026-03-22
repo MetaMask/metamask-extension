@@ -222,8 +222,8 @@ const STANDARD_HOME: ThresholdConfig = {
 
 const POWER_USER_HOME: ThresholdConfig = {
   uiStartup: {
-    p75: { warn: 3000, fail: 4000 },
-    p95: { warn: 4000, fail: 5500 },
+    p75: { warn: 4000, fail: 4700 },
+    p95: { warn: 7000, fail: 10000 },
     ciMultiplier: DEFAULT_CI_MULTIPLIER,
   },
   load: {

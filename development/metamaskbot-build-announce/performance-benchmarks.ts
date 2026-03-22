@@ -709,9 +709,49 @@ function buildHealthMatrixHtml(
 }
 
 /**
- * Builds the "View regression details" collapsible with one list item per failing entry.
- * Baseline is resolved once per entry (single pass, no duplication with caller).
- * Returns empty string when failures === 0.
+ * Returns the worst offending metric label for a failing entry, for use in the
+ * "View regression details" list.
+ *
+ * @param entry - The failing benchmark entry.
+ * @param baselineMetrics - Resolved baseline metrics (for Layer 2 fallback).
+ * @returns Label such as "initialActions(p95)", or empty string if none found.
+ */
+function getWorstViolationLabel(
+  entry: BenchmarkEntry,
+  baselineMetrics: HistoricalBaselineReference[string] | undefined,
+): string {
+  // Layer 1: find the threshold violation with the largest excess over the limit.
+  const thresholdConfig = resolveThresholdConfig(entry.benchmarkName);
+  if (thresholdConfig) {
+    const { violations } = validateResultThresholds(
+      { p75: entry.p75, p95: entry.p95 } as BenchmarkResults,
+      thresholdConfig,
+    );
+    const worst = violations
+      .filter((v) => v.severity === THRESHOLD_SEVERITY.Fail)
+      .sort((a, b) => b.value / b.threshold - a.value / a.threshold)[0];
+    if (worst) {
+      return `${worst.metricId}(${worst.percentile})`;
+    }
+  }
+
+  // Layer 2: fall back to the worst relative regression metric.
+  const regs = getEntryRegressions(entry, baselineMetrics);
+  const topReg =
+    regs.find(
+      (r) => r.worstSeverity === COMPARISON_SEVERITY.Regression.value,
+    ) ?? regs[0];
+  if (!topReg) {
+    return '';
+  }
+  const p95Worst =
+    topReg.p95?.severity === COMPARISON_SEVERITY.Regression.value ||
+    topReg.p95?.severity === COMPARISON_SEVERITY.Warn.value;
+  return `${topReg.metric}(${p95Worst ? 'p95' : 'p75'})`;
+}
+
+/**
+ * Builds the "View regression details" collapsible.
  *
  * @param allEntries - All benchmark entries across all sections.
  * @param baseline - Historical baseline (optional).
@@ -745,24 +785,12 @@ function buildFailingItemsHtml(
       if (computeEntryHealth(entry, baselineMetrics) !== EntryHealth.Fail) {
         return [];
       }
-      const regs = getEntryRegressions(entry, baselineMetrics);
+      const worstLabel = getWorstViolationLabel(entry, baselineMetrics);
+      const labelPart = worstLabel ? ` — ${worstLabel}` : '';
       const logHref = entry.artifactUrl ?? runUrl;
       const logAnchor = logHref ? ` <a href="${logHref}">[Show logs]</a>` : '';
-      const metricBullets = regs
-        .map((r) => {
-          const parts = [
-            r.mean ? `mean ${r.mean.icon}${r.mean.delta}` : null,
-            r.p75 ? `p75 ${r.p75.icon}${r.p75.delta}` : null,
-            r.p95 ? `p95 ${r.p95.icon}${r.p95.delta}` : null,
-          ]
-            .filter(Boolean)
-            .join(', ');
-          return `&nbsp;&nbsp;• ${r.metric}: ${parts}`;
-        })
-        .join('<br>');
       return [
-        `<li><b>${entry.benchmarkName}</b> · ${entry.platform}-${entry.buildType}${logAnchor}` +
-          `<br>${metricBullets}</li>`,
+        `<li><b>${entry.benchmarkName}</b> · ${entry.platform}-${entry.buildType}${labelPart}${logAnchor}</li>`,
       ];
     })
     .join('');

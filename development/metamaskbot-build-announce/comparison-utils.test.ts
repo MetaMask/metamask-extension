@@ -268,6 +268,59 @@ describe('benchmark-comparison', () => {
       expect(comparison.relativeMetrics[0].percentile).toBe('mean');
       expect(comparison.relativeMetrics[1].percentile).toBe('p75');
     });
+
+    it('skips a stat key when its results map is missing (line 159)', () => {
+      // results has no `mean` property → mean relative metric should be absent
+      const results = {
+        p75: { uiStartup: 1800 },
+        p95: { uiStartup: 2200 },
+      } as unknown as BenchmarkResults;
+
+      const comparison = compareBenchmarkEntries(
+        'standard-home',
+        results,
+        thresholdConfig,
+        { uiStartup: { mean: 1400, stdDev: 80, p75: 1700, p95: 2100 } },
+      );
+
+      expect(
+        comparison.relativeMetrics.some((m) => m.percentile === 'mean'),
+      ).toBe(false);
+      expect(
+        comparison.relativeMetrics.some((m) => m.percentile === 'p75'),
+      ).toBe(true);
+    });
+
+    it('skips a metric when its baseline value for a specific percentile is absent (line 166)', () => {
+      // baseline has uiStartup but no p95 entry → p95 relative metric should be absent
+      const results: BenchmarkResults = {
+        testTitle: 'test',
+        persona: 'standard',
+        mean: { uiStartup: 1500 },
+        min: { uiStartup: 1000 },
+        max: { uiStartup: 2000 },
+        stdDev: { uiStartup: 200 },
+        p75: { uiStartup: 1800 },
+        p95: { uiStartup: 2200 },
+      };
+
+      const comparison = compareBenchmarkEntries(
+        'standard-home',
+        results,
+        thresholdConfig,
+        // p95 absent from baseline — only mean and p75 provided
+        {
+          uiStartup: { mean: 1400, stdDev: 80, p75: 1700 },
+        } as unknown as Parameters<typeof compareBenchmarkEntries>[3],
+      );
+
+      expect(
+        comparison.relativeMetrics.some((m) => m.percentile === 'p95'),
+      ).toBe(false);
+      expect(
+        comparison.relativeMetrics.some((m) => m.percentile === 'p75'),
+      ).toBe(true);
+    });
   });
 
   describe('formatDeltaPercent', () => {

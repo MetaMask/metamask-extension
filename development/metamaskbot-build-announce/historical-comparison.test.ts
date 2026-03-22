@@ -273,6 +273,54 @@ describe('fetchHistoricalPerformanceDataFromMain', () => {
     expect(result).toBeNull();
   });
 
+  it('uses mean as fallback p75 when p75 data is absent from all commits', async () => {
+    // Only mean and p95 provided — no p75 in the benchmark results
+    const data = asHistoricalFile({
+      commit1: {
+        timestamp: 1_700_000_000,
+        presets: {
+          pageLoad: {
+            standardHome: {
+              mean: { uiStartup: 1000 },
+              p95: { uiStartup: 1300 },
+              // p75 intentionally absent
+            },
+          },
+        },
+      },
+    });
+
+    const result = aggregateHistoricalData(data);
+
+    // p75 should fall back to the mean value (1000)
+    expect(result['pageLoad/standardHome']?.uiStartup?.p75).toBe(1000);
+    expect(result['pageLoad/standardHome']?.uiStartup?.p95).toBe(1300);
+  });
+
+  it('uses mean as fallback p95 when p95 data is absent from all commits', async () => {
+    // Only mean and p75 provided — no p95 in the benchmark results
+    const data = asHistoricalFile({
+      commit1: {
+        timestamp: 1_700_000_000,
+        presets: {
+          pageLoad: {
+            standardHome: {
+              mean: { uiStartup: 1000 },
+              p75: { uiStartup: 1100 },
+              // p95 intentionally absent
+            },
+          },
+        },
+      },
+    });
+
+    const result = aggregateHistoricalData(data);
+
+    // p95 should fall back to the mean value (1000)
+    expect(result['pageLoad/standardHome']?.uiStartup?.p95).toBe(1000);
+    expect(result['pageLoad/standardHome']?.uiStartup?.p75).toBe(1100);
+  });
+
   it('returns null when aggregation produces no valid metrics', async () => {
     const invalidData = asHistoricalFile({
       commit1: {

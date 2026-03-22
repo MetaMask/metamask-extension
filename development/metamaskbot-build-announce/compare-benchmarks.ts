@@ -46,7 +46,7 @@ type LoadedBenchmark = {
  *
  * @param dirPath - Path to directory containing benchmark JSON files.
  */
-async function loadCurrentBenchmarks(
+export async function loadCurrentBenchmarks(
   dirPath: string,
 ): Promise<LoadedBenchmark[]> {
   const entries = await fs.readdir(dirPath);
@@ -155,7 +155,7 @@ function violationIcon(severity: ThresholdSeverity): string {
     : COMPARISON_SEVERITY.Warn.icon;
 }
 
-type MetricLine = { metric: string; parts: string[] };
+export type MetricLine = { metric: string; parts: string[] };
 
 /**
  * Builds display lines for a single benchmark comparison.
@@ -164,7 +164,9 @@ type MetricLine = { metric: string; parts: string[] };
  *
  * @param comparison - A single benchmark entry comparison result.
  */
-function buildMetricLines(comparison: BenchmarkEntryComparison): MetricLine[] {
+export function buildMetricLines(
+  comparison: BenchmarkEntryComparison,
+): MetricLine[] {
   const violationsByKey = new Map(
     comparison.absoluteViolations.map((v) => [
       `${v.metricId}:${v.percentile}`,

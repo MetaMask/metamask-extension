@@ -151,6 +151,46 @@ describe('computeEntryHealth', () => {
       computeEntryHealth(makeEntry({ p75: {} }), BASELINE_METRICS_PASS),
     ).toBe(EntryHealth.Pass);
   });
+
+  // ciMultiplier=1.5 only applies when process.env.CI is set; force it here so
+  // effective thresholds are deterministic: p75 warn=3000 fail=3750, p95 warn=3750 fail=4800
+  describe('Layer 1 absolute threshold (standardHome, CI=true)', () => {
+    const originalCI = process.env.CI;
+
+    beforeEach(() => {
+      process.env.CI = 'true';
+    });
+
+    afterEach(() => {
+      if (originalCI === undefined) {
+        delete process.env.CI;
+      } else {
+        process.env.CI = originalCI;
+      }
+    });
+
+    it('returns fail when values exceed the absolute fail threshold', () => {
+      const entry = makeEntry({
+        benchmarkName: 'standardHome',
+        mean: { uiStartup: 4000 },
+        stdDev: { uiStartup: 200 },
+        p75: { uiStartup: 4500 }, // > 3750ms effective fail
+        p95: { uiStartup: 6000 }, // > 4800ms effective fail
+      });
+      expect(computeEntryHealth(entry, undefined)).toBe(EntryHealth.Fail);
+    });
+
+    it('returns warn when values exceed warn but not fail threshold', () => {
+      const entry = makeEntry({
+        benchmarkName: 'standardHome',
+        mean: { uiStartup: 2800 },
+        stdDev: { uiStartup: 100 },
+        p75: { uiStartup: 3200 }, // > 3000ms warn, < 3750ms fail
+        p95: { uiStartup: 4200 }, // > 3750ms warn, < 4800ms fail
+      });
+      expect(computeEntryHealth(entry, undefined)).toBe(EntryHealth.Warn);
+    });
+  });
 });
 
 // ─── fetchBenchmarkJson ───────────────────────────────────────────────────────
@@ -487,6 +527,51 @@ describe('buildBenchmarkSection', () => {
 
     expect(html).not.toContain(`${COMPARISON_SEVERITY.Regression.icon} 1`);
   });
+
+  it('shows 🔴 failure badge when Layer 1 absolute fail threshold is exceeded', () => {
+    const entry = makeEntry({
+      benchmarkName: 'standardHome',
+      mean: { uiStartup: 4000 },
+      stdDev: { uiStartup: 200 },
+      p75: { uiStartup: 4500 },
+      p95: { uiStartup: 6000 },
+    });
+    const html = buildBenchmarkSection(withEntries([entry]), 'Test');
+
+    expect(html).toContain(`${COMPARISON_SEVERITY.Regression.icon} 1`);
+    expect(html).toContain(COMPARISON_SEVERITY.Regression.icon);
+  });
+
+  it('returns "No regressions detected" when no entries exist but baseline is provided', () => {
+    // missingPresets must be non-empty to bypass the entries===0 && missingPresets===0 early exit
+    const html = buildBenchmarkSection(
+      { entries: [], missingPresets: ['chrome/browserify/somePreset'] },
+      'Test',
+      {
+        'some/key': {
+          uiStartup: { mean: 500, stdDev: 20, p75: 550, p95: 600 },
+        },
+      },
+    );
+
+    expect(html).toContain('No regressions detected');
+  });
+
+  it('returns empty string and logs error when entry processing throws', () => {
+    const consoleSpy = jest.spyOn(console, 'log').mockImplementation();
+    const badEntry = {
+      ...makeEntry(),
+      p95: null, // causes Object.keys(null) to throw inside computeEntryHealth
+    } as unknown as BenchmarkEntry;
+
+    const html = buildBenchmarkSection(withEntries([badEntry]), 'CrashSection');
+
+    expect(html).toBe('');
+    expect(consoleSpy).toHaveBeenCalledWith(
+      expect.stringContaining('Failed to build CrashSection'),
+    );
+    consoleSpy.mockRestore();
+  });
 });
 
 describe('buildPerformanceBenchmarksSection', () => {
@@ -572,5 +657,88 @@ describe('buildPerformanceBenchmarksSection', () => {
 
     const html = await buildPerformanceBenchmarksSection(HOST);
     expect(html).toContain('loadNewAccount');
+  });
+
+  // Covers buildHealthMatrixHtml (lines 687-750), getWorstViolationLabel (Layer 1),
+  // and buildFailingItemsHtml (lines 771-802) — all require a Layer 1 Fail entry.
+  describe('with a Layer 1 threshold failure (CI=true)', () => {
+    const originalCI = process.env.CI;
+
+    // standardHome p75=4500 > 3750ms fail, p95=6000 > 4800ms fail (with ciMultiplier=1.5)
+    const FAILING_PAYLOAD = {
+      standardHome: {
+        testTitle: 'standard-home',
+        persona: 'standard',
+        mean: { uiStartup: 4500 },
+        min: { uiStartup: 3000 },
+        max: { uiStartup: 7000 },
+        stdDev: { uiStartup: 500 },
+        p75: { uiStartup: 4500 },
+        p95: { uiStartup: 6000 },
+      },
+    };
+
+    beforeEach(() => {
+      process.env.CI = 'true';
+    });
+
+    afterEach(() => {
+      if (originalCI === undefined) {
+        delete process.env.CI;
+      } else {
+        process.env.CI = originalCI;
+      }
+    });
+
+    it('renders the failure matrix table with the worst metric label', async () => {
+      mockFetch.mockResolvedValue({
+        ok: true,
+        json: () => Promise.resolve(FAILING_PAYLOAD),
+      } as unknown as Response);
+
+      const html = await buildPerformanceBenchmarksSection(HOST);
+
+      expect(html).toContain('standardHome');
+      expect(html).toContain(COMPARISON_SEVERITY.Regression.icon);
+      // Health matrix table is rendered when there are failures
+      expect(html).toContain('<table>');
+      // getWorstViolationLabel Layer 1 returns the metric label
+      expect(html).toContain('uiStartup');
+    });
+
+    it('renders the regression details collapsible with the worst label and log link', async () => {
+      mockFetch.mockResolvedValue({
+        ok: true,
+        json: () => Promise.resolve(FAILING_PAYLOAD),
+      } as unknown as Response);
+
+      const html = await buildPerformanceBenchmarksSection(HOST);
+
+      expect(html).toContain('View regression details');
+      expect(html).toContain('standardHome');
+    });
+
+    it('exercises getEntryRegressions with baseline data when entry is non-pass', async () => {
+      mockFetch.mockResolvedValue({
+        ok: true,
+        json: () => Promise.resolve(FAILING_PAYLOAD),
+      } as unknown as Response);
+
+      // Provide baseline so getEntryRegressions has data to iterate
+      jest
+        .spyOn(historicalComparison, 'fetchHistoricalPerformanceDataFromMain')
+        .mockResolvedValue({
+          'pageLoad/chrome-browserify-startupStandardHome': {
+            uiStartup: { mean: 1600, stdDev: 100, p75: 1700, p95: 1900 },
+            // load absent → covers line 393 (metric not in baseline)
+          },
+        });
+
+      const html = await buildPerformanceBenchmarksSection(HOST);
+
+      // Should still render the failure
+      expect(html).toContain('standardHome');
+      expect(html).toContain(COMPARISON_SEVERITY.Regression.icon);
+    });
   });
 });
