@@ -122,12 +122,7 @@ const GITHUB_REPOSITORY =
 // ---------------------------------------------------------------------------
 const SCAN_UNIT_DIRS = ['ui', 'app', 'shared', 'development', 'test/unit-global'];
 const SCAN_INTEGRATION_DIR = 'test/integration';
-const SCAN_E2E_DIRS = ['test/e2e/tests', 'test/e2e/accounts', 'test/e2e/snaps'];
-const SCAN_E2E_FLASK_DIRS = [
-  'test/e2e/flask',
-  'test/e2e/accounts',
-  'test/e2e/snaps',
-];
+const SCAN_E2E_DIR = 'test/e2e';
 
 const PATTERN_UNIT_TEST_FILE = /\.test\.(ts|tsx|js|jsx)$/u;
 const PATTERN_E2E_SPEC_FILE = /\.spec\.(ts|js)$/u;
@@ -295,11 +290,11 @@ async function downloadArtifact(artifactName: string): Promise<string> {
 
 function decodeXmlEntities(s: string): string {
   return s
-    .replace(/&amp;/gu, '&')
     .replace(/&lt;/gu, '<')
     .replace(/&gt;/gu, '>')
     .replace(/&quot;/gu, '"')
-    .replace(/&apos;/gu, "'");
+    .replace(/&apos;/gu, "'")
+    .replace(/&amp;/gu, '&');
 }
 
 function getStringAttribute(tag: string, name: string): string {
@@ -809,9 +804,8 @@ async function collectE2eTestCount(): Promise<Record<string, number>> {
     console.warn(`[e2e] firefox report not available, skipping: ${message}`);
   }
 
-  // --- Static analysis across both main and flask dirs (for defined count only) ---
-  const allE2eDirs = [...new Set([...SCAN_E2E_DIRS, ...SCAN_E2E_FLASK_DIRS])];
-  const { defined } = await scanTestFiles(allE2eDirs, PATTERN_E2E_SPEC_FILE);
+  // --- Static analysis across all of test/e2e/ (for defined count only) ---
+  const { defined } = await scanTestFiles([SCAN_E2E_DIR], PATTERN_E2E_SPEC_FILE);
   console.log(`[e2e] defined: ${defined}`);
 
   const totalSkipped = await getE2eSkippedFromXml();
