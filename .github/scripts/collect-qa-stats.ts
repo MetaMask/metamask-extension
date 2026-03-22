@@ -272,7 +272,7 @@ async function downloadArtifact(artifactName: string): Promise<string> {
     );
   }
 
-  const destDir = `./${artifactName}`;
+  const destDir = join('temp', artifactName);
   await mkdir(destDir, { recursive: true });
   const zipPath = join(destDir, `${artifactName}.zip`);
   await writeFile(zipPath, Buffer.from(await zipRes.arrayBuffer()));
