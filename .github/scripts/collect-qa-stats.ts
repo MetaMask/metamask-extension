@@ -465,19 +465,22 @@ function getFeatureFolder(testFilePath: string): string {
   const normalize = (s: string) => s.toLowerCase().replace(/-/gu, '_');
   const p = testFilePath.replace(/\\/gu, '/');
 
-  const uiComponentsMatch = p.match(/\bui\/components\/([^/]+)/u);
+  // Trailing slash ensures we capture subdirectory names only.
+  // Files placed directly under a scanned root (e.g. app/scripts/foo.test.ts)
+  // would otherwise produce keys containing the filename and extension.
+  const uiComponentsMatch = p.match(/\bui\/components\/([^/]+)\//u);
   if (uiComponentsMatch) return normalize(uiComponentsMatch[1]);
 
-  const uiMatch = p.match(/\bui\/([^/]+)/u);
+  const uiMatch = p.match(/\bui\/([^/]+)\//u);
   if (uiMatch) return normalize(uiMatch[1]);
 
-  const appScriptsMatch = p.match(/\bapp\/scripts\/([^/]+)/u);
+  const appScriptsMatch = p.match(/\bapp\/scripts\/([^/]+)\//u);
   if (appScriptsMatch) return normalize(appScriptsMatch[1]);
 
-  const appMatch = p.match(/\bapp\/([^/]+)/u);
+  const appMatch = p.match(/\bapp\/([^/]+)\//u);
   if (appMatch) return normalize(appMatch[1]);
 
-  const sharedMatch = p.match(/\bshared\/([^/]+)/u);
+  const sharedMatch = p.match(/\bshared\/([^/]+)\//u);
   if (sharedMatch) return `shared_${normalize(sharedMatch[1])}`;
 
   return 'other';
