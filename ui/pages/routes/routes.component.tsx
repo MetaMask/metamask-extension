@@ -1,6 +1,6 @@
 /* eslint-disable jsdoc/check-tag-names */
-/* eslint-disable import/no-useless-path-segments */
-/* eslint-disable import/extensions */
+/* eslint-disable import-x/no-useless-path-segments */
+/* eslint-disable import-x/extensions */
 import classnames from 'clsx';
 import React, { Suspense, useEffect, useRef } from 'react';
 import { Store } from 'redux';
@@ -114,7 +114,7 @@ import {
   SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES,
 } from '../../../shared/constants/app';
 // TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
+// eslint-disable-next-line import-x/no-restricted-paths
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
 import QRHardwarePopover from '../../components/app/qr-hardware-popover';
 import { ToggleIpfsModal } from '../../components/app/assets/nfts/nft-default-image/toggle-ipfs-modal';
@@ -474,12 +474,12 @@ export const getRouteConfig = (store: Store) => [
             element: <SnapView />,
           },
           {
-            path: `${CROSS_CHAIN_SWAP_ROUTE}/*`,
-            element: <CrossChainSwap />,
-          },
-          {
             path: `${CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE}/:txHash`,
             element: <CrossChainSwapTxDetails />,
+          },
+          {
+            path: `${CROSS_CHAIN_SWAP_ROUTE}/*`,
+            element: <CrossChainSwap />,
           },
           {
             path: `${DEFI_ROUTE}/:chainId/:protocolId`,

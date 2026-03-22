@@ -15,7 +15,7 @@ import {
 import { SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES } from '../../../../shared/constants/app';
 import { t } from '../../../../shared/lib/translate';
 // TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
+// eslint-disable-next-line import-x/no-restricted-paths
 import { IconName } from '../../../../ui/components/component-library/icon';
 import MetaMetricsController from '../../controllers/metametrics-controller';
 import { isSnapPreinstalled } from '../../../../shared/lib/snaps/snaps';

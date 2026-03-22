@@ -1,19 +1,25 @@
-import { screen, render } from '@testing-library/react';
+import { screen, render, fireEvent } from '@testing-library/react';
 import React from 'react';
-import { Provider } from 'react-redux';
-import { MemoryRouter } from 'react-router-dom';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import mockState from '../../../test/data/mock-state.json';
 import { enLocale as messages } from '../../../test/lib/i18n-helpers';
-import { I18nProvider, en } from '../../../test/lib/render-helpers-navigate';
+import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
 import { setBackgroundConnection } from '../../store/background-connection';
-import { LegacyMetaMetricsProvider } from '../../contexts/metametrics';
 import {
+  ASSETS_ROUTE,
   CURRENCY_ROUTE,
+  DEFAULT_ROUTE,
   SETTINGS_V2_ROUTE,
 } from '../../helpers/constants/routes';
 import SettingsV2 from './settings-v2';
+
+const mockNavigate = jest.fn();
+
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useNavigate: () => mockNavigate,
+}));
 
 let mockPathname = SETTINGS_V2_ROUTE;
 
@@ -25,17 +31,7 @@ const backgroundConnectionMock = new Proxy(
 const renderSettingsV2 = (
   store: ReturnType<ReturnType<typeof configureMockStore>>,
 ) => {
-  return render(
-    <Provider store={store}>
-      <MemoryRouter initialEntries={[mockPathname]}>
-        <I18nProvider currentLocale="en" current={en} en={en}>
-          <LegacyMetaMetricsProvider>
-            <SettingsV2 />
-          </LegacyMetaMetricsProvider>
-        </I18nProvider>
-      </MemoryRouter>
-    </Provider>,
-  );
+  return renderWithProvider(<SettingsV2 />, store, mockPathname, render);
 };
 
 describe('SettingsV2', () => {
@@ -54,11 +50,11 @@ describe('SettingsV2', () => {
       expect(screen.getByText(messages.settings.message)).toBeInTheDocument();
     });
 
-    it('renders the close button', () => {
+    it('renders the search button', () => {
       renderSettingsV2(mockStore);
 
       expect(
-        screen.getByRole('button', { name: messages.close.message }),
+        screen.getByRole('button', { name: messages.search.message }),
       ).toBeInTheDocument();
     });
 
@@ -67,6 +63,14 @@ describe('SettingsV2', () => {
 
       const assetElements = screen.getAllByText(messages.assets.message);
       expect(assetElements.length).toBeGreaterThan(0);
+    });
+
+    it('navigates to default route when back is clicked at settings root', () => {
+      renderSettingsV2(mockStore);
+
+      fireEvent.click(screen.getByTestId('settings-v2-header-back-button'));
+
+      expect(mockNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE);
     });
   });
 
@@ -82,6 +86,14 @@ describe('SettingsV2', () => {
         messages.localCurrency.message,
       );
       expect(localCurrencyTexts.length).toBeGreaterThan(0);
+    });
+
+    it('navigates to parent route when back is clicked on a sub-route', () => {
+      renderSettingsV2(mockStore);
+
+      fireEvent.click(screen.getByTestId('settings-v2-header-back-button'));
+
+      expect(mockNavigate).toHaveBeenCalledWith(ASSETS_ROUTE);
     });
   });
 });

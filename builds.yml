@@ -100,6 +100,7 @@ buildTypes:
       - GOOGLE_CLIENT_ID_REF: GOOGLE_EXPERIMENTAL_CLIENT_ID
       - APPLE_CLIENT_ID_REF: APPLE_EXPERIMENTAL_CLIENT_ID
       - ENABLE_SETTINGS_PAGE_DEV_OPTIONS: true
+      - PERPS_ENABLED: true
     isPrerelease: true
     manifestOverrides: app/build-types/experimental/manifest
     buildNameOverride: MetaMask Experimental
@@ -377,6 +378,8 @@ env:
 
   # Perps geoblock fallback (comma-separated region codes when remote flag unavailable)
   - MM_PERPS_BLOCKED_REGIONS: null
+  # Build-time gate: omit PerpsController and perps RPC when false (mitigation for critical failures)
+  - PERPS_ENABLED: false
 
   ###
   # Meta variables
