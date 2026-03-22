@@ -6,22 +6,13 @@
  * Required env vars:
  *   GITHUB_TOKEN      — GitHub Actions token for API access
  *   GITHUB_REPOSITORY — Repository in "owner/repo" format (set automatically in Actions)
- *
- * How to add a new metric:
- *   1. Add a collector function that returns a plain object
- *   2. Register it in the collectors array in main()
- *
- * The only rule: never rename existing keys. The DB key is (project, run_id, namespace, metric_key).
- * Renaming a key in the JSON creates a new series in the DB while the old name stops getting new data,
- * which breaks the Grafana time series continuity. Adding and removing keys is fine.
- *
- * Artifact names used below are coupled to `name:` fields in main.yml and run-tests.yml —
- * renaming either side silently drops that metric from the output.
+ *   RUN_ID_TO_TEST    — Run ID to test (optional, defaults to latest main run)
  *
  * Naming convention:
  *   - CI-executed (from JUnit XML artifacts): _run suffix     → tests actually ran in CI
  *   - Static source analysis (from code):     _defined suffix → tests defined in the codebase
- *   - total_tests_skipped is static-analysis derived (it.skip / test.skip / describe.skip)
+ *   - total_tests_skipped is artifact-derived for unit, integration, and e2e
+ *     (counts <skipped> elements in JUnit XML / skipped field in e2e JSON report)
  *
  * Example output:
  *   {
@@ -88,6 +79,7 @@ type GitHubWorkflowRun = {
 
 type JUnitParseResult = {
   total: number;
+  skipped: number;
   perFile: Record<string, number>;
 };
 
@@ -105,6 +97,7 @@ type DescribeBlock = {
 type TestFile = {
   path?: string;
   tests?: number;
+  skipped?: number;
 };
 
 type TestRun = {
@@ -186,7 +179,7 @@ async function getLatestMainRunId(): Promise<string> {
 
 async function getRunId(): Promise<string> {
   if (_runId) return _runId;
-  _runId = await getLatestMainRunId();
+  _runId = process.env.RUN_ID_TO_TEST ?? (await getLatestMainRunId());
   return _runId;
 }
 
@@ -269,7 +262,7 @@ async function downloadArtifact(artifactName: string): Promise<string> {
   await mkdir(destDir, { recursive: true });
   const zipPath = join(destDir, `${artifactName}.zip`);
   await writeFile(zipPath, Buffer.from(await zipRes.arrayBuffer()));
-  execSync(`unzip -q "${zipPath}" -d "${destDir}"`);
+  execSync(`unzip -qo "${zipPath}" -d "${destDir}"`);
 
   return destDir;
 }
@@ -299,12 +292,16 @@ function parseJUnitXml(rawXml: string): JUnitParseResult {
     /<testcase\b([^>]*)(?:\/>|>([\s\S]*?)<\/testcase>)/gu;
   const perFile: Record<string, number> = {};
   let total = 0;
+  let skipped = 0;
 
   for (const match of rawXml.matchAll(testcasePattern)) {
     const attrs = match[1];
     const body = match[2] ?? '';
 
-    if (body.includes('<skipped')) continue;
+    if (body.includes('<skipped')) {
+      skipped++;
+      continue;
+    }
 
     const filePath = getStringAttribute(attrs, 'file');
     if (!filePath) continue;
@@ -313,7 +310,7 @@ function parseJUnitXml(rawXml: string): JUnitParseResult {
     perFile[filePath] = (perFile[filePath] ?? 0) + 1;
   }
 
-  return { total, perFile };
+  return { total, skipped, perFile };
 }
 
 // ---------------------------------------------------------------------------
@@ -553,12 +550,14 @@ async function collectUnitTestCount(
 
   const folderCounts: Record<string, number> = {};
   let total = 0;
+  let totalSkipped = 0;
 
   for (const artifact of shardArtifacts) {
     const destDir = await downloadArtifact(artifact.name);
     const raw = await readFile(join(destDir, 'junit.xml'), 'utf8');
-    const { total: shardTotal, perFile } = parseJUnitXml(raw);
+    const { total: shardTotal, skipped: shardSkipped, perFile } = parseJUnitXml(raw);
     total += shardTotal;
+    totalSkipped += shardSkipped;
 
     for (const [filePath, count] of Object.entries(perFile)) {
       const folder = getFeatureFolder(filePath);
@@ -566,17 +565,17 @@ async function collectUnitTestCount(
     }
   }
 
-  console.log(`[unit] total: ${total}`);
+  console.log(`[unit] total: ${total}, skipped (artifact): ${totalSkipped}`);
 
-  const { defined, skipped } = await scanTestFiles(
+  const { defined } = await scanTestFiles(
     SCAN_UNIT_DIRS,
     PATTERN_UNIT_TEST_FILE,
   );
-  console.log(`[unit] defined: ${defined}, skipped (static): ${skipped}`);
+  console.log(`[unit] defined: ${defined}`);
 
   const result: Record<string, number> = {
     total_tests_run: total,
-    total_tests_skipped: skipped,
+    total_tests_skipped: totalSkipped,
     total_tests_defined: defined,
   };
   for (const [folder, count] of Object.entries(folderCounts)) {
@@ -611,9 +610,9 @@ async function collectIntegrationTestCount(): Promise<Record<string, number>> {
 
   const destDir = await downloadArtifact(artifact.name);
   const raw = await readFile(join(destDir, 'junit.xml'), 'utf8');
-  const { total, perFile } = parseJUnitXml(raw);
+  const { total, skipped, perFile } = parseJUnitXml(raw);
 
-  console.log(`[integration] total: ${total}`);
+  console.log(`[integration] total: ${total}, skipped (artifact): ${skipped}`);
 
   const folderCounts: Record<string, number> = {};
   for (const [filePath, count] of Object.entries(perFile)) {
@@ -621,13 +620,11 @@ async function collectIntegrationTestCount(): Promise<Record<string, number>> {
     folderCounts[folder] = (folderCounts[folder] ?? 0) + count;
   }
 
-  const { defined, skipped } = await scanTestFiles(
+  const { defined } = await scanTestFiles(
     [SCAN_INTEGRATION_DIR],
     PATTERN_UNIT_TEST_FILE,
   );
-  console.log(
-    `[integration] defined: ${defined}, skipped (static): ${skipped}`,
-  );
+  console.log(`[integration] defined: ${defined}`);
 
   const result: Record<string, number> = {
     total_tests_run: total,
@@ -701,6 +698,56 @@ async function getE2eFirefoxReport(): Promise<TestRun[]> {
 
   _e2eFirefoxReportCache = JSON.parse(raw) as TestRun[];
   return _e2eFirefoxReportCache;
+}
+
+/**
+ * Reads the `skipped` attribute from the root `<testsuites>` element of a
+ * `mocha-junit-reporter` XML file.
+ *
+ * Unlike Jest's JUnit output (which marks skipped tests as `<testcase>`
+ * elements with a `<skipped/>` child), `mocha-junit-reporter` records the
+ * total skipped count as an attribute on the `<testsuites>` root element and
+ * omits skipped tests from the `<testcase>` list entirely.
+ *
+ * @param rawXml - Raw JUnit XML string produced by mocha-junit-reporter.
+ */
+function parseMochaSkipped(rawXml: string): number {
+  const match = rawXml.match(/<testsuites\b[^>]*\bskipped="(\d+)"/u);
+  return match ? Number(match[1]) : 0;
+}
+
+/**
+ * Downloads the raw `test-e2e-chrome-browserify` and `test-e2e-chrome-flask`
+ * shard artifacts, reads the `skipped` attribute from each JUnit XML file's
+ * `<testsuites>` root element, and returns the total skipped count.
+ *
+ * Uses `parseMochaSkipped` rather than `parseJUnitXml` because
+ * `mocha-junit-reporter` does not emit `<skipped/>` child elements.
+ */
+async function getE2eSkippedFromXml(): Promise<number> {
+  const artifacts = await getArtifactList();
+  const shardArtifacts = artifacts.filter(
+    (a) =>
+      a.name.startsWith('test-e2e-chrome-browserify') ||
+      a.name.startsWith('test-e2e-chrome-flask'),
+  );
+
+  console.log(
+    `[e2e] found ${shardArtifacts.length} chrome shard artifact(s) for skipped count`,
+  );
+
+  let totalSkipped = 0;
+  for (const artifact of shardArtifacts) {
+    const destDir = await downloadArtifact(artifact.name);
+    const xmlFiles = await walkFiles(destDir, (name) => name.endsWith('.xml'));
+    for (const xmlFile of xmlFiles) {
+      const raw = await readFile(xmlFile, 'utf8');
+      totalSkipped += parseMochaSkipped(raw);
+    }
+  }
+
+  console.log(`[e2e] skipped (artifact XML): ${totalSkipped}`);
+  return totalSkipped;
 }
 
 /**
@@ -779,17 +826,16 @@ async function collectE2eTestCount(): Promise<Record<string, number>> {
     console.warn(`[e2e] firefox report not available, skipping: ${message}`);
   }
 
-  // --- Static analysis across both main and flask dirs ---
+  // --- Static analysis across both main and flask dirs (for defined count only) ---
   const allE2eDirs = [...new Set([...SCAN_E2E_DIRS, ...SCAN_E2E_FLASK_DIRS])];
-  const { defined, skipped } = await scanTestFiles(
-    allE2eDirs,
-    PATTERN_E2E_SPEC_FILE,
-  );
-  console.log(`[e2e] defined: ${defined}, skipped (static): ${skipped}`);
+  const { defined } = await scanTestFiles(allE2eDirs, PATTERN_E2E_SPEC_FILE);
+  console.log(`[e2e] defined: ${defined}`);
+
+  const totalSkipped = await getE2eSkippedFromXml();
 
   const result: Record<string, number> = {
     total_tests_run: mainChromeTotal + flaskChromeTotal,
-    total_tests_skipped: skipped,
+    total_tests_skipped: totalSkipped,
     total_tests_defined: defined,
   };
 
