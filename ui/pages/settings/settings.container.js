@@ -49,6 +49,7 @@ import { getIsSeedlessPasswordOutdated } from '../../ducks/metamask/metamask';
 import { getIsMetaMaskShieldFeatureEnabled } from '../../../shared/lib/environment';
 import { getHasSubscribedToShield } from '../../selectors/subscription/subscription';
 import { SHIELD_QUERY_PARAMS } from '../../../shared/lib/deep-links/routes/shield';
+import { withMessenger } from './messenger';
 import Settings from './settings.component';
 import { CLAIMS_TAB_KEYS } from './transaction-shield-tab/types';
 
@@ -225,6 +226,11 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default compose(
+  //========
+  // This one line creates a messenger and a context for the route and its
+  // children.
+  //========
+  withMessenger,
   withRouterHooks,
   connect(mapStateToProps, mapDispatchToProps),
 )(Settings);
