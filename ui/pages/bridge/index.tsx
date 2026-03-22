@@ -37,6 +37,7 @@ import AwaitingSignaturesCancelButton from './awaiting-signatures/awaiting-signa
 import AwaitingSignatures from './awaiting-signatures/awaiting-signatures';
 import { BridgeTransactionSettingsModal } from './prepare/bridge-transaction-settings-modal';
 import { useRefreshSmartTransactionsLiveness } from './hooks/useRefreshSmartTransactionsLiveness';
+import { withMessenger } from './messenger';
 
 const CrossChainSwap = () => {
   const t = useContext(I18nContext);
@@ -142,4 +143,8 @@ const CrossChainSwap = () => {
   );
 };
 
-export default CrossChainSwap;
+//========
+// This one line creates a messenger and a context for the route and its
+// children.
+//========
+export default withMessenger(CrossChainSwap);

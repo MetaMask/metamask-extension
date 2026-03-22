@@ -1,3 +1,7 @@
+//========
+// Changes to this file demonstrate how `useMessenger` is used in a hook.
+//========
+
 import { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -21,13 +25,19 @@ import {
 import {
   resetBridgeControllerAndCache,
   resetInputFields,
-  trackUnifiedSwapBridgeEvent,
 } from '../../ducks/bridge/actions';
+import { RouteMessenger } from '../../messengers/route-messenger';
 import { validateMinimalAssetObject } from '../../pages/bridge/utils/tokens';
+import { useMessenger } from '../useMessenger';
 import {
   BridgeNavigationOptions,
   useBridgeNavigation,
 } from './useBridgeNavigation';
+
+type RouteMessengerInstance = RouteMessenger<
+  'BridgeController:trackUnifiedSwapBridgeEvent',
+  never
+>;
 
 /**
  * This hook is the entrypoint for the bridge experience
@@ -36,6 +46,12 @@ import {
  */
 const useBridging = () => {
   const dispatch = useDispatch();
+  //========
+  // We first call `useMessenger` to get the messenger for the current route,
+  // which is stored in the global context. We pass a type parameter that
+  // represents the capabilities we want to access (option 2B).
+  //========
+  const messenger = useMessenger<RouteMessengerInstance>();
 
   const { navigateToBridgePage, bridgeState } = useBridgeNavigation();
   const lastSelectedChainId = useSelector(getLastSelectedChainId);
@@ -63,7 +79,7 @@ const useBridging = () => {
    * @param token - the token to set as the source token for the bridge experience
    */
   const openBridgeExperience = useCallback(
-    (
+    async (
       location: MetaMetricsSwapsEventSource | 'Carousel',
       token?: {
         symbol: string;
@@ -79,8 +95,13 @@ const useBridging = () => {
         name: TraceName.SwapViewLoaded,
         startTime: Date.now(),
       });
-      dispatch(
-        trackUnifiedSwapBridgeEvent(UnifiedSwapBridgeEventName.ButtonClicked, {
+      //========
+      // Having retrieved the messenger, we can now call an action.
+      //========
+      await messenger.call(
+        'BridgeController:trackUnifiedSwapBridgeEvent',
+        UnifiedSwapBridgeEventName.ButtonClicked,
+        {
           location: location as never,
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -88,7 +109,7 @@ const useBridging = () => {
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
           token_symbol_destination: '',
-        }),
+        },
       );
 
       let tokenToUse: BridgeNavigationOptions['state']['token'] = null;
@@ -144,6 +165,7 @@ const useBridging = () => {
     },
     [
       navigateToBridgePage,
+      messenger,
       lastSelectedChainId,
       fromChain?.chainId,
       isChainIdEnabledForBridging,

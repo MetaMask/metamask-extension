@@ -85,6 +85,7 @@ import {
   setRedirectAfterDefaultPage,
 } from '../../ducks/history/history';
 import { AppHeader } from '../../components/multichain/app-header';
+import { withMessenger } from './messenger';
 import Home from './home.component';
 
 const mapStateToProps = (state) => {
@@ -258,6 +259,11 @@ const HomeWithRouter = ({ match: _match, ...props }) => {
 };
 
 export default compose(
+  //========
+  // This one line creates a messenger and a context for the route and its
+  // children.
+  //========
+  withMessenger,
   withRouterHooks,
   connect(mapStateToProps, mapDispatchToProps),
 )(HomeWithRouter);
