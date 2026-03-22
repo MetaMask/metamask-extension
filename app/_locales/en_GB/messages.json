@@ -905,9 +905,6 @@
   "basicFunctionalityRequired_openDefiPage": {
     "message": "Open the DeFi page"
   },
-  "basicFunctionalityRequired_openMusdConversionPage": {
-    "message": "Open the mUSD Conversion page"
-  },
   "basicFunctionalityRequired_openNotificationsPage": {
     "message": "Open the Notifications page"
   },

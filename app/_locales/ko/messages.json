@@ -875,9 +875,6 @@
   "basicFunctionalityRequired_openDefiPage": {
     "message": "디파이 페이지 열기"
   },
-  "basicFunctionalityRequired_openMusdConversionPage": {
-    "message": "mUSD 전환 페이지 열기"
-  },
   "basicFunctionalityRequired_openNotificationsPage": {
     "message": "알림 페이지 열기"
   },

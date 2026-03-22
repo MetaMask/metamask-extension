@@ -875,9 +875,6 @@
   "basicFunctionalityRequired_openDefiPage": {
     "message": "Ανοίξτε τη σελίδα DeFi"
   },
-  "basicFunctionalityRequired_openMusdConversionPage": {
-    "message": "Ανοίξτε τη σελίδα Μετατροπή σε mUSD"
-  },
   "basicFunctionalityRequired_openNotificationsPage": {
     "message": "Ανοίξτε τη σελίδα Ειδοποιήσεις"
   },
