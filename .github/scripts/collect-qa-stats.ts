@@ -87,11 +87,6 @@ type ScanResult = {
   defined: number;
 };
 
-type DescribeBlock = {
-  start: number;
-  end: number;
-  content: string;
-};
 
 type TestFile = {
   path?: string;
@@ -317,10 +312,11 @@ function parseJUnitXml(rawXml: string): JUnitParseResult {
       continue;
     }
 
+    total++;
+
     const filePath = getStringAttribute(attrs, 'file');
     if (!filePath) continue;
 
-    total++;
     perFile[filePath] = (perFile[filePath] ?? 0) + 1;
   }
 
@@ -378,64 +374,6 @@ function countDefinedTests(source: string): number {
   ).length;
 }
 
-/**
- * Counts the number of individual test cases that are skipped in a source string.
- *
- * Two categories:
- *   1. Explicit: `it.skip()` / `test.skip()` outside any `describe.skip` block.
- *   2. Implicit: every `it()` / `test()` call (including `.skip` variants) inside
- *      a `describe.skip` block, because the whole block is skipped by the runner.
- *
- * `describe.skip` blocks are extracted via brace matching so their contents are
- * not double-counted against the explicit-skip pass.
- *
- * @param source - Source file content.
- */
-function countSkips(source: string): number {
-  // Find all describe.skip blocks using brace matching.
-  const describeBlocks: DescribeBlock[] = [];
-  const re = /\bdescribe\.skip\s*\(/gu;
-  let m: RegExpExecArray | null;
-  while ((m = re.exec(source)) !== null) {
-    const braceStart = source.indexOf('{', m.index + m[0].length);
-    if (braceStart === -1) continue;
-    let depth = 1,
-      pos = braceStart + 1;
-    while (pos < source.length && depth > 0) {
-      if (source[pos] === '{') depth++;
-      else if (source[pos] === '}') depth--;
-      pos++;
-    }
-    describeBlocks.push({
-      start: m.index,
-      end: pos,
-      content: source.slice(braceStart + 1, pos - 1),
-    });
-  }
-
-  // Strip describe.skip regions from source (reverse order to preserve indices).
-  let outside = source;
-  for (let i = describeBlocks.length - 1; i >= 0; i--) {
-    outside =
-      outside.slice(0, describeBlocks[i].start) +
-      outside.slice(describeBlocks[i].end);
-  }
-
-  // Part 1: it.skip / test.skip outside describe.skip blocks.
-  const explicit = (outside.match(/\b(?:it|test)\.skip\s*\(/gu) ?? []).length;
-
-  // Part 2: all it() / test() (including all modifiers) inside describe.skip blocks.
-  const implicit = describeBlocks.reduce(
-    (sum, { content }) =>
-      sum +
-      (content.match(
-        /\b(?:it|test)(?:\.(?:each|skip|only|concurrent))?\s*\(/gu,
-      ) ?? []).length,
-    0,
-  );
-
-  return explicit + implicit;
-}
 
 /**
  * Scans one or more directories for test files matching `filePattern` and
@@ -801,9 +739,10 @@ async function collectE2eTestCount(): Promise<Record<string, number>> {
     (r) => r.name === 'test-e2e-chrome-browserify',
   )) {
     for (const file of run.testFiles ?? []) {
-      mainChromeTotal += file.tests ?? 0;
+      const ran = (file.tests ?? 0) - (file.skipped ?? 0);
+      mainChromeTotal += ran;
       const folder = getE2eFeatureFolder(file.path ?? '');
-      folderCounts[folder] = (folderCounts[folder] ?? 0) + (file.tests ?? 0);
+      folderCounts[folder] = (folderCounts[folder] ?? 0) + ran;
     }
   }
   console.log(`[e2e/main/chrome] total: ${mainChromeTotal}`);
@@ -815,7 +754,7 @@ async function collectE2eTestCount(): Promise<Record<string, number>> {
     (r) => r.name === 'test-e2e-chrome-flask',
   )) {
     for (const file of run.testFiles ?? []) {
-      flaskChromeTotal += file.tests ?? 0;
+      flaskChromeTotal += (file.tests ?? 0) - (file.skipped ?? 0);
     }
   }
   console.log(`[e2e/flask/chrome] total: ${flaskChromeTotal}`);
@@ -830,7 +769,7 @@ async function collectE2eTestCount(): Promise<Record<string, number>> {
       (r) => r.name === 'test-e2e-firefox-browserify',
     )) {
       for (const file of run.testFiles ?? []) {
-        mainFirefoxTotal += file.tests ?? 0;
+        mainFirefoxTotal += (file.tests ?? 0) - (file.skipped ?? 0);
       }
     }
     console.log(`[e2e/main/firefox] total: ${mainFirefoxTotal}`);
@@ -839,7 +778,7 @@ async function collectE2eTestCount(): Promise<Record<string, number>> {
       (r) => r.name === 'test-e2e-firefox-flask',
     )) {
       for (const file of run.testFiles ?? []) {
-        flaskFirefoxTotal += file.tests ?? 0;
+        flaskFirefoxTotal += (file.tests ?? 0) - (file.skipped ?? 0);
       }
     }
     console.log(`[e2e/flask/firefox] total: ${flaskFirefoxTotal}`);
