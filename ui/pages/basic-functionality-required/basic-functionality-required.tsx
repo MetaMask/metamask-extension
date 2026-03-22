@@ -34,6 +34,7 @@ const CARD_BOX_STYLE = { width: '446px', minHeight: '592px' } as const;
 const LOGO_STYLE = { width: '160px', height: '160px' } as const;
 
 const SEGMENT_CTA_MAPPING: Record<string, string> = {
+  'cross-chain': 'basicFunctionalityRequired_openSwapsPage',
   notifications: 'basicFunctionalityRequired_openNotificationsPage',
   snaps: 'basicFunctionalityRequired_openSnapsPage',
   swaps: 'basicFunctionalityRequired_openSwapsPage',
@@ -58,7 +59,8 @@ export const BasicFunctionalityOff = () => {
   const useExternalServices = useSelector(getUseExternalServices);
 
   const blockedRoutePath = searchParams.get('from') ?? '';
-  const openPageCtaMessageKey = SEGMENT_CTA_MAPPING[blockedRoutePath] ?? '';
+  const segment = blockedRoutePath.split('?')[0].split('/')[1] ?? '';
+  const openPageCtaMessageKey = SEGMENT_CTA_MAPPING[segment] ?? '';
   const hasFeatureContext = Boolean(blockedRoutePath && openPageCtaMessageKey);
 
   const handleToggleBasicFunctionality = (currentValue: boolean) => {

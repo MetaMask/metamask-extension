@@ -1,5 +1,4 @@
 import React from 'react';
-import { useLocation } from 'react-router-dom';
 import { render, screen } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import { configureStore } from '@reduxjs/toolkit';
@@ -7,10 +6,13 @@ import { enLocale as messages } from '../../../test/lib/i18n-helpers';
 import { BasicFunctionalityOff } from './basic-functionality-required';
 
 const mockNavigate = jest.fn();
-jest.mock('react-router-dom', () => ({
-  useNavigate: () => mockNavigate,
-  useLocation: jest.fn(),
-}));
+const mockUseSearchParams = jest.fn();
+jest.mock('react-router-dom', () => {
+  return {
+    useNavigate: () => mockNavigate,
+    useSearchParams: () => mockUseSearchParams(),
+  };
+});
 
 // Avoid unit test warning, by adding a mock for ToggleButton so we don't mount react-toggle-button (which uses deprecated componentWillReceiveProps via react-motion).
 jest.mock('react-toggle-button', () => {
@@ -34,8 +36,6 @@ jest.mock('react-toggle-button', () => {
   }
   return mockToggle;
 });
-
-const mockUseLocation = jest.mocked(useLocation);
 
 const I18N_KEYS = {
   title: 'basicFunctionalityRequired_title',
@@ -82,13 +82,7 @@ function renderWithStore(
 describe('BasicFunctionalityOff', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    mockUseLocation.mockReturnValue({
-      pathname: '/basic-functionality-off',
-      state: undefined,
-      key: '',
-      search: '',
-      hash: '',
-    } as ReturnType<typeof useLocation>);
+    mockUseSearchParams.mockReturnValue([new URLSearchParams(), jest.fn()]);
   });
 
   it('renders title and description', () => {
@@ -143,16 +137,10 @@ describe('BasicFunctionalityOff', () => {
 
   describe('with feature context from guard', () => {
     beforeEach(() => {
-      mockUseLocation.mockReturnValue({
-        pathname: '/basic-functionality-off',
-        state: {
-          blockedRoutePath: '/cross-chain/swaps/prepare-bridge-page',
-          openPageCtaMessageKey: I18N_KEYS.openSwapsPage,
-        },
-        key: '',
-        search: '',
-        hash: '',
-      } as ReturnType<typeof useLocation>);
+      mockUseSearchParams.mockReturnValue([
+        new URLSearchParams('from=/cross-chain/swaps/prepare-bridge-page'),
+        jest.fn(),
+      ]);
     });
 
     it('renders primary CTA Open the [feature] page', () => {
@@ -200,13 +188,7 @@ describe('BasicFunctionalityOff', () => {
 
   describe('without feature context (e.g. direct navigation to page)', () => {
     it('does not render primary Open feature button', () => {
-      mockUseLocation.mockReturnValue({
-        pathname: '/basic-functionality-off',
-        state: undefined,
-        key: '',
-        search: '',
-        hash: '',
-      } as ReturnType<typeof useLocation>);
+      mockUseSearchParams.mockReturnValue([new URLSearchParams(), jest.fn()]);
 
       renderWithStore(<BasicFunctionalityOff />);
 
