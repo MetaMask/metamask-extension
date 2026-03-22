@@ -3,16 +3,8 @@ import { DEFAULT_AUTO_LOCK_TIME_LIMIT } from '../../../../shared/constants/prefe
 import { getPreferences } from '../../../selectors';
 import {
   backupUserData,
-  setAutoLockTimeLimit,
-  setDismissSeedBackUpReminder,
-  setDismissSmartAccountSuggestionEnabled,
   setFeatureFlag,
-  setShowExtensionInFullSizeView,
-  setShowFiatConversionOnTestnetsPreference,
-  setShowTestNetworks,
-  setSmartTransactionsPreferenceEnabled,
   showModal,
-  setManageInstitutionalWallets,
 } from '../../../store/actions';
 import { getSmartTransactionsPreferenceEnabled } from '../../../../shared/lib/selectors';
 import {
@@ -56,37 +48,18 @@ export const mapStateToProps = (state) => {
 export const mapDispatchToProps = (dispatch) => {
   return {
     backupUserData: () => backupUserData(),
-    setHexDataFeatureFlag: (shouldShow) =>
-      dispatch(setFeatureFlag('sendHexData', shouldShow)),
+    setHexDataFeatureFlag: (messenger, shouldShow) =>
+      dispatch(setFeatureFlag(messenger, 'sendHexData', shouldShow)),
     displayErrorInSettings: (errorInSettings) =>
       dispatch(displayErrorInSettings(errorInSettings)),
     hideErrorInSettings: () => dispatch(hideErrorInSettings()),
     showResetAccountConfirmationModal: () =>
       dispatch(showModal({ name: 'CONFIRM_RESET_ACCOUNT' })),
-    setShowFiatConversionOnTestnetsPreference: (value) => {
-      return dispatch(setShowFiatConversionOnTestnetsPreference(value));
-    },
-    setShowTestNetworks: (value) => {
-      return dispatch(setShowTestNetworks(value));
-    },
-    setShowExtensionInFullSizeView: (value) => {
-      return dispatch(setShowExtensionInFullSizeView(value));
-    },
-    setSmartTransactionsEnabled: (value) => {
-      return dispatch(setSmartTransactionsPreferenceEnabled(value));
-    },
-    setAutoLockTimeLimit: (value) => {
-      return dispatch(setAutoLockTimeLimit(value));
-    },
-    setDismissSeedBackUpReminder: (value) => {
-      return dispatch(setDismissSeedBackUpReminder(value));
-    },
-    setManageInstitutionalWallets: (value) => {
-      return dispatch(setManageInstitutionalWallets(value));
-    },
-    setDismissSmartAccountSuggestionEnabled: (value) => {
-      return dispatch(setDismissSmartAccountSuggestionEnabled(value));
-    },
+    //========
+    // We can get rid of all of the actions that merely end up calling the
+    // background API, since we can use the messenger directly in the component
+    // instead.
+    //========
   };
 };
 

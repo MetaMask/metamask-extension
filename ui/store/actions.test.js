@@ -25,6 +25,7 @@ import { mockNetworkState } from '../../test/stub/networks';
 import { CHAIN_IDS } from '../../shared/constants/network';
 import { FirstTimeFlowType } from '../../shared/constants/onboarding';
 import { stripWalletTypePrefixFromWalletId } from '../hooks/multichain-accounts/utils';
+import { createMockRouteMessenger } from '../../test/lib/mock-route-messenger';
 import * as actions from './actions';
 import * as actionConstants from './actionConstants';
 import { setBackgroundConnection } from './background-connection';
@@ -2516,29 +2517,46 @@ describe('Actions', () => {
       sinon.restore();
     });
 
-    it('calls setFeatureFlag in the background', async () => {
+    it('calls PreferencesController:setFeatureFlag via messenger', async () => {
       const store = mockStore();
-
-      const setFeatureFlagStub = sinon.stub().resolves();
-
-      background.getApi.returns({
-        setFeatureFlag: setFeatureFlagStub,
+      const setFeatureFlag = jest.fn().mockResolvedValue({ sendHexData: true });
+      const messenger = createMockRouteMessenger({
+        'PreferencesController:setFeatureFlag': setFeatureFlag,
       });
 
-      setBackgroundConnection(background.getApi());
+      await store.dispatch(
+        actions.setFeatureFlag(messenger, 'sendHexData', true),
+      );
 
-      await store.dispatch(actions.setFeatureFlag());
-      expect(setFeatureFlagStub.callCount).toStrictEqual(1);
+      expect(setFeatureFlag).toHaveBeenCalledWith(['sendHexData', true]);
     });
 
-    it('errors when setFeatureFlag in background throws', async () => {
+    it('dispatches showModal when a notificationType is provided', async () => {
       const store = mockStore();
-
-      background.getApi.returns({
-        setFeatureFlag: sinon.stub().rejects(new Error('error')),
+      const messenger = createMockRouteMessenger({
+        'PreferencesController:setFeatureFlag': jest.fn().mockResolvedValue({}),
       });
 
-      setBackgroundConnection(background.getApi());
+      await store.dispatch(
+        actions.setFeatureFlag(
+          messenger,
+          'sendHexData',
+          true,
+          'TURN_ON_HEX_DATA',
+        ),
+      );
+
+      const actionTypes = store.getActions().map((a) => a.type);
+      expect(actionTypes).toContain('UI_MODAL_OPEN');
+    });
+
+    it('dispatches warning and re-throws when messenger call throws', async () => {
+      const store = mockStore();
+      const messenger = createMockRouteMessenger({
+        'PreferencesController:setFeatureFlag': jest
+          .fn()
+          .mockRejectedValue(new Error('error')),
+      });
 
       const expectedActions = [
         { type: 'SHOW_LOADING_INDICATION', payload: undefined },
@@ -2546,9 +2564,9 @@ describe('Actions', () => {
         { type: 'HIDE_LOADING_INDICATION' },
       ];
 
-      await expect(store.dispatch(actions.setFeatureFlag())).rejects.toThrow(
-        'error',
-      );
+      await expect(
+        store.dispatch(actions.setFeatureFlag(messenger, 'sendHexData', true)),
+      ).rejects.toThrow('error');
 
       expect(store.getActions()).toStrictEqual(expectedActions);
     });
