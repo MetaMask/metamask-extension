@@ -912,7 +912,7 @@
       "Reselect: Identity function warnings": 4
     },
     "ui/pages/confirmations/components/confirm/info/shared/network-row/network-row.test.tsx": {
-      "Reselect: Identity function warnings": 2
+      "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/components/confirm/info/shared/nft-send-heading/nft-send-heading.test.tsx": {
       "MetaMask: Background connection not initialized": 1,
@@ -962,7 +962,7 @@
     },
     "ui/pages/confirmations/components/confirm/info/typed-sign-v1/typed-sign-v1.test.tsx": {
       "React: Act warnings (component updates not wrapped)": 2,
-      "Reselect: Identity function warnings": 2
+      "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/components/confirm/info/typed-sign/typed-sign-permission.test.tsx": {
       "React: Act warnings (component updates not wrapped)": 6,
@@ -1001,7 +1001,7 @@
       "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/components/confirm/info/typed-sign/typed-sign-v4-simulation/permit-simulation/permit-simulation.test.tsx": {
-      "Reselect: Identity function warnings": 3
+      "Reselect: Identity function warnings": 4
     },
     "ui/pages/confirmations/components/confirm/info/typed-sign/typed-sign-v4-simulation/typed-sign-v4-simulation.test.tsx": {
       "Reselect: Identity function warnings": 3
