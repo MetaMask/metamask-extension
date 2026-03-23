@@ -1918,7 +1918,8 @@ export default class MetamaskController extends EventEmitter {
     // wallet_notify for multichain accountChanged when selected account group changes
     this.controllerMessenger.subscribe(
       `${this.accountTreeController.name}:selectedAccountGroupChange`,
-      (groupId) => {
+      async (groupId) => {
+        await new Promise(resolve => setTimeout(resolve, 1000));
         const authorizationsByOrigin = getAuthorizedScopesByOrigin(
           this.permissionController.state,
         );

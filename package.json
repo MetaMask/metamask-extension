@@ -267,6 +267,7 @@
     "@myx-trade/sdk@npm:^0.1.265": "npm:0.1.267",
     "@metamask/multichain-api-middleware": "npm:@metamask-previews/multichain-api-middleware@1.2.7-preview-f3055a72b",
     "@metamask/chain-agnostic-permission": "npm:@metamask-previews/chain-agnostic-permission@1.4.0-preview-f3055a72b",
+    "@metamask/solana-wallet-standard": "file:../solana-wallet-standard",
     "@metamask/multichain-account-service@npm:^7.0.0": "patch:@metamask/multichain-account-service@npm%3A7.1.0#~/.yarn/patches/@metamask-multichain-account-service-npm-7.1.0-4b0ce989c3.patch",
     "@metamask/multichain-account-service@npm:^7.1.0": "patch:@metamask/multichain-account-service@npm%3A7.1.0#~/.yarn/patches/@metamask-multichain-account-service-npm-7.1.0-4b0ce989c3.patch"
   },
