@@ -18,6 +18,7 @@ import {
 import { ENVIRONMENTS, MODES } from './constants';
 import {
   DEFAULT_JOBS_PER_THREAD,
+  getAvailableMemoryMB,
   resolveAutoThreads,
 } from './loaders/threadLoader';
 
@@ -661,6 +662,7 @@ React Compiler verbose: ${args.reactCompilerVerbose}
 React Compiler debug: ${args.reactCompilerDebug}
 Threads: ${args.threads === 'auto' ? `auto (${args.resolvedThreads})` : args.threads}
 Jobs per thread: ${args.jobsPerThread === 'auto' ? `auto (${args.resolvedJobs})` : args.jobsPerThread}
+Free RAM: ${Math.floor(getAvailableMemoryMB())}MB
 Validate Env: ${args.validateEnv}
 Manifest version: ${args.manifest_version}
 Release version: ${args.releaseVersion}

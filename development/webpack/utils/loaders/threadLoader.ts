@@ -33,7 +33,7 @@ export function resolveAutoThreads(): number {
   return Math.max(1, Math.min(coreBasedWorkers, memBasedWorkers));
 }
 
-function getAvailableMemoryMB(): number {
+export function getAvailableMemoryMB(): number {
   return freemem() / (1024 * 1024);
 }
 
@@ -58,12 +58,6 @@ export function getThreadLoader(
   const resolvedThreads = threads === 'auto' ? resolveAutoThreads() : threads;
   const resolvedJobs =
     jobsPerThread === 'auto' ? DEFAULT_JOBS_PER_THREAD : jobsPerThread;
-
-  const threadsLabel = threads === 'auto' ? ' (auto)' : '';
-  const jobsLabel = jobsPerThread === 'auto' ? ' (auto)' : '';
-  console.log(
-    `Thread loader: ${resolvedThreads} workers${threadsLabel}, ${resolvedJobs} jobs per worker${jobsLabel}, ${Math.floor(getAvailableMemoryMB())}MB free RAM`,
-  );
 
   return {
     loader: 'thread-loader',
