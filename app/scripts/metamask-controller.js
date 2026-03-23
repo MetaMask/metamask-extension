@@ -6336,6 +6336,77 @@ export default class MetamaskController extends EventEmitter {
     });
   }
 
+  /**
+   * When the assets-unify-state flag is enabled, register the watched ERC-20
+   * token with the unified AssetsController before handing off to the legacy
+   * TokensController.
+   *
+   * Extracted from {@link handleWatchAssetRequest} to keep cognitive complexity
+   * within the allowed threshold.
+   *
+   * @param {object} asset - The asset descriptor from the dapp request.
+   * @param {string} networkClientId - The network client the request targets.
+   */
+  #addUnifiedWatchAsset = async (asset, networkClientId) => {
+    if (!this.assetsController) {
+      throw rpcErrors.internal({
+        message: 'AssetsController is not available for wallet_watchAsset.',
+      });
+    }
+
+    if (!networkClientId) {
+      throw rpcErrors.invalidParams({
+        message:
+          'wallet_watchAsset requires a network context (networkClientId).',
+      });
+    }
+
+    const { chainId } =
+      this.networkController.getNetworkConfigurationByNetworkClientId(
+        networkClientId,
+      );
+
+    if (!chainId) {
+      throw rpcErrors.internal({
+        message: 'Active network configuration is missing chainId.',
+      });
+    }
+
+    // ERC-20 options from dapps do not include chainId; resolve CAIP asset id from the request network.
+    const assetId = toAssetId(asset.address, chainId);
+    if (!assetId) {
+      throw rpcErrors.invalidParams({
+        message:
+          'Invalid token address or unsupported chain for wallet_watchAsset.',
+      });
+    }
+
+    const decimals = Number.parseInt(String(asset.decimals), 10);
+    if (!Number.isInteger(decimals) || decimals < 0 || decimals > 255) {
+      throw rpcErrors.invalidParams({
+        message: `Invalid ERC-20 decimals: ${String(asset.decimals)}.`,
+      });
+    }
+
+    const accountId = this.accountsController.getSelectedAccount().id;
+    const iconUrl = asset.image ?? asset.iconUrl;
+    const pendingMetadata = {
+      address: asset.address,
+      symbol: asset.symbol,
+      name: asset.name ?? asset.symbol,
+      decimals,
+      chainId,
+      unlisted: false,
+      ...(iconUrl ? { iconUrl } : {}),
+    };
+
+    await this.assetsController.addCustomAsset(
+      accountId,
+      assetId,
+      pendingMetadata,
+    );
+  };
+
   handleWatchAssetRequest = async ({
     asset,
     type,
@@ -6353,64 +6424,7 @@ export default class MetamaskController extends EventEmitter {
             ASSETS_UNIFY_STATE_VERSION_1,
           )
         ) {
-          if (!this.assetsController) {
-            throw rpcErrors.internal({
-              message:
-                'AssetsController is not available for wallet_watchAsset.',
-            });
-          }
-
-          if (!networkClientId) {
-            throw rpcErrors.invalidParams({
-              message:
-                'wallet_watchAsset requires a network context (networkClientId).',
-            });
-          }
-
-          const { chainId } =
-            this.networkController.getNetworkConfigurationByNetworkClientId(
-              networkClientId,
-            );
-
-          if (!chainId) {
-            throw rpcErrors.internal({
-              message: 'Active network configuration is missing chainId.',
-            });
-          }
-
-          // ERC-20 options from dapps do not include chainId; resolve CAIP asset id from the request network.
-          const assetId = toAssetId(asset.address, chainId);
-          if (!assetId) {
-            throw rpcErrors.invalidParams({
-              message:
-                'Invalid token address or unsupported chain for wallet_watchAsset.',
-            });
-          }
-
-          const decimals = Number.parseInt(String(asset.decimals), 10);
-          if (!Number.isInteger(decimals) || decimals < 0 || decimals > 255) {
-            throw rpcErrors.invalidParams({
-              message: `Invalid ERC-20 decimals: ${String(asset.decimals)}.`,
-            });
-          }
-
-          const accountId = this.accountsController.getSelectedAccount().id;
-          const iconUrl = asset.image ?? asset.iconUrl;
-          const pendingMetadata = {
-            address: asset.address,
-            symbol: asset.symbol,
-            name: asset.name ?? asset.symbol,
-            decimals,
-            chainId,
-            unlisted: false,
-            ...(iconUrl ? { iconUrl } : {}),
-          };
-
-          await this.assetsController.addCustomAsset(
-            accountId,
-            assetId,
-            pendingMetadata,
-          );
+          await this.#addUnifiedWatchAsset(asset, networkClientId);
         }
         return this.tokensController.watchAsset({
           asset,
