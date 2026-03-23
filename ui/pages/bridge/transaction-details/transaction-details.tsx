@@ -21,6 +21,7 @@ import {
   Icon,
   IconName,
   IconSize,
+  SuccessPill,
   Text,
 } from '../../../components/component-library';
 import {
@@ -435,19 +436,23 @@ const CrossChainSwapTxDetails = () => {
             <TransactionDetailRow
               title={t('bridgeTxDetailsTotalGasFee')}
               value={
-                <>
-                  {data?.hexGasTotal &&
-                    gasCurrency?.decimals &&
-                    gasCurrency?.symbol &&
-                    formatTokenAmount(
-                      locale,
-                      new Numeric(data.hexGasTotal, 16)
-                        .toBase(10)
-                        .shiftedBy(gasCurrency.decimals ?? 0)
-                        .toString(),
-                      gasCurrency?.symbol,
-                    )}
-                </>
+                data?.isGasFeeSponsored ? (
+                  <SuccessPill label={t('swapGasFeesSponsored')} />
+                ) : (
+                  <>
+                    {data?.hexGasTotal &&
+                      gasCurrency?.decimals &&
+                      gasCurrency?.symbol &&
+                      formatTokenAmount(
+                        locale,
+                        new Numeric(data.hexGasTotal, 16)
+                          .toBase(10)
+                          .shiftedBy(gasCurrency.decimals ?? 0)
+                          .toString(),
+                        gasCurrency?.symbol,
+                      )}
+                  </>
+                )
               }
             />
           </Box>

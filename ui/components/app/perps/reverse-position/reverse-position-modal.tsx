@@ -9,6 +9,7 @@ import {
   TextColor,
   FontWeight,
 } from '@metamask/design-system-react';
+import type { Position as PerpsPosition } from '@metamask/perps-controller';
 import {
   Modal,
   ModalContent,
@@ -19,8 +20,8 @@ import {
   ModalFooter,
 } from '../../../component-library';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { getPerpsController } from '../../../../providers/perps';
-import { getPerpsStreamManager } from '../../../../providers/perps/PerpsStreamManager';
+import { submitRequestToBackground } from '../../../../store/background-connection';
+import { getPerpsStreamManager } from '../../../../providers/perps';
 import { getPositionDirection } from '../utils';
 import type { Position } from '../types';
 
@@ -29,7 +30,6 @@ export type ReversePositionModalProps = {
   onClose: () => void;
   position: Position;
   currentPrice: number;
-  selectedAddress: string;
 };
 
 /**
@@ -41,14 +41,12 @@ export type ReversePositionModalProps = {
  * @param options0.onClose
  * @param options0.position
  * @param options0.currentPrice
- * @param options0.selectedAddress
  */
 export const ReversePositionModal: React.FC<ReversePositionModalProps> = ({
   isOpen,
   onClose,
   position,
   currentPrice,
-  selectedAddress,
 }) => {
   const t = useI18nContext();
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -71,38 +69,44 @@ export const ReversePositionModal: React.FC<ReversePositionModalProps> = ({
   }
 
   const handleSave = useCallback(async () => {
-    if (!selectedAddress) {
-      return;
-    }
     setIsSubmitting(true);
     setError(null);
     let positionClosed = false;
     try {
-      const controller = await getPerpsController(selectedAddress);
-      const closeResult = await controller.closePosition({
-        symbol: position.symbol,
-        orderType: 'market',
-      });
+      const closeResult = await submitRequestToBackground<{
+        success: boolean;
+        error?: string;
+      }>('perpsClosePosition', [
+        { symbol: position.symbol, orderType: 'market' },
+      ]);
       if (!closeResult.success) {
         throw new Error(closeResult.error || 'Failed to close position');
       }
       positionClosed = true;
 
       const usdAmount = (sizeNum * currentPrice).toFixed(2);
-      const orderResult = await controller.placeOrder({
-        symbol: position.symbol,
-        isBuy: oppositeDirection === 'long',
-        size: sizeNum.toString(),
-        orderType: 'market',
-        usdAmount,
-        currentPrice,
-        leverage: leverageValue,
-      });
+      const orderResult = await submitRequestToBackground<{
+        success: boolean;
+        error?: string;
+      }>('perpsPlaceOrder', [
+        {
+          symbol: position.symbol,
+          isBuy: oppositeDirection === 'long',
+          size: sizeNum.toString(),
+          orderType: 'market',
+          usdAmount,
+          currentPrice,
+          leverage: leverageValue,
+        },
+      ]);
       if (!orderResult.success) {
         throw new Error(orderResult.error || 'Failed to place reverse order');
       }
       const streamManager = getPerpsStreamManager();
-      const freshPositions = await controller.getPositions({ skipCache: true });
+      const freshPositions = await submitRequestToBackground<PerpsPosition[]>(
+        'perpsGetPositions',
+        [{ skipCache: true }],
+      );
       streamManager.pushPositionsWithOverrides(freshPositions);
       onClose();
     } catch (err) {
@@ -116,7 +120,6 @@ export const ReversePositionModal: React.FC<ReversePositionModalProps> = ({
       setIsSubmitting(false);
     }
   }, [
-    selectedAddress,
     position.symbol,
     currentPrice,
     sizeNum,

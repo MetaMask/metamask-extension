@@ -29,6 +29,7 @@ Instructions for AI coding agents working on MetaMask Browser Extension.
 11. **WHEN asked to open a PR, use a Conventional Commits title** unless user specifies otherwise
 12. **WHEN asked to open a PR, open it as DRAFT** unless user specifies otherwise
 13. **WHEN using `.github/pull-request-template.md`, comment out non-applicable sections including the section title**
+14. **BEFORE modifying any `.github/workflows/` file**, read `.github/AGENTS.md` for CI-specific rules (consolidation patterns, required job wiring, merge queue considerations)
 
 ### Comprehensive Guidelines Location
 
@@ -37,6 +38,7 @@ Read these files for detailed coding standards:
 - Controller patterns: `.cursor/rules/controller-guidelines/RULE.md`
 - Unit testing standards: `.cursor/rules/unit-testing-guidelines/RULE.md`
 - E2E testing standards: `./test/e2e/AGENTS.md`
+- CI workflows: `.github/AGENTS.md`
 - Front-end performance:
   - `.cursor/rules/front-end-performance-rendering/RULE.md` (rendering performance - start here)
   - `.cursor/rules/front-end-performance-hooks-effects/RULE.md` (hooks & effects)
@@ -1669,6 +1671,7 @@ Performance Checks (React Components):
 - **Unit Testing:** [.cursor/rules/unit-testing-guidelines/RULE.md](./.cursor/rules/unit-testing-guidelines/RULE.md)
 - **E2E Testing:** [./test/e2e/AGENTS.md](./test/e2e/AGENTS.md)
 - **E2E Deprecated Patterns:** [./test/e2e/AGENTS.md](./test/e2e/AGENTS.md)
+- **CI Workflows:** [.github/AGENTS.md](./.github/AGENTS.md)
 - **Front-End Performance:**
   - [Rendering Performance](.cursor/rules/front-end-performance-rendering/RULE.md) - Start here (keys, memoization, virtualization)
   - [Hooks & Effects](.cursor/rules/front-end-performance-hooks-effects/RULE.md) - useEffect best practices
