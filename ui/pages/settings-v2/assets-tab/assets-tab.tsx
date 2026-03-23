@@ -49,7 +49,7 @@ const AutodetectTokensToggleItem = createToggleItem({
 });
 
 /** Registry of setting items for the Assets page. Add new items here */
-export const ASSET_SETTING_ITEMS: SettingItemConfig[] = [
+const ASSET_SETTING_ITEMS: SettingItemConfig[] = [
   { id: 'local-currency', component: LocalCurrencyItem },
   { id: 'show-network-token', component: ShowNetworkTokenToggleItem },
   {

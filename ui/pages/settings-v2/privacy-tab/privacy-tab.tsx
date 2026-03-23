@@ -35,7 +35,7 @@ const SkipLinkConfirmationToggleItem = createToggleItem({
 });
 
 /** Registry of setting items for the Privacy page. Add new items here */
-export const PRIVACY_SETTING_ITEMS: SettingItemConfig[] = [
+const PRIVACY_SETTING_ITEMS: SettingItemConfig[] = [
   { id: 'basic-functionality', component: BasicFunctionalityToggleItem },
   { id: 'third-party-apis', component: ThirdPartyApisItem },
   {

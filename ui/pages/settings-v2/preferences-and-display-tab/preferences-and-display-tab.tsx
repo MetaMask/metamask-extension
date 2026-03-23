@@ -72,7 +72,7 @@ const ManageInstitutionalWalletItem = createToggleItem({
 });
 
 /** Registry of setting items for the Preferences and Display page. Add new items here */
-export const PREFERENCES_AND_DISPLAY_SETTING_ITEMS: SettingItemConfig[] = [
+const PREFERENCES_AND_DISPLAY_SETTING_ITEMS: SettingItemConfig[] = [
   { id: 'theme', component: ThemeItem },
   { id: 'language', component: LanguageItem },
   { id: 'account-identicon', component: AccountIdenticonItem },

@@ -43,7 +43,7 @@ export const AutoLockItem = createSelectItem({
   route: AUTO_LOCK_ROUTE,
 });
 
-export const SECURITY_AND_PASSWORD_SETTING_ITEMS: SettingItemConfig[] = [
+const SECURITY_AND_PASSWORD_SETTING_ITEMS: SettingItemConfig[] = [
   { id: 'manage-wallet-recovery', component: ManageWalletRecoveryItem },
   { id: 'password', component: PasswordItem },
   { id: 'auto-lock', component: AutoLockItem },

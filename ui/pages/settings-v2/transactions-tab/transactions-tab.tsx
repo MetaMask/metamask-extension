@@ -110,7 +110,7 @@ const ShowHexDataItem = createToggleItem({
   dataTestId: 'transactions-show-hex-data-toggle',
 });
 
-export const TRANSACTION_SETTING_ITEMS: SettingItemConfig[] = [
+const TRANSACTION_SETTING_ITEMS: SettingItemConfig[] = [
   { id: 'estimate-balance-changes', component: TransactionSimulationsItem },
   { id: 'security-alerts', component: SecurityAlertsItem },
   { id: 'smart-transactions', component: SmartTransactionsItem },
