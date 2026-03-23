@@ -163,11 +163,6 @@ class FixtureBuilderV2 {
     return this;
   }
 
-  withNftController(data: Partial<NftControllerState>): this {
-    merge(this.fixture.data.NftController, data);
-    return this;
-  }
-
   withNetworkController(data: Partial<NetworkState>): this {
     merge(this.fixture.data.NetworkController, data);
     return this;
@@ -177,6 +172,11 @@ class FixtureBuilderV2 {
     data: Partial<NetworkEnablementControllerState>,
   ): this {
     merge(this.fixture.data.NetworkEnablementController, data);
+    return this;
+  }
+
+  withNftController(data: Partial<NftControllerState>): this {
+    merge(this.fixture.data.NftController, data);
     return this;
   }
 
