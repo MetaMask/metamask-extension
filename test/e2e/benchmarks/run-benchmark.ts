@@ -18,6 +18,7 @@ import type {
   BenchmarkResults,
   ThresholdViolation,
 } from '../../../shared/constants/benchmarks';
+import { toCamelCase } from '../../../shared/lib/string-utils';
 import { runBenchmarkWithIterations, convertSummaryToResults } from './utils';
 import {
   THRESHOLD_REGISTRY,
@@ -37,6 +38,54 @@ import {
  */
 function supportsIterations(filePath: string): boolean {
   return !filePath.includes('/startup/');
+}
+
+/**
+ * Builds the registry key for threshold lookup and JSON output.
+ *
+ * Startup benchmarks require platform-buildType prefix because:
+ * - Each platform/buildType combo has its own baseline (platform-specific performance)
+ * - JSON output keys are: 'chrome-webpack-startupStandardHome'
+ * - Registry keys are: 'chrome-webpack-startupStandardHome'
+ *
+ * Other benchmarks use simple camelCase:
+ * - All platforms share one baseline (platform-agnostic performance)
+ * - JSON output keys are: 'loadNewAccount', 'onboardingImportWallet'
+ * - Registry keys are: 'loadNewAccount', 'onboardingImportWallet'
+ *
+ * @param fileName - Benchmark flow filename (e.g., 'standard-home', 'load-new-account')
+ * @param filePath - Full file path (to detect startup benchmarks)
+ * @param preset - Preset name (e.g., 'startupStandardHome', 'interactionUserActions')
+ * @param outputFilename - Output filename from --out arg (used to extract platform/buildType)
+ * @returns Registry key (e.g., 'chrome-webpack-startupStandardHome', 'loadNewAccount')
+ */
+function buildRegistryKey(
+  fileName: string,
+  filePath: string,
+  preset?: string,
+  outputFilename?: string,
+): string {
+  const baseName = toCamelCase(fileName);
+  const isStartup =
+    (preset &&
+      Object.values(STARTUP_PRESETS).includes(
+        preset as (typeof STARTUP_PRESETS)[keyof typeof STARTUP_PRESETS],
+      )) ||
+    filePath.includes('/startup/');
+
+  if (isStartup) {
+    if (outputFilename) {
+      const outputBasename = path.basename(outputFilename, '.json');
+      const match = outputBasename.match(/^benchmark-([^-]+)-([^-]+)-/u);
+      if (match) {
+        const [, platform, buildType] = match;
+        return `${platform}-${buildType}-startup${baseName.charAt(0).toUpperCase()}${baseName.slice(1)}`;
+      }
+    }
+    return `startup${baseName.charAt(0).toUpperCase()}${baseName.slice(1)}`;
+  }
+
+  return baseName;
 }
 
 const BENCHMARK_DIR = 'test/e2e/benchmarks/flows';
@@ -96,11 +145,12 @@ async function runBenchmarkFile(
     browserLoads: number;
     pageLoads: number;
   },
+  preset?: string,
+  outputFilename?: string,
 ): Promise<unknown> {
   const absolutePath = pathToFileURL(path.resolve(filePath)).href;
   const fileName = path.basename(filePath, path.extname(filePath));
 
-  // Playwright benchmarks run via yarn playwright
   if (filePath.includes('/playwright/')) {
     await runPlaywrightBenchmark(filePath);
     return undefined; // Playwright writes its own output file
@@ -113,10 +163,16 @@ async function runBenchmarkFile(
   }
 
   const { run: runFn } = benchmark;
-  const thresholdConfig = THRESHOLD_REGISTRY[fileName];
+  const registryKey = buildRegistryKey(
+    fileName,
+    filePath,
+    preset,
+    outputFilename,
+  );
+  const thresholdConfig = THRESHOLD_REGISTRY[registryKey];
   if (!thresholdConfig) {
     throw new Error(
-      `No threshold config for "${fileName}". Add an entry to THRESHOLD_REGISTRY in constants.ts.`,
+      `No threshold config for "${fileName}" (registry key "${registryKey}"). Add an entry to THRESHOLD_REGISTRY in constants.ts.`,
     );
   }
 
@@ -269,12 +325,20 @@ async function main(): Promise<void> {
 
   for (const filePath of filesToRun) {
     const fileName = path.basename(filePath, path.extname(filePath));
-    const resultKey = fileName.replace(/-([a-z])/gu, (_, letter) =>
-      letter.toUpperCase(),
+    const resultKey = buildRegistryKey(
+      fileName,
+      filePath,
+      argv.preset,
+      argv.out,
     );
 
     try {
-      const result = await runBenchmarkFile(filePath, options);
+      const result = await runBenchmarkFile(
+        filePath,
+        options,
+        argv.preset,
+        argv.out,
+      );
       // Playwright benchmarks write their own output file, skip storing
       if (filePath.includes('/playwright/')) {
         continue;
