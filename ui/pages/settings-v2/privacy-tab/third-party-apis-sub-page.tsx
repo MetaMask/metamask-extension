@@ -68,21 +68,36 @@ const ProposedNicknamesToggleItem = createToggleItem({
 
 /** Registry of setting items for the Third-party APIs sub-page */
 const THIRD_PARTY_APIS_ITEMS: SettingItemConfig[] = [
-  { id: 'network-details-check', component: NetworkDetailsCheckToggleItem },
-  { id: 'show-ens-domains', component: ShowENSDomainsToggleItem },
+  {
+    id: 'network-details-check',
+    titleKey: 'useSafeChainsListValidation',
+    component: NetworkDetailsCheckToggleItem,
+  },
+  {
+    id: 'show-ens-domains',
+    titleKey: 'ensDomainsSettingTitle',
+    component: ShowENSDomainsToggleItem,
+  },
   {
     id: 'make-smart-contracts-easier',
+    titleKey: 'makeSmartContractsEasier',
     component: MakeSmartContractsEasierToggleItem,
   },
-  { id: 'ipfs-gateway', component: IpfsGatewayItem },
+  { id: 'ipfs-gateway', titleKey: 'ipfsGateway', component: IpfsGatewayItem },
   {
     id: 'display-nft-media',
+    titleKey: 'displayNftMedia',
     component: DisplayNftMediaToggleItem,
     hasDividerBefore: true,
   },
-  { id: 'autodetect-nfts', component: AutodetectNftsToggleItem },
+  {
+    id: 'autodetect-nfts',
+    titleKey: 'useNftDetection',
+    component: AutodetectNftsToggleItem,
+  },
   {
     id: 'proposed-nicknames',
+    titleKey: 'externalNameSourcesSetting',
     component: ProposedNicknamesToggleItem,
     hasDividerBefore: true,
   },
