@@ -3,6 +3,7 @@ import { handleFetch } from '@metamask/controller-utils';
 import { BridgeClientId } from '@metamask/bridge-controller';
 import { trace } from '../../../shared/lib/trace';
 import { BRIDGE_API_BASE_URL } from '../../../shared/constants/bridge';
+import { accountSupports7702 } from '../lib/account-supports-7702';
 import { ControllerInitFunction } from './types';
 import { BridgeStatusControllerMessenger } from './messengers';
 
@@ -20,6 +21,7 @@ export const BridgeStatusControllerInit: ControllerInitFunction<
   BridgeStatusControllerMessenger
 > = ({ controllerMessenger, persistedState, getController }) => {
   const transactionController = getController('TransactionController');
+  const keyringController = getController('KeyringController');
 
   const controller = new BridgeStatusController({
     messenger: controllerMessenger,
@@ -33,8 +35,25 @@ export const BridgeStatusControllerInit: ControllerInitFunction<
     },
     addTransactionFn: (...args) =>
       transactionController.addTransaction(...args),
-    addTransactionBatchFn: (...args) =>
-      transactionController.addTransactionBatch(...args),
+    addTransactionBatchFn: async (request, ...rest) => {
+      const supports7702 = await accountSupports7702(
+        request.from,
+        keyringController as Parameters<typeof accountSupports7702>[1],
+      );
+
+      if (!supports7702) {
+        return transactionController.addTransactionBatch(
+          {
+            ...request,
+            isGasFeeSponsored: false,
+            isGasFeeIncluded: false,
+            disable7702: true,
+          },
+          ...rest,
+        );
+      }
+      return transactionController.addTransactionBatch(request, ...rest);
+    },
     estimateGasFeeFn: (...args) =>
       transactionController.estimateGasFee(...args),
     updateTransactionFn: (...args) =>

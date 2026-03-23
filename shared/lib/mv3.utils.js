@@ -1,4 +1,4 @@
-/* eslint-disable import/unambiguous -- Not an external module and not of concern */
+/* eslint-disable import-x/unambiguous -- Not an external module and not of concern */
 
 const runtimeManifest =
   global.chrome?.runtime.getManifest() || global.browser?.runtime.getManifest();

@@ -7,12 +7,12 @@ import prettier from 'prettier';
 import { isObject, Json, JsonRpcResponse } from '@metamask/utils';
 import { Mockttp, MockttpServer } from 'mockttp';
 import { SENTRY_UI_STATE } from '../../../../app/scripts/constants/sentry-state';
-import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { withFixtures, sentryRegEx } from '../../helpers';
 import { PAGES } from '../../webdriver/driver';
 import { MOCK_META_METRICS_ID } from '../../constants';
 import LoginPage from '../../page-objects/pages/login-page';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 import { mockSpotPrices } from '../tokens/utils/mocks';
 
 const FEATURE_FLAGS_RESPONSE = [
@@ -97,6 +97,7 @@ const maskedUiFields = maskedBackgroundFields.map(backgroundToUiField);
 
 const removedBackgroundFields = [
   // These properties are set to undefined, causing inconsistencies between Chrome and Firefox
+  'AppStateController.appActiveTab',
   'AppStateController.currentPopupId',
   'AppStateController.timeoutMinutes',
   'AppStateController.lastInteractedConfirmationInfo',
@@ -291,7 +292,7 @@ describe('Sentry errors', function () {
       await withFixtures(
         {
           fixtures: {
-            ...new FixtureBuilder()
+            ...new FixtureBuilderV2()
               .withMetaMetricsController({
                 metaMetricsId: null,
                 participateInMetaMetrics: false,
@@ -363,7 +364,7 @@ describe('Sentry errors', function () {
     it('should NOT send error events in the UI', async function () {
       await withFixtures(
         {
-          fixtures: new FixtureBuilder()
+          fixtures: new FixtureBuilderV2()
             .withMetaMetricsController({
               metaMetricsId: null,
               participateInMetaMetrics: false,
@@ -439,7 +440,7 @@ describe('Sentry errors', function () {
       await withFixtures(
         {
           fixtures: {
-            ...new FixtureBuilder()
+            ...new FixtureBuilderV2()
               .withMetaMetricsController({
                 metaMetricsId: MOCK_META_METRICS_ID,
                 participateInMetaMetrics: true,
@@ -523,7 +524,7 @@ describe('Sentry errors', function () {
       await withFixtures(
         {
           fixtures: {
-            ...new FixtureBuilder()
+            ...new FixtureBuilderV2()
               .withMetaMetricsController({
                 metaMetricsId: MOCK_META_METRICS_ID,
                 participateInMetaMetrics: true,
@@ -624,7 +625,7 @@ describe('Sentry errors', function () {
       await withFixtures(
         {
           fixtures: {
-            ...new FixtureBuilder()
+            ...new FixtureBuilderV2()
               .withMetaMetricsController({
                 metaMetricsId: MOCK_META_METRICS_ID,
                 participateInMetaMetrics: true,
@@ -713,7 +714,7 @@ describe('Sentry errors', function () {
     it('should send error events in UI', async function () {
       await withFixtures(
         {
-          fixtures: new FixtureBuilder()
+          fixtures: new FixtureBuilderV2()
             .withMetaMetricsController({
               metaMetricsId: MOCK_META_METRICS_ID,
               participateInMetaMetrics: true,
@@ -796,7 +797,7 @@ describe('Sentry errors', function () {
     it('should capture UI application state', async function () {
       await withFixtures(
         {
-          fixtures: new FixtureBuilder()
+          fixtures: new FixtureBuilderV2()
             .withMetaMetricsController({
               metaMetricsId: MOCK_META_METRICS_ID,
               participateInMetaMetrics: true,
@@ -902,7 +903,7 @@ describe('Sentry errors', function () {
     it('should NOT send error events in the background', async function () {
       await withFixtures(
         {
-          fixtures: new FixtureBuilder()
+          fixtures: new FixtureBuilderV2()
             .withMetaMetricsController({
               metaMetricsId: null,
               participateInMetaMetrics: false,
@@ -975,7 +976,7 @@ describe('Sentry errors', function () {
     it('should NOT send error events in the UI', async function () {
       await withFixtures(
         {
-          fixtures: new FixtureBuilder()
+          fixtures: new FixtureBuilderV2()
             .withMetaMetricsController({
               metaMetricsId: null,
               participateInMetaMetrics: false,
@@ -1048,7 +1049,7 @@ describe('Sentry errors', function () {
     it('should send error events in background', async function () {
       await withFixtures(
         {
-          fixtures: new FixtureBuilder()
+          fixtures: new FixtureBuilderV2()
             .withMetaMetricsController({
               metaMetricsId: MOCK_META_METRICS_ID,
               participateInMetaMetrics: true,
@@ -1135,7 +1136,7 @@ describe('Sentry errors', function () {
     it('should capture background application state', async function () {
       await withFixtures(
         {
-          fixtures: new FixtureBuilder()
+          fixtures: new FixtureBuilderV2()
             .withMetaMetricsController({
               metaMetricsId: MOCK_META_METRICS_ID,
               participateInMetaMetrics: true,
@@ -1186,7 +1187,7 @@ describe('Sentry errors', function () {
           },
         },
         async ({ driver, mockedEndpoint }) => {
-          await loginWithBalanceValidation(driver);
+          await login(driver);
 
           // Wait for state to settle
           await driver.delay(5_000);
@@ -1236,7 +1237,7 @@ describe('Sentry errors', function () {
     it('should send error events in UI', async function () {
       await withFixtures(
         {
-          fixtures: new FixtureBuilder()
+          fixtures: new FixtureBuilderV2()
             .withMetaMetricsController({
               metaMetricsId: MOCK_META_METRICS_ID,
               participateInMetaMetrics: true,
@@ -1317,7 +1318,7 @@ describe('Sentry errors', function () {
     it('should capture UI application state', async function () {
       await withFixtures(
         {
-          fixtures: new FixtureBuilder()
+          fixtures: new FixtureBuilderV2()
             .withMetaMetricsController({
               metaMetricsId: MOCK_META_METRICS_ID,
               participateInMetaMetrics: true,
@@ -1369,7 +1370,7 @@ describe('Sentry errors', function () {
           },
         },
         async ({ driver, mockedEndpoint }) => {
-          await loginWithBalanceValidation(driver);
+          await login(driver);
 
           // Wait for state to settle
           await driver.delay(5_000);
@@ -1467,10 +1468,13 @@ describe('Sentry errors', function () {
       // Filtered from UI state patches (sensitive auth tokens - see state-utils.ts)
       rewardsSubscriptionTokens: false,
       storageWriteErrorType: true,
+      // Optional property on AppStateController; only set after a user
+      // interacts with a Snap install dialog, so absent from initial state.
+      snapsInstallPrivacyWarningShown: true,
     };
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
         manifestFlags: {
           sentry: { forceEnable: false },

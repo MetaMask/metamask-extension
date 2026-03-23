@@ -1,4 +1,5 @@
 import { PRODUCT_TYPES } from '@metamask/subscription-controller';
+import { ORIGIN_METAMASK } from '@metamask/controller-utils';
 import {
   type PublishBatchHookRequest,
   type PublishBatchHookTransaction,
@@ -18,6 +19,7 @@ import {
 } from '@metamask/transaction-pay-controller';
 import { Hex } from '@metamask/utils';
 import { trace } from '../../../../shared/lib/trace';
+import { hasTransactionType } from '../../../../shared/lib/transactions.utils';
 import { getIsSmartTransaction } from '../../../../shared/lib/selectors';
 import { getShieldGatewayConfig } from '../../../../shared/lib/shield';
 import { TransactionMetricsRequest } from '../../../../shared/types/metametrics';
@@ -41,6 +43,7 @@ import {
 } from '../../lib/transaction/metrics';
 import { isSendBundleSupported } from '../../lib/transaction/sentinel-api';
 import { getTransactionById } from '../../lib/transaction/util';
+import { accountSupports7702 } from '../../lib/account-supports-7702';
 import { ControllerFlatState } from '../controller-list';
 import { TransactionControllerInitMessenger } from '../messengers/transaction-controller-messenger';
 import {
@@ -48,6 +51,16 @@ import {
   ControllerInitRequest,
   ControllerInitResult,
 } from '../types';
+
+const DISABLED_AUTOMATIC_GAS_FEE_UPDATE_TYPES = [
+  TransactionType.swap,
+  TransactionType.swapApproval,
+  TransactionType.bridge,
+  TransactionType.bridgeApproval,
+  TransactionType.relayDeposit,
+  TransactionType.perpsRelayDeposit,
+  TransactionType.predictRelayDeposit,
+];
 
 export const TransactionControllerInit: ControllerInitFunction<
   TransactionController,
@@ -113,20 +126,18 @@ export const TransactionControllerInit: ControllerInitFunction<
         onboardingController().state.completedOnboarding,
       updateTransactions: true,
     },
-    isAutomaticGasFeeUpdateEnabled: ({ type }) => {
-      // Disables automatic gas fee updates for swap and bridge transactions
-      // which provide their own gas parameters when they are submitted
-      const disabledTypes = [
-        TransactionType.swap,
-        TransactionType.swapApproval,
-        TransactionType.bridge,
-        TransactionType.bridgeApproval,
-      ];
-
-      return !type || !disabledTypes.includes(type);
-    },
+    isAutomaticGasFeeUpdateEnabled,
     isEIP7702GasFeeTokensEnabled: async (transactionMeta) => {
-      const { chainId } = transactionMeta;
+      if (
+        !(await accountSupports7702(
+          transactionMeta.txParams?.from,
+          keyringController as Parameters<typeof accountSupports7702>[1],
+        ))
+      ) {
+        return false;
+      }
+
+      const { chainId, isExternalSign } = transactionMeta;
       const uiState = getUIState(getFlatState());
 
       // @ts-expect-error Smart transaction selector types does not match controller state
@@ -136,8 +147,13 @@ export const TransactionControllerInit: ControllerInitFunction<
 
       // EIP7702 gas fee tokens are enabled when:
       // - Smart transactions are NOT enabled, OR
-      // - Send bundle is NOT supported
-      return !isSmartTransactionEnabled || !isSendBundleSupportedChain;
+      // - Send bundle is NOT supported, OR
+      // - Gas fee token was provided when creating transaction
+      return (
+        !isSmartTransactionEnabled ||
+        !isSendBundleSupportedChain ||
+        Boolean(isExternalSign)
+      );
     },
     isFirstTimeInteractionEnabled: () =>
       preferencesController().state.securityAlertsEnabled,
@@ -190,6 +206,7 @@ export const TransactionControllerInit: ControllerInitFunction<
         publishHook({
           flatState: getFlatState(),
           initMessenger,
+          keyringController,
           signedTx,
           smartTransactionsController: smartTransactionsController(),
           transactionController: controller,
@@ -347,6 +364,7 @@ function getUIState(flatState: ControllerFlatState) {
 export async function publishHook({
   flatState,
   initMessenger,
+  keyringController,
   signedTx,
   smartTransactionsController,
   transactionController,
@@ -354,6 +372,7 @@ export async function publishHook({
 }: {
   flatState: ControllerFlatState;
   initMessenger: TransactionControllerInitMessenger;
+  keyringController: Parameters<typeof accountSupports7702>[1];
   signedTx: string;
   smartTransactionsController: SmartTransactionsController;
   transactionController: TransactionController;
@@ -378,7 +397,15 @@ export async function publishHook({
 
   const { isExternalSign } = transactionMeta;
 
-  if (!isSmartTransaction || !sendBundleSupport || isExternalSign) {
+  const keyringSupports7702 = await accountSupports7702(
+    transactionMeta.txParams?.from,
+    keyringController,
+  );
+
+  if (
+    keyringSupports7702 &&
+    (!isSmartTransaction || !sendBundleSupport || isExternalSign)
+  ) {
     const hook = new Delegation7702PublishHook({
       isAtomicBatchSupported: transactionController.isAtomicBatchSupported.bind(
         transactionController,
@@ -462,4 +489,18 @@ export function publishBatchHook({
     featureFlags,
     transactionMeta,
   });
+}
+
+function isAutomaticGasFeeUpdateEnabled(transaction: TransactionMeta) {
+  if (
+    transaction.origin === ORIGIN_METAMASK &&
+    transaction.type === TransactionType.tokenMethodApprove
+  ) {
+    return false;
+  }
+
+  return !hasTransactionType(
+    transaction,
+    DISABLED_AUTOMATIC_GAS_FEE_UPDATE_TYPES,
+  );
 }

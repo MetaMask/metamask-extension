@@ -9,10 +9,7 @@ import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import HomePage from '../../page-objects/pages/home/homepage';
 import { switchToNetworkFromNetworkSelect } from '../../page-objects/flows/network.flow';
 import { mockSpotPrices } from '../tokens/utils/mocks';
-import {
-  loginWithBalanceValidation,
-  loginWithoutBalanceValidation,
-} from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 
 const infuraSepoliaUrl =
   'https://sepolia.infura.io/v3/00000000000000000000000000000000';
@@ -101,12 +98,7 @@ describe('Settings', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(
-          driver,
-          undefined,
-          undefined,
-          '$42,500.00',
-        );
+        await login(driver, { expectedBalance: '$42,500.00' });
         await new HeaderNavbar(driver).openAccountMenu();
         await new AccountListPage(
           driver,
@@ -132,7 +124,7 @@ describe('Settings', function () {
         },
       },
       async ({ driver }) => {
-        await loginWithoutBalanceValidation(driver);
+        await login(driver, { validateBalance: false });
         const homePage = new HomePage(driver);
         await homePage.checkExpectedBalanceIsDisplayed('42,500.00', 'USD');
         await new AssetListPage(driver).checkTokenFiatAmountIsDisplayed(
@@ -177,7 +169,7 @@ describe('Settings', function () {
         },
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
         const homePage = new HomePage(driver);
         await homePage.checkExpectedBalanceIsDisplayed('25', 'ETH');
       },

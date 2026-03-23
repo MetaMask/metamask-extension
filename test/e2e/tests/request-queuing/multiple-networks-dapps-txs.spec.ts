@@ -7,7 +7,7 @@ import ActivityListPage from '../../page-objects/pages/home/activity-list';
 import HomePage from '../../page-objects/pages/home/homepage';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import TransactionConfirmation from '../../page-objects/pages/confirmations/transaction-confirmation';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 import { connectAccountToTestDapp } from '../../page-objects/flows/test-dapp.flow';
 
 // BUG #38149 - Request Queuing multiple Dapps and txs on different networks fails with unapproved transaction
@@ -43,7 +43,7 @@ describe.skip('Request Queuing for Multiple Dapps and Txs on different networks.
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         // Open Dapp One
         const testDapp = new TestDapp(driver);

@@ -4,7 +4,7 @@ import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { Driver } from '../../webdriver/driver';
 import {
   lockAndWaitForLoginPage,
-  loginWithBalanceValidation,
+  login,
 } from '../../page-objects/flows/login.flow';
 
 describe('Lock and unlock', function (this: Suite) {
@@ -17,10 +17,10 @@ describe('Lock and unlock', function (this: Suite) {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         await lockAndWaitForLoginPage(driver);
-        await loginWithBalanceValidation(driver);
+        await login(driver);
       },
     );
   });
