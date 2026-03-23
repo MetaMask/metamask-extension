@@ -33,8 +33,11 @@ describe('Auto-Lock Timer', function () {
         await advancedSettingsPage.fillAutoLockoutTime(sixSecsInMins);
         await advancedSettingsPage.confirmAutoLockout();
 
-        // Necessary wait for the auto lockout to trigger
-        await driver.delay(6000);
+        // Wait for unlock route transition, then verify lock screen elements.
+        await driver.waitForUrlContaining({
+          url: `${driver.extensionUrl}/home.html#/unlock`,
+          timeout: 12000,
+        });
 
         // Verify the wallet is locked
         const loginPage = new LoginPage(driver);
