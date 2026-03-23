@@ -25,6 +25,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_REPOSITORY: ${{ github.repository }}
+          RUN_ID_TO_COLLECT: ${{ vars.RUN_ID_TO_COLLECT }}
 
       - name: Upload QA stats artifact
         uses: actions/upload-artifact@v6
