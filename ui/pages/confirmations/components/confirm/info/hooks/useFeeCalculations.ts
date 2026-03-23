@@ -55,18 +55,24 @@ export function useFeeCalculations(transactionMeta: TransactionMeta) {
     ) as Hex;
   }
 
+  // When container types are set, the gas limit has been re-estimated for the
+  // wrapped transaction, so we should use `txParams.gas` directly. Otherwise,
+  // prefer the optimized values from simulation.
+  const hasContainerTypes = (transactionMeta?.containerTypes?.length ?? 0) > 0;
+
   // `gasUsed` is the gas limit actually used by the transaction in the
   // simulation environment.
-  const optimizedGasLimit =
-    quotedGasLimit ||
-    transactionMeta?.gasUsed ||
-    // While estimating gas for the transaction we add 50% gas limit buffer.
-    // With `gasLimitNoBuffer` that buffer is removed. see PR
-    // https://github.com/MetaMask/metamask-extension/pull/29502 for more
-    // details.
-    transactionMeta?.gasLimitNoBuffer ||
-    transactionMeta?.txParams?.gas ||
-    HEX_ZERO;
+  const optimizedGasLimit = hasContainerTypes
+    ? transactionMeta?.txParams?.gas || HEX_ZERO
+    : quotedGasLimit ||
+      transactionMeta?.gasUsed ||
+      // While estimating gas for the transaction we add 50% gas limit buffer.
+      // With `gasLimitNoBuffer` that buffer is removed. see PR
+      // https://github.com/MetaMask/metamask-extension/pull/29502 for more
+      // details.
+      transactionMeta?.gasLimitNoBuffer ||
+      transactionMeta?.txParams?.gas ||
+      HEX_ZERO;
 
   const getFeesFromHex = useCallback(
     (hexFee: Hex) => {
