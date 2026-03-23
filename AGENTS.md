@@ -38,6 +38,7 @@ Read these files for detailed coding standards:
 - Controller patterns: `.cursor/rules/controller-guidelines/RULE.md`
 - Unit testing standards: `.cursor/rules/unit-testing-guidelines/RULE.md`
 - E2E testing standards: `./test/e2e/AGENTS.md`
+- E2E test creation workflow (Agent Skill): `.cursor/skills/creating-e2e-tests/SKILL.md` (symlinked from `.claude/skills/` and `.agents/skills/` — edit the `.cursor` copy only)
 - CI workflows: `.github/AGENTS.md`
 - Front-end performance:
   - `.cursor/rules/front-end-performance-rendering/RULE.md` (rendering performance - start here)
