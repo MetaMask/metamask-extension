@@ -95,6 +95,13 @@ const maskedBackgroundFields = [
 ];
 const maskedUiFields = maskedBackgroundFields.map(backgroundToUiField);
 
+const nullishToNumberTypeBackgroundFields = [
+  'AppStateController.newPrivacyPolicyToastShownDate',
+];
+
+const nullishToNumberTypeUiFields =
+  nullishToNumberTypeBackgroundFields.map(backgroundToUiField);
+
 const removedBackgroundFields = [
   // These properties are set to undefined, causing inconsistencies between Chrome and Firefox
   'AppStateController.appActiveTab',
@@ -128,6 +135,10 @@ const removedUiFields = removedBackgroundFields.map(backgroundToUiField);
 
 const WAIT_FOR_SENTRY_MS = 10000;
 
+function normalizeNullishToNumberType(value: unknown) {
+  return typeof (value ?? 0);
+}
+
 /**
  * Transform background state to make it consistent between test runs.
  *
@@ -137,6 +148,17 @@ function transformBackgroundState(
   data: JsonRpcResponse<Json>,
 ): JsonRpcResponse<Json> {
   const clonedData = cloneDeep(data);
+
+  for (const field of nullishToNumberTypeBackgroundFields) {
+    if (has(clonedData, field)) {
+      set(
+        clonedData,
+        field,
+        normalizeNullishToNumberType(get(clonedData, field)),
+      );
+    }
+  }
+
   for (const field of maskedBackgroundFields) {
     if (has(clonedData, field)) {
       set(clonedData, field, typeof get(clonedData, field));
@@ -156,6 +178,11 @@ function transformBackgroundState(
  * @param data - The data to transform
  */
 function transformUiState(data: JsonRpcResponse<Json>): JsonRpcResponse<Json> {
+  for (const field of nullishToNumberTypeUiFields) {
+    if (has(data, field)) {
+      set(data, field, normalizeNullishToNumberType(get(data, field)));
+    }
+  }
   for (const field of maskedUiFields) {
     if (has(data, field)) {
       set(data, field, typeof get(data, field));
