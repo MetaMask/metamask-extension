@@ -60,6 +60,8 @@ export function useSettingsV2Search(
     if (query.length < MIN_SEARCH_LENGTH) {
       return [];
     }
-    return fuse.search(query) as SettingsV2SearchResult[];
+    // Fuse.js v3 returns T[] directly (not FuseResult<T>[] like v6+).
+    // The bundled types describe the v6 API, so the cast is needed.
+    return fuse.search(query) as unknown as SettingsV2SearchResult[];
   }, [fuse, searchValue]);
 }

@@ -6,13 +6,11 @@ import {
   Text,
   TextVariant,
   TextColor,
-} from '@metamask/design-system-react';
-import {
   Icon,
-  IconName,
   IconSize,
-} from '../../../components/component-library';
-import { IconColor } from '../../../helpers/constants/design-system';
+  IconColor,
+  IconName,
+} from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { REQUEST_SETTING_URL } from '../../../../shared/lib/ui-utils';
 import type { SettingsV2SearchResult } from '../useSettingsV2Search';
@@ -52,7 +50,7 @@ export const SettingsV2SearchResults = ({
             <Icon
               name={item.iconName as IconName}
               size={IconSize.Lg}
-              color={IconColor.iconAlternative}
+              color={IconColor.IconAlternative}
             />
             <Box
               flexDirection={BoxFlexDirection.Row}
