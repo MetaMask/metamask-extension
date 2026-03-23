@@ -44,9 +44,8 @@ export const PerpsTabView: React.FC = () => {
     const streamManager = getPerpsStreamManager();
 
     // Initialize and prewarm
-    streamManager.init(selectedAddress).then(() => {
-      streamManager.prewarm();
-    });
+    streamManager.init(selectedAddress);
+    streamManager.prewarm();
 
     // Cleanup prewarm on unmount (cache persists!)
     return () => {

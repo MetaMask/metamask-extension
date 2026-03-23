@@ -191,6 +191,7 @@
     "PPOMController": { "storageMetadata": {} },
     "PermissionController": { "subjects": "object" },
     "PermissionLogController": { "permissionHistory": "object" },
+    "PerpsController": "object",
     "PhishingController": {
       "addressScanCache": "object",
       "tokenScanCache": "object",
@@ -217,7 +218,6 @@
         "dismissSmartAccountSuggestionEnabled": "boolean",
         "featureNotificationsEnabled": "boolean",
         "hideZeroBalanceTokens": false,
-        "petnamesEnabled": "boolean",
         "privacyMode": "boolean",
         "showConfirmationAdvancedDetails": false,
         "showDefaultAddress": "boolean",
@@ -313,5 +313,5 @@
     },
     "config": "object"
   },
-  "meta": { "storageKind": "split", "version": 198 }
+  "meta": { "storageKind": "split", "version": 199 }
 }

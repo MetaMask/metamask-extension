@@ -1,9 +1,10 @@
 import React from 'react';
 import type { Provider } from '@metamask/network-controller';
-import { act } from '@testing-library/react';
+import { act, render } from '@testing-library/react';
 import { formatChainIdToCaip } from '@metamask/bridge-controller';
 import * as reactRouterUtils from 'react-router-dom';
 import { userEvent } from '@testing-library/user-event';
+import { Provider as ReduxProvider } from 'react-redux';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { toAssetId } from '../../../../shared/lib/asset-utils';
 import configureStore from '../../../store/store';
@@ -228,6 +229,14 @@ describe('PrepareBridgePage', () => {
   });
 
   it('should throw an error if token decimals are not defined', async () => {
+    jest
+      .spyOn(reactRouterUtils, 'useSearchParams')
+      .mockReturnValue([{ get: () => null }] as never);
+
+    const consoleSpy = jest
+      .spyOn(console, 'error')
+      .mockImplementation(() => undefined);
+
     const mockStore = createBridgeMockStore({
       featureFlagOverrides: {
         bridgeConfig: {
@@ -257,13 +266,16 @@ describe('PrepareBridgePage', () => {
     });
 
     expect(() =>
-      renderWithProvider(
-        <HardwareWalletProvider>
-          <PrepareBridgePage onOpenSettings={jest.fn()} />
-        </HardwareWalletProvider>,
-        configureStore(mockStore),
+      render(
+        <ReduxProvider store={configureStore(mockStore)}>
+          <HardwareWalletProvider>
+            <PrepareBridgePage onOpenSettings={jest.fn()} />
+          </HardwareWalletProvider>
+        </ReduxProvider>,
       ),
     ).toThrow();
+
+    consoleSpy.mockRestore();
   });
 
   it('should validate src amount on change', async () => {

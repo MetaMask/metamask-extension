@@ -339,6 +339,18 @@
   "addWallet": {
     "message": "Add wallet"
   },
+  "addedProtectionDescription": {
+    "message": "You're interacting with an unknown address. This helps prevent malicious transactions."
+  },
+  "addedProtectionOptionalBadge": {
+    "message": "Optional"
+  },
+  "addedProtectionTitle": {
+    "message": "Added protection"
+  },
+  "addedProtectionTooltip": {
+    "message": "If the final transaction doesn't match this preview, it won't go through. You only pay the network fee."
+  },
   "additionalNetworks": {
     "message": "Additional networks"
   },
@@ -756,6 +768,27 @@
   "autoDetectTokensDescriptionV2": {
     "message": "Displays new tokens sent to your wallet."
   },
+  "autoLock": {
+    "message": "Auto lock"
+  },
+  "autoLockAfter15Seconds": {
+    "message": "After 15 seconds"
+  },
+  "autoLockAfter1Minute": {
+    "message": "After 1 minute"
+  },
+  "autoLockAfter30Seconds": {
+    "message": "After 30 seconds"
+  },
+  "autoLockAfter5Minutes": {
+    "message": "After 5 minutes"
+  },
+  "autoLockAfterMinutes": {
+    "message": "After $1 minutes"
+  },
+  "autoLockNever": {
+    "message": "Never"
+  },
   "autoLockTimeLimit": {
     "message": "Auto-lock timer (minutes)"
   },
@@ -773,6 +806,9 @@
   },
   "backToHome": {
     "message": "Back to home"
+  },
+  "backUpIncomplete": {
+    "message": "Back up incomplete"
   },
   "backup": {
     "message": "Backup"
@@ -854,18 +890,11 @@
   "basicConfigurationModalCheckbox": {
     "message": "I understand and want to continue"
   },
-  "basicConfigurationModalDisclaimerOff": {
+  "basicConfigurationModalDisclaimerOffPart1": {
     "message": "This means you won't fully optimize your time on MetaMask. Basic features (like token details, optimal gas settings, and others) won't be available to you."
   },
-  "basicConfigurationModalDisclaimerOffAdditionalText": {
-    "message": "Turning this off also disables all features within $1, and $2.",
-    "description": "$1 and $2 are bold text for basicConfigurationModalDisclaimerOffAdditionalTextFeaturesFirst and basicConfigurationModalDisclaimerOffAdditionalTextFeaturesLast respectively"
-  },
-  "basicConfigurationModalDisclaimerOffAdditionalTextFeaturesFirst": {
-    "message": "security and privacy, backup and sync"
-  },
-  "basicConfigurationModalDisclaimerOffAdditionalTextFeaturesLast": {
-    "message": "notifications"
+  "basicConfigurationModalDisclaimerOffPart2": {
+    "message": "Turning this off also disables some features within privacy, backup and sync, and notifications."
   },
   "basicConfigurationModalDisclaimerOn": {
     "message": "To optimize your time on MetaMask, you’ll need to turn on this feature. Basic functions (like token details, optimal gas settings, and others) are important to the web3 experience."
@@ -1077,7 +1106,7 @@
     "message": "Lowest cost"
   },
   "bridgeMarketClosedAction": {
-    "message": "Market is closed"
+    "message": "Market closed"
   },
   "bridgeMarketClosedDescription": {
     "message": "This stock token is currently outside trading hours. Try again when the market reopens."
@@ -2399,12 +2428,6 @@
   "dismissReminderField": {
     "message": "Dismiss Secret Recovery Phrase backup reminder"
   },
-  "dismissSmartAccountSuggestionEnabledDescription": {
-    "message": "Turn this on to no longer see the \"Switch to Smart Account\" suggestion on any account. Smart accounts unlocks faster transactions, lower network fees and more flexibility on payment for those."
-  },
-  "dismissSmartAccountSuggestionEnabledTitle": {
-    "message": "Dismiss \"Switch to Smart Account\" suggestion"
-  },
   "displayNftMedia": {
     "message": "Display NFT media"
   },
@@ -3381,6 +3404,9 @@
     "message": "Save up to 4% on trades with a MetaMask referral code.",
     "description": "The subtitle of the Hyperliquid referral confirmation screen"
   },
+  "iUnderstand": {
+    "message": "I understand"
+  },
   "id": {
     "message": "ID"
   },
@@ -3940,6 +3966,9 @@
   },
   "managePermissions": {
     "message": "Manage permissions"
+  },
+  "manageWalletRecovery": {
+    "message": "Manage wallet recovery"
   },
   "marketCap": {
     "message": "Market cap"
@@ -6683,6 +6712,9 @@
   "securityAlertsDescriptionV2": {
     "message": "This feature alerts you to malicious activity by actively reviewing transaction and signature requests. $1"
   },
+  "securityAndPassword": {
+    "message": "Security and password"
+  },
   "securityAndPrivacy": {
     "message": "Security & privacy"
   },
@@ -6870,9 +6902,6 @@
   },
   "settingsSearchMatchingNotFound": {
     "message": "No matching results found."
-  },
-  "settingsSubHeadingSignaturesAndTransactions": {
-    "message": "Signature and transaction requests"
   },
   "shieldClaim": {
     "message": "Submit a claim"
@@ -7510,6 +7539,10 @@
   "showFiatConversionInTestnetsDescription": {
     "message": "Select this to show fiat conversion on test networks"
   },
+  "showFiatConversionInTestnetsDescriptionV2": {
+    "message": "Shows network tokens as local currency on test networks. If you've been asked to turn this feature on, you might be getting scammed. For testing purposes only. $1",
+    "description": "$1 is the 'Learn more' link"
+  },
   "showHexData": {
     "message": "Show hex data"
   },
@@ -7691,6 +7724,12 @@
   "smartAccount": {
     "message": "Smart account"
   },
+  "smartAccountDappRequestsDescription": {
+    "message": "Let dapps request smart account features for standard accounts. This won't affect accounts that are already smart accounts."
+  },
+  "smartAccountDappRequestsTitle": {
+    "message": "Smart account requests from dapps"
+  },
   "smartAccountLabel": {
     "message": "Smart Account"
   },
@@ -7705,6 +7744,12 @@
   },
   "smartAccountUpgradeBannerTitle": {
     "message": "Switch to smart account"
+  },
+  "smartContractAddress": {
+    "message": "Smart contract address"
+  },
+  "smartContractAddressWarning": {
+    "message": "The recipient address may not support direct token transfers, which could result in fund loss. Only continue if you're certain this contract can receive your transfer."
   },
   "smartContracts": {
     "message": "Smart contracts"
@@ -8742,6 +8787,9 @@
   },
   "tokenContractError": {
     "message": "This address is a token contract address. If you send tokens to this address, you will lose them."
+  },
+  "tokenContractWarning": {
+    "message": "Token contract warning"
   },
   "tokenCount": {
     "message": "token",

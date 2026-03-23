@@ -49,7 +49,7 @@ jest.mock('./stores/persistence-manager', () => ({
 async function importFresh(): Promise<{
   persistenceManager: PersistenceManagerType;
 }> {
-  // eslint-disable-next-line import/extensions -- jest.resetModules requires extension for re-import
+  // eslint-disable-next-line import-x/extensions -- jest.resetModules requires extension for re-import
   const mod = await import('./setup-initial-state-hooks.js');
   return mod as unknown as { persistenceManager: PersistenceManagerType };
 }

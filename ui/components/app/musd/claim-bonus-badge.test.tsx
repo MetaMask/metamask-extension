@@ -27,6 +27,41 @@ jest.mock('../../../hooks/useI18nContext', () => ({
   useI18nContext: () => (key: string) => key,
 }));
 
+jest.mock('react-redux', () => ({
+  ...jest.requireActual('react-redux'),
+  useSelector: jest.fn().mockReturnValue({
+    '0x1': { name: 'Ethereum Mainnet' },
+  }),
+}));
+
+jest.mock('../../../contexts/metametrics', () => {
+  const ReactActual = jest.requireActual<typeof import('react')>('react');
+  const _trackEvent = jest.fn();
+  const MetaMetricsContext = ReactActual.createContext({
+    trackEvent: _trackEvent,
+    bufferedTrace: jest.fn().mockResolvedValue(undefined),
+    bufferedEndTrace: jest.fn().mockResolvedValue(undefined),
+    onboardingParentContext: { current: null },
+  });
+  MetaMetricsContext.Provider = (({
+    children,
+  }: {
+    children: React.ReactNode;
+  }) =>
+    ReactActual.createElement(
+      ReactActual.Fragment,
+      null,
+      children,
+    )) as unknown as typeof MetaMetricsContext.Provider;
+  return {
+    MetaMetricsContext,
+    LegacyMetaMetricsProvider: ({ children }: { children: React.ReactNode }) =>
+      ReactActual.createElement(ReactActual.Fragment, null, children),
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    __mockTrackEvent: _trackEvent,
+  };
+});
+
 const defaultProps = {
   label: 'Claim 5% bonus',
   tokenAddress: '0xabc123',

@@ -3,7 +3,7 @@ import { By } from 'selenium-webdriver';
 import { largeDelayMs, withFixtures } from '../../../helpers';
 import { SOLANA_MAINNET_SCOPE } from '../../../constants';
 import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
-import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
+import { login } from '../../../page-objects/flows/login.flow';
 import { addAccount } from '../../../page-objects/flows/add-account.flow';
 import TestDappMultichain from '../../../page-objects/pages/test-dapp-multichain';
 import { DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS } from '../testHelpers';
@@ -18,7 +18,7 @@ describe('Multichain API - Non EVM', function () {
           title: this.test?.fullTitle(),
         },
         async ({ driver, extensionId }) => {
-          await loginWithBalanceValidation(driver);
+          await login(driver);
           const requestScopesToNetworkMap = {
             'eip155:1': 'Ethereum',
             [SOLANA_MAINNET_SCOPE]: 'Solana',
@@ -83,7 +83,7 @@ describe('Multichain API - Non EVM', function () {
           title: this.test?.fullTitle(),
         },
         async ({ driver, extensionId }) => {
-          await loginWithBalanceValidation(driver);
+          await login(driver);
           await addAccount({ driver, switchToAccount: 'Account 1' });
 
           const testDapp = new TestDappMultichain(driver);

@@ -5,7 +5,7 @@ import { createDappTransaction } from '../../page-objects/flows/transaction';
 import { withFixtures } from '../../helpers';
 import { DAPP_URL, WINDOW_TITLES } from '../../constants';
 import FixtureBuilder from '../../fixtures/fixture-builder';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import HomePage from '../../page-objects/pages/home/homepage';
 
@@ -24,7 +24,7 @@ describe('Navigate transactions', function () {
         dappOptions: { numberOfTestDapps: 1 },
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         await createRedesignedMultipleTransactions(driver, TRANSACTION_COUNT);
 
@@ -63,7 +63,7 @@ describe('Navigate transactions', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         await createRedesignedMultipleTransactions(driver, TRANSACTION_COUNT);
 
@@ -98,7 +98,7 @@ describe('Navigate transactions', function () {
         dappOptions: { numberOfTestDapps: 1 },
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         await createRedesignedMultipleTransactions(driver, TRANSACTION_COUNT);
 
@@ -122,7 +122,7 @@ describe('Navigate transactions', function () {
         dappOptions: { numberOfTestDapps: 1 },
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         await createRedesignedMultipleTransactions(driver, TRANSACTION_COUNT);
 
@@ -146,7 +146,7 @@ describe('Navigate transactions', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         await createRedesignedMultipleTransactions(driver, TRANSACTION_COUNT);
 

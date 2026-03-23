@@ -10,7 +10,7 @@ import SendPage from '../../page-objects/pages/send/send-page';
 import { withFixtures } from '../../helpers';
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 import Confirmation from '../../page-objects/pages/confirmations/confirmation';
 import HomePage from '../../page-objects/pages/home/homepage';
 import ActivityListPage from '../../page-objects/pages/home/activity-list';
@@ -28,11 +28,11 @@ describe('Send - Hex Address Normalization', function () {
     it('normalizes address without 0x prefix and sends ETH', async function () {
       await withFixtures(
         {
-          fixtures: new FixtureBuilderV2().withPetnamesDisabled().build(),
+          fixtures: new FixtureBuilderV2().build(),
           title: this.test?.fullTitle(),
         },
         async ({ driver }) => {
-          await loginWithBalanceValidation(driver);
+          await login(driver);
 
           await createInternalTransaction({
             driver,
@@ -66,7 +66,6 @@ describe('Send - Hex Address Normalization', function () {
         {
           dappOptions: { numberOfTestDapps: 1 },
           fixtures: new FixtureBuilderV2()
-            .withPetnamesDisabled()
             .withTokensControllerERC20()
             .withEnabledNetworks({ eip155: { '0x539': true } })
             .build(),
@@ -74,7 +73,7 @@ describe('Send - Hex Address Normalization', function () {
           title: this.test?.fullTitle(),
         },
         async ({ driver, localNodes }) => {
-          await loginWithBalanceValidation(driver, localNodes[0]);
+          await login(driver, { localNode: localNodes[0] });
 
           // Send TST
           const homePage = new HomePage(driver);
@@ -100,7 +99,6 @@ describe('Send - Hex Address Normalization', function () {
         {
           dappOptions: { numberOfTestDapps: 1 },
           fixtures: new FixtureBuilderV2()
-            .withPetnamesDisabled()
             .withEnabledNetworks({ eip155: { '0x539': true } })
             .withTokensControllerERC20()
             .build(),
@@ -108,7 +106,7 @@ describe('Send - Hex Address Normalization', function () {
           title: this.test?.fullTitle(),
         },
         async ({ driver, localNodes }) => {
-          await loginWithBalanceValidation(driver, localNodes[0]);
+          await login(driver, { localNode: localNodes[0] });
 
           // Send TST
           const homePage = new HomePage(driver);

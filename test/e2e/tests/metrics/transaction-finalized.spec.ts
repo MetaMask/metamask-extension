@@ -8,7 +8,7 @@ import {
 } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { MOCK_META_METRICS_ID } from '../../constants';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 import { sendRedesignedTransactionToAddress } from '../../page-objects/flows/send-transaction.flow';
 import ActivityListPage from '../../page-objects/pages/home/activity-list';
 
@@ -170,7 +170,7 @@ describe('Transaction Finalized Event', function (this: Suite) {
         testSpecificMock,
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         // TODO: Update Test when Multichain Send Flow is added
         await sendRedesignedTransactionToAddress({

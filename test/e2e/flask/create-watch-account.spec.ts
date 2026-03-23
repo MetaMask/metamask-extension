@@ -9,7 +9,7 @@ import ExperimentalSettings from '../page-objects/pages/settings/experimental-se
 import HeaderNavbar from '../page-objects/pages/header-navbar';
 import HomePage from '../page-objects/pages/home/homepage';
 import SettingsPage from '../page-objects/pages/settings/settings-page';
-import { loginWithBalanceValidation } from '../page-objects/flows/login.flow';
+import { login } from '../page-objects/flows/login.flow';
 import { watchEoaAddress } from '../page-objects/flows/watch-account.flow';
 
 const ACCOUNT_1 = '0x5CfE73b6021E818B776b421B1c4Db2474086a7e1';
@@ -39,7 +39,7 @@ describe.skip('Account-watcher snap', function (this: Suite) {
         },
         async ({ driver }: { driver: Driver }) => {
           // watch an EOA address
-          await loginWithBalanceValidation(driver);
+          await login(driver);
           await watchEoaAddress(driver, EOA_ADDRESS);
 
           // new account should be displayed in the account list
@@ -68,7 +68,7 @@ describe.skip('Account-watcher snap', function (this: Suite) {
         },
         async ({ driver }: { driver: Driver }) => {
           // watch an EOA address
-          await loginWithBalanceValidation(driver);
+          await login(driver);
           await watchEoaAddress(driver, EOA_ADDRESS);
           const homePage = new HomePage(driver);
           await homePage.headerNavbar.checkAccountLabel(
@@ -130,7 +130,7 @@ describe.skip('Account-watcher snap', function (this: Suite) {
             title: this.test?.fullTitle(),
           },
           async ({ driver }: { driver: Driver }) => {
-            await loginWithBalanceValidation(driver);
+            await login(driver);
             const homePage = new HomePage(driver);
             await homePage.checkPageIsLoaded();
             await homePage.checkExpectedBalanceIsDisplayed();
@@ -169,7 +169,7 @@ describe.skip('Account-watcher snap', function (this: Suite) {
         },
         async ({ driver }: { driver: Driver }) => {
           // watch an EOA address for ACCOUNT_2
-          await loginWithBalanceValidation(driver);
+          await login(driver);
           await watchEoaAddress(driver, ACCOUNT_2);
           const headerNavbar = new HeaderNavbar(driver);
           await headerNavbar.checkAccountLabel(DEFAULT_WATCHED_ACCOUNT_NAME);
@@ -204,7 +204,7 @@ describe.skip('Account-watcher snap', function (this: Suite) {
         },
         async ({ driver }: { driver: Driver }) => {
           // watch an EOA address
-          await loginWithBalanceValidation(driver);
+          await login(driver);
           await watchEoaAddress(driver, EOA_ADDRESS);
 
           // open account details modal in header navbar
@@ -238,7 +238,7 @@ describe.skip('Account-watcher snap', function (this: Suite) {
         },
         async ({ driver }: { driver: Driver }) => {
           // watch an EOA address
-          await loginWithBalanceValidation(driver);
+          await login(driver);
           await watchEoaAddress(driver, EOA_ADDRESS);
           const homePage = new HomePage(driver);
           await homePage.headerNavbar.checkAccountLabel(
@@ -282,7 +282,7 @@ describe.skip('Account-watcher snap', function (this: Suite) {
           title: this.test?.fullTitle(),
         },
         async ({ driver }) => {
-          await loginWithBalanceValidation(driver);
+          await login(driver);
           const homePage = new HomePage(driver);
           await homePage.checkPageIsLoaded();
           await homePage.checkExpectedBalanceIsDisplayed();
@@ -322,7 +322,7 @@ describe.skip('Account-watcher snap', function (this: Suite) {
           title: this.test?.fullTitle(),
         },
         async ({ driver }) => {
-          await loginWithBalanceValidation(driver);
+          await login(driver);
           const homePage = new HomePage(driver);
           await homePage.checkPageIsLoaded();
           await homePage.checkExpectedBalanceIsDisplayed();
