@@ -6679,10 +6679,7 @@ export default class MetamaskController extends EventEmitter {
       });
     };
 
-    const onBeforeStartUISyncSent = () => {
-      // Start tracking patches immediately after retrieving initial state for
-      // this UI connection (to include with the `startUISync` notification) to
-      // ensure we don't miss any patches or include extra patches.
+    const initializePatchStore = () => {
       patchStore.init();
     };
 
@@ -6748,7 +6745,7 @@ export default class MetamaskController extends EventEmitter {
       patchStore.destroy();
     });
 
-    return { onBeforeStartUISyncSent };
+    return { initializePatchStore };
   }
 
   /**
@@ -6756,10 +6753,11 @@ export default class MetamaskController extends EventEmitter {
    *
    * @param {Substream} outStream - The stream to provide our API over.
    * @param {object} args - Additional arguments.
-   * @param {() => void} args.onBeforeStartUISyncSent - Function to call before
-   * emitting the `startUISync` event.
+   * @param {() => void} args.initializePatchStore - Function to call after
+   * retrieving state but before emitting the `startUISync` event, in order to
+   * initialize the patch store.
    */
-  setupControllerConnection(outStream, { onBeforeStartUISyncSent }) {
+  setupControllerConnection(outStream, { initializePatchStore }) {
     const messengerSubscriptions = new MessengerSubscriptions(
       this.controllerMessenger,
       outStream,
@@ -6813,7 +6811,10 @@ export default class MetamaskController extends EventEmitter {
       }
 
       const initialState = this.getState();
-      onBeforeStartUISyncSent();
+      // Start tracking patches immediately after retrieving initial state for
+      // this UI connection (to include with the `startUISync` notification) to
+      // ensure we don't miss any patches or include extra patches.
+      initializePatchStore();
 
       outStream.write({
         jsonrpc: '2.0',
