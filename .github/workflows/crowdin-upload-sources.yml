@@ -1,14 +1,14 @@
-name: Crowdin Action
+name: Crowdin Upload Sources
 
 on:
   push:
     branches:
       - main
-      
+
 jobs:
-  synchronize-with-crowdin:
+  upload-sources:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 3
     steps:
       - name: Checkout
         uses: actions/checkout@v6

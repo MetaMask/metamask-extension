@@ -5,14 +5,10 @@ on:
     - cron: '0 */12 * * *'
   workflow_dispatch:
 
-permissions:
-  contents: write
-  pull-requests: write
-
 jobs:
   download-translations:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 3
 
     steps:
       - name: Checkout
