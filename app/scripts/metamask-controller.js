@@ -6652,6 +6652,8 @@ export default class MetamaskController extends EventEmitter {
    *
    * @param {Substream} outStream - The substream that patch store messages are
    * sent through.
+   * @returns {{ initializePatchStore: () => void }} Callbacks to call. The only
+   * one is `initializePatchStore`.
    */
   setupPatchStoreConnection(outStream) {
     const patchStore = new PatchStore(this.memStore);
