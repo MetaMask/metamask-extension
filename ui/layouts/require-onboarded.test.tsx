@@ -3,7 +3,7 @@ import { render } from '@testing-library/react';
 import { Navigate, Outlet } from 'react-router-dom';
 import { useAppSelector } from '../store/store';
 import { ONBOARDING_ROUTE } from '../helpers/constants/routes';
-import { RequireInitialized } from './require-initialized';
+import { RequireOnboarded } from './require-onboarded';
 
 jest.mock('../store/store', () => ({
   useAppSelector: jest.fn(),
@@ -20,7 +20,7 @@ jest.mock('react-router-dom', () => {
 
 const mockUseAppSelector = jest.mocked(useAppSelector);
 
-describe('RequireInitialized', () => {
+describe('RequireOnboarded', () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
@@ -36,7 +36,7 @@ describe('RequireInitialized', () => {
       selector(state as never),
     );
 
-    const { getByTestId, queryByTestId } = render(<RequireInitialized />);
+    const { getByTestId, queryByTestId } = render(<RequireOnboarded />);
 
     expect(getByTestId('navigate')).toHaveAttribute(
       'data-to',
@@ -56,7 +56,7 @@ describe('RequireInitialized', () => {
       selector(state as never),
     );
 
-    const { getByTestId, queryByTestId } = render(<RequireInitialized />);
+    const { getByTestId, queryByTestId } = render(<RequireOnboarded />);
 
     expect(getByTestId('outlet')).toBeInTheDocument();
     expect(queryByTestId('navigate')).not.toBeInTheDocument();
@@ -73,7 +73,7 @@ describe('RequireInitialized', () => {
       selector(state as never),
     );
 
-    render(<RequireInitialized />);
+    render(<RequireOnboarded />);
 
     expect(Navigate).toHaveBeenCalledWith(
       expect.objectContaining({

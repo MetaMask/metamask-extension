@@ -3,7 +3,7 @@ import { Navigate, Outlet, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { render } from '@testing-library/react';
 import { SWAP_PATH } from '../../constants/routes';
-import RequireBasicFunctionality from './require-basic-functionality';
+import BasicFunctionalityRequired from './require-basic-functionality';
 
 jest.mock('react-redux', () => ({
   useSelector: jest.fn(),
@@ -40,7 +40,7 @@ describe('RequireBasicFunctionality', () => {
     mockUseSelector.mockReturnValue(true);
 
     const { getByTestId, queryByTestId } = render(
-      <RequireBasicFunctionality />,
+      <BasicFunctionalityRequired />,
     );
 
     expect(getByTestId('outlet')).toBeInTheDocument();
@@ -51,7 +51,7 @@ describe('RequireBasicFunctionality', () => {
     mockUseSelector.mockReturnValue(undefined);
 
     const { getByTestId, queryByTestId } = render(
-      <RequireBasicFunctionality />,
+      <BasicFunctionalityRequired />,
     );
 
     expect(getByTestId('navigate')).toHaveAttribute(
@@ -71,7 +71,7 @@ describe('RequireBasicFunctionality', () => {
       hash: '#section',
     } as ReturnType<typeof useLocation>);
 
-    const { getByTestId } = render(<RequireBasicFunctionality />);
+    const { getByTestId } = render(<BasicFunctionalityRequired />);
 
     expect(getByTestId('navigate')).toHaveAttribute(
       'data-to',
@@ -84,7 +84,7 @@ describe('RequireBasicFunctionality', () => {
   it('uses replace navigation', () => {
     mockUseSelector.mockReturnValue(false);
 
-    render(<RequireBasicFunctionality />);
+    render(<BasicFunctionalityRequired />);
 
     expect(Navigate).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -98,7 +98,7 @@ describe('RequireBasicFunctionality', () => {
   it('does not call Outlet when redirecting', () => {
     mockUseSelector.mockReturnValue(false);
 
-    render(<RequireBasicFunctionality />);
+    render(<BasicFunctionalityRequired />);
 
     expect(Outlet).not.toHaveBeenCalled();
   });

@@ -140,7 +140,7 @@ import { WalletDetailsPage } from '../multichain-accounts/wallet-details-page';
 import { MultichainReviewPermissions } from '../../components/multichain-accounts/permissions/permission-review-page/multichain-review-permissions-page';
 import { LegacyLayout } from '../../layouts/legacy-layout';
 import { RequireAuthenticated } from '../../layouts/require-authenticated';
-import { RequireInitialized } from '../../layouts/require-initialized';
+import { RequireOnboarded } from '../../layouts/require-onboarded';
 import { contactsRoutes } from '../contacts';
 import RequireBasicFunctionality from '../../helpers/higher-order-components/require-basic-functionality/require-basic-functionality';
 import { getCurrencyRateControllerCurrentCurrency } from '../../../shared/lib/selectors/assets-migration';
@@ -267,7 +267,7 @@ export const routeConfig = [
         element: <Lock />,
       },
       {
-        element: <RequireInitialized />,
+        element: <RequireOnboarded />,
         children: [
           {
             path: UNLOCK_ROUTE,

@@ -8,7 +8,7 @@ import { BASIC_FUNCTIONALITY_OFF_ROUTE } from '../../constants/routes';
  * Route guard that redirects to the basic-functionality-off screen when
  * useExternalServices is off.
  */
-const RequireBasicFunctionality = () => {
+const BasicFunctionalityRequired = () => {
   const useExternalServices = useSelector(getUseExternalServices);
   const location = useLocation();
 
@@ -27,4 +27,4 @@ const RequireBasicFunctionality = () => {
   return <Outlet />;
 };
 
-export default RequireBasicFunctionality;
+export default BasicFunctionalityRequired;
