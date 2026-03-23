@@ -24,16 +24,8 @@ const ShowConversionInTestnetsItem = createToggleItem({
 
 /** Registry of setting items for the Developer Options page. Add new items here */
 export const DEVELOPER_OPTIONS_SETTING_ITEMS: SettingItemConfig[] = [
-  {
-    id: 'show-fiat-in-testnets',
-    titleKey: 'showFiatConversionInTestnets',
-    component: ShowConversionInTestnetsItem,
-  },
-  {
-    id: 'auto-reset-account',
-    titleKey: 'clearActivity',
-    component: AutoResetAccountItem,
-  },
+  { id: 'show-fiat-in-testnets', component: ShowConversionInTestnetsItem },
+  { id: 'auto-reset-account', component: AutoResetAccountItem },
 ];
 
 const DeveloperOptionsTab = () => (

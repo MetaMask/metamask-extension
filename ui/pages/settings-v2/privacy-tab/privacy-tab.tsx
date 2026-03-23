@@ -36,45 +36,22 @@ const SkipLinkConfirmationToggleItem = createToggleItem({
 
 /** Registry of setting items for the Privacy page. Add new items here */
 export const PRIVACY_SETTING_ITEMS: SettingItemConfig[] = [
-  {
-    id: 'basic-functionality',
-    titleKey: 'basicConfigurationLabel',
-    component: BasicFunctionalityToggleItem,
-  },
-  {
-    id: 'third-party-apis',
-    titleKey: 'thirdPartyApis',
-    component: ThirdPartyApisItem,
-  },
+  { id: 'basic-functionality', component: BasicFunctionalityToggleItem },
+  { id: 'third-party-apis', component: ThirdPartyApisItem },
   {
     id: 'batch-account-balance-requests',
-    titleKey: 'useMultiAccountBalanceChecker',
     component: BatchAccountBalanceRequestsToggleItem,
   },
-  {
-    id: 'skip-link-confirmation',
-    titleKey: 'skipLinkConfirmationScreens',
-    component: SkipLinkConfirmationToggleItem,
-  },
+  { id: 'skip-link-confirmation', component: SkipLinkConfirmationToggleItem },
   {
     id: 'metametrics',
-    titleKey: 'participateInMetaMetrics',
     component: MetametricsToggleItem,
     hasDividerBefore: true,
   },
-  {
-    id: 'data-collection',
-    titleKey: 'dataCollectionForMarketing',
-    component: DataCollectionToggleItem,
-  },
-  {
-    id: 'delete-metametrics-data',
-    titleKey: 'deleteMetaMetricsData',
-    component: DeleteMetametricsDataItem,
-  },
+  { id: 'data-collection', component: DataCollectionToggleItem },
+  { id: 'delete-metametrics-data', component: DeleteMetametricsDataItem },
   {
     id: 'download-state-logs',
-    titleKey: 'downloadStateLogs',
     component: DownloadStateLogsItem,
     hasDividerBefore: true,
   },

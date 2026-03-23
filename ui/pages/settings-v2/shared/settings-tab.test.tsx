@@ -15,9 +15,9 @@ describe('SettingsTab', () => {
     const MockItem3 = () => <div data-testid="mock-item-3">Item 3</div>;
 
     const mockItems = [
-      { id: 'item-1', titleKey: 'settings', component: MockItem1 },
-      { id: 'item-2', titleKey: 'settings', component: MockItem2 },
-      { id: 'item-3', titleKey: 'settings', component: MockItem3 },
+      { id: 'item-1', component: MockItem1 },
+      { id: 'item-2', component: MockItem2 },
+      { id: 'item-3', component: MockItem3 },
     ];
 
     renderWithProvider(<SettingsTab items={mockItems} />, mockStore);
@@ -32,8 +32,8 @@ describe('SettingsTab', () => {
     const MockItemB = () => <div>Second</div>;
 
     const mockItems = [
-      { id: 'a', titleKey: 'settings', component: MockItemA },
-      { id: 'b', titleKey: 'settings', component: MockItemB },
+      { id: 'a', component: MockItemA },
+      { id: 'b', component: MockItemB },
     ];
 
     const { container } = renderWithProvider(
@@ -52,13 +52,8 @@ describe('SettingsTab', () => {
     const MockItem2 = () => <div data-testid="mock-item-2">Item 2</div>;
 
     const mockItems = [
-      { id: 'item-1', titleKey: 'settings', component: MockItem1 },
-      {
-        id: 'item-2',
-        titleKey: 'settings',
-        component: MockItem2,
-        hasDividerBefore: true,
-      },
+      { id: 'item-1', component: MockItem1 },
+      { id: 'item-2', component: MockItem2, hasDividerBefore: true },
     ];
 
     const { container } = renderWithProvider(
@@ -75,13 +70,8 @@ describe('SettingsTab', () => {
     const MockItem2 = () => <div data-testid="mock-item-2">Item 2</div>;
 
     const mockItems = [
-      { id: 'item-1', titleKey: 'settings', component: MockItem1 },
-      {
-        id: 'item-2',
-        titleKey: 'settings',
-        component: MockItem2,
-        hasDividerBefore: false,
-      },
+      { id: 'item-1', component: MockItem1 },
+      { id: 'item-2', component: MockItem2, hasDividerBefore: false },
     ];
 
     const { container } = renderWithProvider(

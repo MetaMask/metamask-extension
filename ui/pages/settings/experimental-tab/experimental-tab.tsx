@@ -66,25 +66,13 @@ const ExperimentalTab = () => {
     const result: SettingItemConfig[] = [];
 
     if (process.env.NOTIFICATIONS) {
-      result.push({
-        id: 'notifications',
-        titleKey: 'notificationsFeatureToggle',
-        component: NotificationsItem,
-      });
+      result.push({ id: 'notifications', component: NotificationsItem });
     }
 
-    result.push({
-      id: 'keyring-snaps',
-      titleKey: 'addSnapAccountToggle',
-      component: KeyringSnapsItem,
-    });
+    result.push({ id: 'keyring-snaps', component: KeyringSnapsItem });
 
     if (isFlask() || isExperimental()) {
-      result.push({
-        id: 'watch-account',
-        titleKey: 'watchEthereumAccountsToggle',
-        component: WatchAccountItem,
-      });
+      result.push({ id: 'watch-account', component: WatchAccountItem });
     }
 
     return result;

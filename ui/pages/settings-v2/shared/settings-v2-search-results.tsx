@@ -58,7 +58,9 @@ export const SettingsV2SearchResults = ({
               className="flex-1 min-w-0"
             >
               <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
-                {t(item.tabLabelKey)} &gt; {t(item.titleKey)}
+                {item.parentTabLabelKey
+                  ? `${t(item.parentTabLabelKey)} > ${t(item.tabLabelKey)} > ${t(item.titleKey)}`
+                  : `${t(item.tabLabelKey)} > ${t(item.titleKey)}`}
               </Text>
             </Box>
           </Box>

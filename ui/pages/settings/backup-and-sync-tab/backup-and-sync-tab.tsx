@@ -13,7 +13,6 @@ const BackupAndSyncTab = () => {
     const result: SettingItemConfig[] = [
       {
         id: 'backup-toggle',
-        titleKey: 'backupAndSyncEnable',
         component: BackupAndSyncToggle,
       },
     ];
@@ -21,7 +20,6 @@ const BackupAndSyncTab = () => {
     if (isBackupAndSyncEnabled) {
       result.push({
         id: 'features-toggles',
-        titleKey: 'backupAndSyncFeatureAccounts',
         component: BackupAndSyncFeaturesToggles,
         hasDividerBefore: true,
       });

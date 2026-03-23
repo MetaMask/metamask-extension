@@ -111,37 +111,15 @@ const ShowHexDataItem = createToggleItem({
 });
 
 export const TRANSACTION_SETTING_ITEMS: SettingItemConfig[] = [
-  {
-    id: 'estimate-balance-changes',
-    titleKey: 'simulationsSettingSubHeader',
-    component: TransactionSimulationsItem,
-  },
-  {
-    id: 'security-alerts',
-    titleKey: 'securityAlerts',
-    component: SecurityAlertsItem,
-  },
-  {
-    id: 'smart-transactions',
-    titleKey: 'smartTransactions',
-    component: SmartTransactionsItem,
-  },
+  { id: 'estimate-balance-changes', component: TransactionSimulationsItem },
+  { id: 'security-alerts', component: SecurityAlertsItem },
+  { id: 'smart-transactions', component: SmartTransactionsItem },
   {
     id: 'smart-account-requests-from-dapps',
-    titleKey: 'smartAccountRequestsFromDapps',
     component: SmartAccountRequestsFromDappsItem,
   },
-  {
-    id: 'proposed-nicknames',
-    titleKey: 'externalNameSourcesSetting',
-    component: ProposedNicknamesItem,
-  },
-  {
-    id: 'show-hex-data',
-    titleKey: 'showHexData',
-    component: ShowHexDataItem,
-    hasDividerBefore: true,
-  },
+  { id: 'proposed-nicknames', component: ProposedNicknamesItem },
+  { id: 'show-hex-data', component: ShowHexDataItem, hasDividerBefore: true },
 ];
 
 const TransactionsTab = () => <SettingsTab items={TRANSACTION_SETTING_ITEMS} />;

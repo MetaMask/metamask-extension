@@ -14,6 +14,8 @@ export type SettingsV2SearchResult = {
   titleKey: string;
   tabRoute: string;
   iconName: string;
+  /** Present for sub-page items to show full breadcrumb: Parent > SubPage > Item */
+  parentTabLabelKey?: string;
 };
 
 /**
@@ -40,17 +42,18 @@ function buildSearchableItems(): SettingsV2SearchResult[] {
       }),
     );
 
-    const subPageItems: SettingsV2SearchResult[] = (
-      cfg.subPages ?? []
-    ).flatMap((subPage) => {
-      const meta = SETTINGS_V2_ROUTE_META[subPage.path];
-      return subPage.titleKeys.map((titleKey) => ({
-        tabLabelKey: meta?.labelKey ?? tab.labelKey,
-        titleKey,
-        tabRoute: subPage.path,
-        iconName: tab.iconName,
-      }));
-    });
+    const subPageItems: SettingsV2SearchResult[] = (cfg.subPages ?? []).flatMap(
+      (subPage) => {
+        const meta = SETTINGS_V2_ROUTE_META[subPage.path];
+        return subPage.titleKeys.map((titleKey) => ({
+          parentTabLabelKey: tab.labelKey,
+          tabLabelKey: meta?.labelKey ?? tab.labelKey,
+          titleKey,
+          tabRoute: subPage.path,
+          iconName: tab.iconName,
+        }));
+      },
+    );
 
     return [...tabItems, ...subPageItems];
   });

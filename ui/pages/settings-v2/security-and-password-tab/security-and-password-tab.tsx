@@ -44,18 +44,10 @@ export const AutoLockItem = createSelectItem({
 });
 
 export const SECURITY_AND_PASSWORD_SETTING_ITEMS: SettingItemConfig[] = [
-  {
-    id: 'manage-wallet-recovery',
-    titleKey: 'manageWalletRecovery',
-    component: ManageWalletRecoveryItem,
-  },
-  { id: 'password', titleKey: 'password', component: PasswordItem },
-  { id: 'auto-lock', titleKey: 'autoLock', component: AutoLockItem },
-  {
-    id: 'phishing-detection',
-    titleKey: 'usePhishingDetection',
-    component: PhishingDetectionItem,
-  },
+  { id: 'manage-wallet-recovery', component: ManageWalletRecoveryItem },
+  { id: 'password', component: PasswordItem },
+  { id: 'auto-lock', component: AutoLockItem },
+  { id: 'phishing-detection', component: PhishingDetectionItem },
 ];
 
 const SecurityAndPasswordTab = () => (
