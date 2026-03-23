@@ -187,6 +187,7 @@
     "PPOMController": { "storageMetadata": {} },
     "PermissionController": {},
     "PermissionLogController": { "permissionHistory": "object" },
+    "PerpsController": "object",
     "PhishingController": {
       "addressScanCache": "object",
       "tokenScanCache": "object",
@@ -213,7 +214,6 @@
         "dismissSmartAccountSuggestionEnabled": "boolean",
         "featureNotificationsEnabled": "boolean",
         "hideZeroBalanceTokens": false,
-        "petnamesEnabled": "boolean",
         "privacyMode": "boolean",
         "showConfirmationAdvancedDetails": false,
         "showDefaultAddress": "boolean",

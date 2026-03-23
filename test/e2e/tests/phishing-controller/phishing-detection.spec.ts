@@ -16,7 +16,7 @@ import { Driver } from '../../webdriver/driver';
 import HomePage from '../../page-objects/pages/home/homepage';
 import MockedPage from '../../page-objects/pages/mocked-page';
 import PhishingWarningPage from '../../page-objects/pages/phishing-warning-page';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import {
   setupPhishingDetectionMocks,
@@ -67,7 +67,7 @@ describe('Phishing Detection', function (this: Suite) {
         dappOptions: { numberOfTestDapps: 1 },
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
 
@@ -121,7 +121,7 @@ describe('Phishing Detection', function (this: Suite) {
           },
         }),
         async ({ driver }) => {
-          await loginWithBalanceValidation(driver);
+          await login(driver);
           await driver.openNewPage(DAPP_WITH_IFRAMED_PAGE_ON_BLOCKLIST);
           // we don't expect the iframe because early-phishing-detection redirects
           // the top level frame automatically.
@@ -150,7 +150,7 @@ describe('Phishing Detection', function (this: Suite) {
           },
         }),
         async ({ driver }) => {
-          await loginWithBalanceValidation(driver);
+          await login(driver);
           await driver.openNewPage(DAPP_WITH_IFRAMED_PAGE_ON_BLOCKLIST);
           const phishingWarningPage = new PhishingWarningPage(driver);
           await phishingWarningPage.clickOpenWarningInNewTabLinkOnIframe();
@@ -189,7 +189,7 @@ describe('Phishing Detection', function (this: Suite) {
         },
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
         await driver.openNewPage(
           `http://localhost:8080?extensionUrl=${driver.extensionUrl}`,
         );
@@ -227,7 +227,7 @@ describe('Phishing Detection', function (this: Suite) {
         dappOptions: { numberOfTestDapps: 1 },
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
 
@@ -267,7 +267,7 @@ describe('Phishing Detection', function (this: Suite) {
         dappOptions: { numberOfTestDapps: 1 },
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
         await driver.openNewPage(phishingSite.href);
 
         await driver.switchToWindowWithTitle('MetaMask Phishing Detection');
@@ -309,7 +309,7 @@ describe('Phishing Detection', function (this: Suite) {
         },
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
         await driver.openNewPage(
           `http://localhost:8080?extensionUrl=${driver.extensionUrl}`,
         );
@@ -346,7 +346,7 @@ describe('Phishing Detection', function (this: Suite) {
         dappOptions: { numberOfTestDapps: 1 },
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         await driver.openNewPage(testPageURL);
 
@@ -383,7 +383,7 @@ describe('Phishing Detection', function (this: Suite) {
         },
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         await driver.openNewPage(testPageURL);
 
@@ -500,7 +500,7 @@ describe('Phishing Detection', function (this: Suite) {
       // required to ensure MetaMask is fully started before running tests
       // if we had a way of detecting when the offscreen/background were ready
       // we could remove this
-      await loginWithBalanceValidation(driver);
+      await login(driver);
     });
     after('Shut down fixtures', async function () {
       deferredTestSuite.resolve(); // let the fixtures know tests are complete
@@ -567,7 +567,7 @@ describe('Phishing Detection', function (this: Suite) {
             },
           },
           async ({ driver }) => {
-            await loginWithBalanceValidation(driver);
+            await login(driver);
 
             await driver.openNewPage('http://127.0.0.1:8080/path1/');
             await driver.switchToWindowWithTitle(WINDOW_TITLES.Phishing);
@@ -598,7 +598,7 @@ describe('Phishing Detection', function (this: Suite) {
             },
           },
           async ({ driver }) => {
-            await loginWithBalanceValidation(driver);
+            await login(driver);
 
             await driver.openNewPage('http://127.0.0.1:8080/path1/path2');
 
@@ -635,7 +635,7 @@ describe('Phishing Detection', function (this: Suite) {
             },
           },
           async ({ driver }) => {
-            await loginWithBalanceValidation(driver);
+            await login(driver);
 
             await driver.openNewPage('http://127.0.0.1:8080/path1/');
             await driver.switchToWindowWithTitle(WINDOW_TITLES.Phishing);
@@ -679,7 +679,7 @@ describe('Phishing Detection', function (this: Suite) {
             },
           },
           async ({ driver }) => {
-            await loginWithBalanceValidation(driver);
+            await login(driver);
 
             await driver.openNewPage('http://127.0.0.1:8080/path1/path2');
             await driver.switchToWindowWithTitle(WINDOW_TITLES.Phishing);

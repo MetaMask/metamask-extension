@@ -16,9 +16,9 @@ import type {
 import { BaseController, StateMetadata } from '@metamask/base-controller';
 import { Messenger } from '@metamask/messenger';
 import {
-  AcceptRequest,
-  AddApprovalRequest,
-  RejectRequest,
+  ApprovalControllerAcceptRequestAction,
+  ApprovalControllerAddRequestAction,
+  ApprovalControllerRejectRequestAction,
 } from '@metamask/approval-controller';
 import { ApprovalType, ORIGIN_METAMASK } from '@metamask/controller-utils';
 import { Patch } from 'immer';
@@ -27,7 +27,7 @@ import { Eip1024EncryptedData, hasProperty, isObject } from '@metamask/utils';
 import { MetaMetricsEventCategory } from '../../../shared/constants/metametrics';
 import { stripHexPrefix } from '../../../shared/lib/hexstring-utils';
 // This import is only used for the type.
-// eslint-disable-next-line import/no-restricted-paths
+// eslint-disable-next-line import-x/no-restricted-paths
 import type { MetaMaskReduxState } from '../../../ui/store/store';
 
 const controllerName = 'DecryptMessageController';
@@ -115,9 +115,9 @@ export type DecryptMessageControllerEvents =
   DecryptMessageControllerStateChange;
 
 export type AllowedActions =
-  | AddApprovalRequest
-  | AcceptRequest
-  | RejectRequest
+  | ApprovalControllerAddRequestAction
+  | ApprovalControllerAcceptRequestAction
+  | ApprovalControllerRejectRequestAction
   | KeyringControllerDecryptMessageAction;
 
 type DecryptMessageManagerStateChangeEvent = {

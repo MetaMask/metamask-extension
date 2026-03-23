@@ -23,6 +23,10 @@ jest.mock('../../../hooks/musd/useMusdConversionToastStatus', () => ({
   useMusdConversionToastStatus: () => mockUseMusdConversionToastStatus(),
 }));
 
+jest.mock('../../../hooks/musd/useMusdConversionConfirmTrace', () => ({
+  useMusdConversionConfirmTrace: jest.fn(),
+}));
+
 let capturedToastProps: Record<string, unknown> | null = null;
 jest.mock('../../multichain/toast', () => ({
   Toast: (props: Record<string, unknown>) => {
@@ -43,6 +47,7 @@ describe('MusdConversionToast', () => {
     mockUseMusdConversionToastStatus.mockReturnValue({
       toastState: null,
       sourceTokenSymbol: null,
+      activeTransactionId: undefined,
       dismissToast: mockDismissToast,
     });
 
@@ -55,6 +60,7 @@ describe('MusdConversionToast', () => {
     mockUseMusdConversionToastStatus.mockReturnValue({
       toastState: 'in-progress',
       sourceTokenSymbol: 'USDC',
+      activeTransactionId: 'tx-1',
       dismissToast: mockDismissToast,
     });
 
@@ -71,6 +77,7 @@ describe('MusdConversionToast', () => {
     mockUseMusdConversionToastStatus.mockReturnValue({
       toastState: 'in-progress',
       sourceTokenSymbol: null,
+      activeTransactionId: 'tx-1',
       dismissToast: mockDismissToast,
     });
 
@@ -85,6 +92,7 @@ describe('MusdConversionToast', () => {
     mockUseMusdConversionToastStatus.mockReturnValue({
       toastState: 'success',
       sourceTokenSymbol: 'USDC',
+      activeTransactionId: undefined,
       dismissToast: mockDismissToast,
     });
 
@@ -104,6 +112,7 @@ describe('MusdConversionToast', () => {
     mockUseMusdConversionToastStatus.mockReturnValue({
       toastState: 'failed',
       sourceTokenSymbol: 'USDC',
+      activeTransactionId: undefined,
       dismissToast: mockDismissToast,
     });
 
@@ -123,6 +132,7 @@ describe('MusdConversionToast', () => {
     mockUseMusdConversionToastStatus.mockReturnValue({
       toastState: 'success',
       sourceTokenSymbol: 'USDC',
+      activeTransactionId: undefined,
       dismissToast: mockDismissToast,
     });
 
