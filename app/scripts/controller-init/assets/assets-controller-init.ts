@@ -15,6 +15,7 @@ import {
   type AssetsControllerMessenger,
   type AssetsControllerInitMessenger,
 } from '../messengers/assets/assets-controller-messenger';
+import { trace } from '../../../../shared/lib/trace';
 
 /**
  * Cached API client instance.
@@ -158,7 +159,7 @@ export const AssetsControllerInit: ControllerInitFunction<
 
   // Create the controller - it now creates all data sources internally.
   // queryApiClient is cast to the package's type to avoid duplicate @metamask/core-backend type conflicts.
-  const options: AssetsControllerOptions = {
+  const controller = new AssetsController({
     messenger: controllerMessenger,
     state: persistedState.AssetsController,
     isEnabled,
@@ -177,8 +178,9 @@ export const AssetsControllerInit: ControllerInitFunction<
       pollInterval: 30_000,
       enabled: false,
     },
-  };
-  const controller = new AssetsController(options);
+    // @ts-expect-error: Type of `TraceRequest` is different.
+    trace,
+  });
 
   return { controller };
 };

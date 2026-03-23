@@ -39,7 +39,6 @@ function getInitRequestMock(
   options: {
     featureFlagEnabled?: boolean;
     featureVersion?: string | null;
-    minimumVersion?: string | null;
     useTokenDetection?: boolean;
   } = {},
 ): jest.Mocked<
@@ -51,7 +50,6 @@ function getInitRequestMock(
   const {
     featureFlagEnabled = false,
     featureVersion = ASSETS_UNIFY_STATE_VERSION_1,
-    minimumVersion = null,
     useTokenDetection = true,
   } = options;
 
@@ -72,7 +70,6 @@ function getInitRequestMock(
             assetsUnifyState: {
               enabled: featureFlagEnabled,
               featureVersion,
-              minimumVersion,
             },
           },
         },
@@ -126,6 +123,7 @@ describe('AssetsControllerInit', () => {
         pollInterval: 30_000,
         enabled: false,
       },
+      trace: expect.any(Function),
     });
   });
 
@@ -160,6 +158,7 @@ describe('AssetsControllerInit', () => {
         pollInterval: 30_000,
         enabled: false,
       },
+      trace: expect.any(Function),
     });
   });
 

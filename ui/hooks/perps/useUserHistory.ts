@@ -1,7 +1,7 @@
 import { useCallback, useState } from 'react';
-import type { UserHistoryItem } from '@metamask/perps-controller';
 import type { CaipAccountId } from '@metamask/utils';
-import { usePerpsController } from '../../providers/perps';
+import type { UserHistoryItem } from '@metamask/perps-controller';
+import { submitRequestToBackground } from '../../store/background-connection';
 
 /**
  * Parameters for the useUserHistory hook
@@ -32,44 +32,19 @@ export type UseUserHistoryResult = {
 /**
  * Hook to fetch and manage user transaction history including deposits and withdrawals.
  *
- * Uses the PerpsController to fetch historical deposit/withdrawal data
- * via the active provider's getUserHistory method.
+ * Uses the background PerpsController to fetch historical deposit/withdrawal data.
  *
  * @param params - Optional parameters for filtering history
  * @param params.startTime - Optional start time for filtering history (Unix timestamp in ms)
  * @param params.endTime - Optional end time for filtering history (Unix timestamp in ms)
  * @param params.accountId - Optional account ID to fetch history for
  * @returns Object containing userHistory array, loading state, error, and refetch function
- * @example
- * ```tsx
- * function DepositHistory() {
- *   const { userHistory, isLoading, error, refetch } = useUserHistory();
- *
- *   useEffect(() => {
- *     refetch(); // Fetch on mount
- *   }, [refetch]);
- *
- *   if (isLoading) return <Spinner />;
- *   if (error) return <div>Error: {error}</div>;
- *
- *   return (
- *     <ul>
- *       {userHistory.map((item) => (
- *         <li key={item.id}>
- *           {item.type}: {item.amount} {item.asset}
- *         </li>
- *       ))}
- *     </ul>
- *   );
- * }
- * ```
  */
 export function useUserHistory({
   startTime,
   endTime,
   accountId,
 }: UseUserHistoryParams = {}): UseUserHistoryResult {
-  const controller = usePerpsController();
   const [userHistory, setUserHistory] = useState<UserHistoryItem[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -79,15 +54,10 @@ export function useUserHistory({
       setIsLoading(true);
       setError(null);
 
-      const params = {
-        startTime,
-        endTime,
-        accountId,
-      };
-
-      const history = await controller
-        .getActiveProvider()
-        .getUserHistory(params);
+      const history = await submitRequestToBackground<UserHistoryItem[]>(
+        'perpsGetUserHistory',
+        [{ startTime, endTime, accountId }],
+      );
 
       setUserHistory(history);
       return history;
@@ -100,7 +70,7 @@ export function useUserHistory({
     } finally {
       setIsLoading(false);
     }
-  }, [controller, startTime, endTime, accountId]);
+  }, [startTime, endTime, accountId]);
 
   return {
     userHistory,

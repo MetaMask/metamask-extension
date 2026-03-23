@@ -15,7 +15,7 @@ import {
   MOCK_META_METRICS_ID,
   WINDOW_TITLES,
 } from '../../constants';
-import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { mockDialogSnap } from '../../mock-response-data/snaps/snap-binary-mocks';
 import { withTransactionEnvelopeTypeFixtures } from './helpers';
 
@@ -120,8 +120,9 @@ describe('Confirmation Navigation', function (this: Suite) {
           customDappPaths: [DAPP_PATH.TEST_SNAPS],
         },
         driverOptions: { timeOut: 20000 },
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withPermissionControllerConnectedToTestDapp()
+          .withSnapsPrivacyWarningAlreadyShown()
           .withMetaMetricsController({
             metaMetricsId: MOCK_META_METRICS_ID,
             participateInMetaMetrics: true,
