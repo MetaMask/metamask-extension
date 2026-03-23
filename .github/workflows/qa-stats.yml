@@ -22,7 +22,7 @@ jobs:
 
       - name: Set optional run ID override
         if: ${{ vars.RUN_ID_TO_COLLECT != '' }}
-        run: echo "RUN_ID_TO_COLLECT=${{ vars.RUN_ID_TO_COLLECT }}" >> $GITHUB_ENV
+        run: echo "RUN_ID_TO_COLLECT=${{ vars.RUN_ID_TO_COLLECT }}" >> "$GITHUB_ENV"
 
       - name: Collect QA stats
         run: yarn tsx .github/scripts/collect-qa-stats.ts
