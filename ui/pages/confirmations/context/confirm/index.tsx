@@ -4,15 +4,12 @@ import React, {
   useContext,
   useEffect,
   useMemo,
-  useRef,
   useState,
 } from 'react';
-import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
 import { DEFAULT_ROUTE } from '../../../../helpers/constants/routes';
 import { usePrevious } from '../../../../hooks/usePrevious';
-import { getIsHardwareWalletErrorModalVisible } from '../../../../selectors';
 import useCurrentConfirmation from '../../hooks/useCurrentConfirmation';
 import useSyncConfirmPath from '../../hooks/useSyncConfirmPath';
 import { Confirmation } from '../../types/confirm';
@@ -30,53 +27,23 @@ export const ConfirmContext = createContext<ConfirmContextType | undefined>(
 export const ConfirmContextProvider: React.FC<{
   children: ReactElement;
   confirmationId?: string;
-  /** When provided, injects this as currentConfirmation (e.g. for gas modal opened from cancel-speedup). Skips route sync and navigation. */
-  currentConfirmationOverride?: Confirmation;
-}> = ({ children, confirmationId, currentConfirmationOverride }) => {
+}> = ({ children, confirmationId }) => {
   const [isScrollToBottomCompleted, setIsScrollToBottomCompleted] =
     useState(true);
-  const { currentConfirmation: currentConfirmationFromHook } =
-    useCurrentConfirmation(confirmationId);
-  const currentConfirmation =
-    currentConfirmationOverride ?? currentConfirmationFromHook;
-
-  useSyncConfirmPath(
-    currentConfirmationOverride === undefined ? currentConfirmation : undefined,
-  );
+  const { currentConfirmation } = useCurrentConfirmation(confirmationId);
+  useSyncConfirmPath(currentConfirmation);
   const navigate = useNavigate();
   const previousConfirmation = usePrevious(currentConfirmation);
-  const shouldNavigateHomeRef = useRef(false);
-  const isHardwareWalletErrorModalVisible = useSelector(
-    getIsHardwareWalletErrorModalVisible,
-  );
 
   /**
-   * Navigate to the Activity tab when a confirmation disappears without
-   * explicit user action (e.g., dapp changes network). Per-type routing
-   * after user-initiated confirm/cancel is handled elsewhere.
-   *
-   * We also skip this navigation while the hardware wallet error modal is
-   * visible to preserve retry functionality.
+   * The hook below takes care of navigating to the home page when the confirmation not acted on by user
+   * but removed by us, this can happen in cases like when dapp changes network.
    */
   useEffect(() => {
-    if (currentConfirmationOverride !== undefined) {
-      return;
-    }
     if (previousConfirmation && !currentConfirmation) {
-      shouldNavigateHomeRef.current = true;
-    }
-
-    if (shouldNavigateHomeRef.current && !isHardwareWalletErrorModalVisible) {
-      shouldNavigateHomeRef.current = false;
       navigate(`${DEFAULT_ROUTE}?tab=activity`, { replace: true });
     }
-  }, [
-    currentConfirmationOverride,
-    previousConfirmation,
-    currentConfirmation,
-    navigate,
-    isHardwareWalletErrorModalVisible,
-  ]);
+  }, [previousConfirmation, currentConfirmation, navigate]);
 
   const value = useMemo(
     () => ({
