@@ -41,7 +41,7 @@ import {
   getSettingsV2RouteMeta,
 } from './settings-registry';
 import { SettingsV2Header, SettingsV2SearchResults } from './shared';
-import { useSettingsV2Search } from './useSettingsV2Search';
+import { useSettingsV2Search, MIN_SEARCH_LENGTH } from './useSettingsV2Search';
 
 const CurrencySubPage = mmLazy(
   () => import('./assets-tab/currency-sub-page.tsx'),
@@ -145,7 +145,7 @@ const SettingsV2Layout = ({ children }: { children: React.ReactNode }) => {
         onSearchClear={() => setSearchValue('')}
       />
 
-      {isSearchOpen && searchValue.trim().length > 0 ? (
+      {isSearchOpen && searchValue.trim().length >= MIN_SEARCH_LENGTH ? (
         <div className="settings-page__content flex-1 overflow-y-auto">
           <SettingsV2SearchResults
             results={searchResults}

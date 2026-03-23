@@ -3,7 +3,7 @@ import Fuse from 'fuse.js';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { SETTINGS_V2_MENU_LIST_ITEM_REGISTRY } from './settings-registry';
 
-const MIN_SEARCH_LENGTH = 3;
+export const MIN_SEARCH_LENGTH = 3;
 
 export type SettingsV2SearchResult = {
   tabLabelKey: string;
