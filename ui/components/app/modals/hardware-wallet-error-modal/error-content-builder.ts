@@ -116,7 +116,7 @@ export function buildErrorContent(
         variant: 'recovery',
         title: t('hardwareWalletErrorTitleConnectYourDevice', [t(walletType)]),
         recoveryInstructions: addRecoveryInstruction(
-          [t('hardwareWalletErrorRecoveryUnlock1')],
+          [t('hardwareWalletErrorRecoveryUnlock1', [t(walletType)])],
           walletType === HardwareWalletType.Ledger,
           t('hardwareWalletErrorRecoveryUnlock2'),
         ),
