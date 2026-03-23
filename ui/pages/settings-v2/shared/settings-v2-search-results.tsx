@@ -6,6 +6,7 @@ import {
   Text,
   TextVariant,
   TextColor,
+  FontWeight,
   Icon,
   IconSize,
   IconColor,
@@ -36,10 +37,9 @@ export const SettingsV2SearchResults = ({
       {results.map((item) => (
         <button
           key={`${item.tabRoute}-${item.titleKey}`}
-          className="cursor-pointer border-none bg-transparent w-full text-left hover:bg-background-default-hover"
+          className="border-none bg-transparent w-full text-left hover:bg-background-default-hover"
           onClick={() => onClickResult(item)}
           data-testid="settings-v2-search-result-item"
-          type="button"
         >
           <Box
             flexDirection={BoxFlexDirection.Row}
@@ -57,7 +57,7 @@ export const SettingsV2SearchResults = ({
               alignItems={BoxAlignItems.Center}
               className="flex-1 min-w-0"
             >
-              <Text variant={TextVariant.BodyMd}>
+              <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
                 {t(item.tabLabelKey)} &gt; {t(item.titleKey)}
               </Text>
             </Box>

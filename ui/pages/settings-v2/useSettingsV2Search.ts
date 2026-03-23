@@ -1,7 +1,11 @@
 import { useMemo } from 'react';
 import Fuse from 'fuse.js';
 import { useI18nContext } from '../../hooks/useI18nContext';
-import { SETTINGS_V2_MENU_LIST_ITEM_REGISTRY } from './settings-registry';
+import {
+  SETTINGS_V2_MENU_LIST_ITEM_REGISTRY,
+  SETTINGS_V2_ROUTE_META,
+} from './settings-registry';
+import { SETTINGS_V2_SEARCH_CONFIG } from './search-config';
 
 export const MIN_SEARCH_LENGTH = 3;
 
@@ -13,23 +17,49 @@ export type SettingsV2SearchResult = {
 };
 
 /**
- * Builds a flat list of searchable items from the registry,
- * pairing each tab's metadata with its individual setting items.
+ * Builds a flat list of searchable items by joining the lightweight
+ * search config (titleKeys only) with the registry (labelKey, path, iconName).
  */
 function buildSearchableItems(): SettingsV2SearchResult[] {
-  return SETTINGS_V2_MENU_LIST_ITEM_REGISTRY.flatMap((tab) =>
-    tab.settingItems.map((item) => ({
-      tabLabelKey: tab.labelKey,
-      titleKey: item.titleKey,
-      tabRoute: tab.path,
-      iconName: tab.iconName,
-    })),
+  const tabById = new Map(
+    SETTINGS_V2_MENU_LIST_ITEM_REGISTRY.map((t) => [t.id, t]),
   );
+
+  return SETTINGS_V2_SEARCH_CONFIG.flatMap((cfg) => {
+    const tab = tabById.get(cfg.tabId);
+    if (!tab) {
+      return [];
+    }
+
+    const tabItems: SettingsV2SearchResult[] = cfg.titleKeys.map(
+      (titleKey) => ({
+        tabLabelKey: tab.labelKey,
+        titleKey,
+        tabRoute: tab.path,
+        iconName: tab.iconName,
+      }),
+    );
+
+    const subPageItems: SettingsV2SearchResult[] = (
+      cfg.subPages ?? []
+    ).flatMap((subPage) => {
+      const meta = SETTINGS_V2_ROUTE_META[subPage.path];
+      return subPage.titleKeys.map((titleKey) => ({
+        tabLabelKey: meta?.labelKey ?? tab.labelKey,
+        titleKey,
+        tabRoute: subPage.path,
+        iconName: tab.iconName,
+      }));
+    });
+
+    return [...tabItems, ...subPageItems];
+  });
 }
 
 /**
  * Hook that provides fuzzy search over Settings V2 items.
- * Items are derived from the tab registry — no separate search list to maintain.
+ * Items are derived from the lightweight search config — importing this
+ * does NOT eagerly load any tab component module.
  *
  * @param searchValue - Current search input value
  * @returns Matching search results (empty if query is shorter than 3 characters)

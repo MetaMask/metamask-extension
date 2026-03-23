@@ -12,28 +12,27 @@ jest.mock('./settings-registry', () => ({
       path: '/settings-v2/assets',
       labelKey: 'assets',
       iconName: 'Dollar',
-      settingItems: [
-        {
-          id: 'local-currency',
-          titleKey: 'localCurrency',
-          component: () => null,
-        },
-        {
-          id: 'autodetect-tokens',
-          titleKey: 'autoDetectTokens',
-          component: () => null,
-        },
-      ],
+      component: () => null,
     },
     {
-      id: 'preferences',
+      id: 'preferences-and-display',
       path: '/settings-v2/preferences-and-display',
       labelKey: 'preferencesAndDisplay',
       iconName: 'Setting',
-      settingItems: [
-        { id: 'theme', titleKey: 'theme', component: () => null },
-        { id: 'language', titleKey: 'language', component: () => null },
-      ],
+      component: () => null,
+    },
+  ],
+}));
+
+jest.mock('./search-config', () => ({
+  SETTINGS_V2_SEARCH_CONFIG: [
+    {
+      tabId: 'assets',
+      titleKeys: ['localCurrency', 'autoDetectTokens'],
+    },
+    {
+      tabId: 'preferences-and-display',
+      titleKeys: ['theme', 'language'],
     },
   ],
 }));
