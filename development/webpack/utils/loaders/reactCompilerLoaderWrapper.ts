@@ -158,13 +158,16 @@ const loader: LoaderDefinitionFunction<LoaderOptions> = function loader(
     return (logger ? { ...rest, logger } : rest) as LoaderOptions;
   };
 
-  const result = actualLoader.call(this, source, sourceMap);
+  try {
+    const result = actualLoader.call(this, source, sourceMap);
 
-  // react-compiler-loader uses this.async() and returns undefined (not a
-  // callback). It reads options synchronously before returning, so restoring
-  // getOptions immediately is correct.
-  this.getOptions = originalGetOptions;
-  return result;
+    // react-compiler-loader uses this.async() and returns undefined (not a
+    // callback). It reads options synchronously before returning, so restoring
+    // getOptions immediately is correct.
+    return result;
+  } finally {
+    this.getOptions = originalGetOptions;
+  }
 };
 
 export default loader;
