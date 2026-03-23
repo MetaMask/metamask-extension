@@ -108,10 +108,7 @@ describe('useTokenBalances', () => {
       },
     };
 
-    const { result } = renderHookWithProvider(
-      () => useTokenBalances(),
-      state,
-    );
+    const { result } = renderHookWithProvider(() => useTokenBalances(), state);
 
     // Does not start polling (empty input array)
     expect(mockTokenBalancesStartPolling).not.toHaveBeenCalled();
