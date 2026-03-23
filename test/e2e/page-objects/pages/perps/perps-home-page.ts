@@ -1,11 +1,12 @@
 import { PerpsPositionsBase } from './perps-positions-base';
 
 /**
- * Page object for the Perps Home view (balance, positions, explore markets, tutorial).
- * Use this when the user is already on the Perps tab and you interact with the tab content.
- * For opening the Perps tab from account overview, use PerpsTabPage first (e.g. openPerpsTab), then use this page.
+ * Page object for the Perps tab (wallet home with Perps tab selected).
+ * Use this when the user is already on the Perps tab and interacting with
+ * balance, positions, explore markets, and tutorial content.
+ * For opening the Perps tab from account overview, use PerpsTabPage first.
  *
- * @see ui/components/app/perps/perps-tab-view.tsx
+ * @see ui/components/app/perps/perps-view.tsx
  */
 export class PerpsHomePage extends PerpsPositionsBase {
   private readonly addFundsButton = {
