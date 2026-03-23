@@ -9,8 +9,9 @@ const getWrapperPath = () => require.resolve('./reactCompilerLoaderWrapper');
 
 /**
  * React Compiler result status stored in module.buildMeta.
- * This allows statistics to be collected from all modules after compilation,
- * even when using thread-loader (which runs loaders in separate worker threads).
+ * This allows statistics to be collected from all modules after compilation.
+ * NOTE: buildMeta tracking only works without thread-loader (this._module is
+ * null in worker contexts), so it is only active in verbose mode.
  */
 export type ReactCompilerStatus =
   | 'compiled'
@@ -71,21 +72,19 @@ export type ReactCompilerLoaderConfig = {
   target: ReactCompilerLoaderOption['target'];
   verbose: boolean;
   debug: 'all' | 'critical' | 'none';
-  /**
-   * When true, uses the wrapper loader for buildMeta tracking in worker
-   * threads and verbose logging. When false, only uses the wrapper if
-   * `verbose` is true (for logging); otherwise uses the direct loader.
-   */
-  threadLoaderEnabled: boolean;
 };
 
 /**
  * Get the React Compiler loader configuration.
  *
- * Uses the wrapper loader when thread-loader is active (for buildMeta
- * tracking across worker threads) or when verbose logging is requested.
- * Falls back to the direct `react-compiler-webpack` loader otherwise
- * (e.g. LavaMoat policy generation where the wrapper isn't resolvable).
+ * Uses the wrapper loader when verbose logging is requested (for buildMeta
+ * tracking and console output). Falls back to the direct
+ * `react-compiler-webpack` loader otherwise (e.g. LavaMoat policy generation
+ * where the wrapper isn't resolvable).
+ *
+ * NOTE: The wrapper's buildMeta tracking requires `this._module`, which is
+ * null in thread-loader worker contexts. Since verbose mode already disables
+ * thread-loader, the wrapper is only useful when verbose is true.
  *
  * @param config - Configuration options for the React Compiler loader.
  * @param config.target - The target version of the React Compiler.
@@ -99,14 +98,14 @@ export type ReactCompilerLoaderConfig = {
 export function getReactCompilerLoader(
   config: ReactCompilerLoaderConfig,
 ): RuleSetUseItem {
-  const { target, verbose, debug, threadLoaderEnabled } = config;
+  const { target, verbose, debug } = config;
 
   const reactCompilerOptions = {
     target,
     panicThreshold: debug === 'none' ? undefined : `${debug}_errors`,
   } as const satisfies ReactCompilerLoaderOption;
 
-  const useWrapper = threadLoaderEnabled || verbose;
+  const useWrapper = verbose;
 
   return useWrapper
     ? {

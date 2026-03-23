@@ -246,7 +246,6 @@ const reactCompilerConfig = getReactCompilerLoader({
   target: '17',
   verbose: args.reactCompilerVerbose,
   debug: args.reactCompilerDebug,
-  threadLoaderEnabled: threadLoaderConfig !== null,
 });
 
 const UI_COMPONENT_RE =
