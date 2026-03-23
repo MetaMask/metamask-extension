@@ -1918,18 +1918,17 @@ export default class MetamaskController extends EventEmitter {
     // wallet_notify for multichain accountChanged when selected account group changes
     this.controllerMessenger.subscribe(
       `${this.accountTreeController.name}:selectedAccountGroupChange`,
-      async (groupId) => {
-        await new Promise(resolve => setTimeout(resolve, 1000));
+      (groupId) => {
         const authorizationsByOrigin = getAuthorizedScopesByOrigin(
           this.permissionController.state,
         );
 
-        for (const [origin, authorization] of authorizationsByOrigin.entries()) {
-          // Is there a race condition here?
-          // First wallet_sessionChanged event from an account change doesn't seem
-          // to be ordered correctly. Subsequent seem fine.
+        // TODO: Remove this setTimeout once https://github.com/MetaMask/core/pull/8261 is released
+        setTimeout(() => {
+          for (const [origin, authorization] of authorizationsByOrigin.entries()) {
           this._notifyAuthorizationChange(origin, authorization);
-        }
+          }
+        }, 1000);
 
         // TODO: Move this logic to the SnapKeyring directly.
         // Forward selected accounts to the Snap keyring, so each Snaps can fetch those accounts.
