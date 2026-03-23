@@ -72,7 +72,7 @@
     "AccountTreeController": {
       "accountGroupsMetadata": {},
       "accountWalletsMetadata": {},
-      "hasAccountTreeSyncingSyncedAtLeastOnce": false
+      "hasAccountTreeSyncingSyncedAtLeastOnce": true
     },
     "AccountsController": {
       "internalAccounts": {
@@ -194,7 +194,7 @@
       "newPrivacyPolicyToastClickedOrClosed": null,
       "nftsDetectionNoticeDismissed": false,
       "outdatedBrowserWarningLastShown": null,
-      "pendingShieldCohort": "wallet_home",
+      "pendingShieldCohort": null,
       "pendingShieldCohortTxType": null,
       "pna25Acknowledged": true,
       "productTour": "accountIcon",
@@ -794,12 +794,12 @@
       "ignoredNfts": []
     },
     "NotificationServicesController": {
-      "isFeatureAnnouncementsEnabled": false,
-      "isMetamaskNotificationsFeatureSeen": false,
-      "isNotificationServicesEnabled": false,
+      "isFeatureAnnouncementsEnabled": true,
+      "isMetamaskNotificationsFeatureSeen": true,
+      "isNotificationServicesEnabled": true,
       "metamaskNotificationsList": [],
       "metamaskNotificationsReadList": [],
-      "subscriptionAccountsSeen": []
+      "subscriptionAccountsSeen": ["0x5CfE73b6021E818B776b421B1c4Db2474086a7e1"]
     },
     "NotificationServicesPushController": {
       "fcmToken": "",
