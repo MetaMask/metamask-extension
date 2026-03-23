@@ -249,9 +249,6 @@ const reactCompilerConfig = getReactCompilerLoader({
   debug: args.reactCompilerDebug,
 });
 
-const UI_COMPONENT_RE =
-  /^(?!.*\.(?:test|stories|container)\.)(?:.*)\.(?:m?[jt]s|[jt]sx)$/u;
-
 const threadLoaderRule = threadLoaderConfig
   ? [{ test: UI_COMPONENT_RE, include: UI_DIR_RE, use: [threadLoaderConfig] }]
   : [];
@@ -259,12 +256,21 @@ const reactCompilerRule = [
   { test: UI_COMPONENT_RE, include: UI_DIR_RE, use: [reactCompilerConfig] },
 ];
 
-const envValidationLoader = args.validateEnv
-  ? {
-      loader: require.resolve('./utils/loaders/envValidationLoader'),
-      options: { declarations: Array.from(buildEnvVarDeclarations) },
-    }
-  : null;
+const envValidationRule = args.validateEnv
+  ? [
+      {
+        test: /\.(?:[jt]s|m[jt]s|[jt]sx)$/u,
+        exclude: NODE_MODULES_RE,
+        enforce: 'pre' as const,
+        use: [
+          {
+            loader: require.resolve('./utils/loaders/envValidationLoader'),
+            options: { declarations: Array.from(buildEnvVarDeclarations) },
+          },
+        ],
+      },
+    ]
+  : [];
 
 const config = {
   // All entries are added dynamically by ManifestPlugin
@@ -371,18 +377,7 @@ const config = {
       },
       // Source preprocessing (enforce: 'pre' ensures these run before normal
       // loaders; options must be JSON-serializable for thread-loader compatibility)
-      {
-        test: /\.(?:ts|mts|tsx)$/u,
-        exclude: NODE_MODULES_RE,
-        enforce: 'pre',
-        use: [envValidationLoader].filter(Boolean),
-      },
-      {
-        test: /\.(?:js|mjs|jsx)$/u,
-        exclude: NODE_MODULES_RE,
-        enforce: 'pre',
-        use: [envValidationLoader].filter(Boolean),
-      },
+      ...envValidationRule,
       // thread-loader pool for UI component files (must appear before SWC rules)
       ...threadLoaderRule,
       // own typescript, and own typescript with jsx
