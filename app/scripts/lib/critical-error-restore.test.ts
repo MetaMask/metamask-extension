@@ -1,8 +1,6 @@
 import browser from 'webextension-polyfill';
 import {
-  CRITICAL_ERROR_RESTORE_PENDING,
-  CRITICAL_ERROR_RESTORE_TAB_ID,
-  CRITICAL_ERROR_RESTORE_TAB_URL,
+  CRITICAL_ERROR_RESTORE_KEY,
   METAMASK_RESTORING_PAGE_URL,
 } from '../../../shared/constants/critical-error-restore-session';
 import {
@@ -34,7 +32,7 @@ describe('critical-error-restore session', () => {
   });
 
   describe('readPendingCriticalErrorRestore', () => {
-    it('returns null when pending flag is not set', async () => {
+    it('returns null when key is not set', async () => {
       (browser.storage.local.get as jest.Mock).mockResolvedValueOnce({});
 
       await expect(
@@ -42,9 +40,19 @@ describe('critical-error-restore session', () => {
       ).resolves.toBeNull();
     });
 
-    it('returns null when tab URL is missing', async () => {
+    it('returns null when stored value is not an object', async () => {
       (browser.storage.local.get as jest.Mock).mockResolvedValueOnce({
-        [CRITICAL_ERROR_RESTORE_PENDING]: true,
+        [CRITICAL_ERROR_RESTORE_KEY]: true,
+      });
+
+      await expect(
+        readPendingCriticalErrorRestore(browser),
+      ).resolves.toBeNull();
+    });
+
+    it('returns null when tabUrl is missing', async () => {
+      (browser.storage.local.get as jest.Mock).mockResolvedValueOnce({
+        [CRITICAL_ERROR_RESTORE_KEY]: { tabId: 42 },
       });
 
       await expect(
@@ -55,9 +63,7 @@ describe('critical-error-restore session', () => {
     it('returns payload when pending restore data is valid', async () => {
       const tabUrl = 'https://metamask.io/restoring#abc';
       (browser.storage.local.get as jest.Mock).mockResolvedValueOnce({
-        [CRITICAL_ERROR_RESTORE_PENDING]: true,
-        [CRITICAL_ERROR_RESTORE_TAB_URL]: tabUrl,
-        [CRITICAL_ERROR_RESTORE_TAB_ID]: 42,
+        [CRITICAL_ERROR_RESTORE_KEY]: { tabUrl, tabId: 42 },
       });
 
       await expect(
@@ -67,21 +73,33 @@ describe('critical-error-restore session', () => {
         tabUrl,
       });
     });
+
+    it('returns undefined tabId when tabId is not a number', async () => {
+      const tabUrl = 'https://metamask.io/restoring#abc';
+      (browser.storage.local.get as jest.Mock).mockResolvedValueOnce({
+        [CRITICAL_ERROR_RESTORE_KEY]: { tabUrl },
+      });
+
+      await expect(
+        readPendingCriticalErrorRestore(browser),
+      ).resolves.toStrictEqual({
+        tabId: undefined,
+        tabUrl,
+      });
+    });
   });
 
   describe('clearPendingCriticalErrorRestore', () => {
-    it('removes pending restore keys', async () => {
+    it('removes the restore key', async () => {
       (browser.storage.local.remove as jest.Mock).mockResolvedValueOnce(
         undefined,
       );
 
       await clearPendingCriticalErrorRestore(browser);
 
-      expect(browser.storage.local.remove).toHaveBeenCalledWith([
-        CRITICAL_ERROR_RESTORE_PENDING,
-        CRITICAL_ERROR_RESTORE_TAB_ID,
-        CRITICAL_ERROR_RESTORE_TAB_URL,
-      ]);
+      expect(browser.storage.local.remove).toHaveBeenCalledWith(
+        CRITICAL_ERROR_RESTORE_KEY,
+      );
     });
   });
 });
@@ -105,29 +123,25 @@ describe('openRestoringTabAndReload', () => {
       }),
     );
 
-    expect(browser.storage.local.set).toHaveBeenCalledWith(
-      expect.objectContaining({
-        [CRITICAL_ERROR_RESTORE_PENDING]: true,
-        [CRITICAL_ERROR_RESTORE_TAB_ID]: 101,
-        [CRITICAL_ERROR_RESTORE_TAB_URL]: expect.stringContaining(
-          METAMASK_RESTORING_PAGE_URL,
-        ),
+    expect(browser.storage.local.set).toHaveBeenCalledWith({
+      [CRITICAL_ERROR_RESTORE_KEY]: expect.objectContaining({
+        tabId: 101,
+        tabUrl: expect.stringContaining(METAMASK_RESTORING_PAGE_URL),
       }),
-    );
+    });
     expect(requestSafeReload).toHaveBeenCalledTimes(1);
   });
 
-  it('omits tab id when tabs.create fails', async () => {
+  it('omits tabId when tabs.create fails', async () => {
     const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
     (browser.tabs.create as jest.Mock).mockRejectedValueOnce(new Error('fail'));
 
     await openRestoringTabAndReload(requestSafeReload);
 
-    expect(browser.storage.local.set).toHaveBeenCalledWith(
-      expect.not.objectContaining({
-        [CRITICAL_ERROR_RESTORE_TAB_ID]: expect.anything(),
-      }),
-    );
+    const storedValue = (browser.storage.local.set as jest.Mock).mock
+      .calls[0][0][CRITICAL_ERROR_RESTORE_KEY];
+    expect(storedValue).not.toHaveProperty('tabId');
+    expect(storedValue).toHaveProperty('tabUrl');
     expect(requestSafeReload).toHaveBeenCalledTimes(1);
     consoleErrorSpy.mockRestore();
   });
