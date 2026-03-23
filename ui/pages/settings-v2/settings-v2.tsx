@@ -21,14 +21,8 @@ import {
 import classnames from 'clsx';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import {
-  ACCOUNT_IDENTICON_ROUTE,
-  AUTO_LOCK_ROUTE,
-  CURRENCY_ROUTE,
   DEFAULT_ROUTE,
-  LANGUAGE_ROUTE,
   SETTINGS_V2_ROUTE,
-  THEME_ROUTE,
-  THIRD_PARTY_APIS_ROUTE,
 } from '../../helpers/constants/routes';
 // TODO: Remove restricted import
 // eslint-disable-next-line import-x/no-restricted-paths
@@ -37,46 +31,21 @@ import {
   ENVIRONMENT_TYPE_POPUP,
   ENVIRONMENT_TYPE_SIDEPANEL,
 } from '../../../shared/constants/app';
-import { mmLazy } from '../../helpers/utils/mm-lazy';
 import { toRelativeRoutePath } from '../routes/utils';
 import TabBar from './tab-bar';
 import {
-  SETTINGS_V2_MENU_LIST_ITEM_REGISTRY,
+  SETTINGS_V2_TABS,
+  SETTINGS_V2_RENDERABLE_ROUTES,
   getSettingsV2RouteMeta,
 } from './settings-registry';
 import { SettingsV2Header } from './shared';
 
-const CurrencySubPage = mmLazy(
-  () => import('./assets-tab/currency-sub-page.tsx'),
-);
-
-const ThemeSubPage = mmLazy(
-  () => import('./preferences-and-display-tab/theme-sub-page.tsx'),
-);
-
-const LanguageSubPage = mmLazy(
-  () => import('./preferences-and-display-tab/language-sub-page.tsx'),
-);
-
-const AccountIdenticonSubPage = mmLazy(
-  () => import('./preferences-and-display-tab/account-identicon-sub-page.tsx'),
-);
-
-const ThirdPartyApisSubPage = mmLazy(
-  () => import('./privacy-tab/third-party-apis-sub-page.tsx'),
-);
-
-const AutoLockSubPage = mmLazy(
-  () => import('./security-and-password-tab/auto-lock-sub-page.tsx'),
-);
-
-// Get the first tab's component for rendering at the settings root (like Settings V1)
-const FirstTabComponent = SETTINGS_V2_MENU_LIST_ITEM_REGISTRY[0]?.component;
-const FIRST_TAB_PATH = SETTINGS_V2_MENU_LIST_ITEM_REGISTRY[0]?.path;
+const FirstTabComponent = SETTINGS_V2_TABS[0]?.component;
+const FIRST_TAB_PATH = SETTINGS_V2_TABS[0]?.path;
+const HEADER_HEIGHT_PX = 64;
 
 /**
  * Layout for Settings V2: header, tab bar, and content area.
- * Mirrors the existing Settings page structure.
  *
  * @param props - Component props
  * @param props.children - Route content to render in the main area
@@ -108,8 +77,8 @@ const SettingsV2Layout = ({ children }: { children: React.ReactNode }) => {
       ? t(currentPageLabelKey)
       : t('settings');
 
-  // Breadcrumbs: these are shown on sub-pages (2 levels deep from settings root)
-  const breadcrumbs = React.useMemo((): string[] => {
+  // Breadcrumbs: shown on sub-pages (2+ levels deep from settings root)
+  const breadcrumbs = useMemo((): string[] => {
     if (!meta?.parentPath || meta.parentPath === SETTINGS_V2_ROUTE) {
       return [];
     }
@@ -133,7 +102,7 @@ const SettingsV2Layout = ({ children }: { children: React.ReactNode }) => {
 
   const itemTabs = useMemo(
     () =>
-      SETTINGS_V2_MENU_LIST_ITEM_REGISTRY.map((item) => ({
+      SETTINGS_V2_TABS.map((item) => ({
         key: item.path,
         content: t(item.labelKey),
         iconName: item.iconName,
@@ -145,7 +114,7 @@ const SettingsV2Layout = ({ children }: { children: React.ReactNode }) => {
     <Box
       flexDirection={BoxFlexDirection.Column}
       backgroundColor={BoxBackgroundColor.BackgroundDefault}
-      className="h-full w-full"
+      className="h-full w-full shadow-xs"
     >
       <SettingsV2Header
         title={headerTitle}
@@ -158,13 +127,13 @@ const SettingsV2Layout = ({ children }: { children: React.ReactNode }) => {
       />
       <Box
         flexDirection={BoxFlexDirection.Row}
-        className={classnames('h-full', {
+        className={classnames(`h-[calc(100%-${HEADER_HEIGHT_PX}px)]`, {
           'sm:border-t sm:border-border-muted': !isSidepanel,
         })}
       >
         <Box
           className={classnames(
-            'w-full sm:max-w-[262px] sm:bg-background-muted',
+            'w-full h-full sm:max-w-[262px] sm:bg-background-muted',
             {
               flex: isOnSettingsRoot,
               'hidden sm:flex': !isOnSettingsRoot && !isSidepanel,
@@ -228,95 +197,32 @@ const SettingsV2Layout = ({ children }: { children: React.ReactNode }) => {
               })}
             </Box>
           )}
-          <Suspense fallback={null}>
-            <Box>{children}</Box>
-          </Suspense>
+          <Suspense fallback={null}>{children}</Suspense>
         </Box>
       </Box>
     </Box>
   );
 };
 
+/**
+ * Settings V2 router component.
+ * All routes are derived from the centralized SETTINGS_V2_ROUTES registry.
+ */
 const SettingsV2 = () => {
   return (
     <RouterRoutes>
-      {/* Tab routes from registry */}
-      {SETTINGS_V2_MENU_LIST_ITEM_REGISTRY.map((item) => (
+      {SETTINGS_V2_RENDERABLE_ROUTES.map(({ path, component: Component }) => (
         <Route
-          key={item.id}
-          path={toRelativeRoutePath(item.path, SETTINGS_V2_ROUTE)}
+          key={path}
+          path={toRelativeRoutePath(path, SETTINGS_V2_ROUTE)}
           element={
             <SettingsV2Layout>
-              <item.component />
+              <Component />
             </SettingsV2Layout>
           }
         />
       ))}
-      {/* Currency sub-page */}
-      <Route
-        path={toRelativeRoutePath(CURRENCY_ROUTE, SETTINGS_V2_ROUTE)}
-        element={
-          <SettingsV2Layout>
-            <CurrencySubPage />
-          </SettingsV2Layout>
-        }
-      />
-      {/* Theme sub-page */}
-      <Route
-        path={toRelativeRoutePath(THEME_ROUTE, SETTINGS_V2_ROUTE)}
-        element={
-          <SettingsV2Layout>
-            <Suspense fallback={null}>
-              <ThemeSubPage />
-            </Suspense>
-          </SettingsV2Layout>
-        }
-      />
-      {/* Language sub-page */}
-      <Route
-        path={toRelativeRoutePath(LANGUAGE_ROUTE, SETTINGS_V2_ROUTE)}
-        element={
-          <SettingsV2Layout>
-            <Suspense fallback={null}>
-              <LanguageSubPage />
-            </Suspense>
-          </SettingsV2Layout>
-        }
-      />
-      {/* Account identicon sub-page */}
-      <Route
-        path={toRelativeRoutePath(ACCOUNT_IDENTICON_ROUTE, SETTINGS_V2_ROUTE)}
-        element={
-          <SettingsV2Layout>
-            <Suspense fallback={null}>
-              <AccountIdenticonSubPage />
-            </Suspense>
-          </SettingsV2Layout>
-        }
-      />
-      {/* Third-party APIs sub-page */}
-      <Route
-        path={toRelativeRoutePath(THIRD_PARTY_APIS_ROUTE, SETTINGS_V2_ROUTE)}
-        element={
-          <SettingsV2Layout>
-            <Suspense fallback={null}>
-              <ThirdPartyApisSubPage />
-            </Suspense>
-          </SettingsV2Layout>
-        }
-      />
-      {/* Auto-lock sub-page */}
-      <Route
-        path={toRelativeRoutePath(AUTO_LOCK_ROUTE, SETTINGS_V2_ROUTE)}
-        element={
-          <SettingsV2Layout>
-            <Suspense fallback={null}>
-              <AutoLockSubPage />
-            </Suspense>
-          </SettingsV2Layout>
-        }
-      />
-      {/* Catch-all and root: show first tab content (like Settings V1) */}
+      {/* Catch-all and root: show first tab content */}
       <Route
         path="*"
         element={
