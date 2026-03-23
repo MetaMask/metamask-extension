@@ -17,12 +17,14 @@ const createMockStore = () => configureMockStore([thunk])(mockState);
 
 const mockItems: SettingsV2SearchResult[] = [
   {
+    settingId: 'local-currency',
     tabLabelKey: 'assets',
     titleKey: 'localCurrency',
     tabRoute: '/settings-v2/assets',
     iconName: 'dollar',
   },
   {
+    settingId: 'theme',
     tabLabelKey: 'preferencesAndDisplay',
     titleKey: 'theme',
     tabRoute: '/settings-v2/preferences-and-display',
