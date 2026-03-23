@@ -1,22 +1,25 @@
-import React, { useMemo } from 'react';
 import { Box, BoxFlexDirection } from '@metamask/design-system-react';
+import React, { useMemo } from 'react';
+import { useSelector } from 'react-redux';
 import {
   usePerpsLivePositions,
   usePerpsLiveOrders,
   usePerpsLiveMarketData,
 } from '../../../hooks/perps/stream';
+import { getSelectedInternalAccount } from '../../../selectors';
+
 import { usePerpsDepositConfirmation } from './hooks/usePerpsDepositConfirmation';
 import { PerpsBalanceDropdown } from './perps-balance-dropdown';
-import { PerpsPositionsOrders } from './perps-positions-orders';
-import { PerpsWatchlist } from './perps-watchlist';
 import { PerpsExploreMarkets } from './perps-explore-markets';
+import { PerpsPositionsOrders } from './perps-positions-orders';
 import { PerpsRecentActivity } from './perps-recent-activity';
-import { PerpsSupportLearn } from './perps-support-learn';
-import { PerpsTutorialModal } from './perps-tutorial-modal';
 import {
   PerpsControlBarSkeleton,
   PerpsSectionSkeleton,
 } from './perps-skeletons';
+import { PerpsSupportLearn } from './perps-support-learn';
+import { PerpsTutorialModal } from './perps-tutorial-modal';
+import { PerpsWatchlist } from './perps-watchlist';
 
 /**
  * PerpsView component displays the perpetuals trading view
@@ -28,7 +31,12 @@ import {
 export const PerpsView: React.FC = () => {
   const { trigger: triggerDeposit } = usePerpsDepositConfirmation();
 
-  // Use stream hooks for real-time data
+  const selectedAccount = useSelector(getSelectedInternalAccount);
+
+  // Stream hooks must run before any effects that touch PerpsStreamManager.
+  // `usePerpsStreamManager` (inside these hooks) calls `perpsInit` then `init(address)`;
+  // prewarm/init in an effect above these hooks used to run first and triggered
+  // `perpsGetPositions` etc. before the background client existed (CLIENT_NOT_INITIALIZED).
   const { positions, isInitialLoading: positionsLoading } =
     usePerpsLivePositions();
   const { orders: allOrders, isInitialLoading: ordersLoading } =

@@ -15,7 +15,6 @@ import {
   selectPerpsIsFirstTimeUser,
   selectPerpsHasPlacedFirstOrder,
   selectPerpsWatchlistMarkets,
-  selectPerpsIsWatchlistMarket,
   selectPerpsLastError,
   selectPerpsSelectedPaymentToken,
   selectPerpsCachedMarketData,
@@ -267,35 +266,6 @@ describe('perps-controller selectors', () => {
         testnet: [],
         mainnet: [],
       });
-    });
-  });
-
-  describe('selectPerpsIsWatchlistMarket', () => {
-    it('returns true when symbol is in testnet watchlist and isTestnet is true', () => {
-      const state = buildState({
-        watchlistMarkets: { testnet: ['ETH', 'BTC'], mainnet: [] },
-        isTestnet: true,
-      });
-      expect(selectPerpsIsWatchlistMarket(state, 'ETH')).toBe(true);
-      expect(selectPerpsIsWatchlistMarket(state, 'eth')).toBe(true);
-    });
-
-    it('returns true when symbol is in mainnet watchlist and isTestnet is false', () => {
-      const state = buildState({
-        watchlistMarkets: { testnet: [], mainnet: ['BTC', 'SOL'] },
-        isTestnet: false,
-      });
-      expect(selectPerpsIsWatchlistMarket(state, 'BTC')).toBe(true);
-      expect(selectPerpsIsWatchlistMarket(state, 'sol')).toBe(true);
-    });
-
-    it('returns false when symbol is not in watchlist', () => {
-      const state = buildState({
-        watchlistMarkets: { testnet: ['ETH'], mainnet: ['BTC'] },
-        isTestnet: true,
-      });
-      expect(selectPerpsIsWatchlistMarket(state, 'BTC')).toBe(false);
-      expect(selectPerpsIsWatchlistMarket(state, 'SOL')).toBe(false);
     });
   });
 

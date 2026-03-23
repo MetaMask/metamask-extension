@@ -9,6 +9,9 @@ import { transformManifest } from '../utils/plugins/ManifestPlugin/helpers';
 import { MANIFEST_DEV_KEY } from '../../build/constants';
 import { generateCases, type Combination, mockWebpack } from './helpers';
 
+const endsWithPath = (value: string, ...segments: string[]) =>
+  value.endsWith(join(...segments));
+
 describe('ManifestPlugin', () => {
   describe('Plugin', () => {
     const matrix = {
@@ -1309,7 +1312,7 @@ describe('ManifestPlugin', () => {
       // Get the watched files from fileDependencies
       const deps = [...compilation.fileDependencies];
       const baseManifestDep = deps.find((d) =>
-        d.endsWith('manifest/v3/_base.json'),
+        endsWithPath(d, 'manifest', 'v3', '_base.json'),
       );
       assert.ok(baseManifestDep, 'should have base manifest in dependencies');
 
@@ -1373,22 +1376,22 @@ describe('ManifestPlugin', () => {
       const deps = [...compilation.fileDependencies];
       // Should include base manifest
       assert.ok(
-        deps.some((d) => d.endsWith('manifest/v3/_base.json')),
+        deps.some((d) => endsWithPath(d, 'manifest', 'v3', '_base.json')),
         'should watch the base manifest file',
       );
       // Should include browser-specific manifest
       assert.ok(
-        deps.some((d) => d.endsWith('manifest/v3/chrome.json')),
+        deps.some((d) => endsWithPath(d, 'manifest', 'v3', 'chrome.json')),
         'should watch the browser-specific manifest file',
       );
       // Should include build type base manifest
       assert.ok(
-        deps.some((d) => d.endsWith('beta/manifest/_base.json')),
+        deps.some((d) => endsWithPath(d, 'beta', 'manifest', '_base.json')),
         'should watch the build type base manifest file',
       );
       // Should include build type browser manifest
       assert.ok(
-        deps.some((d) => d.endsWith('beta/manifest/chrome.json')),
+        deps.some((d) => endsWithPath(d, 'beta', 'manifest', 'chrome.json')),
         'should watch the build type browser-specific manifest file',
       );
     });
@@ -1451,7 +1454,7 @@ describe('ManifestPlugin', () => {
       const deps = [...compilation.fileDependencies];
       // Should include base manifest (exists)
       assert.ok(
-        deps.some((d) => d.endsWith('manifest/v3/_base.json')),
+        deps.some((d) => endsWithPath(d, 'manifest', 'v3', '_base.json')),
         'should watch the base manifest file',
       );
       // Should NOT include non-existent build type files

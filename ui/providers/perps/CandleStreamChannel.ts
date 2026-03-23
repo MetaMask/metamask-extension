@@ -245,7 +245,8 @@ export class CandleStreamChannel {
       this.notifySubscribers(entry, mergedData);
     } catch (error) {
       console.error(
-        `[CandleStreamChannel] fetchHistoricalCandles failed for ${key}:`,
+        '[CandleStreamChannel] fetchHistoricalCandles failed for key:',
+        key,
         error,
       );
     }
@@ -352,7 +353,8 @@ export class CandleStreamChannel {
       { symbol, interval, duration: entry.duration },
     ]).catch((err) => {
       console.warn(
-        `[CandleStreamChannel] Failed to activate streaming for ${key}:`,
+        '[CandleStreamChannel] Failed to activate streaming for key:',
+        key,
         err,
       );
       entry.isConnected = false;
@@ -367,16 +369,19 @@ export class CandleStreamChannel {
    * Disconnect a channel entry from the controller.
    * Cache is preserved for re-navigation.
    *
-   * @param _key - Cache key (unused, for future logging)
+   * @param key - Cache key (symbol-interval); forwarded to background so only this stream stops
    * @param entry - Channel entry
    */
-  private disconnect(_key: string, entry: ChannelEntry): void {
+  private disconnect(key: string, entry: ChannelEntry): void {
     if (entry.unsubscribeFromSource) {
       entry.unsubscribeFromSource();
       entry.unsubscribeFromSource = null;
     }
     entry.isConnected = false;
-    submitRequestToBackground('perpsDeactivateCandleStream', []);
+    const { symbol, interval } = parseCacheKey(key);
+    submitRequestToBackground('perpsDeactivateCandleStream', [
+      { symbol, interval },
+    ]);
   }
 
   /**

@@ -5,7 +5,13 @@
  * Shows "Get X% bonus" text and navigates to the mUSD conversion flow.
  */
 
-import React, { useCallback, useContext, useState } from 'react';
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import type { Hex } from '@metamask/utils';
 import {
   FontWeight,
@@ -65,6 +71,14 @@ export const MusdConvertLink: React.FC<MusdConvertLinkProps> = ({
   const { trackEvent } = useContext(MetaMetricsContext);
   const { startConversionFlow } = useMusdConversion();
   const [isLoading, setIsLoading] = useState(false);
+  const isMountedRef = useRef(true);
+
+  useEffect(() => {
+    isMountedRef.current = true;
+    return () => {
+      isMountedRef.current = false;
+    };
+  }, []);
 
   const displayText =
     ctaText ?? t('musdGetBonusPercentage', [String(MUSD_CONVERSION_APY)]);
@@ -80,20 +94,21 @@ export const MusdConvertLink: React.FC<MusdConvertLinkProps> = ({
 
       setIsLoading(true);
 
+      /* eslint-disable @typescript-eslint/naming-convention */
+      const eventProperties = {
+        location: MUSD_EVENTS_CONSTANTS.EVENT_LOCATIONS.TOKEN_LIST_ITEM,
+        cta_type: MUSD_EVENTS_CONSTANTS.MUSD_CTA_TYPES.SECONDARY,
+        cta_text: displayText,
+        cta_click_target: MUSD_EVENTS_CONSTANTS.CTA_CLICK_TARGETS.CTA_TEXT_LINK,
+        chain_id: chainId,
+        token_symbol: tokenSymbol,
+      };
+      /* eslint-enable @typescript-eslint/naming-convention */
+
       trackEvent({
         event: MetaMetricsEventName.MusdConversionCtaClicked,
         category: MetaMetricsEventCategory.Tokens,
-        properties: {
-          location: MUSD_EVENTS_CONSTANTS.EVENT_LOCATIONS.TOKEN_LIST_ITEM,
-          /* eslint-disable @typescript-eslint/naming-convention */
-          cta_type: MUSD_EVENTS_CONSTANTS.MUSD_CTA_TYPES.SECONDARY,
-          cta_text: displayText,
-          cta_click_target:
-            MUSD_EVENTS_CONSTANTS.CTA_CLICK_TARGETS.CTA_TEXT_LINK,
-          chain_id: chainId,
-          token_symbol: tokenSymbol,
-          /* eslint-enable @typescript-eslint/naming-convention */
-        },
+        properties: eventProperties,
       });
 
       try {
@@ -105,7 +120,9 @@ export const MusdConvertLink: React.FC<MusdConvertLinkProps> = ({
           entryPoint,
         });
       } finally {
-        setIsLoading(false);
+        if (isMountedRef.current) {
+          setIsLoading(false);
+        }
       }
     },
     [

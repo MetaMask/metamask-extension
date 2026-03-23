@@ -57,6 +57,7 @@ import {
   getMultichainNetworkConfigurationsByChainId,
   getGasFeesSponsoredNetworkEnabled,
   getUseExternalServices,
+  isHardwareWallet,
 } from '../../../../../selectors';
 import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../../../../selectors/multichain-accounts/account-tree';
 import { selectAdditionalNetworksBlacklistFeatureFlag } from '../../../../../selectors/network-blacklist/network-blacklist';
@@ -120,11 +121,12 @@ const DefaultNetworks = memo(() => {
   const isGasFeesSponsoredNetworkEnabled = useSelector(
     getGasFeesSponsoredNetworkEnabled,
   );
+  const isHardwareWalletAccount = useSelector(isHardwareWallet);
 
   // Check if a network has gas sponsorship enabled
   const isNetworkGasSponsored = useCallback(
     (chainId: string | undefined): boolean => {
-      if (!chainId) {
+      if (!chainId || isHardwareWalletAccount) {
         return false;
       }
 
@@ -134,7 +136,7 @@ const DefaultNetworks = memo(() => {
         ],
       );
     },
-    [isGasFeesSponsoredNetworkEnabled],
+    [isGasFeesSponsoredNetworkEnabled, isHardwareWalletAccount],
   );
 
   // Use the shared state hook

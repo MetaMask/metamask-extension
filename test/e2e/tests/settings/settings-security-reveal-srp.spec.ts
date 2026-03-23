@@ -4,7 +4,7 @@ import { E2E_SRP } from '../../fixtures/default-fixture';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import PrivacySettings from '../../page-objects/pages/settings/privacy-settings';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 
 describe('Reveal SRP through settings', function () {
   const testPassword = 'correct horse battery staple';
@@ -17,7 +17,7 @@ describe('Reveal SRP through settings', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         // navigate to security & privacy settings
         await new HeaderNavbar(driver).openSettingsPage();
@@ -44,7 +44,7 @@ describe('Reveal SRP through settings', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         // navigate to security & privacy settings
         await new HeaderNavbar(driver).openSettingsPage();
@@ -76,7 +76,7 @@ describe('Reveal SRP through settings', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         // Navigate to security & privacy settings
         await new HeaderNavbar(driver).openSettingsPage();
