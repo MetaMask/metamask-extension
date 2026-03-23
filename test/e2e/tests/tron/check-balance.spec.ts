@@ -1,7 +1,7 @@
 import { Suite } from 'mocha';
 import { Mockttp } from 'mockttp';
 import { withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { Driver } from '../../webdriver/driver';
 import { login } from '../../page-objects/flows/login.flow';
 import NonEvmHomepage from '../../page-objects/pages/home/non-evm-homepage';
@@ -12,15 +12,10 @@ describe('Check balance', function (this: Suite) {
   it('Just created Tron account shows 0 TRX when native token is enabled', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
         testSpecificMock: (mockServer: Mockttp) =>
           mockTronApis(mockServer, true),
-        manifestFlags: {
-          remoteFeatureFlags: {
-            tronAccounts: { enabled: true, minimumVersion: '13.6.0' },
-          },
-        },
       },
       async ({ driver }: { driver: Driver }) => {
         await login(driver);
@@ -39,16 +34,11 @@ describe('Check balance', function (this: Suite) {
   it('For a non 0 balance account - USD balance', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
-          .withPreferencesControllerShowNativeTokenAsMainBalanceDisabled()
+        fixtures: new FixtureBuilderV2()
+          .withShowNativeTokenAsMainBalanceDisabled()
           .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockTronApis,
-        manifestFlags: {
-          remoteFeatureFlags: {
-            tronAccounts: { enabled: true, minimumVersion: '13.6.0' },
-          },
-        },
       },
       async ({ driver }: { driver: Driver }) => {
         await login(driver, { validateBalance: false });
@@ -68,14 +58,9 @@ describe('Check balance', function (this: Suite) {
   it('For a non 0 balance account - TRX balance', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockTronApis,
-        manifestFlags: {
-          remoteFeatureFlags: {
-            tronAccounts: { enabled: true, minimumVersion: '13.6.0' },
-          },
-        },
       },
       async ({ driver }: { driver: Driver }) => {
         await login(driver);
