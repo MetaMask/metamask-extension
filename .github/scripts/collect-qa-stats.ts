@@ -37,12 +37,7 @@
  *       "main_tests_run": 1200,
  *       "main_chrome_tests_run": 1200,
  *       "main_firefox_tests_run": 1185,
- *       "flask_tests_run": 200,
- *       "flask_chrome_tests_run": 200,
- *       "flask_firefox_tests_run": 195,
- *       "confirmations_tests_run": 300,
- *       "send_tests_run": 120,
- *       "other_tests_run": 780
+ *       "flask_tests_run": 200
  *     }
  *   }
  */
