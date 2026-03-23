@@ -83,20 +83,32 @@ describe('PerpsStreamManager', () => {
     });
 
     it('notifies subscribers with empty markets when fetch fails', async () => {
-      mockSubmitRequestToBackground.mockImplementation((method: string) => {
-        if (method === 'perpsGetMarketDataWithPrices') {
-          return Promise.reject(new Error('network'));
-        }
-        return Promise.resolve(undefined);
-      });
+      const consoleErrorSpy = jest
+        .spyOn(console, 'error')
+        .mockImplementation(() => undefined);
 
-      const onData = jest.fn();
-      manager.markets.subscribe(onData);
+      try {
+        mockSubmitRequestToBackground.mockImplementation((method: string) => {
+          if (method === 'perpsGetMarketDataWithPrices') {
+            return Promise.reject(new Error('network'));
+          }
+          return Promise.resolve(undefined);
+        });
 
-      await Promise.resolve();
-      await Promise.resolve();
+        const onData = jest.fn();
+        manager.markets.subscribe(onData);
 
-      expect(onData).toHaveBeenCalledWith([]);
+        await Promise.resolve();
+        await Promise.resolve();
+
+        expect(onData).toHaveBeenCalledWith([]);
+        expect(consoleErrorSpy).toHaveBeenCalledWith(
+          '[PerpsStreamManager] Failed to fetch markets',
+          expect.any(Error),
+        );
+      } finally {
+        consoleErrorSpy.mockRestore();
+      }
     });
   });
 
