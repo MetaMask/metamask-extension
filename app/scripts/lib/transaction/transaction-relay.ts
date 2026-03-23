@@ -3,7 +3,11 @@ import { type SentinelMeta } from '@metamask/smart-transactions-controller';
 import { Hex, createProjectLogger } from '@metamask/utils';
 import { jsonRpcRequest } from '../../../../shared/lib/rpc.utils';
 import getFetchWithTimeout from '../../../../shared/lib/fetch-with-timeout';
-import { buildUrl, getSentinelNetworkFlags } from './sentinel-api';
+import {
+  buildUrl,
+  getSentinelApiHeadersAsync,
+  getSentinelNetworkFlags,
+} from './sentinel-api';
 
 const log = createProjectLogger('transaction-relay');
 
@@ -50,9 +54,11 @@ export async function submitRelayTransaction(
 
   log('Request', url, request);
 
-  const response = (await jsonRpcRequest(url, RELAY_RPC_METHOD, [
-    request,
-  ])) as RelaySubmitResponse;
+  const headers = await getSentinelApiHeadersAsync();
+
+  const response = (await jsonRpcRequest(url, RELAY_RPC_METHOD, [request], {
+    headers,
+  })) as RelaySubmitResponse;
 
   log('Response', response);
 
@@ -75,7 +81,8 @@ export async function waitForRelayResult(
   return new Promise<RelayWaitResponse>((resolve, reject) => {
     const intervalId = setInterval(async () => {
       try {
-        const result = await pollResult(url);
+        const headers = await getSentinelApiHeadersAsync();
+        const result = await pollResult(url, headers);
 
         if (result.status !== RelayStatus.Pending) {
           clearInterval(intervalId);
@@ -93,10 +100,13 @@ export async function isRelaySupported(chainId: Hex): Promise<boolean> {
   return Boolean(await getRelayUrl(chainId));
 }
 
-async function pollResult(url: string): Promise<RelayWaitResponse> {
+async function pollResult(
+  url: string,
+  headers: HeadersInit = {},
+): Promise<RelayWaitResponse> {
   log('Polling request', url);
 
-  const response = await getFetchWithTimeout()(url);
+  const response = await getFetchWithTimeout()(url, { headers });
 
   log('Polling response', response);
 

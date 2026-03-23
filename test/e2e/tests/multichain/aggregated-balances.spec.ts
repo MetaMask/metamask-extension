@@ -3,7 +3,7 @@ import { MockttpServer } from 'mockttp';
 import { Driver } from '../../webdriver/driver';
 import { withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import HomePage from '../../page-objects/pages/home/homepage';
@@ -60,7 +60,7 @@ describe('Multichain Aggregated Balances', function (this: Suite) {
         localNodes: Anvil[] | Ganache[] | undefined[];
       }) => {
         console.log('// Step 1: Log in and set up page objects');
-        await loginWithBalanceValidation(driver, localNodes[0]);
+        await login(driver, { localNode: localNodes[0] });
 
         const homepage = new HomePage(driver);
         const headerNavbar = new HeaderNavbar(driver);
