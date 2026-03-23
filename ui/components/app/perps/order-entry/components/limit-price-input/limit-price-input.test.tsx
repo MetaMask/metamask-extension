@@ -119,9 +119,39 @@ describe('LimitPriceInput', () => {
 
       fireEvent.click(screen.getByTestId('limit-price-mid-button'));
 
-      expect(defaultProps.onLimitPriceChange).toHaveBeenCalledWith(
-        expect.stringContaining('45,050'),
+      expect(defaultProps.onLimitPriceChange).toHaveBeenCalledWith('45050.00');
+    });
+  });
+
+  describe('locale handling', () => {
+    it('converts de-DE formatted value to canonical value on blur', () => {
+      const deStore = configureStore({
+        metamask: {
+          ...mockState.metamask,
+          currentLocale: 'de',
+        },
+      });
+
+      renderWithProvider(
+        <LimitPriceInput
+          {...defaultProps}
+          limitPrice="45050.00"
+          onLimitPriceChange={defaultProps.onLimitPriceChange}
+        />,
+        deStore,
       );
+
+      const container = screen.getByTestId('limit-price-input');
+      const input = container.querySelector('input');
+      expect(input).not.toBeNull();
+
+      fireEvent.focus(input as HTMLInputElement);
+      fireEvent.change(input as HTMLInputElement, {
+        target: { value: '45.050,00' },
+      });
+      fireEvent.blur(input as HTMLInputElement);
+
+      expect(defaultProps.onLimitPriceChange).toHaveBeenCalledWith('45050.00');
     });
   });
 

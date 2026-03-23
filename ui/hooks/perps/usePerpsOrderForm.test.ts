@@ -1,7 +1,8 @@
 import { act } from '@testing-library/react-hooks';
-import { renderHookWithProvider } from '../../../test/lib/render-helpers-navigate';
-import mockState from '../../../test/data/mock-state.json';
+
 import { usePerpsOrderForm } from './usePerpsOrderForm';
+import mockState from '../../../test/data/mock-state.json';
+import { renderHookWithProvider } from '../../../test/lib/render-helpers-navigate';
 
 describe('usePerpsOrderForm', () => {
   const defaultOptions = {
@@ -330,6 +331,35 @@ describe('usePerpsOrderForm', () => {
       expect(result.current.calculations.positionSize).not.toBe(
         initialPositionSize,
       );
+    });
+
+    it('uses canonical limit price correctly in calculations', () => {
+      const deState = {
+        metamask: {
+          ...mockState.metamask,
+          currentLocale: 'de',
+        },
+      };
+
+      const { result } = renderHookWithProvider(
+        () =>
+          usePerpsOrderForm({
+            ...defaultOptions,
+            orderType: 'limit',
+          }),
+        deState,
+      );
+
+      act(() => {
+        result.current.handleAmountChange('1000');
+      });
+
+      act(() => {
+        result.current.handleLimitPriceChange('45050.00');
+      });
+
+      expect(result.current.calculations.positionSize).toContain('BTC');
+      expect(result.current.calculations.orderValue).toBe('$1,000.00');
     });
   });
 

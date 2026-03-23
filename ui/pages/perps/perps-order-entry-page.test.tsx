@@ -1,15 +1,17 @@
-import React from 'react';
-import configureMockStore from 'redux-mock-store';
-import thunk from 'redux-thunk';
-import { screen, fireEvent, act, waitFor } from '@testing-library/react';
 import type {
   AccountState,
   Position,
   PerpsMarketData,
 } from '@metamask/perps-controller';
-import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
+import { screen, fireEvent, act, waitFor } from '@testing-library/react';
+import React from 'react';
+import configureMockStore from 'redux-mock-store';
+import thunk from 'redux-thunk';
+
+import PerpsOrderEntryPage from './perps-order-entry-page';
 import mockState from '../../../test/data/mock-state.json';
 import { enLocale as messages } from '../../../test/lib/i18n-helpers';
+import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
 import {
   mockPositions,
   mockAccountState,
@@ -144,7 +146,6 @@ jest.mock('../../components/app/perps/order-entry/limit-price-warnings', () => {
 });
 
 // eslint-disable-next-line import-x/first
-import PerpsOrderEntryPage from './perps-order-entry-page';
 
 describe('PerpsOrderEntryPage', () => {
   const middlewares = [thunk];
@@ -159,6 +160,17 @@ describe('PerpsOrderEntryPage', () => {
           ? { enabled: true, minimumVersion: '0.0.0' }
           : { enabled: false, minimumVersion: '99.99.99' },
       },
+    },
+  });
+
+  const createMockStateWithLocale = (
+    locale: string,
+    perpsEnabled = true,
+  ): ReturnType<typeof createMockState> => ({
+    ...createMockState(perpsEnabled),
+    localeMessages: {
+      ...(createMockState(perpsEnabled).localeMessages ?? {}),
+      currentLocale: locale,
     },
   });
 
@@ -933,11 +945,46 @@ describe('PerpsOrderEntryPage', () => {
         [
           expect.objectContaining({
             orderType: 'limit',
-            price: '3000',
+            price: '3000.00',
           }),
         ],
       );
       expect(mockUseNavigate).toHaveBeenCalledWith('/perps/market/ETH');
+    });
+
+    it('submits canonical limit price when locale-formatted value is entered', async () => {
+      mockSearchParams.set('orderType', 'limit');
+
+      const store = mockStore(createMockStateWithLocale('de'));
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      const amountContainer = screen.getByTestId('amount-input-field');
+      const amountInput = amountContainer.querySelector('input');
+      fireEvent.change(amountInput as HTMLInputElement, {
+        target: { value: '500' },
+      });
+
+      const limitContainer = screen.getByTestId('limit-price-input');
+      const limitInput = limitContainer.querySelector('input');
+      fireEvent.focus(limitInput as HTMLInputElement);
+      fireEvent.change(limitInput as HTMLInputElement, {
+        target: { value: '45.050,00' },
+      });
+      fireEvent.blur(limitInput as HTMLInputElement);
+
+      await act(async () => {
+        fireEvent.click(screen.getByTestId('submit-order-button'));
+      });
+
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'perpsPlaceOrder',
+        [
+          expect.objectContaining({
+            orderType: 'limit',
+            price: '45050.00',
+          }),
+        ],
+      );
     });
   });
 

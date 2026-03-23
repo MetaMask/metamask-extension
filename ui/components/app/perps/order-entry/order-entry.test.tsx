@@ -1,10 +1,11 @@
-import React from 'react';
 import { screen, fireEvent } from '@testing-library/react';
-import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
-import configureStore from '../../../../store/store';
+import React from 'react';
+
+import { OrderEntry } from './order-entry';
 import mockState from '../../../../../test/data/mock-state.json';
 import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
-import { OrderEntry } from './order-entry';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
+import configureStore from '../../../../store/store';
 
 // Mock hooks that depend on @metamask/perps-controller to avoid ESM transform issues
 jest.mock('../../../../hooks/perps/useUserHistory', () => ({
@@ -102,7 +103,7 @@ describe('OrderEntry', () => {
         target: { value: '1000' },
       });
 
-      expect(input).toHaveValue('1000');
+      expect(input).toHaveValue('1,000.00');
     });
 
     it('shows token conversion when amount is entered', () => {
