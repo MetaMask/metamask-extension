@@ -40,7 +40,6 @@ import type {
 } from '../../../app/scripts/controllers/preferences-controller';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import {
-  ACCOUNT_2,
   ADDITIONAL_ACCOUNT_FIXTURE_VAULT,
   DAPP_ONE_URL,
   DAPP_TWO_URL,
