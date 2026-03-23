@@ -100,7 +100,9 @@ describe('BridgeAsset', () => {
       configureStore(createBridgeMockStore({})),
     );
     expect(getByTestId('bridge-asset-symbol')).toBeInTheDocument();
-    expect(queryByTestId('bridge-asset-verified-badge')).not.toBeInTheDocument();
+    expect(
+      queryByTestId('bridge-asset-verified-badge'),
+    ).not.toBeInTheDocument();
   });
 
   it('does not render verified badge when isVerified is absent', () => {
@@ -114,6 +116,8 @@ describe('BridgeAsset', () => {
       configureStore(createBridgeMockStore({})),
     );
     expect(getByTestId('bridge-asset-symbol')).toBeInTheDocument();
-    expect(queryByTestId('bridge-asset-verified-badge')).not.toBeInTheDocument();
+    expect(
+      queryByTestId('bridge-asset-verified-badge'),
+    ).not.toBeInTheDocument();
   });
 });
