@@ -1,7 +1,3 @@
-import type { Location as RouterLocation } from 'react-router-dom';
-import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
-import { sanitizeRedirectUrl } from '../../../shared/lib/safe-redirect';
-
 export function getCaretCoordinates(element: HTMLElement, position: number) {
   const div = document.createElement('div');
   div.id = 'password-mirror-div';
@@ -18,15 +14,4 @@ export function getCaretCoordinates(element: HTMLElement, position: number) {
   };
   document.body.removeChild(div);
   return coordinates;
-}
-
-export function getIntendedRoute(location: RouterLocation) {
-  const fromSearchParam = new URLSearchParams(location.search).get('from');
-  const safeFrom = sanitizeRedirectUrl(fromSearchParam);
-
-  if (safeFrom) {
-    return safeFrom;
-  }
-
-  return DEFAULT_ROUTE;
 }

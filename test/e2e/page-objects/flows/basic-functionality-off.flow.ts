@@ -17,7 +17,7 @@ export async function openSwapsPageAndWaitForRedirectToBasicFunctionalityOffPage
   await driver.openNewURL(
     `${driver.extensionUrl}/home.html#${SWAP_PATH}?swaps=true`,
   );
-  await driver.waitForUrlContaining({
+  await driver.waitForUrl({
     url: `${driver.extensionUrl}/home.html#${BASIC_FUNCTIONALITY_OFF_ROUTE}`,
   });
 }

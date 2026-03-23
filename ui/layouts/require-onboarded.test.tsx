@@ -1,12 +1,12 @@
 import React from 'react';
 import { render } from '@testing-library/react';
+import { useSelector } from 'react-redux';
 import { Navigate, Outlet } from 'react-router-dom';
-import { useAppSelector } from '../store/store';
 import { ONBOARDING_ROUTE } from '../helpers/constants/routes';
 import { RequireOnboarded } from './require-onboarded';
 
-jest.mock('../store/store', () => ({
-  useAppSelector: jest.fn(),
+jest.mock('react-redux', () => ({
+  useSelector: jest.fn(),
 }));
 
 jest.mock('react-router-dom', () => {
@@ -18,7 +18,7 @@ jest.mock('react-router-dom', () => {
   };
 });
 
-const mockUseAppSelector = jest.mocked(useAppSelector);
+const mockUseSelector = jest.mocked(useSelector);
 
 describe('RequireOnboarded', () => {
   beforeEach(() => {
@@ -32,9 +32,7 @@ describe('RequireOnboarded', () => {
       },
     };
 
-    mockUseAppSelector.mockImplementation((selector) =>
-      selector(state as never),
-    );
+    mockUseSelector.mockImplementation((selector) => selector(state as never));
 
     const { getByTestId, queryByTestId } = render(<RequireOnboarded />);
 
@@ -52,9 +50,7 @@ describe('RequireOnboarded', () => {
       },
     };
 
-    mockUseAppSelector.mockImplementation((selector) =>
-      selector(state as never),
-    );
+    mockUseSelector.mockImplementation((selector) => selector(state as never));
 
     const { getByTestId, queryByTestId } = render(<RequireOnboarded />);
 
@@ -69,9 +65,7 @@ describe('RequireOnboarded', () => {
       },
     };
 
-    mockUseAppSelector.mockImplementation((selector) =>
-      selector(state as never),
-    );
+    mockUseSelector.mockImplementation((selector) => selector(state as never));
 
     render(<RequireOnboarded />);
 

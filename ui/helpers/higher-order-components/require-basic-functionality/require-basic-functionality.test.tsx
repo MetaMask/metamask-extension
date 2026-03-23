@@ -22,8 +22,8 @@ jest.mock('react-router-dom', () => {
 
 const mockUseSelector = jest.mocked(useSelector);
 
-describe('RequireBasicFunctionality', () => {
-  const encodedSwapPath = encodeURIComponent(SWAP_PATH);
+describe('BasicFunctionalityRequired', () => {
+  const basicFunctionalityOffRoute = '/basic-functionality-off';
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -36,70 +36,123 @@ describe('RequireBasicFunctionality', () => {
     } as ReturnType<typeof useLocation>);
   });
 
-  it('renders Outlet when useExternalServices is true', () => {
-    mockUseSelector.mockReturnValue(true);
+  describe('when useExternalServices is true', () => {
+    it('renders Outlet', () => {
+      mockUseSelector.mockReturnValue(true);
 
-    const { getByTestId, queryByTestId } = render(
-      <BasicFunctionalityRequired />,
-    );
+      const { getByTestId, queryByTestId } = render(
+        <BasicFunctionalityRequired />,
+      );
 
-    expect(getByTestId('outlet')).toBeInTheDocument();
-    expect(queryByTestId('navigate')).not.toBeInTheDocument();
+      expect(getByTestId('outlet')).toBeInTheDocument();
+      expect(queryByTestId('navigate')).not.toBeInTheDocument();
+    });
   });
 
-  it('redirects to basic-functionality-off with from query when useExternalServices is undefined', () => {
-    mockUseSelector.mockReturnValue(undefined);
+  describe('when useExternalServices is undefined (e.g. during hydration or old state)', () => {
+    it('redirects to basic-functionality-off to be conservative', () => {
+      mockUseSelector.mockReturnValue(undefined);
 
-    const { getByTestId, queryByTestId } = render(
-      <BasicFunctionalityRequired />,
-    );
+      const { getByTestId, queryByTestId } = render(
+        <BasicFunctionalityRequired />,
+      );
 
-    expect(getByTestId('navigate')).toHaveAttribute(
-      'data-to',
-      `/basic-functionality-off?from=${encodedSwapPath}`,
-    );
-    expect(queryByTestId('outlet')).not.toBeInTheDocument();
+      expect(getByTestId('navigate')).toBeInTheDocument();
+      expect(getByTestId('navigate')).toHaveAttribute(
+        'data-to',
+        basicFunctionalityOffRoute,
+      );
+      expect(Navigate).toHaveBeenCalledWith(
+        expect.objectContaining({
+          to: basicFunctionalityOffRoute,
+          state: {
+            blockedRoutePath: SWAP_PATH,
+          },
+        }),
+        expect.anything(),
+      );
+      expect(queryByTestId('outlet')).not.toBeInTheDocument();
+    });
   });
 
-  it('redirects to basic-functionality-off with encoded from query when useExternalServices is false', () => {
-    mockUseSelector.mockReturnValue(false);
-    mockUseLocation.mockReturnValue({
-      pathname: SWAP_PATH,
-      state: null,
-      key: '',
-      search: '?swaps=true',
-      hash: '#section',
-    } as ReturnType<typeof useLocation>);
+  describe('when useExternalServices is false', () => {
+    it('redirects to the basic functionality off page', () => {
+      mockUseSelector.mockReturnValue(false);
 
-    const { getByTestId } = render(<BasicFunctionalityRequired />);
+      const { getByTestId, queryByTestId } = render(
+        <BasicFunctionalityRequired />,
+      );
 
-    expect(getByTestId('navigate')).toHaveAttribute(
-      'data-to',
-      `/basic-functionality-off?from=${encodeURIComponent(
-        `${SWAP_PATH}?swaps=true#section`,
-      )}`,
-    );
-  });
+      expect(getByTestId('navigate')).toBeInTheDocument();
+      expect(getByTestId('navigate')).toHaveAttribute(
+        'data-to',
+        basicFunctionalityOffRoute,
+      );
+      expect(queryByTestId('outlet')).not.toBeInTheDocument();
+    });
 
-  it('uses replace navigation', () => {
-    mockUseSelector.mockReturnValue(false);
+    it('uses replace navigation', () => {
+      mockUseSelector.mockReturnValue(false);
 
-    render(<BasicFunctionalityRequired />);
+      render(<BasicFunctionalityRequired />);
 
-    expect(Navigate).toHaveBeenCalledWith(
-      expect.objectContaining({
-        to: `/basic-functionality-off?from=${encodedSwapPath}`,
-        replace: true,
-      }),
-      expect.anything(),
-    );
-  });
+      expect(Navigate).toHaveBeenCalledWith(
+        expect.objectContaining({
+          to: basicFunctionalityOffRoute,
+          state: {
+            blockedRoutePath: SWAP_PATH,
+          },
+          replace: true,
+        }),
+        expect.anything(),
+      );
+    });
 
-  it('does not call Outlet when redirecting', () => {
-    mockUseSelector.mockReturnValue(false);
+    it('passes current location pathname in state', () => {
+      mockUseSelector.mockReturnValue(false);
 
-    render(<BasicFunctionalityRequired />);
+      render(<BasicFunctionalityRequired />);
 
-    expect(Outlet).not.toHaveBeenCalled();
+      expect(Navigate).toHaveBeenCalledWith(
+        expect.objectContaining({
+          to: basicFunctionalityOffRoute,
+          state: {
+            blockedRoutePath: SWAP_PATH,
+          },
+        }),
+        expect.anything(),
+      );
+    });
+
+    it('includes search and hash in blockedRoutePath so original URL context is restored', () => {
+      mockUseSelector.mockReturnValue(false);
+      mockUseLocation.mockReturnValue({
+        pathname: SWAP_PATH,
+        state: null,
+        key: '',
+        search: '?swaps=true',
+        hash: '#section',
+      } as ReturnType<typeof useLocation>);
+
+      render(<BasicFunctionalityRequired />);
+
+      expect(Navigate).toHaveBeenCalledWith(
+        expect.objectContaining({
+          to: basicFunctionalityOffRoute,
+          state: {
+            blockedRoutePath: `${SWAP_PATH}?swaps=true#section`,
+          },
+        }),
+        expect.anything(),
+      );
+    });
+
+    it('does not call Outlet when redirecting', () => {
+      mockUseSelector.mockReturnValue(false);
+
+      render(<BasicFunctionalityRequired />);
+
+      expect(Outlet).not.toHaveBeenCalled();
+    });
   });
 });

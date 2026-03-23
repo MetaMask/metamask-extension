@@ -1,5 +1,5 @@
 import React from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   Box,
@@ -28,6 +28,7 @@ import ToggleButton from '../../components/ui/toggle-button';
 import { DEFAULT_ROUTE, SECURITY_ROUTE } from '../../helpers/constants/routes';
 import { getUseExternalServices } from '../../selectors';
 import { toggleExternalServices } from '../../store/actions';
+import type { BasicFunctionalityOffState } from '../../helpers/higher-order-components/require-basic-functionality/require-basic-functionality';
 
 const CONTAINER_STYLE = { marginTop: '111px' } as const;
 const CARD_BOX_STYLE = { width: '446px', minHeight: '592px' } as const;
@@ -54,11 +55,12 @@ const SEGMENT_CTA_MAPPING: Record<string, string> = {
 export const BasicFunctionalityOff = () => {
   const t = useI18nContext();
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
+  const location = useLocation();
   const dispatch = useDispatch();
   const useExternalServices = useSelector(getUseExternalServices);
 
-  const blockedRoutePath = searchParams.get('from') ?? '';
+  const state = location.state as BasicFunctionalityOffState | undefined;
+  const blockedRoutePath = state?.blockedRoutePath ?? '';
   const segment = blockedRoutePath.split('?')[0].split('/')[1] ?? '';
   const openPageCtaMessageKey = SEGMENT_CTA_MAPPING[segment] ?? '';
   const hasFeatureContext = Boolean(blockedRoutePath && openPageCtaMessageKey);
