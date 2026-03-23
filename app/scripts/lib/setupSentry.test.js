@@ -608,4 +608,82 @@ describe('Setup Sentry', () => {
       ).not.toHaveBeenCalled();
     });
   });
+
+  describe('Sentry.init with makeTransport (MetaMetrics)', () => {
+    afterEach(async () => {
+      await Sentry.close(2000);
+      delete globalThis.stateHooks?.getPersistedState;
+      delete globalThis.stateHooks?.getBackupState;
+      delete globalThis.stateHooks?.getSentryState;
+    });
+
+    it('does not call fetch after init and flush when opted out, including session', async () => {
+      globalThis.nw = {};
+      globalThis.history ??= {};
+
+      globalThis.stateHooks = {
+        getSentryState: () => ({}),
+        getPersistedState: async () => ({
+          data: {
+            MetaMetricsController: { participateInMetaMetrics: false },
+          },
+        }),
+        getBackupState: async () => ({}),
+      };
+
+      const fetchSpy = jest
+        .spyOn(globalThis, 'fetch')
+        .mockResolvedValue({ ok: true });
+
+      await Sentry.close(2000);
+      Sentry.init({
+        dsn: 'https://public@fake.ingest.sentry.io/1',
+        release: 'setup-sentry-unit-test',
+        transport: makeTransport,
+        tracesSampleRate: 0,
+      });
+
+      await Sentry.flush(2000);
+
+      expect(fetchSpy).not.toHaveBeenCalled();
+
+      fetchSpy.mockRestore();
+    });
+
+    it('calls fetch after init and flush when opted in, including session', async () => {
+      globalThis.nw = {};
+      globalThis.history ??= {};
+
+      globalThis.stateHooks = {
+        getSentryState: () => ({}),
+        getPersistedState: async () => ({
+          data: {
+            MetaMetricsController: {
+              participateInMetaMetrics: true,
+              metaMetricsId: 'init-flush-test-id',
+            },
+          },
+        }),
+        getBackupState: async () => ({}),
+      };
+
+      const fetchSpy = jest
+        .spyOn(globalThis, 'fetch')
+        .mockResolvedValue({ ok: true });
+
+      await Sentry.close(2000);
+      Sentry.init({
+        dsn: 'https://public@fake.ingest.sentry.io/1',
+        release: 'setup-sentry-unit-test',
+        transport: makeTransport,
+        tracesSampleRate: 0,
+      });
+
+      await Sentry.flush(2000);
+
+      expect(fetchSpy).toHaveBeenCalled();
+
+      fetchSpy.mockRestore();
+    });
+  });
 });
