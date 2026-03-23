@@ -5,7 +5,6 @@ import {
 } from '../types';
 import { LedgerAdapter } from './LedgerAdapter';
 import { NonHardwareAdapter } from './NonHardwareAdapter';
-import { TrezorAdapter } from './TrezorAdapter';
 
 /**
  * Creates an adapter for the given hardware wallet type.
@@ -21,8 +20,6 @@ export function createAdapterForHardwareWalletType(
   switch (walletType) {
     case HardwareWalletType.Ledger:
       return new LedgerAdapter(adapterOptions);
-    case HardwareWalletType.Trezor:
-      return new TrezorAdapter(adapterOptions);
     default:
       return new NonHardwareAdapter(adapterOptions);
   }
