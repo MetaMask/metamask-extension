@@ -3,7 +3,7 @@
 exports[`ThirdPartyApisSubPage snapshot matches snapshot 1`] = `
 <div>
   <div
-    class="pb-4 px-4"
+    class="pb-4 px-4 overflow-y-auto"
   >
     <p
       class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default py-2"
