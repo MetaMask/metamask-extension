@@ -42,7 +42,6 @@ import { SettingsV2Header } from './shared';
 
 const FirstTabComponent = SETTINGS_V2_TABS[0]?.component;
 const FIRST_TAB_PATH = SETTINGS_V2_TABS[0]?.path;
-const HEADER_HEIGHT_PX = 64;
 
 /**
  * Layout for Settings V2: header, tab bar, and content area.
@@ -127,7 +126,8 @@ const SettingsV2Layout = ({ children }: { children: React.ReactNode }) => {
       />
       <Box
         flexDirection={BoxFlexDirection.Row}
-        className={classnames(`h-[calc(100%-${HEADER_HEIGHT_PX}px)]`, {
+        // 64px is the header height
+        className={classnames(`h-[calc(100%-64px)]`, {
           'sm:border-t sm:border-border-muted': !isSidepanel,
         })}
       >
