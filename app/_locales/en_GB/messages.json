@@ -6048,24 +6048,24 @@
     "message": "Limit order filled"
   },
   "pushNotificationPositionLiquidatedDescriptionLong": {
-    "message": "Your $1 long was closed.",
+    "message": "Your $1 long position was liquidated.",
     "description": "$1 is the asset symbol"
   },
   "pushNotificationPositionLiquidatedDescriptionShort": {
-    "message": "Your $1 short was closed.",
+    "message": "Your $1 short position was liquidated.",
     "description": "$1 is the asset symbol"
   },
   "pushNotificationPositionLiquidatedTitle": {
     "message": "Position liquidated"
   },
   "pushNotificationShieldClaimCreatedDescriptionShort": {
-    "message": "Your claim has been created"
+    "message": "Your claim has been created."
   },
   "pushNotificationShieldClaimCreatedTitle": {
     "message": "Claim created"
   },
   "pushNotificationShieldClaimStatusUpdatedDescriptionShort": {
-    "message": "Your claim has been updated"
+    "message": "Your claim has an update."
   },
   "pushNotificationShieldClaimStatusUpdatedTitle": {
     "message": "Claim updated"
@@ -6077,7 +6077,7 @@
     "message": "Your plan is now active."
   },
   "pushNotificationShieldSubscriptionPaymentFailedDescriptionShort": {
-    "message": "Your plan has been paused due to payment failure."
+    "message": "Your plan is paused. Update your payment to continue."
   },
   "pushNotificationShieldSubscriptionTitle": {
     "message": "MetaMask Transaction Shield"
@@ -6108,76 +6108,76 @@
     "message": "Take profit triggered"
   },
   "pushPlatformNotificationsFundsReceivedDescription": {
-    "message": "You received $1 $2"
+    "message": "You received $1 $2."
   },
   "pushPlatformNotificationsFundsReceivedDescriptionDefault": {
-    "message": "You received some tokens"
+    "message": "You received funds."
   },
   "pushPlatformNotificationsFundsReceivedTitle": {
     "message": "Funds received"
   },
   "pushPlatformNotificationsFundsSentDescription": {
-    "message": "You successfully sent $1 $2"
+    "message": "You sent $1 $2."
   },
   "pushPlatformNotificationsFundsSentDescriptionDefault": {
-    "message": "You successfully sent some tokens"
+    "message": "You sent funds."
   },
   "pushPlatformNotificationsFundsSentTitle": {
     "message": "Funds sent"
   },
   "pushPlatformNotificationsNftReceivedDescription": {
-    "message": "You received new NFTs"
+    "message": "You received new NFTs."
   },
   "pushPlatformNotificationsNftReceivedTitle": {
     "message": "NFT received"
   },
   "pushPlatformNotificationsNftSentDescription": {
-    "message": "You have successfully sent an NFT"
+    "message": "You sent an NFT."
   },
   "pushPlatformNotificationsNftSentTitle": {
     "message": "NFT sent"
   },
   "pushPlatformNotificationsStakingLidoStakeCompletedDescription": {
-    "message": "Your Lido stake was successful"
+    "message": "Your Lido stake deposit is complete."
   },
   "pushPlatformNotificationsStakingLidoStakeCompletedTitle": {
-    "message": "Stake complete"
+    "message": "Stake deposited"
   },
   "pushPlatformNotificationsStakingLidoStakeReadyToBeWithdrawnDescription": {
-    "message": "Your Lido stake is now ready to be withdrawn"
+    "message": "Your Lido stake is ready to withdraw."
   },
   "pushPlatformNotificationsStakingLidoStakeReadyToBeWithdrawnTitle": {
-    "message": "Stake ready for withdrawal"
+    "message": "Stake ready to withdraw"
   },
   "pushPlatformNotificationsStakingLidoWithdrawalCompletedDescription": {
-    "message": "Your Lido withdrawal was successful"
+    "message": "Your Lido withdrawal is complete."
   },
   "pushPlatformNotificationsStakingLidoWithdrawalCompletedTitle": {
-    "message": "Withdrawal completed"
+    "message": "Withdrawal complete"
   },
   "pushPlatformNotificationsStakingLidoWithdrawalRequestedDescription": {
-    "message": "Your Lido withdrawal request was submitted"
+    "message": "Your Lido withdrawal request was submitted."
   },
   "pushPlatformNotificationsStakingLidoWithdrawalRequestedTitle": {
     "message": "Withdrawal requested"
   },
   "pushPlatformNotificationsStakingRocketpoolStakeCompletedDescription": {
-    "message": "Your RocketPool stake was successful"
+    "message": "Your Rocket Pool stake deposit is complete."
   },
   "pushPlatformNotificationsStakingRocketpoolStakeCompletedTitle": {
-    "message": "Stake complete"
+    "message": "Stake deposited"
   },
   "pushPlatformNotificationsStakingRocketpoolUnstakeCompletedDescription": {
-    "message": "Your RocketPool unstake was successful"
+    "message": "Your Rocket Pool unstake is complete."
   },
   "pushPlatformNotificationsStakingRocketpoolUnstakeCompletedTitle": {
     "message": "Unstake complete"
   },
   "pushPlatformNotificationsSwapCompletedDescription": {
-    "message": "Your MetaMask Swap was successful"
+    "message": "Your swap is complete."
   },
   "pushPlatformNotificationsSwapCompletedTitle": {
-    "message": "Swap completed"
+    "message": "Swap complete"
   },
   "qr": {
     "message": "QR",
