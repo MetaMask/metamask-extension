@@ -327,15 +327,15 @@ exports[`AssetPage should render a native asset 1`] = `
             class="flex flex-col gap-2"
           >
             <div
-              class="flex flex-row items-center justify-between"
+              class="flex flex-row justify-between"
             >
               <p
                 class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
               >
                 Network
               </p>
-              <div
-                class=""
+              <p
+                class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
               >
                 <div
                   class="flex flex-row gap-2 items-center"
@@ -356,18 +356,18 @@ exports[`AssetPage should render a native asset 1`] = `
                     Ethereum
                   </p>
                 </div>
-              </div>
+              </p>
             </div>
             <div
-              class="flex flex-row items-center justify-between"
+              class="flex flex-row justify-between"
             >
               <p
                 class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
               >
                 Spending caps
               </p>
-              <div
-                class=""
+              <p
+                class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
               >
                 <a
                   class="inline-flex items-center justify-center font-medium min-w-20 overflow-hidden relative duration-100 ease-linear active:ease-[cubic-bezier(0.3,0.8,0.3,1)] h-auto rounded-none bg-transparent px-0 transform-none transition-none active:scale-100 text-primary-default hover:bg-hover hover:text-primary-default-hover hover:underline hover:decoration-primary-default-hover hover:decoration-2 hover:underline-offset-4 active:bg-pressed active:text-primary-default-pressed active:decoration-primary-default-pressed asset-page__spending-caps"
@@ -377,7 +377,7 @@ exports[`AssetPage should render a native asset 1`] = `
                 >
                   Edit in Portfolio
                 </a>
-              </div>
+              </p>
             </div>
           </div>
         </div>
@@ -689,15 +689,15 @@ exports[`AssetPage should render an ERC20 asset without prices 1`] = `
             class="flex flex-col gap-2"
           >
             <div
-              class="flex flex-row items-center justify-between"
+              class="flex flex-row justify-between"
             >
               <p
                 class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
               >
                 Network
               </p>
-              <div
-                class=""
+              <p
+                class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
               >
                 <div
                   class="flex flex-row gap-2 items-center"
@@ -718,21 +718,21 @@ exports[`AssetPage should render an ERC20 asset without prices 1`] = `
                     Ethereum
                   </p>
                 </div>
-              </div>
+              </p>
             </div>
             <div
               class=""
             >
               <div
-                class="flex flex-row items-center justify-between"
+                class="flex flex-row justify-between"
               >
                 <p
                   class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
                 >
                   Contract address
                 </p>
-                <div
-                  class=""
+                <p
+                  class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
                 >
                   <div>
                     <div
@@ -763,41 +763,41 @@ exports[`AssetPage should render an ERC20 asset without prices 1`] = `
                       </button>
                     </div>
                   </div>
-                </div>
+                </p>
               </div>
               <div
                 class="flex flex-col gap-2"
               >
                 <div
-                  class="flex flex-row items-center justify-between"
+                  class="flex flex-row justify-between"
                 >
                   <p
                     class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
                   >
                     Token decimal
                   </p>
-                  <div
-                    class=""
+                  <p
+                    class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
                   >
                     <p
                       class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
                     >
                       18
                     </p>
-                  </div>
+                  </p>
                 </div>
               </div>
             </div>
             <div
-              class="flex flex-row items-center justify-between"
+              class="flex flex-row justify-between"
             >
               <p
                 class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
               >
                 Spending caps
               </p>
-              <div
-                class=""
+              <p
+                class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
               >
                 <a
                   class="inline-flex items-center justify-center font-medium min-w-20 overflow-hidden relative duration-100 ease-linear active:ease-[cubic-bezier(0.3,0.8,0.3,1)] h-auto rounded-none bg-transparent px-0 transform-none transition-none active:scale-100 text-primary-default hover:bg-hover hover:text-primary-default-hover hover:underline hover:decoration-primary-default-hover hover:decoration-2 hover:underline-offset-4 active:bg-pressed active:text-primary-default-pressed active:decoration-primary-default-pressed asset-page__spending-caps"
@@ -807,7 +807,7 @@ exports[`AssetPage should render an ERC20 asset without prices 1`] = `
                 >
                   Edit in Portfolio
                 </a>
-              </div>
+              </p>
             </div>
           </div>
         </div>
@@ -1114,15 +1114,15 @@ exports[`AssetPage should render an ERC20 token with prices 1`] = `
             class="flex flex-col gap-2"
           >
             <div
-              class="flex flex-row items-center justify-between"
+              class="flex flex-row justify-between"
             >
               <p
                 class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
               >
                 Network
               </p>
-              <div
-                class=""
+              <p
+                class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
               >
                 <div
                   class="flex flex-row gap-2 items-center"
@@ -1143,21 +1143,21 @@ exports[`AssetPage should render an ERC20 token with prices 1`] = `
                     Ethereum
                   </p>
                 </div>
-              </div>
+              </p>
             </div>
             <div
               class=""
             >
               <div
-                class="flex flex-row items-center justify-between"
+                class="flex flex-row justify-between"
               >
                 <p
                   class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
                 >
                   Contract address
                 </p>
-                <div
-                  class=""
+                <p
+                  class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
                 >
                   <div>
                     <div
@@ -1188,41 +1188,41 @@ exports[`AssetPage should render an ERC20 token with prices 1`] = `
                       </button>
                     </div>
                   </div>
-                </div>
+                </p>
               </div>
               <div
                 class="flex flex-col gap-2"
               >
                 <div
-                  class="flex flex-row items-center justify-between"
+                  class="flex flex-row justify-between"
                 >
                   <p
                     class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
                   >
                     Token decimal
                   </p>
-                  <div
-                    class=""
+                  <p
+                    class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
                   >
                     <p
                       class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
                     >
                       18
                     </p>
-                  </div>
+                  </p>
                 </div>
               </div>
             </div>
             <div
-              class="flex flex-row items-center justify-between"
+              class="flex flex-row justify-between"
             >
               <p
                 class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
               >
                 Spending caps
               </p>
-              <div
-                class=""
+              <p
+                class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
               >
                 <a
                   class="inline-flex items-center justify-center font-medium min-w-20 overflow-hidden relative duration-100 ease-linear active:ease-[cubic-bezier(0.3,0.8,0.3,1)] h-auto rounded-none bg-transparent px-0 transform-none transition-none active:scale-100 text-primary-default hover:bg-hover hover:text-primary-default-hover hover:underline hover:decoration-primary-default-hover hover:decoration-2 hover:underline-offset-4 active:bg-pressed active:text-primary-default-pressed active:decoration-primary-default-pressed asset-page__spending-caps"
@@ -1232,7 +1232,7 @@ exports[`AssetPage should render an ERC20 token with prices 1`] = `
                 >
                   Edit in Portfolio
                 </a>
-              </div>
+              </p>
             </div>
           </div>
         </div>
