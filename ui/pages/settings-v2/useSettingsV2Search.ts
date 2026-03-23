@@ -10,6 +10,8 @@ import { SETTINGS_V2_SEARCH_CONFIG } from './search-config';
 export const MIN_SEARCH_LENGTH = 3;
 
 export type SettingsV2SearchResult = {
+  /** Setting item id — used as hash fragment for scroll-to-setting */
+  settingId: string;
   tabLabelKey: string;
   titleKey: string;
   tabRoute: string;
@@ -20,7 +22,7 @@ export type SettingsV2SearchResult = {
 
 /**
  * Builds a flat list of searchable items by joining the lightweight
- * search config (titleKeys only) with the registry (labelKey, path, iconName).
+ * search config (id + titleKey pairs) with the registry (labelKey, path, iconName).
  */
 function buildSearchableItems(): SettingsV2SearchResult[] {
   const tabById = new Map(
@@ -33,22 +35,22 @@ function buildSearchableItems(): SettingsV2SearchResult[] {
       return [];
     }
 
-    const tabItems: SettingsV2SearchResult[] = cfg.titleKeys.map(
-      (titleKey) => ({
-        tabLabelKey: tab.labelKey,
-        titleKey,
-        tabRoute: tab.path,
-        iconName: tab.iconName,
-      }),
-    );
+    const tabItems: SettingsV2SearchResult[] = cfg.items.map((item) => ({
+      settingId: item.id,
+      tabLabelKey: tab.labelKey,
+      titleKey: item.titleKey,
+      tabRoute: tab.path,
+      iconName: tab.iconName,
+    }));
 
     const subPageItems: SettingsV2SearchResult[] = (cfg.subPages ?? []).flatMap(
       (subPage) => {
         const meta = SETTINGS_V2_ROUTE_META[subPage.path];
-        return subPage.titleKeys.map((titleKey) => ({
+        return subPage.items.map((item) => ({
+          settingId: item.id,
           parentTabLabelKey: tab.labelKey,
           tabLabelKey: meta?.labelKey ?? tab.labelKey,
-          titleKey,
+          titleKey: item.titleKey,
           tabRoute: subPage.path,
           iconName: tab.iconName,
         }));

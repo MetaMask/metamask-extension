@@ -9,10 +9,11 @@ import { TESTNET_ETH_SCAMS_LEARN_MORE_LINK } from '../../../../shared/lib/ui-uti
 import { getShowFiatInTestnets } from '../../../selectors';
 import { setShowFiatConversionOnTestnetsPreference } from '../../../store/actions';
 import { AutoResetAccountItem } from './auto-reset-account-item';
+import { DEVELOPER_OPTIONS_ITEMS } from '../search-config';
 
 const ShowConversionInTestnetsItem = createToggleItem({
   name: 'ShowConversionInTestnetsItem',
-  titleKey: 'showFiatConversionInTestnets',
+  titleKey: DEVELOPER_OPTIONS_ITEMS['show-fiat-in-testnets'],
   formatDescription: createDescriptionWithLearnMore(
     'showFiatConversionInTestnetsDescriptionV2',
     TESTNET_ETH_SCAMS_LEARN_MORE_LINK,

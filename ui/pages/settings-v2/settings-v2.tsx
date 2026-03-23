@@ -150,7 +150,7 @@ const SettingsV2Layout = ({ children }: { children: React.ReactNode }) => {
           <SettingsV2SearchResults
             results={searchResults}
             onClickResult={(item) => {
-              navigate(item.tabRoute);
+              navigate(`${item.tabRoute}#${item.settingId}`);
               handleCloseSearch();
             }}
           />

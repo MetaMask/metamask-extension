@@ -13,10 +13,11 @@ import { MetametricsToggleItem } from './metametrics-item';
 import { DataCollectionToggleItem } from './data-collection-item';
 import { DeleteMetametricsDataItem } from './delete-metametrics-data-item';
 import { DownloadStateLogsItem } from './download-state-logs-item';
+import { PRIVACY_ITEMS } from '../search-config';
 
 const BatchAccountBalanceRequestsToggleItem = createToggleItem({
   name: 'BatchAccountBalanceRequestsToggleItem',
-  titleKey: 'useMultiAccountBalanceChecker',
+  titleKey: PRIVACY_ITEMS['batch-account-balance-requests'],
   descriptionKey: 'useMultiAccountBalanceCheckerSettingDescriptionV2',
   selector: (state: MetaMaskReduxState) =>
     state.metamask.useMultiAccountBalanceChecker,
@@ -26,7 +27,7 @@ const BatchAccountBalanceRequestsToggleItem = createToggleItem({
 
 const SkipLinkConfirmationToggleItem = createToggleItem({
   name: 'SkipLinkConfirmationToggleItem',
-  titleKey: 'skipLinkConfirmationScreens',
+  titleKey: PRIVACY_ITEMS['skip-link-confirmation'],
   descriptionKey: 'skipLinkConfirmationScreensDescription',
   selector: (state: MetaMaskReduxState) =>
     Boolean(getPreferences(state).skipDeepLinkInterstitial),

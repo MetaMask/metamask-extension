@@ -20,12 +20,13 @@ import locales from '../../../../app/_locales/index.json';
 import { AccountIdenticonItem } from './account-identicon-item';
 import { ShowDefaultAddressItem } from './show-default-address-item';
 import { THEME_LABEL_MAP } from './theme-utils';
+import { PREFERENCES_ITEMS } from '../search-config';
 
 const localeMap = new Map(locales.map(({ code, name }) => [code, name]));
 
 const ThemeItem = createSelectItem({
   name: 'ThemeItem',
-  titleKey: 'theme',
+  titleKey: PREFERENCES_ITEMS['theme'],
   valueSelector: getTheme,
   formatValue: (theme, t) =>
     t(THEME_LABEL_MAP[theme as ThemeType] ?? THEME_LABEL_MAP[ThemeType.os]),
@@ -34,7 +35,7 @@ const ThemeItem = createSelectItem({
 
 const LanguageItem = createSelectItem({
   name: 'LanguageItem',
-  titleKey: 'language',
+  titleKey: PREFERENCES_ITEMS['language'],
   valueSelector: (state: MetaMaskReduxState) => state.metamask.currentLocale,
   formatValue: (locale) => localeMap.get(locale) ?? locale,
   route: LANGUAGE_ROUTE,
@@ -42,7 +43,7 @@ const LanguageItem = createSelectItem({
 
 const ShowExtensionItem = createToggleItem({
   name: 'ShowExtensionItem',
-  titleKey: 'showExtensionInFullSizeView',
+  titleKey: PREFERENCES_ITEMS['show-extension'],
   descriptionKey: 'showExtensionInFullSizeViewDescription',
   selector: getShowExtensionInFullSizeView,
   action: setShowExtensionInFullSizeView,
@@ -64,7 +65,7 @@ const ShowExtensionItem = createToggleItem({
 
 const ManageInstitutionalWalletItem = createToggleItem({
   name: 'ManageInstitutionalWalletItem',
-  titleKey: 'manageInstitutionalWallets',
+  titleKey: PREFERENCES_ITEMS['manage-institutional-wallet'],
   descriptionKey: 'manageInstitutionalWalletsDescription',
   selector: getManageInstitutionalWallets,
   action: setManageInstitutionalWallets,

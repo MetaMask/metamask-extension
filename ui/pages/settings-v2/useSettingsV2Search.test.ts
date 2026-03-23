@@ -28,11 +28,17 @@ jest.mock('./search-config', () => ({
   SETTINGS_V2_SEARCH_CONFIG: [
     {
       tabId: 'assets',
-      titleKeys: ['localCurrency', 'autoDetectTokens'],
+      items: [
+        { id: 'local-currency', titleKey: 'localCurrency' },
+        { id: 'autodetect-tokens', titleKey: 'autoDetectTokens' },
+      ],
     },
     {
       tabId: 'preferences-and-display',
-      titleKeys: ['theme', 'language'],
+      items: [
+        { id: 'theme', titleKey: 'theme' },
+        { id: 'language', titleKey: 'language' },
+      ],
     },
   ],
 }));

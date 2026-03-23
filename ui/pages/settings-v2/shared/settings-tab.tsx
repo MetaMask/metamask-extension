@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo } from 'react';
+import { useLocation } from 'react-router-dom';
 import {
   Box,
   Text,
@@ -23,6 +24,7 @@ export const SettingsTab = ({
   tabMessageKey,
 }: SettingsTabProps) => {
   const t = useI18nContext();
+  const { hash } = useLocation();
 
   const itemCount = items.length;
   const settingsRefs = useMemo(
@@ -39,6 +41,20 @@ export const SettingsTab = ({
     }
   }, [t, tabMessageKey, settingsRefs]);
 
+  useEffect(() => {
+    if (!hash) {
+      return;
+    }
+    const targetId = hash.slice(1);
+    const index = items.findIndex((item) => item.id === targetId);
+    if (index !== -1) {
+      settingsRefs[index]?.current?.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start',
+      });
+    }
+  }, [hash, items, settingsRefs]);
+
   return (
     <Box paddingHorizontal={4} paddingBottom={4}>
       {subHeader && (
@@ -53,7 +69,9 @@ export const SettingsTab = ({
       {items.map(({ id, component: Component, hasDividerBefore }, index) => (
         <React.Fragment key={id}>
           {hasDividerBefore && <Divider />}
-          <Component sectionRef={settingsRefs[index]} />
+          <div ref={settingsRefs[index]}>
+            <Component />
+          </div>
         </React.Fragment>
       ))}
     </Box>
