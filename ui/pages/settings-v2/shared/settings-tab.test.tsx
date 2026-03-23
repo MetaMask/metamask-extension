@@ -53,7 +53,12 @@ describe('SettingsTab', () => {
 
     const mockItems = [
       { id: 'item-1', titleKey: 'settings', component: MockItem1 },
-      { id: 'item-2', titleKey: 'settings', component: MockItem2, hasDividerBefore: true },
+      {
+        id: 'item-2',
+        titleKey: 'settings',
+        component: MockItem2,
+        hasDividerBefore: true,
+      },
     ];
 
     const { container } = renderWithProvider(
@@ -71,7 +76,12 @@ describe('SettingsTab', () => {
 
     const mockItems = [
       { id: 'item-1', titleKey: 'settings', component: MockItem1 },
-      { id: 'item-2', titleKey: 'settings', component: MockItem2, hasDividerBefore: false },
+      {
+        id: 'item-2',
+        titleKey: 'settings',
+        component: MockItem2,
+        hasDividerBefore: false,
+      },
     ];
 
     const { container } = renderWithProvider(
