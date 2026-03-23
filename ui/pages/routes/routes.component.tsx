@@ -491,7 +491,7 @@ export const getRouteConfig = (store: Store) => [
           },
           {
             path: NONEVM_BALANCE_CHECK_ROUTE,
-            element: <NonEvmBalanceCheck />, // openCreateSnapAccountPage
+            element: <NonEvmBalanceCheck />,
           },
           {
             path: SHIELD_PLAN_ROUTE,
