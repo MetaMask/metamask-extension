@@ -50,7 +50,7 @@ export async function openRestoringTabAndReload(
     const tab = await browser.tabs.create({ url, active: true });
     tabId = tab.id;
   } catch (error) {
-    console.error(error);
+    log.error(error);
   }
 
   const value: Record<string, unknown> = { tabUrl: url };
