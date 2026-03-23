@@ -6659,12 +6659,12 @@ export default class MetamaskController extends EventEmitter {
 
     const handleUpdate = () => {
       if (!isStreamWritable(outStream)) {
-        console.log('Stream is closed, ignoring.');
+        log.debug('Stream is closed, ignoring.');
         return;
       }
 
       if (!isUiReady) {
-        console.warn(
+        log.debug(
           "'startSendingPatches' has not been called yet, not calling 'sendUpdate'.",
         );
         return;
