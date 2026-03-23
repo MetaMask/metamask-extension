@@ -1,6 +1,7 @@
 import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
-import FixtureBuilder from '../fixtures/fixture-builder';
+import { NETWORK_CLIENT_ID } from '../constants';
+import FixtureBuilderV2 from '../fixtures/fixture-builder-v2';
 import { withFixtures } from '../helpers';
 import { Driver } from '../webdriver/driver';
 import MultichainAccountDetailsPage from '../page-objects/pages/multichain/multichain-account-details-page';
@@ -9,7 +10,7 @@ import ExperimentalSettings from '../page-objects/pages/settings/experimental-se
 import HeaderNavbar from '../page-objects/pages/header-navbar';
 import HomePage from '../page-objects/pages/home/homepage';
 import SettingsPage from '../page-objects/pages/settings/settings-page';
-import { loginWithBalanceValidation } from '../page-objects/flows/login.flow';
+import { login } from '../page-objects/flows/login.flow';
 import { watchEoaAddress } from '../page-objects/flows/watch-account.flow';
 
 const ACCOUNT_1 = '0x5CfE73b6021E818B776b421B1c4Db2474086a7e1';
@@ -24,11 +25,11 @@ describe.skip('Account-watcher snap', function (this: Suite) {
     it('adds watch account with valid EOA address', async function () {
       await withFixtures(
         {
-          fixtures: new FixtureBuilder()
+          fixtures: new FixtureBuilderV2()
             .withPreferencesController({
               watchEthereumAccountEnabled: true,
             })
-            .withNetworkControllerOnMainnet()
+            .withSelectedNetwork(NETWORK_CLIENT_ID.MAINNET)
             .withEnabledNetworks({
               eip155: {
                 '0x1': true,
@@ -39,7 +40,7 @@ describe.skip('Account-watcher snap', function (this: Suite) {
         },
         async ({ driver }: { driver: Driver }) => {
           // watch an EOA address
-          await loginWithBalanceValidation(driver);
+          await login(driver);
           await watchEoaAddress(driver, EOA_ADDRESS);
 
           // new account should be displayed in the account list
@@ -53,11 +54,11 @@ describe.skip('Account-watcher snap', function (this: Suite) {
     it("disables 'Send' and 'Swap' buttons for watch accounts", async function () {
       await withFixtures(
         {
-          fixtures: new FixtureBuilder()
+          fixtures: new FixtureBuilderV2()
             .withPreferencesController({
               watchEthereumAccountEnabled: true,
             })
-            .withNetworkControllerOnMainnet()
+            .withSelectedNetwork(NETWORK_CLIENT_ID.MAINNET)
             .withEnabledNetworks({
               eip155: {
                 '0x1': true,
@@ -68,7 +69,7 @@ describe.skip('Account-watcher snap', function (this: Suite) {
         },
         async ({ driver }: { driver: Driver }) => {
           // watch an EOA address
-          await loginWithBalanceValidation(driver);
+          await login(driver);
           await watchEoaAddress(driver, EOA_ADDRESS);
           const homePage = new HomePage(driver);
           await homePage.headerNavbar.checkAccountLabel(
@@ -116,11 +117,11 @@ describe.skip('Account-watcher snap', function (this: Suite) {
       it(`handles invalid input: ${description}`, async function () {
         await withFixtures(
           {
-            fixtures: new FixtureBuilder()
+            fixtures: new FixtureBuilderV2()
               .withPreferencesController({
                 watchEthereumAccountEnabled: true,
               })
-              .withNetworkControllerOnMainnet()
+              .withSelectedNetwork(NETWORK_CLIENT_ID.MAINNET)
               .withEnabledNetworks({
                 eip155: {
                   '0x1': true,
@@ -130,7 +131,7 @@ describe.skip('Account-watcher snap', function (this: Suite) {
             title: this.test?.fullTitle(),
           },
           async ({ driver }: { driver: Driver }) => {
-            await loginWithBalanceValidation(driver);
+            await login(driver);
             const homePage = new HomePage(driver);
             await homePage.checkPageIsLoaded();
             await homePage.checkExpectedBalanceIsDisplayed();
@@ -154,11 +155,11 @@ describe.skip('Account-watcher snap', function (this: Suite) {
 
       await withFixtures(
         {
-          fixtures: new FixtureBuilder()
+          fixtures: new FixtureBuilderV2()
             .withPreferencesController({
               watchEthereumAccountEnabled: true,
             })
-            .withNetworkControllerOnMainnet()
+            .withSelectedNetwork(NETWORK_CLIENT_ID.MAINNET)
             .withEnabledNetworks({
               eip155: {
                 '0x1': true,
@@ -169,7 +170,7 @@ describe.skip('Account-watcher snap', function (this: Suite) {
         },
         async ({ driver }: { driver: Driver }) => {
           // watch an EOA address for ACCOUNT_2
-          await loginWithBalanceValidation(driver);
+          await login(driver);
           await watchEoaAddress(driver, ACCOUNT_2);
           const headerNavbar = new HeaderNavbar(driver);
           await headerNavbar.checkAccountLabel(DEFAULT_WATCHED_ACCOUNT_NAME);
@@ -189,11 +190,11 @@ describe.skip('Account-watcher snap', function (this: Suite) {
     it("does not display 'Show private key' button for watch accounts", async function () {
       await withFixtures(
         {
-          fixtures: new FixtureBuilder()
+          fixtures: new FixtureBuilderV2()
             .withPreferencesController({
               watchEthereumAccountEnabled: true,
             })
-            .withNetworkControllerOnMainnet()
+            .withSelectedNetwork(NETWORK_CLIENT_ID.MAINNET)
             .withEnabledNetworks({
               eip155: {
                 '0x1': true,
@@ -204,7 +205,7 @@ describe.skip('Account-watcher snap', function (this: Suite) {
         },
         async ({ driver }: { driver: Driver }) => {
           // watch an EOA address
-          await loginWithBalanceValidation(driver);
+          await login(driver);
           await watchEoaAddress(driver, EOA_ADDRESS);
 
           // open account details modal in header navbar
@@ -223,11 +224,11 @@ describe.skip('Account-watcher snap', function (this: Suite) {
     it('removes a watched account and recreate a watched account', async function () {
       await withFixtures(
         {
-          fixtures: new FixtureBuilder()
+          fixtures: new FixtureBuilderV2()
             .withPreferencesController({
               watchEthereumAccountEnabled: true,
             })
-            .withNetworkControllerOnMainnet()
+            .withSelectedNetwork(NETWORK_CLIENT_ID.MAINNET)
             .withEnabledNetworks({
               eip155: {
                 '0x1': true,
@@ -238,7 +239,7 @@ describe.skip('Account-watcher snap', function (this: Suite) {
         },
         async ({ driver }: { driver: Driver }) => {
           // watch an EOA address
-          await loginWithBalanceValidation(driver);
+          await login(driver);
           await watchEoaAddress(driver, EOA_ADDRESS);
           const homePage = new HomePage(driver);
           await homePage.headerNavbar.checkAccountLabel(
@@ -278,11 +279,11 @@ describe.skip('Account-watcher snap', function (this: Suite) {
     it("will show the 'Watch an Ethereum account (Beta)' option when setting is enabled", async function () {
       await withFixtures(
         {
-          fixtures: new FixtureBuilder().build(),
+          fixtures: new FixtureBuilderV2().build(),
           title: this.test?.fullTitle(),
         },
         async ({ driver }) => {
-          await loginWithBalanceValidation(driver);
+          await login(driver);
           const homePage = new HomePage(driver);
           await homePage.checkPageIsLoaded();
           await homePage.checkExpectedBalanceIsDisplayed();
@@ -318,11 +319,11 @@ describe.skip('Account-watcher snap', function (this: Suite) {
     it('enables and then disables the toggle and the option to add a watch-only account behaves as expected', async function () {
       await withFixtures(
         {
-          fixtures: new FixtureBuilder().build(),
+          fixtures: new FixtureBuilderV2().build(),
           title: this.test?.fullTitle(),
         },
         async ({ driver }) => {
-          await loginWithBalanceValidation(driver);
+          await login(driver);
           const homePage = new HomePage(driver);
           await homePage.checkPageIsLoaded();
           await homePage.checkExpectedBalanceIsDisplayed();

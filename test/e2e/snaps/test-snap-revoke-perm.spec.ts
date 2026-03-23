@@ -3,7 +3,7 @@ import { TestSnaps } from '../page-objects/pages/test-snaps';
 import HomePage from '../page-objects/pages/home/homepage';
 import SnapListPage from '../page-objects/pages/snap-list-page';
 import FixtureBuilderV2 from '../fixtures/fixture-builder-v2';
-import { loginWithBalanceValidation } from '../page-objects/flows/login.flow';
+import { login } from '../page-objects/flows/login.flow';
 import { openTestSnapClickButtonAndInstall } from '../page-objects/flows/install-test-snap.flow';
 import { approveAccount } from '../page-objects/flows/snap-permission.flow';
 import { withFixtures } from '../helpers';
@@ -28,7 +28,7 @@ describe('Test Snap revoke permission', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         const testSnaps = new TestSnaps(driver);
 
