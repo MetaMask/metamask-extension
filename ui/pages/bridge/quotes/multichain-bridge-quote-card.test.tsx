@@ -967,19 +967,12 @@ describe('MultichainBridgeQuoteCard', () => {
         bridgeConfig: {
           maxRefreshCount: 5,
           refreshRate: 30000,
-          chainRanking: [
-            { chainId: formatChainIdToCaip(CHAIN_IDS.OPTIMISM) },
-          ],
-        },
-        gasFeesSponsoredNetwork: {
-          [CHAIN_IDS.OPTIMISM]: true,
+          chainRanking: [{ chainId: formatChainIdToCaip(CHAIN_IDS.OPTIMISM) }],
         },
       },
       bridgeSliceOverrides: {
         fromTokenInputValue: '1',
-        fromToken: toBridgeToken(
-          getNativeAssetForChainId(CHAIN_IDS.OPTIMISM),
-        ),
+        fromToken: toBridgeToken(getNativeAssetForChainId(CHAIN_IDS.OPTIMISM)),
         toToken: toBridgeToken(getNativeAssetForChainId(CHAIN_IDS.OPTIMISM)),
       },
       bridgeStateOverrides: {
@@ -1006,6 +999,11 @@ describe('MultichainBridgeQuoteCard', () => {
         ...mockNetworkState({ chainId: CHAIN_IDS.OPTIMISM }),
         internalAccounts: {
           selectedAccount: MOCK_LEDGER_ACCOUNT.id,
+        },
+        remoteFeatureFlags: {
+          gasFeesSponsoredNetwork: {
+            [CHAIN_IDS.OPTIMISM]: true,
+          },
         },
       },
     });
