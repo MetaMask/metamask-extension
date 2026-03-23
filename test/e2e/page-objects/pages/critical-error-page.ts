@@ -88,11 +88,7 @@ class CriticalErrorPage {
 
     if (confirm) {
       await alert.accept();
-    } else {
-      await alert.dismiss();
-    }
 
-    if (confirm) {
       // runtime.reload() tears down extension UI tabs, so the driver's current
       // window may be dead. delay() is a pure setTimeout (safe), then
       // getAllWindowHandles() is session-level (also safe on a dead window).
@@ -111,6 +107,8 @@ class CriticalErrorPage {
       // Handoff can leave two full-screen extension tabs; duplicate instances
       // broke Terms-of-Use interactions (visibility / observers). Keep one tab.
       await this.driver.closeAllOtherTabs();
+    } else {
+      await alert.dismiss();
     }
   }
 
