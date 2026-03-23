@@ -15,17 +15,22 @@ import { lockAndWaitForLoginPage } from './login.flow';
  *
  * @param driver - The WebDriver instance.
  * @param headerNavbar - Optional HeaderNavbar instance to reuse.
+ * @param options - Optional settings.
+ * @param options.accountListTimeout - How long to wait for the account list to
+ * load (ms). Default 20 000. Use a higher value after restore-from-backup flows
+ * where multichain state must be fetched from scratch.
  * @returns The first account's address.
  */
 export async function getFirstAddress(
   driver: Driver,
   headerNavbar: HeaderNavbar = new HeaderNavbar(driver),
+  { accountListTimeout = 20000 }: { accountListTimeout?: number } = {},
 ): Promise<string> {
   await headerNavbar.checkPageIsLoaded();
   await headerNavbar.openAccountMenu();
 
   const accountListPage = new AccountListPage(driver);
-  await accountListPage.checkPageIsLoaded(20000);
+  await accountListPage.checkPageIsLoaded(accountListTimeout);
   await accountListPage.openMultichainAccountMenu({
     accountLabel: 'Account 1',
   });

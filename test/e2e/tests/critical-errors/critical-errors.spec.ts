@@ -120,7 +120,11 @@ describe('Critical errors', function (this: Suite) {
         const homePage = new HomePage(driver);
         await homePage.waitForLoadingOverlayToDisappear();
 
-        const restoredFirstAddress = await getFirstAddress(driver);
+        // After restoring from backup, multichain state must be fetched from
+        // scratch (unlike vault-repair where it survives). Allow extra time.
+        const restoredFirstAddress = await getFirstAddress(driver, undefined, {
+          accountListTimeout: 60_000,
+        });
 
         assert.equal(
           restoredFirstAddress,
@@ -162,13 +166,12 @@ describe('Critical errors', function (this: Suite) {
           password: WALLET_PASSWORD,
         });
 
-        // After a restore+reload cycle the extension may still be
-        // initializing multichain features. Wait for the loading overlay
-        // to clear so getFirstAddress doesn't time out on slow CI.
         const homePage = new HomePage(driver);
         await homePage.waitForLoadingOverlayToDisappear();
 
-        const restoredFirstAddress = await getFirstAddress(driver);
+        const restoredFirstAddress = await getFirstAddress(driver, undefined, {
+          accountListTimeout: 60_000,
+        });
 
         assert.equal(
           restoredFirstAddress,
