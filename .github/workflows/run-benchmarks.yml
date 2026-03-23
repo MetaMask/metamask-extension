@@ -15,19 +15,19 @@ env:
     {
       "startupStandardHome": "yarn test:e2e:benchmark --preset startupStandardHome --out test-artifacts/benchmarks/benchmark-{0}-{1}-startupStandardHome.json --retries 2",
       "startupPowerUserHome": "yarn test:e2e:benchmark --preset startupPowerUserHome --browserLoads 10 --pageLoads 10 --out test-artifacts/benchmarks/benchmark-{0}-{1}-startupPowerUserHome.json --retries 2",
-      "interactionUserActions": "yarn test:e2e:benchmark --preset interactionUserActions --out test-artifacts/benchmarks/benchmark-{0}-{1}-interactionUserActions.json --retries 2",
-      "userJourneyOnboardingImport": "yarn test:e2e:benchmark --preset userJourneyOnboardingImport --browserLoads 5 --pageLoads 5 --out test-artifacts/benchmarks/benchmark-{0}-{1}-userJourneyOnboardingImport.json --retries 2",
-      "userJourneyOnboardingNew": "yarn test:e2e:benchmark --preset userJourneyOnboardingNew --out test-artifacts/benchmarks/benchmark-{0}-{1}-userJourneyOnboardingNew.json --retries 2",
-      "userJourneyAssets": "yarn test:e2e:benchmark --preset userJourneyAssets --out test-artifacts/benchmarks/benchmark-{0}-{1}-userJourneyAssets.json --retries 2",
-      "userJourneyTransactions": "yarn test:e2e:benchmark --preset userJourneyTransactions --out test-artifacts/benchmarks/benchmark-{0}-{1}-userJourneyTransactions.json --retries 2",
-      "userJourneyAccountManagement": "yarn test:e2e:benchmark --preset userJourneyAccountManagement --out test-artifacts/benchmarks/benchmark-{0}-{1}-userJourneyAccountManagement.json --retries 2"
+      "interactionUserActions": "yarn test:e2e:benchmark --preset interactionUserActions --iterations 20 --out test-artifacts/benchmarks/benchmark-{0}-{1}-interactionUserActions.json --retries 2",
+      "userJourneyOnboardingImport": "yarn test:e2e:benchmark --preset userJourneyOnboardingImport --iterations 20 --out test-artifacts/benchmarks/benchmark-{0}-{1}-userJourneyOnboardingImport.json --retries 2",
+      "userJourneyOnboardingNew": "yarn test:e2e:benchmark --preset userJourneyOnboardingNew --iterations 20 --out test-artifacts/benchmarks/benchmark-{0}-{1}-userJourneyOnboardingNew.json --retries 2",
+      "userJourneyAssets": "yarn test:e2e:benchmark --preset userJourneyAssets --iterations 20 --out test-artifacts/benchmarks/benchmark-{0}-{1}-userJourneyAssets.json --retries 2",
+      "userJourneyTransactions": "yarn test:e2e:benchmark --preset userJourneyTransactions --iterations 20 --out test-artifacts/benchmarks/benchmark-{0}-{1}-userJourneyTransactions.json --retries 2",
+      "userJourneyAccountManagement": "yarn test:e2e:benchmark --preset userJourneyAccountManagement --iterations 20 --out test-artifacts/benchmarks/benchmark-{0}-{1}-userJourneyAccountManagement.json --retries 2"
     }
 
 jobs:
   benchmarks:
     if: ${{ github.event_name != 'merge_group' && !inputs.webpack-only }} # Skip this job for the Merge Queue
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 45
     container:
       image: ghcr.io/metamask/metamask-extension-e2e-image:v24.13.0
       credentials:
@@ -146,7 +146,7 @@ jobs:
   benchmarks-webpack-only:
     if: ${{ github.event_name != 'merge_group' && inputs.webpack-only }} # Skip this job for the Merge Queue
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 45
     container:
       image: ghcr.io/metamask/metamask-extension-e2e-image:v24.13.0
       credentials:
@@ -231,7 +231,7 @@ jobs:
   benchmarks-webpack-perf:
     if: ${{ !inputs.webpack-only && github.event_name == 'push' && (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/heads/release/')) }}
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 45
     container:
       image: ghcr.io/metamask/metamask-extension-e2e-image:v24.13.0
       credentials:
