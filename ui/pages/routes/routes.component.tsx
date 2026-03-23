@@ -3,7 +3,6 @@
 /* eslint-disable import-x/extensions */
 import classnames from 'clsx';
 import React, { Suspense, useEffect, useRef } from 'react';
-import { Store } from 'redux';
 import { useDispatch } from 'react-redux';
 import {
   useLocation,
@@ -140,12 +139,12 @@ import { AccountList } from '../multichain-accounts/account-list';
 import { AddWalletPage } from '../multichain-accounts/add-wallet-page';
 import { WalletDetailsPage } from '../multichain-accounts/wallet-details-page';
 import { MultichainReviewPermissions } from '../../components/multichain-accounts/permissions/permission-review-page/multichain-review-permissions-page';
-import { RootLayout } from '../../layouts/root-layout';
 import { LegacyLayout } from '../../layouts/legacy-layout';
+import { RequireAuthenticated } from '../../layouts/require-authenticated';
+import { RequireInitialized } from '../../layouts/require-initialized';
 import { contactsRoutes } from '../contacts';
 import RequireBasicFunctionality from '../../helpers/higher-order-components/require-basic-functionality/require-basic-functionality';
 import { getCurrencyRateControllerCurrentCurrency } from '../../../shared/lib/selectors/assets-migration';
-import { createProtectedLoader, requireInitialized } from './loaders';
 import { getConnectingLabel, setTheme } from './utils';
 import { ConfirmationHandler } from './confirmation-handler';
 import { Modals } from './modals';
@@ -280,7 +279,7 @@ const WrappedPerpsOrderEntryPage = () => (
   </PerpsControllerProvider>
 );
 
-export const getRouteConfig = (store: Store) => [
+export const routeConfig = [
   {
     element: <LegacyLayout />,
     children: [
@@ -293,9 +292,13 @@ export const getRouteConfig = (store: Store) => [
         element: <Lock />,
       },
       {
-        loader: () => requireInitialized(store),
-        path: UNLOCK_ROUTE,
-        element: <UnlockPage />,
+        element: <RequireInitialized />,
+        children: [
+          {
+            path: UNLOCK_ROUTE,
+            element: <UnlockPage />,
+          },
+        ],
       },
       {
         path: DEEP_LINK_ROUTE,
@@ -312,8 +315,7 @@ export const getRouteConfig = (store: Store) => [
     ],
   },
   {
-    loader: createProtectedLoader(store),
-    element: <RootLayout />,
+    element: <RequireAuthenticated />,
     children: [
       {
         path: `${REVEAL_SEED_ROUTE}/:keyringId?`,
@@ -333,7 +335,7 @@ export const getRouteConfig = (store: Store) => [
       },
       {
         path: `${SEND_ROUTE}/:page?`,
-        element: <SendPage />, // openSendPage
+        element: <SendPage />,
       },
       {
         path: `${CONFIRM_TRANSACTION_ROUTE}/:id?${DECRYPT_MESSAGE_REQUEST_PATH}`,
