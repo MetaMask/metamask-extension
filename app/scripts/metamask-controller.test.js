@@ -2875,7 +2875,7 @@ describe('MetaMaskController', () => {
             _parent: expect.any(ObjectMultiplex),
           }),
           expect.objectContaining({
-            onBeforeStartUISyncSent: expect.any(Function),
+            initializePatchStore: expect.any(Function),
           }),
         );
       });
