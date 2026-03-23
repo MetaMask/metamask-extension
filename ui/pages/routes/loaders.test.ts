@@ -1,15 +1,7 @@
 import type { Store } from 'redux';
 import type { LoaderFunctionArgs } from 'react-router-dom';
-import {
-  BASIC_FUNCTIONALITY_OFF_ROUTE,
-  ONBOARDING_ROUTE,
-  UNLOCK_ROUTE,
-} from '../../helpers/constants/routes';
-import {
-  createBasicFunctionalityLoader,
-  createProtectedLoader,
-  requireInitialized,
-} from './loaders';
+import { ONBOARDING_ROUTE, UNLOCK_ROUTE } from '../../helpers/constants/routes';
+import { createProtectedLoader, requireInitialized } from './loaders';
 
 type MetamaskState = {
   completedOnboarding?: boolean;
@@ -99,46 +91,6 @@ describe('loaders', () => {
     it('returns null when onboarding is completed and wallet is unlocked', () => {
       const loader = createProtectedLoader(
         createStore({ completedOnboarding: true, isUnlocked: true }),
-      );
-
-      const result = loader(
-        createLoaderArgs(new Request('https://test.local/')),
-      );
-
-      expect(result).toBeNull();
-    });
-  });
-
-  describe('createBasicFunctionalityLoader', () => {
-    it('redirects to basic functionality off route when external services are disabled without request', () => {
-      const loader = createBasicFunctionalityLoader(
-        createStore({ useExternalServices: false }),
-      );
-
-      const result = loader(createLoaderArgs(undefined));
-
-      expect(getRedirectLocation(result)).toBe(BASIC_FUNCTIONALITY_OFF_ROUTE);
-    });
-
-    it('redirects to basic functionality off route with from query when external services are disabled', () => {
-      const loader = createBasicFunctionalityLoader(
-        createStore({ useExternalServices: false }),
-      );
-
-      const result = loader(
-        createLoaderArgs(
-          new Request('https://test.local/notifications?tab=alerts'),
-        ),
-      );
-
-      expect(getRedirectLocation(result)).toBe(
-        `${BASIC_FUNCTIONALITY_OFF_ROUTE}?from=%2Fnotifications%3Ftab%3Dalerts`,
-      );
-    });
-
-    it('returns null when external services are enabled', () => {
-      const loader = createBasicFunctionalityLoader(
-        createStore({ useExternalServices: true }),
       );
 
       const result = loader(

@@ -143,12 +143,9 @@ import { MultichainReviewPermissions } from '../../components/multichain-account
 import { RootLayout } from '../../layouts/root-layout';
 import { LegacyLayout } from '../../layouts/legacy-layout';
 import { contactsRoutes } from '../contacts';
+import RequireBasicFunctionality from '../../helpers/higher-order-components/require-basic-functionality/require-basic-functionality';
 import { getCurrencyRateControllerCurrentCurrency } from '../../../shared/lib/selectors/assets-migration';
-import {
-  createBasicFunctionalityLoader,
-  createProtectedLoader,
-  requireInitialized,
-} from './loaders';
+import { createProtectedLoader, requireInitialized } from './loaders';
 import { getConnectingLabel, setTheme } from './utils';
 import { ConfirmationHandler } from './confirmation-handler';
 import { Modals } from './modals';
@@ -451,7 +448,7 @@ export const getRouteConfig = (store: Store) => [
         element: <Home />,
       },
       {
-        loader: createBasicFunctionalityLoader(store),
+        element: <RequireBasicFunctionality />,
         children: [
           {
             path: '/notifications/settings',
