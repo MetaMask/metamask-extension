@@ -5714,7 +5714,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/assets-controller@npm:^2.3.0, @metamask/assets-controller@npm:^2.4.0":
+"@metamask/assets-controller@npm:^2.4.0":
   version: 2.4.0
   resolution: "@metamask/assets-controller@npm:2.4.0"
   dependencies:
@@ -33958,7 +33958,7 @@ __metadata:
     "@metamask/announcement-controller": "npm:^8.0.0"
     "@metamask/api-specs": "npm:^0.13.0"
     "@metamask/approval-controller": "npm:^9.0.0"
-    "@metamask/assets-controller": "npm:^2.3.0"
+    "@metamask/assets-controller": "npm:^2.4.0"
     "@metamask/assets-controllers": "npm:^101.0.0"
     "@metamask/auto-changelog": "npm:^5.3.1"
     "@metamask/base-controller": "npm:^9.0.0"
