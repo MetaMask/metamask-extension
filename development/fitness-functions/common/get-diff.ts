@@ -3,6 +3,7 @@ import {
   type ExecFileSyncOptionsWithStringEncoding,
 } from 'child_process';
 import fs from 'fs';
+
 import { AUTOMATION_TYPE } from './constants';
 
 const GIT_EXEC_FILE_OPTIONS: ExecFileSyncOptionsWithStringEncoding = {
@@ -47,21 +48,7 @@ function runGitCommand(args: string[]): string {
   return execFileSync('git', args, GIT_EXEC_FILE_OPTIONS).trim();
 }
 
-function isMergeInProgress(): boolean {
-  const mergeHeadPath = runGitCommand([
-    'rev-parse',
-    '--git-path',
-    'MERGE_HEAD',
-  ]);
-
-  return fs.existsSync(mergeHeadPath);
-}
-
 function getPreCommitHookDiff(): string {
-  if (isMergeInProgress()) {
-    return '';
-  }
-
   return runGitCommand(['diff', '--cached', 'HEAD']);
 }
 
