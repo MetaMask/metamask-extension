@@ -142,6 +142,7 @@ import { MultichainReviewPermissions } from '../../components/multichain-account
 import { RootLayout } from '../../layouts/root-layout';
 import { LegacyLayout } from '../../layouts/legacy-layout';
 import { createRouteWithLayout } from '../../layouts/route-with-layout';
+import { RouteWithMessenger } from '../../layouts/route-with-messenger';
 import Authenticated from '../../helpers/higher-order-components/authenticated/authenticated.container';
 import { contactsRoutes } from '../contacts';
 import { getCurrencyRateControllerCurrentCurrency } from '../../../shared/lib/selectors/assets-migration';
@@ -672,19 +673,24 @@ export const routeConfig = [
     basicFunctionalityOpenPageCtaKey:
       'basicFunctionalityRequired_openPerpsPage',
   }),
-  createRouteWithLayout({
-    path: DEFAULT_ROUTE,
-    component: Home,
-    layout: RootLayout,
-    authenticated: true,
-    basicFunctionalityRequired: false,
-    // UIMessenger enforcement: declare which background sync events this route
-    // can subscribe to. Components using useMessenger({ events: [...] }) are
-    // validated against this list — subscribing to an undeclared event throws.
-    messenger: {
-      events: ['CurrencyRateDataService:cacheUpdate'],
-    },
-  }),
+  // Route-level messenger scoping via layout route + Outlet.
+  // RouteWithMessenger creates a child messenger scoped to declared events.
+  {
+    element: (
+      <RouteWithMessenger events={['CurrencyRateDataService:cacheUpdate']}>
+        <Outlet />
+      </RouteWithMessenger>
+    ),
+    children: [
+      createRouteWithLayout({
+        path: DEFAULT_ROUTE,
+        component: Home,
+        layout: RootLayout,
+        authenticated: true,
+        basicFunctionalityRequired: false,
+      }),
+    ],
+  },
 ];
 
 // eslint-disable-next-line @typescript-eslint/naming-convention

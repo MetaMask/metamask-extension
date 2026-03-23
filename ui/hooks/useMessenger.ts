@@ -47,7 +47,7 @@ export function useMessenger<
     if (!delegated.events.includes(eventType)) {
       throw new Error(
         `Route messenger does not support the event '${eventType}'. ` +
-          "Add it to the route's messenger.events config in createRouteWithLayout().",
+          "Add it to the route's RouteWithMessenger events list.",
       );
     }
   }
