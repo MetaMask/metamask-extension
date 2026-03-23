@@ -6,25 +6,22 @@
  * Required env vars:
  *   GITHUB_TOKEN      — GitHub Actions token for API access
  *   GITHUB_REPOSITORY — Repository in "owner/repo" format (set automatically in Actions)
- *   RUN_ID_TO_TEST    — Run ID to test (optional, defaults to latest main run)
+ *   RUN_ID_TO_COLLECT — (optional, for local testing)
  *
- * Naming convention:
- *   - CI-executed (from JUnit XML artifacts): _run suffix     → tests actually ran in CI
- *   - Static source analysis (from code):     _defined suffix → tests defined in the codebase
- *   - total_tests_skipped is artifact-derived for unit, integration, and e2e
- *     (counts <skipped> elements in JUnit XML / skipped field in e2e JSON report)
+ * How to add a new metrics:
+ *   1. Add a collector function that returns any of the following:
+ *      {
+ *        "key1": number,
+ *        "key2": "string",
+ *        "key3": "[\"string1\", \"string2\", ...]" },
+ *      }
+ *   2. Register it as a new namespace in the collectors array in main()
  *
  * Example output:
  *   {
  *     "unit": {
  *       "total_tests_run": 41957,
  *       "total_tests_skipped": 120,
- *       "total_tests_defined": 39500,
- *       "controllers_tests_run": 3200,
- *       "ui_app_tests_run": 5100,
- *       "ducks_tests_run": 1500,
- *       "selectors_tests_run": 900,
- *       "other_tests_run": 26357
  *     },
  *     "integration": {
  *       "total_tests_run": 540,
@@ -46,12 +43,6 @@
  *       "confirmations_tests_run": 300,
  *       "send_tests_run": 120,
  *       "other_tests_run": 780
- *     },
- *     "benchmark": {
- *       "total_tests_defined": 8,
- *       "startup_tests_defined": 2,
- *       "interaction_tests_defined": 1,
- *       "user_journey_tests_defined": 5
  *     }
  *   }
  */
@@ -101,7 +92,7 @@ type TestRun = {
 
 type Collector = {
   namespace: string;
-  collect: () => Promise<Record<string, number>>;
+  collect: () => Promise<Record<string, number | string>>;
 };
 
 // ---------------------------------------------------------------------------
@@ -168,7 +159,7 @@ async function getLatestMainRunId(): Promise<string> {
 
 async function getRunId(): Promise<string> {
   if (_runId) return _runId;
-  _runId = process.env.RUN_ID_TO_TEST ?? (await getLatestMainRunId());
+  _runId = process.env.RUN_ID_TO_COLLECT ?? (await getLatestMainRunId());
   return _runId;
 }
 
@@ -504,8 +495,6 @@ function getE2eFeatureFolder(filePath: string): string {
  * Downloads all `unit-test-results-*` shard artifacts (JUnit XML), parses them,
  * and returns test counts grouped by feature folder.
  *
- * Also counts test definitions and skipped tests via static source analysis.
- *
  * Folders whose total count is below `minFolderCount` are merged into `other`
  * to reduce noise.
  *
@@ -729,18 +718,8 @@ async function getE2eSkippedFromXml(): Promise<number> {
 
 /**
  * Collects all E2E test counts — both main and flask channels — into a single
- * namespace. Mirrors the mobile reference pattern where Chrome is the canonical
- * platform and Firefox is a browser health signal.
+ * namespace. Chrome is the canonical platform as reference for CI runs.
  *
- * Channel breakdown:
- *   main  = standard browserify tests (core wallet features, MV3)
- *   flask = Flask build tests (Snaps, experimental features)
- *
- * Browser breakdown (within each channel):
- *   chrome  = canonical unique count (MV3)
- *   firefox = health signal — drops if Firefox MV2 infrastructure is broken
- *
- * Per-feature keys come from Chrome main only (canonical, like Android in mobile).
  * Static analysis covers both main + flask directories combined.
  */
 async function collectE2eTestCount(): Promise<Record<string, number>> {
@@ -775,6 +754,21 @@ async function collectE2eTestCount(): Promise<Record<string, number>> {
     }
   }
   console.log(`[e2e/flask/chrome] total: ${flaskChromeTotal}`);
+
+  // Warn if the Chrome report contains run names we don't recognise — this
+  // would indicate a new CI job category whose tests are not counted in
+  // total_tests_run and should be added to the collector.
+  const knownChromeRunNames = new Set([
+    'test-e2e-chrome-browserify',
+    'test-e2e-chrome-flask',
+  ]);
+  for (const name of new Set(chromeRuns.map((r) => r.name))) {
+    if (!knownChromeRunNames.has(name)) {
+      console.warn(
+        `[e2e] unrecognized Chrome run "${name}" — not counted in total_tests_run; update collector if intentional`,
+      );
+    }
+  }
 
   // --- Firefox health signals (both channels) ---
   let mainFirefoxTotal = 0;
@@ -907,7 +901,7 @@ async function collectBenchmarkScenarioCount(): Promise<
 // ---------------------------------------------------------------------------
 
 async function main(): Promise<void> {
-  const stats: Record<string, Record<string, number>> = {};
+  const stats: Record<string, Record<string, number | string>> = {};
 
   const collectors: Collector[] = [
     { namespace: 'unit', collect: collectUnitTestCount },
