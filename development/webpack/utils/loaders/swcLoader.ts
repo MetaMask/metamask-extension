@@ -1,5 +1,5 @@
 import { sep } from 'node:path';
-import type { LoaderContext } from 'webpack';
+import type { LoaderDefinitionFunction } from 'webpack';
 import { validate, type JSONSchema7 } from 'schema-utils';
 import type { FromSchema } from 'json-schema-to-ts';
 import { transform, type Options } from '@swc/core';
@@ -169,34 +169,36 @@ const schema = {
 type SchemaOptions = { keepDefaultedPropertiesOptional: true };
 export type SwcLoaderOptions = FromSchema<typeof schema, SchemaOptions>;
 
-type Context = LoaderContext<SwcLoaderOptions>;
-export default function swcLoader(this: Context, src: string, srcMap?: string) {
-  const pluginOptions = this.getOptions();
-  validate(schema, pluginOptions, { name: 'swcLoader' });
+const swcLoader: LoaderDefinitionFunction<SwcLoaderOptions> =
+  function swcLoader(src, srcMap) {
+    const pluginOptions = this.getOptions();
+    validate(schema, pluginOptions, { name: 'swcLoader' });
 
-  const options: Options = {
-    ...pluginOptions,
-    envName: this.mode,
-    filename: this.resourcePath,
-    inputSourceMap:
-      // some files in node_modules claim to have sourcemaps when they do
-      // not[0], and SWC has a bug where logs to stderror if it tries to use a
-      // sourcemap that does not exist[1]. So we disable sourcemaps for
-      // node_modules. Ideally, we would not disable them, as they *are* useful
-      // for debugging.
-      // [0]: https://github.com/trezor/trezor-suite/issues/20298
-      // [1]: https://github.com/swc-project/swc/issues/9416
-      // eslint-disable-next-line no-nested-ternary
-      this.resourcePath.includes(`${sep}node_modules${sep}`)
-        ? false
-        : typeof srcMap === 'object' && srcMap !== null
-          ? JSON.stringify(srcMap)
-          : srcMap,
-    sourceFileName: this.resourcePath,
-    sourceMaps: this.sourceMap,
-    swcrc: false,
+    const options: Options = {
+      ...pluginOptions,
+      envName: this.mode,
+      filename: this.resourcePath,
+      inputSourceMap:
+        // some files in node_modules claim to have sourcemaps when they do
+        // not[0], and SWC has a bug where logs to stderror if it tries to use a
+        // sourcemap that does not exist[1]. So we disable sourcemaps for
+        // node_modules. Ideally, we would not disable them, as they *are* useful
+        // for debugging.
+        // [0]: https://github.com/trezor/trezor-suite/issues/20298
+        // [1]: https://github.com/swc-project/swc/issues/9416
+        // eslint-disable-next-line no-nested-ternary
+        this.resourcePath.includes(`${sep}node_modules${sep}`)
+          ? false
+          : typeof srcMap === 'object' && srcMap !== null
+            ? JSON.stringify(srcMap)
+            : srcMap,
+      sourceFileName: this.resourcePath,
+      sourceMaps: this.sourceMap,
+      swcrc: false,
+    };
+
+    const cb = this.async();
+    transform(src, options).then(({ code, map }) => cb(null, code, map), cb);
   };
 
-  const cb = this.async();
-  transform(src, options).then(({ code, map }) => cb(null, code, map), cb);
-}
+export default swcLoader;
