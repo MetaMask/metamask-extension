@@ -6701,7 +6701,7 @@ export default class MetamaskController extends EventEmitter {
 
     outStream.on('data', (message) => {
       if (!isStreamWritable(outStream)) {
-        console.log('Stream is closed, ignoring incoming message.');
+        log.debug('Stream is closed, ignoring incoming message.');
         return;
       }
 
