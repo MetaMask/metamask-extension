@@ -47,7 +47,10 @@ import { useRewards } from '../../../hooks/bridge/useRewards';
 import { RewardsBadge } from '../../../components/app/rewards/RewardsBadge';
 import AddRewardsAccount from '../../../components/app/rewards/AddRewardsAccount';
 import { Skeleton } from '../../../components/component-library/skeleton';
-import { getGasFeesSponsoredNetworkEnabled } from '../../../selectors/selectors';
+import {
+  getGasFeesSponsoredNetworkEnabled,
+  isHardwareWallet,
+} from '../../../selectors/selectors';
 import { BridgeQuotesModal } from './bridge-quotes-modal';
 
 export { MultichainBridgeQuoteCardSkeleton } from './multichain-bridge-quote-card-skeleton';
@@ -96,6 +99,7 @@ export const MultichainBridgeQuoteCard = ({
     useSelector(getValidationErrors, shallowEqual);
 
   const isToOrFromNonEvm = useSelector(getIsToOrFromNonEvm);
+  const isHardwareWalletAccount = useSelector(isHardwareWallet);
   const gasFeesSponsoredNetworkEnabled = useSelector(
     getGasFeesSponsoredNetworkEnabled,
   );
@@ -123,15 +127,20 @@ export const MultichainBridgeQuoteCard = ({
   }, [fromChain?.chainId, gasFeesSponsoredNetworkEnabled]);
 
   const shouldShowGasSponsored = useMemo(() => {
-    // getBridgeQuotes already strips gasSponsored for HW wallets, so no
-    // additional hardware-wallet gate is needed here.
+    // getBridgeQuotes already strips gasSponsored for HW wallets, so the
+    // quote-level flag is safe to check without an additional HW gate.
     if (gasSponsored) {
       return true;
     }
 
-    // For the insufficientBal workaround, validate it's a same-chain swap
-    if (insufficientBal && isCurrentNetworkGasSponsored) {
-      // Gas sponsorship only applies to same-chain swaps, not cross-chain bridges
+    // This path is independent of the quote's gasSponsored flag—it relies on
+    // the network-level feature flag instead. HW wallets cannot use sponsored
+    // gas, so we must gate them out explicitly here.
+    if (
+      !isHardwareWalletAccount &&
+      insufficientBal &&
+      isCurrentNetworkGasSponsored
+    ) {
       const isSameChain =
         fromToken?.chainId &&
         toToken?.chainId &&
@@ -142,6 +151,7 @@ export const MultichainBridgeQuoteCard = ({
     return false;
   }, [
     gasSponsored,
+    isHardwareWalletAccount,
     insufficientBal,
     isCurrentNetworkGasSponsored,
     fromToken?.chainId,

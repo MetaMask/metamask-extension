@@ -960,4 +960,66 @@ describe('MultichainBridgeQuoteCard', () => {
 
     expect(queryByTestId('network-fees-sponsored')).not.toBeInTheDocument();
   });
+
+  it('should not render gas sponsored text for hardware wallets on the insufficientBal + network-level sponsorship path', async () => {
+    const mockStore = createBridgeMockStore({
+      featureFlagOverrides: {
+        bridgeConfig: {
+          maxRefreshCount: 5,
+          refreshRate: 30000,
+          chainRanking: [
+            { chainId: formatChainIdToCaip(CHAIN_IDS.OPTIMISM) },
+          ],
+        },
+        gasFeesSponsoredNetwork: {
+          [CHAIN_IDS.OPTIMISM]: true,
+        },
+      },
+      bridgeSliceOverrides: {
+        fromTokenInputValue: '1',
+        fromToken: toBridgeToken(
+          getNativeAssetForChainId(CHAIN_IDS.OPTIMISM),
+        ),
+        toToken: toBridgeToken(getNativeAssetForChainId(CHAIN_IDS.OPTIMISM)),
+      },
+      bridgeStateOverrides: {
+        quoteRequest: {
+          insufficientBal: true,
+          srcChainId: 10,
+          destChainId: 10,
+          srcTokenAddress: zeroAddress(),
+          destTokenAddress: '0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85',
+          srcTokenAmount: '1000000000000000000',
+        },
+        quotesRefreshCount: 1,
+        quotes: mockBridgeQuotesErc20Erc20 as unknown as QuoteResponse[],
+        quotesLastFetched: Date.now(),
+        quotesLoadingStatus: RequestStatus.FETCHED,
+      },
+      metamaskStateOverrides: {
+        currencyRates: {
+          ETH: {
+            conversionRate: 2524.25,
+            usdConversionRate: 2524.25,
+          },
+        },
+        ...mockNetworkState({ chainId: CHAIN_IDS.OPTIMISM }),
+        internalAccounts: {
+          selectedAccount: MOCK_LEDGER_ACCOUNT.id,
+        },
+      },
+    });
+
+    const { queryByTestId } = renderWithProvider(
+      <MultichainBridgeQuoteCard
+        onOpenSlippageModal={() => {}}
+        onOpenRecipientModal={() => {}}
+        onOpenPriceImpactWarningModal={mockOnOpenPriceImpactWarningModal}
+        selectedDestinationAccount={null}
+      />,
+      configureStore(mockStore),
+    );
+
+    expect(queryByTestId('network-fees-sponsored')).not.toBeInTheDocument();
+  });
 });
