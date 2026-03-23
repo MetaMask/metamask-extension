@@ -30,9 +30,7 @@ const mockUseMultichainAssetsRatesPolling = jest.mocked(
 );
 
 const renderProvider = (isAssetsUnifyStateEnabled: boolean) => {
-  jest
-    .spyOn(redux, 'useSelector')
-    .mockReturnValue(isAssetsUnifyStateEnabled);
+  jest.spyOn(redux, 'useSelector').mockReturnValue(isAssetsUnifyStateEnabled);
 
   return render(
     <AssetPollingProvider>
@@ -44,14 +42,16 @@ const renderProvider = (isAssetsUnifyStateEnabled: boolean) => {
 describe('AssetPollingProvider', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    (mockUseCurrencyRatePolling as jest.Mock).mockImplementation(() => {});
-    (mockUseTokenRatesPolling as jest.Mock).mockImplementation(() => {});
+    (mockUseCurrencyRatePolling as jest.Mock).mockImplementation(
+      () => undefined,
+    );
+    (mockUseTokenRatesPolling as jest.Mock).mockImplementation(() => undefined);
     mockUseTokenDetectionPolling.mockReturnValue({});
-    (mockUseTokenListPolling as jest.Mock).mockImplementation(() => {});
+    (mockUseTokenListPolling as jest.Mock).mockImplementation(() => undefined);
     mockUseStaticTokensPollingHook.mockReturnValue({});
     mockUseDeFiPolling.mockReturnValue({});
     (mockUseMultichainAssetsRatesPolling as jest.Mock).mockImplementation(
-      () => {},
+      () => undefined,
     );
   });
 
