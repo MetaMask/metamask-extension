@@ -37,15 +37,8 @@ function getAvailableMemoryMB(): number {
   return freemem() / (1024 * 1024);
 }
 
-/**
- * Resolves `workerParallelJobs` when `jobsPerThread` is set to `'auto'`.
- *
- * @param threads - The resolved thread count.
- * @returns The number of parallel jobs per worker thread.
- */
-export function resolveAutoJobs(threads: number): number {
-  return threads <= 1 ? 10 : 15;
-}
+/** Default `workerParallelJobs` when `jobsPerThread` is `'auto'`. */
+export const DEFAULT_JOBS_PER_THREAD = 15;
 
 /**
  * Get thread-loader configuration for parallelizing webpack loaders.
@@ -64,7 +57,7 @@ export function getThreadLoader(
 
   const resolvedThreads = threads === 'auto' ? resolveAutoThreads() : threads;
   const resolvedJobs =
-    jobsPerThread === 'auto' ? resolveAutoJobs(resolvedThreads) : jobsPerThread;
+    jobsPerThread === 'auto' ? DEFAULT_JOBS_PER_THREAD : jobsPerThread;
 
   const threadsLabel = threads === 'auto' ? ' (auto)' : '';
   const jobsLabel = jobsPerThread === 'auto' ? ' (auto)' : '';

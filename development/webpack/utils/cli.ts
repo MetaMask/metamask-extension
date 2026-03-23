@@ -16,7 +16,10 @@ import {
   toOrange,
 } from './helpers';
 import { ENVIRONMENTS, MODES } from './constants';
-import { resolveAutoJobs, resolveAutoThreads } from './loaders/threadLoader';
+import {
+  DEFAULT_JOBS_PER_THREAD,
+  resolveAutoThreads,
+} from './loaders/threadLoader';
 
 const ENV_PREFIX = 'BUNDLE';
 const addFeat = 'addFeature' as const;
@@ -251,7 +254,7 @@ export function parseArgv(
     effectiveThreads === 0
       ? 0
       : config.jobsPerThread === 'auto'
-        ? resolveAutoJobs(effectiveThreads)
+        ? DEFAULT_JOBS_PER_THREAD
         : config.jobsPerThread;
 
   // set up feature flags
@@ -457,7 +460,7 @@ function getOptions(
       defaultDescription:
         effectiveThreads === 0
           ? '0 (thread-loader disabled)'
-          : `auto (resolved: ${resolveAutoJobs(effectiveThreads)})`,
+          : `auto (resolved: ${DEFAULT_JOBS_PER_THREAD})`,
       description:
         'Number of parallel jobs per thread-loader worker. ' +
         '`auto` derives from thread count. Ignored when `threads` is `0`.',
