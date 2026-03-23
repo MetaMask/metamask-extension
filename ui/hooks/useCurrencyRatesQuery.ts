@@ -34,5 +34,8 @@ const currencyRatesStore = createControllerStore<
  * Returns `undefined` before the first background push.
  */
 export function useCurrencyRatesQuery() {
-  return useControllerState(currencyRatesStore);
+  return useControllerState(
+    currencyRatesStore,
+    'CurrencyRateDataService:cacheUpdate',
+  );
 }

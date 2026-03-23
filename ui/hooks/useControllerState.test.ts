@@ -8,6 +8,10 @@ jest.mock('../store/background-connection', () => ({
     mockSubscribeToMessengerEvent(...args),
 }));
 
+jest.mock('./useMessenger', () => ({
+  useMessenger: jest.fn(),
+}));
+
 describe('createControllerStore + useControllerState', () => {
   let capturedCallback: ((payload: unknown) => void) | undefined;
 
@@ -27,7 +31,7 @@ describe('createControllerStore + useControllerState', () => {
       (payload) => (payload as [{ data: string }])[0]?.data,
     );
 
-    renderHook(() => useControllerState(store));
+    renderHook(() => useControllerState(store, 'TestService:cacheUpdate'));
 
     expect(mockSubscribeToMessengerEvent).toHaveBeenCalledWith(
       'TestService:cacheUpdate',
@@ -41,7 +45,7 @@ describe('createControllerStore + useControllerState', () => {
       (payload) => (payload as [{ data: string }])[0]?.data,
     );
 
-    const { result } = renderHook(() => useControllerState(store));
+    const { result } = renderHook(() => useControllerState(store, 'TestService:cacheUpdate'));
 
     expect(result.current).toBeUndefined();
   });
@@ -52,7 +56,7 @@ describe('createControllerStore + useControllerState', () => {
       (payload) => (payload as [{ data: string }])[0]?.data,
     );
 
-    const { result } = renderHook(() => useControllerState(store));
+    const { result } = renderHook(() => useControllerState(store, 'TestService:cacheUpdate'));
     await act(async () => { await Promise.resolve(); });
 
     act(() => {
@@ -68,7 +72,7 @@ describe('createControllerStore + useControllerState', () => {
       (payload) => (payload as [{ data: string }])[0]?.data,
     );
 
-    const { result } = renderHook(() => useControllerState(store));
+    const { result } = renderHook(() => useControllerState(store, 'TestService:cacheUpdate'));
     await act(async () => { await Promise.resolve(); });
 
     act(() => {
@@ -88,7 +92,7 @@ describe('createControllerStore + useControllerState', () => {
       (payload) => (payload as [{ data?: string }])[0]?.data,
     );
 
-    const { result } = renderHook(() => useControllerState(store));
+    const { result } = renderHook(() => useControllerState(store, 'TestService:cacheUpdate'));
     await act(async () => { await Promise.resolve(); });
 
     act(() => {
@@ -108,8 +112,8 @@ describe('createControllerStore + useControllerState', () => {
       (payload) => (payload as [{ data: string }])[0]?.data,
     );
 
-    renderHook(() => useControllerState(store));
-    renderHook(() => useControllerState(store));
+    renderHook(() => useControllerState(store, 'TestService:cacheUpdate'));
+    renderHook(() => useControllerState(store, 'TestService:cacheUpdate'));
 
     expect(mockSubscribeToMessengerEvent).toHaveBeenCalledTimes(1);
   });

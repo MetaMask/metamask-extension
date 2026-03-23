@@ -4,6 +4,8 @@ import { useSyncExternalStore } from 'use-sync-external-store/shim';
 import type { Json } from '@metamask/utils';
 import type { NamespacedName } from '@metamask/messenger';
 import { subscribeToMessengerEvent } from '../store/background-connection';
+import { useMessenger } from './useMessenger';
+import type { UIMessengerEvents } from '../messengers/ui-messenger';
 
 /**
  * Creates a store that subscribes to a background messenger event and exposes
@@ -91,15 +93,29 @@ export function createControllerStore<TData>(
  * no cache policy. The background owns the fetch cadence; the UI renders
  * the latest value.
  *
+ * Validates that the store's event is declared in the current route's
+ * messenger capabilities. This enforces the UIMessenger hierarchy —
+ * components can only subscribe to events their route has declared,
+ * even though the underlying store subscribes directly.
+ *
  * For server state where the UI needs cache policy control (staleTime,
  * refetchOnFocus, retry), use `useQuery` with `get*QueryOptions` from
  * `@metamask/core-backend` — the UI-direct fetch model.
  *
  * @param store - A store created by `createControllerStore`.
+ * @param event - The messenger event name. Must match the event passed to
+ *   `createControllerStore`. Used for route-capability validation.
  * @returns The latest value, or `undefined` before the first push.
+ * @throws If the current route has not declared this event in its
+ *   `RouteWithMessenger` events list.
  */
 export function useControllerState<TData>(
   store: ReturnType<typeof createControllerStore<TData>>,
+  event: NamespacedName,
 ): TData | undefined {
+  // Validate route-level access. Throws if the event isn't declared
+  // in the route's RouteWithMessenger capabilities.
+  useMessenger({ events: [event as UIMessengerEvents['type']] });
+
   return useSyncExternalStore(store.subscribe, store.getSnapshot);
 }
