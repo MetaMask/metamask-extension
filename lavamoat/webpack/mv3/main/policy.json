@@ -2249,7 +2249,7 @@
       },
       "packages": {
         "buffer": true,
-        "@pmmmwh/react-refresh-webpack-plugin>core-js-pure": true,
+        "core-js-pure": true,
         "process": true
       }
     },
@@ -2562,7 +2562,7 @@
         "copy-to-clipboard>toggle-selection": true
       }
     },
-    "@pmmmwh/react-refresh-webpack-plugin>core-js-pure": {
+    "core-js-pure": {
       "globals": {
         "Bun.version": true,
         "Deno.version": true,
@@ -4132,7 +4132,7 @@
         "setImmediate": true
       },
       "packages": {
-        "@pmmmwh/react-refresh-webpack-plugin>core-js-pure": true,
+        "core-js-pure": true,
         "readable-stream-2>core-util-is": true,
         "webpack>events": true,
         "pumpify>inherits": true,
@@ -4415,7 +4415,7 @@
         "setTimeout": true
       },
       "packages": {
-        "@pmmmwh/react-refresh-webpack-plugin>core-js-pure": true
+        "core-js-pure": true
       }
     },
     "ganache>secp256k1": {
@@ -4464,7 +4464,7 @@
         "setTimeout.apply": true
       },
       "packages": {
-        "@pmmmwh/react-refresh-webpack-plugin>core-js-pure": true
+        "core-js-pure": true
       }
     },
     "@ngraveio/bc-ur>sha.js": {
