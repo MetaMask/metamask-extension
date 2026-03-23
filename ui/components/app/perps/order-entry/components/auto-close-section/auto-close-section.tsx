@@ -1,5 +1,3 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { useSelector } from 'react-redux';
 import {
   Box,
   Text,
@@ -10,22 +8,21 @@ import {
   BoxAlignItems,
   FontWeight,
 } from '@metamask/design-system-react';
-import { TextField, TextFieldSize } from '../../../../../component-library';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { useSelector } from 'react-redux';
+
+import { getIntlLocale } from '../../../../../../ducks/locale/locale';
 import {
   BorderRadius,
   BackgroundColor,
   TextVariant as TextVariantLegacy,
 } from '../../../../../../helpers/constants/design-system';
-import ToggleButton from '../../../../../ui/toggle-button';
-import { useI18nContext } from '../../../../../../hooks/useI18nContext';
 import { useFormatters } from '../../../../../../hooks/useFormatters';
-import { getIntlLocale } from '../../../../../../ducks/locale/locale';
+import { useI18nContext } from '../../../../../../hooks/useI18nContext';
+import { TextField, TextFieldSize } from '../../../../../component-library';
+import ToggleButton from '../../../../../ui/toggle-button';
+import { normalizeLocalizedNumberInput } from '../../../utils/localeNumber';
 import type { AutoCloseSectionProps } from '../../order-entry.types';
-import {
-  normalizeLocalizedNumberInput,
-  parseLocalizedNumber,
-  toCanonicalFixedPrice,
-} from '../../../utils/localeNumber';
 
 /**
  * AutoCloseSection - Collapsible section for Take Profit and Stop Loss configuration
@@ -96,14 +93,14 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
         return '';
       }
 
-      const parsed = parseLocalizedNumber(value, locale);
-      if (parsed === null || parsed <= 0) {
+      const parsed = Number.parseFloat(value);
+      if (!Number.isFinite(parsed) || parsed <= 0) {
         return '';
       }
 
       return formatPrice(parsed);
     },
-    [formatPrice, locale],
+    [formatPrice],
   );
 
   const formattedTakeProfitPrice = useMemo(
@@ -134,8 +131,8 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
       if (!price || !entryPrice) {
         return '';
       }
-      const priceNum = parseLocalizedNumber(price, locale);
-      if (priceNum === null || priceNum <= 0) {
+      const priceNum = Number.parseFloat(price);
+      if (!Number.isFinite(priceNum) || priceNum <= 0) {
         return '';
       }
 
@@ -149,7 +146,7 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
       }
       return formatPercent(isTP ? -percentChange : percentChange);
     },
-    [entryPrice, direction, formatPercent, locale],
+    [entryPrice, direction, formatPercent],
   );
 
   // Calculate price from percentage
@@ -201,8 +198,8 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
 
   const handleTpPriceFocus = useCallback(() => {
     setIsTpFocused(true);
-    setTpInputValue(takeProfitPrice);
-  }, [takeProfitPrice]);
+    setTpInputValue(formattedTakeProfitPrice);
+  }, [formattedTakeProfitPrice]);
 
   const handleTpPriceBlur = useCallback(() => {
     setIsTpFocused(false);
@@ -212,11 +209,14 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
       return;
     }
 
-    const canonical = toCanonicalFixedPrice(takeProfitPrice, locale);
-    if (canonical) {
-      onTakeProfitPriceChange(canonical);
+    const parsed = Number.parseFloat(takeProfitPrice);
+    if (Number.isFinite(parsed) && parsed > 0) {
+      onTakeProfitPriceChange(parsed.toFixed(2));
+      return;
     }
-  }, [locale, onTakeProfitPriceChange, takeProfitPrice]);
+
+    onTakeProfitPriceChange('');
+  }, [onTakeProfitPriceChange, takeProfitPrice]);
 
   // Handle TP percentage input change
   const handleTpPercentChange = useCallback(
@@ -255,8 +255,8 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
 
   const handleSlPriceFocus = useCallback(() => {
     setIsSlFocused(true);
-    setSlInputValue(stopLossPrice);
-  }, [stopLossPrice]);
+    setSlInputValue(formattedStopLossPrice);
+  }, [formattedStopLossPrice]);
 
   // Handle SL price blur - commit canonical value
   const handleSlPriceBlur = useCallback(() => {
@@ -267,11 +267,14 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
       return;
     }
 
-    const canonical = toCanonicalFixedPrice(stopLossPrice, locale);
-    if (canonical) {
-      onStopLossPriceChange(canonical);
+    const parsed = Number.parseFloat(stopLossPrice);
+    if (Number.isFinite(parsed) && parsed > 0) {
+      onStopLossPriceChange(parsed.toFixed(2));
+      return;
     }
-  }, [locale, onStopLossPriceChange, stopLossPrice]);
+
+    onStopLossPriceChange('');
+  }, [onStopLossPriceChange, stopLossPrice]);
 
   // Handle SL percentage input change
   const handleSlPercentChange = useCallback(

@@ -1,5 +1,6 @@
-import { renderHook } from '@testing-library/react-hooks';
 import type { PriceUpdate } from '@metamask/perps-controller';
+import { renderHook } from '@testing-library/react-hooks';
+
 import { usePerpsChannel } from './usePerpsChannel';
 import { usePerpsLivePrices } from './usePerpsLivePrices';
 
@@ -104,5 +105,28 @@ describe('usePerpsLivePrices', () => {
     });
 
     nowSpy.mockRestore();
+  });
+
+  it('keeps prices reference stable when inputs are unchanged', () => {
+    const priceUpdates = [
+      {
+        symbol: 'BTC',
+        price: '100',
+        timestamp: 111,
+        markPrice: '101',
+      },
+    ] as PriceUpdate[];
+    mockUsePerpsChannel.mockReturnValue({
+      data: priceUpdates,
+      isInitialLoading: false,
+    });
+
+    const options = { symbols: ['BTC'] };
+    const { result, rerender } = renderHook(() => usePerpsLivePrices(options));
+    const firstPricesRef = result.current.prices;
+
+    rerender();
+
+    expect(result.current.prices).toBe(firstPricesRef);
   });
 });

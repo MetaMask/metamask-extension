@@ -1,15 +1,17 @@
-import React from 'react';
-import configureMockStore from 'redux-mock-store';
-import thunk from 'redux-thunk';
-import { screen, fireEvent, act, waitFor } from '@testing-library/react';
 import type {
   AccountState,
   Position,
   PerpsMarketData,
 } from '@metamask/perps-controller';
-import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
+import { screen, fireEvent, act, waitFor } from '@testing-library/react';
+import React from 'react';
+import configureMockStore from 'redux-mock-store';
+import thunk from 'redux-thunk';
+
+import PerpsOrderEntryPage from './perps-order-entry-page';
 import mockState from '../../../test/data/mock-state.json';
 import { enLocale as messages } from '../../../test/lib/i18n-helpers';
+import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
 import {
   mockPositions,
   mockAccountState,
@@ -120,7 +122,6 @@ jest.mock('react-router-dom', () => ({
 }));
 
 // eslint-disable-next-line import-x/first
-import PerpsOrderEntryPage from './perps-order-entry-page';
 
 describe('PerpsOrderEntryPage', () => {
   const middlewares = [thunk];
@@ -143,8 +144,8 @@ describe('PerpsOrderEntryPage', () => {
     perpsEnabled = true,
   ): ReturnType<typeof createMockState> => ({
     ...createMockState(perpsEnabled),
-    metamask: {
-      ...createMockState(perpsEnabled).metamask,
+    localeMessages: {
+      ...(createMockState(perpsEnabled).localeMessages ?? {}),
       currentLocale: locale,
     },
   });
@@ -778,7 +779,7 @@ describe('PerpsOrderEntryPage', () => {
         [
           expect.objectContaining({
             orderType: 'limit',
-            price: '3000',
+            price: '3000.00',
           }),
         ],
       );

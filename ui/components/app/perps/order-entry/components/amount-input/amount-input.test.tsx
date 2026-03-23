@@ -1,14 +1,24 @@
-import React from 'react';
 import { screen, fireEvent } from '@testing-library/react';
-import { renderWithProvider } from '../../../../../../../test/lib/render-helpers-navigate';
-import { enLocale as messages } from '../../../../../../../test/lib/i18n-helpers';
-import configureStore from '../../../../../../store/store';
-import mockState from '../../../../../../../test/data/mock-state.json';
+import React from 'react';
+
 import { AmountInput } from './amount-input';
+import mockState from '../../../../../../../test/data/mock-state.json';
+import { enLocale as messages } from '../../../../../../../test/lib/i18n-helpers';
+import { renderWithProvider } from '../../../../../../../test/lib/render-helpers-navigate';
+import configureStore from '../../../../../../store/store';
 
 const mockStore = configureStore({
   metamask: {
     ...mockState.metamask,
+  },
+});
+
+const deLocaleStore = configureStore({
+  metamask: {
+    ...mockState.metamask,
+  },
+  localeMessages: {
+    currentLocale: 'de',
   },
 });
 
@@ -87,7 +97,7 @@ describe('AmountInput', () => {
 
       const container = screen.getByTestId('amount-input-field');
       const input = container.querySelector('input');
-      expect(input).toHaveValue('1000');
+      expect(input).toHaveValue('1,000.00');
     });
 
     it('calls onAmountChange when input value changes', () => {
@@ -174,7 +184,25 @@ describe('AmountInput', () => {
         target: { value: '1,000' },
       });
 
-      expect(onAmountChange).toHaveBeenCalledWith('1,000');
+      expect(onAmountChange).toHaveBeenCalledWith('1000');
+    });
+
+    it('normalizes locale-formatted input to canonical value', () => {
+      const onAmountChange = jest.fn();
+      renderWithProvider(
+        <AmountInput {...defaultProps} onAmountChange={onAmountChange} />,
+        deLocaleStore,
+      );
+
+      const container = screen.getByTestId('amount-input-field');
+      const input = container.querySelector('input');
+      expect(input).not.toBeNull();
+      fireEvent.focus(input as HTMLInputElement);
+      fireEvent.change(input as HTMLInputElement, {
+        target: { value: '1.000,50' },
+      });
+
+      expect(onAmountChange).toHaveBeenCalledWith('1000.50');
     });
   });
 

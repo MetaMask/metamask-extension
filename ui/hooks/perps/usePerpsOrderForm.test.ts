@@ -1,7 +1,8 @@
 import { act } from '@testing-library/react-hooks';
-import { renderHookWithProvider } from '../../../test/lib/render-helpers-navigate';
-import mockState from '../../../test/data/mock-state.json';
+
 import { usePerpsOrderForm } from './usePerpsOrderForm';
+import mockState from '../../../test/data/mock-state.json';
+import { renderHookWithProvider } from '../../../test/lib/render-helpers-navigate';
 
 describe('usePerpsOrderForm', () => {
   const defaultOptions = {
@@ -317,7 +318,7 @@ describe('usePerpsOrderForm', () => {
       );
     });
 
-    it('uses locale-formatted limit price correctly in calculations', () => {
+    it('uses canonical limit price correctly in calculations', () => {
       const deState = {
         metamask: {
           ...mockState.metamask,
@@ -339,7 +340,7 @@ describe('usePerpsOrderForm', () => {
       });
 
       act(() => {
-        result.current.handleLimitPriceChange('45.050,00');
+        result.current.handleLimitPriceChange('45050.00');
       });
 
       expect(result.current.calculations.positionSize).toContain('BTC');

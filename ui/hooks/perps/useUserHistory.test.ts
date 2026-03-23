@@ -1,6 +1,7 @@
-import { renderHook, act } from '@testing-library/react-hooks';
-import { waitFor } from '@testing-library/react';
 import type { UserHistoryItem } from '@metamask/perps-controller';
+import { waitFor } from '@testing-library/react';
+import { renderHook, act } from '@testing-library/react-hooks';
+
 import { useUserHistory } from './useUserHistory';
 
 const mockSubmitRequestToBackground = jest.fn();
@@ -71,6 +72,7 @@ describe('useUserHistory', () => {
   });
 
   it('sets loading state during fetch', async () => {
+    jest.useFakeTimers();
     mockSubmitRequestToBackground.mockImplementation(
       () =>
         new Promise((resolve) => {
@@ -86,9 +88,15 @@ describe('useUserHistory', () => {
 
     expect(result.current.isLoading).toBe(true);
 
+    await act(async () => {
+      jest.advanceTimersByTime(100);
+    });
+
     await waitFor(() => {
       expect(result.current.isLoading).toBe(false);
     });
+
+    jest.useRealTimers();
   });
 
   it('handles errors gracefully', async () => {

@@ -1,19 +1,17 @@
-import { useState, useCallback, useMemo, useEffect, useRef } from 'react';
 import type { OrderType } from '@metamask/perps-controller';
-import { useSelector } from 'react-redux';
-import { useFormatters } from '../useFormatters';
-import { getIntlLocale } from '../../ducks/locale/locale';
-import type {
-  OrderFormState,
-  OrderMode,
-  ExistingPositionData,
-} from '../../components/app/perps/order-entry/order-entry.types';
+import { useState, useCallback, useMemo, useEffect, useRef } from 'react';
+
 import {
   mockOrderFormDefaults,
   calculatePositionSize,
   estimateLiquidationPrice,
 } from '../../components/app/perps/order-entry/order-entry.mocks';
-import { parseLocalizedNumber } from '../../components/app/perps/utils/localeNumber';
+import type {
+  OrderFormState,
+  OrderMode,
+  ExistingPositionData,
+} from '../../components/app/perps/order-entry/order-entry.types';
+import { useFormatters } from '../useFormatters';
 
 export type UsePerpsOrderFormOptions = {
   /** Asset symbol */
@@ -102,7 +100,6 @@ export function usePerpsOrderForm({
 }: UsePerpsOrderFormOptions): UsePerpsOrderFormReturn {
   const { formatCurrencyWithMinThreshold, formatTokenQuantity } =
     useFormatters();
-  const locale = useSelector(getIntlLocale);
 
   // Close percentage state (for 'close' mode, defaults to 100%)
   const [closePercent, setClosePercent] = useState<number>(100);
@@ -231,10 +228,8 @@ export function usePerpsOrderForm({
       };
     }
 
-    // For new/modify modes, calculate based on form amount
-    // Remove commas from formatted amount for parsing
-    const cleanAmount = formState.amount.replace(/,/gu, '');
-    const amount = parseFloat(cleanAmount.replace(/,/gu, '')) || 0;
+    // For new/modify modes, calculate based on canonical amount input
+    const amount = Number.parseFloat(formState.amount) || 0;
 
     if (amount === 0) {
       return {
@@ -250,11 +245,8 @@ export function usePerpsOrderForm({
     // Fall back to current market price if limit price is empty/invalid.
     let effectivePrice = currentPrice;
     if (formState.type === 'limit' && formState.limitPrice) {
-      const parsedLimitPrice = parseLocalizedNumber(
-        formState.limitPrice,
-        locale,
-      );
-      if (!Number.isNaN(parsedLimitPrice) && parsedLimitPrice > 0) {
+      const parsedLimitPrice = Number.parseFloat(formState.limitPrice);
+      if (Number.isFinite(parsedLimitPrice) && parsedLimitPrice > 0) {
         effectivePrice = parsedLimitPrice;
       }
     }
@@ -291,7 +283,6 @@ export function usePerpsOrderForm({
     asset,
     formatCurrencyWithMinThreshold,
     formatTokenQuantity,
-    locale,
   ]);
 
   // Form state update handlers

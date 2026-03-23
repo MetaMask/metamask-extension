@@ -2,10 +2,10 @@ import { useCallback, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
-import { getSelectedInternalAccount } from '../../../../selectors';
+import { createPerpsDepositTransaction } from './createPerpsDepositTransaction';
 import { CONFIRM_TRANSACTION_ROUTE } from '../../../../helpers/constants/routes';
 import { ConfirmationLoader } from '../../../../pages/confirmations/hooks/useConfirmationNavigation';
-import { createPerpsDepositTransaction } from './createPerpsDepositTransaction';
+import { getSelectedInternalAccount } from '../../../../selectors';
 
 export type PerpsDepositConfirmationResponse = {
   transactionId: string;
@@ -19,6 +19,7 @@ export type PerpsDepositConfirmationOptions = {
 export type PerpsDepositConfirmationResult = {
   trigger: () => Promise<PerpsDepositConfirmationResponse | null>;
   isLoading: boolean;
+  error: string | null;
 };
 
 /**
@@ -37,6 +38,7 @@ export function usePerpsDepositConfirmation(
   const navigate = useNavigate();
   const selectedAccount = useSelector(getSelectedInternalAccount);
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   // Guard against accidental double-trigger in the same tick
   const isInFlightRef = useRef(false);
@@ -46,8 +48,12 @@ export function usePerpsDepositConfirmation(
       return null;
     }
 
+    setError(null);
+
     if (!selectedAccount?.address) {
-      console.error('No selected account');
+      const message = 'No selected account';
+      console.error(message);
+      setError(message);
       return null;
     }
 
@@ -71,8 +77,10 @@ export function usePerpsDepositConfirmation(
       onCreated?.(transactionId);
 
       return { transactionId };
-    } catch (error) {
-      console.error('Failed to create perps deposit transaction', error);
+    } catch (caughtError) {
+      const message = 'Failed to create perps deposit transaction';
+      console.error(message, caughtError);
+      setError(message);
       return null;
     } finally {
       isInFlightRef.current = false;
@@ -89,5 +97,6 @@ export function usePerpsDepositConfirmation(
   return {
     trigger,
     isLoading,
+    error,
   };
 }

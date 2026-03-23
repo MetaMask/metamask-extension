@@ -1,6 +1,8 @@
 import type { PriceUpdate } from '@metamask/perps-controller';
-import type { PerpsStreamManager } from '../../../providers/perps';
+import { useMemo } from 'react';
+
 import { usePerpsChannel } from './usePerpsChannel';
+import type { PerpsStreamManager } from '../../../providers/perps';
 
 /**
  * Options for usePerpsLivePrices hook
@@ -62,25 +64,28 @@ export function usePerpsLivePrices(
     EMPTY_PRICES,
   );
 
-  if (isInitialLoading || priceArray.length === 0) {
-    return { prices: EMPTY_PRICES_RECORD, isInitialLoading };
-  }
-
-  // Convert array to record, filtered to requested symbols
   const { symbols } = options;
-  const priceRecord: Record<string, PriceUpdate> = {};
-  priceArray.forEach((update) => {
-    if (symbols.length === 0 || symbols.includes(update.symbol)) {
-      const ts = (update as { timestamp?: number }).timestamp;
-      const mark = (update as { markPrice?: string }).markPrice;
-      priceRecord[update.symbol] = {
-        symbol: update.symbol,
-        price: update.price,
-        timestamp: ts ?? Date.now(),
-        markPrice: mark ?? update.price,
-      };
+  const priceRecord = useMemo((): Record<string, PriceUpdate> => {
+    if (isInitialLoading || priceArray.length === 0) {
+      return EMPTY_PRICES_RECORD;
     }
-  });
+
+    // Convert array to record, filtered to requested symbols
+    const result: Record<string, PriceUpdate> = {};
+    priceArray.forEach((update) => {
+      if (symbols.length === 0 || symbols.includes(update.symbol)) {
+        const ts = (update as { timestamp?: number }).timestamp;
+        const mark = (update as { markPrice?: string }).markPrice;
+        result[update.symbol] = {
+          symbol: update.symbol,
+          price: update.price,
+          timestamp: ts ?? Date.now(),
+          markPrice: mark ?? update.price,
+        };
+      }
+    });
+    return result;
+  }, [isInitialLoading, priceArray, symbols]);
 
   return { prices: priceRecord, isInitialLoading };
 }

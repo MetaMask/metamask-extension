@@ -1,6 +1,7 @@
 import type { OrderBookData } from '@metamask/perps-controller';
-import type { PerpsStreamManager } from '../../../providers/perps';
+
 import { usePerpsChannel } from './usePerpsChannel';
+import type { PerpsStreamManager } from '../../../providers/perps';
 
 /**
  * Options for usePerpsLiveOrderBook hook
@@ -8,14 +9,6 @@ import { usePerpsChannel } from './usePerpsChannel';
 export type UsePerpsLiveOrderBookOptions = {
   /** Symbol to get order book for (e.g., 'BTC', 'ETH') */
   symbol: string;
-  /** Number of levels to return per side (default: 10) */
-  levels?: number;
-  /** Price aggregation significant figures (2-5, default: 5) */
-  nSigFigs?: 2 | 3 | 4 | 5;
-  /** Mantissa for aggregation when nSigFigs is 5 */
-  mantissa?: 2 | 5;
-  /** Callback for errors */
-  onError?: (error: Error) => void;
 };
 
 /**
@@ -37,8 +30,7 @@ const getOrderBookChannel = (sm: PerpsStreamManager) => sm.orderBook;
  * perpsStreamUpdate notifications → PerpsStreamManager.handleBackgroundUpdate().
  *
  * Note: The background emits a single orderBook channel for the currently
- * subscribed symbol. The symbol/levels/nSigFigs parameters are used
- * for the perpsSubscriberChange registration (future: per-symbol scoping).
+ * subscribed symbol.
  *
  * @param options - Configuration options
  * @returns Object containing order book data and loading state
@@ -47,7 +39,6 @@ const getOrderBookChannel = (sm: PerpsStreamManager) => sm.orderBook;
  * function OrderBookDisplay() {
  *   const { orderBook, isInitialLoading } = usePerpsLiveOrderBook({
  *     symbol: 'BTC',
- *     levels: 10,
  *   });
  *
  *   if (isInitialLoading) return <Spinner />;

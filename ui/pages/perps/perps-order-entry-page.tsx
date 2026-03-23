@@ -1,11 +1,3 @@
-import React, { useMemo, useCallback, useState, useEffect } from 'react';
-import { useSelector } from 'react-redux';
-import {
-  Navigate,
-  useNavigate,
-  useParams,
-  useSearchParams,
-} from 'react-router-dom';
 import {
   twMerge,
   Box,
@@ -28,28 +20,16 @@ import type {
   OrderParams,
   PriceUpdate,
 } from '@metamask/perps-controller';
-import { getIsPerpsExperienceAvailable } from '../../selectors/perps/feature-flags';
-import { getSelectedInternalAccount } from '../../selectors/accounts';
-import { getIntlLocale } from '../../ducks/locale/locale';
-import { useI18nContext } from '../../hooks/useI18nContext';
+import React, { useMemo, useCallback, useState, useEffect } from 'react';
+import { useSelector } from 'react-redux';
 import {
-  DEFAULT_ROUTE,
-  PERPS_MARKET_DETAIL_ROUTE,
-} from '../../helpers/constants/routes';
-import {
-  usePerpsLivePositions,
-  usePerpsLiveAccount,
-  usePerpsLiveMarketData,
-} from '../../hooks/perps/stream';
-import { usePerpsEligibility } from '../../hooks/perps';
+  Navigate,
+  useNavigate,
+  useParams,
+  useSearchParams,
+} from 'react-router-dom';
+
 import { usePerpsDepositConfirmation } from '../../components/app/perps/hooks/usePerpsDepositConfirmation';
-import { getPerpsStreamManager } from '../../providers/perps';
-import { submitRequestToBackground } from '../../store/background-connection';
-import {
-  getDisplayName,
-  safeDecodeURIComponent,
-} from '../../components/app/perps/utils';
-import { PerpsDetailPageSkeleton } from '../../components/app/perps/perps-skeletons';
 import {
   OrderEntry,
   DirectionTabs,
@@ -59,10 +39,35 @@ import {
   type OrderMode,
   type OrderCalculations,
 } from '../../components/app/perps/order-entry';
+import { PerpsDetailPageSkeleton } from '../../components/app/perps/perps-skeletons';
 import {
-  normalizeLocalizedNumberInput,
-  parseLocalizedNumber,
-} from '../../components/app/perps/utils/localeNumber';
+  getDisplayName,
+  safeDecodeURIComponent,
+} from '../../components/app/perps/utils';
+import {
+  DEFAULT_ROUTE,
+  PERPS_MARKET_DETAIL_ROUTE,
+} from '../../helpers/constants/routes';
+import { usePerpsEligibility } from '../../hooks/perps';
+import {
+  usePerpsLivePositions,
+  usePerpsLiveAccount,
+  usePerpsLiveMarketData,
+} from '../../hooks/perps/stream';
+import { useI18nContext } from '../../hooks/useI18nContext';
+import { getPerpsStreamManager } from '../../providers/perps';
+import { getSelectedInternalAccount } from '../../selectors/accounts';
+import { getIsPerpsExperienceAvailable } from '../../selectors/perps/feature-flags';
+import { submitRequestToBackground } from '../../store/background-connection';
+
+function toCanonicalPositivePrice(value?: string): string | undefined {
+  const parsed = Number.parseFloat(value ?? '');
+  if (!Number.isFinite(parsed) || parsed <= 0) {
+    return undefined;
+  }
+
+  return parsed.toFixed(2);
+}
 
 /**
  * Convert UI OrderFormState to PerpsController OrderParams
@@ -70,25 +75,22 @@ import {
  * @param formState - Current order form state
  * @param currentPrice - Current asset price in USD
  * @param mode - Order mode (new, modify, close)
- * @param locale
  * @param existingPositionSize - Size of existing position when closing
  */
 function formStateToOrderParams(
   formState: OrderFormState,
   currentPrice: number,
   mode: OrderMode,
-  locale: string,
   existingPositionSize?: string,
 ): OrderParams {
   const isBuy = formState.direction === 'long';
-  const marginAmount = parseFloat(formState.amount) || 0;
+  const marginAmount = Number.parseFloat(formState.amount) || 0;
   const positionSize =
     currentPrice > 0 ? (marginAmount * formState.leverage) / currentPrice : 0;
   const size =
     mode === 'close' && existingPositionSize
       ? Math.abs(parseFloat(existingPositionSize)).toString()
       : positionSize.toString();
-  const cleanAmount = formState.amount.replace(/,/gu, '');
 
   const params: OrderParams = {
     symbol: formState.asset,
@@ -97,35 +99,19 @@ function formStateToOrderParams(
     orderType: formState.type,
     leverage: formState.leverage,
     currentPrice,
-    usdAmount: cleanAmount,
+    usdAmount: marginAmount > 0 ? marginAmount.toFixed(2) : '0',
   };
 
   if (formState.type === 'limit' && formState.limitPrice) {
-    const normalizedLimitPrice = normalizeLocalizedNumberInput(
-      formState.limitPrice,
-      locale,
-    );
-    if (normalizedLimitPrice) {
-      params.price = normalizedLimitPrice;
-    }
+    params.price = toCanonicalPositivePrice(formState.limitPrice);
   }
   if (formState.autoCloseEnabled && formState.takeProfitPrice) {
-    const normalizedTakeProfit = normalizeLocalizedNumberInput(
+    params.takeProfitPrice = toCanonicalPositivePrice(
       formState.takeProfitPrice,
-      locale,
     );
-    if (normalizedTakeProfit) {
-      params.takeProfitPrice = normalizedTakeProfit;
-    }
   }
   if (formState.autoCloseEnabled && formState.stopLossPrice) {
-    const normalizedStopLoss = normalizeLocalizedNumberInput(
-      formState.stopLossPrice,
-      locale,
-    );
-    if (normalizedStopLoss) {
-      params.stopLossPrice = normalizedStopLoss;
-    }
+    params.stopLossPrice = toCanonicalPositivePrice(formState.stopLossPrice);
   }
   if (mode === 'close') {
     params.reduceOnly = true;
@@ -146,7 +132,6 @@ const PerpsOrderEntryPage: React.FC = () => {
   const [searchParams] = useSearchParams();
   const isPerpsExperienceAvailable = useSelector(getIsPerpsExperienceAvailable);
   const selectedAccount = useSelector(getSelectedInternalAccount);
-  const locale = useSelector(getIntlLocale);
   const selectedAddress = selectedAccount?.address;
   const { isEligible } = usePerpsEligibility();
   const { trigger: triggerDeposit } = usePerpsDepositConfirmation();
@@ -195,12 +180,9 @@ const PerpsOrderEntryPage: React.FC = () => {
     if (orderType !== 'limit' || !orderFormState) {
       return false;
     }
-    const parsed = parseLocalizedNumber(
-      orderFormState.limitPrice ?? '',
-      locale,
-    );
-    return parsed === null || parsed <= 0;
-  }, [locale, orderType, orderFormState]);
+    const parsed = Number.parseFloat(orderFormState.limitPrice ?? '');
+    return !Number.isFinite(parsed) || parsed <= 0;
+  }, [orderType, orderFormState]);
 
   const market = useMemo(() => {
     if (!decodedSymbol) {
@@ -396,17 +378,11 @@ const PerpsOrderEntryPage: React.FC = () => {
       } else if (orderMode === 'modify' && position) {
         const cleanTp =
           orderFormState.autoCloseEnabled && orderFormState.takeProfitPrice
-            ? normalizeLocalizedNumberInput(
-                orderFormState.takeProfitPrice,
-                locale,
-              )
+            ? toCanonicalPositivePrice(orderFormState.takeProfitPrice)
             : undefined;
         const cleanSl =
           orderFormState.autoCloseEnabled && orderFormState.stopLossPrice
-            ? normalizeLocalizedNumberInput(
-                orderFormState.stopLossPrice,
-                locale,
-              )
+            ? toCanonicalPositivePrice(orderFormState.stopLossPrice)
             : undefined;
         const result = await submitRequestToBackground<{
           success: boolean;
@@ -426,7 +402,6 @@ const PerpsOrderEntryPage: React.FC = () => {
           orderFormState,
           currentPrice,
           orderMode,
-          locale,
           position?.size,
         );
         const result = await submitRequestToBackground<{
@@ -459,7 +434,6 @@ const PerpsOrderEntryPage: React.FC = () => {
     orderMode,
     position,
     currentPrice,
-    locale,
     handleBackClick,
   ]);
 

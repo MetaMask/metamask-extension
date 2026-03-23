@@ -11,6 +11,17 @@ type LocaleNumberSymbols = {
   group: string;
 };
 
+function escapeRegExp(value: string): string {
+  return value.replace(/[.*+?^${}()|[\]\\]/gu, '\\$&');
+}
+
+function countOccurrences(value: string, needle: string): number {
+  if (!needle) {
+    return 0;
+  }
+  return value.split(needle).length - 1;
+}
+
 function getLocaleNumberSymbols(locale: string): LocaleNumberSymbols {
   const cached = localeNumberSymbolsCache.get(locale);
   if (cached) {
@@ -24,51 +35,6 @@ function getLocaleNumberSymbols(locale: string): LocaleNumberSymbols {
   const symbols = { decimal, group };
   localeNumberSymbolsCache.set(locale, symbols);
   return symbols;
-}
-
-function looksLikeGroupedThousands(value: string, separator: string): boolean {
-  const escapedSeparator = separator.replace(/[.*+?^${}()|[\]\\]/gu, '\\$&');
-  return new RegExp(`^\\d{1,3}(?:${escapedSeparator}\\d{3})+$`, 'u').test(
-    value,
-  );
-}
-
-function inferDecimalSeparator(
-  value: string,
-  symbols: LocaleNumberSymbols,
-): string | null {
-  const commaCount = (value.match(/,/gu) || []).length;
-  const dotCount = (value.match(/\./gu) || []).length;
-
-  if (commaCount > 0 && dotCount > 0) {
-    return value.lastIndexOf(',') > value.lastIndexOf('.') ? ',' : '.';
-  }
-
-  if (commaCount === 0 && dotCount === 0) {
-    return null;
-  }
-
-  const separator = commaCount > 0 ? ',' : '.';
-  const separatorCount = commaCount > 0 ? commaCount : dotCount;
-
-  if (separator === symbols.decimal) {
-    return separator;
-  }
-
-  if (separator === symbols.group) {
-    if (looksLikeGroupedThousands(value, separator)) {
-      return null;
-    }
-
-    if (separatorCount > 1) {
-      return null;
-    }
-
-    const digitsAfter = value.length - value.lastIndexOf(separator) - 1;
-    return digitsAfter <= 2 ? separator : null;
-  }
-
-  return separatorCount === 1 ? separator : null;
 }
 
 export function normalizeLocalizedNumberInput(
@@ -88,58 +54,61 @@ export function normalizeLocalizedNumberInput(
     return '';
   }
 
-  if (/[^0-9.,]/u.test(compact)) {
+  const symbols = getLocaleNumberSymbols(locale);
+  const { decimal } = symbols;
+  const { group } = symbols;
+  const escapedDecimal = escapeRegExp(decimal);
+  const escapedGroup = escapeRegExp(group);
+  const allowedPattern = new RegExp(
+    `^[0-9${escapedDecimal}${escapedGroup}]+$`,
+    'u',
+  );
+
+  if (!allowedPattern.test(compact)) {
     return null;
   }
 
-  const symbols = getLocaleNumberSymbols(locale);
-  const decimalSeparator = inferDecimalSeparator(compact, symbols);
-
-  let canonical = '';
-  let sawDecimal = false;
-
-  for (const character of compact) {
-    if (/\d/u.test(character)) {
-      canonical += character;
-      continue;
-    }
-
-    if (decimalSeparator && character === decimalSeparator && !sawDecimal) {
-      if (canonical === '') {
-        canonical = '0';
-      }
-      canonical += '.';
-      sawDecimal = true;
-      continue;
-    }
-
-    if (
-      character === ',' ||
-      character === '.' ||
-      character === symbols.group ||
-      character === symbols.decimal
-    ) {
-      continue;
-    }
-
+  const decimalCount = countOccurrences(compact, decimal);
+  if (decimalCount > 1) {
     return null;
+  }
+
+  const [integerPart = '', fractionPart = ''] =
+    decimalCount === 1 ? compact.split(decimal) : [compact, ''];
+  if (
+    group &&
+    integerPart.includes(group) &&
+    !new RegExp(`^\\d{1,3}(?:${escapedGroup}\\d{3})*$`, 'u').test(integerPart)
+  ) {
+    return null;
+  }
+
+  if (fractionPart.includes(group)) {
+    return null;
+  }
+
+  let canonical = compact;
+  if (group && group !== decimal) {
+    canonical = canonical.split(group).join('');
+  }
+  if (decimal !== '.') {
+    canonical = canonical.split(decimal).join('.');
+  }
+
+  if (canonical.startsWith('.')) {
+    canonical = `0${canonical}`;
   }
 
   if (canonical === '') {
     return null;
   }
 
-  if (!allowTrailingDecimal && canonical.endsWith('.')) {
-    canonical = canonical.slice(0, -1);
+  if (!/^\d+(?:\.\d*)?$/u.test(canonical)) {
+    return null;
   }
 
-  if (
-    allowTrailingDecimal &&
-    decimalSeparator &&
-    compact.endsWith(decimalSeparator) &&
-    !canonical.endsWith('.')
-  ) {
-    canonical += '.';
+  if (!allowTrailingDecimal && canonical.endsWith('.')) {
+    canonical = canonical.slice(0, -1);
   }
 
   return canonical;

@@ -1,10 +1,11 @@
 import { act } from '@testing-library/react-hooks';
+
+import { createPerpsDepositTransaction } from './createPerpsDepositTransaction';
+import { usePerpsDepositConfirmation } from './usePerpsDepositConfirmation';
 import mockState from '../../../../../test/data/mock-state.json';
 import { renderHookWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import { CONFIRM_TRANSACTION_ROUTE } from '../../../../helpers/constants/routes';
 import { ConfirmationLoader } from '../../../../pages/confirmations/hooks/useConfirmationNavigation';
-import { createPerpsDepositTransaction } from './createPerpsDepositTransaction';
-import { usePerpsDepositConfirmation } from './usePerpsDepositConfirmation';
 
 const mockNavigate = jest.fn();
 
@@ -121,6 +122,33 @@ describe('usePerpsDepositConfirmation', () => {
     expect(mockCreatePerpsDepositTransaction).not.toHaveBeenCalled();
     expect(mockNavigate).not.toHaveBeenCalled();
     expect(triggerResult).toBeNull();
+    expect(result.current.error).toBe('No selected account');
+    consoleErrorSpy.mockRestore();
+  });
+
+  it('sets error when transaction creation fails', async () => {
+    mockCreatePerpsDepositTransaction.mockRejectedValue(new Error('Network'));
+
+    const { result } = renderHookWithProvider(
+      () => usePerpsDepositConfirmation(),
+      mockState,
+    );
+
+    const consoleErrorSpy = jest
+      .spyOn(console, 'error')
+      .mockImplementation(() => undefined);
+
+    let triggerResult: Awaited<ReturnType<typeof result.current.trigger>> =
+      null;
+    await act(async () => {
+      triggerResult = await result.current.trigger();
+    });
+
+    expect(triggerResult).toBeNull();
+    expect(result.current.error).toBe(
+      'Failed to create perps deposit transaction',
+    );
+    expect(result.current.isLoading).toBe(false);
     consoleErrorSpy.mockRestore();
   });
 

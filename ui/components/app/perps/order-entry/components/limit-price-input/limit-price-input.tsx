@@ -1,5 +1,3 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { useSelector } from 'react-redux';
 import {
   Box,
   Text,
@@ -12,19 +10,18 @@ import {
   ButtonBase,
   ButtonBaseSize,
 } from '@metamask/design-system-react';
-import { TextField, TextFieldSize } from '../../../../../component-library';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { useSelector } from 'react-redux';
+
+import { getIntlLocale } from '../../../../../../ducks/locale/locale';
 import {
   BorderRadius,
   BackgroundColor,
 } from '../../../../../../helpers/constants/design-system';
-import { useI18nContext } from '../../../../../../hooks/useI18nContext';
 import { useFormatters } from '../../../../../../hooks/useFormatters';
-import { getIntlLocale } from '../../../../../../ducks/locale/locale';
-import {
-  normalizeLocalizedNumberInput,
-  parseLocalizedNumber,
-  toCanonicalFixedPrice,
-} from '../../../utils/localeNumber';
+import { useI18nContext } from '../../../../../../hooks/useI18nContext';
+import { TextField, TextFieldSize } from '../../../../../component-library';
+import { normalizeLocalizedNumberInput } from '../../../utils/localeNumber';
 
 /**
  * Props for LimitPriceInput component
@@ -76,13 +73,13 @@ export const LimitPriceInput: React.FC<LimitPriceInputProps> = ({
       return '';
     }
 
-    const parsed = parseLocalizedNumber(limitPrice, locale);
-    if (parsed === null || parsed <= 0) {
+    const parsed = Number.parseFloat(limitPrice);
+    if (!Number.isFinite(parsed) || parsed <= 0) {
       return '';
     }
 
     return formatPrice(parsed);
-  }, [formatPrice, limitPrice, locale]);
+  }, [formatPrice, limitPrice]);
 
   useEffect(() => {
     if (!isFocused) {
@@ -109,8 +106,8 @@ export const LimitPriceInput: React.FC<LimitPriceInputProps> = ({
 
   const handlePriceFocus = useCallback(() => {
     setIsFocused(true);
-    setInputValue(limitPrice);
-  }, [limitPrice]);
+    setInputValue(formattedLimitPrice);
+  }, [formattedLimitPrice]);
 
   const handlePriceBlur = useCallback(() => {
     setIsFocused(false);
@@ -120,11 +117,14 @@ export const LimitPriceInput: React.FC<LimitPriceInputProps> = ({
       return;
     }
 
-    const canonical = toCanonicalFixedPrice(limitPrice, locale);
-    if (canonical) {
-      onLimitPriceChange(canonical);
+    const parsed = Number.parseFloat(limitPrice);
+    if (Number.isFinite(parsed) && parsed > 0) {
+      onLimitPriceChange(parsed.toFixed(2));
+      return;
     }
-  }, [limitPrice, locale, onLimitPriceChange]);
+
+    onLimitPriceChange('');
+  }, [limitPrice, onLimitPriceChange]);
 
   const handleMidClick = useCallback(() => {
     if (midPrice > 0) {
