@@ -6,7 +6,7 @@ import { withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import HomePage from '../../page-objects/pages/home/homepage';
 import AssetListPage from '../../page-objects/pages/home/asset-list';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 
 describe('Token List via StorageService', function () {
   const chainId = CHAIN_IDS.MAINNET;
@@ -42,7 +42,7 @@ describe('Token List via StorageService', function () {
         title: (this as Context).test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         const homePage = new HomePage(driver);
         const assetListPage = new AssetListPage(driver);

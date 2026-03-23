@@ -105,6 +105,11 @@ export const MultichainBridgeQuoteCard = ({
 
   const [showAllQuotes, setShowAllQuotes] = useState(false);
   const gasSponsored = activeQuote?.quote?.gasSponsored ?? false;
+  const isCrossChainBridge = Boolean(
+    fromToken?.chainId &&
+      toToken?.chainId &&
+      fromToken.chainId !== toToken.chainId,
+  );
 
   const isCurrentNetworkGasSponsored = useMemo(() => {
     if (!fromChain?.chainId || !gasFeesSponsoredNetworkEnabled) {
@@ -467,7 +472,7 @@ export const MultichainBridgeQuoteCard = ({
         )}
 
         {/* Recipient */}
-        {isToOrFromNonEvm && selectedDestinationAccount && (
+        {isCrossChainBridge && selectedDestinationAccount && (
           <Row justifyContent={JustifyContent.spaceBetween}>
             <Text
               variant={TextVariant.bodySm}

@@ -21,7 +21,7 @@ import {
   getDefaultHomeActiveTabName,
   getEnabledChainIds,
 } from '../../../selectors';
-import { getIsPerpsEnabled } from '../../../selectors/perps';
+import { getIsPerpsExperienceAvailable } from '../../../selectors/perps';
 import { getAllEnabledNetworksForAllNamespaces } from '../../../selectors/multichain/networks';
 import {
   detectNfts,
@@ -146,7 +146,7 @@ export const AccountOverviewTabs = ({
 
   const { safeChains } = useSafeChains();
 
-  const isPerpsEnabled = useSelector(getIsPerpsEnabled);
+  const isPerpsExperienceAvailable = useSelector(getIsPerpsExperienceAvailable);
 
   return (
     <>
@@ -176,7 +176,7 @@ export const AccountOverviewTabs = ({
           </Tab>
         )}
 
-        {isPerpsEnabled && (
+        {isPerpsExperienceAvailable && (
           <Tab
             name={t('perps')}
             tabKey={AccountOverviewTabKey.Perps}

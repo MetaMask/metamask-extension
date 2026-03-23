@@ -6,7 +6,7 @@ import AssetListPage from '../../page-objects/pages/home/asset-list';
 import GeneralSettings from '../../page-objects/pages/settings/general-settings';
 import HomePage from '../../page-objects/pages/home/homepage';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 
 describe('Hide tokens without balance', function (this: Suite) {
   // /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -24,7 +24,7 @@ describe('Hide tokens without balance', function (this: Suite) {
         smartContract,
       },
       async ({ driver, localNodes }) => {
-        await loginWithBalanceValidation(driver, localNodes[0]);
+        await login(driver, { localNode: localNodes[0] });
         const assetListPage = new AssetListPage(driver);
         await assetListPage.importCustomTokenByChain(
           '0x539',
