@@ -88,44 +88,29 @@ class CriticalErrorPage {
 
     if (confirm) {
       await alert.accept();
-
-      // runtime.reload() closes all extension pages, invalidating the current
-      // Selenium window handle. Wait for the extension to restart, then close
-      // all but one tab so downstream flows (terms-of-use, etc.) have the same
-      // single-tab context as vault-corruption tests.
-      await this.driver.delay(3000);
-      let handles = await this.driver.driver.getAllWindowHandles();
-      await this.driver.driver.switchTo().window(handles[0]);
-
-      // Poll until the extension is available, then navigate to it.
-      await this.driver.waitUntil(
-        async () => {
-          try {
-            await this.driver.navigate(PAGES.HOME, {
-              waitForControllers: false,
-            });
-            const title = await this.driver.driver.getTitle();
-            return title === WINDOW_TITLES.ExtensionInFullScreenView;
-          } catch {
-            return false;
-          }
-        },
-        { interval: 500, timeout: 30000 },
-      );
-
-      // Close duplicate extension tabs left over from the restoring-tab handoff
-      // so only the current tab remains (mirrors vault-corruption test context).
-      handles = await this.driver.driver.getAllWindowHandles();
-      const current = await this.driver.driver.getWindowHandle();
-      for (const h of handles) {
-        if (h !== current) {
-          await this.driver.driver.switchTo().window(h);
-          await this.driver.driver.close();
-        }
-      }
-      await this.driver.driver.switchTo().window(current);
     } else {
       await alert.dismiss();
+    }
+
+    if (confirm) {
+      // runtime.reload() tears down extension UI tabs, so the driver's current
+      // window may be dead. delay() is a pure setTimeout (safe), then
+      // getAllWindowHandles() is session-level (also safe on a dead window).
+      await this.driver.delay(3000);
+
+      // Reattach to any surviving tab so subsequent commands don't throw
+      // NoSuchWindowError.
+      const handles = await this.driver.driver.getAllWindowHandles();
+      await this.driver.driver.switchTo().window(handles[0]);
+
+      // Navigate to HOME so the extension UI is in a known state regardless
+      // of which tab we landed on. waitForControllers: false avoids blocking
+      // if the background is still starting (e.g. simulateBackgroundInitializationHang).
+      await this.driver.navigate(PAGES.HOME, { waitForControllers: false });
+
+      // Handoff can leave two full-screen extension tabs; duplicate instances
+      // broke Terms-of-Use interactions (visibility / observers). Keep one tab.
+      await this.driver.closeAllOtherTabs();
     }
   }
 
