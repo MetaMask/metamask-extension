@@ -8,6 +8,17 @@ import { useAccountTotalFiatBalance } from '../../../../../../../hooks/useAccoun
 import { getSelectedAccount } from '../../../../../../../selectors';
 import { useConfirmContext } from '../../../../../context/confirm';
 
+export type TokenWithBalance = {
+  address: string;
+  balance: string;
+  balanceError: unknown;
+  decimals: number;
+  image: unknown;
+  isERC721: unknown;
+  string: string;
+  symbol: string;
+};
+
 export const useReceivedToken = () => {
   const { currentConfirmation: transactionMeta } =
     useConfirmContext<TransactionMeta>();
@@ -17,7 +28,7 @@ export const useReceivedToken = () => {
   const { tokensWithBalances } = useAccountTotalFiatBalance(
     selectedAccount,
     true,
-  );
+  ) as { tokensWithBalances: TokenWithBalance[] };
 
   const receivedToken = tokensWithBalances.find(
     (token) =>
