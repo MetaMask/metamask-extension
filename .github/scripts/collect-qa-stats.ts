@@ -13,7 +13,7 @@
  *      {
  *        "key1": number,
  *        "key2": "string",
- *        "key3": "[\"string1\", \"string2\", ...]" },
+ *        "key3": "[\"string1\", \"string2\", ...]",
  *      }
  *   2. Register it as a new namespace in the collectors array in main()
  *
@@ -683,9 +683,9 @@ function parseMochaSkipped(rawXml: string): number {
 }
 
 /**
- * Downloads the raw `test-e2e-chrome-browserify` and `test-e2e-chrome-flask`
- * shard artifacts, reads the `skipped` attribute from each JUnit XML file's
- * `<testsuites>` root element, and returns the total skipped count.
+ * Downloads all Chrome E2E shard artifacts except the explicit browserify run,
+ * reads the `skipped` attribute from each JUnit XML file's `<testsuites>` root
+ * element, and returns the total skipped count.
  *
  * Uses `parseMochaSkipped` rather than `parseJUnitXml` because
  * `mocha-junit-reporter` does not emit `<skipped/>` child elements.
@@ -694,8 +694,9 @@ async function getE2eSkippedFromXml(): Promise<number> {
   const artifacts = await getArtifactList();
   const shardArtifacts = artifacts.filter(
     (a) =>
-      a.name.startsWith('test-e2e-chrome-browserify') ||
-      a.name.startsWith('test-e2e-chrome-flask'),
+      a.name.startsWith('test-e2e-chrome-') &&
+      !a.name.startsWith('test-e2e-chrome-browserify') &&
+      a.name !== 'test-e2e-chrome-report',
   );
 
   console.log(
@@ -727,12 +728,19 @@ async function collectE2eTestCount(): Promise<Record<string, number>> {
 
   const chromeRuns = await getE2eReport();
 
+  // Explicitly excluded run: the browserify build is superseded by webpack.
+  // All other Chrome runs (webpack, flask, rpc, dist, multiple-providers, etc.)
+  // contribute to the totals.
+  const EXCLUDED_CHROME_RUN = 'test-e2e-chrome-browserify';
+
   // --- Main channel (Chrome, canonical) ---
+  // Counts every Chrome run except the explicit browserify job and flask
+  // (flask is tracked separately below).
   let mainChromeTotal = 0;
   const folderCounts: Record<string, number> = {};
 
   for (const run of chromeRuns.filter(
-    (r) => r.name === 'test-e2e-chrome-browserify',
+    (r) => r.name !== EXCLUDED_CHROME_RUN && r.name !== 'test-e2e-chrome-flask',
   )) {
     for (const file of run.testFiles ?? []) {
       const ran = (file.tests ?? 0) - (file.skipped ?? 0);
@@ -754,21 +762,6 @@ async function collectE2eTestCount(): Promise<Record<string, number>> {
     }
   }
   console.log(`[e2e/flask/chrome] total: ${flaskChromeTotal}`);
-
-  // Warn if the Chrome report contains run names we don't recognise — this
-  // would indicate a new CI job category whose tests are not counted in
-  // total_tests_run and should be added to the collector.
-  const knownChromeRunNames = new Set([
-    'test-e2e-chrome-browserify',
-    'test-e2e-chrome-flask',
-  ]);
-  for (const name of new Set(chromeRuns.map((r) => r.name))) {
-    if (!knownChromeRunNames.has(name)) {
-      console.warn(
-        `[e2e] unrecognized Chrome run "${name}" — not counted in total_tests_run; update collector if intentional`,
-      );
-    }
-  }
 
   // --- Firefox health signals (both channels) ---
   let mainFirefoxTotal = 0;
