@@ -44,7 +44,11 @@ export const AutoLockItem = createSelectItem({
 });
 
 export const SECURITY_AND_PASSWORD_SETTING_ITEMS: SettingItemConfig[] = [
-  { id: 'manage-wallet-recovery', titleKey: 'manageWalletRecovery', component: ManageWalletRecoveryItem },
+  {
+    id: 'manage-wallet-recovery',
+    titleKey: 'manageWalletRecovery',
+    component: ManageWalletRecoveryItem,
+  },
   { id: 'password', titleKey: 'password', component: PasswordItem },
   { id: 'auto-lock', titleKey: 'autoLock', component: AutoLockItem },
   {

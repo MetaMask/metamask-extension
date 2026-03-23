@@ -5,9 +5,13 @@ import thunk from 'redux-thunk';
 import mockState from '../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
-import { IconName } from '../../../components/component-library';
 import type { SettingsV2SearchResult } from '../useSettingsV2Search';
 import { SettingsV2SearchResults } from './settings-v2-search-results';
+
+jest.mock('../../../components/component-library', () => ({
+  ...jest.requireActual('../../../components/component-library'),
+  Icon: () => <span data-testid="mock-icon" />,
+}));
 
 const createMockStore = () => configureMockStore([thunk])(mockState);
 
@@ -16,13 +20,13 @@ const mockItems: SettingsV2SearchResult[] = [
     tabLabelKey: 'assets',
     titleKey: 'localCurrency',
     tabRoute: '/settings-v2/assets',
-    iconName: IconName.Dollar,
+    iconName: 'dollar',
   },
   {
     tabLabelKey: 'preferencesAndDisplay',
     titleKey: 'theme',
     tabRoute: '/settings-v2/preferences-and-display',
-    iconName: IconName.Setting,
+    iconName: 'setting',
   },
 ];
 
@@ -34,9 +38,15 @@ describe('SettingsV2SearchResults', () => {
     );
 
     expect(
-      screen.getByText(messages.localCurrency.message),
+      screen.getByText(
+        `${messages.assets.message} > ${messages.localCurrency.message}`,
+      ),
     ).toBeInTheDocument();
-    expect(screen.getByText(messages.theme.message)).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        `${messages.preferencesAndDisplay.message} > ${messages.theme.message}`,
+      ),
+    ).toBeInTheDocument();
   });
 
   it('calls onClickResult when a result is clicked', () => {

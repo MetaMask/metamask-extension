@@ -75,8 +75,16 @@ const ManageInstitutionalWalletItem = createToggleItem({
 export const PREFERENCES_AND_DISPLAY_SETTING_ITEMS: SettingItemConfig[] = [
   { id: 'theme', titleKey: 'theme', component: ThemeItem },
   { id: 'language', titleKey: 'language', component: LanguageItem },
-  { id: 'account-identicon', titleKey: 'accountIdenticon', component: AccountIdenticonItem },
-  { id: 'show-default-address', titleKey: 'showDefaultAddress', component: ShowDefaultAddressItem },
+  {
+    id: 'account-identicon',
+    titleKey: 'accountIdenticon',
+    component: AccountIdenticonItem,
+  },
+  {
+    id: 'show-default-address',
+    titleKey: 'showDefaultAddress',
+    component: ShowDefaultAddressItem,
+  },
   {
     id: 'show-extension',
     titleKey: 'showExtensionInFullSizeView',

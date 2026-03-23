@@ -13,8 +13,16 @@ jest.mock('./settings-registry', () => ({
       labelKey: 'assets',
       iconName: 'Dollar',
       settingItems: [
-        { id: 'local-currency', titleKey: 'localCurrency', component: () => null },
-        { id: 'autodetect-tokens', titleKey: 'autoDetectTokens', component: () => null },
+        {
+          id: 'local-currency',
+          titleKey: 'localCurrency',
+          component: () => null,
+        },
+        {
+          id: 'autodetect-tokens',
+          titleKey: 'autoDetectTokens',
+          component: () => null,
+        },
       ],
     },
     {
@@ -56,9 +64,7 @@ describe('useSettingsV2Search', () => {
   });
 
   it('returns empty array for non-matching queries', () => {
-    const { result } = renderHook(() =>
-      useSettingsV2Search('xyznonexistent'),
-    );
+    const { result } = renderHook(() => useSettingsV2Search('xyznonexistent'));
     expect(result.current).toEqual([]);
   });
 });

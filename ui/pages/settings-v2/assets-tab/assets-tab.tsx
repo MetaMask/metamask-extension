@@ -50,8 +50,16 @@ const AutodetectTokensToggleItem = createToggleItem({
 
 /** Registry of setting items for the Assets page. Add new items here */
 export const ASSET_SETTING_ITEMS: SettingItemConfig[] = [
-  { id: 'local-currency', titleKey: 'localCurrency', component: LocalCurrencyItem },
-  { id: 'show-network-token', titleKey: 'showNativeTokenAsMainBalance', component: ShowNetworkTokenToggleItem },
+  {
+    id: 'local-currency',
+    titleKey: 'localCurrency',
+    component: LocalCurrencyItem,
+  },
+  {
+    id: 'show-network-token',
+    titleKey: 'showNativeTokenAsMainBalance',
+    component: ShowNetworkTokenToggleItem,
+  },
   {
     id: 'hide-zero-balance-tokens',
     titleKey: 'hideZeroBalanceTokens',
@@ -64,8 +72,16 @@ export const ASSET_SETTING_ITEMS: SettingItemConfig[] = [
     component: DisplayNftMediaToggleItem,
     hasDividerBefore: true,
   },
-  { id: 'autodetect-nfts', titleKey: 'useNftDetection', component: AutodetectNftsToggleItem },
-  { id: 'autodetect-tokens', titleKey: 'autoDetectTokens', component: AutodetectTokensToggleItem },
+  {
+    id: 'autodetect-nfts',
+    titleKey: 'useNftDetection',
+    component: AutodetectNftsToggleItem,
+  },
+  {
+    id: 'autodetect-tokens',
+    titleKey: 'autoDetectTokens',
+    component: AutodetectTokensToggleItem,
+  },
 ];
 
 const AssetsTab = () => <SettingsTab items={ASSET_SETTING_ITEMS} />;
