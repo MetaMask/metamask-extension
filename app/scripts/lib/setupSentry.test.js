@@ -1,17 +1,10 @@
-import * as Sentry from '@sentry/browser';
 import {
   removeUrlsFromBreadCrumb,
   rewriteReport,
-  makeTransport,
   getMetaMetricsStateFromAppState,
   getMetaMetricsStateFromPersistedState,
   getMetaMetricsStateFromBackupState,
 } from './setupSentry';
-
-const defaultMetaMetricsState = {
-  participateInMetaMetrics: true,
-  metaMetricsId: 'test-metrics-id',
-};
 
 describe('Setup Sentry', () => {
   describe('getMetaMetricsStateFromAppState', () => {
@@ -165,38 +158,78 @@ describe('Setup Sentry', () => {
   });
 
   describe('rewriteReport', () => {
-    it('sets event.user.id when metaMetricsState has metaMetricsId', () => {
-      const event = { message: 'test', request: {} };
-      rewriteReport(event, defaultMetaMetricsState);
-      expect(event.user).toStrictEqual({ id: 'test-metrics-id' });
+    afterEach(() => {
+      delete globalThis.stateHooks?.getSentryState;
     });
 
-    it('does not set event.user when metaMetricsState has no metaMetricsId', () => {
-      const event = { message: 'test', request: {} };
-      rewriteReport(event, {
-        participateInMetaMetrics: true,
-        metaMetricsId: undefined,
-      });
-      expect(event.user).toBeUndefined();
+    it('sets report.user.id from UI snapshot when opted in', () => {
+      globalThis.stateHooks = {
+        ...globalThis.stateHooks,
+        getSentryState: () => ({
+          state: {
+            metamask: {
+              participateInMetaMetrics: true,
+              metaMetricsId: 'test-metrics-id',
+            },
+          },
+        }),
+      };
+      const rewritten = rewriteReport({ message: 'test', request: {} });
+      expect(rewritten.user).toStrictEqual({ id: 'test-metrics-id' });
     });
 
-    it('does not set event.user when not opted in', () => {
-      const event = { message: 'test', request: {} };
-      rewriteReport(event, {
-        participateInMetaMetrics: false,
-        metaMetricsId: 'ignored',
-      });
-      expect(event.user).toBeUndefined();
+    it('does not set report.user when opted in but metaMetricsId is missing', () => {
+      globalThis.stateHooks = {
+        ...globalThis.stateHooks,
+        getSentryState: () => ({
+          state: {
+            metamask: {
+              participateInMetaMetrics: true,
+              metaMetricsId: undefined,
+            },
+          },
+        }),
+      };
+      const rewritten = rewriteReport({ message: 'test', request: {} });
+      expect(rewritten.user).toBeUndefined();
     });
 
-    it('sanitizes urls and addresses', () => {
+    it('does not set report.user when not opted in', () => {
+      globalThis.stateHooks = {
+        ...globalThis.stateHooks,
+        getSentryState: () => ({
+          state: {
+            MetaMetricsController: {
+              participateInMetaMetrics: false,
+              metaMetricsId: 'ignored',
+            },
+          },
+        }),
+      };
+      const rewritten = rewriteReport({ message: 'test', request: {} });
+      expect(rewritten.user).toBeUndefined();
+    });
+
+    it('sanitizes urls and addresses and sets user id when snapshot has id', () => {
+      globalThis.stateHooks = {
+        ...globalThis.stateHooks,
+        getSentryState: () => ({
+          state: {
+            MetaMetricsController: {
+              participateInMetaMetrics: true,
+              metaMetricsId: 'test-metrics-id',
+            },
+          },
+        }),
+      };
       const event = {
         message:
           'Error at http://example.com with 0x790A8A9E9bc1C9dB991D8721a92e461Db4CfB235',
         request: {},
       };
-      rewriteReport(event, defaultMetaMetricsState);
+      rewriteReport(event);
       expect(event.message).toStrictEqual('Error at ** with 0x**');
+      expect(event.user).toStrictEqual({ id: 'test-metrics-id' });
     });
 
     it('should remove urls from error messages', () => {
@@ -204,7 +237,7 @@ describe('Setup Sentry', () => {
         message: 'This report has a test url: http://example.com',
         request: {},
       };
-      rewriteReport(testReport, defaultMetaMetricsState);
+      rewriteReport(testReport);
       expect(testReport.message).toStrictEqual(
         'This report has a test url: **',
       );
@@ -224,7 +257,7 @@ describe('Setup Sentry', () => {
         },
         request: {},
       };
-      rewriteReport(testReport, defaultMetaMetricsState);
+      rewriteReport(testReport);
       expect(testReport.exception.values).toStrictEqual([
         {
           value: 'This report has a test url: **',
@@ -241,7 +274,7 @@ describe('Setup Sentry', () => {
           'There is an ethereum address 0x790A8A9E9bc1C9dB991D8721a92e461Db4CfB235 in this message',
         request: {},
       };
-      rewriteReport(testReport, defaultMetaMetricsState);
+      rewriteReport(testReport);
       expect(testReport.message).toStrictEqual(
         'There is an ethereum address 0x** in this message',
       );
@@ -252,7 +285,7 @@ describe('Setup Sentry', () => {
         message: 'This report has an allowed url: https://codefi.network/',
         request: {},
       };
-      rewriteReport(testReport, defaultMetaMetricsState);
+      rewriteReport(testReport);
       expect(testReport.message).toStrictEqual(
         'This report has an allowed url: https://codefi.network/',
       );
@@ -264,7 +297,7 @@ describe('Setup Sentry', () => {
           'This report has an allowed url: https://subdomain.codefi.network/',
         request: {},
       };
-      rewriteReport(testReport, defaultMetaMetricsState);
+      rewriteReport(testReport);
       expect(testReport.message).toStrictEqual(
         'This report has an allowed url: https://subdomain.codefi.network/',
       );
@@ -276,7 +309,7 @@ describe('Setup Sentry', () => {
           'This report does not have an allowed url: https://nodefi.network/',
         request: {},
       };
-      rewriteReport(testReport, defaultMetaMetricsState);
+      rewriteReport(testReport);
       expect(testReport.message).toStrictEqual(
         'This report does not have an allowed url: **',
       );
@@ -288,7 +321,7 @@ describe('Setup Sentry', () => {
           'This report does not have an allowed url: https://codefi.network.another.domain.com/',
         request: {},
       };
-      rewriteReport(testReport, defaultMetaMetricsState);
+      rewriteReport(testReport);
       expect(testReport.message).toStrictEqual(
         'This report does not have an allowed url: **',
       );
@@ -300,7 +333,7 @@ describe('Setup Sentry', () => {
           'This report does not have an allowed url: https://example.com/test?redirect=http://codefi.network',
         request: {},
       };
-      rewriteReport(testReport, defaultMetaMetricsState);
+      rewriteReport(testReport);
       expect(testReport.message).toStrictEqual(
         'This report does not have an allowed url: **',
       );
@@ -312,7 +345,7 @@ describe('Setup Sentry', () => {
           'This report does not have an allowed url: https://subdomain.example.com/',
         request: {},
       };
-      rewriteReport(testReport, defaultMetaMetricsState);
+      rewriteReport(testReport);
       expect(testReport.message).toStrictEqual(
         'This report does not have an allowed url: **',
       );
@@ -324,7 +357,7 @@ describe('Setup Sentry', () => {
           'This report does not have an allowed url: https://example.%%%/',
         request: {},
       };
-      rewriteReport(testReport, defaultMetaMetricsState);
+      rewriteReport(testReport);
       expect(testReport.message).toStrictEqual(
         'This report does not have an allowed url: **',
       );
@@ -336,7 +369,7 @@ describe('Setup Sentry', () => {
           'This 0x790A8A9E9bc1C9dB991D8721a92e461Db4CfB235 address used http://example.com on Saturday',
         request: {},
       };
-      rewriteReport(testReport, defaultMetaMetricsState);
+      rewriteReport(testReport);
       expect(testReport.message).toStrictEqual(
         'This 0x** address used ** on Saturday',
       );
@@ -347,7 +380,7 @@ describe('Setup Sentry', () => {
         message: 'This is a simple report',
         request: {},
       };
-      rewriteReport(testReport, defaultMetaMetricsState);
+      rewriteReport(testReport);
       expect(testReport.message).toStrictEqual('This is a simple report');
     });
   });
@@ -433,257 +466,6 @@ describe('Setup Sentry', () => {
         to: '',
         from: 'chrome-extension://abcefg/home.html',
       });
-    });
-  });
-
-  describe('makeTransport (construction)', () => {
-    it('does not call fetch when makeTransport is called', () => {
-      const fetchSpy = jest
-        .spyOn(globalThis, 'fetch')
-        .mockResolvedValue({ ok: true });
-
-      makeTransport({});
-
-      expect(fetchSpy).not.toHaveBeenCalled();
-
-      fetchSpy.mockRestore();
-    });
-
-    it('does not call send or flush on the default transport when makeTransport is called', () => {
-      const defaultTransportSend = jest.fn().mockResolvedValue({});
-      const defaultTransportFlush = jest.fn().mockResolvedValue(true);
-      const makeFetchTransportSpy = jest
-        .spyOn(Sentry, 'makeFetchTransport')
-        .mockReturnValue({
-          send: defaultTransportSend,
-          flush: defaultTransportFlush,
-        });
-
-      makeTransport({});
-
-      expect(defaultTransportSend).not.toHaveBeenCalled();
-      expect(defaultTransportFlush).not.toHaveBeenCalled();
-
-      makeFetchTransportSpy.mockRestore();
-    });
-  });
-
-  describe('makeTransport', () => {
-    let makeFetchTransportSpy;
-
-    beforeEach(() => {
-      makeFetchTransportSpy = jest.spyOn(Sentry, 'makeFetchTransport');
-      makeFetchTransportSpy.mockReturnValue({
-        send: jest.fn().mockResolvedValue({}),
-        flush: jest.fn().mockResolvedValue(true),
-      });
-    });
-
-    afterEach(() => {
-      makeFetchTransportSpy.mockRestore();
-      delete globalThis.stateHooks?.getPersistedState;
-      delete globalThis.stateHooks?.getBackupState;
-    });
-
-    it('throws when MetaMetrics is not opted in', async () => {
-      globalThis.stateHooks = {
-        getSentryState: () => ({}),
-        getPersistedState: async () => ({
-          data: {
-            MetaMetricsController: { participateInMetaMetrics: false },
-          },
-        }),
-        getBackupState: async () => ({}),
-      };
-
-      const transport = makeTransport({});
-      const envelope = [{}, [[{ type: 'event' }, { message: 'test' }]]];
-
-      await expect(transport.send(envelope)).rejects.toThrow(
-        'Network request skipped as metrics disabled',
-      );
-      expect(makeFetchTransportSpy).toHaveBeenCalled();
-      expect(
-        makeFetchTransportSpy.mock.results[0].value.send,
-      ).not.toHaveBeenCalled();
-    });
-
-    it('calls default transport send and mutates event when opted in', async () => {
-      globalThis.stateHooks = {
-        getSentryState: () => ({}),
-        getPersistedState: async () => ({
-          data: {
-            MetaMetricsController: {
-              participateInMetaMetrics: true,
-              metaMetricsId: 'transport-test-id',
-            },
-          },
-        }),
-        getBackupState: async () => ({}),
-      };
-
-      const transport = makeTransport({});
-      const eventPayload = { message: 'test event' };
-      const envelope = [{}, [[{ type: 'event' }, eventPayload]]];
-
-      await transport.send(envelope);
-
-      expect(eventPayload.user).toStrictEqual({ id: 'transport-test-id' });
-      const defaultTransport = makeFetchTransportSpy.mock.results[0].value;
-      expect(defaultTransport.send).toHaveBeenCalledTimes(1);
-      expect(defaultTransport.send).toHaveBeenCalledWith(envelope);
-    });
-
-    it('uses app state from getSentryState when available', async () => {
-      globalThis.stateHooks = {
-        getSentryState: () => ({
-          state: {
-            MetaMetricsController: {
-              participateInMetaMetrics: true,
-              metaMetricsId: 'app-state-id',
-            },
-          },
-        }),
-        getPersistedState: async () => ({}),
-        getBackupState: async () => ({}),
-      };
-
-      const transport = makeTransport({});
-      const eventPayload = { message: 'test' };
-      const envelope = [{}, [[{ type: 'event' }, eventPayload]]];
-
-      await transport.send(envelope);
-
-      expect(eventPayload.user).toStrictEqual({ id: 'app-state-id' });
-      expect(
-        makeFetchTransportSpy.mock.results[0].value.send,
-      ).toHaveBeenCalledWith(envelope);
-    });
-
-    it('falls back to backup state when getPersistedState throws', async () => {
-      globalThis.stateHooks = {
-        getSentryState: () => ({}),
-        getPersistedState: async () => {
-          throw new Error('persisted unavailable');
-        },
-        getBackupState: async () => ({
-          MetaMetricsController: {
-            participateInMetaMetrics: true,
-            metaMetricsId: 'backup-id',
-          },
-        }),
-      };
-
-      const transport = makeTransport({});
-      const eventPayload = { message: 'test' };
-      const envelope = [{}, [[{ type: 'event' }, eventPayload]]];
-
-      await transport.send(envelope);
-
-      expect(eventPayload.user).toStrictEqual({ id: 'backup-id' });
-      expect(
-        makeFetchTransportSpy.mock.results[0].value.send,
-      ).toHaveBeenCalledWith(envelope);
-    });
-
-    it('throws when both getPersistedState and getBackupState fail', async () => {
-      globalThis.stateHooks = {
-        getSentryState: () => ({}),
-        getPersistedState: async () => {
-          throw new Error('persisted failed');
-        },
-        getBackupState: async () => {
-          throw new Error('backup failed');
-        },
-      };
-
-      const transport = makeTransport({});
-      const envelope = [{}, [[{ type: 'event' }, { message: 'test' }]]];
-
-      await expect(transport.send(envelope)).rejects.toThrow(
-        'Network request skipped as metrics disabled',
-      );
-      expect(
-        makeFetchTransportSpy.mock.results[0].value.send,
-      ).not.toHaveBeenCalled();
-    });
-  });
-
-  describe('Sentry.init with makeTransport (MetaMetrics)', () => {
-    afterEach(async () => {
-      await Sentry.close(2000);
-      delete globalThis.stateHooks?.getPersistedState;
-      delete globalThis.stateHooks?.getBackupState;
-      delete globalThis.stateHooks?.getSentryState;
-    });
-
-    it('does not call fetch after init and flush when opted out, including session', async () => {
-      globalThis.nw = {};
-      globalThis.history ??= {};
-
-      globalThis.stateHooks = {
-        getSentryState: () => ({}),
-        getPersistedState: async () => ({
-          data: {
-            MetaMetricsController: { participateInMetaMetrics: false },
-          },
-        }),
-        getBackupState: async () => ({}),
-      };
-
-      const fetchSpy = jest
-        .spyOn(globalThis, 'fetch')
-        .mockResolvedValue({ ok: true });
-
-      await Sentry.close(2000);
-      Sentry.init({
-        dsn: 'https://public@fake.ingest.sentry.io/1',
-        release: 'setup-sentry-unit-test',
-        transport: makeTransport,
-        tracesSampleRate: 0,
-      });
-
-      await Sentry.flush(2000);
-
-      expect(fetchSpy).not.toHaveBeenCalled();
-
-      fetchSpy.mockRestore();
-    });
-
-    it('calls fetch after init and flush when opted in, including session', async () => {
-      globalThis.nw = {};
-      globalThis.history ??= {};
-
-      globalThis.stateHooks = {
-        getSentryState: () => ({}),
-        getPersistedState: async () => ({
-          data: {
-            MetaMetricsController: {
-              participateInMetaMetrics: true,
-              metaMetricsId: 'init-flush-test-id',
-            },
-          },
-        }),
-        getBackupState: async () => ({}),
-      };
-
-      const fetchSpy = jest
-        .spyOn(globalThis, 'fetch')
-        .mockResolvedValue({ ok: true });
-
-      await Sentry.close(2000);
-      Sentry.init({
-        dsn: 'https://public@fake.ingest.sentry.io/1',
-        release: 'setup-sentry-unit-test',
-        transport: makeTransport,
-        tracesSampleRate: 0,
-      });
-
-      await Sentry.flush(2000);
-
-      expect(fetchSpy).toHaveBeenCalled();
-
-      fetchSpy.mockRestore();
     });
   });
 });

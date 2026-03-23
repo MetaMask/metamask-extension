@@ -1,12 +1,13 @@
 import { createModuleLogger } from '@metamask/utils';
 import * as Sentry from '@sentry/browser';
-import { forEachEnvelopeItem, logger } from '@sentry/utils';
+import { logger } from '@sentry/utils';
 import browser from 'webextension-polyfill';
 import { sentryLogger as log } from '../../../shared/lib/sentry';
 import { isManifestV3 } from '../../../shared/lib/mv3.utils';
 import { getManifestFlags } from '../../../shared/lib/manifestFlags';
 import { getSentryRelease } from '../../../shared/lib/sentry-release';
 import extractEthjsErrorMessage from './extractEthjsErrorMessage';
+import { filterEvents } from './sentry-filter-events';
 import { getInstallType, initInstallType } from './install-type';
 
 const internalLog = createModuleLogger(log, 'internal');
@@ -57,6 +58,7 @@ export default function setupSentry() {
 
   return {
     ...Sentry,
+    getMetaMetricsEnabled,
   };
 }
 
@@ -66,6 +68,7 @@ function getClientOptions() {
 
   return {
     beforeBreadcrumb: beforeBreadcrumb(),
+    beforeSend: (report) => rewriteReport(report),
     debug: METAMASK_DEBUG,
     dist: isManifestV3 ? 'mv3' : 'mv2',
     dsn: sentryTarget,
@@ -88,6 +91,7 @@ function getClientOptions() {
           return true;
         },
       }),
+      filterEvents({ getMetaMetricsEnabled, log }),
     ],
     release: RELEASE,
     // Client reports are automatically sent when a page's visibility changes to
@@ -224,7 +228,7 @@ export function getMetaMetricsStateFromBackupState(backupState) {
 
 /**
  * Returns MetaMetrics state (participateInMetaMetrics and metaMetricsId). Uses getState() first (sync),
- * then getPersistedState() / getBackupState() when needed. Called only from the transport.
+ * then getPersistedState() / getBackupState() when needed. Used by {@link getMetaMetricsEnabled}.
  *
  * @returns {Promise<{ participateInMetaMetrics: boolean, metaMetricsId?: string } | null>}
  */
@@ -254,6 +258,16 @@ async function getMetaMetricsState() {
       return null;
     }
   }
+}
+
+/**
+ * Returns whether MetaMetrics is enabled (for {@link filterEvents} and {@link makeTransport}).
+ *
+ * @returns {Promise<boolean>}
+ */
+async function getMetaMetricsEnabled() {
+  const state = await getMetaMetricsState();
+  return Boolean(state?.participateInMetaMetrics);
 }
 
 function getSentryEnvironment() {
@@ -387,15 +401,14 @@ export function removeUrlsFromBreadCrumb(breadcrumb) {
 }
 
 /**
- * Receives a Sentry event object and modifies it before the
- * error is sent to Sentry. Modifications include both sanitization
- * of data via helper methods and addition of state data from the
- * return value of the second parameter passed to the function.
+ * Receives a Sentry event object and modifies it before the error is sent to Sentry.
+ * Sanitizes messages/URLs, attaches app state, and sets `report.user.id` from the MetaMetrics id
+ * in the Sentry debug snapshot when the user has opted in and the id is present.
  *
  * @param {object} report - A Sentry event object: https://develop.sentry.dev/sdk/event-payloads/
- * @param {{ participateInMetaMetrics: boolean, metaMetricsId?: string } | null} metaMetricsState - MetaMetrics state from getMetaMetricsState()
+ * @returns {object} The modified report (same reference).
  */
-export function rewriteReport(report, metaMetricsState) {
+export function rewriteReport(report) {
   try {
     // simplify certain complex error messages (e.g. Ethjs)
     simplifyErrorMessages(report);
@@ -409,16 +422,14 @@ export function rewriteReport(report, metaMetricsState) {
     // modify report urls
     rewriteReportUrls(report);
 
-    // set user id
+    const appState = getState();
+    const metaMetricsState = getMetaMetricsStateFromAppState(appState);
     if (
       metaMetricsState?.participateInMetaMetrics &&
       metaMetricsState.metaMetricsId
     ) {
       report.user = { id: metaMetricsState.metaMetricsId };
     }
-
-    // append app state
-    const appState = getState();
 
     if (!report.extra) {
       report.extra = {};
@@ -441,6 +452,7 @@ export function rewriteReport(report, metaMetricsState) {
   } catch (err) {
     log('Error rewriting report', err);
   }
+  return report;
 }
 
 /**
@@ -592,37 +604,21 @@ function addDebugListeners() {
 }
 
 /**
- * Returns a transport that gates on MetaMetrics opt-in, applies rewrite to event/transaction
- * items, then delegates to the default fetch transport. Single place for state fetch and enrichment.
+ * Custom transport: block network when MetaMetrics is off. Event bodies are already processed in
+ * {@link rewriteReport} via `beforeSend`.
  *
  * @param {object} options - Sentry transport options
- * @returns {{ send: (envelope: unknown) => Promise<unknown>, flush: (timeout?: number) => Promise<boolean> }}
  */
-export function makeTransport(options) {
-  const defaultTransport = Sentry.makeFetchTransport(options, fetch);
+function makeTransport(options) {
+  return Sentry.makeFetchTransport(options, async (...args) => {
+    const metricsEnabled = await getMetaMetricsEnabled();
 
-  return {
-    send: async (envelope) => {
-      const state = await getMetaMetricsState();
+    if (!metricsEnabled) {
+      throw new Error('Network request skipped as metrics disabled');
+    }
 
-      if (!state?.participateInMetaMetrics) {
-        throw new Error('Network request skipped as metrics disabled');
-      }
-
-      forEachEnvelopeItem(envelope, (item, type) => {
-        // Only for 'event' items (i.e. errors/messages), not 'transaction' items (i.e. performance traces).
-        if (type === 'event') {
-          const eventPayload = Array.isArray(item) ? item[1] : undefined;
-          if (eventPayload) {
-            rewriteReport(eventPayload, state);
-          }
-        }
-      });
-
-      return defaultTransport.send(envelope);
-    },
-    flush: (timeout) => defaultTransport.flush(timeout),
-  };
+    return await fetch(...args);
+  });
 }
 
 function isCompletedSessionEnvelope(envelope) {

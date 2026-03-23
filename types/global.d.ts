@@ -241,6 +241,10 @@ declare class Chrome {
   runtime: Runtime;
 }
 
+type SentryObject = Sentry & {
+  getMetaMetricsEnabled: () => Promise<boolean>;
+};
+
 type StateHooks = {
   getCustomTraces?: () => { [name: string]: number };
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
@@ -290,7 +294,7 @@ type StateHooks = {
 export declare global {
   var platform: ExtensionPlatform;
   // Sentry is undefined in dev, so use optional chaining
-  var sentry: Sentry | undefined;
+  var sentry: SentryObject | undefined;
 
   var chrome: Chrome;
 
