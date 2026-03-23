@@ -36,8 +36,6 @@ describe('Auto-Lock Timer', function () {
         // Necessary wait for the auto lockout to trigger
         await driver.delay(6000);
 
-        await driver.navigate();
-
         // Verify the wallet is locked
         const loginPage = new LoginPage(driver);
         await loginPage.checkPageIsLoaded();
