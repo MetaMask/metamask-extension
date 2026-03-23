@@ -1,20 +1,10 @@
 import { QueryClient } from '@tanstack/react-query';
-import {
-  STALE_TIMES,
-  GC_TIMES,
-  shouldRetry,
-  calculateRetryDelay,
-} from '@metamask/core-backend';
 
-export const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      staleTime: STALE_TIMES.DEFAULT, // 30s — UI owns freshness by default
-      cacheTime: GC_TIMES.DEFAULT, // 5min (TQ v4: cacheTime; renamed gcTime in v5)
-      refetchOnWindowFocus: true,
-      refetchOnReconnect: true,
-      retry: shouldRetry as (failureCount: number, error: unknown) => boolean,
-      retryDelay: calculateRetryDelay as (failureCount: number) => number,
-    },
-  },
-});
+/**
+ * UI QueryClient with standard TQ defaults.
+ *
+ * Domain-specific cache policy (staleTime, gcTime, retry) is set per-query
+ * via `get*QueryOptions` from `@metamask/core-backend`, not globally here.
+ * This keeps the QueryClient familiar to developers from other TQ projects.
+ */
+export const queryClient = new QueryClient();

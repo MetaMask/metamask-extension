@@ -26,7 +26,6 @@ import { UIMessengerProvider } from '../contexts/ui-messenger';
 import ErrorPageBase from './error-page/error-page.component';
 
 import Routes, { routeConfig } from './routes';
-import { useBackgroundQuerySync } from '../hooks/useBackgroundQuerySync';
 
 /**
  * UI messenger instance — parent for all route messengers.
@@ -40,15 +39,6 @@ import { useBackgroundQuerySync } from '../hooks/useBackgroundQuerySync';
  */
 const uiMessenger = new Messenger({ namespace: 'UI' });
 
-/**
- * Mounts inside QueryClientProvider to subscribe to background sync events
- * and pipe them into the UI QueryClient via setQueryData.
- */
-function BackgroundQuerySyncBridge({ children }) {
-  useBackgroundQuerySync();
-  return children;
-}
-
 function AppProviders() {
   return (
     <MetaMetricsProvider>
@@ -56,7 +46,6 @@ function AppProviders() {
         <I18nProvider>
           <LegacyI18nProvider>
             <QueryClientProvider client={queryClient}>
-              <BackgroundQuerySyncBridge>
               <UIMessengerProvider value={uiMessenger}>
               <AssetPollingProvider>
                 <MetamaskIdentityProvider>
@@ -72,7 +61,6 @@ function AppProviders() {
                 </MetamaskIdentityProvider>
               </AssetPollingProvider>
               </UIMessengerProvider>
-              </BackgroundQuerySyncBridge>
             </QueryClientProvider>
           </LegacyI18nProvider>
         </I18nProvider>
