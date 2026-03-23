@@ -101,7 +101,7 @@ export default class Analytics {
    */
   enqueue(type, msg, callback = noop) {
     if (!this.enable) {
-      setTimeout(callback, 0);
+      setImmediate(callback);
       return;
     }
 
@@ -158,7 +158,7 @@ export default class Analytics {
    */
   flush(callback = noop) {
     if (!this.enable) {
-      setTimeout(callback, 0);
+      setImmediate(callback);
       return Promise.resolve();
     }
 
@@ -168,7 +168,7 @@ export default class Analytics {
     }
 
     if (!this.queue.length) {
-      setTimeout(callback, 0);
+      setImmediate(callback);
       return Promise.resolve();
     }
 
@@ -183,10 +183,10 @@ export default class Analytics {
     };
 
     const done = (err) => {
-      setTimeout(() => {
+      setImmediate(() => {
         callbacks.forEach((fn) => fn(err, data));
         callback(err, data);
-      }, 0);
+      });
     };
 
     const headers = {
