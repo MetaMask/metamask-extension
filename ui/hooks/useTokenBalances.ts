@@ -52,6 +52,8 @@ export const useTokenTracker = ({
       tokensWithBalances: tokens.map((token) => ({
         ...token,
         balance: '0',
+        balanceError: null,
+        string: stringifyBalance('0', token.decimals),
       })),
     };
   }

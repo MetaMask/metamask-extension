@@ -205,7 +205,12 @@ describe('useTokenTracker', () => {
     );
 
     expect(result.current.tokensWithBalances).toEqual(
-      tokens.map((t) => ({ ...t, balance: '0' })),
+      tokens.map((t) => ({
+        ...t,
+        balance: '0',
+        balanceError: null,
+        string: stringifyBalance('0', t.decimals),
+      })),
     );
   });
 });
