@@ -26,7 +26,6 @@ import {
   PERMISSIONS,
   GATOR_PERMISSIONS,
   CONTACTS_ROUTE,
-  UNLOCK_ROUTE,
 } from '../../../helpers/constants/routes';
 import {
   lockMetamask,
@@ -512,15 +511,14 @@ export function useGlobalMenuSections(
           textColor: TextColor.ErrorDefault,
           label: t('logOut'),
           onClick: async () => {
-            await dispatch(lockMetamask(t('lockMetaMaskLoadingMessage')));
-            navigate(UNLOCK_ROUTE, { replace: true });
-
             trackEvent({
               category: MetaMetricsEventCategory.Navigation,
               event: MetaMetricsEventName.AppLocked,
               properties: { location: METRICS_LOCATION },
             });
             onClose();
+
+            await dispatch(lockMetamask(t('lockMetaMaskLoadingMessage')));
           },
         },
       ],
