@@ -12,31 +12,6 @@ import {
   TRON_MOCK_TRANSACTION_EXPIRATION_MESSAGE,
 } from './mocks/common-tron';
 
-// Tron chainId for bridge/swap config
-const TRON_BRIDGE_CHAIN_ID = '728126428';
-
-const bridgeConfig = {
-  refreshRate: 30000,
-  maxRefreshCount: 5,
-  support: true,
-  minimumVersion: '0.0.0',
-  chains: {
-    '1': { isActiveSrc: true, isActiveDest: true },
-    '42161': { isActiveSrc: true, isActiveDest: true },
-    '59144': { isActiveSrc: true, isActiveDest: true },
-    [TRON_BRIDGE_CHAIN_ID]: {
-      isActiveSrc: true,
-      isActiveDest: true,
-    },
-  },
-  chainRanking: [
-    { chainId: 'eip155:1', name: 'Ethereum' },
-    { chainId: 'eip155:42161', name: 'Arbitrum' },
-    { chainId: 'eip155:59144', name: 'Linea' },
-    { chainId: formatChainIdToCaip(TRON_BRIDGE_CHAIN_ID), name: 'Tron' },
-  ],
-};
-
 describe('Swap on Tron', function () {
   it('Quote displayed between TRX and TRC20', async function () {
     await withFixtures(
