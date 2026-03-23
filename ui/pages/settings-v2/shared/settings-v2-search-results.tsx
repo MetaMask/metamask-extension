@@ -12,9 +12,9 @@ import {
   IconColor,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import { REQUEST_SETTING_URL } from '../../../../shared/lib/ui-utils';
 import type { SettingsV2SearchResult } from '../useSettingsV2Search';
-
-const MAX_RESULTS = 5;
+import { Divider } from './divider';
 
 type SettingsV2SearchResultsProps = {
   results: SettingsV2SearchResult[];
@@ -30,16 +30,13 @@ export const SettingsV2SearchResults = ({
   return (
     <Box
       flexDirection={BoxFlexDirection.Column}
-      className="settings-v2-search-results"
-      padding={2}
-      paddingLeft={4}
-      paddingRight={4}
+      className="flex-1 overflow-y-auto"
       data-testid="settings-v2-search-results"
     >
-      {results.slice(0, MAX_RESULTS).map((item) => (
+      {results.map((item) => (
         <button
           key={`${item.tabRoute}-${item.titleKey}`}
-          className="settings-v2-search-results__item"
+          className="cursor-pointer border-none bg-transparent w-full text-left hover:bg-background-default-hover"
           onClick={() => onClickResult(item)}
           data-testid="settings-v2-search-result-item"
           type="button"
@@ -47,33 +44,52 @@ export const SettingsV2SearchResults = ({
           <Box
             flexDirection={BoxFlexDirection.Row}
             alignItems={BoxAlignItems.Center}
-            gap={2}
-            padding={3}
+            padding={4}
+            gap={3}
           >
-            <Icon name={item.iconName as IconName} size={IconSize.Sm} />
-            <Text
-              variant={TextVariant.BodySm}
-              color={TextColor.TextAlternative}
-            >
-              {t(item.tabLabelKey)}
-            </Text>
             <Icon
-              name={IconName.ArrowRight}
-              size={IconSize.Xs}
+              name={item.iconName as IconName}
+              size={IconSize.Lg}
               color={IconColor.IconAlternative}
             />
-            <Text variant={TextVariant.BodySm}>{t(item.titleKey)}</Text>
+            <Box
+              flexDirection={BoxFlexDirection.Row}
+              alignItems={BoxAlignItems.Center}
+              className="flex-1 min-w-0"
+            >
+              <Text variant={TextVariant.BodyMd}>
+                {t(item.tabLabelKey)} &gt; {t(item.titleKey)}
+              </Text>
+            </Box>
           </Box>
         </button>
       ))}
       {results.length === 0 && (
-        <Box padding={3}>
-          <Text
-            variant={TextVariant.BodySm}
-            color={TextColor.TextAlternative}
-          >
-            {t('settingsSearchMatchingNotFound')}
-          </Text>
+        <Box flexDirection={BoxFlexDirection.Column} padding={4}>
+          <Box className="pt-3 pb-3">
+            <Text variant={TextVariant.BodyMd}>
+              {t('settingsSearchMatchingNotFound')}
+            </Text>
+          </Box>
+          <Divider />
+          <Box className="pt-3 pb-3">
+            <Text
+              variant={TextVariant.BodyMd}
+              color={TextColor.TextAlternative}
+            >
+              {t('settingsSearchCantFindSetting', [
+                <a
+                  key="request-link"
+                  href={REQUEST_SETTING_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-primary-default no-underline hover:underline"
+                >
+                  {t('settingsSearchRequestHere')}
+                </a>,
+              ])}
+            </Text>
+          </Box>
         </Box>
       )}
     </Box>

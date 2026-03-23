@@ -55,7 +55,7 @@ describe('SettingsV2SearchResults', () => {
     expect(onClickResult).toHaveBeenCalledWith(mockItems[0]);
   });
 
-  it('shows no-match message when results are empty', () => {
+  it('shows no-match message and request link when results are empty', () => {
     renderWithProvider(
       <SettingsV2SearchResults results={[]} onClickResult={jest.fn()} />,
       createMockStore(),
@@ -64,36 +64,12 @@ describe('SettingsV2SearchResults', () => {
     expect(
       screen.getByText(messages.settingsSearchMatchingNotFound.message),
     ).toBeInTheDocument();
-  });
+    expect(
+      screen.getByText(messages.settingsSearchRequestHere.message),
+    ).toBeInTheDocument();
 
-  it('limits displayed results to 5', () => {
-    const localeKeys = [
-      'localCurrency',
-      'theme',
-      'language',
-      'privacy',
-      'password',
-      'autoLock',
-      'transactions',
-      'assets',
-    ];
-
-    const manyItems: SettingsV2SearchResult[] = localeKeys.map((key) => ({
-      tabLabelKey: 'assets',
-      titleKey: key,
-      tabRoute: `/route-${key}`,
-      iconName: IconName.Dollar,
-    }));
-
-    renderWithProvider(
-      <SettingsV2SearchResults
-        results={manyItems}
-        onClickResult={jest.fn()}
-      />,
-      createMockStore(),
-    );
-
-    const items = screen.getAllByTestId('settings-v2-search-result-item');
-    expect(items).toHaveLength(5);
+    const link = screen.getByText(messages.settingsSearchRequestHere.message);
+    expect(link.tagName).toBe('A');
+    expect(link).toHaveAttribute('target', '_blank');
   });
 });

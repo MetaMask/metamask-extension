@@ -6883,8 +6883,15 @@
   "settings": {
     "message": "Settings"
   },
+  "settingsSearchCantFindSetting": {
+    "message": "Can't find a setting? $1",
+    "description": "$1 is a link to request a setting"
+  },
   "settingsSearchMatchingNotFound": {
     "message": "No matching results found."
+  },
+  "settingsSearchRequestHere": {
+    "message": "Request here"
   },
   "shieldClaim": {
     "message": "Submit a claim"
