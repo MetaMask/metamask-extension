@@ -5,6 +5,7 @@ import type { AccountsControllerState } from '@metamask/accounts-controller';
 import type { AddressBookControllerState } from '@metamask/address-book-controller';
 import type {
   CurrencyRateState,
+  NftControllerState,
   TokenBalancesControllerState,
   TokenListMap,
   TokenListState,
@@ -39,6 +40,8 @@ import type {
 } from '../../../app/scripts/controllers/preferences-controller';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import {
+  ACCOUNT_2,
+  ADDITIONAL_ACCOUNT_FIXTURE_VAULT,
   DAPP_ONE_URL,
   DAPP_TWO_URL,
   DAPP_URL,
@@ -49,6 +52,7 @@ import {
   LOCALHOST_NETWORK_CLIENT_ID,
   MULTI_SRP_FIXTURE_VAULT,
   NETWORK_CLIENT_ID,
+  OLD_FIXTURE_VAULT,
   SECOND_NODE_NETWORK_CLIENT_ID,
   THIRD_NODE_NETWORK_CLIENT_ID,
   TREZOR_ADDRESS,
@@ -159,6 +163,11 @@ class FixtureBuilderV2 {
     return this;
   }
 
+  withNftController(data: Partial<NftControllerState>): this {
+    merge(this.fixture.data.NftController, data);
+    return this;
+  }
+
   withNetworkController(data: Partial<NetworkState>): this {
     merge(this.fixture.data.NetworkController, data);
     return this;
@@ -251,6 +260,80 @@ class FixtureBuilderV2 {
                               CUSTOM METHODS
      ==================================================================
   */
+  withAccountsControllerAdditionalAccountIdentities(): this {
+    return this.withAccountsController({
+      internalAccounts: {
+        selectedAccount: 'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4',
+        accounts: {
+          'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4': {
+            id: 'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4',
+            address: DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
+            options: {
+              entropySource: '01KGHBJCECE5PTNHY84ZAE2V9Y',
+              derivationPath: "m/44'/60'/0'/0/0",
+              groupIndex: 0,
+              entropy: {
+                type: 'mnemonic',
+                id: '01KGHBJCECE5PTNHY84ZAE2V9Y',
+                derivationPath: "m/44'/60'/0'/0/0",
+                groupIndex: 0,
+              },
+            },
+            methods: [
+              'personal_sign',
+              'eth_signTransaction',
+              'eth_signTypedData_v1',
+              'eth_signTypedData_v3',
+              'eth_signTypedData_v4',
+            ],
+            type: 'eip155:eoa',
+            scopes: ['eip155:0'],
+            metadata: {
+              name: 'Account 1',
+              importTime: 1724486724986,
+              lastSelected: 1665507600000,
+              keyring: {
+                type: 'HD Key Tree',
+              },
+            },
+          },
+          'e9976a84-110e-46c3-9811-e2da7b5528d3': {
+            id: 'e9976a84-110e-46c3-9811-e2da7b5528d3',
+            address: ACCOUNT_2,
+            options: {
+              entropySource: '01KGHBJCECE5PTNHY84ZAE2V9Y',
+              derivationPath: "m/44'/60'/0'/0/1",
+              groupIndex: 1,
+              entropy: {
+                type: 'mnemonic',
+                id: '01KGHBJCECE5PTNHY84ZAE2V9Y',
+                derivationPath: "m/44'/60'/0'/0/1",
+                groupIndex: 1,
+              },
+            },
+            methods: [
+              'personal_sign',
+              'eth_signTransaction',
+              'eth_signTypedData_v1',
+              'eth_signTypedData_v3',
+              'eth_signTypedData_v4',
+            ],
+            type: 'eip155:eoa',
+            scopes: ['eip155:0'],
+            metadata: {
+              name: 'Account 2',
+              importTime: 1724486724987,
+              lastSelected: 1665507800000,
+              keyring: {
+                type: 'HD Key Tree',
+              },
+            },
+          },
+        },
+      },
+    });
+  }
+
   withBadPreferencesControllerState(): this {
     (this.fixture.data as Record<string, unknown>).PreferencesController = 5;
     return this;
@@ -270,9 +353,21 @@ class FixtureBuilderV2 {
     return this;
   }
 
+  withKeyringControllerAdditionalAccountVault(): this {
+    return this.withKeyringController({
+      vault: ADDITIONAL_ACCOUNT_FIXTURE_VAULT,
+    });
+  }
+
   withKeyringControllerMultiSRP(): this {
     return this.withKeyringController({
       vault: MULTI_SRP_FIXTURE_VAULT,
+    });
+  }
+
+  withKeyringControllerOldVault(): this {
+    return this.withKeyringController({
+      vault: OLD_FIXTURE_VAULT,
     });
   }
 
@@ -408,6 +503,74 @@ class FixtureBuilderV2 {
     });
   }
 
+  withNftControllerERC1155(): this {
+    return this.withNftController({
+      allNftContracts: {
+        [DEFAULT_FIXTURE_ACCOUNT_LOWERCASE]: {
+          [toHex(1337)]: [
+            {
+              address: `__FIXTURE_SUBSTITUTION__CONTRACT${SMART_CONTRACTS.ERC1155}`,
+            },
+          ],
+        },
+      },
+      allNfts: {
+        [DEFAULT_FIXTURE_ACCOUNT_LOWERCASE]: {
+          [toHex(1337)]: [
+            {
+              address: `__FIXTURE_SUBSTITUTION__CONTRACT${SMART_CONTRACTS.ERC1155}`,
+              tokenId: '1',
+              favorite: false,
+              isCurrentlyOwned: true,
+              name: 'Rocks',
+              description: 'This is a collection of Rock NFTs.',
+              image:
+                'ipfs://bafkreifvhjdf6ve4jfv6qytqtux5nd4nwnelioeiqx5x2ez5yrgrzk7ypi',
+              standard: 'ERC1155',
+              chainId: 1337,
+            },
+          ],
+        },
+      },
+      ignoredNfts: [],
+    });
+  }
+
+  withNftControllerERC721(): this {
+    return this.withNftController({
+      allNftContracts: {
+        [DEFAULT_FIXTURE_ACCOUNT_LOWERCASE]: {
+          [toHex(1337)]: [
+            {
+              address: `__FIXTURE_SUBSTITUTION__CONTRACT${SMART_CONTRACTS.NFTS}`,
+              name: 'TestDappNFTs',
+              symbol: 'TDC',
+            },
+          ],
+        },
+      },
+      allNfts: {
+        [DEFAULT_FIXTURE_ACCOUNT_LOWERCASE]: {
+          [toHex(1337)]: [
+            {
+              address: `__FIXTURE_SUBSTITUTION__CONTRACT${SMART_CONTRACTS.NFTS}`,
+              description: 'Test Dapp NFTs for testing.',
+              favorite: false,
+              image:
+                'data:image/svg+xml;base64,PHN2ZyBoZWlnaHQ9IjM1MCIgd2lkdGg9IjM1MCIgdmlld0JveD0iMCAwIDEwMCAxMDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdGggaWQ9Ik15UGF0aCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJyZWQiIGQ9Ik0xMCw5MCBROTAsOTAgOTAsNDUgUTkwLDEwIDUwLDEwIFExMCwxMCAxMCw0MCBRMTAsNzAgNDUsNzAgUTcwLDcwIDc1LDUwIiAvPjwvZGVmcz48dGV4dD48dGV4dFBhdGggaHJlZj0iI015UGF0aCI+UXVpY2sgYnJvd24gZm94IGp1bXBzIG92ZXIgdGhlIGxhenkgZG9nLjwvdGV4dFBhdGg+PC90ZXh0Pjwvc3ZnPg==',
+              isCurrentlyOwned: true,
+              name: 'Test Dapp NFTs #1',
+              standard: 'ERC721',
+              tokenId: '1',
+              chainId: 1337,
+            },
+          ],
+        },
+      },
+      ignoredNfts: [],
+    });
+  }
+
   withNoNames(): this {
     // Direct assignment instead of merge so existing petname entries are cleared if any
     this.fixture.data.NameController.names = {
@@ -491,6 +654,12 @@ class FixtureBuilderV2 {
     }
 
     return this.withPermissionController({ subjects });
+  }
+
+  withPreferencesControllerTxSimulationsDisabled(): this {
+    return this.withPreferencesController({
+      useTransactionSimulations: false,
+    });
   }
 
   // NOTE: This method should only be used with EVM networks. Non-EVM networks (Bitcoin, Tron...) rely on Snaps that may not be ready at startup;
