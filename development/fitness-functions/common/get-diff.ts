@@ -48,7 +48,11 @@ function runGitCommand(args: string[]): string {
 }
 
 function isMergeInProgress(): boolean {
-  const mergeHeadPath = runGitCommand(['rev-parse', '--git-path', 'MERGE_HEAD']);
+  const mergeHeadPath = runGitCommand([
+    'rev-parse',
+    '--git-path',
+    'MERGE_HEAD',
+  ]);
 
   return fs.existsSync(mergeHeadPath);
 }
