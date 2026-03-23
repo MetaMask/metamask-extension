@@ -85,6 +85,5 @@ async function start(): Promise<void> {
     repository: REPOSITORY,
     prNumber: PR_NUMBER,
     commentToken: PR_COMMENT_TOKEN,
-    optionalLog: `Announcement:\n${commentBody}`,
   });
 }
