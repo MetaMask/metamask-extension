@@ -99,10 +99,11 @@ class CriticalErrorPage {
       const handles = await this.driver.driver.getAllWindowHandles();
       await this.driver.driver.switchTo().window(handles[0]);
 
-      // Navigate to HOME so the extension UI is in a known state regardless
-      // of which tab we landed on. waitForControllers: false avoids blocking
-      // if the background is still starting (e.g. simulateBackgroundInitializationHang).
-      await this.driver.navigate(PAGES.HOME, { waitForControllers: false });
+      // Poll navigate(HOME) until the extension is reachable (title matches).
+      await this.waitForPageAfterExtensionReload({
+        timeoutMs: 30_000,
+        waitForLoadingLogoToDisappear: false,
+      });
 
       // Handoff can leave two full-screen extension tabs; duplicate instances
       // broke Terms-of-Use interactions (visibility / observers). Keep one tab.
