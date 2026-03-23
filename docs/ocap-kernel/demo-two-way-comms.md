@@ -134,60 +134,36 @@ Parameters are JSON. The format depends on the RPC method:
 - **Object params**: `{"key": "value"}` (most methods)
 - **Tuple params**: `["arg1", "arg2", [...]]` (e.g., `queueMessage`)
 
-### Step 1: Ensure the Daemon Is Running
+### Step 1: Start the Daemon with Remote Comms
+
+If the relay is running on the same machine as the away kernel, use the
+`--local-relay` flag to start the daemon and initialize remote comms in one
+step:
+
+```bash
+yarn ocap daemon --local-relay
+```
+
+This reads the relay's multiaddr from `~/.ocap/relay.addr` (written by
+`ocap relay start`) and calls `initRemoteComms` automatically.
+
+If the relay is on a different machine, start the daemon and initialize remote
+comms manually:
 
 ```bash
 yarn ocap daemon start
-```
-
-### Step 2: Initialize Remote Comms
-
-```bash
-yarn ocap daemon exec initRemoteComms '{"relays": ["<relay_multiaddr>"]}'
-```
-
-Use the same relay multiaddr that the home kernel is using. Example:
-
-```bash
 yarn ocap daemon exec initRemoteComms '{"relays": ["/ip4/<VPS_IP>/tcp/9001/ws/p2p/<relay_peer_id>"]}'
 ```
 
-> **Note**: If the relay is running on the same machine as the away kernel,
-> you can use `127.0.0.1` instead of the external VPS IP.
+> **Note**: The relay list can also start empty. When the away kernel redeems
+> an OCAP URL, the relay hints embedded in the URL are automatically added to
+> the kernel's relay pool. However, the libp2p node still needs at least one
+> relay to bootstrap its connections, so passing a relay here is recommended.
 
-### Step 3: Parse the OCAP URL
-
-The OCAP URL from Step 3 of Part 1 has this format:
-
-```text
-ocap:<encrypted_oid>@<peer_id>,<relay_hint1>,<relay_hint2>,...
-```
-
-Extract:
-
-- **`peer_id`**: the segment after `@`, before the first `,`
-- **Relay hints**: comma-separated multiaddrs after the peer_id
-
-### Step 4: Register Location Hints
-
-Tell the away kernel how to reach the home kernel's peer:
+### Step 2: Redeem the OCAP URL
 
 ```bash
-yarn ocap daemon exec registerLocationHints '{"peerId": "<peer_id>", "hints": ["<relay_multiaddr>"]}'
-```
-
-The `peerId` is just the `12D3KooW...` part extracted from the OCAP URL (after
-`@`, before the first `,`). The hints are the relay multiaddrs after the peer
-ID:
-
-```bash
-yarn ocap daemon exec registerLocationHints '{"peerId": "12D3KooW...", "hints": ["/ip4/<VPS_IP>/tcp/9001/ws/p2p/<relay_peer_id>"]}'
-```
-
-### Step 5: Redeem the OCAP URL
-
-```bash
-yarn ocap daemon exec redeemOcapURL '{"url": "ocap:<full_url>"}'
+yarn ocap daemon redeem-url 'ocap:<full_url>'
 ```
 
 This establishes the cross-kernel CapTP connection and returns a kernel
@@ -197,7 +173,12 @@ reference (kref) for the remote object:
 "ko42"
 ```
 
-### Step 6: Call `requestCapability()` on the Vendor
+Redeeming the URL automatically extracts the relay hints embedded in it,
+adds them to the away kernel's relay pool, and registers them as location
+hints for the home kernel's peer. No manual `registerLocationHints` call is
+needed.
+
+### Step 3: Call `requestCapability()` on the Vendor
 
 The vendor's public facet supports `requestCapability`. Call it to get a
 capability (currently hardcoded to return an `AccountMessageSigner`):
@@ -218,7 +199,7 @@ Returns CapData. If the result includes a new object reference, it appears in
 
 The kref `ko57` is the new capability object.
 
-### Step 7: Use the Capability
+### Step 4: Use the Capability
 
 Call methods on the returned capability:
 
@@ -305,13 +286,13 @@ Here `ko42` is the kref you use in subsequent `queueMessage` calls.
 3. **Home**: Confirm the OCAP URL in the offscreen console contains relay hints
    (comma-separated multiaddrs after the peer ID).
 4. **Copy** the OCAP URL to the VPS SSH session.
-5. **Away**: `daemon start` + `initRemoteComms` with `{"relays": ["..."]}`.
-6. **Away**: `registerLocationHints` with the peer ID and relay hints from the
-   URL.
-7. **Away**: `redeemOcapURL`. Confirm a kref is returned (e.g., `"ko42"`).
-8. **Away**: `queueMessage` with `requestCapability`. Confirm new kref in
+5. **Away**: `daemon --local-relay` (or `daemon start` + manual
+   `initRemoteComms` if the relay is on a different machine).
+6. **Away**: `redeemOcapURL`. Confirm a kref is returned (e.g., `"ko42"`).
+   Relay hints are picked up automatically.
+7. **Away**: `queueMessage` with `requestCapability`. Confirm new kref in
    slots.
-9. **Away**: `queueMessage` with the desired method (e.g., `getAccounts`).
+8. **Away**: `queueMessage` with the desired method (e.g., `getAccounts`).
    Confirm data returned.
 
 ---
@@ -330,8 +311,8 @@ The URL looks like `ocap:<oid>@<peer_id>` with no commas. This means
   at least not time out).
 - Verify the away daemon initialized remote comms: check daemon logs for
   connection to the relay.
-- Verify `registerLocationHints` was called with the correct peer ID (just the
-  `12D3KooW...` part, not the full OCAP URL).
+- Location hints are registered automatically during `redeemOcapURL`. Check
+  daemon logs for relay hint propagation if connectivity issues persist.
 
 ### Smoke test errors in offscreen console
 
