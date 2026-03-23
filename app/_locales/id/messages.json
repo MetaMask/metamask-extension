@@ -875,6 +875,9 @@
   "basicFunctionalityRequired_openDefiPage": {
     "message": "Buka halaman DeFi"
   },
+  "basicFunctionalityRequired_openMusdConversionPage": {
+    "message": "Buka halaman Konversi mUSD"
+  },
   "basicFunctionalityRequired_openNotificationsPage": {
     "message": "Buka halaman Notifikasi"
   },

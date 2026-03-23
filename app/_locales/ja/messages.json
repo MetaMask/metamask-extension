@@ -875,6 +875,9 @@
   "basicFunctionalityRequired_openDefiPage": {
     "message": "DeFiページを開く"
   },
+  "basicFunctionalityRequired_openMusdConversionPage": {
+    "message": "mUSDの変換ページを開く"
+  },
   "basicFunctionalityRequired_openNotificationsPage": {
     "message": "通知ページを開く"
   },

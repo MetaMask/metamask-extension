@@ -875,6 +875,9 @@
   "basicFunctionalityRequired_openDefiPage": {
     "message": "DeFi पेज खोलें"
   },
+  "basicFunctionalityRequired_openMusdConversionPage": {
+    "message": "mUSD कन्वर्शन पेज खोलें"
+  },
   "basicFunctionalityRequired_openNotificationsPage": {
     "message": "नोटिफिकेशंस पेज खोलें"
   },

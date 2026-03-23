@@ -875,6 +875,9 @@
   "basicFunctionalityRequired_openDefiPage": {
     "message": "打开去中心化金融页面"
   },
+  "basicFunctionalityRequired_openMusdConversionPage": {
+    "message": "打开 mUSD 兑换页面"
+  },
   "basicFunctionalityRequired_openNotificationsPage": {
     "message": "打开通知页面"
   },
