@@ -19,6 +19,7 @@ Standards and anti-patterns live in the E2E rule — read them before writing co
 - **Deprecated patterns / automation hints:** `.cursor/BUGBOT.md`
 - **E2E directory index:** `test/e2e/AGENTS.md`
 - **Driver API:** `test/e2e/webdriver/README.md`
+- **Feature Flag Registry:** `test/e2e/feature-flags/feature-flag-registry.ts` — production defaults for remote flags; `test/e2e/mock-e2e.js` serves them via `getProductionRemoteFlagApiResponse()`
 
 ## When to use this skill
 
@@ -66,7 +67,7 @@ Copy this checklist and tick items as you go (skip any step the [decision tree](
 - [ ] **Step 2:** Page objects — skip if the UI is already covered by existing page objects
 - [ ] **Step 3:** Flows — optional; skip if the journey is not reused across specs
 - [ ] **Step 4:** Spec file — `withFixtures`, `FixtureBuilderV2`, page objects only in the spec body
-- [ ] **Step 5:** Fixtures, mocks, flags — state, `testSpecificMock`, `manifestFlags`, local node if needed
+- [ ] **Step 5:** Fixtures, mocks, flags — state, `testSpecificMock`, feature flags (registry baseline + optional `manifestFlags` override), local node if needed
 - [ ] **Step 6:** Run and debug — `yarn build:test` / `yarn test:e2e:single`, fix flakes without sleeps
 - [ ] **Pre-submit:** [Checklist below](#pre-submit-checklist) (lint, POM, `title`, snap privacy helper when applicable)
 
@@ -125,7 +126,13 @@ Copy this checklist and tick items as you go (skip any step the [decision tree](
 
 **Feature flags**
 
-- Use `manifestFlags` (e.g. `remoteFeatureFlags`) on the `withFixtures` options object when behavior is gated remotely (see `test/e2e/tests/update-modal/update-modal.spec.ts` for pattern).
+E2E runs use **production-accurate** remote flag defaults from the **Feature Flag Registry** (`test/e2e/feature-flags/feature-flag-registry.ts`). The global mock (`test/e2e/mock-e2e.js`) serves those defaults on the client-config `/v1/flags` endpoint via `getProductionRemoteFlagApiResponse()`.
+
+- **Override an existing flag for one test:** Pass `manifestFlags: { remoteFeatureFlags: { flagName: value } }` on the `withFixtures` options. Only the listed flags change; the rest stay at registry defaults. Example: `test/e2e/tests/update-modal/update-modal.spec.ts`.
+
+- **Add a new remote flag used in E2E:** Register it in `FEATURE_FLAG_REGISTRY` with `name`, `type` (`FeatureFlagType.Remote` or `FeatureFlagType.Build`), `inProd`, `productionDefault` (shape must match the real API response), and `status` (`FeatureFlagStatus.Active` or `Deprecated`). Then use `manifestFlags` in specs that need a value other than `productionDefault`.
+
+- **Fixture alternative:** `FixtureBuilder.withRemoteFeatureFlags({ ... })` can set flag state in fixtures (see registry file header comment).
 
 **Local chain / contracts**
 
@@ -165,6 +172,7 @@ After the [workflow progress](#workflow-progress) steps above:
 - [ ] Snap specs using V2 include **`.withSnapsPrivacyWarningAlreadyShown()`** when required (see BUGBOT)
 - [ ] `title: this.test?.fullTitle()` passed to `withFixtures`, and the enclosing `it` uses `function ()`, not `=>`, so `this.test` is defined
 - [ ] Test names follow rule conventions (no `should`, focused scenario)
+- [ ] Any **new remote feature flag** required for the scenario is added to `test/e2e/feature-flags/feature-flag-registry.ts` (so global E2E mocks stay consistent)
 - [ ] `yarn lint:changed:fix` run on touched files
 
 ## Related skills

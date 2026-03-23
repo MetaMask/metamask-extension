@@ -61,7 +61,9 @@ describe('My feature', function (this: Suite) {
 });
 ```
 
-### Spec with remote feature flags
+### Spec with remote feature flags (override a registered flag)
+
+`myFeatureFlag` must already exist in `test/e2e/feature-flags/feature-flag-registry.ts` with a `productionDefault`. This block **overrides** it for this test only; other flags keep registry defaults. The global mock (`test/e2e/mock-e2e.js`) still sources unlisted flags from the registry.
 
 ```typescript
 await withFixtures(
@@ -79,6 +81,22 @@ await withFixtures(
   },
 );
 ```
+
+### Register a new remote flag (before or with your E2E)
+
+Add an entry to `FEATURE_FLAG_REGISTRY` in `test/e2e/feature-flags/feature-flag-registry.ts` (import `FeatureFlagStatus` and `FeatureFlagType` from the same file):
+
+```typescript
+myNewFeatureFlag: {
+  name: 'myNewFeatureFlag',
+  type: FeatureFlagType.Remote,
+  inProd: false, // set true once the flag exists in production client-config
+  productionDefault: false,
+  status: FeatureFlagStatus.Active,
+},
+```
+
+Then override per test with `manifestFlags.remoteFeatureFlags` when you need a non-default value. Run the repo’s feature-flag sync / drift checks if your team requires them (see `.github/workflows/check-feature-flag-registry-drift.yml`).
 
 ## Page object (`test/e2e/page-objects/pages/<area>/<name>.ts`)
 
