@@ -54,6 +54,8 @@ export {
 
 export { useCanBuyMusd, type UseCanBuyMusdResult } from './useCanBuyMusd';
 
+export { useMusdConversionConfirmTrace } from './useMusdConversionConfirmTrace';
+
 export {
   useMusdPaymentToken,
   type UseMusdPaymentTokenResult,

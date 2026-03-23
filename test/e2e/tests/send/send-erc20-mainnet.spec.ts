@@ -13,7 +13,7 @@ import HomePage from '../../page-objects/pages/home/homepage';
 import SendPage from '../../page-objects/pages/send/send-page';
 import TokenOverviewPage from '../../page-objects/pages/token-overview-page';
 import TokenTransferTransactionConfirmation from '../../page-objects/pages/confirmations/token-transfer-confirmation';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 
 describe('Send ERC20 - Mainnet', function () {
   it('sends DAI with preloaded state', async function () {
@@ -39,7 +39,7 @@ describe('Send ERC20 - Mainnet', function () {
         ],
       },
       async ({ driver, localNodes }) => {
-        await loginWithBalanceValidation(driver, localNodes[0]);
+        await login(driver, { localNode: localNodes[0] });
 
         const homePage = new HomePage(driver);
         const assetListPage = new AssetListPage(driver);

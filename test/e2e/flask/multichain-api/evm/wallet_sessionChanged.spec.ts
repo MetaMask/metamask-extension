@@ -15,7 +15,7 @@ import HomePage from '../../../page-objects/pages/home/homepage';
 import PermissionListPage from '../../../page-objects/pages/permission/permission-list-page';
 import SitePermissionPage from '../../../page-objects/pages/permission/site-permission-page';
 import TestDappMultichain from '../../../page-objects/pages/test-dapp-multichain';
-import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
+import { login } from '../../../page-objects/flows/login.flow';
 import { openPermissionsPageFlow } from '../../../page-objects/flows/permissions.flow';
 import {
   DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
@@ -48,7 +48,7 @@ describe('Call `wallet_createSession`, then update the accounts and/or scopes in
         driver: Driver;
         extensionId: string;
       }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         const testDapp = new TestDappMultichain(driver);
         await testDapp.openTestDappPage();
