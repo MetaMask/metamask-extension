@@ -22,7 +22,7 @@ describe('Unlock wallet', function (this: Suite) {
       await mockServer
         .forPost('https://api.segment.io/v1/batch')
         .withJsonBodyIncluding({ batch: [{ type: 'page' }] })
-        .times(1)
+        .times(3)
         .thenCallback(() => {
           return {
             statusCode: 200,
@@ -47,7 +47,10 @@ describe('Unlock wallet', function (this: Suite) {
         await login(driver);
         const events = await getEventPayloads(driver, mockedEndpoint);
         const sortedEvents = sortEventsByTime(events);
-        assertBatchValue(sortedEvents[0], 'Unlock Page', '/unlock');
+        await assert.equal(sortedEvents.length, 3);
+        assertBatchValue(sortedEvents[0], 'Home', '/');
+        assertBatchValue(sortedEvents[1], 'Unlock Page', '/unlock');
+        assertBatchValue(sortedEvents[2], 'Home', '/');
       },
     );
   });
