@@ -5,10 +5,10 @@
  *   Two rows share the same queryKey. staleTimeOverride at the call site lets
  *   swap screen request fresher data than portfolio without a different hook.
  *
- * Controller-driven sync via BaseDataService (background-owned):
+ * Controller state via useSyncExternalStore (background-owned):
  *   CurrencyRateDataService extends BaseDataService and subscribes to
  *   CurrencyRateController:stateChange. BaseDataService auto-publishes
- *   cacheUpdate events; useBackgroundQuerySync hydrates the UI QueryClient.
+ *   cacheUpdate events; useControllerState subscribes via useSyncExternalStore.
  */
 import React from 'react';
 import { useQueryClient } from '@tanstack/react-query';
@@ -123,12 +123,12 @@ function SpotPricesRow({
   );
 }
 
-// ─── Controller-driven sync via BaseDataService ──────────────────────────────
+// ─── Controller state via useSyncExternalStore ───────────────────────────────
 
 function CurrencyRatesRow() {
-  const result = useCurrencyRatesQuery();
-  const ethRate = result.data?.ETH?.conversionRate;
-  const preview = ethRate != null ? `ETH/USD: ${ethRate}` : 'null';
+  const data = useCurrencyRatesQuery();
+  const ethRate = data?.ETH?.conversionRate;
+  const preview = ethRate != null ? `ETH/USD: ${ethRate}` : 'undefined';
 
   return (
     <div
@@ -141,16 +141,22 @@ function CurrencyRatesRow() {
     >
       <strong style={{ fontSize: 12 }}>Currency rates (ETH/USD)</strong>
       <span style={{ fontSize: 11, color: '#888', marginLeft: 8 }}>
-        populated by CurrencyRateDataService (BaseDataService) → hydrate()
+        useSyncExternalStore over messenger events (no TQ on UI side)
       </span>
-      <QueryStateTable
-        status={result.status}
-        isFetching={result.isFetching}
-        isStale={result.isStale}
-        dataUpdatedAt={result.dataUpdatedAt}
-        staleTimeLabel="30s (controller pushes; hook does not re-fetch)"
-        dataPreview={preview}
-      />
+      <table style={{ width: '100%', fontSize: 12, marginTop: 8 }}>
+        <tbody>
+          {[
+            ['source', 'CurrencyRateDataService → messenger → useSyncExternalStore'],
+            ['hasData', String(data !== undefined)],
+            ['data', preview],
+          ].map(([key, value]) => (
+            <tr key={key}>
+              <td><code>{key}</code></td>
+              <td>{value}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 }
@@ -164,9 +170,6 @@ function CacheInspector() {
     { currency: 'usd' },
   );
   const spotCached = queryClient.getQueryData(spotQueryOptions.queryKey);
-  const currencyCached = queryClient.getQueryData([
-    'CurrencyRateDataService:getCurrencyRates',
-  ]);
 
   return (
     <div
@@ -178,15 +181,18 @@ function CacheInspector() {
         fontSize: 11,
       }}
     >
-      <strong>Cache</strong>
+      <strong>TQ QueryClient cache (UI-direct only)</strong>
       <br />
       <code>
-        spotPrices: {spotCached ? '✅' : '❌'} &nbsp;|&nbsp; currencyRates:{' '}
-        {currencyCached ? '✅' : '❌'}
+        spotPrices: {spotCached ? '✅' : '❌'}
       </code>
       <br />
       <code style={{ color: '#999', wordBreak: 'break-all' }}>
         key: {JSON.stringify(spotQueryOptions.queryKey).slice(0, 100)}
+      </code>
+      <br />
+      <code style={{ color: '#999' }}>
+        (currency rates live outside QueryClient — useSyncExternalStore)
       </code>
     </div>
   );
@@ -223,7 +229,7 @@ export function SpotPricesQueryPanel() {
       >
         <SectionHeader
           title="UI-direct fetch"
-          subtitle="Same queryKey, same cache entry. staleTimeOverride at the call site — no hook changes needed."
+          subtitle="Same queryKey, same cache entry. staleTimeOverride at the call site — no hook changes needed. Note: when both observers are mounted simultaneously, TQ uses the shortest staleTime (5s) for refetch decisions. Per-component freshness applies when components are on separate routes (mutually exclusive mounts)."
         />
         <SpotPricesRow label="Portfolio view" note="staleTime: 30s (default)" />
         <SpotPricesRow
@@ -243,8 +249,8 @@ export function SpotPricesQueryPanel() {
         }}
       >
         <SectionHeader
-          title="Controller-driven sync (currency rates)"
-          subtitle="CurrencyRateDataService extends BaseDataService. Subscribes to CurrencyRateController:stateChange → fetchQuery → auto-publishes cacheUpdate → hydrate(). isFetching stays false."
+          title="Controller state (currency rates)"
+          subtitle="useSyncExternalStore over messenger events. Background uses TQ internally (BaseDataService → fetchQuery → cacheUpdate); UI subscribes directly — no TQ on the UI side."
         />
         <CurrencyRatesRow />
       </div>
