@@ -631,10 +631,10 @@ function adjustQuoteForHardwareWallet<
     ...quote,
     quote: {
       ...quote.quote,
-      gasIncluded7702: false,
-      gasSponsored: false,
+      gasIncluded7702: false as boolean,
+      gasSponsored: false as boolean,
     },
-  };
+  } as Quote;
 }
 
 export const getBridgeQuotes = createSelector(
@@ -651,10 +651,14 @@ export const getBridgeQuotes = createSelector(
     });
 
     const adjustedSortedQuotes = isHw
-      ? quotes.sortedQuotes.map((q) => ({
+      ? (quotes.sortedQuotes.map((q) => ({
           ...q,
-          quote: { ...q.quote, gasIncluded7702: false, gasSponsored: false },
-        }))
+          quote: {
+            ...q.quote,
+            gasIncluded7702: false as boolean,
+            gasSponsored: false as boolean,
+          },
+        })) as typeof quotes.sortedQuotes)
       : quotes.sortedQuotes;
 
     const adjustedRecommended = adjustQuoteForHardwareWallet(
