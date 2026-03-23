@@ -1,5 +1,5 @@
 import { Messenger } from '@metamask/messenger';
-import { AddApprovalRequest } from '@metamask/approval-controller';
+import { ApprovalControllerAddRequestAction } from '@metamask/approval-controller';
 import { NetworkControllerGetNetworkClientByIdAction } from '@metamask/network-controller';
 import {
   KeyringControllerPatchUserOperationAction,
@@ -13,7 +13,7 @@ import type {
 import { RootMessenger } from '../../lib/messenger';
 
 type AllowedActions =
-  | AddApprovalRequest
+  | ApprovalControllerAddRequestAction
   | KeyringControllerPatchUserOperationAction
   | KeyringControllerPrepareUserOperationAction
   | KeyringControllerSignUserOperationAction

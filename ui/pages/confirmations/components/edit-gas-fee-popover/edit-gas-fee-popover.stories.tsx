@@ -7,6 +7,7 @@ import mockState from '../../../../../test/data/mock-state.json';
 import configureStore from '../../../../store/store';
 import { GasFeeContextProvider } from '../../../../contexts/gasFee';
 import { TransactionModalContext } from '../../../../contexts/transaction-modal';
+import { ConfirmContextProvider } from '../../context/confirm';
 import {
   EditGasModes,
   PriorityLevels,
@@ -68,22 +69,39 @@ interface StoryArgs {
   transaction: TransactionMeta;
 }
 
+const mockCurrentConfirmation = {
+  networkClientId: 'mainnet',
+} as React.ComponentProps<typeof ConfirmContextProvider>['currentConfirmationOverride'];
+
+const defaultEditGasMode = EditGasModes.modifyInPlace;
+const defaultTransaction = createTransaction(defaultEditGasMode);
+
 const meta: Meta<StoryArgs> = {
   title: 'Pages/Confirmations/Components/EditGasFeePopover',
   component: EditGasFeePopover as unknown as ComponentType<StoryArgs>,
   decorators: [
-    (Story, context) => (
-      <Provider store={store}>
-        <MockTransactionModalProvider>
-          <GasFeeContextProvider
-            transaction={createTransaction(context.args.editGasMode)}
-            editGasMode={context.args.editGasMode}
+    (Story, context) => {
+      const editGasMode =
+        context.args?.editGasMode ?? defaultEditGasMode;
+      const transaction =
+        context.args?.transaction ?? defaultTransaction;
+      return (
+        <Provider store={store}>
+          <ConfirmContextProvider
+            currentConfirmationOverride={mockCurrentConfirmation}
           >
-            <Story />
-          </GasFeeContextProvider>
-        </MockTransactionModalProvider>
-      </Provider>
-    ),
+            <MockTransactionModalProvider>
+              <GasFeeContextProvider
+                transaction={transaction}
+                editGasMode={editGasMode}
+              >
+                <Story />
+              </GasFeeContextProvider>
+            </MockTransactionModalProvider>
+          </ConfirmContextProvider>
+        </Provider>
+      );
+    },
   ],
 };
 
@@ -93,7 +111,8 @@ type Story = StoryObj<StoryArgs>;
 
 export const Default: Story = {
   args: {
-    editGasMode: EditGasModes.modifyInPlace,
-    transaction: createTransaction(EditGasModes.modifyInPlace),
+    editGasMode: defaultEditGasMode,
+    transaction: defaultTransaction,
   },
+  render: (args) => <EditGasFeePopover {...args} />,
 };

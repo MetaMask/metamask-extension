@@ -88,7 +88,7 @@ export const StackCard: React.FC<StackCardProps> = ({
         {/* Title and close button container */}
         <div className="carousel-card__text-header">
           <Text
-            variant={TextVariant.bodyMdMedium}
+            variant={TextVariant.bodySmMedium}
             color={TextColor.textDefault}
             className="carousel-card__title"
           >
@@ -112,7 +112,7 @@ export const StackCard: React.FC<StackCardProps> = ({
         {/* Description Text container */}
         <div className="carousel-card__text-body">
           <Text
-            variant={TextVariant.bodySmMedium}
+            variant={TextVariant.bodyXsMedium}
             color={TextColor.textAlternative}
             className="carousel-card__description"
           >
