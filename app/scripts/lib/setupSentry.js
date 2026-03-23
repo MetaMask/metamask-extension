@@ -58,7 +58,6 @@ export default function setupSentry() {
 
   return {
     ...Sentry,
-    getMetaMetricsEnabled,
   };
 }
 
@@ -91,7 +90,11 @@ function getClientOptions() {
           return true;
         },
       }),
-      filterEvents({ getMetaMetricsEnabled, log }),
+      filterEvents({
+        getMetaMetricsEnabled: async () =>
+          Boolean((await getMetaMetricsState())?.participateInMetaMetrics),
+        log,
+      }),
     ],
     release: RELEASE,
     // Client reports are automatically sent when a page's visibility changes to
@@ -228,7 +231,8 @@ export function getMetaMetricsStateFromBackupState(backupState) {
 
 /**
  * Returns MetaMetrics state (participateInMetaMetrics and metaMetricsId). Uses getState() first (sync),
- * then getPersistedState() / getBackupState() when needed. Used by {@link getMetaMetricsEnabled}.
+ * then getPersistedState() / getBackupState() when needed. Used by {@link filterEvents} and
+ * {@link makeTransport}.
  *
  * @returns {Promise<{ participateInMetaMetrics: boolean, metaMetricsId?: string } | null>}
  */
@@ -258,16 +262,6 @@ async function getMetaMetricsState() {
       return null;
     }
   }
-}
-
-/**
- * Returns whether MetaMetrics is enabled (for {@link filterEvents} and {@link makeTransport}).
- *
- * @returns {Promise<boolean>}
- */
-async function getMetaMetricsEnabled() {
-  const state = await getMetaMetricsState();
-  return Boolean(state?.participateInMetaMetrics);
 }
 
 function getSentryEnvironment() {
@@ -611,9 +605,9 @@ function addDebugListeners() {
  */
 function makeTransport(options) {
   return Sentry.makeFetchTransport(options, async (...args) => {
-    const metricsEnabled = await getMetaMetricsEnabled();
+    const state = await getMetaMetricsState();
 
-    if (!metricsEnabled) {
+    if (!state?.participateInMetaMetrics) {
       throw new Error('Network request skipped as metrics disabled');
     }
 
