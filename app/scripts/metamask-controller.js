@@ -6541,11 +6541,11 @@ export default class MetamaskController extends EventEmitter {
     // setup multiplexing
     const mux = setupMultiplex(connectionStream);
     // connect features
-    const { onBeforeStartUISyncSent } = this.setupPatchStoreConnection(
+    const { initializePatchStore } = this.setupPatchStoreConnection(
       mux.createStream('patch-store'),
     );
     this.setupControllerConnection(mux.createStream('controller'), {
-      onBeforeStartUISyncSent,
+      initializePatchStore,
     });
     this.setupProviderConnectionEip1193(
       mux.createStream('provider'),
