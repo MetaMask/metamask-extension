@@ -23,6 +23,7 @@ import { loadBuildTypesConfig } from '../lib/build-type';
 import {
   getMinimizers,
   NODE_MODULES_RE,
+  UI_COMPONENT_RE,
   __HMR_READY__,
   SNOW_MODULE_RE,
   TREZOR_MODULE_RE,
