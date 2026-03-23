@@ -36,6 +36,7 @@
   },
   "AppStateController": {
     "activeQrCodeScanRequest": null,
+    "lastQrScanCompletedSuccessfully": null,
     "addressSecurityAlertResponses": "object",
     "browserEnvironment": { "browser": "string", "os": "string" },
     "canTrackWalletFundsObtained": false,

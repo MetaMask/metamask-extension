@@ -91,6 +91,7 @@
     "accountsByChainId": "object",
     "activeProvider": "string",
     "activeQrCodeScanRequest": null,
+    "lastQrScanCompletedSuccessfully": null,
     "addSnapAccountEnabled": "boolean",
     "addressBook": "object",
     "addressScanCache": "object",
