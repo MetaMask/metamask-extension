@@ -2,7 +2,8 @@ import { type CaipAssetType } from '@metamask/utils';
 import { toBridgeToken } from './utils';
 
 const BASE_PAYLOAD = {
-  assetId: 'eip155:1/erc20:0xaca92e438df0b2401ff60da7e4337b687a2435da' as CaipAssetType,
+  assetId:
+    'eip155:1/erc20:0xaca92e438df0b2401ff60da7e4337b687a2435da' as CaipAssetType,
   symbol: 'mUSD',
   name: 'MetaMask USD',
   decimals: 18,
