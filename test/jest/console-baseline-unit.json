@@ -1147,7 +1147,7 @@
       "Reselect: Identity function warnings": 4
     },
     "ui/pages/confirmations/confirm/confirm.test.tsx": {
-      "MetaMask: Background connection not initialized": 181,
+      "MetaMask: Background connection not initialized": 235,
       "React: Act warnings (component updates not wrapped)": 3,
       "Reselect: Identity function warnings": 7
     },
