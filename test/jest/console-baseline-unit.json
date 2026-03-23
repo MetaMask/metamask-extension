@@ -76,6 +76,7 @@
       "error: This browser doesn't support cancelAnimationFrame.": 1,
       "error: TypeError: Cannot convert undefined or": 2,
       "error: {": 1,
+      "warn: 'startSendingPatches' has not been called": 10,
       "warn: Error during SnapController initialization. AssertionError:": 2,
       "warn: Unable to create some accounts": 1,
       "\u00b5WebSockets: Compatibility warnings": 1,
@@ -215,7 +216,7 @@
       "Test errors: Uncaught Errors": 1
     },
     "ui/components/app/assets/asset-list/asset-list-control-bar/asset-list-control-bar.test.tsx": {
-      "MetaMask: Background connection not initialized": 9
+      "MetaMask: Background connection not initialized": 7
     },
     "ui/components/app/assets/asset-list/asset-list.test.tsx": {
       "Reselect: Identity function warnings": 1
@@ -322,16 +323,16 @@
       "Reselect: Identity function warnings": 1
     },
     "ui/components/app/snaps/snap-ui-renderer/components/account-selector.test.ts": {
-      "MetaMask: Background connection not initialized": 4,
+      "MetaMask: Background connection not initialized": 2,
       "React: DOM nesting violations": 1,
       "Reselect: Identity function warnings": 2
     },
     "ui/components/app/snaps/snap-ui-renderer/components/address-input.test.ts": {
-      "MetaMask: Background connection not initialized": 8,
+      "MetaMask: Background connection not initialized": 4,
       "Reselect: Identity function warnings": 3
     },
     "ui/components/app/snaps/snap-ui-renderer/components/asset-selector.test.ts": {
-      "MetaMask: Background connection not initialized": 4,
+      "MetaMask: Background connection not initialized": 2,
       "Reselect: Identity function warnings": 4
     },
     "ui/components/app/snaps/snap-ui-renderer/components/date-time-picker.test.ts": {
@@ -388,7 +389,6 @@
       "React: Act warnings (component updates not wrapped)": 3
     },
     "ui/components/multichain-accounts/multichain-account-list/multichain-account-list.test.tsx": {
-      "MetaMask: Background connection not initialized": 73,
       "Reselect: Identity function warnings": 1
     },
     "ui/components/multichain-accounts/multichain-address-rows-hovered-list/default-address.test.tsx": {
@@ -565,9 +565,6 @@
     "ui/helpers/utils/tags.test.ts": {
       "Reselect: Input stability warnings": 1
     },
-    "ui/hooks/accounts/useAccountsOperationsLoadingStates.test.ts": {
-      "MetaMask: Background connection not initialized": 2
-    },
     "ui/hooks/gator-permissions/useGatorPermissionTokenInfo.test.tsx": {
       "React: Act warnings (component updates not wrapped)": 10,
       "Reselect: Identity function warnings": 1
@@ -672,7 +669,6 @@
       "Reselect: Identity function warnings": 2
     },
     "ui/pages/asset/hooks/useHistoricalPrices.test.ts": {
-      "MetaMask: Background connection not initialized": 6,
       "React: Act warnings (component updates not wrapped)": 1
     },
     "ui/pages/bridge/hooks/useEnableMissingNetwork.test.ts": {
@@ -737,7 +733,6 @@
       "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/components/confirm/footer/footer.test.tsx": {
-      "MetaMask: Background connection not initialized": 2,
       "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/components/confirm/footer/shield-footer-agreement.test.tsx": {
@@ -1256,7 +1251,7 @@
       "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/hooks/alerts/useNetworkAndOriginSwitchingAlerts.test.ts": {
-      "MetaMask: Background connection not initialized": 7,
+      "MetaMask: Background connection not initialized": 6,
       "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/hooks/alerts/useOriginTrustSignalAlerts.test.ts": {
@@ -1328,7 +1323,6 @@
       "warn: \u26a0\ufe0f React Router Future Flag": 2
     },
     "ui/pages/confirmations/hooks/transactions/useTransactionConfirm.test.ts": {
-      "MetaMask: Background connection not initialized": 96,
       "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/hooks/transactions/useTransactionCustomAmount.test.ts": {
@@ -1434,7 +1428,6 @@
       "React: Missing key props in lists": 1
     },
     "ui/pages/multichain-accounts/multichain-accounts-connect-page/multichain-accounts-connect-page.test.tsx": {
-      "MetaMask: Background connection not initialized": 3,
       "React: DOM nesting violations": 3,
       "Reselect: Identity function warnings": 1
     },
