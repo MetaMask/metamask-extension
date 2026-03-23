@@ -4,7 +4,6 @@ import {
   TransactionStatus,
 } from '@metamask/transaction-controller';
 import { Hex } from '@metamask/utils';
-import { ORIGIN_METAMASK } from '@metamask/controller-utils';
 import {
   MOCK_ANY_NAMESPACE,
   Messenger,
@@ -47,6 +46,7 @@ const TRANSACTION_META_MOCK: TransactionMeta = {
 
 describe('EnforceSimulationHook', () => {
   let messenger: TransactionControllerInitMessenger;
+  const isDefaultEnabledMock = jest.fn();
 
   const applyTransactionContainersMock = jest.mocked(
     applyTransactionContainers,
@@ -55,7 +55,7 @@ describe('EnforceSimulationHook', () => {
   beforeEach(() => {
     jest.resetAllMocks();
 
-    process.env.ENABLE_ENFORCED_SIMULATIONS = true as never;
+    isDefaultEnabledMock.mockReturnValue(true);
 
     applyTransactionContainersMock.mockResolvedValue({
       updateTransaction: jest.fn(),
@@ -85,6 +85,7 @@ describe('EnforceSimulationHook', () => {
 
     const hook = new EnforceSimulationHook({
       messenger,
+      isDefaultEnabled: isDefaultEnabledMock,
     }).getAfterSimulateHook();
 
     const { updateTransaction } =
@@ -110,6 +111,7 @@ describe('EnforceSimulationHook', () => {
 
     const hook = new EnforceSimulationHook({
       messenger,
+      isDefaultEnabled: isDefaultEnabledMock,
     }).getBeforeSignHook();
 
     const { updateTransaction } =
@@ -127,57 +129,26 @@ describe('EnforceSimulationHook', () => {
   });
 
   describe('does nothing if', () => {
-    it('transaction is not a delegation', async () => {
+    it('isDefaultEnabled returns false', async () => {
+      isDefaultEnabledMock.mockReturnValue(false);
+
       const hook = new EnforceSimulationHook({
         messenger,
+        isDefaultEnabled: isDefaultEnabledMock,
       }).getAfterSimulateHook();
 
-      const { updateTransaction } =
-        (await hook({
-          transactionMeta: {
-            ...TRANSACTION_META_MOCK,
-            delegationAddress: undefined,
-          },
-        })) ?? {};
+      const result = await hook({
+        transactionMeta: TRANSACTION_META_MOCK,
+      });
 
-      expect(updateTransaction).toBeUndefined();
-    });
-
-    it('no simulation data', async () => {
-      const hook = new EnforceSimulationHook({
-        messenger,
-      }).getAfterSimulateHook();
-
-      const { updateTransaction } =
-        (await hook({
-          transactionMeta: {
-            ...TRANSACTION_META_MOCK,
-            simulationData: undefined,
-          },
-        })) ?? {};
-
-      expect(updateTransaction).toBeUndefined();
-    });
-
-    it('transaction is internal', async () => {
-      const hook = new EnforceSimulationHook({
-        messenger,
-      }).getAfterSimulateHook();
-
-      const { updateTransaction } =
-        (await hook({
-          transactionMeta: {
-            ...TRANSACTION_META_MOCK,
-            origin: ORIGIN_METAMASK,
-          },
-        })) ?? {};
-
-      expect(updateTransaction).toBeUndefined();
+      expect(result?.skipSimulation).toBe(false);
+      expect(applyTransactionContainersMock).not.toHaveBeenCalled();
     });
 
     it('container types include enforced simulations', async () => {
       const hook = new EnforceSimulationHook({
         messenger,
+        isDefaultEnabled: isDefaultEnabledMock,
       }).getAfterSimulateHook();
 
       const { updateTransaction } =
@@ -194,6 +165,7 @@ describe('EnforceSimulationHook', () => {
     it('container types exist but user opted out (empty array)', async () => {
       const hook = new EnforceSimulationHook({
         messenger,
+        isDefaultEnabled: isDefaultEnabledMock,
       }).getAfterSimulateHook();
 
       const { updateTransaction } =
@@ -210,6 +182,7 @@ describe('EnforceSimulationHook', () => {
     it('before sign hook respects user opt-out (empty container types)', async () => {
       const hook = new EnforceSimulationHook({
         messenger,
+        isDefaultEnabled: isDefaultEnabledMock,
       }).getBeforeSignHook();
 
       const { updateTransaction } =
@@ -222,6 +195,26 @@ describe('EnforceSimulationHook', () => {
 
       expect(updateTransaction).toBeUndefined();
       expect(applyTransactionContainersMock).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('respects user opt-in when isDefaultEnabled is false', () => {
+    it('applies enforcement when user opted in via containerTypes', async () => {
+      isDefaultEnabledMock.mockReturnValue(false);
+
+      const hook = new EnforceSimulationHook({
+        messenger,
+        isDefaultEnabled: isDefaultEnabledMock,
+      }).getBeforeSignHook();
+
+      await hook({
+        transactionMeta: {
+          ...TRANSACTION_META_MOCK,
+          containerTypes: [TransactionContainerType.EnforcedSimulations],
+        },
+      });
+
+      expect(applyTransactionContainersMock).toHaveBeenCalled();
     });
   });
 });

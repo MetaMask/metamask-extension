@@ -23,8 +23,10 @@ import {
 import Tooltip from '../../../../../components/ui/tooltip';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useConfirmContext } from '../../../context/confirm';
-import { isEnforcedSimulationsEligible } from '../../../../../../shared/lib/transaction/enforced-simulations';
-import { applyTransactionContainersExisting } from '../../../../../store/actions';
+import {
+  applyTransactionContainersExisting,
+  isEnforcedSimulationsEligible,
+} from '../../../../../store/actions';
 
 const ADDED_PROTECTION_LEARN_MORE_URL =
   'https://support.metamask.io/privacy-and-security/staying-safe-in-web3/what-are-enforced-simulations/';
@@ -32,9 +34,28 @@ const ADDED_PROTECTION_LEARN_MORE_URL =
 export function EnforcedSimulationsRow() {
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
 
-  const isSupported = isEnforcedSimulationsEligible(currentConfirmation);
-
   const { containerTypes, id: transactionId } = currentConfirmation ?? {};
+
+  const [isSupported, setIsSupported] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    if (!transactionId) {
+      setIsSupported(false);
+      return;
+    }
+
+    let cancelled = false;
+
+    isEnforcedSimulationsEligible(transactionId).then((result) => {
+      if (!cancelled) {
+        setIsSupported(result);
+      }
+    });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [transactionId]);
 
   const isEnabled = containerTypes?.includes(
     TransactionContainerType.EnforcedSimulations,

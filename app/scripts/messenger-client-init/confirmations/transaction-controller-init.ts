@@ -22,6 +22,11 @@ import { trace } from '../../../../shared/lib/trace';
 import { hasTransactionType } from '../../../../shared/lib/transactions.utils';
 import { getIsSmartTransaction } from '../../../../shared/lib/selectors';
 import { getShieldGatewayConfig } from '../../../../shared/lib/shield';
+import {
+  createCacheKey,
+  mapChainIdToSupportedEVMChain,
+  ResultType,
+} from '../../../../shared/lib/trust-signals';
 import { TransactionMetricsRequest } from '../../../../shared/types/metametrics';
 import {
   getSmartTransactionCommonParams,
@@ -190,6 +195,8 @@ export const TransactionControllerInit: ControllerInitFunction<
       },
       afterSimulate: new EnforceSimulationHook({
         messenger: initMessenger,
+        isDefaultEnabled: (transactionMeta) =>
+          getIsEnforcedSimulationsEligible(initMessenger, transactionMeta),
       }).getAfterSimulateHook(),
       beforePublish: (transactionMeta: TransactionMeta) => {
         const response = initMessenger.call(
@@ -200,6 +207,8 @@ export const TransactionControllerInit: ControllerInitFunction<
       },
       beforeSign: new EnforceSimulationHook({
         messenger: initMessenger,
+        isDefaultEnabled: (transactionMeta) =>
+          getIsEnforcedSimulationsEligible(initMessenger, transactionMeta),
       }).getBeforeSignHook(),
       beforeCheckPendingTransactions: (transactionMeta: TransactionMeta) => {
         const response = initMessenger.call(
@@ -265,13 +274,14 @@ export const TransactionControllerInit: ControllerInitFunction<
     getTransactionMetricsRequest,
   );
 
-  const api = getApi(controller);
+  const api = getApi(controller, initMessenger);
 
   return { controller, api, memStateKey: 'TxController' };
 };
 
 function getApi(
   controller: TransactionController,
+  initMessenger: TransactionControllerInitMessenger,
 ): ControllerInitResult<TransactionController>['api'] {
   return {
     abortTransactionSigning:
@@ -279,6 +289,19 @@ function getApi(
     getLayer1GasFee: controller.getLayer1GasFee.bind(controller),
     getTransactions: controller.getTransactions.bind(controller),
     isAtomicBatchSupported: controller.isAtomicBatchSupported.bind(controller),
+    isEnforcedSimulationsEligible: (transactionId: string) => {
+      const { transactions } = controller.state;
+
+      const transactionMeta = transactions.find(
+        (tx) => tx.id === transactionId,
+      );
+
+      if (!transactionMeta) {
+        return false;
+      }
+
+      return getIsEnforcedSimulationsEligible(initMessenger, transactionMeta);
+    },
     startIncomingTransactionPolling:
       controller.startIncomingTransactionPolling.bind(controller),
     stopIncomingTransactionPolling:
@@ -563,5 +586,74 @@ function isAutomaticGasFeeUpdateEnabled(transaction: TransactionMeta) {
   return !hasTransactionType(
     transaction,
     DISABLED_AUTOMATIC_GAS_FEE_UPDATE_TYPES,
+  );
+}
+
+/**
+ * Checks whether enforced simulations should default on for a transaction.
+ *
+ * Requires all of:
+ * - The ENABLE_ENFORCED_SIMULATIONS env flag is set
+ * - The transaction origin is external (not MetaMask-initiated)
+ * - The account has a delegation address (is upgraded)
+ * - The simulation produced balance changes
+ * - The `to` address trust signal is NOT `Trusted`
+ *
+ * @param initMessenger - The init messenger for accessing controller state.
+ * @param transactionMeta - The transaction metadata to check.
+ * @returns Whether enforced simulations should default on.
+ */
+function getIsEnforcedSimulationsEligible(
+  initMessenger: TransactionControllerInitMessenger,
+  transactionMeta: TransactionMeta,
+): boolean {
+  const { delegationAddress, origin, simulationData, chainId, txParams } =
+    transactionMeta;
+
+  if (!process.env.ENABLE_ENFORCED_SIMULATIONS) {
+    return false;
+  }
+
+  if (!origin || origin === ORIGIN_METAMASK) {
+    return false;
+  }
+
+  if (!delegationAddress) {
+    return false;
+  }
+
+  if (!hasBalanceChanges(simulationData)) {
+    return false;
+  }
+
+  const toAddress = txParams?.to;
+
+  if (!toAddress || !chainId) {
+    return true;
+  }
+
+  const supportedChain = mapChainIdToSupportedEVMChain(chainId);
+
+  if (!supportedChain) {
+    return true;
+  }
+
+  const cacheKey = createCacheKey(supportedChain, toAddress);
+  const appState = initMessenger.call('AppStateController:getState');
+  const cached = appState.addressSecurityAlertResponses[cacheKey];
+
+  if (cached?.result_type === ResultType.Trusted) {
+    return false;
+  }
+
+  return true;
+}
+
+function hasBalanceChanges(
+  simulationData?: TransactionMeta['simulationData'],
+): boolean {
+  return (
+    Boolean(simulationData?.nativeBalanceChange) ||
+    Boolean(simulationData?.tokenBalanceChanges?.length)
   );
 }

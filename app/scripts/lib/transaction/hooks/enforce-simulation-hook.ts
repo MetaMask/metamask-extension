@@ -7,19 +7,23 @@ import {
 import { createProjectLogger } from '@metamask/utils';
 import { TransactionControllerInitMessenger } from '../../../messenger-client-init/messengers/transaction-controller-messenger';
 import { applyTransactionContainers } from '../containers/util';
-import { isEnforcedSimulationsEligible } from '../../../../../shared/lib/transaction/enforced-simulations';
 
 const log = createProjectLogger('enforce-simulation-hook');
 
 export class EnforceSimulationHook {
   #messenger: TransactionControllerInitMessenger;
 
+  #isDefaultEnabled: (transactionMeta: TransactionMeta) => boolean;
+
   constructor({
     messenger,
+    isDefaultEnabled,
   }: {
     messenger: TransactionControllerInitMessenger;
+    isDefaultEnabled: (transactionMeta: TransactionMeta) => boolean;
   }) {
     this.#messenger = messenger;
+    this.#isDefaultEnabled = isDefaultEnabled;
   }
 
   getAfterSimulateHook(): AfterSimulateHook {
@@ -41,10 +45,10 @@ export class EnforceSimulationHook {
 
     const { containerTypes, txParamsOriginal } = transactionMeta;
 
-    const isEligible = isEnforcedSimulationsEligible(transactionMeta);
+    const isDefaultEnabled = this.#isDefaultEnabled(transactionMeta);
 
-    if (!isEligible) {
-      log('Skipping as not eligible for enforced simulations');
+    if (!isDefaultEnabled && !containerTypes) {
+      log('Skipping as not eligible or to address is trusted');
       return {
         skipSimulation: false,
       };
