@@ -7,13 +7,13 @@ import {
   setSkipDeepLinkInterstitial,
 } from '../../../store/actions';
 import type { MetaMaskReduxState } from '../../../store/store';
+import { PRIVACY_ITEMS } from '../search-config';
 import { ThirdPartyApisItem } from './third-party-apis-item';
 import { BasicFunctionalityToggleItem } from './basic-functionality-item';
 import { MetametricsToggleItem } from './metametrics-item';
 import { DataCollectionToggleItem } from './data-collection-item';
 import { DeleteMetametricsDataItem } from './delete-metametrics-data-item';
 import { DownloadStateLogsItem } from './download-state-logs-item';
-import { PRIVACY_ITEMS } from '../search-config';
 
 const BatchAccountBalanceRequestsToggleItem = createToggleItem({
   name: 'BatchAccountBalanceRequestsToggleItem',

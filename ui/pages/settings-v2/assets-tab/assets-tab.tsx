@@ -14,8 +14,8 @@ import {
 import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
 import { DisplayNftMediaToggleItem } from '../shared/display-nft-media-item';
 import { AutodetectNftsToggleItem } from '../shared/autodetect-nfts-item';
-import { LocalCurrencyItem } from './local-currency-item';
 import { ASSET_ITEMS } from '../search-config';
+import { LocalCurrencyItem } from './local-currency-item';
 
 const ShowNetworkTokenToggleItem = createToggleItem({
   name: 'ShowNetworkTokenToggleItem',

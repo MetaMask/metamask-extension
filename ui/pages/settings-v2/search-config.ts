@@ -17,13 +17,11 @@ export type TabSearchConfig = {
   subPages?: SearchableSubPage[];
 };
 
-function toItems<T extends Record<string, string>>(
-  record: T,
-): SearchItemMeta[] {
+function toItems(record: Record<string, string>): SearchItemMeta[] {
   return Object.entries(record).map(([id, titleKey]) => ({ id, titleKey }));
 }
 
-// ── Single source of truth: id → titleKey per section ───────────────────
+// id → titleKey per section
 // Tab components import these records to reference titleKey values.
 // The search config array below is auto-derived from them.
 
@@ -46,8 +44,8 @@ export const TRANSACTION_ITEMS = {
 } as const;
 
 export const PREFERENCES_ITEMS = {
-  'theme': 'theme',
-  'language': 'language',
+  theme: 'theme',
+  language: 'language',
   'account-identicon': 'accountIdenticon',
   'show-default-address': 'showDefaultAddress',
   'show-extension': 'showExtensionInFullSizeView',
@@ -59,7 +57,7 @@ export const PRIVACY_ITEMS = {
   'third-party-apis': 'thirdPartyApis',
   'batch-account-balance-requests': 'useMultiAccountBalanceChecker',
   'skip-link-confirmation': 'skipLinkConfirmationScreens',
-  'metametrics': 'participateInMetaMetrics',
+  metametrics: 'participateInMetaMetrics',
   'data-collection': 'dataCollectionForMarketing',
   'delete-metametrics-data': 'deleteMetaMetricsData',
   'download-state-logs': 'downloadStateLogs',
@@ -77,7 +75,7 @@ export const THIRD_PARTY_API_ITEMS = {
 
 export const SECURITY_ITEMS = {
   'manage-wallet-recovery': 'manageWalletRecovery',
-  'password': 'password',
+  password: 'password',
   'auto-lock': 'autoLock',
   'phishing-detection': 'usePhishingDetection',
 } as const;
@@ -88,7 +86,7 @@ export const BACKUP_AND_SYNC_ITEMS = {
 } as const;
 
 export const EXPERIMENTAL_ITEMS = {
-  'notifications': 'notificationsFeatureToggle',
+  notifications: 'notificationsFeatureToggle',
   'keyring-snaps': 'addSnapAccountToggle',
   'watch-account': 'watchEthereumAccountsToggle',
 } as const;

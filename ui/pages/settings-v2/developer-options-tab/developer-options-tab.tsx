@@ -8,8 +8,8 @@ import {
 import { TESTNET_ETH_SCAMS_LEARN_MORE_LINK } from '../../../../shared/lib/ui-utils';
 import { getShowFiatInTestnets } from '../../../selectors';
 import { setShowFiatConversionOnTestnetsPreference } from '../../../store/actions';
-import { AutoResetAccountItem } from './auto-reset-account-item';
 import { DEVELOPER_OPTIONS_ITEMS } from '../search-config';
+import { AutoResetAccountItem } from './auto-reset-account-item';
 
 const ShowConversionInTestnetsItem = createToggleItem({
   name: 'ShowConversionInTestnetsItem',
