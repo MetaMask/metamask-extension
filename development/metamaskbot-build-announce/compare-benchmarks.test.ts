@@ -27,16 +27,18 @@ function makeBenchmarkResults(
 
 describe('compare-benchmarks', () => {
   describe('resolveThresholdConfig', () => {
-    it('resolves a direct kebab-case match', () => {
-      const config = resolveThresholdConfig('onboarding-import-wallet');
+    it('resolves camelCase benchmark names', () => {
+      const config = resolveThresholdConfig('onboardingImportWallet');
       expect(config).toBeDefined();
       expect(config).toHaveProperty('importWalletToSocialScreen');
     });
 
-    it('strips benchmark prefix before matching', () => {
-      const config = resolveThresholdConfig('benchmark-chrome-browserify-swap');
+    it('resolves startup benchmarks with platform prefix', () => {
+      const config = resolveThresholdConfig(
+        'chrome-browserify-startupStandardHome',
+      );
       expect(config).toBeDefined();
-      expect(config).toHaveProperty('openSwapPageFromHome');
+      expect(config).toHaveProperty('uiStartup');
     });
 
     it('returns undefined for unknown benchmarks', () => {
@@ -56,9 +58,9 @@ describe('compare-benchmarks', () => {
     it('passes when results are within thresholds', () => {
       const benchmarks = [
         {
-          name: 'onboarding-import-wallet',
+          name: 'benchmark-chrome-browserify-userJourneyOnboardingImport',
           data: {
-            'onboarding-import-wallet': makeBenchmarkResults({
+            onboardingImportWallet: makeBenchmarkResults({
               p75: { importWalletToSocialScreen: 1500 },
               p95: { importWalletToSocialScreen: 2000 },
               mean: { importWalletToSocialScreen: 1200 },
@@ -75,9 +77,9 @@ describe('compare-benchmarks', () => {
     it('fails when p75 exceeds fail threshold', () => {
       const benchmarks = [
         {
-          name: 'onboarding-import-wallet',
+          name: 'benchmark-chrome-browserify-userJourneyOnboardingImport',
           data: {
-            'onboarding-import-wallet': makeBenchmarkResults({
+            onboardingImportWallet: makeBenchmarkResults({
               p75: { importWalletToSocialScreen: 99999 },
               p95: { importWalletToSocialScreen: 99999 },
               mean: { importWalletToSocialScreen: 99999 },
@@ -93,9 +95,9 @@ describe('compare-benchmarks', () => {
     it('includes relative metrics when baseline is available', () => {
       const benchmarks = [
         {
-          name: 'onboarding-import-wallet',
+          name: 'benchmark-chrome-browserify-userJourneyOnboardingImport',
           data: {
-            'onboarding-import-wallet': makeBenchmarkResults({
+            onboardingImportWallet: makeBenchmarkResults({
               p75: { importWalletToSocialScreen: 1500 },
               p95: { importWalletToSocialScreen: 2000 },
               mean: { importWalletToSocialScreen: 1200 },
@@ -105,7 +107,7 @@ describe('compare-benchmarks', () => {
       ];
 
       const baseline = {
-        'onboarding-import-wallet': {
+        'userJourneyOnboardingImport/onboardingImportWallet': {
           importWalletToSocialScreen: { mean: 1100, p75: 1400, p95: 1900 },
         },
       };
