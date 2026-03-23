@@ -98,7 +98,7 @@ const MY_BENCHMARK: ThresholdConfig = {
 // Then add MY_BENCHMARK to the THRESHOLD_REGISTRY entries
 ```
 
-The constant name is auto-converted to the file name (`MY_BENCHMARK` -> `my-benchmark`).
+The constant name is auto-converted to a **camelCase** `THRESHOLD_REGISTRY` key (`MY_BENCHMARK` → `myBenchmark`). The benchmark runner maps the **kebab-case** file basename (`my-benchmark.ts` → `myBenchmark`) when loading thresholds.
 
 ### 3. Add to a preset (optional)
 

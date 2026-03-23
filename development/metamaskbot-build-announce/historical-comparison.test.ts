@@ -93,9 +93,7 @@ describe('aggregateHistoricalData', () => {
 
     const result = aggregateHistoricalData(data);
 
-    // pageLoad only exists in the older commit but is still included
     expect(result['pageLoad/standardHome']?.uiStartup?.mean).toBe(1000);
-    // userActions averaged across both commits: (300+400)/2 = 350
     expect(result['userActions/loadNewAccount']?.loadNewAccount?.mean).toBe(
       350,
     );
@@ -283,7 +281,6 @@ describe('fetchHistoricalPerformanceDataFromMain', () => {
             standardHome: {
               mean: { uiStartup: 1000 },
               p95: { uiStartup: 1300 },
-              // p75 intentionally absent
             },
           },
         },
@@ -292,7 +289,6 @@ describe('fetchHistoricalPerformanceDataFromMain', () => {
 
     const result = aggregateHistoricalData(data);
 
-    // p75 should fall back to the mean value (1000)
     expect(result['pageLoad/standardHome']?.uiStartup?.p75).toBe(1000);
     expect(result['pageLoad/standardHome']?.uiStartup?.p95).toBe(1300);
   });

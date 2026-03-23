@@ -27,7 +27,6 @@ import {
   THRESHOLD_SEVERITY,
   DEFAULT_RELATIVE_THRESHOLDS,
 } from '../../shared/constants/benchmarks';
-import { toKebabCase } from '../../shared/lib/string-utils';
 import { THRESHOLD_REGISTRY } from '../../test/e2e/benchmarks/utils/constants';
 import { validateResultThresholds } from '../../test/e2e/benchmarks/utils/statistics';
 
@@ -121,6 +120,48 @@ export function compareMetric(
 }
 
 /**
+ * Collects per-metric comparisons of current stats vs baseline (mean, p75, p95).
+ *
+ * @param results - Current benchmark results (must have p75/p95 maps).
+ * @param baselineData - Historical baseline values per metric.
+ * @param relativeThresholds - Relative thresholds for traffic lights.
+ */
+function collectRelativeMetrics(
+  results: BenchmarkResults,
+  baselineData: Record<string, HistoricalBaselineMetrics>,
+  relativeThresholds: RelativeThresholds,
+): MetricComparison[] {
+  const metrics: MetricComparison[] = [];
+  const comparisonKeys: ComparisonKey[] = [
+    STAT_KEY.Mean,
+    PERCENTILE_KEY.P75,
+    PERCENTILE_KEY.P95,
+  ];
+  for (const key of comparisonKeys) {
+    const currentMap = results[key];
+    if (!currentMap) {
+      continue;
+    }
+    for (const [metric, currentValue] of Object.entries(currentMap)) {
+      const baselineVal = baselineData[metric]?.[key];
+      if (baselineVal === undefined) {
+        continue;
+      }
+      metrics.push(
+        compareMetric(
+          metric,
+          key,
+          currentValue,
+          baselineVal,
+          relativeThresholds,
+        ),
+      );
+    }
+  }
+  return metrics;
+}
+
+/**
  * Compares a full benchmark entry against thresholds and baseline.
  *
  * Absolute gate: validates p75/p95 via validateResultThresholds.
@@ -146,38 +187,10 @@ export function compareBenchmarkEntries(
     thresholdConfig,
   );
 
-  const relativeMetrics: MetricComparison[] = [];
-  if (baselineData && results.p75) {
-    const comparisonKeys: ComparisonKey[] = [
-      STAT_KEY.Mean,
-      PERCENTILE_KEY.P75,
-      PERCENTILE_KEY.P95,
-    ];
-    for (const key of comparisonKeys) {
-      const currentMap = results[key];
-      if (!currentMap) {
-        continue;
-      }
-      for (const [metric, currentValue] of Object.entries(currentMap)) {
-        const baselineEntry = baselineData[metric];
-        if (baselineEntry !== undefined) {
-          const baselineVal = baselineEntry[key];
-          if (baselineVal === undefined) {
-            continue;
-          }
-          relativeMetrics.push(
-            compareMetric(
-              metric,
-              key,
-              currentValue,
-              baselineVal,
-              relativeThresholds,
-            ),
-          );
-        }
-      }
-    }
-  }
+  const relativeMetrics =
+    baselineData && results.p75
+      ? collectRelativeMetrics(results, baselineData, relativeThresholds)
+      : [];
 
   return {
     benchmarkName,
@@ -195,46 +208,4 @@ export function compareBenchmarkEntries(
       ),
     absoluteFailed: !passed,
   };
-}
-
-/**
- * Resolves the ThresholdConfig for a benchmark by name.
- * Tries direct match, then strips platform/buildType prefixes and converts to
- * kebab-case, then converts the original name to kebab-case.
- *
- * Moved here from compare-benchmarks.ts so library files (performance-benchmarks.ts)
- * do not need to import from the CLI entry point.
- *
- * @param benchmarkName - Benchmark name (e.g. from a JSON filename).
- * @returns The matching ThresholdConfig, or undefined if not registered.
- */
-export function resolveThresholdConfig(
-  benchmarkName: string,
-): ThresholdConfig | undefined {
-  if (THRESHOLD_REGISTRY[benchmarkName]) {
-    return THRESHOLD_REGISTRY[benchmarkName];
-  }
-
-  const prefixes = ALL_BENCHMARK_COMBOS.map(
-    (combo) => new RegExp(`^benchmark-${combo}-`, 'u'),
-  );
-  for (const prefix of prefixes) {
-    const stripped = benchmarkName.replace(prefix, '');
-    if (stripped !== benchmarkName) {
-      if (THRESHOLD_REGISTRY[stripped]) {
-        return THRESHOLD_REGISTRY[stripped];
-      }
-      const strippedKebab = toKebabCase(stripped);
-      if (strippedKebab && THRESHOLD_REGISTRY[strippedKebab]) {
-        return THRESHOLD_REGISTRY[strippedKebab];
-      }
-    }
-  }
-
-  const kebab = toKebabCase(benchmarkName);
-  if (kebab && THRESHOLD_REGISTRY[kebab]) {
-    return THRESHOLD_REGISTRY[kebab];
-  }
-
-  return undefined;
 }

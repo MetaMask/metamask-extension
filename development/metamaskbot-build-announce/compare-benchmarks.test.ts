@@ -46,9 +46,9 @@ describe('compare-benchmarks', () => {
     it('passes when results are within thresholds', () => {
       const benchmarks = [
         {
-          name: 'onboarding-import-wallet',
+          name: 'benchmark-chrome-browserify-userJourneyOnboardingImport',
           data: {
-            'onboarding-import-wallet': makeBenchmarkResults({
+            onboardingImportWallet: makeBenchmarkResults({
               p75: { importWalletToSocialScreen: 1500 },
               p95: { importWalletToSocialScreen: 2000 },
               mean: { importWalletToSocialScreen: 1200 },
@@ -65,9 +65,9 @@ describe('compare-benchmarks', () => {
     it('fails when p75 exceeds fail threshold', () => {
       const benchmarks = [
         {
-          name: 'onboarding-import-wallet',
+          name: 'benchmark-chrome-browserify-userJourneyOnboardingImport',
           data: {
-            'onboarding-import-wallet': makeBenchmarkResults({
+            onboardingImportWallet: makeBenchmarkResults({
               p75: { importWalletToSocialScreen: 99999 },
               p95: { importWalletToSocialScreen: 99999 },
               mean: { importWalletToSocialScreen: 99999 },
@@ -83,9 +83,9 @@ describe('compare-benchmarks', () => {
     it('includes relative metrics when baseline is available', () => {
       const benchmarks = [
         {
-          name: 'onboarding-import-wallet',
+          name: 'benchmark-chrome-browserify-userJourneyOnboardingImport',
           data: {
-            'onboarding-import-wallet': makeBenchmarkResults({
+            onboardingImportWallet: makeBenchmarkResults({
               p75: { importWalletToSocialScreen: 1500 },
               p95: { importWalletToSocialScreen: 2000 },
               mean: { importWalletToSocialScreen: 1200 },
@@ -95,7 +95,7 @@ describe('compare-benchmarks', () => {
       ];
 
       const baseline = {
-        'onboarding-import-wallet': {
+        'userJourneyOnboardingImport/onboardingImportWallet': {
           importWalletToSocialScreen: {
             mean: 1100,
             stdDev: 50,
@@ -120,12 +120,12 @@ describe('compare-benchmarks', () => {
       expect(p75Metric?.baseline).toBe(1400);
     });
 
-    it('resolves page-load baseline by stripping benchmark- prefix from filename', () => {
+    it('resolves page-load baseline for startup benchmarks', () => {
       const benchmarks = [
         {
           name: 'benchmark-chrome-browserify-startupStandardHome',
           data: {
-            standardHome: makeBenchmarkResults({
+            'chrome-browserify-startupStandardHome': makeBenchmarkResults({
               p75: { uiStartup: 1800 },
               p95: { uiStartup: 2200 },
               mean: { uiStartup: 1500 },
@@ -342,8 +342,7 @@ describe('buildMetricLines', () => {
     expect(lines).toHaveLength(0);
   });
 
-  it('uses the relative indication icon when there is no absolute violation for the metric (line 210 else branch)', () => {
-    // rel.severity is Pass (< 5% delta) and no absolute violation → icon = rel.indication = 🟢
+  it('uses the relative indication icon when there is no absolute violation for the metric', () => {
     const lines = buildMetricLines(
       makeComparison({
         relativeMetrics: [
@@ -367,8 +366,7 @@ describe('buildMetricLines', () => {
     expect(lines[0].parts[0]).toContain('1450ms');
   });
 
-  it('shows 🟡 when relative regression exists but no absolute violation (line 208)', () => {
-    // rel.severity = Regression but absoluteSeverity is undefined → hits line 208
+  it('shows 🟡 when relative regression exists but no absolute violation', () => {
     const lines = buildMetricLines(
       makeComparison({
         relativeMetrics: [
@@ -383,12 +381,11 @@ describe('buildMetricLines', () => {
             indication: COMPARISON_SEVERITY.Regression.icon,
           },
         ],
-        absoluteViolations: [], // no absolute violation → not overridden by lines 203-206
+        absoluteViolations: [],
       }),
     );
 
     expect(lines).toHaveLength(1);
-    // Relative regression without absolute violation → downgraded to 🟡 (line 208)
     expect(lines[0].parts[0]).toContain(COMPARISON_SEVERITY.Warn.icon);
   });
 });

@@ -10,6 +10,7 @@ import {
   buildPerformanceBenchmarksSection,
   computeEntryHealth,
   EntryHealth,
+  getUserJourneyBenchmarkBuildTypesForCurrentRun,
   type FetchBenchmarkResult,
   type BenchmarkEntry,
 } from './performance-benchmarks';
@@ -47,6 +48,71 @@ const BASELINE_600 = {
     loadNewAccount: { mean: 540, stdDev: 30, p75: 540, p95: 600 },
   },
 };
+
+describe('getUserJourneyBenchmarkBuildTypesForCurrentRun', () => {
+  const originalEvent = process.env.GITHUB_EVENT_NAME;
+  const originalRef = process.env.GITHUB_REF;
+
+  afterEach(() => {
+    if (originalEvent === undefined) {
+      delete process.env.GITHUB_EVENT_NAME;
+    } else {
+      process.env.GITHUB_EVENT_NAME = originalEvent;
+    }
+    if (originalRef === undefined) {
+      delete process.env.GITHUB_REF;
+    } else {
+      process.env.GITHUB_REF = originalRef;
+    }
+  });
+
+  it('returns browserify only when env is unset (local / tests)', () => {
+    delete process.env.GITHUB_EVENT_NAME;
+    delete process.env.GITHUB_REF;
+
+    expect(getUserJourneyBenchmarkBuildTypesForCurrentRun()).toStrictEqual([
+      'browserify',
+    ]);
+  });
+
+  it('returns browserify only on pull_request (no webpack user-journey artifacts)', () => {
+    process.env.GITHUB_EVENT_NAME = 'pull_request';
+    process.env.GITHUB_REF = 'refs/pull/42/merge';
+
+    expect(getUserJourneyBenchmarkBuildTypesForCurrentRun()).toStrictEqual([
+      'browserify',
+    ]);
+  });
+
+  it('returns browserify only on push to a feature branch', () => {
+    process.env.GITHUB_EVENT_NAME = 'push';
+    process.env.GITHUB_REF = 'refs/heads/chore/foo';
+
+    expect(getUserJourneyBenchmarkBuildTypesForCurrentRun()).toStrictEqual([
+      'browserify',
+    ]);
+  });
+
+  it('returns browserify and webpack on push to main (benchmarks-webpack-perf runs)', () => {
+    process.env.GITHUB_EVENT_NAME = 'push';
+    process.env.GITHUB_REF = 'refs/heads/main';
+
+    expect(getUserJourneyBenchmarkBuildTypesForCurrentRun()).toStrictEqual([
+      'browserify',
+      'webpack',
+    ]);
+  });
+
+  it('returns browserify and webpack on push to release branch', () => {
+    process.env.GITHUB_EVENT_NAME = 'push';
+    process.env.GITHUB_REF = 'refs/heads/release/12.0.0';
+
+    expect(getUserJourneyBenchmarkBuildTypesForCurrentRun()).toStrictEqual([
+      'browserify',
+      'webpack',
+    ]);
+  });
+});
 
 const MOCK_PAYLOAD: Record<string, BenchmarkResults> = {
   loadNewAccount: {
@@ -119,7 +185,6 @@ describe('computeEntryHealth', () => {
   });
 
   it('returns warn when p95 is 5–10% above baseline (Layer 2 relative context)', () => {
-    // 636 vs 600 → +6% → relative warn, capped at Warn (no absolute threshold for this benchmark)
     expect(
       computeEntryHealth(
         makeEntry({ p95: { loadNewAccount: 636 } }),
@@ -129,13 +194,12 @@ describe('computeEntryHealth', () => {
   });
 
   it('returns warn when p95 is >10% above baseline with no registered threshold', () => {
-    // 672 vs 600 → +12%
     expect(
       computeEntryHealth(
         makeEntry({ p95: { loadNewAccount: 672 } }),
         BASELINE_600['interactionUserActions/loadNewAccount'],
       ),
-    ).toBe(EntryHealth.Warn); // Layer 1 not registered → capped at Warn by Layer 2
+    ).toBe(EntryHealth.Warn);
   });
 
   it('returns pass when the metric key is absent from baseline', () => {
@@ -152,8 +216,6 @@ describe('computeEntryHealth', () => {
     ).toBe(EntryHealth.Pass);
   });
 
-  // ciMultiplier=1.5 only applies when process.env.CI is set; force it here so
-  // effective thresholds are deterministic: p75 warn=3000 fail=3750, p95 warn=3750 fail=4800
   describe('Layer 1 absolute threshold (standardHome, CI=true)', () => {
     const originalCI = process.env.CI;
 
@@ -171,29 +233,29 @@ describe('computeEntryHealth', () => {
 
     it('returns fail when values exceed the absolute fail threshold', () => {
       const entry = makeEntry({
-        benchmarkName: 'standardHome',
+        benchmarkName: 'chrome-browserify-startupStandardHome',
+        presetName: 'startupStandardHome',
         mean: { uiStartup: 4000 },
         stdDev: { uiStartup: 200 },
-        p75: { uiStartup: 4500 }, // > 3750ms effective fail
-        p95: { uiStartup: 6000 }, // > 4800ms effective fail
+        p75: { uiStartup: 4500 },
+        p95: { uiStartup: 6000 },
       });
       expect(computeEntryHealth(entry, undefined)).toBe(EntryHealth.Fail);
     });
 
     it('returns warn when values exceed warn but not fail threshold', () => {
       const entry = makeEntry({
-        benchmarkName: 'standardHome',
+        benchmarkName: 'chrome-browserify-startupStandardHome',
+        presetName: 'startupStandardHome',
         mean: { uiStartup: 2800 },
         stdDev: { uiStartup: 100 },
-        p75: { uiStartup: 3200 }, // > 3000ms warn, < 3750ms fail
-        p95: { uiStartup: 4200 }, // > 3750ms warn, < 4800ms fail
+        p75: { uiStartup: 3200 },
+        p95: { uiStartup: 4200 },
       });
       expect(computeEntryHealth(entry, undefined)).toBe(EntryHealth.Warn);
     });
   });
 });
-
-// ─── fetchBenchmarkJson ───────────────────────────────────────────────────────
 
 describe('fetchBenchmarkJson', () => {
   const HOST = 'https://ci.example.com';
@@ -370,8 +432,6 @@ describe('buildBenchmarkSection', () => {
   });
 
   it('shows 🟡 in the cell when p95 is >10% above baseline (no absolute threshold → Layer 2 caps at Warn)', () => {
-    // 672 vs 600 → +12% relative regression, but loadNewAccount has no THRESHOLD_REGISTRY entry
-    // → Layer 1 skipped, Layer 2 result capped at Warn
     const html = buildBenchmarkSection(
       withEntries([makeEntry({ p95: { loadNewAccount: 672 } })]),
       'Test',
@@ -383,7 +443,6 @@ describe('buildBenchmarkSection', () => {
   });
 
   it('shows 🟡 in the cell and no failure badge when p95 is 5–10% above baseline', () => {
-    // 636 vs 600 → +6% → warn
     const html = buildBenchmarkSection(
       withEntries([makeEntry({ p95: { loadNewAccount: 636 } })]),
       'Test',
@@ -396,7 +455,6 @@ describe('buildBenchmarkSection', () => {
 
   it('shows 🟢 for passing entries even when no baseline is given', () => {
     const html = buildBenchmarkSection(withEntries([makeEntry()]), 'Test');
-
     expect(html).toContain('<table>');
     expect(html).toContain(COMPARISON_SEVERITY.Pass.icon);
   });
@@ -452,10 +510,9 @@ describe('buildBenchmarkSection', () => {
     expect(html).toContain('[Show logs]');
   });
 
-  it('resolves startup baseline via pageLoad/* substring key format', () => {
-    // p95=1980 vs baseline 1750 → +13% → no absolute threshold → Layer 2 → 🟡 warn
+  it('resolves startup baseline via pageLoad/* key format', () => {
     const entry = makeEntry({
-      benchmarkName: 'standardHome',
+      benchmarkName: 'chrome-browserify-startupStandardHome',
       presetName: 'startupStandardHome',
       mean: { uiStartup: 1800 },
       stdDev: { uiStartup: 100 },
@@ -469,12 +526,10 @@ describe('buildBenchmarkSection', () => {
     });
 
     expect(html).toContain(COMPARISON_SEVERITY.Warn.icon);
-    expect(html).toContain('standardHome');
+    expect(html).toContain('chrome-browserify-startupStandardHome');
   });
 
   it('uses the platform-specific baseline, not the first matching key', () => {
-    // Firefox p95=1600 vs its own baseline 1595 → +0.3% → 🟢
-    // Without the fix it would compare against chrome baseline 1500 → +7% → 🟡
     const firefoxEntry = makeEntry({
       benchmarkName: 'standardHome',
       presetName: 'startupStandardHome',
@@ -503,7 +558,6 @@ describe('buildBenchmarkSection', () => {
   });
 
   it('skips metrics absent from the baseline (no false positives)', () => {
-    // otherMetric not in baseline → ignored, loadNewAccount passes → no failure badge
     const entry = makeEntry({
       p95: { loadNewAccount: 612, otherMetric: 100 },
       p75: { loadNewAccount: 550, otherMetric: 80 },
@@ -518,7 +572,6 @@ describe('buildBenchmarkSection', () => {
   });
 
   it('skips a percentile when its value is absent from the entry', () => {
-    // p75={} → p75 skipped; p95 still within threshold → no failure
     const html = buildBenchmarkSection(
       withEntries([makeEntry({ p75: {} })]),
       'Test',
@@ -530,7 +583,8 @@ describe('buildBenchmarkSection', () => {
 
   it('shows 🔴 failure badge when Layer 1 absolute fail threshold is exceeded', () => {
     const entry = makeEntry({
-      benchmarkName: 'standardHome',
+      benchmarkName: 'chrome-browserify-startupStandardHome',
+      presetName: 'startupStandardHome',
       mean: { uiStartup: 4000 },
       stdDev: { uiStartup: 200 },
       p75: { uiStartup: 4500 },
@@ -543,7 +597,6 @@ describe('buildBenchmarkSection', () => {
   });
 
   it('returns "No regressions detected" when no entries exist but baseline is provided', () => {
-    // missingPresets must be non-empty to bypass the entries===0 && missingPresets===0 early exit
     const html = buildBenchmarkSection(
       { entries: [], missingPresets: ['chrome/browserify/somePreset'] },
       'Test',
@@ -561,7 +614,7 @@ describe('buildBenchmarkSection', () => {
     const consoleSpy = jest.spyOn(console, 'log').mockImplementation();
     const badEntry = {
       ...makeEntry(),
-      p95: null, // causes Object.keys(null) to throw inside computeEntryHealth
+      p95: null,
     } as unknown as BenchmarkEntry;
 
     const html = buildBenchmarkSection(withEntries([badEntry]), 'CrashSection');
@@ -634,7 +687,6 @@ describe('buildPerformanceBenchmarksSection', () => {
   });
 
   it('shows regression details when baseline has regressions', async () => {
-    // p95=672 vs baseline 600 → +12% → regression
     mockFetch.mockResolvedValue({
       ok: true,
       json: () =>
@@ -659,14 +711,11 @@ describe('buildPerformanceBenchmarksSection', () => {
     expect(html).toContain('loadNewAccount');
   });
 
-  // Covers buildHealthMatrixHtml (lines 687-750), getWorstViolationLabel (Layer 1),
-  // and buildFailingItemsHtml (lines 771-802) — all require a Layer 1 Fail entry.
   describe('with a Layer 1 threshold failure (CI=true)', () => {
     const originalCI = process.env.CI;
 
-    // standardHome p75=4500 > 3750ms fail, p95=6000 > 4800ms fail (with ciMultiplier=1.5)
     const FAILING_PAYLOAD = {
-      standardHome: {
+      'chrome-browserify-startupStandardHome': {
         testTitle: 'standard-home',
         persona: 'standard',
         mean: { uiStartup: 4500 },
@@ -698,11 +747,8 @@ describe('buildPerformanceBenchmarksSection', () => {
 
       const html = await buildPerformanceBenchmarksSection(HOST);
 
-      expect(html).toContain('standardHome');
+      expect(html).toContain('chrome-browserify-startupStandardHome');
       expect(html).toContain(COMPARISON_SEVERITY.Regression.icon);
-      // Health matrix table is rendered when there are failures
-      expect(html).toContain('<table>');
-      // getWorstViolationLabel Layer 1 returns the metric label
       expect(html).toContain('uiStartup');
     });
 
@@ -715,7 +761,7 @@ describe('buildPerformanceBenchmarksSection', () => {
       const html = await buildPerformanceBenchmarksSection(HOST);
 
       expect(html).toContain('View regression details');
-      expect(html).toContain('standardHome');
+      expect(html).toContain('chrome-browserify-startupStandardHome');
     });
 
     it('exercises getEntryRegressions with baseline data when entry is non-pass', async () => {
@@ -724,20 +770,17 @@ describe('buildPerformanceBenchmarksSection', () => {
         json: () => Promise.resolve(FAILING_PAYLOAD),
       } as unknown as Response);
 
-      // Provide baseline so getEntryRegressions has data to iterate
       jest
         .spyOn(historicalComparison, 'fetchHistoricalPerformanceDataFromMain')
         .mockResolvedValue({
           'pageLoad/chrome-browserify-startupStandardHome': {
             uiStartup: { mean: 1600, stdDev: 100, p75: 1700, p95: 1900 },
-            // load absent → covers line 393 (metric not in baseline)
           },
         });
 
       const html = await buildPerformanceBenchmarksSection(HOST);
 
-      // Should still render the failure
-      expect(html).toContain('standardHome');
+      expect(html).toContain('chrome-browserify-startupStandardHome');
       expect(html).toContain(COMPARISON_SEVERITY.Regression.icon);
     });
   });

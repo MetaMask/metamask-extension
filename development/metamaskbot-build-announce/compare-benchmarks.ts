@@ -26,15 +26,16 @@ import type {
   ComparisonKey,
   BenchmarkResults,
 } from '../../shared/constants/benchmarks';
+import { THRESHOLD_REGISTRY } from '../../test/e2e/benchmarks/utils/constants';
 import { fetchHistoricalPerformanceDataFromMain } from './historical-comparison';
 import type { HistoricalBaselineReference } from './historical-comparison';
 import {
   compareBenchmarkEntries,
   formatDeltaPercent,
-  resolveThresholdConfig,
   COMPARISON_SEVERITY,
   type BenchmarkEntryComparison,
 } from './comparison-utils';
+import { resolveBaselineFromArtifactName } from './utils';
 
 type LoadedBenchmark = {
   name: string;
@@ -71,40 +72,6 @@ async function loadBaseline(): Promise<HistoricalBaselineReference> {
 }
 
 /**
- * Resolves baseline metrics for a benchmark entry.
- * Historical keys use "preset/entryName" format (e.g.
- * "userJourneyOnboardingImport/onboardingImportWallet"),
- * so we try direct match first, then suffix match.
- *
- * @param baseline - Historical baseline reference.
- * @param entryName - Benchmark entry name from JSON.
- * @param fileName - Benchmark file name (without extension).
- */
-function resolveBaseline(
-  baseline: HistoricalBaselineReference,
-  entryName: string,
-  fileName: string,
-): HistoricalBaselineReference[string] | undefined {
-  const strippedFileName = fileName.replace(/^benchmark-/u, '');
-
-  const candidates = [entryName, strippedFileName, fileName];
-
-  for (const candidate of candidates) {
-    if (baseline[candidate]) {
-      return baseline[candidate];
-    }
-    const suffixMatch = Object.keys(baseline).find((key) =>
-      key.endsWith(`/${candidate}`),
-    );
-    if (suffixMatch) {
-      return baseline[suffixMatch];
-    }
-  }
-
-  return undefined;
-}
-
-/**
  * Runs comparison for all loaded benchmarks.
  *
  * @param benchmarks - Loaded benchmark files.
@@ -119,17 +86,20 @@ export function runComparison(
 
   for (const { name, data } of benchmarks) {
     for (const [entryName, results] of Object.entries(data)) {
-      const thresholdConfig =
-        resolveThresholdConfig(entryName) ?? resolveThresholdConfig(name);
+      const thresholdConfig = THRESHOLD_REGISTRY[entryName];
 
       if (!thresholdConfig) {
         console.warn(
-          `No threshold config for "${entryName}" (file: ${name}). Skipping.`,
+          `No threshold config for benchmark "${entryName}" in file "${name}". Add an entry to THRESHOLD_REGISTRY in constants.ts.`,
         );
         continue;
       }
 
-      const baselineMetrics = resolveBaseline(baseline, entryName, name);
+      const baselineMetrics = resolveBaselineFromArtifactName(
+        baseline,
+        entryName,
+        name,
+      );
 
       const comparison = compareBenchmarkEntries(
         entryName,

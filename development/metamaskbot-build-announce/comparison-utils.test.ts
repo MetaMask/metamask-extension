@@ -3,12 +3,14 @@ import type {
   ThresholdConfig,
 } from '../../shared/constants/benchmarks';
 import { DEFAULT_RELATIVE_THRESHOLDS } from '../../shared/constants/benchmarks';
-import { BENCHMARK_PERSONA } from '../../test/e2e/benchmarks/utils/constants';
+import {
+  BENCHMARK_PERSONA,
+  THRESHOLD_REGISTRY,
+} from '../../test/e2e/benchmarks/utils/constants';
 
 import {
   compareMetric,
   compareBenchmarkEntries,
-  resolveThresholdConfig,
   formatDeltaPercent,
   COMPARISON_SEVERITY,
 } from './comparison-utils';
@@ -67,7 +69,6 @@ describe('benchmark-comparison', () => {
     });
 
     it('classifies a 5-10% improvement as pass', () => {
-      // faster by 6% — previously Warn, now Pass (only slower changes warn)
       const result = compareMetric(
         'uiStartup',
         'p75',
@@ -263,14 +264,12 @@ describe('benchmark-comparison', () => {
         baseline,
       );
 
-      // stdDev excluded; p95 absent because results.p95 is undefined.
       expect(comparison.relativeMetrics).toHaveLength(2);
       expect(comparison.relativeMetrics[0].percentile).toBe('mean');
       expect(comparison.relativeMetrics[1].percentile).toBe('p75');
     });
 
     it('skips a stat key when its results map is missing (line 159)', () => {
-      // results has no `mean` property → mean relative metric should be absent
       const results = {
         p75: { uiStartup: 1800 },
         p95: { uiStartup: 2200 },
@@ -292,7 +291,6 @@ describe('benchmark-comparison', () => {
     });
 
     it('skips a metric when its baseline value for a specific percentile is absent (line 166)', () => {
-      // baseline has uiStartup but no p95 entry → p95 relative metric should be absent
       const results: BenchmarkResults = {
         testTitle: 'test',
         persona: 'standard',
@@ -308,7 +306,6 @@ describe('benchmark-comparison', () => {
         'standard-home',
         results,
         thresholdConfig,
-        // p95 absent from baseline — only mean and p75 provided
         {
           uiStartup: { mean: 1400, stdDev: 80, p75: 1700 },
         } as unknown as Parameters<typeof compareBenchmarkEntries>[3],
@@ -338,46 +335,40 @@ describe('benchmark-comparison', () => {
   });
 });
 
-describe('resolveThresholdConfig', () => {
-  it('resolves a direct kebab-case match', () => {
-    const config = resolveThresholdConfig('onboarding-import-wallet');
-    expect(config).toBeDefined();
-    expect(config).toHaveProperty('importWalletToSocialScreen');
+describe('THRESHOLD_REGISTRY', () => {
+  it('has platform-agnostic keys for interaction (runs on 4 combos)', () => {
+    expect(THRESHOLD_REGISTRY.loadNewAccount).toBeDefined();
+    expect(THRESHOLD_REGISTRY.confirmTx).toBeDefined();
+    expect(THRESHOLD_REGISTRY.bridgeUserActions).toBeDefined();
+    expect(
+      THRESHOLD_REGISTRY['chrome-browserify-loadNewAccount'],
+    ).toBeUndefined();
   });
 
-  it('strips platform/buildType prefix before matching', () => {
-    const config = resolveThresholdConfig('benchmark-chrome-browserify-swap');
-    expect(config).toBeDefined();
-    expect(config).toHaveProperty('openSwapPageFromHome');
+  it('has platform-agnostic keys for user journey (chrome-browserify + chrome-webpack)', () => {
+    expect(THRESHOLD_REGISTRY.onboardingImportWallet).toBeDefined();
+    expect(THRESHOLD_REGISTRY.swap).toBeDefined();
+    expect(THRESHOLD_REGISTRY['chrome-webpack-swap']).toBeUndefined();
   });
 
-  it('strips firefox-browserify prefix', () => {
-    const config = resolveThresholdConfig('benchmark-firefox-browserify-swap');
-    expect(config).toBeDefined();
-    expect(config).toHaveProperty('openSwapPageFromHome');
-  });
+  it('auto-expands startup to all 8 platform combos (2 benchmarks × 4 combos)', () => {
+    const platforms = ['chrome', 'firefox'];
+    const buildTypes = ['browserify', 'webpack'];
+    const benchmarks = ['startupStandardHome', 'startupPowerUserHome'];
 
-  it('strips chrome-webpack prefix', () => {
-    const config = resolveThresholdConfig('benchmark-chrome-webpack-swap');
-    expect(config).toBeDefined();
-    expect(config).toHaveProperty('openSwapPageFromHome');
-  });
+    for (const platform of platforms) {
+      for (const buildType of buildTypes) {
+        for (const benchmark of benchmarks) {
+          const key = `${platform}-${buildType}-${benchmark}`;
+          expect(THRESHOLD_REGISTRY[key]).toBeDefined();
+        }
+      }
+    }
 
-  it('resolves camelCase entry name via kebab conversion', () => {
-    const config = resolveThresholdConfig('onboardingImportWallet');
-    expect(config).toBeDefined();
-    expect(config).toHaveProperty('importWalletToSocialScreen');
-  });
-
-  it('strips prefix then converts to kebab-case', () => {
-    const config = resolveThresholdConfig(
-      'benchmark-chrome-browserify-onboardingImportWallet',
+    expect(
+      THRESHOLD_REGISTRY['firefox-webpack-startupPowerUserHome'],
+    ).toStrictEqual(
+      THRESHOLD_REGISTRY['chrome-browserify-startupPowerUserHome'],
     );
-    expect(config).toBeDefined();
-    expect(config).toHaveProperty('importWalletToSocialScreen');
-  });
-
-  it('returns undefined for unknown benchmarks', () => {
-    expect(resolveThresholdConfig('non-existent-benchmark')).toBeUndefined();
   });
 });

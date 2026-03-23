@@ -276,23 +276,67 @@ const BRIDGE_USER_ACTIONS: ThresholdConfig = {
 /* eslint-enable @typescript-eslint/naming-convention */
 
 /**
- * Registry keyed by benchmark file name (kebab-case), auto-converted from
- * UPPER_SNAKE_CASE, e.g. ONBOARDING_IMPORT_WALLET -> onboarding-import-wallet.
+ * Base threshold configurations (platform-agnostic).
+ * When adding a new benchmark, only add it here once.
+ * Startup benchmarks will automatically expand to all platform combos.
  */
-export const THRESHOLD_REGISTRY: Record<string, ThresholdConfig> =
-  Object.fromEntries(
-    Object.entries({
-      ONBOARDING_IMPORT_WALLET,
-      ONBOARDING_NEW_WALLET,
-      IMPORT_SRP_HOME,
-      SWAP,
-      SEND_TRANSACTIONS,
-      ASSET_DETAILS,
-      SOLANA_ASSET_DETAILS,
-      STANDARD_HOME,
-      POWER_USER_HOME,
-      LOAD_NEW_ACCOUNT,
-      CONFIRM_TX,
-      BRIDGE_USER_ACTIONS,
-    }).map(([key, config]) => [key.toLowerCase().replace(/_/gu, '-'), config]),
-  );
+const BASE_THRESHOLDS = {
+  // Interaction benchmarks (run on all 4 combos, shared baseline)
+  loadNewAccount: LOAD_NEW_ACCOUNT,
+  confirmTx: CONFIRM_TX,
+  bridgeUserActions: BRIDGE_USER_ACTIONS,
+
+  // User journey benchmarks (chrome-browserify in PRs, chrome-webpack on main/release)
+  onboardingImportWallet: ONBOARDING_IMPORT_WALLET,
+  onboardingNewWallet: ONBOARDING_NEW_WALLET,
+  importSrpHome: IMPORT_SRP_HOME,
+  assetDetails: ASSET_DETAILS,
+  solanaAssetDetails: SOLANA_ASSET_DETAILS,
+  sendTransactions: SEND_TRANSACTIONS,
+  swap: SWAP,
+
+  // Startup benchmarks (will be expanded to all platform combos below)
+  startupStandardHome: STANDARD_HOME,
+  startupPowerUserHome: POWER_USER_HOME,
+};
+
+/**
+ * Expands startup benchmark thresholds to all platform/buildType combinations.
+ * Generates keys like 'chrome-browserify-startupStandardHome'.
+ */
+function expandStartupThresholds(): Record<string, ThresholdConfig> {
+  const platforms = ['chrome', 'firefox'] as const;
+  const buildTypes = ['browserify', 'webpack'] as const;
+  const expanded: Record<string, ThresholdConfig> = {};
+
+  for (const [key, config] of Object.entries(BASE_THRESHOLDS)) {
+    if (key.startsWith('startup')) {
+      for (const platform of platforms) {
+        for (const buildType of buildTypes) {
+          expanded[`${platform}-${buildType}-${key}`] = config;
+        }
+      }
+    }
+  }
+
+  return expanded;
+}
+
+/**
+ * Registry of threshold configurations keyed by benchmark name (camelCase).
+ *
+ * To add a new benchmark:
+ * 1. Define threshold config constant above (e.g., const MY_BENCHMARK = {...})
+ * 2. Add to BASE_THRESHOLDS with camelCase key matching flow filename
+ * 3. For startup: will automatically expand to 8 platform-combo entries
+ * 4. For interaction/user journey: one entry works for all platforms
+ *
+ * Platform behavior:
+ * - Startup: Each platform combo gets separate baseline (platform-specific performance)
+ * - Interaction: All platforms share one baseline (platform-agnostic performance)
+ * - User Journey: All platforms share one baseline (platform-agnostic performance)
+ */
+export const THRESHOLD_REGISTRY: Record<string, ThresholdConfig> = {
+  ...BASE_THRESHOLDS,
+  ...expandStartupThresholds(),
+};
