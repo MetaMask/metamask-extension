@@ -7,7 +7,11 @@ import {
   tokenBalancesStopPollingByPollingToken,
 } from '../store/actions';
 import { ASSETS_UNIFY_STATE_FLAG } from '../../shared/lib/assets-unify-state/remote-feature-flag';
-import { useTokenBalances, useTokenTracker, stringifyBalance } from './useTokenBalances';
+import {
+  useTokenBalances,
+  useTokenTracker,
+  stringifyBalance,
+} from './useTokenBalances';
 
 jest.mock('../store/actions', () => ({
   tokenBalancesStartPolling: jest
