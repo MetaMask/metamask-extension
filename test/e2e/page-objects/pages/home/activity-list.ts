@@ -32,9 +32,6 @@ class ActivityListPage {
     css: '.transaction-status-label--confirmed',
   };
 
-  private readonly confirmTransactionReplacementButton =
-    '[data-testid="cancel-speedup-confirm-button"]';
-
   private readonly copyTransactionHashButton = {
     text: 'Copy transaction ID',
     tag: 'button',
@@ -459,12 +456,6 @@ class ActivityListPage {
 
   async clickSpeedUpTransaction() {
     await this.driver.clickElement(this.speedupModalButton);
-  }
-
-  async clickConfirmTransactionReplacement() {
-    await this.driver.clickElementAndWaitToDisappear(
-      this.confirmTransactionReplacementButton,
-    );
   }
 
   /**

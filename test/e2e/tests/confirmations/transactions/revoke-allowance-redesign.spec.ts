@@ -1,7 +1,7 @@
 import { WINDOW_TITLES } from '../../../constants';
 import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
 import { withFixtures } from '../../../helpers';
-import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
+import { login } from '../../../page-objects/flows/login.flow';
 import ERC20ApproveTransactionConfirmation from '../../../page-objects/pages/confirmations/erc20-approve-transaction-confirmation';
 import ActivityListPage from '../../../page-objects/pages/home/activity-list';
 import HomePage from '../../../page-objects/pages/home/homepage';
@@ -26,7 +26,7 @@ describe('Confirmation Redesign ERC20 Revoke Allowance', function () {
       async ({ driver, contractRegistry, localNodes }: TestSuiteArguments) => {
         const contractAddress =
           await contractRegistry?.getContractAddress(smartContract);
-        await loginWithBalanceValidation(driver, localNodes?.[0]);
+        await login(driver, { localNode: localNodes?.[0] });
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage({ contractAddress });
         await testDapp.checkPageIsLoaded();

@@ -3,7 +3,7 @@ import { MockttpServer } from 'mockttp';
 import { withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import FixtureBuilder from '../../fixtures/fixture-builder';
-import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 import HomePage from '../../page-objects/pages/home/homepage';
 import { mockServerJsonRpc } from '../ppom/mocks/mock-server-json-rpc';
 import { mockMultiNetworkBalancePolling } from '../../mock-balance-polling/mock-balance-polling';
@@ -91,7 +91,7 @@ describe('ENS', function (this: Suite) {
         testSpecificMock: mockInfura,
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithoutBalanceValidation(driver);
+        await login(driver, { validateBalance: false });
 
         // click send button on homepage to start send flow
         const homepage = new HomePage(driver);

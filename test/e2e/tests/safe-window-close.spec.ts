@@ -3,7 +3,7 @@ import { withFixtures } from '../helpers';
 import FixtureBuilderV2 from '../fixtures/fixture-builder-v2';
 import { Driver, PAGES } from '../webdriver/driver';
 import { WINDOW_TITLES } from '../constants';
-import { loginWithBalanceValidation } from '../page-objects/flows/login.flow';
+import { login } from '../page-objects/flows/login.flow';
 import TestDapp from '../page-objects/pages/test-dapp';
 import ConnectAccountConfirmation from '../page-objects/pages/confirmations/connect-account-confirmation';
 
@@ -16,7 +16,7 @@ describe('Notification window closing', function () {
         title: this.test?.title,
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
 
@@ -51,7 +51,7 @@ describe('Notification window closing', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         // Ensure the window does not close
         // 1. Get the current window handle
