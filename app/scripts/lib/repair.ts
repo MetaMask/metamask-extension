@@ -1,6 +1,6 @@
 import type { Backup } from '../../../shared/lib/backup';
 import { RELOAD_WINDOW } from '../../../shared/constants/start-up-errors';
-import { openRestoringTabAndReload } from './critical-error-restore';
+import { openRestoringTabAndReload } from './critical-error/critical-error-tab-handoff';
 import { tryPostMessage } from './start-up-errors/start-up-errors';
 
 const REPAIR_LOCK_NAME = 'repairDatabase';

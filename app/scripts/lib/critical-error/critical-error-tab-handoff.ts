@@ -4,7 +4,7 @@ import log from 'loglevel';
 import {
   CRITICAL_ERROR_RESTORE_KEY,
   METAMASK_RESTORING_PAGE_URL,
-} from '../../../shared/constants/critical-error-restore-session';
+} from '../../../../shared/constants/critical-error-restore-session';
 
 export type PendingCriticalErrorRestore = {
   tabId: number | undefined;

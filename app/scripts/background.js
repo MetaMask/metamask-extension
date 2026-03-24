@@ -102,7 +102,7 @@ import {
   readPendingCriticalErrorRestore,
   clearPendingCriticalErrorRestore,
   handoffRestoringTabToExtension,
-} from './lib/critical-error-restore';
+} from './lib/critical-error/critical-error-tab-handoff';
 import { runRepairAndReloadExtension } from './lib/repair';
 import { tryPostMessage } from './lib/start-up-errors/start-up-errors';
 import { CronjobControllerStorageManager } from './lib/CronjobControllerStorageManager';

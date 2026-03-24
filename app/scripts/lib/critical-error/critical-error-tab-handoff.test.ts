@@ -2,14 +2,14 @@ import browser from 'webextension-polyfill';
 import {
   CRITICAL_ERROR_RESTORE_KEY,
   METAMASK_RESTORING_PAGE_URL,
-} from '../../../shared/constants/critical-error-restore-session';
+} from '../../../../shared/constants/critical-error-restore-session';
 import {
   readPendingCriticalErrorRestore,
   clearPendingCriticalErrorRestore,
   openRestoringTabAndReload,
   handoffRestoringTabToExtension,
   type ExtensionPlatformLike,
-} from './critical-error-restore';
+} from './critical-error-tab-handoff';
 
 jest.mock('webextension-polyfill', () => ({
   storage: {
