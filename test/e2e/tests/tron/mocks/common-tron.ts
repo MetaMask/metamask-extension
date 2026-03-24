@@ -83,6 +83,51 @@ export async function mockBroadTransaction(
     }));
 }
 
+/**
+ * Simulates TronGrid account-info failure (inactive / not-yet-activated address).
+ * The Tron wallet snap treats a rejected account-info request as inactive and
+ * falls back to GET /v1/accounts/{address}/trc20/balance (NEB-461).
+ */
+export async function mockTronGetAccountRequestFails(
+  mockServer: Mockttp,
+): Promise<MockedEndpoint> {
+  return mockServer
+    .forGet(tronInfuraUrl(`/v1/accounts/${TRON_ACCOUNT_ADDRESS}`))
+    .thenCallback(() => ({
+      statusCode: 404,
+      json: {},
+    }));
+}
+
+/**
+ * Mock TRC20 balances-by-address response (TronGrid-style).
+ * Each `data` entry must be a record of contract address (base58) → raw balance string,
+ * matching the snap’s internal shape after validation.
+ */
+export async function mockTronGetTrc20BalanceByAddress(
+  mockServer: Mockttp,
+): Promise<MockedEndpoint> {
+  return mockServer
+    .forGet(
+      tronInfuraUrl(`/v1/accounts/${TRON_ACCOUNT_ADDRESS}/trc20/balance`),
+    )
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: {
+        success: true,
+        meta: {
+          at: 1767888275562,
+          page_size: 50,
+        },
+        data: [
+          {
+            TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t: '2804595',
+          },
+        ],
+      },
+    }));
+}
+
 export async function mockTronGetAccount(
   mockServer: Mockttp,
   mockZeroBalance?: boolean,
@@ -1048,6 +1093,30 @@ export async function mockTronApis(
     await mockTronGetBlock(mockServer),
     await mockTronGetAccount(mockServer, mockZeroBalance),
     await mockTronGetAccountResource(mockServer),
+    await mockTronGetTrc20Transactions(mockServer),
+    await mockTronGetTransactions(mockServer),
+    await mockExchangeRates(mockServer),
+    await mockFiatExchangeRates(mockServer),
+    await mockTronSpotPrices(mockServer),
+    await mockTrxNativeSpotPrices(mockServer),
+    await mockTronAssets(mockServer),
+    await mockBroadTransaction(mockServer),
+  ];
+}
+
+/**
+ * Inactive Tron address: account info 404/rejected, TRC20 balance from fallback endpoint.
+ * Covers NEB-461 (fallback token balances for inactive addresses).
+ */
+export async function mockTronApisInactiveAccountWithTrc20Fallback(
+  mockServer: Mockttp,
+): Promise<MockedEndpoint[]> {
+  return [
+    await mockTronFeatureFlags(mockServer),
+    await mockTronGetBlock(mockServer),
+    await mockTronGetAccountRequestFails(mockServer),
+    await mockTronGetAccountResource(mockServer),
+    await mockTronGetTrc20BalanceByAddress(mockServer),
     await mockTronGetTrc20Transactions(mockServer),
     await mockTronGetTransactions(mockServer),
     await mockExchangeRates(mockServer),
