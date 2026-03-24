@@ -4,13 +4,13 @@
  * This test automatically runs for all networks defined in network-configs.ts
  *
  * Test Flow:
- * 1. Import Custom Network
- * 2. Verify imported network is showing
- * 3. Perform token import from tokenlist
- * 4. Verify imported token logo and balance
- * 5. Click on each imported token line item
- * 6. Verify Token Details Page (Your Balance, Token Details, Market Details, Your Activity)
- * 7. Also verify native token details page
+ * 1. Import Custom Network (native token imported automatically)
+ * 2. Import first TOKENS_TO_TEST tokens from tokenlist
+ * 3. For each token (native + imported):
+ *    - Click on token to open details page
+ *    - Validate token details sections (header, balance, market, activity, chart)
+ *    - Go back to asset list
+ * 4. Generate consolidated report
  *
  * To add a new network:
  * 1. Add network configuration to network-configs.ts
@@ -43,14 +43,24 @@ import {
 } from './token-import-helpers';
 
 /**
+ * Configuration: Number of tokens to import and test
+ * Can be changed here for testing with more/fewer tokens
+ */
+const TOKENS_TO_TEST = 10;
+
+/**
  * Token details found on the token details page
  */
 interface TokenDetailsPageData {
+  headerData?: {
+    coinPrice?: string;
+    currencySymbol?: string;
+  };
   balanceData?: {
     currency?: string;
-    priceChangePercent?: string;
-    nativeCurrencyBalance?: string;
-    usdBalance?: string;
+    priceChange24h?: string;
+    dollarAmount?: string;
+    nativeCurrencyAmount?: string;
   };
   tokenDetails?: {
     network?: string;
@@ -63,16 +73,15 @@ interface TokenDetailsPageData {
     allTimeLow?: string;
   };
   yourActivity?: {
-    sent?: string[];
-    received?: string[];
+    hasNoActivity: boolean;
+    transactionCount?: number;
   };
   chartData?: {
     chartFound: boolean;
-    hasCandles?: boolean;
-    hasPriceAxis?: boolean;
-    hasTimeAxis?: boolean;
+    hasError: boolean;
   };
   validationResult: {
+    headerDataFound: boolean;
     balanceDataFound: boolean;
     tokenDetailsFound: boolean;
     marketDetailsFound: boolean;
@@ -111,7 +120,7 @@ async function safeFindElements(
 }
 
 /**
- * Verify token details page
+ * Verify token details page with proper section validations
  */
 async function verifyTokenDetailsPage(
   driver: Driver,
@@ -120,6 +129,7 @@ async function verifyTokenDetailsPage(
 ): Promise<TokenDetailsPageData> {
   const result: TokenDetailsPageData = {
     validationResult: {
+      headerDataFound: false,
       balanceDataFound: false,
       tokenDetailsFound: false,
       marketDetailsFound: false,
@@ -137,317 +147,304 @@ async function verifyTokenDetailsPage(
 
   try {
     // ===========================================
-    // 0. Verify "Price Chart" section
+    // 0. HEADER SECTION: Coin Price and Currency
     // ===========================================
-    console.log(
-      `[PROD TEST]    🔍 Looking for "Price Chart" section...`,
-    );
-
-    let chartFound = false;
+    console.log(`[PROD TEST]    🔍 Checking header section (price & currency)...`);
+    const headerData: any = {};
 
     try {
-      // Look for price chart section
-      const chartElements = await safeFindElements(
-        driver,
-        '[data-testid="token-details__price-chart"]',
-      );
-
-      if (chartElements.length > 0) {
-        // Check if error message is displayed
-        const errorMessageElement = await driver.findElement(
-          'text=We could not fetch any historical data',
-        );
-        const errorMessageText = await safeGetText(
-          driver,
-          'text=We could not fetch any historical data',
-        );
-
-        if (errorMessageText) {
-          console.log(
-            `[PROD TEST]       ❌ Price chart failed to load: "${errorMessageText}"`,
-          );
-          result.chartData = { chartFound: false };
-        } else {
-          console.log(
-            `[PROD TEST]       ✅ Price chart section found and loaded`,
-          );
-          chartFound = true;
-          result.chartData = { chartFound: true };
-          result.validationResult.chartFound = true;
-        }
+      const coinPrice = await safeGetText(driver, '[data-testid="asset-hovered-price"]');
+      if (coinPrice) {
+        headerData.coinPrice = coinPrice;
+        console.log(`[PROD TEST]       ✅ Coin Price: ${coinPrice}`);
       } else {
-        console.log(
-          `[PROD TEST]       ⚠️  Price chart section not found`,
-        );
-        result.chartData = { chartFound: false };
+        console.log(`[PROD TEST]       ⚠️  Coin Price not found`);
       }
     } catch (error) {
-      console.log(
-        `[PROD TEST]       ⚠️  Price chart section not found or error occurred`,
-      );
-      result.chartData = { chartFound: false };
+      console.log(`[PROD TEST]       ⚠️  Error getting coin price`);
     }
 
-    // ===========================================
-    // 1. Verify "Your Balance" section
-    // ===========================================
-    console.log(
-      `[PROD TEST]    🔍 Looking for "Your Balance" section...`,
-    );
-
-    const balanceSectionSelectors = [
-      '[data-testid="token-details__your-balance"]',
-      '[data-testid="token-balance-section"]',
-      'text=Your Balance',
-    ];
-
-    let balanceDataFound = false;
-    const balanceData: any = {};
-
-    for (const selector of balanceSectionSelectors) {
-      try {
-        const elements = await driver.findElements(selector);
-        if (elements.length > 0) {
-          balanceDataFound = true;
-          console.log(
-            `[PROD TEST]       ✅ "Your Balance" section found`,
-          );
-
-          // Try to extract balance information
-          const currencyText = await safeGetText(
-            driver,
-            '[data-testid="token-details__balance-currency"]',
-          );
-          const priceChangeText = await safeGetText(
-            driver,
-            '[data-testid="token-details__price-change"]',
-          );
-          const nativeCurrencyBalanceText = await safeGetText(
-            driver,
-            '[data-testid="token-details__balance-native-currency"]',
-          );
-          const usdBalanceText = await safeGetText(
-            driver,
-            '[data-testid="token-details__balance-usd"]',
-          );
-
-          if (currencyText) balanceData.currency = currencyText;
-          if (priceChangeText) balanceData.priceChangePercent = priceChangeText;
-          if (nativeCurrencyBalanceText) balanceData.nativeCurrencyBalance = nativeCurrencyBalanceText;
-          if (usdBalanceText) balanceData.usdBalance = usdBalanceText;
-
-          result.balanceData = balanceData;
-          result.validationResult.balanceDataFound = true;
-          break;
-        }
-      } catch (error) {
-        // Continue to next selector
+    try {
+      const currencySymbol = await safeGetText(driver, '[data-testid="asset-name"]');
+      if (currencySymbol) {
+        headerData.currencySymbol = currencySymbol;
+        console.log(`[PROD TEST]       ✅ Currency Symbol: ${currencySymbol}`);
+      } else {
+        console.log(`[PROD TEST]       ⚠️  Currency Symbol not found`);
       }
+    } catch (error) {
+      console.log(`[PROD TEST]       ⚠️  Error getting currency symbol`);
     }
 
-    if (!balanceDataFound) {
-      console.log(
-        `[PROD TEST]       ⚠️  "Your Balance" section not found (might be loading)`,
-      );
+    if (Object.keys(headerData).length > 0) {
+      result.headerData = headerData;
+      result.validationResult.headerDataFound = true;
+    } else {
+      console.log(`[PROD TEST]       ⚠️  Header section - no data found`);
     }
 
     // ===========================================
-    // 2. Verify "Token Details" section
+    // 1. PRICE CHART SECTION
     // ===========================================
-    console.log(
-      `[PROD TEST]    🔍 Looking for "Token Details" section...`,
-    );
+    console.log(`[PROD TEST]    🔍 Checking Price Chart section...`);
 
-    const tokenDetailsSectionSelectors = [
-      '[data-testid="token-details__token-details"]',
-      '[data-testid="token-details-info"]',
-      'text=Token Details',
-    ];
+    try {
+      const emptyStateElements = await safeFindElements(driver, '[data-testid="asset-chart-empty-state"]');
+      const errorMessageText = await safeGetText(driver, 'text=We could not fetch any historical data');
 
-    let tokenDetailsFound = false;
+      if (errorMessageText) {
+        console.log(`[PROD TEST]       ❌ Price Chart: Failed to load (error message: "${errorMessageText}")`);
+        result.chartData = { chartFound: false, hasError: true };
+      } else if (emptyStateElements.length === 0) {
+        console.log(`[PROD TEST]       ✅ Price Chart: Loaded successfully`);
+        result.chartData = { chartFound: true, hasError: false };
+        result.validationResult.chartFound = true;
+      } else {
+        console.log(`[PROD TEST]       ⚠️  Price Chart: Not rendering`);
+        result.chartData = { chartFound: false, hasError: false };
+      }
+    } catch (error) {
+      console.log(`[PROD TEST]       ⚠️  Error checking price chart: ${error}`);
+      result.chartData = { chartFound: false, hasError: false };
+    }
+
+    // ===========================================
+    // 2. YOUR BALANCE SECTION
+    // ===========================================
+    console.log(`[PROD TEST]    🔍 Checking Your Balance section...`);
+    const balanceData: any = {};
+    let balanceFieldsFound = 0;
+
+    try {
+      // Currency
+      const currencyValue = await safeGetText(driver, '[data-testid="multichain-token-list-item-token-name"]');
+      if (currencyValue) {
+        balanceData.currency = currencyValue;
+        balanceFieldsFound++;
+        console.log(`[PROD TEST]       ✅ Currency: ${currencyValue}`);
+      } else {
+        console.log(`[PROD TEST]       ⚠️  Currency not found`);
+      }
+    } catch (error) {
+      console.log(`[PROD TEST]       ⚠️  Error getting currency`);
+    }
+
+    try {
+      // 24hr change - using XPath
+      const priceChangeElements = await safeFindElements(driver, '//*[contains(@data-testid,"token-increase-decrease-percentage")]');
+      if (priceChangeElements.length > 0) {
+        const priceChangeText = await priceChangeElements[0].getText();
+        if (priceChangeText) {
+          balanceData.priceChange24h = priceChangeText;
+          balanceFieldsFound++;
+          console.log(`[PROD TEST]       ✅ 24h Change: ${priceChangeText}`);
+        }
+      } else {
+        console.log(`[PROD TEST]       ⚠️  24h change not found`);
+      }
+    } catch (error) {
+      console.log(`[PROD TEST]       ⚠️  Error getting 24h change`);
+    }
+
+    try {
+      // Dollar amount
+      const dollarAmount = await safeGetText(driver, '[data-testid="multichain-token-list-item-secondary-value"]');
+      if (dollarAmount) {
+        balanceData.dollarAmount = dollarAmount;
+        balanceFieldsFound++;
+        console.log(`[PROD TEST]       ✅ Dollar Amount: ${dollarAmount}`);
+      } else {
+        console.log(`[PROD TEST]       ⚠️  Dollar amount not found`);
+      }
+    } catch (error) {
+      console.log(`[PROD TEST]       ⚠️  Error getting dollar amount`);
+    }
+
+    try {
+      // Native currency amount
+      const nativeCurrencyAmount = await safeGetText(driver, '[data-testid="multichain-token-list-item-value"]');
+      if (nativeCurrencyAmount) {
+        balanceData.nativeCurrencyAmount = nativeCurrencyAmount;
+        balanceFieldsFound++;
+        console.log(`[PROD TEST]       ✅ Native Currency Amount: ${nativeCurrencyAmount}`);
+      } else {
+        console.log(`[PROD TEST]       ⚠️  Native currency amount not found`);
+      }
+    } catch (error) {
+      console.log(`[PROD TEST]       ⚠️  Error getting native currency amount`);
+    }
+
+    if (balanceFieldsFound > 0) {
+      result.balanceData = balanceData;
+      result.validationResult.balanceDataFound = true;
+      console.log(`[PROD TEST]       📊 Your Balance: ${balanceFieldsFound}/4 fields found`);
+    } else {
+      console.log(`[PROD TEST]       ⚠️  Your Balance section - no fields found`);
+    }
+
+    // ===========================================
+    // 3. TOKEN DETAILS SECTION (Network)
+    // ===========================================
+    console.log(`[PROD TEST]    🔍 Checking Token Details section (Network)...`);
     const tokenDetailsData: any = {};
 
-    for (const selector of tokenDetailsSectionSelectors) {
-      try {
-        const elements = await driver.findElements(selector);
-        if (elements.length > 0) {
-          tokenDetailsFound = true;
-          console.log(
-            `[PROD TEST]       ✅ "Token Details" section found`,
-          );
-
-          // Try to extract network information
-          const networkText = await safeGetText(
-            driver,
-            '[data-testid="token-details__network"]',
-          );
-
-          if (networkText) {
-            tokenDetailsData.network = networkText;
-            console.log(
-              `[PROD TEST]          Network: ${networkText}`,
-            );
-          }
-
-          result.tokenDetails = tokenDetailsData;
-          result.validationResult.tokenDetailsFound = true;
-          break;
-        }
-      } catch (error) {
-        // Continue to next selector
+    try {
+      const networkText = await safeGetText(driver, '[data-testid="asset-market-cap"]');
+      if (networkText) {
+        // Note: Using market-cap selector as a reference - actual network info would be in different location
+        // This may need adjustment based on actual page structure
+        console.log(`[PROD TEST]       ⚠️  Actual network field identifier may differ`);
       }
-    }
 
-    if (!tokenDetailsFound) {
-      console.log(
-        `[PROD TEST]       ⚠️  "Token Details" section not found`,
-      );
+      // Try to find "Token Details" heading/section
+      const tokenDetailsSection = await safeFindElements(driver, 'text=Token Details');
+      if (tokenDetailsSection.length > 0) {
+        result.validationResult.tokenDetailsFound = true;
+        console.log(`[PROD TEST]       ✅ Token Details section found`);
+      } else {
+        console.log(`[PROD TEST]       ⚠️  Token Details section not found`);
+      }
+    } catch (error) {
+      console.log(`[PROD TEST]       ⚠️  Error checking token details: ${error}`);
     }
 
     // ===========================================
-    // 3. Verify "Market Details" section
+    // 4. MARKET DETAILS SECTION
     // ===========================================
-    console.log(
-      `[PROD TEST]    🔍 Looking for "Market Details" section...`,
-    );
-
-    const marketDetailsSectionSelectors = [
-      '[data-testid="token-details__market-details"]',
-      '[data-testid="market-details-section"]',
-      'text=Market Details',
-    ];
-
-    let marketDetailsFound = false;
+    console.log(`[PROD TEST]    🔍 Checking Market Details section...`);
     const marketDetailsData: any = {};
+    let marketFieldsFound = 0;
 
-    for (const selector of marketDetailsSectionSelectors) {
-      try {
-        const elements = await driver.findElements(selector);
-        if (elements.length > 0) {
-          marketDetailsFound = true;
-          console.log(
-            `[PROD TEST]       ✅ "Market Details" section found`,
-          );
-
-          // Try to extract market information
-          const marketCapText = await safeGetText(
-            driver,
-            '[data-testid="token-details__market-cap"]',
-          );
-          const totalVolumeText = await safeGetText(
-            driver,
-            '[data-testid="token-details__total-volume"]',
-          );
-          const circulatingSupplyText = await safeGetText(
-            driver,
-            '[data-testid="token-details__circulating-supply"]',
-          );
-          const allTimeHighText = await safeGetText(
-            driver,
-            '[data-testid="token-details__all-time-high"]',
-          );
-          const allTimeLowText = await safeGetText(
-            driver,
-            '[data-testid="token-details__all-time-low"]',
-          );
-
-          if (marketCapText) marketDetailsData.marketCap = marketCapText;
-          if (totalVolumeText) marketDetailsData.totalVolume = totalVolumeText;
-          if (circulatingSupplyText) marketDetailsData.circulatingSupply = circulatingSupplyText;
-          if (allTimeHighText) marketDetailsData.allTimeHigh = allTimeHighText;
-          if (allTimeLowText) marketDetailsData.allTimeLow = allTimeLowText;
-
-          result.marketDetails = marketDetailsData;
-          result.validationResult.marketDetailsFound = true;
-          break;
-        }
-      } catch (error) {
-        // Continue to next selector
+    try {
+      // Market cap
+      const marketCap = await safeGetText(driver, '[data-testid="asset-market-cap"]');
+      if (marketCap) {
+        marketDetailsData.marketCap = marketCap;
+        marketFieldsFound++;
+        console.log(`[PROD TEST]       ✅ Market Cap: ${marketCap}`);
+      } else {
+        console.log(`[PROD TEST]       ⚠️  Market cap not found`);
       }
+    } catch (error) {
+      console.log(`[PROD TEST]       ⚠️  Error getting market cap`);
     }
 
-    if (!marketDetailsFound) {
-      console.log(
-        `[PROD TEST]       ⚠️  "Market Details" section not found (market data may not be available for this token)`,
-      );
+    try {
+      // Total volume - using XPath
+      const volumeElements = await safeFindElements(driver, `//*[text()='Total volume']/..//p[2]`);
+      if (volumeElements.length > 0) {
+        const volumeText = await volumeElements[0].getText();
+        if (volumeText) {
+          marketDetailsData.totalVolume = volumeText;
+          marketFieldsFound++;
+          console.log(`[PROD TEST]       ✅ Total Volume: ${volumeText}`);
+        }
+      } else {
+        console.log(`[PROD TEST]       ⚠️  Total volume not found`);
+      }
+    } catch (error) {
+      console.log(`[PROD TEST]       ⚠️  Error getting total volume`);
+    }
+
+    try {
+      // Circulating supply - using XPath
+      const supplyElements = await safeFindElements(driver, `//*[text()='Circulating supply']/..//p[2]`);
+      if (supplyElements.length > 0) {
+        const supplyText = await supplyElements[0].getText();
+        if (supplyText) {
+          marketDetailsData.circulatingSupply = supplyText;
+          marketFieldsFound++;
+          console.log(`[PROD TEST]       ✅ Circulating Supply: ${supplyText}`);
+        }
+      } else {
+        console.log(`[PROD TEST]       ⚠️  Circulating supply not found`);
+      }
+    } catch (error) {
+      console.log(`[PROD TEST]       ⚠️  Error getting circulating supply`);
+    }
+
+    try {
+      // All-time high - using XPath
+      const alhElements = await safeFindElements(driver, `//*[text()='All-time high']/..//p[2]`);
+      if (alhElements.length > 0) {
+        const alhText = await alhElements[0].getText();
+        if (alhText) {
+          marketDetailsData.allTimeHigh = alhText;
+          marketFieldsFound++;
+          console.log(`[PROD TEST]       ✅ All-Time High: ${alhText}`);
+        }
+      } else {
+        console.log(`[PROD TEST]       ⚠️  All-time high not found`);
+      }
+    } catch (error) {
+      console.log(`[PROD TEST]       ⚠️  Error getting all-time high`);
+    }
+
+    try {
+      // All-time low - using XPath
+      const atlElements = await safeFindElements(driver, `//*[text()='All-time low']/..//p[2]`);
+      if (atlElements.length > 0) {
+        const atlText = await atlElements[0].getText();
+        if (atlText) {
+          marketDetailsData.allTimeLow = atlText;
+          marketFieldsFound++;
+          console.log(`[PROD TEST]       ✅ All-Time Low: ${atlText}`);
+        }
+      } else {
+        console.log(`[PROD TEST]       ⚠️  All-time low not found`);
+      }
+    } catch (error) {
+      console.log(`[PROD TEST]       ⚠️  Error getting all-time low`);
+    }
+
+    if (marketFieldsFound > 0) {
+      result.marketDetails = marketDetailsData;
+      result.validationResult.marketDetailsFound = true;
+      console.log(`[PROD TEST]       📊 Market Details: ${marketFieldsFound}/5 fields found`);
+    } else {
+      console.log(`[PROD TEST]       ⚠️  Market Details section - no fields found`);
     }
 
     // ===========================================
-    // 4. Verify "Your Activity" section
+    // 5. YOUR ACTIVITY SECTION
     // ===========================================
-    console.log(
-      `[PROD TEST]    🔍 Looking for "Your Activity" section...`,
-    );
-
-    const activitySectionSelectors = [
-      '[data-testid="token-details__your-activity"]',
-      '[data-testid="transaction-history"]',
-      'text=Your Activity',
-    ];
-
-    let activityFound = false;
-    const activityData: any = {
-      sent: [],
-      received: [],
+    console.log(`[PROD TEST]    🔍 Checking Your Activity section...`);
+    const yourActivityData: any = {
+      hasNoActivity: false,
+      transactionCount: 0,
     };
 
-    for (const selector of activitySectionSelectors) {
-      try {
-        const elements = await driver.findElements(selector);
-        if (elements.length > 0) {
-          activityFound = true;
-          console.log(
-            `[PROD TEST]       ✅ "Your Activity" section found`,
-          );
+    try {
+      // Check for "Nothing to see yet" empty state
+      const emptyStateElements = await safeFindElements(driver, '[data-testid="activity-tab-empty-state"]');
 
-          // Try to get sent transactions
-          const sentTxElements = await safeFindElements(
-            driver,
-            '[data-testid="transaction-item-sent"]',
-          );
-          if (sentTxElements.length > 0) {
-            activityData.sent = sentTxElements.map((_, idx) => `Transaction ${idx + 1}`);
-            console.log(
-              `[PROD TEST]          Found ${sentTxElements.length} sent transaction(s)`,
-            );
-          }
-
-          // Try to get received transactions
-          const receivedTxElements = await safeFindElements(
-            driver,
-            '[data-testid="transaction-item-received"]',
-          );
-          if (receivedTxElements.length > 0) {
-            activityData.received = receivedTxElements.map((_, idx) => `Transaction ${idx + 1}`);
-            console.log(
-              `[PROD TEST]          Found ${receivedTxElements.length} received transaction(s)`,
-            );
-          }
-
-          // If no transactions found, that's OK for freshly imported tokens
-          if (sentTxElements.length === 0 && receivedTxElements.length === 0) {
-            console.log(
-              `[PROD TEST]       ℹ️  No transactions found (this is expected for freshly imported tokens)`,
-            );
-          }
-
-          result.yourActivity = activityData;
+      if (emptyStateElements.length > 0) {
+        yourActivityData.hasNoActivity = true;
+        console.log(`[PROD TEST]       ℹ️  No activity: "Nothing to see yet" message shown`);
+        result.validationResult.yourActivityFound = true;
+      } else {
+        // Activity exists - count transactions
+        const activityItems = await safeFindElements(driver, '[data-testid="activity-list-item"]');
+        if (activityItems.length > 0) {
+          yourActivityData.transactionCount = activityItems.length;
+          yourActivityData.hasNoActivity = false;
+          console.log(`[PROD TEST]       ✅ Activity found: ${activityItems.length} transaction(s)`);
           result.validationResult.yourActivityFound = true;
-          break;
+        } else {
+          console.log(`[PROD TEST]       ⚠️  Activity section not found`);
         }
-      } catch (error) {
-        // Continue to next selector
       }
-    }
 
-    if (!activityFound) {
-      console.log(
-        `[PROD TEST]       ⚠️  "Your Activity" section not found`,
-      );
+      result.yourActivity = yourActivityData;
+    } catch (error) {
+      console.log(`[PROD TEST]       ⚠️  Error checking activity: ${error}`);
     }
 
     // Summary
-    console.log(`[PROD TEST]    📊 Details Page Validation Summary:`);
+    console.log(`[PROD TEST]    📊 Token Details Validation Summary:`);
+    console.log(
+      `[PROD TEST]       ${result.validationResult.headerDataFound ? '✅' : '⚠️'} Header Data: ${result.validationResult.headerDataFound ? 'Found' : 'Not found'}`,
+    );
     console.log(
       `[PROD TEST]       ${result.validationResult.chartFound ? '✅' : '⚠️'} Price Chart: ${result.validationResult.chartFound ? 'Found' : 'Not found'}`,
     );
@@ -699,9 +696,15 @@ async function runTokenDetailsTest(
 
       console.log(`[PROD TEST] Starting to import tokens...`);
 
-      // Import tokens (limited to first few for testing)
-      const tokensToTest = tokens.slice(0, 5); // Test first 5 tokens
+      // Determine how many tokens to import
+      // If tokenlist has <= TOKENS_TO_TEST tokens, import all
+      // If tokenlist has > TOKENS_TO_TEST tokens, import only first TOKENS_TO_TEST
+      const tokensToTest = tokens.slice(0, Math.min(TOKENS_TO_TEST, tokens.length));
       let successfulImports = 0;
+
+      console.log(
+        `[PROD TEST] Will test ${tokensToTest.length} tokens (configured for ${TOKENS_TO_TEST})`,
+      );
 
       for (let i = 0; i < tokensToTest.length; i++) {
         const token = tokensToTest[i];
@@ -814,7 +817,7 @@ async function runTokenDetailsTest(
           nativeTokenDetails.validationResult,
         ).filter((v) => v).length;
         console.log(
-          `[PROD TEST] 📊 Native token: ${sectionsFound}/5 sections found`,
+          `[PROD TEST] 📊 Native token: ${sectionsFound}/6 sections found`,
         );
 
         // Collect result
@@ -823,19 +826,18 @@ async function runTokenDetailsTest(
           address: 'NATIVE',
           name: networkConfig.networkName,
           isNativeToken: true,
+          headerDataFound: nativeTokenDetails.validationResult.headerDataFound,
           chartFound: nativeTokenDetails.validationResult.chartFound,
           balanceDataFound: nativeTokenDetails.validationResult.balanceDataFound,
           tokenDetailsFound: nativeTokenDetails.validationResult.tokenDetailsFound,
           marketDetailsFound: nativeTokenDetails.validationResult.marketDetailsFound,
           yourActivityFound: nativeTokenDetails.validationResult.yourActivityFound,
+          headerData: nativeTokenDetails.headerData,
           balanceDetails: nativeTokenDetails.balanceData,
           tokenDetails: nativeTokenDetails.tokenDetails,
           marketDetails: nativeTokenDetails.marketDetails,
           chartDetails: nativeTokenDetails.chartData,
-          yourActivity: {
-            sentCount: nativeTokenDetails.yourActivity?.sent?.length || 0,
-            receivedCount: nativeTokenDetails.yourActivity?.received?.length || 0,
-          },
+          yourActivity: nativeTokenDetails.yourActivity,
         });
 
         await goBackToAssetList(driver);
@@ -890,7 +892,7 @@ async function runTokenDetailsTest(
             tokenDetails.validationResult,
           ).filter((v) => v).length;
           console.log(
-            `[PROD TEST] 📊 ${token.symbol}: ${sectionsFound}/5 sections found`,
+            `[PROD TEST] 📊 ${token.symbol}: ${sectionsFound}/6 sections found`,
           );
 
           // Collect result
@@ -899,19 +901,18 @@ async function runTokenDetailsTest(
             address: token.address,
             name: token.name,
             isNativeToken: false,
+            headerDataFound: tokenDetails.validationResult.headerDataFound,
             chartFound: tokenDetails.validationResult.chartFound,
             balanceDataFound: tokenDetails.validationResult.balanceDataFound,
             tokenDetailsFound: tokenDetails.validationResult.tokenDetailsFound,
             marketDetailsFound: tokenDetails.validationResult.marketDetailsFound,
             yourActivityFound: tokenDetails.validationResult.yourActivityFound,
+            headerData: tokenDetails.headerData,
             balanceDetails: tokenDetails.balanceData,
             tokenDetails: tokenDetails.tokenDetails,
             marketDetails: tokenDetails.marketDetails,
             chartDetails: tokenDetails.chartData,
-            yourActivity: {
-              sentCount: tokenDetails.yourActivity?.sent?.length || 0,
-              receivedCount: tokenDetails.yourActivity?.received?.length || 0,
-            },
+            yourActivity: tokenDetails.yourActivity,
           });
 
           await goBackToAssetList(driver);

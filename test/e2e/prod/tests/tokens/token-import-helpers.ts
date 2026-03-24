@@ -668,16 +668,21 @@ export type TokenDetailsValidationResult = {
   address: string;
   name: string;
   isNativeToken: boolean;
+  headerDataFound: boolean;
   chartFound: boolean;
   balanceDataFound: boolean;
   tokenDetailsFound: boolean;
   marketDetailsFound: boolean;
   yourActivityFound: boolean;
+  headerData?: {
+    coinPrice?: string;
+    currencySymbol?: string;
+  };
   balanceDetails?: {
     currency?: string;
-    priceChangePercent?: string;
-    nativeCurrencyBalance?: string;
-    usdBalance?: string;
+    priceChange24h?: string;
+    dollarAmount?: string;
+    nativeCurrencyAmount?: string;
   };
   tokenDetails?: {
     network?: string;
@@ -691,13 +696,11 @@ export type TokenDetailsValidationResult = {
   };
   chartDetails?: {
     chartFound: boolean;
-    hasCandles?: boolean;
-    hasPriceAxis?: boolean;
-    hasTimeAxis?: boolean;
+    hasError?: boolean;
   };
   yourActivity?: {
-    sentCount: number;
-    receivedCount: number;
+    hasNoActivity: boolean;
+    transactionCount?: number;
   };
 };
 
