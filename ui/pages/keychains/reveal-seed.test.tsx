@@ -467,11 +467,14 @@ describe('Reveal Seed Page', () => {
   });
 
   describe('dapp scan warning', () => {
-    beforeEach(() => {
-      mockScanUrlForPhishing.mockReset().mockResolvedValue(null);
-    });
+    function setupDappScanTest(
+      scanResult: { recommendedAction: string; hostname: string } | null = null,
+    ) {
+      mockScanUrlForPhishing.mockReset().mockResolvedValue(scanResult);
+    }
 
     it('does not show dapp scan warning when scan returns no result', async () => {
+      setupDappScanTest();
       const { queryByTestId, getByText } = renderWithProvider(
         <RevealSeedPage />,
         mockStore,
@@ -492,7 +495,7 @@ describe('Reveal Seed Page', () => {
     });
 
     it('shows dapp scan warning and hides generic warning when site is malicious', async () => {
-      mockScanUrlForPhishing.mockResolvedValue({
+      setupDappScanTest({
         recommendedAction: RecommendedAction.Block,
         hostname: 'evil.com',
       });
@@ -516,7 +519,7 @@ describe('Reveal Seed Page', () => {
     });
 
     it('shows acknowledgment checkbox when site is malicious', async () => {
-      mockScanUrlForPhishing.mockResolvedValue({
+      setupDappScanTest({
         recommendedAction: RecommendedAction.Block,
         hostname: 'evil.com',
       });
@@ -540,7 +543,7 @@ describe('Reveal Seed Page', () => {
     });
 
     it('continue button is disabled until checkbox is acknowledged on malicious site', async () => {
-      mockScanUrlForPhishing.mockResolvedValue({
+      setupDappScanTest({
         recommendedAction: RecommendedAction.Block,
         hostname: 'evil.com',
       });
@@ -577,7 +580,7 @@ describe('Reveal Seed Page', () => {
     });
 
     it('fires SrpRevealMaliciousSiteDetected metric only when site is malicious', async () => {
-      mockScanUrlForPhishing.mockResolvedValue({
+      setupDappScanTest({
         recommendedAction: RecommendedAction.Block,
         hostname: 'evil.com',
       });
@@ -613,8 +616,8 @@ describe('Reveal Seed Page', () => {
     });
 
     it('does not fire metric event when site is not malicious', async () => {
-      mockScanUrlForPhishing.mockResolvedValue({
-        recommendedAction: 'ALLOW',
+      setupDappScanTest({
+        recommendedAction: RecommendedAction.None,
         hostname: 'safe-site.com',
       });
 

@@ -7,7 +7,6 @@ import {
   Text,
   Box,
   Checkbox,
-  type CheckboxProps,
   TextVariant,
   TextColor,
   BoxBackgroundColor,
@@ -81,11 +80,11 @@ function RevealSeedPage() {
 
     if (activeTabOrigin) {
       scanUrlForPhishing(activeTabOrigin)
-        .then((result: unknown) => {
+        .then((result) => {
           if (cancelled) {
             return;
           }
-          setScanResult(result as PhishingDetectionScanResult);
+          setScanResult(result);
         })
         .catch(() => {
           // Scan failed — no action needed
@@ -434,9 +433,7 @@ function RevealSeedPage() {
             id="dapp-scan-acknowledge-checkbox"
             label={t('alertModalAcknowledge')}
             isSelected={dangerAcknowledged}
-            onChange={
-              setDangerAcknowledged as unknown as CheckboxProps['onChange']
-            }
+            onChange={() => setDangerAcknowledged(!dangerAcknowledged)}
             inputProps={{
               'data-testid': 'dapp-scan-acknowledge-checkbox',
             }}
