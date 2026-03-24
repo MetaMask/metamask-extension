@@ -83,6 +83,8 @@ ignores:
   - 'core-js-pure' # polyfills
   - 'react-compiler-webpack' # build tool
   # babel
+  - '@babel/plugin-transform-class-properties'
+  - '@babel/plugin-transform-private-methods'
   - '@babel/plugin-transform-logical-assignment-operators'
   - 'babel-plugin-react-compiler'
   # used in image optimization script
