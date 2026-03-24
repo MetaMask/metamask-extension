@@ -5,7 +5,6 @@ import {
   AvatarTokenSize,
   Box,
   BoxAlignItems,
-  BoxFlexDirection,
   BoxJustifyContent,
   Text,
   TextColor,
@@ -18,15 +17,19 @@ import {
 } from '../../../../../components/component-library';
 import { BackgroundColor } from '../../../../../helpers/constants/design-system';
 import { Skeleton } from '../../../../../components/component-library/skeleton';
+import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useConfirmContext } from '../../../context/confirm';
 import useConfirmationNetworkInfo from '../../../hooks/useConfirmationNetworkInfo';
 import { useMerklClaimAmount } from '../../../hooks/musd/useMerklClaimAmount';
 import { getAssetImageUrl } from '../../../../../../shared/lib/asset-utils';
 import { MUSD_TOKEN_ADDRESS } from '../../../../../components/app/musd/constants';
+import SendHeadingLayout from '../../confirm/info/shared/send-heading-layout/send-heading-layout';
 
-const MUSD_SYMBOL = 'MUSD';
+const MUSD_SYMBOL = 'mUSD';
 
 const MusdClaimHeading = () => {
+  const t = useI18nContext();
+
   const { currentConfirmation: transactionMeta } =
     useConfirmContext<TransactionMeta>();
 
@@ -46,29 +49,16 @@ const MusdClaimHeading = () => {
       justifyContent={BoxJustifyContent.Center}
       style={{ display: 'inline-flex' }}
     >
-      <BadgeWrapper
-        badge={
-          <AvatarNetwork
-            size={AvatarNetworkSize.Sm}
-            name={networkDisplayName}
-            src={networkImageUrl}
-            backgroundColor={BackgroundColor.backgroundDefault}
-            borderWidth={2}
-          />
-        }
-      >
-        <AvatarToken
-          src={musdTokenImageUrl}
-          name={MUSD_SYMBOL}
-          size={AvatarTokenSize.Xl}
-        />
-      </BadgeWrapper>
+      <AvatarToken
+        src={musdTokenImageUrl}
+        name={MUSD_SYMBOL}
+        size={AvatarTokenSize.Xl}
+      />
     </Box>
   );
 
   const TokenValueSkeleton = (
     <Box
-      flexDirection={BoxFlexDirection.Row}
       alignItems={BoxAlignItems.Center}
       gap={2}
       style={{ display: 'inline-flex' }}
@@ -82,7 +72,6 @@ const MusdClaimHeading = () => {
     <Text
       variant={TextVariant.HeadingLg}
       color={TextColor.Inherit}
-      style={{ width: '100%', textAlign: 'center' }}
       data-testid="musd-claim-heading-amount"
     >
       {pending
@@ -101,7 +90,6 @@ const MusdClaimHeading = () => {
         <Text
           variant={TextVariant.BodyMd}
           color={TextColor.TextAlternative}
-          style={{ width: '100%', textAlign: 'center' }}
           data-testid="musd-claim-heading-fiat"
         >
           {fiatDisplayValue}
@@ -109,24 +97,10 @@ const MusdClaimHeading = () => {
       );
 
   return (
-    <Box
-      flexDirection={BoxFlexDirection.Column}
-      justifyContent={BoxJustifyContent.Center}
-      alignItems={BoxAlignItems.Center}
-      paddingTop={2}
-      paddingBottom={2}
-      gap={2}
-      data-testid="musd-claim-heading"
-    >
-      {TokenImage}
-      <Box
-        flexDirection={BoxFlexDirection.Column}
-        alignItems={BoxAlignItems.Center}
-      >
-        {TokenValue}
-        {TokenFiatValue}
-      </Box>
-    </Box>
+    <SendHeadingLayout label={t('musdClaimTitle')} image={TokenImage}>
+      {TokenValue}
+      {TokenFiatValue}
+    </SendHeadingLayout>
   );
 };
 

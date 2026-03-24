@@ -4163,6 +4163,10 @@
     "message": "Claiming to",
     "description": "Label for the account row in the mUSD claim confirmation screen"
   },
+  "musdClaimSendingTo": {
+    "message": "Sending to",
+    "description": "Label prefix for the account row in the mUSD claim confirmation screen, followed by the wallet name"
+  },
   "musdClaimTitle": {
     "message": "Claim bonus",
     "description": "Title for the mUSD bonus claim confirmation screen"
