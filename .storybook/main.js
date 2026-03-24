@@ -3,6 +3,7 @@ const { ProvidePlugin } = require('webpack');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const dotenv = require('dotenv');
 dotenv.config({ path: path.resolve(__dirname, '../.metamaskrc') });
+const tailwindcss = require('../development/lib/load-tailwind-postcss.cjs');
 
 module.exports = {
   core: {
@@ -77,7 +78,7 @@ module.exports = {
           loader: 'postcss-loader',
           options: {
             postcssOptions: {
-              plugins: ['@tailwindcss/postcss'],
+              plugins: [tailwindcss()],
             },
           },
         },
