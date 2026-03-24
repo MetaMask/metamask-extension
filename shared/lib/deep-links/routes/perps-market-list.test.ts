@@ -2,7 +2,10 @@ import {
   VALID_MARKET_FILTERS,
   type MarketFilter,
 } from '../../../constants/perps';
-import { perpsMarketList, PerpsMarketListQueryParams } from './perps-market-list';
+import {
+  perpsMarketList,
+  PerpsMarketListQueryParams,
+} from './perps-market-list';
 import { PERPS_MARKET_LIST_ROUTE, Destination } from './route';
 
 function assertPathDestination(

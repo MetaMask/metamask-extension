@@ -15,10 +15,7 @@ export const perpsMarketList = new Route({
     const query = new URLSearchParams();
     const filter = params.get(PerpsMarketListQueryParams.Filter);
 
-    if (
-      filter &&
-      VALID_MARKET_FILTERS.includes(filter as MarketFilter)
-    ) {
+    if (filter && VALID_MARKET_FILTERS.includes(filter as MarketFilter)) {
       query.set(PerpsMarketListQueryParams.Filter, filter);
     }
 
