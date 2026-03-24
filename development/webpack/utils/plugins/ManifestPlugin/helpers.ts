@@ -30,9 +30,9 @@ function getManifestKey(env: Pick<Args, 'env'>['env']): string | undefined {
  * given build args.
  *
  * Applies the following transformations:
- * - If `env` is `release-candidate`, sets the release-candidate manifest key
- * - If `env` is any other non-production environment, sets the default
- * non-production manifest key
+ * - For non-firefox builds, if `env` is `release-candidate`, sets the
+ * release-candidate manifest key, otherwise sets the default non-production
+ * manifest key.
  * - If `isDevelopment` is `true`, merges manifest override flags from the file
  * specified by `MANIFEST_OVERRIDES`
  * - If `test` is `true`, adds the "tabs" permission to the manifest
@@ -78,13 +78,11 @@ export function transformManifest(
     browserManifest: chrome.runtime.Manifest,
     browser: Browser,
   ) {
-    if (browser === 'firefox') {
+    if (browser === 'chrome') {
       // firefox uses a different key generation method and does not need this
       // fixed Chrome manifest key.
-      return;
+      browserManifest.key = manifestKey;
     }
-
-    browserManifest.key = manifestKey;
   }
 
   if (manifestKey) {
