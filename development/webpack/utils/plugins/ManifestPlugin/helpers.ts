@@ -71,7 +71,7 @@ export function transformManifest(
    * otherwise the manifest flags transform would not be able to override the
    * key when the manifest overrides file is used to set a different one.
    *
-   * @param browserManifest - The Chrome extension manifest object to modify
+   * @param browserManifest - The extension manifest object to modify
    * @param browser - The target browser for the manifest
    */
   function addManifestKey(
@@ -92,12 +92,14 @@ export function transformManifest(
   }
 
   /**
-   * This function sets predefined flags in the manifest's _flags property
-   * that are stored in the file specified by the `MANIFEST_OVERRIDES` build variable
+   * This function merges manifest overrides from the file specified by
+   * `MANIFEST_OVERRIDES` into the manifest.
    *
    * @param browserManifest - The extension manifest object to modify
    */
-  function addManifestFlags(browserManifest: chrome.runtime.Manifest): void {
+  function applyManifestOverrides(
+    browserManifest: chrome.runtime.Manifest,
+  ): void {
     let manifestFlags;
 
     if (manifestOverridesPath) {
@@ -129,8 +131,8 @@ export function transformManifest(
   }
 
   if (isDevelopment) {
-    // Add manifest flags only for development builds
-    transforms.push(addManifestFlags);
+    // Apply manifest overrides only for development builds
+    transforms.push(applyManifestOverrides);
   }
 
   function addTabsPermission(browserManifest: chrome.runtime.Manifest) {
