@@ -10,8 +10,9 @@ import {
   PersistenceManager,
 } from '../stores/persistence-manager';
 import { ErrorLike } from '../../../../shared/constants/errors';
-import { runRepairAndReloadPorts } from '../repair';
+import { requestRepair } from '../repair';
 import { tryPostMessage } from '../start-up-errors/start-up-errors';
+import { RELOAD_WINDOW } from '../../../../shared/constants/start-up-errors';
 import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
 import { trackVaultCorruptionEvent } from './track-vault-corruption';
 
@@ -218,11 +219,25 @@ export class CorruptionHandler {
           );
 
           try {
-            await runRepairAndReloadPorts(
-              backup,
-              repairCallback,
-              connectedPorts,
-            );
+            await requestRepair(async function repairDatabase() {
+              // this callback might be ignored if another repair request
+              // is already in progress.
+
+              try {
+                await repairCallback(backup);
+              } finally {
+                // always reload the UI because if `initBackground` worked, the UI
+                // will redirect to the login screen, and if it didn't work, it'll
+                // show them a new error message (which could be the same as the
+                // vault error that sent them here in the first place, but hopefully
+                // not!)
+                connectedPorts.forEach((connectedPort) => {
+                  // as each page reloads, it will remove itself from the
+                  // `connectedPorts` on disconnection.
+                  tryPostMessage(connectedPort, RELOAD_WINDOW);
+                });
+              }
+            });
             resolve();
           } catch (e) {
             reject(e);

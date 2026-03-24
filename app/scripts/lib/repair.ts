@@ -1,8 +1,3 @@
-import type { Backup } from '../../../shared/lib/backup';
-import { RELOAD_WINDOW } from '../../../shared/constants/start-up-errors';
-import { openRestoringTabAndReload } from './critical-error/critical-error-tab-handoff';
-import { tryPostMessage } from './start-up-errors/start-up-errors';
-
 const REPAIR_LOCK_NAME = 'repairDatabase';
 
 /**
@@ -31,46 +26,4 @@ export async function requestRepair(
       return true;
     },
   );
-}
-
-export async function runRepairAndReloadExtension(
-  requestSafeReload: () => Promise<void>,
-): Promise<boolean> {
-  return requestRepair(async () => {
-    await openRestoringTabAndReload(requestSafeReload);
-  });
-}
-
-/**
- * Runs the repair callback under the repair lock, then sends RELOAD_WINDOW to
- * all given ports. Used by state-corruption restore (in-process repair).
- *
- * @param backup - Backup to pass to the repair callback.
- * @param repairCallback - Called with backup when the repair lock is acquired.
- * @param connectedPorts - Ports to send RELOAD_WINDOW to after repair (e.g. all UI windows).
- */
-export async function runRepairAndReloadPorts(
-  backup: Backup | null,
-  repairCallback: (backup: Backup | null) => void | Promise<void>,
-  connectedPorts: Set<chrome.runtime.Port>,
-): Promise<void> {
-  await requestRepair(async () => {
-    // this callback might be ignored if another repair request
-    // is already in progress.
-
-    try {
-      await repairCallback(backup);
-    } finally {
-      // always reload the UI because if `initBackground` worked, the UI
-      // will redirect to the login screen, and if it didn't work, it'll
-      // show them a new error message (which could be the same as the
-      // error that sent them here in the first place, but hopefully
-      // not!)
-      connectedPorts.forEach((port) => {
-        // as each page reloads, it will remove itself from the
-        // `connectedPorts` on disconnection.
-        tryPostMessage(port, RELOAD_WINDOW);
-      });
-    }
-  });
 }

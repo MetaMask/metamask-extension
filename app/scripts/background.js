@@ -102,8 +102,9 @@ import {
   readPendingCriticalErrorRestore,
   clearPendingCriticalErrorRestore,
   handoffRestoringTabToExtension,
+  openRestoringTabAndReload,
 } from './lib/critical-error/critical-error-tab-handoff';
-import { runRepairAndReloadExtension } from './lib/repair';
+import { requestRepair } from './lib/repair';
 import { tryPostMessage } from './lib/start-up-errors/start-up-errors';
 import { CronjobControllerStorageManager } from './lib/CronjobControllerStorageManager';
 import { ReferralTriggerType } from './lib/createDefiReferralMiddleware';
@@ -572,7 +573,8 @@ const handleOnConnect = async (port) => {
   if (isMetaMaskUIPort) {
     criticalErrorHandler.registerPortForCriticalError({
       port,
-      repairCallback: () => runRepairAndReloadExtension(requestSafeReload),
+      repairCallback: () =>
+        requestRepair(() => openRestoringTabAndReload(requestSafeReload)),
     });
     removeCriticalErrorListeners = () =>
       criticalErrorHandler.removeListenersForPort(port);
