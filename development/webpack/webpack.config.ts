@@ -267,11 +267,18 @@ const config = {
   output: {
     wasmLoading: 'fetch',
     // filenames for *initial* files (essentially JS entry points)
-    filename: '[name].[contenthash].js',
+    // content hashes are only useful in production for cache-busting; in
+    // development they cause a race condition in watch mode where
+    // service-worker.js is rewritten with new chunk hash references before the
+    // new chunk files have finished being written to disk, which causes
+    // importScripts() to fail when Chrome restarts the MV3 service worker.
+    filename: isDevelopment ? '[name].js' : '[name].[contenthash].js',
     path: join(context, '..', 'dist'),
-    // Clean the output directory before emit, so that only the latest build
-    // files remain. Nearly 0 performance penalty for this clean up step.
-    clean: true,
+    // Clean the output directory before emit in production so that only the
+    // latest build files remain. Disabled in development so that existing
+    // extension files survive across the initial build and incremental rebuilds,
+    // keeping the extension loadable in Chrome throughout.
+    clean: !isDevelopment,
     // relative to HTML page. This value is essentially prepended to asset URLs
     // in the output HTML, i.e., `<script src="<publicPath><resourcePath>">`.
     publicPath: '',
