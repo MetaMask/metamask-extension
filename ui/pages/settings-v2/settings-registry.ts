@@ -197,7 +197,7 @@ export const SETTINGS_V2_TABS = Object.entries(SETTINGS_V2_ROUTES)
     return Boolean(meta.isTab && meta.iconName && meta.component);
   })
   .map(([path, meta]) => ({
-    id: path,
+    id: path.split('/').pop() || path,
     path,
     labelKey: meta.labelKey,
     iconName: meta.iconName,
