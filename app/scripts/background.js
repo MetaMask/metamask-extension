@@ -125,7 +125,7 @@ const BADGE_MAX_COUNT = 9;
 
 const inTest = process.env.IN_TEST;
 let inTestRestoreFlow = false;
-let backupExistedAtStartup = false;
+let inTestHasVault = false;
 const { safePersist, requestSafeReload, evacuate } =
   getRequestSafeReload(persistenceManager);
 
@@ -609,7 +609,7 @@ const handleOnConnect = async (port) => {
       inTest &&
       getManifestFlags().testing?.simulateBackgroundStateSyncHang &&
       !inTestRestoreFlow &&
-      backupExistedAtStartup
+      inTestHasVault
     ) {
       return;
     }
@@ -2380,7 +2380,7 @@ async function initBackground(backup) {
       inTest &&
       !backup &&
       getManifestFlags().testing?.simulateBackgroundInitializationHang &&
-      backupExistedAtStartup
+      inTestHasVault
     ) {
       log.info(
         'Simulating initialization hang (simulateBackgroundInitializationHang flag is set, backup exists)',
@@ -2419,16 +2419,18 @@ async function startExtensionInitialization() {
     backup = await persistenceManager.getBackup().catch(() => null);
   }
 
+  const backupHasVault = hasVault(backup);
+
   if (
     testingFlags?.simulateBackgroundStateSyncHang ||
     testingFlags?.simulateBackgroundInitializationHang
   ) {
-    backupExistedAtStartup = Boolean(backup?.KeyringController);
+    inTestHasVault = backupHasVault;
   }
 
   if (pendingRestore) {
     await clearPendingCriticalErrorRestore(browser);
-    if (hasVault(backup)) {
+    if (backupHasVault) {
       if (inTest) {
         inTestRestoreFlow = true;
       }
