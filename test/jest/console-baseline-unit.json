@@ -506,8 +506,10 @@
     },
     "ui/components/multichain/import-tokens-modal/import-tokens-modal.test.js": {
       "React: Act warnings (component updates not wrapped)": 15,
+      "React: DOM nesting violations": 1,
       "React: PropTypes validation failures": 2,
-      "Reselect: Identity function warnings": 1
+      "Reselect: Identity function warnings": 1,
+      "error: Warning: React does not recognize": 1
     },
     "ui/components/multichain/network-list-item/network-list-item.test.js": {
       "React: Act warnings (component updates not wrapped)": 1
