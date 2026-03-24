@@ -4,6 +4,8 @@
       "packages": {
         "$root$": true,
         "@babel/preset-env": true,
+        "@babel/preset-env>@babel/plugin-transform-class-properties": true,
+        "@babel/preset-env>@babel/plugin-transform-private-methods": true,
         "@babel/preset-react": true,
         "@babel/plugin-transform-logical-assignment-operators": true,
         "@babel/plugin-transform-runtime": true,
