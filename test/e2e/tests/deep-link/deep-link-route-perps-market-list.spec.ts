@@ -13,8 +13,7 @@ import {
 } from './helpers';
 
 describe('Deep Link - /perps/market-list Route', function () {
-  // eslint-disable-next-line mocha/no-skipped-tests -- WebSocket mocks not yet wired for real PerpsStreamManager
-  it.skip('navigates to market list page without a filter', async function () {
+  it('navigates to market list page without a filter', async function () {
     const keyPair = await generateECDSAKeyPair();
     const deepLinkPublicKey = bytesToB64(
       await crypto.subtle.exportKey('raw', keyPair.publicKey),
@@ -59,8 +58,7 @@ describe('Deep Link - /perps/market-list Route', function () {
     );
   });
 
-  // eslint-disable-next-line mocha/no-skipped-tests -- WebSocket mocks not yet wired for real PerpsStreamManager
-  it.skip('navigates to market list page with a filter pre-selected', async function () {
+  it('navigates to market list page with a filter pre-selected', async function () {
     const keyPair = await generateECDSAKeyPair();
     const deepLinkPublicKey = bytesToB64(
       await crypto.subtle.exportKey('raw', keyPair.publicKey),

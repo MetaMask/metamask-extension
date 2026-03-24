@@ -13,7 +13,7 @@ import {
 } from './helpers';
 
 describe('Deep Link - /perps/market Route', function () {
-  // eslint-disable-next-line mocha/no-skipped-tests -- WebSocket mocks not yet wired for real PerpsStreamManager
+  // eslint-disable-next-line mocha/no-skipped-tests -- market detail checkPageIsLoaded requires WebSocket market data to render past the skeleton
   it.skip('navigates to market detail page for a crypto symbol', async function () {
     const keyPair = await generateECDSAKeyPair();
     const deepLinkPublicKey = bytesToB64(
@@ -59,7 +59,7 @@ describe('Deep Link - /perps/market Route', function () {
     );
   });
 
-  // eslint-disable-next-line mocha/no-skipped-tests -- WebSocket mocks not yet wired for real PerpsStreamManager
+  // eslint-disable-next-line mocha/no-skipped-tests -- market detail checkPageIsLoaded requires WebSocket market data to render past the skeleton
   it.skip('navigates to market detail page for a HIP-3 symbol', async function () {
     const keyPair = await generateECDSAKeyPair();
     const deepLinkPublicKey = bytesToB64(
