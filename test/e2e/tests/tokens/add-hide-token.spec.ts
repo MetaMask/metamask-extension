@@ -5,10 +5,13 @@ import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import AssetListPage from '../../page-objects/pages/home/asset-list';
 import { login } from '../../page-objects/flows/login.flow';
-import { DEFAULT_FIXTURE_ACCOUNT_LOWERCASE } from '../../constants';
+import {
+  DEFAULT_FIXTURE_ACCOUNT,
+  DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
+} from '../../constants';
 import {
   createBalanceUpdateNotification,
-  waitForAccountActivitySubscription,
+  getLastAccountActivitySubscriptionId,
 } from '../../websocket/account-activity-mocks';
 import WebSocketRegistry from '../../websocket/registry';
 import { WEBSOCKET_SERVICES } from '../../websocket/constants';
@@ -102,20 +105,25 @@ describe('Add hide token', function () {
           WEBSOCKET_SERVICES.accountActivity,
         );
 
-        // Register the subscription waiter BEFORE login so we don't miss
-        // the subscribe handshake if auth completes quickly.
-        const subscriptionPromise = waitForAccountActivitySubscription();
-
         await login(driver, { localNode: localNodes[0] });
 
         const assetListPage = new AssetListPage(driver);
+
         await assetListPage.checkTokenAmountIsDisplayed('10 TST');
 
-        const subscriptionId = await subscriptionPromise;
-        console.log(`Subscription established: ${subscriptionId}`);
+        await driver.waitUntil(
+          async () => getLastAccountActivitySubscriptionId() !== null,
+          { timeout: 15000, interval: 100 },
+        );
+        const subscriptionId = getLastAccountActivitySubscriptionId();
+        if (!subscriptionId) {
+          throw new Error(
+            'Expected Account Activity WebSocket subscription id after login',
+          );
+        }
         const notification = createBalanceUpdateNotification({
           subscriptionId,
-          channel: `account-activity.v1.eip155:0:${account}`,
+          channel: `account-activity.v1.eip155:0:${DEFAULT_FIXTURE_ACCOUNT}`,
           address: account,
           chain: `eip155:${chainId}`,
           updates: [

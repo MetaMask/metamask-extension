@@ -15,6 +15,14 @@ type SubscriptionWaiter = {
 };
 
 let subscriptionWaiters: SubscriptionWaiter[] = [];
+let lastAccountActivitySubscriptionId: string | null = null;
+
+/**
+ * @returns The latest subscription id from the Account Activity mock, or null.
+ */
+export function getLastAccountActivitySubscriptionId(): string | null {
+  return lastAccountActivitySubscriptionId;
+}
 
 /**
  * Returns a Promise that resolves with the subscriptionId once the next
@@ -55,6 +63,7 @@ export function resetAccountActivityMockState(): void {
     clearTimeout(waiter.timer);
   }
   subscriptionWaiters = [];
+  lastAccountActivitySubscriptionId = null;
 }
 
 const DEFAULT_CHAINS_UP = [
@@ -173,6 +182,7 @@ async function setupAccountActivityWebsocketMocks(
 
           setTimeout(() => {
             socket.send(JSON.stringify(subscribeResponse));
+            lastAccountActivitySubscriptionId = subscriptionId;
             console.log(
               `[AccountActivity Mock] Subscribe response sent: subscriptionId=${subscriptionId}`,
             );
