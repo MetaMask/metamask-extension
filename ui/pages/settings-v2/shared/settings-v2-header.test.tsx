@@ -86,23 +86,58 @@ describe('SettingsV2Header', () => {
     expect(onClose).toHaveBeenCalledTimes(1);
   });
 
-  it('switches to search mode when search is clicked', () => {
-    const onSearchChange = jest.fn();
-
+  it('calls onOpenSearch when search button is clicked', () => {
+    const onOpenSearch = jest.fn();
     renderWithProvider(
       <SettingsV2Header
         title={messages.settings.message}
         isPopup
         isOnSettingsRoot
-        searchValue=""
-        onSearchChange={onSearchChange}
-        onSearchClear={jest.fn()}
+        onOpenSearch={onOpenSearch}
       />,
       createMockStore(),
     );
 
     fireEvent.click(screen.getByTestId('settings-v2-header-search-button'));
 
+    expect(onOpenSearch).toHaveBeenCalledTimes(1);
+  });
+
+  it('renders search input when isSearchOpen is true', () => {
+    renderWithProvider(
+      <SettingsV2Header
+        title={messages.settings.message}
+        isSearchOpen
+        searchValue=""
+        onSearchChange={jest.fn()}
+        onSearchClear={jest.fn()}
+      />,
+      createMockStore(),
+    );
+
     expect(screen.getByTestId('settings-v2-header-search-input')).toBeVisible();
+    expect(
+      screen.queryByText(messages.settings.message),
+    ).not.toBeInTheDocument();
+  });
+
+  it('calls onCloseSearch and onSearchClear when close is clicked in search mode', () => {
+    const onCloseSearch = jest.fn();
+    const onSearchClear = jest.fn();
+    renderWithProvider(
+      <SettingsV2Header
+        title={messages.settings.message}
+        isSearchOpen
+        searchValue="test"
+        onCloseSearch={onCloseSearch}
+        onSearchClear={onSearchClear}
+      />,
+      createMockStore(),
+    );
+
+    fireEvent.click(screen.getByLabelText(messages.close.message));
+
+    expect(onCloseSearch).toHaveBeenCalledTimes(1);
+    expect(onSearchClear).toHaveBeenCalledTimes(1);
   });
 });

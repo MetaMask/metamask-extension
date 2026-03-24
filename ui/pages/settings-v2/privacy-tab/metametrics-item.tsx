@@ -23,6 +23,7 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { SettingsToggleItem } from '../../settings/settings-toggle-item';
+import { PRIVACY_ITEMS } from '../search-config';
 
 export const MetametricsToggleItem = () => {
   const t = useI18nContext();
@@ -90,7 +91,7 @@ export const MetametricsToggleItem = () => {
   return (
     <>
       <SettingsToggleItem
-        title={t('participateInMetaMetrics')}
+        title={t(PRIVACY_ITEMS.metametrics)}
         description={t('participateInMetaMetricsDescription')}
         value={participateInMetaMetrics}
         onToggle={handleToggle}

@@ -16,6 +16,7 @@ import { Link } from 'react-router-dom';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { REVEAL_SRP_LIST_ROUTE } from '../../../helpers/constants/routes';
 import { getIsPrimarySeedPhraseBackedUp } from '../../../ducks/metamask/metamask';
+import { SECURITY_ITEMS } from '../search-config';
 
 const ManageWalletRecoveryItem = () => {
   const t = useI18nContext();
@@ -30,7 +31,7 @@ const ManageWalletRecoveryItem = () => {
     >
       <Box flexDirection={BoxFlexDirection.Column} gap={1}>
         <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
-          {t('manageWalletRecovery')}
+          {t(SECURITY_ITEMS['manage-wallet-recovery'])}
         </Text>
         {!isSRPBackedUp && (
           <Box
