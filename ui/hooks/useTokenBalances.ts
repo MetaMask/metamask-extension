@@ -8,11 +8,13 @@ import {
 import { getTokenBalances } from '../ducks/metamask/metamask';
 import { hexToDecimal } from '../../shared/lib/conversion.utils';
 import { getEnabledChainIds } from '../selectors/multichain/networks';
+import { getIsAssetsUnifyStateEnabled } from '../selectors/assets-unify-state';
 import useMultiPolling from './useMultiPolling';
 
 export const useTokenBalances = ({ chainIds }: { chainIds?: Hex[] } = {}) => {
   const tokenBalances = useSelector(getTokenBalances);
   const enabledChainIds = useSelector(getEnabledChainIds);
+  const isAssetsUnifyStateEnabled = useSelector(getIsAssetsUnifyStateEnabled);
 
   const pollableChains =
     chainIds && chainIds.length > 0 ? chainIds : enabledChainIds;
@@ -22,7 +24,7 @@ export const useTokenBalances = ({ chainIds }: { chainIds?: Hex[] } = {}) => {
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
     // eslint-disable-next-line @typescript-eslint/no-misused-promises
     stopPollingByPollingToken: tokenBalancesStopPollingByPollingToken,
-    input: [pollableChains],
+    input: isAssetsUnifyStateEnabled ? [] : [pollableChains],
   });
 
   return { tokenBalances };
@@ -44,6 +46,17 @@ export const useTokenTracker = ({
   hideZeroBalanceTokens?: boolean;
 }) => {
   const { tokenBalances } = useTokenBalances({ chainIds: [chainId] });
+  const isAssetsUnifyStateEnabled = useSelector(getIsAssetsUnifyStateEnabled);
+  if (isAssetsUnifyStateEnabled) {
+    return {
+      tokensWithBalances: tokens.map((token) => ({
+        ...token,
+        balance: '0',
+        balanceError: null,
+        string: stringifyBalance('0', token.decimals),
+      })),
+    };
+  }
 
   const tokensWithBalances = tokens.reduce(
     (acc, token) => {

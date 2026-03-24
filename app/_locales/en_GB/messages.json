@@ -339,6 +339,18 @@
   "addWallet": {
     "message": "Add wallet"
   },
+  "addedProtectionDescription": {
+    "message": "You're interacting with an unknown address. This helps prevent malicious transactions."
+  },
+  "addedProtectionOptionalBadge": {
+    "message": "Optional"
+  },
+  "addedProtectionTitle": {
+    "message": "Added protection"
+  },
+  "addedProtectionTooltip": {
+    "message": "If the final transaction doesn't match this preview, it won't go through. You only pay the network fee."
+  },
   "additionalNetworks": {
     "message": "Additional networks"
   },
@@ -1094,7 +1106,7 @@
     "message": "Lowest cost"
   },
   "bridgeMarketClosedAction": {
-    "message": "Market is closed"
+    "message": "Market closed"
   },
   "bridgeMarketClosedDescription": {
     "message": "This stock token is currently outside trading hours. Try again when the market reopens."
@@ -4181,11 +4193,11 @@
     "description": "$1 is the dapp and $2 is the number of snaps it wants to connect to."
   },
   "musdBonusExplanation": {
-    "message": "Convert your stablecoins to mUSD, MetaMask's US dollar-backed stablecoin, and receive up to a $1% bonus. Powered by Relay. $2",
+    "message": "Convert your stablecoins to mUSD, MetaMask's US dollar-backed stablecoin, and earn up to a $1% annualized bonus that you can claim daily. Powered by Relay. $2",
     "description": "$1 is the bonus APY percentage, $2 is the 'Terms apply' link"
   },
   "musdBoostDescription": {
-    "message": "Convert your stablecoins to mUSD and receive up to a $1% bonus.",
+    "message": "Convert your stablecoins to mUSD and get a $1% annualized bonus.",
     "description": "$1 is the bonus percentage (e.g., 3)"
   },
   "musdBoostTitle": {
@@ -4227,7 +4239,10 @@
     "description": "$1 is the source token symbol (e.g., USDC)"
   },
   "musdConversionToastSuccess": {
-    "message": "Your mUSD is here!"
+    "message": "mUSD conversion successful"
+  },
+  "musdConversionToastSuccessDescription": {
+    "message": "Bonus will be claimable within a day."
   },
   "musdConvert": {
     "message": "Convert"
@@ -6883,8 +6898,15 @@
   "settings": {
     "message": "Settings"
   },
+  "settingsSearchCantFindSetting": {
+    "message": "Can't find a setting? $1",
+    "description": "$1 is a link to request a setting"
+  },
   "settingsSearchMatchingNotFound": {
     "message": "No matching results found."
+  },
+  "settingsSearchRequestHere": {
+    "message": "Request here"
   },
   "shieldClaim": {
     "message": "Submit a claim"

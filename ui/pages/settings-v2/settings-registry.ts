@@ -6,9 +6,12 @@ import {
   ACCOUNT_IDENTICON_ROUTE,
   ASSETS_ROUTE,
   AUTO_LOCK_ROUTE,
+  BACKUPANDSYNC_ROUTE,
   CURRENCY_ROUTE,
   DEVELOPER_OPTIONS_V2_ROUTE,
+  EXPERIMENTAL_ROUTE,
   LANGUAGE_ROUTE,
+  NOTIFICATIONS_SETTINGS_ROUTE,
   PREFERENCES_AND_DISPLAY_ROUTE,
   SECURITY_AND_PASSWORD_ROUTE,
   SETTINGS_V2_ROUTE,
@@ -76,20 +79,15 @@ export const SETTINGS_V2_ROUTES: Record<string, SettingsV2RouteMeta> = {
     ),
   },
 
-  // --- Privacy tab ---
-  [PRIVACY_ROUTE]: {
-    labelKey: 'privacy',
+  // --- Notifications tab ---
+  [NOTIFICATIONS_SETTINGS_ROUTE]: {
+    labelKey: 'notifications',
     parentPath: SETTINGS_V2_ROUTE,
-    component: mmLazy(() => import('./privacy-tab/index.ts')),
-    isTab: true,
-    iconName: IconName.Lock,
-  },
-  [THIRD_PARTY_APIS_ROUTE]: {
-    labelKey: 'thirdPartyApis',
-    parentPath: PRIVACY_ROUTE,
     component: mmLazy(
-      () => import('./privacy-tab/third-party-apis-sub-page.tsx'),
+      () => import('../notifications-settings/notifications-settings.tsx'),
     ),
+    isTab: true,
+    iconName: IconName.Notification,
   },
 
   // --- Security and Password tab ---
@@ -106,6 +104,33 @@ export const SETTINGS_V2_ROUTES: Record<string, SettingsV2RouteMeta> = {
     component: mmLazy(
       () => import('./security-and-password-tab/auto-lock-sub-page.tsx'),
     ),
+  },
+
+  // --- Privacy tab ---
+  [PRIVACY_ROUTE]: {
+    labelKey: 'privacy',
+    parentPath: SETTINGS_V2_ROUTE,
+    component: mmLazy(() => import('./privacy-tab/index.ts')),
+    isTab: true,
+    iconName: IconName.Lock,
+  },
+  [THIRD_PARTY_APIS_ROUTE]: {
+    labelKey: 'thirdPartyApis',
+    parentPath: PRIVACY_ROUTE,
+    component: mmLazy(
+      () => import('./privacy-tab/third-party-apis-sub-page.tsx'),
+    ),
+  },
+
+  // --- Backup and sync tab ---
+  [BACKUPANDSYNC_ROUTE]: {
+    labelKey: 'backupAndSync',
+    parentPath: SETTINGS_V2_ROUTE,
+    component: mmLazy(
+      () => import('../settings/backup-and-sync-tab/backup-and-sync-tab.tsx'),
+    ),
+    isTab: true,
+    iconName: IconName.SecurityTime,
   },
 
   // --- Assets tab ---
@@ -129,6 +154,17 @@ export const SETTINGS_V2_ROUTES: Record<string, SettingsV2RouteMeta> = {
     component: mmLazy(() => import('./transactions-tab/index.ts')),
     isTab: true,
     iconName: IconName.SwapVertical,
+  },
+
+  // --- Experimental tab ---
+  [EXPERIMENTAL_ROUTE]: {
+    labelKey: 'experimental',
+    parentPath: SETTINGS_V2_ROUTE,
+    component: mmLazy(
+      () => import('../settings/experimental-tab/experimental-tab.tsx'),
+    ),
+    isTab: true,
+    iconName: IconName.Flask,
   },
 
   // --- Developer Options tab ---
@@ -167,7 +203,7 @@ export const SETTINGS_V2_TABS = Object.entries(SETTINGS_V2_ROUTES)
     return Boolean(meta.isTab && meta.iconName && meta.component);
   })
   .map(([path, meta]) => ({
-    id: path,
+    id: path.split('/').pop() || path,
     path,
     labelKey: meta.labelKey,
     iconName: meta.iconName,

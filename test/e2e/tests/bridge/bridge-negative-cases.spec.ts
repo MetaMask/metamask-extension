@@ -1,6 +1,6 @@
 import { Suite } from 'mocha';
 import { withFixtures } from '../../helpers';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 import HomePage from '../../page-objects/pages/home/homepage';
 import { Driver } from '../../webdriver/driver';
 import BridgeQuotePage from '../../page-objects/pages/bridge/quote-page';
@@ -29,7 +29,7 @@ describe('Bridge functionality', function (this: Suite) {
         ),
       },
       async ({ driver, localNodes }) => {
-        await loginWithBalanceValidation(driver, localNodes[0]);
+        await login(driver, { localNode: localNodes[0] });
         const homePage = new HomePage(driver);
         await homePage.checkExpectedBalanceIsDisplayed(
           DEFAULT_LOCAL_NODE_USD_BALANCE,
@@ -64,7 +64,7 @@ describe('Bridge functionality', function (this: Suite) {
         ),
       },
       async ({ driver, localNodes }) => {
-        await loginWithBalanceValidation(driver, localNodes[0]);
+        await login(driver, { localNode: localNodes[0] });
         const homePage = new HomePage(driver);
         await homePage.checkExpectedBalanceIsDisplayed(
           DEFAULT_LOCAL_NODE_USD_BALANCE,
@@ -91,7 +91,7 @@ describe('Bridge functionality', function (this: Suite) {
         ),
       },
       async ({ driver, localNodes }) => {
-        await loginWithBalanceValidation(driver, localNodes[0]);
+        await login(driver, { localNode: localNodes[0] });
         const homePage = new HomePage(driver);
         await homePage.checkExpectedBalanceIsDisplayed(
           DEFAULT_LOCAL_NODE_USD_BALANCE,
@@ -118,7 +118,7 @@ describe('Bridge functionality', function (this: Suite) {
         ),
       },
       async ({ driver, localNodes }) => {
-        await loginWithBalanceValidation(driver, localNodes[0]);
+        await login(driver, { localNode: localNodes[0] });
         const homePage = new HomePage(driver);
         await homePage.checkExpectedBalanceIsDisplayed(
           DEFAULT_LOCAL_NODE_USD_BALANCE,
@@ -146,7 +146,7 @@ describe('Bridge functionality', function (this: Suite) {
         ),
       },
       async ({ driver, localNodes }) => {
-        await loginWithBalanceValidation(driver, localNodes[0]);
+        await login(driver, { localNode: localNodes[0] });
 
         const homePage = new HomePage(driver);
         await homePage.checkExpectedBalanceIsDisplayed(
@@ -178,7 +178,7 @@ describe('Bridge functionality', function (this: Suite) {
         ),
       },
       async ({ driver, localNodes }) => {
-        await loginWithBalanceValidation(driver, localNodes[0]);
+        await login(driver, { localNode: localNodes[0] });
 
         const homePage = new HomePage(driver);
         await homePage.checkExpectedBalanceIsDisplayed(
@@ -211,7 +211,7 @@ describe('Bridge functionality', function (this: Suite) {
         ),
       },
       async ({ driver, localNodes }) => {
-        await loginWithBalanceValidation(driver, localNodes[0]);
+        await login(driver, { localNode: localNodes[0] });
 
         const homePage = new HomePage(driver);
         await homePage.checkExpectedBalanceIsDisplayed(

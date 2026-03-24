@@ -4,7 +4,7 @@ import FixtureBuilderV2 from '../fixtures/fixture-builder-v2';
 import { mockManageStateSnap } from '../mock-response-data/snaps/snap-binary-mocks';
 import { DAPP_PATH } from '../constants';
 import { TestSnaps } from '../page-objects/pages/test-snaps';
-import { loginWithoutBalanceValidation } from '../page-objects/flows/login.flow';
+import { login } from '../page-objects/flows/login.flow';
 import { openTestSnapClickButtonAndInstall } from '../page-objects/flows/install-test-snap.flow';
 
 describe('Test Snap manageState', function () {
@@ -21,7 +21,7 @@ describe('Test Snap manageState', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithoutBalanceValidation(driver);
+        await login(driver, { validateBalance: false });
         const testSnaps = new TestSnaps(driver);
 
         // Navigate to test snaps page and connect manage state and validate installation
@@ -90,7 +90,7 @@ describe('Test Snap manageState', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithoutBalanceValidation(driver);
+        await login(driver, { validateBalance: false });
         const testSnaps = new TestSnaps(driver);
 
         // Navigate to test snaps page and connect manage state and validate installation

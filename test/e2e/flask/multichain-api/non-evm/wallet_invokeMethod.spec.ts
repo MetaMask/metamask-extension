@@ -6,7 +6,7 @@ import { DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS } from '../testHelpers';
 import { buildSolanaTestSpecificMock } from '../../../tests/solana/common-solana';
 import { withFixtures } from '../../../helpers';
 import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
-import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
+import { login } from '../../../page-objects/flows/login.flow';
 import SnapTransactionConfirmation from '../../../page-objects/pages/confirmations/snap-transaction-confirmation';
 import SnapSignInConfirmation from '../../../page-objects/pages/confirmations/snap-sign-in-confirmation';
 
@@ -21,7 +21,7 @@ describe('Multichain API - Non EVM', function () {
             title: this.test?.fullTitle(),
           },
           async ({ driver, extensionId }) => {
-            await loginWithBalanceValidation(driver);
+            await login(driver);
             const testDapp = new TestDappMultichain(driver);
             await testDapp.openTestDappPage();
             await testDapp.connectExternallyConnectable(extensionId);
@@ -61,7 +61,7 @@ describe('Multichain API - Non EVM', function () {
             }),
           },
           async ({ driver, extensionId }) => {
-            await loginWithBalanceValidation(driver);
+            await login(driver);
             const testDapp = new TestDappMultichain(driver);
             await testDapp.openTestDappPage();
             await testDapp.connectExternallyConnectable(extensionId);
