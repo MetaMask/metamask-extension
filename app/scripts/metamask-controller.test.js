@@ -4638,7 +4638,7 @@ describe('MetaMaskController', () => {
       let trackEventSpy;
 
       beforeEach(() => {
-        jest.spyOn(console, 'error').mockImplementation(() => {});
+        jest.spyOn(console, 'error').mockImplementation(jest.fn());
         globalThis.sentry = {
           ...globalThis.sentry,
           captureException: jest.fn(),
@@ -4762,7 +4762,7 @@ describe('MetaMaskController', () => {
             throw new Error('sentry capture failed');
           }),
         };
-        const logWarnSpy = jest.spyOn(log, 'warn').mockImplementation(() => {});
+        const logWarnSpy = jest.spyOn(log, 'warn').mockImplementation(jest.fn());
 
         await expect(
           metamaskController._runSeedlessOnboardingMigrations(),
