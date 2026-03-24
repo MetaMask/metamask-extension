@@ -1,4 +1,5 @@
 import * as Sentry from '@sentry/browser';
+import { forEachEnvelopeItem, parseEnvelope } from '@sentry/utils';
 import {
   removeUrlsFromBreadCrumb,
   rewriteReport,
@@ -610,6 +611,18 @@ describe('Setup Sentry', () => {
   });
 
   describe('Sentry.init with makeTransport (MetaMetrics)', () => {
+    /**
+     * Sentry starts or updates sessions on a later turn of the event loop, not inline with
+     * `init`. `setTimeout(0)` schedules the next macrotask so that deferred session work, and
+     * any related `fetch`, can run before we assert.
+     */
+    function triggerSessionEvent() {
+      return new Promise((resolve) => {
+        // Clear the microtask queue and/or wait for the next event loop
+        setTimeout(resolve, 0);
+      });
+    }
+
     afterEach(async () => {
       await Sentry.close(2000);
       delete globalThis.stateHooks?.getPersistedState;
@@ -617,7 +630,7 @@ describe('Setup Sentry', () => {
       delete globalThis.stateHooks?.getSentryState;
     });
 
-    it('does not call fetch after init and flush when opted out, including session', async () => {
+    it('does not call fetch after init when opted out (after triggerSessionEvent)', async () => {
       globalThis.nw = {};
       globalThis.history ??= {};
 
@@ -643,14 +656,14 @@ describe('Setup Sentry', () => {
         tracesSampleRate: 0,
       });
 
-      await Sentry.flush(2000);
+      await triggerSessionEvent();
 
       expect(fetchSpy).not.toHaveBeenCalled();
 
       fetchSpy.mockRestore();
     });
 
-    it('calls fetch after init and flush when opted in, including session', async () => {
+    it('calls fetch after init when opted in (after triggerSessionEvent)', async () => {
       globalThis.nw = {};
       globalThis.history ??= {};
 
@@ -660,7 +673,7 @@ describe('Setup Sentry', () => {
           data: {
             MetaMetricsController: {
               participateInMetaMetrics: true,
-              metaMetricsId: 'init-flush-test-id',
+              metaMetricsId: 'init-session-test-id',
             },
           },
         }),
@@ -679,9 +692,26 @@ describe('Setup Sentry', () => {
         tracesSampleRate: 0,
       });
 
-      await Sentry.flush(2000);
+      await triggerSessionEvent();
 
       expect(fetchSpy).toHaveBeenCalled();
+
+      const envelopes = fetchSpy.mock.calls
+        .map(([, init]) => init?.body)
+        .filter(Boolean)
+        .map((body) => {
+          try {
+            return parseEnvelope(body);
+          } catch {
+            return null;
+          }
+        })
+        .filter(Boolean);
+
+      const hasSessionItem = envelopes.some((envelope) =>
+        forEachEnvelopeItem(envelope, (_item, type) => type === 'session'),
+      );
+      expect(hasSessionItem).toBe(true);
 
       fetchSpy.mockRestore();
     });
