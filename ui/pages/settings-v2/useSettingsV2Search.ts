@@ -1,10 +1,7 @@
 import { useMemo } from 'react';
 import Fuse from 'fuse.js';
 import { useI18nContext } from '../../hooks/useI18nContext';
-import {
-  SETTINGS_V2_TABS,
-  SETTINGS_V2_ROUTES,
-} from './settings-registry';
+import { SETTINGS_V2_TABS, SETTINGS_V2_ROUTES } from './settings-registry';
 import { SETTINGS_V2_SEARCH_CONFIG } from './search-config';
 
 export const MIN_SEARCH_LENGTH = 3;
@@ -25,9 +22,7 @@ export type SettingsV2SearchResult = {
  * search config (id + titleKey pairs) with the registry (labelKey, path, iconName).
  */
 function buildSearchableItems(): SettingsV2SearchResult[] {
-  const tabById = new Map(
-    SETTINGS_V2_TABS.map((t) => [t.id, t]),
-  );
+  const tabById = new Map(SETTINGS_V2_TABS.map((t) => [t.id, t]));
 
   return SETTINGS_V2_SEARCH_CONFIG.flatMap((cfg) => {
     const tab = tabById.get(cfg.tabId);

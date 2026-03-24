@@ -83,7 +83,9 @@ export const SETTINGS_V2_ROUTES: Record<string, SettingsV2RouteMeta> = {
   [NOTIFICATIONS_SETTINGS_ROUTE]: {
     labelKey: 'notifications',
     parentPath: SETTINGS_V2_ROUTE,
-    component: mmLazy(() => import('../notifications-settings/notifications-settings.tsx')),
+    component: mmLazy(
+      () => import('../notifications-settings/notifications-settings.tsx'),
+    ),
     isTab: true,
     iconName: IconName.Notification,
   },
@@ -124,7 +126,9 @@ export const SETTINGS_V2_ROUTES: Record<string, SettingsV2RouteMeta> = {
   [BACKUPANDSYNC_ROUTE]: {
     labelKey: 'backupAndSync',
     parentPath: SETTINGS_V2_ROUTE,
-    component: mmLazy(() => import('../settings/backup-and-sync-tab/backup-and-sync-tab.tsx')),
+    component: mmLazy(
+      () => import('../settings/backup-and-sync-tab/backup-and-sync-tab.tsx'),
+    ),
     isTab: true,
     iconName: IconName.SecurityTime,
   },
@@ -156,7 +160,9 @@ export const SETTINGS_V2_ROUTES: Record<string, SettingsV2RouteMeta> = {
   [EXPERIMENTAL_ROUTE]: {
     labelKey: 'experimental',
     parentPath: SETTINGS_V2_ROUTE,
-    component: mmLazy(() => import('../settings/experimental-tab/experimental-tab.tsx')),
+    component: mmLazy(
+      () => import('../settings/experimental-tab/experimental-tab.tsx'),
+    ),
     isTab: true,
     iconName: IconName.Flask,
   },

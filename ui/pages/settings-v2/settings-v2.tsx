@@ -149,104 +149,104 @@ const SettingsV2Layout = ({ children }: { children: React.ReactNode }) => {
           />
         </div>
       ) : (
-      <Box
-        flexDirection={BoxFlexDirection.Row}
-        // 64px is the header height
-        className={classnames(`h-[calc(100%-64px)]`, {
-          'sm:border-t sm:border-border-muted': !isSidepanel,
-        })}
-      >
         <Box
-          className={classnames(
-            'w-full h-full sm:max-w-[262px] sm:bg-background-muted',
-            {
-              flex: isOnSettingsRoot,
-              'hidden sm:flex': !isOnSettingsRoot && !isSidepanel,
-              hidden: !isOnSettingsRoot && isSidepanel,
-              'sm:max-w-full sm:bg-background-default':
-                isOnSettingsRoot && isSidepanel,
-            },
-          )}
-        >
-          <TabBar
-            tabs={itemTabs}
-            isActive={(key) => {
-              // First tab is active when at settings root
-              if (key === FIRST_TAB_PATH && pathname === SETTINGS_V2_ROUTE) {
-                return true;
-              }
-              return pathname === key || pathname.startsWith(`${key}/`);
-            }}
-            removeFullscreenStyles={isPopupOrSidepanel}
-          />
-        </Box>
-        <Box
-          className={classnames('flex-auto flex-col w-full', {
-            flex: !isOnSettingsRoot,
-            'hidden sm:flex': isOnSettingsRoot && !isSidepanel,
-            hidden: isOnSettingsRoot && isSidepanel,
+          flexDirection={BoxFlexDirection.Row}
+          // 64px is the header height
+          className={classnames(`h-[calc(100%-64px)]`, {
+            'sm:border-t sm:border-border-muted': !isSidepanel,
           })}
         >
-          {showBreadcrumbs && (
-            <Box
-              className="hidden sm:flex"
-              flexDirection={BoxFlexDirection.Row}
-              alignItems={BoxAlignItems.Center}
-              gap={2}
-              paddingHorizontal={4}
-              paddingVertical={3}
-            >
-              {breadcrumbs.map((crumb, index) => {
-                const isFirst = index === 0;
-                const isLast = index === breadcrumbs.length - 1;
-                return (
-                  <Fragment key={crumb.path}>
-                    {!isFirst && (
-                      <Text
-                        variant={TextVariant.BodyMd}
-                        fontWeight={FontWeight.Medium}
-                        color={TextColor.TextAlternative}
-                      >
-                        {'>'}
-                      </Text>
-                    )}
-                    {isLast ? (
-                      <Text
-                        variant={TextVariant.BodyMd}
-                        fontWeight={FontWeight.Medium}
-                        color={TextColor.TextDefault}
-                      >
-                        {t(crumb.labelKey)}
-                      </Text>
-                    ) : (
-                      <Link
-                        to={crumb.path}
-                        className="flex items-center gap-2 cursor-pointer"
-                      >
-                        {isFirst && (
-                          <Icon
-                            name={IconName.ArrowLeft}
-                            size={IconSize.Sm}
-                            className="text-icon-alternative"
-                          />
-                        )}
+          <Box
+            className={classnames(
+              'w-full h-full sm:max-w-[262px] sm:bg-background-muted',
+              {
+                flex: isOnSettingsRoot,
+                'hidden sm:flex': !isOnSettingsRoot && !isSidepanel,
+                hidden: !isOnSettingsRoot && isSidepanel,
+                'sm:max-w-full sm:bg-background-default':
+                  isOnSettingsRoot && isSidepanel,
+              },
+            )}
+          >
+            <TabBar
+              tabs={itemTabs}
+              isActive={(key) => {
+                // First tab is active when at settings root
+                if (key === FIRST_TAB_PATH && pathname === SETTINGS_V2_ROUTE) {
+                  return true;
+                }
+                return pathname === key || pathname.startsWith(`${key}/`);
+              }}
+              removeFullscreenStyles={isPopupOrSidepanel}
+            />
+          </Box>
+          <Box
+            className={classnames('flex-auto flex-col w-full', {
+              flex: !isOnSettingsRoot,
+              'hidden sm:flex': isOnSettingsRoot && !isSidepanel,
+              hidden: isOnSettingsRoot && isSidepanel,
+            })}
+          >
+            {showBreadcrumbs && (
+              <Box
+                className="hidden sm:flex"
+                flexDirection={BoxFlexDirection.Row}
+                alignItems={BoxAlignItems.Center}
+                gap={2}
+                paddingHorizontal={4}
+                paddingVertical={3}
+              >
+                {breadcrumbs.map((crumb, index) => {
+                  const isFirst = index === 0;
+                  const isLast = index === breadcrumbs.length - 1;
+                  return (
+                    <Fragment key={crumb.path}>
+                      {!isFirst && (
                         <Text
                           variant={TextVariant.BodyMd}
                           fontWeight={FontWeight.Medium}
                           color={TextColor.TextAlternative}
                         >
+                          {'>'}
+                        </Text>
+                      )}
+                      {isLast ? (
+                        <Text
+                          variant={TextVariant.BodyMd}
+                          fontWeight={FontWeight.Medium}
+                          color={TextColor.TextDefault}
+                        >
                           {t(crumb.labelKey)}
                         </Text>
-                      </Link>
-                    )}
-                  </Fragment>
-                );
-              })}
-            </Box>
-          )}
-          <Suspense fallback={null}>{children}</Suspense>
+                      ) : (
+                        <Link
+                          to={crumb.path}
+                          className="flex items-center gap-2 cursor-pointer"
+                        >
+                          {isFirst && (
+                            <Icon
+                              name={IconName.ArrowLeft}
+                              size={IconSize.Sm}
+                              className="text-icon-alternative"
+                            />
+                          )}
+                          <Text
+                            variant={TextVariant.BodyMd}
+                            fontWeight={FontWeight.Medium}
+                            color={TextColor.TextAlternative}
+                          >
+                            {t(crumb.labelKey)}
+                          </Text>
+                        </Link>
+                      )}
+                    </Fragment>
+                  );
+                })}
+              </Box>
+            )}
+            <Suspense fallback={null}>{children}</Suspense>
+          </Box>
         </Box>
-      </Box>
       )}
     </Box>
   );
