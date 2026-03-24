@@ -260,27 +260,6 @@ class AccountListPage {
         { timeout },
       );
     } catch (e) {
-      // #region agent log — capture DOM state at the moment of timeout
-      try {
-        const { By } = await import('selenium-webdriver');
-        const rawDriver = this.driver.driver;
-        const mcBtns = await rawDriver.findElements(
-          By.css('[data-testid="add-multichain-account-button"]'),
-        );
-        console.log(
-          `[DEBUG-953861] TIMEOUT in checkPageIsLoaded. add-multichain-account-button count: ${mcBtns.length}`,
-        );
-        for (let i = 0; i < mcBtns.length; i++) {
-          const txt = await mcBtns[i].getText();
-          const displayed = await mcBtns[i].isDisplayed();
-          console.log(
-            `[DEBUG-953861]   button[${i}] text="${txt}" displayed=${displayed}`,
-          );
-        }
-      } catch (debugErr) {
-        console.log(`[DEBUG-953861] diagnostic capture failed: ${debugErr}`);
-      }
-      // #endregion
       console.log('Timeout while waiting for account list to be loaded', e);
       throw e;
     }
@@ -432,17 +411,16 @@ class AccountListPage {
 
   /**
    * Waiting until syncing is completed.
+   * @param timeout
    */
-  async waitUntilSyncingIsCompleted(
-    timeout?: number,
-  ): Promise<void> {
+  async waitUntilSyncingIsCompleted(timeout?: number): Promise<void> {
     console.log(`Check that account syncing not displayed in account list`);
     await this.driver.assertElementNotPresent(
       {
         css: this.addMultichainAccountButton,
         text: 'Syncing',
       },
-      timeout !== undefined ? { timeout } : undefined,
+      timeout === undefined ? undefined : { timeout },
     );
   }
 
