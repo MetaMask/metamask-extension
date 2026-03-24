@@ -28,10 +28,17 @@ function transformState(
   }
 
   if (
-    hasProperty(state.PreferencesController, 'showDefaultAddress') &&
-    state.PreferencesController.showDefaultAddress === false
+    !hasProperty(state.PreferencesController, 'preferences') ||
+    !isObject(state.PreferencesController.preferences)
   ) {
-    state.PreferencesController.showDefaultAddress = true;
+    return;
+  }
+
+  if (
+    hasProperty(state.PreferencesController.preferences, 'showDefaultAddress') &&
+    state.PreferencesController.preferences.showDefaultAddress === false
+  ) {
+    state.PreferencesController.preferences.showDefaultAddress = true;
     changedControllers.add('PreferencesController');
   }
 }

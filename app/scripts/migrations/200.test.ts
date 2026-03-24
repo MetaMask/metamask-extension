@@ -10,7 +10,9 @@ describe(`migration #${VERSION}`, () => {
       meta: { version: OLD_VERSION },
       data: {
         PreferencesController: {
-          showDefaultAddress: false,
+          preferences: {
+            showDefaultAddress: false,
+          },
           currentLocale: 'en',
         },
       },
@@ -24,7 +26,9 @@ describe(`migration #${VERSION}`, () => {
     expect(versionedData.meta.version).toBe(VERSION);
     expect(versionedData.data).toStrictEqual({
       PreferencesController: {
-        showDefaultAddress: true,
+        preferences: {
+          showDefaultAddress: true,
+        },
         currentLocale: 'en',
       },
     });
@@ -38,7 +42,9 @@ describe(`migration #${VERSION}`, () => {
       meta: { version: OLD_VERSION },
       data: {
         PreferencesController: {
-          showDefaultAddress: true,
+          preferences: {
+            showDefaultAddress: true,
+          },
           currentLocale: 'en',
         },
       },
@@ -55,6 +61,27 @@ describe(`migration #${VERSION}`, () => {
   });
 
   it('does nothing when showDefaultAddress is not present', async () => {
+    const oldStorage = {
+      meta: { version: OLD_VERSION },
+      data: {
+        PreferencesController: {
+          preferences: {},
+          currentLocale: 'en',
+        },
+      },
+    };
+
+    const versionedData = cloneDeep(oldStorage);
+    const changedControllers = new Set<string>();
+
+    await migrate(versionedData, changedControllers);
+
+    expect(versionedData.meta.version).toBe(VERSION);
+    expect(versionedData.data).toStrictEqual(oldStorage.data);
+    expect(changedControllers.size).toBe(0);
+  });
+
+  it('does nothing when preferences is not present', async () => {
     const oldStorage = {
       meta: { version: OLD_VERSION },
       data: {
