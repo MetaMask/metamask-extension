@@ -1,28 +1,28 @@
-name: Crowdin Action
+name: Crowdin Download Approved Translations
 
 on:
-  push:
-    branches:
-      - main
   schedule:
     - cron: '0 */12 * * *'
+  workflow_dispatch:
 
 jobs:
-  synchronize-with-crowdin:
+  download-translations:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 3
+
     steps:
       - name: Checkout
         uses: actions/checkout@v6
         with:
-          # Use PAT to ensure that the commit later can trigger status check workflows
           token: ${{ secrets.METAMASKBOT_CROWDIN_TOKEN }}
 
-      - name: crowdin action
+      - name: Crowdin download approved translations
         uses: crowdin/github-action@a3160b9e5a9e00739392c23da5e580c6cabe526d
         with:
+          upload_sources: false
           upload_translations: false
           download_translations: true
+          export_only_approved: true
           pull_request_title: 'chore: New Crowdin Translations by GitHub Action'
           github_user_name: metamaskbot
           github_user_email: metamaskbot@users.noreply.github.com
