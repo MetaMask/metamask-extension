@@ -757,7 +757,7 @@ const _getBaseValidationErrors = createDeepEqualSelector(
 
     const srcChainId =
       quoteRequest.srcChainId ?? activeQuote?.quote?.srcChainId;
-    const minimumBalanceToUse =
+    let minimumBalanceToUse =
       srcChainId && isSolanaChainId(srcChainId)
         ? minimumBalanceForRentExemptionInSOL
         : '0';
@@ -768,9 +768,9 @@ const _getBaseValidationErrors = createDeepEqualSelector(
     const srcHexChainId = srcChainId
       ? getMaybeHexChainId(String(srcChainId))
       : undefined;
-    const isMonad7702 =
-      srcHexChainId === CHAIN_IDS.MONAD &&
-      Boolean(gasIncluded7702 || quoteRequest.gasIncluded7702);
+    if (srcHexChainId === CHAIN_IDS.MONAD) {
+      minimumBalanceToUse = MONAD_MIN_RESERVE;
+    }
 
     return {
       isTxAlertPresent: Boolean(txAlert),
@@ -788,18 +788,12 @@ const _getBaseValidationErrors = createDeepEqualSelector(
           !activeQuote &&
           validatedSrcAmount &&
           fromToken &&
-          ((!isGasless &&
-            (isNativeAddress(fromToken.assetId)
-              ? new BigNumber(nativeBalance)
-                  .sub(minimumBalanceToUse)
-                  .lte(validatedSrcAmount)
-              : new BigNumber(nativeBalance).lte(0))) ||
-            (isMonad7702 &&
-              (isNativeAddress(fromToken.assetId)
-                ? new BigNumber(nativeBalance)
-                    .sub(validatedSrcAmount)
-                    .lt(MONAD_MIN_RESERVE)
-                : new BigNumber(nativeBalance).lt(MONAD_MIN_RESERVE)))),
+          !isGasless &&
+          (isNativeAddress(fromToken.assetId)
+            ? new BigNumber(nativeBalance)
+                .sub(minimumBalanceToUse)
+                .lte(validatedSrcAmount)
+            : new BigNumber(nativeBalance).lte(0)),
       ),
       // Shown after fetching quotes
       isInsufficientGasForQuote: Boolean(
@@ -807,22 +801,16 @@ const _getBaseValidationErrors = createDeepEqualSelector(
           activeQuote &&
           fromToken &&
           fromTokenInputValue &&
-          ((!isGasless &&
-            (isNativeAddress(fromToken.assetId)
-              ? new BigNumber(nativeBalance)
-                  .sub(activeQuote.totalNetworkFee.amount)
-                  .sub(activeQuote.sentAmount.amount)
-                  .sub(minimumBalanceToUse)
-                  .lte(0)
-              : new BigNumber(nativeBalance).lte(
-                  activeQuote.totalNetworkFee.amount,
-                ))) ||
-            (isMonad7702 &&
-              (isNativeAddress(fromToken.assetId)
-                ? new BigNumber(nativeBalance)
-                    .sub(activeQuote.sentAmount.amount)
-                    .lt(MONAD_MIN_RESERVE)
-                : new BigNumber(nativeBalance).lt(MONAD_MIN_RESERVE)))),
+          !isGasless &&
+          (isNativeAddress(fromToken.assetId)
+            ? new BigNumber(nativeBalance)
+                .sub(activeQuote.totalNetworkFee.amount)
+                .sub(activeQuote.sentAmount.amount)
+                .sub(minimumBalanceToUse)
+                .lte(0)
+            : new BigNumber(nativeBalance).lte(
+                activeQuote.totalNetworkFee.amount,
+              )),
       ),
       isInsufficientBalance:
         validatedSrcAmount &&
