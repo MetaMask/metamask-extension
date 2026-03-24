@@ -1,5 +1,6 @@
-import React, { useMemo } from 'react';
+import React, { useContext, useMemo } from 'react';
 import { useDispatch, useSelector, shallowEqual } from 'react-redux';
+import { ErrorCode } from '@metamask/hw-wallet-sdk';
 import {
   Button,
   ButtonLink,
@@ -30,10 +31,24 @@ import { useIsTxSubmittable } from '../../../hooks/bridge/useIsTxSubmittable';
 import { Row } from '../layout';
 import {
   ConnectionStatus,
+  createHardwareWalletError,
+  HardwareWalletType,
   useHardwareWalletConfig,
   useHardwareWalletState,
 } from '../../../contexts/hardware-wallets';
 import { setWasTxDeclined } from '../../../ducks/bridge/actions';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+  MetaMetricsHardwareWalletRecoveryLocation,
+} from '../../../../shared/constants/metametrics';
+import {
+  buildHardwareWalletRecoverySegmentProperties,
+  getHardwareWalletMetricDeviceModel,
+  mapHardwareWalletRecoveryErrorType,
+  mapHardwareWalletTypeToMetricDeviceType,
+} from '../../../../shared/lib/hardware-wallet-recovery-metrics';
 
 export const BridgeCTAButton = ({
   onFetchNewQuotes,
@@ -80,6 +95,8 @@ export const BridgeCTAButton = ({
   const wasTxDeclined = useSelector(getWasTxDeclined);
 
   const isTxSubmittable = useIsTxSubmittable();
+
+  const { trackEvent } = useContext(MetaMetricsContext);
 
   const { isHardwareWalletAccount, walletType } = useHardwareWalletConfig();
   const { connectionState } = useHardwareWalletState();
@@ -206,6 +223,38 @@ export const BridgeCTAButton = ({
           if (isPriceImpactError) {
             onOpenPriceImpactWarningModal();
           } else {
+            if (isHardwareWalletAccount && !isHardwareWalletReady) {
+              const connectionError =
+                connectionState.status === ConnectionStatus.ErrorState
+                  ? connectionState.error
+                  : undefined;
+              const walletTypeForMetrics =
+                walletType ?? HardwareWalletType.Ledger;
+              const errorForMetrics =
+                connectionError ??
+                createHardwareWalletError(
+                  ErrorCode.DeviceDisconnected,
+                  walletTypeForMetrics,
+                );
+              const errorType =
+                mapHardwareWalletRecoveryErrorType(errorForMetrics);
+              trackEvent({
+                category: MetaMetricsEventCategory.Accounts,
+                event: MetaMetricsEventName.HardwareWalletRecoveryCtaClicked,
+                properties: buildHardwareWalletRecoverySegmentProperties({
+                  location: MetaMetricsHardwareWalletRecoveryLocation.Swaps,
+                  deviceType:
+                    mapHardwareWalletTypeToMetricDeviceType(walletType),
+                  deviceModel:
+                    getHardwareWalletMetricDeviceModel(errorForMetrics),
+                  errorType,
+                  errorTypeViewCount: 1,
+                  error: errorForMetrics,
+                }),
+              }).catch(() => {
+                // Analytics must not block or surface errors to the user.
+              });
+            }
             await submitBridgeTransaction(activeQuote);
           }
         }

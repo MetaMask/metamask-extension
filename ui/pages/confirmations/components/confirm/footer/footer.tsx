@@ -2,11 +2,22 @@ import {
   TransactionMeta,
   TransactionType,
 } from '@metamask/transaction-controller';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { PRODUCT_TYPES } from '@metamask/subscription-controller';
 import { useNavigate } from 'react-router-dom';
-import { MetaMetricsEventLocation } from '../../../../../../shared/constants/metametrics';
+import { ErrorCode } from '@metamask/hw-wallet-sdk';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventLocation,
+  MetaMetricsEventName,
+} from '../../../../../../shared/constants/metametrics';
+import {
+  buildHardwareWalletRecoverySegmentProperties,
+  getHardwareWalletMetricDeviceModel,
+  mapHardwareWalletRecoveryErrorType,
+  mapHardwareWalletTypeToMetricDeviceType,
+} from '../../../../../../shared/lib/hardware-wallet-recovery-metrics';
 import { isCorrectDeveloperTransactionType } from '../../../../../../shared/lib/confirmation.utils';
 import { ConfirmAlertModal } from '../../../../../components/app/alert-system/confirm-alert-modal';
 import {
@@ -45,10 +56,16 @@ import {
 import { isSignatureTransactionType } from '../../../utils';
 import { getConfirmationSender } from '../utils';
 import { useUserSubscriptions } from '../../../../../hooks/subscription/useSubscription';
+import { MetaMetricsContext } from '../../../../../contexts/metametrics';
 import {
+  ConnectionStatus,
+  createHardwareWalletError,
+  HardwareWalletType,
   useHardwareFooter,
   useHardwareWalletError,
+  useHardwareWalletState,
 } from '../../../../../contexts/hardware-wallets';
+import { useHardwareWalletRecoveryLocation } from '../../../../../hooks/useHardwareWalletRecoveryLocation';
 import OriginThrottleModal from './origin-throttle-modal';
 import ShieldFooterAgreement from './shield-footer-agreement';
 import ShieldFooterCoverageIndicator from './shield-footer-coverage-indicator/shield-footer-coverage-indicator';
@@ -256,6 +273,9 @@ const Footer = () => {
 
   const { dismissErrorModal, setErrorModalSuppressed } =
     useHardwareWalletError();
+  const { connectionState } = useHardwareWalletState();
+  const hardwareWalletRecoveryLocation = useHardwareWalletRecoveryLocation();
+  const { trackEvent } = useContext(MetaMetricsContext);
 
   useEffect(() => {
     return () => {
@@ -310,6 +330,43 @@ const Footer = () => {
     shouldRunHardwareWalletPreflight &&
     !isHardwareWalletReady &&
     !hasUnconfirmedDangerAlerts;
+
+  const onReconnectHardwareWalletCta = useCallback(async () => {
+    const connectionError =
+      connectionState.status === ConnectionStatus.ErrorState
+        ? connectionState.error
+        : undefined;
+    const walletTypeForMetrics = walletType ?? HardwareWalletType.Ledger;
+    const errorForMetrics =
+      connectionError ??
+      createHardwareWalletError(
+        ErrorCode.DeviceDisconnected,
+        walletTypeForMetrics,
+      );
+    const errorType = mapHardwareWalletRecoveryErrorType(errorForMetrics);
+    const deviceType = mapHardwareWalletTypeToMetricDeviceType(walletType);
+    const deviceModel = getHardwareWalletMetricDeviceModel(errorForMetrics);
+
+    await trackEvent({
+      category: MetaMetricsEventCategory.Accounts,
+      event: MetaMetricsEventName.HardwareWalletRecoveryCtaClicked,
+      properties: buildHardwareWalletRecoverySegmentProperties({
+        location: hardwareWalletRecoveryLocation,
+        deviceType,
+        deviceModel,
+        errorType,
+        errorTypeViewCount: 1,
+        error: errorForMetrics,
+      }),
+    });
+    await onSubmitPreflightCheck();
+  }, [
+    connectionState,
+    hardwareWalletRecoveryLocation,
+    onSubmitPreflightCheck,
+    trackEvent,
+    walletType,
+  ]);
 
   const onSubmit = useCallback(async () => {
     if (!currentConfirmation) {
@@ -464,7 +521,7 @@ const Footer = () => {
             <Button
               block
               data-testid="reconnect-hardware-wallet-button"
-              onClick={onSubmitPreflightCheck}
+              onClick={onReconnectHardwareWalletCta}
               size={ButtonSize.Lg}
             >
               {walletType

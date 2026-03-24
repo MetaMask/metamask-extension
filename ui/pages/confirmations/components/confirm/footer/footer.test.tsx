@@ -1,6 +1,10 @@
 import React from 'react';
 import { fireEvent, waitFor } from '@testing-library/react';
 import { TransactionType } from '@metamask/transaction-controller';
+import {
+  MetaMetricsEventName,
+  MetaMetricsHardwareWalletRecoveryLocation,
+} from '../../../../../../shared/constants/metametrics';
 import { BlockaidResultType } from '../../../../../../shared/constants/security-provider';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../test/data/confirmations/contract-interaction';
 import {
@@ -185,11 +189,24 @@ jest.mock('react-router-dom', () => {
   };
 });
 
-const render = (args?: Record<string, unknown>) => {
+const render = (
+  args?: Record<string, unknown>,
+  options?: {
+    pathname?: string;
+    confirmationId?: string;
+    getMockTrackEvent?: () => jest.Mock;
+  },
+) => {
   const store = configureStore(args ?? getMockPersonalSignConfirmState());
   mockStore = store;
 
-  return renderWithConfirmContextProvider(<Footer />, store);
+  return renderWithConfirmContextProvider(
+    <Footer />,
+    store,
+    options?.pathname ?? DEFAULT_ROUTE,
+    options?.confirmationId,
+    options?.getMockTrackEvent,
+  );
 };
 
 const ALERT_MOCK = [
@@ -704,6 +721,43 @@ describe('ConfirmFooter', () => {
         getByTestId('reconnect-hardware-wallet-button'),
       ).toBeInTheDocument();
       expect(queryByTestId('confirm-footer-button')).not.toBeInTheDocument();
+    });
+
+    it('tracks hardware wallet recovery CTA when reconnect is clicked', async () => {
+      const mockTrackEvent = jest.fn().mockResolvedValue(undefined);
+      mockUseHardwareWalletConfig.mockReturnValue({
+        isHardwareWalletAccount: true,
+        walletType: HardwareWalletType.Ledger,
+      });
+      mockUseHardwareWalletState.mockReturnValue({
+        connectionState: { status: ConnectionStatus.Disconnected },
+      });
+      mockUseHardwareWalletError.mockReturnValue({
+        showErrorModal: showHardwareWalletErrorModalMock,
+        dismissErrorModal: dismissHardwareWalletErrorModalMock,
+        setErrorModalSuppressed: setErrorModalSuppressedMock,
+        isDeviceConnected: false,
+      });
+
+      const { getByTestId } = render(undefined, {
+        getMockTrackEvent: () => mockTrackEvent,
+      });
+
+      fireEvent.click(getByTestId('reconnect-hardware-wallet-button'));
+
+      await waitFor(() => {
+        expect(mockTrackEvent).toHaveBeenCalledWith(
+          expect.objectContaining({
+            event: MetaMetricsEventName.HardwareWalletRecoveryCtaClicked,
+            properties: expect.objectContaining({
+              location: MetaMetricsHardwareWalletRecoveryLocation.Send,
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              error_code: 'DeviceDisconnected',
+            }),
+          }),
+        );
+      });
+      expect(ensureDeviceReadyMock).toHaveBeenCalled();
     });
 
     it('does not confirm when hardware wallet preflight fails', async () => {
