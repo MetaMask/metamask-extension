@@ -12,15 +12,14 @@ const STOCK_RESPONSE: LlmResponse = {
     async signMessage(address, message, chainId) {
       const networkClientId = await E(hostApiProxy).invoke(
         'NetworkController:findNetworkClientIdByChainId',
-        chainId,
+        [chainId],
       );
       if (!networkClientId) {
         throw new Error(\`No network client found for chainId: \${chainId}\`);
       }
       return E(hostApiProxy).invoke(
         'SignatureController:newUnsignedPersonalMessage',
-        { from: address, data: message },
-        { networkClientId },
+        [{ from: address, data: message }, { networkClientId }],
       );
     },
   },

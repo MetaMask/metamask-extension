@@ -10,7 +10,7 @@ import type { HostApiProxyResponse } from '../types';
  */
 export function makeHostApiProxy() {
   return makeDefaultExo('hostApiProxy', {
-    invoke(method: string, ...args: unknown[]): Promise<unknown> {
+    invoke(method: string, args: unknown[] = []): Promise<unknown> {
       return new Promise((resolve, reject) => {
         chrome.runtime.sendMessage(
           {

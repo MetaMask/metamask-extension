@@ -29,7 +29,7 @@ export type CapabilityRecord = {
 };
 
 export type HostApiProxy = {
-  invoke: (method: string, ...args: unknown[]) => Promise<unknown>;
+  invoke: (method: string, args?: unknown[]) => Promise<unknown>;
 };
 
 export type LlmService = {
