@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React from 'react';
 import { useSelector } from 'react-redux';
 import { AccountGroupId } from '@metamask/account-api';
 import {
@@ -7,18 +7,8 @@ import {
   BoxBorderColor,
   BoxFlexDirection,
   BoxJustifyContent,
-  Icon,
-  IconColor,
-  IconName,
-  IconSize,
-  Text,
-  TextColor,
-  TextVariant,
 } from '@metamask/design-system-react';
-import {
-  getDefaultScopeAndAddressByAccountGroupId,
-  getIconSeedAddressByAccountGroupId,
-} from '../../../selectors/multichain-accounts/account-tree';
+import { getIconSeedAddressByAccountGroupId } from '../../../selectors/multichain-accounts/account-tree';
 import {
   Box as BoxDeprecated,
   SensitiveText,
@@ -37,12 +27,6 @@ import {
   STATUS_CONNECTED,
   STATUS_CONNECTED_TO_ANOTHER_ACCOUNT,
 } from '../../../helpers/constants/connected-sites';
-import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
-import { useI18nContext } from '../../../hooks/useI18nContext';
-// TODO: Remove restricted import
-// eslint-disable-next-line import-x/no-restricted-paths
-import { normalizeSafeAddress } from '../../../../app/scripts/lib/multichain/address';
-import { shortenAddress } from '../../../helpers/utils/util';
 import { MultichainHoveredAddressRowsList } from '../multichain-address-rows-hovered-list';
 import { MultichainAccountNetworkGroupWithDefaultAddress } from '../multichain-account-network-group-with-default-address';
 
@@ -74,68 +58,6 @@ const AccountCellAvatar = ({
         isActive={connectionStatus === STATUS_CONNECTED}
         showConnectedStatus={Boolean(connectionStatus)}
         hideTooltip={hideTooltip}
-      />
-    </Box>
-  );
-};
-
-/**
- * Renders default address + copy only when needed
- * @param options0
- * @param options0.accountId
- */
-const AccountCellDefaultAddress = ({
-  accountId,
-}: {
-  accountId: AccountGroupId;
-}) => {
-  const t = useI18nContext();
-  const { defaultAddress } = useSelector((state) =>
-    getDefaultScopeAndAddressByAccountGroupId(state, accountId),
-  );
-  const [addressCopied, handleCopy] = useCopyToClipboard({
-    clearDelayMs: null,
-  });
-  const handleAddressCopy = useCallback(
-    (e: React.MouseEvent) => {
-      e.stopPropagation();
-      if (defaultAddress) {
-        handleCopy(normalizeSafeAddress(defaultAddress));
-      }
-    },
-    [defaultAddress, handleCopy],
-  );
-
-  if (!defaultAddress) {
-    return null;
-  }
-
-  return (
-    <Box
-      alignItems={BoxAlignItems.Center}
-      flexDirection={BoxFlexDirection.Row}
-      gap={1}
-      marginLeft={3}
-      onClick={handleAddressCopy}
-      data-testid="multichain-account-cell-address"
-      aria-label={t('copyAddressShort')}
-    >
-      <Text
-        variant={TextVariant.BodySm}
-        color={
-          addressCopied ? TextColor.SuccessDefault : TextColor.TextAlternative
-        }
-      >
-        {addressCopied
-          ? t('addressCopied')
-          : shortenAddress(normalizeSafeAddress(defaultAddress))}
-      </Text>
-      <Icon
-        name={addressCopied ? IconName.CopySuccess : IconName.Copy}
-        size={IconSize.Xs}
-        color={
-          addressCopied ? IconColor.SuccessDefault : IconColor.IconAlternative
-        }
       />
     </Box>
   );
