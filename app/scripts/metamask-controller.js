@@ -4127,19 +4127,11 @@ export default class MetamaskController extends EventEmitter {
     if (!isSocialLoginFlow || !isPasswordOutdated) {
       await this.submitPassword(password);
       if (isSocialLoginFlow) {
-        // renew seedless refresh token asynchronously
+        // try to revoke pending refresh tokens asynchronously
         this.seedlessOnboardingController
-          .rotateRefreshToken(password)
+          .revokePendingRefreshTokens()
           .catch((err) => {
-            log.error('error while revoking seedless refresh token', err);
-          })
-          .finally(() => {
-            // try to revoke pending refresh tokens asynchronously
-            this.seedlessOnboardingController
-              .revokePendingRefreshTokens()
-              .catch((err) => {
-                log.error('error while revoking pending refresh tokens', err);
-              });
+            log.error('error while revoking pending refresh tokens', err);
           });
       }
       return;
@@ -4213,19 +4205,11 @@ export default class MetamaskController extends EventEmitter {
           skipCache: true,
         });
 
-        // revoke seedless refresh token asynchronously
+        // revoke pending refresh tokens asynchronously
         this.seedlessOnboardingController
-          .rotateRefreshToken(password)
+          .revokePendingRefreshTokens()
           .catch((err) => {
-            log.error('error while revoking seedless refresh token', err);
-          })
-          .finally(() => {
-            // try to revoke pending refresh tokens asynchronously
-            this.seedlessOnboardingController
-              .revokePendingRefreshTokens()
-              .catch((err) => {
-                log.error('error while revoking pending refresh tokens', err);
-              });
+            log.error('error while revoking pending refresh tokens', err);
           });
       } catch (err) {
         this.controllerMessenger?.captureException?.(
