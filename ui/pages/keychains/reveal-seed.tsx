@@ -429,7 +429,7 @@ function RevealSeedPage() {
                   id="dapp-scan-acknowledge-checkbox"
                   label={t('alertModalAcknowledge')}
                   isSelected={dangerAcknowledged}
-                  onChange={(isSelected: boolean) => setDangerAcknowledged(isSelected)}
+                  onChange={() => setDangerAcknowledged(!dangerAcknowledged)}
                   inputProps={{
                     'data-testid': 'dapp-scan-acknowledge-checkbox',
                   }}
