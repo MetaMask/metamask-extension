@@ -35,7 +35,10 @@ function transformState(
   }
 
   if (
-    hasProperty(state.PreferencesController.preferences, 'showDefaultAddress') &&
+    hasProperty(
+      state.PreferencesController.preferences,
+      'showDefaultAddress',
+    ) &&
     state.PreferencesController.preferences.showDefaultAddress === false
   ) {
     state.PreferencesController.preferences.showDefaultAddress = true;
