@@ -10,7 +10,7 @@ function assertPathDestination(
 describe('perpsMarketRoute', () => {
   it('navigates to the market detail page for a crypto symbol', () => {
     const result = perpsMarket.handler(
-      new URLSearchParams({ [PerpsMarketQueryParams.Symbol]: 'BTC' }),
+      new URLSearchParams({ [PerpsMarketQueryParams.MarketSymbol]: 'BTC' }),
     );
 
     assertPathDestination(result);
@@ -20,7 +20,7 @@ describe('perpsMarketRoute', () => {
 
   it('navigates to the market detail page for a HIP-3 equity symbol', () => {
     const result = perpsMarket.handler(
-      new URLSearchParams({ [PerpsMarketQueryParams.Symbol]: 'xyz:TSLA' }),
+      new URLSearchParams({ [PerpsMarketQueryParams.MarketSymbol]: 'xyz:TSLA' }),
     );
 
     assertPathDestination(result);
@@ -31,7 +31,7 @@ describe('perpsMarketRoute', () => {
 
   it('navigates to the market detail page for a HIP-3 forex symbol', () => {
     const result = perpsMarket.handler(
-      new URLSearchParams({ [PerpsMarketQueryParams.Symbol]: 'xyz:EUR' }),
+      new URLSearchParams({ [PerpsMarketQueryParams.MarketSymbol]: 'xyz:EUR' }),
     );
 
     assertPathDestination(result);
@@ -42,7 +42,7 @@ describe('perpsMarketRoute', () => {
 
   it('navigates to the market detail page for a HIP-3 commodity symbol', () => {
     const result = perpsMarket.handler(
-      new URLSearchParams({ [PerpsMarketQueryParams.Symbol]: 'xyz:GOLD' }),
+      new URLSearchParams({ [PerpsMarketQueryParams.MarketSymbol]: 'xyz:GOLD' }),
     );
 
     assertPathDestination(result);

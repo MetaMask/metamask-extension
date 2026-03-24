@@ -1,17 +1,7 @@
 import React, { useMemo } from 'react';
+import type { MarketFilter } from '../../../../../../shared/constants/perps';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { Dropdown, type DropdownOption } from '../dropdown';
-
-export const VALID_MARKET_FILTERS = [
-  'all',
-  'crypto',
-  'stocks',
-  'commodities',
-  'forex',
-  'new',
-] as const;
-
-export type MarketFilter = (typeof VALID_MARKET_FILTERS)[number];
 
 export type FilterSelectProps = {
   /** Currently selected filter */

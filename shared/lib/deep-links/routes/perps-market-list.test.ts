@@ -1,9 +1,8 @@
 import {
-  perpsMarketList,
-  PerpsMarketListQueryParams,
-  VALID_PERPS_MARKET_FILTERS,
-  type PerpsMarketFilter,
-} from './perps-market-list';
+  VALID_MARKET_FILTERS,
+  type MarketFilter,
+} from '../../../constants/perps';
+import { perpsMarketList, PerpsMarketListQueryParams } from './perps-market-list';
 import { PERPS_MARKET_LIST_ROUTE, Destination } from './route';
 
 function assertPathDestination(
@@ -22,9 +21,9 @@ describe('perpsMarketListRoute', () => {
   });
 
   // @ts-expect-error This function is missing from the Mocha type definitions
-  it.each(VALID_PERPS_MARKET_FILTERS)(
+  it.each(VALID_MARKET_FILTERS)(
     'passes through valid filter "%s"',
-    (filter: PerpsMarketFilter) => {
+    (filter: MarketFilter) => {
       const result = perpsMarketList.handler(
         new URLSearchParams({ [PerpsMarketListQueryParams.Filter]: filter }),
       );
@@ -46,9 +45,7 @@ describe('perpsMarketListRoute', () => {
   });
 
   it('ignores unknown extra params', () => {
-    const result = perpsMarketList.handler(
-      new URLSearchParams({ foo: 'bar' }),
-    );
+    const result = perpsMarketList.handler(new URLSearchParams({ foo: 'bar' }));
 
     assertPathDestination(result);
     expect(result.path).toBe(PERPS_MARKET_LIST_ROUTE);

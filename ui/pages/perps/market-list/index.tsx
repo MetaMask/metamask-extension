@@ -38,6 +38,10 @@ import {
   type SortField,
   type SortDirection,
 } from '../utils/sortMarkets';
+import {
+  VALID_MARKET_FILTERS,
+  type MarketFilter,
+} from '../../../../shared/constants/perps';
 import { MarketRow } from './components/market-row';
 import { MarketRowSkeleton } from './components/market-row-skeleton';
 import {
@@ -46,11 +50,7 @@ import {
   type SortOptionId,
 } from './components/sort-dropdown';
 import { SearchInput } from './components/search-input';
-import {
-  FilterSelect,
-  type MarketFilter,
-  VALID_MARKET_FILTERS,
-} from './components/filter-select';
+import { FilterSelect } from './components/filter-select';
 
 /**
  * Get the resolved market type for a market.
@@ -155,7 +155,10 @@ export const MarketListView: React.FC = () => {
   // Read initial filter from URL params (set by deeplink)
   const initialFilter = useMemo<MarketFilter>(() => {
     const filterParam = searchParams.get('filter');
-    if (filterParam && VALID_MARKET_FILTERS.includes(filterParam as MarketFilter)) {
+    if (
+      filterParam &&
+      VALID_MARKET_FILTERS.includes(filterParam as MarketFilter)
+    ) {
       return filterParam as MarketFilter;
     }
     return 'all';

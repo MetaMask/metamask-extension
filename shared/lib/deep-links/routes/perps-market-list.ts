@@ -1,15 +1,8 @@
+import {
+  VALID_MARKET_FILTERS,
+  type MarketFilter,
+} from '../../../constants/perps';
 import { PERPS_MARKET_LIST_ROUTE, Route } from './route';
-
-export const VALID_PERPS_MARKET_FILTERS = [
-  'all',
-  'crypto',
-  'stocks',
-  'commodities',
-  'forex',
-  'new',
-] as const;
-
-export type PerpsMarketFilter = (typeof VALID_PERPS_MARKET_FILTERS)[number];
 
 export enum PerpsMarketListQueryParams {
   Filter = 'filter',
@@ -24,7 +17,7 @@ export const perpsMarketList = new Route({
 
     if (
       filter &&
-      VALID_PERPS_MARKET_FILTERS.includes(filter as PerpsMarketFilter)
+      VALID_MARKET_FILTERS.includes(filter as MarketFilter)
     ) {
       query.set(PerpsMarketListQueryParams.Filter, filter);
     }
