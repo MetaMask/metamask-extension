@@ -5,9 +5,12 @@ import {
   ACCOUNT_IDENTICON_ROUTE,
   ASSETS_ROUTE,
   AUTO_LOCK_ROUTE,
+  BACKUPANDSYNC_ROUTE,
   CURRENCY_ROUTE,
   DEVELOPER_OPTIONS_V2_ROUTE,
+  EXPERIMENTAL_ROUTE,
   LANGUAGE_ROUTE,
+  NOTIFICATIONS_SETTINGS_ROUTE,
   PREFERENCES_AND_DISPLAY_ROUTE,
   SETTINGS_V2_ROUTE,
   SECURITY_AND_PASSWORD_ROUTE,
@@ -92,6 +95,21 @@ export const SETTINGS_V2_ROUTE_META: Record<string, SettingsV2RouteMeta> = {
     labelKey: 'autoLock',
     parentPath: SECURITY_AND_PASSWORD_ROUTE,
   },
+  // Backup and sync tab
+  [BACKUPANDSYNC_ROUTE]: {
+    labelKey: 'backupAndSync',
+    parentPath: SETTINGS_V2_ROUTE,
+  },
+  // Experimental tab
+  [EXPERIMENTAL_ROUTE]: {
+    labelKey: 'experimental',
+    parentPath: SETTINGS_V2_ROUTE,
+  },
+  // Notifications tab
+  [NOTIFICATIONS_SETTINGS_ROUTE]: {
+    labelKey: 'notifications',
+    parentPath: SETTINGS_V2_ROUTE,
+  },
   // Developer options tab
   [DEVELOPER_OPTIONS_V2_ROUTE]: {
     labelKey: 'developerOptions',
@@ -145,6 +163,33 @@ export const SETTINGS_V2_MENU_LIST_ITEM_REGISTRY: SettingsV2MenuListItem[] = [
     labelKey: 'securityAndPassword',
     iconName: IconName.SecuritySearch,
     component: mmLazy(() => import('./security-and-password-tab/index.ts')),
+  },
+  {
+    id: 'backup-and-sync',
+    path: BACKUPANDSYNC_ROUTE,
+    labelKey: 'backupAndSync',
+    iconName: IconName.SecurityTime,
+    component: mmLazy(
+      () => import('../settings/backup-and-sync-tab/backup-and-sync-tab.tsx'),
+    ),
+  },
+  {
+    id: 'experimental',
+    path: EXPERIMENTAL_ROUTE,
+    labelKey: 'experimental',
+    iconName: IconName.Flask,
+    component: mmLazy(
+      () => import('../settings/experimental-tab/experimental-tab.tsx'),
+    ),
+  },
+  {
+    id: 'notifications',
+    path: NOTIFICATIONS_SETTINGS_ROUTE,
+    labelKey: 'notifications',
+    iconName: IconName.Notification,
+    component: mmLazy(
+      () => import('../notifications-settings/notifications-settings.tsx'),
+    ),
   },
   {
     id: 'developer-options',

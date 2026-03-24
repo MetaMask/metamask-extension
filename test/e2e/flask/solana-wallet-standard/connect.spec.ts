@@ -5,7 +5,7 @@ import { DAPP_PATH, WINDOW_TITLES } from '../../constants';
 import { withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixtures/fixture-builder';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 import { addAccount } from '../../page-objects/flows/add-account.flow';
 import ConnectAccountConfirmation from '../../page-objects/pages/confirmations/connect-account-confirmation';
 import NetworkPermissionSelectModal from '../../page-objects/pages/dialog/network-permission-select-modal';
@@ -29,7 +29,7 @@ describe('Solana Wallet Standard - e2e tests', function () {
           },
         },
         async ({ driver }) => {
-          await loginWithBalanceValidation(driver);
+          await login(driver);
           const testDapp = new TestDappSolana(driver);
           await testDapp.openTestDappPage();
           await testDapp.checkPageIsLoaded();
@@ -54,7 +54,7 @@ describe('Solana Wallet Standard - e2e tests', function () {
           },
         },
         async ({ driver }) => {
-          await loginWithBalanceValidation(driver);
+          await login(driver);
           const testDapp = new TestDappSolana(driver);
           await testDapp.openTestDappPage();
           await testDapp.checkPageIsLoaded();
@@ -81,7 +81,7 @@ describe('Solana Wallet Standard - e2e tests', function () {
           },
         },
         async ({ driver }) => {
-          await loginWithBalanceValidation(driver);
+          await login(driver);
           const testDapp = new TestDappSolana(driver);
           await testDapp.openTestDappPage();
           await testDapp.checkPageIsLoaded();
@@ -128,7 +128,7 @@ describe('Solana Wallet Standard - e2e tests', function () {
           },
         },
         async ({ driver }) => {
-          await loginWithBalanceValidation(driver);
+          await login(driver);
           const testDapp = new TestDappSolana(driver);
           await testDapp.openTestDappPage();
           await testDapp.checkPageIsLoaded();
@@ -183,7 +183,7 @@ describe('Solana Wallet Standard - e2e tests', function () {
           },
         },
         async ({ driver }) => {
-          await loginWithBalanceValidation(driver);
+          await login(driver);
           const testDapp = new TestDappSolana(driver);
           await testDapp.openTestDappPage();
           await testDapp.checkPageIsLoaded();
@@ -215,7 +215,7 @@ describe('Solana Wallet Standard - e2e tests', function () {
           },
         },
         async ({ driver }) => {
-          await loginWithBalanceValidation(driver);
+          await login(driver);
           await addAccount({ driver, switchToAccount: 'Account 1' });
 
           const testDapp = new TestDappSolana(driver);
@@ -256,7 +256,7 @@ describe('Solana Wallet Standard - e2e tests', function () {
           },
         },
         async ({ driver }) => {
-          await loginWithBalanceValidation(driver);
+          await login(driver);
           await addAccount({ driver, switchToAccount: 'Account 1' });
 
           const testDapp = new TestDappSolana(driver);
@@ -305,7 +305,7 @@ describe('Solana Wallet Standard - e2e tests', function () {
           },
         },
         async ({ driver }) => {
-          await loginWithBalanceValidation(driver);
+          await login(driver);
           const testDapp = new TestDappSolana(driver);
           await testDapp.openTestDappPage();
           await testDapp.checkPageIsLoaded();
@@ -336,7 +336,7 @@ describe('Solana Wallet Standard - e2e tests', function () {
           },
         },
         async ({ driver }) => {
-          await loginWithBalanceValidation(driver);
+          await login(driver);
           await addAccount({ driver, switchToAccount: 'Account 1' });
 
           const testDapp = new TestDappSolana(driver);
@@ -369,7 +369,7 @@ describe('Solana Wallet Standard - e2e tests', function () {
           },
         },
         async ({ driver }) => {
-          await loginWithBalanceValidation(driver);
+          await login(driver);
           const testDapp = new TestDappSolana(driver);
           await testDapp.openTestDappPage();
           await testDapp.checkPageIsLoaded();

@@ -13,7 +13,7 @@ import PersonalSignConfirmation from '../../../page-objects/pages/confirmations/
 import Confirmation from '../../../page-objects/pages/confirmations/confirmation';
 import AccountDetailsModal from '../../../page-objects/pages/confirmations/accountDetailsModal';
 import TestDapp, { SignatureType } from '../../../page-objects/pages/test-dapp';
-import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
+import { login } from '../../../page-objects/flows/login.flow';
 import {
   BlockaidReason,
   BlockaidResultType,
@@ -38,7 +38,7 @@ describe('Confirmation Signature - SIWE', function (this: Suite) {
         const confirmation = new Confirmation(driver);
         const accountDetailsModal = new AccountDetailsModal(driver);
 
-        await loginWithBalanceValidation(driver);
+        await login(driver);
         await testDapp.openTestDappAndTriggerSignature(SignatureType.SIWE);
 
         await confirmation.clickHeaderAccountDetailsButton();
@@ -82,7 +82,7 @@ describe('Confirmation Signature - SIWE', function (this: Suite) {
         const confirmation = new PersonalSignConfirmation(driver);
         const testDapp = new TestDapp(driver);
 
-        await loginWithBalanceValidation(driver);
+        await login(driver);
         await testDapp.openTestDappAndTriggerSignature(SignatureType.SIWE);
 
         await confirmation.clickFooterCancelButtonAndAndWaitForWindowToClose();
