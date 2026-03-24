@@ -153,19 +153,24 @@ export function usePerpsOrderForm({
   availableBalanceRef.current = availableBalance;
   const existingPositionRef = useRef(existingPosition);
   existingPositionRef.current = existingPosition;
+  const orderTypeRef = useRef(orderType);
+  orderTypeRef.current = orderType;
 
-  // Reset form when mode/asset/direction/orderType change. Read
-  // existingPosition from ref to avoid re-running on stream ticks.
+  // Reset form when mode/asset/direction change. Do not depend on orderType:
+  // toggling market ↔ limit should only update `type` (see effect below), not
+  // wipe amount/leverage. Read existingPosition and orderType from refs so
+  // stream ticks and order-type-only updates do not trigger a full reset.
   useEffect(() => {
     setClosePercent(100);
 
     const pos = existingPositionRef.current;
+    const typeForReset = orderTypeRef.current;
     if (mode === 'modify' && pos) {
       setFormState({
         ...mockOrderFormDefaults,
         asset,
         direction: initialDirection,
-        type: orderType,
+        type: typeForReset,
         ...deriveModifyFields(pos),
       });
     } else {
@@ -173,10 +178,10 @@ export function usePerpsOrderForm({
         ...mockOrderFormDefaults,
         asset,
         direction: initialDirection,
-        type: orderType,
+        type: typeForReset,
       });
     }
-  }, [mode, asset, initialDirection, orderType]);
+  }, [mode, asset, initialDirection]);
 
   // Notify parent of form state changes
   useEffect(() => {

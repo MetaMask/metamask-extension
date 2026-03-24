@@ -333,6 +333,30 @@ describe('usePerpsOrderForm', () => {
     });
   });
 
+  describe('order type prop', () => {
+    it('preserves amount and leverage when orderType prop changes', () => {
+      let orderType: 'market' | 'limit' = 'market';
+      const { result, rerender } = renderHookWithProvider(
+        () => usePerpsOrderForm({ ...defaultOptions, orderType }),
+        mockStateWithLocale,
+      );
+
+      act(() => {
+        result.current.handleAmountChange('1000');
+        result.current.handleLeverageChange(10);
+      });
+
+      orderType = 'limit';
+      act(() => {
+        rerender();
+      });
+
+      expect(result.current.formState.amount).toBe('1000');
+      expect(result.current.formState.leverage).toBe(10);
+      expect(result.current.formState.type).toBe('limit');
+    });
+  });
+
   describe('form state change callback', () => {
     it('calls onFormStateChange when form state changes', () => {
       const onFormStateChange = jest.fn();
