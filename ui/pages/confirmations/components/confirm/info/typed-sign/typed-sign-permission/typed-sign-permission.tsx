@@ -8,23 +8,23 @@ import React from 'react';
 import { isSnapId } from '@metamask/snaps-utils';
 
 import { Text, TextVariant } from '@metamask/design-system-react';
-import { SignatureRequestType } from '../../../../types/confirm';
-import { useConfirmContext } from '../../../../context/confirm';
-import { ConfirmInfoRow } from '../../../../../../components/app/confirm/info/row';
-import { ConfirmInfoRowAddress } from '../../../../../../components/app/confirm/info/row/address';
-import { ConfirmInfoSection } from '../../../../../../components/app/confirm/info/row/section';
-import { ConfirmInfoRowUrl } from '../../../../../../components/app/confirm/info/row/url';
-import { useI18nContext } from '../../../../../../hooks/useI18nContext';
-import { NetworkRow } from '../shared/network-row/network-row';
-import { ConfirmInfoAlertRow } from '../../../../../../components/app/confirm/info/row/alert-row/alert-row';
-import { RowAlertKey } from '../../../../../../components/app/confirm/info/row/constants';
-import { SigningInWithRow } from '../shared/sign-in-with-row/sign-in-with-row';
+import { SignatureRequestType } from '../../../../../types/confirm';
+import { useConfirmContext } from '../../../../../context/confirm';
+import { ConfirmInfoRow } from '../../../../../../../components/app/confirm/info/row';
+import { ConfirmInfoRowAddress } from '../../../../../../../components/app/confirm/info/row/address';
+import { ConfirmInfoSection } from '../../../../../../../components/app/confirm/info/row/section';
+import { ConfirmInfoRowUrl } from '../../../../../../../components/app/confirm/info/row/url';
+import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
+import { NetworkRow } from '../../shared/network-row/network-row';
+import { ConfirmInfoAlertRow } from '../../../../../../../components/app/confirm/info/row/alert-row/alert-row';
+import { RowAlertKey } from '../../../../../../../components/app/confirm/info/row/constants';
+import { SigningInWithRow } from '../../shared/sign-in-with-row/sign-in-with-row';
 
-import { NativeTokenStreamDetails } from './typed-sign-permission/native-token-stream-details';
-import { NativeTokenPeriodicDetails } from './typed-sign-permission/native-token-periodic-details';
-import { Erc20TokenPeriodicDetails } from './typed-sign-permission/erc20-token-periodic-details';
-import { Erc20TokenStreamDetails } from './typed-sign-permission/erc20-token-stream-details';
-import { Erc20TokenRevocationDetails } from './typed-sign-permission/erc20-token-revocation-details';
+import { NativeTokenStreamDetails } from './native-token-stream-details';
+import { NativeTokenPeriodicDetails } from './native-token-periodic-details';
+import { Erc20TokenPeriodicDetails } from './erc20-token-periodic-details';
+import { Erc20TokenStreamDetails } from './erc20-token-stream-details';
+import { Erc20TokenRevocationDetails } from './erc20-token-revocation-details';
 
 /**
  * Main component for displaying typed signature permission information.
