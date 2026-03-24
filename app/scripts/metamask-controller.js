@@ -6337,17 +6337,14 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
-   * When the assets-unify-state flag is enabled, register the watched ERC-20
-   * token with the unified AssetsController before handing off to the legacy
-   * TokensController.
-   *
-   * Extracted from {@link handleWatchAssetRequest} to keep cognitive complexity
-   * within the allowed threshold.
+   * When assets-unify-state is enabled, validates ERC-20 `wallet_watchAsset`
+   * input that the unified path requires before the EIP-747 confirmation flow.
+   * Does not persist; see {@link #persistUnifiedWatchAsset}.
    *
    * @param {object} asset - The asset descriptor from the dapp request.
    * @param {string} networkClientId - The network client the request targets.
    */
-  #addUnifiedWatchAsset = async (asset, networkClientId) => {
+  #validateUnifiedWatchAssetRequest(asset, networkClientId) {
     if (!this.assetsController) {
       throw rpcErrors.internal({
         message: 'AssetsController is not available for wallet_watchAsset.',
@@ -6373,6 +6370,36 @@ export default class MetamaskController extends EventEmitter {
     }
 
     // ERC-20 options from dapps do not include chainId; resolve CAIP asset id from the request network.
+    const assetId = toAssetId(asset.address, chainId);
+    if (!assetId) {
+      throw rpcErrors.invalidParams({
+        message:
+          'Invalid token address or unsupported chain for wallet_watchAsset.',
+      });
+    }
+
+    const decimals = Number.parseInt(String(asset.decimals), 10);
+    if (!Number.isInteger(decimals) || decimals < 0 || decimals > 255) {
+      throw rpcErrors.invalidParams({
+        message: `Invalid ERC-20 decimals: ${String(asset.decimals)}.`,
+      });
+    }
+  }
+
+  /**
+   * After the user approves EIP-747, persist the token on the unified
+   * AssetsController. Must run only after `TokensController.watchAsset` succeeds
+   * so a rejected confirmation does not leave orphaned unified state.
+   *
+   * @param {object} asset - The asset descriptor (possibly enriched by TokensController).
+   * @param {string} networkClientId - The network client the request targets.
+   */
+  #persistUnifiedWatchAsset = async (asset, networkClientId) => {
+    const { chainId } =
+      this.networkController.getNetworkConfigurationByNetworkClientId(
+        networkClientId,
+      );
+
     const assetId = toAssetId(asset.address, chainId);
     if (!assetId) {
       throw rpcErrors.invalidParams({
@@ -6418,19 +6445,22 @@ export default class MetamaskController extends EventEmitter {
         const assetsUnifyFlag =
           this.remoteFeatureFlagController.state.remoteFeatureFlags
             ?.assetsUnifyState;
-        if (
-          isAssetsUnifyStateFeatureEnabled(
-            assetsUnifyFlag,
-            ASSETS_UNIFY_STATE_VERSION_1,
-          )
-        ) {
-          await this.#addUnifiedWatchAsset(asset, networkClientId);
+        const unifyWatchAsset = isAssetsUnifyStateFeatureEnabled(
+          assetsUnifyFlag,
+          ASSETS_UNIFY_STATE_VERSION_1,
+        );
+        if (unifyWatchAsset) {
+          this.#validateUnifiedWatchAssetRequest(asset, networkClientId);
         }
-        return this.tokensController.watchAsset({
+        await this.tokensController.watchAsset({
           asset,
           type,
           networkClientId,
         });
+        if (unifyWatchAsset) {
+          await this.#persistUnifiedWatchAsset(asset, networkClientId);
+        }
+        return undefined;
       }
       case ERC721:
       case ERC1155:

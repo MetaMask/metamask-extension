@@ -716,7 +716,7 @@ describe('MetaMaskController', () => {
             .mockResolvedValue(undefined);
         });
 
-        it('persists on AssetsController then delegates to TokensController.watchAsset', async () => {
+        it('runs TokensController.watchAsset before persisting on AssetsController', async () => {
           const asset = {
             address: watchAssetTokenAddress,
             symbol: 'TST',
@@ -766,7 +766,32 @@ describe('MetaMaskController', () => {
               .invocationCallOrder[0];
           expect(addOrder).toBeDefined();
           expect(watchOrder).toBeDefined();
-          expect(addOrder).toBeLessThan(watchOrder);
+          expect(watchOrder).toBeLessThan(addOrder);
+        });
+
+        it('does not persist on AssetsController when TokensController.watchAsset rejects', async () => {
+          const asset = {
+            address: watchAssetTokenAddress,
+            symbol: 'TST',
+            decimals: 4,
+          };
+
+          unifyMetamaskController.tokensController.watchAsset.mockRejectedValue(
+            new Error('User rejected the request'),
+          );
+
+          await expect(
+            unifyMetamaskController.handleWatchAssetRequest({
+              asset,
+              type: ERC20,
+              origin: 'https://example.com',
+              networkClientId: watchAssetNetworkClientId,
+            }),
+          ).rejects.toThrow('User rejected the request');
+
+          expect(
+            unifyMetamaskController.assetsController.addCustomAsset,
+          ).not.toHaveBeenCalled();
         });
 
         it('throws invalid params when networkClientId is missing', async () => {
@@ -788,6 +813,10 @@ describe('MetaMaskController', () => {
             message:
               'wallet_watchAsset requires a network context (networkClientId).',
           });
+
+          expect(
+            unifyMetamaskController.tokensController.watchAsset,
+          ).not.toHaveBeenCalled();
         });
 
         it('throws invalid params when decimals are invalid', async () => {
@@ -808,6 +837,10 @@ describe('MetaMaskController', () => {
             code: errorCodes.rpc.invalidParams,
             message: 'Invalid ERC-20 decimals: not-a-number.',
           });
+
+          expect(
+            unifyMetamaskController.tokensController.watchAsset,
+          ).not.toHaveBeenCalled();
         });
 
         it('throws internal error when network configuration has no chainId', async () => {
@@ -835,6 +868,10 @@ describe('MetaMaskController', () => {
             code: errorCodes.rpc.internal,
             message: 'Active network configuration is missing chainId.',
           });
+
+          expect(
+            unifyMetamaskController.tokensController.watchAsset,
+          ).not.toHaveBeenCalled();
         });
       });
     });
