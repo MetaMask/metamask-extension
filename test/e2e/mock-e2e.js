@@ -203,24 +203,24 @@ async function setupMocking(
 
   // Snaps execution ACL (signed registry)
   const aclRegistryJson = JSON.parse(
-    fs.readFileSync(ACL_REGISTRY_PATH, 'utf8'),
+    fs.readFileSync(ACL_REGISTRY_PATH),
   );
   const aclSignatureJson = JSON.parse(
-    fs.readFileSync(ACL_SIGNATURE_PATH, 'utf8'),
+    fs.readFileSync(ACL_SIGNATURE_PATH),
   );
   await server
     .forGet('https://acl.execution.metamask.io/latest/registry.json')
     .always()
     .thenCallback(() => ({
       statusCode: 200,
-      json: aclRegistryJson,
+      json: JSON.parse(aclRegistryJson),
     }));
   await server
     .forGet('https://acl.execution.metamask.io/latest/signature.json')
     .always()
     .thenCallback(() => ({
       statusCode: 200,
-      json: aclSignatureJson,
+      json: JSON.parse(aclSignatureJson),
     }));
 
   // remote feature flags — production-accurate defaults from the registry
