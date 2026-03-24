@@ -9,7 +9,8 @@ import {
   PRIORITY_STATUS_HASH,
   PENDING_STATUS_HASH,
   EXCLUDED_TRANSACTION_TYPES,
-  TRANSACTION_TOAST_TYPES,
+  EXCLUDED_TOAST_TRANSACTION_TYPES,
+  EXCLUDED_NON_EVM_TOAST_TYPES,
 } from '../helpers/constants/transactions';
 import txHelper from '../helpers/utils/tx-helper';
 import { SmartTransactionStatus } from '../../shared/constants/transaction';
@@ -44,12 +45,12 @@ export const getTransactions = createSelector(
 );
 
 /**
- * Returns only transactions eligible for transaction toasts.
+ * Returns EVM transactions for toast notifications
  *
  * @param {object} state - Root state
  * @returns {object[]} Filtered array of transaction objects
  */
-export const getToastTransactions = createSelector(
+export const selectEvmTransactions = createSelector(
   getTransactions,
   (transactions) => {
     if (!transactions.length) {
@@ -59,18 +60,18 @@ export const getToastTransactions = createSelector(
     return transactions.filter(
       (transaction) =>
         Boolean(transaction.type) &&
-        TRANSACTION_TOAST_TYPES.has(transaction.type),
+        !EXCLUDED_TOAST_TRANSACTION_TYPES.has(transaction.type),
     );
   },
 );
 
 /**
- * Returns flattened non-EVM send/swap transactions from the state map.
+ * Returns non-EVM transactions for toast notifications
  *
  * @param {object} state - Root state
- * @returns {object[]} Flattened non-EVM send/swap transaction list
+ * @returns {object[]} Filtered array of non-EVM transaction objects
  */
-export const getNonEvmToastTransactions = createSelector(
+export const selectNonEvmTransactions = createSelector(
   (state) => state.metamask?.nonEvmTransactions,
   (nonEvmTransactionsMap) => {
     if (!nonEvmTransactionsMap) {
@@ -85,32 +86,9 @@ export const getNonEvmToastTransactions = createSelector(
       )
       .filter((transaction) => {
         const type = transaction?.type;
-        const isSupportedType = type === 'send' || type === 'swap';
-
-        return isSupportedType;
+        return Boolean(type) && !EXCLUDED_NON_EVM_TOAST_TYPES.has(type);
       });
   },
-);
-
-/**
- * Returns pending non-EVM transactions for toast loading states.
- *
- * @param {object} state - Root state
- * @returns {object[]} Pending non-EVM transaction list
- */
-export const getPendingNonEvmToastTransactions = createSelector(
-  getNonEvmToastTransactions,
-  (transactions) =>
-    transactions.filter((transaction) => {
-      const normalizedStatus = String(transaction?.status ?? '').toLowerCase();
-      const isTerminal =
-        normalizedStatus === 'confirmed' ||
-        normalizedStatus === 'failed' ||
-        normalizedStatus === 'cancelled' ||
-        normalizedStatus === 'canceled';
-
-      return !isTerminal;
-    }),
 );
 
 /**

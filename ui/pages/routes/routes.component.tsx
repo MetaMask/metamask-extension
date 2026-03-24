@@ -146,7 +146,7 @@ import Authenticated from '../../helpers/higher-order-components/authenticated/a
 import { contactsRoutes } from '../contacts';
 import { getCurrencyRateControllerCurrentCurrency } from '../../../shared/lib/selectors/assets-migration';
 import { Toaster } from '../../components/ui/toast/toast';
-import { TransactionToastListener } from '../../components/app/transaction-toast-listener';
+import { ToastListener } from '../../components/ui/toast/toast-listener';
 import { getConnectingLabel, setTheme } from './utils';
 import { ConfirmationHandler } from './confirmation-handler';
 import { Modals } from './modals';
@@ -899,7 +899,7 @@ export default function Routes() {
       dir={textDirection}
     >
       <ConfirmationHandler />
-      {!isNotification && <TransactionToastListener />}
+      {!isNotification && <ToastListener />}
 
       <QRHardwarePopover />
       <Modal />

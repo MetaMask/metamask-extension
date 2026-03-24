@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import { type TransactionMeta } from '@metamask/transaction-controller';
 import {
@@ -8,20 +8,19 @@ import {
 import { toast } from 'react-hot-toast';
 import { Link } from 'react-router-dom';
 import {
-  getNonEvmToastTransactions,
-  getPendingNonEvmToastTransactions,
-  getToastTransactions,
-} from '../../selectors';
+  selectNonEvmTransactions,
+  selectEvmTransactions,
+} from '../../../selectors';
 import {
   TRANSACTION_FAILED_STATUSES,
   TRANSACTION_PENDING_STATUSES,
   TRANSACTION_SUCCESS_STATUSES,
-} from '../../helpers/constants/transactions';
-import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
+} from '../../../helpers/constants/transactions';
+import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import {
-  getTransactionToastContent,
-  type TransactionToastVariant,
-} from '../ui/toast/transaction-toast-content';
+  getTransactionDisplayData,
+  type TransactionStatusVariant,
+} from '../../../helpers/utils/transaction-display';
 
 type TransactionLike = Pick<TransactionMeta, 'id' | 'status' | 'type'>;
 
@@ -40,14 +39,17 @@ const isNonEvmSuccessStatus = (status: string) =>
 const isNonEvmFailedStatus = (status: string) =>
   status === KeyringTransactionStatus.Failed;
 
+const isNonEvmPendingStatus = (status: string) =>
+  !isNonEvmSuccessStatus(status) && !isNonEvmFailedStatus(status);
+
 const ToastContent = ({
   variant,
   toastId,
 }: {
-  variant: TransactionToastVariant;
+  variant: TransactionStatusVariant;
   toastId: string;
 }) => {
-  const { title, description } = getTransactionToastContent(variant);
+  const { title, description } = getTransactionDisplayData(variant);
 
   return (
     <Link
@@ -64,26 +66,18 @@ const ToastContent = ({
   );
 };
 
-export function TransactionToastListener() {
-  const transactions = useSelector(getToastTransactions);
-  const nonEvmTransactions = useSelector(getNonEvmToastTransactions);
-  const pendingNonEvmTransactions = useSelector(
-    getPendingNonEvmToastTransactions,
-  );
+export function ToastListener() {
+  const transactions = useSelector(
+    selectEvmTransactions,
+  ) as readonly TransactionLike[];
+  const nonEvmTransactions = useSelector(
+    selectNonEvmTransactions,
+  ) as readonly NonEvmTransactionLike[];
   const prevTransactionsRef = useRef<readonly TransactionLike[]>([]);
   const prevNonEvmTransactionsRef = useRef<readonly NonEvmTransactionLike[]>(
     [],
   );
   const prevPendingNonEvmIdsRef = useRef<Set<string>>(new Set());
-  const transactionList = transactions as readonly TransactionLike[];
-  const nonEvmTransactionList = useMemo(
-    () => (nonEvmTransactions as NonEvmTransactionLike[]) ?? [],
-    [nonEvmTransactions],
-  );
-  const pendingNonEvmTransactionList = useMemo(
-    () => (pendingNonEvmTransactions as NonEvmTransactionLike[]) ?? [],
-    [pendingNonEvmTransactions],
-  );
 
   useEffect(() => {
     const prevTransactions = prevTransactionsRef.current;
@@ -91,7 +85,7 @@ export function TransactionToastListener() {
     const isFirstEvmRun = prevTransactions.length === 0;
     const isFirstNonEvmRun = prevNonEvmTransactions.length === 0;
 
-    transactionList.forEach((tx) => {
+    transactions.forEach((tx) => {
       if (isFirstEvmRun) {
         return;
       }
@@ -140,11 +134,14 @@ export function TransactionToastListener() {
     });
 
     const prevPendingNonEvmIds = prevPendingNonEvmIdsRef.current;
+    const pendingNonEvmTxs = nonEvmTransactions.filter((tx) =>
+      isNonEvmPendingStatus(tx.status),
+    );
     const currentPendingNonEvmIds = new Set(
-      pendingNonEvmTransactionList.map((tx) => tx.id),
+      pendingNonEvmTxs.map((tx) => tx.id),
     );
 
-    pendingNonEvmTransactionList.forEach((tx) => {
+    pendingNonEvmTxs.forEach((tx) => {
       if (prevPendingNonEvmIds.has(tx.id)) {
         return;
       }
@@ -155,7 +152,7 @@ export function TransactionToastListener() {
       });
     });
 
-    nonEvmTransactionList.forEach((tx) => {
+    nonEvmTransactions.forEach((tx) => {
       const prevTx = prevNonEvmTransactions.find((ptx) => ptx.id === tx.id);
 
       const becameSuccess =
@@ -190,10 +187,10 @@ export function TransactionToastListener() {
       }
     });
 
-    prevTransactionsRef.current = transactionList;
-    prevNonEvmTransactionsRef.current = nonEvmTransactionList;
+    prevTransactionsRef.current = transactions;
+    prevNonEvmTransactionsRef.current = nonEvmTransactions;
     prevPendingNonEvmIdsRef.current = currentPendingNonEvmIds;
-  }, [transactionList, nonEvmTransactionList, pendingNonEvmTransactionList]);
+  }, [transactions, nonEvmTransactions]);
 
   return null;
 }

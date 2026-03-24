@@ -6,6 +6,7 @@ import {
   isCrossChain,
 } from '@metamask/bridge-controller';
 import type { QuoteMetadata, QuoteResponse } from '@metamask/bridge-controller';
+import { useNavigate } from 'react-router-dom';
 import { isHardwareWallet } from '../../../../shared/lib/selectors';
 import { captureException } from '../../../../shared/lib/sentry';
 import {
@@ -27,6 +28,7 @@ import {
 } from '../../../contexts/hardware-wallets/HardwareWalletContext';
 import { isUserRejectedHardwareWalletError } from '../../../contexts/hardware-wallets/rpcErrorUtils';
 import { useBridgeNavigation } from '../../../hooks/bridge/useBridgeNavigation';
+import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import { useEnableMissingNetwork } from './useEnableMissingNetwork';
 
 const ALLOWANCE_RESET_ERROR = 'Eth USDT allowance reset failed';
@@ -60,11 +62,9 @@ const isHardwareWalletUserRejection = (error: unknown): boolean => {
 };
 
 export default function useSubmitBridgeTransaction() {
-  const {
-    navigateToBridgePage,
-    navigateToHwSigningPage,
-    navigateToActivityPage,
-  } = useBridgeNavigation();
+  const navigate = useNavigate();
+  const { navigateToBridgePage, navigateToHwSigningPage } =
+    useBridgeNavigation();
   const dispatch = useDispatch();
   const hardwareWalletUsed = useSelector(isHardwareWallet);
 
@@ -130,7 +130,7 @@ export default function useSubmitBridgeTransaction() {
             accountAddress: fromAccount.address,
           }),
         );
-        navigateToActivityPage();
+        navigate(DEFAULT_ROUTE, { replace: true });
         return;
       }
 
@@ -160,7 +160,7 @@ export default function useSubmitBridgeTransaction() {
       setIsSubmitting(false);
     }
 
-    navigateToActivityPage();
+    navigate(DEFAULT_ROUTE, { replace: true });
   };
 
   return {

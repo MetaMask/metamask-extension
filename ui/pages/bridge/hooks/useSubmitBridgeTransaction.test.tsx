@@ -210,14 +210,9 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
       expect(mockUseNavigate.mock.calls).toMatchInlineSnapshot(`
         [
           [
-            "/?tab=activity",
+            "/",
             {
               "replace": true,
-              "state": {
-                "bridgeState": null,
-                "stayOnHomePage": true,
-                "token": null,
-              },
             },
           ],
         ]
@@ -261,14 +256,9 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
       expect(mockUseNavigate.mock.calls).toMatchInlineSnapshot(`
         [
           [
-            "/?tab=activity",
+            "/",
             {
               "replace": true,
-              "state": {
-                "bridgeState": null,
-                "stayOnHomePage": true,
-                "token": null,
-              },
             },
           ],
         ]
@@ -312,14 +302,9 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
             },
           ],
           [
-            "/?tab=activity",
+            "/",
             {
               "replace": true,
-              "state": {
-                "bridgeState": null,
-                "stayOnHomePage": true,
-                "token": null,
-              },
             },
           ],
         ]
@@ -388,17 +373,9 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
         accountAddress: expect.any(String),
       });
       expect(submitTxSpy).not.toHaveBeenCalled();
-      expect(mockUseNavigate).toHaveBeenCalledWith(
-        `${DEFAULT_ROUTE}?tab=activity`,
-        {
-          replace: true,
-          state: {
-            bridgeState: null,
-            stayOnHomePage: true,
-            token: null,
-          },
-        },
-      );
+      expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE, {
+        replace: true,
+      });
     });
 
     it('routes to activity with replace when non-HW intent submission fails', async () => {
@@ -435,17 +412,9 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
           );
         });
 
-        expect(mockUseNavigate).toHaveBeenCalledWith(
-          `${DEFAULT_ROUTE}?tab=activity`,
-          {
-            replace: true,
-            state: {
-              bridgeState: null,
-              stayOnHomePage: true,
-              token: null,
-            },
-          },
-        );
+        expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE, {
+          replace: true,
+        });
       } finally {
         consoleErrorSpy.mockRestore();
       }
@@ -482,18 +451,9 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
         `${CROSS_CHAIN_SWAP_ROUTE}${AWAITING_SIGNATURES_ROUTE}`,
         { state: {} },
       );
-      expect(mockUseNavigate).toHaveBeenNthCalledWith(
-        2,
-        `${DEFAULT_ROUTE}?tab=activity`,
-        {
-          replace: true,
-          state: {
-            bridgeState: null,
-            stayOnHomePage: true,
-            token: null,
-          },
-        },
-      );
+      expect(mockUseNavigate).toHaveBeenNthCalledWith(2, DEFAULT_ROUTE, {
+        replace: true,
+      });
     });
   });
 });

@@ -30,12 +30,15 @@ export const EXCLUDED_TRANSACTION_TYPES = new Set([
   TransactionType.relayDeposit,
 ]);
 
-// Transaction types we observe and render toast notifications for
-export const TRANSACTION_TOAST_TYPES = new Set([
-  TransactionType.swap,
-  TransactionType.simpleSend,
-  TransactionType.tokenMethodTransfer,
+// EVM transaction types excluded from toast notifications
+export const EXCLUDED_TOAST_TRANSACTION_TYPES = new Set([
+  TransactionType.swapApproval,
+  TransactionType.bridgeApproval,
+  TransactionType.shieldSubscriptionApprove,
 ]);
+
+// Non-EVM transaction types excluded from toast notifications.
+export const EXCLUDED_NON_EVM_TOAST_TYPES = new Set(['approve']);
 
 export const TRANSACTION_PENDING_STATUSES = [
   TransactionStatus.submitted,

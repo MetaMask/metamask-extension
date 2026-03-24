@@ -34,6 +34,8 @@ describe('Ledger Hardware', function (this: Suite) {
           amount: '1',
         });
         await homePage.checkPageIsLoaded();
+
+        await homePage.goToActivityList();
         const activityList = new ActivityListPage(driver);
         await activityList.checkConfirmedTxNumberDisplayedInActivity();
         await activityList.checkTxAmountInActivity();
@@ -64,6 +66,7 @@ describe('Ledger Hardware', function (this: Suite) {
           amount: '1',
         });
         await homePage.checkPageIsLoaded();
+        await homePage.goToActivityList();
         const activityList = new ActivityListPage(driver);
         await activityList.checkConfirmedTxNumberDisplayedInActivity();
         await activityList.checkTxAmountInActivity();
