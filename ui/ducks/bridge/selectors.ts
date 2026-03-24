@@ -612,71 +612,24 @@ export const getIsStockMarketClosed = (
   return isFromClosed || isToClosed;
 };
 
-/**
- * Strips gasIncluded7702 and gasSponsored from a quote when the user is on a
- * hardware wallet. HW wallets cannot sign 7702 upgrades, but the STX
- * gasIncluded path still works, so that flag is left untouched.
- * @param quote
- * @param isHw
- */
-function adjustQuoteForHardwareWallet<
-  Quote extends {
-    quote: { gasIncluded7702?: boolean; gasSponsored?: boolean };
-  },
->(quote: Quote | null | undefined, isHw: boolean): Quote | null | undefined {
-  if (!isHw || !quote) {
-    return quote;
-  }
-  return {
-    ...quote,
-    quote: {
-      ...quote.quote,
-      gasIncluded7702: false as boolean,
-      gasSponsored: false as boolean,
-    },
-  } as Quote;
-}
-
 export const getBridgeQuotes = createSelector(
   [
     ({ metamask }: BridgeAppState) => metamask,
     ({ bridge: { sortOrder } }: BridgeAppState) => sortOrder,
     ({ bridge: { selectedQuote } }: BridgeAppState) => selectedQuote,
-    (state: BridgeAppState) => isHardwareWallet(state as never),
   ],
-  (controllerStates, sortOrder, selectedQuote, isHw) => {
+  (controllerStates, sortOrder, selectedQuote) => {
     const quotes = selectBridgeQuotes(controllerStates, {
       sortOrder,
       selectedQuote,
     });
-
-    const adjustedSortedQuotes = isHw
-      ? (quotes.sortedQuotes.map((q) => ({
-          ...q,
-          quote: {
-            ...q.quote,
-            gasIncluded7702: false as boolean,
-            gasSponsored: false as boolean,
-          },
-        })) as typeof quotes.sortedQuotes)
-      : quotes.sortedQuotes;
-
-    const adjustedRecommended = adjustQuoteForHardwareWallet(
-      quotes.recommendedQuote,
-      isHw,
-    );
-
-    const activeQuote =
-      // TODO move this to controller
-      adjustedSortedQuotes.find(
-        (q) => q.quote.requestId === selectedQuote?.quote.requestId,
-      ) ?? adjustedRecommended;
-
     return {
       ...quotes,
-      sortedQuotes: adjustedSortedQuotes,
-      recommendedQuote: adjustedRecommended,
-      activeQuote,
+      activeQuote:
+        // TODO move this to controller
+        quotes.sortedQuotes.find(
+          (q) => q.quote.requestId === selectedQuote?.quote.requestId,
+        ) ?? quotes.recommendedQuote,
     };
   },
 );
@@ -774,6 +727,7 @@ const _getBaseValidationErrors = createDeepEqualSelector(
     ({ bridge: { txAlertStatus } }: BridgeAppState) => txAlertStatus,
     getPriceImpact,
     getPriceImpactThresholds,
+    (state: BridgeAppState) => isHardwareWallet(state as never),
   ],
   (
     { activeQuote, quotesLastFetchedMs, isLoading, quotesRefreshCount },
@@ -788,12 +742,18 @@ const _getBaseValidationErrors = createDeepEqualSelector(
     txAlertStatus,
     priceImpactNumber,
     { warning, error },
+    isHardwareWalletAccount,
   ) => {
     const { gasIncluded, gasIncluded7702, gasSponsored } =
       activeQuote?.quote ?? {};
-    // getBridgeQuotes already strips gasIncluded7702/gasSponsored for HW
-    // wallets, so no additional HW gate is needed here.
-    const isGasless = Boolean(gasIncluded7702 || gasIncluded || gasSponsored);
+    // gasIncluded7702 and gasSponsored are gated at request time via
+    // useGasIncluded7702 (returns false for HW), so the backend won't
+    // return those flags for HW accounts.
+    // gasIncluded (STX path) is gated at request time in
+    // prepare-bridge-page, but we also gate here as defense-in-depth.
+    const isGasless =
+      !isHardwareWalletAccount &&
+      Boolean(gasIncluded7702 || gasIncluded || gasSponsored);
 
     const srcChainId =
       quoteRequest.srcChainId ?? activeQuote?.quote?.srcChainId;

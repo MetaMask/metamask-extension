@@ -127,8 +127,9 @@ export const MultichainBridgeQuoteCard = ({
   }, [fromChain?.chainId, gasFeesSponsoredNetworkEnabled]);
 
   const shouldShowGasSponsored = useMemo(() => {
-    // getBridgeQuotes already strips gasSponsored for HW wallets, so the
-    // quote-level flag is safe to check without an additional HW gate.
+    // useGasIncluded7702 gates HW wallets at request time (sends
+    // gasIncluded7702=false), so the backend won't return gasSponsored=true
+    // for HW accounts. No additional HW gate needed on this path.
     if (gasSponsored) {
       return true;
     }
@@ -304,7 +305,9 @@ export const MultichainBridgeQuoteCard = ({
                 <SuccessPill label={t('swapGasFeesSponsored')} />
               </Row>
             )}
-            {!shouldShowGasSponsored && activeQuote.quote.gasIncluded && (
+            {!shouldShowGasSponsored &&
+              !isHardwareWalletAccount &&
+              activeQuote.quote.gasIncluded && (
               <Row gap={1} data-testid="network-fees-included">
                 <Text
                   variant={TextVariant.bodySm}
@@ -338,7 +341,8 @@ export const MultichainBridgeQuoteCard = ({
                 </Text>
               </Row>
             )}
-            {!shouldShowGasSponsored && !activeQuote.quote.gasIncluded && (
+            {!shouldShowGasSponsored &&
+              (isHardwareWalletAccount || !activeQuote.quote.gasIncluded) && (
               <Text
                 variant={TextVariant.bodySm}
                 color={
