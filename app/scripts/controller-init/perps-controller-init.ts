@@ -27,7 +27,7 @@ export const PerpsControllerInit: ControllerInitFunction<
   const completedOnboarding =
     persistedState.OnboardingController?.completedOnboarding ?? false;
   const useExternalServices =
-    persistedState.PreferencesController?.useExternalServices ?? true;
+    persistedState.PreferencesController?.useExternalServices ?? false;
 
   const controller = new PerpsController({
     messenger: controllerMessenger,

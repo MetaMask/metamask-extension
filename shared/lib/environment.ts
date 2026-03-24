@@ -16,6 +16,15 @@ export const getIsMetaMaskShieldFeatureEnabled = (): boolean => {
   return process.env.METAMASK_SHIELD_ENABLED?.toString() === 'true';
 };
 
+/**
+ * Compile-time gate (`PERPS_ENABLED`): this extension binary includes PerpsController and
+ * related background paths. Distinct from remote `perpsEnabledVersion` rollout (see
+ * `isPerpsRemoteConfigSatisfied` and `getIsPerpsExperienceAvailable`).
+ */
+export const getIsPerpsIncludedInBuild = (): boolean => {
+  return process.env.PERPS_ENABLED?.toString() === 'true';
+};
+
 export const getIsSettingsPageDevOptionsEnabled = (): boolean => {
   return process.env.ENABLE_SETTINGS_PAGE_DEV_OPTIONS?.toString() === 'true';
 };

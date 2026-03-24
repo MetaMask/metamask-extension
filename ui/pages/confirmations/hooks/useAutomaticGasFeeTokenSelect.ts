@@ -12,7 +12,11 @@ import { useHasInsufficientBalance } from './useHasInsufficientBalance';
 
 export function useAutomaticGasFeeTokenSelect() {
   const dispatch = useDispatch();
-  const { isSmartTransaction } = useIsGaslessSupported();
+  const {
+    isSupported: isGaslessSupported,
+    isSmartTransaction,
+    pending,
+  } = useIsGaslessSupported();
   const [firstCheck, setFirstCheck] = useState(true);
 
   const { currentConfirmation: transactionMeta } =
@@ -37,7 +41,10 @@ export function useAutomaticGasFeeTokenSelect() {
     await forceUpdateMetamaskState(dispatch);
   }, [dispatch, transactionId, firstGasFeeTokenAddress]);
 
+  const isGaslessSupportedAndFinished = isGaslessSupported && !pending;
+
   const shouldSelect =
+    isGaslessSupportedAndFinished &&
     hasInsufficientBalance &&
     !selectedGasFeeToken &&
     Boolean(firstGasFeeTokenAddress);

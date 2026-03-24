@@ -4,7 +4,7 @@ import { MockedEndpoint, Mockttp } from 'mockttp';
 import { MOCK_META_METRICS_ID } from '../../constants';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { getEventPayloads, withFixtures } from '../../helpers';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import HomePage from '../../page-objects/pages/home/homepage';
 import PrivacySettings from '../../page-objects/pages/settings/privacy-settings';
@@ -90,7 +90,7 @@ describe('Delete MetaMetrics Data', function (this: Suite) {
         driver,
         mockedEndpoint: mockedEndpoints,
       }: TestSuiteArguments) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.openSettingsPage();
         const settingsPage = new SettingsPage(driver);
@@ -151,7 +151,7 @@ describe('Delete MetaMetrics Data', function (this: Suite) {
         testSpecificMock: mockSegment,
       },
       async ({ driver }: TestSuiteArguments) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.openSettingsPage();
         const settingsPage = new SettingsPage(driver);
@@ -176,7 +176,7 @@ describe('Delete MetaMetrics Data', function (this: Suite) {
         testSpecificMock: mockSegment,
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.openSettingsPage();
         const settingsPage = new SettingsPage(driver);

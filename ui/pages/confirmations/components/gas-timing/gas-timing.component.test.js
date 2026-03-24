@@ -54,7 +54,7 @@ describe('Gas timing', () => {
     });
   });
 
-  it('renders "⬆ 10% increase" when the estimate is tenPercentIncreased', async () => {
+  it('renders "10% increase" when the estimate is tenPercentIncreased', async () => {
     useGasFeeContext.mockReturnValue({
       estimateUsed: 'tenPercentIncreased',
     });
@@ -65,6 +65,78 @@ describe('Gas timing', () => {
     };
 
     const screen = renderWithProvider(<GasTiming {...props} />, mockStore);
+
+    await waitFor(() => {
+      expect(
+        screen.queryByText(messages.tenPercentIncreased.message),
+      ).toBeTruthy();
+    });
+  });
+
+  it('renders "Site suggested" when the estimate is dappSuggested', async () => {
+    useGasFeeContext.mockReturnValue({
+      estimateUsed: 'dappSuggested',
+    });
+
+    const mockStore = configureMockStore()(mockState);
+    const props = {
+      maxPriorityFeePerGas: '1000000',
+    };
+
+    const screen = renderWithProvider(<GasTiming {...props} />, mockStore);
+
+    await waitFor(() => {
+      expect(screen.queryByText(messages.dappSuggested.message)).toBeTruthy();
+    });
+  });
+
+  it('uses userFeeLevelOverride when context has no estimateUsed', async () => {
+    useGasFeeContext.mockReturnValue({});
+
+    const mockStore = configureMockStore()(mockState);
+    const screen = renderWithProvider(
+      <GasTiming
+        maxPriorityFeePerGas="1000000"
+        userFeeLevelOverride="tenPercentIncreased"
+      />,
+      mockStore,
+    );
+
+    await waitFor(() => {
+      expect(
+        screen.queryByText(messages.tenPercentIncreased.message),
+      ).toBeTruthy();
+    });
+  });
+
+  it('uses userFeeLevelOverride for medium when passed', async () => {
+    useGasFeeContext.mockReturnValue({});
+
+    const mockStore = configureMockStore()(mockState);
+    const screen = renderWithProvider(
+      <GasTiming
+        maxPriorityFeePerGas="1000000"
+        userFeeLevelOverride="medium"
+      />,
+      mockStore,
+    );
+
+    await waitFor(() => {
+      expect(screen.queryByText(messages.medium.message)).toBeTruthy();
+    });
+  });
+
+  it('userFeeLevelOverride wins over context when both are provided', async () => {
+    useGasFeeContext.mockReturnValue({ estimateUsed: 'medium' });
+
+    const mockStore = configureMockStore()(mockState);
+    const screen = renderWithProvider(
+      <GasTiming
+        maxPriorityFeePerGas="1000000"
+        userFeeLevelOverride="tenPercentIncreased"
+      />,
+      mockStore,
+    );
 
     await waitFor(() => {
       expect(

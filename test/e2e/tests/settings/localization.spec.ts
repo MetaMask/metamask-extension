@@ -2,7 +2,7 @@ import { withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { Mockttp } from '../../mock-e2e';
 import HomePage from '../../page-objects/pages/home/homepage';
-import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 
 async function mockPhpConversion(mockServer: Mockttp) {
   return [
@@ -110,7 +110,7 @@ describe('Localization', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await loginWithoutBalanceValidation(driver);
+        await login(driver, { validateBalance: false });
 
         // After the removal of displaying secondary currency in coin-overview.tsx, we will test localization on main balance with showNativeTokenAsMainBalance = false
         await new HomePage(driver).checkExpectedBalanceIsDisplayed(
