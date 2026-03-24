@@ -4,7 +4,7 @@ import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
 import HomePage from '../../../page-objects/pages/home/homepage';
 
 import DeFiTab from '../../../page-objects/pages/defi-tab';
-import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
+import { login } from '../../../page-objects/flows/login.flow';
 import { Driver } from '../../../webdriver/driver';
 import { mockNoDeFiPositionFeatureFlag } from '../../confirmations/helpers';
 
@@ -20,7 +20,7 @@ describe('Check DeFi empty state when no defi positions', function () {
         testSpecificMock: mockNoDeFiPositionFeatureFlag,
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         const homePage = new HomePage(driver);
         await homePage.goToDeFiTab();

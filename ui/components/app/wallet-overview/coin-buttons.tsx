@@ -84,11 +84,8 @@ type CoinButtonsProps = {
   trackingLocation: string;
   isSwapsChain: boolean;
   isSigningEnabled: boolean;
-  /** @deprecated use bridge chain constants instead*/
-  isBridgeChain: boolean;
   isBuyableChain: boolean;
   classPrefix?: string;
-  iconButtonClassName?: string;
   /** When true, disables the send button for non-EVM chains (used on asset page) */
   disableSendForNonEvm?: boolean;
 };

@@ -32,9 +32,6 @@ class ActivityListPage {
     css: '.transaction-status-label--confirmed',
   };
 
-  private readonly confirmTransactionReplacementButton =
-    '[data-testid="cancel-speedup-confirm-button"]';
-
   private readonly copyTransactionHashButton = {
     text: 'Copy transaction ID',
     tag: 'button',
@@ -51,7 +48,7 @@ class ActivityListPage {
     '[data-testid="transaction-breakdown__gas-price"]';
 
   private readonly pendingTransactionItems =
-    '.transaction-list__pending-transactions .activity-list-item';
+    '.transaction-status-label--pending';
 
   private readonly speedupInlineButton = '[data-testid="speed-up-button"]';
 
@@ -459,12 +456,6 @@ class ActivityListPage {
 
   async clickSpeedUpTransaction() {
     await this.driver.clickElement(this.speedupModalButton);
-  }
-
-  async clickConfirmTransactionReplacement() {
-    await this.driver.clickElementAndWaitToDisappear(
-      this.confirmTransactionReplacementButton,
-    );
   }
 
   /**

@@ -1,5 +1,4 @@
 import type { Position } from '@metamask/perps-controller';
-// eslint-disable-next-line import/order
 import { PerpsStreamManager } from './PerpsStreamManager';
 
 // Polyfill crypto.randomUUID for jsdom
@@ -69,6 +68,47 @@ describe('PerpsStreamManager', () => {
       expect(manager.prices.getCachedData()).toEqual([]);
       expect(manager.orderBook.getCachedData()).toBeNull();
       expect(manager.fills.getCachedData()).toEqual([]);
+    });
+  });
+
+  describe('markets channel', () => {
+    beforeEach(() => {
+      jest.useRealTimers();
+    });
+
+    afterEach(() => {
+      mockSubmitRequestToBackground.mockReset();
+      mockSubmitRequestToBackground.mockResolvedValue(undefined);
+      jest.useFakeTimers();
+    });
+
+    it('notifies subscribers with empty markets when fetch fails', async () => {
+      const consoleErrorSpy = jest
+        .spyOn(console, 'error')
+        .mockImplementation(() => undefined);
+
+      try {
+        mockSubmitRequestToBackground.mockImplementation((method: string) => {
+          if (method === 'perpsGetMarketDataWithPrices') {
+            return Promise.reject(new Error('network'));
+          }
+          return Promise.resolve(undefined);
+        });
+
+        const onData = jest.fn();
+        manager.markets.subscribe(onData);
+
+        await Promise.resolve();
+        await Promise.resolve();
+
+        expect(onData).toHaveBeenCalledWith([]);
+        expect(consoleErrorSpy).toHaveBeenCalledWith(
+          '[PerpsStreamManager] Failed to fetch markets',
+          expect.any(Error),
+        );
+      } finally {
+        consoleErrorSpy.mockRestore();
+      }
     });
   });
 

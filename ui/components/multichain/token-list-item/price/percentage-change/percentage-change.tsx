@@ -11,7 +11,7 @@ import {
   formatValue,
   isValidAmount,
   // TODO: Remove restricted import
-  // eslint-disable-next-line import/no-restricted-paths
+  // eslint-disable-next-line import-x/no-restricted-paths
 } from '../../../../../../app/scripts/lib/util';
 
 export const PercentageChange = ({

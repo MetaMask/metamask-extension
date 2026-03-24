@@ -6,7 +6,7 @@
 
 // This import sets up global functions required for Sentry to function.
 // It must be run first in case an error is thrown later during initialization.
-// eslint-disable-next-line import/order -- intentional first import for Sentry
+// eslint-disable-next-line import-x/order -- intentional first import for Sentry
 import { persistenceManager } from './lib/setup-initial-state-hooks';
 
 // Import this very early, so globalThis.INFURA_PROJECT_ID_FROM_MANIFEST_FLAGS is always defined
@@ -85,7 +85,7 @@ import { setupMultiplex } from './lib/stream-utils';
 import rawFirstTimeState from './first-time-state';
 import { onUpdate } from './on-update';
 
-/* eslint-enable import/first */
+/* eslint-enable import-x/first */
 
 import { COOKIE_ID_MARKETING_WHITELIST_ORIGINS } from './constants/marketing-site-whitelist';
 import {

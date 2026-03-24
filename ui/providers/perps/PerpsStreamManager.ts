@@ -173,6 +173,7 @@ class PerpsStreamManager {
           })
           .catch((err) => {
             console.error('[PerpsStreamManager] Failed to fetch markets', err);
+            push(EMPTY_MARKETS);
           });
         // eslint-disable-next-line no-empty-function, @typescript-eslint/no-empty-function
         return () => {};

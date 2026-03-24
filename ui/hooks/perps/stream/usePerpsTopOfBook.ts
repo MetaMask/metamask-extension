@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState } from 'react';
 import { submitRequestToBackground } from '../../../store/background-connection';
 import type { PerpsStreamManager } from '../../../providers/perps';
 import { usePerpsChannel } from './usePerpsChannel';
@@ -78,11 +78,18 @@ export function usePerpsTopOfBook(
   const [topOfBook, setTopOfBook] = useState<TopOfBookData | undefined>(
     undefined,
   );
+<<<<<<< HEAD
   const hasActivated = useRef(false);
+=======
+>>>>>>> main
 
   const { data: orderBookData, isInitialLoading } = usePerpsChannel(
     getOrderBookChannel,
     null,
+<<<<<<< HEAD
+=======
+    symbol || undefined,
+>>>>>>> main
   );
 
   // Activate the background orderBook stream for this symbol
@@ -90,7 +97,10 @@ export function usePerpsTopOfBook(
     if (!symbol) {
       return;
     }
+<<<<<<< HEAD
     hasActivated.current = true;
+=======
+>>>>>>> main
     submitRequestToBackground('perpsActivateOrderBookStream', [
       { symbol },
     ]).catch((err) =>
@@ -128,6 +138,10 @@ export function usePerpsTopOfBook(
 
   return {
     topOfBook,
+<<<<<<< HEAD
     isInitialLoading: isInitialLoading || (!hasActivated.current && !symbol),
+=======
+    isInitialLoading: isInitialLoading || !symbol,
+>>>>>>> main
   };
 }
