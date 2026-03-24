@@ -3,6 +3,10 @@
  * Metrics that could not be collected (missing artifacts, tests did not run)
  * are omitted from the output, i.e., they will not appear in the output file.
  *
+ * Downstream (e.g. Grafana / TSDB) keys metrics by (project, run_id, namespace, metric_key).
+ * Do not rename existing metric keys once published — renaming creates a new time series and
+ * breaks dashboard continuity. Adding or removing keys is fine.
+ *
  * Required env vars:
  *   GITHUB_TOKEN      — GitHub Actions token for API access
  *   GITHUB_REPOSITORY — Repository in "owner/repo" format (set automatically in Actions)
@@ -16,6 +20,10 @@
  *        "key3": "[\"string1\", \"string2\", ...]",
  *      }
  *   2. Register it as a new namespace in the collectors array in main()
+ *
+ * The `metametrics` namespace is populated by a static scan of E2E sources (see
+ * collect-qa-stats-metametrics.ts): `metametrics_events_checked_unique_count` and
+ * `metametrics_events_checked_names_json` must keep stable names for observability pipelines.
  *
  * Example output:
  *   {
@@ -38,10 +46,15 @@
  *       "main_chrome_tests_run": 1200,
  *       "main_firefox_tests_run": 1185,
  *       "flask_tests_run": 200
+ *     },
+ *     "metametrics": {
+ *       "metametrics_events_checked_unique_count": 42,
+ *       "metametrics_events_checked_names_json": "[\"Dapp Viewed\", ...]"
  *     }
  *   }
  */
 
+import { collectE2EMetaMetricsEventCoverage } from './collect-qa-stats-metametrics';
 import { readFile, writeFile, mkdir, readdir } from 'fs/promises';
 import type { Dirent } from 'fs';
 import { execFileSync } from 'child_process';
@@ -884,6 +897,19 @@ async function collectBenchmarkScenarioCount(): Promise<
   return result;
 }
 
+/**
+ * Static scan of E2E MetaMetrics assertions (no GitHub artifacts). On failure, returns {}.
+ */
+async function collectMetametricsQaStats(): Promise<Record<string, number | string>> {
+  try {
+    return await collectE2EMetaMetricsEventCoverage();
+  } catch (err) {
+    const message = err instanceof Error ? err.message : String(err);
+    console.warn(`[metametrics] static scan failed, skipping namespace: ${message}`);
+    return {};
+  }
+}
+
 // ---------------------------------------------------------------------------
 // Main
 // ---------------------------------------------------------------------------
@@ -896,6 +922,7 @@ async function main(): Promise<void> {
     { namespace: 'integration', collect: collectIntegrationTestCount },
     { namespace: 'e2e', collect: collectE2eTestCount },
     { namespace: 'benchmark', collect: collectBenchmarkScenarioCount },
+    { namespace: 'metametrics', collect: collectMetametricsQaStats },
   ];
 
   for (const { namespace, collect } of collectors) {
