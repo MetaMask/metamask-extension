@@ -174,15 +174,15 @@ const PrepareBridgePage = ({
   const keyring = useSelector(getCurrentKeyring);
   const isUsingHardwareWallet = isHardwareKeyring(keyring?.type);
 
-  // useGasIncluded7702 already returns false for HW wallets, but
-  // getIsGasIncluded (STX path) does not gate HW. STX gasless is
-  // unsupported for HW accounts (see useGaslessSupportedSmartTransactions),
-  // so we must gate gasIncluded at the request site.
+  // Defense-in-depth: useGasIncluded7702 already returns false for HW
+  // wallets, and getIsGasIncluded (STX path) is gated elsewhere, but we
+  // guard both here to protect against future hook/selector changes.
   const effectiveGasIncluded = !isUsingHardwareWallet && gasIncluded;
+  const effectiveGasIncluded7702 = !isUsingHardwareWallet && gasIncluded7702;
 
   const shouldShowMaxButton =
     fromToken && isNativeAddress(fromToken.assetId)
-      ? effectiveGasIncluded || gasIncluded7702
+      ? effectiveGasIncluded || effectiveGasIncluded7702
       : true;
   const hardwareWalletName = useSelector(getHardwareWalletName);
   const isTxSubmittable = useIsTxSubmittable();
@@ -297,8 +297,8 @@ const PrepareBridgePage = ({
       slippage,
       walletAddress: selectedAccount.address,
       destWalletAddress: selectedDestinationAccount?.address,
-      gasIncluded: effectiveGasIncluded || gasIncluded7702,
-      gasIncluded7702,
+      gasIncluded: effectiveGasIncluded || effectiveGasIncluded7702,
+      gasIncluded7702: effectiveGasIncluded7702,
     };
   }, [
     fromToken?.assetId,
@@ -311,7 +311,7 @@ const PrepareBridgePage = ({
     selectedDestinationAccount?.address,
     providerConfig?.rpcUrl,
     effectiveGasIncluded,
-    gasIncluded7702,
+    effectiveGasIncluded7702,
     isInsufficientBalance,
   ]);
 
