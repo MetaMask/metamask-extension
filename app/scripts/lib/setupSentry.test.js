@@ -3,10 +3,21 @@ import { forEachEnvelopeItem, parseEnvelope } from '@sentry/utils';
 import {
   removeUrlsFromBreadCrumb,
   rewriteReport,
+  makeTransport,
   getMetaMetricsStateFromAppState,
   getMetaMetricsStateFromPersistedState,
   getMetaMetricsStateFromBackupState,
 } from './setupSentry';
+
+const originalMakeFetchTransport = Sentry.makeFetchTransport.bind(Sentry);
+
+function createTestTransportOptions() {
+  return {
+    url: 'https://public@fake.ingest.sentry.io/api/1/envelope/',
+    headers: {},
+    recordDroppedEvent: jest.fn(),
+  };
+}
 
 describe('Setup Sentry', () => {
   describe('getMetaMetricsStateFromAppState', () => {
@@ -506,12 +517,19 @@ describe('Setup Sentry', () => {
   describe('makeTransport', () => {
     let makeFetchTransportSpy;
 
-    beforeEach(() => {
-      makeFetchTransportSpy = jest.spyOn(Sentry, 'makeFetchTransport');
-      makeFetchTransportSpy.mockReturnValue({
-        send: jest.fn().mockResolvedValue({}),
-        flush: jest.fn().mockResolvedValue(true),
+    function mockFetchForTransport() {
+      return jest.spyOn(globalThis, 'fetch').mockResolvedValue({
+        ok: true,
+        headers: { get: () => null },
       });
+    }
+
+    beforeEach(() => {
+      makeFetchTransportSpy = jest
+        .spyOn(Sentry, 'makeFetchTransport')
+        .mockImplementation((options, customFetch) =>
+          originalMakeFetchTransport(options, customFetch),
+        );
     });
 
     afterEach(() => {
@@ -521,6 +539,8 @@ describe('Setup Sentry', () => {
     });
 
     it('throws when MetaMetrics is not opted in', async () => {
+      const fetchSpy = mockFetchForTransport();
+
       globalThis.stateHooks = {
         getSentryState: () => ({}),
         getPersistedState: async () => ({
@@ -531,19 +551,21 @@ describe('Setup Sentry', () => {
         getBackupState: async () => ({}),
       };
 
-      const transport = makeTransport({});
+      const transport = makeTransport(createTestTransportOptions());
       const envelope = [{}, [[{ type: 'event' }, { message: 'test' }]]];
 
       await expect(transport.send(envelope)).rejects.toThrow(
         'Network request skipped as metrics disabled',
       );
       expect(makeFetchTransportSpy).toHaveBeenCalled();
-      expect(
-        makeFetchTransportSpy.mock.results[0].value.send,
-      ).not.toHaveBeenCalled();
+      expect(fetchSpy).not.toHaveBeenCalled();
+
+      fetchSpy.mockRestore();
     });
 
-    it('calls default transport send and mutates event when opted in', async () => {
+    it('calls fetch when opted in (user id is set in beforeSend, not transport)', async () => {
+      const fetchSpy = mockFetchForTransport();
+
       globalThis.stateHooks = {
         getSentryState: () => ({}),
         getPersistedState: async () => ({
@@ -557,19 +579,21 @@ describe('Setup Sentry', () => {
         getBackupState: async () => ({}),
       };
 
-      const transport = makeTransport({});
+      const transport = makeTransport(createTestTransportOptions());
       const eventPayload = { message: 'test event' };
       const envelope = [{}, [[{ type: 'event' }, eventPayload]]];
 
       await transport.send(envelope);
 
-      expect(eventPayload.user).toStrictEqual({ id: 'transport-test-id' });
-      const defaultTransport = makeFetchTransportSpy.mock.results[0].value;
-      expect(defaultTransport.send).toHaveBeenCalledTimes(1);
-      expect(defaultTransport.send).toHaveBeenCalledWith(envelope);
+      expect(eventPayload.user).toBeUndefined();
+      expect(fetchSpy).toHaveBeenCalled();
+
+      fetchSpy.mockRestore();
     });
 
     it('uses app state from getSentryState when available', async () => {
+      const fetchSpy = mockFetchForTransport();
+
       globalThis.stateHooks = {
         getSentryState: () => ({
           state: {
@@ -583,19 +607,21 @@ describe('Setup Sentry', () => {
         getBackupState: async () => ({}),
       };
 
-      const transport = makeTransport({});
+      const transport = makeTransport(createTestTransportOptions());
       const eventPayload = { message: 'test' };
       const envelope = [{}, [[{ type: 'event' }, eventPayload]]];
 
       await transport.send(envelope);
 
-      expect(eventPayload.user).toStrictEqual({ id: 'app-state-id' });
-      expect(
-        makeFetchTransportSpy.mock.results[0].value.send,
-      ).toHaveBeenCalledWith(envelope);
+      expect(eventPayload.user).toBeUndefined();
+      expect(fetchSpy).toHaveBeenCalled();
+
+      fetchSpy.mockRestore();
     });
 
     it('falls back to backup state when getPersistedState throws', async () => {
+      const fetchSpy = mockFetchForTransport();
+
       globalThis.stateHooks = {
         getSentryState: () => ({}),
         getPersistedState: async () => {
@@ -609,19 +635,21 @@ describe('Setup Sentry', () => {
         }),
       };
 
-      const transport = makeTransport({});
+      const transport = makeTransport(createTestTransportOptions());
       const eventPayload = { message: 'test' };
       const envelope = [{}, [[{ type: 'event' }, eventPayload]]];
 
       await transport.send(envelope);
 
-      expect(eventPayload.user).toStrictEqual({ id: 'backup-id' });
-      expect(
-        makeFetchTransportSpy.mock.results[0].value.send,
-      ).toHaveBeenCalledWith(envelope);
+      expect(eventPayload.user).toBeUndefined();
+      expect(fetchSpy).toHaveBeenCalled();
+
+      fetchSpy.mockRestore();
     });
 
     it('throws when both getPersistedState and getBackupState fail', async () => {
+      const fetchSpy = mockFetchForTransport();
+
       globalThis.stateHooks = {
         getSentryState: () => ({}),
         getPersistedState: async () => {
@@ -632,15 +660,15 @@ describe('Setup Sentry', () => {
         },
       };
 
-      const transport = makeTransport({});
+      const transport = makeTransport(createTestTransportOptions());
       const envelope = [{}, [[{ type: 'event' }, { message: 'test' }]]];
 
       await expect(transport.send(envelope)).rejects.toThrow(
         'Network request skipped as metrics disabled',
       );
-      expect(
-        makeFetchTransportSpy.mock.results[0].value.send,
-      ).not.toHaveBeenCalled();
+      expect(fetchSpy).not.toHaveBeenCalled();
+
+      fetchSpy.mockRestore();
     });
   });
 

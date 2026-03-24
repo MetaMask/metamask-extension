@@ -594,7 +594,7 @@ function addDebugListeners() {
  *
  * @param {object} options - Sentry transport options
  */
-function makeTransport(options) {
+export function makeTransport(options) {
   return Sentry.makeFetchTransport(options, async (...args) => {
     const state = await getMetaMetricsState();
 
