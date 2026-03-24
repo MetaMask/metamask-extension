@@ -759,7 +759,6 @@ const getMetamaskState = (state: BalanceCalculationState) =>
 
 const EMPTY_ACCOUNT_TREE = Object.freeze({
   wallets: {},
-  selectedAccountGroup: '',
 });
 
 // Renamed for clarity
@@ -774,12 +773,16 @@ const selectAccountTreeStateForBalances = createSelector(
     (state: BalanceCalculationState) => getMetamaskState(state).accountTree,
 
     (state: BalanceCalculationState) =>
+      getMetamaskState(state).selectedAccountGroup,
+
+    (state: BalanceCalculationState) =>
       getMetamaskState(state).accountGroupsMetadata,
 
     (state: BalanceCalculationState) =>
       getMetamaskState(state).accountWalletsMetadata,
   ],
-  (accountTree, accountGroupsMetadata, accountWalletsMetadata) => ({
+  (accountTree, selectedAccountGroup, accountGroupsMetadata, accountWalletsMetadata) => ({
+    selectedAccountGroup: selectedAccountGroup ?? '',
     accountTree: accountTree ?? EMPTY_ACCOUNT_TREE,
     accountGroupsMetadata: accountGroupsMetadata ?? EMPTY_OBJECT,
     accountWalletsMetadata: accountWalletsMetadata ?? EMPTY_OBJECT,
@@ -1092,7 +1095,7 @@ export const selectBalanceChangeBySelectedAccountGroup = (
       currencyRateState,
       enabledNetworkMap,
     ): BalanceChangeResult | null => {
-      const groupId = accountTreeState?.accountTree?.selectedAccountGroup;
+      const groupId = accountTreeState?.selectedAccountGroup;
       if (!groupId) {
         return null;
       }
@@ -1201,7 +1204,7 @@ export const selectAccountGroupBalanceForEmptyState = createSelector(
     allMainnetNetworksMap,
     accountsByChainId,
   ): boolean => {
-    const selectedGroupId = accountTreeState?.accountTree?.selectedAccountGroup;
+    const selectedGroupId = accountTreeState?.selectedAccountGroup;
     if (!selectedGroupId) {
       return false;
     }
@@ -1346,7 +1349,7 @@ export const selectAccountGroupBalanceForEmptyState = createSelector(
 export const selectBalanceBySelectedAccountGroup = createSelector(
   [selectAccountTreeStateForBalances, selectBalanceForAllWallets],
   (accountTreeState, allBalances) => {
-    const selectedGroupId = accountTreeState?.accountTree?.selectedAccountGroup;
+    const selectedGroupId = accountTreeState?.selectedAccountGroup;
     if (!selectedGroupId) {
       return null;
     }

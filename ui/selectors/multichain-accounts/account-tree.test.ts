@@ -94,7 +94,6 @@ describe('Multichain Accounts Selectors', () => {
             },
           },
         },
-        selectedAccountGroup: 'entropy:test/0' as AccountGroupId,
       },
       {
         accounts: {},
@@ -106,6 +105,7 @@ describe('Multichain Accounts Selectors', () => {
         multichainNetworkConfigurationsByChainId:
           typedMockState.metamask.multichainNetworkConfigurationsByChainId,
       },
+      'entropy:test/0' as AccountGroupId,
     );
 
   const createStateWithoutMultichain = (): MultichainAccountsState =>
@@ -134,7 +134,6 @@ describe('Multichain Accounts Selectors', () => {
             },
           },
         },
-        selectedAccountGroup: 'keyring:Test/address' as AccountGroupId,
       },
       {
         accounts: {},
@@ -146,6 +145,7 @@ describe('Multichain Accounts Selectors', () => {
         multichainNetworkConfigurationsByChainId:
           typedMockState.metamask.multichainNetworkConfigurationsByChainId,
       },
+      'keyring:Test/address' as AccountGroupId,
     );
 
   // Helper to create state with mixed existing and missing accounts
@@ -180,7 +180,6 @@ describe('Multichain Accounts Selectors', () => {
             },
           },
         },
-        selectedAccountGroup: 'entropy:test/0' as AccountGroupId,
       },
       {
         ...typedMockState.metamask.internalAccounts,
@@ -199,6 +198,7 @@ describe('Multichain Accounts Selectors', () => {
         multichainNetworkConfigurationsByChainId:
           typedMockState.metamask.multichainNetworkConfigurationsByChainId,
       },
+      'entropy:test/0' as AccountGroupId,
     );
 
   // Helper to create state with no matching accounts
@@ -233,7 +233,6 @@ describe('Multichain Accounts Selectors', () => {
             },
           },
         },
-        selectedAccountGroup: 'entropy:test/0' as AccountGroupId,
       },
       {
         accounts: {},
@@ -245,6 +244,7 @@ describe('Multichain Accounts Selectors', () => {
         multichainNetworkConfigurationsByChainId:
           typedMockState.metamask.multichainNetworkConfigurationsByChainId,
       },
+      'entropy:test/0' as AccountGroupId,
     );
 
   describe('getAccountTree', () => {
@@ -678,7 +678,7 @@ describe('Multichain Accounts Selectors', () => {
       const result = getSelectedAccountGroup(typedMockState);
 
       expect(result).toStrictEqual(
-        typedMockState.metamask.accountTree.selectedAccountGroup,
+        typedMockState.metamask.selectedAccountGroup,
       );
     });
   });
@@ -823,7 +823,6 @@ describe('Multichain Accounts Selectors', () => {
               },
             },
           },
-          selectedAccountGroup: null as unknown as AccountGroupId,
         },
         {
           accounts: {},
@@ -835,6 +834,7 @@ describe('Multichain Accounts Selectors', () => {
           multichainNetworkConfigurationsByChainId:
             typedMockState.metamask.multichainNetworkConfigurationsByChainId,
         },
+        null as unknown as AccountGroupId,
       );
       const result = getMultichainAccountGroups(stateWithoutEntropy);
 
@@ -885,7 +885,6 @@ describe('Multichain Accounts Selectors', () => {
               },
             },
           },
-          selectedAccountGroup: null as unknown as AccountGroupId,
         },
         {
           accounts: {},
@@ -897,6 +896,7 @@ describe('Multichain Accounts Selectors', () => {
           multichainNetworkConfigurationsByChainId:
             typedMockState.metamask.multichainNetworkConfigurationsByChainId,
         },
+        null as unknown as AccountGroupId,
       );
       const result = getSingleAccountGroups(stateWithoutEntropy);
 
@@ -1227,7 +1227,6 @@ describe('Multichain Accounts Selectors', () => {
               },
             },
           },
-          selectedAccountGroup: 'entropy:ordered/0' as AccountGroupId,
         },
         {
           accounts: {
@@ -1249,6 +1248,8 @@ describe('Multichain Accounts Selectors', () => {
           },
           selectedAccount: 'account-1',
         },
+        undefined,
+        'entropy:ordered/0' as AccountGroupId,
       );
 
       const result = getInternalAccountsFromGroupById(

@@ -114,7 +114,6 @@ const buildStateWithAccounts = (accounts: InternalAccount[]) => {
   return createMockMultichainAccountsState(
     {
       wallets,
-      selectedAccountGroup: GROUP_ID,
     },
     {
       accounts: accounts.reduce<Record<string, InternalAccount>>((acc, a) => {
@@ -123,6 +122,8 @@ const buildStateWithAccounts = (accounts: InternalAccount[]) => {
       }, {}),
       selectedAccount: accounts[0]?.id ?? '',
     },
+    undefined,
+    GROUP_ID,
   );
 };
 

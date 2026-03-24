@@ -159,8 +159,8 @@ const createMockState = (overrides = {}) => ({
         accounts: [mockSolAccount1.address, mockSolAccount2.address],
       },
     ],
+    selectedAccountGroup: MOCK_GROUP_ID_1,
     accountTree: {
-      selectedAccountGroup: MOCK_GROUP_ID_1,
       wallets: {
         [MOCK_WALLET_ID]: {
           id: MOCK_WALLET_ID,

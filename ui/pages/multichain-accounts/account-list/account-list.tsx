@@ -30,6 +30,7 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MultichainAccountList } from '../../../components/multichain-accounts/multichain-account-list';
 import {
   getAccountTree,
+  getSelectedAccountGroup,
   getNormalizedGroupsMetadata,
 } from '../../../selectors/multichain-accounts/account-tree';
 import {
@@ -60,7 +61,7 @@ export const AccountList = () => {
   const navigate = useNavigate();
   const accountTree = useSelector(getAccountTree);
   const { wallets } = accountTree;
-  const { selectedAccountGroup } = accountTree;
+  const selectedAccountGroup = useSelector(getSelectedAccountGroup);
   const [searchPattern, setSearchPattern] = useState<string>('');
   const groupsMetadata = useSelector(getNormalizedGroupsMetadata);
   const permittedAccounts = useSelector(getAllPermittedAccountsForCurrentTab);

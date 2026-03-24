@@ -101,6 +101,7 @@ describe('EthOverview', () => {
     },
     metamask: {
       ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+      selectedAccountGroup: 'entropy:wallet1/group1',
       accountTree: {
         wallets: {
           'entropy:wallet1': {
@@ -119,7 +120,6 @@ describe('EthOverview', () => {
             },
           },
         },
-        selectedAccountGroup: 'entropy:wallet1/group1',
       },
       tokenBalances: {
         [CHAIN_IDS.MAINNET]: {},

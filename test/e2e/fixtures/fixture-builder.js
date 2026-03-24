@@ -1165,8 +1165,10 @@ class FixtureBuilder {
 
     this.fixture.data.AccountTreeController ??= {};
 
+    const { selectedAccountGroup, wallets } = buildDefaultAccountTree();
     const defaultState = {
-      accountTree: buildDefaultAccountTree(),
+      selectedAccountGroup,
+      accountTree: { wallets },
       accountGroupsMetadata: {},
       accountWalletsMetadata: {},
     };

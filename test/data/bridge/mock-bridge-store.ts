@@ -405,6 +405,9 @@ export const createBridgeMockStore = ({
         ...marketDataOverrides,
       },
       slides: [],
+      selectedAccountGroup:
+        accountTreeOverrides?.selectedAccountGroup ??
+        'entropy:01K2FF18CTTXJYD34R78X4N1N1/0',
       accountTree: {
         wallets: {
           'entropy:01K2FF18CTTXJYD34R78X4N1N1': {
@@ -474,9 +477,6 @@ export const createBridgeMockStore = ({
             },
           },
         },
-        selectedAccountGroup:
-          accountTreeOverrides?.selectedAccountGroup ??
-          'entropy:01K2FF18CTTXJYD34R78X4N1N1/0',
       },
       ...tokenData,
       ...metamaskStateOverridesWithoutAccounts,

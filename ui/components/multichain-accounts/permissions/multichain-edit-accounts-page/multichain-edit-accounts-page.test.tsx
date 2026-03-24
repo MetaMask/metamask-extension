@@ -163,7 +163,6 @@ const createMockAccountGroups = (): AccountGroupWithInternalAccounts[] => [
 
 const createMockState = (overrides = {}) => {
   const accountTreeState = {
-    selectedAccountGroup: MOCK_GROUP_ID_1,
     wallets: {
       [MOCK_WALLET_ID]: {
         id: MOCK_WALLET_ID,
@@ -252,6 +251,8 @@ const createMockState = (overrides = {}) => {
   const mockMultichainState = createMockMultichainAccountsState(
     accountTreeState as unknown as AccountTreeState,
     internalAccountsState as unknown as InternalAccountsState,
+    undefined,
+    MOCK_GROUP_ID_1,
   );
 
   return {

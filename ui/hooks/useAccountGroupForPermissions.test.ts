@@ -71,8 +71,8 @@ const createMockState = (overrides = {}) => ({
   ...mockState,
   metamask: {
     ...mockState.metamask,
+    selectedAccountGroup: MOCK_GROUP_ID_1,
     accountTree: {
-      selectedAccountGroup: MOCK_GROUP_ID_1,
       wallets: {
         [MOCK_WALLET_ID]: {
           id: MOCK_WALLET_ID,
@@ -311,8 +311,8 @@ describe('useAccountGroupsForPermissions', () => {
 
     it('handles missing account groups gracefully', () => {
       const stateOverrides = {
+        selectedAccountGroup: MOCK_GROUP_ID_1,
         accountTree: {
-          selectedAccountGroup: MOCK_GROUP_ID_1,
           wallets: {},
         },
       };
@@ -937,8 +937,8 @@ describe('useAccountGroupsForPermissions', () => {
 
     it('includes first supported group when selected account group is not provided', () => {
       const stateOverrides = {
+        selectedAccountGroup: null, // No selected account group
         accountTree: {
-          selectedAccountGroup: null, // No selected account group
           wallets: {
             [MOCK_WALLET_ID]: {
               id: MOCK_WALLET_ID,
@@ -1026,8 +1026,8 @@ describe('useAccountGroupsForPermissions', () => {
       const requestedNamespaces: CaipNamespace[] = [];
 
       const stateOverrides = {
+        selectedAccountGroup: MOCK_GROUP_ID_1,
         accountTree: {
-          selectedAccountGroup: MOCK_GROUP_ID_1,
           wallets: {
             [MOCK_WALLET_ID]: {
               id: MOCK_WALLET_ID,

@@ -5591,12 +5591,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/account-tree-controller@npm:^5.0.0, @metamask/account-tree-controller@npm:^5.0.1":
-  version: 5.0.1
-  resolution: "@metamask/account-tree-controller@npm:5.0.1"
+"@metamask/account-tree-controller@npm:@metamask-previews/account-tree-controller@5.0.1-preview-ea4ea0a":
+  version: 5.0.1-preview-ea4ea0a
+  resolution: "@metamask-previews/account-tree-controller@npm:5.0.1-preview-ea4ea0a"
   dependencies:
     "@metamask/accounts-controller": "npm:^37.0.0"
     "@metamask/base-controller": "npm:^9.0.0"
+    "@metamask/keyring-api": "npm:^21.6.0"
     "@metamask/keyring-controller": "npm:^25.1.0"
     "@metamask/messenger": "npm:^0.3.0"
     "@metamask/multichain-account-service": "npm:^7.1.0"
@@ -5611,7 +5612,7 @@ __metadata:
   peerDependencies:
     "@metamask/providers": ^22.0.0
     webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
-  checksum: 10/3b2739424e6aeae84e25a5b9326a43bfb905ca6223c34accbc7a9d4de933ccea7ff7bd5f221c84aa3d579ae50b4246fe28c2ab07ebb9db028e382a7629e38bd8
+  checksum: 10/b1437090f1af7276adc501bedc712f98a69030548b8788342f3fc2fdfa691a956c46d007cd5abcb855139a59f649d0d8476ea78a8ba04deff8c37f00338aed96
   languageName: node
   linkType: hard
 
@@ -5622,14 +5623,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/accounts-controller@npm:37.0.0":
-  version: 37.0.0
-  resolution: "@metamask/accounts-controller@npm:37.0.0"
+"@metamask/accounts-controller@npm:@metamask-previews/accounts-controller@37.0.0-preview-ea4ea0a":
+  version: 37.0.0-preview-ea4ea0a
+  resolution: "@metamask-previews/accounts-controller@npm:37.0.0-preview-ea4ea0a"
   dependencies:
     "@ethereumjs/util": "npm:^9.1.0"
     "@metamask/base-controller": "npm:^9.0.0"
     "@metamask/eth-snap-keyring": "npm:^19.0.0"
-    "@metamask/keyring-api": "npm:^21.5.0"
+    "@metamask/keyring-api": "npm:^21.6.0"
     "@metamask/keyring-controller": "npm:^25.1.0"
     "@metamask/keyring-internal-api": "npm:^10.0.0"
     "@metamask/keyring-utils": "npm:^3.1.0"
@@ -5648,7 +5649,7 @@ __metadata:
   peerDependencies:
     "@metamask/providers": ^22.0.0
     webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
-  checksum: 10/4ea9a310d707160b05a314090a7a1e7eee9bcf68e0cc82e1aa471fc2932560fde856176748328932ed4d10a16a6ff8cb9288d10be8821a4460ee76290bf8d747
+  checksum: 10/44cfc5bbe97884f64037b4ac5e0012d395a3114dc6d45d100dded646eeb10a310449bd3e5572030a810ca3477a8a79f6c891f4cc9608cd19bc3124e9fc449700
   languageName: node
   linkType: hard
 
@@ -7175,16 +7176,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/multichain-account-service@npm:7.1.0":
-  version: 7.1.0
-  resolution: "@metamask/multichain-account-service@npm:7.1.0"
+"@metamask/multichain-account-service@npm:@metamask-previews/multichain-account-service@7.1.0-preview-ea4ea0a":
+  version: 7.1.0-preview-ea4ea0a
+  resolution: "@metamask-previews/multichain-account-service@npm:7.1.0-preview-ea4ea0a"
   dependencies:
     "@ethereumjs/util": "npm:^9.1.0"
     "@metamask/accounts-controller": "npm:^37.0.0"
     "@metamask/base-controller": "npm:^9.0.0"
     "@metamask/eth-snap-keyring": "npm:^19.0.0"
     "@metamask/key-tree": "npm:^10.1.1"
-    "@metamask/keyring-api": "npm:^21.5.0"
+    "@metamask/keyring-api": "npm:^21.6.0"
     "@metamask/keyring-controller": "npm:^25.1.0"
     "@metamask/keyring-internal-api": "npm:^10.0.0"
     "@metamask/keyring-snap-client": "npm:^8.2.0"
@@ -7201,37 +7202,7 @@ __metadata:
     "@metamask/account-api": ^1.0.0
     "@metamask/providers": ^22.0.0
     webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
-  checksum: 10/a4264b228be60fe2021a3f6ccfc1eab145c0dd104158a8184278ded2141ca888cf305fd7c4bd1274924a9eb7908b2774852848287bf27d6b972efdd6ba35e11a
-  languageName: node
-  linkType: hard
-
-"@metamask/multichain-account-service@patch:@metamask/multichain-account-service@npm%3A7.1.0#~/.yarn/patches/@metamask-multichain-account-service-npm-7.1.0-4b0ce989c3.patch":
-  version: 7.1.0
-  resolution: "@metamask/multichain-account-service@patch:@metamask/multichain-account-service@npm%3A7.1.0#~/.yarn/patches/@metamask-multichain-account-service-npm-7.1.0-4b0ce989c3.patch::version=7.1.0&hash=15c77a"
-  dependencies:
-    "@ethereumjs/util": "npm:^9.1.0"
-    "@metamask/accounts-controller": "npm:^37.0.0"
-    "@metamask/base-controller": "npm:^9.0.0"
-    "@metamask/eth-snap-keyring": "npm:^19.0.0"
-    "@metamask/key-tree": "npm:^10.1.1"
-    "@metamask/keyring-api": "npm:^21.5.0"
-    "@metamask/keyring-controller": "npm:^25.1.0"
-    "@metamask/keyring-internal-api": "npm:^10.0.0"
-    "@metamask/keyring-snap-client": "npm:^8.2.0"
-    "@metamask/keyring-utils": "npm:^3.1.0"
-    "@metamask/messenger": "npm:^0.3.0"
-    "@metamask/snaps-controllers": "npm:^17.2.0"
-    "@metamask/snaps-sdk": "npm:^10.3.0"
-    "@metamask/snaps-utils": "npm:^11.7.0"
-    "@metamask/superstruct": "npm:^3.1.0"
-    "@metamask/utils": "npm:^11.9.0"
-    async-mutex: "npm:^0.5.0"
-    lodash: "npm:^4.17.21"
-  peerDependencies:
-    "@metamask/account-api": ^1.0.0
-    "@metamask/providers": ^22.0.0
-    webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
-  checksum: 10/082dd5e4c8418addc0d50a39ef649a479147216dfed496771563c0253784b2618844e1d96b82543cf39edbcddde71e3f0c8758f1aa8516803e17737ad5395c0f
+  checksum: 10/1cc3d22afd5a89ef9b49a0d7eedb7482caeb7c14b1dbae74bc6c81f2d6754729c713368380d681a8bb268ff0b61fe4e8f7f289314e035df9a850a46c409b7aa1
   languageName: node
   linkType: hard
 
@@ -34010,7 +33981,7 @@ __metadata:
     "@metamask/message-signing-snap": "npm:1.1.4"
     "@metamask/messenger": "npm:^0.3.0"
     "@metamask/metamask-eth-abis": "npm:^3.1.1"
-    "@metamask/multichain-account-service": "patch:@metamask/multichain-account-service@npm%3A7.1.0#~/.yarn/patches/@metamask-multichain-account-service-npm-7.1.0-4b0ce989c3.patch"
+    "@metamask/multichain-account-service": "npm:^7.1.0"
     "@metamask/multichain-api-client": "npm:^0.10.1"
     "@metamask/multichain-api-middleware": "npm:^1.2.7"
     "@metamask/multichain-network-controller": "npm:^3.0.5"

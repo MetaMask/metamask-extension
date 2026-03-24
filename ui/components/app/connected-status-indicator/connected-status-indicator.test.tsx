@@ -132,8 +132,8 @@ describe('ConnectedStatusIndicator', () => {
       allTokenBalances: {},
       seedPhraseBackedUp: false,
       dismissSeedBackUpReminder: false,
+      selectedAccountGroup: mockAccountGroup1,
       accountTree: {
-        selectedAccountGroup: mockAccountGroup1,
         wallets: {
           'entropy:wallet1': {
             id: 'entropy:wallet1',
@@ -333,8 +333,8 @@ describe('ConnectedStatusIndicator', () => {
   describe('Error handling and edge cases', () => {
     it('renders correctly when no account group is selected', () => {
       const mockState = createMockState({
+        selectedAccountGroup: null,
         accountTree: {
-          selectedAccountGroup: null,
           wallets: {},
         },
       });
@@ -352,8 +352,8 @@ describe('ConnectedStatusIndicator', () => {
 
     it('renders correctly when account group contains no accounts', () => {
       const mockState = createMockState({
+        selectedAccountGroup: mockAccountGroup1,
         accountTree: {
-          selectedAccountGroup: mockAccountGroup1,
           wallets: {
             'entropy:wallet1': {
               id: 'entropy:wallet1',

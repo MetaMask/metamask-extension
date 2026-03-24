@@ -166,6 +166,7 @@ describe('AssetPage', () => {
       enabledNetworkMap: {
         eip155: {},
       },
+      selectedAccountGroup: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0',
       accountTree: {
         wallets: {
           'entropy:01JKAF3DSGM3AB87EM9N0K41AJ': {
@@ -194,7 +195,6 @@ describe('AssetPage', () => {
             },
           },
         },
-        selectedAccountGroup: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0',
       },
       internalAccounts: {
         accounts: {

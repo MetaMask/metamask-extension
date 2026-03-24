@@ -359,6 +359,7 @@ describe('toast display', () => {
           },
         },
       },
+      selectedAccountGroup: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0',
       accountTree: {
         wallets: {
           'entropy:01JKAF3DSGM3AB87EM9N0K41AJ': {
@@ -387,7 +388,6 @@ describe('toast display', () => {
             },
           },
         },
-        selectedAccountGroup: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0',
       },
       internalAccounts: {
         accounts: {

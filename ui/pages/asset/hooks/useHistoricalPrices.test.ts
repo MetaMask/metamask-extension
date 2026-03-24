@@ -96,8 +96,8 @@ const mockBaseState = {
       },
       selectedAccount: '',
     },
+    selectedAccountGroup: 'entropy:wallet1/0',
     accountTree: {
-      selectedAccountGroup: 'entropy:wallet1/0',
       wallets: {
         'entropy:wallet1': {
           id: 'entropy:wallet1',

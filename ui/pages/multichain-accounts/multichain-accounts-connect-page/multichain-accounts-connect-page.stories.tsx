@@ -23,6 +23,9 @@ const mockTargetSubjectMetadata = {
   subjectType: 'website' as const,
 };
 
+const mockSelectedAccountGroup =
+  'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0' as AccountGroupId;
+
 const mockAccountTreeState = {
   wallets: {
     'entropy:01JKAF3DSGM3AB87EM9N0K41AJ': {
@@ -59,8 +62,6 @@ const mockAccountTreeState = {
       },
     },
   },
-  selectedAccountGroup:
-    'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0' as AccountGroupId,
 };
 
 const mockInternalAccountsState = {
@@ -114,6 +115,7 @@ const mockMultichainState = createMockMultichainAccountsState(
   mockAccountTreeState,
   mockInternalAccountsState,
   mockNetworkConfigurations,
+  mockSelectedAccountGroup,
 );
 
 const store = configureStore({
