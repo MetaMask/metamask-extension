@@ -39,6 +39,8 @@ const CDN_STALE_RES_HEADERS_PATH =
 
 const ACCOUNTS_API_TOKENS_PATH =
   'test/e2e/mock-response-data/accounts-api-tokens.json';
+const ACL_REGISTRY_PATH = 'test/e2e/mock-response-data/snaps/acl-registry.json';
+const ACL_SIGNATURE_PATH = 'test/e2e/mock-response-data/snaps/acl-signature.json';
 const AGGREGATOR_METADATA_PATH =
   'test/e2e/mock-response-data/aggregator-metadata.json';
 const CHAIN_ID_NETWORKS_PATH =
@@ -198,6 +200,28 @@ async function setupMocking(
 
   const mockedEndpoint = await testSpecificMock(server);
   // Mocks below this line can be overridden by test-specific mocks
+
+  // Snaps execution ACL (signed registry) — fixtures must match; avoids flaky live fetches in CI.
+  const aclRegistryJson = JSON.parse(
+    fs.readFileSync(ACL_REGISTRY_PATH, 'utf8'),
+  );
+  const aclSignatureJson = JSON.parse(
+    fs.readFileSync(ACL_SIGNATURE_PATH, 'utf8'),
+  );
+  await server
+    .forGet('https://acl.execution.metamask.io/latest/registry.json')
+    .always()
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: aclRegistryJson,
+    }));
+  await server
+    .forGet('https://acl.execution.metamask.io/latest/signature.json')
+    .always()
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: aclSignatureJson,
+    }));
 
   // remote feature flags — production-accurate defaults from the registry
   // FF will apply to all environments: rc, prod and dev
