@@ -1,5 +1,5 @@
 import { perps } from './perps';
-import { PERPS_ROUTE, Destination } from './route';
+import { DEFAULT_ROUTE, Destination } from './route';
 
 function assertPathDestination(
   result: Destination,
@@ -8,18 +8,19 @@ function assertPathDestination(
 }
 
 describe('perpsRoute', () => {
-  it('navigates to the internal perps route', () => {
+  it('navigates to the home route with the perps tab selected', () => {
     const result = perps.handler(new URLSearchParams());
 
     assertPathDestination(result);
-    expect(result.path).toBe(PERPS_ROUTE);
-    expect(result.query.toString()).toBe('');
+    expect(result.path).toBe(DEFAULT_ROUTE);
+    expect(result.query.get('tab')).toBe('perps');
   });
 
   it('ignores any extra params', () => {
     const result = perps.handler(new URLSearchParams({ foo: 'bar' }));
 
     assertPathDestination(result);
-    expect(result.path).toBe(PERPS_ROUTE);
+    expect(result.path).toBe(DEFAULT_ROUTE);
+    expect(result.query.get('tab')).toBe('perps');
   });
 });

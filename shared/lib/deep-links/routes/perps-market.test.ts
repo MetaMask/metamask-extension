@@ -10,33 +10,44 @@ function assertPathDestination(
 describe('perpsMarketRoute', () => {
   it('navigates to the market detail page for a crypto symbol', () => {
     const result = perpsMarket.handler(
-      new URLSearchParams({ [PerpsMarketQueryParams.Symbol]: 'BTC-USD' }),
+      new URLSearchParams({ [PerpsMarketQueryParams.Symbol]: 'BTC' }),
     );
 
     assertPathDestination(result);
-    expect(result.path).toBe(`${PERPS_MARKET_DETAIL_ROUTE}/BTC-USD`);
+    expect(result.path).toBe(`${PERPS_MARKET_DETAIL_ROUTE}/BTC`);
     expect(result.query.toString()).toBe('');
   });
 
-  it('navigates to the market detail page for a HIP-3 symbol', () => {
+  it('navigates to the market detail page for a HIP-3 equity symbol', () => {
     const result = perpsMarket.handler(
-      new URLSearchParams({ [PerpsMarketQueryParams.Symbol]: 'AAPL-USD' }),
-    );
-
-    assertPathDestination(result);
-    expect(result.path).toBe(`${PERPS_MARKET_DETAIL_ROUTE}/AAPL-USD`);
-  });
-
-  it('URL-encodes symbols with special characters', () => {
-    const result = perpsMarket.handler(
-      new URLSearchParams({
-        [PerpsMarketQueryParams.Symbol]: 'EUR/USD',
-      }),
+      new URLSearchParams({ [PerpsMarketQueryParams.Symbol]: 'xyz:TSLA' }),
     );
 
     assertPathDestination(result);
     expect(result.path).toBe(
-      `${PERPS_MARKET_DETAIL_ROUTE}/${encodeURIComponent('EUR/USD')}`,
+      `${PERPS_MARKET_DETAIL_ROUTE}/${encodeURIComponent('xyz:TSLA')}`,
+    );
+  });
+
+  it('navigates to the market detail page for a HIP-3 forex symbol', () => {
+    const result = perpsMarket.handler(
+      new URLSearchParams({ [PerpsMarketQueryParams.Symbol]: 'xyz:EUR' }),
+    );
+
+    assertPathDestination(result);
+    expect(result.path).toBe(
+      `${PERPS_MARKET_DETAIL_ROUTE}/${encodeURIComponent('xyz:EUR')}`,
+    );
+  });
+
+  it('navigates to the market detail page for a HIP-3 commodity symbol', () => {
+    const result = perpsMarket.handler(
+      new URLSearchParams({ [PerpsMarketQueryParams.Symbol]: 'xyz:GOLD' }),
+    );
+
+    assertPathDestination(result);
+    expect(result.path).toBe(
+      `${PERPS_MARKET_DETAIL_ROUTE}/${encodeURIComponent('xyz:GOLD')}`,
     );
   });
 

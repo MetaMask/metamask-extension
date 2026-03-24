@@ -21,6 +21,7 @@ describe('perpsMarketListRoute', () => {
     expect(result.query.get(PerpsMarketListQueryParams.Filter)).toBeNull();
   });
 
+  // @ts-expect-error This function is missing from the Mocha type definitions
   it.each(VALID_PERPS_MARKET_FILTERS)(
     'passes through valid filter "%s"',
     (filter: PerpsMarketFilter) => {

@@ -8,7 +8,9 @@ export enum PerpsMarketQueryParams {
  * Deeplink for a specific perps market detail page.
  * Supports both crypto and HIP-3 markets (stocks, commodities, forex).
  *
- * Example deeplink: https://link.metamask.io/perps/market?symbol=BTC-USD
+ * Example deeplinks:
+ *   - Crypto:  https://link.metamask.io/perps/market?symbol=BTC
+ *   - HIP-3:   https://link.metamask.io/perps/market?symbol=xyz:TSLA
  */
 export const perpsMarket = new Route({
   pathname: '/perps/market',
