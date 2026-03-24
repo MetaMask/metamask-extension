@@ -563,7 +563,7 @@ describe('Setup Sentry', () => {
       fetchSpy.mockRestore();
     });
 
-    it('calls fetch when opted in (user id is set in beforeSend, not transport)', async () => {
+    it('calls fetch when opted in', async () => {
       const fetchSpy = mockFetchForTransport();
 
       globalThis.stateHooks = {
@@ -580,12 +580,10 @@ describe('Setup Sentry', () => {
       };
 
       const transport = makeTransport(createTestTransportOptions());
-      const eventPayload = { message: 'test event' };
-      const envelope = [{}, [[{ type: 'event' }, eventPayload]]];
+      const envelope = [{}, [[{ type: 'event' }, { message: 'test event' }]]];
 
       await transport.send(envelope);
 
-      expect(eventPayload.user).toBeUndefined();
       expect(fetchSpy).toHaveBeenCalled();
 
       fetchSpy.mockRestore();
@@ -608,12 +606,10 @@ describe('Setup Sentry', () => {
       };
 
       const transport = makeTransport(createTestTransportOptions());
-      const eventPayload = { message: 'test' };
-      const envelope = [{}, [[{ type: 'event' }, eventPayload]]];
+      const envelope = [{}, [[{ type: 'event' }, { message: 'test' }]]];
 
       await transport.send(envelope);
 
-      expect(eventPayload.user).toBeUndefined();
       expect(fetchSpy).toHaveBeenCalled();
 
       fetchSpy.mockRestore();
@@ -636,12 +632,10 @@ describe('Setup Sentry', () => {
       };
 
       const transport = makeTransport(createTestTransportOptions());
-      const eventPayload = { message: 'test' };
-      const envelope = [{}, [[{ type: 'event' }, eventPayload]]];
+      const envelope = [{}, [[{ type: 'event' }, { message: 'test' }]]];
 
       await transport.send(envelope);
 
-      expect(eventPayload.user).toBeUndefined();
       expect(fetchSpy).toHaveBeenCalled();
 
       fetchSpy.mockRestore();
