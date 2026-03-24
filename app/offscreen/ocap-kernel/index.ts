@@ -1,5 +1,6 @@
 // @ts-expect-error - Practically baseless ESM / CJS incompatibility complaint
 import { E } from '@endo/eventual-send';
+
 import {
   makeBackgroundCapTP,
   makeCapTPNotification,
@@ -28,8 +29,10 @@ import { makeLlmService } from './services/llm-service';
 const logger = new Logger('offscreen');
 
 declare global {
-  // eslint-disable-next-line no-var
+  /* eslint-disable no-var */
   var kernel: Promise<KernelFacet>;
+  var runSmokeTest: () => Promise<void>;
+  /* eslint-enable no-var */
 }
 
 /**
@@ -94,7 +97,7 @@ export async function runKernel(): Promise<never> {
       'ocap-kernel/vats/capability-vendor/index.bundle',
     );
 
-    const result = await E(kernelP).launchSubcluster({
+    const subclusterResult = await E(kernelP).launchSubcluster({
       bootstrap: 'vendor',
       services: [
         'hostApiProxy',
@@ -109,10 +112,10 @@ export async function runKernel(): Promise<never> {
       },
     });
 
-    console.log('~~~ Vendor subcluster launched ~~~', result);
+    console.log('~~~ Vendor subcluster launched ~~~', subclusterResult);
 
     // Extract and log the OCAP URL from the bootstrap result
-    const { bootstrapResult } = result;
+    const { bootstrapResult } = subclusterResult;
     if (bootstrapResult) {
       const bodyJson = (bootstrapResult as { body: string }).body.replace(
         /^#/u,
@@ -127,37 +130,8 @@ export async function runKernel(): Promise<never> {
       }
     }
 
-    // --- Smoke test: exercise the full vendor pipeline ---
-    const { rootKref } = result;
-
-    // 1. Request a capability via the admin facet (delegates to public facet)
-    const capRecord = await E(kernelP).queueMessage(
-      rootKref,
-      'requestCapability',
-      ['list accounts'],
-    );
-    console.log('~~~ Requested capability ~~~', capRecord);
-
-    // 2. List capabilities via admin facet
-    const capabilities = await E(kernelP).queueMessage(
-      rootKref,
-      'getCapabilities',
-      [],
-    );
-    console.log('~~~ All capabilities ~~~', capabilities);
-
-    // 3. Extract the capability exo kref from CapData and test it
-    const capExoKref = (capRecord as { slots: string[] }).slots[0];
-    console.log('~~~ Capability exo kref ~~~', capExoKref);
-
-    // 4. Call getAccounts() on the vended capability
-    const accounts = await E(kernelP).queueMessage(
-      capExoKref,
-      'getAccounts',
-      [],
-    );
-    console.log('~~~ getAccounts() result ~~~', accounts);
-    // --- End smoke test ---
+    const { rootKref } = subclusterResult;
+    globalThis.runSmokeTest = makeSmokeTest(rootKref);
   } catch (serviceError) {
     console.error('Failed to set up capability vendor:', serviceError);
   }
@@ -251,4 +225,50 @@ function defineGlobals(): void {
     enumerable: true,
     writable: false,
   });
+
+  Object.defineProperty(globalThis, 'smokeTest', {
+    configurable: false,
+    enumerable: true,
+    writable: true,
+    value: undefined,
+  });
+}
+
+/**
+ * Makes a smoke test for the kernel.
+ *
+ * @param rootKref - The root kref of the vendor subcluster.
+ */
+function makeSmokeTest(rootKref: string): () => Promise<void> {
+  return async () => {
+    console.log('~~~ Running smoke test ~~~');
+    // 1. Request a capability via the admin facet (delegates to public facet)
+    const capRecord = await E(kernel).queueMessage(
+      rootKref,
+      'requestCapability',
+      ['list accounts'],
+    );
+    console.log('~~~ Requested capability ~~~', capRecord);
+
+    // 2. List capabilities via admin facet
+    const capabilities = await E(kernel).queueMessage(
+      rootKref,
+      'getCapabilities',
+      [],
+    );
+    console.log('~~~ All capabilities ~~~', capabilities);
+
+    // 3. Extract the capability exo kref from CapData and test it
+    const capExoKref = (capRecord as { slots: string[] }).slots[0];
+    console.log('~~~ Capability exo kref ~~~', capExoKref);
+
+    // 4. Call getAccounts() on the vended capability
+    const accounts = await E(kernel).queueMessage(
+      capExoKref,
+      'getAccounts',
+      [],
+    );
+    console.log('~~~ getAccounts() result ~~~', accounts);
+    console.log('~~~ Smoke test completed successfully ~~~');
+  };
 }
