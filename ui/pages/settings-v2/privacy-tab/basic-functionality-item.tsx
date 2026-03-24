@@ -11,6 +11,7 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { PrivacyPolicyLink } from '../shared';
+import { PRIVACY_ITEMS } from '../search-config';
 
 export const BasicFunctionalityToggleItem = () => {
   const t = useI18nContext();
@@ -46,7 +47,7 @@ export const BasicFunctionalityToggleItem = () => {
 
   return (
     <SettingsToggleItem
-      title={t('basicConfigurationLabel')}
+      title={t(PRIVACY_ITEMS['basic-functionality'])}
       description={description}
       value={useExternalServices}
       onToggle={handleToggle}
