@@ -39,8 +39,13 @@ const CDN_STALE_RES_HEADERS_PATH =
 
 const ACCOUNTS_API_TOKENS_PATH =
   'test/e2e/mock-response-data/accounts-api-tokens.json';
-const ACL_REGISTRY_PATH = 'test/e2e/mock-response-data/snaps/acl-registry.json';
-const ACL_SIGNATURE_PATH = 'test/e2e/mock-response-data/snaps/acl-signature.json';
+const ACL_REGISTRY_DIR =
+  'test/e2e/mock-response-data/snaps/acl-registry-and-headers';
+/** Exact signed registry bytes (like snap `*-@version.txt` bodies; not *.json so Prettier skips it). */
+const ACL_REGISTRY_TXT_PATH = `${ACL_REGISTRY_DIR}/acl-registry.txt`;
+const ACL_SIGNATURE_PATH = `${ACL_REGISTRY_DIR}/acl-signature.json`;
+const ACL_REGISTRY_HEADERS_PATH = `${ACL_REGISTRY_DIR}/acl-registry-headers.json`;
+const ACL_SIGNATURE_HEADERS_PATH = `${ACL_REGISTRY_DIR}/acl-signature-headers.json`;
 const AGGREGATOR_METADATA_PATH =
   'test/e2e/mock-response-data/aggregator-metadata.json';
 const CHAIN_ID_NETWORKS_PATH =
@@ -201,26 +206,24 @@ async function setupMocking(
   const mockedEndpoint = await testSpecificMock(server);
   // Mocks below this line can be overridden by test-specific mocks
 
-  // Snaps execution ACL (signed registry)
-  const aclRegistryJson = JSON.parse(
-    fs.readFileSync(ACL_REGISTRY_PATH),
-  );
-  const aclSignatureJson = JSON.parse(
-    fs.readFileSync(ACL_SIGNATURE_PATH),
-  );
+  // Snaps execution ACL — same pattern as `snap-binary-mocks.ts`: body file + *-headers.json
+  const aclRegistryBody = fs.readFileSync(ACL_REGISTRY_TXT_PATH);
+  const aclSignatureBody = fs.readFileSync(ACL_SIGNATURE_PATH);
   await server
     .forGet('https://acl.execution.metamask.io/latest/registry.json')
     .always()
     .thenCallback(() => ({
       statusCode: 200,
-      json: JSON.parse(aclRegistryJson),
+      rawBody: aclRegistryBody,
+      headers: JSON.parse(fs.readFileSync(ACL_REGISTRY_HEADERS_PATH, 'utf8')),
     }));
   await server
     .forGet('https://acl.execution.metamask.io/latest/signature.json')
     .always()
     .thenCallback(() => ({
       statusCode: 200,
-      json: JSON.parse(aclSignatureJson),
+      rawBody: aclSignatureBody,
+      headers: JSON.parse(fs.readFileSync(ACL_SIGNATURE_HEADERS_PATH, 'utf8')),
     }));
 
   // remote feature flags — production-accurate defaults from the registry

@@ -1,25 +1,4 @@
 {
-  "blockedSnaps": [
-    {
-      "id": "npm:@consensys/starknet-snap",
-      "versionRange": "<0.1.11"
-    },
-    {
-      "checksum": "A83r5/ZIcKuKwuAnQHHByVFCuofj7jGK5hOStmHY6A0="
-    },
-    {
-      "id": "npm:onthis-snap",
-      "versionRange": "<1.4.1"
-    },
-    {
-      "id": "npm:wallet-guard-snap",
-      "versionRange": "<1.1.3"
-    },
-    {
-      "id": "npm:@forta-network/metamask-snap",
-      "versionRange": "<=0.1.3"
-    }
-  ],
   "verifiedSnaps": {
     "npm:@chainsafe/aleo-snap": {
       "id": "npm:@chainsafe/aleo-snap",
@@ -4508,7 +4487,7 @@
         },
         "website": "https://space.id/metamask/",
         "summary": "Easily transfer assets using domain names and Payment IDs instead of complex wallet addresses.",
-        "description": "SPACE ID Web3 Domain Snap allows you to easily transfer assets using domain names instead of complex wallet addresses. It resolves top-level  domain names and Payment IDs issued on the SPACE ID platform, significantly simplifying transactions within MetaMask.\n\n- Top-Level Domains (TLDs) names, such as jerry.bnb\n\nSPACE ID Web3 Domain Snap resolves domain names across all EVM-compatible chains in MetaMask, supporting a wide range of domain name services such as .bnb, eth, .ip, .arb, .g, .mph, .wod, .duck, .zeta, .mode, .taiko, .mint, .manta, .zkf, .floki, .cake, .merlin, .tomo, and more (https://space.id/tld). \n\n- Payment ID, such as jerry@binance\n\nUsers can register a Payment ID on SPACE ID and link it to supported CEX addresses on both EVM-compatible chains (Ethereum, BNB Chain, Arbitrum, etc.) and non-EVM networks such as Bitcoin, Solana, TRON, Aptos, and Sui. Additionally, they can associate their Payment ID with frequently used wallets and on-chain addresses. The SPACE ID Web3 Domain Snap allows seamless resolution of all registered Payment IDs within MetaMask, streamlining transactions effortlessly.\n\nGet Started Easily:\n\n- Upgrade your Metamask to the latest version (https://support.metamask.io/configure/wallet/how-to-update-the-version-of-metamask/) to leverage all the features \n- Enable secure & simple transactions: Download SPACE ID Snaps from https://space.id/metamask\n- Register a domain or Payment ID if you haven’t yet: https://space.id\n\nNote: Make sure your MetaMask extension is up to date before downloading the SPACE ID Snap: https://support.metamask.io/managing-my-wallet/using-metamask/how-to-update-the-version-of-metamask/ \n\nHelpful Tutorials:\n\n- Update MetaMask: https://support.metamask.io/\n- Register a domain and a Payment ID: https://space.id/\n- Download SPACE ID Snaps https://space.id/metamask/\n- SPACE ID Snap Knowledge Base: https://docs.space.id/getting-started/using-domain-on-metamask-snap\n\nJoin Our Community:\n\n- X (formerly Twitter): https://x.com/SpaceIDProtocol/\n- Discord: https://discord.com/invite/spaceid/\n- Telegram: https://t.me/spaceid_news/\n- LinkedIn: https://linkedin.com/\n\nStay updated with the latest news on our blog (https://blog.space.id/) and our Youtube channel (https://www.youtube.com/@SPACEID-web3domains/). Unlock the power of decentralized identities, easier on-chain interactions, and secure and simplified payments with SPACE ID!",
+        "description": "SPACE ID Web3 Domain Snap allows you to easily transfer assets using domain names instead of complex wallet addresses. It resolves top-level  domain names and Payment IDs issued on the SPACE ID platform, significantly simplifying transactions within MetaMask.\n\n- Top-Level Domains (TLDs) names, such as jerry.bnb\n\nSPACE ID Web3 Domain Snap resolves domain names across all EVM-compatible chains in MetaMask, supporting a wide range of domain name services such as .bnb, eth, .ip, .arb, .g, .mph, .wod, .duck, .zeta, .mode, .taiko, .mint, .manta, .zkf, .floki, .cake, .merlin, .tomo, and more (https://space.id/tld). \n\n- Payment ID, such as jerry@binance\n\nUsers can register a Payment ID on SPACE ID and link it to supported CEX addresses on both EVM-compatible chains (Ethereum, BNB Chain, Arbitrum, etc.) and non-EVM networks such as Bitcoin, Solana, TRON, Aptos, and Sui. Additionally, they can associate their Payment ID with frequently used wallets and on-chain addresses. The SPACE ID Web3 Domain Snap allows seamless resolution of all registered Payment IDs within MetaMask, streamlining transactions effortlessly.\n\nGet Started Easily:\n\n- Upgrade your Metamask to the latest version (https://support.metamask.io/configure/wallet/how-to-update-the-version-of-metamask/) to leverage all the features \n- Enable secure & simple transactions: Download SPACE ID Snaps from https://space.id/metamask\n- Register a domain or Payment ID if you haven’t yet: https://space.id\n\nNote: Make sure your MetaMask extension is up to date before downloading the SPACE ID Snap: https://support.metamask.io/managing-my-wallet/using-metamask/how-to-update-the-version-of-metamask/ \n\nHelpful Tutorials:\n\n- Update MetaMask: https://support.metamask.io/\n- Register a domain and a Payment ID: https://space.id/\n- Download SPACE ID Snaps https://space.id/metamask/\n- SPACE ID Snap Knowledge Base: https://docs.space.id/getting-started/using-domain-on-metamask-snap\n\nJoin Our Community:\n\n- X (formerly Twitter): https://x.com/SpaceIDProtocol/\n- Discord: https://discord.com/invite/spaceid/\n- Telegram: https://t.me/spaceid_news/\n- LinkedIn: https://linkedin.com/\n\nStay updated with the latest news on our blog (https://blog.space.id/) and our Youtube channel (https://www.youtube.com/@SPACEID-web3domains/). Unlock the power of decentralized identities, easier on-chain interactions, and secure and simplified payments with SPACE ID!",
         "audits": [
           {
             "auditor": "SlowMist",
@@ -5562,5 +5541,26 @@
         }
       }
     }
-  }
+  },
+  "blockedSnaps": [
+    {
+      "id": "npm:@consensys/starknet-snap",
+      "versionRange": "<0.1.11"
+    },
+    {
+      "checksum": "A83r5/ZIcKuKwuAnQHHByVFCuofj7jGK5hOStmHY6A0="
+    },
+    {
+      "id": "npm:onthis-snap",
+      "versionRange": "<1.4.1"
+    },
+    {
+      "id": "npm:wallet-guard-snap",
+      "versionRange": "<1.1.3"
+    },
+    {
+      "id": "npm:@forta-network/metamask-snap",
+      "versionRange": "<=0.1.3"
+    }
+  ]
 }
