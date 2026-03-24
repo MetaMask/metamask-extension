@@ -13,7 +13,6 @@ import {
   object,
   optional,
   string,
-  tuple,
   union,
   unknown,
   validate,
@@ -22,11 +21,19 @@ import { rpcErrors } from '@metamask/rpc-errors';
 import { GET_STATE_PATCHES, SEND_UPDATE } from '../../shared/constants/patches';
 import getNextId from '../../shared/lib/random-id';
 
+/**
+ * A notification with the method `sendUpdate`.
+ */
+type SendUpdateNotification = JsonRpcNotification & {
+  method: typeof SEND_UPDATE;
+  params: [Patch[]];
+};
+
 let patchStoreSubstreamSingleton: Substream | undefined;
 
 /**
- * A map of request IDs to deconstructed promises, used to resolve pending
- * requests for `getStatePatches`.
+ * A map of request IDs to deferred promises, used to resolve pending requests
+ * for `getStatePatches`.
  */
 const pendingGetStatePatchesRequests = new Map<
   number,
@@ -48,12 +55,6 @@ export const PatchesStruct = array(
 );
 
 /**
- * The struct that identifies the params of a `sendUpdate` notification, which
- * is a tuple whose first element is an array of JSON patch objects.
- */
-const SendUpdateParamsStruct = tuple([PatchesStruct]);
-
-/**
  * The `id` property for a JSON-RPC response is technically allowed to be
  * `null`, but we're not interested in those. This function can be used to
  * filter them out.
@@ -64,6 +65,17 @@ function isValidJsonRpcResponse(
   response: unknown,
 ): response is JsonRpcResponse & { id: number } {
   return isJsonRpcResponse(response) && typeof response.id === 'number';
+}
+
+/**
+ * Type guard to identify a `sendUpdate` notification.
+ *
+ * @param message - The message to identify.
+ */
+function isSendUpdateNotification(
+  message: JsonRpcNotification,
+): message is SendUpdateNotification {
+  return message.method === SEND_UPDATE;
 }
 
 /**
@@ -94,6 +106,8 @@ function resolvePendingGetStatePatchesRequest(
   } else {
     const { result } = message;
 
+    // Technically this could be a response to _any_ request, so we have to make
+    // sure we have a response to `getStatePatches`.
     const [patchError, patches] = validate(result, PatchesStruct);
     if (patchError) {
       request.reject(
@@ -142,7 +156,7 @@ function normalizeMessage(message: unknown): unknown {
 async function receiveMessage(
   message: unknown,
   handleSendUpdate: (
-    notification: JsonRpcNotification & { params: [Patch[]] },
+    notification: SendUpdateNotification,
   ) => void | Promise<void>,
 ): Promise<void> {
   const normalizedMessage = normalizeMessage(message);
@@ -152,23 +166,8 @@ async function receiveMessage(
   }
 
   if (isJsonRpcNotification(normalizedMessage)) {
-    if (normalizedMessage.method === SEND_UPDATE) {
-      const [paramsError, params] = validate(
-        normalizedMessage.params,
-        SendUpdateParamsStruct,
-      );
-
-      if (paramsError) {
-        console.error(
-          `Invalid patch-store update: ${paramsError.message}`,
-          normalizedMessage,
-        );
-        return;
-      }
-
-      return await handleSendUpdate(
-        normalizedMessage as JsonRpcNotification & { params: typeof params },
-      );
+    if (isSendUpdateNotification(normalizedMessage)) {
+      return await handleSendUpdate(normalizedMessage);
     }
 
     console.error(
@@ -210,7 +209,7 @@ export function setupPatchStoreSubstreamConnection(
     handleSendUpdate,
   }: {
     handleSendUpdate: (
-      notification: JsonRpcNotification & { params: [Patch[]] },
+      notification: SendUpdateNotification,
     ) => void | Promise<void>;
   },
 ) {

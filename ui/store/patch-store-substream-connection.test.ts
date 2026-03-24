@@ -176,29 +176,6 @@ describe('patch-store substream connection', () => {
       );
     });
 
-    it('logs an error (including the Superstruct validation message) when a sendUpdate notification is received with an invalid patch array', async () => {
-      const { uiStream, backgroundStream } = createPatchStreamPair();
-      const consoleSpy = jest
-        .spyOn(console, 'error')
-        .mockImplementation(() => undefined);
-      setupPatchStoreSubstreamConnection(uiStream, {
-        handleSendUpdate: jest.fn(),
-      });
-      const notification = {
-        jsonrpc: '2.0',
-        method: SEND_UPDATE,
-        params: ['not-a-patch-array'],
-      };
-
-      backgroundStream.write(notification);
-      await flushBufferedWrites();
-
-      expect(consoleSpy).toHaveBeenCalledWith(
-        'Invalid patch-store update: At path: 0 -- Expected an array value, but received: "not-a-patch-array"',
-        notification,
-      );
-    });
-
     it('logs an error when a notification is received with an unknown method', async () => {
       const { uiStream, backgroundStream } = createPatchStreamPair();
       const consoleSpy = jest
