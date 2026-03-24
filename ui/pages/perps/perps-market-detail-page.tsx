@@ -72,6 +72,11 @@ import { UpdateTPSLModal } from '../../components/app/perps/update-tpsl';
 import { ClosePositionModal } from '../../components/app/perps/close-position';
 import InfoTooltip from '../../components/ui/info-tooltip/info-tooltip';
 import { BorderRadius } from '../../helpers/constants/design-system';
+import type { MetaMaskReduxState } from '../../store/store';
+import {
+  type PerpsState,
+  selectPerpsIsWatchlistMarket,
+} from '../../selectors/perps-controller';
 
 /**
  * Calculate the funding countdown string (time until next UTC hour).
@@ -334,6 +339,9 @@ const PerpsMarketDetailPage: React.FC = () => {
   const [isCloseModalOpen, setIsCloseModalOpen] = useState(false);
   const modifyMenuRef = useRef<HTMLDivElement>(null);
   const marginMenuRef = useRef<HTMLDivElement>(null);
+  const isInWatchlist = useSelector((state: MetaMaskReduxState) =>
+    selectPerpsIsWatchlistMarket(state as PerpsState, decodedSymbol ?? ''),
+  );
 
   // Parse fallback price from market data (used before candle stream is ready)
   const marketPrice = useMemo(() => {
@@ -568,6 +576,17 @@ const PerpsMarketDetailPage: React.FC = () => {
     setIsTPSLModalOpen(false);
   }, []);
 
+  const handleFavoriteClick = useCallback(() => {
+    if (!decodedSymbol) {
+      return;
+    }
+    submitRequestToBackground('perpsToggleWatchlistMarket', [
+      decodedSymbol,
+    ]).catch((e) => {
+      console.warn('[Perps] Toggle watchlist failed:', e);
+    });
+  }, [decodedSymbol]);
+
   // Refetch positions when tab becomes visible (catch changes made elsewhere)
   useEffect(() => {
     const handleVisibility = async () => {
@@ -757,16 +776,20 @@ const PerpsMarketDetailPage: React.FC = () => {
 
         <Box
           data-testid="perps-market-detail-favorite-button"
-          aria-label={t('perpsAddToFavorites')}
+          aria-label={
+            isInWatchlist
+              ? t('perpsRemoveFromFavorites')
+              : t('perpsAddToFavorites')
+          }
           className="p-2 cursor-pointer"
-          onClick={() => {
-            // TODO: Handle favorite toggle
-          }}
+          onClick={handleFavoriteClick}
         >
           <Icon
-            name={IconName.Star}
+            name={isInWatchlist ? IconName.StarFilled : IconName.Star}
             size={IconSize.Md}
-            color={IconColor.IconAlternative}
+            color={
+              isInWatchlist ? IconColor.IconDefault : IconColor.IconAlternative
+            }
           />
         </Box>
       </Box>
