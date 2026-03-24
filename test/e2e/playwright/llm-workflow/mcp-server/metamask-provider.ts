@@ -1,3 +1,4 @@
+import fs from 'node:fs';
 import type { Page, BrowserContext } from '@playwright/test';
 import {
   type ISessionManager,
@@ -40,6 +41,12 @@ import { MetaMaskContractSeedingCapability } from '../capabilities/seeding';
 const DEFAULT_ANVIL_PORT = 8545;
 const DEFAULT_FIXTURE_SERVER_PORT = 12345;
 const HEADLESS = true;
+
+/**
+ * When present, `mm_launch` reads `{ fixture, autoBuild? }` from this path, merges into
+ * launch input, then deletes the file (one-shot). Use for large fixtures that exceed MCP arg limits.
+ */
+const BULK_LAUNCH_FIXTURE_PATH = '/tmp/mm-metamask-bulk-launch.json';
 
 export class MetaMaskSessionManager implements ISessionManager {
   private activeSession: {
@@ -339,6 +346,42 @@ export class MetaMaskSessionManager implements ISessionManager {
     this.refMap.clear();
   }
 
+  /**
+   * Loads `{ fixture, autoBuild? }` from {@link BULK_LAUNCH_FIXTURE_PATH} if the file exists,
+   * then removes it. Otherwise returns `input` unchanged.
+   *
+   * @param input - Launch input from the MCP caller.
+   */
+  private mergeBulkLaunchFixtureFromFile(
+    input: SessionLaunchInput,
+  ): SessionLaunchInput {
+    if (!fs.existsSync(BULK_LAUNCH_FIXTURE_PATH)) {
+      return input;
+    }
+    try {
+      const raw = fs.readFileSync(BULK_LAUNCH_FIXTURE_PATH, 'utf8');
+      const parsed = JSON.parse(raw) as {
+        fixture?: Record<string, unknown>;
+        autoBuild?: boolean;
+      };
+      fs.unlinkSync(BULK_LAUNCH_FIXTURE_PATH);
+      if (parsed.fixture && typeof parsed.fixture === 'object') {
+        const merged: SessionLaunchInput = {
+          ...input,
+          stateMode: 'custom',
+          fixture: parsed.fixture,
+        };
+        if (typeof parsed.autoBuild === 'boolean') {
+          merged.autoBuild = parsed.autoBuild;
+        }
+        return merged;
+      }
+    } catch (e) {
+      console.warn('Failed to consume bulk launch fixture file:', e);
+    }
+    return input;
+  }
+
   resolveA11yRef(ref: string): string | undefined {
     return this.refMap.get(ref);
   }
@@ -348,16 +391,21 @@ export class MetaMaskSessionManager implements ISessionManager {
       throw new Error(ErrorCodes.MM_SESSION_ALREADY_RUNNING);
     }
 
+    const effectiveInput = this.mergeBulkLaunchFixtureFromFile(input);
+
     const sessionId = generateSessionId();
-    const stateMode = input.stateMode ?? 'default';
-    const autoBuild = input.autoBuild ?? true;
+    const stateMode = effectiveInput.stateMode ?? 'default';
+    const autoBuild = effectiveInput.autoBuild ?? true;
     const environment = this.workflowContext?.config?.environment ?? 'e2e';
     const isProdMode = environment === 'prod';
 
-    let { extensionPath } = input;
+    let { extensionPath } = effectiveInput;
 
     // In prod mode, reject fixture-related options (no fixtures available)
-    if (isProdMode && (input.fixturePreset || input.fixture)) {
+    if (
+      isProdMode &&
+      (effectiveInput.fixturePreset || effectiveInput.fixture)
+    ) {
       throw new Error(
         'Fixture options (fixturePreset, fixture) are not available in prod mode.\n\n' +
           'Prod mode does not support fixtures. Options:\n' +
@@ -405,7 +453,7 @@ export class MetaMaskSessionManager implements ISessionManager {
       );
     }
 
-    if (input.seedContracts?.length && !contractSeedingCapability) {
+    if (effectiveInput.seedContracts?.length && !contractSeedingCapability) {
       throw new Error(
         'seedContracts provided but ContractSeedingCapability is not available.',
       );
@@ -421,15 +469,15 @@ export class MetaMaskSessionManager implements ISessionManager {
 
     try {
       if (!isProdMode && fixtureCapability) {
-        const fixturePort = input.ports?.fixtureServer;
+        const fixturePort = effectiveInput.ports?.fixtureServer;
         if (fixturePort !== undefined && fixtureCapability.setPort) {
           fixtureCapability.setPort(fixturePort);
         }
 
         const fixtureState = fixtureCapability.resolveState({
           stateMode,
-          fixturePreset: input.fixturePreset,
-          fixture: input.fixture,
+          fixturePreset: effectiveInput.fixturePreset,
+          fixture: effectiveInput.fixture,
         });
 
         await fixtureCapability.start(fixtureState);
@@ -437,7 +485,7 @@ export class MetaMaskSessionManager implements ISessionManager {
       }
 
       if (chainCapability) {
-        const anvilPort = input.ports?.anvil ?? DEFAULT_ANVIL_PORT;
+        const anvilPort = effectiveInput.ports?.anvil ?? DEFAULT_ANVIL_PORT;
         if (chainCapability.setPort) {
           chainCapability.setPort(anvilPort);
         }
@@ -458,15 +506,17 @@ export class MetaMaskSessionManager implements ISessionManager {
       if (contractSeedingCapability) {
         contractSeedingCapability.initialize();
 
-        if (input.seedContracts?.length) {
-          await contractSeedingCapability.deployContracts(input.seedContracts);
+        if (effectiveInput.seedContracts?.length) {
+          await contractSeedingCapability.deployContracts(
+            effectiveInput.seedContracts,
+          );
         }
       }
 
       const launchOptions: LauncherLaunchOptions = {
         headless: HEADLESS,
         stateMode,
-        slowMo: input.slowMo ?? 0,
+        slowMo: effectiveInput.slowMo ?? 0,
         extensionPath,
         proxyServer,
       };
@@ -496,9 +546,9 @@ export class MetaMaskSessionManager implements ISessionManager {
       chainId,
     });
     const startedAt = new Date().toISOString();
-    const resolvedAnvilPort = input.ports?.anvil ?? DEFAULT_ANVIL_PORT;
+    const resolvedAnvilPort = effectiveInput.ports?.anvil ?? DEFAULT_ANVIL_PORT;
     const resolvedFixturePort =
-      input.ports?.fixtureServer ?? DEFAULT_FIXTURE_SERVER_PORT;
+      effectiveInput.ports?.fixtureServer ?? DEFAULT_FIXTURE_SERVER_PORT;
 
     this.activeSession = {
       state: {
@@ -520,16 +570,16 @@ export class MetaMaskSessionManager implements ISessionManager {
       schemaVersion: 1,
       sessionId,
       createdAt: startedAt,
-      goal: input.goal,
-      flowTags: input.flowTags ?? [],
-      tags: input.tags ?? [],
+      goal: effectiveInput.goal,
+      flowTags: effectiveInput.flowTags ?? [],
+      tags: effectiveInput.tags ?? [],
       build: {
         buildType: 'build:test',
         extensionPathResolved: extensionPath,
       },
       launch: {
         stateMode,
-        fixturePreset: input.fixturePreset ?? null,
+        fixturePreset: effectiveInput.fixturePreset ?? null,
         extensionPath,
         ports: {
           anvil: resolvedAnvilPort,

@@ -1,3 +1,5 @@
+import type { Hex } from '@metamask/utils';
+import { CHAIN_IDS } from '../../../../shared/constants/network';
 import type { FixtureData } from './launcher-types';
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires
@@ -20,6 +22,9 @@ export type FixtureBuilder = {
   withPreferencesController(data: Record<string, unknown>): FixtureBuilder;
   withNetworkController(data: Record<string, unknown>): FixtureBuilder;
   withNetworkControllerOnMainnet(): FixtureBuilder;
+  withNetworkControllerOnMonad(): FixtureBuilder;
+  withNetworkControllerOnSei(): FixtureBuilder;
+  withEnabledNetworks(data: { eip155: Record<Hex, boolean> }): FixtureBuilder;
   withTokensController(data: Record<string, unknown>): FixtureBuilder;
   withTokensControllerERC20(options?: { chainId?: number }): FixtureBuilder;
   withTransactionController(data: Record<string, unknown>): FixtureBuilder;
@@ -104,6 +109,39 @@ export const FixturePresets = {
   withHSTToken: (): FixtureData => {
     const builder = createFixtureBuilder();
     return builder.withTokensControllerERC20({ chainId: 1337 }).build();
+  },
+
+  /**
+   * Matches {@link ../../tests/network/network-connection.spec.ts} for Monad Testnet:
+   * selected network, test dapp permission, EIP-155 enabled for the chain.
+   */
+  networkConnectionMonad: (): FixtureData => {
+    const builder = createFixtureBuilder();
+    return builder
+      .withNetworkControllerOnMonad()
+      .withPermissionControllerConnectedToTestDapp()
+      .withEnabledNetworks({
+        eip155: {
+          [CHAIN_IDS.MONAD_TESTNET]: true,
+        },
+      })
+      .build();
+  },
+
+  /**
+   * Matches {@link ../../tests/network/network-connection.spec.ts} for Sei.
+   */
+  networkConnectionSei: (): FixtureData => {
+    const builder = createFixtureBuilder();
+    return builder
+      .withNetworkControllerOnSei()
+      .withPermissionControllerConnectedToTestDapp()
+      .withEnabledNetworks({
+        eip155: {
+          [CHAIN_IDS.SEI]: true,
+        },
+      })
+      .build();
   },
 };
 
