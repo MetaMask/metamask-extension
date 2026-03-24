@@ -78,7 +78,12 @@ export function normalizeLocalizedNumberInput(
   if (
     group &&
     integerPart.includes(group) &&
-    !new RegExp(`^\\d{1,3}(?:${escapedGroup}\\d{3})*$`, 'u').test(integerPart)
+    !new RegExp(
+      allowTrailingDecimal
+        ? `^\\d{1,3}(?:${escapedGroup}\\d{3})*(?:${escapedGroup}\\d{0,2})?$`
+        : `^\\d{1,3}(?:${escapedGroup}\\d{3})*$`,
+      'u',
+    ).test(integerPart)
   ) {
     return null;
   }

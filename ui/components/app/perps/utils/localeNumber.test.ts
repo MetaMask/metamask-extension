@@ -30,6 +30,14 @@ describe('localeNumber utils', () => {
       ).toBe('45050.');
     });
 
+    it('allows partial grouped thousands while typing', () => {
+      expect(
+        normalizeLocalizedNumberInput('10.0', 'de-DE', {
+          allowTrailingDecimal: true,
+        }),
+      ).toBe('100');
+    });
+
     it('returns null for invalid characters', () => {
       expect(normalizeLocalizedNumberInput('45.0a0', 'en-US')).toBeNull();
     });

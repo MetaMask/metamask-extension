@@ -296,8 +296,8 @@ describe('AutoCloseSection', () => {
     it('normalizes de-DE TP input to canonical value', () => {
       const onTakeProfitPriceChange = jest.fn();
       const deStore = configureStore({
-        metamask: {
-          ...mockState.metamask,
+        localeMessages: {
+          ...(mockState.localeMessages ?? {}),
           currentLocale: 'de',
         },
       });
