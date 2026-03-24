@@ -7532,7 +7532,11 @@ __metadata:
     uuid: "npm:^8.3.2"
   checksum: 10/48e7721d53c1fbd781f8eac23402e1c62ea63ee859092521da3721596c54fe41ddcaaf38e1efacbc09d5e6939514920c95257937b1819b4eec2d1a42ec3a74f2
   languageName: node
+  linkType: hard
+
+"@metamask/phishing-controller@npm:^16.3.0":
   version: 16.3.0
+  resolution: "@metamask/phishing-controller@npm:16.3.0"
   dependencies:
     "@metamask/base-controller": "npm:^9.0.0"
     "@metamask/controller-utils": "npm:^11.18.0"
