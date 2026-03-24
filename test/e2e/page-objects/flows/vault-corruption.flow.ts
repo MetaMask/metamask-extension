@@ -17,20 +17,25 @@ import { lockAndWaitForLoginPage } from './login.flow';
  * @param headerNavbar - Optional HeaderNavbar instance to reuse.
  * @param options - Optional settings.
  * @param options.accountListTimeout - How long to wait for the account list to
- * load (ms). Default 20 000. Use a higher value after restore-from-backup flows
- * where multichain state must be fetched from scratch.
+ * load (ms). Default 20 000.
+ * @param options.waitForSync - Whether to wait for multichain account syncing
+ * to finish. Default true. Set to false when syncing is irrelevant (e.g.
+ * reading an existing account address after a backup restore).
  * @returns The first account's address.
  */
 export async function getFirstAddress(
   driver: Driver,
   headerNavbar: HeaderNavbar = new HeaderNavbar(driver),
-  { accountListTimeout = 20000 }: { accountListTimeout?: number } = {},
+  {
+    accountListTimeout = 20000,
+    waitForSync = true,
+  }: { accountListTimeout?: number; waitForSync?: boolean } = {},
 ): Promise<string> {
   await headerNavbar.checkPageIsLoaded();
   await headerNavbar.openAccountMenu();
 
   const accountListPage = new AccountListPage(driver);
-  await accountListPage.checkPageIsLoaded(accountListTimeout);
+  await accountListPage.checkPageIsLoaded(accountListTimeout, { waitForSync });
   await accountListPage.openMultichainAccountMenu({
     accountLabel: 'Account 1',
   });

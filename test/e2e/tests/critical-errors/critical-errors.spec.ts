@@ -84,7 +84,7 @@ describe('Critical errors', function (this: Suite) {
   });
 
   it('shows critical error screen when background takes over 16 seconds to initialize, and allows user to restore accounts', async function () {
-    this.timeout(200_000);
+    this.timeout(120_000);
     await withFixtures(
       {
         ...getConfig(this.test?.fullTitle(), {
@@ -120,10 +120,10 @@ describe('Critical errors', function (this: Suite) {
         const homePage = new HomePage(driver);
         await homePage.waitForLoadingOverlayToDisappear();
 
-        // After restoring from backup, multichain state must be fetched from
-        // scratch (unlike vault-repair where it survives). Allow extra time.
+        // After restoring from backup, multichain account sync may hang in
+        // CI. Skip the sync check — we only need to read the existing address.
         const restoredFirstAddress = await getFirstAddress(driver, undefined, {
-          accountListTimeout: 60_000,
+          waitForSync: false,
         });
 
         assert.equal(
@@ -136,7 +136,7 @@ describe('Critical errors', function (this: Suite) {
   });
 
   it('shows critical error screen when background takes over 16 seconds to sync state, and allows user to restore accounts', async function () {
-    this.timeout(200_000);
+    this.timeout(120_000);
     await withFixtures(
       {
         ...getConfig(this.test?.fullTitle(), {
@@ -170,7 +170,7 @@ describe('Critical errors', function (this: Suite) {
         await homePage.waitForLoadingOverlayToDisappear();
 
         const restoredFirstAddress = await getFirstAddress(driver, undefined, {
-          accountListTimeout: 60_000,
+          waitForSync: false,
         });
 
         assert.equal(

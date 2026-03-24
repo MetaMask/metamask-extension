@@ -250,7 +250,10 @@ class AccountListPage {
     this.driver = driver;
   }
 
-  async checkPageIsLoaded(timeout: number = 10000): Promise<void> {
+  async checkPageIsLoaded(
+    timeout: number = 10000,
+    { waitForSync = true }: { waitForSync?: boolean } = {},
+  ): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors(
         [this.addMultichainAccountButton, this.addMultichainWalletButton],
@@ -282,7 +285,9 @@ class AccountListPage {
       throw e;
     }
 
-    await this.waitUntilSyncingIsCompleted(timeout);
+    if (waitForSync) {
+      await this.waitUntilSyncingIsCompleted(timeout);
+    }
     console.log('Account list is loaded');
   }
 
