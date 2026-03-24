@@ -19,8 +19,8 @@ import {
 } from '../../../../selectors/perps-controller';
 
 /**
- * PerpsWatchlist displays a list of watched markets (stubbed with mock symbols).
- * Cross-references mockWatchlist with usePerpsLiveMarketData for live price/volume.
+ * PerpsWatchlist displays a list of watched markets.
+ * Resolves symbols from Redux with usePerpsLiveMarketData for live price and change.
  */
 export const PerpsWatchlist: React.FC = () => {
   const t = useI18nContext();
@@ -77,7 +77,6 @@ export const PerpsWatchlist: React.FC = () => {
             name={market.name}
             price={market.price}
             change24hPercent={market.change24hPercent}
-            volume={market.volume}
             onClick={handleMarketClick}
             data-testid={`perps-watchlist-${market.symbol}`}
           />
