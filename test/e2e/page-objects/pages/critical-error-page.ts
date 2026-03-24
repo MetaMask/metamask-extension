@@ -89,24 +89,19 @@ class CriticalErrorPage {
     if (confirm) {
       await alert.accept();
 
-      // runtime.reload() tears down extension UI tabs, so the driver's current
-      // window may be dead. delay() is a pure setTimeout (safe), then
-      // getAllWindowHandles() is session-level (also safe on a dead window).
+      // runtime.reload() kills extension tabs, so the driver's current window
+      // handle is stale. Wait for the reload, then reattach to a surviving tab.
       await this.driver.delay(3000);
-
-      // Reattach to any surviving tab so subsequent commands don't throw
-      // NoSuchWindowError.
       const handles = await this.driver.driver.getAllWindowHandles();
       await this.driver.driver.switchTo().window(handles[0]);
 
-      // Poll navigate(HOME) until the extension is reachable (title matches).
       await this.waitForPageAfterExtensionReload({
         timeoutMs: 30_000,
         waitForLoadingLogoToDisappear: false,
       });
 
-      // Handoff can leave two full-screen extension tabs; duplicate instances
-      // broke Terms-of-Use interactions (visibility / observers). Keep one tab.
+      // Handoff can leave duplicate extension tabs which break Terms-of-Use
+      // interactions (visibility / observers). Keep only one.
       await this.driver.closeAllOtherTabs();
     } else {
       await alert.dismiss();

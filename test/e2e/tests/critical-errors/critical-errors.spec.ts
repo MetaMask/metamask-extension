@@ -159,6 +159,8 @@ describe('Critical errors', function (this: Suite) {
           password: WALLET_PASSWORD,
         });
 
+        // After restoring from backup, multichain account sync may hang in
+        // CI. Skip the sync check — we only need to read the existing address.
         const restoredFirstAddress = await getFirstAddress(driver, undefined, {
           waitForSync: false,
         });
