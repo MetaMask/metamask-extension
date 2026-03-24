@@ -4158,11 +4158,6 @@
         "react>object-assign": true
       }
     },
-    "@metamask/perps-controller>@myx-trade/sdk>dayjs": {
-      "globals": {
-        "define": true
-      }
-    },
     "nock>debug": {
       "globals": {
         "console": true,
@@ -4502,31 +4497,6 @@
         "ethers>@ethersproject/wallet": true,
         "ethers>@ethersproject/web": true,
         "ethers>@ethersproject/wordlists": true
-      }
-    },
-    "@metamask/perps-controller>@myx-trade/sdk>ethers-decode-error": {
-      "packages": {
-        "@metamask/perps-controller>@myx-trade/sdk>ethers": true
-      }
-    },
-    "@metamask/perps-controller>@myx-trade/sdk>ethers": {
-      "globals": {
-        "AbortController": true,
-        "Event": true,
-        "Headers": true,
-        "atob": true,
-        "btoa": true,
-        "clearTimeout": true,
-        "console.log": true,
-        "fetch": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@metamask/perps-controller>@myx-trade/sdk>ethers>@adraffy/ens-normalize": true,
-        "@metamask/perps-controller>@myx-trade/sdk>ethers>@noble/curves": true,
-        "@metamask/perps-controller>@myx-trade/sdk>ethers>@noble/hashes": true,
-        "@metamask/perps-controller>@myx-trade/sdk>ethers>aes-js": true,
-        "@metamask/perps-controller>@myx-trade/sdk>ethers>tslib": true
       }
     },
     "eth-method-registry>@metamask/ethjs-contract>ethjs-abi": {
@@ -5050,12 +5020,6 @@
       "globals": {
         "clearTimeout": true,
         "define": true,
-        "setTimeout": true
-      }
-    },
-    "@metamask/perps-controller>@myx-trade/sdk>lodash-es": {
-      "globals": {
-        "clearTimeout": true,
         "setTimeout": true
       }
     },
@@ -6001,15 +5965,6 @@
         "@metamask/snaps-controllers>readable-web-to-node-stream>readable-stream": true
       }
     },
-    "@metamask/perps-controller>@myx-trade/sdk>reconnecting-websocket": {
-      "globals": {
-        "Blob": true,
-        "WebSocket": true,
-        "clearTimeout": true,
-        "console": true,
-        "setTimeout": true
-      }
-    },
     "redux": {
       "globals": {
         "console": true
@@ -6352,14 +6307,6 @@
     },
     "tslib": {
       "globals": {
-        "SuppressedError": true,
-        "define": true
-      }
-    },
-    "@metamask/perps-controller>@myx-trade/sdk>ethers>tslib": {
-      "globals": {
-        "AsyncIterator": true,
-        "Iterator": true,
         "SuppressedError": true,
         "define": true
       }
