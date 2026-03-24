@@ -55,8 +55,8 @@
  */
 
 import { collectE2EMetaMetricsEventCoverage } from './collect-qa-stats-metametrics';
-import { readFile, writeFile, mkdir, readdir } from 'fs/promises';
-import type { Dirent } from 'fs';
+import { PATTERN_E2E_SPEC_FILE, walkFiles } from './collect-qa-stats-walk-files';
+import { readFile, writeFile, mkdir } from 'fs/promises';
 import { execFileSync } from 'child_process';
 import { join } from 'path';
 
@@ -124,7 +124,6 @@ const SCAN_INTEGRATION_DIR = 'test/integration';
 const SCAN_E2E_DIR = 'test/e2e';
 
 const PATTERN_UNIT_TEST_FILE = /\.test\.(ts|tsx|js|jsx)$/u;
-const PATTERN_E2E_SPEC_FILE = /\.spec\.(ts|js)$/u;
 
 // ---------------------------------------------------------------------------
 // GitHub API helpers
@@ -342,34 +341,6 @@ function parseJUnitXml(rawXml: string): JUnitParseResult {
 // ---------------------------------------------------------------------------
 // Static analysis helpers
 // ---------------------------------------------------------------------------
-
-/**
- * Recursively collects file paths under `dir` that satisfy `predicate(filename)`.
- *
- * @param dir - Directory to walk.
- * @param predicate - Returns true for filenames to include.
- */
-async function walkFiles(
-  dir: string,
-  predicate: (name: string) => boolean,
-): Promise<string[]> {
-  const results: string[] = [];
-  let entries: Dirent[];
-  try {
-    entries = await readdir(dir, { withFileTypes: true });
-  } catch {
-    return results; // directory does not exist — skip silently
-  }
-  for (const entry of entries) {
-    const fullPath = join(dir, entry.name);
-    if (entry.isDirectory()) {
-      results.push(...(await walkFiles(fullPath, predicate)));
-    } else if (entry.isFile() && predicate(entry.name)) {
-      results.push(fullPath);
-    }
-  }
-  return results;
-}
 
 /**
  * Counts all individual test definitions in a source string — both active and

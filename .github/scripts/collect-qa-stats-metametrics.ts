@@ -3,10 +3,9 @@
  * Used by collect-qa-stats.ts for the `metametrics` namespace in qa-stats.json.
  */
 
-import { access, readFile, readdir } from 'fs/promises';
+import { access, readFile } from 'fs/promises';
 import { constants as fsConstants } from 'fs';
-import { join } from 'path';
-import type { Dirent } from 'fs';
+import { PATTERN_E2E_SPEC_FILE, walkFiles } from './collect-qa-stats-walk-files';
 
 /** Constants files whose string enums are resolved in E2E (imported by specs). */
 const METRICS_ENUM_SOURCE_FILES = [
@@ -23,34 +22,8 @@ export const LEGACY_INLINE_METAMETRICS_PATHS: readonly string[] = [
 ];
 
 const SCAN_E2E_ROOT = 'test/e2e';
-const PATTERN_E2E_SPEC_FILE = /\.spec\.(ts|js)$/u;
 
 type EnumMap = Record<string, Record<string, string>>;
-
-/**
- * Recursively collects file paths under `dir` that satisfy `predicate(filename)`.
- */
-async function walkFiles(
-  dir: string,
-  predicate: (name: string) => boolean,
-): Promise<string[]> {
-  const results: string[] = [];
-  let entries: Dirent[];
-  try {
-    entries = await readdir(dir, { withFileTypes: true });
-  } catch {
-    return results;
-  }
-  for (const entry of entries) {
-    const fullPath = join(dir, entry.name);
-    if (entry.isDirectory()) {
-      results.push(...(await walkFiles(fullPath, predicate)));
-    } else if (entry.isFile() && predicate(entry.name)) {
-      results.push(fullPath);
-    }
-  }
-  return results;
-}
 
 /**
  * Parses `enum Name { A = 'x', B = 'y' }` blocks into enumName -> member -> value.
@@ -345,7 +318,7 @@ async function gatherMetametricsE2eFilePaths(): Promise<string[]> {
     PATTERN_E2E_SPEC_FILE.test(name),
   );
   for (const p of specFiles) {
-    if (p.replace(/\\/gu, '/').includes('/test/e2e/websocket/')) {
+    if (p.replace(/\\/gu, '/').includes(`${SCAN_E2E_ROOT}/websocket/`)) {
       continue;
     }
     paths.add(p);
