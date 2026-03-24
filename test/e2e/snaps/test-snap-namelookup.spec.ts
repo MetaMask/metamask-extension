@@ -3,7 +3,7 @@ import { Mockttp } from 'mockttp';
 import { Driver } from '../webdriver/driver';
 import HomePage from '../page-objects/pages/home/homepage';
 import FixtureBuilderV2 from '../fixtures/fixture-builder-v2';
-import { loginWithoutBalanceValidation } from '../page-objects/flows/login.flow';
+import { login } from '../page-objects/flows/login.flow';
 import { DAPP_PATH, WINDOW_TITLES } from '../constants';
 import { withFixtures } from '../helpers';
 import { openTestSnapClickButtonAndInstall } from '../page-objects/flows/install-test-snap.flow';
@@ -27,7 +27,7 @@ describe('Name lookup', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithoutBalanceValidation(driver);
+        await login(driver, { validateBalance: false });
 
         const homePage = new HomePage(driver);
         const sendPage = new SendPage(driver);

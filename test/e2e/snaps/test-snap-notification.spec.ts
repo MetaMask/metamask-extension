@@ -7,7 +7,7 @@ import { withFixtures } from '../helpers';
 import FixtureBuilderV2 from '../fixtures/fixture-builder-v2';
 import NotificationsListPage from '../page-objects/pages/notifications-list-page';
 import { mockNotificationSnap } from '../mock-response-data/snaps/snap-binary-mocks';
-import { loginWithBalanceValidation } from '../page-objects/flows/login.flow';
+import { login } from '../page-objects/flows/login.flow';
 import { DAPP_PATH, WINDOW_TITLES } from '../constants';
 
 describe('Test Snap Notification', function () {
@@ -24,7 +24,7 @@ describe('Test Snap Notification', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         const testSnaps = new TestSnaps(driver);
         const headerNavbar = new HeaderNavbar(driver);
@@ -73,7 +73,7 @@ describe('Test Snap Notification', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         const testSnaps = new TestSnaps(driver);
         const headerNavbar = new HeaderNavbar(driver);

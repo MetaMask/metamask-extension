@@ -339,6 +339,18 @@
   "addWallet": {
     "message": "Add wallet"
   },
+  "addedProtectionDescription": {
+    "message": "You're interacting with an unknown address. This helps prevent malicious transactions."
+  },
+  "addedProtectionOptionalBadge": {
+    "message": "Optional"
+  },
+  "addedProtectionTitle": {
+    "message": "Added protection"
+  },
+  "addedProtectionTooltip": {
+    "message": "If the final transaction doesn't match this preview, it won't go through. You only pay the network fee."
+  },
   "additionalNetworks": {
     "message": "Additional networks"
   },
@@ -756,6 +768,27 @@
   "autoDetectTokensDescriptionV2": {
     "message": "Displays new tokens sent to your wallet."
   },
+  "autoLock": {
+    "message": "Auto lock"
+  },
+  "autoLockAfter15Seconds": {
+    "message": "After 15 seconds"
+  },
+  "autoLockAfter1Minute": {
+    "message": "After 1 minute"
+  },
+  "autoLockAfter30Seconds": {
+    "message": "After 30 seconds"
+  },
+  "autoLockAfter5Minutes": {
+    "message": "After 5 minutes"
+  },
+  "autoLockAfterMinutes": {
+    "message": "After $1 minutes"
+  },
+  "autoLockNever": {
+    "message": "Never"
+  },
   "autoLockTimeLimit": {
     "message": "Auto-lock timer (minutes)"
   },
@@ -773,6 +806,9 @@
   },
   "backToHome": {
     "message": "Back to home"
+  },
+  "backUpIncomplete": {
+    "message": "Back up incomplete"
   },
   "backup": {
     "message": "Backup"
@@ -1070,7 +1106,7 @@
     "message": "Lowest cost"
   },
   "bridgeMarketClosedAction": {
-    "message": "Market is closed"
+    "message": "Market closed"
   },
   "bridgeMarketClosedDescription": {
     "message": "This stock token is currently outside trading hours. Try again when the market reopens."
@@ -3363,6 +3399,9 @@
     "message": "Save up to 4% on trades with a MetaMask referral code.",
     "description": "The subtitle of the Hyperliquid referral confirmation screen"
   },
+  "iUnderstand": {
+    "message": "I understand"
+  },
   "id": {
     "message": "ID"
   },
@@ -3922,6 +3961,9 @@
   },
   "managePermissions": {
     "message": "Manage permissions"
+  },
+  "manageWalletRecovery": {
+    "message": "Manage wallet recovery"
   },
   "marketCap": {
     "message": "Market cap"
@@ -6665,6 +6707,9 @@
   "securityAlertsDescriptionV2": {
     "message": "This feature alerts you to malicious activity by actively reviewing transaction and signature requests. $1"
   },
+  "securityAndPassword": {
+    "message": "Security and password"
+  },
   "securityAndPrivacy": {
     "message": "Security & privacy"
   },
@@ -7694,6 +7739,12 @@
   },
   "smartAccountUpgradeBannerTitle": {
     "message": "Switch to smart account"
+  },
+  "smartContractAddress": {
+    "message": "Smart contract address"
+  },
+  "smartContractAddressWarning": {
+    "message": "The recipient address may not support direct token transfers, which could result in fund loss. Only continue if you're certain this contract can receive your transfer."
   },
   "smartContracts": {
     "message": "Smart contracts"
@@ -8731,6 +8782,9 @@
   },
   "tokenContractError": {
     "message": "This address is a token contract address. If you send tokens to this address, you will lose them."
+  },
+  "tokenContractWarning": {
+    "message": "Token contract warning"
   },
   "tokenCount": {
     "message": "token",

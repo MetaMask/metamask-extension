@@ -1,3 +1,5 @@
+import * as Sentry from '@sentry/browser';
+import { forEachEnvelopeItem, parseEnvelope } from '@sentry/utils';
 import {
   removeUrlsFromBreadCrumb,
   rewriteReport,
@@ -466,6 +468,286 @@ describe('Setup Sentry', () => {
         to: '',
         from: 'chrome-extension://abcefg/home.html',
       });
+    });
+  });
+
+  describe('makeTransport (construction)', () => {
+    it('does not call fetch when makeTransport is called', () => {
+      const fetchSpy = jest
+        .spyOn(globalThis, 'fetch')
+        .mockResolvedValue({ ok: true });
+
+      makeTransport({});
+
+      expect(fetchSpy).not.toHaveBeenCalled();
+
+      fetchSpy.mockRestore();
+    });
+
+    it('does not call send or flush on the default transport when makeTransport is called', () => {
+      const defaultTransportSend = jest.fn().mockResolvedValue({});
+      const defaultTransportFlush = jest.fn().mockResolvedValue(true);
+      const makeFetchTransportSpy = jest
+        .spyOn(Sentry, 'makeFetchTransport')
+        .mockReturnValue({
+          send: defaultTransportSend,
+          flush: defaultTransportFlush,
+        });
+
+      makeTransport({});
+
+      expect(defaultTransportSend).not.toHaveBeenCalled();
+      expect(defaultTransportFlush).not.toHaveBeenCalled();
+
+      makeFetchTransportSpy.mockRestore();
+    });
+  });
+
+  describe('makeTransport', () => {
+    let makeFetchTransportSpy;
+
+    beforeEach(() => {
+      makeFetchTransportSpy = jest.spyOn(Sentry, 'makeFetchTransport');
+      makeFetchTransportSpy.mockReturnValue({
+        send: jest.fn().mockResolvedValue({}),
+        flush: jest.fn().mockResolvedValue(true),
+      });
+    });
+
+    afterEach(() => {
+      makeFetchTransportSpy.mockRestore();
+      delete globalThis.stateHooks?.getPersistedState;
+      delete globalThis.stateHooks?.getBackupState;
+    });
+
+    it('throws when MetaMetrics is not opted in', async () => {
+      globalThis.stateHooks = {
+        getSentryState: () => ({}),
+        getPersistedState: async () => ({
+          data: {
+            MetaMetricsController: { participateInMetaMetrics: false },
+          },
+        }),
+        getBackupState: async () => ({}),
+      };
+
+      const transport = makeTransport({});
+      const envelope = [{}, [[{ type: 'event' }, { message: 'test' }]]];
+
+      await expect(transport.send(envelope)).rejects.toThrow(
+        'Network request skipped as metrics disabled',
+      );
+      expect(makeFetchTransportSpy).toHaveBeenCalled();
+      expect(
+        makeFetchTransportSpy.mock.results[0].value.send,
+      ).not.toHaveBeenCalled();
+    });
+
+    it('calls default transport send and mutates event when opted in', async () => {
+      globalThis.stateHooks = {
+        getSentryState: () => ({}),
+        getPersistedState: async () => ({
+          data: {
+            MetaMetricsController: {
+              participateInMetaMetrics: true,
+              metaMetricsId: 'transport-test-id',
+            },
+          },
+        }),
+        getBackupState: async () => ({}),
+      };
+
+      const transport = makeTransport({});
+      const eventPayload = { message: 'test event' };
+      const envelope = [{}, [[{ type: 'event' }, eventPayload]]];
+
+      await transport.send(envelope);
+
+      expect(eventPayload.user).toStrictEqual({ id: 'transport-test-id' });
+      const defaultTransport = makeFetchTransportSpy.mock.results[0].value;
+      expect(defaultTransport.send).toHaveBeenCalledTimes(1);
+      expect(defaultTransport.send).toHaveBeenCalledWith(envelope);
+    });
+
+    it('uses app state from getSentryState when available', async () => {
+      globalThis.stateHooks = {
+        getSentryState: () => ({
+          state: {
+            MetaMetricsController: {
+              participateInMetaMetrics: true,
+              metaMetricsId: 'app-state-id',
+            },
+          },
+        }),
+        getPersistedState: async () => ({}),
+        getBackupState: async () => ({}),
+      };
+
+      const transport = makeTransport({});
+      const eventPayload = { message: 'test' };
+      const envelope = [{}, [[{ type: 'event' }, eventPayload]]];
+
+      await transport.send(envelope);
+
+      expect(eventPayload.user).toStrictEqual({ id: 'app-state-id' });
+      expect(
+        makeFetchTransportSpy.mock.results[0].value.send,
+      ).toHaveBeenCalledWith(envelope);
+    });
+
+    it('falls back to backup state when getPersistedState throws', async () => {
+      globalThis.stateHooks = {
+        getSentryState: () => ({}),
+        getPersistedState: async () => {
+          throw new Error('persisted unavailable');
+        },
+        getBackupState: async () => ({
+          MetaMetricsController: {
+            participateInMetaMetrics: true,
+            metaMetricsId: 'backup-id',
+          },
+        }),
+      };
+
+      const transport = makeTransport({});
+      const eventPayload = { message: 'test' };
+      const envelope = [{}, [[{ type: 'event' }, eventPayload]]];
+
+      await transport.send(envelope);
+
+      expect(eventPayload.user).toStrictEqual({ id: 'backup-id' });
+      expect(
+        makeFetchTransportSpy.mock.results[0].value.send,
+      ).toHaveBeenCalledWith(envelope);
+    });
+
+    it('throws when both getPersistedState and getBackupState fail', async () => {
+      globalThis.stateHooks = {
+        getSentryState: () => ({}),
+        getPersistedState: async () => {
+          throw new Error('persisted failed');
+        },
+        getBackupState: async () => {
+          throw new Error('backup failed');
+        },
+      };
+
+      const transport = makeTransport({});
+      const envelope = [{}, [[{ type: 'event' }, { message: 'test' }]]];
+
+      await expect(transport.send(envelope)).rejects.toThrow(
+        'Network request skipped as metrics disabled',
+      );
+      expect(
+        makeFetchTransportSpy.mock.results[0].value.send,
+      ).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('Sentry.init with makeTransport (MetaMetrics)', () => {
+    /**
+     * Sentry starts or updates sessions on a later turn of the event loop, not inline with
+     * `init`. `setTimeout(0)` schedules the next macrotask so that deferred session work, and
+     * any related `fetch`, can run before we assert.
+     */
+    function triggerSessionEvent() {
+      return new Promise((resolve) => {
+        // Clear the microtask queue and/or wait for the next event loop
+        setTimeout(resolve, 0);
+      });
+    }
+
+    afterEach(async () => {
+      await Sentry.close(2000);
+      delete globalThis.stateHooks?.getPersistedState;
+      delete globalThis.stateHooks?.getBackupState;
+      delete globalThis.stateHooks?.getSentryState;
+    });
+
+    it('does not call fetch after init when opted out (after triggerSessionEvent)', async () => {
+      globalThis.nw = {};
+      globalThis.history ??= {};
+
+      globalThis.stateHooks = {
+        getSentryState: () => ({}),
+        getPersistedState: async () => ({
+          data: {
+            MetaMetricsController: { participateInMetaMetrics: false },
+          },
+        }),
+        getBackupState: async () => ({}),
+      };
+
+      const fetchSpy = jest
+        .spyOn(globalThis, 'fetch')
+        .mockResolvedValue({ ok: true });
+
+      await Sentry.close(2000);
+      Sentry.init({
+        dsn: 'https://public@fake.ingest.sentry.io/1',
+        release: 'setup-sentry-unit-test',
+        transport: makeTransport,
+        tracesSampleRate: 0,
+      });
+
+      await triggerSessionEvent();
+
+      expect(fetchSpy).not.toHaveBeenCalled();
+
+      fetchSpy.mockRestore();
+    });
+
+    it('calls fetch after init when opted in (after triggerSessionEvent)', async () => {
+      globalThis.nw = {};
+      globalThis.history ??= {};
+
+      globalThis.stateHooks = {
+        getSentryState: () => ({}),
+        getPersistedState: async () => ({
+          data: {
+            MetaMetricsController: {
+              participateInMetaMetrics: true,
+              metaMetricsId: 'init-session-test-id',
+            },
+          },
+        }),
+        getBackupState: async () => ({}),
+      };
+
+      const fetchSpy = jest
+        .spyOn(globalThis, 'fetch')
+        .mockResolvedValue({ ok: true });
+
+      await Sentry.close(2000);
+      Sentry.init({
+        dsn: 'https://public@fake.ingest.sentry.io/1',
+        release: 'setup-sentry-unit-test',
+        transport: makeTransport,
+        tracesSampleRate: 0,
+      });
+
+      await triggerSessionEvent();
+
+      expect(fetchSpy).toHaveBeenCalled();
+
+      const envelopes = fetchSpy.mock.calls
+        .map(([, init]) => init?.body)
+        .filter(Boolean)
+        .map((body) => {
+          try {
+            return parseEnvelope(body);
+          } catch {
+            return null;
+          }
+        })
+        .filter(Boolean);
+
+      const hasSessionItem = envelopes.some((envelope) =>
+        forEachEnvelopeItem(envelope, (_item, type) => type === 'session'),
+      );
+      expect(hasSessionItem).toBe(true);
+
+      fetchSpy.mockRestore();
     });
   });
 });

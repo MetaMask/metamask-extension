@@ -1,11 +1,7 @@
 import React from 'react';
-import {
-  Button,
-  ButtonVariant,
-  IconName,
-} from '../../../components/component-library';
-import { BlockSize } from '../../../helpers/constants/design-system';
+import { Button, ButtonVariant, IconName } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import { JustifyContent } from '../../../helpers/constants/design-system';
 
 type MarketClosedActionButtonProps = {
   onClick: () => void;
@@ -18,11 +14,19 @@ export const MarketClosedActionButton = ({
 
   return (
     <Button
-      width={BlockSize.Full}
+      isFullWidth
       variant={ButtonVariant.Secondary}
-      startIconName={IconName.Clock}
+      startIconName={IconName.AfterHours}
       endIconName={IconName.Info}
+      endIconProps={{
+        style: {
+          marginLeft: 'auto',
+        },
+      }}
       onClick={onClick}
+      style={{
+        justifyContent: JustifyContent.flexStart,
+      }}
       data-testid="market-closed-action-button"
     >
       {t('bridgeMarketClosedAction')}

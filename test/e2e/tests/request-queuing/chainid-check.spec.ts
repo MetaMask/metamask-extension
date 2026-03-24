@@ -8,7 +8,7 @@ import TestDapp from '../../page-objects/pages/test-dapp';
 import ConnectAccountConfirmation from '../../page-objects/pages/confirmations/connect-account-confirmation';
 import ReviewPermissionsConfirmation from '../../page-objects/pages/confirmations/review-permissions-confirmation';
 import type { Driver } from '../../webdriver/driver';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 
 describe('Request Queueing chainId proxy sync', function () {
   it('should preserve per dapp network selections after connecting and switching without refresh calls', async function () {
@@ -36,7 +36,7 @@ describe('Request Queueing chainId proxy sync', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         // Navigate to extension home screen
         await driver.navigate(PAGES.HOME);
