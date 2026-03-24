@@ -164,24 +164,43 @@ export function usePerpsOrderForm({
 
   // Track which deps trigger a full form reset. orderType changes should NOT
   // reset amount/leverage—only the effect above updates formState.type.
-  const prevResetDepsRef = useRef({
-    mode,
-    asset,
-    initialDirection,
-    existingPositionKey: existingPosition?.size ?? 'none',
-  });
+  // Ref starts null so the first effect run always applies. `existingPosition`
+  // uses undefined vs JSON digest so async hydration cannot collide with a size
+  // string like "none" the way a single concatenated key could.
+  const prevResetDepsRef = useRef<{
+    mode: OrderMode;
+    asset: string;
+    initialDirection: 'long' | 'short';
+    existingPositionDigest: string | undefined;
+  } | null>(null);
   useEffect(() => {
+    const existingPositionDigest =
+      existingPosition === undefined
+        ? undefined
+        : JSON.stringify({
+            size: existingPosition.size,
+            entryPrice: existingPosition.entryPrice,
+            leverage: existingPosition.leverage,
+            takeProfitPrice: existingPosition.takeProfitPrice ?? null,
+            stopLossPrice: existingPosition.stopLossPrice ?? null,
+          });
+
     const prev = prevResetDepsRef.current;
-    const prevKey = `${prev.mode}-${prev.asset}-${prev.initialDirection}-${prev.existingPositionKey}`;
-    const currKey = `${mode}-${asset}-${initialDirection}-${existingPosition?.size ?? 'none'}`;
-    if (prevKey === currKey) {
+    if (
+      prev !== null &&
+      prev.mode === mode &&
+      prev.asset === asset &&
+      prev.initialDirection === initialDirection &&
+      prev.existingPositionDigest === existingPositionDigest
+    ) {
       return;
     }
+
     prevResetDepsRef.current = {
       mode,
       asset,
       initialDirection,
-      existingPositionKey: existingPosition?.size ?? 'none',
+      existingPositionDigest,
     };
 
     setClosePercent(100);

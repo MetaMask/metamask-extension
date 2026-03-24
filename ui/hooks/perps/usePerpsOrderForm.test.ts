@@ -110,6 +110,36 @@ describe('usePerpsOrderForm', () => {
 
       expect(result.current.formState.autoCloseEnabled).toBe(true);
     });
+
+    it('pre-populates modify fields when existingPosition loads after mount with size that matches prior absent sentinel', () => {
+      const latePosition = {
+        size: 'none',
+        leverage: 7,
+        entryPrice: '100',
+        takeProfitPrice: undefined,
+        stopLossPrice: undefined,
+      };
+
+      let existingPosition: typeof latePosition | undefined;
+      const { result, rerender } = renderHookWithProvider(
+        () =>
+          usePerpsOrderForm({
+            ...defaultOptions,
+            mode: 'modify',
+            existingPosition,
+          }),
+        mockStateWithLocale,
+      );
+
+      expect(result.current.formState.leverage).toBe(1);
+
+      existingPosition = latePosition;
+      act(() => {
+        rerender();
+      });
+
+      expect(result.current.formState.leverage).toBe(7);
+    });
   });
 
   describe('handlers', () => {
