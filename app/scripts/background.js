@@ -124,7 +124,7 @@ const BADGE_COLOR_APPROVAL = '#0376C9';
 const BADGE_MAX_COUNT = 9;
 
 const inTest = process.env.IN_TEST;
-let inTestRestoreFlow = false;
+let inTestRestoreInProgress = false;
 let inTestHasVault = false;
 const { safePersist, requestSafeReload, evacuate } =
   getRequestSafeReload(persistenceManager);
@@ -608,7 +608,7 @@ const handleOnConnect = async (port) => {
     if (
       inTest &&
       getManifestFlags().testing?.simulateBackgroundStateSyncHang &&
-      !inTestRestoreFlow &&
+      !inTestRestoreInProgress &&
       inTestHasVault
     ) {
       return;
@@ -2431,7 +2431,7 @@ async function startExtensionInitialization() {
     await clearCriticalErrorRestoreSession(browser);
     if (backupHasVault) {
       if (inTest) {
-        inTestRestoreFlow = true;
+        inTestRestoreInProgress = true;
       }
       const handoffPayload = {
         tabId: restoreInProgress.tabId,
