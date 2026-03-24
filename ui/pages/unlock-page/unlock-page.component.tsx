@@ -642,7 +642,7 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
                 )}
                 {isBeta() ? (
                   <Text
-                    className="unlock-page__mascot-container__beta bg-primary-inverse rounded-lg p-1"
+                    className="unlock-page__mascot-container__beta bg-primary-default rounded-lg p-1"
                     color={TextColor.PrimaryInverse}
                     textTransform={TextTransform.Uppercase}
                     fontWeight={FontWeight.Medium}

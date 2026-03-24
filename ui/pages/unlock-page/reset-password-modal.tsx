@@ -86,6 +86,7 @@ export default function ResetPasswordModal({
             <TextButton
               key="need-help-link"
               onClick={handleContactSupportTrackEvent}
+              asChild
             >
               <a
                 href={SUPPORT_LINK}
