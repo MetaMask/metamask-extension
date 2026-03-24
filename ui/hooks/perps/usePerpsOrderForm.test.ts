@@ -120,7 +120,7 @@ describe('usePerpsOrderForm', () => {
         stopLossPrice: undefined,
       };
 
-      let existingPositionAfterLoad: typeof latePosition | undefined;
+      const existingPositionAfterLoad: typeof latePosition | undefined;
       const { result, rerender } = renderHookWithProvider(
         () =>
           usePerpsOrderForm({
