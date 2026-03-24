@@ -4,14 +4,11 @@ import { Mockttp } from 'mockttp';
 import { CHAIN_IDS } from '@metamask/transaction-controller';
 import { createDownloadFolder, withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
-import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import AdvancedSettings from '../../page-objects/pages/settings/advanced-settings';
-import {
-  loginWithBalanceValidation,
-  loginWithoutBalanceValidation,
-} from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 import { mockPriceApi } from '../tokens/utils/mocks';
 
 import referenceStateLogsDefinition from './state-logs.json';
@@ -77,7 +74,7 @@ describe('State logs', function () {
     }
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withPreferencesController({
             preferences: {
               showFiatInTestnets: true,
@@ -95,7 +92,7 @@ describe('State logs', function () {
       },
       async ({ driver }: { driver: Driver }) => {
         await createDownloadFolder(downloadsFolder);
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         // Download state logs
         await new HeaderNavbar(driver).openSettingsPage();
@@ -126,7 +123,7 @@ describe('State logs', function () {
     }
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withPreferencesController({
             preferences: {
               showFiatInTestnets: true,
@@ -149,7 +146,7 @@ describe('State logs', function () {
       },
       async ({ driver }: { driver: Driver }) => {
         await createDownloadFolder(downloadsFolder);
-        await loginWithoutBalanceValidation(driver);
+        await login(driver, { validateBalance: false });
 
         // Add hardcoded delay to stabilize the test and ensure values for properties are loaded
         await driver.delay(15000);

@@ -9,12 +9,12 @@ import { getNativeTokenAddress } from '@metamask/assets-controllers';
 import { BigNumber } from 'bignumber.js';
 import type { TransactionPaymentToken } from '@metamask/transaction-pay-controller';
 import { useConfirmContext } from '../../context/confirm';
-import { hasTransactionType } from '../../utils/transaction-pay';
+import { hasTransactionType } from '../../../../../shared/lib/transactions.utils';
 import { updateEventFragment } from '../../../../store/actions';
 import { useTransactionPayToken } from './useTransactionPayToken';
 import {
+  useTransactionPayPrimaryRequiredToken,
   useTransactionPayQuotes,
-  useTransactionPayRequiredTokens,
   useTransactionPayTotals,
 } from './useTransactionPayData';
 import { useTransactionPayAvailableTokens } from './useTransactionPayAvailableTokens';
@@ -23,7 +23,7 @@ export function useTransactionPayMetrics() {
   const { currentConfirmation: transactionMeta } =
     useConfirmContext<TransactionMeta>();
   const { payToken } = useTransactionPayToken();
-  const requiredTokens = useTransactionPayRequiredTokens();
+  const primaryRequiredToken = useTransactionPayPrimaryRequiredToken();
   const automaticPayToken = useRef<TransactionPaymentToken>();
   const quotes = useTransactionPayQuotes();
   const totals = useTransactionPayTotals();
@@ -36,7 +36,6 @@ export function useTransactionPayMetrics() {
 
   const transactionId = transactionMeta?.id ?? '';
   const { chainId } = transactionMeta ?? {};
-  const primaryRequiredToken = requiredTokens.find((t) => !t.skipIfBalance);
   const sendingValue = Number(primaryRequiredToken?.amountHuman ?? '0');
 
   if (!automaticPayToken.current && payToken) {

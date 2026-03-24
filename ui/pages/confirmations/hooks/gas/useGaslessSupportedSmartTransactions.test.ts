@@ -5,12 +5,18 @@ import { genUnapprovedContractInteractionConfirmation } from '../../../../../tes
 import { getMockConfirmStateForTransaction } from '../../../../../test/data/confirmations/helper';
 import { renderHookWithConfirmContextProvider } from '../../../../../test/lib/confirmations/render-helpers';
 import { isSendBundleSupported } from '../../../../store/actions';
+import { isHardwareWallet } from '../../../../selectors';
 import { useGaslessSupportedSmartTransactions } from './useGaslessSupportedSmartTransactions';
 
 jest.mock('../../../../../shared/lib/selectors');
 jest.mock('../../../../store/actions', () => ({
   ...jest.requireActual('../../../../store/actions'),
   isSendBundleSupported: jest.fn(),
+}));
+
+jest.mock('../../../../selectors', () => ({
+  ...jest.requireActual('../../../../selectors'),
+  isHardwareWallet: jest.fn(),
 }));
 
 const CHAIN_ID_MOCK = '0x5';
@@ -35,11 +41,13 @@ async function runHook() {
 describe('useGaslessSupportedSmartTransactions', () => {
   const getIsSmartTransactionMock = jest.mocked(getIsSmartTransaction);
   const isSendBundleSupportedMock = jest.mocked(isSendBundleSupported);
+  const isHardwareWalletMock = jest.mocked(isHardwareWallet);
 
   beforeEach(() => {
     jest.resetAllMocks();
     getIsSmartTransactionMock.mockReturnValue(false);
     isSendBundleSupportedMock.mockResolvedValue(false);
+    isHardwareWalletMock.mockReturnValue(false);
   });
 
   it('returns isSupported = true when smart transactions enabled and sendBundle supported', async () => {
@@ -137,6 +145,20 @@ describe('useGaslessSupportedSmartTransactions', () => {
 
     expect(result.current).toStrictEqual({
       isSmartTransaction: false,
+      isSupported: false,
+      pending: false,
+    });
+  });
+
+  it('returns isSupported false for hardware wallets even when smart transactions and sendBundle are supported', async () => {
+    isHardwareWalletMock.mockReturnValue(true);
+    getIsSmartTransactionMock.mockReturnValue(true);
+    isSendBundleSupportedMock.mockResolvedValue(true);
+
+    const result = await runHook();
+
+    expect(result).toStrictEqual({
+      isSmartTransaction: true,
       isSupported: false,
       pending: false,
     });

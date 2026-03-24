@@ -17,6 +17,7 @@ export const SETTINGS_ROUTE = '/settings';
 export const SETTINGS_V2_ROUTE = '/settings-v2';
 export const ASSETS_ROUTE = '/settings-v2/assets';
 export const CURRENCY_ROUTE = '/settings-v2/assets/currency';
+export const TRANSACTIONS_ROUTE = '/settings-v2/transactions';
 export const PREFERENCES_AND_DISPLAY_ROUTE =
   '/settings-v2/preferences-and-display';
 export const THEME_ROUTE = '/settings-v2/preferences-and-display/theme';
@@ -25,6 +26,9 @@ export const ACCOUNT_IDENTICON_ROUTE =
   '/settings-v2/preferences-and-display/account-identicon';
 export const PRIVACY_ROUTE = '/settings-v2/privacy';
 export const THIRD_PARTY_APIS_ROUTE = '/settings-v2/privacy/third-party-apis';
+export const SECURITY_AND_PASSWORD_ROUTE = '/settings-v2/security-and-password';
+export const AUTO_LOCK_ROUTE = '/settings-v2/security-and-password/auto-lock';
+export const DEVELOPER_OPTIONS_V2_ROUTE = '/settings-v2/developer-options';
 export const GENERAL_ROUTE = '/settings/general';
 export const ADVANCED_ROUTE = '/settings/advanced';
 export const DEVELOPER_OPTIONS_ROUTE = '/settings/developer-options';

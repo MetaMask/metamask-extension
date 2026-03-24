@@ -1,14 +1,14 @@
 import { Mockttp } from 'mockttp';
 import { DAPP_PATH, WINDOW_TITLES } from '../constants';
 import { withFixtures } from '../helpers';
-import FixtureBuilder from '../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../fixtures/fixture-builder-v2';
 import {
   mockWebpackPluginOldSnap,
   mockWebpackPluginSnap,
 } from '../mock-response-data/snaps/snap-binary-mocks';
 import HeaderNavbar from '../page-objects/pages/header-navbar';
 import SnapListPage from '../page-objects/pages/snap-list-page';
-import { loginWithoutBalanceValidation } from '../page-objects/flows/login.flow';
+import { login } from '../page-objects/flows/login.flow';
 import { openTestSnapClickButtonAndInstall } from '../page-objects/flows/install-test-snap.flow';
 import { TestSnaps } from '../page-objects/pages/test-snaps';
 import SnapInstall from '../page-objects/pages/dialog/snap-install';
@@ -28,12 +28,14 @@ describe('Test Snap update via snaps component', function () {
         dappOptions: {
           customDappPaths: [DAPP_PATH.TEST_SNAPS],
         },
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilderV2()
+          .withSnapsPrivacyWarningAlreadyShown()
+          .build(),
         testSpecificMock: mockSnaps,
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithoutBalanceValidation(driver);
+        await login(driver, { validateBalance: false });
         const testSnaps = new TestSnaps(driver);
         const headerNavbar = new HeaderNavbar(driver);
         const snapListPage = new SnapListPage(driver);

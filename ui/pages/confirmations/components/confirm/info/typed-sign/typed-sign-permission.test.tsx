@@ -2,7 +2,10 @@ import { DecodedPermission } from '@metamask/gator-permissions-controller';
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import { getMockTypedSignPermissionConfirmState } from '../../../../../../../test/data/confirmations/helper';
-import { renderWithConfirmContextProvider } from '../../../../../../../test/lib/confirmations/render-helpers';
+import {
+  renderWithConfirmContextProvider,
+  renderWithConfirmContext,
+} from '../../../../../../../test/lib/confirmations/render-helpers';
 import { enLocale as messages } from '../../../../../../../test/lib/i18n-helpers';
 import TypedSignPermissionInfo from './typed-sign-permission';
 
@@ -14,6 +17,11 @@ jest.mock(
     })),
   }),
 );
+
+jest.mock('../../../../utils/token', () => ({
+  ...jest.requireActual('../../../../utils/token'),
+  fetchErc20DecimalsOrThrow: jest.fn().mockResolvedValue(18),
+}));
 
 describe('TypedSignPermissionInfo', () => {
   describe('permission section fields', () => {
@@ -58,10 +66,7 @@ describe('TypedSignPermissionInfo', () => {
 
       const mockStore = configureMockStore([])(state);
       expect(() =>
-        renderWithConfirmContextProvider(
-          <TypedSignPermissionInfo />,
-          mockStore,
-        ),
+        renderWithConfirmContext(<TypedSignPermissionInfo />, mockStore),
       ).toThrow('Invalid permission type');
     });
 
@@ -73,10 +78,7 @@ describe('TypedSignPermissionInfo', () => {
 
       const mockStore = configureMockStore([])(state);
       expect(() =>
-        renderWithConfirmContextProvider(
-          <TypedSignPermissionInfo />,
-          mockStore,
-        ),
+        renderWithConfirmContext(<TypedSignPermissionInfo />, mockStore),
       ).toThrow('Decoded permission is undefined');
     });
   });
@@ -128,10 +130,7 @@ describe('TypedSignPermissionInfo', () => {
       );
       const mockStore = configureMockStore([])(state);
       expect(() =>
-        renderWithConfirmContextProvider(
-          <TypedSignPermissionInfo />,
-          mockStore,
-        ),
+        renderWithConfirmContext(<TypedSignPermissionInfo />, mockStore),
       ).toThrow('Start time is required');
     });
 
@@ -209,10 +208,7 @@ describe('TypedSignPermissionInfo', () => {
       );
       const mockStore = configureMockStore([])(state);
       expect(() =>
-        renderWithConfirmContextProvider(
-          <TypedSignPermissionInfo />,
-          mockStore,
-        ),
+        renderWithConfirmContext(<TypedSignPermissionInfo />, mockStore),
       ).toThrow('Start time is required');
     });
 
@@ -332,10 +328,7 @@ describe('TypedSignPermissionInfo', () => {
       );
       const mockStore = configureMockStore([])(state);
       expect(() =>
-        renderWithConfirmContextProvider(
-          <TypedSignPermissionInfo />,
-          mockStore,
-        ),
+        renderWithConfirmContext(<TypedSignPermissionInfo />, mockStore),
       ).toThrow('Start time is required');
     });
 
@@ -410,10 +403,7 @@ describe('TypedSignPermissionInfo', () => {
       );
       const mockStore = configureMockStore([])(state);
       expect(() =>
-        renderWithConfirmContextProvider(
-          <TypedSignPermissionInfo />,
-          mockStore,
-        ),
+        renderWithConfirmContext(<TypedSignPermissionInfo />, mockStore),
       ).toThrow('Start time is required');
     });
 

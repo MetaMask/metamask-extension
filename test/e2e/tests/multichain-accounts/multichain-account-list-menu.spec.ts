@@ -7,7 +7,7 @@ import { installSnapSimpleKeyring } from '../../page-objects/flows/snap-simple-k
 import SnapSimpleKeyringPage from '../../page-objects/pages/snap-simple-keyring-page';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import HomePage from '../../page-objects/pages/home/homepage';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 import { KNOWN_PUBLIC_KEY_ADDRESSES } from '../../../stub/keyring-bridge';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { DAPP_PATH, WINDOW_TITLES } from '../../constants';
@@ -84,7 +84,7 @@ describe('Multichain Accounts - Account tree', function (this: Suite) {
           KNOWN_PUBLIC_KEY_ADDRESSES[0].address,
           '0x15af1d78b58c40000',
         )) ?? console.error('localNodes is undefined or empty');
-        await loginWithBalanceValidation(driver);
+        await login(driver);
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
         const headerNavbar = new HeaderNavbar(driver);
@@ -97,8 +97,9 @@ describe('Multichain Accounts - Account tree', function (this: Suite) {
         await accountListPage.checkWalletDisplayedInAccountListMenu('Ledger');
         await accountListPage.checkAddWalletButttonIsDisplayed();
 
+        // The balance is not loaded for a non-selected account (which was never selected before)
         await accountListPage.checkMultichainAccountBalanceDisplayed({
-          balance: '$85,025.00',
+          balance: '$0.00',
           wallet: 'Wallet 1',
           account: 'Account 1',
         });

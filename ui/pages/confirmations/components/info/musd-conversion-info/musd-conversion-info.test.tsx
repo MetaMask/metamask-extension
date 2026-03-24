@@ -13,6 +13,19 @@ import * as useTransactionPayDataModule from '../../../hooks/pay/useTransactionP
 import * as useTransactionPayTokenModule from '../../../hooks/pay/useTransactionPayToken';
 import { MusdConversionInfo } from './musd-conversion-info';
 
+const mockEndTrace = jest.fn();
+jest.mock('../../../../../../shared/lib/trace', () => ({
+  trace: jest.fn(),
+  endTrace: (...args: unknown[]) => mockEndTrace(...args),
+  TraceName: {
+    MusdConversionNavigation: 'MusdConversionNavigation',
+    MusdConversionQuote: 'MusdConversionQuote',
+  },
+  TraceOperation: {
+    MusdConversionDataFetch: 'musd.conversion.data_fetch',
+  },
+}));
+
 jest.mock('../../../hooks/transactions/useTransactionCustomAmount');
 jest.mock('../../../hooks/transactions/useTransactionCustomAmountAlerts');
 jest.mock('../../../hooks/pay/useAutomaticTransactionPayToken');
@@ -151,6 +164,21 @@ function render(mockOptions: Parameters<typeof setupDefaultMocks>[0] = {}) {
 describe('MusdConversionInfo', () => {
   beforeEach(() => {
     jest.resetAllMocks();
+    mockEndTrace.mockClear();
+  });
+
+  it('ends navigation trace with paymentTokenChainId and paymentTokenAddress on mount', () => {
+    render();
+
+    expect(mockEndTrace).toHaveBeenCalledWith(
+      expect.objectContaining({
+        name: 'MusdConversionNavigation',
+        data: expect.objectContaining({
+          paymentTokenChainId: expect.any(String),
+          paymentTokenAddress: expect.any(String),
+        }),
+      }),
+    );
   });
 
   it('renders the custom amount input', () => {
