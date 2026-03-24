@@ -1,3 +1,6 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss' source(none);
+@import '@metamask/design-tokens/tailwind/theme.css';
+
+/* Match prior tailwind.config content: only JS/TS templates under ui/ */
+@source "../**/*.{js,jsx,ts,tsx}";
+@source "../../node_modules/@metamask/design-system-react";

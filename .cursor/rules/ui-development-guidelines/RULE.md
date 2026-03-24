@@ -578,10 +578,11 @@ Before suggesting any UI solution:
 
 ## Tailwind Configuration
 
-The extension uses:
+The extension uses Tailwind CSS v4 with a CSS-first configuration:
 
-- `@metamask/design-system-tailwind-preset` for design token aligned tailwind classnames
-- Custom `tailwind.config.js` that extends the preset
+- `ui/css/tailwind.css` is the entry point that imports `tailwindcss` and the design token theme
+- `@metamask/design-tokens/tailwind/theme.css` provides design token aligned Tailwind theme variables via `@theme`
+- There is no `tailwind.config.js` — all configuration lives in CSS
 
 All Tailwind colors are mapped to design tokens. Use semantic class names:
 

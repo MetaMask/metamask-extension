@@ -2,7 +2,7 @@
  * @file The webpack configuration file to enable debug previewing for UI integration tests.
  */
 
-import { readFileSync } from 'node:fs';
+import { createRequire } from 'node:module';
 import { join } from 'node:path';
 import {
   type Configuration,
@@ -11,14 +11,23 @@ import {
 } from 'webpack';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 import CopyPlugin from 'copy-webpack-plugin';
+import type { PluginCreator } from 'postcss';
 import rtlCss from 'postcss-rtlcss';
-import autoprefixer from 'autoprefixer';
-import tailwindcss from 'tailwindcss';
+
+/** Mirrors `@tailwindcss/postcss` — package uses `export =`, so no `.default` on `import()` types. */
+type TailwindPostcssPlugin = PluginCreator<{
+  base?: string;
+  optimize?: boolean | { minify?: boolean };
+  transformAssetUrls?: boolean;
+}>;
+
+const requireIntegrationConfig = createRequire(__filename);
+const tailwindcss = requireIntegrationConfig(
+  join(__dirname, '../lib/load-tailwind-postcss.cjs'),
+) as TailwindPostcssPlugin;
 
 const context = join(__dirname, '../../app');
 const nodeModules = join(__dirname, '../../node_modules');
-const browsersListPath = join(context, '../.browserslistrc');
-const browsersListQuery = readFileSync(browsersListPath, 'utf8');
 
 const plugins: WebpackPluginInstance[] = [
   new CopyPlugin({
@@ -71,11 +80,7 @@ const config = {
             loader: 'postcss-loader',
             options: {
               postcssOptions: {
-                plugins: [
-                  tailwindcss(),
-                  autoprefixer({ overrideBrowserslist: browsersListQuery }),
-                  rtlCss({ processEnv: false }),
-                ],
+                plugins: [tailwindcss(), rtlCss({ processEnv: false })],
               },
             },
           },
