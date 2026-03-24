@@ -178,7 +178,7 @@ const PrepareBridgePage = ({
   // wallets, and getIsGasIncluded (STX path) is gated elsewhere, but we
   // guard both here to protect against future hook/selector changes.
   const effectiveGasIncluded = !isUsingHardwareWallet && gasIncluded;
-  const effectiveGasIncluded7702 = !isUsingHardwareWallet && gasIncluded7702;
+  const effectiveGasIncluded = gasIncluded;
 
   const shouldShowMaxButton =
     fromToken && isNativeAddress(fromToken.assetId)
