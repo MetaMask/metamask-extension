@@ -162,7 +162,7 @@ describe('Reveal Seed Page', () => {
     });
   });
 
-  it('submits the password form', async () => {
+  it('submits the password form via form submit', async () => {
     const { queryByTestId, getByText } = renderWithProvider(
       <RevealSeedPage />,
       mockStore,
