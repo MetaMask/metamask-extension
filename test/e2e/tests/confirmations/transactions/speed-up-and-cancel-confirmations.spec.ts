@@ -55,7 +55,7 @@ describe('Speed Up and Cancel Transaction Tests', function () {
           await homePage.goToActivityList();
 
           const activityListPage = new ActivityListPage(driver);
-          await activityListPage.checkCompletedTxNumberDisplayedInActivity(1);
+          await activityListPage.checkPendingTxNumberDisplayedInActivity(1);
 
           await activityListPage.checkSpeedUpInlineButtonIsPresent();
           await activityListPage.clickTransactionListItem();
@@ -114,7 +114,7 @@ describe('Speed Up and Cancel Transaction Tests', function () {
           await homePage.goToActivityList();
 
           const activityListPage = new ActivityListPage(driver);
-          await activityListPage.checkCompletedTxNumberDisplayedInActivity(1);
+          await activityListPage.checkPendingTxNumberDisplayedInActivity(1);
 
           await activityListPage.clickCancelTransaction();
 
