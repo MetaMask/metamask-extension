@@ -8,12 +8,13 @@ import {
   SECURITY_PASSWORD_CHANGE_ROUTE,
 } from '../../../helpers/constants/routes';
 import { DEFAULT_AUTO_LOCK_TIME_LIMIT } from '../../../../shared/constants/preferences';
+import { SECURITY_ITEMS } from '../search-config';
 import ManageWalletRecoveryItem from './manage-wallet-recovery-item';
 import { formatAutoLockLabel } from './auto-lock-utils';
 
 const PhishingDetectionItem = createToggleItem({
   name: 'PhishingDetectionItem',
-  titleKey: 'usePhishingDetection',
+  titleKey: SECURITY_ITEMS['phishing-detection'],
   descriptionKey: 'usePhishingDetectionDescription',
   selector: (state) => Boolean(getUsePhishDetect(state)),
   action: setUsePhishDetect,
@@ -22,14 +23,14 @@ const PhishingDetectionItem = createToggleItem({
 
 const PasswordItem = createSelectItem({
   name: 'PasswordItem',
-  titleKey: 'password',
+  titleKey: SECURITY_ITEMS.password,
   valueSelector: () => '',
   route: SECURITY_PASSWORD_CHANGE_ROUTE,
 });
 
 export const AutoLockItem = createSelectItem({
   name: 'AutoLockItem',
-  titleKey: 'autoLock',
+  titleKey: SECURITY_ITEMS['auto-lock'],
   valueSelector: (state) => {
     const { autoLockTimeLimit = DEFAULT_AUTO_LOCK_TIME_LIMIT } =
       getPreferences(state);
@@ -47,10 +48,7 @@ const SECURITY_AND_PASSWORD_SETTING_ITEMS: SettingItemConfig[] = [
   { id: 'manage-wallet-recovery', component: ManageWalletRecoveryItem },
   { id: 'password', component: PasswordItem },
   { id: 'auto-lock', component: AutoLockItem },
-  {
-    id: 'phishing-detection',
-    component: PhishingDetectionItem,
-  },
+  { id: 'phishing-detection', component: PhishingDetectionItem },
 ];
 
 const SecurityAndPasswordTab = () => (

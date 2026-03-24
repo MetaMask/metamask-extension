@@ -15,6 +15,7 @@ import {
 } from '@metamask/design-system-react';
 import { THIRD_PARTY_APIS_ROUTE } from '../../../helpers/constants/routes';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import { PRIVACY_ITEMS } from '../search-config';
 
 export const ThirdPartyApisItem = () => {
   const t = useI18nContext();
@@ -27,7 +28,7 @@ export const ThirdPartyApisItem = () => {
         alignItems={BoxAlignItems.Center}
       >
         <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
-          {t('thirdPartyApis')}
+          {t(PRIVACY_ITEMS['third-party-apis'])}
         </Text>
         <Link to={THIRD_PARTY_APIS_ROUTE}>
           <Icon
