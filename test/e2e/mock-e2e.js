@@ -201,7 +201,7 @@ async function setupMocking(
   const mockedEndpoint = await testSpecificMock(server);
   // Mocks below this line can be overridden by test-specific mocks
 
-  // Snaps execution ACL (signed registry) — fixtures must match; avoids flaky live fetches in CI.
+  // Snaps execution ACL (signed registry)
   const aclRegistryJson = JSON.parse(
     fs.readFileSync(ACL_REGISTRY_PATH, 'utf8'),
   );
