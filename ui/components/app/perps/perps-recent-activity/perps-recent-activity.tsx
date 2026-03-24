@@ -13,11 +13,11 @@ import {
 import { useNavigate } from 'react-router-dom';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { TransactionCard } from '../transaction-card';
-import { mockTransactions } from '../mocks';
 import { PERPS_ACTIVITY_ROUTE } from '../../../../helpers/constants/routes';
 import type { PerpsTransaction } from '../types';
 
 export type PerpsRecentActivityProps = {
+  transactions?: PerpsTransaction[];
   maxTransactions?: number;
   onTransactionClick?: (transaction: PerpsTransaction) => void;
 };
@@ -27,18 +27,19 @@ export type PerpsRecentActivityProps = {
  * in the Perps tab with a "See All" button to view full history
  *
  * @param options0 - Component props
+ * @param options0.transactions - Array of transactions to display
  * @param options0.maxTransactions - Maximum number of transactions to show (default: 5)
  * @param options0.onTransactionClick - Optional click handler for transactions
  */
 export const PerpsRecentActivity: React.FC<PerpsRecentActivityProps> = ({
+  transactions = [],
   maxTransactions = 5,
   onTransactionClick,
 }) => {
   const t = useI18nContext();
   const navigate = useNavigate();
 
-  // Sort by timestamp and take the most recent transactions (typed as UI PerpsTransaction[])
-  const recentTransactions: PerpsTransaction[] = [...mockTransactions]
+  const recentTransactions: PerpsTransaction[] = [...transactions]
     .sort((a, b) => b.timestamp - a.timestamp)
     .slice(0, maxTransactions);
 

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
   Box,
   BoxAlignItems,
@@ -21,6 +21,9 @@ type SettingsV2HeaderProps = {
   isPopup?: boolean;
   isOnSettingsRoot?: boolean;
   onClose?: () => void;
+  isSearchOpen?: boolean;
+  onOpenSearch?: () => void;
+  onCloseSearch?: () => void;
   searchValue?: string;
   searchPlaceholder?: string;
   onSearchChange?: (text: string) => void;
@@ -32,6 +35,9 @@ export const SettingsV2Header = ({
   isPopup = false,
   isOnSettingsRoot = false,
   onClose,
+  isSearchOpen = false,
+  onOpenSearch,
+  onCloseSearch,
   searchValue = '',
   searchPlaceholder,
   onSearchChange,
@@ -39,17 +45,17 @@ export const SettingsV2Header = ({
 }: SettingsV2HeaderProps) => {
   const t = useI18nContext();
   const navigate = useNavigate();
-  const [isSearchOpen, setIsSearchOpen] = useState(false);
   const showSearchButton = !isPopup || isOnSettingsRoot;
 
   if (isSearchOpen) {
     return (
       <HeaderSearch
         variant={HeaderSearchVariant.Inline}
+        className="border-b border-border-muted"
         padding={3}
         paddingHorizontal={4}
         onClickCancelButton={() => {
-          setIsSearchOpen(false);
+          onCloseSearch?.();
           onSearchClear?.();
         }}
         textFieldSearchProps={{
@@ -57,6 +63,7 @@ export const SettingsV2Header = ({
           placeholder: searchPlaceholder ?? t('search'),
           onChangeText: onSearchChange,
           onClickClearButton: onSearchClear,
+          autoFocus: true,
           inputProps: {
             'data-testid': 'settings-v2-header-search-input',
           },
@@ -76,7 +83,7 @@ export const SettingsV2Header = ({
           iconName={IconName.Search}
           ariaLabel={t('search')}
           size={ButtonIconSize.Md}
-          onClick={() => setIsSearchOpen(true)}
+          onClick={onOpenSearch}
           data-testid="settings-v2-header-search-button"
         />
       ) : (

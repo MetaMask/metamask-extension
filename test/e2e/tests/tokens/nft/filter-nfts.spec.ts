@@ -1,7 +1,7 @@
 import { toHex } from '@metamask/controller-utils';
 import { withFixtures } from '../../../helpers';
 import { SMART_CONTRACTS } from '../../../seeder/smart-contracts';
-import FixtureBuilder from '../../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
 import { Driver } from '../../../webdriver/driver';
 import Homepage from '../../../page-objects/pages/home/homepage';
 import NftListPage from '../../../page-objects/pages/home/nft-list';
@@ -9,6 +9,7 @@ import NetworkManager, {
   NetworkId,
 } from '../../../page-objects/pages/network-manager';
 import { login } from '../../../page-objects/flows/login.flow';
+import { NETWORK_CLIENT_ID } from '../../../constants';
 
 describe('View NFT details', function () {
   const smartContract = SMART_CONTRACTS.NFTS;
@@ -17,7 +18,7 @@ describe('View NFT details', function () {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withNftController({
             allNftContracts: {
               '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': {
@@ -83,7 +84,7 @@ describe('View NFT details', function () {
             },
             ignoredNfts: [],
           })
-          .withNetworkControllerOnMainnet()
+          .withSelectedNetwork(NETWORK_CLIENT_ID.MAINNET)
           .withEnabledNetworks({
             eip155: {
               '0x1': true,

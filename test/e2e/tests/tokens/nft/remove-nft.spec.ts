@@ -1,7 +1,6 @@
 import { withFixtures } from '../../../helpers';
 import { SMART_CONTRACTS } from '../../../seeder/smart-contracts';
-import FixtureBuilder from '../../../fixtures/fixture-builder';
-import { MOCK_META_METRICS_ID } from '../../../constants';
+import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
 import Homepage from '../../../page-objects/pages/home/homepage';
 import NFTDetailsPage from '../../../page-objects/pages/nft-details-page';
 import NftListPage from '../../../page-objects/pages/home/nft-list';
@@ -14,13 +13,7 @@ describe('Remove NFT', function () {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
-        fixtures: new FixtureBuilder()
-          .withNftControllerERC721()
-          .withMetaMetricsController({
-            metaMetricsId: MOCK_META_METRICS_ID,
-            participateInMetaMetrics: true,
-          })
-          .build(),
+        fixtures: new FixtureBuilderV2().withNftControllerERC721().build(),
         smartContract,
         title: this.test?.fullTitle(),
       },
