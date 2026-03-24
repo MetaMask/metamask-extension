@@ -768,7 +768,7 @@ const _getBaseValidationErrors = createDeepEqualSelector(
     const srcHexChainId = srcChainId
       ? getMaybeHexChainId(String(srcChainId))
       : undefined;
-    if (srcHexChainId === CHAIN_IDS.MONAD) {
+    if (srcHexChainId === CHAIN_IDS.MONAD && quoteRequest.gasIncluded7702) {
       minimumBalanceToUse = MONAD_MIN_RESERVE;
     }
 
