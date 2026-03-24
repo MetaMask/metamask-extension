@@ -123,7 +123,7 @@ All subsequent calls from the away side flow through automatically.
 
 ## Part 2: Away Side (VPS CLI)
 
-The away kernel runs as a daemon. All commands use:
+The away kernel runs as a daemon. To call an arbitray kernel method, use:
 
 ```bash
 yarn ocap daemon exec <method> '<params-json>'
@@ -163,15 +163,17 @@ yarn ocap daemon exec initRemoteComms '{"relays": ["/ip4/<VPS_IP>/tcp/9001/ws/p2
 ### Step 2: Redeem the OCAP URL
 
 ```bash
-yarn ocap daemon redeem-url 'ocap:<full_url>'
+yarn ocap daemon redeem-url '<ocap_url>'
 ```
 
 This establishes the cross-kernel CapTP connection and returns a kernel
 reference (kref) for the remote object:
 
 ```json
-"ko42"
+"ko4"
 ```
+
+> **Note:** Krefs used throughout this document may or may not match krefs on your device.
 
 Redeeming the URL automatically extracts the relay hints embedded in it,
 adds them to the away kernel's relay pool, and registers them as location
@@ -181,10 +183,10 @@ needed.
 ### Step 3: Call `requestCapability()` on the Vendor
 
 The vendor's public facet supports `requestCapability`. Call it to get a
-capability (currently hardcoded to return an `AccountMessageSigner`):
+capability (currently hardcoded to return a `PersonalMessageSigner`):
 
 ```bash
-yarn ocap daemon exec queueMessage '["<vendor_kref>", "requestCapability", ["view user accounts"]]'
+yarn ocap daemon exec queueMessage '["ko4", "requestCapability", ["view user accounts"]]'
 ```
 
 Returns CapData. If the result includes a new object reference, it appears in
@@ -192,19 +194,19 @@ Returns CapData. If the result includes a new object reference, it appears in
 
 ```json
 {
-  "body": "#\"$0.Alleged: AccountsCapability\"",
-  "slots": ["ko57"]
+  "body": "#\"$0.Alleged: PersonalMessageSigner\"",
+  "slots": ["ko5"]
 }
 ```
 
-The kref `ko57` is the new capability object.
+The kref `ko5` is the new capability object.
 
-### Step 4: Use the Capability
+### Step 4: Get accounts
 
-Call methods on the returned capability:
+Call `getAccounts` on the returned capability:
 
 ```bash
-yarn ocap daemon exec queueMessage '["ko57", "getAccounts", []]'
+yarn ocap daemon exec queueMessage '["ko5", "getAccounts", []]'
 ```
 
 Returns CapData with the result:
@@ -212,6 +214,27 @@ Returns CapData with the result:
 ```json
 {
   "body": "#[\"0x1234...\", \"0xabcd...\"]",
+  "slots": []
+}
+```
+
+### Step 5: Sign a message
+
+Extract an account address from the `getAccounts` result body and call
+`signMessage` with the address, a hex-encoded message, and a chain ID:
+
+```bash
+yarn ocap daemon exec queueMessage '["ko5", "signMessage", ["0x1234...", "0x48656c6c6f", "0x1"]]'
+```
+
+> **Note:** This triggers a confirmation popup in the MetaMask extension — the
+> user must approve the signing request before the call resolves.
+
+Returns CapData with the signature:
+
+```json
+{
+  "body": "#\"0xsignature...\"",
   "slots": []
 }
 ```
@@ -292,8 +315,10 @@ Here `ko42` is the kref you use in subsequent `queueMessage` calls.
    Relay hints are picked up automatically.
 7. **Away**: `queueMessage` with `requestCapability`. Confirm new kref in
    slots.
-8. **Away**: `queueMessage` with the desired method (e.g., `getAccounts`).
-   Confirm data returned.
+8. **Away**: `queueMessage` with `getAccounts`. Confirm account addresses
+   returned.
+9. **Away**: `queueMessage` with `signMessage` (address, hex message, chain
+   ID). Approve in extension popup. Confirm signature returned.
 
 ---
 
@@ -318,7 +343,7 @@ The URL looks like `ocap:<oid>@<peer_id>` with no commas. This means
 
 The home side runs a smoke test after vendor launch that calls
 `requestCapability` and `getAccounts`. If you see errors like
-`AccountsController:listAccounts` failing, the `hostApiProxy` bridge to the
+`AccountsController:listAccounts` or `NetworkController:findNetworkClientIdByChainId` failing, the `hostApiProxy` bridge to the
 background service worker may not be connected. This doesn't block OCAP URL
 issuance but indicates the host API proxy needs debugging.
 
@@ -330,7 +355,7 @@ issuance but indicates the host API proxy needs debugging.
 | -------------------------------------------------------------------- | -------------------------------------------------------------------- |
 | `app/offscreen/ocap-kernel/index.ts`                                 | Home kernel init, CapTP setup, vendor launch, OCAP URL logging       |
 | `app/offscreen/ocap-kernel/vats/capability-vendor/index.ts`          | Vendor vat: bootstrap, requestCapability, publicFacet                |
-| `app/offscreen/ocap-kernel/services/llm-service.ts`                  | Hardcoded LLM service (stock AccountMessageSigner response)          |
+| `app/offscreen/ocap-kernel/services/llm-service.ts`                  | Hardcoded LLM service (stock PersonalMessageSigner response)         |
 | `app/offscreen/ocap-kernel/services/host-api-proxy.ts`               | Proxy to background controller messenger                             |
 | `app/scripts/lib/offscreen-bridge/host-api-proxy-bridge.ts`          | Background-side bridge for host API proxy                            |
 | `packages/kernel-browser-runtime/src/kernel-worker/kernel-worker.ts` | Kernel init, CapTP setup, `initRemoteComms` call                     |
