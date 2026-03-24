@@ -273,11 +273,9 @@ const config = {
     // to fail and prevent the app from initializing.
     filename: isDevelopment ? '[name].js' : '[name].[contenthash].js',
     path: join(context, '..', 'dist'),
-    // Clean the output directory before emit in production so that only the
-    // latest build files remain. Disabled in development so that existing
-    // extension files survive across the initial build and incremental rebuilds,
-    // keeping the extension loadable in Chrome throughout.
-    clean: !isDevelopment,
+    // Clean the output directory before emit, so that only the latest build
+    // files remain. Nearly 0 performance penalty for this clean up step.
+    clean: true,
     // relative to HTML page. This value is essentially prepended to asset URLs
     // in the output HTML, i.e., `<script src="<publicPath><resourcePath>">`.
     publicPath: '',
