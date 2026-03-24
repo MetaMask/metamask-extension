@@ -1013,7 +1013,7 @@ describe('MultichainBridgeQuoteCard', () => {
     expect(queryByTestId('network-fees-sponsored')).not.toBeInTheDocument();
   });
 
-  it('should not render gas-included UI for hardware wallets even when quote has gasIncluded=true', async () => {
+  it('should render gas-included UI for hardware wallets when quote has gasIncluded=true (STX path works for HW)', async () => {
     const mockStore = createBridgeMockStore({
       featureFlagOverrides: {
         bridgeConfig: {
@@ -1096,6 +1096,7 @@ describe('MultichainBridgeQuoteCard', () => {
       configureStore(mockStore),
     );
 
-    expect(queryByTestId('network-fees-included')).not.toBeInTheDocument();
+    expect(queryByTestId('network-fees-included')).toBeInTheDocument();
+    expect(queryByTestId('network-fees')).not.toBeInTheDocument();
   });
 });

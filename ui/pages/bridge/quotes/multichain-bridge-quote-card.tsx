@@ -302,44 +302,8 @@ export const MultichainBridgeQuoteCard = ({
                 <SuccessPill label={t('swapGasFeesSponsored')} />
               </Row>
             )}
-            {!shouldShowGasSponsored &&
-              !isHardwareWalletAccount &&
-              activeQuote.quote.gasIncluded && (
-                <Row gap={1} data-testid="network-fees-included">
-                  <Text
-                    variant={TextVariant.bodySm}
-                    color={
-                      isEstimatedReturnLow
-                        ? TextColor.warningDefault
-                        : TextColor.textAlternative
-                    }
-                    style={{ textDecoration: 'line-through' }}
-                    data-testid="network-fees-included-original-amount"
-                  >
-                    {activeQuote.includedTxFees?.valueInCurrency
-                      ? formatNetworkFee(
-                          activeQuote.includedTxFees.valueInCurrency,
-                          currency,
-                        )
-                      : formatNetworkFee(
-                          activeQuote.gasFee.effective?.valueInCurrency,
-                          currency,
-                        )}
-                  </Text>
-                  <Text
-                    variant={TextVariant.bodySm}
-                    color={
-                      isEstimatedReturnLow
-                        ? TextColor.warningDefault
-                        : TextColor.textAlternative
-                    }
-                  >
-                    {t('swapGasFeesIncluded')}
-                  </Text>
-                </Row>
-              )}
-            {!shouldShowGasSponsored &&
-              (isHardwareWalletAccount || !activeQuote.quote.gasIncluded) && (
+            {!shouldShowGasSponsored && activeQuote.quote.gasIncluded && (
+              <Row gap={1} data-testid="network-fees-included">
                 <Text
                   variant={TextVariant.bodySm}
                   color={
@@ -347,14 +311,47 @@ export const MultichainBridgeQuoteCard = ({
                       ? TextColor.warningDefault
                       : TextColor.textAlternative
                   }
-                  data-testid="network-fees"
+                  style={{ textDecoration: 'line-through' }}
+                  data-testid="network-fees-included-original-amount"
                 >
-                  {formatNetworkFee(
-                    activeQuote.gasFee.effective?.valueInCurrency,
-                    currency,
-                  )}
+                  {activeQuote.includedTxFees?.valueInCurrency
+                    ? formatNetworkFee(
+                        activeQuote.includedTxFees.valueInCurrency,
+                        currency,
+                      )
+                    : formatNetworkFee(
+                        activeQuote.gasFee.effective?.valueInCurrency,
+                        currency,
+                      )}
                 </Text>
-              )}
+                <Text
+                  variant={TextVariant.bodySm}
+                  color={
+                    isEstimatedReturnLow
+                      ? TextColor.warningDefault
+                      : TextColor.textAlternative
+                  }
+                >
+                  {t('swapGasFeesIncluded')}
+                </Text>
+              </Row>
+            )}
+            {!shouldShowGasSponsored && !activeQuote.quote.gasIncluded && (
+              <Text
+                variant={TextVariant.bodySm}
+                color={
+                  isEstimatedReturnLow
+                    ? TextColor.warningDefault
+                    : TextColor.textAlternative
+                }
+                data-testid="network-fees"
+              >
+                {formatNetworkFee(
+                  activeQuote.gasFee.effective?.valueInCurrency,
+                  currency,
+                )}
+              </Text>
+            )}
           </Row>
         )}
 
