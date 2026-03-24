@@ -220,7 +220,7 @@ export function extractPresetFromArtifactName(
     `^benchmark-(?:${platforms})-(?:${buildTypes})-(.+)$`,
     'u',
   );
-  const match = artifactFileName.match(pattern);
+  const match = pattern.exec(artifactFileName);
   if (!match) {
     return undefined;
   }
