@@ -268,10 +268,9 @@ const config = {
     wasmLoading: 'fetch',
     // filenames for *initial* files (essentially JS entry points)
     // content hashes are only useful in production for cache-busting; in
-    // development they cause a race condition in watch mode where
-    // service-worker.js is rewritten with new chunk hash references before the
-    // new chunk files have finished being written to disk, which causes
-    // importScripts() to fail when Chrome restarts the MV3 service worker.
+    // development they can cause the chunk file names registered in the service
+    // worker to become out-of-sync with the files on disk, causing importScripts()
+    // to fail and prevent the app from initializing.
     filename: isDevelopment ? '[name].js' : '[name].[contenthash].js',
     path: join(context, '..', 'dist'),
     // Clean the output directory before emit in production so that only the
