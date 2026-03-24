@@ -2904,9 +2904,6 @@
   "fast": {
     "message": "Fast"
   },
-  "feeDetails": {
-    "message": "Fee details"
-  },
   "fieldRequired": {
     "message": "$1 is required"
   },
@@ -3687,18 +3684,6 @@
   "knownTokenWarning": {
     "message": "This action will edit tokens that are already listed in your wallet, which can be used to phish you. Only approve if you are certain that you mean to change what these tokens represent. Learn more about $1"
   },
-  "l1Fee": {
-    "message": "L1 fee"
-  },
-  "l1FeeTooltip": {
-    "message": "L1 gas fee"
-  },
-  "l2Fee": {
-    "message": "L2 fee"
-  },
-  "l2FeeTooltip": {
-    "message": "L2 gas fee"
-  },
   "language": {
     "message": "Language"
   },
@@ -3711,12 +3696,6 @@
   },
   "lavaDomeCopyWarning": {
     "message": "For your safety, selecting this text is not available right now."
-  },
-  "layer1Fees": {
-    "message": "Layer 1 fees"
-  },
-  "layer2Fees": {
-    "message": "Layer 2 fees"
   },
   "learnHow": {
     "message": "Learn how"
@@ -3849,9 +3828,6 @@
   },
   "links": {
     "message": "Links"
-  },
-  "loadMore": {
-    "message": "Load more"
   },
   "loading": {
     "message": "Loading..."
@@ -8884,9 +8860,6 @@
   },
   "transactionDetailGasHeading": {
     "message": "Estimated gas fee"
-  },
-  "transactionDetailMultiLayerTotalSubtitle": {
-    "message": "Amount + fees"
   },
   "transactionError": {
     "message": "Transaction error. Exception thrown in contract code."
