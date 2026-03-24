@@ -27,11 +27,7 @@ import {
 } from '@metamask/design-system-react';
 import { brandColor } from '@metamask/design-tokens';
 import type { Position, PriceUpdate } from '@metamask/perps-controller';
-<<<<<<< HEAD
-import { getIsPerpsEnabled } from '../../selectors/perps/feature-flags';
-=======
 import { getIsPerpsExperienceAvailable } from '../../selectors/perps/feature-flags';
->>>>>>> main
 import { getSelectedInternalAccount } from '../../selectors/accounts';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import {
