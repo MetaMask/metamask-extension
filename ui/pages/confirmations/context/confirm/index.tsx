@@ -51,12 +51,9 @@ export const ConfirmContextProvider: React.FC<{
   );
 
   /**
-   * Navigate to the Activity tab when a confirmation disappears without
-   * explicit user action (e.g., dapp changes network). Per-type routing
-   * after user-initiated confirm/cancel is handled elsewhere.
-   *
-   * We also skip this navigation while the hardware wallet error modal is
-   * visible to preserve retry functionality.
+   * The hook below takes care of navigating to the home page when the confirmation not acted on by user
+   * but removed by us, this can happen in cases like when dapp changes network.
+   * We also skip navigation if the hardware wallet error modal is visible to allow for retry functionality.
    */
   useEffect(() => {
     if (currentConfirmationOverride !== undefined) {
