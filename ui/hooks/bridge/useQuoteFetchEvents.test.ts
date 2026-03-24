@@ -39,8 +39,7 @@ describe('useQuoteFetchEvents', () => {
     trackEventSpy = jest
       .spyOn(bridgeActions, 'trackUnifiedSwapBridgeEvent')
       .mockImplementation(
-        (..._args: unknown[]) =>
-          (() => Promise.resolve()) as never,
+        (..._args: unknown[]) => (() => Promise.resolve()) as never,
       );
   });
 
@@ -123,6 +122,7 @@ describe('useQuoteFetchEvents', () => {
     expect(trackEventSpy).toHaveBeenCalledWith(
       UnifiedSwapBridgeEventName.QuotesReceived,
       expect.objectContaining({
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         can_submit: false,
         provider: '_',
       }),
@@ -136,8 +136,7 @@ describe('useQuoteFetchEvents', () => {
           quotesRefreshCount: 1,
           quotesLastFetched: Date.now(),
           quotesLoadingStatus: RequestStatus.FETCHED,
-          quotes:
-            mockBridgeQuotesNativeErc20 as unknown as QuoteResponse[],
+          quotes: mockBridgeQuotesNativeErc20 as unknown as QuoteResponse[],
         },
         metamaskStateOverrides: {
           ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
@@ -152,7 +151,7 @@ describe('useQuoteFetchEvents', () => {
     expect(trackEventSpy).toHaveBeenCalledWith(
       UnifiedSwapBridgeEventName.QuotesReceived,
       expect.objectContaining({
-        provider: expect.stringMatching(/.+_.+/),
+        provider: expect.stringMatching(/.+_.+/u),
       }),
     );
   });
