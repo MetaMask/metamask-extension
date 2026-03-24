@@ -34040,7 +34040,7 @@ __metadata:
     "@metamask/rpc-errors": "npm:^7.0.0"
     "@metamask/safe-event-emitter": "npm:^3.1.1"
     "@metamask/scure-bip39": "npm:^2.0.3"
-        "@metamask/seedless-onboarding-controller": "npm:@metamask-previews/seedless-onboarding-controller@9.0.0-preview-93f8bb3d0"
+    "@metamask/seedless-onboarding-controller": "npm:@metamask-previews/seedless-onboarding-controller@9.0.0-preview-93f8bb3d0"
     "@metamask/selected-network-controller": "npm:^26.0.3"
     "@metamask/shield-controller": "npm:^5.0.1"
     "@metamask/signature-controller": "npm:^39.1.0"
