@@ -1,7 +1,4 @@
-import {
-  CRITICAL_ERROR_SCREEN_VIEWED,
-  RELOAD_WINDOW,
-} from '../../../../shared/constants/start-up-errors';
+import { CRITICAL_ERROR_SCREEN_VIEWED } from '../../../../shared/constants/start-up-errors';
 import {
   CriticalErrorType,
   METHOD_REPAIR_DATABASE_TIMEOUT,
@@ -10,7 +7,6 @@ import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
 import type { Backup } from '../../../../shared/lib/backup';
 import { captureException } from '../../../../shared/lib/sentry';
 import { flushPromises } from '../../../../test/lib/timer-helpers';
-import { tryPostMessage } from '../start-up-errors/start-up-errors';
 import {
   CriticalErrorHandler,
   RegisterPortForCriticalErrorConfig,
@@ -21,34 +17,9 @@ jest.mock('./track-critical-error', () => ({
   trackCriticalErrorEvent: jest.fn(),
 }));
 
-jest.mock('../start-up-errors/start-up-errors', () => ({
-  tryPostMessage: jest.fn().mockReturnValue(true),
-}));
-
 jest.mock('../../../../shared/lib/sentry', () => ({
   captureException: jest.fn(),
 }));
-
-jest.mock('../repair', () => {
-  const { RELOAD_WINDOW: RELOAD } = jest.requireActual(
-    '../../../../shared/constants/start-up-errors',
-  );
-  const { tryPostMessage: tryPostMessageMock } = jest.requireMock(
-    '../start-up-errors/start-up-errors',
-  );
-  return {
-    runRepairAndReloadPorts: jest.fn(
-      async (
-        backup: unknown,
-        repairCallback: (b: unknown) => void | Promise<void>,
-        connectedPorts: Set<chrome.runtime.Port>,
-      ) => {
-        await repairCallback(backup);
-        connectedPorts.forEach((port) => tryPostMessageMock(port, RELOAD));
-      },
-    ),
-  };
-});
 
 function createMockPort(): chrome.runtime.Port {
   const messageListeners: ((message: unknown) => void)[] = [];
@@ -85,7 +56,7 @@ function createConfig(
   overrides: Partial<RegisterPortForCriticalErrorConfig> = {},
 ): RegisterPortForCriticalErrorConfig {
   const port = createMockPort();
-  const repairCallback = jest.fn().mockResolvedValue(undefined);
+  const repairCallback = jest.fn().mockResolvedValue(true);
   return { port, repairCallback, ...overrides };
 }
 
@@ -99,14 +70,14 @@ describe('CriticalErrorHandler', () => {
 
   describe('registerPortForCriticalError', () => {
     it('adds port to connectedPorts and attaches message and disconnect listeners', () => {
-      const { port, repairCallback } = createConfig();
+      const config = createConfig();
 
-      handler.registerPortForCriticalError({ port, repairCallback });
+      handler.registerPortForCriticalError(config);
 
-      expect(handler.connectedPorts.has(port)).toBe(true);
+      expect(handler.connectedPorts.has(config.port)).toBe(true);
       expect(handler.connectedPorts.size).toBe(1);
-      expect(port.onMessage.addListener).toHaveBeenCalledTimes(2);
-      expect(port.onDisconnect.addListener).toHaveBeenCalledTimes(1);
+      expect(config.port.onMessage.addListener).toHaveBeenCalledTimes(2);
+      expect(config.port.onDisconnect.addListener).toHaveBeenCalledTimes(1);
     });
   });
 
@@ -133,9 +104,9 @@ describe('CriticalErrorHandler', () => {
   });
 
   describe('when port receives METHOD_REPAIR_DATABASE_TIMEOUT', () => {
-    it('calls repairCallback with backup and sends RELOAD_WINDOW to connectedPorts', async () => {
+    it('calls repairCallback and tracks restore click', async () => {
       const backup: Backup = { KeyringController: {} };
-      const repairCallback = jest.fn().mockResolvedValue(undefined);
+      const repairCallback = jest.fn().mockResolvedValue(true);
       const config = createConfig({ repairCallback });
 
       handler.registerPortForCriticalError(config);
@@ -155,11 +126,7 @@ describe('CriticalErrorHandler', () => {
 
       await flushPromises();
 
-      expect(repairCallback).toHaveBeenCalledWith(backup);
-      expect(jest.mocked(tryPostMessage)).toHaveBeenCalledWith(
-        config.port,
-        RELOAD_WINDOW,
-      );
+      expect(repairCallback).toHaveBeenCalledWith();
       expect(jest.mocked(trackCriticalErrorEvent)).toHaveBeenCalledWith(
         backup,
         MetaMetricsEventName.CriticalErrorRestoreWalletButtonPressed,
@@ -167,13 +134,13 @@ describe('CriticalErrorHandler', () => {
       );
     });
 
-    it('uses backup from params when present', async () => {
+    it('uses backup from params for analytics', async () => {
       const backupFromUi: Backup = {
         KeyringController: { vault: 'from-ui' },
         AppMetadataController: {},
         MetaMetricsController: {},
       };
-      const repairCallback = jest.fn().mockResolvedValue(undefined);
+      const repairCallback = jest.fn().mockResolvedValue(true);
       const config = createConfig({ repairCallback });
 
       handler.registerPortForCriticalError(config);
@@ -193,11 +160,16 @@ describe('CriticalErrorHandler', () => {
 
       await flushPromises();
 
-      expect(repairCallback).toHaveBeenCalledWith(backupFromUi);
+      expect(repairCallback).toHaveBeenCalled();
+      expect(jest.mocked(trackCriticalErrorEvent)).toHaveBeenCalledWith(
+        backupFromUi,
+        MetaMetricsEventName.CriticalErrorRestoreWalletButtonPressed,
+        CriticalErrorType.BackgroundInitTimeout,
+      );
     });
 
     it('returns without restoring when params.backup is missing', async () => {
-      const repairCallback = jest.fn().mockResolvedValue(undefined);
+      const repairCallback = jest.fn().mockResolvedValue(true);
       const config = createConfig({ repairCallback });
       handler.registerPortForCriticalError(config);
 
@@ -219,10 +191,11 @@ describe('CriticalErrorHandler', () => {
       expect(jest.mocked(captureException)).not.toHaveBeenCalled();
     });
 
-    it('removes listeners from all connected ports before repair', async () => {
+    it('removes listeners from all connected ports before restore', async () => {
       const backup: Backup = { KeyringController: {} };
-      const config1 = createConfig();
-      const config2 = createConfig();
+      const sharedRestore = jest.fn().mockResolvedValue(true);
+      const config1 = createConfig({ repairCallback: sharedRestore });
+      const config2 = createConfig({ repairCallback: sharedRestore });
       handler.registerPortForCriticalError(config1);
       handler.registerPortForCriticalError(config2);
 
@@ -240,14 +213,7 @@ describe('CriticalErrorHandler', () => {
 
       expect(config1.port.onMessage.removeListener).toHaveBeenCalled();
       expect(config2.port.onMessage.removeListener).toHaveBeenCalled();
-      expect(jest.mocked(tryPostMessage)).toHaveBeenCalledWith(
-        config1.port,
-        RELOAD_WINDOW,
-      );
-      expect(jest.mocked(tryPostMessage)).toHaveBeenCalledWith(
-        config2.port,
-        RELOAD_WINDOW,
-      );
+      expect(sharedRestore).toHaveBeenCalledTimes(1);
     });
   });
 

@@ -98,6 +98,12 @@ import { ExtensionLazyListener } from './lib/extension-lazy-listener/extension-l
 import { DeepLinkRouter } from './lib/deep-links/deep-link-router';
 import { createEvent } from './lib/deep-links/metrics';
 import { getRequestSafeReload } from './lib/safe-reload';
+import {
+  readPendingCriticalErrorRestore,
+  clearPendingCriticalErrorRestore,
+  handoffRestoringTabToExtension,
+} from './lib/critical-error-restore';
+import { runRepairAndReloadExtension } from './lib/repair';
 import { tryPostMessage } from './lib/start-up-errors/start-up-errors';
 import { CronjobControllerStorageManager } from './lib/CronjobControllerStorageManager';
 import { ReferralTriggerType } from './lib/createDefiReferralMiddleware';
@@ -117,11 +123,7 @@ const BADGE_COLOR_APPROVAL = '#0376C9';
 const BADGE_MAX_COUNT = 9;
 
 const inTest = process.env.IN_TEST;
-/** Persisted to session during repairAndReinitialize; restored from session at start of handleOnConnect so we do not simulate state sync hang on the reconnecting UI. */
 let inTestRestoreFlow = false;
-/** Session storage key to persist inTestRestoreFlow across service worker restart (e.g. after RELOAD_WINDOW). */
-const IN_TEST_RESTORE_FLOW = 'IN_TEST_RESTORE_FLOW';
-
 const { safePersist, requestSafeReload, evacuate } =
   getRequestSafeReload(persistenceManager);
 
@@ -262,11 +264,6 @@ async function repairAndReinitialize(backup) {
   // Right now, that isn't the case though.
   setGlobalInitializers();
 
-  if (inTest && hasVault(backup)) {
-    await browser.storage.session.set({
-      [IN_TEST_RESTORE_FLOW]: true,
-    });
-  }
   if (hasVault(backup)) {
     await initBackground(backup);
     controller.onboardingController.setFirstTimeFlowType(
@@ -571,10 +568,6 @@ const criticalErrorHandler = new CriticalErrorHandler();
 const handleOnConnect = async (port) => {
   const { isMetaMaskUIPort } = parsePortInfo(port);
   if (inTest) {
-    if (isMetaMaskUIPort) {
-      const res = await browser.storage.session.get(IN_TEST_RESTORE_FLOW);
-      inTestRestoreFlow = Boolean(res[IN_TEST_RESTORE_FLOW]);
-    }
     const simulatedDelay =
       getManifestFlags().testing?.simulateDelayedBackgroundResponse;
     if (simulatedDelay === true) {
@@ -611,7 +604,7 @@ const handleOnConnect = async (port) => {
   if (isMetaMaskUIPort) {
     criticalErrorHandler.registerPortForCriticalError({
       port,
-      repairCallback: (backup) => repairAndReinitialize(backup),
+      repairCallback: () => runRepairAndReloadExtension(requestSafeReload),
     });
     removeCriticalErrorListeners = () =>
       criticalErrorHandler.removeListenersForPort(port);
@@ -2419,9 +2412,54 @@ async function initBackground(backup) {
     rejectInitialization(error);
   }
 }
-if (!process.env.SKIP_BACKGROUND_INITIALIZATION) {
+async function startExtensionInitialization() {
+  if (process.env.SKIP_BACKGROUND_INITIALIZATION) {
+    return;
+  }
+
+  const pendingRestore = await readPendingCriticalErrorRestore(browser);
+  if (pendingRestore) {
+    await clearPendingCriticalErrorRestore(browser);
+    await persistenceManager.open();
+    const backup = await persistenceManager.getBackup().catch(() => null);
+    if (hasVault(backup)) {
+      if (inTest) {
+        inTestRestoreFlow = true;
+      }
+      const handoffPayload = {
+        tabId: pendingRestore.tabId,
+        tabUrl: pendingRestore.tabUrl,
+      };
+      initBackground(backup);
+      try {
+        await isInitialized;
+      } catch (error) {
+        log.error('critical-error-restore: initialization failed', error);
+        return;
+      }
+
+      try {
+        controller.onboardingController.setFirstTimeFlowType(
+          FirstTimeFlowType.restore,
+        );
+      } catch (error) {
+        log.error(
+          'critical-error-restore: failed to set restore flow type',
+          error,
+        );
+      }
+
+      await handoffRestoringTabToExtension(platform, handoffPayload);
+      return;
+    }
+  }
+
   initBackground(null);
 }
+
+startExtensionInitialization().catch((error) => {
+  log.error('startExtensionInitialization failed', error);
+});
 
 if (inTest) {
   // listen for test messages from the background

@@ -89,18 +89,20 @@ class CriticalErrorPage {
     if (confirm) {
       await alert.accept();
 
-      // delay needed to mitigate a race condition where the tab is closed and re-opened after confirming, causing to window to become stale
+      // runtime.reload() kills extension tabs, so the driver's current window
+      // handle is stale. Wait for the reload, then reattach to a surviving tab.
       await this.driver.delay(3000);
+      const handles = await this.driver.driver.getAllWindowHandles();
+      await this.driver.driver.switchTo().window(handles[0]);
 
-      try {
-        await this.driver.switchToWindowWithTitle(
-          WINDOW_TITLES.ExtensionInFullScreenView,
-        );
-      } catch {
-        // to mitigate a race condition where the tab is closed after confirming (issue #36916)
-        await this.driver.openNewPage('about:blank');
-        await this.driver.navigate();
-      }
+      await this.waitForPageAfterExtensionReload({
+        timeoutMs: 30_000,
+        waitForLoadingLogoToDisappear: false,
+      });
+
+      // Handoff can leave duplicate extension tabs which break Terms-of-Use
+      // interactions (visibility / observers). Keep only one.
+      await this.driver.closeAllOtherTabs();
     } else {
       await alert.dismiss();
     }

@@ -15,17 +15,22 @@ import { lockAndWaitForLoginPage } from './login.flow';
  *
  * @param driver - The WebDriver instance.
  * @param headerNavbar - Optional HeaderNavbar instance to reuse.
+ * @param options - Optional settings.
+ * @param options.waitForSync - Whether to wait for multichain account syncing
+ * to finish. Default true. Set to false when syncing is irrelevant (e.g.
+ * reading an existing account address after a backup restore).
  * @returns The first account's address.
  */
 export async function getFirstAddress(
   driver: Driver,
   headerNavbar: HeaderNavbar = new HeaderNavbar(driver),
+  { waitForSync = true }: { waitForSync?: boolean } = {},
 ): Promise<string> {
   await headerNavbar.checkPageIsLoaded();
   await headerNavbar.openAccountMenu();
 
   const accountListPage = new AccountListPage(driver);
-  await accountListPage.checkPageIsLoaded(20000);
+  await accountListPage.checkPageIsLoaded(20000, { waitForSync });
   await accountListPage.openMultichainAccountMenu({
     accountLabel: 'Account 1',
   });
