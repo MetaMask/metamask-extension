@@ -266,7 +266,7 @@ describe('CustomAmountInfo', () => {
     });
   });
 
-  describe('overrideContent', () => {
+  describe('overrideCenterContent', () => {
     it('renders override content when provided', () => {
       jest
         .mocked(useTransactionCustomAmountModule.useTransactionCustomAmount)
@@ -311,7 +311,7 @@ describe('CustomAmountInfo', () => {
 
       const { getByTestId, queryByTestId } = renderWithConfirmContextProvider(
         <CustomAmountInfo
-          overrideContent={(amountHuman) => (
+          overrideCenterContent={(amountHuman) => (
             <div data-testid="override-content">{amountHuman}</div>
           )}
         />,

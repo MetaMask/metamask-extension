@@ -195,6 +195,19 @@ describe('useMusdGeoBlocking', () => {
     expect(fetchSpy).toHaveBeenCalledTimes(1);
   });
 
+  it('initializes with isLoading=false and cached country when cache is warm', async () => {
+    const { waitForNextUpdate } = renderHook(() => useMusdGeoBlocking());
+    await waitForNextUpdate();
+
+    const { result: result2 } = renderHook(() => useMusdGeoBlocking());
+
+    // On the very first render (before any useEffect), state should
+    // already reflect the cached value — no loading flash.
+    expect(result2.current.isLoading).toBe(false);
+    expect(result2.current.userCountry).toBe('US');
+    expect(result2.current.error).toBeNull();
+  });
+
   it('refetches after cache is cleared', async () => {
     const { waitForNextUpdate } = renderHook(() => useMusdGeoBlocking());
     await waitForNextUpdate();

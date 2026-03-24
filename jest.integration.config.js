@@ -9,11 +9,7 @@ module.exports = {
   coveragePathIgnorePatterns: ['.stories.*', '.snap', '.test.(js|ts|tsx)'],
   coverageReporters: ['html', 'json'],
   maxWorkers: '50%',
-  moduleNameMapper: {
-    // Map @metamask/perps-controller to local mock
-    '^@metamask/perps-controller$':
-      '<rootDir>/ui/__mocks__/perps/perps-controller/index.ts',
-  },
+  moduleNameMapper: {},
   // The path to the Prettier executable used to format snapshots
   // Jest doesn't support Prettier 3 yet, so we use Prettier 2
   prettierPath: require.resolve('prettier-2'),
@@ -38,6 +34,7 @@ module.exports = {
       {
         outputDirectory: 'test/test-results/integration',
         outputName: 'junit.xml',
+        addFileAttribute: 'true',
       },
     ],
   ],

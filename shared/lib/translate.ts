@@ -1,12 +1,12 @@
 // TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
+// eslint-disable-next-line import-x/no-restricted-paths
 import enTranslations from '../../app/_locales/en/messages.json';
 import {
   FALLBACK_LOCALE,
   I18NMessageDict,
   fetchLocale,
   getMessage,
-} from '../modules/i18n';
+} from './i18n';
 
 let currentLocale: string = FALLBACK_LOCALE;
 let translations: I18NMessageDict = enTranslations;

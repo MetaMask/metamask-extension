@@ -9,7 +9,7 @@ import {
   EditGasModes,
   GasEstimateTypes,
 } from '../../../../shared/constants/gas';
-import { decGWEIToHexWEI } from '../../../../shared/modules/conversion.utils';
+import { decGWEIToHexWEI } from '../../../../shared/lib/conversion.utils';
 import { getSelectedInternalAccountFromMockState } from '../../../../test/jest/mocks';
 import CancelSpeedupPopover from './cancel-speedup-popover';
 

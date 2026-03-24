@@ -309,10 +309,6 @@
   "addToken": {
     "message": "Cuir comhartha leis"
   },
-  "addTokenByContractAddress": {
-    "message": "Nach féidir leat comhartha a aimsiú? Is féidir leat aon chomhartha a chur leis de láimh trína sheoladh a ghreamú. Is féidir seoltaí conartha comhartha a fháil ar $1.",
-    "description": "$1 is a blockchain explorer for a specific network, e.g. Etherscan for Ethereum"
-  },
   "addUrl": {
     "message": "Cuir URL leis"
   },
@@ -754,18 +750,8 @@
   "basicConfigurationModalCheckbox": {
     "message": "Tuigim agus ba mhaith liom leanúint ar aghaidh"
   },
-  "basicConfigurationModalDisclaimerOff": {
+  "basicConfigurationModalDisclaimerOffPart1": {
     "message": "Ciallaíonn sé seo nach mbainfidh tú an leas is fearr as d’am ar MetaMask. Ní bheidh gnéithe bunúsacha (cosúil le sonraí comharthaí, socruithe gáis is fearr, agus eile) ar fáil duit."
-  },
-  "basicConfigurationModalDisclaimerOffAdditionalText": {
-    "message": "Má mhúchtar é seo, díchumasaítear gach gné laistigh de $1 agus $2 freisin.",
-    "description": "$1 and $2 are bold text for basicConfigurationModalDisclaimerOffAdditionalTextFeaturesFirst and basicConfigurationModalDisclaimerOffAdditionalTextFeaturesLast respectively"
-  },
-  "basicConfigurationModalDisclaimerOffAdditionalTextFeaturesFirst": {
-    "message": "slándáil agus príobháideacht, cúltaca agus sioncrónú"
-  },
-  "basicConfigurationModalDisclaimerOffAdditionalTextFeaturesLast": {
-    "message": "fógraí"
   },
   "basicConfigurationModalDisclaimerOn": {
     "message": "Chun d’am ar MetaMask a bharrfheabhsú, beidh ort an ghné seo a chasadh air. Tá feidhmeanna bunúsacha (cosúil le sonraí comharthaí, socruithe gáis is fearr, agus eile) tábhachtach don taithí web3."
@@ -890,9 +876,6 @@
   "bridgeBlockExplorerLinkCopied": {
     "message": "Nasc taiscéalaí blocála cóipeáilte!"
   },
-  "bridgeCalculatingAmount": {
-    "message": "Ag ríomh..."
-  },
   "bridgeConfirmTwoTransactions": {
     "message": "Beidh ort 2 idirbheart a dheimhniú ar do sparán crua-earraí:"
   },
@@ -924,9 +907,6 @@
   },
   "bridgeGasFeesSplit": {
     "message": "Áirítear an dá idirbheart in aon táille líonra a luadh ar an scáileán roimhe seo agus roinnfear í."
-  },
-  "bridgeNetCost": {
-    "message": "Costas glan"
   },
   "bridgeNoMMFee": {
     "message": "Gan aon táille MM"
@@ -988,10 +968,6 @@
   "bridgeStepActionSwapPending": {
     "message": "Ag malartú $1 ar $2",
     "description": "$1 is the amount of the source asset, $2 is the amount of the destination asset"
-  },
-  "bridgeTimingMinutes": {
-    "message": "$1 nóiméad",
-    "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
   },
   "bridgeTo": {
     "message": "Droichead go"
@@ -1063,9 +1039,6 @@
   },
   "browserNotSupported": {
     "message": "Ní thacaítear le do bhrabhsálaí..."
-  },
-  "buildContactList": {
-    "message": "Tóg do liosta teagmhála"
   },
   "builtAroundTheWorld": {
     "message": "Tá MetaMask deartha agus tógtha ar fud an domhain."
@@ -1575,7 +1548,8 @@
     "message": "Díghlasálann sé MetaMask ar an ngléas seo amháin."
   },
   "createPasswordDetailsSocial": {
-    "message": "Má chailleann tú an pasfhocal seo, caillfidh tú rochtain ar do sparán ar gach gléas. Stóráil é in áit shábháilte, "
+    "message": "Má chailleann tú an pasfhocal seo, caillfidh tú rochtain ar do sparán ar gach gléas. Stóráil é in áit shábháilte, ",
+    "description": "$1 is the text 'MetaMask can't reset it.'"
   },
   "createPasswordDetailsSocialReset": {
     "message": "Ní féidir le MetaMask é a athshocrú."
@@ -1841,9 +1815,6 @@
   "delete": {
     "message": "Scrios"
   },
-  "deleteContact": {
-    "message": "Scrios an teagmhálaí"
-  },
   "deleteMetaMetricsData": {
     "message": "Scrios sonraí MetaMetrics"
   },
@@ -1961,12 +1932,6 @@
   },
   "dismissReminderField": {
     "message": "Díbhe meabhrúchán cúltaca Frása Aisghabhála Rúnda"
-  },
-  "dismissSmartAccountSuggestionEnabledDescription": {
-    "message": "Cas air seo chun nach bhfeicfidh tú an moladh \"Athraigh go Cuntas Cliste\" ar aon chuntas a thuilleadh. Díghlasálann cuntais chliste idirbhearta níos tapúla, táillí líonra níos ísle agus níos mó solúbthachta maidir le híocaíocht dóibh sin."
-  },
-  "dismissSmartAccountSuggestionEnabledTitle": {
-    "message": "Diúltaigh an moladh \"Athraigh go Cuntas Cliste\""
   },
   "displayNftMedia": {
     "message": "Taispeáin meáin NFT"
@@ -3685,9 +3650,6 @@
     "message": "Cuntas $1",
     "description": "Default name of next account to be created on create account screen"
   },
-  "newContact": {
-    "message": "Teagmháil nua"
-  },
   "newContract": {
     "message": "Conradh nua"
   },
@@ -4753,12 +4715,6 @@
   "queued": {
     "message": "Sa scuaine"
   },
-  "quotedReceiveAmount": {
-    "message": "Méid faighte $1"
-  },
-  "quotedTotalCost": {
-    "message": "Costas iomlán $1"
-  },
   "rank": {
     "message": "Céim"
   },
@@ -4953,7 +4909,7 @@
     "message": "Nochtadh Frása Rúnda Aisghabhála"
   },
   "revealSeedWordsDescription1": {
-    "message": "Tugann an $1 $2",
+    "message": "Tugann do $1 rochtain iomlán ar do sparán, cistí agus cuntais.",
     "description": "This is a sentence consisting of link using 'revealSeedWordsSRPName' as $1."
   },
   "revealSeedWordsQR": {
@@ -5259,9 +5215,6 @@
   },
   "settingsSearchMatchingNotFound": {
     "message": "Ní bhfuarthas aon torthaí comhoiriúnacha."
-  },
-  "settingsSubHeadingSignaturesAndTransactions": {
-    "message": "Iarratais shínithe agus idirbhearta"
   },
   "shieldClaim": {
     "message": "Cuir éileamh isteach"
@@ -6359,10 +6312,6 @@
     "message": "Sleachta $1.",
     "description": "$1 is the number of quotes that the user can select from when opening the list of quotes on the 'view quote' screen"
   },
-  "swapNoTokensAvailable": {
-    "message": "Níl aon chomharthaí ar fáil a mheaitseálann $1",
-    "description": "Tells the user that a given search string does not match any tokens in our token lists. $1 can be any string of text"
-  },
   "swapOnceTransactionHasProcess": {
     "message": "Cuirfear do $1 le do chuntas a luaithe a bheidh an t-idirbheart seo próiseáilte.",
     "description": "This message communicates the token that is being transferred. It is shown on the awaiting swap screen. The $1 will be a token symbol."
@@ -6979,9 +6928,6 @@
   "usedByClients": {
     "message": "Úsáidte ag réimse cliant éagsúil"
   },
-  "userName": {
-    "message": "Ainm úsáideora"
-  },
   "userOpContractDeployError": {
     "message": "Ní thacaítear le himscaradh conartha ó chuntas conartha cliste"
   },
@@ -7000,9 +6946,6 @@
   "viewAddressOnExplorer": {
     "message": "Féach ar $1",
     "description": "$1 is the block explorer name"
-  },
-  "viewContact": {
-    "message": "Féach ar an teagmháil"
   },
   "viewDetails": {
     "message": "Féach sonraí"

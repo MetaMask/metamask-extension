@@ -58,6 +58,8 @@ class HeaderNavbar {
 
   private readonly settingsButton = '[data-testid="global-menu-settings"]';
 
+  private readonly contactsButton = '[data-testid="global-menu-contacts"]';
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
@@ -156,6 +158,12 @@ class HeaderNavbar {
     await this.driver.clickElement(this.settingsButton);
   }
 
+  async openContactsPage(): Promise<void> {
+    console.log('Open contacts page');
+    await this.openGlobalMenu();
+    await this.driver.clickElement(this.contactsButton);
+  }
+
   async enableNotifications(): Promise<void> {
     console.log('Enabling notifications for the first time');
     await this.openGlobalMenu();
@@ -177,6 +185,14 @@ class HeaderNavbar {
   async checkNotificationCountInMenuOption(count: number): Promise<void> {
     await this.openGlobalMenu({ withNotificationCounter: true });
     await this.driver.findElement({
+      css: this.notificationCountOption,
+      text: count.toString(),
+    });
+  }
+
+  async clickNotificationCount(count: number): Promise<void> {
+    await this.openGlobalMenu({ withNotificationCounter: true });
+    await this.driver.clickElement({
       css: this.notificationCountOption,
       text: count.toString(),
     });

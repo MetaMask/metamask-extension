@@ -9,7 +9,7 @@ import {
 import {
   getCurrencyRateControllerCurrencyRates,
   getCurrencyRateControllerCurrentCurrency,
-} from '../../shared/modules/selectors/assets-migration';
+} from '../../shared/lib/selectors/assets-migration';
 import {
   getGasEstimateType,
   getGasFeeEstimates,
@@ -22,13 +22,13 @@ import {
 import {
   getMaximumGasTotalInHexWei,
   getMinimumGasTotalInHexWei,
-} from '../../shared/modules/gas.utils';
+} from '../../shared/lib/gas.utils';
 import {
   decGWEIToHexWEI,
   getValueFromWeiHex,
   sumHexes,
-} from '../../shared/modules/conversion.utils';
-import { getProviderConfig } from '../../shared/modules/selectors/networks';
+} from '../../shared/lib/conversion.utils';
+import { getProviderConfig } from '../../shared/lib/selectors/networks';
 import { getAveragePriceEstimateInHexWEI } from './custom-gas';
 import {
   checkNetworkAndAccountSupports1559,

@@ -306,11 +306,6 @@ const config = {
     alias: {
       'react/jsx-runtime': require.resolve('react/jsx-runtime.js'),
       'react/jsx-dev-runtime': require.resolve('react/jsx-dev-runtime.js'),
-      // Mock perps-controller for minimal POC branch development
-      '@metamask/perps-controller': join(
-        context,
-        '../ui/__mocks__/perps/perps-controller',
-      ),
     },
     // use `fallback` to redirect module requests when normal resolving fails,
     // good for polyfill-ing built-in node modules that aren't available in
@@ -528,6 +523,9 @@ const config = {
   },
   ignoreWarnings: [
     /the following module ids can't be controlled by policy and must be ignored at runtime/u,
+    // Optional perps-controller: dynamic optional provider not shipped in this build
+    // TODO: Remove this once the MYX provider is included in the published
+    /MYXProvider\.mjs/u,
   ],
 } as const satisfies Configuration;
 

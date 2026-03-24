@@ -1,8 +1,8 @@
 import React, { type ReactNode } from 'react';
 import { useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import type { MetaMaskReduxState } from '../../../store/store';
+import type { SettingItemProps } from '../types';
 import { SettingsSelectItem } from './settings-select-item';
 
 type TranslateFunction = ReturnType<typeof useI18nContext>;
@@ -20,25 +20,23 @@ export type SelectItemConfig = {
  * Factory function to create a simple select settings item component.
  * @param config
  */
-export const createSelectItem = (config: SelectItemConfig): React.FC => {
-  const SelectItem = () => {
+export const createSelectItem = (
+  config: SelectItemConfig,
+): React.FC<SettingItemProps> => {
+  const SelectItem = ({ sectionRef }: SettingItemProps) => {
     const t = useI18nContext();
-    const navigate = useNavigate();
     const value = useSelector(config.valueSelector);
 
     const displayValue = config.formatValue
       ? config.formatValue(value, t)
       : value;
 
-    const handlePress = () => {
-      navigate(config.route);
-    };
-
     return (
       <SettingsSelectItem
         label={t(config.titleKey)}
         value={displayValue}
-        onPress={handlePress}
+        to={config.route}
+        sectionRef={sectionRef}
       />
     );
   };

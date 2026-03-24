@@ -383,9 +383,6 @@
     "message": "Konto $1",
     "description": "Default name of next account to be created on create account screen"
   },
-  "newContact": {
-    "message": "Ny kontaktperson"
-  },
   "newContract": {
     "message": "Ny kontaktperson"
   },
@@ -637,12 +634,6 @@
   },
   "usedByClients": {
     "message": "Brukt av en rekke forskjellige klienter"
-  },
-  "userName": {
-    "message": "Brukernavn"
-  },
-  "viewContact": {
-    "message": "Se kontrakt"
   },
   "visitWebSite": {
     "message": "Besøk nettsiden vår "

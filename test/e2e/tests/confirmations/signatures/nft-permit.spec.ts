@@ -12,7 +12,7 @@ import PermitConfirmation from '../../../page-objects/pages/confirmations/permit
 import TestDapp, { SignatureType } from '../../../page-objects/pages/test-dapp';
 import Confirmation from '../../../page-objects/pages/confirmations/confirmation';
 import AccountDetailsModal from '../../../page-objects/pages/confirmations/accountDetailsModal';
-import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
+import { login } from '../../../page-objects/flows/login.flow';
 import { MetaMetricsRequestedThrough } from '../../../../../shared/constants/metametrics';
 import {
   assertAccountDetailsMetrics,
@@ -35,7 +35,7 @@ describe('Confirmation Signature - NFT Permit', function (this: Suite) {
         const confirmation = new Confirmation(driver);
         const accountDetailsModal = new AccountDetailsModal(driver);
 
-        await loginWithBalanceValidation(driver);
+        await login(driver);
         await testDapp.openTestDappAndTriggerDeploy();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await confirmation.clickScrollToBottomButton();
@@ -87,7 +87,7 @@ describe('Confirmation Signature - NFT Permit', function (this: Suite) {
         const confirmation = new PermitConfirmation(driver);
         const testDapp = new TestDapp(driver);
 
-        await loginWithBalanceValidation(driver);
+        await login(driver);
         await testDapp.openTestDappAndTriggerDeploy();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await confirmation.clickScrollToBottomButton();
@@ -149,5 +149,5 @@ async function assertVerifiedResults(driver: Driver, publicAddress: string) {
     '0x0e390ef295a5a525d19f444943ae82697f0e5b5b0d77cc382cb2ea9486ec2780',
   );
   await testDapp.verifySign721PermitResultV('28');
-  await driver.clickElement('#sign721PermitVerify');
+  await testDapp.checkSuccessSign721Permit(publicAddress);
 }

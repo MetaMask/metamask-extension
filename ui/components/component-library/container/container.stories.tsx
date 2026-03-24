@@ -43,7 +43,7 @@ export const MaxWidth: StoryFn<typeof Container> = (args) => {
         backgroundColor={BackgroundColor.primaryMuted}
         padding={4}
       >
-        Size "sm" container
+        Size &quot;sm&quot; container
       </Container>
       <Container
         {...args}
@@ -51,7 +51,7 @@ export const MaxWidth: StoryFn<typeof Container> = (args) => {
         backgroundColor={BackgroundColor.successMuted}
         padding={4}
       >
-        Size "md" container
+        Size &quot;md&quot; container
       </Container>
       <Container
         {...args}
@@ -59,7 +59,7 @@ export const MaxWidth: StoryFn<typeof Container> = (args) => {
         backgroundColor={BackgroundColor.warningMuted}
         padding={4}
       >
-        Size "lg" container
+        Size &quot;lg&quot; container
       </Container>
       <Container
         {...args}

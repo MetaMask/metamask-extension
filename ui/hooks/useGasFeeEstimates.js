@@ -12,7 +12,7 @@ import {
   gasFeeStopPollingByPollingToken,
   getNetworkConfigurationByNetworkClientId,
 } from '../store/actions';
-import { getSelectedNetworkClientId } from '../../shared/modules/selectors/networks';
+import { getSelectedNetworkClientId } from '../../shared/lib/selectors/networks';
 import usePolling from './usePolling';
 
 /**

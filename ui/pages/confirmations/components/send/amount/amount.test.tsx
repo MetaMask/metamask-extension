@@ -8,7 +8,7 @@ import {
   MOCK_NFT721,
   SOLANA_ASSET,
 } from '../../../../../../test/data/send/assets';
-import { Numeric } from '../../../../../../shared/modules/Numeric';
+import { Numeric } from '../../../../../../shared/lib/Numeric';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
 import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
 import configureStore from '../../../../../store/store';

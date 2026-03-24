@@ -21,6 +21,7 @@ import {
   Icon,
   IconName,
   IconSize,
+  SuccessPill,
   Text,
 } from '../../../components/component-library';
 import {
@@ -29,13 +30,14 @@ import {
   Page,
 } from '../../../components/multichain/pages/page';
 import {
+  selectBridgeHistoryForOriginalTxMetaId,
   selectBridgeHistoryItemByHash,
   selectLocalTxForTxHash,
   selectReceivedSwapsTokenAmountFromTxMeta,
 } from '../../../ducks/bridge-status/selectors';
 import { getTransactionBreakdownData } from '../../../components/app/transaction-breakdown/transaction-breakdown-utils';
 import type { MetaMaskReduxState } from '../../../store/store';
-import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
+import { hexToDecimal } from '../../../../shared/lib/conversion.utils';
 import { SUPPORT_LINK } from '../../../helpers/constants/common';
 import { PREVIOUS_ROUTE } from '../../../helpers/constants/routes';
 import {
@@ -64,7 +66,7 @@ import {
   NETWORK_TO_SHORT_NETWORK_NAME_MAP,
   type AllowedBridgeChainIds,
 } from '../../../../shared/constants/bridge';
-import { Numeric } from '../../../../shared/modules/Numeric';
+import { Numeric } from '../../../../shared/lib/Numeric';
 import { getImageForChainId } from '../../../selectors/multichain';
 import { formatTokenAmount } from '../utils/quote';
 import {
@@ -107,9 +109,15 @@ const CrossChainSwapTxDetails = () => {
     destNetwork,
   } = useBridgeActivityData({ transaction });
 
-  const bridgeHistoryItem = useSelector((state: MetaMaskReduxState) =>
+  const bridgeHistoryItemByHash = useSelector((state: MetaMaskReduxState) =>
     selectBridgeHistoryItemByHash(state, srcChainTxMeta?.hash),
   );
+  const bridgeHistoryItemByOriginalTxMetaId = useSelector(
+    (state: MetaMaskReduxState) =>
+      selectBridgeHistoryForOriginalTxMetaId(state, srcChainTxMeta?.id),
+  );
+  const bridgeHistoryItem =
+    bridgeHistoryItemByHash ?? bridgeHistoryItemByOriginalTxMetaId;
   const approvalTxMeta = allTransactions.find(
     (tx) => tx.id === bridgeHistoryItem?.approvalTxId,
   );
@@ -428,19 +436,23 @@ const CrossChainSwapTxDetails = () => {
             <TransactionDetailRow
               title={t('bridgeTxDetailsTotalGasFee')}
               value={
-                <>
-                  {data?.hexGasTotal &&
-                    gasCurrency?.decimals &&
-                    gasCurrency?.symbol &&
-                    formatTokenAmount(
-                      locale,
-                      new Numeric(data.hexGasTotal, 16)
-                        .toBase(10)
-                        .shiftedBy(gasCurrency.decimals ?? 0)
-                        .toString(),
-                      gasCurrency?.symbol,
-                    )}
-                </>
+                data?.isGasFeeSponsored ? (
+                  <SuccessPill label={t('swapGasFeesSponsored')} />
+                ) : (
+                  <>
+                    {data?.hexGasTotal &&
+                      gasCurrency?.decimals &&
+                      gasCurrency?.symbol &&
+                      formatTokenAmount(
+                        locale,
+                        new Numeric(data.hexGasTotal, 16)
+                          .toBase(10)
+                          .shiftedBy(gasCurrency.decimals ?? 0)
+                          .toString(),
+                        gasCurrency?.symbol,
+                      )}
+                  </>
+                )
               }
             />
           </Box>
@@ -453,14 +465,12 @@ const CrossChainSwapTxDetails = () => {
             flexDirection={FlexDirection.Column}
             gap={2}
           >
-            <TransactionDetailRow
-              title={t('bridgeTxDetailsNonce')}
-              value={
-                srcChainTxMeta?.txParams.nonce
-                  ? hexToDecimal(srcChainTxMeta?.txParams.nonce)
-                  : undefined
-              }
-            />
+            {srcChainTxMeta?.txParams.nonce ? (
+              <TransactionDetailRow
+                title={t('bridgeTxDetailsNonce')}
+                value={hexToDecimal(srcChainTxMeta.txParams.nonce)}
+              />
+            ) : null}
           </Box>
         </React.Fragment>
       </Content>

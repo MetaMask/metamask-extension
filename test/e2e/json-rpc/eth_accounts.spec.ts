@@ -2,7 +2,7 @@ import { strict as assert } from 'assert';
 import { withFixtures } from '../helpers';
 import { Driver } from '../webdriver/driver';
 import FixtureBuilder from '../fixtures/fixture-builder';
-import { loginWithBalanceValidation } from '../page-objects/flows/login.flow';
+import { login } from '../page-objects/flows/login.flow';
 
 describe('eth_accounts', function () {
   it('returns permitted eth accounts when wallet is unlocked', async function () {
@@ -18,7 +18,7 @@ describe('eth_accounts', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         // eth_accounts
         await driver.openNewPage(`http://127.0.0.1:8080`);

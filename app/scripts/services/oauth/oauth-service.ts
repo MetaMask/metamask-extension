@@ -4,8 +4,8 @@ import {
   createSentryError,
   isUserCancelledLoginError,
   OAuthErrorMessages,
-} from '../../../../shared/modules/error';
-import { checkForLastError } from '../../../../shared/modules/browser-runtime.utils';
+} from '../../../../shared/lib/error';
+import { checkForLastError } from '../../../../shared/lib/browser-runtime.utils';
 import { TraceName, TraceOperation } from '../../../../shared/lib/trace';
 import {
   MetaMetricsEventName,
