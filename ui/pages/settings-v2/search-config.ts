@@ -17,7 +17,9 @@ export type TabSearchConfig = {
   subPages?: SearchableSubPage[];
 };
 
-function toItems(record: Record<string, string>): SearchItemMeta[] {
+function createSearchItemMeta(
+  record: Record<string, string>,
+): SearchItemMeta[] {
   return Object.entries(record).map(([id, titleKey]) => ({ id, titleKey }));
 }
 
@@ -83,6 +85,7 @@ export const SECURITY_ITEMS = {
 export const BACKUP_AND_SYNC_ITEMS = {
   'backup-toggle': 'backupAndSyncEnable',
   'features-toggles': 'backupAndSyncFeatureAccounts',
+  'contact-syncing': 'backupAndSyncFeatureContacts',
 } as const;
 
 export const EXPERIMENTAL_ITEMS = {
@@ -104,19 +107,34 @@ export const DEVELOPER_OPTIONS_ITEMS = {
 // ── Registry (auto-derived) ─────────────────────────────────────────────
 
 export const SETTINGS_V2_SEARCH_CONFIG: TabSearchConfig[] = [
-  { tabId: 'assets', items: toItems(ASSET_ITEMS) },
-  { tabId: 'transactions', items: toItems(TRANSACTION_ITEMS) },
-  { tabId: 'preferences-and-display', items: toItems(PREFERENCES_ITEMS) },
+  { tabId: 'assets', items: createSearchItemMeta(ASSET_ITEMS) },
+  { tabId: 'transactions', items: createSearchItemMeta(TRANSACTION_ITEMS) },
+  {
+    tabId: 'preferences-and-display',
+    items: createSearchItemMeta(PREFERENCES_ITEMS),
+  },
   {
     tabId: 'privacy',
-    items: toItems(PRIVACY_ITEMS),
+    items: createSearchItemMeta(PRIVACY_ITEMS),
     subPages: [
-      { path: THIRD_PARTY_APIS_ROUTE, items: toItems(THIRD_PARTY_API_ITEMS) },
+      {
+        path: THIRD_PARTY_APIS_ROUTE,
+        items: createSearchItemMeta(THIRD_PARTY_API_ITEMS),
+      },
     ],
   },
-  { tabId: 'security-and-password', items: toItems(SECURITY_ITEMS) },
-  { tabId: 'backup-and-sync', items: toItems(BACKUP_AND_SYNC_ITEMS) },
-  { tabId: 'experimental', items: toItems(EXPERIMENTAL_ITEMS) },
-  { tabId: 'notifications', items: toItems(NOTIFICATIONS_ITEMS) },
-  { tabId: 'developer-options', items: toItems(DEVELOPER_OPTIONS_ITEMS) },
+  {
+    tabId: 'security-and-password',
+    items: createSearchItemMeta(SECURITY_ITEMS),
+  },
+  {
+    tabId: 'backup-and-sync',
+    items: createSearchItemMeta(BACKUP_AND_SYNC_ITEMS),
+  },
+  { tabId: 'experimental', items: createSearchItemMeta(EXPERIMENTAL_ITEMS) },
+  { tabId: 'notifications', items: createSearchItemMeta(NOTIFICATIONS_ITEMS) },
+  {
+    tabId: 'developer-options',
+    items: createSearchItemMeta(DEVELOPER_OPTIONS_ITEMS),
+  },
 ];
