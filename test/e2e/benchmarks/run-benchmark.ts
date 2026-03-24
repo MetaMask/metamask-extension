@@ -76,7 +76,8 @@ function buildRegistryKey(
   if (isStartup) {
     if (outputFilename) {
       const outputBasename = path.basename(outputFilename, '.json');
-      const match = outputBasename.match(/^benchmark-([^-]+)-([^-]+)-/u);
+      const pattern = /^benchmark-([^-]+)-([^-]+)-/u;
+      const match = pattern.exec(outputBasename);
       if (match) {
         const [, platform, buildType] = match;
         return `${platform}-${buildType}-startup${baseName.charAt(0).toUpperCase()}${baseName.slice(1)}`;
