@@ -145,8 +145,11 @@ export class TestDappMmConnect {
   async selectNetworks(desiredChainIds: string[]): Promise<void> {
     for (const chainId of MM_CONNECT_FEATURED_CHAIN_IDS) {
       const selector = this.checkboxSelector(chainId);
-      const el = await this.driver.waitForSelector(selector);
-      const isChecked = await el.isSelected();
+      const isChecked = await this.driver.readElementWithRetry(
+        selector,
+        async (element: { isSelected: () => Promise<boolean> }) =>
+          await element.isSelected(),
+      );
       const shouldBeChecked = desiredChainIds.includes(chainId);
       if (isChecked !== shouldBeChecked) {
         await this.driver.clickElement(selector);
@@ -265,10 +268,12 @@ export class TestDappMmConnect {
       this.resultDetailsSelector(scope, 'signMessage'),
     );
 
-    const resultEl = await this.driver.waitForSelector(
-      this.resultCodeSelector(scope, 'signMessage'),
+    const cssSelector = this.resultCodeSelector(scope, 'signMessage');
+    const resultText = await this.driver.readElementWithRetry(
+      cssSelector,
+      async (element: { getText: () => Promise<string> }) =>
+        await element.getText(),
     );
-    const resultText = await resultEl.getText();
     const parsed = JSON.parse(resultText) as Record<string, unknown>;
 
     assert.ok(

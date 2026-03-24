@@ -749,6 +749,52 @@ class Driver {
   }
 
   /**
+   * Reads a value from an element while retrying stale element reads.
+   *
+   * @param {string | object} rawLocator - Element locator
+   * @param {Function} read - Function that reads a value from the element
+   * @param {object} [options] - Optional configuration
+   * @param {string} [options.operationName] - Human-readable operation label
+   * @param {number} [options.retries] - Number of times to retry stale reads
+   * @param {number} [options.timeout] - Timeout in milliseconds
+   * @returns {Promise<*>} Promise resolving to the read value
+   */
+  async readElementWithRetry(
+    rawLocator,
+    read,
+    {
+      operationName = 'element read',
+      retries = 3,
+      timeout = this.timeout,
+    } = {},
+  ) {
+    for (let attempt = 0; attempt < retries; attempt++) {
+      try {
+        const element = await this.findElement(rawLocator, timeout);
+        return await read(element);
+      } catch (error) {
+        if (
+          error.name === 'StaleElementReferenceError' &&
+          attempt < retries - 1
+        ) {
+          console.warn(
+            `Retrying ${operationName} (attempt ${attempt + 1}/${retries}) due to: ${
+              error.name
+            }`,
+          );
+          await this.delay(1000);
+        } else {
+          throw error;
+        }
+      }
+    }
+
+    throw new Error(
+      `Failed to complete ${operationName} after ${retries} attempts.`,
+    );
+  }
+
+  /**
    * Checks if an element is moving by comparing its position at two different times.
    *
    * @param {string | object} rawLocator - Element locator.
