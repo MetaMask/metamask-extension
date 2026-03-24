@@ -775,7 +775,145 @@ describe('MultichainBridgeQuoteCard', () => {
     expect(container).toMatchSnapshot();
   });
 
-  it('should not render gas sponsored text for hardware wallet accounts even when gasSponsored is true', async () => {
+  it('should not render gas sponsored text for hardware wallets (request-time gating sends gasIncluded7702=false so backend returns gasSponsored=false)', async () => {
+    const mockStore = createBridgeMockStore({
+      featureFlagOverrides: {
+        bridgeConfig: {
+          maxRefreshCount: 5,
+          refreshRate: 30000,
+          chainRanking: [
+            { chainId: formatChainIdToCaip(CHAIN_IDS.MAINNET) },
+            { chainId: formatChainIdToCaip(CHAIN_IDS.OPTIMISM) },
+            { chainId: formatChainIdToCaip(CHAIN_IDS.POLYGON) },
+          ],
+        },
+      },
+      bridgeSliceOverrides: {
+        fromTokenInputValue: '1',
+        toToken: toBridgeToken(getNativeAssetForChainId(CHAIN_IDS.POLYGON)),
+      },
+      bridgeStateOverrides: {
+        quoteRequest: {
+          insufficientBal: false,
+          srcChainId: 10,
+          destChainId: 137,
+          srcTokenAddress: '0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85',
+          destTokenAddress: '0x3c499c542cef5e3811e1192ce70d8cc03d5c3359',
+          srcTokenAmount: '14000000',
+        },
+        quotesRefreshCount: 1,
+        quotes: mockBridgeQuotesErc20Erc20 as unknown as QuoteResponse[],
+        quotesLastFetched: Date.now(),
+        quotesLoadingStatus: RequestStatus.FETCHED,
+      },
+      metamaskStateOverrides: {
+        marketData: {
+          '0xa': {
+            '0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85': {
+              currency: 'usd',
+              price: 1,
+            },
+          },
+          '0x89': {
+            '0x3c499c542cef5e3811e1192ce70d8cc03d5c3359': {
+              currency: 'usd',
+              price: 0.99,
+            },
+          },
+        },
+        currencyRates: {
+          ETH: {
+            conversionRate: 2524.25,
+          },
+          POL: {
+            conversionRate: 1,
+            usdConversionRate: 1,
+          },
+        },
+        ...mockNetworkState(
+          { chainId: CHAIN_IDS.OPTIMISM },
+          { chainId: CHAIN_IDS.POLYGON },
+        ),
+        internalAccounts: {
+          selectedAccount: MOCK_LEDGER_ACCOUNT.id,
+        },
+      },
+    });
+
+    const { queryByTestId } = renderWithProvider(
+      <MultichainBridgeQuoteCard
+        onOpenSlippageModal={() => {}}
+        onOpenRecipientModal={() => {}}
+        onOpenPriceImpactWarningModal={mockOnOpenPriceImpactWarningModal}
+        selectedDestinationAccount={null}
+      />,
+      configureStore(mockStore),
+    );
+
+    expect(queryByTestId('network-fees-sponsored')).not.toBeInTheDocument();
+  });
+
+  it('should not render gas sponsored text for hardware wallets on the insufficientBal + network-level sponsorship path', async () => {
+    const mockStore = createBridgeMockStore({
+      featureFlagOverrides: {
+        bridgeConfig: {
+          maxRefreshCount: 5,
+          refreshRate: 30000,
+          chainRanking: [{ chainId: formatChainIdToCaip(CHAIN_IDS.OPTIMISM) }],
+        },
+      },
+      bridgeSliceOverrides: {
+        fromTokenInputValue: '1',
+        fromToken: toBridgeToken(getNativeAssetForChainId(CHAIN_IDS.OPTIMISM)),
+        toToken: toBridgeToken(getNativeAssetForChainId(CHAIN_IDS.OPTIMISM)),
+      },
+      bridgeStateOverrides: {
+        quoteRequest: {
+          insufficientBal: true,
+          srcChainId: 10,
+          destChainId: 10,
+          srcTokenAddress: zeroAddress(),
+          destTokenAddress: '0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85',
+          srcTokenAmount: '1000000000000000000',
+        },
+        quotesRefreshCount: 1,
+        quotes: mockBridgeQuotesErc20Erc20 as unknown as QuoteResponse[],
+        quotesLastFetched: Date.now(),
+        quotesLoadingStatus: RequestStatus.FETCHED,
+      },
+      metamaskStateOverrides: {
+        currencyRates: {
+          ETH: {
+            conversionRate: 2524.25,
+            usdConversionRate: 2524.25,
+          },
+        },
+        ...mockNetworkState({ chainId: CHAIN_IDS.OPTIMISM }),
+        internalAccounts: {
+          selectedAccount: MOCK_LEDGER_ACCOUNT.id,
+        },
+        remoteFeatureFlags: {
+          gasFeesSponsoredNetwork: {
+            [CHAIN_IDS.OPTIMISM]: true,
+          },
+        },
+      },
+    });
+
+    const { queryByTestId } = renderWithProvider(
+      <MultichainBridgeQuoteCard
+        onOpenSlippageModal={() => {}}
+        onOpenRecipientModal={() => {}}
+        onOpenPriceImpactWarningModal={mockOnOpenPriceImpactWarningModal}
+        selectedDestinationAccount={null}
+      />,
+      configureStore(mockStore),
+    );
+
+    expect(queryByTestId('network-fees-sponsored')).not.toBeInTheDocument();
+  });
+
+  it('should render gas-included UI for hardware wallets when quote has gasIncluded=true (STX path works for HW)', async () => {
     const mockStore = createBridgeMockStore({
       featureFlagOverrides: {
         bridgeConfig: {
@@ -807,7 +945,7 @@ describe('MultichainBridgeQuoteCard', () => {
             ...quote,
             quote: {
               ...quote.quote,
-              gasSponsored: true,
+              gasIncluded: true,
             },
           }),
         ),
@@ -858,6 +996,7 @@ describe('MultichainBridgeQuoteCard', () => {
       configureStore(mockStore),
     );
 
-    expect(queryByTestId('network-fees-sponsored')).not.toBeInTheDocument();
+    expect(queryByTestId('network-fees-included')).toBeInTheDocument();
+    expect(queryByTestId('network-fees')).not.toBeInTheDocument();
   });
 });
