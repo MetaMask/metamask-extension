@@ -412,12 +412,6 @@ export const mockOrders: Order[] = [
 ];
 
 /**
- * Mock watchlist symbols for the Perps Watchlist section.
- * Cross-referenced with usePerpsLiveMarketData() for live price/volume.
- */
-export const mockWatchlist: string[] = ['BTC', 'ETH'];
-
-/**
  * Mock crypto markets data (main DEX, no marketType)
  * Standard cryptocurrency perpetual markets
  */
