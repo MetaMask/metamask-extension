@@ -128,7 +128,7 @@ export const BridgeQuotesModal = ({
           </Text>
         </Row>
         {/* QUOTE LIST */}
-        <Column maxWidth={BlockSize.Full} style={{ overflow: 'scroll' }}>
+        <Column maxWidth={BlockSize.Full} style={{ overflow: 'auto' }}>
           {sortedQuotes.map(
             (quote: QuoteMetadata & QuoteResponse, index: number) => {
               const {
