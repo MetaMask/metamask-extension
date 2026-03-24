@@ -9,6 +9,7 @@ import {
   MetaMetricsEventCategory,
   type MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
+import type { SettingItemProps } from '../types';
 
 const selectAlwaysFalse = (): boolean => false;
 
@@ -29,6 +30,7 @@ export type ToggleItemConfig = {
   selector: (state: MetaMaskReduxState) => boolean;
   action: (value: boolean) => unknown;
   dataTestId: string;
+  containerDataTestId?: string;
   disabledSelector?: (state: MetaMaskReduxState) => boolean;
   trackEvent?: ToggleEventConfig;
 };
@@ -37,7 +39,9 @@ export type ToggleItemConfig = {
  * Factory function to create a simple toggle settings item component.
  * @param config
  */
-export const createToggleItem = (config: ToggleItemConfig): React.FC => {
+export const createToggleItem = (
+  config: ToggleItemConfig,
+): React.FC<SettingItemProps> => {
   const ToggleItem = () => {
     const t = useI18nContext();
     const dispatch = useDispatch();
@@ -72,6 +76,7 @@ export const createToggleItem = (config: ToggleItemConfig): React.FC => {
         value={value}
         onToggle={handleToggle}
         dataTestId={config.dataTestId}
+        containerDataTestId={config.containerDataTestId}
         disabled={disabled}
       />
     );

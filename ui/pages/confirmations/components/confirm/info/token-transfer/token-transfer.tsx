@@ -6,6 +6,7 @@ import { TransactionPaySection } from '../../../rows/transaction-pay-section/tra
 import { AdvancedDetails } from '../shared/advanced-details/advanced-details';
 import { GasFeesSection } from '../shared/gas-fees-section/gas-fees-section';
 import SendHeading from '../shared/send-heading/send-heading';
+import { EnforcedSimulationsRow } from '../../../rows/enforced-simulations-row';
 import { TokenDetailsSection } from './token-details-section';
 import { TransactionFlowSection } from './transaction-flow-section';
 
@@ -25,6 +26,7 @@ const TokenTransferInfo = () => {
         enableMetrics
         metricsOnly={isWalletInitiated}
       />
+      <EnforcedSimulationsRow />
       <TokenDetailsSection />
       <TransactionPaySection />
       <GasFeesSection />
