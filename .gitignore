@@ -111,3 +111,6 @@ temp-llm-workflow-*
 
 # Cursor IDE internal state
 .cursor/hooks/
+
+# Local git worktrees
+.worktrees

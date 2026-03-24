@@ -123,7 +123,7 @@ describe('AssetsControllerInit', () => {
         pollInterval: 30_000,
         enabled: false,
       },
-      trackMetaMetricsEvent: expect.any(Function),
+      trace: expect.any(Function),
     });
   });
 
@@ -158,7 +158,7 @@ describe('AssetsControllerInit', () => {
         pollInterval: 30_000,
         enabled: false,
       },
-      trackMetaMetricsEvent: expect.any(Function),
+      trace: expect.any(Function),
     });
   });
 

@@ -60,6 +60,14 @@ export const TREZOR_VAULT =
 export const MULTI_SRP_FIXTURE_VAULT =
   '{"data":"tM9QywcUa46iRvWsfvOL9mJqOrRLoVZoDuqTwxEt1Jz4qCpVIx8I/+7wMQuHBhe+DLBMSB7DzWeBpkCngTSE/mt6ygXWd96aKPH00PCW7uq/Z+8gdHQ3+ZGVCkTIDvLwOzG2gywrOfWRzRRcFwV545EV2iC6Q47A6KcgK/YokBeT4uVJ+oC309490eYn6/LkC+e+DNzJOlESs0LOynMJPMP0Wc53AvEuVlmYA2QLUKa+X6Eo1FEm91lg7znnNGTH7d7PVzDjElTQAUcQmiCvLfJU3cCmnVubarG/eOPWyL41u1z2IFMuf2QKoJNG7garFS+z4THtqWuR/NiYbNCJ70G6V2P0+9ntIWMk4qs4cBY4Pl3MPsyXBVhVoL+sLmuguY6iPijQVcPtd8G1HjTWOXNAVYSrdXjd4YHJuBBqgrjsqkkCHknilv6BiyHFH+pURP7zuPley9hiru5szuaKKU4NtpawQe0STQO5X35fI2xrH603etO9lhlK9lU+eFA+6jO0EynA1+HDIWT8iqX0gaOF6aPR/K1EKzbveP+EQbj7vIpOQs2+EJ4F4LYkExKczpvacgci84sLWGeT1e/aP1/dsVjuApUo0mtJaUtbljSvWoGuh6y8orTt6voyvHvbA+atPX+jla0/rWwy1lJ8o6PoXnyBMsgS+DSSamqXeMRKPI4S6GWiAMxLmvJvOEiC/uYRLrCzE0RxjIP9W6f2K+0VhAXJjPBp/t32NeHiwBfVeitdPwZUmMfhqzE0gvXyAd6cfzEnlyICfS8/DQkn74GDbdd1MdikdETCutDpiGEshacQT/scy0Z6n/5vuKkAGgrW66m39Ewqz6H2Rida5zgx1esrwZFy+8H57M2fa9KPa3ddye6J5Cd00JiqK/HiT20Uzt4h725iLNdkDrDT/mLlIGwbcSsSZxpTCYjtAAcN5JtWZNIp6xPOT889Tg9u3hHNy3g3VhVbYevtfTnVSgFFi+9B1JZ1OhL4NZC8bjyeNJ1pOUyLRZiRhgQ8aJPv5QytwDth+pJBvQslQ5UlrbhHRyd0RC0YrcyQ3WbapuDlJtdkkDuQg0OvevX+3F/Z/84uWvJ9qWBPkbOcn+ydULRDDouBmwsHqyY=","iv":"CR5flTdOsO77up6hbd8qQA==","keyMetadata":{"algorithm":"PBKDF2","params":{"iterations":600000}},"salt":"VY02O4NjlOhOKZI0/WPievKNVo2vOcg237YR5MrUW+c="}';
 
+/** KeyringController vault for withKeyringControllerAdditionalAccountVault (two HD accounts). */
+export const ADDITIONAL_ACCOUNT_FIXTURE_VAULT =
+  '{"data":"wiB80G6yk3XY9doo6nmVt+qIgGinIFw0iANKZB7uPM4jjWsLNPny8NaDlh9mQclXfxlvy6wRcEIXmM6D9Qpr3miTfhW4HFcuDFQ0DtrPOceSUZMQtrdpZWul8zwNbjRe1mbprZu0LdPK/0wiSKvHay4/UDHcIxIOWA64a4SUFMQ59Orbh8JQnDZ3rYEi2+zHZuyj4F4J6+HQuWdLV4m/ZbfDeytf7VAn1DXkaCnpne4KAy1YpPXQ2Ucqol1PM9gEZURErwL3xjBARaE8iQHyWQV2FuOj4tylU82Tsa1kn/ne9Sv9lFNNQE0d50EQtPFeLCqjCqj84q2AaOGFXN5ojgYId+m+SMgji2w/ANl/6FXLA7hIPvYEmiS2etLQXS9yj0Z1zGxQO/V6H7wBSGquute9Z1zkSivE5Bpym324ccB9S5H5h9CPgxtdFSnEs+0xkv0OB1GmcS+5dh2ZtK6Am7jvwlkuynC1ha0Gre/xp7SUpG4wM4cGhYn1b3cMz0eYHiP9POaINZvsZWbE+VTWezQ9hHBCdv7o4GXNrwHm3w1cI/bVGotr3MV3tLdXE5T/izNNNXU78s2ADDWkHfjgXm002TDHZtHbmBWFqw==","iv":"djp82xT3OOpenReQzhcEDA==","keyMetadata":{"algorithm":"PBKDF2","params":{"iterations":600000}},"salt":"SJPfWAWz3MfeLwZrOve636Gh0l4qYC60udPVVdXtR/c="}';
+
+/** KeyringController vault for withKeyringControllerOldVault fixture (old encryption format for migration tests). */
+export const OLD_FIXTURE_VAULT =
+  '{"data":"s6TpYjlUNsn7ifhEFTkuDGBUM1GyOlPrim7JSjtfIxgTt8/6MiXgiR/CtFfR4dWW2xhq85/NGIBYEeWrZThGdKGarBzeIqBfLFhw9n509jprzJ0zc2Rf+9HVFGLw+xxC4xPxgCS0IIWeAJQ+XtGcHmn0UZXriXm8Ja4kdlow6SWinB7sr/WM3R0+frYs4WgllkwggDf2/Tv6VHygvLnhtzp6hIJFyTjh+l/KnyJTyZW1TkZhDaNDzX3SCOHT","iv":"FbeHDAW5afeWNORfNJBR0Q==","salt":"TxZ+WbCW6891C9LK/hbMAoUsSEW1E8pyGLVBU6x5KR8="}';
+
 /**
  * Account ID used for hardware wallet fixtures (Ledger and Trezor).
  */
