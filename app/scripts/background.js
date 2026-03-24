@@ -247,38 +247,6 @@ function setGlobalInitializers() {
 setGlobalInitializers();
 
 /**
- * Resets initialization state, reinitializes the background from the given
- * backup (or from scratch if no vault exists), and sets the onboarding flow
- * type to "restore" when a vault is present.
- *
- * Used by both the state corruption handler and the general error repair
- * listener so the repair logic is not duplicated.
- *
- * @param {object | null} backup - The backup state from IndexedDB, or null.
- */
-async function repairAndReinitialize(backup) {
-  // We are going to reinitialize the background script, so we need to
-  // reset the initialization promises. This is gross since it is
-  // possible the original references could have been passed to other
-  // functions, and we can't update those references from here.
-  // Right now, that isn't the case though.
-  setGlobalInitializers();
-
-  if (hasVault(backup)) {
-    await initBackground(backup);
-    controller.onboardingController.setFirstTimeFlowType(
-      FirstTimeFlowType.restore,
-    );
-  } else {
-    // If we don't have a backup we need to make sure we clear the state
-    // from the database, and then reinitialize the background script
-    // with the first time state.
-    await persistenceManager.reset();
-    await initBackground(null);
-  }
-}
-
-/**
  * Sends a message to the dapp(s) content script to signal it can connect to MetaMask background as
  * the backend is not active. It is required to re-connect dapps after service worker re-activates.
  * For non-dapp pages, the message will be sent and ignored.
@@ -664,7 +632,27 @@ const handleOnConnect = async (port) => {
           port,
           error,
           database: persistenceManager,
-          repairCallback: (backup) => repairAndReinitialize(backup),
+          repairCallback: async (backup) => {
+            // we are going to reinitialize the background script, so we need to
+            // reset the initialization promises. this is gross since it is
+            // possible the original references could have been passed to other
+            // functions, and we can't update those references from here.
+            // right now, that isn't the case though.
+            setGlobalInitializers();
+
+            if (hasVault(backup)) {
+              await initBackground(backup);
+              controller.onboardingController.setFirstTimeFlowType(
+                FirstTimeFlowType.restore,
+              );
+            } else {
+              // if we don't have a backup we need to make sure we clear the state
+              // from the database, and then reinitialize the background script
+              // with the first time state.
+              await persistenceManager.reset();
+              await initBackground(null);
+            }
+          },
         });
       } else {
         // General errors
