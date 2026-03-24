@@ -168,22 +168,25 @@ describe('MultichainAccountCell', () => {
     expect(screen.getByTestId('start-accessory')).toBeInTheDocument();
   });
 
-  it('does not render default address element when showDefaultAddress is false', () => {
+  it('does not render hovered addresses element when isDefaultAddressEnabled is false', () => {
     renderWithProvider(<MultichainAccountCell {...defaultProps} />, store);
 
     expect(
-      screen.queryByTestId('multichain-account-cell-default-address'),
+      screen.queryByTestId('multichain-account-cell-hovered-addresses'),
     ).not.toBeInTheDocument();
   });
 
-  it('renders default address element when showDefaultAddress is true', () => {
+  it('renders hovered addresses element when isDefaultAddressEnabled is true', () => {
     renderWithProvider(
-      <MultichainAccountCell {...defaultProps} showDefaultAddress />,
+      <MultichainAccountCell
+        {...defaultProps}
+        isDefaultAddressEnabled={true}
+      />,
       store,
     );
 
     const addressElement = screen.getByTestId(
-      'multichain-account-cell-default-address',
+      'multichain-account-cell-hovered-addresses',
     );
     expect(addressElement).toBeInTheDocument();
   });

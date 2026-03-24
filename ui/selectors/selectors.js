@@ -1491,7 +1491,7 @@ export function getIsDefaultAddressEnabled(state) {
  * @param state - Redux state
  * @returns {boolean}
  */
-export function getShowDefaultAddress(state) {
+export function getShowDefaultAddressPreference(state) {
   const { showDefaultAddress } = getPreferences(state);
   return Boolean(showDefaultAddress);
 }

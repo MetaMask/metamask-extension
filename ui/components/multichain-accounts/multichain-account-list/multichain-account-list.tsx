@@ -53,6 +53,7 @@ import {
   getHDEntropyIndex,
   getPreferences,
   getIsDefaultAddressEnabled,
+  getShowDefaultAddressPreference,
 } from '../../../selectors';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { MultichainAccountMenu } from '../multichain-account-menu';
@@ -75,7 +76,6 @@ export type MultichainAccountListProps = {
   displayWalletHeader?: boolean;
   showAccountCheckbox?: boolean;
   showConnectionStatus?: boolean;
-  showDefaultAddress?: boolean;
 };
 
 type GroupData = AccountTreeWallets[AccountWalletId]['groups'][AccountGroupId];
@@ -109,7 +109,6 @@ export const MultichainAccountList = ({
   displayWalletHeader = true,
   showAccountCheckbox = false,
   showConnectionStatus = false,
-  showDefaultAddress = false,
 }: MultichainAccountListProps) => {
   const showAccountMenu = !showAccountCheckbox;
 
@@ -124,6 +123,7 @@ export const MultichainAccountList = ({
   const allBalances = useSelector(selectBalanceForAllWallets);
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
   const { privacyMode } = useSelector(getPreferences);
+  const showDefaultAddress = useSelector(getShowDefaultAddressPreference);
   const isDefaultAddressEnabled = useSelector(getIsDefaultAddressEnabled);
 
   useEffect(() => {
@@ -321,7 +321,7 @@ export const MultichainAccountList = ({
                 | undefined
             }
             privacyMode={privacyMode}
-            showDefaultAddress={isDefaultAddressEnabled && showDefaultAddress}
+            isDefaultAddressEnabled={isDefaultAddressEnabled}
             walletName={
               showWalletName
                 ? wallets[walletId as AccountWalletId]?.metadata?.name
@@ -370,7 +370,6 @@ export const MultichainAccountList = ({
       handleAccountRenameAction,
       openMenuAccountId,
       handleMenuToggle,
-      showDefaultAddress,
       isDefaultAddressEnabled,
     ],
   );

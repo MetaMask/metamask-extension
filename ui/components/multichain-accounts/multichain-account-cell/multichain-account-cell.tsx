@@ -28,7 +28,7 @@ import {
   STATUS_CONNECTED_TO_ANOTHER_ACCOUNT,
 } from '../../../helpers/constants/connected-sites';
 import { MultichainHoveredAddressRowsList } from '../multichain-address-rows-hovered-list';
-import { MultichainAccountNetworkGroupWithDefaultAddress } from '../multichain-account-network-group-with-default-address';
+import { MultichainAccountNetworkGroupWithCopyIcon } from '../multichain-account-network-group-with-copy-icon';
 
 type AccountCellAvatarProps = {
   seedAddress: string;
@@ -78,7 +78,7 @@ export type MultichainAccountCellProps = {
     | typeof STATUS_CONNECTED
     | typeof STATUS_CONNECTED_TO_ANOTHER_ACCOUNT;
   privacyMode?: boolean;
-  showDefaultAddress?: boolean;
+  isDefaultAddressEnabled?: boolean;
 };
 
 export const MultichainAccountCell = ({
@@ -94,7 +94,7 @@ export const MultichainAccountCell = ({
   disableHoverEffect = false,
   connectionStatus,
   privacyMode = false,
-  showDefaultAddress = false,
+  isDefaultAddressEnabled = false,
 }: MultichainAccountCellProps) => {
   const handleClick = () => onClick?.(accountId);
 
@@ -159,11 +159,11 @@ export const MultichainAccountCell = ({
               {walletName}
             </TextDeprecated>
           )}
-          {showDefaultAddress && (
+          {isDefaultAddressEnabled && (
             <Box
               marginLeft={3}
               onClick={(e: React.MouseEvent) => e.stopPropagation()}
-              data-testid="multichain-account-cell-default-address"
+              data-testid="multichain-account-cell-hovered-addresses"
             >
               <MultichainHoveredAddressRowsList
                 groupId={accountId}
@@ -171,7 +171,7 @@ export const MultichainAccountCell = ({
                 showDefaultAddressSection={false}
                 showViewAllButton={false}
               >
-                <MultichainAccountNetworkGroupWithDefaultAddress
+                <MultichainAccountNetworkGroupWithCopyIcon
                   groupId={accountId}
                 />
               </MultichainHoveredAddressRowsList>

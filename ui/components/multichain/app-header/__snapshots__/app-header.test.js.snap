@@ -142,7 +142,7 @@ exports[`App Header unlocked state matches snapshot: unlocked 1`] = `
               class=""
             >
               <div
-                class="flex flex-row gap-1 items-center p-1 bg-muted rounded-lg"
+                class="flex-row gap-1 items-center p-1 bg-muted rounded-lg inline-flex"
               >
                 <div
                   class="flex flex-row items-center"

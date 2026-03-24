@@ -111,19 +111,19 @@ describe('Default address section', () => {
     await waitFor(() => expect(container).toBeVisible());
   });
 
-  it('does not render the default address when feature flag is off', async () => {
-    const stateWithFlagOff = {
+  it('does not render the default address text when preference is off', async () => {
+    const stateWithPreferenceOff = {
       ...mockDefaultState,
       metamask: {
         ...mockDefaultState.metamask,
-        remoteFeatureFlags: { extensionUxDefaultAddressVersioned: false },
+        remoteFeatureFlags: { extensionUxDefaultAddressVersioned: true },
         preferences: {
           ...mockDefaultState.metamask.preferences,
-          showDefaultAddress: true,
+          showDefaultAddress: false,
         },
       },
     };
-    const store = configureStore(stateWithFlagOff);
+    const store = configureStore(stateWithPreferenceOff);
     const menuRef = { current: null } as React.RefObject<HTMLButtonElement>;
     renderWithProvider(
       <AppHeaderUnlockedContent
@@ -133,10 +133,11 @@ describe('Default address section', () => {
       store,
     );
 
-    await waitFor(() => {
-      expect(
-        screen.queryByTestId('default-address-container'),
-      ).not.toBeInTheDocument();
-    });
+    // Container should still render
+    const container = await screen.findByTestId('default-address-container');
+    expect(container).toBeInTheDocument();
+
+    // But no address text should be visible (only network avatars + copy icon)
+    expect(screen.queryByText(/0x/u)).not.toBeInTheDocument();
   });
 });
