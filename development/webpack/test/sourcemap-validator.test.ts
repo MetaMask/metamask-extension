@@ -205,6 +205,60 @@ describe('sourcemap-validator', () => {
         await rm(fixtureDir, { recursive: true, force: true });
       }
     });
+
+    it('works with a firefox platform directory', async () => {
+      const fixtureDir = await mkdtemp(
+        join(tmpdir(), 'sourcemap-validator-detect-firefox-'),
+      );
+
+      try {
+        const firefoxScriptsDir = join(
+          fixtureDir,
+          'dist',
+          'firefox',
+          'scripts',
+        );
+        await mkdir(firefoxScriptsDir, { recursive: true });
+        await writeFile(
+          join(firefoxScriptsDir, 'contentscript.js'),
+          [
+            '(function(){',
+            '  throw new Error("x");',
+            '})();',
+            '//# sourceMappingURL=contentscript.js.map',
+          ].join('\n'),
+        );
+
+        const mapLocation = await detectMapLocationFromContentscript(
+          join(fixtureDir, 'dist', 'firefox'),
+        );
+        assert.strictEqual(mapLocation, 'sibling');
+      } finally {
+        await rm(fixtureDir, { recursive: true, force: true });
+      }
+    });
+
+    it('includes the platform directory path in the error message', async () => {
+      const fixtureDir = await mkdtemp(
+        join(tmpdir(), 'sourcemap-validator-detect-errmsg-'),
+      );
+      const firefoxDir = join(fixtureDir, 'dist', 'firefox');
+
+      try {
+        await assert.rejects(
+          () => detectMapLocationFromContentscript(firefoxDir),
+          (err: Error) => {
+            assert.ok(
+              err.message.includes(firefoxDir),
+              `error message should include platform dir "${firefoxDir}", got: ${err.message}`,
+            );
+            return true;
+          },
+        );
+      } finally {
+        await rm(fixtureDir, { recursive: true, force: true });
+      }
+    });
   });
 
   describe('discoverWebpackBundles', () => {
@@ -213,13 +267,19 @@ describe('sourcemap-validator', () => {
     // includes 'background'), ui.def456.js+.map ('ui'), scripts/contentscript.js+.map ('contentscript').
     it('returns empty array when dist/chrome does not exist', async () => {
       mock.method(process, 'cwd', () => EMPTY_FIXTURE, { times: Infinity });
-      const pairs = await discoverWebpackBundles({ mapLocation: 'sibling' });
+      const pairs = await discoverWebpackBundles({
+        mapLocation: 'sibling',
+        platform: 'chrome',
+      });
       assert.strictEqual(pairs.length, 0);
     });
 
     it('finds .js files that have a .map sibling', async () => {
       mock.method(process, 'cwd', () => DIST_FIXTURE, { times: Infinity });
-      const pairs = await discoverWebpackBundles({ mapLocation: 'sibling' });
+      const pairs = await discoverWebpackBundles({
+        mapLocation: 'sibling',
+        platform: 'chrome',
+      });
       assert.ok(pairs.length >= 2);
       assert.ok(pairs.some((p) => p.label.includes('background')));
       assert.ok(pairs.some((p) => p.label.includes('ui')));
@@ -230,7 +290,10 @@ describe('sourcemap-validator', () => {
 
     it('scans subdirectories (e.g. scripts/)', async () => {
       mock.method(process, 'cwd', () => DIST_FIXTURE, { times: Infinity });
-      const pairs = await discoverWebpackBundles({ mapLocation: 'sibling' });
+      const pairs = await discoverWebpackBundles({
+        mapLocation: 'sibling',
+        platform: 'chrome',
+      });
       assert.ok(pairs.some((p) => p.label.includes('contentscript')));
     });
 
@@ -261,11 +324,13 @@ describe('sourcemap-validator', () => {
         mock.method(process, 'cwd', () => fixtureDir, { times: Infinity });
         const siblingPairs = await discoverWebpackBundles({
           mapLocation: 'sibling',
+          platform: 'chrome',
         });
         assert.strictEqual(siblingPairs.length, 0);
 
         const pairs = await discoverWebpackBundles({
           mapLocation: 'sourcemaps',
+          platform: 'chrome',
         });
         assert.strictEqual(pairs.length, 1);
         assert.strictEqual(pairs[0].label, 'scripts/contentscript.js');
@@ -280,8 +345,81 @@ describe('sourcemap-validator', () => {
 
     it('does not include sibling maps when map location is sourcemaps', async () => {
       mock.method(process, 'cwd', () => DIST_FIXTURE, { times: Infinity });
-      const pairs = await discoverWebpackBundles({ mapLocation: 'sourcemaps' });
+      const pairs = await discoverWebpackBundles({
+        mapLocation: 'sourcemaps',
+        platform: 'chrome',
+      });
       assert.strictEqual(pairs.length, 0);
+    });
+
+    it('discovers bundles under dist/firefox when platform is firefox', async () => {
+      const fixtureDir = await mkdtemp(
+        join(tmpdir(), 'sourcemap-validator-firefox-discover-'),
+      );
+      try {
+        const firefoxDir = join(fixtureDir, 'dist', 'firefox');
+        await mkdir(firefoxDir, { recursive: true });
+        await writeFile(
+          join(firefoxDir, 'background.js'),
+          'throw new Error("x");',
+        );
+        await writeFile(join(firefoxDir, 'background.js.map'), '{}');
+
+        mock.method(process, 'cwd', () => fixtureDir, { times: Infinity });
+        const pairs = await discoverWebpackBundles({
+          mapLocation: 'sibling',
+          platform: 'firefox',
+        });
+        assert.strictEqual(pairs.length, 1);
+        assert.strictEqual(pairs[0].label, 'background.js');
+      } finally {
+        await rm(fixtureDir, { recursive: true, force: true });
+      }
+    });
+
+    it('finds maps under dist/sourcemaps for firefox platform', async () => {
+      const fixtureDir = await mkdtemp(
+        join(tmpdir(), 'sourcemap-validator-firefox-sourcemaps-'),
+      );
+      try {
+        const firefoxScriptsDir = join(
+          fixtureDir,
+          'dist',
+          'firefox',
+          'scripts',
+        );
+        const sourcemapsScriptsDir = join(
+          fixtureDir,
+          'dist',
+          'sourcemaps',
+          'scripts',
+        );
+        await mkdir(firefoxScriptsDir, { recursive: true });
+        await mkdir(sourcemapsScriptsDir, { recursive: true });
+
+        await writeFile(
+          join(firefoxScriptsDir, 'contentscript.js'),
+          'throw new Error("x");',
+        );
+        await writeFile(
+          join(sourcemapsScriptsDir, 'contentscript.js.map'),
+          '{}',
+        );
+
+        mock.method(process, 'cwd', () => fixtureDir, { times: Infinity });
+        const pairs = await discoverWebpackBundles({
+          mapLocation: 'sourcemaps',
+          platform: 'firefox',
+        });
+        assert.strictEqual(pairs.length, 1);
+        assert.strictEqual(pairs[0].label, 'scripts/contentscript.js');
+        assert.strictEqual(
+          pairs[0].mapPath,
+          join(sourcemapsScriptsDir, 'contentscript.js.map'),
+        );
+      } finally {
+        await rm(fixtureDir, { recursive: true, force: true });
+      }
     });
   });
 
@@ -668,14 +806,66 @@ describe('sourcemap-validator', () => {
       }
     });
 
-    it('exits with 1 when dist/chrome does not exist', async () => {
+    it('exits with 1 when no platform directories exist', async () => {
       mock.method(process, 'cwd', () => EMPTY_FIXTURE, { times: Infinity });
       const exitMock = mock.method(process, 'exit', noop as () => never);
-      mock.method(console, 'error', noop);
+      const errors: string[] = [];
+      mock.method(console, 'error', (...args: unknown[]) => {
+        errors.push(args.map((a) => String(a)).join(' '));
+      });
       mock.method(console, 'log', noop);
       await main({ mapLocation: 'sibling' });
       assert.strictEqual(exitMock.mock.calls.length, 1);
       assert.strictEqual(exitMock.mock.calls[0].arguments[0], 1);
+      assert.ok(
+        errors.some((e) => e.includes('chrome') && e.includes('firefox')),
+        'error message should mention both platforms',
+      );
+    });
+
+    it('falls back to firefox when only dist/firefox exists', async () => {
+      mainTestDir = await mkdtemp(
+        join(tmpdir(), 'sourcemap-validator-firefox-only-'),
+      );
+      const firefoxDir = join(mainTestDir, 'dist', 'firefox');
+      await mkdir(firefoxDir, { recursive: true });
+      const exitMock = mock.method(process, 'exit', noop as () => never);
+      const logs: string[] = [];
+      mock.method(console, 'log', (...args: unknown[]) => {
+        logs.push(args.map((a) => String(a)).join(' '));
+      });
+      mock.method(console, 'error', noop);
+      mock.method(console, 'warn', noop);
+      mock.method(process, 'cwd', () => mainTestDir, { times: Infinity });
+      await main({ mapLocation: 'sibling' });
+      assert.ok(
+        logs.some((l) => l.includes('using platform: firefox')),
+        'should log that firefox platform is being used',
+      );
+      // exits with 1 because no .js+.map pairs (empty dir), but it did pick firefox
+      assert.strictEqual(exitMock.mock.calls.length, 1);
+    });
+
+    it('prefers chrome when both chrome and firefox exist', async () => {
+      mainTestDir = await mkdtemp(
+        join(tmpdir(), 'sourcemap-validator-both-platforms-'),
+      );
+      await mkdir(join(mainTestDir, 'dist', 'chrome'), { recursive: true });
+      await mkdir(join(mainTestDir, 'dist', 'firefox'), { recursive: true });
+      const exitMock = mock.method(process, 'exit', noop as () => never);
+      const logs: string[] = [];
+      mock.method(console, 'log', (...args: unknown[]) => {
+        logs.push(args.map((a) => String(a)).join(' '));
+      });
+      mock.method(console, 'error', noop);
+      mock.method(console, 'warn', noop);
+      mock.method(process, 'cwd', () => mainTestDir, { times: Infinity });
+      await main({ mapLocation: 'sibling' });
+      assert.ok(
+        logs.some((l) => l.includes('using platform: chrome')),
+        'should prefer chrome (first in PLATFORMS array)',
+      );
+      assert.strictEqual(exitMock.mock.calls.length, 1);
     });
 
     it('exits with 1 when dist/chrome exists but has no .js+.map pairs', async () => {

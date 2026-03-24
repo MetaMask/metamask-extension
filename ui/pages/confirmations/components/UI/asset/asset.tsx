@@ -66,7 +66,7 @@ const NftAsset = ({ asset, onClick, isSelected }: AssetProps) => {
       paddingLeft={4}
       paddingRight={4}
     >
-      <Box marginRight={4} style={{ minWidth: 32 }}>
+      <Box marginRight={4} display={Display.Flex} style={{ minWidth: 32 }}>
         <BadgeWrapper
           badge={
             nftData.chainId ? (

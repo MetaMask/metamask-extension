@@ -2,8 +2,8 @@ import { Suite } from 'mocha';
 import { MockttpServer } from 'mockttp';
 import { Driver } from '../../webdriver/driver';
 import { withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixtures/fixture-builder';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
+import { login } from '../../page-objects/flows/login.flow';
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import HomePage from '../../page-objects/pages/home/homepage';
@@ -27,8 +27,8 @@ describe('Multichain Aggregated Balances', function (this: Suite) {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
-        fixtures: new FixtureBuilder()
-          .withPreferencesControllerShowNativeTokenAsMainBalanceDisabled()
+        fixtures: new FixtureBuilderV2()
+          .withShowNativeTokenAsMainBalanceDisabled()
           .withPermissionControllerConnectedToTestDapp()
           .withPreferencesController({
             preferences: {
@@ -60,7 +60,7 @@ describe('Multichain Aggregated Balances', function (this: Suite) {
         localNodes: Anvil[] | Ganache[] | undefined[];
       }) => {
         console.log('// Step 1: Log in and set up page objects');
-        await loginWithBalanceValidation(driver, localNodes[0]);
+        await login(driver, { localNode: localNodes[0] });
 
         const homepage = new HomePage(driver);
         const headerNavbar = new HeaderNavbar(driver);

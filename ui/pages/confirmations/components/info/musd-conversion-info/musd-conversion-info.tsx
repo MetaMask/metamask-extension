@@ -1,7 +1,8 @@
 import type { TransactionMeta } from '@metamask/transaction-controller';
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import { Box, BoxFlexDirection } from '@metamask/design-system-react';
+import { endTrace, TraceName } from '../../../../../../shared/lib/trace';
 import { ConfirmInfoRowSize } from '../../../../../components/app/confirm/info/row/row';
 import {
   selectTransactionPaymentTokenByTransactionId,
@@ -17,6 +18,7 @@ import {
 import { BridgeFeeRow } from '../../rows/bridge-fee-row/bridge-fee-row';
 import { ClaimableBonusRow } from '../../rows/claimable-bonus-row/claimable-bonus-row';
 import { TotalRow } from '../../rows/total-row/total-row';
+import { useMusdConversionQuoteTrace } from '../../../hooks/musd/useMusdConversionQuoteTrace';
 import { MusdOverrideContent } from './musd-override-content';
 
 const MusdBottomContent = () => {
@@ -58,10 +60,31 @@ const MusdBottomContent = () => {
 export const MusdConversionInfo = () => {
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const transactionId = currentConfirmation?.id ?? '';
+  const hasEndedNavigationTraceRef = useRef(false);
 
   const existingPayToken = useSelector((state: TransactionPayState) =>
     selectTransactionPaymentTokenByTransactionId(state, transactionId),
   );
+
+  // Track quote fetch time via Sentry trace
+  useMusdConversionQuoteTrace();
+
+  // End navigation trace on first render - measures time from CTA click to this component mounting
+  useEffect(() => {
+    if (!hasEndedNavigationTraceRef.current) {
+      hasEndedNavigationTraceRef.current = true;
+
+      const traceData = {
+        paymentTokenChainId: existingPayToken?.chainId ?? 'unknown',
+        paymentTokenAddress: existingPayToken?.address ?? 'unknown',
+      };
+
+      endTrace({
+        name: TraceName.MusdConversionNavigation,
+        data: traceData,
+      });
+    }
+  }, [existingPayToken?.chainId, existingPayToken?.address, transactionId]);
 
   const preferredToken = existingPayToken
     ? { address: existingPayToken.address, chainId: existingPayToken.chainId }

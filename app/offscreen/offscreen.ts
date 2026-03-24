@@ -6,9 +6,9 @@ import {
   OffscreenCommunicationEvents,
   OffscreenCommunicationTarget,
 } from '../../shared/constants/offscreen-communication';
-import initLedger from './ledger';
-import initTrezor from './trezor';
-import initLattice from './lattice';
+import initLedger from './hardware-wallets/ledger';
+import initTrezor from './hardware-wallets/trezor';
+import initLattice from './hardware-wallets/lattice';
 import initConnectivityDetection from './connectivity';
 
 /**

@@ -36,7 +36,7 @@
       "announcements": {}
     },
     "AppMetadataController": {
-      "currentMigrationVersion": 198,
+      "currentMigrationVersion": 199,
       "firstTimeInfo": {
         "date": 0,
         "version": "13.17.0"
@@ -1884,6 +1884,40 @@
     "PermissionLogController": {
       "permissionHistory": {}
     },
+    "PerpsController": {
+      "accountState": null,
+      "activeProvider": "hyperliquid",
+      "depositRequests": [],
+      "hasPlacedFirstOrder": {
+        "mainnet": false,
+        "testnet": false
+      },
+      "hip3ConfigVersion": 0,
+      "isFirstTimeUser": {
+        "mainnet": true,
+        "testnet": true
+      },
+      "isTestnet": false,
+      "marketFilterPreferences": {
+        "direction": "desc",
+        "optionId": "volume"
+      },
+      "perpsBalances": {},
+      "tradeConfigurations": {
+        "mainnet": {},
+        "testnet": {}
+      },
+      "watchlistMarkets": {
+        "mainnet": [],
+        "testnet": []
+      },
+      "withdrawalProgress": {
+        "activeWithdrawalId": null,
+        "lastUpdated": 0,
+        "progress": 0
+      },
+      "withdrawalRequests": []
+    },
     "PhishingController": {
       "addressScanCache": {},
       "c2DomainBlocklistLastFetched": 0,
@@ -1917,7 +1951,6 @@
         "dismissSmartAccountSuggestionEnabled": false,
         "featureNotificationsEnabled": false,
         "hideZeroBalanceTokens": false,
-        "petnamesEnabled": true,
         "privacyMode": false,
         "showConfirmationAdvancedDetails": false,
         "showDefaultAddress": false,
@@ -2154,6 +2187,6 @@
   },
   "meta": {
     "storageKind": "split",
-    "version": 198
+    "version": 199
   }
 }
