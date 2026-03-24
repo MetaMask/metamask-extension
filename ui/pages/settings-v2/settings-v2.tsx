@@ -40,7 +40,8 @@ import {
   SETTINGS_V2_RENDERABLE_ROUTES,
   getSettingsV2RouteMeta,
 } from './settings-registry';
-import { SettingsV2Header } from './shared';
+import { SettingsV2Header, SettingsV2SearchResults } from './shared';
+import { useSettingsV2Search, MIN_SEARCH_LENGTH } from './useSettingsV2Search';
 
 const FirstTabComponent = SETTINGS_V2_TABS[0]?.component;
 const FIRST_TAB_PATH = SETTINGS_V2_TABS[0]?.path;
@@ -58,7 +59,6 @@ const SettingsV2Layout = ({ children }: { children: React.ReactNode }) => {
   const { pathname } = location;
   const meta = getSettingsV2RouteMeta(pathname);
   const environmentType = getEnvironmentType();
-  const [searchValue, setSearchValue] = useState('');
 
   const isPopupOrSidepanel =
     environmentType === ENVIRONMENT_TYPE_POPUP ||
@@ -69,6 +69,10 @@ const SettingsV2Layout = ({ children }: { children: React.ReactNode }) => {
   const backRoute = isOnSettingsRoot
     ? DEFAULT_ROUTE
     : (meta?.parentPath ?? SETTINGS_V2_ROUTE);
+
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [searchValue, setSearchValue] = useState('');
+  const searchResults = useSettingsV2Search(searchValue);
 
   const currentPageLabelKey = meta?.labelKey;
 
@@ -111,6 +115,11 @@ const SettingsV2Layout = ({ children }: { children: React.ReactNode }) => {
     [t],
   );
 
+  const handleCloseSearch = () => {
+    setIsSearchOpen(false);
+    setSearchValue('');
+  };
+
   return (
     <Box
       flexDirection={BoxFlexDirection.Column}
@@ -122,10 +131,24 @@ const SettingsV2Layout = ({ children }: { children: React.ReactNode }) => {
         isPopupOrSidepanel={isPopupOrSidepanel}
         isOnSettingsRoot={isOnSettingsRoot}
         onClose={() => navigate(backRoute)}
+        isSearchOpen={isSearchOpen}
+        onOpenSearch={() => setIsSearchOpen(true)}
+        onCloseSearch={handleCloseSearch}
         searchValue={searchValue}
         onSearchChange={setSearchValue}
         onSearchClear={() => setSearchValue('')}
       />
+      {isSearchOpen && searchValue.trim().length >= MIN_SEARCH_LENGTH ? (
+        <div className="settings-page__content flex-1 overflow-y-auto">
+          <SettingsV2SearchResults
+            results={searchResults}
+            onClickResult={(item) => {
+              navigate(`${item.tabRoute}#${item.settingId}`);
+              handleCloseSearch();
+            }}
+          />
+        </div>
+      ) : (
       <Box
         flexDirection={BoxFlexDirection.Row}
         // 64px is the header height
@@ -224,6 +247,7 @@ const SettingsV2Layout = ({ children }: { children: React.ReactNode }) => {
           <Suspense fallback={null}>{children}</Suspense>
         </Box>
       </Box>
+      )}
     </Box>
   );
 };

@@ -69,7 +69,7 @@ export type UsePerpsOrderFormReturn = {
 };
 
 /**
- * Custom hook for managing perps order form state
+ * Custom hook for managing perps order form state.
  *
  * Encapsulates all form state, handlers, and calculations for the order entry form.
  * Supports three modes: 'new', 'modify', and 'close'.
@@ -83,7 +83,7 @@ export type UsePerpsOrderFormReturn = {
  * @param options.availableBalance - Available balance for trading
  * @param options.onFormStateChange - Callback when form state changes
  * @param options.onSubmit - Callback when order is submitted
- * @param options.orderType - Order type: 'market' or 'limit' (defaults to 'market')
+ * @param options.orderType - Order type: 'market' or 'limit'
  * @returns Form state, handlers, and calculated values
  */
 export function usePerpsOrderForm({
@@ -242,12 +242,24 @@ export function usePerpsOrderForm({
       };
     }
 
+    // For limit orders, use the user-specified limit price for calculations.
+    // Fall back to current market price if limit price is empty/invalid.
+    let effectivePrice = currentPrice;
+    if (formState.type === 'limit' && formState.limitPrice) {
+      const parsedLimitPrice = Number.parseFloat(
+        formState.limitPrice.replaceAll(',', ''),
+      );
+      if (!Number.isNaN(parsedLimitPrice) && parsedLimitPrice > 0) {
+        effectivePrice = parsedLimitPrice;
+      }
+    }
+
     // User enters MARGIN amount. Position value = margin × leverage
     const positionValue = amount * formState.leverage;
-    const positionSize = calculatePositionSize(positionValue, currentPrice);
+    const positionSize = calculatePositionSize(positionValue, effectivePrice);
     const marginRequired = amount; // The entered amount IS the margin
     const liquidationPrice = estimateLiquidationPrice(
-      currentPrice,
+      effectivePrice,
       formState.leverage,
       formState.direction === 'long',
     );
@@ -265,6 +277,8 @@ export function usePerpsOrderForm({
     formState.amount,
     formState.leverage,
     formState.direction,
+    formState.type,
+    formState.limitPrice,
     currentPrice,
     mode,
     existingPosition,
@@ -304,6 +318,7 @@ export function usePerpsOrderForm({
     setClosePercent(percent);
   }, []);
 
+  // Limit price change handler (for limit order mode)
   const handleLimitPriceChange = useCallback((limitPrice: string) => {
     setFormState((prev) => ({ ...prev, limitPrice }));
   }, []);

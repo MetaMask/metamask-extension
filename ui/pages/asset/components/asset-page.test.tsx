@@ -4,6 +4,7 @@ import thunk from 'redux-thunk';
 import { fireEvent, waitFor } from '@testing-library/react';
 import { EthAccountType, EthScope } from '@metamask/keyring-api';
 import nock from 'nock';
+import { toChecksumHexAddress } from '@metamask/controller-utils';
 import {
   CHAIN_IDS,
   MAINNET_DISPLAY_NAME,
@@ -251,7 +252,7 @@ describe('AssetPage', () => {
     openTabSpy.mockClear();
 
     nock('https://price.api.cx.metamask.io')
-      .get(/\/v1\/chains\/\d+\/historical-prices/u)
+      .get(/\/v3\/historical-prices\//u)
       .query(true)
       .reply(200, {})
       .persist();
@@ -450,12 +451,6 @@ describe('AssetPage', () => {
   it('should render an ERC20 asset without prices', async () => {
     const address = '0x309375769E79382beFDEc5bdab51063AeBDC4936';
 
-    // Mock no price history
-    nock('https://price.api.cx.metamask.io')
-      .get(`/v1/chains/1/historical-prices/${address}`)
-      .query(true)
-      .reply(200, {});
-
     const { container, queryByTestId } = renderWithProvider(
       <AssetPage asset={{ ...token, address }} optionsButton={null} />,
       configureMockStore([thunk])({
@@ -495,9 +490,11 @@ describe('AssetPage', () => {
     const address = '0xe4246B1Ac0Ba6839d9efA41a8A30AE3007185f55';
     const marketCap = 456;
 
-    // Mock price history
+    // Mock price history (v3 CAIP path; address must match checksummed segment from useHistoricalPrices)
     nock('https://price.api.cx.metamask.io')
-      .get(`/v1/chains/1/historical-prices/${address}`)
+      .get(
+        `/v3/historical-prices/eip155:1/erc20:${toChecksumHexAddress(address)}`,
+      )
       .query(true)
       .reply(200, { prices: [[1, 1]] });
 
