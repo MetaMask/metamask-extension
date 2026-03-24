@@ -4129,7 +4129,7 @@ export default class MetamaskController extends EventEmitter {
       if (isSocialLoginFlow) {
         // renew seedless refresh token asynchronously
         this.seedlessOnboardingController
-          .renewRefreshToken(password)
+          .rotateRefreshToken(password)
           .catch((err) => {
             log.error('error while revoking seedless refresh token', err);
           })
@@ -4215,7 +4215,7 @@ export default class MetamaskController extends EventEmitter {
 
         // revoke seedless refresh token asynchronously
         this.seedlessOnboardingController
-          .renewRefreshToken(password)
+          .rotateRefreshToken(password)
           .catch((err) => {
             log.error('error while revoking seedless refresh token', err);
           })
