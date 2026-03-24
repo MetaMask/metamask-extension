@@ -4633,6 +4633,152 @@ describe('MetaMaskController', () => {
       });
     });
 
+    describe('#_runSeedlessOnboardingMigrations', () => {
+      let runMigrationsSpy;
+      let trackEventSpy;
+
+      beforeEach(() => {
+        jest.spyOn(console, 'error').mockImplementation(() => {});
+        globalThis.sentry = {
+          ...globalThis.sentry,
+          captureException: jest.fn(),
+        };
+
+        jest
+          .spyOn(metamaskController.onboardingController, 'state', 'get')
+          .mockReturnValue({ completedOnboarding: true });
+
+        runMigrationsSpy = jest
+          .spyOn(
+            metamaskController.seedlessOnboardingController,
+            'runMigrations',
+          )
+          .mockResolvedValue(false);
+
+        trackEventSpy = jest.spyOn(
+          metamaskController.metaMetricsController,
+          'trackEvent',
+        );
+      });
+
+      it('returns early and skips migration when onboarding is not completed', async () => {
+        jest
+          .spyOn(metamaskController.onboardingController, 'state', 'get')
+          .mockReturnValue({ completedOnboarding: false });
+
+        await metamaskController._runSeedlessOnboardingMigrations();
+
+        expect(runMigrationsSpy).not.toHaveBeenCalled();
+        expect(trackEventSpy).not.toHaveBeenCalled();
+      });
+
+      it('only tracks a completion event when a migration was actually performed', async () => {
+        jest
+          .spyOn(
+            metamaskController.seedlessOnboardingController,
+            'state',
+            'get',
+          )
+          .mockReturnValue({ migrationVersion: 1 });
+
+        runMigrationsSpy.mockResolvedValue(false);
+        await metamaskController._runSeedlessOnboardingMigrations();
+        expect(trackEventSpy).not.toHaveBeenCalled();
+
+        runMigrationsSpy.mockResolvedValue(true);
+        await metamaskController._runSeedlessOnboardingMigrations();
+        expect(trackEventSpy).toHaveBeenCalledWith({
+          event: 'Seedless Onboarding Migration Completed',
+          category: 'Background',
+          properties: { migration_version: 1 },
+        });
+      });
+
+      it('tracks a failure event, reports to Sentry, and re-throws when migration fails', async () => {
+        const migrationError = new Error('migration failed');
+        runMigrationsSpy.mockRejectedValue(migrationError);
+        jest
+          .spyOn(
+            metamaskController.seedlessOnboardingController,
+            'state',
+            'get',
+          )
+          .mockReturnValue({ migrationVersion: 0 });
+
+        await expect(
+          metamaskController._runSeedlessOnboardingMigrations(),
+        ).rejects.toThrow('migration failed');
+
+        expect(trackEventSpy).toHaveBeenCalledWith({
+          event: 'Seedless Onboarding Migration Failed',
+          category: 'Background',
+          properties: { migration_version: 0, error: 'migration failed' },
+        });
+        expect(globalThis.sentry.captureException).toHaveBeenCalledWith(
+          migrationError,
+        );
+      });
+
+      it('skips Sentry reporting but still tracks the failure event when reportToSentry is false', async () => {
+        runMigrationsSpy.mockRejectedValue(new Error('migration failed'));
+
+        await expect(
+          metamaskController._runSeedlessOnboardingMigrations({
+            reportToSentry: false,
+          }),
+        ).rejects.toThrow('migration failed');
+
+        expect(globalThis.sentry.captureException).not.toHaveBeenCalled();
+        expect(trackEventSpy).toHaveBeenCalledWith(
+          expect.objectContaining({
+            event: 'Seedless Onboarding Migration Failed',
+          }),
+        );
+      });
+
+      it('wraps non-Error thrown values in a new Error before re-throwing', async () => {
+        runMigrationsSpy.mockRejectedValue('string error');
+
+        await expect(
+          metamaskController._runSeedlessOnboardingMigrations(),
+        ).rejects.toThrow('Unknown error');
+
+        expect(trackEventSpy).toHaveBeenCalledWith(
+          expect.objectContaining({
+            event: 'Seedless Onboarding Migration Failed',
+            properties: expect.objectContaining({ error: 'Unknown error' }),
+          }),
+        );
+      });
+
+      it('logs warnings and still re-throws when MetaMetrics tracking or Sentry reporting fail', async () => {
+        runMigrationsSpy.mockRejectedValue(new Error('migration failed'));
+        trackEventSpy.mockImplementation(() => {
+          throw new Error('trackEvent failed');
+        });
+        globalThis.sentry = {
+          ...globalThis.sentry,
+          captureException: jest.fn().mockImplementation(() => {
+            throw new Error('sentry capture failed');
+          }),
+        };
+        const logWarnSpy = jest.spyOn(log, 'warn').mockImplementation(() => {});
+
+        await expect(
+          metamaskController._runSeedlessOnboardingMigrations(),
+        ).rejects.toThrow('migration failed');
+
+        expect(logWarnSpy).toHaveBeenCalledWith(
+          'Failed to track seedless onboarding migration failure',
+          expect.any(Error),
+        );
+        expect(logWarnSpy).toHaveBeenCalledWith(
+          'Failed to capture seedless onboarding migration failure',
+          expect.any(Error),
+        );
+      });
+    });
+
     describe('handleDefiReferral', () => {
       const HYPERLIQUID_LEARN_MORE_URL =
         DEFI_REFERRAL_PARTNERS[DefiReferralPartner.Hyperliquid].learnMoreUrl;
