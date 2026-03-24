@@ -749,11 +749,11 @@ const _getBaseValidationErrors = createDeepEqualSelector(
     // gasIncluded7702 and gasSponsored are gated at request time via
     // useGasIncluded7702 (returns false for HW), so the backend won't
     // return those flags for HW accounts.
-    // gasIncluded (STX path) is gated at request time in
-    // prepare-bridge-page, but we also gate here as defense-in-depth.
-    const isGasless =
-      !isHardwareWalletAccount &&
-      Boolean(gasIncluded7702 || gasIncluded || gasSponsored);
+    // gasIncluded (STX path) works for HW wallets; only 7702/sponsored
+    // need gating. We also gate 7702/sponsored here as defense-in-depth.
+    const isGasless = isHardwareWalletAccount
+      ? gasIncluded
+      : gasIncluded || gasIncluded7702 || gasSponsored;
 
     const srcChainId =
       quoteRequest.srcChainId ?? activeQuote?.quote?.srcChainId;

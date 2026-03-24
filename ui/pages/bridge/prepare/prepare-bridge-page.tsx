@@ -174,11 +174,8 @@ const PrepareBridgePage = ({
   const keyring = useSelector(getCurrentKeyring);
   const isUsingHardwareWallet = isHardwareKeyring(keyring?.type);
 
-  // Defense-in-depth: useGasIncluded7702 already returns false for HW
-  // wallets, and getIsGasIncluded (STX path) is gated elsewhere, but we
-  // guard both here to protect against future hook/selector changes.
-  const effectiveGasIncluded = !isUsingHardwareWallet && gasIncluded;
   const effectiveGasIncluded = gasIncluded;
+  const effectiveGasIncluded7702 = !isUsingHardwareWallet && gasIncluded7702;
 
   const shouldShowMaxButton =
     fromToken && isNativeAddress(fromToken.assetId)
