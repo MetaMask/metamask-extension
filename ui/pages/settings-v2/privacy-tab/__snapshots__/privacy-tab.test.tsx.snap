@@ -3,7 +3,7 @@
 exports[`PrivacyTab snapshot matches snapshot 1`] = `
 <div>
   <div
-    class="pb-4 px-4"
+    class="pb-4 px-4 overflow-y-auto"
   >
     <div>
       <div
