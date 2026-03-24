@@ -1589,8 +1589,9 @@
     "ui/pages/settings-v2/shared/display-nft-media-item.test.tsx": {
       "React: componentWill* lifecycle deprecations": 1
     },
-    "ui/pages/settings-v2/shared/settings-v2-header.test.tsx": {
-      "warn: \u26a0\ufe0f React Router Future Flag": 2
+    "ui/pages/settings-v2/shared/settings-v2-search-results.test.tsx": {
+      "warn: Icon \"dollar\" not found": 2,
+      "warn: Icon \"setting\" not found": 2
     },
     "ui/pages/settings-v2/transactions-tab/transactions-tab.test.tsx": {
       "React: componentWill* lifecycle deprecations": 1,

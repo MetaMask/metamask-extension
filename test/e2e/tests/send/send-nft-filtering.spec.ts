@@ -7,7 +7,7 @@
 
 import { withFixtures } from '../../helpers';
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
-import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { Driver } from '../../webdriver/driver';
 import { Anvil } from '../../seeder/anvil';
 
@@ -23,7 +23,7 @@ describe('Send NFT - Filtering', function () {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
-        fixtures: new FixtureBuilder().withNftControllerERC721().build(),
+        fixtures: new FixtureBuilderV2().withNftControllerERC721().build(),
         smartContract,
         title: this.test?.fullTitle(),
       },
