@@ -19,6 +19,13 @@ jest.mock('../../store/actions.ts', () => ({
   resetWallet: () => mockResetWallet,
 }));
 
+const mockGetIsSocialLoginFlow = jest.fn().mockReturnValue(false);
+jest.mock('../../selectors', () => ({
+  ...jest.requireActual('../../selectors'),
+  getIsSocialLoginFlow: (...args: unknown[]) =>
+    mockGetIsSocialLoginFlow(...args),
+}));
+
 const buildStore = (metamask: Record<string, unknown> = {}) =>
   configureMockStore([thunk])({ metamask });
 
@@ -46,7 +53,9 @@ describe('ResetPasswordModal', () => {
   describe('initial render', () => {
     it('renders the modal with the forgot-password title', () => {
       const { getByText } = renderModal();
-      expect(getByText(messages.forgotPasswordModalTitle.message)).toBeInTheDocument();
+      expect(
+        getByText(messages.forgotPasswordModalTitle.message),
+      ).toBeInTheDocument();
     });
 
     it('does not show the danger icon or back button on initial view', () => {
@@ -64,8 +73,12 @@ describe('ResetPasswordModal', () => {
   describe('SRP login flow (isSocialLoginEnabled = false)', () => {
     it('renders SRP description paragraphs', () => {
       const { getByText } = renderModal();
-      expect(getByText(messages.forgotPasswordModalDescription1.message)).toBeInTheDocument();
-      expect(getByText(messages.forgotPasswordModalDescription2.message)).toBeInTheDocument();
+      expect(
+        getByText(messages.forgotPasswordModalDescription1.message),
+      ).toBeInTheDocument();
+      expect(
+        getByText(messages.forgotPasswordModalDescription2.message),
+      ).toBeInTheDocument();
     });
 
     it('renders the contact support link', () => {
@@ -92,18 +105,15 @@ describe('ResetPasswordModal', () => {
   describe('social login flow (isSocialLoginEnabled = true)', () => {
     const socialLoginMeta = { firstTimeFlowType: 'socialImport' };
 
-    beforeAll(() => {
-      jest.mock('../../selectors', () => ({
-        ...jest.requireActual('../../selectors'),
-        getIsSocialLoginFlow: () => true,
-      }));
+    beforeEach(() => {
+      mockGetIsSocialLoginFlow.mockReturnValue(true);
+    });
+
+    afterEach(() => {
+      mockGetIsSocialLoginFlow.mockReturnValue(false);
     });
 
     it('renders the social-login description when isSocialLoginEnabled is true', () => {
-      jest
-        .spyOn(require('../../selectors'), 'getIsSocialLoginFlow')
-        .mockReturnValue(true);
-
       const { getByText } = renderModal({}, socialLoginMeta);
       expect(
         getByText(messages.forgotPasswordModalContactSupportLink.message),
@@ -111,20 +121,14 @@ describe('ResetPasswordModal', () => {
     });
 
     it('renders the "Import wallet" and "I don\'t know my Phrase" buttons in social flow', () => {
-      jest
-        .spyOn(require('../../selectors'), 'getIsSocialLoginFlow')
-        .mockReturnValue(true);
-
       const { getByTestId } = renderModal({}, socialLoginMeta);
       expect(getByTestId('reset-password-modal-button')).toBeInTheDocument();
-      expect(getByTestId('reset-password-modal-button-link')).toBeInTheDocument();
+      expect(
+        getByTestId('reset-password-modal-button-link'),
+      ).toBeInTheDocument();
     });
 
     it('calls onRestore when "Import wallet" is clicked in social flow', () => {
-      jest
-        .spyOn(require('../../selectors'), 'getIsSocialLoginFlow')
-        .mockReturnValue(true);
-
       const onRestore = jest.fn();
       const { getByTestId } = renderModal({ onRestore }, socialLoginMeta);
       fireEvent.click(getByTestId('reset-password-modal-button'));
@@ -151,7 +155,9 @@ describe('ResetPasswordModal', () => {
 
     it('hides SRP description paragraphs in reset-wallet view', () => {
       const { queryByText, getByTestId } = renderAndOpenResetView();
-      expect(queryByText(messages.forgotPasswordModalDescription1.message)).toBeNull();
+      expect(
+        queryByText(messages.forgotPasswordModalDescription1.message),
+      ).toBeNull();
       expect(getByTestId('reset-password-modal-button')).toBeInTheDocument();
     });
 
@@ -180,7 +186,9 @@ describe('ResetPasswordModal', () => {
 
       if (backBtn) {
         fireEvent.click(backBtn);
-        expect(queryByText(messages.forgotPasswordModalTitle.message)).toBeInTheDocument();
+        expect(
+          queryByText(messages.forgotPasswordModalTitle.message),
+        ).toBeInTheDocument();
       }
     });
   });
@@ -204,7 +212,9 @@ describe('ResetPasswordModal', () => {
     it('fires a trackEvent when the contact support link is clicked', () => {
       const { getByText } = renderModal();
       expect(() =>
-        fireEvent.click(getByText(messages.forgotPasswordModalContactSupportLink.message)),
+        fireEvent.click(
+          getByText(messages.forgotPasswordModalContactSupportLink.message),
+        ),
       ).not.toThrow();
     });
   });
