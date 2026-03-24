@@ -127,21 +127,18 @@ export const MultichainBridgeQuoteCard = ({
   }, [fromChain?.chainId, gasFeesSponsoredNetworkEnabled]);
 
   const shouldShowGasSponsored = useMemo(() => {
-    // useGasIncluded7702 gates HW wallets at request time (sends
-    // gasIncluded7702=false), so the backend won't return gasSponsored=true
-    // for HW accounts. No additional HW gate needed on this path.
+    // HW wallets cannot use any form of gas sponsorship. Gate early as
+    // defense-in-depth even though request-time gating should prevent the
+    // backend from returning gasSponsored=true for HW accounts.
+    if (isHardwareWalletAccount) {
+      return false;
+    }
+
     if (gasSponsored) {
       return true;
     }
 
-    // This path is independent of the quote's gasSponsored flag—it relies on
-    // the network-level feature flag instead. HW wallets cannot use sponsored
-    // gas, so we must gate them out explicitly here.
-    if (
-      !isHardwareWalletAccount &&
-      insufficientBal &&
-      isCurrentNetworkGasSponsored
-    ) {
+    if (insufficientBal && isCurrentNetworkGasSponsored) {
       const isSameChain =
         fromToken?.chainId &&
         toToken?.chainId &&
@@ -308,56 +305,56 @@ export const MultichainBridgeQuoteCard = ({
             {!shouldShowGasSponsored &&
               !isHardwareWalletAccount &&
               activeQuote.quote.gasIncluded && (
-              <Row gap={1} data-testid="network-fees-included">
-                <Text
-                  variant={TextVariant.bodySm}
-                  color={
-                    isEstimatedReturnLow
-                      ? TextColor.warningDefault
-                      : TextColor.textAlternative
-                  }
-                  style={{ textDecoration: 'line-through' }}
-                  data-testid="network-fees-included-original-amount"
-                >
-                  {activeQuote.includedTxFees?.valueInCurrency
-                    ? formatNetworkFee(
-                        activeQuote.includedTxFees.valueInCurrency,
-                        currency,
-                      )
-                    : formatNetworkFee(
-                        activeQuote.gasFee.effective?.valueInCurrency,
-                        currency,
-                      )}
-                </Text>
-                <Text
-                  variant={TextVariant.bodySm}
-                  color={
-                    isEstimatedReturnLow
-                      ? TextColor.warningDefault
-                      : TextColor.textAlternative
-                  }
-                >
-                  {t('swapGasFeesIncluded')}
-                </Text>
-              </Row>
-            )}
+                <Row gap={1} data-testid="network-fees-included">
+                  <Text
+                    variant={TextVariant.bodySm}
+                    color={
+                      isEstimatedReturnLow
+                        ? TextColor.warningDefault
+                        : TextColor.textAlternative
+                    }
+                    style={{ textDecoration: 'line-through' }}
+                    data-testid="network-fees-included-original-amount"
+                  >
+                    {activeQuote.includedTxFees?.valueInCurrency
+                      ? formatNetworkFee(
+                          activeQuote.includedTxFees.valueInCurrency,
+                          currency,
+                        )
+                      : formatNetworkFee(
+                          activeQuote.gasFee.effective?.valueInCurrency,
+                          currency,
+                        )}
+                  </Text>
+                  <Text
+                    variant={TextVariant.bodySm}
+                    color={
+                      isEstimatedReturnLow
+                        ? TextColor.warningDefault
+                        : TextColor.textAlternative
+                    }
+                  >
+                    {t('swapGasFeesIncluded')}
+                  </Text>
+                </Row>
+              )}
             {!shouldShowGasSponsored &&
               (isHardwareWalletAccount || !activeQuote.quote.gasIncluded) && (
-              <Text
-                variant={TextVariant.bodySm}
-                color={
-                  isEstimatedReturnLow
-                    ? TextColor.warningDefault
-                    : TextColor.textAlternative
-                }
-                data-testid="network-fees"
-              >
-                {formatNetworkFee(
-                  activeQuote.gasFee.effective?.valueInCurrency,
-                  currency,
-                )}
-              </Text>
-            )}
+                <Text
+                  variant={TextVariant.bodySm}
+                  color={
+                    isEstimatedReturnLow
+                      ? TextColor.warningDefault
+                      : TextColor.textAlternative
+                  }
+                  data-testid="network-fees"
+                >
+                  {formatNetworkFee(
+                    activeQuote.gasFee.effective?.valueInCurrency,
+                    currency,
+                  )}
+                </Text>
+              )}
           </Row>
         )}
 
