@@ -27,6 +27,10 @@ const REGISTRY_PUBLIC_KEY =
 /**
  * Persists a subset of response headers (aligned with `update-snap-binary.ts`
  * `relevantHeaders`) plus a Content-Length that matches the saved body.
+ *
+ * @param filePath - Path to write the JSON header snapshot.
+ * @param response - Fetch `Response` whose headers are copied (subset).
+ * @param bodyUtf8 - UTF-8 body string; used to set `Content-Length`.
  */
 function saveAclHeadersFile(
   filePath: string,
@@ -35,7 +39,8 @@ function saveAclHeadersFile(
 ) {
   const headerGet = (name: string) => response.headers.get(name);
   const contentTypeRaw = headerGet('content-type') ?? 'application/json';
-  const contentType = contentTypeRaw.split(';')[0]?.trim() ?? 'application/json';
+  const contentType =
+    contentTypeRaw.split(';')[0]?.trim() ?? 'application/json';
 
   const relevantHeaders: Record<string, string> = {
     'Accept-Ranges': headerGet('accept-ranges') ?? 'bytes',
@@ -64,10 +69,14 @@ async function main() {
   ]);
 
   if (!registryRes.ok) {
-    throw new Error(`registry fetch failed: ${registryRes.status} ${registryRes.statusText}`);
+    throw new Error(
+      `registry fetch failed: ${registryRes.status} ${registryRes.statusText}`,
+    );
   }
   if (!signatureRes.ok) {
-    throw new Error(`signature fetch failed: ${signatureRes.status} ${signatureRes.statusText}`);
+    throw new Error(
+      `signature fetch failed: ${signatureRes.status} ${signatureRes.statusText}`,
+    );
   }
 
   const registryText = await registryRes.text();
