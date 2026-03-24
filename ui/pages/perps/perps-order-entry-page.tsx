@@ -570,7 +570,7 @@ const PerpsOrderEntryPage: React.FC = () => {
           <Text
             variant={TextVariant.BodyMd}
             fontWeight={FontWeight.Bold}
-            color={TextColor.textDefault}
+            color={TextColor.TextDefault}
             data-testid="perps-order-entry-asset-symbol"
           >
             {displayName}
@@ -582,7 +582,7 @@ const PerpsOrderEntryPage: React.FC = () => {
           >
             <Text
               variant={TextVariant.BodySm}
-              color={TextColor.textAlternative}
+              color={TextColor.TextAlternative}
               data-testid="perps-order-entry-price"
             >
               {displayPrice}
