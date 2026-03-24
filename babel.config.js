@@ -14,7 +14,7 @@ module.exports = function (api) {
     overrides: [
       {
         test: new RegExp(
-          `^${uiPath}${slash}(?:components|contexts|hooks|layouts|pages)${slash}(?!.*\\.(?:test|stories|container)\\.)(?:.*)\\.(?:m?[jt]s|[jt]sx)$`,
+          `^${uiPath}${slash}(?:components|contexts|hooks|layouts|pages)${slash}(?!.*(?:\\.(?:test|spec|stories|container)\\.|__mocks__${slash}|\\.d\\.[jt]s$)).*\\.(?:m?[jt]s|[jt]sx)$`,
           'u',
         ),
         plugins: [['babel-plugin-react-compiler', { target: '17' }]],

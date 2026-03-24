@@ -151,7 +151,6 @@ module.exports = {
         'newlines-between': 'ignore',
         alphabetize: {
           order: 'ignore',
-          orderImportKind: 'ignore',
           caseInsensitive: false,
         },
       },

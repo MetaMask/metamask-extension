@@ -82,6 +82,7 @@ ignores:
   - 'nyc' # coverage
   - 'core-js-pure' # polyfills
   - 'react-compiler-webpack' # build tool
+  - 'thread-loader' # build tool
   # babel
   - '@babel/plugin-transform-class-properties'
   - '@babel/plugin-transform-private-methods'
