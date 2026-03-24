@@ -114,6 +114,7 @@ import { DecryptMessageController } from '../controllers/decrypt-message';
 import { EncryptionPublicKeyController } from '../controllers/encryption-public-key';
 import { RewardsDataService } from '../controllers/rewards/rewards-data-service';
 import { RewardsController } from '../controllers/rewards/rewards-controller';
+import { OcapKernelController } from '../controllers/ocap-kernel-controller';
 import { StaticAssetsController } from '../controllers/static-assets-controller';
 import { DataDeletionService } from '../services/data-deletion-service';
 import { LegacyBackgroundApiService } from '../services/legacy-background-api-service';
@@ -211,6 +212,7 @@ export type MessengerClient =
   | TokenRatesController
   | NftController
   | NftDetectionController
+  | OcapKernelController
   | AssetsContractController
   | AccountTreeController
   | WebSocketService
@@ -300,6 +302,7 @@ export type MessengerClientFlatState = AccountOrderController['state'] &
   TokenRatesController['state'] &
   NftController['state'] &
   NftDetectionController['state'] &
+  OcapKernelController['state'] &
   NetworkEnablementController['state'] &
   AccountTrackerController['state'] &
   ProfileMetricsController['state'];

@@ -68,6 +68,7 @@ import type { AppStateControllerState } from '../../app/scripts/controllers/app-
 import type { AlertControllerState } from '../../app/scripts/controllers/alert-controller';
 import type { MetaMetricsDataDeletionState } from '../../app/scripts/controllers/metametrics-data-deletion/metametrics-data-deletion';
 import type { EncryptionPublicKeyControllerState } from '../../app/scripts/controllers/encryption-public-key';
+import type { OcapKernelControllerState } from '../../app/scripts/controllers/ocap-kernel-controller';
 import type { DecryptMessageControllerState } from '../../app/scripts/controllers/decrypt-message';
 import type { OnboardingControllerState } from '../../app/scripts/controllers/onboarding';
 import type { MetaMetricsControllerState } from '../../app/scripts/controllers/metametrics-controller';
@@ -327,6 +328,7 @@ export type ControllerStatePropertiesEnumerated = {
   claimsConfigurations: ClaimsControllerState['claimsConfigurations'];
   drafts: ClaimsControllerState['drafts'];
   connectivityStatus: ConnectivityControllerState['connectivityStatus'];
+  capabilityVendorUrl: OcapKernelControllerState['capabilityVendorUrl'];
 };
 
 type ControllerStateTypesMerged = AccountsControllerState &
@@ -390,7 +392,8 @@ type ControllerStateTypesMerged = AccountsControllerState &
   UserOperationControllerState &
   UserStorageController.UserStorageControllerState &
   RewardsControllerState &
-  ConnectivityControllerState;
+  ConnectivityControllerState &
+  OcapKernelControllerState;
 
 /**
  * This type contains all controller state top-level properties, and

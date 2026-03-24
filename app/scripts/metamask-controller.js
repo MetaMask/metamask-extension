@@ -410,6 +410,7 @@ import { TokenDetectionControllerInit } from './messenger-client-init/token-dete
 import { TokensControllerInit } from './messenger-client-init/tokens-controller-init';
 import { TokenBalancesControllerInit } from './messenger-client-init/token-balances-controller-init';
 import { StaticAssetsControllerInit } from './messenger-client-init/static-assets-controller-init';
+import { OcapKernelControllerInit } from './messenger-client-init/ocap-kernel-controller-init';
 import { RatesControllerInit } from './messenger-client-init/rates-controller-init';
 import { CurrencyRateControllerInit } from './messenger-client-init/currency-rate-controller-init';
 import { EnsControllerInit } from './messenger-client-init/confirmations/ens-controller-init';
@@ -686,6 +687,7 @@ export default class MetamaskController extends EventEmitter {
       TokensController: TokensControllerInit,
       TokenBalancesController: TokenBalancesControllerInit,
       StaticAssetsController: StaticAssetsControllerInit,
+      OcapKernelController: OcapKernelControllerInit,
       // MultichainNetworkController and NetworkEnablementController must be initialized before TokenRatesController
       // because TokenRatesController depends on NetworkEnablementController:getState during construction.
       MultichainNetworkController: MultichainNetworkControllerInit,
@@ -864,6 +866,7 @@ export default class MetamaskController extends EventEmitter {
     this.legacyBackgroundApiService =
       messengerClientsByName.LegacyBackgroundApiService;
     this.passkeyController = messengerClientsByName.PasskeyController;
+    this.ocapKernelController = messengerClientsByName.OcapKernelController;
     this.backup = new Backup({
       preferencesController: this.preferencesController,
       addressBookController: this.addressBookController,

@@ -211,6 +211,7 @@ import { getProfileMetricsServiceMessenger } from './profile-metrics-service-mes
 import { getStorageServiceMessenger } from './storage-service-messenger';
 import { getGeolocationApiServiceMessenger } from './geolocation-api-service-messenger';
 import { getGeolocationControllerMessenger } from './geolocation-controller-messenger';
+import { getOcapKernelControllerMessenger } from './ocap-kernel-controller-messenger';
 import { getPerpsControllerMessenger } from './perps-controller-messenger';
 import { getDataDeletionServiceMessenger } from './data-deletion-service-messenger';
 import { getLegacyBackgroundApiServiceMessenger } from './legacy-background-api-service-messenger';
@@ -323,6 +324,8 @@ export type { PermissionLogControllerMessenger } from './permission-log-controll
 export { getPermissionLogControllerMessenger } from './permission-log-controller-messenger';
 export { getGeolocationApiServiceMessenger } from './geolocation-api-service-messenger';
 export { getGeolocationControllerMessenger } from './geolocation-controller-messenger';
+export type { OcapKernelControllerMessenger } from './ocap-kernel-controller-messenger';
+export { getOcapKernelControllerMessenger } from './ocap-kernel-controller-messenger';
 export type { PerpsControllerMessenger } from './perps-controller-messenger';
 export { getPerpsControllerMessenger } from './perps-controller-messenger';
 export type { PhishingControllerMessenger } from './phishing-controller-messenger';
@@ -784,6 +787,10 @@ export const MESSENGER_FACTORIES = {
   },
   NetworkOrderController: {
     getMessenger: getNetworkOrderControllerMessenger,
+    getInitMessenger: noop,
+  },
+  OcapKernelController: {
+    getMessenger: getOcapKernelControllerMessenger,
     getInitMessenger: noop,
   },
   NetworkEnablementController: {

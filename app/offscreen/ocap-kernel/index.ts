@@ -127,6 +127,11 @@ export async function runKernel(): Promise<never> {
         console.log('OCAP URL for remote kernel connection:');
         console.log(parsed.ocapURL);
         console.log('='.repeat(60));
+
+        await E(hostApiProxy).invoke(
+          'OcapKernelController:setCapabilityVendorUrl',
+          [parsed.ocapURL],
+        );
       }
     }
 

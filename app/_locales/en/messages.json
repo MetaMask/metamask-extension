@@ -1536,6 +1536,9 @@
     "message": "You're all caught up!",
     "description": "Message shown in carousel when all promotional slides have been dismissed"
   },
+  "capabilityVendorUrl": {
+    "message": "Capability Vendor URL"
+  },
   "chainId": {
     "message": "Chain ID"
   },
@@ -5058,6 +5061,9 @@
     "message": "View on $1",
     "description": "Additional content in a notification that appears when a transaction is confirmed and has a block explorer URL."
   },
+  "notAvailable": {
+    "message": "Not available"
+  },
   "notificationTransactionWithoutNonceFailedMessage": {
     "message": "Transaction failed! $1",
     "description": "Content of the browser notification that appears when a EIP-7702 transaction fails"
@@ -5146,6 +5152,9 @@
   },
   "onboardedMetametricsParagraph3": {
     "message": "Remember, we never sell the data you provide and you can opt out any time."
+  },
+  "ocapKernel": {
+    "message": "Ocap Kernel"
   },
   "onboardedMetametricsTitle": {
     "message": "Help us enhance your experience"

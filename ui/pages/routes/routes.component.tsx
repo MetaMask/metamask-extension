@@ -70,6 +70,7 @@ import {
   PERPS_WITHDRAW_ROUTE,
   CONTACTS_ROUTE,
   SETTINGS_V2_ROUTE,
+  OCAP_KERNEL_ROUTE,
 } from '../../helpers/constants/routes';
 import { MUSD_CONVERSION_ROUTE } from '../musd/constants/routes';
 import { getProviderConfig } from '../../../shared/lib/selectors/networks';
@@ -239,6 +240,7 @@ const PerpsOrderEntryPage = mmLazy(
 );
 const MusdConversionPage = mmLazy(() => import('../musd/index.tsx'));
 const PerpsLayout = mmLazy(() => import('../perps/perps-layout.tsx'));
+const OcapKernelPage = mmLazy(() => import('../ocap-kernel/index.ts'));
 // End Lazy Routes
 
 const SettingsV2LegacyRedirect = () => {
@@ -437,6 +439,10 @@ export const routeConfig = [
             capabilities: SNAP_VIEW_ROUTE_ALLOWED_CAPABILITIES,
             element: <SnapView />,
           }),
+          {
+            path: OCAP_KERNEL_ROUTE,
+            element: <OcapKernelPage />,
+          },
           {
             path: `${CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE}/:txHash`,
             element: <CrossChainSwapTxDetails />,
