@@ -125,6 +125,7 @@ const BADGE_MAX_COUNT = 9;
 
 const inTest = process.env.IN_TEST;
 let inTestRestoreFlow = false;
+let backupExistedAtStartup = false;
 const { safePersist, requestSafeReload, evacuate } =
   getRequestSafeReload(persistenceManager);
 
@@ -601,18 +602,16 @@ const handleOnConnect = async (port) => {
     }
 
     // For testing: skip connectWindowPostMessage to simulate state sync hang.
-    // Only when backup exists and we're not in the restore flow (so recovery can complete).
+    // Only when backup pre-existed at startup (i.e. after a runtime.reload(),
+    // not during the initial onboarding session) and we're not in the restore
+    // flow (so recovery can complete).
     if (
       inTest &&
       getManifestFlags().testing?.simulateBackgroundStateSyncHang &&
-      !inTestRestoreFlow
+      !inTestRestoreFlow &&
+      backupExistedAtStartup
     ) {
-      const backupInIndexedDb = await persistenceManager
-        .getBackup()
-        .catch(() => null);
-      if (backupInIndexedDb?.KeyringController) {
-        return;
-      }
+      return;
     }
 
     // This is set in `setupController`, which is called as part of initialization
@@ -2380,19 +2379,15 @@ async function initBackground(backup) {
     if (
       inTest &&
       !backup &&
-      getManifestFlags().testing?.simulateBackgroundInitializationHang
+      getManifestFlags().testing?.simulateBackgroundInitializationHang &&
+      backupExistedAtStartup
     ) {
-      const backupInIndexedDb = await persistenceManager
-        .getBackup()
-        .catch(() => null);
-      if (backupInIndexedDb?.KeyringController) {
-        log.info(
-          'Simulating initialization hang (simulateBackgroundInitializationHang flag is set, backup exists)',
-        );
-        await new Promise(() => {
-          // Intentionally never resolves to simulate a hang
-        });
-      }
+      log.info(
+        'Simulating initialization hang (simulateBackgroundInitializationHang flag is set, backup exists)',
+      );
+      await new Promise(() => {
+        // Intentionally never resolves to simulate a hang
+      });
     }
 
     log.info('MetaMask initialization complete.');
@@ -2408,10 +2403,31 @@ async function startExtensionInitialization() {
   }
 
   const pendingRestore = await readPendingCriticalErrorRestore(browser);
+
+  // Fetch the backup once, shared by the pending-restore path below and by
+  // the simulateBackground*Hang test flags (which need to know whether a
+  // backup already existed at startup, before onboarding can create one).
+  const testingFlags = inTest ? getManifestFlags().testing : undefined;
+
+  let backup = null;
+  if (
+    pendingRestore ||
+    testingFlags?.simulateBackgroundStateSyncHang ||
+    testingFlags?.simulateBackgroundInitializationHang
+  ) {
+    await persistenceManager.open();
+    backup = await persistenceManager.getBackup().catch(() => null);
+  }
+
+  if (
+    testingFlags?.simulateBackgroundStateSyncHang ||
+    testingFlags?.simulateBackgroundInitializationHang
+  ) {
+    backupExistedAtStartup = Boolean(backup?.KeyringController);
+  }
+
   if (pendingRestore) {
     await clearPendingCriticalErrorRestore(browser);
-    await persistenceManager.open();
-    const backup = await persistenceManager.getBackup().catch(() => null);
     if (hasVault(backup)) {
       if (inTest) {
         inTestRestoreFlow = true;
