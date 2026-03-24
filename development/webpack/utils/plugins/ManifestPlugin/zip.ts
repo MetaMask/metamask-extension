@@ -6,8 +6,6 @@ import type { ZipOptions } from './types';
 
 const { RawSource } = sources;
 
-const BROWSER_TEMPLATE_RE = /\[browser\]/gu;
-
 /**
  * File types that generally compress well with DEFLATE.
  */
@@ -157,17 +155,6 @@ export function createBrowserZipBuilder({
   };
 
   return { addAsset, finalize };
-}
-
-/**
- * Resolves the output path for a browser-specific zip file.
- *
- * @param outFilePath - The file path template from plugin options.
- * @param browser - The browser currently being built.
- * @returns The resolved zip file path.
- */
-export function getZipFilePath(outFilePath: string, browser: Browser): string {
-  return outFilePath.replace(BROWSER_TEMPLATE_RE, browser);
 }
 
 /**

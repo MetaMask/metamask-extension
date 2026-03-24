@@ -17,11 +17,7 @@ import {
 } from '../../helpers';
 import { schema } from './schema';
 import type { ManifestPluginOptions } from './types';
-import {
-  createBrowserZipBuilder,
-  getZipFilePath,
-  type ZipCompressionOptions,
-} from './zip';
+import { createBrowserZipBuilder, type ZipCompressionOptions } from './zip';
 
 const { CachedSource, RawSource } = sources;
 
@@ -123,11 +119,17 @@ export class ManifestPlugin<Z extends boolean> {
   }
 
   /**
-   * Performs the zip-enabled asset pipeline in a single pass.
+   * Zips the assets for each browser into separate zip files and moves all
+   * assets into browser-specific directories. Source map assets may be moved to
+   * a dedicated `sourcemaps` directory if `devtool` is set to
+   * `hidden-source-map` to avoid exposing them in production builds.
    *
-   * Each asset is classified once so we can selectively cache expensive
-   * sources, stream eligible assets into the zip builders, and move the asset
-   * to its final location without a follow-up delete pass.
+   * It uses a single-pass algorithm that iterates through the assets once, adding
+   * them to the appropriate zip builders and moving them to the correct
+   * location in the browser-specific directories.
+   *
+   * Note: This method uses `path.posix.join`, for the same reason
+   * {@link moveAssets} does.
    *
    * @param compilation - The active compilation.
    * @param assets - The current asset map.
@@ -226,9 +228,9 @@ export class ManifestPlugin<Z extends boolean> {
     this.emitManifestAssets(compilation, browsers);
 
     for (const { browser, builder } of zipBuilders) {
-      const source = await builder.finalize();
-      const zipFilePath = getZipFilePath(outFilePath, browser);
-      compilation.emitAsset(zipFilePath, source, {
+      const data = await builder.finalize();
+      const filePath = outFilePath.replaceAll('[browser]', browser);
+      compilation.emitAsset(filePath, data, {
         javascriptModule: false,
         compressed: true,
         contentType: 'application/zip',
