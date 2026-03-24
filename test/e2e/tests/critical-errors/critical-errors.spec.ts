@@ -120,64 +120,6 @@ describe('Critical errors', function (this: Suite) {
         const homePage = new HomePage(driver);
         await homePage.waitForLoadingOverlayToDisappear();
 
-        // #region agent log — diagnostic instrumentation for CI failure
-        {
-          const { By } = await import('selenium-webdriver');
-          await driver.clickElement('[data-testid="account-menu-icon"]');
-          await driver.waitForSelector('.account-list-page');
-          // Wait 5s for any async rendering to settle
-          await driver.delay(5000);
-
-          // H-A/H-C: Does the button exist at all (with any text)?
-          const mcBtns = await driver.driver.findElements(
-            By.css('[data-testid="add-multichain-account-button"]'),
-          );
-          console.log(
-            `[DEBUG-953861] add-multichain-account-button count: ${mcBtns.length}`,
-          );
-          for (let i = 0; i < mcBtns.length; i++) {
-            const txt = await mcBtns[i].getText();
-            console.log(
-              `[DEBUG-953861] add-multichain-account-button[${i}] text: "${txt}"`,
-            );
-          }
-
-          // H-D: Does the wallet button exist?
-          const walletBtns = await driver.driver.findElements(
-            By.css('[data-testid="account-list-add-wallet-button"]'),
-          );
-          console.log(
-            `[DEBUG-953861] account-list-add-wallet-button count: ${walletBtns.length}`,
-          );
-
-          // Capture visible account list items
-          const accountItems = await driver.driver.findElements(
-            By.css('.multichain-account-cell'),
-          );
-          console.log(
-            `[DEBUG-953861] multichain-account-cell count: ${accountItems.length}`,
-          );
-
-          // Capture the inner HTML of the account list for full visibility
-          const accountListEl = await driver.driver.findElements(
-            By.css('.account-list-page'),
-          );
-          if (accountListEl.length > 0) {
-            const innerHTML = await driver.driver.executeScript(
-              'return arguments[0].innerHTML.substring(0, 3000)',
-              accountListEl[0],
-            );
-            console.log(
-              `[DEBUG-953861] .account-list-page innerHTML (first 3000 chars):\n${innerHTML}`,
-            );
-          }
-
-          // Close the account menu before proceeding
-          await driver.pressKey('\uE00C');
-          await driver.delay(500);
-        }
-        // #endregion
-
         // After restoring from backup, multichain state must be fetched from
         // scratch (unlike vault-repair where it survives). Allow extra time.
         const restoredFirstAddress = await getFirstAddress(driver, undefined, {

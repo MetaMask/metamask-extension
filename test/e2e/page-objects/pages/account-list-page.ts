@@ -263,6 +263,60 @@ class AccountListPage {
         { timeout },
       );
     } catch (e) {
+      // #region agent log — capture DOM state at the moment of timeout
+      try {
+        const { By } = await import('selenium-webdriver');
+        const rawDriver = this.driver.driver;
+        const mcBtns = await rawDriver.findElements(
+          By.css('[data-testid="add-multichain-account-button"]'),
+        );
+        console.log(
+          `[DEBUG-953861] TIMEOUT in checkPageIsLoaded. add-multichain-account-button count: ${mcBtns.length}`,
+        );
+        for (let i = 0; i < mcBtns.length; i++) {
+          const txt = await mcBtns[i].getText();
+          const displayed = await mcBtns[i].isDisplayed();
+          console.log(
+            `[DEBUG-953861]   button[${i}] text="${txt}" displayed=${displayed}`,
+          );
+        }
+        const walletBtns = await rawDriver.findElements(
+          By.css('[data-testid="account-list-add-wallet-button"]'),
+        );
+        console.log(
+          `[DEBUG-953861] account-list-add-wallet-button count: ${walletBtns.length}`,
+        );
+        for (let i = 0; i < walletBtns.length; i++) {
+          const displayed = await walletBtns[i].isDisplayed();
+          console.log(
+            `[DEBUG-953861]   wallet-btn[${i}] displayed=${displayed}`,
+          );
+        }
+        const pageUrl = await rawDriver.getCurrentUrl();
+        console.log(`[DEBUG-953861] current URL: ${pageUrl}`);
+        const pageTitle = await rawDriver.getTitle();
+        console.log(`[DEBUG-953861] page title: ${pageTitle}`);
+        const accountPage = await rawDriver.findElements(
+          By.css('.account-list-page'),
+        );
+        console.log(
+          `[DEBUG-953861] .account-list-page present: ${accountPage.length > 0}`,
+        );
+        if (accountPage.length > 0) {
+          const html = await rawDriver.executeScript(
+            'return arguments[0].innerHTML.substring(0, 2000)',
+            accountPage[0],
+          );
+          console.log(`[DEBUG-953861] .account-list-page HTML:\n${html}`);
+        }
+        const bodyHtml = await rawDriver.executeScript(
+          'return document.body.innerHTML.substring(0, 2000)',
+        );
+        console.log(`[DEBUG-953861] body HTML (first 2000):\n${bodyHtml}`);
+      } catch (debugErr) {
+        console.log(`[DEBUG-953861] diagnostic capture failed: ${debugErr}`);
+      }
+      // #endregion
       console.log('Timeout while waiting for account list to be loaded', e);
       throw e;
     }
