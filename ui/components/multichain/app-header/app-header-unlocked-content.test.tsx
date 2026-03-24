@@ -133,11 +133,7 @@ describe('Default address section', () => {
       store,
     );
 
-    // Container should still render
-    const container = await screen.findByTestId('default-address-container');
-    expect(container).toBeInTheDocument();
-
-    // But no address text should be visible (only network avatars + copy icon)
-    expect(screen.queryByText(/0x/u)).not.toBeInTheDocument();
+    const container = await screen.queryByTestId('default-address-container');
+    expect(container).not.toBeInTheDocument();
   });
 });

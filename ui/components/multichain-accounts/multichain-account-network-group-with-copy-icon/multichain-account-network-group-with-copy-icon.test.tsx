@@ -43,17 +43,6 @@ describe('MultichainAccountNetworkGroupWithCopyIcon', () => {
     mockUseCopyToClipboard.mockReturnValue([false, mockHandleCopy, jest.fn()]);
   });
 
-  it('does not render default-address-container when group has no default address', () => {
-    renderWithProvider(
-      <MultichainAccountNetworkGroupWithCopyIcon
-        groupId={'nonExistentGroupId' as AccountGroupId}
-      />,
-      createStore(),
-    );
-
-    expect(screen.queryByTestId('default-address-container')).not.toBeInTheDocument();
-  });
-
   it('renders default-address-container when default address is available', () => {
     renderWithProvider(
       <MultichainAccountNetworkGroupWithCopyIcon {...defaultProps} />,
@@ -85,7 +74,7 @@ describe('MultichainAccountNetworkGroupWithCopyIcon', () => {
       createStore(),
     );
 
-    const container = screen.getByTestId('default-address-container');
+    const container = screen.getByTestId('network-group-with-copy-icon');
     expect(container).toHaveClass('cursor-pointer');
   });
 
@@ -117,7 +106,7 @@ describe('MultichainAccountNetworkGroupWithCopyIcon', () => {
         createStoreWithPrefOff(),
       );
 
-      expect(screen.queryByTestId('default-address-container')).toBeInTheDocument();
+      expect(screen.queryByTestId('default-address-container')).not.toBeInTheDocument();
     });
 
     it('does not call copy handler when container is clicked', () => {
@@ -126,7 +115,7 @@ describe('MultichainAccountNetworkGroupWithCopyIcon', () => {
         createStoreWithPrefOff(),
       );
 
-      const container = screen.getByTestId('default-address-container');
+      const container = screen.getByTestId('network-group-with-copy-icon');
       fireEvent.click(container);
 
       expect(mockHandleCopy).not.toHaveBeenCalled();

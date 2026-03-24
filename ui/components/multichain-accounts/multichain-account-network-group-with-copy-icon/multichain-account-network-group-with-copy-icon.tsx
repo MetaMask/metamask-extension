@@ -21,7 +21,10 @@ import { shortenAddress } from '../../../helpers/utils/util';
 // eslint-disable-next-line import-x/no-restricted-paths
 import { normalizeSafeAddress } from '../../../../app/scripts/lib/multichain/address';
 import { getDefaultScopeAndAddressByAccountGroupId } from '../../../selectors/multichain-accounts/account-tree';
-import { getIsDefaultAddressEnabled, getShowDefaultAddressPreference } from '../../../selectors/selectors';
+import {
+  getIsDefaultAddressEnabled,
+  getShowDefaultAddressPreference,
+} from '../../../selectors/selectors';
 import { MultichainAccountNetworkGroup } from '../multichain-account-network-group';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 
@@ -44,17 +47,22 @@ export const MultichainAccountNetworkGroupWithCopyIcon = ({
 }: MultichainAccountNetworkGroupWithCopyIconProps) => {
   const t = useI18nContext();
   const isDefaultAddressEnabled = useSelector(getIsDefaultAddressEnabled);
-  const showDefaultAddressPreference = useSelector(getShowDefaultAddressPreference);
+  const showDefaultAddressPreference = useSelector(
+    getShowDefaultAddressPreference,
+  );
   const { defaultAddress, defaultScopes } = useSelector((state) =>
     getDefaultScopeAndAddressByAccountGroupId(state, groupId),
-);
-  const shouldShowDefaultAddress = isDefaultAddressEnabled && showDefaultAddressPreference && defaultAddress;
+  );
+  const shouldShowDefaultAddress =
+    isDefaultAddressEnabled && showDefaultAddressPreference && defaultAddress;
   const [addressCopied, handleCopy] = useCopyToClipboard({
     clearDelayMs: null,
   });
 
   const handleDefaultAddressClick = useCallback(() => {
-    handleCopy(normalizeSafeAddress(defaultAddress!));
+    if (defaultAddress) {
+      handleCopy(normalizeSafeAddress(defaultAddress));
+    }
   }, [defaultAddress, handleCopy]);
 
   return (
@@ -73,6 +81,7 @@ export const MultichainAccountNetworkGroupWithCopyIcon = ({
         'rounded-lg inline-flex',
         shouldShowDefaultAddress && 'cursor-pointer',
       )}
+      data-testid="network-group-with-copy-icon"
     >
       <MultichainAccountNetworkGroup
         groupId={groupId}
