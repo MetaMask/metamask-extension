@@ -4762,7 +4762,9 @@ describe('MetaMaskController', () => {
             throw new Error('sentry capture failed');
           }),
         };
-        const logWarnSpy = jest.spyOn(log, 'warn').mockImplementation(jest.fn());
+        const logWarnSpy = jest
+          .spyOn(log, 'warn')
+          .mockImplementation(jest.fn());
 
         await expect(
           metamaskController._runSeedlessOnboardingMigrations(),
