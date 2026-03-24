@@ -1,5 +1,6 @@
 const path = require('path');
 const { ProvidePlugin } = require('webpack');
+const loadTailwindPostcss = require('../development/lib/load-tailwind-postcss.cjs');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const dotenv = require('dotenv');
 dotenv.config({ path: path.resolve(__dirname, '../.metamaskrc') });
@@ -77,7 +78,8 @@ module.exports = {
           loader: 'postcss-loader',
           options: {
             postcssOptions: {
-              plugins: ['@tailwindcss/postcss'],
+              // Use repo bridge so `base` matches webpack/gulp (Tailwind `@source` scanning).
+              plugins: [loadTailwindPostcss()],
             },
           },
         },
