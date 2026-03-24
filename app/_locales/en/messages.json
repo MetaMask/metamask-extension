@@ -5723,6 +5723,9 @@
   "perpsReduceExposureDescriptionShort": {
     "message": "Decrease the size of your short position"
   },
+  "perpsRemoveFromFavorites": {
+    "message": "Remove from favorites"
+  },
   "perpsRemoveMargin": {
     "message": "Remove margin"
   },

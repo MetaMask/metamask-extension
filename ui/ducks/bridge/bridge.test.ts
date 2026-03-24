@@ -76,7 +76,6 @@ describe('Ducks - Bridge', () => {
           "chainId": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
           "decimals": 9,
           "iconUrl": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/solana/5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token/So11111111111111111111111111111111111111112.png",
-          "isVerified": undefined,
           "name": "SYMBOL",
           "rwaData": undefined,
           "symbol": "SYMBOL",
@@ -110,7 +109,6 @@ describe('Ducks - Bridge', () => {
         balance: '0',
         chainId: 'eip155:10',
         rwaData: undefined,
-        isVerified: undefined,
         iconUrl:
           'https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/10/erc20/0x13341431.png',
       });
