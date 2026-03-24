@@ -1,7 +1,6 @@
 import { extname } from 'node:path';
 import { ZipFile } from 'yazl';
 import { sources } from 'webpack';
-import type { Browser } from '../../helpers';
 import type { ZipOptions } from './types';
 
 const { RawSource } = sources;
