@@ -35,7 +35,7 @@ const createMockStore = (overrides = {}) =>
       ...mockState.metamask,
       remoteFeatureFlags: {
         ...mockState.metamask.remoteFeatureFlags,
-        extensionUxDefaultAddress: true,
+        extensionUxDefaultAddressVersioned: true,
       },
       preferences: {
         ...mockState.metamask.preferences,
@@ -59,7 +59,7 @@ describe('ShowDefaultAddressItem', () => {
         ...mockState.metamask,
         remoteFeatureFlags: {
           ...mockState.metamask.remoteFeatureFlags,
-          extensionUxDefaultAddress: false,
+          extensionUxDefaultAddressVersioned: false,
         },
       },
     });

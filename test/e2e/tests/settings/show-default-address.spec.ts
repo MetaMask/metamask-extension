@@ -7,7 +7,7 @@ import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import { login } from '../../page-objects/flows/login.flow';
 
 const SHOW_DEFAULT_ADDRESS_FLAG = {
-  remoteFeatureFlags: { extensionUxDefaultAddress: true },
+  remoteFeatureFlags: { extensionUxDefaultAddressVersioned: true },
 };
 
 describe('Show default address', function (this: Suite) {
@@ -80,7 +80,7 @@ describe('Show default address', function (this: Suite) {
         fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
         manifestFlags: {
-          remoteFeatureFlags: { extensionUxDefaultAddress: false },
+          remoteFeatureFlags: { extensionUxDefaultAddressVersioned: false },
         },
       },
       async ({ driver }) => {

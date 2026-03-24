@@ -90,7 +90,7 @@ describe('Default address section', () => {
       ...mockDefaultState,
       metamask: {
         ...mockDefaultState.metamask,
-        remoteFeatureFlags: { extensionUxDefaultAddress: true },
+        remoteFeatureFlags: { extensionUxDefaultAddressVersioned: true },
         preferences: {
           ...mockDefaultState.metamask.preferences,
           showDefaultAddress: true,
@@ -116,7 +116,7 @@ describe('Default address section', () => {
       ...mockDefaultState,
       metamask: {
         ...mockDefaultState.metamask,
-        remoteFeatureFlags: { extensionUxDefaultAddress: false },
+        remoteFeatureFlags: { extensionUxDefaultAddressVersioned: false },
         preferences: {
           ...mockDefaultState.metamask.preferences,
           showDefaultAddress: true,
