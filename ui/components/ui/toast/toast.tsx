@@ -191,7 +191,8 @@ export function Toaster() {
       position="bottom-center"
       containerClassName="toast-container"
       toastOptions={{
-        className: 'w-[360px] border border-border-muted',
+        className:
+          'w-[360px] max-w-[360px] border border-border-muted relative',
         style: {
           background: 'var(--color-background-section)',
           color: 'var(--color-text-default)',

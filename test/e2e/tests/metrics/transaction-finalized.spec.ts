@@ -180,10 +180,9 @@ describe('Transaction Finalized Event', function (this: Suite) {
           amount: '2',
         });
 
+        // Get the transaction hash from the activity list
         const homePage = new HomePage(driver);
         await homePage.goToActivityList();
-
-        // Get the transaction hash from the activity list
         const activityList = new ActivityListPage(driver);
         await activityList.checkCompletedTxNumberDisplayedInActivity(1);
         await activityList.clickOnActivity(1);

@@ -28,15 +28,11 @@ type TransactionLike = Pick<TransactionMeta, 'id' | 'status' | 'type'>;
 type NonEvmTransactionLike = Pick<KeyringTransaction, 'id' | 'status' | 'type'>;
 
 const isPendingStatus = (status: string) =>
-  TRANSACTION_PENDING_STATUSES.some(
-    (pendingStatus) => pendingStatus === status,
-  );
+  TRANSACTION_PENDING_STATUSES.some((s) => s === status);
 const isSuccessStatus = (status: string) =>
-  TRANSACTION_SUCCESS_STATUSES.some(
-    (successStatus) => successStatus === status,
-  );
+  TRANSACTION_SUCCESS_STATUSES.some((s) => s === status);
 const isFailedStatus = (status: string) =>
-  TRANSACTION_FAILED_STATUSES.some((failedStatus) => failedStatus === status);
+  TRANSACTION_FAILED_STATUSES.some((s) => s === status);
 
 const isNonEvmSuccessStatus = (status: string) =>
   status === KeyringTransactionStatus.Confirmed;
@@ -44,29 +40,29 @@ const isNonEvmSuccessStatus = (status: string) =>
 const isNonEvmFailedStatus = (status: string) =>
   status === KeyringTransactionStatus.Failed;
 
-// eslint-disable-next-line @typescript-eslint/naming-convention
-function ToastContent({
+const ToastContent = ({
   variant,
   toastId,
 }: {
   variant: TransactionToastVariant;
   toastId: string;
-}) {
+}) => {
   const { title, description } = getTransactionToastContent(variant);
 
   return (
     <Link
       to={`${DEFAULT_ROUTE}?tab=activity`}
       onClick={() => toast.dismiss(toastId)}
-      className="text-default no-underline"
+      className="hover:text-default no-underline before:absolute before:inset-0"
     >
       <p className="text-m-body-md">{title}</p>
+
       {description ? (
         <p className="text-s-body-sm text-alternative">{description}</p>
       ) : null}
     </Link>
   );
-}
+};
 
 export function TransactionToastListener() {
   const transactions = useSelector(getToastTransactions);
