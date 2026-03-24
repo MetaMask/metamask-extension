@@ -26,7 +26,7 @@ describe('SettingsV2Header', () => {
     renderWithProvider(
       <SettingsV2Header
         title={messages.settings.message}
-        isPopup
+        isPopupOrSidepanel
         isOnSettingsRoot
         searchValue=""
       />,
@@ -43,7 +43,7 @@ describe('SettingsV2Header', () => {
     renderWithProvider(
       <SettingsV2Header
         title={messages.settings.message}
-        isPopup
+        isPopupOrSidepanel
         isOnSettingsRoot={false}
       />,
       createMockStore(),
@@ -58,7 +58,7 @@ describe('SettingsV2Header', () => {
     renderWithProvider(
       <SettingsV2Header
         title={messages.settings.message}
-        isPopup
+        isPopupOrSidepanel
         isOnSettingsRoot={false}
       />,
       createMockStore(),
@@ -74,7 +74,7 @@ describe('SettingsV2Header', () => {
     renderWithProvider(
       <SettingsV2Header
         title={messages.settings.message}
-        isPopup
+        isPopupOrSidepanel
         isOnSettingsRoot={false}
         onClose={onClose}
       />,
@@ -91,7 +91,7 @@ describe('SettingsV2Header', () => {
     renderWithProvider(
       <SettingsV2Header
         title={messages.settings.message}
-        isPopup
+        isPopupOrSidepanel
         isOnSettingsRoot
         onOpenSearch={onOpenSearch}
       />,

@@ -6,19 +6,19 @@ jest.mock('../../hooks/useI18nContext', () => ({
 }));
 
 jest.mock('./settings-registry', () => ({
-  SETTINGS_V2_MENU_LIST_ITEM_REGISTRY: [
+  SETTINGS_V2_TABS: [
     {
       id: 'assets',
       path: '/settings-v2/assets',
       labelKey: 'assets',
-      iconName: 'Dollar',
+      iconName: 'Coin',
       component: () => null,
     },
     {
       id: 'preferences-and-display',
       path: '/settings-v2/preferences-and-display',
       labelKey: 'preferencesAndDisplay',
-      iconName: 'Setting',
+      iconName: 'Customize',
       component: () => null,
     },
   ],
