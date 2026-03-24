@@ -120,20 +120,20 @@ describe('usePerpsOrderForm', () => {
         stopLossPrice: undefined,
       };
 
-      let existingPosition: typeof latePosition | undefined;
+      let existingPositionAfterLoad: typeof latePosition | undefined;
       const { result, rerender } = renderHookWithProvider(
         () =>
           usePerpsOrderForm({
             ...defaultOptions,
             mode: 'modify',
-            existingPosition,
+            existingPosition: existingPositionAfterLoad,
           }),
         mockStateWithLocale,
       );
 
       expect(result.current.formState.leverage).toBe(1);
 
-      existingPosition = latePosition;
+      existingPositionAfterLoad = latePosition;
       act(() => {
         rerender();
       });
