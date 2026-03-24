@@ -3,6 +3,7 @@
  */
 
 import { readFileSync } from 'node:fs';
+import { createRequire } from 'node:module';
 import { join } from 'node:path';
 import { argv, exit } from 'node:process';
 import {
@@ -14,11 +15,10 @@ import {
 } from 'webpack';
 import CopyPlugin from 'copy-webpack-plugin';
 import HtmlBundlerPlugin from 'html-bundler-webpack-plugin';
+import type { PluginCreator } from 'postcss';
 import rtlCss from 'postcss-rtlcss';
-import autoprefixer from 'autoprefixer';
 import discardFonts from 'postcss-discard-font-face';
 import type ReactRefreshPluginType from '@pmmmwh/react-refresh-webpack-plugin';
-import tailwindcss from 'tailwindcss';
 import { loadBuildTypesConfig } from '../lib/build-type';
 import {
   getMinimizers,
@@ -38,6 +38,18 @@ import { getThreadLoader } from './utils/loaders/threadLoader';
 import { ManifestPlugin } from './utils/plugins/ManifestPlugin';
 import { getLatestCommit } from './utils/git';
 import { MODES } from './utils/constants';
+
+/** Mirrors `@tailwindcss/postcss` — package uses `export =`, so no `.default` on `import()` types. */
+type TailwindPostcssPlugin = PluginCreator<{
+  base?: string;
+  optimize?: boolean | { minify?: boolean };
+  transformAssetUrls?: boolean;
+}>;
+
+const requireWebpackConfig = createRequire(__filename);
+const tailwindcss = requireWebpackConfig(
+  join(__dirname, '../lib/load-tailwind-postcss.cjs'),
+) as TailwindPostcssPlugin;
 
 const buildTypes = loadBuildTypesConfig();
 const { args, cacheKey, features } = parseArgv(argv.slice(2), buildTypes);
@@ -433,8 +445,11 @@ const config = {
             options: {
               postcssOptions: {
                 plugins: [
+                  // Keep Tailwind options aligned with the Browserify/gulp pipeline
+                  // (`development/build/styles.js` uses `tailwindcss()` with defaults).
+                  // Forcing `{ optimize: false }` on `--test` builds caused divergent CSS
+                  // vs `yarn build:test` and E2E flakes (e.g. overlapping header controls).
                   tailwindcss(),
-                  autoprefixer({ overrideBrowserslist: browsersListQuery }),
                   rtlCss({ processEnv: false }),
                   discardFonts(['woff2']), // keep woff2 fonts
                 ],

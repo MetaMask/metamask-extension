@@ -70,6 +70,11 @@ ignores:
   - 'webpack-dev-server' # dev tool
   - 'html-bundler-webpack-plugin' # build tool
   - 'postcss-loader' # build tool
+  # Tailwind v4: `tailwindcss` is @import'd from CSS; `@tailwindcss/postcss` is loaded by
+  # `development/lib/load-tailwind-postcss.cjs` via a filesystem path so LavaMoat’s
+  # `resolve@1` can resolve it (depcheck does not treat that string as a package dep).
+  - 'tailwindcss'
+  - '@tailwindcss/postcss'
   - '@swc/helpers' # build tool
   - 'browserslist' # build tool
   - 'buffer' # polyfill
