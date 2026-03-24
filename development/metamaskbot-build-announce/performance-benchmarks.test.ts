@@ -686,6 +686,63 @@ describe('buildPerformanceBenchmarksSection', () => {
     );
   });
 
+  it('includes commit information with hash and date', async () => {
+    process.env.GITHUB_SHA = 'abc1234567890def';
+    mockFetch.mockResolvedValue({
+      ok: true,
+      json: () => Promise.resolve(MOCK_PAYLOAD),
+    } as unknown as Response);
+
+    const html = await buildPerformanceBenchmarksSection(HOST);
+
+    expect(html).toContain('Current Commit:');
+    expect(html).toContain('abc1234');
+    expect(html).toContain('Date:');
+
+    delete process.env.GITHUB_SHA;
+  });
+
+  it('links commit hash when GitHub env vars are available', async () => {
+    process.env.GITHUB_SHA = 'abc1234567890def';
+    process.env.GITHUB_SERVER_URL = 'https://github.com';
+    process.env.GITHUB_REPOSITORY = 'MetaMask/metamask-extension';
+    mockFetch.mockResolvedValue({
+      ok: true,
+      json: () => Promise.resolve(MOCK_PAYLOAD),
+    } as unknown as Response);
+
+    const html = await buildPerformanceBenchmarksSection(HOST);
+
+    expect(html).toContain(
+      '<a href="https://github.com/MetaMask/metamask-extension/commit/abc1234567890def">abc1234</a>',
+    );
+
+    delete process.env.GITHUB_SHA;
+    delete process.env.GITHUB_SERVER_URL;
+    delete process.env.GITHUB_REPOSITORY;
+  });
+
+  it('includes build logs link when available', async () => {
+    process.env.GITHUB_SERVER_URL = 'https://github.com';
+    process.env.GITHUB_REPOSITORY = 'MetaMask/metamask-extension';
+    process.env.BENCHMARK_WORKFLOW_RUN_ID = '98765';
+    mockFetch.mockResolvedValue({
+      ok: true,
+      json: () => Promise.resolve(MOCK_PAYLOAD),
+    } as unknown as Response);
+
+    const html = await buildPerformanceBenchmarksSection(HOST);
+
+    expect(html).toContain('Build logs');
+    expect(html).toContain(
+      'https://github.com/MetaMask/metamask-extension/actions/runs/98765',
+    );
+
+    delete process.env.BENCHMARK_WORKFLOW_RUN_ID;
+    delete process.env.GITHUB_SERVER_URL;
+    delete process.env.GITHUB_REPOSITORY;
+  });
+
   it('shows regression details when baseline has regressions', async () => {
     mockFetch.mockResolvedValue({
       ok: true,
@@ -782,6 +839,122 @@ describe('buildPerformanceBenchmarksSection', () => {
 
       expect(html).toContain('chrome-browserify-startupStandardHome');
       expect(html).toContain(COMPARISON_SEVERITY.Regression.icon);
+    });
+  });
+
+  describe('commit information', () => {
+    const originalSha = process.env.GITHUB_SHA;
+    const originalServerUrl = process.env.GITHUB_SERVER_URL;
+    const originalRepo = process.env.GITHUB_REPOSITORY;
+
+    afterEach(() => {
+      if (originalSha === undefined) {
+        delete process.env.GITHUB_SHA;
+      } else {
+        process.env.GITHUB_SHA = originalSha;
+      }
+      if (originalServerUrl === undefined) {
+        delete process.env.GITHUB_SERVER_URL;
+      } else {
+        process.env.GITHUB_SERVER_URL = originalServerUrl;
+      }
+      if (originalRepo === undefined) {
+        delete process.env.GITHUB_REPOSITORY;
+      } else {
+        process.env.GITHUB_REPOSITORY = originalRepo;
+      }
+    });
+
+    it('includes commit hash and date in the section', async () => {
+      process.env.GITHUB_SHA = 'abc1234567890def';
+      mockFetch.mockResolvedValue({
+        ok: true,
+        json: () => Promise.resolve(MOCK_PAYLOAD),
+      } as unknown as Response);
+
+      const html = await buildPerformanceBenchmarksSection(HOST);
+
+      expect(html).toContain('Current Commit:');
+      expect(html).toContain('abc1234');
+      expect(html).toContain('Date:');
+    });
+
+    it('links commit hash when GitHub env vars are set', async () => {
+      process.env.GITHUB_SHA = 'abc1234567890def';
+      process.env.GITHUB_SERVER_URL = 'https://github.com';
+      process.env.GITHUB_REPOSITORY = 'MetaMask/metamask-extension';
+      mockFetch.mockResolvedValue({
+        ok: true,
+        json: () => Promise.resolve(MOCK_PAYLOAD),
+      } as unknown as Response);
+
+      const html = await buildPerformanceBenchmarksSection(HOST);
+
+      expect(html).toContain(
+        '<a href="https://github.com/MetaMask/metamask-extension/commit/abc1234567890def">abc1234</a>',
+      );
+    });
+
+    it('includes build logs link when workflow run ID is available', async () => {
+      process.env.GITHUB_SERVER_URL = 'https://github.com';
+      process.env.GITHUB_REPOSITORY = 'MetaMask/metamask-extension';
+      process.env.BENCHMARK_WORKFLOW_RUN_ID = '12345';
+      mockFetch.mockResolvedValue({
+        ok: true,
+        json: () => Promise.resolve(MOCK_PAYLOAD),
+      } as unknown as Response);
+
+      const html = await buildPerformanceBenchmarksSection(HOST);
+
+      expect(html).toContain('Build logs');
+      expect(html).toContain(
+        'https://github.com/MetaMask/metamask-extension/actions/runs/12345',
+      );
+    });
+  });
+
+  describe('health matrix structure', () => {
+    const MATRIX_PAYLOAD = {
+      'chrome-browserify-startupStandardHome': {
+        testTitle: 'standard-home',
+        persona: 'standard',
+        mean: { uiStartup: 4500 },
+        stdDev: { uiStartup: 500 },
+        p75: { uiStartup: 4500 },
+        p95: { uiStartup: 6000 },
+      },
+    };
+
+    beforeEach(() => {
+      process.env.CI = 'true';
+    });
+
+    afterEach(() => {
+      delete process.env.CI;
+    });
+
+    it('shows benchmarks as rows and browsers as columns', async () => {
+      mockFetch.mockResolvedValue({
+        ok: true,
+        json: () => Promise.resolve(MATRIX_PAYLOAD),
+      } as unknown as Response);
+
+      const html = await buildPerformanceBenchmarksSection(HOST);
+
+      expect(html).toContain('<th>Benchmark</th>');
+      expect(html).toContain('<th>chrome-browserify</th>');
+    });
+
+    it('includes clickable log links in matrix cells', async () => {
+      mockFetch.mockResolvedValue({
+        ok: true,
+        json: () => Promise.resolve(MATRIX_PAYLOAD),
+      } as unknown as Response);
+
+      const html = await buildPerformanceBenchmarksSection(HOST);
+
+      expect(html).toContain('[logs]');
+      expect(html).toContain('<a href=');
     });
   });
 });

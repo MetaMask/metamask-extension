@@ -655,7 +655,7 @@ function buildHealthMatrixHtml(
     return '';
   }
 
-  const headerRow = `<tr><th>Metrics</th>${orderedCombos
+  const headerRow = `<tr><th>Benchmark</th>${orderedCombos
     .map((c) => `<th>${c}</th>`)
     .join('')}</tr>`;
 
@@ -668,7 +668,16 @@ function buildHealthMatrixHtml(
             return `<td align="center">–</td>`;
           }
           const icon = HEALTH_ICON[data.health];
-          const cell = data.label ? `${icon} ${data.label}` : icon;
+          // Find the entry to get artifact URL
+          const entry = allEntries.find(
+            (e) =>
+              e.benchmarkName === benchmark &&
+              `${e.platform}-${e.buildType}` === combo,
+          );
+          const logHref = entry?.artifactUrl;
+          const cell = logHref
+            ? `${icon} <a href="${logHref}">[logs]</a>`
+            : icon;
           return `<td align="center">${cell}</td>`;
         })
         .join('');
@@ -863,8 +872,28 @@ export async function buildPerformanceBenchmarksSection(
     runUrl,
   );
 
+  const commitHash = process.env.GITHUB_SHA?.slice(0, 7) ?? 'unknown';
+  const commitDate = new Date().toLocaleDateString('en-US', {
+    month: 'numeric',
+    day: 'numeric',
+    year: 'numeric',
+  });
+  const commitUrl =
+    process.env.GITHUB_SERVER_URL &&
+    process.env.GITHUB_REPOSITORY &&
+    process.env.GITHUB_SHA
+      ? `${process.env.GITHUB_SERVER_URL}/${process.env.GITHUB_REPOSITORY}/commit/${process.env.GITHUB_SHA}`
+      : undefined;
+  const commitLink = commitUrl
+    ? `<a href="${commitUrl}">${commitHash}</a>`
+    : commitHash;
+  const runLink = runUrl ? `<a href="${runUrl}">Build logs</a>` : '';
+  const separator = runLink ? ' | ' : '';
+  const commitInfo = `<p><sub>Current Commit: ${commitLink} | Date: ${commitDate}${separator}${runLink}</sub></p>\n\n`;
+
   const subsectionsHtml = interactionHtml + startupHtml + userJourneyHtml;
-  const content = matrixHtml + regressionDetailsHtml + subsectionsHtml;
+  const content =
+    commitInfo + matrixHtml + regressionDetailsHtml + subsectionsHtml;
 
   return `<details><summary>${summaryText}</summary>\n<blockquote>\n${content}</blockquote>\n</details>\n\n`;
 }
