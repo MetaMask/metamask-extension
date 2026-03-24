@@ -69,7 +69,7 @@
         "@babel/core>@babel/generator>jsesc": true
       }
     },
-    "@babel/preset-env>@babel/plugin-transform-classes>@babel/helper-annotate-as-pure": {
+    "@babel/plugin-transform-private-property-in-object>@babel/helper-annotate-as-pure": {
       "packages": {
         "@babel/core>@babel/types": true
       }
@@ -95,7 +95,7 @@
       },
       "packages": {
         "@babel/core": true,
-        "@babel/preset-env>@babel/plugin-transform-classes>@babel/helper-annotate-as-pure": true,
+        "@babel/plugin-transform-private-property-in-object>@babel/helper-annotate-as-pure": true,
         "@babel/plugin-transform-private-methods>@babel/helper-create-class-features-plugin>@babel/helper-member-expression-to-functions": true,
         "@babel/plugin-transform-private-methods>@babel/helper-create-class-features-plugin>@babel/helper-optimise-call-expression": true,
         "@babel/preset-env>@babel/plugin-transform-classes>@babel/helper-replace-supers": true,
@@ -187,7 +187,7 @@
       },
       "packages": {
         "@babel/core": true,
-        "@babel/preset-env>@babel/plugin-transform-classes>@babel/helper-annotate-as-pure": true,
+        "@babel/plugin-transform-private-property-in-object>@babel/helper-annotate-as-pure": true,
         "@babel/plugin-transform-private-methods>@babel/helper-create-class-features-plugin": true,
         "@babel/preset-env>@babel/helper-plugin-utils": true,
         "@babel/preset-env>@babel/plugin-transform-for-of>@babel/helper-skip-transparent-expression-wrappers": true,
