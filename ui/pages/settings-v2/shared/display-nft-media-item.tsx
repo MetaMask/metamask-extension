@@ -9,6 +9,7 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { SettingsToggleItem } from '../../settings/settings-toggle-item';
+import { ASSET_ITEMS } from '../search-config';
 
 export const DisplayNftMediaToggleItem = () => {
   const t = useI18nContext();
@@ -19,7 +20,7 @@ export const DisplayNftMediaToggleItem = () => {
 
   return (
     <SettingsToggleItem
-      title={t('displayNftMedia')}
+      title={t(ASSET_ITEMS['display-nft-media'])}
       description={t('displayNftMediaDescriptionV2')}
       value={openSeaEnabled}
       onToggle={(value) => {

@@ -14,9 +14,7 @@ import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 import Name from '../../../../../../../components/app/name';
 import { NativeAmountRow } from './native-amount-row';
 import { TokenAmountRow } from './token-amount-row';
-
-const MAX_UINT256 =
-  '0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff';
+import { MAX_UINT256 } from './typed-sign-permission-util';
 
 /**
  * Parses an amount represented as a hex string to BigNumber.

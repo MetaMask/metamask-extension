@@ -8,8 +8,6 @@ import {
   Box,
   BoxBackgroundColor,
   ButtonIcon,
-  Icon,
-  IconColor,
   IconName,
   IconSize,
   Text,
@@ -130,14 +128,6 @@ export const BridgeAsset = React.forwardRef(
               <Text ellipsis data-testid="bridge-asset-symbol">
                 {asset.symbol}
               </Text>
-              {asset.isVerified && (
-                <Icon
-                  data-testid="bridge-asset-verified-badge"
-                  name={IconName.VerifiedFilled}
-                  size={IconSize.Sm}
-                  color={IconColor.InfoDefault}
-                />
-              )}
               {asset.accountType && ACCOUNT_TYPE_LABELS[asset.accountType] && (
                 <Tag label={ACCOUNT_TYPE_LABELS[asset.accountType]} />
               )}
