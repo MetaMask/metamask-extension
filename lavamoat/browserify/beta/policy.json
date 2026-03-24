@@ -1648,6 +1648,7 @@
         "clearTimeout": true,
         "console.error": true,
         "console.warn": true,
+        "performance.now": true,
         "setTimeout": true
       },
       "packages": {
