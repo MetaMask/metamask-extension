@@ -158,7 +158,7 @@ describe('Send ETH', function () {
     });
   });
 
-  describe('ENS resolution', function () {
+  describe('TEST ENS resolution', function () {
     it('resolves ENS/name lookup address', async function () {
       await withFixtures(
         {

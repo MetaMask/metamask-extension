@@ -10,7 +10,7 @@ import { mockNotificationSnap } from '../mock-response-data/snaps/snap-binary-mo
 import { login } from '../page-objects/flows/login.flow';
 import { DAPP_PATH, WINDOW_TITLES } from '../constants';
 
-describe('Test Snap Notification', function () {
+describe('TEST Test Snap Notification', function () {
   it('can send 1 correctly read in-app notification', async function () {
     await withFixtures(
       {
