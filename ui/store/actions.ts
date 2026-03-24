@@ -2170,7 +2170,7 @@ export async function getPhishingResult(website: string) {
 
 export async function scanUrlForPhishing(
   origin: string,
-): Promise<PhishingDetectionScanResult> {
+): Promise<PhishingDetectionScanResult | null> {
   return await submitRequestToBackground('scanUrlForPhishing', [origin]);
 }
 

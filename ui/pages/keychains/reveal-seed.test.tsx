@@ -89,16 +89,25 @@ async function navigateQuizToPasswordScreen({
   });
 }
 
+function createMockMetaMetricsContext() {
+  const mockTrackEvent = jest.fn();
+  return {
+    context: {
+      trackEvent: mockTrackEvent,
+      bufferedTrace: jest.fn(),
+      bufferedEndTrace: jest.fn(),
+      onboardingParentContext: { current: null },
+    },
+    mockTrackEvent,
+  };
+}
+
 describe('Reveal Seed Page', () => {
   const mockStore = configureMockStore([thunk])(mockState as object);
 
   beforeEach(() => {
     jest.clearAllMocks();
     mockUseParams.mockReturnValue({});
-  });
-
-  afterEach(() => {
-    jest.clearAllMocks();
   });
 
   it('should match snapshot', () => {
@@ -225,15 +234,10 @@ describe('Reveal Seed Page', () => {
         ) => Promise<string>,
       );
 
-    const mockTrackEvent = jest.fn();
-    const mockMetaMetricsContext = {
-      trackEvent: mockTrackEvent,
-      bufferedTrace: jest.fn(),
-      bufferedEndTrace: jest.fn(),
-      onboardingParentContext: { current: null },
-    };
+    const { context: metricsContext, mockTrackEvent } =
+      createMockMetaMetricsContext();
     const { queryByTestId, getByText, getByRole } = renderWithProvider(
-      <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
+      <MetaMetricsContext.Provider value={metricsContext}>
         <RevealSeedPage />
       </MetaMetricsContext.Provider>,
       store,
@@ -433,15 +437,10 @@ describe('Reveal Seed Page', () => {
   });
 
   it('should emit event when back button is clicked', async () => {
-    const mockTrackEvent = jest.fn();
-    const mockMetaMetricsContext = {
-      trackEvent: mockTrackEvent,
-      bufferedTrace: jest.fn(),
-      bufferedEndTrace: jest.fn(),
-      onboardingParentContext: { current: null },
-    };
+    const { context: metricsContext, mockTrackEvent } =
+      createMockMetaMetricsContext();
     const { getByLabelText } = renderWithProvider(
-      <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
+      <MetaMetricsContext.Provider value={metricsContext}>
         <RevealSeedPage />
       </MetaMetricsContext.Provider>,
       mockStore,
@@ -468,7 +467,10 @@ describe('Reveal Seed Page', () => {
 
   describe('dapp scan warning', () => {
     function setupDappScanTest(
-      scanResult: { recommendedAction: string; hostname: string } | null = null,
+      scanResult: {
+        recommendedAction: RecommendedAction;
+        hostname: string;
+      } | null = null,
     ) {
       mockScanUrlForPhishing.mockReset().mockResolvedValue(scanResult);
     }
@@ -585,16 +587,11 @@ describe('Reveal Seed Page', () => {
         hostname: 'evil.com',
       });
 
-      const mockTrackEvent = jest.fn();
-      const mockMetaMetricsContext = {
-        trackEvent: mockTrackEvent,
-        bufferedTrace: jest.fn(),
-        bufferedEndTrace: jest.fn(),
-        onboardingParentContext: { current: null },
-      };
+      const { context: metricsContext, mockTrackEvent } =
+        createMockMetaMetricsContext();
 
       renderWithProvider(
-        <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
+        <MetaMetricsContext.Provider value={metricsContext}>
           <RevealSeedPage />
         </MetaMetricsContext.Provider>,
         mockStore,
@@ -621,16 +618,11 @@ describe('Reveal Seed Page', () => {
         hostname: 'safe-site.com',
       });
 
-      const mockTrackEvent = jest.fn();
-      const mockMetaMetricsContext = {
-        trackEvent: mockTrackEvent,
-        bufferedTrace: jest.fn(),
-        bufferedEndTrace: jest.fn(),
-        onboardingParentContext: { current: null },
-      };
+      const { context: metricsContext, mockTrackEvent } =
+        createMockMetaMetricsContext();
 
       renderWithProvider(
-        <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
+        <MetaMetricsContext.Provider value={metricsContext}>
           <RevealSeedPage />
         </MetaMetricsContext.Provider>,
         mockStore,

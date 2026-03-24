@@ -117,6 +117,7 @@ function RevealSeedPage() {
     }
   }, [scanResult]);
 
+  // Only Block triggers the malicious warning. Warn and None show the generic warning.
   const isMalicious = scanResult?.recommendedAction === RecommendedAction.Block;
 
   const onClickCopy = useCallback(() => {
@@ -401,44 +402,44 @@ function RevealSeedPage() {
         backButtonAriaLabel={t('back')}
       />
       {screen === PASSWORD_PROMPT_SCREEN && (
-        <Text variant={TextVariant.BodyMd} color={TextColor.TextAlternative}>
-          {t('revealSeedWordsDescription1', [
-            <TextButton
-              key="srp-learn-srp"
-              onClick={handleSrpClick}
-              className="hover:bg-transparent"
-            >
-              {t('revealSeedWordsSRPName')}
-            </TextButton>,
-          ])}
-        </Text>
-      )}
-      {screen === PASSWORD_PROMPT_SCREEN && isMalicious && (
-        <RevealSeedWarning
-          message={t('dappScanMaliciousWarning')}
-          title={t('dappScanMaliciousTitle')}
-          data-testid="dapp-scan-warning"
-        />
-      )}
-      {screen === PASSWORD_PROMPT_SCREEN && !isMalicious && (
-        <RevealSeedWarning message={t('revealSeedWordsWarning')} />
-      )}
-      {screen === PASSWORD_PROMPT_SCREEN && isMalicious && (
-        <Box
-          className="flex w-full p-4 rounded-lg"
-          style={{ borderLeft: '4px solid var(--color-error-default)' }}
-          backgroundColor={BoxBackgroundColor.ErrorMuted}
-        >
-          <Checkbox
-            id="dapp-scan-acknowledge-checkbox"
-            label={t('alertModalAcknowledge')}
-            isSelected={dangerAcknowledged}
-            onChange={() => setDangerAcknowledged(!dangerAcknowledged)}
-            inputProps={{
-              'data-testid': 'dapp-scan-acknowledge-checkbox',
-            }}
-          />
-        </Box>
+        <>
+          <Text variant={TextVariant.BodyMd} color={TextColor.TextAlternative}>
+            {t('revealSeedWordsDescription1', [
+              <TextButton
+                key="srp-learn-srp"
+                onClick={handleSrpClick}
+                className="hover:bg-transparent"
+              >
+                {t('revealSeedWordsSRPName')}
+              </TextButton>,
+            ])}
+          </Text>
+          {isMalicious ? (
+            <>
+              <RevealSeedWarning
+                message={t('dappScanMaliciousWarning')}
+                title={t('dappScanMaliciousTitle')}
+                data-testid="dapp-scan-warning"
+              />
+              <Box
+                className="flex w-full p-4 rounded-lg border-l-4 border-l-[var(--color-error-default)]"
+                backgroundColor={BoxBackgroundColor.ErrorMuted}
+              >
+                <Checkbox
+                  id="dapp-scan-acknowledge-checkbox"
+                  label={t('alertModalAcknowledge')}
+                  isSelected={dangerAcknowledged}
+                  onChange={() => setDangerAcknowledged(!dangerAcknowledged)}
+                  inputProps={{
+                    'data-testid': 'dapp-scan-acknowledge-checkbox',
+                  }}
+                />
+              </Box>
+            </>
+          ) : (
+            <RevealSeedWarning message={t('revealSeedWordsWarning')} />
+          )}
+        </>
       )}
       {renderContent()}
       {showSuccessToast && (
