@@ -3,6 +3,7 @@ import React, { Fragment, Suspense, useMemo, useState } from 'react';
 import {
   Routes as RouterRoutes,
   Route,
+  Link,
   useNavigate,
   useLocation,
 } from 'react-router-dom';
@@ -11,6 +12,7 @@ import {
   BoxAlignItems,
   BoxBackgroundColor,
   BoxFlexDirection,
+  FontWeight,
   Icon,
   IconName,
   IconSize,
@@ -77,11 +79,11 @@ const SettingsV2Layout = ({ children }: { children: React.ReactNode }) => {
       : t('settings');
 
   // Breadcrumbs: shown on sub-pages (2+ levels deep from settings root)
-  const breadcrumbs = useMemo((): string[] => {
+  const breadcrumbs = useMemo((): { labelKey: string; path: string }[] => {
     if (!meta?.parentPath || meta.parentPath === SETTINGS_V2_ROUTE) {
       return [];
     }
-    const crumbs: string[] = [];
+    const crumbs: { labelKey: string; path: string }[] = [];
     let currentPath: string | undefined = pathname;
 
     // Walk up the parent chain to build breadcrumbs
@@ -90,7 +92,7 @@ const SettingsV2Layout = ({ children }: { children: React.ReactNode }) => {
       if (!routeMeta) {
         break;
       }
-      crumbs.unshift(routeMeta.labelKey);
+      crumbs.unshift({ labelKey: routeMeta.labelKey, path: currentPath });
       currentPath = routeMeta.parentPath;
     }
 
@@ -172,26 +174,48 @@ const SettingsV2Layout = ({ children }: { children: React.ReactNode }) => {
               paddingVertical={3}
             >
               {breadcrumbs.map((crumb, index) => {
+                const isFirst = index === 0;
                 const isLast = index === breadcrumbs.length - 1;
                 return (
-                  <Fragment key={crumb}>
-                    {index > 0 && (
-                      <Icon
-                        name={IconName.ArrowRight}
-                        size={IconSize.Xs}
-                        className="text-icon-alternative"
-                      />
+                  <Fragment key={crumb.path}>
+                    {!isFirst && (
+                      <Text
+                        variant={TextVariant.BodyMd}
+                        fontWeight={FontWeight.Medium}
+                        color={TextColor.TextAlternative}
+                      >
+                        {'>'}
+                      </Text>
                     )}
-                    <Text
-                      variant={TextVariant.BodyMd}
-                      color={
-                        isLast
-                          ? TextColor.TextDefault
-                          : TextColor.TextAlternative
-                      }
-                    >
-                      {t(crumb)}
-                    </Text>
+                    {isLast ? (
+                      <Text
+                        variant={TextVariant.BodyMd}
+                        fontWeight={FontWeight.Medium}
+                        color={TextColor.TextDefault}
+                      >
+                        {t(crumb.labelKey)}
+                      </Text>
+                    ) : (
+                      <Link
+                        to={crumb.path}
+                        className="flex items-center gap-2 cursor-pointer"
+                      >
+                        {isFirst && (
+                          <Icon
+                            name={IconName.ArrowLeft}
+                            size={IconSize.Sm}
+                            className="text-icon-alternative"
+                          />
+                        )}
+                        <Text
+                          variant={TextVariant.BodyMd}
+                          fontWeight={FontWeight.Medium}
+                          color={TextColor.TextAlternative}
+                        >
+                          {t(crumb.labelKey)}
+                        </Text>
+                      </Link>
+                    )}
                   </Fragment>
                 );
               })}
