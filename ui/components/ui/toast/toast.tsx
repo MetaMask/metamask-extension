@@ -2,6 +2,9 @@ import React, { useEffect } from 'react';
 import { Alignment, Fit, Layout, useRive } from '@rive-app/react-canvas';
 import { Toaster as ToasterBase } from 'react-hot-toast';
 import { ThemeType } from '../../../../shared/constants/preferences';
+import { ENVIRONMENT_TYPE_NOTIFICATION } from '../../../../shared/constants/app';
+// eslint-disable-next-line import-x/no-restricted-paths
+import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { useTheme } from '../../../hooks/useTheme';
 // import { useI18nContext } from '../../../hooks/useI18nContext';
 
@@ -140,6 +143,11 @@ export function TransactionToastStatusAnimation({
 }
 
 export function Toaster() {
+  // Toast UI is not needed in the notification window (confirmation dialog).
+  if (getEnvironmentType() === ENVIRONMENT_TYPE_NOTIFICATION) {
+    return null;
+  }
+
   // const t = useI18nContext();
 
   // Themed + close "X" button, but animation comes from above
