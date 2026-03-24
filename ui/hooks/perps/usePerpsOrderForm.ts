@@ -156,11 +156,47 @@ export function usePerpsOrderForm({
   const orderTypeRef = useRef(orderType);
   orderTypeRef.current = orderType;
 
-  // Reset form when mode/asset/direction change. Do not depend on orderType:
-  // toggling market ↔ limit should only update `type` (see effect below), not
-  // wipe amount/leverage. Read existingPosition and orderType from refs so
-  // stream ticks and order-type-only updates do not trigger a full reset.
+  // Track which deps trigger a full form reset. orderType changes should NOT
+  // reset amount/leverage—only the effect above updates formState.type.
+  // Ref starts null so the first effect run always applies. `existingPosition`
+  // uses undefined vs JSON digest so async hydration cannot collide with a size
+  // string like "none" the way a single concatenated key could.
+  const prevResetDepsRef = useRef<{
+    mode: OrderMode;
+    asset: string;
+    initialDirection: 'long' | 'short';
+    existingPositionDigest: string | undefined;
+  } | null>(null);
   useEffect(() => {
+    const existingPositionDigest =
+      existingPosition === undefined
+        ? undefined
+        : JSON.stringify({
+            size: existingPosition.size,
+            entryPrice: existingPosition.entryPrice,
+            leverage: existingPosition.leverage,
+            takeProfitPrice: existingPosition.takeProfitPrice ?? null,
+            stopLossPrice: existingPosition.stopLossPrice ?? null,
+          });
+
+    const prev = prevResetDepsRef.current;
+    if (
+      prev !== null &&
+      prev.mode === mode &&
+      prev.asset === asset &&
+      prev.initialDirection === initialDirection &&
+      prev.existingPositionDigest === existingPositionDigest
+    ) {
+      return;
+    }
+
+    prevResetDepsRef.current = {
+      mode,
+      asset,
+      initialDirection,
+      existingPositionDigest,
+    };
+
     setClosePercent(100);
 
     const pos = existingPositionRef.current;
