@@ -40,7 +40,12 @@ import {
   usePerpsLivePositions,
   usePerpsLiveAccount,
   usePerpsLiveMarketData,
+  usePerpsLiveCandles,
 } from '../../hooks/perps/stream';
+import {
+  CandlePeriod,
+  TimeDuration,
+} from '../../components/app/perps/constants/chartConfig';
 import { usePerpsEligibility } from '../../hooks/perps';
 import { useFormatters } from '../../hooks/useFormatters';
 import { usePerpsDepositConfirmation } from '../../components/app/perps/hooks/usePerpsDepositConfirmation';
@@ -140,6 +145,14 @@ const PerpsOrderEntryPage: React.FC = () => {
     }
     return safeDecodeURIComponent(symbol);
   }, [symbol]);
+
+  // Same candle stream as market detail (default 5m) so header price matches chart line.
+  const { candleData } = usePerpsLiveCandles({
+    symbol: decodedSymbol ?? '',
+    interval: CandlePeriod.FiveMinutes,
+    duration: TimeDuration.YearToDate,
+    throttleMs: 1000,
+  });
 
   const directionParam = searchParams.get('direction');
   const modeParam = searchParams.get('mode');
@@ -286,24 +299,15 @@ const PerpsOrderEntryPage: React.FC = () => {
     return parseFloat(market.price.replace(/[$,]/gu, ''));
   }, [market]);
 
-  const currentPrice = useMemo(() => {
-    if (livePrice?.markPrice) {
-      const p = parseFloat(livePrice.markPrice);
-      if (!Number.isNaN(p) && p > 0) {
-        return p;
-      }
+  const chartCurrentPrice = useMemo(() => {
+    if (!candleData?.candles?.length) {
+      return 0;
     }
-    if (livePrice?.price) {
-      const p =
-        typeof livePrice.price === 'string'
-          ? parseFloat(livePrice.price)
-          : livePrice.price;
-      if (!Number.isNaN(p) && p > 0) {
-        return p;
-      }
-    }
-    return marketPrice;
-  }, [livePrice, marketPrice]);
+    const lastCandle = candleData.candles.at(-1);
+    return lastCandle?.close ? parseFloat(lastCandle.close) : 0;
+  }, [candleData]);
+
+  const currentPrice = chartCurrentPrice > 0 ? chartCurrentPrice : marketPrice;
 
   const availableBalance = account ? parseFloat(account.availableBalance) : 0;
 
@@ -331,14 +335,14 @@ const PerpsOrderEntryPage: React.FC = () => {
   }, [position]);
 
   const displayPrice = useMemo(() => {
-    if (currentPrice > 0) {
-      return `$${formatNumber(currentPrice, {
+    if (chartCurrentPrice > 0) {
+      return `$${formatNumber(chartCurrentPrice, {
         minimumFractionDigits: 2,
         maximumFractionDigits: 2,
       })}`;
     }
     return market?.price ?? '$0.00';
-  }, [currentPrice, market?.price, formatNumber]);
+  }, [chartCurrentPrice, market?.price, formatNumber]);
 
   const displayChange =
     livePrice?.percentChange24h ?? market?.change24hPercent ?? '';
