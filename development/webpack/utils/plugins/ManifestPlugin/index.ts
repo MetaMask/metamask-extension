@@ -625,13 +625,10 @@ export class ManifestPlugin<Z extends boolean> {
     };
     const moveOptions = this.options as ManifestPluginOptions<false>;
 
-    compilation.hooks.processAssets.tap(
-      moveTapOptions,
-      (assets: Assets) => {
-        this.resolveEntrypoints(compilation);
-        this.moveAssets(compilation, assets, moveOptions);
-      },
-    );
+    compilation.hooks.processAssets.tap(moveTapOptions, (assets: Assets) => {
+      this.resolveEntrypoints(compilation);
+      this.moveAssets(compilation, assets, moveOptions);
+    });
 
     if (this.options.zip) {
       const zipOptions = this.options as ManifestPluginOptions<true>;
