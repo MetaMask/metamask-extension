@@ -458,7 +458,6 @@
       "React: DOM nesting violations": 1
     },
     "ui/components/multichain/app-header/app-header-unlocked-content.test.tsx": {
-      "React: Act warnings (component updates not wrapped)": 2,
       "Reselect: Identity function warnings": 1,
       "Reselect: Input stability warnings": 4
     },
