@@ -7,18 +7,19 @@ import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import { mockPositions, mockAccountState } from '../mocks';
 import { EditMarginExpandable } from './edit-margin-expandable';
 
-const mockGetPerpsController = jest.fn();
 const mockGetPerpsStreamManager = jest.fn();
+const mockSubmitRequestToBackground = jest.fn();
 
-jest.mock('../../../../providers/perps', () => ({
-  getPerpsController: (...args: unknown[]) => mockGetPerpsController(...args),
+jest.mock('../../../../store/background-connection', () => ({
+  submitRequestToBackground: (...args: unknown[]) =>
+    mockSubmitRequestToBackground(...args),
 }));
 
 jest.mock('../../../../hooks/perps/usePerpsEligibility', () => ({
   usePerpsEligibility: () => ({ isEligible: true }),
 }));
 
-jest.mock('../../../../providers/perps/PerpsStreamManager', () => ({
+jest.mock('../../../../providers/perps', () => ({
   getPerpsStreamManager: () => mockGetPerpsStreamManager(),
 }));
 
@@ -32,7 +33,6 @@ const defaultProps = {
   position: mockPositions[0],
   account: mockAccountState,
   currentPrice: 2900,
-  selectedAddress: '0x123',
   isExpanded: true,
   onToggle: jest.fn(),
 };
@@ -40,9 +40,14 @@ const defaultProps = {
 describe('EditMarginExpandable', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    mockGetPerpsController.mockResolvedValue({
-      updateMargin: jest.fn().mockResolvedValue({ success: true }),
-      getPositions: jest.fn().mockResolvedValue(mockPositions),
+    mockSubmitRequestToBackground.mockImplementation((method: string) => {
+      if (method === 'perpsUpdateMargin') {
+        return Promise.resolve({ success: true });
+      }
+      if (method === 'perpsGetPositions') {
+        return Promise.resolve(mockPositions);
+      }
+      return Promise.resolve(undefined);
     });
     mockGetPerpsStreamManager.mockReturnValue({
       pushPositionsWithOverrides: jest.fn(),
@@ -160,13 +165,6 @@ describe('EditMarginExpandable', () => {
   describe('submit', () => {
     it('calls controller updateMargin and onToggle on successful submit', async () => {
       const onToggle = jest.fn();
-      const updateMargin = jest.fn().mockResolvedValue({ success: true });
-      const getPositions = jest.fn().mockResolvedValue(mockPositions);
-
-      mockGetPerpsController.mockResolvedValue({
-        updateMargin,
-        getPositions,
-      });
 
       renderWithProvider(
         <EditMarginExpandable
@@ -186,11 +184,10 @@ describe('EditMarginExpandable', () => {
       fireEvent.click(confirmButton);
 
       await waitFor(() => {
-        expect(mockGetPerpsController).toHaveBeenCalledWith('0x123');
-        expect(updateMargin).toHaveBeenCalledWith({
-          symbol: mockPositions[0].symbol,
-          amount: '100',
-        });
+        expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+          'perpsUpdateMargin',
+          [{ symbol: mockPositions[0].symbol, amount: '100' }],
+        );
       });
       await waitFor(() => {
         expect(onToggle).toHaveBeenCalled();
@@ -198,13 +195,6 @@ describe('EditMarginExpandable', () => {
     });
 
     it('does not call updateMargin when amount is empty', () => {
-      const updateMargin = jest.fn().mockResolvedValue({ success: true });
-
-      mockGetPerpsController.mockResolvedValue({
-        updateMargin,
-        getPositions: jest.fn().mockResolvedValue(mockPositions),
-      });
-
       renderWithProvider(
         <EditMarginExpandable {...defaultProps} isExpanded />,
         mockStore,
@@ -216,17 +206,18 @@ describe('EditMarginExpandable', () => {
       expect(confirmButton).toBeDisabled();
       fireEvent.click(confirmButton);
 
-      expect(updateMargin).not.toHaveBeenCalled();
+      expect(mockSubmitRequestToBackground).not.toHaveBeenCalledWith(
+        'perpsUpdateMargin',
+        expect.any(Array),
+      );
     });
   });
 
   describe('error display', () => {
     it('shows error message when updateMargin fails', async () => {
-      mockGetPerpsController.mockResolvedValue({
-        updateMargin: jest
-          .fn()
-          .mockResolvedValue({ success: false, error: 'Insufficient balance' }),
-        getPositions: jest.fn().mockResolvedValue(mockPositions),
+      mockSubmitRequestToBackground.mockResolvedValueOnce({
+        success: false,
+        error: 'Insufficient balance',
       });
 
       renderWithProvider(

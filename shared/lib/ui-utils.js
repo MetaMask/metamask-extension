@@ -35,3 +35,6 @@ export const SHIELD_TERMS_OF_USE_URL =
 
 export const TESTNET_ETH_SCAMS_LEARN_MORE_LINK =
   'https://support.metamask.io/stay-safe/protect-yourself/tokens-and-transactions/testnet-eth-scams/';
+
+export const REQUEST_SETTING_URL =
+  'https://community.metamask.io/c/feature-requests-ideas/13';

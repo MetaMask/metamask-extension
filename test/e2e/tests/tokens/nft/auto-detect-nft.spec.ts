@@ -1,23 +1,18 @@
+import { NETWORK_CLIENT_ID } from '../../../constants';
 import { withFixtures } from '../../../helpers';
-import FixtureBuilder from '../../../fixtures/fixture-builder';
-import HeaderNavbar from '../../../page-objects/pages/header-navbar';
+import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
 import Homepage from '../../../page-objects/pages/home/homepage';
 import NFTListPage from '../../../page-objects/pages/home/nft-list';
-import PrivacySettings from '../../../page-objects/pages/settings/privacy-settings';
-import SettingsPage from '../../../page-objects/pages/settings/settings-page';
 import { login } from '../../../page-objects/flows/login.flow';
 import { setupAutoDetectMocking } from './mocks';
 
 describe('NFT detection', function () {
-  /**
-   * TODO Revisit this test once we enable nft auto detection by default. Use .withPreferencesControllerNftDetectionEnabled().
-   */
   it('displays NFT media', async function () {
     const driverOptions = { mock: true };
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
-          .withNetworkControllerOnMainnet()
+        fixtures: new FixtureBuilderV2()
+          .withSelectedNetwork(NETWORK_CLIENT_ID.MAINNET)
           .withEnabledNetworks({
             eip155: {
               '0x1': true,
@@ -30,17 +25,6 @@ describe('NFT detection', function () {
       },
       async ({ driver }) => {
         await login(driver, { validateBalance: false });
-
-        // navigate to security & privacy settings and toggle on NFT autodetection
-        await new HeaderNavbar(driver).openSettingsPage();
-        const settingsPage = new SettingsPage(driver);
-        await settingsPage.checkPageIsLoaded();
-        await settingsPage.goToPrivacySettings();
-
-        const privacySettings = new PrivacySettings(driver);
-        await privacySettings.checkPageIsLoaded();
-        await privacySettings.toggleAutodetectNft();
-        await settingsPage.closeSettingsPage();
 
         // check that nft is displayed
         const homepage = new Homepage(driver);
