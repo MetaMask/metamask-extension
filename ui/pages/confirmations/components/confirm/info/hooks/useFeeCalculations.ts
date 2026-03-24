@@ -26,11 +26,6 @@ import { useSupportsEIP1559 } from './useSupportsEIP1559';
 import { useTransactionGasFeeEstimate } from './useTransactionGasFeeEstimate';
 
 const EMPTY_FEE = '';
-const EMPTY_FEES = {
-  currentCurrencyFee: EMPTY_FEE,
-  currentCurrencyFeeWith18SignificantDigits: EMPTY_FEE,
-  nativeCurrencyFee: EMPTY_FEE,
-};
 
 export function useFeeCalculations(transactionMeta: TransactionMeta) {
   const currentCurrency = useSelector(getCurrentCurrency);
@@ -145,18 +140,6 @@ export function useFeeCalculations(transactionMeta: TransactionMeta) {
 
   const layer1GasFee = transactionMeta?.layer1GasFee as Hex;
   const hasLayer1GasFee = Boolean(layer1GasFee);
-
-  // L1 fee
-  const feesL1 = useMemo(
-    () => (hasLayer1GasFee ? getFeesFromHex(layer1GasFee) : EMPTY_FEES),
-    [getFeesFromHex, layer1GasFee, hasLayer1GasFee],
-  );
-
-  // L2 fee
-  const feesL2 = useMemo(
-    () => (hasLayer1GasFee ? getFeesFromHex(gasFeeEstimate) : EMPTY_FEES),
-    [gasFeeEstimate, getFeesFromHex, hasLayer1GasFee],
-  );
 
   // Max fee
   const gasPrice = transactionMeta?.txParams?.gasPrice ?? HEX_ZERO;
@@ -298,14 +281,6 @@ export function useFeeCalculations(transactionMeta: TransactionMeta) {
       estimatedFees.currentCurrencyFeeWith18SignificantDigits,
     estimatedFeeNative: estimatedFees.nativeCurrencyFee,
     estimatedFeeNativeHex: add0x(estimatedFees.hexFee),
-    l1FeeFiat: feesL1.currentCurrencyFee,
-    l1FeeFiatWith18SignificantDigits:
-      feesL1.currentCurrencyFeeWith18SignificantDigits,
-    l1FeeNative: feesL1.nativeCurrencyFee,
-    l2FeeFiat: feesL2.currentCurrencyFee,
-    l2FeeFiatWith18SignificantDigits:
-      feesL2.currentCurrencyFeeWith18SignificantDigits,
-    l2FeeNative: feesL2.nativeCurrencyFee,
     maxFeeFiat,
     maxFeeFiatWith18SignificantDigits,
     maxFeeHex: add0x(maxFeeHex),
