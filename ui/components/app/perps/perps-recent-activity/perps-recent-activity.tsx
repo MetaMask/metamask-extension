@@ -110,11 +110,9 @@ export const PerpsRecentActivity: React.FC<PerpsRecentActivityProps> = ({
         <Box paddingLeft={4} paddingRight={4} paddingBottom={4}>
           <Text
             variant={TextVariant.BodySm}
-            color={
-              error ? TextColor.ErrorDefault : TextColor.TextAlternative
-            }
+            color={error ? TextColor.ErrorDefault : TextColor.TextAlternative}
           >
-            {error ? error : t('perpsNoTransactions')}
+            {error || t('perpsNoTransactions')}
           </Text>
         </Box>
       </Box>
