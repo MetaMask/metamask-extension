@@ -576,13 +576,15 @@ const PerpsMarketDetailPage: React.FC = () => {
     setIsTPSLModalOpen(false);
   }, []);
 
-  const handleFavoriteClick = useCallback(async () => {
+  const handleFavoriteClick = useCallback(() => {
     if (!decodedSymbol) {
       return;
     }
-    await submitRequestToBackground('perpsToggleWatchlistMarket', [
+    submitRequestToBackground('perpsToggleWatchlistMarket', [
       decodedSymbol,
-    ]);
+    ]).catch((e) => {
+      console.warn('[Perps] Toggle watchlist failed:', e);
+    });
   }, [decodedSymbol]);
 
   // Refetch positions when tab becomes visible (catch changes made elsewhere)
