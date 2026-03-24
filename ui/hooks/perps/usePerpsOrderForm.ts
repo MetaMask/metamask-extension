@@ -178,25 +178,6 @@ export function usePerpsOrderForm({
     }
   }, [mode, asset, initialDirection, orderType]);
 
-  // Re-derive modify fields when availableBalance transitions from 0 to a
-  // real value (e.g. account data loading after mount).
-  const prevBalanceRef = useRef(availableBalance);
-  useEffect(() => {
-    const wasZero = prevBalanceRef.current === 0;
-    prevBalanceRef.current = availableBalance;
-    if (
-      wasZero &&
-      availableBalance > 0 &&
-      mode === 'modify' &&
-      existingPosition
-    ) {
-      setFormState((prev) => ({
-        ...prev,
-        ...deriveModifyFields(existingPosition),
-      }));
-    }
-  }, [availableBalance, mode, existingPosition]);
-
   // Notify parent of form state changes
   useEffect(() => {
     onFormStateChange?.(formState);
