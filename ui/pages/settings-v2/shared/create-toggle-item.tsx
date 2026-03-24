@@ -42,7 +42,7 @@ export type ToggleItemConfig = {
 export const createToggleItem = (
   config: ToggleItemConfig,
 ): React.FC<SettingItemProps> => {
-  const ToggleItem = ({ sectionRef }: SettingItemProps) => {
+  const ToggleItem = () => {
     const t = useI18nContext();
     const dispatch = useDispatch();
     const { trackEvent } = useContext(MetaMetricsContext);
@@ -78,7 +78,6 @@ export const createToggleItem = (
         dataTestId={config.dataTestId}
         containerDataTestId={config.containerDataTestId}
         disabled={disabled}
-        sectionRef={sectionRef}
       />
     );
   };

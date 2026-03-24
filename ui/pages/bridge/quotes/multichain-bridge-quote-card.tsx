@@ -127,6 +127,9 @@ export const MultichainBridgeQuoteCard = ({
   }, [fromChain?.chainId, gasFeesSponsoredNetworkEnabled]);
 
   const shouldShowGasSponsored = useMemo(() => {
+    // HW wallets cannot use any form of gas sponsorship. Gate early as
+    // defense-in-depth even though request-time gating should prevent the
+    // backend from returning gasSponsored=true for HW accounts.
     if (isHardwareWalletAccount) {
       return false;
     }
@@ -135,9 +138,7 @@ export const MultichainBridgeQuoteCard = ({
       return true;
     }
 
-    // For the insufficientBal workaround, validate it's a same-chain swap
     if (insufficientBal && isCurrentNetworkGasSponsored) {
-      // Gas sponsorship only applies to same-chain swaps, not cross-chain bridges
       const isSameChain =
         fromToken?.chainId &&
         toToken?.chainId &&
@@ -147,8 +148,8 @@ export const MultichainBridgeQuoteCard = ({
 
     return false;
   }, [
-    isHardwareWalletAccount,
     gasSponsored,
+    isHardwareWalletAccount,
     insufficientBal,
     isCurrentNetworkGasSponsored,
     fromToken?.chainId,
@@ -301,44 +302,8 @@ export const MultichainBridgeQuoteCard = ({
                 <SuccessPill label={t('swapGasFeesSponsored')} />
               </Row>
             )}
-            {!shouldShowGasSponsored &&
-              !isHardwareWalletAccount &&
-              activeQuote.quote.gasIncluded && (
-                <Row gap={1} data-testid="network-fees-included">
-                  <Text
-                    variant={TextVariant.bodySm}
-                    color={
-                      isEstimatedReturnLow
-                        ? TextColor.warningDefault
-                        : TextColor.textAlternative
-                    }
-                    style={{ textDecoration: 'line-through' }}
-                    data-testid="network-fees-included-original-amount"
-                  >
-                    {activeQuote.includedTxFees?.valueInCurrency
-                      ? formatNetworkFee(
-                          activeQuote.includedTxFees.valueInCurrency,
-                          currency,
-                        )
-                      : formatNetworkFee(
-                          activeQuote.gasFee.effective?.valueInCurrency,
-                          currency,
-                        )}
-                  </Text>
-                  <Text
-                    variant={TextVariant.bodySm}
-                    color={
-                      isEstimatedReturnLow
-                        ? TextColor.warningDefault
-                        : TextColor.textAlternative
-                    }
-                  >
-                    {t('swapGasFeesIncluded')}
-                  </Text>
-                </Row>
-              )}
-            {!shouldShowGasSponsored &&
-              (isHardwareWalletAccount || !activeQuote.quote.gasIncluded) && (
+            {!shouldShowGasSponsored && activeQuote.quote.gasIncluded && (
+              <Row gap={1} data-testid="network-fees-included">
                 <Text
                   variant={TextVariant.bodySm}
                   color={
@@ -346,14 +311,47 @@ export const MultichainBridgeQuoteCard = ({
                       ? TextColor.warningDefault
                       : TextColor.textAlternative
                   }
-                  data-testid="network-fees"
+                  style={{ textDecoration: 'line-through' }}
+                  data-testid="network-fees-included-original-amount"
                 >
-                  {formatNetworkFee(
-                    activeQuote.gasFee.effective?.valueInCurrency,
-                    currency,
-                  )}
+                  {activeQuote.includedTxFees?.valueInCurrency
+                    ? formatNetworkFee(
+                        activeQuote.includedTxFees.valueInCurrency,
+                        currency,
+                      )
+                    : formatNetworkFee(
+                        activeQuote.gasFee.effective?.valueInCurrency,
+                        currency,
+                      )}
                 </Text>
-              )}
+                <Text
+                  variant={TextVariant.bodySm}
+                  color={
+                    isEstimatedReturnLow
+                      ? TextColor.warningDefault
+                      : TextColor.textAlternative
+                  }
+                >
+                  {t('swapGasFeesIncluded')}
+                </Text>
+              </Row>
+            )}
+            {!shouldShowGasSponsored && !activeQuote.quote.gasIncluded && (
+              <Text
+                variant={TextVariant.bodySm}
+                color={
+                  isEstimatedReturnLow
+                    ? TextColor.warningDefault
+                    : TextColor.textAlternative
+                }
+                data-testid="network-fees"
+              >
+                {formatNetworkFee(
+                  activeQuote.gasFee.effective?.valueInCurrency,
+                  currency,
+                )}
+              </Text>
+            )}
           </Row>
         )}
 
