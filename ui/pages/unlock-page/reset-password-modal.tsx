@@ -110,8 +110,8 @@ export default function ResetPasswordModal({
           asChild
         >
           <ul>
-            <Box gap={4} asChild>
-              <li className="flex">
+            <Box asChild>
+              <li className="flex gap-4 items-center">
                 <Icon
                   name={IconName.FaceId}
                   size={IconSize.Md}
@@ -134,8 +134,8 @@ export default function ResetPasswordModal({
                 </Text>
               </li>
             </Box>
-            <Box gap={4} asChild>
-              <li className="flex">
+            <Box asChild>
+              <li className="flex gap-4 items-center">
                 <Icon
                   name={IconName.SecurityKey}
                   size={IconSize.Md}
@@ -229,6 +229,7 @@ export default function ResetPasswordModal({
             variant={ButtonVariant.Primary}
             onClick={onRestore}
             size={ButtonSize.Lg}
+            className="w-full"
           >
             {t('forgotPasswordModalButton')}
           </Button>
@@ -237,6 +238,7 @@ export default function ResetPasswordModal({
             variant={ButtonVariant.Secondary}
             onClick={handleResetWallet}
             size={ButtonSize.Lg}
+            className="w-full"
           >
             {t('forgotPasswordModalButtonLink')}
           </Button>
@@ -288,6 +290,7 @@ export default function ResetPasswordModal({
             onClick={handleResetWalletConfirm}
             size={ButtonSize.Lg}
             isDanger
+            className="w-full"
           >
             {t('resetWalletButton')}
           </Button>
