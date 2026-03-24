@@ -1,5 +1,5 @@
 const { strict: assert } = require('assert');
-const FixtureBuilder = require('../../fixtures/fixture-builder');
+const { default: FixtureBuilderV2 } = require('../../fixtures/fixture-builder-v2');
 const { withFixtures } = require('../../helpers');
 const { login } = require('../../page-objects/flows/login.flow');
 const { DAPP_URL, WINDOW_TITLES } = require('../../constants');
@@ -48,7 +48,7 @@ describe('PPOM Blockaid Alert - Multiple Networks Support', function () {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withNetworkControllerOnMainnet()
           .withPermissionControllerConnectedToTestDapp()
           .withPreferencesController({

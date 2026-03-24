@@ -6,7 +6,6 @@ import {
 } from '../../page-objects/flows/transaction';
 import { WINDOW_TITLES } from '../../constants';
 import { withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixtures/fixture-builder';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import SendTokenConfirmPage from '../../page-objects/pages/send/send-token-confirmation-page';
 import ActivityListPage from '../../page-objects/pages/home/activity-list';
@@ -78,7 +77,7 @@ describe('Editing Confirm Transaction', function () {
   it('allows accessing advance gas fee popover from edit gas fee popover', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withPreferencesController(PREFERENCES_STATE_MOCK)
           .build(),
         localNodeOptions: { hardfork: 'london' },
@@ -134,7 +133,7 @@ describe('Editing Confirm Transaction', function () {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withPermissionControllerConnectedToTestDapp()
           .withPreferencesController(PREFERENCES_STATE_MOCK)
           .build(),

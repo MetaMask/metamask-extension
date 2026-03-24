@@ -4,7 +4,7 @@ import { login } from '../../page-objects/flows/login.flow';
 import { withFixtures, getEventPayloads } from '../../helpers';
 import { MOCK_META_METRICS_ID } from '../../constants';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
-import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import PrivacySettings from '../../page-objects/pages/settings/privacy-settings';
 
@@ -58,7 +58,7 @@ describe('PPOM Blockaid Alert - Metrics', function () {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withNetworkControllerOnMainnet()
           .withPermissionControllerConnectedToTestDapp()
           .withMetaMetricsController({

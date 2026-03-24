@@ -1,6 +1,6 @@
 import { Suite } from 'mocha';
 import { MockttpServer } from 'mockttp';
-import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { WINDOW_TITLES } from '../../constants';
 import { withFixtures } from '../../helpers';
 import { mockMultiNetworkBalancePolling } from '../../mock-balance-polling/mock-balance-polling';
@@ -143,7 +143,7 @@ describe('Simple Send Security Alert - Blockaid', function (this: Suite) {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withNetworkControllerOnMainnet()
           .withPreferencesController({
             securityAlertsEnabled: true,
@@ -190,7 +190,7 @@ describe('Simple Send Security Alert - Blockaid', function (this: Suite) {
       // see issue: https://github.com/MetaMask/MetaMask-planning/issues/3560
       {
         dappOptions: { numberOfTestDapps: 1 },
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withNetworkControllerOnMainnet()
           .withPermissionControllerConnectedToTestDapp({
             useLocalhostHostname: true,
@@ -235,7 +235,7 @@ describe('Simple Send Security Alert - Blockaid', function (this: Suite) {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withNetworkControllerOnMainnet()
           .withPreferencesController({
             securityAlertsEnabled: true,
