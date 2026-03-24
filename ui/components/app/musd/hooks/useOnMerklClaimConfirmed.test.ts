@@ -55,7 +55,11 @@ describe('useOnMerklClaimConfirmed', () => {
 
     // Start with already confirmed transaction but no time field (old tx, no time data)
     useSelector.mockReturnValue([
-      { id: 'tx1', status: TransactionStatus.confirmed, txParams: { to: MERKL_DISTRIBUTOR_ADDRESS } },
+      {
+        id: 'tx1',
+        status: TransactionStatus.confirmed,
+        txParams: { to: MERKL_DISTRIBUTOR_ADDRESS },
+      },
     ]);
 
     renderHook(() => useOnMerklClaimConfirmed(onConfirmed));
@@ -101,7 +105,12 @@ describe('useOnMerklClaimConfirmed', () => {
 
       // Component mounts with an already-confirmed tx that happened recently
       useSelector.mockReturnValue([
-        createMockTransaction('tx1', TransactionStatus.confirmed, MERKL_DISTRIBUTOR_ADDRESS, Date.now() - 30_000),
+        createMockTransaction(
+          'tx1',
+          TransactionStatus.confirmed,
+          MERKL_DISTRIBUTOR_ADDRESS,
+          Date.now() - 30_000,
+        ),
       ]);
 
       renderHook(() => useOnMerklClaimConfirmed(onConfirmed));
@@ -115,7 +124,12 @@ describe('useOnMerklClaimConfirmed', () => {
       // Confirmed tx is 10 minutes old — should not trigger
       const TEN_MINUTES_AGO = Date.now() - 10 * 60 * 1000;
       useSelector.mockReturnValue([
-        createMockTransaction('tx1', TransactionStatus.confirmed, MERKL_DISTRIBUTOR_ADDRESS, TEN_MINUTES_AGO),
+        createMockTransaction(
+          'tx1',
+          TransactionStatus.confirmed,
+          MERKL_DISTRIBUTOR_ADDRESS,
+          TEN_MINUTES_AGO,
+        ),
       ]);
 
       renderHook(() => useOnMerklClaimConfirmed(onConfirmed));
@@ -127,7 +141,12 @@ describe('useOnMerklClaimConfirmed', () => {
       const onConfirmed = jest.fn();
 
       useSelector.mockReturnValue([
-        createMockTransaction('tx1', TransactionStatus.confirmed, MERKL_DISTRIBUTOR_ADDRESS, Date.now() - 30_000),
+        createMockTransaction(
+          'tx1',
+          TransactionStatus.confirmed,
+          MERKL_DISTRIBUTOR_ADDRESS,
+          Date.now() - 30_000,
+        ),
       ]);
 
       const { rerender } = renderHook(() =>
@@ -149,7 +168,12 @@ describe('useOnMerklClaimConfirmed', () => {
       const onConfirmed = jest.fn();
 
       useSelector.mockReturnValue([
-        createMockTransaction('tx1', TransactionStatus.confirmed, '0xOtherAddress', Date.now() - 30_000),
+        createMockTransaction(
+          'tx1',
+          TransactionStatus.confirmed,
+          '0xOtherAddress',
+          Date.now() - 30_000,
+        ),
       ]);
 
       renderHook(() => useOnMerklClaimConfirmed(onConfirmed));
