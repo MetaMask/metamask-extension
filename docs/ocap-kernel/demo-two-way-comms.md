@@ -123,7 +123,8 @@ All subsequent calls from the away side flow through automatically.
 
 ## Part 2: Away Side (VPS CLI)
 
-The away kernel runs as a daemon. To call an arbitray kernel method, use:
+The away kernel runs as a daemon. Common operations have dedicated
+subcommands (`redeem-url`, `queueMessage`). For other kernel methods, use:
 
 ```bash
 yarn ocap daemon exec <method> '<params-json>'
@@ -132,7 +133,7 @@ yarn ocap daemon exec <method> '<params-json>'
 Parameters are JSON. The format depends on the RPC method:
 
 - **Object params**: `{"key": "value"}` (most methods)
-- **Tuple params**: `["arg1", "arg2", [...]]` (e.g., `queueMessage`)
+- **Tuple params**: `["arg1", "arg2", [...]]`
 
 ### Step 1: Start the Daemon with Remote Comms
 
@@ -186,57 +187,52 @@ The vendor's public facet supports `requestCapability`. Call it to get a
 capability (currently hardcoded to return a `PersonalMessageSigner`):
 
 ```bash
-yarn ocap daemon exec queueMessage '["ko4", "requestCapability", ["view user accounts"]]'
+yarn ocap daemon queueMessage ko4 requestCapability '["view user accounts"]'
 ```
 
-Returns CapData. If the result includes a new object reference, it appears in
-`slots`:
+The `queueMessage` subcommand automatically decodes the CapData result into a
+human-readable form. If the result includes an object reference, it shows the
+kref:
 
 ```json
-{
-  "body": "#\"$0.Alleged: PersonalMessageSigner\"",
-  "slots": ["ko5"]
-}
+"<ko5> (Alleged: PersonalMessageSigner)"
 ```
 
 The kref `ko5` is the new capability object.
+
+> **Tip:** Use `--raw` to see the original CapData (`{ body, slots }`).
 
 ### Step 4: Get accounts
 
 Call `getAccounts` on the returned capability:
 
 ```bash
-yarn ocap daemon exec queueMessage '["ko5", "getAccounts", []]'
+yarn ocap daemon queueMessage ko5 getAccounts
 ```
 
-Returns CapData with the result:
+Returns the decoded result:
 
 ```json
-{
-  "body": "#[\"0x1234...\", \"0xabcd...\"]",
-  "slots": []
-}
+["0x1234...", "0xabcd..."]
 ```
 
 ### Step 5: Sign a message
 
-Extract an account address from the `getAccounts` result body and call
+Extract an account address from the `getAccounts` result and call
 `signMessage` with the address, a hex-encoded message, and a chain ID:
 
 ```bash
-yarn ocap daemon exec queueMessage '["ko5", "signMessage", ["0x1234...", "0x48656c6c6f", "0x1"]]'
+yarn ocap daemon queueMessage ko5 signMessage \
+  '["0x1234...", "hello, agentic metamask", "0x1"]'
 ```
 
 > **Note:** This triggers a confirmation popup in the MetaMask extension — the
 > user must approve the signing request before the call resolves.
 
-Returns CapData with the signature:
+Returns the signature:
 
 ```json
-{
-  "body": "#\"0xsignature...\"",
-  "slots": []
-}
+"0xsignature..."
 ```
 
 ---
