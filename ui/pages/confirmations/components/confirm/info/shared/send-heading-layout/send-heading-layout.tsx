@@ -16,7 +16,11 @@ type SendHeadingLayoutProps = {
   label?: string;
 };
 
-const SendHeadingLayout = ({ children, image, label }: SendHeadingLayoutProps) => {
+const SendHeadingLayout = ({
+  children,
+  image,
+  label,
+}: SendHeadingLayoutProps) => {
   const t = useI18nContext();
 
   return (
