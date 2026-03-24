@@ -265,7 +265,7 @@ class AccountListPage {
     }
 
     if (waitForSync) {
-      await this.waitUntilSyncingIsCompleted(timeout);
+      await this.waitUntilSyncingIsCompleted();
     }
     console.log('Account list is loaded');
   }
@@ -411,17 +411,13 @@ class AccountListPage {
 
   /**
    * Waiting until syncing is completed.
-   * @param timeout
    */
-  async waitUntilSyncingIsCompleted(timeout?: number): Promise<void> {
+  async waitUntilSyncingIsCompleted(): Promise<void> {
     console.log(`Check that account syncing not displayed in account list`);
-    await this.driver.assertElementNotPresent(
-      {
-        css: this.addMultichainAccountButton,
-        text: 'Syncing',
-      },
-      timeout === undefined ? undefined : { timeout },
-    );
+    await this.driver.assertElementNotPresent({
+      css: this.addMultichainAccountButton,
+      text: 'Syncing',
+    });
   }
 
   /**

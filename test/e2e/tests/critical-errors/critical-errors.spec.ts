@@ -4,7 +4,6 @@ import { WALLET_PASSWORD } from '../../constants';
 import { withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import CriticalErrorPage from '../../page-objects/pages/critical-error-page';
-import HomePage from '../../page-objects/pages/home/homepage';
 import { PAGES } from '../../webdriver/driver';
 import LoginPage from '../../page-objects/pages/login-page';
 import { getManifestVersion } from '../../set-manifest-flags';
@@ -114,12 +113,6 @@ describe('Critical errors', function (this: Suite) {
           password: WALLET_PASSWORD,
         });
 
-        // After a restore+reload cycle the extension may still be
-        // initializing multichain features. Wait for the loading overlay
-        // to clear so getFirstAddress doesn't time out on slow CI.
-        const homePage = new HomePage(driver);
-        await homePage.waitForLoadingOverlayToDisappear();
-
         // After restoring from backup, multichain account sync may hang in
         // CI. Skip the sync check — we only need to read the existing address.
         const restoredFirstAddress = await getFirstAddress(driver, undefined, {
@@ -165,9 +158,6 @@ describe('Critical errors', function (this: Suite) {
           driver,
           password: WALLET_PASSWORD,
         });
-
-        const homePage = new HomePage(driver);
-        await homePage.waitForLoadingOverlayToDisappear();
 
         const restoredFirstAddress = await getFirstAddress(driver, undefined, {
           waitForSync: false,
