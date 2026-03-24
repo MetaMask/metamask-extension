@@ -162,6 +162,32 @@ describe('Reveal Seed Page', () => {
     });
   });
 
+  it('submits the password form', async () => {
+    const { queryByTestId, getByText } = renderWithProvider(
+      <RevealSeedPage />,
+      mockStore,
+    );
+
+    await navigateQuizToPasswordScreen({
+      getByText,
+      queryByTestId,
+      fireEvent,
+    });
+
+    fireEvent.change(queryByTestId('input-password') as HTMLElement, {
+      target: { value: password },
+    });
+
+    fireEvent.submit(queryByTestId('reveal-seed-password-form') as HTMLElement);
+
+    await waitFor(() => {
+      expect(mockRequestRevealSeedWords).toHaveBeenCalledWith(
+        password,
+        undefined,
+      );
+    });
+  });
+
   it('shows error when password is wrong', async () => {
     mockRequestRevealSeedWords.mockImplementation(
       mockUnsuccessfulSrpReveal as () => (
