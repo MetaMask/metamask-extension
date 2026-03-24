@@ -68,7 +68,6 @@ async function createSnapMock(options: {
     .forGet(
       `${NPM_REGISTRY_METAMASK_BASE_URL}/${snapNamePrefix}/-/${snapNamePrefix}-${VERSION}.tgz`,
     )
-    .always()
     .thenCallback(() => {
       console.log("This is mocked")
       return {
