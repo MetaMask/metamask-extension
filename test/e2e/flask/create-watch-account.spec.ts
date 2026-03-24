@@ -1,6 +1,7 @@
 import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
-import FixtureBuilder from '../fixtures/fixture-builder';
+import { NETWORK_CLIENT_ID } from '../constants';
+import FixtureBuilderV2 from '../fixtures/fixture-builder-v2';
 import { withFixtures } from '../helpers';
 import { Driver } from '../webdriver/driver';
 import MultichainAccountDetailsPage from '../page-objects/pages/multichain/multichain-account-details-page';
@@ -24,11 +25,11 @@ describe.skip('Account-watcher snap', function (this: Suite) {
     it('adds watch account with valid EOA address', async function () {
       await withFixtures(
         {
-          fixtures: new FixtureBuilder()
+          fixtures: new FixtureBuilderV2()
             .withPreferencesController({
               watchEthereumAccountEnabled: true,
             })
-            .withNetworkControllerOnMainnet()
+            .withSelectedNetwork(NETWORK_CLIENT_ID.MAINNET)
             .withEnabledNetworks({
               eip155: {
                 '0x1': true,
@@ -53,11 +54,11 @@ describe.skip('Account-watcher snap', function (this: Suite) {
     it("disables 'Send' and 'Swap' buttons for watch accounts", async function () {
       await withFixtures(
         {
-          fixtures: new FixtureBuilder()
+          fixtures: new FixtureBuilderV2()
             .withPreferencesController({
               watchEthereumAccountEnabled: true,
             })
-            .withNetworkControllerOnMainnet()
+            .withSelectedNetwork(NETWORK_CLIENT_ID.MAINNET)
             .withEnabledNetworks({
               eip155: {
                 '0x1': true,
@@ -116,11 +117,11 @@ describe.skip('Account-watcher snap', function (this: Suite) {
       it(`handles invalid input: ${description}`, async function () {
         await withFixtures(
           {
-            fixtures: new FixtureBuilder()
+            fixtures: new FixtureBuilderV2()
               .withPreferencesController({
                 watchEthereumAccountEnabled: true,
               })
-              .withNetworkControllerOnMainnet()
+              .withSelectedNetwork(NETWORK_CLIENT_ID.MAINNET)
               .withEnabledNetworks({
                 eip155: {
                   '0x1': true,
@@ -154,11 +155,11 @@ describe.skip('Account-watcher snap', function (this: Suite) {
 
       await withFixtures(
         {
-          fixtures: new FixtureBuilder()
+          fixtures: new FixtureBuilderV2()
             .withPreferencesController({
               watchEthereumAccountEnabled: true,
             })
-            .withNetworkControllerOnMainnet()
+            .withSelectedNetwork(NETWORK_CLIENT_ID.MAINNET)
             .withEnabledNetworks({
               eip155: {
                 '0x1': true,
@@ -189,11 +190,11 @@ describe.skip('Account-watcher snap', function (this: Suite) {
     it("does not display 'Show private key' button for watch accounts", async function () {
       await withFixtures(
         {
-          fixtures: new FixtureBuilder()
+          fixtures: new FixtureBuilderV2()
             .withPreferencesController({
               watchEthereumAccountEnabled: true,
             })
-            .withNetworkControllerOnMainnet()
+            .withSelectedNetwork(NETWORK_CLIENT_ID.MAINNET)
             .withEnabledNetworks({
               eip155: {
                 '0x1': true,
@@ -223,11 +224,11 @@ describe.skip('Account-watcher snap', function (this: Suite) {
     it('removes a watched account and recreate a watched account', async function () {
       await withFixtures(
         {
-          fixtures: new FixtureBuilder()
+          fixtures: new FixtureBuilderV2()
             .withPreferencesController({
               watchEthereumAccountEnabled: true,
             })
-            .withNetworkControllerOnMainnet()
+            .withSelectedNetwork(NETWORK_CLIENT_ID.MAINNET)
             .withEnabledNetworks({
               eip155: {
                 '0x1': true,
@@ -278,7 +279,7 @@ describe.skip('Account-watcher snap', function (this: Suite) {
     it("will show the 'Watch an Ethereum account (Beta)' option when setting is enabled", async function () {
       await withFixtures(
         {
-          fixtures: new FixtureBuilder().build(),
+          fixtures: new FixtureBuilderV2().build(),
           title: this.test?.fullTitle(),
         },
         async ({ driver }) => {
@@ -318,7 +319,7 @@ describe.skip('Account-watcher snap', function (this: Suite) {
     it('enables and then disables the toggle and the option to add a watch-only account behaves as expected', async function () {
       await withFixtures(
         {
-          fixtures: new FixtureBuilder().build(),
+          fixtures: new FixtureBuilderV2().build(),
           title: this.test?.fullTitle(),
         },
         async ({ driver }) => {
