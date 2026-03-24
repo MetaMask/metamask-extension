@@ -81,7 +81,11 @@ export default function ResetPasswordModal({
   const socialLoginContent = () => {
     return (
       <Box paddingHorizontal={4}>
-        <Text variant={TextVariant.BodyMd} color={TextColor.TextAlternative}>
+        <Text
+          variant={TextVariant.BodyMd}
+          color={TextColor.TextAlternative}
+          className="mb-4"
+        >
           {t('forgotPasswordSocialDescription', [
             <TextButton
               key="need-help-link"
@@ -107,7 +111,7 @@ export default function ResetPasswordModal({
         >
           <ul>
             <Box gap={4} asChild>
-              <li>
+              <li className="flex">
                 <Icon
                   name={IconName.FaceId}
                   size={IconSize.Md}
@@ -131,7 +135,7 @@ export default function ResetPasswordModal({
               </li>
             </Box>
             <Box gap={4} asChild>
-              <li>
+              <li className="flex">
                 <Icon
                   name={IconName.SecurityKey}
                   size={IconSize.Md}
@@ -162,6 +166,7 @@ export default function ResetPasswordModal({
             variant={ButtonVariant.Primary}
             onClick={onRestore}
             size={ButtonSize.Lg}
+            className="w-full"
           >
             {t('forgotPasswordModalButton')}
           </Button>
@@ -170,6 +175,7 @@ export default function ResetPasswordModal({
             variant={ButtonVariant.Secondary}
             onClick={handleResetWallet}
             size={ButtonSize.Lg}
+            className="w-full"
           >
             {t('forgotPasswordModalButtonLink')}
           </Button>
