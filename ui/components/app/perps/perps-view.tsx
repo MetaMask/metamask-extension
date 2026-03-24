@@ -1,59 +1,42 @@
-import React, { useMemo, useEffect } from 'react';
 import { Box, BoxFlexDirection } from '@metamask/design-system-react';
+import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import { getPerpsStreamManager } from '../../../providers/perps';
-import { getSelectedInternalAccount } from '../../../selectors/accounts';
 import {
   usePerpsLivePositions,
   usePerpsLiveOrders,
   usePerpsLiveMarketData,
 } from '../../../hooks/perps/stream';
-import { usePerpsDeposit } from '../../../hooks/perps';
+import { getSelectedInternalAccount } from '../../../selectors';
+
+import { usePerpsDepositConfirmation } from './hooks/usePerpsDepositConfirmation';
 import { PerpsBalanceDropdown } from './perps-balance-dropdown';
-import { PerpsPositionsOrders } from './perps-positions-orders';
-import { PerpsWatchlist } from './perps-watchlist';
 import { PerpsExploreMarkets } from './perps-explore-markets';
+import { PerpsPositionsOrders } from './perps-positions-orders';
 import { PerpsRecentActivity } from './perps-recent-activity';
-import { PerpsSupportLearn } from './perps-support-learn';
-import { PerpsTutorialModal } from './perps-tutorial-modal';
 import {
   PerpsControlBarSkeleton,
   PerpsSectionSkeleton,
 } from './perps-skeletons';
+import { PerpsSupportLearn } from './perps-support-learn';
+import { PerpsTutorialModal } from './perps-tutorial-modal';
+import { PerpsWatchlist } from './perps-watchlist';
 
 /**
- * PerpsTabView component displays the perpetuals trading tab
+ * PerpsView component displays the perpetuals trading view
  * with positions and orders sections using stream data.
  *
  * Uses PerpsStreamManager for cached data, enabling smooth navigation
  * without loading skeletons when switching between views.
  */
-export const PerpsTabView: React.FC = () => {
-  const { triggerDeposit } = usePerpsDeposit();
+export const PerpsView: React.FC = () => {
+  const { trigger: triggerDeposit } = usePerpsDepositConfirmation();
 
-  // Get selected address for stream manager initialization
   const selectedAccount = useSelector(getSelectedInternalAccount);
-  const selectedAddress = selectedAccount?.address;
 
-  // Initialize stream manager and prewarm on mount
-  useEffect(() => {
-    if (!selectedAddress) {
-      return;
-    }
-
-    const streamManager = getPerpsStreamManager();
-
-    // Initialize and prewarm
-    streamManager.init(selectedAddress);
-    streamManager.prewarm();
-
-    // Cleanup prewarm on unmount (cache persists!)
-    return () => {
-      streamManager.cleanupPrewarm();
-    };
-  }, [selectedAddress]);
-
-  // Use stream hooks for real-time data
+  // Stream hooks must run before any effects that touch PerpsStreamManager.
+  // `usePerpsStreamManager` (inside these hooks) calls `perpsInit` then `init(address)`;
+  // prewarm/init in an effect above these hooks used to run first and triggered
+  // `perpsGetPositions` etc. before the background client existed (CLIENT_NOT_INITIALIZED).
   const { positions, isInitialLoading: positionsLoading } =
     usePerpsLivePositions();
   const { orders: allOrders, isInitialLoading: ordersLoading } =
@@ -133,11 +116,10 @@ export const PerpsTabView: React.FC = () => {
 
       {/* Support & Learn */}
       <PerpsSupportLearn />
-
       {/* Tutorial Modal */}
       <PerpsTutorialModal />
     </Box>
   );
 };
 
-export default PerpsTabView;
+export default PerpsView;

@@ -616,6 +616,7 @@ describe('Bridge selectors', () => {
         symbol: 'ETH',
         tokenFiatAmount: undefined,
         rwaData: undefined,
+        isVerified: undefined,
       });
     });
   });
@@ -648,6 +649,7 @@ describe('Bridge selectors', () => {
           "chainId": "eip155:1",
           "decimals": 18,
           "iconUrl": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0x567.png",
+          "isVerified": undefined,
           "name": "DEST",
           "rwaData": undefined,
           "symbol": "DEST",
@@ -682,6 +684,7 @@ describe('Bridge selectors', () => {
         symbol: 'mUSD',
         tokenFiatAmount: undefined,
         rwaData: undefined,
+        isVerified: undefined,
       });
     });
 
@@ -749,6 +752,7 @@ describe('Bridge selectors', () => {
         symbol: 'ETH',
         tokenFiatAmount: undefined,
         rwaData: undefined,
+        isVerified: undefined,
       });
     });
   });
