@@ -62,6 +62,7 @@ import {
 import { SnapAccountRedirect } from '../../../pages/snap-account-redirect';
 import SnapAuthorshipHeader from '../snaps/snap-authorship-header';
 import { Skeleton } from '../../component-library/skeleton';
+import { CapabilityApproval } from '../../../pages/confirmations/components/capability-approval';
 import { DefiReferralConsent } from '../../../pages/core/defi-referral-consent';
 import { Delineator } from '../../ui/delineator';
 
@@ -74,6 +75,7 @@ export const safeComponentList = {
   BannerAlert,
   Box,
   Button,
+  CapabilityApproval,
   Chip,
   ConfirmationNetworkSwitch,
   ConfirmInfoRow,

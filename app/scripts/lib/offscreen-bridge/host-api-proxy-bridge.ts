@@ -30,7 +30,7 @@ export function setupHostApiProxyBridge(
 
       (async () => {
         try {
-          const result = await (controllerMessenger as ReturnType<never>).call(
+          const result = await controllerMessenger.call(
             msg.action,
             ...msg.args,
           );

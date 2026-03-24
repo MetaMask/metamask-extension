@@ -28,6 +28,14 @@ export type CapabilityRecord = {
   sourceCode: string;
 };
 
+export type CapabilityApprovalResult = {
+  approved: boolean;
+  capabilityName?: string;
+  description?: string;
+  methodNames?: string[];
+  sourceCode?: string;
+};
+
 export type HostApiProxy = {
   invoke: (method: string, args?: unknown[]) => Promise<unknown>;
 };

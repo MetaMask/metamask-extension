@@ -177,6 +177,9 @@ export const HYPERLIQUID_APPROVAL_TYPE =
 export const ASTERDEX_APPROVAL_TYPE = MESSAGE_TYPE.ASTERDEX_REFERRAL_CONSENT;
 export const GMX_APPROVAL_TYPE = MESSAGE_TYPE.GMX_REFERRAL_CONSENT;
 
+// Custom ApprovalType for ocap capability approval
+export const OCAP_CAPABILITY_APPROVAL_TYPE = 'ocap:capabilityApproval';
+
 export const SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES = {
   confirmAccountCreation: 'snap_manageAccounts:confirmAccountCreation',
   confirmAccountRemoval: 'snap_manageAccounts:confirmAccountRemoval',

@@ -11,6 +11,7 @@ import {
   HYPERLIQUID_APPROVAL_TYPE,
   ASTERDEX_APPROVAL_TYPE,
   GMX_APPROVAL_TYPE,
+  OCAP_CAPABILITY_APPROVAL_TYPE,
   SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES,
   SMART_TRANSACTION_CONFIRMATION_TYPES,
 } from '../../../../../shared/constants/app';
@@ -25,6 +26,7 @@ import snapAlert from './snaps/snap-alert/snap-alert';
 import snapConfirmation from './snaps/snap-confirmation/snap-confirmation';
 import snapPrompt from './snaps/snap-prompt/snap-prompt';
 import snapDefault from './snaps/snap-default/snap-default';
+import capabilityApproval from './capability-approval';
 import defiReferralConsent from './defi-referral-consent';
 
 const APPROVAL_TEMPLATES = {
@@ -44,6 +46,7 @@ const APPROVAL_TEMPLATES = {
     removeSnapAccount,
   [SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.showSnapAccountRedirect]:
     snapAccountRedirect,
+  [OCAP_CAPABILITY_APPROVAL_TYPE]: capabilityApproval,
   [HYPERLIQUID_APPROVAL_TYPE]: defiReferralConsent,
   [ASTERDEX_APPROVAL_TYPE]: defiReferralConsent,
   [GMX_APPROVAL_TYPE]: defiReferralConsent,
