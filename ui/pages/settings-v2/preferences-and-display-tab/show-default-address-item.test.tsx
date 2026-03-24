@@ -39,7 +39,7 @@ const createMockStore = (overrides = {}) =>
       },
       preferences: {
         ...mockState.metamask.preferences,
-        showDefaultAddress: false,
+        showDefaultAddress: true,
         defaultAddressScope: 'all',
       },
       ...overrides,
@@ -93,7 +93,6 @@ describe('ShowDefaultAddressItem', () => {
     const mockStore = createMockStore({
       preferences: {
         ...mockState.metamask.preferences,
-        showDefaultAddress: true,
         defaultAddressScope: 'all',
       },
     });

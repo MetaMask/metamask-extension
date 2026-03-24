@@ -887,7 +887,7 @@
         "hideZeroBalanceTokens": false,
         "privacyMode": false,
         "showConfirmationAdvancedDetails": false,
-        "showDefaultAddress": false,
+        "showDefaultAddress": true,
         "showExtensionInFullSizeView": false,
         "showFiatInTestnets": false,
         "showMultiRpcModal": false,

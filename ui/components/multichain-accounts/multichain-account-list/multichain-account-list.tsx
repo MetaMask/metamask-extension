@@ -56,7 +56,6 @@ import {
 } from '../../../selectors';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { MultichainAccountMenu } from '../multichain-account-menu';
-import { MultichainHoveredAddressRowsList } from '../multichain-address-rows-hovered-list';
 import { AddMultichainAccount } from '../add-multichain-account';
 import { MultichainAccountEditModal } from '../multichain-account-edit-modal';
 import { getAccountGroupsByAddress } from '../../../selectors/multichain-accounts/account-tree';
@@ -341,20 +340,6 @@ export const MultichainAccountList = ({
                   />
                 </Box>
               ) : undefined
-            }
-            avatarWrapper={
-              isDefaultAddressEnabled
-                ? (avatar) => (
-                    <MultichainHoveredAddressRowsList
-                      groupId={groupId as AccountGroupId}
-                      showAccountHeaderAndBalance={false}
-                      showViewAllButton={false}
-                      showDefaultAddressSection={false}
-                    >
-                      {avatar}
-                    </MultichainHoveredAddressRowsList>
-                  )
-                : undefined
             }
             endAccessory={
               showAccountMenu ? (

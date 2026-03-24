@@ -43,6 +43,8 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 // eslint-disable-next-line import-x/no-restricted-paths
 import { normalizeSafeAddress } from '../../../../app/scripts/lib/multichain/address';
 import { shortenAddress } from '../../../helpers/utils/util';
+import { MultichainHoveredAddressRowsList } from '../multichain-address-rows-hovered-list';
+import { MultichainAccountNetworkGroupWithDefaultAddress } from '../multichain-account-network-group-with-default-address';
 
 type AccountCellAvatarProps = {
   seedAddress: string;
@@ -155,7 +157,6 @@ export type MultichainAccountCellProps = {
     | typeof STATUS_CONNECTED_TO_ANOTHER_ACCOUNT;
   privacyMode?: boolean;
   showDefaultAddress?: boolean;
-  avatarWrapper?: (avatar: React.ReactNode) => React.ReactNode;
 };
 
 export const MultichainAccountCell = ({
@@ -172,7 +173,6 @@ export const MultichainAccountCell = ({
   connectionStatus,
   privacyMode = false,
   showDefaultAddress = false,
-  avatarWrapper,
 }: MultichainAccountCellProps) => {
   const handleClick = () => onClick?.(accountId);
 
@@ -212,20 +212,10 @@ export const MultichainAccountCell = ({
         justifyContent={JustifyContent.flexStart}
         style={{ minWidth: 0, flex: 1 }}
       >
-        {avatarWrapper ? (
-          avatarWrapper(
-            <AccountCellAvatar
-              seedAddress={seedAddressIcon}
-              connectionStatus={connectionStatus}
-              hideTooltip
-            />,
-          )
-        ) : (
-          <AccountCellAvatar
-            seedAddress={seedAddressIcon}
-            connectionStatus={connectionStatus}
-          />
-        )}
+        <AccountCellAvatar
+          seedAddress={seedAddressIcon}
+          connectionStatus={connectionStatus}
+        />
         <BoxDeprecated style={{ overflow: 'hidden' }}>
           {/* Prevent overflow of account name by long account names */}
           <TextDeprecated
@@ -248,7 +238,22 @@ export const MultichainAccountCell = ({
             </TextDeprecated>
           )}
           {showDefaultAddress && (
-            <AccountCellDefaultAddress accountId={accountId} />
+            <Box
+              marginLeft={3}
+              onClick={(e: React.MouseEvent) => e.stopPropagation()}
+              data-testid="multichain-account-cell-default-address"
+            >
+              <MultichainHoveredAddressRowsList
+                groupId={accountId}
+                showAccountHeaderAndBalance={false}
+                showDefaultAddressSection={false}
+                showViewAllButton={false}
+              >
+                <MultichainAccountNetworkGroupWithDefaultAddress
+                  groupId={accountId}
+                />
+              </MultichainHoveredAddressRowsList>
+            </Box>
           )}
         </BoxDeprecated>
       </BoxDeprecated>
