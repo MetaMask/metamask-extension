@@ -7,7 +7,6 @@ import type {
   NetworkControllerGetNetworkClientByIdAction,
   NetworkControllerGetStateAction,
 } from '@metamask/network-controller';
-import type { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
 import type {
   TransactionControllerAddTransactionAction,
   TransactionControllerGetStateAction,
@@ -39,7 +38,6 @@ type AllowedActions =
   | BridgeControllerAction<BridgeBackgroundAction.STOP_POLLING_FOR_QUOTES>
   | GetGasFeeState
   | AccountsControllerGetAccountByAddressAction
-  | RemoteFeatureFlagControllerGetStateAction
   | KeyringControllerSignTypedMessageAction
   | AuthenticationControllerGetBearerTokenAction;
 
@@ -87,7 +85,6 @@ export function getBridgeStatusControllerMessenger(
       'TransactionController:addTransaction',
       'TransactionController:estimateGasFee',
       'TransactionController:updateTransaction',
-      'RemoteFeatureFlagController:getState',
       'AuthenticationController:getBearerToken',
     ],
     events: [
