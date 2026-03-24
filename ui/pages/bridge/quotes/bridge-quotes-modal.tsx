@@ -142,6 +142,7 @@ export const BridgeQuotesModal = ({
 
               return (
                 <Column
+                  className={`bridge-quote-option${isQuoteActive ? ' bridge-quote-option--selected' : ''}`}
                   alignItems={AlignItems.flexStart}
                   key={index}
                   backgroundColor={
@@ -151,7 +152,7 @@ export const BridgeQuotesModal = ({
                   paddingInline={4}
                   paddingTop={3}
                   paddingBottom={3}
-                  style={{ position: 'relative' }}
+                  style={{ position: 'relative', cursor: 'pointer' }}
                 >
                   {isQuoteActive && (
                     <Column
