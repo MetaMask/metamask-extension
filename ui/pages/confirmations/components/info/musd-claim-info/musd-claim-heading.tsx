@@ -10,16 +10,9 @@ import {
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
-import {
-  AvatarNetwork,
-  AvatarNetworkSize,
-  BadgeWrapper,
-} from '../../../../../components/component-library';
-import { BackgroundColor } from '../../../../../helpers/constants/design-system';
 import { Skeleton } from '../../../../../components/component-library/skeleton';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useConfirmContext } from '../../../context/confirm';
-import useConfirmationNetworkInfo from '../../../hooks/useConfirmationNetworkInfo';
 import { useMerklClaimAmount } from '../../../hooks/musd/useMerklClaimAmount';
 import { getAssetImageUrl } from '../../../../../../shared/lib/asset-utils';
 import { MUSD_TOKEN_ADDRESS } from '../../../../../components/app/musd/constants';
@@ -35,8 +28,6 @@ const MusdClaimHeading = () => {
 
   const { displayClaimAmount, fiatDisplayValue, pending } =
     useMerklClaimAmount(transactionMeta);
-
-  const { networkImageUrl, networkDisplayName } = useConfirmationNetworkInfo();
 
   const musdTokenImageUrl = getAssetImageUrl(
     MUSD_TOKEN_ADDRESS,

@@ -45,7 +45,7 @@ const MusdClaimAccountRow = () => {
   });
 
   const label = walletName
-    ? `${t('musdClaimSendingTo')} ${walletName}`
+    ? t('musdClaimSendingToWallet', [walletName])
     : t('musdClaimSendingTo');
 
   return (
