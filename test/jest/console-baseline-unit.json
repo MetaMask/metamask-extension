@@ -387,6 +387,9 @@
     "ui/components/multichain-accounts/add-multichain-account/add-multichain-account.test.tsx": {
       "React: Act warnings (component updates not wrapped)": 3
     },
+    "ui/components/multichain-accounts/multichain-account-cell/multichain-account-cell.test.tsx": {
+      "Reselect: Identity function warnings": 1
+    },
     "ui/components/multichain-accounts/multichain-account-list/multichain-account-list.test.tsx": {
       "MetaMask: Background connection not initialized": 73,
       "Reselect: Identity function warnings": 1
