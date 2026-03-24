@@ -144,15 +144,18 @@ describe('PerpsStreamManager', () => {
       clearSpy.mockRestore();
     });
 
-    it('clears caches when address changes', () => {
+    it('resets channels when address changes', () => {
       manager.init('0xold');
 
-      const clearSpy = jest.spyOn(manager, 'clearAllCaches');
+      const positionsResetSpy = jest.spyOn(manager.positions, 'reset');
+      const accountResetSpy = jest.spyOn(manager.account, 'reset');
       manager.init('0xnew');
 
-      expect(clearSpy).toHaveBeenCalledTimes(1);
+      expect(positionsResetSpy).toHaveBeenCalledTimes(1);
+      expect(accountResetSpy).toHaveBeenCalledTimes(1);
       expect(manager.getCurrentAddress()).toBe('0xnew');
-      clearSpy.mockRestore();
+      positionsResetSpy.mockRestore();
+      accountResetSpy.mockRestore();
     });
 
     it('does not clear caches when initializing from null address', () => {
@@ -162,6 +165,71 @@ describe('PerpsStreamManager', () => {
 
       expect(clearSpy).not.toHaveBeenCalled();
       clearSpy.mockRestore();
+    });
+  });
+
+  describe('initForAddress', () => {
+    beforeEach(() => {
+      jest.useRealTimers();
+      mockSubmitRequestToBackground.mockReset();
+      mockSubmitRequestToBackground.mockResolvedValue(undefined);
+    });
+
+    afterEach(() => {
+      jest.useFakeTimers();
+    });
+
+    it('calls perpsInit on first init and sets address', async () => {
+      await manager.initForAddress('0xfirst');
+
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith('perpsInit');
+      expect(mockSubmitRequestToBackground).not.toHaveBeenCalledWith(
+        'perpsDisconnect',
+      );
+      expect(manager.isInitialized('0xfirst')).toBe(true);
+    });
+
+    it('returns immediately when already initialized for the same address', async () => {
+      await manager.initForAddress('0xsame');
+      mockSubmitRequestToBackground.mockClear();
+
+      await manager.initForAddress('0xsame');
+
+      expect(mockSubmitRequestToBackground).not.toHaveBeenCalled();
+    });
+
+    it('calls disconnect then init on account switch', async () => {
+      await manager.initForAddress('0xfirst');
+      mockSubmitRequestToBackground.mockClear();
+
+      const callOrder: string[] = [];
+      mockSubmitRequestToBackground.mockImplementation((method: string) => {
+        callOrder.push(method);
+        return Promise.resolve(undefined);
+      });
+
+      await manager.initForAddress('0xsecond');
+
+      expect(callOrder).toContain('perpsDisconnect');
+      expect(callOrder).toContain('perpsInit');
+      expect(callOrder.indexOf('perpsDisconnect')).toBeLessThan(
+        callOrder.indexOf('perpsInit'),
+      );
+      expect(manager.isInitialized('0xsecond')).toBe(true);
+    });
+
+    it('deduplicates concurrent calls for the same address', async () => {
+      mockSubmitRequestToBackground.mockResolvedValue(undefined);
+
+      const p1 = manager.initForAddress('0xaaa');
+      const p2 = manager.initForAddress('0xaaa');
+
+      await Promise.all([p1, p2]);
+
+      const initCalls = mockSubmitRequestToBackground.mock.calls.filter(
+        ([m]: [string]) => m === 'perpsInit',
+      );
+      expect(initCalls).toHaveLength(1);
     });
   });
 
