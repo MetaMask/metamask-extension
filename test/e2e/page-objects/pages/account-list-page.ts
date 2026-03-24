@@ -253,13 +253,7 @@ class AccountListPage {
   async checkPageIsLoaded(timeout: number = 10000): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors(
-        [
-          {
-            css: this.addMultichainAccountButton,
-            text: 'Add account',
-          },
-          this.addMultichainWalletButton,
-        ],
+        [this.addMultichainAccountButton, this.addMultichainWalletButton],
         { timeout },
       );
     } catch (e) {
@@ -280,39 +274,6 @@ class AccountListPage {
             `[DEBUG-953861]   button[${i}] text="${txt}" displayed=${displayed}`,
           );
         }
-        const walletBtns = await rawDriver.findElements(
-          By.css('[data-testid="account-list-add-wallet-button"]'),
-        );
-        console.log(
-          `[DEBUG-953861] account-list-add-wallet-button count: ${walletBtns.length}`,
-        );
-        for (let i = 0; i < walletBtns.length; i++) {
-          const displayed = await walletBtns[i].isDisplayed();
-          console.log(
-            `[DEBUG-953861]   wallet-btn[${i}] displayed=${displayed}`,
-          );
-        }
-        const pageUrl = await rawDriver.getCurrentUrl();
-        console.log(`[DEBUG-953861] current URL: ${pageUrl}`);
-        const pageTitle = await rawDriver.getTitle();
-        console.log(`[DEBUG-953861] page title: ${pageTitle}`);
-        const accountPage = await rawDriver.findElements(
-          By.css('.account-list-page'),
-        );
-        console.log(
-          `[DEBUG-953861] .account-list-page present: ${accountPage.length > 0}`,
-        );
-        if (accountPage.length > 0) {
-          const html = await rawDriver.executeScript(
-            'return arguments[0].innerHTML.substring(0, 2000)',
-            accountPage[0],
-          );
-          console.log(`[DEBUG-953861] .account-list-page HTML:\n${html}`);
-        }
-        const bodyHtml = await rawDriver.executeScript(
-          'return document.body.innerHTML.substring(0, 2000)',
-        );
-        console.log(`[DEBUG-953861] body HTML (first 2000):\n${bodyHtml}`);
       } catch (debugErr) {
         console.log(`[DEBUG-953861] diagnostic capture failed: ${debugErr}`);
       }
@@ -321,7 +282,7 @@ class AccountListPage {
       throw e;
     }
 
-    await this.waitUntilSyncingIsCompleted();
+    await this.waitUntilSyncingIsCompleted(timeout);
     console.log('Account list is loaded');
   }
 
@@ -467,12 +428,17 @@ class AccountListPage {
   /**
    * Waiting until syncing is completed.
    */
-  async waitUntilSyncingIsCompleted(): Promise<void> {
+  async waitUntilSyncingIsCompleted(
+    timeout?: number,
+  ): Promise<void> {
     console.log(`Check that account syncing not displayed in account list`);
-    await this.driver.assertElementNotPresent({
-      css: this.addMultichainAccountButton,
-      text: 'Syncing',
-    });
+    await this.driver.assertElementNotPresent(
+      {
+        css: this.addMultichainAccountButton,
+        text: 'Syncing',
+      },
+      timeout !== undefined ? { timeout } : undefined,
+    );
   }
 
   /**
