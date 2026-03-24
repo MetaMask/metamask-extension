@@ -464,7 +464,9 @@ export class SubscriptionService {
 
       await this.#messenger.call(
         'SubscriptionController:submitShieldSubscriptionCryptoApproval',
-        txMeta,
+        // TODO: Remove this cast when @metamask/subscription-controller upgrades to @metamask/transaction-controller v63
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        txMeta as any,
         isSponsored,
         rewardAccountId,
       );
