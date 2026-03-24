@@ -7,7 +7,13 @@ import {
   useLocation,
 } from 'react-router-dom';
 import classnames from 'clsx';
-import { Box } from '@metamask/design-system-react';
+import {
+  Box,
+  BoxFlexDirection,
+  BoxAlignItems,
+  Text,
+  TextVariant,
+} from '@metamask/design-system-react';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import {
   ACCOUNT_IDENTICON_ROUTE,
@@ -19,16 +25,7 @@ import {
   THEME_ROUTE,
   THIRD_PARTY_APIS_ROUTE,
 } from '../../helpers/constants/routes';
-import {
-  Box as LegacyBox,
-  Icon,
-  Text,
-} from '../../components/component-library';
-import {
-  AlignItems,
-  FlexDirection,
-  TextVariant,
-} from '../../helpers/constants/design-system';
+import { Icon } from '../../components/component-library';
 import TabBar from '../../components/app/tab-bar';
 // TODO: Remove restricted import
 // eslint-disable-next-line import-x/no-restricted-paths
@@ -43,7 +40,8 @@ import {
   SETTINGS_V2_MENU_LIST_ITEM_REGISTRY,
   getSettingsV2RouteMeta,
 } from './settings-registry';
-import { SettingsV2Header } from './shared';
+import { SettingsV2Header, SettingsV2SearchResults } from './shared';
+import { useSettingsV2Search, MIN_SEARCH_LENGTH } from './useSettingsV2Search';
 
 const CurrencySubPage = mmLazy(
   () => import('./assets-tab/currency-sub-page.tsx'),
@@ -94,7 +92,9 @@ const SettingsV2Layout = ({ children }: { children: React.ReactNode }) => {
   const isSidepanel = environmentType === ENVIRONMENT_TYPE_SIDEPANEL;
 
   const isOnSettingsRoot = pathname === SETTINGS_V2_ROUTE;
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchValue, setSearchValue] = useState('');
+  const searchResults = useSettingsV2Search(searchValue);
   const backRoute = isOnSettingsRoot
     ? DEFAULT_ROUTE
     : (meta?.parentPath ?? SETTINGS_V2_ROUTE);
@@ -117,6 +117,11 @@ const SettingsV2Layout = ({ children }: { children: React.ReactNode }) => {
     icon: <Icon name={item.iconName} />,
   }));
 
+  const handleCloseSearch = () => {
+    setIsSearchOpen(false);
+    setSearchValue('');
+  };
+
   return (
     <div
       className={classnames(
@@ -132,45 +137,59 @@ const SettingsV2Layout = ({ children }: { children: React.ReactNode }) => {
         isPopup={isPopup}
         isOnSettingsRoot={isOnSettingsRoot}
         onClose={() => navigate(backRoute)}
+        isSearchOpen={isSearchOpen}
+        onOpenSearch={() => setIsSearchOpen(true)}
+        onCloseSearch={handleCloseSearch}
         searchValue={searchValue}
         onSearchChange={setSearchValue}
         onSearchClear={() => setSearchValue('')}
       />
 
-      <div className="settings-page__content">
-        <div className="settings-page__content__tabs">
-          <TabBar
-            tabs={itemTabs}
-            isActive={(key) => {
-              // First tab is active when at settings root (like Settings V1)
-              if (key === FIRST_TAB_PATH && pathname === SETTINGS_V2_ROUTE) {
-                return true;
-              }
-              return pathname === key || pathname.startsWith(`${key}/`);
+      {isSearchOpen && searchValue.trim().length >= MIN_SEARCH_LENGTH ? (
+        <div className="settings-page__content flex-1 overflow-y-auto">
+          <SettingsV2SearchResults
+            results={searchResults}
+            onClickResult={(item) => {
+              navigate(`${item.tabRoute}#${item.settingId}`);
+              handleCloseSearch();
             }}
-            onSelect={(key) => navigate(key)}
           />
         </div>
-        <div className="settings-page__content__modules">
-          {showSubheader && (
-            <LegacyBox
-              className="settings-page__subheader"
-              padding={4}
-              paddingLeft={6}
-              paddingRight={6}
-              flexDirection={FlexDirection.Row}
-              alignItems={AlignItems.center}
-            >
-              <Text variant={TextVariant.headingSm}>
-                {t(subheaderLabelKey)}
-              </Text>
-            </LegacyBox>
-          )}
-          <Suspense fallback={null}>
-            <Box>{children}</Box>
-          </Suspense>
+      ) : (
+        <div className="settings-page__content">
+          <div className="settings-page__content__tabs">
+            <TabBar
+              tabs={itemTabs}
+              isActive={(key) => {
+                if (key === FIRST_TAB_PATH && pathname === SETTINGS_V2_ROUTE) {
+                  return true;
+                }
+                return pathname === key || pathname.startsWith(`${key}/`);
+              }}
+              onSelect={(key) => navigate(key)}
+            />
+          </div>
+          <div className="settings-page__content__modules">
+            {showSubheader && (
+              <Box
+                className="settings-page__subheader"
+                padding={4}
+                paddingLeft={6}
+                paddingRight={6}
+                flexDirection={BoxFlexDirection.Row}
+                alignItems={BoxAlignItems.Center}
+              >
+                <Text variant={TextVariant.HeadingSm}>
+                  {t(subheaderLabelKey)}
+                </Text>
+              </Box>
+            )}
+            <Suspense fallback={null}>
+              <Box>{children}</Box>
+            </Suspense>
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };
