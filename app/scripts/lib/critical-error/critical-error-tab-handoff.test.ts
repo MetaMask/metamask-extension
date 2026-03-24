@@ -4,8 +4,8 @@ import {
   METAMASK_RESTORING_PAGE_URL,
 } from '../../../../shared/constants/critical-error-restore-session';
 import {
-  readPendingCriticalErrorRestore,
-  clearPendingCriticalErrorRestore,
+  readCriticalErrorRestoreSession,
+  clearCriticalErrorRestoreSession,
   openRestoringTabAndReload,
   handoffRestoringTabToExtension,
   type ExtensionPlatformLike,
@@ -31,12 +31,12 @@ describe('critical-error-restore session', () => {
     jest.resetAllMocks();
   });
 
-  describe('readPendingCriticalErrorRestore', () => {
+  describe('readCriticalErrorRestoreSession', () => {
     it('returns null when key is not set', async () => {
       (browser.storage.local.get as jest.Mock).mockResolvedValueOnce({});
 
       await expect(
-        readPendingCriticalErrorRestore(browser),
+        readCriticalErrorRestoreSession(browser),
       ).resolves.toBeNull();
     });
 
@@ -46,7 +46,7 @@ describe('critical-error-restore session', () => {
       });
 
       await expect(
-        readPendingCriticalErrorRestore(browser),
+        readCriticalErrorRestoreSession(browser),
       ).resolves.toBeNull();
     });
 
@@ -56,18 +56,18 @@ describe('critical-error-restore session', () => {
       });
 
       await expect(
-        readPendingCriticalErrorRestore(browser),
+        readCriticalErrorRestoreSession(browser),
       ).resolves.toBeNull();
     });
 
-    it('returns payload when pending restore data is valid', async () => {
+    it('returns payload when restore session data is valid', async () => {
       const tabUrl = 'https://metamask.io/restoring#abc';
       (browser.storage.local.get as jest.Mock).mockResolvedValueOnce({
         [CRITICAL_ERROR_RESTORE_KEY]: { tabUrl, tabId: 42 },
       });
 
       await expect(
-        readPendingCriticalErrorRestore(browser),
+        readCriticalErrorRestoreSession(browser),
       ).resolves.toStrictEqual({
         tabId: 42,
         tabUrl,
@@ -81,7 +81,7 @@ describe('critical-error-restore session', () => {
       });
 
       await expect(
-        readPendingCriticalErrorRestore(browser),
+        readCriticalErrorRestoreSession(browser),
       ).resolves.toStrictEqual({
         tabId: undefined,
         tabUrl,
@@ -89,13 +89,13 @@ describe('critical-error-restore session', () => {
     });
   });
 
-  describe('clearPendingCriticalErrorRestore', () => {
+  describe('clearCriticalErrorRestoreSession', () => {
     it('removes the restore key', async () => {
       (browser.storage.local.remove as jest.Mock).mockResolvedValueOnce(
         undefined,
       );
 
-      await clearPendingCriticalErrorRestore(browser);
+      await clearCriticalErrorRestoreSession(browser);
 
       expect(browser.storage.local.remove).toHaveBeenCalledWith(
         CRITICAL_ERROR_RESTORE_KEY,

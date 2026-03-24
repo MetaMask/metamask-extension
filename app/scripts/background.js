@@ -99,8 +99,8 @@ import { DeepLinkRouter } from './lib/deep-links/deep-link-router';
 import { createEvent } from './lib/deep-links/metrics';
 import { getRequestSafeReload } from './lib/safe-reload';
 import {
-  readPendingCriticalErrorRestore,
-  clearPendingCriticalErrorRestore,
+  readCriticalErrorRestoreSession,
+  clearCriticalErrorRestoreSession,
   handoffRestoringTabToExtension,
   openRestoringTabAndReload,
 } from './lib/critical-error/critical-error-tab-handoff';
@@ -2402,16 +2402,15 @@ async function startExtensionInitialization() {
     return;
   }
 
-  const pendingRestore = await readPendingCriticalErrorRestore(browser);
+  const restoreInProgress = await readCriticalErrorRestoreSession(browser);
 
-  // Fetch the backup once, shared by the pending-restore path below and by
+  // Fetch the backup once, shared by the restore path below and by
   // the simulateBackground*Hang test flags (which need to know whether a
   // backup already existed at startup, before onboarding can create one).
   const testingFlags = inTest ? getManifestFlags().testing : undefined;
-
   let backup = null;
   if (
-    pendingRestore ||
+    restoreInProgress ||
     testingFlags?.simulateBackgroundStateSyncHang ||
     testingFlags?.simulateBackgroundInitializationHang
   ) {
@@ -2428,15 +2427,15 @@ async function startExtensionInitialization() {
     inTestHasVault = backupHasVault;
   }
 
-  if (pendingRestore) {
-    await clearPendingCriticalErrorRestore(browser);
+  if (restoreInProgress) {
+    await clearCriticalErrorRestoreSession(browser);
     if (backupHasVault) {
       if (inTest) {
         inTestRestoreFlow = true;
       }
       const handoffPayload = {
-        tabId: pendingRestore.tabId,
-        tabUrl: pendingRestore.tabUrl,
+        tabId: restoreInProgress.tabId,
+        tabUrl: restoreInProgress.tabUrl,
       };
       initBackground(backup);
       try {

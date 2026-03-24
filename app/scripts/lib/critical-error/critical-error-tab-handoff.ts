@@ -6,23 +6,23 @@ import {
   METAMASK_RESTORING_PAGE_URL,
 } from '../../../../shared/constants/critical-error-restore-session';
 
-export type PendingCriticalErrorRestore = {
+export type CriticalErrorRestoreSession = {
   tabId: number | undefined;
   tabUrl: string;
 };
 
-export async function readPendingCriticalErrorRestore(
+export async function readCriticalErrorRestoreSession(
   browserApi: typeof browser,
-): Promise<PendingCriticalErrorRestore | null> {
+): Promise<CriticalErrorRestoreSession | null> {
   // storage.local survives runtime.reload(); storage.session does not
   const data = await browserApi.storage.local.get(CRITICAL_ERROR_RESTORE_KEY);
-  const pending = data[CRITICAL_ERROR_RESTORE_KEY];
+  const session = data[CRITICAL_ERROR_RESTORE_KEY];
 
-  if (!pending || typeof pending !== 'object') {
+  if (!session || typeof session !== 'object') {
     return null;
   }
 
-  const { tabUrl, tabId } = pending as Record<string, unknown>;
+  const { tabUrl, tabId } = session as Record<string, unknown>;
   if (typeof tabUrl !== 'string') {
     return null;
   }
@@ -33,7 +33,7 @@ export async function readPendingCriticalErrorRestore(
   };
 }
 
-export async function clearPendingCriticalErrorRestore(
+export async function clearCriticalErrorRestoreSession(
   browserApi: typeof browser,
 ): Promise<void> {
   await browserApi.storage.local.remove(CRITICAL_ERROR_RESTORE_KEY);
