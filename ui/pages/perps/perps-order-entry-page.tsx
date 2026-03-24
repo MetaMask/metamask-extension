@@ -385,11 +385,9 @@ const PerpsOrderEntryPage: React.FC = () => {
             throw new Error(result.error || 'Failed to add to position');
           }
 
-          if (orderFormState.type === 'limit') {
-            handleBackClick();
-            return;
-          }
-          setPendingOrderSymbol(orderFormState.asset);
+          // Existing position is already in `allPositions`, so pending-order
+          // confirmation would resolve immediately; navigate like limit orders.
+          handleBackClick();
           return;
         }
 
