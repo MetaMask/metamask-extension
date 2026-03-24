@@ -98,14 +98,13 @@ export function createBrowserZipBuilder({
 
   zipFile.once('error', rejectOnce);
   zipFile.outputStream.once('error', rejectOnce);
-  zipFile.outputStream.on('data', (chunk) => {
+  zipFile.outputStream.on('data', (chunk: Buffer) => {
     if (errored) {
       return;
     }
 
-    const buffer = Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk);
-    zipChunks.push(buffer);
-    zipSize += buffer.length;
+    zipChunks.push(chunk);
+    zipSize += chunk.length;
   });
   zipFile.outputStream.once('end', () => {
     if (!errored) {
@@ -124,7 +123,11 @@ export function createBrowserZipBuilder({
   onAssetAdded('manifest.json');
 
   const addAsset = (assetName: string, asset: sources.Source) => {
-    if (errored || finalized) {
+    if (finalized) {
+      throw new Error('Cannot add asset after finalize()');
+    }
+
+    if (errored) {
       return;
     }
 

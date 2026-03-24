@@ -2,13 +2,16 @@ import { describe, it, afterEach } from 'node:test';
 import assert from 'node:assert';
 import { join, resolve } from 'node:path';
 import { Open } from 'unzipper';
-import { type Compilation } from 'webpack';
+import { sources, type Compilation } from 'webpack';
 import { ManifestPlugin } from '../utils/plugins/ManifestPlugin';
+import { createBrowserZipBuilder } from '../utils/plugins/ManifestPlugin/zip';
 import { ZipOptions } from '../utils/plugins/ManifestPlugin/types';
 import { Manifest } from '../utils/helpers';
 import { transformManifest } from '../utils/plugins/ManifestPlugin/helpers';
 import { MANIFEST_DEV_KEY } from '../../build/constants';
 import { generateCases, type Combination, mockWebpack } from './helpers';
+
+const { RawSource } = sources;
 
 const endsWithPath = (value: string, ...segments: string[]) =>
   value.endsWith(join(...segments));
@@ -342,6 +345,137 @@ describe('ManifestPlugin', () => {
           compilation.assets[`${browser}/manifest.json`].source().toString(),
         );
       }
+    });
+
+    it('moves source maps to the sourcemaps directory when zipping hidden-source-map builds', async () => {
+      const files = [
+        {
+          name: 'filename.js',
+          source: Buffer.from('console.log(1 + 2);', 'utf8'),
+        },
+        {
+          name: 'filename.js.map',
+          source: Buffer.from('{}', 'utf8'),
+        },
+      ];
+      const { compiler, compilation, promise } = mockWebpack(
+        files.map(({ name }) => name),
+        files.map(({ source }) => source),
+        files.map(() => null),
+        'hidden-source-map',
+      );
+      compiler.context = join(__dirname, 'fixtures/ManifestPlugin/empty');
+
+      const manifestPlugin = new ManifestPlugin({
+        browsers: ['chrome', 'firefox'],
+        manifest_version: 3,
+        version: '1.0.0.0',
+        versionName: '1.0.0',
+        description: null,
+        buildType: 'main',
+        zip: true,
+        zipOptions: {
+          level: 0,
+          mtime: 1711141205825,
+          excludeExtensions: ['.map'],
+          outFilePath: '[browser]/extension.zip',
+        },
+      });
+
+      manifestPlugin.apply(compiler);
+      await promise;
+
+      assert.deepStrictEqual(
+        new Set(Object.keys(compilation.assets)),
+        new Set([
+          'chrome/extension.zip',
+          'chrome/manifest.json',
+          'chrome/filename.js',
+          'firefox/extension.zip',
+          'firefox/manifest.json',
+          'firefox/filename.js',
+          'sourcemaps/filename.js.map',
+        ]),
+      );
+
+      for (const browser of ['chrome', 'firefox'] as const) {
+        const zipEntries = await readZipEntries(
+          compilation.assets[`${browser}/extension.zip`],
+        );
+        assert.strictEqual(zipEntries.has('filename.js.map'), false);
+      }
+    });
+  });
+
+  describe('zip helpers', () => {
+    it('skips excluded extensions when adding assets to a browser zip', async () => {
+      const addedAssets: string[] = [];
+      const builder = createBrowserZipBuilder({
+        compressionOptions: { level: 0 },
+        excludeExtensions: ['.map'],
+        manifest: new RawSource('{"name":"test"}'),
+        mtime: 1711141205825,
+        onAssetAdded: (assetName) => addedAssets.push(assetName),
+      });
+
+      builder.addAsset('ignored.js.map', new RawSource('{}'));
+      const zipSource = await builder.finalize();
+      const zipEntries = await readZipEntries(zipSource);
+
+      assert.deepStrictEqual(addedAssets, ['manifest.json']);
+      assert.deepStrictEqual([...zipEntries.keys()], ['manifest.json']);
+    });
+
+    it('compresses javascript assets and reuses the finalized zip source', async () => {
+      const builder = createBrowserZipBuilder({
+        compressionOptions: { level: 9 },
+        excludeExtensions: ['.map'],
+        manifest: new RawSource('{"name":"test"}'),
+        mtime: 1711141205825,
+        onAssetAdded: () => undefined,
+      });
+
+      builder.addAsset(
+        'script.js',
+        new RawSource('console.log("compressed");'),
+      );
+
+      const [firstZipSource, secondZipSource] = await Promise.all([
+        builder.finalize(),
+        builder.finalize(),
+      ]);
+      const directory = await Open.buffer(firstZipSource.buffer());
+      const scriptFile = directory.files.find(
+        (file) => file.path === 'script.js',
+      );
+
+      assert.strictEqual(firstZipSource, secondZipSource);
+      assert.ok(scriptFile, 'expected script.js to be included in the zip');
+      assert.strictEqual(scriptFile.compressionMethod, 8);
+      assert.deepStrictEqual(
+        await scriptFile.buffer(),
+        Buffer.from('console.log("compressed");'),
+      );
+    });
+
+    it('throws when assets are added after the zip has been finalized', async () => {
+      const builder = createBrowserZipBuilder({
+        compressionOptions: { level: 0 },
+        excludeExtensions: ['.map'],
+        manifest: new RawSource('{"name":"test"}'),
+        mtime: 1711141205825,
+        onAssetAdded: () => undefined,
+      });
+
+      const zipSource = await builder.finalize();
+      assert.throws(
+        () =>
+          builder.addAsset('late.js', new RawSource('console.log("late");')),
+        /Cannot add asset after finalize\(\)/u,
+      );
+
+      const zipEntries = await readZipEntries(zipSource);
+      assert.deepStrictEqual([...zipEntries.keys()], ['manifest.json']);
     });
   });
 
