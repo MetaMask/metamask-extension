@@ -919,14 +919,16 @@ export async function buildPerformanceBenchmarksSection(
   const commitUrl = baselineCommit
     ? `https://github.com/MetaMask/metamask-extension/commit/${baselineCommit}`
     : undefined;
-  const commitLink = commitUrl ? `[${commitHash}](${commitUrl})` : commitHash;
+  const commitLink = commitUrl
+    ? `<a href="${commitUrl}">${commitHash}</a>`
+    : commitHash;
   const pipelineLink = runUrl
-    ? `[${benchmarkRunId}](${runUrl})`
+    ? `<a href="${runUrl}">${benchmarkRunId}</a>`
     : (benchmarkRunId ?? '');
   const baselineLogsUrl =
     'https://raw.githubusercontent.com/MetaMask/extension_benchmark_stats/main/stats/main/performance_data.json';
-  const baselineLogsLink = `[Baseline logs](${baselineLogsUrl})`;
-  const commitInfo = `**Current Commit**: ${commitLink} | **Date**: ${commitDate} | **Pipeline**: ${pipelineLink} | ${baselineLogsLink}\n\n`;
+  const baselineLogsLink = `<a href="${baselineLogsUrl}">Baseline logs</a>`;
+  const commitInfo = `<p><strong>Baseline (latest main)</strong>: ${commitLink} | <strong>Date</strong>: ${commitDate} | <strong>Pipeline</strong>: ${pipelineLink} | ${baselineLogsLink}</p>\n\n`;
 
   const subsectionsHtml = interactionHtml + startupHtml + userJourneyHtml;
   const content =

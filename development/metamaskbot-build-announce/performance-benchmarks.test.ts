@@ -701,9 +701,9 @@ describe('buildPerformanceBenchmarksSection', () => {
 
     const html = await buildPerformanceBenchmarksSection(HOST);
 
-    expect(html).toContain('**Current Commit**:');
+    expect(html).toContain('<strong>Baseline (latest main)</strong>');
     expect(html).toContain('abc1234');
-    expect(html).toContain('**Date**:');
+    expect(html).toContain('<strong>Date</strong>');
   });
 
   it('links commit hash from baseline data', async () => {
@@ -721,7 +721,9 @@ describe('buildPerformanceBenchmarksSection', () => {
 
     const html = await buildPerformanceBenchmarksSection(HOST);
 
-    expect(html).toContain('[abc1234]');
+    expect(html).toContain(
+      '<a href="https://github.com/MetaMask/metamask-extension/commit/abc1234567890def">abc1234</a>',
+    );
     expect(html).toContain(
       'https://github.com/MetaMask/metamask-extension/commit/abc1234567890def',
     );
@@ -739,7 +741,9 @@ describe('buildPerformanceBenchmarksSection', () => {
     const html = await buildPerformanceBenchmarksSection(HOST);
 
     expect(html).toContain('Pipeline');
-    expect(html).toContain('[98765]');
+    expect(html).toContain(
+      '<a href="https://github.com/MetaMask/metamask-extension/actions/runs/98765">98765</a>',
+    );
     expect(html).toContain(
       'https://github.com/MetaMask/metamask-extension/actions/runs/98765',
     );
@@ -895,9 +899,9 @@ describe('buildPerformanceBenchmarksSection', () => {
 
       const html = await buildPerformanceBenchmarksSection(HOST);
 
-      expect(html).toContain('**Current Commit**:');
+      expect(html).toContain('<strong>Baseline (latest main)</strong>');
       expect(html).toContain('abc1234');
-      expect(html).toContain('**Date**:');
+      expect(html).toContain('<strong>Date</strong>');
     });
 
     it('links commit hash from baseline data', async () => {
@@ -915,7 +919,9 @@ describe('buildPerformanceBenchmarksSection', () => {
 
       const html = await buildPerformanceBenchmarksSection(HOST);
 
-      expect(html).toContain('[abc1234]');
+      expect(html).toContain(
+        '<a href="https://github.com/MetaMask/metamask-extension/commit/abc1234567890def">abc1234</a>',
+      );
       expect(html).toContain(
         'https://github.com/MetaMask/metamask-extension/commit/abc1234567890def',
       );
@@ -933,7 +939,9 @@ describe('buildPerformanceBenchmarksSection', () => {
       const html = await buildPerformanceBenchmarksSection(HOST);
 
       expect(html).toContain('Pipeline');
-      expect(html).toContain('[12345]');
+      expect(html).toContain(
+        '<a href="https://github.com/MetaMask/metamask-extension/actions/runs/12345">12345</a>',
+      );
       expect(html).toContain(
         'https://github.com/MetaMask/metamask-extension/actions/runs/12345',
       );

@@ -68,7 +68,7 @@ export async function loadCurrentBenchmarks(
  */
 async function loadBaseline(): Promise<HistoricalBaselineReference> {
   const result = await fetchHistoricalPerformanceDataFromMain();
-  return result ?? {};
+  return result?.baseline ?? {};
 }
 
 /**
