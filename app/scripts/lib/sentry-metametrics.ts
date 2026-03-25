@@ -1,4 +1,9 @@
-import { Event as SentryEvent, Integration } from '@sentry/types';
+import {
+  type Client,
+  Event as SentryEvent,
+  EventHint,
+  Integration,
+} from '@sentry/types';
 
 import type { MetaMetricsParticipation } from './sentry-get-state';
 
@@ -22,7 +27,11 @@ export function metaMetricsIntegration({
 }): Integration {
   return {
     name: NAME,
-    processEvent: async (event: SentryEvent) => {
+    processEvent: async (
+      event: SentryEvent,
+      _hint: EventHint,
+      _client: Client,
+    ) => {
       // This integration is required in addition to the custom transport as it provides an
       // asynchronous context which we may need in order to read the persisted state from the
       // store, so it can later be added to the event via the `beforeSend` overload.

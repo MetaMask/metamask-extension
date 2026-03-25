@@ -1,7 +1,10 @@
-import type { Event as SentryEvent } from '@sentry/types';
+import type { Client, Event as SentryEvent, EventHint } from '@sentry/types';
 
 import type { MetaMetricsParticipation } from './sentry-get-state';
 import { metaMetricsIntegration } from './sentry-metametrics';
+
+const stubHint = {} as EventHint;
+const stubClient = {} as Client;
 
 describe('metaMetricsIntegration', () => {
   const log = jest.fn();
@@ -29,7 +32,9 @@ describe('metaMetricsIntegration', () => {
       if (!processEvent) {
         throw new Error('expected processEvent');
       }
-      await expect(processEvent(event, {})).resolves.toBeNull();
+      await expect(
+        processEvent(event, stubHint, stubClient),
+      ).resolves.toBeNull();
       expect(log).toHaveBeenCalledWith('Event dropped as metrics disabled');
     });
 
@@ -40,7 +45,9 @@ describe('metaMetricsIntegration', () => {
       if (!processEvent) {
         throw new Error('expected processEvent');
       }
-      await expect(processEvent(event, {})).resolves.toBeNull();
+      await expect(
+        processEvent(event, stubHint, stubClient),
+      ).resolves.toBeNull();
       expect(log).toHaveBeenCalledWith('Event dropped as metrics disabled');
     });
 
@@ -54,7 +61,7 @@ describe('metaMetricsIntegration', () => {
       if (!processEvent) {
         throw new Error('expected processEvent');
       }
-      const result = await processEvent(event, {});
+      const result = await processEvent(event, stubHint, stubClient);
       expect(result).toBe(event);
       expect(event.user).toStrictEqual({ id: 'metrics-id-from-async' });
       expect(log).not.toHaveBeenCalled();
@@ -70,7 +77,7 @@ describe('metaMetricsIntegration', () => {
       if (!processEvent) {
         throw new Error('expected processEvent');
       }
-      await processEvent(event, {});
+      await processEvent(event, stubHint, stubClient);
       expect(event.user).toBeUndefined();
     });
   });
