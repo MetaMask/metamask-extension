@@ -65,7 +65,7 @@ const ALL_FACTORS: FactorOption[] = [
   { id: 'social', nameKey: 'twoFAFactorSocialLogin', descKey: 'twoFAFactorSocialLoginDesc', icon: IconName.Global, security: 'more' },
 ];
 
-const BACKUP_ALLOWED_IDS: FactorId[] = ['mobile', 'email', 'passkeys', 'sms', 'social'];
+const BACKUP_ALLOWED_IDS: FactorId[] = ['mobile', 'email', 'sms', 'social'];
 
 type Step = 'carousel-0' | 'carousel-1' | 'carousel-2' | 'signing' | 'recovery' | 'success';
 
