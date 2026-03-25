@@ -6,6 +6,7 @@
  * Once integration is complete, import from:
  * `app/scripts/controllers/perps/mocks`
  */
+
 import {
   AccountState,
   Order,
@@ -409,12 +410,6 @@ export const mockOrders: Order[] = [
     timestamp: Date.now() - 600000, // 10 minutes ago
   },
 ];
-
-/**
- * Mock watchlist symbols for the Perps Watchlist section.
- * Cross-referenced with usePerpsLiveMarketData() for live price/volume.
- */
-export const mockWatchlist: string[] = ['BTC', 'ETH'];
 
 /**
  * Mock crypto markets data (main DEX, no marketType)

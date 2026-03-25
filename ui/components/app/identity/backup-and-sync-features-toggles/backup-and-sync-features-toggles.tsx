@@ -140,13 +140,7 @@ const FeatureToggle = ({
   );
 };
 
-type BackupAndSyncFeaturesTogglesProps = {
-  sectionRef?: React.RefObject<HTMLDivElement>;
-};
-
-export const BackupAndSyncFeaturesToggles = ({
-  sectionRef,
-}: BackupAndSyncFeaturesTogglesProps) => {
+export const BackupAndSyncFeaturesToggles = () => {
   const t = useI18nContext();
 
   const isBackupAndSyncEnabled = useSelector(selectIsBackupAndSyncEnabled);
@@ -190,7 +184,6 @@ export const BackupAndSyncFeaturesToggles = ({
 
   return (
     <Box
-      ref={sectionRef}
       marginTop={4}
       marginBottom={4}
       className="privacy-settings__setting__wrapper"

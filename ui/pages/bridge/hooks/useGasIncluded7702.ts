@@ -29,14 +29,21 @@ type UseGasIncluded7702Params = {
 };
 
 /**
- * Custom hook to check if gasless 7702 is supported for Smart Accounts
+ * Custom hook to check if gasless 7702 is supported for Smart Accounts.
+ *
+ * This hook serves as the **request-time HW wallet gate** for 7702 gas
+ * sponsorship, matching the mobile `useIsGasIncluded7702Supported` pattern.
+ * When the active account is a hardware wallet the hook returns `false`,
+ * which causes the quote request to be sent with `gasIncluded7702=false`.
+ * The backend then returns `gasSponsored=false` directly, so no post-quote
+ * normalization is necessary.
  *
  * @param params - Configuration object
  * @param params.isSwap - Whether this is a swap transaction
  * @param params.selectedAccount - The selected account
  * @param params.fromChain - The source chain
  * @param params.isSendBundleSupportedForChain - Whether send bundle is supported for the chain
- * @returns Whether gasless 7702 is supported
+ * @returns Whether gasless 7702 is supported (always `false` for HW wallets)
  */
 export function useGasIncluded7702({
   isSwap,

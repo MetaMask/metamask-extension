@@ -5,7 +5,7 @@ import type { PerpsControllerState } from '@metamask/perps-controller';
  * ComposableObservableStore.getFlatState(). All properties live directly
  * on state.metamask, NOT nested under state.metamask.PerpsController.
  */
-type PerpsState = {
+export type PerpsState = {
   metamask: Partial<PerpsControllerState>;
 };
 
@@ -67,6 +67,24 @@ export const selectPerpsWatchlistMarkets = (state: PerpsState) =>
     testnet: EMPTY_ARRAY,
     mainnet: EMPTY_ARRAY,
   };
+
+/**
+ * Whether `symbol` is on the watchlist for the current environment (testnet vs mainnet).
+ * @param state
+ * @param symbol
+ */
+export const selectPerpsIsWatchlistMarket = (
+  state: PerpsState,
+  symbol: string,
+): boolean => {
+  if (!symbol) {
+    return false;
+  }
+  const { testnet, mainnet } = selectPerpsWatchlistMarkets(state);
+  const list = selectPerpsIsTestnet(state) ? testnet : mainnet;
+  const upper = symbol.toUpperCase();
+  return list.some((s) => s.toUpperCase() === upper);
+};
 
 export const selectPerpsLastError = (state: PerpsState) =>
   state.metamask.lastError ?? null;

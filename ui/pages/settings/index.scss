@@ -169,14 +169,6 @@
     color: var(--color-primary-default);
   }
 
-  &__subheader--break {
-    margin-inline-start: 4px;
-    white-space: nowrap;
-    width: 100%;
-    max-width: calc(100% - 125px - 85px);
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
 
   &__sub-header {
     height: 72px;
@@ -361,15 +353,6 @@
     margin-left: auto;
   }
 
-  &__address-book-button {
-    @include design-system.H5;
-
-    padding: 0;
-  }
-
-  &__address-book-button + &__address-book-button {
-    margin-left: 1.875rem;
-  }
 
   &__inline-link {
     @include design-system.H6;
