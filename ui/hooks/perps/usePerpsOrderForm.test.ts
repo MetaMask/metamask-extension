@@ -333,21 +333,14 @@ describe('usePerpsOrderForm', () => {
       );
     });
 
-    it('uses normalized limit price correctly in calculations', () => {
-      const deState = {
-        metamask: {
-          ...mockState.metamask,
-          currentLocale: 'de',
-        },
-      };
-
+    it('uses dot-decimal limit price correctly in calculations', () => {
       const { result } = renderHookWithProvider(
         () =>
           usePerpsOrderForm({
             ...defaultOptions,
             orderType: 'limit',
           }),
-        deState,
+        mockState,
       );
 
       act(() => {
