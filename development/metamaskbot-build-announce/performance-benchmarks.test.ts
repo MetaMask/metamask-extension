@@ -233,7 +233,7 @@ describe('computeEntryHealth', () => {
 
     it('returns fail when values exceed the absolute fail threshold', () => {
       const entry = makeEntry({
-        benchmarkName: 'chrome-browserify-startupStandardHome',
+        benchmarkName: 'startupStandardHome',
         presetName: 'startupStandardHome',
         mean: { uiStartup: 4000 },
         stdDev: { uiStartup: 200 },
@@ -245,7 +245,7 @@ describe('computeEntryHealth', () => {
 
     it('returns warn when values exceed warn but not fail threshold', () => {
       const entry = makeEntry({
-        benchmarkName: 'chrome-browserify-startupStandardHome',
+        benchmarkName: 'startupStandardHome',
         presetName: 'startupStandardHome',
         mean: { uiStartup: 2800 },
         stdDev: { uiStartup: 100 },
@@ -583,7 +583,7 @@ describe('buildBenchmarkSection', () => {
 
   it('shows 🔴 failure badge when Layer 1 absolute fail threshold is exceeded', () => {
     const entry = makeEntry({
-      benchmarkName: 'chrome-browserify-startupStandardHome',
+      benchmarkName: 'startupStandardHome',
       presetName: 'startupStandardHome',
       mean: { uiStartup: 4000 },
       stdDev: { uiStartup: 200 },
@@ -891,9 +891,11 @@ describe('buildPerformanceBenchmarksSection', () => {
     const originalCI = process.env.CI;
 
     const FAILING_PAYLOAD = {
-      'chrome-browserify-startupStandardHome': {
+      startupStandardHome: {
         testTitle: 'standard-home',
         persona: 'standard',
+        platform: 'chrome',
+        buildType: 'browserify',
         mean: { uiStartup: 4500 },
         min: { uiStartup: 3000 },
         max: { uiStartup: 7000 },
@@ -923,7 +925,7 @@ describe('buildPerformanceBenchmarksSection', () => {
 
       const html = await buildPerformanceBenchmarksSection(HOST);
 
-      expect(html).toContain('chrome-browserify-startupStandardHome');
+      expect(html).toContain('startupStandardHome');
       expect(html).toContain(COMPARISON_SEVERITY.Regression.icon);
       expect(html).toContain('uiStartup');
     });
@@ -937,7 +939,7 @@ describe('buildPerformanceBenchmarksSection', () => {
       const html = await buildPerformanceBenchmarksSection(HOST);
 
       expect(html).toContain('View regression details');
-      expect(html).toContain('chrome-browserify-startupStandardHome');
+      expect(html).toContain('startupStandardHome');
     });
 
     it('exercises getEntryRegressions with baseline data when entry is non-pass', async () => {
@@ -960,7 +962,7 @@ describe('buildPerformanceBenchmarksSection', () => {
 
       const html = await buildPerformanceBenchmarksSection(HOST);
 
-      expect(html).toContain('chrome-browserify-startupStandardHome');
+      expect(html).toContain('startupStandardHome');
       expect(html).toContain(COMPARISON_SEVERITY.Regression.icon);
     });
   });
@@ -1055,9 +1057,11 @@ describe('buildPerformanceBenchmarksSection', () => {
 
   describe('health matrix structure', () => {
     const MATRIX_PAYLOAD = {
-      'chrome-browserify-startupStandardHome': {
+      startupStandardHome: {
         testTitle: 'standard-home',
         persona: 'standard',
+        platform: 'chrome',
+        buildType: 'browserify',
         mean: { uiStartup: 4500 },
         stdDev: { uiStartup: 500 },
         p75: { uiStartup: 4500 },
@@ -1093,7 +1097,7 @@ describe('buildPerformanceBenchmarksSection', () => {
 
       const html = await buildPerformanceBenchmarksSection(HOST);
 
-      expect(html).toContain('[logs]');
+      expect(html).toContain('startupStandardHome');
       expect(html).toContain('<a href=');
     });
   });
