@@ -1,5 +1,6 @@
 import React, { useCallback } from 'react';
 import { useSelector } from 'react-redux';
+import classnames from 'clsx';
 import { type AccountGroupId } from '@metamask/account-api';
 import {
   Box,
@@ -20,47 +21,53 @@ import { shortenAddress } from '../../../helpers/utils/util';
 // eslint-disable-next-line import-x/no-restricted-paths
 import { normalizeSafeAddress } from '../../../../app/scripts/lib/multichain/address';
 import { getDefaultScopeAndAddressByAccountGroupId } from '../../../selectors/multichain-accounts/account-tree';
+import {
+  getIsDefaultAddressEnabled,
+  getShowDefaultAddressPreference,
+} from '../../../selectors/selectors';
 import { MultichainAccountNetworkGroup } from '../multichain-account-network-group';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 
 const MAX_NETWORK_AVATARS = 4;
 
-export type MultichainAccountNetworkGroupWithDefaultAddressProps = {
+export type MultichainAccountNetworkGroupWithCopyIconProps = {
   groupId: AccountGroupId;
 };
 
 /**
- * Displays the default-address component: includes network avatars, shortened address,
- * and copy icon. Click copies the address and shows "Copied" briefly.
+ * Displays network avatars with a copy icon. When the showDefaultAddress
+ * preference is enabled, also displays the shortened default address.
+ * Click copies the default address and shows "Copied" briefly.
  *
  * @param options0
  * @param options0.groupId
  */
-export const MultichainAccountNetworkGroupWithDefaultAddress = ({
+export const MultichainAccountNetworkGroupWithCopyIcon = ({
   groupId,
-}: MultichainAccountNetworkGroupWithDefaultAddressProps) => {
+}: MultichainAccountNetworkGroupWithCopyIconProps) => {
   const t = useI18nContext();
+  const isDefaultAddressEnabled = useSelector(getIsDefaultAddressEnabled);
+  const showDefaultAddressPreference = useSelector(
+    getShowDefaultAddressPreference,
+  );
   const { defaultAddress, defaultScopes } = useSelector((state) =>
     getDefaultScopeAndAddressByAccountGroupId(state, groupId),
   );
+  const shouldShowDefaultAddress =
+    isDefaultAddressEnabled && showDefaultAddressPreference && defaultAddress;
   const [addressCopied, handleCopy] = useCopyToClipboard({
     clearDelayMs: null,
   });
 
   const handleDefaultAddressClick = useCallback(() => {
-    if (!defaultAddress) {
-      return;
+    if (defaultAddress) {
+      handleCopy(normalizeSafeAddress(defaultAddress));
     }
-    handleCopy(normalizeSafeAddress(defaultAddress));
   }, [defaultAddress, handleCopy]);
-
-  if (!defaultAddress) {
-    return null;
-  }
 
   return (
     <Box
-      onClick={handleDefaultAddressClick}
+      onClick={shouldShowDefaultAddress ? handleDefaultAddressClick : undefined}
       flexDirection={BoxFlexDirection.Row}
       alignItems={BoxAlignItems.Center}
       backgroundColor={
@@ -70,26 +77,36 @@ export const MultichainAccountNetworkGroupWithDefaultAddress = ({
       }
       padding={1}
       gap={1}
-      className="cursor-pointer rounded-lg"
-      data-testid="default-address-container"
+      className={classnames(
+        'rounded-lg inline-flex',
+        shouldShowDefaultAddress && 'cursor-pointer',
+      )}
+      data-testid="network-group-with-copy-icon"
     >
       <MultichainAccountNetworkGroup
         groupId={groupId}
-        chainIds={defaultScopes.slice(0, MAX_NETWORK_AVATARS)}
+        chainIds={
+          shouldShowDefaultAddress && defaultScopes.length > 0
+            ? defaultScopes.slice(0, MAX_NETWORK_AVATARS)
+            : undefined
+        }
         limit={MAX_NETWORK_AVATARS}
       />
-      <Text
-        variant={TextVariant.BodySm}
-        fontWeight={FontWeight.Medium}
-        color={
-          addressCopied ? TextColor.SuccessDefault : TextColor.TextAlternative
-        }
-        style={{ lineHeight: 0 }}
-      >
-        {addressCopied
-          ? t('addressCopied')
-          : shortenAddress(normalizeSafeAddress(defaultAddress))}
-      </Text>
+      {shouldShowDefaultAddress && (
+        <Text
+          variant={TextVariant.BodySm}
+          fontWeight={FontWeight.Medium}
+          color={
+            addressCopied ? TextColor.SuccessDefault : TextColor.TextAlternative
+          }
+          style={{ lineHeight: 0 }}
+          data-testid="default-address-container"
+        >
+          {addressCopied
+            ? t('addressCopied')
+            : shortenAddress(normalizeSafeAddress(defaultAddress))}
+        </Text>
+      )}
       <Icon
         name={addressCopied ? IconName.CopySuccess : IconName.Copy}
         size={IconSize.Sm}
