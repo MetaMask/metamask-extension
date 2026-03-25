@@ -158,14 +158,22 @@ jobs:
     uses: ./.github/workflows/storybook.yml
     secrets: inherit
 
-  lavamoat:
-    name: LavaMoat
+  lavamoat-validate-policies:
+    name: LavaMoat / validate policies
+    needs:
+      - get-requirements
+      - prep-deps
+    if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
+    uses: ./.github/workflows/validate-lavamoat-policies.yml
+
+  lavamoat-build-viz:
+    name: LavaMoat / build viz
     needs:
       - get-requirements
       - prep-deps
       - builds-dist-beta-flask
     if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
-    uses: ./.github/workflows/lavamoat.yml
+    uses: ./.github/workflows/lavamoat-build-viz.yml
     with:
       builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
     secrets: inherit
@@ -380,7 +388,7 @@ jobs:
         contains(fromJson('["success","skipped"]'), needs.storybook.result) &&
         contains(fromJson('["success","skipped"]'), needs.build-ts-migration-dashboard.result) &&
         contains(fromJson('["success","skipped"]'), needs.build-source-map-explorer.result) &&
-        contains(fromJson('["success","skipped"]'), needs.lavamoat.result)
+        contains(fromJson('["success","skipped"]'), needs.lavamoat-build-viz.result)
       }}
     needs:
       - get-requirements
@@ -392,10 +400,10 @@ jobs:
       - storybook
       - build-ts-migration-dashboard
       - build-source-map-explorer
-      - lavamoat
+      - lavamoat-build-viz
     uses: ./.github/workflows/publish-prerelease.yml
     with:
-      lavamoat-policy-changed: ${{ needs.lavamoat.outputs.lavamoat-policy-changed == 'true' }}
+      lavamoat-policy-changed: ${{ needs.lavamoat-build-viz.outputs.lavamoat-policy-changed == 'true' }}
       post-new-builds: ${{ needs.get-requirements.outputs.builds-from-run == github.run_id }}
     secrets:
       PR_COMMENT_TOKEN: ${{ secrets.PR_COMMENT_TOKEN }}
@@ -467,7 +475,8 @@ jobs:
       - lint-code
       - repository-health-checks
       - storybook
-      - lavamoat
+      - lavamoat-validate-policies
+      - lavamoat-build-viz
       - builds-dist-beta-flask
       - builds-test-mv3
       - builds-test-mv2

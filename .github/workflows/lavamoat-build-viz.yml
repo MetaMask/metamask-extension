@@ -1,4 +1,4 @@
-name: LavaMoat
+name: LavaMoat build viz
 
 on:
   workflow_call:
@@ -25,116 +25,13 @@ env:
   APPLE_FLASK_CLIENT_ID: 00000000000
 
 jobs:
-  validate-policy-build:
-    name: Validate LavaMoat build policy
-    runs-on: ubuntu-latest
-    timeout-minutes: 30
-    steps:
-      - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v3
-        with:
-          is-high-risk-environment: false
-          skip-allow-scripts: true
-
-      - name: Validate LavaMoat build policy
-        run: yarn lavamoat:build:auto
-
-      - name: Check working tree
-        run: |
-          if ! git diff --exit-code; then
-              echo "::error::Working tree dirty."
-              exit 1
-          fi
-
-  validate-policy-webapp:
-    name: Validate LavaMoat webapp policy
-    runs-on: ubuntu-latest
-    timeout-minutes: 30
-    steps:
-      - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v3
-        with:
-          is-high-risk-environment: false
-          skip-allow-scripts: true
-
-      - name: Validate LavaMoat webapp policy
-        run: yarn lavamoat:webapp:auto
-
-      - name: Check working tree
-        run: |
-          if ! git diff --exit-code; then
-              echo "::error::Working tree dirty."
-              exit 1
-          fi
-
-  validate-policy-webpack-build:
-    name: Validate LavaMoat webpack build policy
-    runs-on: ubuntu-latest
-    timeout-minutes: 30
-    steps:
-      - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v3
-        with:
-          is-high-risk-environment: false
-          skip-allow-scripts: true
-
-      - name: Validate LavaMoat webpack build policy
-        run: yarn webpack:tsc && yarn webpack:lavamoat:policy:build
-
-      - name: Check working tree
-        run: |
-          if ! git diff --exit-code; then
-              echo "::error::Working tree dirty."
-              exit 1
-          fi
-
-  validate-policy-webpack-mv2:
-    name: Validate LavaMoat webpack MV2 policy
-    runs-on: ubuntu-latest
-    timeout-minutes: 30
-    steps:
-      - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v3
-        with:
-          is-high-risk-environment: false
-          skip-allow-scripts: true
-
-      - name: Validate LavaMoat webpack MV2 policy
-        run: yarn webpack:tsc && yarn webpack:lavamoat:policy:mv2
-
-      - name: Check working tree
-        run: |
-          if ! git diff --exit-code; then
-              echo "::error::Working tree dirty."
-              exit 1
-          fi
-
-  validate-policy-webpack-mv3:
-    name: Validate LavaMoat webpack MV3 policy
-    runs-on: ubuntu-latest
-    timeout-minutes: 30
-    steps:
-      - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v3
-        with:
-          is-high-risk-environment: false
-          skip-allow-scripts: true
-
-      - name: Validate LavaMoat webpack MV3 policy
-        run: yarn webpack:tsc && yarn webpack:lavamoat:policy:mv3
-
-      - name: Check working tree
-        run: |
-          if ! git diff --exit-code; then
-              echo "::error::Working tree dirty."
-              exit 1
-          fi
-
   build-viz:
     name: Build viz
     runs-on: ubuntu-latest
     timeout-minutes: 30
     env:
+      # For a `pull_request` event, the branch is `github.head_ref`.
+      # For a `push` event, the branch is `github.ref_name`.
       BRANCH: ${{ github.head_ref || github.ref_name }}
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
