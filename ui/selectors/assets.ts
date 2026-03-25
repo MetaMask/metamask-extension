@@ -781,7 +781,12 @@ const selectAccountTreeStateForBalances = createSelector(
     (state: BalanceCalculationState) =>
       getMetamaskState(state).accountWalletsMetadata,
   ],
-  (accountTree, selectedAccountGroup, accountGroupsMetadata, accountWalletsMetadata) => ({
+  (
+    accountTree,
+    selectedAccountGroup,
+    accountGroupsMetadata,
+    accountWalletsMetadata,
+  ) => ({
     selectedAccountGroup: selectedAccountGroup ?? '',
     accountTree: accountTree ?? EMPTY_ACCOUNT_TREE,
     accountGroupsMetadata: accountGroupsMetadata ?? EMPTY_OBJECT,
