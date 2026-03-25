@@ -224,12 +224,14 @@ shared/lib/deep-links/routes/musd.ts @MetaMask/metamask-earn
 app/scripts/lib/setup-initial-state-hooks.js          @MetaMask/extension-platform @MetaMask/qa
 
 # Release
-/.metamaskrc.dist                                     @MetaMask/extension-platform @MetaMask/release-team
-/builds.yml                                           @MetaMask/extension-platform @MetaMask/release-team
-development/attributions-check.sh                     @MetaMask/extension-platform @MetaMask/release-team
-development/generate-attributions.sh                  @MetaMask/extension-platform @MetaMask/release-team
-app/scripts/lib/setupSentry.js                        @MetaMask/extension-platform @MetaMask/release-team
-shared/lib/trace.ts                                   @MetaMask/extension-platform @MetaMask/release-team
+/.metamaskrc.dist                                     @MetaMask/extension-platform
+/builds.yml                                           @MetaMask/extension-platform
+development/attributions-check.sh                     @MetaMask/extension-platform
+development/generate-attributions.sh                  @MetaMask/extension-platform
+
+# Observability
+app/scripts/lib/setupSentry.js                        @MetaMask/extension-platform
+shared/lib/trace.ts                                   @MetaMask/extension-platform
 
 # CI
 /.github/workflows/                                   @MetaMask/extension-platform @HowardBraham @itsyoboieltr
