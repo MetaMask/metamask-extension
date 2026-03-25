@@ -24,9 +24,12 @@ export type PerpsWithdrawNavigationResult = {
 /**
  * Perps-owned entrypoint for opening the withdraw flow (dedicated route).
  *
- * Sibling to {@link usePerpsDepositConfirmation}: same `trigger` / `isLoading` shape,
- * but withdraw uses HyperLiquid `perpsWithdraw` on the withdraw page—not
- * `CONFIRM_TRANSACTION_ROUTE` / CustomAmount (deposits are transaction-prepared).
+ * Sibling to {@link usePerpsDepositConfirmation}: same `trigger` / `isLoading` shape.
+ * Deposit confirmation is backed by `depositWithConfirmation`, which builds an EVM
+ * transaction and submits it through `TransactionController` (`perpsDeposit`).
+ * Withdraw is API-only (`perpsWithdraw`) with no staged `TransactionMeta`, so it
+ * cannot reuse that confirmations path without new controller support. Completion
+ * feedback on the wallet home uses `PerpsWithdrawToast` and `lastWithdrawResult`.
  *
  * @param options
  */
@@ -65,7 +68,13 @@ export function usePerpsWithdrawNavigation(
       isInFlightRef.current = false;
       setIsLoading(false);
     }
-  }, [isLoading, navigate, navigateOnTrigger, onNavigated, selectedAccount?.address]);
+  }, [
+    isLoading,
+    navigate,
+    navigateOnTrigger,
+    onNavigated,
+    selectedAccount?.address,
+  ]);
 
   return {
     trigger,

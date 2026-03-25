@@ -5930,6 +5930,16 @@
   "perpsWithdrawRoutesError": {
     "message": "Could not load withdrawal limits. Try again later."
   },
+  "perpsWithdrawToastSuccessTitle": {
+    "message": "Withdrawal submitted"
+  },
+  "perpsWithdrawToastSuccessDescription": {
+    "message": "We are processing $1. Funds typically arrive within a few minutes.",
+    "description": "$1 is the formatted withdrawal amount"
+  },
+  "perpsWithdrawToastErrorTitle": {
+    "message": "Withdrawal failed"
+  },
   "perpsYouWillReceive": {
     "message": "You'll receive"
   },

@@ -55,6 +55,7 @@ import {
   StorageWriteErrorType,
 } from '../../../../shared/constants/app-state';
 import { MerklClaimToast, MusdConversionToast } from '../musd';
+import { PerpsWithdrawToast } from '../perps/perps-withdraw-toast';
 import { getDappActiveNetwork } from '../../../selectors/dapp';
 import {
   getAccountGroupWithInternalAccounts,
@@ -147,6 +148,7 @@ export function ToastMaster() {
         <CopyAddressToast />
         <MerklClaimToast />
         <MusdConversionToast />
+        <PerpsWithdrawToast />
         <ShieldPausedToast />
         <ShieldEndingToast />
       </ToastContainer>

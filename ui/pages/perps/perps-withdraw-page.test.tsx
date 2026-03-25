@@ -5,8 +5,22 @@ import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
 import configureStore from '../../store/store';
 import mockState from '../../../test/data/mock-state.json';
 import { getIsPerpsExperienceAvailable } from '../../selectors/perps/feature-flags';
-import PerpsWithdrawPage from './perps-withdraw-page';
 import { submitRequestToBackground } from '../../store/background-connection';
+import PerpsWithdrawPage from './perps-withdraw-page';
+
+jest.mock('@metamask/perps-controller', () => ({
+  HYPERLIQUID_ASSET_CONFIGS: {
+    usdc: {
+      mainnet: 'eip155:42161/erc20:0xaf88d065e77c8cC2239327C5EDb3A432268e5831',
+      testnet: 'eip155:42161/erc20:0xaf88d065e77c8cC2239327C5EDb3A432268e5831',
+    },
+  },
+  HYPERLIQUID_WITHDRAWAL_MINUTES: 5,
+  WITHDRAWAL_CONSTANTS: {
+    DefaultMinAmount: '1.01',
+    DefaultFeeAmount: 1,
+  },
+}));
 
 const mockNavigate = jest.fn();
 
@@ -103,7 +117,7 @@ describe('PerpsWithdrawPage', () => {
       expect(mockSubmit).toHaveBeenCalledWith('perpsGetWithdrawalRoutes', []);
     });
 
-    await user.type(screen.getByTestId('perps-withdraw-amount-input'), '50');
+    await user.type(screen.getByTestId('perps-fiat-hero-amount-input'), '50');
     await user.click(screen.getByTestId('perps-withdraw-continue'));
 
     await waitFor(() => {
@@ -128,5 +142,43 @@ describe('PerpsWithdrawPage', () => {
     fireEvent.click(screen.getByTestId('perps-withdraw-back-button'));
 
     expect(mockNavigate).toHaveBeenCalledWith('/');
+  });
+
+  it('clears controller withdraw result when withdrawal fails', async () => {
+    const user = userEvent.setup();
+    mockSubmit.mockImplementation((method: string) => {
+      if (method === 'perpsGetWithdrawalRoutes') {
+        return Promise.resolve([
+          {
+            assetId:
+              'eip155:42161/erc20:0xaf88d065e77c8cC2239327C5EDb3A432268e5831',
+            chainId: 'eip155:42161',
+            contractAddress:
+              '0xaf88d065e77c8cC2239327C5EDb3A432268e5831' as `0x${string}`,
+            constraints: { minAmount: '1.01' },
+          },
+        ]);
+      }
+      if (method === 'perpsValidateWithdrawal') {
+        return Promise.resolve({ isValid: true });
+      }
+      if (method === 'perpsWithdraw') {
+        return Promise.resolve({ success: false, error: 'provider_error' });
+      }
+      return Promise.resolve(undefined);
+    });
+
+    renderWithProvider(<PerpsWithdrawPage />, createMockStore());
+
+    await waitFor(() => {
+      expect(mockSubmit).toHaveBeenCalledWith('perpsGetWithdrawalRoutes', []);
+    });
+
+    await user.type(screen.getByTestId('perps-fiat-hero-amount-input'), '50');
+    await user.click(screen.getByTestId('perps-withdraw-continue'));
+
+    await waitFor(() => {
+      expect(mockSubmit).toHaveBeenCalledWith('perpsClearWithdrawResult', []);
+    });
   });
 });

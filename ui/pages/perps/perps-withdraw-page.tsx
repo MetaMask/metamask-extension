@@ -2,14 +2,9 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Navigate, useNavigate } from 'react-router-dom';
 import {
-  Box,
-  BoxFlexDirection,
-  BoxAlignItems,
-  BoxJustifyContent,
   Text,
   TextVariant,
   TextColor,
-  FontWeight,
   Button,
   ButtonVariant,
   ButtonSize,
@@ -24,10 +19,25 @@ import {
   ButtonIcon,
   ButtonIconSize,
   IconName,
-  TextField,
-  TextFieldSize,
+  Box,
+  Text as ClText,
 } from '../../components/component-library';
+import {
+  BlockSize,
+  Display,
+  FlexDirection,
+  AlignItems,
+  JustifyContent,
+  TextAlign,
+  TextVariant as ClTextVariant,
+  TextColor as ClTextColor,
+} from '../../helpers/constants/design-system';
+import { ConfirmInfoRowSize } from '../../components/app/confirm/info/row/row';
 import { Content, Header, Page } from '../../components/multichain/pages/page';
+import { PerpsFiatHeroAmountInput } from '../../components/app/perps/perps-fiat-hero-amount-input';
+import { PerpsFiatSummaryRows } from '../../components/app/perps/perps-fiat-summary-rows';
+import { PerpsWithdrawPercentageButtons } from '../../components/app/perps/perps-withdraw-percentage-buttons';
+import { PerpsWalletAccountHeader } from '../../components/app/perps/perps-wallet-account-header';
 import { getIsPerpsExperienceAvailable } from '../../selectors/perps/feature-flags';
 import { selectPerpsIsTestnet } from '../../selectors/perps-controller';
 import { useI18nContext } from '../../hooks/useI18nContext';
@@ -37,9 +47,29 @@ import { usePerpsLiveAccount } from '../../hooks/perps/stream';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import { submitRequestToBackground } from '../../store/background-connection';
 
+function parsePerpsAmountInput(raw: string): number {
+  const normalized = raw.replace(/,/gu, '.');
+  const n = parseFloat(normalized);
+  return Number.isFinite(n) ? n : NaN;
+}
+
+function formatAmountInputFromNumber(n: number): string {
+  if (!Number.isFinite(n) || n <= 0) {
+    return '';
+  }
+  const rounded = Math.floor(n * 1e8) / 1e8;
+  if (rounded === Math.floor(rounded)) {
+    return String(Math.floor(rounded));
+  }
+  return String(rounded);
+}
+
 /**
  * Perps withdraw screen: enter USDC amount, validate against routes and balance,
  * submit `perpsWithdraw` with HyperLiquid USDC CAIP asset id.
+ *
+ * Layout mirrors deposit confirmations (`CustomAmountInfo` + small summary rows)
+ * while remaining a standalone multichain page (no `TransactionMeta` / pay flow).
  */
 const PerpsWithdrawPage: React.FC = () => {
   const t = useI18nContext();
@@ -110,11 +140,7 @@ const PerpsWithdrawPage: React.FC = () => {
     };
   }, [t]);
 
-  const amountNum = useMemo(() => {
-    const clean = amount.replace(/,/gu, '');
-    const n = parseFloat(clean);
-    return Number.isFinite(n) ? n : NaN;
-  }, [amount]);
+  const amountNum = useMemo(() => parsePerpsAmountInput(amount), [amount]);
 
   const youReceiveNum = useMemo(() => {
     if (!Number.isFinite(amountNum) || amountNum <= 0) {
@@ -149,15 +175,23 @@ const PerpsWithdrawPage: React.FC = () => {
     navigate(DEFAULT_ROUTE);
   }, [navigate]);
 
-  const handleAmountChange = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      const { value } = e.target;
-      if (value === '' || /^[\d,]*\.?\d*$/u.test(value)) {
-        setAmount(value);
-        setSubmitError(null);
+  const handleHeroAmountChange = useCallback((value: string) => {
+    setAmount(value);
+    setSubmitError(null);
+  }, []);
+
+  const handlePercentageClick = useCallback(
+    (percentage: number) => {
+      if (percentage === 100) {
+        setAmount(availableBalance);
+      } else {
+        setAmount(
+          formatAmountInputFromNumber((availableNum * percentage) / 100),
+        );
       }
+      setSubmitError(null);
     },
-    [],
+    [availableBalance, availableNum],
   );
 
   const handleContinue = useCallback(async () => {
@@ -168,7 +202,7 @@ const PerpsWithdrawPage: React.FC = () => {
     setIsSubmitting(true);
     setSubmitError(null);
 
-    const cleanAmount = amount.replace(/,/gu, '');
+    const cleanAmount = amount.replace(/,/gu, '.');
 
     try {
       const validation = await submitRequestToBackground<{
@@ -194,19 +228,52 @@ const PerpsWithdrawPage: React.FC = () => {
       }
 
       setSubmitError(result?.error ?? t('perpsWithdrawFailed'));
+      submitRequestToBackground('perpsClearWithdrawResult', []).catch(() => {
+        // Non-blocking cleanup of controller toast state
+      });
     } catch {
       setSubmitError(t('perpsWithdrawFailed'));
+      submitRequestToBackground('perpsClearWithdrawResult', []).catch(() => {
+        // Non-blocking cleanup of controller toast state
+      });
     } finally {
       setIsSubmitting(false);
     }
   }, [amount, hasValidInputs, isSubmitting, navigate, t, usdcAssetId]);
 
+  const summaryRows = useMemo(
+    () => [
+      {
+        label: t('perpsWithdrawFee'),
+        value: formatCurrency(defaultFee, 'USD'),
+        'data-testid': 'perps-withdraw-summary-fee',
+      },
+      {
+        label: t('perpsWithdrawEstimatedTime'),
+        value: t('perpsWithdrawMinutesApprox', [String(estimatedMinutes)]),
+        'data-testid': 'perps-withdraw-summary-time',
+      },
+      {
+        label: t('perpsYouWillReceive'),
+        value: Number.isFinite(youReceiveNum)
+          ? formatCurrency(youReceiveNum, 'USD')
+          : '—',
+        emphasizeValue: true,
+        'data-testid': 'perps-withdraw-summary-receive',
+      },
+    ],
+    [defaultFee, estimatedMinutes, formatCurrency, t, youReceiveNum],
+  );
+
   if (!isPerpsExperienceAvailable) {
     return <Navigate to={DEFAULT_ROUTE} replace />;
   }
 
+  const amountHasAlert = Boolean(validationMessage);
+
   return (
     <Page data-testid="perps-withdraw-page">
+      <PerpsWalletAccountHeader />
       <Header
         startAccessory={
           <ButtonIcon
@@ -220,117 +287,110 @@ const PerpsWithdrawPage: React.FC = () => {
       >
         {t('perpsWithdrawFunds')}
       </Header>
-      <Content>
+      <Content className="min-h-0 flex-1">
         <Box
-          flexDirection={BoxFlexDirection.Column}
+          display={Display.Flex}
+          flexDirection={FlexDirection.Column}
           gap={4}
-          paddingLeft={4}
-          paddingRight={4}
-          paddingBottom={4}
+          width={BlockSize.Full}
+          style={{ flex: 1, minHeight: 0 }}
         >
-          <Text variant={TextVariant.BodyMd} color={TextColor.TextAlternative}>
-            {t('perpsWithdrawDescription')}
-          </Text>
-
-          {routesError ? (
-            <Text variant={TextVariant.BodySm} color={TextColor.Error}>
-              {routesError}
-            </Text>
-          ) : null}
-
-          <Box flexDirection={BoxFlexDirection.Column} gap={2}>
-            <Text fontWeight={FontWeight.Medium}>
-              {t('perpsWithdrawAmount')}
-            </Text>
-            <TextField
-              size={TextFieldSize.Md}
-              type="text"
-              inputMode="decimal"
-              placeholder="0.00"
-              value={amount}
-              onChange={handleAmountChange}
-              disabled={!isEligible || isSubmitting}
-              inputProps={{ 'data-testid': 'perps-withdraw-amount-input' }}
-            />
+          <Box
+            display={Display.Flex}
+            flexDirection={FlexDirection.Column}
+            gap={4}
+            style={{ flexShrink: 0 }}
+          >
             <Text
-              variant={TextVariant.BodySm}
+              variant={TextVariant.BodyMd}
               color={TextColor.TextAlternative}
+            >
+              {t('perpsWithdrawDescription')}
+            </Text>
+
+            {routesError ? (
+              <Text variant={TextVariant.BodySm} color={TextColor.ErrorDefault}>
+                {routesError}
+              </Text>
+            ) : null}
+          </Box>
+
+          <Box
+            display={Display.Flex}
+            flexDirection={FlexDirection.Column}
+            alignItems={AlignItems.center}
+            justifyContent={JustifyContent.center}
+            gap={4}
+            width={BlockSize.Full}
+            style={{ flex: 1, minHeight: 0 }}
+          >
+            <PerpsFiatHeroAmountInput
+              value={amount}
+              onChange={handleHeroAmountChange}
+              disabled={!isEligible || isSubmitting}
+              hasAlert={amountHasAlert}
+            />
+
+            <ClText
+              variant={ClTextVariant.bodySm}
+              color={ClTextColor.textAlternative}
+              textAlign={TextAlign.Center}
             >
               {t('perpsAvailableBalance')}:{' '}
               {formatCurrency(availableNum, 'USD')}
-            </Text>
+            </ClText>
+
+            {isEligible ? (
+              <PerpsWithdrawPercentageButtons
+                disabled={isSubmitting}
+                onPercentageClick={handlePercentageClick}
+              />
+            ) : null}
           </Box>
 
-          <Box flexDirection={BoxFlexDirection.Column} gap={2}>
-            <Box
-              flexDirection={BoxFlexDirection.Row}
-              justifyContent={BoxJustifyContent.Between}
-              alignItems={BoxAlignItems.Center}
-            >
-              <Text color={TextColor.TextAlternative}>
-                {t('perpsWithdrawFee')}
-              </Text>
-              <Text>{formatCurrency(defaultFee, 'USD')}</Text>
-            </Box>
-            <Box
-              flexDirection={BoxFlexDirection.Row}
-              justifyContent={BoxJustifyContent.Between}
-              alignItems={BoxAlignItems.Center}
-            >
-              <Text color={TextColor.TextAlternative}>
-                {t('perpsWithdrawEstimatedTime')}
-              </Text>
-              <Text>
-                {t('perpsWithdrawMinutesApprox', [String(estimatedMinutes)])}
-              </Text>
-            </Box>
-            <Box
-              flexDirection={BoxFlexDirection.Row}
-              justifyContent={BoxJustifyContent.Between}
-              alignItems={BoxAlignItems.Center}
-            >
-              <Text fontWeight={FontWeight.Medium}>
-                {t('perpsYouWillReceive')}
-              </Text>
-              <Text fontWeight={FontWeight.Medium}>
-                {Number.isFinite(youReceiveNum)
-                  ? formatCurrency(youReceiveNum, 'USD')
-                  : '—'}
-              </Text>
-            </Box>
-          </Box>
-
-          {validationMessage ? (
-            <Text variant={TextVariant.BodySm} color={TextColor.Error}>
-              {validationMessage}
-            </Text>
-          ) : null}
-
-          {submitError ? (
-            <Text variant={TextVariant.BodySm} color={TextColor.Error}>
-              {submitError}
-            </Text>
-          ) : null}
-
-          {!isEligible ? (
-            <Text
-              variant={TextVariant.BodySm}
-              color={TextColor.TextAlternative}
-            >
-              {t('perpsGeoBlockedTooltip')}
-            </Text>
-          ) : null}
-
-          <Button
-            data-testid="perps-withdraw-continue"
-            variant={ButtonVariant.Primary}
-            size={ButtonSize.Lg}
-            onClick={handleContinue}
-            isLoading={isSubmitting}
-            disabled={!hasValidInputs || isSubmitting}
+          <Box
+            display={Display.Flex}
+            flexDirection={FlexDirection.Column}
+            gap={4}
+            style={{ flexShrink: 0 }}
           >
-            {t('continue')}
-          </Button>
+            <PerpsFiatSummaryRows
+              rows={summaryRows}
+              rowVariant={ConfirmInfoRowSize.Small}
+            />
+
+            {validationMessage ? (
+              <Text variant={TextVariant.BodySm} color={TextColor.ErrorDefault}>
+                {validationMessage}
+              </Text>
+            ) : null}
+
+            {submitError ? (
+              <Text variant={TextVariant.BodySm} color={TextColor.ErrorDefault}>
+                {submitError}
+              </Text>
+            ) : null}
+
+            {isEligible ? null : (
+              <Text
+                variant={TextVariant.BodySm}
+                color={TextColor.TextAlternative}
+              >
+                {t('perpsGeoBlockedTooltip')}
+              </Text>
+            )}
+
+            <Button
+              data-testid="perps-withdraw-continue"
+              variant={ButtonVariant.Primary}
+              size={ButtonSize.Lg}
+              onClick={handleContinue}
+              isLoading={isSubmitting}
+              disabled={!hasValidInputs || isSubmitting}
+            >
+              {t('continue')}
+            </Button>
+          </Box>
         </Box>
       </Content>
     </Page>
