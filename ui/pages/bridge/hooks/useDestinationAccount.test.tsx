@@ -198,7 +198,7 @@ describe('useDestinationAccount', () => {
           selectedAccount: MOCK_LEDGER_ACCOUNT.id,
         },
         selectedAccountGroup:
-            'keyring:Ledger Hardware/0xb3864b298f4fddbbbd2fa5cf1a2a2748932b3b82',
+          'keyring:Ledger Hardware/0xb3864b298f4fddbbbd2fa5cf1a2a2748932b3b82',
       },
     });
     expect(result.current.selectedDestinationAccount).toStrictEqual({
@@ -230,7 +230,7 @@ describe('useDestinationAccount', () => {
           selectedAccount: MOCK_LEDGER_ACCOUNT.id,
         },
         selectedAccountGroup:
-            'keyring:Ledger Hardware/0xb3864b298f4fddbbbd2fa5cf1a2a2748932b3b82',
+          'keyring:Ledger Hardware/0xb3864b298f4fddbbbd2fa5cf1a2a2748932b3b82',
       },
     });
     expect(result.current.selectedDestinationAccount).toBeNull();
