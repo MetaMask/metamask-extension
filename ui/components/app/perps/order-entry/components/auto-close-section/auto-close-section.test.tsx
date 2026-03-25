@@ -149,6 +149,46 @@ describe('AutoCloseSection', () => {
 
       expect(onTakeProfitPriceChange).not.toHaveBeenCalled();
     });
+
+    it('normalizes take profit price on blur', () => {
+      const onTakeProfitPriceChange = jest.fn();
+      renderWithProvider(
+        <AutoCloseSection
+          {...defaultProps}
+          enabled={true}
+          takeProfitPrice="50000.1"
+          onTakeProfitPriceChange={onTakeProfitPriceChange}
+        />,
+        mockStore,
+      );
+
+      const container = screen.getByTestId('tp-price-input');
+      const input = container.querySelector('input');
+      expect(input).not.toBeNull();
+      fireEvent.blur(input as HTMLInputElement);
+
+      expect(onTakeProfitPriceChange).toHaveBeenCalledWith('50000.10');
+    });
+
+    it('clears take profit price on blur when value is non-positive', () => {
+      const onTakeProfitPriceChange = jest.fn();
+      renderWithProvider(
+        <AutoCloseSection
+          {...defaultProps}
+          enabled={true}
+          takeProfitPrice="0"
+          onTakeProfitPriceChange={onTakeProfitPriceChange}
+        />,
+        mockStore,
+      );
+
+      const container = screen.getByTestId('tp-price-input');
+      const input = container.querySelector('input');
+      expect(input).not.toBeNull();
+      fireEvent.blur(input as HTMLInputElement);
+
+      expect(onTakeProfitPriceChange).toHaveBeenCalledWith('');
+    });
   });
 
   describe('stop loss input', () => {
@@ -186,6 +226,46 @@ describe('AutoCloseSection', () => {
       });
 
       expect(onStopLossPriceChange).toHaveBeenCalledWith('40000');
+    });
+
+    it('normalizes stop loss price on blur', () => {
+      const onStopLossPriceChange = jest.fn();
+      renderWithProvider(
+        <AutoCloseSection
+          {...defaultProps}
+          enabled={true}
+          stopLossPrice="40000.1"
+          onStopLossPriceChange={onStopLossPriceChange}
+        />,
+        mockStore,
+      );
+
+      const container = screen.getByTestId('sl-price-input');
+      const input = container.querySelector('input');
+      expect(input).not.toBeNull();
+      fireEvent.blur(input as HTMLInputElement);
+
+      expect(onStopLossPriceChange).toHaveBeenCalledWith('40000.10');
+    });
+
+    it('clears stop loss price on blur when value is non-positive', () => {
+      const onStopLossPriceChange = jest.fn();
+      renderWithProvider(
+        <AutoCloseSection
+          {...defaultProps}
+          enabled={true}
+          stopLossPrice="0"
+          onStopLossPriceChange={onStopLossPriceChange}
+        />,
+        mockStore,
+      );
+
+      const container = screen.getByTestId('sl-price-input');
+      const input = container.querySelector('input');
+      expect(input).not.toBeNull();
+      fireEvent.blur(input as HTMLInputElement);
+
+      expect(onStopLossPriceChange).toHaveBeenCalledWith('');
     });
   });
 

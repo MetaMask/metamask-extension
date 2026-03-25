@@ -630,6 +630,89 @@ describe('PerpsOrderEntryPage', () => {
       expect(mockUseNavigate).toHaveBeenCalledWith('/perps/market/ETH');
     });
 
+    it('submits normalized TP/SL values when modified', async () => {
+      mockSearchParams.set('mode', 'modify');
+      mockLivePositions.mockReturnValue({
+        positions: mockPositions,
+        isInitialLoading: false,
+      });
+
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      const tpContainer = screen.getByTestId('tp-price-input');
+      const tpInput = tpContainer.querySelector('input');
+      fireEvent.change(tpInput as HTMLInputElement, {
+        target: { value: '3300.1' },
+      });
+      fireEvent.blur(tpInput as HTMLInputElement);
+
+      const slContainer = screen.getByTestId('sl-price-input');
+      const slInput = slContainer.querySelector('input');
+      fireEvent.change(slInput as HTMLInputElement, {
+        target: { value: '2500' },
+      });
+      fireEvent.blur(slInput as HTMLInputElement);
+
+      await act(async () => {
+        fireEvent.click(screen.getByTestId('submit-order-button'));
+      });
+
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'perpsUpdatePositionTPSL',
+        [
+          expect.objectContaining({
+            symbol: 'ETH',
+            takeProfitPrice: '3300.10',
+            stopLossPrice: '2500.00',
+          }),
+        ],
+      );
+    });
+
+    it('submits undefined TP/SL values when fields are cleared', async () => {
+      mockSearchParams.set('mode', 'modify');
+      mockLivePositions.mockReturnValue({
+        positions: mockPositions,
+        isInitialLoading: false,
+      });
+
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      const tpContainer = screen.getByTestId('tp-price-input');
+      const tpInput = tpContainer.querySelector('input');
+      fireEvent.change(tpInput as HTMLInputElement, {
+        target: { value: '' },
+      });
+      fireEvent.blur(tpInput as HTMLInputElement);
+
+      const slContainer = screen.getByTestId('sl-price-input');
+      const slInput = slContainer.querySelector('input');
+      fireEvent.change(slInput as HTMLInputElement, {
+        target: { value: '' },
+      });
+      fireEvent.blur(slInput as HTMLInputElement);
+
+      await act(async () => {
+        fireEvent.click(screen.getByTestId('submit-order-button'));
+      });
+
+      const updateCall = mockSubmitRequestToBackground.mock.calls.find(
+        ([method]) => method === 'perpsUpdatePositionTPSL',
+      );
+      expect(updateCall).toBeDefined();
+
+      const payload = updateCall?.[1]?.[0] as {
+        symbol?: string;
+        takeProfitPrice?: string;
+        stopLossPrice?: string;
+      };
+      expect(payload.symbol).toBe('ETH');
+      expect(payload.takeProfitPrice).toBeUndefined();
+      expect(payload.stopLossPrice).toBeUndefined();
+    });
+
     it('does not submit when currentPrice is 0', async () => {
       mockLiveMarketData.mockReturnValue({
         markets: mockCryptoMarkets.map((m) => ({
