@@ -3,7 +3,7 @@ import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import AboutPage from '../../page-objects/pages/settings/about-page';
 import AdvancedSettings from '../../page-objects/pages/settings/advanced-settings';
 import ExperimentalSettings from '../../page-objects/pages/settings/experimental-settings';
-import GeneralSettings from '../../page-objects/pages/settings/general-settings';
+import PreferencesAndDisplaySettings from '../../page-objects/pages/settings/preferences-and-display-settings';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import PrivacySettings from '../../page-objects/pages/settings/privacy-settings';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
@@ -34,7 +34,7 @@ describe('Settings Search', function () {
 
         // navigate to general settings
         await settingsPage.goToSearchResultPage('General');
-        await new GeneralSettings(driver).checkPageIsLoaded();
+        await new PreferencesAndDisplaySettings(driver).checkPageIsLoaded();
       },
     );
   });

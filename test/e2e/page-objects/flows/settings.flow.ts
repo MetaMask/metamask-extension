@@ -1,7 +1,7 @@
 import { Driver } from '../../webdriver/driver';
 import HomePage from '../pages/home/homepage';
 import SettingsPage from '../pages/settings/settings-page';
-import GeneralSettings from '../pages/settings/general-settings';
+import PreferencesAndDisplaySettings from '../pages/settings/preferences-and-display-settings';
 import AdvancedSettings from '../pages/settings/advanced-settings';
 
 /**
@@ -33,9 +33,10 @@ export const enableNativeTokenAsMainBalance = async (
   const homePage = new HomePage(driver);
   await homePage.headerNavbar.openSettingsPage();
 
-  const generalSettings = new GeneralSettings(driver);
-  await generalSettings.checkPageIsLoaded();
-  await generalSettings.toggleShowNativeTokenAsMainBalance();
+  const preferencesAndDisplaySettings =
+    new PreferencesAndDisplaySettings(driver);
+  await preferencesAndDisplaySettings.checkPageIsLoaded();
+  await preferencesAndDisplaySettings.toggleShowNativeTokenAsMainBalance();
 
   const settingsPage = new SettingsPage(driver);
   await settingsPage.closeSettingsPage();

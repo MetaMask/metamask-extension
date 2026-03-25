@@ -41,10 +41,10 @@ class SettingsPage {
 
   private readonly searchSettingsInput = '#search-settings';
 
-  private readonly settingsPageTitle = {
-    text: 'Settings',
-    css: 'h3',
-  };
+  private readonly searchButton =
+    '[data-testid="settings-v2-header-search-button"]';
+
+  private readonly settingsPageRoot = '[data-testid="settings-v2-root"]';
 
   private readonly notificationsSettingsButton = {
     text: 'Notifications',
@@ -67,7 +67,7 @@ class SettingsPage {
 
   async checkPageIsLoaded(): Promise<void> {
     console.log('Check settings page is loaded');
-    await this.driver.waitForSelector(this.settingsPageTitle);
+    await this.driver.waitForSelector(this.settingsPageRoot);
   }
 
   async waitForTransactionShieldButtonReady(): Promise<void> {
@@ -94,6 +94,11 @@ class SettingsPage {
   async fillSearchSettingsInput(text: string): Promise<void> {
     console.log(`Filling search settings input with ${text}`);
     await this.driver.fill(this.searchSettingsInput, text);
+  }
+
+  async openSearch(): Promise<void> {
+    console.log('Opening settings search');
+    await this.driver.clickElement(this.searchButton);
   }
 
   async toggleShowFiatOnTestnets(): Promise<void> {

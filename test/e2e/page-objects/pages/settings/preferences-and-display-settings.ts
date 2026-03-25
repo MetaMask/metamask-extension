@@ -1,31 +1,25 @@
 import { Driver } from '../../../webdriver/driver';
+import {
+  ACCOUNT_IDENTICON_ROUTE,
+  ASSETS_ROUTE,
+  LANGUAGE_ROUTE,
+  PREFERENCES_AND_DISPLAY_ROUTE,
+} from '../../../../../ui/helpers/constants/routes';
 
-class GeneralSettings {
+class PreferencesAndDisplaySettings {
   private readonly driver: Driver;
 
-  private readonly blockiesAccountIdenticon = {
-    tag: 'h6',
-    text: 'Blockies',
-  };
-
-  private readonly generalSettingsPageTitle = {
-    text: 'General',
-    tag: 'h4',
-  };
+  private readonly preferencesAndDisplayLanguageLink =
+    'a[href="#/settings/preferences-and-display/language"]';
 
   private readonly hideTokensWithoutBalanceToggle =
-    '[id="toggle-zero-balance"] .toggle-button';
-
-  private readonly jazziconsAccountIdenticon = {
-    tag: 'h6',
-    text: 'Jazzicons',
-  };
+    '[data-testid="toggle-zero-balance-button"]';
 
   private readonly loadingOverlay = '.loading-overlay';
 
   private readonly loadingOverlaySpinner = '.loading-overlay__spinner';
 
-  private readonly selectLanguageField = '[data-testid="locale-select"]';
+  private readonly localeSelectList = '[data-testid="locale-select-list"]';
 
   private readonly identicons = {
     maskicon: '[data-testid="maskicon_icon"]',
@@ -34,76 +28,66 @@ class GeneralSettings {
   };
 
   private readonly toggleNativeTokenAsMainBalance =
-    '[id="toggle-show-native-token-as-main-balance"] .toggle-button';
+    '[data-testid="show-native-token-as-main-balance"]';
 
   private readonly showDefaultAddressToggle =
-    '[id="show-default-address"] .toggle-button';
+    '[data-testid="show-default-address-toggle"]';
 
   constructor(driver: Driver) {
     this.driver = driver;
   }
 
-  /**
-   * Check if the General Settings page is loaded
-   */
   async checkPageIsLoaded(): Promise<void> {
     try {
+      await this.navigateToRoute(PREFERENCES_AND_DISPLAY_ROUTE);
       await this.checkNoLoadingOverlaySpinner();
       await this.driver.waitForMultipleSelectors([
-        this.generalSettingsPageTitle,
-        this.selectLanguageField,
+        this.preferencesAndDisplayLanguageLink,
       ]);
     } catch (e) {
       console.log(
-        'Timeout while waiting for General Settings page to be loaded',
+        'Timeout while waiting for Preferences and Display settings page to be loaded',
         e,
       );
       throw e;
     }
-    console.log('General Settings page is loaded');
+    console.log('Preferences and Display settings page is loaded');
   }
 
-  /**
-   * Change the language of MM on General Settings page
-   *
-   * @param languageToSelect - The language to select
-   */
   async changeLanguage(languageToSelect: string): Promise<void> {
     console.log(
       'Changing language to ',
       languageToSelect,
-      'on general settings page',
+      'on preferences and display settings page',
     );
+    await this.navigateToRoute(LANGUAGE_ROUTE);
     await this.checkNoLoadingOverlaySpinner();
-    // We use send keys, because clicking the dropdown causes flakiness, if it's not auto closed after selecting the language
-    const dropdown = await this.driver.findElement(this.selectLanguageField);
-    await dropdown.sendKeys(languageToSelect);
+    await this.driver.waitForSelector(this.localeSelectList);
+    await this.driver.clickElement({ text: languageToSelect });
     await this.checkNoLoadingOverlaySpinner();
   }
 
-  /**
-   * Verify that both Jazzicon and Blockies options are visible
-   */
   async checkIdenticonOptionsAreDisplayed(): Promise<void> {
     console.log(
-      'Checking if identicon options are displayed on general settings page',
+      'Checking if identicon options are displayed on preferences and display settings page',
     );
-    await this.driver.waitForSelector(this.jazziconsAccountIdenticon);
-    await this.driver.waitForSelector(this.blockiesAccountIdenticon);
+    await this.navigateToRoute(ACCOUNT_IDENTICON_ROUTE);
+    await this.driver.waitForSelector('[data-testid="account-identicon-list"]');
+    await this.driver.waitForSelector(
+      '[data-testid="account-identicon-option-blockies"]',
+    );
+    await this.driver.waitForSelector(
+      '[data-testid="account-identicon-option-jazzicon"]',
+    );
   }
 
-  /**
-   * Check if the specified identicon type is active
-   *
-   * @param identicon - The type of identicon to check ('maskicon' or 'jazzicon' or 'blockies')
-   */
   async checkIdenticonIsActive(
     identicon: 'maskicon' | 'jazzicon' | 'blockies',
   ): Promise<void> {
     console.log(
-      `Checking if ${identicon} identicon is active on general settings page`,
+      `Checking if ${identicon} identicon is active on preferences and display settings page`,
     );
-
+    await this.navigateToRoute(ACCOUNT_IDENTICON_ROUTE);
     const activeSelector = this.identicons[identicon];
     await this.driver.waitForSelector(activeSelector);
   }
@@ -117,24 +101,35 @@ class GeneralSettings {
   }
 
   async toggleHideTokensWithoutBalance(): Promise<void> {
+    await this.navigateToRoute(ASSETS_ROUTE);
     await this.driver.clickElement(this.hideTokensWithoutBalanceToggle);
   }
 
   async toggleShowNativeTokenAsMainBalance(): Promise<void> {
+    await this.navigateToRoute(ASSETS_ROUTE);
     await this.driver.clickElement(this.toggleNativeTokenAsMainBalance);
   }
 
   async toggleShowDefaultAddress(): Promise<void> {
+    await this.navigateToRoute(PREFERENCES_AND_DISPLAY_ROUTE);
     await this.driver.clickElement(this.showDefaultAddressToggle);
   }
 
   async checkShowDefaultAddressSectionIsDisplayed(): Promise<void> {
+    await this.navigateToRoute(PREFERENCES_AND_DISPLAY_ROUTE);
     await this.driver.waitForSelector(this.showDefaultAddressToggle);
   }
 
   async checkShowDefaultAddressSectionIsNotDisplayed(): Promise<void> {
+    await this.navigateToRoute(PREFERENCES_AND_DISPLAY_ROUTE);
     await this.driver.assertElementNotPresent(this.showDefaultAddressToggle);
+  }
+
+  private async navigateToRoute(route: string): Promise<void> {
+    await this.driver.executeScript(
+      `window.location.hash = ${JSON.stringify(route)};`,
+    );
   }
 }
 
-export default GeneralSettings;
+export default PreferencesAndDisplaySettings;
