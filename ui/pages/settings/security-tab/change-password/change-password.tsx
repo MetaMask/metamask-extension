@@ -254,7 +254,7 @@ const ChangePassword = () => {
               >
                 <Checkbox
                   id="change-password-terms"
-                  inputProps={{ 'data-testid': 'change-password-terms' }}
+                  data-testid="change-password-terms"
                   isSelected={termsChecked}
                   onChange={() => {
                     setTermsChecked(!termsChecked);
