@@ -14,11 +14,12 @@ import {
 import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
 import { DisplayNftMediaToggleItem } from '../shared/display-nft-media-item';
 import { AutodetectNftsToggleItem } from '../shared/autodetect-nfts-item';
+import { ASSET_ITEMS } from '../search-config';
 import { LocalCurrencyItem } from './local-currency-item';
 
 const ShowNetworkTokenToggleItem = createToggleItem({
   name: 'ShowNetworkTokenToggleItem',
-  titleKey: 'showNativeTokenAsMainBalance',
+  titleKey: ASSET_ITEMS['show-network-token'],
   selector: getShowNativeTokenAsMainBalance,
   action: setShowNativeTokenAsMainBalancePreference,
   dataTestId: 'show-native-token-as-main-balance',
@@ -33,7 +34,7 @@ const ShowNetworkTokenToggleItem = createToggleItem({
 
 const HideZeroBalanceTokensToggleItem = createToggleItem({
   name: 'HideZeroBalanceTokensToggleItem',
-  titleKey: 'hideZeroBalanceTokens',
+  titleKey: ASSET_ITEMS['hide-zero-balance-tokens'],
   selector: getShouldHideZeroBalanceTokens,
   action: setHideZeroBalanceTokens,
   dataTestId: 'toggle-zero-balance-button',
@@ -41,7 +42,7 @@ const HideZeroBalanceTokensToggleItem = createToggleItem({
 
 const AutodetectTokensToggleItem = createToggleItem({
   name: 'AutodetectTokensToggleItem',
-  titleKey: 'autoDetectTokens',
+  titleKey: ASSET_ITEMS['autodetect-tokens'],
   descriptionKey: 'autoDetectTokensDescriptionV2',
   selector: getUseTokenDetection,
   action: setUseTokenDetection,
