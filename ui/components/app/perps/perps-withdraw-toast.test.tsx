@@ -4,6 +4,7 @@ import userEvent from '@testing-library/user-event';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import { submitRequestToBackground } from '../../../store/background-connection';
 import { PerpsWithdrawToast } from './perps-withdraw-toast';
 
@@ -36,7 +37,9 @@ describe('PerpsWithdrawToast', () => {
     renderWithProvider(<PerpsWithdrawToast />, store);
 
     expect(screen.getByTestId('perps-withdraw-toast')).toBeInTheDocument();
-    expect(screen.getByText('Withdrawal submitted')).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.perpsWithdrawToastSuccessTitle.message),
+    ).toBeInTheDocument();
   });
 
   it('calls perpsClearWithdrawResult when dismissed', async () => {
@@ -50,7 +53,9 @@ describe('PerpsWithdrawToast', () => {
 
     renderWithProvider(<PerpsWithdrawToast />, store);
 
-    await user.click(screen.getByRole('button', { name: 'Close' }));
+    await user.click(
+      screen.getByRole('button', { name: messages.close.message }),
+    );
 
     expect(mockSubmit).toHaveBeenCalledWith('perpsClearWithdrawResult', []);
   });
