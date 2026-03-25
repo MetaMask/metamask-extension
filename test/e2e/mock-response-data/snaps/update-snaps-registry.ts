@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import { assert } from '@metamask/superstruct';
+import { create } from '@metamask/superstruct';
 import { SignatureStruct, verify } from '@metamask/snaps-registry';
 
 /**
@@ -46,8 +46,12 @@ function saveAclHeadersFile(
     'Accept-Ranges': headerGet('accept-ranges') ?? 'bytes',
     'Content-Length': String(Buffer.byteLength(bodyUtf8, 'utf8')),
     'Content-Type': contentType,
-    Etag: headerGet('etag'),
   };
+
+  const etag = headerGet('etag');
+  if (etag) {
+    relevantHeaders.Etag = etag;
+  }
 
   const cacheControl = headerGet('cache-control');
   if (cacheControl) {
@@ -81,11 +85,11 @@ async function main() {
 
   const registryText = await registryRes.text();
   const signatureText = await signatureRes.text();
-  const signatureParsed: unknown = JSON.parse(signatureText);
+  const signature = create(JSON.parse(signatureText), SignatureStruct);
 
   const valid = await verify({
     registry: registryText,
-    signature: signatureParsed,
+    signature,
     publicKey: REGISTRY_PUBLIC_KEY,
   });
 

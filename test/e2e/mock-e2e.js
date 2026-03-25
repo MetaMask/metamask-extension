@@ -39,8 +39,7 @@ const CDN_STALE_RES_HEADERS_PATH =
 
 const ACCOUNTS_API_TOKENS_PATH =
   'test/e2e/mock-response-data/accounts-api-tokens.json';
-const REGISTRY_DIR =
-  'test/e2e/mock-response-data/snaps/registry-and-headers';
+const REGISTRY_DIR = 'test/e2e/mock-response-data/snaps/registry-and-headers';
 /** Exact signed registry bytes (like snap `*-@version.txt` bodies; not *.json so Prettier skips it). */
 const REGISTRY_TXT_PATH = `${REGISTRY_DIR}/registry.txt`;
 const SIGNATURE_PATH = `${REGISTRY_DIR}/signature.json`;
@@ -207,15 +206,15 @@ async function setupMocking(
   // Mocks below this line can be overridden by test-specific mocks
 
   // Snaps execution ACL — same pattern as `snap-binary-mocks.ts`: body file + *-headers.json
-  const aclRegistryBody = fs.readFileSync(ACL_REGISTRY_TXT_PATH);
-  const aclSignatureBody = fs.readFileSync(ACL_SIGNATURE_PATH);
+  const aclRegistryBody = fs.readFileSync(REGISTRY_TXT_PATH);
+  const aclSignatureBody = fs.readFileSync(SIGNATURE_PATH);
   await server
     .forGet('https://acl.execution.metamask.io/latest/registry.json')
     .always()
     .thenCallback(() => ({
       statusCode: 200,
       rawBody: aclRegistryBody,
-      headers: JSON.parse(fs.readFileSync(ACL_REGISTRY_HEADERS_PATH, 'utf8')),
+      headers: JSON.parse(fs.readFileSync(REGISTRY_HEADERS_PATH, 'utf8')),
     }));
   await server
     .forGet('https://acl.execution.metamask.io/latest/signature.json')
@@ -223,7 +222,7 @@ async function setupMocking(
     .thenCallback(() => ({
       statusCode: 200,
       rawBody: aclSignatureBody,
-      headers: JSON.parse(fs.readFileSync(ACL_SIGNATURE_HEADERS_PATH, 'utf8')),
+      headers: JSON.parse(fs.readFileSync(SIGNATURE_HEADERS_PATH, 'utf8')),
     }));
 
   // remote feature flags — production-accurate defaults from the registry
