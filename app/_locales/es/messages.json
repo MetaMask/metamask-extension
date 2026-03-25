@@ -339,6 +339,9 @@
   "addWallet": {
     "message": "Agregar billetera"
   },
+  "addedProtectionOptionalBadge": {
+    "message": "Opcional"
+  },
   "additionalNetworks": {
     "message": "Redes adicionales"
   },
@@ -756,6 +759,27 @@
   "autoDetectTokensDescriptionV2": {
     "message": "Muestra los nuevos tokens enviados a tu billetera."
   },
+  "autoLock": {
+    "message": "Bloqueo automático"
+  },
+  "autoLockAfter15Seconds": {
+    "message": "Después de 15 segundos"
+  },
+  "autoLockAfter1Minute": {
+    "message": "Después de 1 minuto"
+  },
+  "autoLockAfter30Seconds": {
+    "message": "Después de 30 segundos"
+  },
+  "autoLockAfter5Minutes": {
+    "message": "Después de 5 minutos"
+  },
+  "autoLockAfterMinutes": {
+    "message": "Después de $1 minutos"
+  },
+  "autoLockNever": {
+    "message": "Nunca"
+  },
   "autoLockTimeLimit": {
     "message": "Temporizador con bloqueo automático (minutos)"
   },
@@ -773,6 +797,9 @@
   },
   "backToHome": {
     "message": "Volver a inicio"
+  },
+  "backUpIncomplete": {
+    "message": "Copia de seguridad incompleta"
   },
   "backup": {
     "message": "Respaldo"
@@ -853,6 +880,12 @@
   },
   "basicConfigurationModalCheckbox": {
     "message": "Entiendo y deseo continuar"
+  },
+  "basicConfigurationModalDisclaimerOffPart1": {
+    "message": "Esto significa que no optimizará completamente su tiempo en MetaMask. Las funciones básicas (como los detalles de los tokenes, la configuración óptima de gas y otras) no estarán disponibles para usted."
+  },
+  "basicConfigurationModalDisclaimerOffPart2": {
+    "message": "Desactivar esta opción también desactiva algunas funciones relacionadas con la privacidad, la copia de seguridad y la sincronización, así como las notificaciones."
   },
   "basicConfigurationModalDisclaimerOn": {
     "message": "Para optimizar su tiempo en MetaMask, tendrá que activar esta función. Las funciones básicas (como los detalles de los tokenes, la configuración óptima de gas y otras) son importantes para la experiencia Web3."
@@ -1064,7 +1097,10 @@
     "message": "Menor costo"
   },
   "bridgeMarketClosedAction": {
-    "message": "El mercado está cerrado"
+    "message": "Mercado cerrado"
+  },
+  "bridgeMarketClosedDescription": {
+    "message": "Este token bursátil se encuentra actualmente fuera del horario de trading. Inténtalo de nuevo cuando el mercado vuelva a abrir."
   },
   "bridgeMarketClosedModalDescription": {
     "message": "El mercado que respalda este token está actualmente cerrado. Los tokens se pueden transferir dentro de la cadena en cualquier momento."
@@ -1157,6 +1193,9 @@
   },
   "bridgeSelectNetwork": {
     "message": "Selecciona una red"
+  },
+  "bridgeSelectQuote": {
+    "message": "Seleccionar cotización"
   },
   "bridgeSelectTokenAmountAndAccount": {
     "message": "Seleccione token, monto y cuenta de destino"
@@ -1525,6 +1564,9 @@
   "confirmFieldTooltipPaymaster": {
     "message": "La tarifa de esta transacción la pagará el contrato inteligente del pagador."
   },
+  "confirmFieldTotalExposure": {
+    "message": "Exposición total"
+  },
   "confirmGasFeeTokenBalance": {
     "message": "Saldo:"
   },
@@ -1809,6 +1851,9 @@
   "contactDetails": {
     "message": "Detalles del contacto"
   },
+  "contactUpdated": {
+    "message": "Contacto actualizado"
+  },
   "contactUs": {
     "message": "Contáctenos"
   },
@@ -1892,6 +1937,10 @@
   },
   "createPasswordDetails": {
     "message": "Desbloquea MetaMask solo en este dispositivo."
+  },
+  "createPasswordDetailsSocial": {
+    "message": "Perder esta contraseña significa perder el acceso a la billetera en todos los dispositivos, $1",
+    "description": "$1 is the text 'MetaMask can't reset it.'"
   },
   "createPasswordDetailsSocialReset": {
     "message": "MetaMask no puede restablecerla."
@@ -2237,17 +2286,31 @@
     "message": "Esto eliminará los datos históricos de MetaMetrics asociados con su uso en este dispositivo. Su monedero y cuentas permanecerán exactamente como están ahora después de que se eliminen estos datos. Este proceso puede tardar hasta 30 días. Consulte nuestra $1.",
     "description": "$1 will have text saying Privacy Policy "
   },
+  "deleteMetaMetricsDataDescriptionV2": {
+    "message": "Esto eliminará los datos históricos de MetaMetrics asociados con tu billetera. MetaMetrics incluye datos de uso y diagnóstico anonimizados. Tu billetera y cuentas permanecerán iguales. Este proceso puede tardar hasta 30 días. Consulta nuestra $1.",
+    "description": "$1 will have text saying Privacy Policy "
+  },
   "deleteMetaMetricsDataErrorDesc": {
     "message": "Esta solicitud no se puede completar en este momento debido a un problema con el servidor del sistema de análisis. Por favor, vuelva a intentarlo más tarde."
   },
   "deleteMetaMetricsDataErrorTitle": {
     "message": "No pudimos eliminar estos datos en este momento"
   },
+  "deleteMetaMetricsDataErrorToast": {
+    "message": "No se puede eliminar"
+  },
   "deleteMetaMetricsDataModalDesc": {
     "message": "Estamos a punto de eliminar todos sus datos de MetaMetrics. ¿Está seguro?"
   },
   "deleteMetaMetricsDataModalTitle": {
     "message": "¿Eliminar datos de MetaMetrics?"
+  },
+  "deleteMetaMetricsDataRequestedDescription": {
+    "message": "Iniciaste esta acción el $1. Este proceso puede tardar hasta 30 días. Consulta la $2.",
+    "description": "$1 will be the date on which teh deletion is requested and $2 will have text saying Privacy Policy "
+  },
+  "deleteMetaMetricsDataToast": {
+    "message": "Los datos se eliminarán en un plazo de 30 días"
   },
   "deleteNetworkIntro": {
     "message": "Si elimina esta red, deberá volver a agregarla para ver sus activos en esta red"
@@ -2811,6 +2874,9 @@
   "externalNameSourcesSettingDescription": {
     "message": "Obtendremos apodos propuestos para las direcciones con las que interactúa de fuentes de terceros como Etherscan, Infura y Lens Protocol. Estas fuentes podrán ver esas direcciones y su dirección IP. La dirección de su cuenta no estará expuesta a terceros."
   },
+  "externalNameSourcesSettingDescriptionV2": {
+    "message": "Obtiene los apodos propuestos para las direcciones con las que interactúas de fuentes de terceros como Etherscan, Infura y el protocolo Lens."
+  },
   "failed": {
     "message": "Fallida"
   },
@@ -3149,6 +3215,9 @@
   "hardwareWalletErrorRecoveryUnlock2": {
     "message": "La aplicación Ethereum esté abierta"
   },
+  "hardwareWalletErrorTitleBlindSignNotSupported": {
+    "message": "Habilitar la firma ciega"
+  },
   "hardwareWalletErrorTitleBlindSignNotSupportedInstruction1": {
     "message": "La aplicación Ethereum esté abierta en tu Ledger"
   },
@@ -3188,6 +3257,9 @@
   },
   "hardwareWalletSupportLinkConversion": {
     "message": "haga clic aquí"
+  },
+  "hardwareWalletTitleEthAppNotOpen": {
+    "message": "Abrir la aplicación Ethereum"
   },
   "hardwareWalletTypeConnected": {
     "message": "$1 conectada",
@@ -3314,6 +3386,9 @@
   "hyperliquidReferralSubtitle": {
     "message": "Ahorra hasta un 4 % en operaciones con un código de recomendación de MetaMask.",
     "description": "The subtitle of the Hyperliquid referral confirmation screen"
+  },
+  "iUnderstand": {
+    "message": "Comprendo"
   },
   "id": {
     "message": "ID"
@@ -3543,6 +3618,9 @@
   },
   "ipfsGatewayDescription": {
     "message": "MetaMask utiliza servicios de terceros para mostrar imágenes de sus NFT almacenados en IPFS, mostrar información relacionada con las direcciones ENS ingresadas en la barra de direcciones de su navegador y obtener íconos para diferentes tokens. Su dirección IP puede estar expuesta a estos servicios cuando los está utilizando."
+  },
+  "ipfsGatewayDescriptionV2": {
+    "message": "Utiliza servicios de terceros para mostrar imágenes de tus NFT almacenados en IPFS, información relacionada con las direcciones ENS introducidas en la barra de direcciones de tu navegador e íconos para diferentes tokens. Selecciona tu puerta de enlace IPFS preferida a continuación."
   },
   "ipfsToggleModalDescriptionOne": {
     "message": "Utilizamos servicios de terceros para mostrar imágenes de sus NFT almacenadas en IPFS, mostrar información relacionada con las direcciones ENS ingresadas en la barra de direcciones de su navegador y buscar íconos para diferentes tokens. Su dirección IP puede quedar expuesta a estos servicios cuando los esté utilizando."
@@ -3827,6 +3905,12 @@
   "makeAnotherSwap": {
     "message": "Crear un nuevo swap"
   },
+  "makeSmartContractsEasier": {
+    "message": "Haz que los contratos inteligentes sean más fáciles de leer"
+  },
+  "makeSmartContractsEasierDescription": {
+    "message": "MetaMask utiliza 4byte.directory y Sourcify para traducir esta información."
+  },
   "manage": {
     "message": "Gestionar"
   },
@@ -3844,6 +3928,9 @@
   },
   "managePermissions": {
     "message": "Administrar permisos"
+  },
+  "manageWalletRecovery": {
+    "message": "Gestiona la recuperación de la billetera"
   },
   "marketCap": {
     "message": "Capitalización bursátil"
@@ -4072,10 +4159,6 @@
     "message": "$1 quiere conectarse a $2",
     "description": "$1 is the dapp and $2 is the number of snaps it wants to connect to."
   },
-  "musdBoostDescription": {
-    "message": "Convierte tus monedas estables a mUSD y recibe un bono de hasta el $1 %.",
-    "description": "$1 is the bonus percentage (e.g., 3)"
-  },
   "musdBoostTitle": {
     "message": "Obtén un $1 % en tus monedas estables",
     "description": "$1 is the bonus percentage (e.g., 3)"
@@ -4095,6 +4178,10 @@
     "message": "Bonificación reclamable",
     "description": "Label for the claimable bonus row in the mUSD conversion confirmation screen"
   },
+  "musdClaimableBonusTooltip": {
+    "message": "Bonificación anualizada del $1 % que has ganado por mantener mUSD. Puedes reclamar tu bono diariamente en Linea. Desarrollado por Relay. $2",
+    "description": "$1 is the APY percentage, $2 is the 'Terms apply' link"
+  },
   "musdConversionActivityTitle": {
     "message": "Convertir $1 a mUSD",
     "description": "$1 is the source token symbol (e.g., USDC)"
@@ -4110,11 +4197,12 @@
     "message": "Convirtiendo $1 → mUSD",
     "description": "$1 is the source token symbol (e.g., USDC)"
   },
-  "musdConversionToastSuccess": {
-    "message": "¡Tus mUSD ya están aquí!"
-  },
   "musdConvert": {
     "message": "Convertir"
+  },
+  "musdConvertAndGetBonus": {
+    "message": "Convierte y obtén un $1 %",
+    "description": "$1 is the bonus percentage (e.g., 3)"
   },
   "musdEarnBonusPercentage": {
     "message": "Gana un bono del $1 %",
@@ -4129,6 +4217,10 @@
   },
   "musdEducationNotNow": {
     "message": "Ahora no"
+  },
+  "musdGetBonusPercentage": {
+    "message": "Obtén un bono del $1 % en mUSD",
+    "description": "$1 is the bonus percentage (e.g., 3)"
   },
   "musdGetMusd": {
     "message": "Obtener USDC"
@@ -6053,6 +6145,9 @@
   "quizIntroduction": {
     "message": "Para revelar tu frase secreta de recuperación, debes responder correctamente dos preguntas."
   },
+  "quotedTotalCost": {
+    "message": "Costo total: $1"
+  },
   "rank": {
     "message": "Rango"
   },
@@ -6567,6 +6662,9 @@
   },
   "securityAlertsDescriptionV2": {
     "message": "Esta función le alerta sobre actividades maliciosas al revisar activamente las solicitudes de transacciones y firmas. $1"
+  },
+  "securityAndPassword": {
+    "message": "Seguridad y contraseña"
   },
   "securityAndPrivacy": {
     "message": "Seguridad y privacidad"
@@ -7392,6 +7490,10 @@
   "showFiatConversionInTestnetsDescription": {
     "message": "Seleccione esta opción para mostrar la conversión de moneda fiduciaria en las redes de prueba"
   },
+  "showFiatConversionInTestnetsDescriptionV2": {
+    "message": "Muestra los tokens de la red como moneda local en redes de prueba. Si te han pedido que actives esta función, podrías estar siendo víctima de una estafa. Solo para fines de prueba. $1",
+    "description": "$1 is the 'Learn more' link"
+  },
   "showHexData": {
     "message": "Mostrar datos hexadecimales"
   },
@@ -7516,6 +7618,9 @@
   "simulationsSettingDescription": {
     "message": "Active esta opción para calcular los cambios de saldo de las transacciones y firmas antes de confirmarlas. Esto no garantiza su resultado final. $1"
   },
+  "simulationsSettingDescriptionV2": {
+    "message": "Calcula los cambios de saldo de las transacciones antes de que las confirmes. Esto no garantiza el resultado final de tus transacciones. $1"
+  },
   "simulationsSettingSubHeader": {
     "message": "Estimar cambios de saldo"
   },
@@ -7570,14 +7675,32 @@
   "smartAccount": {
     "message": "Cuenta inteligente"
   },
+  "smartAccountDappRequestsDescription": {
+    "message": "Permite que las dapps soliciten funciones de cuentas inteligentes para cuentas estándar. Esto no afectará a las cuentas que ya son cuentas inteligentes."
+  },
+  "smartAccountDappRequestsTitle": {
+    "message": "Solicitudes de cuentas inteligentes desde dapps"
+  },
   "smartAccountLabel": {
     "message": "Cuenta inteligente"
+  },
+  "smartAccountRequestsFromDapps": {
+    "message": "Solicitudes de cuentas inteligentes desde dapps"
+  },
+  "smartAccountRequestsFromDappsDescription": {
+    "message": "Permite que las dapps soliciten funciones de cuentas inteligentes para cuentas estándar. Esto no afectará a las cuentas que ya son cuentas inteligentes."
   },
   "smartAccountUpgradeBannerDescription": {
     "message": "La misma dirección. Funciones más inteligentes."
   },
   "smartAccountUpgradeBannerTitle": {
     "message": "Cambiar a cuenta inteligente"
+  },
+  "smartContractAddress": {
+    "message": "Dirección del contrato inteligente"
+  },
+  "smartContractAddressWarning": {
+    "message": "Es posible que la dirección del destinatario no admita transferencias directas de tokens, lo que podría provocar la pérdida de fondos. Continúa solo si estás seguro de que este contrato puede recibir tu transferencia."
   },
   "smartContracts": {
     "message": "Contratos inteligentes"
@@ -8049,6 +8172,9 @@
   "stateCorruptionTheseInstructionsLinkTitle": {
     "message": "Cómo recuperar tu frase secreta de recuperación"
   },
+  "stateLogError": {
+    "message": "Error al recuperar los registros de estado, inténtalo de nuevo más tarde."
+  },
   "stateLogFileName": {
     "message": "Registros de estado de MetaMask"
   },
@@ -8057,6 +8183,9 @@
   },
   "stateLogsDescription": {
     "message": "Los registros de estado contienen sus direcciones de cuentas públicas y las transacciones enviadas."
+  },
+  "stateLogsModalDescription": {
+    "message": "Los registros de estado nos ayudan a solucionar los problemas que puedas encontrar. Envíalos únicamente a MetaMask para obtener asistencia, ya que contienen la dirección de tu cuenta pública y tus transacciones."
   },
   "status": {
     "message": "Estado"
@@ -8129,6 +8258,9 @@
   "stxFailureDescription": {
     "message": "Los cambios repentinos del mercado pueden causar fallas. Si el problema persiste, comuníquese con $1.",
     "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
+  },
+  "stxOptInDescriptionV2": {
+    "message": "Activa las transacciones inteligentes para realizar transacciones más confiables y seguras. $1"
   },
   "stxOptInSupportedNetworksDescription": {
     "message": "Active las Transacciones inteligentes para realizar transacciones más confiables y seguras en las redes compatibles. $1"
@@ -8567,6 +8699,12 @@
   "themeDescription": {
     "message": "Elija su tema MetaMask preferido."
   },
+  "thirdPartyApis": {
+    "message": "API de terceros"
+  },
+  "thirdPartyApisDescription": {
+    "message": "Elige cómo compartir tu dirección IP o dirección Ethereum con las API de terceros. Los cambios afectarán tu experiencia con MetaMask."
+  },
   "thirdPartySoftware": {
     "message": "Aviso de software de terceros",
     "description": "Title of a popup modal displayed when installing a snap for the first time."
@@ -8600,6 +8738,9 @@
   },
   "tokenContractError": {
     "message": "Esta dirección es una dirección de contrato de tókens. Si envías tókens a esta dirección, los perderás."
+  },
+  "tokenContractWarning": {
+    "message": "Advertencia sobre el contrato de tokens"
   },
   "tokenCount": {
     "message": "token",
@@ -8880,6 +9021,9 @@
     "message": "No se puede conectar a $1.",
     "description": "Message shown when network connection fails. $1 is the network name."
   },
+  "unableToDownload": {
+    "message": "No se puede descargar"
+  },
   "unapproved": {
     "message": "No aprobado"
   },
@@ -9032,6 +9176,9 @@
   },
   "useSafeChainsListValidationDescription": {
     "message": "MetaMask utiliza un servicio de terceros llamado $1 para mostrar detalles de red precisos y estandarizados. Esto reduce las posibilidades de conectarse a una red maliciosa o incorrecta. Al utilizar esta función, su dirección IP queda expuesta a chainid.network."
+  },
+  "useSafeChainsListValidationDescriptionV2": {
+    "message": "Reduce las probabilidades de conectarse a una red maliciosa o incorrecta. MetaMask utiliza $1 para mostrar detalles de red precisos y estandarizados."
   },
   "useSafeChainsListValidationWebsite": {
     "message": "chainid.network",
