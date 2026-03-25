@@ -5553,19 +5553,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask-previews/base-data-service@npm:0.0.0-preview-00245ea":
-  version: 0.0.0-preview-00245ea
-  resolution: "@metamask-previews/base-data-service@npm:0.0.0-preview-00245ea"
-  dependencies:
-    "@metamask/messenger": "npm:^0.3.0"
-    "@metamask/utils": "npm:^11.9.0"
-    "@tanstack/query-core": "npm:^4.43.0"
-    "@tanstack/react-query": "npm:^4.43.0"
-    fast-deep-equal: "npm:^3.1.3"
-  checksum: 10/92b6ddf391b701a45e6eedcc03912acf40a784a142f3f0c1faabcbb5433dcfa83205d34f37b09857d0e4c21437073d1388a3f21bd5d24986ed5f49294a20d3e4
-  languageName: node
-  linkType: hard
-
 "@metamask/7715-permission-types@npm:^0.5.0":
   version: 0.5.0
   resolution: "@metamask/7715-permission-types@npm:0.5.0"
@@ -5979,6 +5966,19 @@ __metadata:
     "@metamask/utils": "npm:^11.8.1"
     immer: "npm:^9.0.6"
   checksum: 10/27554d34ec85c4b585b87850c90dfeaaf9c7e6430f2ab2fa80a1ec06ccc17641e118afab7ad765a0b7255ffef37bc9f6ca5065d459228a2dc660bc463293310d
+  languageName: node
+  linkType: hard
+
+"@metamask/base-data-service@npm:^0.1.0":
+  version: 0.1.0
+  resolution: "@metamask/base-data-service@npm:0.1.0"
+  dependencies:
+    "@metamask/controller-utils": "npm:^11.19.0"
+    "@metamask/messenger": "npm:^0.3.0"
+    "@metamask/utils": "npm:^11.9.0"
+    "@tanstack/query-core": "npm:^4.43.0"
+    fast-deep-equal: "npm:^3.1.3"
+  checksum: 10/1a6c7cde54fa3a1d5378cfbb33891cb640c913421e747126587dc432e4c52c0510ba1f6dc18ab615528bf721b0f122c48707ba382dfa80fe9eff60fff0a0d26a
   languageName: node
   linkType: hard
 
@@ -7826,6 +7826,22 @@ __metadata:
     "@metamask/rpc-errors": "npm:^7.0.2"
     "@metamask/utils": "npm:^11.8.1"
   checksum: 10/6bc52d4fb6f844f189173c72debce4cb342ece42a7fb36dfa3bffbfdfe0e821691e7a96b50d6a5b5e588ac658d0a3158f5fd9dfc54d8287c052aeee28a47a54b
+  languageName: node
+  linkType: hard
+
+"@metamask/react-data-query@npm:^0.1.0":
+  version: 0.1.0
+  resolution: "@metamask/react-data-query@npm:0.1.0"
+  dependencies:
+    "@metamask/base-data-service": "npm:^0.1.0"
+    "@metamask/utils": "npm:^11.9.0"
+    "@tanstack/query-core": "npm:^4.43.0"
+    "@tanstack/react-query": "npm:^4.43.0"
+  peerDependencies:
+    react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
+    react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
+    react-native: "*"
+  checksum: 10/68f11a3b826c3fe56f28296f5f4af8299275912f5120ee1e86f5b9c46efca0d4064f6fffb0e2c30b685674930f36b8524bf9669175ca2a6746953f05b3dced73
   languageName: node
   linkType: hard
 
@@ -33977,7 +33993,6 @@ __metadata:
     "@lydell/node-pty": "npm:^1.1.0"
     "@material-ui/core": "npm:^4.12.4"
     "@material-ui/pickers": "npm:^3.3.11"
-    "@metamask-previews/base-data-service": "npm:0.0.0-preview-00245ea"
     "@metamask/abi-utils": "npm:^3.0.0"
     "@metamask/account-api": "npm:^1.0.0"
     "@metamask/account-tree-controller": "npm:^5.0.0"
@@ -33991,6 +34006,7 @@ __metadata:
     "@metamask/assets-controllers": "npm:^101.0.1"
     "@metamask/auto-changelog": "npm:^5.3.1"
     "@metamask/base-controller": "npm:^9.0.0"
+    "@metamask/base-data-service": "npm:^0.1.0"
     "@metamask/bitcoin-wallet-snap": "npm:^1.10.0"
     "@metamask/bridge-controller": "npm:^68.0.0"
     "@metamask/bridge-status-controller": "patch:@metamask/bridge-status-controller@npm%3A69.0.0#~/.yarn/patches/@metamask-bridge-status-controller-npm-69.0.0-15106ec5e0.patch"
@@ -34080,6 +34096,7 @@ __metadata:
     "@metamask/profile-sync-controller": "npm:^28.0.0"
     "@metamask/providers": "npm:^22.1.1"
     "@metamask/rate-limit-controller": "npm:^7.0.0"
+    "@metamask/react-data-query": "npm:^0.1.0"
     "@metamask/remote-feature-flag-controller": "npm:^4.1.0"
     "@metamask/rpc-errors": "npm:^7.0.0"
     "@metamask/safe-event-emitter": "npm:^3.1.1"

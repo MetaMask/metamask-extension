@@ -1,5 +1,5 @@
 import { Messenger } from '@metamask/messenger';
-import { BaseDataService } from '@metamask-previews/base-data-service';
+import { BaseDataService } from '@metamask/base-data-service';
 import { Duration, inMilliseconds } from '@metamask/utils';
 
 const serviceName = 'AssetDataService';

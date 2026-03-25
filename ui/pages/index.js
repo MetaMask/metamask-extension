@@ -20,12 +20,6 @@ import { MetamaskNotificationsProvider } from '../contexts/metamask-notification
 import { AssetPollingProvider } from '../contexts/assetPolling';
 import { MetamaskIdentityProvider } from '../contexts/identity';
 import { ShieldSubscriptionProvider } from '../contexts/shield/shield-subscription';
-import { DATA_SERVICES } from '../../shared/constants/data-services';
-import {
-  submitRequestToBackground,
-  background as backgroundConnection,
-  subscribeToMessengerEvent,
-} from '../store/background-connection';
 import RiveWasmProvider from '../contexts/rive-wasm';
 import { queryClient } from '../contexts/query-client';
 import { HardwareWalletErrorProvider } from '../contexts/hardware-wallets';
@@ -89,23 +83,6 @@ const router = createHashRouter([
     children: routeConfig,
   },
 ]);
-
-const subscriptions = new Map();
-
-const adapter = {
-  call: (method, ...params) =>
-    submitRequestToBackground('messengerCall', [method, params]),
-  subscribe: async (method, callback) => {
-    const unsubscribe = await subscribeToMessengerEvent(method, callback);
-    subscriptions.set(callback, unsubscribe);
-  },
-  unsubscribe: (_method, callback) => {
-    const unsubscribe = subscriptions.get(callback);
-    unsubscribe?.().catch(console.error);
-  },
-};
-
-const uiQueryClient = createUIQueryClient(DATA_SERVICES, adapter);
 
 class Index extends PureComponent {
   state = {};
