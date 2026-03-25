@@ -1275,6 +1275,12 @@
         "@metamask/providers>readable-stream": true
       }
     },
+    "@metamask/react-data-query": {
+      "packages": {
+        "@metamask/utils": true,
+        "@tanstack/react-query>@tanstack/query-core": true
+      }
+    },
     "@metamask/rpc-errors": {
       "packages": {
         "@metamask/utils": true,
