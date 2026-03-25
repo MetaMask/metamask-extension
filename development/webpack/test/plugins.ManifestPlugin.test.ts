@@ -7,8 +7,12 @@ import { ManifestPlugin } from '../utils/plugins/ManifestPlugin';
 import { createBrowserZipBuilder } from '../utils/plugins/ManifestPlugin/zip';
 import { ZipOptions } from '../utils/plugins/ManifestPlugin/types';
 import { Manifest } from '../utils/helpers';
+import {
+  CHROME_MANIFEST_KEY_NON_PRODUCTION,
+  CHROME_MANIFEST_KEY_RELEASE_CANDIDATE,
+  ENVIRONMENTS,
+} from '../utils/constants';
 import { transformManifest } from '../utils/plugins/ManifestPlugin/helpers';
-import { MANIFEST_DEV_KEY } from '../../build/constants';
 import { generateCases, type Combination, mockWebpack } from './helpers';
 
 const { RawSource } = sources;
@@ -197,9 +201,7 @@ describe('ManifestPlugin', () => {
           if (testCase.webAccessibleResources) {
             if (baseManifest.manifest_version === 3) {
               // Extend expected resources for manifest version 3
-              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-              // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-              expectedWar = baseManifest.web_accessible_resources || [];
+              expectedWar = baseManifest.web_accessible_resources ?? [];
               expectedWar = [
                 {
                   // the manifest plugin only supports `<all_urls>` for manifest version 3
@@ -212,9 +214,7 @@ describe('ManifestPlugin', () => {
                 },
               ];
             } else {
-              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-              // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-              expectedWar = baseManifest.web_accessible_resources || [];
+              expectedWar = baseManifest.web_accessible_resources ?? [];
               // Keep or extend expected resources for manifest version 2
               expectedWar = [
                 ...expectedWar,
@@ -222,15 +222,11 @@ describe('ManifestPlugin', () => {
               ];
             }
           } else {
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-            expectedWar = baseManifest.web_accessible_resources || [];
+            expectedWar = baseManifest.web_accessible_resources ?? [];
           }
 
           assert.deepStrictEqual(
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-            json.web_accessible_resources || [],
+            json.web_accessible_resources ?? [],
             expectedWar,
             "should have the correct 'web_accessible_resources' in the manifest",
           );
@@ -483,7 +479,7 @@ describe('ManifestPlugin', () => {
     const keep = ['scripts/contentscript.js', 'scripts/inpage.js'];
     const argsMatrix = {
       test: [true, false],
-      manifest_version: [2, 3] as const,
+      env: [ENVIRONMENTS.PRODUCTION],
     };
     const manifestMatrix = {
       content_scripts: [
@@ -501,12 +497,10 @@ describe('ManifestPlugin', () => {
 
       function runTest(baseManifest: Combination<typeof manifestMatrix>) {
         const manifest = baseManifest as unknown as chrome.runtime.Manifest;
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-        const hasTabsPermission = (manifest.permissions || []).includes('tabs');
+        const hasTabsPermission = (manifest.permissions ?? []).includes('tabs');
         const transform = transformManifest(args, false);
 
-        if (args.test && args.manifest_version === 2 && hasTabsPermission) {
+        if (args.test && hasTabsPermission) {
           it("throws in test mode when manifest already contains 'tabs' permission", () => {
             assert(transform, 'transform should be truthy');
             const p = () => {
@@ -518,7 +512,7 @@ describe('ManifestPlugin', () => {
               'should throw when manifest contains tabs already',
             );
           });
-        } else if (args.test && args.manifest_version === 2) {
+        } else if (args.test) {
           it(`works for args.test of ${args.test}. Manifest: ${JSON.stringify(manifest)}`, () => {
             assert(transform, 'transform should be truthy');
             const transformed = transform(manifest, 'chrome');
@@ -526,9 +520,7 @@ describe('ManifestPlugin', () => {
             if (args.test) {
               assert.deepStrictEqual(
                 transformed.permissions,
-                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-                // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-                [...(manifest.permissions || []), 'tabs'],
+                [...(manifest.permissions ?? []), 'tabs'],
                 "manifest should have 'tabs' permission",
               );
             }
@@ -545,7 +537,6 @@ describe('ManifestPlugin', () => {
     } as unknown as chrome.runtime.Manifest;
     const mockFlags = {
       _flags: { remoteFeatureFlags: { testFlag: true } },
-      key: MANIFEST_DEV_KEY,
     };
     const manifestOverridesPath = 'testManifestOverridesPath.json';
     const fs = require('node:fs');
@@ -561,17 +552,22 @@ describe('ManifestPlugin', () => {
         return fs.readFileSync.original(path, options);
       });
       const transform = transformManifest(
-        { test: false, manifest_version: 3 },
+        {
+          env: ENVIRONMENTS.DEVELOPMENT,
+          test: false,
+        },
         true,
         manifestOverridesPath,
       );
       assert(transform, 'transform should be truthy');
 
       const transformed = transform(emptyTestManifest, 'chrome');
-      console.log('Transformed:', transformed);
       assert.deepStrictEqual(
         transformed,
-        mockFlags,
+        {
+          ...mockFlags,
+          key: CHROME_MANIFEST_KEY_NON_PRODUCTION,
+        },
         'manifest should have flags in development mode',
       );
     });
@@ -584,7 +580,10 @@ describe('ManifestPlugin', () => {
         return fs.readFileSync.original(path, options);
       });
       const transform = transformManifest(
-        { test: false, manifest_version: 3 },
+        {
+          env: ENVIRONMENTS.DEVELOPMENT,
+          test: false,
+        },
         true,
         manifestOverridesPath,
       );
@@ -600,7 +599,7 @@ describe('ManifestPlugin', () => {
               testFlag: true,
             },
           },
-          key: MANIFEST_DEV_KEY,
+          key: CHROME_MANIFEST_KEY_NON_PRODUCTION,
         },
         'manifest should merge original properties with overrides, with overrides taking precedence',
       );
@@ -614,7 +613,10 @@ describe('ManifestPlugin', () => {
       });
 
       const transform = transformManifest(
-        { test: false, manifest_version: 3 },
+        {
+          env: ENVIRONMENTS.DEVELOPMENT,
+          test: false,
+        },
         true,
         manifestOverridesPath,
       );
@@ -631,7 +633,10 @@ describe('ManifestPlugin', () => {
 
     it('silently ignores non-ENOENT filesystem errors', () => {
       const transform = transformManifest(
-        { test: false, manifest_version: 3 },
+        {
+          env: ENVIRONMENTS.DEVELOPMENT,
+          test: false,
+        },
         true,
         manifestOverridesPath,
       );
@@ -651,6 +656,83 @@ describe('ManifestPlugin', () => {
         transformed._flags,
         undefined,
         'should not have flags when file read fails with non-ENOENT error',
+      );
+    });
+  });
+
+  describe('manifest key behavior', () => {
+    it('adds the default non-production manifest key for non-production builds', () => {
+      const transform = transformManifest(
+        { env: ENVIRONMENTS.OTHER, test: false },
+        false,
+      );
+      assert(transform, 'transform should be truthy');
+
+      const transformed = transform(
+        { manifest_version: 3 } as chrome.runtime.Manifest,
+        'chrome',
+      );
+
+      assert.strictEqual(
+        transformed.key,
+        CHROME_MANIFEST_KEY_NON_PRODUCTION,
+        'should add the default non-production manifest key outside production',
+      );
+    });
+
+    it('adds the release candidate manifest key for release-candidate builds', () => {
+      const transform = transformManifest(
+        {
+          env: ENVIRONMENTS.RELEASE_CANDIDATE,
+          test: false,
+        },
+        false,
+      );
+      assert(transform, 'transform should be truthy');
+
+      const transformed = transform(
+        { manifest_version: 3 } as chrome.runtime.Manifest,
+        'chrome',
+      );
+
+      assert.strictEqual(
+        transformed.key,
+        CHROME_MANIFEST_KEY_RELEASE_CANDIDATE,
+        'should add the release-candidate manifest key on release-candidate builds',
+      );
+    });
+
+    it('returns undefined for production builds with no other manifest transforms', () => {
+      const transform = transformManifest(
+        { env: ENVIRONMENTS.PRODUCTION, test: false },
+        false,
+      );
+
+      assert.strictEqual(
+        transform,
+        undefined,
+        'should preserve the conditional transform return for production builds',
+      );
+    });
+
+    it('does not add the manifest key for firefox builds based on the browser argument', () => {
+      const transform = transformManifest(
+        { env: ENVIRONMENTS.DEVELOPMENT, test: false },
+        false,
+      );
+      assert(transform, 'transform should be truthy');
+
+      const transformed = transform(
+        {
+          manifest_version: 2,
+        } as unknown as chrome.runtime.Manifest,
+        'firefox',
+      );
+
+      assert.strictEqual(
+        transformed.key,
+        undefined,
+        'should not add the manifest key for Firefox builds',
       );
     });
   });

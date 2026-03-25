@@ -144,15 +144,18 @@ describe('PerpsStreamManager', () => {
       clearSpy.mockRestore();
     });
 
-    it('clears caches when address changes', () => {
+    it('resets channels when address changes', () => {
       manager.init('0xold');
 
-      const clearSpy = jest.spyOn(manager, 'clearAllCaches');
+      const positionsResetSpy = jest.spyOn(manager.positions, 'reset');
+      const accountResetSpy = jest.spyOn(manager.account, 'reset');
       manager.init('0xnew');
 
-      expect(clearSpy).toHaveBeenCalledTimes(1);
+      expect(positionsResetSpy).toHaveBeenCalledTimes(1);
+      expect(accountResetSpy).toHaveBeenCalledTimes(1);
       expect(manager.getCurrentAddress()).toBe('0xnew');
-      clearSpy.mockRestore();
+      positionsResetSpy.mockRestore();
+      accountResetSpy.mockRestore();
     });
 
     it('does not clear caches when initializing from null address', () => {
@@ -162,6 +165,219 @@ describe('PerpsStreamManager', () => {
 
       expect(clearSpy).not.toHaveBeenCalled();
       clearSpy.mockRestore();
+    });
+  });
+
+  describe('initForAddress', () => {
+    beforeEach(() => {
+      jest.useRealTimers();
+      mockSubmitRequestToBackground.mockReset();
+      mockSubmitRequestToBackground.mockResolvedValue(undefined);
+    });
+
+    afterEach(() => {
+      jest.useFakeTimers();
+    });
+
+    it('calls perpsInit on first init and sets address', async () => {
+      await manager.initForAddress('0xfirst');
+
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith('perpsInit');
+      expect(mockSubmitRequestToBackground).not.toHaveBeenCalledWith(
+        'perpsDisconnect',
+      );
+      expect(manager.isInitialized('0xfirst')).toBe(true);
+    });
+
+    it('returns immediately when already initialized for the same address', async () => {
+      await manager.initForAddress('0xsame');
+      mockSubmitRequestToBackground.mockClear();
+
+      await manager.initForAddress('0xsame');
+
+      expect(mockSubmitRequestToBackground).not.toHaveBeenCalled();
+    });
+
+    it('calls disconnect then init on account switch', async () => {
+      await manager.initForAddress('0xfirst');
+      mockSubmitRequestToBackground.mockClear();
+
+      const callOrder: string[] = [];
+      mockSubmitRequestToBackground.mockImplementation((method: string) => {
+        callOrder.push(method);
+        return Promise.resolve(undefined);
+      });
+
+      await manager.initForAddress('0xsecond');
+
+      expect(callOrder).toContain('perpsDisconnect');
+      expect(callOrder).toContain('perpsInit');
+      expect(callOrder.indexOf('perpsDisconnect')).toBeLessThan(
+        callOrder.indexOf('perpsInit'),
+      );
+      expect(manager.isInitialized('0xsecond')).toBe(true);
+    });
+
+    it('deduplicates concurrent calls for the same address', async () => {
+      mockSubmitRequestToBackground.mockResolvedValue(undefined);
+
+      const p1 = manager.initForAddress('0xaaa');
+      const p2 = manager.initForAddress('0xaaa');
+
+      await Promise.all([p1, p2]);
+
+      const initCalls = mockSubmitRequestToBackground.mock.calls.filter(
+        ([m]: [string]) => m === 'perpsInit',
+      );
+      expect(initCalls).toHaveLength(1);
+    });
+
+    it('throws when address is empty', async () => {
+      await expect(manager.initForAddress('')).rejects.toThrow(
+        'No account selected',
+      );
+    });
+
+    it('calls perpsDisconnect before second perpsInit when first init is still in flight', async () => {
+      let releaseFirstInit: (() => void) | undefined;
+      const firstInitBarrier = new Promise<void>((resolve) => {
+        releaseFirstInit = resolve;
+      });
+
+      let perpsInitCount = 0;
+      mockSubmitRequestToBackground.mockImplementation(
+        async (method: string) => {
+          if (method === 'perpsDisconnect') {
+            return undefined;
+          }
+          if (method === 'perpsInit') {
+            perpsInitCount += 1;
+            if (perpsInitCount === 1) {
+              await firstInitBarrier;
+            }
+            return undefined;
+          }
+          return undefined;
+        },
+      );
+
+      const pFirst = manager.initForAddress('0xfirst');
+      await Promise.resolve();
+      await Promise.resolve();
+
+      const pSecond = manager.initForAddress('0xsecond');
+      await pSecond;
+
+      const callOrder = mockSubmitRequestToBackground.mock.calls.map(
+        ([m]: [string]) => m,
+      );
+      const disconnectIdx = callOrder.indexOf('perpsDisconnect');
+      const secondInitIdx = callOrder.findIndex(
+        (m, i) => m === 'perpsInit' && i > disconnectIdx,
+      );
+      expect(disconnectIdx).toBeGreaterThanOrEqual(0);
+      expect(secondInitIdx).toBeGreaterThan(disconnectIdx);
+      expect(manager.getCurrentAddress()).toBe('0xsecond');
+
+      expect(releaseFirstInit).toBeDefined();
+      if (releaseFirstInit === undefined) {
+        throw new Error('releaseFirstInit not set by Promise executor');
+      }
+      releaseFirstInit();
+      await pFirst;
+      expect(manager.getCurrentAddress()).toBe('0xsecond');
+    });
+
+    it('clears pending init on perpsInit failure so the same address can be retried', async () => {
+      let initAttempts = 0;
+      mockSubmitRequestToBackground.mockImplementation((method: string) => {
+        if (method === 'perpsDisconnect') {
+          return Promise.resolve(undefined);
+        }
+        if (method === 'perpsInit') {
+          initAttempts += 1;
+          if (initAttempts === 1) {
+            return Promise.reject(new Error('init failed'));
+          }
+          return Promise.resolve(undefined);
+        }
+        return Promise.resolve(undefined);
+      });
+
+      await expect(manager.initForAddress('0xretry')).rejects.toThrow(
+        'init failed',
+      );
+
+      await manager.initForAddress('0xretry');
+
+      expect(manager.isInitialized('0xretry')).toBe(true);
+      const initCalls = mockSubmitRequestToBackground.mock.calls.filter(
+        ([m]: [string]) => m === 'perpsInit',
+      );
+      expect(initCalls).toHaveLength(2);
+    });
+
+    it('clears pending init on perpsDisconnect failure so switch can be retried', async () => {
+      await manager.initForAddress('0xfirst');
+      mockSubmitRequestToBackground.mockClear();
+
+      mockSubmitRequestToBackground.mockImplementation((method: string) => {
+        if (method === 'perpsDisconnect') {
+          return Promise.reject(new Error('disconnect failed'));
+        }
+        return Promise.resolve(undefined);
+      });
+
+      await expect(manager.initForAddress('0xnext')).rejects.toThrow(
+        'disconnect failed',
+      );
+
+      mockSubmitRequestToBackground.mockReset();
+      mockSubmitRequestToBackground.mockResolvedValue(undefined);
+
+      await manager.initForAddress('0xnext');
+      expect(manager.isInitialized('0xnext')).toBe(true);
+    });
+
+    it('does not apply a superseded address when an older init completes later', async () => {
+      let releaseFirstInit: (() => void) | undefined;
+      const firstInitBarrier = new Promise<void>((resolve) => {
+        releaseFirstInit = resolve;
+      });
+
+      let perpsInitCount = 0;
+      mockSubmitRequestToBackground.mockImplementation(
+        async (method: string) => {
+          if (method === 'perpsDisconnect') {
+            return undefined;
+          }
+          if (method === 'perpsInit') {
+            perpsInitCount += 1;
+            if (perpsInitCount === 1) {
+              await firstInitBarrier;
+            }
+            return undefined;
+          }
+          return undefined;
+        },
+      );
+
+      const pSlow = manager.initForAddress('0xslow');
+      await Promise.resolve();
+      await Promise.resolve();
+
+      await manager.initForAddress('0xwins');
+
+      expect(manager.getCurrentAddress()).toBe('0xwins');
+
+      expect(releaseFirstInit).toBeDefined();
+      if (releaseFirstInit === undefined) {
+        throw new Error('releaseFirstInit not set by Promise executor');
+      }
+      releaseFirstInit();
+      await pSlow;
+
+      expect(manager.getCurrentAddress()).toBe('0xwins');
     });
   });
 

@@ -40,7 +40,7 @@ const LanguageSubPage = () => {
   };
 
   return (
-    <Box data-testid="locale-select-list">
+    <Box data-testid="locale-select-list" className="overflow-y-auto">
       {localeOptions.map(({ value, label }) => {
         const isSelected = value === currentLocale;
         return (
