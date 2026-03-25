@@ -15,7 +15,10 @@ describe('ChangePasswordWarning', () => {
 
   function renderWarning() {
     return renderWithLocalization(
-      <ChangePasswordWarning onConfirm={mockOnConfirm} onCancel={mockOnCancel} />,
+      <ChangePasswordWarning
+        onConfirm={mockOnConfirm}
+        onCancel={mockOnCancel}
+      />,
     );
   }
 
@@ -23,7 +26,9 @@ describe('ChangePasswordWarning', () => {
     const { getByTestId, getByText } = renderWarning();
 
     expect(getByTestId('change-password-warning-modal')).toBeInTheDocument();
-    expect(getByText(messages.changePasswordWarning.message)).toBeInTheDocument();
+    expect(
+      getByText(messages.changePasswordWarning.message),
+    ).toBeInTheDocument();
     expect(
       getByText(messages.changePasswordWarningDescription.message, {
         exact: false,
@@ -60,5 +65,4 @@ describe('ChangePasswordWarning', () => {
     expect(mockOnConfirm).toHaveBeenCalledTimes(1);
     expect(mockOnCancel).not.toHaveBeenCalled();
   });
-
 });
