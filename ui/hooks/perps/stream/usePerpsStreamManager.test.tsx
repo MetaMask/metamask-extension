@@ -128,7 +128,7 @@ describe('usePerpsStreamManager', () => {
   });
 
   it('ignores stale init completion after selected address changes', async () => {
-    let releaseFirstInit: () => void;
+    let releaseFirstInit: (() => void) | undefined;
     const firstInitGate = new Promise<void>((resolve) => {
       releaseFirstInit = resolve;
     });
@@ -168,8 +168,14 @@ describe('usePerpsStreamManager', () => {
 
     expect(getPerpsStreamManager().getCurrentAddress()).toBe('0xB');
 
+    expect(releaseFirstInit).toBeDefined();
+    if (releaseFirstInit === undefined) {
+      throw new Error('releaseFirstInit not set by Promise executor');
+    }
+    const releaseStaleInit = releaseFirstInit;
+
     await act(async () => {
-      releaseFirstInit!();
+      releaseStaleInit();
     });
 
     await waitFor(() => {
