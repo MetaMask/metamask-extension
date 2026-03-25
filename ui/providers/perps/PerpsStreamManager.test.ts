@@ -239,9 +239,9 @@ describe('PerpsStreamManager', () => {
     });
 
     it('calls perpsDisconnect before second perpsInit when first init is still in flight', async () => {
-      let firstInitResolve: () => void;
+      let releaseFirstInit: (() => void) | undefined;
       const firstInitBarrier = new Promise<void>((resolve) => {
-        firstInitResolve = resolve;
+        releaseFirstInit = resolve;
       });
 
       let perpsInitCount = 0;
@@ -279,7 +279,11 @@ describe('PerpsStreamManager', () => {
       expect(secondInitIdx).toBeGreaterThan(disconnectIdx);
       expect(manager.getCurrentAddress()).toBe('0xsecond');
 
-      firstInitResolve!();
+      expect(releaseFirstInit).toBeDefined();
+      if (releaseFirstInit === undefined) {
+        throw new Error('releaseFirstInit not set by Promise executor');
+      }
+      releaseFirstInit();
       await pFirst;
       expect(manager.getCurrentAddress()).toBe('0xsecond');
     });
@@ -336,9 +340,9 @@ describe('PerpsStreamManager', () => {
     });
 
     it('does not apply a superseded address when an older init completes later', async () => {
-      let firstInitResolve: () => void;
+      let releaseFirstInit: (() => void) | undefined;
       const firstInitBarrier = new Promise<void>((resolve) => {
-        firstInitResolve = resolve;
+        releaseFirstInit = resolve;
       });
 
       let perpsInitCount = 0;
@@ -366,7 +370,11 @@ describe('PerpsStreamManager', () => {
 
       expect(manager.getCurrentAddress()).toBe('0xwins');
 
-      firstInitResolve!();
+      expect(releaseFirstInit).toBeDefined();
+      if (releaseFirstInit === undefined) {
+        throw new Error('releaseFirstInit not set by Promise executor');
+      }
+      releaseFirstInit();
       await pSlow;
 
       expect(manager.getCurrentAddress()).toBe('0xwins');
