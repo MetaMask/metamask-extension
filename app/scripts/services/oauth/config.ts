@@ -146,10 +146,10 @@ export function loadOAuthConfig(): OAuthConfig {
 
   let buildTypeEnv = BuildTypeEnv.DevMain;
   if (buildType === 'main' || buildType === 'experimental') {
-    if (isDevOrTestBuild()) {
-      buildTypeEnv = BuildTypeEnv.DevMain;
-    } else if (isProductionBuild() || isReleaseCandidateBuild()) {
+    if (isProductionBuild() || isReleaseCandidateBuild()) {
       buildTypeEnv = BuildTypeEnv.ProdMain;
+    } else if (isDevOrTestBuild()) {
+      buildTypeEnv = BuildTypeEnv.DevMain;
     } else {
       buildTypeEnv = BuildTypeEnv.UatMain;
     }
