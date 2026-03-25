@@ -48,6 +48,7 @@ import {
   getMultiChainBalancesControllerBalances,
 } from '../../shared/lib/selectors/assets-migration';
 import { getEnabledNetworks } from '../../shared/lib/selectors/multichain';
+import { getBooleanFeatureFlag } from '../../shared/lib/remote-feature-flag-utils';
 // TODO: Fix circular dependency
 // To avoid import evaluating as `undefined` due to circular dependency,
 // this needs to be imported before `'../pages/confirmations/confirmation/templates'`
@@ -1471,14 +1472,17 @@ export function getPrivacyMode(state) {
 }
 
 /**
- * Default address feature flag (extension-ux-default-address)
+ * Default address feature flag (extension-ux-default-address-versioned)
  *
  * @param state - Redux state
  * @returns {boolean}
  */
 export function getIsDefaultAddressEnabled(state) {
   const remoteFeatureFlags = getRemoteFeatureFlags(state);
-  return Boolean(remoteFeatureFlags?.extensionUxDefaultAddress);
+  return getBooleanFeatureFlag(
+    remoteFeatureFlags?.extensionUxDefaultAddressVersioned,
+    false,
+  );
 }
 
 /**
@@ -1487,7 +1491,7 @@ export function getIsDefaultAddressEnabled(state) {
  * @param state - Redux state
  * @returns {boolean}
  */
-export function getShowDefaultAddress(state) {
+export function getShowDefaultAddressPreference(state) {
   const { showDefaultAddress } = getPreferences(state);
   return Boolean(showDefaultAddress);
 }

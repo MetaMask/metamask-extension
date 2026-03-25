@@ -25,7 +25,9 @@ export const Loader = () => {
         approval.origin === TRON_WALLET_SNAP_ID,
     );
     if (pendingSend) {
-      navigate(`${CONFIRMATION_V_NEXT_ROUTE}/${pendingSend.id}`);
+      navigate(`${CONFIRMATION_V_NEXT_ROUTE}/${pendingSend.id}`, {
+        replace: true,
+      });
     }
   }, [unapprovedTemplatedConfirmations, navigate]);
 

@@ -84,6 +84,18 @@ jest.mock('../../hooks/perps/stream', () => ({
   }),
   usePerpsLiveAccount: () => mockLiveAccount(),
   usePerpsLiveMarketData: () => mockLiveMarketData(),
+  usePerpsLiveCandles: () => ({
+    candleData: {
+      symbol: 'ETH',
+      interval: '5m',
+      candles: [],
+    },
+    isInitialLoading: false,
+    isLoadingMore: false,
+    hasHistoricalData: false,
+    error: null,
+    fetchMoreHistory: jest.fn(),
+  }),
 }));
 
 jest.mock('../../hooks/perps/useUserHistory', () => ({

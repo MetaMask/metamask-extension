@@ -166,12 +166,15 @@ export default class ExtensionStore implements BaseStore {
 
     const { local } = browser.storage;
     console.time('[ExtensionStore]: Overwriting local store');
-    await local.set({ data, meta });
-    // we ensure we keep track of data and meta in the manifest if we need to
-    // reset later
-    this.#manifest.add('data');
-    this.#manifest.add('meta');
-    console.timeEnd('[ExtensionStore]: Overwriting local store');
+    try {
+      await local.set({ data, meta });
+      // we ensure we keep track of data and meta in the manifest if we need to
+      // reset later
+      this.#manifest.add('data');
+      this.#manifest.add('meta');
+    } finally {
+      console.timeEnd('[ExtensionStore]: Overwriting local store');
+    }
   }
 
   /**
