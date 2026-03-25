@@ -37,7 +37,7 @@ class SettingsPage {
   };
 
   private readonly searchResultItem =
-    '.settings-page__header__search__list__item__tab';
+    '[data-testid="settings-v2-search-result-item"]';
 
   private readonly searchSettingsInput = '#search-settings';
 
@@ -45,6 +45,9 @@ class SettingsPage {
     '[data-testid="settings-v2-header-search-button"]';
 
   private readonly settingsPageRoot = '[data-testid="settings-v2-root"]';
+
+  private readonly settingsPageFullscreenRoot =
+    '[data-testid="settings-v2-tab-bar-grouped"]';
 
   private readonly notificationsSettingsButton = {
     text: 'Notifications',
@@ -67,7 +70,20 @@ class SettingsPage {
 
   async checkPageIsLoaded(): Promise<void> {
     console.log('Check settings page is loaded');
-    await this.driver.waitForSelector(this.settingsPageRoot);
+    await this.driver.waitUntil(
+      async () => {
+        const [popupOrSidepanelRoot, fullscreenRoot] = await Promise.all([
+          this.driver.findElements(this.settingsPageRoot),
+          this.driver.findElements(this.settingsPageFullscreenRoot),
+        ]);
+
+        return popupOrSidepanelRoot.length > 0 || fullscreenRoot.length > 0;
+      },
+      {
+        timeout: this.driver.timeout,
+        interval: 250,
+      },
+    );
   }
 
   async waitForTransactionShieldButtonReady(): Promise<void> {
@@ -93,6 +109,9 @@ class SettingsPage {
 
   async fillSearchSettingsInput(text: string): Promise<void> {
     console.log(`Filling search settings input with ${text}`);
+    if (!(await this.driver.isElementPresent(this.searchSettingsInput))) {
+      await this.openSearch();
+    }
     await this.driver.fill(this.searchSettingsInput, text);
   }
 

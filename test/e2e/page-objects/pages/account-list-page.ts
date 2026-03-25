@@ -1147,7 +1147,9 @@ class AccountListPage {
       throw new Error('SRP index must be > 0');
     }
 
-    const srps = await this.driver.findElements('.select-srp__container');
+    const srps = await this.driver.findElements(
+      '[data-testid="select-srp-container"]',
+    );
     const selectedSrp = srps[srpIndex - 1];
     const showAccountsButton = await this.driver.waitForSelector(
       `[data-testid="srp-list-show-accounts-${srpIndex - 1}"]`,

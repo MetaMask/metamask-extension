@@ -53,15 +53,11 @@ class PrivacySettings {
   private readonly ipfsGatewayToggle =
     '[data-testid="ipfsToggle"] .toggle-button';
 
-  private readonly privacySettingsPageTitle = {
-    text: 'Privacy',
-    tag: 'h4',
-  };
+  private readonly privacySettingsLoadedMarker =
+    '[data-testid="use-nft-detection"]';
 
-  private readonly securityAndPasswordSettingsPageTitle = {
-    text: 'Security and password',
-    tag: 'h4',
-  };
+  private readonly securityAndPasswordSettingsLoadedMarker =
+    '[data-testid="reveal-seed-words"]';
 
   // reveal SRP related locators
   private readonly displayedSrpText = '[data-testid="recovery-phrase-chip-0"]';
@@ -144,7 +140,7 @@ class PrivacySettings {
 
   async checkPageIsLoaded(): Promise<void> {
     try {
-      await this.driver.waitForSelector(this.privacySettingsPageTitle);
+      await this.driver.waitForSelector(this.privacySettingsLoadedMarker);
     } catch (e) {
       console.log(
         'Timeout while waiting for Privacy & Security Settings page to be loaded',
@@ -158,7 +154,7 @@ class PrivacySettings {
   async checkSecurityAndPasswordPageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForSelector(
-        this.securityAndPasswordSettingsPageTitle,
+        this.securityAndPasswordSettingsLoadedMarker,
       );
     } catch (e) {
       console.log(
@@ -172,11 +168,7 @@ class PrivacySettings {
 
   async checkSrpListIsLoaded(): Promise<void> {
     console.log('Check SRP list is loaded on privacy settings page');
-    const srpSelector = {
-      text: `Secret Recovery Phrase 1`,
-      tag: 'p',
-    };
-    await this.driver.waitForSelector(srpSelector);
+    await this.driver.waitForSelector('[data-testid="select-srp-container"]');
   }
 
   async deleteMetaMetrics(): Promise<void> {
@@ -284,12 +276,10 @@ class PrivacySettings {
 
   async openRevealSrpQuiz(srpIndex: number = 1): Promise<void> {
     await this.openSrpList();
-    // We only pass in the srpIndex when there are multiple SRPs
-    const srpSelector = {
-      text: `Secret Recovery Phrase ${srpIndex.toString()}`,
-      tag: 'p',
-    };
-    await this.driver.clickElement(srpSelector);
+    await this.driver.waitForSelector('[data-testid="select-srp-container"]');
+    await this.driver.clickElement({
+      testId: `select-srp-Secret Recovery Phrase ${srpIndex.toString()}`,
+    });
 
     await this.driver.waitForSelector(this.revealSrpQuizModalTitle);
   }
