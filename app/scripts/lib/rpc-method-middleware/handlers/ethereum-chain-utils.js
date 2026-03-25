@@ -143,10 +143,10 @@ export function validateAddEthereumChainParams(params) {
   const ticker = nativeCurrency?.symbol || UNKNOWN_TICKER_SYMBOL;
   if (
     ticker !== UNKNOWN_TICKER_SYMBOL &&
-    (typeof ticker !== 'string' || ticker.length < 1 || ticker.length > 6)
+    (typeof ticker !== 'string' || ticker.length < 1 || ticker.length > 10)
   ) {
     throw rpcErrors.invalidParams({
-      message: `Expected 1-6 character string 'nativeCurrency.symbol'. Received:\n${ticker}`,
+      message: `Expected 1-10 character string 'nativeCurrency.symbol'. Received:\n${ticker}`,
     });
   }
 
