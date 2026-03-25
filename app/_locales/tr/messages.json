@@ -5581,9 +5581,6 @@
   "perpsPosition": {
     "message": "Pozisyon"
   },
-  "perpsPositionClosedReverseOrderFailed": {
-    "message": "Pozisyonunuz kapandı ancak ters emir başarısız oldu. Yeni bir pozisyonu manuel olarak açmanız gerekebilir"
-  },
   "perpsPositionSize": {
     "message": "Pozisyon Büyüklüğü"
   },
