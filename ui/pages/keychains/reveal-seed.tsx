@@ -71,19 +71,23 @@ function RevealSeedPage() {
   const activeTabOrigin = useSelector(getOriginOfCurrentTab);
   const [scanResult, setScanResult] =
     useState<PhishingDetectionScanResult | null>(null);
+  const [scannedOrigin, setScannedOrigin] = useState<string | null>(null);
   const [dangerAcknowledged, setDangerAcknowledged] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
     setScanResult(null);
+    setScannedOrigin(null);
     setDangerAcknowledged(false);
 
     if (activeTabOrigin) {
-      scanUrlForPhishing(activeTabOrigin)
+      const originToScan = activeTabOrigin;
+      scanUrlForPhishing(originToScan)
         .then((result) => {
           if (cancelled) {
             return;
           }
+          setScannedOrigin(originToScan);
           setScanResult(result);
         })
         .catch(() => {
@@ -98,8 +102,6 @@ function RevealSeedPage() {
 
   const trackEventRef = React.useRef(trackEvent);
   trackEventRef.current = trackEvent;
-  const activeTabOriginRef = React.useRef(activeTabOrigin);
-  activeTabOriginRef.current = activeTabOrigin;
 
   useEffect(() => {
     if (scanResult?.recommendedAction === RecommendedAction.Block) {
@@ -110,12 +112,12 @@ function RevealSeedPage() {
           // eslint-disable-next-line @typescript-eslint/naming-convention
           key_type: MetaMetricsEventKeyType.Srp,
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          active_tab_origin: activeTabOriginRef.current,
+          active_tab_origin: scannedOrigin,
           hostname: scanResult.hostname ?? 'unknown',
         },
       });
     }
-  }, [scanResult]);
+  }, [scanResult, scannedOrigin]);
 
   // Only Block triggers the malicious warning. Warn and None show the generic warning.
   const isMalicious = scanResult?.recommendedAction === RecommendedAction.Block;

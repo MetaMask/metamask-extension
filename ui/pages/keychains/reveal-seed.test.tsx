@@ -110,6 +110,10 @@ describe('Reveal Seed Page', () => {
     mockUseParams.mockReturnValue({});
   });
 
+  afterEach(() => {
+    mockScanUrlForPhishing.mockReset().mockResolvedValue(null);
+  });
+
   it('should match snapshot', () => {
     const { container } = renderWithProvider(<RevealSeedPage />, mockStore);
 
