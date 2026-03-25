@@ -597,10 +597,10 @@
     "message": "Go to Wallet"
   },
   "twoFAAdd2FAVerification": {
-    "message": "Add 2FA verification"
+    "message": "Set up transaction verification"
   },
   "twoFAStepSigning": {
-    "message": "Signing method"
+    "message": "Transaction verification"
   },
   "twoFAStepRecovery": {
     "message": "Backup method"
@@ -609,7 +609,7 @@
     "message": "Complete"
   },
   "twoFAWalletSetup": {
-    "message": "2FA wallet setup"
+    "message": "2FA Wallet Setup"
   },
   "twoFAChooseSigningMethod": {
     "message": "Used to approve every transaction on this wallet."
