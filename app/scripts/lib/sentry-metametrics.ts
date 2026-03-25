@@ -1,19 +1,23 @@
 import { Event as SentryEvent, Integration } from '@sentry/types';
 
-const NAME = 'FilterEvents';
+import type { MetaMetricsParticipation } from './sentry-get-state';
+
+const NAME = 'MetaMetrics';
 
 /**
- * Filter events when MetaMetrics is disabled.
+ * Drops Sentry events when MetaMetrics is disabled, and attaches `user.id` from the same
+ * async MetaMetrics resolution used for that check (persisted / backup when the in-memory
+ * snapshot is not ready yet).
  *
  * @param options - Options bag.
- * @param options.getMetaMetricsEnabled - Function that returns whether MetaMetrics is enabled.
+ * @param options.getMetaMetricsState - Resolves participation and id (e.g. `getMetaMetricsState`).
  * @param options.log - Function to log messages.
  */
-export function filterEvents({
-  getMetaMetricsEnabled,
+export function metaMetricsIntegration({
+  getMetaMetricsState,
   log,
 }: {
-  getMetaMetricsEnabled: () => Promise<boolean>;
+  getMetaMetricsState: () => Promise<MetaMetricsParticipation>;
   log: (message: string) => void;
 }): Integration {
   return {
@@ -24,11 +28,15 @@ export function filterEvents({
       // store, so it can later be added to the event via the `beforeSend` overload.
       // It also provides a more native solution for discarding events, but any
       // session requests will always be handled by the custom transport.
-      const metricsEnabled = await getMetaMetricsEnabled();
+      const metaMetricsState = await getMetaMetricsState();
 
-      if (!metricsEnabled) {
+      if (!metaMetricsState?.participateInMetaMetrics) {
         log('Event dropped as metrics disabled');
         return null;
+      }
+
+      if (metaMetricsState.metaMetricsId) {
+        event.user = { ...event.user, id: metaMetricsState.metaMetricsId };
       }
 
       return event;
