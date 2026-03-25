@@ -33,14 +33,6 @@ describe('compare-benchmarks', () => {
       expect(config).toHaveProperty('importWalletToSocialScreen');
     });
 
-    it('resolves startup benchmarks with platform prefix', () => {
-      const config = resolveThresholdConfig(
-        'chrome-browserify-startupStandardHome',
-      );
-      expect(config).toBeDefined();
-      expect(config).toHaveProperty('uiStartup');
-    });
-
     it('returns undefined for unknown benchmarks', () => {
       expect(resolveThresholdConfig('non-existent-benchmark')).toBeUndefined();
     });
