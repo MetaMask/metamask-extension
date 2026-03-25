@@ -190,7 +190,6 @@ export function ToastListener() {
       }
 
       const prevItem = prevBridgeHistory[key];
-      const toastId = `bridge-tx-${key}`;
 
       const becamePending = !prevItem && isBridgeHistoryPending(item);
 
@@ -204,18 +203,13 @@ export function ToastListener() {
         prevItem &&
         !isBridgeHistoryFailed(prevItem);
 
+      const id = `bridge-tx-${key}`;
       if (becamePending) {
-        toast.loading(<ToastContent variant="pending" id={toastId} />, {
-          id: toastId,
-        });
+        toast.loading(<ToastContent variant="pending" id={id} />, { id });
       } else if (becameComplete) {
-        toast.success(<ToastContent variant="success" id={toastId} />, {
-          id: toastId,
-        });
+        toast.success(<ToastContent variant="success" id={id} />, { id });
       } else if (becameFailed) {
-        toast.error(<ToastContent variant="failed" id={toastId} />, {
-          id: toastId,
-        });
+        toast.error(<ToastContent variant="failed" id={id} />, { id });
       }
     }
 
