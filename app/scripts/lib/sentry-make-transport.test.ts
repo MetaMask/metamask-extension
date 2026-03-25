@@ -5,6 +5,34 @@ import { makeTransport } from './sentry-make-transport';
 
 const originalMakeFetchTransport = Sentry.makeFetchTransport.bind(Sentry);
 
+type TestTransport = ReturnType<typeof makeTransport>;
+type TestEnvelope = Parameters<TestTransport['send']>[0];
+type ParsedSentryEnvelope = ReturnType<typeof parseEnvelope>;
+type FetchCallArgs = [RequestInfo | URL, RequestInit | undefined];
+
+/** Matches `StateHooks.getSentryState` so tests satisfy `types/global.d.ts`. */
+function emptySentrySnapshot(): ReturnType<
+  (typeof globalThis.stateHooks)['getSentryState']
+> {
+  return { browser: 'jest', version: '0' };
+}
+
+function deleteStateHookProperty(
+  key: keyof typeof globalThis.stateHooks,
+): void {
+  Reflect.deleteProperty(
+    globalThis.stateHooks as unknown as Record<string, unknown>,
+    key,
+  );
+}
+
+function minimalFetchResponse(): Response {
+  return {
+    ok: true,
+    headers: { get: () => null },
+  } as unknown as Response;
+}
+
 function createTestTransportOptions() {
   return {
     url: 'https://public@fake.ingest.sentry.io/api/1/envelope/',
@@ -18,7 +46,7 @@ describe('sentry-make-transport', () => {
     it('does not call fetch when makeTransport is called', () => {
       const fetchSpy = jest
         .spyOn(globalThis, 'fetch')
-        .mockResolvedValue({ ok: true });
+        .mockResolvedValue(minimalFetchResponse());
 
       makeTransport({} as Parameters<typeof Sentry.makeFetchTransport>[0]);
 
@@ -50,10 +78,9 @@ describe('sentry-make-transport', () => {
     let makeFetchTransportSpy: jest.SpyInstance;
 
     function mockFetchForTransport() {
-      return jest.spyOn(globalThis, 'fetch').mockResolvedValue({
-        ok: true,
-        headers: { get: () => null },
-      } as Response);
+      return jest
+        .spyOn(globalThis, 'fetch')
+        .mockResolvedValue(minimalFetchResponse());
     }
 
     beforeEach(() => {
@@ -69,8 +96,8 @@ describe('sentry-make-transport', () => {
 
     afterEach(() => {
       makeFetchTransportSpy.mockRestore();
-      delete globalThis.stateHooks?.getPersistedState;
-      delete globalThis.stateHooks?.getBackupState;
+      deleteStateHookProperty('getPersistedState');
+      deleteStateHookProperty('getBackupState');
     });
 
     it('throws when MetaMetrics is not opted in', async () => {
@@ -78,7 +105,7 @@ describe('sentry-make-transport', () => {
 
       globalThis.stateHooks = {
         ...globalThis.stateHooks,
-        getSentryState: () => ({}),
+        getSentryState: () => emptySentrySnapshot(),
         getPersistedState: async () => ({
           data: {
             MetaMetricsController: { participateInMetaMetrics: false },
@@ -92,7 +119,10 @@ describe('sentry-make-transport', () => {
           typeof Sentry.makeFetchTransport
         >[0],
       );
-      const envelope = [{}, [[{ type: 'event' }, { message: 'test' }]]];
+      const envelope = [
+        {},
+        [[{ type: 'event' }, { message: 'test' }]],
+      ] as unknown as TestEnvelope;
 
       await expect(transport.send(envelope)).rejects.toThrow(
         'Network request skipped as metrics disabled',
@@ -108,7 +138,7 @@ describe('sentry-make-transport', () => {
 
       globalThis.stateHooks = {
         ...globalThis.stateHooks,
-        getSentryState: () => ({}),
+        getSentryState: () => emptySentrySnapshot(),
         getPersistedState: async () => ({
           data: {
             MetaMetricsController: {
@@ -125,7 +155,10 @@ describe('sentry-make-transport', () => {
           typeof Sentry.makeFetchTransport
         >[0],
       );
-      const envelope = [{}, [[{ type: 'event' }, { message: 'test event' }]]];
+      const envelope = [
+        {},
+        [[{ type: 'event' }, { message: 'test event' }]],
+      ] as unknown as TestEnvelope;
 
       await transport.send(envelope);
 
@@ -140,6 +173,7 @@ describe('sentry-make-transport', () => {
       globalThis.stateHooks = {
         ...globalThis.stateHooks,
         getSentryState: () => ({
+          ...emptySentrySnapshot(),
           state: {
             MetaMetricsController: {
               participateInMetaMetrics: true,
@@ -156,7 +190,10 @@ describe('sentry-make-transport', () => {
           typeof Sentry.makeFetchTransport
         >[0],
       );
-      const envelope = [{}, [[{ type: 'event' }, { message: 'test' }]]];
+      const envelope = [
+        {},
+        [[{ type: 'event' }, { message: 'test' }]],
+      ] as unknown as TestEnvelope;
 
       await transport.send(envelope);
 
@@ -170,7 +207,7 @@ describe('sentry-make-transport', () => {
 
       globalThis.stateHooks = {
         ...globalThis.stateHooks,
-        getSentryState: () => ({}),
+        getSentryState: () => emptySentrySnapshot(),
         getPersistedState: async () => {
           throw new Error('persisted unavailable');
         },
@@ -187,7 +224,10 @@ describe('sentry-make-transport', () => {
           typeof Sentry.makeFetchTransport
         >[0],
       );
-      const envelope = [{}, [[{ type: 'event' }, { message: 'test' }]]];
+      const envelope = [
+        {},
+        [[{ type: 'event' }, { message: 'test' }]],
+      ] as unknown as TestEnvelope;
 
       await transport.send(envelope);
 
@@ -201,7 +241,7 @@ describe('sentry-make-transport', () => {
 
       globalThis.stateHooks = {
         ...globalThis.stateHooks,
-        getSentryState: () => ({}),
+        getSentryState: () => emptySentrySnapshot(),
         getPersistedState: async () => {
           throw new Error('persisted failed');
         },
@@ -215,7 +255,10 @@ describe('sentry-make-transport', () => {
           typeof Sentry.makeFetchTransport
         >[0],
       );
-      const envelope = [{}, [[{ type: 'event' }, { message: 'test' }]]];
+      const envelope = [
+        {},
+        [[{ type: 'event' }, { message: 'test' }]],
+      ] as unknown as TestEnvelope;
 
       await expect(transport.send(envelope)).rejects.toThrow(
         'Network request skipped as metrics disabled',
@@ -229,18 +272,18 @@ describe('sentry-make-transport', () => {
   describe('Sentry.init with makeTransport (MetaMetrics)', () => {
     afterEach(async () => {
       await Sentry.close(2000);
-      delete globalThis.stateHooks?.getPersistedState;
-      delete globalThis.stateHooks?.getBackupState;
-      delete globalThis.stateHooks?.getSentryState;
+      deleteStateHookProperty('getPersistedState');
+      deleteStateHookProperty('getBackupState');
+      deleteStateHookProperty('getSentryState');
     });
 
     it('does not call fetch after init when opted out', async () => {
-      globalThis.nw = {};
-      globalThis.history ??= {};
+      (globalThis as typeof globalThis & { nw?: object }).nw = {};
+      globalThis.history ??= {} as unknown as History;
 
       globalThis.stateHooks = {
         ...globalThis.stateHooks,
-        getSentryState: () => ({}),
+        getSentryState: () => emptySentrySnapshot(),
         getPersistedState: async () => ({
           data: {
             MetaMetricsController: { participateInMetaMetrics: false },
@@ -251,7 +294,7 @@ describe('sentry-make-transport', () => {
 
       const fetchSpy = jest
         .spyOn(globalThis, 'fetch')
-        .mockResolvedValue({ ok: true });
+        .mockResolvedValue(minimalFetchResponse());
 
       await Sentry.close(2000);
       Sentry.init({
@@ -269,12 +312,12 @@ describe('sentry-make-transport', () => {
     });
 
     it('calls fetch after init when opted in', async () => {
-      globalThis.nw = {};
-      globalThis.history ??= {};
+      (globalThis as typeof globalThis & { nw?: object }).nw = {};
+      globalThis.history ??= {} as unknown as History;
 
       globalThis.stateHooks = {
         ...globalThis.stateHooks,
-        getSentryState: () => ({}),
+        getSentryState: () => emptySentrySnapshot(),
         getPersistedState: async () => ({
           data: {
             MetaMetricsController: {
@@ -288,7 +331,7 @@ describe('sentry-make-transport', () => {
 
       const fetchSpy = jest
         .spyOn(globalThis, 'fetch')
-        .mockResolvedValue({ ok: true });
+        .mockResolvedValue(minimalFetchResponse());
 
       await Sentry.close(2000);
       Sentry.init({
@@ -302,20 +345,27 @@ describe('sentry-make-transport', () => {
 
       expect(fetchSpy).toHaveBeenCalled();
 
-      const envelopes = fetchSpy.mock.calls
+      const fetchCalls = fetchSpy.mock.calls as FetchCallArgs[];
+
+      const envelopes = fetchCalls
         .map(([, init]) => init?.body)
-        .filter(Boolean)
-        .map((body) => {
+        .filter((body): body is NonNullable<RequestInit['body']> =>
+          Boolean(body),
+        )
+        .map((body): ParsedSentryEnvelope | null => {
           try {
-            return parseEnvelope(body);
+            return parseEnvelope(body as Parameters<typeof parseEnvelope>[0]);
           } catch {
             return null;
           }
         })
-        .filter(Boolean);
+        .filter((parsed): parsed is ParsedSentryEnvelope => parsed !== null);
 
-      const hasSessionItem = envelopes.some((envelope) =>
-        forEachEnvelopeItem(envelope, (_item, type) => type === 'session'),
+      const hasSessionItem = envelopes.some((parsedEnvelope) =>
+        forEachEnvelopeItem(
+          parsedEnvelope,
+          (_item: unknown, type: string) => type === 'session',
+        ),
       );
       expect(hasSessionItem).toBe(true);
 

@@ -4,14 +4,31 @@ import {
   getState,
 } from './sentry-get-state';
 
+/** Matches `StateHooks.getSentryState` so tests satisfy `types/global.d.ts`. */
+function emptySentrySnapshot(): ReturnType<
+  (typeof globalThis.stateHooks)['getSentryState']
+> {
+  return { browser: 'jest', version: '0' };
+}
+
+function deleteStateHookProperty(
+  key: keyof typeof globalThis.stateHooks,
+): void {
+  Reflect.deleteProperty(
+    globalThis.stateHooks as unknown as Record<string, unknown>,
+    key,
+  );
+}
+
 describe('sentry-get-state', () => {
   describe('getState', () => {
     afterEach(() => {
-      delete globalThis.stateHooks?.getSentryState;
+      deleteStateHookProperty('getSentryState');
     });
 
     it('returns the snapshot from getSentryState when present', () => {
       const snapshot = {
+        ...emptySentrySnapshot(),
         state: { metamask: { participateInMetaMetrics: true } },
       };
       globalThis.stateHooks = {
@@ -24,8 +41,11 @@ describe('sentry-get-state', () => {
 
     it('returns empty object when getSentryState is missing or returns falsy', () => {
       const hooks = { ...globalThis.stateHooks };
-      delete hooks.getSentryState;
-      globalThis.stateHooks = hooks;
+      Reflect.deleteProperty(
+        hooks as unknown as Record<string, unknown>,
+        'getSentryState',
+      );
+      globalThis.stateHooks = hooks as typeof globalThis.stateHooks;
 
       expect(getState()).toStrictEqual({});
 
@@ -43,14 +63,14 @@ describe('sentry-get-state', () => {
 
   describe('getMetaMetricsState', () => {
     afterEach(() => {
-      delete globalThis.stateHooks?.getPersistedState;
-      delete globalThis.stateHooks?.getBackupState;
+      deleteStateHookProperty('getPersistedState');
+      deleteStateHookProperty('getBackupState');
     });
 
     it('resolves participation from persisted state when snapshot has no state keys', async () => {
       globalThis.stateHooks = {
         ...globalThis.stateHooks,
-        getSentryState: () => ({}),
+        getSentryState: () => emptySentrySnapshot(),
         getPersistedState: async () => ({
           data: {
             MetaMetricsController: {
@@ -71,7 +91,7 @@ describe('sentry-get-state', () => {
     it('resolves participation false from persisted state when not opted in', async () => {
       globalThis.stateHooks = {
         ...globalThis.stateHooks,
-        getSentryState: () => ({}),
+        getSentryState: () => emptySentrySnapshot(),
         getPersistedState: async () => ({
           data: {
             MetaMetricsController: { participateInMetaMetrics: false },
@@ -89,7 +109,7 @@ describe('sentry-get-state', () => {
     it('treats missing or malformed persisted state as not opted in', async () => {
       globalThis.stateHooks = {
         ...globalThis.stateHooks,
-        getSentryState: () => ({}),
+        getSentryState: () => emptySentrySnapshot(),
         getPersistedState: async () => undefined,
         getBackupState: async () => ({}),
       };
@@ -101,7 +121,7 @@ describe('sentry-get-state', () => {
 
       globalThis.stateHooks = {
         ...globalThis.stateHooks,
-        getSentryState: () => ({}),
+        getSentryState: () => emptySentrySnapshot(),
         getPersistedState: async () => ({ data: {} }),
         getBackupState: async () => ({}),
       };
@@ -115,7 +135,7 @@ describe('sentry-get-state', () => {
     it('resolves participation from backup when getPersistedState throws', async () => {
       globalThis.stateHooks = {
         ...globalThis.stateHooks,
-        getSentryState: () => ({}),
+        getSentryState: () => emptySentrySnapshot(),
         getPersistedState: async () => {
           throw new Error('persisted unavailable');
         },
@@ -136,7 +156,7 @@ describe('sentry-get-state', () => {
     it('resolves participation false from backup when not opted in', async () => {
       globalThis.stateHooks = {
         ...globalThis.stateHooks,
-        getSentryState: () => ({}),
+        getSentryState: () => emptySentrySnapshot(),
         getPersistedState: async () => {
           throw new Error('persisted unavailable');
         },
@@ -154,7 +174,7 @@ describe('sentry-get-state', () => {
     it('treats missing or empty backup state as not opted in after persisted throws', async () => {
       globalThis.stateHooks = {
         ...globalThis.stateHooks,
-        getSentryState: () => ({}),
+        getSentryState: () => emptySentrySnapshot(),
         getPersistedState: async () => {
           throw new Error('persisted unavailable');
         },
@@ -168,7 +188,7 @@ describe('sentry-get-state', () => {
 
       globalThis.stateHooks = {
         ...globalThis.stateHooks,
-        getSentryState: () => ({}),
+        getSentryState: () => emptySentrySnapshot(),
         getPersistedState: async () => {
           throw new Error('persisted unavailable');
         },
