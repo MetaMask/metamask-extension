@@ -231,7 +231,8 @@ async function verifyTokenDetailsPage(
 
     try {
       // 24hr change - using XPath
-      const priceChangeElements = await safeFindElements(driver, '//*[contains(@data-testid,"token-increase-decrease-percentage")]');
+       await driver.delay(500);
+      const priceChangeElements = await safeFindElements(driver, '//*[@data-testid="multichain-token-list-item-value"]/../div/p');
       if (priceChangeElements.length > 0) {
         const priceChangeText = await priceChangeElements[0].getText();
         if (priceChangeText) {
@@ -289,20 +290,25 @@ async function verifyTokenDetailsPage(
     const tokenDetailsData: any = {};
 
     try {
-      const networkText = await safeGetText(driver, '[data-testid="asset-market-cap"]');
-      if (networkText) {
-        // Note: Using market-cap selector as a reference - actual network info would be in different location
-        // This may need adjustment based on actual page structure
-        console.log(`[PROD TEST]       ⚠️  Actual network field identifier may differ`);
-      }
-
-      // Try to find "Token Details" heading/section
-      const tokenDetailsSection = await safeFindElements(driver, 'text=Token Details');
-      if (tokenDetailsSection.length > 0) {
-        result.validationResult.tokenDetailsFound = true;
-        console.log(`[PROD TEST]       ✅ Token Details section found`);
+      // Get network from the dedicated data-testid
+      const networkElements = await safeFindElements(driver, '//*[@data-testid="asset-network"]/p');
+      if (networkElements.length > 0) {
+        const networkText = await networkElements[0].getText();
+        if (networkText && networkText.trim()) {
+          tokenDetailsData.network = networkText.trim();
+          result.tokenDetails = tokenDetailsData;
+          result.validationResult.tokenDetailsFound = true;
+          console.log(`[PROD TEST]       ✅ Network: ${networkText}`);
+        }
       } else {
-        console.log(`[PROD TEST]       ⚠️  Token Details section not found`);
+        // Check for "Token Details" heading/section as fallback
+        const tokenDetailsSection = await safeFindElements(driver, `//*[text()='Token details']`);
+        if (tokenDetailsSection.length > 0) {
+          result.validationResult.tokenDetailsFound = true;
+          console.log(`[PROD TEST]       ✅ Token Details section found`);
+        } else {
+          console.log(`[PROD TEST]       ⚠️  Token Details section not found`);
+        }
       }
     } catch (error) {
       console.log(`[PROD TEST]       ⚠️  Error checking token details: ${error}`);
@@ -330,71 +336,155 @@ async function verifyTokenDetailsPage(
     }
 
     try {
-      // Total volume - using XPath
-      const volumeElements = await safeFindElements(driver, `//*[text()='Total volume']/..//p[2]`);
+      await driver.delay(500);
+      // Total volume - using XPath with multiple fallback approaches
+      let volumeText: string | null = null;
+
+      // Try: Find text='Total volume', go to parent, find p[2]
+      let volumeElements = await safeFindElements(driver, `//*[text()='Total volume']/..//p[2]`);
       if (volumeElements.length > 0) {
-        const volumeText = await volumeElements[0].getText();
-        if (volumeText) {
-          marketDetailsData.totalVolume = volumeText;
-          marketFieldsFound++;
-          console.log(`[PROD TEST]       ✅ Total Volume: ${volumeText}`);
+        volumeText = await volumeElements[0].getText();
+      }
+
+      // Fallback: try contains instead of exact text
+      if (!volumeText) {
+        volumeElements = await safeFindElements(driver, `//*[contains(text(),'Total volume')]/..//p[2]`);
+        if (volumeElements.length > 0) {
+          volumeText = await volumeElements[0].getText();
         }
+      }
+
+      // Fallback: try finding the value element after the label
+      if (!volumeText) {
+        volumeElements = await safeFindElements(driver, `//*[contains(text(),'Total volume')]/following-sibling::*[1]`);
+        if (volumeElements.length > 0) {
+          volumeText = await volumeElements[0].getText();
+        }
+      }
+
+      if (volumeText && volumeText.trim()) {
+        marketDetailsData.totalVolume = volumeText.trim();
+        marketFieldsFound++;
+        console.log(`[PROD TEST]       ✅ Total Volume: ${volumeText}`);
       } else {
-        console.log(`[PROD TEST]       ⚠️  Total volume not found`);
+        console.log(`[PROD TEST]       ⚠️  Total volume not found - check page HTML structure`);
       }
     } catch (error) {
-      console.log(`[PROD TEST]       ⚠️  Error getting total volume`);
+      console.log(`[PROD TEST]       ⚠️  Error getting total volume: ${error}`);
     }
 
     try {
-      // Circulating supply - using XPath
-      const supplyElements = await safeFindElements(driver, `//*[text()='Circulating supply']/..//p[2]`);
+      // Circulating supply - using XPath with multiple fallback approaches
+       await driver.delay(500);
+      let supplyText: string | null = null;
+
+      // Try: Find text='Circulating supply', go to parent, find p[2]
+      let supplyElements = await safeFindElements(driver, `//*[text()='Circulating supply']/..//p[2]`);
       if (supplyElements.length > 0) {
-        const supplyText = await supplyElements[0].getText();
-        if (supplyText) {
-          marketDetailsData.circulatingSupply = supplyText;
-          marketFieldsFound++;
-          console.log(`[PROD TEST]       ✅ Circulating Supply: ${supplyText}`);
+        supplyText = await supplyElements[0].getText();
+      }
+
+      // Fallback: try contains instead of exact text
+      if (!supplyText) {
+        supplyElements = await safeFindElements(driver, `//*[contains(text(),'Circulating supply')]/..//p[2]`);
+        if (supplyElements.length > 0) {
+          supplyText = await supplyElements[0].getText();
         }
+      }
+
+      // Fallback: try finding the value element after the label
+      if (!supplyText) {
+        supplyElements = await safeFindElements(driver, `//*[contains(text(),'Circulating supply')]/following-sibling::*[1]`);
+        if (supplyElements.length > 0) {
+          supplyText = await supplyElements[0].getText();
+        }
+      }
+
+      if (supplyText && supplyText.trim()) {
+        marketDetailsData.circulatingSupply = supplyText.trim();
+        marketFieldsFound++;
+        console.log(`[PROD TEST]       ✅ Circulating Supply: ${supplyText}`);
       } else {
-        console.log(`[PROD TEST]       ⚠️  Circulating supply not found`);
+        console.log(`[PROD TEST]       ⚠️  Circulating supply not found - check page HTML structure`);
       }
     } catch (error) {
-      console.log(`[PROD TEST]       ⚠️  Error getting circulating supply`);
+      console.log(`[PROD TEST]       ⚠️  Error getting circulating supply: ${error}`);
     }
 
     try {
-      // All-time high - using XPath
-      const alhElements = await safeFindElements(driver, `//*[text()='All-time high']/..//p[2]`);
+      // All-time high - using XPath with multiple fallback approaches
+       await driver.delay(500);
+      let alhText: string | null = null;
+
+      // Try: Find text='All-time high', go to parent, find p[2]
+      let alhElements = await safeFindElements(driver, `//*[text()='All-time high']/..//p[2]`);
       if (alhElements.length > 0) {
-        const alhText = await alhElements[0].getText();
-        if (alhText) {
-          marketDetailsData.allTimeHigh = alhText;
-          marketFieldsFound++;
-          console.log(`[PROD TEST]       ✅ All-Time High: ${alhText}`);
+        alhText = await alhElements[0].getText();
+      }
+
+      // Fallback: try contains instead of exact text
+      if (!alhText) {
+        alhElements = await safeFindElements(driver, `//*[contains(text(),'All-time high')]/..//p[2]`);
+        if (alhElements.length > 0) {
+          alhText = await alhElements[0].getText();
         }
+      }
+
+      // Fallback: try finding the value element after the label
+      if (!alhText) {
+        alhElements = await safeFindElements(driver, `//*[contains(text(),'All-time high')]/following-sibling::*[1]`);
+        if (alhElements.length > 0) {
+          alhText = await alhElements[0].getText();
+        }
+      }
+
+      if (alhText && alhText.trim()) {
+        marketDetailsData.allTimeHigh = alhText.trim();
+        marketFieldsFound++;
+        console.log(`[PROD TEST]       ✅ All-Time High: ${alhText}`);
       } else {
-        console.log(`[PROD TEST]       ⚠️  All-time high not found`);
+        console.log(`[PROD TEST]       ⚠️  All-time high not found - check page HTML structure`);
       }
     } catch (error) {
-      console.log(`[PROD TEST]       ⚠️  Error getting all-time high`);
+      console.log(`[PROD TEST]       ⚠️  Error getting all-time high: ${error}`);
     }
 
     try {
-      // All-time low - using XPath
-      const atlElements = await safeFindElements(driver, `//*[text()='All-time low']/..//p[2]`);
+      // All-time low - using XPath with multiple fallback approaches
+       await driver.delay(500);
+      let atlText: string | null = null;
+
+      // Try: Find text='All-time low', go to parent, find p[2]
+      let atlElements = await safeFindElements(driver, `//*[text()='All-time low']/..//p[2]`);
       if (atlElements.length > 0) {
-        const atlText = await atlElements[0].getText();
-        if (atlText) {
-          marketDetailsData.allTimeLow = atlText;
-          marketFieldsFound++;
-          console.log(`[PROD TEST]       ✅ All-Time Low: ${atlText}`);
+        atlText = await atlElements[0].getText();
+      }
+
+      // Fallback: try contains instead of exact text
+      if (!atlText) {
+        atlElements = await safeFindElements(driver, `//*[contains(text(),'All-time low')]/..//p[2]`);
+        if (atlElements.length > 0) {
+          atlText = await atlElements[0].getText();
         }
+      }
+
+      // Fallback: try finding the value element after the label
+      if (!atlText) {
+        atlElements = await safeFindElements(driver, `//*[contains(text(),'All-time low')]/following-sibling::*[1]`);
+        if (atlElements.length > 0) {
+          atlText = await atlElements[0].getText();
+        }
+      }
+
+      if (atlText && atlText.trim()) {
+        marketDetailsData.allTimeLow = atlText.trim();
+        marketFieldsFound++;
+        console.log(`[PROD TEST]       ✅ All-Time Low: ${atlText}`);
       } else {
-        console.log(`[PROD TEST]       ⚠️  All-time low not found`);
+        console.log(`[PROD TEST]       ⚠️  All-time low not found - check page HTML structure`);
       }
     } catch (error) {
-      console.log(`[PROD TEST]       ⚠️  Error getting all-time low`);
+      console.log(`[PROD TEST]       ⚠️  Error getting all-time low: ${error}`);
     }
 
     if (marketFieldsFound > 0) {
