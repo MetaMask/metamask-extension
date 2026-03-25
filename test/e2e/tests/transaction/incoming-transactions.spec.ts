@@ -121,7 +121,6 @@ describe('Incoming Transactions', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilderV2()
-          .withUseBasicFunctionalityEnabled()
           .withSelectedNetwork(NETWORK_CLIENT_ID.MAINNET)
           .withEnabledNetworks({
             eip155: {
@@ -161,7 +160,6 @@ describe('Incoming Transactions', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilderV2()
-          .withUseBasicFunctionalityEnabled()
           .withSelectedNetwork(NETWORK_CLIENT_ID.MAINNET)
           .withEnabledNetworks({
             eip155: {
@@ -189,7 +187,6 @@ describe('Incoming Transactions', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilderV2()
-          .withUseBasicFunctionalityEnabled()
           .withSelectedNetwork(NETWORK_CLIENT_ID.MAINNET)
           .withEnabledNetworks({
             eip155: {

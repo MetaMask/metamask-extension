@@ -640,13 +640,6 @@ class FixtureBuilderV2 {
     });
   }
 
-  /** Same as fixture-builder.js `withNetworkControllerOnMainnet`. */
-  withNetworkControllerOnMainnet(): this {
-    return this.withNetworkController({
-      selectedNetworkClientId: NETWORK_CLIENT_ID.MAINNET,
-    });
-  }
-
   withSelectedNetworkControllerPerDomain(): this {
     return this.withSelectedNetworkController({
       domains: {
@@ -886,12 +879,6 @@ class FixtureBuilderV2 {
       });
     }
     return this;
-  }
-
-  withUseBasicFunctionalityEnabled() {
-    return this.withPreferencesController({
-      useExternalServices: true,
-    });
   }
 
   build(): FixtureBuildResult {
