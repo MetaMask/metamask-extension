@@ -2,7 +2,7 @@ import { Suite } from 'mocha';
 import { Driver } from '../../webdriver/driver';
 import WebSocketRegistry from '../../websocket/registry';
 import { withFixtures } from '../../helpers';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { WEBSOCKET_SERVICES } from '../../websocket/constants';
 
@@ -27,7 +27,7 @@ describe('Solana Web Socket', function (this: Suite) {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         await waitForWebsocketConnections(driver, 1);
       },
@@ -41,7 +41,7 @@ describe('Solana Web Socket', function (this: Suite) {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
         await waitForWebsocketConnections(driver, 1);
 
         await driver.openNewPage('about:blank');
@@ -61,7 +61,7 @@ describe('Solana Web Socket', function (this: Suite) {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         await waitForWebsocketConnections(driver, 1);
 

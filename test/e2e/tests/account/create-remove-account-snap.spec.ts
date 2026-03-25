@@ -8,7 +8,7 @@ import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import SnapListPage from '../../page-objects/pages/snap-list-page';
 import SnapSimpleKeyringPage from '../../page-objects/pages/snap-simple-keyring-page';
 import { installSnapSimpleKeyring } from '../../page-objects/flows/snap-simple-keyring.flow';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 import { mockSnapSimpleKeyringAndSite } from './snap-keyring-site-mocks';
 
 describe('Create and remove Snap Account', function (this: Suite) {
@@ -23,7 +23,7 @@ describe('Create and remove Snap Account', function (this: Suite) {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
         await installSnapSimpleKeyring(driver);
         const snapSimpleKeyringPage = new SnapSimpleKeyringPage(driver);
         await snapSimpleKeyringPage.createNewAccount();

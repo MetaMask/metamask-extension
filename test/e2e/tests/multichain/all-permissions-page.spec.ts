@@ -12,7 +12,7 @@ import { openPermissionsPageFlow } from '../../page-objects/flows/permissions.fl
 import PermissionListPage from '../../page-objects/pages/permission/permission-list-page';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import TestDapp from '../../page-objects/pages/test-dapp';
-import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 import { connectAccountToTestDapp } from '../../page-objects/flows/test-dapp.flow';
 
 describe('Permissions Page', function () {
@@ -24,7 +24,7 @@ describe('Permissions Page', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await loginWithoutBalanceValidation(driver);
+        await login(driver, { validateBalance: false });
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
         await connectAccountToTestDapp(driver, {
@@ -57,7 +57,7 @@ describe('Permissions Page', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await loginWithoutBalanceValidation(driver);
+        await login(driver, { validateBalance: false });
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.openSettingsPage();
 

@@ -93,6 +93,7 @@ For new test code, use `FixtureBuilderV2` by default.
 - `withNameController`
 - `withNetworkController`
 - `withNetworkEnablementController`
+- `withNftController`
 - `withOnboardingController`
 - `withPermissionController`
 - `withPreferencesController`
@@ -105,12 +106,18 @@ For new test code, use `FixtureBuilderV2` by default.
 **Custom convenience methods**:
 
 - `withConversionRateDisabled`
+- `withKeyringControllerAdditionalAccountVault`
+- `withKeyringControllerMultiSRP`
+- `withKeyringControllerOldVault`
 - `withEnabledNetworks`
 - `withLedgerAccount`
 - `withNetworkControllerDoubleNode`
 - `withNetworkControllerTripleNode`
+- `withNftControllerERC1155`
+- `withNftControllerERC721`
 - `withNoNames`
 - `withPermissionControllerConnectedToTestDapp`
+- `withPreferencesControllerTxSimulationsDisabled`
 - `withSelectedNetwork`
 - `withSelectedNetworkControllerPerDomain`
 - `withShowNativeTokenAsMainBalanceDisabled`
