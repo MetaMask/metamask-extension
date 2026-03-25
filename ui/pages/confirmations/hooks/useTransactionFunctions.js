@@ -2,6 +2,7 @@ import { useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 
 import BigNumber from 'bignumber.js';
+import { CANCEL_RATE, SPEED_UP_RATE } from '@metamask/transaction-controller';
 import {
   EditGasModes,
   PriorityLevels,
@@ -10,6 +11,7 @@ import {
 import {
   addTenPercentAndRound,
   editGasModeIsSpeedUpOrCancel,
+  getGasValuesForReplacement,
 } from '../../../helpers/utils/gas';
 import {
   createCancelTransaction,
@@ -44,7 +46,7 @@ import {
  * @param options.gasLimit
  * @param options.maxPriorityFeePerGas
  * @param options.transaction
- * @param options.setRetryTxMeta
+ * @param {Function} [options.setRetryTxMeta] - Optional callback; when absent, cancel/speedup dispatches to store
  * @returns {TransactionFunctionsReturnType}
  */
 export const useTransactionFunctions = ({
@@ -55,7 +57,7 @@ export const useTransactionFunctions = ({
   gasLimit: gasLimitValue,
   maxPriorityFeePerGas: maxPriorityFeePerGasValue,
   transaction,
-  setRetryTxMeta,
+  setRetryTxMeta = undefined,
 }) => {
   const dispatch = useDispatch();
 
@@ -116,7 +118,7 @@ export const useTransactionFunctions = ({
           updateSwapsUserFeeLevel(estimateUsed || PriorityLevels.custom),
         );
         dispatch(updateCustomSwapsEIP1559GasParams(newGasSettings));
-      } else if (editGasModeIsSpeedUpOrCancel(editGasMode)) {
+      } else if (editGasModeIsSpeedUpOrCancel(editGasMode) && setRetryTxMeta) {
         setRetryTxMeta(updatedTxMeta);
       } else {
         newGasSettings.userEditedGasLimit = updatedTxMeta.userEditedGasLimit;
@@ -146,16 +148,26 @@ export const useTransactionFunctions = ({
   );
 
   const cancelTransaction = useCallback(() => {
+    const gasValuesForCancel = getGasValuesForReplacement(
+      transaction.txParams,
+      transaction.previousGas,
+      CANCEL_RATE,
+    );
     dispatch(
-      createCancelTransaction(transaction.id, transaction.txParams, {
+      createCancelTransaction(transaction.id, gasValuesForCancel, {
         estimatedBaseFee,
       }),
     );
   }, [dispatch, estimatedBaseFee, transaction]);
 
   const speedUpTransaction = useCallback(() => {
+    const gasValuesForSpeedUp = getGasValuesForReplacement(
+      transaction.txParams,
+      transaction.previousGas,
+      SPEED_UP_RATE,
+    );
     dispatch(
-      createSpeedUpTransaction(transaction.id, transaction.txParams, {
+      createSpeedUpTransaction(transaction.id, gasValuesForSpeedUp, {
         estimatedBaseFee,
       }),
     );

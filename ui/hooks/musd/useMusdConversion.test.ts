@@ -64,6 +64,13 @@ jest.mock('../../components/app/musd/constants', () => ({
   MUSD_CONVERSION_DEFAULT_CHAIN_ID: '0x1',
 }));
 
+const mockTrace = jest.fn();
+jest.mock('../../../shared/lib/trace', () => ({
+  trace: (...args: unknown[]) => mockTrace(...args),
+  TraceName: { MusdConversionNavigation: 'MusdConversionNavigation' },
+  TraceOperation: { MusdConversionOperation: 'musd.conversion.operation' },
+}));
+
 jest.mock('../../pages/confirmations/hooks/useConfirmationNavigation', () => ({
   ConfirmationLoader: { CustomAmount: 'customAmount' },
 }));
@@ -125,6 +132,7 @@ function setupSelectors(overrides: Partial<SelectorMap> = {}) {
 describe('useMusdConversion', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockTrace.mockClear();
     setupSelectors();
 
     mockFindNetworkClientIdByChainId.mockResolvedValue('mainnet');
@@ -369,6 +377,42 @@ describe('useMusdConversion', () => {
       });
 
       expect(mockFindNetworkClientIdByChainId).toHaveBeenCalledWith('0xe708');
+    });
+
+    it('starts a navigation trace after creating a new transaction', async () => {
+      const { result } = renderHook(() => useMusdConversion());
+
+      await act(async () => {
+        await result.current.startConversionFlow({
+          preferredToken: MOCK_PREFERRED_TOKEN,
+        });
+      });
+
+      expect(mockAddTransaction).toHaveBeenCalled();
+      expect(mockTrace).toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: 'MusdConversionNavigation',
+          tags: expect.objectContaining({
+            paymentTokenAddress: MOCK_PREFERRED_TOKEN.address,
+            hasPreferredToken: true,
+          }),
+        }),
+      );
+    });
+
+    it('does not start navigation trace when transaction creation fails', async () => {
+      jest.spyOn(console, 'error').mockImplementation();
+      mockAddTransaction.mockRejectedValue(new Error('TX_FAILED'));
+
+      const { result } = renderHook(() => useMusdConversion());
+
+      await act(async () => {
+        await result.current.startConversionFlow({
+          preferredToken: MOCK_PREFERRED_TOKEN,
+        });
+      });
+
+      expect(mockTrace).not.toHaveBeenCalled();
     });
 
     it('sets error when transaction creation fails', async () => {

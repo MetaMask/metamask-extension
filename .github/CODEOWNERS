@@ -67,16 +67,15 @@ tailwind.config.js                   @MetaMask/design-system-engineers
 **/pages/notification*/**                           @MetaMask/notifications
 **/utils/notification.util.ts                       @MetaMask/notifications
 
-# Accounts team is responsible for code related with snap management accounts
+# Accounts team is responsible for code related with: Snap accounts,
+# Multichain accounts, Authentication, Backup and sync, Hardware Wallets
 # Slack handle: @accounts-team-devs | Slack channel: #metamask-accounts-team
-
 app/scripts/lib/snap-keyring                        @MetaMask/accounts-engineers
-
-# Multichain Accounts, Authentication, Backup and sync
-# Those features are owned by the multichain account tiger team
-# Slack handle: @multichain-accounts-devs | Slack channel: #metamask-bip44-team
+app/scripts/lib/offscreen-bridge                    @MetaMask/accounts-engineers
+ui/pages/create-account                             @MetaMask/accounts-engineers
 **/multichain-accounts/**                           @MetaMask/accounts-engineers
 **/identity/**                                      @MetaMask/accounts-engineers
+**/hardware-wallets/**                              @MetaMask/accounts-engineers
 
 # Swaps-Bridge team to own code for the swaps folder
 ui/pages/swaps                                        @MetaMask/swaps-engineers
@@ -153,6 +152,7 @@ app/scripts/lib/transaction                                                     
 ui/pages/confirmations                                                              @MetaMask/confirmations
 ui/components/multichain/pages/send                                                 @MetaMask/confirmations
 ui/pages/confirmations/components/confirm/footer                                    @MetaMask/confirmations
+ui/pages/confirmations/components/confirm/info/typed-sign/typed-sign-permission     @MetaMask/confirmations @MetaMask/delegation
 ui/pages/confirmations/components/confirm/footer/shield-footer-coverage-indicator   @MetaMask/confirmations @MetaMask/web3auth
 ui/pages/confirmations/components/confirm/footer/shield-footer-agreement*           @MetaMask/confirmations @MetaMask/web3auth
 ui/pages/confirmations/components/confirm/info/shield-subscription-approve          @MetaMask/confirmations @MetaMask/web3auth

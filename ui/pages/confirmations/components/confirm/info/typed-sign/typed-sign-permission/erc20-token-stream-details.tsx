@@ -13,6 +13,7 @@ import { TokenAmountRow } from './token-amount-row';
 import { DateAndTimeRow } from './date-and-time-row';
 import { Expiry } from './expiry';
 import { TotalExposure } from './total-exposure';
+import { MAX_UINT256 } from './typed-sign-permission-util';
 
 /**
  * Component for displaying ERC20 token stream permission details.
@@ -53,6 +54,8 @@ export const Erc20TokenStreamDetails: React.FC<{
 
   const decimals = metadataResult.value;
 
+  const hasMaxAmount = maxAmount && maxAmount.toLowerCase() !== MAX_UINT256;
+
   return (
     <>
       <ConfirmInfoSection data-testid="erc20-token-stream-details-section">
@@ -66,7 +69,7 @@ export const Erc20TokenStreamDetails: React.FC<{
           />
         )}
 
-        {maxAmount && (
+        {hasMaxAmount && (
           <TokenAmountRow
             label={t('confirmFieldMaxAllowance')}
             value={maxAmount}

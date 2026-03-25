@@ -12,6 +12,7 @@
 import { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { getSelectedInternalAccount } from '../../../selectors/accounts';
+import { submitRequestToBackground } from '../../../store/background-connection';
 import {
   getPerpsStreamManager,
   type PerpsStreamManager,
@@ -51,53 +52,55 @@ export type UsePerpsStreamManagerReturn = {
  * ```
  */
 export function usePerpsStreamManager(): UsePerpsStreamManagerReturn {
-  const [isInitializing, setIsInitializing] = useState(true);
-  const [error, setError] = useState<Error | null>(null);
-  const [isReady, setIsReady] = useState(false);
-
   // Get the selected account address from Redux
   const selectedAccount = useSelector(getSelectedInternalAccount);
   const selectedAddress = selectedAccount?.address ?? null;
 
   const streamManager = getPerpsStreamManager();
 
+  // Track whether streamManager is ready for this address.
+  // Initialize synchronously in case init was already done by a previous call
+  const [isReady, setIsReady] = useState(
+    () =>
+      selectedAddress !== null && streamManager.isInitialized(selectedAddress),
+  );
+  const [error, setError] = useState<Error | null>(null);
+
   useEffect(() => {
     if (!selectedAddress) {
-      setIsInitializing(false);
-      setError(new Error('No account selected'));
       setIsReady(false);
+      setError(new Error('No account selected'));
       return;
     }
 
-    // Check if already initialized for this address
+    // Already initialized by a previous call
     if (streamManager.isInitialized(selectedAddress)) {
-      setIsInitializing(false);
-      setError(null);
       setIsReady(true);
+      setError(null);
       return;
     }
 
-    // Initialize
-    setIsInitializing(true);
-    setError(null);
     setIsReady(false);
+    setError(null);
 
-    streamManager
-      .init(selectedAddress)
+    // Clear stale cached data from the previous account immediately,
+    // before the async init completes, so we never briefly show wrong data.
+    streamManager.clearAllCaches();
+
+    submitRequestToBackground('perpsInit')
       .then(() => {
-        setIsInitializing(false);
+        streamManager.init(selectedAddress);
         setIsReady(true);
       })
       .catch((err: unknown) => {
         console.error('[usePerpsStreamManager] Init failed:', err);
-        setIsInitializing(false);
         setError(err instanceof Error ? err : new Error(String(err)));
       });
   }, [selectedAddress, streamManager]);
 
   return {
     streamManager: isReady ? streamManager : null,
-    isInitializing,
+    isInitializing: !isReady && !error && selectedAddress !== null,
     error,
     selectedAddress,
   };

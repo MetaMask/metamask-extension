@@ -5,7 +5,7 @@ import { DAPP_HOST_ADDRESS } from '../../constants';
 import PermissionListPage from '../../page-objects/pages/permission/permission-list-page';
 import { openPermissionsPageFlow } from '../../page-objects/flows/permissions.flow';
 import TestDapp from '../../page-objects/pages/test-dapp';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 
 describe('Permissions', function (this: Suite) {
   it('sets permissions and connect to Dapp', async function () {
@@ -20,7 +20,7 @@ describe('Permissions', function (this: Suite) {
       async ({ driver, localNodes }) => {
         const addresses = await localNodes[0].getAccounts();
         const publicAddress = addresses[0].toLowerCase();
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         // open permissions page and check that the dapp is connected
         await openPermissionsPageFlow(driver);

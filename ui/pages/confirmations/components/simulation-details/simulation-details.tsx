@@ -155,8 +155,6 @@ const HeaderWithAlert = ({
         label={label}
         ownerId={transactionId}
         tooltip={tooltip}
-        tooltipIcon={isEnforced && IconName.SecurityTick}
-        tooltipIconColor={isEnforced && IconColor.infoDefault}
         style={{
           paddingLeft: 0,
           paddingRight: 0,
