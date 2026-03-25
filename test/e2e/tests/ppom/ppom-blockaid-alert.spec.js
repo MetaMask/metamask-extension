@@ -1,8 +1,14 @@
 const { strict: assert } = require('assert');
-const { default: FixtureBuilderV2 } = require('../../fixtures/fixture-builder-v2');
+const {
+  default: FixtureBuilderV2,
+} = require('../../fixtures/fixture-builder-v2');
 const { login } = require('../../page-objects/flows/login.flow');
 const { withFixtures } = require('../../helpers');
-const { DAPP_URL, WINDOW_TITLES } = require('../../constants');
+const {
+  DAPP_URL_LOCALHOST,
+  NETWORK_CLIENT_ID,
+  WINDOW_TITLES,
+} = require('../../constants');
 const { mockServerJsonRpc } = require('./mocks/mock-server-json-rpc');
 
 const bannerAlertSelector = '[data-testid="security-provider-banner-alert"]';
@@ -167,10 +173,15 @@ describe('Confirmation Security Alert - Blockaid', function () {
       {
         dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilderV2()
-          .withNetworkControllerOnMainnet()
-          .withPermissionControllerConnectedToTestDapp()
-          .withPreferencesController({
-            securityAlertsEnabled: true,
+          .withSelectedNetwork(NETWORK_CLIENT_ID.MAINNET)
+          .withPermissionControllerConnectedToTestDapp({
+            useLocalhostHostname: true,
+            chainIds: [1],
+          })
+          .withEnabledNetworks({
+            eip155: {
+              '0x1': true,
+            },
           })
           .build(),
         testSpecificMock: mockInfura,
@@ -178,8 +189,8 @@ describe('Confirmation Security Alert - Blockaid', function () {
       },
 
       async ({ driver }) => {
-        await login(driver);
-        await driver.openNewPage(DAPP_URL);
+        await login(driver, { expectedBalance: '1.37T ETH' });
+        await driver.openNewPage(DAPP_URL_LOCALHOST);
 
         for (const config of testBenignConfigs) {
           const { btnSelector, logExpectedDetail, method, params } = config;
@@ -229,10 +240,15 @@ describe('Confirmation Security Alert - Blockaid', function () {
       {
         dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilderV2()
-          .withNetworkControllerOnMainnet()
-          .withPermissionControllerConnectedToTestDapp()
-          .withPreferencesController({
-            securityAlertsEnabled: true,
+          .withSelectedNetwork(NETWORK_CLIENT_ID.MAINNET)
+          .withPermissionControllerConnectedToTestDapp({
+            useLocalhostHostname: true,
+            chainIds: [1],
+          })
+          .withEnabledNetworks({
+            eip155: {
+              '0x1': true,
+            },
           })
           .build(),
         testSpecificMock: mockInfuraWithMaliciousResponses,
@@ -240,8 +256,8 @@ describe('Confirmation Security Alert - Blockaid', function () {
       },
 
       async ({ driver }) => {
-        await login(driver);
-        await driver.openNewPage(DAPP_URL);
+        await login(driver, { expectedBalance: '1.37T ETH' });
+        await driver.openNewPage(DAPP_URL_LOCALHOST);
 
         for (const config of testMaliciousConfigs) {
           const { expectedDescription, expectedReason, btnSelector } = config;
@@ -287,10 +303,15 @@ describe('Confirmation Security Alert - Blockaid', function () {
       {
         dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilderV2()
-          .withNetworkControllerOnMainnet()
-          .withPermissionControllerConnectedToTestDapp()
-          .withPreferencesController({
-            securityAlertsEnabled: true,
+          .withSelectedNetwork(NETWORK_CLIENT_ID.MAINNET)
+          .withPermissionControllerConnectedToTestDapp({
+            useLocalhostHostname: true,
+            chainIds: [1],
+          })
+          .withEnabledNetworks({
+            eip155: {
+              '0x1': true,
+            },
           })
           .build(),
         testSpecificMock: mockInfuraWithFailedResponses,
@@ -298,8 +319,8 @@ describe('Confirmation Security Alert - Blockaid', function () {
       },
 
       async ({ driver }) => {
-        await login(driver);
-        await driver.openNewPage(DAPP_URL);
+        await login(driver, { expectedBalance: '1.37T ETH' });
+        await driver.openNewPage(DAPP_URL_LOCALHOST);
 
         // Click TestDapp button to send JSON-RPC request
         await driver.clickElement('#maliciousApprovalButton');

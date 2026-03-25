@@ -229,19 +229,8 @@ describe('PPOM Blockaid Alert - Malicious Contract interaction', function (this:
       {
         dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilderV2()
-          .withNetworkController({
-            selectedNetworkClientId: 'networkConfigurationId',
-          })
-          .withEnabledNetworks({
-            eip155: {
-              '0x539': true,
-            },
-          })
           .withPermissionControllerConnectedToTestDapp({
             useLocalhostHostname: true,
-          })
-          .withPreferencesController({
-            securityAlertsEnabled: true,
           })
           .build(),
         testSpecificMock: mockInfura,

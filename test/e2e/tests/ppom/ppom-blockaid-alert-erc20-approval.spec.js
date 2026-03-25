@@ -1,12 +1,16 @@
-const { strict: assert } = require('assert');
-const { default: FixtureBuilderV2 } = require('../../fixtures/fixture-builder-v2');
-
+const {
+  default: FixtureBuilderV2,
+} = require('../../fixtures/fixture-builder-v2');
 const { withFixtures } = require('../../helpers');
 const { login } = require('../../page-objects/flows/login.flow');
-const { DAPP_URL, WINDOW_TITLES } = require('../../constants');
+const {
+  DAPP_URL_LOCALHOST,
+  NETWORK_CLIENT_ID,
+  WINDOW_TITLES,
+} = require('../../constants');
 const { mockServerJsonRpc } = require('./mocks/mock-server-json-rpc');
 
-const bannerAlertSelector = '[data-testid="security-provider-banner-alert"]';
+const bannerAlertSelector = '[data-testid="confirm-banner-alert"]';
 
 const selectedAddress = '0x5cfe73b6021e818b776b421b1c4db2474086a7e1';
 const selectedAddressWithoutPrefix = '5cfe73b6021e818b776b421b1c4db2474086a7e1';
@@ -206,16 +210,20 @@ async function mockInfura(mockServer) {
 }
 
 describe('PPOM Blockaid Alert - Malicious ERC20 Approval', function () {
-  // eslint-disable-next-line mocha/no-skipped-tests
-  it.skip('should show banner alert', async function () {
+  it('should show banner alert', async function () {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilderV2()
-          .withNetworkControllerOnMainnet()
-          .withPermissionControllerConnectedToTestDapp()
-          .withPreferencesController({
-            securityAlertsEnabled: true,
+          .withSelectedNetwork(NETWORK_CLIENT_ID.MAINNET)
+          .withPermissionControllerConnectedToTestDapp({
+            useLocalhostHostname: true,
+            chainIds: [1],
+          })
+          .withEnabledNetworks({
+            eip155: {
+              '0x1': true,
+            },
           })
           .build(),
         testSpecificMock: mockInfura,
@@ -223,12 +231,12 @@ describe('PPOM Blockaid Alert - Malicious ERC20 Approval', function () {
       },
 
       async ({ driver }) => {
-        await login(driver);
-        await driver.openNewPage(DAPP_URL);
+        await login(driver, { expectedBalance: '1.37T ETH' });
+        await driver.openNewPage(DAPP_URL_LOCALHOST);
 
         const expectedTitle = 'This is a deceptive request';
         const expectedDescription =
-          'If you approve this request, you might lose your assets.';
+          'If you approve this request, a third party known for scams might take all your assets.';
 
         // Click TestDapp button to send JSON-RPC request
         await driver.clickElement('#maliciousApprovalButton');
@@ -236,22 +244,15 @@ describe('PPOM Blockaid Alert - Malicious ERC20 Approval', function () {
         // Wait for confirmation pop-up
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-        await driver.assertElementNotPresent('.loading-indicator');
-
-        const bannerAlertFoundByTitle = await driver.findElement({
+        await driver.waitForSelector({
           css: bannerAlertSelector,
           text: expectedTitle,
         });
-        const bannerAlertText = await bannerAlertFoundByTitle.getText();
 
-        assert(
-          bannerAlertFoundByTitle,
-          `Banner alert not found. Expected Title: ${expectedTitle} \nExpected reason: approval_farming\n`,
-        );
-        assert(
-          bannerAlertText.includes(expectedDescription),
-          `Unexpected banner alert description. Expected: ${expectedDescription} \nExpected reason: approval_farming\n`,
-        );
+        await driver.waitForSelector({
+          css: bannerAlertSelector,
+          text: expectedDescription,
+        });
       },
     );
   });

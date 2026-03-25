@@ -1,7 +1,7 @@
 import { Suite } from 'mocha';
 import { MockttpServer } from 'mockttp';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
-import { WINDOW_TITLES } from '../../constants';
+import { NETWORK_CLIENT_ID, WINDOW_TITLES } from '../../constants';
 import { withFixtures } from '../../helpers';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import TransactionConfirmation from '../../page-objects/pages/confirmations/transaction-confirmation';
@@ -120,35 +120,30 @@ describe('PPOM Blockaid Alert - Set Trade farming order', function (this: Suite)
       {
         dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilderV2()
+          .withSelectedNetwork(NETWORK_CLIENT_ID.MAINNET)
           .withPermissionControllerConnectedToTestDapp({
             useLocalhostHostname: true,
-          })
-          .withNetworkController({
-            selectedNetworkClientId: 'networkConfigurationId',
+            chainIds: [1],
           })
           .withEnabledNetworks({
             eip155: {
-              '0x539': true,
+              '0x1': true,
             },
           })
-          .withPreferencesController({
-            securityAlertsEnabled: true,
-          })
-          // .withNetworkControllerOnMainnet()
           .build(),
         testSpecificMock: mockInfura,
         title: this.test?.fullTitle(),
       },
 
       async ({ driver }) => {
-        await login(driver);
+        await login(driver, { expectedBalance: '1.37T ETH' });
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage({ url: 'http://localhost:8080' });
         await testDapp.checkPageIsLoaded();
 
         const expectedTitle = 'This is a deceptive request';
         const expectedDescription =
-          'If you approve this request, a third party known for scams will take all your assets.';
+          'If you approve this request, you might lose your assets.';
 
         // Click TestDapp button to send JSON-RPC request
         await testDapp.clickMaliciousTradeOrderButton();
