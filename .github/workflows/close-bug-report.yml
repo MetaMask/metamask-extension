@@ -32,7 +32,7 @@ jobs:
 
             // Use BUG_REPORT_TOKEN for cross-repo access
             const { getOctokit } = require('@actions/github');
-            const octokit = getOctokit(process.env.BUG_REPORT_TOKEN);
+            const bugReportOctokit = getOctokit(process.env.BUG_REPORT_TOKEN);
 
             // Find the open bug report issue
             const searchQuery = [
@@ -42,7 +42,7 @@ jobs:
               'in:title',
               `v${version} Bug Report`,
             ].join(' ');
-            const result = await octokit.graphql(`
+            const result = await bugReportOctokit.graphql(`
               query FindBugReport($searchQuery: String!) {
                 search(query: $searchQuery, type: ISSUE, first: 1) {
                   nodes {
@@ -63,7 +63,7 @@ jobs:
             console.log(`Closing bug report issue "${issue.title}" (id: ${issue.id})`);
 
             // Close the issue
-            await octokit.graphql(`
+            await bugReportOctokit.graphql(`
               mutation CloseIssue($issueId: ID!) {
                 updateIssue(input: {id: $issueId, state: CLOSED}) {
                   clientMutationId
