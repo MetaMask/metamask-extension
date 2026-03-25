@@ -1,1 +1,1 @@
-export { default as WithdrawFundsModal } from './withdraw-funds-modal';
+export { WithdrawFundsModal } from './withdraw-funds-modal';

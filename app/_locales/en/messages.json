@@ -5895,6 +5895,15 @@
   "perpsWithdraw": {
     "message": "Withdraw"
   },
+  "perpsWithdrawAssetUnavailableError": {
+    "message": "Withdrawal asset unavailable. Please try again."
+  },
+  "perpsWithdrawEnterValidAmountError": {
+    "message": "Enter a valid amount to withdraw."
+  },
+  "perpsWithdrawInvalidDestinationError": {
+    "message": "Invalid withdrawal destination."
+  },
   "perpsYouWillReceive": {
     "message": "You'll receive"
   },

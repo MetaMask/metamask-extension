@@ -6,8 +6,6 @@ import { selectPerpsIsTestnet } from '../../../../selectors/perps-controller';
 import { getPerpsWithdrawUsdcAssetId } from '../constants';
 import { createPerpsWithdrawTransaction } from './createPerpsWithdrawTransaction';
 
-const MAX_DECIMALS = 6;
-
 function isValidAmount(amount: string): boolean {
   return /^\d*\.?\d{0,6}$/u.test(amount);
 }
@@ -41,7 +39,7 @@ export function usePerpsWithdraw(): UsePerpsWithdrawResult {
 
   const trigger = useCallback(
     async ({ amount }: PerpsWithdrawParams): Promise<PerpsWithdrawResult> => {
-      if (isInFlightRef.current || isLoading) {
+      if (isInFlightRef.current) {
         return { success: false };
       }
 
@@ -55,7 +53,6 @@ export function usePerpsWithdraw(): UsePerpsWithdrawResult {
       if (
         !normalizedAmount ||
         !isValidAmount(normalizedAmount) ||
-        normalizedAmount.split('.')[1]?.length > MAX_DECIMALS ||
         Number(normalizedAmount) <= 0
       ) {
         const nextError = 'Invalid amount';
@@ -93,7 +90,7 @@ export function usePerpsWithdraw(): UsePerpsWithdrawResult {
         setIsLoading(false);
       }
     },
-    [isLoading, isPerpsTestnet, selectedAccount?.address],
+    [isPerpsTestnet, selectedAccount?.address],
   );
 
   return {

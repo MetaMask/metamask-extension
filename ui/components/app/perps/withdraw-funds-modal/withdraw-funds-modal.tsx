@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import classnames from 'clsx';
 import {
   Box,
   BoxFlexDirection,
@@ -51,19 +52,22 @@ const WITHDRAW_ERROR_CODES = {
   INVALID_DESTINATION: 'WITHDRAW_INVALID_DESTINATION',
 } as const;
 
-function getReadableWithdrawError(error: string | null): string | null {
+function getReadableWithdrawError(
+  error: string | null,
+  t: ReturnType<typeof useI18nContext>,
+): string | null {
   if (!error) {
     return null;
   }
 
   switch (error) {
     case WITHDRAW_ERROR_CODES.ASSET_ID_REQUIRED:
-      return 'Withdrawal asset unavailable. Please try again.';
+      return t('perpsWithdrawAssetUnavailableError');
     case WITHDRAW_ERROR_CODES.AMOUNT_REQUIRED:
     case WITHDRAW_ERROR_CODES.AMOUNT_POSITIVE:
-      return 'Enter a valid amount to withdraw.';
+      return t('perpsWithdrawEnterValidAmountError');
     case WITHDRAW_ERROR_CODES.INVALID_DESTINATION:
-      return 'Invalid withdrawal destination.';
+      return t('perpsWithdrawInvalidDestinationError');
     default:
       return error;
   }
@@ -80,12 +84,8 @@ export const WithdrawFundsModal: React.FC<WithdrawFundsModalProps> = ({
 
   const [amount, setAmount] = useState('');
 
-  const availableBalance = useMemo(
-    () => parseFloat(account?.availableBalance ?? '0') || 0,
-    [account?.availableBalance],
-  );
-
-  const amountNum = useMemo(() => parseFloat(amount) || 0, [amount]);
+  const availableBalance = parseFloat(account?.availableBalance ?? '0') || 0;
+  const amountNum = parseFloat(amount) || 0;
   const hasAmount = amount.length > 0;
   const isInsufficient = hasAmount && amountNum > availableBalance;
   const isInvalidAmount = hasAmount && amountNum <= 0;
@@ -144,7 +144,7 @@ export const WithdrawFundsModal: React.FC<WithdrawFundsModalProps> = ({
   }, [amount, validationError, trigger, onClose]);
 
   const submitDisabled = isLoading || !amount || Boolean(validationError);
-  const displayError = validationError ?? getReadableWithdrawError(error);
+  const displayError = validationError ?? getReadableWithdrawError(error, t);
 
   return (
     <Modal
@@ -205,12 +205,13 @@ export const WithdrawFundsModal: React.FC<WithdrawFundsModalProps> = ({
               {WITHDRAW_PRESETS.map((preset) => (
                 <Box
                   key={`withdraw-preset-${preset}`}
-                  onClick={
-                    isLoading ? undefined : () => handlePreset(Number(preset))
-                  }
-                  className={`flex-1 py-1.5 rounded-lg bg-background-default cursor-pointer text-center hover:bg-muted-hover active:bg-muted-pressed border border-muted transition-colors duration-150${
-                    isLoading ? ' opacity-50 pointer-events-none' : ''
-                  }`}
+                  onClick={isLoading ? undefined : () => handlePreset(preset)}
+                  className={classnames(
+                    'flex-1 py-1.5 rounded-lg bg-background-default cursor-pointer text-center hover:bg-muted-hover active:bg-muted-pressed border border-muted transition-colors duration-150',
+                    {
+                      'opacity-50 pointer-events-none': isLoading,
+                    },
+                  )}
                   data-testid={`perps-withdraw-preset-${preset}`}
                 >
                   <Text
@@ -251,5 +252,3 @@ export const WithdrawFundsModal: React.FC<WithdrawFundsModalProps> = ({
     </Modal>
   );
 };
-
-export default WithdrawFundsModal;
