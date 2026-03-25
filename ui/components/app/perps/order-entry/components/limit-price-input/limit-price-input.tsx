@@ -14,18 +14,14 @@ import {
   IconSize,
   IconColor,
 } from '@metamask/design-system-react';
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { useSelector } from 'react-redux';
+import React, { useCallback, useMemo } from 'react';
 
-import { getIntlLocale } from '../../../../../../ducks/locale/locale';
 import {
   BorderRadius,
   BackgroundColor,
 } from '../../../../../../helpers/constants/design-system';
-import { useFormatters } from '../../../../../../hooks/useFormatters';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
 import { TextField, TextFieldSize } from '../../../../../component-library';
-import { normalizeLocalizedNumberInput } from '../../../utils/localeNumber';
 import type { OrderDirection } from '../../order-entry.types';
 import {
   isLimitPriceUnfavorable,
@@ -69,66 +65,19 @@ export const LimitPriceInput: React.FC<LimitPriceInputProps> = ({
   liquidationPrice,
 }) => {
   const t = useI18nContext();
-  const { formatNumber } = useFormatters();
-  const locale = useSelector(getIntlLocale);
-  const [isFocused, setIsFocused] = useState(false);
-  const [inputValue, setInputValue] = useState('');
-
-  const formatPrice = useCallback(
-    (value: number): string =>
-      formatNumber(value, {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2,
-      }),
-    [formatNumber],
-  );
-
   const midPrice = midPriceProp ?? currentPrice;
-
-  const formattedLimitPrice = useMemo(() => {
-    if (!limitPrice) {
-      return '';
-    }
-
-    const parsed = Number.parseFloat(limitPrice);
-    if (!Number.isFinite(parsed) || parsed <= 0) {
-      return '';
-    }
-
-    return formatPrice(parsed);
-  }, [formatPrice, limitPrice]);
-
-  useEffect(() => {
-    if (!isFocused) {
-      setInputValue(formattedLimitPrice);
-    }
-  }, [isFocused, formattedLimitPrice]);
 
   const handlePriceChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       const { value } = event.target;
-      const normalizedDraft = normalizeLocalizedNumberInput(value, locale, {
-        allowTrailingDecimal: true,
-      });
-
-      if (normalizedDraft === null) {
-        return;
+      if (value === '' || /^\d*\.?\d*$/u.test(value)) {
+        onLimitPriceChange(value);
       }
-
-      setInputValue(value);
-      onLimitPriceChange(normalizedDraft);
     },
-    [locale, onLimitPriceChange],
+    [onLimitPriceChange],
   );
 
-  const handlePriceFocus = useCallback(() => {
-    setIsFocused(true);
-    setInputValue(formattedLimitPrice);
-  }, [formattedLimitPrice]);
-
   const handlePriceBlur = useCallback(() => {
-    setIsFocused(false);
-
     if (!limitPrice) {
       onLimitPriceChange('');
       return;
@@ -148,10 +97,6 @@ export const LimitPriceInput: React.FC<LimitPriceInputProps> = ({
       onLimitPriceChange(midPrice.toFixed(2));
     }
   }, [midPrice, onLimitPriceChange]);
-
-  const placeholderValue = useMemo(() => formatPrice(0), [formatPrice]);
-
-  const displayedValue = isFocused ? inputValue : formattedLimitPrice;
 
   const limitPriceWarning = useMemo(() => {
     if (!isLimitPriceUnfavorable(limitPrice, currentPrice, direction)) {
@@ -185,11 +130,10 @@ export const LimitPriceInput: React.FC<LimitPriceInputProps> = ({
 
       <TextField
         size={TextFieldSize.Md}
-        value={displayedValue}
+        value={limitPrice}
         onChange={handlePriceChange}
-        onFocus={handlePriceFocus}
         onBlur={handlePriceBlur}
-        placeholder={placeholderValue}
+        placeholder="0.00"
         borderRadius={BorderRadius.MD}
         borderWidth={0}
         backgroundColor={BackgroundColor.backgroundMuted}

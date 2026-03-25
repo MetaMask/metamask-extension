@@ -124,7 +124,7 @@ describe('LimitPriceInput', () => {
   });
 
   describe('locale handling', () => {
-    it('converts de-DE formatted value to normalized value on blur', () => {
+    it('keeps raw dot-decimal value in de locale', () => {
       const deStore = configureStore({
         localeMessages: {
           ...(mockState.localeMessages ?? {}),
@@ -144,14 +144,40 @@ describe('LimitPriceInput', () => {
       const container = screen.getByTestId('limit-price-input');
       const input = container.querySelector('input');
       expect(input).not.toBeNull();
+      expect(input).toHaveValue('45050.00');
+      fireEvent.blur(input as HTMLInputElement);
+
+      expect(defaultProps.onLimitPriceChange).toHaveBeenCalledWith('45050.00');
+    });
+
+    it('rejects non-en-US locale-formatted input while typing', () => {
+      const onLimitPriceChange = jest.fn();
+      const deStore = configureStore({
+        localeMessages: {
+          ...(mockState.localeMessages ?? {}),
+          currentLocale: 'de',
+        },
+      });
+
+      renderWithProvider(
+        <LimitPriceInput
+          {...defaultProps}
+          limitPrice=""
+          onLimitPriceChange={onLimitPriceChange}
+        />,
+        deStore,
+      );
+
+      const container = screen.getByTestId('limit-price-input');
+      const input = container.querySelector('input');
+      expect(input).not.toBeNull();
 
       fireEvent.focus(input as HTMLInputElement);
       fireEvent.change(input as HTMLInputElement, {
         target: { value: '45.050,00' },
       });
-      fireEvent.blur(input as HTMLInputElement);
 
-      expect(defaultProps.onLimitPriceChange).toHaveBeenCalledWith('45050.00');
+      expect(onLimitPriceChange).not.toHaveBeenCalled();
     });
   });
 

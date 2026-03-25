@@ -13,15 +13,6 @@ const mockStore = configureStore({
   },
 });
 
-const deLocaleStore = configureStore({
-  metamask: {
-    ...mockState.metamask,
-  },
-  localeMessages: {
-    currentLocale: 'de',
-  },
-});
-
 describe('AmountInput', () => {
   const defaultProps = {
     amount: '',
@@ -97,7 +88,7 @@ describe('AmountInput', () => {
 
       const container = screen.getByTestId('amount-input-field');
       const input = container.querySelector('input');
-      expect(input).toHaveValue('1,000.00');
+      expect(input).toHaveValue('1000');
     });
 
     it('calls onAmountChange when input value changes', () => {
@@ -170,7 +161,7 @@ describe('AmountInput', () => {
       expect(onAmountChange).not.toHaveBeenCalled();
     });
 
-    it('allows formatted numbers with commas', () => {
+    it('rejects numbers with comma grouping', () => {
       const onAmountChange = jest.fn();
       renderWithProvider(
         <AmountInput {...defaultProps} onAmountChange={onAmountChange} />,
@@ -184,11 +175,20 @@ describe('AmountInput', () => {
         target: { value: '1,000' },
       });
 
-      expect(onAmountChange).toHaveBeenCalledWith('1000');
+      expect(onAmountChange).not.toHaveBeenCalled();
     });
 
-    it('normalizes locale-formatted input to normalized value', () => {
+    it('rejects non-en-US locale-formatted input', () => {
       const onAmountChange = jest.fn();
+      const deLocaleStore = configureStore({
+        metamask: {
+          ...mockState.metamask,
+        },
+        localeMessages: {
+          currentLocale: 'de',
+        },
+      });
+
       renderWithProvider(
         <AmountInput {...defaultProps} onAmountChange={onAmountChange} />,
         deLocaleStore,
@@ -202,7 +202,27 @@ describe('AmountInput', () => {
         target: { value: '1.000,50' },
       });
 
-      expect(onAmountChange).toHaveBeenCalledWith('1000.50');
+      expect(onAmountChange).not.toHaveBeenCalled();
+    });
+
+    it('keeps raw dot-decimal value in de locale', () => {
+      const deLocaleStore = configureStore({
+        metamask: {
+          ...mockState.metamask,
+        },
+        localeMessages: {
+          currentLocale: 'de',
+        },
+      });
+
+      renderWithProvider(
+        <AmountInput {...defaultProps} amount="1000.50" />,
+        deLocaleStore,
+      );
+
+      const container = screen.getByTestId('amount-input-field');
+      const input = container.querySelector('input');
+      expect(input).toHaveValue('1000.50');
     });
   });
 

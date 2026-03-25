@@ -12,9 +12,7 @@ import {
   IconColor,
 } from '@metamask/design-system-react';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { useSelector } from 'react-redux';
 
-import { getIntlLocale } from '../../../../../../ducks/locale/locale';
 import {
   BorderRadius,
   BackgroundColor,
@@ -23,7 +21,6 @@ import { useFormatters } from '../../../../../../hooks/useFormatters';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
 import { TextField, TextFieldSize } from '../../../../../component-library';
 import { PerpsSlider } from '../../../perps-slider';
-import { normalizeLocalizedNumberInput } from '../../../utils/localeNumber';
 import type { AmountInputProps } from '../../order-entry.types';
 
 /**
@@ -55,42 +52,13 @@ export const AmountInput: React.FC<AmountInputProps> = ({
 }) => {
   const t = useI18nContext();
   const { formatCurrencyWithMinThreshold, formatNumber } = useFormatters();
-  const locale = useSelector(getIntlLocale);
   const [percentInputValue, setPercentInputValue] = useState<string>(
     String(balancePercent),
   );
-  const [isAmountFocused, setIsAmountFocused] = useState(false);
-  const [amountInputValue, setAmountInputValue] = useState('');
 
   useEffect(() => {
     setPercentInputValue(String(balancePercent));
   }, [balancePercent]);
-
-  const formatAmountForDisplay = useCallback(
-    (value: number): string =>
-      formatNumber(value, {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2,
-      }),
-    [formatNumber],
-  );
-
-  const formattedAmountDisplayValue = useMemo(() => {
-    if (!amount) {
-      return '';
-    }
-    const parsed = Number.parseFloat(amount);
-    if (!Number.isFinite(parsed) || parsed <= 0) {
-      return '';
-    }
-    return formatAmountForDisplay(parsed);
-  }, [amount, formatAmountForDisplay]);
-
-  useEffect(() => {
-    if (!isAmountFocused) {
-      setAmountInputValue(formattedAmountDisplayValue);
-    }
-  }, [formattedAmountDisplayValue, isAmountFocused]);
 
   const tokenAmount = useMemo(() => {
     const numAmount = Number.parseFloat(amount) || 0;
@@ -114,19 +82,14 @@ export const AmountInput: React.FC<AmountInputProps> = ({
   const handleAmountChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       const { value } = event.target;
-      const normalizedDraft = normalizeLocalizedNumberInput(value, locale, {
-        allowTrailingDecimal: true,
-      });
-
-      if (normalizedDraft === null) {
+      if (!(value === '' || /^\d*\.?\d*$/u.test(value))) {
         return;
       }
 
-      setAmountInputValue(value);
-      onAmountChange(normalizedDraft);
+      onAmountChange(value);
 
-      if (normalizedDraft && availableBalance > 0) {
-        const numValue = Number.parseFloat(normalizedDraft);
+      if (value && availableBalance > 0) {
+        const numValue = Number.parseFloat(value);
         if (!Number.isNaN(numValue) && numValue > 0) {
           const pct = Math.min(
             Math.round((numValue / availableBalance) * 100),
@@ -143,17 +106,10 @@ export const AmountInput: React.FC<AmountInputProps> = ({
         setPercentInputValue('0');
       }
     },
-    [availableBalance, locale, onAmountChange, onBalancePercentChange],
+    [availableBalance, onAmountChange, onBalancePercentChange],
   );
 
-  const handleAmountFocus = useCallback(() => {
-    setIsAmountFocused(true);
-    setAmountInputValue(formattedAmountDisplayValue);
-  }, [formattedAmountDisplayValue]);
-
   const handleAmountBlur = useCallback(() => {
-    setIsAmountFocused(false);
-
     if (!amount) {
       onAmountChange('');
       return;
@@ -167,11 +123,6 @@ export const AmountInput: React.FC<AmountInputProps> = ({
 
     onAmountChange('');
   }, [amount, onAmountChange]);
-
-  const displayedAmountValue = useMemo(
-    () => (isAmountFocused ? amountInputValue : formattedAmountDisplayValue),
-    [amountInputValue, formattedAmountDisplayValue, isAmountFocused],
-  );
 
   const handleTokenAmountChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -279,11 +230,6 @@ export const AmountInput: React.FC<AmountInputProps> = ({
     availableBalance,
   ]);
 
-  const formattedPlaceholder = useMemo(
-    () => formatAmountForDisplay(0),
-    [formatAmountForDisplay],
-  );
-
   return (
     <Box flexDirection={BoxFlexDirection.Column} gap={3}>
       {/* Header: Size, then Available to trade below (both left-aligned) */}
@@ -330,11 +276,10 @@ export const AmountInput: React.FC<AmountInputProps> = ({
         <Box className="flex-1 min-w-0">
           <TextField
             size={TextFieldSize.Md}
-            value={displayedAmountValue}
+            value={amount}
             onChange={handleAmountChange}
-            onFocus={handleAmountFocus}
             onBlur={handleAmountBlur}
-            placeholder={formattedPlaceholder}
+            placeholder="0.00"
             borderRadius={BorderRadius.MD}
             borderWidth={0}
             backgroundColor={BackgroundColor.backgroundMuted}

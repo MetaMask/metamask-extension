@@ -952,7 +952,7 @@ describe('PerpsOrderEntryPage', () => {
       expect(mockUseNavigate).toHaveBeenCalledWith('/perps/market/ETH');
     });
 
-    it('submits normalized limit price when locale-formatted value is entered', async () => {
+    it('does not submit a limit order when locale-formatted limit price is entered', async () => {
       mockSearchParams.set('orderType', 'limit');
 
       const store = mockStore(createMockStateWithLocale('de'));
@@ -976,15 +976,10 @@ describe('PerpsOrderEntryPage', () => {
         fireEvent.click(screen.getByTestId('submit-order-button'));
       });
 
-      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
-        'perpsPlaceOrder',
-        [
-          expect.objectContaining({
-            orderType: 'limit',
-            price: '45050.00',
-          }),
-        ],
+      const placeOrderCalls = mockSubmitRequestToBackground.mock.calls.filter(
+        ([method]) => method === 'perpsPlaceOrder',
       );
+      expect(placeOrderCalls).toHaveLength(0);
     });
   });
 

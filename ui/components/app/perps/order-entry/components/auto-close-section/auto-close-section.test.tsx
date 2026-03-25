@@ -107,7 +107,7 @@ describe('AutoCloseSection', () => {
       // TextField wraps an input, query the actual input element
       const container = screen.getByTestId('tp-price-input');
       const input = container.querySelector('input');
-      expect(input).toHaveValue('50,000.00');
+      expect(input).toHaveValue('50000');
     });
 
     it('calls onTakeProfitPriceChange when input changes', () => {
@@ -164,7 +164,7 @@ describe('AutoCloseSection', () => {
 
       const container = screen.getByTestId('sl-price-input');
       const input = container.querySelector('input');
-      expect(input).toHaveValue('40,000.00');
+      expect(input).toHaveValue('40000');
     });
 
     it('calls onStopLossPriceChange when input changes', () => {
@@ -293,7 +293,7 @@ describe('AutoCloseSection', () => {
   });
 
   describe('locale handling', () => {
-    it('normalizes de-DE TP input to normalized value', () => {
+    it('keeps raw dot-decimal TP value in de locale', () => {
       const onTakeProfitPriceChange = jest.fn();
       const deStore = configureStore({
         localeMessages: {
@@ -315,14 +315,41 @@ describe('AutoCloseSection', () => {
       const container = screen.getByTestId('tp-price-input');
       const input = container.querySelector('input');
       expect(input).not.toBeNull();
+      expect(input).toHaveValue('45050.00');
+      fireEvent.blur(input as HTMLInputElement);
+
+      expect(onTakeProfitPriceChange).toHaveBeenCalledWith('45050.00');
+    });
+
+    it('rejects non-en-US locale-formatted TP input while typing', () => {
+      const onTakeProfitPriceChange = jest.fn();
+      const deStore = configureStore({
+        localeMessages: {
+          ...(mockState.localeMessages ?? {}),
+          currentLocale: 'de',
+        },
+      });
+
+      renderWithProvider(
+        <AutoCloseSection
+          {...defaultProps}
+          enabled={true}
+          takeProfitPrice=""
+          onTakeProfitPriceChange={onTakeProfitPriceChange}
+        />,
+        deStore,
+      );
+
+      const container = screen.getByTestId('tp-price-input');
+      const input = container.querySelector('input');
+      expect(input).not.toBeNull();
 
       fireEvent.focus(input as HTMLInputElement);
       fireEvent.change(input as HTMLInputElement, {
         target: { value: '45.050,00' },
       });
-      fireEvent.blur(input as HTMLInputElement);
 
-      expect(onTakeProfitPriceChange).toHaveBeenCalledWith('45050.00');
+      expect(onTakeProfitPriceChange).not.toHaveBeenCalled();
     });
   });
 });
