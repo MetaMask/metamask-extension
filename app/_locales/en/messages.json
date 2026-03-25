@@ -410,10 +410,10 @@
     "message": "Manage factors"
   },
   "twoFASigningMethods": {
-    "message": "Signing methods"
+    "message": "Transaction verification"
   },
   "twoFARecoveryMethods": {
-    "message": "Backup methods"
+    "message": "Recovery methods"
   },
   "twoFAFactorAuthenticator": {
     "message": "Authenticator App"
