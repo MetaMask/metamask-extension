@@ -2,6 +2,7 @@ import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
 import { Mockttp } from 'mockttp';
 import { DEFAULT_BTC_BALANCE } from '../../constants';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { withFixtures } from '../../helpers';
 import { completeImportSRPOnboardingFlow } from '../../page-objects/flows/onboarding.flow';
 import ActivityListPage from '../../page-objects/pages/home/activity-list';
@@ -53,24 +54,15 @@ async function mockBtcSwapMocksNoQuotes(mockServer: Mockttp) {
   ];
 }
 
-const btcSwapManifestFlags = {
-  remoteFeatureFlags: {
-    bitcoinAccounts: { enabled: true, minimumVersion: '13.6.0' },
-    sendRedesign: { enabled: true },
-    bitcoinSwaps: { enabled: true },
-  },
-};
-
 describe('BTC Account - Swap (Bridge)', function (this: Suite) {
   this.timeout(180000); // Bridge tests need longer timeout
 
   it('can open the swap/bridge page from Bitcoin account', async function () {
     await withFixtures(
       {
-        onboarding: true,
+        fixtures: new FixtureBuilderV2({ onboarding: true }).build(),
         title: this.test?.fullTitle(),
         dappOptions: { numberOfTestDapps: 1 },
-        manifestFlags: btcSwapManifestFlags,
         testSpecificMock: mockBtcSwapMocks,
       },
       async ({ driver }) => {
@@ -104,10 +96,9 @@ describe('BTC Account - Swap (Bridge)', function (this: Suite) {
   it('can select destination token and see quote', async function () {
     await withFixtures(
       {
-        onboarding: true,
+        fixtures: new FixtureBuilderV2({ onboarding: true }).build(),
         title: this.test?.fullTitle(),
         dappOptions: { numberOfTestDapps: 1 },
-        manifestFlags: btcSwapManifestFlags,
         testSpecificMock: mockBtcSwapMocks,
       },
       async ({ driver }) => {
@@ -150,10 +141,9 @@ describe('BTC Account - Swap (Bridge)', function (this: Suite) {
   it('shows insufficient funds error when amount exceeds balance', async function () {
     await withFixtures(
       {
-        onboarding: true,
+        fixtures: new FixtureBuilderV2({ onboarding: true }).build(),
         title: this.test?.fullTitle(),
         dappOptions: { numberOfTestDapps: 1 },
-        manifestFlags: btcSwapManifestFlags,
         testSpecificMock: mockBtcSwapMocks,
       },
       async ({ driver }) => {
@@ -192,10 +182,9 @@ describe('BTC Account - Swap (Bridge)', function (this: Suite) {
   it('shows no trade route available when no quotes are returned', async function () {
     await withFixtures(
       {
-        onboarding: true,
+        fixtures: new FixtureBuilderV2({ onboarding: true }).build(),
         title: this.test?.fullTitle(),
         dappOptions: { numberOfTestDapps: 1 },
-        manifestFlags: btcSwapManifestFlags,
         testSpecificMock: mockBtcSwapMocksNoQuotes,
       },
       async ({ driver }) => {
@@ -235,10 +224,9 @@ describe('BTC Account - Swap (Bridge)', function (this: Suite) {
   it('can complete a swap from BTC to ETH', async function () {
     await withFixtures(
       {
-        onboarding: true,
+        fixtures: new FixtureBuilderV2({ onboarding: true }).build(),
         title: this.test?.fullTitle(),
         dappOptions: { numberOfTestDapps: 1 },
-        manifestFlags: btcSwapManifestFlags,
         testSpecificMock: mockBtcSwapMocks,
       },
       async ({ driver }) => {

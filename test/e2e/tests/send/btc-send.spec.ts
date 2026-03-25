@@ -1,6 +1,7 @@
 import { Suite } from 'mocha';
 import { Mockttp } from 'mockttp';
 import { DEFAULT_BTC_BALANCE } from '../../constants';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { withFixtures } from '../../helpers';
 import { completeImportSRPOnboardingFlow } from '../../page-objects/flows/onboarding.flow';
 import ActivityListPage from '../../page-objects/pages/home/activity-list';
@@ -41,15 +42,9 @@ describe('BTC Account - Send', function (this: Suite) {
   it('fields validation', async function () {
     await withFixtures(
       {
-        onboarding: true,
+        fixtures: new FixtureBuilderV2({ onboarding: true }).build(),
         title: this.test?.fullTitle(),
         dappOptions: { numberOfTestDapps: 1 },
-        manifestFlags: {
-          remoteFeatureFlags: {
-            bitcoinAccounts: { enabled: true, minimumVersion: '13.6.0' },
-            sendRedesign: { enabled: true },
-          },
-        },
         testSpecificMock: mockBtcSendMocks,
       },
       async ({ driver }) => {
@@ -79,15 +74,9 @@ describe('BTC Account - Send', function (this: Suite) {
   it('amount validation', async function () {
     await withFixtures(
       {
-        onboarding: true,
+        fixtures: new FixtureBuilderV2({ onboarding: true }).build(),
         title: this.test?.fullTitle(),
         dappOptions: { numberOfTestDapps: 1 },
-        manifestFlags: {
-          remoteFeatureFlags: {
-            bitcoinAccounts: { enabled: true, minimumVersion: '13.6.0' },
-            sendRedesign: { enabled: true },
-          },
-        },
         testSpecificMock: mockBtcSendMocks,
       },
       async ({ driver }) => {
@@ -123,15 +112,9 @@ describe('BTC Account - Send', function (this: Suite) {
 
     await withFixtures(
       {
-        onboarding: true,
+        fixtures: new FixtureBuilderV2({ onboarding: true }).build(),
         title: this.test?.fullTitle(),
         dappOptions: { numberOfTestDapps: 1 },
-        manifestFlags: {
-          remoteFeatureFlags: {
-            bitcoinAccounts: { enabled: true, minimumVersion: '13.6.0' },
-            sendRedesign: { enabled: true },
-          },
-        },
         testSpecificMock: mockBtcSendMocks,
       },
       async ({ driver }) => {
