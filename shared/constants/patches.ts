@@ -11,7 +11,7 @@ export const GET_STATE_PATCHES = 'getStatePatches';
 export const SEND_UPDATE = 'sendUpdate';
 
 /**
- * This method is used by a UI process to retrieve the first batch of state
- * updates from the background.
+ * This method is used by a UI process to ask the background process to
+ * begin sending state updates.
  */
 export const START_SENDING_PATCHES = 'startSendingPatches';
