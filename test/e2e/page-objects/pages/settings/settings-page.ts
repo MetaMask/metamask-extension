@@ -4,7 +4,7 @@ class SettingsPage {
   private readonly driver: Driver;
 
   private readonly aboutViewButton = {
-    text: 'About',
+    text: 'About MetaMask',
     css: '.tab-bar__tab__content__title',
   };
 
@@ -12,7 +12,7 @@ class SettingsPage {
     '.settings-page__header__title-container__close-button';
 
   private readonly developerOptionsButton = {
-    text: 'Developer options',
+    text: 'Debug',
     css: '.tab-bar__tab__content__title',
   };
 
@@ -27,7 +27,12 @@ class SettingsPage {
   };
 
   private readonly privacySettingsButton = {
-    text: 'Security & privacy',
+    text: 'Privacy',
+    css: '.tab-bar__tab__content__title',
+  };
+
+  private readonly securityAndPasswordSettingsButton = {
+    text: 'Security and password',
     css: '.tab-bar__tab__content__title',
   };
 
@@ -128,8 +133,13 @@ class SettingsPage {
   }
 
   async goToDeveloperOptions(): Promise<void> {
-    console.log('Navigating to Developer options page');
+    console.log('Navigating to Debug page');
     await this.driver.clickElement(this.developerOptionsButton);
+  }
+
+  async goToSecurityAndPasswordSettings(): Promise<void> {
+    console.log('Navigating to Security and password page');
+    await this.driver.clickElement(this.securityAndPasswordSettingsButton);
   }
 
   async goToExperimentalSettings(): Promise<void> {

@@ -54,7 +54,12 @@ class PrivacySettings {
     '[data-testid="ipfsToggle"] .toggle-button';
 
   private readonly privacySettingsPageTitle = {
-    text: 'Security & privacy',
+    text: 'Privacy',
+    tag: 'h4',
+  };
+
+  private readonly securityAndPasswordSettingsPageTitle = {
+    text: 'Security and password',
     tag: 'h4',
   };
 
@@ -148,6 +153,19 @@ class PrivacySettings {
       throw e;
     }
     console.log('Privacy & Security Settings page is loaded');
+  }
+
+  async checkSecurityAndPasswordPageIsLoaded(): Promise<void> {
+    try {
+      await this.driver.waitForSelector(this.securityAndPasswordSettingsPageTitle);
+    } catch (e) {
+      console.log(
+        'Timeout while waiting for Security and password settings page to be loaded',
+        e,
+      );
+      throw e;
+    }
+    console.log('Security and password settings page is loaded');
   }
 
   async checkSrpListIsLoaded(): Promise<void> {

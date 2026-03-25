@@ -22,15 +22,15 @@ async function doPasswordChangeAndLockWallet(
   newPassword: string,
   isSocialLogin: boolean = false,
 ) {
-  // navigate to security & privacy settings
+  // navigate to security and password settings
   const headerNavbar = new HeaderNavbar(driver);
   await headerNavbar.openSettingsPage();
   const settingsPage = new SettingsPage(driver);
   await settingsPage.checkPageIsLoaded();
-  await settingsPage.goToPrivacySettings();
+  await settingsPage.goToSecurityAndPasswordSettings();
 
   const privacySettings = new PrivacySettings(driver);
-  await privacySettings.checkPageIsLoaded();
+  await privacySettings.checkSecurityAndPasswordPageIsLoaded();
   await privacySettings.openChangePassword();
 
   const changePasswordPage = new ChangePasswordPage(driver);

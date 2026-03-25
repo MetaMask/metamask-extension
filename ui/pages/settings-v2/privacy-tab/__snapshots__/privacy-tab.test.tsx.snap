@@ -85,7 +85,7 @@ exports[`PrivacyTab snapshot matches snapshot 1`] = `
             Third-party APIs
           </p>
           <a
-            href="/settings-v2/privacy/third-party-apis"
+            href="/settings/privacy/third-party-apis"
           >
             <svg
               class="inline-block w-4 h-4 text-icon-alternative"
