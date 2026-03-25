@@ -240,7 +240,7 @@ async function startApp(metamaskState, opts) {
   return store;
 }
 
-async function runInitialActions(store) {
+export async function runInitialActions(store) {
   const initialState = store.getState();
 
   // Update browser environment with accurate browser detection from UI
