@@ -1,156 +1,224 @@
 /* eslint-disable import-x/no-useless-path-segments */
 /* eslint-disable import-x/extensions */
 import { type ComponentType } from 'react';
+import { IconName } from '@metamask/design-system-react';
 import {
   ACCOUNT_IDENTICON_ROUTE,
   ASSETS_ROUTE,
   AUTO_LOCK_ROUTE,
+  BACKUPANDSYNC_ROUTE,
   CURRENCY_ROUTE,
   DEVELOPER_OPTIONS_V2_ROUTE,
+  EXPERIMENTAL_ROUTE,
   LANGUAGE_ROUTE,
+  NOTIFICATIONS_SETTINGS_ROUTE,
   PREFERENCES_AND_DISPLAY_ROUTE,
-  SETTINGS_V2_ROUTE,
   SECURITY_AND_PASSWORD_ROUTE,
+  SETTINGS_V2_ROUTE,
   TRANSACTIONS_ROUTE,
   THEME_ROUTE,
   PRIVACY_ROUTE,
   THIRD_PARTY_APIS_ROUTE,
 } from '../../helpers/constants/routes';
-import { IconName } from '../../components/component-library';
 import { mmLazy } from '../../helpers/utils/mm-lazy';
 
-export type SettingsV2MenuListItem = {
-  id: string;
-  /** Absolute path, e.g. SETTINGS_V2_ROUTE + '/privacy' */
-  path: string;
-  /** i18n key for menu list item label */
+/**
+ * Route definition for a Settings V2 page.
+ */
+export type SettingsV2RouteMeta = {
+  /** i18n key for the route label (used in header, breadcrumbs, TabBar) */
   labelKey: string;
-  iconName: IconName;
-  /** Lazy-loaded menu list item content component */
-  component: ComponentType;
+  /** Parent path for back navigation; undefined = settings root */
+  parentPath?: string;
+  /** Lazy-loaded component to render for this route */
+  component?: ComponentType;
+  /** If true, this route appears as a tab in the TabBar */
+  isTab?: boolean;
+  /** Icon for TabBar (required if isTab is true) */
+  iconName?: IconName;
 };
 
 /**
- * Route meta for header title and back navigation.
- * Used by the layout to derive title and backRoute from pathname.
+ * Single source of truth for all Settings V2 routes.
+ * Order of tabs in the TabBar is determined by declaration order of isTab entries.
  */
-export type SettingsV2RouteMeta = {
-  labelKey: string;
-  /** Parent path for back button; undefined = root (back goes to app home) */
-  parentPath?: string;
-};
+export const SETTINGS_V2_ROUTES: Record<string, SettingsV2RouteMeta> = {
+  // Settings root (no component - renders first tab content)
+  [SETTINGS_V2_ROUTE]: {
+    labelKey: 'settings',
+  },
 
-// Map from path to route meta. Sub-pages (e.g. currency) must be listed here.
-export const SETTINGS_V2_ROUTE_META: Record<string, SettingsV2RouteMeta> = {
-  [SETTINGS_V2_ROUTE]: { labelKey: 'settings' },
-  // Assets tab
-  [ASSETS_ROUTE]: {
-    labelKey: 'assets',
-    parentPath: SETTINGS_V2_ROUTE,
-  },
-  [CURRENCY_ROUTE]: {
-    labelKey: 'localCurrency',
-    parentPath: ASSETS_ROUTE,
-  },
-  [TRANSACTIONS_ROUTE]: {
-    labelKey: 'transactions',
-    parentPath: SETTINGS_V2_ROUTE,
-  },
-  // Preferences and display tab
+  // --- Preferences and Display tab ---
   [PREFERENCES_AND_DISPLAY_ROUTE]: {
     labelKey: 'preferencesAndDisplay',
     parentPath: SETTINGS_V2_ROUTE,
+    component: mmLazy(() => import('./preferences-and-display-tab/index.ts')),
+    isTab: true,
+    iconName: IconName.Customize,
   },
   [THEME_ROUTE]: {
     labelKey: 'theme',
     parentPath: PREFERENCES_AND_DISPLAY_ROUTE,
+    component: mmLazy(
+      () => import('./preferences-and-display-tab/theme-sub-page.tsx'),
+    ),
   },
   [LANGUAGE_ROUTE]: {
     labelKey: 'language',
     parentPath: PREFERENCES_AND_DISPLAY_ROUTE,
+    component: mmLazy(
+      () => import('./preferences-and-display-tab/language-sub-page.tsx'),
+    ),
   },
   [ACCOUNT_IDENTICON_ROUTE]: {
     labelKey: 'accountIdenticon',
     parentPath: PREFERENCES_AND_DISPLAY_ROUTE,
+    component: mmLazy(
+      () =>
+        import('./preferences-and-display-tab/account-identicon-sub-page.tsx'),
+    ),
   },
-  // Privacy tab
-  [PRIVACY_ROUTE]: {
-    labelKey: 'privacy',
+
+  // --- Notifications tab ---
+  [NOTIFICATIONS_SETTINGS_ROUTE]: {
+    labelKey: 'notifications',
     parentPath: SETTINGS_V2_ROUTE,
+    component: mmLazy(
+      () => import('../notifications-settings/notifications-settings.tsx'),
+    ),
+    isTab: true,
+    iconName: IconName.Notification,
   },
-  [THIRD_PARTY_APIS_ROUTE]: {
-    labelKey: 'thirdPartyApis',
-    parentPath: PRIVACY_ROUTE,
-  },
-  // TODO: Update route after screen is updated
-  // Security and password tab
+
+  // --- Security and Password tab ---
   [SECURITY_AND_PASSWORD_ROUTE]: {
     labelKey: 'securityAndPassword',
     parentPath: SETTINGS_V2_ROUTE,
+    component: mmLazy(() => import('./security-and-password-tab/index.ts')),
+    isTab: true,
+    iconName: IconName.SecurityKey,
   },
   [AUTO_LOCK_ROUTE]: {
     labelKey: 'autoLock',
     parentPath: SECURITY_AND_PASSWORD_ROUTE,
+    component: mmLazy(
+      () => import('./security-and-password-tab/auto-lock-sub-page.tsx'),
+    ),
   },
-  // Developer options tab
+
+  // --- Privacy tab ---
+  [PRIVACY_ROUTE]: {
+    labelKey: 'privacy',
+    parentPath: SETTINGS_V2_ROUTE,
+    component: mmLazy(() => import('./privacy-tab/index.ts')),
+    isTab: true,
+    iconName: IconName.Lock,
+  },
+  [THIRD_PARTY_APIS_ROUTE]: {
+    labelKey: 'thirdPartyApis',
+    parentPath: PRIVACY_ROUTE,
+    component: mmLazy(
+      () => import('./privacy-tab/third-party-apis-sub-page.tsx'),
+    ),
+  },
+
+  // --- Backup and sync tab ---
+  [BACKUPANDSYNC_ROUTE]: {
+    labelKey: 'backupAndSync',
+    parentPath: SETTINGS_V2_ROUTE,
+    component: mmLazy(
+      () => import('../settings/backup-and-sync-tab/backup-and-sync-tab.tsx'),
+    ),
+    isTab: true,
+    iconName: IconName.SecurityTime,
+  },
+
+  // --- Assets tab ---
+  [ASSETS_ROUTE]: {
+    labelKey: 'assets',
+    parentPath: SETTINGS_V2_ROUTE,
+    component: mmLazy(() => import('./assets-tab/index.ts')),
+    isTab: true,
+    iconName: IconName.Coin,
+  },
+  [CURRENCY_ROUTE]: {
+    labelKey: 'localCurrency',
+    parentPath: ASSETS_ROUTE,
+    component: mmLazy(() => import('./assets-tab/currency-sub-page.tsx')),
+  },
+
+  // --- Transactions tab ---
+  [TRANSACTIONS_ROUTE]: {
+    labelKey: 'transactions',
+    parentPath: SETTINGS_V2_ROUTE,
+    component: mmLazy(() => import('./transactions-tab/index.ts')),
+    isTab: true,
+    iconName: IconName.SwapVertical,
+  },
+
+  // --- Experimental tab ---
+  [EXPERIMENTAL_ROUTE]: {
+    labelKey: 'experimental',
+    parentPath: SETTINGS_V2_ROUTE,
+    component: mmLazy(
+      () => import('../settings/experimental-tab/experimental-tab.tsx'),
+    ),
+    isTab: true,
+    iconName: IconName.Flask,
+  },
+
+  // --- Developer Options tab ---
   [DEVELOPER_OPTIONS_V2_ROUTE]: {
     labelKey: 'developerOptions',
     parentPath: SETTINGS_V2_ROUTE,
+    component: mmLazy(() => import('./developer-options-tab/index.ts')),
+    isTab: true,
+    iconName: IconName.Code,
   },
 };
 
 /**
- * Returns route meta for the given pathname, or null if not a known settings v2 route.
- * @param pathname
+ * Returns route definition for the given pathname, or null if not found.
+ *
+ * @param pathname - The route pathname to look up
  */
 export function getSettingsV2RouteMeta(
   pathname: string,
 ): SettingsV2RouteMeta | null {
-  return SETTINGS_V2_ROUTE_META[pathname] ?? null;
+  return SETTINGS_V2_ROUTES[pathname] ?? null;
 }
 
-// Registry of all Settings V2 menu list items. Order here defines menu order in the UI.
-export const SETTINGS_V2_MENU_LIST_ITEM_REGISTRY: SettingsV2MenuListItem[] = [
-  {
-    id: 'assets',
-    path: ASSETS_ROUTE,
-    labelKey: 'assets',
-    iconName: IconName.Dollar,
-    component: mmLazy(() => import('./assets-tab/index.ts')),
-  },
-  {
-    id: 'transactions',
-    path: TRANSACTIONS_ROUTE,
-    labelKey: 'transactions',
-    iconName: IconName.Setting,
-    component: mmLazy(() => import('./transactions-tab/index.ts')),
-  },
-  {
-    id: 'preferences-and-display',
-    path: PREFERENCES_AND_DISPLAY_ROUTE,
-    labelKey: 'preferencesAndDisplay',
-    iconName: IconName.Setting,
-    component: mmLazy(() => import('./preferences-and-display-tab/index.ts')),
-  },
-  {
-    id: 'privacy',
-    path: PRIVACY_ROUTE,
-    labelKey: 'privacy',
-    iconName: IconName.Lock,
-    component: mmLazy(() => import('./privacy-tab/index.ts')),
-  },
-  {
-    id: 'security-and-password',
-    path: SECURITY_AND_PASSWORD_ROUTE,
-    labelKey: 'securityAndPassword',
-    iconName: IconName.SecuritySearch,
-    component: mmLazy(() => import('./security-and-password-tab/index.ts')),
-  },
-  {
-    id: 'developer-options',
-    path: DEVELOPER_OPTIONS_V2_ROUTE,
-    labelKey: 'developerOptions',
-    iconName: IconName.Code,
-    component: mmLazy(() => import('./developer-options-tab/index.ts')),
-  },
-];
+type TabRouteMeta = SettingsV2RouteMeta &
+  Required<Pick<SettingsV2RouteMeta, 'iconName' | 'component'>>;
+
+type RenderableRouteMeta = SettingsV2RouteMeta &
+  Required<Pick<SettingsV2RouteMeta, 'component'>>;
+
+/**
+ * Derived list of tabs for the TabBar, in order of declaration.
+ */
+export const SETTINGS_V2_TABS = Object.entries(SETTINGS_V2_ROUTES)
+  .filter((entry): entry is [string, TabRouteMeta] => {
+    const [, meta] = entry;
+    return Boolean(meta.isTab && meta.iconName && meta.component);
+  })
+  .map(([path, meta]) => ({
+    id: path.split('/').pop() || path,
+    path,
+    labelKey: meta.labelKey,
+    iconName: meta.iconName,
+    component: meta.component,
+  }));
+
+/**
+ * All routes that have a component (for generating Route elements).
+ */
+export const SETTINGS_V2_RENDERABLE_ROUTES = Object.entries(SETTINGS_V2_ROUTES)
+  .filter((entry): entry is [string, RenderableRouteMeta] => {
+    const [, meta] = entry;
+    return Boolean(meta.component);
+  })
+  .map(([path, meta]) => ({
+    path,
+    component: meta.component,
+  }));
