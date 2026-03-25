@@ -23,6 +23,9 @@ const { ALLOWLISTED_URLS } = require('./mock-e2e-allowlist');
 const {
   getProductionRemoteFlagApiResponse,
 } = require('./feature-flags/feature-flag-registry');
+const {
+  setupSnapRegistryMocks,
+} = require('./mock-response-data/snaps/snap-registry-mocks');
 
 const CDN_CONFIG_PATH = 'test/e2e/mock-cdn/cdn-config.txt';
 const CDN_STALE_DIFF_PATH = 'test/e2e/mock-cdn/cdn-stale-diff.txt';
@@ -39,12 +42,6 @@ const CDN_STALE_RES_HEADERS_PATH =
 
 const ACCOUNTS_API_TOKENS_PATH =
   'test/e2e/mock-response-data/accounts-api-tokens.json';
-const REGISTRY_DIR = 'test/e2e/mock-response-data/snaps/registry-and-headers';
-/** Exact signed registry bytes (like snap `*-@version.txt` bodies; not *.json so Prettier skips it). */
-const REGISTRY_TXT_PATH = `${REGISTRY_DIR}/registry.txt`;
-const SIGNATURE_PATH = `${REGISTRY_DIR}/signature.json`;
-const REGISTRY_HEADERS_PATH = `${REGISTRY_DIR}/registry-headers.json`;
-const SIGNATURE_HEADERS_PATH = `${REGISTRY_DIR}/signature-headers.json`;
 const AGGREGATOR_METADATA_PATH =
   'test/e2e/mock-response-data/aggregator-metadata.json';
 const CHAIN_ID_NETWORKS_PATH =
@@ -205,25 +202,8 @@ async function setupMocking(
   const mockedEndpoint = await testSpecificMock(server);
   // Mocks below this line can be overridden by test-specific mocks
 
-  // Snaps execution ACL — same pattern as `snap-binary-mocks.ts`: body file + *-headers.json
-  const aclRegistryBody = fs.readFileSync(REGISTRY_TXT_PATH);
-  const aclSignatureBody = fs.readFileSync(SIGNATURE_PATH);
-  await server
-    .forGet('https://acl.execution.metamask.io/latest/registry.json')
-    .always()
-    .thenCallback(() => ({
-      statusCode: 200,
-      rawBody: aclRegistryBody,
-      headers: JSON.parse(fs.readFileSync(REGISTRY_HEADERS_PATH, 'utf8')),
-    }));
-  await server
-    .forGet('https://acl.execution.metamask.io/latest/signature.json')
-    .always()
-    .thenCallback(() => ({
-      statusCode: 200,
-      rawBody: aclSignatureBody,
-      headers: JSON.parse(fs.readFileSync(SIGNATURE_HEADERS_PATH, 'utf8')),
-    }));
+  // Snaps execution ACL registry
+  await setupSnapRegistryMocks(server);
 
   // remote feature flags — production-accurate defaults from the registry
   // FF will apply to all environments: rc, prod and dev

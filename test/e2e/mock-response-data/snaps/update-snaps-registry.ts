@@ -1,24 +1,25 @@
 import fs from 'fs';
-import path from 'path';
 import { create } from '@metamask/superstruct';
 import { SignatureStruct, verify } from '@metamask/snaps-registry';
+import { getSnapAclRegistryFixturePaths } from './snap-registry-mocks';
 
 /**
  * Same idea as `update-snap-binary.ts`, but for the Snaps execution allowlist:
  * downloads the signed registry + signature from ACL, verifies the pair, then
- * writes bodies and response header snapshots under `registry-and-headers/`.
+ * writes bodies and response header snapshots (paths from `snap-registry-mocks.ts`).
  *
- * Registry bytes live in `registry.txt` (like snap tarball payloads stored as
- * `*.txt`) so `yarn lint:prettier:fix` does not touch them; only `*.{json,md,mdx,yml}` run.
+ * Registry bytes use `*.txt` so `yarn lint:prettier:fix` does not touch them.
  */
 const REGISTRY_URL = 'https://acl.execution.metamask.io/latest/registry.json';
 const SIGNATURE_URL = 'https://acl.execution.metamask.io/latest/signature.json';
 
-const OUT_DIR = path.join(__dirname, 'registry-and-headers');
-const REGISTRY_PATH = path.join(OUT_DIR, 'registry.txt');
-const SIGNATURE_PATH = path.join(OUT_DIR, 'signature.json');
-const REGISTRY_HEADERS_PATH = path.join(OUT_DIR, 'registry-headers.json');
-const SIGNATURE_HEADERS_PATH = path.join(OUT_DIR, 'signature-headers.json');
+const {
+  outDir: OUT_DIR,
+  registryBody: REGISTRY_PATH,
+  signatureBody: SIGNATURE_PATH,
+  registryHeaders: REGISTRY_HEADERS_PATH,
+  signatureHeaders: SIGNATURE_HEADERS_PATH,
+} = getSnapAclRegistryFixturePaths();
 
 /** Public key from JsonSnapsRegistry / extension snaps registry init. */
 const REGISTRY_PUBLIC_KEY =
