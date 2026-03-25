@@ -254,7 +254,37 @@ function VerifyFactorModal({ factorId, onVerified, onClose, t }: {
     );
   }
 
-  // Passkeys / Mobile — single action
+  // Mobile — QR based action (matches setup flow)
+  if (factorId === 'mobile') {
+    return (
+      <Box backgroundColor={BoxBackgroundColor.BackgroundDefault} className="absolute inset-0 z-50 flex flex-col">
+        {header}
+        <Box className="flex-1" paddingHorizontal={4}>
+          <Text variant={TextVariant.HeadingMd} fontWeight={FontWeight.Bold}>{t('twoFAFactorMobileDevice')}</Text>
+          <Text color={TextColor.TextAlternative} variant={TextVariant.BodySm} className="mt-1 mb-6">
+            {t('twoFAMobileDeviceSubtitle')}
+          </Text>
+          <Box
+            flexDirection={BoxFlexDirection.Row}
+            justifyContent={BoxJustifyContent.Center}
+            alignItems={BoxAlignItems.Center}
+            backgroundColor={BoxBackgroundColor.BackgroundMuted}
+            className="rounded-xl"
+            style={{ height: 180 }}
+          >
+            <Icon name={IconName.QrCode} color={IconColor.IconMuted} size={IconSize.Xl} />
+          </Box>
+        </Box>
+        <Box padding={4} className="shrink-0 border-t" borderColor={BoxBorderColor.BorderMuted}>
+          <Button variant={ButtonVariant.Primary} size={ButtonSize.Lg} isFullWidth startIconName={IconName.Mobile} onClick={onVerified}>
+            {t('twoFAVerify')}
+          </Button>
+        </Box>
+      </Box>
+    );
+  }
+
+  // Passkeys — single action
   return (
     <Box backgroundColor={BoxBackgroundColor.BackgroundDefault} className="absolute inset-0 z-50 flex flex-col">
       {header}
