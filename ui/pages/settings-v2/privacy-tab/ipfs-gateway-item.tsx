@@ -9,9 +9,13 @@ import {
   setIsIpfsGatewayEnabled,
 } from '../../../store/actions';
 import type { MetaMaskReduxState } from '../../../store/store';
-import { IPFS_DEFAULT_GATEWAY_URL } from '../../../../shared/constants/network';
-// eslint-disable-next-line import/no-restricted-paths
+import {
+  IPFS_DEFAULT_GATEWAY_URL,
+  IPFS_FORBIDDEN_GATEWAY,
+} from '../../../../shared/constants/network';
+// eslint-disable-next-line import-x/no-restricted-paths
 import { addUrlProtocolPrefix } from '../../../../app/scripts/lib/util';
+import { THIRD_PARTY_API_ITEMS } from '../search-config';
 
 export const IpfsGatewayItem = () => {
   const t = useI18nContext();
@@ -28,35 +32,27 @@ export const IpfsGatewayItem = () => {
   const [ipfsGatewayError, setIpfsGatewayError] = useState('');
 
   const handleIpfsGatewayChange = (url: string) => {
-    let error = '';
+    setIpfsGatewayValue(url);
 
-    if (url.length > 0) {
-      try {
-        const validUrl = addUrlProtocolPrefix(url);
-
-        if (validUrl) {
-          const urlObj = new URL(validUrl);
-
-          // don't allow the use of this gateway
-          if (urlObj.host === 'gateway.ipfs.io') {
-            error = t('forbiddenIpfsGateway');
-          }
-
-          if (error.length === 0) {
-            dispatch(setIpfsGateway(urlObj.host));
-          }
-        } else {
-          error = t('invalidIpfsGateway');
-        }
-      } catch {
-        error = t('invalidIpfsGateway');
-      }
-    } else {
-      error = t('invalidIpfsGateway');
+    if (!url.length) {
+      setIpfsGatewayError(t('invalidIpfsGateway'));
+      return;
     }
 
-    setIpfsGatewayValue(url);
-    setIpfsGatewayError(error);
+    const validUrl = addUrlProtocolPrefix(url);
+    if (!validUrl) {
+      setIpfsGatewayError(t('invalidIpfsGateway'));
+      return;
+    }
+
+    const urlObj = new URL(validUrl);
+    if (urlObj.host === IPFS_FORBIDDEN_GATEWAY) {
+      setIpfsGatewayError(t('forbiddenIpfsGateway'));
+      return;
+    }
+
+    dispatch(setIpfsGateway(urlObj.host));
+    setIpfsGatewayError('');
   };
 
   const handleToggle = (currentValue: boolean) => {
@@ -76,7 +72,7 @@ export const IpfsGatewayItem = () => {
   return (
     <Box className={ipfsToggle ? 'mb-4' : undefined}>
       <SettingsToggleItem
-        title={t('ipfsGateway')}
+        title={t(THIRD_PARTY_API_ITEMS['ipfs-gateway'])}
         description={t('ipfsGatewayDescriptionV2')}
         value={ipfsToggle}
         onToggle={handleToggle}

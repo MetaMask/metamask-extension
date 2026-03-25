@@ -16,7 +16,6 @@ export const ConfirmInfoRowTypedSignData = ({
   chainId,
 }: {
   data: string;
-  isPermit?: boolean;
   tokenDecimals?: number;
   chainId: string;
 }) => {

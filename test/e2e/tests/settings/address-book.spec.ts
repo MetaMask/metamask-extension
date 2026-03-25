@@ -7,7 +7,7 @@ import ActivityListPage from '../../page-objects/pages/home/activity-list';
 import ContactsPage from '../../page-objects/pages/settings/contacts-settings';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import TransactionConfirmation from '../../page-objects/pages/confirmations/transaction-confirmation';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 import NetworkManager from '../../page-objects/pages/network-manager';
 import { TOKENS_API_MOCK_RESULT } from '../../../data/mock-data';
 import { createInternalTransaction } from '../../page-objects/flows/transaction';
@@ -46,7 +46,7 @@ describe('Address Book', function (this: Suite) {
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         await createInternalTransaction({
           driver,
@@ -95,7 +95,7 @@ describe('Address Book', function (this: Suite) {
       },
       async ({ driver }) => {
         // Start on Linea
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         // Send transaction on Localhost
         await createInternalTransaction({
@@ -129,7 +129,7 @@ describe('Address Book', function (this: Suite) {
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         await new HeaderNavbar(driver).openContactsPage();
         const contactsPage = new ContactsPage(driver);
@@ -153,7 +153,7 @@ describe('Address Book', function (this: Suite) {
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         await new HeaderNavbar(driver).openContactsPage();
         const contactsPage = new ContactsPage(driver);
@@ -192,7 +192,7 @@ describe('Address Book', function (this: Suite) {
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         await new HeaderNavbar(driver).openContactsPage();
         const contactsPage = new ContactsPage(driver);
@@ -230,7 +230,7 @@ describe('Address Book', function (this: Suite) {
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         await new HeaderNavbar(driver).openContactsPage();
         const contactsPage = new ContactsPage(driver);
@@ -254,7 +254,7 @@ describe('Address Book', function (this: Suite) {
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         await new HeaderNavbar(driver).openContactsPage();
         const contactsPage = new ContactsPage(driver);

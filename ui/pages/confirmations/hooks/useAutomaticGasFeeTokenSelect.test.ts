@@ -145,6 +145,21 @@ describe('useAutomaticGasFeeTokenSelect', () => {
     expect(forceUpdateMetamaskStateMock).toHaveBeenCalledWith(store.dispatch);
   });
 
+  it('does not select first gas fee token if gasless not supported', async () => {
+    useIsGaslessSupportedMock.mockReturnValue({
+      isSupported: false,
+      isSmartTransaction: false,
+      pending: false,
+    });
+
+    runHook();
+
+    await flushAsyncUpdates();
+
+    expect(updateSelectedGasFeeTokenMock).toHaveBeenCalledTimes(0);
+    expect(forceUpdateMetamaskStateMock).toHaveBeenCalledTimes(0);
+  });
+
   it('does not select first gas fee token if sufficient balance', async () => {
     useHasInsufficientBalanceMock.mockReturnValue({
       hasInsufficientBalance: false,
@@ -224,13 +239,16 @@ describe('useAutomaticGasFeeTokenSelect', () => {
 
   it('does not select if transactionId is falsy', async () => {
     const state = getMockConfirmStateForTransaction(
-      genUnapprovedContractInteractionConfirmation({
-        gasFeeTokens: [GAS_FEE_TOKEN_MOCK],
-        selectedGasFeeToken: undefined,
-      }),
+      // Remove transactionId
+      Object.assign(
+        genUnapprovedContractInteractionConfirmation({
+          gasFeeTokens: [GAS_FEE_TOKEN_MOCK],
+          selectedGasFeeToken: undefined,
+        }),
+        { id: '' },
+      ),
     );
-    // Remove transactionId
-    state.metamask.transactions = [];
+
     renderHookWithConfirmContextProvider(useAutomaticGasFeeTokenSelect, state);
 
     await flushAsyncUpdates();

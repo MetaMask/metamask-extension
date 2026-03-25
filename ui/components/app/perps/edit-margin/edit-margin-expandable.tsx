@@ -16,7 +16,6 @@ export type EditMarginExpandableProps = {
   position: Position;
   account: AccountState | null;
   currentPrice: number;
-  selectedAddress: string;
   isExpanded: boolean;
   onToggle: () => void;
 };
@@ -29,7 +28,6 @@ export type EditMarginExpandableProps = {
  * @param options0.position
  * @param options0.account
  * @param options0.currentPrice
- * @param options0.selectedAddress
  * @param options0.isExpanded
  * @param options0.onToggle
  */
@@ -37,7 +35,6 @@ export const EditMarginExpandable: React.FC<EditMarginExpandableProps> = ({
   position,
   account,
   currentPrice,
-  selectedAddress,
   isExpanded,
   onToggle,
 }) => {
@@ -145,7 +142,6 @@ export const EditMarginExpandable: React.FC<EditMarginExpandableProps> = ({
               position={position}
               account={account}
               currentPrice={currentPrice}
-              selectedAddress={selectedAddress}
               mode={marginMode}
               onClose={handleClose}
               onSavingChange={setIsSaving}

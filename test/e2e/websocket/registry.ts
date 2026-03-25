@@ -1,4 +1,4 @@
-import type { WebSocketMessageMock } from '../tests/solana/mocks/websocketDefaultMocks';
+import type { WebSocketMessageMock } from './types';
 import LocalWebSocketServer from './server';
 
 /**

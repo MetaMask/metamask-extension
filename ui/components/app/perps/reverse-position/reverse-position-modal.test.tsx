@@ -7,14 +7,15 @@ import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import { mockPositions } from '../mocks';
 import { ReversePositionModal } from './reverse-position-modal';
 
-const mockGetPerpsController = jest.fn();
+const mockSubmitRequestToBackground = jest.fn();
 const mockGetPerpsStreamManager = jest.fn();
 
-jest.mock('../../../../providers/perps', () => ({
-  getPerpsController: (...args: unknown[]) => mockGetPerpsController(...args),
+jest.mock('../../../../store/background-connection', () => ({
+  submitRequestToBackground: (...args: unknown[]) =>
+    mockSubmitRequestToBackground(...args),
 }));
 
-jest.mock('../../../../providers/perps/PerpsStreamManager', () => ({
+jest.mock('../../../../providers/perps', () => ({
   getPerpsStreamManager: () => mockGetPerpsStreamManager(),
 }));
 
@@ -32,16 +33,22 @@ const defaultProps = {
   onClose: jest.fn(),
   position: longPosition,
   currentPrice: 2900,
-  selectedAddress: '0x123',
 };
 
 describe('ReversePositionModal', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    mockGetPerpsController.mockResolvedValue({
-      closePosition: jest.fn().mockResolvedValue({ success: true }),
-      placeOrder: jest.fn().mockResolvedValue({ success: true }),
-      getPositions: jest.fn().mockResolvedValue(mockPositions),
+    mockSubmitRequestToBackground.mockImplementation((method: string) => {
+      if (method === 'perpsClosePosition') {
+        return Promise.resolve({ success: true });
+      }
+      if (method === 'perpsPlaceOrder') {
+        return Promise.resolve({ success: true });
+      }
+      if (method === 'perpsGetPositions') {
+        return Promise.resolve(mockPositions);
+      }
+      return Promise.resolve(undefined);
     });
     mockGetPerpsStreamManager.mockReturnValue({
       pushPositionsWithOverrides: jest.fn(),
@@ -134,15 +141,6 @@ describe('ReversePositionModal', () => {
   describe('successful save', () => {
     it('closes the position and places a reverse order', async () => {
       const onClose = jest.fn();
-      const closePosition = jest.fn().mockResolvedValue({ success: true });
-      const placeOrder = jest.fn().mockResolvedValue({ success: true });
-      const getPositions = jest.fn().mockResolvedValue(mockPositions);
-
-      mockGetPerpsController.mockResolvedValue({
-        closePosition,
-        placeOrder,
-        getPositions,
-      });
 
       renderWithProvider(
         <ReversePositionModal {...defaultProps} onClose={onClose} />,
@@ -152,23 +150,27 @@ describe('ReversePositionModal', () => {
       fireEvent.click(screen.getByTestId('perps-reverse-position-modal-save'));
 
       await waitFor(() => {
-        expect(mockGetPerpsController).toHaveBeenCalledWith('0x123');
-        expect(closePosition).toHaveBeenCalledWith({
-          symbol: 'ETH',
-          orderType: 'market',
-        });
+        expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+          'perpsClosePosition',
+          [{ symbol: 'ETH', orderType: 'market' }],
+        );
       });
 
       await waitFor(() => {
-        expect(placeOrder).toHaveBeenCalledWith({
-          symbol: 'ETH',
-          isBuy: false, // long→short: isBuy=false
-          size: '2.5',
-          orderType: 'market',
-          usdAmount: '7250.00', // 2.5 * 2900
-          currentPrice: 2900,
-          leverage: 3,
-        });
+        expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+          'perpsPlaceOrder',
+          [
+            {
+              symbol: 'ETH',
+              isBuy: false, // long→short: isBuy=false
+              size: '2.5',
+              orderType: 'market',
+              usdAmount: '7250.00', // 2.5 * 2900
+              currentPrice: 2900,
+              leverage: 3,
+            },
+          ],
+        );
       });
 
       await waitFor(() => {
@@ -192,13 +194,6 @@ describe('ReversePositionModal', () => {
     });
 
     it('places a buy order when reversing a short position', async () => {
-      const placeOrder = jest.fn().mockResolvedValue({ success: true });
-      mockGetPerpsController.mockResolvedValue({
-        closePosition: jest.fn().mockResolvedValue({ success: true }),
-        placeOrder,
-        getPositions: jest.fn().mockResolvedValue(mockPositions),
-      });
-
       renderWithProvider(
         <ReversePositionModal
           {...defaultProps}
@@ -211,13 +206,16 @@ describe('ReversePositionModal', () => {
       fireEvent.click(screen.getByTestId('perps-reverse-position-modal-save'));
 
       await waitFor(() => {
-        expect(placeOrder).toHaveBeenCalledWith(
-          expect.objectContaining({
-            symbol: 'BTC',
-            isBuy: true, // short→long: isBuy=true
-            size: '0.5',
-            leverage: 15,
-          }),
+        expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+          'perpsPlaceOrder',
+          [
+            expect.objectContaining({
+              symbol: 'BTC',
+              isBuy: true, // short→long: isBuy=true
+              size: '0.5',
+              leverage: 15,
+            }),
+          ],
         );
       });
     });
@@ -225,12 +223,14 @@ describe('ReversePositionModal', () => {
 
   describe('close fails', () => {
     it('displays error when closePosition returns failure', async () => {
-      mockGetPerpsController.mockResolvedValue({
-        closePosition: jest
-          .fn()
-          .mockResolvedValue({ success: false, error: 'Insufficient margin' }),
-        placeOrder: jest.fn(),
-        getPositions: jest.fn(),
+      mockSubmitRequestToBackground.mockImplementation((method: string) => {
+        if (method === 'perpsClosePosition') {
+          return Promise.resolve({
+            success: false,
+            error: 'Insufficient margin',
+          });
+        }
+        return Promise.resolve(undefined);
       });
 
       renderWithProvider(<ReversePositionModal {...defaultProps} />, mockStore);
@@ -243,13 +243,11 @@ describe('ReversePositionModal', () => {
     });
 
     it('does not call placeOrder when close fails', async () => {
-      const placeOrder = jest.fn();
-      mockGetPerpsController.mockResolvedValue({
-        closePosition: jest
-          .fn()
-          .mockResolvedValue({ success: false, error: 'fail' }),
-        placeOrder,
-        getPositions: jest.fn(),
+      mockSubmitRequestToBackground.mockImplementation((method: string) => {
+        if (method === 'perpsClosePosition') {
+          return Promise.resolve({ success: false, error: 'fail' });
+        }
+        return Promise.resolve(undefined);
       });
 
       renderWithProvider(<ReversePositionModal {...defaultProps} />, mockStore);
@@ -259,17 +257,20 @@ describe('ReversePositionModal', () => {
       await waitFor(() => {
         expect(screen.getByText('fail')).toBeInTheDocument();
       });
-      expect(placeOrder).not.toHaveBeenCalled();
+
+      expect(mockSubmitRequestToBackground).not.toHaveBeenCalledWith(
+        'perpsPlaceOrder',
+        expect.anything(),
+      );
     });
 
     it('does not call onClose when close fails', async () => {
       const onClose = jest.fn();
-      mockGetPerpsController.mockResolvedValue({
-        closePosition: jest
-          .fn()
-          .mockResolvedValue({ success: false, error: 'fail' }),
-        placeOrder: jest.fn(),
-        getPositions: jest.fn(),
+      mockSubmitRequestToBackground.mockImplementation((method: string) => {
+        if (method === 'perpsClosePosition') {
+          return Promise.resolve({ success: false, error: 'fail' });
+        }
+        return Promise.resolve(undefined);
       });
 
       renderWithProvider(
@@ -288,12 +289,14 @@ describe('ReversePositionModal', () => {
 
   describe('reverse order fails after close succeeds (partial failure)', () => {
     it('shows partial failure error when placeOrder fails after close succeeds', async () => {
-      mockGetPerpsController.mockResolvedValue({
-        closePosition: jest.fn().mockResolvedValue({ success: true }),
-        placeOrder: jest
-          .fn()
-          .mockResolvedValue({ success: false, error: 'Order rejected' }),
-        getPositions: jest.fn().mockResolvedValue(mockPositions),
+      mockSubmitRequestToBackground.mockImplementation((method: string) => {
+        if (method === 'perpsClosePosition') {
+          return Promise.resolve({ success: true });
+        }
+        if (method === 'perpsPlaceOrder') {
+          return Promise.resolve({ success: false, error: 'Order rejected' });
+        }
+        return Promise.resolve(undefined);
       });
 
       renderWithProvider(<ReversePositionModal {...defaultProps} />, mockStore);
@@ -311,12 +314,14 @@ describe('ReversePositionModal', () => {
 
     it('does not call onClose on partial failure', async () => {
       const onClose = jest.fn();
-      mockGetPerpsController.mockResolvedValue({
-        closePosition: jest.fn().mockResolvedValue({ success: true }),
-        placeOrder: jest
-          .fn()
-          .mockResolvedValue({ success: false, error: 'rejected' }),
-        getPositions: jest.fn().mockResolvedValue(mockPositions),
+      mockSubmitRequestToBackground.mockImplementation((method: string) => {
+        if (method === 'perpsClosePosition') {
+          return Promise.resolve({ success: true });
+        }
+        if (method === 'perpsPlaceOrder') {
+          return Promise.resolve({ success: false, error: 'rejected' });
+        }
+        return Promise.resolve(undefined);
       });
 
       renderWithProvider(
@@ -334,8 +339,13 @@ describe('ReversePositionModal', () => {
   });
 
   describe('exception handling', () => {
-    it('shows error when getPerpsController throws', async () => {
-      mockGetPerpsController.mockRejectedValue(new Error('Network error'));
+    it('shows error when submitRequestToBackground throws', async () => {
+      mockSubmitRequestToBackground.mockImplementation((method: string) => {
+        if (method === 'perpsClosePosition') {
+          return Promise.reject(new Error('Network error'));
+        }
+        return Promise.resolve(undefined);
+      });
 
       renderWithProvider(<ReversePositionModal {...defaultProps} />, mockStore);
 
@@ -344,25 +354,6 @@ describe('ReversePositionModal', () => {
       await waitFor(() => {
         expect(screen.getByText('Network error')).toBeInTheDocument();
       });
-    });
-  });
-
-  describe('no selectedAddress', () => {
-    it('does not submit when selectedAddress is empty', () => {
-      mockGetPerpsController.mockResolvedValue({
-        closePosition: jest.fn(),
-        placeOrder: jest.fn(),
-        getPositions: jest.fn(),
-      });
-
-      renderWithProvider(
-        <ReversePositionModal {...defaultProps} selectedAddress="" />,
-        mockStore,
-      );
-
-      fireEvent.click(screen.getByTestId('perps-reverse-position-modal-save'));
-
-      expect(mockGetPerpsController).not.toHaveBeenCalled();
     });
   });
 
@@ -385,13 +376,6 @@ describe('ReversePositionModal', () => {
 
   describe('leverage fallback', () => {
     it('uses numeric leverage value when leverage is a plain number', async () => {
-      const placeOrder = jest.fn().mockResolvedValue({ success: true });
-      mockGetPerpsController.mockResolvedValue({
-        closePosition: jest.fn().mockResolvedValue({ success: true }),
-        placeOrder,
-        getPositions: jest.fn().mockResolvedValue(mockPositions),
-      });
-
       const positionWithPrimitiveLeverage = {
         ...longPosition,
         leverage: 5 as unknown as typeof longPosition.leverage,
@@ -408,10 +392,13 @@ describe('ReversePositionModal', () => {
       fireEvent.click(screen.getByTestId('perps-reverse-position-modal-save'));
 
       await waitFor(() => {
-        expect(placeOrder).toHaveBeenCalledWith(
-          expect.objectContaining({
-            leverage: 5,
-          }),
+        expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+          'perpsPlaceOrder',
+          [
+            expect.objectContaining({
+              leverage: 5,
+            }),
+          ],
         );
       });
     });

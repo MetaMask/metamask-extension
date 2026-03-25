@@ -16,6 +16,8 @@ import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 import { NativeAmountRow } from './native-amount-row';
 import { DateAndTimeRow } from './date-and-time-row';
 import { Expiry } from './expiry';
+import { TotalExposure } from './total-exposure';
+import { MAX_UINT256 } from './typed-sign-permission-util';
 
 /**
  * Component for displaying native token stream permission details.
@@ -45,6 +47,8 @@ export const NativeTokenStreamDetails: React.FC<{
   // DAY is in milliseconds, so we divide by 1000 to get seconds
   const amountPerDay = new BigNumber(amountPerSecond).mul(DAY / 1000);
 
+  const hasMaxAmount = maxAmount && maxAmount.toLowerCase() !== MAX_UINT256;
+
   const { symbol, decimals } = useSelector((state: MetaMaskReduxState) =>
     getNativeTokenInfo(state.metamask.networkConfigurationsByChainId, chainId),
   );
@@ -63,7 +67,7 @@ export const NativeTokenStreamDetails: React.FC<{
             imageUrl={tokenImageUrl}
           />
         )}
-        {maxAmount && (
+        {hasMaxAmount && (
           <NativeAmountRow
             label={t('confirmFieldMaxAllowance')}
             value={maxAmount}
@@ -93,6 +97,17 @@ export const NativeTokenStreamDetails: React.FC<{
         <NativeAmountRow
           label={t('confirmFieldAvailablePerDay')}
           value={amountPerDay}
+          symbol={symbol}
+          decimals={decimals}
+          imageUrl={tokenImageUrl}
+        />
+        <TotalExposure
+          variant="native"
+          initialAmount={initialAmount ?? undefined}
+          maxAmount={maxAmount ?? undefined}
+          amountPerSecond={amountPerSecond}
+          startTime={startTime}
+          expiry={expiry}
           symbol={symbol}
           decimals={decimals}
           imageUrl={tokenImageUrl}

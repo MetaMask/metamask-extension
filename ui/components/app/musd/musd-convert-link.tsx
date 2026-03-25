@@ -5,7 +5,13 @@
  * Shows "Get X% bonus" text and navigates to the mUSD conversion flow.
  */
 
-import React, { useCallback, useContext } from 'react';
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import type { Hex } from '@metamask/utils';
 import {
   FontWeight,
@@ -64,6 +70,15 @@ export const MusdConvertLink: React.FC<MusdConvertLinkProps> = ({
   const t = useI18nContext();
   const { trackEvent } = useContext(MetaMetricsContext);
   const { startConversionFlow } = useMusdConversion();
+  const [isLoading, setIsLoading] = useState(false);
+  const isMountedRef = useRef(true);
+
+  useEffect(() => {
+    isMountedRef.current = true;
+    return () => {
+      isMountedRef.current = false;
+    };
+  }, []);
 
   const displayText =
     ctaText ?? t('musdGetBonusPercentage', [String(MUSD_CONVERSION_APY)]);
@@ -73,31 +88,45 @@ export const MusdConvertLink: React.FC<MusdConvertLinkProps> = ({
       e.preventDefault();
       e.stopPropagation();
 
+      if (isLoading) {
+        return;
+      }
+
+      setIsLoading(true);
+
+      /* eslint-disable @typescript-eslint/naming-convention */
+      const eventProperties = {
+        location: MUSD_EVENTS_CONSTANTS.EVENT_LOCATIONS.TOKEN_LIST_ITEM,
+        cta_type: MUSD_EVENTS_CONSTANTS.MUSD_CTA_TYPES.SECONDARY,
+        cta_text: displayText,
+        cta_click_target: MUSD_EVENTS_CONSTANTS.CTA_CLICK_TARGETS.CTA_TEXT_LINK,
+        chain_id: chainId,
+        token_symbol: tokenSymbol,
+      };
+      /* eslint-enable @typescript-eslint/naming-convention */
+
       trackEvent({
         event: MetaMetricsEventName.MusdConversionCtaClicked,
         category: MetaMetricsEventCategory.Tokens,
-        properties: {
-          location: MUSD_EVENTS_CONSTANTS.EVENT_LOCATIONS.TOKEN_LIST_ITEM,
-          /* eslint-disable @typescript-eslint/naming-convention */
-          cta_type: MUSD_EVENTS_CONSTANTS.MUSD_CTA_TYPES.SECONDARY,
-          cta_text: displayText,
-          cta_click_target:
-            MUSD_EVENTS_CONSTANTS.CTA_CLICK_TARGETS.CTA_TEXT_LINK,
-          chain_id: chainId,
-          token_symbol: tokenSymbol,
-          /* eslint-enable @typescript-eslint/naming-convention */
-        },
+        properties: eventProperties,
       });
 
-      await startConversionFlow({
-        preferredToken: {
-          address: tokenAddress as Hex,
-          chainId: chainId as Hex,
-        },
-        entryPoint,
-      });
+      try {
+        await startConversionFlow({
+          preferredToken: {
+            address: tokenAddress as Hex,
+            chainId: chainId as Hex,
+          },
+          entryPoint,
+        });
+      } finally {
+        if (isMountedRef.current) {
+          setIsLoading(false);
+        }
+      }
     },
     [
+      isLoading,
       chainId,
       tokenAddress,
       tokenSymbol,
@@ -112,6 +141,7 @@ export const MusdConvertLink: React.FC<MusdConvertLinkProps> = ({
     <button
       type="button"
       onClick={handleClick}
+      disabled={isLoading}
       data-testid={`musd-convert-link-${chainId}`}
       className="musd-convert-link"
     >
@@ -120,6 +150,7 @@ export const MusdConvertLink: React.FC<MusdConvertLinkProps> = ({
         color={TextColor.PrimaryDefault}
         fontWeight={FontWeight.Medium}
         data-testid="musd-convert-link-text"
+        style={isLoading ? { opacity: 0.5 } : undefined}
       >
         {displayText}
       </Text>

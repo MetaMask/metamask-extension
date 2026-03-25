@@ -83,8 +83,10 @@ Every benchmark **must** have a threshold entry in `THRESHOLD_REGISTRY` inside `
 
 To add thresholds for a new benchmark:
 
-1. Define a constant named after the file in UPPER_SNAKE_CASE (e.g. `my-benchmark.ts` -> `MY_BENCHMARK`)
-2. Add it to the `THRESHOLD_REGISTRY` entries
+1. Define a threshold config constant in `test/e2e/benchmarks/utils/constants.ts`
+2. Add it to the appropriate collection:
+   - **Interaction/User Journey:** Add to `BENCHMARK_THRESHOLDS`
+   - **Startup:** Add to `STARTUP_BENCHMARK_CONFIGS` (auto-generates 8 platform-combo entries)
 
 ```typescript
 const MY_BENCHMARK: ThresholdConfig = {
@@ -95,10 +97,18 @@ const MY_BENCHMARK: ThresholdConfig = {
   },
 };
 
-// Then add MY_BENCHMARK to the THRESHOLD_REGISTRY entries
+// For interaction/user journey:
+const BENCHMARK_THRESHOLDS = {
+  myBenchmark: MY_BENCHMARK, // camelCase key matching filename
+};
+
+// For startup:
+const STARTUP_BENCHMARK_CONFIGS = {
+  startupMyBenchmark: MY_BENCHMARK, // Will generate 8 platform-combo entries
+};
 ```
 
-The constant name is auto-converted to the file name (`MY_BENCHMARK` -> `my-benchmark`).
+The key must be **camelCase matching the filename**: `my-benchmark.ts` → `myBenchmark`.
 
 ### 3. Add to a preset (optional)
 

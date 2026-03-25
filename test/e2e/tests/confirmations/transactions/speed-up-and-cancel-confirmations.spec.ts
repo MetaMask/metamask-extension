@@ -1,12 +1,13 @@
 /* eslint-disable @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires */
 import { Hex } from '@metamask/utils';
 import { decimalToPrefixedHex } from '../../../../../shared/lib/conversion.utils';
-import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
+import { login } from '../../../page-objects/flows/login.flow';
 import { DEFAULT_FIXTURE_ACCOUNT, WINDOW_TITLES } from '../../../constants';
 import { withFixtures } from '../../../helpers';
 import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
 import { createDappTransaction } from '../../../page-objects/flows/transaction';
 import Confirmation from '../../../page-objects/pages/confirmations/confirmation';
+import SpeedUpAndCancelModal from '../../../page-objects/pages/confirmations/speed-up-and-cancel-modal';
 import ActivityListPage from '../../../page-objects/pages/home/activity-list';
 import HomePage from '../../../page-objects/pages/home/homepage';
 import { TestSuiteArguments } from './shared';
@@ -29,7 +30,7 @@ describe('Speed Up and Cancel Transaction Tests', function () {
           title: this.test?.fullTitle(),
         },
         async ({ driver, localNodes }: TestSuiteArguments) => {
-          await loginWithBalanceValidation(driver);
+          await login(driver);
 
           // Create initial stuck transaction
           await createDappTransaction(driver, {
@@ -54,12 +55,18 @@ describe('Speed Up and Cancel Transaction Tests', function () {
           await homePage.goToActivityList();
 
           const activityListPage = new ActivityListPage(driver);
-          await activityListPage.checkCompletedTxNumberDisplayedInActivity(1);
+          await activityListPage.checkPendingTxNumberDisplayedInActivity(1);
 
           await activityListPage.checkSpeedUpInlineButtonIsPresent();
           await activityListPage.clickTransactionListItem();
           await activityListPage.clickSpeedUpTransaction();
-          await activityListPage.clickConfirmTransactionReplacement();
+
+          const speedUpCancelModal = new SpeedUpAndCancelModal(driver);
+          await speedUpCancelModal.waitForModal();
+          await speedUpCancelModal.checkSpeedUpTitleVisible();
+          await speedUpCancelModal.checkSpeedRowShowsSiteSuggested();
+          await speedUpCancelModal.waitForConfirmEnabled();
+          await speedUpCancelModal.clickConfirm();
           await driver.delay(3000); // Delay needed to ensure the transaction is updated before mining
           (await localNodes?.[0]?.mineBlock()) ??
             console.error('localNodes is undefined or empty');
@@ -85,7 +92,7 @@ describe('Speed Up and Cancel Transaction Tests', function () {
           title: this.test?.fullTitle(),
         },
         async ({ driver, localNodes }: TestSuiteArguments) => {
-          await loginWithBalanceValidation(driver);
+          await login(driver);
 
           // Create initial stuck transaction
           await createDappTransaction(driver, {
@@ -107,10 +114,16 @@ describe('Speed Up and Cancel Transaction Tests', function () {
           await homePage.goToActivityList();
 
           const activityListPage = new ActivityListPage(driver);
-          await activityListPage.checkCompletedTxNumberDisplayedInActivity(1);
+          await activityListPage.checkPendingTxNumberDisplayedInActivity(1);
 
           await activityListPage.clickCancelTransaction();
-          await activityListPage.clickConfirmTransactionReplacement();
+
+          const speedUpCancelModal = new SpeedUpAndCancelModal(driver);
+          await speedUpCancelModal.waitForModal();
+          await speedUpCancelModal.checkCancelTitleVisible();
+          await speedUpCancelModal.checkSpeedRowShowsSiteSuggested();
+          await speedUpCancelModal.waitForConfirmEnabled();
+          await speedUpCancelModal.clickConfirm();
           await driver.delay(3000); // Delay needed to ensure the transaction updated before mining
           (await localNodes?.[0]?.mineBlock()) ??
             console.error('localNodes is undefined or empty');
