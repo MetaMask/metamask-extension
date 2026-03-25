@@ -1,4 +1,5 @@
 import fs from 'fs';
+import { verify } from '@metamask/snaps-registry';
 import {
   SNAPS_REGISTRY_URL,
   SNAPS_SIGNATURE_URL,
@@ -8,7 +9,6 @@ import {
   SNAPS_SIGNATURE_BODY_PATH,
   SNAPS_SIGNATURE_HEADERS_PATH,
 } from './snap-registry-mocks';
-import { verify } from '@metamask/snaps-registry';
 
 /**
  * Same idea as `update-snap-binary.ts`, but for the Snaps execution allowlist:
