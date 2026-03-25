@@ -114,7 +114,6 @@ async function trackTransactionEvent({
     category: MetaMetricsEventCategory.Transactions,
     properties,
     sensitiveProperties,
-    actionId: transactionEventPayload.actionId,
   });
 }
 
