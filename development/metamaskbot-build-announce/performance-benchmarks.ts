@@ -38,7 +38,6 @@ import {
   buildArtifactUrl,
 } from './utils';
 
-/** A parsed benchmark entry with its name, preset, platform, buildType, and stats. */
 export type BenchmarkEntry = {
   benchmarkName: string;
   presetName: string;
@@ -85,23 +84,6 @@ const HEALTH_ICON: Record<EntryHealth, string> = {
   [EntryHealth.Warn]: COMPARISON_SEVERITY.Warn.icon,
   [EntryHealth.Pass]: COMPARISON_SEVERITY.Pass.icon,
 };
-
-/**
- * Platform/buildType sets for startup benchmarks (all 4 combos in CI).
- * Interaction uses ENTRY_BENCHMARK_PLATFORMS/BUILD_TYPES (chrome-browserify).
- *
- * User journey: always chrome × browserify in CI. Webpack user-journey JSON is only
- * uploaded on **push to `main` or `release/*`** (`benchmarks-webpack-perf` in
- * `run-benchmarks.yml`).
- */
-const STARTUP_BENCHMARK_PLATFORMS = [
-  BENCHMARK_PLATFORMS.CHROME,
-  BENCHMARK_PLATFORMS.FIREFOX,
-] as const;
-const STARTUP_BENCHMARK_BUILD_TYPES = [
-  BENCHMARK_BUILD_TYPES.BROWSERIFY,
-  BENCHMARK_BUILD_TYPES.WEBPACK,
-] as const;
 
 const USER_JOURNEY_BENCHMARK_PLATFORMS = [BENCHMARK_PLATFORMS.CHROME] as const;
 
@@ -284,7 +266,6 @@ function checkMetricPercentiles(
       baselineVal,
       DEFAULT_RELATIVE_THRESHOLDS,
     );
-    // Layer 2: cap at Warn for both regression and warn severities.
     if (
       cmp.severity === COMPARISON_SEVERITY.Regression.value ||
       cmp.severity === COMPARISON_SEVERITY.Warn.value
@@ -343,7 +324,6 @@ export function computeEntryHealth(
       continue;
     }
     const health = checkMetricPercentiles(entry, metric, baselineMetric);
-    // checkMetricPercentiles already caps at Warn (Layer 2 semantics).
     if (health === EntryHealth.Warn) {
       worst = EntryHealth.Warn;
     }
@@ -476,7 +456,6 @@ function buildHealthMap(
  * @param benchmarkName
  */
 function extractDisplayName(benchmarkName: string): string {
-  // Match pattern: platform-buildType-metricName (for startup benchmarks)
   const match = benchmarkName.match(
     /^(?:chrome|firefox)-(?:browserify|webpack)-(.+)$/u,
   );
@@ -540,7 +519,6 @@ export function buildBenchmarkSection(
         ? ` ${HEALTH_ICON[EntryHealth.Fail]} ${sectionCounts.failures}`
         : '';
 
-    // Build entry lookup: benchmarkName|platform-buildType → entry
     const entryLookup = new Map<string, BenchmarkEntry>();
     for (const entry of entries) {
       entryLookup.set(
@@ -557,7 +535,7 @@ export function buildBenchmarkSection(
 
     let sectionBody = '';
     if (benchmarkNames.length > 0 && orderedCombos.length > 0) {
-      const headerRow = `<tr><th>Metrics</th>${orderedCombos
+      const headerRow = `<tr><th>Benchmark</th>${orderedCombos
         .map((c) => `<th>${c}</th>`)
         .join('')}</tr>`;
 
@@ -602,7 +580,6 @@ export function buildBenchmarkSection(
 
 type MatrixCellData = {
   health: EntryHealth;
-  /** Worst offending metric and percentile, e.g. "uiStartup(p95)". Empty for Pass. */
   label: string;
 };
 
@@ -619,7 +596,6 @@ function buildHealthMatrixHtml(
   allEntries: BenchmarkEntry[],
   baseline: HistoricalBaselineReference | undefined,
 ): string {
-  // Build per-cell data in a single pass (health + worst label + artifact URL).
   const cellMap = new Map<string, MatrixCellData>();
   for (const entry of allEntries) {
     const baselineMetrics = baseline
@@ -659,7 +635,6 @@ function buildHealthMatrixHtml(
   );
   const orderedCombos = ALL_BENCHMARK_COMBOS.filter((c) => usedCombos.has(c));
 
-  // Group benchmarks by display name (strips platform prefix for startup benchmarks)
   const displayNameMap = new Map<string, string[]>();
   for (const benchmark of allEntries.map((e) => e.benchmarkName)) {
     const displayName = extractDisplayName(benchmark);
@@ -704,10 +679,7 @@ function buildHealthMatrixHtml(
       }
       const cells = orderedCombos
         .map((combo) => {
-          // Find the benchmark variant that matches this combo
-          // For startup benchmarks, the variant includes platform-buildType prefix
           const matchingBenchmark = variants.find((v) => {
-            // Check if this is a startup benchmark with platform prefix
             const isStartup =
               v.startsWith('chrome-') || v.startsWith('firefox-');
             if (isStartup) {
@@ -870,8 +842,8 @@ export async function buildPerformanceBenchmarksSection(
       fetchBenchmarkEntries(
         hostUrl,
         Object.values(STARTUP_PRESETS),
-        STARTUP_BENCHMARK_PLATFORMS,
-        STARTUP_BENCHMARK_BUILD_TYPES,
+        Object.values(BENCHMARK_PLATFORMS),
+        Object.values(BENCHMARK_BUILD_TYPES),
       ),
       fetchBenchmarkEntries(
         hostUrl,
@@ -921,7 +893,6 @@ export async function buildPerformanceBenchmarksSection(
   const healthBadge = `(${HEALTH_ICON[EntryHealth.Pass]} pass · ${HEALTH_ICON[EntryHealth.Warn]} warn · ${HEALTH_ICON[EntryHealth.Fail]} fail)`;
   const summaryText = `${sectionTitle} ${healthBadge}`;
 
-  // Health matrix: preset × combo grid, only rows with at least one failure.
   const matrixHtml = buildHealthMatrixHtml(allEntries, resolvedBaseline);
 
   const { failures } = countHealthEntries(allEntries, resolvedBaseline);
