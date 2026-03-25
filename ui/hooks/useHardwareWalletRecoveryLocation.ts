@@ -6,8 +6,6 @@ import {
   CONFIRM_TRANSACTION_ROUTE,
   CONFIRMATION_V_NEXT_ROUTE,
   CROSS_CHAIN_SWAP_ROUTE,
-  DECRYPT_MESSAGE_REQUEST_PATH,
-  ENCRYPTION_PUBLIC_KEY_REQUEST_PATH,
   SIGNATURE_REQUEST_PATH,
 } from '../helpers/constants/routes';
 import { getUnapprovedTransaction } from '../selectors';
@@ -46,11 +44,7 @@ export function useHardwareWalletRecoveryLocation(): MetaMetricsHardwareWalletRe
     return MetaMetricsHardwareWalletRecoveryLocation.Swaps;
   }
 
-  if (
-    pathname.includes(SIGNATURE_REQUEST_PATH) ||
-    pathname.includes(DECRYPT_MESSAGE_REQUEST_PATH) ||
-    pathname.includes(ENCRYPTION_PUBLIC_KEY_REQUEST_PATH)
-  ) {
+  if (pathname.includes(SIGNATURE_REQUEST_PATH)) {
     return MetaMetricsHardwareWalletRecoveryLocation.Message;
   }
 

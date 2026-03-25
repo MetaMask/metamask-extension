@@ -23,8 +23,6 @@ import {
   CONFIRMATION_V_NEXT_ROUTE,
   CONFIRM_TRANSACTION_ROUTE,
   CROSS_CHAIN_SWAP_ROUTE,
-  DECRYPT_MESSAGE_REQUEST_PATH,
-  ENCRYPTION_PUBLIC_KEY_REQUEST_PATH,
   SIGNATURE_REQUEST_PATH,
 } from '../helpers/constants/routes';
 import { useHardwareWalletRecoveryLocation } from './useHardwareWalletRecoveryLocation';
@@ -90,21 +88,15 @@ describe('useHardwareWalletRecoveryLocation', () => {
     );
   });
 
-  const signatureLikePaths: readonly (readonly [string, string])[] = [
-    [`/dapp${SIGNATURE_REQUEST_PATH}/1`, '*'],
-    [`/dapp${DECRYPT_MESSAGE_REQUEST_PATH}/1`, '*'],
-    [`/dapp${ENCRYPTION_PUBLIC_KEY_REQUEST_PATH}/1`, '*'],
-  ];
-  signatureLikePaths.forEach(([path, routePath]) => {
-    it(`returns Message for signature-related path ${path}`, () => {
-      const store = configureStore(getMockContractInteractionConfirmState());
-      const { result } = renderHook(() => useHardwareWalletRecoveryLocation(), {
-        wrapper: createHookWrapper(store, path, routePath),
-      });
-      expect(result.current).toBe(
-        MetaMetricsHardwareWalletRecoveryLocation.Message,
-      );
+  it('returns Message for signature request path', () => {
+    const path = `/dapp${SIGNATURE_REQUEST_PATH}/1`;
+    const store = configureStore(getMockContractInteractionConfirmState());
+    const { result } = renderHook(() => useHardwareWalletRecoveryLocation(), {
+      wrapper: createHookWrapper(store, path, '*'),
     });
+    expect(result.current).toBe(
+      MetaMetricsHardwareWalletRecoveryLocation.Message,
+    );
   });
 
   it('returns Message on confirm route when pending message matches confirmation id', () => {
