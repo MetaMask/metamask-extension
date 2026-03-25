@@ -2,147 +2,181 @@
  * @jest-environment node
  */
 
-jest.mock('node:fs', () => ({
-  readFileSync: jest.fn(() => 'mocked-svg'),
-}));
-
 const { Variables } = require('../lib/variables');
 const { ENVIRONMENT } = require('./constants');
-const { setEnvironmentVariables } = require('./set-environment-variables');
+const { getOAuthClientId } = require('./set-environment-variables');
 
-const DECLARED_VARIABLES = [
-  'SEEDLESS_ONBOARDING_ENABLED',
-  'DEBUG',
-  'EIP_4337_ENTRYPOINT',
-  'IN_TEST',
-  'INFURA_PROJECT_ID',
-  'INFURA_ENV_KEY_REF',
-  'INFURA_PROD_PROJECT_ID',
-  'METAMASK_DEBUG',
-  'METAMASK_BUILD_NAME',
-  'METAMASK_BUILD_APP_ID',
-  'METAMASK_BUILD_ICON',
-  'METAMASK_ENVIRONMENT',
-  'METAMASK_VERSION',
-  'METAMASK_BUILD_TYPE',
-  'NODE_ENV',
-  'PHISHING_WARNING_PAGE_URL',
-  'SEGMENT_WRITE_KEY',
-  'SEGMENT_WRITE_KEY_REF',
-  'SEGMENT_PROD_WRITE_KEY',
-  'TEST_GAS_FEE_FLOWS',
-  'DEEP_LINK_HOST',
-  'DEEP_LINK_PUBLIC_KEY',
-  'METAMASK_SHIELD_ENABLED',
-  'PERPS_ENABLED',
-  'GOOGLE_CLIENT_ID',
-  'APPLE_CLIENT_ID',
-  'GOOGLE_CLIENT_ID_REF',
-  'APPLE_CLIENT_ID_REF',
-  'GOOGLE_PROD_CLIENT_ID',
-  'APPLE_PROD_CLIENT_ID',
-  'GOOGLE_CLIENT_ID_UAT',
-  'APPLE_CLIENT_ID_UAT',
-  'GOOGLE_CLIENT_ID_FLASK_UAT',
-  'APPLE_CLIENT_ID_FLASK_UAT',
-];
+const PROVIDER_CONFIG = {
+  GOOGLE: {
+    clientIdEnv: 'GOOGLE_CLIENT_ID',
+    directClientId: 'google-dev-client-id',
+    clientIdRefEnv: 'GOOGLE_CLIENT_ID_REF',
+    referencedClientIdEnv: 'GOOGLE_PROD_CLIENT_ID',
+    referencedClientId: 'google-prod-client-id',
+    uatClientIdEnv: 'GOOGLE_CLIENT_ID_UAT',
+    uatClientId: 'google-uat-client-id',
+    flaskUatClientIdEnv: 'GOOGLE_CLIENT_ID_FLASK_UAT',
+    flaskUatClientId: 'google-flask-uat-client-id',
+  },
+  APPLE: {
+    clientIdEnv: 'APPLE_CLIENT_ID',
+    directClientId: 'apple-dev-client-id',
+    clientIdRefEnv: 'APPLE_CLIENT_ID_REF',
+    referencedClientIdEnv: 'APPLE_PROD_CLIENT_ID',
+    referencedClientId: 'apple-prod-client-id',
+    uatClientIdEnv: 'APPLE_CLIENT_ID_UAT',
+    uatClientId: 'apple-uat-client-id',
+    flaskUatClientIdEnv: 'APPLE_CLIENT_ID_FLASK_UAT',
+    flaskUatClientId: 'apple-flask-uat-client-id',
+  },
+};
 
-function getVariables(overrides = {}) {
+const DECLARED_VARIABLES = Object.values(PROVIDER_CONFIG).flatMap(
+  ({
+    clientIdEnv,
+    clientIdRefEnv,
+    referencedClientIdEnv,
+    uatClientIdEnv,
+    flaskUatClientIdEnv,
+  }) => [
+    clientIdEnv,
+    clientIdRefEnv,
+    referencedClientIdEnv,
+    uatClientIdEnv,
+    flaskUatClientIdEnv,
+  ],
+);
+
+function getVariables({ overrides = {}, omitted = [] } = {}) {
   const variables = new Variables(DECLARED_VARIABLES);
+  const defaults = Object.values(PROVIDER_CONFIG).reduce((result, config) => {
+    result[config.clientIdEnv] = config.directClientId;
+    result[config.clientIdRefEnv] = config.referencedClientIdEnv;
+    result[config.referencedClientIdEnv] = config.referencedClientId;
+    result[config.uatClientIdEnv] = config.uatClientId;
+    result[config.flaskUatClientIdEnv] = config.flaskUatClientId;
+    return result;
+  }, {});
+
+  omitted.forEach((envName) => {
+    delete defaults[envName];
+  });
 
   variables.set({
-    SEEDLESS_ONBOARDING_ENABLED: 'true',
-    DEBUG: false,
-    EIP_4337_ENTRYPOINT: undefined,
-    INFURA_PROJECT_ID: 'dev-infura-project-id',
-    INFURA_ENV_KEY_REF: 'INFURA_PROD_PROJECT_ID',
-    INFURA_PROD_PROJECT_ID: 'prod-infura-project-id',
-    METAMASK_DEBUG: false,
-    PHISHING_WARNING_PAGE_URL: 'https://example.com/',
-    SEGMENT_WRITE_KEY: 'segment-dev-write-key',
-    SEGMENT_WRITE_KEY_REF: 'SEGMENT_PROD_WRITE_KEY',
-    SEGMENT_PROD_WRITE_KEY: 'segment-prod-write-key',
-    TEST_GAS_FEE_FLOWS: false,
-    DEEP_LINK_HOST: undefined,
-    DEEP_LINK_PUBLIC_KEY: undefined,
-    METAMASK_SHIELD_ENABLED: false,
-    PERPS_ENABLED: false,
-    GOOGLE_CLIENT_ID: 'google-dev-client-id',
-    APPLE_CLIENT_ID: 'apple-dev-client-id',
-    GOOGLE_CLIENT_ID_REF: 'GOOGLE_PROD_CLIENT_ID',
-    APPLE_CLIENT_ID_REF: 'APPLE_PROD_CLIENT_ID',
-    GOOGLE_PROD_CLIENT_ID: 'google-prod-client-id',
-    APPLE_PROD_CLIENT_ID: 'apple-prod-client-id',
-    GOOGLE_CLIENT_ID_UAT: 'google-uat-client-id',
-    APPLE_CLIENT_ID_UAT: 'apple-uat-client-id',
-    GOOGLE_CLIENT_ID_FLASK_UAT: 'google-flask-uat-client-id',
-    APPLE_CLIENT_ID_FLASK_UAT: 'apple-flask-uat-client-id',
+    ...defaults,
     ...overrides,
   });
 
   return variables;
 }
 
-function runSetEnvironmentVariables({
+function runGetOAuthClientId({
+  provider = 'GOOGLE',
   buildType = 'main',
   environment = ENVIRONMENT.TESTING,
-  isDevBuild = false,
-  isTestBuild = false,
-  variables: variablesOverrides = {},
+  testing = false,
+  development = false,
+  overrides = {},
+  omitted = [],
 } = {}) {
-  const variables = getVariables(variablesOverrides);
-
-  setEnvironmentVariables({
-    buildName: 'test-build',
-    isDevBuild,
-    isTestBuild,
+  return getOAuthClientId({
+    provider,
     buildType,
+    variables: getVariables({ overrides, omitted }),
     environment,
-    variables,
-    version: '1.0.0',
+    testing,
+    development,
   });
-
-  return variables;
 }
 
-describe('setEnvironmentVariables', () => {
-  describe('when seedless onboarding is enabled', () => {
-    it.each([ENVIRONMENT.PRODUCTION, ENVIRONMENT.RELEASE_CANDIDATE])(
-      'loads referenced OAuth client IDs for %s builds',
-      (environment) => {
-        const variables = runSetEnvironmentVariables({
-          environment,
-        });
+describe('getOAuthClientId', () => {
+  describe.each(Object.entries(PROVIDER_CONFIG))(
+    'when the provider is %s',
+    (provider, config) => {
+      it.each([ENVIRONMENT.PRODUCTION, ENVIRONMENT.RELEASE_CANDIDATE])(
+        'loads referenced client IDs for %s builds',
+        (environment) => {
+          expect(
+            runGetOAuthClientId({
+              provider,
+              environment,
+            }),
+          ).toBe(config.referencedClientId);
+        },
+      );
 
-        expect(variables.get('GOOGLE_CLIENT_ID')).toBe('google-prod-client-id');
-        expect(variables.get('APPLE_CLIENT_ID')).toBe('apple-prod-client-id');
-      },
-    );
-
-    it('loads direct OAuth client IDs for test builds', () => {
-      const variables = runSetEnvironmentVariables({
-        environment: ENVIRONMENT.TESTING,
-        isTestBuild: true,
+      it('prefers referenced client IDs when production environment overlaps with test and development flags', () => {
+        expect(
+          runGetOAuthClientId({
+            provider,
+            environment: ENVIRONMENT.PRODUCTION,
+            testing: true,
+            development: true,
+          }),
+        ).toBe(config.referencedClientId);
       });
 
-      expect(variables.get('GOOGLE_CLIENT_ID')).toBe('google-dev-client-id');
-      expect(variables.get('APPLE_CLIENT_ID')).toBe('apple-dev-client-id');
-    });
+      it.each([
+        {
+          name: 'test',
+          environment: ENVIRONMENT.TESTING,
+          testing: true,
+          development: false,
+        },
+        {
+          name: 'development',
+          environment: ENVIRONMENT.DEVELOPMENT,
+          testing: false,
+          development: true,
+        },
+      ])(
+        'loads direct client IDs for $name builds',
+        ({ environment, testing, development }) => {
+          expect(
+            runGetOAuthClientId({
+              provider,
+              environment,
+              testing,
+              development,
+            }),
+          ).toBe(config.directClientId);
+        },
+      );
 
-    it.each([
-      ['main', 'google-uat-client-id', 'apple-uat-client-id'],
-      ['flask', 'google-flask-uat-client-id', 'apple-flask-uat-client-id'],
-    ])(
-      'loads UAT OAuth client IDs for %s dist builds',
-      (buildType, expectedGoogleClientId, expectedAppleClientId) => {
-        const variables = runSetEnvironmentVariables({
-          buildType,
-          environment: ENVIRONMENT.STAGING,
-        });
+      it.each([
+        {
+          buildType: 'main',
+          expectedClientId: config.uatClientId,
+        },
+        {
+          buildType: 'flask',
+          expectedClientId: config.flaskUatClientId,
+        },
+      ])(
+        'loads UAT client IDs for $buildType staging builds',
+        ({ buildType, expectedClientId }) => {
+          expect(
+            runGetOAuthClientId({
+              provider,
+              buildType,
+              environment: ENVIRONMENT.STAGING,
+            }),
+          ).toBe(expectedClientId);
+        },
+      );
 
-        expect(variables.get('GOOGLE_CLIENT_ID')).toBe(expectedGoogleClientId);
-        expect(variables.get('APPLE_CLIENT_ID')).toBe(expectedAppleClientId);
-      },
-    );
-  });
+      it('throws when the direct client ID is missing for test builds', () => {
+        expect(() =>
+          runGetOAuthClientId({
+            provider,
+            environment: ENVIRONMENT.TESTING,
+            testing: true,
+            omitted: [config.clientIdEnv],
+          }),
+        ).toThrow(
+          `${config.clientIdEnv} is not set for seedless onboarding enabled build`,
+        );
+      });
+    },
+  );
 });

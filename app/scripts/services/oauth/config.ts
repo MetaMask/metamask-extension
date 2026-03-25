@@ -154,10 +154,10 @@ export function loadOAuthConfig(): OAuthConfig {
       buildTypeEnv = BuildTypeEnv.UatMain;
     }
   } else if (buildType === 'flask') {
-    if (isDevOrTestBuild()) {
-      buildTypeEnv = BuildTypeEnv.DevFlask;
-    } else if (isProductionBuild() || isReleaseCandidateBuild()) {
+    if (isProductionBuild() || isReleaseCandidateBuild()) {
       buildTypeEnv = BuildTypeEnv.ProdFlask;
+    } else if (isDevOrTestBuild()) {
+      buildTypeEnv = BuildTypeEnv.DevFlask;
     } else {
       buildTypeEnv = BuildTypeEnv.UatFlask;
     }

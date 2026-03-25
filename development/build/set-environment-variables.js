@@ -15,7 +15,7 @@ const { ENVIRONMENT } = require('./constants');
  * @param {import('../lib/variables').Variables} options.variables
  * @param {ENVIRONMENT[keyof ENVIRONMENT]} options.environment - The build environment.
  */
-module.exports.setEnvironmentVariables = function setEnvironmentVariables({
+function setEnvironmentVariables({
   buildName,
   isDevBuild,
   isTestBuild,
@@ -89,7 +89,7 @@ module.exports.setEnvironmentVariables = function setEnvironmentVariables({
     GOOGLE_CLIENT_ID,
     APPLE_CLIENT_ID,
   });
-};
+}
 
 const BUILD_TYPES_TO_SVG_LOGO_PATH = {
   main: './app/images/logo/metamask-fox.svg',
@@ -297,3 +297,8 @@ function getPhishingWarningPageUrl({ variables, testing }) {
   // of the domain if it is missing
   return phishingWarningPageUrlObject.toString();
 }
+
+module.exports = {
+  setEnvironmentVariables,
+  getOAuthClientId,
+};
