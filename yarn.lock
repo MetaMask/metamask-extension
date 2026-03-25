@@ -5749,9 +5749,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/assets-controller@npm:^3.1.0":
-  version: 3.1.0
-  resolution: "@metamask/assets-controller@npm:3.1.0"
+"@metamask/assets-controller@npm:^3.1.1":
+  version: 3.1.1
+  resolution: "@metamask/assets-controller@npm:3.1.1"
   dependencies:
     "@ethereumjs/util": "npm:^9.1.0"
     "@ethersproject/abi": "npm:^5.7.0"
@@ -5780,7 +5780,7 @@ __metadata:
     bignumber.js: "npm:^9.1.2"
     lodash: "npm:^4.17.21"
     p-limit: "npm:^3.1.0"
-  checksum: 10/f144e3c6210f6dcd1ac8a98f850eb0cb48c5806dccec5ce2b9e34d2184ebcebd8f0c7f32751f93768bf6b2a0f77431e849ffed99d8d34c2e26ec6e8f885ec137
+  checksum: 10/31d2de936f003be07c56dd7e248d22b70fcadaa35f41e463946ea3cacdfad927336a8315222ea92e0eb2c032f5b9cf4dc1e4c55e27ad5a5ac955a6c6cea075c6
   languageName: node
   linkType: hard
 
@@ -33973,7 +33973,7 @@ __metadata:
     "@metamask/announcement-controller": "npm:^8.0.0"
     "@metamask/api-specs": "npm:^0.13.0"
     "@metamask/approval-controller": "npm:^9.0.0"
-    "@metamask/assets-controller": "npm:^3.1.0"
+    "@metamask/assets-controller": "npm:^3.1.1"
     "@metamask/assets-controllers": "npm:^101.0.1"
     "@metamask/auto-changelog": "npm:^5.3.1"
     "@metamask/base-controller": "npm:^9.0.0"
@@ -34079,6 +34079,7 @@ __metadata:
     "@metamask/snap-simple-keyring-site": "npm:^2.0.0"
     "@metamask/snaps-controllers": "npm:^18.0.4"
     "@metamask/snaps-execution-environments": "npm:^11.0.1"
+    "@metamask/snaps-registry": "npm:^4.0.0"
     "@metamask/snaps-rpc-methods": "npm:^15.0.0"
     "@metamask/snaps-sdk": "npm:^11.0.0"
     "@metamask/snaps-utils": "npm:^12.1.1"
