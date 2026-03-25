@@ -28,7 +28,10 @@ import {
   COMPARISON_SEVERITY,
 } from './comparison-utils';
 import type { ComparisonSeverity } from './comparison-utils';
-import type { HistoricalBaselineReference } from './historical-comparison';
+import type {
+  HistoricalBaselineReference,
+  HistoricalBaselineResult,
+} from './historical-comparison';
 import { fetchHistoricalPerformanceDataFromMain } from './historical-comparison';
 import {
   resolveBaseline,
@@ -831,7 +834,7 @@ export async function buildPerformanceBenchmarksSection(
       ? `${process.env.GITHUB_SERVER_URL}/${process.env.GITHUB_REPOSITORY}/actions/runs/${benchmarkRunId}`
       : undefined;
 
-  const [interactionResult, startupResult, userJourneyResult, baseline] =
+  const [interactionResult, startupResult, userJourneyResult, baselineResult] =
     await Promise.all([
       fetchBenchmarkEntries(
         hostUrl,
@@ -854,7 +857,9 @@ export async function buildPerformanceBenchmarksSection(
       fetchHistoricalPerformanceDataFromMain(),
     ]);
 
-  const resolvedBaseline = baseline ?? undefined;
+  const resolvedBaseline = baselineResult?.baseline ?? undefined;
+  const baselineCommit = baselineResult?.latestCommit;
+  const baselineTimestamp = baselineResult?.latestTimestamp;
 
   const allEntries = [
     ...startupResult.entries,
@@ -903,18 +908,17 @@ export async function buildPerformanceBenchmarksSection(
     runUrl,
   );
 
-  const commitHash = process.env.GITHUB_SHA?.slice(0, 7) ?? 'unknown';
-  const commitDate = new Date().toLocaleDateString('en-US', {
-    month: 'numeric',
-    day: 'numeric',
-    year: 'numeric',
-  });
-  const commitUrl =
-    process.env.GITHUB_SERVER_URL &&
-    process.env.GITHUB_REPOSITORY &&
-    process.env.GITHUB_SHA
-      ? `${process.env.GITHUB_SERVER_URL}/${process.env.GITHUB_REPOSITORY}/commit/${process.env.GITHUB_SHA}`
-      : undefined;
+  const commitHash = baselineCommit?.slice(0, 7) ?? 'unknown';
+  const commitDate = baselineTimestamp
+    ? new Date(baselineTimestamp).toLocaleDateString('en-US', {
+        month: 'numeric',
+        day: 'numeric',
+        year: 'numeric',
+      })
+    : 'unknown';
+  const commitUrl = baselineCommit
+    ? `https://github.com/MetaMask/metamask-extension/commit/${baselineCommit}`
+    : undefined;
   const commitLink = commitUrl ? `[${commitHash}](${commitUrl})` : commitHash;
   const pipelineLink = runUrl
     ? `[${benchmarkRunId}](${runUrl})`

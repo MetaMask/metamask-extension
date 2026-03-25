@@ -686,8 +686,14 @@ describe('buildPerformanceBenchmarksSection', () => {
     );
   });
 
-  it('includes commit information with hash and date', async () => {
-    process.env.GITHUB_SHA = 'abc1234567890def';
+  it('includes commit information with hash and date from baseline', async () => {
+    jest
+      .spyOn(historicalComparison, 'fetchHistoricalPerformanceDataFromMain')
+      .mockResolvedValue({
+        baseline: {},
+        latestCommit: 'abc1234567890def',
+        latestTimestamp: 1700000000000,
+      });
     mockFetch.mockResolvedValue({
       ok: true,
       json: () => Promise.resolve(MOCK_PAYLOAD),
@@ -698,14 +704,16 @@ describe('buildPerformanceBenchmarksSection', () => {
     expect(html).toContain('**Current Commit**:');
     expect(html).toContain('abc1234');
     expect(html).toContain('**Date**:');
-
-    delete process.env.GITHUB_SHA;
   });
 
-  it('links commit hash when GitHub env vars are available', async () => {
-    process.env.GITHUB_SHA = 'abc1234567890def';
-    process.env.GITHUB_SERVER_URL = 'https://github.com';
-    process.env.GITHUB_REPOSITORY = 'MetaMask/metamask-extension';
+  it('links commit hash from baseline data', async () => {
+    jest
+      .spyOn(historicalComparison, 'fetchHistoricalPerformanceDataFromMain')
+      .mockResolvedValue({
+        baseline: {},
+        latestCommit: 'abc1234567890def',
+        latestTimestamp: 1700000000000,
+      });
     mockFetch.mockResolvedValue({
       ok: true,
       json: () => Promise.resolve(MOCK_PAYLOAD),
@@ -717,10 +725,6 @@ describe('buildPerformanceBenchmarksSection', () => {
     expect(html).toContain(
       'https://github.com/MetaMask/metamask-extension/commit/abc1234567890def',
     );
-
-    delete process.env.GITHUB_SHA;
-    delete process.env.GITHUB_SERVER_URL;
-    delete process.env.GITHUB_REPOSITORY;
   });
 
   it('includes build logs link when available', async () => {
@@ -762,9 +766,13 @@ describe('buildPerformanceBenchmarksSection', () => {
     jest
       .spyOn(historicalComparison, 'fetchHistoricalPerformanceDataFromMain')
       .mockResolvedValue({
-        'interactionUserActions/loadNewAccount': {
-          loadNewAccount: { mean: 540, stdDev: 30, p75: 540, p95: 600 },
+        baseline: {
+          'interactionUserActions/loadNewAccount': {
+            loadNewAccount: { mean: 540, stdDev: 30, p75: 540, p95: 600 },
+          },
         },
+        latestCommit: 'abc123',
+        latestTimestamp: 1700000000000,
       });
 
     const html = await buildPerformanceBenchmarksSection(HOST);
@@ -833,9 +841,13 @@ describe('buildPerformanceBenchmarksSection', () => {
       jest
         .spyOn(historicalComparison, 'fetchHistoricalPerformanceDataFromMain')
         .mockResolvedValue({
-          'pageLoad/chrome-browserify-startupStandardHome': {
-            uiStartup: { mean: 1600, stdDev: 100, p75: 1700, p95: 1900 },
+          baseline: {
+            'pageLoad/chrome-browserify-startupStandardHome': {
+              uiStartup: { mean: 1600, stdDev: 100, p75: 1700, p95: 1900 },
+            },
           },
+          latestCommit: 'abc123',
+          latestTimestamp: 1700000000000,
         });
 
       const html = await buildPerformanceBenchmarksSection(HOST);
@@ -868,8 +880,14 @@ describe('buildPerformanceBenchmarksSection', () => {
       }
     });
 
-    it('includes commit hash and date in the section', async () => {
-      process.env.GITHUB_SHA = 'abc1234567890def';
+    it('includes commit hash and date in the section from baseline', async () => {
+      jest
+        .spyOn(historicalComparison, 'fetchHistoricalPerformanceDataFromMain')
+        .mockResolvedValue({
+          baseline: {},
+          latestCommit: 'abc1234567890def',
+          latestTimestamp: 1700000000000,
+        });
       mockFetch.mockResolvedValue({
         ok: true,
         json: () => Promise.resolve(MOCK_PAYLOAD),
@@ -882,10 +900,14 @@ describe('buildPerformanceBenchmarksSection', () => {
       expect(html).toContain('**Date**:');
     });
 
-    it('links commit hash when GitHub env vars are set', async () => {
-      process.env.GITHUB_SHA = 'abc1234567890def';
-      process.env.GITHUB_SERVER_URL = 'https://github.com';
-      process.env.GITHUB_REPOSITORY = 'MetaMask/metamask-extension';
+    it('links commit hash from baseline data', async () => {
+      jest
+        .spyOn(historicalComparison, 'fetchHistoricalPerformanceDataFromMain')
+        .mockResolvedValue({
+          baseline: {},
+          latestCommit: 'abc1234567890def',
+          latestTimestamp: 1700000000000,
+        });
       mockFetch.mockResolvedValue({
         ok: true,
         json: () => Promise.resolve(MOCK_PAYLOAD),

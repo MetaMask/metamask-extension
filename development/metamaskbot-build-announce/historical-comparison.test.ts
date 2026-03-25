@@ -1,5 +1,6 @@
 import {
   aggregateHistoricalData,
+  aggregateHistoricalDataWithCommit,
   fetchHistoricalPerformanceDataFromMain,
   type HistoricalPerformanceFile,
 } from './historical-comparison';
@@ -223,6 +224,109 @@ describe('aggregateHistoricalData', () => {
   });
 });
 
+describe('aggregateHistoricalDataWithCommit', () => {
+  it('returns baseline data with latest commit hash and timestamp', () => {
+    const data: HistoricalPerformanceFile = {
+      abc123: makeCommit({ timestamp: 1_700_000_000 }),
+      def456: makeCommit({ timestamp: 1_700_000_001 }),
+      ghi789: makeCommit({ timestamp: 1_700_000_002 }),
+    };
+
+    const result = aggregateHistoricalDataWithCommit(data);
+
+    expect(result.latestCommit).toBe('ghi789');
+    expect(result.latestTimestamp).toBe(1_700_000_002);
+    expect(result.baseline).toBeDefined();
+    expect(result.baseline['pageLoad/standardHome']).toBeDefined();
+  });
+
+  it('returns empty string and 0 timestamp when data is empty', () => {
+    const data: HistoricalPerformanceFile = {};
+
+    const result = aggregateHistoricalDataWithCommit(data);
+
+    expect(result.latestCommit).toBe('');
+    expect(result.latestTimestamp).toBe(0);
+    expect(result.baseline).toStrictEqual({});
+  });
+
+  it('returns the most recent commit when commits are out of order', () => {
+    const data: HistoricalPerformanceFile = {
+      old: makeCommit({ timestamp: 1_700_000_000 }),
+      newest: makeCommit({ timestamp: 1_700_000_003 }),
+      middle: makeCommit({ timestamp: 1_700_000_001 }),
+    };
+
+    const result = aggregateHistoricalDataWithCommit(data);
+
+    expect(result.latestCommit).toBe('newest');
+    expect(result.latestTimestamp).toBe(1_700_000_003);
+  });
+
+  it('filters out commits without timestamps', () => {
+    const data = asHistoricalFile({
+      valid: makeCommit({ timestamp: 1_700_000_001 }),
+      noTimestamp: { presets: {} },
+      nullTimestamp: { timestamp: null, presets: {} },
+    });
+
+    const result = aggregateHistoricalDataWithCommit(data);
+
+    expect(result.latestCommit).toBe('valid');
+    expect(result.latestTimestamp).toBe(1_700_000_001);
+  });
+
+  it('aggregates baseline from the same commits used to find latest', () => {
+    const data: HistoricalPerformanceFile = {
+      commit1: makeCommit({
+        timestamp: 1_700_000_000,
+        presets: {
+          pageLoad: {
+            standardHome: {
+              mean: { uiStartup: 1000 },
+              p75: { uiStartup: 1100 },
+              p95: { uiStartup: 1200 },
+            },
+          },
+        },
+      }),
+      commit2: makeCommit({
+        timestamp: 1_700_000_001,
+        presets: {
+          pageLoad: {
+            standardHome: {
+              mean: { uiStartup: 2000 },
+              p75: { uiStartup: 2200 },
+              p95: { uiStartup: 2400 },
+            },
+          },
+        },
+      }),
+      commit3: makeCommit({
+        timestamp: 1_700_000_002,
+        presets: {
+          pageLoad: {
+            standardHome: {
+              mean: { uiStartup: 3000 },
+              p75: { uiStartup: 3300 },
+              p95: { uiStartup: 3600 },
+            },
+          },
+        },
+      }),
+    };
+
+    const result = aggregateHistoricalDataWithCommit(data);
+
+    expect(result.latestCommit).toBe('commit3');
+    expect(result.latestTimestamp).toBe(1_700_000_002);
+    // Should average across all 3 commits
+    expect(result.baseline['pageLoad/standardHome']?.uiStartup?.mean).toBe(
+      2000,
+    );
+  });
+});
+
 describe('fetchHistoricalPerformanceDataFromMain', () => {
   const mockFetch = jest.fn();
 
@@ -244,12 +348,16 @@ describe('fetchHistoricalPerformanceDataFromMain', () => {
 
   const makeNotFoundResponse = () => Promise.resolve({ ok: false } as Response);
 
-  it('fetches from main and returns aggregated data', async () => {
+  it('fetches from main and returns aggregated data with commit info', async () => {
     mockFetch.mockReturnValueOnce(makeOkResponse(mockFile));
 
     const result = await fetchHistoricalPerformanceDataFromMain();
 
-    expect(result?.['pageLoad/standardHome']?.uiStartup?.mean).toBe(1500);
+    expect(result?.baseline['pageLoad/standardHome']?.uiStartup?.mean).toBe(
+      1500,
+    );
+    expect(result?.latestCommit).toBe('def456');
+    expect(result?.latestTimestamp).toBe(1_700_000_001);
     expect(mockFetch).toHaveBeenCalledWith(
       expect.stringContaining('stats/main/performance_data.json'),
     );

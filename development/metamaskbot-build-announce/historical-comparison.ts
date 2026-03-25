@@ -25,13 +25,19 @@ export type HistoricalBaselineReference = Record<
   Record<string, HistoricalBaselineMetrics>
 >;
 
+export type HistoricalBaselineResult = {
+  baseline: HistoricalBaselineReference;
+  latestCommit: string;
+  latestTimestamp: number;
+};
+
 /**
  * Fetches historical performance data from the `main` branch of
  * extension_benchmark_stats.
  *
- * @returns Reference map (benchmarkName -> metric -> baseline), or null if unavailable.
+ * @returns Reference map (benchmarkName -> metric -> baseline) with latest commit info, or null if unavailable.
  */
-export async function fetchHistoricalPerformanceDataFromMain(): Promise<HistoricalBaselineReference | null> {
+export async function fetchHistoricalPerformanceDataFromMain(): Promise<HistoricalBaselineResult | null> {
   try {
     const STATS_PERFORMANCE_DATA_URL =
       'https://raw.githubusercontent.com/MetaMask/extension_benchmark_stats/main/stats/main/performance_data.json';
@@ -43,8 +49,11 @@ export async function fetchHistoricalPerformanceDataFromMain(): Promise<Historic
     if (Object.keys(data).length === 0) {
       return null;
     }
-    const result = aggregateHistoricalData(data);
-    return Object.keys(result).length > 0 ? result : null;
+    const { baseline, latestCommit, latestTimestamp } =
+      aggregateHistoricalDataWithCommit(data);
+    return Object.keys(baseline).length > 0
+      ? { baseline, latestCommit, latestTimestamp }
+      : null;
   } catch {
     return null;
   }
@@ -186,4 +195,28 @@ export function aggregateHistoricalData(
     }
   }
   return reference;
+}
+
+/**
+ * Aggregates historical data and returns the baseline along with the latest commit info.
+ *
+ * @param data - Full historical data file contents.
+ * @returns Aggregated reference map with latest commit hash and timestamp.
+ */
+export function aggregateHistoricalDataWithCommit(
+  data: HistoricalPerformanceFile,
+): {
+  baseline: HistoricalBaselineReference;
+  latestCommit: string;
+  latestTimestamp: number;
+} {
+  const sortedCommits = Object.keys(data)
+    .filter((hash) => data[hash]?.timestamp)
+    .sort((a, b) => data[b].timestamp - data[a].timestamp);
+
+  const latestCommit = sortedCommits[0] || '';
+  const latestTimestamp = data[latestCommit]?.timestamp || 0;
+  const baseline = aggregateHistoricalData(data);
+
+  return { baseline, latestCommit, latestTimestamp };
 }
