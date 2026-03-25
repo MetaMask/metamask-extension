@@ -39,13 +39,13 @@ const CDN_STALE_RES_HEADERS_PATH =
 
 const ACCOUNTS_API_TOKENS_PATH =
   'test/e2e/mock-response-data/accounts-api-tokens.json';
-const ACL_REGISTRY_DIR =
-  'test/e2e/mock-response-data/snaps/acl-registry-and-headers';
+const REGISTRY_DIR =
+  'test/e2e/mock-response-data/snaps/registry-and-headers';
 /** Exact signed registry bytes (like snap `*-@version.txt` bodies; not *.json so Prettier skips it). */
-const ACL_REGISTRY_TXT_PATH = `${ACL_REGISTRY_DIR}/acl-registry.txt`;
-const ACL_SIGNATURE_PATH = `${ACL_REGISTRY_DIR}/acl-signature.json`;
-const ACL_REGISTRY_HEADERS_PATH = `${ACL_REGISTRY_DIR}/acl-registry-headers.json`;
-const ACL_SIGNATURE_HEADERS_PATH = `${ACL_REGISTRY_DIR}/acl-signature-headers.json`;
+const REGISTRY_TXT_PATH = `${REGISTRY_DIR}/registry.txt`;
+const SIGNATURE_PATH = `${REGISTRY_DIR}/signature.json`;
+const REGISTRY_HEADERS_PATH = `${REGISTRY_DIR}/registry-headers.json`;
+const SIGNATURE_HEADERS_PATH = `${REGISTRY_DIR}/signature-headers.json`;
 const AGGREGATOR_METADATA_PATH =
   'test/e2e/mock-response-data/aggregator-metadata.json';
 const CHAIN_ID_NETWORKS_PATH =
