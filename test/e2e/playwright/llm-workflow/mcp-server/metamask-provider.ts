@@ -21,8 +21,6 @@ import {
   knowledgeStore,
   MockServerCapability,
 } from '@metamask/client-mcp-core';
-import { validateExtensionBuilt } from '../validate-extension';
-
 import { MetaMaskExtensionLauncher } from '..';
 import {
   createMetaMaskE2EContext,
@@ -350,7 +348,7 @@ export class MetaMaskSessionManager implements ISessionManager {
     const environment = this.workflowContext?.config?.environment ?? 'e2e';
     const isProdMode = environment === 'prod';
 
-    let { extensionPath } = input;
+    const { extensionPath } = input;
 
     // In prod mode, reject fixture-related options (no fixtures available)
     if (isProdMode && (input.fixturePreset || input.fixture)) {
@@ -360,15 +358,6 @@ export class MetaMaskSessionManager implements ISessionManager {
           '  1. Remove fixturePreset/fixture parameters\n' +
           '  2. Use stateMode: "onboarding" for fresh wallet setup\n' +
           '  3. Switch to e2e environment for fixture support',
-      );
-    }
-
-    // Resolve extension path — build is a manual prerequisite, validate only
-    try {
-      extensionPath = await validateExtensionBuilt(extensionPath);
-    } catch (error) {
-      throw new Error(
-        `${ErrorCodes.MM_LAUNCH_FAILED}: ${(error as Error).message}`,
       );
     }
 
