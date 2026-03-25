@@ -194,6 +194,7 @@ jobs:
         !(github.event.pull_request.head.repo.fork || github.event.repository.fork)
       }}
     uses: ./.github/workflows/sonarcloud.yml
+    secrets: inherit
 
   bundle-size:
     needs:
