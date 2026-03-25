@@ -3,8 +3,8 @@ import { screen } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
-import * as mocks from './mocks';
 import { usePerpsTransactionHistory } from '../../../hooks/perps/usePerpsTransactionHistory';
+import * as mocks from './mocks';
 import { PerpsView } from './perps-view';
 
 jest.mock('../../../hooks/perps/usePerpsTransactionHistory', () => ({
