@@ -1,6 +1,4 @@
 import fs from 'fs';
-import { create } from '@metamask/superstruct';
-import { SignatureStruct, verify } from '@metamask/snaps-registry';
 import {
   SNAPS_REGISTRY_URL,
   SNAPS_SIGNATURE_URL,
@@ -84,7 +82,7 @@ async function main() {
 
   const registryText = await registryRes.text();
   const signatureText = await signatureRes.text();
-  const signature = create(JSON.parse(signatureText), SignatureStruct);
+  const signature = JSON.parse(signatureText);
 
   const valid = await verify({
     registry: registryText,

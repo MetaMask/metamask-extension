@@ -45,8 +45,8 @@ export const SNAPS_SIGNATURE_HEADERS_PATH = path.join(
  * @param server - Mockttp server
  */
 export async function setupSnapRegistryMocks(server: Mockttp): Promise<void> {
-  const aclRegistryBody = fs.readFileSync(SNAPS_REGISTRY_BODY_PATH);
-  const aclSignatureBody = fs.readFileSync(SNAPS_SIGNATURE_BODY_PATH);
+  const registryBody = fs.readFileSync(SNAPS_REGISTRY_BODY_PATH);
+  const signatureBody = fs.readFileSync(SNAPS_SIGNATURE_BODY_PATH);
   const registryHeaders = JSON.parse(
     fs.readFileSync(SNAPS_REGISTRY_HEADERS_PATH, 'utf8'),
   ) as Record<string, string>;
@@ -59,7 +59,7 @@ export async function setupSnapRegistryMocks(server: Mockttp): Promise<void> {
     .always()
     .thenCallback(() => ({
       statusCode: 200,
-      rawBody: aclRegistryBody,
+      rawBody: registryBody,
       headers: registryHeaders,
     }));
 
@@ -68,7 +68,7 @@ export async function setupSnapRegistryMocks(server: Mockttp): Promise<void> {
     .always()
     .thenCallback(() => ({
       statusCode: 200,
-      rawBody: aclSignatureBody,
+      rawBody: signatureBody,
       headers: signatureHeaders,
     }));
 }
