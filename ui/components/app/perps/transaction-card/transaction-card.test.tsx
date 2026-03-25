@@ -172,7 +172,7 @@ describe('TransactionCard', () => {
         fill: undefined,
         fundingAmount: {
           isPositive: true,
-          fee: '+8.30',
+          fee: '+$8.30',
           feeNumber: 8.3,
           rate: '0.0001',
         },
@@ -193,7 +193,7 @@ describe('TransactionCard', () => {
         fill: undefined,
         fundingAmount: {
           isPositive: false,
-          fee: '-3.10',
+          fee: '-$3.10',
           feeNumber: -3.1,
           rate: '-0.00005',
         },
@@ -217,7 +217,7 @@ describe('TransactionCard', () => {
         title: 'Deposited 5000 USDC',
         fill: undefined,
         depositWithdrawal: {
-          amount: '5000.00',
+          amount: '+$5000.00',
           amountNumber: 5000,
           isPositive: true,
           asset: 'USDC',
@@ -243,7 +243,7 @@ describe('TransactionCard', () => {
         title: 'Withdrew 2000 USDC',
         fill: undefined,
         depositWithdrawal: {
-          amount: '2000.00',
+          amount: '-$2000.00',
           amountNumber: 2000,
           isPositive: false,
           asset: 'USDC',
@@ -268,7 +268,7 @@ describe('TransactionCard', () => {
         title: 'Deposited 5000 USDC',
         fill: undefined,
         depositWithdrawal: {
-          amount: '5000.00',
+          amount: '+$5000.00',
           amountNumber: 5000,
           isPositive: true,
           asset: 'USDC',

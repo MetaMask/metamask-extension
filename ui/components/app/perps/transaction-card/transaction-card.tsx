@@ -68,18 +68,19 @@ export const TransactionCard: React.FC<TransactionCardProps> = ({
       };
     }
     if (transaction.fundingAmount) {
-      const { fee } = transaction.fundingAmount;
-      const isNegative = fee.startsWith('-');
       return {
-        text: `${isNegative ? '-' : '+'}$${fee.replace(/^[+-]/u, '')}`,
-        color: isNegative ? TextColor.ErrorDefault : TextColor.SuccessDefault,
+        text: transaction.fundingAmount.fee,
+        color: transaction.fundingAmount.isPositive
+          ? TextColor.SuccessDefault
+          : TextColor.ErrorDefault,
       };
     }
     if (transaction.depositWithdrawal) {
-      const isWithdrawal = transaction.type === 'withdrawal';
       return {
-        text: `${isWithdrawal ? '-' : '+'}$${transaction.depositWithdrawal.amount}`,
-        color: isWithdrawal ? TextColor.ErrorDefault : TextColor.SuccessDefault,
+        text: transaction.depositWithdrawal.amount,
+        color: transaction.depositWithdrawal.isPositive
+          ? TextColor.SuccessDefault
+          : TextColor.ErrorDefault,
       };
     }
     // For trades without realized PnL, return empty (don't show symbol)
