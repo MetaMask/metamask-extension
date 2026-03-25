@@ -261,6 +261,11 @@ app/scripts/contentscript.js                         @MetaMask/extension-platfor
 app/scripts/offscreen.js                             @MetaMask/extension-platform
 app/scripts/ui.js                                    @MetaMask/extension-platform
 
+# Manifest
+/.browserslistrc                                     @MetaMask/extension-platform
+app/manifest/                                        @MetaMask/extension-platform
+app/build-types/                                     @MetaMask/extension-platform
+
 # LavaMoat policy changes can highlight security risks. Teams are encouraged to
 # audit these changes on their own, and leave their analysis in a comment.
 # These codeowners will review this analysis, and review the policy changes in
@@ -277,13 +282,6 @@ development/build/index.js           @MetaMask/policy-reviewers @MetaMask/extens
 # providing a path for users to avoid that communication. MetaMask strives to
 # make all such communication opt IN versus opt OUT.
 /privacy-snapshot.json                @MetaMask/extension-privacy-reviewers
-
-# Application manifest, build types, and browserslist config
-# must be approved by those with the knowledge and responsibility to
-# publish libraries under the MetaMask name.
-/.browserslistrc                      @MetaMask/extension-security-team
-app/manifest/                         @MetaMask/extension-security-team
-app/build-types/                      @MetaMask/extension-security-team
 
 # The CODEOWNERS, CONTRIBUTING, LICENSE files constitute agreements
 # amongst organization admins and maintainers. Modifications to these files
