@@ -26,7 +26,7 @@ concurrency:
   cancel-in-progress: ${{ !(contains(github.ref, 'refs/heads/main') || contains(github.ref, 'refs/heads/stable')) }}
 
 env:
-  # For a `pull_request` event, the branch is `github.head_ref``.
+  # For a `pull_request` event, the branch is `github.head_ref`.
   # For a `push` event, the branch is `github.ref_name`.
   BRANCH: ${{ github.head_ref || github.ref_name }}
   # For a `pull_request` event, the fork is `github.event.pull_request.head.repo.fork`.
@@ -206,7 +206,7 @@ jobs:
       EXTENSION_BUNDLESIZE_STATS_TOKEN: ${{ secrets.EXTENSION_BUNDLESIZE_STATS_TOKEN }}
       SELENIUM_BROWSER: chrome
       RUN_ID: ${{ github.run_id }}
-      # For a `pull_request` event, the branch is `github.head_ref``.
+      # For a `pull_request` event, the branch is `github.head_ref`.
       # For a `push` event, the branch is `github.ref_name`.
       BRANCH: ${{ github.head_ref || github.ref_name }}
     steps:
@@ -241,7 +241,7 @@ jobs:
           path: test-artifacts/chrome
 
   e2e-prep:
-    name: E2E
+    name: E2E / prep
     needs:
       - get-requirements
       - prep-deps
@@ -249,7 +249,7 @@ jobs:
     uses: ./.github/workflows/prep-e2e.yml
 
   e2e-chrome:
-    name: E2E
+    name: E2E / Chrome
     needs:
       - get-requirements
       - e2e-prep
@@ -264,7 +264,7 @@ jobs:
     secrets: inherit
 
   e2e-firefox:
-    name: E2E
+    name: E2E / Firefox
     needs:
       - get-requirements
       - e2e-prep

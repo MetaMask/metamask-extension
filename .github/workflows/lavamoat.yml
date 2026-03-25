@@ -135,6 +135,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     env:
+      BRANCH: ${{ github.head_ref || github.ref_name }}
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
     outputs:
@@ -193,5 +194,5 @@ jobs:
         with:
           aws-region: ${{ vars.AWS_REGION }}
           role-to-assume: ${{ vars.AWS_IAM_ROLE }}
-          s3-bucket: ${{ vars.AWS_S3_BUCKET }}/${{ github.event.repository.name }}/${{ env.RUN_ID }}/lavamoat-viz
+          s3-bucket: ${{ vars.AWS_S3_BUCKET }}/${{ github.event.repository.name }}/${{ github.run_id }}/lavamoat-viz
           path: build-artifacts/build-viz
