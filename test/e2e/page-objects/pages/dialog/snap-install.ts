@@ -83,7 +83,7 @@ class SnapInstall {
       throw new Error(
         [
           'Snap install: timed out waiting for "Add to MetaMask" (install confirmation).',
-          'If snap E2E uses mocked ACL data, the registry/signature fixtures may be stale or out of sync with each other.',
+          'If the E2E uses mocked data, the registry/signature fixtures may be stale or out of sync with each other.',
           'Refresh them with: yarn update-snaps-registry',
           '',
           `Underlying error: ${original}`,
