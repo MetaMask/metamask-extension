@@ -74,7 +74,7 @@ export type MultichainAccountListProps = {
   displayWalletHeader?: boolean;
   showAccountCheckbox?: boolean;
   showConnectionStatus?: boolean;
-  showDefaultAddress?: boolean;
+  showNetworkGroupWithCopyIcon?: boolean;
 };
 
 type GroupData = AccountTreeWallets[AccountWalletId]['groups'][AccountGroupId];
@@ -108,7 +108,7 @@ export const MultichainAccountList = ({
   displayWalletHeader = true,
   showAccountCheckbox = false,
   showConnectionStatus = false,
-  showDefaultAddress = false,
+  showNetworkGroupWithCopyIcon = false,
 }: MultichainAccountListProps) => {
   const showAccountMenu = !showAccountCheckbox;
 
@@ -319,7 +319,7 @@ export const MultichainAccountList = ({
                 | undefined
             }
             privacyMode={privacyMode}
-            showDefaultAddress={showDefaultAddress}
+            showNetworkGroupWithCopyIcon={showNetworkGroupWithCopyIcon}
             walletName={
               showWalletName
                 ? wallets[walletId as AccountWalletId]?.metadata?.name
@@ -368,7 +368,7 @@ export const MultichainAccountList = ({
       handleAccountRenameAction,
       openMenuAccountId,
       handleMenuToggle,
-      showDefaultAddress,
+      showNetworkGroupWithCopyIcon,
     ],
   );
 
@@ -396,7 +396,7 @@ export const MultichainAccountList = ({
             groupId,
             groupData,
             walletId,
-            showWalletName: !showDefaultAddress,
+            showWalletName: !showNetworkGroupWithCopyIcon,
           });
         });
       }
@@ -470,7 +470,7 @@ export const MultichainAccountList = ({
             groupId,
             groupData,
             walletId,
-            showWalletName: !showDefaultAddress,
+            showWalletName: !showNetworkGroupWithCopyIcon,
           });
         });
       }
@@ -485,7 +485,7 @@ export const MultichainAccountList = ({
     displayWalletHeader,
     isHiddenAccountsExpanded,
     collapsedSectionKeys,
-    showDefaultAddress,
+    showNetworkGroupWithCopyIcon,
     t,
   ]);
 

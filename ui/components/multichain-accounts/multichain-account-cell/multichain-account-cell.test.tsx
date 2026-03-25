@@ -168,7 +168,7 @@ describe('MultichainAccountCell', () => {
     expect(screen.getByTestId('start-accessory')).toBeInTheDocument();
   });
 
-  it('does not render hovered addresses element when showDefaultAddress is false', () => {
+  it('does not render hovered addresses element when showNetworkGroupWithCopyIcon is false', () => {
     renderWithProvider(<MultichainAccountCell {...defaultProps} />, store);
 
     expect(
@@ -176,9 +176,9 @@ describe('MultichainAccountCell', () => {
     ).not.toBeInTheDocument();
   });
 
-  it('renders hovered addresses element when showDefaultAddress is true', () => {
+  it('renders hovered addresses element when showNetworkGroupWithCopyIcon is true', () => {
     renderWithProvider(
-      <MultichainAccountCell {...defaultProps} showDefaultAddress={true} />,
+      <MultichainAccountCell {...defaultProps} showNetworkGroupWithCopyIcon={true} />,
       store,
     );
 

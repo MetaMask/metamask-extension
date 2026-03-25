@@ -168,7 +168,7 @@ export const AccountList = () => {
               isInSearchMode={Boolean(searchPattern)}
               displayWalletHeader={hasMultipleWallets}
               showConnectionStatus={permittedAccounts.length > 0}
-              showDefaultAddress={isDefaultAddressEnabled}
+              showNetworkGroupWithCopyIcon={isDefaultAddressEnabled}
             />
           ) : (
             <Box
