@@ -1,3 +1,30 @@
-import { QueryClient } from '@tanstack/react-query';
+import { createUIQueryClient } from '@metamask/react-data-query';
+import { NamespacedName } from '@metamask/messenger';
+import { Json } from '@metamask/utils';
+import { DATA_SERVICES } from '../../shared/constants/data-services';
+import {
+  submitRequestToBackground,
+  subscribeToMessengerEvent,
+} from '../store/background-connection';
 
-export const queryClient = new QueryClient();
+type JsonSubscriptionCallback = (data: Json) => void;
+
+const subscriptions = new Map();
+
+const adapter = {
+  call: (method: string, ...params: Json[]) =>
+    submitRequestToBackground<Json>('messengerCall', [method, params]),
+  subscribe: async (method: string, callback: JsonSubscriptionCallback) => {
+    const unsubscribe = await subscribeToMessengerEvent(
+      method as NamespacedName,
+      callback,
+    );
+    subscriptions.set(callback, unsubscribe);
+  },
+  unsubscribe: (_method: string, callback: JsonSubscriptionCallback) => {
+    const unsubscribe = subscriptions.get(callback);
+    unsubscribe?.().catch(console.error);
+  },
+};
+
+export const queryClient = createUIQueryClient(DATA_SERVICES, adapter);
