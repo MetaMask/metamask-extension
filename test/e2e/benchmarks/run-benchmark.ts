@@ -66,7 +66,6 @@ function extractPlatformBuildType(outputFilename?: string): {
 
 /**
  * Builds the registry key for threshold lookup and JSON output.
- * All benchmarks now use simple camelCase keys (platform/buildType stored as data fields).
  *
  * @param fileName - Benchmark flow filename (e.g., 'standard-home', 'load-new-account')
  * @param filePath - Full file path (to detect startup benchmarks)

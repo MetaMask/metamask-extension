@@ -2,9 +2,17 @@ import type { ThresholdConfig } from '../../../../shared/constants/benchmarks';
 import {
   BENCHMARK_PLATFORMS,
   BENCHMARK_BUILD_TYPES,
+  BENCHMARK_PERSONA,
+  BENCHMARK_TYPE,
 } from '../../../../shared/constants/benchmarks';
 
-export { BENCHMARK_PLATFORMS, BENCHMARK_BUILD_TYPES };
+export {
+  BENCHMARK_PLATFORMS,
+  BENCHMARK_BUILD_TYPES,
+  BENCHMARK_PERSONA,
+  BENCHMARK_TYPE,
+};
+
 export const STARTUP_PRESETS = {
   STANDARD_HOME: 'startupStandardHome',
   POWER_USER_HOME: 'startupPowerUserHome',
@@ -24,17 +32,6 @@ export const USER_JOURNEY_PRESETS = {
 
 export const DEFAULT_NUM_BROWSER_LOADS = 10;
 export const DEFAULT_NUM_PAGE_LOADS = 10;
-
-export const BENCHMARK_PERSONA = {
-  STANDARD: 'standard',
-  POWER_USER: 'powerUser',
-} as const;
-
-export const BENCHMARK_TYPE = {
-  BENCHMARK: 'benchmark',
-  PERFORMANCE: 'performance',
-  USER_ACTION: 'userAction',
-} as const;
 
 export const ALL_METRICS = {
   uiStartup: 'UI Startup',
@@ -278,7 +275,6 @@ const BRIDGE_USER_ACTIONS: ThresholdConfig = {
 
 /**
  * Threshold configurations for all benchmarks.
- * All benchmarks now use simple camelCase keys (platform/buildType stored as data fields).
  */
 const BENCHMARK_THRESHOLDS = {
   // Interaction benchmarks (run on all 4 combos, shared baseline)

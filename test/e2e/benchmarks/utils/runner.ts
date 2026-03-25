@@ -7,6 +7,7 @@ import type {
   StatisticalResult,
   ThresholdConfig,
 } from '../../../../shared/constants/benchmarks';
+import { BENCHMARK_PERSONA } from '../../../../shared/constants/benchmarks';
 import {
   ALL_METRICS,
   DEFAULT_NUM_BROWSER_LOADS,
@@ -195,7 +196,7 @@ export async function runBenchmarkWithIterations(
 export function convertSummaryToResults(
   summary: BenchmarkSummary,
   testTitle: string,
-  persona: Persona = 'standard',
+  persona: Persona = BENCHMARK_PERSONA.STANDARD,
   benchmarkType?: BenchmarkType,
   platform?: string,
   buildType?: string,
@@ -261,7 +262,7 @@ export async function runPageLoadBenchmark(
   const pageName = 'home';
   let runResults: Metrics[] = [];
   let testTitle = '';
-  let resultPersona: Persona = 'standard';
+  let resultPersona: Persona = BENCHMARK_PERSONA.STANDARD;
 
   for (let i = 0; i < browserLoads; i += 1) {
     console.log('Starting browser load', i + 1, 'of', browserLoads);
