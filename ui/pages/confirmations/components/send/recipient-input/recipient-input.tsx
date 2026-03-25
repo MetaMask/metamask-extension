@@ -52,9 +52,12 @@ export const RecipientInput = ({
   const {
     recipientConfusableCharacters,
     recipientError,
+    recipientErrorAllowAcknowledge,
     recipientResolvedLookup,
     toAddressValidated,
   } = recipientValidationResult;
+  const isWarning = Boolean(recipientErrorAllowAcknowledge);
+  const isHardError = Boolean(recipientError) && !isWarning;
   const avatarSeedAddress =
     accountAddressSeedIconMap.get(to?.toLowerCase() as string) ||
     recipientResolvedLookup ||
@@ -149,7 +152,8 @@ export const RecipientInput = ({
         </Box>
       ) : (
         <TextField
-          error={Boolean(recipientError)}
+          error={isHardError}
+          className={isWarning ? 'mm-text-field--warning' : undefined}
           endAccessory={
             recipients.length > 0 ? (
               <ButtonIcon
