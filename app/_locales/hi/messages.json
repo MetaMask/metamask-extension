@@ -339,6 +339,9 @@
   "addWallet": {
     "message": "वॉलेट जोड़ें"
   },
+  "addedProtectionOptionalBadge": {
+    "message": "वैकल्पिक"
+  },
   "additionalNetworks": {
     "message": "अतिरिक्त नेटवर्क"
   },
@@ -756,6 +759,27 @@
   "autoDetectTokensDescriptionV2": {
     "message": "आपके वॉलेट में भेजे गए नए टोकन दिखाता है।"
   },
+  "autoLock": {
+    "message": "ऑटो लॉक"
+  },
+  "autoLockAfter15Seconds": {
+    "message": "15 सेकंड के बाद"
+  },
+  "autoLockAfter1Minute": {
+    "message": "1 मिनट के बाद"
+  },
+  "autoLockAfter30Seconds": {
+    "message": "30 सेकंड के बाद"
+  },
+  "autoLockAfter5Minutes": {
+    "message": "5 मिनट के बाद"
+  },
+  "autoLockAfterMinutes": {
+    "message": "$1 मिनट के बाद"
+  },
+  "autoLockNever": {
+    "message": "कभी नहीँ"
+  },
   "autoLockTimeLimit": {
     "message": "ऑटो-लॉक टाइमर (मिनट)"
   },
@@ -773,6 +797,9 @@
   },
   "backToHome": {
     "message": "होम स्क्रीन पर वापस लौटें"
+  },
+  "backUpIncomplete": {
+    "message": "बैकअप अधूरा है"
   },
   "backup": {
     "message": "बैकअप"
@@ -853,6 +880,12 @@
   },
   "basicConfigurationModalCheckbox": {
     "message": "मैं समझता/समझती हूं और जारी रखना चाहता/चाहती हूं"
+  },
+  "basicConfigurationModalDisclaimerOffPart1": {
+    "message": "इसका मतलब यह है कि आप MetaMask पर अपना समय सबसे अच्छे तरीके से इस्तेमाल नहीं कर पाएंगे। बेसिक फीचर्स (जैसे, टोकन विवरण, ऑप्टीमल गैस सेटिंग्स और अन्य) आपके लिए उपलब्ध नहीं होंगे।"
+  },
+  "basicConfigurationModalDisclaimerOffPart2": {
+    "message": "इसे बंद करने से प्राइवेसी, बैकअप और सिंक, और नोटिफ़िकेशन के कुछ फ़ीचर भी बंद हो जाते हैं।"
   },
   "basicConfigurationModalDisclaimerOn": {
     "message": "MetaMask पर अपना समय अच्छे तरीके से इस्तेमाल करने के लिए, आपको इस फीचर को चालू करना होगा। बुनियादी कार्य (जैसे, टोकन विवरण, ऑप्टीमल गैस सेटिंग्स और अन्य) Web3 अनुभव के लिए महत्वपूर्ण हैं।"
@@ -1064,7 +1097,10 @@
     "message": "सबसे कम लागत"
   },
   "bridgeMarketClosedAction": {
-    "message": "मार्केट बंद है"
+    "message": "मार्केट बंद"
+  },
+  "bridgeMarketClosedDescription": {
+    "message": "यह स्टॉक टोकन अभी ट्रेडिंग के समय के बाहर है। मार्केट खुलने पर फिर से कोशिश करें।"
   },
   "bridgeMarketClosedModalDescription": {
     "message": "इस टोकन को सपोर्ट करने वाला मार्केट अभी बंद है। टोकन को कभी भी ऑन-चेन ट्रांसफर किया जा सकता है।"
@@ -1157,6 +1193,9 @@
   },
   "bridgeSelectNetwork": {
     "message": "नेटवर्क चुनें"
+  },
+  "bridgeSelectQuote": {
+    "message": "कोटेशन चुनें"
   },
   "bridgeSelectTokenAmountAndAccount": {
     "message": "टोकन, राशि और गंतव्य अकाउंट चुनें"
@@ -1525,6 +1564,9 @@
   "confirmFieldTooltipPaymaster": {
     "message": "इस ट्रांसेक्शन के लिए शुल्क का भुगतान पेमास्टर स्मार्ट कॉन्ट्रैक्ट द्वारा किया जाएगा।"
   },
+  "confirmFieldTotalExposure": {
+    "message": "कुल एक्सपोज़र"
+  },
   "confirmGasFeeTokenBalance": {
     "message": "बैल:"
   },
@@ -1809,6 +1851,9 @@
   "contactDetails": {
     "message": "कॉन्टेक्ट की जानकारी"
   },
+  "contactUpdated": {
+    "message": "कॉन्टेक्ट अपडेट किया गया"
+  },
   "contactUs": {
     "message": "हमसे कॉन्टेक्ट करें"
   },
@@ -1892,6 +1937,10 @@
   },
   "createPasswordDetails": {
     "message": "केवल इस डिवाइस पर MetaMask को अनलॉक करता है।"
+  },
+  "createPasswordDetailsSocial": {
+    "message": "यह पासवर्ड खो देने का मतलब है कि सभी डिवाइस पर वॉलेट तक आपकी एक्सेस भी खो जाएगी, $1",
+    "description": "$1 is the text 'MetaMask can't reset it.'"
   },
   "createPasswordDetailsSocialReset": {
     "message": "MetaMask इसे रीसेट नहीं कर सकता।"
@@ -2237,17 +2286,31 @@
     "message": "यह इस डिवाइस पर आपके उपयोग से जुड़ा ऐतिहासिक MetaMetrics डेटा डिलीट कर देगा। इस डेटा को डिलीट किए जाने के बाद आपका वॉलेट और एकाउंट्स बिल्कुल वैसे ही रहेंगे जैसे वे अभी हैं। इस प्रक्रिया में 30 दिन तक का समय लग सकता है। हमारी $1 देखें।",
     "description": "$1 will have text saying Privacy Policy "
   },
+  "deleteMetaMetricsDataDescriptionV2": {
+    "message": "इससे आपके वॉलेट से जुड़ा पुराना MetaMetrics डेटा डिलीट हो जाएगा। MetaMetrics में एनॉनिमाइज़्ड इस्तेमाल और डायग्नोस्टिक डेटा शामिल है। आपका वॉलेट और अकाउंट वैसे ही रहेंगे। इस प्रोसेस में 30 दिन तक लग सकते हैं। हमारा $1 देखें।",
+    "description": "$1 will have text saying Privacy Policy "
+  },
   "deleteMetaMetricsDataErrorDesc": {
     "message": "एनालिटिक्स सिस्टम सर्वर की समस्या के कारण यह रिक्वेस्ट अभी पूरा नहीं किया जा सकता है, कृपया बाद में फिर से प्रयास करें।"
   },
   "deleteMetaMetricsDataErrorTitle": {
     "message": "हम अभी इस डेटा को डिलीट करने में असमर्थ हैं"
   },
+  "deleteMetaMetricsDataErrorToast": {
+    "message": "मिटाया नहीं जा सका"
+  },
   "deleteMetaMetricsDataModalDesc": {
     "message": "हम आपके सभी मेटामेट्रिक्स डेटा को निकालने वाले हैं। क्या आप वाकई ऐसा चाहते हैं?"
   },
   "deleteMetaMetricsDataModalTitle": {
     "message": "मेटामेट्रिक्स डेटा हटाएं?"
+  },
+  "deleteMetaMetricsDataRequestedDescription": {
+    "message": "आपने यह मिटाने की कार्रवाई $1 पर शुरू की। इस प्रक्रिया में 30 दिन तक का समय लग सकता है। $2 देखें।",
+    "description": "$1 will be the date on which teh deletion is requested and $2 will have text saying Privacy Policy "
+  },
+  "deleteMetaMetricsDataToast": {
+    "message": "डेटा 30 दिनों के अंदर मिटा दिया जाएगा"
   },
   "deleteNetworkIntro": {
     "message": "अगर आप इस नेटवर्क को हटाते हैं, तो आपको इस नेटवर्क में अपने एसेट देखने के लिए इसे फिर से जोड़ना होगा"
@@ -2811,6 +2874,9 @@
   "externalNameSourcesSettingDescription": {
     "message": "हम Etherscan, Infura और Lens Protocol जैसे थर्ड पार्टी सोर्सों से उन एड्रेसों के लिए प्रस्तावित उपनाम लाएंगे जिनके साथ आप इंटरैक्ट करते हैं। ये सोर्स उन एड्रेसों और आपके आईपी एड्रेस को देख सकेंगे। आपके अकाउंट का एड्रेस थर्ड पार्टी के सामने नहीं आएगा।"
   },
+  "externalNameSourcesSettingDescriptionV2": {
+    "message": "Etherscan, Infura और Lens प्रोटोकॉल जैसे थर्ड-पार्टी सोर्स से आपके इंटरैक्ट करने वाले एड्रेस के लिए सुझाए गए निकनेम लेकर आता है।"
+  },
   "failed": {
     "message": "विफल हुआ"
   },
@@ -3149,6 +3215,9 @@
   "hardwareWalletErrorRecoveryUnlock2": {
     "message": "इथेरियम ऐप खुला है"
   },
+  "hardwareWalletErrorTitleBlindSignNotSupported": {
+    "message": "ब्लाइंड साइनिंग चालू करें"
+  },
   "hardwareWalletErrorTitleBlindSignNotSupportedInstruction1": {
     "message": "इथेरियम ऐप आपके लेज़र पर खुला है"
   },
@@ -3188,6 +3257,9 @@
   },
   "hardwareWalletSupportLinkConversion": {
     "message": "यहां क्लिक करें"
+  },
+  "hardwareWalletTitleEthAppNotOpen": {
+    "message": "Ethereum ऐप खोलें"
   },
   "hardwareWalletTypeConnected": {
     "message": "$1 कनेक्ट हो गया है",
@@ -3314,6 +3386,9 @@
   "hyperliquidReferralSubtitle": {
     "message": "MetaMask रेफ़रल कोड के साथ ट्रेड पर 4% तक की बचत करें।",
     "description": "The subtitle of the Hyperliquid referral confirmation screen"
+  },
+  "iUnderstand": {
+    "message": "मैं समझता हूं"
   },
   "id": {
     "message": "ID"
@@ -3543,6 +3618,9 @@
   },
   "ipfsGatewayDescription": {
     "message": "IPFS पर स्टोर किए गए आपके NFT की इमेज दिखाने, आपके ब्राउज़र के एड्रेस बार में एंटर किए गए ENS एड्रेस से संबंधित जानकारी दिखाने और अलग-अलग टोकनों के लिए आइकन लाने के लिए MetaMask तृतीय-पक्ष के सेवाओं का इस्तेमाल करता है। जब आप इन सेवाओं का इस्तेमाल कर रहे हों तो आपका IP एड्रेस इन सेवाओं को भी दिख सकता है।"
+  },
+  "ipfsGatewayDescriptionV2": {
+    "message": "IPFS पर स्टोर किए गए आपके NFT की इमेज दिखाने, आपके ब्राउज़़र के एड्रेस बार में एंटर किए गए ENS एड्रेस से संबंधित जानकारी दिखाने और अलग-अलग टोकनों के लिए आइकन लाने के लिए थर्ड-पार्टी सर्विसेज़ का इस्तेमाल करता है। जब आप इन सेवाओं का इस्तेमाल कर रहे हों तो आपका IP एड्रेस इन सेवाओं को भी दिख सकता है। नीचे अपना पसंदीदा IPFS गेटवे चुनें।"
   },
   "ipfsToggleModalDescriptionOne": {
     "message": "हम IPFS पर स्टोर किए गए आपके NFT की इमेज दिखाने, आपके ब्राउज़़र के एड्रेस बार में एंटर किए गए ENS एड्रेस से संबंधित जानकारी दिखाने और अलग-अलग टोकनों के लिए आइकन लाने के लिए तृतीय पक्ष के सेवाओं का इस्तेमाल करते हैं। जब आप इन सेवाओं का इस्तेमाल कर रहे हों तो आपका IP एड्रेस इन सेवाओं को भी दिख सकता है।"
@@ -3827,6 +3905,12 @@
   "makeAnotherSwap": {
     "message": "एक नया स्वैप बनाएं"
   },
+  "makeSmartContractsEasier": {
+    "message": "स्मार्ट कॉन्ट्रैक्ट को पढ़ने में आसान बनाएं"
+  },
+  "makeSmartContractsEasierDescription": {
+    "message": "MetaMask इस जानकारी को ट्रांसलेट करने के लिए 4byte.directory और Sourcify का इस्तेमाल करता है।"
+  },
   "manage": {
     "message": "मैनेज करें"
   },
@@ -3844,6 +3928,9 @@
   },
   "managePermissions": {
     "message": "अनुमतियाँ प्रबंधित करें"
+  },
+  "manageWalletRecovery": {
+    "message": "वॉलेट रिकवरी मैनेज करें"
   },
   "marketCap": {
     "message": "मार्केट कैप"
@@ -4072,10 +4159,6 @@
     "message": "$1 $2 Snaps का उपयोग करना चाहता है",
     "description": "$1 is the dapp and $2 is the number of snaps it wants to connect to."
   },
-  "musdBoostDescription": {
-    "message": "अपने स्टेबलकॉइन्स को mUSD में कन्वर्ट करें और $1% तक का बोनस प्राप्त करें।",
-    "description": "$1 is the bonus percentage (e.g., 3)"
-  },
   "musdBoostTitle": {
     "message": "अपने स्टेबलकॉइन्स पर $1% पाएं",
     "description": "$1 is the bonus percentage (e.g., 3)"
@@ -4095,6 +4178,10 @@
     "message": "क्लेम करने योग्य बोनस",
     "description": "Label for the claimable bonus row in the mUSD conversion confirmation screen"
   },
+  "musdClaimableBonusTooltip": {
+    "message": "mUSD होल्ड करने पर आपको मिला $1% सालाना बोनस। आपका बोनस Linea पर रोज़ाना क्लेम किया जा सकता है। रीले द्वारा पावर्ड। $2",
+    "description": "$1 is the APY percentage, $2 is the 'Terms apply' link"
+  },
   "musdConversionActivityTitle": {
     "message": "$1 को mUSD में कन्वर्ट करें",
     "description": "$1 is the source token symbol (e.g., USDC)"
@@ -4110,11 +4197,12 @@
     "message": "$1 → mUSD में कन्वर्ट किया जा रहा है",
     "description": "$1 is the source token symbol (e.g., USDC)"
   },
-  "musdConversionToastSuccess": {
-    "message": "आपका mUSD यहाँ है!"
-  },
   "musdConvert": {
     "message": "कन्वर्ट करें"
+  },
+  "musdConvertAndGetBonus": {
+    "message": "कन्वर्ट करें और $1% पाएं",
+    "description": "$1 is the bonus percentage (e.g., 3)"
   },
   "musdEarnBonusPercentage": {
     "message": "$1% बोनस कमाएं",
@@ -4129,6 +4217,10 @@
   },
   "musdEducationNotNow": {
     "message": "अभी नहीं"
+  },
+  "musdGetBonusPercentage": {
+    "message": "$1% mUSD बोनस पाएं",
+    "description": "$1 is the bonus percentage (e.g., 3)"
   },
   "musdGetMusd": {
     "message": "mUSD प्राप्त करें"
@@ -6053,6 +6145,9 @@
   "quizIntroduction": {
     "message": "अपना सीक्रेट रिकवरी फ्रेज़ देखने के लिए, आपको दो प्रश्नों का सही उत्तर देना होगा।"
   },
+  "quotedTotalCost": {
+    "message": "कुल कीमत: $1"
+  },
   "rank": {
     "message": "रैंक"
   },
@@ -6567,6 +6662,9 @@
   },
   "securityAlertsDescriptionV2": {
     "message": "यह फीचर सक्रिय रूप से ट्रांसेक्शन और सिग्नेचर अनुरोधों की समीक्षा करके आपको बुरी नीयत वाली गतिविधि के प्रति एलर्ट करती है। $1"
+  },
+  "securityAndPassword": {
+    "message": "सिक्योरिटी और पासवर्ड"
   },
   "securityAndPrivacy": {
     "message": "सुरक्षा और गोपनीयता"
@@ -7392,6 +7490,10 @@
   "showFiatConversionInTestnetsDescription": {
     "message": "टेस्ट नेटवर्क पर फिएट कन्वर्शन दिखाने के लिए इसको चुनें"
   },
+  "showFiatConversionInTestnetsDescriptionV2": {
+    "message": "टेस्ट नेटवर्क पर नेटवर्क टोकन को लोकल करेंसी के रूप में दिखाता है। अगर आपको यह फ़ीचर चालू करने के लिए कहा गया है, तो हो सकता है कि आपके साथ स्कैम हो रहा हो। सिर्फ़ टेस्टिंग के लिए। $1",
+    "description": "$1 is the 'Learn more' link"
+  },
   "showHexData": {
     "message": "हेक्स डेटा दिखाएं"
   },
@@ -7516,6 +7618,9 @@
   "simulationsSettingDescription": {
     "message": "ट्रांसेक्शन और सिग्नेचर्स को कन्फर्म करने से पहले उनके बैलेंस में बदलाव का अनुमान लगाने के लिए इसे चालू करें। यह उनके अंतिम परिणाम की गारंटी नहीं देता। $1"
   },
+  "simulationsSettingDescriptionV2": {
+    "message": "ट्रांसेक्शन को कन्फर्म करने से पहले बैलेंस अमाउंट में बदलाव का अनुमान लगाता है। यह आपके ट्रांसेक्शन के फाइनल आउटकम की गारंटी नहीं देता है।$1"
+  },
   "simulationsSettingSubHeader": {
     "message": "बैलेंस अमाउंट में बदलावों का अनुमान लगाएं"
   },
@@ -7570,14 +7675,32 @@
   "smartAccount": {
     "message": "स्मार्ट अकाउंट"
   },
+  "smartAccountDappRequestsDescription": {
+    "message": "dapps को स्टैंडर्ड अकाउंट के लिए स्मार्ट अकाउंट फ़ीचर रिक्वेस्ट करने दें। इससे उन अकाउंट पर कोई असर नहीं पड़ेगा जो पहले से ही स्मार्ट अकाउंट हैं।"
+  },
+  "smartAccountDappRequestsTitle": {
+    "message": "dapps से स्मार्ट अकाउंट रिक्वेस्ट"
+  },
   "smartAccountLabel": {
     "message": "स्मार्ट अकाउंट"
+  },
+  "smartAccountRequestsFromDapps": {
+    "message": "dapps से स्मार्ट अकाउंट रिक्वेस्ट"
+  },
+  "smartAccountRequestsFromDappsDescription": {
+    "message": "dapps को स्टैंडर्ड अकाउंट के लिए स्मार्ट अकाउंट फ़ीचर रिक्वेस्ट करने दें। इससे उन अकाउंट पर कोई असर नहीं पड़ेगा जो पहले से ही स्मार्ट अकाउंट हैं।"
   },
   "smartAccountUpgradeBannerDescription": {
     "message": "वही एड्रेस। और स्मार्ट फीचर्स।"
   },
   "smartAccountUpgradeBannerTitle": {
     "message": "स्मार्ट अकाउंट पर स्विच करें"
+  },
+  "smartContractAddress": {
+    "message": "स्मार्ट कॉन्ट्रैक्ट एड्रेस"
+  },
+  "smartContractAddressWarning": {
+    "message": "हो सकता है कि पाने वाले का पता सीधे टोकन ट्रांसफर को सपोर्ट न करे, जिससे फंड का नुकसान हो सकता है। तभी आगे बढ़ें जब आपको पक्का हो कि यह कॉन्ट्रैक्ट आपका ट्रांसफर प्राप्त कर सकता है।"
   },
   "smartContracts": {
     "message": "स्मार्ट कॉन्ट्रैक्ट्स"
@@ -8049,6 +8172,9 @@
   "stateCorruptionTheseInstructionsLinkTitle": {
     "message": "अपना सीक्रेट रिकवरी फ्रेज़ कैसे रिकवर करें"
   },
+  "stateLogError": {
+    "message": "स्टेट लॉग्स पाने में गड़बड़ी हुई, कृपया बाद में फिर से कोशिश करें।"
+  },
   "stateLogFileName": {
     "message": "MetaMask स्टेट लॉग"
   },
@@ -8057,6 +8183,9 @@
   },
   "stateLogsDescription": {
     "message": "स्टेट लॉग में आपके सार्वजनिक अकाउंट के एड्रेस और भेजे गए ट्रांसेक्शन शामिल होते हैं।"
+  },
+  "stateLogsModalDescription": {
+    "message": "स्टेट लॉग्स हमें उन दिक्कतों को डीबग करने में मदद कर सकते हैं जिनका आपको सामना करना पड़ सकता है। इसे सपोर्ट के लिए सिर्फ़ MetaMask को भेजें, क्योंकि स्टेट लॉग्स में आपका पब्लिक अकाउंट एड्रेस और ट्रांसेक्शन होते हैं।"
   },
   "status": {
     "message": "स्थिति"
@@ -8129,6 +8258,9 @@
   "stxFailureDescription": {
     "message": "बाजार में अचानक परिवर्तन विफलताओं का कारण बन सकता है। यदि समस्या बनी रहती है, तो कृपया $1 से संपर्क करें।",
     "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
+  },
+  "stxOptInDescriptionV2": {
+    "message": "अधिक विश्वसनीय और सुरक्षित ट्रांसेक्शन के लिए स्मार्ट ट्रांसेक्शन चालू करें। $1"
   },
   "stxOptInSupportedNetworksDescription": {
     "message": "समर्थित नेटवर्क पर अधिक विश्वसनीय और सुरक्षित ट्रांसेक्शन के लिए स्मार्ट ट्रांसेक्शन चालू करें। $1"
@@ -8567,6 +8699,12 @@
   "themeDescription": {
     "message": "अपनी पसंदीदा MetaMask थीम चुनें।"
   },
+  "thirdPartyApis": {
+    "message": "थर्ड-पार्टी APIs"
+  },
+  "thirdPartyApisDescription": {
+    "message": "चुनें कि आप अपना IP एड्रेस या Ethereum एड्रेस थर्ड-पार्टी APIs के साथ कैसे शेयर करते हैं। बदलाव आपके MetaMask एक्सपीरियंस पर असर डालेंगे।"
+  },
   "thirdPartySoftware": {
     "message": "थर्ड-पार्टी सॉफ्टवेयर नोटिस",
     "description": "Title of a popup modal displayed when installing a snap for the first time."
@@ -8600,6 +8738,9 @@
   },
   "tokenContractError": {
     "message": "यह एड्रेस एक टोकन कॉन्ट्रैक्ट एड्रेस है। अगर आप इस एड्रेस पर टोकन भेजते हैं, तो आप उन्हें खो देंगे।"
+  },
+  "tokenContractWarning": {
+    "message": "टोकन कॉन्ट्रैक्ट वार्निंग"
   },
   "tokenCount": {
     "message": "टोकन",
@@ -8880,6 +9021,9 @@
     "message": "$1 से कनेक्ट करने में असमर्थ।",
     "description": "Message shown when network connection fails. $1 is the network name."
   },
+  "unableToDownload": {
+    "message": "डाउनलोड नहीं हो पा रहा है"
+  },
   "unapproved": {
     "message": "रिजेक्ट"
   },
@@ -9032,6 +9176,9 @@
   },
   "useSafeChainsListValidationDescription": {
     "message": "MetaMask, सटीक और स्टैंडर्डाइज़्ड नेटवर्क डिटेल्स दिखाने के लिए, $1 नाम की थर्ड-पार्टी सर्विस इस्तेमाल करता है। इससे बुरी नीयत वाले या गलत नेटवर्क से आपके जुड़ने की संभावना कम हो जाती है। इस फ़ीचर को इस्तेमाल करते समय आपका आईपी एड्रेस, chainid.network के सामने आ जाता है।"
+  },
+  "useSafeChainsListValidationDescriptionV2": {
+    "message": "किसी खराब या गलत नेटवर्क से कनेक्ट होने के आपके चांस कम करता है। MetaMask सही और स्टैंडर्ड नेटवर्क डिटेल्स दिखाने के लिए $1 का इस्तेमाल करता है।"
   },
   "useSafeChainsListValidationWebsite": {
     "message": "chainid.network",
