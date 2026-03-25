@@ -90,13 +90,52 @@ jobs:
           path: .metamask
           key: .metamask-${{ hashFiles('yarn.lock') }}
 
-  lint:
-    name: Lint
-    if: ${{ needs.get-requirements.outputs.skip-everything != 'true' || needs.get-requirements.outputs.needs-lint == 'true' }}
+  lint-workflows:
+    name: Lint / workflows
+    if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
     needs:
       - get-requirements
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Download actionlint
+        id: download-actionlint
+        run: bash <(curl https://raw.githubusercontent.com/rhysd/actionlint/7fdc9630cc360ea1a469eed64ac6d78caeda1234/scripts/download-actionlint.bash) 1.7.11
+        shell: bash
+
+      - name: Lint workflow files
+        env:
+          EXECUTABLE: ${{ steps.download-actionlint.outputs.executable }}
+        run: |
+          "$EXECUTABLE" -color
+        shell: bash
+
+  lint-code:
+    name: Lint / code
+    if: ${{ needs.get-requirements.outputs.needs-lint == 'true' }}
+    needs:
       - prep-deps
-    uses: ./.github/workflows/lint.yml
+      - get-requirements
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout and setup environment
+        uses: MetaMask/action-checkout-and-setup@v3
+        with:
+          is-high-risk-environment: false
+          skip-allow-scripts: true
+
+      - name: Lint
+        run: yarn lint
+
+      - name: Verify locales
+        run: yarn verify-locales --quiet
+
+      - name: Check circular dependencies
+        run: yarn circular-deps:check
 
   repository-health-checks:
     needs:
@@ -424,7 +463,8 @@ jobs:
       - get-requirements
       - locales-changed-only
       - prep-deps
-      - lint
+      - lint-workflows
+      - lint-code
       - repository-health-checks
       - storybook
       - lavamoat
