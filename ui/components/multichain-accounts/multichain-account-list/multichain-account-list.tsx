@@ -52,8 +52,6 @@ import {
   getDefaultHomeActiveTabName,
   getHDEntropyIndex,
   getPreferences,
-  getIsDefaultAddressEnabled,
-  getShowDefaultAddressPreference,
 } from '../../../selectors';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { MultichainAccountMenu } from '../multichain-account-menu';
@@ -76,6 +74,7 @@ export type MultichainAccountListProps = {
   displayWalletHeader?: boolean;
   showAccountCheckbox?: boolean;
   showConnectionStatus?: boolean;
+  showDefaultAddress?: boolean;
 };
 
 type GroupData = AccountTreeWallets[AccountWalletId]['groups'][AccountGroupId];
@@ -109,6 +108,7 @@ export const MultichainAccountList = ({
   displayWalletHeader = true,
   showAccountCheckbox = false,
   showConnectionStatus = false,
+  showDefaultAddress = false,
 }: MultichainAccountListProps) => {
   const showAccountMenu = !showAccountCheckbox;
 
@@ -123,8 +123,6 @@ export const MultichainAccountList = ({
   const allBalances = useSelector(selectBalanceForAllWallets);
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
   const { privacyMode } = useSelector(getPreferences);
-  const showDefaultAddress = useSelector(getShowDefaultAddressPreference);
-  const isDefaultAddressEnabled = useSelector(getIsDefaultAddressEnabled);
 
   useEffect(() => {
     endTrace({ name: TraceName.AccountList });
@@ -321,7 +319,7 @@ export const MultichainAccountList = ({
                 | undefined
             }
             privacyMode={privacyMode}
-            isDefaultAddressEnabled={isDefaultAddressEnabled}
+            showDefaultAddress={showDefaultAddress}
             walletName={
               showWalletName
                 ? wallets[walletId as AccountWalletId]?.metadata?.name
@@ -370,7 +368,7 @@ export const MultichainAccountList = ({
       handleAccountRenameAction,
       openMenuAccountId,
       handleMenuToggle,
-      isDefaultAddressEnabled,
+      showDefaultAddress,
     ],
   );
 
@@ -398,7 +396,7 @@ export const MultichainAccountList = ({
             groupId,
             groupData,
             walletId,
-            showWalletName: !(showDefaultAddress && isDefaultAddressEnabled),
+            showWalletName: !showDefaultAddress,
           });
         });
       }
@@ -472,7 +470,7 @@ export const MultichainAccountList = ({
             groupId,
             groupData,
             walletId,
-            showWalletName: true,
+            showWalletName: !showDefaultAddress,
           });
         });
       }
@@ -488,7 +486,6 @@ export const MultichainAccountList = ({
     isHiddenAccountsExpanded,
     collapsedSectionKeys,
     showDefaultAddress,
-    isDefaultAddressEnabled,
     t,
   ]);
 
