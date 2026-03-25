@@ -262,7 +262,7 @@ function VerifyFactorModal({ factorId, onVerified, onClose, t }: {
         <Box className="flex-1" paddingHorizontal={4}>
           <Text variant={TextVariant.HeadingMd} fontWeight={FontWeight.Bold}>{t('twoFAFactorMobileDevice')}</Text>
           <Text color={TextColor.TextAlternative} variant={TextVariant.BodySm} className="mt-1 mb-6">
-            {t('twoFAMobileDeviceSubtitle')}
+            {t('twoFARecoverMobileDeviceSubtitle')}
           </Text>
           <Box
             flexDirection={BoxFlexDirection.Row}
@@ -294,7 +294,7 @@ function VerifyFactorModal({ factorId, onVerified, onClose, t }: {
         </Box>
         <Text variant={TextVariant.HeadingMd} fontWeight={FontWeight.Bold} className="text-center">{t(meta.nameKey)}</Text>
         <Text color={TextColor.TextAlternative} variant={TextVariant.BodySm} className="mt-1 text-center">
-          {factorId === 'passkeys' ? t('twoFAPasskeysSubtitle') : t('twoFAMobileDeviceSubtitle')}
+          {t('twoFAPasskeysSubtitle')}
         </Text>
       </Box>
       <Box padding={4} className="shrink-0 border-t" borderColor={BoxBorderColor.BorderMuted}>

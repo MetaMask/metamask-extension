@@ -380,10 +380,13 @@
     "message": "Choose any recovery method you set up with your 2FA wallet."
   },
   "twoFARecoverSecondFactorTitle": {
-    "message": "One more verification"
+    "message": "Approve recovery transaction"
   },
   "twoFARecoverSecondFactorSubtitle": {
-    "message": "Choose a different factor to complete recovery."
+    "message": "Approve with any transaction verification method attached to your 2FA Wallet."
+  },
+  "twoFARecoverMobileDeviceSubtitle": {
+    "message": "Scan this QR code with your MetaMask Mobile app to verify recovery."
   },
   "twoFARecoverVerifyFactor": {
     "message": "Verify"
