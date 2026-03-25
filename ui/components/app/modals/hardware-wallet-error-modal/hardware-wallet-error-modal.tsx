@@ -1,4 +1,11 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { ErrorCode, type HardwareWalletError } from '@metamask/hw-wallet-sdk';
 import {
   Text,
@@ -29,8 +36,21 @@ import {
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useModalProps } from '../../../../hooks/useModalProps';
+import { useHardwareWalletRecoveryLocation } from '../../../../hooks/useHardwareWalletRecoveryLocation';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../../shared/constants/metametrics';
+import {
+  buildHardwareWalletRecoverySegmentProperties,
+  getHardwareWalletMetricDeviceModel,
+  mapHardwareWalletRecoveryErrorType,
+  mapHardwareWalletTypeToMetricDeviceType,
+} from '../../../../../shared/lib/hardware-wallet-recovery-metrics';
+import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import {
   HardwareWalletType,
+  getHardwareWalletErrorCode,
   isUserRejectedHardwareWalletError,
   isRetryableHardwareWalletError,
   useHardwareWalletActions,
@@ -57,26 +77,154 @@ const RECOVERY_SUCCESS_AUTO_DISMISS_MS = 3000;
 export const HardwareWalletErrorModal: React.FC<HardwareWalletErrorModalProps> =
   React.memo((props) => {
     const t = useI18nContext();
+    const { trackEvent } = useContext(MetaMetricsContext);
+    const recoveryLocation = useHardwareWalletRecoveryLocation();
     const { hideModal, props: modalProps } = useModalProps();
     const [isLoading, setIsLoading] = useState(false);
     const [recovered, setRecovered] = useState(false);
     const recoveredDismissTimeoutRef = useRef<ReturnType<
       typeof setTimeout
     > | null>(null);
+    const errorTypeViewCountRef = useRef(0);
+    const lastTrackedErrorKeyRef = useRef<string | null>(null);
+    const prevNonNullErrorIdentityKeyRef = useRef<string | null>(null);
+    const successModalMetricSentRef = useRef(false);
     const { error, onClose, onCancel, onRetry } = { ...modalProps, ...props };
 
     const { walletType: selectedAccountWalletType } = useHardwareWalletConfig();
     const { ensureDeviceReady, clearError, setConnectionReady } =
       useHardwareWalletActions();
 
+    const errorMetadata =
+      error === undefined
+        ? undefined
+        : ((error as { metadata?: { walletType?: HardwareWalletType } })
+            .metadata ??
+          (
+            error as {
+              data?: { metadata?: { walletType?: HardwareWalletType } };
+            }
+          ).data?.metadata);
+    const displayWalletType = useMemo(
+      () =>
+        errorMetadata?.walletType ??
+        selectedAccountWalletType ??
+        HardwareWalletType.Ledger,
+      [errorMetadata?.walletType, selectedAccountWalletType],
+    );
+
+    const isUserRejectedError =
+      error !== undefined && isUserRejectedHardwareWalletError(error);
+
+    const errorIdentityKey = useMemo(() => {
+      if (!error) {
+        return null;
+      }
+      const code = getHardwareWalletErrorCode(error);
+      return `${recoveryLocation}:${String(code)}:${mapHardwareWalletRecoveryErrorType(error)}`;
+    }, [error, recoveryLocation]);
+
+    useEffect(() => {
+      setRecovered(false);
+      successModalMetricSentRef.current = false;
+
+      if (errorIdentityKey === null) {
+        prevNonNullErrorIdentityKeyRef.current = null;
+        return;
+      }
+
+      if (
+        prevNonNullErrorIdentityKeyRef.current !== null &&
+        prevNonNullErrorIdentityKeyRef.current !== errorIdentityKey
+      ) {
+        errorTypeViewCountRef.current = 0;
+      }
+      prevNonNullErrorIdentityKeyRef.current = errorIdentityKey;
+    }, [errorIdentityKey]);
+
+    useEffect(() => {
+      if (error) {
+        return;
+      }
+      lastTrackedErrorKeyRef.current = null;
+    }, [error]);
+
+    useEffect(() => {
+      if (!error || isUserRejectedError || !errorIdentityKey) {
+        return;
+      }
+      if (lastTrackedErrorKeyRef.current === errorIdentityKey) {
+        return;
+      }
+      lastTrackedErrorKeyRef.current = errorIdentityKey;
+      errorTypeViewCountRef.current += 1;
+      const deviceType =
+        mapHardwareWalletTypeToMetricDeviceType(displayWalletType);
+      const deviceModel = getHardwareWalletMetricDeviceModel(error);
+      trackEvent({
+        category: MetaMetricsEventCategory.Accounts,
+        event: MetaMetricsEventName.HardwareWalletRecoveryModalViewed,
+        properties: buildHardwareWalletRecoverySegmentProperties({
+          location: recoveryLocation,
+          deviceType,
+          deviceModel,
+          errorType: mapHardwareWalletRecoveryErrorType(error),
+          errorTypeViewCount: errorTypeViewCountRef.current,
+          error,
+        }),
+      });
+    }, [
+      displayWalletType,
+      error,
+      errorIdentityKey,
+      isUserRejectedError,
+      recoveryLocation,
+      trackEvent,
+    ]);
+
     const handleRetry = async () => {
       onRetry?.();
+      if (error) {
+        const deviceType =
+          mapHardwareWalletTypeToMetricDeviceType(displayWalletType);
+        const deviceModel = getHardwareWalletMetricDeviceModel(error);
+        trackEvent({
+          category: MetaMetricsEventCategory.Accounts,
+          event: MetaMetricsEventName.HardwareWalletRecoveryCtaClicked,
+          properties: buildHardwareWalletRecoverySegmentProperties({
+            location: recoveryLocation,
+            deviceType,
+            deviceModel,
+            errorType: mapHardwareWalletRecoveryErrorType(error),
+            errorTypeViewCount: errorTypeViewCountRef.current,
+            error,
+          }),
+        });
+      }
+
       setIsLoading(true);
       try {
         const result = await ensureDeviceReady();
         if (result) {
           setConnectionReady();
           setRecovered(true);
+        } else if (error) {
+          errorTypeViewCountRef.current += 1;
+          const deviceType =
+            mapHardwareWalletTypeToMetricDeviceType(displayWalletType);
+          const deviceModel = getHardwareWalletMetricDeviceModel(error);
+          trackEvent({
+            category: MetaMetricsEventCategory.Accounts,
+            event: MetaMetricsEventName.HardwareWalletRecoveryModalViewed,
+            properties: buildHardwareWalletRecoverySegmentProperties({
+              location: recoveryLocation,
+              deviceType,
+              deviceModel,
+              errorType: mapHardwareWalletRecoveryErrorType(error),
+              errorTypeViewCount: errorTypeViewCountRef.current,
+              error,
+            }),
+          });
         }
       } finally {
         setIsLoading(false);
@@ -112,8 +260,30 @@ export const HardwareWalletErrorModal: React.FC<HardwareWalletErrorModalProps> =
       };
     }, [handleRecoveredClose, recovered]);
 
-    const isUserRejectedError =
-      error !== undefined && isUserRejectedHardwareWalletError(error);
+    useEffect(() => {
+      if (!recovered || !error || successModalMetricSentRef.current) {
+        return;
+      }
+      successModalMetricSentRef.current = true;
+      const deviceType =
+        mapHardwareWalletTypeToMetricDeviceType(displayWalletType);
+      const deviceModel = getHardwareWalletMetricDeviceModel(error);
+      trackEvent({
+        category: MetaMetricsEventCategory.Accounts,
+        event: MetaMetricsEventName.HardwareWalletRecoverySuccessModalViewed,
+        properties: buildHardwareWalletRecoverySegmentProperties({
+          location: recoveryLocation,
+          deviceType,
+          deviceModel,
+          errorType: mapHardwareWalletRecoveryErrorType(error),
+          errorTypeViewCount: errorTypeViewCountRef.current,
+          error,
+        }),
+      });
+      lastTrackedErrorKeyRef.current = null;
+      errorTypeViewCountRef.current = 0;
+      prevNonNullErrorIdentityKeyRef.current = null;
+    }, [displayWalletType, error, recovered, recoveryLocation, trackEvent]);
 
     useEffect(() => {
       if (!isUserRejectedError) {
@@ -140,22 +310,6 @@ export const HardwareWalletErrorModal: React.FC<HardwareWalletErrorModalProps> =
     if (isUserRejectedError) {
       return null;
     }
-
-    // Get wallet type from error metadata first (for signature flows where
-    // the signing account may differ from the selected account), then fall
-    // back to the selected account's wallet type.
-    // Handle both direct metadata and RPC error format (data.metadata)
-    const errorMetadata =
-      (error as { metadata?: { walletType?: HardwareWalletType } }).metadata ??
-      (error as { data?: { metadata?: { walletType?: HardwareWalletType } } })
-        .data?.metadata;
-    const errorWalletType = errorMetadata?.walletType;
-
-    // Use errorWalletType, then selectedAccountWalletType, then default to Ledger
-    // as a fallback since most hardware wallet users are Ledger users.
-    // This ensures the modal always shows rather than silently closing.
-    const displayWalletType =
-      errorWalletType ?? selectedAccountWalletType ?? HardwareWalletType.Ledger;
 
     const errorContent = buildErrorContent(
       error,

@@ -1,9 +1,16 @@
 import React from 'react';
 import { render, fireEvent, waitFor, act } from '@testing-library/react';
 import { ErrorCode, type HardwareWalletError } from '@metamask/hw-wallet-sdk';
+import { MetaMetricsEventName } from '../../../../../shared/constants/metametrics';
+import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import { createHardwareWalletError } from '../../../../contexts/hardware-wallets/errors';
 import { HardwareWalletType } from '../../../../contexts/hardware-wallets/types';
 import { HardwareWalletErrorModal } from './hardware-wallet-error-modal';
+
+const mockTrackEvent = jest.fn();
+jest.mock('../../../../hooks/useHardwareWalletRecoveryLocation', () => ({
+  useHardwareWalletRecoveryLocation: jest.fn(() => 'Send'),
+}));
 
 const mockHideModal = jest.fn();
 jest.mock('../../../../hooks/useModalProps', () => ({
@@ -44,6 +51,21 @@ const createTestError = (
   );
 };
 
+const metricsProviderValue = {
+  trackEvent: mockTrackEvent,
+  bufferedTrace: jest.fn(),
+  bufferedEndTrace: jest.fn(),
+  onboardingParentContext: { current: null },
+};
+
+function renderWithMetrics(ui: React.ReactElement) {
+  return render(
+    <MetaMetricsContext.Provider value={metricsProviderValue}>
+      {ui}
+    </MetaMetricsContext.Provider>,
+  );
+}
+
 describe('HardwareWalletErrorModal', () => {
   beforeEach(() => {
     jest.clearAllMocks();
@@ -61,7 +83,9 @@ describe('HardwareWalletErrorModal', () => {
         'Your Ledger device is locked. Please unlock it to continue.',
       );
 
-      const { getByText } = render(<HardwareWalletErrorModal error={error} />);
+      const { getByText } = renderWithMetrics(
+        <HardwareWalletErrorModal error={error} />,
+      );
 
       expect(
         getByText('[hardwareWalletErrorTitleDeviceLocked]'),
@@ -76,7 +100,7 @@ describe('HardwareWalletErrorModal', () => {
 
     it('renders nothing when error is not provided', () => {
       const onClose = jest.fn();
-      const { container } = render(
+      const { container } = renderWithMetrics(
         <HardwareWalletErrorModal onClose={onClose} />,
       );
 
@@ -95,7 +119,9 @@ describe('HardwareWalletErrorModal', () => {
         walletType: null,
       });
 
-      const { getByText } = render(<HardwareWalletErrorModal error={error} />);
+      const { getByText } = renderWithMetrics(
+        <HardwareWalletErrorModal error={error} />,
+      );
 
       expect(
         getByText('[hardwareWalletErrorTitleDeviceLocked]'),
@@ -109,7 +135,7 @@ describe('HardwareWalletErrorModal', () => {
         'You cancelled the operation.',
       );
       const onCancel = jest.fn();
-      const { container } = render(
+      const { container } = renderWithMetrics(
         <HardwareWalletErrorModal error={error} onCancel={onCancel} />,
       );
 
@@ -128,7 +154,9 @@ describe('HardwareWalletErrorModal', () => {
         'Your device is locked.',
       );
 
-      const { getByText } = render(<HardwareWalletErrorModal error={error} />);
+      const { getByText } = renderWithMetrics(
+        <HardwareWalletErrorModal error={error} />,
+      );
 
       expect(
         getByText('[hardwareWalletErrorTitleDeviceLocked]'),
@@ -148,7 +176,9 @@ describe('HardwareWalletErrorModal', () => {
         'Blind sign not supported.',
       );
 
-      const { getByText } = render(<HardwareWalletErrorModal error={error} />);
+      const { getByText } = renderWithMetrics(
+        <HardwareWalletErrorModal error={error} />,
+      );
 
       expect(
         getByText('[hardwareWalletErrorTitleBlindSignNotSupported]'),
@@ -172,7 +202,9 @@ describe('HardwareWalletErrorModal', () => {
         'Please open the Ethereum app.',
       );
 
-      const { getByText } = render(<HardwareWalletErrorModal error={error} />);
+      const { getByText } = renderWithMetrics(
+        <HardwareWalletErrorModal error={error} />,
+      );
 
       expect(
         getByText('[hardwareWalletTitleEthAppNotOpen]'),
@@ -189,7 +221,9 @@ describe('HardwareWalletErrorModal', () => {
         'Device not found.',
       );
 
-      const { getByText } = render(<HardwareWalletErrorModal error={error} />);
+      const { getByText } = renderWithMetrics(
+        <HardwareWalletErrorModal error={error} />,
+      );
 
       expect(
         getByText('[hardwareWalletErrorTitleConnectYourDevice]'),
@@ -212,7 +246,9 @@ describe('HardwareWalletErrorModal', () => {
         'Connection lost.',
       );
 
-      const { getByText } = render(<HardwareWalletErrorModal error={error} />);
+      const { getByText } = renderWithMetrics(
+        <HardwareWalletErrorModal error={error} />,
+      );
 
       expect(
         getByText('[hardwareWalletErrorTitleConnectYourDevice]'),
@@ -232,7 +268,9 @@ describe('HardwareWalletErrorModal', () => {
         'Unknown error.',
       );
 
-      const { getByText } = render(<HardwareWalletErrorModal error={error} />);
+      const { getByText } = renderWithMetrics(
+        <HardwareWalletErrorModal error={error} />,
+      );
 
       expect(
         getByText('[hardwareWalletErrorUnknownErrorDescription]'),
@@ -250,7 +288,7 @@ describe('HardwareWalletErrorModal', () => {
       const onRetry = jest.fn();
       const onCancel = jest.fn();
 
-      const { getByText, queryByText } = render(
+      const { getByText, queryByText } = renderWithMetrics(
         <HardwareWalletErrorModal
           error={error}
           onRetry={onRetry}
@@ -272,7 +310,7 @@ describe('HardwareWalletErrorModal', () => {
       );
       const onCancel = jest.fn();
 
-      const { getByText, queryByText } = render(
+      const { getByText, queryByText } = renderWithMetrics(
         <HardwareWalletErrorModal error={error} onCancel={onCancel} />,
       );
 
@@ -290,7 +328,7 @@ describe('HardwareWalletErrorModal', () => {
       );
       const onCancel = jest.fn();
 
-      const { getByText, queryByText } = render(
+      const { getByText, queryByText } = renderWithMetrics(
         <HardwareWalletErrorModal error={error} onCancel={onCancel} />,
       );
 
@@ -309,7 +347,7 @@ describe('HardwareWalletErrorModal', () => {
       const onRetry = jest.fn();
       const onCancel = jest.fn();
 
-      const { getByText } = render(
+      const { getByText } = renderWithMetrics(
         <HardwareWalletErrorModal
           error={error}
           onRetry={onRetry}
@@ -328,6 +366,89 @@ describe('HardwareWalletErrorModal', () => {
       expect(mockSetConnectionReady).toHaveBeenCalledTimes(1);
     });
 
+    it('tracks incremented modal view count when reconnect fails', async () => {
+      mockEnsureDeviceReady.mockResolvedValue(false);
+      const error = createTestError(
+        ErrorCode.DeviceDisconnected,
+        'Device disconnected',
+        'Device not found.',
+      );
+
+      const { getByText } = renderWithMetrics(
+        <HardwareWalletErrorModal error={error} />,
+      );
+
+      await waitFor(() => {
+        const modalViewed = mockTrackEvent.mock.calls.filter(
+          (call) =>
+            call[0].event ===
+            MetaMetricsEventName.HardwareWalletRecoveryModalViewed,
+        );
+        expect(modalViewed).toHaveLength(1);
+        expect(modalViewed[0][0].properties.error_type_view_count).toBe(1);
+      });
+
+      await act(async () => {
+        fireEvent.click(getByText('[hardwareWalletErrorContinueButton]'));
+      });
+
+      await waitFor(() => {
+        const modalViewed = mockTrackEvent.mock.calls.filter(
+          (call) =>
+            call[0].event ===
+            MetaMetricsEventName.HardwareWalletRecoveryModalViewed,
+        );
+        expect(modalViewed.length).toBeGreaterThanOrEqual(2);
+        expect(
+          modalViewed[modalViewed.length - 1][0].properties
+            .error_type_view_count,
+        ).toBe(2);
+      });
+    });
+
+    it('tracks modal viewed again after error clears and is shown again', async () => {
+      const error = createTestError(
+        ErrorCode.DeviceDisconnected,
+        'Device disconnected',
+        'Device not found.',
+      );
+
+      const { rerender } = renderWithMetrics(
+        <HardwareWalletErrorModal error={error} />,
+      );
+
+      await waitFor(() => {
+        expect(
+          mockTrackEvent.mock.calls.some(
+            (call) =>
+              call[0].event ===
+              MetaMetricsEventName.HardwareWalletRecoveryModalViewed,
+          ),
+        ).toBe(true);
+      });
+
+      rerender(
+        <MetaMetricsContext.Provider value={metricsProviderValue}>
+          <HardwareWalletErrorModal />
+        </MetaMetricsContext.Provider>,
+      );
+
+      rerender(
+        <MetaMetricsContext.Provider value={metricsProviderValue}>
+          <HardwareWalletErrorModal error={error} />
+        </MetaMetricsContext.Provider>,
+      );
+
+      await waitFor(() => {
+        const modalViewed = mockTrackEvent.mock.calls.filter(
+          (call) =>
+            call[0].event ===
+            MetaMetricsEventName.HardwareWalletRecoveryModalViewed,
+        );
+        expect(modalViewed.length).toBeGreaterThanOrEqual(2);
+      });
+    });
+
     it('handles Confirm button click for non-retryable errors', async () => {
       const error = createTestError(
         ErrorCode.Unknown,
@@ -336,7 +457,7 @@ describe('HardwareWalletErrorModal', () => {
       );
       const onCancel = jest.fn();
 
-      const { getByText } = render(
+      const { getByText } = renderWithMetrics(
         <HardwareWalletErrorModal error={error} onCancel={onCancel} />,
       );
 
@@ -360,7 +481,7 @@ describe('HardwareWalletErrorModal', () => {
 
       mockEnsureDeviceReady.mockResolvedValueOnce(true);
 
-      const { getByText, rerender } = render(
+      const { getByText, rerender } = renderWithMetrics(
         <HardwareWalletErrorModal error={error} />,
       );
 
@@ -368,7 +489,11 @@ describe('HardwareWalletErrorModal', () => {
         fireEvent.click(getByText('[hardwareWalletErrorReconnectButton]'));
       });
 
-      rerender(<HardwareWalletErrorModal error={error} />);
+      rerender(
+        <MetaMetricsContext.Provider value={metricsProviderValue}>
+          <HardwareWalletErrorModal error={error} />
+        </MetaMetricsContext.Provider>,
+      );
 
       expect(getByText('[hardwareWalletTypeConnected]')).toBeInTheDocument();
       expect(mockSetConnectionReady).toHaveBeenCalledTimes(1);
@@ -383,7 +508,7 @@ describe('HardwareWalletErrorModal', () => {
 
       mockEnsureDeviceReady.mockResolvedValueOnce(true);
 
-      const { getByText, getByLabelText } = render(
+      const { getByText, getByLabelText } = renderWithMetrics(
         <HardwareWalletErrorModal error={error} />,
       );
 
@@ -411,7 +536,9 @@ describe('HardwareWalletErrorModal', () => {
 
       mockEnsureDeviceReady.mockResolvedValueOnce(true);
 
-      const { getByText } = render(<HardwareWalletErrorModal error={error} />);
+      const { getByText } = renderWithMetrics(
+        <HardwareWalletErrorModal error={error} />,
+      );
 
       await act(async () => {
         fireEvent.click(getByText('[hardwareWalletErrorReconnectButton]'));
@@ -438,7 +565,9 @@ describe('HardwareWalletErrorModal', () => {
         'Your device is locked.',
       );
 
-      const { getByText } = render(<HardwareWalletErrorModal error={error} />);
+      const { getByText } = renderWithMetrics(
+        <HardwareWalletErrorModal error={error} />,
+      );
 
       expect(
         getByText('[hardwareWalletErrorTitleDeviceLocked]'),
