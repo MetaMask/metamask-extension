@@ -445,7 +445,6 @@ jobs:
       - e2e-prep
       - builds-test
       - builds-dist
-      - builds-flask
     uses: ./.github/workflows/e2e-chrome.yml
     # Without this `if`, when builds-from-run is activated, the build jobs are considered skipped, and the downstream E2E tests won't run
     if: ${{ !cancelled() && needs.get-requirements.outputs.needs-e2e == 'true' && !contains(needs.*.result, 'failure') }}
@@ -461,7 +460,6 @@ jobs:
       - e2e-prep
       - builds-test
       - builds-dist
-      - builds-flask
     uses: ./.github/workflows/e2e-firefox.yml
     # Without this `if`, when builds-from-run is activated, the build jobs are considered skipped, and the downstream E2E tests won't run
     if: ${{ !cancelled() && needs.get-requirements.outputs.needs-e2e == 'true' && !contains(needs.*.result, 'failure') }}
