@@ -98,7 +98,8 @@ describe('PerpsWithdrawPage', () => {
     renderWithProvider(<PerpsWithdrawPage />, createMockStore());
 
     expect(screen.getByTestId('perps-withdraw-page')).toBeInTheDocument();
-    expect(screen.getByText('Withdraw funds')).toBeInTheDocument();
+    expect(screen.getByTestId('perps-withdraw-cancel')).toBeInTheDocument();
+    expect(screen.getByTestId('perps-withdraw-submit')).toBeInTheDocument();
   });
 
   it('redirects when perps experience is disabled', () => {
@@ -117,8 +118,10 @@ describe('PerpsWithdrawPage', () => {
       expect(mockSubmit).toHaveBeenCalledWith('perpsGetWithdrawalRoutes', []);
     });
 
-    await user.type(screen.getByTestId('perps-fiat-hero-amount-input'), '50');
-    await user.click(screen.getByTestId('perps-withdraw-continue'));
+    const amountInput = screen.getByTestId('perps-fiat-hero-amount-input');
+    await user.clear(amountInput);
+    await user.type(amountInput, '50');
+    await user.click(screen.getByTestId('perps-withdraw-submit'));
 
     await waitFor(() => {
       expect(mockSubmit).toHaveBeenCalledWith(
@@ -136,10 +139,10 @@ describe('PerpsWithdrawPage', () => {
     });
   });
 
-  it('navigates home when back is pressed', () => {
+  it('navigates home when cancel is pressed', () => {
     renderWithProvider(<PerpsWithdrawPage />, createMockStore());
 
-    fireEvent.click(screen.getByTestId('perps-withdraw-back-button'));
+    fireEvent.click(screen.getByTestId('perps-withdraw-cancel'));
 
     expect(mockNavigate).toHaveBeenCalledWith('/');
   });
@@ -174,8 +177,10 @@ describe('PerpsWithdrawPage', () => {
       expect(mockSubmit).toHaveBeenCalledWith('perpsGetWithdrawalRoutes', []);
     });
 
-    await user.type(screen.getByTestId('perps-fiat-hero-amount-input'), '50');
-    await user.click(screen.getByTestId('perps-withdraw-continue'));
+    const amountInput = screen.getByTestId('perps-fiat-hero-amount-input');
+    await user.clear(amountInput);
+    await user.type(amountInput, '50');
+    await user.click(screen.getByTestId('perps-withdraw-submit'));
 
     await waitFor(() => {
       expect(mockSubmit).toHaveBeenCalledWith('perpsClearWithdrawResult', []);

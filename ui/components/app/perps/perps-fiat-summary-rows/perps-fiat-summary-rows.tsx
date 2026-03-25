@@ -34,7 +34,14 @@ export const PerpsFiatSummaryRows: React.FC<PerpsFiatSummaryRowsProps> = ({
     >
       {rows.map(
         (
-          { label, value, 'data-testid': dataTestId, emphasizeValue },
+          {
+            label,
+            value,
+            valueContent,
+            'data-testid': dataTestId,
+            emphasizeValue,
+            valueColor = TextColor.textAlternative,
+          },
           index,
         ) => (
           <ConfirmInfoRow
@@ -43,14 +50,16 @@ export const PerpsFiatSummaryRows: React.FC<PerpsFiatSummaryRowsProps> = ({
             rowVariant={rowVariant}
             data-testid={dataTestId}
           >
-            <Text
-              variant={textVariant}
-              color={TextColor.textAlternative}
-              fontWeight={emphasizeValue ? FontWeight.Medium : undefined}
-              data-testid={dataTestId ? `${dataTestId}-value` : undefined}
-            >
-              {value}
-            </Text>
+            {valueContent ?? (
+              <Text
+                variant={textVariant}
+                color={valueColor}
+                fontWeight={emphasizeValue ? FontWeight.Medium : undefined}
+                data-testid={dataTestId ? `${dataTestId}-value` : undefined}
+              >
+                {value}
+              </Text>
+            )}
           </ConfirmInfoRow>
         ),
       )}

@@ -1,10 +1,18 @@
+import type { ReactNode } from 'react';
+
+import type { TextColor } from '../../../../helpers/constants/design-system';
 import type { ConfirmInfoRowSize } from '../../confirm/info/row/row';
 
 export type PerpsFiatSummaryRow = {
   label: string;
-  value: string;
+  /** Shown when `valueContent` is not set. */
+  value?: string;
+  /** Renders in place of `value` (e.g. token + network badge). */
+  valueContent?: ReactNode;
   'data-testid'?: string;
   emphasizeValue?: boolean;
+  /** Value column text color; defaults to `textAlternative`. */
+  valueColor?: TextColor;
 };
 
 export type PerpsFiatSummaryRowsProps = {

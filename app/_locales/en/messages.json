@@ -5480,7 +5480,7 @@
     "description": "is the available balance amount"
   },
   "perpsAvailableBalance": {
-    "message": "Available balance"
+    "message": "Available Perps balance: "
   },
   "perpsAvailableToClose": {
     "message": "Available to close"
@@ -5895,12 +5895,6 @@
   "perpsWithdraw": {
     "message": "Withdraw"
   },
-  "perpsWithdrawAmount": {
-    "message": "Amount (USDC)"
-  },
-  "perpsWithdrawDescription": {
-    "message": "Withdraw USDC from your Perps balance to your wallet on Arbitrum. A network fee applies."
-  },
   "perpsWithdrawEstimatedTime": {
     "message": "Estimated time"
   },
@@ -5908,10 +5902,7 @@
     "message": "Withdrawal could not be completed. Try again."
   },
   "perpsWithdrawFee": {
-    "message": "Fee"
-  },
-  "perpsWithdrawFunds": {
-    "message": "Withdraw funds"
+    "message": "Provider Fee"
   },
   "perpsWithdrawInsufficient": {
     "message": "Amount exceeds your available Perps balance."
@@ -5927,6 +5918,9 @@
     "message": "~$1 min",
     "description": "$1 is the estimated number of minutes"
   },
+  "perpsWithdrawReceive": {
+    "message": "Receive"
+  },
   "perpsWithdrawRoutesError": {
     "message": "Could not load withdrawal limits. Try again later."
   },
@@ -5939,6 +5933,9 @@
   },
   "perpsWithdrawToastErrorTitle": {
     "message": "Withdrawal failed"
+  },
+  "perpsYouReceive": {
+    "message": "You receive"
   },
   "perpsYouWillReceive": {
     "message": "You'll receive"
