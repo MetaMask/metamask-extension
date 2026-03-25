@@ -46,7 +46,7 @@ function saveAclHeadersFile(
     'Accept-Ranges': headerGet('accept-ranges') ?? 'bytes',
     'Content-Length': String(Buffer.byteLength(bodyUtf8, 'utf8')),
     'Content-Type': contentType,
-    Etag: headerGet('etag') ?? '',
+    Etag: headerGet('etag'),
   };
 
   const cacheControl = headerGet('cache-control');
