@@ -68,7 +68,6 @@ export default class OAuthService {
     this.#messenger = messenger;
 
     const oauthConfig = loadOAuthConfig();
-    console.log('oauthConfig', oauthConfig);
     this.#env = {
       ...env,
       ...oauthConfig,

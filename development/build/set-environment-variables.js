@@ -24,14 +24,6 @@ module.exports.setEnvironmentVariables = function setEnvironmentVariables({
   variables,
   version,
 }) {
-  console.log('buildName', buildName);
-  console.log('isDevBuild', isDevBuild);
-  console.log('isTestBuild', isTestBuild);
-  console.log('buildType', buildType);
-  console.log('environment', environment);
-  console.log('version', version);
-  console.log('variables', variables);
-
   const isSeedlessOnboardingEnabled =
     variables.get('SEEDLESS_ONBOARDING_ENABLED')?.toString() === 'true';
   const oauthClientIdOptions = {
@@ -45,12 +37,10 @@ module.exports.setEnvironmentVariables = function setEnvironmentVariables({
   const APPLE_CLIENT_ID = isSeedlessOnboardingEnabled
     ? getOAuthClientId({ ...oauthClientIdOptions, provider: 'APPLE' })
     : '';
-  console.log('APPLE_CLIENT_ID', APPLE_CLIENT_ID);
 
   const GOOGLE_CLIENT_ID = isSeedlessOnboardingEnabled
     ? getOAuthClientId({ ...oauthClientIdOptions, provider: 'GOOGLE' })
     : '';
-  console.log('GOOGLE_CLIENT_ID', GOOGLE_CLIENT_ID);
 
   variables.set({
     DEBUG: isDevBuild || isTestBuild ? variables.getMaybe('DEBUG') : undefined,
