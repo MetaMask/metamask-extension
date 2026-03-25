@@ -339,6 +339,9 @@
   "addWallet": {
     "message": "ウォレットを追加"
   },
+  "addedProtectionOptionalBadge": {
+    "message": "オプション"
+  },
   "additionalNetworks": {
     "message": "他のネットワーク"
   },
@@ -756,6 +759,27 @@
   "autoDetectTokensDescriptionV2": {
     "message": "ウォレットに送信された新しいトークンを表示します。"
   },
+  "autoLock": {
+    "message": "自動ロック"
+  },
+  "autoLockAfter15Seconds": {
+    "message": "15秒後"
+  },
+  "autoLockAfter1Minute": {
+    "message": "1分後"
+  },
+  "autoLockAfter30Seconds": {
+    "message": "30秒後"
+  },
+  "autoLockAfter5Minutes": {
+    "message": "5分後"
+  },
+  "autoLockAfterMinutes": {
+    "message": "$1分後"
+  },
+  "autoLockNever": {
+    "message": "絶対に"
+  },
   "autoLockTimeLimit": {
     "message": "オートロックタイマー (分)"
   },
@@ -773,6 +797,9 @@
   },
   "backToHome": {
     "message": "ホームに戻る"
+  },
+  "backUpIncomplete": {
+    "message": "バックアップ未完了"
   },
   "backup": {
     "message": "バックアップ"
@@ -853,6 +880,12 @@
   },
   "basicConfigurationModalCheckbox": {
     "message": "理解したうえで続行します"
+  },
+  "basicConfigurationModalDisclaimerOffPart1": {
+    "message": "これは、MetaMaskでの時間が完全に最適化されないことを意味します。基本機能 (トークンの詳細、最適なガス設定など) は利用できません。"
+  },
+  "basicConfigurationModalDisclaimerOffPart2": {
+    "message": "この機能をオフにすると、プライバシー、バックアップと同期、通知の一部機能も無効になります。"
   },
   "basicConfigurationModalDisclaimerOn": {
     "message": "MetaMaskでの時間を最適化するには、この機能をオンにする必要があります。基本機能 (トークンの詳細、最適なガス設定など) は、Web3エクスペリエンスに重要です。"
@@ -1066,6 +1099,9 @@
   "bridgeMarketClosedAction": {
     "message": "市場が取引時間外です"
   },
+  "bridgeMarketClosedDescription": {
+    "message": "この株式トークンは現在取引時間外です。市場が取引を開始してから再度お試しください。"
+  },
   "bridgeMarketClosedModalDescription": {
     "message": "このトークンをサポートしている市場は、現在取引時間外です。トークンはいつでもオンチェーンで送金できます。"
   },
@@ -1157,6 +1193,9 @@
   },
   "bridgeSelectNetwork": {
     "message": "ネットワークを選択"
+  },
+  "bridgeSelectQuote": {
+    "message": "クォートを選択"
   },
   "bridgeSelectTokenAmountAndAccount": {
     "message": "トークン、金額、送金先アカウントを選択します"
@@ -1525,6 +1564,9 @@
   "confirmFieldTooltipPaymaster": {
     "message": "このトランザクションの手数料は、ペイマスターのスマートコントラクトにより支払われます。"
   },
+  "confirmFieldTotalExposure": {
+    "message": "合計エクスポージャー"
+  },
   "confirmGasFeeTokenBalance": {
     "message": "残高:"
   },
@@ -1809,6 +1851,9 @@
   "contactDetails": {
     "message": "連絡先の詳細"
   },
+  "contactUpdated": {
+    "message": "連絡先が更新されました"
+  },
   "contactUs": {
     "message": "お問い合わせ"
   },
@@ -1892,6 +1937,10 @@
   },
   "createPasswordDetails": {
     "message": "このデバイスでのみMetaMaskのロックが解除されます。"
+  },
+  "createPasswordDetailsSocial": {
+    "message": "このパスワードを失うと、すべてのデバイスでウォレットにアクセスできなくなります。$1",
+    "description": "$1 is the text 'MetaMask can't reset it.'"
   },
   "createPasswordDetailsSocialReset": {
     "message": "MetaMask側でリセットすることはできません。"
@@ -2237,17 +2286,31 @@
     "message": "これにより、このデバイスでの使用に関連した過去のMetaMetricsデータが削除されます。このデータが削除された後も、ウォレットとアカウントに変化はありません。このプロセスには最長30日間かかる場合があります。$1をご覧ください。",
     "description": "$1 will have text saying Privacy Policy "
   },
+  "deleteMetaMetricsDataDescriptionV2": {
+    "message": "これにより、ウォレットに関連する過去のMetaMetricsデータが削除されます。MetaMetricsには匿名化された使用状況および診断データが含まれます。ウォレットとアカウントに変化はありません。このプロセスには最長30日間かかる場合があります。当社の$1をご覧ください。",
+    "description": "$1 will have text saying Privacy Policy "
+  },
   "deleteMetaMetricsDataErrorDesc": {
     "message": "アナリティクスシステムサーバーの問題により、現在このリクエストを完了させることができません。後ほど再度お試しください。"
   },
   "deleteMetaMetricsDataErrorTitle": {
     "message": "現在このデータを削除できません"
   },
+  "deleteMetaMetricsDataErrorToast": {
+    "message": "削除できません"
+  },
   "deleteMetaMetricsDataModalDesc": {
     "message": "すべてのMetaMetricsデータを削除しようとしています。よろしいですか？"
   },
   "deleteMetaMetricsDataModalTitle": {
     "message": "MetaMetricsデータを削除しますか？"
+  },
+  "deleteMetaMetricsDataRequestedDescription": {
+    "message": "$1で削除を開始しました。このプロセスには最長30日間かかる場合があります。$2をご覧ください。",
+    "description": "$1 will be the date on which teh deletion is requested and $2 will have text saying Privacy Policy "
+  },
+  "deleteMetaMetricsDataToast": {
+    "message": "データは30日以内に削除されます"
   },
   "deleteNetworkIntro": {
     "message": "このネットワークを削除した場合、このネットワーク内の資産を見るには、再度ネットワークの追加が必要になります。"
@@ -2811,6 +2874,9 @@
   "externalNameSourcesSettingDescription": {
     "message": "当社は、Etherscan、Infura、Lensプロトコルなどのサードパーティソースから、やり取りするアドレスに使用するニックネームの提案を取得します。これらのソースは対象となるアドレスとユーザーのIPアドレスを把握できます。ユーザーのアカウントアドレスはサードパーティに公開されません。"
   },
+  "externalNameSourcesSettingDescriptionV2": {
+    "message": "Etherscan、Infura、Lensプロトコルなどのサードパーティソースから、ユーザーがやり取りするアドレスのニックネームの提案を取得します。"
+  },
   "failed": {
     "message": "失敗"
   },
@@ -3149,6 +3215,9 @@
   "hardwareWalletErrorRecoveryUnlock2": {
     "message": "イーサリアムアプリが開いていること"
   },
+  "hardwareWalletErrorTitleBlindSignNotSupported": {
+    "message": "ブラインド署名を有効にする"
+  },
   "hardwareWalletErrorTitleBlindSignNotSupportedInstruction1": {
     "message": "Ledgerでイーサリアムアプリが開いていること"
   },
@@ -3188,6 +3257,9 @@
   },
   "hardwareWalletSupportLinkConversion": {
     "message": "こちらをクリックしてください"
+  },
+  "hardwareWalletTitleEthAppNotOpen": {
+    "message": "イーサリアムアプリを開く"
   },
   "hardwareWalletTypeConnected": {
     "message": "$1が接続されました",
@@ -3314,6 +3386,9 @@
   "hyperliquidReferralSubtitle": {
     "message": "MetaMaskの紹介コードを使うと、取引手数料が最大4%割引されます。",
     "description": "The subtitle of the Hyperliquid referral confirmation screen"
+  },
+  "iUnderstand": {
+    "message": "理解しています"
   },
   "id": {
     "message": "ID"
@@ -3543,6 +3618,9 @@
   },
   "ipfsGatewayDescription": {
     "message": "MetaMaskは、サードパーティサービスを使用して、IPFSに保管されているNFTの画像の表示、ブラウザのアドレスバーに入力されたENSアドレスに関する情報の表示、様々なトークンのアイコンの取得を行います。これらのサービスの使用時には、IPアドレスが当該サービスに公開される可能性があります。"
+  },
+  "ipfsGatewayDescriptionV2": {
+    "message": "サードパーティサービスを使用して、IPFSに保管されているNFTの画像の表示、ブラウザのアドレスバーに入力されたENSアドレスに関する情報の表示、様々なトークンのアイコンの取得を行います。下から希望のIPFSゲートウェイを選択してください。"
   },
   "ipfsToggleModalDescriptionOne": {
     "message": "MetaMaskは、サードパーティサービスを使用してIPFSに保管されているNFTの画像の表示、ブラウザのアドレスバーに入力されたENSアドレスに関連する情報の表示、様々なトークンのアイコンの取得を行います。これらのサービスの使用時には、IPアドレスが当該サービスに公開される可能性があります。"
@@ -3827,6 +3905,12 @@
   "makeAnotherSwap": {
     "message": "新しいスワップの作成"
   },
+  "makeSmartContractsEasier": {
+    "message": "スマートコントラクトを読みやすく"
+  },
+  "makeSmartContractsEasierDescription": {
+    "message": "MetaMaskは、4byte.directoryとSourcifyを使用してこの情報を変換します。"
+  },
   "manage": {
     "message": "管理"
   },
@@ -3844,6 +3928,9 @@
   },
   "managePermissions": {
     "message": "アクセス許可の管理"
+  },
+  "manageWalletRecovery": {
+    "message": "ウォレットの復元の管理"
   },
   "marketCap": {
     "message": "時価総額"
@@ -4072,10 +4159,6 @@
     "message": "$1が$2 Snapの使用を求めています",
     "description": "$1 is the dapp and $2 is the number of snaps it wants to connect to."
   },
-  "musdBoostDescription": {
-    "message": "お持ちのステーブルコインをmUSDに換えて、最大$1%のボーナスを受け取りましょう。",
-    "description": "$1 is the bonus percentage (e.g., 3)"
-  },
   "musdBoostTitle": {
     "message": "ステーブルコインで$1%をゲット",
     "description": "$1 is the bonus percentage (e.g., 3)"
@@ -4095,6 +4178,10 @@
     "message": "獲得できるボーナス",
     "description": "Label for the claimable bonus row in the mUSD conversion confirmation screen"
   },
+  "musdClaimableBonusTooltip": {
+    "message": "mUSDを保有することで獲得した年換算$1%のボーナスです。ボーナスはLineaで毎日請求できます。Powered by Relay。$2",
+    "description": "$1 is the APY percentage, $2 is the 'Terms apply' link"
+  },
   "musdConversionActivityTitle": {
     "message": "$1をmUSDに変換",
     "description": "$1 is the source token symbol (e.g., USDC)"
@@ -4110,11 +4197,12 @@
     "message": "$1 → mUSDに変換中",
     "description": "$1 is the source token symbol (e.g., USDC)"
   },
-  "musdConversionToastSuccess": {
-    "message": "mUSDへの変換が完了しました！"
-  },
   "musdConvert": {
     "message": "変換"
+  },
+  "musdConvertAndGetBonus": {
+    "message": "換金して$1%獲得",
+    "description": "$1 is the bonus percentage (e.g., 3)"
   },
   "musdEarnBonusPercentage": {
     "message": "$1%のボーナスを獲得",
@@ -4129,6 +4217,10 @@
   },
   "musdEducationNotNow": {
     "message": "後で"
+  },
+  "musdGetBonusPercentage": {
+    "message": "$1%のmUSDボーナスを獲得",
+    "description": "$1 is the bonus percentage (e.g., 3)"
   },
   "musdGetMusd": {
     "message": "mUSDを入手"
@@ -6053,6 +6145,9 @@
   "quizIntroduction": {
     "message": "シークレットリカバリーフレーズを表示するには、2つの質問に正しく答える必要があります."
   },
+  "quotedTotalCost": {
+    "message": "合計コスト: $1"
+  },
   "rank": {
     "message": "ランキング"
   },
@@ -6567,6 +6662,9 @@
   },
   "securityAlertsDescriptionV2": {
     "message": "この機能は、トランザクションと署名要求を能動的に確認し、悪質なアクティビティに関するアラートを発します。$1"
+  },
+  "securityAndPassword": {
+    "message": "セキュリティとパスワード"
   },
   "securityAndPrivacy": {
     "message": "セキュリティとプライバシー"
@@ -7392,6 +7490,10 @@
   "showFiatConversionInTestnetsDescription": {
     "message": "これを選択すると、テストネット上に法定通貨の換算レートが表示されます"
   },
+  "showFiatConversionInTestnetsDescriptionV2": {
+    "message": "テストネットワーク上でネットワークトークンを現地通貨として表示します。この機能をオンにするよう求められた場合、詐欺の可能性があります。これはテスト目的のみです。$1",
+    "description": "$1 is the 'Learn more' link"
+  },
   "showHexData": {
     "message": "16進データを表示"
   },
@@ -7516,6 +7618,9 @@
   "simulationsSettingDescription": {
     "message": "トランザクションと署名を確定する前に残高の増減を予測するには、この機能をオンにします。これは最終的な結果を保証するものではありません。$1"
   },
+  "simulationsSettingDescriptionV2": {
+    "message": "トランザクションを確定する前に残高の増減を予測します。これはトランザクションの最終的な結果を保証するものではありません。$1"
+  },
   "simulationsSettingSubHeader": {
     "message": "予測される残高の増減"
   },
@@ -7570,14 +7675,32 @@
   "smartAccount": {
     "message": "スマートアカウント"
   },
+  "smartAccountDappRequestsDescription": {
+    "message": "DAppによる、スタンダードアカウントに対するスマートアカウント機能のリクエストを許可します。これにより、すでにスマートアカウントのアカウントに影響はありません。"
+  },
+  "smartAccountDappRequestsTitle": {
+    "message": "DAppからのスマートアカウントリクエスト"
+  },
   "smartAccountLabel": {
     "message": "スマートアカウント"
+  },
+  "smartAccountRequestsFromDapps": {
+    "message": "DAppからのスマートアカウントリクエスト"
+  },
+  "smartAccountRequestsFromDappsDescription": {
+    "message": "DAppによる、スタンダードアカウントに対するスマートアカウント機能のリクエストを許可します。これにより、すでにスマートアカウントのアカウントに影響はありません。"
   },
   "smartAccountUpgradeBannerDescription": {
     "message": "同じアドレスでよりスマートな機能。"
   },
   "smartAccountUpgradeBannerTitle": {
     "message": "スマートアカウントに切り替える"
+  },
+  "smartContractAddress": {
+    "message": "スマートコントラクトアドレス"
+  },
+  "smartContractAddressWarning": {
+    "message": "この受取人のアドレスはトークンの直接送金に対応していない可能性があり、資金を失うおそれがあります。これが送金を受け取れるコントラクトであることを確信している場合のみ、続行してください。"
   },
   "smartContracts": {
     "message": "スマートコントラクト"
@@ -8049,6 +8172,9 @@
   "stateCorruptionTheseInstructionsLinkTitle": {
     "message": "シークレットリカバリーフレーズの復元方法"
   },
+  "stateLogError": {
+    "message": "ステートログの取得中にエラーが発生しました。後程もう一度お試しください。"
+  },
   "stateLogFileName": {
     "message": "MetaMaskステートログ"
   },
@@ -8057,6 +8183,9 @@
   },
   "stateLogsDescription": {
     "message": "ステートログには、パブリックアカウントアドレスと送信済みトランザクションが含まれています。"
+  },
+  "stateLogsModalDescription": {
+    "message": "ステートログは、ユーザーが遭遇する可能性のある問題のデバッグに役立ちます。ステートログにはパブリックアカウントアドレスとトランザクションが含まれるため、サポート目的でMetaMaskにのみ送信してください。"
   },
   "status": {
     "message": "ステータス"
@@ -8129,6 +8258,9 @@
   "stxFailureDescription": {
     "message": "急激な市場の変化により、障害が発生することがあります。問題が解決しない場合は$1にご連絡ください。",
     "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
+  },
+  "stxOptInDescriptionV2": {
+    "message": "スマートトランザクションをオンにして、トランザクションの信頼性と安全性を高めましょう。$1"
   },
   "stxOptInSupportedNetworksDescription": {
     "message": "スマートトランザクションをオンにして、サポートされているネットワーク上でのトランザクションの信頼性と安全性を高めましょう。$1"
@@ -8567,6 +8699,12 @@
   "themeDescription": {
     "message": "お好みのMetaMaskテーマを選択してください。"
   },
+  "thirdPartyApis": {
+    "message": "サードパーティAPI"
+  },
+  "thirdPartyApisDescription": {
+    "message": "IPアドレスやイーサリアムアドレスのサードパーティAPIとの共有方法を選択します。変更はMetaMaskエクスペリエンスに影響を与えます。"
+  },
   "thirdPartySoftware": {
     "message": "サードパーティソフトウェアに関する通知",
     "description": "Title of a popup modal displayed when installing a snap for the first time."
@@ -8600,6 +8738,9 @@
   },
   "tokenContractError": {
     "message": "このアドレスはトークンコントラクトアドレスです。このアドレスにトークンを送ると、トークンが失われます。"
+  },
+  "tokenContractWarning": {
+    "message": "トークンコントラクトに関する警告"
   },
   "tokenCount": {
     "message": "トークン",
@@ -8880,6 +9021,9 @@
     "message": "$1に接続できません。",
     "description": "Message shown when network connection fails. $1 is the network name."
   },
+  "unableToDownload": {
+    "message": "ダウンロードできません"
+  },
   "unapproved": {
     "message": "未承認"
   },
@@ -9032,6 +9176,9 @@
   },
   "useSafeChainsListValidationDescription": {
     "message": "MetaMaskは$1というサードパーティサービスを利用して、正確かつ標準化されたネットワーク情報を表示しています。これにより、悪質なネットワークや正しくないネットワークに接続してしまう可能性が減ります。この機能を使用すると、ユーザーのIPアドレスがchainid.networkに公開されます。"
+  },
+  "useSafeChainsListValidationDescriptionV2": {
+    "message": "悪意のある、または正しくないネットワークに接続する可能性が低くなります。MetaMaskは$1を使用して、正確かつ標準化されたネットワーク情報を表示します。"
   },
   "useSafeChainsListValidationWebsite": {
     "message": "chainid.network",
