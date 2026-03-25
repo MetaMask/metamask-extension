@@ -74,7 +74,7 @@ export type MultichainAccountListProps = {
   displayWalletHeader?: boolean;
   showAccountCheckbox?: boolean;
   showConnectionStatus?: boolean;
-  showNetworkGroupWithCopyIcon?: boolean;
+  showHoverableNetworkGroup?: boolean;
 };
 
 type GroupData = AccountTreeWallets[AccountWalletId]['groups'][AccountGroupId];
@@ -108,7 +108,7 @@ export const MultichainAccountList = ({
   displayWalletHeader = true,
   showAccountCheckbox = false,
   showConnectionStatus = false,
-  showNetworkGroupWithCopyIcon = false,
+  showHoverableNetworkGroup = false,
 }: MultichainAccountListProps) => {
   const showAccountMenu = !showAccountCheckbox;
 
@@ -319,7 +319,7 @@ export const MultichainAccountList = ({
                 | undefined
             }
             privacyMode={privacyMode}
-            showNetworkGroupWithCopyIcon={showNetworkGroupWithCopyIcon}
+            showHoverableNetworkGroup={showHoverableNetworkGroup}
             walletName={
               showWalletName
                 ? wallets[walletId as AccountWalletId]?.metadata?.name
@@ -368,7 +368,7 @@ export const MultichainAccountList = ({
       handleAccountRenameAction,
       openMenuAccountId,
       handleMenuToggle,
-      showNetworkGroupWithCopyIcon,
+      showHoverableNetworkGroup,
     ],
   );
 
@@ -396,7 +396,7 @@ export const MultichainAccountList = ({
             groupId,
             groupData,
             walletId,
-            showWalletName: !showNetworkGroupWithCopyIcon,
+            showWalletName: !showHoverableNetworkGroup,
           });
         });
       }
@@ -470,7 +470,7 @@ export const MultichainAccountList = ({
             groupId,
             groupData,
             walletId,
-            showWalletName: !showNetworkGroupWithCopyIcon,
+            showWalletName: !showHoverableNetworkGroup,
           });
         });
       }
@@ -485,7 +485,7 @@ export const MultichainAccountList = ({
     displayWalletHeader,
     isHiddenAccountsExpanded,
     collapsedSectionKeys,
-    showNetworkGroupWithCopyIcon,
+    showHoverableNetworkGroup,
     t,
   ]);
 

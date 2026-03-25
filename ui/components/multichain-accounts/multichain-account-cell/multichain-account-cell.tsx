@@ -78,7 +78,7 @@ export type MultichainAccountCellProps = {
     | typeof STATUS_CONNECTED
     | typeof STATUS_CONNECTED_TO_ANOTHER_ACCOUNT;
   privacyMode?: boolean;
-  showNetworkGroupWithCopyIcon?: boolean;
+  showHoverableNetworkGroup?: boolean;
 };
 
 export const MultichainAccountCell = ({
@@ -94,7 +94,7 @@ export const MultichainAccountCell = ({
   disableHoverEffect = false,
   connectionStatus,
   privacyMode = false,
-  showNetworkGroupWithCopyIcon = false,
+  showHoverableNetworkGroup = false,
 }: MultichainAccountCellProps) => {
   const handleClick = () => onClick?.(accountId);
 
@@ -159,7 +159,7 @@ export const MultichainAccountCell = ({
               {walletName}
             </TextDeprecated>
           )}
-          {showNetworkGroupWithCopyIcon && (
+          {showHoverableNetworkGroup && (
             <Box
               flexDirection={BoxFlexDirection.Row}
               marginLeft={3}

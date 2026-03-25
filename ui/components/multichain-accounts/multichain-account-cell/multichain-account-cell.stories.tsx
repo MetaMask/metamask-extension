@@ -79,7 +79,7 @@ export default {
       control: 'boolean',
       description: 'Whether the account is selected',
     },
-    showNetworkGroupWithCopyIcon: {
+    showHoverableNetworkGroup: {
       control: 'boolean',
       description:
         'Whether to show the network avatars and copy functionality with optional default address',
@@ -223,14 +223,14 @@ export const MultipleAccountsWithStartAccessories: StoryFn<
   </div>
 );
 
-export const WithNetworkGroupWithCopyIcon = Template.bind({});
-WithNetworkGroupWithCopyIcon.args = {
+export const WithHoverableNetworkGroup = Template.bind({});
+WithHoverableNetworkGroup.args = {
   accountId: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0',
   accountName: 'Account with Networks',
   balance: '$2,400.00',
-  showNetworkGroupWithCopyIcon: true,
+  showHoverableNetworkGroup: true,
 };
-WithNetworkGroupWithCopyIcon.parameters = {
+WithHoverableNetworkGroup.parameters = {
   docs: {
     description: {
       story:
