@@ -3570,18 +3570,6 @@
   "knownTokenWarning": {
     "message": "Cette action modifiera les jetons déjà présents dans votre portefeuille, et risque de favoriser les tentatives d’hameçonnage. N’approuvez que si vous êtes certain·e de vouloir modifier ce que ces jetons représentent. En savoir plus sur $1"
   },
-  "l1Fee": {
-    "message": "Frais L1"
-  },
-  "l1FeeTooltip": {
-    "message": "Frais de gaz L1"
-  },
-  "l2Fee": {
-    "message": "Frais L2"
-  },
-  "l2FeeTooltip": {
-    "message": "Frais de gaz L2"
-  },
   "language": {
     "message": "Langue"
   },
@@ -3594,9 +3582,6 @@
   },
   "lavaDomeCopyWarning": {
     "message": "Pour votre sécurité, vous ne pouvez pas sélectionner ce texte actuellement."
-  },
-  "layer1Fees": {
-    "message": "Frais de couche 1 (L1)"
   },
   "learnHow": {
     "message": "Découvrir comment"
@@ -3729,9 +3714,6 @@
   },
   "links": {
     "message": "Liens"
-  },
-  "loadMore": {
-    "message": "Charger plus"
   },
   "loading": {
     "message": "Chargement…"
@@ -8674,9 +8656,6 @@
   },
   "transactionDetailGasHeading": {
     "message": "Frais de gaz estimés"
-  },
-  "transactionDetailMultiLayerTotalSubtitle": {
-    "message": "Montant + frais"
   },
   "transactionError": {
     "message": "Erreur de transaction. Une exception a été rencontrée dans l’exécution du code du contrat."

@@ -941,9 +941,6 @@
   "links": {
     "message": "Links"
   },
-  "loadMore": {
-    "message": "Carregar mais"
-  },
   "loading": {
     "message": "Carregando..."
   },
@@ -1716,9 +1713,6 @@
   },
   "transactionDetailGasHeading": {
     "message": "Taxa de gás estimada"
-  },
-  "transactionDetailMultiLayerTotalSubtitle": {
-    "message": "Valor + taxas"
   },
   "transactionError": {
     "message": "Erro de transação. Exceção gerada no código do contrato."

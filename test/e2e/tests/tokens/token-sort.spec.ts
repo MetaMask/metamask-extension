@@ -7,7 +7,7 @@ import { withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import HomePage from '../../page-objects/pages/home/homepage';
 import AssetListPage from '../../page-objects/pages/home/asset-list';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 import { mockSpotPrices } from './utils/mocks';
 
 describe('Token List Sorting', function () {
@@ -41,7 +41,7 @@ describe('Token List Sorting', function () {
         },
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         const homePage = new HomePage(driver);
         const assetListPage = new AssetListPage(driver);

@@ -5,7 +5,7 @@ import { MOCK_META_METRICS_ID } from '../../constants';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import ErrorPage from '../../page-objects/pages/error-page';
 import { triggerCrash } from '../../page-objects/flows/crash.flow';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 
 /**
  * Mocks the segment API for events tracked from the error page.
@@ -45,7 +45,7 @@ describe('Error Page', function () {
         ],
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
         await triggerCrash(driver);
 
         const errorPage = new ErrorPage(driver);
@@ -85,7 +85,7 @@ describe('Error Page', function () {
         ],
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
         await triggerCrash(driver);
 
         const errorPage = new ErrorPage(driver);
