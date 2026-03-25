@@ -106,7 +106,9 @@ describe('MultichainAccountNetworkGroupWithCopyIcon', () => {
         createStoreWithPrefOff(),
       );
 
-      expect(screen.queryByTestId('default-address-container')).not.toBeInTheDocument();
+      expect(
+        screen.queryByTestId('default-address-container'),
+      ).not.toBeInTheDocument();
     });
 
     it('does not call copy handler when container is clicked', () => {
