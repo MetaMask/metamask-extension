@@ -1,0 +1,49 @@
+name: Builds test mv3
+
+on:
+  workflow_call:
+    inputs:
+      builds-from-run:
+        required: true
+        type: string
+
+jobs:
+  build-test-browserify:
+    name: build-test-browserify
+    uses: ./.github/workflows/run-build.yml
+    with:
+      build-name: build-test-browserify
+      build-command: yarn build:test
+      builds-from-run: ${{ inputs.builds-from-run }}
+    secrets: inherit
+
+  build-test-flask-browserify:
+    name: build-test-flask-browserify
+    uses: ./.github/workflows/run-build.yml
+    with:
+      build-name: build-test-flask-browserify
+      build-command: yarn build:test:flask
+      builds-from-run: ${{ inputs.builds-from-run }}
+    secrets: inherit
+
+  build-test-webpack:
+    name: build-test-webpack
+    uses: ./.github/workflows/run-build.yml
+    with:
+      is-high-risk-environment: false
+      build-name: build-test-webpack
+      build-command: yarn build:test:webpack
+      builds-from-run: ${{ inputs.builds-from-run }}
+      zip: true
+    secrets: inherit
+
+  build-test-flask-webpack:
+    name: build-test-flask-webpack
+    uses: ./.github/workflows/run-build.yml
+    with:
+      is-high-risk-environment: false
+      build-name: build-test-flask-webpack
+      build-command: yarn build:test:flask:webpack
+      builds-from-run: ${{ inputs.builds-from-run }}
+      zip: true
+    secrets: inherit

@@ -1,0 +1,49 @@
+name: Builds test mv2
+
+on:
+  workflow_call:
+    inputs:
+      builds-from-run:
+        required: true
+        type: string
+
+jobs:
+  build-test-mv2-browserify:
+    name: build-test-mv2-browserify
+    uses: ./.github/workflows/run-build.yml
+    with:
+      build-name: build-test-mv2-browserify
+      build-command: yarn build:test:mv2
+      builds-from-run: ${{ inputs.builds-from-run }}
+    secrets: inherit
+
+  build-test-flask-mv2-browserify:
+    name: build-test-flask-mv2-browserify
+    uses: ./.github/workflows/run-build.yml
+    with:
+      build-name: build-test-flask-mv2-browserify
+      build-command: yarn build:test:flask:mv2
+      builds-from-run: ${{ inputs.builds-from-run }}
+    secrets: inherit
+
+  build-test-mv2-webpack:
+    name: build-test-mv2-webpack
+    uses: ./.github/workflows/run-build.yml
+    with:
+      is-high-risk-environment: false
+      build-name: build-test-mv2-webpack
+      build-command: yarn build:test:webpack:mv2
+      builds-from-run: ${{ inputs.builds-from-run }}
+      zip: true
+    secrets: inherit
+
+  build-test-flask-mv2-webpack:
+    name: build-test-flask-mv2-webpack
+    uses: ./.github/workflows/run-build.yml
+    with:
+      is-high-risk-environment: false
+      build-name: build-test-flask-mv2-webpack
+      build-command: yarn build:test:flask:webpack:mv2
+      builds-from-run: ${{ inputs.builds-from-run }}
+      zip: true
+    secrets: inherit
