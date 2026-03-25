@@ -10,8 +10,9 @@ import type {
   KeyValuePatternProperty,
 } from '@swc/types';
 
+// Options are serialized to a JSON array for thread-loader compatibility
 export type EnvValidationLoaderOptions = {
-  declarations: Set<string>;
+  declarations: string[];
 };
 
 /**
@@ -194,7 +195,7 @@ function walkAst(node: Node, envVars: Set<string>): void {
  * // webpack.config.ts
  * {
  *   loader: 'envValidationLoader',
- *   options: { declarations: new Set(['NODE_ENV', 'API_URL']) }
+ *   options: { declarations: ['NODE_ENV', 'API_URL'] }
  * }
  * @param source - The source code content of the file being processed.
  * @throws Emits a webpack error if any `process.env.*` references
@@ -205,7 +206,8 @@ export default function envValidationLoader(
   source: string,
 ) {
   const callback = this.async();
-  const { declarations } = this.getOptions();
+  const { declarations: declarationsArray } = this.getOptions();
+  const declarations = new Set(declarationsArray);
   const parseOptions = getParseOptions(this.resourcePath);
 
   (async () => {

@@ -971,11 +971,6 @@
       "React: Act warnings (component updates not wrapped)": 2,
       "Reselect: Identity function warnings": 3
     },
-    "ui/pages/confirmations/components/confirm/info/typed-sign/typed-sign-permission.test.tsx": {
-      "React: Act warnings (component updates not wrapped)": 6,
-      "Reselect: Identity function warnings": 4,
-      "Test errors: Uncaught Errors": 6
-    },
     "ui/pages/confirmations/components/confirm/info/typed-sign/typed-sign-permission/erc20-token-periodic-details.test.tsx": {
       "React: Act warnings (component updates not wrapped)": 5,
       "Reselect: Identity function warnings": 4,
@@ -1001,6 +996,12 @@
     "ui/pages/confirmations/components/confirm/info/typed-sign/typed-sign-permission/total-exposure.test.tsx": {
       "Reselect: Identity function warnings": 4,
       "warn: \u26a0\ufe0f React Router Future Flag": 2
+    },
+    "ui/pages/confirmations/components/confirm/info/typed-sign/typed-sign-permission/typed-sign-permission.test.tsx": {
+      "React: Act warnings (component updates not wrapped)": 6,
+      "Reselect: Identity function warnings": 4,
+      "Test errors: Uncaught Errors": 6,
+      "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/confirmations/components/confirm/info/typed-sign/typed-sign-v4-simulation/decoded-simulation/decoded-simulation.test.tsx": {
       "MetaMask: Background connection not initialized": 4,
@@ -1086,9 +1087,6 @@
     },
     "ui/pages/confirmations/components/modals/advanced-gas-price-modal/advanced-gas-price-modal.test.tsx": {
       "Reselect: Identity function warnings": 3
-    },
-    "ui/pages/confirmations/components/multilayer-fee-message/multi-layer-fee-message.test.js": {
-      "error: Warning: React does not recognize": 1
     },
     "ui/pages/confirmations/components/pay-token-amount/pay-token-amount.test.tsx": {
       "Reselect: Identity function warnings": 3
@@ -1527,8 +1525,7 @@
       "React: componentWill* lifecycle deprecations": 1
     },
     "ui/pages/settings-v2/developer-options-tab/developer-options-tab.test.tsx": {
-      "React: componentWill* lifecycle deprecations": 1,
-      "warn: \u26a0\ufe0f React Router Future Flag": 2
+      "React: componentWill* lifecycle deprecations": 1
     },
     "ui/pages/settings-v2/preferences-and-display-tab/account-identicon-item.test.tsx": {
       "React: Act warnings (component updates not wrapped)": 4
@@ -1549,12 +1546,6 @@
     "ui/pages/settings-v2/privacy-tab/data-collection-item.test.tsx": {
       "React: componentWill* lifecycle deprecations": 1
     },
-    "ui/pages/settings-v2/privacy-tab/delete-metametrics-data-item.test.tsx": {
-      "warn: \u26a0\ufe0f React Router Future Flag": 2
-    },
-    "ui/pages/settings-v2/privacy-tab/download-state-logs-item.test.tsx": {
-      "warn: \u26a0\ufe0f React Router Future Flag": 2
-    },
     "ui/pages/settings-v2/privacy-tab/metametrics-item.test.tsx": {
       "React: componentWill* lifecycle deprecations": 1
     },
@@ -1564,18 +1555,8 @@
     "ui/pages/settings-v2/privacy-tab/third-party-apis-sub-page.test.tsx": {
       "React: componentWill* lifecycle deprecations": 1
     },
-    "ui/pages/settings-v2/security-and-password-tab/auto-lock-item.test.tsx": {
-      "warn: \u26a0\ufe0f React Router Future Flag": 2
-    },
-    "ui/pages/settings-v2/security-and-password-tab/auto-lock-sub-page.test.tsx": {
-      "warn: \u26a0\ufe0f React Router Future Flag": 2
-    },
-    "ui/pages/settings-v2/security-and-password-tab/manage-wallet-recovery-item.test.tsx": {
-      "warn: \u26a0\ufe0f React Router Future Flag": 2
-    },
     "ui/pages/settings-v2/security-and-password-tab/security-and-password-tab.test.tsx": {
-      "React: componentWill* lifecycle deprecations": 1,
-      "warn: \u26a0\ufe0f React Router Future Flag": 2
+      "React: componentWill* lifecycle deprecations": 1
     },
     "ui/pages/settings-v2/settings-v2.test.tsx": {
       "React: componentWill* lifecycle deprecations": 1
@@ -1589,14 +1570,9 @@
     "ui/pages/settings-v2/shared/display-nft-media-item.test.tsx": {
       "React: componentWill* lifecycle deprecations": 1
     },
-    "ui/pages/settings-v2/shared/settings-v2-search-results.test.tsx": {
-      "warn: Icon \"dollar\" not found": 2,
-      "warn: Icon \"setting\" not found": 2
-    },
     "ui/pages/settings-v2/transactions-tab/transactions-tab.test.tsx": {
       "React: componentWill* lifecycle deprecations": 1,
-      "Reselect: Identity function warnings": 1,
-      "warn: \u26a0\ufe0f React Router Future Flag": 2
+      "Reselect: Identity function warnings": 1
     },
     "ui/pages/settings/advanced-tab/advanced-tab.component.test.js": {
       "React: Missing key props in lists": 1,

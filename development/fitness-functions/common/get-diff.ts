@@ -1,6 +1,15 @@
-import { execSync } from 'child_process';
+import {
+  execFileSync,
+  type ExecFileSyncOptionsWithStringEncoding,
+} from 'child_process';
 import fs from 'fs';
+
 import { AUTOMATION_TYPE } from './constants';
+
+const GIT_EXEC_FILE_OPTIONS: ExecFileSyncOptionsWithStringEncoding = {
+  encoding: 'utf8',
+  maxBuffer: 50 * 1024 * 1024,
+};
 
 function getDiffByAutomationType(
   automationType: AUTOMATION_TYPE,
@@ -35,20 +44,25 @@ function getCIDiff(path: string): string {
   });
 }
 
+function runGitCommand(args: string[]): string {
+  return execFileSync('git', args, GIT_EXEC_FILE_OPTIONS).trim();
+}
+
 function getPreCommitHookDiff(): string {
-  return execSync(`git diff --cached HEAD`).toString().trim();
+  return runGitCommand(['diff', '--cached', 'HEAD']);
 }
 
 function getPrePushHookDiff(): string {
-  const currentBranch = execSync(`git rev-parse --abbrev-ref HEAD`)
-    .toString()
-    .trim();
+  const currentBranch = runGitCommand(['rev-parse', '--abbrev-ref', 'HEAD']);
 
-  return execSync(
-    `git diff ${currentBranch} origin/${currentBranch} -- . ':(exclude)development/fitness-functions/'`,
-  )
-    .toString()
-    .trim();
+  return runGitCommand([
+    'diff',
+    currentBranch,
+    `origin/${currentBranch}`,
+    '--',
+    '.',
+    ':(exclude)development/fitness-functions/',
+  ]);
 }
 
 export { getDiffByAutomationType };
