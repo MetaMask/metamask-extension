@@ -35,15 +35,22 @@ jobs:
             const octokit = getOctokit(process.env.BUG_REPORT_TOKEN);
 
             // Find the open bug report issue
+            const searchQuery = [
+              `repo:${repoOwner}/${bugReportRepo}`,
+              'type:issue',
+              'is:open',
+              'in:title',
+              `v${version} Bug Report`,
+            ].join(' ');
             const result = await octokit.graphql(`
-              query {
-                search(query: "repo:${repoOwner}/${bugReportRepo} type:issue is:open in:title v${version} Bug Report", type: ISSUE, first: 1) {
+              query FindBugReport($searchQuery: String!) {
+                search(query: $searchQuery, type: ISSUE, first: 1) {
                   nodes {
                     ... on Issue { id, title }
                   }
                 }
               }
-            `);
+            `, { searchQuery });
 
             const issue = result.search.nodes[0];
             if (!issue) {
