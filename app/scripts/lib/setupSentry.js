@@ -8,6 +8,12 @@ import { getManifestFlags } from '../../../shared/lib/manifestFlags';
 import { getSentryRelease } from '../../../shared/lib/sentry-release';
 import extractEthjsErrorMessage from './extractEthjsErrorMessage';
 import { filterEvents } from './sentry-filter-events';
+import {
+  getMetaMetricsState,
+  getMetaMetricsStateFromAppState,
+  getState,
+} from './sentry-get-state';
+import { makeTransport } from './sentry-make-transport';
 import { getInstallType, initInstallType } from './install-type';
 
 const internalLog = createModuleLogger(log, 'internal');
@@ -156,101 +162,6 @@ function setCITags() {
     }
     if (ci.testTitle) {
       Sentry.setTag('ci.testTitle', ci.testTitle);
-    }
-  }
-}
-
-/**
- * Returns MetaMetrics state (participateInMetaMetrics and metaMetricsId) from app state.
- *
- * @param {{ state: unknown} | { persistedState: unknown }} appState - Application state
- * @returns {{ participateInMetaMetrics: boolean, metaMetricsId?: string } | null}
- */
-export function getMetaMetricsStateFromAppState(appState) {
-  if (appState.persistedState) {
-    return getMetaMetricsStateFromPersistedState(appState.persistedState);
-  }
-  if (appState.state) {
-    if (appState.state.metamask) {
-      const enabled = Boolean(appState.state.metamask.participateInMetaMetrics);
-      return {
-        participateInMetaMetrics: enabled,
-        metaMetricsId: enabled
-          ? appState.state.metamask.metaMetricsId
-          : undefined,
-      };
-    }
-    const controller = appState.state.MetaMetricsController;
-    const enabled = Boolean(controller?.participateInMetaMetrics);
-    return {
-      participateInMetaMetrics: enabled,
-      metaMetricsId: enabled ? controller?.metaMetricsId : undefined,
-    };
-  }
-  return null;
-}
-
-/**
- * Returns MetaMetrics state from persisted state.
- *
- * @param {unknown} persistedState - Application persisted state
- * @returns {{ participateInMetaMetrics: boolean, metaMetricsId?: string } | null}
- */
-export function getMetaMetricsStateFromPersistedState(persistedState) {
-  const controller = persistedState?.data?.MetaMetricsController;
-  const enabled = Boolean(controller?.participateInMetaMetrics);
-  return {
-    participateInMetaMetrics: enabled,
-    metaMetricsId: enabled ? controller?.metaMetricsId : undefined,
-  };
-}
-
-/**
- * Returns MetaMetrics state from backup state.
- *
- * @param {unknown} backupState - Backup state from IndexedDB
- * @returns {{ participateInMetaMetrics: boolean, metaMetricsId?: string } | null}
- */
-export function getMetaMetricsStateFromBackupState(backupState) {
-  const controller = backupState?.MetaMetricsController;
-  const enabled = Boolean(controller?.participateInMetaMetrics);
-  return {
-    participateInMetaMetrics: enabled,
-    metaMetricsId: enabled ? controller?.metaMetricsId : undefined,
-  };
-}
-
-/**
- * Returns MetaMetrics state (participateInMetaMetrics and metaMetricsId). Uses getState() first (sync),
- * then getPersistedState() / getBackupState() when needed. Used by {@link filterEvents} and
- * {@link makeTransport}.
- *
- * @returns {Promise<{ participateInMetaMetrics: boolean, metaMetricsId?: string } | null>}
- */
-async function getMetaMetricsState() {
-  const flags = getManifestFlags();
-
-  if (flags.ci && flags.sentry?.forceEnable) {
-    return { participateInMetaMetrics: true, metaMetricsId: undefined };
-  }
-
-  const appState = getState();
-
-  if (appState.state || appState.persistedState) {
-    return getMetaMetricsStateFromAppState(appState);
-  }
-
-  try {
-    const persistedState = await globalThis.stateHooks.getPersistedState();
-    return getMetaMetricsStateFromPersistedState(persistedState);
-  } catch (error) {
-    log('Error retrieving persisted state, falling back to backup', error);
-    try {
-      const backupState = await globalThis.stateHooks.getBackupState();
-      return getMetaMetricsStateFromBackupState(backupState);
-    } catch (backupError) {
-      log('Error retrieving backup state', backupError);
-      return null;
     }
   }
 }
@@ -548,10 +459,6 @@ function toMetamaskUrl(origUrl) {
   return metamaskUrl;
 }
 
-function getState() {
-  return globalThis.stateHooks?.getSentryState?.() || {};
-}
-
 function integrateLogging() {
   if (!METAMASK_DEBUG) {
     return;
@@ -586,24 +493,6 @@ function addDebugListeners() {
   });
 
   log('Added debug listeners');
-}
-
-/**
- * Custom transport: block network when MetaMetrics is off. Event bodies are already processed in
- * {@link rewriteReport} via `beforeSend`.
- *
- * @param {object} options - Sentry transport options
- */
-export function makeTransport(options) {
-  return Sentry.makeFetchTransport(options, async (...args) => {
-    const state = await getMetaMetricsState();
-
-    if (!state?.participateInMetaMetrics) {
-      throw new Error('Network request skipped as metrics disabled');
-    }
-
-    return await fetch(...args);
-  });
 }
 
 function isCompletedSessionEnvelope(envelope) {
