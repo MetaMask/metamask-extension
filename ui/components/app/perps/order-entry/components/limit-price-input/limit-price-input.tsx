@@ -27,6 +27,7 @@ import {
   isLimitPriceUnfavorable,
   isNearLiquidationPrice,
 } from '../../limit-price-warnings';
+import { isUnsignedDecimalInput } from '../../utils';
 
 /**
  * Props for LimitPriceInput component
@@ -70,7 +71,7 @@ export const LimitPriceInput: React.FC<LimitPriceInputProps> = ({
   const handlePriceChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       const { value } = event.target;
-      if (value === '' || /^\d*\.?\d*$/u.test(value)) {
+      if (value === '' || isUnsignedDecimalInput(value)) {
         onLimitPriceChange(value);
       }
     },

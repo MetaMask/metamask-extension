@@ -19,6 +19,7 @@ import { useI18nContext } from '../../../../../../hooks/useI18nContext';
 import { TextField, TextFieldSize } from '../../../../../component-library';
 import ToggleButton from '../../../../../ui/toggle-button';
 import type { AutoCloseSectionProps } from '../../order-entry.types';
+import { isSignedDecimalInput, isUnsignedDecimalInput } from '../../utils';
 
 /**
  * AutoCloseSection - Collapsible section for Take Profit and Stop Loss configuration
@@ -118,7 +119,7 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
   const handleTpPriceChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       const { value } = event.target;
-      if (value === '' || /^\d*\.?\d*$/u.test(value)) {
+      if (value === '' || isUnsignedDecimalInput(value)) {
         onTakeProfitPriceChange(value);
       }
     },
@@ -144,7 +145,7 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
   const handleTpPercentChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       const { value } = event.target;
-      if (value === '' || /^-?\d*(?:\.\d*)?$/u.test(value)) {
+      if (value === '' || isSignedDecimalInput(value)) {
         const numValue = parseFloat(value);
         if (value === '' || value === '-') {
           onTakeProfitPriceChange('');
@@ -161,7 +162,7 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
   const handleSlPriceChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       const { value } = event.target;
-      if (value === '' || /^\d*\.?\d*$/u.test(value)) {
+      if (value === '' || isUnsignedDecimalInput(value)) {
         onStopLossPriceChange(value);
       }
     },
@@ -188,7 +189,7 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
   const handleSlPercentChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       const { value } = event.target;
-      if (value === '' || /^-?\d*(?:\.\d*)?$/u.test(value)) {
+      if (value === '' || isSignedDecimalInput(value)) {
         const numValue = parseFloat(value);
         if (value === '' || value === '-') {
           onStopLossPriceChange('');

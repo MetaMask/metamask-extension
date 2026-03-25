@@ -22,6 +22,7 @@ import { useI18nContext } from '../../../../../../hooks/useI18nContext';
 import { TextField, TextFieldSize } from '../../../../../component-library';
 import { PerpsSlider } from '../../../perps-slider';
 import type { AmountInputProps } from '../../order-entry.types';
+import { isDigitsOnlyInput, isUnsignedDecimalInput } from '../../utils';
 
 /**
  * AmountInput - Size section with dual USD/token inputs and percentage slider
@@ -82,7 +83,7 @@ export const AmountInput: React.FC<AmountInputProps> = ({
   const handleAmountChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       const { value } = event.target;
-      if (!(value === '' || /^\d*\.?\d*$/u.test(value))) {
+      if (!(value === '' || isUnsignedDecimalInput(value))) {
         return;
       }
 
@@ -127,7 +128,7 @@ export const AmountInput: React.FC<AmountInputProps> = ({
   const handleTokenAmountChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       const { value } = event.target;
-      if (value === '' || /^\d+(\.\d*)?$|^\.\d*$/u.test(value)) {
+      if (value === '' || isUnsignedDecimalInput(value)) {
         if (value === '' || value === '.') {
           onAmountChange('');
           onBalancePercentChange(0);
@@ -192,7 +193,7 @@ export const AmountInput: React.FC<AmountInputProps> = ({
   const handlePercentInputChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       const { value } = event.target;
-      if (value === '' || /^\d*$/u.test(value)) {
+      if (value === '' || isDigitsOnlyInput(value)) {
         setPercentInputValue(value);
         const num = parseInt(value, 10);
         if (!isNaN(num) && num >= 0 && num <= 100) {
