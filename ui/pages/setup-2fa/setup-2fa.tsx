@@ -65,7 +65,6 @@ const ALL_FACTORS: FactorOption[] = [
   { id: 'social', nameKey: 'twoFAFactorSocialLogin', descKey: 'twoFAFactorSocialLoginDesc', icon: IconName.Global, security: 'more' },
 ];
 
-const DEFAULT_FACTORS: FactorId[] = ['email', 'authenticator'];
 const BACKUP_ALLOWED_IDS: FactorId[] = ['mobile', 'email', 'passkeys', 'sms', 'social'];
 
 type Step = 'carousel-0' | 'carousel-1' | 'carousel-2' | 'signing' | 'recovery' | 'success';
@@ -548,7 +547,7 @@ function SetupModal({ factorId, phase, onComplete, onClose, t }: {
 
 // ─── Factor List Screen ──────────────────────────────────────────────
 
-function FactorListScreen({ phase, title, subtitle, factors, excludeIds, configured, onFactorConfigured, onContinue, onBack, onClose, step, minTopCount = 2, t }: {
+function FactorListScreen({ phase, title, subtitle, factors, excludeIds, configured, onFactorConfigured, onContinue, onBack, onClose, step, t }: {
   phase: 'signing' | 'recovery';
   title: string;
   subtitle: string;
@@ -560,11 +559,9 @@ function FactorListScreen({ phase, title, subtitle, factors, excludeIds, configu
   onBack: () => void;
   onClose: () => void;
   step: Step;
-  minTopCount?: number;
   t: (key: string) => string;
 }) {
   const [setupModalFactor, setSetupModalFactor] = useState<FactorId | null>(null);
-  const [availableExpanded, setAvailableExpanded] = useState(false);
   const [smsWarningVisible, setSmsWarningVisible] = useState(false);
   const [learnMoreVisible, setLearnMoreVisible] = useState(false);
 
@@ -601,72 +598,17 @@ function FactorListScreen({ phase, title, subtitle, factors, excludeIds, configu
           <TextButton size={TextButtonSize.BodySm} className="inline" onClick={() => setLearnMoreVisible(true)}>{t('twoFALearnMore')}</TextButton>
         </Box>
 
-        {(() => {
-          const configuredIds = configured.map((c) => c.id);
-          const hasAnyConfigured = configuredIds.length > 0;
-          const configuredFactors = available.filter((f) => configuredIds.includes(f.id));
-          const unconfiguredAll = available.filter((f) => !configuredIds.includes(f.id));
-
-          let topFactors: FactorOption[];
-          let collapsedFactors: FactorOption[];
-
-          if (hasAnyConfigured) {
-            topFactors = configuredFactors;
-            collapsedFactors = unconfiguredAll;
-          } else {
-            const defaults = available.filter((f) => DEFAULT_FACTORS.includes(f.id));
-            const rest = available.filter((f) => !DEFAULT_FACTORS.includes(f.id));
-            const needed = Math.max(0, minTopCount - defaults.length);
-            topFactors = [...defaults, ...rest.slice(0, needed)];
-            collapsedFactors = rest.slice(needed);
-          }
-
-          return (
-            <>
-              {/* Top section: configured factors, or defaults when none configured */}
-              <Box flexDirection={BoxFlexDirection.Column} gap={2}>
-                {topFactors.map((factor) => (
-                  <FactorRow
-                    key={factor.id}
-                    factor={factor}
-                    configured={configured.find((c) => c.id === factor.id)}
-                    onSetUp={() => handleFactorSetUp(factor.id)}
-                    t={t}
-                  />
-                ))}
-              </Box>
-
-              {/* Available methods (collapsible) */}
-              {collapsedFactors.length > 0 && (
-                <Box className="mt-4">
-                  <Box
-                    flexDirection={BoxFlexDirection.Row} alignItems={BoxAlignItems.Center} justifyContent={BoxJustifyContent.Between}
-                    borderColor={BoxBorderColor.BorderMuted} className="border-t pt-4 cursor-pointer"
-                    onClick={() => setAvailableExpanded(!availableExpanded)}
-                  >
-                    <Text variant={TextVariant.BodySm} fontWeight={FontWeight.Medium} color={TextColor.TextDefault}>
-                      {t('twoFAAvailableMethods')}
-                    </Text>
-                    <Icon name={availableExpanded ? IconName.ArrowUp : IconName.ArrowDown} size={IconSize.Sm} color={IconColor.IconMuted} />
-                  </Box>
-                  {availableExpanded && (
-                    <Box flexDirection={BoxFlexDirection.Column} gap={2} className="mt-3">
-                      {collapsedFactors.map((factor) => (
-                        <FactorRow
-                          key={factor.id}
-                          factor={factor}
-                          configured={undefined}
-                          onSetUp={() => handleFactorSetUp(factor.id)}
-                          t={t}
-                        />
-                      ))}
-                    </Box>
-                  )}
-                </Box>
-              )}
-            </>
-          );
-        })()}
+        <Box flexDirection={BoxFlexDirection.Column} gap={2}>
+          {available.map((factor) => (
+            <FactorRow
+              key={factor.id}
+              factor={factor}
+              configured={configured.find((c) => c.id === factor.id)}
+              onSetUp={() => handleFactorSetUp(factor.id)}
+              t={t}
+            />
+          ))}
+        </Box>
       </Box>
 
       {/* Footer */}
