@@ -6,14 +6,29 @@ export type StatisticalResult = {
   [key: string]: number;
 };
 
-export type Persona = 'standard' | 'powerUser';
+export const BENCHMARK_PERSONA = {
+  STANDARD: 'standard',
+  POWER_USER: 'powerUser',
+} as const;
 
-export type BenchmarkType = 'benchmark' | 'performance' | 'userAction';
+export type Persona =
+  (typeof BENCHMARK_PERSONA)[keyof typeof BENCHMARK_PERSONA];
+
+export const BENCHMARK_TYPE = {
+  BENCHMARK: 'benchmark',
+  PERFORMANCE: 'performance',
+  USER_ACTION: 'userAction',
+} as const;
+
+export type BenchmarkType =
+  (typeof BENCHMARK_TYPE)[keyof typeof BENCHMARK_TYPE];
 
 export type BenchmarkResults = {
   testTitle: string;
   persona: Persona;
   benchmarkType?: BenchmarkType;
+  platform?: string;
+  buildType?: string;
   mean: StatisticalResult;
   min: StatisticalResult;
   max: StatisticalResult;
