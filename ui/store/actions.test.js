@@ -29,6 +29,16 @@ import * as actions from './actions';
 import * as actionConstants from './actionConstants';
 import { setBackgroundConnection } from './background-connection';
 
+jest.mock('../../app/scripts/controller-init/perps-controller-init', () => ({
+  PerpsControllerInit: jest.fn().mockReturnValue({
+    controller: {
+      state: {},
+      name: 'PerpsController',
+    },
+    api: {},
+  }),
+}));
+
 const { TRIGGER_TYPES } = NotificationServicesController.Constants;
 
 const mockUlid = '01JMPHQSH1A4DQAAS6ES7NDJ38';
@@ -1955,6 +1965,7 @@ describe('Actions', () => {
       expect(addCustomAssetStub.firstCall.args).toStrictEqual([
         accountId,
         'eip155:1/erc20:0xbbb',
+        undefined,
       ]);
 
       const actionTypes = store.getActions().map((a) => a.type);

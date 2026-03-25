@@ -1,12 +1,8 @@
 import React from 'react';
-import { Navigate, useLocation } from 'react-router-dom';
+import { Navigate, Outlet, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { render } from '@testing-library/react';
 import { SWAP_PATH } from '../../constants/routes';
-import { getMessage } from '../../utils/i18n-helper';
-// TODO: Remove restricted import
-// eslint-disable-next-line import-x/no-restricted-paths
-import messages from '../../../../app/_locales/en/messages.json';
 import BasicFunctionalityRequired from './require-basic-functionality';
 
 jest.mock('react-redux', () => ({
@@ -19,24 +15,16 @@ jest.mock('react-router-dom', () => {
   return {
     ...actual,
     useLocation: () => mockUseLocation(),
-    Navigate: jest.fn(({ to, state }) => (
-      <div
-        data-testid="navigate"
-        data-to={to}
-        data-state={JSON.stringify(state)}
-      />
-    )),
+    Outlet: jest.fn(() => <div data-testid="outlet" />),
+    Navigate: jest.fn(({ to }) => <div data-testid="navigate" data-to={to} />),
   };
 });
 
 const mockUseSelector = jest.mocked(useSelector);
 
-const CHILD_MESSAGE_KEY = 'basicFunctionalityRequired_title';
-const childText = getMessage('en', messages, CHILD_MESSAGE_KEY) as string;
-
-const testChild = <span>{childText}</span>;
-
 describe('BasicFunctionalityRequired', () => {
+  const basicFunctionalityOffRoute = '/basic-functionality-off';
+
   beforeEach(() => {
     jest.clearAllMocks();
     mockUseLocation.mockReturnValue({
@@ -49,14 +37,14 @@ describe('BasicFunctionalityRequired', () => {
   });
 
   describe('when useExternalServices is true', () => {
-    it('renders children', () => {
+    it('renders Outlet', () => {
       mockUseSelector.mockReturnValue(true);
 
-      const { getByText, queryByTestId } = render(
-        <BasicFunctionalityRequired>{testChild}</BasicFunctionalityRequired>,
+      const { getByTestId, queryByTestId } = render(
+        <BasicFunctionalityRequired />,
       );
 
-      expect(getByText(childText)).toBeInTheDocument();
+      expect(getByTestId('outlet')).toBeInTheDocument();
       expect(queryByTestId('navigate')).not.toBeInTheDocument();
     });
   });
@@ -65,27 +53,8 @@ describe('BasicFunctionalityRequired', () => {
     it('redirects to basic-functionality-off to be conservative', () => {
       mockUseSelector.mockReturnValue(undefined);
 
-      const { getByTestId, queryByText } = render(
-        <BasicFunctionalityRequired>{testChild}</BasicFunctionalityRequired>,
-      );
-
-      expect(getByTestId('navigate')).toBeInTheDocument();
-      expect(getByTestId('navigate')).toHaveAttribute(
-        'data-to',
-        '/basic-functionality-off',
-      );
-      expect(queryByText(childText)).not.toBeInTheDocument();
-    });
-  });
-
-  describe('when useExternalServices is false', () => {
-    const basicFunctionalityOffRoute = '/basic-functionality-off';
-
-    it('redirects to the basic functionality off page', () => {
-      mockUseSelector.mockReturnValue(false);
-
-      const { getByTestId, queryByText } = render(
-        <BasicFunctionalityRequired>{testChild}</BasicFunctionalityRequired>,
+      const { getByTestId, queryByTestId } = render(
+        <BasicFunctionalityRequired />,
       );
 
       expect(getByTestId('navigate')).toBeInTheDocument();
@@ -93,47 +62,66 @@ describe('BasicFunctionalityRequired', () => {
         'data-to',
         basicFunctionalityOffRoute,
       );
-      expect(queryByText(childText)).not.toBeInTheDocument();
+      expect(Navigate).toHaveBeenCalledWith(
+        expect.objectContaining({
+          to: basicFunctionalityOffRoute,
+          state: {
+            blockedRoutePath: SWAP_PATH,
+          },
+        }),
+        expect.anything(),
+      );
+      expect(queryByTestId('outlet')).not.toBeInTheDocument();
+    });
+  });
+
+  describe('when useExternalServices is false', () => {
+    it('redirects to the basic functionality off page', () => {
+      mockUseSelector.mockReturnValue(false);
+
+      const { getByTestId, queryByTestId } = render(
+        <BasicFunctionalityRequired />,
+      );
+
+      expect(getByTestId('navigate')).toBeInTheDocument();
+      expect(getByTestId('navigate')).toHaveAttribute(
+        'data-to',
+        basicFunctionalityOffRoute,
+      );
+      expect(queryByTestId('outlet')).not.toBeInTheDocument();
     });
 
     it('uses replace navigation', () => {
       mockUseSelector.mockReturnValue(false);
 
-      render(
-        <BasicFunctionalityRequired>{testChild}</BasicFunctionalityRequired>,
-      );
+      render(<BasicFunctionalityRequired />);
 
       expect(Navigate).toHaveBeenCalledWith(
         expect.objectContaining({
           to: basicFunctionalityOffRoute,
+          state: {
+            blockedRoutePath: SWAP_PATH,
+          },
           replace: true,
         }),
         expect.anything(),
       );
     });
 
-    it('passes current location pathname and feature name i18n key in state', () => {
+    it('passes current location pathname in state', () => {
       mockUseSelector.mockReturnValue(false);
-      mockUseLocation.mockReturnValue({
-        pathname: SWAP_PATH,
-        state: null,
-        key: '',
-        search: '',
-        hash: '',
-      } as ReturnType<typeof useLocation>);
 
-      const { getByTestId } = render(
-        <BasicFunctionalityRequired openPageCtaMessageKey="basicFunctionalityRequired_openSwapsPage">
-          {testChild}
-        </BasicFunctionalityRequired>,
+      render(<BasicFunctionalityRequired />);
+
+      expect(Navigate).toHaveBeenCalledWith(
+        expect.objectContaining({
+          to: basicFunctionalityOffRoute,
+          state: {
+            blockedRoutePath: SWAP_PATH,
+          },
+        }),
+        expect.anything(),
       );
-
-      const stateJson = getByTestId('navigate').getAttribute('data-state');
-      const state = stateJson ? JSON.parse(stateJson) : undefined;
-      expect(state).toStrictEqual({
-        blockedRoutePath: SWAP_PATH,
-        openPageCtaMessageKey: 'basicFunctionalityRequired_openSwapsPage',
-      });
     });
 
     it('includes search and hash in blockedRoutePath so original URL context is restored', () => {
@@ -146,15 +134,25 @@ describe('BasicFunctionalityRequired', () => {
         hash: '#section',
       } as ReturnType<typeof useLocation>);
 
-      const { getByTestId } = render(
-        <BasicFunctionalityRequired openPageCtaMessageKey="basicFunctionalityRequired_openSwapsPage">
-          {testChild}
-        </BasicFunctionalityRequired>,
-      );
+      render(<BasicFunctionalityRequired />);
 
-      const stateJson = getByTestId('navigate').getAttribute('data-state');
-      const state = stateJson ? JSON.parse(stateJson) : undefined;
-      expect(state.blockedRoutePath).toBe(`${SWAP_PATH}?swaps=true#section`);
+      expect(Navigate).toHaveBeenCalledWith(
+        expect.objectContaining({
+          to: basicFunctionalityOffRoute,
+          state: {
+            blockedRoutePath: `${SWAP_PATH}?swaps=true#section`,
+          },
+        }),
+        expect.anything(),
+      );
+    });
+
+    it('does not call Outlet when redirecting', () => {
+      mockUseSelector.mockReturnValue(false);
+
+      render(<BasicFunctionalityRequired />);
+
+      expect(Outlet).not.toHaveBeenCalled();
     });
   });
 });

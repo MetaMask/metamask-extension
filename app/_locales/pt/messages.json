@@ -3548,18 +3548,6 @@
   "knownTokenWarning": {
     "message": "Essa ação editará os tokens já listados na sua carteira, que podem ser usados para praticar phishing contra você. Só aprove se você tiver certeza de que quer alterar o que esses tokens representam. Saiba mais sobre $1"
   },
-  "l1Fee": {
-    "message": "Taxa da L1"
-  },
-  "l1FeeTooltip": {
-    "message": "Taxa de gás da L1"
-  },
-  "l2Fee": {
-    "message": "Taxa da L2"
-  },
-  "l2FeeTooltip": {
-    "message": "Taxa de gás da L2"
-  },
   "language": {
     "message": "Idioma"
   },
@@ -3572,9 +3560,6 @@
   },
   "lavaDomeCopyWarning": {
     "message": "Para sua segurança, não é possível selecionar este texto no momento."
-  },
-  "layer1Fees": {
-    "message": "Taxas de camada 1"
   },
   "learnHow": {
     "message": "Saiba como"
@@ -3707,9 +3692,6 @@
   },
   "links": {
     "message": "Links"
-  },
-  "loadMore": {
-    "message": "Carregar mais"
   },
   "loading": {
     "message": "Carregando..."
@@ -8643,9 +8625,6 @@
   },
   "transactionDetailGasHeading": {
     "message": "Taxa de gás estimada"
-  },
-  "transactionDetailMultiLayerTotalSubtitle": {
-    "message": "Valor + taxas"
   },
   "transactionError": {
     "message": "Erro de transação. Exceção gerada no código do contrato."

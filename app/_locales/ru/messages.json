@@ -3548,18 +3548,6 @@
   "knownTokenWarning": {
     "message": "Это действие изменит токены, уже указанные в вашем кошельке, которые можно использовать для фишинга. Утверждайте, только если вы уверены, что хотите изменить то, что представляют эти токены. Узнайте подробнее о $1"
   },
-  "l1Fee": {
-    "message": "Комиссия L1"
-  },
-  "l1FeeTooltip": {
-    "message": "Плата за газ L1"
-  },
-  "l2Fee": {
-    "message": "Комиссия L2"
-  },
-  "l2FeeTooltip": {
-    "message": "Плата за газ L2"
-  },
   "language": {
     "message": "Язык"
   },
@@ -3572,9 +3560,6 @@
   },
   "lavaDomeCopyWarning": {
     "message": "В целях вашей безопасности выбор этого текста в данный момент недоступен."
-  },
-  "layer1Fees": {
-    "message": "Комиссии 1-го уровня"
   },
   "learnHow": {
     "message": "Узнайте как"
@@ -3707,9 +3692,6 @@
   },
   "links": {
     "message": "Ссылки"
-  },
-  "loadMore": {
-    "message": "Загрузить еще"
   },
   "loading": {
     "message": "Загрузка..."
@@ -8643,9 +8625,6 @@
   },
   "transactionDetailGasHeading": {
     "message": "Примерная плата за газ"
-  },
-  "transactionDetailMultiLayerTotalSubtitle": {
-    "message": "Сумма + комиссии"
   },
   "transactionError": {
     "message": "Ошибка транзакции. Исключение в коде контракта."

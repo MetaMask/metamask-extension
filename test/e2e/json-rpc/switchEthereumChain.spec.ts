@@ -14,7 +14,7 @@ import NetworkPermissionSelectModal from '../page-objects/pages/dialog/network-p
 import ReviewPermissionsConfirmation from '../page-objects/pages/confirmations/review-permissions-confirmation';
 import TestDapp from '../page-objects/pages/test-dapp';
 import TransactionConfirmation from '../page-objects/pages/confirmations/transaction-confirmation';
-import { loginWithBalanceValidation } from '../page-objects/flows/login.flow';
+import { login } from '../page-objects/flows/login.flow';
 
 describe('Switch Ethereum Chain for two dapps', function () {
   it('switches the chainId of two dapps when switchEthereumChain of one dapp is confirmed', async function () {
@@ -43,7 +43,7 @@ describe('Switch Ethereum Chain for two dapps', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
         // open two dapps
         const dappOne = new TestDapp(driver);
         await dappOne.openTestDappPage({ url: DAPP_URL });
@@ -121,7 +121,7 @@ describe('Switch Ethereum Chain for two dapps', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         // open two dapps
         const dappOne = new TestDapp(driver);
@@ -238,7 +238,7 @@ describe('Switch Ethereum Chain for two dapps', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         // open two dapps
         const dappTwo = new TestDapp(driver);

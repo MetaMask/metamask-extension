@@ -3548,18 +3548,6 @@
   "knownTokenWarning": {
     "message": "Mae-edit ng aksyong ito ang mga token na nakalista na sa iyong wallet, na puwedeng gamitin para i-phish ka. Aprubahan lang kung sigurado kang gusto mong baguhin kung ano ang kinakatawan ng mga token na ito. Alamin pa ang tungkol sa $1"
   },
-  "l1Fee": {
-    "message": "L1 na bayad"
-  },
-  "l1FeeTooltip": {
-    "message": "L1 na bayad sa gas"
-  },
-  "l2Fee": {
-    "message": "L2 na bayad"
-  },
-  "l2FeeTooltip": {
-    "message": "L2 na bayad sa gas"
-  },
   "language": {
     "message": "Wika"
   },
@@ -3572,9 +3560,6 @@
   },
   "lavaDomeCopyWarning": {
     "message": "Para sa iyong kaligtasan, ang pagpil ng tekstong ito ay hindi available ngayon."
-  },
-  "layer1Fees": {
-    "message": "Layer 1 fees"
   },
   "learnHow": {
     "message": "Alamin kung paano"
@@ -3707,9 +3692,6 @@
   },
   "links": {
     "message": "Mga Link"
-  },
-  "loadMore": {
-    "message": "Matuto Pa"
   },
   "loading": {
     "message": "Nilo-load..."
@@ -8643,9 +8625,6 @@
   },
   "transactionDetailGasHeading": {
     "message": "Tinatayang bayad sa gas"
-  },
-  "transactionDetailMultiLayerTotalSubtitle": {
-    "message": "Halaga + fees"
   },
   "transactionError": {
     "message": "Error sa transaksyon. Nagkaroon ng exception sa code ng kontrata."

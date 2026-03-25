@@ -3548,18 +3548,6 @@
   "knownTokenWarning": {
     "message": "Diese Aktion wird Token bearbeiten, die bereits in Ihrem Wallet aufgelistet sind, was dazu verwendet werden kann, Sie zu betrügen. Stimmen Sie nur zu, wenn Sie sicher sind, dass Sie die Änderung durchführen möchten, wofür diese Token stehen. Mehr über $1 erfahren"
   },
-  "l1Fee": {
-    "message": "L1-Gebühr"
-  },
-  "l1FeeTooltip": {
-    "message": "L1-Gas-Gebühr"
-  },
-  "l2Fee": {
-    "message": "L2-Gebühr"
-  },
-  "l2FeeTooltip": {
-    "message": "L2-Gas-Gebühr"
-  },
   "language": {
     "message": "Sprache"
   },
@@ -3572,9 +3560,6 @@
   },
   "lavaDomeCopyWarning": {
     "message": "Zu Ihrer Sicherheit ist die Auswahl dieses Textes im Moment nicht möglich."
-  },
-  "layer1Fees": {
-    "message": "Layer 1 Gebühren"
   },
   "learnHow": {
     "message": "Erfahren Sie, wie es funktioniert"
@@ -3707,9 +3692,6 @@
   },
   "links": {
     "message": "Links"
-  },
-  "loadMore": {
-    "message": "Mehr laden"
   },
   "loading": {
     "message": "Wird geladen ..."
@@ -8643,9 +8625,6 @@
   },
   "transactionDetailGasHeading": {
     "message": "Geschätzte Gas-Gebühr"
-  },
-  "transactionDetailMultiLayerTotalSubtitle": {
-    "message": "Betrag + Gebühren"
   },
   "transactionError": {
     "message": "Transaktionsfehler. Fehler in Contract-Code eingefügt."

@@ -3548,18 +3548,6 @@
   "knownTokenWarning": {
     "message": "Esta acción editará tokens que ya estén enumerados en su monedero y que se pueden usar para engañarlo. Apruebe solo si está seguro de que quiere cambiar lo que representan estos tokens. Más información sobre $1"
   },
-  "l1Fee": {
-    "message": "Tarifa L1"
-  },
-  "l1FeeTooltip": {
-    "message": "Tarifa de gas L1"
-  },
-  "l2Fee": {
-    "message": "Tarifa L2"
-  },
-  "l2FeeTooltip": {
-    "message": "Tarifa de gas L2"
-  },
   "language": {
     "message": "Idioma"
   },
@@ -3572,9 +3560,6 @@
   },
   "lavaDomeCopyWarning": {
     "message": "Por su seguridad, seleccionar este texto no está disponible en este momento."
-  },
-  "layer1Fees": {
-    "message": "Cargos de capa 1"
   },
   "learnHow": {
     "message": "Más información"
@@ -3707,9 +3692,6 @@
   },
   "links": {
     "message": "Enlaces"
-  },
-  "loadMore": {
-    "message": "Cargar más"
   },
   "loading": {
     "message": "Cargando..."
@@ -8643,9 +8625,6 @@
   },
   "transactionDetailGasHeading": {
     "message": "Tarifa estimada de gas"
-  },
-  "transactionDetailMultiLayerTotalSubtitle": {
-    "message": "Monto + cargos"
   },
   "transactionError": {
     "message": "Error de transacción. Excepción generada en el código de contrato."
