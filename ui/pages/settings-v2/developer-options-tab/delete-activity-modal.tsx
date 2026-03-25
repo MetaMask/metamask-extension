@@ -38,7 +38,7 @@ export default function DeleteActivityModal({
   const dispatch = useDispatch();
 
   const deleteActivityData = async () => {
-    dispatch(resetAccount());
+    await dispatch(resetAccount());
     onClose();
   };
 
