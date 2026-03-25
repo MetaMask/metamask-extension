@@ -71,27 +71,6 @@ class SnapInstall {
     this.driver = driver;
   }
 
-  /**
-   * Waits for the snap install title. A timeout in this step can mean the install never progressed
-   * (e.g. stale mocked ACL registry/signature). Refresh with `yarn update-snaps-registry`.
-   */
-  private async waitForAddToMetaMaskInstallHeader(): Promise<void> {
-    try {
-      await this.driver.waitForSelector(this.addToMetaMaskHeader);
-    } catch (error) {
-      const original = error instanceof Error ? error.message : String(error);
-      throw new Error(
-        [
-          'Snap install: timed out waiting for "Add to MetaMask" (install confirmation).',
-          'If the E2E uses mocked data, the registry/signature fixtures may be stale or out of sync with each other.',
-          'Refresh them with: yarn update-snaps-registry',
-          '',
-          `Underlying error: ${original}`,
-        ].join('\n'),
-      );
-    }
-  }
-
   async checkMessageResultSpan(
     spanSelectorId: string,
     expectedMessage: string,
@@ -217,6 +196,27 @@ class SnapInstall {
       { timeout: veryLargeDelayMs, interval: 100 },
     );
     await this.driver.clickElement(this.nextPageButton);
+  }
+
+  /**
+   * Waits for the snap install title. A timeout in this step can mean the install never progressed
+   * (e.g. stale mocked ACL registry/signature). Refresh with `yarn update-snaps-registry`.
+   */
+  async waitForAddToMetaMaskInstallHeader(): Promise<void> {
+    try {
+      await this.driver.waitForSelector(this.addToMetaMaskHeader);
+    } catch (error) {
+      const original = error instanceof Error ? error.message : String(error);
+      throw new Error(
+        [
+          'Snap install: timed out waiting for "Add to MetaMask" (install confirmation).',
+          'If the E2E uses mocked data, the registry/signature fixtures may be stale or out of sync with each other.',
+          'Refresh them with: yarn update-snaps-registry',
+          '',
+          `Underlying error: ${original}`,
+        ].join('\n'),
+      );
+    }
   }
 
   async waitForConfirmationDialogLinkText(): Promise<void> {

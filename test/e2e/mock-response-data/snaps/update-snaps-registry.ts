@@ -1,7 +1,13 @@
 import fs from 'fs';
 import { create } from '@metamask/superstruct';
 import { SignatureStruct, verify } from '@metamask/snaps-registry';
-import { getSnapAclRegistryFixturePaths } from './snap-registry-mocks';
+import {
+  SNAPS_REGISTRY_BODY_PATH,
+  SNAPS_REGISTRY_HEADERS_PATH,
+  SNAPS_REGISTRY_MOCK_DIR,
+  SNAPS_SIGNATURE_BODY_PATH,
+  SNAPS_SIGNATURE_HEADERS_PATH,
+} from './snap-registry-mocks';
 
 /**
  * Same idea as `update-snap-binary.ts`, but for the Snaps execution allowlist:
@@ -12,14 +18,6 @@ import { getSnapAclRegistryFixturePaths } from './snap-registry-mocks';
  */
 const REGISTRY_URL = 'https://acl.execution.metamask.io/latest/registry.json';
 const SIGNATURE_URL = 'https://acl.execution.metamask.io/latest/signature.json';
-
-const {
-  outDir: OUT_DIR,
-  registryBody: REGISTRY_PATH,
-  signatureBody: SIGNATURE_PATH,
-  registryHeaders: REGISTRY_HEADERS_PATH,
-  signatureHeaders: SIGNATURE_HEADERS_PATH,
-} = getSnapAclRegistryFixturePaths();
 
 /** Public key from JsonSnapsRegistry / extension snaps registry init. */
 const REGISTRY_PUBLIC_KEY =
@@ -33,7 +31,7 @@ const REGISTRY_PUBLIC_KEY =
  * @param response - Fetch `Response` whose headers are copied (subset).
  * @param bodyUtf8 - UTF-8 body string; used to set `Content-Length`.
  */
-function saveAclHeadersFile(
+function saveHeadersFile(
   filePath: string,
   response: Response,
   bodyUtf8: string,
@@ -100,16 +98,20 @@ async function main() {
     );
   }
 
-  fs.mkdirSync(OUT_DIR, { recursive: true });
-  fs.writeFileSync(REGISTRY_PATH, registryText);
-  fs.writeFileSync(SIGNATURE_PATH, signatureText);
-  saveAclHeadersFile(REGISTRY_HEADERS_PATH, registryRes, registryText);
-  saveAclHeadersFile(SIGNATURE_HEADERS_PATH, signatureRes, signatureText);
+  fs.mkdirSync(SNAPS_REGISTRY_MOCK_DIR, { recursive: true });
+  fs.writeFileSync(SNAPS_REGISTRY_BODY_PATH, registryText);
+  fs.writeFileSync(SNAPS_SIGNATURE_BODY_PATH, signatureText);
+  saveHeadersFile(SNAPS_REGISTRY_HEADERS_PATH, registryRes, registryText);
+  saveHeadersFile(SNAPS_SIGNATURE_HEADERS_PATH, signatureRes, signatureText);
 
-  console.log(`Wrote ${REGISTRY_PATH} (${registryText.length} bytes)`);
-  console.log(`Wrote ${REGISTRY_HEADERS_PATH}`);
-  console.log(`Wrote ${SIGNATURE_PATH} (${signatureText.length} bytes)`);
-  console.log(`Wrote ${SIGNATURE_HEADERS_PATH}`);
+  console.log(
+    `Wrote ${SNAPS_REGISTRY_BODY_PATH} (${registryText.length} bytes)`,
+  );
+  console.log(`Wrote ${SNAPS_REGISTRY_HEADERS_PATH}`);
+  console.log(
+    `Wrote ${SNAPS_SIGNATURE_BODY_PATH} (${signatureText.length} bytes)`,
+  );
+  console.log(`Wrote ${SNAPS_SIGNATURE_HEADERS_PATH}`);
 }
 
 main().catch((error) => {
