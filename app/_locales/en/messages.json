@@ -5895,6 +5895,41 @@
   "perpsWithdraw": {
     "message": "Withdraw"
   },
+  "perpsWithdrawAmount": {
+    "message": "Amount (USDC)"
+  },
+  "perpsWithdrawDescription": {
+    "message": "Withdraw USDC from your Perps balance to your wallet on Arbitrum. A network fee applies."
+  },
+  "perpsWithdrawEstimatedTime": {
+    "message": "Estimated time"
+  },
+  "perpsWithdrawFailed": {
+    "message": "Withdrawal could not be completed. Try again."
+  },
+  "perpsWithdrawFee": {
+    "message": "Fee"
+  },
+  "perpsWithdrawFunds": {
+    "message": "Withdraw funds"
+  },
+  "perpsWithdrawInsufficient": {
+    "message": "Amount exceeds your available Perps balance."
+  },
+  "perpsWithdrawInvalidAmount": {
+    "message": "Enter a valid amount."
+  },
+  "perpsWithdrawMinNotice": {
+    "message": "Minimum withdrawal: $1 USDC",
+    "description": "$1 is the minimum amount (e.g. 1.01)"
+  },
+  "perpsWithdrawMinutesApprox": {
+    "message": "~$1 min",
+    "description": "$1 is the estimated number of minutes"
+  },
+  "perpsWithdrawRoutesError": {
+    "message": "Could not load withdrawal limits. Try again later."
+  },
   "perpsYouWillReceive": {
     "message": "You'll receive"
   },
