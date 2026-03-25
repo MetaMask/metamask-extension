@@ -91,8 +91,8 @@ jobs:
           key: .metamask-${{ hashFiles('yarn.lock') }}
 
   # Lint Jobs - Using name prefix for visual grouping
-  lint-workflows:
-    name: Lint / workflows
+  lint-github-workflows:
+    name: Lint / GitHub workflows
     if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
     needs:
       - get-requirements
@@ -151,7 +151,7 @@ jobs:
     uses: ./.github/workflows/validate-lavamoat-policies.yml
 
   builds-dist:
-    name: Builds / dist / ${{ matrix.manifest }} / ${{ matrix.bundler }}
+    name: ${{ matrix.build-name }}
     needs:
       - get-requirements
     if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
@@ -193,7 +193,7 @@ jobs:
     secrets: inherit
 
   builds-beta:
-    name: Builds / beta / ${{ matrix.manifest }} / ${{ matrix.bundler }}
+    name: ${{ matrix.build-name }}
     needs:
       - get-requirements
     if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
@@ -235,7 +235,7 @@ jobs:
     secrets: inherit
 
   builds-flask:
-    name: Builds / flask / ${{ matrix.manifest }} / ${{ matrix.bundler }}
+    name: ${{ matrix.build-name }}
     needs:
       - get-requirements
     if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
@@ -277,7 +277,7 @@ jobs:
     secrets: inherit
 
   builds-test:
-    name: Builds / test / ${{ matrix.variant }} / ${{ matrix.bundler }}
+    name: ${{ matrix.build-name }}
     needs:
       - get-requirements
     if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
@@ -705,7 +705,7 @@ jobs:
       - get-requirements
       - locales-changed-only
       - prep-deps
-      - lint-workflows
+      - lint-github-workflows
       - lint-code
       - repository-health-checks
       - storybook-test
