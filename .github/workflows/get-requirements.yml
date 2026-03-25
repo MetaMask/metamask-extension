@@ -33,6 +33,7 @@ env:
   # For a `push` event, the head commit hash is `github.sha`.
   HEAD_COMMIT_HASH: ${{ github.event.pull_request.head.sha || github.sha }}
   BRANCH: ${{ github.head_ref || github.ref_name }}
+  IS_BENCHMARK_ONLY_BRANCH: ${{ startsWith(github.head_ref || github.ref_name, 'benchmark/fixture-session/') }}
   IS_RUN_EVERYTHING_BRANCH: ${{ (github.head_ref || github.ref_name) == 'main' || (github.head_ref || github.ref_name) == 'stable' }}
   RUN_ID: ${{ github.run_id }}
   IS_FORK: ${{ github.event.pull_request.head.repo.fork || github.event.repository.fork }}
@@ -117,10 +118,16 @@ jobs:
           fi
 
       # skip-everything is a shortcut for up-to-date == 'true' || needs-locales == 'true'
+      # || the dedicated fixture-session benchmark branch mode.
       - name: Compute skip-everything flag
         id: set-skip-everything
-        if: ${{ env.IS_RUN_EVERYTHING_BRANCH == 'false' && (steps.check-skip-merge-queue.outputs.up-to-date == 'true' || steps.set-needs-locales.outputs.needs-locales == 'true') }}
-        run: echo "skip-everything=true" >> "$GITHUB_OUTPUT"
+        if: ${{ env.IS_RUN_EVERYTHING_BRANCH == 'false' && (steps.check-skip-merge-queue.outputs.up-to-date == 'true' || steps.set-needs-locales.outputs.needs-locales == 'true' || env.IS_BENCHMARK_ONLY_BRANCH == 'true') }}
+        run: |
+          echo "skip-everything=true" >> "$GITHUB_OUTPUT"
+
+          if [[ "$IS_BENCHMARK_ONLY_BRANCH" == 'true' ]]; then
+            echo "-> skip-everything=true due to fixture-session benchmark branch mode"
+          fi
 
       # This is very simple right now (and equivalent to !skip-everything)
       - name: Compute needs-lint flag

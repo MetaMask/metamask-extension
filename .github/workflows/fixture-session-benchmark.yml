@@ -1,0 +1,71 @@
+name: Fixture Session Benchmark
+
+on:
+  pull_request:
+    types:
+      - opened
+      - reopened
+      - synchronize
+  workflow_dispatch:
+    inputs:
+      iterations:
+        default: 6
+        description: Iterations to run per benchmark mode
+        required: true
+        type: number
+
+permissions:
+  contents: read
+
+jobs:
+  fixture-session-benchmark:
+    name: fixture-session-benchmark
+    if: ${{ github.event_name == 'workflow_dispatch' || startsWith(github.head_ref || github.ref_name, 'benchmark/fixture-session/') }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    container:
+      image: ghcr.io/metamask/metamask-extension-e2e-image:v24.13.0
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    env:
+      BENCHMARK_ITERATIONS: ${{ github.event_name == 'workflow_dispatch' && inputs.iterations || 6 }}
+      FORCE_COLOR: '1'
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - name: Checkout and setup environment
+        uses: MetaMask/action-checkout-and-setup@v3
+        with:
+          is-high-risk-environment: false
+          skip-allow-scripts: true
+
+      - name: Restore .metamask folder
+        id: restore-metamask
+        uses: actions/cache/restore@v5
+        with:
+          path: .metamask
+          key: .metamask-${{ hashFiles('yarn.lock') }}
+          fail-on-cache-miss: false
+
+      - name: Install anvil if cache missed
+        if: ${{ steps.restore-metamask.outputs.cache-hit != 'true' }}
+        run: yarn mm-foundryup
+
+      - name: Configure Xvfb
+        run: Xvfb -ac :99 -screen 0 1280x1024x16 &
+
+      - name: Build test bundle
+        run: yarn build:test
+
+      - name: Run fixture-session benchmark
+        run: yarn test:e2e:fixture-session:benchmark --iterations "$BENCHMARK_ITERATIONS"
+
+      - name: Publish benchmark summary
+        run: cat test-artifacts/fixture-session-benchmark/summary.md >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload benchmark artifacts
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v6
+        with:
+          name: fixture-session-benchmark
+          path: test-artifacts/fixture-session-benchmark
