@@ -83,13 +83,10 @@ describe('Multichain API - Non EVM', function () {
           );
           await editConnectedAccountsModal.checkPageIsLoaded();
 
-          const isAccountSelected =
-            await editConnectedAccountsModal.checkIsAccountSelected(1);
-          assert.strictEqual(
-            isAccountSelected,
-            true,
-            'current active account in the wallet should be automatically selected',
-          );
+          await editConnectedAccountsModal.waitForAccountSelectedStatus({
+            accountIndex: 1,
+            status: 'selected',
+          });
         },
       );
     });
