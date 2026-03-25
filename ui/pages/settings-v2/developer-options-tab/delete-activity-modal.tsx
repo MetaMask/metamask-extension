@@ -77,7 +77,7 @@ export default function DeleteActivityModal({
           gap={4}
         >
           <Text variant={TextVariant.BodyMd} color={TextColor.TextAlternative}>
-            {t('deleteActivityAndNonceDataDescription')}
+            {t('clearActivityDescription')}
           </Text>
         </Box>
         <ModalFooter>
