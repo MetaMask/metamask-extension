@@ -45,9 +45,9 @@ const FACTOR_META: Record<FactorId, { nameKey: string; icon: IconName }> = {
   mobile: { nameKey: 'twoFAFactorMobileDevice', icon: IconName.Mobile },
 };
 
-const RECOVERY_FACTORS: FactorId[] = ['mobile', 'email', 'passkeys', 'sms', 'social'];
-const ALL_FACTORS: FactorId[] = ['email', 'authenticator', 'social', 'mobile', 'passkeys', 'sms'];
-const NON_SOCIAL_RECOVERY_FACTORS: FactorId[] = ['mobile', 'email', 'passkeys', 'sms'];
+const RECOVERY_FACTORS: FactorId[] = ['mobile', 'social', 'email', 'sms'];
+const ALL_FACTORS: FactorId[] = ['mobile', 'social', 'authenticator', 'passkeys', 'email', 'sms'];
+const NON_SOCIAL_RECOVERY_FACTORS: FactorId[] = ['mobile', 'email', 'sms'];
 
 type Step = 'intro' | 'identity-pick' | 'identity-verify' | 'second-pick' | 'second-verify' | 'recovery-pick' | 'recovery-verify' | 'recovering' | 'success';
 
