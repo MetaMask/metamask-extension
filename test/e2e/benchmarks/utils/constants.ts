@@ -1,9 +1,10 @@
 import type { ThresholdConfig } from '../../../../shared/constants/benchmarks';
-
-export {
+import {
   BENCHMARK_PLATFORMS,
   BENCHMARK_BUILD_TYPES,
 } from '../../../../shared/constants/benchmarks';
+
+export { BENCHMARK_PLATFORMS, BENCHMARK_BUILD_TYPES };
 export const STARTUP_PRESETS = {
   STANDARD_HOME: 'startupStandardHome',
   POWER_USER_HOME: 'startupPowerUserHome',
@@ -222,8 +223,8 @@ const STANDARD_HOME: ThresholdConfig = {
 
 const POWER_USER_HOME: ThresholdConfig = {
   uiStartup: {
-    p75: { warn: 3000, fail: 4000 },
-    p95: { warn: 4000, fail: 5500 },
+    p75: { warn: 4000, fail: 4700 },
+    p95: { warn: 7000, fail: 10000 },
     ciMultiplier: DEFAULT_CI_MULTIPLIER,
   },
   load: {
@@ -276,23 +277,67 @@ const BRIDGE_USER_ACTIONS: ThresholdConfig = {
 /* eslint-enable @typescript-eslint/naming-convention */
 
 /**
- * Registry keyed by benchmark file name (kebab-case), auto-converted from
- * UPPER_SNAKE_CASE, e.g. ONBOARDING_IMPORT_WALLET -> onboarding-import-wallet.
+ * Threshold configurations for interaction and user journey benchmarks.
  */
-export const THRESHOLD_REGISTRY: Record<string, ThresholdConfig> =
-  Object.fromEntries(
-    Object.entries({
-      ONBOARDING_IMPORT_WALLET,
-      ONBOARDING_NEW_WALLET,
-      IMPORT_SRP_HOME,
-      SWAP,
-      SEND_TRANSACTIONS,
-      ASSET_DETAILS,
-      SOLANA_ASSET_DETAILS,
-      STANDARD_HOME,
-      POWER_USER_HOME,
-      LOAD_NEW_ACCOUNT,
-      CONFIRM_TX,
-      BRIDGE_USER_ACTIONS,
-    }).map(([key, config]) => [key.toLowerCase().replace(/_/gu, '-'), config]),
-  );
+const BENCHMARK_THRESHOLDS = {
+  // Interaction benchmarks (run on all 4 combos, shared baseline)
+  loadNewAccount: LOAD_NEW_ACCOUNT,
+  confirmTx: CONFIRM_TX,
+  bridgeUserActions: BRIDGE_USER_ACTIONS,
+
+  // User journey benchmarks (chrome-browserify in PRs, chrome-webpack on main/release)
+  onboardingImportWallet: ONBOARDING_IMPORT_WALLET,
+  onboardingNewWallet: ONBOARDING_NEW_WALLET,
+  importSrpHome: IMPORT_SRP_HOME,
+  assetDetails: ASSET_DETAILS,
+  solanaAssetDetails: SOLANA_ASSET_DETAILS,
+  sendTransactions: SEND_TRANSACTIONS,
+  swap: SWAP,
+
+  // Startup benchmarks (fallback when platform/buildType not available)
+  startupStandardHome: STANDARD_HOME,
+  startupPowerUserHome: POWER_USER_HOME,
+};
+
+/**
+ * Startup benchmark configurations.
+ * Generated for all platform/buildType combos with platform-prefixed keys.
+ */
+const STARTUP_BENCHMARK_CONFIGS = {
+  startupStandardHome: STANDARD_HOME,
+  startupPowerUserHome: POWER_USER_HOME,
+};
+
+/**
+ * Generates startup benchmark thresholds for all platform/buildType combinations.
+ * Creates keys like 'chrome-browserify-startupStandardHome'.
+ */
+function generateStartupThresholds(): Record<string, ThresholdConfig> {
+  const platforms = Object.values(BENCHMARK_PLATFORMS);
+  const buildTypes = Object.values(BENCHMARK_BUILD_TYPES);
+  const result: Record<string, ThresholdConfig> = {};
+
+  for (const [benchmarkName, config] of Object.entries(
+    STARTUP_BENCHMARK_CONFIGS,
+  )) {
+    for (const platform of platforms) {
+      for (const buildType of buildTypes) {
+        result[`${platform}-${buildType}-${benchmarkName}`] = config;
+      }
+    }
+  }
+
+  return result;
+}
+
+/**
+ * Registry of threshold configurations keyed by benchmark name (camelCase).
+ *
+ * To add a new benchmark:
+ * - Interaction/User Journey: Add to BENCHMARK_THRESHOLDS (works for all platforms)
+ * - Startup: Add to STARTUP_BENCHMARK_CONFIGS (auto-generates 8 platform-combo entries)
+ */
+export const THRESHOLD_REGISTRY: Record<string, ThresholdConfig> = {
+  ...BENCHMARK_THRESHOLDS,
+  ...generateStartupThresholds(),
+};

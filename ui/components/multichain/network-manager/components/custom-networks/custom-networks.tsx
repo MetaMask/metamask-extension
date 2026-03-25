@@ -1,7 +1,7 @@
 import { type MultichainNetworkConfiguration } from '@metamask/multichain-network-controller';
 import React, { useCallback, useEffect, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 import { endTrace, TraceName } from '../../../../../../shared/lib/trace';
 import {
   convertCaipToHexChainId,
@@ -41,7 +41,7 @@ import { hideModal } from '../../../../../store/actions';
 
 export const CustomNetworks = React.memo(() => {
   const t = useI18nContext();
-  const navigate = useNavigate();
+  const [, setSearchParams] = useSearchParams();
   const dispatch = useDispatch();
   const orderedNetworksList = useSelector(getOrderedNetworksList);
   const [, evmNetworks] = useSelector(
@@ -186,8 +186,8 @@ export const CustomNetworks = React.memo(() => {
 
   // Memoize the add button click handler
   const handleAddNetworkClick = useCallback(() => {
-    navigate('/add');
-  }, [navigate]);
+    setSearchParams({ view: 'add' });
+  }, [setSearchParams]);
 
   return (
     <>
