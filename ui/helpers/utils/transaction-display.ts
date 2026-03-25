@@ -1,12 +1,12 @@
-export type TransactionStatusVariant = 'pending' | 'success' | 'failed';
+export type TransactionStatus = 'pending' | 'success' | 'failed';
 
-export type TransactionDisplayData = {
+type TransactionDisplayData = {
   title: string;
   description: string;
 };
 
 const TRANSACTION_DISPLAY_DATA: Record<
-  TransactionStatusVariant,
+  TransactionStatus,
   TransactionDisplayData
 > = {
   pending: {
@@ -23,12 +23,6 @@ const TRANSACTION_DISPLAY_DATA: Record<
   },
 };
 
-/**
- * Returns display title and description for a transaction status.
- *
- * @param variant - The transaction status variant.
- * @returns The display data with title and description.
- */
-export function getTransactionDisplayData(variant: TransactionStatusVariant) {
-  return TRANSACTION_DISPLAY_DATA[variant];
+export function getTransactionDisplayData(status: TransactionStatus) {
+  return TRANSACTION_DISPLAY_DATA[status];
 }
