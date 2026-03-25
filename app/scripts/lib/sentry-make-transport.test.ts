@@ -1,5 +1,6 @@
 import * as Sentry from '@sentry/browser';
 import { forEachEnvelopeItem, parseEnvelope } from '@sentry/utils';
+import { tick } from '../../../test/lib/timer-helpers';
 import { makeTransport } from './sentry-make-transport';
 
 const originalMakeFetchTransport = Sentry.makeFetchTransport.bind(Sentry);
@@ -226,12 +227,6 @@ describe('sentry-make-transport', () => {
   });
 
   describe('Sentry.init with makeTransport (MetaMetrics)', () => {
-    function triggerSessionEvent() {
-      return new Promise((resolve) => {
-        setTimeout(resolve, 0);
-      });
-    }
-
     afterEach(async () => {
       await Sentry.close(2000);
       delete globalThis.stateHooks?.getPersistedState;
@@ -239,7 +234,7 @@ describe('sentry-make-transport', () => {
       delete globalThis.stateHooks?.getSentryState;
     });
 
-    it('does not call fetch after init when opted out (after triggerSessionEvent)', async () => {
+    it('does not call fetch after init when opted out', async () => {
       globalThis.nw = {};
       globalThis.history ??= {};
 
@@ -266,14 +261,14 @@ describe('sentry-make-transport', () => {
         tracesSampleRate: 0,
       });
 
-      await triggerSessionEvent();
+      await tick();
 
       expect(fetchSpy).not.toHaveBeenCalled();
 
       fetchSpy.mockRestore();
     });
 
-    it('calls fetch after init when opted in (after triggerSessionEvent)', async () => {
+    it('calls fetch after init when opted in', async () => {
       globalThis.nw = {};
       globalThis.history ??= {};
 
@@ -303,7 +298,7 @@ describe('sentry-make-transport', () => {
         tracesSampleRate: 0,
       });
 
-      await triggerSessionEvent();
+      await tick();
 
       expect(fetchSpy).toHaveBeenCalled();
 
