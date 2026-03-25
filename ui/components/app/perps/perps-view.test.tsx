@@ -188,7 +188,7 @@ describe('PerpsView', () => {
     });
 
     it('opens withdraw modal when withdraw is clicked from balance dropdown', () => {
-      renderWithProvider(<PerpsTabView />, mockStore);
+      renderWithProvider(<PerpsView />, mockStore);
 
       expect(
         screen.getByTestId('perps-withdraw-modal-state'),
