@@ -167,6 +167,8 @@ const ConnectHardwareForm = () => {
   );
   const latestHardwareAccounts = useRef(hardwareAccounts);
   const latestDevice = useRef(device);
+  const latestPendingDevice = useRef<string | null>(null);
+  const latestGetPageRequestId = useRef(0);
 
   useEffect(() => {
     latestHardwareAccounts.current = hardwareAccounts;
@@ -175,6 +177,11 @@ const ConnectHardwareForm = () => {
   useEffect(() => {
     latestDevice.current = device;
   }, [device]);
+
+  const setCurrentDevice = useCallback((nextDevice: string | null) => {
+    latestDevice.current = nextDevice;
+    setDevice(nextDevice);
+  }, []);
 
   const hardwareWalletKeyrings = useMemo(
     () =>
@@ -223,9 +230,14 @@ const ConnectHardwareForm = () => {
       page: number,
       hdPath: string,
       loadHid?: boolean,
+      shouldShowConnectedAlert = true,
     ) => {
       // The actions.ts type declares `page` as string, but the background
       // handler expects a number (0 = first, 1 = next, -1 = previous).
+      const requestId = latestGetPageRequestId.current + 1;
+      latestGetPageRequestId.current = requestId;
+      latestPendingDevice.current = deviceName;
+
       try {
         const nextAccounts = (await dispatch(
           actions.connectHardware(
@@ -237,8 +249,18 @@ const ConnectHardwareForm = () => {
           ),
         )) as { address: string; index?: number }[];
 
+        if (requestId !== latestGetPageRequestId.current) {
+          return;
+        }
+
+        latestPendingDevice.current = null;
+
         if (nextAccounts.length) {
-          if (hardwareAccounts.length === 0 && !unlocked) {
+          if (
+            shouldShowConnectedAlert &&
+            hardwareAccounts.length === 0 &&
+            !unlocked
+          ) {
             showTemporaryAlert();
           }
 
@@ -256,10 +278,16 @@ const ConnectHardwareForm = () => {
 
           setHardwareAccounts(newAccounts);
           setUnlocked(true);
-          setDevice(deviceName);
+          setCurrentDevice(deviceName);
           setError(null);
         }
       } catch (e: unknown) {
+        if (requestId !== latestGetPageRequestId.current) {
+          return;
+        }
+
+        latestPendingDevice.current = null;
+
         const errorMessage = toErrorMessage(e);
 
         // Use shared Ledger error mapping (hw-wallet-sdk) when connecting to Ledger.
@@ -317,6 +345,7 @@ const ConnectHardwareForm = () => {
       accounts,
       dispatch,
       hardwareAccounts.length,
+      setCurrentDevice,
       showTemporaryAlert,
       t,
       unlocked,
@@ -336,9 +365,14 @@ const ConnectHardwareForm = () => {
         const isUnlocked = await dispatch(
           actions.checkHardwareStatus(deviceName, path),
         );
-        if (isUnlocked && device) {
-          setUnlocked(true);
-          getPage(deviceName, 0, path);
+        if (
+          isUnlocked &&
+          latestHardwareAccounts.current.length === 0 &&
+          !latestDevice.current &&
+          !latestPendingDevice.current
+        ) {
+          getPage(deviceName, 0, path, false, false).catch(() => undefined);
+          return;
         }
       }
     };
@@ -358,7 +392,8 @@ const ConnectHardwareForm = () => {
       previousScanRequest?.type === QrScanRequestType.PAIR &&
       !activeQrCodeScanRequest &&
       latestHardwareAccounts.current.length === 0 &&
-      !latestDevice.current
+      !latestDevice.current &&
+      !latestPendingDevice.current
     ) {
       const hdPath = defaultHdPaths[HardwareDeviceNames.qr];
 
@@ -367,9 +402,10 @@ const ConnectHardwareForm = () => {
           if (
             isUnlocked &&
             latestHardwareAccounts.current.length === 0 &&
-            !latestDevice.current
+            !latestDevice.current &&
+            !latestPendingDevice.current
           ) {
-            setDevice(HardwareDeviceNames.qr);
+            setCurrentDevice(HardwareDeviceNames.qr);
             getPage(HardwareDeviceNames.qr, 0, hdPath).catch(() => undefined);
           }
         })
@@ -379,11 +415,21 @@ const ConnectHardwareForm = () => {
     }
 
     previousActiveQrCodeScanRequest.current = activeQrCodeScanRequest;
-  }, [activeQrCodeScanRequest, defaultHdPaths, dispatch, getPage]);
+  }, [
+    activeQrCodeScanRequest,
+    defaultHdPaths,
+    dispatch,
+    getPage,
+    setCurrentDevice,
+  ]);
 
   const connectToHardwareWallet = useCallback(
     (nextDevice: string) => {
-      setDevice(nextDevice);
+      if (latestPendingDevice.current === nextDevice) {
+        return;
+      }
+
+      setCurrentDevice(nextDevice);
       if (hardwareAccounts.length) {
         return;
       }
@@ -405,6 +451,7 @@ const ConnectHardwareForm = () => {
       getPage,
       hardwareAccounts.length,
       hardwareWalletKeyrings.length,
+      setCurrentDevice,
       trackEvent,
     ],
   );
@@ -453,7 +500,11 @@ const ConnectHardwareForm = () => {
 
         setError(null);
         setSelectedAccounts([]);
+        latestGetPageRequestId.current += 1;
+        latestPendingDevice.current = null;
+        latestHardwareAccounts.current = [];
         setHardwareAccounts([]);
+        setCurrentDevice(null);
         setUnlocked(false);
       } catch (e) {
         const errorMessage = toErrorMessage(e);
@@ -470,7 +521,7 @@ const ConnectHardwareForm = () => {
         setError(errorMessage);
       }
     },
-    [dispatch, trackEvent],
+    [dispatch, setCurrentDevice, trackEvent],
   );
 
   const onUnlockAccounts = useCallback(

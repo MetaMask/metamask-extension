@@ -210,6 +210,204 @@ describe('ConnectHardwareForm', () => {
       expect(screen.getByText(tEn('hardwareWallets'))).toBeInTheDocument();
     });
 
+    it('fetches accounts on mount when a device is already unlocked', async () => {
+      mockCheckHardwareStatus
+        .mockReset()
+        .mockResolvedValueOnce(false)
+        .mockResolvedValueOnce(false)
+        .mockResolvedValueOnce(true)
+        .mockResolvedValueOnce(false);
+      mockConnectHardware.mockResolvedValue([
+        { address: '0xLedger1', index: 0 },
+      ]);
+
+      const mockStore = configureMockStore([thunk])(createMockState());
+      renderWithProvider(<ConnectHardwareForm />, mockStore);
+
+      await waitFor(() => {
+        expect(mockConnectHardwareAction).toHaveBeenCalledWith(
+          HardwareDeviceNames.ledger,
+          0,
+          DEFAULT_HD_PATH,
+          false,
+          expect.any(Function),
+        );
+      });
+
+      const showAlertAction = mockStore
+        .getActions()
+        .find((action: { type: string }) => action.type === 'SHOW_ALERT');
+      expect(showAlertAction).toBeUndefined();
+    });
+
+    it('does not overwrite a manual selection when mount-time detection resolves later', async () => {
+      let resolveStatus: (value: boolean) => void;
+      const deferredStatus = new Promise<boolean>((resolve) => {
+        resolveStatus = resolve;
+      });
+
+      mockCheckHardwareStatus
+        .mockReset()
+        .mockImplementationOnce(() => deferredStatus)
+        .mockResolvedValue(false);
+      mockConnectHardware.mockResolvedValue([
+        { address: '0xLedger1', index: 0 },
+      ]);
+
+      const mockStore = configureMockStore([thunk])(createMockState());
+      renderWithProvider(<ConnectHardwareForm />, mockStore);
+
+      connectToDevice(tEn('ledger'));
+
+      await waitFor(() => {
+        expect(mockConnectHardwareAction).toHaveBeenCalledWith(
+          HardwareDeviceNames.ledger,
+          0,
+          DEFAULT_HD_PATH,
+          true,
+          expect.any(Function),
+        );
+      });
+
+      await act(async () => {
+        resolveStatus?.(true);
+      });
+
+      await waitFor(() => {
+        const trezorCalls = mockConnectHardwareAction.mock.calls.filter(
+          (call: unknown[]) => call[0] === HardwareDeviceNames.trezor,
+        );
+        expect(trezorCalls).toHaveLength(0);
+      });
+    });
+
+    it('ignores stale account fetches after a newer device selection starts', async () => {
+      let resolveLedgerFetch: (
+        value: { address: string; index: number }[],
+      ) => void;
+      const deferredLedgerFetch = new Promise<
+        { address: string; index: number }[]
+      >((resolve) => {
+        resolveLedgerFetch = resolve;
+      });
+
+      mockCheckHardwareStatus.mockReset().mockResolvedValue(false);
+      mockConnectHardware
+        .mockReset()
+        .mockImplementationOnce(() => deferredLedgerFetch)
+        .mockResolvedValueOnce([
+          {
+            address: '0x2222222222222222222222222222222222222222',
+            index: 0,
+          },
+        ]);
+
+      const mockStore = configureMockStore([thunk])(createMockState());
+      renderWithProvider(<ConnectHardwareForm />, mockStore);
+
+      connectToDevice(tEn('ledger'));
+      connectToDevice(tEn('trezor'));
+
+      await waitFor(() => {
+        const accountItems = screen.getAllByTestId('hw-account-list__item');
+        expect(accountItems).toHaveLength(1);
+        expect(accountItems[0]).toHaveTextContent('0x22...2222');
+      });
+
+      await act(async () => {
+        resolveLedgerFetch?.([
+          {
+            address: '0x1111111111111111111111111111111111111111',
+            index: 0,
+          },
+        ]);
+      });
+
+      await waitFor(() => {
+        const accountItems = screen.getAllByTestId('hw-account-list__item');
+        expect(accountItems).toHaveLength(1);
+        expect(accountItems[0]).toHaveTextContent('0x22...2222');
+        expect(accountItems[0]).not.toHaveTextContent('0x11...1111');
+      });
+    });
+
+    it('does not start a duplicate fetch when the same device is selected again while pending', async () => {
+      let resolveLedgerFetch: (
+        value: { address: string; index: number }[],
+      ) => void;
+      const deferredLedgerFetch = new Promise<
+        { address: string; index: number }[]
+      >((resolve) => {
+        resolveLedgerFetch = resolve;
+      });
+
+      mockCheckHardwareStatus.mockReset().mockResolvedValue(false);
+      mockConnectHardware
+        .mockReset()
+        .mockImplementation(() => deferredLedgerFetch);
+      mockConnectHardwareAction.mockClear();
+
+      const mockStore = configureMockStore([thunk])(createMockState());
+      renderWithProvider(<ConnectHardwareForm />, mockStore);
+
+      connectToDevice(tEn('ledger'));
+      connectToDevice(tEn('ledger'));
+
+      expect(
+        mockConnectHardwareAction.mock.calls.filter(
+          (call: unknown[]) => call[0] === HardwareDeviceNames.ledger,
+        ),
+      ).toHaveLength(1);
+
+      await act(async () => {
+        resolveLedgerFetch?.([]);
+      });
+    });
+
+    it('ignores stale rejected fetches after a newer device selection succeeds', async () => {
+      let rejectLedgerFetch: (reason?: Error) => void;
+      const deferredLedgerFetch = new Promise<
+        { address: string; index: number }[]
+      >((_, reject) => {
+        rejectLedgerFetch = reject;
+      });
+
+      mockCheckHardwareStatus.mockReset().mockResolvedValue(false);
+      mockConnectHardware
+        .mockReset()
+        .mockImplementationOnce(() => deferredLedgerFetch)
+        .mockResolvedValueOnce([
+          {
+            address: '0x2222222222222222222222222222222222222222',
+            index: 0,
+          },
+        ]);
+
+      const mockStore = configureMockStore([thunk])(createMockState());
+      renderWithProvider(<ConnectHardwareForm />, mockStore);
+
+      connectToDevice(tEn('ledger'));
+      connectToDevice(tEn('trezor'));
+
+      await waitFor(() => {
+        const accountItems = screen.getAllByTestId('hw-account-list__item');
+        expect(accountItems).toHaveLength(1);
+        expect(accountItems[0]).toHaveTextContent('0x22...2222');
+      });
+
+      await act(async () => {
+        rejectLedgerFetch?.(new Error('stale ledger error'));
+      });
+
+      await waitFor(() => {
+        const accountItems = screen.getAllByTestId('hw-account-list__item');
+        expect(accountItems).toHaveLength(1);
+        expect(accountItems[0]).toHaveTextContent('0x22...2222');
+      });
+
+      expect(screen.queryByText('stale ledger error')).not.toBeInTheDocument();
+    });
+
     it('detects Firefox user agent on mount', async () => {
       jest
         .spyOn(window.navigator, 'userAgent', 'get')
