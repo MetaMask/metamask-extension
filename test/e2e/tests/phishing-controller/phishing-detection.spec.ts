@@ -18,6 +18,7 @@ import MockedPage from '../../page-objects/pages/mocked-page';
 import PhishingWarningPage from '../../page-objects/pages/phishing-warning-page';
 import { login } from '../../page-objects/flows/login.flow';
 import TestDapp from '../../page-objects/pages/test-dapp';
+import type { Driver } from '../../webdriver/driver';
 import {
   setupPhishingDetectionMocks,
   mockConfigLookupOnWarningPage,
@@ -31,6 +32,27 @@ import {
 // Common test constants
 const DEFAULT_BLOCKED_DOMAIN =
   'a379a6f6eeafb9a55e378c118034e2751e682fab9f2d30ab13d2125586ce1947';
+const PHISHING_WINDOW_TIMEOUT_MS = 15000;
+
+async function openIframeWarningInNewTab(
+  driver: Driver,
+  phishingWarningPage: PhishingWarningPage,
+): Promise<void> {
+  await phishingWarningPage.clickOpenWarningInNewTabLinkOnIframe();
+  await driver.waitForWindowWithTitleToBePresent(
+    WINDOW_TITLES.Phishing,
+    PHISHING_WINDOW_TIMEOUT_MS,
+  );
+}
+
+async function switchToWindowWithTitleWhenPresent(
+  driver: Driver,
+  title: string,
+  timeout = PHISHING_WINDOW_TIMEOUT_MS,
+): Promise<void> {
+  await driver.waitForWindowWithTitleToBePresent(title, timeout);
+  await driver.switchToWindowWithTitle(title);
+}
 
 describe('Phishing Detection', function (this: Suite) {
   describe('Phishing Detection Mock', function () {
@@ -153,16 +175,23 @@ describe('Phishing Detection', function (this: Suite) {
           await login(driver);
           await driver.openNewPage(DAPP_WITH_IFRAMED_PAGE_ON_BLOCKLIST);
           const phishingWarningPage = new PhishingWarningPage(driver);
-          await phishingWarningPage.clickOpenWarningInNewTabLinkOnIframe();
-          await driver.switchToWindowWithTitle(
+          await openIframeWarningInNewTab(driver, phishingWarningPage);
+          await switchToWindowWithTitleWhenPresent(
+            driver,
             WINDOW_TITLES.ExtensionInFullScreenView,
           );
           await new HomePage(driver).checkPageIsLoaded();
 
-          await driver.switchToWindowWithTitle('MetaMask Phishing Detection');
+          await switchToWindowWithTitleWhenPresent(
+            driver,
+            WINDOW_TITLES.Phishing,
+          );
           await phishingWarningPage.checkPageIsLoaded();
           await phishingWarningPage.clickProceedAnywayButton();
-          await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
+          await switchToWindowWithTitleWhenPresent(
+            driver,
+            WINDOW_TITLES.TestDApp,
+          );
         },
       );
     });
@@ -195,8 +224,11 @@ describe('Phishing Detection', function (this: Suite) {
         );
 
         const phishingWarningPage = new PhishingWarningPage(driver);
-        await phishingWarningPage.clickOpenWarningInNewTabLinkOnIframe();
-        await driver.switchToWindowWithTitle('MetaMask Phishing Detection');
+        await openIframeWarningInNewTab(driver, phishingWarningPage);
+        await switchToWindowWithTitleWhenPresent(
+          driver,
+          WINDOW_TITLES.Phishing,
+        );
 
         // we need to wait for this selector to mitigate a race condition on the phishing page site
         // see more here https://github.com/MetaMask/phishing-warning/pull/173
@@ -315,8 +347,11 @@ describe('Phishing Detection', function (this: Suite) {
         );
 
         const phishingWarningPage = new PhishingWarningPage(driver);
-        await phishingWarningPage.clickOpenWarningInNewTabLinkOnIframe();
-        await driver.switchToWindowWithTitle('MetaMask Phishing Detection');
+        await openIframeWarningInNewTab(driver, phishingWarningPage);
+        await switchToWindowWithTitleWhenPresent(
+          driver,
+          WINDOW_TITLES.Phishing,
+        );
         await phishingWarningPage.checkPageIsLoaded();
         await phishingWarningPage.clickBackToSafetyButton();
 
