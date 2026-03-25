@@ -11,7 +11,6 @@ import NetworkManager from '../../page-objects/pages/network-manager';
 import BridgeQuotePage from '../../page-objects/pages/bridge/quote-page';
 import {
   mockAllBridgeEndpoints,
-  mockBitcoinFeatureFlag,
   mockBtcSpotPrices,
   mockExchangeRates,
   mockCurrencyExchangeRates,
@@ -24,7 +23,6 @@ import { mockPriceMulti, mockPriceMultiBtcAndSol } from './mocks/min-api';
 
 async function buildBtcSwapBaseMocks(mockServer: Mockttp) {
   return [
-    await mockBitcoinFeatureFlag(mockServer),
     await mockInitialFullScan(mockServer),
     await mockExchangeRates(mockServer),
     await mockCurrencyExchangeRates(mockServer),

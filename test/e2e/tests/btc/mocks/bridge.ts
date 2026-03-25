@@ -1,5 +1,7 @@
 import { Mockttp } from 'mockttp';
 
+import { BITCOIN_FEATURE_FLAGS } from './feature-flag';
+
 // Bitcoin mainnet chain ID formats
 export const BTC_CHAIN_ID = 'bip122:000000000019d6689c085ae165831e93';
 // Numeric chain ID used by bridge API for Bitcoin
@@ -145,7 +147,12 @@ export async function mockBridgeFeatureFlags(mockServer: Mockttp) {
       return {
         ok: true,
         statusCode: 200,
-        json: [{ bridgeConfig: BTC_BRIDGE_FEATURE_FLAGS }],
+        json: [
+          {
+            bridgeConfig: BTC_BRIDGE_FEATURE_FLAGS,
+            ...BITCOIN_FEATURE_FLAGS,
+          },
+        ],
       };
     });
 }
