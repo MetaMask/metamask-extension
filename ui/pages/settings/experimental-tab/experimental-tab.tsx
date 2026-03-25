@@ -13,10 +13,11 @@ import {
 } from '../../../store/actions';
 import { SettingItemConfig } from '../../settings-v2/types';
 import { SettingsTab, createToggleItem } from '../../settings-v2/shared';
+import { EXPERIMENTAL_ITEMS } from '../../settings-v2/search-config';
 
 const NotificationsItem = createToggleItem({
   name: 'NotificationsItem',
-  titleKey: 'notificationsFeatureToggle',
+  titleKey: EXPERIMENTAL_ITEMS.notifications,
   descriptionKey: 'notificationsFeatureToggleDescription',
   selector: getFeatureNotificationsEnabled,
   action: setFeatureNotificationsEnabled,
@@ -25,7 +26,7 @@ const NotificationsItem = createToggleItem({
 
 const KeyringSnapsItem = createToggleItem({
   name: 'KeyringSnapsItem',
-  titleKey: 'addSnapAccountToggle',
+  titleKey: EXPERIMENTAL_ITEMS['keyring-snaps'],
   descriptionKey: 'addSnapAccountsDescription',
   selector: getIsAddSnapAccountEnabled,
   action: setAddSnapAccountEnabled,
@@ -39,7 +40,7 @@ const KeyringSnapsItem = createToggleItem({
 
 const WatchAccountItem = createToggleItem({
   name: 'WatchAccountItem',
-  titleKey: 'watchEthereumAccountsToggle',
+  titleKey: EXPERIMENTAL_ITEMS['watch-account'],
   formatDescription: (t) =>
     t('watchEthereumAccountsDescription', [
       <a

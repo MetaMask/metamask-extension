@@ -48,7 +48,7 @@ class ActivityListPage {
     '[data-testid="transaction-breakdown__gas-price"]';
 
   private readonly pendingTransactionItems =
-    '.transaction-list__pending-transactions .activity-list-item';
+    '.transaction-status-label--pending';
 
   private readonly speedupInlineButton = '[data-testid="speed-up-button"]';
 

@@ -26,6 +26,11 @@ jest.mock('../../../../hooks/perps/stream', () => ({
 const mockStore = configureStore({
   metamask: {
     ...mockState.metamask,
+    isTestnet: false,
+    watchlistMarkets: {
+      testnet: [],
+      mainnet: ['BTC', 'ETH'],
+    },
   },
 });
 
@@ -53,11 +58,13 @@ describe('PerpsWatchlist', () => {
     expect(screen.getByTestId('perps-watchlist-ETH')).toBeInTheDocument();
   });
 
-  it('displays market name and price for each watchlist item', () => {
+  it('displays market name, volume, and price for each watchlist item', () => {
     renderWithProvider(<PerpsWatchlist />, mockStore);
 
     expect(screen.getByText(tEn('networkNameBitcoin'))).toBeInTheDocument();
     expect(screen.getByText(tEn('networkNameEthereum'))).toBeInTheDocument();
+    expect(screen.getByText('$1.2B')).toBeInTheDocument();
+    expect(screen.getByText('$850M')).toBeInTheDocument();
     expect(screen.getByText('$45,250.00')).toBeInTheDocument();
     expect(screen.getByText('$3,025.50')).toBeInTheDocument();
   });
