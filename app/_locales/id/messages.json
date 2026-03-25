@@ -339,6 +339,9 @@
   "addWallet": {
     "message": "Tambahkan dompet"
   },
+  "addedProtectionOptionalBadge": {
+    "message": "Opsional"
+  },
   "additionalNetworks": {
     "message": "Jaringan tambahan"
   },
@@ -756,6 +759,27 @@
   "autoDetectTokensDescriptionV2": {
     "message": "Menampilkan token baru yang dikirim ke dompet Anda."
   },
+  "autoLock": {
+    "message": "Kunci otomatis"
+  },
+  "autoLockAfter15Seconds": {
+    "message": "Setelah 15 detik"
+  },
+  "autoLockAfter1Minute": {
+    "message": "Setelah 1 menit"
+  },
+  "autoLockAfter30Seconds": {
+    "message": "Setelah 30 detik"
+  },
+  "autoLockAfter5Minutes": {
+    "message": "Setelah 5 menit"
+  },
+  "autoLockAfterMinutes": {
+    "message": "Setelah $1 menit"
+  },
+  "autoLockNever": {
+    "message": "Tidak akan pernah"
+  },
   "autoLockTimeLimit": {
     "message": "Timer kunci otomatis (menit)"
   },
@@ -773,6 +797,9 @@
   },
   "backToHome": {
     "message": "Kembali ke beranda"
+  },
+  "backUpIncomplete": {
+    "message": "Pencadangan tidak selesai"
   },
   "backup": {
     "message": "Pencadangan"
@@ -853,6 +880,12 @@
   },
   "basicConfigurationModalCheckbox": {
     "message": "Saya memahami dan ingin melanjutkan"
+  },
+  "basicConfigurationModalDisclaimerOffPart1": {
+    "message": "Artinya, Anda tidak akan benar-benar mengoptimalkan waktu di MetaMask. Fitur dasar (seperti detail token, pengaturan gas optimal, dan lainnya) tidak akan tersedia untuk Anda."
+  },
+  "basicConfigurationModalDisclaimerOffPart2": {
+    "message": "Menonaktifkan opsi ini juga akan menonaktifkan beberapa fitur dalam privasi, pencadangan dan sinkronisasi, serta notifikasi."
   },
   "basicConfigurationModalDisclaimerOn": {
     "message": "Untuk mengoptimalkan waktu di MetaMask, Anda perlu mengaktifkan fitur ini. Fungsi dasar (seperti detail token, pengaturan gas optimal, dan lainnya) penting untuk pengalaman web3."
@@ -1066,6 +1099,9 @@
   "bridgeMarketClosedAction": {
     "message": "Pasar tutup"
   },
+  "bridgeMarketClosedDescription": {
+    "message": "Token saham ini berada di luar jam perdagangan untuk saat ini. Coba lagi saat pasar dibuka kembali."
+  },
   "bridgeMarketClosedModalDescription": {
     "message": "Pasar yang mendukung token ini saat ini ditutup. Token dapat ditransfer on-chain setiap saat."
   },
@@ -1157,6 +1193,9 @@
   },
   "bridgeSelectNetwork": {
     "message": "Pilih jaringan"
+  },
+  "bridgeSelectQuote": {
+    "message": "Pilih kuotasi"
   },
   "bridgeSelectTokenAmountAndAccount": {
     "message": "Pilih token, jumlah, dan akun tujuan"
@@ -1525,6 +1564,9 @@
   "confirmFieldTooltipPaymaster": {
     "message": "Biaya untuk transaksi ini akan dibayar oleh kontrak cerdas paymaster."
   },
+  "confirmFieldTotalExposure": {
+    "message": "Total eksposur"
+  },
   "confirmGasFeeTokenBalance": {
     "message": "Saldo:"
   },
@@ -1809,6 +1851,9 @@
   "contactDetails": {
     "message": "Detail kontak"
   },
+  "contactUpdated": {
+    "message": "Kontak diperbarui"
+  },
   "contactUs": {
     "message": "Hubungi kami"
   },
@@ -1892,6 +1937,10 @@
   },
   "createPasswordDetails": {
     "message": "Membuka MetaMask hanya pada perangkat ini."
+  },
+  "createPasswordDetailsSocial": {
+    "message": "Kehilangan kata sandi ini berarti kehilangan akses dompet di semua perangkat, $1",
+    "description": "$1 is the text 'MetaMask can't reset it.'"
   },
   "createPasswordDetailsSocialReset": {
     "message": "MetaMask tidak dapat meresetnya."
@@ -2237,17 +2286,31 @@
     "message": "Ini akan menghapus data MetaMetrics historis yang terkait dengan penggunaan Anda pada perangkat ini. Dompet dan akun Anda akan tetap sama seperti sekarang setelah data ini dihapus. Proses ini dapat memakan waktu hingga 30 hari. Lihat $1.",
     "description": "$1 will have text saying Privacy Policy "
   },
+  "deleteMetaMetricsDataDescriptionV2": {
+    "message": "Ini akan menghapus data MetaMetrics historis yang terkait dengan dompet Anda. MetaMetrics mencakup data penggunaan dan diagnostik yang dianonimkan. Dompet dan akun Anda akan tetap sama. Proses ini akan memakan waktu hingga 30 hari. Lihat $1 kami.",
+    "description": "$1 will have text saying Privacy Policy "
+  },
   "deleteMetaMetricsDataErrorDesc": {
     "message": "Permintaan ini tidak dapat diselesaikan sekarang karena masalah server sistem analitis, coba lagi nanti."
   },
   "deleteMetaMetricsDataErrorTitle": {
     "message": "Kami tidak dapat menghapus data ini sekarang"
   },
+  "deleteMetaMetricsDataErrorToast": {
+    "message": "Tidak dapat menghapus"
+  },
   "deleteMetaMetricsDataModalDesc": {
     "message": "Kami akan menghapus semua data MetaMetrics Anda. Lanjutkan?"
   },
   "deleteMetaMetricsDataModalTitle": {
     "message": "Hapus data MetaMetrics?"
+  },
+  "deleteMetaMetricsDataRequestedDescription": {
+    "message": "Anda memulai penghapusan pada $1. Proses ini dapat memakan waktu hingga 30 hari. Lihat $2.",
+    "description": "$1 will be the date on which teh deletion is requested and $2 will have text saying Privacy Policy "
+  },
+  "deleteMetaMetricsDataToast": {
+    "message": "Data akan dihapus dalam waktu 30 hari"
   },
   "deleteNetworkIntro": {
     "message": "Jika menghapus jaringan ini, Anda harus menambahkannya lagi untuk melihat aset di jaringan ini"
@@ -2811,6 +2874,9 @@
   "externalNameSourcesSettingDescription": {
     "message": "Kami akan mengambil nama panggilan yang diusulkan untuk alamat yang berinteraksi dengan Anda dari sumber pihak ketiga seperti Etherscan, Infura, dan Lens Protocol. Sumber-sumber ini dapat melihat alamat-alamat tersebut dan alamat IP Anda. Alamat akun Anda tidak akan diketahui oleh pihak ketiga."
   },
+  "externalNameSourcesSettingDescriptionV2": {
+    "message": "Mengambil nama panggilan yang disarankan untuk alamat yang berinteraksi dengan Anda dari sumber pihak ketiga seperti Etherscan, Infura, dan Lens protocol."
+  },
   "failed": {
     "message": "Gagal"
   },
@@ -3149,6 +3215,9 @@
   "hardwareWalletErrorRecoveryUnlock2": {
     "message": "Aplikasi Ethereum sudah dibuka"
   },
+  "hardwareWalletErrorTitleBlindSignNotSupported": {
+    "message": "Aktifkan penandatanganan buta"
+  },
   "hardwareWalletErrorTitleBlindSignNotSupportedInstruction1": {
     "message": "Aplikasi Ethereum sudah dibuka pada Ledger"
   },
@@ -3188,6 +3257,9 @@
   },
   "hardwareWalletSupportLinkConversion": {
     "message": "klik di sini"
+  },
+  "hardwareWalletTitleEthAppNotOpen": {
+    "message": "Buka aplikasi Ethereum"
   },
   "hardwareWalletTypeConnected": {
     "message": "$1 terhubung",
@@ -3314,6 +3386,9 @@
   "hyperliquidReferralSubtitle": {
     "message": "Hemat hingga 4% untuk perdagangan dengan kode rujukan MetaMask.",
     "description": "The subtitle of the Hyperliquid referral confirmation screen"
+  },
+  "iUnderstand": {
+    "message": "Saya mengerti"
   },
   "id": {
     "message": "ID"
@@ -3543,6 +3618,9 @@
   },
   "ipfsGatewayDescription": {
     "message": "MetaMask menggunakan layanan pihak ketiga untuk menampilkan gambar NFT Anda yang disimpan di IPFS, menampilkan informasi terkait alamat ENS yang dimasukkan di bilah alamat browser Anda, serta mengambil ikon untuk token yang berbeda. Alamat IP Anda mungkin tidak memberikan perlindungan terhadap layanan ini saat Anda menggunakannya."
+  },
+  "ipfsGatewayDescriptionV2": {
+    "message": "Menggunakan layanan pihak ketiga untuk menampilkan gambar NFT yang tersimpan di IPFS, menampilkan informasi terkait alamat ENS yang dimasukkan di bilah alamat browser Anda, serta mengambil ikon untuk berbagai token. Pilih gateway IPFS pilihan Anda di bawah ini."
   },
   "ipfsToggleModalDescriptionOne": {
     "message": "Kami menggunakan layanan pihak ketiga untuk menampilkan gambar NFT yang disimpan di IPFS, menampilkan informasi terkait alamat ENS yang dimasukkan di bilah alamat browser, serta mengambil ikon untuk token yang berbeda. Alamat IP dapat terekspos oleh layanan ini saat Anda menggunakannya."
@@ -3827,6 +3905,12 @@
   "makeAnotherSwap": {
     "message": "Buat swap baru"
   },
+  "makeSmartContractsEasier": {
+    "message": "Mempermudah pembacaan kontrak cerdas"
+  },
+  "makeSmartContractsEasierDescription": {
+    "message": "MetaMask menggunakan 4byte.directory dan Sourcify untuk menerjemahkan informasi ini."
+  },
   "manage": {
     "message": "Kelola"
   },
@@ -3844,6 +3928,9 @@
   },
   "managePermissions": {
     "message": "Kelola izin"
+  },
+  "manageWalletRecovery": {
+    "message": "Kelola pemulihan dompet"
   },
   "marketCap": {
     "message": "Kap pasar"
@@ -4072,10 +4159,6 @@
     "message": "$1 ingin menggunakan Snap $2",
     "description": "$1 is the dapp and $2 is the number of snaps it wants to connect to."
   },
-  "musdBoostDescription": {
-    "message": "Konversikan stablecoin ke mUSD dan dapatkan bonus hingga $1%.",
-    "description": "$1 is the bonus percentage (e.g., 3)"
-  },
   "musdBoostTitle": {
     "message": "Dapatkan $1% untuk stablecoin Anda",
     "description": "$1 is the bonus percentage (e.g., 3)"
@@ -4095,6 +4178,10 @@
     "message": "Bonus yang dapat diklaim",
     "description": "Label for the claimable bonus row in the mUSD conversion confirmation screen"
   },
+  "musdClaimableBonusTooltip": {
+    "message": "Bonus tahunan sebesar $1% yang Anda peroleh karena memiliki mUSD. Bonus dapat diklaim setiap hari di Linea. Didukung oleh Relay. $2",
+    "description": "$1 is the APY percentage, $2 is the 'Terms apply' link"
+  },
   "musdConversionActivityTitle": {
     "message": "Konversikan $1 ke mUSD",
     "description": "$1 is the source token symbol (e.g., USDC)"
@@ -4110,11 +4197,12 @@
     "message": "Mengonversi $1 → mUSD",
     "description": "$1 is the source token symbol (e.g., USDC)"
   },
-  "musdConversionToastSuccess": {
-    "message": "mUSD telah tiba!"
-  },
   "musdConvert": {
     "message": "Konversikan"
+  },
+  "musdConvertAndGetBonus": {
+    "message": "Konversikan dan dapatkan $1%",
+    "description": "$1 is the bonus percentage (e.g., 3)"
   },
   "musdEarnBonusPercentage": {
     "message": "Dapatkan bonus sebesar $1%",
@@ -4129,6 +4217,10 @@
   },
   "musdEducationNotNow": {
     "message": "Tidak sekarang"
+  },
+  "musdGetBonusPercentage": {
+    "message": "Dapatkan bonus $1% mUSD",
+    "description": "$1 is the bonus percentage (e.g., 3)"
   },
   "musdGetMusd": {
     "message": "Dapatkan mUSD"
@@ -6053,6 +6145,9 @@
   "quizIntroduction": {
     "message": "Untuk mengungkapkan Frasa Pemulihan Rahasia, Anda perlu menjawab dua pertanyaan dengan benar."
   },
+  "quotedTotalCost": {
+    "message": "Total biaya: $1"
+  },
   "rank": {
     "message": "Peringkat"
   },
@@ -6567,6 +6662,9 @@
   },
   "securityAlertsDescriptionV2": {
     "message": "Fitur ini memperingatkan Anda tentang aktivitas jahat dengan meninjau permintaan transaksi dan tanda tangan secara aktif. $1"
+  },
+  "securityAndPassword": {
+    "message": "Keamanan dan kata sandi"
   },
   "securityAndPrivacy": {
     "message": "Keamanan & privasi"
@@ -7392,6 +7490,10 @@
   "showFiatConversionInTestnetsDescription": {
     "message": "Pilih ini untuk menampilkan konversi fiat di jaringan uji"
   },
+  "showFiatConversionInTestnetsDescriptionV2": {
+    "message": "Menampilkan token jaringan sebagai mata uang lokal di jaringan uji. Jika Anda diminta untuk mengaktifkan fitur ini, Anda mungkin sedang menjadi korban penipuan. Hanya untuk tujuan pengujian. $1",
+    "description": "$1 is the 'Learn more' link"
+  },
   "showHexData": {
     "message": "Tampilkan data Hex"
   },
@@ -7516,6 +7618,9 @@
   "simulationsSettingDescription": {
     "message": "Aktifkan untuk mengestimasikan perubahan saldo transaksi dan tanda tangan sebelum Anda mengonfirmasikannya. Ini tidak menjamin hasil akhirnya. $1"
   },
+  "simulationsSettingDescriptionV2": {
+    "message": "Mengestimasikan perubahan saldo transaksi sebelum Anda mengonfirmasinya. Ini tidak menjamin hasil akhir transaksi Anda. $1"
+  },
   "simulationsSettingSubHeader": {
     "message": "Estimasikan perubahan saldo"
   },
@@ -7570,14 +7675,32 @@
   "smartAccount": {
     "message": "Akun cerdas"
   },
+  "smartAccountDappRequestsDescription": {
+    "message": "Izinkan dapp meminta fitur akun cerdas untuk akun standar. Ini tidak akan memengaruhi akun yang sudah menjadi akun cerdas."
+  },
+  "smartAccountDappRequestsTitle": {
+    "message": "Permintaan akun cerdas dari dapp"
+  },
   "smartAccountLabel": {
     "message": "Akun Cerdas"
+  },
+  "smartAccountRequestsFromDapps": {
+    "message": "Permintaan akun cerdas dari dapp"
+  },
+  "smartAccountRequestsFromDappsDescription": {
+    "message": "Izinkan dapp meminta fitur akun cerdas untuk akun standar. Ini tidak akan memengaruhi akun yang sudah menjadi akun cerdas."
   },
   "smartAccountUpgradeBannerDescription": {
     "message": "Alamat sama. Fitur lebih cerdas."
   },
   "smartAccountUpgradeBannerTitle": {
     "message": "Beralih ke akun cerdas"
+  },
+  "smartContractAddress": {
+    "message": "Alamat kontrak cerdas"
+  },
+  "smartContractAddressWarning": {
+    "message": "Alamat penerima mungkin tidak mendukung transfer token langsung, yang dapat mengakibatkan hilangnya dana. Lanjutkan hanya jika Anda yakin kontrak ini dapat menerima transfer."
   },
   "smartContracts": {
     "message": "Kontrak cerdas"
@@ -8049,6 +8172,9 @@
   "stateCorruptionTheseInstructionsLinkTitle": {
     "message": "Cara memulihkan Frasa Pemulihan Rahasia"
   },
+  "stateLogError": {
+    "message": "Terjadi kesalahan saat memulihkan log state, coba lagi nanti."
+  },
   "stateLogFileName": {
     "message": "Log status MetaMask"
   },
@@ -8057,6 +8183,9 @@
   },
   "stateLogsDescription": {
     "message": "Log status berisi alamat akun publik Anda dan transaksi terkirim."
+  },
+  "stateLogsModalDescription": {
+    "message": "Log state dapat membantu kami mendebug masalah yang mungkin Anda temui. Kirimkan hanya ke MetaMask untuk mendapatkan dukungan, karena log state berisi alamat akun publik dan transaksi Anda."
   },
   "status": {
     "message": "Status"
@@ -8129,6 +8258,9 @@
   "stxFailureDescription": {
     "message": "Perubahan pasar yang terjadi secara tiba-tiba dapat menyebabkan kegagalan. Jika masalah berlanjut, hubungi $1.",
     "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
+  },
+  "stxOptInDescriptionV2": {
+    "message": "Aktifkan Transaksi Cerdas untuk transaksi yang lebih andal dan aman. $1"
   },
   "stxOptInSupportedNetworksDescription": {
     "message": "Aktifkan Transaksi Pintar untuk transaksi yang lebih andal dan aman di jaringan yang didukung. $1"
@@ -8567,6 +8699,12 @@
   "themeDescription": {
     "message": "Pilih tema MetaMask yang Anda sukai."
   },
+  "thirdPartyApis": {
+    "message": "API pihak ketiga"
+  },
+  "thirdPartyApisDescription": {
+    "message": "Pilih cara Anda membagikan alamat IP atau alamat Ethereum Anda dengan API pihak ketiga. Perubahan akan memengaruhi pengalaman Anda menggunakan MetaMask."
+  },
   "thirdPartySoftware": {
     "message": "Pemberitahuan perangkat lunak pihak ketiga",
     "description": "Title of a popup modal displayed when installing a snap for the first time."
@@ -8600,6 +8738,9 @@
   },
   "tokenContractError": {
     "message": "Alamat ini merupakan alamat kontrak token. Jika mengirim token ke alamat ini, Anda akan kehilangan token tersebut."
+  },
+  "tokenContractWarning": {
+    "message": "Peringatan kontrak token"
   },
   "tokenCount": {
     "message": "token",
@@ -8880,6 +9021,9 @@
     "message": "Tidak dapat terhubung ke $1.",
     "description": "Message shown when network connection fails. $1 is the network name."
   },
+  "unableToDownload": {
+    "message": "Tidak dapat mengunduh"
+  },
   "unapproved": {
     "message": "Tidak disetujui"
   },
@@ -9032,6 +9176,9 @@
   },
   "useSafeChainsListValidationDescription": {
     "message": "MetaMask menggunakan layanan pihak ketiga yang disebut $1 untuk menampilkan detail jaringan yang akurat dan terstandardisasi. Hal ini dapat mengurangi kemungkinan Anda untuk terhubung ke jaringan berbahaya atau salah. Saat menggunakan fitur ini, alamat IP akan diketahui oleh chainid.network."
+  },
+  "useSafeChainsListValidationDescriptionV2": {
+    "message": "Mengurangi kemungkinan Anda terhubung ke jaringan yang berbahaya atau salah. MetaMask menggunakan $1 untuk menampilkan detail jaringan yang akurat dan terstandardisasi."
   },
   "useSafeChainsListValidationWebsite": {
     "message": "chainid.network",

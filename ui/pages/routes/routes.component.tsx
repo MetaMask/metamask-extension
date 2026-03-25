@@ -359,15 +359,7 @@ export const routeConfig = [
         element: <NftFullImage />,
       },
       {
-        path: `${ASSET_ROUTE}/:chainId/:asset/:id`,
-        element: <Asset />,
-      },
-      {
-        path: `${ASSET_ROUTE}/:chainId/:asset/`,
-        element: <Asset />,
-      },
-      {
-        path: `${ASSET_ROUTE}/:chainId`,
+        path: `${ASSET_ROUTE}/:chainId/:asset?/:id?`,
         element: <Asset />,
       },
       {
@@ -379,19 +371,11 @@ export const routeConfig = [
         element: <GatorPermissionsPage />,
       },
       {
-        path: `${TOKEN_TRANSFER_ROUTE}/:origin`,
+        path: `${TOKEN_TRANSFER_ROUTE}/:origin?`,
         element: <GatorPermissionsTokenTransferPermissionsPage />,
       },
       {
-        path: TOKEN_TRANSFER_ROUTE,
-        element: <GatorPermissionsTokenTransferPermissionsPage />,
-      },
-      {
-        path: `${REVIEW_GATOR_PERMISSIONS_ROUTE}/:chainId/:permissionGroupName/:origin`,
-        element: <GatorPermissionsReviewPermissionsPage />,
-      },
-      {
-        path: `${REVIEW_GATOR_PERMISSIONS_ROUTE}/:chainId/:permissionGroupName`,
+        path: `${REVIEW_GATOR_PERMISSIONS_ROUTE}/:chainId/:permissionGroupName/:origin?`,
         element: <GatorPermissionsReviewPermissionsPage />,
       },
       {
@@ -439,7 +423,7 @@ export const routeConfig = [
         children: [
           {
             path: '/notifications/settings',
-            element: <NotificationsSettingsRedirect />,
+            element: <Navigate to={NOTIFICATIONS_SETTINGS_ROUTE} replace />,
           },
           {
             path: `${NOTIFICATIONS_ROUTE}/:uuid`,
