@@ -223,13 +223,12 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }} # This is required when downloading artifacts from a different repository or from a different workflow run.
           run-id: ${{ needs.get-requirements.outputs.builds-from-run }} # Download from whatever run the get-requirements job said.
 
-      - name: Compare bundle size
-        id: compare-bundle-size
-        run: |
-          yarn run measure-bundle-size
+      - name: Measure bundle size
+        run: yarn tsx test/e2e/mv3-perf-stats/bundle-size.ts --out test-artifacts/chrome
 
-          BRANCH=$BRANCH OUTPUT_DIR=./test-artifacts/chrome \
-            yarn run compare-bundle-size
+      - name: Record bundle size at commit
+        if: ${{ env.BRANCH == 'main' && env.IS_FORK == 'false' }}
+        run: ./.github/scripts/bundle-stats-commit.sh
 
       - name: Upload 'bundle-size' to S3
         if: ${{ vars.AWS_REGION && vars.AWS_IAM_ROLE && vars.AWS_S3_BUCKET }}
