@@ -144,7 +144,7 @@
     "download-builds": "tsx .devcontainer/download-builds.ts",
     "stable-sync-legacy": "node development/stable-sync-legacy.js",
     "update-mock-cdn": "node test/e2e/mock-cdn/update-mock-cdn-files.js",
-    "update-acl-registry": "tsx test/e2e/mock-response-data/snaps/update-acl-registry.ts",
+    "update-snaps-registry": "tsx test/e2e/mock-response-data/snaps/update-snaps-registry.ts",
     "update-snap-binary": "tsx test/e2e/mock-response-data/snaps/update-snap-binary.ts",
     "attributions:check": "./development/attributions-check.sh",
     "attributions:generate": "./development/generate-attributions.sh",
