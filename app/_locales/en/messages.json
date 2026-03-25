@@ -603,7 +603,7 @@
     "message": "Transaction verification"
   },
   "twoFAStepRecovery": {
-    "message": "Backup method"
+    "message": "Recovery setup"
   },
   "twoFAStepDone": {
     "message": "Complete"
@@ -629,10 +629,10 @@
     "description": "$1 is the current factor number, $2 is the total"
   },
   "twoFASetupRecoveryFactor": {
-    "message": "Add backup verification"
+    "message": "Make your 2FA wallet recoverable"
   },
   "twoFARecoveryPickerSubtitleNew": {
-    "message": "Choose a backup method to help restore access to your 2FA wallet. To recover your wallet on a new device, you'll need to verify with both your signing method and your backup method."
+    "message": "Choose a recovery method to help restore access to your 2FA wallet. To recover your wallet on a new device, you'll need to verify with both your transaction method and your recovery method."
   },
   "twoFALearnMore": {
     "message": "Learn more"
