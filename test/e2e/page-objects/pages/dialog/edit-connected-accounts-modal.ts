@@ -103,8 +103,12 @@ class EditConnectedAccountsModal {
     await this.driver.waitUntil(
       async () => {
         const checkboxes = await this.driver.findElements(this.accountCheckbox);
-        const accountCheckbox = checkboxes[accountIndex - 1];
-        const isSelected = await accountCheckbox.isSelected();
+
+        if (checkboxes.length < accountIndex) {
+          return false;
+        }
+
+        const isSelected = await checkboxes[accountIndex - 1].isSelected();
         return status === 'selected' ? isSelected : !isSelected;
       },
       { interval: 500, timeout: 5000 },
