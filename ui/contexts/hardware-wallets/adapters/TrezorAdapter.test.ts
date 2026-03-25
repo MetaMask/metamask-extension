@@ -37,6 +37,7 @@ const mockSubscribeToWebUsbEvents =
   >;
 
 type TrezorFeaturesPayload = {
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   session_id: string | null;
   model: string;
   initialized: boolean;
@@ -48,6 +49,7 @@ const createMockFeaturesResponse = (
   payload: Partial<TrezorFeaturesPayload> = {},
 ) => ({
   payload: {
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     session_id: 'session-id',
     model: 'T',
     initialized: true,
@@ -226,6 +228,7 @@ describe('TrezorAdapter', () => {
       mockGetTrezorFeatures.mockResolvedValue(
         createMockFeaturesResponse({
           model: 'safe 7',
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           session_id: null,
         }),
       );
@@ -278,6 +281,7 @@ describe('TrezorAdapter', () => {
       mockGetTrezorFeatures.mockResolvedValue(
         createMockFeaturesResponse({
           model: 'T',
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           session_id: null,
         }),
       );
