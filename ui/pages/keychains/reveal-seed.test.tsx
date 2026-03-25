@@ -114,14 +114,22 @@ describe('Reveal Seed Page', () => {
     mockScanUrlForPhishing.mockReset().mockResolvedValue(null);
   });
 
-  it('should match snapshot', () => {
+  it('should match snapshot', async () => {
     const { container } = renderWithProvider(<RevealSeedPage />, mockStore);
+
+    await waitFor(() => {
+      expect(mockScanUrlForPhishing).toHaveBeenCalled();
+    });
 
     expect(container).toMatchSnapshot();
   });
 
-  it('shows quiz introduction first', () => {
+  it('shows quiz introduction first', async () => {
     const { getByText } = renderWithProvider(<RevealSeedPage />, mockStore);
+
+    await waitFor(() => {
+      expect(mockScanUrlForPhishing).toHaveBeenCalled();
+    });
 
     expect(
       getByText(messages.srpSecurityQuizGetStarted.message),
