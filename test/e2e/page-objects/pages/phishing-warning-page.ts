@@ -1,5 +1,8 @@
 import { WebElement } from 'selenium-webdriver';
+import { WINDOW_TITLES } from '../../constants';
 import { Driver } from '../../webdriver/driver';
+
+const PHISHING_WINDOW_TIMEOUT_MS = 15000;
 
 class PhishingWarningPage {
   private readonly driver: Driver;
@@ -70,6 +73,10 @@ class PhishingWarningPage {
       { interval: 1000, timeout: 10000 },
     );
     await this.driver.clickElement(this.openWarningInNewTabLink);
+    await this.driver.waitForWindowWithTitleToBePresent(
+      WINDOW_TITLES.Phishing,
+      PHISHING_WINDOW_TIMEOUT_MS,
+    );
   }
 
   async clickProceedAnywayButton(): Promise<void> {

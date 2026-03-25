@@ -34,17 +34,6 @@ const DEFAULT_BLOCKED_DOMAIN =
   'a379a6f6eeafb9a55e378c118034e2751e682fab9f2d30ab13d2125586ce1947';
 const PHISHING_WINDOW_TIMEOUT_MS = 15000;
 
-async function openIframeWarningInNewTab(
-  driver: Driver,
-  phishingWarningPage: PhishingWarningPage,
-): Promise<void> {
-  await phishingWarningPage.clickOpenWarningInNewTabLinkOnIframe();
-  await driver.waitForWindowWithTitleToBePresent(
-    WINDOW_TITLES.Phishing,
-    PHISHING_WINDOW_TIMEOUT_MS,
-  );
-}
-
 async function switchToWindowWithTitleWhenPresent(
   driver: Driver,
   title: string,
@@ -175,7 +164,7 @@ describe('Phishing Detection', function (this: Suite) {
           await login(driver);
           await driver.openNewPage(DAPP_WITH_IFRAMED_PAGE_ON_BLOCKLIST);
           const phishingWarningPage = new PhishingWarningPage(driver);
-          await openIframeWarningInNewTab(driver, phishingWarningPage);
+          await phishingWarningPage.clickOpenWarningInNewTabLinkOnIframe();
           await switchToWindowWithTitleWhenPresent(
             driver,
             WINDOW_TITLES.ExtensionInFullScreenView,
@@ -224,7 +213,7 @@ describe('Phishing Detection', function (this: Suite) {
         );
 
         const phishingWarningPage = new PhishingWarningPage(driver);
-        await openIframeWarningInNewTab(driver, phishingWarningPage);
+        await phishingWarningPage.clickOpenWarningInNewTabLinkOnIframe();
         await switchToWindowWithTitleWhenPresent(
           driver,
           WINDOW_TITLES.Phishing,
@@ -347,7 +336,7 @@ describe('Phishing Detection', function (this: Suite) {
         );
 
         const phishingWarningPage = new PhishingWarningPage(driver);
-        await openIframeWarningInNewTab(driver, phishingWarningPage);
+        await phishingWarningPage.clickOpenWarningInNewTabLinkOnIframe();
         await switchToWindowWithTitleWhenPresent(
           driver,
           WINDOW_TITLES.Phishing,
