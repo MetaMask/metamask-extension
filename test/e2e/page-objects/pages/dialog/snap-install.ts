@@ -200,7 +200,7 @@ class SnapInstall {
 
   /**
    * Waits for the snap install title. A timeout in this step can mean the install never progressed
-   * (e.g. stale mocked ACL registry/signature). Refresh with `yarn update-snaps-registry`.
+   * (e.g. stale mocked snaps registry/signature ). Refresh with `yarn update-snaps-registry`.
    */
   async waitForAddToMetaMaskInstallHeader(): Promise<void> {
     try {
