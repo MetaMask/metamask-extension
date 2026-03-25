@@ -50,7 +50,6 @@ export const handleTransactionConfirmed = async (
     eventName: TransactionMetaMetricsEvent.finalized,
     transactionMetricsRequest,
     transactionEventPayload: {
-      actionId: transactionEventPayload.actionId,
       transactionMeta: transactionEventPayload,
     },
   });
