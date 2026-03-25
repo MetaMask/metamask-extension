@@ -280,8 +280,10 @@ describe('Actions', () => {
       expect(result).toStrictEqual(true);
       expect(checkIsSeedlessPasswordOutdated.callCount).toStrictEqual(1);
       expect(checkIsSeedlessPasswordOutdated.firstCall.args).toStrictEqual([
-        true,
-        true,
+        {
+          skipCache: true,
+          captureSentryError: true,
+        },
       ]);
     });
 
@@ -327,8 +329,10 @@ describe('Actions', () => {
       expect(result).toStrictEqual(true);
       expect(checkIsSeedlessPasswordOutdated.callCount).toStrictEqual(1);
       expect(checkIsSeedlessPasswordOutdated.firstCall.args).toStrictEqual([
-        false,
-        false,
+        {
+          skipCache: false,
+          captureSentryError: false,
+        },
       ]);
     });
 

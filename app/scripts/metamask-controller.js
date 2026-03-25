@@ -4112,10 +4112,10 @@ export default class MetamaskController extends EventEmitter {
     let isPasswordOutdated = false;
     if (isSocialLoginFlow) {
       try {
-        isPasswordOutdated = await this.checkIsSeedlessPasswordOutdated(
-          false, // skip cache
-          true, // capture sentry error
-        );
+        isPasswordOutdated = await this.checkIsSeedlessPasswordOutdated({
+          skipCache: false,
+          captureSentryError: true,
+        });
       } catch (error) {
         // we don't want to block the unlock flow if the password outdated check fails
         log.error('error while checking if password is outdated', error);
@@ -4201,7 +4201,10 @@ export default class MetamaskController extends EventEmitter {
         await this.syncKeyringEncryptionKey();
 
         // check password outdated again skip cache to reset the cache after successful syncing
-        await this.checkIsSeedlessPasswordOutdated(true, true); // skip cache, capture sentry error
+        await this.checkIsSeedlessPasswordOutdated({
+          skipCache: true,
+          captureSentryError: true,
+        });
 
         // revoke pending refresh tokens asynchronously
         this.seedlessOnboardingController
@@ -4246,14 +4249,18 @@ export default class MetamaskController extends EventEmitter {
   /**
    * Checks if the seedless password is outdated.
    *
-   * @param {boolean} skipCache - whether to skip the cache @default false
-   * @param {boolean} captureSentryError - whether to capture the sentry error. @default false
+   * @param {object} args - The arguments for the checkIsSeedlessPasswordOutdated method.
+   * @param {boolean} args.skipCache - whether to skip the cache @default false
+   * @param {boolean} args.captureSentryError - whether to capture the sentry error. @default false
    * @returns {Promise<boolean | undefined>} true if the password is outdated, false otherwise, undefined if the flow is not seedless
    */
   async checkIsSeedlessPasswordOutdated(
-    skipCache = false,
-    captureSentryError = false,
+    args = {
+      skipCache: false,
+      captureSentryError: false,
+    },
   ) {
+    const { skipCache, captureSentryError } = args;
     try {
       const isSocialLoginFlow =
         this.onboardingController.getIsSocialLoginFlow();

@@ -727,7 +727,10 @@ describe('MetaMaskController', function () {
         .mockRejectedValue(error);
 
       await expect(
-        metamaskController.checkIsSeedlessPasswordOutdated(false, true),
+        metamaskController.checkIsSeedlessPasswordOutdated({
+          skipCache: false,
+          captureSentryError: true,
+        }),
       ).rejects.toThrow(error);
 
       expect(
@@ -755,7 +758,10 @@ describe('MetaMaskController', function () {
         .mockRejectedValue(error);
 
       await expect(
-        metamaskController.checkIsSeedlessPasswordOutdated(false, false),
+        metamaskController.checkIsSeedlessPasswordOutdated({
+          skipCache: false,
+          captureSentryError: false,
+        }),
       ).rejects.toThrow(error);
 
       expect(
@@ -959,10 +965,16 @@ describe('MetaMaskController', function () {
         expect(metamaskController.syncKeyringEncryptionKey).toHaveBeenCalled();
         expect(
           metamaskController.checkIsSeedlessPasswordOutdated,
-        ).toHaveBeenNthCalledWith(1, false, true);
+        ).toHaveBeenNthCalledWith(1, {
+          skipCache: false,
+          captureSentryError: true,
+        });
         expect(
           metamaskController.checkIsSeedlessPasswordOutdated,
-        ).toHaveBeenNthCalledWith(2, true, true);
+        ).toHaveBeenNthCalledWith(2, {
+          skipCache: true,
+          captureSentryError: true,
+        });
         expect(releaseLock).toHaveBeenCalled();
       });
 
