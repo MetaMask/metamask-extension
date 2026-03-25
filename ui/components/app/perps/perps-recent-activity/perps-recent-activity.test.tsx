@@ -289,3 +289,40 @@ describe('PerpsRecentActivity - Empty State', () => {
     ).toBeInTheDocument();
   });
 });
+
+describe('PerpsRecentActivity - Loading state', () => {
+  it('shows loading skeleton when isLoading and no transactions yet', () => {
+    renderWithProvider(
+      <PerpsRecentActivity transactions={[]} isLoading />,
+      mockStore,
+    );
+
+    expect(
+      screen.getByTestId('perps-recent-activity-loading'),
+    ).toBeInTheDocument();
+  });
+
+  it('shows transactions when loading but data already present', () => {
+    renderWithProvider(
+      <PerpsRecentActivity transactions={mockTransactions} isLoading />,
+      mockStore,
+    );
+
+    expect(screen.getByTestId('perps-recent-activity')).toBeInTheDocument();
+  });
+});
+
+describe('PerpsRecentActivity - Error state', () => {
+  it('shows error message in empty state when error is set', () => {
+    const errorMessage = 'Network error';
+    renderWithProvider(
+      <PerpsRecentActivity transactions={[]} error={errorMessage} />,
+      mockStore,
+    );
+
+    expect(
+      screen.getByTestId('perps-recent-activity-empty'),
+    ).toBeInTheDocument();
+    expect(screen.getByText(errorMessage)).toBeInTheDocument();
+  });
+});
