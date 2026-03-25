@@ -30,8 +30,11 @@ const getTextElementDefault = (variant: TextVariant) => {
 };
 
 /**
- * @deprecated Please update your code to use `Text` from `@metamask/design-system-react`.
- * @see {@link https://github.com/MetaMask/metamask-design-system/blob/main/packages/design-system-react/MIGRATION.md#from-extension-component-library | Migration guide}
+ * @deprecated This component is deprecated and will be removed in a future release.
+ * Please use the Text component from @metamask/design-system-react instead.
+ * @see {@link https://github.com/MetaMask/metamask-design-system/blob/main/packages/design-system-react/MIGRATION.md#text-component | Migration Guide}
+ * @see {@link https://metamask.github.io/metamask-design-system/?path=/docs/react-components-text--docs | Storybook Documentation}
+ * @see {@link https://github.com/MetaMask/metamask-design-system/tree/main/packages/design-system-react/src/components/Text | Component Source}
  */
 export const Text: TextComponent = React.forwardRef(
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860

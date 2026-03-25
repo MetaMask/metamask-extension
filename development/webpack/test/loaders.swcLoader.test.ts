@@ -66,6 +66,21 @@ describe('swcLoader', () => {
     );
   });
 
+  it('should stringify object source maps for inputSourceMap', async () => {
+    const { context, source, deferredPromise } = generateData();
+    const sourceMapObject = {
+      version: 3,
+      sources: ['test.ts'],
+      mappings: 'AAAA',
+    };
+
+    swcLoader.call(context, source, sourceMapObject as unknown as string);
+
+    const [err, content] = await deferredPromise;
+    assert.strictEqual(err, null);
+    assert.ok(content);
+  });
+
   it('should return an error when code is invalid', async () => {
     const { context, deferredPromise } = generateData();
     const brokenSource = 'this is not real code;';

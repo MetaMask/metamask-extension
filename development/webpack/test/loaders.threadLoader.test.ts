@@ -7,8 +7,16 @@ import {
 } from '../utils/loaders/threadLoader';
 
 describe('resolveAutoThreads', () => {
-  it('returns 1 worker when core count is <= 4', () => {
+  it('returns numCores - 2 (min 1) for low core counts', () => {
     mock.method(require('node:os'), 'availableParallelism', () => 4);
+    mock.method(require('node:os'), 'freemem', () => 16 * 1024 * 1024 * 1024);
+    const result = resolveAutoThreads();
+    assert.strictEqual(result, 2);
+    mock.restoreAll();
+  });
+
+  it('returns 1 worker when core count is <= 3', () => {
+    mock.method(require('node:os'), 'availableParallelism', () => 3);
     mock.method(require('node:os'), 'freemem', () => 16 * 1024 * 1024 * 1024);
     const result = resolveAutoThreads();
     assert.strictEqual(result, 1);

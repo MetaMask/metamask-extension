@@ -16,7 +16,11 @@ import {
   toOrange,
 } from './helpers';
 import { ENVIRONMENTS, MODES } from './constants';
-import { resolveAutoJobs, resolveAutoThreads } from './loaders/threadLoader';
+import {
+  getAvailableMemoryMB,
+  resolveAutoJobs,
+  resolveAutoThreads,
+} from './loaders/threadLoader';
 
 const ENV_PREFIX = 'BUNDLE';
 const addFeat = 'addFeature' as const;
@@ -659,6 +663,7 @@ React Compiler verbose: ${args.reactCompilerVerbose}
 React Compiler debug: ${args.reactCompilerDebug}
 Threads: ${args.threads}
 Jobs per thread: ${args.jobsPerThread}
+Free RAM: ${Math.floor(getAvailableMemoryMB())}MB
 Validate Env: ${args.validateEnv}
 Manifest version: ${args.manifest_version}
 Release version: ${args.releaseVersion}

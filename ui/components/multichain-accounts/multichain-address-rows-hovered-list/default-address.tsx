@@ -22,7 +22,7 @@ import {
 } from '../../../../shared/constants/default-address';
 import {
   getDefaultAddressScope,
-  getShowDefaultAddress,
+  getShowDefaultAddressPreference,
 } from '../../../selectors';
 import { setShowDefaultAddress } from '../../../store/actions';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
@@ -38,7 +38,7 @@ export const DefaultAddress = () => {
   const dispatch = useDispatch();
   const { trackEvent } = useContext(MetaMetricsContext);
   const navigate = useNavigate();
-  const showDefaultAddress = useSelector(getShowDefaultAddress);
+  const showDefaultAddress = useSelector(getShowDefaultAddressPreference);
   const defaultAddressScope = useSelector(
     getDefaultAddressScope,
   ) as DefaultAddressScope;

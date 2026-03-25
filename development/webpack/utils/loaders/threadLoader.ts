@@ -24,7 +24,7 @@ export function resolveAutoThreads(): number {
   const MEMORY_BUDGET_RATIO = 0.5;
 
   const numCores = availableParallelism();
-  const coreBasedWorkers = numCores <= 4 ? 1 : numCores - 2;
+  const coreBasedWorkers = Math.max(1, numCores - 2);
 
   const memBasedWorkers = Math.floor(
     (getAvailableMemoryMB() * MEMORY_BUDGET_RATIO) / ESTIMATED_WORKER_MEMORY_MB,
@@ -33,7 +33,7 @@ export function resolveAutoThreads(): number {
   return Math.max(1, Math.min(coreBasedWorkers, memBasedWorkers));
 }
 
-function getAvailableMemoryMB(): number {
+export function getAvailableMemoryMB(): number {
   return freemem() / (1024 * 1024);
 }
 

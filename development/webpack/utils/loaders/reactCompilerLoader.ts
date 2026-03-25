@@ -9,8 +9,9 @@ const getWrapperPath = () => require.resolve('./reactCompilerLoaderWrapper');
 
 /**
  * React Compiler result status stored in module.buildMeta.
- * This allows statistics to be collected from all modules after compilation,
- * even when using thread-loader (which runs loaders in separate worker threads).
+ * This allows statistics to be collected from all modules after compilation.
+ * NOTE: worker-thread executions still cannot contribute buildMeta events
+ * because `this._module` is unavailable in that context.
  */
 export type ReactCompilerStatus =
   | 'compiled'
@@ -72,9 +73,9 @@ export type ReactCompilerLoaderConfig = {
   verbose: boolean;
   debug: 'all' | 'critical' | 'none';
   /**
-   * When true, uses the wrapper loader for buildMeta tracking in worker
-   * threads and verbose logging. When false, only uses the wrapper if
-   * `verbose` is true (for logging); otherwise uses the direct loader.
+   * When true, uses the wrapper loader so the same source works in
+   * thread-loader workers and the emitted CJS build. Verbose mode also uses
+   * the wrapper for logging and buildMeta tracking.
    */
   threadLoaderEnabled: boolean;
 };
@@ -82,10 +83,12 @@ export type ReactCompilerLoaderConfig = {
 /**
  * Get the React Compiler loader configuration.
  *
- * Uses the wrapper loader when thread-loader is active (for buildMeta
- * tracking across worker threads) or when verbose logging is requested.
- * Falls back to the direct `react-compiler-webpack` loader otherwise
- * (e.g. LavaMoat policy generation where the wrapper isn't resolvable).
+ * Uses the wrapper loader when thread-loader is active or when verbose logging
+ * is requested. Falls back to the direct `react-compiler-webpack` loader
+ * otherwise (e.g. LavaMoat policy generation where the wrapper isn't
+ * resolvable). While worker builds still cannot record buildMeta stats, using
+ * the wrapper there keeps the loader path consistent across the direct `tsx`
+ * and emitted `.webpack` CJS execution paths.
  *
  * @param config - Configuration options for the React Compiler loader.
  * @param config.target - The target version of the React Compiler.
