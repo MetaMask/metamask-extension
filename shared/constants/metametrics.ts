@@ -957,6 +957,7 @@ export enum MetaMetricsEventName {
   RehydrationCompleted = 'Rehydration Completed',
   RehydrationPasswordFailed = 'Rehydration Password Failed',
   UseDifferentLoginMethodClicked = 'Use Different Login Method Clicked',
+  PasswordOutdatedModalViewed = 'Password Outdated Modal Viewed',
   WatchEthereumAccountsToggled = 'Watch Ethereum Accounts Toggled',
   AccountDetailMenuOpened = 'Account Details Menu Opened',
   BlockExplorerLinkClicked = 'Block Explorer Clicked',
