@@ -274,7 +274,7 @@ describe('PPOM Blockaid Alert - Set Approval to All', function () {
         await login(driver, { expectedBalance: '1.37T ETH' });
         await driver.openNewPage(DAPP_URL_LOCALHOST);
 
-       const expectedTitle = 'This is a deceptive request';
+        const expectedTitle = 'This is a deceptive request';
         const expectedDescription =
           'If you approve this request, you might lose your assets.';
 
