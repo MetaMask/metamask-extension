@@ -1,11 +1,11 @@
 import { screen, fireEvent } from '@testing-library/react';
 import React from 'react';
 
-import { OrderEntry } from './order-entry';
 import mockState from '../../../../../test/data/mock-state.json';
 import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../../store/store';
+import { OrderEntry } from './order-entry';
 
 // Mock hooks that depend on @metamask/perps-controller to avoid ESM transform issues
 jest.mock('../../../../hooks/perps/useUserHistory', () => ({
@@ -103,7 +103,21 @@ describe('OrderEntry', () => {
         target: { value: '1000' },
       });
 
-      expect(input).toHaveValue('1,000.00');
+      expect(input).toHaveValue('1000');
+    });
+
+    it('normalizes amount on blur', () => {
+      renderWithProvider(<OrderEntry {...defaultProps} />, mockStore);
+
+      const container = screen.getByTestId('amount-input-field');
+      const input = container.querySelector('input');
+      expect(input).not.toBeNull();
+      fireEvent.change(input as HTMLInputElement, {
+        target: { value: '1000' },
+      });
+      fireEvent.blur(input as HTMLInputElement);
+
+      expect(input).toHaveValue('1000.00');
     });
 
     it('shows token conversion when amount is entered', () => {
