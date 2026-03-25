@@ -14,6 +14,8 @@ export type BenchmarkResults = {
   testTitle: string;
   persona: Persona;
   benchmarkType?: BenchmarkType;
+  platform?: string;
+  buildType?: string;
   mean: StatisticalResult;
   min: StatisticalResult;
   max: StatisticalResult;
