@@ -167,7 +167,7 @@ describe('AutoCloseSection', () => {
       expect(input).not.toBeNull();
       fireEvent.blur(input as HTMLInputElement);
 
-      expect(onTakeProfitPriceChange).toHaveBeenCalledWith('50000.10');
+      expect(onTakeProfitPriceChange).toHaveBeenCalledWith('50000.1');
     });
 
     it('clears take profit price on blur when value is non-positive', () => {
@@ -245,7 +245,7 @@ describe('AutoCloseSection', () => {
       expect(input).not.toBeNull();
       fireEvent.blur(input as HTMLInputElement);
 
-      expect(onStopLossPriceChange).toHaveBeenCalledWith('40000.10');
+      expect(onStopLossPriceChange).toHaveBeenCalledWith('40000.1');
     });
 
     it('clears stop loss price on blur when value is non-positive', () => {
@@ -344,7 +344,7 @@ describe('AutoCloseSection', () => {
       });
 
       // For long +10%: 45000 * 1.10 = 49500
-      expect(onTakeProfitPriceChange).toHaveBeenCalledWith('49500.00');
+      expect(onTakeProfitPriceChange).toHaveBeenCalledWith('49500');
     });
 
     it('updates price when percent is entered for SL', () => {
@@ -368,7 +368,7 @@ describe('AutoCloseSection', () => {
       });
 
       // For long -10%: 45000 * 0.90 = 40500
-      expect(onStopLossPriceChange).toHaveBeenCalledWith('40500.00');
+      expect(onStopLossPriceChange).toHaveBeenCalledWith('40500');
     });
   });
 
@@ -398,7 +398,7 @@ describe('AutoCloseSection', () => {
       expect(input).toHaveValue('45050.00');
       fireEvent.blur(input as HTMLInputElement);
 
-      expect(onTakeProfitPriceChange).toHaveBeenCalledWith('45050.00');
+      expect(onTakeProfitPriceChange).toHaveBeenCalledWith('45050');
     });
 
     it('rejects non-en-US locale-formatted TP input while typing', () => {

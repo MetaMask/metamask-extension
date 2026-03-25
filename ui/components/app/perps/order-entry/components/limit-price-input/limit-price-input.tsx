@@ -86,7 +86,7 @@ export const LimitPriceInput: React.FC<LimitPriceInputProps> = ({
 
     const parsed = Number.parseFloat(limitPrice);
     if (Number.isFinite(parsed) && parsed > 0) {
-      onLimitPriceChange(parsed.toFixed(2));
+      onLimitPriceChange(parsed.toString());
       return;
     }
 
@@ -95,7 +95,7 @@ export const LimitPriceInput: React.FC<LimitPriceInputProps> = ({
 
   const handleMidClick = useCallback(() => {
     if (midPrice > 0) {
-      onLimitPriceChange(midPrice.toFixed(2));
+      onLimitPriceChange(midPrice.toString());
     }
   }, [midPrice, onLimitPriceChange]);
 

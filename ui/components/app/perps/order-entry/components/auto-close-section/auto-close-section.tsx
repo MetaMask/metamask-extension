@@ -103,7 +103,10 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
       }
 
       const price = entryPrice * multiplier;
-      return price.toFixed(2);
+      const normalizedPrice = Number.parseFloat(price.toFixed(8));
+      return Number.isFinite(normalizedPrice) && normalizedPrice > 0
+        ? normalizedPrice.toString()
+        : '';
     },
     [entryPrice, direction],
   );
@@ -134,7 +137,7 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
 
     const parsed = Number.parseFloat(takeProfitPrice);
     if (Number.isFinite(parsed) && parsed > 0) {
-      onTakeProfitPriceChange(parsed.toFixed(2));
+      onTakeProfitPriceChange(parsed.toString());
       return;
     }
 
@@ -178,7 +181,7 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
 
     const parsed = Number.parseFloat(stopLossPrice);
     if (Number.isFinite(parsed) && parsed > 0) {
-      onStopLossPriceChange(parsed.toFixed(2));
+      onStopLossPriceChange(parsed.toString());
       return;
     }
 

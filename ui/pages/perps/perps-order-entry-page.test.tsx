@@ -663,8 +663,8 @@ describe('PerpsOrderEntryPage', () => {
         [
           expect.objectContaining({
             symbol: 'ETH',
-            takeProfitPrice: '3300.10',
-            stopLossPrice: '2500.00',
+            takeProfitPrice: '3300.1',
+            stopLossPrice: '2500',
           }),
         ],
       );
@@ -1025,7 +1025,7 @@ describe('PerpsOrderEntryPage', () => {
         [
           expect.objectContaining({
             orderType: 'limit',
-            price: '3000.00',
+            price: '3000',
           }),
         ],
       );

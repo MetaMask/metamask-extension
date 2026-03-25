@@ -119,7 +119,7 @@ describe('LimitPriceInput', () => {
 
       fireEvent.click(screen.getByTestId('limit-price-mid-button'));
 
-      expect(defaultProps.onLimitPriceChange).toHaveBeenCalledWith('45050.00');
+      expect(defaultProps.onLimitPriceChange).toHaveBeenCalledWith('45050');
     });
   });
 
@@ -147,7 +147,7 @@ describe('LimitPriceInput', () => {
       expect(input).toHaveValue('45050.00');
       fireEvent.blur(input as HTMLInputElement);
 
-      expect(defaultProps.onLimitPriceChange).toHaveBeenCalledWith('45050.00');
+      expect(defaultProps.onLimitPriceChange).toHaveBeenCalledWith('45050');
     });
 
     it('rejects non-en-US locale-formatted input while typing', () => {

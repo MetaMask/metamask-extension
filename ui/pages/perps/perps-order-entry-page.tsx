@@ -77,7 +77,7 @@ function toNormalizedPositivePrice(value?: string): string | undefined {
     return undefined;
   }
 
-  return parsed.toFixed(2);
+  return parsed.toString();
 }
 
 /**
