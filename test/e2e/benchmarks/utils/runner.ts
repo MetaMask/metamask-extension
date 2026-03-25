@@ -189,12 +189,16 @@ export async function runBenchmarkWithIterations(
  * @param testTitle
  * @param persona
  * @param benchmarkType
+ * @param platform
+ * @param buildType
  */
 export function convertSummaryToResults(
   summary: BenchmarkSummary,
   testTitle: string,
   persona: Persona = 'standard',
   benchmarkType?: BenchmarkType,
+  platform?: string,
+  buildType?: string,
 ): BenchmarkResults {
   const mean: StatisticalResult = {};
   const min: StatisticalResult = {};
@@ -216,6 +220,8 @@ export function convertSummaryToResults(
     testTitle,
     persona,
     benchmarkType,
+    platform,
+    buildType,
     mean,
     min,
     max,
@@ -240,12 +246,16 @@ export async function runPageLoadBenchmark(
     browserLoads?: number;
     pageLoads?: number;
     retries?: number;
+    platform?: string;
+    buildType?: string;
   },
 ): Promise<BenchmarkResults> {
   const {
     browserLoads = DEFAULT_NUM_BROWSER_LOADS,
     pageLoads = DEFAULT_NUM_PAGE_LOADS,
     retries = 0,
+    platform,
+    buildType,
   } = options;
 
   const pageName = 'home';
@@ -286,6 +296,8 @@ export async function runPageLoadBenchmark(
   return {
     testTitle,
     persona: resultPersona,
+    platform,
+    buildType,
     mean: calcMeanResult(result),
     min: calcMinResult(result),
     max: calcMaxResult(result),
