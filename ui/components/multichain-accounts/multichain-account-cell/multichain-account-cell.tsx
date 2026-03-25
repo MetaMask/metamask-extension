@@ -161,6 +161,7 @@ export const MultichainAccountCell = ({
           )}
           {showDefaultAddress && (
             <Box
+              flexDirection={BoxFlexDirection.Row}
               marginLeft={3}
               onClick={(e: React.MouseEvent) => e.stopPropagation()}
               data-testid="multichain-account-cell-hovered-addresses"
