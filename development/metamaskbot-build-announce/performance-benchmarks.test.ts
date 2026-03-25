@@ -625,6 +625,110 @@ describe('buildBenchmarkSection', () => {
     );
     consoleSpy.mockRestore();
   });
+
+  describe('timer details', () => {
+    it('shows timer breakdown when entry has multiple timers', () => {
+      const entry = makeEntry({
+        benchmarkName: 'swap',
+        mean: {
+          openSwapPageFromHome: 310,
+          fetchAndDisplaySwapQuotes: 920,
+        },
+        p75: {
+          openSwapPageFromHome: 340,
+          fetchAndDisplaySwapQuotes: 1050,
+        },
+        p95: {
+          openSwapPageFromHome: 400,
+          fetchAndDisplaySwapQuotes: 1200,
+        },
+      });
+
+      const html = buildBenchmarkSection(withEntries([entry]), 'Test');
+
+      expect(html).toContain('<code>openSwapPageFromHome</code>');
+      expect(html).toContain('<code>fetchAndDisplaySwapQuotes</code>');
+      expect(html).toContain('<ul');
+    });
+
+    it('shows [Show logs] without icon when timers are present', () => {
+      const entry = makeEntry({
+        benchmarkName: 'swap',
+        mean: { timer1: 100, timer2: 200 },
+        p75: { timer1: 110, timer2: 220 },
+        p95: { timer1: 120, timer2: 240 },
+      });
+
+      const html = buildBenchmarkSection(
+        withEntries([entry]),
+        'Test',
+        undefined,
+        'https://github.com/actions/runs/123',
+      );
+      expect(html).not.toMatch(/🟢 <a href=.*\[Show logs\]<br\/>/);
+    });
+
+    it('shows icon with [Show logs] when no timers present', () => {
+      const entry = makeEntry({
+        benchmarkName: 'loadNewAccount',
+        mean: {},
+        p75: {},
+        p95: {},
+        artifactUrl: 'https://example.com/artifact.json',
+      });
+
+      const html = buildBenchmarkSection(withEntries([entry]), 'Test');
+
+      expect(html).toContain('[Show logs]');
+      expect(html).toContain(COMPARISON_SEVERITY.Pass.icon);
+      expect(html).not.toContain('<ul');
+    });
+
+    it('shows per-timer traffic lights based on thresholds', () => {
+      const entry = makeEntry({
+        benchmarkName: 'onboardingImportWallet',
+        mean: {
+          fastTimer: 100,
+          slowTimer: 3000,
+        },
+        p75: {
+          fastTimer: 110,
+          slowTimer: 3200,
+        },
+        p95: {
+          fastTimer: 120,
+          slowTimer: 5500,
+        },
+      });
+
+      const html = buildBenchmarkSection(withEntries([entry]), 'Test');
+
+      expect(html).toContain('<code>fastTimer</code>');
+      expect(html).toContain('<code>slowTimer</code>');
+      expect(html).toMatch(/<li>[🟢🟡🔴]/);
+    });
+
+    it('does not show timer details for benchmarks without timer data', () => {
+      const entry = makeEntry({
+        benchmarkName: 'startupStandardHome',
+        mean: { uiStartup: 1500 },
+        p75: { uiStartup: 1600 },
+        p95: { uiStartup: 1800 },
+      });
+
+      const html = buildBenchmarkSection(
+        withEntries([entry]),
+        'Test',
+        undefined,
+        'https://github.com/actions/runs/123',
+      );
+
+      expect(html).toContain(COMPARISON_SEVERITY.Pass.icon);
+      expect(html).toContain('[Show logs]');
+      expect(html).not.toContain('<code>uiStartup</code>');
+      expect(html).not.toContain('<ul');
+    });
+  });
 });
 
 describe('buildPerformanceBenchmarksSection', () => {

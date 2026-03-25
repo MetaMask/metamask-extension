@@ -491,6 +491,72 @@ function countHealthEntries(
 }
 
 /**
+ * Formats timer details from StatisticalResult into a readable HTML list with traffic lights.
+ * Only returns timer breakdown if entry has multiple timers (user journey benchmarks).
+ *
+ * @param entry - Benchmark entry with all stats (mean, p75, p95)
+ * @param baselineMetrics - Historical baseline for comparison (optional)
+ * @returns HTML string with timer breakdown, or empty string if single timer
+ */
+function formatTimerDetails(
+  entry: BenchmarkEntry,
+  baselineMetrics: HistoricalBaselineReference[string] | undefined,
+): string {
+  const timerCount = Object.keys(entry.mean).length;
+
+  if (timerCount <= 1) {
+    return '';
+  }
+
+  const thresholdConfig = THRESHOLD_REGISTRY[entry.benchmarkName];
+
+  const entries = Object.entries(entry.mean)
+    .map(([metricName, meanValue]) => {
+      let icon = HEALTH_ICON[EntryHealth.Pass]; // Default to green
+
+      if (thresholdConfig?.[metricName]) {
+        const metricResult = {
+          p75: { [metricName]: entry.p75[metricName] },
+          p95: { [metricName]: entry.p95[metricName] },
+        } as BenchmarkResults;
+
+        const { violations } = validateResultThresholds(metricResult, {
+          [metricName]: thresholdConfig[metricName],
+        });
+
+        if (violations.some((v) => v.severity === THRESHOLD_SEVERITY.Fail)) {
+          icon = HEALTH_ICON[EntryHealth.Fail];
+        } else if (
+          violations.some((v) => v.severity === THRESHOLD_SEVERITY.Warn)
+        ) {
+          icon = HEALTH_ICON[EntryHealth.Warn];
+        }
+      }
+
+      if (
+        icon === HEALTH_ICON[EntryHealth.Pass] &&
+        baselineMetrics?.[metricName]
+      ) {
+        const health = checkMetricPercentiles(
+          entry,
+          metricName,
+          baselineMetrics[metricName],
+        );
+        if (health === EntryHealth.Warn) {
+          icon = HEALTH_ICON[EntryHealth.Warn];
+        }
+      }
+
+      return `<li>${icon} <code>${metricName}</code></li>`;
+    })
+    .join('');
+
+  return entries
+    ? `<ul style="text-align: left; margin: 4px 0; list-style: none; padding-left: 8px;">${entries}</ul>`
+    : '';
+}
+
+/**
  * Builds an outer collapsible section (e.g. 'Interaction Benchmarks').
  *
  * @param result - Fetched entries and missing preset descriptions.
@@ -556,9 +622,18 @@ export function buildBenchmarkSection(
               const health = computeEntryHealth(entry, baselineMetrics);
               const icon = HEALTH_ICON[health];
               const logHref = entry.artifactUrl ?? runUrl;
-              const cell = logHref
-                ? `${icon} <a href="${logHref}">[Show logs]</a>`
-                : icon;
+
+              const timerDetails = formatTimerDetails(entry, baselineMetrics);
+
+              const logsLink = logHref
+                ? `<a href="${logHref}">[Show logs]</a>`
+                : '';
+
+              const cell = timerDetails
+                ? `${logsLink}<br/>${timerDetails}`
+                : logHref
+                  ? `${icon} ${logsLink}`
+                  : icon;
               return `<td align="center">${cell}</td>`;
             })
             .join('');
