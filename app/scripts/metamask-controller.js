@@ -436,7 +436,6 @@ import {
 import { MessengerSubscriptions } from './lib/MessengerSubscriptions';
 import { ProfileMetricsControllerInit } from './controller-init/profile-metrics-controller-init';
 import { ProfileMetricsServiceInit } from './controller-init/profile-metrics-service-init';
-import { MessengerSubscriptions } from './lib/MessengerSubscriptions';
 import { ActivityDataService } from './queries/ActivityDataService';
 import { AssetDataService } from './queries/AssetDataService';
 

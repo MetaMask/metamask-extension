@@ -8,7 +8,6 @@ import {
   useRouteError,
 } from 'react-router-dom';
 import { QueryClientProvider } from '@tanstack/react-query';
-import { createUIQueryClient } from '@metamask-previews/base-data-service';
 
 import { captureException } from '../../shared/lib/sentry';
 import { I18nProvider, LegacyI18nProvider } from '../contexts/i18n';

@@ -1,9 +1,10 @@
 import React from 'react';
 import { useQueryClient } from '@tanstack/react-query';
+import { QueryKey } from '@metamask/base-data-service';
 import {
   useQuery,
   useInfiniteQuery,
-} from '@metamask-previews/base-data-service';
+} from '@metamask/react-data-query';
 import Box from '../../ui/box/box';
 import { Button } from '../../component-library';
 import type { GetActivityResponse } from '../../../../app/scripts/queries/ActivityDataService';
@@ -27,7 +28,7 @@ export const TestTab = () => {
       'bip122:000000000019d6689c085ae165831e93/slip44:0',
       'eip155:1/erc20:0x6b175474e89094c44da98b954eedeac495271d0f',
     ],
-  ];
+  ] as QueryKey;
 
   const query = useQuery({
     queryKey: assetsQueryKey,
