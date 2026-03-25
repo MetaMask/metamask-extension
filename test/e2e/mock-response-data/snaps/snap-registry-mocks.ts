@@ -10,7 +10,7 @@ export const SNAPS_SIGNATURE_BODY_FILENAME = 'signature.json';
 export const SNAPS_REGISTRY_HEADERS_FILENAME = 'registry-headers.json';
 export const SNAPS_SIGNATURE_HEADERS_FILENAME = 'signature-headers.json';
 
-/** Snaps execution allowlist endpoints — mock rules and `update-snaps-registry` must match. */
+/** Snaps execution endpoints. */
 export const SNAPS_REGISTRY_URL =
   'https://acl.execution.metamask.io/latest/registry.json';
 export const SNAPS_SIGNATURE_URL =
