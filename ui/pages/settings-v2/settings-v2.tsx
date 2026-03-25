@@ -55,6 +55,8 @@ const FirstTabComponent = SETTINGS_V2_TABS[0]?.component;
 const normalizeSettingsPath = (path: string) =>
   path !== '/' && path.endsWith('/') ? path.slice(0, -1) : path;
 
+const getRoutePathname = (path: string) => path.split('?')[0];
+
 /**
  * Layout for Settings V2: header, tab bar, and content area.
  *
@@ -100,8 +102,11 @@ const SettingsV2Layout = ({ children }: { children: React.ReactNode }) => {
     let currentPath: string | undefined = normalizedPathname;
 
     // Walk up the parent chain to build breadcrumbs
-    while (currentPath && currentPath !== SETTINGS_V2_ROUTE) {
-      const routeMeta = getSettingsV2RouteMeta(currentPath);
+    while (
+      currentPath &&
+      getRoutePathname(currentPath) !== SETTINGS_V2_ROUTE
+    ) {
+      const routeMeta = getSettingsV2RouteMeta(getRoutePathname(currentPath));
       if (!routeMeta) {
         break;
       }

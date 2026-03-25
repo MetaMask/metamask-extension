@@ -3,6 +3,7 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import mockState from '../../../test/data/mock-state.json';
+import messages from '../../../app/_locales/en/messages.json';
 import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
 import { setBackgroundConnection } from '../../store/background-connection';
 import {
@@ -79,12 +80,12 @@ describe('SettingsV2', () => {
       expect(
         screen.getByTestId('settings-v2-tab-bar-grouped'),
       ).toBeInTheDocument();
-      expect(screen.getByText('General')).toBeInTheDocument();
+      expect(screen.getByText(messages.general.message)).toBeInTheDocument();
       expect(
         screen.getByTestId('settings-v2-tab-item-transaction-shield'),
       ).toBeInTheDocument();
       expect(screen.queryByTestId('settings-v2-root')).not.toBeInTheDocument();
-      expect(await screen.findByText('Theme')).toBeInTheDocument();
+      expect(await screen.findByText(messages.theme.message)).toBeInTheDocument();
     });
 
     it('treats trailing-slash fullscreen settings route as the root route', async () => {
@@ -97,7 +98,7 @@ describe('SettingsV2', () => {
         screen.getByTestId('settings-v2-tab-bar-grouped'),
       ).toBeInTheDocument();
       expect(screen.queryByTestId('settings-v2-root')).not.toBeInTheDocument();
-      expect(await screen.findByText('Theme')).toBeInTheDocument();
+      expect(await screen.findByText(messages.theme.message)).toBeInTheDocument();
     });
 
     it('navigates to transaction shield from the root page', async () => {

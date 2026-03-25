@@ -157,7 +157,9 @@ class PrivacySettings {
 
   async checkSecurityAndPasswordPageIsLoaded(): Promise<void> {
     try {
-      await this.driver.waitForSelector(this.securityAndPasswordSettingsPageTitle);
+      await this.driver.waitForSelector(
+        this.securityAndPasswordSettingsPageTitle,
+      );
     } catch (e) {
       console.log(
         'Timeout while waiting for Security and password settings page to be loaded',
