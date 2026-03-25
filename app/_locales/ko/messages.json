@@ -339,9 +339,6 @@
   "addWallet": {
     "message": "지갑 추가"
   },
-  "addedProtectionOptionalBadge": {
-    "message": "선택 사항"
-  },
   "additionalNetworks": {
     "message": "추가 네트워크"
   },

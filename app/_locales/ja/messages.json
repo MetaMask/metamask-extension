@@ -339,9 +339,6 @@
   "addWallet": {
     "message": "ウォレットを追加"
   },
-  "addedProtectionOptionalBadge": {
-    "message": "オプション"
-  },
   "additionalNetworks": {
     "message": "他のネットワーク"
   },

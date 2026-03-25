@@ -339,9 +339,6 @@
   "addWallet": {
     "message": "Добавить кошелек"
   },
-  "addedProtectionOptionalBadge": {
-    "message": "Необязательно"
-  },
   "additionalNetworks": {
     "message": "Дополнительные сети"
   },

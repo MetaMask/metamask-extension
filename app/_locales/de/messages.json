@@ -339,9 +339,6 @@
   "addWallet": {
     "message": "Wallet hinzufügen"
   },
-  "addedProtectionOptionalBadge": {
-    "message": "Optional"
-  },
   "additionalNetworks": {
     "message": "Zusätzliche Netzwerke"
   },

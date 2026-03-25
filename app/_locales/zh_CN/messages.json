@@ -339,9 +339,6 @@
   "addWallet": {
     "message": "添加钱包"
   },
-  "addedProtectionOptionalBadge": {
-    "message": "可选"
-  },
   "additionalNetworks": {
     "message": "其他网络"
   },
