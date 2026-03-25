@@ -33,6 +33,11 @@ export const PERPS_WITHDRAW_ASSET_CONFIGS = {
   },
 } as const;
 
+export const PERPS_WITHDRAW_AMOUNT_REGEX = /^\d*\.?\d{0,6}$/u;
+
+export const isValidPerpsWithdrawAmount = (amount: string): boolean =>
+  PERPS_WITHDRAW_AMOUNT_REGEX.test(amount);
+
 /**
  * Get the CAIP asset ID used for Perps USDC withdrawals.
  *

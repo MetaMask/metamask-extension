@@ -72,6 +72,27 @@ describe('WithdrawFundsModal', () => {
     expect(input).toHaveValue('50.00');
   });
 
+  it('max preset does not round above available balance', () => {
+    mockUsePerpsLiveAccount.mockReturnValueOnce({
+      account: {
+        availableBalance: '99.999',
+      },
+      isInitialLoading: false,
+    } as ReturnType<typeof usePerpsLiveAccount>);
+
+    renderWithProvider(
+      <WithdrawFundsModal isOpen onClose={onCloseMock} />,
+      mockStore,
+    );
+
+    fireEvent.click(screen.getByTestId('perps-withdraw-preset-100'));
+
+    const input = screen.getByPlaceholderText('0.00') as HTMLInputElement;
+    expect(input).toHaveValue('99.999');
+    expect(screen.getByTestId('perps-withdraw-submit')).not.toBeDisabled();
+    expect(screen.getByTestId('perps-withdraw-error')).toHaveTextContent('');
+  });
+
   it('disables submit for insufficient amount', () => {
     renderWithProvider(
       <WithdrawFundsModal isOpen onClose={onCloseMock} />,

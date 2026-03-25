@@ -3,12 +3,11 @@ import { useSelector } from 'react-redux';
 
 import { getSelectedInternalAccount } from '../../../../selectors';
 import { selectPerpsIsTestnet } from '../../../../selectors/perps-controller';
-import { getPerpsWithdrawUsdcAssetId } from '../constants';
+import {
+  getPerpsWithdrawUsdcAssetId,
+  isValidPerpsWithdrawAmount,
+} from '../constants';
 import { createPerpsWithdrawTransaction } from './createPerpsWithdrawTransaction';
-
-function isValidAmount(amount: string): boolean {
-  return /^\d*\.?\d{0,6}$/u.test(amount);
-}
 
 export type PerpsWithdrawParams = {
   amount: string;
@@ -53,7 +52,7 @@ export function usePerpsWithdraw(): UsePerpsWithdrawResult {
       const amountNum = Number(normalizedAmount);
       if (
         !normalizedAmount ||
-        !isValidAmount(normalizedAmount) ||
+        !isValidPerpsWithdrawAmount(normalizedAmount) ||
         !Number.isFinite(amountNum) ||
         amountNum <= 0
       ) {

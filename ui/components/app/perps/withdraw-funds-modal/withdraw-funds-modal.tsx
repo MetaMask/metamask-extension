@@ -25,9 +25,11 @@ import {
 import { useFormatters } from '../../../../hooks/useFormatters';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { usePerpsLiveAccount } from '../../../../hooks/perps/stream';
+import { isValidPerpsWithdrawAmount } from '../constants';
 import { usePerpsWithdraw } from '../hooks/usePerpsWithdraw';
 
 const WITHDRAW_PRESETS = [25, 50, 100] as const;
+const MAX_WITHDRAW_DECIMALS = 6;
 
 type WithdrawFundsModalProps = {
   isOpen: boolean;
@@ -41,8 +43,10 @@ function formatPresetAmount(value: number): string {
   return value.toFixed(2);
 }
 
-function isAllowedAmountInput(value: string): boolean {
-  return /^\d*\.?\d{0,6}$/u.test(value);
+function formatMaxPresetAmount(value: number): string {
+  const factor = 10 ** MAX_WITHDRAW_DECIMALS;
+  const floored = Math.floor(value * factor) / factor;
+  return floored.toFixed(MAX_WITHDRAW_DECIMALS).replace(/\.?0+$/u, '');
 }
 
 const WITHDRAW_ERROR_CODES = {
@@ -111,7 +115,7 @@ export const WithdrawFundsModal: React.FC<WithdrawFundsModalProps> = ({
   const handleAmountChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       const next = event.target.value.replace(/,/gu, '');
-      if (!isAllowedAmountInput(next)) {
+      if (!isValidPerpsWithdrawAmount(next)) {
         return;
       }
       setAmount(next);
@@ -124,7 +128,11 @@ export const WithdrawFundsModal: React.FC<WithdrawFundsModalProps> = ({
 
   const handlePreset = useCallback(
     (preset: number) => {
-      const next = formatPresetAmount((availableBalance * preset) / 100);
+      const rawPresetAmount = (availableBalance * preset) / 100;
+      const next =
+        preset === 100
+          ? formatMaxPresetAmount(rawPresetAmount)
+          : formatPresetAmount(rawPresetAmount);
       setAmount(next);
       if (error) {
         resetError();
