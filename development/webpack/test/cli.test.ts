@@ -21,6 +21,8 @@ describe('./utils/cli.ts', () => {
     test: false,
     reactCompilerVerbose: false,
     reactCompilerDebug: 'none',
+    threads: 'auto',
+    jobsPerThread: 'auto',
     zip: false,
     minify: false,
     browser: ['chrome'],
@@ -37,7 +39,12 @@ describe('./utils/cli.ts', () => {
 
   it('should return defaults', () => {
     const { args, cacheKey, features } = parseArgv([], loadBuildTypesConfig());
-    assert.deepStrictEqual(args, defaultArgs);
+    const { resolvedThreads, resolvedJobs, ...rest } = args;
+    assert.deepStrictEqual(rest, defaultArgs);
+    assert.strictEqual(typeof resolvedThreads, 'number');
+    assert.strictEqual(typeof resolvedJobs, 'number');
+    assert(resolvedThreads >= 0, 'resolvedThreads should be non-negative');
+    assert(resolvedJobs >= 0, 'resolvedJobs should be non-negative');
     assert.strictEqual(
       typeof cacheKey,
       'string',
@@ -226,6 +233,106 @@ describe('./utils/cli.ts', () => {
         loadBuildTypesConfig(),
       );
       assert.strictEqual(args.env, 'production');
+    });
+  });
+
+  describe('thread-loader options', () => {
+    it('parses --threads with explicit number', () => {
+      const { args } = parseArgv(['--threads', '4'], loadBuildTypesConfig());
+      assert.strictEqual(args.threads, 4);
+      assert.strictEqual(args.jobsPerThread, 'auto');
+    });
+
+    it('parses --jobsPerThread with explicit number when threads enabled', () => {
+      const { args } = parseArgv(
+        ['--threads', '4', '--jobsPerThread', '20'],
+        loadBuildTypesConfig(),
+      );
+      assert.strictEqual(args.threads, 4);
+      assert.strictEqual(args.jobsPerThread, 20);
+    });
+
+    it('getDryRunMessage includes thread resolution for auto', () => {
+      const { args, features } = parseArgv([], loadBuildTypesConfig());
+      const message = getDryRunMessage(args, features);
+      assert.ok(
+        message.includes('Threads:') && message.includes('Jobs per thread:'),
+        'Dry run message should include thread-related output',
+      );
+    });
+
+    it('getDryRunMessage shows resolved values for explicit threads', () => {
+      const { args, features } = parseArgv(
+        ['--threads', '2'],
+        loadBuildTypesConfig(),
+      );
+      const message = getDryRunMessage(args, features);
+      assert.ok(
+        message.includes('Threads: 2'),
+        'Dry run message should show explicit thread count',
+      );
+    });
+  });
+
+  describe('thread-loader option validation', () => {
+    it('throws when --jobsPerThread is used with --threads 0', () => {
+      assert.throws(
+        () =>
+          parseArgv(
+            ['--threads', '0', '--jobsPerThread', '15'],
+            loadBuildTypesConfig(),
+          ),
+        {
+          message:
+            /Invalid combination.*jobsPerThread.*thread-loader is disabled/u,
+        },
+      );
+    });
+
+    it('throws when --jobsPerThread is used with --generatePolicy', () => {
+      assert.throws(
+        () =>
+          parseArgv(
+            ['--generatePolicy', '--jobsPerThread', '20'],
+            loadBuildTypesConfig(),
+          ),
+        {
+          message:
+            /Invalid combination.*jobsPerThread.*thread-loader is disabled/u,
+        },
+      );
+    });
+
+    it('throws when --jobsPerThread is used with --reactCompilerVerbose', () => {
+      assert.throws(
+        () =>
+          parseArgv(
+            ['--reactCompilerVerbose', '--jobsPerThread', '10'],
+            loadBuildTypesConfig(),
+          ),
+        {
+          message:
+            /Invalid combination.*jobsPerThread.*thread-loader is disabled/u,
+        },
+      );
+    });
+
+    it('throws when --threads is invalid (non-numeric)', () => {
+      assert.throws(
+        () => parseArgv(['--threads', 'abc'], loadBuildTypesConfig()),
+        {
+          message: /Invalid --threads value "abc"/u,
+        },
+      );
+    });
+
+    it('allows --jobsPerThread auto with --threads 0', () => {
+      const { args } = parseArgv(
+        ['--threads', '0', '--jobsPerThread', 'auto'],
+        loadBuildTypesConfig(),
+      );
+      assert.strictEqual(args.threads, 0);
+      assert.strictEqual(args.jobsPerThread, 'auto');
     });
   });
 });

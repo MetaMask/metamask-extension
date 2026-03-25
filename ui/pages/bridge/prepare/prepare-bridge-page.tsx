@@ -155,7 +155,7 @@ const PrepareBridgePage = ({
   // Determine if the current quote is expired or does not match the currently
   // selected destination asset/chain.
   const isQuoteExpiredOrInvalid = isQuoteExpiredOrInvalidUtil({
-    activeQuote: unvalidatedQuote,
+    activeQuote: unvalidatedQuote ?? null,
     toToken,
     isQuoteExpired,
   });
@@ -174,7 +174,7 @@ const PrepareBridgePage = ({
   const keyring = useSelector(getCurrentKeyring);
   const isUsingHardwareWallet = isHardwareKeyring(keyring?.type);
 
-  const effectiveGasIncluded = !isUsingHardwareWallet && gasIncluded;
+  const effectiveGasIncluded = gasIncluded;
   const effectiveGasIncluded7702 = !isUsingHardwareWallet && gasIncluded7702;
 
   const shouldShowMaxButton =
