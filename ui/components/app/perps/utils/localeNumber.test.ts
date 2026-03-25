@@ -1,8 +1,4 @@
-import {
-  normalizeLocalizedNumberInput,
-  parseLocalizedNumber,
-  toNormalizedFixedPrice,
-} from './localeNumber';
+import { normalizeLocalizedNumberInput } from './localeNumber';
 
 describe('localeNumber utils', () => {
   describe('normalizeLocalizedNumberInput', () => {
@@ -59,30 +55,6 @@ describe('localeNumber utils', () => {
     it('rejects malformed grouped input', () => {
       expect(normalizeLocalizedNumberInput('1..2', 'de-DE')).toBeNull();
       expect(normalizeLocalizedNumberInput('1,,2', 'en-US')).toBeNull();
-    });
-  });
-
-  describe('parseLocalizedNumber', () => {
-    it('parses locale-formatted values accurately', () => {
-      expect(parseLocalizedNumber('45.050,00', 'de-DE')).toBe(45050);
-      expect(parseLocalizedNumber('45,050.00', 'en-US')).toBe(45050);
-    });
-
-    it('returns null for invalid values', () => {
-      expect(parseLocalizedNumber('', 'en-US')).toBeNull();
-      expect(parseLocalizedNumber('abc', 'en-US')).toBeNull();
-    });
-  });
-
-  describe('toNormalizedFixedPrice', () => {
-    it('returns normalized fixed-decimal string', () => {
-      expect(toNormalizedFixedPrice('45.050,1', 'de-DE')).toBe('45050.10');
-      expect(toNormalizedFixedPrice('45,050.1', 'en-US')).toBe('45050.10');
-    });
-
-    it('returns null for non-positive values', () => {
-      expect(toNormalizedFixedPrice('0', 'en-US')).toBeNull();
-      expect(toNormalizedFixedPrice('', 'en-US')).toBeNull();
     });
   });
 });

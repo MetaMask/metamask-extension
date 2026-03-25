@@ -118,34 +118,3 @@ export function normalizeLocalizedNumberInput(
 
   return normalized;
 }
-
-export function parseLocalizedNumber(
-  input: string,
-  locale: string,
-): number | null {
-  const normalized = normalizeLocalizedNumberInput(input, locale);
-  if (!normalized) {
-    return null;
-  }
-
-  const parsed = Number.parseFloat(normalized);
-  if (Number.isNaN(parsed) || !Number.isFinite(parsed)) {
-    return null;
-  }
-
-  return parsed;
-}
-
-export function toNormalizedFixedPrice(
-  input: string,
-  locale: string,
-  fractionDigits = 2,
-): string | null {
-  const value = parseLocalizedNumber(input, locale);
-
-  if (value === null || value <= 0) {
-    return null;
-  }
-
-  return value.toFixed(fractionDigits);
-}
