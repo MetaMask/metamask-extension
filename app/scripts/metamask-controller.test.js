@@ -5321,6 +5321,9 @@ describe('MetaMaskController', () => {
         firstTimeFlowType: FirstTimeFlowType.socialImport,
       });
 
+      // Allow async subscription handler to run
+      await new Promise((resolve) => setImmediate(resolve));
+
       expect(
         metamaskController._importAccountsWithBalances,
       ).toHaveBeenCalledTimes(1);
