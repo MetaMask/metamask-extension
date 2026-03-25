@@ -111,7 +111,7 @@ describe('Reveal Seed Page', () => {
   });
 
   afterEach(() => {
-    mockScanUrlForPhishing.mockReset().mockResolvedValue(null);
+    jest.clearAllMocks();
   });
 
   it('should match snapshot', () => {
