@@ -36,11 +36,6 @@ class SettingsPage {
     css: '.tab-bar__tab__content__title',
   };
 
-  private readonly preInstalledExampleButton = {
-    text: 'Preinstalled Example Snap',
-    css: '.tab-bar__tab__content__title',
-  };
-
   private readonly searchResultItem =
     '.settings-page__header__search__list__item__tab';
 
@@ -150,11 +145,6 @@ class SettingsPage {
   async goToPrivacySettings(): Promise<void> {
     console.log('Navigating to Privacy Settings page');
     await this.driver.clickElement(this.privacySettingsButton);
-  }
-
-  async goToPreInstalledExample(): Promise<void> {
-    console.log('Navigating to Preinstalled Example Snap settings page');
-    await this.driver.clickElement(this.preInstalledExampleButton);
   }
 
   async goToNotificationsSettings(): Promise<void> {
