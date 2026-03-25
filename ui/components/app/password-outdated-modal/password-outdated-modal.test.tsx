@@ -55,4 +55,36 @@ describe('PasswordOutdatedModal', () => {
       });
     });
   });
+
+  it('does not track PasswordOutdatedModalViewed on mount when the password is not outdated', async () => {
+    const store = mockStore({
+      ...mockState,
+      metamask: {
+        ...mockState.metamask,
+        passwordOutdatedCache: {
+          isExpiredPwd: false,
+        },
+      },
+    });
+    const mockTrackEvent = jest.fn();
+    const mockMetaMetricsContext = {
+      trackEvent: mockTrackEvent,
+      bufferedTrace: jest.fn(),
+      bufferedEndTrace: jest.fn(),
+      onboardingParentContext: { current: null },
+    };
+
+    renderWithProvider(
+      <MetaMetricsContext.Provider
+        value={mockMetaMetricsContext as typeof mockMetaMetricsContext}
+      >
+        <PasswordOutdatedModal />
+      </MetaMetricsContext.Provider>,
+      store,
+    );
+
+    await waitFor(() => {
+      expect(mockTrackEvent).not.toHaveBeenCalled();
+    });
+  });
 });
