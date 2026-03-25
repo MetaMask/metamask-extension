@@ -142,7 +142,6 @@ jobs:
     if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
     uses: ./.github/workflows/test-storybook.yml
 
-  # LavaMoat Jobs - Using name prefix for visual grouping
   lavamoat-validate-policies:
     name: LavaMoat / validate policies
     needs:
@@ -443,7 +442,7 @@ jobs:
     name: E2E / Chrome
     needs:
       - get-requirements
-      - prep-e2e
+      - e2e-prep
       - builds-test
       - builds-dist
       - builds-flask
@@ -452,14 +451,14 @@ jobs:
     if: ${{ !cancelled() && needs.get-requirements.outputs.needs-e2e == 'true' && !contains(needs.*.result, 'failure') }}
     with:
       builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
-      use-matrix: ${{ needs.prep-e2e.outputs.use-matrix }}
+      use-matrix: ${{ needs.e2e-prep.outputs.use-matrix }}
     secrets: inherit
 
   e2e-firefox:
     name: E2E / Firefox
     needs:
       - get-requirements
-      - prep-e2e
+      - e2e-prep
       - builds-test
       - builds-dist
       - builds-flask
@@ -468,7 +467,7 @@ jobs:
     if: ${{ !cancelled() && needs.get-requirements.outputs.needs-e2e == 'true' && !contains(needs.*.result, 'failure') }}
     with:
       builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
-      use-matrix: ${{ needs.prep-e2e.outputs.use-matrix }}
+      use-matrix: ${{ needs.e2e-prep.outputs.use-matrix }}
     secrets:
       INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
 
@@ -695,7 +694,7 @@ jobs:
     # named here. A failing job can cause downstream jobs to be `skipped`, which can hide the true failure unless
     # the upstream job is also included.
     #
-    # For instance, if prep-e2e fails, e2e-chrome and e2e-firefox are skipped, so we need the direct result of prep-e2e.
+    # For instance, if e2e-prep fails, e2e-chrome and e2e-firefox are skipped, so we need the direct result of e2e-prep.
     #
     # Jobs intentionally excluded:
     # - Publish jobs (not required for CI pass)
@@ -716,7 +715,7 @@ jobs:
       - performance-benchmarks
       - unit-and-integration-tests
       - bundle-size
-      - prep-e2e
+      - e2e-prep
       - e2e-chrome
       - e2e-firefox
       - storybook-build
