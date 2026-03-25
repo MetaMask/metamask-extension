@@ -748,10 +748,7 @@ describe('MetaMaskController', function () {
           )
           .mockReturnValue(true);
         jest
-          .spyOn(
-            metamaskController.seedlessOnboardingController,
-            'checkIsPasswordOutdated',
-          )
+          .spyOn(metamaskController, 'checkIsSeedlessPasswordOutdated')
           .mockResolvedValue(false);
 
         const submitPasswordSpy = jest
@@ -776,10 +773,7 @@ describe('MetaMaskController', function () {
           )
           .mockReturnValue(true);
         jest
-          .spyOn(
-            metamaskController.seedlessOnboardingController,
-            'checkIsPasswordOutdated',
-          )
+          .spyOn(metamaskController, 'checkIsSeedlessPasswordOutdated')
           .mockResolvedValue(true);
       });
 
@@ -875,11 +869,11 @@ describe('MetaMaskController', function () {
         ).toHaveBeenCalledWith(password);
         expect(metamaskController.syncKeyringEncryptionKey).toHaveBeenCalled();
         expect(
-          metamaskController.seedlessOnboardingController
-            .checkIsPasswordOutdated,
-        ).toHaveBeenCalledWith({
-          skipCache: true,
-        });
+          metamaskController.checkIsSeedlessPasswordOutdated,
+        ).toHaveBeenNthCalledWith(1, false, true);
+        expect(
+          metamaskController.checkIsSeedlessPasswordOutdated,
+        ).toHaveBeenNthCalledWith(2, true, true);
         expect(releaseLock).toHaveBeenCalled();
       });
 
@@ -972,10 +966,7 @@ describe('MetaMaskController', function () {
 
       it('should allow user to unlock the wallet even if checkIsPasswordOutdated fails', async function () {
         jest
-          .spyOn(
-            metamaskController.seedlessOnboardingController,
-            'checkIsPasswordOutdated',
-          )
+          .spyOn(metamaskController, 'checkIsSeedlessPasswordOutdated')
           .mockRejectedValue('Network Error');
         const keyringSubmitPwdSpy = jest
           .spyOn(metamaskController.keyringController, 'submitPassword')
