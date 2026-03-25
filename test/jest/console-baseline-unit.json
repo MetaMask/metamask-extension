@@ -62,8 +62,8 @@
       "Test errors: Fetch failures": 4,
       "Third-party: Bindings failed, using pure JS": 1,
       "error: This browser doesn't support cancelAnimationFrame.": 1,
-      "\u00b5WebSockets: Compatibility warnings": 1,
-      "\u00b5WebSockets: Fallback to Node implementation": 1
+      "µWebSockets: Compatibility warnings": 1,
+      "µWebSockets: Fallback to Node implementation": 1
     },
     "app/scripts/metamask-controller.test.js": {
       "MetaMask: MetaMetrics invalid trait types": 1,
@@ -78,8 +78,8 @@
       "error: {": 1,
       "warn: Error during SnapController initialization. AssertionError:": 2,
       "warn: Unable to create some accounts": 1,
-      "\u00b5WebSockets: Compatibility warnings": 1,
-      "\u00b5WebSockets: Fallback to Node implementation": 1
+      "µWebSockets: Compatibility warnings": 1,
+      "µWebSockets: Fallback to Node implementation": 1
     },
     "app/scripts/migrations/092.2.test.ts": {
       "error: Migration 92.2: Invalid NetworkController state:": 2
@@ -186,13 +186,13 @@
     },
     "shared/lib/contract-utils.test.js": {
       "Third-party: Bindings failed, using pure JS": 1,
-      "\u00b5WebSockets: Compatibility warnings": 1,
-      "\u00b5WebSockets: Fallback to Node implementation": 1
+      "µWebSockets: Compatibility warnings": 1,
+      "µWebSockets: Fallback to Node implementation": 1
     },
     "shared/lib/metametrics.test.ts": {
       "Third-party: Bindings failed, using pure JS": 1,
-      "\u00b5WebSockets: Compatibility warnings": 1,
-      "\u00b5WebSockets: Fallback to Node implementation": 1
+      "µWebSockets: Compatibility warnings": 1,
+      "µWebSockets: Fallback to Node implementation": 1
     },
     "shared/lib/selectors/index.test.ts": {
       "Reselect: Identity function warnings": 2
@@ -205,8 +205,8 @@
     },
     "shared/lib/transaction.utils.test.js": {
       "Third-party: Bindings failed, using pure JS": 1,
-      "\u00b5WebSockets: Compatibility warnings": 1,
-      "\u00b5WebSockets: Fallback to Node implementation": 1
+      "µWebSockets: Compatibility warnings": 1,
+      "µWebSockets: Fallback to Node implementation": 1
     },
     "ui/components/app/alert-system/contexts/alertActionHandler.test.ts": {
       "Test errors: Uncaught Errors": 1
@@ -705,8 +705,8 @@
       "Reselect: Input stability warnings": 1,
       "Third-party: Bindings failed, using pure JS": 1,
       "error: Warning: A component is changing": 2,
-      "\u00b5WebSockets: Compatibility warnings": 1,
-      "\u00b5WebSockets: Fallback to Node implementation": 1
+      "µWebSockets: Compatibility warnings": 1,
+      "µWebSockets: Fallback to Node implementation": 1
     },
     "ui/pages/bridge/quotes/multichain-bridge-quote-card.test.tsx": {
       "Reselect: Identity function warnings": 1
@@ -889,7 +889,7 @@
       "Reselect: Identity function warnings": 4
     },
     "ui/pages/confirmations/components/confirm/info/shared/edit-gas-icon/edit-gas-icon-button.test.tsx": {
-      "warn: \u26a0\ufe0f React Router Future Flag": 2
+      "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/confirmations/components/confirm/info/shared/gas-fee-token-icon/gas-fee-token-icon.test.tsx": {
       "Reselect: Identity function warnings": 4
@@ -995,7 +995,7 @@
     },
     "ui/pages/confirmations/components/confirm/info/typed-sign/typed-sign-permission/total-exposure.test.tsx": {
       "Reselect: Identity function warnings": 4,
-      "warn: \u26a0\ufe0f React Router Future Flag": 2
+      "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/confirmations/components/confirm/info/typed-sign/typed-sign-permission/typed-sign-permission.test.tsx": {
       "React: Act warnings (component updates not wrapped)": 6,
@@ -1103,13 +1103,13 @@
     "ui/pages/confirmations/components/rows/claimable-bonus-row/claimable-bonus-row.test.tsx": {
       "React: Act warnings (component updates not wrapped)": 1,
       "Reselect: Identity function warnings": 3,
-      "warn: \u26a0\ufe0f React Router Future Flag": 2
+      "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/confirmations/components/rows/enforced-simulations-row/enforced-simulations-row.test.tsx": {
       "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/components/rows/pay-with-row/pay-with-row.test.tsx": {
-      "warn: \u26a0\ufe0f React Router Future Flag": 2
+      "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/confirmations/components/rows/required-tokens-row/required-tokens-row.test.tsx": {
       "Reselect: Identity function warnings": 3
@@ -1242,7 +1242,7 @@
     "ui/pages/confirmations/hooks/alerts/transactions/useTokenContractAlert.test.ts": {
       "React: Act warnings (component updates not wrapped)": 7,
       "Reselect: Identity function warnings": 3,
-      "warn: \u26a0\ufe0f React Router Future Flag": 2
+      "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/confirmations/hooks/alerts/useAddressTrustSignalAlerts.test.ts": {
       "Reselect: Identity function warnings": 3
@@ -1323,7 +1323,7 @@
       "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/hooks/transactions/useShieldConfirm.test.ts": {
-      "warn: \u26a0\ufe0f React Router Future Flag": 2
+      "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/confirmations/hooks/transactions/useTransactionConfirm.test.ts": {
       "MetaMask: Background connection not initialized": 96,
@@ -1670,6 +1670,9 @@
     },
     "ui/pages/trust-signals/hooks/useTrustSignalMetrics.test.ts": {
       "Reselect: Identity function warnings": 3
+    },
+    "ui/pages/unlock-page/reset-password-modal.test.tsx": {
+      "React: DOM nesting violations": 1
     },
     "ui/pages/unlock-page/unlock-page.test.tsx": {
       "MetaMask: Background connection not initialized": 1,
