@@ -144,9 +144,6 @@ jest.mock('../../components/app/perps/order-entry/limit-price-warnings', () => {
       mockIsNearLiquidationPrice(...args),
   };
 });
-
-// eslint-disable-next-line import-x/first
-
 describe('PerpsOrderEntryPage', () => {
   const middlewares = [thunk];
   const mockStore = configureMockStore(middlewares);
