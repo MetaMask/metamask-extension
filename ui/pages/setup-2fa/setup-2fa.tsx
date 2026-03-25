@@ -39,7 +39,7 @@ const successPhoneImage = './images/2fa-success-phone.png';
 
 // ─── Types & Data ────────────────────────────────────────────────────
 
-type FactorId = 'email' | 'sms' | 'authenticator' | 'passkeys';
+type FactorId = 'email' | 'sms' | 'social' | 'authenticator' | 'passkeys' | 'mobile';
 
 type SecurityLevel = 'most' | 'more' | 'less';
 
@@ -61,10 +61,12 @@ const ALL_FACTORS: FactorOption[] = [
   { id: 'passkeys', nameKey: 'twoFAFactorPasskeys', descKey: 'twoFAFactorPasskeysDesc', icon: IconName.Fingerprint, security: 'most' },
   { id: 'email', nameKey: 'twoFAFactorEmailOtp', descKey: 'twoFAFactorEmailOtpDesc', icon: IconName.Mail, security: 'more' },
   { id: 'sms', nameKey: 'twoFAFactorSmsOtp', descKey: 'twoFAFactorSmsOtpDesc', icon: IconName.Sms, security: 'less' },
+  { id: 'social', nameKey: 'twoFAFactorSocialLogin', descKey: 'twoFAFactorSocialLoginDesc', icon: IconName.Global, security: 'more' },
+  { id: 'mobile', nameKey: 'twoFAFactorMobileDevice', descKey: 'twoFAFactorMobileDeviceDesc', icon: IconName.Mobile, security: 'more' },
 ];
 
 const DEFAULT_FACTORS: FactorId[] = ['email', 'authenticator'];
-const BACKUP_ALLOWED_IDS: FactorId[] = ['email', 'passkeys'];
+const BACKUP_ALLOWED_IDS: FactorId[] = ['email', 'passkeys', 'sms', 'social', 'mobile'];
 
 type Step = 'carousel-0' | 'carousel-1' | 'carousel-2' | 'signing' | 'recovery' | 'success';
 
@@ -443,6 +445,83 @@ function SetupModal({ factorId, phase, onComplete, onClose, t }: {
     );
   }
 
+  if (factorId === 'social') {
+    return (
+      <Box backgroundColor={BoxBackgroundColor.BackgroundDefault} className="absolute inset-0 z-50 flex flex-col">
+        {header}
+        <Box className="flex-1" paddingHorizontal={4}>
+          <Text variant={TextVariant.HeadingMd} fontWeight={FontWeight.Bold}>{t('twoFAFactorSocialLogin')}</Text>
+          <Text color={TextColor.TextAlternative} variant={TextVariant.BodySm} className="mt-1 mb-6">{t('twoFASocialPickProvider')}</Text>
+          <Box flexDirection={BoxFlexDirection.Column} gap={2}>
+            <Box
+              flexDirection={BoxFlexDirection.Row} alignItems={BoxAlignItems.Center} gap={3} padding={4}
+              borderColor={BoxBorderColor.BorderMuted} className="rounded-xl border cursor-pointer hover:bg-background-default-hover"
+              onClick={() => onComplete(t('twoFAGoogleLinked'))}
+            >
+              <Box backgroundColor={BoxBackgroundColor.BackgroundMuted} className="rounded-full p-1.5 shrink-0">
+                <Icon name={IconName.Global} color={IconColor.IconDefault} size={IconSize.Sm} />
+              </Box>
+              <Box className="flex-1">
+                <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>{t('twoFAFactorGoogle')}</Text>
+                <Text variant={TextVariant.BodyXs} color={TextColor.TextMuted}>{t('twoFAFactorGoogleDesc')}</Text>
+              </Box>
+              <Icon name={IconName.ArrowRight} size={IconSize.Sm} color={IconColor.IconMuted} />
+            </Box>
+            <Box
+              flexDirection={BoxFlexDirection.Row} alignItems={BoxAlignItems.Center} gap={3} padding={4}
+              borderColor={BoxBorderColor.BorderMuted} className="rounded-xl border cursor-pointer hover:bg-background-default-hover"
+              onClick={() => onComplete(t('twoFAAppleLinked'))}
+            >
+              <Box backgroundColor={BoxBackgroundColor.BackgroundMuted} className="rounded-full p-1.5 shrink-0">
+                <Icon name={IconName.Mobile} color={IconColor.IconDefault} size={IconSize.Sm} />
+              </Box>
+              <Box className="flex-1">
+                <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>{t('twoFAFactorApple')}</Text>
+                <Text variant={TextVariant.BodyXs} color={TextColor.TextMuted}>{t('twoFAFactorAppleDesc')}</Text>
+              </Box>
+              <Icon name={IconName.ArrowRight} size={IconSize.Sm} color={IconColor.IconMuted} />
+            </Box>
+          </Box>
+        </Box>
+      </Box>
+    );
+  }
+
+  if (factorId === 'mobile') {
+    return (
+      <Box backgroundColor={BoxBackgroundColor.BackgroundDefault} className="absolute inset-0 z-50 flex flex-col">
+        {header}
+        <Box className="flex-1" paddingHorizontal={4}>
+          <Text variant={TextVariant.HeadingMd} fontWeight={FontWeight.Bold}>{t('twoFAMobileDeviceSetup')}</Text>
+          <Text color={TextColor.TextAlternative} variant={TextVariant.BodySm} className="mt-1 mb-6">{t('twoFAMobileDeviceSubtitle')}</Text>
+          <Box flexDirection={BoxFlexDirection.Column} gap={3} className="mb-4">
+            {[
+              { num: '1', textKey: 'twoFAMobileDeviceStep1' },
+              { num: '2', textKey: 'twoFAMobileDeviceStep2' },
+              { num: '3', textKey: 'twoFAMobileDeviceStep3' },
+            ].map((s) => (
+              <Box key={s.num} flexDirection={BoxFlexDirection.Row} alignItems={BoxAlignItems.Center} gap={3}>
+                <Box backgroundColor={BoxBackgroundColor.PrimaryMuted} className="rounded-full w-6 h-6 flex items-center justify-center shrink-0">
+                  <Text variant={TextVariant.BodyXs} fontWeight={FontWeight.Bold} color={TextColor.PrimaryDefault}>{s.num}</Text>
+                </Box>
+                <Text variant={TextVariant.BodySm}>{t(s.textKey)}</Text>
+              </Box>
+            ))}
+          </Box>
+          <Box flexDirection={BoxFlexDirection.Row} justifyContent={BoxJustifyContent.Center} alignItems={BoxAlignItems.Center}
+            backgroundColor={BoxBackgroundColor.BackgroundMuted} className="rounded-xl" style={{ height: 180 }}>
+            <Icon name={IconName.QrCode} color={IconColor.IconMuted} size={IconSize.Xl} />
+          </Box>
+        </Box>
+        <Box padding={4} className="shrink-0">
+          <Button variant={ButtonVariant.Primary} size={ButtonSize.Lg} isFullWidth onClick={() => onComplete(t('twoFAMobileLinked'))}>
+            {t('twoFAMobileDeviceLink')}
+          </Button>
+        </Box>
+      </Box>
+    );
+  }
+
   if (factorId === 'passkeys') {
     return (
       <Box backgroundColor={BoxBackgroundColor.BackgroundDefault} className="absolute inset-0 z-50 flex flex-col">
@@ -469,7 +548,7 @@ function SetupModal({ factorId, phase, onComplete, onClose, t }: {
 
 // ─── Factor List Screen ──────────────────────────────────────────────
 
-function FactorListScreen({ phase, title, subtitle, factors, excludeIds, configured, onFactorConfigured, onContinue, onBack, onClose, step, t }: {
+function FactorListScreen({ phase, title, subtitle, factors, excludeIds, configured, onFactorConfigured, onContinue, onBack, onClose, step, minTopCount = 2, t }: {
   phase: 'signing' | 'recovery';
   title: string;
   subtitle: string;
@@ -481,6 +560,7 @@ function FactorListScreen({ phase, title, subtitle, factors, excludeIds, configu
   onBack: () => void;
   onClose: () => void;
   step: Step;
+  minTopCount?: number;
   t: (key: string) => string;
 }) {
   const [setupModalFactor, setSetupModalFactor] = useState<FactorId | null>(null);
@@ -527,13 +607,19 @@ function FactorListScreen({ phase, title, subtitle, factors, excludeIds, configu
           const configuredFactors = available.filter((f) => configuredIds.includes(f.id));
           const unconfiguredAll = available.filter((f) => !configuredIds.includes(f.id));
 
-          const topFactors = hasAnyConfigured
-            ? configuredFactors
-            : available.filter((f) => DEFAULT_FACTORS.includes(f.id));
+          let topFactors: FactorOption[];
+          let collapsedFactors: FactorOption[];
 
-          const collapsedFactors = hasAnyConfigured
-            ? unconfiguredAll
-            : available.filter((f) => !DEFAULT_FACTORS.includes(f.id));
+          if (hasAnyConfigured) {
+            topFactors = configuredFactors;
+            collapsedFactors = unconfiguredAll;
+          } else {
+            const defaults = available.filter((f) => DEFAULT_FACTORS.includes(f.id));
+            const rest = available.filter((f) => !DEFAULT_FACTORS.includes(f.id));
+            const needed = Math.max(0, minTopCount - defaults.length);
+            topFactors = [...defaults, ...rest.slice(0, needed)];
+            collapsedFactors = rest.slice(needed);
+          }
 
           return (
             <>
@@ -840,7 +926,7 @@ export const Setup2FAPage: React.FC = () => {
         title={t('twoFAAdd2FAVerification')}
         subtitle={t('twoFAChooseSigningMethod')}
         factors={ALL_FACTORS}
-        excludeIds={[]}
+        excludeIds={['social', 'mobile']}
         configured={configuredSigning}
         onFactorConfigured={(f) => setConfiguredSigning((prev) => [...prev.filter((x) => x.id !== f.id), f])}
         onContinue={() => setStep('recovery')}
