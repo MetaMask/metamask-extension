@@ -48,6 +48,11 @@ jest.mock('../../../hooks/perps/stream', () => ({
 const mockStore = configureStore({
   metamask: {
     ...mockState.metamask,
+    isTestnet: false,
+    watchlistMarkets: {
+      testnet: [],
+      mainnet: ['BTC', 'ETH'],
+    },
   },
 });
 
