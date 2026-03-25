@@ -108,7 +108,7 @@ import { useI18nContext } from '../../hooks/useI18nContext';
 import RewardsPage from '../rewards';
 import { DEFAULT_AUTO_LOCK_TIME_LIMIT } from '../../../shared/constants/preferences';
 import {
-  ENVIRONMENT_TYPE_NOTIFICATION,
+  ENVIRONMENT_TYPE_FULLSCREEN,
   ENVIRONMENT_TYPE_POPUP,
   ENVIRONMENT_TYPE_SIDEPANEL,
   SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES,
@@ -886,8 +886,12 @@ export default function Routes() {
     // is already a fullscreen interface.
     !isShowingDeepLinkRoute;
 
-  const isSidepanel = getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL;
-  const isNotification = getEnvironmentType() === ENVIRONMENT_TYPE_NOTIFICATION;
+  const environmentType = getEnvironmentType();
+  const isSidepanel = environmentType === ENVIRONMENT_TYPE_SIDEPANEL;
+  const isMainUI =
+    environmentType === ENVIRONMENT_TYPE_POPUP ||
+    environmentType === ENVIRONMENT_TYPE_SIDEPANEL ||
+    environmentType === ENVIRONMENT_TYPE_FULLSCREEN;
 
   return (
     <div
@@ -899,9 +903,7 @@ export default function Routes() {
       dir={textDirection}
     >
       <ConfirmationHandler />
-      {!isNotification && location.pathname === DEFAULT_ROUTE && (
-        <ToastListener />
-      )}
+      {isMainUI && <ToastListener />}
 
       <QRHardwarePopover />
       <Modal />

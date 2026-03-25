@@ -227,6 +227,21 @@ export const useBridgeNavigation = () => {
     });
   }, [state]);
 
+  /**
+   * Navigates to the activity page and clears the navigation state.
+   */
+  const navigateToActivityPage = useCallback(() => {
+    navigate(`${DEFAULT_ROUTE}?tab=activity`, {
+      state: {
+        ...state,
+        bridgeState: null,
+        token: null,
+        stayOnHomePage: true,
+      },
+      replace: true,
+    });
+  }, [state]);
+
   const navigateToDefaultRoute = useCallback(async () => {
     dispatch(resetBridgeControllerAndCache());
     const isFromTransactionShield = new URLSearchParams(search || '').get(
@@ -258,6 +273,7 @@ export const useBridgeNavigation = () => {
     navigateToAssetPage,
     navigateToBridgePage,
     navigateToHwSigningPage,
+    navigateToActivityPage,
     navigateToDefaultRoute,
   };
 };

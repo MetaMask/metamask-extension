@@ -1,3 +1,4 @@
+import { isNonEvmChainId } from '@metamask/bridge-controller';
 import { createSelector } from 'reselect';
 import type {
   BridgeHistoryItem,
@@ -11,6 +12,7 @@ import {
   getInternalAccountsFromGroupById,
   getSelectedAccountGroup,
 } from '../../selectors/multichain-accounts/account-tree';
+import { EMPTY_OBJECT } from '../../selectors/shared';
 
 type BridgeStatusAppState = {
   metamask: BridgeStatusControllerState & TransactionControllerState;
@@ -30,7 +32,7 @@ const selectBridgeHistoryForAccount = createSelector(
   [(_, selectedAddresses?: string[]) => selectedAddresses, selectBridgeHistory],
   (selectedAddresses, txHistory) => {
     if (!txHistory) {
-      return {};
+      return EMPTY_OBJECT as Record<string, BridgeHistoryItem>;
     }
 
     if (!selectedAddresses || selectedAddresses.length === 0) {
@@ -69,6 +71,29 @@ export const selectBridgeHistoryForAccountGroup = createSelector(
     ).map((internalAccount) => internalAccount.address);
 
     return selectBridgeHistoryForAccount(state, internalAccountAddresses);
+  },
+);
+
+export const selectNonEvmBridgeSourceTxIds = createSelector(
+  [selectBridgeHistoryForAccountGroup],
+  (bridgeHistory) => {
+    const ids = new Set<string>();
+
+    for (const [key, item] of Object.entries(bridgeHistory ?? {})) {
+      if (!isNonEvmChainId(item.quote.srcChainId)) {
+        continue;
+      }
+
+      ids.add(key);
+
+      const { originalTransactionId } = item;
+
+      if (originalTransactionId) {
+        ids.add(originalTransactionId);
+      }
+    }
+
+    return ids;
   },
 );
 

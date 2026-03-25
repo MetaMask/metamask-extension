@@ -30,10 +30,8 @@ export const EXCLUDED_TRANSACTION_TYPES = new Set([
   TransactionType.relayDeposit,
 ]);
 
-// EVM transaction types excluded from toast notifications.
-// Bridge transactions are handled via txHistory (bridge status controller),
-// so bridge and bridgeApproval types are excluded here to avoid double-toasting.
-export const EXCLUDED_TOAST_TRANSACTION_TYPES = new Set([
+// EVM transaction types excluded from toast notifications
+export const TOAST_EXCLUDED_TRANSACTION_TYPES = new Set([
   TransactionType.swapApproval,
   TransactionType.bridgeApproval,
   TransactionType.bridge,
@@ -41,21 +39,26 @@ export const EXCLUDED_TOAST_TRANSACTION_TYPES = new Set([
 ]);
 
 // Non-EVM transaction types excluded from toast notifications.
-export const EXCLUDED_NON_EVM_TOAST_TYPES = new Set(['approve']);
+export const TOAST_EXCLUDED_NON_EVM_TRANSACTION_TYPES = new Set(['approve']);
 
-export const TRANSACTION_PENDING_STATUSES = [
+const TRANSACTION_PENDING_STATUSES = [
   TransactionStatus.submitted,
   SmartTransactionStatus.pending,
 ];
 
-export const TRANSACTION_SUCCESS_STATUSES = [
+const TRANSACTION_SUCCESS_STATUSES = [
   TransactionStatus.confirmed,
   SmartTransactionStatus.success,
 ];
 
-export const TRANSACTION_FAILED_STATUSES = [
+const TRANSACTION_FAILED_STATUSES = [
   TransactionStatus.failed,
   SmartTransactionStatus.cancelled,
 ];
 
-export const ERC20_TRANSFER_SELECTOR = 'a9059cbb';
+export const isPending = (status) =>
+  TRANSACTION_PENDING_STATUSES.some((s) => s === status);
+export const isSuccess = (status) =>
+  TRANSACTION_SUCCESS_STATUSES.some((s) => s === status);
+export const isFailed = (status) =>
+  TRANSACTION_FAILED_STATUSES.some((s) => s === status);

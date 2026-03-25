@@ -24,14 +24,14 @@ import {
   hasTransactionPendingApprovals,
   getApprovedAndSignedTransactions,
   smartTransactionsListSelector,
-  selectNonEvmTransactions,
   getTransactions,
-  selectEvmTransactions,
   getUnapprovedTransactions,
   getTransactionsByChainId,
   incomingTxListSelectorAllChains,
   selectedAddressTxListSelectorAllChain,
   selectedAddressTxListSelector,
+  selectEvmTransactionsForToast,
+  selectNonEvmTransactionsForToast,
   transactionSubSelectorAllChains,
   transactionsSelectorAllChains,
 } from './transactions';
@@ -1899,7 +1899,7 @@ describe('Transaction Selectors', () => {
         },
       };
 
-      const results = selectEvmTransactions(state);
+      const results = selectEvmTransactionsForToast(state);
 
       expect(results).toStrictEqual([
         {
@@ -1921,7 +1921,7 @@ describe('Transaction Selectors', () => {
     });
 
     it('returns an empty array if there are no transactions', () => {
-      const results = selectEvmTransactions({});
+      const results = selectEvmTransactionsForToast({});
       expect(results).toStrictEqual([]);
     });
   });
@@ -1975,13 +1975,13 @@ describe('Transaction Selectors', () => {
         },
       };
 
-      const results = selectNonEvmTransactions(state);
+      const results = selectNonEvmTransactionsForToast(state);
 
       expect(results).toStrictEqual([tx1, tx2, tx3, includedBtcTx]);
     });
 
     it('returns an empty array if non-EVM transactions do not exist', () => {
-      const results = selectNonEvmTransactions({});
+      const results = selectNonEvmTransactionsForToast({});
       expect(results).toStrictEqual([]);
     });
   });

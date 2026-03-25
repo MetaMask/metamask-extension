@@ -341,7 +341,7 @@ describe('Swap on Solana', function () {
           swapFromAmount: '1',
         });
 
-        // After failure, navigate to activity list to check the failed tx
+        // After failure, the bridge navigates to home/activity with the failed tx
         await homePage.goToActivityList();
         const activityListPage = new ActivityListPage(driver);
         await activityListPage.checkFailedTxNumberDisplayedInActivity(1);

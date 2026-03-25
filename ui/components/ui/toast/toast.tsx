@@ -9,24 +9,16 @@ import { ENVIRONMENT_TYPE_NOTIFICATION } from '../../../../shared/constants/app'
 // eslint-disable-next-line import-x/no-restricted-paths
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import {
-  getTransactionDisplayData,
+  useTransactionDisplayData,
   type TransactionStatus,
 } from '../../../helpers/utils/transaction-display';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { SPINNER_INPUT, ToastStatusIcon } from './toast-status-icon';
 
 export const ToastContent = ({ variant }: { variant: TransactionStatus }) => {
-  const { title, description } = getTransactionDisplayData(variant);
+  const { title } = useTransactionDisplayData(variant);
 
-  return (
-    <>
-      <p className="text-m-body-md">{title}</p>
-
-      {description ? (
-        <p className="text-s-body-sm text-alternative">{description}</p>
-      ) : null}
-    </>
-  );
+  return <p className="text-m-body-md">{title}</p>;
 };
 
 export function Toaster() {
@@ -48,7 +40,6 @@ export function Toaster() {
           borderRadius: 12,
           padding: 12,
         },
-        duration: Infinity,
       }}
     >
       {(notification) => (

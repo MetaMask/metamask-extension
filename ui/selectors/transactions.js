@@ -9,8 +9,8 @@ import {
   PRIORITY_STATUS_HASH,
   PENDING_STATUS_HASH,
   EXCLUDED_TRANSACTION_TYPES,
-  EXCLUDED_TOAST_TRANSACTION_TYPES,
-  EXCLUDED_NON_EVM_TOAST_TYPES,
+  TOAST_EXCLUDED_TRANSACTION_TYPES,
+  TOAST_EXCLUDED_NON_EVM_TRANSACTION_TYPES,
 } from '../helpers/constants/transactions';
 import txHelper from '../helpers/utils/tx-helper';
 import { SmartTransactionStatus } from '../../shared/constants/transaction';
@@ -50,17 +50,17 @@ export const getTransactions = createSelector(
  * @param {object} state - Root state
  * @returns {object[]} Filtered array of transaction objects
  */
-export const selectEvmTransactions = createSelector(
+export const selectEvmTransactionsForToast = createSelector(
   getTransactions,
   (transactions) => {
-    if (!transactions.length) {
+    if (transactions.length === 0) {
       return EMPTY_ARRAY;
     }
 
     return transactions.filter(
       (transaction) =>
         Boolean(transaction.type) &&
-        !EXCLUDED_TOAST_TRANSACTION_TYPES.has(transaction.type),
+        !TOAST_EXCLUDED_TRANSACTION_TYPES.has(transaction.type),
     );
   },
 );
@@ -71,7 +71,7 @@ export const selectEvmTransactions = createSelector(
  * @param {object} state - Root state
  * @returns {object[]} Filtered array of non-EVM transaction objects
  */
-export const selectNonEvmTransactions = createSelector(
+export const selectNonEvmTransactionsForToast = createDeepEqualSelector(
   (state) => state.metamask?.nonEvmTransactions,
   (nonEvmTransactionsMap) => {
     if (!nonEvmTransactionsMap) {
@@ -86,7 +86,9 @@ export const selectNonEvmTransactions = createSelector(
       )
       .filter((transaction) => {
         const type = transaction?.type;
-        return Boolean(type) && !EXCLUDED_NON_EVM_TOAST_TYPES.has(type);
+        return (
+          Boolean(type) && !TOAST_EXCLUDED_NON_EVM_TRANSACTION_TYPES.has(type)
+        );
       });
   },
 );
