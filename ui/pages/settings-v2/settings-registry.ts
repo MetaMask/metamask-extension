@@ -11,7 +11,7 @@ import {
   BACKUPANDSYNC_ROUTE,
   CURRENCY_ROUTE,
   DEVELOPER_OPTIONS_ROUTE,
-  DEVELOPER_OPTIONS_V2_ROUTE,
+  DEVELOPER_TOOLS_V2_ROUTE,
   MANAGE_WALLET_RECOVERY_V2_ROUTE,
   EXPERIMENTAL_ROUTE,
   LANGUAGE_ROUTE,
@@ -69,7 +69,7 @@ export const SETTINGS_V2_ROOT_SECTIONS: readonly {
     paths: [
       EXPERIMENTAL_ROUTE,
       DEVELOPER_OPTIONS_ROUTE,
-      DEVELOPER_OPTIONS_V2_ROUTE,
+      DEVELOPER_TOOLS_V2_ROUTE,
       ABOUT_US_ROUTE,
     ],
   },
@@ -295,10 +295,10 @@ export const SETTINGS_V2_ROUTES: Record<string, SettingsV2RouteMeta> = {
         },
       }
     : {}),
-  [DEVELOPER_OPTIONS_V2_ROUTE]: {
-    labelKey: 'developerOptions',
+  [DEVELOPER_TOOLS_V2_ROUTE]: {
+    labelKey: 'developerTools',
     parentPath: SETTINGS_V2_ROUTE,
-    component: mmLazy(() => import('./developer-options-tab/index.ts')),
+    component: mmLazy(() => import('./developer-tools-tab/index.ts')),
     isTab: true,
     iconName: IconName.Code,
   },

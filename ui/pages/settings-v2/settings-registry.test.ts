@@ -1,5 +1,5 @@
 import {
-  DEVELOPER_OPTIONS_V2_ROUTE,
+  DEVELOPER_TOOLS_V2_ROUTE,
   DEVELOPER_OPTIONS_ROUTE,
   ASSETS_ROUTE,
   CURRENCY_ROUTE,
@@ -36,16 +36,6 @@ describe('settings-registry', () => {
         }),
       );
       expect(meta?.parentPath).toBeUndefined();
-    });
-
-    it('keeps v2 developer options as developer options', () => {
-      const meta = getSettingsV2RouteMeta(DEVELOPER_OPTIONS_V2_ROUTE);
-
-      expect(meta).toEqual(
-        expect.objectContaining({
-          labelKey: 'developerOptions',
-        }),
-      );
     });
 
     it('adds a separate debug route in test builds', () => {

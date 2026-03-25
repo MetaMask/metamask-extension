@@ -29,8 +29,8 @@ const DEVELOPER_OPTIONS_SETTING_ITEMS: SettingItemConfig[] = [
   { id: 'delete-activity-and-nonce-data', component: DeleteActivityItem },
 ];
 
-const DeveloperOptionsTab = () => (
+const DeveloperToolsTab = () => (
   <SettingsTab items={DEVELOPER_OPTIONS_SETTING_ITEMS} />
 );
 
-export default DeveloperOptionsTab;
+export default DeveloperToolsTab;
