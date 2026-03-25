@@ -467,11 +467,26 @@ function buildHealthMap(
 }
 
 /**
- * Counts fail/warn preset × combo combinations across all entries.
+ * Extracts the display name from a benchmark name.
+ * For startup benchmarks with platform prefix (e.g., 'chrome-browserify-startupStandardHome'),
+ * returns just the metric name (e.g., 'startupStandardHome').
+ * For other benchmarks, returns the name as-is.
+ * @param benchmarkName
+ */
+function extractDisplayName(benchmarkName: string): string {
+  // Match pattern: platform-buildType-metricName (for startup benchmarks)
+  const match = benchmarkName.match(
+    /^(?:chrome|firefox)-(?:browserify|webpack)-(.+)$/u,
+  );
+  return match ? match[1] : benchmarkName;
+}
+
+/**
+ * Counts the number of failing and warning benchmark entries.
  *
- * @param allEntries - Benchmark entries to aggregate.
+ * @param allEntries - All benchmark entries to count.
  * @param baseline - Historical baseline (optional).
- * @returns Count of failing and warning preset × combo combinations.
+ * @returns Object with failure and warning counts.
  */
 function countHealthEntries(
   allEntries: BenchmarkEntry[],
@@ -545,9 +560,9 @@ export function buildBenchmarkSection(
         .join('')}</tr>`;
 
       const dataRows = benchmarkNames
-        .map((benchmarkName) => {
+        .map((benchmarkName: string) => {
           const cells = orderedCombos
-            .map((combo) => {
+            .map((combo: string) => {
               const entry = entryLookup.get(`${benchmarkName}|${combo}`);
               if (!entry) {
                 return `<td align="center">–</td>`;
@@ -564,7 +579,7 @@ export function buildBenchmarkSection(
               return `<td align="center">${cell}</td>`;
             })
             .join('');
-          return `<tr><td>${benchmarkName}</td>${cells}</tr>`;
+          return `<tr><td>${String(benchmarkName)}</td>${cells}</tr>`;
         })
         .join('');
 
@@ -642,16 +657,36 @@ function buildHealthMatrixHtml(
   );
   const orderedCombos = ALL_BENCHMARK_COMBOS.filter((c) => usedCombos.has(c));
 
+  // Group benchmarks by display name (strips platform prefix for startup benchmarks)
+  const displayNameMap = new Map<string, string[]>();
+  for (const benchmark of allEntries.map((e) => e.benchmarkName)) {
+    const displayName = extractDisplayName(benchmark);
+    if (!displayNameMap.has(displayName)) {
+      displayNameMap.set(displayName, []);
+    }
+    const variants = displayNameMap.get(displayName);
+    if (variants && !variants.includes(benchmark)) {
+      variants.push(benchmark);
+    }
+  }
+
   // Only include benchmark rows that have at least one Fail.
-  const allBenchmarks = [...new Set(allEntries.map((e) => e.benchmarkName))];
-  const affectedBenchmarks = allBenchmarks.filter((benchmark) =>
-    orderedCombos.some(
-      (combo) =>
-        cellMap.get(`${benchmark}|${combo}`)?.health === EntryHealth.Fail,
-    ),
+  const affectedDisplayNames = [...displayNameMap.keys()].filter(
+    (displayName) => {
+      const variants = displayNameMap.get(displayName);
+      if (!variants) {
+        return false;
+      }
+      return variants.some((benchmark) =>
+        orderedCombos.some(
+          (combo) =>
+            cellMap.get(`${benchmark}|${combo}`)?.health === EntryHealth.Fail,
+        ),
+      );
+    },
   );
 
-  if (affectedBenchmarks.length === 0 || orderedCombos.length === 0) {
+  if (affectedDisplayNames.length === 0 || orderedCombos.length === 0) {
     return '';
   }
 
@@ -659,11 +694,34 @@ function buildHealthMatrixHtml(
     .map((c) => `<th>${c}</th>`)
     .join('')}</tr>`;
 
-  const dataRows = affectedBenchmarks
-    .map((benchmark) => {
+  const dataRows = affectedDisplayNames
+    .map((displayName) => {
+      const variants = displayNameMap.get(displayName);
+      if (!variants) {
+        return '';
+      }
       const cells = orderedCombos
         .map((combo) => {
-          const data = cellMap.get(`${benchmark}|${combo}`);
+          // Find the benchmark variant that matches this combo
+          // For startup benchmarks, the variant includes platform-buildType prefix
+          const matchingBenchmark = variants.find((v) => {
+            // Check if this is a startup benchmark with platform prefix
+            const isStartup =
+              v.startsWith('chrome-') || v.startsWith('firefox-');
+            if (isStartup) {
+              // Extract platform-buildType from benchmark name
+              const prefix = v.replace(/-startup.+$/u, '');
+              return prefix === combo;
+            }
+            // For non-startup benchmarks, all variants map to all combos
+            return true;
+          });
+
+          if (!matchingBenchmark) {
+            return `<td align="center">–</td>`;
+          }
+
+          const data = cellMap.get(`${matchingBenchmark}|${combo}`);
           if (!data) {
             return `<td align="center">–</td>`;
           }
@@ -671,7 +729,7 @@ function buildHealthMatrixHtml(
           // Find the entry to get artifact URL
           const entry = allEntries.find(
             (e) =>
-              e.benchmarkName === benchmark &&
+              e.benchmarkName === matchingBenchmark &&
               `${e.platform}-${e.buildType}` === combo,
           );
           const logHref = entry?.artifactUrl;
@@ -681,7 +739,7 @@ function buildHealthMatrixHtml(
           return `<td align="center">${cell}</td>`;
         })
         .join('');
-      return `<tr><td>${benchmark}</td>${cells}</tr>`;
+      return `<tr><td>${displayName}</td>${cells}</tr>`;
     })
     .join('');
 
@@ -788,7 +846,7 @@ function buildFailingItemsHtml(
 export async function buildPerformanceBenchmarksSection(
   hostUrl: string,
 ): Promise<string> {
-  const sectionTitle = '⚡ Performance Benchmarks';
+  const sectionTitle = '⚡ Performance Benchmarks (vs. main)';
 
   const benchmarkRunId =
     process.env.BENCHMARK_WORKFLOW_RUN_ID ?? process.env.GITHUB_RUN_ID;
@@ -884,12 +942,14 @@ export async function buildPerformanceBenchmarksSection(
     process.env.GITHUB_SHA
       ? `${process.env.GITHUB_SERVER_URL}/${process.env.GITHUB_REPOSITORY}/commit/${process.env.GITHUB_SHA}`
       : undefined;
-  const commitLink = commitUrl
-    ? `<a href="${commitUrl}">${commitHash}</a>`
-    : commitHash;
-  const runLink = runUrl ? `<a href="${runUrl}">Build logs</a>` : '';
-  const separator = runLink ? ' | ' : '';
-  const commitInfo = `<p><sub>Current Commit: ${commitLink} | Date: ${commitDate}${separator}${runLink}</sub></p>\n\n`;
+  const commitLink = commitUrl ? `[${commitHash}](${commitUrl})` : commitHash;
+  const pipelineLink = runUrl
+    ? `[${benchmarkRunId}](${runUrl})`
+    : (benchmarkRunId ?? '');
+  const baselineLogsUrl =
+    'https://raw.githubusercontent.com/MetaMask/extension_benchmark_stats/main/stats/main/performance_data.json';
+  const baselineLogsLink = `[Baseline logs](${baselineLogsUrl})`;
+  const commitInfo = `**Current Commit**: ${commitLink} | **Date**: ${commitDate} | **Pipeline**: ${pipelineLink} | ${baselineLogsLink}\n\n`;
 
   const subsectionsHtml = interactionHtml + startupHtml + userJourneyHtml;
   const content =

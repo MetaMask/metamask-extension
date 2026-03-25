@@ -329,8 +329,8 @@ describe('benchmark-comparison', () => {
       expect(formatDeltaPercent(-0.08)).toBe('-8%');
     });
 
-    it('formats zero as 0%', () => {
-      expect(formatDeltaPercent(0)).toBe('0%');
+    it('formats zero as 0.0%', () => {
+      expect(formatDeltaPercent(0)).toBe('0.0%');
     });
   });
 });

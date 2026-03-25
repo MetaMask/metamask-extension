@@ -3,7 +3,7 @@
  *
  * Two-layer approach:
  *
- * 1. Absolute gate: validates p75/p95 against constant limits in THRESHOLD_REGISTRY.
+ * 1. Absolute gate: validates p75/p95 against constant limits.
  * This is the primary pass/fail authority that prevents performance drift.
  * Reuses validateResultThresholds from the benchmark statistics module.
  *
@@ -67,9 +67,9 @@ const iconForSeverity = (severity: ComparisonSeverity): string =>
  * @param deltaPercent - Delta as a fraction (0.1 = 10%, -0.08 = -8%).
  */
 export function formatDeltaPercent(deltaPercent: number): string {
-  const pct = Number((deltaPercent * 100).toFixed(0));
+  const pct = Number((deltaPercent * 100).toFixed(1));
   if (pct === 0) {
-    return '0%';
+    return '0.0%';
   }
   const sign = pct > 0 ? '+' : '';
   return `${sign}${pct}%`;

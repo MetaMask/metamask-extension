@@ -682,7 +682,7 @@ describe('buildPerformanceBenchmarksSection', () => {
     const html = await buildPerformanceBenchmarksSection(HOST);
 
     expect(html).toContain(
-      `<summary>⚡ Performance Benchmarks (${COMPARISON_SEVERITY.Pass.icon} pass · ${COMPARISON_SEVERITY.Warn.icon} warn · ${COMPARISON_SEVERITY.Regression.icon} fail)</summary>`,
+      `<summary>⚡ Performance Benchmarks (vs. main) (${COMPARISON_SEVERITY.Pass.icon} pass · ${COMPARISON_SEVERITY.Warn.icon} warn · ${COMPARISON_SEVERITY.Regression.icon} fail)</summary>`,
     );
   });
 
@@ -695,9 +695,9 @@ describe('buildPerformanceBenchmarksSection', () => {
 
     const html = await buildPerformanceBenchmarksSection(HOST);
 
-    expect(html).toContain('Current Commit:');
+    expect(html).toContain('**Current Commit**:');
     expect(html).toContain('abc1234');
-    expect(html).toContain('Date:');
+    expect(html).toContain('**Date**:');
 
     delete process.env.GITHUB_SHA;
   });
@@ -713,8 +713,9 @@ describe('buildPerformanceBenchmarksSection', () => {
 
     const html = await buildPerformanceBenchmarksSection(HOST);
 
+    expect(html).toContain('[abc1234]');
     expect(html).toContain(
-      '<a href="https://github.com/MetaMask/metamask-extension/commit/abc1234567890def">abc1234</a>',
+      'https://github.com/MetaMask/metamask-extension/commit/abc1234567890def',
     );
 
     delete process.env.GITHUB_SHA;
@@ -733,10 +734,12 @@ describe('buildPerformanceBenchmarksSection', () => {
 
     const html = await buildPerformanceBenchmarksSection(HOST);
 
-    expect(html).toContain('Build logs');
+    expect(html).toContain('Pipeline');
+    expect(html).toContain('[98765]');
     expect(html).toContain(
       'https://github.com/MetaMask/metamask-extension/actions/runs/98765',
     );
+    expect(html).toContain('Baseline logs');
 
     delete process.env.BENCHMARK_WORKFLOW_RUN_ID;
     delete process.env.GITHUB_SERVER_URL;
@@ -874,9 +877,9 @@ describe('buildPerformanceBenchmarksSection', () => {
 
       const html = await buildPerformanceBenchmarksSection(HOST);
 
-      expect(html).toContain('Current Commit:');
+      expect(html).toContain('**Current Commit**:');
       expect(html).toContain('abc1234');
-      expect(html).toContain('Date:');
+      expect(html).toContain('**Date**:');
     });
 
     it('links commit hash when GitHub env vars are set', async () => {
@@ -890,8 +893,9 @@ describe('buildPerformanceBenchmarksSection', () => {
 
       const html = await buildPerformanceBenchmarksSection(HOST);
 
+      expect(html).toContain('[abc1234]');
       expect(html).toContain(
-        '<a href="https://github.com/MetaMask/metamask-extension/commit/abc1234567890def">abc1234</a>',
+        'https://github.com/MetaMask/metamask-extension/commit/abc1234567890def',
       );
     });
 
@@ -906,10 +910,12 @@ describe('buildPerformanceBenchmarksSection', () => {
 
       const html = await buildPerformanceBenchmarksSection(HOST);
 
-      expect(html).toContain('Build logs');
+      expect(html).toContain('Pipeline');
+      expect(html).toContain('[12345]');
       expect(html).toContain(
         'https://github.com/MetaMask/metamask-extension/actions/runs/12345',
       );
+      expect(html).toContain('Baseline logs');
     });
   });
 
