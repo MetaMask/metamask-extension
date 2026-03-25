@@ -473,8 +473,8 @@ describe('Phishing Detection', function (this: Suite) {
         async function () {
           const { promise, resolve, reject } = createDeferredPromise();
           server = createServer();
-          server.listen(0, blocked, resolve);
           server.on('error', reject);
+          server.listen(0, blocked, resolve);
           await promise;
 
           // required to ensure MetaMask is fully started before running tests
