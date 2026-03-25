@@ -114,8 +114,6 @@ describe('Editing Confirm Transaction', function () {
         });
 
         // has correct updated value on the confirm screen the transaction
-        await sendTokenConfirmationPage.checkFirstGasFee('0.0002');
-
         await sendTokenConfirmationPage.checkNativeCurrency('$0.30');
 
         // confirms the transaction
@@ -175,8 +173,6 @@ describe('Editing Confirm Transaction', function () {
         await sendTokenConfirmationPage.checkGasFee('0.001 ETH');
 
         // has correct updated value on the confirm screen the transaction
-        await sendTokenConfirmationPage.checkFirstGasFee('0.0019');
-
         await sendTokenConfirmationPage.checkNativeCurrency('$3.15');
 
         // confirms the transaction

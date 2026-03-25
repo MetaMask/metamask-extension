@@ -1,4 +1,3 @@
-/* eslint-disable mocha/no-skipped-tests */
 import { MockttpServer } from 'mockttp';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { NETWORK_CLIENT_ID, WINDOW_TITLES } from '../../constants';
@@ -42,7 +41,7 @@ async function withFixturesForSmartTransactions(
     {
       dappOptions: { numberOfTestDapps: 1 },
       fixtures: new FixtureBuilderV2()
-        .withPermissionControllerConnectedToTestDapp()
+        .withPermissionControllerConnectedToTestDapp({ chainIds: [1] })
         .withSelectedNetwork(NETWORK_CLIENT_ID.MAINNET)
         .withEnabledNetworks({
           eip155: {

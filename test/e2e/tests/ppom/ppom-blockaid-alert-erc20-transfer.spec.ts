@@ -84,19 +84,8 @@ describe('PPOM Blockaid Alert - Malicious ERC20 Transfer', function (this: Suite
       {
         dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilderV2()
-          .withNetworkController({
-            selectedNetworkClientId: 'networkConfigurationId',
-          })
           .withPermissionControllerConnectedToTestDapp({
             useLocalhostHostname: true,
-          })
-          .withPreferencesController({
-            securityAlertsEnabled: true,
-          })
-          .withEnabledNetworks({
-            eip155: {
-              '0x539': true,
-            },
           })
           .build(),
         testSpecificMock: mockInfuraWithMaliciousResponses,
