@@ -49,7 +49,9 @@ describe('settings-registry', () => {
     });
 
     it('matches transaction shield sub-pages', () => {
-      expect(getSettingsV2RouteMeta(TRANSACTION_SHIELD_MANAGE_PLAN_ROUTE)).toEqual(
+      expect(
+        getSettingsV2RouteMeta(TRANSACTION_SHIELD_MANAGE_PLAN_ROUTE),
+      ).toEqual(
         expect.objectContaining({
           labelKey: 'shieldManagePlan',
           parentPath: TRANSACTION_SHIELD_ROUTE,

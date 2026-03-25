@@ -9,7 +9,10 @@ class SettingsPage {
   };
 
   private readonly closeSettingsPageButton =
-    '.settings-page__header__title-container__close-button';
+    '[data-testid="settings-v2-header-back-button"]';
+
+  private readonly backSettingsPageButton =
+    '[data-testid="settings-v2-header-back-button"]';
 
   private readonly developerOptionsButton = {
     text: 'Debug',
@@ -31,10 +34,8 @@ class SettingsPage {
     css: '.tab-bar__tab__content__title',
   };
 
-  private readonly securityAndPasswordSettingsButton = {
-    text: 'Security and password',
-    css: '.tab-bar__tab__content__title',
-  };
+  private readonly securityAndPasswordSettingsButton =
+    '[data-testid="settings-v2-tab-item-security-and-password"]';
 
   private readonly searchResultItem =
     '[data-testid="settings-v2-search-result-item"]';
@@ -70,20 +71,26 @@ class SettingsPage {
 
   async checkPageIsLoaded(): Promise<void> {
     console.log('Check settings page is loaded');
-    await this.driver.waitUntil(
-      async () => {
-        const [popupOrSidepanelRoot, fullscreenRoot] = await Promise.all([
-          this.driver.findElements(this.settingsPageRoot),
-          this.driver.findElements(this.settingsPageFullscreenRoot),
-        ]);
+    await this.driver.waitForSelector(this.settingsPageFullscreenRoot);
+  }
 
-        return popupOrSidepanelRoot.length > 0 || fullscreenRoot.length > 0;
-      },
-      {
-        timeout: this.driver.timeout,
-        interval: 250,
-      },
-    );
+  async hasElement(
+    locator: string | { css?: string; text?: string; tag?: string },
+  ) {
+    const elements = await this.driver.findElements(locator);
+    return elements.length > 0;
+  }
+
+  async getCloseControl() {
+    if (await this.hasElement(this.closeSettingsPageButton)) {
+      return this.closeSettingsPageButton;
+    }
+
+    if (await this.hasElement(this.backSettingsPageButton)) {
+      return this.backSettingsPageButton;
+    }
+
+    return '.settings-page__header__title-container__close-button';
   }
 
   async waitForTransactionShieldButtonReady(): Promise<void> {
@@ -109,7 +116,7 @@ class SettingsPage {
 
   async fillSearchSettingsInput(text: string): Promise<void> {
     console.log(`Filling search settings input with ${text}`);
-    if (!(await this.driver.isElementPresent(this.searchSettingsInput))) {
+    if (!(await this.hasElement(this.searchSettingsInput))) {
       await this.openSearch();
     }
     await this.driver.fill(this.searchSettingsInput, text);
@@ -136,14 +143,12 @@ class SettingsPage {
 
   async exitSettings(): Promise<void> {
     console.log('Exiting settings page');
-    await this.driver.clickElement(
-      '.settings-page__header__title-container__close-button',
-    );
+    await this.closeSettingsPage();
   }
 
   async closeSettingsPage(): Promise<void> {
     console.log('Closing Settings page');
-    await this.driver.clickElement(this.closeSettingsPageButton);
+    await this.driver.clickElement(await this.getCloseControl());
   }
 
   async goToAboutPage(): Promise<void> {

@@ -143,6 +143,7 @@ export const RevealSrpList = () => {
         paddingRight={4}
         paddingBottom={0}
         className="srp-reveal-list__srp-list"
+        data-testid="select-srp-container"
       >
         <Text
           marginBottom={2}

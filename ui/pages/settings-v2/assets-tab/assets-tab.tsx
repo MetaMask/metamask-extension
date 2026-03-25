@@ -47,6 +47,7 @@ const AutodetectTokensToggleItem = createToggleItem({
   selector: getUseTokenDetection,
   action: setUseTokenDetection,
   dataTestId: 'autodetect-tokens',
+  containerDataTestId: 'autodetect-tokens',
 });
 
 /** Registry of setting items for the Assets page. Add new items here */

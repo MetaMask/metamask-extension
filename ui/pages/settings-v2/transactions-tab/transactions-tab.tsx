@@ -58,6 +58,7 @@ const SecurityAlertsItem = createToggleItem({
   selector: getIsSecurityAlertsEnabled,
   action: setSecurityAlertsEnabled,
   dataTestId: 'transactions-security-alerts-toggle',
+  containerDataTestId: 'securityAlert',
   disabledSelector: selectIsDisabledByShieldSubscription,
   trackEvent: {
     event: MetaMetricsEventName.SettingsUpdated,

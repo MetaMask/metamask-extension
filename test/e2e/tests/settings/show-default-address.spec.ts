@@ -24,8 +24,9 @@ describe('Show default address', function (this: Suite) {
         // Navigate to settings and check "show default address" section is displayed
         const homePage = new HomePage(driver);
         await homePage.headerNavbar.openSettingsPage();
-        const preferencesAndDisplaySettings =
-          new PreferencesAndDisplaySettings(driver);
+        const preferencesAndDisplaySettings = new PreferencesAndDisplaySettings(
+          driver,
+        );
         await preferencesAndDisplaySettings.checkPageIsLoaded();
         await preferencesAndDisplaySettings.checkShowDefaultAddressSectionIsDisplayed();
       },
@@ -63,11 +64,14 @@ describe('Show default address', function (this: Suite) {
         // Navigate to settings and toggle off "show default address" feature
         const homePage = new HomePage(driver);
         await homePage.headerNavbar.openSettingsPage();
-        const preferencesAndDisplaySettings =
-          new PreferencesAndDisplaySettings(driver);
+        const preferencesAndDisplaySettings = new PreferencesAndDisplaySettings(
+          driver,
+        );
         await preferencesAndDisplaySettings.checkPageIsLoaded();
         await preferencesAndDisplaySettings.toggleShowDefaultAddress();
-        await new SettingsPage(driver).closeSettingsPage();
+        const settingsPage = new SettingsPage(driver);
+        await settingsPage.closeSettingsPage();
+        await settingsPage.closeSettingsPage();
 
         // Check on home page that default address is not present
         await homePage.checkPageIsLoaded();
@@ -91,8 +95,9 @@ describe('Show default address', function (this: Suite) {
         // Navigate to settings and check "show default address" section is not displayed
         const homePage = new HomePage(driver);
         await homePage.headerNavbar.openSettingsPage();
-        const preferencesAndDisplaySettings =
-          new PreferencesAndDisplaySettings(driver);
+        const preferencesAndDisplaySettings = new PreferencesAndDisplaySettings(
+          driver,
+        );
         await preferencesAndDisplaySettings.checkPageIsLoaded();
         await preferencesAndDisplaySettings.checkShowDefaultAddressSectionIsNotDisplayed();
       },

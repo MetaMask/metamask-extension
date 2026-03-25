@@ -75,7 +75,9 @@ describe('Settings Search', function () {
         );
 
         await settingsPage.goToSearchResultPage('Security and password');
-        await new PrivacySettings(driver).checkSecurityAndPasswordPageIsLoaded();
+        await new PrivacySettings(
+          driver,
+        ).checkSecurityAndPasswordPageIsLoaded();
       },
     );
   });

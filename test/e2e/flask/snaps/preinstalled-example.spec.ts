@@ -239,4 +239,3 @@ describe('Preinstalled example Snap', function () {
     );
   });
 });
-

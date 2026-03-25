@@ -61,7 +61,7 @@ const ManageWalletRecoveryItem = ({ route }: ManageWalletRecoveryItemProps) => {
         alignItems={BoxAlignItems.Center}
         className="shrink-0"
       >
-        <Link to={route} className="flex ml-1">
+        <Link to={route} className="flex ml-1" data-testid="reveal-seed-words">
           <Icon
             name={IconName.ArrowRight}
             size={IconSize.Sm}

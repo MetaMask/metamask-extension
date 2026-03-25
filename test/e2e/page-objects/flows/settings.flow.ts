@@ -33,11 +33,13 @@ export const enableNativeTokenAsMainBalance = async (
   const homePage = new HomePage(driver);
   await homePage.headerNavbar.openSettingsPage();
 
-  const preferencesAndDisplaySettings =
-    new PreferencesAndDisplaySettings(driver);
+  const preferencesAndDisplaySettings = new PreferencesAndDisplaySettings(
+    driver,
+  );
   await preferencesAndDisplaySettings.checkPageIsLoaded();
   await preferencesAndDisplaySettings.toggleShowNativeTokenAsMainBalance();
 
   const settingsPage = new SettingsPage(driver);
+  await settingsPage.closeSettingsPage();
   await settingsPage.closeSettingsPage();
 };

@@ -41,8 +41,9 @@ describe('Settings V2 - Preferences and display', function (this: Suite) {
       async ({ driver }: { driver: Driver }) => {
         await login(driver);
         await new HeaderNavbar(driver).openSettingsPage();
-        const preferencesAndDisplaySettings =
-          new PreferencesAndDisplaySettings(driver);
+        const preferencesAndDisplaySettings = new PreferencesAndDisplaySettings(
+          driver,
+        );
         await preferencesAndDisplaySettings.checkPageIsLoaded();
 
         await preferencesAndDisplaySettings.changeLanguage('Español');
@@ -77,8 +78,9 @@ describe('Settings V2 - Preferences and display', function (this: Suite) {
       async ({ driver }: { driver: Driver }) => {
         await login(driver);
         await new HeaderNavbar(driver).openSettingsPage();
-        const preferencesAndDisplaySettings =
-          new PreferencesAndDisplaySettings(driver);
+        const preferencesAndDisplaySettings = new PreferencesAndDisplaySettings(
+          driver,
+        );
         await preferencesAndDisplaySettings.checkPageIsLoaded();
 
         await preferencesAndDisplaySettings.changeLanguage('Dansk');
@@ -122,8 +124,9 @@ describe('Settings V2 - Preferences and display', function (this: Suite) {
       async ({ driver }: { driver: Driver }) => {
         await login(driver);
         await new HeaderNavbar(driver).openSettingsPage();
-        const preferencesAndDisplaySettings =
-          new PreferencesAndDisplaySettings(driver);
+        const preferencesAndDisplaySettings = new PreferencesAndDisplaySettings(
+          driver,
+        );
         await preferencesAndDisplaySettings.checkPageIsLoaded();
 
         await preferencesAndDisplaySettings.changeLanguage('Deutsch');
@@ -132,7 +135,9 @@ describe('Settings V2 - Preferences and display', function (this: Suite) {
         );
         assert.equal(isLanguageLabelChanged, true, 'Language did not change');
 
-        await new SettingsPage(driver).closeSettingsPage();
+        const settingsPage = new SettingsPage(driver);
+        await settingsPage.closeSettingsPage();
+        await settingsPage.closeSettingsPage();
 
         const homepage = new Homepage(driver);
         await homepage.checkPageIsLoaded();
@@ -164,8 +169,9 @@ describe('Settings V2 - Preferences and display', function (this: Suite) {
       async ({ driver }: { driver: Driver }) => {
         await login(driver);
         await new HeaderNavbar(driver).openSettingsPage();
-        const preferencesAndDisplaySettings =
-          new PreferencesAndDisplaySettings(driver);
+        const preferencesAndDisplaySettings = new PreferencesAndDisplaySettings(
+          driver,
+        );
         await preferencesAndDisplaySettings.checkPageIsLoaded();
 
         await preferencesAndDisplaySettings.changeLanguage('मानक हिन्दी');
@@ -175,7 +181,9 @@ describe('Settings V2 - Preferences and display', function (this: Suite) {
         );
         assert.equal(isLabelTextChanged, true, 'Language did not change');
 
-        await new SettingsPage(driver).closeSettingsPage();
+        const settingsPage = new SettingsPage(driver);
+        await settingsPage.closeSettingsPage();
+        await settingsPage.closeSettingsPage();
         const homepage = new Homepage(driver);
         await homepage.checkPageIsLoaded();
         await homepage.checkExpectedBalanceIsDisplayed();
@@ -200,8 +208,9 @@ describe('Settings V2 - Preferences and display', function (this: Suite) {
       async ({ driver }: { driver: Driver }) => {
         await login(driver);
         await new HeaderNavbar(driver).openSettingsPage();
-        const preferencesAndDisplaySettings =
-          new PreferencesAndDisplaySettings(driver);
+        const preferencesAndDisplaySettings = new PreferencesAndDisplaySettings(
+          driver,
+        );
         await preferencesAndDisplaySettings.checkPageIsLoaded();
 
         await preferencesAndDisplaySettings.changeLanguage('العربية');

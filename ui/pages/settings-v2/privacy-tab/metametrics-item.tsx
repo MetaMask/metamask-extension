@@ -96,6 +96,7 @@ export const MetametricsToggleItem = () => {
         value={participateInMetaMetrics}
         onToggle={handleToggle}
         dataTestId="participate-in-meta-metrics-toggle"
+        containerDataTestId="participate-in-meta-metrics-toggle"
         disabled={!useExternalServices}
       />
       {error && (

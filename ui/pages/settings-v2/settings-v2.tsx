@@ -102,10 +102,7 @@ const SettingsV2Layout = ({ children }: { children: React.ReactNode }) => {
     let currentPath: string | undefined = normalizedPathname;
 
     // Walk up the parent chain to build breadcrumbs
-    while (
-      currentPath &&
-      getRoutePathname(currentPath) !== SETTINGS_V2_ROUTE
-    ) {
+    while (currentPath && getRoutePathname(currentPath) !== SETTINGS_V2_ROUTE) {
       const routeMeta = getSettingsV2RouteMeta(getRoutePathname(currentPath));
       if (!routeMeta) {
         break;

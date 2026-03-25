@@ -278,7 +278,8 @@ class PrivacySettings {
     await this.openSrpList();
     await this.driver.waitForSelector('[data-testid="select-srp-container"]');
     await this.driver.clickElement({
-      testId: `select-srp-Secret Recovery Phrase ${srpIndex.toString()}`,
+      css: '.select-srp__container',
+      text: `Secret Recovery Phrase ${srpIndex.toString()}`,
     });
 
     await this.driver.waitForSelector(this.revealSrpQuizModalTitle);
