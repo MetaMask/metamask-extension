@@ -1,14 +1,13 @@
 import { Box, BoxFlexDirection } from '@metamask/design-system-react';
-import React, { useCallback, useMemo } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useMemo } from 'react';
 import {
   usePerpsLivePositions,
   usePerpsLiveOrders,
   usePerpsLiveMarketData,
 } from '../../../hooks/perps/stream';
-import { PERPS_WITHDRAW_ROUTE } from '../../../helpers/constants/routes';
 
 import { usePerpsDepositConfirmation } from './hooks/usePerpsDepositConfirmation';
+import { usePerpsWithdrawNavigation } from './hooks/usePerpsWithdrawNavigation';
 import { PerpsBalanceDropdown } from './perps-balance-dropdown';
 import { PerpsExploreMarkets } from './perps-explore-markets';
 import { PerpsPositionsOrders } from './perps-positions-orders';
@@ -30,11 +29,7 @@ import { PerpsWatchlist } from './perps-watchlist';
  */
 export const PerpsView: React.FC = () => {
   const { trigger: triggerDeposit } = usePerpsDepositConfirmation();
-  const navigate = useNavigate();
-
-  const handleWithdraw = useCallback(() => {
-    navigate(PERPS_WITHDRAW_ROUTE);
-  }, [navigate]);
+  const { trigger: triggerWithdraw } = usePerpsWithdrawNavigation();
 
   // Stream hooks must run before any effects that touch PerpsStreamManager.
   // `usePerpsStreamManager` (inside these hooks) calls `perpsInit` then `init(address)`;
@@ -97,7 +92,7 @@ export const PerpsView: React.FC = () => {
       <PerpsBalanceDropdown
         hasPositions={hasPositions}
         onAddFunds={triggerDeposit}
-        onWithdraw={handleWithdraw}
+        onWithdraw={triggerWithdraw}
       />
 
       {/* Positions + Orders sections */}
