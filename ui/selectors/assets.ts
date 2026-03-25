@@ -1415,6 +1415,7 @@ export const selectBalanceByWallet = (walletId: string) =>
 // eslint-disable-next-line @typescript-eslint/no-explicit-any -- There is no type for the root state
 const getStateForAssetSelector = ({ metamask }: any) => {
   const initialState = {
+    selectedAccountGroup: metamask.selectedAccountGroup,
     accountTree: metamask.accountTree,
     internalAccounts: metamask.internalAccounts,
     allTokens: getTokensControllerAllTokens({ metamask }),
