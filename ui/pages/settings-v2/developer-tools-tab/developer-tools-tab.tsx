@@ -9,7 +9,7 @@ import { TESTNET_ETH_SCAMS_LEARN_MORE_LINK } from '../../../../shared/lib/ui-uti
 import { getShowFiatInTestnets } from '../../../selectors';
 import { setShowFiatConversionOnTestnetsPreference } from '../../../store/actions';
 import { DEVELOPER_OPTIONS_ITEMS } from '../search-config';
-import { AutoResetAccountItem } from './auto-reset-account-item';
+import { DeleteActivityItem } from './delete-activity-item';
 
 const ShowConversionInTestnetsItem = createToggleItem({
   name: 'ShowConversionInTestnetsItem',
@@ -26,11 +26,11 @@ const ShowConversionInTestnetsItem = createToggleItem({
 /** Registry of setting items for the Developer Options page. Add new items here */
 const DEVELOPER_OPTIONS_SETTING_ITEMS: SettingItemConfig[] = [
   { id: 'show-fiat-in-testnets', component: ShowConversionInTestnetsItem },
-  { id: 'auto-reset-account', component: AutoResetAccountItem },
+  { id: 'delete-activity-and-nonce-data', component: DeleteActivityItem },
 ];
 
-const DeveloperOptionsTab = () => (
+const DeveloperToolsTab = () => (
   <SettingsTab items={DEVELOPER_OPTIONS_SETTING_ITEMS} />
 );
 
-export default DeveloperOptionsTab;
+export default DeveloperToolsTab;
