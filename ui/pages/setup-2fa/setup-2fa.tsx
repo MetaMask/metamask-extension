@@ -1,6 +1,5 @@
 import React, { useState, useCallback, useRef } from 'react';
 import classnames from 'clsx';
-import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import {
   Box,
@@ -30,7 +29,6 @@ import {
   FormTextFieldSize,
 } from '../../components/component-library';
 import { useI18nContext } from '../../hooks/useI18nContext';
-import { getIsSocialLoginFlow } from '../../selectors';
 import { ACCOUNT_LIST_PAGE_ROUTE, DEFAULT_ROUTE } from '../../helpers/constants/routes';
 
 const slide1Image = './images/2fa-slide1-wallet.png';
@@ -41,7 +39,7 @@ const successPhoneImage = './images/2fa-success-phone.png';
 
 // ─── Types & Data ────────────────────────────────────────────────────
 
-type FactorId = 'email' | 'sms' | 'social' | 'authenticator' | 'passkeys' | 'mobile';
+type FactorId = 'email' | 'sms' | 'authenticator' | 'passkeys';
 
 type SecurityLevel = 'most' | 'more' | 'less';
 
@@ -59,19 +57,14 @@ type ConfiguredFactor = {
 };
 
 const ALL_FACTORS: FactorOption[] = [
-  { id: 'email', nameKey: 'twoFAFactorEmailOtp', descKey: 'twoFAFactorEmailOtpDesc', icon: IconName.Mail, security: 'more' },
   { id: 'authenticator', nameKey: 'twoFAFactorAuthenticator', descKey: 'twoFAFactorAuthenticatorDesc', icon: IconName.SecurityKey, security: 'more' },
-  { id: 'social', nameKey: 'twoFAFactorSocialLogin', descKey: 'twoFAFactorSocialLoginDesc', icon: IconName.Global, security: 'more' },
-  { id: 'mobile', nameKey: 'twoFAFactorMobileDevice', descKey: 'twoFAFactorMobileDeviceDesc', icon: IconName.Mobile, security: 'more' },
   { id: 'passkeys', nameKey: 'twoFAFactorPasskeys', descKey: 'twoFAFactorPasskeysDesc', icon: IconName.Fingerprint, security: 'most' },
+  { id: 'email', nameKey: 'twoFAFactorEmailOtp', descKey: 'twoFAFactorEmailOtpDesc', icon: IconName.Mail, security: 'more' },
   { id: 'sms', nameKey: 'twoFAFactorSmsOtp', descKey: 'twoFAFactorSmsOtpDesc', icon: IconName.Sms, security: 'less' },
 ];
 
 const DEFAULT_FACTORS: FactorId[] = ['email', 'authenticator'];
-const CLOUD_FACTOR_IDS: FactorId[] = ['email', 'sms', 'social'];
-const BACKUP_ALLOWED_IDS: FactorId[] = ['email', 'social', 'passkeys'];
-
-type UserType = 'srp' | 'social';
+const BACKUP_ALLOWED_IDS: FactorId[] = ['email', 'passkeys'];
 
 type Step = 'carousel-0' | 'carousel-1' | 'carousel-2' | 'signing' | 'recovery' | 'success';
 
@@ -387,50 +380,6 @@ function SetupModal({ factorId, phase, onComplete, onClose, t }: {
     );
   }
 
-  if (factorId === 'social') {
-    return (
-      <Box backgroundColor={BoxBackgroundColor.BackgroundDefault} className="absolute inset-0 z-50 flex flex-col">
-        {header}
-        <Box className="flex-1" paddingHorizontal={4}>
-          <Text variant={TextVariant.HeadingMd} fontWeight={FontWeight.Bold}>{t('twoFAFactorSocialLogin')}</Text>
-          <Text color={TextColor.TextAlternative} variant={TextVariant.BodySm} className="mt-1 mb-6">{t('twoFASocialPickProvider')}</Text>
-          <Box flexDirection={BoxFlexDirection.Column} gap={2}>
-            <Box
-              flexDirection={BoxFlexDirection.Row} alignItems={BoxAlignItems.Center} gap={3} padding={4}
-              borderColor={BoxBorderColor.BorderMuted} className="rounded-xl border cursor-pointer hover:bg-background-default-hover"
-              onClick={() => onComplete(t('twoFAGoogleLinked'))}
-            >
-              <Box backgroundColor={BoxBackgroundColor.BackgroundMuted} className="rounded-full p-1.5 shrink-0">
-                <Icon name={IconName.Global} color={IconColor.IconDefault} size={IconSize.Sm} />
-              </Box>
-              <Box className="flex-1">
-                <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>{t('twoFAFactorGoogle')}</Text>
-                <Text variant={TextVariant.BodyXs} color={TextColor.TextMuted}>{t('twoFAFactorGoogleDesc')}</Text>
-              </Box>
-              <Icon name={IconName.ArrowRight} size={IconSize.Sm} color={IconColor.IconMuted} />
-            </Box>
-            {phase === 'signing' && (
-              <Box
-                flexDirection={BoxFlexDirection.Row} alignItems={BoxAlignItems.Center} gap={3} padding={4}
-                borderColor={BoxBorderColor.BorderMuted} className="rounded-xl border cursor-pointer hover:bg-background-default-hover"
-                onClick={() => onComplete(t('twoFAAppleLinked'))}
-              >
-                <Box backgroundColor={BoxBackgroundColor.BackgroundMuted} className="rounded-full p-1.5 shrink-0">
-                  <Icon name={IconName.Mobile} color={IconColor.IconDefault} size={IconSize.Sm} />
-                </Box>
-                <Box className="flex-1">
-                  <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>{t('twoFAFactorApple')}</Text>
-                  <Text variant={TextVariant.BodyXs} color={TextColor.TextMuted}>{t('twoFAFactorAppleDesc')}</Text>
-                </Box>
-                <Icon name={IconName.ArrowRight} size={IconSize.Sm} color={IconColor.IconMuted} />
-              </Box>
-            )}
-          </Box>
-        </Box>
-      </Box>
-    );
-  }
-
   if (factorId === 'authenticator') {
     const setupKey = 'XQJF-KGHT-MNPW-2R4S';
     return (
@@ -494,43 +443,6 @@ function SetupModal({ factorId, phase, onComplete, onClose, t }: {
     );
   }
 
-  if (factorId === 'mobile') {
-    return (
-      <Box backgroundColor={BoxBackgroundColor.BackgroundDefault} className="absolute inset-0 z-50 flex flex-col">
-        {header}
-        <Box className="flex-1" paddingHorizontal={4}>
-          <Text variant={TextVariant.HeadingMd} fontWeight={FontWeight.Bold}>{t('twoFAMobileDeviceSetup')}</Text>
-          <Text color={TextColor.TextAlternative} variant={TextVariant.BodySm} className="mt-1 mb-6">{t('twoFAMobileDeviceSubtitle')}</Text>
-          {/* Steps */}
-          <Box flexDirection={BoxFlexDirection.Column} gap={3} className="mb-4">
-            {[
-              { num: '1', textKey: 'twoFAMobileDeviceStep1' },
-              { num: '2', textKey: 'twoFAMobileDeviceStep2' },
-              { num: '3', textKey: 'twoFAMobileDeviceStep3' },
-            ].map((step) => (
-              <Box key={step.num} flexDirection={BoxFlexDirection.Row} alignItems={BoxAlignItems.Center} gap={3}>
-                <Box backgroundColor={BoxBackgroundColor.PrimaryMuted} className="rounded-full w-6 h-6 flex items-center justify-center shrink-0">
-                  <Text variant={TextVariant.BodyXs} fontWeight={FontWeight.Bold} color={TextColor.PrimaryDefault}>{step.num}</Text>
-                </Box>
-                <Text variant={TextVariant.BodySm}>{t(step.textKey)}</Text>
-              </Box>
-            ))}
-          </Box>
-          {/* QR Code */}
-          <Box flexDirection={BoxFlexDirection.Row} justifyContent={BoxJustifyContent.Center} alignItems={BoxAlignItems.Center}
-            backgroundColor={BoxBackgroundColor.BackgroundMuted} className="rounded-xl" style={{ height: 180 }}>
-            <Icon name={IconName.QrCode} color={IconColor.IconMuted} size={IconSize.Xl} />
-          </Box>
-        </Box>
-        <Box padding={4} className="shrink-0">
-          <Button variant={ButtonVariant.Primary} size={ButtonSize.Lg} isFullWidth onClick={() => onComplete(t('twoFAMobileLinked'))}>
-            {t('twoFAMobileDeviceLink')}
-          </Button>
-        </Box>
-      </Box>
-    );
-  }
-
   if (factorId === 'passkeys') {
     return (
       <Box backgroundColor={BoxBackgroundColor.BackgroundDefault} className="absolute inset-0 z-50 flex flex-col">
@@ -578,15 +490,6 @@ function FactorListScreen({ phase, title, subtitle, factors, excludeIds, configu
 
   const available = factors.filter((f) => !excludeIds.includes(f.id));
   const canContinue = configured.length > 0;
-
-  // Cloud factor must be configured before MetaMask Mobile can be set up (signing phase only)
-  const isCloudConfigured = configured.some((c) => CLOUD_FACTOR_IDS.includes(c.id));
-  const getMobileDisabledReason = (factorId: FactorId): string | undefined => {
-    if (phase === 'signing' && factorId === 'mobile' && !isCloudConfigured) {
-      return t('twoFAMobileRequiresCloudFirst');
-    }
-    return undefined;
-  };
 
   const handleSetupComplete = (detail?: string) => {
     if (setupModalFactor) {
@@ -642,7 +545,6 @@ function FactorListScreen({ phase, title, subtitle, factors, excludeIds, configu
                     factor={factor}
                     configured={configured.find((c) => c.id === factor.id)}
                     onSetUp={() => handleFactorSetUp(factor.id)}
-                    disabledReason={getMobileDisabledReason(factor.id)}
                     t={t}
                   />
                 ))}
@@ -669,7 +571,6 @@ function FactorListScreen({ phase, title, subtitle, factors, excludeIds, configu
                           factor={factor}
                           configured={undefined}
                           onSetUp={() => handleFactorSetUp(factor.id)}
-                          disabledReason={getMobileDisabledReason(factor.id)}
                           t={t}
                         />
                       ))}
@@ -800,8 +701,6 @@ function FactorListScreen({ phase, title, subtitle, factors, excludeIds, configu
 export const Setup2FAPage: React.FC = () => {
   const t = useI18nContext();
   const navigate = useNavigate();
-  const isSocialLogin = useSelector(getIsSocialLoginFlow);
-  const userType: UserType = isSocialLogin ? 'social' : 'srp';
   const [step, setStep] = useState<Step>('carousel-0');
   const [configuredSigning, setConfiguredSigning] = useState<ConfiguredFactor[]>([]);
   const [configuredRecovery, setConfiguredRecovery] = useState<ConfiguredFactor[]>([]);
@@ -941,7 +840,7 @@ export const Setup2FAPage: React.FC = () => {
         title={t('twoFAAdd2FAVerification')}
         subtitle={t('twoFAChooseSigningMethod')}
         factors={ALL_FACTORS}
-        excludeIds={userType === 'social' ? ['social'] : []}
+        excludeIds={[]}
         configured={configuredSigning}
         onFactorConfigured={(f) => setConfiguredSigning((prev) => [...prev.filter((x) => x.id !== f.id), f])}
         onContinue={() => setStep('recovery')}
@@ -962,7 +861,7 @@ export const Setup2FAPage: React.FC = () => {
         title={t('twoFASetupRecoveryFactor')}
         subtitle={t('twoFARecoveryPickerSubtitleNew')}
         factors={ALL_FACTORS.filter((f) => BACKUP_ALLOWED_IDS.includes(f.id))}
-        excludeIds={userType === 'social' ? [...signingFactorIds, 'social', 'mobile'] : [...signingFactorIds, 'mobile']}
+        excludeIds={signingFactorIds}
         configured={configuredRecovery}
         onFactorConfigured={(f) => setConfiguredRecovery((prev) => [...prev.filter((x) => x.id !== f.id), f])}
         onContinue={() => setStep('success')}
