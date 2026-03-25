@@ -10,7 +10,8 @@ export const SNAPS_ACL_SIGNATURE_BODY_FILENAME = 'signature.json';
 export const SNAPS_ACL_REGISTRY_HEADERS_FILENAME = 'registry-headers.json';
 export const SNAPS_ACL_SIGNATURE_HEADERS_FILENAME = 'signature-headers.json';
 
-const ACL_REGISTRY_URL = 'https://acl.execution.metamask.io/latest/registry.json';
+const ACL_REGISTRY_URL =
+  'https://acl.execution.metamask.io/latest/registry.json';
 const ACL_SIGNATURE_URL =
   'https://acl.execution.metamask.io/latest/signature.json';
 
@@ -37,6 +38,8 @@ export function getSnapAclRegistryFixturePaths(): {
 
 /**
  * Serves signed Snaps execution allowlist (registry + signature) from local fixtures.
+ *
+ * @param server - Mockttp server
  */
 export async function setupSnapRegistryMocks(server: Mockttp): Promise<void> {
   const paths = getSnapAclRegistryFixturePaths();
