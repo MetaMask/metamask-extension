@@ -50,10 +50,12 @@ export function usePerpsWithdraw(): UsePerpsWithdrawResult {
       }
 
       const normalizedAmount = amount.trim();
+      const amountNum = Number(normalizedAmount);
       if (
         !normalizedAmount ||
         !isValidAmount(normalizedAmount) ||
-        Number(normalizedAmount) <= 0
+        !Number.isFinite(amountNum) ||
+        amountNum <= 0
       ) {
         const nextError = 'Invalid amount';
         setError(nextError);

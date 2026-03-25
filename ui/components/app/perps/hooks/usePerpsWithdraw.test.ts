@@ -103,6 +103,27 @@ describe('usePerpsWithdraw', () => {
     expect(result.current.error).toBe('Invalid amount');
   });
 
+  it('rejects bare dot amount before background call', async () => {
+    const { result } = renderHookWithProvider(
+      () => usePerpsWithdraw(),
+      mockState,
+    );
+
+    let response: Awaited<ReturnType<typeof result.current.trigger>> = {
+      success: true,
+    };
+    await act(async () => {
+      response = await result.current.trigger({ amount: '.' });
+    });
+
+    expect(mockCreatePerpsWithdrawTransaction).not.toHaveBeenCalled();
+    expect(response).toStrictEqual({
+      success: false,
+      error: 'Invalid amount',
+    });
+    expect(result.current.error).toBe('Invalid amount');
+  });
+
   it('prevents duplicate in-flight requests', async () => {
     let resolveWithdraw:
       | ((value: { success: boolean; error?: string }) => void)

@@ -88,6 +88,22 @@ describe('WithdrawFundsModal', () => {
     );
   });
 
+  it('shows invalid amount message for non-positive amount', () => {
+    renderWithProvider(
+      <WithdrawFundsModal isOpen onClose={onCloseMock} />,
+      mockStore,
+    );
+
+    const input = screen.getByPlaceholderText('0.00') as HTMLInputElement;
+    fireEvent.change(input, { target: { value: '0' } });
+
+    const submit = screen.getByTestId('perps-withdraw-submit');
+    expect(submit).toBeDisabled();
+    expect(screen.getByTestId('perps-withdraw-error')).toHaveTextContent(
+      'Enter a valid amount to withdraw.',
+    );
+  });
+
   it('submits amount and closes modal on success', async () => {
     triggerMock.mockResolvedValue({ success: true });
 

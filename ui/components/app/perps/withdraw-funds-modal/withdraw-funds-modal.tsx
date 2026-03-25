@@ -88,11 +88,12 @@ export const WithdrawFundsModal: React.FC<WithdrawFundsModalProps> = ({
   const amountNum = parseFloat(amount) || 0;
   const hasAmount = amount.length > 0;
   const isInsufficient = hasAmount && amountNum > availableBalance;
-  const isInvalidAmount = hasAmount && amountNum <= 0;
+  const isInvalidAmount =
+    hasAmount && (!Number.isFinite(amountNum) || amountNum <= 0);
 
   const validationError = useMemo(() => {
     if (isInvalidAmount) {
-      return t('insufficientBalance');
+      return t('perpsWithdrawEnterValidAmountError');
     }
     if (isInsufficient) {
       return t('insufficientFunds');
