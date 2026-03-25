@@ -61,10 +61,6 @@ export function useHardwareWalletRecoveryLocation(): MetaMetricsHardwareWalletRe
     ) {
       return MetaMetricsHardwareWalletRecoveryLocation.Swaps;
     }
-    if (transaction) {
-      return MetaMetricsHardwareWalletRecoveryLocation.Send;
-    }
-    return MetaMetricsHardwareWalletRecoveryLocation.Send;
   }
 
   return MetaMetricsHardwareWalletRecoveryLocation.Send;
