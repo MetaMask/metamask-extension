@@ -2232,6 +2232,12 @@
   "deepLink_theOnboardingPage": {
     "message": "the onboarding page"
   },
+  "deepLink_thePerpsMarketDetailPage": {
+    "message": "the perps market page"
+  },
+  "deepLink_thePerpsMarketListPage": {
+    "message": "the perps market list page"
+  },
   "deepLink_thePerpsPage": {
     "message": "the perps page"
   },
@@ -5716,6 +5722,9 @@
   },
   "perpsReduceExposureDescriptionShort": {
     "message": "Decrease the size of your short position"
+  },
+  "perpsRemoveFromFavorites": {
+    "message": "Remove from favorites"
   },
   "perpsRemoveMargin": {
     "message": "Remove margin"

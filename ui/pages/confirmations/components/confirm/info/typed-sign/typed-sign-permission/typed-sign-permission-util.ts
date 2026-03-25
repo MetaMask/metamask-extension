@@ -15,6 +15,9 @@ import { selectNetworkConfigurationByChainId } from '../../../../../../../select
 import { getTokenByAccountAndAddressAndChainId } from '../../../../../../../selectors/assets';
 import type { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 
+export const MAX_UINT256 =
+  '0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff';
+
 /**
  * Formats a period duration in seconds to a human-readable string.
  * Converts common durations (daily, weekly) to readable labels, otherwise shows seconds.

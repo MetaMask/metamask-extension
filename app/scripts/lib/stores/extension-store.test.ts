@@ -69,6 +69,36 @@ describe('ExtensionStore', () => {
 
       expect(setMock).toHaveBeenCalledWith(MOCK_STATE);
     });
+
+    it('ends the overwrite timer when browser storage.local.set throws', async () => {
+      const timeSpy = jest
+        .spyOn(console, 'time')
+        .mockImplementation(() => undefined);
+      const timeEndSpy = jest
+        .spyOn(console, 'timeEnd')
+        .mockImplementation(() => undefined);
+      const localStore = setup({
+        localMock: {
+          set: jest.fn().mockRejectedValue(new Error('Failed to write state')),
+        },
+      });
+
+      try {
+        await expect(localStore.set(MOCK_STATE)).rejects.toThrow(
+          'Failed to write state',
+        );
+
+        expect(timeSpy).toHaveBeenCalledWith(
+          '[ExtensionStore]: Overwriting local store',
+        );
+        expect(timeEndSpy).toHaveBeenCalledWith(
+          '[ExtensionStore]: Overwriting local store',
+        );
+      } finally {
+        timeSpy.mockRestore();
+        timeEndSpy.mockRestore();
+      }
+    });
   });
 
   describe('get', () => {
