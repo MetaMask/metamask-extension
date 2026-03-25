@@ -24,9 +24,6 @@ class SendTokenConfirmPage {
 
   private readonly senderAddress = '[data-testid="sender-address"]';
 
-  private readonly walletInitiatedBackButton =
-    '[data-testid="wallet-initiated-header-back-button"]';
-
   constructor(driver: Driver) {
     this.driver = driver;
   }
@@ -160,16 +157,6 @@ class SendTokenConfirmPage {
       css: 'h2',
       text: amount,
     });
-  }
-
-  /**
-   * Clicks the wallet-initiated header back button to navigate back to the send form.
-   */
-  async clickBackButton(): Promise<void> {
-    console.log('Clicking wallet-initiated back button');
-    await this.driver.clickElementAndWaitToDisappear(
-      this.walletInitiatedBackButton,
-    );
   }
 
   /**

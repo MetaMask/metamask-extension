@@ -56,6 +56,9 @@ class Confirmation {
 
   private sectionCollapseButton = '[data-testid="sectionCollapseButton"]';
 
+  private readonly walletInitiatedBackButton =
+    '[data-testid="wallet-initiated-header-back-button"]';
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
@@ -74,6 +77,13 @@ class Confirmation {
       throw e;
     }
     console.log('Confirmation page is loaded');
+  }
+
+  async clickBackButton(): Promise<void> {
+    console.log('Clicking wallet-initiated back button');
+    await this.driver.clickElementAndWaitToDisappear(
+      this.walletInitiatedBackButton,
+    );
   }
 
   async clickScrollToBottomButton() {
