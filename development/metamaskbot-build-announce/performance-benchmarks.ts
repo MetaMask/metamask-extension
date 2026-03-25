@@ -257,11 +257,12 @@ export async function fetchBenchmarkEntries(
 
 /**
  * Checks P75 and P95 for a single metric against its baseline and returns the worst health.
+ * Layer 2 (relative context) — capped at Warn, never escalates to Fail.
  *
  * @param entry - The benchmark entry.
  * @param metric - Metric key to check.
  * @param baselineMetric - Baseline values for this metric.
- * @returns `EntryHealth.Fail`, `EntryHealth.Warn`, or `EntryHealth.Pass`.
+ * @returns `EntryHealth.Warn` or `EntryHealth.Pass` (never `EntryHealth.Fail`).
  */
 function checkMetricPercentiles(
   entry: BenchmarkEntry,
@@ -283,10 +284,11 @@ function checkMetricPercentiles(
       baselineVal,
       DEFAULT_RELATIVE_THRESHOLDS,
     );
-    if (cmp.severity === COMPARISON_SEVERITY.Regression.value) {
-      return EntryHealth.Fail;
-    }
-    if (cmp.severity === COMPARISON_SEVERITY.Warn.value) {
+    // Layer 2: cap at Warn for both regression and warn severities.
+    if (
+      cmp.severity === COMPARISON_SEVERITY.Regression.value ||
+      cmp.severity === COMPARISON_SEVERITY.Warn.value
+    ) {
       metricWorst = EntryHealth.Warn;
     }
   }
@@ -341,8 +343,8 @@ export function computeEntryHealth(
       continue;
     }
     const health = checkMetricPercentiles(entry, metric, baselineMetric);
-    // Layer 2 relative regression caps at Warn; Fail is owned by Layer 1.
-    if (health === EntryHealth.Fail || health === EntryHealth.Warn) {
+    // checkMetricPercentiles already caps at Warn (Layer 2 semantics).
+    if (health === EntryHealth.Warn) {
       worst = EntryHealth.Warn;
     }
   }
