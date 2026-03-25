@@ -30,10 +30,13 @@ export const EXCLUDED_TRANSACTION_TYPES = new Set([
   TransactionType.relayDeposit,
 ]);
 
-// EVM transaction types excluded from toast notifications
+// EVM transaction types excluded from toast notifications.
+// Bridge transactions are handled via txHistory (bridge status controller),
+// so bridge and bridgeApproval types are excluded here to avoid double-toasting.
 export const EXCLUDED_TOAST_TRANSACTION_TYPES = new Set([
   TransactionType.swapApproval,
   TransactionType.bridgeApproval,
+  TransactionType.bridge,
   TransactionType.shieldSubscriptionApprove,
 ]);
 

@@ -29,6 +29,10 @@ const selectBridgeHistory = (state: BridgeStatusAppState) =>
 const selectBridgeHistoryForAccount = createSelector(
   [(_, selectedAddresses?: string[]) => selectedAddresses, selectBridgeHistory],
   (selectedAddresses, txHistory) => {
+    if (!txHistory) {
+      return {};
+    }
+
     if (!selectedAddresses || selectedAddresses.length === 0) {
       return txHistory;
     }

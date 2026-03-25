@@ -899,7 +899,9 @@ export default function Routes() {
       dir={textDirection}
     >
       <ConfirmationHandler />
-      {!isNotification && <ToastListener />}
+      {!isNotification && location.pathname === DEFAULT_ROUTE && (
+        <ToastListener />
+      )}
 
       <QRHardwarePopover />
       <Modal />

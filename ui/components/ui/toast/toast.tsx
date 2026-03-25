@@ -1,14 +1,44 @@
 import React, { useEffect } from 'react';
 import { Alignment, Fit, Layout, useRive } from '@rive-app/react-canvas';
-import { Toaster as ToasterBase } from 'react-hot-toast';
+import { toast, Toaster as ToasterBase } from 'react-hot-toast';
+import { Link } from 'react-router-dom';
 import { ThemeType } from '../../../../shared/constants/preferences';
 import { ENVIRONMENT_TYPE_NOTIFICATION } from '../../../../shared/constants/app';
 // eslint-disable-next-line import-x/no-restricted-paths
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { useTheme } from '../../../hooks/useTheme';
+import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
+import {
+  getTransactionDisplayData,
+  type TransactionStatusVariant,
+} from '../../../helpers/utils/transaction-display';
 // import { useI18nContext } from '../../../hooks/useI18nContext';
 
 type ToastVariant = 'default' | 'loading' | 'success' | 'error';
+
+export const ToastContent = ({
+  variant,
+  id,
+}: {
+  variant: TransactionStatusVariant;
+  id: string;
+}) => {
+  const { title, description } = getTransactionDisplayData(variant);
+
+  return (
+    <Link
+      to={`${DEFAULT_ROUTE}?tab=activity`}
+      onClick={() => toast.dismiss(id)}
+      className="hover:text-default no-underline before:absolute before:inset-0"
+    >
+      <p className="text-m-body-md">{title}</p>
+
+      {description ? (
+        <p className="text-s-body-sm text-alternative">{description}</p>
+      ) : null}
+    </Link>
+  );
+};
 
 function getRiveAssetForVariant() {
   return './images/riv_animations/spinner_loader_with_states.riv';
