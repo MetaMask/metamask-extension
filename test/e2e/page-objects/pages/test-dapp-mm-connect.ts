@@ -282,15 +282,33 @@ export class TestDappMmConnect {
 
     const cssSelector = this.resultCodeSelector(scope, 'signMessage');
     let resultText = '';
+    let parsed: Record<string, unknown> = {};
+    // Both the emptiness check and JSON.parse are kept inside the polling
+    // callback so transient states are retried rather than surfaced as errors:
+    //  - Empty text: the <details> element may briefly have no text content
+    //    immediately after the <summary> is clicked to expand it.
+    //  - SyntaxError: the renderer may flush partial/incomplete JSON before
+    //    the full result string is available.
+    // Only when getText() returns a non-empty, fully parseable JSON string do
+    // we capture both `parsed` and `resultText` and exit the loop, ensuring
+    // the assert.ok calls below always operate on valid data.
     await this.driver.waitUntil(
       async () => {
         try {
           const element = await this.driver.findElement(cssSelector);
-          resultText = await element.getText();
+          const text = await element.getText();
+          if (!text) {
+            return false;
+          }
+          parsed = JSON.parse(text) as Record<string, unknown>;
+          resultText = text;
           return true;
         } catch (error) {
           const err = error as { name?: string };
-          if (err.name === 'StaleElementReferenceError') {
+          if (
+            err.name === 'StaleElementReferenceError' ||
+            err.name === 'SyntaxError'
+          ) {
             return false;
           }
           throw error;
@@ -298,7 +316,6 @@ export class TestDappMmConnect {
       },
       { interval: 500, timeout: this.driver.timeout },
     );
-    const parsed = JSON.parse(resultText) as Record<string, unknown>;
 
     assert.ok(
       typeof parsed.signature === 'string',
