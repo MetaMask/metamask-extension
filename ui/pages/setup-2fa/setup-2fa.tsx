@@ -160,8 +160,6 @@ function FactorRow({ factor, configured, onSetUp, disabledReason, t }: {
   const [tooltipVisible, setTooltipVisible] = useState(false);
   const isConfigured = Boolean(configured);
   const isDisabled = !isConfigured && Boolean(disabledReason);
-  const showLessSecure = !isConfigured && !isDisabled && factor.security === 'less';
-
   return (
     <Box
       flexDirection={BoxFlexDirection.Row}
@@ -185,12 +183,6 @@ function FactorRow({ factor, configured, onSetUp, disabledReason, t }: {
         </Text>
         {isConfigured && configured?.detail ? (
           <Text variant={TextVariant.BodyXs} color={TextColor.TextMuted}>{configured.detail}</Text>
-        ) : showLessSecure ? (
-          <Text variant={TextVariant.BodyXs} fontWeight={FontWeight.Bold} color={TextColor.ErrorDefault}
-            className="text-[10px] uppercase tracking-wider"
-          >
-            {t('twoFALessSecure')}
-          </Text>
         ) : null}
       </Box>
       {isConfigured ? (
