@@ -526,7 +526,7 @@ describe('buildBenchmarkSection', () => {
     });
 
     expect(html).toContain(COMPARISON_SEVERITY.Warn.icon);
-    expect(html).toContain('chrome-browserify-startupStandardHome');
+    expect(html).toContain('startupStandardHome');
   });
 
   it('uses the platform-specific baseline, not the first matching key', () => {

@@ -562,7 +562,8 @@ export function buildBenchmarkSection(
               return `<td align="center">${cell}</td>`;
             })
             .join('');
-          return `<tr><td>${String(benchmarkName)}</td>${cells}</tr>`;
+          const displayName = extractDisplayName(benchmarkName);
+          return `<tr><td>${displayName}</td>${cells}</tr>`;
         })
         .join('');
 
