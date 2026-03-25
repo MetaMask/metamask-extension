@@ -1,16 +1,22 @@
 import React from 'react';
 import { render, fireEvent, waitFor, act } from '@testing-library/react';
+import { Provider } from 'react-redux';
+import {
+  MemoryRouter,
+  type MemoryRouterProps,
+  Route,
+  Routes,
+} from 'react-router-dom';
 import { ErrorCode, type HardwareWalletError } from '@metamask/hw-wallet-sdk';
+import { getMockContractInteractionConfirmState } from '../../../../../test/data/confirmations/helper';
 import { MetaMetricsEventName } from '../../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import { createHardwareWalletError } from '../../../../contexts/hardware-wallets/errors';
 import { HardwareWalletType } from '../../../../contexts/hardware-wallets/types';
+import configureStore from '../../../../store/store';
 import { HardwareWalletErrorModal } from './hardware-wallet-error-modal';
 
 const mockTrackEvent = jest.fn();
-jest.mock('../../../../hooks/useHardwareWalletRecoveryLocation', () => ({
-  useHardwareWalletRecoveryLocation: jest.fn(() => 'Send'),
-}));
 
 const mockHideModal = jest.fn();
 jest.mock('../../../../hooks/useModalProps', () => ({
@@ -58,12 +64,47 @@ const metricsProviderValue = {
   onboardingParentContext: { current: null },
 };
 
-function renderWithMetrics(ui: React.ReactElement) {
-  return render(
-    <MetaMetricsContext.Provider value={metricsProviderValue}>
-      {ui}
-    </MetaMetricsContext.Provider>,
+const memoryRouterFuture = {
+  ['v7_startTransition' as keyof NonNullable<MemoryRouterProps['future']>]:
+    true,
+  ['v7_relativeSplatPath' as keyof NonNullable<MemoryRouterProps['future']>]:
+    true,
+} as NonNullable<MemoryRouterProps['future']>;
+
+/**
+ * `HardwareWalletErrorModal` uses {@link useHardwareWalletRecoveryLocation}, which needs
+ * React Router and Redux. Default route `/` yields `Send`, matching prior mock behavior.
+ * @param store
+ * @param ui
+ */
+function wrapHardwareWalletModalTree(
+  store: ReturnType<typeof configureStore>,
+  ui: React.ReactElement,
+) {
+  return (
+    <Provider store={store}>
+      <MemoryRouter initialEntries={['/']} future={memoryRouterFuture}>
+        <Routes>
+          <Route
+            path="*"
+            element={
+              <MetaMetricsContext.Provider value={metricsProviderValue}>
+                {ui}
+              </MetaMetricsContext.Provider>
+            }
+          />
+        </Routes>
+      </MemoryRouter>
+    </Provider>
   );
+}
+
+function renderWithMetrics(ui: React.ReactElement) {
+  const store = configureStore(getMockContractInteractionConfirmState());
+  return {
+    store,
+    ...render(wrapHardwareWalletModalTree(store, ui)),
+  };
 }
 
 describe('HardwareWalletErrorModal', () => {
@@ -413,7 +454,7 @@ describe('HardwareWalletErrorModal', () => {
         'Device not found.',
       );
 
-      const { rerender } = renderWithMetrics(
+      const { rerender, store } = renderWithMetrics(
         <HardwareWalletErrorModal error={error} />,
       );
 
@@ -428,15 +469,14 @@ describe('HardwareWalletErrorModal', () => {
       });
 
       rerender(
-        <MetaMetricsContext.Provider value={metricsProviderValue}>
-          <HardwareWalletErrorModal />
-        </MetaMetricsContext.Provider>,
+        wrapHardwareWalletModalTree(store, <HardwareWalletErrorModal />),
       );
 
       rerender(
-        <MetaMetricsContext.Provider value={metricsProviderValue}>
-          <HardwareWalletErrorModal error={error} />
-        </MetaMetricsContext.Provider>,
+        wrapHardwareWalletModalTree(
+          store,
+          <HardwareWalletErrorModal error={error} />,
+        ),
       );
 
       await waitFor(() => {
@@ -481,7 +521,7 @@ describe('HardwareWalletErrorModal', () => {
 
       mockEnsureDeviceReady.mockResolvedValueOnce(true);
 
-      const { getByText, rerender } = renderWithMetrics(
+      const { getByText, rerender, store } = renderWithMetrics(
         <HardwareWalletErrorModal error={error} />,
       );
 
@@ -490,9 +530,10 @@ describe('HardwareWalletErrorModal', () => {
       });
 
       rerender(
-        <MetaMetricsContext.Provider value={metricsProviderValue}>
-          <HardwareWalletErrorModal error={error} />
-        </MetaMetricsContext.Provider>,
+        wrapHardwareWalletModalTree(
+          store,
+          <HardwareWalletErrorModal error={error} />,
+        ),
       );
 
       expect(getByText('[hardwareWalletTypeConnected]')).toBeInTheDocument();
