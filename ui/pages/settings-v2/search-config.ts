@@ -99,7 +99,7 @@ export const NOTIFICATIONS_ITEMS = {
   'account-activity': 'accountActivity',
 } as const;
 
-export const DEVELOPER_OPTIONS_ITEMS = {
+export const DEVELOPER_TOOLS_ITEMS = {
   'show-fiat-in-testnets': 'showFiatConversionInTestnets',
   'delete-activity-and-nonce-data': 'deleteActivityAndNonceData',
 } as const;
@@ -134,7 +134,7 @@ export const SETTINGS_V2_SEARCH_CONFIG: TabSearchConfig[] = [
   { tabId: 'experimental', items: createSearchItemMeta(EXPERIMENTAL_ITEMS) },
   { tabId: 'notifications', items: createSearchItemMeta(NOTIFICATIONS_ITEMS) },
   {
-    tabId: 'developer-options',
-    items: createSearchItemMeta(DEVELOPER_OPTIONS_ITEMS),
+    tabId: 'developer-tools',
+    items: createSearchItemMeta(DEVELOPER_TOOLS_ITEMS),
   },
 ];
