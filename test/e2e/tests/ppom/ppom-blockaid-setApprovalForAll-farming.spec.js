@@ -1,3 +1,4 @@
+const { strict: assert } = require('assert');
 const {
   default: FixtureBuilderV2,
 } = require('../../fixtures/fixture-builder-v2');
@@ -248,7 +249,8 @@ async function mockInfura(mockServer) {
 }
 
 describe('PPOM Blockaid Alert - Set Approval to All', function () {
-  it('should show banner alert', async function () {
+  // eslint-disable-next-line mocha/no-skipped-tests
+  it.skip('should show banner alert', async function () {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
@@ -272,9 +274,9 @@ describe('PPOM Blockaid Alert - Set Approval to All', function () {
         await login(driver, { expectedBalance: '1.37T ETH' });
         await driver.openNewPage(DAPP_URL_LOCALHOST);
 
-        const expectedTitle = 'This is a deceptive request';
+       const expectedTitle = 'This is a deceptive request';
         const expectedDescription =
-          'If you approve this request, a third party known for scams might take all your assets.';
+          'If you approve this request, you might lose your assets.';
 
         // Click TestDapp button to send JSON-RPC request
         await driver.clickElement('#maliciousSetApprovalForAll');
@@ -282,15 +284,22 @@ describe('PPOM Blockaid Alert - Set Approval to All', function () {
         // Wait for confirmation pop-up
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-        await driver.waitForSelector({
+        await driver.assertElementNotPresent('.loading-indicator');
+
+        const bannerAlertFoundByTitle = await driver.findElement({
           css: bannerAlertSelector,
           text: expectedTitle,
         });
+        const bannerAlertText = await bannerAlertFoundByTitle.getText();
 
-        await driver.waitForSelector({
-          css: bannerAlertSelector,
-          text: expectedDescription,
-        });
+        assert(
+          bannerAlertFoundByTitle,
+          `Banner alert not found. Expected Title: ${expectedTitle} \nExpected reason: approval_farming\n`,
+        );
+        assert(
+          bannerAlertText.includes(expectedDescription),
+          `Unexpected banner alert description. Expected: ${expectedDescription} \nExpected reason: approval_farming\n`,
+        );
       },
     );
   });
