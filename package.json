@@ -264,14 +264,14 @@
     "minimatch@npm:^10.1.1": "10.2.4",
     "@metamask/snaps-controllers": "^18.0.4",
     "@metamask/bridge-status-controller@npm:^69.0.0": "patch:@metamask/bridge-status-controller@npm%3A69.0.0#~/.yarn/patches/@metamask-bridge-status-controller-npm-69.0.0-15106ec5e0.patch",
-    "@metamask/multichain-account-service@npm:^7.1.0": "npm:@metamask-previews/multichain-account-service@7.1.0-preview-ea4ea0a",
-    "@metamask/account-tree-controller@npm:^5.0.1": "npm:@metamask-previews/account-tree-controller@5.0.1-preview-ea4ea0a",
-    "@metamask/account-tree-controller@npm:^5.0.0": "npm:@metamask-previews/account-tree-controller@5.0.1-preview-ea4ea0a",
-    "@metamask/accounts-controller@npm:^36.0.1": "npm:@metamask-previews/accounts-controller@37.0.0-preview-ea4ea0a",
-    "@metamask/accounts-controller@npm:^37.0.0": "npm:@metamask-previews/accounts-controller@37.0.0-preview-ea4ea0a",
-    "@metamask/assets-controllers@npm:^100.0.3": "npm:@metamask-previews/assets-controllers@101.0.1-preview-ea4ea0a",
-    "@metamask/assets-controllers@npm:^101.0.0": "npm:@metamask-previews/assets-controllers@101.0.1-preview-ea4ea0a",
-    "@metamask/assets-controllers@npm:^101.0.1": "npm:@metamask-previews/assets-controllers@101.0.1-preview-ea4ea0a"
+    "@metamask/multichain-account-service@npm:^7.1.0": "npm:@metamask-previews/multichain-account-service@7.1.0-preview-afe010990",
+    "@metamask/account-tree-controller@npm:^5.0.1": "npm:@metamask-previews/account-tree-controller@5.0.1-preview-afe010990",
+    "@metamask/account-tree-controller@npm:^5.0.0": "npm:@metamask-previews/account-tree-controller@5.0.1-preview-afe010990",
+    "@metamask/accounts-controller@npm:^36.0.1": "npm:@metamask-previews/accounts-controller@37.0.0-preview-afe010990",
+    "@metamask/accounts-controller@npm:^37.0.0": "npm:@metamask-previews/accounts-controller@37.0.0-preview-afe010990",
+    "@metamask/assets-controllers@npm:^100.0.3": "npm:@metamask-previews/assets-controllers@101.0.1-preview-afe010990",
+    "@metamask/assets-controllers@npm:^101.0.0": "npm:@metamask-previews/assets-controllers@101.0.1-preview-afe010990",
+    "@metamask/assets-controllers@npm:^101.0.1": "npm:@metamask-previews/assets-controllers@101.0.1-preview-afe010990"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.26.10#~/.yarn/patches/@babel-runtime-npm-7.26.10-fe8c62510a.patch",

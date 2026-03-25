@@ -5591,9 +5591,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/account-tree-controller@npm:@metamask-previews/account-tree-controller@5.0.1-preview-ea4ea0a":
-  version: 5.0.1-preview-ea4ea0a
-  resolution: "@metamask-previews/account-tree-controller@npm:5.0.1-preview-ea4ea0a"
+"@metamask/account-tree-controller@npm:@metamask-previews/account-tree-controller@5.0.1-preview-afe010990":
+  version: 5.0.1-preview-afe010990
+  resolution: "@metamask-previews/account-tree-controller@npm:5.0.1-preview-afe010990"
   dependencies:
     "@metamask/accounts-controller": "npm:^37.0.0"
     "@metamask/base-controller": "npm:^9.0.0"
@@ -5612,7 +5612,7 @@ __metadata:
   peerDependencies:
     "@metamask/providers": ^22.0.0
     webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
-  checksum: 10/b1437090f1af7276adc501bedc712f98a69030548b8788342f3fc2fdfa691a956c46d007cd5abcb855139a59f649d0d8476ea78a8ba04deff8c37f00338aed96
+  checksum: 10/0f0f01142d1cde5cd4d2c860ee77d2fa6940750b4e914b234f3eeb85f61ec1027c14de45c11873c6e12a88e8fcd2d47948fc809b47aa479e6aac7eeab6bce887
   languageName: node
   linkType: hard
 
@@ -5623,9 +5623,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/accounts-controller@npm:@metamask-previews/accounts-controller@37.0.0-preview-ea4ea0a":
-  version: 37.0.0-preview-ea4ea0a
-  resolution: "@metamask-previews/accounts-controller@npm:37.0.0-preview-ea4ea0a"
+"@metamask/accounts-controller@npm:@metamask-previews/accounts-controller@37.0.0-preview-afe010990":
+  version: 37.0.0-preview-afe010990
+  resolution: "@metamask-previews/accounts-controller@npm:37.0.0-preview-afe010990"
   dependencies:
     "@ethereumjs/util": "npm:^9.1.0"
     "@metamask/base-controller": "npm:^9.0.0"
@@ -5649,7 +5649,7 @@ __metadata:
   peerDependencies:
     "@metamask/providers": ^22.0.0
     webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
-  checksum: 10/44cfc5bbe97884f64037b4ac5e0012d395a3114dc6d45d100dded646eeb10a310449bd3e5572030a810ca3477a8a79f6c891f4cc9608cd19bc3124e9fc449700
+  checksum: 10/f1d59cd3441cb711e48966fcf0e246c39588ce5b20b161d993f1ec92bca7025ded4614898426b12f7654f18201c587941297c6cbad220cdc4ca0c29939a33554
   languageName: node
   linkType: hard
 
@@ -5785,9 +5785,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/assets-controllers@npm:@metamask-previews/assets-controllers@101.0.1-preview-ea4ea0a":
-  version: 101.0.1-preview-ea4ea0a
-  resolution: "@metamask-previews/assets-controllers@npm:101.0.1-preview-ea4ea0a"
+"@metamask/assets-controllers@npm:@metamask-previews/assets-controllers@101.0.1-preview-afe010990":
+  version: 101.0.1-preview-afe010990
+  resolution: "@metamask-previews/assets-controllers@npm:101.0.1-preview-afe010990"
   dependencies:
     "@ethereumjs/util": "npm:^9.1.0"
     "@ethersproject/abi": "npm:^5.7.0"
@@ -5837,7 +5837,7 @@ __metadata:
   peerDependencies:
     "@metamask/providers": ^22.0.0
     webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
-  checksum: 10/37072fb316dfe16994b2652c8d79b8243d5c69234aec00463596f29a95db27dc7191907206ce46f90ef35ac561653cfb6fedfa89f99d9be886f0237356053051
+  checksum: 10/9073add2bc7d32e2e339235077f2d2b4f2f1695dfc6692b2c47d2ec13deddeb05a4f47e170a4df0b27a5e762326a886f6605988cdddaa0f3ac63825ebed48abb
   languageName: node
   linkType: hard
 
@@ -7143,9 +7143,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/multichain-account-service@npm:@metamask-previews/multichain-account-service@7.1.0-preview-ea4ea0a":
-  version: 7.1.0-preview-ea4ea0a
-  resolution: "@metamask-previews/multichain-account-service@npm:7.1.0-preview-ea4ea0a"
+"@metamask/multichain-account-service@npm:@metamask-previews/multichain-account-service@7.1.0-preview-afe010990":
+  version: 7.1.0-preview-afe010990
+  resolution: "@metamask-previews/multichain-account-service@npm:7.1.0-preview-afe010990"
   dependencies:
     "@ethereumjs/util": "npm:^9.1.0"
     "@metamask/accounts-controller": "npm:^37.0.0"
@@ -7169,7 +7169,7 @@ __metadata:
     "@metamask/account-api": ^1.0.0
     "@metamask/providers": ^22.0.0
     webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
-  checksum: 10/1cc3d22afd5a89ef9b49a0d7eedb7482caeb7c14b1dbae74bc6c81f2d6754729c713368380d681a8bb268ff0b61fe4e8f7f289314e035df9a850a46c409b7aa1
+  checksum: 10/db089bb649424a61d028a94831243608e1a966c2894f38315aac8581f430c9a95296ce4376a1b19c8b742220107212910bed4512821bca2c7536868b7268b5a4
   languageName: node
   linkType: hard
 
@@ -8310,46 +8310,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/transaction-controller@npm:^63.0.0":
-  version: 63.0.0
-  resolution: "@metamask/transaction-controller@npm:63.0.0"
-  dependencies:
-    "@ethereumjs/common": "npm:^4.4.0"
-    "@ethereumjs/tx": "npm:^5.4.0"
-    "@ethereumjs/util": "npm:^9.1.0"
-    "@ethersproject/abi": "npm:^5.7.0"
-    "@ethersproject/contracts": "npm:^5.7.0"
-    "@ethersproject/providers": "npm:^5.7.0"
-    "@ethersproject/wallet": "npm:^5.7.0"
-    "@metamask/accounts-controller": "npm:^37.0.0"
-    "@metamask/approval-controller": "npm:^9.0.0"
-    "@metamask/base-controller": "npm:^9.0.0"
-    "@metamask/controller-utils": "npm:^11.19.0"
-    "@metamask/core-backend": "npm:^6.1.1"
-    "@metamask/eth-query": "npm:^4.0.0"
-    "@metamask/gas-fee-controller": "npm:^26.1.0"
-    "@metamask/messenger": "npm:^0.3.0"
-    "@metamask/metamask-eth-abis": "npm:^3.1.1"
-    "@metamask/network-controller": "npm:^30.0.0"
-    "@metamask/nonce-tracker": "npm:^6.0.0"
-    "@metamask/remote-feature-flag-controller": "npm:^4.1.0"
-    "@metamask/rpc-errors": "npm:^7.0.2"
-    "@metamask/utils": "npm:^11.9.0"
-    async-mutex: "npm:^0.5.0"
-    bignumber.js: "npm:^9.1.2"
-    bn.js: "npm:^5.2.1"
-    eth-method-registry: "npm:^4.0.0"
-    fast-json-patch: "npm:^3.1.1"
-    lodash: "npm:^4.17.21"
-    uuid: "npm:^8.3.2"
-  peerDependencies:
-    "@babel/runtime": ^7.0.0
-    "@metamask/eth-block-tracker": ">=9"
-  checksum: 10/1e6c79a4b6714731880eeae3acf02d30814a54087a8ff66ddf95b1168d21434d81ce05bd0906f27a81f7c0b5de1a934bd5de879523449737b21dcbe9560d6787
-  languageName: node
-  linkType: hard
-
-"@metamask/transaction-controller@npm:^63.1.0":
+"@metamask/transaction-controller@npm:^63.0.0, @metamask/transaction-controller@npm:^63.1.0":
   version: 63.1.0
   resolution: "@metamask/transaction-controller@npm:63.1.0"
   dependencies:
