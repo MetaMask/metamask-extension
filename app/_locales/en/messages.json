@@ -5541,7 +5541,7 @@
     "message": "Direction"
   },
   "perpsDisclaimer": {
-    "message": "Trading perpetuals involves significant risk. You may lose more than your initial investment. This is not financial advice."
+    "message": "Perpetual contracts are very risky, and you could suddenly and without notice lose your entire investment. You trade entirely at your own risk. Powered by Hyperliquid. Price chart powered by TradingView."
   },
   "perpsEmptyDescription": {
     "message": "Trade perpetuals with leverage. Open your first position to get started."
