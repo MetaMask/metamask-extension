@@ -1,0 +1,7 @@
+{
+  "entryPoints": [
+    "node_modules/@metamask/address-book-controller/dist/index.d.mts"
+  ],
+  "json": "messenger-docs.json",
+  "tsconfig": "tsconfig.typedoc.json"
+}

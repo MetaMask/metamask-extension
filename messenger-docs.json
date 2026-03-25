@@ -1,0 +1,3569 @@
+{
+	"schemaVersion": "2.0",
+	"id": 0,
+	"name": "@metamask/address-book-controller",
+	"variant": "project",
+	"kind": 1,
+	"flags": {},
+	"children": [
+		{
+			"id": 1,
+			"name": "AddressType",
+			"variant": "declaration",
+			"kind": 8,
+			"flags": {
+				"isExternal": true
+			},
+			"comment": {
+				"summary": [
+					{
+						"kind": "text",
+						"text": "The type of address."
+					}
+				]
+			},
+			"children": [
+				{
+					"id": 3,
+					"name": "contractAccounts",
+					"variant": "declaration",
+					"kind": 16,
+					"flags": {
+						"isExternal": true
+					},
+					"sources": [
+						{
+							"fileName": "address-book-controller/dist/AddressBookController.d.mts",
+							"line": 22,
+							"character": 4
+						}
+					],
+					"type": {
+						"type": "literal",
+						"value": "CONTRACT_ACCOUNTS"
+					}
+				},
+				{
+					"id": 2,
+					"name": "externallyOwnedAccounts",
+					"variant": "declaration",
+					"kind": 16,
+					"flags": {
+						"isExternal": true
+					},
+					"sources": [
+						{
+							"fileName": "address-book-controller/dist/AddressBookController.d.mts",
+							"line": 21,
+							"character": 4
+						}
+					],
+					"type": {
+						"type": "literal",
+						"value": "EXTERNALLY_OWNED_ACCOUNTS"
+					}
+				},
+				{
+					"id": 4,
+					"name": "nonAccounts",
+					"variant": "declaration",
+					"kind": 16,
+					"flags": {
+						"isExternal": true
+					},
+					"sources": [
+						{
+							"fileName": "address-book-controller/dist/AddressBookController.d.mts",
+							"line": 23,
+							"character": 4
+						}
+					],
+					"type": {
+						"type": "literal",
+						"value": "NON_ACCOUNTS"
+					}
+				}
+			],
+			"groups": [
+				{
+					"title": "Enumeration Members",
+					"children": [
+						3,
+						2,
+						4
+					]
+				}
+			],
+			"sources": [
+				{
+					"fileName": "address-book-controller/dist/AddressBookController.d.mts",
+					"line": 20,
+					"character": 20
+				}
+			]
+		},
+		{
+			"id": 44,
+			"name": "AddressBookController",
+			"variant": "declaration",
+			"kind": 128,
+			"flags": {
+				"isExternal": true
+			},
+			"comment": {
+				"summary": [
+					{
+						"kind": "text",
+						"text": "Controller that manages a list of recipient addresses associated with nicknames."
+					}
+				]
+			},
+			"children": [
+				{
+					"id": 45,
+					"name": "constructor",
+					"variant": "declaration",
+					"kind": 512,
+					"flags": {
+						"isExternal": true
+					},
+					"sources": [
+						{
+							"fileName": "address-book-controller/dist/AddressBookController.d.mts",
+							"line": 110,
+							"character": 4
+						}
+					],
+					"signatures": [
+						{
+							"id": 46,
+							"name": "AddressBookController",
+							"variant": "signature",
+							"kind": 16384,
+							"flags": {
+								"isExternal": true
+							},
+							"comment": {
+								"summary": [
+									{
+										"kind": "text",
+										"text": "Creates an AddressBookController instance."
+									}
+								]
+							},
+							"sources": [
+								{
+									"fileName": "address-book-controller/dist/AddressBookController.d.mts",
+									"line": 110,
+									"character": 4
+								}
+							],
+							"parameters": [
+								{
+									"id": 47,
+									"name": "args",
+									"variant": "param",
+									"kind": 32768,
+									"flags": {
+										"isExternal": true
+									},
+									"comment": {
+										"summary": [
+											{
+												"kind": "text",
+												"text": "The "
+											},
+											{
+												"kind": "inline-tag",
+												"tag": "@link",
+												"text": "AddressBookController",
+												"target": 44
+											},
+											{
+												"kind": "text",
+												"text": " arguments."
+											}
+										]
+									},
+									"type": {
+										"type": "reflection",
+										"declaration": {
+											"id": 48,
+											"name": "__type",
+											"variant": "declaration",
+											"kind": 65536,
+											"flags": {
+												"isExternal": true
+											},
+											"children": [
+												{
+													"id": 49,
+													"name": "messenger",
+													"variant": "declaration",
+													"kind": 1024,
+													"flags": {
+														"isExternal": true
+													},
+													"comment": {
+														"summary": [
+															{
+																"kind": "text",
+																"text": "The controller messenger instance for communication."
+															}
+														]
+													},
+													"sources": [
+														{
+															"fileName": "address-book-controller/dist/AddressBookController.d.mts",
+															"line": 111,
+															"character": 8
+														}
+													],
+													"type": {
+														"type": "reference",
+														"target": 35,
+														"name": "AddressBookControllerMessenger",
+														"package": "@metamask/address-book-controller"
+													}
+												},
+												{
+													"id": 50,
+													"name": "state",
+													"variant": "declaration",
+													"kind": 1024,
+													"flags": {
+														"isExternal": true,
+														"isOptional": true
+													},
+													"comment": {
+														"summary": [
+															{
+																"kind": "text",
+																"text": "Initial state to set on this controller."
+															}
+														]
+													},
+													"sources": [
+														{
+															"fileName": "address-book-controller/dist/AddressBookController.d.mts",
+															"line": 112,
+															"character": 8
+														}
+													],
+													"type": {
+														"type": "reference",
+														"target": {
+															"packageName": "typescript",
+															"packagePath": "lib/lib.es5.d.ts",
+															"qualifiedName": "Partial"
+														},
+														"typeArguments": [
+															{
+																"type": "reference",
+																"target": 14,
+																"name": "AddressBookControllerState",
+																"package": "@metamask/address-book-controller"
+															}
+														],
+														"name": "Partial",
+														"package": "typescript"
+													}
+												}
+											],
+											"groups": [
+												{
+													"title": "Properties",
+													"children": [
+														49,
+														50
+													]
+												}
+											]
+										}
+									}
+								}
+							],
+							"type": {
+								"type": "reference",
+								"target": 44,
+								"name": "AddressBookController",
+								"package": "@metamask/address-book-controller"
+							},
+							"overwrites": {
+								"type": "reference",
+								"target": -1,
+								"name": "BaseController<typeof controllerName, AddressBookControllerState, AddressBookControllerMessenger>.constructor",
+								"package": "@metamask/base-controller"
+							}
+						}
+					],
+					"overwrites": {
+						"type": "reference",
+						"target": -1,
+						"name": "BaseController<typeof controllerName, AddressBookControllerState, AddressBookControllerMessenger>.constructor",
+						"package": "@metamask/base-controller"
+					}
+				},
+				{
+					"id": 67,
+					"name": "messenger",
+					"variant": "declaration",
+					"kind": 1024,
+					"flags": {
+						"isProtected": true,
+						"isExternal": true,
+						"isInherited": true
+					},
+					"comment": {
+						"summary": [
+							{
+								"kind": "text",
+								"text": "The controller messenger. This is used to interact with other parts of the application."
+							}
+						]
+					},
+					"sources": [
+						{
+							"fileName": "base-controller/dist/BaseController.d.mts",
+							"line": 130,
+							"character": 14
+						}
+					],
+					"type": {
+						"type": "reference",
+						"target": 35,
+						"name": "AddressBookControllerMessenger",
+						"package": "@metamask/address-book-controller"
+					},
+					"inheritedFrom": {
+						"type": "reference",
+						"target": -1,
+						"name": "BaseController.messenger",
+						"package": "@metamask/base-controller"
+					}
+				},
+				{
+					"id": 69,
+					"name": "metadata",
+					"variant": "declaration",
+					"kind": 1024,
+					"flags": {
+						"isExternal": true,
+						"isReadonly": true,
+						"isInherited": true
+					},
+					"sources": [
+						{
+							"fileName": "base-controller/dist/BaseController.d.mts",
+							"line": 137,
+							"character": 13
+						}
+					],
+					"type": {
+						"type": "reference",
+						"target": {
+							"packageName": "@metamask/base-controller",
+							"packagePath": "src/BaseController.ts",
+							"qualifiedName": "StateMetadata"
+						},
+						"typeArguments": [
+							{
+								"type": "reference",
+								"target": {
+									"packageName": "@metamask/base-controller",
+									"packagePath": "src/BaseController.ts",
+									"qualifiedName": "BaseController.ControllerState"
+								},
+								"name": "ControllerState",
+								"package": "@metamask/base-controller",
+								"qualifiedName": "BaseController.ControllerState",
+								"refersToTypeParameter": true
+							}
+						],
+						"name": "StateMetadata",
+						"package": "@metamask/base-controller"
+					},
+					"inheritedFrom": {
+						"type": "reference",
+						"target": -1,
+						"name": "BaseController.metadata",
+						"package": "@metamask/base-controller"
+					}
+				},
+				{
+					"id": 68,
+					"name": "name",
+					"variant": "declaration",
+					"kind": 1024,
+					"flags": {
+						"isExternal": true,
+						"isReadonly": true,
+						"isInherited": true
+					},
+					"comment": {
+						"summary": [
+							{
+								"kind": "text",
+								"text": "The name of the controller.\n\nThis is used by the ComposableController to construct a composed application state."
+							}
+						]
+					},
+					"sources": [
+						{
+							"fileName": "base-controller/dist/BaseController.d.mts",
+							"line": 136,
+							"character": 13
+						}
+					],
+					"type": {
+						"type": "literal",
+						"value": "AddressBookController"
+					},
+					"inheritedFrom": {
+						"type": "reference",
+						"target": -1,
+						"name": "BaseController.name",
+						"package": "@metamask/base-controller"
+					}
+				},
+				{
+					"id": 70,
+					"name": "state",
+					"variant": "declaration",
+					"kind": 262144,
+					"flags": {
+						"isExternal": true,
+						"isInherited": true
+					},
+					"sources": [
+						{
+							"fileName": "base-controller/dist/BaseController.d.mts",
+							"line": 159,
+							"character": 8
+						},
+						{
+							"fileName": "base-controller/dist/BaseController.d.mts",
+							"line": 160,
+							"character": 8
+						}
+					],
+					"getSignature": {
+						"id": 71,
+						"name": "state",
+						"variant": "signature",
+						"kind": 524288,
+						"flags": {
+							"isExternal": true,
+							"isInherited": true
+						},
+						"comment": {
+							"summary": [
+								{
+									"kind": "text",
+									"text": "Retrieves current controller state."
+								}
+							],
+							"blockTags": [
+								{
+									"tag": "@returns",
+									"content": [
+										{
+											"kind": "text",
+											"text": "The current state."
+										}
+									]
+								}
+							]
+						},
+						"sources": [
+							{
+								"fileName": "base-controller/dist/BaseController.d.mts",
+								"line": 159,
+								"character": 8
+							}
+						],
+						"type": {
+							"type": "reference",
+							"target": {
+								"packageName": "@metamask/base-controller",
+								"packagePath": "src/BaseController.ts",
+								"qualifiedName": "BaseController.ControllerState"
+							},
+							"name": "ControllerState",
+							"package": "@metamask/base-controller",
+							"qualifiedName": "BaseController.ControllerState",
+							"refersToTypeParameter": true
+						},
+						"inheritedFrom": {
+							"type": "reference",
+							"target": -1,
+							"name": "BaseController.state",
+							"package": "@metamask/base-controller"
+						}
+					},
+					"setSignature": {
+						"id": 72,
+						"name": "state",
+						"variant": "signature",
+						"kind": 1048576,
+						"flags": {
+							"isExternal": true,
+							"isInherited": true
+						},
+						"sources": [
+							{
+								"fileName": "base-controller/dist/BaseController.d.mts",
+								"line": 160,
+								"character": 8
+							}
+						],
+						"parameters": [
+							{
+								"id": 73,
+								"name": "_",
+								"variant": "param",
+								"kind": 32768,
+								"flags": {
+									"isExternal": true
+								},
+								"type": {
+									"type": "reference",
+									"target": {
+										"packageName": "@metamask/base-controller",
+										"packagePath": "src/BaseController.ts",
+										"qualifiedName": "BaseController.ControllerState"
+									},
+									"name": "ControllerState",
+									"package": "@metamask/base-controller",
+									"qualifiedName": "BaseController.ControllerState",
+									"refersToTypeParameter": true
+								}
+							}
+						],
+						"type": {
+							"type": "intrinsic",
+							"name": "void"
+						},
+						"inheritedFrom": {
+							"type": "reference",
+							"target": -1,
+							"name": "BaseController.state",
+							"package": "@metamask/base-controller"
+						}
+					},
+					"inheritedFrom": {
+						"type": "reference",
+						"target": -1,
+						"name": "BaseController.state",
+						"package": "@metamask/base-controller"
+					}
+				},
+				{
+					"id": 84,
+					"name": "applyPatches",
+					"variant": "declaration",
+					"kind": 2048,
+					"flags": {
+						"isProtected": true,
+						"isExternal": true,
+						"isInherited": true
+					},
+					"sources": [
+						{
+							"fileName": "base-controller/dist/BaseController.d.mts",
+							"line": 184,
+							"character": 14
+						}
+					],
+					"signatures": [
+						{
+							"id": 85,
+							"name": "applyPatches",
+							"variant": "signature",
+							"kind": 4096,
+							"flags": {
+								"isExternal": true,
+								"isInherited": true
+							},
+							"comment": {
+								"summary": [
+									{
+										"kind": "text",
+										"text": "Applies immer patches to the current state. The patches come from the\nupdate function itself and can either be normal or inverse patches."
+									}
+								]
+							},
+							"sources": [
+								{
+									"fileName": "base-controller/dist/BaseController.d.mts",
+									"line": 184,
+									"character": 14
+								}
+							],
+							"parameters": [
+								{
+									"id": 86,
+									"name": "patches",
+									"variant": "param",
+									"kind": 32768,
+									"flags": {
+										"isExternal": true
+									},
+									"comment": {
+										"summary": [
+											{
+												"kind": "text",
+												"text": "An array of immer patches that are to be applied to make\nor undo changes."
+											}
+										]
+									},
+									"type": {
+										"type": "array",
+										"elementType": {
+											"type": "reference",
+											"target": {
+												"packageName": "immer",
+												"packagePath": "dist/src/types/types-external.ts",
+												"qualifiedName": "Patch"
+											},
+											"name": "Patch",
+											"package": "immer"
+										}
+									}
+								}
+							],
+							"type": {
+								"type": "intrinsic",
+								"name": "void"
+							},
+							"inheritedFrom": {
+								"type": "reference",
+								"target": -1,
+								"name": "BaseController.applyPatches",
+								"package": "@metamask/base-controller"
+							}
+						}
+					],
+					"inheritedFrom": {
+						"type": "reference",
+						"target": -1,
+						"name": "BaseController.applyPatches",
+						"package": "@metamask/base-controller"
+					}
+				},
+				{
+					"id": 53,
+					"name": "clear",
+					"variant": "declaration",
+					"kind": 2048,
+					"flags": {
+						"isExternal": true
+					},
+					"sources": [
+						{
+							"fileName": "address-book-controller/dist/AddressBookController.d.mts",
+							"line": 123,
+							"character": 4
+						}
+					],
+					"signatures": [
+						{
+							"id": 54,
+							"name": "clear",
+							"variant": "signature",
+							"kind": 4096,
+							"flags": {
+								"isExternal": true
+							},
+							"comment": {
+								"summary": [
+									{
+										"kind": "text",
+										"text": "Remove all contract entries."
+									}
+								]
+							},
+							"sources": [
+								{
+									"fileName": "address-book-controller/dist/AddressBookController.d.mts",
+									"line": 123,
+									"character": 4
+								}
+							],
+							"type": {
+								"type": "intrinsic",
+								"name": "void"
+							}
+						}
+					]
+				},
+				{
+					"id": 55,
+					"name": "delete",
+					"variant": "declaration",
+					"kind": 2048,
+					"flags": {
+						"isExternal": true
+					},
+					"sources": [
+						{
+							"fileName": "address-book-controller/dist/AddressBookController.d.mts",
+							"line": 131,
+							"character": 4
+						}
+					],
+					"signatures": [
+						{
+							"id": 56,
+							"name": "delete",
+							"variant": "signature",
+							"kind": 4096,
+							"flags": {
+								"isExternal": true
+							},
+							"comment": {
+								"summary": [
+									{
+										"kind": "text",
+										"text": "Remove a contract entry by address."
+									}
+								],
+								"blockTags": [
+									{
+										"tag": "@returns",
+										"content": [
+											{
+												"kind": "text",
+												"text": "Whether the entry was deleted."
+											}
+										]
+									}
+								]
+							},
+							"sources": [
+								{
+									"fileName": "address-book-controller/dist/AddressBookController.d.mts",
+									"line": 131,
+									"character": 4
+								}
+							],
+							"parameters": [
+								{
+									"id": 57,
+									"name": "chainId",
+									"variant": "param",
+									"kind": 32768,
+									"flags": {
+										"isExternal": true
+									},
+									"comment": {
+										"summary": [
+											{
+												"kind": "text",
+												"text": "Chain id identifies the current chain."
+											}
+										]
+									},
+									"type": {
+										"type": "templateLiteral",
+										"head": "0x",
+										"tail": [
+											[
+												{
+													"type": "intrinsic",
+													"name": "string"
+												},
+												""
+											]
+										]
+									}
+								},
+								{
+									"id": 58,
+									"name": "address",
+									"variant": "param",
+									"kind": 32768,
+									"flags": {
+										"isExternal": true
+									},
+									"comment": {
+										"summary": [
+											{
+												"kind": "text",
+												"text": "Recipient address to delete."
+											}
+										]
+									},
+									"type": {
+										"type": "intrinsic",
+										"name": "string"
+									}
+								}
+							],
+							"type": {
+								"type": "intrinsic",
+								"name": "boolean"
+							}
+						}
+					]
+				},
+				{
+					"id": 87,
+					"name": "destroy",
+					"variant": "declaration",
+					"kind": 2048,
+					"flags": {
+						"isProtected": true,
+						"isExternal": true,
+						"isInherited": true
+					},
+					"sources": [
+						{
+							"fileName": "base-controller/dist/BaseController.d.mts",
+							"line": 194,
+							"character": 14
+						}
+					],
+					"signatures": [
+						{
+							"id": 88,
+							"name": "destroy",
+							"variant": "signature",
+							"kind": 4096,
+							"flags": {
+								"isExternal": true,
+								"isInherited": true
+							},
+							"comment": {
+								"summary": [
+									{
+										"kind": "text",
+										"text": "Prepares the controller for garbage collection. This should be extended\nby any subclasses to clean up any additional connections or events.\n\nThe only cleanup performed here is to remove listeners. While technically\nthis is not required to ensure this instance is garbage collected, it at\nleast ensures this instance won't be responsible for preventing the\nlisteners from being garbage collected."
+									}
+								]
+							},
+							"sources": [
+								{
+									"fileName": "base-controller/dist/BaseController.d.mts",
+									"line": 194,
+									"character": 14
+								}
+							],
+							"type": {
+								"type": "intrinsic",
+								"name": "void"
+							},
+							"inheritedFrom": {
+								"type": "reference",
+								"target": -1,
+								"name": "BaseController.destroy",
+								"package": "@metamask/base-controller"
+							}
+						}
+					],
+					"inheritedFrom": {
+						"type": "reference",
+						"target": -1,
+						"name": "BaseController.destroy",
+						"package": "@metamask/base-controller"
+					}
+				},
+				{
+					"id": 51,
+					"name": "list",
+					"variant": "declaration",
+					"kind": 2048,
+					"flags": {
+						"isExternal": true
+					},
+					"sources": [
+						{
+							"fileName": "address-book-controller/dist/AddressBookController.d.mts",
+							"line": 119,
+							"character": 4
+						}
+					],
+					"signatures": [
+						{
+							"id": 52,
+							"name": "list",
+							"variant": "signature",
+							"kind": 4096,
+							"flags": {
+								"isExternal": true
+							},
+							"comment": {
+								"summary": [
+									{
+										"kind": "text",
+										"text": "Returns all address book entries as an array."
+									}
+								],
+								"blockTags": [
+									{
+										"tag": "@returns",
+										"content": [
+											{
+												"kind": "text",
+												"text": "Array of all address book entries."
+											}
+										]
+									}
+								]
+							},
+							"sources": [
+								{
+									"fileName": "address-book-controller/dist/AddressBookController.d.mts",
+									"line": 119,
+									"character": 4
+								}
+							],
+							"type": {
+								"type": "array",
+								"elementType": {
+									"type": "reference",
+									"target": 5,
+									"name": "AddressBookEntry",
+									"package": "@metamask/address-book-controller"
+								}
+							}
+						}
+					]
+				},
+				{
+					"id": 59,
+					"name": "set",
+					"variant": "declaration",
+					"kind": 2048,
+					"flags": {
+						"isExternal": true
+					},
+					"sources": [
+						{
+							"fileName": "address-book-controller/dist/AddressBookController.d.mts",
+							"line": 142,
+							"character": 4
+						}
+					],
+					"signatures": [
+						{
+							"id": 60,
+							"name": "set",
+							"variant": "signature",
+							"kind": 4096,
+							"flags": {
+								"isExternal": true
+							},
+							"comment": {
+								"summary": [
+									{
+										"kind": "text",
+										"text": "Add or update a contact entry by address."
+									}
+								],
+								"blockTags": [
+									{
+										"tag": "@returns",
+										"content": [
+											{
+												"kind": "text",
+												"text": "Boolean indicating if the address was successfully set."
+											}
+										]
+									}
+								]
+							},
+							"sources": [
+								{
+									"fileName": "address-book-controller/dist/AddressBookController.d.mts",
+									"line": 142,
+									"character": 4
+								}
+							],
+							"parameters": [
+								{
+									"id": 61,
+									"name": "address",
+									"variant": "param",
+									"kind": 32768,
+									"flags": {
+										"isExternal": true
+									},
+									"comment": {
+										"summary": [
+											{
+												"kind": "text",
+												"text": "Recipient address to add or update."
+											}
+										]
+									},
+									"type": {
+										"type": "intrinsic",
+										"name": "string"
+									}
+								},
+								{
+									"id": 62,
+									"name": "name",
+									"variant": "param",
+									"kind": 32768,
+									"flags": {
+										"isExternal": true
+									},
+									"comment": {
+										"summary": [
+											{
+												"kind": "text",
+												"text": "Nickname to associate with this address."
+											}
+										]
+									},
+									"type": {
+										"type": "intrinsic",
+										"name": "string"
+									}
+								},
+								{
+									"id": 63,
+									"name": "chainId",
+									"variant": "param",
+									"kind": 32768,
+									"flags": {
+										"isExternal": true,
+										"isOptional": true
+									},
+									"comment": {
+										"summary": [
+											{
+												"kind": "text",
+												"text": "Chain id identifies the current chain."
+											}
+										]
+									},
+									"type": {
+										"type": "templateLiteral",
+										"head": "0x",
+										"tail": [
+											[
+												{
+													"type": "intrinsic",
+													"name": "string"
+												},
+												""
+											]
+										]
+									}
+								},
+								{
+									"id": 64,
+									"name": "memo",
+									"variant": "param",
+									"kind": 32768,
+									"flags": {
+										"isExternal": true,
+										"isOptional": true
+									},
+									"comment": {
+										"summary": [
+											{
+												"kind": "text",
+												"text": "User's note about address."
+											}
+										]
+									},
+									"type": {
+										"type": "intrinsic",
+										"name": "string"
+									}
+								},
+								{
+									"id": 65,
+									"name": "addressType",
+									"variant": "param",
+									"kind": 32768,
+									"flags": {
+										"isExternal": true,
+										"isOptional": true
+									},
+									"comment": {
+										"summary": [
+											{
+												"kind": "text",
+												"text": "Contact's address type."
+											}
+										]
+									},
+									"type": {
+										"type": "reference",
+										"target": 1,
+										"name": "AddressType",
+										"package": "@metamask/address-book-controller"
+									}
+								}
+							],
+							"type": {
+								"type": "intrinsic",
+								"name": "boolean"
+							}
+						}
+					]
+				},
+				{
+					"id": 74,
+					"name": "update",
+					"variant": "declaration",
+					"kind": 2048,
+					"flags": {
+						"isProtected": true,
+						"isExternal": true,
+						"isInherited": true
+					},
+					"sources": [
+						{
+							"fileName": "base-controller/dist/BaseController.d.mts",
+							"line": 172,
+							"character": 14
+						}
+					],
+					"signatures": [
+						{
+							"id": 75,
+							"name": "update",
+							"variant": "signature",
+							"kind": 4096,
+							"flags": {
+								"isExternal": true,
+								"isInherited": true
+							},
+							"comment": {
+								"summary": [
+									{
+										"kind": "text",
+										"text": "Updates controller state. Accepts a callback that is passed a draft copy\nof the controller state. If a value is returned, it is set as the new\nstate. Otherwise, any changes made within that callback to the draft are\napplied to the controller state."
+									}
+								],
+								"blockTags": [
+									{
+										"tag": "@returns",
+										"content": [
+											{
+												"kind": "text",
+												"text": "An object that has the next state, patches applied in the update and inverse patches to\nrollback the update."
+											}
+										]
+									}
+								]
+							},
+							"sources": [
+								{
+									"fileName": "base-controller/dist/BaseController.d.mts",
+									"line": 172,
+									"character": 14
+								}
+							],
+							"parameters": [
+								{
+									"id": 76,
+									"name": "callback",
+									"variant": "param",
+									"kind": 32768,
+									"flags": {
+										"isExternal": true
+									},
+									"comment": {
+										"summary": [
+											{
+												"kind": "text",
+												"text": "Callback for updating state, passed a draft state\nobject. Return a new state object or mutate the draft to update state."
+											}
+										]
+									},
+									"type": {
+										"type": "reflection",
+										"declaration": {
+											"id": 77,
+											"name": "__type",
+											"variant": "declaration",
+											"kind": 65536,
+											"flags": {
+												"isExternal": true
+											},
+											"signatures": [
+												{
+													"id": 78,
+													"name": "__type",
+													"variant": "signature",
+													"kind": 4096,
+													"flags": {
+														"isExternal": true
+													},
+													"parameters": [
+														{
+															"id": 79,
+															"name": "state",
+															"variant": "param",
+															"kind": 32768,
+															"flags": {
+																"isExternal": true
+															},
+															"type": {
+																"type": "reference",
+																"target": {
+																	"packageName": "immer",
+																	"packagePath": "dist/src/types/types-external.ts",
+																	"qualifiedName": "Draft"
+																},
+																"typeArguments": [
+																	{
+																		"type": "reference",
+																		"target": {
+																			"packageName": "@metamask/base-controller",
+																			"packagePath": "src/BaseController.ts",
+																			"qualifiedName": "BaseController.ControllerState"
+																		},
+																		"name": "ControllerState",
+																		"package": "@metamask/base-controller",
+																		"qualifiedName": "BaseController.ControllerState",
+																		"refersToTypeParameter": true
+																	}
+																],
+																"name": "Draft",
+																"package": "immer"
+															}
+														}
+													],
+													"type": {
+														"type": "union",
+														"types": [
+															{
+																"type": "intrinsic",
+																"name": "void"
+															},
+															{
+																"type": "reference",
+																"target": 14,
+																"name": "AddressBookControllerState",
+																"package": "@metamask/address-book-controller"
+															}
+														]
+													}
+												}
+											]
+										}
+									}
+								}
+							],
+							"type": {
+								"type": "reflection",
+								"declaration": {
+									"id": 80,
+									"name": "__type",
+									"variant": "declaration",
+									"kind": 65536,
+									"flags": {
+										"isExternal": true
+									},
+									"children": [
+										{
+											"id": 83,
+											"name": "inversePatches",
+											"variant": "declaration",
+											"kind": 1024,
+											"flags": {
+												"isExternal": true
+											},
+											"sources": [
+												{
+													"fileName": "base-controller/dist/BaseController.d.mts",
+													"line": 175,
+													"character": 8
+												}
+											],
+											"type": {
+												"type": "array",
+												"elementType": {
+													"type": "reference",
+													"target": {
+														"packageName": "immer",
+														"packagePath": "dist/src/types/types-external.ts",
+														"qualifiedName": "Patch"
+													},
+													"name": "Patch",
+													"package": "immer"
+												}
+											}
+										},
+										{
+											"id": 81,
+											"name": "nextState",
+											"variant": "declaration",
+											"kind": 1024,
+											"flags": {
+												"isExternal": true
+											},
+											"sources": [
+												{
+													"fileName": "base-controller/dist/BaseController.d.mts",
+													"line": 173,
+													"character": 8
+												}
+											],
+											"type": {
+												"type": "reference",
+												"target": 14,
+												"name": "AddressBookControllerState",
+												"package": "@metamask/address-book-controller"
+											}
+										},
+										{
+											"id": 82,
+											"name": "patches",
+											"variant": "declaration",
+											"kind": 1024,
+											"flags": {
+												"isExternal": true
+											},
+											"sources": [
+												{
+													"fileName": "base-controller/dist/BaseController.d.mts",
+													"line": 174,
+													"character": 8
+												}
+											],
+											"type": {
+												"type": "array",
+												"elementType": {
+													"type": "reference",
+													"target": {
+														"packageName": "immer",
+														"packagePath": "dist/src/types/types-external.ts",
+														"qualifiedName": "Patch"
+													},
+													"name": "Patch",
+													"package": "immer"
+												}
+											}
+										}
+									],
+									"groups": [
+										{
+											"title": "Properties",
+											"children": [
+												83,
+												81,
+												82
+											]
+										}
+									]
+								}
+							},
+							"inheritedFrom": {
+								"type": "reference",
+								"target": -1,
+								"name": "BaseController.update",
+								"package": "@metamask/base-controller"
+							}
+						}
+					],
+					"inheritedFrom": {
+						"type": "reference",
+						"target": -1,
+						"name": "BaseController.update",
+						"package": "@metamask/base-controller"
+					}
+				}
+			],
+			"groups": [
+				{
+					"title": "Constructors",
+					"children": [
+						45
+					]
+				},
+				{
+					"title": "Properties",
+					"children": [
+						67,
+						69,
+						68
+					]
+				},
+				{
+					"title": "Accessors",
+					"children": [
+						70
+					]
+				},
+				{
+					"title": "Methods",
+					"children": [
+						84,
+						53,
+						55,
+						87,
+						51,
+						59,
+						74
+					]
+				}
+			],
+			"sources": [
+				{
+					"fileName": "address-book-controller/dist/AddressBookController.d.mts",
+					"line": 102,
+					"character": 21
+				}
+			],
+			"extendedTypes": [
+				{
+					"type": "reference",
+					"target": {
+						"packageName": "@metamask/base-controller",
+						"packagePath": "src/BaseController.ts",
+						"qualifiedName": "BaseController"
+					},
+					"typeArguments": [
+						{
+							"type": "query",
+							"queryType": {
+								"type": "reference",
+								"target": {
+									"packageName": "@metamask/address-book-controller",
+									"packagePath": "src/AddressBookController.ts",
+									"qualifiedName": "controllerName"
+								},
+								"name": "controllerName",
+								"package": "@metamask/address-book-controller",
+								"preferValues": true
+							}
+						},
+						{
+							"type": "reference",
+							"target": 14,
+							"name": "AddressBookControllerState",
+							"package": "@metamask/address-book-controller"
+						},
+						{
+							"type": "reference",
+							"target": 35,
+							"name": "AddressBookControllerMessenger",
+							"package": "@metamask/address-book-controller"
+						}
+					],
+					"name": "BaseController",
+					"package": "@metamask/base-controller"
+				}
+			]
+		},
+		{
+			"id": 24,
+			"name": "AddressBookControllerActions",
+			"variant": "declaration",
+			"kind": 2097152,
+			"flags": {
+				"isExternal": true
+			},
+			"comment": {
+				"summary": [
+					{
+						"kind": "text",
+						"text": "The actions that can be performed using the "
+					},
+					{
+						"kind": "inline-tag",
+						"tag": "@link",
+						"text": "AddressBookController",
+						"target": 44
+					},
+					{
+						"kind": "text",
+						"text": "."
+					}
+				]
+			},
+			"sources": [
+				{
+					"fileName": "address-book-controller/dist/AddressBookController.d.mts",
+					"line": 80,
+					"character": 12
+				}
+			],
+			"type": {
+				"type": "union",
+				"types": [
+					{
+						"type": "reference",
+						"target": 23,
+						"name": "AddressBookControllerGetStateAction",
+						"package": "@metamask/address-book-controller"
+					},
+					{
+						"type": "reference",
+						"target": {
+							"packageName": "@metamask/address-book-controller",
+							"packagePath": "src/AddressBookController-method-action-types.ts",
+							"qualifiedName": "AddressBookControllerMethodActions"
+						},
+						"name": "AddressBookControllerMethodActions",
+						"package": "@metamask/address-book-controller"
+					}
+				]
+			}
+		},
+		{
+			"id": 101,
+			"name": "AddressBookControllerClearAction",
+			"variant": "declaration",
+			"kind": 2097152,
+			"flags": {
+				"isExternal": true
+			},
+			"comment": {
+				"summary": [
+					{
+						"kind": "text",
+						"text": "Remove all contract entries."
+					}
+				]
+			},
+			"children": [
+				{
+					"id": 104,
+					"name": "handler",
+					"variant": "declaration",
+					"kind": 1024,
+					"flags": {
+						"isExternal": true
+					},
+					"sources": [
+						{
+							"fileName": "address-book-controller/dist/AddressBookController-method-action-types.d.mts",
+							"line": 20,
+							"character": 4
+						}
+					],
+					"type": {
+						"type": "indexedAccess",
+						"indexType": {
+							"type": "literal",
+							"value": "clear"
+						},
+						"objectType": {
+							"type": "reference",
+							"target": 44,
+							"name": "AddressBookController",
+							"package": "@metamask/address-book-controller"
+						}
+					}
+				},
+				{
+					"id": 103,
+					"name": "type",
+					"variant": "declaration",
+					"kind": 1024,
+					"flags": {
+						"isExternal": true
+					},
+					"sources": [
+						{
+							"fileName": "address-book-controller/dist/AddressBookController-method-action-types.d.mts",
+							"line": 19,
+							"character": 4
+						}
+					],
+					"type": {
+						"type": "literal",
+						"value": "AddressBookController:clear"
+					}
+				}
+			],
+			"groups": [
+				{
+					"title": "Properties",
+					"children": [
+						104,
+						103
+					]
+				}
+			],
+			"sources": [
+				{
+					"fileName": "address-book-controller/dist/AddressBookController-method-action-types.d.mts",
+					"line": 18,
+					"character": 12
+				}
+			]
+		},
+		{
+			"id": 30,
+			"name": "AddressBookControllerContactDeletedEvent",
+			"variant": "declaration",
+			"kind": 2097152,
+			"flags": {
+				"isExternal": true
+			},
+			"comment": {
+				"summary": [
+					{
+						"kind": "text",
+						"text": "Event emitted when a contact is deleted"
+					}
+				]
+			},
+			"children": [
+				{
+					"id": 33,
+					"name": "payload",
+					"variant": "declaration",
+					"kind": 1024,
+					"flags": {
+						"isExternal": true
+					},
+					"sources": [
+						{
+							"fileName": "address-book-controller/dist/AddressBookController.d.mts",
+							"line": 75,
+							"character": 4
+						}
+					],
+					"type": {
+						"type": "tuple",
+						"elements": [
+							{
+								"type": "reference",
+								"target": 5,
+								"name": "AddressBookEntry",
+								"package": "@metamask/address-book-controller"
+							}
+						]
+					}
+				},
+				{
+					"id": 32,
+					"name": "type",
+					"variant": "declaration",
+					"kind": 1024,
+					"flags": {
+						"isExternal": true
+					},
+					"sources": [
+						{
+							"fileName": "address-book-controller/dist/AddressBookController.d.mts",
+							"line": 74,
+							"character": 4
+						}
+					],
+					"type": {
+						"type": "templateLiteral",
+						"head": "",
+						"tail": [
+							[
+								{
+									"type": "query",
+									"queryType": {
+										"type": "reference",
+										"target": {
+											"packageName": "@metamask/address-book-controller",
+											"packagePath": "src/AddressBookController.ts",
+											"qualifiedName": "controllerName"
+										},
+										"name": "controllerName",
+										"package": "@metamask/address-book-controller",
+										"preferValues": true
+									}
+								},
+								":contactDeleted"
+							]
+						]
+					}
+				}
+			],
+			"groups": [
+				{
+					"title": "Properties",
+					"children": [
+						33,
+						32
+					]
+				}
+			],
+			"sources": [
+				{
+					"fileName": "address-book-controller/dist/AddressBookController.d.mts",
+					"line": 73,
+					"character": 12
+				}
+			]
+		},
+		{
+			"id": 26,
+			"name": "AddressBookControllerContactUpdatedEvent",
+			"variant": "declaration",
+			"kind": 2097152,
+			"flags": {
+				"isExternal": true
+			},
+			"comment": {
+				"summary": [
+					{
+						"kind": "text",
+						"text": "Event emitted when a contact is added or updated"
+					}
+				]
+			},
+			"children": [
+				{
+					"id": 29,
+					"name": "payload",
+					"variant": "declaration",
+					"kind": 1024,
+					"flags": {
+						"isExternal": true
+					},
+					"sources": [
+						{
+							"fileName": "address-book-controller/dist/AddressBookController.d.mts",
+							"line": 68,
+							"character": 4
+						}
+					],
+					"type": {
+						"type": "tuple",
+						"elements": [
+							{
+								"type": "reference",
+								"target": 5,
+								"name": "AddressBookEntry",
+								"package": "@metamask/address-book-controller"
+							}
+						]
+					}
+				},
+				{
+					"id": 28,
+					"name": "type",
+					"variant": "declaration",
+					"kind": 1024,
+					"flags": {
+						"isExternal": true
+					},
+					"sources": [
+						{
+							"fileName": "address-book-controller/dist/AddressBookController.d.mts",
+							"line": 67,
+							"character": 4
+						}
+					],
+					"type": {
+						"type": "templateLiteral",
+						"head": "",
+						"tail": [
+							[
+								{
+									"type": "query",
+									"queryType": {
+										"type": "reference",
+										"target": {
+											"packageName": "@metamask/address-book-controller",
+											"packagePath": "src/AddressBookController.ts",
+											"qualifiedName": "controllerName"
+										},
+										"name": "controllerName",
+										"package": "@metamask/address-book-controller",
+										"preferValues": true
+									}
+								},
+								":contactUpdated"
+							]
+						]
+					}
+				}
+			],
+			"groups": [
+				{
+					"title": "Properties",
+					"children": [
+						29,
+						28
+					]
+				}
+			],
+			"sources": [
+				{
+					"fileName": "address-book-controller/dist/AddressBookController.d.mts",
+					"line": 66,
+					"character": 12
+				}
+			]
+		},
+		{
+			"id": 97,
+			"name": "AddressBookControllerDeleteAction",
+			"variant": "declaration",
+			"kind": 2097152,
+			"flags": {
+				"isExternal": true
+			},
+			"comment": {
+				"summary": [
+					{
+						"kind": "text",
+						"text": "Remove a contract entry by address."
+					}
+				],
+				"blockTags": [
+					{
+						"tag": "@param",
+						"name": "chainId",
+						"content": [
+							{
+								"kind": "text",
+								"text": "Chain id identifies the current chain."
+							}
+						]
+					},
+					{
+						"tag": "@param",
+						"name": "address",
+						"content": [
+							{
+								"kind": "text",
+								"text": "Recipient address to delete."
+							}
+						]
+					},
+					{
+						"tag": "@returns",
+						"content": [
+							{
+								"kind": "text",
+								"text": "Whether the entry was deleted."
+							}
+						]
+					}
+				]
+			},
+			"children": [
+				{
+					"id": 100,
+					"name": "handler",
+					"variant": "declaration",
+					"kind": 1024,
+					"flags": {
+						"isExternal": true
+					},
+					"sources": [
+						{
+							"fileName": "address-book-controller/dist/AddressBookController-method-action-types.d.mts",
+							"line": 31,
+							"character": 4
+						}
+					],
+					"type": {
+						"type": "indexedAccess",
+						"indexType": {
+							"type": "literal",
+							"value": "delete"
+						},
+						"objectType": {
+							"type": "reference",
+							"target": 44,
+							"name": "AddressBookController",
+							"package": "@metamask/address-book-controller"
+						}
+					}
+				},
+				{
+					"id": 99,
+					"name": "type",
+					"variant": "declaration",
+					"kind": 1024,
+					"flags": {
+						"isExternal": true
+					},
+					"sources": [
+						{
+							"fileName": "address-book-controller/dist/AddressBookController-method-action-types.d.mts",
+							"line": 30,
+							"character": 4
+						}
+					],
+					"type": {
+						"type": "literal",
+						"value": "AddressBookController:delete"
+					}
+				}
+			],
+			"groups": [
+				{
+					"title": "Properties",
+					"children": [
+						100,
+						99
+					]
+				}
+			],
+			"sources": [
+				{
+					"fileName": "address-book-controller/dist/AddressBookController-method-action-types.d.mts",
+					"line": 29,
+					"character": 12
+				}
+			]
+		},
+		{
+			"id": 34,
+			"name": "AddressBookControllerEvents",
+			"variant": "declaration",
+			"kind": 2097152,
+			"flags": {
+				"isExternal": true
+			},
+			"comment": {
+				"summary": [
+					{
+						"kind": "text",
+						"text": "The events that "
+					},
+					{
+						"kind": "inline-tag",
+						"tag": "@link",
+						"text": "AddressBookController",
+						"target": 44
+					},
+					{
+						"kind": "text",
+						"text": " can emit."
+					}
+				]
+			},
+			"sources": [
+				{
+					"fileName": "address-book-controller/dist/AddressBookController.d.mts",
+					"line": 88,
+					"character": 12
+				}
+			],
+			"type": {
+				"type": "union",
+				"types": [
+					{
+						"type": "reference",
+						"target": 25,
+						"name": "AddressBookControllerStateChangeEvent",
+						"package": "@metamask/address-book-controller"
+					},
+					{
+						"type": "reference",
+						"target": 26,
+						"name": "AddressBookControllerContactUpdatedEvent",
+						"package": "@metamask/address-book-controller"
+					},
+					{
+						"type": "reference",
+						"target": 30,
+						"name": "AddressBookControllerContactDeletedEvent",
+						"package": "@metamask/address-book-controller"
+					}
+				]
+			}
+		},
+		{
+			"id": 23,
+			"name": "AddressBookControllerGetStateAction",
+			"variant": "declaration",
+			"kind": 2097152,
+			"flags": {
+				"isExternal": true
+			},
+			"comment": {
+				"summary": [
+					{
+						"kind": "text",
+						"text": "The action that can be performed to get the state of the "
+					},
+					{
+						"kind": "inline-tag",
+						"tag": "@link",
+						"text": "AddressBookController",
+						"target": 44
+					},
+					{
+						"kind": "text",
+						"text": "."
+					}
+				]
+			},
+			"sources": [
+				{
+					"fileName": "address-book-controller/dist/AddressBookController.d.mts",
+					"line": 62,
+					"character": 12
+				}
+			],
+			"type": {
+				"type": "reference",
+				"target": {
+					"packageName": "@metamask/base-controller",
+					"packagePath": "src/BaseController.ts",
+					"qualifiedName": "ControllerGetStateAction"
+				},
+				"typeArguments": [
+					{
+						"type": "query",
+						"queryType": {
+							"type": "reference",
+							"target": {
+								"packageName": "@metamask/address-book-controller",
+								"packagePath": "src/AddressBookController.ts",
+								"qualifiedName": "controllerName"
+							},
+							"name": "controllerName",
+							"package": "@metamask/address-book-controller",
+							"preferValues": true
+						}
+					},
+					{
+						"type": "reference",
+						"target": 14,
+						"name": "AddressBookControllerState",
+						"package": "@metamask/address-book-controller"
+					}
+				],
+				"name": "ControllerGetStateAction",
+				"package": "@metamask/base-controller"
+			}
+		},
+		{
+			"id": 89,
+			"name": "AddressBookControllerListAction",
+			"variant": "declaration",
+			"kind": 2097152,
+			"flags": {
+				"isExternal": true
+			},
+			"comment": {
+				"summary": [
+					{
+						"kind": "text",
+						"text": "Returns all address book entries as an array."
+					}
+				],
+				"blockTags": [
+					{
+						"tag": "@returns",
+						"content": [
+							{
+								"kind": "text",
+								"text": "Array of all address book entries."
+							}
+						]
+					}
+				]
+			},
+			"children": [
+				{
+					"id": 92,
+					"name": "handler",
+					"variant": "declaration",
+					"kind": 1024,
+					"flags": {
+						"isExternal": true
+					},
+					"sources": [
+						{
+							"fileName": "address-book-controller/dist/AddressBookController-method-action-types.d.mts",
+							"line": 13,
+							"character": 4
+						}
+					],
+					"type": {
+						"type": "indexedAccess",
+						"indexType": {
+							"type": "literal",
+							"value": "list"
+						},
+						"objectType": {
+							"type": "reference",
+							"target": 44,
+							"name": "AddressBookController",
+							"package": "@metamask/address-book-controller"
+						}
+					}
+				},
+				{
+					"id": 91,
+					"name": "type",
+					"variant": "declaration",
+					"kind": 1024,
+					"flags": {
+						"isExternal": true
+					},
+					"sources": [
+						{
+							"fileName": "address-book-controller/dist/AddressBookController-method-action-types.d.mts",
+							"line": 12,
+							"character": 4
+						}
+					],
+					"type": {
+						"type": "literal",
+						"value": "AddressBookController:list"
+					}
+				}
+			],
+			"groups": [
+				{
+					"title": "Properties",
+					"children": [
+						92,
+						91
+					]
+				}
+			],
+			"sources": [
+				{
+					"fileName": "address-book-controller/dist/AddressBookController-method-action-types.d.mts",
+					"line": 11,
+					"character": 12
+				}
+			]
+		},
+		{
+			"id": 35,
+			"name": "AddressBookControllerMessenger",
+			"variant": "declaration",
+			"kind": 2097152,
+			"flags": {
+				"isExternal": true
+			},
+			"comment": {
+				"summary": [
+					{
+						"kind": "text",
+						"text": "The messenger of the "
+					},
+					{
+						"kind": "inline-tag",
+						"tag": "@link",
+						"text": "AddressBookController",
+						"target": 44
+					},
+					{
+						"kind": "text",
+						"text": " for communication."
+					}
+				]
+			},
+			"sources": [
+				{
+					"fileName": "address-book-controller/dist/AddressBookController.d.mts",
+					"line": 98,
+					"character": 12
+				}
+			],
+			"type": {
+				"type": "reference",
+				"target": {
+					"packageName": "@metamask/messenger",
+					"packagePath": "src/Messenger.ts",
+					"qualifiedName": "Messenger"
+				},
+				"typeArguments": [
+					{
+						"type": "query",
+						"queryType": {
+							"type": "reference",
+							"target": {
+								"packageName": "@metamask/address-book-controller",
+								"packagePath": "src/AddressBookController.ts",
+								"qualifiedName": "controllerName"
+							},
+							"name": "controllerName",
+							"package": "@metamask/address-book-controller",
+							"preferValues": true
+						}
+					},
+					{
+						"type": "reference",
+						"target": 24,
+						"name": "AddressBookControllerActions",
+						"package": "@metamask/address-book-controller"
+					},
+					{
+						"type": "reference",
+						"target": 34,
+						"name": "AddressBookControllerEvents",
+						"package": "@metamask/address-book-controller"
+					}
+				],
+				"name": "Messenger",
+				"package": "@metamask/messenger"
+			}
+		},
+		{
+			"id": 93,
+			"name": "AddressBookControllerSetAction",
+			"variant": "declaration",
+			"kind": 2097152,
+			"flags": {
+				"isExternal": true
+			},
+			"comment": {
+				"summary": [
+					{
+						"kind": "text",
+						"text": "Add or update a contact entry by address."
+					}
+				],
+				"blockTags": [
+					{
+						"tag": "@param",
+						"name": "address",
+						"content": [
+							{
+								"kind": "text",
+								"text": "Recipient address to add or update."
+							}
+						]
+					},
+					{
+						"tag": "@param",
+						"name": "name",
+						"content": [
+							{
+								"kind": "text",
+								"text": "Nickname to associate with this address."
+							}
+						]
+					},
+					{
+						"tag": "@param",
+						"name": "chainId",
+						"content": [
+							{
+								"kind": "text",
+								"text": "Chain id identifies the current chain."
+							}
+						]
+					},
+					{
+						"tag": "@param",
+						"name": "memo",
+						"content": [
+							{
+								"kind": "text",
+								"text": "User's note about address."
+							}
+						]
+					},
+					{
+						"tag": "@param",
+						"name": "addressType",
+						"content": [
+							{
+								"kind": "text",
+								"text": "Contact's address type."
+							}
+						]
+					},
+					{
+						"tag": "@returns",
+						"content": [
+							{
+								"kind": "text",
+								"text": "Boolean indicating if the address was successfully set."
+							}
+						]
+					}
+				]
+			},
+			"children": [
+				{
+					"id": 96,
+					"name": "handler",
+					"variant": "declaration",
+					"kind": 1024,
+					"flags": {
+						"isExternal": true
+					},
+					"sources": [
+						{
+							"fileName": "address-book-controller/dist/AddressBookController-method-action-types.d.mts",
+							"line": 45,
+							"character": 4
+						}
+					],
+					"type": {
+						"type": "indexedAccess",
+						"indexType": {
+							"type": "literal",
+							"value": "set"
+						},
+						"objectType": {
+							"type": "reference",
+							"target": 44,
+							"name": "AddressBookController",
+							"package": "@metamask/address-book-controller"
+						}
+					}
+				},
+				{
+					"id": 95,
+					"name": "type",
+					"variant": "declaration",
+					"kind": 1024,
+					"flags": {
+						"isExternal": true
+					},
+					"sources": [
+						{
+							"fileName": "address-book-controller/dist/AddressBookController-method-action-types.d.mts",
+							"line": 44,
+							"character": 4
+						}
+					],
+					"type": {
+						"type": "literal",
+						"value": "AddressBookController:set"
+					}
+				}
+			],
+			"groups": [
+				{
+					"title": "Properties",
+					"children": [
+						96,
+						95
+					]
+				}
+			],
+			"sources": [
+				{
+					"fileName": "address-book-controller/dist/AddressBookController-method-action-types.d.mts",
+					"line": 43,
+					"character": 12
+				}
+			]
+		},
+		{
+			"id": 14,
+			"name": "AddressBookControllerState",
+			"variant": "declaration",
+			"kind": 2097152,
+			"flags": {
+				"isExternal": true
+			},
+			"comment": {
+				"summary": [
+					{
+						"kind": "text",
+						"text": "State for the AddressBookController."
+					}
+				]
+			},
+			"children": [
+				{
+					"id": 16,
+					"name": "addressBook",
+					"variant": "declaration",
+					"kind": 1024,
+					"flags": {
+						"isExternal": true
+					},
+					"comment": {
+						"summary": [
+							{
+								"kind": "text",
+								"text": "Map of chainId to address to contact entries"
+							}
+						]
+					},
+					"sources": [
+						{
+							"fileName": "address-book-controller/dist/AddressBookController.d.mts",
+							"line": 49,
+							"character": 4
+						}
+					],
+					"type": {
+						"type": "reflection",
+						"declaration": {
+							"id": 17,
+							"name": "__type",
+							"variant": "declaration",
+							"kind": 65536,
+							"flags": {
+								"isExternal": true
+							},
+							"indexSignatures": [
+								{
+									"id": 18,
+									"name": "__index",
+									"variant": "signature",
+									"kind": 8192,
+									"flags": {
+										"isExternal": true
+									},
+									"parameters": [
+										{
+											"id": 19,
+											"name": "chainId",
+											"variant": "param",
+											"kind": 32768,
+											"flags": {
+												"isExternal": true
+											},
+											"type": {
+												"type": "templateLiteral",
+												"head": "0x",
+												"tail": [
+													[
+														{
+															"type": "intrinsic",
+															"name": "string"
+														},
+														""
+													]
+												]
+											}
+										}
+									],
+									"type": {
+										"type": "reflection",
+										"declaration": {
+											"id": 20,
+											"name": "__type",
+											"variant": "declaration",
+											"kind": 65536,
+											"flags": {
+												"isExternal": true
+											},
+											"indexSignatures": [
+												{
+													"id": 21,
+													"name": "__index",
+													"variant": "signature",
+													"kind": 8192,
+													"flags": {
+														"isExternal": true
+													},
+													"parameters": [
+														{
+															"id": 22,
+															"name": "address",
+															"variant": "param",
+															"kind": 32768,
+															"flags": {
+																"isExternal": true
+															},
+															"type": {
+																"type": "intrinsic",
+																"name": "string"
+															}
+														}
+													],
+													"type": {
+														"type": "reference",
+														"target": 5,
+														"name": "AddressBookEntry",
+														"package": "@metamask/address-book-controller"
+													}
+												}
+											]
+										}
+									}
+								}
+							]
+						}
+					}
+				}
+			],
+			"groups": [
+				{
+					"title": "Properties",
+					"children": [
+						16
+					]
+				}
+			],
+			"sources": [
+				{
+					"fileName": "address-book-controller/dist/AddressBookController.d.mts",
+					"line": 47,
+					"character": 12
+				}
+			]
+		},
+		{
+			"id": 25,
+			"name": "AddressBookControllerStateChangeEvent",
+			"variant": "declaration",
+			"kind": 2097152,
+			"flags": {
+				"isExternal": true
+			},
+			"comment": {
+				"summary": [
+					{
+						"kind": "text",
+						"text": "The event that "
+					},
+					{
+						"kind": "inline-tag",
+						"tag": "@link",
+						"text": "AddressBookController",
+						"target": 44
+					},
+					{
+						"kind": "text",
+						"text": " can emit."
+					}
+				]
+			},
+			"sources": [
+				{
+					"fileName": "address-book-controller/dist/AddressBookController.d.mts",
+					"line": 84,
+					"character": 12
+				}
+			],
+			"type": {
+				"type": "reference",
+				"target": {
+					"packageName": "@metamask/base-controller",
+					"packagePath": "src/BaseController.ts",
+					"qualifiedName": "ControllerStateChangeEvent"
+				},
+				"typeArguments": [
+					{
+						"type": "query",
+						"queryType": {
+							"type": "reference",
+							"target": {
+								"packageName": "@metamask/address-book-controller",
+								"packagePath": "src/AddressBookController.ts",
+								"qualifiedName": "controllerName"
+							},
+							"name": "controllerName",
+							"package": "@metamask/address-book-controller",
+							"preferValues": true
+						}
+					},
+					{
+						"type": "reference",
+						"target": 14,
+						"name": "AddressBookControllerState",
+						"package": "@metamask/address-book-controller"
+					}
+				],
+				"name": "ControllerStateChangeEvent",
+				"package": "@metamask/base-controller"
+			}
+		},
+		{
+			"id": 5,
+			"name": "AddressBookEntry",
+			"variant": "declaration",
+			"kind": 2097152,
+			"flags": {
+				"isExternal": true
+			},
+			"comment": {
+				"summary": [
+					{
+						"kind": "text",
+						"text": "AddressBookEntry represents a contact in the address book."
+					}
+				]
+			},
+			"children": [
+				{
+					"id": 7,
+					"name": "address",
+					"variant": "declaration",
+					"kind": 1024,
+					"flags": {
+						"isExternal": true
+					},
+					"comment": {
+						"summary": [
+							{
+								"kind": "text",
+								"text": "Hex address of a recipient account"
+							}
+						]
+					},
+					"sources": [
+						{
+							"fileName": "address-book-controller/dist/AddressBookController.d.mts",
+							"line": 30,
+							"character": 4
+						}
+					],
+					"type": {
+						"type": "intrinsic",
+						"name": "string"
+					}
+				},
+				{
+					"id": 12,
+					"name": "addressType",
+					"variant": "declaration",
+					"kind": 1024,
+					"flags": {
+						"isExternal": true,
+						"isOptional": true
+					},
+					"comment": {
+						"summary": [
+							{
+								"kind": "text",
+								"text": "The type of this address"
+							}
+						]
+					},
+					"sources": [
+						{
+							"fileName": "address-book-controller/dist/AddressBookController.d.mts",
+							"line": 40,
+							"character": 4
+						}
+					],
+					"type": {
+						"type": "reference",
+						"target": 1,
+						"name": "AddressType",
+						"package": "@metamask/address-book-controller"
+					}
+				},
+				{
+					"id": 9,
+					"name": "chainId",
+					"variant": "declaration",
+					"kind": 1024,
+					"flags": {
+						"isExternal": true
+					},
+					"comment": {
+						"summary": [
+							{
+								"kind": "text",
+								"text": "Chain id identifies the current chain"
+							}
+						]
+					},
+					"sources": [
+						{
+							"fileName": "address-book-controller/dist/AddressBookController.d.mts",
+							"line": 34,
+							"character": 4
+						}
+					],
+					"type": {
+						"type": "reference",
+						"target": {
+							"packageName": "@metamask/utils",
+							"packagePath": "src/hex.ts",
+							"qualifiedName": "Hex"
+						},
+						"name": "Hex",
+						"package": "@metamask/utils"
+					}
+				},
+				{
+					"id": 11,
+					"name": "isEns",
+					"variant": "declaration",
+					"kind": 1024,
+					"flags": {
+						"isExternal": true
+					},
+					"comment": {
+						"summary": [
+							{
+								"kind": "text",
+								"text": "Indicates if the entry is an ENS name"
+							}
+						]
+					},
+					"sources": [
+						{
+							"fileName": "address-book-controller/dist/AddressBookController.d.mts",
+							"line": 38,
+							"character": 4
+						}
+					],
+					"type": {
+						"type": "intrinsic",
+						"name": "boolean"
+					}
+				},
+				{
+					"id": 13,
+					"name": "lastUpdatedAt",
+					"variant": "declaration",
+					"kind": 1024,
+					"flags": {
+						"isExternal": true,
+						"isOptional": true
+					},
+					"comment": {
+						"summary": [
+							{
+								"kind": "text",
+								"text": "Timestamp of when this entry was last updated"
+							}
+						]
+					},
+					"sources": [
+						{
+							"fileName": "address-book-controller/dist/AddressBookController.d.mts",
+							"line": 42,
+							"character": 4
+						}
+					],
+					"type": {
+						"type": "intrinsic",
+						"name": "number"
+					}
+				},
+				{
+					"id": 10,
+					"name": "memo",
+					"variant": "declaration",
+					"kind": 1024,
+					"flags": {
+						"isExternal": true
+					},
+					"comment": {
+						"summary": [
+							{
+								"kind": "text",
+								"text": "User's note about address"
+							}
+						]
+					},
+					"sources": [
+						{
+							"fileName": "address-book-controller/dist/AddressBookController.d.mts",
+							"line": 36,
+							"character": 4
+						}
+					],
+					"type": {
+						"type": "intrinsic",
+						"name": "string"
+					}
+				},
+				{
+					"id": 8,
+					"name": "name",
+					"variant": "declaration",
+					"kind": 1024,
+					"flags": {
+						"isExternal": true
+					},
+					"comment": {
+						"summary": [
+							{
+								"kind": "text",
+								"text": "Nickname associated with this address"
+							}
+						]
+					},
+					"sources": [
+						{
+							"fileName": "address-book-controller/dist/AddressBookController.d.mts",
+							"line": 32,
+							"character": 4
+						}
+					],
+					"type": {
+						"type": "intrinsic",
+						"name": "string"
+					}
+				}
+			],
+			"groups": [
+				{
+					"title": "Properties",
+					"children": [
+						7,
+						12,
+						9,
+						11,
+						13,
+						10,
+						8
+					]
+				}
+			],
+			"sources": [
+				{
+					"fileName": "address-book-controller/dist/AddressBookController.d.mts",
+					"line": 28,
+					"character": 12
+				}
+			]
+		},
+		{
+			"id": 36,
+			"name": "ContactEntry",
+			"variant": "declaration",
+			"kind": 2097152,
+			"flags": {
+				"isExternal": true
+			},
+			"comment": {
+				"summary": [
+					{
+						"kind": "text",
+						"text": "ContactEntry representation"
+					}
+				]
+			},
+			"children": [
+				{
+					"id": 38,
+					"name": "address",
+					"variant": "declaration",
+					"kind": 1024,
+					"flags": {
+						"isExternal": true
+					},
+					"comment": {
+						"summary": [
+							{
+								"kind": "text",
+								"text": "Hex address of a recipient account"
+							}
+						]
+					},
+					"sources": [
+						{
+							"fileName": "address-book-controller/dist/AddressBookController.d.mts",
+							"line": 11,
+							"character": 4
+						}
+					],
+					"type": {
+						"type": "intrinsic",
+						"name": "string"
+					}
+				},
+				{
+					"id": 40,
+					"name": "importTime",
+					"variant": "declaration",
+					"kind": 1024,
+					"flags": {
+						"isExternal": true,
+						"isOptional": true
+					},
+					"comment": {
+						"summary": [
+							{
+								"kind": "text",
+								"text": "Data time when an account as created/imported"
+							}
+						]
+					},
+					"sources": [
+						{
+							"fileName": "address-book-controller/dist/AddressBookController.d.mts",
+							"line": 15,
+							"character": 4
+						}
+					],
+					"type": {
+						"type": "intrinsic",
+						"name": "number"
+					}
+				},
+				{
+					"id": 39,
+					"name": "name",
+					"variant": "declaration",
+					"kind": 1024,
+					"flags": {
+						"isExternal": true
+					},
+					"comment": {
+						"summary": [
+							{
+								"kind": "text",
+								"text": "Nickname associated with this address"
+							}
+						]
+					},
+					"sources": [
+						{
+							"fileName": "address-book-controller/dist/AddressBookController.d.mts",
+							"line": 13,
+							"character": 4
+						}
+					],
+					"type": {
+						"type": "intrinsic",
+						"name": "string"
+					}
+				}
+			],
+			"groups": [
+				{
+					"title": "Properties",
+					"children": [
+						38,
+						40,
+						39
+					]
+				}
+			],
+			"sources": [
+				{
+					"fileName": "address-book-controller/dist/AddressBookController.d.mts",
+					"line": 9,
+					"character": 12
+				}
+			]
+		},
+		{
+			"id": 41,
+			"name": "getDefaultAddressBookControllerState",
+			"variant": "declaration",
+			"kind": 32,
+			"flags": {
+				"isExternal": true,
+				"isConst": true
+			},
+			"comment": {
+				"summary": [
+					{
+						"kind": "text",
+						"text": "Get the default "
+					},
+					{
+						"kind": "inline-tag",
+						"tag": "@link",
+						"text": "AddressBookController",
+						"target": 44
+					},
+					{
+						"kind": "text",
+						"text": " state."
+					}
+				]
+			},
+			"sources": [
+				{
+					"fileName": "address-book-controller/dist/AddressBookController.d.mts",
+					"line": 94,
+					"character": 21
+				}
+			],
+			"type": {
+				"type": "reflection",
+				"declaration": {
+					"id": 42,
+					"name": "__type",
+					"variant": "declaration",
+					"kind": 65536,
+					"flags": {
+						"isExternal": true
+					},
+					"signatures": [
+						{
+							"id": 43,
+							"name": "__type",
+							"variant": "signature",
+							"kind": 4096,
+							"flags": {
+								"isExternal": true
+							},
+							"comment": {
+								"summary": [],
+								"blockTags": [
+									{
+										"tag": "@returns",
+										"content": [
+											{
+												"kind": "text",
+												"text": "The default "
+											},
+											{
+												"kind": "inline-tag",
+												"tag": "@link",
+												"text": "AddressBookController",
+												"target": 44
+											},
+											{
+												"kind": "text",
+												"text": " state."
+											}
+										]
+									}
+								]
+							},
+							"type": {
+								"type": "reference",
+								"target": 14,
+								"name": "AddressBookControllerState",
+								"package": "@metamask/address-book-controller"
+							}
+						}
+					]
+				}
+			}
+		}
+	],
+	"groups": [
+		{
+			"title": "Enumerations",
+			"children": [
+				1
+			]
+		},
+		{
+			"title": "Classes",
+			"children": [
+				44
+			]
+		},
+		{
+			"title": "Type Aliases",
+			"children": [
+				24,
+				101,
+				30,
+				26,
+				97,
+				34,
+				23,
+				89,
+				35,
+				93,
+				14,
+				25,
+				5,
+				36
+			]
+		},
+		{
+			"title": "Variables",
+			"children": [
+				41
+			]
+		}
+	],
+	"packageName": "@metamask/address-book-controller",
+	"readme": [
+		{
+			"kind": "text",
+			"text": "# "
+		},
+		{
+			"kind": "code",
+			"text": "`@metamask/address-book-controller`"
+		},
+		{
+			"kind": "text",
+			"text": "\n\nManages a list of recipient addresses associated with nicknames.\n\n## Installation\n\n"
+		},
+		{
+			"kind": "code",
+			"text": "`yarn add @metamask/address-book-controller`"
+		},
+		{
+			"kind": "text",
+			"text": "\n\nor\n\n"
+		},
+		{
+			"kind": "code",
+			"text": "`npm install @metamask/address-book-controller`"
+		},
+		{
+			"kind": "text",
+			"text": "\n\n## Contributing\n\nThis package is part of a monorepo. Instructions for contributing can be found in the [monorepo README](https://github.com/MetaMask/core#readme)."
+		}
+	],
+	"symbolIdMap": {
+		"0": {
+			"packageName": "@metamask/address-book-controller",
+			"packagePath": "src/index.ts",
+			"qualifiedName": ""
+		},
+		"1": {
+			"packageName": "@metamask/address-book-controller",
+			"packagePath": "src/AddressBookController.ts",
+			"qualifiedName": "AddressType"
+		},
+		"2": {
+			"packageName": "@metamask/address-book-controller",
+			"packagePath": "src/AddressBookController.ts",
+			"qualifiedName": "AddressType.externallyOwnedAccounts"
+		},
+		"3": {
+			"packageName": "@metamask/address-book-controller",
+			"packagePath": "src/AddressBookController.ts",
+			"qualifiedName": "AddressType.contractAccounts"
+		},
+		"4": {
+			"packageName": "@metamask/address-book-controller",
+			"packagePath": "src/AddressBookController.ts",
+			"qualifiedName": "AddressType.nonAccounts"
+		},
+		"5": {
+			"packageName": "@metamask/address-book-controller",
+			"packagePath": "src/AddressBookController.ts",
+			"qualifiedName": "AddressBookEntry"
+		},
+		"7": {
+			"packageName": "@metamask/address-book-controller",
+			"packagePath": "src/AddressBookController.ts",
+			"qualifiedName": "__type.address"
+		},
+		"8": {
+			"packageName": "@metamask/address-book-controller",
+			"packagePath": "src/AddressBookController.ts",
+			"qualifiedName": "__type.name"
+		},
+		"9": {
+			"packageName": "@metamask/address-book-controller",
+			"packagePath": "src/AddressBookController.ts",
+			"qualifiedName": "__type.chainId"
+		},
+		"10": {
+			"packageName": "@metamask/address-book-controller",
+			"packagePath": "src/AddressBookController.ts",
+			"qualifiedName": "__type.memo"
+		},
+		"11": {
+			"packageName": "@metamask/address-book-controller",
+			"packagePath": "src/AddressBookController.ts",
+			"qualifiedName": "__type.isEns"
+		},
+		"12": {
+			"packageName": "@metamask/address-book-controller",
+			"packagePath": "src/AddressBookController.ts",
+			"qualifiedName": "__type.addressType"
+		},
+		"13": {
+			"packageName": "@metamask/address-book-controller",
+			"packagePath": "src/AddressBookController.ts",
+			"qualifiedName": "__type.lastUpdatedAt"
+		},
+		"14": {
+			"packageName": "@metamask/address-book-controller",
+			"packagePath": "src/AddressBookController.ts",
+			"qualifiedName": "AddressBookControllerState"
+		},
+		"16": {
+			"packageName": "@metamask/address-book-controller",
+			"packagePath": "src/AddressBookController.ts",
+			"qualifiedName": "__type.addressBook"
+		},
+		"17": {
+			"packageName": "@metamask/address-book-controller",
+			"packagePath": "src/AddressBookController.ts",
+			"qualifiedName": "__type"
+		},
+		"18": {
+			"packageName": "@metamask/address-book-controller",
+			"packagePath": "src/AddressBookController.ts",
+			"qualifiedName": "__type.__index"
+		},
+		"20": {
+			"packageName": "@metamask/address-book-controller",
+			"packagePath": "src/AddressBookController.ts",
+			"qualifiedName": "__type"
+		},
+		"21": {
+			"packageName": "@metamask/address-book-controller",
+			"packagePath": "src/AddressBookController.ts",
+			"qualifiedName": "__type.__index"
+		},
+		"23": {
+			"packageName": "@metamask/address-book-controller",
+			"packagePath": "src/AddressBookController.ts",
+			"qualifiedName": "AddressBookControllerGetStateAction"
+		},
+		"24": {
+			"packageName": "@metamask/address-book-controller",
+			"packagePath": "src/AddressBookController.ts",
+			"qualifiedName": "AddressBookControllerActions"
+		},
+		"25": {
+			"packageName": "@metamask/address-book-controller",
+			"packagePath": "src/AddressBookController.ts",
+			"qualifiedName": "AddressBookControllerStateChangeEvent"
+		},
+		"26": {
+			"packageName": "@metamask/address-book-controller",
+			"packagePath": "src/AddressBookController.ts",
+			"qualifiedName": "AddressBookControllerContactUpdatedEvent"
+		},
+		"28": {
+			"packageName": "@metamask/address-book-controller",
+			"packagePath": "src/AddressBookController.ts",
+			"qualifiedName": "__type.type"
+		},
+		"29": {
+			"packageName": "@metamask/address-book-controller",
+			"packagePath": "src/AddressBookController.ts",
+			"qualifiedName": "__type.payload"
+		},
+		"30": {
+			"packageName": "@metamask/address-book-controller",
+			"packagePath": "src/AddressBookController.ts",
+			"qualifiedName": "AddressBookControllerContactDeletedEvent"
+		},
+		"32": {
+			"packageName": "@metamask/address-book-controller",
+			"packagePath": "src/AddressBookController.ts",
+			"qualifiedName": "__type.type"
+		},
+		"33": {
+			"packageName": "@metamask/address-book-controller",
+			"packagePath": "src/AddressBookController.ts",
+			"qualifiedName": "__type.payload"
+		},
+		"34": {
+			"packageName": "@metamask/address-book-controller",
+			"packagePath": "src/AddressBookController.ts",
+			"qualifiedName": "AddressBookControllerEvents"
+		},
+		"35": {
+			"packageName": "@metamask/address-book-controller",
+			"packagePath": "src/AddressBookController.ts",
+			"qualifiedName": "AddressBookControllerMessenger"
+		},
+		"36": {
+			"packageName": "@metamask/address-book-controller",
+			"packagePath": "src/AddressBookController.ts",
+			"qualifiedName": "ContactEntry"
+		},
+		"38": {
+			"packageName": "@metamask/address-book-controller",
+			"packagePath": "src/AddressBookController.ts",
+			"qualifiedName": "__type.address"
+		},
+		"39": {
+			"packageName": "@metamask/address-book-controller",
+			"packagePath": "src/AddressBookController.ts",
+			"qualifiedName": "__type.name"
+		},
+		"40": {
+			"packageName": "@metamask/address-book-controller",
+			"packagePath": "src/AddressBookController.ts",
+			"qualifiedName": "__type.importTime"
+		},
+		"41": {
+			"packageName": "@metamask/address-book-controller",
+			"packagePath": "src/AddressBookController.ts",
+			"qualifiedName": "getDefaultAddressBookControllerState"
+		},
+		"42": {
+			"packageName": "@metamask/address-book-controller",
+			"packagePath": "src/AddressBookController.ts",
+			"qualifiedName": "__type"
+		},
+		"43": {
+			"packageName": "@metamask/address-book-controller",
+			"packagePath": "src/AddressBookController.ts",
+			"qualifiedName": "__type"
+		},
+		"44": {
+			"packageName": "@metamask/address-book-controller",
+			"packagePath": "src/AddressBookController.ts",
+			"qualifiedName": "AddressBookController"
+		},
+		"45": {
+			"packageName": "@metamask/address-book-controller",
+			"packagePath": "src/AddressBookController.ts",
+			"qualifiedName": "AddressBookController.__constructor"
+		},
+		"46": {
+			"packageName": "@metamask/address-book-controller",
+			"packagePath": "src/AddressBookController.ts",
+			"qualifiedName": "AddressBookController"
+		},
+		"47": {
+			"packageName": "@metamask/address-book-controller",
+			"packagePath": "src/AddressBookController.ts",
+			"qualifiedName": "__0"
+		},
+		"48": {
+			"packageName": "@metamask/address-book-controller",
+			"packagePath": "src/AddressBookController.ts",
+			"qualifiedName": "__type"
+		},
+		"49": {
+			"packageName": "@metamask/address-book-controller",
+			"packagePath": "src/AddressBookController.ts",
+			"qualifiedName": "__type.messenger"
+		},
+		"50": {
+			"packageName": "@metamask/address-book-controller",
+			"packagePath": "src/AddressBookController.ts",
+			"qualifiedName": "__type.state"
+		},
+		"51": {
+			"packageName": "@metamask/address-book-controller",
+			"packagePath": "src/AddressBookController.ts",
+			"qualifiedName": "AddressBookController.list"
+		},
+		"52": {
+			"packageName": "@metamask/address-book-controller",
+			"packagePath": "src/AddressBookController.ts",
+			"qualifiedName": "AddressBookController.list"
+		},
+		"53": {
+			"packageName": "@metamask/address-book-controller",
+			"packagePath": "src/AddressBookController.ts",
+			"qualifiedName": "AddressBookController.clear"
+		},
+		"54": {
+			"packageName": "@metamask/address-book-controller",
+			"packagePath": "src/AddressBookController.ts",
+			"qualifiedName": "AddressBookController.clear"
+		},
+		"55": {
+			"packageName": "@metamask/address-book-controller",
+			"packagePath": "src/AddressBookController.ts",
+			"qualifiedName": "AddressBookController.delete"
+		},
+		"56": {
+			"packageName": "@metamask/address-book-controller",
+			"packagePath": "src/AddressBookController.ts",
+			"qualifiedName": "AddressBookController.delete"
+		},
+		"57": {
+			"packageName": "@metamask/address-book-controller",
+			"packagePath": "src/AddressBookController.ts",
+			"qualifiedName": "chainId"
+		},
+		"58": {
+			"packageName": "@metamask/address-book-controller",
+			"packagePath": "src/AddressBookController.ts",
+			"qualifiedName": "address"
+		},
+		"59": {
+			"packageName": "@metamask/address-book-controller",
+			"packagePath": "src/AddressBookController.ts",
+			"qualifiedName": "AddressBookController.set"
+		},
+		"60": {
+			"packageName": "@metamask/address-book-controller",
+			"packagePath": "src/AddressBookController.ts",
+			"qualifiedName": "AddressBookController.set"
+		},
+		"61": {
+			"packageName": "@metamask/address-book-controller",
+			"packagePath": "src/AddressBookController.ts",
+			"qualifiedName": "address"
+		},
+		"62": {
+			"packageName": "@metamask/address-book-controller",
+			"packagePath": "src/AddressBookController.ts",
+			"qualifiedName": "name"
+		},
+		"63": {
+			"packageName": "@metamask/address-book-controller",
+			"packagePath": "src/AddressBookController.ts",
+			"qualifiedName": "chainId"
+		},
+		"64": {
+			"packageName": "@metamask/address-book-controller",
+			"packagePath": "src/AddressBookController.ts",
+			"qualifiedName": "memo"
+		},
+		"65": {
+			"packageName": "@metamask/address-book-controller",
+			"packagePath": "src/AddressBookController.ts",
+			"qualifiedName": "addressType"
+		},
+		"67": {
+			"packageName": "@metamask/base-controller",
+			"packagePath": "src/BaseController.ts",
+			"qualifiedName": "BaseController.messenger"
+		},
+		"68": {
+			"packageName": "@metamask/base-controller",
+			"packagePath": "src/BaseController.ts",
+			"qualifiedName": "BaseController.name"
+		},
+		"69": {
+			"packageName": "@metamask/base-controller",
+			"packagePath": "src/BaseController.ts",
+			"qualifiedName": "BaseController.metadata"
+		},
+		"70": {
+			"packageName": "@metamask/base-controller",
+			"packagePath": "src/BaseController.ts",
+			"qualifiedName": "BaseController.state"
+		},
+		"71": {
+			"packageName": "@metamask/base-controller",
+			"packagePath": "src/BaseController.ts",
+			"qualifiedName": "BaseController.state"
+		},
+		"72": {
+			"packageName": "@metamask/base-controller",
+			"packagePath": "src/BaseController.ts",
+			"qualifiedName": "BaseController.state"
+		},
+		"73": {
+			"packageName": "@metamask/base-controller",
+			"packagePath": "src/BaseController.ts",
+			"qualifiedName": "_"
+		},
+		"74": {
+			"packageName": "@metamask/base-controller",
+			"packagePath": "src/BaseController.ts",
+			"qualifiedName": "BaseController.update"
+		},
+		"75": {
+			"packageName": "@metamask/base-controller",
+			"packagePath": "src/BaseController.ts",
+			"qualifiedName": "BaseController.update"
+		},
+		"76": {
+			"packageName": "@metamask/base-controller",
+			"packagePath": "src/BaseController.ts",
+			"qualifiedName": "callback"
+		},
+		"77": {
+			"packageName": "@metamask/base-controller",
+			"packagePath": "src/BaseController.ts",
+			"qualifiedName": "__type"
+		},
+		"78": {
+			"packageName": "@metamask/base-controller",
+			"packagePath": "src/BaseController.ts",
+			"qualifiedName": "__type"
+		},
+		"79": {
+			"packageName": "@metamask/base-controller",
+			"packagePath": "src/BaseController.ts",
+			"qualifiedName": "state"
+		},
+		"80": {
+			"packageName": "@metamask/base-controller",
+			"packagePath": "src/BaseController.ts",
+			"qualifiedName": "__type"
+		},
+		"81": {
+			"packageName": "@metamask/base-controller",
+			"packagePath": "src/BaseController.ts",
+			"qualifiedName": "__type.nextState"
+		},
+		"82": {
+			"packageName": "@metamask/base-controller",
+			"packagePath": "src/BaseController.ts",
+			"qualifiedName": "__type.patches"
+		},
+		"83": {
+			"packageName": "@metamask/base-controller",
+			"packagePath": "src/BaseController.ts",
+			"qualifiedName": "__type.inversePatches"
+		},
+		"84": {
+			"packageName": "@metamask/base-controller",
+			"packagePath": "src/BaseController.ts",
+			"qualifiedName": "BaseController.applyPatches"
+		},
+		"85": {
+			"packageName": "@metamask/base-controller",
+			"packagePath": "src/BaseController.ts",
+			"qualifiedName": "BaseController.applyPatches"
+		},
+		"86": {
+			"packageName": "@metamask/base-controller",
+			"packagePath": "src/BaseController.ts",
+			"qualifiedName": "patches"
+		},
+		"87": {
+			"packageName": "@metamask/base-controller",
+			"packagePath": "src/BaseController.ts",
+			"qualifiedName": "BaseController.destroy"
+		},
+		"88": {
+			"packageName": "@metamask/base-controller",
+			"packagePath": "src/BaseController.ts",
+			"qualifiedName": "BaseController.destroy"
+		},
+		"89": {
+			"packageName": "@metamask/address-book-controller",
+			"packagePath": "src/AddressBookController-method-action-types.ts",
+			"qualifiedName": "AddressBookControllerListAction"
+		},
+		"91": {
+			"packageName": "@metamask/address-book-controller",
+			"packagePath": "src/AddressBookController-method-action-types.ts",
+			"qualifiedName": "__type.type"
+		},
+		"92": {
+			"packageName": "@metamask/address-book-controller",
+			"packagePath": "src/AddressBookController-method-action-types.ts",
+			"qualifiedName": "__type.handler"
+		},
+		"93": {
+			"packageName": "@metamask/address-book-controller",
+			"packagePath": "src/AddressBookController-method-action-types.ts",
+			"qualifiedName": "AddressBookControllerSetAction"
+		},
+		"95": {
+			"packageName": "@metamask/address-book-controller",
+			"packagePath": "src/AddressBookController-method-action-types.ts",
+			"qualifiedName": "__type.type"
+		},
+		"96": {
+			"packageName": "@metamask/address-book-controller",
+			"packagePath": "src/AddressBookController-method-action-types.ts",
+			"qualifiedName": "__type.handler"
+		},
+		"97": {
+			"packageName": "@metamask/address-book-controller",
+			"packagePath": "src/AddressBookController-method-action-types.ts",
+			"qualifiedName": "AddressBookControllerDeleteAction"
+		},
+		"99": {
+			"packageName": "@metamask/address-book-controller",
+			"packagePath": "src/AddressBookController-method-action-types.ts",
+			"qualifiedName": "__type.type"
+		},
+		"100": {
+			"packageName": "@metamask/address-book-controller",
+			"packagePath": "src/AddressBookController-method-action-types.ts",
+			"qualifiedName": "__type.handler"
+		},
+		"101": {
+			"packageName": "@metamask/address-book-controller",
+			"packagePath": "src/AddressBookController-method-action-types.ts",
+			"qualifiedName": "AddressBookControllerClearAction"
+		},
+		"103": {
+			"packageName": "@metamask/address-book-controller",
+			"packagePath": "src/AddressBookController-method-action-types.ts",
+			"qualifiedName": "__type.type"
+		},
+		"104": {
+			"packageName": "@metamask/address-book-controller",
+			"packagePath": "src/AddressBookController-method-action-types.ts",
+			"qualifiedName": "__type.handler"
+		}
+	},
+	"files": {
+		"entries": {
+			"1": "node_modules/@metamask/address-book-controller/dist/index.d.mts",
+			"2": "node_modules/@metamask/address-book-controller/README.md",
+			"3": "node_modules/@metamask/address-book-controller"
+		},
+		"reflections": {
+			"1": 0,
+			"2": 0,
+			"3": 0
+		}
+	}
+}
