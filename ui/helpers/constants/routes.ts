@@ -93,6 +93,9 @@ export const MULTICHAIN_ACCOUNT_DETAILS_PAGE_ROUTE =
 export const MULTICHAIN_WALLET_DETAILS_PAGE_ROUTE =
   '/multichain-wallet-details-page';
 export const MULTICHAIN_SMART_ACCOUNT_PAGE_ROUTE = '/multichain-smart-account';
+export const SETUP_2FA_ROUTE = '/setup-2fa';
+export const MANAGE_2FA_ROUTE = '/manage-2fa';
+export const RECOVER_2FA_ROUTE = '/recover-2fa';
 export const NEW_ACCOUNT_ROUTE = '/new-account';
 export const CONFIRM_ADD_SUGGESTED_NFT_ROUTE = '/confirm-add-suggested-nft';
 export const CONNECT_HARDWARE_ROUTE = '/new-account/connect';

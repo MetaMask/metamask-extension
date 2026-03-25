@@ -31,6 +31,8 @@ import {
   CONNECT_HARDWARE_ROUTE,
   IMPORT_SRP_ROUTE,
   ADD_WALLET_PAGE_ROUTE,
+  SETUP_2FA_ROUTE,
+  RECOVER_2FA_ROUTE,
 } from '../../../helpers/constants/routes';
 import {
   ENVIRONMENT_TYPE_POPUP,
@@ -92,6 +94,18 @@ export const AddWalletModal: React.FC<AddWalletModalProps> = ({
   );
 
   const walletOptions: WalletOption[] = [
+    {
+      id: 'add-2fa-wallet',
+      titleKey: 'add2FAWallet',
+      iconName: IconName.SecurityKey,
+      route: SETUP_2FA_ROUTE,
+    },
+    {
+      id: 'recover-2fa-wallet',
+      titleKey: 'twoFARecover2FAWallet',
+      iconName: IconName.Refresh,
+      route: RECOVER_2FA_ROUTE,
+    },
     {
       id: 'import-wallet',
       titleKey: 'importAWallet',

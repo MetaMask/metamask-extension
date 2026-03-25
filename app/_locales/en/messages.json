@@ -187,6 +187,537 @@
   "addACustomNetwork": {
     "message": "Add a custom network"
   },
+  "add2FAWallet": {
+    "message": "Add 2FA Wallet"
+  },
+  "twoFAMobileRequiresCloudFirst": {
+    "message": "Set up a cloud factor (Email, SMS, or Social Login) first before adding MetaMask Mobile."
+  },
+  "twoFARecoverSocialNote": {
+    "message": "Your identity is already verified via your social login. Confirm with your recovery factor below."
+  },
+  "twoFARecoverRecoveryFactorTitle": {
+    "message": "Verify your recovery factor"
+  },
+  "twoFARecoverRecoveryFactorSubtitle": {
+    "message": "Use the recovery factor you set up to restore access to your 2FA wallet."
+  },
+  "twoFARecoverStepRecoveryFactor": {
+    "message": "Recovery factor"
+  },
+  "twoFASlide1Title": {
+    "message": "Add hardware-wallet level security"
+  },
+  "twoFASlide1Body": {
+    "message": "Your 2FA Wallet requires two-factor verification for every transaction — so even if your device is compromised, funds in your 2FA wallet stay safe."
+  },
+  "twoFASlide2Title": {
+    "message": "Peace of mind, recover anywhere"
+  },
+  "twoFASlide2Point1": {
+    "message": "Choose from Email OTP, Passkeys, Authenticator app, and more. Every transaction on your 2FA wallet requires verification before it's sent on-chain."
+  },
+  "twoFASlide2Point2": {
+    "message": "If you lose your device or password, you can recover your 2FA wallet using any two factors — one must be a recovery factor — on a new device."
+  },
+  "twoFASlide3Title": {
+    "message": "How it works"
+  },
+  "twoFASlide3Intro": {
+    "message": "Under the hood, your 2FA Wallet uses Multi-Party Computation (MPC). Instead of one private key or seed phrase, your key is split into cryptographic shares:"
+  },
+  "twoFASlide3Share1Title": {
+    "message": "Share 1: Your current device"
+  },
+  "twoFASlide3Share1Desc": {
+    "message": "Created automatically"
+  },
+  "twoFASlide3Share2Title": {
+    "message": "Share 2: A signing factor you choose"
+  },
+  "twoFASlide3Share2Desc": {
+    "message": "Email, authenticator app, passkey, etc."
+  },
+  "twoFASlide3Share3Title": {
+    "message": "Share 3: A recovery factor"
+  },
+  "twoFASlide3Share3Desc": {
+    "message": "In case you lose access to a signing factor or device"
+  },
+  "twoFASlide3Footer": {
+    "message": "No single share can access your wallet alone. You always need two to sign or recover — that's what makes it secure."
+  },
+  "twoFACreateNewWallet": {
+    "message": "Create a new wallet"
+  },
+  "twoFASigningPickerTitle": {
+    "message": "Set up signing verification"
+  },
+  "twoFASigningPickerSubtitle": {
+    "message": "Choose how you'll verify transactions and logins on your 2FA wallet."
+  },
+  "twoFARecoveryPickerTitle": {
+    "message": "Set up recovery method"
+  },
+  "twoFARecoveryPickerSubtitle": {
+    "message": "Choose how you'll recover your wallet if you lose access to a device."
+  },
+  "twoFAFactorEmailOtp": {
+    "message": "Email OTP"
+  },
+  "twoFAFactorEmailOtpDesc": {
+    "message": "Verify with a code sent to your email"
+  },
+  "twoFAFactorSmsOtp": {
+    "message": "SMS OTP"
+  },
+  "twoFAFactorSmsOtpDesc": {
+    "message": "Verify with a code sent via text message"
+  },
+  "twoFAFactorGoogle": {
+    "message": "Google"
+  },
+  "twoFAFactorGoogleDesc": {
+    "message": "Sign in with your Google account"
+  },
+  "twoFAFactorApple": {
+    "message": "Apple"
+  },
+  "twoFAFactorAppleDesc": {
+    "message": "Sign in with your Apple account"
+  },
+  "twoFAFactorSocialLogin": {
+    "message": "Social Login"
+  },
+  "twoFAFactorSocialLoginDesc": {
+    "message": "Sign in with Google or Apple"
+  },
+  "twoFAFactorSocialLoginBackupDesc": {
+    "message": "Sign in with Google"
+  },
+  "twoFASocialPickProvider": {
+    "message": "Choose your provider"
+  },
+  "twoFASocialContinueWith": {
+    "message": "Continue with"
+  },
+  "twoFAManageWallet": {
+    "message": "Manage 2FA Wallet"
+  },
+  "twoFAConfiguredMethods": {
+    "message": "Configured methods"
+  },
+  "twoFAAddMoreMethods": {
+    "message": "Add more methods"
+  },
+  "twoFAEdit": {
+    "message": "Edit"
+  },
+  "twoFADelete": {
+    "message": "Remove"
+  },
+  "twoFACannotDeleteSole": {
+    "message": "Cannot remove the only factor of this type. Add another first."
+  },
+  "twoFADeleteWarningTitle": {
+    "message": "Remove this factor?"
+  },
+  "twoFADeleteWarningBody": {
+    "message": "You won't be able to use this factor for verification or recovery after removing it. Make sure you have other active factors before proceeding."
+  },
+  "twoFADeleteWarningConfirm": {
+    "message": "Yes, remove"
+  },
+  "twoFADeleteWarningCancel": {
+    "message": "Cancel"
+  },
+  "twoFANext": {
+    "message": "Next"
+  },
+  "twoFAActive": {
+    "message": "Active"
+  },
+  "twoFAGoogleLinked": {
+    "message": "Google account linked"
+  },
+  "twoFAAppleLinked": {
+    "message": "Apple account linked"
+  },
+  "twoFAAuthenticatorLinked": {
+    "message": "TOTP configured"
+  },
+  "twoFAPasskeyLinked": {
+    "message": "Passkey created"
+  },
+  "twoFAMobileLinked": {
+    "message": "MetaMask Mobile linked"
+  },
+  "twoFACodeSent": {
+    "message": "Code sent!"
+  },
+  "twoFARecover2FAWallet": {
+    "message": "Recover 2FA Wallet"
+  },
+  "twoFARecoverIntroTitle": {
+    "message": "Recover your 2FA Wallet"
+  },
+  "twoFARecoverIntroBody": {
+    "message": "If you've lost access to your device, you can recover your 2FA wallet by verifying your identity. You'll need your cloud backup (email or phone) and one other factor."
+  },
+  "twoFAStartRecovery": {
+    "message": "Start Recovery"
+  },
+  "twoFARecoverStepCloud": {
+    "message": "Verify identity"
+  },
+  "twoFARecoverStepSecond": {
+    "message": "Second verification"
+  },
+  "twoFARecoverVerifyIdentity": {
+    "message": "Verify your identity"
+  },
+  "twoFARecoverVerifyIdentitySubtitle": {
+    "message": "Choose any method you set up with your 2FA wallet to confirm it's you."
+  },
+  "twoFARecoverSecondFactorTitle": {
+    "message": "One more verification"
+  },
+  "twoFARecoverSecondFactorSubtitle": {
+    "message": "Choose a different factor to complete recovery."
+  },
+  "twoFARecoverVerifyFactor": {
+    "message": "Verify"
+  },
+  "twoFARecovering": {
+    "message": "Recovering your wallet..."
+  },
+  "twoFARecoveringSubtitle": {
+    "message": "Re-creating key shares on this device"
+  },
+  "twoFARecoverSuccessTitle": {
+    "message": "Wallet Recovered!"
+  },
+  "twoFARecoverSuccessBody": {
+    "message": "Your 2FA wallet has been restored on this device. All your accounts and balances are intact."
+  },
+  "twoFARecoverSuccessInfo": {
+    "message": "Review your security factors. If you lost a device or factor, we recommend replacing it."
+  },
+  "twoFARecoverManageFactors": {
+    "message": "Manage factors"
+  },
+  "twoFASigningMethods": {
+    "message": "Signing methods"
+  },
+  "twoFARecoveryMethods": {
+    "message": "Backup methods"
+  },
+  "twoFAFactorAuthenticator": {
+    "message": "Authenticator App"
+  },
+  "twoFAFactorAuthenticatorDesc": {
+    "message": "Use Google Authenticator, Authy, or similar"
+  },
+  "twoFAFactorPasskeys": {
+    "message": "Passkeys"
+  },
+  "twoFAFactorPasskeysDesc": {
+    "message": "Use biometrics or a hardware security key"
+  },
+  "twoFAFactorMobileDevice": {
+    "message": "MetaMask Mobile"
+  },
+  "twoFAFactorMobileDeviceDesc": {
+    "message": "Link MetaMask Mobile as a factor"
+  },
+  "twoFAMobileDeviceSetup": {
+    "message": "Link Mobile Device"
+  },
+  "twoFAMobileDeviceSubtitle": {
+    "message": "Scan this QR code with your MetaMask Mobile app to link it as a 2FA factor."
+  },
+  "twoFAMobileDeviceStep1": {
+    "message": "Open MetaMask on your mobile device"
+  },
+  "twoFAMobileDeviceStep2": {
+    "message": "Go to Settings > Security & Privacy"
+  },
+  "twoFAMobileDeviceStep3": {
+    "message": "Tap 'Link as 2FA factor' and scan the code below"
+  },
+  "twoFAMobileDeviceLink": {
+    "message": "Link device"
+  },
+  "twoFARecommended": {
+    "message": "Recommended"
+  },
+  "twoFAContinueWith": {
+    "message": "Continue with $1",
+    "description": "$1 is the factor name"
+  },
+  "twoFAEnterYourEmail": {
+    "message": "Enter your email"
+  },
+  "twoFAEnterEmailSubtitle": {
+    "message": "We'll send a verification code to this email for all logins and transactions."
+  },
+  "twoFAEmailLabel": {
+    "message": "Email"
+  },
+  "twoFAEmailPlaceholder": {
+    "message": "your-email@gmail.com"
+  },
+  "twoFASendVerificationEmail": {
+    "message": "Send verification email"
+  },
+  "twoFAVerifyYourEmail": {
+    "message": "Verify your email"
+  },
+  "twoFAVerifyEmailSubtitle": {
+    "message": "Enter the 6-digit code sent to your email."
+  },
+  "twoFAResendCode": {
+    "message": "Resend code"
+  },
+  "twoFAEnterYourPhone": {
+    "message": "Enter your phone number"
+  },
+  "twoFAEnterPhoneSubtitle": {
+    "message": "We'll send a verification code to this number for all logins and transactions."
+  },
+  "twoFAPhoneLabel": {
+    "message": "Phone number"
+  },
+  "twoFAPhonePlaceholder": {
+    "message": "+1 (555) 000-0000"
+  },
+  "twoFASendVerificationSms": {
+    "message": "Send verification code"
+  },
+  "twoFAVerifyYourPhone": {
+    "message": "Verify your phone"
+  },
+  "twoFAVerifyPhoneSubtitle": {
+    "message": "Enter the 6-digit code sent to your phone."
+  },
+  "twoFAGoogleSignIn": {
+    "message": "Sign in with Google"
+  },
+  "twoFAGoogleSubtitle": {
+    "message": "Link your Google account for verification."
+  },
+  "twoFAAppleSignIn": {
+    "message": "Sign in with Apple"
+  },
+  "twoFAAppleSubtitle": {
+    "message": "Link your Apple account for verification."
+  },
+  "twoFAAuthenticatorSetup": {
+    "message": "Set up Authenticator"
+  },
+  "twoFAAuthenticatorSubtitle": {
+    "message": "Link your authenticator app to enable TOTP verification."
+  },
+  "twoFAAuthenticatorVerify": {
+    "message": "Verify and link"
+  },
+  "twoFAAuthenticatorStep1": {
+    "message": "Open authenticator app"
+  },
+  "twoFAAuthenticatorStep1Desc": {
+    "message": "Google Authenticator, Authy, or similar"
+  },
+  "twoFAAuthenticatorStep2": {
+    "message": "Scan QR code or enter key"
+  },
+  "twoFAAuthenticatorCantScan": {
+    "message": "Can't scan?"
+  },
+  "twoFAAuthenticatorCopyKey": {
+    "message": "Copy setup key"
+  },
+  "twoFAAuthenticatorStep3": {
+    "message": "Enter the 6-digit code"
+  },
+  "twoFAVerify": {
+    "message": "Verify"
+  },
+  "twoFAPasskeysSetup": {
+    "message": "Set up Passkey"
+  },
+  "twoFAPasskeysSubtitle": {
+    "message": "Use your device's biometrics or a security key to create a passkey."
+  },
+  "twoFAPasskeysCreate": {
+    "message": "Create Passkey"
+  },
+  "twoFASigningDoneTitle": {
+    "message": "Signing factor set up"
+  },
+  "twoFASigningDoneSubtitle": {
+    "message": "Now let's set up your recovery method so you can always access your wallet."
+  },
+  "twoFAContinue": {
+    "message": "Continue"
+  },
+  "twoFASuccessTitle": {
+    "message": "2FA Wallet Created!"
+  },
+  "twoFASuccessSubtitle": {
+    "message": "Your wallet is now protected with two-factor authentication"
+  },
+  "twoFAConfiguredFactors": {
+    "message": "Configured factors"
+  },
+  "twoFASuccessInfoBanner": {
+    "message": "Two-factor authentication applies only to this wallet. Your other accounts are not affected. Every transaction from this wallet will require verification from your signing factor."
+  },
+  "twoFAFactorShareLabel": {
+    "message": "Factor share"
+  },
+  "twoFAManageFactorsLater": {
+    "message": "Manage factors later in settings"
+  },
+  "twoFAWallets": {
+    "message": "2FA wallets"
+  },
+  "twoFASigningFactor": {
+    "message": "Signing factor"
+  },
+  "twoFARecoveryFactor": {
+    "message": "Backup factor"
+  },
+  "twoFADeviceFactor": {
+    "message": "Current device"
+  },
+  "twoFADeviceFactorDesc": {
+    "message": "Auto-created"
+  },
+  "twoFAGoToWallet": {
+    "message": "Go to Wallet"
+  },
+  "twoFAAdd2FAVerification": {
+    "message": "Add 2FA verification"
+  },
+  "twoFAStepSigning": {
+    "message": "Signing method"
+  },
+  "twoFAStepRecovery": {
+    "message": "Backup method"
+  },
+  "twoFAStepDone": {
+    "message": "Complete"
+  },
+  "twoFAWalletSetup": {
+    "message": "2FA wallet setup"
+  },
+  "twoFAChooseSigningMethod": {
+    "message": "Used to approve every transaction on this wallet."
+  },
+  "twoFAChooseRecoveryMethod": {
+    "message": "Choose how you'll recover your wallet if you lose a device."
+  },
+  "twoFAOtherOptions": {
+    "message": "Other options"
+  },
+  "twoFAContinueCount": {
+    "message": "Continue ($1 selected)",
+    "description": "$1 is the number of factors selected"
+  },
+  "twoFASettingUpXofY": {
+    "message": "Setting up $1 of $2",
+    "description": "$1 is the current factor number, $2 is the total"
+  },
+  "twoFASetupRecoveryFactor": {
+    "message": "Add backup verification"
+  },
+  "twoFARecoveryPickerSubtitleNew": {
+    "message": "Choose a backup method to help restore access to your 2FA wallet. To recover your wallet on a new device, you'll need to verify with both your signing method and your backup method."
+  },
+  "twoFALearnMore": {
+    "message": "Learn more"
+  },
+  "twoFASetUp": {
+    "message": "Set up"
+  },
+  "twoFAConfigured": {
+    "message": "Configured"
+  },
+  "twoFAAvailableMethods": {
+    "message": "Other methods"
+  },
+  "twoFACreate2FAWallet": {
+    "message": "Create 2FA Wallet"
+  },
+  "twoFAThisDevice": {
+    "message": "This device"
+  },
+  "twoFAThisDeviceDesc": {
+    "message": "Automatically added as a factor share"
+  },
+  "twoFAAtLeastOneSigning": {
+    "message": "Set up at least one verification method to continue"
+  },
+  "twoFAAtLeastOneRecovery": {
+    "message": "Set up at least one backup method to create your wallet"
+  },
+  "twoFACanAddMoreLater": {
+    "message": "You can setup more methods later in settings"
+  },
+  "twoFALearnMoreSigningTitle": {
+    "message": "How signing verification works"
+  },
+  "twoFALearnMoreSigningPoint1": {
+    "message": "Every transaction from your 2FA wallet requires verification from your signing method"
+  },
+  "twoFALearnMoreSigningPoint2": {
+    "message": "Your private key is split using MPC — no single device ever holds the full key"
+  },
+  "twoFALearnMoreSigningPoint3": {
+    "message": "This applies only to this wallet. Your other accounts are not affected"
+  },
+  "twoFALearnMoreRecoveryTitle": {
+    "message": "How backup methods work"
+  },
+  "twoFALearnMoreRecoveryPoint1": {
+    "message": "If you lose access to your device, your backup method helps restore access to your wallet. You'll need both your signing method and your backup method to recover your 2FA wallet on a new device."
+  },
+  "twoFALearnMoreRecoveryPoint2": {
+    "message": "Your backup method helps re-create the key shares on your new device without ever exposing the full key."
+  },
+  "twoFALearnMoreRecoveryPoint3": {
+    "message": "Your backup method is separate from your signing method — it's only used for account restoration, not for transaction verification."
+  },
+  "twoFAGotIt": {
+    "message": "Got it"
+  },
+  "twoFAMostSecure": {
+    "message": "MOST SECURE"
+  },
+  "twoFAMoreSecure": {
+    "message": "MORE SECURE"
+  },
+  "twoFALessSecure": {
+    "message": "LESS SECURE"
+  },
+  "twoFASmsWarningTitle": {
+    "message": "Are you sure?"
+  },
+  "twoFASmsWarningBody": {
+    "message": "Activating phone number weakens the overall security of your account. Use your stronger 2FA methods for better protection."
+  },
+  "twoFASmsWarningConfirm": {
+    "message": "Yes, I'm sure"
+  },
+  "twoFASmsWarningCancel": {
+    "message": "Cancel"
+  },
+  "twoFAVerificationFactors": {
+    "message": "2FA Verification"
+  },
+  "twoFARecoveryFactors": {
+    "message": "Backup"
+  },
   "addAHardwareWallet": {
     "message": "Add a hardware wallet"
   },
