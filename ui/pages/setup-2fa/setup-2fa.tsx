@@ -57,16 +57,16 @@ type ConfiguredFactor = {
 };
 
 const ALL_FACTORS: FactorOption[] = [
+  { id: 'mobile', nameKey: 'twoFAFactorMobileDevice', descKey: 'twoFAFactorMobileDeviceDesc', icon: IconName.Mobile, security: 'more' },
   { id: 'authenticator', nameKey: 'twoFAFactorAuthenticator', descKey: 'twoFAFactorAuthenticatorDesc', icon: IconName.SecurityKey, security: 'more' },
   { id: 'passkeys', nameKey: 'twoFAFactorPasskeys', descKey: 'twoFAFactorPasskeysDesc', icon: IconName.Fingerprint, security: 'most' },
   { id: 'email', nameKey: 'twoFAFactorEmailOtp', descKey: 'twoFAFactorEmailOtpDesc', icon: IconName.Mail, security: 'more' },
   { id: 'sms', nameKey: 'twoFAFactorSmsOtp', descKey: 'twoFAFactorSmsOtpDesc', icon: IconName.Sms, security: 'less' },
   { id: 'social', nameKey: 'twoFAFactorSocialLogin', descKey: 'twoFAFactorSocialLoginDesc', icon: IconName.Global, security: 'more' },
-  { id: 'mobile', nameKey: 'twoFAFactorMobileDevice', descKey: 'twoFAFactorMobileDeviceDesc', icon: IconName.Mobile, security: 'more' },
 ];
 
 const DEFAULT_FACTORS: FactorId[] = ['email', 'authenticator'];
-const BACKUP_ALLOWED_IDS: FactorId[] = ['email', 'passkeys', 'sms', 'social', 'mobile'];
+const BACKUP_ALLOWED_IDS: FactorId[] = ['mobile', 'email', 'passkeys', 'sms', 'social'];
 
 type Step = 'carousel-0' | 'carousel-1' | 'carousel-2' | 'signing' | 'recovery' | 'success';
 
