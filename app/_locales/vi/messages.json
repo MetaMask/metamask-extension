@@ -339,6 +339,9 @@
   "addWallet": {
     "message": "Thêm ví"
   },
+  "addedProtectionOptionalBadge": {
+    "message": "Không bắt buộc"
+  },
   "additionalNetworks": {
     "message": "Mạng bổ sung"
   },
@@ -756,6 +759,27 @@
   "autoDetectTokensDescriptionV2": {
     "message": "Hiển thị các token mới được gửi đến ví của bạn."
   },
+  "autoLock": {
+    "message": "Tự động khóa"
+  },
+  "autoLockAfter15Seconds": {
+    "message": "Sau 15 giây"
+  },
+  "autoLockAfter1Minute": {
+    "message": "Sau 1 phút"
+  },
+  "autoLockAfter30Seconds": {
+    "message": "Sau 30 giây"
+  },
+  "autoLockAfter5Minutes": {
+    "message": "Sau 5 phút"
+  },
+  "autoLockAfterMinutes": {
+    "message": "Sau $1 phút"
+  },
+  "autoLockNever": {
+    "message": "Không bao giờ"
+  },
   "autoLockTimeLimit": {
     "message": "Hẹn giờ tự động khóa (phút)"
   },
@@ -773,6 +797,9 @@
   },
   "backToHome": {
     "message": "Quay lại trang chủ"
+  },
+  "backUpIncomplete": {
+    "message": "Sao lưu chưa hoàn tất"
   },
   "backup": {
     "message": "Sao lưu"
@@ -853,6 +880,12 @@
   },
   "basicConfigurationModalCheckbox": {
     "message": "Tôi hiểu rõ và muốn tiếp tục"
+  },
+  "basicConfigurationModalDisclaimerOffPart1": {
+    "message": "Điều này có nghĩa là bạn sẽ không thể tối ưu hoàn toàn thời gian sử dụng MetaMask. Các tính năng cơ bản (chẳng hạn như chi tiết token, cài đặt gas tối ưu và các tính năng khác) sẽ không khả dụng."
+  },
+  "basicConfigurationModalDisclaimerOffPart2": {
+    "message": "Việc tắt tính năng này cũng sẽ vô hiệu hóa một số tính năng trong quyền riêng tư, sao lưu, đồng bộ và thông báo."
   },
   "basicConfigurationModalDisclaimerOn": {
     "message": "Để tối ưu thời gian sử dụng MetaMask, bạn cần bật tính năng này. Các chức năng cơ bản (chẳng hạn như chi tiết token, cài đặt gas tối ưu và các chức năng khác) rất quan trọng đối với trải nghiệm web3."
@@ -1066,6 +1099,9 @@
   "bridgeMarketClosedAction": {
     "message": "Thị trường đã đóng cửa"
   },
+  "bridgeMarketClosedDescription": {
+    "message": "Token cổ phiếu này hiện đang ngoài giờ giao dịch. Hãy thử lại khi thị trường mở cửa trở lại."
+  },
   "bridgeMarketClosedModalDescription": {
     "message": "Thị trường hỗ trợ token này hiện đang đóng cửa. Token vẫn có thể được chuyển trên chuỗi bất cứ lúc nào."
   },
@@ -1157,6 +1193,9 @@
   },
   "bridgeSelectNetwork": {
     "message": "Chọn mạng"
+  },
+  "bridgeSelectQuote": {
+    "message": "Chọn báo giá"
   },
   "bridgeSelectTokenAmountAndAccount": {
     "message": "Chọn token, số tiền và tài khoản đích"
@@ -1525,6 +1564,9 @@
   "confirmFieldTooltipPaymaster": {
     "message": "Phí cho giao dịch này sẽ được thanh toán bởi hợp đồng thông minh Paymaster."
   },
+  "confirmFieldTotalExposure": {
+    "message": "Tổng mức tiếp xúc"
+  },
   "confirmGasFeeTokenBalance": {
     "message": "Số dư:"
   },
@@ -1809,6 +1851,9 @@
   "contactDetails": {
     "message": "Chi tiết liên hệ"
   },
+  "contactUpdated": {
+    "message": "Liên hệ đã được cập nhật"
+  },
   "contactUs": {
     "message": "Liên hệ với chúng tôi"
   },
@@ -1892,6 +1937,10 @@
   },
   "createPasswordDetails": {
     "message": "Chỉ mở khóa MetaMask trên thiết bị này."
+  },
+  "createPasswordDetailsSocial": {
+    "message": "Mất mật khẩu này đồng nghĩa với việc mất quyền truy cập ví trên tất cả các thiết bị, $1",
+    "description": "$1 is the text 'MetaMask can't reset it.'"
   },
   "createPasswordDetailsSocialReset": {
     "message": "MetaMask không thể đặt lại mật khẩu này."
@@ -2237,17 +2286,31 @@
     "message": "Thao tác này sẽ xóa dữ liệu MetaMetrics trước đây liên quan đến quá trình sử dụng của bạn trên thiết bị này. Ví và tài khoản của bạn sẽ vẫn như hiện tại sau khi dữ liệu này bị xóa. Quá trình này có thể mất đến 30 ngày. Xem $1 của chúng tôi.",
     "description": "$1 will have text saying Privacy Policy "
   },
+  "deleteMetaMetricsDataDescriptionV2": {
+    "message": "Thao tác này sẽ xóa dữ liệu MetaMetrics trước đây liên kết với ví của bạn. MetaMetrics bao gồm dữ liệu sử dụng và chẩn đoán đã được ẩn danh. Ví và các tài khoản của bạn sẽ không thay đổi. Quá trình này có thể mất tới 30 ngày. Xem $1 của chúng tôi.",
+    "description": "$1 will have text saying Privacy Policy "
+  },
   "deleteMetaMetricsDataErrorDesc": {
     "message": "Không thể hoàn tất yêu cầu này ngay bây giờ do sự cố máy chủ hệ thống phân tích, vui lòng thử lại sau."
   },
   "deleteMetaMetricsDataErrorTitle": {
     "message": "Chúng tôi không thể xóa dữ liệu này bây giờ"
   },
+  "deleteMetaMetricsDataErrorToast": {
+    "message": "Không thể xóa"
+  },
   "deleteMetaMetricsDataModalDesc": {
     "message": "Chúng tôi sắp xóa tất cả dữ liệu MetaMetrics của bạn. Bạn có chắc không?"
   },
   "deleteMetaMetricsDataModalTitle": {
     "message": "Xóa dữ liệu MetaMetrics?"
+  },
+  "deleteMetaMetricsDataRequestedDescription": {
+    "message": "Bạn đã bắt đầu quá trình xóa vào $1. Quá trình này có thể mất tới 30 ngày. Xem $2.",
+    "description": "$1 will be the date on which teh deletion is requested and $2 will have text saying Privacy Policy "
+  },
+  "deleteMetaMetricsDataToast": {
+    "message": "Dữ liệu sẽ bị xóa trong vòng 30 ngày"
   },
   "deleteNetworkIntro": {
     "message": "Nếu xóa mạng này, bạn sẽ cần thêm lại mạng này để xem các tài sản của mình trong mạng này"
@@ -2811,6 +2874,9 @@
   "externalNameSourcesSettingDescription": {
     "message": "Chúng tôi sẽ tìm nạp những biệt danh được đề xuất cho các địa chỉ mà bạn tương tác từ các nguồn bên thứ ba như Etherscan, Infura và Lens Protocol. Các nguồn này sẽ có thể nhìn thấy các địa chỉ đó và địa chỉ IP của bạn. Địa chỉ tài khoản của bạn sẽ không bị lộ với các bên thứ ba."
   },
+  "externalNameSourcesSettingDescriptionV2": {
+    "message": "Tìm nạp biệt danh được đề xuất cho các địa chỉ bạn tương tác từ các nguồn bên thứ ba như Etherscan, Infura và giao thức Lens."
+  },
   "failed": {
     "message": "Thất bại"
   },
@@ -3149,6 +3215,9 @@
   "hardwareWalletErrorRecoveryUnlock2": {
     "message": "Ứng dụng Ethereum đang mở"
   },
+  "hardwareWalletErrorTitleBlindSignNotSupported": {
+    "message": "Bật ký mù"
+  },
   "hardwareWalletErrorTitleBlindSignNotSupportedInstruction1": {
     "message": "Ứng dụng Ethereum đang mở trên thiết bị Ledger của bạn"
   },
@@ -3188,6 +3257,9 @@
   },
   "hardwareWalletSupportLinkConversion": {
     "message": "nhấp vào đây"
+  },
+  "hardwareWalletTitleEthAppNotOpen": {
+    "message": "Mở ứng dụng Ethereum"
   },
   "hardwareWalletTypeConnected": {
     "message": "$1 đã được kết nối",
@@ -3314,6 +3386,9 @@
   "hyperliquidReferralSubtitle": {
     "message": "Tiết kiệm đến 4% khi giao dịch với mã giới thiệu MetaMask.",
     "description": "The subtitle of the Hyperliquid referral confirmation screen"
+  },
+  "iUnderstand": {
+    "message": "Tôi hiểu"
   },
   "id": {
     "message": "ID"
@@ -3543,6 +3618,9 @@
   },
   "ipfsGatewayDescription": {
     "message": "MetaMask sử dụng các dịch vụ của bên thứ ba để hiển thị hình ảnh các NFT của bạn được lưu trữ trên IPFS, hiển thị thông tin liên quan đến địa chỉ ENS được nhập trong thanh địa chỉ của trình duyệt và tìm nạp biểu tượng cho các token khác nhau. Địa chỉ IP của bạn có thể được hiển thị với các dịch vụ này khi bạn đang sử dụng chúng."
+  },
+  "ipfsGatewayDescriptionV2": {
+    "message": "Sử dụng các dịch vụ bên thứ ba để hiển thị hình ảnh NFT được lưu trữ trên IPFS, hiển thị thông tin liên quan đến các địa chỉ ENS được nhập vào thanh địa chỉ của trình duyệt và tìm nạp biểu tượng cho các token khác nhau. Chọn cổng IPFS ưu tiên của bạn bên dưới."
   },
   "ipfsToggleModalDescriptionOne": {
     "message": "Chúng tôi sử dụng các dịch vụ của bên thứ ba để hiển thị hình ảnh của các NFT của bạn được lưu trữ trên IPFS, hiển thị thông tin liên quan đến địa chỉ ENS được nhập trong thanh địa chỉ của trình duyệt và tìm nạp biểu tượng cho các token khác nhau. Địa chỉ IP của bạn có thể bị lộ với các dịch vụ này khi bạn sử dụng chúng."
@@ -3827,6 +3905,12 @@
   "makeAnotherSwap": {
     "message": "Tạo một giao dịch hoán đổi mới"
   },
+  "makeSmartContractsEasier": {
+    "message": "Giúp hợp đồng thông minh dễ đọc hơn"
+  },
+  "makeSmartContractsEasierDescription": {
+    "message": "MetaMask sử dụng 4byte.directory và Sourcify để dịch thông tin này."
+  },
   "manage": {
     "message": "Quản lý"
   },
@@ -3844,6 +3928,9 @@
   },
   "managePermissions": {
     "message": "Quản lý quyền"
+  },
+  "manageWalletRecovery": {
+    "message": "Quản lý khôi phục ví"
   },
   "marketCap": {
     "message": "Vốn hóa thị trường"
@@ -4072,10 +4159,6 @@
     "message": "$1 muốn sử dụng $2 Snap",
     "description": "$1 is the dapp and $2 is the number of snaps it wants to connect to."
   },
-  "musdBoostDescription": {
-    "message": "Chuyển đổi đồng ổn định sang mUSD và nhận thưởng lên đến $1%.",
-    "description": "$1 is the bonus percentage (e.g., 3)"
-  },
   "musdBoostTitle": {
     "message": "Nhận $1% trên số lượng đồng ổn định của bạn",
     "description": "$1 is the bonus percentage (e.g., 3)"
@@ -4095,6 +4178,10 @@
     "message": "Thưởng có thể nhận",
     "description": "Label for the claimable bonus row in the mUSD conversion confirmation screen"
   },
+  "musdClaimableBonusTooltip": {
+    "message": "$1% phần thưởng quy đổi theo năm bạn đã nhận được khi nắm giữ mUSD. Bạn có thể nhận thưởng hằng ngày trên Linea. Được hỗ trợ bởi Relay. $2",
+    "description": "$1 is the APY percentage, $2 is the 'Terms apply' link"
+  },
   "musdConversionActivityTitle": {
     "message": "Chuyển đổi $1 sang mUSD",
     "description": "$1 is the source token symbol (e.g., USDC)"
@@ -4110,11 +4197,12 @@
     "message": "Đang chuyển đổi $1 → mUSD",
     "description": "$1 is the source token symbol (e.g., USDC)"
   },
-  "musdConversionToastSuccess": {
-    "message": "mUSD của bạn đã sẵn sàng!"
-  },
   "musdConvert": {
     "message": "Chuyển đổi"
+  },
+  "musdConvertAndGetBonus": {
+    "message": "Chuyển đổi và nhận $1%",
+    "description": "$1 is the bonus percentage (e.g., 3)"
   },
   "musdEarnBonusPercentage": {
     "message": "Nhận thưởng $1%",
@@ -4129,6 +4217,10 @@
   },
   "musdEducationNotNow": {
     "message": "Không phải bây giờ"
+  },
+  "musdGetBonusPercentage": {
+    "message": "Nhận thưởng $1% mUSD",
+    "description": "$1 is the bonus percentage (e.g., 3)"
   },
   "musdGetMusd": {
     "message": "Nhận mUSD"
@@ -6053,6 +6145,9 @@
   "quizIntroduction": {
     "message": "Để hiển thị Cụm từ khôi phục bí mật, bạn cần trả lời đúng hai câu hỏi."
   },
+  "quotedTotalCost": {
+    "message": "Tổng chi phí: $1"
+  },
   "rank": {
     "message": "Xếp hạng"
   },
@@ -6567,6 +6662,9 @@
   },
   "securityAlertsDescriptionV2": {
     "message": "Tính năng này sẽ cảnh báo bạn khi có hoạt động độc hại bằng cách chủ động xem xét các yêu cầu giao dịch và chữ ký. $1"
+  },
+  "securityAndPassword": {
+    "message": "Bảo mật và mật khẩu"
   },
   "securityAndPrivacy": {
     "message": "Bảo mật và quyền riêng tư"
@@ -7392,6 +7490,10 @@
   "showFiatConversionInTestnetsDescription": {
     "message": "Chọn tùy chọn này để hiển thị tỷ lệ quy đổi tiền pháp định trên mạng thử nghiệm"
   },
+  "showFiatConversionInTestnetsDescriptionV2": {
+    "message": "Hiển thị token mạng theo tiền tệ địa phương trên các mạng thử nghiệm. Nếu bạn được yêu cầu bật tính năng này, bạn có thể đang bị lừa đảo. Chỉ dành cho mục đích thử nghiệm. $1",
+    "description": "$1 is the 'Learn more' link"
+  },
   "showHexData": {
     "message": "Hiển thị dữ liệu thập lục phân"
   },
@@ -7516,6 +7618,9 @@
   "simulationsSettingDescription": {
     "message": "Bật tính năng này để ước tính thay đổi số dư của các giao dịch và chữ ký trước khi bạn xác nhận. Điều này không đảm bảo cho kết quả cuối cùng. $1"
   },
+  "simulationsSettingDescriptionV2": {
+    "message": "Ước tính thay đổi số dư của các giao dịch trước khi bạn xác nhận chúng. Điều này không đảm bảo kết quả cuối cùng của giao dịch. $1"
+  },
   "simulationsSettingSubHeader": {
     "message": "Ước tính thay đổi số dư"
   },
@@ -7570,14 +7675,32 @@
   "smartAccount": {
     "message": "Tài khoản thông minh"
   },
+  "smartAccountDappRequestsDescription": {
+    "message": "Cho phép dapp yêu cầu các tính năng tài khoản thông minh cho tài khoản tiêu chuẩn. Điều này sẽ không ảnh hưởng đến các tài khoản đã là tài khoản thông minh."
+  },
+  "smartAccountDappRequestsTitle": {
+    "message": "Yêu cầu tài khoản thông minh từ dapp"
+  },
   "smartAccountLabel": {
     "message": "Tài khoản thông minh"
+  },
+  "smartAccountRequestsFromDapps": {
+    "message": "Yêu cầu tài khoản thông minh từ dapp"
+  },
+  "smartAccountRequestsFromDappsDescription": {
+    "message": "Cho phép dapp yêu cầu các tính năng tài khoản thông minh cho tài khoản tiêu chuẩn. Điều này sẽ không ảnh hưởng đến các tài khoản đã là tài khoản thông minh."
   },
   "smartAccountUpgradeBannerDescription": {
     "message": "Cùng địa chỉ. Tính năng thông minh hơn."
   },
   "smartAccountUpgradeBannerTitle": {
     "message": "Chuyển sang tài khoản thông minh"
+  },
+  "smartContractAddress": {
+    "message": "Địa chỉ hợp đồng thông minh"
+  },
+  "smartContractAddressWarning": {
+    "message": "Địa chỉ người nhận có thể không hỗ trợ chuyển khoản token trực tiếp, điều này có thể dẫn đến mất tiền. Chỉ tiếp tục nếu bạn chắc chắn hợp đồng này có thể nhận khoản chuyển của bạn."
   },
   "smartContracts": {
     "message": "Hợp đồng thông minh"
@@ -8049,6 +8172,9 @@
   "stateCorruptionTheseInstructionsLinkTitle": {
     "message": "Cách khôi phục Cụm từ khôi phục bí mật của bạn"
   },
+  "stateLogError": {
+    "message": "Lỗi khi truy xuất nhật ký trạng thái, vui lòng thử lại sau."
+  },
   "stateLogFileName": {
     "message": "Nhật ký trạng thái của MetaMask"
   },
@@ -8057,6 +8183,9 @@
   },
   "stateLogsDescription": {
     "message": "Nhật ký trạng thái có chứa các địa chỉ tài khoản công khai của bạn và các giao dịch đã gửi."
+  },
+  "stateLogsModalDescription": {
+    "message": "Nhật ký trạng thái có thể giúp chúng tôi gỡ lỗi các vấn đề bạn gặp phải. Chỉ gửi cho MetaMask để được hỗ trợ, vì nhật ký trạng thái chứa địa chỉ tài khoản công khai và các giao dịch của bạn."
   },
   "status": {
     "message": "Trạng thái"
@@ -8129,6 +8258,9 @@
   "stxFailureDescription": {
     "message": "Thị trường thay đổi đột ngột có thể gây thất bại. Nếu sự cố vẫn tiếp diễn, vui lòng liên hệ $1.",
     "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
+  },
+  "stxOptInDescriptionV2": {
+    "message": "Bật Giao dịch thông minh để có giao dịch đáng tin cậy và an toàn hơn. $1"
   },
   "stxOptInSupportedNetworksDescription": {
     "message": "Bật Giao dịch thông minh để có các giao dịch đáng tin cậy và an toàn hơn trên các mạng được hỗ trợ. $1"
@@ -8567,6 +8699,12 @@
   "themeDescription": {
     "message": "Chọn chủ đề MetaMask yêu thích của bạn."
   },
+  "thirdPartyApis": {
+    "message": "API bên thứ ba"
+  },
+  "thirdPartyApisDescription": {
+    "message": "Chọn cách bạn chia sẻ địa chỉ IP hoặc địa chỉ Ethereum của mình với các API bên thứ ba. Những thay đổi này sẽ ảnh hưởng đến trải nghiệm sử dụng MetaMask của bạn."
+  },
   "thirdPartySoftware": {
     "message": "Thông báo phần mềm của bên thứ ba",
     "description": "Title of a popup modal displayed when installing a snap for the first time."
@@ -8600,6 +8738,9 @@
   },
   "tokenContractError": {
     "message": "Đây là địa chỉ hợp đồng token. Nếu bạn gửi token đến địa chỉ này, bạn sẽ bị mất chúng."
+  },
+  "tokenContractWarning": {
+    "message": "Cảnh báo hợp đồng token"
   },
   "tokenCount": {
     "message": "token",
@@ -8880,6 +9021,9 @@
     "message": "Không thể kết nối với $1.",
     "description": "Message shown when network connection fails. $1 is the network name."
   },
+  "unableToDownload": {
+    "message": "Không thể tải xuống"
+  },
   "unapproved": {
     "message": "Chưa chấp thuận"
   },
@@ -9032,6 +9176,9 @@
   },
   "useSafeChainsListValidationDescription": {
     "message": "MetaMask sử dụng dịch vụ của bên thứ ba có tên $1 để hiển thị thông tin mạng chính xác và được tiêu chuẩn hóa. Điều này giúp hạn chế khả năng bạn kết nối với mạng độc hại hoặc mạng không chính xác. Khi sử dụng tính năng này, địa chỉ IP của bạn sẽ được hiển thị với chainid.network."
+  },
+  "useSafeChainsListValidationDescriptionV2": {
+    "message": "Giảm khả năng bạn kết nối với mạng độc hại hoặc không chính xác. MetaMask sử dụng $1 để hiển thị thông tin mạng chính xác và được chuẩn hóa."
   },
   "useSafeChainsListValidationWebsite": {
     "message": "chainid.network",
