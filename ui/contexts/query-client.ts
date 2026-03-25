@@ -14,12 +14,12 @@ const subscriptions = new Map();
 const adapter = {
   call: (method: string, ...params: Json[]) =>
     submitRequestToBackground<Json>('messengerCall', [method, params]),
-  subscribe: (method: string, callback: JsonSubscriptionCallback) => {
-    subscribeToMessengerEvent(method as NamespacedName, callback)
+  subscribe: (event: string, callback: JsonSubscriptionCallback) => {
+    subscribeToMessengerEvent(event as NamespacedName, callback)
       .then((unsubscribe) => subscriptions.set(callback, unsubscribe))
       .catch(console.error);
   },
-  unsubscribe: (_method: string, callback: JsonSubscriptionCallback) => {
+  unsubscribe: (_event: string, callback: JsonSubscriptionCallback) => {
     const unsubscribe = subscriptions.get(callback);
     unsubscribe?.().catch(console.error);
   },
