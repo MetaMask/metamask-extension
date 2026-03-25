@@ -14,6 +14,7 @@ import {
   BoxFlexDirection,
   FontWeight,
   Icon,
+  IconColor,
   IconName,
   IconSize,
   Text,
@@ -36,15 +37,23 @@ import {
 import { toRelativeRoutePath } from '../routes/utils';
 import TabBar from './tab-bar';
 import {
+  SETTINGS_V2_ROOT_SECTIONS,
   SETTINGS_V2_TABS,
   SETTINGS_V2_RENDERABLE_ROUTES,
   getSettingsV2RouteMeta,
 } from './settings-registry';
-import { SettingsV2Header, SettingsV2SearchResults } from './shared';
+import {
+  SettingsV2Header,
+  SettingsV2Root,
+  SettingsV2SearchResults,
+} from './shared';
 import { useSettingsV2Search, MIN_SEARCH_LENGTH } from './useSettingsV2Search';
 
-const FirstTabComponent = SETTINGS_V2_TABS[0]?.component;
 const FIRST_TAB_PATH = SETTINGS_V2_TABS[0]?.path;
+const FirstTabComponent = SETTINGS_V2_TABS[0]?.component;
+
+const normalizeSettingsPath = (path: string) =>
+  path !== '/' && path.endsWith('/') ? path.slice(0, -1) : path;
 
 /**
  * Layout for Settings V2: header, tab bar, and content area.
@@ -56,16 +65,16 @@ const SettingsV2Layout = ({ children }: { children: React.ReactNode }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const t = useI18nContext();
-  const { pathname } = location;
-  const meta = getSettingsV2RouteMeta(pathname);
+  const normalizedPathname = normalizeSettingsPath(location.pathname);
+  const meta = getSettingsV2RouteMeta(normalizedPathname);
   const environmentType = getEnvironmentType();
 
   const isPopupOrSidepanel =
     environmentType === ENVIRONMENT_TYPE_POPUP ||
     environmentType === ENVIRONMENT_TYPE_SIDEPANEL;
   const isSidepanel = environmentType === ENVIRONMENT_TYPE_SIDEPANEL;
-
-  const isOnSettingsRoot = pathname === SETTINGS_V2_ROUTE;
+  const isOnSettingsRoot = normalizedPathname === SETTINGS_V2_ROUTE;
+  const showRootLandingPage = isOnSettingsRoot && isPopupOrSidepanel;
   const backRoute = isOnSettingsRoot
     ? DEFAULT_ROUTE
     : (meta?.parentPath ?? SETTINGS_V2_ROUTE);
@@ -88,7 +97,7 @@ const SettingsV2Layout = ({ children }: { children: React.ReactNode }) => {
       return [];
     }
     const crumbs: { labelKey: string; path: string }[] = [];
-    let currentPath: string | undefined = pathname;
+    let currentPath: string | undefined = normalizedPathname;
 
     // Walk up the parent chain to build breadcrumbs
     while (currentPath && currentPath !== SETTINGS_V2_ROUTE) {
@@ -101,7 +110,7 @@ const SettingsV2Layout = ({ children }: { children: React.ReactNode }) => {
     }
 
     return crumbs;
-  }, [pathname, meta?.parentPath]);
+  }, [normalizedPathname, meta?.parentPath]);
 
   const showBreadcrumbs = breadcrumbs.length > 1 && !isPopupOrSidepanel;
 
@@ -114,11 +123,170 @@ const SettingsV2Layout = ({ children }: { children: React.ReactNode }) => {
       })),
     [t],
   );
+  const groupedItemTabs = useMemo(
+    () =>
+      SETTINGS_V2_ROOT_SECTIONS.map(({ titleKeys, paths }) => {
+        const items = SETTINGS_V2_TABS.filter((item) =>
+          paths.includes(item.path),
+        ).map((item) => ({
+          key: item.path,
+          content: t(item.labelKey),
+          iconName: item.iconName,
+          dataTestId: `settings-v2-tab-item-${item.id}`,
+        }));
+
+        return {
+          key: titleKeys.join('-'),
+          title: titleKeys.map((key) => t(key)).join(' & '),
+          items,
+        };
+      }).filter(({ items }) => items.length > 0),
+    [t],
+  );
 
   const handleCloseSearch = () => {
     setIsSearchOpen(false);
     setSearchValue('');
   };
+
+  const showSearchResults =
+    isSearchOpen && searchValue.trim().length >= MIN_SEARCH_LENGTH;
+
+  let mainContent: React.ReactNode;
+
+  if (showSearchResults) {
+    mainContent = (
+      <Box className="flex-1 overflow-y-auto">
+        <SettingsV2SearchResults
+          results={searchResults}
+          onClickResult={(item) => {
+            navigate(`${item.tabRoute}#${item.settingId}`);
+            handleCloseSearch();
+          }}
+        />
+      </Box>
+    );
+  } else if (showRootLandingPage) {
+    mainContent = (
+      <Box className="flex-1 overflow-y-auto">
+        <SettingsV2Root />
+      </Box>
+    );
+  } else {
+    mainContent = (
+      <Box
+        flexDirection={BoxFlexDirection.Row}
+        // 64px is the header height
+        className={classnames(`h-[calc(100%-64px)]`, {
+          'sm:border-t sm:border-border-muted': !isSidepanel,
+        })}
+      >
+        <Box
+          className={classnames(
+            'w-full h-full sm:max-w-[262px] sm:bg-background-muted',
+            {
+              flex: isOnSettingsRoot,
+              'hidden sm:flex': !isOnSettingsRoot && !isSidepanel,
+              hidden: !isOnSettingsRoot && isSidepanel,
+              'sm:max-w-full sm:bg-background-default':
+                isOnSettingsRoot && isSidepanel,
+            },
+          )}
+        >
+          <TabBar
+            tabs={isPopupOrSidepanel ? itemTabs : []}
+            sections={isPopupOrSidepanel ? [] : groupedItemTabs}
+            isActive={(key) => {
+              // First tab is active when at settings root
+              if (
+                key === FIRST_TAB_PATH &&
+                normalizedPathname === SETTINGS_V2_ROUTE
+              ) {
+                return true;
+              }
+              return (
+                normalizedPathname === key ||
+                normalizedPathname.startsWith(`${key}/`)
+              );
+            }}
+            removeFullscreenStyles={isPopupOrSidepanel}
+          />
+        </Box>
+        <Box
+          className={classnames('flex-auto flex-col w-full pt-2', {
+            flex: !isOnSettingsRoot,
+            'hidden sm:flex': isOnSettingsRoot && !isSidepanel,
+            hidden: isOnSettingsRoot && isSidepanel,
+          })}
+        >
+          {showBreadcrumbs && (
+            <Box
+              className="hidden sm:flex"
+              flexDirection={BoxFlexDirection.Row}
+              alignItems={BoxAlignItems.Center}
+              gap={2}
+              paddingHorizontal={4}
+              paddingVertical={3}
+            >
+              {breadcrumbs.map((crumb, index) => {
+                const isFirst = index === 0;
+                const isLast = index === breadcrumbs.length - 1;
+                return (
+                  <Fragment key={crumb.path}>
+                    {!isFirst && (
+                      <Text
+                        variant={TextVariant.BodyMd}
+                        fontWeight={FontWeight.Medium}
+                        color={TextColor.TextAlternative}
+                      >
+                        {'>'}
+                      </Text>
+                    )}
+                    {isLast ? (
+                      <Text
+                        variant={TextVariant.BodyMd}
+                        fontWeight={FontWeight.Medium}
+                        color={TextColor.TextDefault}
+                      >
+                        {t(crumb.labelKey)}
+                      </Text>
+                    ) : (
+                      <Link
+                        to={crumb.path}
+                        className="flex items-center gap-2 cursor-pointer"
+                      >
+                        {isFirst && (
+                          <Icon
+                            name={IconName.ArrowLeft}
+                            size={IconSize.Sm}
+                            color={IconColor.IconDefault}
+                          />
+                        )}
+                        <Text
+                          variant={TextVariant.BodyMd}
+                          fontWeight={FontWeight.Medium}
+                          color={TextColor.TextAlternative}
+                        >
+                          {t(crumb.labelKey)}
+                        </Text>
+                      </Link>
+                    )}
+                  </Fragment>
+                );
+              })}
+            </Box>
+          )}
+          <Suspense fallback={null}>
+            {isOnSettingsRoot && !isPopupOrSidepanel && FirstTabComponent ? (
+              <FirstTabComponent />
+            ) : (
+              children
+            )}
+          </Suspense>
+        </Box>
+      </Box>
+    );
+  }
 
   return (
     <Box
@@ -138,116 +306,7 @@ const SettingsV2Layout = ({ children }: { children: React.ReactNode }) => {
         onSearchChange={setSearchValue}
         onSearchClear={() => setSearchValue('')}
       />
-      {isSearchOpen && searchValue.trim().length >= MIN_SEARCH_LENGTH ? (
-        <div className="settings-page__content flex-1 overflow-y-auto">
-          <SettingsV2SearchResults
-            results={searchResults}
-            onClickResult={(item) => {
-              navigate(`${item.tabRoute}#${item.settingId}`);
-              handleCloseSearch();
-            }}
-          />
-        </div>
-      ) : (
-        <Box
-          flexDirection={BoxFlexDirection.Row}
-          // 64px is the header height
-          className={classnames(`h-[calc(100%-64px)]`, {
-            'sm:border-t sm:border-border-muted': !isSidepanel,
-          })}
-        >
-          <Box
-            className={classnames(
-              'w-full h-full sm:max-w-[262px] sm:bg-background-muted',
-              {
-                flex: isOnSettingsRoot,
-                'hidden sm:flex': !isOnSettingsRoot && !isSidepanel,
-                hidden: !isOnSettingsRoot && isSidepanel,
-                'sm:max-w-full sm:bg-background-default':
-                  isOnSettingsRoot && isSidepanel,
-              },
-            )}
-          >
-            <TabBar
-              tabs={itemTabs}
-              isActive={(key) => {
-                // First tab is active when at settings root
-                if (key === FIRST_TAB_PATH && pathname === SETTINGS_V2_ROUTE) {
-                  return true;
-                }
-                return pathname === key || pathname.startsWith(`${key}/`);
-              }}
-              removeFullscreenStyles={isPopupOrSidepanel}
-            />
-          </Box>
-          <Box
-            className={classnames('flex-auto flex-col w-full', {
-              flex: !isOnSettingsRoot,
-              'hidden sm:flex': isOnSettingsRoot && !isSidepanel,
-              hidden: isOnSettingsRoot && isSidepanel,
-            })}
-          >
-            {showBreadcrumbs && (
-              <Box
-                className="hidden sm:flex"
-                flexDirection={BoxFlexDirection.Row}
-                alignItems={BoxAlignItems.Center}
-                gap={2}
-                paddingHorizontal={4}
-                paddingVertical={3}
-              >
-                {breadcrumbs.map((crumb, index) => {
-                  const isFirst = index === 0;
-                  const isLast = index === breadcrumbs.length - 1;
-                  return (
-                    <Fragment key={crumb.path}>
-                      {!isFirst && (
-                        <Text
-                          variant={TextVariant.BodyMd}
-                          fontWeight={FontWeight.Medium}
-                          color={TextColor.TextAlternative}
-                        >
-                          {'>'}
-                        </Text>
-                      )}
-                      {isLast ? (
-                        <Text
-                          variant={TextVariant.BodyMd}
-                          fontWeight={FontWeight.Medium}
-                          color={TextColor.TextDefault}
-                        >
-                          {t(crumb.labelKey)}
-                        </Text>
-                      ) : (
-                        <Link
-                          to={crumb.path}
-                          className="flex items-center gap-2 cursor-pointer"
-                        >
-                          {isFirst && (
-                            <Icon
-                              name={IconName.ArrowLeft}
-                              size={IconSize.Sm}
-                              className="text-icon-alternative"
-                            />
-                          )}
-                          <Text
-                            variant={TextVariant.BodyMd}
-                            fontWeight={FontWeight.Medium}
-                            color={TextColor.TextAlternative}
-                          >
-                            {t(crumb.labelKey)}
-                          </Text>
-                        </Link>
-                      )}
-                    </Fragment>
-                  );
-                })}
-              </Box>
-            )}
-            <Suspense fallback={null}>{children}</Suspense>
-          </Box>
-        </Box>
-      )}
+      {mainContent}
     </Box>
   );
 };
@@ -270,7 +329,7 @@ const SettingsV2 = () => {
           }
         />
       ))}
-      {/* Catch-all and root: show first tab content */}
+      {/* Catch-all and root: layout handles popup root and fullscreen first-tab rendering */}
       <Route
         path="*"
         element={

@@ -1,7 +1,11 @@
 import {
+  DEVELOPER_OPTIONS_V2_ROUTE,
+  DEVELOPER_OPTIONS_ROUTE,
   ASSETS_ROUTE,
   CURRENCY_ROUTE,
+  MANAGE_WALLET_RECOVERY_V2_ROUTE,
   PRIVACY_ROUTE,
+  SECURITY_PASSWORD_CHANGE_V2_ROUTE,
   SETTINGS_V2_ROUTE,
   THEME_ROUTE,
   THIRD_PARTY_APIS_ROUTE,
@@ -28,6 +32,26 @@ describe('settings-registry', () => {
         }),
       );
       expect(meta?.parentPath).toBeUndefined();
+    });
+
+    it('keeps v2 developer options as developer options', () => {
+      const meta = getSettingsV2RouteMeta(DEVELOPER_OPTIONS_V2_ROUTE);
+
+      expect(meta).toEqual(
+        expect.objectContaining({
+          labelKey: 'developerOptions',
+        }),
+      );
+    });
+
+    it('adds a separate debug route in test builds', () => {
+      const meta = getSettingsV2RouteMeta(DEVELOPER_OPTIONS_ROUTE);
+
+      expect(meta).toEqual(
+        expect.objectContaining({
+          labelKey: 'debug',
+        }),
+      );
     });
   });
 
@@ -62,6 +86,8 @@ describe('settings-registry', () => {
       // Sub-pages
       expect(paths).toContain(CURRENCY_ROUTE);
       expect(paths).toContain(THEME_ROUTE);
+      expect(paths).toContain(MANAGE_WALLET_RECOVERY_V2_ROUTE);
+      expect(paths).toContain(SECURITY_PASSWORD_CHANGE_V2_ROUTE);
     });
 
     it('does not include settings root', () => {

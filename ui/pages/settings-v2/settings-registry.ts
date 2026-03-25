@@ -4,17 +4,22 @@ import { type ComponentType } from 'react';
 import { IconName } from '@metamask/design-system-react';
 import {
   ACCOUNT_IDENTICON_ROUTE,
+  ABOUT_US_ROUTE,
   ASSETS_ROUTE,
   AUTO_LOCK_ROUTE,
   BACKUPANDSYNC_ROUTE,
   CURRENCY_ROUTE,
+  DEVELOPER_OPTIONS_ROUTE,
   DEVELOPER_OPTIONS_V2_ROUTE,
+  MANAGE_WALLET_RECOVERY_V2_ROUTE,
   EXPERIMENTAL_ROUTE,
   LANGUAGE_ROUTE,
   NOTIFICATIONS_SETTINGS_ROUTE,
   PREFERENCES_AND_DISPLAY_ROUTE,
   SECURITY_AND_PASSWORD_ROUTE,
+  SECURITY_PASSWORD_CHANGE_V2_ROUTE,
   SETTINGS_V2_ROUTE,
+  TRANSACTION_SHIELD_ROUTE,
   TRANSACTIONS_ROUTE,
   THEME_ROUTE,
   PRIVACY_ROUTE,
@@ -37,6 +42,37 @@ export type SettingsV2RouteMeta = {
   /** Icon for TabBar (required if isTab is true) */
   iconName?: IconName;
 };
+
+export const SETTINGS_V2_ROOT_SECTIONS: readonly {
+  titleKeys: readonly string[];
+  paths: readonly string[];
+}[] = [
+  {
+    titleKeys: ['general'],
+    paths: [PREFERENCES_AND_DISPLAY_ROUTE, NOTIFICATIONS_SETTINGS_ROUTE],
+  },
+  {
+    titleKeys: ['securityAndPrivacy'],
+    paths: [SECURITY_AND_PASSWORD_ROUTE, PRIVACY_ROUTE, BACKUPANDSYNC_ROUTE],
+  },
+  {
+    titleKeys: ['transactions', 'assets'],
+    paths: [TRANSACTION_SHIELD_ROUTE, ASSETS_ROUTE, TRANSACTIONS_ROUTE],
+  },
+  {
+    titleKeys: ['more'],
+    paths: [
+      EXPERIMENTAL_ROUTE,
+      DEVELOPER_OPTIONS_ROUTE,
+      DEVELOPER_OPTIONS_V2_ROUTE,
+      ABOUT_US_ROUTE,
+    ],
+  },
+] as const;
+
+const SHOW_DEBUG_SETTINGS = Boolean(
+  process.env.ENABLE_SETTINGS_PAGE_DEV_OPTIONS || process.env.IN_TEST,
+);
 
 /**
  * Single source of truth for all Settings V2 routes.
@@ -83,9 +119,7 @@ export const SETTINGS_V2_ROUTES: Record<string, SettingsV2RouteMeta> = {
   [NOTIFICATIONS_SETTINGS_ROUTE]: {
     labelKey: 'notifications',
     parentPath: SETTINGS_V2_ROUTE,
-    component: mmLazy(
-      () => import('../notifications-settings/notifications-settings.tsx'),
-    ),
+    component: mmLazy(() => import('./notifications-tab/index.tsx')),
     isTab: true,
     iconName: IconName.Notification,
   },
@@ -103,6 +137,23 @@ export const SETTINGS_V2_ROUTES: Record<string, SettingsV2RouteMeta> = {
     parentPath: SECURITY_AND_PASSWORD_ROUTE,
     component: mmLazy(
       () => import('./security-and-password-tab/auto-lock-sub-page.tsx'),
+    ),
+  },
+  [MANAGE_WALLET_RECOVERY_V2_ROUTE]: {
+    labelKey: 'manageWalletRecovery',
+    parentPath: SECURITY_AND_PASSWORD_ROUTE,
+    component: mmLazy(
+      () =>
+        import(
+          './security-and-password-tab/manage-wallet-recovery-sub-page.tsx'
+        ),
+    ),
+  },
+  [SECURITY_PASSWORD_CHANGE_V2_ROUTE]: {
+    labelKey: 'password',
+    parentPath: SECURITY_AND_PASSWORD_ROUTE,
+    component: mmLazy(
+      () => import('./security-and-password-tab/password-sub-page.tsx'),
     ),
   },
 
@@ -131,6 +182,15 @@ export const SETTINGS_V2_ROUTES: Record<string, SettingsV2RouteMeta> = {
     ),
     isTab: true,
     iconName: IconName.SecurityTime,
+  },
+  [TRANSACTION_SHIELD_ROUTE]: {
+    labelKey: 'shieldTx',
+    parentPath: SETTINGS_V2_ROUTE,
+    component: mmLazy(
+      () => import('../settings/transaction-shield-tab/index.ts'),
+    ),
+    isTab: true,
+    iconName: IconName.ShieldLock,
   },
 
   // --- Assets tab ---
@@ -168,12 +228,35 @@ export const SETTINGS_V2_ROUTES: Record<string, SettingsV2RouteMeta> = {
   },
 
   // --- Developer Options tab ---
+  ...(SHOW_DEBUG_SETTINGS
+    ? {
+        [DEVELOPER_OPTIONS_ROUTE]: {
+          labelKey: 'debug',
+          parentPath: SETTINGS_V2_ROUTE,
+          component: mmLazy(
+            () =>
+              import(
+                '../settings/developer-options-tab/developer-options-tab.tsx'
+              ),
+          ),
+          isTab: true,
+          iconName: IconName.Code,
+        },
+      }
+    : {}),
   [DEVELOPER_OPTIONS_V2_ROUTE]: {
     labelKey: 'developerOptions',
     parentPath: SETTINGS_V2_ROUTE,
     component: mmLazy(() => import('./developer-options-tab/index.ts')),
     isTab: true,
     iconName: IconName.Code,
+  },
+  [ABOUT_US_ROUTE]: {
+    labelKey: 'aboutMetaMask',
+    parentPath: SETTINGS_V2_ROUTE,
+    component: mmLazy(() => import('./about-tab/index.tsx')),
+    isTab: true,
+    iconName: IconName.Info,
   },
 };
 
