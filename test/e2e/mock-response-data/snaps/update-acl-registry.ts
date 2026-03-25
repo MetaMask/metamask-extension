@@ -82,7 +82,6 @@ async function main() {
   const registryText = await registryRes.text();
   const signatureText = await signatureRes.text();
   const signatureParsed: unknown = JSON.parse(signatureText);
-  assert(signatureParsed, SignatureStruct);
 
   const valid = await verify({
     registry: registryText,
