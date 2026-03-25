@@ -59,17 +59,19 @@ export function configureFixtureSession(
       await fixtureSetup.promise;
     });
 
+    defineSuite({ getDriver, getFixtures });
+
+    // Register shared cleanup after the suite so suite-specific teardown can
+    // still access the active session before we reset or shut it down.
+    afterEach('Reset current window to about:blank', async function () {
+      await getDriver().openNewURL('about:blank');
+    });
+
     after('Shut down shared fixture session', async function () {
       suiteFinished.resolve();
       if (fixturePromise) {
         await fixturePromise;
       }
     });
-
-    afterEach('Reset current window to about:blank', async function () {
-      await getDriver().openNewURL('about:blank');
-    });
-
-    defineSuite({ getDriver, getFixtures });
   });
 }
