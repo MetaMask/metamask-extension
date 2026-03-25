@@ -90,15 +90,16 @@ jobs:
           path: .metamask
           key: .metamask-${{ hashFiles('yarn.lock') }}
 
+  # Lint Jobs - Using name prefix for visual grouping
   lint-workflows:
-    name: Lint workflows
+    name: Lint / workflows
     if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
     needs:
       - get-requirements
     uses: MetaMask/github-tools/.github/workflows/lint-workflows.yml@v1
 
-  test-lint:
-    name: Test lint
+  lint-code:
+    name: Lint / code
     if: ${{ needs.get-requirements.outputs.needs-lint == 'true' }}
     needs:
       - prep-deps
@@ -132,292 +133,242 @@ jobs:
       pull-requests: write
     uses: ./.github/workflows/repository-health-checks.yml
 
-  test-storybook:
-    name: Test storybook
+  # Storybook Jobs - Using name prefix for visual grouping
+  storybook-test:
+    name: Storybook / test
     needs:
       - get-requirements
       - prep-deps
     if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
     uses: ./.github/workflows/test-storybook.yml
 
-  validate-lavamoat-policies:
+  # LavaMoat Jobs - Using name prefix for visual grouping
+  lavamoat-validate-policies:
+    name: LavaMoat / validate policies
     needs:
       - get-requirements
       - prep-deps
     if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
     uses: ./.github/workflows/validate-lavamoat-policies.yml
 
-  build-dist-browserify:
+  builds-dist:
+    name: Builds / dist / ${{ matrix.manifest }} / ${{ matrix.bundler }}
     needs:
       - get-requirements
     if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
+    strategy:
+      matrix:
+        include:
+          - manifest: mv3
+            bundler: browserify
+            build-name: build-dist-browserify
+            build-command: yarn build dist
+            is-high-risk-environment: true
+            zip: false
+          - manifest: mv2
+            bundler: browserify
+            build-name: build-dist-mv2-browserify
+            build-command: yarn build dist
+            is-high-risk-environment: true
+            zip: false
+          - manifest: mv3
+            bundler: webpack
+            build-name: build-dist-webpack
+            build-command: yarn webpack:lavamoat:build
+            is-high-risk-environment: false
+            zip: true
+          - manifest: mv2
+            bundler: webpack
+            build-name: build-dist-mv2-webpack
+            build-command: yarn webpack:lavamoat:build:mv2
+            is-high-risk-environment: false
+            zip: true
     uses: ./.github/workflows/run-build.yml
     with:
-      build-name: build-dist-browserify
-      build-command: yarn build dist
+      is-high-risk-environment: ${{ matrix.is-high-risk-environment }}
+      build-name: ${{ matrix.build-name }}
+      build-command: ${{ matrix.build-command }}
       builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
+      zip: ${{ matrix.zip }}
     secrets: inherit
 
-  build-dist-mv2-browserify:
+  builds-beta:
+    name: Builds / beta / ${{ matrix.manifest }} / ${{ matrix.bundler }}
     needs:
       - get-requirements
     if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
+    strategy:
+      matrix:
+        include:
+          - manifest: mv3
+            bundler: browserify
+            build-name: build-beta-browserify
+            build-command: yarn build --build-type beta dist
+            is-high-risk-environment: true
+            zip: false
+          - manifest: mv2
+            bundler: browserify
+            build-name: build-beta-mv2-browserify
+            build-command: yarn build --build-type beta dist
+            is-high-risk-environment: true
+            zip: false
+          - manifest: mv3
+            bundler: webpack
+            build-name: build-beta-webpack
+            build-command: yarn webpack:lavamoat:build --type beta
+            is-high-risk-environment: false
+            zip: true
+          - manifest: mv2
+            bundler: webpack
+            build-name: build-beta-mv2-webpack
+            build-command: yarn webpack:lavamoat:build:mv2 --type beta
+            is-high-risk-environment: false
+            zip: true
     uses: ./.github/workflows/run-build.yml
     with:
-      build-name: build-dist-mv2-browserify
-      build-command: yarn build dist
+      is-high-risk-environment: ${{ matrix.is-high-risk-environment }}
+      build-name: ${{ matrix.build-name }}
+      build-command: ${{ matrix.build-command }}
       builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
+      zip: ${{ matrix.zip }}
     secrets: inherit
 
-  build-beta-browserify:
+  builds-flask:
+    name: Builds / flask / ${{ matrix.manifest }} / ${{ matrix.bundler }}
     needs:
       - get-requirements
     if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
+    strategy:
+      matrix:
+        include:
+          - manifest: mv3
+            bundler: browserify
+            build-name: build-flask-browserify
+            build-command: yarn build --build-type flask dist
+            is-high-risk-environment: true
+            zip: false
+          - manifest: mv2
+            bundler: browserify
+            build-name: build-flask-mv2-browserify
+            build-command: yarn build --build-type flask dist
+            is-high-risk-environment: true
+            zip: false
+          - manifest: mv3
+            bundler: webpack
+            build-name: build-flask-webpack
+            build-command: yarn webpack:lavamoat:build --type flask
+            is-high-risk-environment: false
+            zip: true
+          - manifest: mv2
+            bundler: webpack
+            build-name: build-flask-mv2-webpack
+            build-command: yarn webpack:lavamoat:build:mv2 --type flask
+            is-high-risk-environment: false
+            zip: true
     uses: ./.github/workflows/run-build.yml
     with:
-      build-name: build-beta-browserify
-      build-command: yarn build --build-type beta dist
+      is-high-risk-environment: ${{ matrix.is-high-risk-environment }}
+      build-name: ${{ matrix.build-name }}
+      build-command: ${{ matrix.build-command }}
       builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
+      zip: ${{ matrix.zip }}
     secrets: inherit
 
-  build-beta-mv2-browserify:
+  builds-test:
+    name: Builds / test / ${{ matrix.variant }} / ${{ matrix.bundler }}
     needs:
       - get-requirements
     if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
+    strategy:
+      matrix:
+        include:
+          - variant: mv3
+            bundler: browserify
+            build-name: build-test-browserify
+            build-command: yarn build:test
+            is-high-risk-environment: true
+            zip: false
+          - variant: mv2
+            bundler: browserify
+            build-name: build-test-mv2-browserify
+            build-command: yarn build:test:mv2
+            is-high-risk-environment: true
+            zip: false
+          - variant: mv3
+            bundler: webpack
+            build-name: build-test-webpack
+            build-command: yarn build:test:webpack
+            is-high-risk-environment: false
+            zip: true
+          - variant: mv2
+            bundler: webpack
+            build-name: build-test-mv2-webpack
+            build-command: yarn build:test:webpack:mv2
+            is-high-risk-environment: false
+            zip: true
+          # Flask test builds
+          - variant: flask-mv3
+            bundler: browserify
+            build-name: build-test-flask-browserify
+            build-command: yarn build:test:flask
+            is-high-risk-environment: true
+            zip: false
+          - variant: flask-mv2
+            bundler: browserify
+            build-name: build-test-flask-mv2-browserify
+            build-command: yarn build:test:flask:mv2
+            is-high-risk-environment: true
+            zip: false
+          - variant: flask-mv3
+            bundler: webpack
+            build-name: build-test-flask-webpack
+            build-command: yarn build:test:flask:webpack
+            is-high-risk-environment: false
+            zip: true
+          - variant: flask-mv2
+            bundler: webpack
+            build-name: build-test-flask-mv2-webpack
+            build-command: yarn build:test:flask:webpack:mv2
+            is-high-risk-environment: false
+            zip: true
     uses: ./.github/workflows/run-build.yml
     with:
-      build-name: build-beta-mv2-browserify
-      build-command: yarn build --build-type beta dist
+      is-high-risk-environment: ${{ matrix.is-high-risk-environment }}
+      build-name: ${{ matrix.build-name }}
+      build-command: ${{ matrix.build-command }}
       builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
+      zip: ${{ matrix.zip }}
     secrets: inherit
 
-  build-flask-browserify:
-    needs:
-      - get-requirements
-    if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
-    uses: ./.github/workflows/run-build.yml
-    with:
-      build-name: build-flask-browserify
-      build-command: yarn build --build-type flask dist
-      builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
-    secrets: inherit
-
-  build-flask-mv2-browserify:
-    needs:
-      - get-requirements
-    if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
-    uses: ./.github/workflows/run-build.yml
-    with:
-      build-name: build-flask-mv2-browserify
-      build-command: yarn build --build-type flask dist
-      builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
-    secrets: inherit
-
-  build-test-browserify:
-    needs:
-      - get-requirements
-    if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
-    uses: ./.github/workflows/run-build.yml
-    with:
-      build-name: build-test-browserify
-      build-command: yarn build:test
-      builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
-    secrets: inherit
-
-  build-test-mv2-browserify:
-    needs:
-      - get-requirements
-    if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
-    uses: ./.github/workflows/run-build.yml
-    with:
-      build-name: build-test-mv2-browserify
-      build-command: yarn build:test:mv2
-      builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
-    secrets: inherit
-
-  build-test-flask-browserify:
-    needs:
-      - get-requirements
-    if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
-    uses: ./.github/workflows/run-build.yml
-    with:
-      build-name: build-test-flask-browserify
-      build-command: yarn build:test:flask
-      builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
-    secrets: inherit
-
-  build-test-flask-mv2-browserify:
-    needs:
-      - get-requirements
-    if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
-    uses: ./.github/workflows/run-build.yml
-    with:
-      build-name: build-test-flask-mv2-browserify
-      build-command: yarn build:test:flask:mv2
-      builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
-    secrets: inherit
-
-  build-dist-webpack:
-    needs:
-      - get-requirements
-    if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
-    uses: ./.github/workflows/run-build.yml
-    with:
-      is-high-risk-environment: false
-      build-name: build-dist-webpack
-      build-command: yarn webpack:lavamoat:build
-      builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
-      zip: true
-    secrets: inherit
-
-  build-dist-mv2-webpack:
-    needs:
-      - get-requirements
-    if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
-    uses: ./.github/workflows/run-build.yml
-    with:
-      is-high-risk-environment: false
-      build-name: build-dist-mv2-webpack
-      build-command: yarn webpack:lavamoat:build:mv2
-      builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
-      zip: true
-    secrets: inherit
-
-  build-beta-webpack:
-    needs:
-      - get-requirements
-    if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
-    uses: ./.github/workflows/run-build.yml
-    with:
-      is-high-risk-environment: false
-      build-name: build-beta-webpack
-      build-command: yarn webpack:lavamoat:build --type beta
-      builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
-      zip: true
-    secrets: inherit
-
-  build-beta-mv2-webpack:
-    needs:
-      - get-requirements
-    if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
-    uses: ./.github/workflows/run-build.yml
-    with:
-      is-high-risk-environment: false
-      build-name: build-beta-mv2-webpack
-      build-command: yarn webpack:lavamoat:build:mv2 --type beta
-      builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
-      zip: true
-    secrets: inherit
-
-  build-flask-webpack:
-    needs:
-      - get-requirements
-    if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
-    uses: ./.github/workflows/run-build.yml
-    with:
-      is-high-risk-environment: false
-      build-name: build-flask-webpack
-      build-command: yarn webpack:lavamoat:build --type flask
-      builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
-      zip: true
-    secrets: inherit
-
-  build-flask-mv2-webpack:
-    needs:
-      - get-requirements
-    if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
-    uses: ./.github/workflows/run-build.yml
-    with:
-      is-high-risk-environment: false
-      build-name: build-flask-mv2-webpack
-      build-command: yarn webpack:lavamoat:build:mv2 --type flask
-      builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
-      zip: true
-    secrets: inherit
-
-  build-test-webpack:
-    needs:
-      - get-requirements
-    if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
-    uses: ./.github/workflows/run-build.yml
-    with:
-      is-high-risk-environment: false
-      build-name: build-test-webpack
-      build-command: yarn build:test:webpack
-      builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
-      zip: true
-    secrets: inherit
-
-  build-test-mv2-webpack:
-    needs:
-      - get-requirements
-    if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
-    uses: ./.github/workflows/run-build.yml
-    with:
-      is-high-risk-environment: false
-      build-name: build-test-mv2-webpack
-      build-command: yarn build:test:webpack:mv2
-      builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
-      zip: true
-    secrets: inherit
-
-  build-test-flask-webpack:
-    needs:
-      - get-requirements
-    if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
-    uses: ./.github/workflows/run-build.yml
-    with:
-      is-high-risk-environment: false
-      build-name: build-test-flask-webpack
-      build-command: yarn build:test:flask:webpack
-      builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
-      zip: true
-    secrets: inherit
-
-  build-test-flask-mv2-webpack:
-    needs:
-      - get-requirements
-    if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
-    uses: ./.github/workflows/run-build.yml
-    with:
-      is-high-risk-environment: false
-      build-name: build-test-flask-mv2-webpack
-      build-command: yarn build:test:flask:webpack:mv2
-      builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
-      zip: true
-    secrets: inherit
-
-  run-benchmarks:
+  performance-benchmarks:
+    name: Performance / all benchmarks
     if: ${{ needs.get-requirements.outputs.needs-benchmarks == 'true' }}
     uses: ./.github/workflows/run-benchmarks.yml
     needs:
       - get-requirements
       - prep-deps
-      - build-test-browserify
-      - build-test-mv2-browserify
-      - build-test-webpack
-      - build-test-mv2-webpack
+      - builds-test
     with:
       builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
     secrets: inherit
 
-  run-tests:
-    name: Run tests
+  unit-and-integration-tests:
+    name: Unit and integration tests
     needs:
       - get-requirements
       - prep-deps
     if: ${{ needs.get-requirements.outputs.needs-unit-and-integration == 'true' }}
     uses: ./.github/workflows/run-tests.yml
 
-  sonarcloud:
-    name: SonarCloud
+  code-coverage:
+    name: Code coverage (SonarCloud)
     needs:
-      - run-tests
+      - unit-and-integration-tests
     if: >-
       ${{
         !cancelled() &&
         (github.event_name == 'pull_request' || (github.event_name == 'push' && github.ref_name == 'main')) &&
-        needs.run-tests.result == 'success' &&
+        needs.unit-and-integration-tests.result == 'success' &&
         !(github.event.pull_request.head.repo.fork || github.event.repository.fork)
       }}
     runs-on: ubuntu-latest
@@ -443,7 +394,7 @@ jobs:
   bundle-size:
     needs:
       - get-requirements
-      - build-dist-browserify
+      - builds-dist
     runs-on: ubuntu-latest
     timeout-minutes: 30
     environment: ${{ github.ref_name == 'main' && 'default-branch' || null }}
@@ -480,7 +431,8 @@ jobs:
           s3-bucket: ${{ vars.AWS_S3_BUCKET }}/${{ github.event.repository.name }}/${{ env.RUN_ID }}/bundle-size
           path: test-artifacts/chrome
 
-  prep-e2e:
+  e2e-prep:
+    name: E2E / prep
     needs:
       - get-requirements
       - prep-deps
@@ -488,15 +440,13 @@ jobs:
     uses: ./.github/workflows/prep-e2e.yml
 
   e2e-chrome:
+    name: E2E / Chrome
     needs:
       - get-requirements
       - prep-e2e
-      - build-test-browserify
-      - build-dist-browserify
-      - build-test-flask-browserify
-      - build-test-webpack
-      - build-dist-webpack
-      - build-test-flask-webpack
+      - builds-test
+      - builds-dist
+      - builds-flask
     uses: ./.github/workflows/e2e-chrome.yml
     # Without this `if`, when builds-from-run is activated, the build jobs are considered skipped, and the downstream E2E tests won't run
     if: ${{ !cancelled() && needs.get-requirements.outputs.needs-e2e == 'true' && !contains(needs.*.result, 'failure') }}
@@ -506,15 +456,13 @@ jobs:
     secrets: inherit
 
   e2e-firefox:
+    name: E2E / Firefox
     needs:
       - get-requirements
       - prep-e2e
-      - build-dist-mv2-browserify
-      - build-test-mv2-browserify
-      - build-test-flask-mv2-browserify
-      - build-dist-mv2-webpack
-      - build-test-mv2-webpack
-      - build-test-flask-mv2-webpack
+      - builds-test
+      - builds-dist
+      - builds-flask
     uses: ./.github/workflows/e2e-firefox.yml
     # Without this `if`, when builds-from-run is activated, the build jobs are considered skipped, and the downstream E2E tests won't run
     if: ${{ !cancelled() && needs.get-requirements.outputs.needs-e2e == 'true' && !contains(needs.*.result, 'failure') }}
@@ -524,8 +472,8 @@ jobs:
     secrets:
       INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
 
-  build-storybook:
-    name: Build storybook
+  storybook-build:
+    name: Storybook / build
     if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
     needs:
       - get-requirements
@@ -545,7 +493,7 @@ jobs:
     needs:
       - get-requirements
       - prep-deps
-      - build-dist-browserify
+      - builds-dist
     if: ${{ needs.get-requirements.outputs.skip-everything != 'true' && github.event_name != 'merge_group' }}
     runs-on: ubuntu-latest
     timeout-minutes: 30
@@ -574,11 +522,12 @@ jobs:
           s3-bucket: ${{ vars.AWS_S3_BUCKET }}/${{ github.event.repository.name }}/${{ env.RUN_ID }}/source-map-explorer
           path: build-artifacts/source-map-explorer
 
-  build-lavamoat-viz:
+  lavamoat-build-viz:
+    name: LavaMoat / build viz
     needs:
       - get-requirements
       - prep-deps
-      - build-dist-browserify
+      - builds-dist
     if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
     runs-on: ubuntu-latest
     timeout-minutes: 30
@@ -665,63 +614,31 @@ jobs:
       ${{
         !cancelled() &&
         needs.get-requirements.outputs.needs-releases == 'true' &&
-        contains(fromJson('["success","skipped"]'), needs.build-dist-browserify.result) &&
-        contains(fromJson('["success","skipped"]'), needs.build-dist-mv2-browserify.result) &&
-        contains(fromJson('["success","skipped"]'), needs.build-beta-browserify.result) &&
-        contains(fromJson('["success","skipped"]'), needs.build-beta-mv2-browserify.result) &&
-        contains(fromJson('["success","skipped"]'), needs.build-flask-browserify.result) &&
-        contains(fromJson('["success","skipped"]'), needs.build-flask-mv2-browserify.result) &&
-        contains(fromJson('["success","skipped"]'), needs.build-test-browserify.result) &&
-        contains(fromJson('["success","skipped"]'), needs.build-test-mv2-browserify.result) &&
-        contains(fromJson('["success","skipped"]'), needs.build-test-flask-browserify.result) &&
-        contains(fromJson('["success","skipped"]'), needs.build-test-flask-mv2-browserify.result) &&
-        contains(fromJson('["success","skipped"]'), needs.build-dist-webpack.result) &&
-        contains(fromJson('["success","skipped"]'), needs.build-dist-mv2-webpack.result) &&
-        contains(fromJson('["success","skipped"]'), needs.build-beta-webpack.result) &&
-        contains(fromJson('["success","skipped"]'), needs.build-beta-mv2-webpack.result) &&
-        contains(fromJson('["success","skipped"]'), needs.build-flask-webpack.result) &&
-        contains(fromJson('["success","skipped"]'), needs.build-flask-mv2-webpack.result) &&
-        contains(fromJson('["success","skipped"]'), needs.build-test-webpack.result) &&
-        contains(fromJson('["success","skipped"]'), needs.build-test-mv2-webpack.result) &&
-        contains(fromJson('["success","skipped"]'), needs.build-test-flask-webpack.result) &&
-        contains(fromJson('["success","skipped"]'), needs.build-test-flask-mv2-webpack.result) &&
+        contains(fromJson('["success","skipped"]'), needs.builds-dist.result) &&
+        contains(fromJson('["success","skipped"]'), needs.builds-beta.result) &&
+        contains(fromJson('["success","skipped"]'), needs.builds-flask.result) &&
+        contains(fromJson('["success","skipped"]'), needs.builds-test.result) &&
         contains(fromJson('["success","skipped"]'), needs.bundle-size.result) &&
-        contains(fromJson('["success","skipped"]'), needs.build-storybook.result) &&
+        contains(fromJson('["success","skipped"]'), needs.storybook-build.result) &&
         contains(fromJson('["success","skipped"]'), needs.build-ts-migration-dashboard.result) &&
         contains(fromJson('["success","skipped"]'), needs.build-source-map-explorer.result) &&
-        contains(fromJson('["success","skipped"]'), needs.build-lavamoat-viz.result)
+        contains(fromJson('["success","skipped"]'), needs.lavamoat-build-viz.result)
       }}
     needs:
       - get-requirements
-      - build-dist-browserify
-      - build-dist-mv2-browserify
-      - build-beta-browserify
-      - build-beta-mv2-browserify
-      - build-flask-browserify
-      - build-flask-mv2-browserify
-      - build-test-browserify
-      - build-test-mv2-browserify
-      - build-test-flask-browserify
-      - build-test-flask-mv2-browserify
-      - build-dist-webpack
-      - build-dist-mv2-webpack
-      - build-beta-webpack
-      - build-beta-mv2-webpack
-      - build-flask-webpack
-      - build-flask-mv2-webpack
-      - build-test-webpack
-      - build-test-mv2-webpack
-      - build-test-flask-webpack
-      - build-test-flask-mv2-webpack
-      - run-benchmarks
+      - builds-dist
+      - builds-beta
+      - builds-flask
+      - builds-test
+      - performance-benchmarks
       - bundle-size
-      - build-storybook
+      - storybook-build
       - build-ts-migration-dashboard
       - build-source-map-explorer
-      - build-lavamoat-viz
+      - lavamoat-build-viz
     uses: ./.github/workflows/publish-prerelease.yml
     with:
-      lavamoat-policy-changed: ${{ needs.build-lavamoat-viz.outputs.lavamoat-policy-changed == 'true' }}
+      lavamoat-policy-changed: ${{ needs.lavamoat-build-viz.outputs.lavamoat-policy-changed == 'true' }}
       post-new-builds: ${{ needs.get-requirements.outputs.builds-from-run == github.run_id }}
     secrets:
       PR_COMMENT_TOKEN: ${{ secrets.PR_COMMENT_TOKEN }}
@@ -734,7 +651,7 @@ jobs:
     # Only run for release branches, not forks
     if: ${{ (startsWith(github.head_ref || github.ref_name, 'release/') && !(github.event.pull_request.head.repo.fork || github.event.repository.fork)) }}
     needs:
-      - build-dist-browserify
+      - builds-dist
     runs-on: ubuntu-latest
     timeout-minutes: 5
     environment: release-ci
@@ -788,40 +705,24 @@ jobs:
       - locales-changed-only
       - prep-deps
       - lint-workflows
-      - test-lint
+      - lint-code
       - repository-health-checks
-      - test-storybook
-      - validate-lavamoat-policies
-      - build-dist-browserify
-      - build-dist-mv2-browserify
-      - build-beta-browserify
-      - build-beta-mv2-browserify
-      - build-flask-browserify
-      - build-flask-mv2-browserify
-      - build-test-browserify
-      - build-test-mv2-browserify
-      - build-test-flask-browserify
-      - build-test-flask-mv2-browserify
-      - build-dist-webpack
-      - build-dist-mv2-webpack
-      - build-beta-webpack
-      - build-beta-mv2-webpack
-      - build-flask-webpack
-      - build-flask-mv2-webpack
-      - build-test-webpack
-      - build-test-mv2-webpack
-      - build-test-flask-webpack
-      - build-test-flask-mv2-webpack
-      - run-benchmarks
-      - run-tests
+      - storybook-test
+      - lavamoat-validate-policies
+      - builds-dist
+      - builds-beta
+      - builds-flask
+      - builds-test
+      - performance-benchmarks
+      - unit-and-integration-tests
       - bundle-size
       - prep-e2e
       - e2e-chrome
       - e2e-firefox
-      - build-storybook
+      - storybook-build
       - build-ts-migration-dashboard
       - build-source-map-explorer
-      - build-lavamoat-viz
+      - lavamoat-build-viz
       - trigger-regression-validation
     steps:
       - name: Check that all jobs have passed
