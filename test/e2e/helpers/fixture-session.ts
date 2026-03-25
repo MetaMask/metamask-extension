@@ -13,6 +13,15 @@ export type FixtureSessionAccessors = {
   getFixtures: () => FixtureSessionContext;
 };
 
+/**
+ * Defines a suite that reuses a single browser/extension fixture session
+ * across all tests in the suite to reduce repeated E2E setup cost.
+ *
+ * @param suiteTitle - The Mocha suite title for the shared-session tests.
+ * @param fixtureOptions - The `withFixtures` options used to start the shared session.
+ * @param defineSuite - Callback that defines the suite's tests and hooks using
+ * the shared driver and fixture accessors.
+ */
 export function configureFixtureSession(
   suiteTitle: string,
   fixtureOptions: WithFixturesOptions,
