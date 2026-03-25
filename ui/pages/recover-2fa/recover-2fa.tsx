@@ -363,23 +363,14 @@ export const Recover2FAPage: React.FC = () => {
 
   const isSocialUser = useSelector(getIsSocialLoginFlow);
 
-  const storedRecovery: FactorId[] = (() => {
-    try {
-      return JSON.parse(localStorage.getItem('mm-2fa-configured-recovery') || '[]') as FactorId[];
-    } catch {
-      return [];
-    }
-  })();
-
-  // Recovery factors for social user: their configured recovery factors (excluding social),
-  // falling back to supported non-social recovery factors if nothing stored.
-  const socialRecoveryFactors: FactorId[] = storedRecovery.length > 0
-    ? storedRecovery.filter((id) => id !== 'social')
-    : NON_SOCIAL_RECOVERY_FACTORS;
+  // Social users skip identity verification (already verified by social login)
+  // and continue with a non-social recovery factor.
+  const socialRecoveryFactors: FactorId[] = NON_SOCIAL_RECOVERY_FACTORS;
 
   const [step, setStep] = useState<Step>('intro');
   const [identityFactor, setIdentityFactor] = useState<FactorId | null>(null);
   const [verifyModalFactor, setVerifyModalFactor] = useState<FactorId | null>(null);
+  const [availableSigningFactors, setAvailableSigningFactors] = useState<FactorId[]>([]);
 
   const handleClose = useCallback(() => navigate(ACCOUNT_LIST_PAGE_ROUTE, { replace: true }), [navigate]);
   const handleGoToWallet = useCallback(() => {
@@ -408,6 +399,16 @@ export const Recover2FAPage: React.FC = () => {
 
   const handleIdentityVerified = useCallback(() => {
     if (verifyModalFactor) {
+      const retrievedSigningFactors = (() => {
+        try {
+          const stored = JSON.parse(localStorage.getItem('mm-2fa-configured-signing') || '[]') as FactorId[];
+          return ALL_FACTORS.filter((id) => stored.includes(id));
+        } catch {
+          return [];
+        }
+      })();
+
+      setAvailableSigningFactors(retrievedSigningFactors);
       setIdentityFactor(verifyModalFactor);
       setVerifyModalFactor(null);
       setStep('second-pick');
@@ -428,7 +429,7 @@ export const Recover2FAPage: React.FC = () => {
     }
   }, [verifyModalFactor]);
 
-  const secondFactors = ALL_FACTORS.filter((id) => id !== identityFactor);
+  const secondFactors = availableSigningFactors.filter((id) => id !== identityFactor);
 
   // ─── Intro ─────────────────────────────────────────────────────────
 
