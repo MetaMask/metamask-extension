@@ -264,7 +264,9 @@ describe('TransactionCard', () => {
         mockStore,
       );
 
-      expect(screen.getByText('+$5000.00')).toBeInTheDocument();
+      const amountElement = screen.getByText('+$5000.00');
+      expect(amountElement).toBeInTheDocument();
+      expect(amountElement).toHaveClass('text-success-default');
     });
 
     it('shows withdrawal amount with negative sign', () => {
@@ -290,7 +292,9 @@ describe('TransactionCard', () => {
         mockStore,
       );
 
-      expect(screen.getByText('-$2000.00')).toBeInTheDocument();
+      const amountElement = screen.getByText('-$2000.00');
+      expect(amountElement).toBeInTheDocument();
+      expect(amountElement).toHaveClass('text-error-default');
     });
 
     it('shows "Completed" status for deposits', () => {
