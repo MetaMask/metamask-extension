@@ -1,4 +1,3 @@
-import { strict as assert } from 'assert';
 import { withFixtures } from '../../../helpers';
 import { SOLANA_MAINNET_SCOPE } from '../../../constants';
 import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';

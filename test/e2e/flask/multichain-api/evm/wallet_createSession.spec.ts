@@ -287,11 +287,10 @@ describe('Multichain API', function () {
           );
           await editConnectedAccountsModal.checkPageIsLoaded();
 
-          const isAccountSelected =
-            await editConnectedAccountsModal.waitForAccountSelectedStatus({
-              accountIndex: 1,
-              status: 'selected',
-            });
+          await editConnectedAccountsModal.waitForAccountSelectedStatus({
+            accountIndex: 1,
+            status: 'selected',
+          });
         },
       );
     });
