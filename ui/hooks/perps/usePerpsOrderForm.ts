@@ -247,7 +247,7 @@ export function usePerpsOrderForm({
       };
     }
 
-    // For new/modify modes, calculate based on canonical amount input
+    // For new/modify modes, calculate based on normalized amount input
     const amount = Number.parseFloat(formState.amount) || 0;
 
     if (amount === 0) {

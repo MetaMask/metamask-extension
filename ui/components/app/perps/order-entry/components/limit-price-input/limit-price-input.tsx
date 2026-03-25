@@ -107,16 +107,16 @@ export const LimitPriceInput: React.FC<LimitPriceInputProps> = ({
   const handlePriceChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       const { value } = event.target;
-      const canonicalDraft = normalizeLocalizedNumberInput(value, locale, {
+      const normalizedDraft = normalizeLocalizedNumberInput(value, locale, {
         allowTrailingDecimal: true,
       });
 
-      if (canonicalDraft === null) {
+      if (normalizedDraft === null) {
         return;
       }
 
       setInputValue(value);
-      onLimitPriceChange(canonicalDraft);
+      onLimitPriceChange(normalizedDraft);
     },
     [locale, onLimitPriceChange],
   );

@@ -92,43 +92,43 @@ export function normalizeLocalizedNumberInput(
     return null;
   }
 
-  let canonical = compact;
+  let normalized = compact;
   if (group && group !== decimal) {
-    canonical = canonical.split(group).join('');
+    normalized = normalized.split(group).join('');
   }
   if (decimal !== '.') {
-    canonical = canonical.split(decimal).join('.');
+    normalized = normalized.split(decimal).join('.');
   }
 
-  if (canonical.startsWith('.')) {
-    canonical = `0${canonical}`;
+  if (normalized.startsWith('.')) {
+    normalized = `0${normalized}`;
   }
 
-  if (canonical === '') {
+  if (normalized === '') {
     return null;
   }
 
-  if (!/^\d+(?:\.\d*)?$/u.test(canonical)) {
+  if (!/^\d+(?:\.\d*)?$/u.test(normalized)) {
     return null;
   }
 
-  if (!allowTrailingDecimal && canonical.endsWith('.')) {
-    canonical = canonical.slice(0, -1);
+  if (!allowTrailingDecimal && normalized.endsWith('.')) {
+    normalized = normalized.slice(0, -1);
   }
 
-  return canonical;
+  return normalized;
 }
 
 export function parseLocalizedNumber(
   input: string,
   locale: string,
 ): number | null {
-  const canonical = normalizeLocalizedNumberInput(input, locale);
-  if (!canonical) {
+  const normalized = normalizeLocalizedNumberInput(input, locale);
+  if (!normalized) {
     return null;
   }
 
-  const parsed = Number.parseFloat(canonical);
+  const parsed = Number.parseFloat(normalized);
   if (Number.isNaN(parsed) || !Number.isFinite(parsed)) {
     return null;
   }
@@ -136,7 +136,7 @@ export function parseLocalizedNumber(
   return parsed;
 }
 
-export function toCanonicalFixedPrice(
+export function toNormalizedFixedPrice(
   input: string,
   locale: string,
   fractionDigits = 2,

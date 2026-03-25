@@ -1,7 +1,7 @@
 import {
   normalizeLocalizedNumberInput,
   parseLocalizedNumber,
-  toCanonicalFixedPrice,
+  toNormalizedFixedPrice,
 } from './localeNumber';
 
 describe('localeNumber utils', () => {
@@ -74,15 +74,15 @@ describe('localeNumber utils', () => {
     });
   });
 
-  describe('toCanonicalFixedPrice', () => {
-    it('returns canonical fixed-decimal string', () => {
-      expect(toCanonicalFixedPrice('45.050,1', 'de-DE')).toBe('45050.10');
-      expect(toCanonicalFixedPrice('45,050.1', 'en-US')).toBe('45050.10');
+  describe('toNormalizedFixedPrice', () => {
+    it('returns normalized fixed-decimal string', () => {
+      expect(toNormalizedFixedPrice('45.050,1', 'de-DE')).toBe('45050.10');
+      expect(toNormalizedFixedPrice('45,050.1', 'en-US')).toBe('45050.10');
     });
 
     it('returns null for non-positive values', () => {
-      expect(toCanonicalFixedPrice('0', 'en-US')).toBeNull();
-      expect(toCanonicalFixedPrice('', 'en-US')).toBeNull();
+      expect(toNormalizedFixedPrice('0', 'en-US')).toBeNull();
+      expect(toNormalizedFixedPrice('', 'en-US')).toBeNull();
     });
   });
 });

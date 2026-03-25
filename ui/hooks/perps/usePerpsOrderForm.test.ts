@@ -1,8 +1,8 @@
 import { act } from '@testing-library/react-hooks';
 
-import { usePerpsOrderForm } from './usePerpsOrderForm';
 import mockState from '../../../test/data/mock-state.json';
 import { renderHookWithProvider } from '../../../test/lib/render-helpers-navigate';
+import { usePerpsOrderForm } from './usePerpsOrderForm';
 
 describe('usePerpsOrderForm', () => {
   const defaultOptions = {
@@ -333,7 +333,7 @@ describe('usePerpsOrderForm', () => {
       );
     });
 
-    it('uses canonical limit price correctly in calculations', () => {
+    it('uses normalized limit price correctly in calculations', () => {
       const deState = {
         metamask: {
           ...mockState.metamask,

@@ -71,7 +71,7 @@ import { getSelectedInternalAccount } from '../../selectors/accounts';
 import { getIsPerpsExperienceAvailable } from '../../selectors/perps/feature-flags';
 import { submitRequestToBackground } from '../../store/background-connection';
 
-function toCanonicalPositivePrice(value?: string): string | undefined {
+function toNormalizedPositivePrice(value?: string): string | undefined {
   const parsed = Number.parseFloat(value ?? '');
   if (!Number.isFinite(parsed) || parsed <= 0) {
     return undefined;
@@ -114,15 +114,15 @@ function formStateToOrderParams(
   };
 
   if (formState.type === 'limit' && formState.limitPrice) {
-    params.price = toCanonicalPositivePrice(formState.limitPrice);
+    params.price = toNormalizedPositivePrice(formState.limitPrice);
   }
   if (formState.autoCloseEnabled && formState.takeProfitPrice) {
-    params.takeProfitPrice = toCanonicalPositivePrice(
+    params.takeProfitPrice = toNormalizedPositivePrice(
       formState.takeProfitPrice,
     );
   }
   if (formState.autoCloseEnabled && formState.stopLossPrice) {
-    params.stopLossPrice = toCanonicalPositivePrice(formState.stopLossPrice);
+    params.stopLossPrice = toNormalizedPositivePrice(formState.stopLossPrice);
   }
   if (mode === 'close') {
     params.reduceOnly = true;
@@ -469,11 +469,11 @@ const PerpsOrderEntryPage: React.FC = () => {
         // Amount is 0: only update TP/SL
         const cleanTp =
           orderFormState.autoCloseEnabled && orderFormState.takeProfitPrice
-            ? toCanonicalPositivePrice(orderFormState.takeProfitPrice)
+            ? toNormalizedPositivePrice(orderFormState.takeProfitPrice)
             : undefined;
         const cleanSl =
           orderFormState.autoCloseEnabled && orderFormState.stopLossPrice
-            ? toCanonicalPositivePrice(orderFormState.stopLossPrice)
+            ? toNormalizedPositivePrice(orderFormState.stopLossPrice)
             : undefined;
         const result = await submitRequestToBackground<{
           success: boolean;

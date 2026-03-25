@@ -8,7 +8,6 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 
-import PerpsOrderEntryPage from './perps-order-entry-page';
 import mockState from '../../../test/data/mock-state.json';
 import { enLocale as messages } from '../../../test/lib/i18n-helpers';
 import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
@@ -18,6 +17,7 @@ import {
   mockCryptoMarkets,
   mockHip3Markets,
 } from '../../components/app/perps/mocks';
+import PerpsOrderEntryPage from './perps-order-entry-page';
 
 jest.mock('../../hooks/perps/usePerpsEligibility', () => ({
   usePerpsEligibility: () => ({ isEligible: true }),
@@ -952,7 +952,7 @@ describe('PerpsOrderEntryPage', () => {
       expect(mockUseNavigate).toHaveBeenCalledWith('/perps/market/ETH');
     });
 
-    it('submits canonical limit price when locale-formatted value is entered', async () => {
+    it('submits normalized limit price when locale-formatted value is entered', async () => {
       mockSearchParams.set('orderType', 'limit');
 
       const store = mockStore(createMockStateWithLocale('de'));

@@ -124,7 +124,7 @@ describe('LimitPriceInput', () => {
   });
 
   describe('locale handling', () => {
-    it('converts de-DE formatted value to canonical value on blur', () => {
+    it('converts de-DE formatted value to normalized value on blur', () => {
       const deStore = configureStore({
         localeMessages: {
           ...(mockState.localeMessages ?? {}),

@@ -182,16 +182,16 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
   const handleTpPriceChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       const { value } = event.target;
-      const canonicalDraft = normalizeLocalizedNumberInput(value, locale, {
+      const normalizedDraft = normalizeLocalizedNumberInput(value, locale, {
         allowTrailingDecimal: true,
       });
 
-      if (canonicalDraft === null) {
+      if (normalizedDraft === null) {
         return;
       }
 
       setTpInputValue(value);
-      onTakeProfitPriceChange(canonicalDraft);
+      onTakeProfitPriceChange(normalizedDraft);
     },
     [locale, onTakeProfitPriceChange],
   );
@@ -239,16 +239,16 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
   const handleSlPriceChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       const { value } = event.target;
-      const canonicalDraft = normalizeLocalizedNumberInput(value, locale, {
+      const normalizedDraft = normalizeLocalizedNumberInput(value, locale, {
         allowTrailingDecimal: true,
       });
 
-      if (canonicalDraft === null) {
+      if (normalizedDraft === null) {
         return;
       }
 
       setSlInputValue(value);
-      onStopLossPriceChange(canonicalDraft);
+      onStopLossPriceChange(normalizedDraft);
     },
     [locale, onStopLossPriceChange],
   );
@@ -258,7 +258,7 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
     setSlInputValue(formattedStopLossPrice);
   }, [formattedStopLossPrice]);
 
-  // Handle SL price blur - commit canonical value
+  // Handle SL price blur - commit normalized value
   const handleSlPriceBlur = useCallback(() => {
     setIsSlFocused(false);
 

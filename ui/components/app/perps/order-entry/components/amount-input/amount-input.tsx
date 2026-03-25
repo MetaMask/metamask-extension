@@ -114,19 +114,19 @@ export const AmountInput: React.FC<AmountInputProps> = ({
   const handleAmountChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       const { value } = event.target;
-      const canonicalDraft = normalizeLocalizedNumberInput(value, locale, {
+      const normalizedDraft = normalizeLocalizedNumberInput(value, locale, {
         allowTrailingDecimal: true,
       });
 
-      if (canonicalDraft === null) {
+      if (normalizedDraft === null) {
         return;
       }
 
       setAmountInputValue(value);
-      onAmountChange(canonicalDraft);
+      onAmountChange(normalizedDraft);
 
-      if (canonicalDraft && availableBalance > 0) {
-        const numValue = Number.parseFloat(canonicalDraft);
+      if (normalizedDraft && availableBalance > 0) {
+        const numValue = Number.parseFloat(normalizedDraft);
         if (!Number.isNaN(numValue) && numValue > 0) {
           const pct = Math.min(
             Math.round((numValue / availableBalance) * 100),

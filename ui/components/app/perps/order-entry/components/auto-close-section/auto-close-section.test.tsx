@@ -293,7 +293,7 @@ describe('AutoCloseSection', () => {
   });
 
   describe('locale handling', () => {
-    it('normalizes de-DE TP input to canonical value', () => {
+    it('normalizes de-DE TP input to normalized value', () => {
       const onTakeProfitPriceChange = jest.fn();
       const deStore = configureStore({
         localeMessages: {
