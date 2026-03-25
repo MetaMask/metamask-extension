@@ -1,4 +1,9 @@
-import { ErrorCode, HardwareWalletError } from '@metamask/hw-wallet-sdk';
+import {
+  Category,
+  ErrorCode,
+  HardwareWalletError,
+  Severity,
+} from '@metamask/hw-wallet-sdk';
 import { getTrezorFeatures } from '../../../store/actions';
 import { DeviceEvent, type HardwareWalletAdapterOptions } from '../types';
 import * as webConnectionUtils from '../webConnectionUtils';
@@ -46,7 +51,11 @@ const createMockFeaturesResponse = (
     session_id: 'session-id',
     model: 'T',
     initialized: true,
-    capabilities: ['Capability_Bitcoin', 'Capability_Solana', 'Capability_Ethereum'],
+    capabilities: [
+      'Capability_Bitcoin',
+      'Capability_Solana',
+      'Capability_Ethereum',
+    ],
     unlocked: true,
     ...payload,
   },
@@ -73,7 +82,9 @@ describe('TrezorAdapter', () => {
     jest.clearAllMocks();
     mockOptions = createMockOptions();
     mockUnsubscribe = jest.fn();
-    consoleLogSpy = jest.spyOn(console, 'log').mockImplementation(() => undefined);
+    consoleLogSpy = jest
+      .spyOn(console, 'log')
+      .mockImplementation(() => undefined);
     consoleErrorSpy = jest
       .spyOn(console, 'error')
       .mockImplementation(() => undefined);
@@ -173,7 +184,9 @@ describe('TrezorAdapter', () => {
       expect(mockOptions.onDeviceEvent).toHaveBeenCalledWith(
         expect.objectContaining({
           event: DeviceEvent.Disconnected,
-          error: expect.objectContaining({ code: ErrorCode.DeviceDisconnected }),
+          error: expect.objectContaining({
+            code: ErrorCode.DeviceDisconnected,
+          }),
         }),
       );
       expect(adapter.isConnected()).toBe(false);
@@ -305,12 +318,20 @@ describe('TrezorAdapter', () => {
       await adapter.connect();
       expect(adapter.isConnected()).toBe(true);
 
-      const connectionClosedError = new HardwareWalletError('Connection closed', {
-        code: ErrorCode.ConnectionClosed,
-      });
+      const connectionClosedError = new HardwareWalletError(
+        'Connection closed',
+        {
+          code: ErrorCode.ConnectionClosed,
+          severity: Severity.Err,
+          category: Category.Connection,
+          userMessage: 'Connection closed',
+        },
+      );
       mockGetTrezorFeatures.mockRejectedValue(connectionClosedError);
 
-      await expect(adapter.ensureDeviceReady()).rejects.toBe(connectionClosedError);
+      await expect(adapter.ensureDeviceReady()).rejects.toBe(
+        connectionClosedError,
+      );
 
       expect(mockOptions.onDeviceEvent).toHaveBeenCalledWith({
         event: DeviceEvent.Disconnected,
@@ -320,9 +341,13 @@ describe('TrezorAdapter', () => {
     });
 
     it('wraps unknown errors as HardwareWalletError', async () => {
-      mockGetTrezorFeatures.mockRejectedValue(new Error('feature fetch failed'));
+      mockGetTrezorFeatures.mockRejectedValue(
+        new Error('feature fetch failed'),
+      );
 
-      await expect(adapter.ensureDeviceReady()).rejects.toThrow(HardwareWalletError);
+      await expect(adapter.ensureDeviceReady()).rejects.toThrow(
+        HardwareWalletError,
+      );
       expect(mockOptions.onDeviceEvent).toHaveBeenCalledWith(
         expect.objectContaining({
           event: DeviceEvent.Disconnected,
