@@ -382,22 +382,34 @@ class PerpsStreamManager {
     }
 
     // New address requested — discard any stale pending init and start fresh.
-    const needsDisconnect = this.initializedAddress !== null;
+    // Also treat an in-flight pendingInit as needing disconnect: during first
+    // init, initializedAddress is still null but perpsInit was already sent.
+    const needsDisconnect =
+      this.initializedAddress !== null || this.pendingInit !== null;
     this.pendingInit = null;
     this.clearAllCaches();
 
     const promise = (async () => {
-      // PerpsController.init() is a no-op when already initialized.
-      // Disconnect first so the controller tears down the old provider/WebSocket
-      // and re-initializes with the new account from AccountTreeController.
-      if (needsDisconnect) {
-        await submitRequestToBackground('perpsDisconnect');
-      }
-      await submitRequestToBackground('perpsInit');
-      // Only apply if this is still the latest requested address.
-      if (this.pendingInit?.address === address) {
-        this.init(address);
-        this.pendingInit = null;
+      try {
+        // PerpsController.init() is a no-op when already initialized.
+        // Disconnect first so the controller tears down the old provider/WebSocket
+        // and re-initializes with the new account from AccountTreeController.
+        if (needsDisconnect) {
+          await submitRequestToBackground('perpsDisconnect');
+        }
+        await submitRequestToBackground('perpsInit');
+        // Only apply if this is still the latest requested address.
+        if (this.pendingInit?.address === address) {
+          this.init(address);
+          this.pendingInit = null;
+        }
+      } catch (err) {
+        // Clear pendingInit on failure so subsequent retries start fresh
+        // instead of piggybacking on this rejected promise.
+        if (this.pendingInit?.address === address) {
+          this.pendingInit = null;
+        }
+        throw err;
       }
     })();
 

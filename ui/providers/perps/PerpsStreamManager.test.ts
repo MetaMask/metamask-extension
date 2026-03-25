@@ -231,6 +231,146 @@ describe('PerpsStreamManager', () => {
       );
       expect(initCalls).toHaveLength(1);
     });
+
+    it('throws when address is empty', async () => {
+      await expect(manager.initForAddress('')).rejects.toThrow(
+        'No account selected',
+      );
+    });
+
+    it('calls perpsDisconnect before second perpsInit when first init is still in flight', async () => {
+      let firstInitResolve: () => void;
+      const firstInitBarrier = new Promise<void>((resolve) => {
+        firstInitResolve = resolve;
+      });
+
+      let perpsInitCount = 0;
+      mockSubmitRequestToBackground.mockImplementation(
+        async (method: string) => {
+          if (method === 'perpsDisconnect') {
+            return undefined;
+          }
+          if (method === 'perpsInit') {
+            perpsInitCount += 1;
+            if (perpsInitCount === 1) {
+              await firstInitBarrier;
+            }
+            return undefined;
+          }
+          return undefined;
+        },
+      );
+
+      const pFirst = manager.initForAddress('0xfirst');
+      await Promise.resolve();
+      await Promise.resolve();
+
+      const pSecond = manager.initForAddress('0xsecond');
+      await pSecond;
+
+      const callOrder = mockSubmitRequestToBackground.mock.calls.map(
+        ([m]: [string]) => m,
+      );
+      const disconnectIdx = callOrder.indexOf('perpsDisconnect');
+      const secondInitIdx = callOrder.findIndex(
+        (m, i) => m === 'perpsInit' && i > disconnectIdx,
+      );
+      expect(disconnectIdx).toBeGreaterThanOrEqual(0);
+      expect(secondInitIdx).toBeGreaterThan(disconnectIdx);
+      expect(manager.getCurrentAddress()).toBe('0xsecond');
+
+      firstInitResolve!();
+      await pFirst;
+      expect(manager.getCurrentAddress()).toBe('0xsecond');
+    });
+
+    it('clears pending init on perpsInit failure so the same address can be retried', async () => {
+      let initAttempts = 0;
+      mockSubmitRequestToBackground.mockImplementation((method: string) => {
+        if (method === 'perpsDisconnect') {
+          return Promise.resolve(undefined);
+        }
+        if (method === 'perpsInit') {
+          initAttempts += 1;
+          if (initAttempts === 1) {
+            return Promise.reject(new Error('init failed'));
+          }
+          return Promise.resolve(undefined);
+        }
+        return Promise.resolve(undefined);
+      });
+
+      await expect(manager.initForAddress('0xretry')).rejects.toThrow(
+        'init failed',
+      );
+
+      await manager.initForAddress('0xretry');
+
+      expect(manager.isInitialized('0xretry')).toBe(true);
+      const initCalls = mockSubmitRequestToBackground.mock.calls.filter(
+        ([m]: [string]) => m === 'perpsInit',
+      );
+      expect(initCalls).toHaveLength(2);
+    });
+
+    it('clears pending init on perpsDisconnect failure so switch can be retried', async () => {
+      await manager.initForAddress('0xfirst');
+      mockSubmitRequestToBackground.mockClear();
+
+      mockSubmitRequestToBackground.mockImplementation((method: string) => {
+        if (method === 'perpsDisconnect') {
+          return Promise.reject(new Error('disconnect failed'));
+        }
+        return Promise.resolve(undefined);
+      });
+
+      await expect(manager.initForAddress('0xnext')).rejects.toThrow(
+        'disconnect failed',
+      );
+
+      mockSubmitRequestToBackground.mockReset();
+      mockSubmitRequestToBackground.mockResolvedValue(undefined);
+
+      await manager.initForAddress('0xnext');
+      expect(manager.isInitialized('0xnext')).toBe(true);
+    });
+
+    it('does not apply a superseded address when an older init completes later', async () => {
+      let firstInitResolve: () => void;
+      const firstInitBarrier = new Promise<void>((resolve) => {
+        firstInitResolve = resolve;
+      });
+
+      let perpsInitCount = 0;
+      mockSubmitRequestToBackground.mockImplementation(
+        async (method: string) => {
+          if (method === 'perpsDisconnect') {
+            return undefined;
+          }
+          if (method === 'perpsInit') {
+            perpsInitCount += 1;
+            if (perpsInitCount === 1) {
+              await firstInitBarrier;
+            }
+            return undefined;
+          }
+          return undefined;
+        },
+      );
+
+      const pSlow = manager.initForAddress('0xslow');
+      await Promise.resolve();
+      await Promise.resolve();
+
+      await manager.initForAddress('0xwins');
+
+      expect(manager.getCurrentAddress()).toBe('0xwins');
+
+      firstInitResolve!();
+      await pSlow;
+
+      expect(manager.getCurrentAddress()).toBe('0xwins');
+    });
   });
 
   describe('handleBackgroundUpdate', () => {
