@@ -10,8 +10,11 @@ export const SNAPS_SIGNATURE_BODY_FILENAME = 'signature.json';
 export const SNAPS_REGISTRY_HEADERS_FILENAME = 'registry-headers.json';
 export const SNAPS_SIGNATURE_HEADERS_FILENAME = 'signature-headers.json';
 
-const REGISTRY_URL = 'https://acl.execution.metamask.io/latest/registry.json';
-const SIGNATURE_URL = 'https://acl.execution.metamask.io/latest/signature.json';
+/** Snaps execution allowlist endpoints — mock rules and `update-snaps-registry` must match. */
+export const SNAPS_REGISTRY_URL =
+  'https://acl.execution.metamask.io/latest/registry.json';
+export const SNAPS_SIGNATURE_URL =
+  'https://acl.execution.metamask.io/latest/signature.json';
 
 /** Absolute directory for registry mocks (same layout as `update-snaps-registry` writes). */
 export const SNAPS_REGISTRY_MOCK_DIR = path.join(
@@ -52,7 +55,7 @@ export async function setupSnapRegistryMocks(server: Mockttp): Promise<void> {
   ) as Record<string, string>;
 
   await server
-    .forGet(REGISTRY_URL)
+    .forGet(SNAPS_REGISTRY_URL)
     .always()
     .thenCallback(() => ({
       statusCode: 200,
@@ -61,7 +64,7 @@ export async function setupSnapRegistryMocks(server: Mockttp): Promise<void> {
     }));
 
   await server
-    .forGet(SIGNATURE_URL)
+    .forGet(SNAPS_SIGNATURE_URL)
     .always()
     .thenCallback(() => ({
       statusCode: 200,

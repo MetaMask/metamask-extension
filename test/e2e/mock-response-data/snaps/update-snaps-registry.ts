@@ -2,6 +2,8 @@ import fs from 'fs';
 import { create } from '@metamask/superstruct';
 import { SignatureStruct, verify } from '@metamask/snaps-registry';
 import {
+  SNAPS_REGISTRY_URL,
+  SNAPS_SIGNATURE_URL,
   SNAPS_REGISTRY_BODY_PATH,
   SNAPS_REGISTRY_HEADERS_PATH,
   SNAPS_REGISTRY_MOCK_DIR,
@@ -16,8 +18,6 @@ import {
  *
  * Registry bytes use `*.txt` so `yarn lint:prettier:fix` does not touch them.
  */
-const REGISTRY_URL = 'https://acl.execution.metamask.io/latest/registry.json';
-const SIGNATURE_URL = 'https://acl.execution.metamask.io/latest/signature.json';
 
 /** Public key from JsonSnapsRegistry / extension snaps registry init. */
 const REGISTRY_PUBLIC_KEY =
@@ -67,8 +67,8 @@ function saveHeadersFile(
 
 async function main() {
   const [registryRes, signatureRes] = await Promise.all([
-    fetch(REGISTRY_URL),
-    fetch(SIGNATURE_URL),
+    fetch(SNAPS_REGISTRY_URL),
+    fetch(SNAPS_SIGNATURE_URL),
   ]);
 
   if (!registryRes.ok) {
