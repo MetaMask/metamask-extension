@@ -101,7 +101,7 @@ export const NOTIFICATIONS_ITEMS = {
 
 export const DEVELOPER_OPTIONS_ITEMS = {
   'show-fiat-in-testnets': 'showFiatConversionInTestnets',
-  'auto-reset-account': 'clearActivity',
+  'delete-activity-and-nonce-data': 'deleteActivityAndNonceData',
 } as const;
 
 // ── Registry (auto-derived) ─────────────────────────────────────────────

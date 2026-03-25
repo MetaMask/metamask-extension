@@ -2300,6 +2300,12 @@
   "delete": {
     "message": "Delete"
   },
+  "deleteActivityAndNonceData": {
+    "message": "Delete activity and nonce data"
+  },
+  "deleteActivityAndNonceDataDescription": {
+    "message": "Clears local transaction history and resets the cached nonce on test networks and unsupported networks. Doesn't affect activity synced from the accounts API."
+  },
   "deleteMetaMetricsData": {
     "message": "Delete MetaMetrics data"
   },
