@@ -339,6 +339,9 @@
   "addWallet": {
     "message": "Magdagdag ng wallet"
   },
+  "addedProtectionOptionalBadge": {
+    "message": "Opsyonal"
+  },
   "additionalNetworks": {
     "message": "Mga karagdagang network"
   },
@@ -756,6 +759,27 @@
   "autoDetectTokensDescriptionV2": {
     "message": "Ipinapakita ang mga bagong token na ipinadala sa wallet mo."
   },
+  "autoLock": {
+    "message": "Awtomatikong nagla-lock"
+  },
+  "autoLockAfter15Seconds": {
+    "message": "Pagkalipas ng 15 segundo"
+  },
+  "autoLockAfter1Minute": {
+    "message": "Pagkalipas ng 1 minuto"
+  },
+  "autoLockAfter30Seconds": {
+    "message": "Pagkalipas ng 30 segundo"
+  },
+  "autoLockAfter5Minutes": {
+    "message": "Pagkalipas ng 5 minuto"
+  },
+  "autoLockAfterMinutes": {
+    "message": "Pagkalipas ng $1 (na) minuto"
+  },
+  "autoLockNever": {
+    "message": "Hindi kailanman"
+  },
   "autoLockTimeLimit": {
     "message": "Timer sa Awtomatikong Pag-lock (minuto)"
   },
@@ -773,6 +797,9 @@
   },
   "backToHome": {
     "message": "Bumalik sa home"
+  },
+  "backUpIncomplete": {
+    "message": "Hindi nakumpleto ang pag-back up"
   },
   "backup": {
     "message": "I-backup"
@@ -853,6 +880,12 @@
   },
   "basicConfigurationModalCheckbox": {
     "message": "Nauunawaan ko at nais kong magpatuloy"
+  },
+  "basicConfigurationModalDisclaimerOffPart1": {
+    "message": "Ibig sabihin nito hindi mo lubos na mao-optimize ang iyong oras sa MetaMask. Ang mga batayang tampok (tulad ng mga detalye ng token, optimal na settings ng gas, at iba pa) ay hindi magiging available para sa iyo."
+  },
+  "basicConfigurationModalDisclaimerOffPart2": {
+    "message": "Ang pag-off dito ay hindi rin magpapagana sa ilang mga feature sa loob ng pagkapribado, backup at sync, at mga notipikasyon."
   },
   "basicConfigurationModalDisclaimerOn": {
     "message": "Upang ma-optimize ang iyong oras sa MetaMask, kailangan mong i-on ang tampok na ito. Ang mga batayang function (tulad ng mga detalye ng token, optimal na settings ng gas, at iba pa) ay mahalaga sa karanasan sa web3."
@@ -1066,6 +1099,9 @@
   "bridgeMarketClosedAction": {
     "message": "Sarado ang market"
   },
+  "bridgeMarketClosedDescription": {
+    "message": "Ang stock token na ito ay kasalukuyang hindi pasok sa mga oras ng pagti-trade. Subukan muli kapag nagbukas na ang market."
+  },
   "bridgeMarketClosedModalDescription": {
     "message": "Ang market na sumusuporta sa token na ito ay kasalukuyang sarado. Maaaring i-transfer ang mga token na nasa chain anumang oras."
   },
@@ -1157,6 +1193,9 @@
   },
   "bridgeSelectNetwork": {
     "message": "Pumili ng network"
+  },
+  "bridgeSelectQuote": {
+    "message": "Piliin ang quote"
   },
   "bridgeSelectTokenAmountAndAccount": {
     "message": "Pumili ng token, halaga, at destinasyong account"
@@ -1525,6 +1564,9 @@
   "confirmFieldTooltipPaymaster": {
     "message": "Ang bayarin para sa transaksyong ito ay babayaran ng paymaster smart contract."
   },
+  "confirmFieldTotalExposure": {
+    "message": "Kabuuang exposure"
+  },
   "confirmGasFeeTokenBalance": {
     "message": "Bal:"
   },
@@ -1809,6 +1851,9 @@
   "contactDetails": {
     "message": "Mga detalye ng contact"
   },
+  "contactUpdated": {
+    "message": "Na-update na ang contact"
+  },
   "contactUs": {
     "message": "Makipag-ugnayan sa amin"
   },
@@ -1892,6 +1937,10 @@
   },
   "createPasswordDetails": {
     "message": "I-unlock ang MetaMask sa device lang na ito."
+  },
+  "createPasswordDetailsSocial": {
+    "message": "Ang pagkawala ng password na ito ay nangangahulungan ng pagkawala ng access sa wallet sa lahat ng device, $1",
+    "description": "$1 is the text 'MetaMask can't reset it.'"
   },
   "createPasswordDetailsSocialReset": {
     "message": "Hindi ito maire-reset ng MetaMask."
@@ -2237,17 +2286,31 @@
     "message": "Tatanggalin nito ang kasaysayan ng data ng MetaMetrics na may kaugnayan sa paggamit mo sa device na ito. Hindi magbabago ang wallet at mga account mo sa kung ano ito ngayon pagkatapos mabura ang data na ito. Ang prosesong ito ay maaaring tumagal nang hanggang 30 araw. Tingnan ang aming $1.",
     "description": "$1 will have text saying Privacy Policy "
   },
+  "deleteMetaMetricsDataDescriptionV2": {
+    "message": "Tatanggalin nito ang kasaysayan ng data ng MetaMetrics na may kaugnayan sa iyong wallet. Kabilang sa MetaMetrics ang walang pagkakakilanlan na paggamit at diagnostic data. Hindi magbabago ang wallet at mga account mo. Ang proseso na ito ay maaaring tumagal ng 30 araw. Tingnan ang aming $1.",
+    "description": "$1 will have text saying Privacy Policy "
+  },
   "deleteMetaMetricsDataErrorDesc": {
     "message": "Hindi makumpleto ang kahilingang ito sa ngayon dahil sa isang isyu sa server ng analytics system, pakisubukang muli mamaya."
   },
   "deleteMetaMetricsDataErrorTitle": {
     "message": "Hindi namin matanggal ang data na ito sa ngayon"
   },
+  "deleteMetaMetricsDataErrorToast": {
+    "message": "Hindi matanggal"
+  },
   "deleteMetaMetricsDataModalDesc": {
     "message": "Aalisin na namin ang lahat ng iyong data ng MetaMetrics. Sigurado ka ba?"
   },
   "deleteMetaMetricsDataModalTitle": {
     "message": "Tanggalin ang data ng MetaMetrics?"
+  },
+  "deleteMetaMetricsDataRequestedDescription": {
+    "message": "Pinasimulan mo ang pagtatanggal sa $1. Ang prosesong ito ay maaaring tumagal nang hanggang 30 araw. Tingnan ang $2.",
+    "description": "$1 will be the date on which teh deletion is requested and $2 will have text saying Privacy Policy "
+  },
+  "deleteMetaMetricsDataToast": {
+    "message": "Tatanggalin ang data sa loob ng 30 araw"
   },
   "deleteNetworkIntro": {
     "message": "Kapag tinanggal mo ang network na ito, kakailanganin mo itong idagdag muli para makita ang mga asset mo sa network na ito"
@@ -2811,6 +2874,9 @@
   "externalNameSourcesSettingDescription": {
     "message": "Kami ay kukuha ng ilang mungkahing palayaw para sa mga address na nakikipag-ugnayan ka mula sa mga third-party source tulad ng Etherscan, Infura, at Lens Protocol. Ang mga source na ito ay maaaring makita ang mga address na ito at ang iyong iyong IP address. Ang iyong address ay hindi ilalantad sa mga third party."
   },
+  "externalNameSourcesSettingDescriptionV2": {
+    "message": "Kinukuha ang mga iminumungkahing palayaw para sa mga address kung saan ka nakikipag-ugnayan mula sa mga third-party na pinagmulan gaya ng Etherscan, Infura, at Lens protocol."
+  },
   "failed": {
     "message": "Pumalya"
   },
@@ -3149,6 +3215,9 @@
   "hardwareWalletErrorRecoveryUnlock2": {
     "message": "Bukas ang app ng Ethereum"
   },
+  "hardwareWalletErrorTitleBlindSignNotSupported": {
+    "message": "Paganahin ang blind signing"
+  },
   "hardwareWalletErrorTitleBlindSignNotSupportedInstruction1": {
     "message": "Bukas ang app ng Ethereum sa Ledger mo"
   },
@@ -3188,6 +3257,9 @@
   },
   "hardwareWalletSupportLinkConversion": {
     "message": "mag-click dito"
+  },
+  "hardwareWalletTitleEthAppNotOpen": {
+    "message": "Buksan ang Ethereum app"
   },
   "hardwareWalletTypeConnected": {
     "message": "Nakakonekta ang $1",
@@ -3314,6 +3386,9 @@
   "hyperliquidReferralSubtitle": {
     "message": "Makatipid ng hanggang 4% sa mga trade na gumagamit ng referral code ng MetaMask.",
     "description": "The subtitle of the Hyperliquid referral confirmation screen"
+  },
+  "iUnderstand": {
+    "message": "Nauunawaan ko"
   },
   "id": {
     "message": "ID"
@@ -3543,6 +3618,9 @@
   },
   "ipfsGatewayDescription": {
     "message": "Ang MetaMask ay gumagamit ng mga serbisyo ng third-party para ipakita ang mga imahe sa iyong mga NFT na nakaimbak sa IPFS, nagpapakita ng impormasyong nauugnay sa mga ENS address na ipinakita sa address bar ng iyong browser, at kinukuha ang mga icon para sa iba't ibang token. Ang iyong IP address ay maaaring ipakita sa mga serbisyong ito kapag ginagamit mo ang mga iyon."
+  },
+  "ipfsGatewayDescriptionV2": {
+    "message": "Gumagamit ng mga serbisyo ng third-party para ipakita ang mga imahe ng iyong mga NFT na nakaimbak sa IPFS, ipinapakita ang impormasyong nauugnay sa mga ENS address na inilagay sa address bar ng iyong browser, at kinukuha ang mga icon para sa iba't ibang token. Piliin ang gusto mong IPFS gateway sa ibaba."
   },
   "ipfsToggleModalDescriptionOne": {
     "message": "Gumagamit kami ng mga serbisyo ng third-party upang ipakita ang mga imahe ng iyong mga NFT na nakaimbak sa IPFS, nagpapakita ng impormasyon na nauugnay sa mga ENS address na inilagay sa address bar ng iyong browser, at fetch icon para sa iba't ibang token. Maaaring malantad ang iyong IP address sa mga serbisyong iyon kapag ginagamit mo ang mga iyon."
@@ -3827,6 +3905,12 @@
   "makeAnotherSwap": {
     "message": "Gumawa ng bagong pag-swap"
   },
+  "makeSmartContractsEasier": {
+    "message": "Pinakadali ang pagbasas sa mga smart contract"
+  },
+  "makeSmartContractsEasierDescription": {
+    "message": "Ginagamit ng MetaMask ang 4byte.directory at Sourcify para isalin ang impormasyong ito."
+  },
   "manage": {
     "message": "Pamahalaan"
   },
@@ -3844,6 +3928,9 @@
   },
   "managePermissions": {
     "message": "Pamahalaan ang mga pahintulot"
+  },
+  "manageWalletRecovery": {
+    "message": "Pamahalaan ang pag-recover sa wallet"
   },
   "marketCap": {
     "message": "Market cap"
@@ -4072,10 +4159,6 @@
     "message": "Si $1 ay gustong gumamit ng $2 Snaps",
     "description": "$1 is the dapp and $2 is the number of snaps it wants to connect to."
   },
-  "musdBoostDescription": {
-    "message": "I-convert ang mga stablecoin mo sa mUSD at makatanggap ng hanggang $1% bonus.",
-    "description": "$1 is the bonus percentage (e.g., 3)"
-  },
   "musdBoostTitle": {
     "message": "Makakuha ng $1% sa mga stablecoin mo",
     "description": "$1 is the bonus percentage (e.g., 3)"
@@ -4095,6 +4178,10 @@
     "message": "Naki-claim na bonus",
     "description": "Label for the claimable bonus row in the mUSD conversion confirmation screen"
   },
+  "musdClaimableBonusTooltip": {
+    "message": "$1% taunang bonus na kinita mo sa pagho-hold ng mUSD. Pwedeng i-claim ang bonus mo sa Linea araw-araw. Pinapagana ng Relay. $2",
+    "description": "$1 is the APY percentage, $2 is the 'Terms apply' link"
+  },
   "musdConversionActivityTitle": {
     "message": "I-convert ang $1 sa mUSD",
     "description": "$1 is the source token symbol (e.g., USDC)"
@@ -4110,11 +4197,12 @@
     "message": "Ikino-convert ang $1 → mUSD",
     "description": "$1 is the source token symbol (e.g., USDC)"
   },
-  "musdConversionToastSuccess": {
-    "message": "Ang mUSD mo ay narito na!"
-  },
   "musdConvert": {
     "message": "I-convert"
+  },
+  "musdConvertAndGetBonus": {
+    "message": "I-convert at makakuha ng $1%",
+    "description": "$1 is the bonus percentage (e.g., 3)"
   },
   "musdEarnBonusPercentage": {
     "message": "Kumita ng $1% bonus",
@@ -4129,6 +4217,10 @@
   },
   "musdEducationNotNow": {
     "message": "Hindi sa ngayon"
+  },
+  "musdGetBonusPercentage": {
+    "message": "Makakuha ng $1% mUSD bonus",
+    "description": "$1 is the bonus percentage (e.g., 3)"
   },
   "musdGetMusd": {
     "message": "Kumuha ng mUSD"
@@ -6053,6 +6145,9 @@
   "quizIntroduction": {
     "message": "Upang ibunyag ang iyong Lihim na Parirala sa Pagbawi, kailangan mong sagutin nang tama ang dalawang tanong."
   },
+  "quotedTotalCost": {
+    "message": "Kabuuang halaga: $1"
+  },
   "rank": {
     "message": "Rank"
   },
@@ -6567,6 +6662,9 @@
   },
   "securityAlertsDescriptionV2": {
     "message": "Ang tampok na ito ay nag-aalerto sa iyo ng masamang aktibidad sa pamamagitan ng aktibong pagsusuri ng mga hiling na transaksyon at pirma. $1"
+  },
+  "securityAndPassword": {
+    "message": "Seguridad at password"
   },
   "securityAndPrivacy": {
     "message": "Seguridad at pagkapribado"
@@ -7392,6 +7490,10 @@
   "showFiatConversionInTestnetsDescription": {
     "message": "Piliin ito para ipakita ang palitan ng fiat sa mga test network"
   },
+  "showFiatConversionInTestnetsDescriptionV2": {
+    "message": "Ipinapakita ang mga network token bilang lokal na currency sa mga test network. Kung hiniling sa iyo na i-on ang feature na ito, maaari kang ma-scam. Para lamang ito sa mga layunin ng pagsusuri. $1",
+    "description": "$1 is the 'Learn more' link"
+  },
   "showHexData": {
     "message": "Ipakita ang hex na data"
   },
@@ -7516,6 +7618,9 @@
   "simulationsSettingDescription": {
     "message": "I-on ito para tantyahin ang mga pagbabago sa balanse ng mga transaksyon at mga pirma bago mo kumpirmahin ang mga ito. Hindi nito ginagarantiyahan ang panghuling resulta ng mga ito. $1"
   },
+  "simulationsSettingDescriptionV2": {
+    "message": "Mga tinatayang pagbabago sa balanse ng mga transaksyon bago mo kumpirmahin ang mga iyon. Hindi nito iginagarantiya ang panghuling resulta ng iyong mga transaksyon. $1"
+  },
   "simulationsSettingSubHeader": {
     "message": "Tinatayang mga pagbabago sa balanse"
   },
@@ -7570,14 +7675,32 @@
   "smartAccount": {
     "message": "Smart account"
   },
+  "smartAccountDappRequestsDescription": {
+    "message": "Hayaan ang dapps na hilingin ang mga feature ng smart account para sa mga standard na account. Hindi nito maaapektuhan ang mga smart account na."
+  },
+  "smartAccountDappRequestsTitle": {
+    "message": "Mga kahilingan na smart account mula sa dapps"
+  },
   "smartAccountLabel": {
     "message": "Smart Account"
+  },
+  "smartAccountRequestsFromDapps": {
+    "message": "Mga kahilingan na smart account mula sa dapps"
+  },
+  "smartAccountRequestsFromDappsDescription": {
+    "message": "Hayaan ang dapps na hilingin ang mga feature ng smart account para sa mga standard na account. Hindi nito maaapektuhan ang mga smart account na."
   },
   "smartAccountUpgradeBannerDescription": {
     "message": "Parehong address. Mas mahuhusay na feature."
   },
   "smartAccountUpgradeBannerTitle": {
     "message": "Lumipat sa smart account"
+  },
+  "smartContractAddress": {
+    "message": "Address ng smart na kontrata"
+  },
+  "smartContractAddressWarning": {
+    "message": "Maaaring hindi sinusuportahan ng address ng tatanggap ang direktang mga paglilipat ng token, na maaaring magresulta sa pagkalugi ng pondo. Magpatuloy lamang kung tiyak ka na matatanggap ng kontratang ito ang paglilipat mo."
   },
   "smartContracts": {
     "message": "Mga smart na kontrata"
@@ -8049,6 +8172,9 @@
   "stateCorruptionTheseInstructionsLinkTitle": {
     "message": "Paano makuha ulit ang iyong Lihim na Parirala sa Pagbawi"
   },
+  "stateLogError": {
+    "message": "Error sa pagbabalik ng mga state log, pakisubukan muli mamaya."
+  },
   "stateLogFileName": {
     "message": "Mga log ng estado ng MetaMask"
   },
@@ -8057,6 +8183,9 @@
   },
   "stateLogsDescription": {
     "message": "Naglalaman ang mga log ng estado ng iyong mga address ng pampublikong account at ipinadalang transaksyon."
+  },
+  "stateLogsModalDescription": {
+    "message": "Matutulungan kami ng mga state log na i-debug ang mga isyung maaari mong makaharap. Ipadala lamang ito sa MetaMask para sa suporta, dahil naglalaman ang mga state log ng pampublikong account address at mga transaksyon mo."
   },
   "status": {
     "message": "Lagay"
@@ -8129,6 +8258,9 @@
   "stxFailureDescription": {
     "message": "Ang biglaang pagbabago sa merkado ay maaaring maging sanhi ng pagkabigo. Kung magpatuloy ang problema, makipag-ugnyan sa $1.",
     "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
+  },
+  "stxOptInDescriptionV2": {
+    "message": "I-on ang mga Smart Transaction para sa mas maaasahan at ligtas na mga transaksyon. $1"
   },
   "stxOptInSupportedNetworksDescription": {
     "message": "I-on ang mga Smart Transaction para sa mas maaasahan at ligtas na mga transaksyon sa mga sinusuportahang network. $1"
@@ -8567,6 +8699,12 @@
   "themeDescription": {
     "message": "Piliin ang mas gusto mong tema ng MetaMask."
   },
+  "thirdPartyApis": {
+    "message": "Mga Third-party API"
+  },
+  "thirdPartyApisDescription": {
+    "message": "Piliin kung paano mo ibabahagi ang iyong IP address o Ethereum address sa mga third-party API. Maaapektuhan ng mga pagbabago ang iyong karanasan sa MetaMask."
+  },
   "thirdPartySoftware": {
     "message": "Paunawa ng third-party na software",
     "description": "Title of a popup modal displayed when installing a snap for the first time."
@@ -8600,6 +8738,9 @@
   },
   "tokenContractError": {
     "message": "Ang address na ito ay isang address ng kontrata ng token. Kung magpapadala ka ng mga token sa address na ito, mawawala ang mga ito sa iyo."
+  },
+  "tokenContractWarning": {
+    "message": "Babala sa kontrata ng token"
   },
   "tokenCount": {
     "message": "token",
@@ -8880,6 +9021,9 @@
     "message": "Hindi makakonekta sa $1.",
     "description": "Message shown when network connection fails. $1 is the network name."
   },
+  "unableToDownload": {
+    "message": "Hindi mai-download"
+  },
   "unapproved": {
     "message": "Hindi inaprubahan"
   },
@@ -9032,6 +9176,9 @@
   },
   "useSafeChainsListValidationDescription": {
     "message": "Ang MetaMask ay gumagamit ng serbisyong third-party na tinatawag na $1 para magpakita ng tumpak at naka-standardized na detalye ng network. Binabawasan nito ang iyong tiyansa sa pagkonekta sa malisiyoso o malitang network. Kapag ginagamit ang tampok na ito, ang iyong IP address ay nakalantad sa chainid.network."
+  },
+  "useSafeChainsListValidationDescriptionV2": {
+    "message": "Binabawasan ang tsansa na maikonekta ka sa mapaminsala o maling network. Ginagamit ng MetaMask ang $1 para ipakita ang tumpak at mga pamantayang detalye ng network."
   },
   "useSafeChainsListValidationWebsite": {
     "message": "chainid.network",
