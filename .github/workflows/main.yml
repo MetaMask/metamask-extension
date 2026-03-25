@@ -129,6 +129,7 @@ jobs:
     uses: ./.github/workflows/lavamoat.yml
     with:
       builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
+    secrets: inherit
 
   builds-dist-beta-flask:
     name: Builds / dist-beta-flask
