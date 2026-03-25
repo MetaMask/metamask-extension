@@ -1,11 +1,5 @@
 import type { Substream } from '@metamask/object-multiplex/dist/Substream';
-import type { Patch } from 'immer';
-import type { JsonRpcNotification, JsonRpcResponse } from '@metamask/utils';
-import {
-  createDeferredPromise,
-  isJsonRpcNotification,
-  isJsonRpcResponse,
-} from '@metamask/utils';
+import { rpcErrors } from '@metamask/rpc-errors';
 import {
   array,
   literal,
@@ -17,7 +11,14 @@ import {
   unknown,
   validate,
 } from '@metamask/superstruct';
-import { rpcErrors } from '@metamask/rpc-errors';
+import {
+  createDeferredPromise,
+  isJsonRpcNotification,
+  isJsonRpcResponse,
+} from '@metamask/utils';
+import type { JsonRpcNotification, JsonRpcResponse } from '@metamask/utils';
+import type { Patch } from 'immer';
+
 import { GET_STATE_PATCHES, SEND_UPDATE } from '../../shared/constants/patches';
 import getNextId from '../../shared/lib/random-id';
 
