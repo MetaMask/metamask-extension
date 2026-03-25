@@ -219,6 +219,8 @@ import { createSentryError } from '../../shared/lib/error';
 import {
   getAccountTrackerControllerAccountsByChainId,
   getTokensControllerAllTokens,
+  getRatesControllerRates,
+  getRatesControllerFiatCurrency,
 } from '../../shared/lib/selectors/assets-migration';
 import {
   isUserRejectedHardwareWalletError,
@@ -1586,6 +1588,7 @@ export default class MetamaskController extends EventEmitter {
     ]);
   }
 
+  // TODO AssetsController RatesController
   triggerNetworkrequests() {
     this.tokenDetectionController.enable();
     this.getInfuraFeatureFlags();
@@ -1606,6 +1609,7 @@ export default class MetamaskController extends EventEmitter {
     }
   }
 
+  // TODO AssetsController RatesController
   stopNetworkRequests() {
     this.txController.stopIncomingTransactionPolling();
     this.tokenDetectionController.disable();
@@ -2251,6 +2255,7 @@ export default class MetamaskController extends EventEmitter {
     );
   }
 
+  // TODO AssetsController RatesController
   /**
    * Sets up multichain data and subscriptions.
    * This method is called during the MetaMaskController constructor.
@@ -7540,8 +7545,9 @@ export default class MetamaskController extends EventEmitter {
           origin,
         ),
         getCurrencyRate: (currency) => {
-          const rate = this.multichainRatesController.state.rates[currency];
-          const { fiatCurrency } = this.multichainRatesController.state;
+          const state = this._getMetaMaskState();
+          const fiatCurrency = getRatesControllerFiatCurrency(state);
+          const rate = getRatesControllerRates(state)[currency];
 
           if (!rate) {
             return undefined;
