@@ -56,7 +56,6 @@ import {
   useHardwareWalletActions,
   useHardwareWalletConfig,
 } from '../../../../contexts/hardware-wallets';
-// HardwareWalletType is used as a default fallback when walletType cannot be extracted
 import { buildErrorContent } from './error-content-builder';
 
 type HardwareWalletErrorModalProps = {
@@ -95,6 +94,9 @@ export const HardwareWalletErrorModal: React.FC<HardwareWalletErrorModalProps> =
     const { ensureDeviceReady, clearError, setConnectionReady } =
       useHardwareWalletActions();
 
+    // Prefer `walletType` from error metadata first (e.g. signature flows where the signing
+    // account may differ from the selected account). Read both top-level `metadata` and RPC-style
+    // `data.metadata`. Then selected account, then Ledger so copy/icons still resolve if metadata is missing.
     const errorMetadata =
       error === undefined
         ? undefined
