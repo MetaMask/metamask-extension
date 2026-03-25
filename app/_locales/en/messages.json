@@ -2066,7 +2066,7 @@
     "message": "Dapp Connections"
   },
   "dappScanMaliciousTitle": {
-    "message": "Malicious website detected!"
+    "message": "Malicious website detected"
   },
   "dappScanMaliciousWarning": {
     "message": "This website is flagged as potentially dangerous. If you reveal your Secret Recovery Phrase, you could put your funds at risk."
