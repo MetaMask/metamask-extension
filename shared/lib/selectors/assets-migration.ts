@@ -34,6 +34,7 @@ import {
   isAssetsUnifyStateFeatureEnabled,
   type AssetsUnifyStateFeatureFlag,
 } from '../assets-unify-state/remote-feature-flag';
+import { getIsAssetsUnifiedStateIncludedInBuild } from '../environment';
 import { AssetType } from '../../constants/transaction';
 import { createDeepEqualSelector } from './selector-creators';
 
@@ -90,6 +91,9 @@ const getIsAssetsUnifyStateEnabled = createDeepEqualSelector(
       state.metamask?.remoteFeatureFlags ?? {},
   ],
   (remoteFeatureFlags) => {
+    if (!getIsAssetsUnifiedStateIncludedInBuild()) {
+      return false;
+    }
     const featureFlag = remoteFeatureFlags[ASSETS_UNIFY_STATE_FLAG] as
       | AssetsUnifyStateFeatureFlag
       | undefined;
