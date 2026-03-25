@@ -1,5 +1,5 @@
 import React from 'react';
-import { fireEvent, screen, waitFor } from '@testing-library/react';
+import { act, fireEvent, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
 import configureStore from '../../store/store';
@@ -59,6 +59,19 @@ const mockSubmit = submitRequestToBackground as jest.MockedFunction<
   typeof submitRequestToBackground
 >;
 
+/**
+ * Wait for the mount `useEffect` that fetches withdrawal routes, then flush the
+ * promise `.then()` `setState` so updates run inside `act` (avoids act warnings).
+ */
+async function settleInitialWithdrawRoutesFetch() {
+  await waitFor(() => {
+    expect(mockSubmit).toHaveBeenCalledWith('perpsGetWithdrawalRoutes', []);
+  });
+  await act(async () => {
+    await Promise.resolve();
+  });
+}
+
 describe('PerpsWithdrawPage', () => {
   const createMockStore = () =>
     configureStore({
@@ -94,29 +107,31 @@ describe('PerpsWithdrawPage', () => {
     });
   });
 
-  it('renders when perps experience is available', () => {
+  it('renders when perps experience is available', async () => {
     renderWithProvider(<PerpsWithdrawPage />, createMockStore());
 
     expect(screen.getByTestId('perps-withdraw-page')).toBeInTheDocument();
     expect(screen.getByTestId('perps-withdraw-cancel')).toBeInTheDocument();
     expect(screen.getByTestId('perps-withdraw-submit')).toBeInTheDocument();
+
+    await settleInitialWithdrawRoutesFetch();
   });
 
-  it('redirects when perps experience is disabled', () => {
+  it('redirects when perps experience is disabled', async () => {
     mockGetIsPerpsExperienceAvailable.mockReturnValue(false);
 
     renderWithProvider(<PerpsWithdrawPage />, createMockStore());
 
     expect(screen.getByTestId('navigate-to')).toHaveTextContent('/');
+
+    await settleInitialWithdrawRoutesFetch();
   });
 
   it('submits withdrawal when amount is valid', async () => {
     const user = userEvent.setup();
     renderWithProvider(<PerpsWithdrawPage />, createMockStore());
 
-    await waitFor(() => {
-      expect(mockSubmit).toHaveBeenCalledWith('perpsGetWithdrawalRoutes', []);
-    });
+    await settleInitialWithdrawRoutesFetch();
 
     const amountInput = screen.getByTestId('perps-fiat-hero-amount-input');
     await user.clear(amountInput);
@@ -137,10 +152,16 @@ describe('PerpsWithdrawPage', () => {
     await waitFor(() => {
       expect(mockNavigate).toHaveBeenCalledWith('/');
     });
+
+    await act(async () => {
+      await Promise.resolve();
+    });
   });
 
-  it('navigates home when cancel is pressed', () => {
+  it('navigates home when cancel is pressed', async () => {
     renderWithProvider(<PerpsWithdrawPage />, createMockStore());
+
+    await settleInitialWithdrawRoutesFetch();
 
     fireEvent.click(screen.getByTestId('perps-withdraw-cancel'));
 
@@ -173,9 +194,7 @@ describe('PerpsWithdrawPage', () => {
 
     renderWithProvider(<PerpsWithdrawPage />, createMockStore());
 
-    await waitFor(() => {
-      expect(mockSubmit).toHaveBeenCalledWith('perpsGetWithdrawalRoutes', []);
-    });
+    await settleInitialWithdrawRoutesFetch();
 
     const amountInput = screen.getByTestId('perps-fiat-hero-amount-input');
     await user.clear(amountInput);
@@ -184,6 +203,10 @@ describe('PerpsWithdrawPage', () => {
 
     await waitFor(() => {
       expect(mockSubmit).toHaveBeenCalledWith('perpsClearWithdrawResult', []);
+    });
+
+    await act(async () => {
+      await Promise.resolve();
     });
   });
 });

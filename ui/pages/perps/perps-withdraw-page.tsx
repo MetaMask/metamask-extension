@@ -398,13 +398,19 @@ const PerpsWithdrawPage: React.FC = () => {
             />
 
             {validationMessage ? (
-              <Text variant={TextVariant.BodySm} color={DsTextColor.ErrorDefault}>
+              <Text
+                variant={TextVariant.BodySm}
+                color={DsTextColor.ErrorDefault}
+              >
                 {validationMessage}
               </Text>
             ) : null}
 
             {submitError ? (
-              <Text variant={TextVariant.BodySm} color={DsTextColor.ErrorDefault}>
+              <Text
+                variant={TextVariant.BodySm}
+                color={DsTextColor.ErrorDefault}
+              >
                 {submitError}
               </Text>
             ) : null}
