@@ -1,12 +1,12 @@
 import { ERC20, ERC721 } from '@metamask/controller-utils';
-import { parseStandardTokenTransactionData } from '../../../shared/modules/transaction.utils';
+import { parseStandardTokenTransactionData } from '../../../shared/lib/transaction.utils';
 import {
   getTokenStandardAndDetails,
   getTokenStandardAndDetailsByChain,
 } from '../../store/actions';
 import { getAssetDetails, getTokenMetadata } from './token-util';
 
-jest.mock('../../../shared/modules/transaction.utils', () => ({
+jest.mock('../../../shared/lib/transaction.utils', () => ({
   parseStandardTokenTransactionData: jest.fn(),
 }));
 

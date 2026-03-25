@@ -1,8 +1,8 @@
 const { promises: fs } = require('fs');
 const path = require('path');
 const childProcess = require('child_process');
-const { merge, mergeWith, cloneDeep } = require('lodash');
-const { isManifestV3 } = require('../../shared/modules/mv3.utils');
+const { mergeWith, cloneDeep } = require('lodash');
+const { isManifestV3 } = require('../../shared/lib/mv3.utils');
 
 const baseManifest = isManifestV3
   ? require('../../app/manifest/v3/_base.json')
@@ -52,7 +52,6 @@ function createManifestTasks({
   browserVersionMap,
   buildType,
   entryTask,
-  shouldIncludeOcapKernel = false,
   shouldIncludeSnow,
 }) {
   const environment = getEnvironment({ buildTarget: entryTask });
@@ -84,10 +83,6 @@ function createManifestTasks({
         );
         modifyNameAndDescForNonProd(result);
 
-        if (shouldIncludeOcapKernel) {
-          applyOcapKernelChanges(result);
-        }
-
         applyLockdownContentScripts(result);
 
         if (isManifestV3) {
@@ -103,17 +98,21 @@ function createManifestTasks({
 
   // dev: add perms
   const envDev = createTaskForModifyManifestForEnvironment((manifest) => {
-    manifest.permissions = [...manifest.permissions, 'webRequestBlocking'];
+    manifest.permissions = [
+      ...new Set([...manifest.permissions, 'webRequestBlocking']),
+    ];
     loadManifestKey(manifest);
   });
 
   // testDev: add perms
   const envTestDev = createTaskForModifyManifestForEnvironment((manifest) => {
     manifest.permissions = [
-      ...manifest.permissions,
-      'webRequestBlocking',
-      'http://localhost/*',
-      'tabs', // test builds need tabs permission for switchToWindowWithTitle
+      ...new Set([
+        ...manifest.permissions,
+        'webRequestBlocking',
+        'http://localhost/*',
+        'tabs', // test builds need tabs permission for switchToWindowWithTitle
+      ]),
     ];
     loadManifestKey(manifest);
   });
@@ -121,10 +120,12 @@ function createManifestTasks({
   // test: add permissions
   const envTest = createTaskForModifyManifestForEnvironment((manifest) => {
     manifest.permissions = [
-      ...manifest.permissions,
-      'webRequestBlocking',
-      'http://localhost/*',
-      'tabs', // test builds need tabs permission for switchToWindowWithTitle
+      ...new Set([
+        ...manifest.permissions,
+        'webRequestBlocking',
+        'http://localhost/*',
+        'tabs', // test builds need tabs permission for switchToWindowWithTitle
+      ]),
     ];
     loadManifestKey(manifest);
   });
@@ -211,21 +212,6 @@ function createManifestTasks({
       return [...new Set([...objValue, ...srcValue])];
     }
     return undefined;
-  }
-
-  function applyOcapKernelChanges(manifest) {
-    if (!Array.isArray(manifest.sandbox?.pages)) {
-      merge(manifest, { sandbox: { pages: [] } });
-    }
-    manifest.sandbox.pages.push('ocap-kernel/vat/iframe.html');
-    manifest.devtools_page = 'devtools/devtools.html';
-    if (manifest.content_security_policy?.extension_pages) {
-      manifest.content_security_policy.extension_pages =
-        manifest.content_security_policy.extension_pages.replace(
-          "frame-ancestors 'none';",
-          "frame-ancestors 'self' devtools://*;",
-        );
-    }
   }
 
   function applyLockdownContentScripts(manifest) {

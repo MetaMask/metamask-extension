@@ -231,6 +231,10 @@ const migrations = [
   require('./193'),
   require('./194'),
   require('./195'),
+  require('./196'),
+  require('./197'),
+  require('./198'),
+  require('./199'),
 ];
 
 export default migrations;

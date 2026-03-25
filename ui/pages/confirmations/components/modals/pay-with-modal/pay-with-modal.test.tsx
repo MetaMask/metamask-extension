@@ -1,14 +1,25 @@
 import React from 'react';
 import { screen, fireEvent } from '@testing-library/react';
+import { TransactionType } from '@metamask/transaction-controller';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
 import { useTransactionPayToken } from '../../../hooks/pay/useTransactionPayToken';
 import { useTransactionPayRequiredTokens } from '../../../hooks/pay/useTransactionPayData';
 import { getAvailableTokens } from '../../../utils/transaction-pay';
+import {
+  useMusdConversionTokens,
+  useMusdPaymentToken,
+} from '../../../../../hooks/musd';
+import { useConfirmContext } from '../../../context/confirm';
 import { PayWithModal } from './pay-with-modal';
 
 jest.mock('../../../hooks/pay/useTransactionPayToken');
 jest.mock('../../../hooks/pay/useTransactionPayData');
 jest.mock('../../../utils/transaction-pay');
+jest.mock('../../../../../hooks/musd');
+jest.mock('../../../context/confirm', () => ({
+  useConfirmContext: jest.fn(),
+}));
 
 jest.mock('../../send/asset', () => ({
   Asset: ({
@@ -61,18 +72,40 @@ const CHAIN_ID_MOCK = '0x1';
 
 describe('PayWithModal', () => {
   const setPayTokenMock = jest.fn();
+  const onMusdPaymentTokenChangeMock = jest.fn();
   const onCloseMock = jest.fn();
   const useTransactionPayTokenMock = jest.mocked(useTransactionPayToken);
   const useTransactionPayRequiredTokensMock = jest.mocked(
     useTransactionPayRequiredTokens,
   );
   const getAvailableTokensMock = jest.mocked(getAvailableTokens);
+  const useMusdConversionTokensMock = jest.mocked(useMusdConversionTokens);
+  const useMusdPaymentTokenMock = jest.mocked(useMusdPaymentToken);
+  const useConfirmContextMock = jest.mocked(useConfirmContext);
 
   beforeEach(() => {
     jest.resetAllMocks();
 
+    useConfirmContextMock.mockReturnValue({
+      currentConfirmation: {},
+    } as ReturnType<typeof useConfirmContext>);
+
     getAvailableTokensMock.mockImplementation(({ tokens }) => tokens as never);
     useTransactionPayRequiredTokensMock.mockReturnValue([]);
+    useMusdConversionTokensMock.mockReturnValue({
+      filterTokens: (tokens) => tokens,
+      filterAllowedTokens: (tokens) => tokens,
+      isConversionToken: () => false,
+      isMusdSupportedOnChain: () => false,
+      hasConvertibleTokensByChainId: () => false,
+      tokens: [],
+      defaultPaymentToken: null,
+    });
+
+    useMusdPaymentTokenMock.mockReturnValue({
+      onPaymentTokenChange: onMusdPaymentTokenChangeMock,
+      isReplacing: false,
+    });
 
     useTransactionPayTokenMock.mockReturnValue({
       payToken: {
@@ -93,7 +126,9 @@ describe('PayWithModal', () => {
   it('renders modal with header', () => {
     renderWithProvider(<PayWithModal isOpen={true} onClose={onCloseMock} />);
 
-    expect(screen.getByText('Pay with')).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.payWithModalTitle.message),
+    ).toBeInTheDocument();
   });
 
   it('renders Asset component with correct props', () => {
@@ -107,7 +142,7 @@ describe('PayWithModal', () => {
   it('calls onClose when close button is clicked', () => {
     renderWithProvider(<PayWithModal isOpen={true} onClose={onCloseMock} />);
 
-    const closeButton = screen.getByLabelText('Close');
+    const closeButton = screen.getByLabelText(messages.close.message);
     fireEvent.click(closeButton);
 
     expect(onCloseMock).toHaveBeenCalled();
@@ -126,7 +161,7 @@ describe('PayWithModal', () => {
     expect(onCloseMock).toHaveBeenCalled();
   });
 
-  it('filters tokens using getAvailableTokens', () => {
+  it('filters tokens using getAvailableTokens with payToken and requiredTokens', () => {
     renderWithProvider(<PayWithModal isOpen={true} onClose={onCloseMock} />);
 
     expect(getAvailableTokensMock).toHaveBeenCalledWith(
@@ -143,7 +178,9 @@ describe('PayWithModal', () => {
   it('does not render when isOpen is false', () => {
     renderWithProvider(<PayWithModal isOpen={false} onClose={onCloseMock} />);
 
-    expect(screen.queryByText('Pay with')).not.toBeInTheDocument();
+    expect(
+      screen.queryByText(messages.payWith.message),
+    ).not.toBeInTheDocument();
   });
 
   it('does not call setPayToken when disabled token is selected', () => {
@@ -154,5 +191,58 @@ describe('PayWithModal', () => {
 
     expect(setPayTokenMock).not.toHaveBeenCalled();
     expect(onCloseMock).not.toHaveBeenCalled();
+  });
+
+  describe('mUSD conversion token selection', () => {
+    beforeEach(() => {
+      useConfirmContextMock.mockReturnValue({
+        currentConfirmation: {
+          type: TransactionType.musdConversion,
+        },
+      } as ReturnType<typeof useConfirmContext>);
+    });
+
+    it('calls onMusdPaymentTokenChange instead of setPayToken for mUSD conversions', () => {
+      renderWithProvider(<PayWithModal isOpen={true} onClose={onCloseMock} />);
+
+      fireEvent.click(screen.getByTestId('select-token'));
+
+      expect(onMusdPaymentTokenChangeMock).toHaveBeenCalledWith({
+        address: '0x123',
+        chainId: '0x1',
+      });
+      expect(setPayTokenMock).not.toHaveBeenCalled();
+    });
+
+    it('closes modal after mUSD token selection', () => {
+      renderWithProvider(<PayWithModal isOpen={true} onClose={onCloseMock} />);
+
+      fireEvent.click(screen.getByTestId('select-token'));
+
+      expect(onCloseMock).toHaveBeenCalled();
+    });
+
+    it('does not call onMusdPaymentTokenChange when disabled token is selected', () => {
+      renderWithProvider(<PayWithModal isOpen={true} onClose={onCloseMock} />);
+
+      fireEvent.click(screen.getByTestId('select-disabled-token'));
+
+      expect(onMusdPaymentTokenChangeMock).not.toHaveBeenCalled();
+      expect(onCloseMock).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('non-mUSD token selection', () => {
+    it('calls setPayToken and not onMusdPaymentTokenChange for non-mUSD transactions', () => {
+      renderWithProvider(<PayWithModal isOpen={true} onClose={onCloseMock} />);
+
+      fireEvent.click(screen.getByTestId('select-token'));
+
+      expect(setPayTokenMock).toHaveBeenCalledWith({
+        address: '0x123',
+        chainId: '0x1',
+      });
+      expect(onMusdPaymentTokenChangeMock).not.toHaveBeenCalled();
+    });
   });
 });

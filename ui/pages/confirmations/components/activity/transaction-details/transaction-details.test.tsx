@@ -8,6 +8,10 @@ import { renderWithProvider } from '../../../../../../test/lib/render-helpers-na
 import { TransactionDetailsProvider } from '../transaction-details-context';
 import { TransactionDetails } from './transaction-details';
 
+jest.mock('../../../hooks/send/useSendTokens', () => ({
+  useSendTokens: () => [],
+}));
+
 const CHAIN_ID = '0x1';
 const TOKEN_ADDRESS = '0xtoken123';
 
@@ -45,6 +49,13 @@ function createMockState(includeToken = false) {
           defaultBlockExplorerUrlIndex: 0,
         },
       },
+      multichainNetworkConfigurationsByChainId: {},
+      accountTree: { wallets: {}, selectedAccountGroup: null },
+      allIgnoredTokens: {},
+      marketData: {},
+      currencyRates: {},
+      currentCurrency: 'usd',
+      accountsByChainId: {},
     },
   };
 }
@@ -112,23 +123,6 @@ describe('TransactionDetails', () => {
     expect(getByTestId('transaction-details-date-row')).toBeInTheDocument();
   });
 
-  it('renders account row', () => {
-    const { getByTestId } = render();
-    expect(getByTestId('transaction-details-account-row')).toBeInTheDocument();
-  });
-
-  it('renders network fee row', () => {
-    const { getByTestId } = render();
-    expect(
-      getByTestId('transaction-details-network-fee-row'),
-    ).toBeInTheDocument();
-  });
-
-  it('renders total row', () => {
-    const { getByTestId } = render();
-    expect(getByTestId('transaction-details-total-row')).toBeInTheDocument();
-  });
-
   it('renders summary section', () => {
     const { getByTestId } = render();
     expect(getByTestId('transaction-details-summary')).toBeInTheDocument();
@@ -153,18 +147,65 @@ describe('TransactionDetails', () => {
         queryByTestId('transaction-details-bridge-fee-row'),
       ).not.toBeInTheDocument();
     });
+
+    it('does not render network fee row', () => {
+      const { queryByTestId } = render();
+      expect(
+        queryByTestId('transaction-details-network-fee-row'),
+      ).not.toBeInTheDocument();
+    });
+
+    it('does not render total row', () => {
+      const { queryByTestId } = render();
+      expect(
+        queryByTestId('transaction-details-total-row'),
+      ).not.toBeInTheDocument();
+    });
+
+    it('does not render account row', () => {
+      const { queryByTestId } = render();
+      expect(
+        queryByTestId('transaction-details-account-row'),
+      ).not.toBeInTheDocument();
+    });
   });
 
   describe('with metamaskPay data', () => {
-    it('renders hero section when metamaskPay targetFiat is present', () => {
+    it('renders hero section', () => {
       const { getByTestId } = render(TransactionType.perpsDeposit, true);
       expect(getByTestId('transaction-details-hero')).toBeInTheDocument();
     });
 
-    it('renders bridge fee row when metamaskPay bridgeFeeFiat is present', () => {
+    it('renders paid with row', () => {
+      const { getByTestId } = render(TransactionType.perpsDeposit, true);
+      expect(
+        getByTestId('transaction-details-paid-with-row'),
+      ).toBeInTheDocument();
+    });
+
+    it('renders bridge fee row', () => {
       const { getByTestId } = render(TransactionType.perpsDeposit, true);
       expect(
         getByTestId('transaction-details-bridge-fee-row'),
+      ).toBeInTheDocument();
+    });
+
+    it('renders network fee row', () => {
+      const { getByTestId } = render(TransactionType.perpsDeposit, true);
+      expect(
+        getByTestId('transaction-details-network-fee-row'),
+      ).toBeInTheDocument();
+    });
+
+    it('renders total row', () => {
+      const { getByTestId } = render(TransactionType.perpsDeposit, true);
+      expect(getByTestId('transaction-details-total-row')).toBeInTheDocument();
+    });
+
+    it('renders account row', () => {
+      const { getByTestId } = render(TransactionType.perpsDeposit, true);
+      expect(
+        getByTestId('transaction-details-account-row'),
       ).toBeInTheDocument();
     });
   });

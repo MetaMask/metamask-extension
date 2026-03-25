@@ -20,10 +20,7 @@ import {
   BoxFlexDirection,
   BoxJustifyContent,
 } from '@metamask/design-system-react';
-import {
-  PermissionTypesWithCustom,
-  StoredGatorPermissionSanitized,
-} from '@metamask/gator-permissions-controller';
+import { PermissionInfoWithMetadata } from '@metamask/gator-permissions-controller';
 import { Content, Header, Page } from '../../page';
 import { BackgroundColor } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
@@ -127,9 +124,7 @@ export const ReviewGatorPermissionsPage = () => {
   });
 
   const handleRevokeClick = useCallback(
-    async (
-      permission: StoredGatorPermissionSanitized<PermissionTypesWithCustom>,
-    ) => {
+    async (permission: PermissionInfoWithMetadata) => {
       const { context } = permission.permissionResponse;
 
       // Set pending state immediately to disable button and show "Pending..." text
@@ -160,9 +155,7 @@ export const ReviewGatorPermissionsPage = () => {
     [revokeGatorPermission, addPendingContext, removePendingContext],
   );
 
-  const renderGatorPermissions = (
-    permissions: StoredGatorPermissionSanitized<PermissionTypesWithCustom>[],
-  ) =>
+  const renderGatorPermissions = (permissions: PermissionInfoWithMetadata[]) =>
     permissions.map((permission) => (
       <ReviewGatorPermissionItem
         key={`${permission.siteOrigin}-${permission.permissionResponse.context}`}

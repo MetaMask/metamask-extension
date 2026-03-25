@@ -20,11 +20,12 @@ import { NotificationsTagCounter } from '../notifications-tag-counter';
 import { NewFeatureTag } from '../../../pages/notifications/NewFeatureTag';
 import {
   SETTINGS_ROUTE,
-  DEFAULT_ROUTE,
+  // SETTINGS_V2_ROUTE,
   NOTIFICATIONS_ROUTE,
   SNAPS_ROUTE,
   PERMISSIONS,
   GATOR_PERMISSIONS,
+  CONTACTS_ROUTE,
 } from '../../../helpers/constants/routes';
 import {
   lockMetamask,
@@ -33,7 +34,7 @@ import {
   toggleNetworkMenu,
   setUseSidePanelAsDefault,
 } from '../../../store/actions';
-import { isGatorPermissionsRevocationFeatureEnabled } from '../../../../shared/modules/environment';
+import { isGatorPermissionsRevocationFeatureEnabled } from '../../../../shared/lib/environment';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useSidePanelEnabled } from '../../../hooks/useSidePanelEnabled';
 import { useBrowserSupportsSidePanel } from '../../../hooks/useBrowserSupportsSidePanel';
@@ -44,14 +45,14 @@ import {
 import { selectIsBackupAndSyncEnabled } from '../../../selectors/identity/backup-and-sync';
 import { Tag } from '../../component-library';
 // TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
+// eslint-disable-next-line import-x/no-restricted-paths
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import {
   ENVIRONMENT_TYPE_POPUP,
   ENVIRONMENT_TYPE_SIDEPANEL,
   PLATFORM_FIREFOX,
 } from '../../../../shared/constants/app';
-import { getBrowserName } from '../../../../shared/modules/browser-runtime.utils';
+import { getBrowserName } from '../../../../shared/lib/browser-runtime.utils';
 import { SUPPORT_LINK } from '../../../../shared/lib/ui-utils';
 
 import { MetaMetricsContext } from '../../../contexts/metametrics';
@@ -80,7 +81,7 @@ import {
 import { useSubscriptionMetrics } from '../../../hooks/shield/metrics/useSubscriptionMetrics';
 import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
 import type { GlobalMenuSection } from '../global-menu/global-menu-list.types';
-import { isBeta, isFlask } from '../../../helpers/utils/build-types';
+import { isBeta, isFlask } from '../../../../shared/lib/build-types';
 
 const METRICS_LOCATION = 'Global Menu';
 
@@ -396,6 +397,12 @@ export function useGlobalMenuSections(
       title: t('manage'),
       items: [
         {
+          id: 'global-menu-contacts',
+          iconName: IconName.Book,
+          label: t('contacts'),
+          to: `${CONTACTS_ROUTE}?from=${encodeURIComponent(location.pathname)}`,
+        },
+        {
           id: 'global-menu-connected-sites',
           iconName: IconName.SecurityTick,
           label: t('allPermissions'),
@@ -448,6 +455,21 @@ export function useGlobalMenuSections(
           },
           disabled: hasUnapprovedTransactions,
         },
+        // Uncomment to view Settings V2 in Hamburger Menu
+        // {
+        //   id: 'global-menu-settings-v2',
+        //   iconName: IconName.Setting,
+        //   label: `${t('settings')} (V2)`,
+        //   to: SETTINGS_V2_ROUTE,
+        //   onClick: () => {
+        //     trackEvent({
+        //       category: MetaMetricsEventCategory.Navigation,
+        //       event: MetaMetricsEventName.NavSettingsOpened,
+        //       properties: { location: METRICS_LOCATION },
+        //     });
+        //   },
+        //   disabled: hasUnapprovedTransactions,
+        // },
         {
           id: 'global-menu-support',
           iconName: IconName.MessageQuestion,
@@ -488,15 +510,15 @@ export function useGlobalMenuSections(
           iconColor: IconColor.ErrorDefault,
           textColor: TextColor.ErrorDefault,
           label: t('logOut'),
-          onClick: () => {
-            navigate(DEFAULT_ROUTE);
-            dispatch(lockMetamask(t('lockMetaMaskLoadingMessage')));
+          onClick: async () => {
             trackEvent({
               category: MetaMetricsEventCategory.Navigation,
               event: MetaMetricsEventName.AppLocked,
               properties: { location: METRICS_LOCATION },
             });
             onClose();
+
+            await dispatch(lockMetamask(t('lockMetaMaskLoadingMessage')));
           },
         },
       ],

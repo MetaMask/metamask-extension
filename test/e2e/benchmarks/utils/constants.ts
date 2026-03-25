@@ -1,4 +1,26 @@
-import type { ThresholdConfig } from './types';
+import type { ThresholdConfig } from '../../../../shared/constants/benchmarks';
+import {
+  BENCHMARK_PLATFORMS,
+  BENCHMARK_BUILD_TYPES,
+} from '../../../../shared/constants/benchmarks';
+
+export { BENCHMARK_PLATFORMS, BENCHMARK_BUILD_TYPES };
+export const STARTUP_PRESETS = {
+  STANDARD_HOME: 'startupStandardHome',
+  POWER_USER_HOME: 'startupPowerUserHome',
+} as const;
+
+export const INTERACTION_PRESETS = {
+  USER_ACTIONS: 'interactionUserActions',
+} as const;
+
+export const USER_JOURNEY_PRESETS = {
+  ONBOARDING_IMPORT: 'userJourneyOnboardingImport',
+  ONBOARDING_NEW: 'userJourneyOnboardingNew',
+  ASSETS: 'userJourneyAssets',
+  ACCOUNT_MANAGEMENT: 'userJourneyAccountManagement',
+  TRANSACTIONS: 'userJourneyTransactions',
+} as const;
 
 export const DEFAULT_NUM_BROWSER_LOADS = 10;
 export const DEFAULT_NUM_PAGE_LOADS = 10;
@@ -45,10 +67,7 @@ export const WITH_STATE_POWER_USER = {
  */
 export const DEFAULT_CI_MULTIPLIER = 1.5;
 
-/**
- * Onboarding import wallet thresholds.
- */
-export const ONBOARDING_IMPORT_THRESHOLDS: ThresholdConfig = {
+const ONBOARDING_IMPORT_WALLET: ThresholdConfig = {
   importWalletToSocialScreen: {
     p75: { warn: 1800, fail: 2400 },
     p95: { warn: 2800, fail: 3500 },
@@ -75,8 +94,8 @@ export const ONBOARDING_IMPORT_THRESHOLDS: ThresholdConfig = {
     ciMultiplier: DEFAULT_CI_MULTIPLIER,
   },
   doneButtonToHomeScreen: {
-    p75: { warn: 13500, fail: 17500 },
-    p95: { warn: 21000, fail: 26000 },
+    p75: { warn: 10500, fail: 14000 },
+    p95: { warn: 16000, fail: 21000 },
     ciMultiplier: DEFAULT_CI_MULTIPLIER,
   },
   openAccountMenuToAccountListLoaded: {
@@ -86,10 +105,7 @@ export const ONBOARDING_IMPORT_THRESHOLDS: ThresholdConfig = {
   },
 };
 
-/**
- * Onboarding new wallet thresholds.
- */
-export const ONBOARDING_NEW_WALLET_THRESHOLDS: ThresholdConfig = {
+const ONBOARDING_NEW_WALLET: ThresholdConfig = {
   createWalletToSocialScreen: {
     p75: { warn: 1800, fail: 2400 },
     p95: { warn: 2800, fail: 3500 },
@@ -116,19 +132,16 @@ export const ONBOARDING_NEW_WALLET_THRESHOLDS: ThresholdConfig = {
     ciMultiplier: DEFAULT_CI_MULTIPLIER,
   },
   doneButtonToAssetList: {
-    p75: { warn: 13500, fail: 17500 },
-    p95: { warn: 21000, fail: 26000 },
+    p75: { warn: 10500, fail: 14000 },
+    p95: { warn: 16000, fail: 21000 },
     ciMultiplier: DEFAULT_CI_MULTIPLIER,
   },
 };
 
-/**
- * Import SRP from home thresholds.
- */
-export const IMPORT_SRP_HOME_THRESHOLDS: ThresholdConfig = {
+const IMPORT_SRP_HOME: ThresholdConfig = {
   loginToHomeScreen: {
-    p75: { warn: 9000, fail: 11500 },
-    p95: { warn: 14000, fail: 17500 },
+    p75: { warn: 5000, fail: 7000 },
+    p95: { warn: 8000, fail: 10500 },
     ciMultiplier: DEFAULT_CI_MULTIPLIER,
   },
   openAccountMenuAfterLogin: {
@@ -137,67 +150,194 @@ export const IMPORT_SRP_HOME_THRESHOLDS: ThresholdConfig = {
     ciMultiplier: DEFAULT_CI_MULTIPLIER,
   },
   homeAfterImportWithNewWallet: {
-    p75: { warn: 27000, fail: 35000 },
-    p95: { warn: 42000, fail: 52000 },
+    p75: { warn: 20000, fail: 27000 },
+    p95: { warn: 32000, fail: 40000 },
     ciMultiplier: DEFAULT_CI_MULTIPLIER,
   },
 };
 
-/**
- * Swap flow thresholds.
- */
-export const SWAP_THRESHOLDS: ThresholdConfig = {
+const SWAP: ThresholdConfig = {
   openSwapPageFromHome: {
-    p75: { warn: 4500, fail: 5800 },
-    p95: { warn: 7000, fail: 8700 },
+    p75: { warn: 3000, fail: 4500 },
+    p95: { warn: 5000, fail: 7000 },
     ciMultiplier: DEFAULT_CI_MULTIPLIER,
   },
   fetchAndDisplaySwapQuotes: {
-    p75: { warn: 9000, fail: 11500 },
-    p95: { warn: 14000, fail: 17500 },
+    p75: { warn: 1200, fail: 2000 },
+    p95: { warn: 2000, fail: 3500 },
     ciMultiplier: DEFAULT_CI_MULTIPLIER,
   },
 };
 
-/**
- * Send transactions thresholds.
- */
-export const SEND_TRANSACTIONS_THRESHOLDS: ThresholdConfig = {
+const SEND_TRANSACTIONS: ThresholdConfig = {
   openSendPageFromHome: {
-    p75: { warn: 2700, fail: 3500 },
-    p95: { warn: 4200, fail: 5200 },
+    p75: { warn: 1800, fail: 2700 },
+    p95: { warn: 3000, fail: 4000 },
     ciMultiplier: DEFAULT_CI_MULTIPLIER,
   },
   selectTokenToSendFormLoaded: {
-    p75: { warn: 6000, fail: 7500 },
-    p95: { warn: 8000, fail: 10000 },
+    p75: { warn: 4000, fail: 5500 },
+    p95: { warn: 6000, fail: 8000 },
     ciMultiplier: DEFAULT_CI_MULTIPLIER,
   },
   reviewTransactionToConfirmationPage: {
-    p75: { warn: 4500, fail: 5800 },
-    p95: { warn: 7000, fail: 8700 },
+    p75: { warn: 3000, fail: 4500 },
+    p95: { warn: 5000, fail: 7000 },
     ciMultiplier: DEFAULT_CI_MULTIPLIER,
   },
 };
 
-/**
- * Asset details thresholds (power user).
- */
-export const ASSET_DETAILS_THRESHOLDS: ThresholdConfig = {
+const ASSET_DETAILS: ThresholdConfig = {
   assetClickToPriceChart: {
-    p75: { warn: 8000, fail: 12000 },
-    p95: { warn: 12000, fail: 15000 },
+    p75: { warn: 500, fail: 1500 },
+    p95: { warn: 1500, fail: 3000 },
     ciMultiplier: DEFAULT_CI_MULTIPLIER,
   },
 };
 
-/**
- * Solana asset details thresholds (power user).
- */
-export const SOLANA_ASSET_DETAILS_THRESHOLDS: ThresholdConfig = {
+const SOLANA_ASSET_DETAILS: ThresholdConfig = {
   assetClickToPriceChart: {
-    p75: { warn: 5500, fail: 8000 },
-    p95: { warn: 8000, fail: 10000 },
+    p75: { warn: 500, fail: 1500 },
+    p95: { warn: 1500, fail: 3000 },
     ciMultiplier: DEFAULT_CI_MULTIPLIER,
   },
+};
+
+const STANDARD_HOME: ThresholdConfig = {
+  uiStartup: {
+    p75: { warn: 2000, fail: 2500 },
+    p95: { warn: 2500, fail: 3200 },
+    ciMultiplier: DEFAULT_CI_MULTIPLIER,
+  },
+  load: {
+    p75: { warn: 1600, fail: 2200 },
+    p95: { warn: 2200, fail: 2800 },
+    ciMultiplier: DEFAULT_CI_MULTIPLIER,
+  },
+  loadScripts: {
+    p75: { warn: 1400, fail: 1800 },
+    p95: { warn: 1800, fail: 2400 },
+    ciMultiplier: DEFAULT_CI_MULTIPLIER,
+  },
+};
+
+const POWER_USER_HOME: ThresholdConfig = {
+  uiStartup: {
+    p75: { warn: 4000, fail: 4700 },
+    p95: { warn: 7000, fail: 10000 },
+    ciMultiplier: DEFAULT_CI_MULTIPLIER,
+  },
+  load: {
+    p75: { warn: 2500, fail: 3500 },
+    p95: { warn: 3500, fail: 4500 },
+    ciMultiplier: DEFAULT_CI_MULTIPLIER,
+  },
+  loadScripts: {
+    p75: { warn: 2000, fail: 2800 },
+    p95: { warn: 2800, fail: 3800 },
+    ciMultiplier: DEFAULT_CI_MULTIPLIER,
+  },
+};
+
+// Threshold keys must match timer IDs emitted by the benchmark flows (snake_case).
+/* eslint-disable @typescript-eslint/naming-convention */
+const LOAD_NEW_ACCOUNT: ThresholdConfig = {
+  load_new_account: {
+    p75: { warn: 800, fail: 1200 },
+    p95: { warn: 1200, fail: 1800 },
+    ciMultiplier: DEFAULT_CI_MULTIPLIER,
+  },
+};
+
+const CONFIRM_TX: ThresholdConfig = {
+  confirm_tx: {
+    p75: { warn: 7000, fail: 9000 },
+    p95: { warn: 9000, fail: 12000 },
+    ciMultiplier: 1.3,
+  },
+};
+
+const BRIDGE_USER_ACTIONS: ThresholdConfig = {
+  bridge_load_page: {
+    p75: { warn: 500, fail: 800 },
+    p95: { warn: 800, fail: 1200 },
+    ciMultiplier: DEFAULT_CI_MULTIPLIER,
+  },
+  bridge_load_asset_picker: {
+    p75: { warn: 500, fail: 800 },
+    p95: { warn: 800, fail: 1200 },
+    ciMultiplier: DEFAULT_CI_MULTIPLIER,
+  },
+  bridge_search_token: {
+    p75: { warn: 1200, fail: 1800 },
+    p95: { warn: 1800, fail: 2500 },
+    ciMultiplier: DEFAULT_CI_MULTIPLIER,
+  },
+};
+/* eslint-enable @typescript-eslint/naming-convention */
+
+/**
+ * Threshold configurations for interaction and user journey benchmarks.
+ */
+const BENCHMARK_THRESHOLDS = {
+  // Interaction benchmarks (run on all 4 combos, shared baseline)
+  loadNewAccount: LOAD_NEW_ACCOUNT,
+  confirmTx: CONFIRM_TX,
+  bridgeUserActions: BRIDGE_USER_ACTIONS,
+
+  // User journey benchmarks (chrome-browserify in PRs, chrome-webpack on main/release)
+  onboardingImportWallet: ONBOARDING_IMPORT_WALLET,
+  onboardingNewWallet: ONBOARDING_NEW_WALLET,
+  importSrpHome: IMPORT_SRP_HOME,
+  assetDetails: ASSET_DETAILS,
+  solanaAssetDetails: SOLANA_ASSET_DETAILS,
+  sendTransactions: SEND_TRANSACTIONS,
+  swap: SWAP,
+
+  // Startup benchmarks (fallback when platform/buildType not available)
+  startupStandardHome: STANDARD_HOME,
+  startupPowerUserHome: POWER_USER_HOME,
+};
+
+/**
+ * Startup benchmark configurations.
+ * Generated for all platform/buildType combos with platform-prefixed keys.
+ */
+const STARTUP_BENCHMARK_CONFIGS = {
+  startupStandardHome: STANDARD_HOME,
+  startupPowerUserHome: POWER_USER_HOME,
+};
+
+/**
+ * Generates startup benchmark thresholds for all platform/buildType combinations.
+ * Creates keys like 'chrome-browserify-startupStandardHome'.
+ */
+function generateStartupThresholds(): Record<string, ThresholdConfig> {
+  const platforms = Object.values(BENCHMARK_PLATFORMS);
+  const buildTypes = Object.values(BENCHMARK_BUILD_TYPES);
+  const result: Record<string, ThresholdConfig> = {};
+
+  for (const [benchmarkName, config] of Object.entries(
+    STARTUP_BENCHMARK_CONFIGS,
+  )) {
+    for (const platform of platforms) {
+      for (const buildType of buildTypes) {
+        result[`${platform}-${buildType}-${benchmarkName}`] = config;
+      }
+    }
+  }
+
+  return result;
+}
+
+/**
+ * Registry of threshold configurations keyed by benchmark name (camelCase).
+ *
+ * To add a new benchmark:
+ * - Interaction/User Journey: Add to BENCHMARK_THRESHOLDS (works for all platforms)
+ * - Startup: Add to STARTUP_BENCHMARK_CONFIGS (auto-generates 8 platform-combo entries)
+ */
+export const THRESHOLD_REGISTRY: Record<string, ThresholdConfig> = {
+  ...BENCHMARK_THRESHOLDS,
+  ...generateStartupThresholds(),
 };

@@ -9,6 +9,37 @@ export const LOCAL_NODE_PRIVATE_KEY =
 export const LOCAL_NODE_MNEMONIC =
   'spread raise short crane omit tent fringe mandate neglect detail suspect cradle';
 
+/** networkClientId for localhost (0x539); matches default-fixture.json. */
+export const LOCALHOST_NETWORK_CLIENT_ID =
+  '3a5eb6f2-cb62-428d-897c-b7ded577d7c2';
+
+/** networkClientId for the second local node (0x53a / Localhost 8546). */
+export const SECOND_NODE_NETWORK_CLIENT_ID =
+  '76e9cd59-d8e2-47e7-b369-9c205ccb602c';
+
+/** networkClientId for the third local node (0x3e8 / Localhost 7777). */
+export const THIRD_NODE_NETWORK_CLIENT_ID =
+  'a3460c52-12ee-4267-9be6-1503095a587e';
+
+/**
+ * Network client IDs. Each key maps to the `networkClientId` used inside
+ * `NetworkController.networkConfigurationsByChainId`.
+ */
+export const NETWORK_CLIENT_ID = Object.freeze({
+  MAINNET: 'mainnet',
+  ARBITRUM_MAINNET: 'arbitrum-mainnet',
+  BASE_MAINNET: 'base-mainnet',
+  BSC_MAINNET: 'bsc-mainnet',
+  LINEA_MAINNET: 'linea-mainnet',
+  LINEA_SEPOLIA: 'linea-sepolia',
+  LOCALHOST: LOCALHOST_NETWORK_CLIENT_ID,
+  MEGAETH_TESTNET_V2: 'megaeth-testnet-v2',
+  MONAD_TESTNET: 'monad-testnet',
+  OPTIMISM_MAINNET: 'optimism-mainnet',
+  POLYGON_MAINNET: 'polygon-mainnet',
+  SEPOLIA: 'sepolia',
+} as const);
+
 /** Address of the account derived from the default onboarding fixture. */
 export const DEFAULT_FIXTURE_ACCOUNT =
   '0x5CfE73b6021E818B776b421B1c4Db2474086a7e1';
@@ -16,7 +47,35 @@ export const DEFAULT_FIXTURE_ACCOUNT =
 export const DEFAULT_FIXTURE_ACCOUNT_LOWERCASE =
   DEFAULT_FIXTURE_ACCOUNT.toLowerCase();
 
+/** KeyringController vault for withLedgerAccount fixture (HD + Ledger accounts). */
+export const LEDGER_FIXTURE_VAULT =
+  '{"data":"dwEWCLyS14yChQuzUYsiVhfaSZ7pzwjnhUhmTlz/5Nmxn3aTN/tIicWEMGjQ3+GgJw7E1fkn2OLfA4U9iw5eV5ZVozHLJC+4K3YihNJGcLaxQQj9hb8fnxWhRR2NWgKlThkGiGBF+66qE5rCgmGijYy3WA19OrpgTANYRE9IZifS46MokrWxHlZNY90PQWl+6ROc6XtfbdetpslQkOBCGDTp49FZz0E2M62crLMAU+cSLHuMIkwq7WfbJwy5ybMe085Bo3ghzrwwpysu39vUozGbaQN4EUhNgE7vzxPcasQWwqi/3aLKTm2JATs3sia0jIp5OSdaZkcTX4pcvqgXxGUrxsqK56FtFzAg4TE7qjl2smX3ScW1xJopYHvI8Uv6eEH6kLcnZbV7MJw+Dasu/ROrsynrbywevY3LQ62g07t2ZPz/82VfcEOGcdBmhsVoFGpNYoaESGQIKV2yXLU+0erOzAmYz4bSI+66i+a1woLaQveko/7nm38ILojedM9+Zqfcgh+PjCYyfjRxTc+5BhS+AjHHQgWAD/sqvaMTLQiH7dP4rYHYeZQi9WL9nfvv/orxVJFCEpMAb13BbJefvCKTKxiOg/F+4RPPB46gAAXMrMGtin/P8wxlFcOR0Drfg0COa5hMvSM2hOhV6LUfx3gL5ilAjuFAL3iANh5qJSECg8m46BU6maVQoGQCiaGSfSerEvnbXftXNCK1SfpkSpV7k/hFAVQyv5tN+4yi4CYqLq+43roSNxlaEVSz8MDJr+SNIJQFD8aqT4RiHMQqOPpYrmSvWeZDELs0TQU4XEVKIU/7naocQfdncUfsExXKdJGvIvnISZpNGcr9/DU2V6a3ZmF3pvQ2HPnZgYSsYBXK7mxJSpgTNCwvV1HBSl93SHs59Zn2aWW0qvaS0IpTHklMWC+8YF3FQAikgaEnVnTwGJL/4gg02MMHOKbazr7Cv/z9Vfj8sSU3enuiK4fCRqlFbwKHtQwqry6or6p+NiXFZ40EuMy0NYPkDy/h5Srk0Y1JMRJJp6bcTIu1f90+fVziqQ==","iv":"2gvqZ+DkKASrRK8iCXALPQ==","keyMetadata":{"algorithm":"PBKDF2","params":{"iterations":600000}},"salt":"PwqqENo0YiZXcRrMzg+ujLG2VtyTNkKBCvFMsnzFefk="}';
+
 export const DEFAULT_FIXTURE_ACCOUNT_SHORTENED = '0x5CfE73b602...474086a7e1';
+
+export const TREZOR_VAULT =
+  '{"data":"H+KGUVIk87gi/8BeaSNHa2F0lyQ0Jbu/n8MlD1hV9s3EhA8978Qr1nfJyGlO9YY5pZo10R0dWGurtIe7wA/TSqhrY9gqn1O9zSW+4IJBx22iKTmcjN1PIlMtqP8h1Ft3vDVUtXC1ZR6wJWkmPVMMKGDay0OhZ0EL9iK6JEusN4F/XyTbvGHpvEbMq+dgxds3U9g/NcWH8oe0q9ZdqKmcxCwjalVsSfBgwVCpj66Tt+wTMEC38eDeXWrJEs0Kmq6dVUa74ivMhdVJYbqwg0rN4AA/SXBRx+37/nPOcJPV+spyzZvSBwFWDn7l1dwgszdiy+NyCBGUK/jJRYQo5np7+a7n62Gc2Jnbs2cZarqtUKKqQ+oVsSFPJAWfFgoe9QBVhaU+MP8+URSipvJvpgpX+ODV8iEFdJ3rLXs377cvyABKVrVHOusJzwLS1H2evLyqej+HaLMD0TkyB40AiVU1sMc/Od3P1xQ+I8GBxrxfK+hodNLxWbyjbIM9k4vSNZMoTSkiaWSeJ/hxgRL5Y8clAJTRRqgTpwERQUwW891i5t5HIQoIOl2PNsOw7V/wRzCqWR1COjgMRrAoKjVcuOBu2NmnM1MNq/hPNNn8LMmrCH3qydS2N/J/OKRoeny+h4+9IL8rxmzSP7Zqk+tTFZmMkMCrHo3bofmTXg2XjOqjbZuN3Rn+qtvDOjjzf1atI8+4yFn6jffgQF2wFrFpUnVxl+4Gc/EdEZPSKNQgWkYt8rhgMumDppJ1QboWnKIyNjeN2kVNfqUcNsgp4Qkw34Wq5Ifw3NPkmJ1iOmfpsGPjz4vx1+pRS49PT6qRpdM7nRjuB9uU17VztoPiU/ASj5lkTI53NgIGvMQ3qMoee2wRvPSflsy892f5cs8ZqFTm+YB3kRgl2pq8BHRFR+iXcsVPl+I=","iv":"yLI4xnkISVYDNAiMX5XsNw==","keyMetadata":{"algorithm":"PBKDF2","params":{"iterations":600000}},"salt":"KlzhFYDtD7xefesp6xGvs41ZaziHohL7RgfRf1yX1WM="}';
+
+/** KeyringController vault for withKeyringControllerMultiSRP fixture (multiple SRP keyrings). */
+export const MULTI_SRP_FIXTURE_VAULT =
+  '{"data":"tM9QywcUa46iRvWsfvOL9mJqOrRLoVZoDuqTwxEt1Jz4qCpVIx8I/+7wMQuHBhe+DLBMSB7DzWeBpkCngTSE/mt6ygXWd96aKPH00PCW7uq/Z+8gdHQ3+ZGVCkTIDvLwOzG2gywrOfWRzRRcFwV545EV2iC6Q47A6KcgK/YokBeT4uVJ+oC309490eYn6/LkC+e+DNzJOlESs0LOynMJPMP0Wc53AvEuVlmYA2QLUKa+X6Eo1FEm91lg7znnNGTH7d7PVzDjElTQAUcQmiCvLfJU3cCmnVubarG/eOPWyL41u1z2IFMuf2QKoJNG7garFS+z4THtqWuR/NiYbNCJ70G6V2P0+9ntIWMk4qs4cBY4Pl3MPsyXBVhVoL+sLmuguY6iPijQVcPtd8G1HjTWOXNAVYSrdXjd4YHJuBBqgrjsqkkCHknilv6BiyHFH+pURP7zuPley9hiru5szuaKKU4NtpawQe0STQO5X35fI2xrH603etO9lhlK9lU+eFA+6jO0EynA1+HDIWT8iqX0gaOF6aPR/K1EKzbveP+EQbj7vIpOQs2+EJ4F4LYkExKczpvacgci84sLWGeT1e/aP1/dsVjuApUo0mtJaUtbljSvWoGuh6y8orTt6voyvHvbA+atPX+jla0/rWwy1lJ8o6PoXnyBMsgS+DSSamqXeMRKPI4S6GWiAMxLmvJvOEiC/uYRLrCzE0RxjIP9W6f2K+0VhAXJjPBp/t32NeHiwBfVeitdPwZUmMfhqzE0gvXyAd6cfzEnlyICfS8/DQkn74GDbdd1MdikdETCutDpiGEshacQT/scy0Z6n/5vuKkAGgrW66m39Ewqz6H2Rida5zgx1esrwZFy+8H57M2fa9KPa3ddye6J5Cd00JiqK/HiT20Uzt4h725iLNdkDrDT/mLlIGwbcSsSZxpTCYjtAAcN5JtWZNIp6xPOT889Tg9u3hHNy3g3VhVbYevtfTnVSgFFi+9B1JZ1OhL4NZC8bjyeNJ1pOUyLRZiRhgQ8aJPv5QytwDth+pJBvQslQ5UlrbhHRyd0RC0YrcyQ3WbapuDlJtdkkDuQg0OvevX+3F/Z/84uWvJ9qWBPkbOcn+ydULRDDouBmwsHqyY=","iv":"CR5flTdOsO77up6hbd8qQA==","keyMetadata":{"algorithm":"PBKDF2","params":{"iterations":600000}},"salt":"VY02O4NjlOhOKZI0/WPievKNVo2vOcg237YR5MrUW+c="}';
+
+/** KeyringController vault for withKeyringControllerAdditionalAccountVault (two HD accounts). */
+export const ADDITIONAL_ACCOUNT_FIXTURE_VAULT =
+  '{"data":"wiB80G6yk3XY9doo6nmVt+qIgGinIFw0iANKZB7uPM4jjWsLNPny8NaDlh9mQclXfxlvy6wRcEIXmM6D9Qpr3miTfhW4HFcuDFQ0DtrPOceSUZMQtrdpZWul8zwNbjRe1mbprZu0LdPK/0wiSKvHay4/UDHcIxIOWA64a4SUFMQ59Orbh8JQnDZ3rYEi2+zHZuyj4F4J6+HQuWdLV4m/ZbfDeytf7VAn1DXkaCnpne4KAy1YpPXQ2Ucqol1PM9gEZURErwL3xjBARaE8iQHyWQV2FuOj4tylU82Tsa1kn/ne9Sv9lFNNQE0d50EQtPFeLCqjCqj84q2AaOGFXN5ojgYId+m+SMgji2w/ANl/6FXLA7hIPvYEmiS2etLQXS9yj0Z1zGxQO/V6H7wBSGquute9Z1zkSivE5Bpym324ccB9S5H5h9CPgxtdFSnEs+0xkv0OB1GmcS+5dh2ZtK6Am7jvwlkuynC1ha0Gre/xp7SUpG4wM4cGhYn1b3cMz0eYHiP9POaINZvsZWbE+VTWezQ9hHBCdv7o4GXNrwHm3w1cI/bVGotr3MV3tLdXE5T/izNNNXU78s2ADDWkHfjgXm002TDHZtHbmBWFqw==","iv":"djp82xT3OOpenReQzhcEDA==","keyMetadata":{"algorithm":"PBKDF2","params":{"iterations":600000}},"salt":"SJPfWAWz3MfeLwZrOve636Gh0l4qYC60udPVVdXtR/c="}';
+
+/** KeyringController vault for withKeyringControllerOldVault fixture (old encryption format for migration tests). */
+export const OLD_FIXTURE_VAULT =
+  '{"data":"s6TpYjlUNsn7ifhEFTkuDGBUM1GyOlPrim7JSjtfIxgTt8/6MiXgiR/CtFfR4dWW2xhq85/NGIBYEeWrZThGdKGarBzeIqBfLFhw9n509jprzJ0zc2Rf+9HVFGLw+xxC4xPxgCS0IIWeAJQ+XtGcHmn0UZXriXm8Ja4kdlow6SWinB7sr/WM3R0+frYs4WgllkwggDf2/Tv6VHygvLnhtzp6hIJFyTjh+l/KnyJTyZW1TkZhDaNDzX3SCOHT","iv":"FbeHDAW5afeWNORfNJBR0Q==","salt":"TxZ+WbCW6891C9LK/hbMAoUsSEW1E8pyGLVBU6x5KR8="}';
+
+/**
+ * Account ID used for hardware wallet fixtures (Ledger and Trezor).
+ */
+export const HARDWARE_WALLET_ACCOUNT_ID =
+  '221ecb67-0d29-4c04-83b2-dff07c263634';
+
+/** Trezor hardware wallet address (lowercase) */
+export const TREZOR_ADDRESS = '0xf68464152d7289d7ea9a2bec2e0035c45188223c';
 
 /* Address of the 4337 entrypoint smart contract. */
 export const ENTRYPOINT = '0x18b06605539dc02ecD3f7AB314e38eB7c1dA5c9b';
@@ -168,16 +227,16 @@ export const MOCK_REMOTE_FEATURE_FLAGS_RESPONSE = {
   feature1: true,
   feature2: false,
   feature3: {
-    name: 'groupC',
-    value: 'valueC',
+    name: 'groupA',
+    value: 'valueA',
   },
 };
 
 /* Mock customized remote feature flags response*/
 export const MOCK_CUSTOMIZED_REMOTE_FEATURE_FLAGS = {
   feature3: {
-    name: 'groupA',
-    value: 'valueA',
+    name: 'groupC',
+    value: 'valueC',
   },
 };
 
@@ -224,6 +283,7 @@ export const WINDOW_TITLES = Object.freeze({
   MultichainTestDApp: 'Multichain Test Dapp',
   SolanaTestDApp: 'Solana Test Dapp',
   TronTestDApp: 'Tron Test Dapp',
+  TestE2EPage: 'E2E Test Page',
   TestSnaps: 'Test Snaps',
   ERC4337Snap: 'Account Abstraction Snap',
 });

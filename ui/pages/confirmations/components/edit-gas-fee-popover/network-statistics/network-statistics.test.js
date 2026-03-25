@@ -2,7 +2,21 @@ import React from 'react';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../../../store/store';
 import { GasFeeContext } from '../../../../../contexts/gasFee';
+import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
+import { useGasFeeEstimates } from '../../../../../hooks/useGasFeeEstimates';
+import { useConfirmContext } from '../../../context/confirm';
 import NetworkStatistics from './network-statistics';
+
+jest.mock('../../../../../hooks/useGasFeeEstimates', () => ({
+  useGasFeeEstimates: jest.fn(),
+}));
+
+jest.mock('../../../context/confirm', () => ({
+  useConfirmContext: jest.fn(),
+}));
+
+const mockUseGasFeeEstimates = jest.mocked(useGasFeeEstimates);
+const mockUseConfirmContext = jest.mocked(useConfirmContext);
 
 const renderComponent = ({ gasFeeContext = {}, state = {} } = {}) => {
   const store = configureStore(state);
@@ -15,6 +29,11 @@ const renderComponent = ({ gasFeeContext = {}, state = {} } = {}) => {
 };
 
 describe('NetworkStatistics', () => {
+  beforeEach(() => {
+    mockUseConfirmContext.mockReturnValue({ currentConfirmation: {} });
+    mockUseGasFeeEstimates.mockReturnValue({ gasFeeEstimates: undefined });
+  });
+
   it('should render the latest base fee rounded to no decimal places', () => {
     const { getByText } = renderComponent({
       gasFeeContext: {
@@ -89,7 +108,7 @@ describe('NetworkStatistics', () => {
         },
       },
     });
-    expect(getByText('Stable')).toBeInTheDocument();
+    expect(getByText(messages.stable.message)).toBeInTheDocument();
   });
 
   it('should not render the network status slider if the network congestion is not available', () => {
@@ -110,5 +129,50 @@ describe('NetworkStatistics', () => {
       },
     });
     expect(queryByTestId('status-slider-label')).not.toBeInTheDocument();
+  });
+
+  it('uses fallback from useGasFeeEstimates when context has no gasFeeEstimates and confirm context provides networkClientId', () => {
+    mockUseConfirmContext.mockReturnValue({
+      currentConfirmation: { networkClientId: 'mainnet' },
+    });
+    mockUseGasFeeEstimates.mockReturnValue({
+      gasFeeEstimates: {
+        estimatedBaseFee: '50',
+        latestPriorityFeeRange: ['1', '3'],
+        networkCongestion: 0.5,
+      },
+    });
+
+    const store = configureStore({});
+    const { getByText } = renderWithProvider(
+      <GasFeeContext.Provider value={{}}>
+        <NetworkStatistics />
+      </GasFeeContext.Provider>,
+      store,
+    );
+
+    expect(getByText('50 GWEI')).toBeInTheDocument();
+    expect(getByText('1 - 3 GWEI')).toBeInTheDocument();
+    expect(getByText(messages.stable.message)).toBeInTheDocument();
+  });
+
+  it('uses context gasFeeEstimates when present and ignores fallback', () => {
+    mockUseGasFeeEstimates.mockReturnValue({
+      gasFeeEstimates: {
+        estimatedBaseFee: '50',
+        latestPriorityFeeRange: ['1', '3'],
+        networkCongestion: 0.5,
+      },
+    });
+
+    const { getByText } = renderComponent({
+      gasFeeContext: {
+        gasFeeEstimates: {
+          estimatedBaseFee: '99.5',
+        },
+      },
+    });
+
+    expect(getByText('100 GWEI')).toBeInTheDocument();
   });
 });

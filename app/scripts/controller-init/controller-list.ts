@@ -85,14 +85,15 @@ import {
   BackendWebSocketService,
 } from '@metamask/core-backend';
 import { ClaimsController, ClaimsService } from '@metamask/claims-controller';
+import { ClientController } from '@metamask/client-controller';
 import { ConnectivityController } from '@metamask/connectivity-controller';
 import {
   ProfileMetricsController,
   ProfileMetricsService,
 } from '@metamask/profile-metrics-controller';
+import { PerpsController } from '@metamask/perps-controller';
 import OnboardingController from '../controllers/onboarding';
 import { PreferencesController } from '../controllers/preferences-controller';
-import SwapsController from '../controllers/swaps';
 import { InstitutionalSnapController } from '../controllers/institutional-snap/InstitutionalSnapController';
 import { NetworkOrderController } from '../controllers/network-order';
 import OAuthService from '../services/oauth/oauth-service';
@@ -166,6 +167,7 @@ export type Controller =
       CaveatSpecificationConstraint
     >
   | PermissionLogController
+  | PerpsController
   | PhishingController
   | PPOMController
   | PreferencesController
@@ -187,7 +189,6 @@ export type Controller =
   | SnapsNameProvider
   | SubjectMetadataController
   | SubscriptionService
-  | SwapsController
   | TokenBalancesController
   | TokenDetectionController
   | TokenListController
@@ -208,6 +209,7 @@ export type Controller =
   | MultichainAccountService
   | NetworkEnablementController
   | ClaimsService
+  | ClientController
   | StaticAssetsController
   | ProfileMetricsController
   | ProfileMetricsService
@@ -231,6 +233,7 @@ export type ControllerFlatState = AccountOrderController['state'] &
   BridgeController['state'] &
   BridgeStatusController['state'] &
   ClaimsController['state'] &
+  ClientController['state'] &
   CronjobController['state'] &
   CurrencyRateController['state'] &
   DeFiPositionsController['state'] &
@@ -257,6 +260,7 @@ export type ControllerFlatState = AccountOrderController['state'] &
     CaveatSpecificationConstraint
   >['state'] &
   PermissionLogController['state'] &
+  PerpsController['state'] &
   PhishingController['state'] &
   PPOMController['state'] &
   PreferencesController['state'] &
@@ -272,7 +276,6 @@ export type ControllerFlatState = AccountOrderController['state'] &
   SnapInsightsController['state'] &
   SnapInterfaceController['state'] &
   SubscriptionController['state'] &
-  SwapsController['state'] &
   TokenBalancesController['state'] &
   TokenDetectionController['state'] &
   TokenListController['state'] &

@@ -21,7 +21,7 @@ import {
   getDefaultHomeActiveTabName,
   getEnabledChainIds,
 } from '../../../selectors';
-import { getIsPerpsEnabled } from '../../../selectors/perps';
+import { getIsPerpsExperienceAvailable } from '../../../selectors/perps';
 import { getAllEnabledNetworksForAllNamespaces } from '../../../selectors/multichain/networks';
 import {
   detectNfts,
@@ -30,10 +30,12 @@ import {
 import AssetList from '../../app/assets/asset-list';
 import DeFiTab from '../../app/assets/defi-list/defi-tab';
 import NftsTab from '../../app/assets/nfts/nfts-tab';
-import UnifiedTransactionList from '../../app/transaction-list/unified-transaction-list.component';
-import { PerpsTabView } from '../../app/perps';
+import { PerpsView, PerpsViewStreamBoundary } from '../../app/perps';
 import { Tab, Tabs } from '../../ui/tabs';
 import { useTokenBalances } from '../../../hooks/useTokenBalances';
+import { ActivityList } from '../activity-v2/activity-list';
+import { usePrefetchTransactions } from '../activity-v2/hooks';
+import { transitionForward } from '../../ui/transition';
 import { AccountOverviewCommonProps } from './common';
 import { AssetListTokenDetection } from './asset-list-token-detection';
 
@@ -61,6 +63,7 @@ export const AccountOverviewTabs = ({
   const { trackEvent } = useContext(MetaMetricsContext);
   const dispatch = useDispatch();
   const selectedChainIds = useSelector(getEnabledChainIds);
+  const prefetchTransactions = usePrefetchTransactions();
 
   useEffect(() => {
     if (activeTabKey in ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP) {
@@ -129,7 +132,9 @@ export const AccountOverviewTabs = ({
 
   const onClickAsset = useCallback(
     (chainId: string, asset: string) =>
-      navigate(`${ASSET_ROUTE}/${chainId}/${encodeURIComponent(asset)}`),
+      transitionForward(() =>
+        navigate(`${ASSET_ROUTE}/${chainId}/${encodeURIComponent(asset)}`),
+      ),
     [navigate],
   );
   const onClickDeFi = useCallback(
@@ -140,13 +145,14 @@ export const AccountOverviewTabs = ({
 
   const { safeChains } = useSafeChains();
 
-  const isPerpsEnabled = useSelector(getIsPerpsEnabled);
+  const isPerpsExperienceAvailable = useSelector(getIsPerpsExperienceAvailable);
 
   return (
     <>
       <AssetListTokenDetection />
 
       <Tabs<AccountOverviewTab>
+        animated
         activeTab={activeTabKey}
         onTabClick={handleTabClick}
         tabListProps={{
@@ -169,14 +175,16 @@ export const AccountOverviewTabs = ({
           </Tab>
         )}
 
-        {isPerpsEnabled && (
+        {isPerpsExperienceAvailable && (
           <Tab
             name={t('perps')}
             tabKey={AccountOverviewTabKey.Perps}
             data-testid="account-overview__perps-tab"
           >
             <ErrorBoundary key="perps">
-              <PerpsTabView />
+              <PerpsViewStreamBoundary>
+                <PerpsView />
+              </PerpsViewStreamBoundary>
             </ErrorBoundary>
           </Tab>
         )}
@@ -214,9 +222,10 @@ export const AccountOverviewTabs = ({
             name={t('activity')}
             tabKey={AccountOverviewTabKey.Activity}
             data-testid="account-overview__activity-tab"
+            onMouseEnter={prefetchTransactions}
           >
             <ErrorBoundary key="activity">
-              <UnifiedTransactionList />
+              <ActivityList />
             </ErrorBoundary>
           </Tab>
         )}

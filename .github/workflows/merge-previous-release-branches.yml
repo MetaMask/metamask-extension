@@ -36,6 +36,7 @@ jobs:
     needs: validate-branch
     if: needs.validate-branch.outputs.is-valid == 'true'
     runs-on: ubuntu-latest
+    environment: release-ci
     steps:
       - name: Merge previous releases
         uses: metamask/github-tools/.github/actions/merge-previous-releases@v1.2.0

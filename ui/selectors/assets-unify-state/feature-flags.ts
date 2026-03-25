@@ -5,17 +5,17 @@ import {
   nullable,
   string,
   assert,
+  optional,
 } from '@metamask/superstruct';
 import {
   getRemoteFeatureFlags,
   type RemoteFeatureFlagsState,
 } from '../remote-feature-flags';
 import {
+  ASSETS_UNIFY_STATE_FLAG,
   ASSETS_UNIFY_STATE_VERSION_1,
   isAssetsUnifyStateFeatureEnabled,
 } from '../../../shared/lib/assets-unify-state/remote-feature-flag';
-
-export const ASSETS_UNIFY_STATE_FLAG = 'assetsUnifyState';
 
 /**
  * Feature flag structure for assets-unify-state feature
@@ -23,7 +23,7 @@ export const ASSETS_UNIFY_STATE_FLAG = 'assetsUnifyState';
 const AssetsUnifyStateFeatureFlag = object({
   enabled: boolean(),
   featureVersion: nullable(string()),
-  minimumVersion: nullable(string()),
+  minimumVersion: optional(nullable(string())),
 });
 
 /**

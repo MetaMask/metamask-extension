@@ -18,6 +18,7 @@ jest.mock('../../../../../../../store/actions', () => ({
 }));
 
 jest.mock('../../../../../hooks/pay/useTransactionPayData', () => ({
+  ...jest.requireActual('../../../../../hooks/pay/useTransactionPayData'),
   useTransactionPaySourceAmounts: jest.fn(),
 }));
 

@@ -1,6 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { StoryFn, Meta } from '@storybook/react';
 import { useArgs } from '@storybook/client-api';
+import README from './README.mdx';
 
 import {
   Display,
@@ -22,7 +23,6 @@ import { TextFieldSize, TextFieldType } from './text-field.types';
 import { TextField } from './text-field';
 import { ButtonIcon } from '../button-icon';
 
-import README from './README.mdx';
 import { Icon, IconName, IconSize } from '../icon';
 import {
   AvatarAccount,
@@ -33,6 +33,7 @@ import { Button } from '../button';
 export default {
   title: 'Components/ComponentLibrary/TextField',
   component: TextField,
+  tags: ['autodocs'],
   parameters: {
     docs: {
       page: README,

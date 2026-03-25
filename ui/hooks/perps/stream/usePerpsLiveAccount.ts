@@ -1,5 +1,5 @@
-import { usePerpsChannel } from './usePerpsChannel';
 import type { AccountState } from '@metamask/perps-controller';
+import { usePerpsChannel } from './usePerpsChannel';
 
 /**
  * Options for usePerpsLiveAccount hook

@@ -1,12 +1,20 @@
-import React, { useState } from 'react';
-import { action } from '@storybook/addon-actions';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { IconName, BannerAlert } from '../../component-library';
 import { Severity } from '../../../helpers/constants/design-system';
 import { Menu, MenuItem } from '.';
 
 export default {
-  title: 'Components/UI/Menu',
+  title: 'Components/UI/Menu (deprecated)',
+  component: Menu,
+  parameters: {
+    docs: {
+      description: {
+        component:
+          '**Deprecated**: This component is deprecated and will be removed in a future release. Please use the `<Popover />` component instead.',
+      },
+    },
+  },
 };
 
 const Deprecated = ({ children }) => (
@@ -28,12 +36,32 @@ Deprecated.propTypes = {
 export const DefaultStory = () => {
   return (
     <Deprecated>
-      <Menu onHide={action('Hide')}>
-        <MenuItem iconName={IconName.Eye} onClick={action('Menu Item 1')}>
+      <Menu
+        onHide={() => {
+          /* no-op */
+        }}
+      >
+        <MenuItem
+          iconName={IconName.Eye}
+          onClick={() => {
+            /* no-op */
+          }}
+        >
           Menu Item 1
         </MenuItem>
-        <MenuItem onClick={action('Menu Item 2')}>Menu Item 2</MenuItem>
-        <MenuItem iconName={IconName.EyeSlash} onClick={action('Menu Item 3')}>
+        <MenuItem
+          onClick={() => {
+            /* no-op */
+          }}
+        >
+          Menu Item 2
+        </MenuItem>
+        <MenuItem
+          iconName={IconName.EyeSlash}
+          onClick={() => {
+            /* no-op */
+          }}
+        >
           Menu Item 3
         </MenuItem>
       </Menu>
@@ -42,27 +70,3 @@ export const DefaultStory = () => {
 };
 
 DefaultStory.storyName = 'Default';
-
-export const Anchored = () => {
-  const [anchorElement, setAnchorElement] = useState(null);
-  return (
-    <Deprecated>
-      <button ref={setAnchorElement}>Menu</button>
-      <Menu anchorElement={anchorElement} onHide={action('Hide')}>
-        <MenuItem iconName={IconName.Export} onClick={action('Menu Item 1')}>
-          Menu Item 1
-        </MenuItem>
-        <MenuItem onClick={action('Menu Item 2')}>Menu Item 2</MenuItem>
-        <MenuItem iconName={IconName.EyeSlash} onClick={action('Menu Item 3')}>
-          Menu Item 3
-        </MenuItem>
-        <MenuItem
-          iconName={IconName.AddSquare}
-          onClick={action('Disabled Item')}
-        >
-          Disabled Item
-        </MenuItem>
-      </Menu>
-    </Deprecated>
-  );
-};

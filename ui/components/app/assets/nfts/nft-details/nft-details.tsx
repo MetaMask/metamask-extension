@@ -26,7 +26,7 @@ import { getNftImage, getNftImageAlt } from '../../../../../helpers/utils/nfts';
 import {
   getCurrentChainId,
   getNetworkConfigurationsByChainId,
-} from '../../../../../../shared/modules/selectors/networks';
+} from '../../../../../../shared/lib/selectors/networks';
 import {
   getCurrentNetwork,
   getIpfsGateway,
@@ -72,12 +72,12 @@ import {
   getConversionRate,
   getCurrentCurrency,
 } from '../../../../../ducks/metamask/metamask';
-import { Numeric } from '../../../../../../shared/modules/Numeric';
+import { Numeric } from '../../../../../../shared/lib/Numeric';
 // TODO: Remove restricted import
 import {
   addUrlProtocolPrefix,
   isWebUrl,
-  // eslint-disable-next-line import/no-restricted-paths
+  // eslint-disable-next-line import-x/no-restricted-paths
 } from '../../../../../../app/scripts/lib/util';
 import useGetAssetImageUrl from '../../../../../hooks/useGetAssetImageUrl';
 import { getImageForChainId } from '../../../../../selectors/multichain';
@@ -148,7 +148,8 @@ export function NftDetailsComponent({
   const nftImageAlt = getNftImageAlt(nft);
   const image = getNftImage(_image);
   const nftSrcUrl = imageOriginal ?? image ?? imageFromTokenURI;
-  const isIpfsURL = nftSrcUrl?.startsWith('ipfs:');
+  const isIpfsURL =
+    typeof nftSrcUrl === 'string' && nftSrcUrl.startsWith('ipfs:');
 
   const isImageHosted =
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880

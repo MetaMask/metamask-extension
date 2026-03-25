@@ -4,7 +4,7 @@ import { AccountsControllerState } from '@metamask/accounts-controller';
 import { NetworkState } from '@metamask/network-controller';
 import { RemoteFeatureFlagControllerState } from '@metamask/remote-feature-flag-controller';
 import { hasProperty, isObject, Json } from '@metamask/utils';
-import { getIsSettingsPageDevOptionsEnabled } from '../../../shared/modules/environment';
+import { getIsSettingsPageDevOptionsEnabled } from '../../../shared/lib/environment';
 
 type State = {
   RemoteFeatureFlagController?: RemoteFeatureFlagControllerState;

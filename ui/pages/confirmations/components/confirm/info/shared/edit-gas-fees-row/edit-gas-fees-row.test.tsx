@@ -8,6 +8,7 @@ import { getMockConfirmStateForTransaction } from '../../../../../../../../test/
 import { renderWithConfirmContextProvider } from '../../../../../../../../test/lib/confirmations/render-helpers';
 import { GAS_FEE_TOKEN_MOCK } from '../../../../../../../../test/data/confirmations/gas';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../../../test/data/confirmations/contract-interaction';
+import { enLocale as messages } from '../../../../../../../../test/lib/i18n-helpers';
 import * as DappSwapContext from '../../../../../context/dapp-swap';
 import { useEstimationFailed } from '../../../../../hooks/gas/useEstimationFailed';
 import { useIsGaslessSupported } from '../../../../../hooks/gas/useIsGaslessSupported';
@@ -129,7 +130,7 @@ describe('<EditGasFeesRow />', () => {
         estimationFailed: true,
       });
 
-      expect(getByText('Unavailable')).toBeInTheDocument();
+      expect(getByText(messages.unavailable.message)).toBeInTheDocument();
       expect(queryByTestId('native-currency')).toBeNull();
       expect(queryByTestId('first-gas-field')).toBeNull();
     });
@@ -139,7 +140,7 @@ describe('<EditGasFeesRow />', () => {
         estimationFailed: false,
       });
 
-      expect(queryByText('Unavailable')).toBeNull();
+      expect(queryByText(messages.unavailable.message)).toBeNull();
     });
 
     it('does not render "Unavailable" when gas fee is sponsored even if estimation failed', () => {
@@ -148,7 +149,7 @@ describe('<EditGasFeesRow />', () => {
         isGaslessSupported: true,
       });
 
-      expect(queryByText('Unavailable')).toBeNull();
+      expect(queryByText(messages.unavailable.message)).toBeNull();
       expect(getByTestId('paid-by-meta-mask')).toBeInTheDocument();
     });
   });

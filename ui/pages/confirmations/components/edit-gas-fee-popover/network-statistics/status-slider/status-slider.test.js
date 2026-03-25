@@ -3,13 +3,18 @@ import React from 'react';
 import { renderWithProvider } from '../../../../../../../test/lib/render-helpers-navigate';
 import { GasFeeContext } from '../../../../../../contexts/gasFee';
 import configureStore from '../../../../../../store/store';
+import { enLocale as messages } from '../../../../../../../test/lib/i18n-helpers';
 
 import StatusSlider from './status-slider';
 
-const renderComponent = ({ networkCongestion }) => {
+const renderComponent = ({ networkCongestion, gasFeeEstimatesProp } = {}) => {
+  const contextValue =
+    networkCongestion === undefined
+      ? {}
+      : { gasFeeEstimates: { networkCongestion } };
   const component = (
-    <GasFeeContext.Provider value={{ gasFeeEstimates: { networkCongestion } }}>
-      <StatusSlider />
+    <GasFeeContext.Provider value={contextValue}>
+      <StatusSlider gasFeeEstimates={gasFeeEstimatesProp} />
     </GasFeeContext.Provider>
   );
 
@@ -21,32 +26,32 @@ const renderComponent = ({ networkCongestion }) => {
 describe('StatusSlider', () => {
   it('should show "Not busy" when networkCongestion is less than 0.33', () => {
     const { getByText } = renderComponent({ networkCongestion: 0.32 });
-    expect(getByText('Not busy')).toBeInTheDocument();
+    expect(getByText(messages.notBusy.message)).toBeInTheDocument();
   });
 
   it('should show "Stable" when networkCongestion is 0.33', () => {
     const { getByText } = renderComponent({ networkCongestion: 0.33 });
-    expect(getByText('Stable')).toBeInTheDocument();
+    expect(getByText(messages.stable.message)).toBeInTheDocument();
   });
 
   it('should show "Stable" when networkCongestion is between 0.33 and 0.66', () => {
     const { getByText } = renderComponent({ networkCongestion: 0.5 });
-    expect(getByText('Stable')).toBeInTheDocument();
+    expect(getByText(messages.stable.message)).toBeInTheDocument();
   });
 
   it('should show "Busy" when networkCongestion is 0.9', () => {
     const { getByText } = renderComponent({ networkCongestion: 0.9 });
-    expect(getByText('Busy')).toBeInTheDocument();
+    expect(getByText(messages.busy.message)).toBeInTheDocument();
   });
 
   it('should show "Busy" when networkCongestion is greater than 0.9', () => {
     const { getByText } = renderComponent({ networkCongestion: 0.91 });
-    expect(getByText('Busy')).toBeInTheDocument();
+    expect(getByText(messages.busy.message)).toBeInTheDocument();
   });
 
   it('should show "Stable" if networkCongestion is not available yet', () => {
     const { getByText } = renderComponent({});
-    expect(getByText('Stable')).toBeInTheDocument();
+    expect(getByText(messages.stable.message)).toBeInTheDocument();
   });
 
   it('should position the arrow based on converting networkCongestion to a percentage rounded to the nearest 10', () => {
@@ -85,5 +90,12 @@ describe('StatusSlider', () => {
       'border-top-color: #6D5C90',
     );
     expect(getByTestId('status-slider-label')).toHaveStyle('color: #6D5C90');
+  });
+
+  it('uses gasFeeEstimates prop for networkCongestion when provided (no context)', () => {
+    const { getByText } = renderComponent({
+      gasFeeEstimatesProp: { networkCongestion: 0.9 },
+    });
+    expect(getByText(messages.busy.message)).toBeInTheDocument();
   });
 });

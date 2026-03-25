@@ -7,7 +7,7 @@ export type ShieldState = {
   metamask: ShieldControllerState;
 };
 
-export type CoverageStatusResult = {
+type CoverageStatusResult = {
   status: CoverageStatus | undefined;
   reasonCode: string | undefined;
 };

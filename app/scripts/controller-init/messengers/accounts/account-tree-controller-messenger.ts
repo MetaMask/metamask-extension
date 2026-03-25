@@ -31,11 +31,11 @@ type Actions =
   | SnapControllerGet
   | KeyringControllerGetStateAction
   | UserStorageController.UserStorageControllerGetStateAction
-  | UserStorageController.UserStorageControllerPerformGetStorage
-  | UserStorageController.UserStorageControllerPerformGetStorageAllFeatureEntries
-  | UserStorageController.UserStorageControllerPerformSetStorage
-  | UserStorageController.UserStorageControllerPerformBatchSetStorage
-  | AuthenticationController.AuthenticationControllerGetSessionProfile
+  | UserStorageController.UserStorageControllerPerformGetStorageAction
+  | UserStorageController.UserStorageControllerPerformGetStorageAllFeatureEntriesAction
+  | UserStorageController.UserStorageControllerPerformSetStorageAction
+  | UserStorageController.UserStorageControllerPerformBatchSetStorageAction
+  | AuthenticationController.AuthenticationControllerGetSessionProfileAction
   | MultichainAccountServiceCreateMultichainAccountGroupAction;
 
 type Events =

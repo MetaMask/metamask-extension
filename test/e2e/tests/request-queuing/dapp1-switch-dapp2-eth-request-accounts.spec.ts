@@ -1,11 +1,11 @@
 import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
-import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { DAPP_ONE_URL, WINDOW_TITLES } from '../../constants';
 import { withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import TestDapp from '../../page-objects/pages/test-dapp';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 import TransactionConfirmation from '../../page-objects/pages/confirmations/transaction-confirmation';
 import ConnectAccountConfirmation from '../../page-objects/pages/confirmations/connect-account-confirmation';
 
@@ -16,7 +16,7 @@ describe('Request Queuing Dapp 1 Send Tx -> Dapp 2 Request Accounts Tx', functio
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 2 },
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withNetworkControllerDoubleNode()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
@@ -35,7 +35,7 @@ describe('Request Queuing Dapp 1 Send Tx -> Dapp 2 Request Accounts Tx', functio
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         // Open Dapp One
         const testDapp = new TestDapp(driver);
@@ -101,9 +101,9 @@ describe('Request Queuing Dapp 1 Send Tx -> Dapp 2 Request Accounts Tx', functio
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 2 },
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withNetworkControllerDoubleNode()
-          .withPermissionControllerConnectedToTwoTestDapps()
+          .withPermissionControllerConnectedToTestDapp({ numberOfDapps: 2 })
           .build(),
         localNodeOptions: [
           {
@@ -120,7 +120,7 @@ describe('Request Queuing Dapp 1 Send Tx -> Dapp 2 Request Accounts Tx', functio
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         // Open Dapp One
         const testDapp = new TestDapp(driver);

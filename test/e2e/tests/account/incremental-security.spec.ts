@@ -4,7 +4,7 @@ import { Mockttp } from 'mockttp';
 import { Anvil } from '../../seeder/anvil';
 import { withFixtures, isSidePanelEnabled } from '../../helpers';
 import { WALLET_PASSWORD, WINDOW_TITLES } from '../../constants';
-import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { Driver } from '../../webdriver/driver';
 import HomePage from '../../page-objects/pages/home/homepage';
 import OnboardingCompletePage from '../../page-objects/pages/onboarding/onboarding-complete-page';
@@ -38,8 +38,8 @@ describe('Incremental Security', function (this: Suite) {
         dappOptions: {
           customDappPaths: ['./send-eth-with-private-key-test'],
         },
-        fixtures: new FixtureBuilder({ onboarding: true })
-          .withPreferencesControllerShowNativeTokenAsMainBalanceEnabled()
+        fixtures: new FixtureBuilderV2({ onboarding: true })
+          .withShowNativeTokenAsMainBalanceEnabled()
           .withEnabledNetworks({
             eip155: {
               '0x1': true,

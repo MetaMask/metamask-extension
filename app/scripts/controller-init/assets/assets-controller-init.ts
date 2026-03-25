@@ -1,34 +1,26 @@
 import {
   AssetsController,
-  type AssetsControllerFirstInitFetchMetaMetricsPayload,
   type AssetsControllerOptions,
 } from '@metamask/assets-controller';
 import type { PreferencesState } from '@metamask/preferences-controller';
-import {
-  createApiPlatformClient,
-  type ApiPlatformClient,
-} from '@metamask/core-backend';
+import { createApiPlatformClient } from '@metamask/core-backend';
 import {
   isAssetsUnifyStateFeatureEnabled,
   ASSETS_UNIFY_STATE_VERSION_1,
   type AssetsUnifyStateFeatureFlag,
+  ASSETS_UNIFY_STATE_FLAG,
 } from '../../../../shared/lib/assets-unify-state/remote-feature-flag';
 import { type ControllerInitFunction } from '../types';
 import {
   type AssetsControllerMessenger,
   type AssetsControllerInitMessenger,
 } from '../messengers/assets/assets-controller-messenger';
-import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-} from '../../../../shared/constants/metametrics';
-
-const ASSETS_UNIFY_STATE_FLAG = 'assetsUnifyState';
+import { trace } from '../../../../shared/lib/trace';
 
 /**
  * Cached API client instance.
  */
-let apiClient: ApiPlatformClient | null = null;
+let apiClient: AssetsControllerOptions['queryApiClient'] | null = null;
 
 /**
  * Safely retrieves the bearer token for API authentication.
@@ -95,12 +87,12 @@ function getIsBasicFunctionality(
  */
 function getApiClient(
   initMessenger: AssetsControllerInitMessenger,
-): ApiPlatformClient {
+): AssetsControllerOptions['queryApiClient'] {
   if (!apiClient) {
     apiClient = createApiPlatformClient({
       clientProduct: 'metamask-extension',
       getBearerToken: () => safeGetBearerToken(initMessenger),
-    });
+    }) as unknown as AssetsControllerOptions['queryApiClient'];
   }
   return apiClient;
 }
@@ -165,34 +157,9 @@ export const AssetsControllerInit: ControllerInitFunction<
     );
   };
 
-  // MetaMetrics: track first init fetch duration and per-data-source latency when AssetsController completes initial load after unlock.
-  // Uses initMessenger.call (same pattern as SmartTransactionsController and SubscriptionService).
-  // isOptIn: true so the event is sent even when user hasn't opted in (with anonymousId), so it appears in mock Segment during dev.
-  const trackMetaMetricsEvent = (
-    payload: AssetsControllerFirstInitFetchMetaMetricsPayload,
-  ): void => {
-    try {
-      initMessenger.call(
-        'MetaMetricsController:trackEvent',
-        {
-          event: MetaMetricsEventName.AssetsFirstInitFetchCompleted,
-          category: MetaMetricsEventCategory.Background,
-          properties: {
-            durationMs: payload.durationMs,
-            chainIds: payload.chainIds,
-            durationByDataSource: payload.durationByDataSource,
-          },
-        },
-        { isOptIn: true },
-      );
-    } catch {
-      // MetaMetricsController may not be available (e.g. init order); skip tracking.
-    }
-  };
-
   // Create the controller - it now creates all data sources internally.
   // queryApiClient is cast to the package's type to avoid duplicate @metamask/core-backend type conflicts.
-  const options: AssetsControllerOptions = {
+  const controller = new AssetsController({
     messenger: controllerMessenger,
     state: persistedState.AssetsController,
     isEnabled,
@@ -209,11 +176,11 @@ export const AssetsControllerInit: ControllerInitFunction<
     },
     stakedBalanceDataSourceConfig: {
       pollInterval: 30_000,
-      enabled: true,
+      enabled: false,
     },
-    trackMetaMetricsEvent,
-  };
-  const controller = new AssetsController(options);
+    // @ts-expect-error: Type of `TraceRequest` is different.
+    trace,
+  });
 
   return { controller };
 };

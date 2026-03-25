@@ -20,7 +20,7 @@ describe('AccountDetails', () => {
       mockStore,
     );
 
-    expect(getByText(tEn('account') as string)).toBeInTheDocument();
+    expect(getByText(tEn('account'))).toBeInTheDocument();
     expect(getByText('0xFrom')).toBeInTheDocument();
   });
 });

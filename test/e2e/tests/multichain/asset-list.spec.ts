@@ -1,7 +1,7 @@
 import { Suite } from 'mocha';
 import { withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixtures/fixture-builder';
-import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
 import AssetListPage from '../../page-objects/pages/home/asset-list';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
@@ -72,7 +72,7 @@ describe('Multichain Asset List', function (this: Suite) {
     await withFixtures(
       buildFixtures(this.test?.fullTitle() as string),
       async ({ driver }) => {
-        await loginWithoutBalanceValidation(driver);
+        await login(driver, { validateBalance: false });
         const assetListPage = new AssetListPage(driver);
         await switchToNetworkFromNetworkSelect(
           driver,
@@ -91,7 +91,7 @@ describe('Multichain Asset List', function (this: Suite) {
     await withFixtures(
       buildFixtures(this.test?.fullTitle() as string),
       async ({ driver }) => {
-        await loginWithoutBalanceValidation(driver);
+        await login(driver, { validateBalance: false });
         const homePage = new HomePage(driver);
         const assetListPage = new AssetListPage(driver);
         const sendPage = new SendPage(driver);

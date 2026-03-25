@@ -135,92 +135,96 @@ exports[`App Header unlocked state matches snapshot: unlocked 1`] = `
             </div>
           </div>
           <div
-            class="mm-box mm-box--margin-top-1 mm-box--margin-left-2 mm-box--padding-1 mm-box--background-color-background-muted mm-box--rounded-lg"
+            class="mm-box mm-box--margin-top-1 mm-box--margin-left-2"
             data-testid="networks-subtitle-test-id"
           >
             <div
-              class="flex flex-row gap-1 items-center"
+              class=""
             >
               <div
-                class="flex flex-row items-center"
-                style="flex-shrink: 1;"
+                class="flex flex-row gap-1 items-center p-1 bg-muted rounded-lg"
               >
                 <div
-                  class="mm-box multichain-avatar-group mm-box--display-flex mm-box--gap-1 mm-box--align-items-center"
-                  data-testid="avatar-group"
+                  class="flex flex-row items-center"
+                  style="flex-shrink: 1;"
                 >
                   <div
-                    class="mm-box mm-box--display-flex mm-box--align-items-center"
+                    class="mm-box multichain-avatar-group mm-box--display-flex mm-box--gap-1 mm-box--align-items-center"
+                    data-testid="avatar-group"
                   >
                     <div
-                      class="mm-box mm-box--rounded-full"
-                      style="margin-left: 0px;"
+                      class="mm-box mm-box--display-flex mm-box--align-items-center"
                     >
                       <div
-                        class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
+                        class="mm-box mm-box--rounded-full"
+                        style="margin-left: 0px;"
                       >
-                        <img
-                          alt="network logo"
-                          class="mm-avatar-network__network-image"
-                          src="./images/arbitrum.svg"
-                        />
+                        <div
+                          class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
+                        >
+                          <img
+                            alt="network logo"
+                            class="mm-avatar-network__network-image"
+                            src="./images/arbitrum.svg"
+                          />
+                        </div>
                       </div>
-                    </div>
-                    <div
-                      class="mm-box mm-box--rounded-full"
-                      style="margin-left: -8px;"
-                    >
                       <div
-                        class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
+                        class="mm-box mm-box--rounded-full"
+                        style="margin-left: -8px;"
                       >
-                        <img
-                          alt="network logo"
-                          class="mm-avatar-network__network-image"
-                          src="./images/pol-token.svg"
-                        />
+                        <div
+                          class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
+                        >
+                          <img
+                            alt="network logo"
+                            class="mm-avatar-network__network-image"
+                            src="./images/pol-token.svg"
+                          />
+                        </div>
                       </div>
-                    </div>
-                    <div
-                      class="mm-box mm-box--rounded-full"
-                      style="margin-left: -8px;"
-                    >
                       <div
-                        class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
+                        class="mm-box mm-box--rounded-full"
+                        style="margin-left: -8px;"
                       >
-                        <img
-                          alt="network logo"
-                          class="mm-avatar-network__network-image"
-                          src="./images/bnb.svg"
-                        />
+                        <div
+                          class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
+                        >
+                          <img
+                            alt="network logo"
+                            class="mm-avatar-network__network-image"
+                            src="./images/bnb.svg"
+                          />
+                        </div>
                       </div>
-                    </div>
-                    <div
-                      class="mm-box mm-box--rounded-full"
-                      style="margin-left: -8px;"
-                    >
                       <div
-                        class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
+                        class="mm-box mm-box--rounded-full"
+                        style="margin-left: -8px;"
                       >
-                        <img
-                          alt="network logo"
-                          class="mm-avatar-network__network-image"
-                          src="./images/eth_logo.svg"
-                        />
+                        <div
+                          class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
+                        >
+                          <img
+                            alt="network logo"
+                            class="mm-avatar-network__network-image"
+                            src="./images/eth_logo.svg"
+                          />
+                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
+                <svg
+                  class="inline-block w-4 h-4 text-icon-alternative"
+                  fill="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M9 18q-.825 0-1.412-.587C7 16.826 7 16.55 7 16V4q0-.824.588-1.412C8.176 1.999 8.45 2 9 2h9q.824 0 1.413.588C20.002 3.175 20 3.45 20 4v12q0 .824-.587 1.413c-.587.589-.863.587-1.413.587zm0-2h9V4H9zm-4 6q-.824 0-1.412-.587C2.999 20.826 3 20.55 3 20V6h2v14h11v2z"
+                  />
+                </svg>
               </div>
-              <svg
-                class="inline-block w-4 h-4 text-icon-alternative"
-                fill="currentColor"
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M9 18q-.825 0-1.412-.587C7 16.826 7 16.55 7 16V4q0-.824.588-1.412C8.176 1.999 8.45 2 9 2h9q.824 0 1.413.588C20.002 3.175 20 3.45 20 4v12q0 .824-.587 1.413c-.587.589-.863.587-1.413.587zm0-2h9V4H9zm-4 6q-.824 0-1.412-.587C2.999 20.826 3 20.55 3 20V6h2v14h11v2z"
-                />
-              </svg>
             </div>
           </div>
         </div>

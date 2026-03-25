@@ -5,6 +5,7 @@ import thunk from 'redux-thunk';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { EthMethod } from '@metamask/keyring-api';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import mockState from '../../../../test/data/mock-state.json';
 import { ThemeType } from '../../../../shared/constants/preferences';
 import useBridging from '../../../hooks/bridge/useBridging';
@@ -88,7 +89,9 @@ const createValidSwapState = (): ReturnType<typeof createStateOverrides> =>
   });
 
 const expectSwapButtonState = (enabled: boolean): HTMLElement => {
-  const swapButton = screen.getByRole('button', { name: 'Swap tokens' });
+  const swapButton = screen.getByRole('button', {
+    name: messages.swapTokens.message,
+  });
   if (enabled) {
     expect(swapButton).not.toBeDisabled();
   } else {
@@ -170,7 +173,7 @@ describe('TransactionActivityEmptyState', () => {
   it('renders description text', () => {
     renderComponent();
     expect(
-      screen.getByText('Nothing to see yet. Swap your first token today.'),
+      screen.getByText(messages.activityEmptyDescription.message),
     ).toBeInTheDocument();
   });
 

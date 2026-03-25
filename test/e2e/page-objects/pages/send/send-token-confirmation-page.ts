@@ -7,22 +7,25 @@ class SendTokenConfirmPage {
 
   private readonly confirmButton = '[data-testid="confirm-footer-button"]';
 
+  private readonly editGasFeeIcon = '[data-testid="edit-gas-fee-icon"]';
+
+  private readonly firstGasField = '[data-testid="first-gas-field"]';
+
+  private readonly gasFeeEstimatesModal =
+    '[data-testid="gas-fee-estimates-modal"]';
+
+  private readonly inlineGasFeeAlert = '[data-testid="inline-alert"]';
+
+  private readonly nativeCurrency = '[data-testid="native-currency"]';
+
   private readonly nftImage = '[data-testid="nft-default-image"]';
 
   private readonly recipientAddress = '[data-testid="recipient-address"]';
 
   private readonly senderAddress = '[data-testid="sender-address"]';
 
-  private readonly editGasFeeIcon = '[data-testid="edit-gas-fee-icon"]';
-
-  private readonly firstGasField = '[data-testid="first-gas-field"]';
-
-  private readonly nativeCurrency = '[data-testid="native-currency"]';
-
-  private readonly inlineGasFeeAlert = '[data-testid="inline-alert"]';
-
-  private readonly gasFeeEstimatesModal =
-    '[data-testid="gas-fee-estimates-modal"]';
+  private readonly walletInitiatedBackButton =
+    '[data-testid="wallet-initiated-header-back-button"]';
 
   constructor(driver: Driver) {
     this.driver = driver;
@@ -136,12 +139,37 @@ class SendTokenConfirmPage {
     );
   }
 
+  async checkRecipientAddressDisplayed(address: string): Promise<void> {
+    console.log(
+      `Checking recipient address ${address} is displayed on confirmation screen`,
+    );
+    await this.driver.wait(async () => {
+      const recipientAddress = await this.driver.findElement(
+        '[data-testid="recipient-address"]',
+      );
+      return (await recipientAddress.getText()).includes(
+        address.substring(0, 6),
+      );
+    }, 10000);
+    console.log(`Recipient address displayed as expected`);
+  }
+
   async checkTransactionAmount(amount: string): Promise<void> {
     console.log(`Checking transaction amount is ${amount}`);
     await this.driver.waitForSelector({
       css: 'h2',
       text: amount,
     });
+  }
+
+  /**
+   * Clicks the wallet-initiated header back button to navigate back to the send form.
+   */
+  async clickBackButton(): Promise<void> {
+    console.log('Clicking wallet-initiated back button');
+    await this.driver.clickElementAndWaitToDisappear(
+      this.walletInitiatedBackButton,
+    );
   }
 
   /**

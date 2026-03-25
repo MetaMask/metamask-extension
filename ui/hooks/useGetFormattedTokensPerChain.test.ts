@@ -1,7 +1,7 @@
 import { renderHook } from '@testing-library/react-hooks';
 import { act } from 'react-dom/test-utils';
 import { getAllTokens } from '../selectors';
-import { getCurrentChainId } from '../../shared/modules/selectors/networks';
+import { getCurrentChainId } from '../../shared/lib/selectors/networks';
 import { useGetFormattedTokensPerChain } from './useGetFormattedTokensPerChain';
 import { stringifyBalance } from './useTokenBalances';
 
@@ -9,7 +9,7 @@ jest.mock('react-redux', () => ({
   useSelector: jest.fn((selector) => selector()),
 }));
 
-jest.mock('../../shared/modules/selectors/networks', () => ({
+jest.mock('../../shared/lib/selectors/networks', () => ({
   getCurrentChainId: jest.fn(),
 }));
 

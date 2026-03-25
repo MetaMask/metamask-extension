@@ -7,6 +7,7 @@ import { fireEvent } from '@testing-library/react';
 import { getMockConfirmStateForTransaction } from '../../../../../../test/data/confirmations/helper';
 import { mockSwapConfirmation } from '../../../../../../test/data/confirmations/contract-interaction';
 import { renderWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
+import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
 import { getRemoteFeatureFlags } from '../../../../../selectors/remote-feature-flags';
 import { Confirmation } from '../../../types/confirm';
 import { useDappSwapComparisonInfo } from '../../../hooks/transactions/dapp-swap-comparison/useDappSwapComparisonInfo';
@@ -143,13 +144,13 @@ describe('<DappSwapComparisonBanner />', () => {
       tokenAmountDifference: 0.01,
     } as unknown as ReturnType<typeof useDappSwapComparisonInfo>);
     const { getByText } = render();
-    expect(getByText('Market rate')).toBeInTheDocument();
-    expect(getByText('MetaMask Swap')).toBeInTheDocument();
-    expect(getByText('Save with MetaMask Swaps')).toBeInTheDocument();
-    expect(getByText('Save $0.10')).toBeInTheDocument();
+    expect(getByText(messages.marketRate.message)).toBeInTheDocument();
+    expect(getByText(messages.metamaskSwap.message)).toBeInTheDocument();
     expect(
-      getByText('Network fees refunded on failed swaps'),
+      getByText(messages.dappSwapAdvantageSaveOnly.message),
     ).toBeInTheDocument();
+    expect(getByText('Save $0.10')).toBeInTheDocument();
+    expect(getByText(messages.dappSwapBenefits.message)).toBeInTheDocument();
   });
 
   it('renders undefined for incorrect origin', () => {
@@ -175,7 +176,7 @@ describe('<DappSwapComparisonBanner />', () => {
       tokenAmountDifference: 0.01,
     } as unknown as ReturnType<typeof useDappSwapComparisonInfo>);
     const { getByText } = render();
-    const quoteSwapButton = getByText('MetaMask Swap');
+    const quoteSwapButton = getByText(messages.metamaskSwap.message);
     fireEvent.click(quoteSwapButton);
     expect(mockSetQuotedSwapDisplayedInInfo).toHaveBeenCalledTimes(1);
     expect(
@@ -247,6 +248,6 @@ describe('<DappSwapComparisonBanner />', () => {
     });
     const { getByText } = render();
     expect(getByText(/Earn 100 points/u)).toBeInTheDocument();
-    expect(getByText('Save and earn with MetaMask Swaps')).toBeInTheDocument();
+    expect(getByText(messages.dappSwapAdvantage.message)).toBeInTheDocument();
   });
 });

@@ -6,9 +6,7 @@ import {
 import {
   getCronjobControllerMessenger,
   getExecutionServiceMessenger,
-  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   getMultichainRouterMessenger,
-  ///: END:ONLY_INCLUDE_IF
   getRateLimitControllerInitMessenger,
   getRateLimitControllerMessenger,
   getSnapControllerInitMessenger,
@@ -58,6 +56,7 @@ import {
   getNetworkEnablementControllerInitMessenger,
   getAssetsControllerMessenger,
   getAssetsControllerInitMessenger,
+  getClientControllerMessenger,
 } from './assets';
 import {
   getNotificationServicesControllerMessenger,
@@ -151,10 +150,6 @@ import {
   getRewardsControllerMessenger,
 } from './rewards-controller-messenger';
 import {
-  getSwapsControllerInitMessenger,
-  getSwapsControllerMessenger,
-} from './swaps-controller-messenger';
-import {
   getBridgeControllerInitMessenger,
   getBridgeControllerMessenger,
 } from './bridge-controller-messenger';
@@ -214,6 +209,7 @@ import { getClaimsServiceMessenger } from './claims/claims-service-messenger';
 import { getProfileMetricsControllerMessenger } from './profile-metrics-controller-messenger';
 import { getProfileMetricsServiceMessenger } from './profile-metrics-service-messenger';
 import { getStorageServiceMessenger } from './storage-service-messenger';
+import { getPerpsControllerMessenger } from './perps-controller-messenger';
 
 export type { AccountOrderControllerMessenger } from './account-order-controller-messenger';
 export { getAccountOrderControllerMessenger } from './account-order-controller-messenger';
@@ -337,6 +333,8 @@ export {
 } from './permission-controller-messenger';
 export type { PermissionLogControllerMessenger } from './permission-log-controller-messenger';
 export { getPermissionLogControllerMessenger } from './permission-log-controller-messenger';
+export type { PerpsControllerMessenger } from './perps-controller-messenger';
+export { getPerpsControllerMessenger } from './perps-controller-messenger';
 export type { PhishingControllerMessenger } from './phishing-controller-messenger';
 export { getPhishingControllerMessenger } from './phishing-controller-messenger';
 export type {
@@ -365,14 +363,6 @@ export type {
   RewardsControllerEvents,
 } from './rewards-controller-messenger';
 export { getRewardsControllerMessenger } from './rewards-controller-messenger';
-export type {
-  SwapsControllerMessenger,
-  SwapsControllerInitMessenger,
-} from './swaps-controller-messenger';
-export {
-  getSwapsControllerMessenger,
-  getSwapsControllerInitMessenger,
-} from './swaps-controller-messenger';
 export type {
   TokenBalancesControllerMessenger,
   TokenBalancesControllerInitMessenger,
@@ -494,6 +484,10 @@ export const CONTROLLER_MESSENGERS = {
     getMessenger: getClaimsServiceMessenger,
     getInitMessenger: noop,
   },
+  ClientController: {
+    getMessenger: getClientControllerMessenger,
+    getInitMessenger: noop,
+  },
   CronjobController: {
     getMessenger: getCronjobControllerMessenger,
     getInitMessenger: noop,
@@ -590,12 +584,10 @@ export const CONTROLLER_MESSENGERS = {
     getMessenger: getMultichainNetworkControllerMessenger,
     getInitMessenger: noop,
   },
-  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   MultichainRouter: {
     getMessenger: getMultichainRouterMessenger,
     getInitMessenger: noop,
   },
-  ///: END:ONLY_INCLUDE_IF
   NameController: {
     getMessenger: getNameControllerMessenger,
     getInitMessenger: getNameControllerInitMessenger,
@@ -626,6 +618,10 @@ export const CONTROLLER_MESSENGERS = {
   },
   PermissionLogController: {
     getMessenger: getPermissionLogControllerMessenger,
+    getInitMessenger: noop,
+  },
+  PerpsController: {
+    getMessenger: getPerpsControllerMessenger,
     getInitMessenger: noop,
   },
   PhishingController: {
@@ -707,10 +703,6 @@ export const CONTROLLER_MESSENGERS = {
   RewardsController: {
     getMessenger: getRewardsControllerMessenger,
     getInitMessenger: getRewardsControllerInitMessenger,
-  },
-  SwapsController: {
-    getMessenger: getSwapsControllerMessenger,
-    getInitMessenger: getSwapsControllerInitMessenger,
   },
   PPOMController: {
     getMessenger: getPPOMControllerMessenger,

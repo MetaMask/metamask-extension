@@ -1,0 +1,31 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`SuccessPill should render the label inside the pill and match snapshot 1`] = `
+<div>
+  <div
+    class="mm-box mm-tag mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-success-muted mm-box--rounded-sm"
+    data-testid="success-pill"
+  >
+    <p
+      class="text-success-default text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default"
+    >
+      Paid by MetaMask
+    </p>
+  </div>
+</div>
+`;
+
+exports[`SuccessPill should render with custom label 1`] = `
+<div>
+  <div
+    class="mm-box mm-tag mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-success-muted mm-box--rounded-sm"
+    data-testid="success-pill"
+  >
+    <p
+      class="text-success-default text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default"
+    >
+      No network fee
+    </p>
+  </div>
+</div>
+`;

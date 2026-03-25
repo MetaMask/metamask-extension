@@ -39,6 +39,7 @@ type ControllerMessengerCallback = (
 export type ControllersToInitialize =
   | 'AccountTrackerController'
   | 'AuthenticationController'
+  | 'ClientController'
   | 'CronjobController'
   | 'DeFiPositionsController'
   | 'ExecutionService'
@@ -54,6 +55,7 @@ export type ControllersToInitialize =
   | 'SnapController'
   | 'SnapInsightsController'
   | 'SnapInterfaceController'
+  | 'PerpsController'
   | 'PPOMController'
   | 'TransactionController'
   | 'TransactionPayController'

@@ -10,6 +10,8 @@ import type {
 } from '@metamask/notification-services-controller/notification-services';
 import { TRIGGER_TYPES } from '@metamask/notification-services-controller/notification-services';
 import log from 'loglevel';
+import { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
+import { AssetsControllerGetStateAction } from '@metamask/assets-controller';
 import type { MetaMetricsControllerTrackEventAction } from '../controllers/metametrics-controller';
 import type { AppStateControllerSetCanTrackWalletFundsObtainedAction } from '../controllers/app-state-controller';
 import type { OnboardingControllerGetStateAction } from '../controllers/onboarding';
@@ -19,6 +21,11 @@ import {
   getWalletFundsObtainedEventProperties,
 } from '../../../shared/lib/wallet-funds-obtained-metric';
 import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
+import {
+  ASSETS_UNIFY_STATE_VERSION_1,
+  AssetsUnifyStateFeatureFlag,
+  isAssetsUnifyStateFeatureEnabled,
+} from '../../../shared/lib/assets-unify-state/remote-feature-flag';
 
 type WalletFundsObtainedMonitorAllowedEvents = NotificationListUpdatedEvent;
 
@@ -28,7 +35,9 @@ type WalletFundsObtainedMonitorAllowedActions =
   | MultichainBalancesControllerGetStateAction
   | OnboardingControllerGetStateAction
   | NotificationServicesControllerGetStateAction
-  | AppStateControllerSetCanTrackWalletFundsObtainedAction;
+  | AppStateControllerSetCanTrackWalletFundsObtainedAction
+  | RemoteFeatureFlagControllerGetStateAction
+  | AssetsControllerGetStateAction;
 
 export type WalletFundsObtainedMonitorMessenger = Messenger<
   'WalletFundsObtainedMonitor',
@@ -69,16 +78,36 @@ export class WalletFundsObtainedMonitor {
    */
   #hasExistingFunds(): boolean {
     try {
-      const tokenBalancesState = this.#messenger.call(
-        'TokenBalancesController:getState',
-      );
-      const multichainBalancesState = this.#messenger.call(
-        'MultichainBalancesController:getState',
+      const remoteFeatureFlagState = this.#messenger.call(
+        'RemoteFeatureFlagController:getState',
       );
 
-      return (
-        hasNonZeroTokenBalance(tokenBalancesState.tokenBalances) ||
-        hasNonZeroMultichainBalance(multichainBalancesState.balances)
+      const assetsUnifyFlag = remoteFeatureFlagState?.remoteFeatureFlags
+        ?.assetsUnifyState as AssetsUnifyStateFeatureFlag | undefined;
+      const assetsUnifyEnabled = isAssetsUnifyStateFeatureEnabled(
+        assetsUnifyFlag,
+        ASSETS_UNIFY_STATE_VERSION_1,
+      );
+
+      if (!assetsUnifyEnabled) {
+        const tokenBalancesState = this.#messenger.call(
+          'TokenBalancesController:getState',
+        );
+        const multichainBalancesState = this.#messenger.call(
+          'MultichainBalancesController:getState',
+        );
+
+        return (
+          hasNonZeroTokenBalance(tokenBalancesState.tokenBalances) ||
+          hasNonZeroMultichainBalance(multichainBalancesState.balances)
+        );
+      }
+
+      const assetsState = this.#messenger.call('AssetsController:getState');
+      return Object.values(assetsState.assetsBalance).some((assets) =>
+        Object.values(assets).some(
+          (balance) => balance.amount && balance.amount !== '0',
+        ),
       );
     } catch (error) {
       log.error('Error checking for existing funds: ', error);

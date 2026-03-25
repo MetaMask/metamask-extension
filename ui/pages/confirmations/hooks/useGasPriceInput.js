@@ -7,7 +7,7 @@ import {
 } from '../../../../shared/constants/gas';
 import { isLegacyTransaction } from '../../../helpers/utils/transactions.util';
 
-import { hexWEIToDecGWEI } from '../../../../shared/modules/conversion.utils';
+import { hexWEIToDecGWEI } from '../../../../shared/lib/conversion.utils';
 import { feeParamsAreCustom } from './utils';
 
 function getGasPriceEstimate(gasFeeEstimates, gasEstimateType, estimateToUse) {

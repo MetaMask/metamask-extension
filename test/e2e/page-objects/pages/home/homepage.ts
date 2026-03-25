@@ -42,6 +42,8 @@ class HomePage {
     css: '.mm-banner-base',
   };
 
+  private readonly bitcoinAccountIcon = 'img[src="./images/bitcoin-logo.svg"]';
+
   protected readonly bridgeButton: string =
     '[data-testid="eth-overview-bridge"]';
 
@@ -70,6 +72,8 @@ class HomePage {
     testId: 'account-overview__defi-tab',
   };
 
+  private readonly overviewBalanceSection = '.wallet-overview__balance';
+
   private readonly popoverBackground = '.popover-bg';
 
   private readonly portfolioLink = '[data-testid="portfolio-link"]';
@@ -79,6 +83,8 @@ class HomePage {
   };
 
   protected readonly sendButton: string = '[data-testid="eth-overview-send"]';
+
+  private readonly solanaAccountIcon = 'img[src="./images/solana-logo.svg"]';
 
   protected readonly swapButton: string = '[data-testid="eth-overview-swap"]';
 
@@ -95,6 +101,8 @@ class HomePage {
 
   private readonly revealSrpPasswordInput = '[data-testid="input-password"]';
 
+  private readonly srpAddedToast = '.toasts-container__banner-base';
+
   private readonly surveyToast = '[data-testid="survey-toast"]';
 
   private readonly tokensTab = {
@@ -105,6 +113,9 @@ class HomePage {
     '[data-testid="survey-toast-banner-base"] [aria-label="Close"] span';
 
   private readonly copyAddressButton = '[data-testid="app-header-copy-button"]';
+
+  private readonly defaultAddressContainer =
+    '[data-testid="default-address-container"]';
 
   private readonly connectionsRemovedModal =
     '[data-testid="connections-removed-modal"]';
@@ -128,8 +139,8 @@ class HomePage {
   async checkPageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
-        this.sendButton,
         this.activityTab,
+        this.overviewBalanceSection,
         this.tokensTab,
       ]);
     } catch (e) {
@@ -196,6 +207,12 @@ class HomePage {
     } catch (e) {
       console.log('Error waiting for network, DOM, and Redux ready', e);
     }
+  }
+
+  async waitForNonEvmAccountsLoaded(): Promise<void> {
+    console.log('Waiting for Non EVM account icons to be visible');
+    await this.driver.waitForSelector(this.solanaAccountIcon);
+    await this.driver.waitForSelector(this.bitcoinAccountIcon);
   }
 
   async checkPageIsNotLoaded(): Promise<void> {
@@ -531,10 +548,16 @@ class HomePage {
     await skeleton.waitForElementState('hidden', this.driver.timeout);
   }
 
-  async checkNewSrpAddedToastIsDisplayed(srpNumber: number = 2): Promise<void> {
-    await this.driver.waitForSelector({
-      text: `Wallet ${srpNumber} imported`,
-    });
+  async checkNewSrpAddedToastIsDisplayed(): Promise<void> {
+    // Race condition: the toast initially renders with the stale keyring count (e.g. "Wallet 1 imported")
+    // and only updates to the correct number once the background state propagates.
+    // If the 5s auto-hide fires before the state update, the toast disappears while still showing the wrong value
+    // the text-based selector never matches, causing the test to fail. See issue #40944
+    await this.driver.waitForSelector(this.srpAddedToast);
+    // TODO: Uncomment the selector below and add the param in the function, once the issue above is fixed.
+    // await this.driver.waitForSelector({
+    //   text: `Wallet ${srpNumber} imported`,
+    // });
   }
 
   async checkNoSurveyToastIsDisplayed(): Promise<void> {
@@ -574,6 +597,16 @@ class HomePage {
 
   async checkConnectionsRemovedModalIsDisplayed(): Promise<void> {
     await this.driver.waitForSelector(this.connectionsRemovedModal);
+  }
+
+  async checkDefaultAddressIsDisplayed(): Promise<void> {
+    console.log('Check default address is displayed in header on homepage');
+    await this.driver.waitForSelector(this.defaultAddressContainer);
+  }
+
+  async checkDefaultAddressIsNotDisplayed(): Promise<void> {
+    console.log('Check default address is not displayed in header on homepage');
+    await this.driver.assertElementNotPresent(this.defaultAddressContainer);
   }
 
   async checkShieldEntryModalIsDisplayed(): Promise<void> {

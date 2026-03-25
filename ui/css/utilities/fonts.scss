@@ -81,9 +81,31 @@ $font-path: './fonts';
   font-style: normal;
 }
 
+/* MM Poly */
 @font-face {
   font-family: 'MMPoly';
   src: url('#{$font-path}/MMPoly/MM_Poly-Regular.woff2') format('woff2');
   font-weight: 400;
+  font-style: normal;
+}
+
+// Additional weight declarations to prevent browser font synthesis
+// The DisplayMd typography variant uses font-weight: 700 on small screens and
+// font-weight: 500 on larger screens. Without these declarations, browsers
+// would artificially synthesize bold text, resulting in blurry/muddy rendering.
+// By explicitly mapping weights 500 and 700 to the Regular font file, we ensure
+// consistent rendering quality across all screen sizes.
+// See: https://github.com/MetaMask/metamask-design-system/issues/928
+@font-face {
+  font-family: 'MMPoly';
+  src: url('#{$font-path}/MMPoly/MM_Poly-Regular.woff2') format('woff2');
+  font-weight: 500;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'MMPoly';
+  src: url('#{$font-path}/MMPoly/MM_Poly-Regular.woff2') format('woff2');
+  font-weight: 700;
   font-style: normal;
 }

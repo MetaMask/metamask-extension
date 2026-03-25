@@ -21,7 +21,7 @@ import { omit } from 'lodash';
 
 import { captureException, captureMessage } from '../../shared/lib/sentry';
 // TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
+// eslint-disable-next-line import-x/no-restricted-paths
 import { getEnvironmentType } from '../../app/scripts/lib/util';
 import {
   PATH_NAME_MAP,
@@ -49,6 +49,7 @@ import type {
   EndTraceRequest,
   TraceCallback,
 } from '../../shared/lib/trace';
+import { EnvironmentType } from '../../shared/constants/app';
 
 /**
  * UI-specific event payload that omits fields added by the provider
@@ -262,7 +263,7 @@ export function MetaMetricsProvider({ children }: MetaMetricsProviderProps) {
             string,
             string
           >,
-          environmentType,
+          environmentType: environmentType as EnvironmentType,
           page: context.page,
           referrer: context.referrer,
         },

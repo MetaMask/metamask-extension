@@ -6,7 +6,7 @@ import {
 } from '../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../contexts/metametrics';
 import { SUPPORT_LINK } from '../../helpers/constants/common';
-import { isFlask } from '../../helpers/utils/build-types';
+import { isFlask } from '../../../shared/lib/build-types';
 import { useI18nContext } from '../../hooks/useI18nContext';
 
 export default function BetaAndFlaskHomeFooter() {

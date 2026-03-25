@@ -3,7 +3,6 @@ import { Suite } from 'mocha';
 import { toHex } from '@metamask/controller-utils';
 import { MockttpServer } from 'mockttp';
 import { withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixtures/fixture-builder';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import AddEditNetworkModal from '../../page-objects/pages/dialog/add-edit-network';
 import AddNetworkRpcUrlModal from '../../page-objects/pages/dialog/add-network-rpc-url';
@@ -12,8 +11,7 @@ import Homepage from '../../page-objects/pages/home/homepage';
 import SelectNetwork from '../../page-objects/pages/dialog/select-network';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import PrivacySettings from '../../page-objects/pages/settings/privacy-settings';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
-import { switchToEditRPCViaGlobalMenuNetworks } from '../../page-objects/flows/network.flow';
+import { login } from '../../page-objects/flows/login.flow';
 
 const MOCK_CHAINLIST_RESPONSE = [
   {
@@ -73,8 +71,9 @@ describe('Popular Networks', function (this: Suite) {
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
-        await switchToEditRPCViaGlobalMenuNetworks(driver);
+        await login(driver);
+        const headerNavbar = new HeaderNavbar(driver);
+        await headerNavbar.openGlobalNetworksMenu();
 
         const selectNetworkDialog = new SelectNetwork(driver);
         await selectNetworkDialog.checkPageIsLoaded();
@@ -89,37 +88,14 @@ describe('Popular Networks', function (this: Suite) {
   it('delete the Arbitrum network', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
-          .withNetworkController({
-            providerConfig: {
-              rpcPrefs: { blockExplorerUrl: 'https://etherscan.io/' },
-            },
-            networkConfigurations: {
-              networkConfigurationId: {
-                chainId: '0x539',
-                nickname: 'Localhost 8545',
-                rpcUrl: 'http://localhost:8545',
-                ticker: 'ETH',
-                rpcPrefs: { blockExplorerUrl: 'https://etherscan.io/' },
-              },
-              '2ce66016-8aab-47df-b27f-318c80865eb0': {
-                chainId: '0xa4b1',
-                id: '2ce66016-8aab-47df-b27f-318c80865eb0',
-                nickname: 'Arbitrum mainnet',
-                rpcPrefs: {},
-                rpcUrl: 'https://arbitrum-mainnet.infura.io',
-                ticker: 'ETH',
-              },
-            },
-            selectedNetworkClientId: 'networkConfigurationId',
-          })
-          .build(),
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
         const homepage = new Homepage(driver);
-        await switchToEditRPCViaGlobalMenuNetworks(driver);
+        const headerNavbar = new HeaderNavbar(driver);
+        await headerNavbar.openGlobalNetworksMenu();
 
         const selectNetworkDialog = new SelectNetwork(driver);
         await selectNetworkDialog.checkPageIsLoaded();
@@ -127,7 +103,7 @@ describe('Popular Networks', function (this: Suite) {
 
         await homepage.checkPageIsLoaded();
         await homepage.checkExpectedBalanceIsDisplayed();
-        await switchToEditRPCViaGlobalMenuNetworks(driver);
+        await headerNavbar.openGlobalNetworksMenu();
 
         // check that arbitrum is on the list of popular network
         await selectNetworkDialog.checkPageIsLoaded();
@@ -162,8 +138,9 @@ describe('Popular Networks', function (this: Suite) {
         testSpecificMock: mockRPCURLAndChainId,
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
-        await switchToEditRPCViaGlobalMenuNetworks(driver);
+        await login(driver);
+        const headerNavbar = new HeaderNavbar(driver);
+        await headerNavbar.openGlobalNetworksMenu();
 
         const selectNetworkDialog = new SelectNetwork(driver);
         await selectNetworkDialog.checkPageIsLoaded();
@@ -228,10 +205,11 @@ describe('Popular Networks', function (this: Suite) {
         testSpecificMock: mockRPCURLAndChainId,
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
+        const headerNavbar = new HeaderNavbar(driver);
 
         // navigate to security & privacy settings and toggle off network details check
-        await new HeaderNavbar(driver).openSettingsPage();
+        await headerNavbar.openSettingsPage();
         const settingsPage = new SettingsPage(driver);
         await settingsPage.checkPageIsLoaded();
         await settingsPage.goToPrivacySettings();
@@ -245,7 +223,7 @@ describe('Popular Networks', function (this: Suite) {
         const homepage = new Homepage(driver);
         await homepage.checkPageIsLoaded();
         await homepage.checkExpectedBalanceIsDisplayed();
-        await switchToEditRPCViaGlobalMenuNetworks(driver);
+        await headerNavbar.openGlobalNetworksMenu();
 
         const selectNetworkDialog = new SelectNetwork(driver);
         await selectNetworkDialog.checkPageIsLoaded();

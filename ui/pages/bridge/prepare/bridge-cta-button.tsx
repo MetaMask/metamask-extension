@@ -1,5 +1,5 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { useSelector } from 'react-redux';
+import React, { useMemo } from 'react';
+import { useDispatch, useSelector, shallowEqual } from 'react-redux';
 import {
   Button,
   ButtonLink,
@@ -30,21 +30,26 @@ import { useIsTxSubmittable } from '../../../hooks/bridge/useIsTxSubmittable';
 import { Row } from '../layout';
 import {
   ConnectionStatus,
-  useHardwareWalletActions,
   useHardwareWalletConfig,
   useHardwareWalletState,
 } from '../../../contexts/hardware-wallets';
+import { setWasTxDeclined } from '../../../ducks/bridge/actions';
 
 export const BridgeCTAButton = ({
   onFetchNewQuotes,
   needsDestinationAddress = false,
   onOpenRecipientModal,
+  onOpenPriceImpactWarningModal,
+  onOpenMarketClosedModal,
 }: {
   onFetchNewQuotes: () => void;
   needsDestinationAddress?: boolean;
   onOpenRecipientModal?: () => void;
+  onOpenPriceImpactWarningModal: () => void;
+  onOpenMarketClosedModal?: () => void;
 }) => {
   const t = useI18nContext();
+  const dispatch = useDispatch();
 
   const toToken = useSelector(getToToken);
 
@@ -55,15 +60,8 @@ export const BridgeCTAButton = ({
   const isQuoteExpired = useSelector((state) =>
     getIsQuoteExpired(state as BridgeAppState, Date.now()),
   );
-  const { submitBridgeTransaction } = useSubmitBridgeTransaction();
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const mountedRef = useRef(true);
-
-  useEffect(() => {
-    return () => {
-      mountedRef.current = false;
-    };
-  }, []);
+  const { submitBridgeTransaction, isSubmitting } =
+    useSubmitBridgeTransaction();
 
   const {
     isNoQuotesAvailable,
@@ -72,14 +70,18 @@ export const BridgeCTAButton = ({
     isInsufficientGasForQuote,
     isTxAlertPresent,
     isTxAlertLoading,
-  } = useSelector(getValidationErrors);
+    isStockMarketClosed: isMarketClosed,
+    isPriceImpactError,
+  } = useSelector(
+    (state) => getValidationErrors(state as BridgeAppState, Date.now()),
+    shallowEqual,
+  );
 
   const wasTxDeclined = useSelector(getWasTxDeclined);
 
   const isTxSubmittable = useIsTxSubmittable();
 
   const { isHardwareWalletAccount, walletType } = useHardwareWalletConfig();
-  const { ensureDeviceReady } = useHardwareWalletActions();
   const { connectionState } = useHardwareWalletState();
 
   const hardwareWalletName = useMemo(
@@ -114,6 +116,10 @@ export const BridgeCTAButton = ({
           ? 'bridgeSelectDestinationAccount'
           : 'bridgeEnterAmount',
       };
+    }
+
+    if (isMarketClosed) {
+      return { key: 'bridgeMarketClosedAction' };
     }
 
     if (needsDestinationAddress) {
@@ -158,6 +164,7 @@ export const BridgeCTAButton = ({
     isInsufficientGasForQuote,
     wasTxDeclined,
     isQuoteExpired,
+    isMarketClosed,
     needsDestinationAddress,
     activeQuote,
     isNoQuotesAvailable,
@@ -174,7 +181,8 @@ export const BridgeCTAButton = ({
     return undefined;
   }, [wasTxDeclined, isQuoteExpired]);
 
-  return (activeQuote || needsDestinationAddress) && !secondaryButtonLabel ? (
+  return (activeQuote || needsDestinationAddress || isMarketClosed) &&
+    !secondaryButtonLabel ? (
     <Button
       width={BlockSize.Full}
       size={ButtonSize.Lg}
@@ -184,37 +192,29 @@ export const BridgeCTAButton = ({
       // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
       // eslint-disable-next-line @typescript-eslint/no-misused-promises
       onClick={async () => {
+        if (isMarketClosed) {
+          onOpenMarketClosedModal?.();
+          return;
+        }
+
         if (needsDestinationAddress && onOpenRecipientModal) {
           onOpenRecipientModal();
           return;
         }
 
         if (activeQuote && isTxSubmittable && !isSubmitting) {
-          // Set submitting state before async checks to prevent duplicate clicks.
-          setIsSubmitting(true);
-
-          try {
-            // Verify hardware wallet device is ready before submitting.
-            if (isHardwareWalletAccount) {
-              const isDeviceReady = await ensureDeviceReady();
-              if (!isDeviceReady) {
-                return;
-              }
-            }
-
-            // We don't need to worry about setting to false if the tx submission succeeds
-            // because we route immediately to Activity list page
+          if (isPriceImpactError) {
+            onOpenPriceImpactWarningModal();
+          } else {
             await submitBridgeTransaction(activeQuote);
-          } finally {
-            if (mountedRef.current) {
-              setIsSubmitting(false);
-            }
           }
         }
       }}
       loading={isSubmitting}
       disabled={
-        (!needsDestinationAddress && (!isTxSubmittable || isQuoteExpired)) ||
+        (!needsDestinationAddress &&
+          !isMarketClosed &&
+          (!isTxSubmittable || isQuoteExpired)) ||
         isSubmitting
       }
     >
@@ -238,7 +238,12 @@ export const BridgeCTAButton = ({
           as="a"
           variant={TextVariant.bodyMd}
           style={{ whiteSpace: 'nowrap' }}
-          onClick={onFetchNewQuotes}
+          onClick={() => {
+            if (wasTxDeclined) {
+              dispatch(setWasTxDeclined(false));
+            }
+            onFetchNewQuotes();
+          }}
         >
           {t(secondaryButtonLabel)}
         </ButtonLink>

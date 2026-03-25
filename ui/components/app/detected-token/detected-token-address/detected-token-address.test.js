@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../../store/store';
+import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 
 import DetectedTokenAddress from './detected-token-address';
 
@@ -16,7 +17,7 @@ describe('DetectedTokenAddress', () => {
       store,
     );
 
-    expect(getByText('Token address:')).toBeInTheDocument();
+    expect(getByText(`${messages.tokenAddress.message}:`)).toBeInTheDocument();
     expect(getByText('0xc011a...f2a6f')).toBeInTheDocument();
   });
 });

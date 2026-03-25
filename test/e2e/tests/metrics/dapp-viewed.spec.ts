@@ -2,16 +2,16 @@ import { strict as assert } from 'assert';
 import { Mockttp } from 'mockttp';
 import { Browser } from 'selenium-webdriver';
 import { getEventPayloads, withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
 import { DEFAULT_FIXTURE_ACCOUNT } from '../../constants';
 import TestDapp from '../../page-objects/pages/test-dapp';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 import { connectAccountToTestDapp } from '../../page-objects/flows/test-dapp.flow';
 import { Driver } from '../../webdriver/driver';
 
-// Solana + EVM accounts (using the current E2E fixtures setup).
-const ACCOUNTS_IN_MULTICHAIN_ACCOUNTS = 2;
+// E2E Fixtures setup has 4 identities (1 EVM, 1 Solana, 1 Bitcoin, 1 Tron)
+const METAMASK_IDENTITIES = 4;
 
 async function waitForAccountsToBeAligned(driver: Driver) {
   // Multichain accounts create non-EVM accounts asynchronously, thus we need to
@@ -95,7 +95,7 @@ describe('Dapp viewed Event', function () {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withMetaMetricsController({
             metaMetricsId: null,
             participateInMetaMetrics: true,
@@ -105,7 +105,7 @@ describe('Dapp viewed Event', function () {
         testSpecificMock: mockSegment,
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
         await waitForAccountsToBeAligned(driver);
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
@@ -128,7 +128,7 @@ describe('Dapp viewed Event', function () {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withMetaMetricsController({
             metaMetricsId: validFakeMetricsId, // 1% sample rate for dapp viewed event
             participateInMetaMetrics: true,
@@ -138,7 +138,7 @@ describe('Dapp viewed Event', function () {
         testSpecificMock: mockSegment,
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
         await waitForAccountsToBeAligned(driver);
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
@@ -152,7 +152,7 @@ describe('Dapp viewed Event', function () {
         assert.equal(dappViewedEventProperties.is_first_visit, true);
         assert.equal(
           dappViewedEventProperties.number_of_accounts,
-          ACCOUNTS_IN_MULTICHAIN_ACCOUNTS,
+          METAMASK_IDENTITIES,
         );
         assert.equal(dappViewedEventProperties.number_of_accounts_connected, 1);
       },
@@ -171,7 +171,7 @@ describe('Dapp viewed Event', function () {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withMetaMetricsController({
             metaMetricsId: validFakeMetricsId,
             participateInMetaMetrics: true,
@@ -181,7 +181,7 @@ describe('Dapp viewed Event', function () {
         testSpecificMock: mockSegment,
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
         await waitForAccountsToBeAligned(driver);
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
@@ -198,7 +198,7 @@ describe('Dapp viewed Event', function () {
         assert.equal(dappViewedEventProperties.is_first_visit, false);
         assert.equal(
           dappViewedEventProperties.number_of_accounts,
-          ACCOUNTS_IN_MULTICHAIN_ACCOUNTS,
+          METAMASK_IDENTITIES,
         );
         assert.equal(dappViewedEventProperties.number_of_accounts_connected, 1);
       },
@@ -217,7 +217,7 @@ describe('Dapp viewed Event', function () {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withMetaMetricsController({
             metaMetricsId: validFakeMetricsId,
             participateInMetaMetrics: true,
@@ -227,7 +227,7 @@ describe('Dapp viewed Event', function () {
         testSpecificMock: mockSegment,
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
         await waitForAccountsToBeAligned(driver);
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
@@ -245,7 +245,7 @@ describe('Dapp viewed Event', function () {
         assert.equal(dappViewedEventProperties.is_first_visit, false);
         assert.equal(
           dappViewedEventProperties.number_of_accounts,
-          ACCOUNTS_IN_MULTICHAIN_ACCOUNTS,
+          METAMASK_IDENTITIES,
         );
         assert.equal(dappViewedEventProperties.number_of_accounts_connected, 1);
       },
@@ -266,7 +266,7 @@ describe('Dapp viewed Event', function () {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withMetaMetricsController({
             metaMetricsId: validFakeMetricsId,
             participateInMetaMetrics: true,
@@ -276,7 +276,7 @@ describe('Dapp viewed Event', function () {
         testSpecificMock: mockSegment,
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
         await waitForAccountsToBeAligned(driver);
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
@@ -294,7 +294,7 @@ describe('Dapp viewed Event', function () {
         assert.equal(dappViewedEventProperties.is_first_visit, false);
         assert.equal(
           dappViewedEventProperties.number_of_accounts,
-          ACCOUNTS_IN_MULTICHAIN_ACCOUNTS,
+          METAMASK_IDENTITIES,
         );
         assert.equal(dappViewedEventProperties.number_of_accounts_connected, 1);
       },
@@ -312,7 +312,7 @@ describe('Dapp viewed Event', function () {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withMetaMetricsController({
             metaMetricsId: validFakeMetricsId,
             participateInMetaMetrics: true,
@@ -322,7 +322,7 @@ describe('Dapp viewed Event', function () {
         testSpecificMock: mockSegment,
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
         await waitForAccountsToBeAligned(driver);
         // connect to dapp and disconnect
         const testDapp = new TestDapp(driver);
@@ -346,7 +346,7 @@ describe('Dapp viewed Event', function () {
         assert.equal(dappViewedEventProperties.is_first_visit, false);
         assert.equal(
           dappViewedEventProperties.number_of_accounts,
-          ACCOUNTS_IN_MULTICHAIN_ACCOUNTS,
+          METAMASK_IDENTITIES,
         );
         assert.equal(dappViewedEventProperties.number_of_accounts_connected, 1);
       },

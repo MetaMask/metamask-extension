@@ -90,9 +90,9 @@ jobs:
 
       - id: filter
         if: ${{ steps.check-skip-merge-queue.outputs.up-to-date != 'true' }}
-        uses: dorny/paths-filter@de90cc6fb38fc0963ad72b210f1f284cd68cea36
+        uses: dorny/paths-filter@9d7afb8d214ad99e78fbd4247752c4caed2b6e4c
         with:
-          filters: .github/filter-rules.yml
+          filters: .github/rules/filter-rules.yml
           list-files: shell
 
       # This puts the workflow in locales-only mode, with skip-everything=true and needs-locales=true
@@ -144,8 +144,8 @@ jobs:
       # This is very simple right now, but is built to have future complexity
       - name: Compute needs-benchmarks flag
         id: set-needs-benchmarks
-        # Do not run benchmarks on a fork
-        if: ${{ env.IS_FORK == 'false' && (env.IS_RUN_EVERYTHING_BRANCH == 'true' || env.EVENT_NAME == 'pull_request') && steps.set-skip-everything.outputs.skip-everything != 'true' }}
+        # Do not run benchmarks on a fork or in the merge queue
+        if: ${{ env.IS_FORK == 'false' && env.EVENT_NAME != 'merge_group' && steps.set-skip-everything.outputs.skip-everything != 'true' }}
         run: echo "needs-benchmarks=true" >> "$GITHUB_OUTPUT"
 
       - name: Compute needs-e2e flag

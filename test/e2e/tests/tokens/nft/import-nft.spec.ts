@@ -1,11 +1,11 @@
 import { withFixtures } from '../../../helpers';
 import { SMART_CONTRACTS } from '../../../seeder/smart-contracts';
-import FixtureBuilder from '../../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
 import AccountListPage from '../../../page-objects/pages/account-list-page';
 import HeaderNavbar from '../../../page-objects/pages/header-navbar';
 import Homepage from '../../../page-objects/pages/home/homepage';
 import NftListPage from '../../../page-objects/pages/home/nft-list';
-import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
+import { login } from '../../../page-objects/flows/login.flow';
 
 describe('Import NFT', function () {
   const smartContract = SMART_CONTRACTS.NFTS;
@@ -14,7 +14,7 @@ describe('Import NFT', function () {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
         smartContract,
@@ -23,7 +23,7 @@ describe('Import NFT', function () {
       async ({ driver, localNodes, contractRegistry }) => {
         const contractAddress =
           contractRegistry.getContractAddress(smartContract);
-        await loginWithBalanceValidation(driver, localNodes[0]);
+        await login(driver, { localNode: localNodes[0] });
 
         const homepage = new Homepage(driver);
         await homepage.goToNftTab();
@@ -39,7 +39,7 @@ describe('Import NFT', function () {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
         smartContract,
@@ -48,7 +48,7 @@ describe('Import NFT', function () {
       async ({ driver, localNodes, contractRegistry }) => {
         const contractAddress =
           contractRegistry.getContractAddress(smartContract);
-        await loginWithBalanceValidation(driver, localNodes[0]);
+        await login(driver, { localNode: localNodes[0] });
 
         // Import a NFT and check that it is displayed in the NFT tab on homepage
         const homepage = new Homepage(driver);
@@ -85,7 +85,7 @@ describe('Import NFT', function () {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
         smartContract,
@@ -94,7 +94,7 @@ describe('Import NFT', function () {
       async ({ driver, localNodes, contractRegistry }) => {
         const contractAddress =
           contractRegistry.getContractAddress(smartContract);
-        await loginWithBalanceValidation(driver, localNodes[0]);
+        await login(driver, { localNode: localNodes[0] });
 
         await new Homepage(driver).goToNftTab();
         await new NftListPage(driver).importNft(

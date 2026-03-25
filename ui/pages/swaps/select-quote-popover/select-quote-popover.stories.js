@@ -1,18 +1,12 @@
 import React, { useState } from 'react';
 import Button from '../../../components/ui/button';
 import mockQuoteData from './mock-quote-data';
-import README from './README.mdx';
 import SelectQuotePopover from '.';
 
 export default {
   title: 'Pages/Swaps/SelectQuotePopover',
 
   component: SelectQuotePopover,
-  parameters: {
-    docs: {
-      page: README,
-    },
-  },
   argTypes: {
     swapToSymbol: {
       control: {

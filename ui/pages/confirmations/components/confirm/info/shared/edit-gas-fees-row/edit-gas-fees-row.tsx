@@ -5,7 +5,11 @@ import { useSelector } from 'react-redux';
 import { TEST_CHAINS } from '../../../../../../../../shared/constants/network';
 import { ConfirmInfoAlertRow } from '../../../../../../../components/app/confirm/info/row/alert-row/alert-row';
 import { RowAlertKey } from '../../../../../../../components/app/confirm/info/row/constants';
-import { Box, Text } from '../../../../../../../components/component-library';
+import {
+  Box,
+  SuccessPill,
+  Text,
+} from '../../../../../../../components/component-library';
 import { Skeleton } from '../../../../../../../components/component-library/skeleton';
 import Tooltip from '../../../../../../../components/ui/tooltip';
 import {
@@ -34,10 +38,12 @@ export const EditGasFeesRow = ({
   fiatFee,
   fiatFeeWith18SignificantDigits,
   nativeFee,
+  disableUpdate,
 }: {
   fiatFee: string;
   fiatFeeWith18SignificantDigits: string | null;
   nativeFee: string;
+  disableUpdate?: boolean;
 }) => {
   const t = useI18nContext();
 
@@ -79,7 +85,10 @@ export const EditGasFeesRow = ({
   }
 
   const isGasFeeEditable =
-    !isQuotedSwapDisplayedInInfo && !gasFeeToken && !isGasFeeSponsored;
+    !disableUpdate &&
+    !isQuotedSwapDisplayedInInfo &&
+    !gasFeeToken &&
+    !isGasFeeSponsored;
   const shouldShowPrimaryFiatValue =
     showFiat && hasFiatValue && !showAdvancedDetails && !isGasFeeSponsored;
 
@@ -105,12 +114,10 @@ export const EditGasFeesRow = ({
             gap={1}
           >
             {isGasFeeSponsored && (
-              <Text
-                color={TextColor.textDefault}
+              <SuccessPill
+                label={t('paidByMetaMask')}
                 data-testid="paid-by-meta-mask"
-              >
-                {t('paidByMetaMask')}
-              </Text>
+              />
             )}
             {isGasFeeEditable && <EditGasIconButton />}
             {estimationFailed && !isGasFeeSponsored && (

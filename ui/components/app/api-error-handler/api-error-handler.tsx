@@ -11,7 +11,7 @@ import {
   Text,
   TextVariant,
 } from '@metamask/design-system-react';
-import classnames from 'classnames';
+import classnames from 'clsx';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { ShieldUnexpectedErrorEventLocationEnum } from '../../../../shared/constants/subscriptions';
 import { useSubscriptionMetrics } from '../../../hooks/shield/metrics/useSubscriptionMetrics';
@@ -37,7 +37,7 @@ const ApiErrorHandler = ({
       errorMessage: error?.message || 'Unknown error',
       location,
     });
-    // we only want to capture the event once when the component is mounted
+    // eslint-disable-next-line react-compiler/react-compiler,react-hooks/exhaustive-deps -- we only want to capture the event once when the component is mounted
   }, []);
 
   return (

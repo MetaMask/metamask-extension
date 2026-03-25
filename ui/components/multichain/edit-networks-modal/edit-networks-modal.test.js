@@ -3,6 +3,7 @@ import { fireEvent } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import mockState from '../../../../test/data/mock-state.json';
 import configureStore from '../../../store/store';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import { EditNetworksModal } from '.';
 
 const render = (
@@ -58,7 +59,7 @@ describe('EditNetworksModal', () => {
 
   it('shows select all button', async () => {
     const { getByLabelText } = render();
-    expect(getByLabelText('Select all')).toBeInTheDocument();
+    expect(getByLabelText(messages.selectAll.message)).toBeInTheDocument();
   });
 
   it('calls onSubmit with the selected chain IDs when the connect button is clicked', async () => {
@@ -83,8 +84,8 @@ describe('EditNetworksModal', () => {
 
   it('shows the disconnect text button when nothing is selected', () => {
     const { getByLabelText, getByTestId } = render();
-    fireEvent.click(getByLabelText('Select all'));
-    fireEvent.click(getByLabelText('Select all'));
+    fireEvent.click(getByLabelText(messages.selectAll.message));
+    fireEvent.click(getByLabelText(messages.selectAll.message));
     expect(getByTestId('disconnect-chains-button')).toHaveTextContent(
       'Disconnect',
     );

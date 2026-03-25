@@ -1,4 +1,4 @@
-import classnames from 'classnames';
+import classnames from 'clsx';
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 import { flatten } from 'lodash';

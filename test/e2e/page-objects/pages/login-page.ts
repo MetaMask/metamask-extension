@@ -27,6 +27,10 @@ class LoginPage {
     testId: 'reset-password-modal-button',
   };
 
+  private readonly resetPasswordModalButtonLink: object = {
+    testId: 'reset-password-modal-button-link',
+  };
+
   private readonly resetWalletButton: object = {
     testId: 'login-error-modal-button',
   };
@@ -85,6 +89,21 @@ class LoginPage {
       'Resetting wallet due to unrecoverable error in social login unlock',
     );
     await this.driver.clickElementAndWaitToDisappear(this.resetWalletButton);
+  }
+
+  /**
+   * Resets the wallet via the "Forgot password?" flow on the unlock page.
+   * Clicks "Forgot password?" -> "I don't know my Recovery Phrase" -> "Reset wallet".
+   */
+  async resetWalletFromForgotPassword(): Promise<void> {
+    console.log(
+      'Resetting wallet from forgot password flow on the unlock page',
+    );
+    await this.driver.clickElement(this.forgotPasswordButton);
+    await this.driver.clickElement(this.resetPasswordModalButtonLink);
+    await this.driver.clickElementAndWaitToDisappear(
+      this.resetPasswordModalButton,
+    );
   }
 
   async checkConnectionsRemovedModalIsDisplayed(): Promise<void> {

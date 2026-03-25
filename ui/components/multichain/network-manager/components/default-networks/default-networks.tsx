@@ -12,7 +12,7 @@ import {
   getNetworkIcon,
   getRpcDataByChainId,
   sortNetworks,
-} from '../../../../../../shared/modules/network.utils';
+} from '../../../../../../shared/lib/network.utils';
 import {
   AlignItems,
   BlockSize,
@@ -37,6 +37,7 @@ import {
   ButtonIconSize,
   IconName,
   IconSize,
+  SuccessPill,
   Text,
 } from '../../../../component-library';
 import { NetworkListItem } from '../../../network-list-item';
@@ -56,6 +57,7 @@ import {
   getMultichainNetworkConfigurationsByChainId,
   getGasFeesSponsoredNetworkEnabled,
   getUseExternalServices,
+  isHardwareWallet,
 } from '../../../../../selectors';
 import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../../../../selectors/multichain-accounts/account-tree';
 import { selectAdditionalNetworksBlacklistFeatureFlag } from '../../../../../selectors/network-blacklist/network-blacklist';
@@ -101,21 +103,13 @@ const DefaultNetworks = memo(() => {
     getInternalAccountBySelectedAccountGroupAndCaip(state, SolScope.Mainnet),
   );
 
-  let btcAccountGroup = null;
-
-  ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
-  btcAccountGroup = useSelector((state) =>
+  const btcAccountGroup = useSelector((state) =>
     getInternalAccountBySelectedAccountGroupAndCaip(state, BtcScope.Mainnet),
   );
-  ///: END:ONLY_INCLUDE_IF
 
-  let trxAccountGroup = null;
-
-  ///: BEGIN:ONLY_INCLUDE_IF(tron)
-  trxAccountGroup = useSelector((state) =>
+  const trxAccountGroup = useSelector((state) =>
     getInternalAccountBySelectedAccountGroupAndCaip(state, TrxScope.Mainnet),
   );
-  ///: END:ONLY_INCLUDE_IF
 
   // Get blacklisted chain IDs from feature flag
   const blacklistedChainIds = useSelector(
@@ -127,11 +121,12 @@ const DefaultNetworks = memo(() => {
   const isGasFeesSponsoredNetworkEnabled = useSelector(
     getGasFeesSponsoredNetworkEnabled,
   );
+  const isHardwareWalletAccount = useSelector(isHardwareWallet);
 
   // Check if a network has gas sponsorship enabled
   const isNetworkGasSponsored = useCallback(
     (chainId: string | undefined): boolean => {
-      if (!chainId) {
+      if (!chainId || isHardwareWalletAccount) {
         return false;
       }
 
@@ -141,7 +136,7 @@ const DefaultNetworks = memo(() => {
         ],
       );
     },
-    [isGasFeesSponsoredNetworkEnabled],
+    [isGasFeesSponsoredNetworkEnabled, isHardwareWalletAccount],
   );
 
   // Use the shared state hook
@@ -371,7 +366,12 @@ const DefaultNetworks = memo(() => {
             src={networkImageUrl}
             borderRadius={BorderRadius.LG}
           />
-          <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
+          <Box
+            display={Display.Flex}
+            flexDirection={FlexDirection.Row}
+            alignItems={AlignItems.center}
+            gap={2}
+          >
             <Text
               variant={TextVariant.bodyMdMedium}
               color={TextColor.textDefault}
@@ -379,12 +379,10 @@ const DefaultNetworks = memo(() => {
               {network.name}
             </Text>
             {isNetworkGasSponsored(network.chainId) && (
-              <Text
-                variant={TextVariant.bodySm}
-                color={TextColor.textAlternative}
-              >
-                {t('noNetworkFee')}
-              </Text>
+              <SuccessPill
+                label={t('noNetworkFee')}
+                display={Display.InlineFlex}
+              />
             )}
           </Box>
           <ButtonIcon
