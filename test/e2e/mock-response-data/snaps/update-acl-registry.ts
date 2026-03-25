@@ -92,7 +92,7 @@ async function main() {
 
   if (!valid) {
     throw new Error(
-      'Downloaded registry.json + signature.json do not verify; not writing fixtures.',
+      'Downloaded registry.json + signature.json is not valid; not writing fixtures.',
     );
   }
 
