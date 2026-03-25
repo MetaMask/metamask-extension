@@ -276,71 +276,108 @@ jobs:
       zip: ${{ matrix.zip }}
     secrets: inherit
 
-  builds-test:
-    name: ${{ matrix.build-name }}
+  build-test-browserify:
+    name: build-test-browserify
     needs:
       - get-requirements
     if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - variant: mv3
-            bundler: browserify
-            build-name: build-test-browserify
-            build-command: yarn build:test
-            is-high-risk-environment: true
-            zip: false
-          - variant: mv2
-            bundler: browserify
-            build-name: build-test-mv2-browserify
-            build-command: yarn build:test:mv2
-            is-high-risk-environment: true
-            zip: false
-          - variant: mv3
-            bundler: webpack
-            build-name: build-test-webpack
-            build-command: yarn build:test:webpack
-            is-high-risk-environment: false
-            zip: true
-          - variant: mv2
-            bundler: webpack
-            build-name: build-test-mv2-webpack
-            build-command: yarn build:test:webpack:mv2
-            is-high-risk-environment: false
-            zip: true
-          # Flask test builds
-          - variant: flask-mv3
-            bundler: browserify
-            build-name: build-test-flask-browserify
-            build-command: yarn build:test:flask
-            is-high-risk-environment: true
-            zip: false
-          - variant: flask-mv2
-            bundler: browserify
-            build-name: build-test-flask-mv2-browserify
-            build-command: yarn build:test:flask:mv2
-            is-high-risk-environment: true
-            zip: false
-          - variant: flask-mv3
-            bundler: webpack
-            build-name: build-test-flask-webpack
-            build-command: yarn build:test:flask:webpack
-            is-high-risk-environment: false
-            zip: true
-          - variant: flask-mv2
-            bundler: webpack
-            build-name: build-test-flask-mv2-webpack
-            build-command: yarn build:test:flask:webpack:mv2
-            is-high-risk-environment: false
-            zip: true
     uses: ./.github/workflows/run-build.yml
     with:
-      is-high-risk-environment: ${{ matrix.is-high-risk-environment }}
-      build-name: ${{ matrix.build-name }}
-      build-command: ${{ matrix.build-command }}
+      build-name: build-test-browserify
+      build-command: yarn build:test
       builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
-      zip: ${{ matrix.zip }}
+    secrets: inherit
+
+  build-test-mv2-browserify:
+    name: build-test-mv2-browserify
+    needs:
+      - get-requirements
+    if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
+    uses: ./.github/workflows/run-build.yml
+    with:
+      build-name: build-test-mv2-browserify
+      build-command: yarn build:test:mv2
+      builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
+    secrets: inherit
+
+  build-test-flask-browserify:
+    name: build-test-flask-browserify
+    needs:
+      - get-requirements
+    if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
+    uses: ./.github/workflows/run-build.yml
+    with:
+      build-name: build-test-flask-browserify
+      build-command: yarn build:test:flask
+      builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
+    secrets: inherit
+
+  build-test-flask-mv2-browserify:
+    name: build-test-flask-mv2-browserify
+    needs:
+      - get-requirements
+    if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
+    uses: ./.github/workflows/run-build.yml
+    with:
+      build-name: build-test-flask-mv2-browserify
+      build-command: yarn build:test:flask:mv2
+      builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
+    secrets: inherit
+
+  build-test-webpack:
+    name: build-test-webpack
+    needs:
+      - get-requirements
+    if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
+    uses: ./.github/workflows/run-build.yml
+    with:
+      is-high-risk-environment: false
+      build-name: build-test-webpack
+      build-command: yarn build:test:webpack
+      builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
+      zip: true
+    secrets: inherit
+
+  build-test-mv2-webpack:
+    name: build-test-mv2-webpack
+    needs:
+      - get-requirements
+    if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
+    uses: ./.github/workflows/run-build.yml
+    with:
+      is-high-risk-environment: false
+      build-name: build-test-mv2-webpack
+      build-command: yarn build:test:webpack:mv2
+      builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
+      zip: true
+    secrets: inherit
+
+  build-test-flask-webpack:
+    name: build-test-flask-webpack
+    needs:
+      - get-requirements
+    if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
+    uses: ./.github/workflows/run-build.yml
+    with:
+      is-high-risk-environment: false
+      build-name: build-test-flask-webpack
+      build-command: yarn build:test:flask:webpack
+      builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
+      zip: true
+    secrets: inherit
+
+  build-test-flask-mv2-webpack:
+    name: build-test-flask-mv2-webpack
+    needs:
+      - get-requirements
+    if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
+    uses: ./.github/workflows/run-build.yml
+    with:
+      is-high-risk-environment: false
+      build-name: build-test-flask-mv2-webpack
+      build-command: yarn build:test:flask:webpack:mv2
+      builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
+      zip: true
     secrets: inherit
 
   performance-benchmarks:
@@ -350,7 +387,10 @@ jobs:
     needs:
       - get-requirements
       - prep-deps
-      - builds-test
+      - build-test-browserify
+      - build-test-mv2-browserify
+      - build-test-webpack
+      - build-test-mv2-webpack
     with:
       builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
     secrets: inherit
@@ -447,7 +487,10 @@ jobs:
     needs:
       - get-requirements
       - e2e-prep
-      - builds-test
+      - build-test-browserify
+      - build-test-flask-browserify
+      - build-test-webpack
+      - build-test-flask-webpack
       - builds-dist
     uses: ./.github/workflows/e2e-chrome.yml
     # Without this `if`, when builds-from-run is activated, the build jobs are considered skipped, and the downstream E2E tests won't run
@@ -462,7 +505,10 @@ jobs:
     needs:
       - get-requirements
       - e2e-prep
-      - builds-test
+      - build-test-mv2-browserify
+      - build-test-flask-mv2-browserify
+      - build-test-mv2-webpack
+      - build-test-flask-mv2-webpack
       - builds-dist
     uses: ./.github/workflows/e2e-firefox.yml
     # Without this `if`, when builds-from-run is activated, the build jobs are considered skipped, and the downstream E2E tests won't run
@@ -618,7 +664,14 @@ jobs:
         contains(fromJson('["success","skipped"]'), needs.builds-dist.result) &&
         contains(fromJson('["success","skipped"]'), needs.builds-beta.result) &&
         contains(fromJson('["success","skipped"]'), needs.builds-flask.result) &&
-        contains(fromJson('["success","skipped"]'), needs.builds-test.result) &&
+        contains(fromJson('["success","skipped"]'), needs.build-test-browserify.result) &&
+        contains(fromJson('["success","skipped"]'), needs.build-test-mv2-browserify.result) &&
+        contains(fromJson('["success","skipped"]'), needs.build-test-flask-browserify.result) &&
+        contains(fromJson('["success","skipped"]'), needs.build-test-flask-mv2-browserify.result) &&
+        contains(fromJson('["success","skipped"]'), needs.build-test-webpack.result) &&
+        contains(fromJson('["success","skipped"]'), needs.build-test-mv2-webpack.result) &&
+        contains(fromJson('["success","skipped"]'), needs.build-test-flask-webpack.result) &&
+        contains(fromJson('["success","skipped"]'), needs.build-test-flask-mv2-webpack.result) &&
         contains(fromJson('["success","skipped"]'), needs.bundle-size.result) &&
         contains(fromJson('["success","skipped"]'), needs.storybook-build.result) &&
         contains(fromJson('["success","skipped"]'), needs.build-ts-migration-dashboard.result) &&
@@ -630,7 +683,14 @@ jobs:
       - builds-dist
       - builds-beta
       - builds-flask
-      - builds-test
+      - build-test-browserify
+      - build-test-mv2-browserify
+      - build-test-flask-browserify
+      - build-test-flask-mv2-browserify
+      - build-test-webpack
+      - build-test-mv2-webpack
+      - build-test-flask-webpack
+      - build-test-flask-mv2-webpack
       - performance-benchmarks
       - bundle-size
       - storybook-build
@@ -701,6 +761,8 @@ jobs:
     # Jobs intentionally excluded:
     # - Publish jobs (not required for CI pass)
     # - Jobs that depend on all-jobs-pass (e.g., log-merge-group-failure) cannot be included here
+    #
+    # NOTE: Test builds are separated (not in a matrix) to allow granular E2E dependencies
     needs:
       - get-requirements
       - locales-changed-only
@@ -713,7 +775,14 @@ jobs:
       - builds-dist
       - builds-beta
       - builds-flask
-      - builds-test
+      - build-test-browserify
+      - build-test-mv2-browserify
+      - build-test-flask-browserify
+      - build-test-flask-mv2-browserify
+      - build-test-webpack
+      - build-test-mv2-webpack
+      - build-test-flask-webpack
+      - build-test-flask-mv2-webpack
       - performance-benchmarks
       - unit-and-integration-tests
       - bundle-size
