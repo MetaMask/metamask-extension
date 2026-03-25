@@ -34,6 +34,20 @@ const CONTAINER_STYLE = { marginTop: '111px' } as const;
 const CARD_BOX_STYLE = { width: '446px', minHeight: '592px' } as const;
 const LOGO_STYLE = { width: '160px', height: '160px' } as const;
 
+const SEGMENT_CTA_MAPPING: Record<string, string> = {
+  'cross-chain': 'basicFunctionalityRequired_openSwapsPage',
+  notifications: 'basicFunctionalityRequired_openNotificationsPage',
+  snaps: 'basicFunctionalityRequired_openSnapsPage',
+  swaps: 'basicFunctionalityRequired_openSwapsPage',
+  defi: 'basicFunctionalityRequired_openDefiPage',
+  musd: 'basicFunctionalityRequired_openMusdConversionPage',
+  'nonevm-balance-check':
+    'basicFunctionalityRequired_openCreateSnapAccountPage',
+  'shield-plan': 'basicFunctionalityRequired_openTransactionShieldPage',
+  rewards: 'basicFunctionalityRequired_openRewardsPage',
+  perps: 'basicFunctionalityRequired_openPerpsPage',
+};
+
 /**
  * Shown when Basic Functionality is off and the user opens a route that requires it (e.g. swap, rewards).
  * Shows an inline toggle to turn it on and, when on, a primary CTA to open the blocked feature page.
@@ -47,7 +61,8 @@ export const BasicFunctionalityOff = () => {
 
   const state = location.state as BasicFunctionalityOffState | undefined;
   const blockedRoutePath = state?.blockedRoutePath ?? '';
-  const openPageCtaMessageKey = state?.openPageCtaMessageKey ?? '';
+  const segment = blockedRoutePath.split('?')[0].split('/')[1] ?? '';
+  const openPageCtaMessageKey = SEGMENT_CTA_MAPPING[segment] ?? '';
   const hasFeatureContext = Boolean(blockedRoutePath && openPageCtaMessageKey);
 
   const handleToggleBasicFunctionality = (currentValue: boolean) => {
