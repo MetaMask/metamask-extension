@@ -339,6 +339,9 @@
   "addWallet": {
     "message": "Добавить кошелек"
   },
+  "addedProtectionOptionalBadge": {
+    "message": "Необязательно"
+  },
   "additionalNetworks": {
     "message": "Дополнительные сети"
   },
@@ -756,6 +759,27 @@
   "autoDetectTokensDescriptionV2": {
     "message": "Отображает новые токены, отправленные в ваш кошелек."
   },
+  "autoLock": {
+    "message": "Автоблокировка"
+  },
+  "autoLockAfter15Seconds": {
+    "message": "Через 15 секунд"
+  },
+  "autoLockAfter1Minute": {
+    "message": "Через 1 минуту"
+  },
+  "autoLockAfter30Seconds": {
+    "message": "Через 30 секунд"
+  },
+  "autoLockAfter5Minutes": {
+    "message": "Через 5 минут"
+  },
+  "autoLockAfterMinutes": {
+    "message": "Через $1 минут(-ы)"
+  },
+  "autoLockNever": {
+    "message": "Никогда"
+  },
   "autoLockTimeLimit": {
     "message": "Таймер автоблокировки (минуты)"
   },
@@ -773,6 +797,9 @@
   },
   "backToHome": {
     "message": "Назад на главную"
+  },
+  "backUpIncomplete": {
+    "message": "Резервное копирование не завершено"
   },
   "backup": {
     "message": "Создать резервную копию"
@@ -853,6 +880,12 @@
   },
   "basicConfigurationModalCheckbox": {
     "message": "Я понимаю и хочу продолжить"
+  },
+  "basicConfigurationModalDisclaimerOffPart1": {
+    "message": "Это означает, что вы не сможете полностью оптимизировать свое время в MetaMask. Вам будут недоступны базовые функции (например, сведения о токенах, оптимальные настройки газа и т. д.)."
+  },
+  "basicConfigurationModalDisclaimerOffPart2": {
+    "message": "Отключение этой функции также деактивирует некоторые функции в разделах «Конфиденциальность», «Резервное копирование и синхронизация» и «Уведомления»."
   },
   "basicConfigurationModalDisclaimerOn": {
     "message": "Чтобы оптимизировать свое время в MetaMask, вам необходимо включить эту функцию. Базовые функции (например, сведения о токенах, оптимальные настройки газа и другие) важны для работы с web3."
@@ -1066,6 +1099,9 @@
   "bridgeMarketClosedAction": {
     "message": "Рынок закрыт"
   },
+  "bridgeMarketClosedDescription": {
+    "message": "В настоящее время данный токен акции недоступен для покупки в часы работы рынка. Попробуйте снова, когда рынок откроется."
+  },
   "bridgeMarketClosedModalDescription": {
     "message": "Рынок, обеспечивающий этот токен, в настоящее время закрыт. Токены можно переводить в блокчейне в любое время."
   },
@@ -1157,6 +1193,9 @@
   },
   "bridgeSelectNetwork": {
     "message": "Выбор сети"
+  },
+  "bridgeSelectQuote": {
+    "message": "Выбрать котировку"
   },
   "bridgeSelectTokenAmountAndAccount": {
     "message": "Выберите токен, сумму и целевой счет"
@@ -1525,6 +1564,9 @@
   "confirmFieldTooltipPaymaster": {
     "message": "Комиссия за эту транзакцию будет оплачена смарт-контрактом paymaster."
   },
+  "confirmFieldTotalExposure": {
+    "message": "Общая экспозиция"
+  },
   "confirmGasFeeTokenBalance": {
     "message": "Баланс:"
   },
@@ -1809,6 +1851,9 @@
   "contactDetails": {
     "message": "Контактные данные"
   },
+  "contactUpdated": {
+    "message": "Контакт обновлен"
+  },
   "contactUs": {
     "message": "Свяжитесь с нами"
   },
@@ -1892,6 +1937,10 @@
   },
   "createPasswordDetails": {
     "message": "Разблокирует MetaMask только на этом устройстве."
+  },
+  "createPasswordDetailsSocial": {
+    "message": "Потеря этого пароля означает потерю доступа к кошельку на всех устройствах, $1",
+    "description": "$1 is the text 'MetaMask can't reset it.'"
   },
   "createPasswordDetailsSocialReset": {
     "message": "MetaMask не может ее сбросить."
@@ -2237,17 +2286,31 @@
     "message": "Это приведет к удалению исторических данных MetaMetrics, связанных с использованием вами этого устройства. Ваш кошелек и счета останутся такими же, как сейчас, после удаления этих данных. Этот процесс может занять до 30 дней. Наша $1 содержит подробные сведения по этому вопросу.",
     "description": "$1 will have text saying Privacy Policy "
   },
+  "deleteMetaMetricsDataDescriptionV2": {
+    "message": "Это удалит исторические данные MetaMetrics, связанные с вашим кошельком. MetaMetrics включает анонимизированные данные об использовании и диагностике. Ваш кошелек и счета останутся без изменений. Этот процесс может занять до 30 дней. См. нашу $1.",
+    "description": "$1 will have text saying Privacy Policy "
+  },
   "deleteMetaMetricsDataErrorDesc": {
     "message": "Этот запрос нельзя выполнить сейчас из-за проблемы с сервером аналитической системы. Повторите попытку позже."
   },
   "deleteMetaMetricsDataErrorTitle": {
     "message": "Мы не можем удалить эти данные прямо сейчас"
   },
+  "deleteMetaMetricsDataErrorToast": {
+    "message": "Не удалось удалить"
+  },
   "deleteMetaMetricsDataModalDesc": {
     "message": "Мы собираемся удалить всю все данные MetaMetrics. Вы уверены?"
   },
   "deleteMetaMetricsDataModalTitle": {
     "message": "Удалить данные MetaMetrics?"
+  },
+  "deleteMetaMetricsDataRequestedDescription": {
+    "message": "Вы инициировали удаление $1. Этот процесс может занять до 30 дней. См. $2",
+    "description": "$1 will be the date on which teh deletion is requested and $2 will have text saying Privacy Policy "
+  },
+  "deleteMetaMetricsDataToast": {
+    "message": "Данные будут удалены в течение 30 дней"
   },
   "deleteNetworkIntro": {
     "message": "Если вы удалите эту сеть, вам нужно будет добавить ее снова, чтобы просмотреть свои активы в этой сети"
@@ -2811,6 +2874,9 @@
   "externalNameSourcesSettingDescription": {
     "message": "Мы будем получать предлагаемые псевдонимы для адресов, с которыми вы взаимодействуете, из сторонних источников, таких как Etherscan, Infura и Lens Protocol. Эти источники могут видеть эти адреса и ваш IP-адрес. Адрес вашего счета не будет доступен третьим сторонам."
   },
+  "externalNameSourcesSettingDescriptionV2": {
+    "message": "Функция получения предлагаемых псевдонимов для адресов, с которыми вы взаимодействуете, из сторонних источников, таких как Etherscan, Infura и протокол Lens."
+  },
   "failed": {
     "message": "Не удалось"
   },
@@ -3149,6 +3215,9 @@
   "hardwareWalletErrorRecoveryUnlock2": {
     "message": "Приложение Ethereum открыто"
   },
+  "hardwareWalletErrorTitleBlindSignNotSupported": {
+    "message": "Включить слепую подпись"
+  },
   "hardwareWalletErrorTitleBlindSignNotSupportedInstruction1": {
     "message": "Приложение Ethereum открыто в вашем Ledger"
   },
@@ -3188,6 +3257,9 @@
   },
   "hardwareWalletSupportLinkConversion": {
     "message": "нажмите здесь"
+  },
+  "hardwareWalletTitleEthAppNotOpen": {
+    "message": "Откройте приложение Ethereum"
   },
   "hardwareWalletTypeConnected": {
     "message": "$1 подключено",
@@ -3314,6 +3386,9 @@
   "hyperliquidReferralSubtitle": {
     "message": "Экономьте до 4% на сделках с реферальным кодом MetaMask.",
     "description": "The subtitle of the Hyperliquid referral confirmation screen"
+  },
+  "iUnderstand": {
+    "message": "Я понимаю"
   },
   "id": {
     "message": "Ид."
@@ -3543,6 +3618,9 @@
   },
   "ipfsGatewayDescription": {
     "message": "MetaMask использует сторонние службы для показа изображений ваших NFT, хранящихся в IPFS, отображения информации, связанной с адресами ENS, введенными в адресную строку вашего браузера, и получения значков для различных токенов. Ваш IP-адрес может быть открыт для этих служб, когда вы их используете."
+  },
+  "ipfsGatewayDescriptionV2": {
+    "message": "Использует сторонние сервисы для отображения изображений ваших NFT, хранящихся в IPFS, отображения информации, связанной с ENS-адресами, введенными в адресную строку вашего браузера, и получения значков для различных токенов. Выберите предпочитаемый шлюз IPFS ниже."
   },
   "ipfsToggleModalDescriptionOne": {
     "message": "Мы задействуем сторонние службы для показа изображений ваших NFT, хранящихся в IPFS, отображения информации, связанной с адресами ENS, введенными в адресную строку вашего браузера, и получения значков для различных токенов. При использовании вами этих служб они могут узнать ваш IP-адрес."
@@ -3827,6 +3905,12 @@
   "makeAnotherSwap": {
     "message": "Создать новый своп"
   },
+  "makeSmartContractsEasier": {
+    "message": "Сделайте смарт-контракты более понятными"
+  },
+  "makeSmartContractsEasierDescription": {
+    "message": "MetaMask использует 4byte.directory и Sourcify для перевода этой информации."
+  },
   "manage": {
     "message": "Управление"
   },
@@ -3844,6 +3928,9 @@
   },
   "managePermissions": {
     "message": "Управление разрешениями"
+  },
+  "manageWalletRecovery": {
+    "message": "Управление восстановлением кошелька"
   },
   "marketCap": {
     "message": "Рыночная капитализация"
@@ -4072,10 +4159,6 @@
     "message": "$1 хочет использовать $2 Snaps",
     "description": "$1 is the dapp and $2 is the number of snaps it wants to connect to."
   },
-  "musdBoostDescription": {
-    "message": "Конвертируйте свои стейблкоины в mUSD и получите бонус до $1%.",
-    "description": "$1 is the bonus percentage (e.g., 3)"
-  },
   "musdBoostTitle": {
     "message": "Получите $1% на свои стейблкоины",
     "description": "$1 is the bonus percentage (e.g., 3)"
@@ -4095,6 +4178,10 @@
     "message": "Встребуемый бонус",
     "description": "Label for the claimable bonus row in the mUSD conversion confirmation screen"
   },
+  "musdClaimableBonusTooltip": {
+    "message": "Бонус в размере $1% годовых от суммы вашего накопленного бонуса за владение mUSD. Ваш бонус можно получить ежедневно на Linea. Работает на платформе Relay. $2",
+    "description": "$1 is the APY percentage, $2 is the 'Terms apply' link"
+  },
   "musdConversionActivityTitle": {
     "message": "Конвертировать $1 в mUSD",
     "description": "$1 is the source token symbol (e.g., USDC)"
@@ -4110,11 +4197,12 @@
     "message": "Выполняется конвертация $1 → mUSD",
     "description": "$1 is the source token symbol (e.g., USDC)"
   },
-  "musdConversionToastSuccess": {
-    "message": "Ваши mUSD здесь!"
-  },
   "musdConvert": {
     "message": "Конвертировать"
+  },
+  "musdConvertAndGetBonus": {
+    "message": "Конвертируйте и получите $1%",
+    "description": "$1 is the bonus percentage (e.g., 3)"
   },
   "musdEarnBonusPercentage": {
     "message": "Заработайте бонус $1%",
@@ -4129,6 +4217,10 @@
   },
   "musdEducationNotNow": {
     "message": "Не сейчас"
+  },
+  "musdGetBonusPercentage": {
+    "message": "Получите бонус в размере $1% mUSD",
+    "description": "$1 is the bonus percentage (e.g., 3)"
   },
   "musdGetMusd": {
     "message": "Получить mUSD"
@@ -6053,6 +6145,9 @@
   "quizIntroduction": {
     "message": "Чтобы увидеть свою секретную фразу для восстановления, вам нужно правильно ответить на два вопроса."
   },
+  "quotedTotalCost": {
+    "message": "Общая стоимость: $1"
+  },
   "rank": {
     "message": "Рейтинг"
   },
@@ -6567,6 +6662,9 @@
   },
   "securityAlertsDescriptionV2": {
     "message": "Эта функция предупреждает вас о вредоносной активности, активно проверяя транзакции и запросы на подпись. $1"
+  },
+  "securityAndPassword": {
+    "message": "Безопасность и пароль"
   },
   "securityAndPrivacy": {
     "message": "Безопасность и конфиденциальность"
@@ -7392,6 +7490,10 @@
   "showFiatConversionInTestnetsDescription": {
     "message": "Выберите это, чтобы показывать обмен на фиатную валюту в тестовых сетях"
   },
+  "showFiatConversionInTestnetsDescriptionV2": {
+    "message": "Отображает сетевые токены в качестве местной валюты в тестовых сетях. Если вас попросили включить эту функцию, возможно, вас обманывают. Только для тестирования. $1",
+    "description": "$1 is the 'Learn more' link"
+  },
   "showHexData": {
     "message": "Показать шестнадцатеричные данные"
   },
@@ -7516,6 +7618,9 @@
   "simulationsSettingDescription": {
     "message": "Включите эту опцию, чтобы оценить изменения баланса транзакций и подписей перед их подтверждением. Это не гарантирует их окончательный результат. $1"
   },
+  "simulationsSettingDescriptionV2": {
+    "message": "Прогнозирует изменения баланса транзакций перед их подтверждением. Это не гарантирует окончательный результат ваших транзакций. $1"
+  },
   "simulationsSettingSubHeader": {
     "message": "Спрогнозировать изменения баланса"
   },
@@ -7570,14 +7675,32 @@
   "smartAccount": {
     "message": "Смарт-счет"
   },
+  "smartAccountDappRequestsDescription": {
+    "message": "Разрешите dapps запрашивать функции смарт-счетов для стандартных счетов. Это не повлияет на счета, которые уже являются смарт-счетами."
+  },
+  "smartAccountDappRequestsTitle": {
+    "message": "Запросы на создание смарт-счетов от dapps"
+  },
   "smartAccountLabel": {
     "message": "Смарт-счет"
+  },
+  "smartAccountRequestsFromDapps": {
+    "message": "Запросы на создание смарт-счетов от dapps"
+  },
+  "smartAccountRequestsFromDappsDescription": {
+    "message": "Разрешите dapps запрашивать функции смарт-счетов для стандартных счетов. Это не повлияет на счета, которые уже являются смарт-счетами."
   },
   "smartAccountUpgradeBannerDescription": {
     "message": "Один и тот же адрес. Более умные функции."
   },
   "smartAccountUpgradeBannerTitle": {
     "message": "Перейдите на смарт-счет"
+  },
+  "smartContractAddress": {
+    "message": "Адрес смарт-контракта"
+  },
+  "smartContractAddressWarning": {
+    "message": "Адрес получателя может не поддерживать прямые переводы токенов, что может привести к потере средств. Продолжайте только в том случае, если вы уверены, что этот контракт может получить ваш перевод."
   },
   "smartContracts": {
     "message": "Смарт-контракты"
@@ -8049,6 +8172,9 @@
   "stateCorruptionTheseInstructionsLinkTitle": {
     "message": "Как восстановить вашу секретную фразу для восстановления"
   },
+  "stateLogError": {
+    "message": "Ошибка при получении журналов состояния, повторите попытку позже."
+  },
   "stateLogFileName": {
     "message": "Журналы состояния MetaMask"
   },
@@ -8057,6 +8183,9 @@
   },
   "stateLogsDescription": {
     "message": "Журналы состояния содержат ваши адреса публичных счетов и отправленные транзакции."
+  },
+  "stateLogsModalDescription": {
+    "message": "Журналы состояния могут помочь нам в отладке проблем, с которыми вы можете столкнуться. Отправляйте их в службу поддержки MetaMask только в этом случае, поскольку журналы состояния содержат публичный адрес вашего счета и информацию о ваших транзакциях."
   },
   "status": {
     "message": "Статус"
@@ -8129,6 +8258,9 @@
   "stxFailureDescription": {
     "message": "Внезапные изменения на рынке могут привести к сбою транзакции. Если проблема не исчезает, обратитесь в $1.",
     "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
+  },
+  "stxOptInDescriptionV2": {
+    "message": "Включите функцию «Умные транзакции» для более надежного и безопасного выполнения транзакций. $1"
   },
   "stxOptInSupportedNetworksDescription": {
     "message": "Включите функцию «Смарт-транзакции» для более надежных и безопасных транзакций в поддерживаемых сетях. $1"
@@ -8567,6 +8699,12 @@
   "themeDescription": {
     "message": "Выберите предпочтительную тему MetaMask."
   },
+  "thirdPartyApis": {
+    "message": "Сторонние API"
+  },
+  "thirdPartyApisDescription": {
+    "message": "Выберите способ предоставления вашего IP-адреса или адреса Ethereum сторонним API. Изменения повлияют на работу MetaMask."
+  },
   "thirdPartySoftware": {
     "message": "Уведомление о стороннем ПО",
     "description": "Title of a popup modal displayed when installing a snap for the first time."
@@ -8600,6 +8738,9 @@
   },
   "tokenContractError": {
     "message": "Этот адрес — адрес контракта токенов. Если вы отправите токены на этот адрес, вы их потеряете."
+  },
+  "tokenContractWarning": {
+    "message": "Предупреждение о контракте токена"
   },
   "tokenCount": {
     "message": "токену",
@@ -8880,6 +9021,9 @@
     "message": "Не удается подключиться к $1.",
     "description": "Message shown when network connection fails. $1 is the network name."
   },
+  "unableToDownload": {
+    "message": "Не удалось скачать"
+  },
   "unapproved": {
     "message": "Не одобрен"
   },
@@ -9032,6 +9176,9 @@
   },
   "useSafeChainsListValidationDescription": {
     "message": "MetaMask использует сторонний сервис под названием $1 для отображения точных и стандартизированных сведений о сети. Это снижает ваши шансы подключиться к вредоносной или неправильной сети. При использовании этой функции ваш IP-адрес доступен сети chainid.network."
+  },
+  "useSafeChainsListValidationDescriptionV2": {
+    "message": "Снижает вероятность подключения к вредоносной или некорректной сети. MetaMask использует $1 для отображения точных и стандартизированных данных о сети."
   },
   "useSafeChainsListValidationWebsite": {
     "message": "chainid.network",

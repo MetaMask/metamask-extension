@@ -339,6 +339,9 @@
   "addWallet": {
     "message": "添加钱包"
   },
+  "addedProtectionOptionalBadge": {
+    "message": "可选"
+  },
   "additionalNetworks": {
     "message": "其他网络"
   },
@@ -756,6 +759,27 @@
   "autoDetectTokensDescriptionV2": {
     "message": "显示发送到您钱包的新代币。"
   },
+  "autoLock": {
+    "message": "自动锁定"
+  },
+  "autoLockAfter15Seconds": {
+    "message": "15 秒后"
+  },
+  "autoLockAfter1Minute": {
+    "message": "1 分钟后"
+  },
+  "autoLockAfter30Seconds": {
+    "message": "30 秒后"
+  },
+  "autoLockAfter5Minutes": {
+    "message": "5 分钟后"
+  },
+  "autoLockAfterMinutes": {
+    "message": "$1 分钟后"
+  },
+  "autoLockNever": {
+    "message": "绝不会"
+  },
   "autoLockTimeLimit": {
     "message": "自动锁定计时器（分钟）"
   },
@@ -773,6 +797,9 @@
   },
   "backToHome": {
     "message": "返回首页"
+  },
+  "backUpIncomplete": {
+    "message": "备份未完成"
   },
   "backup": {
     "message": "备份"
@@ -853,6 +880,12 @@
   },
   "basicConfigurationModalCheckbox": {
     "message": "我理解并想继续"
+  },
+  "basicConfigurationModalDisclaimerOffPart1": {
+    "message": "这意味着您不能充分优化您在 MetaMask 上的时间。您将无法使用基本功能（例如代币详情、最优燃料设置等）。"
+  },
+  "basicConfigurationModalDisclaimerOffPart2": {
+    "message": "关闭此功能也会禁用隐私、备份与同步以及通知中的部分功能。"
   },
   "basicConfigurationModalDisclaimerOn": {
     "message": "如需优化您在 MetaMask 上的时间，您将需要开启此功能。基本功能（例如代币详情、最优燃料设置等）对于 Web3 体验至关重要。"
@@ -1066,6 +1099,9 @@
   "bridgeMarketClosedAction": {
     "message": "已休市"
   },
+  "bridgeMarketClosedDescription": {
+    "message": "该股票代币当前处于非交易时段。请在市场重新开放后重试。"
+  },
   "bridgeMarketClosedModalDescription": {
     "message": "支撑该代币的市场目前已关闭。但代币仍可随时在链上进行转移。"
   },
@@ -1157,6 +1193,9 @@
   },
   "bridgeSelectNetwork": {
     "message": "选择网络"
+  },
+  "bridgeSelectQuote": {
+    "message": "选择报价"
   },
   "bridgeSelectTokenAmountAndAccount": {
     "message": "选择代币、金额和目标账户"
@@ -1525,6 +1564,9 @@
   "confirmFieldTooltipPaymaster": {
     "message": "此交易的费用将由 paymaster 智能合约支付。"
   },
+  "confirmFieldTotalExposure": {
+    "message": "总风险敞口"
+  },
   "confirmGasFeeTokenBalance": {
     "message": "余额："
   },
@@ -1809,6 +1851,9 @@
   "contactDetails": {
     "message": "联系人详情"
   },
+  "contactUpdated": {
+    "message": "联系人已更新"
+  },
   "contactUs": {
     "message": "联系我们"
   },
@@ -1892,6 +1937,10 @@
   },
   "createPasswordDetails": {
     "message": "仅在此设备上解锁 MetaMask。"
+  },
+  "createPasswordDetailsSocial": {
+    "message": "丢失此密码将导致您在所有设备上失去对钱包的访问权限，$1",
+    "description": "$1 is the text 'MetaMask can't reset it.'"
   },
   "createPasswordDetailsSocialReset": {
     "message": "MetaMask 无法重设该密码。"
@@ -2237,17 +2286,31 @@
     "message": "这将删除与您在此设备上的使用相关的 MetaMetrics 历史数据。删除此数据后，您的钱包和账户将保持原样。此过程可能需要最多 30 天。查看我们的 $1。",
     "description": "$1 will have text saying Privacy Policy "
   },
+  "deleteMetaMetricsDataDescriptionV2": {
+    "message": "这将会删除与您的钱包关联的历史 MetaMetrics 数据。MetaMetrics 包含匿名使用数据和诊断数据。您的钱包和账户将保持不变。此过程最长可能需要 30 天。查看我们的 $1。",
+    "description": "$1 will have text saying Privacy Policy "
+  },
   "deleteMetaMetricsDataErrorDesc": {
     "message": "由于分析系统服务器问题，现在无法完成此请求，请稍后再试。"
   },
   "deleteMetaMetricsDataErrorTitle": {
     "message": "我们现在无法删除此数据"
   },
+  "deleteMetaMetricsDataErrorToast": {
+    "message": "无法删除"
+  },
   "deleteMetaMetricsDataModalDesc": {
     "message": "我们即将删除您所有的MetaMetrics数据。您确定吗？"
   },
   "deleteMetaMetricsDataModalTitle": {
     "message": "要删除MetaMetrics数据吗？"
+  },
+  "deleteMetaMetricsDataRequestedDescription": {
+    "message": "您在 $1 发起了删除操作。此过程最长可能需要 30 天。查看 $2。",
+    "description": "$1 will be the date on which teh deletion is requested and $2 will have text saying Privacy Policy "
+  },
+  "deleteMetaMetricsDataToast": {
+    "message": "数据将在 30 天内删除"
   },
   "deleteNetworkIntro": {
     "message": "如果您删除此网络，则需要再次添加此网络才能查看您在其中的资产"
@@ -2811,6 +2874,9 @@
   "externalNameSourcesSettingDescription": {
     "message": "我们将从 Etherscan、Infura 和 Lens 协议等第三方来源为您与之交互的地址获取建议的昵称。这些来源将能够看到这些地址和您的 IP 地址。您的账户地址不会暴露给第三方。"
   },
+  "externalNameSourcesSettingDescriptionV2": {
+    "message": "从 Etherscan、Infura 和 Lens 协议等第三方来源获取您所交互地址的建议昵称。"
+  },
   "failed": {
     "message": "失败"
   },
@@ -3149,6 +3215,9 @@
   "hardwareWalletErrorRecoveryUnlock2": {
     "message": "以太坊应用已打开"
   },
+  "hardwareWalletErrorTitleBlindSignNotSupported": {
+    "message": "启用盲签名"
+  },
   "hardwareWalletErrorTitleBlindSignNotSupportedInstruction1": {
     "message": "您的 Ledger 上的该以太坊应用已打开"
   },
@@ -3188,6 +3257,9 @@
   },
   "hardwareWalletSupportLinkConversion": {
     "message": "点击这里"
+  },
+  "hardwareWalletTitleEthAppNotOpen": {
+    "message": "打开以太坊应用"
   },
   "hardwareWalletTypeConnected": {
     "message": "$1 已连接",
@@ -3314,6 +3386,9 @@
   "hyperliquidReferralSubtitle": {
     "message": "使用 MetaMask 推荐码交易费用最高可节省 4%。",
     "description": "The subtitle of the Hyperliquid referral confirmation screen"
+  },
+  "iUnderstand": {
+    "message": "我理解"
   },
   "id": {
     "message": "ID"
@@ -3543,6 +3618,9 @@
   },
   "ipfsGatewayDescription": {
     "message": "MetaMask使用第三方服务来显示存储在IPFS的NFT图像、显示与在浏览器地址栏中输入的ENS地址相关的信息，并获取不同代币的图标。当您使用这些服务时，您的IP地址可能会被其获悉。"
+  },
+  "ipfsGatewayDescriptionV2": {
+    "message": "使用第三方服务来显示您存储在 IPFS 上的 NFT 图片，展示与浏览器地址栏中输入的 ENS 地址相关的信息，并获取不同代币的图标。请在下方选择您偏好的 IPFS 网关。"
   },
   "ipfsToggleModalDescriptionOne": {
     "message": "我们使用第三方服务来显示您存储在 IPFS 的 NFT 图像，显示与您输入到浏览器地址栏中的ENS（Ethereum 域名服务）地址相关的信息，并获取不同代币的图标。当您使用这些服务时，这些服务可能会看到您的 IP 地址。"
@@ -3827,6 +3905,12 @@
   "makeAnotherSwap": {
     "message": "创建新的交换"
   },
+  "makeSmartContractsEasier": {
+    "message": "让智能合约更易读懂"
+  },
+  "makeSmartContractsEasierDescription": {
+    "message": "MetaMask 使用 4byte.directory 和 Sourcify 来翻译这些信息。"
+  },
   "manage": {
     "message": "管理"
   },
@@ -3844,6 +3928,9 @@
   },
   "managePermissions": {
     "message": "管理许可"
+  },
+  "manageWalletRecovery": {
+    "message": "管理钱包恢复"
   },
   "marketCap": {
     "message": "市值"
@@ -4072,10 +4159,6 @@
     "message": "$1 想连接 $2 个 snap。",
     "description": "$1 is the dapp and $2 is the number of snaps it wants to connect to."
   },
-  "musdBoostDescription": {
-    "message": "将您的稳定币兑换为 mUSD，即可获得高达 $1% 的奖励。",
-    "description": "$1 is the bonus percentage (e.g., 3)"
-  },
   "musdBoostTitle": {
     "message": "获得稳定币的 $1% 奖励",
     "description": "$1 is the bonus percentage (e.g., 3)"
@@ -4095,6 +4178,10 @@
     "message": "可领取奖励",
     "description": "Label for the claimable bonus row in the mUSD conversion confirmation screen"
   },
+  "musdClaimableBonusTooltip": {
+    "message": "您持有 mUSD 所获得的 $1% 年化奖励。该奖励可在 Linea 上每日领取。该服务由 Relay 提供支持。$2",
+    "description": "$1 is the APY percentage, $2 is the 'Terms apply' link"
+  },
   "musdConversionActivityTitle": {
     "message": "将 $1 兑换为 mUSD",
     "description": "$1 is the source token symbol (e.g., USDC)"
@@ -4110,11 +4197,12 @@
     "message": "正在将 $1 兑换为 mUSD",
     "description": "$1 is the source token symbol (e.g., USDC)"
   },
-  "musdConversionToastSuccess": {
-    "message": "您的 mUSD 已到账！"
-  },
   "musdConvert": {
     "message": "兑换"
+  },
+  "musdConvertAndGetBonus": {
+    "message": "兑换并获得 $1%",
+    "description": "$1 is the bonus percentage (e.g., 3)"
   },
   "musdEarnBonusPercentage": {
     "message": "获得 $1% 的奖励",
@@ -4129,6 +4217,10 @@
   },
   "musdEducationNotNow": {
     "message": "暂时不"
+  },
+  "musdGetBonusPercentage": {
+    "message": "获取 $1% mUSD 奖励",
+    "description": "$1 is the bonus percentage (e.g., 3)"
   },
   "musdGetMusd": {
     "message": "获取 mUSD"
@@ -6053,6 +6145,9 @@
   "quizIntroduction": {
     "message": "要查看私钥助记词，您需要答对两个问题."
   },
+  "quotedTotalCost": {
+    "message": "总成本：$1"
+  },
   "rank": {
     "message": "排名"
   },
@@ -6567,6 +6662,9 @@
   },
   "securityAlertsDescriptionV2": {
     "message": "此功能通过主动审查交易和签名请求向您发出恶意活动提醒。$1"
+  },
+  "securityAndPassword": {
+    "message": "安全与密码"
   },
   "securityAndPrivacy": {
     "message": "安全和隐私"
@@ -7392,6 +7490,10 @@
   "showFiatConversionInTestnetsDescription": {
     "message": "选择此项以在测试网络上显示法币转换"
   },
+  "showFiatConversionInTestnetsDescriptionV2": {
+    "message": "在测试网络上将网络代币显示为本地货币。如果您被要求开启此功能，您可能正在遭遇诈骗。仅供测试用途。$1",
+    "description": "$1 is the 'Learn more' link"
+  },
   "showHexData": {
     "message": "显示十六进制数据"
   },
@@ -7516,6 +7618,9 @@
   "simulationsSettingDescription": {
     "message": "开启此选项，以便在确认交易和签名之前预估交易余额的变化。这并不能保证交易的最终结果。$1"
   },
+  "simulationsSettingDescriptionV2": {
+    "message": "在您确认交易前估算交易的余额变化。这并不能保证您交易的最终结果。$1"
+  },
   "simulationsSettingSubHeader": {
     "message": "预计余额变化"
   },
@@ -7570,14 +7675,32 @@
   "smartAccount": {
     "message": "智能账户"
   },
+  "smartAccountDappRequestsDescription": {
+    "message": "让 dapp 为标准账户请求智能账户功能。这不会影响已经是智能账户的账户。"
+  },
+  "smartAccountDappRequestsTitle": {
+    "message": "来自 dapp 的智能账户请求"
+  },
   "smartAccountLabel": {
     "message": "智能账户"
+  },
+  "smartAccountRequestsFromDapps": {
+    "message": "来自 dapp 的智能账户请求"
+  },
+  "smartAccountRequestsFromDappsDescription": {
+    "message": "让 dapp 为标准账户请求智能账户功能。这不会影响已经是智能账户的账户。"
   },
   "smartAccountUpgradeBannerDescription": {
     "message": "地址相同。功能更加智能化。"
   },
   "smartAccountUpgradeBannerTitle": {
     "message": "切换至智能账户"
+  },
+  "smartContractAddress": {
+    "message": "智能合约地址"
+  },
+  "smartContractAddressWarning": {
+    "message": "该代币接收地址可能不支持直接转账，这可能导致资金损失。建议仅在确认该合约能够接收转账的情况下继续操作。"
   },
   "smartContracts": {
     "message": "智能合约"
@@ -8049,6 +8172,9 @@
   "stateCorruptionTheseInstructionsLinkTitle": {
     "message": "如何恢复私钥助记词"
   },
+  "stateLogError": {
+    "message": "获取状态记录时出错，请稍后重试。"
+  },
   "stateLogFileName": {
     "message": "MetaMask 状态日志"
   },
@@ -8057,6 +8183,9 @@
   },
   "stateLogsDescription": {
     "message": "状态日志包含您的公共账户地址和已发送的交易。"
+  },
+  "stateLogsModalDescription": {
+    "message": "状态记录可以帮助我们调试您可能遇到的问题。如需支持，请仅将其发送给 MetaMask 支持团队，因为状态记录包含您的公共账户地址和交易信息。"
   },
   "status": {
     "message": "状态"
@@ -8129,6 +8258,9 @@
   "stxFailureDescription": {
     "message": "突然的市场变化可能导致失败。如果问题仍然存在，请联系$1。",
     "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
+  },
+  "stxOptInDescriptionV2": {
+    "message": "开启智能交易，以获得更加安全可靠的交易体验。$1"
   },
   "stxOptInSupportedNetworksDescription": {
     "message": "开启智能交易，以便在支持的网络上实现更加安全可靠的交易。$1"
@@ -8567,6 +8699,12 @@
   "themeDescription": {
     "message": "选择您喜欢的MetaMask主题。"
   },
+  "thirdPartyApis": {
+    "message": "第三方 API"
+  },
+  "thirdPartyApisDescription": {
+    "message": "选择如何向第三方 API 共享您的 IP 地址或以太坊地址。相关更改将影响您的 MetaMask 体验。"
+  },
   "thirdPartySoftware": {
     "message": "第三方软件通告",
     "description": "Title of a popup modal displayed when installing a snap for the first time."
@@ -8600,6 +8738,9 @@
   },
   "tokenContractError": {
     "message": "此地址为代币合约地址。若向该地址发送代币，将导致代币丢失。"
+  },
+  "tokenContractWarning": {
+    "message": "代币合约警告"
   },
   "tokenCount": {
     "message": "代币",
@@ -8880,6 +9021,9 @@
     "message": "无法连接到 $1。",
     "description": "Message shown when network connection fails. $1 is the network name."
   },
+  "unableToDownload": {
+    "message": "无法下载"
+  },
   "unapproved": {
     "message": "未批准"
   },
@@ -9032,6 +9176,9 @@
   },
   "useSafeChainsListValidationDescription": {
     "message": "MetaMask 使用名为$1的第三方服务来显示标准化网络的准确详细信息。这可减少您连接到恶意或不正确网络的机会。使用此功能时，chainid.network 可以看到您的 IP 地址。"
+  },
+  "useSafeChainsListValidationDescriptionV2": {
+    "message": "降低您连接到恶意或错误网络的可能性。MetaMask 使用 $1 来显示准确且标准化的网络详情。"
   },
   "useSafeChainsListValidationWebsite": {
     "message": "chainid.network",
