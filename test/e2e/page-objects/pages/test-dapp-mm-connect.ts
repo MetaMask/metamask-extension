@@ -145,10 +145,22 @@ export class TestDappMmConnect {
   async selectNetworks(desiredChainIds: string[]): Promise<void> {
     for (const chainId of MM_CONNECT_FEATURED_CHAIN_IDS) {
       const selector = this.checkboxSelector(chainId);
-      const isChecked = await this.driver.readElementWithRetry(
-        selector,
-        async (element: { isSelected: () => Promise<boolean> }) =>
-          await element.isSelected(),
+      let isChecked = false;
+      await this.driver.waitUntil(
+        async () => {
+          try {
+            const element = await this.driver.findElement(selector);
+            isChecked = await element.isSelected();
+            return true;
+          } catch (error) {
+            const err = error as { name?: string };
+            if (err.name === 'StaleElementReferenceError') {
+              return false;
+            }
+            throw error;
+          }
+        },
+        { interval: 500, timeout: this.driver.timeout },
       );
       const shouldBeChecked = desiredChainIds.includes(chainId);
       if (isChecked !== shouldBeChecked) {
@@ -269,10 +281,22 @@ export class TestDappMmConnect {
     );
 
     const cssSelector = this.resultCodeSelector(scope, 'signMessage');
-    const resultText = await this.driver.readElementWithRetry(
-      cssSelector,
-      async (element: { getText: () => Promise<string> }) =>
-        await element.getText(),
+    let resultText = '';
+    await this.driver.waitUntil(
+      async () => {
+        try {
+          const element = await this.driver.findElement(cssSelector);
+          resultText = await element.getText();
+          return true;
+        } catch (error) {
+          const err = error as { name?: string };
+          if (err.name === 'StaleElementReferenceError') {
+            return false;
+          }
+          throw error;
+        }
+      },
+      { interval: 500, timeout: this.driver.timeout },
     );
     const parsed = JSON.parse(resultText) as Record<string, unknown>;
 
