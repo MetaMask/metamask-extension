@@ -73,7 +73,6 @@ type ScanResult = {
   defined: number;
 };
 
-
 type TestFile = {
   path?: string;
   tests?: number;
@@ -106,7 +105,13 @@ const GITHUB_REPOSITORY =
 // Update these if the repository directory structure or file-naming conventions
 // change — the collectors below rely on them for skip/defined counts.
 // ---------------------------------------------------------------------------
-const SCAN_UNIT_DIRS = ['ui', 'app', 'shared', 'development', 'test/unit-global'];
+const SCAN_UNIT_DIRS = [
+  'ui',
+  'app',
+  'shared',
+  'development',
+  'test/unit-global',
+];
 const SCAN_INTEGRATION_DIR = 'test/integration';
 const SCAN_E2E_DIR = 'test/e2e';
 
@@ -300,8 +305,7 @@ function getStringAttribute(tag: string, name: string): string {
  * @param rawXml - Raw JUnit XML string.
  */
 function parseJUnitXml(rawXml: string): JUnitParseResult {
-  const testcasePattern =
-    /<testcase\b([^>]*)(?:\/>|>([\s\S]*?)<\/testcase>)/gu;
+  const testcasePattern = /<testcase\b([^>]*)(?:\/>|>([\s\S]*?)<\/testcase>)/gu;
   const perFile: Record<string, number> = {};
   let total = 0;
   let skipped = 0;
@@ -371,12 +375,10 @@ async function walkFiles(
  */
 function countDefinedTests(source: string): number {
   return (
-    source.match(
-      /\b(?:it|test)(?:\.(?:each|skip|only|concurrent))?\s*\(/gu,
-    ) ?? []
+    source.match(/\b(?:it|test)(?:\.(?:each|skip|only|concurrent))?\s*\(/gu) ??
+    []
   ).length;
 }
-
 
 /**
  * Scans one or more directories for test files matching `filePattern` and
@@ -448,8 +450,7 @@ function getFeatureFolder(testFilePath: string): string {
  * @param testFilePath - Absolute or relative test file path.
  */
 function getIntegrationFeatureFolder(testFilePath: string): string {
-  const normalize = (s: string) =>
-    s.toLowerCase().replace(/[^a-z0-9]+/gu, '_');
+  const normalize = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/gu, '_');
   const p = testFilePath.replace(/\\/gu, '/');
   const match = p.match(/\btest\/integration\/([^/]+)\//u);
   return match ? normalize(match[1]) : 'other';
@@ -515,7 +516,11 @@ async function collectUnitTestCount(
   for (const artifact of shardArtifacts) {
     const destDir = await downloadArtifact(artifact.name);
     const raw = await readFile(join(destDir, 'junit.xml'), 'utf8');
-    const { total: shardTotal, skipped: shardSkipped, perFile } = parseJUnitXml(raw);
+    const {
+      total: shardTotal,
+      skipped: shardSkipped,
+      perFile,
+    } = parseJUnitXml(raw);
     total += shardTotal;
     totalSkipped += shardSkipped;
 
@@ -787,7 +792,10 @@ async function collectE2eTestCount(): Promise<Record<string, number>> {
   }
 
   // --- Static analysis across all of test/e2e/ (for defined count only) ---
-  const { defined } = await scanTestFiles([SCAN_E2E_DIR], PATTERN_E2E_SPEC_FILE);
+  const { defined } = await scanTestFiles(
+    [SCAN_E2E_DIR],
+    PATTERN_E2E_SPEC_FILE,
+  );
   console.log(`[e2e] defined: ${defined}`);
 
   const totalSkipped = await getE2eSkippedFromXml();
@@ -845,7 +853,9 @@ async function collectBenchmarkScenarioCount(): Promise<
   Record<string, number>
 > {
   const constantsFile = 'test/e2e/benchmarks/utils/constants.ts';
-  console.log(`[benchmark] reading preset definitions from ${constantsFile}...`);
+  console.log(
+    `[benchmark] reading preset definitions from ${constantsFile}...`,
+  );
 
   const raw = await readFile(constantsFile, 'utf8');
 
@@ -885,6 +895,41 @@ async function collectBenchmarkScenarioCount(): Promise<
 }
 
 // ---------------------------------------------------------------------------
+// Feature flag coverage collector
+// ---------------------------------------------------------------------------
+
+/**
+ * Runs static analysis of E2E test coverage for feature flags using the
+ * shared report generator in test/e2e/scripts/feature-flag-coverage-report.ts.
+ *
+ * No artifact download required — the analysis reads the feature flag registry
+ * and scans test files on disk (both available in the checked-out repo).
+ */
+async function collectFeatureFlagCoverage(): Promise<Record<string, number>> {
+  console.log('[e2e_feature_flags] running static coverage analysis...');
+
+  const { generateReport } = await import(
+    '../../test/e2e/scripts/feature-flag-coverage-report'
+  );
+
+  const report = generateReport(process.cwd());
+  const { summary } = report;
+
+  console.log(
+    `[e2e_feature_flags] total: ${summary.totalFlags}, active: ${summary.activeFlags}, coverage: ${summary.coveragePercentage}%`,
+  );
+
+  return {
+    total_flags: summary.totalFlags,
+    active_flags: summary.activeFlags,
+    full_coverage_flags: summary.fullCoverage,
+    partial_coverage_flags: summary.partialCoverage,
+    default_only_flags: summary.defaultOnlyCoverage,
+    coverage_percentage: summary.coveragePercentage,
+  };
+}
+
+// ---------------------------------------------------------------------------
 // Main
 // ---------------------------------------------------------------------------
 
@@ -896,6 +941,7 @@ async function main(): Promise<void> {
     { namespace: 'integration', collect: collectIntegrationTestCount },
     { namespace: 'e2e', collect: collectE2eTestCount },
     { namespace: 'benchmark', collect: collectBenchmarkScenarioCount },
+    { namespace: 'e2e_feature_flags', collect: collectFeatureFlagCoverage },
   ];
 
   for (const { namespace, collect } of collectors) {

@@ -42,7 +42,7 @@ type FlagCoverageEntry = {
   references: FlagReference[];
 };
 
-type CoverageReport = {
+export type CoverageReport = {
   generatedAt: string;
   summary: {
     totalFlags: number;
@@ -244,7 +244,7 @@ function determineCoverage(
 // Report Generation
 // ============================================================================
 
-function generateReport(repoRoot: string): CoverageReport {
+export function generateReport(repoRoot: string): CoverageReport {
   const testFiles: string[] = [];
   for (const scanDir of SCAN_DIRS) {
     const absDir = path.join(repoRoot, scanDir);
