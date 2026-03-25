@@ -156,6 +156,7 @@ jobs:
       - get-requirements
     if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
     strategy:
+      fail-fast: false
       matrix:
         include:
           - manifest: mv3
@@ -197,6 +198,7 @@ jobs:
       - get-requirements
     if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
     strategy:
+      fail-fast: false
       matrix:
         include:
           - manifest: mv3
@@ -238,6 +240,7 @@ jobs:
       - get-requirements
     if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
     strategy:
+      fail-fast: false
       matrix:
         include:
           - manifest: mv3
@@ -279,6 +282,7 @@ jobs:
       - get-requirements
     if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
     strategy:
+      fail-fast: false
       matrix:
         include:
           - variant: mv3
