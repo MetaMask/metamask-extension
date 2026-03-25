@@ -59,6 +59,7 @@ assemble_performance_data() {
     # Page load presets run on ALL browser/buildType combinations (chrome/firefox × browserify/webpack).
     # They are stored under the "pageLoad" group, keyed as "{browser}-{buildType}-{preset}"
     # so each combination has its own historical entry (e.g. "chrome-browserify-standardHome").
+    # Note: platform/buildType are also stored in the benchmark data itself.
     #
     # User action and performance presets only run on chrome-browserify (the canonical production
     # target) and are stored under their own preset key (e.g. "userActions", "performanceAssets").
