@@ -46,7 +46,7 @@ const TRANSACTION_META_MOCK: TransactionMeta = {
 
 describe('EnforceSimulationHook', () => {
   let messenger: TransactionControllerInitMessenger;
-  const isDefaultEnabledMock = jest.fn();
+  const isEligibleMock = jest.fn();
 
   const applyTransactionContainersMock = jest.mocked(
     applyTransactionContainers,
@@ -55,7 +55,7 @@ describe('EnforceSimulationHook', () => {
   beforeEach(() => {
     jest.resetAllMocks();
 
-    isDefaultEnabledMock.mockReturnValue(true);
+    isEligibleMock.mockReturnValue(true);
 
     applyTransactionContainersMock.mockResolvedValue({
       updateTransaction: jest.fn(),
@@ -76,7 +76,7 @@ describe('EnforceSimulationHook', () => {
     });
   });
 
-  it('applies enforced simulations container if after simulate hook', async () => {
+  it('applies enforced simulations at beforeSign when container type is set', async () => {
     const updateTransactionMock = jest.fn();
 
     applyTransactionContainersMock.mockResolvedValue({
@@ -85,38 +85,15 @@ describe('EnforceSimulationHook', () => {
 
     const hook = new EnforceSimulationHook({
       messenger,
-      isDefaultEnabled: isDefaultEnabledMock,
-    }).getAfterSimulateHook();
-
-    const { updateTransaction } =
-      (await hook({
-        transactionMeta: TRANSACTION_META_MOCK,
-      })) ?? {};
-
-    expect(updateTransaction).toBe(updateTransactionMock);
-
-    expect(applyTransactionContainersMock).toHaveBeenCalledWith(
-      expect.objectContaining({
-        isApproved: false,
-      }),
-    );
-  });
-
-  it('applies enforced simulations container if before sign hook', async () => {
-    const updateTransactionMock = jest.fn();
-
-    applyTransactionContainersMock.mockResolvedValue({
-      updateTransaction: updateTransactionMock,
-    });
-
-    const hook = new EnforceSimulationHook({
-      messenger,
-      isDefaultEnabled: isDefaultEnabledMock,
+      isEligible: isEligibleMock,
     }).getBeforeSignHook();
 
     const { updateTransaction } =
       (await hook({
-        transactionMeta: TRANSACTION_META_MOCK,
+        transactionMeta: {
+          ...TRANSACTION_META_MOCK,
+          containerTypes: [TransactionContainerType.EnforcedSimulations],
+        },
       })) ?? {};
 
     expect(updateTransaction).toBe(updateTransactionMock);
@@ -129,12 +106,12 @@ describe('EnforceSimulationHook', () => {
   });
 
   describe('does nothing if', () => {
-    it('isDefaultEnabled returns false', async () => {
-      isDefaultEnabledMock.mockReturnValue(false);
+    it('not eligible', async () => {
+      isEligibleMock.mockReturnValue(false);
 
       const hook = new EnforceSimulationHook({
         messenger,
-        isDefaultEnabled: isDefaultEnabledMock,
+        isEligible: isEligibleMock,
       }).getAfterSimulateHook();
 
       const result = await hook({
@@ -145,76 +122,69 @@ describe('EnforceSimulationHook', () => {
       expect(applyTransactionContainersMock).not.toHaveBeenCalled();
     });
 
-    it('container types include enforced simulations', async () => {
+    it('no container types set', async () => {
       const hook = new EnforceSimulationHook({
         messenger,
-        isDefaultEnabled: isDefaultEnabledMock,
+        isEligible: isEligibleMock,
       }).getAfterSimulateHook();
 
-      const { updateTransaction } =
-        (await hook({
-          transactionMeta: {
-            ...TRANSACTION_META_MOCK,
-            containerTypes: [TransactionContainerType.EnforcedSimulations],
-          },
-        })) ?? {};
+      const result = await hook({
+        transactionMeta: TRANSACTION_META_MOCK,
+      });
 
-      expect(updateTransaction).toBeUndefined();
-    });
-
-    it('container types exist but user opted out (empty array)', async () => {
-      const hook = new EnforceSimulationHook({
-        messenger,
-        isDefaultEnabled: isDefaultEnabledMock,
-      }).getAfterSimulateHook();
-
-      const { updateTransaction } =
-        (await hook({
-          transactionMeta: {
-            ...TRANSACTION_META_MOCK,
-            containerTypes: [],
-          },
-        })) ?? {};
-
-      expect(updateTransaction).toBeUndefined();
-    });
-
-    it('before sign hook respects user opt-out (empty container types)', async () => {
-      const hook = new EnforceSimulationHook({
-        messenger,
-        isDefaultEnabled: isDefaultEnabledMock,
-      }).getBeforeSignHook();
-
-      const { updateTransaction } =
-        (await hook({
-          transactionMeta: {
-            ...TRANSACTION_META_MOCK,
-            containerTypes: [],
-          },
-        })) ?? {};
-
-      expect(updateTransaction).toBeUndefined();
       expect(applyTransactionContainersMock).not.toHaveBeenCalled();
+      expect(result).toEqual({});
     });
-  });
 
-  describe('respects user opt-in when isDefaultEnabled is false', () => {
-    it('applies enforcement when user opted in via containerTypes', async () => {
-      isDefaultEnabledMock.mockReturnValue(false);
-
+    it('container types exist but enforced simulations not included', async () => {
       const hook = new EnforceSimulationHook({
         messenger,
-        isDefaultEnabled: isDefaultEnabledMock,
-      }).getBeforeSignHook();
+        isEligible: isEligibleMock,
+      }).getAfterSimulateHook();
 
-      await hook({
+      const result = await hook({
+        transactionMeta: {
+          ...TRANSACTION_META_MOCK,
+          containerTypes: [],
+        },
+      });
+
+      expect(applyTransactionContainersMock).not.toHaveBeenCalled();
+      expect(result).toEqual({});
+    });
+
+    it('afterSimulate hook with enforced simulations already set', async () => {
+      const hook = new EnforceSimulationHook({
+        messenger,
+        isEligible: isEligibleMock,
+      }).getAfterSimulateHook();
+
+      const result = await hook({
         transactionMeta: {
           ...TRANSACTION_META_MOCK,
           containerTypes: [TransactionContainerType.EnforcedSimulations],
         },
       });
 
-      expect(applyTransactionContainersMock).toHaveBeenCalled();
+      expect(applyTransactionContainersMock).not.toHaveBeenCalled();
+      expect(result).toEqual({});
+    });
+
+    it('before sign hook respects user opt-out (empty container types)', async () => {
+      const hook = new EnforceSimulationHook({
+        messenger,
+        isEligible: isEligibleMock,
+      }).getBeforeSignHook();
+
+      const result = await hook({
+        transactionMeta: {
+          ...TRANSACTION_META_MOCK,
+          containerTypes: [],
+        },
+      });
+
+      expect(applyTransactionContainersMock).not.toHaveBeenCalled();
+      expect(result).toEqual({});
     });
   });
 });

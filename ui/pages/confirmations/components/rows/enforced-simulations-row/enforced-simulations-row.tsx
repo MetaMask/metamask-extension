@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/naming-convention */
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
   TransactionContainerType,
   TransactionMeta,
@@ -23,10 +23,8 @@ import {
 import Tooltip from '../../../../../components/ui/tooltip';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useConfirmContext } from '../../../context/confirm';
-import {
-  applyTransactionContainersExisting,
-  isEnforcedSimulationsEligible,
-} from '../../../../../store/actions';
+import { applyTransactionContainersExisting } from '../../../../../store/actions';
+import { useIsEnforcedSimulationsEligible } from '../../../hooks/useIsEnforcedSimulationsEligible';
 
 const ADDED_PROTECTION_LEARN_MORE_URL =
   'https://support.metamask.io/privacy-and-security/staying-safe-in-web3/what-are-enforced-simulations/';
@@ -36,32 +34,28 @@ export function EnforcedSimulationsRow() {
 
   const { containerTypes, id: transactionId } = currentConfirmation ?? {};
 
-  const [isSupported, setIsSupported] = useState<boolean | null>(null);
+  const { isEligible, isDefaultEnabled } = useIsEnforcedSimulationsEligible();
 
-  useEffect(() => {
-    if (!transactionId) {
-      setIsSupported(false);
-      return;
-    }
-
-    let cancelled = false;
-
-    isEnforcedSimulationsEligible(transactionId).then((result) => {
-      if (!cancelled) {
-        setIsSupported(result);
-      }
-    });
-
-    return () => {
-      cancelled = true;
-    };
-  }, [transactionId]);
+  const hasAppliedDefault = useRef(false);
 
   const isEnabled = containerTypes?.includes(
     TransactionContainerType.EnforcedSimulations,
   );
 
-  if (!isSupported) {
+  useEffect(() => {
+    if (!isDefaultEnabled || hasAppliedDefault.current || !transactionId) {
+      return;
+    }
+
+    hasAppliedDefault.current = true;
+
+    applyTransactionContainersExisting(transactionId, [
+      ...(containerTypes ?? []),
+      TransactionContainerType.EnforcedSimulations,
+    ]);
+  }, [isDefaultEnabled, transactionId, containerTypes]);
+
+  if (!isEligible) {
     return null;
   }
 

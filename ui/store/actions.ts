@@ -7988,15 +7988,6 @@ export async function applyTransactionContainersExisting(
   );
 }
 
-export async function isEnforcedSimulationsEligible(
-  transactionId: string,
-): Promise<boolean> {
-  return await submitRequestToBackground<boolean>(
-    'isEnforcedSimulationsEligible',
-    [transactionId],
-  );
-}
-
 export async function getLayer1GasFeeValue({
   chainId,
   networkClientId,

@@ -6,10 +6,8 @@ import { getMockConfirmStateForTransaction } from '../../../../../../test/data/c
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../test/data/confirmations/contract-interaction';
 import { renderWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import {
-  applyTransactionContainersExisting,
-  isEnforcedSimulationsEligible,
-} from '../../../../../store/actions';
+import { applyTransactionContainersExisting } from '../../../../../store/actions';
+import { useIsEnforcedSimulationsEligible } from '../../../hooks/useIsEnforcedSimulationsEligible';
 import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
 import { EnforcedSimulationsRow } from './enforced-simulations-row';
 
@@ -17,28 +15,33 @@ jest.mock('../../../../../hooks/useI18nContext');
 jest.mock('../../../../../store/actions', () => ({
   ...jest.requireActual('../../../../../store/actions'),
   applyTransactionContainersExisting: jest.fn().mockResolvedValue(undefined),
-  isEnforcedSimulationsEligible: jest.fn().mockResolvedValue(true),
 }));
+jest.mock('../../../hooks/useIsEnforcedSimulationsEligible');
 
 const mockStore = configureMockStore([]);
 
-const isEnforcedSimulationsEligibleMock = jest.mocked(
-  isEnforcedSimulationsEligible,
+const useIsEnforcedSimulationsEligibleMock = jest.mocked(
+  useIsEnforcedSimulationsEligible,
 );
 const useI18nContextMock = jest.mocked(useI18nContext);
 
 function render({
-  isSupported = true,
+  isEligible = true,
+  isDefaultEnabled = true,
   containerTypes,
   origin,
   delegationAddress,
 }: {
-  isSupported?: boolean;
+  isEligible?: boolean;
+  isDefaultEnabled?: boolean;
   containerTypes?: TransactionContainerType[];
   origin?: string;
   delegationAddress?: string;
 } = {}) {
-  isEnforcedSimulationsEligibleMock.mockResolvedValue(isSupported);
+  useIsEnforcedSimulationsEligibleMock.mockReturnValue({
+    isEligible,
+    isDefaultEnabled,
+  });
 
   useI18nContextMock.mockReturnValue(((key: string) => {
     const translations: Record<string, string> = {
@@ -74,8 +77,8 @@ describe('EnforcedSimulationsRow', () => {
     jest.clearAllMocks();
   });
 
-  it('renders nothing when enforced simulations is not supported', async () => {
-    const { container } = render({ isSupported: false });
+  it('renders nothing when enforced simulations is not eligible', async () => {
+    const { container } = render({ isEligible: false });
 
     await waitFor(() => {
       expect(container).toBeEmptyDOMElement();
