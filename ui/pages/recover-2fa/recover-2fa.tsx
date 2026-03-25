@@ -45,10 +45,9 @@ const FACTOR_META: Record<FactorId, { nameKey: string; icon: IconName }> = {
   mobile: { nameKey: 'twoFAFactorMobileDevice', icon: IconName.Mobile },
 };
 
-const CLOUD_FACTORS: FactorId[] = ['email', 'social'];
+const RECOVERY_FACTORS: FactorId[] = ['mobile', 'email', 'passkeys', 'sms', 'social'];
 const ALL_FACTORS: FactorId[] = ['email', 'authenticator', 'social', 'mobile', 'passkeys', 'sms'];
-const NON_SOCIAL_CLOUD_FACTORS: FactorId[] = ['email'];
-const CUBIST_RECOVERY_IDS: FactorId[] = ['email', 'social', 'passkeys'];
+const NON_SOCIAL_RECOVERY_FACTORS: FactorId[] = ['mobile', 'email', 'passkeys', 'sms'];
 
 type Step = 'intro' | 'identity-pick' | 'identity-verify' | 'second-pick' | 'second-verify' | 'recovery-pick' | 'recovery-verify' | 'recovering' | 'success';
 
@@ -166,6 +165,7 @@ function VerifyFactorModal({ factorId, onVerified, onClose, t }: {
               {isEmail ? t('twoFAEnterEmailSubtitle') : t('twoFAEnterPhoneSubtitle')}
             </Text>
             <FormTextField label={t(isEmail ? 'twoFAEmailLabel' : 'twoFAPhoneLabel')}
+              id={isEmail ? 'recover-2fa-email' : 'recover-2fa-phone'}
               placeholder={t(isEmail ? 'twoFAEmailPlaceholder' : 'twoFAPhonePlaceholder')}
               size={FormTextFieldSize.Lg} value={inputValue}
               onChange={(e: React.ChangeEvent<HTMLInputElement>) => setInputValue(e.target.value)} autoFocus />
@@ -215,6 +215,7 @@ function VerifyFactorModal({ factorId, onVerified, onClose, t }: {
           <Box flexDirection={BoxFlexDirection.Column} gap={2}>
             {[
               { nameKey: 'twoFAFactorGoogle', icon: IconName.Global },
+              { nameKey: 'twoFAFactorApple', icon: IconName.Mobile },
             ].map((provider) => (
               <Box key={provider.nameKey} flexDirection={BoxFlexDirection.Row} alignItems={BoxAlignItems.Center} gap={3} padding={4}
                 borderColor={BoxBorderColor.BorderMuted} className="rounded-xl border cursor-pointer hover:bg-background-default-hover"
@@ -327,7 +328,7 @@ function FactorPickerScreen({ title, subtitle, note, factors, onSelect, onBack, 
 // ─── Main Component ──────────────────────────────────────────────────
 
 export const Recover2FAPage: React.FC = () => {
-  const t = useI18nContext();
+  const t = useI18nContext() as (key: string) => string;
   const navigate = useNavigate();
 
   const isSocialUser = useSelector(getIsSocialLoginFlow);
@@ -341,13 +342,10 @@ export const Recover2FAPage: React.FC = () => {
   })();
 
   // Recovery factors for social user: their configured recovery factors (excluding social),
-  // falling back to non-social cloud factors if nothing stored
-  // Mobile can never be a recovery factor
-  const RECOVERY_EXCLUDED: FactorId[] = ['mobile'];
-
+  // falling back to supported non-social recovery factors if nothing stored.
   const socialRecoveryFactors: FactorId[] = storedRecovery.length > 0
-    ? storedRecovery.filter((id) => id !== 'social' && !RECOVERY_EXCLUDED.includes(id))
-    : NON_SOCIAL_CLOUD_FACTORS;
+    ? storedRecovery.filter((id) => id !== 'social')
+    : NON_SOCIAL_RECOVERY_FACTORS;
 
   const [step, setStep] = useState<Step>('intro');
   const [identityFactor, setIdentityFactor] = useState<FactorId | null>(null);
@@ -400,7 +398,7 @@ export const Recover2FAPage: React.FC = () => {
     }
   }, [verifyModalFactor]);
 
-  const secondFactors = ALL_FACTORS.filter((id) => id !== identityFactor && !RECOVERY_EXCLUDED.includes(id) && CUBIST_RECOVERY_IDS.includes(id));
+  const secondFactors = ALL_FACTORS.filter((id) => id !== identityFactor);
 
   // ─── Intro ─────────────────────────────────────────────────────────
 
@@ -439,7 +437,7 @@ export const Recover2FAPage: React.FC = () => {
         <FactorPickerScreen
           title={t('twoFARecoverVerifyIdentity')}
           subtitle={t('twoFARecoverVerifyIdentitySubtitle')}
-          factors={CLOUD_FACTORS}
+          factors={RECOVERY_FACTORS}
           onSelect={(id) => { setVerifyModalFactor(id); }}
           onBack={handleBack}
           onClose={handleClose}

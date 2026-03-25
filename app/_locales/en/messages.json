@@ -368,16 +368,16 @@
     "message": "Start Recovery"
   },
   "twoFARecoverStepCloud": {
-    "message": "Verify identity"
+    "message": "Recovery method"
   },
   "twoFARecoverStepSecond": {
-    "message": "Second verification"
+    "message": "Transaction verification"
   },
   "twoFARecoverVerifyIdentity": {
-    "message": "Verify your identity"
+    "message": "Choose recovery method"
   },
   "twoFARecoverVerifyIdentitySubtitle": {
-    "message": "Choose any method you set up with your 2FA wallet to confirm it's you."
+    "message": "Choose any recovery method you set up with your 2FA wallet."
   },
   "twoFARecoverSecondFactorTitle": {
     "message": "One more verification"
