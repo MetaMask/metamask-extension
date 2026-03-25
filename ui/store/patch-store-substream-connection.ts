@@ -106,8 +106,6 @@ function resolvePendingGetStatePatchesRequest(
   } else {
     const { result } = message;
 
-    // Technically this could be a response to _any_ request, so we have to make
-    // sure we have a response to `getStatePatches`.
     const [patchError, patches] = validate(result, PatchesStruct);
     if (patchError) {
       request.reject(
