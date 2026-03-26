@@ -475,9 +475,10 @@ function extractDisplayName(benchmarkName: string): string {
 function countHealthEntries(
   allEntries: BenchmarkEntry[],
   baseline?: HistoricalBaselineReference,
-): { failures: number; warnings: number } {
+): { passes: number; failures: number; warnings: number } {
   const presetComboMap = buildHealthMap(allEntries, baseline);
 
+  let passes = 0;
   let failures = 0;
   let warnings = 0;
   for (const health of presetComboMap.values()) {
@@ -485,9 +486,11 @@ function countHealthEntries(
       failures += 1;
     } else if (health === EntryHealth.Warn) {
       warnings += 1;
+    } else if (health === EntryHealth.Pass) {
+      passes += 1;
     }
   }
-  return { failures, warnings };
+  return { passes, failures, warnings };
 }
 
 /**
@@ -527,12 +530,17 @@ function formatTimerDetails(
           [metricName]: thresholdConfig[metricName],
         });
 
-        if (violations.some((v) => v.severity === THRESHOLD_SEVERITY.Fail)) {
+        const hasFail = violations.some(
+          (v) => v.severity === THRESHOLD_SEVERITY.Fail,
+        );
+        const hasWarn = violations.some(
+          (v) => v.severity === THRESHOLD_SEVERITY.Warn,
+        );
+
+        if (hasFail) {
           icon = HEALTH_ICON[EntryHealth.Fail];
           hasIssue = true;
-        } else if (
-          violations.some((v) => v.severity === THRESHOLD_SEVERITY.Warn)
-        ) {
+        } else if (hasWarn) {
           icon = HEALTH_ICON[EntryHealth.Warn];
           hasIssue = true;
         }
@@ -626,7 +634,7 @@ export function buildBenchmarkSection(
             .map((combo: string) => {
               const entry = entryLookup.get(`${benchmarkName}|${combo}`);
               if (!entry) {
-                return `<td align="center">–</td>`;
+                return `<td align="left">–</td>`;
               }
               const baselineMetrics = baseline
                 ? resolveBaseline(baseline, entry.presetName, benchmarkName)
@@ -646,14 +654,17 @@ export function buildBenchmarkSection(
                 : '';
 
               let cell: string;
-              if (timerDetails) {
-                cell = timerDetails;
-              } else if (logHref) {
-                cell = `${icon} ${logsLink}`;
-              } else {
-                cell = icon;
+              switch (true) {
+                case Boolean(timerDetails):
+                  cell = timerDetails;
+                  break;
+                case Boolean(logHref):
+                  cell = `${icon} ${logsLink}`;
+                  break;
+                default:
+                  cell = icon;
               }
-              return `<td align="center">${cell}</td>`;
+              return `<td align="left">${cell}</td>`;
             })
             .join('');
           const displayName = extractDisplayName(benchmarkName);
@@ -904,8 +915,8 @@ function buildFailingItemsHtml(
   }
 
   return (
-    `<details><summary>View regression details - ${failureLabel}</summary>\n` +
-    `<ul>${listItems}</ul></details>\n`
+    `<p><strong>Regressions (${failureLabel})</strong></p>\n` +
+    `<ul>${listItems}</ul>\n`
   );
 }
 
@@ -993,9 +1004,10 @@ export async function buildPerformanceBenchmarksSection(
   const healthBadge = `(${HEALTH_ICON[EntryHealth.Pass]} pass · ${HEALTH_ICON[EntryHealth.Warn]} warn · ${HEALTH_ICON[EntryHealth.Fail]} fail)`;
   const summaryText = `${sectionTitle} ${healthBadge}`;
 
-  const matrixHtml = buildHealthMatrixHtml(allEntries, resolvedBaseline);
-
-  const { failures } = countHealthEntries(allEntries, resolvedBaseline);
+  const { passes, failures, warnings } = countHealthEntries(
+    allEntries,
+    resolvedBaseline,
+  );
   const regressionDetailsHtml = buildFailingItemsHtml(
     allEntries,
     resolvedBaseline,
@@ -1025,9 +1037,11 @@ export async function buildPerformanceBenchmarksSection(
   const baselineLogsLink = `<a href="${baselineLogsUrl}">Baseline logs</a>`;
   const commitInfo = `<p><strong>Baseline (latest main)</strong>: ${commitLink} | <strong>Date</strong>: ${commitDate} | <strong>Pipeline</strong>: ${pipelineLink} | ${baselineLogsLink}</p>\n\n`;
 
+  const totalSummary = `<p><strong>Total</strong>: ${HEALTH_ICON[EntryHealth.Pass]} ${passes} pass · ${HEALTH_ICON[EntryHealth.Warn]} ${warnings} warn · ${HEALTH_ICON[EntryHealth.Fail]} ${failures} fail</p>\n\n`;
+
   const subsectionsHtml = interactionHtml + startupHtml + userJourneyHtml;
   const content =
-    commitInfo + matrixHtml + regressionDetailsHtml + subsectionsHtml;
+    commitInfo + totalSummary + regressionDetailsHtml + subsectionsHtml;
 
   return `<details><summary>${summaryText}</summary>\n<blockquote>\n${content}</blockquote>\n</details>\n\n`;
 }

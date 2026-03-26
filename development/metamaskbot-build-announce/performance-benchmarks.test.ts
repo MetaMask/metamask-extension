@@ -818,7 +818,7 @@ describe('buildPerformanceBenchmarksSection', () => {
       .mockResolvedValue({
         baseline: {},
         latestCommit: 'abc1234567890def',
-        latestTimestamp: 1700000000000,
+        latestTimestamp: 1700000000,
       });
     mockFetch.mockResolvedValue({
       ok: true,
@@ -882,7 +882,7 @@ describe('buildPerformanceBenchmarksSection', () => {
           },
         },
         latestCommit: 'abc123',
-        latestTimestamp: 1700000000000,
+        latestTimestamp: 1700000000, // Unix timestamp in seconds
       });
 
     const html = await buildPerformanceBenchmarksSection(HOST);
@@ -932,7 +932,7 @@ describe('buildPerformanceBenchmarksSection', () => {
       expect(html).toContain('uiStartup');
     });
 
-    it('renders the regression details collapsible with the worst label and log link', async () => {
+    it('renders the regression details inline with the worst label and log link', async () => {
       mockFetch.mockResolvedValue({
         ok: true,
         json: () => Promise.resolve(FAILING_PAYLOAD),
@@ -940,7 +940,7 @@ describe('buildPerformanceBenchmarksSection', () => {
 
       const html = await buildPerformanceBenchmarksSection(HOST);
 
-      expect(html).toContain('View regression details');
+      expect(html).toContain('Regressions');
       expect(html).toContain('startupStandardHome');
     });
 
@@ -959,7 +959,7 @@ describe('buildPerformanceBenchmarksSection', () => {
             },
           },
           latestCommit: 'abc123',
-          latestTimestamp: 1700000000000,
+          latestTimestamp: 1700000000,
         });
 
       const html = await buildPerformanceBenchmarksSection(HOST);
