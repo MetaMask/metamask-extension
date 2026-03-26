@@ -411,9 +411,6 @@
     "message": "Сохраните эти значения как значения по умолчанию для сети $1.",
     "description": "$1 is the current network name."
   },
-  "advancedGasFeeModalTitle": {
-    "message": "Дополнительная плата за газ"
-  },
   "advancedGasPriceModalTitle": {
     "message": "Дополнительная комиссия сети"
   },
@@ -1351,14 +1348,6 @@
   "cancelPopoverTitle": {
     "message": "Отменить транзакцию"
   },
-  "cancelSpeedUpLabel": {
-    "message": "Эта плата за газ $1 первоначальную.",
-    "description": "$1 is text 'replace' in bold"
-  },
-  "cancelSpeedUpTransactionTooltip": {
-    "message": "Чтобы $1 транзакцию, плата за газ должна быть увеличена как минимум на 10%. Это позволит обеспечить признание транзакции сетью.",
-    "description": "$1 is string 'cancel' or 'speed up'"
-  },
   "cancelTransactionDescription": {
     "message": "Эта транзакция будет отменена, и эта комиссия сети заменит исходную."
   },
@@ -2072,10 +2061,6 @@
   "dappSuggestedShortLabel": {
     "message": "Сайт"
   },
-  "dappSuggestedTooltip": {
-    "message": "$1 рекомендовал эту цену.",
-    "description": "$1 represents the Dapp's origin"
-  },
   "dappSwapAdvantage": {
     "message": "Экономьте и зарабатывайте с MetaMask Swaps"
   },
@@ -2526,9 +2511,6 @@
   "editAddressNickname": {
     "message": "Изменить ник адреса"
   },
-  "editCancellationGasFeeModalTitle": {
-    "message": "Изменить плату за газ за отмену"
-  },
   "editContact": {
     "message": "Изменить контакт"
   },
@@ -2587,9 +2569,6 @@
   "editGasPriceTooltip": {
     "message": "В этой сети необходимо заполнить поле «Цена газа» при отправке транзакции. Цена газа — это сумма, которую вы будете платить за единицу газа."
   },
-  "editGasSubTextFeeLabel": {
-    "message": "Максимальная комиссия:"
-  },
   "editGasTitle": {
     "message": "Изменить приоритет"
   },
@@ -2616,9 +2595,6 @@
   },
   "editPermissions": {
     "message": "Изменить разрешения"
-  },
-  "editSpeedUpEditGasFeeModalTitle": {
-    "message": "Изменить плату за газ за ускорение"
   },
   "editSpendingCap": {
     "message": "Изменить лимит расходов"
@@ -3026,9 +3002,6 @@
   },
   "gasLimitV2": {
     "message": "Лимит газа"
-  },
-  "gasOption": {
-    "message": "Настройка газа"
   },
   "gasPrice": {
     "message": "Цена газа (Гвей)"
@@ -3962,9 +3935,6 @@
   "maxFeeTooltip": {
     "message": "Максимальная комиссия, предусмотренная для оплаты транзакции."
   },
-  "maxPriorityFee": {
-    "message": "Максимальная плата за приоритет"
-  },
   "medium": {
     "message": "Рынок"
   },
@@ -4390,9 +4360,6 @@
   },
   "networkFeeExplanationTitle": {
     "message": "Комиссия сети"
-  },
-  "networkIsBusy": {
-    "message": "Сеть занята. Цены газа высоки, а оценки менее точны."
   },
   "networkMenu": {
     "message": "Сетевое меню"

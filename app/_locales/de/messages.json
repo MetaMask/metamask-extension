@@ -411,9 +411,6 @@
     "message": "Speichern Sie diese Werte als Standard für das $1-Netzwerk.",
     "description": "$1 is the current network name."
   },
-  "advancedGasFeeModalTitle": {
-    "message": "Erweiterte Gas-Gebühr"
-  },
   "advancedGasPriceModalTitle": {
     "message": "Erweiterte Netzwerkgebühr"
   },
@@ -1351,14 +1348,6 @@
   "cancelPopoverTitle": {
     "message": "Transaktion stornieren"
   },
-  "cancelSpeedUpLabel": {
-    "message": "Diese Gas-Gebühr kostet $1 das Original.",
-    "description": "$1 is text 'replace' in bold"
-  },
-  "cancelSpeedUpTransactionTooltip": {
-    "message": "Für eine Transaktion im Wert von $1 muss die Gasgebühr um mindestens 10 % erhöht werden, damit sie vom Netz erkannt wird.",
-    "description": "$1 is string 'cancel' or 'speed up'"
-  },
   "cancelTransactionDescription": {
     "message": "Diese Transaktion wird storniert und diese Netzwerkgebühr ersetzt die ursprüngliche Gebühr."
   },
@@ -2072,10 +2061,6 @@
   "dappSuggestedShortLabel": {
     "message": "Seite"
   },
-  "dappSuggestedTooltip": {
-    "message": "$1 hat diesen Preis vorgeschlagen.",
-    "description": "$1 represents the Dapp's origin"
-  },
   "dappSwapAdvantage": {
     "message": "Sparen und verdienen Sie mit MetaMask-Swaps"
   },
@@ -2526,9 +2511,6 @@
   "editAddressNickname": {
     "message": "Adressen-Spitzname bearbeiten"
   },
-  "editCancellationGasFeeModalTitle": {
-    "message": "Gas-Gebühr für Stornierungen bearbeiten"
-  },
   "editContact": {
     "message": "Kontakt bearbeiten"
   },
@@ -2587,9 +2569,6 @@
   "editGasPriceTooltip": {
     "message": "Dieses Netzwerk erfordert ein „Gas-Preis“-Feld beim Absenden einer Transaktion. Der Gas-Preis ist der Betrag, den Sie pro Gas-Einheit bezahlen."
   },
-  "editGasSubTextFeeLabel": {
-    "message": "Maximale Gebühr:"
-  },
   "editGasTitle": {
     "message": "Priorität bearbeiten"
   },
@@ -2616,9 +2595,6 @@
   },
   "editPermissions": {
     "message": "Genehmigungen bearbeiten"
-  },
-  "editSpeedUpEditGasFeeModalTitle": {
-    "message": "Gas-Gebühr für Beschleunigung bearbeiten"
   },
   "editSpendingCap": {
     "message": "Ausgabenobergrenze bearbeiten"
@@ -3026,9 +3002,6 @@
   },
   "gasLimitV2": {
     "message": "Gas-Limit"
-  },
-  "gasOption": {
-    "message": "Gas-Option"
   },
   "gasPrice": {
     "message": "Gas-Preis"
@@ -3962,9 +3935,6 @@
   "maxFeeTooltip": {
     "message": "Eine maximale Gebühr, die für die Bezahlung der Transaktion vorgesehen ist."
   },
-  "maxPriorityFee": {
-    "message": "Maximale Prioritätsgebühr"
-  },
   "medium": {
     "message": "Markt"
   },
@@ -4390,9 +4360,6 @@
   },
   "networkFeeExplanationTitle": {
     "message": "Netzwerkgebühr"
-  },
-  "networkIsBusy": {
-    "message": "Das Netzwerk ist ausgelastet. Die Gas-Preise sind hoch und die Schätzungen sind weniger genau."
   },
   "networkMenu": {
     "message": "Netzwerkmenü"

@@ -411,9 +411,6 @@
     "message": "I-save ang mga value na ito bilang default ko para sa $1 network.",
     "description": "$1 is the current network name."
   },
-  "advancedGasFeeModalTitle": {
-    "message": "Advanced na bayad sa gas"
-  },
   "advancedGasPriceModalTitle": {
     "message": "Advanced na bayad sa network"
   },
@@ -1351,14 +1348,6 @@
   "cancelPopoverTitle": {
     "message": "Kanselahin ang transaksyon"
   },
-  "cancelSpeedUpLabel": {
-    "message": "$1 ng bayad sa gas na ito ang orihinal.",
-    "description": "$1 is text 'replace' in bold"
-  },
-  "cancelSpeedUpTransactionTooltip": {
-    "message": "Para $1 ang transaksyon, dapat itaas ang bayad sa gas nang kahit 10% man lang para matukoy ito ng network.",
-    "description": "$1 is string 'cancel' or 'speed up'"
-  },
   "cancelTransactionDescription": {
     "message": "Makakansela ang transaksyong ito at papalitan ng bayad sa network na ito ang orihinal."
   },
@@ -2072,10 +2061,6 @@
   "dappSuggestedShortLabel": {
     "message": "Site"
   },
-  "dappSuggestedTooltip": {
-    "message": "Nirekomenda ng $1 ang presyong ito.",
-    "description": "$1 represents the Dapp's origin"
-  },
   "dappSwapAdvantage": {
     "message": "Makatipid at kumita sa MetaMask Swaps"
   },
@@ -2526,9 +2511,6 @@
   "editAddressNickname": {
     "message": "I-edit ang address ng palayaw"
   },
-  "editCancellationGasFeeModalTitle": {
-    "message": "I-edit ang pagkansela ng bayad sa gas"
-  },
   "editContact": {
     "message": "I-edit ang kontak"
   },
@@ -2587,9 +2569,6 @@
   "editGasPriceTooltip": {
     "message": "Ang network na ito ay nangangailangan ng field ng “Presyo ng gas” kapag nagsusumite ng transaksyon. Ang presyo ng gas ay ang halaga na babayaran mo kada yunit ng gas."
   },
-  "editGasSubTextFeeLabel": {
-    "message": "Max fee:"
-  },
   "editGasTitle": {
     "message": "I-edit ang priyoridad"
   },
@@ -2616,9 +2595,6 @@
   },
   "editPermissions": {
     "message": "Mag-edit ng mga pahintulot"
-  },
-  "editSpeedUpEditGasFeeModalTitle": {
-    "message": "I-edit ang pagpapabilis ng bayad sa gas"
   },
   "editSpendingCap": {
     "message": "I-edit ang limitasyon sa paggastos"
@@ -3026,9 +3002,6 @@
   },
   "gasLimitV2": {
     "message": "Gas limit"
-  },
-  "gasOption": {
-    "message": "Opsyon ng gas"
   },
   "gasPrice": {
     "message": "Presyo ng gas (GWEI)"
@@ -3962,9 +3935,6 @@
   "maxFeeTooltip": {
     "message": "Ang pinakamalaking bayad na inilaan para bayaran ang transaksyon."
   },
-  "maxPriorityFee": {
-    "message": "Max priority fee"
-  },
   "medium": {
     "message": "Market"
   },
@@ -4390,9 +4360,6 @@
   },
   "networkFeeExplanationTitle": {
     "message": "Bayad sa network"
-  },
-  "networkIsBusy": {
-    "message": "Busy ang network. Ang presyo ng gas ay mataas at ang pagtantya ay hindi gaanong tumpak."
   },
   "networkMenu": {
     "message": "Network Menu"

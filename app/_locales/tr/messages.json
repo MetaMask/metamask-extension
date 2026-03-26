@@ -411,9 +411,6 @@
     "message": "Bu değerleri $1 ağı için varsayılanım olarak kaydet.",
     "description": "$1 is the current network name."
   },
-  "advancedGasFeeModalTitle": {
-    "message": "Gelişmiş gaz ücreti"
-  },
   "advancedGasPriceModalTitle": {
     "message": "Gelişmiş ağ ücreti"
   },
@@ -1351,14 +1348,6 @@
   "cancelPopoverTitle": {
     "message": "İşlemi iptal et"
   },
-  "cancelSpeedUpLabel": {
-    "message": "Bu gas ücreti aslına göre $1 olacaktır.",
-    "description": "$1 is text 'replace' in bold"
-  },
-  "cancelSpeedUpTransactionTooltip": {
-    "message": "Bir işleme $1 uygulamak için ağ tarafından tanınması amacıyla gas ücreti en az %10 artırılmalıdır.",
-    "description": "$1 is string 'cancel' or 'speed up'"
-  },
   "cancelTransactionDescription": {
     "message": "Bu işlem iptal edilecek ve bu ağ ücreti orijinalinin yerine geçecektir."
   },
@@ -2072,10 +2061,6 @@
   "dappSuggestedShortLabel": {
     "message": "Site"
   },
-  "dappSuggestedTooltip": {
-    "message": "$1 bu fiyatı önerdi.",
-    "description": "$1 represents the Dapp's origin"
-  },
   "dappSwapAdvantage": {
     "message": "MetaMask Swaps ile tasarruf et ve kazan"
   },
@@ -2526,9 +2511,6 @@
   "editAddressNickname": {
     "message": "Adres takma adını düzenle"
   },
-  "editCancellationGasFeeModalTitle": {
-    "message": "İptal gas ücretini düzenle"
-  },
   "editContact": {
     "message": "Kişiyi düzenle"
   },
@@ -2587,9 +2569,6 @@
   "editGasPriceTooltip": {
     "message": "Bu ağ, bir işlem gönderirken bir \"Gaz fiyatı\" alanı gerektirir. Gaz fiyatı, gaz birimi başına ödeyeceğiniz miktardır."
   },
-  "editGasSubTextFeeLabel": {
-    "message": "Maks. ücret:"
-  },
   "editGasTitle": {
     "message": "Önceliği düzenle"
   },
@@ -2616,9 +2595,6 @@
   },
   "editPermissions": {
     "message": "İzinleri düzenle"
-  },
-  "editSpeedUpEditGasFeeModalTitle": {
-    "message": "Hızlandırma gaz ücretini düzenle"
   },
   "editSpendingCap": {
     "message": "Harcama üst limitini düzenle"
@@ -3026,9 +3002,6 @@
   },
   "gasLimitV2": {
     "message": "Gaz limiti"
-  },
-  "gasOption": {
-    "message": "Gaz seçeneği"
   },
   "gasPrice": {
     "message": "Gaz fiyatı"
@@ -3962,9 +3935,6 @@
   "maxFeeTooltip": {
     "message": "İşlemi ödemek için sunulan maksimum ücret."
   },
-  "maxPriorityFee": {
-    "message": "Maks. öncelik ücreti"
-  },
   "medium": {
     "message": "Piyasa"
   },
@@ -4390,9 +4360,6 @@
   },
   "networkFeeExplanationTitle": {
     "message": "Ağ ücreti"
-  },
-  "networkIsBusy": {
-    "message": "Ağ meşgul. Gas fiyatları yüksek ve tahminler daha az doğru."
   },
   "networkMenu": {
     "message": "Ağ menüsü"

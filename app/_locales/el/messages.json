@@ -411,9 +411,6 @@
     "message": "Αποθηκεύστε αυτές τις τιμές ως προεπιλεγμένες για το δίκτυο $1.",
     "description": "$1 is the current network name."
   },
-  "advancedGasFeeModalTitle": {
-    "message": "Προηγμένη χρέωση τελών συναλλαγής"
-  },
   "advancedGasPriceModalTitle": {
     "message": "Τέλη δικτύου για προχωρημένους"
   },
@@ -1351,14 +1348,6 @@
   "cancelPopoverTitle": {
     "message": "Ακύρωση συναλλαγής"
   },
-  "cancelSpeedUpLabel": {
-    "message": "Αυτό το τέλος συναλλαγής θα $1 το αρχικό.",
-    "description": "$1 is text 'replace' in bold"
-  },
-  "cancelSpeedUpTransactionTooltip": {
-    "message": "Για να $1 μια συναλλαγή το τέλος συναλλαγής πρέπει να αυξηθεί κατά τουλάχιστον 10% για να αναγνωριστεί από το δίκτυο.",
-    "description": "$1 is string 'cancel' or 'speed up'"
-  },
   "cancelTransactionDescription": {
     "message": "Αυτή η συναλλαγή θα ακυρωθεί και αυτά τα τέλη δικτύου θα αντικαταστήσουν τα αρχικά."
   },
@@ -2072,10 +2061,6 @@
   "dappSuggestedShortLabel": {
     "message": "Ιστότοπος"
   },
-  "dappSuggestedTooltip": {
-    "message": "Το $1 έχει προτείνει αυτή την τιμή.",
-    "description": "$1 represents the Dapp's origin"
-  },
   "dappSwapAdvantage": {
     "message": "Εξοικονομήστε και κερδίστε με το MetaMask Swaps"
   },
@@ -2526,9 +2511,6 @@
   "editAddressNickname": {
     "message": "Επεξεργασία διεύθυνσης ψευδώνυμου"
   },
-  "editCancellationGasFeeModalTitle": {
-    "message": "Επεξεργασία ακύρωσης τέλους συναλλαγής"
-  },
   "editContact": {
     "message": "Επεξεργασία επαφής"
   },
@@ -2587,9 +2569,6 @@
   "editGasPriceTooltip": {
     "message": "Αυτό το δίκτυο απαιτεί ένα πεδίο \"Τέλος συναλλαγής\" κατά την υποβολή μιας συναλλαγής. Η τιμή τέλους συναλλαγής είναι το ποσό που θα πληρώσετε ανά μονάδα τέλους συναλλαγής."
   },
-  "editGasSubTextFeeLabel": {
-    "message": "Μέγιστο τέλος συναλλαγής:"
-  },
   "editGasTitle": {
     "message": "Επεξεργασία προτεραιότητας"
   },
@@ -2616,9 +2595,6 @@
   },
   "editPermissions": {
     "message": "Επεξεργασία αδειών"
-  },
-  "editSpeedUpEditGasFeeModalTitle": {
-    "message": "Επεξεργαστείτε την ταχύτητα του τέλους συναλλαγής"
   },
   "editSpendingCap": {
     "message": "Επεξεργασία ανώτατου ορίου δαπανών"
@@ -3026,9 +3002,6 @@
   },
   "gasLimitV2": {
     "message": "Όριο τέλους συναλλαγής"
-  },
-  "gasOption": {
-    "message": "Επιλογή τέλους συναλλαγής"
   },
   "gasPrice": {
     "message": "Τέλη συναλλαγών"
@@ -3962,9 +3935,6 @@
   "maxFeeTooltip": {
     "message": "Τα μέγιστα τέλη που προβλέπονται για την πληρωμή της συναλλαγής."
   },
-  "maxPriorityFee": {
-    "message": "Μέγιστη προτεραιότητα τέλους"
-  },
   "medium": {
     "message": "Τιμή αγοράς"
   },
@@ -4390,9 +4360,6 @@
   },
   "networkFeeExplanationTitle": {
     "message": "Τέλη δικτύου"
-  },
-  "networkIsBusy": {
-    "message": "Το δίκτυο είναι απασχολημένο. Τα τέλη συναλλαγής είναι υψηλά και οι εκτιμήσεις είναι λιγότερο ακριβείς."
   },
   "networkMenu": {
     "message": "Μενού δικτύου"
