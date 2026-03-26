@@ -411,9 +411,6 @@
     "message": "Lưu các giá trị này làm giá trị mặc định cho mạng $1.",
     "description": "$1 is the current network name."
   },
-  "advancedGasFeeModalTitle": {
-    "message": "Phí gas nâng cao"
-  },
   "advancedGasPriceModalTitle": {
     "message": "Phí mạng nâng cao"
   },
@@ -1351,14 +1348,6 @@
   "cancelPopoverTitle": {
     "message": "Hủy giao dịch"
   },
-  "cancelSpeedUpLabel": {
-    "message": "Phí gas này sẽ $1 phí gas ban đầu.",
-    "description": "$1 is text 'replace' in bold"
-  },
-  "cancelSpeedUpTransactionTooltip": {
-    "message": "Để $1 giao dịch, phí gas phải tăng thêm ít nhất 10% để được mạng lưới ghi nhận.",
-    "description": "$1 is string 'cancel' or 'speed up'"
-  },
   "cancelTransactionDescription": {
     "message": "Giao dịch này sẽ bị hủy và phí mạng này sẽ thay thế phí ban đầu."
   },
@@ -2072,10 +2061,6 @@
   "dappSuggestedShortLabel": {
     "message": "Trang web"
   },
-  "dappSuggestedTooltip": {
-    "message": "$1 đã đề xuất mức giá này.",
-    "description": "$1 represents the Dapp's origin"
-  },
   "dappSwapAdvantage": {
     "message": "Tiết kiệm và kiếm tiền với MetaMask Hoán đổi"
   },
@@ -2526,9 +2511,6 @@
   "editAddressNickname": {
     "message": "Chỉnh sửa biệt danh địa chỉ"
   },
-  "editCancellationGasFeeModalTitle": {
-    "message": "Chỉnh sửa phí gas hủy"
-  },
   "editContact": {
     "message": "Sửa người liên hệ"
   },
@@ -2587,9 +2569,6 @@
   "editGasPriceTooltip": {
     "message": "Mạng này yêu cầu trường \"Giá gas\" khi gửi giao dịch. Giá gas là số tiền bạn sẽ trả cho mỗi đơn vị gas."
   },
-  "editGasSubTextFeeLabel": {
-    "message": "Phí tối đa:"
-  },
   "editGasTitle": {
     "message": "Chỉnh sửa mức ưu tiên"
   },
@@ -2616,9 +2595,6 @@
   },
   "editPermissions": {
     "message": "Chỉnh sửa quyền"
-  },
-  "editSpeedUpEditGasFeeModalTitle": {
-    "message": "Chỉnh sửa phí gas tăng tốc"
   },
   "editSpendingCap": {
     "message": "Chỉnh sửa hạn mức chi tiêu"
@@ -3026,9 +3002,6 @@
   },
   "gasLimitV2": {
     "message": "Hạn mức phí gas"
-  },
-  "gasOption": {
-    "message": "Tùy chọn phí gas"
   },
   "gasPrice": {
     "message": "Giá gas"
@@ -3962,9 +3935,6 @@
   "maxFeeTooltip": {
     "message": "Một khoản phí tối đa được cung cấp để thanh toán cho giao dịch."
   },
-  "maxPriorityFee": {
-    "message": "Phí ưu tiên tối đa"
-  },
   "medium": {
     "message": "Thị trường"
   },
@@ -4390,9 +4360,6 @@
   },
   "networkFeeExplanationTitle": {
     "message": "Phí mạng"
-  },
-  "networkIsBusy": {
-    "message": "Mạng đang bận. Phí gas cao và ước tính kém chính xác hơn."
   },
   "networkMenu": {
     "message": "Trình đơn mạng"

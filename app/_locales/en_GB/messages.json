@@ -420,9 +420,6 @@
     "message": "Save these values as my default for the $1 network.",
     "description": "$1 is the current network name."
   },
-  "advancedGasFeeModalTitle": {
-    "message": "Advanced gas fee"
-  },
   "advancedGasPriceModalTitle": {
     "message": "Advanced network fee"
   },
@@ -1360,14 +1357,6 @@
   "cancelPopoverTitle": {
     "message": "Cancel transaction"
   },
-  "cancelSpeedUpLabel": {
-    "message": "This gas fee will $1 the original.",
-    "description": "$1 is text 'replace' in bold"
-  },
-  "cancelSpeedUpTransactionTooltip": {
-    "message": "To $1 a transaction the gas fee must be increased by at least 10% for it to be recognized by the network.",
-    "description": "$1 is string 'cancel' or 'speed up'"
-  },
   "cancelTransactionDescription": {
     "message": "This transaction will be canceled and this network fee will replace the original."
   },
@@ -2081,10 +2070,6 @@
   "dappSuggestedShortLabel": {
     "message": "Site"
   },
-  "dappSuggestedTooltip": {
-    "message": "$1 has recommended this price.",
-    "description": "$1 represents the Dapp's origin"
-  },
   "dappSwapAdvantage": {
     "message": "Save and earn with MetaMask Swaps"
   },
@@ -2541,9 +2526,6 @@
   "editAddressNickname": {
     "message": "Edit address nickname"
   },
-  "editCancellationGasFeeModalTitle": {
-    "message": "Edit cancellation gas fee"
-  },
   "editContact": {
     "message": "Edit contact"
   },
@@ -2602,9 +2584,6 @@
   "editGasPriceTooltip": {
     "message": "This network requires a “Gas price” field when submitting a transaction. Gas price is the amount you will pay pay per unit of gas."
   },
-  "editGasSubTextFeeLabel": {
-    "message": "Max fee:"
-  },
   "editGasTitle": {
     "message": "Edit priority"
   },
@@ -2631,9 +2610,6 @@
   },
   "editPermissions": {
     "message": "Edit permissions"
-  },
-  "editSpeedUpEditGasFeeModalTitle": {
-    "message": "Edit speed up gas fee"
   },
   "editSpendingCap": {
     "message": "Edit spending cap"
@@ -3041,9 +3017,6 @@
   },
   "gasLimitV2": {
     "message": "Gas limit"
-  },
-  "gasOption": {
-    "message": "Gas option"
   },
   "gasPrice": {
     "message": "Gas price"
@@ -3977,9 +3950,6 @@
   "maxFeeTooltip": {
     "message": "A maximum fee provided to pay for the transaction."
   },
-  "maxPriorityFee": {
-    "message": "Max priority fee"
-  },
   "medium": {
     "message": "Market"
   },
@@ -4419,9 +4389,6 @@
   },
   "networkFeeExplanationTitle": {
     "message": "Network fee"
-  },
-  "networkIsBusy": {
-    "message": "Network is busy. Gas prices are high and estimates are less accurate."
   },
   "networkMenu": {
     "message": "Network menu"
