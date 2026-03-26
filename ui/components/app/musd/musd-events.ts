@@ -202,6 +202,31 @@ export type MusdClaimBonusButtonClickedEventProperties = {
   network_name: string;
 };
 
+/** Where the Merkl claim bonus CTA can appear (impression + click context) */
+export type MusdMerklClaimCtaLocation = 'token_list_item' | 'asset_overview';
+
+/**
+ * Properties for mUSD Claim Bonus CTA Displayed (Merkl claim CTA impression)
+ */
+export type MusdClaimBonusCtaDisplayedEventProperties = {
+  location: MusdMerklClaimCtaLocation;
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  view_trigger: 'component_mounted';
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  button_text: string;
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  network_chain_id: string;
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  network_name: string;
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  asset_symbol: string;
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  bonus_amount_range: string;
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  has_claimed_before: boolean;
+};
+
 /**
  * Properties for MUSD_CLAIM_BONUS_STATUS_UPDATED event
  * Tracks Merkl claim transaction status changes

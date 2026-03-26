@@ -68,6 +68,7 @@ export const PerpsExploreMarkets: React.FC<PerpsExploreMarketsProps> = ({
             name={market.name}
             price={market.price}
             change24hPercent={market.change24hPercent}
+            volume={market.volume}
             onClick={handleMarketClick}
             data-testid={`explore-crypto-${market.symbol}`}
           />
@@ -79,6 +80,7 @@ export const PerpsExploreMarkets: React.FC<PerpsExploreMarketsProps> = ({
             name={market.name}
             price={market.price}
             change24hPercent={market.change24hPercent}
+            volume={market.volume}
             onClick={handleMarketClick}
             data-testid={`explore-hip3-${market.symbol.replace(/:/gu, '-')}`}
           />
