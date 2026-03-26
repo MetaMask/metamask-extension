@@ -411,9 +411,6 @@
     "message": "将这些值保存为 $1 网络的默认值。",
     "description": "$1 is the current network name."
   },
-  "advancedGasFeeModalTitle": {
-    "message": "高级燃料费"
-  },
   "advancedGasPriceModalTitle": {
     "message": "高级网络费"
   },
@@ -1351,14 +1348,6 @@
   "cancelPopoverTitle": {
     "message": "取消交易"
   },
-  "cancelSpeedUpLabel": {
-    "message": "这笔燃料费将$1原来的费用。",
-    "description": "$1 is text 'replace' in bold"
-  },
-  "cancelSpeedUpTransactionTooltip": {
-    "message": "若要$1交易，燃料费用必须增加至少10%才能被网络认可。",
-    "description": "$1 is string 'cancel' or 'speed up'"
-  },
   "cancelTransactionDescription": {
     "message": "这笔交易将被取消，且此网络费用将取代原有费用。"
   },
@@ -2072,10 +2061,6 @@
   "dappSuggestedShortLabel": {
     "message": "网站"
   },
-  "dappSuggestedTooltip": {
-    "message": "$1 建议了这个价格。",
-    "description": "$1 represents the Dapp's origin"
-  },
   "dappSwapAdvantage": {
     "message": "通过 MetaMask Swaps 节省成本并赚取奖励"
   },
@@ -2526,9 +2511,6 @@
   "editAddressNickname": {
     "message": "编辑地址昵称"
   },
-  "editCancellationGasFeeModalTitle": {
-    "message": "编辑取消燃料费用"
-  },
   "editContact": {
     "message": "编辑联系信息"
   },
@@ -2587,9 +2569,6 @@
   "editGasPriceTooltip": {
     "message": "此网络在提交交易时需要一个“燃料价格”字段。燃料价格是您支付的每单位燃料金额。"
   },
-  "editGasSubTextFeeLabel": {
-    "message": "最大费用："
-  },
   "editGasTitle": {
     "message": "编辑优先级"
   },
@@ -2616,9 +2595,6 @@
   },
   "editPermissions": {
     "message": "编辑许可"
-  },
-  "editSpeedUpEditGasFeeModalTitle": {
-    "message": "编辑加速燃料费用"
   },
   "editSpendingCap": {
     "message": "编辑支出上限"
@@ -3026,9 +3002,6 @@
   },
   "gasLimitV2": {
     "message": "燃料上限"
-  },
-  "gasOption": {
-    "message": "燃料选项"
   },
   "gasPrice": {
     "message": "Gas 价格（GWEI）"
@@ -3962,9 +3935,6 @@
   "maxFeeTooltip": {
     "message": "为支付交易而提供的最高费用。"
   },
-  "maxPriorityFee": {
-    "message": "最大优先费用"
-  },
   "medium": {
     "message": "市场"
   },
@@ -4390,9 +4360,6 @@
   },
   "networkFeeExplanationTitle": {
     "message": "网络费"
-  },
-  "networkIsBusy": {
-    "message": "网络繁忙。燃料价格较高，估值较不准确。"
   },
   "networkMenu": {
     "message": "网络菜单"
