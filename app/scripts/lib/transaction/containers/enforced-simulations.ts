@@ -6,6 +6,7 @@ import {
 import { Hex, createProjectLogger, hexToNumber } from '@metamask/utils';
 import { BigNumber } from 'bignumber.js';
 import { TransactionControllerInitMessenger } from '../../../controller-init/messengers/transaction-controller-messenger';
+import { getEnforcedSimulationsSlippage } from '../../../../../shared/lib/transaction/enforced-simulations';
 import {
   createCaveatBuilder,
   getDeleGatorEnvironment,
@@ -20,8 +21,6 @@ const log = createProjectLogger('enforced-simulations');
 
 const MOCK_DELEGATION_SIGNATURE =
   '0x2261a7810ed3e9cde160895909e138e2f68adb2da86fcf98ea0840701df107721fb369ab9b52550ea98832c09f8185284aca4c94bd345e867a4f4461868dd7751b' as Hex;
-
-const DEFAULT_SLIPPAGE = 10;
 
 export async function enforceSimulations({
   messenger,
@@ -46,12 +45,13 @@ export async function enforceSimulations({
   const from = txParams.from as Hex;
   const chainIdDecimal = hexToNumber(chainId);
   const delegationEnvironment = getDeleGatorEnvironment(chainIdDecimal);
+  const slippage = getEnforcedSimulationsSlippage();
 
   const caveats = generateCaveats(
     from,
     delegationEnvironment,
     simulationData,
-    DEFAULT_SLIPPAGE,
+    slippage,
   );
 
   const { data, to } = await convertTransactionToRedeemDelegations({

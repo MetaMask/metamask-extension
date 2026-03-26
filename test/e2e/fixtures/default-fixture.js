@@ -245,7 +245,7 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
           showTestNetworks: false,
           smartTransactionsOptInStatus: true,
           showNativeTokenAsMainBalance: true,
-          showDefaultAddress: false,
+          showDefaultAddress: true,
           showMultiRpcModal: false,
           showConfirmationAdvancedDetails: false,
           tokenSortConfig: {

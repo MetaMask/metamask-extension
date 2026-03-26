@@ -52,7 +52,7 @@ export type PerpsControllerProviderProps = {
  * @example
  * ```tsx
  * <PerpsControllerProvider>
- *   <PerpsTabView />
+ *   <PerpsView />
  * </PerpsControllerProvider>
  * ```
  */

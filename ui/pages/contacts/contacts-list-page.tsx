@@ -30,10 +30,6 @@ import {
 import { getCompleteAddressBook, getInternalAccounts } from '../../selectors';
 import { isEqualCaseInsensitive } from '../../../shared/lib/string-utils';
 import {
-  buildDuplicateContactMap,
-  hasDuplicateContacts,
-} from '../../components/app/contact-list/utils';
-import {
   BannerAlert,
   BannerAlertSeverity,
 } from '../../components/component-library';
@@ -42,6 +38,7 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../shared/constants/metametrics';
+import { buildDuplicateContactMap, hasDuplicateContacts } from './utils';
 import { ContactListItem } from './components/contact-list-item';
 import { ContactsEmptyState } from './components/contacts-empty-state';
 

@@ -1,6 +1,4 @@
-export type SettingItemProps = {
-  sectionRef?: React.RefObject<HTMLDivElement>;
-};
+export type SettingItemProps = Record<string, never>;
 
 export type SettingItemConfig = {
   id: string;

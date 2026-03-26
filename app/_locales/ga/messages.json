@@ -381,9 +381,6 @@
     "message": "Sábháil na luachanna seo mar mo luachanna réamhshocraithe don líonra $1.",
     "description": "$1 is the current network name."
   },
-  "advancedGasFeeModalTitle": {
-    "message": "Táille gáis roimhe ré"
-  },
   "advancedGasPriceTitle": {
     "message": "Praghas gáis"
   },
@@ -1068,14 +1065,6 @@
   "cancelPopoverTitle": {
     "message": "Cealaigh an t-idirbheart"
   },
-  "cancelSpeedUpLabel": {
-    "message": "Beidh an táille gáis seo $1 ar an mbunphraghas.",
-    "description": "$1 is text 'replace' in bold"
-  },
-  "cancelSpeedUpTransactionTooltip": {
-    "message": "Go dtí $1 in aghaidh an idirbhirt, ní mór an táille gáis a mhéadú 10% ar a laghad le go n-aithneoidh an líonra í.",
-    "description": "$1 is string 'cancel' or 'speed up'"
-  },
   "cancelled": {
     "message": "Cealaithe"
   },
@@ -1660,10 +1649,6 @@
   "dappSuggestedShortLabel": {
     "message": "Suíomh"
   },
-  "dappSuggestedTooltip": {
-    "message": "Tá $1 tar éis an praghas seo a mholadh.",
-    "description": "$1 represents the Dapp's origin"
-  },
   "darkTheme": {
     "message": "Dorcha"
   },
@@ -2034,9 +2019,6 @@
   "editAddressNickname": {
     "message": "Cuir leasainm an tseolta in eagar"
   },
-  "editCancellationGasFeeModalTitle": {
-    "message": "Cuir an táille cealaithe gáis in eagar"
-  },
   "editContact": {
     "message": "Cuir teagmháil in eagar"
   },
@@ -2095,9 +2077,6 @@
   "editGasPriceTooltip": {
     "message": "Éilíonn an líonra seo réimse “Praghas gáis” agus idirbheart á chur isteach. Is é praghas gáis an méid a íocfaidh tú in aghaidh an aonaid gháis."
   },
-  "editGasSubTextFeeLabel": {
-    "message": "Uasmhéid táille:"
-  },
   "editGasTitle": {
     "message": "Tosaíocht eagarthóireachta"
   },
@@ -2124,9 +2103,6 @@
   },
   "editPermissions": {
     "message": "Ceadanna a chur in eagar"
-  },
-  "editSpeedUpEditGasFeeModalTitle": {
-    "message": "Cuir táille gáis luas suas in eagar"
   },
   "editSpendingCap": {
     "message": "Cuir an teorainn caiteachais in eagar"
@@ -2391,9 +2367,6 @@
   "fast": {
     "message": "Tapa"
   },
-  "feeDetails": {
-    "message": "Sonraí na táille"
-  },
   "fileImportFail": {
     "message": "Nach bhfuil allmhairiú comhaid ag obair? Cliceáil anseo!",
     "description": "Helps user import their account from a JSON file"
@@ -2508,9 +2481,6 @@
   },
   "gasLimitV2": {
     "message": "Teorainn gáis"
-  },
-  "gasOption": {
-    "message": "Rogha gáis"
   },
   "gasPriceExcessive": {
     "message": "Tá do tháille gáis socraithe ró-ard. Smaoinigh ar an méid a ísliú."
@@ -2974,29 +2944,11 @@
   "knownTokenWarning": {
     "message": "Cuirfidh an gníomh seo comharthaí in eagar atá liostaithe i do sparán cheana féin, ar féidir iad a úsáid chun fioscaireachta a dhéanamh ort. Ná ceadaigh ach amháin má tá tú cinnte go bhfuil sé i gceist agat athrú a dhéanamh ar a seasann na comharthaí seo dó. Foghlaim tuilleadh faoi $1"
   },
-  "l1Fee": {
-    "message": "Táille L1"
-  },
-  "l1FeeTooltip": {
-    "message": "Táille gáis L1"
-  },
-  "l2Fee": {
-    "message": "Táille L2"
-  },
-  "l2FeeTooltip": {
-    "message": "Táille gáis L2"
-  },
   "lastSold": {
     "message": "Díolta go deireanach"
   },
   "lavaDomeCopyWarning": {
     "message": "Ar mhaithe le do shábháilteacht, ní féidir an téacs seo a roghnú faoi láthair."
-  },
-  "layer1Fees": {
-    "message": "Táillí Sraith 1"
-  },
-  "layer2Fees": {
-    "message": "Táillí Sraith 2"
   },
   "learnHow": {
     "message": "Foghlaim conas"
@@ -3126,9 +3078,6 @@
   "links": {
     "message": "Naisc"
   },
-  "loadMore": {
-    "message": "Luchtaigh níos mó"
-  },
   "loading": {
     "message": "Ag lódáil..."
   },
@@ -3239,9 +3188,6 @@
   },
   "maxFeeTooltip": {
     "message": "Táille uasta arna soláthar chun íoc as an idirbheart."
-  },
-  "maxPriorityFee": {
-    "message": "Uasmhéid táille tosaíochta"
   },
   "medium": {
     "message": "Margadh"
@@ -3554,9 +3500,6 @@
   },
   "networkFeeExplanationTitle": {
     "message": "Táille Líonra"
-  },
-  "networkIsBusy": {
-    "message": "Tá an líonra gnóthach. Tá praghsanna gáis ard agus níl na meastacháin chomh cruinn céanna."
   },
   "networkMenu": {
     "message": "Roghchlár Líonra"
@@ -6630,9 +6573,6 @@
   },
   "transactionDetailGasHeading": {
     "message": "Táille gáis measta"
-  },
-  "transactionDetailMultiLayerTotalSubtitle": {
-    "message": "Méid + táillí"
   },
   "transactionError": {
     "message": "Earráid idirbhirt. Caitheadh ​​eisceacht i gcód an chonartha."

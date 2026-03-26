@@ -105,7 +105,7 @@
       "announcements": {}
     },
     "AppMetadataController": {
-      "currentMigrationVersion": 199,
+      "currentMigrationVersion": 200,
       "firstTimeInfo": {},
       "previousAppVersion": "",
       "previousMigrationVersion": 0
@@ -822,7 +822,7 @@
         "hideZeroBalanceTokens": false,
         "privacyMode": false,
         "showConfirmationAdvancedDetails": false,
-        "showDefaultAddress": false,
+        "showDefaultAddress": true,
         "showExtensionInFullSizeView": false,
         "showFiatInTestnets": false,
         "showMultiRpcModal": false,
@@ -1087,6 +1087,6 @@
   },
   "meta": {
     "storageKind": "split",
-    "version": 199
+    "version": 200
   }
 }
