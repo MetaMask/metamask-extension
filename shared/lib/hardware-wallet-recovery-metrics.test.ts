@@ -36,19 +36,10 @@ describe('hardware-wallet-recovery-metrics', () => {
       );
     });
 
-    it('defaults unknown or schema-unlisted wallet types to Ledger', () => {
-      expect(mapHardwareWalletTypeToMetricDeviceType(undefined)).toBe(
-        MetaMetricsHardwareWalletDeviceType.Ledger,
-      );
-      expect(mapHardwareWalletTypeToMetricDeviceType(null)).toBe(
-        MetaMetricsHardwareWalletDeviceType.Ledger,
-      );
-      expect(mapHardwareWalletTypeToMetricDeviceType('oneKey')).toBe(
-        MetaMetricsHardwareWalletDeviceType.Ledger,
-      );
-      expect(mapHardwareWalletTypeToMetricDeviceType('unknown')).toBe(
-        MetaMetricsHardwareWalletDeviceType.Ledger,
-      );
+    it('returns null for unknown or schema-unlisted wallet types', () => {
+      expect(mapHardwareWalletTypeToMetricDeviceType(undefined)).toBeNull();
+      expect(mapHardwareWalletTypeToMetricDeviceType(null)).toBeNull();
+      expect(mapHardwareWalletTypeToMetricDeviceType('unknown')).toBeNull();
     });
   });
 

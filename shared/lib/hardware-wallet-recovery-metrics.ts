@@ -190,24 +190,30 @@ export function extractHardwareWalletRecoveryErrorCodeAndMessage(
  * Maps internal wallet type keys to Segment `device_type` enum values.
  *
  * Segment schema only defines Ledger, Trezor, QR Hardware, and Lattice.
- * Other keys such as `unknown` are not in the schema and are reported as Ledger for consistency.
+ * Unknown/unmapped wallet types are intentionally not tracked.
  *
- * @param walletType - Value from {@link HardwareWalletType} or keyring-derived string (e.g. `ledger`, `qr`).
- * @returns Corresponding {@link MetaMetricsHardwareWalletDeviceType}, or Ledger when unmapped.
+ * @param walletType - Hardware wallet type key from UI/hardware contexts.
+ * @returns Corresponding {@link MetaMetricsHardwareWalletDeviceType}, or null when unmapped.
  */
 export function mapHardwareWalletTypeToMetricDeviceType(
   walletType?: string | null,
-): MetaMetricsHardwareWalletDeviceType {
+): MetaMetricsHardwareWalletDeviceType | null {
   if (
-    walletType !== undefined &&
-    walletType !== null &&
-    Object.hasOwn(HARDWARE_WALLET_TYPE_KEY_TO_SEGMENT_DEVICE_TYPE, walletType)
+    walletType === null ||
+    walletType === undefined ||
+    walletType === 'unknown'
   ) {
-    return HARDWARE_WALLET_TYPE_KEY_TO_SEGMENT_DEVICE_TYPE[
-      walletType as MappableHardwareWalletTypeKey
-    ];
+    return null;
   }
-  return MetaMetricsHardwareWalletDeviceType.Ledger;
+
+  return Object.hasOwn(
+    HARDWARE_WALLET_TYPE_KEY_TO_SEGMENT_DEVICE_TYPE,
+    walletType,
+  )
+    ? HARDWARE_WALLET_TYPE_KEY_TO_SEGMENT_DEVICE_TYPE[
+        walletType as MappableHardwareWalletTypeKey
+      ]
+    : null;
 }
 
 /**

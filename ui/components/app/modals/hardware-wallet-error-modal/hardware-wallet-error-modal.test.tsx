@@ -7,7 +7,13 @@ import {
   Route,
   Routes,
 } from 'react-router-dom';
-import { ErrorCode, type HardwareWalletError } from '@metamask/hw-wallet-sdk';
+import {
+  Category,
+  ErrorCode,
+  HardwareWalletError,
+  Severity,
+  type HardwareWalletError as HardwareWalletErrorType,
+} from '@metamask/hw-wallet-sdk';
 import { getMockContractInteractionConfirmState } from '../../../../../test/data/confirmations/helper';
 import { MetaMetricsEventName } from '../../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
@@ -49,7 +55,7 @@ const createTestError = (
   code: ErrorCode,
   message: string,
   userMessage?: string,
-): HardwareWalletError => {
+): HardwareWalletErrorType => {
   return createHardwareWalletError(
     code,
     'ledger' as HardwareWalletType,
@@ -167,6 +173,30 @@ describe('HardwareWalletErrorModal', () => {
       expect(
         getByText('[hardwareWalletErrorTitleDeviceLocked]'),
       ).toBeInTheDocument();
+    });
+
+    it('renders modal but skips tracking when wallet type is unknown', async () => {
+      const error = new HardwareWalletError('Device is locked', {
+        code: ErrorCode.AuthenticationDeviceLocked,
+        severity: Severity.Info,
+        category: Category.Unknown,
+        userMessage: 'Your device is locked.',
+      });
+      mockUseHardwareWalletConfig.mockReturnValue({
+        walletType: HardwareWalletType.Unknown,
+      });
+
+      const { getByText } = renderWithMetrics(
+        <HardwareWalletErrorModal error={error} />,
+      );
+
+      expect(
+        getByText('[hardwareWalletErrorTitleDeviceLocked]'),
+      ).toBeInTheDocument();
+
+      await waitFor(() => {
+        expect(mockTrackEvent).not.toHaveBeenCalled();
+      });
     });
 
     it('renders nothing for user-rejected errors', () => {
