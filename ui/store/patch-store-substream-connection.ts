@@ -1,21 +1,5 @@
 import type { Substream } from '@metamask/object-multiplex/dist/Substream';
-import {
-  array,
-  literal,
-  number,
-  object,
-  optional,
-  string,
-  union,
-  unknown,
-  validate,
-} from '@metamask/superstruct';
-import {
-  createDeferredPromise,
-  hasProperty,
-  isObject,
-  jsonrpc2 as JSON_RPC_VERSION,
-} from '@metamask/utils';
+import { createDeferredPromise, hasProperty, isObject } from '@metamask/utils';
 import type { JsonRpcNotification } from '@metamask/utils';
 import type { Patch } from 'immer';
 
@@ -43,21 +27,6 @@ const pendingGetStatePatchesRequests = new Map<
     reject: (error: unknown) => void;
   }
 >();
-
-/**
- * Type guard to identify a message that comes through the stream.
- *
- * @param message - The message to identify.
- */
-function isValidMessage(
-  message: unknown,
-): message is { jsonrpc: typeof JSON_RPC_VERSION } {
-  return (
-    !isObject(message) ||
-    !hasProperty(message, 'jsonrpc') ||
-    message.jsonrpc !== JSON_RPC_VERSION
-  );
-}
 
 /**
  * Type guard to identify a `sendUpdate` notification.
