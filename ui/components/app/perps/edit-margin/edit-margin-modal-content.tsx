@@ -283,7 +283,10 @@ export const EditMarginModalContent: React.FC<EditMarginModalContentProps> = ({
           alignItems={BoxAlignItems.Center}
           gap={2}
         >
-          <Box className="min-w-0 flex-1 px-3" data-testid="perps-margin-amount-slider">
+          <Box
+            className="min-w-0 flex-1 px-3"
+            data-testid="perps-margin-amount-slider"
+          >
             <PerpsSlider
               min={0}
               max={100}
@@ -342,14 +345,20 @@ export const EditMarginModalContent: React.FC<EditMarginModalContentProps> = ({
               gap={1}
               className="max-w-[65%] flex-wrap justify-end"
             >
-              <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
+              <Text
+                variant={TextVariant.BodySm}
+                color={TextColor.TextAlternative}
+              >
                 $
                 {formatNumber(anchorLiquidationPrice, {
                   minimumFractionDigits: 2,
                   maximumFractionDigits: 2,
                 })}
               </Text>
-              <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
+              <Text
+                variant={TextVariant.BodySm}
+                color={TextColor.TextAlternative}
+              >
                 →
               </Text>
               <Text
@@ -371,10 +380,13 @@ export const EditMarginModalContent: React.FC<EditMarginModalContentProps> = ({
               fontWeight={FontWeight.Medium}
             >
               $
-              {formatNumber(estimatedLiquidationPrice ?? anchorLiquidationPrice, {
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2,
-              })}
+              {formatNumber(
+                estimatedLiquidationPrice ?? anchorLiquidationPrice,
+                {
+                  minimumFractionDigits: 2,
+                  maximumFractionDigits: 2,
+                },
+              )}
             </Text>
           )}
         </Box>
@@ -397,14 +409,20 @@ export const EditMarginModalContent: React.FC<EditMarginModalContentProps> = ({
               gap={1}
               className="max-w-[65%] flex-wrap justify-end"
             >
-              <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
+              <Text
+                variant={TextVariant.BodySm}
+                color={TextColor.TextAlternative}
+              >
                 {formatNumber(anchorLiquidationDistance, {
                   minimumFractionDigits: 1,
                   maximumFractionDigits: 1,
                 })}
                 %
               </Text>
-              <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
+              <Text
+                variant={TextVariant.BodySm}
+                color={TextColor.TextAlternative}
+              >
                 →
               </Text>
               <Text
