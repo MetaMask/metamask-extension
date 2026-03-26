@@ -1,15 +1,13 @@
-import React, { useState, useCallback, useMemo, useEffect } from 'react';
+import React, { useState, useCallback, useMemo, useLayoutEffect } from 'react';
 import {
   Box,
   BoxAlignItems,
   BoxFlexDirection,
+  BoxJustifyContent,
   Text,
   TextVariant,
   TextColor,
   FontWeight,
-  Button,
-  ButtonVariant,
-  ButtonSize,
   Icon,
   IconName,
   IconSize,
@@ -31,31 +29,58 @@ import type { Position } from '../types';
 const TP_PRESETS = [10, 25, 50, 100];
 const SL_PRESETS = [10, 25, 50, 75];
 
+function getPnlDisplayColor(pnl: number): TextColor {
+  if (pnl > 0) {
+    return TextColor.SuccessDefault;
+  }
+  if (pnl < 0) {
+    return TextColor.ErrorDefault;
+  }
+  return TextColor.TextDefault;
+}
+
+export type UpdateTPSLSubmitState = {
+  onSubmit: () => void;
+  isSaving: boolean;
+  submitDisabled: boolean;
+  submitButtonTitle?: string;
+};
+
 export type UpdateTPSLModalContentProps = {
   position: Position;
   currentPrice: number;
   onClose: () => void;
+  /** Wired by UpdateTPSLModal to place the primary action in ModalFooter */
+  onSubmitStateChange?: (state: UpdateTPSLSubmitState) => void;
 };
 
 /**
- * TP/SL form content: presets, price/percent inputs, save.
- * Used inside UpdateTPSLModal. Initializes from position when modal opens.
+ * TP/SL form content: presets, price/percent inputs, and validation errors.
+ * Used inside UpdateTPSLModal. Initializes from position on mount; parent should set
+ * `key={position.symbol}` on the modal so edits are not overwritten when the same
+ * market is refetched while the modal is open.
  * @param options0
  * @param options0.position
  * @param options0.currentPrice
  * @param options0.onClose
+ * @param options0.onSubmitStateChange
  */
 export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
   position,
   currentPrice,
   onClose,
+  onSubmitStateChange,
 }) => {
   const t = useI18nContext();
-  const { formatNumber } = useFormatters();
+  const { formatNumber, formatCurrencyWithMinThreshold } = useFormatters();
   const { isEligible } = usePerpsEligibility();
 
-  const [editingTpPrice, setEditingTpPrice] = useState<string>('');
-  const [editingSlPrice, setEditingSlPrice] = useState<string>('');
+  const [editingTpPrice, setEditingTpPrice] = useState(
+    () => position.takeProfitPrice ?? '',
+  );
+  const [editingSlPrice, setEditingSlPrice] = useState(
+    () => position.stopLossPrice ?? '',
+  );
   const [isSaving, setIsSaving] = useState(false);
   const [tpslError, setTpslError] = useState<string | null>(null);
 
@@ -138,13 +163,34 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
     [priceToPercentForEdit, editingSlPrice],
   );
 
-  useEffect(() => {
-    if (position) {
-      setEditingTpPrice(position.takeProfitPrice ?? '');
-      setEditingSlPrice(position.stopLossPrice ?? '');
-      setTpslError(null);
+  const signedSize = useMemo(
+    () => parseFloat(position.size.replace(/,/gu, '')) || 0,
+    [position.size],
+  );
+
+  const estimatedPnlAtTp = useMemo(() => {
+    const clean = editingTpPrice.replace(/,/gu, '').trim();
+    if (!clean) {
+      return null;
     }
-  }, [position]);
+    const exitPrice = parseFloat(clean);
+    if (Number.isNaN(exitPrice) || exitPrice <= 0 || !entryPriceForEdit) {
+      return null;
+    }
+    return signedSize * (exitPrice - entryPriceForEdit);
+  }, [editingTpPrice, signedSize, entryPriceForEdit]);
+
+  const estimatedPnlAtSl = useMemo(() => {
+    const clean = editingSlPrice.replace(/,/gu, '').trim();
+    if (!clean) {
+      return null;
+    }
+    const exitPrice = parseFloat(clean);
+    if (Number.isNaN(exitPrice) || exitPrice <= 0 || !entryPriceForEdit) {
+      return null;
+    }
+    return signedSize * (exitPrice - entryPriceForEdit);
+  }, [editingSlPrice, signedSize, entryPriceForEdit]);
 
   const handleTpPresetClick = useCallback(
     (percent: number) => {
@@ -271,6 +317,15 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
     }
   }, [isEligible, position, editingTpPrice, editingSlPrice, onClose]);
 
+  useLayoutEffect(() => {
+    onSubmitStateChange?.({
+      onSubmit: handleSave,
+      isSaving,
+      submitDisabled: !isEligible || isSaving,
+      submitButtonTitle: isEligible ? undefined : t('perpsGeoBlockedTooltip'),
+    });
+  }, [onSubmitStateChange, handleSave, isSaving, isEligible, t]);
+
   return (
     <Box flexDirection={BoxFlexDirection.Column} gap={4}>
       {/* Take Profit */}
@@ -356,6 +411,32 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
             />
           </Box>
         </Box>
+        {estimatedPnlAtTp !== null && (
+          <Box
+            flexDirection={BoxFlexDirection.Row}
+            justifyContent={BoxJustifyContent.Between}
+            alignItems={BoxAlignItems.Center}
+            data-testid="perps-update-tpsl-estimated-tp-pnl-row"
+          >
+            <Text
+              variant={TextVariant.BodyXs}
+              color={TextColor.TextAlternative}
+            >
+              {t('perpsEstimatedPnlAtTakeProfit')}
+            </Text>
+            <Text
+              variant={TextVariant.BodySm}
+              fontWeight={FontWeight.Medium}
+              color={getPnlDisplayColor(estimatedPnlAtTp)}
+            >
+              {estimatedPnlAtTp >= 0 ? '+' : '-'}
+              {formatCurrencyWithMinThreshold(
+                Math.abs(estimatedPnlAtTp),
+                'USD',
+              )}
+            </Text>
+          </Box>
+        )}
       </Box>
 
       {/* Stop Loss */}
@@ -441,6 +522,32 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
             />
           </Box>
         </Box>
+        {estimatedPnlAtSl !== null && (
+          <Box
+            flexDirection={BoxFlexDirection.Row}
+            justifyContent={BoxJustifyContent.Between}
+            alignItems={BoxAlignItems.Center}
+            data-testid="perps-update-tpsl-estimated-sl-pnl-row"
+          >
+            <Text
+              variant={TextVariant.BodyXs}
+              color={TextColor.TextAlternative}
+            >
+              {t('perpsEstimatedPnlAtStopLoss')}
+            </Text>
+            <Text
+              variant={TextVariant.BodySm}
+              fontWeight={FontWeight.Medium}
+              color={getPnlDisplayColor(estimatedPnlAtSl)}
+            >
+              {estimatedPnlAtSl >= 0 ? '+' : '-'}
+              {formatCurrencyWithMinThreshold(
+                Math.abs(estimatedPnlAtSl),
+                'USD',
+              )}
+            </Text>
+          </Box>
+        )}
       </Box>
 
       {tpslError && (
@@ -460,21 +567,6 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
           </Text>
         </Box>
       )}
-
-      <Button
-        variant={ButtonVariant.Primary}
-        size={ButtonSize.Md}
-        onClick={handleSave}
-        disabled={!isEligible || isSaving}
-        title={isEligible ? undefined : t('perpsGeoBlockedTooltip')}
-        className={
-          isSaving || !isEligible
-            ? 'w-full opacity-70 cursor-not-allowed'
-            : 'w-full'
-        }
-      >
-        {isSaving ? t('perpsSubmitting') : t('perpsSaveChanges')}
-      </Button>
     </Box>
   );
 };

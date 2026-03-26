@@ -5716,6 +5716,14 @@
   "perpsReversePositionDescriptionShort": {
     "message": "Flip your short position to a long"
   },
+  "perpsEstimatedPnlAtStopLoss": {
+    "message": "Est. P&L at stop loss",
+    "description": "Label for estimated profit or loss when stop loss is hit"
+  },
+  "perpsEstimatedPnlAtTakeProfit": {
+    "message": "Est. P&L at take profit",
+    "description": "Label for estimated profit or loss when take profit is hit"
+  },
   "perpsSaveChanges": {
     "message": "Save Changes",
     "description": "Button text for saving TP/SL changes"
