@@ -207,6 +207,7 @@ import {
   getIsSeedlessOnboardingFeatureEnabled,
   getEnabledAdvancedPermissions,
   getIsPerpsIncludedInBuild,
+  getIsAssetsUnifiedStateIncludedInBuild,
 } from '../../shared/lib/environment';
 import { isSnapPreinstalled } from '../../shared/lib/snaps/snaps';
 import { toChecksumHexAddress } from '../../shared/lib/hexstring-utils';
@@ -495,13 +496,6 @@ export default class MetamaskController extends EventEmitter {
     this.platform = opts.platform;
     this.notificationManager = opts.notificationManager;
     const initState = opts.initState || {};
-    const assetsUnifyFlag =
-      initState?.RemoteFeatureFlagController?.remoteFeatureFlags
-        ?.assetsUnifyState;
-    const shouldInitAssetsController = isAssetsUnifyStateFeatureEnabled(
-      assetsUnifyFlag,
-      ASSETS_UNIFY_STATE_VERSION_1,
-    );
     const version = process.env.METAMASK_VERSION;
     this.featureFlags = opts.featureFlags;
 
@@ -684,7 +678,7 @@ export default class MetamaskController extends EventEmitter {
       ProfileMetricsService: ProfileMetricsServiceInit,
       // ClientController must be initialized before AssetsController (AssetsController subscribes to ClientController:stateChange).
       ClientController: ClientControllerInit,
-      ...(shouldInitAssetsController
+      ...(getIsAssetsUnifiedStateIncludedInBuild()
         ? { AssetsController: AssetsControllerInit }
         : {}),
     };
@@ -9433,9 +9427,11 @@ export default class MetamaskController extends EventEmitter {
     const assetsUnifyFlag =
       this.remoteFeatureFlagController?.state?.remoteFeatureFlags
         ?.assetsUnifyState;
-    return isAssetsUnifyStateFeatureEnabled(
-      assetsUnifyFlag,
-      ASSETS_UNIFY_STATE_VERSION_1,
+    return (
+      isAssetsUnifyStateFeatureEnabled(
+        assetsUnifyFlag,
+        ASSETS_UNIFY_STATE_VERSION_1,
+      ) && getIsAssetsUnifiedStateIncludedInBuild()
     );
   }
 }
