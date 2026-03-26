@@ -394,7 +394,7 @@
     "@metamask/snaps-sdk": "^11.0.0",
     "@metamask/snaps-utils": "^12.1.1",
     "@metamask/solana-wallet-snap": "^2.7.3",
-    "@metamask/solana-wallet-standard": "^1.0.0",
+    "@metamask/solana-wallet-standard": "^0.6.0",
     "@metamask/storage-service": "^1.0.0",
     "@metamask/subscription-controller": "^6.0.0",
     "@metamask/transaction-controller": "^63.0.0",
