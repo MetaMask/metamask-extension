@@ -1,10 +1,11 @@
-import { strict as assert } from 'assert';
-import { By } from 'selenium-webdriver';
-import { largeDelayMs, withFixtures } from '../../../helpers';
+import { withFixtures } from '../../../helpers';
 import { SOLANA_MAINNET_SCOPE } from '../../../constants';
 import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
 import { login } from '../../../page-objects/flows/login.flow';
 import { addAccount } from '../../../page-objects/flows/add-account.flow';
+import ConnectAccountConfirmation from '../../../page-objects/pages/confirmations/connect-account-confirmation';
+import EditConnectedAccountsModal from '../../../page-objects/pages/dialog/edit-connected-accounts-modal';
+import NetworkPermissionSelectModal from '../../../page-objects/pages/dialog/network-permission-select-modal';
 import TestDappMultichain from '../../../page-objects/pages/test-dapp-multichain';
 import { DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS } from '../testHelpers';
 
@@ -29,46 +30,24 @@ describe('Multichain API - Non EVM', function () {
 
           const testDapp = new TestDappMultichain(driver);
           await testDapp.openTestDappPage();
+          await testDapp.checkPageIsLoaded();
           await testDapp.connectExternallyConnectable(extensionId);
           await testDapp.initCreateSessionScopes(requestScopes);
 
-          // navigate to network selection screen
-          const permissionsTab = await driver.findElement(
-            '[data-testid="permissions-tab"]',
+          const connectAccountConfirmation = new ConnectAccountConfirmation(
+            driver,
           );
-          await permissionsTab.click();
-          const editButtons = await driver.findElements('[data-testid="edit"]');
-          await editButtons[1].click();
-          await driver.delay(largeDelayMs);
+          await connectAccountConfirmation.checkPageIsLoaded();
+          await connectAccountConfirmation.goToPermissionsTab();
+          await connectAccountConfirmation.openEditNetworksModal();
 
-          const networkListItems = await driver.findElements(
-            '.multichain-network-list-item',
+          const networkPermissionSelectModal = new NetworkPermissionSelectModal(
+            driver,
           );
-
-          for (const item of networkListItems) {
-            const networkNameDiv = await item.findElement(
-              By.css('div[data-testid]'),
-            );
-            const network = await networkNameDiv.getAttribute('data-testid');
-
-            const checkbox = await item.findElement(
-              By.css('input[type="checkbox"]'),
-            );
-            const isChecked = await checkbox.isSelected();
-            if (networksToRequest.includes(network)) {
-              assert.strictEqual(
-                isChecked,
-                true,
-                `Expected ${network} to be selected.`,
-              );
-            } else {
-              assert.strictEqual(
-                isChecked,
-                false,
-                `Expected ${network} to NOT be selected.`,
-              );
-            }
-          }
+          await networkPermissionSelectModal.checkPageIsLoaded();
+          await networkPermissionSelectModal.checkNetworkStatus(
+            networksToRequest,
+          );
         },
       );
     });
@@ -88,24 +67,25 @@ describe('Multichain API - Non EVM', function () {
 
           const testDapp = new TestDappMultichain(driver);
           await testDapp.openTestDappPage();
+          await testDapp.checkPageIsLoaded();
           await testDapp.connectExternallyConnectable(extensionId);
           await testDapp.initCreateSessionScopes([SOLANA_MAINNET_SCOPE]);
 
-          const editButtons = await driver.findElements('[data-testid="edit"]');
-          await editButtons[0].click();
-
-          const checkboxes = await driver.findElements(
-            'input[type="checkbox" i]',
+          const connectAccountConfirmation = new ConnectAccountConfirmation(
+            driver,
           );
+          await connectAccountConfirmation.checkPageIsLoaded();
+          await connectAccountConfirmation.openEditAccountsModal();
 
-          const accountCheckbox = checkboxes[0];
-          const isChecked = await accountCheckbox.isSelected();
-
-          assert.strictEqual(
-            isChecked,
-            true,
-            'current active account in the wallet should be automatically selected',
+          const editConnectedAccountsModal = new EditConnectedAccountsModal(
+            driver,
           );
+          await editConnectedAccountsModal.checkPageIsLoaded();
+
+          await editConnectedAccountsModal.waitForAccountSelectedStatus({
+            accountIndex: 1,
+            status: 'selected',
+          });
         },
       );
     });
