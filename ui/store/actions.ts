@@ -3607,15 +3607,6 @@ export function createCancelTransaction(
       const { id } = currentNetworkTxList[currentNetworkTxList.length - 1];
       return id;
     } catch (err) {
-      if (err?.message?.includes('Previous transaction is already confirmed')) {
-        dispatch(
-          showModal({
-            name: 'TRANSACTION_ALREADY_CONFIRMED',
-            originalTransactionId: txId,
-          }),
-        );
-      }
-
       dispatch(displayWarning(err));
       throw err;
     }

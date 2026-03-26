@@ -29,8 +29,8 @@ export type UseCancelSpeedupGasStateReturn = {
     | LegacyGasPriceEstimate
     | Record<string, never>
     | null;
-  cancelTransaction: () => void;
-  speedUpTransaction: () => void;
+  cancelTransaction: () => Promise<unknown>;
+  speedUpTransaction: () => Promise<unknown>;
   updateTransactionToTenPercentIncreasedGasFee: (
     initTransaction?: boolean,
   ) => void;
