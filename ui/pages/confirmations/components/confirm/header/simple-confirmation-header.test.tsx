@@ -5,6 +5,7 @@ import { TransactionType } from '@metamask/transaction-controller';
 
 import { getMockConfirmStateForTransaction } from '../../../../../../test/data/confirmations/helper';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../test/data/confirmations/contract-interaction';
+import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
 import { renderWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
 import configureStore from '../../../../../store/store';
 import * as ConfirmActions from '../../../hooks/useConfirmActions';
@@ -84,7 +85,9 @@ describe('<SimpleConfirmationHeader />', () => {
       const { getByRole } = render(TransactionType.musdConversion);
 
       expect(
-        getByRole('button', { name: 'Bonus details' }),
+        getByRole('button', {
+          name: messages.musdConversionBonusTooltipAria.message,
+        }),
       ).toBeInTheDocument();
     });
 
@@ -103,7 +106,9 @@ describe('<SimpleConfirmationHeader />', () => {
         fireEvent.click(getByTestId('musd-conversion-header-tooltip-button'));
       });
 
-      expect(getByText('Powered by Relay')).toBeInTheDocument();
+      expect(
+        getByText(messages.musdBonusPoweredByRelay.message),
+      ).toBeInTheDocument();
     });
   });
 
