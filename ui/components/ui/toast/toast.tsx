@@ -15,7 +15,7 @@ import {
   type TransactionStatus,
 } from '../../../helpers/utils/transaction-display';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-// import { SPINNER_INPUT, ToastStatusIcon } from './toast-status-icon';
+import { SPINNER_INPUT, ToastStatusIcon } from './toast-status-icon';
 
 export const ToastContent = ({ variant }: { variant: TransactionStatus }) => {
   const { title } = useTransactionDisplay(variant);
@@ -59,13 +59,13 @@ export function Toaster() {
         >
           {({ message }) => (
             <>
-              {/* <ToastStatusIcon
-                status={
+              <ToastStatusIcon
+                state={
                   SPINNER_INPUT[
                     notification.type as keyof typeof SPINNER_INPUT
                   ] ?? SPINNER_INPUT.loading
                 }
-              /> */}
+              />
 
               {message}
 

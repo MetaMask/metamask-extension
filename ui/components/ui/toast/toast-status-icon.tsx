@@ -1,4 +1,8 @@
-import { useRive, useStateMachineInput } from '@rive-app/react-canvas';
+import {
+  useRive,
+  useRiveFile,
+  // useStateMachineInput,
+} from '@rive-app/react-canvas';
 import React, { useEffect } from 'react';
 import { ThemeType } from '../../../../shared/constants/preferences';
 import { useTheme } from '../../../hooks/useTheme';
@@ -18,26 +22,31 @@ export const SPINNER_INPUT = {
 export type AnimationStatus =
   (typeof SPINNER_INPUT)[keyof typeof SPINNER_INPUT];
 
-export function ToastStatusIcon({ status }: { status: AnimationStatus }) {
+export function ToastStatusIcon({ state }: { state: AnimationStatus }) {
   const theme = useTheme();
   const isDark = theme === ThemeType.dark;
 
-  const { rive, RiveComponent } = useRive({
-    src: getAsset(),
-    stateMachines: SPINNER_STATE_MACHINE,
+  const { riveFile, status } = useRiveFile({
+    src: './images/riv_animations/spinner_loader_with_states.riv',
   });
 
-  const darkInput = useStateMachineInput(rive, SPINNER_STATE_MACHINE, 'Dark');
+  const { rive, RiveComponent } = useRive({
+    riveFile: riveFile ?? undefined,
+    stateMachines: riveFile ? SPINNER_STATE_MACHINE : undefined,
+  });
+
+  // const darkInput = useStateMachineInput(rive, SPINNER_STATE_MACHINE, 'Dark');
 
   useEffect(() => {
-    if (!darkInput) {
-      return;
-    }
+    // if (!darkInput) {
+    //   return;
+    // }
 
     // eslint-disable-next-line react-compiler/react-compiler
-    darkInput.value = isDark;
+    // darkInput.value = isDark;
     rive?.play();
-  }, [rive, darkInput, isDark]);
+    // }, [rive, darkInput, isDark]);
+  }, [rive, isDark]);
 
   useEffect(() => {
     if (!rive) {
@@ -45,15 +54,19 @@ export function ToastStatusIcon({ status }: { status: AnimationStatus }) {
     }
 
     const inputs = rive.stateMachineInputs(SPINNER_STATE_MACHINE);
-    const trigger = inputs?.find((i) => i.name === status);
+    const trigger = inputs?.find((i) => i.name === state);
     trigger?.fire();
-  }, [rive, status]);
+  }, [rive, state]);
 
   useEffect(() => {
     return () => {
       rive?.cleanup();
     };
   }, [rive]);
+
+  if (status !== 'success') {
+    return null;
+  }
 
   return <RiveComponent className="size-6" />;
 }
