@@ -1,7 +1,9 @@
 import {
+  ASSET_OVERVIEW_TOKEN_CELL_MUSD_OPTIONS,
   MUSD_EVENTS_CONSTANTS,
   musdConversionFlowEntryPointToCtaEventLocation,
   resolveMusdConversionCtaRedirectsTo,
+  TOKEN_LIST_CELL_MUSD_OPTIONS,
 } from './musd-events';
 
 describe('resolveMusdConversionCtaRedirectsTo', () => {
@@ -49,5 +51,20 @@ describe('musdConversionFlowEntryPointToCtaEventLocation', () => {
     expect(
       musdConversionFlowEntryPointToCtaEventLocation('asset_overview'),
     ).toBe(MUSD_EVENTS_CONSTANTS.EVENT_LOCATIONS.ASSET_OVERVIEW);
+  });
+});
+
+describe('TokenCell musd presets', () => {
+  it('TOKEN_LIST_CELL_MUSD_OPTIONS matches home token list surfaces', () => {
+    expect(TOKEN_LIST_CELL_MUSD_OPTIONS).toStrictEqual({
+      merklClaimBonus: { location: 'token_list_item' },
+      convert: { entryPoint: 'token_list' },
+    });
+  });
+
+  it('ASSET_OVERVIEW_TOKEN_CELL_MUSD_OPTIONS matches asset overview Merkl surface', () => {
+    expect(ASSET_OVERVIEW_TOKEN_CELL_MUSD_OPTIONS).toStrictEqual({
+      merklClaimBonus: { location: 'asset_overview' },
+    });
   });
 });

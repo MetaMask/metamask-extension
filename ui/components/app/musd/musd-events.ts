@@ -235,6 +235,32 @@ export type MerklClaimBonusAnalyticsLocation =
   | 'asset_overview';
 
 /**
+ * Stable `musd` prop preset for home token list rows. Single module-level object so
+ * parents do not allocate new references each render (see TokenCell `showMusdCta` memo).
+ */
+export type TokenListCellMusdOptions = {
+  merklClaimBonus: { location: MerklClaimBonusAnalyticsLocation };
+  convert: { entryPoint: MusdConvertLinkEntryPoint };
+};
+
+export const TOKEN_LIST_CELL_MUSD_OPTIONS: TokenListCellMusdOptions = {
+  merklClaimBonus: { location: 'token_list_item' },
+  convert: { entryPoint: 'token_list' },
+};
+
+/**
+ * Stable `musd` prop preset for the asset overview token cell (Merkl only; no list convert link).
+ */
+export type AssetOverviewTokenCellMusdOptions = {
+  merklClaimBonus: { location: 'asset_overview' };
+};
+
+export const ASSET_OVERVIEW_TOKEN_CELL_MUSD_OPTIONS: AssetOverviewTokenCellMusdOptions =
+  {
+    merklClaimBonus: { location: 'asset_overview' },
+  };
+
+/**
  * Properties for MUSD_CLAIM_BONUS_BUTTON_CLICKED event
  */
 export type MusdClaimBonusButtonClickedEventProperties = {

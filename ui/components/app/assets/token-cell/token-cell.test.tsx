@@ -24,6 +24,7 @@ import { getProviderConfig } from '../../../../../shared/lib/selectors/networks'
 import { useIsOriginalTokenSymbol } from '../../../../hooks/useIsOriginalTokenSymbol';
 import { getIntlLocale } from '../../../../ducks/locale/locale';
 import { TokenWithFiatAmount } from '../types';
+import { TOKEN_LIST_CELL_MUSD_OPTIONS } from '../../musd/musd-events';
 import { TokenCellProps } from './token-cell';
 import TokenCell from '.';
 
@@ -159,7 +160,7 @@ describe('Token Cell', () => {
       ...propToken,
     },
     musd: {
-      merklClaimBonus: { location: 'token_list_item' as const },
+      merklClaimBonus: TOKEN_LIST_CELL_MUSD_OPTIONS.merklClaimBonus,
     },
     onClick: jest.fn(),
   };
@@ -183,7 +184,7 @@ describe('Token Cell', () => {
       ...propAnotherToken,
     },
     musd: {
-      merklClaimBonus: { location: 'token_list_item' as const },
+      merklClaimBonus: TOKEN_LIST_CELL_MUSD_OPTIONS.merklClaimBonus,
     },
     onClick: jest.fn(),
   };
@@ -298,10 +299,7 @@ describe('Token Cell', () => {
       const { queryByTestId } = renderWithProvider(
         <TokenCell
           {...(props as TokenCellProps)}
-          musd={{
-            merklClaimBonus: { location: 'token_list_item' },
-            convert: { entryPoint: 'token_list' },
-          }}
+          musd={TOKEN_LIST_CELL_MUSD_OPTIONS}
         />,
         mockStore,
       );
@@ -315,10 +313,7 @@ describe('Token Cell', () => {
       const { queryByTestId } = renderWithProvider(
         <TokenCell
           {...(props as TokenCellProps)}
-          musd={{
-            merklClaimBonus: { location: 'token_list_item' },
-            convert: { entryPoint: 'token_list' },
-          }}
+          musd={TOKEN_LIST_CELL_MUSD_OPTIONS}
         />,
         mockStore,
       );
