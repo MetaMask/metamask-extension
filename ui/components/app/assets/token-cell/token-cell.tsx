@@ -1,8 +1,16 @@
+import type { Hex } from '@metamask/utils';
 import React, { useMemo, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import type { Hex } from '@metamask/utils';
-import { useTokenDisplayInfo } from '../hooks';
+import { isEvmChainId } from '../../../../../shared/lib/asset-utils';
+import { NETWORKS_ROUTE } from '../../../../helpers/constants/routes';
+import { useMusdBalance, useMusdCtaVisibility } from '../../../../hooks/musd';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
+import {
+  getSafeNativeCurrencySymbol,
+  type SafeChain,
+} from '../../../../pages/settings/networks-tab/networks-form/use-safe-chains';
+import { setEditedNetwork } from '../../../../store/actions';
 import {
   ButtonSecondary,
   Modal,
@@ -12,28 +20,21 @@ import {
   ModalHeader,
   ModalOverlay,
 } from '../../../component-library';
-import { useI18nContext } from '../../../../hooks/useI18nContext';
-import {
-  getSafeNativeCurrencySymbol,
-  type SafeChain,
-} from '../../../../pages/settings/networks-tab/networks-form/use-safe-chains';
-import { NETWORKS_ROUTE } from '../../../../helpers/constants/routes';
-import { setEditedNetwork } from '../../../../store/actions';
-import { type TokenWithFiatAmount } from '../types';
-import GenericAssetCellLayout from '../asset-list/cells/generic-asset-cell-layout';
-import { AssetCellBadge } from '../asset-list/cells/asset-cell-badge';
-import { isEvmChainId } from '../../../../../shared/lib/asset-utils';
-import { ClaimBonusBadge, useMerklRewards, MusdConvertLink } from '../../musd';
+import { ClaimBonusBadge, MusdConvertLink, useMerklRewards } from '../../musd';
+import { getBonusAmountRange } from '../../musd/merkl-bonus-analytics';
 import type {
   MerklClaimBonusAnalyticsLocation,
   MusdConvertLinkEntryPoint,
 } from '../../musd/musd-events';
-import { useMusdCtaVisibility, useMusdBalance } from '../../../../hooks/musd';
+import { AssetCellBadge } from '../asset-list/cells/asset-cell-badge';
+import GenericAssetCellLayout from '../asset-list/cells/generic-asset-cell-layout';
+import { useTokenDisplayInfo } from '../hooks';
+import { type TokenWithFiatAmount } from '../types';
 import {
-  TokenCellTitle,
   TokenCellPercentChange,
   TokenCellPrimaryDisplay,
   TokenCellSecondaryDisplay,
+  TokenCellTitle,
 } from './cells';
 
 export type TokenCellMusdOptions = {
@@ -79,6 +80,8 @@ export default function TokenCell({
   const {
     hasClaimableReward,
     isEligible,
+    hasClaimedBefore,
+    claimableRewardDisplay,
     refetch: refetchMerklRewards,
   } = useMerklRewards({
     tokenAddress: token.address,
@@ -123,6 +126,11 @@ export default function TokenCell({
     [token, tokenDisplayInfo],
   );
 
+  const merklBonusAmountRange = useMemo(
+    () => getBonusAmountRange(claimableRewardDisplay ?? '< 0.01'),
+    [claimableRewardDisplay],
+  );
+
   const handleScamWarningModal = (arg: boolean) => {
     setShowScamWarningModal(arg);
   };
@@ -146,6 +154,9 @@ export default function TokenCell({
           label={t('merklRewardsClaimBonus')}
           refetchRewards={refetchMerklRewards}
           analyticsLocation={musd.merklClaimBonus.location}
+          assetSymbol={token.symbol}
+          bonusAmountRange={merklBonusAmountRange}
+          hasClaimedBefore={hasClaimedBefore}
         />
       );
     }

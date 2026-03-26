@@ -411,9 +411,6 @@
     "message": "Simpan nilai ini sebagai default saya untuk jaringan $1.",
     "description": "$1 is the current network name."
   },
-  "advancedGasFeeModalTitle": {
-    "message": "Biaya gas lanjutan"
-  },
   "advancedGasPriceModalTitle": {
     "message": "Biaya jaringan lanjutan"
   },
@@ -1351,14 +1348,6 @@
   "cancelPopoverTitle": {
     "message": "Batalkan transaksi"
   },
-  "cancelSpeedUpLabel": {
-    "message": "Biaya gas ini akan $1 yang aslinya.",
-    "description": "$1 is text 'replace' in bold"
-  },
-  "cancelSpeedUpTransactionTooltip": {
-    "message": "Untuk $1 suatu transaksi, biaya gas harus ditingkatkan minimal 10% agar dapat dikenali oleh jaringan.",
-    "description": "$1 is string 'cancel' or 'speed up'"
-  },
   "cancelTransactionDescription": {
     "message": "Transaksi ini akan dibatalkan dan biaya jaringan ini akan menggantikan biaya awal."
   },
@@ -2072,10 +2061,6 @@
   "dappSuggestedShortLabel": {
     "message": "Situs"
   },
-  "dappSuggestedTooltip": {
-    "message": "$1 telah merekomendasikan harga ini.",
-    "description": "$1 represents the Dapp's origin"
-  },
   "dappSwapAdvantage": {
     "message": "Hemat dan dapatkan penghasilan dengan MetaMask Swap"
   },
@@ -2526,9 +2511,6 @@
   "editAddressNickname": {
     "message": "Edit nama panggilan alamat"
   },
-  "editCancellationGasFeeModalTitle": {
-    "message": "Edit pembatalan biaya gas"
-  },
   "editContact": {
     "message": "Edit kontak"
   },
@@ -2587,9 +2569,6 @@
   "editGasPriceTooltip": {
     "message": "Jaringan ini memerlukan kolom “Harga gas” saat mengirimkan transaksi. Harga gas merupakan jumlah yang akan Anda bayar per unit gas."
   },
-  "editGasSubTextFeeLabel": {
-    "message": "Biaya maks:"
-  },
   "editGasTitle": {
     "message": "Edit prioritas"
   },
@@ -2616,9 +2595,6 @@
   },
   "editPermissions": {
     "message": "Edit izin"
-  },
-  "editSpeedUpEditGasFeeModalTitle": {
-    "message": "Edit percepatan biaya gas"
   },
   "editSpendingCap": {
     "message": "Edit batas penggunaan"
@@ -3026,9 +3002,6 @@
   },
   "gasLimitV2": {
     "message": "Batas gas"
-  },
-  "gasOption": {
-    "message": "Opsi gas"
   },
   "gasPrice": {
     "message": "Harga gas"
@@ -3962,9 +3935,6 @@
   "maxFeeTooltip": {
     "message": "Biaya maksimum yang diberikan untuk membayar transaksi."
   },
-  "maxPriorityFee": {
-    "message": "Biaya prioritas maks"
-  },
   "medium": {
     "message": "Pasar"
   },
@@ -4390,9 +4360,6 @@
   },
   "networkFeeExplanationTitle": {
     "message": "Biaya jaringan"
-  },
-  "networkIsBusy": {
-    "message": "Jaringan sibuk. Harga gas tinggi dan estimasinya kurang akurat."
   },
   "networkMenu": {
     "message": "Menu jaringan"

@@ -70,6 +70,8 @@ jest.mock('react-router-dom', () => {
 const mockUseMerklRewards = jest.fn().mockReturnValue({
   isEligible: false,
   hasClaimableReward: false,
+  hasClaimedBefore: false,
+  claimableRewardDisplay: null,
   refetch: jest.fn(),
 });
 jest.mock('../../musd', () => ({
@@ -327,6 +329,8 @@ describe('Token Cell', () => {
       mockUseMerklRewards.mockReturnValue({
         isEligible: false,
         hasClaimableReward: false,
+        hasClaimedBefore: false,
+        claimableRewardDisplay: null,
         refetch: jest.fn(),
       });
     });
@@ -335,6 +339,8 @@ describe('Token Cell', () => {
       mockUseMerklRewards.mockReturnValue({
         isEligible: true,
         hasClaimableReward: true,
+        hasClaimedBefore: false,
+        claimableRewardDisplay: '10.50',
         refetch: jest.fn(),
       });
 
@@ -350,6 +356,8 @@ describe('Token Cell', () => {
       mockUseMerklRewards.mockReturnValue({
         isEligible: false,
         hasClaimableReward: true,
+        hasClaimedBefore: false,
+        claimableRewardDisplay: null,
         refetch: jest.fn(),
       });
 
@@ -365,6 +373,8 @@ describe('Token Cell', () => {
       mockUseMerklRewards.mockReturnValue({
         isEligible: true,
         hasClaimableReward: false,
+        hasClaimedBefore: false,
+        claimableRewardDisplay: null,
         refetch: jest.fn(),
       });
 
