@@ -163,14 +163,14 @@ export const HardwareWalletErrorModal: React.FC<HardwareWalletErrorModalProps> =
       if (!error || isUserRejectedError || !errorIdentityKey) {
         return;
       }
+      if (!trackableMetricDeviceType) {
+        return;
+      }
       if (lastTrackedErrorKeyRef.current === errorIdentityKey) {
         return;
       }
       lastTrackedErrorKeyRef.current = errorIdentityKey;
       errorTypeViewCountRef.current += 1;
-      if (!trackableMetricDeviceType) {
-        return;
-      }
       const deviceModel = getHardwareWalletMetricDeviceModel(error);
       trackEvent({
         category: MetaMetricsEventCategory.Accounts,

@@ -199,6 +199,47 @@ describe('HardwareWalletErrorModal', () => {
       });
     });
 
+    it('tracks modal viewed if wallet type becomes known after initial unknown render', async () => {
+      const error = new HardwareWalletError('Device is locked', {
+        code: ErrorCode.AuthenticationDeviceLocked,
+        severity: Severity.Info,
+        category: Category.Unknown,
+        userMessage: 'Your device is locked.',
+      });
+      mockUseHardwareWalletConfig.mockReturnValue({
+        walletType: HardwareWalletType.Unknown,
+      });
+
+      const { rerender, store } = renderWithMetrics(
+        <HardwareWalletErrorModal error={error} />,
+      );
+
+      await waitFor(() => {
+        expect(mockTrackEvent).not.toHaveBeenCalled();
+      });
+
+      mockUseHardwareWalletConfig.mockReturnValue({
+        walletType: HardwareWalletType.Ledger,
+      });
+
+      rerender(
+        wrapHardwareWalletModalTree(
+          store,
+          <HardwareWalletErrorModal error={error} />,
+        ),
+      );
+
+      await waitFor(() => {
+        const modalViewed = mockTrackEvent.mock.calls.filter(
+          (call) =>
+            call[0].event ===
+            MetaMetricsEventName.HardwareWalletRecoveryModalViewed,
+        );
+        expect(modalViewed).toHaveLength(1);
+        expect(modalViewed[0][0].properties.error_type_view_count).toBe(1);
+      });
+    });
+
     it('renders nothing for user-rejected errors', () => {
       const error = createTestError(
         ErrorCode.UserCancelled,
