@@ -4254,13 +4254,9 @@ export default class MetamaskController extends EventEmitter {
    * @param {boolean} args.captureSentryError - whether to capture the sentry error. @default false
    * @returns {Promise<boolean | undefined>} true if the password is outdated, false otherwise, undefined if the flow is not seedless
    */
-  async checkIsSeedlessPasswordOutdated(
-    args = {
-      skipCache: false,
-      captureSentryError: false,
-    },
-  ) {
-    const { skipCache, captureSentryError } = args;
+  async checkIsSeedlessPasswordOutdated(args) {
+    const skipCache = args?.skipCache || false;
+    const captureSentryError = args?.captureSentryError || false;
     try {
       const isSocialLoginFlow =
         this.onboardingController.getIsSocialLoginFlow();
