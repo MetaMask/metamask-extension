@@ -3,10 +3,10 @@ import { Mockttp } from 'mockttp';
 import { DEFAULT_BTC_BALANCE } from '../../constants';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { withFixtures } from '../../helpers';
-import { completeImportSRPOnboardingFlow } from '../../page-objects/flows/onboarding.flow';
+import { login } from '../../page-objects/flows/login.flow';
+import { switchToNetworkFromNetworkSelect } from '../../page-objects/flows/network.flow';
 import ActivityListPage from '../../page-objects/pages/home/activity-list';
 import BitcoinHomepage from '../../page-objects/pages/home/bitcoin-homepage';
-import NetworkManager from '../../page-objects/pages/network-manager';
 import BitcoinReviewTxPage from '../../page-objects/pages/send/bitcoin-review-tx-page';
 import SendPage from '../../page-objects/pages/send/send-page';
 import {
@@ -42,20 +42,16 @@ describe('BTC Account - Send', function (this: Suite) {
   it('fields validation', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilderV2({ onboarding: true }).build(),
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
         dappOptions: { numberOfTestDapps: 1 },
         testSpecificMock: mockBtcSendMocks,
       },
       async ({ driver }) => {
-        await completeImportSRPOnboardingFlow({ driver });
-
-        const networkManager = new NetworkManager(driver);
-        await networkManager.openNetworkManager();
-        await networkManager.selectTab('Popular');
-        await networkManager.selectNetworkByNameWithWait('Bitcoin');
-
+        await login(driver, { validateBalance: false });
         const homePage = new BitcoinHomepage(driver);
+        await homePage.waitForNonEvmAccountsLoaded();
+        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Bitcoin');
         await homePage.checkPageIsLoaded();
         await homePage.checkIsExpectedBitcoinBalanceDisplayed(
           DEFAULT_BTC_BALANCE,
@@ -74,20 +70,16 @@ describe('BTC Account - Send', function (this: Suite) {
   it('amount validation', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilderV2({ onboarding: true }).build(),
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
         dappOptions: { numberOfTestDapps: 1 },
         testSpecificMock: mockBtcSendMocks,
       },
       async ({ driver }) => {
-        await completeImportSRPOnboardingFlow({ driver });
-
-        const networkManager = new NetworkManager(driver);
-        await networkManager.openNetworkManager();
-        await networkManager.selectTab('Popular');
-        await networkManager.selectNetworkByNameWithWait('Bitcoin');
-
+        await login(driver, { validateBalance: false });
         const homePage = new BitcoinHomepage(driver);
+        await homePage.waitForNonEvmAccountsLoaded();
+        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Bitcoin');
         await homePage.checkPageIsLoaded();
         await homePage.checkIsExpectedBitcoinBalanceDisplayed(
           DEFAULT_BTC_BALANCE,
@@ -112,20 +104,16 @@ describe('BTC Account - Send', function (this: Suite) {
 
     await withFixtures(
       {
-        fixtures: new FixtureBuilderV2({ onboarding: true }).build(),
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
         dappOptions: { numberOfTestDapps: 1 },
         testSpecificMock: mockBtcSendMocks,
       },
       async ({ driver }) => {
-        await completeImportSRPOnboardingFlow({ driver });
-
-        const networkManager = new NetworkManager(driver);
-        await networkManager.openNetworkManager();
-        await networkManager.selectTab('Popular');
-        await networkManager.selectNetworkByNameWithWait('Bitcoin');
-
+        await login(driver, { validateBalance: false });
         const homePage = new BitcoinHomepage(driver);
+        await homePage.waitForNonEvmAccountsLoaded();
+        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Bitcoin');
         await homePage.checkPageIsLoaded();
         await homePage.checkIsExpectedBitcoinBalanceDisplayed(
           DEFAULT_BTC_BALANCE,

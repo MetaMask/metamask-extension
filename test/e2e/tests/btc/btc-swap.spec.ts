@@ -4,10 +4,10 @@ import { Mockttp } from 'mockttp';
 import { DEFAULT_BTC_BALANCE } from '../../constants';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { withFixtures } from '../../helpers';
-import { completeImportSRPOnboardingFlow } from '../../page-objects/flows/onboarding.flow';
+import { login } from '../../page-objects/flows/login.flow';
+import { switchToNetworkFromNetworkSelect } from '../../page-objects/flows/network.flow';
 import ActivityListPage from '../../page-objects/pages/home/activity-list';
 import BitcoinHomepage from '../../page-objects/pages/home/bitcoin-homepage';
-import NetworkManager from '../../page-objects/pages/network-manager';
 import BridgeQuotePage from '../../page-objects/pages/bridge/quote-page';
 import {
   mockAllBridgeEndpoints,
@@ -58,20 +58,16 @@ describe('BTC Account - Swap (Bridge)', function (this: Suite) {
   it('can open the swap/bridge page from Bitcoin account', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilderV2({ onboarding: true }).build(),
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
         dappOptions: { numberOfTestDapps: 1 },
         testSpecificMock: mockBtcSwapMocks,
       },
       async ({ driver }) => {
-        await completeImportSRPOnboardingFlow({ driver });
-
-        const networkManager = new NetworkManager(driver);
-        await networkManager.openNetworkManager();
-        await networkManager.selectTab('Popular');
-        await networkManager.selectNetworkByNameWithWait('Bitcoin');
-
+        await login(driver, { validateBalance: false });
         const homePage = new BitcoinHomepage(driver);
+        await homePage.waitForNonEvmAccountsLoaded();
+        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Bitcoin');
         await homePage.checkPageIsLoaded();
         await homePage.checkIsExpectedBitcoinBalanceDisplayed(
           DEFAULT_BTC_BALANCE,
@@ -94,20 +90,16 @@ describe('BTC Account - Swap (Bridge)', function (this: Suite) {
   it('can select destination token and see quote', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilderV2({ onboarding: true }).build(),
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
         dappOptions: { numberOfTestDapps: 1 },
         testSpecificMock: mockBtcSwapMocks,
       },
       async ({ driver }) => {
-        await completeImportSRPOnboardingFlow({ driver });
-
-        const networkManager = new NetworkManager(driver);
-        await networkManager.openNetworkManager();
-        await networkManager.selectTab('Popular');
-        await networkManager.selectNetworkByNameWithWait('Bitcoin');
-
+        await login(driver, { validateBalance: false });
         const homePage = new BitcoinHomepage(driver);
+        await homePage.waitForNonEvmAccountsLoaded();
+        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Bitcoin');
         await homePage.checkPageIsLoaded();
         await homePage.checkIsExpectedBitcoinBalanceDisplayed(
           DEFAULT_BTC_BALANCE,
@@ -139,20 +131,16 @@ describe('BTC Account - Swap (Bridge)', function (this: Suite) {
   it('shows insufficient funds error when amount exceeds balance', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilderV2({ onboarding: true }).build(),
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
         dappOptions: { numberOfTestDapps: 1 },
         testSpecificMock: mockBtcSwapMocks,
       },
       async ({ driver }) => {
-        await completeImportSRPOnboardingFlow({ driver });
-
-        const networkManager = new NetworkManager(driver);
-        await networkManager.openNetworkManager();
-        await networkManager.selectTab('Popular');
-        await networkManager.selectNetworkByNameWithWait('Bitcoin');
-
+        await login(driver, { validateBalance: false });
         const homePage = new BitcoinHomepage(driver);
+        await homePage.waitForNonEvmAccountsLoaded();
+        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Bitcoin');
         await homePage.checkPageIsLoaded();
         await homePage.checkIsExpectedBitcoinBalanceDisplayed(
           DEFAULT_BTC_BALANCE,
@@ -180,20 +168,16 @@ describe('BTC Account - Swap (Bridge)', function (this: Suite) {
   it('shows no trade route available when no quotes are returned', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilderV2({ onboarding: true }).build(),
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
         dappOptions: { numberOfTestDapps: 1 },
         testSpecificMock: mockBtcSwapMocksNoQuotes,
       },
       async ({ driver }) => {
-        await completeImportSRPOnboardingFlow({ driver });
-
-        const networkManager = new NetworkManager(driver);
-        await networkManager.openNetworkManager();
-        await networkManager.selectTab('Popular');
-        await networkManager.selectNetworkByNameWithWait('Bitcoin');
-
+        await login(driver, { validateBalance: false });
         const homePage = new BitcoinHomepage(driver);
+        await homePage.waitForNonEvmAccountsLoaded();
+        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Bitcoin');
         await homePage.checkPageIsLoaded();
         await homePage.checkIsExpectedBitcoinBalanceDisplayed(
           DEFAULT_BTC_BALANCE,
@@ -222,20 +206,16 @@ describe('BTC Account - Swap (Bridge)', function (this: Suite) {
   it('can complete a swap from BTC to ETH', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilderV2({ onboarding: true }).build(),
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
         dappOptions: { numberOfTestDapps: 1 },
         testSpecificMock: mockBtcSwapMocks,
       },
       async ({ driver }) => {
-        await completeImportSRPOnboardingFlow({ driver });
-
-        const networkManager = new NetworkManager(driver);
-        await networkManager.openNetworkManager();
-        await networkManager.selectTab('Popular');
-        await networkManager.selectNetworkByNameWithWait('Bitcoin');
-
+        await login(driver, { validateBalance: false });
         const homePage = new BitcoinHomepage(driver);
+        await homePage.waitForNonEvmAccountsLoaded();
+        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Bitcoin');
         await homePage.checkPageIsLoaded();
         await homePage.checkIsExpectedBitcoinBalanceDisplayed(
           DEFAULT_BTC_BALANCE,
