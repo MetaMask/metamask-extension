@@ -5590,6 +5590,12 @@
   "perpsLimitPrice": {
     "message": "Limit Price"
   },
+  "perpsLimitPriceLongMustBeBelowMarket": {
+    "message": "For a buy limit, set a price below the market so the order can rest on the book."
+  },
+  "perpsLimitPriceShortMustBeAboveMarket": {
+    "message": "For a sell limit, set a price above the market so the order can rest on the book."
+  },
   "perpsLiquidationDistance": {
     "message": "Liq. distance"
   },

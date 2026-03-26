@@ -55,6 +55,7 @@ import { CloseAmountSection } from './components/close-amount-section';
  * @param props.onOrderTypeChange
  * @param props.onCalculationsChange
  * @param props.onAddFunds
+ * @param props.limitPriceErrorMessage
  */
 export const OrderEntry: React.FC<OrderEntryProps> = ({
   asset,
@@ -71,6 +72,7 @@ export const OrderEntry: React.FC<OrderEntryProps> = ({
   existingPosition,
   orderType = 'market',
   midPrice,
+  limitPriceErrorMessage,
   onOrderTypeChange,
   onAddFunds,
 }) => {
@@ -248,6 +250,7 @@ export const OrderEntry: React.FC<OrderEntryProps> = ({
             onLimitPriceChange={handleLimitPriceChange}
             currentPrice={currentPrice}
             midPrice={midPrice}
+            errorMessage={limitPriceErrorMessage}
           />
         )}
 

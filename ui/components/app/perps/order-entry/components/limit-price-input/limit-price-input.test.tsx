@@ -63,6 +63,20 @@ describe('LimitPriceInput', () => {
       expect(screen.getByTestId('limit-price-mid-button')).toBeInTheDocument();
       expect(screen.getByText(messages.perpsMid.message)).toBeInTheDocument();
     });
+
+    it('displays error message when provided', () => {
+      renderWithProvider(
+        <LimitPriceInput
+          {...defaultProps}
+          errorMessage={messages.perpsLimitPriceLongMustBeBelowMarket.message}
+        />,
+        mockStore,
+      );
+
+      expect(
+        screen.getByText(messages.perpsLimitPriceLongMustBeBelowMarket.message),
+      ).toBeInTheDocument();
+    });
   });
 
   describe('input handling', () => {
