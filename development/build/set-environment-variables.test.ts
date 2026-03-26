@@ -76,17 +76,16 @@ const DECLARED_VARIABLES = Object.values(PROVIDER_CONFIG).flatMap(
 
 function getVariables({ overrides = {}, omitted = [] }: GetVariablesArgs = {}) {
   const variables = new Variables(DECLARED_VARIABLES);
-  const defaults = Object.values(PROVIDER_CONFIG).reduce<Record<string, string>>(
-    (result, config) => {
-      result[config.clientIdEnv] = config.directClientId;
-      result[config.clientIdRefEnv] = config.referencedClientIdEnv;
-      result[config.referencedClientIdEnv] = config.referencedClientId;
-      result[config.uatClientIdEnv] = config.uatClientId;
-      result[config.flaskUatClientIdEnv] = config.flaskUatClientId;
-      return result;
-    },
-    {},
-  );
+  const defaults = Object.values(PROVIDER_CONFIG).reduce<
+    Record<string, string>
+  >((result, config) => {
+    result[config.clientIdEnv] = config.directClientId;
+    result[config.clientIdRefEnv] = config.referencedClientIdEnv;
+    result[config.referencedClientIdEnv] = config.referencedClientId;
+    result[config.uatClientIdEnv] = config.uatClientId;
+    result[config.flaskUatClientIdEnv] = config.flaskUatClientId;
+    return result;
+  }, {});
 
   omitted.forEach((envName) => {
     delete defaults[envName];
