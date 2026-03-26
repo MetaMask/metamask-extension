@@ -1,12 +1,22 @@
-/**
- * @jest-environment node
- */
+import { Variables } from '../lib/variables';
+import { ENVIRONMENT } from './constants';
+import { getOAuthClientId } from './set-environment-variables';
 
-const { Variables } = require('../lib/variables');
-const { ENVIRONMENT } = require('./constants');
-const { getOAuthClientId } = require('./set-environment-variables');
+type ProviderConfig = {
+  clientIdEnv: string;
+  directClientId: string;
+  clientIdRefEnv: string;
+  referencedClientIdEnv: string;
+  referencedClientId: string;
+  uatClientIdEnv: string;
+  uatClientId: string;
+  flaskUatClientIdEnv: string;
+  flaskUatClientId: string;
+};
 
-const PROVIDER_CONFIG = {
+type Provider = 'GOOGLE' | 'APPLE';
+
+const PROVIDER_CONFIG: Record<Provider, ProviderConfig> = {
   GOOGLE: {
     clientIdEnv: 'GOOGLE_CLIENT_ID',
     directClientId: 'google-dev-client-id',
@@ -31,6 +41,23 @@ const PROVIDER_CONFIG = {
   },
 };
 
+type VariablesOverrides = Record<string, string>;
+
+type GetVariablesArgs = {
+  overrides?: VariablesOverrides;
+  omitted?: string[];
+};
+
+type RunGetOAuthClientIdArgs = {
+  provider?: Provider;
+  buildType?: string;
+  environment?: string;
+  testing?: boolean;
+  development?: boolean;
+  overrides?: VariablesOverrides;
+  omitted?: string[];
+};
+
 const DECLARED_VARIABLES = Object.values(PROVIDER_CONFIG).flatMap(
   ({
     clientIdEnv,
@@ -47,16 +74,19 @@ const DECLARED_VARIABLES = Object.values(PROVIDER_CONFIG).flatMap(
   ],
 );
 
-function getVariables({ overrides = {}, omitted = [] } = {}) {
+function getVariables({ overrides = {}, omitted = [] }: GetVariablesArgs = {}) {
   const variables = new Variables(DECLARED_VARIABLES);
-  const defaults = Object.values(PROVIDER_CONFIG).reduce((result, config) => {
-    result[config.clientIdEnv] = config.directClientId;
-    result[config.clientIdRefEnv] = config.referencedClientIdEnv;
-    result[config.referencedClientIdEnv] = config.referencedClientId;
-    result[config.uatClientIdEnv] = config.uatClientId;
-    result[config.flaskUatClientIdEnv] = config.flaskUatClientId;
-    return result;
-  }, {});
+  const defaults = Object.values(PROVIDER_CONFIG).reduce<Record<string, string>>(
+    (result, config) => {
+      result[config.clientIdEnv] = config.directClientId;
+      result[config.clientIdRefEnv] = config.referencedClientIdEnv;
+      result[config.referencedClientIdEnv] = config.referencedClientId;
+      result[config.uatClientIdEnv] = config.uatClientId;
+      result[config.flaskUatClientIdEnv] = config.flaskUatClientId;
+      return result;
+    },
+    {},
+  );
 
   omitted.forEach((envName) => {
     delete defaults[envName];
@@ -78,7 +108,7 @@ function runGetOAuthClientId({
   development = false,
   overrides = {},
   omitted = [],
-} = {}) {
+}: RunGetOAuthClientIdArgs = {}) {
   return getOAuthClientId({
     provider,
     buildType,
@@ -89,21 +119,39 @@ function runGetOAuthClientId({
   });
 }
 
+const providerEntries = Object.entries(PROVIDER_CONFIG) as [
+  Provider,
+  ProviderConfig,
+][];
+
 describe('getOAuthClientId', () => {
-  describe.each(Object.entries(PROVIDER_CONFIG))(
-    'when the provider is %s',
-    (provider, config) => {
-      it.each([ENVIRONMENT.PRODUCTION, ENVIRONMENT.RELEASE_CANDIDATE])(
-        'loads referenced client IDs for %s builds',
-        (environment) => {
+  for (const [provider, config] of providerEntries) {
+    describe(`when the provider is ${provider}`, () => {
+      for (const environment of [
+        ENVIRONMENT.PRODUCTION,
+        ENVIRONMENT.RELEASE_CANDIDATE,
+      ]) {
+        it(`loads referenced client IDs for ${environment} builds`, () => {
           expect(
             runGetOAuthClientId({
               provider,
               environment,
             }),
           ).toBe(config.referencedClientId);
-        },
-      );
+        });
+
+        it(`throws when the referenced client ID is missing for ${environment} builds`, () => {
+          expect(() =>
+            runGetOAuthClientId({
+              provider,
+              environment,
+              omitted: [config.referencedClientIdEnv],
+            }),
+          ).toThrow(
+            `Tried to access a declared, but not defined environmental variable "${config.referencedClientIdEnv}"`,
+          );
+        });
+      }
 
       it('prefers referenced client IDs when production environment overlaps with test and development flags', () => {
         expect(
@@ -116,7 +164,7 @@ describe('getOAuthClientId', () => {
         ).toBe(config.referencedClientId);
       });
 
-      it.each([
+      const directClientIdTestCases = [
         {
           name: 'test',
           environment: ENVIRONMENT.TESTING,
@@ -129,9 +177,15 @@ describe('getOAuthClientId', () => {
           testing: false,
           development: true,
         },
-      ])(
-        'loads direct client IDs for $name builds',
-        ({ environment, testing, development }) => {
+      ];
+
+      for (const {
+        name,
+        environment,
+        testing,
+        development,
+      } of directClientIdTestCases) {
+        it(`loads direct client IDs for ${name} builds`, () => {
           expect(
             runGetOAuthClientId({
               provider,
@@ -140,10 +194,10 @@ describe('getOAuthClientId', () => {
               development,
             }),
           ).toBe(config.directClientId);
-        },
-      );
+        });
+      }
 
-      it.each([
+      const stagingBuildTestCases = [
         {
           buildType: 'main',
           expectedClientId: config.uatClientId,
@@ -152,9 +206,10 @@ describe('getOAuthClientId', () => {
           buildType: 'flask',
           expectedClientId: config.flaskUatClientId,
         },
-      ])(
-        'loads UAT client IDs for $buildType staging builds',
-        ({ buildType, expectedClientId }) => {
+      ] as const;
+
+      for (const { buildType, expectedClientId } of stagingBuildTestCases) {
+        it(`loads UAT client IDs for ${buildType} staging builds`, () => {
           expect(
             runGetOAuthClientId({
               provider,
@@ -162,8 +217,8 @@ describe('getOAuthClientId', () => {
               environment: ENVIRONMENT.STAGING,
             }),
           ).toBe(expectedClientId);
-        },
-      );
+        });
+      }
 
       it('throws when the direct client ID is missing for test builds', () => {
         expect(() =>
@@ -177,6 +232,6 @@ describe('getOAuthClientId', () => {
           `${config.clientIdEnv} is not set for seedless onboarding enabled build`,
         );
       });
-    },
-  );
+    });
+  }
 });
