@@ -17,7 +17,6 @@ import {
   Button,
   ButtonSize,
   ButtonVariant,
-  FontWeight,
   Text,
   TextColor,
   TextVariant,
@@ -233,15 +232,11 @@ export const MusdBuyGetCta: React.FC<MusdBuyGetCtaProps> = ({
         flexDirection={BoxFlexDirection.Column}
         className="musd-buy-get-cta__text"
       >
-        <Text variant={TextVariant.BodyMd} color={TextColor.TextAlternative}>
+        <Text variant={TextVariant.BodyMd} color={TextColor.TextDefault}>
           {ctaText}
         </Text>
-        <Text
-          variant={TextVariant.BodySm}
-          fontWeight={FontWeight.Medium}
-          color={TextColor.PrimaryDefault}
-        >
-          {t('musdBoostDescription', [String(MUSD_CONVERSION_APY)])}
+        <Text variant={TextVariant.BodySm} color={TextColor.PrimaryDefault}>
+          {t('musdEarnBonusPercentage', [String(MUSD_CONVERSION_APY)])}
         </Text>
       </Box>
 
