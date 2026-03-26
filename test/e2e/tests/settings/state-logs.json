@@ -268,8 +268,7 @@
             }
           }
         }
-      },
-      "selectedAccountGroup": "string"
+      }
     },
     "accountWalletsMetadata": {},
     "activeProvider": "string",
@@ -940,6 +939,7 @@
     "securityAlertsEnabled": "boolean",
     "seedPhraseBackedUp": "null",
     "segmentApiCalls": {},
+    "selectedAccountGroup": "string",
     "selectedMultichainNetworkChainId": "string",
     "selectedPaymentToken": "null",
     "selectedNetworkClientId": "string",
