@@ -15,7 +15,7 @@ import {
 } from '../../page-objects/flows/transaction';
 import FixtureBuilder from '../../fixtures/fixture-builder';
 import { GAS_API_BASE_URL } from '../../../../shared/constants/swaps';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 import { validateTransaction } from '../../page-objects/flows/send-transaction.flow';
 import { mockSpotPrices } from '../tokens/utils/mocks';
 import GasFeeModal from '../../page-objects/pages/confirmations/gas-fee-modal';
@@ -53,7 +53,7 @@ describe('Send ETH - Max Amount', function () {
         },
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         await createInternalTransactionWithMaxAmount({ driver });
         await reviewTransaction(driver);
@@ -87,7 +87,7 @@ describe('Send ETH - Max Amount', function () {
           },
         },
         async ({ driver }) => {
-          await loginWithBalanceValidation(driver);
+          await login(driver);
 
           await createInternalTransactionWithMaxAmount({ driver });
           await reviewTransaction(driver);
@@ -143,7 +143,7 @@ describe('Send ETH - Max Amount', function () {
           },
         },
         async ({ driver }) => {
-          await loginWithBalanceValidation(driver);
+          await login(driver);
 
           await createInternalTransactionWithMaxAmount({ driver });
           await reviewTransaction(driver);
@@ -198,7 +198,7 @@ describe('Send ETH - Max Amount', function () {
         },
       },
       async ({ driver, mockServer }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         await createInternalTransactionWithMaxAmount({ driver });
 
@@ -279,7 +279,7 @@ describe('Send ETH - Max Amount', function () {
         },
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         await createInternalTransactionWithMaxAmount({ driver });
         await reviewTransaction(driver);

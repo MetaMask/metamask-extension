@@ -399,10 +399,7 @@ jobs:
       - build-test-mv2-webpack
     with:
       builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
-    secrets:
-      INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
-      TEST_SRP_2: ${{ secrets.TEST_SRP_2 }}
-      EXTENSION_BENCHMARK_STATS_TOKEN: ${{ secrets.EXTENSION_BENCHMARK_STATS_TOKEN }}
+    secrets: inherit
 
   run-tests:
     name: Run tests
@@ -449,6 +446,7 @@ jobs:
       - build-dist-browserify
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    environment: ${{ github.ref_name == 'main' && 'default-branch' || null }}
     env:
       EXTENSION_BUNDLESIZE_STATS_TOKEN: ${{ secrets.EXTENSION_BUNDLESIZE_STATS_TOKEN }}
       SELENIUM_BROWSER: chrome
@@ -532,8 +530,7 @@ jobs:
     needs:
       - get-requirements
     uses: ./.github/workflows/build-storybook.yml
-    secrets:
-      STORYBOOK_TOKEN: ${{ secrets.STORYBOOK_TOKEN }}
+    secrets: inherit
 
   build-ts-migration-dashboard:
     name: Build ts migration dashboard
@@ -772,11 +769,10 @@ jobs:
 
           echo "Regression validation triggered successfully"
 
-  all-jobs-pass:
-    name: All jobs pass
+  ci-status-gate:
     if: ${{ !cancelled() }}
-    runs-on: ubuntu-latest
-    timeout-minutes: 2
+    permissions:
+      statuses: write
     # We list every job we want to validate in `needs`, because `needs` only contains results for jobs explicitly
     # named here. A failing job can cause downstream jobs to be `skipped`, which can hide the true failure unless
     # the upstream job is also included.
@@ -785,7 +781,7 @@ jobs:
     #
     # Jobs intentionally excluded:
     # - Publish jobs (not required for CI pass)
-    # - Jobs that depend on all-jobs-pass (e.g., log-merge-group-failure) cannot be included here
+    # - Jobs that depend on ci-status-gate (e.g., log-merge-group-failure) cannot be included here
     needs:
       - get-requirements
       - locales-changed-only
@@ -826,67 +822,25 @@ jobs:
       - build-source-map-explorer
       - build-lavamoat-viz
       - trigger-regression-validation
-    steps:
-      - name: Check that all jobs have passed
-        env:
-          NEEDS_JSON: ${{ toJson(needs) }} # This is required for the the job_result lookup and the job_id loop
-          BUILDS_FROM_RUN: ${{ needs.get-requirements.outputs.builds-from-run }}
-        run: |
-          # Function to ensure a job's result is either 'success' or 'skipped'
-          requireJobSuccessOrSkipped() {
-            local job_id="$1"
-            local job_result="$2"
-
-            if [[ -z "$job_result" ]]; then
-              echo "Could not determine result for job: $job_id"
-              exit 1
-            fi
-
-            if [[ "$job_result" != "skipped" && "$job_result" != "success" ]]; then
-              echo "$job_id did not succeed (result: $job_result)"
-              exit 1
-            fi
-          }
-
-          # Loop through each job in the needs array to ensure it succeeded or was skipped
-          while IFS=$'\t' read -r job_id job_result; do
-            # job_result is effectively `needs[$job_id].result`
-            requireJobSuccessOrSkipped "$job_id" "$job_result"
-          done < <(
-            jq -r 'to_entries[] | [.key, (.value.result // "")] | @tsv' <<<"$NEEDS_JSON"
-          )
-
-          # # Check if the builds-from-run output is the current run ID
-          if [[ "$BUILDS_FROM_RUN" != "$RUN_ID" ]]; then
-            echo "Builds were used from a different GHA run: $BUILDS_FROM_RUN"
-            echo "Right now you can use this feature to test and iterate faster, but to merge a PR, you have to disable it."
-            exit 1
-          fi
-
-          echo "All required jobs either passed or were skipped"
-
-      - name: Log merge group failure
-        if: ${{ github.event_name == 'merge_group' && failure() && !github.event.repository.fork }}
-        uses: MetaMask/github-tools/.github/actions/log-merge-group-failure@v1
-        with:
-          google-application-credentials: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
-          google-service-account: ${{ secrets.GOOGLE_SERVICE_ACCOUNT }}
-          spreadsheet-id: ${{ secrets.GOOGLE_MERGE_QUEUE_SPREADSHEET_ID }}
-          sheet-name: ${{ secrets.GOOGLE_MERGE_QUEUE_SHEET_NAME }}
+    uses: ./.github/workflows/ci-status-gate.yml
+    with:
+      needs-json: ${{ toJson(needs) }}
+      builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
+    secrets: inherit
 
   check-retry-ci:
     name: Check for retry-ci label and retry
     if: >-
       ${{
         !cancelled() &&
-        needs.all-jobs-pass.result == 'failure' &&
+        needs.ci-status-gate.result == 'failure' &&
         github.event_name == 'pull_request' &&
         !(github.event.pull_request.head.repo.fork || github.event.repository.fork)
       }}
     runs-on: ubuntu-latest
     timeout-minutes: 2
     needs:
-      - all-jobs-pass
+      - ci-status-gate
       - publish-prerelease
     env:
       GH_TOKEN: ${{ github.token }}

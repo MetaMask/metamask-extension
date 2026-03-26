@@ -22,6 +22,7 @@ ignores:
   - '@lavamoat/preinstall-always-fail'
   # used in testing + ci
   - '@metamask/auto-changelog' # invoked as `auto-changelog`
+  - '@metamask/browser-playground' # used by MM Connect E2E tests
   - '@metamask/forwarder'
   - '@metamask/phishing-warning' # statically hosted as part of some e2e tests
   - '@metamask/test-dapp'
@@ -82,6 +83,7 @@ ignores:
   - 'nyc' # coverage
   - 'core-js-pure' # polyfills
   - 'react-compiler-webpack' # build tool
+  - 'thread-loader' # build tool
   # babel
   - '@babel/plugin-transform-logical-assignment-operators'
   - 'babel-plugin-react-compiler'

@@ -7,7 +7,7 @@ import {
   mockJsonRpcSnap,
 } from '../mock-response-data/snaps/snap-binary-mocks';
 import { TestSnaps } from '../page-objects/pages/test-snaps';
-import { loginWithoutBalanceValidation } from '../page-objects/flows/login.flow';
+import { login } from '../page-objects/flows/login.flow';
 import { Driver } from '../webdriver/driver';
 import { openTestSnapClickButtonAndInstall } from '../page-objects/flows/install-test-snap.flow';
 import SnapInstall from '../page-objects/pages/dialog/snap-install';
@@ -30,7 +30,7 @@ describe('Test Snap RPC', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithoutBalanceValidation(driver);
+        await login(driver, { validateBalance: false });
 
         const testSnaps = new TestSnaps(driver);
         const snapInstall = new SnapInstall(driver);

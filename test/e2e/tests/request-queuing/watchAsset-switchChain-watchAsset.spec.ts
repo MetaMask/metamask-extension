@@ -3,7 +3,7 @@ import { DAPP_URL, WINDOW_TITLES } from '../../constants';
 import { withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { Driver } from '../../webdriver/driver';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import AddTokensModal from '../../page-objects/pages/dialog/add-tokens';
 import ReviewPermissionsConfirmation from '../../page-objects/pages/confirmations/review-permissions-confirmation';
@@ -50,7 +50,7 @@ describe('Request Queue WatchAsset -> SwitchChain -> WatchAsset', function (this
       }) => {
         const contractAddress =
           await contractRegistry.getContractAddress(smartContract);
-        await loginWithBalanceValidation(driver, localNodes[0]);
+        await login(driver, { localNode: localNodes[0] });
 
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage({ contractAddress, url: DAPP_URL });
