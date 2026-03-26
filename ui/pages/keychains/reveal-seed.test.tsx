@@ -642,8 +642,6 @@ describe('Reveal Seed Page', () => {
           properties: {
             // eslint-disable-next-line @typescript-eslint/naming-convention
             key_type: MetaMetricsEventKeyType.Srp,
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            active_tab_origin: 'https://metamask.github.io',
             hostname: 'evil.com',
           },
         });

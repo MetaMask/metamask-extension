@@ -71,13 +71,11 @@ function RevealSeedPage() {
   const activeTabOrigin = useSelector(getOriginOfCurrentTab);
   const [scanResult, setScanResult] =
     useState<PhishingDetectionScanResult | null>(null);
-  const [scannedOrigin, setScannedOrigin] = useState<string | null>(null);
   const [dangerAcknowledged, setDangerAcknowledged] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
     setScanResult(null);
-    setScannedOrigin(null);
     setDangerAcknowledged(false);
 
     if (activeTabOrigin) {
@@ -87,7 +85,6 @@ function RevealSeedPage() {
           if (cancelled) {
             return;
           }
-          setScannedOrigin(originToScan);
           setScanResult(result);
         })
         .catch(() => {
@@ -111,13 +108,11 @@ function RevealSeedPage() {
         properties: {
           // eslint-disable-next-line @typescript-eslint/naming-convention
           key_type: MetaMetricsEventKeyType.Srp,
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          active_tab_origin: scannedOrigin,
           hostname: scanResult.hostname ?? 'unknown',
         },
       });
     }
-  }, [scanResult, scannedOrigin]);
+  }, [scanResult]);
 
   // Only Block triggers the malicious warning. Warn and None show the generic warning.
   const isMalicious = scanResult?.recommendedAction === RecommendedAction.Block;
