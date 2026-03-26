@@ -343,6 +343,7 @@ export const MultichainHoveredAddressRowsList = ({
         ref={setReferenceElement}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
+        className="min-w-0"
       >
         {children}
       </Box>

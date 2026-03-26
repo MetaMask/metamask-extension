@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 import {
   Box,
   BoxFlexDirection,
@@ -33,9 +33,27 @@ export type ReversePositionModalProps = {
 };
 
 /**
+ * Builds a position payload for `perpsFlipPosition`. The controller expects
+ * `leverage.value`; normalize when the stream sent a primitive leverage.
+ *
+ * @param pos - UI position from props
+ * @returns Position safe to pass to the background flip RPC
+ */
+function toFlipPositionPayload(pos: Position): Position {
+  if (typeof pos.leverage === 'object' && pos.leverage !== null) {
+    return pos;
+  }
+  const value = typeof pos.leverage === 'number' ? pos.leverage : 1;
+  return {
+    ...pos,
+    leverage: { type: 'cross', value },
+  };
+}
+
+/**
  * Modal to reverse a position (Long -> Short or Short -> Long).
  * Shows Direction, Est. size, Fees and Cancel/Save.
- * Save closes the position and places an order in the opposite direction (no dedicated reversePosition API).
+ * Save calls `perpsFlipPosition` (single venue order via PerpsController; not close+open).
  * @param options0
  * @param options0.isOpen
  * @param options0.onClose
@@ -46,14 +64,13 @@ export const ReversePositionModal: React.FC<ReversePositionModalProps> = ({
   isOpen,
   onClose,
   position,
-  currentPrice,
+  currentPrice: _currentPrice,
 }) => {
   const t = useI18nContext();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const direction = getPositionDirection(position.size);
-  const oppositeDirection = direction === 'long' ? 'short' : 'long';
   const directionLabel =
     direction === 'long'
       ? `${t('perpsLong')} → ${t('perpsShort')}`
@@ -61,46 +78,23 @@ export const ReversePositionModal: React.FC<ReversePositionModalProps> = ({
   const sizeNum = Math.abs(parseFloat(position.size));
   const estSizeLabel = `${sizeNum.toFixed(2)} ${position.symbol}`;
 
-  let leverageValue = 1;
-  if (typeof position.leverage === 'object' && position.leverage !== null) {
-    leverageValue = (position.leverage as { value?: number }).value ?? 1;
-  } else if (typeof position.leverage === 'number') {
-    leverageValue = position.leverage;
-  }
+  const positionForFlip = useMemo(
+    () => toFlipPositionPayload(position),
+    [position],
+  );
 
   const handleSave = useCallback(async () => {
     setIsSubmitting(true);
     setError(null);
-    let positionClosed = false;
     try {
-      const closeResult = await submitRequestToBackground<{
+      const flipResult = await submitRequestToBackground<{
         success: boolean;
         error?: string;
-      }>('perpsClosePosition', [
-        { symbol: position.symbol, orderType: 'market' },
+      }>('perpsFlipPosition', [
+        { symbol: position.symbol, position: positionForFlip },
       ]);
-      if (!closeResult.success) {
-        throw new Error(closeResult.error || 'Failed to close position');
-      }
-      positionClosed = true;
-
-      const usdAmount = (sizeNum * currentPrice).toFixed(2);
-      const orderResult = await submitRequestToBackground<{
-        success: boolean;
-        error?: string;
-      }>('perpsPlaceOrder', [
-        {
-          symbol: position.symbol,
-          isBuy: oppositeDirection === 'long',
-          size: sizeNum.toString(),
-          orderType: 'market',
-          usdAmount,
-          currentPrice,
-          leverage: leverageValue,
-        },
-      ]);
-      if (!orderResult.success) {
-        throw new Error(orderResult.error || 'Failed to place reverse order');
+      if (flipResult?.success !== true) {
+        throw new Error(flipResult?.error || 'Failed to flip position');
       }
       const streamManager = getPerpsStreamManager();
       const freshPositions = await submitRequestToBackground<PerpsPosition[]>(
@@ -112,22 +106,11 @@ export const ReversePositionModal: React.FC<ReversePositionModalProps> = ({
     } catch (err) {
       const raw =
         err instanceof Error ? err.message : 'An unknown error occurred';
-      const message = positionClosed
-        ? `${t('perpsPositionClosedReverseOrderFailed')}: ${raw}`
-        : raw;
-      setError(message);
+      setError(raw);
     } finally {
       setIsSubmitting(false);
     }
-  }, [
-    position.symbol,
-    currentPrice,
-    sizeNum,
-    oppositeDirection,
-    leverageValue,
-    onClose,
-    t,
-  ]);
+  }, [onClose, position.symbol, positionForFlip]);
 
   return (
     <Modal
