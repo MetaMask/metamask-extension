@@ -34,18 +34,95 @@ describe('Check balance', function (this: Suite) {
     );
   });
 
-  it.only('For a non 0 balance account - USD balance', async function () {
+  it('For a non 0 balance account - USD balance', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilderV2()
           .withShowNativeTokenAsMainBalanceDisabled()
+          .withAssetsController({
+            assetsBalance: {
+              '04b514a4-c0a0-4fbf-ab11-7dbca387025f': {
+                'tron:728126428/slip44:195': {
+                  amount: '6.072392',
+                },
+                'tron:3448148188/slip44:195': {
+                  amount: '0',
+                },
+                'tron:2494104990/slip44:195': {
+                  amount: '0',
+                },
+                'tron:728126428/slip44:195-staked-for-bandwidth': {
+                  amount: '0',
+                },
+                'tron:3448148188/slip44:195-staked-for-bandwidth': {
+                  amount: '0',
+                },
+                'tron:2494104990/slip44:195-staked-for-bandwidth': {
+                  amount: '0',
+                },
+                'tron:728126428/slip44:195-staked-for-energy': {
+                  amount: '20',
+                },
+                'tron:3448148188/slip44:195-staked-for-energy': {
+                  amount: '0',
+                },
+                'tron:2494104990/slip44:195-staked-for-energy': {
+                  amount: '0',
+                },
+                'tron:728126428/slip44:bandwidth': {
+                  amount: '600',
+                },
+                'tron:3448148188/slip44:bandwidth': {
+                  amount: '0',
+                },
+                'tron:2494104990/slip44:bandwidth': {
+                  amount: '0',
+                },
+                'tron:728126428/slip44:maximum-bandwidth': {
+                  amount: '600',
+                },
+                'tron:3448148188/slip44:maximum-bandwidth': {
+                  amount: '0',
+                },
+                'tron:2494104990/slip44:maximum-bandwidth': {
+                  amount: '0',
+                },
+                'tron:728126428/slip44:energy': {
+                  amount: '189',
+                },
+                'tron:3448148188/slip44:energy': {
+                  amount: '0',
+                },
+                'tron:2494104990/slip44:energy': {
+                  amount: '0',
+                },
+                'tron:728126428/slip44:maximum-energy': {
+                  amount: '189',
+                },
+                'tron:3448148188/slip44:maximum-energy': {
+                  amount: '0',
+                },
+                'tron:2494104990/slip44:maximum-energy': {
+                  amount: '0',
+                },
+                'tron:728126428/trc20:TUPM7K8REVzD2UdV4R5fe5M8XbnR2DdoJ6': {
+                  amount: '3156454.956836360132407885',
+                },
+                'tron:728126428/trc20:TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t': {
+                  amount: '2.804595',
+                },
+                'tron:728126428/trc20:TXDk8mbtRbXeYuMNS83CfKPaYYT8XWv9Hz': {
+                  amount: '0.289757448699320931',
+                },
+              },
+            },
+          })
           .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockTronApis,
       },
       async ({ driver }: { driver: Driver }) => {
         await login(driver, { validateBalance: false });
-        await driver.delay(1000000);
         const homePage = new HomePage(driver);
         await homePage.waitForNonEvmAccountsLoaded();
 
