@@ -949,11 +949,6 @@ export const getRatesControllerRates = createDeepEqualSelector(
       };
     }
 
-    console.log('DEBUG RATES', {
-      oldRates: rates,
-      newRates: result,
-    });
-
     return result;
   },
 ) as unknown as ControllerStateSelector<RatesControllerState, 'rates'>;
