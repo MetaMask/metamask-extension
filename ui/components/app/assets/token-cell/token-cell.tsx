@@ -2,6 +2,9 @@ import React, { useMemo, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import type { Hex } from '@metamask/utils';
+import type { MusdMerklClaimCtaLocation } from '../../musd/musd-events';
+import { MUSD_EVENTS_CONSTANTS } from '../../musd/musd-events';
+import { getBonusAmountRange } from '../../musd/merkl-bonus-analytics';
 import { useTokenDisplayInfo } from '../hooks';
 import {
   ButtonSecondary,
@@ -42,6 +45,8 @@ export type TokenCellProps = {
   showMerklBadge?: boolean;
   /** When true, shows the mUSD convert CTA in the footer (e.g. on the home token list). */
   showMusdConvertCta?: boolean;
+  /** Analytics: where the Merkl claim CTA is shown (default home/list). */
+  merklClaimCtaLocation?: MusdMerklClaimCtaLocation;
 };
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
@@ -54,6 +59,7 @@ export default function TokenCell({
   safeChains,
   showMerklBadge = false,
   showMusdConvertCta = false,
+  merklClaimCtaLocation = MUSD_EVENTS_CONSTANTS.EVENT_LOCATIONS.TOKEN_LIST_ITEM,
 }: TokenCellProps) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -69,6 +75,8 @@ export default function TokenCell({
   const {
     hasClaimableReward,
     isEligible,
+    hasClaimedBefore,
+    claimableRewardDisplay,
     refetch: refetchMerklRewards,
   } = useMerklRewards({
     tokenAddress: token.address,
@@ -113,6 +121,11 @@ export default function TokenCell({
     [token, tokenDisplayInfo],
   );
 
+  const merklBonusAmountRange = useMemo(
+    () => getBonusAmountRange(claimableRewardDisplay ?? '< 0.01'),
+    [claimableRewardDisplay],
+  );
+
   const handleScamWarningModal = (arg: boolean) => {
     setShowScamWarningModal(arg);
   };
@@ -135,6 +148,10 @@ export default function TokenCell({
           chainId={token.chainId as Hex}
           label={t('merklRewardsClaimBonus')}
           refetchRewards={refetchMerklRewards}
+          location={merklClaimCtaLocation}
+          assetSymbol={token.symbol}
+          bonusAmountRange={merklBonusAmountRange}
+          hasClaimedBefore={hasClaimedBefore}
         />
       );
     }

@@ -22,7 +22,7 @@ const POPOVER_STYLE = {
   paddingBottom: '6px',
   paddingLeft: '16px',
   paddingRight: '16px',
-  maxWidth: 240,
+  maxWidth: 250,
 } as const;
 
 type InfoPopoverTooltipProps = {
@@ -38,6 +38,8 @@ type InfoPopoverTooltipProps = {
    * question mark). The icon is still clickable.
    */
   plainIcon?: boolean;
+  /** Accessible name for the popover trigger (prefer context-specific copy). */
+  ariaLabel?: string;
   'data-testid'?: string;
 };
 
@@ -49,6 +51,7 @@ export function InfoPopoverTooltip({
   iconColor,
   iconMarginLeft,
   plainIcon = false,
+  ariaLabel,
   'data-testid': dataTestId,
 }: Readonly<InfoPopoverTooltipProps>) {
   const [isOpen, setIsOpen] = useState(false);
@@ -72,6 +75,7 @@ export function InfoPopoverTooltip({
         <button
           ref={triggerRef as React.Ref<HTMLButtonElement>}
           type="button"
+          aria-label={ariaLabel ?? 'info'}
           onClick={handleToggle}
           data-testid={dataTestId ? `${dataTestId}-button` : undefined}
           style={{
@@ -92,7 +96,7 @@ export function InfoPopoverTooltip({
       ) : (
         <ButtonIcon
           ref={triggerRef as React.Ref<HTMLButtonElement>}
-          ariaLabel="info"
+          ariaLabel={ariaLabel ?? 'info'}
           iconName={iconName}
           size={iconSize}
           onClick={handleToggle}
