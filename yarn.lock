@@ -6122,9 +6122,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/chain-agnostic-permission@npm:@metamask-previews/chain-agnostic-permission@1.4.0-preview-f3055a72b":
-  version: 1.4.0-preview-f3055a72b
-  resolution: "@metamask-previews/chain-agnostic-permission@npm:1.4.0-preview-f3055a72b"
+"@metamask/chain-agnostic-permission@npm:^1.5.0":
+  version: 1.5.0
+  resolution: "@metamask/chain-agnostic-permission@npm:1.5.0"
   dependencies:
     "@metamask/api-specs": "npm:^0.14.0"
     "@metamask/controller-utils": "npm:^11.19.0"
@@ -6132,7 +6132,7 @@ __metadata:
     "@metamask/rpc-errors": "npm:^7.0.2"
     "@metamask/utils": "npm:^11.9.0"
     lodash: "npm:^4.17.21"
-  checksum: 10/105de64c44767b7c4f799b7782cb69583cb801334f42a05c47a1de95f4309b7df953fd40ff15f8477ad33d3c66769452454e770ee8c365ad3bbcd0e0e66847d0
+  checksum: 10/d9d7f912d911623bbbec7952ef8f5d882d7d79bca75915dfa7366a6abc22a2b7bd22c267f84a6c5c628a6fd484d69aecfa1a95d6840ca2ccfd5ff5f247f0bb8b
   languageName: node
   linkType: hard
 
@@ -7319,12 +7319,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/multichain-api-middleware@npm:@metamask-previews/multichain-api-middleware@1.2.7-preview-f3055a72b":
-  version: 1.2.7-preview-f3055a72b
-  resolution: "@metamask-previews/multichain-api-middleware@npm:1.2.7-preview-f3055a72b"
+"@metamask/multichain-api-middleware@npm:^2.0.0":
+  version: 2.0.0
+  resolution: "@metamask/multichain-api-middleware@npm:2.0.0"
   dependencies:
     "@metamask/api-specs": "npm:^0.14.0"
-    "@metamask/chain-agnostic-permission": "npm:^1.4.0"
+    "@metamask/chain-agnostic-permission": "npm:^1.5.0"
     "@metamask/controller-utils": "npm:^11.19.0"
     "@metamask/json-rpc-engine": "npm:^10.2.3"
     "@metamask/network-controller": "npm:^30.0.0"
@@ -7334,7 +7334,7 @@ __metadata:
     "@open-rpc/meta-schema": "npm:^1.14.6"
     "@open-rpc/schema-utils-js": "npm:^2.0.5"
     jsonschema: "npm:^1.4.1"
-  checksum: 10/08b315c121c0ef4e4ce34849bdade5327e3912744789ecdbc919b2921b5dad83d7c36db91f36b5661ad9a6a51b4f96b7e4cd3bc1d80b521629aed05d0791d22d
+  checksum: 10/c887073833ece8daee46727a5991ff15e329557e7453b34e62f7d65add09edeaa64a14cdd4f44bb343cd2c637c1c431e7f544ee7f1db441eb4b2a9959d40a4cb
   languageName: node
   linkType: hard
 
@@ -8312,9 +8312,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/solana-wallet-standard@file:../solana-wallet-standard::locator=metamask-crx%40workspace%3A.":
-  version: 0.6.0
-  resolution: "@metamask/solana-wallet-standard@file:../solana-wallet-standard#../solana-wallet-standard::hash=50fc69&locator=metamask-crx%40workspace%3A."
+"@metamask/solana-wallet-standard@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "@metamask/solana-wallet-standard@npm:1.0.0"
   dependencies:
     "@solana/wallet-standard-chains": "npm:^1.1.1"
     "@solana/wallet-standard-features": "npm:^1.3.0"
@@ -8322,7 +8322,7 @@ __metadata:
     "@wallet-standard/features": "npm:^1.1.0"
     "@wallet-standard/wallet": "npm:^1.1.0"
     bs58: "npm:^6.0.0"
-  checksum: 10/44d168e665e584ce1c575293d431391b258ad7a0920130a6bd514f018141f61de55675a4549e1ad6baea6fdb631c01a674b46805b2bad9bd896acadfee18f794
+  checksum: 10/d5a21e964d1f31b3c08d28859332b7005646005de03836412c45bdfd8d9caf88ac633936f7e4fdc573591149171d0d08f8a8c9c679d99ac080f4d1d5762e333f
   languageName: node
   linkType: hard
 
@@ -34033,7 +34033,7 @@ __metadata:
     "@metamask/bridge-status-controller": "npm:^68.0.0"
     "@metamask/browser-passworder": "npm:^6.0.0"
     "@metamask/build-utils": "npm:^3.0.0"
-    "@metamask/chain-agnostic-permission": "npm:^1.3.0"
+    "@metamask/chain-agnostic-permission": "npm:^1.5.0"
     "@metamask/claims-controller": "npm:^0.4.2"
     "@metamask/client-controller": "npm:^1.0.0"
     "@metamask/client-mcp-core": "npm:^0.1.1"
@@ -34093,7 +34093,7 @@ __metadata:
     "@metamask/metamask-eth-abis": "npm:^3.1.1"
     "@metamask/multichain-account-service": "patch:@metamask/multichain-account-service@npm%3A7.1.0#~/.yarn/patches/@metamask-multichain-account-service-npm-7.1.0-4b0ce989c3.patch"
     "@metamask/multichain-api-client": "npm:^0.10.1"
-    "@metamask/multichain-api-middleware": "npm:^1.2.5"
+    "@metamask/multichain-api-middleware": "npm:^2.0.0"
     "@metamask/multichain-network-controller": "npm:^3.0.5"
     "@metamask/multichain-transactions-controller": "npm:^7.0.2"
     "@metamask/name-controller": "npm:^9.0.0"
@@ -34134,7 +34134,7 @@ __metadata:
     "@metamask/snaps-sdk": "npm:^11.0.0"
     "@metamask/snaps-utils": "npm:^12.1.1"
     "@metamask/solana-wallet-snap": "npm:^2.7.3"
-    "@metamask/solana-wallet-standard": "npm:^0.6.0"
+    "@metamask/solana-wallet-standard": "npm:^1.0.0"
     "@metamask/storage-service": "npm:^1.0.0"
     "@metamask/subscription-controller": "npm:^6.0.0"
     "@metamask/superstruct": "npm:^3.2.1"
