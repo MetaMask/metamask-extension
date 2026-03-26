@@ -32,17 +32,17 @@ export type LongTaskMetrics = {
   totalDuration: number;
   /** Maximum single long task duration in milliseconds */
   maxDuration: number;
+  /** Total Blocking Time in milliseconds, accumulated incrementally */
+  tbt: number;
   /** Individual task entries (capped at 50) */
   tasks: LongTaskEntry[];
 };
 
 /**
- * Extended metrics including derived TBT.
+ * Extended metrics including TBT rating.
  */
 export type LongTaskMetricsWithTBT = LongTaskMetrics & {
-  /** Total Blocking Time in milliseconds */
-  tbt: number;
-  /** TBT rating based on Lighthouse thresholds */
+  /** TBT rating based on Lighthouse desktop thresholds */
   tbtRating: 'good' | 'needs-improvement' | 'poor';
 };
 
@@ -62,6 +62,7 @@ let longTaskMetrics: LongTaskMetrics = {
   count: 0,
   totalDuration: 0,
   maxDuration: 0,
+  tbt: 0,
   tasks: [],
 };
 
@@ -105,6 +106,10 @@ export function setupLongTaskObserver(sampleRate: number = 0.1): () => void {
         longTaskMetrics.maxDuration = Math.max(
           longTaskMetrics.maxDuration,
           entry.duration,
+        );
+        longTaskMetrics.tbt += Math.max(
+          0,
+          entry.duration - LONG_TASK_THRESHOLD_MS,
         );
 
         // Store up to MAX_TASKS_STORED tasks for analysis
@@ -164,6 +169,7 @@ export function resetLongTaskMetrics(): void {
     count: 0,
     totalDuration: 0,
     maxDuration: 0,
+    tbt: 0,
     tasks: [],
   };
 }
@@ -212,12 +218,10 @@ export function getLongTaskMetricsWithTBT(
   reset: boolean = false,
 ): LongTaskMetricsWithTBT {
   const metrics = getLongTaskMetrics(reset);
-  const tbt = calculateTBT(metrics.tasks);
 
   return {
     ...metrics,
-    tbt,
-    tbtRating: getTBTRating(tbt),
+    tbtRating: getTBTRating(metrics.tbt),
   };
 }
 

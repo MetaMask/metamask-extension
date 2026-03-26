@@ -71,6 +71,7 @@ describe('performance-observers', () => {
         count: 0,
         totalDuration: 0,
         maxDuration: 0,
+        tbt: 0,
         tasks: [],
       });
     });
@@ -90,6 +91,7 @@ describe('performance-observers', () => {
         count: 0,
         totalDuration: 0,
         maxDuration: 0,
+        tbt: 0,
         tasks: [],
       });
 
@@ -126,6 +128,7 @@ describe('performance-observers', () => {
       expect(metrics.count).toBe(0);
       expect(metrics.totalDuration).toBe(0);
       expect(metrics.maxDuration).toBe(0);
+      expect(metrics.tbt).toBe(0);
       expect(metrics.tasks).toEqual([]);
     });
   });
@@ -140,28 +143,51 @@ describe('performance-observers', () => {
       Math.random = originalRandom;
     });
 
-    it('returns cleanup function', () => {
+    it('creates observer when sampled', () => {
       Math.random = () => 0; // Always sample
+      const mockObserve = jest.fn();
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (globalThis as any).PerformanceObserver = class {
+        observe = mockObserve;
+
+        disconnect = jest.fn();
+      };
+
       const cleanup = setupLongTaskObserver(1);
       expect(typeof cleanup).toBe('function');
+      expect(mockObserve).toHaveBeenCalledWith({
+        type: 'longtask',
+        buffered: true,
+      });
     });
 
-    it('does not setup observer when not sampled', () => {
+    it('does not create observer when not sampled', () => {
       Math.random = () => 0.5; // 50% > 10% sample rate
-      const cleanup = setupLongTaskObserver(0.1);
+      const mockConstructor = jest.fn();
 
-      // Should return no-op cleanup
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (globalThis as any).PerformanceObserver = class {
+        constructor() {
+          mockConstructor();
+        }
+
+        observe = jest.fn();
+
+        disconnect = jest.fn();
+      };
+
+      const cleanup = setupLongTaskObserver(0.1);
       expect(typeof cleanup).toBe('function');
+      expect(mockConstructor).not.toHaveBeenCalled();
     });
 
-    it('handles missing PerformanceObserver gracefully', () => {
+    it('does not create observer when PerformanceObserver is unavailable', () => {
       Math.random = () => 0;
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       delete (globalThis as any).PerformanceObserver;
 
       const cleanup = setupLongTaskObserver(1);
-
-      // Should return no-op cleanup without throwing
       expect(typeof cleanup).toBe('function');
     });
 
@@ -197,6 +223,8 @@ describe('performance-observers', () => {
       expect(metrics.count).toBe(2);
       expect(metrics.totalDuration).toBe(200);
       expect(metrics.maxDuration).toBe(120);
+      // TBT = (120 - 50) + (80 - 50) = 70 + 30 = 100ms
+      expect(metrics.tbt).toBe(100);
       expect(metrics.tasks).toHaveLength(2);
     });
 
@@ -246,7 +274,7 @@ describe('performance-observers', () => {
       consoleWarnSpy.mockRestore();
     });
 
-    it('caps stored tasks at MAX_TASKS_STORED (50)', () => {
+    it('caps stored tasks at MAX_TASKS_STORED (50) but accumulates all TBT', () => {
       Math.random = () => 0;
       let capturedCallback: (list: { getEntries: () => object[] }) => void;
 
@@ -263,6 +291,9 @@ describe('performance-observers', () => {
 
       setupLongTaskObserver(1);
 
+      // 60 tasks, each with duration = 60 + i (range: 60-119ms)
+      // Blocking time per task = duration - 50ms = (10 + i)ms
+      // Total TBT = sum(10..69) = 60 * (10 + 69) / 2 = 2370ms
       const entries = Array.from({ length: 60 }, (_, i) => ({
         name: 'self',
         duration: 60 + i,
@@ -275,6 +306,8 @@ describe('performance-observers', () => {
       const metrics = getLongTaskMetrics();
       expect(metrics.count).toBe(60);
       expect(metrics.tasks).toHaveLength(50);
+      // TBT accounts for all 60 tasks, not just the 50 stored
+      expect(metrics.tbt).toBe(2370);
     });
 
     it('disconnects observer on cleanup', () => {

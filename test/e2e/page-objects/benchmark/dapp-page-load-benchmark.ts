@@ -333,6 +333,32 @@ export class PageLoadBenchmark {
       performance.now = () => originalNow() + (Date.now() - startTime);
     });
 
+    // Inject standalone Long Task observer for this page context.
+    // The extension's observer runs on chrome-extension:// pages and is
+    // not accessible from dapp pages, so we set up a dedicated one here.
+    await page.addInitScript(() => {
+      const LONG_TASK_THRESHOLD_MS = 50;
+      const metrics = { count: 0, totalDuration: 0, maxDuration: 0, tbt: 0 };
+      try {
+        const obs = new PerformanceObserver((list) => {
+          for (const entry of list.getEntries()) {
+            metrics.count += 1;
+            metrics.totalDuration += entry.duration;
+            metrics.maxDuration = Math.max(metrics.maxDuration, entry.duration);
+            metrics.tbt += Math.max(
+              0,
+              entry.duration - LONG_TASK_THRESHOLD_MS,
+            );
+          }
+        });
+        obs.observe({ type: 'longtask', buffered: true });
+      } catch {
+        // longtask not supported in this browser
+      }
+      // @ts-expect-error Injected property for benchmark metric collection
+      window.__longTaskMetrics = metrics;
+    });
+
     await page.goto(url, { waitUntil: 'networkidle' });
 
     // Wait for page to be fully loaded
@@ -349,20 +375,17 @@ export class PageLoadBenchmark {
         'largest-contentful-paint',
       )[0] as PerformanceEntry;
 
-      // Collect Long Task / TBT metrics from stateHooks if available
+      // Read Long Task / TBT metrics from the injected page-level observer
       const longTaskMetricsRaw = (
         window as typeof window & {
-          stateHooks?: {
-            getLongTaskMetricsWithTBT?: () => {
-              count: number;
-              totalDuration: number;
-              maxDuration: number;
-              tbt: number;
-              tbtRating: 'good' | 'needs-improvement' | 'poor';
-            };
+          __longTaskMetrics?: {
+            count: number;
+            totalDuration: number;
+            maxDuration: number;
+            tbt: number;
           };
         }
-      ).stateHooks?.getLongTaskMetricsWithTBT?.();
+      ).__longTaskMetrics;
 
       return {
         pageLoadTime: navigation.loadEventEnd - navigation.startTime,
@@ -384,7 +407,15 @@ export class PageLoadBenchmark {
         longTaskTotalDuration: longTaskMetricsRaw?.totalDuration,
         longTaskMaxDuration: longTaskMetricsRaw?.maxDuration,
         tbt: longTaskMetricsRaw?.tbt,
-        tbtRating: longTaskMetricsRaw?.tbtRating,
+        // Thresholds (200/600ms) must match TBT_GOOD_THRESHOLD_MS and
+        // TBT_NEEDS_IMPROVEMENT_THRESHOLD_MS in performance-observers.ts
+        tbtRating: longTaskMetricsRaw
+          ? longTaskMetricsRaw.tbt < 200
+            ? 'good'
+            : longTaskMetricsRaw.tbt < 600
+              ? 'needs-improvement'
+              : 'poor'
+          : undefined,
       };
     });
 
