@@ -5417,6 +5417,15 @@
   "perps": {
     "message": "Perps"
   },
+  "perps.feedback.title": {
+    "message": "Perps feedback"
+  },
+  "perps.support.description": {
+    "message": "Get help with MetaMask and Perps"
+  },
+  "perps.support.title": {
+    "message": "MetaMask Help Center"
+  },
   "perps24hVolume": {
     "message": "24h Volume"
   },
@@ -5568,15 +5577,6 @@
   },
   "perpsGiveFeedback": {
     "message": "Give us feedback"
-  },
-  "perps.support.title": {
-    "message": "MetaMask Help Center"
-  },
-  "perps.support.description": {
-    "message": "Get help with MetaMask and Perps"
-  },
-  "perps.feedback.title": {
-    "message": "Perps feedback"
   },
   "perpsIncludesPnl": {
     "message": "includes P&L $1"
