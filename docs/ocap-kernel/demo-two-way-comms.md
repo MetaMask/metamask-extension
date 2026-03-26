@@ -95,7 +95,16 @@ Load the extension in Chrome (`chrome://extensions` → Load unpacked →
 
 ### Step 3: Find the OCAP URL
 
-Open the offscreen document's console to see the OCAP URL:
+The OCAP URL is available in two places:
+
+**Option A — Extension UI (easiest):**
+
+1. Open the MetaMask extension
+2. Open the global menu (hamburger icon)
+3. Click **OCAP Kernel**
+4. The capability vendor OCAP URL is displayed with a copy button
+
+**Option B — Offscreen console:**
 
 1. Go to `chrome://extensions`
 2. Find MetaMask → click "Details"
@@ -189,6 +198,9 @@ capability (currently hardcoded to return a `PersonalMessageSigner`):
 ```bash
 yarn ocap daemon queueMessage ko4 requestCapability '["view user accounts"]'
 ```
+
+> **Note:** This triggers a capability approval confirmation in the MetaMask
+> extension — the user must approve the capability before the call resolves.
 
 The `queueMessage` subcommand automatically decodes the CapData result into a
 human-readable form. If the result includes an object reference, it shows the
@@ -337,8 +349,8 @@ The URL looks like `ocap:<oid>@<peer_id>` with no commas. This means
 
 ### Smoke test errors in offscreen console
 
-The home side runs a smoke test after vendor launch that calls
-`requestCapability` and `getAccounts`. If you see errors like
+The smoke test is no longer automatic — it's exposed as `globalThis.runSmokeTest`
+in the offscreen console. Run it manually if needed. If you see errors like
 `AccountsController:listAccounts` or `NetworkController:findNetworkClientIdByChainId` failing, the `hostApiProxy` bridge to the
 background service worker may not be connected. This doesn't block OCAP URL
 issuance but indicates the host API proxy needs debugging.
@@ -354,6 +366,8 @@ issuance but indicates the host API proxy needs debugging.
 | `app/offscreen/ocap-kernel/services/llm-service.ts`                  | Hardcoded LLM service (stock PersonalMessageSigner response)         |
 | `app/offscreen/ocap-kernel/services/host-api-proxy.ts`               | Proxy to background controller messenger                             |
 | `app/scripts/lib/offscreen-bridge/host-api-proxy-bridge.ts`          | Background-side bridge for host API proxy                            |
+| `app/scripts/controllers/ocap-kernel-controller.ts`                  | OcapKernelController: stores capabilityVendorUrl for UI              |
+| `ui/pages/ocap-kernel/ocap-kernel-page.tsx`                          | Kernel management UI (OCAP URL display + copy)                       |
 | `packages/kernel-browser-runtime/src/kernel-worker/kernel-worker.ts` | Kernel init, CapTP setup, `initRemoteComms` call                     |
 | `packages/kernel-browser-runtime/src/background-captp.ts`            | `makeBackgroundCapTP` — web app gets `KernelFacet` via `getKernel()` |
 | `packages/ocap-kernel/src/kernel-facet.ts`                           | KernelFacet method list                                              |
