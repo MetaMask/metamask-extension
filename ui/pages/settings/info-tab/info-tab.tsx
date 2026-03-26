@@ -86,8 +86,8 @@ export default function InfoTab(): React.ReactElement {
     };
 
     const linkItemProps = {
-      paddingTop: 4 as const,
-      paddingBottom: 4 as const,
+      paddingTop: 3 as const,
+      paddingBottom: 3 as const,
     };
 
     return (
@@ -95,7 +95,7 @@ export default function InfoTab(): React.ReactElement {
         ref={settingsRefs[1]}
         flexDirection={BoxFlexDirection.Column}
         alignItems={BoxAlignItems.Start}
-        className="settings-page__content-item settings-page__content-item--without-height w-full px-0"
+        className="w-full"
       >
         <Box ref={settingsRefs[2]} {...linkItemProps}>
           <TextButton asChild {...linkProps}>
@@ -176,34 +176,30 @@ export default function InfoTab(): React.ReactElement {
     : t('metamaskVersion');
 
   return (
-    <Box className="settings-page__body px-0">
-      <Box className="settings-page__content-row">
-        <Box
-          flexDirection={BoxFlexDirection.Column}
-          alignItems={BoxAlignItems.Center}
-          paddingBottom={6}
-          gap={4}
-          className="settings-page__content-item settings-page__content-item--without-height w-full px-0"
-        >
-          <Box>
-            <img
-              src="./images/logo/metamask-fox.svg"
-              alt="MetaMask Logo"
-              className="info-tab__logo w-24 h-24"
-            />
-          </Box>
-          <Box ref={settingsRefs[0]} data-testid="info-tab-version">
-            <Text
-              variant={TextVariant.BodySm}
-              color={TextColor.TextAlternative}
-              className="info-tab__version-number"
-            >
-              {versionLabel} {version}
-            </Text>
-          </Box>
-          {renderInfoLinks()}
-        </Box>
+    <Box
+      flexDirection={BoxFlexDirection.Column}
+      alignItems={BoxAlignItems.Center}
+      paddingTop={3}
+      paddingBottom={6}
+      gap={4}
+    >
+      <Box>
+        <img
+          src="./images/logo/metamask-fox.svg"
+          alt="MetaMask Logo"
+          className="info-tab__logo w-24 h-24"
+        />
       </Box>
+      <Box ref={settingsRefs[0]} data-testid="info-tab-version">
+        <Text
+          variant={TextVariant.BodySm}
+          color={TextColor.TextAlternative}
+          className="info-tab__version-number"
+        >
+          {versionLabel} {version}
+        </Text>
+      </Box>
+      {renderInfoLinks()}
       {isVisitSupportDataConsentModalOpen && (
         <VisitSupportDataConsentModal
           isOpen={isVisitSupportDataConsentModalOpen}

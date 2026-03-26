@@ -278,7 +278,7 @@ export const SETTINGS_V2_ROUTES: Record<string, SettingsV2RouteMeta> = {
     iconName: IconName.Flask,
   },
 
-  // --- Developer Options tab ---
+  // --- Debug (internal) tab ---
   ...(SHOW_DEBUG_SETTINGS
     ? {
         [DEVELOPER_OPTIONS_ROUTE]: {
@@ -295,6 +295,8 @@ export const SETTINGS_V2_ROUTES: Record<string, SettingsV2RouteMeta> = {
         },
       }
     : {}),
+
+  // --- Developer Tools tab ---
   [DEVELOPER_TOOLS_V2_ROUTE]: {
     labelKey: 'developerTools',
     parentPath: SETTINGS_V2_ROUTE,
@@ -302,10 +304,12 @@ export const SETTINGS_V2_ROUTES: Record<string, SettingsV2RouteMeta> = {
     isTab: true,
     iconName: IconName.Code,
   },
+
+  // --- About tab ---
   [ABOUT_US_ROUTE]: {
     labelKey: 'aboutMetaMask',
     parentPath: SETTINGS_V2_ROUTE,
-    component: mmLazy(() => import('./about-tab/index.tsx')),
+    component: mmLazy(() => import('./about-tab/index.ts')),
     isTab: true,
     iconName: IconName.Info,
   },
