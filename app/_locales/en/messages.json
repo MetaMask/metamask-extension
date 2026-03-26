@@ -5457,18 +5457,18 @@
   "perpsAvailableBalance": {
     "message": "Available balance"
   },
+  "perpsAvailableToAdd": {
+    "message": "Available to add"
+  },
   "perpsAvailableToClose": {
     "message": "Available to close"
+  },
+  "perpsAvailableToSubtract": {
+    "message": "Available to subtract"
   },
   "perpsAvailableToTrade": {
     "message": "Available to trade",
     "description": "Label for the available balance that can be used for trading"
-  },
-  "perpsAvailableToAdd": {
-    "message": "Available to add"
-  },
-  "perpsAvailableToSubtract": {
-    "message": "Available to subtract"
   },
   "perpsCancelAllOrders": {
     "message": "Cancel all"
@@ -5602,12 +5602,6 @@
   "perpsLiquidationPrice": {
     "message": "Liquidation price"
   },
-  "perpsNewLiquidationPrice": {
-    "message": "New liquidation price"
-  },
-  "perpsNewLiquidationDistance": {
-    "message": "New liq. distance"
-  },
   "perpsLong": {
     "message": "Long"
   },
@@ -5647,6 +5641,12 @@
   },
   "perpsMore": {
     "message": "More"
+  },
+  "perpsNewLiquidationDistance": {
+    "message": "New liq. distance"
+  },
+  "perpsNewLiquidationPrice": {
+    "message": "New liquidation price"
   },
   "perpsNoMarketsFound": {
     "message": "No markets found"
