@@ -1,8 +1,8 @@
 /**
  * Core Web Vitals instrumentation using the web-vitals library.
  *
- * Provides utilities to measure INP, LCP, and CLS using the attribution build
- * which shows which element/script caused each metric.
+ * Provides utilities to measure INP, FCP, LCP, and CLS using the attribution
+ * build which shows which element/script caused each metric.
  *
  * IMPORTANT: On `chrome-extension://` pages, Chrome does not emit
  * `PerformancePaintTiming` (`first-paint`, `first-contentful-paint`) or
@@ -32,12 +32,12 @@ import type {
   INPMetricWithAttribution,
   LCPMetricWithAttribution,
   CLSMetricWithAttribution,
+  FCPMetricWithAttribution,
   // @ts-expect-error suppress CommonJS vs ECMAScript error
 } from 'web-vitals/attribution';
 // @ts-expect-error suppress CommonJS vs ECMAScript error
-import { onINP, onLCP, onCLS } from 'web-vitals/attribution';
+import { onINP, onLCP, onCLS, onFCP } from 'web-vitals/attribution';
 import type { WebVitalsMetrics } from '../../../shared/constants/benchmarks';
-
 
 /**
  * Stored web vitals metrics for E2E benchmark retrieval.
@@ -65,6 +65,12 @@ const LCP_GOOD_THRESHOLD_MS = 2500;
 
 /** LCP threshold for "needs improvement" rating in milliseconds */
 const LCP_NEEDS_IMPROVEMENT_THRESHOLD_MS = 4000;
+
+/** FCP threshold for "good" rating in milliseconds */
+const FCP_GOOD_THRESHOLD_MS = 1800;
+
+/** FCP threshold for "needs improvement" rating in milliseconds */
+const FCP_NEEDS_IMPROVEMENT_THRESHOLD_MS = 3000;
 
 /** CLS threshold for "good" rating (unitless) */
 const CLS_GOOD_THRESHOLD = 0.1;
@@ -198,6 +204,54 @@ export function initINPObserver(): void {
 }
 
 /**
+ * Initialize FCP (First Contentful Paint) observer.
+ *
+ * FCP measures when the first content (text, image, canvas) is painted.
+ * On the sidepanel (`sidepanel.html`), Chrome emits `PerformancePaintTiming`
+ * entries so FCP fires (~55% of pageloads, 800ms–1.05s typical). On popup
+ * pages (`home.html`, `notification.html`), paint entries are not emitted.
+ *
+ * @see https://web.dev/articles/fcp
+ */
+export function initFCPObserver(): void {
+  try {
+    onFCP(
+      (metric: FCPMetricWithAttribution) => {
+        const { value, attribution } = metric;
+        const rating = getRating(
+          value,
+          FCP_GOOD_THRESHOLD_MS,
+          FCP_NEEDS_IMPROVEMENT_THRESHOLD_MS,
+        );
+
+        webVitalsMetrics.fcp = value;
+        webVitalsMetrics.fcpRating = rating;
+
+        const attributionData: Record<string, unknown> = {};
+        if (attribution) {
+          attributionData.timeToFirstByte =
+            attribution.timeToFirstByte ?? null;
+          attributionData.firstByteToFCP =
+            attribution.firstByteToFCP ?? null;
+          attributionData.loadState = attribution.loadState ?? null;
+        }
+
+        enrichSentryWithWebVitals(
+          'FCP',
+          value,
+          'millisecond',
+          rating,
+          attributionData,
+        );
+      },
+      { reportAllChanges: true },
+    );
+  } catch (error) {
+    console.warn('[Performance] Failed to initialize FCP observer:', error);
+  }
+}
+
+/**
  * Initialize LCP (Largest Contentful Paint) observer.
  *
  * LCP measures when the largest content element finishes rendering.
@@ -299,10 +353,12 @@ export function initCLSObserver(): void {
 /**
  * Initialize all Web Vitals observers.
  *
- * Sets up INP, LCP, and CLS measurement with attribution.
- * On `chrome-extension://` pages, only INP is expected to fire in
- * production. LCP and CLS fire during CI E2E benchmark runs where
- * data is collected via `stateHooks.getWebVitalsMetrics()`.
+ * Sets up INP, FCP, LCP, and CLS measurement with attribution.
+ * On `chrome-extension://` pages, INP fires on all page types.
+ * FCP and LCP fire on the sidepanel (~55% of pageloads). CLS is
+ * unreliable on extension pages. All four fire during CI E2E
+ * benchmark runs where data is collected via
+ * `stateHooks.getWebVitalsMetrics()`.
  *
  * Also registers getter/resetter on `stateHooks` if available. This
  * must happen here (at call time) rather than at module evaluation
@@ -311,6 +367,7 @@ export function initCLSObserver(): void {
  */
 export function initWebVitals(): void {
   initINPObserver();
+  initFCPObserver();
   initLCPObserver();
   initCLSObserver();
 

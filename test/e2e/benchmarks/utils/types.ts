@@ -77,7 +77,6 @@ export type BenchmarkRunResult = {
   benchmarkType?: BenchmarkType;
 };
 
-
 export type BenchmarkSummary = {
   name: string;
   iterations: number;
