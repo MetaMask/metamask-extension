@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useMemo, useState } from 'react';
+import React, { useCallback, useContext, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import {
   MetaMetricsEventCategory,
