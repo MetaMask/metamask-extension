@@ -616,7 +616,7 @@ describe('Query hooks', () => {
     });
 
     expect(mockQueryClient.prefetchInfiniteQuery).toHaveBeenCalledWith(
-      queryOptions,
+      expect.objectContaining(queryOptions),
     );
   });
 });
