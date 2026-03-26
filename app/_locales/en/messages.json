@@ -1357,17 +1357,17 @@
   "cancelPopoverTitle": {
     "message": "Cancel transaction"
   },
-  "cancelTransactionDescription": {
-    "message": "This transaction will be canceled and this network fee will replace the original."
-  },
-  "cancelTransactionFailed": {
-    "message": "Cancel transaction failed"
-  },
   "cancelSpeedupAlreadyConfirmedDescription": {
     "message": "We were unable to update your transaction because it was already confirmed on the blockchain."
   },
   "cancelSpeedupFailedDescription": {
     "message": "Something went wrong while updating your transaction."
+  },
+  "cancelTransactionDescription": {
+    "message": "This transaction will be canceled and this network fee will replace the original."
+  },
+  "cancelTransactionFailed": {
+    "message": "Cancel transaction failed"
   },
   "cancelTransactionTitle": {
     "message": "Cancel transaction"

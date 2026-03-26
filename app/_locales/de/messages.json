@@ -9342,12 +9342,6 @@
   "yourNFTmayBeAtRisk": {
     "message": "Ihr NFT könnte gefährdet sein"
   },
-  "yourTransactionConfirmed": {
-    "message": "Transaktion bereits bestätigt"
-  },
-  "yourTransactionJustConfirmed": {
-    "message": "Wir waren nicht in der Lage, Ihre Transaktion zu stornieren, bevor sie in der Blockchain bestätigt wurde."
-  },
   "yourWalletIsReady": {
     "message": "Ihre Wallet ist bereit!"
   },
