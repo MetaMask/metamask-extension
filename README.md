@@ -18,16 +18,16 @@ To learn how to contribute to the MetaMask Extension project itself, visit our [
 
 As an alternative to building on your local machine, there is a new option to get a development environment up and running in less than 5 minutes by using GitHub Codespaces. Please note that there is a [Limited Free Monthly Quota](https://docs.github.com/en/billing/managing-billing-for-github-codespaces/about-billing-for-github-codespaces), and after that GitHub will start charging you.
 
-_Note: You are billed for both time spent running, and for storage used_
+*Note: You are billed for both time spent running, and for storage used*
 
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/MetaMask/metamask-extension?quickstart=1)
+[Open in GitHub Codespaces](https://codespaces.new/MetaMask/metamask-extension?quickstart=1)
 
 1. Start by clicking the button above
 2. A new browser tab will open with a remote version of Visual Studio Code (this will take a few minutes to load)
 3. A "Simple Browser" will open inside the browser with noVNC -- click Connect
-   - Optional steps:
-     - Click the button at the upper-right of the Simple Browser tab to open the noVNC window in its own tab
-     - Open the noVNC sidebar on the left, click the gear icon, change the Scaling Mode to Remote Resizing
+  - Optional steps:
+    - Click the button at the upper-right of the Simple Browser tab to open the noVNC window in its own tab
+    - Open the noVNC sidebar on the left, click the gear icon, change the Scaling Mode to Remote Resizing
 4. Wait about 20 extra seconds on the first launch, for the scripts to finish
 5. Right-click on the noVNC desktop to launch Chrome or Firefox with MetaMask pre-installed
 6. Change some code, then run `yarn start` to build in dev mode
@@ -37,7 +37,7 @@ _Note: You are billed for both time spent running, and for storage used_
 
 - You are billed for both time spent running, and for storage used
 - Codespaces pause after 30 minutes of inactivity, and auto-delete after 30 days of inactivity
-- You can manage your Codespaces here: https://github.com/codespaces
+- You can manage your Codespaces here: [https://github.com/codespaces](https://github.com/codespaces)
   - You may want to manually pause them before the 30 minute timeout
   - If you have several idle Codespaces hanging around for several days, you can quickly run out of storage quota. You should delete the ones you do not plan to use anymore, and probably keep only 1 or 2 in the long-term. It's also possible to re-use old Codespaces and switch the branch, instead of creating new ones and deleting the old ones.
 
@@ -57,9 +57,8 @@ If you are not a MetaMask Internal Developer, or are otherwise developing on a f
   - If debugging unhandled exceptions, you'll need to add a value for `SENTRY_DSN` [Sentry Dsn](https://docs.sentry.io/product/sentry-basics/dsn-explainer/), see [Developing on MetaMask - Sentry](./development/README.md#sentry).
   - Optionally, replace the `PASSWORD` value with your development wallet password to avoid entering it each time you open the app.
   - If developing with remote feature flags, and you want to override the flags in the build process, you can add a `.manifest-overrides.json` file to the root of the project and set `MANIFEST_OVERRIDES=.manifest-overrides.json` in `.metamaskrc` to the path of the file.
-    This file is used to add flags to `manifest.json` build files for the extension. You can also modify the `_flags.remoteFeatureFlags` in the built version of `manifest.json` in the `dist/browser` folder to tweak the flags after the build process (these changes will get overwritten when you build again).
-    An example of this remote feature flag overwrite could be:
-
+  This file is used to add flags to `manifest.json` build files for the extension. You can also modify the `_flags.remoteFeatureFlags` in the built version of `manifest.json` in the `dist/browser` folder to tweak the flags after the build process (these changes will get overwritten when you build again).
+  An example of this remote feature flag overwrite could be:
   ```json
   {
     "_flags": {
@@ -67,13 +66,11 @@ If you are not a MetaMask Internal Developer, or are otherwise developing on a f
     }
   }
   ```
-
 - Run `yarn install` to install the dependencies.
 - Build the project to the `./dist/` folder with `yarn dist` (for Chromium-based browsers) or `yarn dist:mv2` (for Firefox)
   - Optionally, to create a development build you can instead run `yarn start` (for Chromium-based browsers) or `yarn start:mv2` (for Firefox)
   - Uncompressed builds can be found in `/dist`, compressed builds can be found in `/builds` once they're built.
   - See the [build system readme](./development/build/README.md) for build system usage information.
-
 - Follow these instructions to verify that your local build runs correctly:
   - [How to add custom build to Chrome](./docs/add-to-chrome.md)
   - [How to add custom build to Firefox](./docs/add-to-firefox.md)
@@ -144,13 +141,13 @@ Before running e2e tests, ensure you've run `yarn install` to download dependenc
 
 1. Use `yarn download-builds --build-type test` to quickly download and unzip test builds for Chrome and Firefox into the `./dist/` folder. This method is fast and convenient for standard testing.
 2. Create a custom test build: for testing against different build types, use `yarn build:test`. This command allows you to generate test builds for various types, including:
-   - `yarn build:test` for main build
-   - `yarn build:test:flask` for flask build
-   - `yarn build:test:mv2` for mv2 build
+  - `yarn build:test` for main build
+  - `yarn build:test:flask` for flask build
+  - `yarn build:test:mv2` for mv2 build
 3. Start a test build with live changes: `yarn start:test` is particularly useful for development. It starts a test build that automatically recompiles application code upon changes. This option is ideal for iterative testing and development. This command also allows you to generate test builds for various types, including:
-   - `yarn start:test` for main build
-   - `yarn start:test:flask` for flask build
-   - `yarn start:test:mv2` for mv2 build
+  - `yarn start:test` for main build
+  - `yarn start:test:flask` for flask build
+  - `yarn start:test:mv2` for mv2 build
 
 Note: The `yarn start:test` command (which initiates the testDev build type) has LavaMoat disabled for both the build system and the application, offering a streamlined testing experience during development. On the other hand, `yarn build:test` enables LavaMoat for enhanced security in both the build system and application, mirroring production environments more closely.
 
@@ -196,8 +193,8 @@ Remote flags are provided at runtime and should usually follow production defaul
 
 Use one of these test-time overrides:
 
-- **`manifestFlags` in `withFixtures`** — best for simple, test-wide flag overrides that don't depend on other fixture state.
-- **`FixtureBuilder.withRemoteFeatureFlags()`** — best when you need the flag change to interact with other fixture state. Note: this method is only available on the legacy `FixtureBuilder`; use this builder when you need it, even for new tests.
+- `**manifestFlags` in `withFixtures**` — best for simple, test-wide flag overrides that don't depend on other fixture state.
+- `**FixtureBuilder.withRemoteFeatureFlags()**` — best when you need the flag change to interact with other fixture state. Note: this method is only available on the legacy `FixtureBuilder`; use this builder when you need it, even for new tests.
 
 For code examples and detailed guidelines, see [Feature flags in E2E tests](https://github.com/MetaMask/contributor-docs/blob/main/docs/testing/e2e-testing.md#feature-flags-in-e2e-tests) in contributor-docs.
 
@@ -223,6 +220,7 @@ myNewFlag: {
 },
 ```
 
+
 | Field               | Description                                                                             |
 | ------------------- | --------------------------------------------------------------------------------------- |
 | `name`              | Must match the object key exactly                                                       |
@@ -231,13 +229,14 @@ myNewFlag: {
 | `productionDefault` | Any valid JSON value (`Json` type — boolean, number, string, null, object, or array)    |
 | `status`            | `FeatureFlagStatus.Active` or `FeatureFlagStatus.Deprecated`                            |
 
+
 ##### Add a flag to the registry
 
 For the full process of creating a remote feature flag (LaunchDarkly setup, code integration), see the [Remote Feature Flags](https://github.com/MetaMask/contributor-docs/blob/main/docs/remote-feature-flags.md) contributor doc. Once the flag exists, register it for E2E tests:
 
 1. Look up the flag's current production value from the [client-config API](https://client-config.api.cx.metamask.io/v1/flags?client=extension&distribution=main&environment=prod). If the flag is not yet in production, set `inProd: false` and `productionDefault` to the intended default.
 2. Add an entry to `test/e2e/feature-flags/feature-flag-registry.ts` in alphabetical order.
-3. If you access the flag via a constant (e.g. `remoteFeatureFlags[MY_CONSTANT]`), also add the constant mapping to [`.github/scripts/known-feature-flag-constants.ts`](./.github/scripts/known-feature-flag-constants.ts) so the CI check can resolve it.
+3. If you access the flag via a constant (e.g. `remoteFeatureFlags[MY_CONSTANT]`), also add the constant mapping to `[.github/scripts/known-feature-flag-constants.ts](./.github/scripts/known-feature-flag-constants.ts)` so the CI check can resolve it.
 
 ##### Override flags in E2E tests
 
@@ -271,12 +270,12 @@ Different build types have different e2e tests sets. In order to run them look i
 Running the full workflow on GitHub Actions can take 30 minutes or more, but there are ways to speed it up for faster iteration
 
 - `[builds-from-run: <run-id>]` in the last commit message - If you didn't change any code that will change the builds, you can use this to speed up CI by about 10 minutes
-  - You probably want to use either the last completed run on branch `main` https://github.com/MetaMask/metamask-extension/actions/workflows/main.yml?query=branch%3Amain, or the last run on your feature branch. The run-id is at the end of the URL like https://github.com/MetaMask/metamask-extension/actions/runs/xxxxxxxx
+  - You probably want to use either the last completed run on branch `main` [https://github.com/MetaMask/metamask-extension/actions/workflows/main.yml?query=branch%3Amain](https://github.com/MetaMask/metamask-extension/actions/workflows/main.yml?query=branch%3Amain), or the last run on your feature branch. The run-id is at the end of the URL like [https://github.com/MetaMask/metamask-extension/actions/runs/xxxxxxxx](https://github.com/MetaMask/metamask-extension/actions/runs/xxxxxxxx)
   - For security, you will be prevented from merging the PR in this test state.
   - If this is popular (a lot of people using it in commit messages, praising it on Slack), we may be able to harden this state, trigger it more automatically, make the UX easier, and allow merges.
 - `[skip-e2e]` in the last commit message - Skips the E2E test suite
-- `[skip-unit]` in the last commit message _(command not working yet, coming soon)_ - Skips the unit test suite
-- `trigger-ci-*` as the branch name - This allows you to run the CI workflow without attaching it to a PR. This is useful if you need to test some things that you know will never be merged. Please clean up after yourself when you're done, and delete the branch.
+- `[skip-unit]` in the last commit message *(command not working yet, coming soon)* - Skips the unit test suite
+- `trigger-ci-`* as the branch name - This allows you to run the CI workflow without attaching it to a PR. This is useful if you need to test some things that you know will never be merged. Please clean up after yourself when you're done, and delete the branch.
 
 ### Changing dependencies
 
@@ -291,7 +290,7 @@ Whenever you change dependencies (adding, removing, or updating, either in `pack
 - The LavaMoat policy files
   - If you are a MetaMask team member and your PR is on a repository branch, you can use the bot command `@metamaskbot update-policies` to ask the MetaMask bot to automatically update the policies for you.
   - If your PR is from a fork, you can ask a MetaMask team member to help with updating the policy files.
-  - Manual update instructions: The _tl;dr_ is to run `yarn lavamoat:auto` to update these files, but there can be devils in the details:
+  - Manual update instructions: The *tl;dr* is to run `yarn lavamoat:auto` to update these files, but there can be devils in the details:
     - There are two sets of LavaMoat policy files:
       - The production LavaMoat policy files (`lavamoat/browserify/*/policy.json`), which are re-generated using `yarn lavamoat:webapp:auto`. Add `--help` for usage.
         - These should be regenerated whenever the production dependencies for the webapp change.
@@ -299,11 +298,11 @@ Whenever you change dependencies (adding, removing, or updating, either in `pack
         - This should be regenerated whenever the dependencies used by the build system itself change.
     - Whenever you regenerate a policy file, review the changes to determine whether the access granted to each package seems appropriate.
     - Unfortunately, `yarn lavamoat:auto` will behave inconsistently on different platforms.
-      macOS and Windows users may see extraneous changes relating to optional dependencies.
+    macOS and Windows users may see extraneous changes relating to optional dependencies.
     - If you keep getting policy failures even after regenerating the policy files, try regenerating the policies after a clean install by doing:
       - `rm -rf node_modules/ && yarn && yarn lavamoat:auto`
     - Keep in mind that any kind of dynamic import or dynamic use of globals may elude LavaMoat's static analysis.
-      Refer to the LavaMoat documentation or ask for help if you run into any issues.
+    Refer to the LavaMoat documentation or ask for help if you run into any issues.
 - The Attributions file
   - If you are a MetaMask team member and your PR is on a repository branch, you can use the bot command `@metamaskbot update-attributions` to ask the MetaMask bot to automatically update the attributions file for you.
   - Manual update: run `yarn attributions:generate`.
@@ -313,7 +312,7 @@ Whenever you change dependencies (adding, removing, or updating, either in `pack
 - [Visual of the controller hierarchy and dependencies as of summer 2022.](https://gist.github.com/rekmarks/8dba6306695dcd44967cce4b6a94ae33)
 - [Visual of the entire codebase.](https://mango-dune-07a8b7110.1.azurestaticapps.net/?repo=metamask%2Fmetamask-extension)
 
-[![Architecture Diagram](./docs/architecture.png)][1]
+[Architecture Diagram](http://www.nomnoml.com/#view/%5B%3Cactor%3Euser%5D%0A%0A%5Bmetamask-ui%7C%0A%20%20%20%5Btools%7C%0A%20%20%20%20%20react%0A%20%20%20%20%20redux%0A%20%20%20%20%20thunk%0A%20%20%20%20%20ethUtils%0A%20%20%20%20%20jazzicon%0A%20%20%20%5D%0A%20%20%20%5Bcomponents%7C%0A%20%20%20%20%20app%0A%20%20%20%20%20account-detail%0A%20%20%20%20%20accounts%0A%20%20%20%20%20locked-screen%0A%20%20%20%20%20restore-vault%0A%20%20%20%20%20identicon%0A%20%20%20%20%20config%0A%20%20%20%20%20info%0A%20%20%20%5D%0A%20%20%20%5Breducers%7C%0A%20%20%20%20%20app%0A%20%20%20%20%20metamask%0A%20%20%20%20%20identities%0A%20%20%20%5D%0A%20%20%20%5Bactions%7C%0A%20%20%20%20%20%5BbackgroundConnection%5D%0A%20%20%20%5D%0A%20%20%20%5Bcomponents%5D%3A-%3E%5Bactions%5D%0A%20%20%20%5Bactions%5D%3A-%3E%5Breducers%5D%0A%20%20%20%5Breducers%5D%3A-%3E%5Bcomponents%5D%0A%5D%0A%0A%5Bweb%20dapp%7C%0A%20%20%5Bui%20code%5D%0A%20%20%5Bweb3%5D%0A%20%20%5Bmetamask-inpage%5D%0A%20%20%0A%20%20%5B%3Cactor%3Eui%20developer%5D%0A%20%20%5Bui%20developer%5D-%3E%5Bui%20code%5D%0A%20%20%5Bui%20code%5D%3C-%3E%5Bweb3%5D%0A%20%20%5Bweb3%5D%3C-%3E%5Bmetamask-inpage%5D%0A%5D%0A%0A%5Bmetamask-background%7C%0A%20%20%5Bprovider-engine%5D%0A%20%20%5Bhooked%20wallet%20subprovider%5D%0A%20%20%5Bid%20store%5D%0A%20%20%0A%20%20%5Bprovider-engine%5D%3C-%3E%5Bhooked%20wallet%20subprovider%5D%0A%20%20%5Bhooked%20wallet%20subprovider%5D%3C-%3E%5Bid%20store%5D%0A%20%20%5Bconfig%20manager%7C%0A%20%20%20%20%5Brpc%20configuration%5D%0A%20%20%20%20%5Bencrypted%20keys%5D%0A%20%20%20%20%5Bwallet%20nicknames%5D%0A%20%20%5D%0A%20%20%0A%20%20%5Bprovider-engine%5D%3C-%5Bconfig%20manager%5D%0A%20%20%5Bid%20store%5D%3C-%3E%5Bconfig%20manager%5D%0A%5D%0A%0A%5Buser%5D%3C-%3E%5Bmetamask-ui%5D%0A%0A%5Buser%5D%3C%3A--%3A%3E%5Bweb%20dapp%5D%0A%0A%5Bmetamask-contentscript%7C%0A%20%20%5Bplugin%20restart%20detector%5D%0A%20%20%5Brpc%20passthrough%5D%0A%5D%0A%0A%5Brpc%20%7C%0A%20%20%5Bethereum%20blockchain%20%7C%0A%20%20%20%20%5Bcontracts%5D%0A%20%20%20%20%5Baccounts%5D%0A%20%20%5D%0A%5D%0A%0A%5Bweb%20dapp%5D%3C%3A--%3A%3E%5Bmetamask-contentscript%5D%0A%5Bmetamask-contentscript%5D%3C-%3E%5Bmetamask-background%5D%0A%5Bmetamask-background%5D%3C-%3E%5Bmetamask-ui%5D%0A%5Bmetamask-background%5D%3C-%3E%5Brpc%5D%0A)
 
 ## Other Docs
 
@@ -331,4 +330,3 @@ Whenever you change dependencies (adding, removing, or updating, either in `pack
 - [Prompt your users to add and switch to a new network.](https://docs.metamask.io/wallet/how-to/add-network/)
 - [Change the logo that appears when your dapp connects to MetaMask.](https://docs.metamask.io/wallet/how-to/display/icon/)
 
-[1]: http://www.nomnoml.com/#view/%5B%3Cactor%3Euser%5D%0A%0A%5Bmetamask-ui%7C%0A%20%20%20%5Btools%7C%0A%20%20%20%20%20react%0A%20%20%20%20%20redux%0A%20%20%20%20%20thunk%0A%20%20%20%20%20ethUtils%0A%20%20%20%20%20jazzicon%0A%20%20%20%5D%0A%20%20%20%5Bcomponents%7C%0A%20%20%20%20%20app%0A%20%20%20%20%20account-detail%0A%20%20%20%20%20accounts%0A%20%20%20%20%20locked-screen%0A%20%20%20%20%20restore-vault%0A%20%20%20%20%20identicon%0A%20%20%20%20%20config%0A%20%20%20%20%20info%0A%20%20%20%5D%0A%20%20%20%5Breducers%7C%0A%20%20%20%20%20app%0A%20%20%20%20%20metamask%0A%20%20%20%20%20identities%0A%20%20%20%5D%0A%20%20%20%5Bactions%7C%0A%20%20%20%20%20%5BbackgroundConnection%5D%0A%20%20%20%5D%0A%20%20%20%5Bcomponents%5D%3A-%3E%5Bactions%5D%0A%20%20%20%5Bactions%5D%3A-%3E%5Breducers%5D%0A%20%20%20%5Breducers%5D%3A-%3E%5Bcomponents%5D%0A%5D%0A%0A%5Bweb%20dapp%7C%0A%20%20%5Bui%20code%5D%0A%20%20%5Bweb3%5D%0A%20%20%5Bmetamask-inpage%5D%0A%20%20%0A%20%20%5B%3Cactor%3Eui%20developer%5D%0A%20%20%5Bui%20developer%5D-%3E%5Bui%20code%5D%0A%20%20%5Bui%20code%5D%3C-%3E%5Bweb3%5D%0A%20%20%5Bweb3%5D%3C-%3E%5Bmetamask-inpage%5D%0A%5D%0A%0A%5Bmetamask-background%7C%0A%20%20%5Bprovider-engine%5D%0A%20%20%5Bhooked%20wallet%20subprovider%5D%0A%20%20%5Bid%20store%5D%0A%20%20%0A%20%20%5Bprovider-engine%5D%3C-%3E%5Bhooked%20wallet%20subprovider%5D%0A%20%20%5Bhooked%20wallet%20subprovider%5D%3C-%3E%5Bid%20store%5D%0A%20%20%5Bconfig%20manager%7C%0A%20%20%20%20%5Brpc%20configuration%5D%0A%20%20%20%20%5Bencrypted%20keys%5D%0A%20%20%20%20%5Bwallet%20nicknames%5D%0A%20%20%5D%0A%20%20%0A%20%20%5Bprovider-engine%5D%3C-%5Bconfig%20manager%5D%0A%20%20%5Bid%20store%5D%3C-%3E%5Bconfig%20manager%5D%0A%5D%0A%0A%5Buser%5D%3C-%3E%5Bmetamask-ui%5D%0A%0A%5Buser%5D%3C%3A--%3A%3E%5Bweb%20dapp%5D%0A%0A%5Bmetamask-contentscript%7C%0A%20%20%5Bplugin%20restart%20detector%5D%0A%20%20%5Brpc%20passthrough%5D%0A%5D%0A%0A%5Brpc%20%7C%0A%20%20%5Bethereum%20blockchain%20%7C%0A%20%20%20%20%5Bcontracts%5D%0A%20%20%20%20%5Baccounts%5D%0A%20%20%5D%0A%5D%0A%0A%5Bweb%20dapp%5D%3C%3A--%3A%3E%5Bmetamask-contentscript%5D%0A%5Bmetamask-contentscript%5D%3C-%3E%5Bmetamask-background%5D%0A%5Bmetamask-background%5D%3C-%3E%5Bmetamask-ui%5D%0A%5Bmetamask-background%5D%3C-%3E%5Brpc%5D%0A
