@@ -1144,7 +1144,7 @@
     "previousMigrationVersion": "number",
     "productTour": "string",
     "quoteFetchError": "null",
-    "tokenWarnings": "object",
+    "tokenWarnings": "array",
     "quoteRequest": {
       "srcTokenAddress": "string"
     },
