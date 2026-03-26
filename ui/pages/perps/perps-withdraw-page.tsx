@@ -25,12 +25,7 @@ import {
   Text as ClText,
 } from '../../components/component-library';
 import { isValidPerpsWithdrawAmount } from '../../components/app/perps/constants';
-import {
-  Content,
-  Footer,
-  Header,
-  Page,
-} from '../../components/multichain/pages/page';
+import { Content, Footer, Page } from '../../components/multichain/pages/page';
 import { getSelectedInternalAccount } from '../../selectors/accounts';
 import {
   BlockSize,
