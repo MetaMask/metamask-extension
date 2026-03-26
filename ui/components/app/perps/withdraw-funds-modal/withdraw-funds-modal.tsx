@@ -108,8 +108,8 @@ export const WithdrawFundsModal: React.FC<WithdrawFundsModalProps> = ({
   useEffect(() => {
     if (!isOpen) {
       setAmount('');
-      resetError();
     }
+    resetError();
   }, [isOpen, resetError]);
 
   const handleAmountChange = useCallback(

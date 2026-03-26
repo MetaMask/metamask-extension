@@ -2,6 +2,7 @@ import React from 'react';
 import { fireEvent, screen, waitFor } from '@testing-library/react';
 
 import mockState from '../../../../../test/data/mock-state.json';
+import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import { usePerpsLiveAccount } from '../../../../hooks/perps/stream';
 import configureStore from '../../../../store/store';
@@ -105,7 +106,7 @@ describe('WithdrawFundsModal', () => {
     const submit = screen.getByTestId('perps-withdraw-submit');
     expect(submit).toBeDisabled();
     expect(screen.getByTestId('perps-withdraw-error')).toHaveTextContent(
-      'Insufficient funds',
+      messages.insufficientFunds.message,
     );
   });
 
@@ -121,8 +122,21 @@ describe('WithdrawFundsModal', () => {
     const submit = screen.getByTestId('perps-withdraw-submit');
     expect(submit).toBeDisabled();
     expect(screen.getByTestId('perps-withdraw-error')).toHaveTextContent(
-      'Enter a valid amount to withdraw.',
+      messages.perpsWithdrawEnterValidAmountError.message,
     );
+  });
+
+  it('clears hook error when modal reopens', () => {
+    const { rerender } = renderWithProvider(
+      <WithdrawFundsModal isOpen={false} onClose={onCloseMock} />,
+      mockStore,
+    );
+
+    resetErrorMock.mockClear();
+
+    rerender(<WithdrawFundsModal isOpen onClose={onCloseMock} />);
+
+    expect(resetErrorMock).toHaveBeenCalledTimes(1);
   });
 
   it('submits amount and closes modal on success', async () => {
@@ -198,7 +212,7 @@ describe('WithdrawFundsModal', () => {
       expect(onCloseMock).not.toHaveBeenCalled();
     });
     expect(screen.getByTestId('perps-withdraw-error')).toHaveTextContent(
-      'Withdrawal asset unavailable. Please try again.',
+      messages.perpsWithdrawAssetUnavailableError.message,
     );
   });
 });
