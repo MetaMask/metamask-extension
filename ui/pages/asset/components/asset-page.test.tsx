@@ -184,6 +184,7 @@ describe('AssetPage', () => {
                   },
                   hidden: false,
                   pinned: false,
+                  lastSelected: 0,
                 },
               },
             },

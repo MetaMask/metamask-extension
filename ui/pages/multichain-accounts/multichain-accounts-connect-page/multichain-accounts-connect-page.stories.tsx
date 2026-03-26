@@ -42,6 +42,7 @@ const mockAccountTreeState = {
             entropy: { groupIndex: 0 },
             pinned: false,
             hidden: false,
+            lastSelected: 0,
           },
         },
         'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/1': {
@@ -53,6 +54,7 @@ const mockAccountTreeState = {
             entropy: { groupIndex: 1 },
             pinned: false,
             hidden: false,
+            lastSelected: 0,
           },
         },
       },

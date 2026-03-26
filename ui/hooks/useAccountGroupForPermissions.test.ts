@@ -94,6 +94,7 @@ const createMockState = (overrides = {}) => ({
                 entropy: {
                   groupIndex: 0,
                 },
+                lastSelected: 0,
               },
               accounts: [mockEvmAccount1.id, mockSolAccount1.id],
             },
@@ -107,6 +108,7 @@ const createMockState = (overrides = {}) => ({
                 entropy: {
                   groupIndex: 1,
                 },
+                lastSelected: 0,
               },
               accounts: [mockEvmAccount2.id, mockSolAccount2.id],
             },
@@ -960,6 +962,7 @@ describe('useAccountGroupsForPermissions', () => {
                     entropy: {
                       groupIndex: 0,
                     },
+                    lastSelected: 0,
                   },
                   accounts: [mockEvmAccount1.id, mockSolAccount1.id],
                 },
@@ -973,6 +976,7 @@ describe('useAccountGroupsForPermissions', () => {
                     entropy: {
                       groupIndex: 1,
                     },
+                    lastSelected: 0,
                   },
                   accounts: [mockEvmAccount2.id, mockSolAccount2.id],
                 },
@@ -1049,6 +1053,7 @@ describe('useAccountGroupsForPermissions', () => {
                     entropy: {
                       groupIndex: 0,
                     },
+                    lastSelected: 0,
                   },
                   accounts: [mockEvmAccount1.id],
                 },
@@ -1062,6 +1067,7 @@ describe('useAccountGroupsForPermissions', () => {
                     entropy: {
                       groupIndex: 1,
                     },
+                    lastSelected: 0,
                   },
                   accounts: [mockSolAccount1.id],
                 },

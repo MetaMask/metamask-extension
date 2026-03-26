@@ -156,6 +156,7 @@ const mockMetamaskStore = {
               name: 'Account',
               hidden: false,
               pinned: false,
+              lastSelected: 0,
             },
           },
         },

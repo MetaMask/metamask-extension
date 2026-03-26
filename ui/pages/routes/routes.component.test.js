@@ -377,6 +377,7 @@ describe('toast display', () => {
                   },
                   hidden: false,
                   pinned: false,
+                  lastSelected: 0,
                 },
               },
             },

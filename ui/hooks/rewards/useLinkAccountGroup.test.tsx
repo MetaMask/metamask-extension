@@ -104,6 +104,7 @@ const buildStateWithAccounts = (accounts: InternalAccount[]) => {
             pinned: false,
             hidden: false,
             entropy: { groupIndex: 0 },
+            lastSelected: 0,
           },
           accounts: accounts.map((a) => a.id),
         },
