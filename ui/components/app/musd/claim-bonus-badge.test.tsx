@@ -3,6 +3,10 @@
  */
 import React from 'react';
 import { render, fireEvent, screen } from '@testing-library/react';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
 import { ClaimBonusBadge } from './claim-bonus-badge';
 
 const mockClaimRewards = jest.fn();
@@ -61,12 +65,20 @@ jest.mock('../../../contexts/metametrics', () => {
     __mockTrackEvent: _trackEvent,
   };
 });
+const { __mockTrackEvent: mockTrackEvent } = jest.requireMock<{
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  __mockTrackEvent: jest.Mock;
+}>('../../../contexts/metametrics');
 
 const defaultProps = {
   label: 'Claim 5% bonus',
   tokenAddress: '0xabc123',
   chainId: '0x1' as const,
   refetchRewards: jest.fn(),
+  location: 'token_list_item' as const,
+  assetSymbol: 'MUSD',
+  bonusAmountRange: '10.00 - 99.99',
+  hasClaimedBefore: false,
 };
 
 describe('ClaimBonusBadge', () => {
@@ -85,6 +97,52 @@ describe('ClaimBonusBadge', () => {
     expect(screen.getByTestId('claim-bonus-badge')).toHaveTextContent(
       'Claim 5% bonus',
     );
+  });
+
+  it('fires MusdClaimBonusCtaDisplayed once when the claim button is shown', () => {
+    render(<ClaimBonusBadge {...defaultProps} />);
+
+    expect(mockTrackEvent).toHaveBeenCalledTimes(1);
+    /* eslint-disable @typescript-eslint/naming-convention */
+    expect(mockTrackEvent).toHaveBeenCalledWith({
+      event: MetaMetricsEventName.MusdClaimBonusCtaDisplayed,
+      category: MetaMetricsEventCategory.MusdConversion,
+      properties: {
+        location: 'token_list_item',
+        view_trigger: 'component_mounted',
+        button_text: 'Claim 5% bonus',
+        network_chain_id: '0x1',
+        network_name: 'Ethereum Mainnet',
+        asset_symbol: 'MUSD',
+        bonus_amount_range: '10.00 - 99.99',
+        has_claimed_before: false,
+      },
+    });
+    /* eslint-enable @typescript-eslint/naming-convention */
+  });
+
+  it('does not fire MusdClaimBonusCtaDisplayed when showing spinner', () => {
+    mockUseMerklClaim.mockReturnValue({
+      claimRewards: mockClaimRewards,
+      isClaiming: true,
+      error: null,
+    });
+
+    render(<ClaimBonusBadge {...defaultProps} />);
+
+    expect(mockTrackEvent).not.toHaveBeenCalled();
+  });
+
+  it('does not fire MusdClaimBonusCtaDisplayed when showing error', () => {
+    mockUseMerklClaim.mockReturnValue({
+      claimRewards: mockClaimRewards,
+      isClaiming: false,
+      error: 'Something went wrong',
+    });
+
+    render(<ClaimBonusBadge {...defaultProps} />);
+
+    expect(mockTrackEvent).not.toHaveBeenCalled();
   });
 
   it('calls claimRewards and stopPropagation on click', () => {
