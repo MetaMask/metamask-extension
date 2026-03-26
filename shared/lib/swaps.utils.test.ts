@@ -43,9 +43,9 @@ describe('swaps.utils', () => {
     });
 
     it('returns false when the symbol does not match the default token symbol', () => {
-      expect(
-        isSwapsDefaultTokenSymbol('NOT_ETH', CHAIN_IDS.MAINNET),
-      ).toBe(false);
+      expect(isSwapsDefaultTokenSymbol('NOT_ETH', CHAIN_IDS.MAINNET)).toBe(
+        false,
+      );
     });
 
     it('returns false when the symbol is an empty string', () => {

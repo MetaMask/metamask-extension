@@ -18,7 +18,10 @@ export function isSwapsDefaultTokenAddress(
     return false;
   }
 
-  return address === SWAPS_CHAINID_DEFAULT_TOKEN_MAP[chainId as SwapsChainId]?.address;
+  return (
+    address ===
+    SWAPS_CHAINID_DEFAULT_TOKEN_MAP[chainId as SwapsChainId]?.address
+  );
 }
 
 /**
@@ -37,5 +40,7 @@ export function isSwapsDefaultTokenSymbol(
     return false;
   }
 
-  return symbol === SWAPS_CHAINID_DEFAULT_TOKEN_MAP[chainId as SwapsChainId]?.symbol;
+  return (
+    symbol === SWAPS_CHAINID_DEFAULT_TOKEN_MAP[chainId as SwapsChainId]?.symbol
+  );
 }
