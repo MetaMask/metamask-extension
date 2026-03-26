@@ -65,7 +65,7 @@ describe('Backup and Restore', function () {
         await new HeaderNavbar(driver).openSettingsPage();
         const settingsPage = new SettingsPage(driver);
         await settingsPage.checkPageIsLoaded();
-        await settingsPage.clickAdvancedTab();
+        await settingsPage.goToAdvancedSettings();
         const advancedSettings = new AdvancedSettings(driver);
         await advancedSettings.checkPageIsLoaded();
         await advancedSettings.downloadData();

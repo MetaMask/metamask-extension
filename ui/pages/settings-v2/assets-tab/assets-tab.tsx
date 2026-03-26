@@ -23,6 +23,7 @@ const ShowNetworkTokenToggleItem = createToggleItem({
   selector: getShowNativeTokenAsMainBalance,
   action: setShowNativeTokenAsMainBalancePreference,
   dataTestId: 'show-native-token-as-main-balance',
+  containerDataTestId: 'show-native-token-as-main-balance-toggle',
   trackEvent: {
     event: MetaMetricsEventName.SettingsUpdated,
     properties: (newValue) => ({

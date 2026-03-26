@@ -27,8 +27,14 @@ class PreferencesAndDisplaySettings {
     jazzicon: '[data-testid="jazz_icon"]',
   };
 
-  private readonly toggleNativeTokenAsMainBalance =
-    '[data-testid="show-native-token-as-main-balance"]';
+  /**
+   * Visible toggle: `data-testid="show-native-token-as-main-balance"` is on the
+   * hidden input inside ToggleButton; click the wrapping label.
+   */
+  private readonly showNativeTokenAsMainBalanceToggleLabel = {
+    xpath:
+      "//label[contains(@class,'toggle-button')][.//*[@data-testid='show-native-token-as-main-balance']]",
+  };
 
   private readonly showDefaultAddressToggle =
     '[data-testid="show-default-address-toggle"]';
@@ -52,6 +58,19 @@ class PreferencesAndDisplaySettings {
       throw e;
     }
     console.log('Preferences and Display settings page is loaded');
+  }
+
+  async checkAssetsPageIsLoaded(): Promise<void> {
+    try {
+      await this.navigateToRoute(ASSETS_ROUTE);
+      await this.driver.waitForMultipleSelectors([
+        this.showNativeTokenAsMainBalanceToggleLabel,
+      ]);
+    } catch (e) {
+      console.log('Timeout while waiting for Assets settings page to be loaded', e);
+      throw e;
+    }
+    console.log('Assets settings page is loaded');
   }
 
   async changeLanguage(languageToSelect: string): Promise<void> {
@@ -101,13 +120,15 @@ class PreferencesAndDisplaySettings {
   }
 
   async toggleHideTokensWithoutBalance(): Promise<void> {
-    await this.navigateToRoute(ASSETS_ROUTE);
+    await this.checkAssetsPageIsLoaded();
     await this.driver.clickElement(this.hideTokensWithoutBalanceToggle);
   }
 
   async toggleShowNativeTokenAsMainBalance(): Promise<void> {
-    await this.navigateToRoute(ASSETS_ROUTE);
-    await this.driver.clickElement(this.toggleNativeTokenAsMainBalance);
+    await this.checkAssetsPageIsLoaded();
+    await this.driver.clickElement(
+      this.showNativeTokenAsMainBalanceToggleLabel,
+    );
   }
 
   async toggleShowDefaultAddress(): Promise<void> {

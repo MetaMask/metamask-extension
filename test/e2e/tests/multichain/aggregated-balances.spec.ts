@@ -107,7 +107,7 @@ describe('Multichain Aggregated Balances', function (this: Suite) {
         console.log('Step 7: Enable fiat display on testnets in settings');
         await headerNavbar.openSettingsPage();
         await settingsPage.toggleBalanceSetting();
-        await settingsPage.clickAdvancedTab();
+        await settingsPage.goToAdvancedSettings();
         await settingsPage.toggleShowFiatOnTestnets();
         await settingsPage.closeSettingsPage();
 

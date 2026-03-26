@@ -44,11 +44,9 @@ describe('Hide tokens without balance', function (this: Suite) {
 
         // Navigate to settings and toggle on "hide tokens without balance" feature
         await new HomePage(driver).headerNavbar.openSettingsPage();
-        const preferencesAndDisplaySettings = new PreferencesAndDisplaySettings(
-          driver,
-        );
-        await preferencesAndDisplaySettings.checkPageIsLoaded();
-        await preferencesAndDisplaySettings.toggleHideTokensWithoutBalance();
+        const assetsSettings = new PreferencesAndDisplaySettings(driver);
+        await assetsSettings.checkAssetsPageIsLoaded();
+        await assetsSettings.toggleHideTokensWithoutBalance();
         const settingsPage = new SettingsPage(driver);
         await settingsPage.closeSettingsPage();
         await settingsPage.closeSettingsPage();

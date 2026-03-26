@@ -1,38 +1,38 @@
+import {
+  ADVANCED_ROUTE,
+  DEFAULT_ROUTE,
+} from '../../../../../ui/helpers/constants/routes';
+import HomePage from '../home/homepage';
 import { Driver } from '../../../webdriver/driver';
 
 class SettingsPage {
   private readonly driver: Driver;
 
-  private readonly aboutViewButton = {
-    text: 'About MetaMask',
-    css: '.tab-bar__tab__content__title',
-  };
+  private readonly aboutViewButton =
+    '[data-testid="settings-v2-tab-item-about-us"]';
 
-  private readonly closeSettingsPageButton =
-    '[data-testid="settings-v2-header-back-button"]';
+  private readonly assetsSettingsButton =
+    '[data-testid="settings-v2-tab-item-assets"]';
 
   private readonly backSettingsPageButton =
     '[data-testid="settings-v2-header-back-button"]';
 
-  private readonly developerOptionsButton = {
-    text: 'Debug',
-    css: '.tab-bar__tab__content__title',
-  };
+  private readonly developerOptionsButton =
+    '[data-testid="settings-v2-tab-item-debug"]';
 
-  private readonly experimentalSettingsButton = {
-    text: 'Experimental',
-    css: '.tab-bar__tab__content__title',
-  };
+  private readonly developerToolsSettingsButton =
+    '[data-testid="settings-v2-tab-item-developer-options"]';
+
+  private readonly experimentalSettingsButton =
+    '[data-testid="settings-v2-tab-item-experimental"]';
 
   private readonly noMatchingResultsFoundMessage = {
     text: 'No matching results found',
     tag: 'span',
   };
 
-  private readonly privacySettingsButton = {
-    text: 'Privacy',
-    css: '.tab-bar__tab__content__title',
-  };
+  private readonly privacySettingsButton =
+    '[data-testid="settings-v2-tab-item-privacy"]';
 
   private readonly securityAndPasswordSettingsButton =
     '[data-testid="settings-v2-tab-item-security-and-password"]';
@@ -40,7 +40,10 @@ class SettingsPage {
   private readonly searchResultItem =
     '[data-testid="settings-v2-search-result-item"]';
 
-  private readonly searchSettingsInput = '#search-settings';
+  private readonly legacySearchSettingsInput = '#search-settings';
+
+  private readonly searchSettingsInput =
+    '[data-testid="settings-v2-header-search-input"]';
 
   private readonly searchButton =
     '[data-testid="settings-v2-header-search-button"]';
@@ -50,20 +53,14 @@ class SettingsPage {
   private readonly settingsPageFullscreenRoot =
     '[data-testid="settings-v2-tab-bar-grouped"]';
 
-  private readonly notificationsSettingsButton = {
-    text: 'Notifications',
-    css: '.tab-bar__tab__content__title',
-  };
+  private readonly notificationsSettingsButton =
+    '[data-testid="settings-v2-tab-item-notifications"]';
 
-  private readonly backupAndSyncSettingsButton = {
-    text: 'Backup and sync',
-    css: '.tab-bar__tab__content__title',
-  };
+  private readonly backupAndSyncSettingsButton =
+    '[data-testid="settings-v2-tab-item-backup-and-sync"]';
 
-  private readonly transactionShieldButton = {
-    text: 'Transaction Shield',
-    css: '.tab-bar__tab__content__title',
-  };
+  private readonly transactionShieldButton =
+    '[data-testid="settings-v2-tab-item-transaction-shield"]';
 
   constructor(driver: Driver) {
     this.driver = driver;
@@ -71,7 +68,9 @@ class SettingsPage {
 
   async checkPageIsLoaded(): Promise<void> {
     console.log('Check settings page is loaded');
-    await this.driver.waitForSelector(this.settingsPageFullscreenRoot);
+    await this.driver.wait(async () => {
+      return await this.isOnSettingsPage();
+    });
   }
 
   async hasElement(
@@ -81,16 +80,23 @@ class SettingsPage {
     return elements.length > 0;
   }
 
-  async getCloseControl() {
-    if (await this.hasElement(this.closeSettingsPageButton)) {
-      return this.closeSettingsPageButton;
+  async getSearchInputLocator() {
+    if (await this.hasElement(this.searchSettingsInput)) {
+      return this.searchSettingsInput;
     }
 
-    if (await this.hasElement(this.backSettingsPageButton)) {
-      return this.backSettingsPageButton;
-    }
+    return this.legacySearchSettingsInput;
+  }
 
-    return '.settings-page__header__title-container__close-button';
+  async isOnSettingsPage() {
+    return await this.hasElement(this.settingsPageFullscreenRoot);
+  }
+
+  async clickBackButton(): Promise<void> {
+    await this.driver.executeScript(
+      `window.location.hash = ${JSON.stringify(DEFAULT_ROUTE)};`,
+    );
+    await new HomePage(this.driver).checkPageIsLoaded();
   }
 
   async waitForTransactionShieldButtonReady(): Promise<void> {
@@ -106,31 +112,45 @@ class SettingsPage {
     await this.driver.clickElement(this.transactionShieldButton);
   }
 
-  async clickAdvancedTab(): Promise<void> {
-    console.log('Clicking on Advanced tab');
-    await this.driver.clickElement({
-      css: '.tab-bar__tab__content__title',
-      text: 'Advanced',
-    });
+  async goToAdvancedSettings(): Promise<void> {
+    console.log('Navigating to Advanced Settings page');
+    await this.driver.executeScript(
+      `window.location.hash = ${JSON.stringify(ADVANCED_ROUTE)};`,
+    );
   }
 
   async fillSearchSettingsInput(text: string): Promise<void> {
     console.log(`Filling search settings input with ${text}`);
-    if (!(await this.hasElement(this.searchSettingsInput))) {
+    if (
+      !(await this.hasElement(this.searchSettingsInput)) &&
+      !(await this.hasElement(this.legacySearchSettingsInput))
+    ) {
       await this.openSearch();
     }
-    await this.driver.fill(this.searchSettingsInput, text);
+    await this.driver.wait(async () => {
+      return (
+        (await this.hasElement(this.searchSettingsInput)) ||
+        (await this.hasElement(this.legacySearchSettingsInput))
+      );
+    });
+    await this.driver.fill(await this.getSearchInputLocator(), text);
   }
 
   async openSearch(): Promise<void> {
     console.log('Opening settings search');
     await this.driver.clickElement(this.searchButton);
+    await this.driver.wait(async () => {
+      return (
+        (await this.hasElement(this.searchSettingsInput)) ||
+        (await this.hasElement(this.legacySearchSettingsInput))
+      );
+    });
   }
 
   async toggleShowFiatOnTestnets(): Promise<void> {
     console.log('Toggling Show Fiat on Testnets setting');
     await this.driver.clickElement(
-      '.toggle-button.show-fiat-on-testnets-toggle',
+      '[data-testid="developer-options-show-testnet-conversion-toggle"]',
     );
   }
 
@@ -148,12 +168,20 @@ class SettingsPage {
 
   async closeSettingsPage(): Promise<void> {
     console.log('Closing Settings page');
-    await this.driver.clickElement(await this.getCloseControl());
+    await this.driver.executeScript(
+      `window.location.hash = ${JSON.stringify(DEFAULT_ROUTE)};`,
+    );
+    await new HomePage(this.driver).checkPageIsLoaded();
   }
 
   async goToAboutPage(): Promise<void> {
     console.log('Navigating to About page');
     await this.driver.clickElement(this.aboutViewButton);
+  }
+
+  async goToAssetsSettings(): Promise<void> {
+    console.log('Navigating to Assets Settings page');
+    await this.driver.clickElement(this.assetsSettingsButton);
   }
 
   async goToDeveloperOptions(): Promise<void> {

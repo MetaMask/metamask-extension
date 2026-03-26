@@ -15,7 +15,9 @@ export default class ShieldClaimPage {
     text: accountName,
   });
 
-  private readonly backButton = '[data-testid="settings-back-button"]';
+  private readonly backButton = '[data-testid="settings-v2-header-back-button"]';
+
+  private readonly legacyBackButton = '[data-testid="settings-back-button"]';
 
   private readonly claimErrorToast = '[data-testid="claim-submit-toast-error"]';
 
@@ -324,7 +326,13 @@ export default class ShieldClaimPage {
    */
   async clickBackButton(): Promise<void> {
     console.log('Clicking back button on claim detail page');
-    await this.driver.clickElement(this.backButton);
+    const v2BackButtons = await this.driver.findElements(this.backButton);
+    if (v2BackButtons.length > 0) {
+      await this.driver.clickElement(this.backButton);
+      return;
+    }
+
+    await this.driver.clickElement(this.legacyBackButton);
   }
 
   async clickDeleteDraftButton(): Promise<void> {

@@ -98,7 +98,7 @@ describe('State logs', function () {
         await new HeaderNavbar(driver).openSettingsPage();
         const settingsPage = new SettingsPage(driver);
         await settingsPage.checkPageIsLoaded();
-        await settingsPage.clickAdvancedTab();
+        await settingsPage.goToAdvancedSettings();
         const advancedSettingsPage = new AdvancedSettings(driver);
         await advancedSettingsPage.checkPageIsLoaded();
         await advancedSettingsPage.downloadStateLogs();
@@ -155,7 +155,7 @@ describe('State logs', function () {
         await new HeaderNavbar(driver).openSettingsPage();
         const settingsPage = new SettingsPage(driver);
         await settingsPage.checkPageIsLoaded();
-        await settingsPage.clickAdvancedTab();
+        await settingsPage.goToAdvancedSettings();
         const advancedSettingsPage = new AdvancedSettings(driver);
         await advancedSettingsPage.checkPageIsLoaded();
         await advancedSettingsPage.downloadStateLogs();

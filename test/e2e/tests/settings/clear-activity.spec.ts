@@ -37,7 +37,7 @@ describe('Clear account activity', function (this: Suite) {
         await homePage.headerNavbar.openSettingsPage();
         const settingsPage = new SettingsPage(driver);
         await settingsPage.checkPageIsLoaded();
-        await settingsPage.clickAdvancedTab();
+        await settingsPage.goToAdvancedSettings();
         const advancedSettings = new AdvancedSettings(driver);
         await advancedSettings.checkPageIsLoaded();
         await advancedSettings.clearActivityTabData();

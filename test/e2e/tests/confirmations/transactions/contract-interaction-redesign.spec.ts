@@ -314,7 +314,7 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
           await homePage.headerNavbar.openSettingsPage();
           const settingsPage = new SettingsPage(driver);
           await settingsPage.checkPageIsLoaded();
-          await settingsPage.clickAdvancedTab();
+          await settingsPage.goToAdvancedSettings();
           const advancedSettingsPage = new AdvancedSettings(driver);
           await advancedSettingsPage.checkPageIsLoaded();
           await advancedSettingsPage.toggleOnHexData();
