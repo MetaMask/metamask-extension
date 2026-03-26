@@ -21,13 +21,13 @@ type GetMinimumGasTotalInHexWeiOptions = {
  *
  * @param options - gas fee parameters object
  * @param options.gasLimit - the maximum amount of gas to allow this
- *  transaction to consume. Value is a hex string
+ * transaction to consume. Value is a hex string
  * @param options.gasPrice - The fee in wei to pay per gas used.
- *  gasPrice is only set on Legacy type transactions. Value is hex string
+ * gasPrice is only set on Legacy type transactions. Value is hex string
  * @param options.maxFeePerGas - The maximum fee in wei to pay per
- *  gas used. maxFeePerGas is introduced in EIP 1559 and represents the max
- *  total a user will pay per gas. Actual cost is determined by baseFeePerGas
- *  on the block + maxPriorityFeePerGas. Value is hex string
+ * gas used. maxFeePerGas is introduced in EIP 1559 and represents the max
+ * total a user will pay per gas. Actual cost is determined by baseFeePerGas
+ * on the block + maxPriorityFeePerGas. Value is hex string
  * @returns The maximum total cost of transaction in hex wei string
  */
 export function getMaximumGasTotalInHexWei({
@@ -59,13 +59,13 @@ export function getMaximumGasTotalInHexWei({
  * @param options - gas fee parameters object
  * @param options.gasLimitNoBuffer - gas limit without buffer
  * @param options.gasPrice - The fee in wei to pay per gas used.
- *  gasPrice is only set on Legacy type transactions. Value is hex string
+ * gasPrice is only set on Legacy type transactions. Value is hex string
  * @param options.maxFeePerGas - The maximum fee in wei to pay per
- *  gas used. maxFeePerGas is introduced in EIP 1559 and represents the max
- *  total a user will pay per gas. Actual cost is determined by baseFeePerGas
- *  on the block + maxPriorityFeePerGas. Value is hex string
+ * gas used. maxFeePerGas is introduced in EIP 1559 and represents the max
+ * total a user will pay per gas. Actual cost is determined by baseFeePerGas
+ * on the block + maxPriorityFeePerGas. Value is hex string
  * @param options.maxPriorityFeePerGas - The maximum fee in wei to
- *  pay a miner to include this transaction.
+ * pay a miner to include this transaction.
  * @param options.baseFeePerGas - The estimated block baseFeePerGas
  *  that will be burned. Introduced in EIP 1559. Value in hex wei.
  * @returns The minimum total cost of transaction in hex wei string
@@ -109,11 +109,15 @@ export function getMinimumGasTotalInHexWei({
       gasPrice,
     });
   }
-  const minimumFeePerGas = new Numeric(baseFeePerGas!, 16)
-    .add(new Numeric(maxPriorityFeePerGas!, 16))
+  // baseFeePerGas, maxPriorityFeePerGas, and maxFeePerGas are guaranteed to
+  // be defined here due to the validation checks above.
+  const minimumFeePerGas = new Numeric(baseFeePerGas as string, 16)
+    .add(new Numeric(maxPriorityFeePerGas as string, 16))
     .toString();
 
-  if (new Numeric(minimumFeePerGas, 16).greaterThan(maxFeePerGas!, 16)) {
+  if (
+    new Numeric(minimumFeePerGas, 16).greaterThan(maxFeePerGas as string, 16)
+  ) {
     return getMaximumGasTotalInHexWei({
       gasLimit: gasLimitNoBuffer,
       maxFeePerGas,

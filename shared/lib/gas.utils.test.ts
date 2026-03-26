@@ -1,5 +1,8 @@
 import { addHexPrefix } from 'ethereumjs-util';
-import { getMaximumGasTotalInHexWei, getMinimumGasTotalInHexWei } from './gas.utils';
+import {
+  getMaximumGasTotalInHexWei,
+  getMinimumGasTotalInHexWei,
+} from './gas.utils';
 import { Numeric } from './Numeric';
 
 const feesToTest = [10, 24, 90];
