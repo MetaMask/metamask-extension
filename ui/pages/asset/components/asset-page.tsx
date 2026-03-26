@@ -362,7 +362,7 @@ const AssetPage = ({
             key={`${symbol}-${address}`}
             token={tokenWithFiatAmount as TokenWithFiatAmount}
             safeChains={safeChains}
-            showMerklBadge
+            musd={{ merklClaimBonus: { location: 'asset_overview' } }}
           />
         )}
         {/* mUSD Conversion CTA - shows for eligible stablecoins */}

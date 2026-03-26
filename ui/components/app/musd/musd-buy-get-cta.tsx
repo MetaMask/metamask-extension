@@ -139,7 +139,7 @@ export const MusdBuyGetCta: React.FC<MusdBuyGetCtaProps> = ({
   ]);
 
   // Product name line (same for BUY and GET); action copy is ctaButtonText.
-  const ctaText = useMemo(() => t('musdMetaMaskUsd'), [t]);
+  const ctaText = t('musdMetaMaskUsd');
 
   /**
    * Handle CTA click

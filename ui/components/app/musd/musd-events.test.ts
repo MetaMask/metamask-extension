@@ -1,7 +1,6 @@
 import {
   MUSD_EVENTS_CONSTANTS,
   musdConversionFlowEntryPointToCtaEventLocation,
-  resolveMerklClaimBonusAnalyticsLocation,
   resolveMusdConversionCtaRedirectsTo,
 } from './musd-events';
 
@@ -50,19 +49,5 @@ describe('musdConversionFlowEntryPointToCtaEventLocation', () => {
     expect(
       musdConversionFlowEntryPointToCtaEventLocation('asset_overview'),
     ).toBe(MUSD_EVENTS_CONSTANTS.EVENT_LOCATIONS.ASSET_OVERVIEW);
-  });
-});
-
-describe('resolveMerklClaimBonusAnalyticsLocation', () => {
-  it('returns token_list_item when on home token list with mUSD convert CTA', () => {
-    expect(resolveMerklClaimBonusAnalyticsLocation(true)).toBe(
-      MUSD_EVENTS_CONSTANTS.EVENT_LOCATIONS.TOKEN_LIST_ITEM,
-    );
-  });
-
-  it('returns asset_overview when not on home token list row', () => {
-    expect(resolveMerklClaimBonusAnalyticsLocation(false)).toBe(
-      MUSD_EVENTS_CONSTANTS.EVENT_LOCATIONS.ASSET_OVERVIEW,
-    );
   });
 });

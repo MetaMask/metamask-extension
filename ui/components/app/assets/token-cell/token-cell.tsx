@@ -23,12 +23,11 @@ import { type TokenWithFiatAmount } from '../types';
 import GenericAssetCellLayout from '../asset-list/cells/generic-asset-cell-layout';
 import { AssetCellBadge } from '../asset-list/cells/asset-cell-badge';
 import { isEvmChainId } from '../../../../../shared/lib/asset-utils';
-import {
-  ClaimBonusBadge,
-  useMerklRewards,
-  MusdConvertLink,
-  resolveMerklClaimBonusAnalyticsLocation,
-} from '../../musd';
+import { ClaimBonusBadge, useMerklRewards, MusdConvertLink } from '../../musd';
+import type {
+  MerklClaimBonusAnalyticsLocation,
+  MusdConvertLinkEntryPoint,
+} from '../../musd/musd-events';
 import { useMusdCtaVisibility, useMusdBalance } from '../../../../hooks/musd';
 import {
   TokenCellTitle,
@@ -37,16 +36,21 @@ import {
   TokenCellSecondaryDisplay,
 } from './cells';
 
+export type TokenCellMusdOptions = {
+  /** When set, enables Merkl fetch/badge for this cell. */
+  merklClaimBonus?: { location: MerklClaimBonusAnalyticsLocation };
+  /** When set, enables footer convert link (subject to `useMusdCtaVisibility` / balance rules). */
+  convert?: { entryPoint: MusdConvertLinkEntryPoint };
+};
+
 export type TokenCellProps = {
   token: TokenWithFiatAmount;
   privacyMode?: boolean;
   onClick?: () => void;
   fixCurrencyToUSD?: boolean;
   safeChains?: SafeChain[];
-  /** When true, shows the Merkl "Claim bonus" badge (e.g. on asset detail page). */
-  showMerklBadge?: boolean;
-  /** When true, shows the mUSD convert CTA in the footer (e.g. on the home token list). */
-  showMusdConvertCta?: boolean;
+  /** Merkl claim bonus and/or mUSD convert surfaces; parent must pass explicit analytics locations. */
+  musd?: TokenCellMusdOptions;
 };
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
@@ -57,8 +61,7 @@ export default function TokenCell({
   onClick,
   fixCurrencyToUSD = false,
   safeChains,
-  showMerklBadge = false,
-  showMusdConvertCta = false,
+  musd,
 }: TokenCellProps) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -69,6 +72,8 @@ export default function TokenCell({
     [safeChains, token.chainId],
   );
   const [showScamWarningModal, setShowScamWarningModal] = useState(false);
+
+  const showMerklBadge = Boolean(musd?.merklClaimBonus);
 
   // Check whether there are rewards available for the user
   const {
@@ -85,7 +90,7 @@ export default function TokenCell({
   const { hasMusdBalance } = useMusdBalance();
 
   const showMusdCta = useMemo(() => {
-    if (!showMusdConvertCta || !token.address || !token.chainId) {
+    if (!musd?.convert || !token.address || !token.chainId) {
       return false;
     }
     return shouldShowTokenListItemCta(
@@ -97,7 +102,7 @@ export default function TokenCell({
       { hasMusdBalance },
     );
   }, [
-    showMusdConvertCta,
+    musd?.convert,
     token.address,
     token.chainId,
     token.symbol,
@@ -123,26 +128,24 @@ export default function TokenCell({
   };
 
   const renderFooterLeft = () => {
-    if (showMusdCta) {
+    if (showMusdCta && musd?.convert) {
       return (
         <MusdConvertLink
           tokenAddress={token.address as Hex}
           chainId={token.chainId as Hex}
           tokenSymbol={token.symbol}
-          entryPoint="token_list"
+          entryPoint={musd.convert.entryPoint}
         />
       );
     }
-    if (isEligible && hasClaimableReward) {
+    if (musd?.merklClaimBonus && isEligible && hasClaimableReward) {
       return (
         <ClaimBonusBadge
           tokenAddress={token.address as string}
           chainId={token.chainId as Hex}
           label={t('merklRewardsClaimBonus')}
           refetchRewards={refetchMerklRewards}
-          analyticsLocation={resolveMerklClaimBonusAnalyticsLocation(
-            showMusdConvertCta,
-          )}
+          analyticsLocation={musd.merklClaimBonus.location}
         />
       );
     }

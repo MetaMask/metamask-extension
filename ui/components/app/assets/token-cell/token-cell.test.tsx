@@ -76,8 +76,6 @@ jest.mock('../../musd', () => ({
   MusdConvertLink: () => <div data-testid="musd-convert-link-mock" />,
   isEligibleForMerklRewards: jest.fn().mockReturnValue(false),
   useMerklRewards: (...args: unknown[]) => mockUseMerklRewards(...args),
-  resolveMerklClaimBonusAnalyticsLocation: (showMusdConvertCta: boolean) =>
-    showMusdConvertCta ? 'token_list_item' : 'asset_overview',
 }));
 
 describe('Token Cell', () => {
@@ -160,7 +158,9 @@ describe('Token Cell', () => {
     token: {
       ...propToken,
     },
-    showMerklBadge: true,
+    musd: {
+      merklClaimBonus: { location: 'token_list_item' as const },
+    },
     onClick: jest.fn(),
   };
   const propAnotherToken: Partial<TokenWithFiatAmount> & {
@@ -182,7 +182,9 @@ describe('Token Cell', () => {
     token: {
       ...propAnotherToken,
     },
-    showMerklBadge: true,
+    musd: {
+      merklClaimBonus: { location: 'token_list_item' as const },
+    },
     onClick: jest.fn(),
   };
   const mockProviderConfig = jest.fn().mockReturnValue({
@@ -278,8 +280,8 @@ describe('Token Cell', () => {
     expect(amountElement.textContent).toBe('5.00M TEST');
   });
 
-  describe('showMusdConvertCta', () => {
-    it('does not show the mUSD convert CTA by default', () => {
+  describe('musd.convert', () => {
+    it('does not show the mUSD convert CTA when musd.convert is not passed', () => {
       mockShouldShowTokenListItemCta.mockReturnValue(true);
 
       const { queryByTestId } = renderWithProvider(
@@ -290,22 +292,34 @@ describe('Token Cell', () => {
       expect(queryByTestId('musd-convert-link-mock')).not.toBeInTheDocument();
     });
 
-    it('shows the mUSD convert CTA when showMusdConvertCta is true and token is eligible', () => {
+    it('shows the mUSD convert CTA when musd.convert is set and token is eligible', () => {
       mockShouldShowTokenListItemCta.mockReturnValue(true);
 
       const { queryByTestId } = renderWithProvider(
-        <TokenCell {...(props as TokenCellProps)} showMusdConvertCta />,
+        <TokenCell
+          {...(props as TokenCellProps)}
+          musd={{
+            merklClaimBonus: { location: 'token_list_item' },
+            convert: { entryPoint: 'token_list' },
+          }}
+        />,
         mockStore,
       );
 
       expect(queryByTestId('musd-convert-link-mock')).toBeInTheDocument();
     });
 
-    it('does not show the mUSD convert CTA when showMusdConvertCta is true but token is not eligible', () => {
+    it('does not show the mUSD convert CTA when musd.convert is set but token is not eligible', () => {
       mockShouldShowTokenListItemCta.mockReturnValue(false);
 
       const { queryByTestId } = renderWithProvider(
-        <TokenCell {...(props as TokenCellProps)} showMusdConvertCta />,
+        <TokenCell
+          {...(props as TokenCellProps)}
+          musd={{
+            merklClaimBonus: { location: 'token_list_item' },
+            convert: { entryPoint: 'token_list' },
+          }}
+        />,
         mockStore,
       );
 

@@ -34,6 +34,7 @@ import {
   musdConversionFlowEntryPointToCtaEventLocation,
   MUSD_EVENTS_CONSTANTS,
   resolveMusdConversionCtaRedirectsTo,
+  type MusdConvertLinkEntryPoint,
 } from './musd-events';
 
 // ============================================================================
@@ -50,7 +51,7 @@ export type MusdConvertLinkProps = {
   /** Optional custom CTA text to display */
   ctaText?: string;
   /** Entry point for analytics tracking */
-  entryPoint?: 'token_list' | 'asset_overview';
+  entryPoint?: MusdConvertLinkEntryPoint;
 };
 
 // ============================================================================

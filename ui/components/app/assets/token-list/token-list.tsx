@@ -167,8 +167,10 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
               privacyMode={privacyMode}
               onClick={isNonEvmTestnet ? undefined : handleTokenClick(token)}
               safeChains={safeChains}
-              showMerklBadge
-              showMusdConvertCta
+              musd={{
+                merklClaimBonus: { location: 'token_list_item' },
+                convert: { entryPoint: 'token_list' },
+              }}
             />
           );
         })}
@@ -195,8 +197,10 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
             privacyMode={privacyMode}
             onClick={isNonEvmTestnet ? undefined : handleTokenClick(token)}
             safeChains={safeChains}
-            showMerklBadge
-            showMusdConvertCta
+            musd={{
+              merklClaimBonus: { location: 'token_list_item' },
+              convert: { entryPoint: 'token_list' },
+            }}
           />
         );
       }}

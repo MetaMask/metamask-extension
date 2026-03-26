@@ -123,11 +123,29 @@ export function resolveMusdConversionCtaRedirectsTo(
 }
 
 /**
+ * Argument to {@link musdConversionFlowEntryPointToCtaEventLocation}; maps to
+ * {@link MusdCtaClickedEventProperties} `location`.
+ */
+export type MusdConversionFlowEntryPoint =
+  | 'home'
+  | 'token_list'
+  | 'asset_overview';
+
+/**
+ * Subset of {@link MusdConversionFlowEntryPoint} for conversion CTAs on token rows
+ * (e.g. `MusdConvertLink` in the token cell).
+ */
+export type MusdConvertLinkEntryPoint = Exclude<
+  MusdConversionFlowEntryPoint,
+  'home'
+>;
+
+/**
  * Maps `startConversionFlow` entry points to `MusdConversionCtaClicked.location`.
  * @param entryPoint
  */
 export function musdConversionFlowEntryPointToCtaEventLocation(
-  entryPoint: 'home' | 'token_list' | 'asset_overview',
+  entryPoint: MusdConversionFlowEntryPoint,
 ): MusdCtaClickedEventProperties['location'] {
   switch (entryPoint) {
     case 'home':
@@ -235,18 +253,6 @@ export type MusdClaimBonusButtonClickedEventProperties = {
   // eslint-disable-next-line @typescript-eslint/naming-convention
   network_name: string;
 };
-
-/**
- * `location` for claim bonus analytics: home token list row vs asset detail row.
- * @param showMusdConvertCta - True when `TokenCell` is used on the main wallet token list with mUSD convert CTA.
- */
-export function resolveMerklClaimBonusAnalyticsLocation(
-  showMusdConvertCta: boolean,
-): MerklClaimBonusAnalyticsLocation {
-  return showMusdConvertCta
-    ? MUSD_EVENTS_CONSTANTS.EVENT_LOCATIONS.TOKEN_LIST_ITEM
-    : MUSD_EVENTS_CONSTANTS.EVENT_LOCATIONS.ASSET_OVERVIEW;
-}
 
 /**
  * Properties for MUSD_CLAIM_BONUS_STATUS_UPDATED event
