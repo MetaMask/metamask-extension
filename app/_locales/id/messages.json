@@ -5673,9 +5673,6 @@
   "perpsPosition": {
     "message": "Posisi"
   },
-  "perpsPositionClosedReverseOrderFailed": {
-    "message": "Posisi Anda telah ditutup tetapi order terbalik gagal. Anda mungkin perlu membuka posisi baru secara manual"
-  },
   "perpsPositionSize": {
     "message": "Ukuran Posisi"
   },

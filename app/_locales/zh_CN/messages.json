@@ -5673,9 +5673,6 @@
   "perpsPosition": {
     "message": "仓位"
   },
-  "perpsPositionClosedReverseOrderFailed": {
-    "message": "您的仓位已平仓，但反向订单操作失败。您可能需要手动开立新仓位"
-  },
   "perpsPositionSize": {
     "message": "仓位规模"
   },
