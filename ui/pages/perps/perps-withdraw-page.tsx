@@ -72,15 +72,18 @@ function parsePerpsAmountInput(raw: string): number {
   return Number.isFinite(n) ? n : NaN;
 }
 
+const PERPS_WITHDRAW_AMOUNT_DECIMALS = 6;
+
 function formatAmountInputFromNumber(n: number): string {
   if (!Number.isFinite(n) || n <= 0) {
     return '';
   }
-  const rounded = Math.floor(n * 1e8) / 1e8;
-  if (rounded === Math.floor(rounded)) {
-    return String(Math.floor(rounded));
+  const factor = 10 ** PERPS_WITHDRAW_AMOUNT_DECIMALS;
+  const floored = Math.floor(n * factor) / factor;
+  if (floored === Math.floor(floored)) {
+    return String(Math.floor(floored));
   }
-  return String(rounded);
+  return floored.toFixed(PERPS_WITHDRAW_AMOUNT_DECIMALS).replace(/\.?0+$/u, '');
 }
 
 /**
@@ -170,17 +173,16 @@ const PerpsWithdrawPage: React.FC = () => {
   }, [amountNum, defaultFee]);
 
   const validationMessage = useMemo((): string | null => {
-    if (amount.trim() === '') {
+    const trimmed = amount.trim();
+    if (trimmed === '' || trimmed === '0') {
       return null;
     }
-    if (!isValidPerpsWithdrawAmount(amount.trim())) {
+    const normalizedForValidation = trimmed.replace(/,/gu, '.');
+    if (!isValidPerpsWithdrawAmount(normalizedForValidation)) {
       return t('perpsWithdrawInvalidAmount');
     }
     if (!Number.isFinite(amountNum) || amountNum <= 0) {
       return t('perpsWithdrawInvalidAmount');
-    }
-    if (amountNum === 0) {
-      return null;
     }
     if (amountNum < minWithdrawNum) {
       return t('perpsWithdrawMinNotice', [minWithdrawAmount]);
@@ -192,14 +194,14 @@ const PerpsWithdrawPage: React.FC = () => {
   }, [amount, amountNum, availableNum, minWithdrawNum, minWithdrawAmount, t]);
 
   const hasValidInputs =
-    isValidPerpsWithdrawAmount(amount.trim()) &&
+    isValidPerpsWithdrawAmount(amount.trim().replace(/,/gu, '.')) &&
     Number.isFinite(amountNum) &&
     amountNum >= minWithdrawNum &&
     amountNum <= availableNum &&
     isEligible;
 
   const handleHeroAmountChange = useCallback((value: string) => {
-    const next = value.replace(/,/gu, '');
+    const next = value.replace(/,/gu, '.');
     if (next === '' || isValidPerpsWithdrawAmount(next)) {
       setAmount(next);
     }
@@ -209,7 +211,7 @@ const PerpsWithdrawPage: React.FC = () => {
   const handlePercentageClick = useCallback(
     (percentage: number) => {
       if (percentage === 100) {
-        setAmount(availableBalance);
+        setAmount(formatAmountInputFromNumber(availableNum) || '0');
       } else {
         setAmount(
           formatAmountInputFromNumber((availableNum * percentage) / 100),
@@ -217,7 +219,7 @@ const PerpsWithdrawPage: React.FC = () => {
       }
       setSubmitError(null);
     },
-    [availableBalance, availableNum],
+    [availableNum],
   );
 
   const handleCancel = useCallback(() => {
@@ -232,7 +234,7 @@ const PerpsWithdrawPage: React.FC = () => {
     setIsSubmitting(true);
     setSubmitError(null);
 
-    const cleanAmount = amount.replace(/,/gu, '').trim();
+    const cleanAmount = amount.replace(/,/gu, '.').trim();
 
     if (!selectedAccount?.address) {
       setSubmitError(t('perpsWithdrawNoAccount'));
