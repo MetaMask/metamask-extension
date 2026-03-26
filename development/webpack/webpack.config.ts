@@ -39,12 +39,8 @@ import { getLatestCommit } from './utils/git';
 import { MODES } from './utils/constants';
 
 const requireWebpackConfig = createRequire(__filename);
-// Tailwind v4’s PostCSS plugin lives in `@tailwindcss/postcss`, which is published
-// using `package.json#exports` (no legacy `main`). Webpack can resolve this
-// directly, but LavaMoat policy generation (and related dependency scanning) can
-// fail to resolve exports-only packages. The shim loads the concrete `dist`
-// entrypoint and pins `base` to the repo root for consistent source scanning.
-const tailwindcss = requireWebpackConfig(
+// Tailwind v4 + LavaMoat compatibility: use the shared shim.
+const loadTailwindPostcss = requireWebpackConfig(
   join(__dirname, '../lib/load-tailwind-postcss.cjs'),
 );
 
@@ -454,7 +450,7 @@ const config = {
                   // (`development/build/styles.js` uses `tailwindcss()` with defaults).
                   // Forcing `{ optimize: false }` on `--test` builds caused divergent CSS
                   // vs `yarn build:test` and E2E flakes (e.g. overlapping header controls).
-                  tailwindcss(),
+                  loadTailwindPostcss(),
                   rtlCss({ processEnv: false }),
                   discardFonts(['woff2']), // keep woff2 fonts
                 ],

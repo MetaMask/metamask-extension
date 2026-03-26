@@ -8,7 +8,7 @@ const postcss = require('gulp-postcss');
 const pipeline = pify(require('readable-stream').pipeline);
 const sass = require('sass-embedded');
 const gulpSass = require('gulp-sass')(sass);
-const tailwindcss = require('../lib/load-tailwind-postcss.cjs');
+const loadTailwindPostcss = require('../lib/load-tailwind-postcss.cjs');
 const { TASKS } = require('./constants');
 const { createTask } = require('./task');
 
@@ -74,7 +74,7 @@ async function buildScssPipeline(src, dest, devMode) {
           '-mm-fa-path()': () => new sass.SassString('./fonts/fontawesome'),
         },
       }).on('error', gulpSass.logError),
-      postcss([tailwindcss(), rtlcss(), discardFonts(['woff2'])]),
+      postcss([loadTailwindPostcss(), rtlcss(), discardFonts(['woff2'])]),
       devMode && sourcemaps.write(),
       gulp.dest(dest),
     ].filter(Boolean),
