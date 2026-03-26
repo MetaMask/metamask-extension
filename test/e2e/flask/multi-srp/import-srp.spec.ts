@@ -5,7 +5,7 @@ import { Driver } from '../../webdriver/driver';
 import FixtureBuilder from '../../fixtures/fixture-builder';
 import { WALLET_PASSWORD as testPassword } from '../../constants';
 import { withFixtures } from '../../helpers';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import HomePage from '../../page-objects/pages/home/homepage';
@@ -80,7 +80,7 @@ describe('Multi SRP - Import SRP', function (this: Suite) {
         dappOptions: { numberOfTestDapps: 1 },
       },
       async ({ driver }: { driver: Driver; mockServer?: Mockttp }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
 

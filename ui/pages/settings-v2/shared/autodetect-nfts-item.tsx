@@ -9,6 +9,7 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { SettingsToggleItem } from '../../settings/settings-toggle-item';
+import { ASSET_ITEMS } from '../search-config';
 
 export const AutodetectNftsToggleItem = () => {
   const t = useI18nContext();
@@ -19,7 +20,7 @@ export const AutodetectNftsToggleItem = () => {
 
   return (
     <SettingsToggleItem
-      title={t('useNftDetection')}
+      title={t(ASSET_ITEMS['autodetect-nfts'])}
       description={t('useNftDetectionDescription')}
       value={useNftDetection}
       onToggle={(value) => {

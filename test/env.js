@@ -16,3 +16,5 @@ process.env.PORTFOLIO_URL = 'https://portfolio.test';
 process.env.METAMASK_VERSION = 'MOCK_VERSION';
 process.env.SEEDLESS_ONBOARDING_ENABLED = 'true';
 process.env.METAMASK_SHIELD_ENABLED = 'false';
+process.env.PERPS_ENABLED = 'true';
+process.env.ASSETS_UNIFIED_STATE_ENABLED = 'true';

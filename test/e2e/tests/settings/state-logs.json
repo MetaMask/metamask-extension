@@ -173,6 +173,7 @@
     "accountsAssets": {
       "3c62fe60-6f00-4227-86f4-33d0b1f4c39e": ["string"]
     },
+    "accountState": "null",
     "accountsByChainId": {
       "0x1": {
         "0x5CfE73b6021E818B776b421B1c4Db2474086a7e1": {
@@ -271,6 +272,7 @@
       "selectedAccountGroup": "string"
     },
     "accountWalletsMetadata": {},
+    "activeProvider": "string",
     "activeQrCodeScanRequest": "null",
     "addressBook": {},
     "addressScanCache": {},
@@ -332,6 +334,13 @@
       "browser": "string",
       "os": "string"
     },
+    "cachedAccountState": "null",
+    "cachedMarketData": "null",
+    "cachedMarketDataTimestamp": "number",
+    "cachedOrders": "null",
+    "cachedPositions": "null",
+    "cachedUserDataAddress": "null",
+    "cachedUserDataTimestamp": "number",
     "cacheTimestamp": "number",
     "canTrackWalletFundsObtained": "boolean",
     "claims": [],
@@ -381,6 +390,8 @@
     "dataCollectionForMarketing": "boolean",
     "defaultHomeActiveTabName": "null",
     "delegations": {},
+    "depositInProgress": "boolean",
+    "depositRequests": [],
     "dismissSeedBackUpReminder": "boolean",
     "domains": {},
     "drafts": [],
@@ -544,12 +555,20 @@
     "gasFeeEstimatesByChainId": {},
     "grantedPermissions": [],
     "lastSyncedTimestamp": "number",
+    "hasPlacedFirstOrder": {
+      "testnet": "boolean",
+      "mainnet": "boolean"
+    },
     "hadAdvancedGasFeesSetPriorToMigration92_3": "boolean",
     "hasAccountTreeSyncingSyncedAtLeastOnce": "boolean",
     "hasShownMultichainAccountsIntroModal": "boolean",
     "hiddenAccountList": [],
+    "hip3ConfigVersion": "number",
     "historicalPrices": {},
     "ignoredNfts": [],
+    "initializationAttempts": "number",
+    "initializationError": "null",
+    "initializationState": "string",
     "initialEnqueueCompleted": "boolean",
     "initialDelayEndTimestamp": "number",
     "insights": {},
@@ -624,8 +643,13 @@
     "isCheckingAccountsPresence": "boolean",
     "isContactSyncingEnabled": "boolean",
     "isContactSyncingInProgress": "boolean",
+    "isEligible": "boolean",
     "isEvmSelected": "boolean",
     "isFeatureAnnouncementsEnabled": "boolean",
+    "isFirstTimeUser": {
+      "testnet": "boolean",
+      "mainnet": "boolean"
+    },
     "isFetchingGatorPermissions": "boolean",
     "isFetchingMetamaskNotifications": "boolean",
     "isInitialized": "boolean",
@@ -636,6 +660,7 @@
     "isPushEnabled": "boolean",
     "isRampCardClosed": "boolean",
     "isReady": "boolean",
+    "isTestnet": "boolean",
     "isSeedlessOnboardingUserAuthenticated": "boolean",
     "isSignedIn": "boolean",
     "isUiOpen": "boolean",
@@ -656,7 +681,11 @@
       }
     ],
     "knownMethodData": {},
+    "lastDepositResult": "null",
+    "lastDepositTransactionId": "null",
+    "lastError": "null",
     "lastFetchedBlockNumbers": {},
+    "lastUpdateTimestamp": "number",
     "lastUpdated": "number",
     "lastUpdatedAt": "null",
     "lastUpdatedFromVersion": "null",
@@ -664,6 +693,7 @@
     "latestNonAnonymousEventTimestamp": "number",
     "ledgerTransportType": "string",
     "logs": {},
+    "lastWithdrawResult": "null",
     "manageInstitutionalWallets": "boolean",
     "marketData": {
       "0x1": {},
@@ -674,6 +704,10 @@
       "0xa": {},
       "0xa4b1": {},
       "0xe708": {}
+    },
+    "marketFilterPreferences": {
+      "optionId": "string",
+      "direction": "string"
     },
     "marketingCampaignCookieId": "null",
     "metamaskNotificationsList": [],
@@ -811,6 +845,7 @@
       }
     ],
     "permissionHistory": {},
+    "perpsBalances": {},
     "pinnedAccountList": [],
     "popupGasPollTokens": [],
     "preferences": {
@@ -906,6 +941,7 @@
     "seedPhraseBackedUp": "null",
     "segmentApiCalls": {},
     "selectedMultichainNetworkChainId": "string",
+    "selectedPaymentToken": "null",
     "selectedNetworkClientId": "string",
     "shieldSubscriptionError": "null",
     "shieldEndingToastLastClickedOrClosed": "null",
@@ -1102,6 +1138,10 @@
         "timestamp": "number"
       }
     },
+    "tradeConfigurations": {
+      "testnet": {},
+      "mainnet": {}
+    },
     "tracesBeforeMetricsOptIn": [],
     "traits": {
       "install_date_ext": "string",
@@ -1139,6 +1179,17 @@
     "useTransactionSimulations": "boolean",
     "versionInfo": [],
     "watchEthereumAccountEnabled": "boolean",
+    "watchlistMarkets": {
+      "testnet": [],
+      "mainnet": []
+    },
+    "withdrawInProgress": "boolean",
+    "withdrawalProgress": {
+      "progress": "number",
+      "lastUpdated": "number",
+      "activeWithdrawalId": "null"
+    },
+    "withdrawalRequests": [],
     "web3ShimUsageOrigins": {},
     "verifiedSnaps": {}
   },

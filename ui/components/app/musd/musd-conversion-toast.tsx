@@ -49,6 +49,10 @@ export function MusdConversionToast() {
     }
   })();
 
+  const toastDescription = isSuccess
+    ? (t('musdConversionToastSuccessDescription') as string)
+    : undefined;
+
   const startAdornment = (() => {
     if (isInProgress) {
       return (
@@ -83,6 +87,7 @@ export function MusdConversionToast() {
       key="musd-conversion-toast"
       dataTestId="musd-conversion-toast"
       text={toastText}
+      description={toastDescription}
       startAdornment={startAdornment}
       onClose={dismissToast}
       {...(!isInProgress && {

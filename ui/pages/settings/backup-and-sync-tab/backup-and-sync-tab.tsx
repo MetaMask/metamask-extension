@@ -11,7 +11,10 @@ const BackupAndSyncTab = () => {
 
   const items = useMemo<SettingItemConfig[]>(() => {
     const result: SettingItemConfig[] = [
-      { id: 'backup-toggle', component: BackupAndSyncToggle },
+      {
+        id: 'backup-toggle',
+        component: BackupAndSyncToggle,
+      },
     ];
 
     if (isBackupAndSyncEnabled) {

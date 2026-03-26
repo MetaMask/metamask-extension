@@ -4,7 +4,7 @@ import { Box, BoxFlexDirection } from '@metamask/design-system-react';
 import Dropdown from '../../../components/ui/dropdown';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
-  getShowDefaultAddress,
+  getShowDefaultAddressPreference,
   getDefaultAddressScope,
   getIsDefaultAddressEnabled,
 } from '../../../selectors';
@@ -22,6 +22,7 @@ import {
   type DefaultAddressScope,
 } from '../../../../shared/constants/default-address';
 import { SettingsToggleItem } from '../../settings/settings-toggle-item';
+import { PREFERENCES_ITEMS } from '../search-config';
 
 export const ShowDefaultAddressItem = () => {
   const t = useI18nContext();
@@ -29,7 +30,7 @@ export const ShowDefaultAddressItem = () => {
   const { trackEvent } = useContext(MetaMetricsContext);
 
   const isDefaultAddressEnabled = useSelector(getIsDefaultAddressEnabled);
-  const showDefaultAddress = useSelector(getShowDefaultAddress);
+  const showDefaultAddress = useSelector(getShowDefaultAddressPreference);
   const defaultAddressScope = useSelector(
     getDefaultAddressScope,
   ) as DefaultAddressScope;
@@ -77,7 +78,7 @@ export const ShowDefaultAddressItem = () => {
   return (
     <Box flexDirection={BoxFlexDirection.Column} gap={1} marginBottom={3}>
       <SettingsToggleItem
-        title={t('showDefaultAddress')}
+        title={t(PREFERENCES_ITEMS['show-default-address'])}
         description={t('showDefaultAddressDescription')}
         value={showDefaultAddress}
         onToggle={handleToggle}

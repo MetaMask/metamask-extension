@@ -1,5 +1,5 @@
 import { Suite } from 'mocha';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 import { withSignatureFixtures } from '../confirmations/helpers';
 import { TestSuiteArguments } from '../confirmations/transactions/shared';
 import TestDapp from '../../page-objects/pages/test-dapp';
@@ -17,7 +17,7 @@ describe('Petnames - Signatures', function (this: Suite) {
       async ({ driver }: TestSuiteArguments) => {
         const testDapp = new TestDapp(driver);
         const confirmation = new Confirmation(driver);
-        await loginWithBalanceValidation(driver);
+        await login(driver);
         await testDapp.openTestDappPage();
         await testDapp.clickSignTypedDatav3();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
@@ -54,7 +54,7 @@ describe('Petnames - Signatures', function (this: Suite) {
       async ({ driver }: TestSuiteArguments) => {
         const testDapp = new TestDapp(driver);
         const confirmation = new Confirmation(driver);
-        await loginWithBalanceValidation(driver);
+        await login(driver);
         await testDapp.openTestDappPage();
         await testDapp.clickSignTypedDatav4();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
@@ -106,7 +106,7 @@ describe('Petnames - Signatures', function (this: Suite) {
       async ({ driver }) => {
         const testDapp = new TestDapp(driver);
         const confirmation = new Confirmation(driver);
-        await loginWithBalanceValidation(driver);
+        await login(driver);
         await testDapp.openTestDappPage();
         await openTestSnapClickButtonAndInstall(
           driver,
