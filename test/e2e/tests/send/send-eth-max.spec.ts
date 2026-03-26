@@ -55,7 +55,7 @@ describe('Send ETH - Max Amount', function () {
 
         await createInternalTransactionWithMaxAmount({ driver });
         const transactionConfirmation = new TransactionConfirmation(driver);
-        await transactionConfirmation.checkGasFeeFiat('0.0009');
+        await transactionConfirmation.checkGasFeeFiat('$0.75');
 
         await transactionConfirmation.clickFooterConfirmButtonAndWaitToDisappear();
         await validateTransaction(driver, '-24.99945808');
