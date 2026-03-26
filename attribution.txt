@@ -28918,7 +28918,7 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 ******************************
 
 picomatch
-4.0.3 <https://github.com/micromatch/picomatch>
+4.0.4 <https://github.com/micromatch/picomatch>
 The MIT License (MIT)
 
 Copyright (c) 2017-present, Jon Schlinkert.
