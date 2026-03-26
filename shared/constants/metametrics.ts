@@ -820,6 +820,7 @@ export enum MetaMetricsEventName {
   MetricsOptOut = 'Metrics Opt Out',
   MetricsDataDeletionRequest = 'Delete MetaMetrics Data Request Submitted',
   MusdClaimBonusButtonClicked = 'MUSD Claim Bonus Button Clicked',
+  MusdClaimBonusCtaDisplayed = 'mUSD Claim Bonus CTA Displayed',
   MusdClaimBonusStatusUpdated = 'MUSD Claim Bonus Status Updated',
   MusdConversionCompleted = 'MUSD Conversion Completed',
   MusdConversionCtaClicked = 'MUSD Conversion CTA Clicked',
