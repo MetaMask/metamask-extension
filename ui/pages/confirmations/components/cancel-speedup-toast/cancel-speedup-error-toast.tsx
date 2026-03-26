@@ -4,9 +4,9 @@ import { Icon, IconColor, IconName } from '@metamask/design-system-react';
 import {
   Toast,
   ToastContainer,
-} from '../../../components/multichain/toast/toast';
-import { useI18nContext } from '../../../hooks/useI18nContext';
-import { resolveCancelSpeedupErrorMessage } from './cancel-speedup-error-utils';
+} from '../../../../components/multichain/toast/toast';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { resolveCancelSpeedupErrorMessage } from './utils';
 
 const AUTO_HIDE_MS = 5000;
 

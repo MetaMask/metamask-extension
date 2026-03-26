@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React from 'react';
 import { useSelector } from 'react-redux';
 import { TransactionMeta } from '@metamask/transaction-controller';
 import {
@@ -46,7 +46,8 @@ import { useEIP1559TxFees } from '../components/confirm/info/hooks/useEIP1559TxF
 import { useFeeCalculations } from '../components/confirm/info/hooks/useFeeCalculations';
 import { useCancelSpeedupGasState } from '../hooks/useCancelSpeedupGasState';
 import { useCancelSpeedupInitialGas } from '../hooks/useCancelSpeedupInitialGas';
-import { CancelSpeedupErrorToast } from './cancel-speedup-error-toast';
+import { CancelSpeedupErrorToast } from '../components/cancel-speedup-toast/cancel-speedup-error-toast';
+import { useCancelSpeedupActions } from '../hooks/useCancelSpeedupActions';
 
 type EditGasButtonProps = {
   onClick: () => void;
@@ -249,36 +250,31 @@ type TransactionModalContextType = {
 type CancelSpeedupModalProps = {
   mode: EditGasModes;
   onClose: () => void;
-  onError: (error: Error, isCancel: boolean) => void;
   dataTestId?: string;
   effectiveTransaction: TransactionMeta;
   cancelTransaction: () => Promise<unknown>;
   speedUpTransaction: () => Promise<unknown>;
+  submitTransaction: (
+    action: () => Promise<unknown>,
+    isCancel: boolean,
+  ) => Promise<void>;
 };
 
 const CancelSpeedupModal = ({
   mode,
   onClose,
-  onError,
   dataTestId,
   effectiveTransaction,
   cancelTransaction,
   speedUpTransaction,
+  submitTransaction,
 }: CancelSpeedupModalProps) => {
   const t = useI18nContext();
   const isCancel = mode === EditGasModes.cancel;
 
-  const handleSubmit = async () => {
-    onClose();
-    try {
-      if (isCancel) {
-        await cancelTransaction();
-      } else {
-        await speedUpTransaction();
-      }
-    } catch (err) {
-      onError(err as Error, isCancel);
-    }
+  const handleSubmit = () => {
+    const action = isCancel ? cancelTransaction : speedUpTransaction;
+    submitTransaction(action, isCancel);
   };
 
   return (
@@ -314,14 +310,17 @@ type CancelSpeedupContentProps = {
   transaction: TransactionMeta;
   editGasMode: EditGasModes;
   onClose: () => void;
-  onError: (error: Error, isCancel: boolean) => void;
+  submitTransaction: (
+    action: () => Promise<unknown>,
+    isCancel: boolean,
+  ) => Promise<void>;
 };
 
 const CancelSpeedupContent = ({
   transaction,
   editGasMode,
   onClose,
-  onError,
+  submitTransaction,
 }: CancelSpeedupContentProps) => {
   const { currentModal } =
     useTransactionModalContext() as TransactionModalContextType;
@@ -355,20 +354,15 @@ const CancelSpeedupContent = ({
         <CancelSpeedupModal
           mode={editGasMode}
           onClose={onClose}
-          onError={onError}
           dataTestId="speed-up-and-cancel-modal"
           effectiveTransaction={effectiveTransaction}
           cancelTransaction={cancelTransaction}
           speedUpTransaction={speedUpTransaction}
+          submitTransaction={submitTransaction}
         />
       </>
     </GasFeeModalContextProvider>
   );
-};
-
-type CancelSpeedupErrorState = {
-  message: string;
-  isCancel: boolean;
 };
 
 type CancelSpeedupProps = {
@@ -382,15 +376,10 @@ export const CancelSpeedup = ({
 }: CancelSpeedupProps) => {
   const { currentModal, closeModal } =
     useTransactionModalContext() as TransactionModalContextType;
-  const [error, setError] = useState<CancelSpeedupErrorState | null>(null);
 
-  const handleError = useCallback((err: Error, isCancel: boolean) => {
-    setError({ message: err.message, isCancel });
-  }, []);
-
-  const clearError = useCallback(() => {
-    setError(null);
-  }, []);
+  const onClose = () => closeModal(['cancelSpeedUpTransaction']);
+  const { error, clearError, submitTransaction } =
+    useCancelSpeedupActions(onClose);
 
   if (currentModal !== 'cancelSpeedUpTransaction') {
     if (error) {
@@ -409,8 +398,8 @@ export const CancelSpeedup = ({
     <CancelSpeedupContent
       transaction={transaction}
       editGasMode={editGasMode}
-      onClose={() => closeModal(['cancelSpeedUpTransaction'])}
-      onError={handleError}
+      onClose={onClose}
+      submitTransaction={submitTransaction}
     />
   );
 };

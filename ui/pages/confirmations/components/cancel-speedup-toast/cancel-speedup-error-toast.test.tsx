@@ -1,7 +1,7 @@
 import React from 'react';
 import { screen, act } from '@testing-library/react';
-import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
-import { tEn } from '../../../../test/lib/i18n-helpers';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
+import { tEn } from '../../../../../test/lib/i18n-helpers';
 import { CancelSpeedupErrorToast } from './cancel-speedup-error-toast';
 
 describe('CancelSpeedupErrorToast', () => {

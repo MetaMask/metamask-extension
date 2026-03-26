@@ -1,4 +1,4 @@
-import { resolveCancelSpeedupErrorMessage } from './cancel-speedup-error-utils';
+import { resolveCancelSpeedupErrorMessage } from './utils';
 
 describe('resolveCancelSpeedupErrorMessage', () => {
   it('returns cancelSpeedupAlreadyConfirmedDescription for "already confirmed" errors', () => {
