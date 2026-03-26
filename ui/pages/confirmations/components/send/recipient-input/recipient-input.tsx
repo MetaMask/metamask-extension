@@ -153,7 +153,8 @@ export const RecipientInput = ({
       ) : (
         <TextField
           error={isHardError}
-          className={isWarning ? 'mm-text-field--warning' : undefined}
+// TODO: @MetaMask/design-system-engineers: This seems to be the only current use case for a TextField warning state; align on whether TextField should support warning styling (or if there’s a preferred DS pattern).
+className={isWarning ? 'border-warning-default' : undefined}
           endAccessory={
             recipients.length > 0 ? (
               <ButtonIcon
