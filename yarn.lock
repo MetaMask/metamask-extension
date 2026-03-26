@@ -7852,9 +7852,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/react-data-query@npm:^0.1.0":
-  version: 0.1.0
-  resolution: "@metamask/react-data-query@npm:0.1.0"
+"@metamask/react-data-query@npm:^0.2.0":
+  version: 0.2.0
+  resolution: "@metamask/react-data-query@npm:0.2.0"
   dependencies:
     "@metamask/base-data-service": "npm:^0.1.0"
     "@metamask/utils": "npm:^11.9.0"
@@ -7864,7 +7864,7 @@ __metadata:
     react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
     react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
     react-native: "*"
-  checksum: 10/68f11a3b826c3fe56f28296f5f4af8299275912f5120ee1e86f5b9c46efca0d4064f6fffb0e2c30b685674930f36b8524bf9669175ca2a6746953f05b3dced73
+  checksum: 10/c54a9943bb68ad46ad9964864d4ee81604e61216ebed00026a1a4681a1e1091b6e413b9812d25e38d028493f3c75e91c8102b9d1c0232f409cd6f1dd4d22b211
   languageName: node
   linkType: hard
 
@@ -34118,7 +34118,7 @@ __metadata:
     "@metamask/profile-sync-controller": "npm:^28.0.0"
     "@metamask/providers": "npm:^22.1.1"
     "@metamask/rate-limit-controller": "npm:^7.0.0"
-    "@metamask/react-data-query": "npm:^0.1.0"
+    "@metamask/react-data-query": "npm:^0.2.0"
     "@metamask/remote-feature-flag-controller": "npm:^4.1.0"
     "@metamask/rpc-errors": "npm:^7.0.0"
     "@metamask/safe-event-emitter": "npm:^3.1.1"
