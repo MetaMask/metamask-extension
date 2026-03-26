@@ -4,7 +4,6 @@ import {
   formatChainIdToCaip,
   getQuotesReceivedProperties,
   isCrossChain,
-  isNonEvmChainId,
 } from '@metamask/bridge-controller';
 import type { QuoteMetadata, QuoteResponse } from '@metamask/bridge-controller';
 import { useNavigate } from 'react-router-dom';

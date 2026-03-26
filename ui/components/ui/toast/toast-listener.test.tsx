@@ -3,7 +3,6 @@ import { type BridgeHistoryItem } from '@metamask/bridge-status-controller';
 import { render } from '@testing-library/react';
 import { useSelector } from 'react-redux';
 import { toast } from 'react-hot-toast';
-import { ToastListener } from './toast-listener';
 import {
   selectEvmTransactionsForToast,
   selectNonEvmTransactionsForToast,
@@ -12,6 +11,7 @@ import {
   selectBridgeHistoryForAccountGroup,
   selectNonEvmBridgeSourceTxIds,
 } from '../../../ducks/bridge-status/selectors';
+import { ToastListener } from './toast-listener';
 
 jest.mock('react-redux', () => ({ useSelector: jest.fn() }));
 
