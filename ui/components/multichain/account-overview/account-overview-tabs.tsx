@@ -37,7 +37,6 @@ import { ActivityList } from '../activity-v2/activity-list';
 import { usePrefetchTransactions } from '../activity-v2/hooks';
 import { transitionForward } from '../../ui/transition';
 import { AccountOverviewCommonProps } from './common';
-import { AssetListTokenDetection } from './asset-list-token-detection';
 
 export type AccountOverviewTabsProps = AccountOverviewCommonProps & {
   showTokens: boolean;
@@ -149,8 +148,6 @@ export const AccountOverviewTabs = ({
 
   return (
     <>
-      <AssetListTokenDetection />
-
       <Tabs<AccountOverviewTab>
         animated
         activeTab={activeTabKey}
