@@ -5,7 +5,9 @@ import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
   getPermittedEthChainIds,
+  getAllScopesFromCaip25CaveatValue,
 } from '@metamask/chain-agnostic-permission';
+import { parseCaipChainId, KnownCaipNamespace } from '@metamask/utils';
 import PermissionsConnectPermissionList from '../../permissions-connect-permission-list';
 import {
   AlignItems,
@@ -76,16 +78,32 @@ export default class PermissionPageContainerContent extends PureComponent {
     // permissionDiffMap is expected to be present when an incremental permission request is made
     // This occurs when a "wallet_switchEthereumChain" request comes in and we already have a set of permissions
     const permissionDiffMap = request.diff?.permissionDiffMap;
+    const diffCaveatValue = permissionDiffMap?.[
+      Caip25EndowmentPermissionName
+    ]?.[Caip25CaveatType] ?? {
+      requiredScopes: {},
+      optionalScopes: {},
+    };
     // Extract the requested chain IDs from the permission diff, specifically from the CAIP-25 endowment permission
     // This represents the new chains being requested in addition to existing permissions
-    const permissionDiffRequestedChainIds = getPermittedEthChainIds(
-      permissionDiffMap?.[Caip25EndowmentPermissionName]?.[
-        Caip25CaveatType
-      ] ?? {
-        requiredScopes: {},
-        optionalScopes: {},
-      },
-    );
+    const permissionDiffRequestedChainIds =
+      getPermittedEthChainIds(diffCaveatValue);
+
+    // Extract non-EVM CAIP chain IDs from the diff so we only show newly
+    // requested non-EVM chains, not the entire set of already-granted chains.
+    const permissionDiffNonEvmCaipChainIds = permissionDiffMap
+      ? getAllScopesFromCaip25CaveatValue(diffCaveatValue).filter((chainId) => {
+          try {
+            const { namespace } = parseCaipChainId(chainId);
+            return (
+              namespace !== KnownCaipNamespace.Wallet &&
+              namespace !== KnownCaipNamespace.Eip155
+            );
+          } catch {
+            return false;
+          }
+        })
+      : null;
     return (
       <Box
         className="permission-page-container-content"
@@ -146,7 +164,16 @@ export default class PermissionPageContainerContent extends PureComponent {
                 ? permissionDiffRequestedChainIds
                 : requestedChainIds
             }
-            caipChainIds={selectedCaipChainIds}
+            // For incremental requests, only show non-EVM chains from the diff
+            // (avoids showing already-granted non-EVM chains like Bitcoin/Solana/Tron
+            // when the request is only adding an EVM chain like Sepolia).
+            // When permissionDiffNonEvmCaipChainIds is empty, PermissionCell falls
+            // back to EVM-only display via requestedChainIds.
+            caipChainIds={
+              permissionDiffMap
+                ? permissionDiffNonEvmCaipChainIds
+                : selectedCaipChainIds
+            }
           />
         </Box>
       </Box>
