@@ -50,7 +50,7 @@ export const MultichainAccountNetworkGroupWithCopyIcon = ({
   const showDefaultAddressPreference = useSelector(
     getShowDefaultAddressPreference,
   );
-  const { defaultAddress, defaultScopes } = useSelector((state) =>
+  const { defaultAddress } = useSelector((state) =>
     getDefaultScopeAndAddressByAccountGroupId(state, groupId),
   );
   const shouldShowDefaultAddress =

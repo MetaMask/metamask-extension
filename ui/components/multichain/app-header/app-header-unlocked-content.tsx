@@ -162,11 +162,7 @@ export const AppHeaderUnlockedContent = ({
 
   const multichainAccountAppContent = useMemo(() => {
     return (
-      <BoxDeprecated
-        display={Display.Flex}
-        flexDirection={FlexDirection.Column}
-        className="min-w-0 overflow-hidden"
-      >
+      <BoxDeprecated style={{ overflow: 'hidden' }}>
         {/* Prevent overflow of account picker by long account names */}
         <Text
           as="div"
@@ -209,10 +205,9 @@ export const AppHeaderUnlockedContent = ({
         </Text>
         {selectedMultichainAccountId && (
           <BoxDeprecated
-            display={Display.Flex}
             marginTop={1}
             marginLeft={2}
-            className="min-w-0"
+            style={{ width: 'fit-content' }}
             data-testid="networks-subtitle-test-id"
           >
             <MultichainHoveredAddressRowsList
