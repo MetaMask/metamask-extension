@@ -42,6 +42,7 @@ export type MultichainAccountNetworkGroupWithCopyIconProps = {
  *
  * @param options0
  * @param options0.groupId
+ * @param options0.showStaticNetworkAvatars
  */
 export const MultichainAccountNetworkGroupWithCopyIcon = ({
   groupId,
