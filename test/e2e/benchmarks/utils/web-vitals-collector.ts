@@ -22,7 +22,7 @@
 
 import { WINDOW_TITLES } from '../../constants';
 import type { Driver } from '../../webdriver/driver';
-import type { WebVitalsMetrics } from './types';
+import type { WebVitalsMetrics } from '../../../../shared/constants/benchmarks';
 
 /**
  * Setup script: creates PerformanceObservers for event timing, LCP,

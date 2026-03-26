@@ -7,7 +7,7 @@ import type {
   BenchmarkResults,
   StatisticalResult,
   WebVitalsSummary,
-} from '../../test/e2e/benchmarks/utils/types';
+} from '../../shared/constants/benchmarks';
 import {
   STARTUP_PRESETS,
   INTERACTION_PRESETS,

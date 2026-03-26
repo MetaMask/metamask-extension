@@ -12,9 +12,11 @@ import HeaderNavbar from '../../../page-objects/pages/header-navbar';
 import { mockNotificationServices } from '../../../tests/notifications/mocks';
 import type {
   BenchmarkResults,
+  WebVitalsMetrics,
+} from '../../../../shared/constants/benchmarks';
+import type {
   Metrics,
   PageLoadBenchmarkOptions,
-  WebVitalsMetrics,
 } from '../../utils/types';
 import {
   BENCHMARK_PERSONA,

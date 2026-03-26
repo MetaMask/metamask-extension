@@ -36,29 +36,8 @@ import type {
 } from 'web-vitals/attribution';
 // @ts-expect-error suppress CommonJS vs ECMAScript error
 import { onINP, onLCP, onCLS } from 'web-vitals/attribution';
+import type { WebVitalsMetrics } from '../../../shared/constants/benchmarks';
 
-/**
- * Web Vitals metrics stored for E2E benchmark retrieval.
- * Values are updated as metrics are reported by the web-vitals library.
- */
-export type WebVitalsMetrics = {
-  /** Interaction to Next Paint in milliseconds */
-  inp: number | null;
-  /** First Contentful Paint in milliseconds (always available on extension pages) */
-  fcp: number | null;
-  /** Largest Contentful Paint in milliseconds (null on chrome-extension:// pages) */
-  lcp: number | null;
-  /** Cumulative Layout Shift (unitless) */
-  cls: number | null;
-  /** Rating for INP metric */
-  inpRating: 'good' | 'needs-improvement' | 'poor' | null;
-  /** Rating for FCP metric */
-  fcpRating: 'good' | 'needs-improvement' | 'poor' | null;
-  /** Rating for LCP metric */
-  lcpRating: 'good' | 'needs-improvement' | 'poor' | null;
-  /** Rating for CLS metric */
-  clsRating: 'good' | 'needs-improvement' | 'poor' | null;
-};
 
 /**
  * Stored web vitals metrics for E2E benchmark retrieval.

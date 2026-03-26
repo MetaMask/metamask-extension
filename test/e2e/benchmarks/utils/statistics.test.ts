@@ -19,10 +19,10 @@ import {
   MAX_METRIC_DURATION_MS,
 } from './statistics';
 import type {
-  ThresholdConfig,
   TimerStatistics,
   WebVitalsMetrics,
-} from './types';
+} from '../../../../shared/constants/benchmarks';
+import type { ThresholdConfig } from './types';
 
 function createMockStats(
   overrides: Partial<TimerStatistics> = {},

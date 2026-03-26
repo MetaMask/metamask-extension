@@ -8,9 +8,11 @@ import { withFixtures } from '../../../helpers';
 import { loginWithoutBalanceValidation } from '../../../page-objects/flows/login.flow';
 import type {
   BenchmarkResults,
+  WebVitalsMetrics,
+} from '../../../../shared/constants/benchmarks';
+import type {
   Metrics,
   PageLoadBenchmarkOptions,
-  WebVitalsMetrics,
 } from '../../utils/types';
 import { BENCHMARK_PERSONA } from '../../utils/constants';
 import { runPageLoadBenchmark, type MeasurePageResult } from '../../utils';

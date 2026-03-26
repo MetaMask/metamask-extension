@@ -19,20 +19,22 @@ import {
   validateThresholds,
 } from './statistics';
 import type {
-  BenchmarkFunction,
   BenchmarkResults,
-  BenchmarkRunResult,
-  BenchmarkSummary,
   BenchmarkType,
-  Metrics,
   Persona,
   StatisticalResult,
-  ThresholdConfig,
   TimerStatistics,
-  UserActionMeasurement,
   WebVitalsMetrics,
   WebVitalsRun,
   WebVitalsSummary,
+} from '../../../../shared/constants/benchmarks';
+import type {
+  BenchmarkFunction,
+  BenchmarkRunResult,
+  BenchmarkSummary,
+  Metrics,
+  ThresholdConfig,
+  UserActionMeasurement,
 } from './types';
 import { performanceTracker } from './performance-tracker';
 

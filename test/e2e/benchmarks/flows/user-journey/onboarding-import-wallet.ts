@@ -34,7 +34,8 @@ import {
 } from '../../mocks/performance-mocks';
 import { shouldUseMockedRequests } from '../../utils/mock-config';
 import { BENCHMARK_PERSONA, BENCHMARK_TYPE } from '../../utils/constants';
-import type { BenchmarkRunResult, WebVitalsMetrics } from '../../utils/types';
+import type { WebVitalsMetrics } from '../../../../shared/constants/benchmarks';
+import type { BenchmarkRunResult } from '../../utils/types';
 import { collectWebVitals } from '../../utils/web-vitals-collector';
 
 export const testTitle = 'benchmark-onboarding-import-wallet';

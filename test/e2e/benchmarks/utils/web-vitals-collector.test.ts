@@ -1,5 +1,5 @@
 import type { Driver } from '../../webdriver/driver';
-import type { WebVitalsMetrics } from './types';
+import type { WebVitalsMetrics } from '../../../../shared/constants/benchmarks';
 import { collectWebVitals } from './web-vitals-collector';
 
 function createMockDriver(overrides: {
@@ -29,6 +29,7 @@ function createMockDriver(overrides: {
   const driver = {
     executeScript: overrides.executeScript ?? jest.fn().mockResolvedValue(null),
     delay: overrides.delay ?? jest.fn().mockResolvedValue(undefined),
+    switchToWindowWithTitle: jest.fn().mockResolvedValue(undefined),
     driver:
       overrides.innerActions === null &&
       overrides.innerSendDevToolsCommand === null
@@ -181,6 +182,7 @@ describe('collectWebVitals', () => {
       const driver = {
         executeScript: execScript,
         delay: jest.fn().mockResolvedValue(undefined),
+        switchToWindowWithTitle: jest.fn().mockResolvedValue(undefined),
         driver: { sendDevToolsCommand: sendCmd },
       } as unknown as Driver;
 

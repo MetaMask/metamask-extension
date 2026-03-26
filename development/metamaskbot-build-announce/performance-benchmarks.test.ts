@@ -1,4 +1,8 @@
-import type { BenchmarkResults } from '../../shared/constants/benchmarks';
+import type {
+  BenchmarkResults,
+  WebVitalsSummary,
+  TimerStatistics,
+} from '../../shared/constants/benchmarks';
 import {
   buildTableRows,
   buildBenchmarkSection,
@@ -251,6 +255,52 @@ describe('buildTableRows', () => {
     expect(rows[3]).toContain('>600<');
     expect(rows[3]).toContain('>9000<');
     expect(rows[3]).toContain('>10200<');
+  });
+
+  it('renders web vitals rows when webVitals.aggregated is present', () => {
+    const stats: TimerStatistics = {
+      id: 'inp',
+      mean: 180,
+      min: 120,
+      max: 250,
+      stdDev: 35,
+      cv: 0.19,
+      p50: 175,
+      p75: 210,
+      p95: 240,
+      p99: 248,
+      samples: 10,
+      outliers: 0,
+      dataQuality: 'good',
+    };
+    const webVitals: WebVitalsSummary = {
+      runs: [],
+      aggregated: {
+        inp: stats,
+        fcp: { ...stats, id: 'fcp', mean: 450 },
+        lcp: { ...stats, id: 'lcp', mean: 1200 },
+        cls: { ...stats, id: 'cls', mean: 0.05 },
+        ratings: {
+          inp: { good: 8, 'needs-improvement': 2, poor: 0, null: 0 },
+          fcp: { good: 10, 'needs-improvement': 0, poor: 0, null: 0 },
+          lcp: { good: 9, 'needs-improvement': 1, poor: 0, null: 0 },
+          cls: { good: 10, 'needs-improvement': 0, poor: 0, null: 0 },
+        },
+      },
+    };
+    const entries = extractEntries({
+      loadNewAccount: {
+        ...mockUserActionsJson.loadNewAccount,
+        webVitals,
+      },
+    });
+    const rows = buildTableRows(entries);
+
+    expect(rows.length).toBeGreaterThan(4);
+    expect(rows.some((r) => r.includes('INP'))).toBe(true);
+    expect(rows.some((r) => r.includes('FCP'))).toBe(true);
+    expect(rows.some((r) => r.includes('LCP'))).toBe(true);
+    expect(rows.some((r) => r.includes('CLS'))).toBe(true);
   });
 
   it('renders dash when a metric key is missing from a stats field', () => {

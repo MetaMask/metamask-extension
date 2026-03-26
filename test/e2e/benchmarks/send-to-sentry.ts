@@ -22,9 +22,9 @@ import yargs from 'yargs/yargs';
 import { getGitBranch, getGitCommitHash } from './send-to-sentry-utils';
 import type {
   BenchmarkResults,
-  UserActionResult,
   WebVitalsSummary,
-} from './utils/types';
+} from '../../shared/constants/benchmarks';
+import type { UserActionResult } from './utils/types';
 import { BENCHMARK_PERSONA, BENCHMARK_TYPE } from './utils/constants';
 import { aggregateWebVitals } from './utils/statistics';
 

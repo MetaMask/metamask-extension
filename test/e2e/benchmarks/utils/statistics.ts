@@ -10,15 +10,17 @@
 
 import type {
   BenchmarkResults,
-  PercentileThreshold,
   RatingDistribution,
   StatisticalResult,
-  ThresholdConfig,
-  ThresholdViolation,
   TimerStatistics,
   WebVitalsAggregated,
   WebVitalsMetrics,
   WebVitalsRating,
+} from '../../../../shared/constants/benchmarks';
+import type {
+  PercentileThreshold,
+  ThresholdConfig,
+  ThresholdViolation,
 } from './types';
 
 /**

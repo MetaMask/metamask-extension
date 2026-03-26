@@ -25,7 +25,8 @@ import {
   validateResultThresholds,
   logThresholdResult,
 } from './utils/statistics';
-import type { BenchmarkResults, ThresholdViolation } from './utils/types';
+import type { BenchmarkResults } from '../../shared/constants/benchmarks';
+import type { ThresholdViolation } from './utils/types';
 
 /**
  * Startup benchmarks handle their own iteration internally (browserLoads x pageLoads).
