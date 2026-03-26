@@ -9353,5 +9353,8 @@
   },
   "yourWalletIsReadyFromReminder": {
     "message": "Gizli Kurtarma İfadenizi güvenli bir şekilde saklayın!"
+  },
+  "perpsClosePartialMinNotional": {
+    "message": "Partial closes must be at least $1 in USD value. Increase the close amount or set the slider to 100%."
   }
 }

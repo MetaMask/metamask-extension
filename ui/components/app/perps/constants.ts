@@ -38,6 +38,13 @@ export const PERPS_CONSTANTS = {
 export const PERPS_MARKET_ORDER_FEE_RATE = 0.0001;
 
 /**
+ * Minimum USD notional for market / reduce-only orders on HyperLiquid (mainnet and testnet).
+ * Partial closes below this amount fail with ORDER_SIZE_MIN; full closes omit this check.
+ * @see TRADING_DEFAULTS.amount in @metamask/perps-controller hyperLiquidConfig
+ */
+export const PERPS_MIN_MARKET_ORDER_USD = 10;
+
+/**
  * Market sorting configuration
  * Controls sorting behavior for the markets view
  */

@@ -7058,5 +7058,8 @@
   },
   "yourWalletIsReadyFromReminder": {
     "message": "Coinnigh do Rúndacht Aisghabhála slán!"
+  },
+  "perpsClosePartialMinNotional": {
+    "message": "Partial closes must be at least $1 in USD value. Increase the close amount or set the slider to 100%."
   }
 }

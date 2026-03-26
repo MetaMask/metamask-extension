@@ -27,7 +27,10 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useFormatters } from '../../../../hooks/useFormatters';
 import { submitRequestToBackground } from '../../../../store/background-connection';
 import { getDisplayName } from '../utils';
-import { PERPS_MARKET_ORDER_FEE_RATE } from '../constants';
+import {
+  PERPS_MARKET_ORDER_FEE_RATE,
+  PERPS_MIN_MARKET_ORDER_USD,
+} from '../constants';
 import { CloseAmountSection } from '../order-entry';
 import type { Position } from '../types';
 
@@ -86,12 +89,29 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
     [closeSize, currentPrice],
   );
 
+  /** HyperLiquid requires ≥ $10 notional for partial closes; full close omits size and skips this. */
+  const closeNotionalUsd = useMemo(
+    () => closeSize * currentPrice,
+    [closeSize, currentPrice],
+  );
+
+  const isPartialCloseBelowMinNotional = useMemo(() => {
+    if (closePercent >= 100) {
+      return false;
+    }
+    return closeNotionalUsd + 1e-9 < PERPS_MIN_MARKET_ORDER_USD;
+  }, [closePercent, closeNotionalUsd]);
+
   const youWillReceive = useMemo(
     () => margin + unrealizedPnl - estimatedFees,
     [margin, unrealizedPnl, estimatedFees],
   );
 
-  const isSubmitDisabled = closePercent <= 0 || isSubmitting || closeSize <= 0;
+  const isSubmitDisabled =
+    closePercent <= 0 ||
+    isSubmitting ||
+    closeSize <= 0 ||
+    isPartialCloseBelowMinNotional;
 
   const handleClose = useCallback(async () => {
     if (isSubmitDisabled) {
@@ -105,10 +125,12 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
       const params: {
         symbol: string;
         orderType: 'market';
+        currentPrice: number;
         size?: string;
       } = {
         symbol: position.symbol,
         orderType: 'market',
+        currentPrice,
       };
 
       if (closePercent < 100) {
@@ -124,13 +146,30 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
       }
       onClose();
     } catch (err) {
-      setError(
-        err instanceof Error ? err.message : 'An unknown error occurred',
-      );
+      if (err instanceof Error && err.message === 'ORDER_SIZE_MIN') {
+        setError(
+          t('perpsClosePartialMinNotional', [
+            formatCurrencyWithMinThreshold(PERPS_MIN_MARKET_ORDER_USD, 'USD'),
+          ]),
+        );
+      } else {
+        setError(
+          err instanceof Error ? err.message : 'An unknown error occurred',
+        );
+      }
     } finally {
       setIsSubmitting(false);
     }
-  }, [isSubmitDisabled, position.symbol, closePercent, closeSize, onClose]);
+  }, [
+    isSubmitDisabled,
+    position.symbol,
+    closePercent,
+    closeSize,
+    currentPrice,
+    onClose,
+    t,
+    formatCurrencyWithMinThreshold,
+  ]);
 
   const handlePercentChange = useCallback((percent: number) => {
     setClosePercent(percent);
@@ -156,6 +195,33 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
               asset={displayName}
               currentPrice={currentPrice}
             />
+
+            {isPartialCloseBelowMinNotional ? (
+              <Box
+                className="bg-warning-muted rounded-lg"
+                padding={3}
+                flexDirection={BoxFlexDirection.Row}
+                alignItems={BoxAlignItems.Center}
+                gap={2}
+              >
+                <Icon
+                  name={IconName.Warning}
+                  size={IconSize.Sm}
+                  color={IconColor.WarningDefault}
+                />
+                <Text
+                  variant={TextVariant.BodySm}
+                  color={TextColor.WarningDefault}
+                >
+                  {t('perpsClosePartialMinNotional', [
+                    formatCurrencyWithMinThreshold(
+                      PERPS_MIN_MARKET_ORDER_USD,
+                      'USD',
+                    ),
+                  ])}
+                </Text>
+              </Box>
+            ) : null}
 
             {/* Summary rows */}
             <Box flexDirection={BoxFlexDirection.Column} gap={2}>
@@ -275,12 +341,7 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
           </Box>
         </ModalBody>
         <ModalFooter
-          onCancel={onClose}
           onSubmit={handleClose}
-          cancelButtonProps={{
-            'data-testid': 'perps-close-position-modal-cancel',
-            children: t('cancel'),
-          }}
           submitButtonProps={{
             'data-testid': 'perps-close-position-modal-submit',
             children: t('perpsClosePosition'),
