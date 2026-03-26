@@ -39,7 +39,6 @@ The system uses a **decoupled, capability-based architecture**:
 │                                  │                                      │
 │  ┌─────────────────────────────────────────────────────────────────┐   │
 │  │  MetaMask Capabilities (this directory)                         │   │
-│  │  - BuildCapability: yarn build:test                             │   │
 │  │  - FixtureCapability: wallet state management                   │   │
 │  │  - ChainCapability: Anvil blockchain                            │   │
 │  │  - ContractSeedingCapability: deploy test contracts             │   │
@@ -101,8 +100,6 @@ Important setup note:
 - Yarn is required for bootstrap (`corepack enable`, `yarn install`, `yarn playwright install chromium`).
 - For MCP runtime commands, prefer direct `node` + local `tsx` paths in client config instead of `yarn tsx`.
 - This reduces stdio startup issues in GUI clients and avoids runtime failures when `yarn` is not on `PATH`.
-
-`mm_build` can take a long time. In OpenCode, use both server `timeout` (tool discovery/startup) and `experimental.mcp_timeout` (tool execution timeout). Claude Desktop and Cursor do not currently document a client-side MCP timeout field.
 
 #### Claude Desktop
 
@@ -178,8 +175,7 @@ Add this to `~/.config/opencode/opencode.json` under `mcp`:
 Notes:
 
 - `timeout` under `mcp.metamask` controls how long OpenCode waits to discover tools from this server.
-- `experimental.mcp_timeout` controls runtime tool execution timeout (for long commands like `mm_build`).
-- If `mm_build` still times out in your environment, increase `experimental.mcp_timeout` to `600000`.
+- `experimental.mcp_timeout` controls runtime tool execution timeout.
 - OpenCode uses `mcp` as the top-level key, and `command` is an array.
 
 ### MCP Startup Troubleshooting
@@ -195,7 +191,6 @@ Notes:
 Once configured, the LLM agent can use tools like:
 
 ```
-mm_build      → Build the extension
 mm_launch     → Launch browser with MetaMask
 mm_click      → Click UI elements
 mm_type       → Type into inputs
@@ -214,7 +209,7 @@ When implementing UI changes, follow this cycle:
 3. **PLAN**: Break down into atomic implementation steps.
 4. **IMPLEMENT**: Write code changes.
 5. **RUN TESTS**: `yarn test:unit`, `yarn lint:changed`.
-6. **BUILD & LAUNCH**: `mm_build` → `mm_launch`.
+6. **LAUNCH**: `mm_launch` (requires `yarn build:test` to have been run first).
 7. **VISUAL VALIDATION**: `mm_describe_screen`, `mm_screenshot`.
 8. **INTERACT & VERIFY**: `mm_click`, `mm_type` → verify behavior.
 9. **ITERATE**: If acceptance criteria NOT met → go to step 4.
@@ -228,7 +223,6 @@ When implementing UI changes, follow this cycle:
 
 | Tool         | Description                              |
 | ------------ | ---------------------------------------- |
-| `mm_build`   | Build extension using `yarn build:test`  |
 | `mm_launch`  | Launch MetaMask in headed Chrome browser |
 | `mm_cleanup` | Stop browser, Anvil, and all services    |
 
@@ -418,7 +412,6 @@ The system is built on pluggable capabilities that implement interfaces from the
 
 | Capability           | Class                               | Description                            |
 | -------------------- | ----------------------------------- | -------------------------------------- |
-| **Build**            | `MetaMaskBuildCapability`           | Builds extension via `yarn build:test` |
 | **Fixture**          | `MetaMaskFixtureCapability`         | Manages wallet state fixtures, presets |
 | **Chain**            | `MetaMaskChainCapability`           | Anvil blockchain management            |
 | **Contract Seeding** | `MetaMaskContractSeedingCapability` | Deploy ERC-20, NFT, ERC-4337 contracts |
@@ -447,7 +440,6 @@ test/e2e/playwright/llm-workflow/
 │
 ├── capabilities/                 # MetaMask-specific capability implementations
 │   ├── factory.ts                # Creates workflow context with all capabilities
-│   ├── build.ts                  # BuildCapability - yarn build:test
 │   ├── fixture.ts                # FixtureCapability - wallet state management
 │   ├── chain.ts                  # ChainCapability - Anvil blockchain
 │   ├── seeding.ts                # ContractSeedingCapability - deploy contracts
