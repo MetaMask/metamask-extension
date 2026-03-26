@@ -1445,7 +1445,12 @@ describe('Multichain Accounts Selectors', () => {
         {
           id: ENTROPY_GROUP_1_ID as AccountGroupId,
           type: AccountGroupType.MultichainAccount,
-          metadata: { name: 'Account 1', pinned: false, hidden: false, lastSelected: 0 },
+          metadata: {
+            name: 'Account 1',
+            pinned: false,
+            hidden: false,
+            lastSelected: 0,
+          },
           accounts: [],
           walletName: 'Test Wallet',
           walletId: ENTROPY_WALLET_1_ID as AccountWalletId,
@@ -1453,7 +1458,12 @@ describe('Multichain Accounts Selectors', () => {
         {
           id: ENTROPY_GROUP_2_ID as AccountGroupId,
           type: AccountGroupType.MultichainAccount,
-          metadata: { name: 'Account 2', pinned: false, hidden: false, lastSelected: 0 },
+          metadata: {
+            name: 'Account 2',
+            pinned: false,
+            hidden: false,
+            lastSelected: 0,
+          },
           accounts: [],
           walletName: 'Test Wallet 2',
           walletId: 'entropy:01JKAF3PJ247KAM6C03G5Q0NP8' as AccountWalletId,
@@ -1482,7 +1492,12 @@ describe('Multichain Accounts Selectors', () => {
         {
           id: ENTROPY_GROUP_1_ID as AccountGroupId,
           type: AccountGroupType.MultichainAccount,
-          metadata: { name: 'Valid Account', pinned: false, hidden: false, lastSelected: 0 },
+          metadata: {
+            name: 'Valid Account',
+            pinned: false,
+            hidden: false,
+            lastSelected: 0,
+          },
           accounts: [],
           walletName: 'Test Wallet',
           walletId: ENTROPY_WALLET_1_ID as AccountWalletId,
@@ -1490,7 +1505,12 @@ describe('Multichain Accounts Selectors', () => {
         {
           id: 'entropy:nonexistent/0' as AccountGroupId,
           type: AccountGroupType.MultichainAccount,
-          metadata: { name: 'Invalid Account', pinned: false, hidden: false, lastSelected: 0 },
+          metadata: {
+            name: 'Invalid Account',
+            pinned: false,
+            hidden: false,
+            lastSelected: 0,
+          },
           accounts: [],
           walletName: 'Invalid Wallet',
           walletId: 'entropy:nonexistent' as AccountWalletId,
@@ -1529,7 +1549,12 @@ describe('Multichain Accounts Selectors', () => {
         {
           id: 'entropy:invalid1/0' as AccountGroupId,
           type: AccountGroupType.MultichainAccount,
-          metadata: { name: 'Invalid 1', pinned: false, hidden: false, lastSelected: 0 },
+          metadata: {
+            name: 'Invalid 1',
+            pinned: false,
+            hidden: false,
+            lastSelected: 0,
+          },
           accounts: [],
           walletName: 'Invalid Wallet 1',
           walletId: 'entropy:invalid1' as AccountWalletId,
@@ -1537,7 +1562,12 @@ describe('Multichain Accounts Selectors', () => {
         {
           id: 'entropy:invalid2/0' as AccountGroupId,
           type: AccountGroupType.MultichainAccount,
-          metadata: { name: 'Invalid 2', pinned: false, hidden: false, lastSelected: 0 },
+          metadata: {
+            name: 'Invalid 2',
+            pinned: false,
+            hidden: false,
+            lastSelected: 0,
+          },
           accounts: [],
           walletName: 'Invalid Wallet 2',
           walletId: 'entropy:invalid2' as AccountWalletId,
@@ -1560,7 +1590,12 @@ describe('Multichain Accounts Selectors', () => {
         {
           id: LEDGER_GROUP_ID as AccountGroupId,
           type: AccountGroupType.SingleAccount,
-          metadata: { name: 'Ledger Account', pinned: false, hidden: false, lastSelected: 0 },
+          metadata: {
+            name: 'Ledger Account',
+            pinned: false,
+            hidden: false,
+            lastSelected: 0,
+          },
           accounts: [],
           walletName: 'Ledger Hardware',
           walletId: 'keyring:Ledger Hardware' as AccountWalletId,
@@ -1583,7 +1618,12 @@ describe('Multichain Accounts Selectors', () => {
         {
           id: 'keyring:some/0x123' as AccountGroupId,
           type: AccountGroupType.SingleAccount,
-          metadata: { name: 'Some Account', pinned: false, hidden: false, lastSelected: 0 },
+          metadata: {
+            name: 'Some Account',
+            pinned: false,
+            hidden: false,
+            lastSelected: 0,
+          },
           accounts: [],
           walletName: 'Some Wallet',
           walletId: 'keyring:some' as AccountWalletId,
