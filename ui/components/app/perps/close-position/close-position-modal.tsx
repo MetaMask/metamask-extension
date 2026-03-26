@@ -45,8 +45,7 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
   currentPrice,
 }) => {
   const t = useI18nContext();
-  const { formatCurrencyWithMinThreshold, formatTokenQuantity } =
-    useFormatters();
+  const { formatCurrencyWithMinThreshold } = useFormatters();
 
   const [closePercent, setClosePercent] = useState(100);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -149,23 +148,6 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
         <ModalHeader onClose={onClose}>{t('perpsClosePosition')}</ModalHeader>
         <ModalBody>
           <Box flexDirection={BoxFlexDirection.Column} gap={4}>
-            {/* Available to close */}
-            <Box
-              flexDirection={BoxFlexDirection.Row}
-              justifyContent={BoxJustifyContent.Between}
-              alignItems={BoxAlignItems.Center}
-            >
-              <Text
-                variant={TextVariant.BodySm}
-                color={TextColor.TextAlternative}
-              >
-                {t('perpsAvailableToClose')}
-              </Text>
-              <Text variant={TextVariant.BodySm} fontWeight={FontWeight.Medium}>
-                {formatTokenQuantity(positionSize, displayName)}
-              </Text>
-            </Box>
-
             {/* Close Amount Section (input + slider) */}
             <CloseAmountSection
               positionSize={position.size}
@@ -206,10 +188,19 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
                     textAlign={TextAlign.Right}
                   >
                     {t('perpsIncludesPnl', [
-                      `${unrealizedPnl >= 0 ? '+' : '-'}${formatCurrencyWithMinThreshold(
-                        Math.abs(unrealizedPnl),
-                        'USD',
-                      )}`,
+                      <span
+                        key="perps-close-margin-pnl"
+                        className={
+                          unrealizedPnl >= 0
+                            ? 'text-success-default'
+                            : 'text-error-default'
+                        }
+                      >
+                        {`${unrealizedPnl >= 0 ? '+' : '-'}${formatCurrencyWithMinThreshold(
+                          Math.abs(unrealizedPnl),
+                          'USD',
+                        )}`}
+                      </span>,
                     ])}
                   </Text>
                 </Box>
