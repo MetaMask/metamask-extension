@@ -4254,6 +4254,10 @@
   "musdGetMusd": {
     "message": "Get mUSD"
   },
+  "musdMetaMaskUsd": {
+    "message": "MetaMask USD",
+    "description": "Product name shown as the title line on the home token list mUSD Buy/Get CTA"
+  },
   "musdTermsApply": {
     "message": "Terms apply."
   },

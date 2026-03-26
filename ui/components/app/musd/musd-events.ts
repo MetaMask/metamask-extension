@@ -24,7 +24,6 @@ export const MUSD_EVENTS_CONSTANTS = {
     HOME_SCREEN: 'home_screen',
     TOKEN_LIST_ITEM: 'token_list_item',
     ASSET_OVERVIEW: 'asset_overview',
-    CLAIM_BONUS_BOTTOM_SHEET: 'claim_bonus_bottom_sheet',
     CONVERSION_EDUCATION_SCREEN: 'conversion_education_screen',
     CUSTOM_AMOUNT_SCREEN: 'custom_amount_screen',
     BUY_SCREEN: 'buy_screen',
@@ -70,11 +69,7 @@ export const MUSD_EVENTS_CONSTANTS = {
  */
 export type MusdCtaClickedEventProperties = {
   /** Where the CTA was displayed */
-  location:
-    | 'home_screen'
-    | 'token_list_item'
-    | 'asset_overview'
-    | 'claim_bonus_bottom_sheet';
+  location: 'home_screen' | 'token_list_item' | 'asset_overview';
   /** Where the user will be redirected */
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -110,6 +105,40 @@ export type MusdCtaClickedEventProperties = {
   // eslint-disable-next-line @typescript-eslint/naming-convention
   asset_symbol?: string;
 };
+
+/**
+ * Resolves `redirects_to` for `MusdConversionCtaClicked` so it matches where
+ * the user lands: buy (ramps) vs conversion, and education vs custom amount.
+ * @param params
+ */
+export function resolveMusdConversionCtaRedirectsTo(
+  params: { intent: 'buy' } | { intent: 'conversion'; educationSeen: boolean },
+): MusdCtaClickedEventProperties['redirects_to'] {
+  if (params.intent === 'buy') {
+    return MUSD_EVENTS_CONSTANTS.REDIRECT_DESTINATIONS.BUY_SCREEN;
+  }
+  return params.educationSeen
+    ? MUSD_EVENTS_CONSTANTS.REDIRECT_DESTINATIONS.CUSTOM_AMOUNT_SCREEN
+    : MUSD_EVENTS_CONSTANTS.REDIRECT_DESTINATIONS.CONVERSION_EDUCATION_SCREEN;
+}
+
+/**
+ * Maps `startConversionFlow` entry points to `MusdConversionCtaClicked.location`.
+ * @param entryPoint
+ */
+export function musdConversionFlowEntryPointToCtaEventLocation(
+  entryPoint: 'home' | 'token_list' | 'asset_overview',
+): MusdCtaClickedEventProperties['location'] {
+  switch (entryPoint) {
+    case 'home':
+      return MUSD_EVENTS_CONSTANTS.EVENT_LOCATIONS.HOME_SCREEN;
+    case 'asset_overview':
+      return MUSD_EVENTS_CONSTANTS.EVENT_LOCATIONS.ASSET_OVERVIEW;
+    case 'token_list':
+    default:
+      return MUSD_EVENTS_CONSTANTS.EVENT_LOCATIONS.TOKEN_LIST_ITEM;
+  }
+}
 
 /**
  * Properties for MUSD_BONUS_TERMS_OF_USE_PRESSED event
@@ -182,12 +211,17 @@ export type MusdConversionStatusUpdatedEventProperties = {
   amount_hex: string;
 };
 
+/** Analytics `location` for Merkl claim bonus in the extension (no mobile bottom sheet). */
+export type MerklClaimBonusAnalyticsLocation =
+  | 'token_list_item'
+  | 'asset_overview';
+
 /**
  * Properties for MUSD_CLAIM_BONUS_BUTTON_CLICKED event
  */
 export type MusdClaimBonusButtonClickedEventProperties = {
   /** Where the button was displayed */
-  location: 'claim_bonus_bottom_sheet';
+  location: MerklClaimBonusAnalyticsLocation;
   /** Claim amount in mUSD */
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -201,6 +235,18 @@ export type MusdClaimBonusButtonClickedEventProperties = {
   // eslint-disable-next-line @typescript-eslint/naming-convention
   network_name: string;
 };
+
+/**
+ * `location` for claim bonus analytics: home token list row vs asset detail row.
+ * @param showMusdConvertCta - True when `TokenCell` is used on the main wallet token list with mUSD convert CTA.
+ */
+export function resolveMerklClaimBonusAnalyticsLocation(
+  showMusdConvertCta: boolean,
+): MerklClaimBonusAnalyticsLocation {
+  return showMusdConvertCta
+    ? MUSD_EVENTS_CONSTANTS.EVENT_LOCATIONS.TOKEN_LIST_ITEM
+    : MUSD_EVENTS_CONSTANTS.EVENT_LOCATIONS.ASSET_OVERVIEW;
+}
 
 /**
  * Properties for MUSD_CLAIM_BONUS_STATUS_UPDATED event

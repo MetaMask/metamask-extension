@@ -62,11 +62,17 @@ jest.mock('../../../contexts/metametrics', () => {
   };
 });
 
+const { __mockTrackEvent: mockTrackEvent } = jest.requireMock<{
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  __mockTrackEvent: jest.Mock;
+}>('../../../contexts/metametrics');
+
 const defaultProps = {
   label: 'Claim 5% bonus',
   tokenAddress: '0xabc123',
   chainId: '0x1' as const,
   refetchRewards: jest.fn(),
+  analyticsLocation: 'token_list_item' as const,
 };
 
 describe('ClaimBonusBadge', () => {
@@ -95,6 +101,38 @@ describe('ClaimBonusBadge', () => {
     fireEvent.click(button, { stopPropagation });
 
     expect(mockClaimRewards).toHaveBeenCalledTimes(1);
+  });
+
+  it('tracks claim click with token_list_item location', () => {
+    render(<ClaimBonusBadge {...defaultProps} />);
+
+    fireEvent.click(screen.getByRole('button'));
+
+    expect(mockTrackEvent).toHaveBeenCalledWith(
+      expect.objectContaining({
+        properties: expect.objectContaining({
+          location: 'token_list_item',
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          network_chain_id: '0x1',
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          network_name: 'Ethereum Mainnet',
+        }),
+      }),
+    );
+  });
+
+  it('tracks claim click with asset_overview location when provided', () => {
+    render(
+      <ClaimBonusBadge {...defaultProps} analyticsLocation="asset_overview" />,
+    );
+
+    fireEvent.click(screen.getByRole('button'));
+
+    expect(mockTrackEvent).toHaveBeenCalledWith(
+      expect.objectContaining({
+        properties: expect.objectContaining({ location: 'asset_overview' }),
+      }),
+    );
   });
 
   it('renders spinner when isClaiming is true', () => {

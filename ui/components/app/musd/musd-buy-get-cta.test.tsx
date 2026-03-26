@@ -15,6 +15,7 @@ jest.mock('../../../hooks/useI18nContext', () => ({
     const translations: Record<string, string> = {
       musdBuyMusd: 'Buy mUSD',
       musdGetMusd: 'Get mUSD',
+      musdMetaMaskUsd: 'MetaMask USD',
       musdEarnBonusPercentage: `Earn a ${values?.[0] || '3'}% bonus`,
     };
     return translations[key] || key;
@@ -130,7 +131,7 @@ describe('MusdBuyGetCta', () => {
   });
 
   describe('GET variant', () => {
-    it('renders "Get mUSD" text for GET variant', () => {
+    it('renders MetaMask USD headline and Get mUSD button', () => {
       const store = createMockStore();
       renderWithProvider(
         <MusdBuyGetCta
@@ -140,8 +141,12 @@ describe('MusdBuyGetCta', () => {
         store,
       );
 
-      const elements = screen.getAllByText(messages.musdGetMusd.message);
-      expect(elements.length).toBeGreaterThanOrEqual(1);
+      expect(
+        screen.getByText(messages.musdMetaMaskUsd.message),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByRole('button', { name: messages.musdGetMusd.message }),
+      ).toBeInTheDocument();
     });
 
     it('calls startConversionFlow when row is clicked', () => {
@@ -219,7 +224,7 @@ describe('MusdBuyGetCta', () => {
   });
 
   describe('BUY variant', () => {
-    it('renders "Buy mUSD" text for BUY variant', () => {
+    it('renders MetaMask USD headline and Buy mUSD button', () => {
       const store = createMockStore();
       renderWithProvider(
         <MusdBuyGetCta
@@ -229,8 +234,12 @@ describe('MusdBuyGetCta', () => {
         store,
       );
 
-      const elements = screen.getAllByText(messages.musdBuyMusd.message);
-      expect(elements.length).toBeGreaterThanOrEqual(1);
+      expect(
+        screen.getByText(messages.musdMetaMaskUsd.message),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByRole('button', { name: messages.musdBuyMusd.message }),
+      ).toBeInTheDocument();
     });
 
     it('opens buy crypto page when row is clicked for BUY variant', () => {

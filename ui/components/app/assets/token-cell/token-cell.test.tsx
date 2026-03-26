@@ -76,6 +76,8 @@ jest.mock('../../musd', () => ({
   MusdConvertLink: () => <div data-testid="musd-convert-link-mock" />,
   isEligibleForMerklRewards: jest.fn().mockReturnValue(false),
   useMerklRewards: (...args: unknown[]) => mockUseMerklRewards(...args),
+  resolveMerklClaimBonusAnalyticsLocation: (showMusdConvertCta: boolean) =>
+    showMusdConvertCta ? 'token_list_item' : 'asset_overview',
 }));
 
 describe('Token Cell', () => {

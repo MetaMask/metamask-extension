@@ -21,7 +21,7 @@ import { getMultichainNetworkConfigurationsByChainId } from '../../../selectors/
 import { useMerklClaim } from './hooks/useMerklClaim';
 import { useOnMerklClaimConfirmed } from './hooks/useOnMerklClaimConfirmed';
 import {
-  MUSD_EVENTS_CONSTANTS,
+  type MerklClaimBonusAnalyticsLocation,
   type MusdClaimBonusButtonClickedEventProperties,
 } from './musd-events';
 
@@ -30,11 +30,13 @@ export const ClaimBonusBadge = ({
   tokenAddress,
   chainId,
   refetchRewards,
+  analyticsLocation,
 }: {
   label: string;
   tokenAddress: string;
   chainId: Hex;
   refetchRewards: () => void;
+  analyticsLocation: MerklClaimBonusAnalyticsLocation;
 }) => {
   const t = useI18nContext();
   const { trackEvent } = useContext(MetaMetricsContext);
@@ -60,8 +62,7 @@ export const ClaimBonusBadge = ({
 
       /* eslint-disable @typescript-eslint/naming-convention */
       const eventProperties: MusdClaimBonusButtonClickedEventProperties = {
-        location:
-          MUSD_EVENTS_CONSTANTS.EVENT_LOCATIONS.CLAIM_BONUS_BOTTOM_SHEET,
+        location: analyticsLocation,
         claim_amount: label,
         network_chain_id: chainId,
         network_name: networkName,
@@ -77,7 +78,7 @@ export const ClaimBonusBadge = ({
 
       claimRewards();
     },
-    [claimRewards, trackEvent, label, chainId, networkName],
+    [claimRewards, trackEvent, label, chainId, networkName, analyticsLocation],
   );
 
   if (isClaiming) {

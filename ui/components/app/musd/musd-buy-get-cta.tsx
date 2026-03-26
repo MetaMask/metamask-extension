@@ -2,7 +2,7 @@
  * MusdBuyGetCta Component
  *
  * Primary banner CTA that appears above the token list.
- * Shows "Buy mUSD" for empty wallets or "Get mUSD" for users with convertible tokens.
+ * Headline shows the MetaMask USD product name; the button shows "Buy mUSD" or "Get mUSD" by variant.
  *
  * Based on mobile's MusdConversionAssetListCta component.
  */
@@ -56,7 +56,7 @@ import {
 import {
   createMusdCtaClickedEventProperties,
   MUSD_EVENTS_CONSTANTS,
-  type MusdCtaClickedEventProperties,
+  resolveMusdConversionCtaRedirectsTo,
 } from './musd-events';
 
 // ============================================================================
@@ -77,7 +77,7 @@ export type MusdBuyGetCtaProps = {
 /**
  * Primary banner CTA for mUSD acquisition
  *
- * Shows different content based on variant:
+ * Shows different button labels and destinations based on variant:
  * - BUY: For empty wallets, routes to Ramp to buy mUSD
  * - GET: For users with convertible tokens, routes to conversion flow
  *
@@ -120,7 +120,7 @@ export const MusdBuyGetCta: React.FC<MusdBuyGetCtaProps> = ({
   /**
    * CTA text based on variant
    */
-  const ctaText = useMemo(() => {
+  const ctaButtonText = useMemo(() => {
     switch (variant) {
       case BuyGetMusdCtaVariant.BUY:
         return t('musdBuyMusd');
@@ -138,25 +138,24 @@ export const MusdBuyGetCta: React.FC<MusdBuyGetCtaProps> = ({
     String(MUSD_CONVERSION_APY),
   ]);
 
+  // Product name line (same for BUY and GET); action copy is ctaButtonText.
+  const ctaText = useMemo(() => t('musdMetaMaskUsd'), [t]);
+
   /**
    * Handle CTA click
    */
   const handleClick = useCallback(() => {
-    const { REDIRECT_DESTINATIONS } = MUSD_EVENTS_CONSTANTS;
-    let redirectsTo: MusdCtaClickedEventProperties['redirects_to'];
-    if (variant === BuyGetMusdCtaVariant.BUY) {
-      redirectsTo = REDIRECT_DESTINATIONS.BUY_SCREEN;
-    } else if (educationSeen) {
-      redirectsTo = REDIRECT_DESTINATIONS.CUSTOM_AMOUNT_SCREEN;
-    } else {
-      redirectsTo = REDIRECT_DESTINATIONS.CONVERSION_EDUCATION_SCREEN;
-    }
+    const redirectsTo = resolveMusdConversionCtaRedirectsTo(
+      variant === BuyGetMusdCtaVariant.BUY
+        ? { intent: 'buy' }
+        : { intent: 'conversion', educationSeen },
+    );
 
     const eventProperties = createMusdCtaClickedEventProperties({
       location: MUSD_EVENTS_CONSTANTS.EVENT_LOCATIONS.HOME_SCREEN,
       redirectsTo,
       ctaType: MUSD_EVENTS_CONSTANTS.MUSD_CTA_TYPES.PRIMARY,
-      ctaText,
+      ctaText: ctaButtonText,
       chainId: selectedChainId,
       chainName: networkName,
       clickTarget: MUSD_EVENTS_CONSTANTS.CTA_CLICK_TARGETS.CTA_BUTTON,
@@ -189,7 +188,7 @@ export const MusdBuyGetCta: React.FC<MusdBuyGetCtaProps> = ({
     variant,
     selectedChainId,
     networkName,
-    ctaText,
+    ctaButtonText,
     educationSeen,
     trackEvent,
     openBuyCryptoInPdapp,
@@ -259,7 +258,7 @@ export const MusdBuyGetCta: React.FC<MusdBuyGetCtaProps> = ({
         }}
         className="musd-buy-get-cta__button"
       >
-        {ctaText}
+        {ctaButtonText}
       </Button>
     </Box>
   );

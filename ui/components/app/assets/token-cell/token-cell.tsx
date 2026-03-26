@@ -23,7 +23,12 @@ import { type TokenWithFiatAmount } from '../types';
 import GenericAssetCellLayout from '../asset-list/cells/generic-asset-cell-layout';
 import { AssetCellBadge } from '../asset-list/cells/asset-cell-badge';
 import { isEvmChainId } from '../../../../../shared/lib/asset-utils';
-import { ClaimBonusBadge, useMerklRewards, MusdConvertLink } from '../../musd';
+import {
+  ClaimBonusBadge,
+  useMerklRewards,
+  MusdConvertLink,
+  resolveMerklClaimBonusAnalyticsLocation,
+} from '../../musd';
 import { useMusdCtaVisibility, useMusdBalance } from '../../../../hooks/musd';
 import {
   TokenCellTitle,
@@ -135,6 +140,9 @@ export default function TokenCell({
           chainId={token.chainId as Hex}
           label={t('merklRewardsClaimBonus')}
           refetchRewards={refetchMerklRewards}
+          analyticsLocation={resolveMerklClaimBonusAnalyticsLocation(
+            showMusdConvertCta,
+          )}
         />
       );
     }
