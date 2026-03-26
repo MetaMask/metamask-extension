@@ -3,8 +3,11 @@ import React, { useEffect } from 'react';
 import { ThemeType } from '../../../../shared/constants/preferences';
 import { useTheme } from '../../../hooks/useTheme';
 
-const RIVE_ASSET = './images/riv_animations/spinner_loader_with_states.riv';
+// const RIVE_ASSET = './images/riv_animations/spinner_loader_with_states.riv';
 const SPINNER_STATE_MACHINE = 'SpinnerLoader';
+const getAsset = () => {
+  return './images/riv_animations/spinner_loader_with_states.riv';
+};
 
 export const SPINNER_INPUT = {
   loading: 'Loading',
@@ -20,7 +23,7 @@ export function ToastStatusIcon({ status }: { status: AnimationStatus }) {
   const isDark = theme === ThemeType.dark;
 
   const { rive, RiveComponent } = useRive({
-    src: RIVE_ASSET,
+    src: getAsset(),
     stateMachines: SPINNER_STATE_MACHINE,
   });
 
