@@ -32,7 +32,7 @@ const MAX_NETWORK_AVATARS = 4;
 
 export type MultichainAccountNetworkGroupWithCopyIconProps = {
   groupId: AccountGroupId;
-  isAppHeader?: boolean;
+  showStaticNetworkAvatars?: boolean;
 };
 
 /**
@@ -45,7 +45,7 @@ export type MultichainAccountNetworkGroupWithCopyIconProps = {
  */
 export const MultichainAccountNetworkGroupWithCopyIcon = ({
   groupId,
-  isAppHeader = false,
+  showStaticNetworkAvatars = false,
 }: MultichainAccountNetworkGroupWithCopyIconProps) => {
   const t = useI18nContext();
   const isDefaultAddressEnabled = useSelector(getIsDefaultAddressEnabled);
@@ -88,7 +88,7 @@ export const MultichainAccountNetworkGroupWithCopyIcon = ({
       <MultichainAccountNetworkGroup
         groupId={groupId}
         chainIds={
-          shouldShowDefaultAddress && !isAppHeader
+          shouldShowDefaultAddress && !showStaticNetworkAvatars
             ? defaultScopes.slice(0, MAX_NETWORK_AVATARS)
             : undefined
         }

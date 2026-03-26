@@ -233,7 +233,7 @@ export const AppHeaderUnlockedContent = ({
             >
               <MultichainAccountNetworkGroupWithCopyIcon
                 groupId={selectedMultichainAccountId}
-                isAppHeader={true}
+                showStaticNetworkAvatars={true}
               />
             </MultichainHoveredAddressRowsList>
           </BoxDeprecated>
