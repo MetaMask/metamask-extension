@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 /* eslint-disable import-x/extensions */
+import path from 'path';
 import {
   createMcpServer,
   setSessionManager,
@@ -10,6 +11,7 @@ import {
 
 import type { WorkflowContext } from '@metamask/client-mcp-core';
 import { createMetaMaskE2EContext } from '../capabilities/factory';
+import { resolveRepoRoot } from '../resolve-repo-root';
 import { metaMaskSessionManager } from './metamask-provider';
 
 function initializeWorkflowContext(): WorkflowContext {
@@ -20,7 +22,11 @@ async function main() {
   const partialContext = initializeWorkflowContext();
   metaMaskSessionManager.setWorkflowContext(partialContext);
 
-  setKnowledgeStore(createKnowledgeStore());
+  setKnowledgeStore(
+    createKnowledgeStore({
+      rootDir: path.join(resolveRepoRoot(), 'test-artifacts', 'llm-knowledge'),
+    }),
+  );
   setSessionManager(metaMaskSessionManager);
 
   const server = createMcpServer({

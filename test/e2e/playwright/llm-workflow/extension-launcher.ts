@@ -23,9 +23,11 @@ import type {
   LauncherContext,
   NetworkConfig,
 } from './launcher-types';
+import { resolveRepoRoot } from './resolve-repo-root';
 
 const DEFAULT_PASSWORD = 'correct horse battery staple';
 const DEFAULT_CHAIN_ID = 1337;
+const REPO_ROOT = resolveRepoRoot();
 
 // Routes that indicate a confirmation screen when matched against the sidepanel URL hash.
 const SIDEPANEL_CONFIRMATION_ROUTE_PREFIXES: string[] = [
@@ -100,7 +102,7 @@ export class MetaMaskExtensionLauncher {
   constructor(options: LauncherLaunchOptions = {}) {
     this.options = {
       extensionPath:
-        options.extensionPath ?? path.join(process.cwd(), 'dist', 'chrome'),
+        options.extensionPath ?? path.join(REPO_ROOT, 'dist', 'chrome'),
       headless: Boolean(options.headless),
       userDataDir: options.userDataDir ?? '',
       viewportWidth: options.viewportWidth ?? 1280,
@@ -108,7 +110,7 @@ export class MetaMaskExtensionLauncher {
       slowMo: options.slowMo ?? 0,
       screenshotDir:
         options.screenshotDir ??
-        path.join(process.cwd(), 'test-artifacts', 'screenshots'),
+        path.join(REPO_ROOT, 'test-artifacts', 'screenshots'),
       stateMode: options.stateMode ?? 'default',
       network: options.network ?? {
         mode: 'localhost',
@@ -127,7 +129,7 @@ export class MetaMaskExtensionLauncher {
   }
 
   private ensureDependenciesInstalled(): void {
-    const nodeModulesPath = path.join(process.cwd(), 'node_modules');
+    const nodeModulesPath = path.join(REPO_ROOT, 'node_modules');
     if (!existsSync(nodeModulesPath)) {
       throw new Error(
         'Dependencies not installed. The node_modules directory was not found.\n\n' +
@@ -185,7 +187,7 @@ export class MetaMaskExtensionLauncher {
     try {
       this.userDataDir =
         this.options.userDataDir ||
-        path.join(process.cwd(), `temp-llm-workflow-${Date.now()}`);
+        path.join(REPO_ROOT, `temp-llm-workflow-${Date.now()}`);
       await fs.mkdir(this.userDataDir, { recursive: true });
 
       const launchArgs = buildChromiumLaunchArgs(

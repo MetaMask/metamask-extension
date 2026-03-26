@@ -1,7 +1,8 @@
 import { promises as fs } from 'fs';
 import path from 'path';
+import { resolveRepoRoot } from './resolve-repo-root';
 
-const DEFAULT_EXTENSION_PATH = path.join(process.cwd(), 'dist', 'chrome');
+const DEFAULT_EXTENSION_PATH = path.join(resolveRepoRoot(), 'dist', 'chrome');
 
 /**
  * Validates that a built extension exists at the given path by checking
