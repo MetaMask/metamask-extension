@@ -41,13 +41,15 @@ const defaultProps = {
   onClose: jest.fn(),
 };
 
-/** Mirrors UpdateTPSLModal footer so unit tests can reach the primary action */
+/**
+ * Mirrors UpdateTPSLModal footer so unit tests can reach the primary action
+ * @param props
+ */
 const TpslContentWithTestFooter: React.FC<
   React.ComponentProps<typeof UpdateTPSLModalContent>
 > = (props) => {
-  const [submitState, setSubmitState] = React.useState<UpdateTPSLSubmitState | null>(
-    null,
-  );
+  const [submitState, setSubmitState] =
+    React.useState<UpdateTPSLSubmitState | null>(null);
   return (
     <>
       <UpdateTPSLModalContent {...props} onSubmitStateChange={setSubmitState} />
@@ -176,8 +178,12 @@ describe('UpdateTPSLModalContent', () => {
         mockStore,
       );
 
-      const tpInput = screen.getAllByPlaceholderText('0.00')[0] as HTMLInputElement;
-      const slInput = screen.getAllByPlaceholderText('0.00')[1] as HTMLInputElement;
+      const tpInput = screen.getAllByPlaceholderText(
+        '0.00',
+      )[0] as HTMLInputElement;
+      const slInput = screen.getAllByPlaceholderText(
+        '0.00',
+      )[1] as HTMLInputElement;
       fireEvent.change(tpInput, { target: { value: '4000' } });
       fireEvent.change(slInput, { target: { value: '2500' } });
 
@@ -188,7 +194,10 @@ describe('UpdateTPSLModalContent', () => {
         takeProfitPrice: undefined,
       };
       rerender(
-        <TpslContentWithTestFooter {...defaultProps} position={polledPosition} />,
+        <TpslContentWithTestFooter
+          {...defaultProps}
+          position={polledPosition}
+        />,
       );
 
       expect(
