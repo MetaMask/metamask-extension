@@ -1100,5 +1100,76 @@ describe('buildPerformanceBenchmarksSection', () => {
       expect(html).toContain('startupStandardHome');
       expect(html).toContain('<a href=');
     });
+
+    it('renders startup benchmark in the matrix with the correct combo column', async () => {
+      mockFetch.mockResolvedValue({
+        ok: true,
+        json: () => Promise.resolve(MATRIX_PAYLOAD),
+      } as unknown as Response);
+
+      const html = await buildPerformanceBenchmarksSection(HOST);
+
+      expect(html).toContain('startupStandardHome');
+      expect(html).toContain(COMPARISON_SEVERITY.Regression.icon);
+    });
+
+    it('does not render matrix rows when there are no failures', async () => {
+      const passingPayload = {
+        startupStandardHome: {
+          testTitle: 'standard-home',
+          persona: 'standard',
+          mean: { uiStartup: 1500 },
+          stdDev: { uiStartup: 100 },
+          p75: { uiStartup: 1600 },
+          p95: { uiStartup: 1800 },
+        },
+      };
+      mockFetch.mockResolvedValue({
+        ok: true,
+        json: () => Promise.resolve(passingPayload),
+      } as unknown as Response);
+
+      const html = await buildPerformanceBenchmarksSection(HOST);
+
+      // No failing entries → matrix returns '' → no <tbody> rows for matrix
+      expect(html).not.toContain('<th>Metrics</th>');
+    });
+
+    it('renders non-startup (interaction) benchmark in the matrix when it fails', async () => {
+      /* eslint-disable @typescript-eslint/naming-convention */
+      const interactionFailPayload = {
+        loadNewAccount: {
+          testTitle: 'load-new-account',
+          persona: 'standard',
+          mean: { load_new_account: 5000 },
+          stdDev: { load_new_account: 200 },
+          p75: { load_new_account: 9000 },
+          p95: { load_new_account: 12000 },
+        },
+      };
+      /* eslint-enable @typescript-eslint/naming-convention */
+      mockFetch.mockResolvedValue({
+        ok: true,
+        json: () => Promise.resolve(interactionFailPayload),
+      } as unknown as Response);
+
+      const html = await buildPerformanceBenchmarksSection(HOST);
+
+      expect(html).toContain('loadNewAccount');
+      expect(html).toContain(COMPARISON_SEVERITY.Regression.icon);
+    });
+
+    it('renders the matrix header with the correct column label', async () => {
+      mockFetch.mockResolvedValue({
+        ok: true,
+        json: () => Promise.resolve(MATRIX_PAYLOAD),
+      } as unknown as Response);
+
+      const html = await buildPerformanceBenchmarksSection(HOST);
+
+      // Matrix uses 'Metrics' as the first column header
+      expect(html).toContain('<th>Metrics</th>');
+      expect(html).toContain('<th>chrome-browserify</th>');
+    });
   });
 });

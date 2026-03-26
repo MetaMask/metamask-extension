@@ -259,7 +259,7 @@ export function buildMetricLines(
  * @param result.comparisons
  * @param result.anyFailed
  */
-function printReport(result: {
+export function printReport(result: {
   comparisons: BenchmarkEntryComparison[];
   anyFailed: boolean;
 }): void {

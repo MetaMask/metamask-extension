@@ -5,6 +5,7 @@ import {
   runComparison,
   buildMetricLines,
   loadCurrentBenchmarks,
+  printReport,
 } from './compare-benchmarks';
 import { COMPARISON_SEVERITY } from './comparison-utils';
 import type { BenchmarkEntryComparison } from './comparison-utils';
@@ -220,6 +221,178 @@ const makeComparison = (
   hasWarning: false,
   absoluteFailed: false,
   ...overrides,
+});
+
+describe('printReport', () => {
+  let consoleSpy: jest.SpyInstance;
+
+  beforeEach(() => {
+    consoleSpy = jest.spyOn(console, 'log').mockImplementation();
+  });
+
+  afterEach(() => {
+    consoleSpy.mockRestore();
+  });
+
+  it('prints PASS result when no comparison failed', () => {
+    printReport({ comparisons: [], anyFailed: false });
+
+    expect(consoleSpy).toHaveBeenCalledWith(
+      expect.stringContaining('PASS — all benchmarks within constant limits'),
+    );
+  });
+
+  it('prints FAIL result when anyFailed is true', () => {
+    printReport({
+      comparisons: [
+        makeComparison({
+          benchmarkName: 'standardHome',
+          absoluteFailed: true,
+        }),
+      ],
+      anyFailed: true,
+    });
+
+    expect(consoleSpy).toHaveBeenCalledWith(
+      expect.stringContaining('FAIL — at least one benchmark'),
+    );
+    expect(consoleSpy).toHaveBeenCalledWith(expect.stringContaining('FAIL'));
+  });
+
+  it('prints the benchmark name and PASS status for a passing comparison', () => {
+    printReport({
+      comparisons: [
+        makeComparison({
+          benchmarkName: 'loadNewAccount',
+          absoluteFailed: false,
+        }),
+      ],
+      anyFailed: false,
+    });
+
+    const allCalls = consoleSpy.mock.calls.flat().join('\n');
+    expect(allCalls).toContain('loadNewAccount');
+    expect(allCalls).toContain('PASS');
+  });
+
+  it('prints the benchmark name and FAIL status for a failing comparison', () => {
+    printReport({
+      comparisons: [
+        makeComparison({
+          benchmarkName: 'loadNewAccount',
+          absoluteFailed: true,
+        }),
+      ],
+      anyFailed: true,
+    });
+
+    const allCalls = consoleSpy.mock.calls.flat().join('\n');
+    expect(allCalls).toContain('loadNewAccount');
+    expect(allCalls).toContain('FAIL');
+  });
+
+  it('prints (no historical baseline data) when comparison has no metric lines', () => {
+    printReport({
+      comparisons: [
+        makeComparison({ relativeMetrics: [], absoluteViolations: [] }),
+      ],
+      anyFailed: false,
+    });
+
+    expect(consoleSpy).toHaveBeenCalledWith(
+      expect.stringContaining('no historical baseline data'),
+    );
+  });
+
+  it('prints pass icon with [Show logs] when all metrics pass', () => {
+    const { COMPARISON_SEVERITY: SEV } = jest.requireActual(
+      './comparison-utils',
+    ) as typeof import('./comparison-utils');
+    printReport({
+      comparisons: [
+        makeComparison({
+          relativeMetrics: [
+            {
+              metric: 'uiStartup',
+              percentile: 'p95',
+              current: 1400,
+              baseline: 1400,
+              delta: 0,
+              deltaPercent: 0,
+              severity: SEV.Pass.value,
+              indication: SEV.Pass.icon,
+            },
+          ],
+        }),
+      ],
+      anyFailed: false,
+    });
+
+    const allCalls = consoleSpy.mock.calls.flat().join('\n');
+    expect(allCalls).toContain('[Show logs]');
+  });
+
+  it('prints issue metric lines for comparisons with violations', () => {
+    const { COMPARISON_SEVERITY: SEV } = jest.requireActual(
+      './comparison-utils',
+    ) as typeof import('./comparison-utils');
+    const { THRESHOLD_SEVERITY: TS } = jest.requireActual(
+      '../../shared/constants/benchmarks',
+    ) as typeof import('../../shared/constants/benchmarks');
+    printReport({
+      comparisons: [
+        makeComparison({
+          benchmarkName: 'standardHome',
+          absoluteFailed: true,
+          absoluteViolations: [
+            {
+              metricId: 'uiStartup',
+              percentile: 'p95',
+              value: 6000,
+              threshold: 4800,
+              severity: TS.Fail,
+            },
+          ],
+        }),
+      ],
+      anyFailed: true,
+    });
+
+    const allCalls = consoleSpy.mock.calls.flat().join('\n');
+    expect(allCalls).toContain('uiStartup');
+    expect(allCalls).toContain(SEV.Regression.icon);
+  });
+
+  it('reports correct total counts for failed and warned comparisons', () => {
+    const { THRESHOLD_SEVERITY: TS } = jest.requireActual(
+      '../../shared/constants/benchmarks',
+    ) as typeof import('../../shared/constants/benchmarks');
+    printReport({
+      comparisons: [
+        makeComparison({ benchmarkName: 'A', absoluteFailed: true }),
+        makeComparison({
+          benchmarkName: 'B',
+          absoluteFailed: false,
+          absoluteViolations: [
+            {
+              metricId: 'uiStartup',
+              percentile: 'p75',
+              value: 2100,
+              threshold: 2000,
+              severity: TS.Warn,
+            },
+          ],
+        }),
+        makeComparison({ benchmarkName: 'C', absoluteFailed: false }),
+      ],
+      anyFailed: true,
+    });
+
+    const allCalls = consoleSpy.mock.calls.flat().join('\n');
+    expect(allCalls).toContain('3 benchmarks');
+    expect(allCalls).toContain('1 failed');
+    expect(allCalls).toContain('1 warnings');
+  });
 });
 
 describe('buildMetricLines', () => {

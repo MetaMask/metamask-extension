@@ -565,8 +565,10 @@ function formatTimerDetails(
         return null;
       }
 
-      const logsLink = logHref ? ` <a href="${logHref}">[Show logs]</a>` : '';
-      return `<div>${icon} <code>${metricName}</code>${logsLink}</div>`;
+      const logsLine = logHref
+        ? `<br><a href="${logHref}">[Show logs]</a>`
+        : '';
+      return `<div>${icon} <code>${metricName}</code>${logsLine}</div>`;
     })
     .filter((item) => item !== null)
     .join('');
@@ -744,85 +746,45 @@ function buildHealthMatrixHtml(
   );
   const orderedCombos = ALL_BENCHMARK_COMBOS.filter((c) => usedCombos.has(c));
 
-  const displayNameMap = new Map<string, string[]>();
-  for (const benchmark of allEntries.map((e) => e.benchmarkName)) {
-    const displayName = extractDisplayName(benchmark);
-    if (!displayNameMap.has(displayName)) {
-      displayNameMap.set(displayName, []);
-    }
-    const variants = displayNameMap.get(displayName);
-    if (variants && !variants.includes(benchmark)) {
-      variants.push(benchmark);
-    }
-  }
-
-  // Only include benchmark rows that have at least one Fail.
-  const affectedDisplayNames = [...displayNameMap.keys()].filter(
-    (displayName) => {
-      const variants = displayNameMap.get(displayName);
-      if (!variants) {
-        return false;
-      }
-      return variants.some((benchmark) =>
-        orderedCombos.some(
-          (combo) =>
-            cellMap.get(`${benchmark}|${combo}`)?.health === EntryHealth.Fail,
-        ),
-      );
-    },
+  const allBenchmarks = [...new Set(allEntries.map((e) => e.benchmarkName))];
+  const affectedBenchmarks = allBenchmarks.filter((benchmark) =>
+    orderedCombos.some(
+      (combo) =>
+        cellMap.get(`${benchmark}|${combo}`)?.health === EntryHealth.Fail,
+    ),
   );
 
-  if (affectedDisplayNames.length === 0 || orderedCombos.length === 0) {
+  if (affectedBenchmarks.length === 0 || orderedCombos.length === 0) {
     return '';
   }
 
-  const headerRow = `<tr><th>Benchmark</th>${orderedCombos
+  const headerRow = `<tr><th>Metrics</th>${orderedCombos
     .map((c) => `<th>${c}</th>`)
     .join('')}</tr>`;
 
-  const dataRows = affectedDisplayNames
-    .map((displayName) => {
-      const variants = displayNameMap.get(displayName);
-      if (!variants) {
-        return '';
-      }
+  const dataRows = affectedBenchmarks
+    .map((benchmark) => {
       const cells = orderedCombos
         .map((combo) => {
-          const matchingBenchmark = variants.find((v) => {
-            const isStartup =
-              v.startsWith('chrome-') || v.startsWith('firefox-');
-            if (isStartup) {
-              // Extract platform-buildType from benchmark name
-              const prefix = v.replace(/-startup.+$/u, '');
-              return prefix === combo;
-            }
-            // For non-startup benchmarks, all variants map to all combos
-            return true;
-          });
-
-          if (!matchingBenchmark) {
-            return `<td align="center">–</td>`;
-          }
-
-          const data = cellMap.get(`${matchingBenchmark}|${combo}`);
+          const data = cellMap.get(`${benchmark}|${combo}`);
           if (!data) {
             return `<td align="center">–</td>`;
           }
           const icon = HEALTH_ICON[data.health];
-          // Find the entry to get artifact URL
           const entry = allEntries.find(
             (e) =>
-              e.benchmarkName === matchingBenchmark &&
+              e.benchmarkName === benchmark &&
               `${e.platform}-${e.buildType}` === combo,
           );
           const logHref = entry?.artifactUrl;
+          const label = data.label ? `${icon} ${data.label}` : icon;
           const cell = logHref
-            ? `${icon} <a href="${logHref}">[logs]</a>`
-            : icon;
+            ? `${label} <a href="${logHref}">[logs]</a>`
+            : label;
           return `<td align="center">${cell}</td>`;
         })
         .join('');
-      return `<tr><td>${displayName}</td>${cells}</tr>`;
+      return `<tr><td>${benchmark}</td>${cells}</tr>`;
     })
     .join('');
 
@@ -1015,6 +977,8 @@ export async function buildPerformanceBenchmarksSection(
     runUrl,
   );
 
+  const matrixHtml = buildHealthMatrixHtml(allEntries, resolvedBaseline);
+
   const commitHash = baselineCommit?.slice(0, 7) ?? 'unknown';
   const commitDate = baselineTimestamp
     ? new Date(baselineTimestamp * 1000).toLocaleDateString('en-US', {
@@ -1041,7 +1005,11 @@ export async function buildPerformanceBenchmarksSection(
 
   const subsectionsHtml = interactionHtml + startupHtml + userJourneyHtml;
   const content =
-    commitInfo + totalSummary + regressionDetailsHtml + subsectionsHtml;
+    commitInfo +
+    totalSummary +
+    matrixHtml +
+    regressionDetailsHtml +
+    subsectionsHtml;
 
   return `<details><summary>${summaryText}</summary>\n<blockquote>\n${content}</blockquote>\n</details>\n\n`;
 }

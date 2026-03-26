@@ -320,6 +320,32 @@ describe('benchmark-comparison', () => {
     });
   });
 
+  describe('compareBenchmarkEntries — no p75 in results', () => {
+    it('skips relative metrics when results.p75 is absent but baseline is provided', () => {
+      const p95OnlyConfig: import('../../shared/constants/benchmarks').ThresholdConfig =
+        {
+          uiStartup: { p95: { warn: 2500, fail: 3200 }, ciMultiplier: 1 },
+        };
+      const results = {
+        testTitle: 'test',
+        persona: 'standard',
+        mean: { uiStartup: 1500 },
+        min: { uiStartup: 1000 },
+        max: { uiStartup: 2000 },
+        stdDev: { uiStartup: 200 },
+        p95: { uiStartup: 2200 },
+      } as unknown as import('../../shared/constants/benchmarks').BenchmarkResults;
+
+      const comparison = compareBenchmarkEntries(
+        'no-p75',
+        results,
+        p95OnlyConfig,
+        { uiStartup: { mean: 1400, stdDev: 80, p75: 1700, p95: 2100 } },
+      );
+      expect(comparison.relativeMetrics).toHaveLength(0);
+    });
+  });
+
   describe('formatDeltaPercent', () => {
     it('formats a positive delta as +X%', () => {
       expect(formatDeltaPercent(0.15)).toBe('+15%');
@@ -350,13 +376,10 @@ describe('THRESHOLD_REGISTRY', () => {
     expect(THRESHOLD_REGISTRY.swap).toBeDefined();
     expect(THRESHOLD_REGISTRY['chrome-webpack-swap']).toBeUndefined();
   });
+
   it('has startup benchmarks without platform prefixes', () => {
-    // After refactor c243dbb, platform/buildType are stored as separate fields
-    // Entry names should NOT include platform prefixes
     expect(THRESHOLD_REGISTRY.startupStandardHome).toBeDefined();
     expect(THRESHOLD_REGISTRY.startupPowerUserHome).toBeDefined();
-
-    // Platform-prefixed keys should NOT exist
     expect(
       THRESHOLD_REGISTRY['chrome-browserify-startupStandardHome'],
     ).toBeUndefined();

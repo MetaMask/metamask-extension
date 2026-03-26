@@ -53,36 +53,6 @@ function getChangedFileNames(): string[] {
   return [...unique];
 }
 
-/**
- * Paths can appear in git output but not exist on disk (e.g. staged add + working-tree
- * delete shows as `AD`). ESLint fails on missing paths; skip those.
- */
-function filterToExistingFiles(files: string[]): string[] {
-  const existing: string[] = [];
-  const missing: string[] = [];
-
-  for (const file of files) {
-    const absolute = path.join(process.cwd(), file);
-    if (fs.existsSync(absolute)) {
-      existing.push(file);
-    } else {
-      missing.push(file);
-    }
-  }
-
-  if (missing.length > 0) {
-    process.stderr.write(
-      `Skipping ${missing.length} changed path(s) not found on disk (fix git state, e.g. restore files or git rm --cached):\n`,
-    );
-    for (const file of missing) {
-      process.stderr.write(`  - ${file}\n`);
-    }
-    process.stderr.write('\n');
-  }
-
-  return existing;
-}
-
 function parseArgs(argv: string[]): LintChangedOptions {
   return {
     fix: argv.includes('--fix'),
@@ -130,8 +100,8 @@ function chunkByApproxCommandLength(
 function main(): void {
   const options = parseArgs(process.argv.slice(2));
 
-  const changedFiles = filterToExistingFiles(
-    getChangedFileNames().filter((file) => JS_TS_TSX_SNAP_FILE_REGEX.test(file)),
+  const changedFiles = getChangedFileNames().filter((file) =>
+    JS_TS_TSX_SNAP_FILE_REGEX.test(file),
   );
 
   if (changedFiles.length === 0) {

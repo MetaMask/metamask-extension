@@ -196,6 +196,80 @@ describe('aggregateHistoricalData', () => {
     );
   });
 
+  it('includes stdDev in the baseline when stdDev data is present', () => {
+    const data = asHistoricalFile({
+      c1: {
+        timestamp: 1,
+        presets: {
+          pageLoad: {
+            entry: {
+              mean: { metric: 500 },
+              stdDev: { metric: 30 },
+              p75: { metric: 550 },
+              p95: { metric: 650 },
+            },
+          },
+        },
+      },
+      c2: {
+        timestamp: 2,
+        presets: {
+          pageLoad: {
+            entry: {
+              mean: { metric: 600 },
+              stdDev: { metric: 40 },
+              p75: { metric: 660 },
+              p95: { metric: 760 },
+            },
+          },
+        },
+      },
+    });
+
+    const result = aggregateHistoricalData(data);
+
+    // stdDev true-branch: result should include a stdDev field
+    expect(result['pageLoad/entry']?.metric).toHaveProperty('stdDev');
+    expect(result['pageLoad/entry']?.metric?.stdDev).toBeCloseTo(35);
+  });
+
+  it('skips entries where mean values average to NaN (e.g. Infinity + -Infinity)', () => {
+    // Infinity and -Infinity are valid numbers and not NaN, so they pass the
+    // typeof/isNaN guard in collectMetrics.  But mean([Infinity, -Infinity]) = NaN,
+    // which must be caught by the NaN guard in buildMetricBaselines.
+    const data = asHistoricalFile({
+      c1: {
+        timestamp: 1,
+        presets: {
+          pageLoad: {
+            nanEntry: {
+              mean: { metric: Infinity },
+              p75: { metric: Infinity },
+              p95: { metric: Infinity },
+            },
+          },
+        },
+      },
+      c2: {
+        timestamp: 2,
+        presets: {
+          pageLoad: {
+            nanEntry: {
+              mean: { metric: -Infinity },
+              p75: { metric: -Infinity },
+              p95: { metric: -Infinity },
+            },
+          },
+        },
+      },
+    });
+
+    const result = aggregateHistoricalData(data);
+
+    // mean([Infinity, -Infinity]) = NaN → entry must be skipped
+    expect(result['pageLoad/nanEntry']).toBeUndefined();
+  });
+
   it('falls back to mean when p75/p95 data is missing', () => {
     const data = asHistoricalFile({
       c1: {
