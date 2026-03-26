@@ -21,6 +21,8 @@ class BitcoinHomepage extends HomePage {
         this.buySellButton,
         this.receiveButton,
       ]);
+
+      await this.driver.delay(2000); // HACK: wait for balance to be fully loaded.
     } catch (e) {
       console.log('Timeout while waiting for bitcoin homepage to be loaded', e);
       throw e;
