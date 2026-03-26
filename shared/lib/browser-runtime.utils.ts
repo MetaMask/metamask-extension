@@ -24,23 +24,25 @@ import {
  * "
  *
  * @see {@link https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/runtime/lastError}
- * @returns {Error|undefined}
+ * @returns The last error, or undefined
  */
-export function checkForLastError() {
+export function checkForLastError(): Error | undefined {
   const { lastError } = browser.runtime;
   if (!lastError) {
     return undefined;
   }
   // if it quacks like an Error, its an Error
-  if (lastError.stack && lastError.message) {
-    return lastError;
+  if ('stack' in lastError && lastError.stack && lastError.message) {
+    return lastError as Error;
   }
   // repair incomplete error object (eg chromium v77)
   return new Error(lastError.message);
 }
 
-/** @returns {Error|undefined} */
-export function checkForLastErrorAndLog() {
+/**
+ * @returns The last error, or undefined
+ */
+export function checkForLastErrorAndLog(): Error | undefined {
   const error = checkForLastError();
 
   if (error) {
@@ -50,8 +52,10 @@ export function checkForLastErrorAndLog() {
   return error;
 }
 
-/** @returns {Error|undefined} */
-export function checkForLastErrorAndWarn() {
+/**
+ * @returns The last error, or undefined
+ */
+export function checkForLastErrorAndWarn(): Error | undefined {
   const error = checkForLastError();
 
   if (error) {
@@ -66,12 +70,12 @@ export function checkForLastErrorAndWarn() {
  * extension port stream established between the contentscript and background
  * to be broken when a prerendered (eagerly rendered, hidden) page becomes active (visible to the user).
  *
- * @param {Bowser} bowser - optional Bowser instance to check against
- * @returns {boolean} Whether the browser is affected by the prerender regression
+ * @param bowser - optional Bowser instance to check against
+ * @returns Whether the browser is affected by the prerender regression
  */
 export function getIsBrowserPrerenderBroken(
-  bowser = Bowser.getParser(window.navigator.userAgent),
-) {
+  bowser: Bowser.Parser.Parser = Bowser.getParser(window.navigator.userAgent),
+): boolean {
   return (
     (bowser.satisfies(BROKEN_PRERENDER_BROWSER_VERSIONS) &&
       !bowser.satisfies(FIXED_PRERENDER_BROWSER_VERSIONS)) ??
@@ -82,14 +86,14 @@ export function getIsBrowserPrerenderBroken(
 /**
  * Returns the name of the browser
  *
- * @param {Bowser} bowser - optional Bowser instance to check against
- * @param {Navigator} navigator - optional Navigator instance to check against
- * @returns {string} The name of the browser
+ * @param bowser - optional Bowser instance to check against
+ * @param navigator - optional Navigator instance to check against
+ * @returns The name of the browser
  */
 export function getBrowserName(
-  bowser = Bowser.getParser(window.navigator.userAgent),
-  navigator = window.navigator,
-) {
+  bowser: Bowser.Parser.Parser = Bowser.getParser(window.navigator.userAgent),
+  navigator: Navigator = window.navigator,
+): string {
   // Handle case for brave by parsing navigator.userAgent
   if ('brave' in navigator) {
     return 'Brave';
