@@ -1,9 +1,6 @@
-const { addHexPrefix } = require('ethereumjs-util');
-const {
-  getMaximumGasTotalInHexWei,
-  getMinimumGasTotalInHexWei,
-} = require('./gas.utils');
-const { Numeric } = require('./Numeric');
+import { addHexPrefix } from 'ethereumjs-util';
+import { getMaximumGasTotalInHexWei, getMinimumGasTotalInHexWei } from './gas.utils';
+import { Numeric } from './Numeric';
 
 const feesToTest = [10, 24, 90];
 const tipsToTest = [2, 10, 50];
