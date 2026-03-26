@@ -6031,6 +6031,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/browser-playground@npm:0.3.0":
+  version: 0.3.0
+  resolution: "@metamask/browser-playground@npm:0.3.0"
+  checksum: 10/87eb5f9f623afea58dcf2eaeb46795ce595ecc3462b5976a4ab35d04c1eff0edde05ccaf52681fe1f02f840cf7d06b29ca6a71ce581cf1b2df2bc1b2e7acd28b
+  languageName: node
+  linkType: hard
+
 "@metamask/build-utils@npm:^3.0.0":
   version: 3.0.0
   resolution: "@metamask/build-utils@npm:3.0.0"
@@ -7808,9 +7815,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/seedless-onboarding-controller@npm:^8.1.0":
-  version: 8.1.0
-  resolution: "@metamask/seedless-onboarding-controller@npm:8.1.0"
+"@metamask/seedless-onboarding-controller@npm:^9.0.0":
+  version: 9.0.0
+  resolution: "@metamask/seedless-onboarding-controller@npm:9.0.0"
   dependencies:
     "@metamask/auth-network-utils": "npm:^0.3.0"
     "@metamask/base-controller": "npm:^9.0.0"
@@ -7823,7 +7830,7 @@ __metadata:
     "@noble/curves": "npm:^1.9.2"
     "@noble/hashes": "npm:^1.8.0"
     async-mutex: "npm:^0.5.0"
-  checksum: 10/4bf49ddbd326a08c332390c4ac913929876a453aea603880d5d1c5218bd2d241ae9eb588ddb60cf9f5a87beb8d7586d20ad0f5a812d9fde5a7ce9d0e48acf3f4
+  checksum: 10/e547fc366c86ddef687e866e245a1895f174981dadbbdbf5250711555500305d0f33989be6ce95f48ff89e3aa31cb803c83cbdae8cb0608cebb9c08dbdb5c17f
   languageName: node
   linkType: hard
 
@@ -33916,6 +33923,7 @@ __metadata:
     "@metamask/bridge-controller": "npm:^69.0.0"
     "@metamask/bridge-status-controller": "npm:^69.0.0"
     "@metamask/browser-passworder": "npm:^6.0.0"
+    "@metamask/browser-playground": "npm:0.3.0"
     "@metamask/build-utils": "npm:^3.0.0"
     "@metamask/chain-agnostic-permission": "npm:^1.4.0"
     "@metamask/claims-controller": "npm:^0.4.2"
@@ -34005,7 +34013,7 @@ __metadata:
     "@metamask/rpc-errors": "npm:^7.0.0"
     "@metamask/safe-event-emitter": "npm:^3.1.1"
     "@metamask/scure-bip39": "npm:^2.0.3"
-    "@metamask/seedless-onboarding-controller": "npm:^8.1.0"
+    "@metamask/seedless-onboarding-controller": "npm:^9.0.0"
     "@metamask/selected-network-controller": "npm:^26.0.3"
     "@metamask/shield-controller": "npm:^5.0.1"
     "@metamask/signature-controller": "npm:^39.1.0"
