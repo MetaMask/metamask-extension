@@ -1588,14 +1588,14 @@ export default class MetamaskController extends EventEmitter {
     ]);
   }
 
-  // TODO AssetsController RatesController
   triggerNetworkrequests() {
     this.tokenDetectionController.enable();
     this.getInfuraFeatureFlags();
     if (
       !isEvmAccountType(
         this.accountsController.getSelectedMultichainAccount().type,
-      )
+      ) &&
+      !this.#isAssetsUnifyStateEnabled()
     ) {
       this.multichainRatesController.start();
     }
@@ -1609,11 +1609,12 @@ export default class MetamaskController extends EventEmitter {
     }
   }
 
-  // TODO AssetsController RatesController
   stopNetworkRequests() {
     this.txController.stopIncomingTransactionPolling();
     this.tokenDetectionController.disable();
-    this.multichainRatesController.stop();
+    if (!this.#isAssetsUnifyStateEnabled()) {
+      this.multichainRatesController.stop();
+    }
     if (getIsPerpsIncludedInBuild()) {
       this.controllerApi.perpsStopEligibilityMonitoring?.()?.catch((error) => {
         console.error(error);
@@ -2255,7 +2256,6 @@ export default class MetamaskController extends EventEmitter {
     );
   }
 
-  // TODO AssetsController RatesController
   /**
    * Sets up multichain data and subscriptions.
    * This method is called during the MetaMaskController constructor.
@@ -2263,6 +2263,10 @@ export default class MetamaskController extends EventEmitter {
    * and subscribes to account changes.
    */
   setupMultichainDataAndSubscriptions() {
+    if (this.#isAssetsUnifyStateEnabled()) {
+      return;
+    }
+
     this.controllerMessenger.subscribe(
       'AccountsController:selectedAccountChange',
       (selectedAccount) => {
@@ -6447,13 +6451,7 @@ export default class MetamaskController extends EventEmitter {
   }) => {
     switch (type) {
       case ERC20: {
-        const assetsUnifyFlag =
-          this.remoteFeatureFlagController.state.remoteFeatureFlags
-            ?.assetsUnifyState;
-        const unifyWatchAsset = isAssetsUnifyStateFeatureEnabled(
-          assetsUnifyFlag,
-          ASSETS_UNIFY_STATE_VERSION_1,
-        );
+        const unifyWatchAsset = this.#isAssetsUnifyStateEnabled();
         if (unifyWatchAsset) {
           this.#validateUnifiedWatchAssetRequest(asset, networkClientId);
         }
@@ -9429,5 +9427,15 @@ export default class MetamaskController extends EventEmitter {
       isSupported,
       upgradeContractAddress,
     };
+  }
+
+  #isAssetsUnifyStateEnabled() {
+    const assetsUnifyFlag =
+      this.remoteFeatureFlagController?.state?.remoteFeatureFlags
+        ?.assetsUnifyState;
+    return isAssetsUnifyStateFeatureEnabled(
+      assetsUnifyFlag,
+      ASSETS_UNIFY_STATE_VERSION_1,
+    );
   }
 }

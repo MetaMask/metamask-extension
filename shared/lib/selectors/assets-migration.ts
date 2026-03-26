@@ -904,19 +904,6 @@ export const getMultichainAssetsRatesControllerConversionRates =
     'conversionRates'
   >;
 
-// {
-//   "btc": {
-//       "conversionDate": 1774451294887,
-//       "conversionRate": 71052.43,
-//       "usdConversionRate": 71052.43
-//   },
-//   "sol": {
-//       "conversionDate": 1774451294887,
-//       "conversionRate": 91.69,
-//       "usdConversionRate": 91.69
-//   }
-// }
-
 export const getRatesControllerRates = createDeepEqualSelector(
   [
     getIsAssetsUnifyStateEnabled,
