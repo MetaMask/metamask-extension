@@ -4,16 +4,6 @@ import browser from 'webextension-polyfill';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import {
-  Box,
-  BoxAlignItems,
-  BoxBackgroundColor,
-  BoxFlexDirection,
-  Icon,
-  IconName,
-  IconSize,
-  IconColor,
-} from '@metamask/design-system-react';
-import {
   AlignItems,
   BlockSize,
   Display,
@@ -172,7 +162,11 @@ export const AppHeaderUnlockedContent = ({
 
   const multichainAccountAppContent = useMemo(() => {
     return (
-      <BoxDeprecated style={{ overflow: 'hidden' }}>
+      <BoxDeprecated
+        display={Display.Flex}
+        flexDirection={FlexDirection.Column}
+        className="min-w-0 overflow-hidden"
+      >
         {/* Prevent overflow of account picker by long account names */}
         <Text
           as="div"
@@ -215,9 +209,10 @@ export const AppHeaderUnlockedContent = ({
         </Text>
         {selectedMultichainAccountId && (
           <BoxDeprecated
+            display={Display.Flex}
             marginTop={1}
             marginLeft={2}
-            style={{ width: 'fit-content' }}
+            className="min-w-0"
             data-testid="networks-subtitle-test-id"
           >
             <MultichainHoveredAddressRowsList

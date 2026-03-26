@@ -80,7 +80,7 @@ export const MultichainAccountNetworkGroupWithCopyIcon = ({
       padding={1}
       gap={1}
       className={classnames(
-        'rounded-lg inline-flex',
+        'rounded-lg',
         shouldShowDefaultAddress && 'cursor-pointer',
       )}
       data-testid="network-group-with-copy-icon"
@@ -96,11 +96,13 @@ export const MultichainAccountNetworkGroupWithCopyIcon = ({
       />
       {shouldShowDefaultAddress && (
         <Text
+          ellipsis
           variant={TextVariant.BodySm}
           fontWeight={FontWeight.Medium}
           color={
             addressCopied ? TextColor.SuccessDefault : TextColor.TextAlternative
           }
+          className="flex-1 min-w-0"
           style={{ lineHeight: 0 }}
           data-testid="default-address-container"
         >
