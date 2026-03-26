@@ -1098,9 +1098,6 @@
     "ui/pages/confirmations/components/priority-fee-input/priority-fee-input.test.tsx": {
       "Reselect: Identity function warnings": 3
     },
-    "ui/pages/confirmations/components/rows/account-row/account-row.test.tsx": {
-      "Reselect: Identity function warnings": 4
-    },
     "ui/pages/confirmations/components/rows/bridge-fee-row/bridge-fee-row.test.tsx": {
       "Reselect: Identity function warnings": 3
     },

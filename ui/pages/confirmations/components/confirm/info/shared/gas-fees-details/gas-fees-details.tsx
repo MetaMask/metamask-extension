@@ -57,29 +57,6 @@ export const GasFeesDetails = (): JSX.Element | null => {
         fiatFeeWith18SignificantDigits={estimatedFeeFiatWith18SignificantDigits}
         nativeFee={estimatedFeeNative}
       />
-      {showAdvancedDetails &&
-        hasLayer1GasFee &&
-        !transactionMeta.isGasFeeSponsored &&
-        !estimationFailed && (
-          <>
-            <GasFeesRow
-              data-testid="gas-fee-details-l1"
-              label={t('l1Fee')}
-              tooltipText={t('l1FeeTooltip')}
-              fiatFee={l1FeeFiat}
-              fiatFeeWith18SignificantDigits={l1FeeFiatWith18SignificantDigits}
-              nativeFee={l1FeeNative}
-            />
-            <GasFeesRow
-              data-testid="gas-fee-details-l2"
-              label={t('l2Fee')}
-              tooltipText={t('l2FeeTooltip')}
-              fiatFee={l2FeeFiat}
-              fiatFeeWith18SignificantDigits={l2FeeFiatWith18SignificantDigits}
-              nativeFee={l2FeeNative}
-            />
-          </>
-        )}
       {supportsEIP1559 &&
         !transactionMeta.selectedGasFeeToken &&
         !transactionMeta.isGasFeeSponsored && (
