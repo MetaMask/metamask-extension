@@ -10,6 +10,7 @@ import {
 import * as tokenUtils from '../../../../../utils/token';
 import { Erc20TokenStreamDetails } from './erc20-token-stream-details';
 import { TestErrorBoundary } from './test-error-boundary';
+import { MAX_UINT256 } from './typed-sign-permission-util';
 
 jest.mock('../../../../../utils/token', () => ({
   ...jest.requireActual('../../../../../utils/token'),
@@ -208,6 +209,31 @@ describe('Erc20TokenStreamDetails', () => {
       (
         tokenUtils as jest.Mocked<typeof tokenUtils>
       ).fetchErc20DecimalsOrThrow.mockResolvedValue(2);
+    });
+  });
+
+  describe('max amount display', () => {
+    it('does not display max allowance row when maxAmount equals uint256 max', async () => {
+      const permissionWithMaxUint256 = {
+        ...mockPermission,
+        data: {
+          ...mockPermission.data,
+          maxAmount: MAX_UINT256,
+        },
+      } as const;
+
+      const { detailsSection } = await renderAndGetSections({
+        ...defaultProps,
+        permission: permissionWithMaxUint256,
+      });
+
+      expect(detailsSection?.textContent).not.toContain('Max allowance');
+    });
+
+    it('displays max allowance row when maxAmount is not uint256 max', async () => {
+      const { detailsSection } = await renderAndGetSections(defaultProps);
+
+      expect(detailsSection?.textContent).toContain('Max allowance');
     });
   });
 
