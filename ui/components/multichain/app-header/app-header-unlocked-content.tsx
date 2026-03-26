@@ -4,16 +4,6 @@ import browser from 'webextension-polyfill';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import {
-  Box,
-  BoxAlignItems,
-  BoxBackgroundColor,
-  BoxFlexDirection,
-  Icon,
-  IconName,
-  IconSize,
-  IconColor,
-} from '@metamask/design-system-react';
-import {
   AlignItems,
   BlockSize,
   Display,
