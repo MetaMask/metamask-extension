@@ -5449,9 +5449,6 @@
   "perpsAvailableBalance": {
     "message": "Available balance"
   },
-  "perpsAvailableToClose": {
-    "message": "Available to close"
-  },
   "perpsAvailableToTrade": {
     "message": "Available to trade",
     "description": "Label for the available balance that can be used for trading"

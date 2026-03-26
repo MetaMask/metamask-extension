@@ -5420,9 +5420,6 @@
   "perpsAvailableBalance": {
     "message": "Saldo disponível"
   },
-  "perpsAvailableToClose": {
-    "message": "Disponível para fechar"
-  },
   "perpsAvailableToTrade": {
     "message": "Disponível para negociação",
     "description": "Label for the available balance that can be used for trading"

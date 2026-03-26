@@ -26,11 +26,14 @@ describe('CloseAmountSection', () => {
   });
 
   describe('rendering', () => {
-    it('renders available to close label', () => {
+    it('renders position size and close amount labels', () => {
       renderWithProvider(<CloseAmountSection {...defaultProps} />, mockStore);
 
       expect(
-        screen.getByText(messages.perpsAvailableToClose.message),
+        screen.getByText(messages.perpsPositionSize.message),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByText(messages.perpsCloseAmount.message),
       ).toBeInTheDocument();
     });
 

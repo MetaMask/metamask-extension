@@ -62,27 +62,32 @@ export const CloseAmountSection: React.FC<CloseAmountSectionProps> = ({
         alignItems={BoxAlignItems.Center}
       >
         <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
-          {t('perpsAvailableToClose')}
+          {t('perpsPositionSize')}
         </Text>
         <Text variant={TextVariant.BodySm} fontWeight={FontWeight.Medium}>
           {formatTokenQuantity(totalPositionSize, asset)}
         </Text>
       </Box>
 
-      <Box
-        className="bg-muted rounded-xl"
-        paddingLeft={4}
-        paddingRight={4}
-        paddingTop={4}
-        paddingBottom={4}
-      >
-        <Text
-          variant={TextVariant.BodyMd}
-          fontWeight={FontWeight.Medium}
-          data-testid="close-amount-value"
-        >
-          {formatCurrencyWithMinThreshold(closeValueUsd, 'USD')}
+      <Box flexDirection={BoxFlexDirection.Column} gap={2}>
+        <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
+          {t('perpsCloseAmount')}
         </Text>
+        <Box
+          className="bg-muted rounded-xl"
+          paddingLeft={4}
+          paddingRight={4}
+          paddingTop={4}
+          paddingBottom={4}
+        >
+          <Text
+            variant={TextVariant.BodyMd}
+            fontWeight={FontWeight.Medium}
+            data-testid="close-amount-value"
+          >
+            {formatCurrencyWithMinThreshold(closeValueUsd, 'USD')}
+          </Text>
+        </Box>
       </Box>
 
       <Box

@@ -496,7 +496,7 @@ describe('PerpsMarketDetailPage', () => {
         screen.getByTestId('perps-close-position-modal'),
       ).toBeInTheDocument();
       expect(
-        screen.getByText(messages.perpsAvailableToClose.message),
+        screen.getByText(messages.perpsPositionSize.message),
       ).toBeInTheDocument();
     });
 

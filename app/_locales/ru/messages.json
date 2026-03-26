@@ -5420,9 +5420,6 @@
   "perpsAvailableBalance": {
     "message": "Доступный баланс"
   },
-  "perpsAvailableToClose": {
-    "message": "Доступно для закрытия"
-  },
   "perpsAvailableToTrade": {
     "message": "Доступно для торговли",
     "description": "Label for the available balance that can be used for trading"

@@ -324,7 +324,7 @@ describe('OrderEntry', () => {
       );
 
       expect(
-        screen.getByText(messages.perpsAvailableToClose.message),
+        screen.getByText(messages.perpsPositionSize.message),
       ).toBeInTheDocument();
       expect(screen.getByTestId('close-amount-slider')).toBeInTheDocument();
     });

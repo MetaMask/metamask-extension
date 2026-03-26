@@ -5420,9 +5420,6 @@
   "perpsAvailableBalance": {
     "message": "Số dư khả dụng"
   },
-  "perpsAvailableToClose": {
-    "message": "Có sẵn để đóng"
-  },
   "perpsAvailableToTrade": {
     "message": "Có sẵn để giao dịch",
     "description": "Label for the available balance that can be used for trading"
