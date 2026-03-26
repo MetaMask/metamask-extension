@@ -78,6 +78,7 @@ import * as metamaskControllerUtils from '../../shared/lib/metamask-controller-u
 import { ReferralStatus } from './controllers/preferences-controller';
 import { METAMASK_COOKIE_HANDLER } from './constants/stream';
 import {
+  getAuthorizedScopesByOrigin,
   getOriginsWithSessionProperty,
   getPermittedAccountsForScopesByOrigin,
 } from './controllers/permissions';
@@ -5715,6 +5716,8 @@ describe('MetaMaskController', () => {
     });
 
     it('notifies wallet_sessionChanged for each authorized origin', () => {
+      jest.useFakeTimers();
+
       const authA = {
         requiredScopes: {},
         optionalScopes: {},
@@ -5742,6 +5745,8 @@ describe('MetaMaskController', () => {
         'AccountTreeController:selectedAccountGroupChange',
         'group-1',
       );
+        // TODO: Remove this setTimeout once https://github.com/MetaMask/core/pull/8261 is released
+      jest.advanceTimersByTime(1000);
 
       expect(metamaskController._notifyAuthorizationChange).toHaveBeenCalledWith(
         'https://a.example',
@@ -5754,6 +5759,8 @@ describe('MetaMaskController', () => {
       expect(metamaskController._notifyAuthorizationChange).toHaveBeenCalledTimes(
         2,
       );
+
+      jest.useRealTimers();
     });
   });
 
