@@ -7757,7 +7757,7 @@
         "process.versions.pnp": true
       },
       "packages": {
-        "eslint-import-resolver-typescript>unrs-resolver>@unrs/resolver-binding-linux-x64-gnu": true
+        "eslint-import-resolver-typescript>unrs-resolver>@unrs/resolver-binding-darwin-arm64": true
       }
     },
     "gulp>gulp-cli>matchdep>micromatch>snapdragon>base>cache-base>unset-value": {
@@ -8000,18 +8000,14 @@
       }
     },
     "yaml": {
-      "builtin": {
-        "buffer.Buffer": true,
-        "process.emitWarning": true,
-        "process.env.LOG_STREAM": true,
-        "process.env.LOG_TOKENS": true
-      },
       "globals": {
+        "Buffer": true,
         "atob": true,
         "btoa": true,
         "console.dir": true,
         "console.log": true,
-        "console.warn": true
+        "console.warn": true,
+        "process": true
       }
     },
     "gulp-postcss>postcss-load-config>yaml": {
