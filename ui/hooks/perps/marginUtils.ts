@@ -79,7 +79,9 @@ export function safeDenominator(value: number, epsilon = 1e-12): number {
  * @param maxLeverage - Market max leverage for the asset
  * @returns Rate in (0, 1], or fallback when invalid
  */
-export function maintenanceMarginRateFromMaxLeverage(maxLeverage: number): number {
+export function maintenanceMarginRateFromMaxLeverage(
+  maxLeverage: number,
+): number {
   const fallback = 1 / (MARGIN_ADJUSTMENT_CONFIG.FallbackMaxLeverage as number);
   if (!Number.isFinite(maxLeverage) || maxLeverage <= 0) {
     return fallback;
