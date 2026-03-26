@@ -13,10 +13,14 @@ Reference: [Extension CI Flakiness - Google Doc](https://docs.google.com/documen
 
 # Extension CI Flakiness Patterns
 
+> **How this document relates to E2E Testing Guidelines:**
+> The [E2E Testing Guidelines](../e2e-testing-guidelines/RULE.md) is a _prescriptive_ guide covering how to write good E2E tests (page objects, structure, waiting strategies, mocking conventions). This document is a _diagnostic_ reference — a catalog of specific real-world flakiness bugs encountered in CI, each with root cause analysis and concrete before/after fixes. Use the guidelines when **writing new tests**; use this document when **debugging or fixing flaky tests**.
+
 ---
 
 ## Table of Contents
 
+- [E2E Anti-Patterns Quick Reference](#e2e-anti-patterns-quick-reference)
 - [E2E Flakiness Categories](#e2e-flakiness-categories)
   - [Race Conditions on Driver/Helpers Functions](#race-conditions-on-driverhelpers-functions)
   - [Taking Unnecessary Steps](#taking-unnecessary-steps)
@@ -31,9 +35,28 @@ Reference: [Extension CI Flakiness - Google Doc](https://docs.google.com/documen
   - [Actions that Take Time](#actions-that-take-time)
   - [Errors in the testing dapp](#errors-in-the-testing-dapp)
   - [Not using driver methods](#not-using-driver-methods)
-- [E2E Anti-Patterns](#e2e-anti-patterns)
 - [Unit Test Flakiness Categories](#unit-test-flakiness-categories)
 - [Flakiness on Other CI Jobs](#flakiness-on-other-ci-jobs)
+
+---
+
+## E2E Anti-Patterns Quick Reference
+
+These are the most critical anti-patterns to avoid. Each links to a detailed section with concrete examples below.
+
+1. **Asserting element values without waiting for them** — use `waitForSelector` with `text` instead of `findElement` + `getText` + `assert`. See [Race Conditions with Assertions](#race-conditions-with-assertions-within-the-test-body-steps).
+
+2. **Asserting `isDisplayed()` after finding an element** — the element can update between find and assert (e.g., tx status changes), throwing a stale element error. `waitForSelector` already guarantees the element is displayed.
+
+3. **Using `element.click()` instead of `driver.clickElement()`** — native `.click()` has no stale-element retry. Always use the driver wrapper. See [Not using driver methods](#not-using-driver-methods).
+
+4. **Going to live sites** instead of using mocks — tests should never depend on external services. See [Missing or Incorrect Use of Mocks](#missing-or-incorrect-use-of-mocks).
+
+5. **Adding `driver.delay()` instead of waiting for conditions** — use `waitForSelector`, `clickElementAndWaitToDisappear`, or `waitUntil` instead of arbitrary delays. See [Confirmation Popups / Modals](#confirmation-popups--modals).
+
+6. **Importing from another `.spec` file** — this causes that spec's tests to run too, leading to timeouts. Move shared functions to helper files. See [Actions that Take Time](#actions-that-take-time).
+
+7. **Looking for transient elements** (e.g., "Pending" status) — skip transient states and wait for the final state. See [Race Conditions with Assertions](#race-conditions-with-assertions-within-the-test-body-steps).
 
 ---
 
@@ -62,7 +85,7 @@ Reference: [Extension CI Flakiness - Google Doc](https://docs.google.com/documen
         return;
       } catch (error) {
         if (error.name === 'StaleElementReferenceError' && attempt < retries - 1) {
-          await this.driver.delay(1000);
+          await new Promise((resolve) => setTimeout(resolve, 1000));
         } else {
           throw error;
         }
@@ -108,7 +131,7 @@ Reference: [Extension CI Flakiness - Google Doc](https://docs.google.com/documen
   ❌ Incorrect:
 
   ```javascript
-  await driver.clickElement('[data-testid="token-list-item"]');
+  await driver.clickElement(this.tokenListItem);
   ```
 
   ✅ Correct:
@@ -139,45 +162,41 @@ Reference: [Extension CI Flakiness - Google Doc](https://docs.google.com/documen
 - **Getting multiple elements with the same selector and then expecting to have the exact number**
   ❌ Incorrect:
   ```javascript
-  const accounts = await driver.findElements('.account-list-item');
+  const accounts = await driver.findElements(this.accountListItem);
   assert.equal(accounts.length, 5);
   ```
   ✅ Correct:
   ```javascript
-  await driver.waitForSelector('.account-list-item:nth-child(5)');
+  await driver.waitForSelector(`${this.accountListItem}:nth-child(5)`);
   ```
 
 ---
 
 ### Taking Unnecessary Steps
 
-- **Create token, approve token, missing permission controller connected to the test dapp**
+> **General rule:** Use fixtures (`FixtureBuilder`) to set up test state (network, tokens, settings, accounts) instead of performing UI actions. This is faster, more reliable, and avoids race conditions during setup. Also avoid unnecessary browser refreshes, scrolls, and delays.
+
+- **Performing UI actions that can be set via fixtures (settings, network, tokens, contracts, etc.)**
   ❌ Incorrect:
 
   ```javascript
-  await withFixtures({
-    dapp: true,
-    fixtures: new FixtureBuilder()
-      .withPermissionControllerConnectedToTestDapp()
-      .build(),
-  }, async ({ driver, contractAddress }) => {
-    await unlockWallet(driver);
-    await openDapp(driver, contractAddress);
-    const windowHandles = await driver.getAllWindowHandles();
-    const extension = windowHandles[0];
-    await driver.switchToWindow(extension);
-    await driver.clickElement(`[data-testid="home__asset-tab"]`);
+  await unlockWallet(driver);
+  await headerNavbar.openSettingsMenu();
+  await settingsPage.toggleShowNonce();
+  await settingsPage.goBack();
   ```
 
   ✅ Correct:
 
   ```javascript
-  await withFixtures({
-    fixtures: new FixtureBuilder().build(),
-  }, async ({ driver, contractAddress }) => {
+  fixtures: new FixtureBuilder()
+    .withPreferencesController({ useNonceField: true })
+    .build(),
+  async ({ driver }) => {
     await unlockWallet(driver);
-    await driver.clickElement(`[data-testid="home__asset-tab"]`);
   ```
+
+  This pattern applies broadly — use `withNetworkControllerOnMainnet()` instead of switching network via UI, `withTokensControllerERC20()` instead of importing tokens through modals, and pre-deploy contracts via fixture (`smartContract: [...]`) instead of deploying through the dapp UI.
 
 - **Unnecessary browser refresh, causing to land into the Confirmation screen if it was appearing in the activity as unapproved**
   ❌ Incorrect:
@@ -193,7 +212,7 @@ Reference: [Extension CI Flakiness - Google Doc](https://docs.google.com/documen
 
   ```javascript
   await driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionInFullScreenView);
-  await driver.clickElement('[data-testid="home__activity-tab"]');
+  await homePage.goToActivityList();
   ```
 
 - **Unnecessary scrolls and delays which added up more than 15 seconds of delay**
@@ -212,152 +231,6 @@ Reference: [Extension CI Flakiness - Google Doc](https://docs.google.com/documen
   ```javascript
   await driver.waitForSelector(selector);
   await driver.clickElement(selector);
-  ```
-
-- **Unnecessary step: performing UI actions that can be set via fixtures**
-  ❌ Incorrect:
-
-  ```javascript
-  await unlockWallet(driver);
-  await driver.clickElement('[data-testid="global-menu-settings"]');
-  await driver.clickElement('[data-testid="advanced-setting-show-nonce"]');
-  await driver.clickElement('[data-testid="settings-back-button"]');
-  ```
-
-  ✅ Correct:
-
-  ```javascript
-  fixtures: new FixtureBuilder()
-    .withPreferencesController({ useNonceField: true })
-    .build(),
-  async ({ driver }) => {
-    await unlockWallet(driver);
-  ```
-
-- **Unnecessary steps importing a token instead of using fixtures**
-  ❌ Incorrect:
-
-  ```javascript
-  navigateToAssetPage = async (
-    contractRegistry,
-    symbol,
-    shouldImportToken = true,
-  ) => {
-    if (shouldImportToken) {
-      const contractAddress = await contractRegistry.getContractAddress(
-        SMART_CONTRACTS.HST,
-      );
-      await clickNestedButton(this.driver, 'Import tokens');
-      await clickNestedButton(this.driver, 'Custom token');
-      await this.driver.fill(
-        LOCATOR.MM_IMPORT_TOKENS_MODAL('custom-address'),
-        contractAddress,
-      );
-      await this.driver.fill(
-        LOCATOR.MM_IMPORT_TOKENS_MODAL('custom-symbol'),
-        symbol,
-      );
-      await this.driver.waitForSelector(
-        LOCATOR.MM_IMPORT_TOKENS_MODAL('custom-decimals'),
-      );
-      await clickNestedButton(this.driver, 'Next');
-      await this.driver.clickElement(
-        LOCATOR.MM_IMPORT_TOKENS_MODAL('import-button'),
-      );
-      await this.driver.clickElement({ text: symbol });
-    }
-  };
-  ```
-
-  ✅ Correct:
-
-  ```javascript
-  // Use fixtures instead: fixtureBuilder.withTokensControllerERC20({ chainId: 1 });
-  navigateToAssetPage = async (symbol: string) => {
-    await this.driver.clickElement({
-      css: '[data-testid="multichain-token-list-button"]',
-      text: symbol,
-    });
-    await this.driver.delay(2000);
-    assert.ok((await this.driver.getCurrentUrl()).includes('asset'));
-  };
-  ```
-
-- **Switching to Mainnet before starting a test for Import tokens — can use fixtures to start the wallet in Mainnet network**
-  ❌ Incorrect:
-
-  ```javascript
-  fixtures: new FixtureBuilder().build(),
-  async ({ driver }) => {
-    await unlockWallet(driver);
-    await driver.clickElement('[data-testid="network-display"]');
-    const networkSelectionModal = await driver.findVisibleElement('.mm-modal');
-    await driver.clickElement({ text: 'Ethereum Mainnet', tag: 'p' });
-    await networkSelectionModal.waitForElementState('hidden');
-    await driver.clickElement('[data-testid="import-token-button"]');
-  ```
-
-  ✅ Correct:
-
-  ```javascript
-  fixtures: new FixtureBuilder().withNetworkControllerOnMainnet().build(),
-  async ({ driver }) => {
-    await unlockWallet(driver);
-    await driver.assertElementNotPresent('.loading-overlay');
-    await driver.clickElement('[data-testid="import-token-button"]');
-  ```
-
-- **Unnecessary steps by deploying manually 3 token contracts instead of just pre deploying using the anvil seeder**
-  ❌ Incorrect:
-
-  ```javascript
-  // Manually create tokens via dapp UI in a loop (slow, flaky)
-  for (let i = 0; i < 3; i++) {
-    await testDapp.findAndClickCreateToken();
-    await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-    const createContractModal = new CreateContractModal(driver);
-    await createContractModal.checkPageIsLoaded();
-    await createContractModal.clickConfirm();
-    await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
-    await testDapp.checkPageIsLoaded();
-    await testDapp.checkTokenAddressesCount(i + 1);
-  }
-  ```
-
-  ✅ Correct:
-
-  ```javascript
-  // Pre-deploy contracts via fixture: smartContract: [tokenContract, tokenContract, tokenContract]
-  const contracts = contractRegistry.getAllDeployedContractAddresses();
-  for (let i = 0; i < 3; i++) {
-    await driver.executeScript(`
-      window.ethereum.request({
-        method: 'wallet_watchAsset',
-        params: {
-          type: 'ERC20',
-          options: { address: '${contracts[i]}', symbol: 'TST', decimals: 4 }
-        }
-      })
-    `);
-  }
-  ```
-
-- **Unnecessary steps for switching network when already in the network I want**
-  ❌ Incorrect:
-  ```javascript
-  const homePage = new HomePage(driver);
-  await homePage.checkPageIsLoaded();
-  await switchToNetworkFromSendFlow(driver, networkName);
-  await homePage.checkAddNetworkMessageIsDisplayed(networkName);
-  await homePage.checkExpectedBalanceIsDisplayed('17,000.00', '$');
-  ```
-  ✅ Correct:
-  ```javascript
-  const homePage = new HomePage(driver);
-  await homePage.checkPageIsLoaded();
-  // Already on the correct network — just check balance directly
-  await homePage.checkExpectedBalanceIsDisplayed('17,000.00', '$');
-  await homePage.checkAddNetworkMessageIsDisplayed(networkName);
   ```
 
 ---
@@ -504,23 +377,6 @@ Reference: [Extension CI Flakiness - Google Doc](https://docs.google.com/documen
     .thenJson(200, { result: { value: 500000000 } });
   ```
 
-**Additional common missing-mock scenarios** (all follow the same pattern — add the missing mock to avoid hitting real services):
-
-| Missing mock                                   | Fix PR                                                                              |
-| ---------------------------------------------- | ----------------------------------------------------------------------------------- |
-| ENS resolution                                 | [#24898](https://github.com/MetaMask/metamask-extension/pull/24898)                 |
-| aggregatorMetadata, block list, blocked tokens | [MetaMask-planning#2637](https://github.com/MetaMask/MetaMask-planning/issues/2637) |
-| Swap quotes                                    | [#27160](https://github.com/MetaMask/metamask-extension/pull/27160)                 |
-| Solana `api.simplehash.com`                    | [#29986](https://github.com/MetaMask/metamask-extension/pull/29986)                 |
-| Transaction simulation supported networks      | [#30507](https://github.com/MetaMask/metamask-extension/pull/30507)                 |
-| Smart Transactions + Swap specs                | [#30932](https://github.com/MetaMask/metamask-extension/pull/30932)                 |
-| Swaps notifications slippage                   | [#31383](https://github.com/MetaMask/metamask-extension/pull/31383)                 |
-| Solana devnet                                  | [#31331](https://github.com/MetaMask/metamask-extension/pull/31331)                 |
-| Onboarding privacy                             | [#31272](https://github.com/MetaMask/metamask-extension/pull/31272)                 |
-| User storage                                   | [#31947](https://github.com/MetaMask/metamask-extension/pull/31947)                 |
-| Custom network during onboarding               | [#32932](https://github.com/MetaMask/metamask-extension/pull/32932)                 |
-| Token list                                     | [#34834](https://github.com/MetaMask/metamask-extension/pull/34834)                 |
-
 ---
 
 ### Removing URL/host entries to the live server allowlist
@@ -557,7 +413,7 @@ await server
   async ({ driver, contractRegistry }) => {
     const contractAddress = await contractRegistry.getContractAddress(smartContract);
     await unlockWallet(driver);
-    await driver.clickElement('[data-testid="eth-overview-send"]');
+    await homePage.startSendFlow();
   ```
 
   ✅ Correct:
@@ -566,7 +422,7 @@ await server
   async ({ driver, contractRegistry, ganacheServer }) => {
     const contractAddress = await contractRegistry.getContractAddress(smartContract);
     await logInWithBalanceValidation(driver, ganacheServer);
-    await driver.clickElement('[data-testid="eth-overview-send"]');
+    await homePage.startSendFlow();
   ```
 
 - **Mismatch in gas calculation values, when changing the increase token allowance amount**
@@ -574,7 +430,7 @@ await server
 
   ```javascript
   driver.waitForSelector({
-    css: '.box--display-flex > h6',
+    css: this.tokenAllowanceAmount,
     text: `10 TST`,
   });
   ```
@@ -583,7 +439,7 @@ await server
 
   ```javascript
   await driver.waitForSelector({
-    css: '.box--display-flex > h6',
+    css: this.tokenAllowanceAmount,
     text: `10 TST`,
   });
   await driver.waitForSelector({
@@ -626,7 +482,7 @@ await server
   await sendPage.fillAmount('10');
   await driver.waitForSelector({
     text: '0.000',
-    css: '[data-testid="gas-fee"]',
+    css: this.gasFee,
   });
   await sendPage.clickContinue();
   ```
@@ -637,7 +493,7 @@ await server
   ```javascript
   async ({ driver }) => {
     await unlockWallet(driver);
-    await driver.clickElement('[data-testid="next-page"]');
+    await confirmationPage.clickNextPage();
   ```
 
   ✅ Correct:
@@ -647,7 +503,7 @@ await server
     await unlockWallet(driver);
     // Wait until total amount is loaded before rejecting
     await driver.findElement({ tag: 'span', text: '3.0000315' });
-    await driver.clickElement('[data-testid="next-page"]');
+    await confirmationPage.clickNextPage();
   ```
 
 - **Spec was not waiting for queued signatures to display navigation, making some signatures not queue properly. Need to wait for the navigation numbers to appear before queueing a new signature**
@@ -681,31 +537,14 @@ await server
 
 ### Confirmation Popups / Modals
 
-- **Confirmation popup appears and obfuscates subsequent elements (snaps, vault decryption, etc.)**
-  ❌ Incorrect:
+> **General rule:** When clicking a button/modal that should disappear afterward, always use `clickElementAndWaitToDisappear` instead of `clickElement`. The disappearing element can block subsequent clicks if it's still in the DOM. This applies to confirmation popups, "Got it" buttons, import modals, onboarding screens, and any overlay that closes after interaction.
 
-  ```javascript
-  // Clicking the next element immediately — the confirmation popup may be on top
-  await driver.clickElement('[data-testid="account-options-menu-button"]');
-  ```
-
-  ✅ Correct:
-
-  ```javascript
-  // Dismiss the popup first, wait for it to disappear, then proceed
-  await driver.clickElementAndWaitToDisappear({
-    text: 'Got it',
-    tag: 'button',
-  });
-  await driver.clickElement('[data-testid="account-options-menu-button"]');
-  ```
-
-- **"Got it" element taking time to disappear obfuscates other elements**
+- **Popup/modal obfuscates subsequent elements (common pattern — applies to "Got it" buttons, import modals, add account popups, onboarding screens, etc.)**
   ❌ Incorrect:
 
   ```javascript
   await driver.clickElement({ text: 'Got it', tag: 'button' });
-  await driver.clickElement({ text: '127.0.0.1:8080', tag: 'p' });
+  await headerNavbar.openThreeDotMenu(); // popup may still be on top
   ```
 
   ✅ Correct:
@@ -715,57 +554,16 @@ await server
     text: 'Got it',
     tag: 'button',
   });
-  await driver.clickElement({ text: '127.0.0.1:8080', tag: 'p' });
+  await headerNavbar.openThreeDotMenu();
   ```
 
-- **Add account popup obfuscates clicking on the next element from the Home page**
-  ❌ Incorrect:
-
-  ```javascript
-  await driver.clickElement({ text: 'Create', tag: 'button' });
-  ```
-
-  ✅ Correct:
-
-  ```javascript
-  await driver.clickElementAndWaitToDisappear({
-    text: 'Create',
-    tag: 'button',
-  });
-  ```
-
-- **Import NFT modal obfuscates clicking on the Account menu**
-  ❌ Incorrect:
-
-  ```javascript
-  await driver.clickElement('[data-testid="import-nft-button"]');
-  // Modal still visible when trying to click account menu
-  await driver.clickElement('[data-testid="account-menu-icon"]');
-  ```
-
-  ✅ Correct:
-
-  ```javascript
-  await driver.clickElementAndWaitToDisappear(
-    '[data-testid="import-nft-button"]',
-  );
-  await driver.clickElement('[data-testid="account-menu-icon"]');
-  ```
-
-- **On the onboarding carousel, not waiting for the element to disappear when switching between screens causes race conditions**
+- **Multi-step flows with disappearing screens (e.g., onboarding carousel)**
   ❌ Incorrect:
 
   ```javascript
   await driver.clickElement({ text: 'Manage default settings' });
   await driver.delay(regularDelayMs);
   await driver.clickElement({ text: 'General' });
-
-  await driver.clickElement({ text: 'Save', tag: 'button' });
-  await driver.delay(regularDelayMs);
-  await driver.clickElement('[data-testid="category-back-button"]');
-
-  await driver.clickElement({ text: 'Done', tag: 'button' });
-  await driver.delay(regularDelayMs);
   ```
 
   ✅ Correct:
@@ -775,29 +573,6 @@ await server
     text: 'Manage default settings',
   });
   await driver.clickElement({ text: 'General' });
-
-  await driver.clickElementAndWaitToDisappear({ text: 'Save', tag: 'button' });
-  await driver.clickElement('[data-testid="category-back-button"]');
-
-  await driver.clickElementAndWaitToDisappear({ text: 'Done', tag: 'button' });
-  await driver.assertElementNotPresent('.popover-bg');
-  ```
-
-- **On the Add token flow, should wait until the dialog has been closed before proceeding — otherwise re-render with React failures**
-  ❌ Incorrect:
-
-  ```javascript
-  await driver.clickElement(
-    '[data-testid="import-tokens-modal-import-button"]',
-  );
-  ```
-
-  ✅ Correct:
-
-  ```javascript
-  await driver.clickElementAndWaitToDisappear(
-    '[data-testid="import-tokens-modal-import-button"]',
-  );
   ```
 
 - **On Queued Confirmations tests, connected manually to the test dapp and didn't wait for the MM dialog to close after connect. Caused chainId to be incorrectly outdated**
@@ -825,15 +600,15 @@ await server
   ❌ Incorrect:
 
   ```javascript
-  await driver.waitForSelector('[data-testid="account-options-menu-button"]');
-  await driver.clickElement('[data-testid="account-options-menu-button"]');
+  await driver.waitForSelector(this.threeDotMenuButton);
+  await driver.clickElement(this.threeDotMenuButton);
   ```
 
   ✅ Correct:
 
   ```javascript
   // Click the notification dot overlay instead of the obscured button
-  await driver.clickElement('.notification-list-item__unread-dot__wrapper');
+  await driver.clickElement(this.notificationDotWrapper);
   ```
 
 - **When changing language, sometimes the dropdown menu remains open, causing the next click to have no effect**
@@ -881,7 +656,11 @@ await server
       // MV3 uses a Service Worker — no background page
       await driver.navigate(PAGES.OFFSCREEN);
     }
-    await driver.delay(1000);
+    await driver.waitUntil(
+      async () =>
+        await driver.executeScript('return document.readyState === "complete"'),
+      { timeout: 5000 },
+    );
     assert.equal(
       await driver.executeScript(lockdownTestScript),
       true,
@@ -894,47 +673,60 @@ await server
 
 ### Race Conditions with Assertions within the Test Body Steps
 
-- **Assert element value as soon as we find the element — the real value has not been rendered**
+> **General rule:** Never use `findElement` + `getText`/`isDisplayed`/`isEnabled` + `assert`. The element can update or re-render between the find and the assertion, causing a stale element error or a false negative. Instead, use `waitForSelector` with `text` to atomically wait for the desired state. This single principle covers most assertion-related flakiness.
+
+- **Don't assert text after findElement — wait for the text with waitForSelector**
   ❌ Incorrect:
 
   ```javascript
-  const tokenListAmount = await driver.findElement(
-    '[data-testid="multichain-token-list-item-value"]',
-  );
-  assert.equal(await tokenListAmount.getText(), tokenValue);
+  const permissionElement = await driver.findElement(this.permissionLabel);
+  assert.equal(await permissionElement.getText(), 'View your accounts');
   ```
 
   ✅ Correct:
 
   ```javascript
-  const tokenListAmount = await driver.findElement(
-    '[data-testid="multichain-token-list-item-value"]',
-  );
-  await driver.waitForNonEmptyElement(tokenListAmount);
-  assert.equal(await tokenListAmount.getText(), tokenValue);
+  await driver.waitForSelector({
+    css: this.permissionLabel,
+    text: 'View your accounts',
+  });
+  ```
+
+- **Don't assert isDisplayed/isEnabled after waitForSelector — the wait already guarantees it**
+  ❌ Incorrect:
+
+  ```javascript
+  const buySellButton = await driver.waitForSelector(this.buySellButton);
+  assert.equal(await buySellButton.isEnabled(), true);
+  ```
+
+  ✅ Correct:
+
+  ```javascript
+  await driver.findClickableElement(this.buySellButton);
   ```
 
 - **Rapid input of the entire Chain ID resulted in the error message appearing and persisting**
   ❌ Incorrect:
 
   ```javascript
-  await driver.fill('[data-testid="network-form-chain-id"]', '10');
+  await driver.fill(this.chainIdInput, '10');
   // Error message from partial input ('1') persists even after full value is entered
   ```
 
   ✅ Correct:
 
   ```javascript
-  await driver.fill('[data-testid="network-form-chain-id"]', '10');
+  await driver.fill(this.chainIdInput, '10');
   // Wait for validation to complete before asserting
   await driver.waitForSelector({
-    css: '[data-testid="network-form-chain-id"]',
+    css: this.chainIdInput,
     text: '10',
   });
-  await driver.assertElementNotPresent('.form-error-message');
+  await driver.assertElementNotPresent(this.formErrorMessage);
   ```
 
-- **Trying to find a pending transaction and then a confirmed one — bad pattern as we shouldn't look for transient elements. Looking for the confirmed tx gives us the assertion we want**
+- **Don't assert transient states — skip to the final state**
   ❌ Incorrect:
 
   ```javascript
@@ -951,7 +743,7 @@ await server
   await swapSendPage.verifyHistoryEntry('Send ETH as TST', 'Confirmed', ...);
   ```
 
-- **Assert the currentUrl is the desired one can create a race condition. The correct approach is to wait for the URL we want**
+- **Don't assert getCurrentUrl — use waitForUrl instead**
   ❌ Incorrect:
 
   ```javascript
@@ -971,118 +763,6 @@ await server
   await driver.clickElement({ text: 'report a detection problem.' });
   await driver.waitForUrl({
     url: `https://github.com/phishfort/phishfort-lists/issues/new?title=...`,
-  });
-  ```
-
-- **Find an element and then assert it has the correct status (enabled) creates a race condition. Need to wait for the desired state instead of asserting directly**
-  ❌ Incorrect:
-
-  ```javascript
-  const buySellButton = await driver.waitForSelector(
-    '[data-testid="coin-overview-buy"]',
-  );
-  assert.equal(await buySellButton.isEnabled(), true);
-  ```
-
-  ✅ Correct:
-
-  ```javascript
-  await driver.findClickableElement('[data-testid="coin-overview-buy"]');
-  ```
-
-- **Find an element and then assert it has the correct value creates a race condition. Need to wait for the desired value**
-  ❌ Incorrect:
-
-  ```javascript
-  let navigationElement = await driver.findElement(
-    '.confirm-page-container-navigation',
-  );
-  let navigationText = await navigationElement.getText();
-  assert.equal(navigationText.includes('1 of 2'), true);
-  ```
-
-  ✅ Correct:
-
-  ```javascript
-  await driver.findElement(By.xpath("//div[normalize-space(.)='1 of 2']"));
-  ```
-
-- **Find an element and assert it has the correct text — race condition when element re-renders between find and getText**
-  ❌ Incorrect:
-
-  ```javascript
-  const permissionElement = await driver.findElement(
-    '[data-testid="permission-label"]',
-  );
-  assert.equal(await permissionElement.getText(), 'View your accounts');
-  ```
-
-  ✅ Correct:
-
-  ```javascript
-  await driver.waitForSelector({
-    css: '[data-testid="permission-label"]',
-    text: 'View your accounts',
-  });
-  ```
-
-- **Asserting an element is displayed after looking for its selector can cause race conditions where the element updates in between (e.g., tx from pending to confirmed)**
-  ❌ Incorrect:
-
-  ```javascript
-  const transactionItem = await driver.waitForSelector({
-    css: '[data-testid="activity-list-item-action"]',
-    text: 'Deposit',
-  });
-  assert.equal(await transactionItem.isDisplayed(), true);
-  ```
-
-  ✅ Correct:
-
-  ```javascript
-  await driver.waitForSelector({
-    css: '[data-testid="activity-list-item-action"]',
-    text: 'Deposit',
-  });
-  ```
-
-- **Find element and assert correct text in the Swaps STX spec**
-  ❌ Incorrect:
-
-  ```javascript
-  const transactionList = await driver.findElements(
-    '[data-testid="activity-list-item-action"]',
-  );
-  const transactionText = await transactionList[options.index].getText();
-  assert.equal(
-    transactionText,
-    `Swap ${options.swapFrom} to ${options.swapTo}`,
-  );
-  ```
-
-  ✅ Correct:
-
-  ```javascript
-  await driver.waitForSelector({
-    tag: 'p',
-    text: `Swap ${options.swapFrom} to ${options.swapTo}`,
-  });
-  ```
-
-- **Find element and assert correct text in wallet_invokeMethod multichain test**
-  ❌ Incorrect:
-  ```javascript
-  const resultElement = await driver.findElement(
-    `#invoke-method-${escapeColon(scope)}-${invokeMethod}-result-0`,
-  );
-  const result = await resultElement.getText();
-  assert.strictEqual(result, `"${EXPECTED_RESULTS[scope]}"`);
-  ```
-  ✅ Correct:
-  ```javascript
-  await driver.waitForSelector({
-    css: `[id="invoke-method-${scope}-${invokeMethod}-result-0"]`,
-    text: `"${EXPECTED_RESULTS[scope]}"`,
   });
   ```
 
@@ -1206,23 +886,23 @@ await server
   ❌ Incorrect:
 
   ```javascript
-  await driver.waitForSelector('[data-testid="account-options-menu-button"]');
-  await driver.clickElement('[data-testid="account-options-menu-button"]');
+  await driver.waitForSelector(this.threeDotMenuButton);
+  await driver.clickElement(this.threeDotMenuButton);
   ```
 
   ✅ Correct:
 
   ```javascript
   // Wait for re-renders to settle before clicking
-  await driver.assertElementNotPresent('.loading-overlay');
-  await driver.clickElement('[data-testid="account-options-menu-button"]');
+  await driver.assertElementNotPresent(this.loadingOverlay);
+  await driver.clickElement(this.threeDotMenuButton);
   ```
 
 - **Checkbox component for Snap Insights Signatures is re-rendered when the host value is loaded, making the checkbox unchecked if the click happens before the re-render**
   ❌ Incorrect:
 
   ```javascript
-  await driver.clickElement('.mm-checkbox__input-wrapper');
+  await driver.clickElement(this.checkboxWrapper);
   ```
 
   ✅ Correct:
@@ -1230,54 +910,48 @@ await server
   ```javascript
   // Wait for host to render before clicking — re-render resets checkbox state
   await driver.waitForSelector({ text: '127.0.0.1:8080', tag: 'span' });
-  await driver.clickElement('.mm-checkbox__input-wrapper');
+  await driver.clickElement(this.checkboxWrapper);
   ```
 
 - **The Add account modal needs to finish rendering the account list before proceeding with a click action — otherwise the re-render causes the click to be performed outside the popup, closing the modal**
   ❌ Incorrect:
 
   ```javascript
-  await driver.clickElement('[data-testid="account-menu-icon"]');
-  await driver.clickElement(
-    '[data-testid="multichain-account-menu-popover-action-button"]',
-  );
+  await headerNavbar.openAccountMenu();
+  await driver.clickElement(this.addAccountButton);
   ```
 
   ✅ Correct:
 
   ```javascript
-  await driver.clickElement('[data-testid="account-menu-icon"]');
+  await headerNavbar.openAccountMenu();
   // Wait until account list is loaded to avoid re-render race condition
   await driver.waitForSelector({ text: 'Account 1', tag: 'span' });
-  await driver.clickElement(
-    '[data-testid="multichain-account-menu-popover-action-button"]',
-  );
+  await driver.clickElement(this.addAccountButton);
   ```
 
 - **In the onboarding flow, clicking an element when it's moving causes the click to take no effect. Added a new driver method to wait until the element is not moving**
   ❌ Incorrect:
 
   ```javascript
-  await driver.clickElement('[data-testid="category-back-button"]');
+  await driver.clickElement(this.categoryBackButton);
   await driver.delay(regularDelayMs);
-  await driver.clickElement('[data-testid="privacy-settings-back-button"]');
+  await driver.clickElement(this.privacySettingsBackButton);
   ```
 
   ✅ Correct:
 
   ```javascript
-  await driver.clickElement('[data-testid="category-back-button"]');
+  await driver.clickElement(this.categoryBackButton);
   // Wait until carousel stops animating — clicking while moving has no effect
-  await driver.waitForElementToStopMoving(
-    '[data-testid="privacy-settings-back-button"]',
-  );
-  await driver.clickElement('[data-testid="privacy-settings-back-button"]');
+  await driver.waitForElementToStopMoving(this.privacySettingsBackButton);
+  await driver.clickElement(this.privacySettingsBackButton);
   ```
 
 - **In the carousel spec, looking for an element and then using `.click` — a re-render in between made the element stale. Should use the custom `clickElement` driver method**
   ❌ Incorrect:
   ```javascript
-  const dots = await driver.findElements('.dot');
+  const dots = await driver.findElements(this.carouselDot);
   await dots[i].click();
   ```
   ✅ Correct:
@@ -1289,7 +963,9 @@ await server
 
 ### Actions that Take Time
 
-- **Requests to Sentry take time — if the wait time is not enough, tests will be flaky**
+> **General rule:** When an action takes time (API calls, file I/O, state updates, extension restarts), wait for the expected outcome using `driver.wait`, `waitUntil`, or `waitForSelector` instead of assuming it's complete. Use generous timeouts — 3 seconds is often not enough.
+
+- **Insufficient timeout on async operations (Sentry requests, Snap connections, file writes, etc.)**
   ❌ Incorrect:
 
   ```javascript
@@ -1308,80 +984,20 @@ await server
   }, 8000);
   ```
 
-- **Chrome takes time to write to .log files (storage) — vault decrypt test was flaky when trying to import the log file before it was finished writing**
+- **State not ready before acting (chain id, balance, account creation, cookie id, etc.) — wait for the expected state instead of acting immediately**
   ❌ Incorrect:
 
   ```javascript
-  const fileContents = fs.readFileSync(logFilePath, 'utf-8');
-  // File may be partially written or empty
+  const homePage = new HomePage(driver);
+  await homePage.startBridgeFlow(); // chain id / balance may not be loaded yet
   ```
 
   ✅ Correct:
 
   ```javascript
-  await driver.wait(async () => {
-    const fileSize = fs.statSync(logFilePath).size;
-    return fileSize > MIN_FILE_SIZE;
-  }, 10000);
-  const fileContents = fs.readFileSync(logFilePath, 'utf-8');
-  ```
-
-- **The Connect action takes several seconds — the default timeout for the next action was not enough**
-  ❌ Incorrect:
-
-  ```javascript
-  await driver.clickElementSafe('[data-testid="snap-install-scroll"]');
-  ```
-
-  ✅ Correct:
-
-  ```javascript
-  await driver.clickElementSafe('[data-testid="snap-install-scroll"]', 3000);
-  ```
-
-- **After going to metamask.io with Marketing feature enabled, the cookie id takes time to be added into MetaMask state**
-  ❌ Incorrect:
-
-  ```javascript
-  await driver.openNewPage('https://metamask.io');
-  await driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionInFullScreenView);
-  const state = await driver.executeScript('return window.__METAMASK_STATE__');
-  assert.ok(state.marketingCookieId); // may not be set yet
-  ```
-
-  ✅ Correct:
-
-  ```javascript
-  await driver.openNewPage('https://metamask.io');
-  await driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionInFullScreenView);
-  await driver.wait(async () => {
-    const state = await driver.executeScript(
-      'return window.__METAMASK_STATE__',
-    );
-    return state.marketingCookieId !== undefined;
-  }, 5000);
-  ```
-
-- **Some `it` blocks are really long leading to timeout issues — not because the test fails, but because the 80000ms threshold is reached**
-  ❌ Incorrect:
-
-  ```javascript
-  describe('Account syncing - User already has balances on multiple accounts', function () {
-    if (!IS_ACCOUNT_SYNCING_ENABLED) {
-      return;
-    }
-    // ... long-running tests with default timeout
-  ```
-
-  ✅ Correct:
-
-  ```javascript
-  describe('Account syncing - User already has balances on multiple accounts', function () {
-    this.timeout(160000);
-    if (!IS_ACCOUNT_SYNCING_ENABLED) {
-      return;
-    }
-    // ...
+  const homePage = new HomePage(driver);
+  await homePage.check_expectedBalanceIsDisplayed();
+  await homePage.startBridgeFlow();
   ```
 
 - **Metrics events can get unordered if 2 actions are done subsequently very fast, leading to the 2nd event being the first one triggered**
@@ -1420,44 +1036,6 @@ await server
   import { mockedSourcifyTokenSend } from '../confirmations/helpers';
   ```
 
-- **Chain id is not immediately set when we land on the home page. For actions that rely on chain id, should wait until the balance is loaded**
-  ❌ Incorrect:
-
-  ```javascript
-  const homePage = new HomePage(driver);
-  await homePage.startBridgeFlow();
-  ```
-
-  ✅ Correct:
-
-  ```javascript
-  const homePage = new HomePage(driver);
-  await homePage.check_expectedBalanceIsDisplayed();
-  await homePage.startBridgeFlow();
-  ```
-
-- **Creating an account takes a few seconds to be loaded. Performing a subsequent action right away without checking can create race conditions (e.g., switching to Solana shows a dialog warning about missing Solana account)**
-  ❌ Incorrect:
-
-  ```javascript
-  await accountListPage.addAccount({
-    accountType: 'Solana',
-    accountName: 'Solana 1',
-  });
-  await test(driver, mockServer);
-  ```
-
-  ✅ Correct:
-
-  ```javascript
-  await accountListPage.addAccount({
-    accountType: 'Solana',
-    accountName: 'Solana 1',
-  });
-  await headerComponent.check_accountLabel('Solana 1');
-  await test(driver, mockServer);
-  ```
-
 - **On the Swap page with a default token, adding an amount triggers quotes. Changing to a custom token before quotes finalize can load quotes for the previous token swap**
   ❌ Incorrect:
 
@@ -1486,75 +1064,12 @@ await server
 
   ```javascript
   await driver.executeScript('chrome.runtime.reload()');
-  await driver.delay(2000);
   await driver.waitUntilXWindowHandles(1);
   await driver.navigate();
   await driver.waitForSelector('#password');
   ```
 
-- **Scroll to bottom using the arrow button takes several seconds for the button to disappear (wallet-side bug)**
-  ❌ Incorrect:
-
-  ```javascript
-  await driver.clickElement('[data-testid="scroll-to-bottom"]');
-  await driver.clickElement({ text: 'Confirm', tag: 'button' });
-  ```
-
-  ✅ Correct:
-
-  ```javascript
-  await driver.clickElementAndWaitToDisappear(
-    '[data-testid="scroll-to-bottom"]',
-  );
-  await driver.clickElement({ text: 'Confirm', tag: 'button' });
-  ```
-
-- **Writing to the local storage file takes time — Vault Decryptor test flaky because sometimes the backup file was empty on upload**
-  ❌ Incorrect:
-
-  ```javascript
-  async function waitUntilFileIsWritten({
-    driver,
-    filePath,
-    maxRetries = 3,
-    minFileSize = 1000000,
-  }) {
-    for (let attempt = 0; attempt < maxRetries; attempt++) {
-      const fileSize = await getFileSize(filePath);
-      if (fileSize > minFileSize) {
-        break;
-      } else if (attempt < maxRetries - 1) {
-        await driver.delay(2000);
-      }
-    }
-  }
-  ```
-
-  ✅ Correct:
-
-  ```javascript
-  async function waitUntilFileIsWritten({
-    driver,
-    filePath,
-    maxRetries = 5,
-    minFileSize = 1000000,
-  }) {
-    for (let attempt = 0; attempt < maxRetries; attempt++) {
-      const fileSize = await getFileSize(filePath);
-      if (fileSize > minFileSize) {
-        return;
-      }
-      if (attempt < maxRetries - 1) {
-        await driver.delay(5000);
-      }
-    }
-    throw new Error(
-      `File did not reach the minimum size of ${minFileSize} bytes after ${maxRetries} retries.`,
-    );
-  }
-  ```
-
-- **Request to Profile Sync after onboarding takes seconds — locking the wallet before this request causes "unable to proceed, wallet is locked" error**
+- **Background API requests (auth, profile sync) may not complete before the next action — wait for the request or ignore the benign error**
   ❌ Incorrect:
 
   ```javascript
@@ -1565,11 +1080,10 @@ await server
   await homePage.headerNavbar.lockMetaMask();
   ```
 
-  ✅ Correct:
+  ✅ Correct (wait for the request):
 
   ```javascript
   await loginWithBalanceValidation(driver, localNodes[0]);
-  // Wait for auth request to complete instead of arbitrary delay
   await driver.waitUntil(
     async () => {
       const requests = await mockedEndpoint.getSeenRequests();
@@ -1582,25 +1096,9 @@ await server
   await homePage.headerNavbar.lockMetaMask();
   ```
 
-- **After login, Authentication API requests take time to be triggered. Locking the wallet before they happen causes "wallet is locked" error**
-  ❌ Incorrect (complex mock + waitUntil pattern):
+  ✅ Or simpler — just ignore the harmless error:
 
   ```javascript
-  testSpecificMock: (seeAuthenticationRequest,
-    // ...
-    await driver.waitUntil(
-      async () => {
-        const requests = await mockedEndpoint.getSeenRequests();
-        return requests.length > 0;
-      },
-      { interval: 200, timeout: 10000 },
-    ));
-  ```
-
-  ✅ Correct (simplified — just ignore the benign error):
-
-  ```javascript
-  // Ignore the harmless console error that occurs when wallet is locked during in-flight auth
   ignoredConsoleErrors: ['unable to proceed, wallet is locked'],
   ```
 
@@ -1650,8 +1148,15 @@ await server
   ```javascript
   await driver.navigate(PHISHING_PAGE_URL);
   await driver.waitForSelector('#proceed-link');
-  await driver.delay(500); // allow event listener to attach
-  await driver.clickElement('#proceed-link');
+  // Retry clicking until the event listener is attached and the navigation succeeds
+  await driver.waitUntil(
+    async () => {
+      await driver.clickElement('#proceed-link');
+      const currentUrl = await driver.getCurrentUrl();
+      return !currentUrl.includes('phishing');
+    },
+    { timeout: 5000 },
+  );
   ```
 
 ---
@@ -1662,13 +1167,11 @@ await server
   ❌ Incorrect:
 
   ```javascript
-  const [, tst] = await driver.findElements(
-    '[data-testid="multichain-token-list-button"]',
-  );
+  const [, tst] = await driver.findElements(this.tokenListButton);
   await tst.click();
 
   // ...
-  const body = await driver.findElement('[data-testid="empty-page-body"]');
+  const body = await driver.findElement(this.emptyPageBody);
   assert.equal(await body.getText(), 'Empty page by MetaMask');
   assert.equal(
     await driver.getCurrentUrl(),
@@ -1687,26 +1190,6 @@ await server
   });
   await driver.waitForSelector({ text: 'Empty page by MetaMask', tag: 'body' });
   ```
-
----
-
-## E2E Anti-Patterns
-
-These are the most critical anti-patterns to avoid. Each is described in detail in the categories above.
-
-1. **Asserting element values without waiting for them** — use `waitForSelector` with `text` instead of `findElement` + `getText` + `assert`. See [Race Conditions with Assertions](#race-conditions-with-assertions-within-the-test-body-steps).
-
-2. **Asserting `isDisplayed()` after finding an element** — the element can update between find and assert (e.g., tx status changes), throwing a stale element error. `waitForSelector` already guarantees the element is displayed.
-
-3. **Using `element.click()` instead of `driver.clickElement()`** — native `.click()` has no stale-element retry. Always use the driver wrapper. See [Not using driver methods](#not-using-driver-methods).
-
-4. **Going to live sites** instead of using mocks — tests should never depend on external services. See [Missing or Incorrect Use of Mocks](#missing-or-incorrect-use-of-mocks).
-
-5. **Adding `driver.delay()` instead of waiting for conditions** — use `waitForSelector`, `clickElementAndWaitToDisappear`, or `waitUntil` instead of arbitrary delays. See [Confirmation Popups / Modals](#confirmation-popups--modals).
-
-6. **Importing from another `.spec` file** — this causes that spec's tests to run too, leading to timeouts. Move shared functions to helper files. See [Actions that Take Time](#actions-that-take-time).
-
-7. **Looking for transient elements** (e.g., "Pending" status) — skip transient states and wait for the final state. See [Race Conditions with Assertions](#race-conditions-with-assertions-within-the-test-body-steps).
 
 ---
 
