@@ -8,12 +8,12 @@ import {
 import { TESTNET_ETH_SCAMS_LEARN_MORE_LINK } from '../../../../shared/lib/ui-utils';
 import { getShowFiatInTestnets } from '../../../selectors';
 import { setShowFiatConversionOnTestnetsPreference } from '../../../store/actions';
-import { DEVELOPER_OPTIONS_ITEMS } from '../search-config';
+import { DEVELOPER_TOOLS_ITEMS } from '../search-config';
 import { DeleteActivityItem } from './delete-activity-item';
 
 const ShowConversionInTestnetsItem = createToggleItem({
   name: 'ShowConversionInTestnetsItem',
-  titleKey: DEVELOPER_OPTIONS_ITEMS['show-fiat-in-testnets'],
+  titleKey: DEVELOPER_TOOLS_ITEMS['show-fiat-in-testnets'],
   formatDescription: createDescriptionWithLearnMore(
     'showFiatConversionInTestnetsDescriptionV2',
     TESTNET_ETH_SCAMS_LEARN_MORE_LINK,

@@ -6,7 +6,7 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import { DEVELOPER_OPTIONS_ITEMS } from '../search-config';
+import { DEVELOPER_TOOLS_ITEMS } from '../search-config';
 import DeleteActivityModal from './delete-activity-modal';
 
 export const DeleteActivityItem = () => {
@@ -30,7 +30,7 @@ export const DeleteActivityItem = () => {
         onClick={handleDeleteActivity}
         className="text-bg !bg-transparent p-0 text-left"
       >
-        {t(DEVELOPER_OPTIONS_ITEMS['delete-activity-and-nonce-data'])}
+        {t(DEVELOPER_TOOLS_ITEMS['delete-activity-and-nonce-data'])}
       </Button>
       {showDeleteModal && (
         <DeleteActivityModal onClose={() => setShowDeleteModal(false)} />
