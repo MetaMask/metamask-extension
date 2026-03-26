@@ -262,6 +262,7 @@ export function usePerpsOrderForm({
         positionSize: formatTokenQuantity(closeAmount, asset),
         marginRequired: null, // Not relevant for closing
         liquidationPrice: null, // Not relevant for closing
+        liquidationPriceRaw: null,
         orderValue: formatCurrencyWithMinThreshold(closeValueUsd, 'USD'),
         estimatedFees: formatCurrencyWithMinThreshold(estimatedFees, 'USD'),
       };
@@ -277,6 +278,7 @@ export function usePerpsOrderForm({
         positionSize: null,
         marginRequired: null,
         liquidationPrice: null,
+        liquidationPriceRaw: null,
         orderValue: null,
         estimatedFees: null,
       };
@@ -310,6 +312,7 @@ export function usePerpsOrderForm({
       positionSize: formatTokenQuantity(positionSize, asset),
       marginRequired: formatCurrencyWithMinThreshold(marginRequired, 'USD'),
       liquidationPrice: formatCurrencyWithMinThreshold(liquidationPrice, 'USD'),
+      liquidationPriceRaw: liquidationPrice,
       orderValue: formatCurrencyWithMinThreshold(positionValue, 'USD'),
       estimatedFees: formatCurrencyWithMinThreshold(estimatedFees, 'USD'),
     };

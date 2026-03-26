@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import {
   Box,
   Text,
@@ -10,6 +10,10 @@ import {
   FontWeight,
   ButtonBase,
   ButtonBaseSize,
+  Icon,
+  IconName,
+  IconSize,
+  IconColor,
 } from '@metamask/design-system-react';
 import { TextField, TextFieldSize } from '../../../../../component-library';
 import {
@@ -18,6 +22,7 @@ import {
 } from '../../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
 import { useFormatters } from '../../../../../../hooks/useFormatters';
+import type { OrderDirection } from '../../order-entry.types';
 
 /**
  * Props for LimitPriceInput component
@@ -31,6 +36,10 @@ export type LimitPriceInputProps = {
   currentPrice: number;
   /** Mid price from top-of-book (optional, falls back to currentPrice) */
   midPrice?: number;
+  /** Order direction (long or short) */
+  direction: OrderDirection;
+  /** Raw estimated liquidation price (for proximity warning) */
+  liquidationPrice?: number | null;
 };
 
 /**
@@ -40,12 +49,16 @@ export type LimitPriceInputProps = {
  * @param options0.onLimitPriceChange
  * @param options0.currentPrice
  * @param options0.midPrice
+ * @param options0.direction
+ * @param options0.liquidationPrice
  */
 export const LimitPriceInput: React.FC<LimitPriceInputProps> = ({
   limitPrice,
   onLimitPriceChange,
   currentPrice,
   midPrice: midPriceProp,
+  direction,
+  liquidationPrice,
 }) => {
   const t = useI18nContext();
   const { formatNumber } = useFormatters();
@@ -73,8 +86,8 @@ export const LimitPriceInput: React.FC<LimitPriceInputProps> = ({
 
   const handlePriceBlur = useCallback(() => {
     if (limitPrice) {
-      const numValue = parseFloat(limitPrice.replace(/,/gu, ''));
-      if (!isNaN(numValue) && numValue > 0) {
+      const numValue = Number.parseFloat(limitPrice.replaceAll(',', ''));
+      if (!Number.isNaN(numValue) && numValue > 0) {
         onLimitPriceChange(formatPrice(numValue));
       }
     }
@@ -85,6 +98,59 @@ export const LimitPriceInput: React.FC<LimitPriceInputProps> = ({
       onLimitPriceChange(formatPrice(midPrice));
     }
   }, [midPrice, onLimitPriceChange, formatPrice]);
+
+  const limitPriceWarning = useMemo(() => {
+    const parsedLimit = Number.parseFloat(
+      limitPrice.replaceAll(',', '').replaceAll('$', ''),
+    );
+    if (
+      !limitPrice ||
+      Number.isNaN(parsedLimit) ||
+      !currentPrice ||
+      currentPrice <= 0
+    ) {
+      return null;
+    }
+
+    if (direction === 'long' && parsedLimit > currentPrice) {
+      return t('perpsLimitPriceAboveCurrentPrice');
+    }
+    if (direction === 'short' && parsedLimit < currentPrice) {
+      return t('perpsLimitPriceBelowCurrentPrice');
+    }
+    return null;
+  }, [limitPrice, currentPrice, direction, t]);
+
+  const liquidationWarning = useMemo(() => {
+    if (
+      liquidationPrice === null ||
+      liquidationPrice === undefined ||
+      liquidationPrice <= 0
+    ) {
+      return null;
+    }
+    const parsedLimit = Number.parseFloat(
+      limitPrice.replaceAll(',', '').replaceAll('$', ''),
+    );
+    if (
+      !limitPrice ||
+      Number.isNaN(parsedLimit) ||
+      !currentPrice ||
+      currentPrice <= 0
+    ) {
+      return null;
+    }
+
+    const isLong = direction === 'long';
+    const isCurrentNearLiquidation = isLong
+      ? currentPrice <= liquidationPrice
+      : currentPrice >= liquidationPrice;
+
+    if (isCurrentNearLiquidation) {
+      return t('perpsLimitPriceNearLiquidation');
+    }
+    return null;
+  }, [limitPrice, currentPrice, liquidationPrice, direction, t]);
 
   return (
     <Box
@@ -132,6 +198,42 @@ export const LimitPriceInput: React.FC<LimitPriceInputProps> = ({
           </ButtonBase>
         }
       />
+
+      {limitPriceWarning && (
+        <Box
+          flexDirection={BoxFlexDirection.Row}
+          alignItems={BoxAlignItems.Center}
+          gap={1}
+          data-testid="limit-price-warning"
+        >
+          <Icon
+            name={IconName.Warning}
+            size={IconSize.Xs}
+            color={IconColor.WarningDefault}
+          />
+          <Text variant={TextVariant.BodyXs} color={TextColor.WarningDefault}>
+            {limitPriceWarning}
+          </Text>
+        </Box>
+      )}
+
+      {liquidationWarning && (
+        <Box
+          flexDirection={BoxFlexDirection.Row}
+          alignItems={BoxAlignItems.Center}
+          gap={1}
+          data-testid="limit-price-liquidation-warning"
+        >
+          <Icon
+            name={IconName.Warning}
+            size={IconSize.Xs}
+            color={IconColor.ErrorDefault}
+          />
+          <Text variant={TextVariant.BodyXs} color={TextColor.ErrorDefault}>
+            {liquidationWarning}
+          </Text>
+        </Box>
+      )}
     </Box>
   );
 };
