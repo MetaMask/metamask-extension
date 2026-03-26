@@ -67,8 +67,20 @@ export const UserStorageMockttpControllerEvents = {
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export type AsEnum<T> = T[keyof T];
 
-const determineIfFeatureEntryFromURL = (url: string) =>
-  url.substring(url.lastIndexOf('userstorage') + 12).split('/').length === 2;
+// Determine whether the request URL targets a single feature entry (i.e. ends
+// with a 64-character hex hashed key). This is more robust than relying on
+// substring/split heuristics and works regardless of leading/trailing slashes
+// or whether the path is an absolute URL or just a pathname.
+const determineIfFeatureEntryFromURL = (url: string) => {
+  try {
+    // If `url` is an absolute URL, extract the pathname, otherwise use as-is
+    const pathname = url.startsWith('http') ? new URL(url).pathname : url;
+    // Match trailing 64-character hex (typical hashed keys used in tests)
+    return /\/([0-9a-f]{64})$/.test(pathname);
+  } catch (_err) {
+    return /\/([0-9a-f]{64})$/.test(url);
+  }
+};
 
 const getSrpIdentifierFromHeaders = (headers: Record<string, unknown>) => {
   const authHeader = headers.authorization;
