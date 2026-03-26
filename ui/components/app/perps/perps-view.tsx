@@ -1,12 +1,12 @@
 import { Box, BoxFlexDirection } from '@metamask/design-system-react';
 import React, { useMemo } from 'react';
-import { useSelector } from 'react-redux';
 import {
   usePerpsLivePositions,
   usePerpsLiveOrders,
   usePerpsLiveMarketData,
 } from '../../../hooks/perps/stream';
-import { getSelectedInternalAccount } from '../../../selectors';
+import { usePerpsTransactionHistory } from '../../../hooks/perps/usePerpsTransactionHistory';
+import { PERPS_RECENT_ACTIVITY_MAX_TRANSACTIONS } from '../../../../shared/constants/perps';
 
 import { usePerpsDepositConfirmation } from './hooks/usePerpsDepositConfirmation';
 import { PerpsBalanceDropdown } from './perps-balance-dropdown';
@@ -31,8 +31,6 @@ import { PerpsWatchlist } from './perps-watchlist';
 export const PerpsView: React.FC = () => {
   const { trigger: triggerDeposit } = usePerpsDepositConfirmation();
 
-  const selectedAccount = useSelector(getSelectedInternalAccount);
-
   // Stream hooks must run before any effects that touch PerpsStreamManager.
   // `usePerpsStreamManager` (inside these hooks) calls `perpsInit` then `init(address)`;
   // prewarm/init in an effect above these hooks used to run first and triggered
@@ -46,6 +44,12 @@ export const PerpsView: React.FC = () => {
     hip3Markets: allHip3Markets,
     isInitialLoading: marketsLoading,
   } = usePerpsLiveMarketData();
+
+  const {
+    transactions: recentActivityTransactions,
+    isLoading: recentActivityLoading,
+    error: recentActivityError,
+  } = usePerpsTransactionHistory();
 
   // Show only user-placed limit orders resting on the orderbook.
   // Excludes all position-attached orders:
@@ -69,7 +73,9 @@ export const PerpsView: React.FC = () => {
     return allHip3Markets.slice(0, 5);
   }, [allHip3Markets]);
 
-  // Show loading state while initial data is being fetched
+  // Show loading state while initial stream data is being fetched.
+  // Transaction history loads in parallel; Recent Activity skeleton is included here
+  // so the section is represented before the main view mounts.
   if (isLoading) {
     return (
       <Box
@@ -80,6 +86,9 @@ export const PerpsView: React.FC = () => {
         <PerpsControlBarSkeleton />
         <PerpsSectionSkeleton cardCount={5} showStartTradeCta />
         <PerpsSectionSkeleton cardCount={5} />
+        <Box data-testid="perps-recent-activity-skeleton">
+          <PerpsSectionSkeleton cardCount={3} showStartTradeCta={false} />
+        </Box>
       </Box>
     );
   }
@@ -112,7 +121,12 @@ export const PerpsView: React.FC = () => {
       />
 
       {/* Recent Activity */}
-      <PerpsRecentActivity />
+      <PerpsRecentActivity
+        transactions={recentActivityTransactions}
+        maxTransactions={PERPS_RECENT_ACTIVITY_MAX_TRANSACTIONS}
+        isLoading={recentActivityLoading}
+        error={recentActivityError}
+      />
 
       {/* Support & Learn */}
       <PerpsSupportLearn />
