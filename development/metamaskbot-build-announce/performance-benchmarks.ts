@@ -566,13 +566,13 @@ function formatTimerDetails(
       }
 
       const logsLink = logHref ? ` <a href="${logHref}">[Show logs]</a>` : '';
-      return `<li>${icon} <code>${metricName}</code>${logsLink}</li>`;
+      return `<div>${icon} <code>${metricName}</code>${logsLink}</div>`;
     })
     .filter((item) => item !== null)
     .join('');
 
   return entries
-    ? `<ul style="text-align: left; margin: 4px 0 8px 0; list-style: none; padding-left: 8px;">${entries}</ul>`
+    ? `<div style="text-align: left; margin: 4px 0 8px 0; padding-left: 8px;">${entries}</div>`
     : '';
 }
 

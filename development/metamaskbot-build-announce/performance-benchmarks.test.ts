@@ -646,10 +646,8 @@ describe('buildBenchmarkSection', () => {
 
       const html = buildBenchmarkSection(withEntries([entry]), 'Test');
 
-      // Should only show failing timer, not the passing one
       expect(html).not.toContain('<code>openSwapPageFromHome</code>');
       expect(html).toContain('<code>fetchAndDisplaySwapQuotes</code>');
-      expect(html).toContain('<ul');
     });
 
     it('shows [Show logs] without icon when timers are present', () => {
@@ -690,15 +688,15 @@ describe('buildBenchmarkSection', () => {
         benchmarkName: 'onboardingImportWallet',
         mean: {
           importWalletToSocialScreen: 1000,
-          doneButtonToHomeScreen: 15000, // Exceeds fail threshold (14000)
+          doneButtonToHomeScreen: 22000,
         },
         p75: {
           importWalletToSocialScreen: 1200,
-          doneButtonToHomeScreen: 15000, // Exceeds fail threshold (14000)
+          doneButtonToHomeScreen: 22000,
         },
         p95: {
           importWalletToSocialScreen: 1500,
-          doneButtonToHomeScreen: 22000, // Exceeds fail threshold (21000)
+          doneButtonToHomeScreen: 32000,
         },
       });
 
@@ -707,7 +705,7 @@ describe('buildBenchmarkSection', () => {
       // Should only show failing timer, not the passing one
       expect(html).not.toContain('<code>importWalletToSocialScreen</code>');
       expect(html).toContain('<code>doneButtonToHomeScreen</code>');
-      expect(html).toMatch(/<li>🔴/u);
+      expect(html).toMatch(/<div>🔴/u);
     });
 
     it('does not show timer details for benchmarks without timer data', () => {
