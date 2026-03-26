@@ -125,7 +125,7 @@ describe('compare-benchmarks', () => {
         {
           name: 'benchmark-chrome-browserify-startupStandardHome',
           data: {
-            'chrome-browserify-startupStandardHome': makeBenchmarkResults({
+            startupStandardHome: makeBenchmarkResults({
               p75: { uiStartup: 1800 },
               p95: { uiStartup: 2200 },
               mean: { uiStartup: 1500 },
@@ -135,7 +135,7 @@ describe('compare-benchmarks', () => {
       ];
 
       const baseline = {
-        'pageLoad/chrome-browserify-startupStandardHome': {
+        'pageLoad/startupStandardHome': {
           uiStartup: { mean: 1400, stdDev: 80, p75: 1700, p95: 2100 },
         },
       };
@@ -227,7 +227,7 @@ describe('buildMetricLines', () => {
     expect(buildMetricLines(makeComparison())).toHaveLength(0);
   });
 
-  it('formats a metric with baseline using relative delta and pass icon', () => {
+  it('formats a metric with baseline using relative delta and warn icon when has issue', () => {
     const lines = buildMetricLines(
       makeComparison({
         relativeMetrics: [
@@ -247,8 +247,10 @@ describe('buildMetricLines', () => {
 
     expect(lines).toHaveLength(1);
     expect(lines[0].metric).toBe('uiStartup');
-    expect(lines[0].parts[0]).toContain('1500ms');
-    expect(lines[0].parts[0]).toContain('p95');
+    expect(lines[0].icon).toBe(COMPARISON_SEVERITY.Warn.icon);
+    expect(lines[0].hasIssue).toBe(true);
+    expect(lines[0].details).toContain('1500ms');
+    expect(lines[0].details).toContain('p95');
   });
 
   it('overrides icon with 🔴 when absolute Fail violation matches the metric', () => {
@@ -278,7 +280,8 @@ describe('buildMetricLines', () => {
       }),
     );
 
-    expect(lines[0].parts[0]).toContain(COMPARISON_SEVERITY.Regression.icon);
+    expect(lines[0].icon).toBe(COMPARISON_SEVERITY.Regression.icon);
+    expect(lines[0].hasIssue).toBe(true);
   });
 
   it('overrides icon with 🟡 when absolute Warn violation matches the metric', () => {
@@ -308,7 +311,8 @@ describe('buildMetricLines', () => {
       }),
     );
 
-    expect(lines[0].parts[0]).toContain(COMPARISON_SEVERITY.Warn.icon);
+    expect(lines[0].icon).toBe(COMPARISON_SEVERITY.Warn.icon);
+    expect(lines[0].hasIssue).toBe(true);
   });
 
   it('shows violation value with (no baseline) when no relative metric exists for the key', () => {
@@ -327,9 +331,10 @@ describe('buildMetricLines', () => {
     );
 
     expect(lines).toHaveLength(1);
-    expect(lines[0].parts[0]).toContain('no baseline');
-    expect(lines[0].parts[0]).toContain('6000ms');
-    expect(lines[0].parts[0]).toContain(COMPARISON_SEVERITY.Regression.icon);
+    expect(lines[0].icon).toBe(COMPARISON_SEVERITY.Regression.icon);
+    expect(lines[0].hasIssue).toBe(true);
+    expect(lines[0].details).toContain('no baseline');
+    expect(lines[0].details).toContain('6000ms');
   });
 
   it('shows 🟢 with (no baseline) for a violation-free metric absent from relative metrics', () => {
@@ -342,7 +347,7 @@ describe('buildMetricLines', () => {
     expect(lines).toHaveLength(0);
   });
 
-  it('uses the relative indication icon when there is no absolute violation for the metric', () => {
+  it('shows only icon when metric passes (no timing details)', () => {
     const lines = buildMetricLines(
       makeComparison({
         relativeMetrics: [
@@ -362,8 +367,9 @@ describe('buildMetricLines', () => {
     );
 
     expect(lines).toHaveLength(1);
-    expect(lines[0].parts[0]).toContain(COMPARISON_SEVERITY.Pass.icon);
-    expect(lines[0].parts[0]).toContain('1450ms');
+    expect(lines[0].icon).toBe(COMPARISON_SEVERITY.Pass.icon);
+    expect(lines[0].hasIssue).toBe(false);
+    expect(lines[0].details).toBeUndefined();
   });
 
   it('shows 🟡 when relative regression exists but no absolute violation', () => {
@@ -386,6 +392,8 @@ describe('buildMetricLines', () => {
     );
 
     expect(lines).toHaveLength(1);
-    expect(lines[0].parts[0]).toContain(COMPARISON_SEVERITY.Warn.icon);
+    expect(lines[0].icon).toBe(COMPARISON_SEVERITY.Warn.icon);
+    expect(lines[0].hasIssue).toBe(true);
+    expect(lines[0].details).toContain('1560ms');
   });
 });

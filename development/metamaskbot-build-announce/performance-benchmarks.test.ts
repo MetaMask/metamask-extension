@@ -627,26 +627,27 @@ describe('buildBenchmarkSection', () => {
   });
 
   describe('timer details', () => {
-    it('shows timer breakdown when entry has multiple timers', () => {
+    it('shows only failing/warning timers when entry has multiple timers', () => {
       const entry = makeEntry({
         benchmarkName: 'swap',
         mean: {
           openSwapPageFromHome: 310,
-          fetchAndDisplaySwapQuotes: 920,
+          fetchAndDisplaySwapQuotes: 2500, // Exceeds warn threshold (2000)
         },
         p75: {
           openSwapPageFromHome: 340,
-          fetchAndDisplaySwapQuotes: 1050,
+          fetchAndDisplaySwapQuotes: 2500, // Exceeds warn threshold (2000)
         },
         p95: {
           openSwapPageFromHome: 400,
-          fetchAndDisplaySwapQuotes: 1200,
+          fetchAndDisplaySwapQuotes: 4000, // Exceeds fail threshold (3500)
         },
       });
 
       const html = buildBenchmarkSection(withEntries([entry]), 'Test');
 
-      expect(html).toContain('<code>openSwapPageFromHome</code>');
+      // Should only show failing timer, not the passing one
+      expect(html).not.toContain('<code>openSwapPageFromHome</code>');
       expect(html).toContain('<code>fetchAndDisplaySwapQuotes</code>');
       expect(html).toContain('<ul');
     });
@@ -665,7 +666,7 @@ describe('buildBenchmarkSection', () => {
         undefined,
         'https://github.com/actions/runs/123',
       );
-      expect(html).not.toMatch(/🟢 <a href=.*\[Show logs\]<br\/>/);
+      expect(html).not.toMatch(/🟢 <a href=.*\[Show logs\]<br\/>/u);
     });
 
     it('shows icon with [Show logs] when no timers present', () => {
@@ -684,28 +685,29 @@ describe('buildBenchmarkSection', () => {
       expect(html).not.toContain('<ul');
     });
 
-    it('shows per-timer traffic lights based on thresholds', () => {
+    it('shows per-timer traffic lights based on thresholds (only warnings/failures)', () => {
       const entry = makeEntry({
         benchmarkName: 'onboardingImportWallet',
         mean: {
-          fastTimer: 100,
-          slowTimer: 3000,
+          importWalletToSocialScreen: 1000,
+          doneButtonToHomeScreen: 15000, // Exceeds fail threshold (14000)
         },
         p75: {
-          fastTimer: 110,
-          slowTimer: 3200,
+          importWalletToSocialScreen: 1200,
+          doneButtonToHomeScreen: 15000, // Exceeds fail threshold (14000)
         },
         p95: {
-          fastTimer: 120,
-          slowTimer: 5500,
+          importWalletToSocialScreen: 1500,
+          doneButtonToHomeScreen: 22000, // Exceeds fail threshold (21000)
         },
       });
 
       const html = buildBenchmarkSection(withEntries([entry]), 'Test');
 
-      expect(html).toContain('<code>fastTimer</code>');
-      expect(html).toContain('<code>slowTimer</code>');
-      expect(html).toMatch(/<li>[🟢🟡🔴]/);
+      // Should only show failing timer, not the passing one
+      expect(html).not.toContain('<code>importWalletToSocialScreen</code>');
+      expect(html).toContain('<code>doneButtonToHomeScreen</code>');
+      expect(html).toMatch(/<li>🔴/u);
     });
 
     it('does not show timer details for benchmarks without timer data', () => {
@@ -786,7 +788,7 @@ describe('buildPerformanceBenchmarksSection', () => {
     const html = await buildPerformanceBenchmarksSection(HOST);
 
     expect(html).toContain(
-      `<summary>⚡ Performance Benchmarks (vs. main) (${COMPARISON_SEVERITY.Pass.icon} pass · ${COMPARISON_SEVERITY.Warn.icon} warn · ${COMPARISON_SEVERITY.Regression.icon} fail)</summary>`,
+      `<summary>⚡ Performance Benchmarks (${COMPARISON_SEVERITY.Pass.icon} pass · ${COMPARISON_SEVERITY.Warn.icon} warn · ${COMPARISON_SEVERITY.Regression.icon} fail)</summary>`,
     );
   });
 
@@ -796,7 +798,7 @@ describe('buildPerformanceBenchmarksSection', () => {
       .mockResolvedValue({
         baseline: {},
         latestCommit: 'abc1234567890def',
-        latestTimestamp: 1700000000000,
+        latestTimestamp: 1700000000, // Unix timestamp in seconds
       });
     mockFetch.mockResolvedValue({
       ok: true,

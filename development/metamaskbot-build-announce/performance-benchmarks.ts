@@ -496,11 +496,13 @@ function countHealthEntries(
  *
  * @param entry - Benchmark entry with all stats (mean, p75, p95)
  * @param baselineMetrics - Historical baseline for comparison (optional)
+ * @param logHref
  * @returns HTML string with timer breakdown, or empty string if single timer
  */
 function formatTimerDetails(
   entry: BenchmarkEntry,
   baselineMetrics: HistoricalBaselineReference[string] | undefined,
+  logHref?: string,
 ): string {
   const timerCount = Object.keys(entry.mean).length;
 
@@ -512,7 +514,8 @@ function formatTimerDetails(
 
   const entries = Object.entries(entry.mean)
     .map(([metricName, meanValue]) => {
-      let icon = HEALTH_ICON[EntryHealth.Pass]; // Default to green
+      let icon = HEALTH_ICON[EntryHealth.Pass];
+      let hasIssue = false;
 
       if (thresholdConfig?.[metricName]) {
         const metricResult = {
@@ -526,10 +529,12 @@ function formatTimerDetails(
 
         if (violations.some((v) => v.severity === THRESHOLD_SEVERITY.Fail)) {
           icon = HEALTH_ICON[EntryHealth.Fail];
+          hasIssue = true;
         } else if (
           violations.some((v) => v.severity === THRESHOLD_SEVERITY.Warn)
         ) {
           icon = HEALTH_ICON[EntryHealth.Warn];
+          hasIssue = true;
         }
       }
 
@@ -544,15 +549,22 @@ function formatTimerDetails(
         );
         if (health === EntryHealth.Warn) {
           icon = HEALTH_ICON[EntryHealth.Warn];
+          hasIssue = true;
         }
       }
 
-      return `<li>${icon} <code>${metricName}</code></li>`;
+      if (!hasIssue) {
+        return null;
+      }
+
+      const logsLink = logHref ? ` <a href="${logHref}">[Show logs]</a>` : '';
+      return `<li>${icon} <code>${metricName}</code>${logsLink}</li>`;
     })
+    .filter((item) => item !== null)
     .join('');
 
   return entries
-    ? `<ul style="text-align: left; margin: 4px 0; list-style: none; padding-left: 8px;">${entries}</ul>`
+    ? `<ul style="text-align: left; margin: 4px 0 8px 0; list-style: none; padding-left: 8px;">${entries}</ul>`
     : '';
 }
 
@@ -623,17 +635,24 @@ export function buildBenchmarkSection(
               const icon = HEALTH_ICON[health];
               const logHref = entry.artifactUrl ?? runUrl;
 
-              const timerDetails = formatTimerDetails(entry, baselineMetrics);
+              const timerDetails = formatTimerDetails(
+                entry,
+                baselineMetrics,
+                logHref,
+              );
 
               const logsLink = logHref
                 ? `<a href="${logHref}">[Show logs]</a>`
                 : '';
 
-              const cell = timerDetails
-                ? `${logsLink}<br/>${timerDetails}`
-                : logHref
-                  ? `${icon} ${logsLink}`
-                  : icon;
+              let cell: string;
+              if (timerDetails) {
+                cell = timerDetails;
+              } else if (logHref) {
+                cell = `${icon} ${logsLink}`;
+              } else {
+                cell = icon;
+              }
               return `<td align="center">${cell}</td>`;
             })
             .join('');
@@ -899,7 +918,7 @@ function buildFailingItemsHtml(
 export async function buildPerformanceBenchmarksSection(
   hostUrl: string,
 ): Promise<string> {
-  const sectionTitle = '⚡ Performance Benchmarks (vs. main)';
+  const sectionTitle = '⚡ Performance Benchmarks';
 
   const benchmarkRunId =
     process.env.BENCHMARK_WORKFLOW_RUN_ID ?? process.env.GITHUB_RUN_ID;
@@ -986,7 +1005,7 @@ export async function buildPerformanceBenchmarksSection(
 
   const commitHash = baselineCommit?.slice(0, 7) ?? 'unknown';
   const commitDate = baselineTimestamp
-    ? new Date(baselineTimestamp).toLocaleDateString('en-US', {
+    ? new Date(baselineTimestamp * 1000).toLocaleDateString('en-US', {
         month: 'numeric',
         day: 'numeric',
         year: 'numeric',

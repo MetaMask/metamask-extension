@@ -350,25 +350,18 @@ describe('THRESHOLD_REGISTRY', () => {
     expect(THRESHOLD_REGISTRY.swap).toBeDefined();
     expect(THRESHOLD_REGISTRY['chrome-webpack-swap']).toBeUndefined();
   });
+  it('has startup benchmarks without platform prefixes', () => {
+    // After refactor c243dbb, platform/buildType are stored as separate fields
+    // Entry names should NOT include platform prefixes
+    expect(THRESHOLD_REGISTRY.startupStandardHome).toBeDefined();
+    expect(THRESHOLD_REGISTRY.startupPowerUserHome).toBeDefined();
 
-  it('auto-expands startup to all 8 platform combos (2 benchmarks × 4 combos)', () => {
-    const platforms = ['chrome', 'firefox'];
-    const buildTypes = ['browserify', 'webpack'];
-    const benchmarks = ['startupStandardHome', 'startupPowerUserHome'];
-
-    for (const platform of platforms) {
-      for (const buildType of buildTypes) {
-        for (const benchmark of benchmarks) {
-          const key = `${platform}-${buildType}-${benchmark}`;
-          expect(THRESHOLD_REGISTRY[key]).toBeDefined();
-        }
-      }
-    }
-
+    // Platform-prefixed keys should NOT exist
+    expect(
+      THRESHOLD_REGISTRY['chrome-browserify-startupStandardHome'],
+    ).toBeUndefined();
     expect(
       THRESHOLD_REGISTRY['firefox-webpack-startupPowerUserHome'],
-    ).toStrictEqual(
-      THRESHOLD_REGISTRY['chrome-browserify-startupPowerUserHome'],
-    );
+    ).toBeUndefined();
   });
 });

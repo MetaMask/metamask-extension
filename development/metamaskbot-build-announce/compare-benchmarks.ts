@@ -125,12 +125,15 @@ function violationIcon(severity: ThresholdSeverity): string {
     : COMPARISON_SEVERITY.Warn.icon;
 }
 
-export type MetricLine = { metric: string; parts: string[] };
+export type MetricLine = {
+  metric: string;
+  icon: string;
+  hasIssue: boolean;
+  details?: string;
+};
 
 /**
  * Builds display lines for a single benchmark comparison.
- * Metrics with baseline show relative deltas; metrics without show "(no baseline)".
- * Absolute violations override the indication icon with the appropriate indicator.
  *
  * @param comparison - A single benchmark entry comparison result.
  */
@@ -162,35 +165,90 @@ export function buildMetricLines(
     allMetrics.set(v.metricId, list);
   }
 
+  // Helper function to update displayIcon to track worst severity
+  const updateDisplayIcon = (
+    icon: string,
+    currentDisplayIcon: string,
+  ): string => {
+    switch (icon) {
+      case COMPARISON_SEVERITY.Regression.icon:
+        return COMPARISON_SEVERITY.Regression.icon;
+      case COMPARISON_SEVERITY.Warn.icon:
+        return currentDisplayIcon === COMPARISON_SEVERITY.Pass.icon
+          ? COMPARISON_SEVERITY.Warn.icon
+          : currentDisplayIcon;
+      default:
+        return currentDisplayIcon;
+    }
+  };
+
   return [...allMetrics.entries()].map(([metric, percentiles]) => {
-    const parts = percentiles.map((pKey) => {
+    let displayIcon: string = COMPARISON_SEVERITY.Pass.icon;
+    let hasIssue = false;
+    const details: string[] = [];
+
+    for (const pKey of percentiles) {
       const key = `${metric}:${pKey}`;
       const rel = relativeByKey.get(key);
+      const absoluteSeverity = violationsByKey.get(key);
+
+      let icon: string;
+      let isIssue = false;
+
       if (rel) {
-        const delta = formatDeltaPercent(rel.deltaPercent);
-        const absoluteSeverity = violationsByKey.get(key);
-        let icon: string;
-        if (absoluteSeverity === THRESHOLD_SEVERITY.Fail) {
-          icon = COMPARISON_SEVERITY.Regression.icon;
-        } else if (absoluteSeverity === THRESHOLD_SEVERITY.Warn) {
-          icon = COMPARISON_SEVERITY.Warn.icon;
-        } else if (rel.severity === COMPARISON_SEVERITY.Regression.value) {
-          icon = COMPARISON_SEVERITY.Warn.icon;
+        if (absoluteSeverity) {
+          switch (absoluteSeverity) {
+            case THRESHOLD_SEVERITY.Fail:
+              icon = COMPARISON_SEVERITY.Regression.icon;
+              isIssue = true;
+              break;
+            case THRESHOLD_SEVERITY.Warn:
+              icon = COMPARISON_SEVERITY.Warn.icon;
+              isIssue = true;
+              break;
+            default:
+              icon = rel.indication;
+          }
         } else {
-          icon = rel.indication;
+          switch (rel.severity) {
+            case COMPARISON_SEVERITY.Regression.value:
+            case COMPARISON_SEVERITY.Warn.value:
+              icon = COMPARISON_SEVERITY.Warn.icon;
+              isIssue = true;
+              break;
+            default:
+              icon = rel.indication;
+          }
         }
-        return `${icon} ${pKey}: ${rel.current.toFixed(0)}ms (${delta})`;
+
+        if (isIssue) {
+          const delta = formatDeltaPercent(rel.deltaPercent);
+          details.push(`${pKey}: ${rel.current.toFixed(0)}ms (${delta})`);
+          hasIssue = true;
+          displayIcon = updateDisplayIcon(icon, displayIcon);
+        }
+      } else {
+        const violation = comparison.absoluteViolations.find(
+          (v) => v.metricId === metric && v.percentile === pKey,
+        );
+        if (violation) {
+          icon = violationIcon(violation.severity);
+          isIssue = true;
+          details.push(
+            `${pKey}: ${violation.value.toFixed(0)}ms (no baseline)`,
+          );
+          hasIssue = true;
+          displayIcon = updateDisplayIcon(icon, displayIcon);
+        }
       }
-      const violation = comparison.absoluteViolations.find(
-        (v) => v.metricId === metric && v.percentile === pKey,
-      );
-      const icon = violation
-        ? violationIcon(violation.severity)
-        : COMPARISON_SEVERITY.Pass.icon;
-      const value = violation?.value ?? 0;
-      return `${icon} ${pKey}: ${value.toFixed(0)}ms (no baseline)`;
-    });
-    return { metric, parts };
+    }
+
+    return {
+      metric,
+      icon: displayIcon,
+      hasIssue,
+      details: hasIssue ? details.join(' | ') : undefined,
+    };
   });
 }
 
@@ -217,9 +275,15 @@ function printReport(result: {
 
     if (lines.length === 0) {
       console.log('    (no historical baseline data)');
-    }
-    for (const { metric, parts } of lines) {
-      console.log(`    ${metric}: ${parts.join(' | ')}`);
+    } else {
+      const issueLines = lines.filter((line) => line.hasIssue);
+      if (issueLines.length === 0) {
+        console.log(`${COMPARISON_SEVERITY.Pass.icon} [Show logs]`);
+      } else {
+        for (const line of issueLines) {
+          console.log(`${line.icon} ${line.metric}`);
+        }
+      }
     }
   }
 
