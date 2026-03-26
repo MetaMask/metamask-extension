@@ -38,6 +38,25 @@ export const PERPS_CONSTANTS = {
 export const PERPS_MARKET_ORDER_FEE_RATE = 0.0001;
 
 /**
+ * Slippage tolerance in basis points for order placement (parity with mobile ORDER_SLIPPAGE_CONFIG).
+ * Used in OrderParams.maxSlippageBps — controller maps limits to GTC and market to venue defaults.
+ */
+export const PERPS_ORDER_SLIPPAGE_BPS = {
+  /** Limit orders: 1% */
+  LIMIT: 100,
+  /** Market orders: 3% */
+  MARKET: 300,
+} as const;
+
+/**
+ * Query param for post-order navigation: scroll market detail to orders or position section.
+ * @see perps-order-entry-page navigate after successful perpsPlaceOrder
+ */
+export const PERPS_MARKET_DETAIL_FOCUS_PARAM = 'focus' as const;
+
+export type PerpsMarketDetailFocus = 'orders' | 'positions';
+
+/**
  * Market sorting configuration
  * Controls sorting behavior for the markets view
  */

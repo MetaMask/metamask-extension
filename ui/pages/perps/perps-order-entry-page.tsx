@@ -24,11 +24,7 @@ import {
   ButtonVariant,
   ButtonSize,
 } from '@metamask/design-system-react';
-import type {
-  OrderType,
-  OrderParams,
-  PriceUpdate,
-} from '@metamask/perps-controller';
+import type { OrderParams, PriceUpdate } from '@metamask/perps-controller';
 import { getIsPerpsExperienceAvailable } from '../../selectors/perps/feature-flags';
 import { getSelectedInternalAccount } from '../../selectors/accounts';
 import { useI18nContext } from '../../hooks/useI18nContext';
@@ -46,6 +42,11 @@ import {
   CandlePeriod,
   TimeDuration,
 } from '../../components/app/perps/constants/chartConfig';
+import {
+  PERPS_ORDER_SLIPPAGE_BPS,
+  PERPS_MARKET_DETAIL_FOCUS_PARAM,
+  type PerpsMarketDetailFocus,
+} from '../../components/app/perps/constants';
 import { usePerpsEligibility } from '../../hooks/perps';
 import { useFormatters } from '../../hooks/useFormatters';
 import { usePerpsDepositConfirmation } from '../../components/app/perps/hooks/usePerpsDepositConfirmation';
@@ -68,14 +69,33 @@ import {
 } from '../../components/app/perps/order-entry';
 
 /**
- * Convert UI OrderFormState to PerpsController OrderParams
+ * Parse limit price from form state; returns undefined if missing or non-positive.
+ *
+ * @param formState - Order form state
+ */
+export function getValidLimitPriceFromForm(
+  formState: OrderFormState,
+): string | undefined {
+  if (formState.type !== 'limit') {
+    return undefined;
+  }
+  const cleaned = formState.limitPrice?.replace(/,/gu, '') ?? '';
+  const parsed = parseFloat(cleaned);
+  if (!cleaned || Number.isNaN(parsed) || parsed <= 0) {
+    return undefined;
+  }
+  return cleaned;
+}
+
+/**
+ * Convert UI OrderFormState to PerpsController OrderParams (parity with mobile PerpsOrderView).
  *
  * @param formState - Current order form state
  * @param currentPrice - Current asset price in USD
  * @param mode - Order mode (new, modify, close)
  * @param existingPositionSize - Size of existing position when closing
  */
-function formStateToOrderParams(
+export function formStateToOrderParams(
   formState: OrderFormState,
   currentPrice: number,
   mode: OrderMode,
@@ -91,6 +111,8 @@ function formStateToOrderParams(
       : positionSize.toString();
   const cleanAmount = formState.amount.replace(/,/gu, '');
 
+  const limitPriceClean = getValidLimitPriceFromForm(formState);
+
   const params: OrderParams = {
     symbol: formState.asset,
     isBuy,
@@ -99,11 +121,16 @@ function formStateToOrderParams(
     leverage: formState.leverage,
     currentPrice,
     usdAmount: cleanAmount,
+    priceAtCalculation: currentPrice,
+    maxSlippageBps:
+      formState.type === 'limit'
+        ? PERPS_ORDER_SLIPPAGE_BPS.LIMIT
+        : PERPS_ORDER_SLIPPAGE_BPS.MARKET,
+    ...(formState.type === 'limit' && limitPriceClean
+      ? { price: limitPriceClean }
+      : {}),
   };
 
-  if (formState.type === 'limit' && formState.limitPrice) {
-    params.price = formState.limitPrice.replace(/,/gu, '');
-  }
   if (formState.autoCloseEnabled && formState.takeProfitPrice) {
     params.takeProfitPrice = formState.takeProfitPrice.replace(/,/gu, '');
   }
@@ -158,11 +185,13 @@ const PerpsOrderEntryPage: React.FC = () => {
   const modeParam = searchParams.get('mode');
   const orderTypeParam = searchParams.get('orderType');
 
+  const initialOrderTypeFromUrl = useMemo(
+    () => (orderTypeParam === 'limit' ? 'limit' : 'market'),
+    [orderTypeParam],
+  );
+
   const [orderDirection, setOrderDirection] = useState<OrderDirection>(
     (directionParam === 'short' ? 'short' : 'long') as OrderDirection,
-  );
-  const [orderType, setOrderType] = useState<OrderType>(
-    (orderTypeParam === 'limit' ? 'limit' : 'market') as OrderType,
   );
   const [orderMode] = useState<OrderMode>(
     (modeParam === 'modify' || modeParam === 'close'
@@ -176,20 +205,15 @@ const PerpsOrderEntryPage: React.FC = () => {
     useState<OrderCalculations | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
-  const [pendingOrderSymbol, setPendingOrderSymbol] = useState<string | null>(
-    null,
-  );
 
-  const isOrderPending = isSubmitting || pendingOrderSymbol !== null;
+  const isOrderPending = isSubmitting;
 
   const isLimitPriceInvalid = useMemo(() => {
-    if (orderType !== 'limit' || !orderFormState) {
+    if (orderFormState?.type !== 'limit') {
       return false;
     }
-    const cleaned = orderFormState.limitPrice?.replace(/,/gu, '') ?? '';
-    const parsed = parseFloat(cleaned);
-    return !cleaned || isNaN(parsed) || parsed <= 0;
-  }, [orderType, orderFormState]);
+    return !getValidLimitPriceFromForm(orderFormState);
+  }, [orderFormState]);
 
   const market = useMemo(() => {
     if (!decodedSymbol) {
@@ -347,14 +371,24 @@ const PerpsOrderEntryPage: React.FC = () => {
   const displayChange =
     livePrice?.percentChange24h ?? market?.change24hPercent ?? '';
 
+  const navigateToMarketDetail = useCallback(
+    (focus?: PerpsMarketDetailFocus) => {
+      if (!decodedSymbol) {
+        return;
+      }
+      const path = `${PERPS_MARKET_DETAIL_ROUTE}/${encodeURIComponent(decodedSymbol)}`;
+      navigate(
+        focus
+          ? `${path}?${PERPS_MARKET_DETAIL_FOCUS_PARAM}=${focus}`
+          : path,
+      );
+    },
+    [navigate, decodedSymbol],
+  );
+
   const handleBackClick = useCallback(() => {
-    if (!decodedSymbol) {
-      return;
-    }
-    navigate(
-      `${PERPS_MARKET_DETAIL_ROUTE}/${encodeURIComponent(decodedSymbol)}`,
-    );
-  }, [navigate, decodedSymbol]);
+    navigateToMarketDetail();
+  }, [navigateToMarketDetail]);
 
   const handleFormStateChange = useCallback((formState: OrderFormState) => {
     setOrderFormState(formState);
@@ -399,6 +433,13 @@ const PerpsOrderEntryPage: React.FC = () => {
           parseFloat(orderFormState.amount.replace(/,/gu, '')) || 0;
 
         if (marginAmount > 0) {
+          if (
+            orderFormState.type === 'limit' &&
+            !getValidLimitPriceFromForm(orderFormState)
+          ) {
+            setSubmitError(`${t('perpsLimitPrice')}: ${t('required')}`);
+            return;
+          }
           // Add to position: place order with additional size + TP/SL
           const orderParams = formStateToOrderParams(
             orderFormState,
@@ -414,9 +455,9 @@ const PerpsOrderEntryPage: React.FC = () => {
             throw new Error(result.error || 'Failed to add to position');
           }
 
-          // Existing position is already in `allPositions`, so pending-order
-          // confirmation would resolve immediately; navigate like limit orders.
-          handleBackClick();
+          navigateToMarketDetail(
+            orderFormState.type === 'limit' ? 'orders' : 'positions',
+          );
           return;
         }
 
@@ -443,6 +484,13 @@ const PerpsOrderEntryPage: React.FC = () => {
           throw new Error(result.error || 'Failed to update TP/SL');
         }
       } else {
+        if (
+          orderFormState.type === 'limit' &&
+          !getValidLimitPriceFromForm(orderFormState)
+        ) {
+          setSubmitError(`${t('perpsLimitPrice')}: ${t('required')}`);
+          return;
+        }
         const orderParams = formStateToOrderParams(
           orderFormState,
           currentPrice,
@@ -457,11 +505,9 @@ const PerpsOrderEntryPage: React.FC = () => {
           throw new Error(result.error || 'Failed to place order');
         }
 
-        if (orderFormState.type === 'limit') {
-          handleBackClick();
-          return;
-        }
-        setPendingOrderSymbol(orderFormState.asset);
+        navigateToMarketDetail(
+          orderFormState.type === 'limit' ? 'orders' : 'positions',
+        );
         return;
       }
       handleBackClick();
@@ -480,33 +526,9 @@ const PerpsOrderEntryPage: React.FC = () => {
     position,
     currentPrice,
     handleBackClick,
+    navigateToMarketDetail,
+    t,
   ]);
-
-  useEffect(() => {
-    if (!pendingOrderSymbol) {
-      return;
-    }
-    const hasPosition = allPositions.some(
-      (p) => p.symbol === pendingOrderSymbol,
-    );
-    if (hasPosition) {
-      setPendingOrderSymbol(null);
-      setIsSubmitting(false);
-      handleBackClick();
-    }
-  }, [pendingOrderSymbol, allPositions, handleBackClick]);
-
-  useEffect(() => {
-    if (!pendingOrderSymbol) {
-      return undefined;
-    }
-    const timeout = setTimeout(() => {
-      setPendingOrderSymbol(null);
-      setIsSubmitting(false);
-      handleBackClick();
-    }, 15000);
-    return () => clearTimeout(timeout);
-  }, [pendingOrderSymbol, handleBackClick]);
 
   if (!isPerpsExperienceAvailable) {
     return <Navigate to={DEFAULT_ROUTE} replace />;
@@ -658,10 +680,9 @@ const PerpsOrderEntryPage: React.FC = () => {
           onFormStateChange={handleFormStateChange}
           onCalculationsChange={handleCalculationsChange}
           mode={orderMode}
-          orderType={orderType}
+          orderType={orderFormState?.type ?? initialOrderTypeFromUrl}
           existingPosition={existingPositionForOrder}
           midPrice={topOfBook?.midPrice}
-          onOrderTypeChange={setOrderType}
           onAddFunds={triggerDeposit}
         />
       </Box>

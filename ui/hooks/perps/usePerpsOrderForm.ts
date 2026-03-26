@@ -341,7 +341,11 @@ export function usePerpsOrderForm({
   }, []);
 
   const handleOrderTypeChange = useCallback((type: OrderType) => {
-    setFormState((prev) => ({ ...prev, type }));
+    setFormState((prev) => ({
+      ...prev,
+      type,
+      ...(type === 'market' ? { limitPrice: '' } : {}),
+    }));
   }, []);
 
   // Submit handler

@@ -334,6 +334,25 @@ describe('usePerpsOrderForm', () => {
   });
 
   describe('order type prop', () => {
+    it('clears limit price when switching to market', () => {
+      const { result } = renderHookWithProvider(
+        () => usePerpsOrderForm({ ...defaultOptions, orderType: 'limit' }),
+        mockStateWithLocale,
+      );
+
+      act(() => {
+        result.current.handleLimitPriceChange('3000');
+      });
+      expect(result.current.formState.limitPrice).toBe('3000');
+
+      act(() => {
+        result.current.handleOrderTypeChange('market');
+      });
+
+      expect(result.current.formState.type).toBe('market');
+      expect(result.current.formState.limitPrice).toBe('');
+    });
+
     it('preserves amount and leverage when orderType prop changes', () => {
       let orderType: 'market' | 'limit' = 'market';
       const { result, rerender } = renderHookWithProvider(
