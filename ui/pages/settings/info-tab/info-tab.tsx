@@ -31,6 +31,7 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import VisitSupportDataConsentModal from '../../../components/app/modals/visit-support-data-consent-modal';
+import { Divider } from '../../settings-v2/shared';
 
 export default function InfoTab(): React.ReactElement {
   const t = useI18nContext();
@@ -89,10 +90,6 @@ export default function InfoTab(): React.ReactElement {
       paddingBottom: 4 as const,
     };
 
-    const separatorBox = (
-      <Box className="mt-4 mb-4 border-t border-border-muted" />
-    );
-
     return (
       <Box
         ref={settingsRefs[1]}
@@ -142,7 +139,7 @@ export default function InfoTab(): React.ReactElement {
             </a>
           </TextButton>
         </Box>
-        {separatorBox}
+        <Divider />
         <Box ref={settingsRefs[5]} {...linkItemProps}>
           <TextButton
             onClick={toggleVisitSupportDataConsentModal}
@@ -158,7 +155,6 @@ export default function InfoTab(): React.ReactElement {
             </a>
           </TextButton>
         </Box>
-        {separatorBox}
         <Box ref={settingsRefs[7]} {...linkItemProps}>
           <TextButton asChild {...linkProps}>
             <a
