@@ -40,7 +40,6 @@ import { GlobalMenuDrawerWithList } from '../global-menu-drawer';
 import {
   getSelectedInternalAccount,
   getOriginOfCurrentTab,
-  getShowDefaultAddress,
   getIsDefaultAddressEnabled,
 } from '../../../selectors';
 // TODO: Remove restricted import
@@ -68,13 +67,11 @@ import {
 } from '../../../ducks/app/app';
 import {
   getAccountListStats,
-  getDefaultScopeAndAddressByAccountGroupId,
   getMultichainAccountGroupById,
   getSelectedAccountGroup,
 } from '../../../selectors/multichain-accounts/account-tree';
 import { trace, TraceName, TraceOperation } from '../../../../shared/lib/trace';
-import { MultichainAccountNetworkGroupWithDefaultAddress } from '../../multichain-accounts/multichain-account-network-group-with-default-address';
-import { MultichainAccountNetworkGroup } from '../../multichain-accounts/multichain-account-network-group';
+import { MultichainAccountNetworkGroupWithCopyIcon } from '../../multichain-accounts/multichain-account-network-group-with-copy-icon';
 
 type AppHeaderUnlockedContentProps = {
   disableAccountPicker: boolean;
@@ -98,14 +95,7 @@ export const AppHeaderUnlockedContent = ({
     getMultichainAccountGroupById(state, selectedMultichainAccountId),
   );
   const accountListStats = useSelector(getAccountListStats);
-  const showDefaultAddress = useSelector(getShowDefaultAddress);
   const isDefaultAddressEnabled = useSelector(getIsDefaultAddressEnabled);
-  const { defaultAddress } = useSelector((state) =>
-    getDefaultScopeAndAddressByAccountGroupId(
-      state,
-      selectedMultichainAccountId,
-    ),
-  );
 
   // Used for account picker
   const internalAccount = useSelector(getSelectedInternalAccount);
@@ -241,32 +231,9 @@ export const AppHeaderUnlockedContent = ({
               }}
               showDefaultAddressSection={isDefaultAddressEnabled}
             >
-              {isDefaultAddressEnabled &&
-              showDefaultAddress &&
-              defaultAddress ? (
-                <MultichainAccountNetworkGroupWithDefaultAddress
-                  groupId={selectedMultichainAccountId}
-                />
-              ) : (
-                <Box
-                  flexDirection={BoxFlexDirection.Row}
-                  alignItems={BoxAlignItems.Center}
-                  backgroundColor={BoxBackgroundColor.BackgroundMuted}
-                  padding={1}
-                  gap={1}
-                  className="rounded-lg"
-                >
-                  <MultichainAccountNetworkGroup
-                    groupId={selectedMultichainAccountId}
-                    limit={4}
-                  />
-                  <Icon
-                    name={IconName.Copy}
-                    size={IconSize.Sm}
-                    color={IconColor.IconAlternative}
-                  />
-                </Box>
-              )}
+              <MultichainAccountNetworkGroupWithCopyIcon
+                groupId={selectedMultichainAccountId}
+              />
             </MultichainHoveredAddressRowsList>
           </BoxDeprecated>
         )}
@@ -274,11 +241,9 @@ export const AppHeaderUnlockedContent = ({
     );
   }, [
     accountName,
-    defaultAddress,
     disableAccountPicker,
     isDefaultAddressEnabled,
     selectedMultichainAccountId,
-    showDefaultAddress,
     navigate,
     trackEvent,
     accountListStats,

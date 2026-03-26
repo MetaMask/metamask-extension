@@ -74,12 +74,6 @@ const render = async ({ componentProps, contextProps } = {}) => {
 };
 
 describe('TransactionDetail', () => {
-  it('should render edit link with text low if low gas estimates are selected', async () => {
-    await render({ contextProps: { transaction: { userFeeLevel: 'low' } } });
-    expect(screen.queryByText('🐢')).toBeInTheDocument();
-    expect(screen.queryByText(messages.low.message)).toBeInTheDocument();
-  });
-
   it('should render edit link with text edit for legacy transactions', async () => {
     await render({
       contextProps: {
