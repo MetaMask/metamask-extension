@@ -5464,6 +5464,12 @@
     "message": "Available to trade",
     "description": "Label for the available balance that can be used for trading"
   },
+  "perpsAvailableToAdd": {
+    "message": "Available to add"
+  },
+  "perpsAvailableToSubtract": {
+    "message": "Available to subtract"
+  },
   "perpsCancelAllOrders": {
     "message": "Cancel all"
   },
@@ -5591,10 +5597,16 @@
     "message": "Limit Price"
   },
   "perpsLiquidationDistance": {
-    "message": "Liq. distance"
+    "message": "Liquidation distance"
   },
   "perpsLiquidationPrice": {
     "message": "Liquidation price"
+  },
+  "perpsNewLiquidationPrice": {
+    "message": "New liquidation price"
+  },
+  "perpsNewLiquidationDistance": {
+    "message": "New liq. distance"
   },
   "perpsLong": {
     "message": "Long"

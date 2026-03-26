@@ -94,6 +94,8 @@ export type PerpsSliderProps = {
   valueText?: string | React.ReactNode;
   /** Test ID for testing */
   'data-testid'?: string;
+  /** When true, the slider is non-interactive */
+  disabled?: boolean;
 };
 
 export const PerpsSlider: React.FC<PerpsSliderProps> = ({
@@ -110,6 +112,7 @@ export const PerpsSlider: React.FC<PerpsSliderProps> = ({
   tooltipText,
   valueText,
   'data-testid': dataTestId,
+  disabled = false,
 }) => {
   const hasHeader = titleText || tooltipText || valueText || titleDetail;
   const hasFooter = infoText || onEdit;
@@ -163,6 +166,7 @@ export const PerpsSlider: React.FC<PerpsSliderProps> = ({
         step={step}
         value={value}
         onChange={onChange}
+        disabled={disabled}
         data-testid={dataTestId}
       />
 
