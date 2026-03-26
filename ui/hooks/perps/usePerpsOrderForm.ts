@@ -43,6 +43,7 @@ export type UsePerpsOrderFormReturn = {
     positionSize: string | null;
     marginRequired: string | null;
     liquidationPrice: string | null;
+    liquidationPriceRaw: number | null;
     orderValue: string | null;
     estimatedFees: string | null;
   };
