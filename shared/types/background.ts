@@ -201,7 +201,6 @@ export type ControllerStatePropertiesEnumerated = {
   balances: MultichainBalancesControllerState['balances'];
   nonEvmTransactions: MultichainTransactionsControllerState['nonEvmTransactions'];
   conversionRates: MultichainAssetsRatesControllerState['conversionRates'];
-  historicalPrices: MultichainAssetsRatesControllerState['historicalPrices'];
   assetsMetadata: MultichainAssetsControllerState['assetsMetadata'];
   accountsAssets: MultichainAssetsControllerState['accountsAssets'];
   allIgnoredAssets: MultichainAssetsControllerState['allIgnoredAssets'];
@@ -301,7 +300,6 @@ export type ControllerStatePropertiesEnumerated = {
   signature: SnapsRegistryState['signature'];
   subjectMetadata: SubjectMetadataControllerState['subjectMetadata'];
   tokenBalances: TokenBalancesControllerState['tokenBalances'];
-  allDetectedTokens: TokensControllerState['allDetectedTokens'];
   allIgnoredTokens: TokensControllerState['allIgnoredTokens'];
   allTokens: TokensControllerState['allTokens'];
   tokensChainsCache: TokenListState['tokensChainsCache'];

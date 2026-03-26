@@ -337,7 +337,6 @@ describe('getTokensControllerAllTokens', () => {
         metamask: {
           allTokens: legacyAllTokens,
           allIgnoredTokens: {},
-          allDetectedTokens: {},
         },
       };
       const result = getTokensControllerAllTokens(state);
@@ -359,7 +358,6 @@ describe('getTokensControllerAllTokens', () => {
           },
           allTokens: {},
           allIgnoredTokens: {},
-          allDetectedTokens: {},
           assetsInfo: {
             [nativeEthAssetId]: { type: 'native', decimals: 18 },
             [erc20AssetId]: {
@@ -416,7 +414,6 @@ describe('getTokensControllerAllTokens', () => {
           ...enabledFlags,
           allTokens: {},
           allIgnoredTokens: {},
-          allDetectedTokens: {},
           assetsInfo: {
             [erc20AssetId]: {
               type: 'erc20',
@@ -460,7 +457,6 @@ describe('getTokensControllerAllTokens', () => {
           ...enabledFlags,
           allTokens: {},
           allIgnoredTokens: {},
-          allDetectedTokens: {},
           assetsInfo: {
             [erc20AssetId]: {
               type: 'erc20',
@@ -501,7 +497,6 @@ describe('getTokensControllerAllTokens', () => {
           ...enabledFlags,
           allTokens: {},
           allIgnoredTokens: {},
-          allDetectedTokens: {},
           assetsInfo: {},
           assetsBalance: {
             [mockAccountId]: {
@@ -531,7 +526,6 @@ describe('getTokensControllerAllTokens', () => {
           ...enabledFlags,
           allTokens: {},
           allIgnoredTokens: {},
-          allDetectedTokens: {},
           assetsInfo: {
             [nativeEthAssetId]: {
               type: 'native',
@@ -576,7 +570,6 @@ describe('getTokensControllerAllIgnoredTokens', () => {
         metamask: {
           allIgnoredTokens: legacyAllIgnoredTokens,
           allTokens: {},
-          allDetectedTokens: {},
         },
       };
       const result = getTokensControllerAllIgnoredTokens(state);
@@ -598,7 +591,6 @@ describe('getTokensControllerAllIgnoredTokens', () => {
           },
           allIgnoredTokens: {},
           allTokens: {},
-          allDetectedTokens: {},
           assetPreferences: {
             [erc20AssetId]: { hidden: true },
             [solanaTokenAssetId]: { hidden: true },
@@ -635,7 +627,7 @@ describe('getTokensControllerAllIgnoredTokens', () => {
           ...enabledFlags,
           allIgnoredTokens: {},
           allTokens: {},
-          allDetectedTokens: {},
+
           assetPreferences: {
             [erc20AssetId]: { hidden: false },
           },
@@ -661,7 +653,6 @@ describe('getTokensControllerAllIgnoredTokens', () => {
           ...enabledFlags,
           allIgnoredTokens: {},
           allTokens: {},
-          allDetectedTokens: {},
           assetPreferences: {
             [erc20AssetId]: { hidden: true },
           },

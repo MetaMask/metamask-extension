@@ -46,7 +46,7 @@ import { createDeepEqualSelector } from './selector-creators';
 // TokensController
 // allTokens: DONE
 // allIgnoredTokens: DONE
-// allDetectedTokens: TODO (This state should be removed)
+// allDetectedTokens: DONE (Not being used)
 //
 // TokenBalancesController
 // tokenBalances: DONE

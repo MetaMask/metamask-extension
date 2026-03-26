@@ -655,7 +655,6 @@ class FixtureBuilderV2 {
         },
       },
       allIgnoredTokens: {},
-      allDetectedTokens: {},
     });
   }
 
