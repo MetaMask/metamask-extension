@@ -307,12 +307,19 @@ function getFailedJobs(): Job[] {
   const jobsPath = ATTEMPT
     ? `${repoApi}/actions/runs/${MAIN_RUN_ID}/attempts/${ATTEMPT}/jobs?per_page=100`
     : `${repoApi}/actions/runs/${MAIN_RUN_ID}/jobs?per_page=100`;
-  // --jq '.jobs' extracts the array from each page so --paginate
-  // concatenates them into a single valid JSON array (without it,
-  // multi-page responses produce concatenated JSON objects which
-  // break JSON.parse).
-  const jobs = JSON.parse(ghApi(jobsPath, { paginate: true, jq: '.jobs' }));
-  return (jobs as Job[]).filter((j) => j.conclusion === 'failure');
+  // --jq '.jobs[]' emits each job as a separate JSON object on its own
+  // line.  With --paginate, gh applies the jq filter per page and
+  // concatenates the output — using '.jobs[]' (not '.jobs') avoids the
+  // broken concatenated-arrays problem that '.jobs' would cause across
+  // multiple pages.
+  const raw = ghApi(jobsPath, { paginate: true, jq: '.jobs[]' });
+  const jobs: Job[] = [];
+  for (const line of raw.split('\n')) {
+    const trimmed = line.trim();
+    if (!trimmed) continue;
+    jobs.push(JSON.parse(trimmed) as Job);
+  }
+  return jobs.filter((j) => j.conclusion === 'failure');
 }
 
 function getAnnotations(jobId: number): Annotation[] {
