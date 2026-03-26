@@ -9,6 +9,7 @@ const fetchWithTimeout = getFetchWithTimeout();
  * @param rpcMethod - The RPC method to request.
  * @param rpcParams - The RPC method params.
  * @param options - Optional extra headers (e.g. Authorization).
+ * @param options.headers - Optional HTTP headers to include in the request.
  * @returns Returns the result of the RPC method call,
  * or throws an error in case of failure.
  */
