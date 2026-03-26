@@ -27,7 +27,9 @@ import {
   TextField,
   TextFieldSize,
 } from '../../components/component-library';
+import { isValidPerpsWithdrawAmount } from '../../components/app/perps/constants';
 import { Content, Header, Page } from '../../components/multichain/pages/page';
+import { getSelectedInternalAccount } from '../../selectors/accounts';
 import { getIsPerpsExperienceAvailable } from '../../selectors/perps/feature-flags';
 import { selectPerpsIsTestnet } from '../../selectors/perps-controller';
 import { useI18nContext } from '../../hooks/useI18nContext';
@@ -47,6 +49,7 @@ const PerpsWithdrawPage: React.FC = () => {
   const { formatCurrency } = useFormatters();
   const isPerpsExperienceAvailable = useSelector(getIsPerpsExperienceAvailable);
   const isTestnet = useSelector(selectPerpsIsTestnet);
+  const selectedAccount = useSelector(getSelectedInternalAccount);
   const { isEligible } = usePerpsEligibility();
   const { account } = usePerpsLiveAccount();
 
@@ -127,6 +130,9 @@ const PerpsWithdrawPage: React.FC = () => {
     if (amount.trim() === '') {
       return null;
     }
+    if (!isValidPerpsWithdrawAmount(amount.trim())) {
+      return t('perpsWithdrawInvalidAmount');
+    }
     if (!Number.isFinite(amountNum) || amountNum <= 0) {
       return t('perpsWithdrawInvalidAmount');
     }
@@ -140,6 +146,7 @@ const PerpsWithdrawPage: React.FC = () => {
   }, [amount, amountNum, availableNum, minWithdrawNum, minWithdrawAmount, t]);
 
   const hasValidInputs =
+    isValidPerpsWithdrawAmount(amount.trim()) &&
     Number.isFinite(amountNum) &&
     amountNum >= minWithdrawNum &&
     amountNum <= availableNum &&
@@ -151,9 +158,9 @@ const PerpsWithdrawPage: React.FC = () => {
 
   const handleAmountChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
-      const { value } = e.target;
-      if (value === '' || /^[\d,]*\.?\d*$/u.test(value)) {
-        setAmount(value);
+      const next = e.target.value.replace(/,/gu, '');
+      if (next === '' || isValidPerpsWithdrawAmount(next)) {
+        setAmount(next);
         setSubmitError(null);
       }
     },
@@ -168,7 +175,19 @@ const PerpsWithdrawPage: React.FC = () => {
     setIsSubmitting(true);
     setSubmitError(null);
 
-    const cleanAmount = amount.replace(/,/gu, '');
+    const cleanAmount = amount.replace(/,/gu, '').trim();
+
+    if (!selectedAccount?.address) {
+      setSubmitError(t('perpsWithdrawNoAccount'));
+      setIsSubmitting(false);
+      return;
+    }
+
+    if (!isValidPerpsWithdrawAmount(cleanAmount)) {
+      setSubmitError(t('perpsWithdrawInvalidAmount'));
+      setIsSubmitting(false);
+      return;
+    }
 
     try {
       const validation = await submitRequestToBackground<{
@@ -199,7 +218,15 @@ const PerpsWithdrawPage: React.FC = () => {
     } finally {
       setIsSubmitting(false);
     }
-  }, [amount, hasValidInputs, isSubmitting, navigate, t, usdcAssetId]);
+  }, [
+    amount,
+    hasValidInputs,
+    isSubmitting,
+    navigate,
+    selectedAccount?.address,
+    t,
+    usdcAssetId,
+  ]);
 
   if (!isPerpsExperienceAvailable) {
     return <Navigate to={DEFAULT_ROUTE} replace />;

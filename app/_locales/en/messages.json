@@ -5927,6 +5927,9 @@
     "message": "~$1 min",
     "description": "$1 is the estimated number of minutes"
   },
+  "perpsWithdrawNoAccount": {
+    "message": "No account selected. Select an account and try again."
+  },
   "perpsWithdrawRoutesError": {
     "message": "Could not load withdrawal limits. Try again later."
   },

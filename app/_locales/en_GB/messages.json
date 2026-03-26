@@ -5895,6 +5895,9 @@
   "perpsWithdraw": {
     "message": "Withdraw"
   },
+  "perpsWithdrawNoAccount": {
+    "message": "No account selected. Select an account and try again."
+  },
   "perpsYouWillReceive": {
     "message": "You'll receive"
   },

@@ -4,9 +4,26 @@ import userEvent from '@testing-library/user-event';
 import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
 import configureStore from '../../store/store';
 import mockState from '../../../test/data/mock-state.json';
+import * as accountsSelectors from '../../selectors/accounts';
 import { getIsPerpsExperienceAvailable } from '../../selectors/perps/feature-flags';
 import PerpsWithdrawPage from './perps-withdraw-page';
 import { submitRequestToBackground } from '../../store/background-connection';
+
+jest.mock('@metamask/perps-controller', () => ({
+  HYPERLIQUID_ASSET_CONFIGS: {
+    usdc: {
+      mainnet:
+        'eip155:42161/erc20:0xaf88d065e77c8cC2239327C5EDb3A432268e5831',
+      testnet:
+        'eip155:421614/erc20:0x75faf114eafb1BDbe2F0316DF893fd58CE46AA4d',
+    },
+  },
+  HYPERLIQUID_WITHDRAWAL_MINUTES: 30,
+  WITHDRAWAL_CONSTANTS: {
+    DefaultMinAmount: '1.01',
+    DefaultFeeAmount: 1,
+  },
+}));
 
 const mockNavigate = jest.fn();
 
@@ -128,5 +145,74 @@ describe('PerpsWithdrawPage', () => {
     fireEvent.click(screen.getByTestId('perps-withdraw-back-button'));
 
     expect(mockNavigate).toHaveBeenCalledWith('/');
+  });
+
+  it('does not accept more than six decimal places in the amount field', async () => {
+    const user = userEvent.setup();
+    renderWithProvider(<PerpsWithdrawPage />, createMockStore());
+
+    await waitFor(() => {
+      expect(mockSubmit).toHaveBeenCalledWith('perpsGetWithdrawalRoutes', []);
+    });
+
+    await user.type(
+      screen.getByTestId('perps-withdraw-amount-input'),
+      '1.1234567',
+    );
+
+    expect(screen.getByTestId('perps-withdraw-amount-input')).toHaveValue(
+      '1.123456',
+    );
+  });
+
+  it('does not call perpsValidateWithdrawal when no account is selected', async () => {
+    const user = userEvent.setup();
+    const spy = jest
+      .spyOn(accountsSelectors, 'getSelectedInternalAccount')
+      .mockReturnValue(undefined);
+
+    renderWithProvider(<PerpsWithdrawPage />, createMockStore());
+
+    await waitFor(() => {
+      expect(mockSubmit).toHaveBeenCalledWith('perpsGetWithdrawalRoutes', []);
+    });
+
+    await user.type(screen.getByTestId('perps-withdraw-amount-input'), '50');
+    await user.click(screen.getByTestId('perps-withdraw-continue'));
+
+    await waitFor(() => {
+      expect(
+        screen.getByText('No account selected. Select an account and try again.'),
+      ).toBeInTheDocument();
+    });
+
+    expect(mockSubmit).not.toHaveBeenCalledWith(
+      'perpsValidateWithdrawal',
+      expect.any(Array),
+    );
+
+    spy.mockRestore();
+  });
+
+  it('accepts six decimal places and submits withdrawal', async () => {
+    const user = userEvent.setup();
+    renderWithProvider(<PerpsWithdrawPage />, createMockStore());
+
+    await waitFor(() => {
+      expect(mockSubmit).toHaveBeenCalledWith('perpsGetWithdrawalRoutes', []);
+    });
+
+    await user.type(
+      screen.getByTestId('perps-withdraw-amount-input'),
+      '10.123456',
+    );
+    await user.click(screen.getByTestId('perps-withdraw-continue'));
+
+    await waitFor(() => {
+      expect(mockSubmit).toHaveBeenCalledWith(
+        'perpsValidateWithdrawal',
+        expect.any(Array),
+      );
+    });
   });
 });
