@@ -132,13 +132,6 @@ export const MusdBuyGetCta: React.FC<MusdBuyGetCtaProps> = ({
   }, [variant, t]);
 
   /**
-   * Subtitle text with bonus percentage
-   */
-  const subtitleText = t('musdEarnBonusPercentage', [
-    String(MUSD_CONVERSION_APY),
-  ]);
-
-  /**
    * Handle CTA click
    */
   const handleClick = useCallback(() => {
@@ -241,11 +234,15 @@ export const MusdBuyGetCta: React.FC<MusdBuyGetCtaProps> = ({
         flexDirection={BoxFlexDirection.Column}
         className="musd-buy-get-cta__text"
       >
-        <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
-          {ctaText}
+        <Text variant={TextVariant.BodyMd} color={TextColor.TextAlternative}>
+          {t('musdBoostTitle', [String(MUSD_CONVERSION_APY)])}
         </Text>
-        <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
-          {subtitleText}
+        <Text
+          variant={TextVariant.BodySm}
+          fontWeight={FontWeight.Medium}
+          color={TextColor.TextDefault}
+        >
+          {t('musdBoostDescription', [String(MUSD_CONVERSION_APY)])}
         </Text>
       </Box>
 

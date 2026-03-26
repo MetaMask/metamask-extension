@@ -81,6 +81,14 @@ describe('ClaimableBonusRow', () => {
     );
   });
 
+  it('exposes an accessible name on the claimable bonus info control', () => {
+    const { getByRole } = render();
+
+    expect(
+      getByRole('button', { name: 'Claimable bonus details' }),
+    ).toBeInTheDocument();
+  });
+
   it('opens tooltip popover when info button is clicked', () => {
     const { getByTestId } = render();
 

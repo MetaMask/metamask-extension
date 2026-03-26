@@ -30,6 +30,7 @@ describe('InfoPopoverTooltip', () => {
 
     expect(getByTestId('test-tooltip')).toBeInTheDocument();
     expect(getByTestId('test-tooltip')).toHaveTextContent('Tooltip content');
+    expect(getByTestId('test-tooltip')).toHaveStyle({ maxWidth: '250px' });
   });
 
   it('closes the popover when clicking outside', () => {

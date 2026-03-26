@@ -1,6 +1,6 @@
 import React from 'react';
 import { DefaultRootState } from 'react-redux';
-import { fireEvent } from '@testing-library/react';
+import { act, fireEvent } from '@testing-library/react';
 import { TransactionType } from '@metamask/transaction-controller';
 
 import { getMockConfirmStateForTransaction } from '../../../../../../test/data/confirmations/helper';
@@ -80,12 +80,30 @@ describe('<SimpleConfirmationHeader />', () => {
       ).toBeInTheDocument();
     });
 
+    it('exposes an accessible name on the mUSD bonus info control', () => {
+      const { getByRole } = render(TransactionType.musdConversion);
+
+      expect(
+        getByRole('button', { name: 'Bonus details' }),
+      ).toBeInTheDocument();
+    });
+
     it('shows tooltip when info button is clicked', () => {
       const { getByTestId } = render(TransactionType.musdConversion);
 
       fireEvent.click(getByTestId('musd-conversion-header-tooltip-button'));
 
       expect(getByTestId('musd-conversion-header-tooltip')).toBeInTheDocument();
+    });
+
+    it('shows Powered by Relay attribution in the mUSD bonus tooltip', async () => {
+      const { getByTestId, getByText } = render(TransactionType.musdConversion);
+
+      await act(async () => {
+        fireEvent.click(getByTestId('musd-conversion-header-tooltip-button'));
+      });
+
+      expect(getByText('Powered by Relay')).toBeInTheDocument();
     });
   });
 
