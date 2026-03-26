@@ -59,7 +59,9 @@ export async function jsonRpcRequest(
 
   if (error) {
     throw new Error(
-      typeof error === 'object' ? error.message : error,
+      typeof error === 'object'
+        ? (error.message ?? JSON.stringify(error))
+        : error,
     );
   }
   return result;
