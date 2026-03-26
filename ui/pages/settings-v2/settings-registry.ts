@@ -129,7 +129,7 @@ export const SETTINGS_V2_ROUTES: Record<string, SettingsV2RouteMeta> = {
   [NOTIFICATIONS_SETTINGS_ROUTE]: {
     labelKey: 'notifications',
     parentPath: SETTINGS_V2_ROUTE,
-    component: mmLazy(() => import('./notifications-tab/index.tsx')),
+    component: mmLazy(() => import('./notifications-tab/index.ts')),
     isTab: true,
     iconName: IconName.Notification,
   },
