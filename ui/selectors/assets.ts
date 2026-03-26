@@ -93,7 +93,10 @@ import {
   getSelectedMultichainNetworkConfiguration,
   MultichainNetworkControllerState,
 } from './multichain/networks';
-import { getInternalAccountBySelectedAccountGroupAndCaip } from './multichain-accounts/account-tree';
+import {
+  getInternalAccountBySelectedAccountGroupAndCaip,
+  getSelectedAccountGroup,
+} from './multichain-accounts/account-tree';
 
 export type AssetsState = {
   metamask: MultichainAssetsControllerState;
@@ -207,6 +210,7 @@ export const selectAggregatedBalanceForSelectedAccount = createSelector(
     getCustomAssets,
     getCurrentCurrency,
     getSelectedInternalAccount,
+    getSelectedAccountGroup,
     getEnabledNetworks,
     (state: AggregatedBalanceState) => state.metamask?.accountTree,
     (state: AggregatedBalanceState) =>
@@ -238,6 +242,7 @@ export const selectAggregatedBalanceForSelectedAccount = createSelector(
     customAssets,
     selectedCurrency,
     selectedInternalAccount,
+    selectedAccountGroup,
     enabledNetworkMap,
     accountTree,
     isAccountTreeSyncingInProgress,
@@ -260,6 +265,7 @@ export const selectAggregatedBalanceForSelectedAccount = createSelector(
     };
     const accountTreeState: AccountTreeControllerState | undefined = accountTree
       ? {
+          selectedAccountGroup,
           accountTree,
           isAccountTreeSyncingInProgress:
             isAccountTreeSyncingInProgress ?? false,

@@ -97,6 +97,7 @@ const createMockAccountGroups = (): AccountGroupWithInternalAccounts[] => [
       entropy: {
         groupIndex: 0,
       },
+      lastSelected: 0,
     },
     accounts: [
       {
@@ -121,6 +122,7 @@ const createMockAccountGroups = (): AccountGroupWithInternalAccounts[] => [
       entropy: {
         groupIndex: 1,
       },
+      lastSelected: 0,
     },
     accounts: [
       {
@@ -145,6 +147,7 @@ const createMockAccountGroups = (): AccountGroupWithInternalAccounts[] => [
       entropy: {
         groupIndex: 2,
       },
+      lastSelected: 0,
     },
     accounts: [
       {
@@ -184,6 +187,7 @@ const createMockState = (overrides = {}) => {
               entropy: {
                 groupIndex: 0,
               },
+              lastSelected: 0,
             },
             accounts: [mockEvmAccount1.id, mockSolAccount1.id],
           },
@@ -197,6 +201,7 @@ const createMockState = (overrides = {}) => {
               entropy: {
                 groupIndex: 1,
               },
+              lastSelected: 0,
             },
             accounts: [mockEvmAccount2.id, mockSolAccount2.id],
           },
@@ -210,6 +215,7 @@ const createMockState = (overrides = {}) => {
               entropy: {
                 groupIndex: 2,
               },
+              lastSelected: 0,
             },
             accounts: [mockEvmAccount3.id, mockSolAccount3.id],
           },
