@@ -107,8 +107,8 @@ describe('Dapp viewed Event', function () {
         await connectAccountToTestDapp(driver, {
           publicAddress: DEFAULT_FIXTURE_ACCOUNT,
         });
-
         const events = await getEventPayloads(driver, mockedEndpoints);
+        console.log(events);
         assert.equal(events.length, 0);
       },
     );
