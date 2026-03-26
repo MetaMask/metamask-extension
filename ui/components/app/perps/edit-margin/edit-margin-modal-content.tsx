@@ -105,6 +105,73 @@ export const EditMarginModalContent: React.FC<EditMarginModalContentProps> = ({
   );
   const showLiquidationComparison = amountNumForDisplay > 0;
 
+  const liquidationPriceDisplay = useMemo(() => {
+    if (
+      anchorLiquidationPrice === null ||
+      !Number.isFinite(anchorLiquidationPrice)
+    ) {
+      return (
+        <Text variant={TextVariant.BodySm} fontWeight={FontWeight.Medium}>
+          -
+        </Text>
+      );
+    }
+    if (
+      showLiquidationComparison &&
+      estimatedLiquidationPrice !== null &&
+      Number.isFinite(estimatedLiquidationPrice)
+    ) {
+      return (
+        <Box
+          flexDirection={BoxFlexDirection.Row}
+          alignItems={BoxAlignItems.Center}
+          gap={1}
+          className="max-w-[65%] flex-wrap justify-end"
+        >
+          <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
+            $
+            {formatNumber(anchorLiquidationPrice, {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2,
+            })}
+          </Text>
+          <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
+            →
+          </Text>
+          <Text
+            variant={TextVariant.BodySm}
+            color={TextColor.TextDefault}
+            fontWeight={FontWeight.Medium}
+          >
+            $
+            {formatNumber(estimatedLiquidationPrice, {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2,
+            })}
+          </Text>
+        </Box>
+      );
+    }
+    return (
+      <Text
+        variant={TextVariant.BodySm}
+        color={TextColor.TextDefault}
+        fontWeight={FontWeight.Medium}
+      >
+        $
+        {formatNumber(estimatedLiquidationPrice ?? anchorLiquidationPrice, {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2,
+        })}
+      </Text>
+    );
+  }, [
+    anchorLiquidationPrice,
+    estimatedLiquidationPrice,
+    showLiquidationComparison,
+    formatNumber,
+  ]);
+
   const formatAmount = useCallback(
     (value: number): string =>
       formatNumber(value, {
@@ -328,55 +395,7 @@ export const EditMarginModalContent: React.FC<EditMarginModalContentProps> = ({
           <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
             {t('perpsLiquidationPrice')}
           </Text>
-          {anchorLiquidationPrice === null ||
-          !Number.isFinite(anchorLiquidationPrice) ? (
-            <Text variant={TextVariant.BodySm} fontWeight={FontWeight.Medium}>
-              -
-            </Text>
-          ) : showLiquidationComparison &&
-            estimatedLiquidationPrice !== null &&
-            Number.isFinite(estimatedLiquidationPrice) ? (
-            <Box
-              flexDirection={BoxFlexDirection.Row}
-              alignItems={BoxAlignItems.Center}
-              gap={1}
-              className="max-w-[65%] flex-wrap justify-end"
-            >
-              <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
-                $
-                {formatNumber(anchorLiquidationPrice, {
-                  minimumFractionDigits: 2,
-                  maximumFractionDigits: 2,
-                })}
-              </Text>
-              <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
-                →
-              </Text>
-              <Text
-                variant={TextVariant.BodySm}
-                color={TextColor.TextDefault}
-                fontWeight={FontWeight.Medium}
-              >
-                $
-                {formatNumber(estimatedLiquidationPrice, {
-                  minimumFractionDigits: 2,
-                  maximumFractionDigits: 2,
-                })}
-              </Text>
-            </Box>
-          ) : (
-            <Text
-              variant={TextVariant.BodySm}
-              color={TextColor.TextDefault}
-              fontWeight={FontWeight.Medium}
-            >
-              $
-              {formatNumber(estimatedLiquidationPrice ?? anchorLiquidationPrice, {
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2,
-              })}
-            </Text>
-          )}
+          {liquidationPriceDisplay}
         </Box>
 
         <Box
