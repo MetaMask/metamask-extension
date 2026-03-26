@@ -48,8 +48,7 @@ describe('Hide tokens without balance', function (this: Suite) {
         await assetsSettings.checkAssetsPageIsLoaded();
         await assetsSettings.toggleHideTokensWithoutBalance();
         const settingsPage = new SettingsPage(driver);
-        await settingsPage.closeSettingsPage();
-        await settingsPage.closeSettingsPage();
+        await settingsPage.clickBackButton();
 
         // Check that tokens with zero balances are hidden, tokens with non-zero balances remain visible
         await new HomePage(driver).checkPageIsLoaded();

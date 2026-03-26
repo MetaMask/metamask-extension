@@ -41,7 +41,7 @@ describe('Clear account activity', function (this: Suite) {
         const advancedSettings = new AdvancedSettings(driver);
         await advancedSettings.checkPageIsLoaded();
         await advancedSettings.clearActivityTabData();
-        await settingsPage.closeSettingsPage();
+        await settingsPage.clickBackButton();
 
         await activityList.checkNoTxInActivity();
       },

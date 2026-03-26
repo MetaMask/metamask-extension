@@ -19,7 +19,7 @@ export const enableTestNetworks = async (driver: Driver): Promise<void> => {
   const advancedSettings = new AdvancedSettings(driver);
   await advancedSettings.checkPageIsLoaded();
   await advancedSettings.toggleShowTestnets();
-  await settingsPage.closeSettingsPage();
+  await settingsPage.clickBackButton();
 };
 
 /**
@@ -38,6 +38,5 @@ export const enableNativeTokenAsMainBalance = async (
   await assetsSettings.toggleShowNativeTokenAsMainBalance();
 
   const settingsPage = new SettingsPage(driver);
-  await settingsPage.closeSettingsPage();
-  await settingsPage.closeSettingsPage();
+  await settingsPage.clickBackButton();
 };

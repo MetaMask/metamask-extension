@@ -161,19 +161,6 @@ class SettingsPage {
     );
   }
 
-  async exitSettings(): Promise<void> {
-    console.log('Exiting settings page');
-    await this.closeSettingsPage();
-  }
-
-  async closeSettingsPage(): Promise<void> {
-    console.log('Closing Settings page');
-    await this.driver.executeScript(
-      `window.location.hash = ${JSON.stringify(DEFAULT_ROUTE)};`,
-    );
-    await new HomePage(this.driver).checkPageIsLoaded();
-  }
-
   async goToAboutPage(): Promise<void> {
     console.log('Navigating to About page');
     await this.driver.clickElement(this.aboutViewButton);

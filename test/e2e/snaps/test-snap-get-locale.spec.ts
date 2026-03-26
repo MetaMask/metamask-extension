@@ -57,8 +57,7 @@ describe('Test Snap Get Locale', function () {
 
         await preferencesAndDisplaySettings.assertLoadingOverlayNotPresent();
         const settingsPage = new SettingsPage(driver);
-        await settingsPage.closeSettingsPage();
-        await settingsPage.closeSettingsPage();
+        await settingsPage.clickBackButton();
 
         await homePage.headerNavbar.openSnapListPage();
         await driver.waitForSelector({

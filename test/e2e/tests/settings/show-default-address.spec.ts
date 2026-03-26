@@ -70,8 +70,7 @@ describe('Show default address', function (this: Suite) {
         await preferencesAndDisplaySettings.checkPageIsLoaded();
         await preferencesAndDisplaySettings.toggleShowDefaultAddress();
         const settingsPage = new SettingsPage(driver);
-        await settingsPage.closeSettingsPage();
-        await settingsPage.closeSettingsPage();
+        await settingsPage.clickBackButton();
 
         // Check on home page that default address is not present
         await homePage.checkPageIsLoaded();

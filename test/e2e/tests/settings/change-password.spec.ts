@@ -46,7 +46,7 @@ async function doPasswordChangeAndLockWallet(
 
   await privacySettings.checkPasswordChangeSuccessToastIsDisplayed();
 
-  await settingsPage.closeSettingsPage();
+  await settingsPage.clickBackButton();
 
   // Wait for the password change to be applied
   await driver.delay(2_000);

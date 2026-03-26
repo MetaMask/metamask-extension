@@ -109,7 +109,7 @@ describe('Multichain Aggregated Balances', function (this: Suite) {
         await settingsPage.toggleBalanceSetting();
         await settingsPage.goToAdvancedSettings();
         await settingsPage.toggleShowFiatOnTestnets();
-        await settingsPage.closeSettingsPage();
+        await settingsPage.clickBackButton();
 
         console.log('Step 8: Verify USD balance on Sepolia network');
         await homepage.checkExpectedBalanceIsDisplayed(

@@ -122,7 +122,7 @@ describe('Delete MetaMetrics Data', function (this: Suite) {
           environment_type: 'fullscreen',
         });
 
-        await settingsPage.closeSettingsPage();
+        await settingsPage.clickBackButton();
         await new HomePage(driver).checkPageIsLoaded();
         await headerNavbar.openSettingsPage();
         await settingsPage.checkPageIsLoaded();

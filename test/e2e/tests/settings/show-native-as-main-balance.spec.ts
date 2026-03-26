@@ -136,7 +136,7 @@ describe('Settings: Show native token as main balance', function () {
         // go to setting and back to home page and make sure popover is not shown again
         await homePage.headerNavbar.openSettingsPage();
         await settingsPage.checkPageIsLoaded();
-        await settingsPage.closeSettingsPage();
+        await settingsPage.clickBackButton();
         await homePage.checkPageIsLoaded();
       },
     );

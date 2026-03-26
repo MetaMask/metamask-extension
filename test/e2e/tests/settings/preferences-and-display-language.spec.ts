@@ -136,8 +136,7 @@ describe('Settings V2 - Preferences and display', function (this: Suite) {
         assert.equal(isLanguageLabelChanged, true, 'Language did not change');
 
         const settingsPage = new SettingsPage(driver);
-        await settingsPage.closeSettingsPage();
-        await settingsPage.closeSettingsPage();
+        await settingsPage.clickBackButton();
 
         const homepage = new Homepage(driver);
         await homepage.checkPageIsLoaded();
@@ -182,8 +181,7 @@ describe('Settings V2 - Preferences and display', function (this: Suite) {
         assert.equal(isLabelTextChanged, true, 'Language did not change');
 
         const settingsPage = new SettingsPage(driver);
-        await settingsPage.closeSettingsPage();
-        await settingsPage.closeSettingsPage();
+        await settingsPage.clickBackButton();
         const homepage = new Homepage(driver);
         await homepage.checkPageIsLoaded();
         await homepage.checkExpectedBalanceIsDisplayed();
