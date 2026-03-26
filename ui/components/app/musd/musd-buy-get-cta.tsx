@@ -131,13 +131,6 @@ export const MusdBuyGetCta: React.FC<MusdBuyGetCtaProps> = ({
     }
   }, [variant, t]);
 
-  /**
-   * Subtitle text with bonus percentage
-   */
-  const subtitleText = t('musdEarnBonusPercentage', [
-    String(MUSD_CONVERSION_APY),
-  ]);
-
   // Product name line (same for BUY and GET); action copy is ctaButtonText.
   const ctaText = t('musdMetaMaskUsd');
 
@@ -240,11 +233,15 @@ export const MusdBuyGetCta: React.FC<MusdBuyGetCtaProps> = ({
         flexDirection={BoxFlexDirection.Column}
         className="musd-buy-get-cta__text"
       >
-        <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
+        <Text variant={TextVariant.BodyMd} color={TextColor.TextAlternative}>
           {ctaText}
         </Text>
-        <Text variant={TextVariant.BodySm} color={TextColor.PrimaryDefault}>
-          {subtitleText}
+        <Text
+          variant={TextVariant.BodySm}
+          fontWeight={FontWeight.Medium}
+          color={TextColor.PrimaryDefault}
+        >
+          {t('musdBoostDescription', [String(MUSD_CONVERSION_APY)])}
         </Text>
       </Box>
 
