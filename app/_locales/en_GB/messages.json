@@ -5569,6 +5569,15 @@
   "perpsGiveFeedback": {
     "message": "Give us feedback"
   },
+  "perps.support.title": {
+    "message": "MetaMask Help Center"
+  },
+  "perps.support.description": {
+    "message": "Get help with MetaMask and Perps"
+  },
+  "perps.feedback.title": {
+    "message": "Perps feedback"
+  },
   "perpsIncludesPnl": {
     "message": "includes P&L $1"
   },
