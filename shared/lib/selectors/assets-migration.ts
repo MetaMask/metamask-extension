@@ -921,28 +921,26 @@ export const getRatesControllerRates = createDeepEqualSelector(
     const result: RatesControllerState['rates'] = {};
 
     for (const [assetId, metadata] of Object.entries(assetsInfo)) {
+      const symbol = metadata.symbol.toLowerCase();
+
       // Skip if we already have an entry for this symbol
-      if (result[metadata.symbol]) {
+      if (result[symbol]) {
         continue;
       }
 
       const assetType = parseCaipAssetType(assetId as CaipAssetType);
+      const price = assetsPrice[assetId];
 
-      // Skip if not a native asset or not evm
+      // Skip if not a native asset, if evm or if not fungible
       if (
         metadata.type !== 'native' ||
-        assetType.chain.namespace === KnownCaipNamespace.Eip155
+        assetType.chain.namespace === KnownCaipNamespace.Eip155 ||
+        price?.assetPriceType !== 'fungible'
       ) {
         continue;
       }
 
-      const price = assetsPrice[assetId];
-
-      if (price?.assetPriceType !== 'fungible') {
-        continue;
-      }
-
-      result[metadata.symbol.toLowerCase()] = {
+      result[symbol] = {
         conversionDate: price.lastUpdated,
         conversionRate: price.price,
         usdConversionRate: price.usdPrice,
