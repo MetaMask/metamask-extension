@@ -5673,9 +5673,6 @@
   "perpsPosition": {
     "message": "Posisyon"
   },
-  "perpsPositionClosedReverseOrderFailed": {
-    "message": "Isinara ang posisyon mo pero pumalya ang reverse order. Posibleng kailanganin mong manu-manong magbukas ng bagong posisyon"
-  },
   "perpsPositionSize": {
     "message": "Laki ng Posisyon"
   },

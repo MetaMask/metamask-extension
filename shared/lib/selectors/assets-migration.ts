@@ -704,19 +704,7 @@ export const getCurrencyRateControllerCurrencyRates = createDeepEqualSelector(
         continue;
       }
 
-      // assetsInfo may use slip44:60 (EVM standard) for native tokens while assetsPrice
-      // uses the chain-specific slip44 (e.g., slip44:9005 for AVAX on eip155:43114).
-      // Fall back to any slip44 key for the same chain when the direct lookup misses.
-      let price = assetsPrice[assetId];
-      if (!price) {
-        const chainNativePrefix = `${assetType.chain.namespace}:${assetType.chain.reference}/slip44:`;
-        const fallbackKey = Object.keys(assetsPrice).find((key) =>
-          key.startsWith(chainNativePrefix),
-        );
-        if (fallbackKey) {
-          price = assetsPrice[fallbackKey];
-        }
-      }
+      const price = assetsPrice[assetId];
 
       if (price?.assetPriceType !== 'fungible') {
         continue;
@@ -771,21 +759,7 @@ export const getTokenRatesControllerMarketData = createDeepEqualSelector(
         continue;
       }
 
-      // assetsPrice may use a chain-specific slip44 (e.g., slip44:9005 for AVAX)
-      // while assetsInfo uses slip44:60 (EVM standard). Fall back to any slip44
-      // key for the same chain when the direct lookup misses.
-      // Guard: only attempt fallback for slip44 (native) assets to avoid
-      // misattributing an ERC-20 price entry to the native token address.
-      let metadata = assetsInfo[assetId];
-      if (!metadata && assetType.assetNamespace === 'slip44') {
-        const chainNativePrefix = `${assetType.chain.namespace}:${assetType.chain.reference}/slip44:`;
-        const fallbackKey = Object.keys(assetsInfo).find((key) =>
-          key.startsWith(chainNativePrefix),
-        );
-        if (fallbackKey) {
-          metadata = assetsInfo[fallbackKey];
-        }
-      }
+      const metadata = assetsInfo[assetId];
       if (!metadata) {
         continue;
       }

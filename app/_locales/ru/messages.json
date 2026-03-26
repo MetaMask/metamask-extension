@@ -5673,9 +5673,6 @@
   "perpsPosition": {
     "message": "Позиция"
   },
-  "perpsPositionClosedReverseOrderFailed": {
-    "message": "Ваша позиция была закрыта, но обратный ордер не выполнен. Возможно, вам придется вручную открыть новую позицию"
-  },
   "perpsPositionSize": {
     "message": "Размер позиции"
   },

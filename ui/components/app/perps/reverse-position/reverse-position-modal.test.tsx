@@ -39,10 +39,7 @@ describe('ReversePositionModal', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockSubmitRequestToBackground.mockImplementation((method: string) => {
-      if (method === 'perpsClosePosition') {
-        return Promise.resolve({ success: true });
-      }
-      if (method === 'perpsPlaceOrder') {
+      if (method === 'perpsFlipPosition') {
         return Promise.resolve({ success: true });
       }
       if (method === 'perpsGetPositions') {
@@ -139,7 +136,7 @@ describe('ReversePositionModal', () => {
   });
 
   describe('successful save', () => {
-    it('closes the position and places a reverse order', async () => {
+    it('calls perpsFlipPosition once with symbol and position payload', async () => {
       const onClose = jest.fn();
 
       renderWithProvider(
@@ -151,27 +148,28 @@ describe('ReversePositionModal', () => {
 
       await waitFor(() => {
         expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
-          'perpsClosePosition',
-          [{ symbol: 'ETH', orderType: 'market' }],
-        );
-      });
-
-      await waitFor(() => {
-        expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
-          'perpsPlaceOrder',
+          'perpsFlipPosition',
           [
             {
               symbol: 'ETH',
-              isBuy: false, // long→short: isBuy=false
-              size: '2.5',
-              orderType: 'market',
-              usdAmount: '7250.00', // 2.5 * 2900
-              currentPrice: 2900,
-              leverage: 3,
+              position: expect.objectContaining({
+                symbol: 'ETH',
+                size: '2.5',
+                leverage: expect.objectContaining({ value: 3 }),
+              }),
             },
           ],
         );
       });
+
+      expect(mockSubmitRequestToBackground).not.toHaveBeenCalledWith(
+        'perpsClosePosition',
+        expect.anything(),
+      );
+      expect(mockSubmitRequestToBackground).not.toHaveBeenCalledWith(
+        'perpsPlaceOrder',
+        expect.anything(),
+      );
 
       await waitFor(() => {
         expect(onClose).toHaveBeenCalled();
@@ -193,7 +191,7 @@ describe('ReversePositionModal', () => {
       });
     });
 
-    it('places a buy order when reversing a short position', async () => {
+    it('calls flip with short position when reversing a short', async () => {
       renderWithProvider(
         <ReversePositionModal
           {...defaultProps}
@@ -207,24 +205,26 @@ describe('ReversePositionModal', () => {
 
       await waitFor(() => {
         expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
-          'perpsPlaceOrder',
+          'perpsFlipPosition',
           [
-            expect.objectContaining({
+            {
               symbol: 'BTC',
-              isBuy: true, // short→long: isBuy=true
-              size: '0.5',
-              leverage: 15,
-            }),
+              position: expect.objectContaining({
+                symbol: 'BTC',
+                size: '-0.5',
+                leverage: expect.objectContaining({ value: 15 }),
+              }),
+            },
           ],
         );
       });
     });
   });
 
-  describe('close fails', () => {
-    it('displays error when closePosition returns failure', async () => {
+  describe('flip fails', () => {
+    it('displays error when perpsFlipPosition returns failure', async () => {
       mockSubmitRequestToBackground.mockImplementation((method: string) => {
-        if (method === 'perpsClosePosition') {
+        if (method === 'perpsFlipPosition') {
           return Promise.resolve({
             success: false,
             error: 'Insufficient margin',
@@ -242,9 +242,9 @@ describe('ReversePositionModal', () => {
       });
     });
 
-    it('does not call placeOrder when close fails', async () => {
+    it('does not call perpsClosePosition or perpsPlaceOrder when flip fails', async () => {
       mockSubmitRequestToBackground.mockImplementation((method: string) => {
-        if (method === 'perpsClosePosition') {
+        if (method === 'perpsFlipPosition') {
           return Promise.resolve({ success: false, error: 'fail' });
         }
         return Promise.resolve(undefined);
@@ -259,15 +259,19 @@ describe('ReversePositionModal', () => {
       });
 
       expect(mockSubmitRequestToBackground).not.toHaveBeenCalledWith(
+        'perpsClosePosition',
+        expect.anything(),
+      );
+      expect(mockSubmitRequestToBackground).not.toHaveBeenCalledWith(
         'perpsPlaceOrder',
         expect.anything(),
       );
     });
 
-    it('does not call onClose when close fails', async () => {
+    it('does not call onClose when flip fails', async () => {
       const onClose = jest.fn();
       mockSubmitRequestToBackground.mockImplementation((method: string) => {
-        if (method === 'perpsClosePosition') {
+        if (method === 'perpsFlipPosition') {
           return Promise.resolve({ success: false, error: 'fail' });
         }
         return Promise.resolve(undefined);
@@ -287,61 +291,10 @@ describe('ReversePositionModal', () => {
     });
   });
 
-  describe('reverse order fails after close succeeds (partial failure)', () => {
-    it('shows partial failure error when placeOrder fails after close succeeds', async () => {
-      mockSubmitRequestToBackground.mockImplementation((method: string) => {
-        if (method === 'perpsClosePosition') {
-          return Promise.resolve({ success: true });
-        }
-        if (method === 'perpsPlaceOrder') {
-          return Promise.resolve({ success: false, error: 'Order rejected' });
-        }
-        return Promise.resolve(undefined);
-      });
-
-      renderWithProvider(<ReversePositionModal {...defaultProps} />, mockStore);
-
-      fireEvent.click(screen.getByTestId('perps-reverse-position-modal-save'));
-
-      await waitFor(() => {
-        const errorText = screen.getByText(/Order rejected/u);
-        expect(errorText).toBeInTheDocument();
-        expect(errorText.textContent).toContain(
-          messages.perpsPositionClosedReverseOrderFailed.message,
-        );
-      });
-    });
-
-    it('does not call onClose on partial failure', async () => {
-      const onClose = jest.fn();
-      mockSubmitRequestToBackground.mockImplementation((method: string) => {
-        if (method === 'perpsClosePosition') {
-          return Promise.resolve({ success: true });
-        }
-        if (method === 'perpsPlaceOrder') {
-          return Promise.resolve({ success: false, error: 'rejected' });
-        }
-        return Promise.resolve(undefined);
-      });
-
-      renderWithProvider(
-        <ReversePositionModal {...defaultProps} onClose={onClose} />,
-        mockStore,
-      );
-
-      fireEvent.click(screen.getByTestId('perps-reverse-position-modal-save'));
-
-      await waitFor(() => {
-        expect(screen.getByText(/rejected/u)).toBeInTheDocument();
-      });
-      expect(onClose).not.toHaveBeenCalled();
-    });
-  });
-
   describe('exception handling', () => {
     it('shows error when submitRequestToBackground throws', async () => {
       mockSubmitRequestToBackground.mockImplementation((method: string) => {
-        if (method === 'perpsClosePosition') {
+        if (method === 'perpsFlipPosition') {
           return Promise.reject(new Error('Network error'));
         }
         return Promise.resolve(undefined);
@@ -375,7 +328,7 @@ describe('ReversePositionModal', () => {
   });
 
   describe('leverage fallback', () => {
-    it('uses numeric leverage value when leverage is a plain number', async () => {
+    it('normalizes primitive leverage for flip payload', async () => {
       const positionWithPrimitiveLeverage = {
         ...longPosition,
         leverage: 5 as unknown as typeof longPosition.leverage,
@@ -393,11 +346,14 @@ describe('ReversePositionModal', () => {
 
       await waitFor(() => {
         expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
-          'perpsPlaceOrder',
+          'perpsFlipPosition',
           [
-            expect.objectContaining({
-              leverage: 5,
-            }),
+            {
+              symbol: 'ETH',
+              position: expect.objectContaining({
+                leverage: { type: 'cross', value: 5 },
+              }),
+            },
           ],
         );
       });

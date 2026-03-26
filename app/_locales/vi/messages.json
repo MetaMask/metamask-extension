@@ -5673,9 +5673,6 @@
   "perpsPosition": {
     "message": "Vị thế"
   },
-  "perpsPositionClosedReverseOrderFailed": {
-    "message": "Vị thế của bạn đã được đóng nhưng lệnh đảo chiều thất bại. Bạn có thể cần mở một vị thế mới theo cách thủ công"
-  },
   "perpsPositionSize": {
     "message": "Kích thước vị thế"
   },

@@ -5673,9 +5673,6 @@
   "perpsPosition": {
     "message": "पोज़िशन"
   },
-  "perpsPositionClosedReverseOrderFailed": {
-    "message": "आपकी पोज़िशन बंद हो गई थी लेकिन रिवर्स ऑर्डर फ़ेल हो गया। आपको मैन्युअली नई पोज़िशन ओपन करनी पड़ सकती है"
-  },
   "perpsPositionSize": {
     "message": "पोज़िशन साइज़"
   },

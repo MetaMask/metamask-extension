@@ -5673,9 +5673,6 @@
   "perpsPosition": {
     "message": "ポジション"
   },
-  "perpsPositionClosedReverseOrderFailed": {
-    "message": "ポジションはクローズされましたが、反転注文に失敗しました。新しいポジションを手動でオープンする必要があるかもしれません。"
-  },
   "perpsPositionSize": {
     "message": "ポジションサイズ"
   },
