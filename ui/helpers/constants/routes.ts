@@ -33,7 +33,7 @@ export const MANAGE_WALLET_RECOVERY_V2_ROUTE =
   '/settings/security-and-password/manage-wallet-recovery';
 export const SECURITY_PASSWORD_CHANGE_V2_ROUTE =
   '/settings/security-and-password/password';
-export const DEVELOPER_TOOLS_V2_ROUTE = '/settings/developer-tools';
+export const DEVELOPER_TOOLS_ROUTE = '/settings/developer-tools';
 export const DEBUG_ROUTE = '/settings/debug';
 export const GENERAL_ROUTE = '/settings/general';
 export const ADVANCED_ROUTE = '/settings/advanced';

@@ -11,7 +11,7 @@ import {
   BACKUPANDSYNC_ROUTE,
   CURRENCY_ROUTE,
   DEVELOPER_OPTIONS_ROUTE,
-  DEVELOPER_TOOLS_V2_ROUTE,
+  DEVELOPER_TOOLS_ROUTE,
   MANAGE_WALLET_RECOVERY_V2_ROUTE,
   EXPERIMENTAL_ROUTE,
   LANGUAGE_ROUTE,
@@ -69,7 +69,7 @@ export const SETTINGS_V2_ROOT_SECTIONS: readonly {
     paths: [
       EXPERIMENTAL_ROUTE,
       DEVELOPER_OPTIONS_ROUTE,
-      DEVELOPER_TOOLS_V2_ROUTE,
+      DEVELOPER_TOOLS_ROUTE,
       ABOUT_US_ROUTE,
     ],
   },
@@ -193,6 +193,8 @@ export const SETTINGS_V2_ROUTES: Record<string, SettingsV2RouteMeta> = {
     isTab: true,
     iconName: IconName.SecurityTime,
   },
+
+  // --- Transaction Shield tab ---
   [TRANSACTION_SHIELD_ROUTE]: {
     labelKey: 'shieldTx',
     parentPath: SETTINGS_V2_ROUTE,
@@ -284,20 +286,15 @@ export const SETTINGS_V2_ROUTES: Record<string, SettingsV2RouteMeta> = {
         [DEVELOPER_OPTIONS_ROUTE]: {
           labelKey: 'debug',
           parentPath: SETTINGS_V2_ROUTE,
-          component: mmLazy(
-            () =>
-              import(
-                '../settings/developer-options-tab/developer-options-tab.tsx'
-              ),
-          ),
+          component: mmLazy(() => import('./debug-tab/index.ts')),
           isTab: true,
-          iconName: IconName.Code,
+          iconName: IconName.Sparkle,
         },
       }
     : {}),
 
   // --- Developer Tools tab ---
-  [DEVELOPER_TOOLS_V2_ROUTE]: {
+  [DEVELOPER_TOOLS_ROUTE]: {
     labelKey: 'developerTools',
     parentPath: SETTINGS_V2_ROUTE,
     component: mmLazy(() => import('./developer-tools-tab/index.ts')),
