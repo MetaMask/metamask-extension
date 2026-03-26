@@ -444,6 +444,9 @@
   "pending": {
     "message": "folyamatban"
   },
+  "perpsClosePartialMinNotional": {
+    "message": "Partial closes must be at least $1 in USD value. Increase the close amount or set the slider to 100%."
+  },
   "personalAddressDetected": {
     "message": "Személyes címet észleltünk. Adja meg a token szerződés címét."
   },
@@ -652,8 +655,5 @@
   },
   "youNeedToAllowCameraAccess": {
     "message": "Ennek a funkciónak a használatához engedélyeznie kell a kamerához való hozzáférést."
-  },
-  "perpsClosePartialMinNotional": {
-    "message": "Partial closes must be at least $1 in USD value. Increase the close amount or set the slider to 100%."
   }
 }

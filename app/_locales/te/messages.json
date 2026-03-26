@@ -103,6 +103,9 @@
   "password": {
     "message": "పాస్‌వర్డ్"
   },
+  "perpsClosePartialMinNotional": {
+    "message": "Partial closes must be at least $1 in USD value. Increase the close amount or set the slider to 100%."
+  },
   "reject": {
     "message": "తిరస్కరించు"
   },
@@ -138,8 +141,5 @@
   },
   "unlock": {
     "message": "అన్‌లాక్ చెయ్యి"
-  },
-  "perpsClosePartialMinNotional": {
-    "message": "Partial closes must be at least $1 in USD value. Increase the close amount or set the slider to 100%."
   }
 }

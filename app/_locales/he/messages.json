@@ -444,6 +444,9 @@
   "pending": {
     "message": "בהמתנה"
   },
+  "perpsClosePartialMinNotional": {
+    "message": "Partial closes must be at least $1 in USD value. Increase the close amount or set the slider to 100%."
+  },
   "personalAddressDetected": {
     "message": "זוהתה כתובת אישית. יש להזין את כתובת חוזה הטוקן."
   },
@@ -655,8 +658,5 @@
   },
   "youNeedToAllowCameraAccess": {
     "message": "עליך לאפשר גישה למצלמה כדי להשתמש בתכונה זו."
-  },
-  "perpsClosePartialMinNotional": {
-    "message": "Partial closes must be at least $1 in USD value. Increase the close amount or set the slider to 100%."
   }
 }

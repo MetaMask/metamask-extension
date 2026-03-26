@@ -5439,6 +5439,9 @@
   "perpsCloseLong": {
     "message": "लॉन्ग क्लोज़ करें"
   },
+  "perpsClosePartialMinNotional": {
+    "message": "Partial closes must be at least $1 in USD value. Increase the close amount or set the slider to 100%."
+  },
   "perpsClosePosition": {
     "message": "पोज़िशन बंद करें"
   },
@@ -9353,8 +9356,5 @@
   },
   "yourWalletIsReadyFromReminder": {
     "message": "अपने सीक्रेट रिकवरी फ्रेज़ को सुरक्षित रखें!"
-  },
-  "perpsClosePartialMinNotional": {
-    "message": "Partial closes must be at least $1 in USD value. Increase the close amount or set the slider to 100%."
   }
 }

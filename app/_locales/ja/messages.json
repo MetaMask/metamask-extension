@@ -5439,6 +5439,9 @@
   "perpsCloseLong": {
     "message": "ロングをクローズ"
   },
+  "perpsClosePartialMinNotional": {
+    "message": "Partial closes must be at least $1 in USD value. Increase the close amount or set the slider to 100%."
+  },
   "perpsClosePosition": {
     "message": "ポジションのクローズ"
   },
@@ -9353,8 +9356,5 @@
   },
   "yourWalletIsReadyFromReminder": {
     "message": "シークレットリカバリーフレーズは安全に保管してください。"
-  },
-  "perpsClosePartialMinNotional": {
-    "message": "Partial closes must be at least $1 in USD value. Increase the close amount or set the slider to 100%."
   }
 }

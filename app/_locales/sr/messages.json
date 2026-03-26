@@ -438,6 +438,9 @@
   "pending": {
     "message": "u toku"
   },
+  "perpsClosePartialMinNotional": {
+    "message": "Partial closes must be at least $1 in USD value. Increase the close amount or set the slider to 100%."
+  },
   "personalAddressDetected": {
     "message": "Otkrivena je lična adresa. Unesite adresu token ugovora."
   },
@@ -646,8 +649,5 @@
   },
   "youNeedToAllowCameraAccess": {
     "message": "Za upotrebu ove funkcije morate omogućiti pristup kameri."
-  },
-  "perpsClosePartialMinNotional": {
-    "message": "Partial closes must be at least $1 in USD value. Increase the close amount or set the slider to 100%."
   }
 }

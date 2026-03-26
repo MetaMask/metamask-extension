@@ -314,6 +314,9 @@
   "pending": {
     "message": "l ap mache"
   },
+  "perpsClosePartialMinNotional": {
+    "message": "Partial closes must be at least $1 in USD value. Increase the close amount or set the slider to 100%."
+  },
   "personalAddressDetected": {
     "message": "Adrès pèsonèl detekte. Antre adrès kontra token la."
   },
@@ -486,8 +489,5 @@
   },
   "youNeedToAllowCameraAccess": {
     "message": "Ou bezwen bay kamera aksè pou sèvi ak fonksyon sa."
-  },
-  "perpsClosePartialMinNotional": {
-    "message": "Partial closes must be at least $1 in USD value. Increase the close amount or set the slider to 100%."
   }
 }

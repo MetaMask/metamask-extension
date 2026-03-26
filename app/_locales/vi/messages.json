@@ -5439,6 +5439,9 @@
   "perpsCloseLong": {
     "message": "Đóng vị thế mua khống"
   },
+  "perpsClosePartialMinNotional": {
+    "message": "Partial closes must be at least $1 in USD value. Increase the close amount or set the slider to 100%."
+  },
   "perpsClosePosition": {
     "message": "Đóng vị thế"
   },
@@ -9353,8 +9356,5 @@
   },
   "yourWalletIsReadyFromReminder": {
     "message": "Lưu giữ Cụm từ khôi phục bí mật của bạn ở nơi an toàn!"
-  },
-  "perpsClosePartialMinNotional": {
-    "message": "Partial closes must be at least $1 in USD value. Increase the close amount or set the slider to 100%."
   }
 }

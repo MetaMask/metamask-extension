@@ -432,6 +432,9 @@
   "pending": {
     "message": "afventer"
   },
+  "perpsClosePartialMinNotional": {
+    "message": "Partial closes must be at least $1 in USD value. Increase the close amount or set the slider to 100%."
+  },
   "personalAddressDetected": {
     "message": "Personlig adresse opdaget. Indtast polet kontrakt adressen."
   },
@@ -631,8 +634,5 @@
   },
   "youNeedToAllowCameraAccess": {
     "message": "Du skal tillade kameraadgang for at bruge denne funktion."
-  },
-  "perpsClosePartialMinNotional": {
-    "message": "Partial closes must be at least $1 in USD value. Increase the close amount or set the slider to 100%."
   }
 }

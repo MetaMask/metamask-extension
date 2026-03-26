@@ -5439,6 +5439,9 @@
   "perpsCloseLong": {
     "message": "Cerrar posición larga"
   },
+  "perpsClosePartialMinNotional": {
+    "message": "Partial closes must be at least $1 in USD value. Increase the close amount or set the slider to 100%."
+  },
   "perpsClosePosition": {
     "message": "Cerrar posición"
   },
@@ -9353,8 +9356,5 @@
   },
   "yourWalletIsReadyFromReminder": {
     "message": "¡Mantén segura tu frase secreta de recuperación!"
-  },
-  "perpsClosePartialMinNotional": {
-    "message": "Partial closes must be at least $1 in USD value. Increase the close amount or set the slider to 100%."
   }
 }

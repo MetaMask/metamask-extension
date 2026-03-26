@@ -5439,6 +5439,9 @@
   "perpsCloseLong": {
     "message": "Κλείσιμο θέσης αγοράς"
   },
+  "perpsClosePartialMinNotional": {
+    "message": "Partial closes must be at least $1 in USD value. Increase the close amount or set the slider to 100%."
+  },
   "perpsClosePosition": {
     "message": "Κλείσιμο θέσης"
   },
@@ -9353,8 +9356,5 @@
   },
   "yourWalletIsReadyFromReminder": {
     "message": "Φυλάξτε τη Μυστική Φράση Ανάκτησης σε ασφαλές μέρος!"
-  },
-  "perpsClosePartialMinNotional": {
-    "message": "Partial closes must be at least $1 in USD value. Increase the close amount or set the slider to 100%."
   }
 }
