@@ -4,7 +4,7 @@ import {
   TransactionStatus as KeyringTransactionStatus,
   type Transaction as KeyringTransaction,
 } from '@metamask/keyring-api';
-import { StatusTypes, isNonEvmChainId } from '@metamask/bridge-controller';
+import { StatusTypes } from '@metamask/bridge-controller';
 import { type BridgeHistoryItem } from '@metamask/bridge-status-controller';
 import { toast } from 'react-hot-toast';
 import { useSelector } from 'react-redux';
@@ -13,7 +13,7 @@ import {
   selectEvmTransactionsForToast,
 } from '../../../selectors';
 import {
-  selectBridgeHistoryForAccountGroup,
+  selectBridgeHistoryForToast,
   selectNonEvmBridgeSourceTxIds,
 } from '../../../ducks/bridge-status/selectors';
 import {
@@ -45,7 +45,7 @@ const options = {
 };
 
 function useBridgeApprovalTxIds() {
-  const bridgeHistory = useSelector(selectBridgeHistoryForAccountGroup);
+  const bridgeHistory = useSelector(selectBridgeHistoryForToast);
   return useMemo(() => {
     const ids = new Set<string>();
     for (const item of Object.values(bridgeHistory ?? {})) {
@@ -61,18 +61,23 @@ function useEvmTransactionToasts() {
   const evmTransactions = useSelector(selectEvmTransactionsForToast);
   const bridgeApprovalTxIds = useBridgeApprovalTxIds();
 
-  const prevEvmTransactionsRef = useRef<readonly TransactionLike[]>([]);
-  const hasMountedRef = useRef(false);
+  const prevEvmTransactionsRef = useRef<readonly TransactionLike[] | null>(
+    null,
+  );
 
   useEffect(() => {
+    if (
+      prevEvmTransactionsRef.current === null ||
+      (prevEvmTransactionsRef.current.length === 0 &&
+        evmTransactions.length > 0)
+    ) {
+      prevEvmTransactionsRef.current = evmTransactions;
+      return;
+    }
+
     const previousEvmTransactions = prevEvmTransactionsRef.current;
-    const isFirstRun = !hasMountedRef.current;
 
     for (const tx of evmTransactions) {
-      if (isFirstRun) {
-        continue;
-      }
-
       // Skip bridge approval txns
       if (bridgeApprovalTxIds.has(tx.id?.toLowerCase())) {
         continue;
@@ -120,7 +125,6 @@ function useEvmTransactionToasts() {
     }
 
     prevEvmTransactionsRef.current = evmTransactions;
-    hasMountedRef.current = true;
   }, [evmTransactions, bridgeApprovalTxIds]);
 }
 
@@ -128,30 +132,45 @@ function useNonEvmTransactionToasts() {
   const nonEvmTransactions = useSelector(selectNonEvmTransactionsForToast);
   const nonEvmBridgeSourceTxIds = useSelector(selectNonEvmBridgeSourceTxIds);
 
-  const prevPendingNonEvmIdsRef = useRef<Set<string>>(new Set());
-  const prevNonEvmTransactionsRef = useRef<readonly NonEvmTransactionLike[]>(
-    [],
-  );
-  const hasMountedRef = useRef(false);
+  const prevNonEvmTransactionsRef = useRef<
+    readonly NonEvmTransactionLike[] | null
+  >(null);
 
   useEffect(() => {
-    const prevNonEvmTransactions = prevNonEvmTransactionsRef.current;
-    const isFirstRun = !hasMountedRef.current;
+    if (prevNonEvmTransactionsRef.current === null) {
+      prevNonEvmTransactionsRef.current = nonEvmTransactions;
+      return;
+    }
 
-    const previousPendingNonEvmIds = prevPendingNonEvmIdsRef.current;
+    // Non-EVM txs load asynchronously after mount. When prev was empty and
+    // items appear, distinguish between:
+    //   (a) persisted txs async-loading on startup — all terminal → re-baseline
+    //   (b) a brand new tx just submitted — has pending → fall through and toast
+    if (
+      prevNonEvmTransactionsRef.current.length === 0 &&
+      nonEvmTransactions.length > 0 &&
+      nonEvmTransactions.every(
+        (tx) => isNonEvmSuccess(tx.status) || isNonEvmFailed(tx.status),
+      )
+    ) {
+      prevNonEvmTransactionsRef.current = nonEvmTransactions;
+      return;
+    }
+
+    const prevNonEvmTransactions = prevNonEvmTransactionsRef.current;
+
+    const prevPendingIds = new Set(
+      prevNonEvmTransactions
+        .filter((tx) => isNonEvmPending(tx.status))
+        .map((tx) => tx.id),
+    );
+
     const pendingNonEvmTxs = nonEvmTransactions.filter((tx) =>
       isNonEvmPending(tx.status),
     );
-    const currentPendingNonEvmIds = new Set(
-      pendingNonEvmTxs.map((tx) => tx.id),
-    );
 
     for (const tx of pendingNonEvmTxs) {
-      if (
-        isFirstRun ||
-        previousPendingNonEvmIds.has(tx.id) ||
-        nonEvmBridgeSourceTxIds.has(tx.id)
-      ) {
+      if (prevPendingIds.has(tx.id) || nonEvmBridgeSourceTxIds.has(tx.id)) {
         continue;
       }
 
@@ -163,7 +182,7 @@ function useNonEvmTransactionToasts() {
 
     // Check for non-EVM transactions that became success/failed
     for (const tx of nonEvmTransactions) {
-      if (isFirstRun || nonEvmBridgeSourceTxIds.has(tx.id)) {
+      if (nonEvmBridgeSourceTxIds.has(tx.id)) {
         continue;
       }
 
@@ -186,45 +205,49 @@ function useNonEvmTransactionToasts() {
       const id = `non-evm-tx-${tx.id}`;
 
       if (becameSuccess) {
-        toast.success(<ToastContent variant="success" />, { id, ...options });
+        toast.success(<ToastContent variant="success" />, {
+          id,
+          ...options,
+        });
       } else if (becameFailed) {
-        toast.error(<ToastContent variant="failed" />, { id, ...options });
+        toast.error(<ToastContent variant="failed" />, {
+          id,
+          ...options,
+        });
       }
     }
 
     prevNonEvmTransactionsRef.current = nonEvmTransactions;
-    hasMountedRef.current = true;
-    prevPendingNonEvmIdsRef.current = currentPendingNonEvmIds;
   }, [nonEvmTransactions, nonEvmBridgeSourceTxIds]);
 }
 
 function useBridgeHistoryToasts() {
-  const bridgeHistory = useSelector(selectBridgeHistoryForAccountGroup);
+  const bridgeHistory = useSelector(selectBridgeHistoryForToast);
 
-  const prevBridgeHistoryRef = useRef<Record<string, BridgeHistoryItem>>({});
-  const hasMountedRef = useRef(false);
+  const prevBridgeHistoryRef = useRef<Record<string, BridgeHistoryItem> | null>(
+    null,
+  );
 
   useEffect(() => {
-    const prevBridgeHistory = prevBridgeHistoryRef.current;
     const currentHistory = bridgeHistory ?? {};
-    const isFirstRun = !hasMountedRef.current;
+
+    // Bridge history loads in two phases: initially empty {}, then populated
+    // from persisted state asynchronously. We snapshot twice — once on mount
+    // (null sentinel) and again the first time items actually appear — so old
+    // persisted items are never treated as "new".
+    if (
+      prevBridgeHistoryRef.current === null ||
+      (Object.keys(prevBridgeHistoryRef.current).length === 0 &&
+        Object.keys(currentHistory).length > 0)
+    ) {
+      prevBridgeHistoryRef.current = currentHistory;
+      return;
+    }
+
+    const prevBridgeHistory = prevBridgeHistoryRef.current;
 
     for (const [key, item] of Object.entries(currentHistory)) {
-      // Skip same-chain EVM swaps — those are handled by the EVM watcher.
-      // Non-EVM same-chain swaps (e.g. Solana SOL→USDC) must still fire here.
-      if (
-        item.quote.srcChainId === item.quote.destChainId &&
-        !isNonEvmChainId(item.quote.srcChainId)
-      ) {
-        continue;
-      }
-
       const id = `bridge-tx-${key}`;
-
-      if (isFirstRun) {
-        continue;
-      }
-
       const prevItem = prevBridgeHistory[key];
 
       const becamePending = !prevItem && isBridgePending(item);
@@ -233,17 +256,29 @@ function useBridgeHistoryToasts() {
       const becameFailed =
         isBridgeFailed(item) && prevItem && !isBridgeFailed(prevItem);
 
+      if (!becamePending && !becameComplete && !becameFailed) {
+        continue;
+      }
+
       if (becamePending) {
-        toast.loading(<ToastContent variant="pending" />, { id, ...options });
+        toast.loading(<ToastContent variant="pending" />, {
+          id,
+          ...options,
+        });
       } else if (becameComplete) {
-        toast.success(<ToastContent variant="success" />, { id, ...options });
+        toast.success(<ToastContent variant="success" />, {
+          id,
+          ...options,
+        });
       } else if (becameFailed) {
-        toast.error(<ToastContent variant="failed" />, { id, ...options });
+        toast.error(<ToastContent variant="failed" />, {
+          id,
+          ...options,
+        });
       }
     }
 
     prevBridgeHistoryRef.current = currentHistory;
-    hasMountedRef.current = true;
   }, [bridgeHistory]);
 }
 

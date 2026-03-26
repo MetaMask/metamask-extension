@@ -1,7 +1,6 @@
 /**
  * @file The entry point for the web extension singleton process.
  */
-import { lightTheme } from '@metamask/design-tokens';
 
 // Disabled to allow setting up initial state hooks first
 
@@ -13,6 +12,7 @@ import { persistenceManager } from './lib/setup-initial-state-hooks';
 // Import this very early, so globalThis.INFURA_PROJECT_ID_FROM_MANIFEST_FLAGS is always defined
 import '../../shared/constants/infura-project-id';
 
+import { lightTheme } from '@metamask/design-tokens';
 import { finished } from 'readable-stream';
 import log from 'loglevel';
 import browser from 'webextension-polyfill';

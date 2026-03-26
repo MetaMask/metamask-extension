@@ -8,7 +8,7 @@ const TRANSACTION_DISPLAY_KEYS: Record<TransactionStatus, string> = {
   failed: 'transactionFailed',
 };
 
-export function useTransactionDisplayData(status: TransactionStatus) {
+export function useTransactionDisplay(status: TransactionStatus) {
   const t = useI18nContext();
   return { title: t(TRANSACTION_DISPLAY_KEYS[status]) };
 }

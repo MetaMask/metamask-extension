@@ -66,6 +66,19 @@ export const selectEvmTransactionsForToast = createSelector(
 );
 
 /**
+ * Returns all EVM transaction IDs for the selected account, including
+ * transaction types excluded from toast (e.g. bridge) so that bridge history
+ * entries can be cross-referenced against live transactions.
+ *
+ * @param {object} state - Root state
+ * @returns {Set<string>} Set of transaction IDs
+ */
+export const selectCurrentAccountEvmTransactionIds = createSelector(
+  getTransactions,
+  (transactions) => new Set(transactions.map((tx) => tx.id)),
+);
+
+/**
  * Returns non-EVM transactions for toast notifications
  *
  * @param {object} state - Root state

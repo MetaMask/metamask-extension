@@ -13,6 +13,8 @@ import {
   getSelectedAccountGroup,
 } from '../../selectors/multichain-accounts/account-tree';
 import { EMPTY_OBJECT } from '../../selectors/shared';
+import { selectCurrentAccountNonEvmTransactions } from '../../selectors/multichain-transactions';
+import { selectCurrentAccountEvmTransactionIds } from '../../selectors/transactions';
 
 type BridgeStatusAppState = {
   metamask: BridgeStatusControllerState & TransactionControllerState;
@@ -74,6 +76,61 @@ export const selectBridgeHistoryForAccountGroup = createSelector(
   },
 );
 
+/**
+ * Returns bridge history filtered to only items that have a matching live
+ * transaction for the currently selected account (EVM or non-EVM). Items
+ * without a corresponding transaction are orphaned and should never produce
+ * a toast notification.
+ *
+ * Same-chain EVM swaps are excluded here as those are handled entirely by the
+ * EVM transaction watcher.
+ */
+export const selectBridgeHistoryForToast = createSelector(
+  [
+    selectBridgeHistoryForAccountGroup,
+    selectCurrentAccountNonEvmTransactions,
+    selectCurrentAccountEvmTransactionIds,
+  ],
+  (bridgeHistory, nonEvmTxs, evmTxIds) => {
+    if (!bridgeHistory) {
+      return EMPTY_OBJECT as Record<string, BridgeHistoryItem>;
+    }
+
+    const nonEvmTxIds = new Set(nonEvmTxs.map((tx) => tx.id));
+
+    return Object.entries(bridgeHistory).reduce<
+      Record<string, BridgeHistoryItem>
+    >((acc, [key, item]) => {
+      // Same-chain EVM swaps are handled by the EVM transaction watcher
+      if (
+        item.quote.srcChainId === item.quote.destChainId &&
+        !isNonEvmChainId(item.quote.srcChainId)
+      ) {
+        return acc;
+      }
+      // Same-chain non-EVM swaps (e.g. Solana SOL→USDC) are handled by
+      // the non-EVM transaction watcher — bridge status may never reach
+      // COMPLETE for same-chain swaps, so let the non-EVM hook drive toasts
+      if (
+        item.quote.srcChainId === item.quote.destChainId &&
+        isNonEvmChainId(item.quote.srcChainId)
+      ) {
+        return acc;
+      }
+      // Only include items whose source transaction exists in the current
+      // account's active transactions — orphaned items are silently dropped
+      const hasMatchingTx = isNonEvmChainId(item.quote.srcChainId)
+        ? nonEvmTxIds.has(key)
+        : evmTxIds.has(key);
+
+      if (hasMatchingTx) {
+        acc[key] = item;
+      }
+      return acc;
+    }, {});
+  },
+);
+
 export const selectNonEvmBridgeSourceTxIds = createSelector(
   [selectBridgeHistoryForAccountGroup],
   (bridgeHistory) => {
@@ -81,6 +138,10 @@ export const selectNonEvmBridgeSourceTxIds = createSelector(
 
     for (const [key, item] of Object.entries(bridgeHistory ?? {})) {
       if (!isNonEvmChainId(item.quote.srcChainId)) {
+        continue;
+      }
+      // Same-chain non-EVM swaps are handled by the non-EVM transaction watcher
+      if (item.quote.srcChainId === item.quote.destChainId) {
         continue;
       }
 

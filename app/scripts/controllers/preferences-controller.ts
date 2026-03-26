@@ -182,7 +182,7 @@ export const getDefaultPreferencesControllerState =
       hideZeroBalanceTokens: false,
       privacyMode: false,
       showConfirmationAdvancedDetails: false,
-      showDefaultAddress: false,
+      showDefaultAddress: true,
       defaultAddressScope: 'eip155',
       showExtensionInFullSizeView: false,
       showFiatInTestnets: false,
