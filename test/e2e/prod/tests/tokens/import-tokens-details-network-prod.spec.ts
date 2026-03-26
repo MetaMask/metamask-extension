@@ -230,21 +230,35 @@ async function verifyTokenDetailsPage(
     }
 
     try {
-      // 24hr change - using XPath
-       await driver.delay(500);
+      // 24hr change - using dedicated data-testid (more reliable than complex XPath)
+      await driver.delay(2000);
       const priceChangeElements = await safeFindElements(driver, '//*[@data-testid="multichain-token-list-item-value"]/../div/p');
+
+      console.log(`[PROD TEST]       📊 24h Change - Elements found: ${priceChangeElements.length}`);
+
       if (priceChangeElements.length > 0) {
         const priceChangeText = await priceChangeElements[0].getText();
-        if (priceChangeText) {
-          balanceData.priceChange24h = priceChangeText;
+        const trimmedText = priceChangeText?.trim() ?? '';
+
+        console.log(`[PROD TEST]       📊 24h Change - Raw getText(): "${priceChangeText}"`);
+        console.log(`[PROD TEST]       📊 24h Change - Trimmed: "${trimmedText}"`);
+
+        // Also check element visibility
+        const isDisplayed = await priceChangeElements[0].isDisplayed().catch(() => false);
+        console.log(`[PROD TEST]       📊 24h Change - Is displayed: ${isDisplayed}`);
+
+        if (trimmedText) {
+          balanceData.priceChange24h = trimmedText;
           balanceFieldsFound++;
-          console.log(`[PROD TEST]       ✅ 24h Change: ${priceChangeText}`);
+          console.log(`[PROD TEST]       ✅ 24h Change: ${trimmedText}`);
+        } else {
+          console.log(`[PROD TEST]       ⚠️  24h change - Element found but getText() returned empty/whitespace`);
         }
       } else {
         console.log(`[PROD TEST]       ⚠️  24h change not found`);
       }
     } catch (error) {
-      console.log(`[PROD TEST]       ⚠️  Error getting 24h change`);
+      console.log(`[PROD TEST]       ⚠️  Error getting 24h change: ${(error as Error).message}`);
     }
 
     try {
@@ -340,23 +354,9 @@ async function verifyTokenDetailsPage(
       // Total volume - using XPath with multiple fallback approaches
       let volumeText: string | null = null;
 
-      // Try: Find text='Total volume', go to parent, find p[2]
-      let volumeElements = await safeFindElements(driver, `//*[text()='Total volume']/..//p[2]`);
-      if (volumeElements.length > 0) {
-        volumeText = await volumeElements[0].getText();
-      }
-
-      // Fallback: try contains instead of exact text
-      if (!volumeText) {
-        volumeElements = await safeFindElements(driver, `//*[contains(text(),'Total volume')]/..//p[2]`);
-        if (volumeElements.length > 0) {
-          volumeText = await volumeElements[0].getText();
-        }
-      }
-
       // Fallback: try finding the value element after the label
       if (!volumeText) {
-        volumeElements = await safeFindElements(driver, `//*[contains(text(),'Total volume')]/following-sibling::*[1]`);
+        let volumeElements = await safeFindElements(driver, `//*[contains(text(),'Total volume')]/following-sibling::*[1]`);
         if (volumeElements.length > 0) {
           volumeText = await volumeElements[0].getText();
         }
@@ -378,23 +378,9 @@ async function verifyTokenDetailsPage(
        await driver.delay(500);
       let supplyText: string | null = null;
 
-      // Try: Find text='Circulating supply', go to parent, find p[2]
-      let supplyElements = await safeFindElements(driver, `//*[text()='Circulating supply']/..//p[2]`);
-      if (supplyElements.length > 0) {
-        supplyText = await supplyElements[0].getText();
-      }
-
-      // Fallback: try contains instead of exact text
-      if (!supplyText) {
-        supplyElements = await safeFindElements(driver, `//*[contains(text(),'Circulating supply')]/..//p[2]`);
-        if (supplyElements.length > 0) {
-          supplyText = await supplyElements[0].getText();
-        }
-      }
-
       // Fallback: try finding the value element after the label
       if (!supplyText) {
-        supplyElements = await safeFindElements(driver, `//*[contains(text(),'Circulating supply')]/following-sibling::*[1]`);
+        let supplyElements = await safeFindElements(driver, `//*[contains(text(),'Circulating supply')]/following-sibling::*[1]`);
         if (supplyElements.length > 0) {
           supplyText = await supplyElements[0].getText();
         }
@@ -416,23 +402,9 @@ async function verifyTokenDetailsPage(
        await driver.delay(500);
       let alhText: string | null = null;
 
-      // Try: Find text='All-time high', go to parent, find p[2]
-      let alhElements = await safeFindElements(driver, `//*[text()='All-time high']/..//p[2]`);
-      if (alhElements.length > 0) {
-        alhText = await alhElements[0].getText();
-      }
-
-      // Fallback: try contains instead of exact text
-      if (!alhText) {
-        alhElements = await safeFindElements(driver, `//*[contains(text(),'All-time high')]/..//p[2]`);
-        if (alhElements.length > 0) {
-          alhText = await alhElements[0].getText();
-        }
-      }
-
       // Fallback: try finding the value element after the label
       if (!alhText) {
-        alhElements = await safeFindElements(driver, `//*[contains(text(),'All-time high')]/following-sibling::*[1]`);
+        let alhElements = await safeFindElements(driver, `//*[contains(text(),'All-time high')]/following-sibling::*[1]`);
         if (alhElements.length > 0) {
           alhText = await alhElements[0].getText();
         }
@@ -454,23 +426,9 @@ async function verifyTokenDetailsPage(
        await driver.delay(500);
       let atlText: string | null = null;
 
-      // Try: Find text='All-time low', go to parent, find p[2]
-      let atlElements = await safeFindElements(driver, `//*[text()='All-time low']/..//p[2]`);
-      if (atlElements.length > 0) {
-        atlText = await atlElements[0].getText();
-      }
-
-      // Fallback: try contains instead of exact text
-      if (!atlText) {
-        atlElements = await safeFindElements(driver, `//*[contains(text(),'All-time low')]/..//p[2]`);
-        if (atlElements.length > 0) {
-          atlText = await atlElements[0].getText();
-        }
-      }
-
       // Fallback: try finding the value element after the label
       if (!atlText) {
-        atlElements = await safeFindElements(driver, `//*[contains(text(),'All-time low')]/following-sibling::*[1]`);
+        let atlElements = await safeFindElements(driver, `//*[contains(text(),'All-time low')]/following-sibling::*[1]`);
         if (atlElements.length > 0) {
           atlText = await atlElements[0].getText();
         }
