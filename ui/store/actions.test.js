@@ -279,6 +279,12 @@ describe('Actions', () => {
       );
       expect(result).toStrictEqual(true);
       expect(checkIsSeedlessPasswordOutdated.callCount).toStrictEqual(1);
+      expect(checkIsSeedlessPasswordOutdated.firstCall.args).toStrictEqual([
+        {
+          skipCache: true,
+          captureSentryError: true,
+        },
+      ]);
     });
 
     it('should return false if the password is not outdated', async () => {
@@ -300,6 +306,34 @@ describe('Actions', () => {
       );
       expect(result).toStrictEqual(false);
       expect(checkIsSeedlessPasswordOutdated.callCount).toStrictEqual(1);
+    });
+
+    it('passes skipCache and captureSentryError to the background check', async () => {
+      const store = mockStore({
+        ...defaultState,
+        metamask: {
+          ...defaultState.metamask,
+          firstTimeFlowType: FirstTimeFlowType.socialCreate,
+        },
+      });
+
+      const checkIsSeedlessPasswordOutdated =
+        background.checkIsSeedlessPasswordOutdated.resolves(true);
+
+      setBackgroundConnection(background);
+
+      const result = await store.dispatch(
+        actions.checkIsSeedlessPasswordOutdated(false, false),
+      );
+
+      expect(result).toStrictEqual(true);
+      expect(checkIsSeedlessPasswordOutdated.callCount).toStrictEqual(1);
+      expect(checkIsSeedlessPasswordOutdated.firstCall.args).toStrictEqual([
+        {
+          skipCache: false,
+          captureSentryError: false,
+        },
+      ]);
     });
 
     it('should not throw an error if the checkIsSeedlessPasswordOutdated fails', async () => {
