@@ -8000,14 +8000,18 @@
       }
     },
     "yaml": {
+      "builtin": {
+        "buffer.Buffer": true,
+        "process.emitWarning": true,
+        "process.env.LOG_STREAM": true,
+        "process.env.LOG_TOKENS": true
+      },
       "globals": {
-        "Buffer": true,
         "atob": true,
         "btoa": true,
         "console.dir": true,
         "console.log": true,
-        "console.warn": true,
-        "process": true
+        "console.warn": true
       }
     },
     "gulp-postcss>postcss-load-config>yaml": {
