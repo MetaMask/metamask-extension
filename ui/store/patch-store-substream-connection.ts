@@ -1,5 +1,4 @@
 import type { Substream } from '@metamask/object-multiplex/dist/Substream';
-import { rpcErrors } from '@metamask/rpc-errors';
 import {
   array,
   literal,
@@ -13,10 +12,11 @@ import {
 } from '@metamask/superstruct';
 import {
   createDeferredPromise,
-  isJsonRpcNotification,
-  isJsonRpcResponse,
+  hasProperty,
+  isObject,
+  jsonrpc2 as JSON_RPC_VERSION,
 } from '@metamask/utils';
-import type { JsonRpcNotification, JsonRpcResponse } from '@metamask/utils';
+import type { JsonRpcNotification } from '@metamask/utils';
 import type { Patch } from 'immer';
 
 import { GET_STATE_PATCHES, SEND_UPDATE } from '../../shared/constants/patches';
@@ -45,51 +45,46 @@ const pendingGetStatePatchesRequests = new Map<
 >();
 
 /**
- * The struct that identifies an array of JSON patch objects.
- */
-export const PatchesStruct = array(
-  object({
-    op: union([literal('replace'), literal('remove'), literal('add')]),
-    path: array(union([string(), number()])),
-    value: optional(unknown()),
-  }),
-);
-
-/**
- * The `id` property for a JSON-RPC response is technically allowed to be
- * `null`, but we're not interested in those. This function can be used to
- * filter them out.
+ * Type guard to identify a message that comes through the stream.
  *
- * @param response - The possible response.
+ * @param message - The message to identify.
  */
-function isValidJsonRpcResponse(
-  response: unknown,
-): response is JsonRpcResponse & { id: number } {
-  return isJsonRpcResponse(response) && typeof response.id === 'number';
+function isValidMessage(
+  message: unknown,
+): message is { jsonrpc: typeof JSON_RPC_VERSION } {
+  return (
+    !isObject(message) ||
+    !hasProperty(message, 'jsonrpc') ||
+    message.jsonrpc !== JSON_RPC_VERSION
+  );
 }
 
 /**
  * Type guard to identify a `sendUpdate` notification.
  *
  * @param message - The message to identify.
+ * @param message.method - The RPC method on the message.
  */
-function isSendUpdateNotification(
-  message: JsonRpcNotification,
-): message is SendUpdateNotification {
+function isSendUpdateNotification(message: {
+  method: unknown;
+}): message is SendUpdateNotification {
   return message.method === SEND_UPDATE;
 }
 
 /**
- * Handles the response from a previous request to the background by
+ * Handles the response from a previous request for `getStatePatches` by
  * resolving the pending promise for that request.
  *
  * @param message - The message sent through the background connection.
+ * @param message.id - The `id` field on the message.
+ * @param message.result - The state patches.
  * @throws If the previous request corresponding to the response cannot be
  * found.
  */
-function resolvePendingGetStatePatchesRequest(
-  message: JsonRpcResponse & { id: number },
-) {
+function resolvePendingGetStatePatchesRequest(message: {
+  id: number;
+  result: Patch[];
+}) {
   const { id } = message;
   const request = pendingGetStatePatchesRequests.get(id);
   if (!request) {
@@ -106,35 +101,7 @@ function resolvePendingGetStatePatchesRequest(
     request.reject(message.error);
   } else {
     const { result } = message;
-
-    const [patchError, patches] = validate(result, PatchesStruct);
-    if (patchError) {
-      request.reject(
-        rpcErrors.internal(
-          `Invalid response for patch-store stream request ID '${id}': ${patchError.message}`,
-        ),
-      );
-    } else {
-      request.resolve(patches);
-    }
-  }
-}
-
-/**
- * Normalizes a message received from the background process by serializing and
- * deserializing it as JSON. This strips properties with `undefined` values,
- * which is necessary because while Chrome uses JSON serialization for
- * inter-process messages (so `undefined` values are already stripped),
- * Firefox does not, and so this function emulates that behavior.
- *
- * @param message - The raw message to normalize.
- * @returns The normalized message.
- */
-function normalizeMessage(message: unknown): unknown {
-  try {
-    return JSON.parse(JSON.stringify(message)) as unknown;
-  } catch {
-    return message;
+    request.resolve(result);
   }
 }
 
@@ -158,27 +125,29 @@ async function receiveMessage(
     notification: SendUpdateNotification,
   ) => void | Promise<void>,
 ): Promise<void> {
-  const normalizedMessage = normalizeMessage(message);
-
-  if (isValidJsonRpcResponse(normalizedMessage)) {
-    return resolvePendingGetStatePatchesRequest(normalizedMessage);
-  }
-
-  if (isJsonRpcNotification(normalizedMessage)) {
-    if (isSendUpdateNotification(normalizedMessage)) {
-      return await handleSendUpdate(normalizedMessage);
+  // We cannot use `isJsonRpcNotification` and/or `isJsonRpcResponse` because
+  // the message object may not be completely JSON-compatible.
+  if (isObject(message) && hasProperty(message, 'id')) {
+    // Type assertion: We assume we have a response to a previous
+    // `getStatePatches` request. (These responses can be quite large so we avoid
+    // a runtime check for performance reasons.)
+    resolvePendingGetStatePatchesRequest(
+      message as unknown as {
+        id: number;
+        result: Patch[];
+      },
+    );
+  } else if (isObject(message) && hasProperty(message, 'method')) {
+    if (isSendUpdateNotification(message)) {
+      return await handleSendUpdate(message);
     }
 
-    console.error(
-      `Invalid method '${normalizedMessage.method}' for patch-store notification`,
+    console.warn(
+      `Invalid method '${String(message.method)}' for patch-store notification`,
     );
-    return;
+  } else {
+    // Ignore noise which can cause processing errors.
   }
-
-  console.error(
-    'Unrecognized patch-store substream message (not a response or notification)',
-    normalizedMessage,
-  );
 }
 
 /**

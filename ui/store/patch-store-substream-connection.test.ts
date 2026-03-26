@@ -1,12 +1,10 @@
 import ObjectMultiplex from '@metamask/object-multiplex';
-import { is } from '@metamask/superstruct';
 
 import { GET_STATE_PATCHES, SEND_UPDATE } from '../../shared/constants/patches';
 import randomId from '../../shared/lib/random-id';
 import { flushPromises } from '../../test/lib/timer-helpers';
 import {
   getStatePatches,
-  PatchesStruct,
   setupPatchStoreSubstreamConnection,
 } from './patch-store-substream-connection';
 
@@ -42,75 +40,6 @@ async function flushBufferedWrites() {
 describe('patch-store substream connection', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-  });
-
-  describe('PatchesStruct', () => {
-    it('validates a valid replace patch', () => {
-      const input = [
-        {
-          op: 'replace',
-          path: ['foo'],
-          value: 'bar',
-        },
-      ];
-      expect(is(input, PatchesStruct)).toBe(true);
-    });
-
-    it('validates a valid remove patch', () => {
-      const input = [
-        {
-          op: 'remove',
-          path: ['foo'],
-        },
-      ];
-
-      expect(is(input, PatchesStruct)).toBe(true);
-    });
-
-    it('validates a valid add patch', () => {
-      const input = [
-        {
-          op: 'add',
-          path: ['foo', 0],
-          value: 42,
-        },
-      ];
-      expect(is(input, PatchesStruct)).toBe(true);
-    });
-
-    it('rejects a patch with an unknown op', () => {
-      const input = [
-        {
-          op: 'copy',
-          path: ['foo'],
-          value: 'bar',
-        },
-      ];
-      expect(is(input, PatchesStruct)).toBe(false);
-    });
-
-    it('rejects a non-array', () => {
-      const input = {
-        op: 'replace',
-        path: [],
-        value: {},
-      };
-      expect(is(input, PatchesStruct)).toBe(false);
-    });
-
-    it('rejects a patch with a missing path', () => {
-      const input = [
-        {
-          op: 'replace',
-          value: 'bar',
-        },
-      ];
-      expect(is(input, PatchesStruct)).toBe(false);
-    });
-
-    it('validates an empty array', () => {
-      expect(is([], PatchesStruct)).toBe(true);
-    });
   });
 
   describe('setupPatchStoreSubstreamConnection', () => {
@@ -176,10 +105,10 @@ describe('patch-store substream connection', () => {
       );
     });
 
-    it('logs an error when a notification is received with an unknown method', async () => {
+    it('logs a warning when a notification is received with an unknown method', async () => {
       const { uiStream, backgroundStream } = createPatchStreamPair();
       const consoleSpy = jest
-        .spyOn(console, 'error')
+        .spyOn(console, 'warn')
         .mockImplementation(() => undefined);
       setupPatchStoreSubstreamConnection(uiStream, {
         handleSendUpdate: jest.fn(),
@@ -197,7 +126,7 @@ describe('patch-store substream connection', () => {
       );
     });
 
-    it('logs an error when an invalid message is received', async () => {
+    it('logs an error when a response for an unknown request is received', async () => {
       const { uiStream, backgroundStream } = createPatchStreamPair();
       const consoleSpy = jest
         .spyOn(console, 'error')
@@ -217,7 +146,7 @@ describe('patch-store substream connection', () => {
       await flushBufferedWrites();
 
       expect(consoleSpy).toHaveBeenCalledWith(
-        'Unrecognized patch-store substream message (not a response or notification)',
+        "Encountered response for unexpected patch-store stream request '42'",
         message,
       );
     });
@@ -330,33 +259,30 @@ describe('patch-store substream connection', () => {
 
       const patches = await patchesPromise;
       expect(consoleSpy).not.toHaveBeenCalled();
-      expect(patches).toStrictEqual([{ op: 'replace', path: ['foo'] }]);
+      expect(patches).toStrictEqual([
+        { op: 'replace', path: ['foo'], value: undefined },
+      ]);
     });
 
-    it('rejects when a getStatePatches response result is not a valid patch array', async () => {
+    it('does not reject when a getStatePatches response result is not an array of patches', async () => {
       const { uiStream, backgroundStream } = createPatchStreamPair();
+      const consoleSpy = jest
+        .spyOn(console, 'error')
+        .mockImplementation(() => undefined);
       randomIdMock.mockReturnValue(42);
       setupPatchStoreSubstreamConnection(uiStream, {
         handleSendUpdate: jest.fn(),
       });
-      const message = {
+      const patchesPromise = getStatePatches();
+      backgroundStream.write({
         jsonrpc: '2.0',
         id: 42,
         result: 'not-an-array',
-      };
+      });
 
-      const patchesPromise = getStatePatches();
-      backgroundStream.write(message);
-      // Note: We don't need to call flushBufferedWrites() because it will cause
-      // the rejection of the promise to happen out of band. Awaiting the next
-      // promise in the next step will accomplish the same goal.
-
-      await expect(patchesPromise).rejects.toStrictEqual(
-        expect.objectContaining({
-          message:
-            'Invalid response for patch-store stream request ID \'42\': Expected an array value, but received: "not-an-array"',
-        }),
-      );
+      const patches = await patchesPromise;
+      expect(consoleSpy).not.toHaveBeenCalled();
+      expect(patches).toStrictEqual('not-an-array');
     });
 
     it('rejects pending requests when the stream is destroyed', async () => {
