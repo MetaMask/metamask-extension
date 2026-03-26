@@ -244,13 +244,13 @@ export const MusdBuyGetCta: React.FC<MusdBuyGetCtaProps> = ({
         <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
           {ctaText}
         </Text>
-        <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
+        <Text variant={TextVariant.BodySm} color={TextColor.PrimaryDefault}>
           {subtitleText}
         </Text>
       </Box>
 
       <Button
-        variant={ButtonVariant.Primary}
+        variant={ButtonVariant.Secondary}
         size={ButtonSize.Sm}
         onClick={(e: React.MouseEvent) => {
           e.stopPropagation();

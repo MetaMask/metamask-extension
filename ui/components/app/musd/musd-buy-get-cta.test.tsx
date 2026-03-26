@@ -144,7 +144,7 @@ describe('MusdBuyGetCta', () => {
       expect(elements.length).toBeGreaterThanOrEqual(1);
     });
 
-    it('calls startConversionFlow when clicked', () => {
+    it('calls startConversionFlow when row is clicked', () => {
       const store = createMockStore();
       renderWithProvider(
         <MusdBuyGetCta
@@ -156,6 +156,29 @@ describe('MusdBuyGetCta', () => {
 
       const ctaElement = screen.getByTestId('multichain-token-list-button');
       fireEvent.click(ctaElement);
+
+      expect(mockStartConversionFlow).toHaveBeenCalledWith({
+        entryPoint: 'home',
+        preferredToken: {
+          address: mockDefaultPaymentToken.address,
+          chainId: mockDefaultPaymentToken.chainId,
+        },
+      });
+    });
+
+    it('calls startConversionFlow when inner CTA button is clicked', () => {
+      const store = createMockStore();
+      renderWithProvider(
+        <MusdBuyGetCta
+          variant={BuyGetMusdCtaVariant.GET}
+          selectedChainId="0x1"
+        />,
+        store,
+      );
+
+      fireEvent.click(
+        screen.getByRole('button', { name: messages.musdGetMusd.message }),
+      );
 
       expect(mockStartConversionFlow).toHaveBeenCalledWith({
         entryPoint: 'home',
@@ -210,7 +233,7 @@ describe('MusdBuyGetCta', () => {
       expect(elements.length).toBeGreaterThanOrEqual(1);
     });
 
-    it('opens buy crypto page when clicked for BUY variant', () => {
+    it('opens buy crypto page when row is clicked for BUY variant', () => {
       const store = createMockStore();
       renderWithProvider(
         <MusdBuyGetCta
@@ -228,6 +251,61 @@ describe('MusdBuyGetCta', () => {
           url: expect.stringContaining('/buy'),
         }),
       );
+    });
+
+    it('opens buy crypto page when inner CTA button is clicked for BUY variant', () => {
+      const store = createMockStore();
+      renderWithProvider(
+        <MusdBuyGetCta
+          variant={BuyGetMusdCtaVariant.BUY}
+          selectedChainId="0x1"
+        />,
+        store,
+      );
+
+      fireEvent.click(
+        screen.getByRole('button', { name: messages.musdBuyMusd.message }),
+      );
+
+      expect(mockOpenTab).toHaveBeenCalledWith(
+        expect.objectContaining({
+          url: expect.stringContaining('/buy'),
+        }),
+      );
+    });
+  });
+
+  describe('CTA button', () => {
+    it('renders a native button labeled with GET copy', () => {
+      const store = createMockStore();
+      renderWithProvider(
+        <MusdBuyGetCta
+          variant={BuyGetMusdCtaVariant.GET}
+          selectedChainId="0x1"
+        />,
+        store,
+      );
+
+      const button = screen.getByRole('button', {
+        name: messages.musdGetMusd.message,
+      });
+      expect(button).toHaveClass('musd-buy-get-cta__button');
+    });
+
+    it('renders a native button labeled with BUY copy', () => {
+      const store = createMockStore();
+      renderWithProvider(
+        <MusdBuyGetCta
+          variant={BuyGetMusdCtaVariant.BUY}
+          selectedChainId="0x1"
+        />,
+        store,
+      );
+
+      const button = screen.getByRole('button', {
+        name: messages.musdBuyMusd.message,
+      });
+      expect(button).toHaveClass('musd-buy-get-cta__button');
     });
   });
 
@@ -292,7 +370,7 @@ describe('MusdBuyGetCta', () => {
   });
 
   describe('accessibility', () => {
-    it('renders as a clickable anchor element with hover styling', () => {
+    it('renders row as clickable div with hover styling and inner button', () => {
       const store = createMockStore();
       renderWithProvider(
         <MusdBuyGetCta
@@ -305,6 +383,9 @@ describe('MusdBuyGetCta', () => {
       const ctaElement = screen.getByTestId('multichain-token-list-button');
       expect(ctaElement.tagName).toBe('DIV');
       expect(ctaElement.className).toContain('hover:bg-hover');
+      expect(
+        screen.getByRole('button', { name: messages.musdGetMusd.message }),
+      ).toBeInTheDocument();
     });
   });
 
