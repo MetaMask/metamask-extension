@@ -32,7 +32,9 @@ function createShieldFixture() {
         },
       },
     })
-    .withPermissionControllerConnectedToTestDapp();
+    .withPermissionControllerConnectedToTestDapp({
+      chainIds: [1],
+    });
 }
 
 describe('Shield Ruleset Engine Tests', function () {
