@@ -772,35 +772,6 @@ if (atMaxAttempts && hasRetryLabel && isRetryable) {
 }
 
 // ---------------------------------------------------------------------------
-// Disable auto-merge on non-retryable failures
-//
-// Developers use auto-merge to add PRs to the merge queue. When the queue
-// ejects a PR after a failure, auto-merge immediately re-queues it. For
-// retryable (transient) failures that's fine — the next queue entry may
-// succeed. But for non-retryable failures the code is genuinely broken,
-// so re-queuing just creates an infinite eject→re-queue loop.
-//
-// Breaking the loop here by disabling auto-merge forces the developer to
-// investigate, fix, and re-enable auto-merge themselves.
-// ---------------------------------------------------------------------------
-
-if (!isRetryable && prNumber) {
-  try {
-    execFileSync(
-      'gh',
-      ['pr', 'merge', '--disable-auto', prNumber, '--repo', REPO],
-      { encoding: 'utf8', env: ghEnv },
-    );
-    console.log(
-      `Disabled auto-merge on PR #${prNumber} to prevent re-queue loop`,
-    );
-  } catch (err) {
-    // Non-fatal: auto-merge may already be off, or permissions may differ.
-    console.warn(`Could not disable auto-merge on PR #${prNumber}:`, err);
-  }
-}
-
-// ---------------------------------------------------------------------------
 // Post deferred failure commit status (merge queue only)
 //
 // ci-status-gate.yml defers the "All jobs pass" commit status when it
@@ -812,8 +783,8 @@ if (!isRetryable && prNumber) {
 // The merge queue requires two checks (ruleset or classic branch protection):
 //   Rule 1 — Merge queue > ALLGREEN (monitors check suites directly)
 //   Rule 2 — Status checks > "All jobs pass" (monitors commit status)
-// Without this fallback post, Rule 2 stays pending forever, the queue
-// can't eject, and auto-merge re-queues the PR in an infinite loop.
+// Without this fallback post, Rule 2 stays pending forever and the queue
+// can't eject the PR.
 // ---------------------------------------------------------------------------
 
 // The gate defers when: merge_group + failure + retry-ci + attempt < MAX_ATTEMPTS.
@@ -889,13 +860,6 @@ if (unmatchedJobs.length > 0) {
     ``,
     `> ⚠️ **${unmatchedJobs.length} job(s) did not match any pattern** in retry-config.jsonc and used the default category \`${config.defaults.unmatchedCategory}\`:`,
     ...unmatchedJobs.map((c) => `> - ${c.jobName}`),
-  );
-}
-
-if (!isRetryable && prNumber) {
-  reportLines.push(
-    ``,
-    `> 🛑 **Auto-merge disabled** on PR #${prNumber} to prevent infinite re-queue. Fix the failures and re-enable auto-merge.`,
   );
 }
 
