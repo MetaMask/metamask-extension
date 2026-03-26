@@ -5,6 +5,8 @@ import {
   usePerpsLiveOrders,
   usePerpsLiveMarketData,
 } from '../../../hooks/perps/stream';
+import { usePerpsTransactionHistory } from '../../../hooks/perps/usePerpsTransactionHistory';
+import { PERPS_RECENT_ACTIVITY_MAX_TRANSACTIONS } from '../../../../shared/constants/perps';
 
 import { usePerpsDepositConfirmation } from './hooks/usePerpsDepositConfirmation';
 import { usePerpsWithdrawNavigation } from './hooks/usePerpsWithdrawNavigation';
@@ -45,6 +47,12 @@ export const PerpsView: React.FC = () => {
     isInitialLoading: marketsLoading,
   } = usePerpsLiveMarketData();
 
+  const {
+    transactions: recentActivityTransactions,
+    isLoading: recentActivityLoading,
+    error: recentActivityError,
+  } = usePerpsTransactionHistory();
+
   // Show only user-placed limit orders resting on the orderbook.
   // Excludes all position-attached orders:
   // - isTrigger: TP/SL trigger orders
@@ -67,7 +75,9 @@ export const PerpsView: React.FC = () => {
     return allHip3Markets.slice(0, 5);
   }, [allHip3Markets]);
 
-  // Show loading state while initial data is being fetched
+  // Show loading state while initial stream data is being fetched.
+  // Transaction history loads in parallel; Recent Activity skeleton is included here
+  // so the section is represented before the main view mounts.
   if (isLoading) {
     return (
       <Box
@@ -78,6 +88,9 @@ export const PerpsView: React.FC = () => {
         <PerpsControlBarSkeleton />
         <PerpsSectionSkeleton cardCount={5} showStartTradeCta />
         <PerpsSectionSkeleton cardCount={5} />
+        <Box data-testid="perps-recent-activity-skeleton">
+          <PerpsSectionSkeleton cardCount={3} showStartTradeCta={false} />
+        </Box>
       </Box>
     );
   }
@@ -108,7 +121,12 @@ export const PerpsView: React.FC = () => {
       />
 
       {/* Recent Activity */}
-      <PerpsRecentActivity />
+      <PerpsRecentActivity
+        transactions={recentActivityTransactions}
+        maxTransactions={PERPS_RECENT_ACTIVITY_MAX_TRANSACTIONS}
+        isLoading={recentActivityLoading}
+        error={recentActivityError}
+      />
 
       {/* Support & Learn */}
       <PerpsSupportLearn />
