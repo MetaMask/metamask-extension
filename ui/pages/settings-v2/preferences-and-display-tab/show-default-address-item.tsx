@@ -4,7 +4,7 @@ import { Box, BoxFlexDirection } from '@metamask/design-system-react';
 import Dropdown from '../../../components/ui/dropdown';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
-  getShowDefaultAddress,
+  getShowDefaultAddressPreference,
   getDefaultAddressScope,
   getIsDefaultAddressEnabled,
 } from '../../../selectors';
@@ -30,7 +30,7 @@ export const ShowDefaultAddressItem = () => {
   const { trackEvent } = useContext(MetaMetricsContext);
 
   const isDefaultAddressEnabled = useSelector(getIsDefaultAddressEnabled);
-  const showDefaultAddress = useSelector(getShowDefaultAddress);
+  const showDefaultAddress = useSelector(getShowDefaultAddressPreference);
   const defaultAddressScope = useSelector(
     getDefaultAddressScope,
   ) as DefaultAddressScope;

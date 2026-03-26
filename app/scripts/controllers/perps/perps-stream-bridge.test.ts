@@ -221,6 +221,22 @@ describe('PerpsStreamBridge', () => {
       expect(result).toBe('disconnect-result');
       expect(bridge.isActive).toBe(false);
     });
+
+    it('allows perpsInit to activate static subscriptions again after disconnect', async () => {
+      const controller = createMockController();
+      const { bridge } = createBridge({
+        controller: controller as unknown as PerpsController,
+      });
+      const api = bridge.bridgeApi();
+
+      await api.perpsInit();
+      expect(controller.subscribeToPositions).toHaveBeenCalledTimes(1);
+
+      await api.perpsDisconnect();
+
+      await api.perpsInit();
+      expect(controller.subscribeToPositions).toHaveBeenCalledTimes(2);
+    });
   });
 
   describe('perpsToggleTestnet', () => {
