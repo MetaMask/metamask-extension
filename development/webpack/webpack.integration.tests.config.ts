@@ -11,20 +11,17 @@ import {
 } from 'webpack';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 import CopyPlugin from 'copy-webpack-plugin';
-import type { PluginCreator } from 'postcss';
 import rtlCss from 'postcss-rtlcss';
 
-/** Mirrors `@tailwindcss/postcss` — package uses `export =`, so no `.default` on `import()` types. */
-type TailwindPostcssPlugin = PluginCreator<{
-  base?: string;
-  optimize?: boolean | { minify?: boolean };
-  transformAssetUrls?: boolean;
-}>;
-
 const requireIntegrationConfig = createRequire(__filename);
+// Tailwind v4’s PostCSS plugin lives in `@tailwindcss/postcss`, which is published
+// using `package.json#exports` (no legacy `main`). Webpack can resolve this
+// directly, but LavaMoat policy generation (and related dependency scanning) can
+// fail to resolve exports-only packages. The shim loads the concrete `dist`
+// entrypoint and pins `base` to the repo root for consistent source scanning.
 const tailwindcss = requireIntegrationConfig(
   join(__dirname, '../lib/load-tailwind-postcss.cjs'),
-) as TailwindPostcssPlugin;
+);
 
 const context = join(__dirname, '../../app');
 const nodeModules = join(__dirname, '../../node_modules');
