@@ -59,6 +59,9 @@ class SettingsPage {
   private readonly backupAndSyncSettingsButton =
     '[data-testid="settings-v2-tab-item-backup-and-sync"]';
 
+  private readonly transactionsSettingsButton =
+    '[data-testid="settings-v2-tab-item-transactions"]';
+
   private readonly transactionShieldButton =
     '[data-testid="settings-v2-tab-item-transaction-shield"]';
 
@@ -199,6 +202,11 @@ class SettingsPage {
   async goToBackupAndSyncSettings(): Promise<void> {
     console.log('Navigating to Backup & Sync Settings page');
     await this.driver.clickElement(this.backupAndSyncSettingsButton);
+  }
+
+  async goToTransactionsSettings(): Promise<void> {
+    console.log('Navigating to Transactions Settings page');
+    await this.driver.clickElement(this.transactionsSettingsButton);
   }
 
   async goToSearchResultPage(page: string): Promise<void> {

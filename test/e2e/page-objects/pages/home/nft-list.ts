@@ -39,6 +39,8 @@ class NftListPage {
 
   private readonly nftListItem = '[data-testid="nft-wrapper"]';
 
+  private readonly toastBanner = '.toasts-container__banner-base';
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
@@ -55,6 +57,10 @@ class NftListPage {
   }
 
   async clickNFTIconOnActivityList() {
+    await this.driver.assertElementNotPresent(this.toastBanner, {
+      timeout: 5000,
+      waitAtLeastGuard: 250,
+    });
     await this.driver.clickElement(this.nftIconOnActivityList);
   }
 

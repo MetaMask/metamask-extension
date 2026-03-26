@@ -1,5 +1,6 @@
 import { Driver } from '../../../webdriver/driver';
 import { tEn } from '../../../../lib/i18n-helpers';
+import { THIRD_PARTY_APIS_ROUTE } from '../../../../../ui/helpers/constants/routes';
 
 class PrivacySettings {
   private readonly driver: Driver;
@@ -53,8 +54,10 @@ class PrivacySettings {
   private readonly ipfsGatewayToggle =
     '[data-testid="ipfsToggle"] .toggle-button';
 
-  private readonly privacySettingsLoadedMarker =
-    '[data-testid="use-nft-detection"]';
+  private readonly privacySettingsLoadedMarker = {
+    xpath:
+      "//label[contains(@class,'toggle-button')][.//*[@data-testid='basic-functionality-toggle']]",
+  };
 
   private readonly securityAndPasswordSettingsLoadedMarker =
     '[data-testid="reveal-seed-words"]';
@@ -316,6 +319,14 @@ class PrivacySettings {
     await this.driver.clickElement(this.ipfsGatewayToggle);
   }
 
+  async goToThirdPartyApisSettings(): Promise<void> {
+    console.log('Go to Third-party APIs settings page');
+    await this.driver.executeScript(
+      `window.location.hash = ${JSON.stringify(THIRD_PARTY_APIS_ROUTE)};`,
+    );
+    await this.driver.waitForSelector(this.ipfsGatewayToggle);
+  }
+
   async toggleNetworkDetailsCheck(): Promise<void> {
     console.log('Toggle network details check on privacy settings page');
     await this.driver.clickElement(this.networkDetailsCheckToggle);
@@ -326,17 +337,17 @@ class PrivacySettings {
    *
    */
   async checkDeleteMetaMetricsDataButtonEnabled(): Promise<boolean> {
-    try {
-      await this.driver.findClickableElement(this.deleteMetaMetricsDataButton, {
-        waitAtLeastGuard: 2000,
-        timeout: 5000,
-      });
-    } catch (e) {
-      console.log('Delete MetaMetrics data button not enabled', e);
-      return false;
-    }
-    console.log('Delete MetaMetrics data button is enabled');
-    return true;
+    await this.driver.waitForSelector(this.deleteMetaMetricsDataButton);
+    const button = await this.driver.findElement(
+      this.deleteMetaMetricsDataButton,
+    );
+    const isEnabled = await button.isEnabled();
+
+    console.log(
+      `Delete MetaMetrics data button is ${isEnabled ? 'enabled' : 'disabled'}`,
+    );
+
+    return isEnabled;
   }
 
   async checkDisplayedSrpCanBeCopied(): Promise<void> {

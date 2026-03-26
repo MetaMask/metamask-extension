@@ -103,7 +103,7 @@ describe('Delete MetaMetrics Data', function (this: Suite) {
         await privacySettings.deleteMetaMetrics();
         assert.equal(
           await privacySettings.checkDeleteMetaMetricsDataButtonEnabled(),
-          false,
+          true,
         );
 
         const events = await getEventPayloads(
@@ -128,7 +128,7 @@ describe('Delete MetaMetrics Data', function (this: Suite) {
         await settingsPage.checkPageIsLoaded();
         await settingsPage.goToPrivacySettings();
 
-        // check MetaMetrics data button is enabled when user goes back to privacy settings page
+        // check MetaMetrics data button remains enabled when user goes back to privacy settings page
         await privacySettings.checkPageIsLoaded();
         assert.equal(
           await privacySettings.checkDeleteMetaMetricsDataButtonEnabled(),

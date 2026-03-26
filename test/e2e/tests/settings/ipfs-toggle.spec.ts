@@ -40,6 +40,7 @@ describe('Settings', function () {
         await settingsPage.goToPrivacySettings();
         const privacySettings = new PrivacySettings(driver);
         await privacySettings.checkPageIsLoaded();
+        await privacySettings.goToThirdPartyApisSettings();
         await privacySettings.toggleIpfsGateway();
         await settingsPage.clickBackButton();
         const homePage = new Homepage(driver);

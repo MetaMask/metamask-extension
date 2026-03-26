@@ -26,7 +26,7 @@ const selectors = {
   currentLanguageवर्तमान: { text: 'मानक हिन्दी' },
   waterTextDansk: `[placeholder="${da.search.message}"]`,
   headerTextDansk: { text: da.settings.message.trim() },
-  dialogTextDeutsch: { text: de.invalidAddress.message, tag: 'p' },
+  dialogTextDeutsch: { text: de.invalidAddressRecipient.message, tag: 'p' },
   discoverTextवर्तमान: { text: hi.discover.message, tag: 'a' },
   headerTextAr: { text: ar.settings.message },
 };
@@ -92,6 +92,16 @@ describe('Settings V2 - Preferences and display', function (this: Suite) {
         await driver.refresh();
         const settingsPage = new SettingsPage(driver);
         await settingsPage.checkPageIsLoaded();
+
+        const isHeaderTextChanged = await driver.isElementPresent(
+          selectors.headerTextDansk,
+        );
+        assert.equal(
+          isHeaderTextChanged,
+          true,
+          'Language change is not reflected in headers',
+        );
+
         await settingsPage.openSearch();
 
         const isWaterTextChanged = await driver.isElementPresent(
@@ -103,14 +113,6 @@ describe('Settings V2 - Preferences and display', function (this: Suite) {
           'Water text in the search box does not match with the selected language',
         );
 
-        const isHeaderTextChanged = await driver.isElementPresent(
-          selectors.headerTextDansk,
-        );
-        assert.equal(
-          isHeaderTextChanged,
-          true,
-          'Language change is not reflected in headers',
-        );
       },
     );
   });
@@ -185,6 +187,9 @@ describe('Settings V2 - Preferences and display', function (this: Suite) {
         const homepage = new Homepage(driver);
         await homepage.checkPageIsLoaded();
         await homepage.checkExpectedBalanceIsDisplayed();
+        await driver.refresh();
+        await homepage.checkPageIsLoaded();
+        await homepage.checkExpectedBalanceIsDisplayed();
         const isDiscoverButtonTextChanged = await driver.isElementPresent(
           selectors.discoverTextवर्तमान,
         );
@@ -212,6 +217,11 @@ describe('Settings V2 - Preferences and display', function (this: Suite) {
         await preferencesAndDisplaySettings.checkPageIsLoaded();
 
         await preferencesAndDisplaySettings.changeLanguage('العربية');
+
+        const settingsPage = new SettingsPage(driver);
+        await settingsPage.clickBackButton();
+        await new HeaderNavbar(driver).openSettingsPage();
+        await settingsPage.checkPageIsLoaded();
 
         const isHeaderTextChanged = await driver.isElementPresent(
           selectors.headerTextAr,

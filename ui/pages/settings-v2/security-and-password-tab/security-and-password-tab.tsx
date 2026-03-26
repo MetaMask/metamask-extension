@@ -27,6 +27,7 @@ const PasswordItem = createSelectItem({
   titleKey: SECURITY_ITEMS.password,
   valueSelector: () => '',
   route: SECURITY_PASSWORD_CHANGE_V2_ROUTE,
+  dataTestId: 'change-password-button',
 });
 
 export const AutoLockItem = createSelectItem({
