@@ -1,6 +1,7 @@
 import React from 'react';
 import { act, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { enLocale as messages } from '../../../test/lib/i18n-helpers';
 import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
 import configureStore from '../../store/store';
 import mockState from '../../../test/data/mock-state.json';
@@ -256,9 +257,7 @@ describe('PerpsWithdrawPage', () => {
     await user.click(screen.getByTestId('perps-withdraw-submit'));
 
     expect(
-      await screen.findByText(
-        'No account selected. Select an account and try again.',
-      ),
+      await screen.findByText(messages.perpsWithdrawNoAccount.message),
     ).toBeInTheDocument();
 
     expect(mockSubmit).not.toHaveBeenCalledWith(
