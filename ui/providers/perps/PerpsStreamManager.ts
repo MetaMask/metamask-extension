@@ -98,6 +98,10 @@ class PerpsStreamManager {
   // Tracks which address this manager is initialized for
   private initializedAddress: string | null = null;
 
+  // Deduplicates concurrent initForAddress calls
+  private pendingInit: { address: string; promise: Promise<void> } | null =
+    null;
+
   // Optimistic overrides for TP/SL - preserves user-set values until WebSocket catches up
   private readonly optimisticTPSLOverrides: Map<
     string,
@@ -332,23 +336,85 @@ class PerpsStreamManager {
     const currentControllerAddress = this.initializedAddress;
 
     // If same address and already initialized, nothing to do
-    if (
-      currentControllerAddress === address &&
-      this.initializedAddress === address
-    ) {
+    if (currentControllerAddress === address) {
       return;
     }
 
-    // Address changed - clear caches and reinitialize
-    if (
-      currentControllerAddress !== null &&
-      currentControllerAddress !== address
-    ) {
-      this.clearAllCaches();
+    // Address changed - fully reset channels so they disconnect and
+    // re-fetch data for the new account on next subscribe.
+    if (currentControllerAddress !== null) {
       this.cleanupPrewarm();
+      this.positions.reset();
+      this.orders.reset();
+      this.account.reset();
+      this.fills.reset();
+      this.markets.reset();
+      this.prices.reset();
+      this.orderBook.reset();
+      this.candles.clearAll();
+      this.optimisticTPSLOverrides.clear();
     }
 
     this.initializedAddress = address;
+  }
+
+  /**
+   * Initialize the stream manager for a given address, including the
+   * background `perpsInit` RPC call. Deduplicates concurrent calls so
+   * that multiple hooks sharing this singleton only trigger one round-trip.
+   *
+   * @param address - The selected account address
+   * @returns Resolves when the manager is ready for `address`, or rejects on error.
+   */
+  async initForAddress(address: string): Promise<void> {
+    if (!address) {
+      throw new Error('No account selected');
+    }
+
+    if (this.initializedAddress === address) {
+      return;
+    }
+
+    // If there's already a pending init for this exact address, piggyback on it.
+    if (this.pendingInit?.address === address) {
+      await this.pendingInit.promise;
+      return;
+    }
+
+    // New address requested — discard any stale pending init and start fresh.
+    // Also treat an in-flight pendingInit as needing disconnect: during first
+    // init, initializedAddress is still null but perpsInit was already sent.
+    const needsDisconnect =
+      this.initializedAddress !== null || this.pendingInit !== null;
+    this.pendingInit = null;
+    this.clearAllCaches();
+
+    const promise = (async () => {
+      try {
+        // PerpsController.init() is a no-op when already initialized.
+        // Disconnect first so the controller tears down the old provider/WebSocket
+        // and re-initializes with the new account from AccountTreeController.
+        if (needsDisconnect) {
+          await submitRequestToBackground('perpsDisconnect');
+        }
+        await submitRequestToBackground('perpsInit');
+        // Only apply if this is still the latest requested address.
+        if (this.pendingInit?.address === address) {
+          this.init(address);
+          this.pendingInit = null;
+        }
+      } catch (err) {
+        // Clear pendingInit on failure so subsequent retries start fresh
+        // instead of piggybacking on this rejected promise.
+        if (this.pendingInit?.address === address) {
+          this.pendingInit = null;
+        }
+        throw err;
+      }
+    })();
+
+    this.pendingInit = { address, promise };
+    await promise;
   }
 
   /**
