@@ -1,5 +1,5 @@
 import React from 'react';
-import { screen, fireEvent } from '@testing-library/react';
+import { screen, fireEvent, waitFor } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import configureStore from '../../../store/store';
@@ -7,6 +7,7 @@ import mockState from '../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import {
+  DEFAULT_ROUTE,
   MULTICHAIN_WALLET_DETAILS_PAGE_ROUTE,
   PREVIOUS_ROUTE,
 } from '../../../helpers/constants/routes';
@@ -21,6 +22,9 @@ const accountDetailsRowSmartAccountTestId = 'account-details-row-smart-account';
 const accountDetailsRowWalletTestId = 'account-details-row-wallet';
 const accountDetailsRowSecretRecoveryPhraseTestId = 'multichain-srp-backup';
 const accountNameInputDataTestId = 'account-name-input';
+const DEFAULT_ACCOUNT_GROUP_ID = 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0';
+const LEDGER_ACCOUNT_GROUP_ID =
+  'keyring:Ledger Hardware/0xc42edfcc21ed14dda456aa0756c153f7985d8813';
 
 jest.mock('../../../../shared/lib/trace', () => ({
   ...jest.requireActual('../../../../shared/lib/trace'),
@@ -28,14 +32,24 @@ jest.mock('../../../../shared/lib/trace', () => ({
 }));
 
 const mockUseNavigate = jest.fn();
-const mockUseParams = jest.fn();
-const mockUseLocation = jest.fn();
+const mockUseSearchParams = jest.fn();
+
+const setSearchParams = (
+  accountGroupId: string | null = DEFAULT_ACCOUNT_GROUP_ID,
+) => {
+  const searchParams = new URLSearchParams();
+  if (accountGroupId) {
+    searchParams.set('accountGroupId', accountGroupId);
+  }
+
+  mockUseSearchParams.mockReturnValue([searchParams, jest.fn()]);
+};
+
 jest.mock('react-router-dom', () => {
   return {
     ...jest.requireActual('react-router-dom'),
     useNavigate: () => mockUseNavigate,
-    useParams: () => mockUseParams(),
-    useLocation: () => mockUseLocation(),
+    useSearchParams: () => mockUseSearchParams(),
   };
 });
 
@@ -52,17 +66,7 @@ jest.mock('react-redux', () => {
 describe('MultichainAccountDetailsPage', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-
-    mockUseParams.mockReturnValue({
-      id: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0',
-    });
-
-    mockUseLocation.mockReturnValue({
-      pathname: '/test',
-      search: '',
-      hash: '',
-      state: null,
-    });
+    setSearchParams();
   });
 
   const mockStore = configureMockStore([thunk])(mockState);
@@ -116,9 +120,20 @@ describe('MultichainAccountDetailsPage', () => {
     fireEvent.click(walletRow);
 
     expect(mockUseNavigate).toHaveBeenCalledTimes(1);
-    expect(mockUseNavigate).toHaveBeenCalledWith(
-      `${MULTICHAIN_WALLET_DETAILS_PAGE_ROUTE}/entropy%3A01JKAF3DSGM3AB87EM9N0K41AJ`,
-    );
+    expect(mockUseNavigate).toHaveBeenCalledWith({
+      pathname: MULTICHAIN_WALLET_DETAILS_PAGE_ROUTE,
+      search: 'id=entropy%3A01JKAF3DSGM3AB87EM9N0K41AJ',
+    });
+  });
+
+  it('navigates to default route when accountGroupId is missing', async () => {
+    setSearchParams(null);
+
+    expect(() => renderComponent()).not.toThrow();
+
+    await waitFor(() => {
+      expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE);
+    });
   });
 
   it('does not render remove account section for Entropy wallet type', () => {
@@ -128,9 +143,7 @@ describe('MultichainAccountDetailsPage', () => {
   });
 
   it('renders remove account section for Keyring wallet type', () => {
-    mockUseParams.mockReturnValue({
-      id: 'keyring:Ledger Hardware/0xc42edfcc21ed14dda456aa0756c153f7985d8813',
-    });
+    setSearchParams(LEDGER_ACCOUNT_GROUP_ID);
 
     renderComponent();
 
@@ -138,9 +151,7 @@ describe('MultichainAccountDetailsPage', () => {
   });
 
   it('does not render Setup Smart Account row for hardware wallet (Ledger) account', () => {
-    mockUseParams.mockReturnValue({
-      id: 'keyring:Ledger Hardware/0xc42edfcc21ed14dda456aa0756c153f7985d8813',
-    });
+    setSearchParams(LEDGER_ACCOUNT_GROUP_ID);
 
     renderComponent();
 
@@ -174,9 +185,7 @@ describe('MultichainAccountDetailsPage', () => {
   });
 
   it('opens account remove modal when remove account action button is clicked', () => {
-    mockUseParams.mockReturnValue({
-      id: 'keyring:Ledger Hardware/0xc42edfcc21ed14dda456aa0756c153f7985d8813',
-    });
+    setSearchParams(LEDGER_ACCOUNT_GROUP_ID);
     renderComponent();
 
     const removeAccountActionButton = screen.getByTestId(
@@ -188,9 +197,7 @@ describe('MultichainAccountDetailsPage', () => {
   });
 
   it('closes account remove modal when close button is clicked', () => {
-    mockUseParams.mockReturnValue({
-      id: 'keyring:Ledger Hardware/0xc42edfcc21ed14dda456aa0756c153f7985d8813',
-    });
+    setSearchParams(LEDGER_ACCOUNT_GROUP_ID);
 
     renderComponent();
 
@@ -208,9 +215,7 @@ describe('MultichainAccountDetailsPage', () => {
   });
 
   it('calls removeAccount action when remove account button is clicked', () => {
-    mockUseParams.mockReturnValue({
-      id: 'keyring:Ledger Hardware/0xc42edfcc21ed14dda456aa0756c153f7985d8813',
-    });
+    setSearchParams(LEDGER_ACCOUNT_GROUP_ID);
     renderComponent();
 
     const removeAccountActionButton = screen.getByTestId(
@@ -232,10 +237,11 @@ describe('MultichainAccountDetailsPage', () => {
     it('calls ShowAccountAddressList trace when clicking network addresses link', () => {
       const store = configureStore(mockState);
       const groupId = mockState.metamask.accountTree.selectedAccountGroup;
+      setSearchParams(groupId);
       renderWithProvider(
         <MultichainAccountDetailsPage />,
         store,
-        `/test/${encodeURIComponent(groupId)}`,
+        `/test?accountGroupId=${encodeURIComponent(groupId)}`,
       );
 
       const addressesLink = document.querySelector(

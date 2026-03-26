@@ -100,7 +100,7 @@ import {
   POLLING_TOKEN_ENVIRONMENT_TYPES,
 } from '../../shared/constants/app';
 // TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
+// eslint-disable-next-line import-x/no-restricted-paths
 import { getEnvironmentType, addHexPrefix } from '../../app/scripts/lib/util';
 import {
   getMetaMaskAccounts,
@@ -122,13 +122,13 @@ import {
 import {
   getSelectedNetworkClientId,
   getProviderConfig,
-} from '../../shared/modules/selectors/networks';
+} from '../../shared/lib/selectors/networks';
 import { switchedToUnconnectedAccount } from '../ducks/alerts/unconnected-account-slice';
 import {
   getUnconnectedAccountAlertEnabledness,
   getCompletedOnboarding,
 } from '../ducks/metamask/metamask';
-import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
+import { toChecksumHexAddress } from '../../shared/lib/hexstring-utils';
 import {
   HardwareDeviceNames,
   LedgerTransportTypes,
@@ -148,20 +148,20 @@ import {
   MetaMetricsUserTraits,
 } from '../../shared/constants/metametrics';
 import { parseSmartTransactionsError } from '../pages/swaps/swaps.util';
-import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
-import { getSmartTransactionsOptInStatusInternal } from '../../shared/modules/selectors';
+import { isEqualCaseInsensitive } from '../../shared/lib/string-utils';
+import { getSmartTransactionsOptInStatusInternal } from '../../shared/lib/selectors';
 import {
   fetchLocale,
   loadRelativeTimeFormatLocaleData,
-} from '../../shared/modules/i18n';
-import { decimalToHex } from '../../shared/modules/conversion.utils';
+} from '../../shared/lib/i18n';
+import { decimalToHex } from '../../shared/lib/conversion.utils';
 import { TxGasFees, PriorityLevels } from '../../shared/constants/gas';
 import {
   getErrorMessage,
   isErrorWithMessage,
   logErrorWithMessage,
   createSentryError,
-} from '../../shared/modules/error';
+} from '../../shared/lib/error';
 import type { DefaultAddressScope } from '../../shared/constants/default-address';
 import { ThemeType } from '../../shared/constants/preferences';
 import { FirstTimeFlowType } from '../../shared/constants/onboarding';
@@ -199,7 +199,7 @@ import {
   DefaultSubscriptionPaymentOptions,
   ShieldSubscriptionMetricsPropsFromUI,
 } from '../../shared/types';
-// eslint-disable-next-line import/no-restricted-paths
+// eslint-disable-next-line import-x/no-restricted-paths
 import { OAuthLoginResult } from '../../app/scripts/services/oauth/types';
 import { isHardwareAccount } from '../../shared/lib/accounts';
 import { SUBSCRIPTIONS_POLLING_INPUT } from '../../shared/constants/subscriptions';
@@ -3140,17 +3140,23 @@ export function removeCustomAsset(
  *
  * @param accountId - The account ID to add custom assets for
  * @param assets - Array of asset descriptors with assetId and whether each was previously hidden in preferences
+ * @param pendingMetadataByAssetId - Optional map of assetId to PendingTokenMetadata, used to seed assetsInfo immediately on import
  */
 export function importCustomAssetsBatch(
   accountId: string,
   assets: { assetId: Caip19AssetId; isHidden: boolean }[],
+  pendingMetadataByAssetId?: Record<string, Record<string, unknown>>,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
     const results = await Promise.allSettled(
       assets.map(({ assetId, isHidden }) =>
         isHidden
           ? submitRequestToBackground('unhideAsset', [assetId])
-          : submitRequestToBackground('addCustomAsset', [accountId, assetId]),
+          : submitRequestToBackground('addCustomAsset', [
+              accountId,
+              assetId,
+              pendingMetadataByAssetId?.[assetId],
+            ]),
       ),
     );
     const firstError = results.find(
@@ -3242,7 +3248,9 @@ export async function getBalancesInSingleCall(
  *
  * @param chainId - chainId of the network
  */
-export async function findNetworkClientIdByChainId(chainId: string): string {
+export async function findNetworkClientIdByChainId(
+  chainId: string,
+): Promise<string> {
   return await submitRequestToBackground('findNetworkClientIdByChainId', [
     chainId,
   ]);
@@ -4617,13 +4625,13 @@ export function setDataCollectionForMarketing(
 
 export function setPna25Acknowledged(
   acknowledged: boolean,
-  delayCollection = false,
+  disableDelay: boolean = false,
 ): ThunkAction<Promise<void>, MetaMaskReduxState, unknown, AnyAction> {
   return async () => {
     log.debug(`background.setPna25Acknowledged`);
     await submitRequestToBackground('setPna25Acknowledged', [
       acknowledged,
-      delayCollection,
+      disableDelay,
     ]);
   };
 }
@@ -4930,7 +4938,7 @@ export function toggleExternalServices(
 }
 
 export function setIsIpfsGatewayEnabled(
-  val: string,
+  val: boolean,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
     log.debug(`background.setIsIpfsGatewayEnabled`);

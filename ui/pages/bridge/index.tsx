@@ -13,7 +13,7 @@ import {
   ButtonIconSize,
   IconName,
 } from '../../components/component-library';
-import { getSelectedNetworkClientId } from '../../../shared/modules/selectors/networks';
+import { getSelectedNetworkClientId } from '../../../shared/lib/selectors/networks';
 import useBridging from '../../hooks/bridge/useBridging';
 import {
   Content,

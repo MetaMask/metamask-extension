@@ -13,7 +13,7 @@ import type {
   NotificationServicesPushControllerMessenger,
   NotificationServicesPushControllerInitMessenger,
 } from '../messengers/notifications';
-import { isManifestV3 } from '../../../../shared/modules/mv3.utils';
+import { isManifestV3 } from '../../../../shared/lib/mv3.utils';
 import {
   onPushNotificationClicked,
   onPushNotificationReceived,

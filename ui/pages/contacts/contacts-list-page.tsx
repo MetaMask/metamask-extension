@@ -28,11 +28,7 @@ import {
   PREVIOUS_ROUTE,
 } from '../../helpers/constants/routes';
 import { getCompleteAddressBook, getInternalAccounts } from '../../selectors';
-import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
-import {
-  buildDuplicateContactMap,
-  hasDuplicateContacts,
-} from '../../components/app/contact-list/utils';
+import { isEqualCaseInsensitive } from '../../../shared/lib/string-utils';
 import {
   BannerAlert,
   BannerAlertSeverity,
@@ -42,6 +38,7 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../shared/constants/metametrics';
+import { buildDuplicateContactMap, hasDuplicateContacts } from './utils';
 import { ContactListItem } from './components/contact-list-item';
 import { ContactsEmptyState } from './components/contacts-empty-state';
 
@@ -231,7 +228,9 @@ export function ContactsListPage() {
                     name={entry.name ?? ''}
                     chainId={entry.chainId}
                     onSelect={() =>
-                      navigate(`${CONTACTS_VIEW_ROUTE}/${entry.address}`)
+                      navigate(
+                        `${CONTACTS_VIEW_ROUTE}/${entry.chainId}/${entry.address}`,
+                      )
                     }
                     isDuplicate={
                       (

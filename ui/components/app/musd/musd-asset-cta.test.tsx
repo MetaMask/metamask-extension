@@ -12,7 +12,7 @@ jest.mock('../../../hooks/useI18nContext', () => ({
   useI18nContext: () => (key: string, values?: string[]) => {
     const translations: Record<string, string> = {
       musdBoostTitle: `Get ${values?.[0] || '3'}% on your stablecoins`,
-      musdBoostDescription: `Convert your stablecoins to mUSD and receive up to a ${values?.[0] || '3'}% bonus.`,
+      musdBoostDescription: `Convert your stablecoins to mUSD and get a ${values?.[0] || '3'}% annualized bonus.`,
       musdConvert: 'Convert',
       dismiss: 'Dismiss',
     };
@@ -125,7 +125,7 @@ describe('MusdAssetCta', () => {
       ).toBeInTheDocument();
       expect(
         screen.getByText(
-          'Convert your stablecoins to mUSD and receive up to a 3% bonus.',
+          'Convert your stablecoins to mUSD and get a 3% annualized bonus.',
         ),
       ).toBeInTheDocument();
     });

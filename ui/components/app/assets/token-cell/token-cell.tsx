@@ -40,6 +40,8 @@ export type TokenCellProps = {
   safeChains?: SafeChain[];
   /** When true, shows the Merkl "Claim bonus" badge (e.g. on asset detail page). */
   showMerklBadge?: boolean;
+  /** When true, shows the mUSD convert CTA in the footer (e.g. on the home token list). */
+  showMusdConvertCta?: boolean;
 };
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
@@ -51,6 +53,7 @@ export default function TokenCell({
   fixCurrencyToUSD = false,
   safeChains,
   showMerklBadge = false,
+  showMusdConvertCta = false,
 }: TokenCellProps) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -63,7 +66,11 @@ export default function TokenCell({
   const [showScamWarningModal, setShowScamWarningModal] = useState(false);
 
   // Check whether there are rewards available for the user
-  const { hasClaimableReward, refetch: refetchMerklRewards } = useMerklRewards({
+  const {
+    hasClaimableReward,
+    isEligible,
+    refetch: refetchMerklRewards,
+  } = useMerklRewards({
     tokenAddress: token.address,
     chainId: token.chainId as Hex,
     showMerklBadge,
@@ -73,7 +80,7 @@ export default function TokenCell({
   const { hasMusdBalance } = useMusdBalance();
 
   const showMusdCta = useMemo(() => {
-    if (!token.address || !token.chainId) {
+    if (!showMusdConvertCta || !token.address || !token.chainId) {
       return false;
     }
     return shouldShowTokenListItemCta(
@@ -85,6 +92,7 @@ export default function TokenCell({
       { hasMusdBalance },
     );
   }, [
+    showMusdConvertCta,
     token.address,
     token.chainId,
     token.symbol,
@@ -120,7 +128,7 @@ export default function TokenCell({
         />
       );
     }
-    if (hasClaimableReward) {
+    if (isEligible && hasClaimableReward) {
       return (
         <ClaimBonusBadge
           tokenAddress={token.address as string}

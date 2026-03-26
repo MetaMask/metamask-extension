@@ -1,3 +1,8 @@
+import type {
+  ThresholdConfig,
+  TimerStatistics,
+  WebVitalsMetrics,
+} from '../../../../shared/constants/benchmarks';
 import {
   calculateMean,
   calculateStdDev,
@@ -18,11 +23,6 @@ import {
   aggregateWebVitals,
   MAX_METRIC_DURATION_MS,
 } from './statistics';
-import type {
-  TimerStatistics,
-  WebVitalsMetrics,
-} from '../../../../shared/constants/benchmarks';
-import type { ThresholdConfig } from './types';
 
 function createMockStats(
   overrides: Partial<TimerStatistics> = {},

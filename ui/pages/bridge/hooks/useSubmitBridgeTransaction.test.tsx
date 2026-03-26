@@ -2,9 +2,8 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { renderHook } from '@testing-library/react-hooks';
-import { Provider } from 'react-redux';
-import { MemoryRouter } from 'react-router-dom';
 import { act } from '@testing-library/react';
+import { createMemoryRouterWrapper } from '../../../../test/lib/render-helpers-navigate';
 import {
   createBridgeMockStore,
   MOCK_LEDGER_ACCOUNT,
@@ -18,7 +17,7 @@ import {
   CROSS_CHAIN_SWAP_ROUTE,
   DEFAULT_ROUTE,
 } from '../../../helpers/constants/routes';
-import * as sharedSelectors from '../../../../shared/modules/selectors';
+import * as sharedSelectors from '../../../../shared/lib/selectors';
 import * as sentry from '../../../../shared/lib/sentry';
 import * as bridgeStatusActions from '../../../ducks/bridge-status/actions';
 import { setBackgroundConnection } from '../../../store/background-connection';
@@ -65,9 +64,9 @@ jest.mock('../../../store/actions', () => {
   };
 });
 
-jest.mock('../../../../shared/modules/selectors/networks', () => {
+jest.mock('../../../../shared/lib/selectors/networks', () => {
   const original = jest.requireActual(
-    '../../../../shared/modules/selectors/networks',
+    '../../../../shared/lib/selectors/networks',
   );
   return {
     ...original,
@@ -107,9 +106,9 @@ jest.mock('../../../../shared/modules/selectors/networks', () => {
   };
 });
 
-jest.mock('../../../../shared/modules/selectors', () => {
+jest.mock('../../../../shared/lib/selectors', () => {
   const smartTransactions = jest.requireActual(
-    '../../../../shared/modules/selectors/smart-transactions',
+    '../../../../shared/lib/selectors/smart-transactions',
   );
   return {
     ...smartTransactions,
@@ -154,15 +153,17 @@ const makeMockStore = (
   );
 };
 
-const makeWrapper =
-  (store: ReturnType<typeof makeMockStore>) =>
-  ({ children }: { children: React.ReactNode }) => (
-    <Provider store={store}>
-      <MemoryRouter>
-        <HardwareWalletProvider>{children}</HardwareWalletProvider>
-      </MemoryRouter>
-    </Provider>
+const makeWrapper = (store: ReturnType<typeof makeMockStore>) => {
+  const MemoryRouter = createMemoryRouterWrapper({
+    store,
+  });
+
+  return ({ children }: { children: React.ReactNode }) => (
+    <MemoryRouter>
+      <HardwareWalletProvider>{children}</HardwareWalletProvider>
+    </MemoryRouter>
   );
+};
 
 const submitTxSpy = jest.spyOn(bridgeStatusActions, 'submitBridgeTx');
 const submitIntentSpy = jest.spyOn(bridgeStatusActions, 'submitBridgeIntent');

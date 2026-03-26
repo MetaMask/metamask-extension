@@ -2,7 +2,7 @@ const { promises: fs } = require('fs');
 const path = require('path');
 const childProcess = require('child_process');
 const { mergeWith, cloneDeep } = require('lodash');
-const { isManifestV3 } = require('../../shared/modules/mv3.utils');
+const { isManifestV3 } = require('../../shared/lib/mv3.utils');
 
 const baseManifest = isManifestV3
   ? require('../../app/manifest/v3/_base.json')
@@ -99,17 +99,21 @@ function createManifestTasks({
 
   // dev: add perms
   const envDev = createTaskForModifyManifestForEnvironment((manifest) => {
-    manifest.permissions = [...manifest.permissions, 'webRequestBlocking'];
+    manifest.permissions = [
+      ...new Set([...manifest.permissions, 'webRequestBlocking']),
+    ];
     loadManifestKey(manifest);
   });
 
   // testDev: add perms
   const envTestDev = createTaskForModifyManifestForEnvironment((manifest) => {
     manifest.permissions = [
-      ...manifest.permissions,
-      'webRequestBlocking',
-      'http://localhost/*',
-      'tabs', // test builds need tabs permission for switchToWindowWithTitle
+      ...new Set([
+        ...manifest.permissions,
+        'webRequestBlocking',
+        'http://localhost/*',
+        'tabs', // test builds need tabs permission for switchToWindowWithTitle
+      ]),
     ];
     loadManifestKey(manifest);
   });
@@ -117,10 +121,12 @@ function createManifestTasks({
   // test: add permissions
   const envTest = createTaskForModifyManifestForEnvironment((manifest) => {
     manifest.permissions = [
-      ...manifest.permissions,
-      'webRequestBlocking',
-      'http://localhost/*',
-      'tabs', // test builds need tabs permission for switchToWindowWithTitle
+      ...new Set([
+        ...manifest.permissions,
+        'webRequestBlocking',
+        'http://localhost/*',
+        'tabs', // test builds need tabs permission for switchToWindowWithTitle
+      ]),
     ];
     loadManifestKey(manifest);
   });

@@ -79,7 +79,7 @@ automatically categorized by environment based on build target and GitHub contex
 
 | Environment         | When Used           | Build Command     | Webpack Command                                   | Branch/Context       |
 | ------------------- | ------------------- | ----------------- | ------------------------------------------------- | -------------------- |
-| `production`        | Production releases | `yarn build prod` | `yarn webpack --mode production --env production` | `stable` branch      |
+| `production`        | Production releases | `yarn build prod` | `yarn webpack --mode production --env production` | `release/*` branches |
 | `staging`           | Main branch builds  | `yarn build dist` | `yarn webpack --mode production`                  | `main` branch        |
 | `development`       | Local development   | `yarn start`      | `yarn webpack --mode development --watch`         | Local                |
 | `testing`           | E2E test builds     | `yarn build:test` | `yarn webpack --mode production --test`           | Any                  |

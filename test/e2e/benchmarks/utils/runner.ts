@@ -1,5 +1,16 @@
 import get from 'lodash/get';
 import { retry } from '../../../../development/lib/retry';
+import type {
+  BenchmarkResults,
+  BenchmarkType,
+  Persona,
+  StatisticalResult,
+  ThresholdConfig,
+  TimerStatistics,
+  WebVitalsMetrics,
+  WebVitalsRun,
+  WebVitalsSummary,
+} from '../../../../shared/constants/benchmarks';
 import {
   ALL_METRICS,
   DEFAULT_NUM_BROWSER_LOADS,
@@ -19,21 +30,10 @@ import {
   validateThresholds,
 } from './statistics';
 import type {
-  BenchmarkResults,
-  BenchmarkType,
-  Persona,
-  StatisticalResult,
-  TimerStatistics,
-  WebVitalsMetrics,
-  WebVitalsRun,
-  WebVitalsSummary,
-} from '../../../../shared/constants/benchmarks';
-import type {
   BenchmarkFunction,
   BenchmarkRunResult,
   BenchmarkSummary,
   Metrics,
-  ThresholdConfig,
   UserActionMeasurement,
 } from './types';
 import { performanceTracker } from './performance-tracker';

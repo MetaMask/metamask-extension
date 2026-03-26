@@ -4,7 +4,17 @@ import type {
   WebVitalsMetrics,
   WebVitalsSummary,
   TimerStatistics,
+  ThresholdViolation,
+  ThresholdConfig,
+  PercentileThreshold,
 } from '../../../../shared/constants/benchmarks';
+
+export type {
+  TimerStatistics,
+  ThresholdViolation,
+  ThresholdConfig,
+  PercentileThreshold,
+};
 
 export type TimerResult = {
   id: string;
@@ -67,38 +77,6 @@ export type BenchmarkRunResult = {
   benchmarkType?: BenchmarkType;
 };
 
-/**
- * Threshold limits for a single percentile
- */
-export type PercentileThreshold = {
-  /** Threshold (ms) that triggers a warning */
-  warn: number;
-  /** Threshold (ms) that triggers a failure */
-  fail: number;
-};
-
-/**
- * Configuration for performance thresholds
- * Each metric can have thresholds for P75 and/or P95 values
- */
-export type ThresholdConfig = {
-  [metricName: string]: {
-    /** P75 thresholds - typical user experience */
-    p75?: PercentileThreshold;
-    /** P95 thresholds - worst-case guardrail */
-    p95?: PercentileThreshold;
-    /** Multiplier for CI environments (e.g., 1.5 for slower CI machines) */
-    ciMultiplier?: number;
-  };
-};
-
-export type ThresholdViolation = {
-  metricId: string;
-  percentile: 'p75' | 'p95';
-  value: number;
-  threshold: number;
-  severity: 'warn' | 'fail';
-};
 
 export type BenchmarkSummary = {
   name: string;

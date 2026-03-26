@@ -26,7 +26,7 @@ import { getAssetsRates } from '../../../selectors/assets';
 import { getCurrencyRates, getMarketData } from '../../../selectors/selectors';
 import { AssetType } from '../../../../shared/constants/transaction';
 import { Asset } from '../types/asset';
-// eslint-disable-next-line import/no-restricted-paths
+// eslint-disable-next-line import-x/no-restricted-paths
 import { getConversionRatesForNativeAsset } from '../../../../app/scripts/lib/util';
 import { isEvmChainId } from '../../../../shared/lib/asset-utils';
 import { useFormatters } from '../../../hooks/useFormatters';

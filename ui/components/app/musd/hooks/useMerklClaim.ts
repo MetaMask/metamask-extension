@@ -5,6 +5,7 @@ import type { Hex } from '@metamask/utils';
 import { TransactionType } from '@metamask/transaction-controller';
 import { Interface } from '@ethersproject/abi';
 import { getSelectedInternalAccount } from '../../../../selectors/accounts';
+import { useMusdGeoBlocking } from '../../../../hooks/musd/useMusdGeoBlocking';
 import {
   addTransaction,
   findNetworkClientIdByChainId,
@@ -41,6 +42,7 @@ export const useMerklClaim = ({
   const abortControllerRef = useRef<AbortController | null>(null);
   const navigate = useNavigate();
   const location = useLocation();
+  const { isBlocked: isGeoBlocked } = useMusdGeoBlocking();
 
   const selectedAccount = useSelector(getSelectedInternalAccount);
   const selectedAddress = selectedAccount?.address;
@@ -56,6 +58,10 @@ export const useMerklClaim = ({
   );
 
   const claimRewards = useCallback(async () => {
+    if (isGeoBlocked) {
+      return;
+    }
+
     if (!selectedAddress) {
       const errorMessage = 'No account selected';
       setError(errorMessage);
@@ -132,6 +138,7 @@ export const useMerklClaim = ({
       setIsClaiming(false);
     }
   }, [
+    isGeoBlocked,
     selectedAddress,
     tokenAddress,
     chainId,

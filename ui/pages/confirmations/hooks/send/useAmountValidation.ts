@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 
-import { Numeric } from '../../../../../shared/modules/Numeric';
+import { Numeric } from '../../../../../shared/lib/Numeric';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
   fromTokenMinUnitsNumeric,

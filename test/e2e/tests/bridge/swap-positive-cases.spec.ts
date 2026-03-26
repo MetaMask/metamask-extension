@@ -1,7 +1,7 @@
 import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
 import { getEventPayloads, withFixtures } from '../../helpers';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 import HomePage from '../../page-objects/pages/home/homepage';
 import { BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED } from './constants';
 import { bridgeTransaction, getBridgeFixtures } from './bridge-test-utils';
@@ -19,12 +19,7 @@ describe('Swap tests', function (this: Suite) {
         ),
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
-        await loginWithBalanceValidation(
-          driver,
-          undefined,
-          undefined,
-          '$225,730.11',
-        );
+        await login(driver, { expectedBalance: '$225,730.11' });
 
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
@@ -103,12 +98,7 @@ describe('Swap tests', function (this: Suite) {
         true,
       ),
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
-        await loginWithBalanceValidation(
-          driver,
-          undefined,
-          undefined,
-          '$225,730.11',
-        );
+        await login(driver, { expectedBalance: '$225,730.11' });
 
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();

@@ -9,7 +9,7 @@ import { SignatureRequestType } from '../../types/confirm';
 import {
   parseTypedDataMessage,
   parseApprovalTransactionData,
-} from '../../../../../shared/modules/transaction.utils';
+} from '../../../../../shared/lib/transaction.utils';
 import { PRIMARY_TYPES_PERMIT } from '../../../../../shared/constants/signatures';
 import { Alert } from '../../../../ducks/confirm-alerts/confirm-alerts';
 import { RowAlertKey } from '../../../../components/app/confirm/info/row/constants';

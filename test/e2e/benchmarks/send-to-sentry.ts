@@ -19,11 +19,12 @@ import * as Sentry from '@sentry/node';
 import { isNullOrUndefined } from '@metamask/utils';
 import { hideBin } from 'yargs/helpers';
 import yargs from 'yargs/yargs';
-import { getGitBranch, getGitCommitHash } from './send-to-sentry-utils';
+import { StatKey } from '../../../shared/constants/benchmarks';
 import type {
   BenchmarkResults,
   WebVitalsSummary,
-} from '../../shared/constants/benchmarks';
+} from '../../../shared/constants/benchmarks';
+import { getGitBranch, getGitCommitHash } from './utils/git';
 import type { UserActionResult } from './utils/types';
 import { BENCHMARK_PERSONA, BENCHMARK_TYPE } from './utils/constants';
 import { aggregateWebVitals } from './utils/statistics';
@@ -224,7 +225,7 @@ async function main() {
       }
 
       const allMetrics: Record<string, number> = {};
-      const statTypes = ['mean', 'p75', 'p95'] as const;
+      const statTypes = Object.values(StatKey);
       for (const statType of statTypes) {
         const statData = benchmark[statType];
         if (statData && Object.keys(statData).length > 0) {

@@ -21,7 +21,6 @@ import { NewFeatureTag } from '../../../pages/notifications/NewFeatureTag';
 import {
   SETTINGS_ROUTE,
   // SETTINGS_V2_ROUTE,
-  DEFAULT_ROUTE,
   NOTIFICATIONS_ROUTE,
   SNAPS_ROUTE,
   PERMISSIONS,
@@ -35,7 +34,7 @@ import {
   toggleNetworkMenu,
   setUseSidePanelAsDefault,
 } from '../../../store/actions';
-import { isGatorPermissionsRevocationFeatureEnabled } from '../../../../shared/modules/environment';
+import { isGatorPermissionsRevocationFeatureEnabled } from '../../../../shared/lib/environment';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useSidePanelEnabled } from '../../../hooks/useSidePanelEnabled';
 import { useBrowserSupportsSidePanel } from '../../../hooks/useBrowserSupportsSidePanel';
@@ -46,14 +45,14 @@ import {
 import { selectIsBackupAndSyncEnabled } from '../../../selectors/identity/backup-and-sync';
 import { Tag } from '../../component-library';
 // TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
+// eslint-disable-next-line import-x/no-restricted-paths
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import {
   ENVIRONMENT_TYPE_POPUP,
   ENVIRONMENT_TYPE_SIDEPANEL,
   PLATFORM_FIREFOX,
 } from '../../../../shared/constants/app';
-import { getBrowserName } from '../../../../shared/modules/browser-runtime.utils';
+import { getBrowserName } from '../../../../shared/lib/browser-runtime.utils';
 import { SUPPORT_LINK } from '../../../../shared/lib/ui-utils';
 
 import { MetaMetricsContext } from '../../../contexts/metametrics';
@@ -511,15 +510,15 @@ export function useGlobalMenuSections(
           iconColor: IconColor.ErrorDefault,
           textColor: TextColor.ErrorDefault,
           label: t('logOut'),
-          onClick: () => {
-            navigate(DEFAULT_ROUTE);
-            dispatch(lockMetamask(t('lockMetaMaskLoadingMessage')));
+          onClick: async () => {
             trackEvent({
               category: MetaMetricsEventCategory.Navigation,
               event: MetaMetricsEventName.AppLocked,
               properties: { location: METRICS_LOCATION },
             });
             onClose();
+
+            await dispatch(lockMetamask(t('lockMetaMaskLoadingMessage')));
           },
         },
       ],

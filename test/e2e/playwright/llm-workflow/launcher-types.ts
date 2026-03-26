@@ -27,14 +27,7 @@ export type LaunchOptions = {
   viewportWidth?: number;
   viewportHeight?: number;
   slowMo?: number;
-  /**
-   * Whether to automatically build the extension before launching.
-   * This option is handled by the MCP session manager (BuildCapability) and is ignored by the launcher.
-   * The launcher only validates that the extension is already built.
-   *
-   * @default true (when using MCP workflow with BuildCapability)
-   */
-  autoBuild?: boolean;
+  headless?: boolean;
   screenshotDir?: string;
   stateMode?: StateMode;
   network?: NetworkConfig;
@@ -74,6 +67,8 @@ export type ScreenName =
   | 'send'
   | 'swap'
   | 'bridge'
+  | 'connect'
+  | 'confirmation'
   | 'confirm-transaction'
   | 'confirm-signature'
   | 'notification'

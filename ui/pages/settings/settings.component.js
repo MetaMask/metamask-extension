@@ -50,7 +50,7 @@ import {
 } from '../../helpers/constants/design-system';
 import MetafoxLogo from '../../components/ui/metafox-logo';
 // TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
+// eslint-disable-next-line import-x/no-restricted-paths
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
 import {
   ENVIRONMENT_TYPE_POPUP,
@@ -93,12 +93,11 @@ NetworkRouteHandler.propTypes = {
 class SettingsPage extends PureComponent {
   static propTypes = {
     addNewNetwork: PropTypes.bool,
-    addressName: PropTypes.string,
     backRoute: PropTypes.string,
     conversionDate: PropTypes.number,
     currentPath: PropTypes.string,
+    currentSnapId: PropTypes.string,
     hasSubscribedToShield: PropTypes.bool,
-    isAddressEntryPage: PropTypes.bool,
     isMetaMaskShieldFeatureEnabled: PropTypes.bool,
     isPasswordChangePage: PropTypes.bool,
     isPopup: PropTypes.bool,
@@ -267,12 +266,9 @@ class SettingsPage extends PureComponent {
 
   renderTitle() {
     const { t } = this.context;
-    const { isPopup, pathnameI18nKey, addressName, snapSettingsTitle } =
-      this.props;
+    const { isPopup, pathnameI18nKey, snapSettingsTitle } = this.props;
     let titleText;
-    if (isPopup && addressName) {
-      titleText = t('details');
-    } else if (pathnameI18nKey && isPopup) {
+    if (pathnameI18nKey && isPopup) {
       titleText = t(pathnameI18nKey);
     } else if (snapSettingsTitle) {
       titleText = snapSettingsTitle;
@@ -332,24 +328,8 @@ class SettingsPage extends PureComponent {
 
   renderSubHeader() {
     const { t } = this.context;
-    const {
-      currentPath,
-      isPopup,
-      isAddressEntryPage,
-      pathnameI18nKey,
-      addressName,
-      backRoute,
-      navigate,
-    } = this.props;
-    let subheaderText;
-
-    if (isPopup && isAddressEntryPage) {
-      subheaderText = t('settings');
-    } else if (isAddressEntryPage) {
-      subheaderText = t('contacts');
-    } else {
-      subheaderText = t(pathnameI18nKey || 'general');
-    }
+    const { currentPath, pathnameI18nKey, backRoute, navigate } = this.props;
+    const subheaderText = t(pathnameI18nKey || 'general');
 
     // Show back button only on inner pages of the settings page
     const showBackButton = backRoute !== SETTINGS_ROUTE;
@@ -375,12 +355,6 @@ class SettingsPage extends PureComponent {
             />
           )}
           <Text variant={TextVariant.headingSm}>{subheaderText}</Text>
-          {isAddressEntryPage && (
-            <div className="settings-page__subheader--break">
-              <span>{' > '}</span>
-              {addressName}
-            </div>
-          )}
         </Box>
       )
     );
@@ -390,6 +364,7 @@ class SettingsPage extends PureComponent {
     const {
       navigate,
       currentPath,
+      currentSnapId,
       useExternalServices,
       settingsPageSnaps,
       isMetaMaskShieldFeatureEnabled,
@@ -407,7 +382,7 @@ class SettingsPage extends PureComponent {
             style={{ '--size': '20px' }}
           />
         ),
-        key: `${SNAP_SETTINGS_ROUTE}/${encodeURIComponent(id)}`,
+        key: `${SNAP_SETTINGS_ROUTE}?snapId=${encodeURIComponent(id)}`,
       };
     });
 
@@ -476,6 +451,17 @@ class SettingsPage extends PureComponent {
           if (key === GENERAL_ROUTE && currentPath === SETTINGS_ROUTE) {
             return true;
           }
+
+          if (
+            currentPath === SNAP_SETTINGS_ROUTE &&
+            key.startsWith(`${SNAP_SETTINGS_ROUTE}?`)
+          ) {
+            const keySnapId = new URLSearchParams(key.split('?')[1]).get(
+              'snapId',
+            );
+            return keySnapId === currentSnapId;
+          }
+
           return matchPath(key, currentPath);
         }}
         onSelect={(key) => {
@@ -507,7 +493,7 @@ class SettingsPage extends PureComponent {
           element={<InfoTab />}
         />
         <Route
-          path={`${toRelativeRoutePath(SNAP_SETTINGS_ROUTE, SETTINGS_ROUTE)}/:snapId`}
+          path={toRelativeRoutePath(SNAP_SETTINGS_ROUTE, SETTINGS_ROUTE)}
           element={<SnapSettingsRenderer />}
         />
         <Route

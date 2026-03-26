@@ -65,7 +65,7 @@ export const BridgePriceImpactWarningModal = ({
     return true;
   }, [variant, isPriceImpactError, isPriceImpactWarning]);
 
-  const shouldAllowClose = !(isSubmitting && variant === 'submit-cta');
+  const shouldAllowClose = variant !== 'submit-cta';
 
   return (
     <Modal
@@ -80,7 +80,7 @@ export const BridgePriceImpactWarningModal = ({
         <ModalHeader
           onClose={onClose}
           closeButtonProps={{
-            disabled: isSubmitting && variant === 'submit-cta',
+            disabled: isSubmitting && !shouldAllowClose,
           }}
         >
           <Column alignItems={AlignItems.center} gap={2}>
@@ -123,7 +123,6 @@ export const BridgePriceImpactWarningModal = ({
                   if (activeQuote) {
                     await submitBridgeTransaction(activeQuote);
                   }
-                  onClose();
                 }}
               >
                 {t('proceed')}
