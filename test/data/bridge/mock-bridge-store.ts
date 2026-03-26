@@ -430,6 +430,7 @@ export const createBridgeMockStore = ({
                   entropy: {
                     groupIndex: 0,
                   },
+                  lastSelected: 0,
                 },
                 accounts: [
                   MOCK_EVM_ACCOUNT.id,
@@ -447,6 +448,7 @@ export const createBridgeMockStore = ({
                   entropy: {
                     groupIndex: 1,
                   },
+                  lastSelected: 0,
                 },
                 accounts: [MOCK_EVM_ACCOUNT_2.id],
               },
@@ -471,6 +473,7 @@ export const createBridgeMockStore = ({
                     name: 'Ledger Account 1',
                     pinned: false,
                     hidden: false,
+                    lastSelected: 0,
                   },
                   accounts: [MOCK_LEDGER_ACCOUNT.id],
                 },
