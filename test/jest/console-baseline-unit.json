@@ -246,16 +246,6 @@
     "ui/components/app/confirm/info/row/address.test.tsx": {
       "Reselect: Identity function warnings": 1
     },
-    "ui/components/app/detected-token/detected-token-details/detected-token-details.test.js": {
-      "MetaMask: Background connection not initialized": 4
-    },
-    "ui/components/app/detected-token/detected-token-values/detected-token-values.test.js": {
-      "MetaMask: Background connection not initialized": 4
-    },
-    "ui/components/app/detected-token/detected-token.test.js": {
-      "MetaMask: Background connection not initialized": 12,
-      "error: Warning: A component is changing": 1
-    },
     "ui/components/app/identity/backup-and-sync-features-toggles/backup-and-sync-features-toggles.test.tsx": {
       "React: componentWill* lifecycle deprecations": 1,
       "error: Error: MetaMetrics context trackEvent was": 4
