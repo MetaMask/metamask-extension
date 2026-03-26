@@ -1,8 +1,7 @@
 import React from 'react';
-import { act, fireEvent, screen, waitFor } from '@testing-library/react';
+import { act, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
-import { flushPromises } from '../../../test/lib/timer-helpers';
 import configureStore from '../../store/store';
 import mockState from '../../../test/data/mock-state.json';
 import { getIsPerpsExperienceAvailable } from '../../selectors/perps/feature-flags';
@@ -66,22 +65,58 @@ const mockSubmit = submitRequestToBackground as jest.MockedFunction<
   typeof submitRequestToBackground
 >;
 
-/** Drain promise chains + macrotasks so React updates run inside `act`. */
-async function flushReactUpdates() {
+/**
+ * Await every promise returned for a given `submitRequestToBackground` method so
+ * `.then()` handlers (e.g. `setWithdrawalRoutes`) run inside `act`. Handles more
+ * than one call (e.g. effect re-run).
+ *
+ * @param method - Background RPC method name passed as the first argument.
+ */
+async function awaitSubmitPromisesForMethod(method: string) {
+  const promises: Promise<unknown>[] = [];
+  mockSubmit.mock.calls.forEach((call, i) => {
+    if (call[0] !== method) {
+      return;
+    }
+    const value = mockSubmit.mock.results[i]?.value;
+    if (value && typeof (value as Promise<unknown>).then === 'function') {
+      promises.push(value as Promise<unknown>);
+    }
+  });
+  if (promises.length === 0) {
+    return;
+  }
   await act(async () => {
-    await flushPromises();
+    await Promise.all(promises);
   });
 }
 
 /**
- * Wait for the mount `useEffect` that fetches withdrawal routes, then flush the
- * promise `.then()` `setState` so updates run inside `act` (avoids act warnings).
+ * Wait for the mount `useEffect` that fetches withdrawal routes, then await those
+ * RPC promises until no new `perpsGetWithdrawalRoutes` calls appear. `waitFor` alone
+ * can pass before `.then(setState)` runs; a routes update can also re-trigger the
+ * effect (dependency `[t]`), queueing another fetch whose promise must be awaited.
  */
 async function settleInitialWithdrawRoutesFetch() {
   await waitFor(() => {
     expect(mockSubmit).toHaveBeenCalledWith('perpsGetWithdrawalRoutes', []);
   });
-  await flushReactUpdates();
+
+  for (let i = 0; i < 10; i += 1) {
+    const countBefore = mockSubmit.mock.calls.filter(
+      (call) => call[0] === 'perpsGetWithdrawalRoutes',
+    ).length;
+    await awaitSubmitPromisesForMethod('perpsGetWithdrawalRoutes');
+    await act(async () => {
+      await Promise.resolve();
+    });
+    const countAfter = mockSubmit.mock.calls.filter(
+      (call) => call[0] === 'perpsGetWithdrawalRoutes',
+    ).length;
+    if (countAfter === countBefore) {
+      return;
+    }
+  }
 }
 
 /** `handleWithdraw` is async; `finally` sets `isSubmitting` false after mocks resolve. */
@@ -157,6 +192,11 @@ describe('PerpsWithdrawPage', () => {
     await user.type(amountInput, '50');
     await user.click(screen.getByTestId('perps-withdraw-submit'));
 
+    // `user.click` resolves before the async `handleWithdraw` finishes; await the
+    // same background promises so `setState` / `finally` run inside `act`.
+    await awaitSubmitPromisesForMethod('perpsValidateWithdrawal');
+    await awaitSubmitPromisesForMethod('perpsWithdraw');
+
     await waitFor(() => {
       expect(mockSubmit).toHaveBeenCalledWith(
         'perpsValidateWithdrawal',
@@ -173,21 +213,17 @@ describe('PerpsWithdrawPage', () => {
     });
 
     await waitForWithdrawHandlerSettled();
-    await flushReactUpdates();
   });
 
   it('navigates home when cancel is pressed', async () => {
+    const user = userEvent.setup();
     renderWithProvider(<PerpsWithdrawPage />, createMockStore());
 
     await settleInitialWithdrawRoutesFetch();
 
-    await act(() => {
-      fireEvent.click(screen.getByTestId('perps-withdraw-cancel'));
-    });
+    await user.click(screen.getByTestId('perps-withdraw-cancel'));
 
     expect(mockNavigate).toHaveBeenCalledWith('/');
-
-    await flushReactUpdates();
   });
 
   it('clears controller withdraw result when withdrawal fails', async () => {
@@ -223,11 +259,14 @@ describe('PerpsWithdrawPage', () => {
     await user.type(amountInput, '50');
     await user.click(screen.getByTestId('perps-withdraw-submit'));
 
+    await awaitSubmitPromisesForMethod('perpsValidateWithdrawal');
+    await awaitSubmitPromisesForMethod('perpsWithdraw');
+
     await waitFor(() => {
       expect(mockSubmit).toHaveBeenCalledWith('perpsClearWithdrawResult', []);
     });
 
     await waitForWithdrawHandlerSettled();
-    await flushReactUpdates();
+    await awaitSubmitPromisesForMethod('perpsClearWithdrawResult');
   });
 });
