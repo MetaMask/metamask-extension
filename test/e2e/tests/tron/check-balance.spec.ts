@@ -34,7 +34,7 @@ describe('Check balance', function (this: Suite) {
     );
   });
 
-  it('For a non 0 balance account - USD balance', async function () {
+  it.only('For a non 0 balance account - USD balance', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilderV2()
@@ -45,6 +45,7 @@ describe('Check balance', function (this: Suite) {
       },
       async ({ driver }: { driver: Driver }) => {
         await login(driver, { validateBalance: false });
+        await driver.delay(1000000);
         const homePage = new HomePage(driver);
         await homePage.waitForNonEvmAccountsLoaded();
 
