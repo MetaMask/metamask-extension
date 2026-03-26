@@ -5673,9 +5673,6 @@
   "perpsPosition": {
     "message": "Θέση"
   },
-  "perpsPositionClosedReverseOrderFailed": {
-    "message": "Η θέση σας έκλεισε, αλλά η αντίστροφη εντολή απέτυχε. Ίσως χρειαστεί να ανοίξετε χειροκίνητα μια νέα θέση"
-  },
   "perpsPositionSize": {
     "message": "Μέγεθος θέσης"
   },

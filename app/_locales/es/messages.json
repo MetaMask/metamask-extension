@@ -5673,9 +5673,6 @@
   "perpsPosition": {
     "message": "Posición"
   },
-  "perpsPositionClosedReverseOrderFailed": {
-    "message": "Tu posición se cerró, pero la orden inversa falló. Es posible que debas abrir manualmente una nueva posición"
-  },
   "perpsPositionSize": {
     "message": "Tamaño de la posición"
   },
