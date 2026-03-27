@@ -38,8 +38,17 @@ const SOLANA_URL_REGEX_MAINNET =
 const SOLANA_URL_REGEX_DEVNET = /^https:\/\/solana-devnet\.infura\.io\/v3\/.*/u;
 const SPOT_PRICE_API =
   /^https:\/\/price\.api\.cx\.metamask\.io\/v[1-9]\/spot-prices/u;
+
+/** Price API v3 spot-prices (query params vary; path is always `/v3/spot-prices`). */
+export const V3_SPOT_PRICES_URL_PATTERN =
+  /^https:\/\/price\.api\.cx\.metamask\.io\/v3\/spot-prices/u;
+/**
+ * Matches Price API exchange-rates used by the extension:
+ * - `GET /v1/exchange-rates?baseCurrency=usd` (common)
+ * - `GET /v1/exchange-rates/fiat`
+ */
 const SOLANA_EXCHANGE_RATES_PRICE_API =
-  /^https:\/\/price\.api\.cx\.metamask\.io\/v[1-9]\/exchange-rates\/fiat/u;
+  /^https:\/\/price\.api\.cx\.metamask\.io\/v[1-9]\/exchange-rates(?:\/fiat)?(?:\?.*)?$/u;
 const SOLANA_STATIC_TOKEN_IMAGE_REGEX_MAINNET =
   /^https:\/\/static\.cx\.metamask\.io\/api\/v2\/tokenIcons\/assets\/solana\/5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/u;
 const SOLANA_BITCOIN_MIN_API =
@@ -313,7 +322,6 @@ export async function mockPriceApiSpotPrice(mockServer: Mockttp) {
 }
 
 export async function mockPriceApiExchangeRates(mockServer: Mockttp) {
-  console.log('mockPriceApiExchangeRates');
   const response = {
     statusCode: 200,
     json: {
@@ -335,10 +343,17 @@ export async function mockPriceApiExchangeRates(mockServer: Mockttp) {
         value: 0.7925789957213786,
         currencyType: 'fiat',
       },
+      sol: {
+        name: 'Solana',
+        ticker: 'sol',
+        value: 0.00592,
+        currencyType: 'crypto',
+      },
     },
   };
   return await mockServer
     .forGet(SOLANA_EXCHANGE_RATES_PRICE_API)
+    .always()
     .thenCallback(() => {
       return response;
     });
@@ -1635,32 +1650,55 @@ export async function mockSecurityAlertSwap(mockServer: Mockttp) {
     });
 }
 
-export async function mockPriceApiSpotPriceSwap(mockServer: Mockttp) {
-  // BridgeController's fetchAssetPricesForCurrency expects each asset value to be
-  // `{ [vsCurrency]: number }` (e.g. `usd` matching CurrencyController currentCurrency),
-  // not `{ price }` alone — otherwise assetExchangeRates stay empty and fiat "Total cost"
-  // never renders. UI fetchTokenExchangeRates still reads `price`.
-  return await mockServer
-    .forGet(SPOT_PRICE_API)
+/**
+ * Mocks GET `price.api.cx.metamask.io/v3/spot-prices` for Solana mainnet native SOL and USDC.
+ *
+ * Uses `.always()` so repeated AssetsController / Bridge requests are satisfied.
+ *
+ * BridgeController's `fetchAssetPricesForCurrency` expects each asset value to be
+ * `{ [vsCurrency]: number }` (e.g. `usd` matching CurrencyController currentCurrency),
+ * not `{ price }` alone — otherwise assetExchangeRates stay empty and fiat "Total cost"
+ * never renders. UI `fetchTokenExchangeRates` still reads `price`.
+ *
+ * @param mockServer - Mockttp instance.
+ * @param options - Optional spot prices (defaults match Solana swap E2E fixtures).
+ * @param options.solPrice - USD price for native SOL.
+ * @param options.usdcPrice - USD price for USDC (mainnet mint).
+ * @returns Mocked endpoint handle.
+ */
+export async function mockPriceApiV3SpotPrices(
+  mockServer: Mockttp,
+  {
+    solPrice = 168.88,
+    usdcPrice = 0.999761,
+  }: {
+    solPrice?: number;
+    usdcPrice?: number;
+  } = {},
+): Promise<MockedEndpoint> {
+  return mockServer
+    .forGet(V3_SPOT_PRICES_URL_PATTERN)
     .always()
-    .thenCallback(() => {
-      return {
-        statusCode: 200,
-        json: {
-          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v':
-            {
-              id: 'usd-coin',
-              price: 0.999761,
-              usd: 0.999761,
-            },
-          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501': {
-            id: 'solana',
-            price: 168.88,
-            usd: 168.88,
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: {
+        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v':
+          {
+            id: 'usd-coin',
+            price: usdcPrice,
+            usd: usdcPrice,
           },
+        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501': {
+          id: 'solana',
+          price: solPrice,
+          usd: solPrice,
         },
-      };
-    });
+      },
+    }));
+}
+
+export async function mockPriceApiSpotPriceSwap(mockServer: Mockttp) {
+  return mockPriceApiV3SpotPrices(mockServer);
 }
 
 const SOLANA_BRIDGE_TOKENS = [
