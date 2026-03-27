@@ -20,7 +20,7 @@ import {
   BENCHMARK_TYPE,
   WITH_STATE_POWER_USER,
 } from '../../utils';
-import type { WebVitalsMetrics } from '../../../../shared/constants/benchmarks';
+import type { WebVitalsMetrics } from '../../../../../shared/constants/benchmarks';
 import type { BenchmarkRunResult } from '../../utils/types';
 import { collectWebVitals } from '../../utils/web-vitals-collector';
 
