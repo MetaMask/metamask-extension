@@ -28,6 +28,7 @@ import { PayloadAction } from '@reduxjs/toolkit';
 import { GasFeeController } from '@metamask/gas-fee-controller';
 import { PermissionsRequest } from '@metamask/permission-controller';
 import { NonEmptyArray } from '@metamask/controller-utils';
+import type { PhishingDetectionScanResult } from '@metamask/phishing-controller';
 import {
   SetNameRequest,
   UpdateProposedNamesRequest,
@@ -1001,8 +1002,16 @@ export function getIsSeedlessOnboardingUserAuthenticated(): ThunkAction<
   };
 }
 
+/**
+ * Checks if the seedless password is outdated.
+ *
+ * @param skipCache - whether to skip the cache @default false
+ * @param captureSentryError - whether to capture the sentry error. @default false
+ * @returns Promise<boolean | undefined> true if the password is outdated, false otherwise, undefined if the flow is not seedless
+ */
 export function checkIsSeedlessPasswordOutdated(
   skipCache = true,
+  captureSentryError = true,
 ): ThunkAction<boolean | undefined, MetaMaskReduxState, unknown, AnyAction> {
   return async (
     dispatch: MetaMaskReduxDispatch,
@@ -1017,7 +1026,7 @@ export function checkIsSeedlessPasswordOutdated(
     try {
       isPasswordOutdated = await submitRequestToBackground<boolean>(
         'checkIsSeedlessPasswordOutdated',
-        [skipCache],
+        [{ skipCache, captureSentryError }],
       );
       if (isPasswordOutdated) {
         await forceUpdateMetamaskState(dispatch);
@@ -2165,6 +2174,12 @@ export function updateSnap(
 
 export async function getPhishingResult(website: string) {
   return await submitRequestToBackground('getPhishingResult', [website]);
+}
+
+export async function scanUrlForPhishing(
+  origin: string,
+): Promise<PhishingDetectionScanResult | null> {
+  return await submitRequestToBackground('scanUrlForPhishing', [origin]);
 }
 
 // TODO: Clean this up.

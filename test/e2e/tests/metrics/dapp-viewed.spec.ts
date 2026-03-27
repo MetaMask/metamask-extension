@@ -8,17 +8,10 @@ import { DEFAULT_FIXTURE_ACCOUNT } from '../../constants';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import { login } from '../../page-objects/flows/login.flow';
 import { connectAccountToTestDapp } from '../../page-objects/flows/test-dapp.flow';
-import { Driver } from '../../webdriver/driver';
+import HomePage from '../../page-objects/pages/home/homepage';
 
 // E2E Fixtures setup has 4 identities (1 EVM, 1 Solana, 1 Bitcoin, 1 Tron)
 const METAMASK_IDENTITIES = 4;
-
-async function waitForAccountsToBeAligned(driver: Driver) {
-  // Multichain accounts create non-EVM accounts asynchronously, thus we need to
-  // wait for them to be created before proceeding with tests that depend on
-  // account count.
-  await driver.delay(2000);
-}
 
 async function mockedDappViewedEndpointFirstVisit(mockServer: Mockttp) {
   return await mockServer
@@ -106,14 +99,14 @@ describe('Dapp viewed Event', function () {
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
         await login(driver);
-        await waitForAccountsToBeAligned(driver);
+        const homePage = new HomePage(driver);
+        await homePage.waitForNonEvmAccountsLoaded();
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
         await testDapp.checkPageIsLoaded();
         await connectAccountToTestDapp(driver, {
           publicAddress: DEFAULT_FIXTURE_ACCOUNT,
         });
-
         const events = await getEventPayloads(driver, mockedEndpoints);
         assert.equal(events.length, 0);
       },
@@ -139,7 +132,8 @@ describe('Dapp viewed Event', function () {
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
         await login(driver);
-        await waitForAccountsToBeAligned(driver);
+        const homePage = new HomePage(driver);
+        await homePage.waitForNonEvmAccountsLoaded();
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
         await testDapp.checkPageIsLoaded();
@@ -182,7 +176,8 @@ describe('Dapp viewed Event', function () {
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
         await login(driver);
-        await waitForAccountsToBeAligned(driver);
+        const homePage = new HomePage(driver);
+        await homePage.waitForNonEvmAccountsLoaded();
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
         await testDapp.checkPageIsLoaded();
@@ -228,7 +223,8 @@ describe('Dapp viewed Event', function () {
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
         await login(driver);
-        await waitForAccountsToBeAligned(driver);
+        const homePage = new HomePage(driver);
+        await homePage.waitForNonEvmAccountsLoaded();
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
         await testDapp.checkPageIsLoaded();
@@ -277,7 +273,8 @@ describe('Dapp viewed Event', function () {
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
         await login(driver);
-        await waitForAccountsToBeAligned(driver);
+        const homePage = new HomePage(driver);
+        await homePage.waitForNonEvmAccountsLoaded();
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
         await testDapp.checkPageIsLoaded();
@@ -323,7 +320,8 @@ describe('Dapp viewed Event', function () {
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
         await login(driver);
-        await waitForAccountsToBeAligned(driver);
+        const homePage = new HomePage(driver);
+        await homePage.waitForNonEvmAccountsLoaded();
         // connect to dapp and disconnect
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();

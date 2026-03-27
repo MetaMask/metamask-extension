@@ -48,7 +48,7 @@ development/circular-deps.ts         @MetaMask/extension-security-team
 
 # For now, restricting approvals inside the .devcontainer folder to devs
 # who were involved with the Codespaces project.
-.devcontainer/                       @MetaMask/extension-security-team @HowardBraham
+.devcontainer/                       @MetaMask/extension-platform @HowardBraham
 
 # Design System to own code for the component-library folder
 # Slack handle: @metamask-design-system-team | Slack channel: #metamask-design-system

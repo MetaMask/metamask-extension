@@ -139,10 +139,10 @@ exports[`App Header unlocked state matches snapshot: unlocked 1`] = `
             data-testid="networks-subtitle-test-id"
           >
             <div
-              class=""
+              class="min-w-0"
             >
               <div
-                class="flex-row gap-1 items-center p-1 bg-muted rounded-lg inline-flex"
+                class="flex flex-row gap-1 items-center p-1 bg-muted rounded-lg h-6"
                 data-testid="network-group-with-copy-icon"
               >
                 <div
@@ -237,7 +237,6 @@ exports[`App Header unlocked state matches snapshot: unlocked 1`] = `
         <div
           class="mm-box mm-box--display-flex mm-box--gap-2"
         >
-           
           <div
             class="mm-box mm-box--display-flex mm-box--justify-content-flex-end mm-box--width-full"
             style="position: relative;"

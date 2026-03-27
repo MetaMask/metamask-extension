@@ -1,14 +1,17 @@
+import type { InfiniteData } from '@tanstack/react-query';
+import type { V4MultiAccountTransactionsResponse } from '@metamask/core-backend';
 import { NATIVE_TOKEN_ADDRESS } from '../../constants/transaction';
-import { parseValueTransfers } from './transformations';
+import { parseValueTransfers, selectTransactions } from './transformations';
 
-const account = '0xABCDef0123456789abcdef0123456789ABCDEF00';
+const account = '0xAABBCCDDEE11223344556677889900AABBCCDD00';
+const other = '0x00AABBCCDDEE112233445566778899AABBCCDDEE';
 
 const makeTransfer = (overrides: Record<string, unknown> = {}) => ({
   amount: '1000000000000000000',
   decimal: 18,
   symbol: 'ETH',
   from: account,
-  to: '0x1111111111111111111111111111111111111111',
+  to: other,
   ...overrides,
 });
 
@@ -129,5 +132,132 @@ describe('parseValueTransfers', () => {
       makeTx([makeTransfer({ from: '0xaaaa', to: '0xbbbb' })]),
     );
     expect(result).toStrictEqual({});
+  });
+});
+
+const baseRawTx = {
+  hash: '0xabc',
+  timestamp: '2025-01-01T00:00:00Z',
+  chainId: 1,
+  blockNumber: 100,
+  blockHash: '0x0',
+  gas: 21000,
+  gasUsed: 21000,
+  gasPrice: '1000000000',
+  effectiveGasPrice: '1000000000',
+  nonce: 0,
+  cumulativeGasUsed: 21000,
+  value: '1000000000000000000',
+  methodId: '0x',
+};
+
+const createData = (rawTxs: Record<string, unknown>[]) => ({
+  pageParams: [],
+  pages: [
+    {
+      unprocessedNetworks: [],
+      pageInfo: { count: rawTxs.length, hasNextPage: false },
+      data: rawTxs as V4MultiAccountTransactionsResponse['data'],
+    },
+  ],
+});
+
+const nativeTransfer = (from: string, to: string) => ({
+  from,
+  to,
+  amount: '1000000000000000000',
+  decimal: 18,
+  symbol: 'ETH',
+  name: 'Ether',
+  contractAddress: '',
+  transferType: 'normal',
+});
+
+describe('selectTransactions', () => {
+  it('shows outgoing native transfers initiated by the account', () => {
+    const transform = selectTransactions({ address: account });
+    const result = transform(
+      createData([
+        {
+          ...baseRawTx,
+          from: account,
+          to: other,
+          valueTransfers: [nativeTransfer(account, other)],
+        },
+      ]),
+    );
+
+    expect(result.pages[0].data).toHaveLength(1);
+  });
+
+  it('shows native self-sends', () => {
+    const result = selectTransactions({ address: account })(
+      createData([
+        {
+          ...baseRawTx,
+          from: account,
+          to: account,
+          valueTransfers: [nativeTransfer(account, account)],
+        },
+      ]),
+    );
+    expect(result.pages[0].data).toHaveLength(1);
+  });
+
+  it('shows swaps where the account sends native and receives a token', () => {
+    const router = '0x2222222222222222222222222222222222222222';
+    const result = selectTransactions({ address: account })(
+      createData([
+        {
+          ...baseRawTx,
+          from: account,
+          to: router,
+          valueTransfers: [
+            nativeTransfer(account, router),
+            {
+              from: router,
+              to: account,
+              amount: '500000',
+              decimal: 6,
+              symbol: 'USDC',
+              name: 'USD Coin',
+              contractAddress: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
+              transferType: 'erc20',
+            },
+          ],
+        },
+      ]),
+    );
+    expect(result.pages[0].data).toHaveLength(1);
+  });
+
+  it('blocks incoming native transfers where the account is the recipient', () => {
+    const result = selectTransactions({ address: account })(
+      createData([
+        {
+          ...baseRawTx,
+          from: other,
+          to: account,
+          valueTransfers: [nativeTransfer(other, account)],
+        },
+      ]),
+    );
+    expect(result.pages[0].data).toHaveLength(0);
+  });
+
+  it('blocks contract-initiated native receipt where account did not initiate', () => {
+    const contract = '0x3333333333333333333333333333333333333333';
+    const result = selectTransactions({ address: account })(
+      createData([
+        {
+          ...baseRawTx,
+          from: contract,
+          to: account,
+          value: '0',
+          valueTransfers: [nativeTransfer(contract, account)],
+        },
+      ]),
+    );
+    expect(result.pages[0].data).toHaveLength(0);
   });
 });
