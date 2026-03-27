@@ -868,7 +868,7 @@
         "@metamask/polling-controller": true,
         "@metamask/assets-controller>@metamask/snaps-utils": true,
         "@metamask/utils": true,
-        "@metamask/keyring-api>async-mutex": true,
+        "mockttp>async-mutex": true,
         "@metamask/assets-controller>bignumber.js": true,
         "lodash": true,
         "@metamask/assets-controller>p-limit": true
@@ -908,7 +908,7 @@
         "@metamask/rpc-errors": true,
         "@metamask/assets-controllers>@metamask/snaps-utils": true,
         "@metamask/utils": true,
-        "@metamask/keyring-api>async-mutex": true,
+        "mockttp>async-mutex": true,
         "ethereumjs-util>bn.js": true,
         "immer": true,
         "lodash": true,
@@ -1243,7 +1243,7 @@
         "@metamask/controller-utils>@metamask/eth-query": true,
         "@metamask/json-rpc-engine": true,
         "@metamask/safe-event-emitter": true,
-        "@metamask/keyring-api>async-mutex": true,
+        "mockttp>async-mutex": true,
         "pify": true
       }
     },
@@ -1318,7 +1318,7 @@
         "@ethereumjs/tx>@ethereumjs/util": true,
         "@metamask/eth-qr-keyring>@keystonehq/bc-ur-registry-eth": true,
         "@metamask/utils": true,
-        "@metamask/keyring-api>async-mutex": true,
+        "mockttp>async-mutex": true,
         "browserify>buffer": true,
         "@metamask/eth-qr-keyring>hdkey": true,
         "@metamask/eth-qr-keyring>uuid": true
@@ -1369,7 +1369,7 @@
         "@metamask/keyring-utils": true,
         "@metamask/superstruct": true,
         "@metamask/utils": true,
-        "@metamask/keyring-api>async-mutex": true,
+        "mockttp>async-mutex": true,
         "@metamask/eth-snap-keyring>uuid": true
       }
     },
@@ -1538,7 +1538,7 @@
         "@metamask/keyring-utils": true,
         "@metamask/superstruct": true,
         "@metamask/utils": true,
-        "@metamask/keyring-api>async-mutex": true,
+        "mockttp>async-mutex": true,
         "bitcoin-address-validation": true,
         "@metamask/keyring-api>uuid": true
       }
@@ -1554,7 +1554,7 @@
         "@metamask/eth-sig-util": true,
         "@metamask/keyring-controller>@metamask/eth-simple-keyring": true,
         "@metamask/utils": true,
-        "@metamask/keyring-api>async-mutex": true,
+        "mockttp>async-mutex": true,
         "@metamask/keyring-controller>ethereumjs-wallet": true,
         "lodash": true,
         "@metamask/keyring-controller>ulid": true
@@ -1659,7 +1659,7 @@
         "@metamask/keyring-snap-client": true,
         "@metamask/multichain-account-service>@metamask/snaps-utils": true,
         "@metamask/utils": true,
-        "@metamask/keyring-api>async-mutex": true,
+        "mockttp>async-mutex": true,
         "lodash": true
       }
     },
@@ -1713,7 +1713,7 @@
         "@metamask/base-controller": true,
         "@metamask/controller-utils": true,
         "@metamask/utils": true,
-        "@metamask/keyring-api>async-mutex": true
+        "mockttp>async-mutex": true
       }
     },
     "@metamask/network-controller": {
@@ -1939,7 +1939,7 @@
         "@metamask/polling-controller": true,
         "@metamask/profile-sync-controller": true,
         "@metamask/utils": true,
-        "@metamask/keyring-api>async-mutex": true
+        "mockttp>async-mutex": true
       }
     },
     "@metamask/profile-sync-controller": {
@@ -2049,7 +2049,7 @@
         "@metamask/utils": true,
         "@noble/ciphers": true,
         "@noble/curves": true,
-        "@metamask/keyring-api>async-mutex": true
+        "mockttp>async-mutex": true
       }
     },
     "@metamask/selected-network-controller": {
@@ -2139,7 +2139,7 @@
         "@metamask/snaps-utils": true,
         "@metamask/utils": true,
         "@metamask/snaps-controllers>@xstate/fsm": true,
-        "@metamask/keyring-api>async-mutex": true,
+        "mockttp>async-mutex": true,
         "@metamask/snaps-controllers>concat-stream": true,
         "cron-parser": true,
         "eslint>fast-deep-equal": true,
@@ -2184,7 +2184,7 @@
         "@metamask/superstruct": true,
         "@metamask/utils": true,
         "@noble/hashes": true,
-        "@metamask/keyring-api>async-mutex": true
+        "mockttp>async-mutex": true
       }
     },
     "@metamask/snaps-sdk": {
@@ -2502,7 +2502,7 @@
         "@metamask/transaction-controller>@metamask/nonce-tracker": true,
         "@metamask/rpc-errors": true,
         "@metamask/utils": true,
-        "@metamask/keyring-api>async-mutex": true,
+        "mockttp>async-mutex": true,
         "@metamask/transaction-controller>bignumber.js": true,
         "ethereumjs-util>bn.js": true,
         "browserify>buffer": true,
@@ -2535,7 +2535,7 @@
         "@metamask/transaction-controller>@metamask/nonce-tracker": true,
         "@metamask/rpc-errors": true,
         "@metamask/utils": true,
-        "@metamask/keyring-api>async-mutex": true,
+        "mockttp>async-mutex": true,
         "@metamask/eip-5792-middleware>@metamask/transaction-controller>bignumber.js": true,
         "ethereumjs-util>bn.js": true,
         "browserify>buffer": true,
@@ -2568,7 +2568,7 @@
         "@metamask/transaction-controller>@metamask/nonce-tracker": true,
         "@metamask/rpc-errors": true,
         "@metamask/utils": true,
-        "@metamask/keyring-api>async-mutex": true,
+        "mockttp>async-mutex": true,
         "@metamask/shield-controller>@metamask/transaction-controller>bignumber.js": true,
         "ethereumjs-util>bn.js": true,
         "browserify>buffer": true,
@@ -2601,7 +2601,7 @@
         "@metamask/transaction-controller>@metamask/nonce-tracker": true,
         "@metamask/rpc-errors": true,
         "@metamask/utils": true,
-        "@metamask/keyring-api>async-mutex": true,
+        "mockttp>async-mutex": true,
         "@metamask/subscription-controller>bignumber.js": true,
         "ethereumjs-util>bn.js": true,
         "browserify>buffer": true,
@@ -3589,7 +3589,7 @@
         "browserify>assert>util": true
       }
     },
-    "@metamask/keyring-api>async-mutex": {
+    "@metamask/transaction-controller>@metamask/nonce-tracker>async-mutex": {
       "globals": {
         "clearTimeout": true,
         "setTimeout": true
@@ -3598,7 +3598,7 @@
         "tslib": true
       }
     },
-    "@metamask/transaction-controller>@metamask/nonce-tracker>async-mutex": {
+    "mockttp>async-mutex": {
       "globals": {
         "clearTimeout": true,
         "setTimeout": true
