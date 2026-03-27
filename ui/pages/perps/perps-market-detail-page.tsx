@@ -6,7 +6,7 @@ import React, {
   useEffect,
 } from 'react';
 import { useSelector } from 'react-redux';
-import { Navigate, useNavigate, useParams, useSearchParams } from 'react-router-dom';
+import { Navigate, useNavigate, useParams } from 'react-router-dom';
 import {
   Box,
   BoxFlexDirection,
@@ -57,7 +57,6 @@ import {
   TimeDuration,
   ZOOM_CONFIG,
 } from '../../components/app/perps/constants/chartConfig';
-import { PERPS_MARKET_DETAIL_FOCUS_PARAM } from '../../components/app/perps/constants';
 import {
   getDisplayName,
   safeDecodeURIComponent,
@@ -177,7 +176,6 @@ const PerpsMarketDetailPage: React.FC = () => {
   const t = useI18nContext();
   const navigate = useNavigate();
   const { symbol } = useParams<{ symbol: string }>();
-  const [searchParams, setSearchParams] = useSearchParams();
   const isPerpsExperienceAvailable = useSelector(getIsPerpsExperienceAvailable);
   const selectedAccount = useSelector(getSelectedInternalAccount);
   const selectedAddress = selectedAccount?.address;
@@ -308,32 +306,6 @@ const PerpsMarketDetailPage: React.FC = () => {
       return true;
     });
   }, [decodedSymbol, allOrders]);
-
-  const focusParam = searchParams.get(PERPS_MARKET_DETAIL_FOCUS_PARAM);
-  const positionSectionRef = useRef<HTMLDivElement | null>(null);
-  const ordersSectionRef = useRef<HTMLDivElement | null>(null);
-
-  useEffect(() => {
-    if (focusParam !== 'orders' && focusParam !== 'positions') {
-      return;
-    }
-    const targetEl =
-      focusParam === 'orders'
-        ? ordersSectionRef.current
-        : positionSectionRef.current;
-    if (!targetEl) {
-      return;
-    }
-    targetEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    setSearchParams(
-      (prev) => {
-        const next = new URLSearchParams(prev);
-        next.delete(PERPS_MARKET_DETAIL_FOCUS_PARAM);
-        return next;
-      },
-      { replace: true },
-    );
-  }, [focusParam, position, orders, setSearchParams]);
 
   // Candle period state and chart ref
   const [selectedPeriod, setSelectedPeriod] = useState<CandlePeriod>(
@@ -891,13 +863,7 @@ const PerpsMarketDetailPage: React.FC = () => {
       <>
         {/* Position Section */}
         {position && (
-          <Box
-            ref={positionSectionRef}
-            data-testid="perps-market-detail-position-section"
-            paddingLeft={4}
-            paddingRight={4}
-            paddingBottom={4}
-          >
+          <Box paddingLeft={4} paddingRight={4} paddingBottom={4}>
             <Box paddingBottom={2}>
               <Text
                 variant={TextVariant.HeadingSm}
@@ -1217,13 +1183,7 @@ const PerpsMarketDetailPage: React.FC = () => {
 
         {/* Orders Section - shown regardless of position, but only if there are orders */}
         {orders.length > 0 && (
-          <Box
-            ref={ordersSectionRef}
-            data-testid="perps-market-detail-orders-section"
-            paddingLeft={4}
-            paddingRight={4}
-            paddingBottom={4}
-          >
+          <Box paddingLeft={4} paddingRight={4} paddingBottom={4}>
             <Box paddingBottom={2}>
               <Text
                 variant={TextVariant.HeadingSm}

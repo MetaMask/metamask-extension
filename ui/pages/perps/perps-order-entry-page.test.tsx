@@ -132,12 +132,7 @@ jest.mock('react-router-dom', () => ({
 }));
 
 // eslint-disable-next-line import-x/first
-import PerpsOrderEntryPage, {
-  formStateToOrderParams,
-  getValidLimitPriceFromForm,
-} from './perps-order-entry-page';
-import { PERPS_ORDER_SLIPPAGE_BPS } from '../../components/app/perps/constants';
-import type { OrderFormState } from '../../components/app/perps/order-entry/order-entry.types';
+import PerpsOrderEntryPage from './perps-order-entry-page';
 
 describe('PerpsOrderEntryPage', () => {
   const middlewares = [thunk];
@@ -367,13 +362,8 @@ describe('PerpsOrderEntryPage', () => {
             symbol: 'ETH',
             isBuy: true,
             orderType: 'market',
-            priceAtCalculation: expect.any(Number),
-            maxSlippageBps: PERPS_ORDER_SLIPPAGE_BPS.MARKET,
           }),
         ],
-      );
-      expect(mockUseNavigate).toHaveBeenCalledWith(
-        '/perps/market/ETH?focus=positions',
       );
     });
 
@@ -503,14 +493,10 @@ describe('PerpsOrderEntryPage', () => {
           expect.objectContaining({
             symbol: 'ETH',
             orderType: 'market',
-            priceAtCalculation: expect.any(Number),
-            maxSlippageBps: PERPS_ORDER_SLIPPAGE_BPS.MARKET,
           }),
         ]),
       );
-      expect(mockUseNavigate).toHaveBeenCalledWith(
-        '/perps/market/ETH?focus=positions',
-      );
+      expect(mockUseNavigate).toHaveBeenCalledWith('/perps/market/ETH');
     });
 
     it('does not submit when currentPrice is 0', async () => {
@@ -556,97 +542,6 @@ describe('PerpsOrderEntryPage', () => {
         'perpsClosePosition',
         expect.any(Array),
       );
-    });
-
-    it('includes priceAtCalculation and market slippage for market orders', () => {
-      const formState: OrderFormState = {
-        asset: 'ETH',
-        direction: 'long',
-        amount: '100',
-        leverage: 5,
-        balancePercent: 0,
-        takeProfitPrice: '',
-        stopLossPrice: '',
-        limitPrice: '',
-        type: 'market',
-        autoCloseEnabled: false,
-      };
-      const params = formStateToOrderParams(formState, 3000, 'new');
-      expect(params.priceAtCalculation).toBe(3000);
-      expect(params.maxSlippageBps).toBe(PERPS_ORDER_SLIPPAGE_BPS.MARKET);
-      expect(params.price).toBeUndefined();
-    });
-
-    it('spreads limit price and limit slippage for limit orders', () => {
-      const formState: OrderFormState = {
-        asset: 'ETH',
-        direction: 'long',
-        amount: '100',
-        leverage: 5,
-        balancePercent: 0,
-        takeProfitPrice: '',
-        stopLossPrice: '',
-        limitPrice: '2800',
-        type: 'limit',
-        autoCloseEnabled: false,
-      };
-      const params = formStateToOrderParams(formState, 3000, 'new');
-      expect(params.orderType).toBe('limit');
-      expect(params.price).toBe('2800');
-      expect(params.maxSlippageBps).toBe(PERPS_ORDER_SLIPPAGE_BPS.LIMIT);
-      expect(params.priceAtCalculation).toBe(3000);
-    });
-
-    it('omits price when limit type but empty limit price', () => {
-      const formState: OrderFormState = {
-        asset: 'ETH',
-        direction: 'long',
-        amount: '100',
-        leverage: 5,
-        balancePercent: 0,
-        takeProfitPrice: '',
-        stopLossPrice: '',
-        limitPrice: '',
-        type: 'limit',
-        autoCloseEnabled: false,
-      };
-      const params = formStateToOrderParams(formState, 3000, 'new');
-      expect(params.orderType).toBe('limit');
-      expect(params.price).toBeUndefined();
-    });
-  });
-
-  describe('getValidLimitPriceFromForm', () => {
-    it('returns cleaned price when valid', () => {
-      const formState: OrderFormState = {
-        asset: 'ETH',
-        direction: 'long',
-        amount: '100',
-        leverage: 5,
-        balancePercent: 0,
-        takeProfitPrice: '',
-        stopLossPrice: '',
-        limitPrice: '3,000.5',
-        type: 'limit',
-        autoCloseEnabled: false,
-      };
-      expect(getValidLimitPriceFromForm(formState)).toBe('3000.5');
-    });
-
-    it('returns undefined for market type', () => {
-      const formState: OrderFormState = {
-        asset: 'ETH',
-        direction: 'long',
-        amount: '100',
-        leverage: 5,
-        balancePercent: 0,
-        takeProfitPrice: '',
-        stopLossPrice: '',
-        limitPrice: '3000',
-        type: 'market',
-        autoCloseEnabled: false,
-      };
-      expect(getValidLimitPriceFromForm(formState)).toBeUndefined();
     });
   });
 
@@ -917,23 +812,55 @@ describe('PerpsOrderEntryPage', () => {
           expect.objectContaining({
             orderType: 'limit',
             price: '3000',
-            priceAtCalculation: expect.any(Number),
-            maxSlippageBps: PERPS_ORDER_SLIPPAGE_BPS.LIMIT,
           }),
         ],
       );
-      expect(mockUseNavigate).toHaveBeenCalledWith(
-        '/perps/market/ETH?focus=orders',
-      );
+      expect(mockUseNavigate).toHaveBeenCalledWith('/perps/market/ETH');
     });
   });
 
-  describe('post-submit navigation', () => {
+  describe('pending order effects', () => {
     beforeEach(() => {
+      jest.useFakeTimers();
       mockSubmitRequestToBackground.mockResolvedValue({ success: true });
     });
 
-    it('navigates to market detail with focus=positions immediately after market order', async () => {
+    afterEach(() => {
+      jest.useRealTimers();
+    });
+
+    it('navigates back when position appears after market order', async () => {
+      const store = mockStore(createMockState());
+      const { rerender } = renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      const amountContainer = screen.getByTestId('amount-input-field');
+      const input = amountContainer.querySelector('input');
+      fireEvent.change(input as HTMLInputElement, {
+        target: { value: '1000' },
+      });
+
+      await act(async () => {
+        fireEvent.click(screen.getByTestId('submit-order-button'));
+      });
+
+      mockLivePositions.mockReturnValue({
+        positions: [
+          {
+            ...mockPositions[0],
+            symbol: 'ETH',
+          },
+        ],
+        isInitialLoading: false,
+      });
+
+      await act(async () => {
+        rerender(<PerpsOrderEntryPage />);
+      });
+
+      expect(mockUseNavigate).toHaveBeenCalledWith('/perps/market/ETH');
+    });
+
+    it('navigates back after 15s timeout if position never appears', async () => {
       const store = mockStore(createMockState());
       renderWithProvider(<PerpsOrderEntryPage />, store);
 
@@ -947,9 +874,11 @@ describe('PerpsOrderEntryPage', () => {
         fireEvent.click(screen.getByTestId('submit-order-button'));
       });
 
-      expect(mockUseNavigate).toHaveBeenCalledWith(
-        '/perps/market/ETH?focus=positions',
-      );
+      await act(async () => {
+        jest.advanceTimersByTime(15000);
+      });
+
+      expect(mockUseNavigate).toHaveBeenCalledWith('/perps/market/ETH');
     });
   });
 });
