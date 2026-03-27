@@ -57,7 +57,7 @@ export function maskObject(
       // As typeof null (misleadingly) returns "object," it would be more readable to display "null" instead of "object."
       state[key] = obj[key] === null ? null : typeof obj[key];
     } else {
-      throw new Error(`Unsupported mask entry: ${maskKey}`);
+      throw new Error(`Unsupported mask entry: ${String(maskKey)}`);
     }
     return state;
   }, {});
