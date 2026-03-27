@@ -44,6 +44,35 @@ function getLineHeight(length: number): string {
   return '22px';
 }
 
+/** Enough for realistic USD entry; bounds worst-case validation cost. */
+const MAX_PARTIAL_FIAT_AMOUNT_LENGTH = 48;
+
+/**
+ * Partial amount while typing: digits with at most one `,` or `.` separator.
+ * Linear-time (no regex) so pathological strings cannot burn CPU.
+ */
+export function isValidPartialFiatAmountInput(raw: string): boolean {
+  if (raw.length > MAX_PARTIAL_FIAT_AMOUNT_LENGTH) {
+    return false;
+  }
+  let sawSeparator = false;
+  for (let i = 0; i < raw.length; i++) {
+    const c = raw[i];
+    if (c >= '0' && c <= '9') {
+      continue;
+    }
+    if (c === '.' || c === ',') {
+      if (sawSeparator) {
+        return false;
+      }
+      sawSeparator = true;
+      continue;
+    }
+    return false;
+  }
+  return true;
+}
+
 function getHeroAmountColors(
   hasAlert: boolean,
   disabled: boolean,
@@ -93,7 +122,7 @@ export const PerpsFiatHeroAmountInput: React.FC<PerpsFiatHeroAmountInputProps> =
       const handleChange = useCallback(
         (e: React.ChangeEvent<HTMLInputElement>) => {
           const next = e.target.value;
-          if (/^\d*[.,]?\d*$/u.test(next)) {
+          if (isValidPartialFiatAmountInput(next)) {
             onChange(next);
           }
         },

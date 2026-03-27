@@ -109,4 +109,28 @@ describe('usePerpsWithdrawNavigation', () => {
 
     expect(mockNavigate).toHaveBeenCalledTimes(2);
   });
+
+  it('returns null and logs when navigate throws', async () => {
+    mockNavigate.mockImplementationOnce(() => {
+      throw new Error('nav failed');
+    });
+    const consoleErrorSpy = jest
+      .spyOn(console, 'error')
+      .mockImplementation(() => undefined);
+
+    const { result } = renderHookWithProvider(
+      () => usePerpsWithdrawNavigation(),
+      mockState,
+    );
+
+    let triggerResult: Awaited<ReturnType<typeof result.current.trigger>> =
+      null;
+    await act(async () => {
+      triggerResult = await result.current.trigger();
+    });
+
+    expect(triggerResult).toBeNull();
+    expect(consoleErrorSpy).toHaveBeenCalled();
+    consoleErrorSpy.mockRestore();
+  });
 });

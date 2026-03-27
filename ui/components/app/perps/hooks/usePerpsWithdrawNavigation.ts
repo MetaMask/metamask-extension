@@ -64,6 +64,9 @@ export function usePerpsWithdrawNavigation(
       onNavigated?.(PERPS_WITHDRAW_ROUTE);
 
       return { route: PERPS_WITHDRAW_ROUTE };
+    } catch (error) {
+      console.error('Failed to open perps withdraw flow', error);
+      return null;
     } finally {
       isInFlightRef.current = false;
       setIsLoading(false);

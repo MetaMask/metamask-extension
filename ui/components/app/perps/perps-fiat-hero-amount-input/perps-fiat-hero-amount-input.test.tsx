@@ -1,6 +1,31 @@
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
-import { PerpsFiatHeroAmountInput } from './perps-fiat-hero-amount-input';
+import {
+  PerpsFiatHeroAmountInput,
+  isValidPartialFiatAmountInput,
+} from './perps-fiat-hero-amount-input';
+
+describe('isValidPartialFiatAmountInput', () => {
+  it('accepts empty, digits, and a single separator', () => {
+    expect(isValidPartialFiatAmountInput('')).toBe(true);
+    expect(isValidPartialFiatAmountInput('0')).toBe(true);
+    expect(isValidPartialFiatAmountInput('12.5')).toBe(true);
+    expect(isValidPartialFiatAmountInput('12,5')).toBe(true);
+    expect(isValidPartialFiatAmountInput('.5')).toBe(true);
+    expect(isValidPartialFiatAmountInput('5.')).toBe(true);
+  });
+
+  it('rejects invalid characters and multiple separators', () => {
+    expect(isValidPartialFiatAmountInput('12a')).toBe(false);
+    expect(isValidPartialFiatAmountInput('1.2.3')).toBe(false);
+    expect(isValidPartialFiatAmountInput('1,2,')).toBe(false);
+  });
+
+  it('rejects input longer than the max length', () => {
+    expect(isValidPartialFiatAmountInput('0'.repeat(49))).toBe(false);
+    expect(isValidPartialFiatAmountInput('0'.repeat(48))).toBe(true);
+  });
+});
 
 describe('PerpsFiatHeroAmountInput', () => {
   it('renders symbol and forwards input changes', () => {

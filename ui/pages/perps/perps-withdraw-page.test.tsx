@@ -5,6 +5,7 @@ import { enLocale as messages } from '../../../test/lib/i18n-helpers';
 import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
 import configureStore from '../../store/store';
 import mockState from '../../../test/data/mock-state.json';
+import { usePerpsEligibility } from '../../hooks/perps';
 import * as accountsSelectors from '../../selectors/accounts';
 import { getIsPerpsExperienceAvailable } from '../../selectors/perps/feature-flags';
 import { submitRequestToBackground } from '../../store/background-connection';
@@ -39,8 +40,12 @@ jest.mock('../../selectors/perps/feature-flags', () => ({
 }));
 
 jest.mock('../../hooks/perps', () => ({
-  usePerpsEligibility: () => ({ isEligible: true }),
+  usePerpsEligibility: jest.fn(() => ({ isEligible: true })),
 }));
+
+const mockUsePerpsEligibility = usePerpsEligibility as jest.MockedFunction<
+  typeof usePerpsEligibility
+>;
 
 jest.mock('../../hooks/perps/stream', () => ({
   usePerpsLiveAccount: () => ({
@@ -121,6 +126,21 @@ async function settleInitialWithdrawRoutesFetch() {
   }
 }
 
+/** Await rejected `perpsGetWithdrawalRoutes` promises so the effect `catch` runs in `act`. */
+async function flushRejectedWithdrawRoutesPromises() {
+  await act(async () => {
+    for (let i = 0; i < mockSubmit.mock.calls.length; i += 1) {
+      if (mockSubmit.mock.calls[i][0] !== 'perpsGetWithdrawalRoutes') {
+        continue;
+      }
+      const value = mockSubmit.mock.results[i]?.value;
+      if (value && typeof (value as Promise<unknown>).then === 'function') {
+        await (value as Promise<unknown>).catch(() => undefined);
+      }
+    }
+  });
+}
+
 /** `handleWithdraw` is async; `finally` sets `isSubmitting` false after mocks resolve. */
 async function waitForWithdrawHandlerSettled() {
   await waitFor(() => {
@@ -139,6 +159,7 @@ describe('PerpsWithdrawPage', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    mockUsePerpsEligibility.mockReturnValue({ isEligible: true });
     mockGetIsPerpsExperienceAvailable.mockReturnValue(true);
     mockSubmit.mockImplementation((method: string) => {
       if (method === 'perpsGetWithdrawalRoutes') {
@@ -171,6 +192,9 @@ describe('PerpsWithdrawPage', () => {
     expect(screen.getByTestId('perps-withdraw-page')).toBeInTheDocument();
     expect(screen.getByTestId('perps-withdraw-cancel')).toBeInTheDocument();
     expect(screen.getByTestId('perps-withdraw-submit')).toBeInTheDocument();
+    expect(
+      screen.getByTestId('perps-withdraw-summary-receive-value'),
+    ).toHaveTextContent('—');
   });
 
   it('redirects when perps experience is disabled', async () => {
@@ -334,5 +358,233 @@ describe('PerpsWithdrawPage', () => {
 
     await waitForWithdrawHandlerSettled();
     await awaitSubmitPromisesForMethod('perpsClearWithdrawResult');
+  });
+
+  it('shows minimum withdrawal notice when amount is below the route minimum', async () => {
+    const user = userEvent.setup();
+    renderWithProvider(<PerpsWithdrawPage />, createMockStore());
+
+    await settleInitialWithdrawRoutesFetch();
+
+    const amountInput = screen.getByTestId('perps-fiat-hero-amount-input');
+    await user.clear(amountInput);
+    await user.type(amountInput, '1');
+
+    expect(
+      await screen.findByText(/Minimum withdrawal/iu),
+    ).toBeInTheDocument();
+  });
+
+  it('shows insufficient balance when amount exceeds available Perps balance', async () => {
+    const user = userEvent.setup();
+    renderWithProvider(<PerpsWithdrawPage />, createMockStore());
+
+    await settleInitialWithdrawRoutesFetch();
+
+    const amountInput = screen.getByTestId('perps-fiat-hero-amount-input');
+    await user.clear(amountInput);
+    await user.type(amountInput, '101');
+
+    expect(
+      await screen.findByText(messages.perpsWithdrawInsufficient.message),
+    ).toBeInTheDocument();
+  });
+
+  it('shows geo-blocked copy and disables submit when user is not eligible', async () => {
+    mockUsePerpsEligibility.mockReturnValue({ isEligible: false });
+
+    renderWithProvider(<PerpsWithdrawPage />, createMockStore());
+
+    await settleInitialWithdrawRoutesFetch();
+
+    expect(
+      screen.getByText(messages.perpsGeoBlockedTooltip.message),
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByTestId('perps-withdraw-percentage-buttons'),
+    ).not.toBeInTheDocument();
+    expect(screen.getByTestId('perps-fiat-hero-amount-input')).toBeDisabled();
+    expect(screen.getByTestId('perps-withdraw-submit')).toBeDisabled();
+  });
+
+  it('fills amount from Max and 50% quick actions', async () => {
+    const user = userEvent.setup();
+    renderWithProvider(<PerpsWithdrawPage />, createMockStore());
+
+    await settleInitialWithdrawRoutesFetch();
+
+    await user.click(screen.getByTestId('perps-withdraw-percentage-max'));
+    expect(screen.getByTestId('perps-fiat-hero-amount-input')).toHaveValue(
+      '100',
+    );
+
+    await user.click(screen.getByTestId('perps-withdraw-percentage-50'));
+    expect(screen.getByTestId('perps-fiat-hero-amount-input')).toHaveValue(
+      '50',
+    );
+  });
+
+  it('shows server validation error when perpsValidateWithdrawal returns invalid', async () => {
+    const user = userEvent.setup();
+    mockSubmit.mockImplementation((method: string) => {
+      if (method === 'perpsGetWithdrawalRoutes') {
+        return Promise.resolve([
+          {
+            assetId:
+              'eip155:42161/erc20:0xaf88d065e77c8cC2239327C5EDb3A432268e5831',
+            chainId: 'eip155:42161',
+            contractAddress:
+              '0xaf88d065e77c8cC2239327C5EDb3A432268e5831' as `0x${string}`,
+            constraints: { minAmount: '1.01' },
+          },
+        ]);
+      }
+      if (method === 'perpsValidateWithdrawal') {
+        return Promise.resolve({
+          isValid: false,
+          error: 'blocked_by_provider',
+        });
+      }
+      return Promise.resolve(undefined);
+    });
+
+    renderWithProvider(<PerpsWithdrawPage />, createMockStore());
+
+    await settleInitialWithdrawRoutesFetch();
+
+    const amountInput = screen.getByTestId('perps-fiat-hero-amount-input');
+    await user.clear(amountInput);
+    await user.type(amountInput, '50');
+    await user.click(screen.getByTestId('perps-withdraw-submit'));
+
+    await awaitSubmitPromisesForMethod('perpsValidateWithdrawal');
+
+    expect(
+      await screen.findByText('blocked_by_provider'),
+    ).toBeInTheDocument();
+    expect(mockSubmit).not.toHaveBeenCalledWith(
+      'perpsWithdraw',
+      expect.any(Array),
+    );
+
+    await waitForWithdrawHandlerSettled();
+  });
+
+  it('shows generic invalid message when validation fails without an error string', async () => {
+    const user = userEvent.setup();
+    mockSubmit.mockImplementation((method: string) => {
+      if (method === 'perpsGetWithdrawalRoutes') {
+        return Promise.resolve([
+          {
+            assetId:
+              'eip155:42161/erc20:0xaf88d065e77c8cC2239327C5EDb3A432268e5831',
+            chainId: 'eip155:42161',
+            contractAddress:
+              '0xaf88d065e77c8cC2239327C5EDb3A432268e5831' as `0x${string}`,
+            constraints: { minAmount: '1.01' },
+          },
+        ]);
+      }
+      if (method === 'perpsValidateWithdrawal') {
+        return Promise.resolve({ isValid: false });
+      }
+      return Promise.resolve(undefined);
+    });
+
+    renderWithProvider(<PerpsWithdrawPage />, createMockStore());
+
+    await settleInitialWithdrawRoutesFetch();
+
+    const amountInput = screen.getByTestId('perps-fiat-hero-amount-input');
+    await user.clear(amountInput);
+    await user.type(amountInput, '50');
+    await user.click(screen.getByTestId('perps-withdraw-submit'));
+
+    await awaitSubmitPromisesForMethod('perpsValidateWithdrawal');
+
+    expect(
+      await screen.findByText(messages.perpsWithdrawInvalidAmount.message),
+    ).toBeInTheDocument();
+
+    await waitForWithdrawHandlerSettled();
+  });
+
+  it('shows failure message and clears withdraw result when perpsWithdraw throws', async () => {
+    const user = userEvent.setup();
+    mockSubmit.mockImplementation((method: string) => {
+      if (method === 'perpsGetWithdrawalRoutes') {
+        return Promise.resolve([
+          {
+            assetId:
+              'eip155:42161/erc20:0xaf88d065e77c8cC2239327C5EDb3A432268e5831',
+            chainId: 'eip155:42161',
+            contractAddress:
+              '0xaf88d065e77c8cC2239327C5EDb3A432268e5831' as `0x${string}`,
+            constraints: { minAmount: '1.01' },
+          },
+        ]);
+      }
+      if (method === 'perpsValidateWithdrawal') {
+        return Promise.resolve({ isValid: true });
+      }
+      if (method === 'perpsWithdraw') {
+        return Promise.reject(new Error('network'));
+      }
+      if (method === 'perpsClearWithdrawResult') {
+        return Promise.resolve(undefined);
+      }
+      return Promise.resolve(undefined);
+    });
+
+    renderWithProvider(<PerpsWithdrawPage />, createMockStore());
+
+    await settleInitialWithdrawRoutesFetch();
+
+    const amountInput = screen.getByTestId('perps-fiat-hero-amount-input');
+    await user.clear(amountInput);
+    await user.type(amountInput, '50');
+    await user.click(screen.getByTestId('perps-withdraw-submit'));
+
+    await awaitSubmitPromisesForMethod('perpsValidateWithdrawal');
+    await waitFor(() => {
+      expect(mockSubmit).toHaveBeenCalledWith('perpsWithdraw', expect.any(Array));
+    });
+    const withdrawCallIndex = mockSubmit.mock.calls.findIndex(
+      (call) => call[0] === 'perpsWithdraw',
+    );
+    await act(async () => {
+      await (
+        mockSubmit.mock.results[withdrawCallIndex].value as Promise<unknown>
+      ).catch(() => undefined);
+    });
+
+    expect(
+      await screen.findByText(messages.perpsWithdrawFailed.message),
+    ).toBeInTheDocument();
+
+    await waitFor(() => {
+      expect(mockSubmit).toHaveBeenCalledWith('perpsClearWithdrawResult', []);
+    });
+
+    await waitForWithdrawHandlerSettled();
+    await awaitSubmitPromisesForMethod('perpsClearWithdrawResult');
+  });
+
+  it('survives withdrawal routes fetch rejection', async () => {
+    mockSubmit.mockImplementation((method: string) => {
+      if (method === 'perpsGetWithdrawalRoutes') {
+        return Promise.reject(new Error('rpc'));
+      }
+      return Promise.resolve(undefined);
+    });
+
+    renderWithProvider(<PerpsWithdrawPage />, createMockStore());
+
+    await waitFor(() => {
+      expect(mockSubmit).toHaveBeenCalledWith('perpsGetWithdrawalRoutes', []);
+    });
+    await flushRejectedWithdrawRoutesPromises();
+
+    expect(screen.getByTestId('perps-withdraw-page')).toBeInTheDocument();
   });
 });

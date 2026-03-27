@@ -50,6 +50,7 @@ import { usePerpsEligibility } from '../../hooks/perps';
 import { usePerpsLiveAccount } from '../../hooks/perps/stream';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import { submitRequestToBackground } from '../../store/background-connection';
+import { formatAmountInputFromNumber } from './perps-withdraw-amount-format';
 
 /** Arbitrum native USDC (matches `ARBITRUM_USDC_TOKEN_OBJECT` in swaps constants). */
 const ARBITRUM_USDC_TOKEN_ICON_URL =
@@ -59,20 +60,6 @@ function parsePerpsAmountInput(raw: string): number {
   const normalized = raw.replace(/,/gu, '.');
   const n = parseFloat(normalized);
   return Number.isFinite(n) ? n : NaN;
-}
-
-const PERPS_WITHDRAW_AMOUNT_DECIMALS = 6;
-
-function formatAmountInputFromNumber(n: number): string {
-  if (!Number.isFinite(n) || n <= 0) {
-    return '';
-  }
-  const factor = 10 ** PERPS_WITHDRAW_AMOUNT_DECIMALS;
-  const floored = Math.floor(n * factor) / factor;
-  if (floored === Math.floor(floored)) {
-    return String(Math.floor(floored));
-  }
-  return floored.toFixed(PERPS_WITHDRAW_AMOUNT_DECIMALS).replace(/\.?0+$/u, '');
 }
 
 /**

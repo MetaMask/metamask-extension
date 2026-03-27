@@ -19,14 +19,18 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useFormatters } from '../../../../hooks/useFormatters';
 import { usePerpsEligibility } from '../../../../hooks/perps';
 import { usePerpsLiveAccount } from '../../../../hooks/perps/stream';
+import {
+  invokePerpsBalanceAction,
+  type PerpsBalanceActionHandler,
+} from '../invoke-perps-balance-action';
 
 export type PerpsBalanceDropdownProps = {
   /** Whether the user has open positions (controls P&L row visibility) */
   hasPositions?: boolean;
   /** Callback when Add funds button is pressed */
-  onAddFunds?: () => void;
+  onAddFunds?: PerpsBalanceActionHandler;
   /** Callback when Withdraw button is pressed */
-  onWithdraw?: () => void;
+  onWithdraw?: PerpsBalanceActionHandler;
 };
 
 /**
@@ -72,11 +76,11 @@ export const PerpsBalanceDropdown: React.FC<PerpsBalanceDropdownProps> = ({
     if (!isEligible) {
       return;
     }
-    onAddFunds?.();
+    invokePerpsBalanceAction(onAddFunds);
   }, [isEligible, onAddFunds]);
 
   const handleWithdraw = useCallback(() => {
-    onWithdraw?.();
+    invokePerpsBalanceAction(onWithdraw);
   }, [onWithdraw]);
 
   const containerRef = useRef<HTMLDivElement>(null);

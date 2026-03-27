@@ -1,5 +1,5 @@
 import React from 'react';
-import { fireEvent, screen } from '@testing-library/react';
+import { fireEvent, screen, waitFor } from '@testing-library/react';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../../store/store';
 import mockState from '../../../../../test/data/mock-state.json';
@@ -107,6 +107,28 @@ describe('PerpsBalanceDropdown', () => {
     fireEvent.click(screen.getByTestId('perps-balance-dropdown-withdraw'));
 
     expect(onWithdraw).toHaveBeenCalledTimes(1);
+  });
+
+  it('logs when onWithdraw returns a rejected promise', async () => {
+    const consoleErrorSpy = jest
+      .spyOn(console, 'error')
+      .mockImplementation(() => undefined);
+    const onWithdraw = jest
+      .fn()
+      .mockImplementation(() => Promise.reject(new Error('withdraw failed')));
+
+    renderWithProvider(
+      <PerpsBalanceDropdown onWithdraw={onWithdraw} />,
+      mockStore,
+    );
+
+    fireEvent.click(screen.getByTestId('perps-balance-dropdown-balance'));
+    fireEvent.click(screen.getByTestId('perps-balance-dropdown-withdraw'));
+
+    await waitFor(() => {
+      expect(consoleErrorSpy).toHaveBeenCalledWith(expect.any(Error));
+    });
+    consoleErrorSpy.mockRestore();
   });
 
   it('does not show P&L row when hasPositions is false', () => {
