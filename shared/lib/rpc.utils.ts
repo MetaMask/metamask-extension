@@ -5,21 +5,22 @@ const fetchWithTimeout = getFetchWithTimeout();
 /**
  * Makes a JSON RPC request to the given URL, with the given RPC method and params.
  *
- * @param {string} rpcUrl - The RPC endpoint URL to target.
- * @param {string} rpcMethod - The RPC method to request.
- * @param {Array<unknown>} [rpcParams] - The RPC method params.
- * @param {{ headers?: Record<string, string> }} [options] - Optional extra headers (e.g. Authorization).
- * @returns {Promise<unknown|undefined>} Returns the result of the RPC method call,
+ * @param rpcUrl - The RPC endpoint URL to target.
+ * @param rpcMethod - The RPC method to request.
+ * @param rpcParams - The RPC method params.
+ * @param options - Optional extra headers (e.g. Authorization).
+ * @param options.headers - Optional HTTP headers to include in the request.
+ * @returns Returns the result of the RPC method call,
  * or throws an error in case of failure.
  */
 export async function jsonRpcRequest(
-  rpcUrl,
-  rpcMethod,
-  rpcParams = [],
-  options = {},
-) {
+  rpcUrl: string,
+  rpcMethod: string,
+  rpcParams: unknown[] = [],
+  options: { headers?: Record<string, string> } = {},
+): Promise<unknown> {
   let fetchUrl = rpcUrl;
-  const headers = {
+  const headers: Record<string, string> = {
     'Content-Type': 'application/json',
     ...options.headers,
   };
@@ -52,10 +53,17 @@ export async function jsonRpcRequest(
   ) {
     throw new Error(`RPC endpoint ${rpcUrl} returned non-object response.`);
   }
-  const { error, result } = jsonRpcResponse;
+  const { error, result } = jsonRpcResponse as {
+    error?: { message?: string } | string;
+    result?: unknown;
+  };
 
   if (error) {
-    throw new Error(error?.message || error);
+    throw new Error(
+      typeof error === 'object'
+        ? (error.message ?? JSON.stringify(error))
+        : error,
+    );
   }
   return result;
 }
