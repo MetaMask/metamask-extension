@@ -31,8 +31,6 @@ export type LimitPriceInputProps = {
   currentPrice: number;
   /** Mid price from top-of-book (optional, falls back to currentPrice) */
   midPrice?: number;
-  /** Validation or hint shown below the field */
-  errorMessage?: string | null;
 };
 
 /**
@@ -42,14 +40,12 @@ export type LimitPriceInputProps = {
  * @param options0.onLimitPriceChange
  * @param options0.currentPrice
  * @param options0.midPrice
- * @param options0.errorMessage
  */
 export const LimitPriceInput: React.FC<LimitPriceInputProps> = ({
   limitPrice,
   onLimitPriceChange,
   currentPrice,
   midPrice: midPriceProp,
-  errorMessage,
 }) => {
   const t = useI18nContext();
   const { formatNumber } = useFormatters();
@@ -136,11 +132,6 @@ export const LimitPriceInput: React.FC<LimitPriceInputProps> = ({
           </ButtonBase>
         }
       />
-      {errorMessage ? (
-        <Text variant={TextVariant.BodySm} color={TextColor.ErrorDefault}>
-          {errorMessage}
-        </Text>
-      ) : null}
     </Box>
   );
 };

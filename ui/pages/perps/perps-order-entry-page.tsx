@@ -67,10 +67,6 @@ import {
   type OrderMode,
   type OrderCalculations,
 } from '../../components/app/perps/order-entry';
-import {
-  getLimitOrderReferencePrice,
-  isLimitPriceRestingOnBook,
-} from '../../components/app/perps/order-entry/limitPriceRestingValidation';
 
 /**
  * Parse limit price from form state; returns undefined if missing or non-positive.
@@ -337,47 +333,10 @@ const PerpsOrderEntryPage: React.FC = () => {
 
   const currentPrice = chartCurrentPrice > 0 ? chartCurrentPrice : marketPrice;
 
-  const limitOrderReferencePrice = useMemo(
-    () => getLimitOrderReferencePrice(topOfBook?.midPrice, currentPrice),
-    [topOfBook?.midPrice, currentPrice],
-  );
-
-  const isLimitPriceNotRestingOnBook = useMemo(() => {
-    if (orderFormState?.type !== 'limit' || !orderFormState) {
-      return false;
-    }
-    const cleaned = getValidLimitPriceFromForm(orderFormState);
-    if (!cleaned) {
-      return false;
-    }
-    if (limitOrderReferencePrice <= 0) {
-      return false;
-    }
-    const parsed = parseFloat(cleaned);
-    return !isLimitPriceRestingOnBook(
-      orderFormState.direction,
-      parsed,
-      limitOrderReferencePrice,
-    );
-  }, [orderFormState, limitOrderReferencePrice]);
-
-  const limitPriceRestingErrorMessage = useMemo(() => {
-    if (!isLimitPriceNotRestingOnBook || !orderFormState) {
-      return null;
-    }
-    return orderFormState.direction === 'long'
-      ? t('perpsLimitPriceLongMustBeBelowMarket')
-      : t('perpsLimitPriceShortMustBeAboveMarket');
-  }, [isLimitPriceNotRestingOnBook, orderFormState, t]);
-
   const availableBalance = account ? parseFloat(account.availableBalance) : 0;
 
   const isSubmitDisabled =
-    !isEligible ||
-    isOrderPending ||
-    isLimitPriceInvalid ||
-    isLimitPriceNotRestingOnBook ||
-    currentPrice <= 0;
+    !isEligible || isOrderPending || isLimitPriceInvalid || currentPrice <= 0;
 
   const maxLeverage = useMemo(() => {
     if (!market) {
@@ -419,7 +378,9 @@ const PerpsOrderEntryPage: React.FC = () => {
       }
       const path = `${PERPS_MARKET_DETAIL_ROUTE}/${encodeURIComponent(decodedSymbol)}`;
       navigate(
-        focus ? `${path}?${PERPS_MARKET_DETAIL_FOCUS_PARAM}=${focus}` : path,
+        focus
+          ? `${path}?${PERPS_MARKET_DETAIL_FOCUS_PARAM}=${focus}`
+          : path,
       );
     },
     [navigate, decodedSymbol],
@@ -454,33 +415,6 @@ const PerpsOrderEntryPage: React.FC = () => {
     setSubmitError(null);
 
     try {
-      const assertLimitRestsOnBookOrError = (): boolean => {
-        if (orderFormState.type !== 'limit') {
-          return true;
-        }
-        const cleaned = getValidLimitPriceFromForm(orderFormState);
-        if (!cleaned) {
-          return true;
-        }
-        const ref = getLimitOrderReferencePrice(
-          topOfBook?.midPrice,
-          currentPrice,
-        );
-        if (ref <= 0) {
-          return true;
-        }
-        const parsed = parseFloat(cleaned);
-        if (isLimitPriceRestingOnBook(orderFormState.direction, parsed, ref)) {
-          return true;
-        }
-        setSubmitError(
-          orderFormState.direction === 'long'
-            ? t('perpsLimitPriceLongMustBeBelowMarket')
-            : t('perpsLimitPriceShortMustBeAboveMarket'),
-        );
-        return false;
-      };
-
       if (orderMode === 'close' && position) {
         const closeParams = {
           symbol: orderFormState.asset,
@@ -504,9 +438,6 @@ const PerpsOrderEntryPage: React.FC = () => {
             !getValidLimitPriceFromForm(orderFormState)
           ) {
             setSubmitError(`${t('perpsLimitPrice')}: ${t('required')}`);
-            return;
-          }
-          if (!assertLimitRestsOnBookOrError()) {
             return;
           }
           // Add to position: place order with additional size + TP/SL
@@ -560,9 +491,6 @@ const PerpsOrderEntryPage: React.FC = () => {
           setSubmitError(`${t('perpsLimitPrice')}: ${t('required')}`);
           return;
         }
-        if (!assertLimitRestsOnBookOrError()) {
-          return;
-        }
         const orderParams = formStateToOrderParams(
           orderFormState,
           currentPrice,
@@ -600,7 +528,6 @@ const PerpsOrderEntryPage: React.FC = () => {
     handleBackClick,
     navigateToMarketDetail,
     t,
-    topOfBook?.midPrice,
   ]);
 
   if (!isPerpsExperienceAvailable) {
@@ -756,7 +683,6 @@ const PerpsOrderEntryPage: React.FC = () => {
           orderType={orderFormState?.type ?? initialOrderTypeFromUrl}
           existingPosition={existingPositionForOrder}
           midPrice={topOfBook?.midPrice}
-          limitPriceErrorMessage={limitPriceRestingErrorMessage}
           onAddFunds={triggerDeposit}
         />
       </Box>

@@ -117,10 +117,6 @@ export type OrderEntryProps = {
   orderType?: OrderType;
   /** Mid price from top-of-book for limit order Mid button */
   midPrice?: number;
-  /**
-   * When set, shown under the limit price field (e.g. resting-order validation).
-   */
-  limitPriceErrorMessage?: string | null;
   /** Callback when user changes order type (Market/Limit) */
   onOrderTypeChange?: (orderType: OrderType) => void;
   /** Callback when add-funds icon is pressed in the amount input */

@@ -17,14 +17,6 @@ import {
   mockHip3Markets,
 } from '../../components/app/perps/mocks';
 
-// eslint-disable-next-line import-x/first
-import { PERPS_ORDER_SLIPPAGE_BPS } from '../../components/app/perps/constants';
-import type { OrderFormState } from '../../components/app/perps/order-entry/order-entry.types';
-import PerpsOrderEntryPage, {
-  formStateToOrderParams,
-  getValidLimitPriceFromForm,
-} from './perps-order-entry-page';
-
 jest.mock('../../hooks/perps/usePerpsEligibility', () => ({
   usePerpsEligibility: () => ({ isEligible: true }),
 }));
@@ -138,6 +130,14 @@ jest.mock('react-router-dom', () => ({
     return null;
   },
 }));
+
+// eslint-disable-next-line import-x/first
+import PerpsOrderEntryPage, {
+  formStateToOrderParams,
+  getValidLimitPriceFromForm,
+} from './perps-order-entry-page';
+import { PERPS_ORDER_SLIPPAGE_BPS } from '../../components/app/perps/constants';
+import type { OrderFormState } from '../../components/app/perps/order-entry/order-entry.types';
 
 describe('PerpsOrderEntryPage', () => {
   const middlewares = [thunk];
@@ -338,61 +338,6 @@ describe('PerpsOrderEntryPage', () => {
       renderWithProvider(<PerpsOrderEntryPage />, store);
 
       expect(screen.getByTestId('submit-order-button')).toBeDisabled();
-    });
-
-    it('disables submit when long limit price is at or above reference', () => {
-      mockSearchParams.set('orderType', 'limit');
-      const store = mockStore(createMockState());
-      renderWithProvider(<PerpsOrderEntryPage />, store);
-
-      const amountContainer = screen.getByTestId('amount-input-field');
-      fireEvent.change(
-        amountContainer.querySelector('input') as HTMLInputElement,
-        {
-          target: { value: '500' },
-        },
-      );
-      const limitContainer = screen.getByTestId('limit-price-input');
-      fireEvent.change(
-        limitContainer.querySelector('input') as HTMLInputElement,
-        {
-          target: { value: '3500' },
-        },
-      );
-
-      expect(screen.getByTestId('submit-order-button')).toBeDisabled();
-      expect(
-        screen.getByText(messages.perpsLimitPriceLongMustBeBelowMarket.message),
-      ).toBeInTheDocument();
-    });
-
-    it('disables submit when short limit price is at or below reference', () => {
-      mockSearchParams.set('orderType', 'limit');
-      mockSearchParams.set('direction', 'short');
-      const store = mockStore(createMockState());
-      renderWithProvider(<PerpsOrderEntryPage />, store);
-
-      const amountContainer = screen.getByTestId('amount-input-field');
-      fireEvent.change(
-        amountContainer.querySelector('input') as HTMLInputElement,
-        {
-          target: { value: '500' },
-        },
-      );
-      const limitContainer = screen.getByTestId('limit-price-input');
-      fireEvent.change(
-        limitContainer.querySelector('input') as HTMLInputElement,
-        {
-          target: { value: '2500' },
-        },
-      );
-
-      expect(screen.getByTestId('submit-order-button')).toBeDisabled();
-      expect(
-        screen.getByText(
-          messages.perpsLimitPriceShortMustBeAboveMarket.message,
-        ),
-      ).toBeInTheDocument();
     });
   });
 
