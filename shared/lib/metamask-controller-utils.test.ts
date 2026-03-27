@@ -150,14 +150,16 @@ describe('getTokenValueParam', () => {
   it('returns the _value as string when token data name is not tokenMethodIncreaseAllowance', () => {
     const tokenData = {
       name: TransactionType.tokenMethodTransfer,
-      args: { _value: 200 },
+      args: { ['_value']: 200 },
     };
     // Validates that the numeric value is converted to a string via toString()
     expect(getTokenValueParam(tokenData)).toBe('200');
   });
 
   it('returns undefined when args are not provided', () => {
-    expect(getTokenValueParam({ name: TransactionType.tokenMethodTransfer })).toBeUndefined();
+    expect(
+      getTokenValueParam({ name: TransactionType.tokenMethodTransfer }),
+    ).toBeUndefined();
   });
 
   it('returns undefined when tokenData is empty', () => {
