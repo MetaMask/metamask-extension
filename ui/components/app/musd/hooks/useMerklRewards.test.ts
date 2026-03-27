@@ -157,6 +157,8 @@ describe('useMerklRewards', () => {
     expect(result.current.isEligible).toBe(false);
     expect(result.current.hasClaimableReward).toBe(false);
     expect(result.current.rewardAmountFiat).toBeNull();
+    expect(result.current.hasClaimedBefore).toBe(false);
+    expect(result.current.claimableRewardDisplay).toBeNull();
     expect(mockFetchMerklRewardsForAsset).not.toHaveBeenCalled();
   });
 
@@ -224,6 +226,8 @@ describe('useMerklRewards', () => {
 
     expect(result.current.hasClaimableReward).toBe(true);
     expect(result.current.rewardAmountFiat).toBe(10.5);
+    expect(result.current.hasClaimedBefore).toBe(false);
+    expect(result.current.claimableRewardDisplay).toBe('10.50');
   });
 
   it('uses on-chain claimed amount when available', async () => {
@@ -261,6 +265,8 @@ describe('useMerklRewards', () => {
     // 10.5 - 5.5 = 5.0 MUSD claimable
     expect(result.current.hasClaimableReward).toBe(true);
     expect(result.current.rewardAmountFiat).toBe(5.0);
+    expect(result.current.hasClaimedBefore).toBe(true);
+    expect(result.current.claimableRewardDisplay).toBe('5.00');
     expect(mockGetClaimedAmountFromContract).toHaveBeenCalledWith(
       MOCK_ADDRESS,
       MUSD_TOKEN_ADDRESS,
@@ -301,6 +307,8 @@ describe('useMerklRewards', () => {
 
     expect(result.current.hasClaimableReward).toBe(false);
     expect(result.current.rewardAmountFiat).toBeNull();
+    expect(result.current.hasClaimedBefore).toBe(true);
+    expect(result.current.claimableRewardDisplay).toBeNull();
   });
 
   it('returns false when API returns no matching reward', async () => {
@@ -324,6 +332,8 @@ describe('useMerklRewards', () => {
     expect(mockFetchMerklRewardsForAsset).toHaveBeenCalled();
     expect(result.current.hasClaimableReward).toBe(false);
     expect(result.current.rewardAmountFiat).toBeNull();
+    expect(result.current.hasClaimedBefore).toBe(false);
+    expect(result.current.claimableRewardDisplay).toBeNull();
   });
 
   it('returns false when all rewards are claimed (API)', async () => {
@@ -357,6 +367,8 @@ describe('useMerklRewards', () => {
     });
 
     expect(result.current.hasClaimableReward).toBe(false);
+    expect(result.current.hasClaimedBefore).toBe(true);
+    expect(result.current.claimableRewardDisplay).toBeNull();
   });
 
   it('handles API errors gracefully', async () => {
@@ -380,6 +392,8 @@ describe('useMerklRewards', () => {
     });
 
     expect(result.current.hasClaimableReward).toBe(false);
+    expect(result.current.hasClaimedBefore).toBe(false);
+    expect(result.current.claimableRewardDisplay).toBeNull();
   });
 
   it('aborts fetch on unmount', () => {
@@ -433,6 +447,8 @@ describe('useMerklRewards', () => {
     });
 
     expect(result.current.hasClaimableReward).toBe(false);
+    expect(result.current.hasClaimedBefore).toBe(false);
+    expect(result.current.claimableRewardDisplay).toBeNull();
   });
 
   it('returns true for exactly 1 cent unclaimed amount', async () => {
@@ -468,6 +484,8 @@ describe('useMerklRewards', () => {
 
     expect(result.current.hasClaimableReward).toBe(true);
     expect(result.current.rewardAmountFiat).toBe(0.01);
+    expect(result.current.hasClaimedBefore).toBe(false);
+    expect(result.current.claimableRewardDisplay).toBe('0.01');
   });
 
   it('returns false and skips API call when user is geoblocked', async () => {
@@ -492,6 +510,8 @@ describe('useMerklRewards', () => {
     });
 
     expect(result.current.hasClaimableReward).toBe(false);
+    expect(result.current.hasClaimedBefore).toBe(false);
+    expect(result.current.claimableRewardDisplay).toBeNull();
     expect(mockFetchMerklRewardsForAsset).not.toHaveBeenCalled();
   });
 
@@ -530,6 +550,8 @@ describe('useMerklRewards', () => {
     // Falls back to API value (claimed=0), so full amount is claimable
     expect(result.current.hasClaimableReward).toBe(true);
     expect(result.current.rewardAmountFiat).toBe(10.5);
+    expect(result.current.hasClaimedBefore).toBe(false);
+    expect(result.current.claimableRewardDisplay).toBe('10.50');
   });
 
   it('returns null rewardAmountFiat when token price is null', async () => {
@@ -565,6 +587,8 @@ describe('useMerklRewards', () => {
 
     expect(result.current.hasClaimableReward).toBe(true);
     expect(result.current.rewardAmountFiat).toBeNull();
+    expect(result.current.hasClaimedBefore).toBe(false);
+    expect(result.current.claimableRewardDisplay).toBe('10.50');
   });
 
   it('returns cached data on remount without refetching', async () => {
@@ -603,6 +627,7 @@ describe('useMerklRewards', () => {
     });
 
     expect(firstResult.current.hasClaimableReward).toBe(true);
+    expect(firstResult.current.claimableRewardDisplay).toBe('10.50');
     expect(mockFetchMerklRewardsForAsset).toHaveBeenCalledTimes(1);
 
     // Unmount (simulates switching to another tab)
@@ -616,6 +641,7 @@ describe('useMerklRewards', () => {
 
     // Should immediately have the cached value, no additional fetch
     expect(secondResult.current.hasClaimableReward).toBe(true);
+    expect(secondResult.current.claimableRewardDisplay).toBe('10.50');
     expect(mockFetchMerklRewardsForAsset).toHaveBeenCalledTimes(1);
   });
 
@@ -668,5 +694,7 @@ describe('useMerklRewards', () => {
 
     // Must be false despite the warm cache
     expect(secondResult.current.hasClaimableReward).toBe(false);
+    expect(secondResult.current.hasClaimedBefore).toBe(false);
+    expect(secondResult.current.claimableRewardDisplay).toBeNull();
   });
 });
