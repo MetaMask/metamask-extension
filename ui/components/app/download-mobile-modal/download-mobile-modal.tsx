@@ -1,22 +1,21 @@
 import React from 'react';
 import {
-  AlignItems,
-  BlockSize,
-  BorderColor,
-  Display,
-  FlexDirection,
-  JustifyContent,
+  Box,
+  BoxAlignItems,
+  BoxBorderColor,
+  BoxFlexDirection,
+  BoxJustifyContent,
+  Text,
   TextAlign,
   TextVariant,
-} from '../../../helpers/constants/design-system';
+} from '@metamask/design-system-react';
+import { AlignItems } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
-  Box,
   Modal,
   ModalContent,
   ModalHeader,
   ModalOverlay,
-  Text,
 } from '../../component-library';
 
 const DownloadMobileAppModal = ({ onClose }: { onClose: () => void }) => {
@@ -37,27 +36,21 @@ const DownloadMobileAppModal = ({ onClose }: { onClose: () => void }) => {
         <Box
           paddingLeft={4}
           paddingRight={4}
-          display={Display.Flex}
-          flexDirection={FlexDirection.Column}
+          flexDirection={BoxFlexDirection.Column}
           gap={2}
         >
-          <Text variant={TextVariant.bodyMd}>
+          <Text variant={TextVariant.BodyMd}>
             {t('downloadMetaMaskMobileDescription')}
           </Text>
           <Box
-            className="download-mobile-app-modal__qr-code-wrapper"
-            width={BlockSize.Full}
-            display={Display.Flex}
-            justifyContent={JustifyContent.center}
-            alignItems={AlignItems.center}
+            className="download-mobile-app-modal__qr-code-wrapper w-full rounded-2xl"
+            justifyContent={BoxJustifyContent.Center}
+            alignItems={BoxAlignItems.Center}
             borderWidth={1}
-            paddingInline={0}
+            paddingHorizontal={0}
             paddingTop={3}
             paddingBottom={3}
-            borderColor={BorderColor.borderMuted}
-            style={{
-              borderRadius: '16px',
-            }}
+            borderColor={BoxBorderColor.BorderMuted}
           >
             <img
               src="images/download-mobile-app-qr-code.png"
@@ -69,11 +62,8 @@ const DownloadMobileAppModal = ({ onClose }: { onClose: () => void }) => {
               }}
             />
           </Box>
-          <Box
-            display={Display.Flex}
-            justifyContent={JustifyContent.center}
-          ></Box>
-          <Text variant={TextVariant.bodyMd} textAlign={TextAlign.Center}>
+          <Box justifyContent={BoxJustifyContent.Center} />
+          <Text variant={TextVariant.BodyMd} textAlign={TextAlign.Center}>
             {t('downloadMetaMaskMobileQrNote')}
           </Text>
         </Box>
