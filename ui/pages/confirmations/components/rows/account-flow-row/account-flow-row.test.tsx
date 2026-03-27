@@ -2,6 +2,7 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import { getMockTokenTransferConfirmState } from '../../../../../../test/data/confirmations/helper';
 import { renderWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
+import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
 import { TrustSignalDisplayState } from '../../../../../hooks/useTrustSignals';
 import { RowAlertKey } from '../../../../../components/app/confirm/info/row/constants';
 import { AccountFlowRow } from './account-flow-row';
@@ -17,11 +18,13 @@ jest.mock(
   }),
 );
 
+const label = messages.from.message;
+
 const ADDRESS = '0x6B175474E89094C44Da98b954EedeAC495271d0F';
 
 const defaultProps = {
   address: ADDRESS,
-  label: 'From',
+  label,
   alertKey: RowAlertKey.SigningInWith,
   name: null,
   isAccount: false,
@@ -47,6 +50,6 @@ describe('<AccountFlowRow />', () => {
       <AccountFlowRow {...defaultProps} />,
       mockStore,
     );
-    expect(getByText('From')).toBeInTheDocument();
+    expect(getByText(label)).toBeInTheDocument();
   });
 });
