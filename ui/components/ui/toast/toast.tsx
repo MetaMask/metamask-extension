@@ -1,14 +1,12 @@
 import React from 'react';
+import { useLocation } from 'react-router-dom';
 import { toast, ToastBar, Toaster as ToasterBase } from 'react-hot-toast';
 import {
   ButtonIcon,
   ButtonIconSize,
   IconName,
 } from '@metamask/design-system-react';
-import { useLocation } from 'react-router-dom';
-import { ENVIRONMENT_TYPE_NOTIFICATION } from '../../../../shared/constants/app';
-// eslint-disable-next-line import-x/no-restricted-paths
-import { getEnvironmentType } from '../../../../app/scripts/lib/util';
+import { isInteractiveUI } from '../../../../shared/lib/environment-type';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import {
   useTransactionDisplay,
@@ -27,10 +25,11 @@ export function Toaster() {
   const t = useI18nContext();
   const { pathname } = useLocation();
 
-  if (getEnvironmentType() === ENVIRONMENT_TYPE_NOTIFICATION) {
+  if (!isInteractiveUI()) {
     return null;
   }
 
+  // Only show toast on the default (home) route
   const style = pathname === DEFAULT_ROUTE ? undefined : { display: 'none' };
 
   return (

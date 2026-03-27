@@ -24,6 +24,7 @@ export function StatusIcon({ state, className }: Props) {
   const { rive, RiveComponent } = useRive({
     riveFile: riveFile ?? undefined,
     stateMachines: riveFile ? stateMachine : undefined,
+    autoplay: true,
   });
   const darkInput = useStateMachineInput(rive, stateMachine, 'Dark');
 
@@ -34,7 +35,6 @@ export function StatusIcon({ state, className }: Props) {
 
     // eslint-disable-next-line react-compiler/react-compiler
     darkInput.value = isDark;
-    rive?.play();
   }, [rive, darkInput, isDark]);
 
   useEffect(() => {

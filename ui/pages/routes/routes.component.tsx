@@ -108,11 +108,11 @@ import { useI18nContext } from '../../hooks/useI18nContext';
 import RewardsPage from '../rewards';
 import { DEFAULT_AUTO_LOCK_TIME_LIMIT } from '../../../shared/constants/preferences';
 import {
-  ENVIRONMENT_TYPE_FULLSCREEN,
   ENVIRONMENT_TYPE_POPUP,
   ENVIRONMENT_TYPE_SIDEPANEL,
   SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES,
 } from '../../../shared/constants/app';
+import { isInteractiveUI } from '../../../shared/lib/environment-type';
 // TODO: Remove restricted import
 // eslint-disable-next-line import-x/no-restricted-paths
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
@@ -709,10 +709,6 @@ export default function Routes() {
 
   const environmentType = getEnvironmentType();
   const isSidepanel = environmentType === ENVIRONMENT_TYPE_SIDEPANEL;
-  const isMainUI =
-    environmentType === ENVIRONMENT_TYPE_POPUP ||
-    environmentType === ENVIRONMENT_TYPE_SIDEPANEL ||
-    environmentType === ENVIRONMENT_TYPE_FULLSCREEN;
 
   return (
     <div
@@ -724,7 +720,7 @@ export default function Routes() {
       dir={textDirection}
     >
       <ConfirmationHandler />
-      {isMainUI && <ToastListener />}
+      {isInteractiveUI() && <ToastListener />}
 
       <QRHardwarePopover />
       <Modal />
