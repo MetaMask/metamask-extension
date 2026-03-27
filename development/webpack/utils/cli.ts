@@ -396,13 +396,13 @@ function getOptions(
   allFeatures: string[],
 ) {
   const isProduction = mode === 'production';
+  const prodDefaultDesc =
+    "If `mode` is 'production', `true`, otherwise `false`";
   const effectiveThreads = resolveEffectiveThreads({
     generatePolicy,
     reactCompilerVerbose,
     threads,
   });
-  const prodDefaultDesc =
-    "If `mode` is 'production', `true`, otherwise `false`";
   const defaultJobsPerThread =
     effectiveThreads === 0 ? 0 : resolveAutoJobs(effectiveThreads);
   return {
