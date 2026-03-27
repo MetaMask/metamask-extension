@@ -54,9 +54,9 @@ export function usePerpsMarginCalculations({
   amount,
 }: UsePerpsMarginCalculationsParams): UsePerpsMarginCalculationsReturn {
   return useMemo(() => {
-    const currentMargin = parseFloat(position.marginUsed) || 0;
-    const positionSize = Math.abs(parseFloat(position.size)) || 0;
-    const entryPrice = parseFloat(position.entryPrice) || 0;
+    const currentMargin = Number.parseFloat(position.marginUsed) || 0;
+    const positionSize = Math.abs(Number.parseFloat(position.size)) || 0;
+    const entryPrice = Number.parseFloat(position.entryPrice) || 0;
     const positionLeverage =
       position.leverage?.value ?? MARGIN_ADJUSTMENT_CONFIG.FallbackMaxLeverage;
     const maxLeverageForFormula =
@@ -64,17 +64,17 @@ export function usePerpsMarginCalculations({
 
     let anchorLiquidationPrice: number | null = null;
     if (position.liquidationPrice) {
-      const parsed = parseFloat(position.liquidationPrice);
+      const parsed = Number.parseFloat(position.liquidationPrice);
       if (Number.isFinite(parsed)) {
         anchorLiquidationPrice = parsed;
       }
     }
 
-    const isLong = parseFloat(position.size) >= 0;
+    const isLong = Number.parseFloat(position.size) >= 0;
     const availableBalance = account
-      ? parseFloat(account.availableBalance) || 0
+      ? Number.parseFloat(account.availableBalance) || 0
       : 0;
-    const notionalValue = parseFloat(position.positionValue) || 0;
+    const notionalValue = Number.parseFloat(position.positionValue) || 0;
 
     const maxAmount =
       mode === 'add'
@@ -91,7 +91,7 @@ export function usePerpsMarginCalculations({
             }),
           );
 
-    const amountNum = parseFloat(amount.replace(/,/gu, '')) || 0;
+    const amountNum = Number.parseFloat(amount.replaceAll(',', '')) || 0;
     const newMargin =
       mode === 'add'
         ? currentMargin + amountNum

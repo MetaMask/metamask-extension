@@ -100,7 +100,7 @@ export const EditMarginModalContent: React.FC<EditMarginModalContentProps> = ({
   } = calculations;
 
   const amountNumForDisplay = useMemo(
-    () => parseFloat(marginAmount.replace(/,/gu, '')) || 0,
+    () => Number.parseFloat(marginAmount.replaceAll(',', '')) || 0,
     [marginAmount],
   );
   const showLiquidationComparison = amountNumForDisplay > 0;
@@ -185,7 +185,7 @@ export const EditMarginModalContent: React.FC<EditMarginModalContentProps> = ({
     if (maxAmount <= 0) {
       return 0;
     }
-    const n = parseFloat(marginAmount.replace(/,/gu, '')) || 0;
+    const n = Number.parseFloat(marginAmount.replaceAll(',', '')) || 0;
     return Math.min(100, Math.round((n / maxAmount) * 100));
   }, [marginAmount, maxAmount]);
 
@@ -193,9 +193,9 @@ export const EditMarginModalContent: React.FC<EditMarginModalContentProps> = ({
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const { value } = e.target;
       if (value === '' || /^[\d,]*\.?\d{0,2}$/u.test(value)) {
-        let cleaned = value.replace(/,/gu, '');
+        let cleaned = value.replaceAll(',', '');
         if (marginMode === 'remove' && maxAmount > 0) {
-          const num = parseFloat(cleaned) || 0;
+          const num = Number.parseFloat(cleaned) || 0;
           if (num > maxAmount) {
             cleaned = maxAmount.toFixed(2);
           }
@@ -232,8 +232,8 @@ export const EditMarginModalContent: React.FC<EditMarginModalContentProps> = ({
       return;
     }
 
-    const rawMarginAmount = marginAmount.replace(/,/gu, '');
-    const amountNum = parseFloat(rawMarginAmount) || 0;
+    const rawMarginAmount = marginAmount.replaceAll(',', '');
+    const amountNum = Number.parseFloat(rawMarginAmount) || 0;
     if (amountNum <= 0) {
       return;
     }
@@ -297,7 +297,7 @@ export const EditMarginModalContent: React.FC<EditMarginModalContentProps> = ({
     !isEligible ||
     !isValid ||
     isSaving ||
-    parseFloat(marginAmount.replace(/,/gu, '')) <= 0;
+    Number.parseFloat(marginAmount.replaceAll(',', '')) <= 0;
 
   useEffect(() => {
     if (onSaveRef) {
