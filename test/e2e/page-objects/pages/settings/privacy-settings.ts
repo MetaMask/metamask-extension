@@ -329,6 +329,8 @@ class PrivacySettings {
 
   async toggleNetworkDetailsCheck(): Promise<void> {
     console.log('Toggle network details check on privacy settings page');
+    await this.goToThirdPartyApisSettings();
+    await this.driver.waitForSelector(this.networkDetailsCheckToggle);
     await this.driver.clickElement(this.networkDetailsCheckToggle);
   }
 

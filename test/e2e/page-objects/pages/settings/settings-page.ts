@@ -59,6 +59,11 @@ class SettingsPage {
   private readonly backupAndSyncSettingsButton =
     '[data-testid="settings-v2-tab-item-backup-and-sync"]';
 
+  private readonly showNativeTokenAsMainBalanceToggleLabel = {
+    xpath:
+      "//label[contains(@class,'toggle-button')][.//*[@data-testid='show-native-token-as-main-balance']]",
+  };
+
   private readonly transactionsSettingsButton =
     '[data-testid="settings-v2-tab-item-transactions"]';
 
@@ -137,8 +142,12 @@ class SettingsPage {
 
   async toggleBalanceSetting(): Promise<void> {
     console.log('Toggling balance setting');
+    await this.goToAssetsSettings();
+    await this.driver.waitForSelector(
+      this.showNativeTokenAsMainBalanceToggleLabel,
+    );
     await this.driver.clickElement(
-      '.toggle-button.show-native-token-as-main-balance',
+      this.showNativeTokenAsMainBalanceToggleLabel,
     );
   }
 

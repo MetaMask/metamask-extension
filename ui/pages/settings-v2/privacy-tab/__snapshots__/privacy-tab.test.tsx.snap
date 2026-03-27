@@ -229,7 +229,9 @@ exports[`PrivacyTab snapshot matches snapshot 1`] = `
           >
             Participate in MetaMetrics
           </p>
-          <div>
+          <div
+            data-testid="participate-in-meta-metrics-toggle"
+          >
             <label
               class="toggle-button toggle-button--off toggle-button--disabled"
               tabindex="0"
@@ -283,7 +285,9 @@ exports[`PrivacyTab snapshot matches snapshot 1`] = `
           >
             Data collection for marketing
           </p>
-          <div>
+          <div
+            data-testid="data-collection-for-marketing-toggle"
+          >
             <label
               class="toggle-button toggle-button--off toggle-button--disabled"
               tabindex="0"
@@ -328,7 +332,7 @@ exports[`PrivacyTab snapshot matches snapshot 1`] = `
     <div>
       <button
         class="inline-flex items-center justify-center rounded-xl font-medium min-w-20 overflow-hidden relative h-12 transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-icon-default hover:bg-icon-default-hover active:bg-icon-default-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default text-error-default !bg-transparent p-0 text-left"
-        data-testid="delete-metametrics-button"
+        data-testid="delete-metametrics-data-button"
         disabled=""
         role="button"
       >
@@ -345,7 +349,7 @@ exports[`PrivacyTab snapshot matches snapshot 1`] = `
     <div>
       <button
         class="inline-flex items-center justify-center rounded-xl font-medium min-w-20 overflow-hidden relative h-12 transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-icon-default hover:bg-icon-default-hover active:bg-icon-default-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default text-text-default !bg-transparent p-0 text-left"
-        data-testid="download-state-logs-button"
+        data-testid="advanced-setting-state-logs-button"
         role="button"
       >
         <span

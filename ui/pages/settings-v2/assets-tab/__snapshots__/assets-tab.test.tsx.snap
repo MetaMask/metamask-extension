@@ -52,7 +52,9 @@ exports[`Assets Tab snapshot matches snapshot 1`] = `
           >
             Show native token as main balance
           </p>
-          <div>
+          <div
+            data-testid="show-native-token-as-main-balance-toggle"
+          >
             <label
               class="toggle-button toggle-button--on"
               tabindex="0"
@@ -210,7 +212,9 @@ exports[`Assets Tab snapshot matches snapshot 1`] = `
           >
             Autodetect NFTs
           </p>
-          <div>
+          <div
+            data-testid="use-nft-detection"
+          >
             <label
               class="toggle-button toggle-button--on"
               tabindex="0"
@@ -264,7 +268,9 @@ exports[`Assets Tab snapshot matches snapshot 1`] = `
           >
             Autodetect tokens
           </p>
-          <div>
+          <div
+            data-testid="autodetect-tokens"
+          >
             <label
               class="toggle-button toggle-button--on"
               tabindex="0"
