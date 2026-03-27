@@ -92,6 +92,9 @@ class TransactionConfirmation extends Confirmation {
     text: tEn('confirmTitleSending'),
   };
 
+  private readonly walletInitiatedBackButton =
+    '[data-testid="wallet-initiated-header-back-button"]';
+
   private readonly tokenGasFeeDropdown =
     '[data-testid="selected-gas-fee-token-arrow"]';
 
@@ -365,6 +368,13 @@ class TransactionConfirmation extends Confirmation {
   async closeGasFeeToastMessage() {
     // the toast message automatically disappears after some seconds, so we need to use clickElementSafe to prevent race conditions
     await this.driver.clickElementSafe(this.gasFeeCloseToastMessage, 10000);
+  }
+
+  async clickBackButton(): Promise<void> {
+    console.log('Clicking wallet-initiated back button');
+    await this.driver.clickElementAndWaitToDisappear(
+      this.walletInitiatedBackButton,
+    );
   }
 
   /**
