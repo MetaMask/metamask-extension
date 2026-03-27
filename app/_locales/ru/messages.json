@@ -411,9 +411,6 @@
     "message": "Сохраните эти значения как значения по умолчанию для сети $1.",
     "description": "$1 is the current network name."
   },
-  "advancedGasFeeModalTitle": {
-    "message": "Дополнительная плата за газ"
-  },
   "advancedGasPriceModalTitle": {
     "message": "Дополнительная комиссия сети"
   },
@@ -1351,14 +1348,6 @@
   "cancelPopoverTitle": {
     "message": "Отменить транзакцию"
   },
-  "cancelSpeedUpLabel": {
-    "message": "Эта плата за газ $1 первоначальную.",
-    "description": "$1 is text 'replace' in bold"
-  },
-  "cancelSpeedUpTransactionTooltip": {
-    "message": "Чтобы $1 транзакцию, плата за газ должна быть увеличена как минимум на 10%. Это позволит обеспечить признание транзакции сетью.",
-    "description": "$1 is string 'cancel' or 'speed up'"
-  },
   "cancelTransactionDescription": {
     "message": "Эта транзакция будет отменена, и эта комиссия сети заменит исходную."
   },
@@ -2072,10 +2061,6 @@
   "dappSuggestedShortLabel": {
     "message": "Сайт"
   },
-  "dappSuggestedTooltip": {
-    "message": "$1 рекомендовал эту цену.",
-    "description": "$1 represents the Dapp's origin"
-  },
   "dappSwapAdvantage": {
     "message": "Экономьте и зарабатывайте с MetaMask Swaps"
   },
@@ -2526,9 +2511,6 @@
   "editAddressNickname": {
     "message": "Изменить ник адреса"
   },
-  "editCancellationGasFeeModalTitle": {
-    "message": "Изменить плату за газ за отмену"
-  },
   "editContact": {
     "message": "Изменить контакт"
   },
@@ -2587,9 +2569,6 @@
   "editGasPriceTooltip": {
     "message": "В этой сети необходимо заполнить поле «Цена газа» при отправке транзакции. Цена газа — это сумма, которую вы будете платить за единицу газа."
   },
-  "editGasSubTextFeeLabel": {
-    "message": "Максимальная комиссия:"
-  },
   "editGasTitle": {
     "message": "Изменить приоритет"
   },
@@ -2616,9 +2595,6 @@
   },
   "editPermissions": {
     "message": "Изменить разрешения"
-  },
-  "editSpeedUpEditGasFeeModalTitle": {
-    "message": "Изменить плату за газ за ускорение"
   },
   "editSpendingCap": {
     "message": "Изменить лимит расходов"
@@ -3026,9 +3002,6 @@
   },
   "gasLimitV2": {
     "message": "Лимит газа"
-  },
-  "gasOption": {
-    "message": "Настройка газа"
   },
   "gasPrice": {
     "message": "Цена газа (Гвей)"
@@ -3962,9 +3935,6 @@
   "maxFeeTooltip": {
     "message": "Максимальная комиссия, предусмотренная для оплаты транзакции."
   },
-  "maxPriorityFee": {
-    "message": "Максимальная плата за приоритет"
-  },
   "medium": {
     "message": "Рынок"
   },
@@ -4179,8 +4149,8 @@
     "description": "Label for the claimable bonus row in the mUSD conversion confirmation screen"
   },
   "musdClaimableBonusTooltip": {
-    "message": "Бонус в размере $1% годовых от суммы вашего накопленного бонуса за владение mUSD. Ваш бонус можно получить ежедневно на Linea. Работает на платформе Relay. $2",
-    "description": "$1 is the APY percentage, $2 is the 'Terms apply' link"
+    "message": "Годовой бонус, который вы получили за владение mUSD. Ваш бонус можно получать ежедневно на Linea. $1",
+    "description": "$1 is the 'Terms apply' link"
   },
   "musdConversionActivityTitle": {
     "message": "Конвертировать $1 в mUSD",
@@ -4204,16 +4174,12 @@
     "message": "Конвертируйте и получите $1%",
     "description": "$1 is the bonus percentage (e.g., 3)"
   },
-  "musdEarnBonusPercentage": {
-    "message": "Заработайте бонус $1%",
-    "description": "$1 is the bonus percentage (e.g., 3)"
-  },
   "musdEducationGetStarted": {
     "message": "С чего начать"
   },
   "musdEducationHeadline": {
     "message": "ПОЛУЧИТЕ $1% НА СТЕЙБЛКОИНАХ",
-    "description": "$1 is the bonus APY percentage"
+    "description": "$1 is the bonus APY percentage. Line break between ON and STABLECOINS matches splash layout."
   },
   "musdEducationNotNow": {
     "message": "Не сейчас"
@@ -4390,9 +4356,6 @@
   },
   "networkFeeExplanationTitle": {
     "message": "Комиссия сети"
-  },
-  "networkIsBusy": {
-    "message": "Сеть занята. Цены газа высоки, а оценки менее точны."
   },
   "networkMenu": {
     "message": "Сетевое меню"
@@ -5672,9 +5635,6 @@
   },
   "perpsPosition": {
     "message": "Позиция"
-  },
-  "perpsPositionClosedReverseOrderFailed": {
-    "message": "Ваша позиция была закрыта, но обратный ордер не выполнен. Возможно, вам придется вручную открыть новую позицию"
   },
   "perpsPositionSize": {
     "message": "Размер позиции"
@@ -8807,14 +8767,8 @@
   "tokensInCollection": {
     "message": "Токены в коллекции"
   },
-  "tooltipSatusConnected": {
-    "message": "подключен"
-  },
   "tooltipSatusConnectedUpperCase": {
     "message": "Подключено"
-  },
-  "tooltipSatusNotConnected": {
-    "message": "не подключено"
   },
   "total": {
     "message": "Итого"

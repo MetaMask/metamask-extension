@@ -49,17 +49,24 @@ type UseMerklRewardsOptions = {
 type MerklRewardQueryResult = {
   hasClaimable: boolean;
   unclaimedFiat: number | null;
+  hasClaimedBefore: boolean;
+  /** Formatted unclaimed amount for analytics bucketing; null when not claimable */
+  claimableRewardDisplay: string | null;
 };
 
 const EMPTY_RESULT: MerklRewardQueryResult = {
   hasClaimable: false,
   unclaimedFiat: null,
+  hasClaimedBefore: false,
+  claimableRewardDisplay: null,
 };
 
 type UseMerklRewardsReturn = {
   isEligible: boolean;
   hasClaimableReward: boolean;
   rewardAmountFiat: number | null;
+  hasClaimedBefore: boolean;
+  claimableRewardDisplay: string | null;
   refetch: () => void;
 };
 
@@ -137,6 +144,19 @@ export const useMerklRewards = ({
       const oneCentInBaseUnits =
         10n ** BigInt(matchingReward.token.decimals - 2);
       const hasClaimable = unclaimedBaseUnits >= oneCentInBaseUnits;
+      const hasClaimedBefore = BigInt(claimedAmount) > 0n;
+
+      const tokenDecimals = matchingReward.token.decimals;
+      let claimableRewardDisplay: string | null = null;
+      if (hasClaimable) {
+        const unclaimedDecimal =
+          Number(unclaimedBaseUnits) / 10 ** tokenDecimals;
+        const displayAmount =
+          unclaimedDecimal < 0.01 ? '< 0.01' : unclaimedDecimal.toFixed(2);
+        if (displayAmount !== '0' && displayAmount !== '0.00') {
+          claimableRewardDisplay = displayAmount;
+        }
+      }
 
       let unclaimedFiat: number | null = null;
       if (hasClaimable && matchingReward.token.price !== null) {
@@ -145,7 +165,12 @@ export const useMerklRewards = ({
           (Number(unclaimedBaseUnits) / divisor) * matchingReward.token.price;
       }
 
-      return { hasClaimable, unclaimedFiat };
+      return {
+        hasClaimable,
+        unclaimedFiat,
+        hasClaimedBefore,
+        claimableRewardDisplay,
+      };
     },
     enabled: isEligible && Boolean(selectedAddress) && Boolean(tokenAddress),
     staleTime: MERKL_REWARDS_STALE_TIME,
@@ -167,6 +192,9 @@ export const useMerklRewards = ({
     isEligible,
     hasClaimableReward: hasClaimableRewardData?.hasClaimable ?? false,
     rewardAmountFiat: hasClaimableRewardData?.unclaimedFiat ?? null,
+    hasClaimedBefore: hasClaimableRewardData?.hasClaimedBefore ?? false,
+    claimableRewardDisplay:
+      hasClaimableRewardData?.claimableRewardDisplay ?? null,
     refetch,
   };
 };

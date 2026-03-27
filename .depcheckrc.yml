@@ -22,6 +22,7 @@ ignores:
   - '@lavamoat/preinstall-always-fail'
   # used in testing + ci
   - '@metamask/auto-changelog' # invoked as `auto-changelog`
+  - '@metamask/browser-playground' # used by MM Connect E2E tests
   - '@metamask/forwarder'
   - '@metamask/phishing-warning' # statically hosted as part of some e2e tests
   - '@metamask/test-dapp'

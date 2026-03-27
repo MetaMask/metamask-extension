@@ -2007,6 +2007,13 @@
         "@metamask/utils": true
       }
     },
+    "@metamask/react-data-query": {
+      "packages": {
+        "@metamask/utils": true,
+        "@tanstack/react-query>@tanstack/query-core": true,
+        "@tanstack/react-query": true
+      }
+    },
     "@metamask/remote-feature-flag-controller": {
       "globals": {
         "TextEncoder": true

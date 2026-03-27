@@ -290,8 +290,18 @@ const config = {
   devtool: args.devtool === 'none' ? false : args.devtool,
   output: {
     wasmLoading: 'fetch',
-    // filenames for *initial* files (essentially JS entry points)
-    filename: '[name].[contenthash].js',
+    // At some point we added the contenthash to filenames. People do this for cache
+    // busting in production, but as an extension, that is not relevant for us.
+    // Primarily, we are concerned here with making builds go faster, and it's not
+    // clear how including the contenthash furthers that goal.
+    // Eventually, we discovered that including the contenthash in the filenames
+    // breaks watched builds, because the filenames used by the background service
+    // worker for importScripts() somehow become out of sync with the files on
+    // disk on rebuilds.
+    // Although we aren't certain why we enabled content hashes in the first place,
+    // for now we only disable them in watched builds, and leave resolution of what
+    // to do for production builds to the future.
+    filename: args.watch ? '[name].js' : '[name].[contenthash].js',
     path: join(context, '..', 'dist'),
     // Clean the output directory before emit, so that only the latest build
     // files remain. Nearly 0 performance penalty for this clean up step.
