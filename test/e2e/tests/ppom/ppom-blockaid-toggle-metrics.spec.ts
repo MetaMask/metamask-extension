@@ -2,9 +2,9 @@ import { strict as assert } from 'assert';
 import { Mockttp } from 'mockttp';
 import { login } from '../../page-objects/flows/login.flow';
 import { withFixtures, getEventPayloads } from '../../helpers';
-import { MOCK_META_METRICS_ID } from '../../constants';
+import { MOCK_META_METRICS_ID, NETWORK_CLIENT_ID } from '../../constants';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
-import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import PrivacySettings from '../../page-objects/pages/settings/privacy-settings';
 
@@ -58,9 +58,17 @@ describe('PPOM Blockaid Alert - Metrics', function () {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
-        fixtures: new FixtureBuilder()
-          .withNetworkControllerOnMainnet()
-          .withPermissionControllerConnectedToTestDapp()
+        fixtures: new FixtureBuilderV2()
+          .withSelectedNetwork(NETWORK_CLIENT_ID.MAINNET)
+          .withEnabledNetworks({
+            eip155: {
+              '0x1': true,
+            },
+          })
+          .withPermissionControllerConnectedToTestDapp({
+            useLocalhostHostname: true,
+            chainIds: [1],
+          })
           .withMetaMetricsController({
             metaMetricsId: MOCK_META_METRICS_ID,
             participateInMetaMetrics: true,
