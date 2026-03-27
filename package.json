@@ -1,6 +1,6 @@
 {
   "name": "metamask-crx",
-  "version": "13.25.0",
+  "version": "13.26.0",
   "private": true,
   "repository": {
     "type": "git",
@@ -501,7 +501,10 @@
     "@babel/core": "patch:@babel/core@npm%3A7.25.9#~/.yarn/patches/@babel-core-npm-7.25.9-4ae3bff7f3.patch",
     "@babel/eslint-parser": "^7.25.9",
     "@babel/eslint-plugin": "^7.25.9",
+    "@babel/plugin-transform-class-properties": "^7.28.6",
     "@babel/plugin-transform-logical-assignment-operators": "^7.25.9",
+    "@babel/plugin-transform-private-methods": "^7.28.6",
+    "@babel/plugin-transform-private-property-in-object": "^7.27.1",
     "@babel/preset-env": "^7.25.9",
     "@babel/preset-react": "^7.25.9",
     "@babel/preset-typescript": "^7.25.9",
