@@ -22,10 +22,9 @@ class BitcoinHomepage extends HomePage {
         this.receiveButton,
       ]);
 
-      // HACK: Bitcoin accounts get created asynchronously during wallet alignment, so we need
-      // to wait for this to succeed. There is no specific element that indicates the alignment
-      // is complete and the account is fully ready. For now, we just wait for a few seconds.
-      await this.driver.delay(4000);
+      // Bitcoin accounts get created asynchronously during wallet alignment, so we need
+      // to wait for this to succeed to be able to use Bitcoin accounts.
+      await this.waitForNonEvmAccountsLoaded();
     } catch (e) {
       console.log('Timeout while waiting for bitcoin homepage to be loaded', e);
       throw e;
