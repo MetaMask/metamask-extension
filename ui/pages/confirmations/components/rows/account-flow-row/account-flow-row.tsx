@@ -4,6 +4,7 @@ import {
   BoxAlignItems,
   BoxFlexDirection,
 } from '@metamask/design-system-react';
+import { TransactionMeta } from '@metamask/transaction-controller';
 import React from 'react';
 import { FlexDirection } from '../../../../../helpers/constants/design-system';
 import { ConfirmInfoAlertRow } from '../../../../../components/app/confirm/info/row/alert-row/alert-row';
@@ -12,13 +13,12 @@ import { ConfirmInfoRowAddressDisplay } from '../../../../../components/app/conf
 import { PreferredAvatar } from '../../../../../components/app/preferred-avatar';
 import { toChecksumHexAddress } from '../../../../../../shared/lib/hexstring-utils';
 import { TrustSignalDisplayState } from '../../../../../hooks/useTrustSignals';
+import { useConfirmContext } from '../../../context/confirm';
 
 type Props = {
   address: string;
-  chainId: string;
   label: string;
   alertKey: RowAlertKey;
-  ownerId: string;
   name: string | null;
   isAccount: boolean;
   image?: string;
@@ -28,45 +28,50 @@ type Props = {
 
 export const AccountFlowRow = ({
   address,
-  chainId,
   label,
   alertKey,
-  ownerId,
   name,
   isAccount,
   image,
   displayState,
   'data-testid': testId,
-}: Props) => (
-  <Box
-    flexDirection={BoxFlexDirection.Row}
-    alignItems={BoxAlignItems.Center}
-    gap={2}
-  >
-    <Box style={{ flex: 1, minWidth: 0 }}>
-      <ConfirmInfoAlertRow
-        alertKey={alertKey}
-        label={label}
-        ownerId={ownerId}
-        style={{ flexDirection: FlexDirection.Column, width: '100%' }}
-      >
-        <Box data-testid={testId} className="w-full">
-          <ConfirmInfoRowAddressDisplay
-            address={address}
-            chainId={chainId}
-            name={name}
-            isAccount={isAccount}
-            image={image}
-            displayState={displayState}
-            showAvatar={false}
-          />
-        </Box>
-      </ConfirmInfoAlertRow>
+}: Props) => {
+  const { currentConfirmation: transactionMeta } =
+    useConfirmContext<TransactionMeta>();
+
+  const { chainId, id: ownerId } = transactionMeta;
+
+  return (
+    <Box
+      flexDirection={BoxFlexDirection.Row}
+      alignItems={BoxAlignItems.Center}
+      gap={2}
+    >
+      <Box style={{ flex: 1, minWidth: 0 }}>
+        <ConfirmInfoAlertRow
+          alertKey={alertKey}
+          label={label}
+          ownerId={ownerId}
+          style={{ flexDirection: FlexDirection.Column, width: '100%' }}
+        >
+          <Box data-testid={testId} className="w-full">
+            <ConfirmInfoRowAddressDisplay
+              address={address}
+              chainId={chainId}
+              name={name}
+              isAccount={isAccount}
+              image={image}
+              displayState={displayState}
+              showAvatar={false}
+            />
+          </Box>
+        </ConfirmInfoAlertRow>
+      </Box>
+      <PreferredAvatar
+        address={toChecksumHexAddress(address)}
+        size={AvatarAccountSize.Md}
+        style={{ flexShrink: 0 }}
+      />
     </Box>
-    <PreferredAvatar
-      address={toChecksumHexAddress(address)}
-      size={AvatarAccountSize.Md}
-      style={{ flexShrink: 0 }}
-    />
-  </Box>
-);
+  );
+};

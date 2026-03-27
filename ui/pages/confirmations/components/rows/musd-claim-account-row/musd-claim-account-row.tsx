@@ -13,7 +13,6 @@ export const MusdClaimAccountRow = () => {
   const { currentConfirmation: transactionMeta } =
     useConfirmContext<TransactionMeta>();
 
-  const { chainId } = transactionMeta;
   const fromAddress = transactionMeta.txParams.from;
 
   const {
@@ -26,7 +25,7 @@ export const MusdClaimAccountRow = () => {
     value: toChecksumHexAddress(fromAddress),
     type: NameType.ETHEREUM_ADDRESS,
     preferContractSymbol: true,
-    variation: chainId,
+    variation: transactionMeta.chainId,
   });
 
   const label = walletName
@@ -36,10 +35,8 @@ export const MusdClaimAccountRow = () => {
   return (
     <AccountFlowRow
       address={fromAddress}
-      chainId={chainId}
       label={label}
       alertKey={RowAlertKey.SigningInWith}
-      ownerId={transactionMeta.id}
       name={name}
       isAccount={isAccount}
       image={image}

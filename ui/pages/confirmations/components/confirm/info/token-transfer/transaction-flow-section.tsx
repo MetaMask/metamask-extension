@@ -60,10 +60,8 @@ export const TransactionFlowSection = () => {
       <Box flexDirection={BoxFlexDirection.Column} paddingRight={2}>
         <AccountFlowRow
           address={fromAddress}
-          chainId={chainId}
           label={fromLabel}
           alertKey={RowAlertKey.SigningInWith}
-          ownerId={transactionMeta.id}
           name={fromName}
           isAccount={fromIsAccount}
           image={fromImage}
@@ -82,10 +80,8 @@ export const TransactionFlowSection = () => {
 
         <AccountFlowRow
           address={toAddress}
-          chainId={chainId}
           label={toLabel}
           alertKey={RowAlertKey.InteractingWith}
-          ownerId={transactionMeta.id}
           name={toName}
           isAccount={toIsAccount}
           image={toImage}

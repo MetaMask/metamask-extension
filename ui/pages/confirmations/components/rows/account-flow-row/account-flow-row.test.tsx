@@ -21,10 +21,8 @@ const ADDRESS = '0x6B175474E89094C44Da98b954EedeAC495271d0F';
 
 const defaultProps = {
   address: ADDRESS,
-  chainId: '0x1',
   label: 'From',
   alertKey: RowAlertKey.SigningInWith,
-  ownerId: 'test-owner-id',
   name: null,
   isAccount: false,
   displayState: TrustSignalDisplayState.Unknown,
