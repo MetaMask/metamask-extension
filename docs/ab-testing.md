@@ -25,7 +25,7 @@ Use these entrypoints:
 - OpenAI/Codex skill entrypoint: `.agents/skills/ab-testing-implementation/SKILL.md` (`$ab-testing-implementation`)
 - Claude skill entrypoint: `.claude/skills/ab-testing-implementation/SKILL.md`
 - Cursor skill entrypoint: `.claude/skills/ab-testing-implementation/SKILL.md`
-- Compliance check: `bash .agents/skills/ab-testing-implementation/scripts/check-ab-testing-compliance.sh --staged`
+- Compliance check: `node --import tsx .agents/skills/ab-testing-implementation/scripts/check-ab-testing-compliance.ts --staged`
 - If no files are staged, the checker automatically falls back to changed working-tree files.
 - Windsurf and other harnesses: start prompts with `Follow docs/ab-testing.md section "Agent Execution Standard (SSOT)".`
 
@@ -52,7 +52,7 @@ rg -n "Experiment Viewed|ExperimentViewed" app shared ui
 8. Run compliance check:
 
 ```bash
-bash .agents/skills/ab-testing-implementation/scripts/check-ab-testing-compliance.sh --staged
+node --import tsx .agents/skills/ab-testing-implementation/scripts/check-ab-testing-compliance.ts --staged
 ```
 
 Required agent response sections:

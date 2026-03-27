@@ -18,5 +18,5 @@ Follow `docs/ab-testing.md` section `Agent Execution Standard (SSOT)` for:
 Run and report:
 
 ```bash
-bash .agents/skills/ab-testing-implementation/scripts/check-ab-testing-compliance.sh --staged
+node --import tsx .agents/skills/ab-testing-implementation/scripts/check-ab-testing-compliance.ts --staged
 ```

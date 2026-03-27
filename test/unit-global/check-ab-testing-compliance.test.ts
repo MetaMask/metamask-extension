@@ -19,9 +19,13 @@ type CommandResult = {
   output: string;
 };
 
-const checkerPath = path.resolve(
+const checkerSourcePath = path.resolve(
   __dirname,
-  '../../.agents/skills/ab-testing-implementation/scripts/check-ab-testing-compliance.sh',
+  '../../.agents/skills/ab-testing-implementation/scripts/check-ab-testing-compliance.ts',
+);
+const tsxLoaderPath = path.resolve(
+  __dirname,
+  '../../node_modules/tsx/dist/loader.mjs',
 );
 
 const tempRepos: string[] = [];
@@ -48,7 +52,12 @@ const runGit = (cwd: string, args: string[]) => {
 };
 
 const runChecker = (cwd: string, args: string[]): CommandResult =>
-  runCommand(cwd, 'bash', [checkerPath, ...args]);
+  runCommand(cwd, process.execPath, [
+    '--import',
+    tsxLoaderPath,
+    checkerSourcePath,
+    ...args,
+  ]);
 
 const createRepo = (): string => {
   const repo = mkdtempSync(path.join(tmpdir(), 'ab-checker-test-'));
@@ -74,7 +83,7 @@ afterAll(() => {
   }
 });
 
-describe('check-ab-testing-compliance.sh', () => {
+describe('check-ab-testing-compliance.ts', () => {
   it('fails with mode conflict', () => {
     const repo = createRepo();
     const result = runChecker(repo, ['--staged', '--files', 'app/sample.ts']);
@@ -241,6 +250,19 @@ describe('check-ab-testing-compliance.sh', () => {
     expect(result.output).not.toContain(
       'Risky A/B integration changes were detected without any test-file updates',
     );
+  });
+
+  it('does not warn on regex source that mentions Abtest', () => {
+    const repo = createRepo();
+    appendFileSync(
+      path.join(repo, 'app/sample.ts'),
+      `const pattern = /['"][^'"]*Abtest[^'"]*['"]/gu;\n`,
+    );
+
+    const result = runChecker(repo, ['--staged']);
+
+    expect(result.status).toBe(0);
+    expect(result.output).not.toContain("Abtest key ']*Abtest[^'");
   });
 
   it('still scans staged added lines whose code starts with ++', () => {
