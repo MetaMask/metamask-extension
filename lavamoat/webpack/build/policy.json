@@ -69,7 +69,7 @@
         "@babel/core>@babel/generator>jsesc": true
       }
     },
-    "@babel/preset-env>@babel/plugin-transform-classes>@babel/helper-annotate-as-pure": {
+    "@babel/plugin-transform-private-property-in-object>@babel/helper-annotate-as-pure": {
       "packages": {
         "@babel/core>@babel/types": true
       }
@@ -89,22 +89,22 @@
         "@babel/core>@babel/helper-compilation-targets>semver": true
       }
     },
-    "@babel/preset-env>@babel/plugin-transform-private-methods>@babel/helper-create-class-features-plugin": {
+    "@babel/plugin-transform-private-methods>@babel/helper-create-class-features-plugin": {
       "globals": {
         "console.warn": true
       },
       "packages": {
         "@babel/core": true,
-        "@babel/preset-env>@babel/plugin-transform-classes>@babel/helper-annotate-as-pure": true,
-        "@babel/preset-env>@babel/plugin-transform-classes>@babel/helper-replace-supers>@babel/helper-member-expression-to-functions": true,
-        "@babel/preset-env>@babel/plugin-transform-classes>@babel/helper-replace-supers>@babel/helper-optimise-call-expression": true,
+        "@babel/plugin-transform-private-property-in-object>@babel/helper-annotate-as-pure": true,
+        "@babel/plugin-transform-private-methods>@babel/helper-create-class-features-plugin>@babel/helper-member-expression-to-functions": true,
+        "@babel/plugin-transform-private-methods>@babel/helper-create-class-features-plugin>@babel/helper-optimise-call-expression": true,
         "@babel/preset-env>@babel/plugin-transform-classes>@babel/helper-replace-supers": true,
         "@babel/preset-env>@babel/plugin-transform-for-of>@babel/helper-skip-transparent-expression-wrappers": true,
         "depcheck>@babel/traverse": true,
-        "@babel/preset-env>@babel/plugin-transform-private-methods>@babel/helper-create-class-features-plugin>semver": true
+        "@babel/plugin-transform-private-methods>@babel/helper-create-class-features-plugin>semver": true
       }
     },
-    "@babel/preset-env>@babel/plugin-transform-classes>@babel/helper-replace-supers>@babel/helper-member-expression-to-functions": {
+    "@babel/plugin-transform-private-methods>@babel/helper-create-class-features-plugin>@babel/helper-member-expression-to-functions": {
       "packages": {
         "@babel/core>@babel/types": true
       }
@@ -131,7 +131,7 @@
         "depcheck>@babel/traverse": true
       }
     },
-    "@babel/preset-env>@babel/plugin-transform-classes>@babel/helper-replace-supers>@babel/helper-optimise-call-expression": {
+    "@babel/plugin-transform-private-methods>@babel/helper-create-class-features-plugin>@babel/helper-optimise-call-expression": {
       "packages": {
         "@babel/core>@babel/types": true
       }
@@ -139,8 +139,8 @@
     "@babel/preset-env>@babel/plugin-transform-classes>@babel/helper-replace-supers": {
       "packages": {
         "@babel/core": true,
-        "@babel/preset-env>@babel/plugin-transform-classes>@babel/helper-replace-supers>@babel/helper-member-expression-to-functions": true,
-        "@babel/preset-env>@babel/plugin-transform-classes>@babel/helper-replace-supers>@babel/helper-optimise-call-expression": true,
+        "@babel/plugin-transform-private-methods>@babel/helper-create-class-features-plugin>@babel/helper-member-expression-to-functions": true,
+        "@babel/plugin-transform-private-methods>@babel/helper-create-class-features-plugin>@babel/helper-optimise-call-expression": true,
         "depcheck>@babel/traverse": true
       }
     },
@@ -187,8 +187,8 @@
       },
       "packages": {
         "@babel/core": true,
-        "@babel/preset-env>@babel/plugin-transform-classes>@babel/helper-annotate-as-pure": true,
-        "@babel/preset-env>@babel/plugin-transform-private-methods>@babel/helper-create-class-features-plugin": true,
+        "@babel/plugin-transform-private-property-in-object>@babel/helper-annotate-as-pure": true,
+        "@babel/plugin-transform-private-methods>@babel/helper-create-class-features-plugin": true,
         "@babel/preset-env>@babel/helper-plugin-utils": true,
         "@babel/preset-env>@babel/plugin-transform-for-of>@babel/helper-skip-transparent-expression-wrappers": true,
         "react-compiler-webpack>@babel/plugin-syntax-typescript": true
@@ -2678,7 +2678,7 @@
         "process": true
       }
     },
-    "@babel/preset-env>@babel/plugin-transform-private-methods>@babel/helper-create-class-features-plugin>semver": {
+    "@babel/plugin-transform-private-methods>@babel/helper-create-class-features-plugin>semver": {
       "globals": {
         "console": true,
         "process": true

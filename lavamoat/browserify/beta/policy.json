@@ -2743,7 +2743,7 @@
     "@metamask/perps-controller>@nktkas/hyperliquid>@nktkas/rews": {
       "globals": {
         "AbortController": true,
-        "AbortSignal": true,
+        "AbortSignal.timeout": true,
         "CustomEvent": true,
         "DOMException": true,
         "WebSocket": true,
@@ -4980,7 +4980,10 @@
         "fetch": false,
         "getComputedStyle": true,
         "location.href": true,
-        "navigator": true,
+        "navigator.language": true,
+        "navigator.platform": true,
+        "navigator.userAgent.toLowerCase": true,
+        "navigator.userAgentData": true,
         "performance.now": true,
         "queueMicrotask": true,
         "requestAnimationFrame": true,
