@@ -3,27 +3,6 @@ import { DAPP_URL, MM_CONNECT_FEATURED_CHAIN_IDS } from '../../constants';
 import { Driver } from '../../webdriver/driver';
 
 /**
- * Replicates @metamask/playground-ui createTestId / escapeTestId.
- * Rules: lowercase, colon → dash, underscore → dash, spaces → dash,
- * strip any non-[a-z0-9-] characters, join parts with dash.
- *
- * @param value - The string to escape.
- * @returns The escaped string.
- */
-function escapeTestId(value: string): string {
-  return value
-    .toLowerCase()
-    .replace(/:/gu, '-')
-    .replace(/\s+/gu, '-')
-    .replace(/_/gu, '-')
-    .replace(/[^a-z0-9-]/gu, '');
-}
-
-function createTestId(...parts: string[]): string {
-  return parts.map(escapeTestId).filter(Boolean).join('-');
-}
-
-/**
  * Page object for MM Connect Test Dapp
  * Package: @metamask/browser-playground | Repo: metamask/connect-monorepo
  *
@@ -137,31 +116,63 @@ export class TestDappMmConnect {
   }
 
   // ──────────────────────────────────────────────────────────────────────────
+  // Private static helpers — replicate @metamask/playground-ui test ID logic
+  // ──────────────────────────────────────────────────────────────────────────
+
+  /**
+   * Replicates @metamask/playground-ui escapeTestId.
+   * Rules: lowercase, colon → dash, underscore → dash, spaces → dash,
+   * strip any non-[a-z0-9-] characters.
+   *
+   * @param value - The string to escape.
+   * @returns The escaped string.
+   */
+  private static escapeTestId(value: string): string {
+    return value
+      .toLowerCase()
+      .replace(/:/gu, '-')
+      .replace(/\s+/gu, '-')
+      .replace(/_/gu, '-')
+      .replace(/[^a-z0-9-]/gu, '');
+  }
+
+  /**
+   * Replicates @metamask/playground-ui createTestId.
+   * Joins escaped parts with a dash.
+   *
+   * @param parts - Parts to join into a test ID.
+   * @returns The composed test ID string.
+   */
+  private static createTestId(...parts: string[]): string {
+    return parts.map(TestDappMmConnect.escapeTestId).filter(Boolean).join('-');
+  }
+
+  // ──────────────────────────────────────────────────────────────────────────
   // Private selector helpers (dynamic — depend on scope / method params)
   // ──────────────────────────────────────────────────────────────────────────
 
   private checkboxSelector(chainId: string): string {
-    return `[data-testid="${createTestId('dynamic-inputs', 'checkbox', chainId)}"]`;
+    return `[data-testid="${TestDappMmConnect.createTestId('dynamic-inputs', 'checkbox', chainId)}"]`;
   }
 
   private scopeCardSelector(scope: string): string {
-    return `[data-testid="${createTestId('scope-card', scope)}"]`;
+    return `[data-testid="${TestDappMmConnect.createTestId('scope-card', scope)}"]`;
   }
 
   private methodOptionSelector(scope: string, method: string): string {
-    return `[data-testid="${createTestId('scope-card', 'method-select', scope)}"] option[value="${method}"]`;
+    return `[data-testid="${TestDappMmConnect.createTestId('scope-card', 'method-select', scope)}"] option[value="${method}"]`;
   }
 
   private invokeBtnSelector(scope: string): string {
-    return `[data-testid="${createTestId('scope-card', 'invoke-btn', scope)}"]`;
+    return `[data-testid="${TestDappMmConnect.createTestId('scope-card', 'invoke-btn', scope)}"]`;
   }
 
   private resultCodeSelector(scope: string, method: string): string {
-    return `[data-testid="${createTestId('scope-card', 'result-code', scope, method, '0')}"]`;
+    return `[data-testid="${TestDappMmConnect.createTestId('scope-card', 'result-code', scope, method, '0')}"]`;
   }
 
   private resultDetailsSelector(scope: string, method: string): string {
-    return `[data-testid="${createTestId('scope-card', 'result', scope, method, '0')}"] summary`;
+    return `[data-testid="${TestDappMmConnect.createTestId('scope-card', 'result', scope, method, '0')}"] summary`;
   }
 
   // ──────────────────────────────────────────────────────────────────────────
