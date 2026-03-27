@@ -238,7 +238,6 @@ class TestDappMultichain {
   }: { numberOfResultItems?: number } = {}): Promise<{
     sessionScopes: Record<string, NormalizedScopeObject>;
   }> {
-    await this.driver.switchToWindowWithTitle(WINDOW_TITLES.MultichainTestDApp);
     await this.clickWalletGetSessionButton();
     // Wait for the complete result list to be displayed to avoid race conditions with the results
     await this.checkResultListTotalItems(numberOfResultItems);
