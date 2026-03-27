@@ -92,7 +92,7 @@ export const PerpsSupportLearn: React.FC = () => {
         contextPropsIntoEventProperties: [MetaMetricsContextProp.PageTitle],
       },
     );
-    globalThis.platform.openTab({ url: SUPPORT_CONFIG.Url });
+    global.platform.openTab({ url: SUPPORT_CONFIG.Url });
   }, [trackEvent]);
 
   const handleFeedback = useCallback(() => {
@@ -110,7 +110,7 @@ export const PerpsSupportLearn: React.FC = () => {
         contextPropsIntoEventProperties: [MetaMetricsContextProp.PageTitle],
       },
     );
-    globalThis.platform.openTab({ url: FEEDBACK_CONFIG.Url });
+    global.platform.openTab({ url: FEEDBACK_CONFIG.Url });
   }, [trackEvent]);
 
   return (
