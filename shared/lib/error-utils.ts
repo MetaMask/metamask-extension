@@ -1,9 +1,9 @@
 import { memoize, escape as lodashEscape } from 'lodash';
+import type { ErrorLike } from '../constants/errors';
 import type { I18NMessageDict } from './i18n';
 import { fetchLocale, loadRelativeTimeFormatLocaleData } from './i18n';
 import getFirstPreferredLangCode from './get-first-preferred-lang-code';
 import { switchDirectionForPreferredLocale } from './switch-direction';
-import type { ErrorLike } from '../constants/errors';
 
 const defaultLocale = 'en';
 
@@ -25,7 +25,10 @@ const _setupLocale = async (
   const enRelativeTime = loadRelativeTimeFormatLocaleData(defaultLocale);
   const enLocale = fetchLocale(defaultLocale);
 
-  const promises: Promise<I18NMessageDict | void>[] = [enRelativeTime, enLocale];
+  const promises: Promise<I18NMessageDict | void>[] = [
+    enRelativeTime,
+    enLocale,
+  ];
   if (currentLocale === defaultLocale) {
     // enLocaleMessages and currentLocaleMessages are the same; reuse enLocale
     promises.push(enLocale); // currentLocaleMessages
