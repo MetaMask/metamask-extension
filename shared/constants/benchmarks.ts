@@ -113,10 +113,7 @@ export type RelativeThresholds = {
 /**
  * Uniform relative thresholds applied to all metrics.
  * These are informational only (do not affect pass/fail).
- *
- * Assumption: all benchmark metrics have similar run-to-run stability,
- * so a single set of percentages is sufficient. If specific metrics
- * prove noisier, consider making thresholds per-metric or per-percentile.
+ * Per-metric overrides can be set via relativeThresholds in ThresholdConfig.
  */
 export const DEFAULT_RELATIVE_THRESHOLDS: RelativeThresholds = {
   regressionPercent: 0.1,

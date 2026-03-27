@@ -178,28 +178,27 @@ describe('computeEntryHealth', () => {
   });
 
   it('returns pass when metrics are within threshold', () => {
-    // p95=612 vs baseline 620 → -1.3% → neutral
     expect(computeEntryHealth(makeEntry(), BASELINE_METRICS_PASS)).toBe(
       EntryHealth.Pass,
     );
   });
 
-  it('returns warn when p95 is 5–10% above baseline (Layer 2 relative context)', () => {
+  it('returns pass when p95 is above baseline but within absolute threshold', () => {
     expect(
       computeEntryHealth(
         makeEntry({ p95: { loadNewAccount: 636 } }),
         BASELINE_600['interactionUserActions/loadNewAccount'],
       ),
-    ).toBe(EntryHealth.Warn);
+    ).toBe(EntryHealth.Pass);
   });
 
-  it('returns warn when p95 is >10% above baseline with no registered threshold', () => {
+  it('returns pass even when p95 is >10% above baseline with no registered threshold', () => {
     expect(
       computeEntryHealth(
         makeEntry({ p95: { loadNewAccount: 672 } }),
         BASELINE_600['interactionUserActions/loadNewAccount'],
       ),
-    ).toBe(EntryHealth.Warn);
+    ).toBe(EntryHealth.Pass);
   });
 
   it('returns pass when the metric key is absent from baseline', () => {
@@ -425,37 +424,45 @@ describe('buildBenchmarkSection', () => {
       BASELINE_PASS,
     );
 
-    expect(html).toContain('<table>');
+    expect(html).toContain('<table style=');
     expect(html).toContain('<th>chrome-browserify</th>');
     expect(html).toContain('<td>loadNewAccount</td>');
     expect(html).toContain('<td>confirmTx</td>');
   });
 
-  it('shows 🟡 in the cell when p95 is >10% above baseline (no absolute threshold → Layer 2 caps at Warn)', () => {
+  it('shows 🟢 in the cell when p95 is above baseline but within absolute threshold', () => {
     const html = buildBenchmarkSection(
       withEntries([makeEntry({ p95: { loadNewAccount: 672 } })]),
       'Test',
       BASELINE_600,
     );
 
-    expect(html).toContain(COMPARISON_SEVERITY.Warn.icon);
-    expect(html).not.toContain(`${COMPARISON_SEVERITY.Regression.icon} 1`);
+    expect(html).toContain(COMPARISON_SEVERITY.Pass.icon);
+    expect(html).not.toContain(COMPARISON_SEVERITY.Warn.icon);
   });
 
-  it('shows 🟡 in the cell and no failure badge when p95 is 5–10% above baseline', () => {
+  it('shows relative delta in bullet section when p75 is notably above baseline', () => {
     const html = buildBenchmarkSection(
-      withEntries([makeEntry({ p95: { loadNewAccount: 636 } })]),
+      withEntries([
+        makeEntry({
+          p75: { loadNewAccount: 700 },
+          p95: { loadNewAccount: 720 },
+        }),
+      ]),
       'Test',
       BASELINE_600,
     );
 
-    expect(html).toContain(COMPARISON_SEVERITY.Warn.icon);
-    expect(html).not.toContain(`${COMPARISON_SEVERITY.Regression.icon} 1`);
+    expect(html).toContain(
+      '📊 Results compared to the previous 5 runs on main',
+    );
+    expect(html).toContain('loadNewAccount/loadNewAccount');
+    expect(html).toContain('+30%');
   });
 
   it('shows 🟢 for passing entries even when no baseline is given', () => {
     const html = buildBenchmarkSection(withEntries([makeEntry()]), 'Test');
-    expect(html).toContain('<table>');
+    expect(html).toContain('<table style=');
     expect(html).toContain(COMPARISON_SEVERITY.Pass.icon);
   });
 
@@ -510,7 +517,7 @@ describe('buildBenchmarkSection', () => {
     expect(html).toContain('[Show logs]');
   });
 
-  it('resolves startup baseline via pageLoad/* key format', () => {
+  it('resolves startup baseline via pageLoad/* key format and shows delta in bullet section', () => {
     const entry = makeEntry({
       benchmarkName: 'chrome-browserify-startupStandardHome',
       presetName: 'startupStandardHome',
@@ -525,8 +532,10 @@ describe('buildBenchmarkSection', () => {
       },
     });
 
-    expect(html).toContain(COMPARISON_SEVERITY.Warn.icon);
+    expect(html).toContain(COMPARISON_SEVERITY.Pass.icon);
     expect(html).toContain('startupStandardHome');
+    expect(html).toContain('📊 Comparison with last 5 runs on main');
+    expect(html).toContain('uiStartup');
   });
 
   it('uses the platform-specific baseline, not the first matching key', () => {
@@ -632,15 +641,15 @@ describe('buildBenchmarkSection', () => {
         benchmarkName: 'swap',
         mean: {
           openSwapPageFromHome: 310,
-          fetchAndDisplaySwapQuotes: 2500, // Exceeds warn threshold (2000)
+          fetchAndDisplaySwapQuotes: 5000,
         },
         p75: {
           openSwapPageFromHome: 340,
-          fetchAndDisplaySwapQuotes: 2500, // Exceeds warn threshold (2000)
+          fetchAndDisplaySwapQuotes: 4500,
         },
         p95: {
           openSwapPageFromHome: 400,
-          fetchAndDisplaySwapQuotes: 4000, // Exceeds fail threshold (3500)
+          fetchAndDisplaySwapQuotes: 5500,
         },
       });
 
@@ -702,7 +711,6 @@ describe('buildBenchmarkSection', () => {
 
       const html = buildBenchmarkSection(withEntries([entry]), 'Test');
 
-      // Should only show failing timer, not the passing one
       expect(html).not.toContain('<code>importWalletToSocialScreen</code>');
       expect(html).toContain('<code>doneButtonToHomeScreen</code>');
       expect(html).toMatch(/<div>🔴/u);
@@ -1131,7 +1139,6 @@ describe('buildPerformanceBenchmarksSection', () => {
 
       const html = await buildPerformanceBenchmarksSection(HOST);
 
-      // No failing entries → matrix returns '' → no <tbody> rows for matrix
       expect(html).not.toContain('<th>Metrics</th>');
     });
 
@@ -1167,7 +1174,6 @@ describe('buildPerformanceBenchmarksSection', () => {
 
       const html = await buildPerformanceBenchmarksSection(HOST);
 
-      // Matrix uses 'Metrics' as the first column header
       expect(html).toContain('<th>Metrics</th>');
       expect(html).toContain('<th>chrome-browserify</th>');
     });

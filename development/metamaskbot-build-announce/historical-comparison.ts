@@ -165,9 +165,10 @@ function buildMetricBaselines(
  * into a baseline reference keyed by benchmark name and metric,
  * with mean, p75, and p95 values.
  *
- * Uses a window of 3 commits so that a single incomplete CI run
+ * Uses a window of 5 commits so that a single incomplete CI run
  * (e.g. missing the `pageLoad` preset) doesn't wipe out the entire
- * startup baseline. Values from all commits are averaged together.
+ * startup baseline, and to smooth out run-to-run variance.
+ * Values from all commits are averaged together.
  *
  * @param data - Full historical data file contents.
  * @returns Aggregated reference map.
@@ -178,7 +179,7 @@ export function aggregateHistoricalData(
   const latestCommits = Object.keys(data)
     .filter((hash) => data[hash]?.timestamp)
     .sort((a, b) => data[b].timestamp - data[a].timestamp)
-    .slice(0, 3);
+    .slice(0, 5);
 
   const collected: CollectedData = {};
   for (const hash of latestCommits) {

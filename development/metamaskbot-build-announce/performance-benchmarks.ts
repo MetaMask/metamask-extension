@@ -241,64 +241,23 @@ export async function fetchBenchmarkEntries(
 }
 
 /**
- * Checks P75 and P95 for a single metric against its baseline and returns the worst health.
- * Layer 2 (relative context) — capped at Warn, never escalates to Fail.
+ * Computes the worst EntryHealth for a benchmark entry using the absolute gate only.
+ *
+ * Validates P75/P95 against THRESHOLD_REGISTRY limits.
+ * Fail violation → EntryHealth.Fail; Warn violation → EntryHealth.Warn.
+ * Returns Pass when no threshold is registered or all values are within limits.
+ *
+ * Relative context is shown separately as informational deltas below each table,
+ * and does not affect the health badge.
  *
  * @param entry - The benchmark entry.
- * @param metric - Metric key to check.
- * @param baselineMetric - Baseline values for this metric.
- * @returns `EntryHealth.Warn` or `EntryHealth.Pass` (never `EntryHealth.Fail`).
- */
-function checkMetricPercentiles(
-  entry: BenchmarkEntry,
-  metric: string,
-  baselineMetric: HistoricalBaselineReference[string][string],
-): EntryHealth {
-  let metricWorst: EntryHealth = EntryHealth.Pass;
-  for (const key of [STAT_KEY.P95, STAT_KEY.P75] as ComparisonKey[]) {
-    const statsMap = key === STAT_KEY.P95 ? entry.p95 : entry.p75;
-    const val = statsMap[metric];
-    const baselineVal = baselineMetric[key];
-    if (val === undefined || baselineVal === undefined) {
-      continue;
-    }
-    const cmp = compareMetric(
-      metric,
-      key,
-      val,
-      baselineVal,
-      DEFAULT_RELATIVE_THRESHOLDS,
-    );
-    if (
-      cmp.severity === COMPARISON_SEVERITY.Regression.value ||
-      cmp.severity === COMPARISON_SEVERITY.Warn.value
-    ) {
-      metricWorst = EntryHealth.Warn;
-    }
-  }
-  return metricWorst;
-}
-
-/**
- * Computes the worst EntryHealth for a benchmark entry using both layers:
- *
- * Layer 1 (absolute gate — primary authority): validates P75/P95 against
- * THRESHOLD_REGISTRY limits. Fail violation → EntryHealth.Fail; Warn → Warn.
- * Falls through to Layer 2 when no threshold is registered.
- *
- * Layer 2 (relative context — informational, capped at Warn): compares P75/P95
- * against the historical baseline. >10% or 5–10% slower → Warn.
- * Never escalates to Fail (the absolute gate owns that).
- *
- * @param entry - The benchmark entry.
- * @param baselineMetrics - Resolved baseline metrics for this entry (optional).
+ * @param _baselineMetrics - Unused; kept for call-site compatibility.
  * @returns `EntryHealth.Fail` | `EntryHealth.Warn` | `EntryHealth.Pass`.
  */
 export function computeEntryHealth(
   entry: BenchmarkEntry,
-  baselineMetrics: HistoricalBaselineReference[string] | undefined,
+  _baselineMetrics: HistoricalBaselineReference[string] | undefined,
 ): EntryHealth {
-  // Layer 1: absolute gate (primary authority).
   const thresholdConfig = THRESHOLD_REGISTRY[entry.benchmarkName];
   if (thresholdConfig) {
     const { violations } = validateResultThresholds(
@@ -312,26 +271,7 @@ export function computeEntryHealth(
       return EntryHealth.Warn;
     }
   }
-
-  // Layer 2: relative context — informational, capped at Warn.
-  if (!baselineMetrics) {
-    return EntryHealth.Pass;
-  }
-
-  const metrics = Object.keys(entry.p95).filter((m) => m !== 'total');
-  let worst: EntryHealth = EntryHealth.Pass;
-
-  for (const metric of metrics) {
-    const baselineMetric = baselineMetrics[metric];
-    if (!baselineMetric) {
-      continue;
-    }
-    const health = checkMetricPercentiles(entry, metric, baselineMetric);
-    if (health === EntryHealth.Warn) {
-      worst = EntryHealth.Warn;
-    }
-  }
-  return worst;
+  return EntryHealth.Pass;
 }
 
 /**
@@ -546,21 +486,6 @@ function formatTimerDetails(
         }
       }
 
-      if (
-        icon === HEALTH_ICON[EntryHealth.Pass] &&
-        baselineMetrics?.[metricName]
-      ) {
-        const health = checkMetricPercentiles(
-          entry,
-          metricName,
-          baselineMetrics[metricName],
-        );
-        if (health === EntryHealth.Warn) {
-          icon = HEALTH_ICON[EntryHealth.Warn];
-          hasIssue = true;
-        }
-      }
-
       if (!hasIssue) {
         return null;
       }
@@ -583,10 +508,72 @@ function formatTimerDetails(
  *
  * @param result - Fetched entries and missing preset descriptions.
  * @param summary - The collapsible header text.
- * @param baseline - Historical baseline for traffic-light annotations.
+ * @param baseline - Historical baseline for relative delta annotations.
  * @param runUrl - GitHub Actions run URL for "Show logs" links (optional).
  * @returns HTML string or empty string if no data.
  */
+
+/** Minimum absolute delta (%) to include a metric in the relative summary. */
+const RELATIVE_DELTA_MIN_PCT = 0.1;
+
+/**
+ * Builds a bullet-point summary of notable relative deltas vs the 5-commit baseline.
+ * Only metrics that changed by ≥10% (either direction) are shown.
+ * This is purely informational and does not affect any health badge.
+ *
+ * @param entries - All benchmark entries in this section.
+ * @param baseline - Historical baseline reference.
+ * @returns HTML string, or empty string if nothing notable.
+ */
+function buildRelativeDeltaSection(
+  entries: BenchmarkEntry[],
+  baseline: HistoricalBaselineReference | undefined,
+): string {
+  if (!baseline) {
+    return '';
+  }
+
+  const lines: string[] = [];
+
+  for (const entry of entries) {
+    const baselineMetrics = resolveBaseline(
+      baseline,
+      entry.presetName,
+      entry.benchmarkName,
+    );
+    if (!baselineMetrics) {
+      continue;
+    }
+
+    for (const metric of Object.keys(entry.p75)) {
+      const baselineMetric = baselineMetrics[metric];
+      if (!baselineMetric) {
+        continue;
+      }
+      const cur = entry.p75[metric];
+      const base = baselineMetric.p75;
+      if (cur === undefined || !base) {
+        continue;
+      }
+      const deltaPercent = (cur - base) / base;
+      if (Math.abs(deltaPercent) < RELATIVE_DELTA_MIN_PCT) {
+        continue;
+      }
+      const sign = deltaPercent > 0 ? '+' : '';
+      const pct = `${sign}${(deltaPercent * 100).toFixed(0)}%`;
+      const arrow = deltaPercent > 0 ? '↑' : '↓';
+      lines.push(
+        `<li>${arrow} <code>${entry.benchmarkName}/${metric}</code>: ${pct}</li>`,
+      );
+    }
+  }
+
+  if (lines.length === 0) {
+    return '';
+  }
+
+  return `<p><b>📈 Results compared to the previous 5 runs on main</b></p><ul>${lines.join('')}</ul>\n`;
+}
 export function buildBenchmarkSection(
   result: FetchBenchmarkResult,
   summary: string,
@@ -674,12 +661,13 @@ export function buildBenchmarkSection(
         })
         .join('');
 
-      sectionBody = `<table><thead>${headerRow}</thead><tbody>${dataRows}</tbody></table>\n`;
+      sectionBody = `<table style="width:100%;table-layout:auto"><thead>${headerRow}</thead><tbody>${dataRows}</tbody></table>\n`;
     } else if (baseline) {
       sectionBody = `<p>✅ No regressions detected</p>\n`;
     }
 
-    const sectionContent = warningHtml + sectionBody;
+    const deltaSection = buildRelativeDeltaSection(entries, baseline);
+    const sectionContent = warningHtml + sectionBody + deltaSection;
     return sectionContent
       ? `<details><summary><b>${summary}${sectionBadge}</b></summary>\n${sectionContent}</details>\n`
       : '';
@@ -999,7 +987,7 @@ export async function buildPerformanceBenchmarksSection(
   const baselineLogsUrl =
     'https://raw.githubusercontent.com/MetaMask/extension_benchmark_stats/main/stats/main/performance_data.json';
   const baselineLogsLink = `<a href="${baselineLogsUrl}">Baseline logs</a>`;
-  const commitInfo = `<p><strong>Baseline (latest main)</strong>: ${commitLink} | <strong>Date</strong>: ${commitDate} | <strong>Pipeline</strong>: ${pipelineLink} | ${baselineLogsLink}</p>\n\n`;
+  const commitInfo = `\n<p><strong>Baseline (latest main)</strong>: ${commitLink} | <strong>Date</strong>: ${commitDate} | <strong>Pipeline</strong>: ${pipelineLink} | ${baselineLogsLink}</p>\n\n`;
 
   const totalSummary = `<p><strong>Total</strong>: ${HEALTH_ICON[EntryHealth.Pass]} ${passes} pass · ${HEALTH_ICON[EntryHealth.Warn]} ${warnings} warn · ${HEALTH_ICON[EntryHealth.Fail]} ${failures} fail</p>\n\n`;
 
