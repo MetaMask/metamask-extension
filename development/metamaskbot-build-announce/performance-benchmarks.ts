@@ -536,11 +536,18 @@ function buildRelativeDeltaSection(
   const lines: string[] = [];
 
   for (const entry of entries) {
-    const baselineMetrics = resolveBaseline(
-      baseline,
-      entry.presetName,
-      entry.benchmarkName,
-    );
+    // Try the current key format first (e.g. pageLoad/startupStandardHome).
+    // TODO: remove the legacy fallback once PR #41217 has merged into main and
+    // the historical stats file has fully transitioned to the new key format
+    const baselineMetrics =
+      resolveBaseline(baseline, entry.presetName, entry.benchmarkName) ??
+      (entry.presetName.startsWith('startup')
+        ? resolveBaseline(
+            baseline,
+            entry.presetName,
+            `${entry.platform}-${entry.buildType}-${entry.benchmarkName}`,
+          )
+        : undefined);
     if (!baselineMetrics) {
       continue;
     }
