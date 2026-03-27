@@ -2,7 +2,7 @@ import { useI18nContext } from '../../hooks/useI18nContext';
 
 export type TransactionStatus = 'pending' | 'success' | 'failed';
 
-const TRANSACTION_DISPLAY_KEYS: Record<TransactionStatus, string> = {
+const statusMessageKeys: Record<TransactionStatus, string> = {
   pending: 'transactionSubmitted',
   success: 'transactionConfirmed',
   failed: 'transactionFailed',
@@ -10,5 +10,5 @@ const TRANSACTION_DISPLAY_KEYS: Record<TransactionStatus, string> = {
 
 export function useTransactionDisplay(status: TransactionStatus) {
   const t = useI18nContext();
-  return { title: t(TRANSACTION_DISPLAY_KEYS[status]) };
+  return { title: t(statusMessageKeys[status]) };
 }

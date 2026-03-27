@@ -107,17 +107,17 @@ function useEvmTransactionToasts() {
       const id = `tx-${tx.id}`;
 
       if (becamePending) {
-        toast.loading(<ToastContent variant="pending" />, {
+        toast.loading(<ToastContent status="pending" />, {
           id,
           ...options,
         });
       } else if (becameSuccess) {
-        toast.success(<ToastContent variant="success" />, {
+        toast.success(<ToastContent status="success" />, {
           id,
           ...options,
         });
       } else if (becameFailed) {
-        toast.error(<ToastContent variant="failed" />, {
+        toast.error(<ToastContent status="failed" />, {
           id,
           ...options,
         });
@@ -174,7 +174,7 @@ function useNonEvmTransactionToasts() {
         continue;
       }
 
-      toast.loading(<ToastContent variant="pending" />, {
+      toast.loading(<ToastContent status="pending" />, {
         id: `non-evm-tx-${tx.id}`,
         ...options,
       });
@@ -205,12 +205,12 @@ function useNonEvmTransactionToasts() {
       const id = `non-evm-tx-${tx.id}`;
 
       if (becameSuccess) {
-        toast.success(<ToastContent variant="success" />, {
+        toast.success(<ToastContent status="success" />, {
           id,
           ...options,
         });
       } else if (becameFailed) {
-        toast.error(<ToastContent variant="failed" />, {
+        toast.error(<ToastContent status="failed" />, {
           id,
           ...options,
         });
@@ -261,17 +261,17 @@ function useBridgeHistoryToasts() {
       }
 
       if (becamePending) {
-        toast.loading(<ToastContent variant="pending" />, {
+        toast.loading(<ToastContent status="pending" />, {
           id,
           ...options,
         });
       } else if (becameComplete) {
-        toast.success(<ToastContent variant="success" />, {
+        toast.success(<ToastContent status="success" />, {
           id,
           ...options,
         });
       } else if (becameFailed) {
-        toast.error(<ToastContent variant="failed" />, {
+        toast.error(<ToastContent status="failed" />, {
           id,
           ...options,
         });

@@ -15,17 +15,13 @@ import {
   type TransactionStatus,
 } from '../../../helpers/utils/transaction-display';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { SPINNER_INPUT, ToastStatusIcon } from './toast-status-icon';
+import { StatusIcon } from '../icon/status-icon';
 
-export const ToastContent = ({ variant }: { variant: TransactionStatus }) => {
-  const { title } = useTransactionDisplay(variant);
-
-  return (
-    <div>
-      <p className="text-m-body-md">{title}</p>
-    </div>
-  );
-};
+const statusMap = {
+  loading: 'loading',
+  success: 'success',
+  error: 'fail',
+} as const;
 
 export function Toaster() {
   const t = useI18nContext();
@@ -52,18 +48,14 @@ export function Toaster() {
         },
       }}
     >
-      {(notification) => (
-        <ToastBar
-          toast={notification}
-          position={notification.position ?? 'bottom-center'}
-        >
+      {(item) => (
+        <ToastBar toast={item} position={item.position ?? 'bottom-center'}>
           {({ message }) => (
             <>
-              <ToastStatusIcon
+              <StatusIcon
                 state={
-                  SPINNER_INPUT[
-                    notification.type as keyof typeof SPINNER_INPUT
-                  ] ?? SPINNER_INPUT.loading
+                  statusMap[item.type as keyof typeof statusMap] ??
+                  statusMap.loading
                 }
               />
 
@@ -73,7 +65,7 @@ export function Toaster() {
                 ariaLabel={t('close')}
                 iconName={IconName.Close}
                 size={ButtonIconSize.Sm}
-                onClick={() => toast.dismiss(notification.id)}
+                onClick={() => toast.dismiss(item.id)}
               />
             </>
           )}
@@ -82,3 +74,13 @@ export function Toaster() {
     </ToasterBase>
   );
 }
+
+export const ToastContent = ({ status }: { status: TransactionStatus }) => {
+  const { title } = useTransactionDisplay(status);
+
+  return (
+    <div>
+      <p className="text-m-body-md">{title}</p>
+    </div>
+  );
+};
