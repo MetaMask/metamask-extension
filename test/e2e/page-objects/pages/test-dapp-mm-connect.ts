@@ -431,14 +431,24 @@ export class TestDappMmConnect {
 
   /**
    * Wait until the legacy active-account element shows the expected address.
+   * Uses case-insensitive comparison because the dapp may render
+   * checksummed addresses while tests pass lowercase.
    *
    * @param expectedAddress - The address to wait for
    */
   async waitForLegacyActiveAccount(expectedAddress: string): Promise<void> {
-    await this.driver.waitForSelector({
-      css: this.legacyActiveAccount,
-      text: expectedAddress,
-    });
+    await this.driver.waitUntil(
+      async () => {
+        try {
+          const el = await this.driver.findElement(this.legacyActiveAccount);
+          const text = await el.getText();
+          return text.toLowerCase().includes(expectedAddress.toLowerCase());
+        } catch {
+          return false;
+        }
+      },
+      { interval: 500, timeout: this.driver.timeout },
+    );
   }
 
   /**
@@ -519,14 +529,24 @@ export class TestDappMmConnect {
 
   /**
    * Wait until the wagmi active-account element shows the expected address.
+   * Uses case-insensitive comparison because wagmi may render
+   * checksummed addresses while tests pass lowercase.
    *
    * @param expectedAddress - The address to wait for
    */
   async waitForWagmiActiveAccount(expectedAddress: string): Promise<void> {
-    await this.driver.waitForSelector({
-      css: this.wagmiActiveAccount,
-      text: expectedAddress,
-    });
+    await this.driver.waitUntil(
+      async () => {
+        try {
+          const el = await this.driver.findElement(this.wagmiActiveAccount);
+          const text = await el.getText();
+          return text.toLowerCase().includes(expectedAddress.toLowerCase());
+        } catch {
+          return false;
+        }
+      },
+      { interval: 500, timeout: this.driver.timeout },
+    );
   }
 
   /**
