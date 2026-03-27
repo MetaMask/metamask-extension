@@ -295,7 +295,7 @@ describe('Onboarding Flow', () => {
     });
 
     it('should call unlockAndGetSeedPhrase when unlocking with a password', async () => {
-      const { getByLabelText, getByText } = renderWithProvider(
+      const { getByLabelText, getByText, getByTestId } = renderWithProvider(
         <OnboardingFlowWithRouteContext />,
         configureMockStore([thunk])({
           ...mockState,
@@ -306,6 +306,9 @@ describe('Onboarding Flow', () => {
         }),
         ONBOARDING_UNLOCK_ROUTE,
       );
+
+      const usePasswordButton = getByTestId('unlock-use-password-button');
+      fireEvent.click(usePasswordButton);
 
       const password = 'a-new-password';
       const inputPassword = getByLabelText(messages.password.message);

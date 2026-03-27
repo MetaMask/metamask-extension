@@ -81,10 +81,13 @@ describe('Unlock Page', () => {
       onSubmit: jest.fn(),
     };
 
-    const { queryByTestId } = renderWithProvider(
+    const { queryByTestId, getByTestId } = renderWithProvider(
       <UnlockPage {...props} />,
       mockStore,
     );
+
+    const usePasswordButton = getByTestId('unlock-use-password-button');
+    fireEvent.click(usePasswordButton);
 
     const passwordField = queryByTestId('unlock-password');
     const loginButton = queryByTestId('unlock-submit');
@@ -116,6 +119,9 @@ describe('Unlock Page', () => {
       store,
     );
 
+    const usePasswordButton = getByTestId('unlock-use-password-button');
+    fireEvent.click(usePasswordButton);
+
     fireEvent.click(getByText(messages.forgotPassword.message));
 
     const resetPasswordButton = getByTestId('reset-password-modal-button');
@@ -144,11 +150,14 @@ describe('Unlock Page', () => {
       forceUpdateMetamaskState: mockForceUpdateMetamaskState,
     };
 
-    const { queryByText } = renderWithProvider(
+    const { queryByText, getByTestId } = renderWithProvider(
       <UnlockPage {...props} />,
       store,
       '/unlock',
     );
+
+    const usePasswordButton = getByTestId('unlock-use-password-button');
+    fireEvent.click(usePasswordButton);
 
     fireEvent.click(
       queryByText(messages.useDifferentLoginMethod.message) as HTMLElement,
@@ -194,10 +203,17 @@ describe('Unlock Page', () => {
       from: { pathname: intendedPath, search: intendedSearch },
     };
 
-    const { queryByTestId } = renderWithProvider(<UnlockPage />, store, {
-      pathname: '/unlock',
-      state: locationState,
-    } as unknown as string);
+    const { queryByTestId, getByTestId } = renderWithProvider(
+      <UnlockPage />,
+      store,
+      {
+        pathname: '/unlock',
+        state: locationState,
+      } as unknown as string,
+    );
+
+    const usePasswordButton = getByTestId('unlock-use-password-button');
+    fireEvent.click(usePasswordButton);
 
     const passwordField = queryByTestId('unlock-password') as HTMLElement;
     const loginButton = queryByTestId('unlock-submit') as HTMLElement;
@@ -222,11 +238,15 @@ describe('Unlock Page', () => {
     });
     const mockForceUpdateMetamaskState = jest.fn();
 
-    const { queryByTestId } = renderWithProvider(
+    const { queryByTestId, getByTestId } = renderWithProvider(
       <UnlockPage forceUpdateMetamaskState={mockForceUpdateMetamaskState} />,
       store,
       '/unlock',
     );
+
+    const usePasswordButton = getByTestId('unlock-use-password-button');
+    fireEvent.click(usePasswordButton);
+
     const passwordField = queryByTestId('unlock-password') as HTMLElement;
     const loginButton = queryByTestId('unlock-submit') as HTMLElement;
     fireEvent.change(passwordField, { target: { value: 'a-password' } });

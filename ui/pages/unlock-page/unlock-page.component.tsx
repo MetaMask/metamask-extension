@@ -818,7 +818,7 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
                 </Button>
                 <Button
                   variant={ButtonVariant.Tertiary}
-                  data-testid="unlock-forgot-password-button"
+                  data-testid="unlock-use-password-button"
                   key="import-account"
                   type="button"
                   onClick={this.handlePasswordForm}
