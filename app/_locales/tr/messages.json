@@ -8683,14 +8683,8 @@
   "tokensInCollection": {
     "message": "Koleksiyondaki tokenlar"
   },
-  "tooltipSatusConnected": {
-    "message": "bağlandı"
-  },
   "tooltipSatusConnectedUpperCase": {
     "message": "Bağlandı"
-  },
-  "tooltipSatusNotConnected": {
-    "message": "bağlanmadı"
   },
   "total": {
     "message": "Toplam"
