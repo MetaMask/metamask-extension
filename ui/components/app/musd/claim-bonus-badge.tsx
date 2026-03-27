@@ -1,30 +1,29 @@
-import React, { useCallback, useContext, useEffect, useRef } from 'react';
-import type { Hex } from '@metamask/utils';
-import { useSelector } from 'react-redux';
 import {
-  Text,
-  TextVariant,
-  TextColor,
   FontWeight,
   Icon,
+  IconColor,
   IconName,
   IconSize,
-  IconColor,
+  Text,
+  TextColor,
+  TextVariant,
 } from '@metamask/design-system-react';
-import { useI18nContext } from '../../../hooks/useI18nContext';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
+import type { Hex } from '@metamask/utils';
+import React, { useCallback, useContext, useEffect, useRef } from 'react';
+import { useSelector } from 'react-redux';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getMultichainNetworkConfigurationsByChainId } from '../../../selectors/multichain';
 import { useMerklClaim } from './hooks/useMerklClaim';
 import { useOnMerklClaimConfirmed } from './hooks/useOnMerklClaimConfirmed';
 import {
-  MUSD_EVENTS_CONSTANTS,
+  type MerklClaimBonusAnalyticsLocation,
   type MusdClaimBonusButtonClickedEventProperties,
   type MusdClaimBonusCtaDisplayedEventProperties,
-  type MusdMerklClaimCtaLocation,
 } from './musd-events';
 
 export const ClaimBonusBadge = ({
@@ -32,7 +31,7 @@ export const ClaimBonusBadge = ({
   tokenAddress,
   chainId,
   refetchRewards,
-  location,
+  analyticsLocation,
   assetSymbol,
   bonusAmountRange,
   hasClaimedBefore,
@@ -41,7 +40,7 @@ export const ClaimBonusBadge = ({
   tokenAddress: string;
   chainId: Hex;
   refetchRewards: () => void;
-  location: MusdMerklClaimCtaLocation;
+  analyticsLocation: MerklClaimBonusAnalyticsLocation;
   assetSymbol: string;
   bonusAmountRange: string;
   hasClaimedBefore: boolean;
@@ -78,7 +77,7 @@ export const ClaimBonusBadge = ({
 
     /* eslint-disable @typescript-eslint/naming-convention */
     const impressionProperties: MusdClaimBonusCtaDisplayedEventProperties = {
-      location,
+      location: analyticsLocation,
       view_trigger: 'component_mounted',
       button_text: label,
       network_chain_id: chainId,
@@ -102,7 +101,7 @@ export const ClaimBonusBadge = ({
     hasClaimedBefore,
     isClaiming,
     label,
-    location,
+    analyticsLocation,
     networkName,
     trackEvent,
   ]);
@@ -114,8 +113,7 @@ export const ClaimBonusBadge = ({
 
       /* eslint-disable @typescript-eslint/naming-convention */
       const eventProperties: MusdClaimBonusButtonClickedEventProperties = {
-        location:
-          MUSD_EVENTS_CONSTANTS.EVENT_LOCATIONS.CLAIM_BONUS_BOTTOM_SHEET,
+        location: analyticsLocation,
         claim_amount: label,
         network_chain_id: chainId,
         network_name: networkName,
@@ -131,7 +129,7 @@ export const ClaimBonusBadge = ({
 
       claimRewards();
     },
-    [claimRewards, trackEvent, label, chainId, networkName],
+    [claimRewards, trackEvent, label, chainId, networkName, analyticsLocation],
   );
 
   if (isClaiming) {
