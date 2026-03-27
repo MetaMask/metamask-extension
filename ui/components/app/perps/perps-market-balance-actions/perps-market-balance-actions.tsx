@@ -20,7 +20,7 @@ import { usePerpsLiveAccount } from '../../../../hooks/perps/stream';
 import {
   invokePerpsBalanceAction,
   type PerpsBalanceActionHandler,
-} from '../invoke-perps-balance-action';
+} from '../perps-balance-dropdown';
 
 type PerpsMarketBalanceActionsProps = {
   /** Whether to show the action buttons (Add funds, Withdraw) */
