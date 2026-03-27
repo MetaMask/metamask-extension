@@ -534,7 +534,9 @@ describe('buildBenchmarkSection', () => {
 
     expect(html).toContain(COMPARISON_SEVERITY.Pass.icon);
     expect(html).toContain('startupStandardHome');
-    expect(html).toContain('📈 Results compared to the previous 5 runs on main');
+    expect(html).toContain(
+      '📈 Results compared to the previous 5 runs on main',
+    );
     expect(html).toContain('uiStartup');
   });
 
