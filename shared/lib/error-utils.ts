@@ -1,8 +1,9 @@
 import { memoize, escape as lodashEscape } from 'lodash';
-import { type I18NMessageDict, fetchLocale, loadRelativeTimeFormatLocaleData } from './i18n';
+import type { I18NMessageDict } from './i18n';
+import { fetchLocale, loadRelativeTimeFormatLocaleData } from './i18n';
 import getFirstPreferredLangCode from './get-first-preferred-lang-code';
 import { switchDirectionForPreferredLocale } from './switch-direction';
-import { type ErrorLike } from '../constants/errors';
+import type { ErrorLike } from '../constants/errors';
 
 const defaultLocale = 'en';
 
@@ -156,7 +157,7 @@ export function getErrorHtml(
 
   /**
    * The pattern ${errorKey === 'somethingIsWrong' ? t('somethingIsWrong') : ''}
-   * is necessary because we we need linter to see the string
+   * is necessary because we need linter to see the string
    * of the locale keys. If we use the variable directly, the linter will not
    * see the string and will not be able to check if the locale key exists.
    */

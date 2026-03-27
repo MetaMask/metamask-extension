@@ -1,5 +1,4 @@
-import { type I18NMessageDict } from './i18n';
-import { fetchLocale } from './i18n';
+import { type I18NMessageDict, fetchLocale } from './i18n';
 import { SUPPORT_LINK } from './ui-utils';
 import { maybeGetLocaleContext, getErrorHtml } from './error-utils';
 
