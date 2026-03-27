@@ -125,6 +125,7 @@ jest.mock('../../providers/perps', () => ({
 
 jest.mock('../../hooks/perps', () => ({
   usePerpsEligibility: () => ({ isEligible: true }),
+  usePerpsEventTracking: () => ({ track: jest.fn() }),
   usePerpsOrderForm: jest.fn(),
   useUserHistory: jest.fn(),
   usePerpsTransactionHistory: jest.fn(),
