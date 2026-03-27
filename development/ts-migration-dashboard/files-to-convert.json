@@ -284,7 +284,6 @@
   "shared/lib/swaps-utils.js",
   "shared/lib/swaps-utils.test.js",
   "shared/lib/swaps.utils.js",
-  "shared/lib/switch-direction.js",
   "shared/lib/transaction-controller-utils.test.js",
   "shared/lib/transaction.utils.test.js",
   "shared/lib/transactions-controller-utils.js",
@@ -1044,7 +1043,6 @@
   "ui/helpers/utils/portfolio.js",
   "ui/helpers/utils/settings-search.js",
   "ui/helpers/utils/settings-search.test.js",
-
   "ui/helpers/utils/token-util.js",
   "ui/helpers/utils/token-util.test.js",
   "ui/helpers/utils/transactions.util.js",
