@@ -4149,8 +4149,8 @@
     "description": "Label for the claimable bonus row in the mUSD conversion confirmation screen"
   },
   "musdClaimableBonusTooltip": {
-    "message": "Bonus tahunan sebesar $1% yang Anda peroleh karena memiliki mUSD. Bonus dapat diklaim setiap hari di Linea. Didukung oleh Relay. $2",
-    "description": "$1 is the APY percentage, $2 is the 'Terms apply' link"
+    "message": "Bonus tahunan yang Anda peroleh karena memiliki mUSD. Bonus dapat diklaim setiap hari di Linea. $1",
+    "description": "$1 is the 'Terms apply' link"
   },
   "musdConversionActivityTitle": {
     "message": "Konversikan $1 ke mUSD",
@@ -4174,16 +4174,12 @@
     "message": "Konversikan dan dapatkan $1%",
     "description": "$1 is the bonus percentage (e.g., 3)"
   },
-  "musdEarnBonusPercentage": {
-    "message": "Dapatkan bonus sebesar $1%",
-    "description": "$1 is the bonus percentage (e.g., 3)"
-  },
   "musdEducationGetStarted": {
     "message": "Mulai"
   },
   "musdEducationHeadline": {
     "message": "DAPATKAN $1% UNTUK STABLECOIN",
-    "description": "$1 is the bonus APY percentage"
+    "description": "$1 is the bonus APY percentage. Line break between ON and STABLECOINS matches splash layout."
   },
   "musdEducationNotNow": {
     "message": "Tidak sekarang"
