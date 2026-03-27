@@ -72,7 +72,9 @@ describe('PasswordForm', () => {
 
   describe('custom test IDs', () => {
     it('uses custom password input test id when provided', () => {
-      render(<PasswordForm onChange={onChange} pwdInputTestId="custom-pwd-id" />);
+      render(
+        <PasswordForm onChange={onChange} pwdInputTestId="custom-pwd-id" />,
+      );
 
       expect(screen.getByTestId('custom-pwd-id')).toBeInTheDocument();
     });
