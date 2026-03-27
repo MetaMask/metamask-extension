@@ -4,7 +4,7 @@ import copyToClipboard from 'copy-to-clipboard';
 import { shortenAddress } from '../../../helpers/utils/util';
 
 import Tooltip from '../../ui/tooltip';
-import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
+import { toChecksumHexAddress } from '../../../../shared/lib/hexstring-utils';
 import { SECOND } from '../../../../shared/constants/time';
 import { Icon, IconName, IconSize, Text } from '../../component-library';
 import {

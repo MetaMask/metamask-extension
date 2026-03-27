@@ -23,18 +23,19 @@ import {
   MultichainNetworks,
   MultichainProviderConfig,
 } from '../../shared/constants/multichain/networks';
-import { Numeric } from '../../shared/modules/Numeric';
+import { Numeric } from '../../shared/lib/Numeric';
 import {
   getMultichainAssetsRatesControllerConversionRates,
   getMultiChainBalancesControllerBalances,
-} from '../../shared/modules/selectors/assets-migration';
+  getRatesControllerRates,
+} from '../../shared/lib/selectors/assets-migration';
 import {
   getConversionRate,
   getCurrentCurrency,
   getNativeCurrency,
 } from '../ducks/metamask/metamask';
 // TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
+// eslint-disable-next-line import-x/no-restricted-paths
 import { MULTICHAIN_NETWORK_TO_ASSET_TYPES } from '../../shared/constants/multichain/assets';
 import {
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
@@ -45,10 +46,10 @@ import {
   getNetworkConfigurationsByChainId,
   getProviderConfig,
   NetworkState,
-} from '../../shared/modules/selectors/networks';
-// eslint-disable-next-line import/no-restricted-paths
+} from '../../shared/lib/selectors/networks';
+// eslint-disable-next-line import-x/no-restricted-paths
 import { getConversionRatesForNativeAsset } from '../../app/scripts/lib/util';
-import { createDeepEqualSelector } from '../../shared/modules/selectors/util';
+import { createDeepEqualSelector } from '../../shared/lib/selectors/util';
 import {
   AccountsState,
   getInternalAccounts,
@@ -332,9 +333,7 @@ export function getMultichainIsTestnet(
 // TODO: Update all references to use asset-migration.ts
 export { getMultiChainBalancesControllerBalances as getMultichainBalances };
 
-export const getMultichainCoinRates = (state: MultichainState) => {
-  return state.metamask.rates;
-};
+export { getRatesControllerRates as getMultichainCoinRates };
 
 function getNonEvmCachedBalance(
   state: MultichainState,

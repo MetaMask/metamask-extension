@@ -10,7 +10,7 @@ import {
 } from '../tests/swaps/shared';
 import { TRADES_API_MOCK_RESULT } from '../../data/mock-data';
 import { installSnapSimpleKeyring } from '../page-objects/flows/snap-simple-keyring.flow';
-import { loginWithBalanceValidation } from '../page-objects/flows/login.flow';
+import { login } from '../page-objects/flows/login.flow';
 import { Mockttp } from '../mock-e2e';
 import { mockSnapSimpleKeyringAndSite } from '../tests/account/snap-keyring-site-mocks';
 
@@ -48,7 +48,7 @@ describe('Snap Account - Swap', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
         await installSnapSimpleKeyring(driver);
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,

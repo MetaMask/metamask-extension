@@ -10,7 +10,7 @@ import ResetPasswordPage from '../../page-objects/pages/reset-password-page';
 import MultichainAccountDetailsPage from '../../page-objects/pages/multichain/multichain-account-details-page';
 import { Driver } from '../../webdriver/driver';
 import {
-  loginWithoutBalanceValidation,
+  login,
   lockAndWaitForLoginPage,
 } from '../../page-objects/flows/login.flow';
 import { mockPriceApi } from '../tokens/utils/mocks';
@@ -46,7 +46,11 @@ describe('Add account', function () {
         await accountListPage.checkAccountDisplayedInAccountList(
           SECOND_ACCOUNT_NAME,
         );
-        await accountListPage.checkMultichainAccountBalanceDisplayed('0');
+        await accountListPage.checkMultichainAccountBalanceDisplayed({
+          wallet: 'Wallet 1',
+          account: SECOND_ACCOUNT_NAME,
+          balance: '$0.00',
+        });
         await accountListPage.closeMultichainAccountsPage();
 
         await sendRedesignedTransactionToAccount({
@@ -62,7 +66,11 @@ describe('Add account', function () {
         await activityList.checkTxAmountInActivity('-2.8 ETH');
         await activityList.waitPendingTxToNotBeVisible();
         await headerNavbar.openAccountMenu();
-        await accountListPage.checkMultichainAccountBalanceDisplayed('75,502');
+        await accountListPage.checkMultichainAccountBalanceDisplayed({
+          wallet: 'Wallet 1',
+          account: 'Account 1',
+          balance: '$75,502.00',
+        });
         await accountListPage.closeMultichainAccountsPage();
 
         // Lock wallet and recover via SRP in "forget password" option
@@ -133,7 +141,11 @@ describe('Add account', function () {
         await accountListPage.checkAccountDisplayedInAccountList(
           SECOND_ACCOUNT_NAME,
         );
-        await accountListPage.checkMultichainAccountBalanceDisplayed('0');
+        await accountListPage.checkMultichainAccountBalanceDisplayed({
+          account: SECOND_ACCOUNT_NAME,
+          wallet: 'Wallet 1',
+          balance: '$0.00',
+        });
         await accountListPage.openMultichainAccountMenu({
           accountLabel: SECOND_ACCOUNT_NAME,
         });
@@ -156,7 +168,11 @@ describe('Add account', function () {
         await accountListPage.checkAccountDisplayedInAccountList(
           IMPORTED_ACCOUNT_NAME,
         );
-        await accountListPage.checkMultichainAccountBalanceDisplayed('0');
+        await accountListPage.checkMultichainAccountBalanceDisplayed({
+          account: IMPORTED_ACCOUNT_NAME,
+          wallet: 'Imported accounts',
+          balance: '$0.00',
+        });
 
         // Remove the 3rd account imported with a private key
         await accountListPage.openMultichainAccountMenu({
@@ -177,7 +193,7 @@ describe('Add account', function () {
     );
   });
 
-  it('added account should persiste after wallet lock', async function () {
+  it('added account should persist after wallet lock', async function () {
     await withMultichainAccountsDesignEnabled(
       {
         title: this.test?.fullTitle(),
@@ -203,7 +219,7 @@ describe('Add account', function () {
 
         // Lock and unlock wallet
         await lockAndWaitForLoginPage(driver);
-        await loginWithoutBalanceValidation(driver);
+        await login(driver, { validateBalance: false });
 
         // Verify both account labels persist after unlock
         await headerNavbar.checkAccountLabel(CUSTOM_ACCOUNT_NAME);

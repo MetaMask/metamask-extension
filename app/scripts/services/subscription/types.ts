@@ -12,7 +12,7 @@ import {
   SubscriptionControllerSubmitShieldSubscriptionCryptoApprovalAction,
   SubscriptionControllerClearLastSelectedPaymentMethodAction,
 } from '@metamask/subscription-controller';
-import { AuthenticationControllerGetBearerToken } from '@metamask/profile-sync-controller/auth';
+import { AuthenticationControllerGetBearerTokenAction } from '@metamask/profile-sync-controller/auth';
 import {
   TransactionControllerGetTransactionsAction,
   TransactionMeta,
@@ -66,7 +66,7 @@ export type SubscriptionServiceAction =
   | SmartTransactionsControllerGetStateAction
   | NetworkControllerGetStateAction
   | RemoteFeatureFlagControllerGetStateAction
-  | AuthenticationControllerGetBearerToken
+  | AuthenticationControllerGetBearerTokenAction
   | AppStateControllerGetStateAction
   | AppStateControllerSetPendingShieldCohortAction
   | AppStateControllerSetPendingRedirectRouteAction

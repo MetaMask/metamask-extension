@@ -345,9 +345,6 @@
   "links": {
     "message": "ಲಿಂಕ್‌ಗಳು"
   },
-  "loadMore": {
-    "message": "ಇನ್ನಷ್ಟು ಲೋಡ್ ಮಾಡಿ"
-  },
   "loading": {
     "message": "ಲೋಡ್ ಆಗುತ್ತಿದೆ..."
   },
@@ -394,9 +391,6 @@
   "newAccountNumberName": {
     "message": "ಖಾತೆ $1",
     "description": "Default name of next account to be created on create account screen"
-  },
-  "newContact": {
-    "message": "ಹೊಸ ಸಂಪರ್ಕ"
   },
   "newContract": {
     "message": "ಹೊಸ ಒಪ್ಪಂದ"
@@ -655,12 +649,6 @@
   },
   "usedByClients": {
     "message": "ವಿಭಿನ್ನ ಕ್ಲೈಂಟ್‌ಗಳ ಮೂಲಕ ಬಳಸಲಾಗುತ್ತದೆ"
-  },
-  "userName": {
-    "message": "ಬಳಕೆದಾರಹೆಸರು"
-  },
-  "viewContact": {
-    "message": "ಸಂಪರ್ಕವನ್ನು ವೀಕ್ಷಿಸಿ"
   },
   "visitWebSite": {
     "message": "ನಮ್ಮ ವೆಬ್ ಸೈಟ್ ಅನ್ನು ಭೇಟಿ ಮಾಡಿ"

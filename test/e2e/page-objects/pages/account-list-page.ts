@@ -430,10 +430,20 @@ class AccountListPage {
   async addMultichainAccount(options?: { srpIndex?: number }): Promise<void> {
     console.log(`Adding new multichain account`);
     await this.waitUntilSyncingIsCompleted();
-    const createMultichainAccountButtons = await this.driver.findElements(
-      this.addMultichainAccountButton,
-    );
     const buttonIndex = options?.srpIndex ?? 0;
+    const expectedCount = buttonIndex + 1;
+    let createMultichainAccountButtons: Awaited<
+      ReturnType<typeof this.driver.findElements>
+    > = [];
+    await this.driver.waitUntil(
+      async () => {
+        createMultichainAccountButtons = await this.driver.findElements(
+          this.addMultichainAccountButton,
+        );
+        return createMultichainAccountButtons.length >= expectedCount;
+      },
+      { timeout: 10000, interval: 500 },
+    );
     await createMultichainAccountButtons[buttonIndex].click();
 
     // Wait for the account creation to complete by waiting for loading state to finish
@@ -812,20 +822,50 @@ class AccountListPage {
   }
 
   /**
-   * Checks that the account balance is displayed on the multichain account list page.
+   * Checks that the account balance is displayed on the multichain account list page
+   * for a specific account, optionally scoped under a specific wallet.
    *
-   * @param expectedBalance - The expected balance to check.
+   * When only one wallet exists the wallet header is not rendered, so omit
+   * the `wallet` param and the lookup falls back to finding the account cell
+   * directly by account name.
+   *
+   * @param options - The wallet, account, and balance to check.
+   * @param options.balance - The expected balance to check.
+   * @param options.wallet - The wallet name. Only pass when multiple wallets are present.
+   * @param options.account - The account name (default: 'Account 1').
    */
-  async checkMultichainAccountBalanceDisplayed(
-    expectedBalance: string,
-  ): Promise<void> {
+  async checkMultichainAccountBalanceDisplayed({
+    balance,
+    wallet,
+    account = 'Account 1',
+  }: {
+    balance: string;
+    wallet?: string;
+    account?: string;
+  }): Promise<void> {
     console.log(
-      `Check that multichain account balance ${expectedBalance} is displayed in account list on accounts page`,
+      `Check that multichain account balance ${balance} is displayed for ${account}${wallet ? ` under ${wallet}` : ''}`,
     );
-    await this.driver.waitForSelector({
-      css: this.accountPageBalance,
-      text: expectedBalance,
-    });
+
+    if (wallet) {
+      // Multiple wallets: scope the search to accounts under the specified wallet header.
+      const walletHeader = await this.driver.waitForSelector({
+        css: this.walletHeader,
+        text: wallet,
+      });
+      await this.driver.findNestedElement(walletHeader, {
+        xpath: `../following-sibling::*[preceding-sibling::*[.//*[@data-testid='multichain-account-tree-wallet-header']][1]//*[@data-testid='multichain-account-tree-wallet-header' and contains(., ${quoteXPathText(wallet)})]]//*[contains(@class, 'multichain-account-cell') and .//*[contains(@class, 'multichain-account-cell__account-name') and contains(text(), ${quoteXPathText(account)})]]//*[@data-testid='balance-display' and contains(text(), ${quoteXPathText(balance)})]`,
+      });
+    } else {
+      // Single wallet (no wallet header rendered): find the account cell directly.
+      const accountCell = await this.driver.waitForSelector({
+        css: this.multichainAccountListItem,
+        text: account,
+      });
+      await this.driver.findNestedElement(accountCell, {
+        xpath: `.//*[@data-testid='balance-display' and contains(text(), ${quoteXPathText(balance)})]`,
+      });
+    }
   }
 
   async checkAccountDisplayedInAccountList(

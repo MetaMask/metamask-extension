@@ -14,7 +14,7 @@ import {
   formatAddressToCaipReference,
 } from '@metamask/bridge-controller';
 import { handleFetch } from '@metamask/controller-utils';
-import { Numeric } from '../../../shared/modules/Numeric';
+import { Numeric } from '../../../shared/lib/Numeric';
 import { BRIDGE_CHAINID_COMMON_TOKEN_PAIR } from '../../../shared/constants/bridge';
 import { getAssetImageUrl } from '../../../shared/lib/asset-utils';
 import type { TokenPayload, BridgeToken } from './types';
@@ -207,6 +207,7 @@ export const toBridgeToken = (
     tokenFiatAmount,
     accountType,
     rwaData,
+    isVerified,
   } = payload;
   const { chainId } = parseCaipAssetType(assetId);
   return {
@@ -220,6 +221,7 @@ export const toBridgeToken = (
     tokenFiatAmount: tokenMetadata?.tokenFiatAmount ?? tokenFiatAmount,
     accountType: tokenMetadata?.accountType ?? accountType,
     rwaData: tokenMetadata?.rwaData ?? rwaData,
+    isVerified: tokenMetadata?.isVerified ?? isVerified,
   };
 };
 

@@ -396,11 +396,6 @@
     "@lydell/node-pty>@lydell/node-pty-win32-x64": {
       "native": true
     },
-    "@metamask/build-utils": {
-      "packages": {
-        "@metamask/build-utils>@metamask/utils": true
-      }
-    },
     "@metamask/build-utils>@metamask/utils": {
       "globals": {
         "Buffer": true,
@@ -414,13 +409,6 @@
         "nock>debug": true,
         "@metamask/utils>pony-cause": true,
         "semver": true
-      }
-    },
-    "@noble/hashes": {
-      "globals": {
-        "TextDecoder": true,
-        "TextEncoder": true,
-        "crypto": true
       }
     },
     "eslint>@nodelib/fs.walk>@nodelib/fs.scandir": {
@@ -475,12 +463,6 @@
       "packages": {
         "schema-utils": true,
         "webpack": true
-      }
-    },
-    "@scure/base": {
-      "globals": {
-        "TextDecoder": true,
-        "TextEncoder": true
       }
     },
     "@swc/core": {
@@ -2081,7 +2063,8 @@
         "html-bundler-webpack-plugin": true,
         "postcss-loader": true,
         "react-compiler-webpack": true,
-        "sass-loader": true
+        "sass-loader": true,
+        "thread-loader": true
       }
     },
     "lodash": {
@@ -3012,6 +2995,33 @@
         "html-bundler-webpack-plugin>handlebars>uglify-js": true
       }
     },
+    "thread-loader": {
+      "builtin": {
+        "child_process": true,
+        "os": true,
+        "path": true
+      },
+      "globals": {
+        "Buffer.alloc": true,
+        "Buffer.concat": true,
+        "Buffer.from": true,
+        "clearInterval": true,
+        "clearTimeout": true,
+        "console.error": true,
+        "process": true,
+        "setImmediate": true,
+        "setInterval": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "thread-loader>json-parse-better-errors": true,
+        "webpack>loader-runner": true,
+        "thread-loader>neo-async": true,
+        "webpack>neo-async": true,
+        "thread-loader>schema-utils": true,
+        "webpack": true
+      }
+    },
     "webpack-dev-server>bonjour-service>multicast-dns>thunky": {
       "globals": {
         "process.nextTick": true
@@ -3288,6 +3298,7 @@
         "schema-utils": true,
         "webpack>tapable": true,
         "terser-webpack-plugin": true,
+        "thread-loader": true,
         "webpack>watchpack": true,
         "webpack>webpack-sources": true
       }
@@ -3454,14 +3465,18 @@
       }
     },
     "yaml": {
+      "builtin": {
+        "buffer.Buffer": true,
+        "process.emitWarning": true,
+        "process.env.LOG_STREAM": true,
+        "process.env.LOG_TOKENS": true
+      },
       "globals": {
-        "Buffer": true,
         "atob": true,
         "btoa": true,
         "console.dir": true,
         "console.log": true,
-        "console.warn": true,
-        "process": true
+        "console.warn": true
       }
     },
     "yargs": {

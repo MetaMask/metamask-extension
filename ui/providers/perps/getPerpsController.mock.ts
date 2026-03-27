@@ -13,9 +13,6 @@
  */
 
 import type { Store } from 'redux';
-import type { MetaMaskReduxState } from '../../store/store';
-import { mockPositions } from '../../components/app/perps/mocks';
-import { getPerpsStreamManager } from './PerpsStreamManager';
 import type { OrderParams } from '@metamask/perps-controller';
 import {
   AccountState,
@@ -24,6 +21,9 @@ import {
   PerpsMarketData,
   Position,
 } from '@metamask/perps-controller';
+import type { MetaMaskReduxState } from '../../store/store';
+import { mockPositions } from '../../components/app/perps/mocks';
+import { getPerpsStreamManager } from './PerpsStreamManager';
 
 /**
  * Mock PerpsController class

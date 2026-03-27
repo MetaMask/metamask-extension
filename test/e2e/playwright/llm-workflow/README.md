@@ -39,7 +39,6 @@ The system uses a **decoupled, capability-based architecture**:
 │                                  │                                      │
 │  ┌─────────────────────────────────────────────────────────────────┐   │
 │  │  MetaMask Capabilities (this directory)                         │   │
-│  │  - BuildCapability: yarn build:test                             │   │
 │  │  - FixtureCapability: wallet state management                   │   │
 │  │  - ChainCapability: Anvil blockchain                            │   │
 │  │  - ContractSeedingCapability: deploy test contracts             │   │
@@ -96,7 +95,11 @@ yarn playwright install chromium
 
 Use one of the client-specific configurations below.
 
-`mm_build` can take a long time. In OpenCode, set an explicit `timeout` in the MCP server config. Claude Desktop and Cursor do not currently document a client-side MCP timeout field.
+Important setup note:
+
+- Yarn is required for bootstrap (`corepack enable`, `yarn install`, `yarn playwright install chromium`).
+- For MCP runtime commands, prefer direct `node` + local `tsx` paths in client config instead of `yarn tsx`.
+- This reduces stdio startup issues in GUI clients and avoids runtime failures when `yarn` is not on `PATH`.
 
 #### Claude Desktop
 
@@ -106,9 +109,9 @@ Add this to your Claude Desktop MCP config file (`claude_desktop_config.json`):
 {
   "mcpServers": {
     "metamask": {
-      "command": "yarn",
+      "command": "/path/to/node",
       "args": [
-        "tsx",
+        "/path/to/metamask-extension/node_modules/.bin/tsx",
         "/path/to/metamask-extension/test/e2e/playwright/llm-workflow/mcp-server/server.ts"
       ]
     }
@@ -119,7 +122,8 @@ Add this to your Claude Desktop MCP config file (`claude_desktop_config.json`):
 Notes:
 
 - `mcpServers` is the correct top-level key.
-- Prefer an absolute server path in `args` if your client launches from a non-repo working directory.
+- Use absolute paths for `node`, `tsx`, and `server.ts` to avoid working-directory assumptions.
+- Keep `yarn tsx ...` for manual terminal runs; prefer direct runtime command in MCP client config.
 
 #### Cursor
 
@@ -129,10 +133,10 @@ Add this to your Cursor MCP config (for example, `.cursor/mcp.json` in your work
 {
   "mcpServers": {
     "metamask": {
-      "command": "yarn",
+      "command": "/path/to/node",
       "args": [
-        "tsx",
-        "${workspaceFolder}/test/e2e/playwright/llm-workflow/mcp-server/server.ts"
+        "/path/to/metamask-extension/node_modules/.bin/tsx",
+        "/path/to/metamask-extension/test/e2e/playwright/llm-workflow/mcp-server/server.ts"
       ]
     }
   }
@@ -141,8 +145,8 @@ Add this to your Cursor MCP config (for example, `.cursor/mcp.json` in your work
 
 Notes:
 
-- Use `${workspaceFolder}` so the config is portable across machines.
 - Cursor uses `mcpServers`.
+- Use absolute paths in `args` for the most reliable startup behavior.
 
 #### OpenCode
 
@@ -150,16 +154,19 @@ Add this to `~/.config/opencode/opencode.json` under `mcp`:
 
 ```json
 {
+  "experimental": {
+    "mcp_timeout": 300000
+  },
   "mcp": {
     "metamask": {
       "type": "local",
       "command": [
-        "yarn",
-        "tsx",
+        "/path/to/node",
+        "/path/to/metamask-extension/node_modules/.bin/tsx",
         "/path/to/metamask-extension/test/e2e/playwright/llm-workflow/mcp-server/server.ts"
       ],
       "enabled": true,
-      "timeout": 120000
+      "timeout": 30000
     }
   }
 }
@@ -167,16 +174,23 @@ Add this to `~/.config/opencode/opencode.json` under `mcp`:
 
 Notes:
 
-- `timeout: 120000` (120s) is a practical default for build-heavy workflows in OpenCode.
-- If `mm_build` still times out in your environment, increase `timeout` to `180000` or `300000`.
+- `timeout` under `mcp.metamask` controls how long OpenCode waits to discover tools from this server.
+- `experimental.mcp_timeout` controls runtime tool execution timeout.
 - OpenCode uses `mcp` as the top-level key, and `command` is an array.
+
+### MCP Startup Troubleshooting
+
+| Symptom                                                     | Likely cause                                           | Fix                                                                                       |
+| ----------------------------------------------------------- | ------------------------------------------------------ | ----------------------------------------------------------------------------------------- |
+| `Unexpected token ... is not valid JSON` during MCP startup | Non-protocol stdout output from a wrapper command      | Use direct `node` + local `tsx` in MCP client config instead of `yarn tsx`                |
+| `Executable not found in $PATH: "yarn"`                     | GUI client environment does not include Yarn in `PATH` | Keep Yarn for bootstrap only; use absolute `node` and local `tsx` paths in runtime config |
+| MCP works in terminal but fails in GUI client               | Different Node runtime between shell and GUI app       | Pin an absolute `node` path in MCP config                                                 |
 
 ### 2. Use the Tools
 
 Once configured, the LLM agent can use tools like:
 
 ```
-mm_build      → Build the extension
 mm_launch     → Launch browser with MetaMask
 mm_click      → Click UI elements
 mm_type       → Type into inputs
@@ -195,7 +209,7 @@ When implementing UI changes, follow this cycle:
 3. **PLAN**: Break down into atomic implementation steps.
 4. **IMPLEMENT**: Write code changes.
 5. **RUN TESTS**: `yarn test:unit`, `yarn lint:changed`.
-6. **BUILD & LAUNCH**: `mm_build` → `mm_launch`.
+6. **LAUNCH**: `mm_launch` (requires `yarn build:test` to have been run first).
 7. **VISUAL VALIDATION**: `mm_describe_screen`, `mm_screenshot`.
 8. **INTERACT & VERIFY**: `mm_click`, `mm_type` → verify behavior.
 9. **ITERATE**: If acceptance criteria NOT met → go to step 4.
@@ -209,7 +223,6 @@ When implementing UI changes, follow this cycle:
 
 | Tool         | Description                              |
 | ------------ | ---------------------------------------- |
-| `mm_build`   | Build extension using `yarn build:test`  |
 | `mm_launch`  | Launch MetaMask in headed Chrome browser |
 | `mm_cleanup` | Stop browser, Anvil, and all services    |
 
@@ -399,7 +412,6 @@ The system is built on pluggable capabilities that implement interfaces from the
 
 | Capability           | Class                               | Description                            |
 | -------------------- | ----------------------------------- | -------------------------------------- |
-| **Build**            | `MetaMaskBuildCapability`           | Builds extension via `yarn build:test` |
 | **Fixture**          | `MetaMaskFixtureCapability`         | Manages wallet state fixtures, presets |
 | **Chain**            | `MetaMaskChainCapability`           | Anvil blockchain management            |
 | **Contract Seeding** | `MetaMaskContractSeedingCapability` | Deploy ERC-20, NFT, ERC-4337 contracts |
@@ -428,7 +440,6 @@ test/e2e/playwright/llm-workflow/
 │
 ├── capabilities/                 # MetaMask-specific capability implementations
 │   ├── factory.ts                # Creates workflow context with all capabilities
-│   ├── build.ts                  # BuildCapability - yarn build:test
 │   ├── fixture.ts                # FixtureCapability - wallet state management
 │   ├── chain.ts                  # ChainCapability - Anvil blockchain
 │   ├── seeding.ts                # ContractSeedingCapability - deploy contracts

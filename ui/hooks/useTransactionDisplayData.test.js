@@ -10,6 +10,7 @@ import { getMessage } from '../helpers/utils/i18n-helper';
 import { mockNetworkState } from '../../test/stub/networks';
 import { CHAIN_IDS } from '../../shared/constants/network';
 import { renderHookWithProvider } from '../../test/lib/render-helpers-navigate';
+import { MERKL_DISTRIBUTOR_ADDRESS } from '../components/app/musd/constants';
 import * as i18nhooks from './useI18nContext';
 import * as useTokenFiatAmountHooks from './useTokenFiatAmount';
 import { useTransactionDisplayData } from './useTransactionDisplayData';
@@ -259,5 +260,47 @@ describe('useTransactionDisplayData', () => {
       DEFAULT_ROUTE,
     );
     expect(result.current).toStrictEqual(expectedResults[0]);
+  });
+
+  it('should return "Claim Bonus" title for a contractInteraction sent to the Merkl distributor address', () => {
+    const merklClaimGroup = {
+      nonce: '0x1',
+      initialTransaction: {
+        id: 'merkl-claim-test',
+        time: 1700000000000,
+        status: 'confirmed',
+        chainId: '0xe708',
+        txParams: {
+          from: '0x9eca64466f257793eaa52fcfff5066894b76a149',
+          to: MERKL_DISTRIBUTOR_ADDRESS,
+          value: '0x0',
+          data: '0x71ee95c0',
+        },
+        type: 'contractInteraction',
+      },
+      primaryTransaction: {
+        id: 'merkl-claim-test',
+        time: 1700000000000,
+        status: 'confirmed',
+        chainId: '0xe708',
+        txParams: {
+          from: '0x9eca64466f257793eaa52fcfff5066894b76a149',
+          to: MERKL_DISTRIBUTOR_ADDRESS,
+          value: '0x0',
+          data: '0x71ee95c0',
+        },
+        type: 'contractInteraction',
+      },
+      transactions: [],
+      hasRetried: false,
+      hasCancelled: false,
+    };
+
+    const { result } = renderHookWithProvider(
+      () => useTransactionDisplayData(merklClaimGroup),
+      getMockState(),
+      DEFAULT_ROUTE,
+    );
+    expect(result.current.title).toBe('Claim bonus');
   });
 });

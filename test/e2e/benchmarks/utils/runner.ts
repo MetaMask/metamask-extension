@@ -1,5 +1,12 @@
 import get from 'lodash/get';
 import { retry } from '../../../../development/lib/retry';
+import type {
+  BenchmarkResults,
+  BenchmarkType,
+  Persona,
+  StatisticalResult,
+  ThresholdConfig,
+} from '../../../../shared/constants/benchmarks';
 import {
   ALL_METRICS,
   DEFAULT_NUM_BROWSER_LOADS,
@@ -19,14 +26,9 @@ import {
 } from './statistics';
 import type {
   BenchmarkFunction,
-  BenchmarkResults,
   BenchmarkRunResult,
   BenchmarkSummary,
-  BenchmarkType,
   Metrics,
-  Persona,
-  StatisticalResult,
-  ThresholdConfig,
   TimerResult,
   TimerStatistics,
 } from './types';

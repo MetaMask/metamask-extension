@@ -41,9 +41,9 @@ import {
   MultichainNetworkConfigurationsByChainIdState,
   selectDefaultNetworkClientIdsByChainId,
   getNetworksMetadata,
-} from '../../../shared/modules/selectors/networks';
-import { createDeepEqualSelector } from '../../../shared/modules/selectors/util';
-import { getEnabledNetworks } from '../../../shared/modules/selectors/multichain';
+} from '../../../shared/lib/selectors/networks';
+import { createDeepEqualSelector } from '../../../shared/lib/selectors/util';
+import { getEnabledNetworks } from '../../../shared/lib/selectors/multichain';
 import { getIsMetaMaskInfuraEndpointUrl } from '../../../shared/lib/network-utils';
 import { type RemoteFeatureFlagsState } from '../remote-feature-flags';
 import {

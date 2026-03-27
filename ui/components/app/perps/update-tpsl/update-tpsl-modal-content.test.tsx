@@ -7,18 +7,19 @@ import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import { mockPositions } from '../mocks';
 import { UpdateTPSLModalContent } from './update-tpsl-modal-content';
 
-const mockGetPerpsController = jest.fn();
+const mockSubmitRequestToBackground = jest.fn();
 const mockGetPerpsStreamManager = jest.fn();
 
-jest.mock('../../../../providers/perps', () => ({
-  getPerpsController: (...args: unknown[]) => mockGetPerpsController(...args),
+jest.mock('../../../../store/background-connection', () => ({
+  submitRequestToBackground: (...args: unknown[]) =>
+    mockSubmitRequestToBackground(...args),
 }));
 
 jest.mock('../../../../hooks/perps/usePerpsEligibility', () => ({
   usePerpsEligibility: () => ({ isEligible: true }),
 }));
 
-jest.mock('../../../../providers/perps/PerpsStreamManager', () => ({
+jest.mock('../../../../providers/perps', () => ({
   getPerpsStreamManager: () => mockGetPerpsStreamManager(),
 }));
 
@@ -34,16 +35,20 @@ const positionWithoutTPSL = mockPositions[2]; // LINK: TP=undefined, SL=undefine
 const defaultProps = {
   position: positionWithTPSL,
   currentPrice: 2900,
-  selectedAddress: '0x123',
   onClose: jest.fn(),
 };
 
 describe('UpdateTPSLModalContent', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    mockGetPerpsController.mockResolvedValue({
-      updatePositionTPSL: jest.fn().mockResolvedValue({ success: true }),
-      getPositions: jest.fn().mockResolvedValue(mockPositions),
+    mockSubmitRequestToBackground.mockImplementation((method: string) => {
+      if (method === 'perpsUpdatePositionTPSL') {
+        return Promise.resolve({ success: true });
+      }
+      if (method === 'perpsGetPositions') {
+        return Promise.resolve(mockPositions);
+      }
+      return Promise.resolve(undefined);
     });
     mockGetPerpsStreamManager.mockReturnValue({
       setOptimisticTPSL: jest.fn(),
@@ -305,12 +310,15 @@ describe('UpdateTPSLModalContent', () => {
   describe('submit', () => {
     it('calls updatePositionTPSL and onClose on successful save', async () => {
       const onClose = jest.fn();
-      const updatePositionTPSL = jest.fn().mockResolvedValue({ success: true });
-      const getPositions = jest.fn().mockResolvedValue(mockPositions);
 
-      mockGetPerpsController.mockResolvedValue({
-        updatePositionTPSL,
-        getPositions,
+      mockSubmitRequestToBackground.mockImplementation((method: string) => {
+        if (method === 'perpsUpdatePositionTPSL') {
+          return Promise.resolve({ success: true });
+        }
+        if (method === 'perpsGetPositions') {
+          return Promise.resolve(mockPositions);
+        }
+        return Promise.resolve(undefined);
       });
 
       renderWithProvider(
@@ -322,12 +330,16 @@ describe('UpdateTPSLModalContent', () => {
       fireEvent.click(saveButton);
 
       await waitFor(() => {
-        expect(mockGetPerpsController).toHaveBeenCalledWith('0x123');
-        expect(updatePositionTPSL).toHaveBeenCalledWith({
-          symbol: positionWithTPSL.symbol,
-          takeProfitPrice: '3200.00',
-          stopLossPrice: '2600.00',
-        });
+        expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+          'perpsUpdatePositionTPSL',
+          [
+            {
+              symbol: positionWithTPSL.symbol,
+              takeProfitPrice: '3200.00',
+              stopLossPrice: '2600.00',
+            },
+          ],
+        );
       });
       await waitFor(() => {
         expect(onClose).toHaveBeenCalled();
@@ -335,11 +347,14 @@ describe('UpdateTPSLModalContent', () => {
     });
 
     it('sends undefined for empty TP/SL prices (clearing them)', async () => {
-      const updatePositionTPSL = jest.fn().mockResolvedValue({ success: true });
-
-      mockGetPerpsController.mockResolvedValue({
-        updatePositionTPSL,
-        getPositions: jest.fn().mockResolvedValue(mockPositions),
+      mockSubmitRequestToBackground.mockImplementation((method: string) => {
+        if (method === 'perpsUpdatePositionTPSL') {
+          return Promise.resolve({ success: true });
+        }
+        if (method === 'perpsGetPositions') {
+          return Promise.resolve(mockPositions);
+        }
+        return Promise.resolve(undefined);
       });
 
       renderWithProvider(
@@ -354,11 +369,16 @@ describe('UpdateTPSLModalContent', () => {
       fireEvent.click(saveButton);
 
       await waitFor(() => {
-        expect(updatePositionTPSL).toHaveBeenCalledWith({
-          symbol: positionWithoutTPSL.symbol,
-          takeProfitPrice: undefined,
-          stopLossPrice: undefined,
-        });
+        expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+          'perpsUpdatePositionTPSL',
+          [
+            {
+              symbol: positionWithoutTPSL.symbol,
+              takeProfitPrice: undefined,
+              stopLossPrice: undefined,
+            },
+          ],
+        );
       });
     });
 
@@ -394,11 +414,14 @@ describe('UpdateTPSLModalContent', () => {
 
   describe('error handling', () => {
     it('displays an error when updatePositionTPSL fails', async () => {
-      mockGetPerpsController.mockResolvedValue({
-        updatePositionTPSL: jest
-          .fn()
-          .mockResolvedValue({ success: false, error: 'Server error' }),
-        getPositions: jest.fn().mockResolvedValue(mockPositions),
+      mockSubmitRequestToBackground.mockImplementation((method: string) => {
+        if (method === 'perpsUpdatePositionTPSL') {
+          return Promise.resolve({ success: false, error: 'Server error' });
+        }
+        if (method === 'perpsGetPositions') {
+          return Promise.resolve(mockPositions);
+        }
+        return Promise.resolve(undefined);
       });
 
       renderWithProvider(
@@ -414,7 +437,12 @@ describe('UpdateTPSLModalContent', () => {
     });
 
     it('displays a generic error when an exception is thrown', async () => {
-      mockGetPerpsController.mockRejectedValue(new Error('Network failure'));
+      mockSubmitRequestToBackground.mockImplementation((method: string) => {
+        if (method === 'perpsUpdatePositionTPSL') {
+          return Promise.reject(new Error('Network failure'));
+        }
+        return Promise.resolve(undefined);
+      });
 
       renderWithProvider(
         <UpdateTPSLModalContent {...defaultProps} />,
@@ -430,11 +458,14 @@ describe('UpdateTPSLModalContent', () => {
 
     it('does not call onClose when save fails', async () => {
       const onClose = jest.fn();
-      mockGetPerpsController.mockResolvedValue({
-        updatePositionTPSL: jest
-          .fn()
-          .mockResolvedValue({ success: false, error: 'fail' }),
-        getPositions: jest.fn().mockResolvedValue(mockPositions),
+      mockSubmitRequestToBackground.mockImplementation((method: string) => {
+        if (method === 'perpsUpdatePositionTPSL') {
+          return Promise.resolve({ success: false, error: 'fail' });
+        }
+        if (method === 'perpsGetPositions') {
+          return Promise.resolve(mockPositions);
+        }
+        return Promise.resolve(undefined);
       });
 
       renderWithProvider(

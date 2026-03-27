@@ -1,4 +1,4 @@
-import { getBrowserName } from '../../../shared/modules/browser-runtime.utils';
+import { getBrowserName } from '../../../shared/lib/browser-runtime.utils';
 import { PLATFORM_FIREFOX } from '../../../shared/constants/app';
 
 const isTransitionSupported = () => {

@@ -11,8 +11,8 @@ import {
   OverflowWrap,
   TextColor,
 } from '../../../../helpers/constants/design-system';
-// import { toChecksumHexAddress } from '../../../../../../../shared/modules/hexstring-utils';
-import { toChecksumHexAddress } from '../../../../../shared/modules/hexstring-utils';
+// import { toChecksumHexAddress } from '../../../../../../../shared/lib/hexstring-utils';
+import { toChecksumHexAddress } from '../../../../../shared/lib/hexstring-utils';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 
 export const KeyringAccountListItem = ({

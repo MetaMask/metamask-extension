@@ -2,6 +2,9 @@ import React, { useMemo, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import type { Hex } from '@metamask/utils';
+import type { MusdMerklClaimCtaLocation } from '../../musd/musd-events';
+import { MUSD_EVENTS_CONSTANTS } from '../../musd/musd-events';
+import { getBonusAmountRange } from '../../musd/merkl-bonus-analytics';
 import { useTokenDisplayInfo } from '../hooks';
 import {
   ButtonSecondary,
@@ -40,6 +43,10 @@ export type TokenCellProps = {
   safeChains?: SafeChain[];
   /** When true, shows the Merkl "Claim bonus" badge (e.g. on asset detail page). */
   showMerklBadge?: boolean;
+  /** When true, shows the mUSD convert CTA in the footer (e.g. on the home token list). */
+  showMusdConvertCta?: boolean;
+  /** Analytics: where the Merkl claim CTA is shown (default home/list). */
+  merklClaimCtaLocation?: MusdMerklClaimCtaLocation;
 };
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
@@ -51,6 +58,8 @@ export default function TokenCell({
   fixCurrencyToUSD = false,
   safeChains,
   showMerklBadge = false,
+  showMusdConvertCta = false,
+  merklClaimCtaLocation = MUSD_EVENTS_CONSTANTS.EVENT_LOCATIONS.TOKEN_LIST_ITEM,
 }: TokenCellProps) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -63,7 +72,13 @@ export default function TokenCell({
   const [showScamWarningModal, setShowScamWarningModal] = useState(false);
 
   // Check whether there are rewards available for the user
-  const { hasClaimableReward, refetch: refetchMerklRewards } = useMerklRewards({
+  const {
+    hasClaimableReward,
+    isEligible,
+    hasClaimedBefore,
+    claimableRewardDisplay,
+    refetch: refetchMerklRewards,
+  } = useMerklRewards({
     tokenAddress: token.address,
     chainId: token.chainId as Hex,
     showMerklBadge,
@@ -73,7 +88,7 @@ export default function TokenCell({
   const { hasMusdBalance } = useMusdBalance();
 
   const showMusdCta = useMemo(() => {
-    if (!token.address || !token.chainId) {
+    if (!showMusdConvertCta || !token.address || !token.chainId) {
       return false;
     }
     return shouldShowTokenListItemCta(
@@ -85,6 +100,7 @@ export default function TokenCell({
       { hasMusdBalance },
     );
   }, [
+    showMusdConvertCta,
     token.address,
     token.chainId,
     token.symbol,
@@ -105,6 +121,11 @@ export default function TokenCell({
     [token, tokenDisplayInfo],
   );
 
+  const merklBonusAmountRange = useMemo(
+    () => getBonusAmountRange(claimableRewardDisplay ?? '< 0.01'),
+    [claimableRewardDisplay],
+  );
+
   const handleScamWarningModal = (arg: boolean) => {
     setShowScamWarningModal(arg);
   };
@@ -120,13 +141,17 @@ export default function TokenCell({
         />
       );
     }
-    if (hasClaimableReward) {
+    if (isEligible && hasClaimableReward) {
       return (
         <ClaimBonusBadge
           tokenAddress={token.address as string}
           chainId={token.chainId as Hex}
           label={t('merklRewardsClaimBonus')}
           refetchRewards={refetchMerklRewards}
+          location={merklClaimCtaLocation}
+          assetSymbol={token.symbol}
+          bonusAmountRange={merklBonusAmountRange}
+          hasClaimedBefore={hasClaimedBefore}
         />
       );
     }

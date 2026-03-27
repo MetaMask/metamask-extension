@@ -39,24 +39,25 @@ import {
   getProviderConfig,
   getSelectedNetworkClientId,
   getNetworkConfigurationsByChainId,
-} from '../../shared/modules/selectors/networks';
+} from '../../shared/lib/selectors/networks';
 import {
   getAccountTrackerControllerAccountsByChainId,
   getTokensControllerAllTokens,
   getCurrencyRateControllerCurrencyRates,
   getTokenRatesControllerMarketData,
   getMultiChainBalancesControllerBalances,
-} from '../../shared/modules/selectors/assets-migration';
-import { getEnabledNetworks } from '../../shared/modules/selectors/multichain';
+} from '../../shared/lib/selectors/assets-migration';
+import { getEnabledNetworks } from '../../shared/lib/selectors/multichain';
+import { getBooleanFeatureFlag } from '../../shared/lib/remote-feature-flag-utils';
 // TODO: Fix circular dependency
 // To avoid import evaluating as `undefined` due to circular dependency,
 // this needs to be imported before `'../pages/confirmations/confirmation/templates'`
-// eslint-disable-next-line import/order
+// eslint-disable-next-line import-x/order
 import { getRemoteFeatureFlags } from './remote-feature-flags';
 // TODO: Fix circular dependency
 // To avoid import evaluating as `undefined` due to circular dependency,
 // this needs to be imported before `'../pages/confirmations/confirmation/templates'`
-// eslint-disable-next-line import/order
+// eslint-disable-next-line import-x/order
 import {
   getIsBitcoinSupportEnabled,
   getIsSolanaSupportEnabled,
@@ -67,7 +68,7 @@ import {
 } from './multichain/feature-flags';
 
 // TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
+// eslint-disable-next-line import-x/no-restricted-paths
 import { addHexPrefix, getEnvironmentType } from '../../app/scripts/lib/util';
 import {
   TEST_CHAINS,
@@ -148,24 +149,27 @@ import {
   getLedgerWebHidConnectedStatus,
   getLedgerTransportStatus,
 } from '../ducks/app/app';
-import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
+import { isEqualCaseInsensitive } from '../../shared/lib/string-utils';
 import {
   getValueFromWeiHex,
   hexToDecimal,
-} from '../../shared/modules/conversion.utils';
+} from '../../shared/lib/conversion.utils';
 import { BackgroundColor } from '../helpers/constants/design-system';
 import { MULTICHAIN_NETWORK_TO_ASSET_TYPES } from '../../shared/constants/multichain/assets';
 import { MULTICHAIN_PROVIDER_CONFIGS } from '../../shared/constants/multichain/networks';
-import { hasTransactionData } from '../../shared/modules/transaction.utils';
-import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
-import { createDeepEqualSelector } from '../../shared/modules/selectors/util';
-import { createParameterizedShallowEqualSelector } from '../../shared/modules/selectors/selector-creators';
+import { hasTransactionData } from '../../shared/lib/transaction.utils';
+import { toChecksumHexAddress } from '../../shared/lib/hexstring-utils';
+import { createDeepEqualSelector } from '../../shared/lib/selectors/util';
+import {
+  createParameterizedSelector,
+  createParameterizedShallowEqualSelector,
+} from '../../shared/lib/selectors/selector-creators';
 import { isSnapIgnoredInProd } from '../helpers/utils/snaps';
 import {
   FeatureFlagNames,
   DEFAULT_FEATURE_FLAG_VALUES,
-} from '../../shared/modules/feature-flags';
-// eslint-disable-next-line import/order
+} from '../../shared/lib/feature-flags';
+// eslint-disable-next-line import-x/order
 import {
   getSelectedInternalAccount,
   getInternalAccounts,
@@ -184,6 +188,8 @@ import {
   getCurrentNetworkTransactions,
 } from './transactions';
 import { EMPTY_ARRAY, EMPTY_OBJECT } from './shared';
+
+const PERMITTED_ACCOUNTS_LRU_CACHE_SIZE = 5;
 
 /**
  * @typedef {import('../../ui/store/store').MetaMaskReduxState} MetaMaskReduxState
@@ -763,11 +769,10 @@ export function getMetaMaskKeyrings(state) {
   return state.metamask.keyrings;
 }
 
-export function getMetaMaskHdKeyrings(state) {
-  return state.metamask.keyrings.filter(
-    (keyring) => keyring.type === KeyringTypes.hd,
-  );
-}
+export const getMetaMaskHdKeyrings = createSelector(
+  getMetaMaskKeyrings,
+  (keyrings) => keyrings.filter((keyring) => keyring.type === KeyringTypes.hd),
+);
 
 export function getHDEntropyIndex(state) {
   const selectedAddress = getSelectedAddress(state);
@@ -1467,14 +1472,17 @@ export function getPrivacyMode(state) {
 }
 
 /**
- * Default address feature flag (extension-ux-default-address)
+ * Default address feature flag (extension-ux-default-address-versioned)
  *
  * @param state - Redux state
  * @returns {boolean}
  */
 export function getIsDefaultAddressEnabled(state) {
   const remoteFeatureFlags = getRemoteFeatureFlags(state);
-  return Boolean(remoteFeatureFlags?.extensionUxDefaultAddress);
+  return getBooleanFeatureFlag(
+    remoteFeatureFlags?.extensionUxDefaultAddressVersioned,
+    false,
+  );
 }
 
 /**
@@ -1483,7 +1491,7 @@ export function getIsDefaultAddressEnabled(state) {
  * @param state - Redux state
  * @returns {boolean}
  */
-export function getShowDefaultAddress(state) {
+export function getShowDefaultAddressPreference(state) {
   const { showDefaultAddress } = getPreferences(state);
   return Boolean(showDefaultAddress);
 }
@@ -2930,6 +2938,8 @@ export const getTokenDetectionSupportNetworkByChainId = (state) => {
       return '';
   }
 };
+
+// TODO AssetsController - Remove this selector and fix dependencies
 /**
  * Returns true if a token list is available for the current network.
  *
@@ -2942,10 +2952,12 @@ export function getDetectedTokensInCurrentNetwork(state) {
   return state.metamask.allDetectedTokens?.[currentChainId]?.[selectedAddress];
 }
 
+// TODO AssetsController - Remove this selector and fix dependencies
 export function getAllDetectedTokens(state) {
   return state.metamask.allDetectedTokens;
 }
 
+// TODO AssetsController - Remove this selector and fix dependencies
 /**
  * To retrieve the list of tokens detected across all chains.
  *
@@ -3216,7 +3228,7 @@ export function getUnconnectedAccounts(state, activeTab) {
   return unConnectedAccounts;
 }
 
-export const getOrderedConnectedAccountsForActiveTab = createDeepEqualSelector(
+export const getOrderedConnectedAccountsForActiveTab = createSelector(
   getOriginOfCurrentTab,
   (state) => state.metamask.permissionHistory,
   getMetaMaskAccountsOrderedWithoutBalance,
@@ -3351,8 +3363,9 @@ export const getUpdatedAndSortedAccounts = createSelector(
   },
 );
 
-export const getUpdatedAndSortedAccountsWithCaipAccountId =
-  createDeepEqualSelector(getUpdatedAndSortedAccounts, (accounts) => {
+export const getUpdatedAndSortedAccountsWithCaipAccountId = createSelector(
+  getUpdatedAndSortedAccounts,
+  (accounts) => {
     return accounts.map((account) => {
       const { namespace, reference } = parseCaipChainId(account.scopes[0]);
       return {
@@ -3360,7 +3373,8 @@ export const getUpdatedAndSortedAccountsWithCaipAccountId =
         caipAccountId: `${namespace}:${reference}:${account.address}`,
       };
     });
-  });
+  },
+);
 
 export const getUseSafeChainsListValidation = (state) => {
   return state.metamask.useSafeChainsListValidation;
@@ -3555,15 +3569,19 @@ function getPermittedEVMChains(state, origin) {
   );
 }
 
-export function getAllPermittedAccounts(state, origin) {
-  const caip25Permission = getCaip25PermissionFromSubject(
-    subjectSelector(state, origin),
-  );
-  const caip25Caveat = getCaip25CaveatFromPermission(caip25Permission);
-  return caip25Caveat
-    ? getCaipAccountIdsFromCaip25CaveatValue(caip25Caveat.value)
-    : [];
-}
+export const getAllPermittedAccounts = createParameterizedSelector(
+  PERMITTED_ACCOUNTS_LRU_CACHE_SIZE,
+)(
+  subjectSelector,
+  (_state, origin) => origin,
+  (subject) => {
+    const caip25Permission = getCaip25PermissionFromSubject(subject);
+    const caip25Caveat = getCaip25CaveatFromPermission(caip25Permission);
+    return caip25Caveat
+      ? getCaipAccountIdsFromCaip25CaveatValue(caip25Caveat.value)
+      : [];
+  },
+);
 
 function getAllPermittedScopes(state, origin) {
   const caip25Permission = getCaip25PermissionFromSubject(

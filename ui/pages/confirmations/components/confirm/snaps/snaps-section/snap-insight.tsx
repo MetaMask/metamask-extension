@@ -35,6 +35,7 @@ export const SnapInsight: React.FunctionComponent<SnapInsightProps> = ({
     <Text>
       {t('insightsFromSnap', [
         <Text
+          key="snap-name"
           fontWeight={FontWeight.Medium}
           variant={TextVariant.inherit}
           color={TextColor.inherit}

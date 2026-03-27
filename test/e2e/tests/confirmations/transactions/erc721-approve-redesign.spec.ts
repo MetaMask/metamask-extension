@@ -6,7 +6,7 @@ import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
 import { Driver } from '../../../webdriver/driver';
 import { SMART_CONTRACTS } from '../../../seeder/smart-contracts';
 import TestDapp from '../../../page-objects/pages/test-dapp';
-import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
+import { login } from '../../../page-objects/flows/login.flow';
 import { scrollAndConfirmAndAssertConfirm } from '../helpers';
 import { TestSuiteArguments, toggleAdvancedDetails } from './shared';
 
@@ -32,7 +32,7 @@ describe('Confirmation Redesign ERC721 Approve Component', function () {
         }: TestSuiteArguments) => {
           const contractAddress =
             await contractRegistry?.getContractAddress(smartContract);
-          await loginWithBalanceValidation(driver, localNodes?.[0]);
+          await login(driver, { localNode: localNodes?.[0] });
           const testDapp = new TestDapp(driver);
           await testDapp.openTestDappPage({ contractAddress });
           await testDapp.checkPageIsLoaded();

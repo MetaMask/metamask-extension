@@ -1,6 +1,6 @@
 import browser from 'webextension-polyfill';
 import { captureException } from '../../../shared/lib/sentry';
-import { createSentryError } from '../../../shared/modules/error';
+import { createSentryError } from '../../../shared/lib/error';
 import { OperationSafener } from './operation-safener';
 import { PersistenceManager } from './stores/persistence-manager';
 import { MetaMaskStateType } from './stores/base-store';
