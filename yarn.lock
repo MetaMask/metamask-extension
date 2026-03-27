@@ -6388,16 +6388,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/error-reporting-service@npm:^3.0.0":
-  version: 3.0.0
-  resolution: "@metamask/error-reporting-service@npm:3.0.0"
-  dependencies:
-    "@metamask/base-controller": "npm:^9.0.0"
-    "@metamask/messenger": "npm:^0.3.0"
-  checksum: 10/f62921c4b185ae2d7524230da35e8f6e9d18554931fc1c72da2c0e59a27c8b7ceaa12d5a94f6fda4a9a313abce71fa59c76954615a13e28df7830b7e716664e5
-  languageName: node
-  linkType: hard
-
 "@metamask/eslint-config-jest@npm:^13.0.0":
   version: 13.0.0
   resolution: "@metamask/eslint-config-jest@npm:13.0.0"
@@ -34031,7 +34021,6 @@ __metadata:
     "@metamask/eip-7702-internal-rpc-middleware": "npm:^0.1.0"
     "@metamask/ens-controller": "npm:^19.1.0"
     "@metamask/ens-resolver-snap": "npm:^1.1.0"
-    "@metamask/error-reporting-service": "npm:^3.0.0"
     "@metamask/eslint-config": "npm:^13.0.0"
     "@metamask/eslint-config-jest": "npm:^13.0.0"
     "@metamask/eslint-config-mocha": "npm:^13.0.0"
