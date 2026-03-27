@@ -11,6 +11,7 @@ import type {
   NetworkControllerFindNetworkClientIdByChainIdAction,
   NetworkControllerGetNetworkClientByIdAction,
 } from '@metamask/network-controller';
+import type { AssetsControllerGetExchangeRatesForBridgeAction } from '@metamask/assets-controller';
 import type { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
 import { MetaMetricsControllerTrackEventAction } from '../../controllers/metametrics-controller';
 import { RootMessenger } from '../../lib/messenger';
@@ -24,7 +25,8 @@ type AllowedActions =
   | NetworkControllerFindNetworkClientIdByChainIdAction
   | NetworkControllerGetNetworkClientByIdAction
   | RemoteFeatureFlagControllerGetStateAction
-  | AuthenticationControllerGetBearerTokenAction;
+  | AuthenticationControllerGetBearerTokenAction
+  | AssetsControllerGetExchangeRatesForBridgeAction;
 
 export type BridgeControllerMessenger = ReturnType<
   typeof getBridgeControllerMessenger
@@ -62,6 +64,7 @@ export function getBridgeControllerMessenger(
       'RemoteFeatureFlagController:getState',
       'CurrencyRateController:getState',
       'AuthenticationController:getBearerToken',
+      'AssetsController:getExchangeRatesForBridge',
     ],
   });
   return controllerMessenger;
