@@ -339,6 +339,18 @@
   "addWallet": {
     "message": "Add wallet"
   },
+  "addedProtectionDescription": {
+    "message": "You're interacting with an unknown address. This helps prevent malicious transactions."
+  },
+  "addedProtectionOptionalBadge": {
+    "message": "Optional"
+  },
+  "addedProtectionTitle": {
+    "message": "Added protection"
+  },
+  "addedProtectionTooltip": {
+    "message": "If the final transaction doesn't match this preview, it won't go through. You only pay the network fee."
+  },
   "additionalNetworks": {
     "message": "Additional networks"
   },
@@ -1081,7 +1093,7 @@
     "message": "Lowest cost"
   },
   "bridgeMarketClosedAction": {
-    "message": "Market is closed"
+    "message": "Market closed"
   },
   "bridgeMarketClosedDescription": {
     "message": "This stock token is currently outside trading hours. Try again when the market reopens."
@@ -2182,6 +2194,12 @@
   },
   "deepLink_theOnboardingPage": {
     "message": "the onboarding page"
+  },
+  "deepLink_thePerpsMarketDetailPage": {
+    "message": "the perps market page"
+  },
+  "deepLink_thePerpsMarketListPage": {
+    "message": "the perps market list page"
   },
   "deepLink_thePerpsPage": {
     "message": "the perps page"
@@ -3576,18 +3594,6 @@
   "knownTokenWarning": {
     "message": "This action will edit tokens that are already listed in your wallet, which can be used to phish you. Only approve if you are certain that you mean to change what these tokens represent. Learn more about $1"
   },
-  "l1Fee": {
-    "message": "L1 fee"
-  },
-  "l1FeeTooltip": {
-    "message": "L1 gas fee"
-  },
-  "l2Fee": {
-    "message": "L2 fee"
-  },
-  "l2FeeTooltip": {
-    "message": "L2 gas fee"
-  },
   "language": {
     "message": "Language"
   },
@@ -3600,9 +3606,6 @@
   },
   "lavaDomeCopyWarning": {
     "message": "For your safety, selecting this text is not available right now."
-  },
-  "layer1Fees": {
-    "message": "Layer 1 fees"
   },
   "learnHow": {
     "message": "Learn how"
@@ -3732,9 +3735,6 @@
   },
   "links": {
     "message": "Links"
-  },
-  "loadMore": {
-    "message": "Load more"
   },
   "loading": {
     "message": "Loading..."
@@ -4073,11 +4073,15 @@
     "description": "$1 is the dapp and $2 is the number of snaps it wants to connect to."
   },
   "musdBonusExplanation": {
-    "message": "Convert your stablecoins to mUSD, MetaMask's US dollar-backed stablecoin, and receive up to a $1% bonus. Powered by Relay. $2",
+    "message": "Convert your stablecoins to mUSD and earn\nup to a $1% annualized bonus that you can\nclaim daily. $2",
     "description": "$1 is the bonus APY percentage, $2 is the 'Terms apply' link"
   },
+  "musdBonusPoweredByRelay": {
+    "message": "Powered by Relay",
+    "description": "Attribution shown below mUSD bonus explanation on the conversion confirmation info popover"
+  },
   "musdBoostDescription": {
-    "message": "Convert your stablecoins to mUSD and receive up to a $1% bonus.",
+    "message": "Convert your stablecoins to mUSD and get a $1% annualized bonus.",
     "description": "$1 is the bonus percentage (e.g., 3)"
   },
   "musdBoostTitle": {
@@ -4100,12 +4104,20 @@
     "description": "Label for the claimable bonus row in the mUSD conversion confirmation screen"
   },
   "musdClaimableBonusTooltip": {
-    "message": "$1% annualized bonus you've earned for holding mUSD. Your bonus is claimable daily on Linea. Powered by Relay. $2",
-    "description": "$1 is the APY percentage, $2 is the 'Terms apply' link"
+    "message": "The annualized bonus you've earned for holding mUSD. Your bonus is claimable daily on Linea. $1",
+    "description": "$1 is the 'Terms apply' link"
+  },
+  "musdClaimableBonusTooltipAria": {
+    "message": "Claimable bonus details",
+    "description": "Accessible name for the info control that opens the claimable bonus explanation popover"
   },
   "musdConversionActivityTitle": {
     "message": "Convert $1 to mUSD",
     "description": "$1 is the source token symbol (e.g., USDC)"
+  },
+  "musdConversionBonusTooltipAria": {
+    "message": "Bonus details",
+    "description": "Accessible name for the info control that opens the mUSD conversion bonus explanation popover"
   },
   "musdConversionTitle": {
     "message": "Converted to mUSD",
@@ -4119,7 +4131,10 @@
     "description": "$1 is the source token symbol (e.g., USDC)"
   },
   "musdConversionToastSuccess": {
-    "message": "Your mUSD is here!"
+    "message": "mUSD conversion successful"
+  },
+  "musdConversionToastSuccessDescription": {
+    "message": "Bonus will be claimable within a day."
   },
   "musdConvert": {
     "message": "Convert"
@@ -4128,16 +4143,12 @@
     "message": "Convert and get $1%",
     "description": "$1 is the bonus percentage (e.g., 3)"
   },
-  "musdEarnBonusPercentage": {
-    "message": "Earn a $1% bonus",
-    "description": "$1 is the bonus percentage (e.g., 3)"
-  },
   "musdEducationGetStarted": {
     "message": "Get started"
   },
   "musdEducationHeadline": {
-    "message": "GET $1% ON STABLECOINS",
-    "description": "$1 is the bonus APY percentage"
+    "message": "GET $1% ON\nSTABLECOINS",
+    "description": "$1 is the bonus APY percentage. Line break between ON and STABLECOINS matches splash layout."
   },
   "musdEducationNotNow": {
     "message": "Not now"
@@ -5433,7 +5444,7 @@
     "message": "Direction"
   },
   "perpsDisclaimer": {
-    "message": "Trading perpetuals involves significant risk. You may lose more than your initial investment. This is not financial advice."
+    "message": "Perpetual contracts are very risky, and you could suddenly and without notice lose your entire investment. You trade entirely at your own risk. Powered by Hyperliquid. Price chart powered by TradingView."
   },
   "perpsEmptyDescription": {
     "message": "Trade perpetuals with leverage. Open your first position to get started."
@@ -5594,9 +5605,6 @@
   "perpsPosition": {
     "message": "Position"
   },
-  "perpsPositionClosedReverseOrderFailed": {
-    "message": "Your position was closed but the reverse order failed. You may need to manually open a new position"
-  },
   "perpsPositionSize": {
     "message": "Position Size"
   },
@@ -5614,6 +5622,9 @@
   },
   "perpsReduceExposureDescriptionShort": {
     "message": "Decrease the size of your short position"
+  },
+  "perpsRemoveFromFavorites": {
+    "message": "Remove from favorites"
   },
   "perpsRemoveMargin": {
     "message": "Remove margin"
@@ -6772,8 +6783,15 @@
   "settings": {
     "message": "Settings"
   },
+  "settingsSearchCantFindSetting": {
+    "message": "Can't find a setting? $1",
+    "description": "$1 is a link to request a setting"
+  },
   "settingsSearchMatchingNotFound": {
     "message": "No matching results found."
+  },
+  "settingsSearchRequestHere": {
+    "message": "Request here"
   },
   "shieldClaim": {
     "message": "Submit a claim"
@@ -7841,7 +7859,7 @@
     "message": "Something's gone wrong. Try reloading the page."
   },
   "somethingWentWrong": {
-    "message": "We could not load this page."
+    "message": "We couldn't load this page."
   },
   "sortBy": {
     "message": "Sort by"
@@ -8739,9 +8757,6 @@
   },
   "transactionDetailGasHeading": {
     "message": "Estimated gas fee"
-  },
-  "transactionDetailMultiLayerTotalSubtitle": {
-    "message": "Amount + fees"
   },
   "transactionError": {
     "message": "Transaction error. Exception thrown in contract code."

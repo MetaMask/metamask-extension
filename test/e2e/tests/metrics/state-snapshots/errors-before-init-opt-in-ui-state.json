@@ -191,6 +191,7 @@
     "PPOMController": { "storageMetadata": {} },
     "PermissionController": { "subjects": "object" },
     "PermissionLogController": { "permissionHistory": "object" },
+    "PerpsController": "object",
     "PhishingController": {
       "addressScanCache": "object",
       "tokenScanCache": "object",
@@ -312,5 +313,5 @@
     },
     "config": "object"
   },
-  "meta": { "storageKind": "split", "version": 199 }
+  "meta": { "storageKind": "split", "version": 200 }
 }

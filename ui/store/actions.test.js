@@ -29,6 +29,16 @@ import * as actions from './actions';
 import * as actionConstants from './actionConstants';
 import { setBackgroundConnection } from './background-connection';
 
+jest.mock('../../app/scripts/controller-init/perps-controller-init', () => ({
+  PerpsControllerInit: jest.fn().mockReturnValue({
+    controller: {
+      state: {},
+      name: 'PerpsController',
+    },
+    api: {},
+  }),
+}));
+
 const { TRIGGER_TYPES } = NotificationServicesController.Constants;
 
 const mockUlid = '01JMPHQSH1A4DQAAS6ES7NDJ38';
@@ -269,6 +279,12 @@ describe('Actions', () => {
       );
       expect(result).toStrictEqual(true);
       expect(checkIsSeedlessPasswordOutdated.callCount).toStrictEqual(1);
+      expect(checkIsSeedlessPasswordOutdated.firstCall.args).toStrictEqual([
+        {
+          skipCache: true,
+          captureSentryError: true,
+        },
+      ]);
     });
 
     it('should return false if the password is not outdated', async () => {
@@ -290,6 +306,34 @@ describe('Actions', () => {
       );
       expect(result).toStrictEqual(false);
       expect(checkIsSeedlessPasswordOutdated.callCount).toStrictEqual(1);
+    });
+
+    it('passes skipCache and captureSentryError to the background check', async () => {
+      const store = mockStore({
+        ...defaultState,
+        metamask: {
+          ...defaultState.metamask,
+          firstTimeFlowType: FirstTimeFlowType.socialCreate,
+        },
+      });
+
+      const checkIsSeedlessPasswordOutdated =
+        background.checkIsSeedlessPasswordOutdated.resolves(true);
+
+      setBackgroundConnection(background);
+
+      const result = await store.dispatch(
+        actions.checkIsSeedlessPasswordOutdated(false, false),
+      );
+
+      expect(result).toStrictEqual(true);
+      expect(checkIsSeedlessPasswordOutdated.callCount).toStrictEqual(1);
+      expect(checkIsSeedlessPasswordOutdated.firstCall.args).toStrictEqual([
+        {
+          skipCache: false,
+          captureSentryError: false,
+        },
+      ]);
     });
 
     it('should not throw an error if the checkIsSeedlessPasswordOutdated fails', async () => {
@@ -1955,6 +1999,7 @@ describe('Actions', () => {
       expect(addCustomAssetStub.firstCall.args).toStrictEqual([
         accountId,
         'eip155:1/erc20:0xbbb',
+        undefined,
       ]);
 
       const actionTypes = store.getActions().map((a) => a.type);

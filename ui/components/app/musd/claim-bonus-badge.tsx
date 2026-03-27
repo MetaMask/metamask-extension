@@ -1,4 +1,4 @@
-import React, { useCallback, useContext } from 'react';
+import React, { useCallback, useContext, useEffect, useRef } from 'react';
 import type { Hex } from '@metamask/utils';
 import { useSelector } from 'react-redux';
 import {
@@ -23,6 +23,8 @@ import { useOnMerklClaimConfirmed } from './hooks/useOnMerklClaimConfirmed';
 import {
   MUSD_EVENTS_CONSTANTS,
   type MusdClaimBonusButtonClickedEventProperties,
+  type MusdClaimBonusCtaDisplayedEventProperties,
+  type MusdMerklClaimCtaLocation,
 } from './musd-events';
 
 export const ClaimBonusBadge = ({
@@ -30,14 +32,23 @@ export const ClaimBonusBadge = ({
   tokenAddress,
   chainId,
   refetchRewards,
+  location,
+  assetSymbol,
+  bonusAmountRange,
+  hasClaimedBefore,
 }: {
   label: string;
   tokenAddress: string;
   chainId: Hex;
   refetchRewards: () => void;
+  location: MusdMerklClaimCtaLocation;
+  assetSymbol: string;
+  bonusAmountRange: string;
+  hasClaimedBefore: boolean;
 }) => {
   const t = useI18nContext();
   const { trackEvent } = useContext(MetaMetricsContext);
+  const hasFiredCtaDisplayedEvent = useRef(false);
 
   // Get network name for analytics
   const networkConfigurationsByChainId = useSelector(
@@ -53,6 +64,49 @@ export const ClaimBonusBadge = ({
     tokenAddress,
     chainId,
   });
+
+  useEffect(() => {
+    if (
+      hasFiredCtaDisplayedEvent.current ||
+      isClaiming ||
+      error ||
+      !bonusAmountRange
+    ) {
+      return;
+    }
+    hasFiredCtaDisplayedEvent.current = true;
+
+    /* eslint-disable @typescript-eslint/naming-convention */
+    const impressionProperties: MusdClaimBonusCtaDisplayedEventProperties = {
+      location,
+      view_trigger: 'component_mounted',
+      button_text: label,
+      network_chain_id: chainId,
+      network_name: networkName,
+      asset_symbol: assetSymbol,
+      bonus_amount_range: bonusAmountRange,
+      has_claimed_before: hasClaimedBefore,
+    };
+    /* eslint-enable @typescript-eslint/naming-convention */
+
+    trackEvent({
+      event: MetaMetricsEventName.MusdClaimBonusCtaDisplayed,
+      category: MetaMetricsEventCategory.MusdConversion,
+      properties: impressionProperties,
+    });
+  }, [
+    assetSymbol,
+    bonusAmountRange,
+    chainId,
+    error,
+    hasClaimedBefore,
+    isClaiming,
+    label,
+    location,
+    networkName,
+    trackEvent,
+  ]);
+
   // Trigger the claim transaction directly, routing to the confirmation page.
   const handleBadgeClick = useCallback(
     (e: React.MouseEvent) => {

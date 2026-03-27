@@ -18,7 +18,6 @@ export type EditMarginModalProps = {
   position: Position;
   account: AccountState | null;
   currentPrice: number;
-  selectedAddress: string;
   /** 'add' | 'remove' — modal title and content mode */
   mode: 'add' | 'remove';
 };
@@ -32,7 +31,6 @@ export type EditMarginModalProps = {
  * @param options0.position
  * @param options0.account
  * @param options0.currentPrice
- * @param options0.selectedAddress
  * @param options0.mode
  */
 export const EditMarginModal: React.FC<EditMarginModalProps> = ({
@@ -41,7 +39,6 @@ export const EditMarginModal: React.FC<EditMarginModalProps> = ({
   position,
   account,
   currentPrice,
-  selectedAddress,
   mode,
 }) => {
   const t = useI18nContext();
@@ -71,7 +68,6 @@ export const EditMarginModal: React.FC<EditMarginModalProps> = ({
             position={position}
             account={account}
             currentPrice={currentPrice}
-            selectedAddress={selectedAddress}
             mode={mode}
             onClose={onClose}
             externalSave

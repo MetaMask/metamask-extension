@@ -21,7 +21,6 @@ import { PerpsSlider } from '../../../perps-slider';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
 import { useFormatters } from '../../../../../../hooks/useFormatters';
 import type { AmountInputProps } from '../../order-entry.types';
-import { calculatePositionSize } from '../../order-entry.mocks';
 
 /**
  * AmountInput - Size section with dual USD/token inputs and percentage slider
@@ -67,7 +66,7 @@ export const AmountInput: React.FC<AmountInputProps> = ({
       return null;
     }
     const positionValue = numAmount * leverage;
-    return calculatePositionSize(positionValue, currentPrice);
+    return currentPrice > 0 ? positionValue / currentPrice : null;
   }, [amount, currentPrice, leverage]);
 
   const tokenDisplayValue = useMemo(() => {

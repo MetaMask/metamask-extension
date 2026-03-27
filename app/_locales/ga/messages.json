@@ -2875,26 +2875,11 @@
   "knownTokenWarning": {
     "message": "Cuirfidh an gníomh seo comharthaí in eagar atá liostaithe i do sparán cheana féin, ar féidir iad a úsáid chun fioscaireachta a dhéanamh ort. Ná ceadaigh ach amháin má tá tú cinnte go bhfuil sé i gceist agat athrú a dhéanamh ar a seasann na comharthaí seo dó. Foghlaim tuilleadh faoi $1"
   },
-  "l1Fee": {
-    "message": "Táille L1"
-  },
-  "l1FeeTooltip": {
-    "message": "Táille gáis L1"
-  },
-  "l2Fee": {
-    "message": "Táille L2"
-  },
-  "l2FeeTooltip": {
-    "message": "Táille gáis L2"
-  },
   "lastSold": {
     "message": "Díolta go deireanach"
   },
   "lavaDomeCopyWarning": {
     "message": "Ar mhaithe le do shábháilteacht, ní féidir an téacs seo a roghnú faoi láthair."
-  },
-  "layer1Fees": {
-    "message": "Táillí Sraith 1"
   },
   "learnHow": {
     "message": "Foghlaim conas"
@@ -3020,9 +3005,6 @@
   },
   "links": {
     "message": "Naisc"
-  },
-  "loadMore": {
-    "message": "Luchtaigh níos mó"
   },
   "loading": {
     "message": "Ag lódáil..."
@@ -6507,9 +6489,6 @@
   },
   "transactionDetailGasHeading": {
     "message": "Táille gáis measta"
-  },
-  "transactionDetailMultiLayerTotalSubtitle": {
-    "message": "Méid + táillí"
   },
   "transactionError": {
     "message": "Earráid idirbhirt. Caitheadh ​​eisceacht i gcód an chonartha."

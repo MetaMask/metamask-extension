@@ -885,9 +885,6 @@
   "links": {
     "message": "Enlaces"
   },
-  "loadMore": {
-    "message": "Cargar más"
-  },
   "loading": {
     "message": "Cargando..."
   },
@@ -1648,9 +1645,6 @@
   },
   "transactionDetailGasHeading": {
     "message": "Tarifa estimada de gas"
-  },
-  "transactionDetailMultiLayerTotalSubtitle": {
-    "message": "Monto + cargos"
   },
   "transactionError": {
     "message": "Error de transacción. Excepción generada en el código de contrato."

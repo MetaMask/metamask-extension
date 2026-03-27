@@ -184,7 +184,7 @@ export const MusdAssetCta: React.FC<MusdAssetCtaProps> = ({
         flexDirection={BoxFlexDirection.Row}
         alignItems={BoxAlignItems.Center}
         justifyContent={BoxJustifyContent.Center}
-        backgroundColor={BoxBackgroundColor.BackgroundMuted}
+        backgroundColor={BoxBackgroundColor.Transparent}
         className="musd-asset-cta__icon"
       >
         <img src={MUSD_EDUCATION_COIN_IMAGE} alt="mUSD" />
@@ -195,10 +195,18 @@ export const MusdAssetCta: React.FC<MusdAssetCtaProps> = ({
         flexDirection={BoxFlexDirection.Column}
         className="musd-asset-cta__content"
       >
-        <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
+        <Text
+          color={TextColor.TextAlternative}
+          variant={TextVariant.BodyMd}
+          fontWeight={FontWeight.Medium}
+        >
           {t('musdBoostTitle', [String(MUSD_CONVERSION_APY)])}
         </Text>
-        <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
+        <Text
+          variant={TextVariant.BodySm}
+          fontWeight={FontWeight.Medium}
+          color={TextColor.TextDefault}
+        >
           {t('musdBoostDescription', [String(MUSD_CONVERSION_APY)])}
         </Text>
       </Box>

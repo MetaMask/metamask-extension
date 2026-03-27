@@ -812,7 +812,7 @@
     "showTestNetworks": true,
     "smartTransactionsOptInStatus": true,
     "showConfirmationAdvancedDetails": false,
-    "showDefaultAddress": false,
+    "showDefaultAddress": true,
     "featureNotificationsEnabled": false,
     "showMultiRpcModal": false,
     "privacyMode": false,
