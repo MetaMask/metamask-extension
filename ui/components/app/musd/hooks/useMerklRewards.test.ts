@@ -1,5 +1,5 @@
 import React from 'react';
-import { renderHook, act, cleanup } from '@testing-library/react-hooks';
+import { renderHook, cleanup } from '@testing-library/react-hooks';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import * as merklClient from '../merkl-client';
 import {
@@ -114,13 +114,7 @@ describe('useMerklRewards', () => {
       typeof merklClient.getClaimedAmountFromContract
     >;
 
-  afterEach(async () => {
-    // Flush pending TanStack Query observer notification microtasks BEFORE
-    // the testing library unmounts hooks, preventing "state update on
-    // unmounted component" warnings from deferred scheduleMicrotask calls.
-    await act(async () => {
-      await new Promise((resolve) => setTimeout(resolve, 0));
-    });
+  afterEach(() => {
     cleanup();
     queryClient.clear();
     jest.restoreAllMocks();
@@ -210,7 +204,7 @@ describe('useMerklRewards', () => {
     // On-chain read returns null → fallback to API claimed value (0)
     mockGetClaimedAmountFromContract.mockResolvedValueOnce(null);
 
-    const { result, waitForNextUpdate } = renderHook(
+    const { result, waitFor } = renderHook(
       () =>
         useMerklRewards({
           tokenAddress: MUSD_TOKEN_ADDRESS,
@@ -220,11 +214,10 @@ describe('useMerklRewards', () => {
       { wrapper: createWrapper() },
     );
 
-    await act(async () => {
-      await waitForNextUpdate();
+    await waitFor(() => {
+      expect(result.current.hasClaimableReward).toBe(true);
     });
 
-    expect(result.current.hasClaimableReward).toBe(true);
     expect(result.current.rewardAmountFiat).toBe(10.5);
     expect(result.current.hasClaimedBefore).toBe(false);
     expect(result.current.claimableRewardDisplay).toBe('10.50');
@@ -248,7 +241,7 @@ describe('useMerklRewards', () => {
     // On-chain read says 5.5 MUSD already claimed
     mockGetClaimedAmountFromContract.mockResolvedValueOnce('5500000');
 
-    const { result, waitForNextUpdate } = renderHook(
+    const { result, waitFor } = renderHook(
       () =>
         useMerklRewards({
           tokenAddress: MUSD_TOKEN_ADDRESS,
@@ -258,12 +251,11 @@ describe('useMerklRewards', () => {
       { wrapper: createWrapper() },
     );
 
-    await act(async () => {
-      await waitForNextUpdate();
+    // 10.5 - 5.5 = 5.0 MUSD claimable
+    await waitFor(() => {
+      expect(result.current.hasClaimableReward).toBe(true);
     });
 
-    // 10.5 - 5.5 = 5.0 MUSD claimable
-    expect(result.current.hasClaimableReward).toBe(true);
     expect(result.current.rewardAmountFiat).toBe(5.0);
     expect(result.current.hasClaimedBefore).toBe(true);
     expect(result.current.claimableRewardDisplay).toBe('5.00');
@@ -291,7 +283,7 @@ describe('useMerklRewards', () => {
     // On-chain says all claimed
     mockGetClaimedAmountFromContract.mockResolvedValueOnce('1000000');
 
-    const { result } = renderHook(
+    const { result, waitFor } = renderHook(
       () =>
         useMerklRewards({
           tokenAddress: MUSD_TOKEN_ADDRESS,
@@ -301,20 +293,19 @@ describe('useMerklRewards', () => {
       { wrapper: createWrapper() },
     );
 
-    await act(async () => {
-      await new Promise((resolve) => setTimeout(resolve, 0));
+    await waitFor(() => {
+      expect(result.current.hasClaimedBefore).toBe(true);
     });
 
     expect(result.current.hasClaimableReward).toBe(false);
     expect(result.current.rewardAmountFiat).toBeNull();
-    expect(result.current.hasClaimedBefore).toBe(true);
     expect(result.current.claimableRewardDisplay).toBeNull();
   });
 
   it('returns false when API returns no matching reward', async () => {
     mockFetchMerklRewardsForAsset.mockResolvedValueOnce(null);
 
-    const { result } = renderHook(
+    const { result, waitFor } = renderHook(
       () =>
         useMerklRewards({
           tokenAddress: MUSD_TOKEN_ADDRESS,
@@ -324,12 +315,10 @@ describe('useMerklRewards', () => {
       { wrapper: createWrapper() },
     );
 
-    // Allow the query to execute and resolve
-    await act(async () => {
-      await new Promise((resolve) => setTimeout(resolve, 0));
+    await waitFor(() => {
+      expect(mockFetchMerklRewardsForAsset).toHaveBeenCalled();
     });
 
-    expect(mockFetchMerklRewardsForAsset).toHaveBeenCalled();
     expect(result.current.hasClaimableReward).toBe(false);
     expect(result.current.rewardAmountFiat).toBeNull();
     expect(result.current.hasClaimedBefore).toBe(false);
@@ -352,7 +341,7 @@ describe('useMerklRewards', () => {
       recipient: MOCK_ADDRESS,
     });
 
-    const { result } = renderHook(
+    const { result, waitFor } = renderHook(
       () =>
         useMerklRewards({
           tokenAddress: MUSD_TOKEN_ADDRESS,
@@ -362,12 +351,11 @@ describe('useMerklRewards', () => {
       { wrapper: createWrapper() },
     );
 
-    await act(async () => {
-      await new Promise((resolve) => setTimeout(resolve, 0));
+    await waitFor(() => {
+      expect(result.current.hasClaimedBefore).toBe(true);
     });
 
     expect(result.current.hasClaimableReward).toBe(false);
-    expect(result.current.hasClaimedBefore).toBe(true);
     expect(result.current.claimableRewardDisplay).toBeNull();
   });
 
@@ -377,7 +365,7 @@ describe('useMerklRewards', () => {
       new Error('Network error'),
     );
 
-    const { result } = renderHook(
+    const { result, waitFor } = renderHook(
       () =>
         useMerklRewards({
           tokenAddress: MUSD_TOKEN_ADDRESS,
@@ -387,8 +375,10 @@ describe('useMerklRewards', () => {
       { wrapper: createWrapper() },
     );
 
-    await act(async () => {
-      await new Promise((resolve) => setTimeout(resolve, 0));
+    // Wait for the rejected promise to be processed — the mock being called
+    // proves react-query ran the queryFn and settled (not just default state).
+    await waitFor(() => {
+      expect(mockFetchMerklRewardsForAsset).toHaveBeenCalled();
     });
 
     expect(result.current.hasClaimableReward).toBe(false);
@@ -432,7 +422,7 @@ describe('useMerklRewards', () => {
     });
     mockGetClaimedAmountFromContract.mockResolvedValueOnce(null);
 
-    const { result } = renderHook(
+    const { result, waitFor } = renderHook(
       () =>
         useMerklRewards({
           tokenAddress: MUSD_TOKEN_ADDRESS,
@@ -442,8 +432,8 @@ describe('useMerklRewards', () => {
       { wrapper: createWrapper() },
     );
 
-    await act(async () => {
-      await new Promise((resolve) => setTimeout(resolve, 0));
+    await waitFor(() => {
+      expect(mockFetchMerklRewardsForAsset).toHaveBeenCalled();
     });
 
     expect(result.current.hasClaimableReward).toBe(false);
@@ -468,7 +458,7 @@ describe('useMerklRewards', () => {
     });
     mockGetClaimedAmountFromContract.mockResolvedValueOnce(null);
 
-    const { result, waitForNextUpdate } = renderHook(
+    const { result, waitFor } = renderHook(
       () =>
         useMerklRewards({
           tokenAddress: MUSD_TOKEN_ADDRESS,
@@ -478,23 +468,24 @@ describe('useMerklRewards', () => {
       { wrapper: createWrapper() },
     );
 
-    await act(async () => {
-      await waitForNextUpdate();
+    await waitFor(() => {
+      expect(result.current.hasClaimableReward).toBe(true);
     });
 
-    expect(result.current.hasClaimableReward).toBe(true);
     expect(result.current.rewardAmountFiat).toBe(0.01);
     expect(result.current.hasClaimedBefore).toBe(false);
     expect(result.current.claimableRewardDisplay).toBe('0.01');
   });
 
-  it('returns false and skips API call when user is geoblocked', async () => {
+  it('returns false and skips API call when user is geoblocked', () => {
     useMusdGeoBlocking.mockReturnValue({
       isBlocked: true,
       userCountry: 'GB',
       isLoading: false,
     });
 
+    // Query is disabled when geoblocked (enabled: false), so state is
+    // synchronous — no async cycle to wait for.
     const { result } = renderHook(
       () =>
         useMerklRewards({
@@ -504,10 +495,6 @@ describe('useMerklRewards', () => {
         }),
       { wrapper: createWrapper() },
     );
-
-    await act(async () => {
-      await new Promise((resolve) => setTimeout(resolve, 0));
-    });
 
     expect(result.current.hasClaimableReward).toBe(false);
     expect(result.current.hasClaimedBefore).toBe(false);
@@ -533,7 +520,7 @@ describe('useMerklRewards', () => {
       recipient: MOCK_ADDRESS,
     });
 
-    const { result } = renderHook(
+    const { result, waitFor } = renderHook(
       () =>
         useMerklRewards({
           tokenAddress: MUSD_TOKEN_ADDRESS,
@@ -543,12 +530,11 @@ describe('useMerklRewards', () => {
       { wrapper: createWrapper() },
     );
 
-    await act(async () => {
-      await new Promise((resolve) => setTimeout(resolve, 100));
+    // Falls back to API value (claimed=0), so full amount is claimable
+    await waitFor(() => {
+      expect(result.current.hasClaimableReward).toBe(true);
     });
 
-    // Falls back to API value (claimed=0), so full amount is claimable
-    expect(result.current.hasClaimableReward).toBe(true);
     expect(result.current.rewardAmountFiat).toBe(10.5);
     expect(result.current.hasClaimedBefore).toBe(false);
     expect(result.current.claimableRewardDisplay).toBe('10.50');
@@ -571,7 +557,7 @@ describe('useMerklRewards', () => {
     });
     mockGetClaimedAmountFromContract.mockResolvedValueOnce(null);
 
-    const { result } = renderHook(
+    const { result, waitFor } = renderHook(
       () =>
         useMerklRewards({
           tokenAddress: MUSD_TOKEN_ADDRESS,
@@ -581,11 +567,10 @@ describe('useMerklRewards', () => {
       { wrapper: createWrapper() },
     );
 
-    await act(async () => {
-      await new Promise((resolve) => setTimeout(resolve, 100));
+    await waitFor(() => {
+      expect(result.current.hasClaimableReward).toBe(true);
     });
 
-    expect(result.current.hasClaimableReward).toBe(true);
     expect(result.current.rewardAmountFiat).toBeNull();
     expect(result.current.hasClaimedBefore).toBe(false);
     expect(result.current.claimableRewardDisplay).toBe('10.50');
@@ -617,16 +602,16 @@ describe('useMerklRewards', () => {
     const wrapper = createWrapper();
 
     // First mount — fetches from API
-    const { result: firstResult, unmount } = renderHook(
-      () => useMerklRewards(hookArgs),
-      { wrapper },
-    );
+    const {
+      result: firstResult,
+      unmount,
+      waitFor,
+    } = renderHook(() => useMerklRewards(hookArgs), { wrapper });
 
-    await act(async () => {
-      await new Promise((resolve) => setTimeout(resolve, 100));
+    await waitFor(() => {
+      expect(firstResult.current.hasClaimableReward).toBe(true);
     });
 
-    expect(firstResult.current.hasClaimableReward).toBe(true);
     expect(firstResult.current.claimableRewardDisplay).toBe('10.50');
     expect(mockFetchMerklRewardsForAsset).toHaveBeenCalledTimes(1);
 
@@ -665,7 +650,7 @@ describe('useMerklRewards', () => {
     const wrapper = createWrapper();
 
     // First render with showMerklBadge=true — populates the cache
-    const { result: firstResult, waitForNextUpdate } = renderHook(
+    const { result: firstResult, waitFor } = renderHook(
       () =>
         useMerklRewards({
           tokenAddress: MUSD_TOKEN_ADDRESS,
@@ -675,11 +660,9 @@ describe('useMerklRewards', () => {
       { wrapper },
     );
 
-    await act(async () => {
-      await waitForNextUpdate();
+    await waitFor(() => {
+      expect(firstResult.current.hasClaimableReward).toBe(true);
     });
-
-    expect(firstResult.current.hasClaimableReward).toBe(true);
 
     // Second render with showMerklBadge=false — same queryKey, cache is warm
     const { result: secondResult } = renderHook(
