@@ -1,6 +1,5 @@
+import type { TextColor } from '@metamask/design-system-react';
 import type { ReactNode } from 'react';
-
-import type { TextColor } from '../../../../helpers/constants/design-system';
 import type { ConfirmInfoRowSize } from '../../confirm/info/row/row';
 
 export type PerpsFiatSummaryRow = {

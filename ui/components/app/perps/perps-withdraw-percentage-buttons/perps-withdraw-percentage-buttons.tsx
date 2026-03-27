@@ -1,16 +1,13 @@
-import React, { useCallback } from 'react';
 import {
   Box,
+  BoxFlexDirection,
+  BoxFlexWrap,
+  BoxJustifyContent,
   Button,
   ButtonSize,
   ButtonVariant,
-} from '../../../component-library';
-import {
-  Display,
-  FlexDirection,
-  FlexWrap,
-  JustifyContent,
-} from '../../../../helpers/constants/design-system';
+} from '@metamask/design-system-react';
+import React, { useCallback } from 'react';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 
 const QUICK_PERCENTAGES = [10, 25, 50] as const;
@@ -41,10 +38,9 @@ export const PerpsWithdrawPercentageButtons: React.FC<
 
   return (
     <Box
-      display={Display.Flex}
-      flexDirection={FlexDirection.Row}
-      flexWrap={FlexWrap.Wrap}
-      justifyContent={JustifyContent.center}
+      flexDirection={BoxFlexDirection.Row}
+      flexWrap={BoxFlexWrap.Wrap}
+      justifyContent={BoxJustifyContent.Center}
       gap={2}
       data-testid="perps-withdraw-percentage-buttons"
     >
@@ -53,7 +49,7 @@ export const PerpsWithdrawPercentageButtons: React.FC<
           key={percentage}
           variant={ButtonVariant.Secondary}
           size={ButtonSize.Sm}
-          disabled={disabled}
+          isDisabled={disabled}
           onClick={() => handleClick(percentage)}
           data-testid={`perps-withdraw-percentage-${percentage}`}
         >
@@ -63,7 +59,7 @@ export const PerpsWithdrawPercentageButtons: React.FC<
       <Button
         variant={ButtonVariant.Secondary}
         size={ButtonSize.Sm}
-        disabled={disabled}
+        isDisabled={disabled}
         onClick={() => handleClick(100)}
         data-testid="perps-withdraw-percentage-max"
       >

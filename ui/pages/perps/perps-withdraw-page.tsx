@@ -2,9 +2,24 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Navigate, useNavigate } from 'react-router-dom';
 import {
+  AvatarNetwork,
+  AvatarNetworkSize,
+  AvatarToken,
+  AvatarTokenSize,
+  BadgeWrapper,
+  BadgeWrapperPosition,
+  BadgeWrapperPositionAnchorShape,
+  Box,
+  BoxAlignItems,
+  BoxFlexDirection,
+  BoxJustifyContent,
+  Button,
+  ButtonSize,
+  ButtonVariant,
   Text,
+  TextAlign,
+  TextColor,
   TextVariant,
-  TextColor as DsTextColor,
 } from '@metamask/design-system-react';
 import type { AssetRoute, WithdrawResult } from '@metamask/perps-controller';
 import {
@@ -12,31 +27,10 @@ import {
   HYPERLIQUID_WITHDRAWAL_MINUTES,
   WITHDRAWAL_CONSTANTS,
 } from '@metamask/perps-controller';
-import {
-  AvatarNetwork,
-  AvatarNetworkSize,
-  AvatarToken,
-  AvatarTokenSize,
-  BadgeWrapper,
-  Box,
-  Button,
-  ButtonSize,
-  ButtonVariant,
-  Text as ClText,
-} from '../../components/component-library';
 import { isValidPerpsWithdrawAmount } from '../../components/app/perps/constants';
 import { Content, Footer, Page } from '../../components/multichain/pages/page';
 import { getSelectedInternalAccount } from '../../selectors/accounts';
-import {
-  BlockSize,
-  Display,
-  FlexDirection,
-  AlignItems,
-  JustifyContent,
-  TextAlign,
-  TextVariant as ClTextVariant,
-  TextColor as ClTextColor,
-} from '../../helpers/constants/design-system';
+import { FlexDirection } from '../../helpers/constants/design-system';
 import { getAvatarNetworkColor } from '../../helpers/utils/accounts';
 import {
   CHAIN_IDS,
@@ -297,23 +291,31 @@ const PerpsWithdrawPage: React.FC = () => {
       CHAIN_IDS.ARBITRUM as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
     ] ?? '';
 
-  const receiveAssetRowContent = useMemo(
-    () => (
+  const receiveAssetRowContent = useMemo(() => {
+    const networkBackgroundKey = getAvatarNetworkColor(arbitrumNetworkName);
+    const networkAvatarStyle = networkBackgroundKey
+      ? {
+          backgroundColor: `var(--color-network-${networkBackgroundKey}-default)`,
+        }
+      : undefined;
+
+    return (
       <Box
-        display={Display.Flex}
-        flexDirection={FlexDirection.Row}
-        alignItems={AlignItems.center}
+        flexDirection={BoxFlexDirection.Row}
+        alignItems={BoxAlignItems.Center}
         gap={2}
         data-testid="perps-withdraw-summary-asset-value"
       >
         <BadgeWrapper
+          position={BadgeWrapperPosition.BottomRight}
+          positionAnchorShape={BadgeWrapperPositionAnchorShape.Rectangular}
           badge={
             <AvatarNetwork
               src={arbitrumNetworkImageUrl}
               name={arbitrumNetworkName}
               size={AvatarNetworkSize.Xs}
-              backgroundColor={getAvatarNetworkColor(arbitrumNetworkName)}
-              borderWidth={2}
+              className="box-border border-2 border-default"
+              style={networkAvatarStyle}
             />
           }
         >
@@ -323,13 +325,12 @@ const PerpsWithdrawPage: React.FC = () => {
             size={AvatarTokenSize.Sm}
           />
         </BadgeWrapper>
-        <ClText variant={ClTextVariant.bodyMd} color={ClTextColor.textDefault}>
+        <Text variant={TextVariant.BodyMd} color={TextColor.TextDefault}>
           USDC
-        </ClText>
+        </Text>
       </Box>
-    ),
-    [arbitrumNetworkImageUrl, arbitrumNetworkName],
-  );
+    );
+  }, [arbitrumNetworkImageUrl, arbitrumNetworkName]);
 
   const summaryRows = useMemo(
     () => [
@@ -354,7 +355,7 @@ const PerpsWithdrawPage: React.FC = () => {
           ? formatCurrency(youReceiveNum, 'USD')
           : '—',
         emphasizeValue: true,
-        valueColor: ClTextColor.textDefault,
+        valueColor: TextColor.TextDefault,
         'data-testid': 'perps-withdraw-summary-receive',
       },
     ],
@@ -379,19 +380,17 @@ const PerpsWithdrawPage: React.FC = () => {
       <PerpsWalletAccountHeader />
       <Content className="min-h-0 flex-1">
         <Box
-          display={Display.Flex}
-          flexDirection={FlexDirection.Column}
+          flexDirection={BoxFlexDirection.Column}
           gap={4}
-          width={BlockSize.Full}
+          className="w-full min-h-0 flex-1"
           style={{ flex: 1, minHeight: 0 }}
         >
           <Box
-            display={Display.Flex}
-            flexDirection={FlexDirection.Column}
-            alignItems={AlignItems.center}
-            justifyContent={JustifyContent.center}
+            flexDirection={BoxFlexDirection.Column}
+            alignItems={BoxAlignItems.Center}
+            justifyContent={BoxJustifyContent.Center}
             gap={4}
-            width={BlockSize.Full}
+            className="w-full min-h-0 flex-1"
             style={{ flex: 1, minHeight: 0 }}
           >
             <PerpsFiatHeroAmountInput
@@ -401,14 +400,14 @@ const PerpsWithdrawPage: React.FC = () => {
               hasAlert={amountHasAlert}
             />
 
-            <ClText
-              variant={ClTextVariant.bodySm}
-              color={ClTextColor.textAlternative}
+            <Text
+              variant={TextVariant.BodySm}
+              color={TextColor.TextAlternative}
               textAlign={TextAlign.Center}
             >
               {t('perpsAvailableBalance')}
               {formatCurrency(availableNum, 'USD')}
-            </ClText>
+            </Text>
 
             {isEligible ? (
               <PerpsWithdrawPercentageButtons
@@ -419,8 +418,7 @@ const PerpsWithdrawPage: React.FC = () => {
           </Box>
 
           <Box
-            display={Display.Flex}
-            flexDirection={FlexDirection.Column}
+            flexDirection={BoxFlexDirection.Column}
             gap={4}
             style={{ flexShrink: 0 }}
           >
@@ -430,19 +428,13 @@ const PerpsWithdrawPage: React.FC = () => {
             />
 
             {validationMessage ? (
-              <Text
-                variant={TextVariant.BodySm}
-                color={DsTextColor.ErrorDefault}
-              >
+              <Text variant={TextVariant.BodySm} color={TextColor.ErrorDefault}>
                 {validationMessage}
               </Text>
             ) : null}
 
             {submitError ? (
-              <Text
-                variant={TextVariant.BodySm}
-                color={DsTextColor.ErrorDefault}
-              >
+              <Text variant={TextVariant.BodySm} color={TextColor.ErrorDefault}>
                 {submitError}
               </Text>
             ) : null}
@@ -450,7 +442,7 @@ const PerpsWithdrawPage: React.FC = () => {
             {isEligible ? null : (
               <Text
                 variant={TextVariant.BodySm}
-                color={DsTextColor.TextAlternative}
+                color={TextColor.TextAlternative}
               >
                 {t('perpsGeoBlockedTooltip')}
               </Text>
@@ -462,14 +454,9 @@ const PerpsWithdrawPage: React.FC = () => {
         className="confirm-footer_page-footer"
         flexDirection={FlexDirection.Column}
       >
-        <Box
-          display={Display.Flex}
-          flexDirection={FlexDirection.Row}
-          gap={4}
-          width={BlockSize.Full}
-        >
+        <Box flexDirection={BoxFlexDirection.Row} gap={4} className="w-full">
           <Button
-            block
+            isFullWidth
             data-testid="perps-withdraw-cancel"
             variant={ButtonVariant.Secondary}
             size={ButtonSize.Lg}
@@ -478,13 +465,13 @@ const PerpsWithdrawPage: React.FC = () => {
             {t('cancel')}
           </Button>
           <Button
-            block
+            isFullWidth
             data-testid="perps-withdraw-submit"
             variant={ButtonVariant.Primary}
             size={ButtonSize.Lg}
             onClick={handleContinue}
-            loading={isSubmitting}
-            disabled={!hasValidInputs || isSubmitting}
+            isLoading={isSubmitting}
+            isDisabled={!hasValidInputs || isSubmitting}
           >
             {t('perpsWithdraw')}
           </Button>

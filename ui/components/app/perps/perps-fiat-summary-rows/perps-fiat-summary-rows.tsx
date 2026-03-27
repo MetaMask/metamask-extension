@@ -1,12 +1,12 @@
 import React from 'react';
-import { Box, Text } from '../../../component-library';
 import {
-  Display,
-  FlexDirection,
+  Box,
+  BoxFlexDirection,
   FontWeight,
+  Text,
   TextColor,
   TextVariant,
-} from '../../../../helpers/constants/design-system';
+} from '@metamask/design-system-react';
 import { ConfirmInfoRow, ConfirmInfoRowSize } from '../../confirm/info/row/row';
 import type { PerpsFiatSummaryRowsProps } from './perps-fiat-summary-rows.types';
 
@@ -22,12 +22,11 @@ export const PerpsFiatSummaryRows: React.FC<PerpsFiatSummaryRowsProps> = ({
   rowVariant = ConfirmInfoRowSize.Small,
 }) => {
   const isSmall = rowVariant === ConfirmInfoRowSize.Small;
-  const textVariant = isSmall ? TextVariant.bodyMd : TextVariant.bodyMdMedium;
+  const textVariant = TextVariant.BodyMd;
 
   return (
     <Box
-      display={Display.Flex}
-      flexDirection={FlexDirection.Column}
+      flexDirection={BoxFlexDirection.Column}
       gap={2}
       paddingBottom={4}
       data-testid="perps-fiat-summary-rows"
@@ -40,28 +39,33 @@ export const PerpsFiatSummaryRows: React.FC<PerpsFiatSummaryRowsProps> = ({
             valueContent,
             'data-testid': dataTestId,
             emphasizeValue,
-            valueColor = TextColor.textAlternative,
+            valueColor = TextColor.TextAlternative,
           },
           index,
-        ) => (
-          <ConfirmInfoRow
-            key={`${label}-${index}`}
-            label={label}
-            rowVariant={rowVariant}
-            data-testid={dataTestId}
-          >
-            {valueContent ?? (
-              <Text
-                variant={textVariant}
-                color={valueColor}
-                fontWeight={emphasizeValue ? FontWeight.Medium : undefined}
-                data-testid={dataTestId ? `${dataTestId}-value` : undefined}
-              >
-                {value}
-              </Text>
-            )}
-          </ConfirmInfoRow>
-        ),
+        ) => {
+          const valueFontWeight =
+            emphasizeValue || !isSmall ? FontWeight.Medium : undefined;
+
+          return (
+            <ConfirmInfoRow
+              key={`${label}-${index}`}
+              label={label}
+              rowVariant={rowVariant}
+              data-testid={dataTestId}
+            >
+              {valueContent ?? (
+                <Text
+                  variant={textVariant}
+                  color={valueColor}
+                  fontWeight={valueFontWeight}
+                  data-testid={dataTestId ? `${dataTestId}-value` : undefined}
+                >
+                  {value}
+                </Text>
+              )}
+            </ConfirmInfoRow>
+          );
+        },
       )}
     </Box>
   );

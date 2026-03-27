@@ -1,25 +1,23 @@
 import type { Hex } from '@metamask/utils';
+import {
+  AvatarNetwork,
+  AvatarNetworkSize,
+  Box,
+  BoxAlignItems,
+  BoxFlexDirection,
+  BoxJustifyContent,
+  FontWeight,
+  Text,
+  TextColor,
+  TextVariant,
+} from '@metamask/design-system-react';
 import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import {
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
   NETWORK_TO_NAME_MAP,
 } from '../../../../../shared/constants/network';
-import {
-  AvatarNetwork,
-  AvatarNetworkSize,
-  Box,
-  Text,
-} from '../../../component-library';
 import { PreferredAvatar } from '../../preferred-avatar';
-import {
-  AlignItems,
-  Display,
-  FlexDirection,
-  JustifyContent,
-  TextColor,
-  TextVariant,
-} from '../../../../helpers/constants/design-system';
 import { getAvatarNetworkColor } from '../../../../helpers/utils/accounts';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { getCurrentChainId } from '../../../../../shared/lib/selectors/networks';
@@ -110,6 +108,13 @@ export const PerpsWalletAccountHeader: React.FC = () => {
       chainId as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
     ] ?? '';
 
+  const networkBackgroundKey = getAvatarNetworkColor(networkDisplayName);
+  const networkAvatarStyle = networkBackgroundKey
+    ? {
+        backgroundColor: `var(--color-network-${networkBackgroundKey}-default)`,
+      }
+    : undefined;
+
   const primaryLabel =
     (isMultichainAccountsState2Enabled ? accountGroupDisplayName : null) ??
     selectedAccount?.metadata?.name ??
@@ -130,43 +135,48 @@ export const PerpsWalletAccountHeader: React.FC = () => {
 
   return (
     <Box
-      display={Display.Flex}
+      flexDirection={BoxFlexDirection.Row}
       className="confirm_header__wrapper"
-      alignItems={AlignItems.center}
-      justifyContent={JustifyContent.spaceBetween}
+      alignItems={BoxAlignItems.Center}
+      justifyContent={BoxJustifyContent.Between}
       data-testid="perps-wallet-account-header"
     >
-      <Box alignItems={AlignItems.flexStart} display={Display.Flex} padding={4}>
-        <Box display={Display.Flex} marginTop={2}>
+      <Box
+        flexDirection={BoxFlexDirection.Row}
+        alignItems={BoxAlignItems.Start}
+        padding={4}
+      >
+        <Box flexDirection={BoxFlexDirection.Row} marginTop={2}>
           <PreferredAvatar address={senderAddress} />
           {isMultichainAccountsState2Enabled ? null : (
             <AvatarNetwork
               src={networkImageUrl}
               name={networkDisplayName}
               size={AvatarNetworkSize.Xs}
-              backgroundColor={getAvatarNetworkColor(networkDisplayName)}
               className="confirm_header__avatar-network"
+              style={networkAvatarStyle}
             />
           )}
         </Box>
         <Box
-          display={Display.Flex}
-          flexDirection={FlexDirection.Column}
-          alignItems={AlignItems.flexStart}
+          flexDirection={BoxFlexDirection.Column}
+          alignItems={BoxAlignItems.Start}
           gap={1}
-          marginInlineStart={4}
+          marginLeft={4}
           marginTop={secondaryText ? 0 : 3}
         >
           <Text
-            color={TextColor.textDefault}
-            variant={TextVariant.bodyMdMedium}
+            color={TextColor.TextDefault}
+            variant={TextVariant.BodyMd}
+            fontWeight={FontWeight.Medium}
             data-testid="perps-wallet-account-header-name"
           >
             {primaryLabel}
           </Text>
           {secondaryText ? (
             <Text
-              color={TextColor.textAlternative}
+              color={TextColor.TextAlternative}
+              variant={TextVariant.BodyMd}
               data-testid="perps-wallet-account-header-secondary"
             >
               {secondaryText}
@@ -175,7 +185,7 @@ export const PerpsWalletAccountHeader: React.FC = () => {
         </Box>
       </Box>
       {/* Right column reserved to match confirmations header grid; deposit shows HeaderInfo here. */}
-      <Box alignItems={AlignItems.flexEnd} display={Display.Flex} padding={4} />
+      <Box alignItems={BoxAlignItems.End} flexDirection={BoxFlexDirection.Row} padding={4} />
     </Box>
   );
 };

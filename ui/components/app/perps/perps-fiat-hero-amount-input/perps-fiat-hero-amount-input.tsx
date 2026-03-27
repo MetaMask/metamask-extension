@@ -1,14 +1,14 @@
 import React, { useCallback } from 'react';
 import {
-  Display,
-  FlexDirection,
-  JustifyContent,
-  AlignItems,
+  Box,
+  BoxAlignItems,
+  BoxFlexDirection,
+  BoxJustifyContent,
   FontWeight,
-  TextColor,
+  Text,
   TextAlign,
-} from '../../../../helpers/constants/design-system';
-import { Box, Text } from '../../../component-library';
+  TextColor,
+} from '@metamask/design-system-react';
 import { Skeleton } from '../../../component-library/skeleton';
 import { getCurrencySymbol } from '../../../../helpers/utils/common.util';
 import type { PerpsFiatHeroAmountInputProps } from './perps-fiat-hero-amount-input.types';
@@ -44,25 +44,33 @@ function getLineHeight(length: number): string {
   return '22px';
 }
 
-function getTextColor(
+function getHeroAmountColors(
   hasAlert: boolean,
   disabled: boolean,
-): TextColor | undefined {
+): { textColor: TextColor; inputColor: string } {
   if (hasAlert) {
-    return TextColor.errorDefault;
+    return {
+      textColor: TextColor.ErrorDefault,
+      inputColor: 'var(--color-error-default)',
+    };
   }
   if (disabled) {
-    return TextColor.textMuted;
+    return {
+      textColor: TextColor.TextMuted,
+      inputColor: 'var(--color-text-muted)',
+    };
   }
-  return TextColor.textDefault;
+  return {
+    textColor: TextColor.TextDefault,
+    inputColor: 'var(--color-text-default)',
+  };
 }
 
 export const PerpsFiatHeroAmountSkeleton: React.FC = () => (
   <Box
-    display={Display.Flex}
-    flexDirection={FlexDirection.Row}
-    justifyContent={JustifyContent.center}
-    alignItems={AlignItems.center}
+    flexDirection={BoxFlexDirection.Row}
+    justifyContent={BoxJustifyContent.Center}
+    alignItems={BoxAlignItems.Center}
     style={{ minHeight: '70px' }}
     data-testid="perps-fiat-hero-amount-skeleton"
   >
@@ -85,7 +93,7 @@ export const PerpsFiatHeroAmountInput: React.FC<PerpsFiatHeroAmountInputProps> =
       const handleChange = useCallback(
         (e: React.ChangeEvent<HTMLInputElement>) => {
           const next = e.target.value;
-          if (/^[0-9]*[.,]?[0-9]*$/u.test(next)) {
+          if (/^\d*[.,]?\d*$/u.test(next)) {
             onChange(next);
           }
         },
@@ -98,14 +106,13 @@ export const PerpsFiatHeroAmountInput: React.FC<PerpsFiatHeroAmountInputProps> =
 
       const fontSize = getFontSize(amountLength);
       const lineHeight = getLineHeight(amountLength);
-      const textColor = getTextColor(hasAlert, disabled);
+      const { textColor, inputColor } = getHeroAmountColors(hasAlert, disabled);
 
       return (
         <Box
-          display={Display.Flex}
-          flexDirection={FlexDirection.Row}
-          justifyContent={JustifyContent.center}
-          alignItems={AlignItems.center}
+          flexDirection={BoxFlexDirection.Row}
+          justifyContent={BoxJustifyContent.Center}
+          alignItems={BoxAlignItems.Center}
           style={{ minHeight: '70px' }}
         >
           <Text
@@ -129,7 +136,7 @@ export const PerpsFiatHeroAmountInput: React.FC<PerpsFiatHeroAmountInputProps> =
                 fontSize,
                 lineHeight,
                 fontWeight: 500,
-                color: textColor ? `var(--color-${textColor})` : 'inherit',
+                color: inputColor,
                 textAlign: 'left',
                 border: 'none',
                 background: 'transparent',
