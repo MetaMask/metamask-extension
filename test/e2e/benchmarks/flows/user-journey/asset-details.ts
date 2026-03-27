@@ -23,7 +23,8 @@ import {
   WITH_STATE_POWER_USER,
   collectWebVitals,
 } from '../../utils';
-import type { WebVitalsMetrics, BenchmarkRunResult } from '../../utils';
+import type { WebVitalsMetrics } from '../../../../../shared/constants/benchmarks';
+import type { BenchmarkRunResult } from '../../utils';
 
 const ETH_TOKEN_ADDRESS = '0x0000000000000000000000000000000000000000';
 export const testTitle = 'benchmark-asset-details-power-user';

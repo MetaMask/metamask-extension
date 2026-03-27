@@ -25,7 +25,8 @@ import {
   WITH_STATE_POWER_USER,
   collectWebVitals,
 } from '../../utils';
-import type { WebVitalsMetrics, BenchmarkRunResult } from '../../utils';
+import type { WebVitalsMetrics } from '../../../../../shared/constants/benchmarks';
+import type { BenchmarkRunResult } from '../../utils';
 import { registerSwapInterceptor } from '../../mocks/swap-mocks';
 
 export const testTitle = 'benchmark-swap-power-user';

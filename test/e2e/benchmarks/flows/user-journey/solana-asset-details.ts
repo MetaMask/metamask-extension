@@ -21,7 +21,8 @@ import {
   WITH_STATE_POWER_USER,
   collectWebVitals,
 } from '../../utils';
-import type { WebVitalsMetrics, BenchmarkRunResult } from '../../utils';
+import type { WebVitalsMetrics } from '../../../../../shared/constants/benchmarks';
+import type { BenchmarkRunResult } from '../../utils';
 
 const SOL_TOKEN_ADDRESS = 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501';
 

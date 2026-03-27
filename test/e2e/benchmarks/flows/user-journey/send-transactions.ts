@@ -26,7 +26,8 @@ import {
   WITH_STATE_POWER_USER,
   collectWebVitals,
 } from '../../utils';
-import type { WebVitalsMetrics, BenchmarkRunResult } from '../../utils';
+import type { WebVitalsMetrics } from '../../../../../shared/constants/benchmarks';
+import type { BenchmarkRunResult } from '../../utils';
 
 const RECIPIENT_ADDRESS = 'GxSJqxAyTjCjyDmPxdBBfVE9QwuMhEoHrPLRTmMyqxnU';
 

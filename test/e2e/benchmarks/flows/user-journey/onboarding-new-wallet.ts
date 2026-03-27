@@ -31,7 +31,8 @@ import {
   BENCHMARK_TYPE,
   collectWebVitals,
 } from '../../utils';
-import type { WebVitalsMetrics, BenchmarkRunResult } from '../../utils';
+import type { WebVitalsMetrics } from '../../../../../shared/constants/benchmarks';
+import type { BenchmarkRunResult } from '../../utils';
 
 export const testTitle = 'benchmark-onboarding-new-wallet';
 export const persona = BENCHMARK_PERSONA.STANDARD;

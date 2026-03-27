@@ -19,6 +19,8 @@ import {
 import type {
   BenchmarkResults,
   WebVitalsMetrics,
+} from '../../../../../shared/constants/benchmarks';
+import type {
   Metrics,
   PageLoadBenchmarkOptions,
   MeasurePageResult,

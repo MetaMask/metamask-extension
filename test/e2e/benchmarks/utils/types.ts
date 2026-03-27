@@ -1,23 +1,11 @@
 import type {
-  BenchmarkResults,
   Persona,
   BenchmarkType,
   WebVitalsMetrics,
   WebVitalsSummary,
   TimerStatistics,
   ThresholdViolation,
-  ThresholdConfig,
-  PercentileThreshold,
 } from '../../../../shared/constants/benchmarks';
-
-export type {
-  BenchmarkResults,
-  TimerStatistics,
-  ThresholdViolation,
-  ThresholdConfig,
-  PercentileThreshold,
-  WebVitalsMetrics,
-};
 
 export type TimerResult = {
   id: string;

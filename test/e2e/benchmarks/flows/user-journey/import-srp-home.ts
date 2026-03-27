@@ -24,7 +24,8 @@ import {
   WITH_STATE_POWER_USER,
   collectWebVitals,
 } from '../../utils';
-import type { WebVitalsMetrics, BenchmarkRunResult } from '../../utils';
+import type { WebVitalsMetrics } from '../../../../../shared/constants/benchmarks';
+import type { BenchmarkRunResult } from '../../utils';
 
 const SECOND_SRP = process.env.TEST_SRP_2;
 
