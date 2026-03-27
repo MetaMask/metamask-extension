@@ -290,7 +290,6 @@
   "shared/lib/hexstring-utils.test.js",
   "shared/lib/mv3.utils.js",
   "shared/lib/network.utils.js",
-  "shared/lib/object.utils.js",
   "shared/lib/random-id.js",
   "shared/lib/siwe.js",
   "shared/lib/string-utils.js",
