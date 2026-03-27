@@ -1,6 +1,6 @@
 import { Mockttp } from 'mockttp';
 import { withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { login } from '../../page-objects/flows/login.flow';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import HomePage from '../../page-objects/pages/home/homepage';
@@ -18,23 +18,15 @@ import {
   MOCK_CLAIMS_3_PENDING,
 } from '../../helpers/shield/constants';
 import { ShieldMockttpService } from '../../helpers/shield/mocks';
+import { NETWORK_CLIENT_ID } from '../../constants';
 
 // Local fixture for this spec file
 function createShieldFixture() {
-  return new FixtureBuilder()
-    .withNetworkControllerOnMainnet()
+  return new FixtureBuilderV2()
+    .withSelectedNetwork(NETWORK_CLIENT_ID.MAINNET)
     .withEnabledNetworks({
       eip155: {
         '0x1': true,
-      },
-    })
-    .withAccountTracker({
-      accountsByChainId: {
-        '0x1': {
-          '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': {
-            balance: '0x15af1d78b58c40000', // 25 ETH
-          },
-        },
       },
     })
     .withTokensController({
@@ -51,16 +43,13 @@ function createShieldFixture() {
           ],
         },
       },
-    })
-    .withAppStateController({
-      showShieldEntryModalOnce: null, // set the initial state to null so that the modal is shown
     });
 }
 
 // Local fixture for cancelled subscription test - prevents entry modal from showing
 function createShieldFixtureCancelled() {
-  return new FixtureBuilder()
-    .withNetworkControllerOnMainnet()
+  return new FixtureBuilderV2()
+    .withSelectedNetwork(NETWORK_CLIENT_ID.MAINNET)
     .withEnabledNetworks({
       eip155: {
         '0x1': true,
@@ -82,29 +71,17 @@ function createShieldFixtureCancelled() {
       },
     })
     .withAppStateController({
-      showShieldEntryModalOnce: {
-        show: false,
-        hasUserInteractedWithModal: true,
-      }, // Prevent entry modal from showing since subscription exists (even if cancelled)
+      showShieldEntryModalOnce: true, // Prevent entry modal from showing since subscription exists (even if cancelled)
     });
 }
 
 // Local fixture for crypto payment tests with USDC and USDT
 function createShieldFixtureCrypto() {
-  return new FixtureBuilder()
-    .withNetworkControllerOnMainnet()
+  return new FixtureBuilderV2()
+    .withSelectedNetwork(NETWORK_CLIENT_ID.MAINNET)
     .withEnabledNetworks({
       eip155: {
         '0x1': true,
-      },
-    })
-    .withAccountTracker({
-      accountsByChainId: {
-        '0x1': {
-          '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': {
-            balance: '0x15af1d78b58c40000', // 25 ETH
-          },
-        },
       },
     })
     .withTokensController({
@@ -129,9 +106,6 @@ function createShieldFixtureCrypto() {
           ],
         },
       },
-    })
-    .withAppStateController({
-      showShieldEntryModalOnce: null,
     });
 }
 
