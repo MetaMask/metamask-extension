@@ -260,7 +260,6 @@
   "development/stream-flat-map.js",
   "shared/constants/alarms.js",
   "shared/constants/permissions.test.js",
-  "shared/constants/tokens.js",
   "shared/lib/browser-runtime.utils.js",
   "shared/lib/browser-runtime.utils.test.js",
   "shared/lib/contract-utils.test.js",

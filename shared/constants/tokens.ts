@@ -11,24 +11,44 @@ export const LISTED_CONTRACT_ADDRESSES = Object.keys(contractMap).map(
 );
 
 /**
- * @typedef {object} TokenDetails
- * @property {string} address - The address of the selected 'TOKEN' or
- *  'NFT' contract.
- * @property {string} [symbol] - The symbol of the token.
- * @property {string|null} [name] - The name of the token.
- * @property {number} [decimals] - The number of decimals of the selected
- *  'ERC20' asset.
- * @property {number} [tokenId] - The id of the selected 'NFT' asset.
- * @property {string} [image] - A URL to the image of the NFT or ERC20 icon.
- * @property {TokenStandardStrings} [standard] - The standard of the selected
- *  asset.
- * @property {boolean} [isERC721] - True when the asset is a ERC721 token.
+ * Details about a token asset.
  */
+export type TokenDetails = {
+  /** The address of the selected 'TOKEN' or 'NFT' contract. */
+  address: string;
+  /** The symbol of the token. */
+  symbol?: string;
+  /** The name of the token. */
+  name?: string;
+  /** The number of decimals of the selected 'ERC20' asset. */
+  decimals?: number;
+  /** The id of the selected 'NFT' asset. */
+  tokenId?: number;
+  /** A URL to the image of the NFT or ERC20 icon. */
+  image?: string;
+  /** The standard of the selected asset. */
+  standard?: string;
+  /** True when the asset is a ERC721 token. */
+  isERC721?: boolean;
+};
 
-const STATIC_MAINNET_TOKEN_LIST = {};
+/**
+ * Represents a single entry in the static mainnet token list.
+ */
+type StaticMainnetToken = {
+  address: string;
+  iconUrl: string;
+  aggregators: string[];
+  symbol?: string;
+  decimals?: number;
+  name?: string;
+};
+
+const STATIC_MAINNET_TOKEN_LIST: Record<string, StaticMainnetToken> = {};
 
 for (const base of Object.keys(contractMap)) {
-  const { logo, ...tokenMetadata } = contractMap[base];
+  const { logo, ...tokenMetadata } =
+    contractMap[base as keyof typeof contractMap];
   STATIC_MAINNET_TOKEN_LIST[base.toLowerCase()] = {
     ...tokenMetadata,
     address: base.toLowerCase(),
