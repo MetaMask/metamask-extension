@@ -264,6 +264,22 @@ async function main() {
       const type = userAction.benchmarkType || BENCHMARK_TYPE.USER_ACTION;
       const message = `${type}.${name}`;
 
+      // Web vitals: send per-run span for user action benchmarks
+      if (userAction.webVitals) {
+        const webVitalsSummary: WebVitalsSummary = {
+          runs: [{ ...userAction.webVitals, iteration: 0 }],
+          aggregated: aggregateWebVitals([userAction.webVitals]),
+        };
+        sendWebVitalsToSentry(
+          type,
+          name,
+          webVitalsSummary,
+          userAction.persona || BENCHMARK_PERSONA.STANDARD,
+          userAction.testTitle,
+          baseCiAttributes,
+        );
+      }
+
       const metrics = Object.entries(userAction).reduce(
         (acc, [key, val]) =>
           typeof val === 'number' ? { ...acc, [key]: val } : acc,
@@ -283,22 +299,6 @@ async function main() {
         'ci.testTitle': userAction.testTitle,
         ...metrics,
       });
-
-      // Web vitals: send per-run span for user action benchmarks
-      if (userAction.webVitals) {
-        const webVitalsSummary: WebVitalsSummary = {
-          runs: [{ ...userAction.webVitals, iteration: 0 }],
-          aggregated: aggregateWebVitals([userAction.webVitals]),
-        };
-        sendWebVitalsToSentry(
-          type,
-          name,
-          webVitalsSummary,
-          userAction.persona || BENCHMARK_PERSONA.STANDARD,
-          userAction.testTitle,
-          baseCiAttributes,
-        );
-      }
       sentCount += 1;
     }
   }
