@@ -48,10 +48,7 @@ const SETUP_SCRIPT = readFileSync(
  * LCP from stateHooks → PerformanceObserver → mm-hero-painted mark.
  * CLS from stateHooks first, then observer entries as fallback.
  */
-const READ_SCRIPT = readFileSync(
-  path.join(__dirname, 'cwv-read.js'),
-  'utf-8',
-);
+const READ_SCRIPT = readFileSync(path.join(__dirname, 'cwv-read.js'), 'utf-8');
 
 const CDP_MOUSE_BASE = {
   x: 100,
