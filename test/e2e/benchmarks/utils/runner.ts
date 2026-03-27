@@ -140,7 +140,9 @@ export async function runBenchmarkWithIterations(
   const perRunTotalDurations: number[] = [];
   for (const result of allResults) {
     if (result.success && result.timers.length > 0) {
-      const runTotal = result.timers.reduce((acc, t) => acc + t.duration, 0);
+      const runTotal = result.timers
+        .filter((t) => t.unit !== 'count')
+        .reduce((acc, t) => acc + t.duration, 0);
       perRunTotalDurations.push(runTotal);
     }
   }

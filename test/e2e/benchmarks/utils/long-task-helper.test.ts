@@ -82,7 +82,7 @@ describe('long-task-helper', () => {
       const results = buildLongTaskTimerResults([]);
 
       expect(results).toEqual([
-        { id: 'longTaskCount', duration: 0 },
+        { id: 'longTaskCount', duration: 0, unit: 'count' },
         { id: 'longTaskTotalDuration', duration: 0 },
         { id: 'longTaskMaxDuration', duration: 0 },
         { id: 'tbt', duration: 0 },
@@ -104,7 +104,7 @@ describe('long-task-helper', () => {
       const results = buildLongTaskTimerResults(steps);
 
       expect(results).toEqual([
-        { id: 'longTaskCount', duration: 3 },
+        { id: 'longTaskCount', duration: 3, unit: 'count' },
         { id: 'longTaskTotalDuration', duration: 250 },
         { id: 'longTaskMaxDuration', duration: 120 },
         { id: 'tbt', duration: 100 },
@@ -142,7 +142,7 @@ describe('long-task-helper', () => {
       const results = buildLongTaskTimerResults(steps);
 
       expect(results).toEqual([
-        { id: 'longTaskCount', duration: 8 },
+        { id: 'longTaskCount', duration: 8, unit: 'count' },
         { id: 'longTaskTotalDuration', duration: 660 },
         { id: 'longTaskMaxDuration', duration: 150 },
         { id: 'tbt', duration: 260 },

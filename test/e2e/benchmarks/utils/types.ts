@@ -6,6 +6,8 @@ import type {
 export type TimerResult = {
   id: string;
   duration: number;
+  /** Defaults to 'ms'. Non-duration entries (e.g. counts) use 'count'. */
+  unit?: 'ms' | 'count';
 };
 
 export type LongTaskStepResult = {

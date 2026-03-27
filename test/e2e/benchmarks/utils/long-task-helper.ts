@@ -65,7 +65,7 @@ export function buildLongTaskTimerResults(
   }
 
   return [
-    { id: 'longTaskCount', duration: totalCount },
+    { id: 'longTaskCount', duration: totalCount, unit: 'count' as const },
     { id: 'longTaskTotalDuration', duration: totalDuration },
     { id: 'longTaskMaxDuration', duration: maxDuration },
     { id: 'tbt', duration: totalTbt },

@@ -333,29 +333,6 @@ export class PageLoadBenchmark {
       performance.now = () => originalNow() + (Date.now() - startTime);
     });
 
-    // Inject standalone Long Task observer for this page context.
-    // The extension's observer runs on chrome-extension:// pages and is
-    // not accessible from dapp pages, so we set up a dedicated one here.
-    await page.addInitScript(() => {
-      const LONG_TASK_THRESHOLD_MS = 50;
-      const metrics = { count: 0, totalDuration: 0, maxDuration: 0, tbt: 0 };
-      try {
-        const obs = new PerformanceObserver((list) => {
-          for (const entry of list.getEntries()) {
-            metrics.count += 1;
-            metrics.totalDuration += entry.duration;
-            metrics.maxDuration = Math.max(metrics.maxDuration, entry.duration);
-            metrics.tbt += Math.max(0, entry.duration - LONG_TASK_THRESHOLD_MS);
-          }
-        });
-        obs.observe({ type: 'longtask', buffered: true });
-      } catch {
-        // longtask not supported in this browser
-      }
-      // @ts-expect-error Injected property for benchmark metric collection
-      window.longTaskMetricsData = metrics;
-    });
-
     await page.goto(url, { waitUntil: 'networkidle' });
 
     // Wait for page to be fully loaded
@@ -363,22 +340,12 @@ export class PageLoadBenchmark {
     await page.waitForLoadState('networkidle');
 
     // Collect performance metrics
+    // Long task metrics are not collected on dapp pages. The extension's
+    // PerformanceObserver runs on chrome-extension:// pages and is not
+    // accessible here. Dapp page long tasks reflect the dapp's own JS,
+    // not the extension's. Long task/TBT metrics are collected only in
+    // Selenium-based startup/journey/interaction benchmarks via stateHooks.
     const metrics: BenchmarkMetrics = await page.evaluate(() => {
-      function rateTbt(
-        tbt?: number,
-      ): 'good' | 'needs-improvement' | 'poor' | undefined {
-        if (tbt === undefined) {
-          return undefined;
-        }
-        if (tbt < 200) {
-          return 'good';
-        }
-        if (tbt < 600) {
-          return 'needs-improvement';
-        }
-        return 'poor';
-      }
-
       const navigation = performance.getEntriesByType(
         'navigation',
       )[0] as PerformanceNavigationTiming;
@@ -386,18 +353,6 @@ export class PageLoadBenchmark {
       const lcp = performance.getEntriesByType(
         'largest-contentful-paint',
       )[0] as PerformanceEntry;
-
-      // Read Long Task / TBT metrics from the injected page-level observer
-      const longTaskMetricsRaw = (
-        window as typeof window & {
-          longTaskMetricsData?: {
-            count: number;
-            totalDuration: number;
-            maxDuration: number;
-            tbt: number;
-          };
-        }
-      ).longTaskMetricsData;
 
       return {
         pageLoadTime: navigation.loadEventEnd - navigation.startTime,
@@ -415,13 +370,6 @@ export class PageLoadBenchmark {
               jsHeapSizeLimit: performance.memory.jsHeapSizeLimit,
             }
           : undefined,
-        longTaskCount: longTaskMetricsRaw?.count,
-        longTaskTotalDuration: longTaskMetricsRaw?.totalDuration,
-        longTaskMaxDuration: longTaskMetricsRaw?.maxDuration,
-        tbt: longTaskMetricsRaw?.tbt,
-        // Thresholds (200/600ms) must match TBT_GOOD_THRESHOLD_MS and
-        // TBT_NEEDS_IMPROVEMENT_THRESHOLD_MS in performance-observers.ts
-        tbtRating: rateTbt(longTaskMetricsRaw?.tbt),
       };
     });
 
