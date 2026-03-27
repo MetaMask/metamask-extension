@@ -1,12 +1,9 @@
-import {
-  useRive,
-  useRiveFile,
-  useStateMachineInput,
-} from '@rive-app/react-canvas';
+import { useRive, useStateMachineInput } from '@rive-app/react-canvas';
 import React, { useEffect } from 'react';
 import cn from 'clsx';
 import { ThemeType } from '../../../../shared/constants/preferences';
 import { useTheme } from '../../../hooks/useTheme';
+import { useRiveFileLavamoat } from '../../../hooks/useRiveFileLavamoat';
 
 const source = './images/riv_animations/spinner_loader_with_states.riv';
 const stateMachine = 'SpinnerLoader';
@@ -20,7 +17,7 @@ export function StatusIcon({ state, className }: Props) {
   const theme = useTheme();
   const isDark = theme === ThemeType.dark;
 
-  const { riveFile, status: fileStatus } = useRiveFile({ src: source });
+  const { riveFile, status: fileStatus } = useRiveFileLavamoat({ src: source });
   const { rive, RiveComponent } = useRive({
     riveFile: riveFile ?? undefined,
     stateMachines: riveFile ? stateMachine : undefined,
