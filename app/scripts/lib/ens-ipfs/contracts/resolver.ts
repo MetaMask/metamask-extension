@@ -232,5 +232,5 @@ const abi = [
     name: 'ContenthashChanged',
     type: 'event',
   },
-];
+] as const;
 export default abi;
