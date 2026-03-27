@@ -9,83 +9,38 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [13.25.0]
 
-### Uncategorized
-
-- Updated mUSD conversion education and confirmation copy: clearer bonus explanation layout, `Powered by Relay` on the header (#41233)
-  info popover, wider info popover (`maxWidth` 250px), accessible names on
-  bonus tooltips, aligned home mUSD CTA copy/typography with the asset
-  overview CTA, and removed unused `musdEarnBonusPercentage` locale
-  entries after reusing boost strings.
-- Activity tab error state (#41266)
-- Static multichain network avatars are now preserved when default address is enabled (#41238)
-- Add ASSETS_UNIFIED_STATE_ENABLED build-time flag (#41204)
-- Bump new assets controller to v3.1.0 (#41035)
-- Reverts add asset verified badge in swaps asset picker (#41163)
-
 ### Added
 
-- N/a (#41229)
-- Upgrade `@metamask/seedless-onboarding-controller` to `v9.0.0`. (#41133)
-- Adds Recent Activity component, and miscellaneous UI improvements to Perps tab (#41174)
-- Show default address by default and display hoverable network group with optional default address on Account List below each (#41138)
-  account name
-- Integrates perps watchlist feature, remove mocks (#40991)
-- Added deep links for the Perps experience — users can now be linked directly to the Perps tab, a specific market, or the (#41143)
-  market list with a pre-selected filter
-- Added search functionality to Settings V2 (#41080)
-- Added Stable network and native token logos (#40879)
-- Add asset verified badge in swaps asset picker (#41118)
-- Migrate to historical prices v3 (#41112)
-- Migrate stock and market closure components so they use design-system-react library (#41059)
-  adjust stock and market closure components styling to
-  design guidelines
-- Add perps live stream hooks to UI (#40779)
-- Allows bridging on EVM chains to other wallets (#40990)
-- Integrates perps controller v1 with messenger streams and API (#40769)
-- Fixed gas edit opening from cancel/speed-up transaction flow and aligned cancel-speedup gas UI with the main confirmation flow. (#40734)
+- Recent Activity on the Perps tab and related UI improvements (#41174)
+- Default address shown by default with a hoverable network group (optional default address) below each account name on the account list (#41138)
+- Perps watchlist (#40991)
+- Deep links for Perps: open the Perps tab, a specific market, or the market list with a pre-selected filter (#41143)
+- Search in Settings V2 (#41080)
+- Logos for Stable network and its native token (#40879)
+- Bridging from EVM chains to other wallet addresses (#40990)
+- Perps live stream hooks in the UI (#40779)
+- "Paid by MetaMask" on the Activity "Total gas fee" row when the transaction was a gas-sponsored swap (#40757)
+
+### Changed
+
+- mUSD conversion education and confirmation copy: clearer bonus layout, Relay attribution in the header, wider info popover, accessible bonus tooltip labels, aligned home mUSD CTA with the asset overview CTA, and removed unused `musdEarnBonusPercentage` locale keys (#41233)
+- Migrated stock and market closure components to the design-system-react library and adjusted styling to design guidelines (#41059)
+- Migrated to historical prices v3 (#41112)
+- Multichain network avatars remain visible when default address mode is enabled (#41238)
+- Reverted the asset verified badge in the swaps asset picker (#41163)
+- mUSD education splash screen no longer shows extra empty space at the bottom on shorter screens (#41077)
 
 ### Fixed
 
-- Nft page in fullscreen (#41210)
-- Fixes bug in order exposure increase (#41028)
-- Fixed perps positions and balance not updating when switching between accounts (#41168)
-- Fixes visual discrepancy in order entry header, and persisted order values (#41025)
-- Null ## Manual testing steps (#40648)
+- Activity tab error state (#41266)
+- NFT detail page in fullscreen (#41210)
+- Gas editor from cancel or speed-up flow aligned with the main transaction confirmation flow (#40734)
+- Order exposure increase bug (#41028)
+- Perps positions and balance not updating when switching between accounts (#41168)
+- Order entry header visuals and persisted order values (#41025)
+- Canceling Solana transactions no longer leaves the wallet loading indefinitely (#41055)
+- Translation error on the Reveal Secret Recovery Phrase page that could crash the extension for the Irish (ga) locale (#41047)
 
-1. Create or select a branch with a large staged diff or a large branch
-   diff.
-2. Run the fitness functions through the normal pre-commit or pre-push
-   workflow.
-3. Confirm diff collection succeeds without ENOBUFS failures.
-
-## Pre-merge author checklist
-
-- [x] I've followed [MetaMask Contributor
-      Docs](https://github.com/MetaMask/contributor-docs) and [MetaMask
-      Extension Coding
-      Standards](https://github.com/MetaMask/metamask-extension/blob/main/.github/guidelines/CODING_GUIDELINES.md).
-- [x] I've completed the PR template to the best of my ability
-- [x] I've included tests if applicable
-- [ ] I've documented my code using [JSDoc](https://jsdoc.app/) format
-      if applicable
-- [x] I've applied the right labels on the PR (see [labeling
-      guidelines](https://github.com/MetaMask/metamask-extension/blob/main/docs/labeling-guidelines.md)).
-      Not required for external contributors.
-
----
-
-Note
-Low Risk
-Overview
-Updates pre-commit and pre-push fitness-function diff generation to use
-execFileSync with a shared 50 MB maxBuffer, reducing failures on large
-diffs and avoiding ENOBUFS errors during hook execution.
-
-- Fixed cancel Solana transactions leaves wallet loading indefinetly (#41055)
-- Stop assets polling when the new controller is used (#41113)
-- Adds "Paid by MetaMask" on Activity "Total gas fee" row when the tx was a gas-sponsored swap. (#40757)
-- Update mUSD education splash screen showing empty space at the bottom on shorter screens (#41077)
-- Fixed a translation error on the Reveal Secret Recovery Phrase page that caused a crash for users with the Irish (ga) locale. (#41047)
 ## [13.24.0]
 
 ### Added
@@ -2063,8 +2018,7 @@ diffs and avoiding ENOBUFS errors during hook execution.
 - All older changes can be found in [docs/CHANGELOG_older.md](https://github.com/MetaMask/metamask-extension/blob/main/docs/CHANGELOG_older.md)
 
 [Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.25.0...HEAD
-[13.25.0]: https://github.com/MetaMask/metamask-extension/compare/v13.23.0...v13.25.0
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.24.0...HEAD
+[13.25.0]: https://github.com/MetaMask/metamask-extension/compare/v13.24.0...v13.25.0
 [13.24.0]: https://github.com/MetaMask/metamask-extension/compare/v13.23.0...v13.24.0
 [13.23.0]: https://github.com/MetaMask/metamask-extension/compare/v13.22.0...v13.23.0
 [13.22.0]: https://github.com/MetaMask/metamask-extension/compare/v13.21.0...v13.22.0
