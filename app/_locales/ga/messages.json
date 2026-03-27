@@ -6553,14 +6553,8 @@
   "tokensInCollection": {
     "message": "Comharthaí sa bhailiúchán"
   },
-  "tooltipSatusConnected": {
-    "message": "ceangailte"
-  },
   "tooltipSatusConnectedUpperCase": {
     "message": "Ceangailte"
-  },
-  "tooltipSatusNotConnected": {
-    "message": "gan cheangal"
   },
   "total": {
     "message": "Iomlán"
