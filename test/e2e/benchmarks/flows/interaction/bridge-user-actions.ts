@@ -100,7 +100,11 @@ export async function run(): Promise<BenchmarkRunResult> {
           timestampAfterTokenSearch.getTime() -
           timestampBeforeTokenSearch.getTime();
 
-        webVitals = await collectWebVitals(driver);
+        try {
+          webVitals = await collectWebVitals(driver);
+        } catch (error) {
+          console.error('Error collecting web vitals:', error);
+        }
       },
     );
 

@@ -48,7 +48,11 @@ export async function run(): Promise<BenchmarkRunResult> {
         loadingTimes =
           timestampAfterAction.getTime() - timestampBeforeAction.getTime();
 
-        webVitals = await collectWebVitals(driver);
+        try {
+          webVitals = await collectWebVitals(driver);
+        } catch (error) {
+          console.error('Error collecting web vitals:', error);
+        }
       },
     );
 
