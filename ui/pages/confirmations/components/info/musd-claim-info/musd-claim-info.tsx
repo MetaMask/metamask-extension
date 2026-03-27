@@ -3,8 +3,8 @@ import { ConfirmInfoSection } from '../../../../../components/app/confirm/info/r
 import { GasFeesSection } from '../../confirm/info/shared/gas-fees-section/gas-fees-section';
 import { AdvancedDetails } from '../../confirm/info/shared/advanced-details/advanced-details';
 import { NetworkRow } from '../../confirm/info/shared/network-row/network-row';
+import { MusdClaimAccountRow } from '../../rows/musd-claim-account-row/musd-claim-account-row';
 import MusdClaimHeading from './musd-claim-heading';
-import { MusdClaimAccountRow } from './musd-claim-account-row';
 
 /**
  * Info component for mUSD claim (Merkl rewards) confirmation screen.

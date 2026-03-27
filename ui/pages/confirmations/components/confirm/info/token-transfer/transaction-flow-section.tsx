@@ -9,7 +9,7 @@ import { useI18nContext } from '../../../../../../hooks/useI18nContext';
 import { useDisplayName } from '../../../../../../hooks/useDisplayName';
 import { useConfirmContext } from '../../../../context/confirm';
 import { useTransferRecipient } from '../hooks/useTransferRecipient';
-import { AccountFlowRow } from '../shared/account-flow-row/account-flow-row';
+import { AccountFlowRow } from '../../../rows/account-flow-row/account-flow-row';
 
 export const TransactionFlowSection = () => {
   const t = useI18nContext();

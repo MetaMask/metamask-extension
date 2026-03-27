@@ -1,13 +1,13 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
-import { getMockTokenTransferConfirmState } from '../../../../../../../../test/data/confirmations/helper';
-import { renderWithConfirmContextProvider } from '../../../../../../../../test/lib/confirmations/render-helpers';
-import { TrustSignalDisplayState } from '../../../../../../../hooks/useTrustSignals';
-import { RowAlertKey } from '../../../../../../../components/app/confirm/info/row/constants';
+import { getMockTokenTransferConfirmState } from '../../../../../../test/data/confirmations/helper';
+import { renderWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
+import { TrustSignalDisplayState } from '../../../../../hooks/useTrustSignals';
+import { RowAlertKey } from '../../../../../components/app/confirm/info/row/constants';
 import { AccountFlowRow } from './account-flow-row';
 
 jest.mock(
-  '../../../../../../../components/app/alert-system/contexts/alertMetricsContext.tsx',
+  '../../../../../components/app/alert-system/contexts/alertMetricsContext.tsx',
   () => ({
     useAlertMetrics: () => ({
       trackInlineAlertClicked: jest.fn(),

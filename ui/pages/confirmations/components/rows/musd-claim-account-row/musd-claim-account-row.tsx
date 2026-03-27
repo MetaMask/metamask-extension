@@ -6,7 +6,7 @@ import { useDisplayName } from '../../../../../hooks/useDisplayName';
 import { toChecksumHexAddress } from '../../../../../../shared/lib/hexstring-utils';
 import { RowAlertKey } from '../../../../../components/app/confirm/info/row/constants';
 import { useConfirmContext } from '../../../context/confirm';
-import { AccountFlowRow } from '../../confirm/info/shared/account-flow-row/account-flow-row';
+import { AccountFlowRow } from '../account-flow-row/account-flow-row';
 
 export const MusdClaimAccountRow = () => {
   const t = useI18nContext();
