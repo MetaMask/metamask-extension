@@ -15,7 +15,6 @@ import NetworkManager, {
   NetworkId,
 } from '../../page-objects/pages/network-manager';
 import { login } from '../../page-objects/flows/login.flow';
-import FixtureBuilder from '../../fixtures/fixture-builder';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { withFixtures, veryLargeDelayMs } from '../../helpers';
 import { Driver, PAGES } from '../../webdriver/driver';
@@ -261,16 +260,8 @@ describe('Request-queue UI changes', function () {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 3 },
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withNetworkControllerTripleNode()
-          .withPreferencesController({
-            preferences: { showTestNetworks: true },
-          })
-          .withEnabledNetworks({
-            eip155: {
-              '0x539': true,
-            },
-          })
           .build(),
         localNodeOptions: [
           {
