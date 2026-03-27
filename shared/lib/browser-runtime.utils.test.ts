@@ -5,8 +5,7 @@ import * as BrowserRuntimeUtil from './browser-runtime.utils';
 
 const mockLastError = { message: 'error', stack: [] as string[] };
 
-let mockRuntimeLastError: { message: string; stack?: string[] } | undefined =
-  undefined;
+let mockRuntimeLastError: { message: string; stack?: string[] } | undefined;
 
 jest.mock('webextension-polyfill', () => ({
   runtime: {
@@ -41,7 +40,7 @@ describe('Browser Runtime Utils', () => {
 
       expect(result).toStrictEqual(expect.any(Error));
       expect(result).toHaveProperty('stack');
-      expect(result!.message).toBe(mockLastError.message);
+      expect((result as Error).message).toBe(mockLastError.message);
     });
   });
 
