@@ -9,7 +9,7 @@ const STOCK_RESPONSE: LlmResponse = {
     async getAccounts() {
       return E(hostApiProxy).invoke('AccountsController:listAccounts');
     },
-    async signMessage(address, message, chainId) {
+    async signMessage(address, message, chainId = '0x1') {
       const networkClientId = await E(hostApiProxy).invoke(
         'NetworkController:findNetworkClientIdByChainId',
         [chainId],
