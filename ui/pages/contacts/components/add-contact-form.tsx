@@ -66,6 +66,7 @@ import {
 import { INVALID_RECIPIENT_ADDRESS_ERROR } from '../../confirmations/send-utils/send.constants';
 import { isValidDomainName } from '../../../helpers/utils/util';
 import type { AddContactFormProps } from '../contacts.types';
+import { useDialContacts } from '../../../hooks/useDialContacts';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
@@ -84,6 +85,9 @@ export function AddContactForm({ onCancel, onSuccess }: AddContactFormProps) {
   const domainResolutions = useSelector(getDomainResolutions);
   const currentChainId = useSelector(getCurrentChainId);
   const networks = useSelector(getNetworkConfigurationsByChainId);
+
+  const { addContact: addDialContact, isAuthenticated: isDialAuthenticated } =
+    useDialContacts();
 
   const [newName, setNewName] = useState('');
   const [selectedAddress, setSelectedAddress] = useState('');
@@ -225,6 +229,19 @@ export function AddContactForm({ onCancel, onSuccess }: AddContactFormProps) {
         typeof selectedChainId === 'string' ? selectedChainId : '',
       ),
     );
+
+    // Sync to Dial contacts if authenticated
+    if (isDialAuthenticated) {
+      try {
+        await addDialContact({
+          walletAddress: newAddress as `0x${string}`,
+          nickname: newName,
+        });
+      } catch {
+        // Dial sync failed — non-blocking
+      }
+    }
+
     trackEvent({
       category: MetaMetricsEventCategory.Contacts,
       event: MetaMetricsEventName.ContactAdded,

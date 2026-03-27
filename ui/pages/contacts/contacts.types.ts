@@ -20,6 +20,10 @@ export type ViewContactContentProps = {
   chainId: string;
   onEdit: () => void;
   onDelete: () => void;
+  ensName?: string;
+  dialDisplayName?: string;
+  isDialAuthenticated?: boolean;
+  onCall?: () => void;
 };
 
 export type ContactListItemProps = {
@@ -28,4 +32,6 @@ export type ContactListItemProps = {
   chainId: string;
   onSelect: () => void;
   isDuplicate?: boolean;
+  ensName?: string;
+  isDialContact?: boolean;
 };

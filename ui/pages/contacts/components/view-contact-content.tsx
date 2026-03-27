@@ -35,6 +35,10 @@ export function ViewContactContent({
   chainId,
   onEdit,
   onDelete,
+  ensName,
+  dialDisplayName,
+  isDialAuthenticated = false,
+  onCall,
 }: ViewContactContentProps) {
   const t = useI18nContext();
   const [copied, handleCopy] = useCopyToClipboard({ clearDelayMs: null });
@@ -97,6 +101,68 @@ export function ViewContactContent({
                 </Text>
               </Box>
             </Box>
+
+            {ensName ? (
+              <Box
+                flexDirection={BoxFlexDirection.Column}
+                gap={1}
+                className="flex w-full flex-col"
+              >
+                <Text
+                  variant={TextVariant.BodyMd}
+                  fontWeight={FontWeight.Medium}
+                  color={TextColor.TextDefault}
+                  className="mb-1"
+                >
+                  ENS
+                </Text>
+                <Box
+                  padding={4}
+                  className="flex h-12 items-center rounded-xl border border-border-muted bg-background-muted"
+                >
+                  <Text
+                    variant={TextVariant.BodyMd}
+                    color={TextColor.InfoDefault}
+                    ellipsis
+                    className="min-w-0 flex-1"
+                    data-testid="address-book-ens"
+                  >
+                    {ensName}
+                  </Text>
+                </Box>
+              </Box>
+            ) : null}
+
+            {dialDisplayName ? (
+              <Box
+                flexDirection={BoxFlexDirection.Column}
+                gap={1}
+                className="flex w-full flex-col"
+              >
+                <Text
+                  variant={TextVariant.BodyMd}
+                  fontWeight={FontWeight.Medium}
+                  color={TextColor.TextDefault}
+                  className="mb-1"
+                >
+                  Dial Profile
+                </Text>
+                <Box
+                  padding={4}
+                  className="flex h-12 items-center rounded-xl border border-border-muted bg-background-muted"
+                >
+                  <Text
+                    variant={TextVariant.BodyMd}
+                    color={TextColor.TextDefault}
+                    ellipsis
+                    className="min-w-0 flex-1"
+                    data-testid="address-book-dial-profile"
+                  >
+                    {dialDisplayName}
+                  </Text>
+                </Box>
+              </Box>
+            ) : null}
 
             <Box
               flexDirection={BoxFlexDirection.Column}
@@ -226,6 +292,17 @@ export function ViewContactContent({
         >
           {t('delete')}
         </Button>
+        {isDialAuthenticated && onCall ? (
+          <Button
+            variant={ButtonVariant.Secondary}
+            size={ButtonSize.Lg}
+            onClick={onCall}
+            className="flex-1 rounded-xl"
+            data-testid="view-contact-call-button"
+          >
+            Call
+          </Button>
+        ) : null}
         <Button
           variant={ButtonVariant.Primary}
           size={ButtonSize.Lg}

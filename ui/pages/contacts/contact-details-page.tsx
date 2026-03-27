@@ -23,6 +23,9 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../shared/constants/metametrics';
+import { useDialProfile } from '../../hooks/useDialProfile';
+import { useDialCall } from '../../hooks/useDialCall';
+import { getDialIsAuthenticated } from '../../selectors/dial';
 import { DeleteContactModal } from './components/delete-contact-modal';
 import { ViewContactContent } from './components/view-contact-content';
 
@@ -44,6 +47,9 @@ export function ContactDetailsPage() {
     address ? getInternalAccountByAddress(state, address) : null,
   );
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const isDialAuthenticated = useSelector(getDialIsAuthenticated);
+  const { profile: dialProfile, ensName } = useDialProfile(address);
+  const { startCall } = useDialCall();
 
   useEffect(() => {
     if (address && contact?.chainId) {
@@ -158,6 +164,10 @@ export function ContactDetailsPage() {
             checkSummedAddress={checkSummedAddress}
             memo={memo}
             chainId={contact.chainId ?? ''}
+            ensName={ensName}
+            dialDisplayName={dialProfile?.displayName}
+            isDialAuthenticated={isDialAuthenticated}
+            onCall={() => address && startCall(address, 'audio')}
             onEdit={() => {
               trackEvent({
                 category: MetaMetricsEventCategory.Contacts,

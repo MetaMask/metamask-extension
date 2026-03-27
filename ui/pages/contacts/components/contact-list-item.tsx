@@ -37,6 +37,8 @@ export function ContactListItem({
   chainId,
   onSelect,
   isDuplicate = false,
+  ensName,
+  isDialContact = false,
 }: ContactListItemProps) {
   const t = useI18nContext();
   const [copied, handleCopy] = useCopyToClipboard({ clearDelayMs: null });
@@ -102,15 +104,32 @@ export function ContactListItem({
           >
             {name}
           </Text>
-          <Text
-            variant={TextVariant.BodySm}
-            color={TextColor.TextAlternative}
-            textAlign={TextAlign.Left}
-            ellipsis
-            data-testid="contact-list-item-address"
+          <Box
+            flexDirection={BoxFlexDirection.Row}
+            alignItems={BoxAlignItems.Center}
+            gap={1}
           >
-            {shortenAddress(address)}
-          </Text>
+            <Text
+              variant={TextVariant.BodySm}
+              color={TextColor.TextAlternative}
+              textAlign={TextAlign.Left}
+              ellipsis
+              data-testid="contact-list-item-address"
+            >
+              {shortenAddress(address)}
+            </Text>
+            {ensName ? (
+              <Text
+                variant={TextVariant.BodySm}
+                color={TextColor.InfoDefault}
+                textAlign={TextAlign.Left}
+                ellipsis
+                data-testid="contact-list-item-ens"
+              >
+                {ensName}
+              </Text>
+            ) : null}
+          </Box>
         </Box>
       </Box>
       <Box
@@ -119,6 +138,17 @@ export function ContactListItem({
         gap={2}
         className="mt-4 shrink-0"
       >
+        {isDialContact && (
+          <Tooltip title="Dial Contact" position="top">
+            <Box
+              onClick={(e: React.MouseEvent) => e.stopPropagation()}
+              data-testid="contact-list-item-dial-indicator"
+              className="flex size-10 items-center justify-center"
+            >
+              <Icon name={IconName.Call} color={IconColor.InfoDefault} />
+            </Box>
+          </Tooltip>
+        )}
         {isDuplicate && (
           <Tooltip title={t('duplicateContactTooltip')} position="top">
             <Box

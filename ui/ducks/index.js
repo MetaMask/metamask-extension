@@ -15,6 +15,7 @@ import confirmAlertsReducer from './confirm-alerts/confirm-alerts';
 import smartAccountsReducer from './smart-accounts/smart-accounts';
 import rewardsReducer from './rewards';
 import { perpsTutorialReducer } from './perps';
+import dialReducer from './dial';
 
 export default combineReducers({
   [AlertTypes.invalidCustomNetwork]: invalidCustomNetwork,
@@ -34,4 +35,5 @@ export default combineReducers({
   smartAccounts: smartAccountsReducer,
   rewards: rewardsReducer,
   perpsTutorial: perpsTutorialReducer,
+  dial: dialReducer,
 });

@@ -38,6 +38,8 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../shared/constants/metametrics';
+import { useDialContacts } from '../../hooks/useDialContacts';
+import { getDialProfiles } from '../../selectors/dial';
 import { buildDuplicateContactMap, hasDuplicateContacts } from './utils';
 import { ContactListItem } from './components/contact-list-item';
 import { ContactsEmptyState } from './components/contacts-empty-state';
@@ -53,6 +55,9 @@ export function ContactsListPage() {
   const { trackEvent } = useContext(MetaMetricsContext);
   const completeAddressBook = useSelector(getCompleteAddressBook);
   const internalAccounts = useSelector(getInternalAccounts);
+  const dialProfiles = useSelector(getDialProfiles);
+  const { contacts: dialContacts, isAuthenticated: isDialAuthenticated } =
+    useDialContacts();
   const [showDeletedToast, setShowDeletedToast] = useState(false);
   const [showUpdatedToast, setShowUpdatedToast] = useState(false);
 
@@ -66,6 +71,26 @@ export function ContactsListPage() {
       (entry.name ?? '').toLowerCase(),
     );
   }, [completeAddressBook]);
+
+  // Build a set of Dial contact addresses for quick lookup
+  const dialContactAddresses = useMemo(() => {
+    const set = new Set<string>();
+    for (const dc of dialContacts) {
+      set.add(dc.walletAddress.toLowerCase());
+    }
+    return set;
+  }, [dialContacts]);
+
+  // Build ENS lookup from Dial profiles
+  const ensLookup = useMemo(() => {
+    const map = new Map<string, string>();
+    for (const [addr, profile] of Object.entries(dialProfiles)) {
+      if (profile?.links?.ens) {
+        map.set(addr.toLowerCase(), profile.links.ens);
+      }
+    }
+    return map;
+  }, [dialProfiles]);
 
   const hasDuplicates = useMemo(
     () =>
@@ -243,6 +268,10 @@ export function ContactsListPage() {
                           isEqualCaseInsensitive(e.address, entry.address),
                       ).length > 1
                     }
+                    ensName={ensLookup.get(entry.address?.toLowerCase())}
+                    isDialContact={dialContactAddresses.has(
+                      entry.address?.toLowerCase(),
+                    )}
                   />
                 ),
               )}

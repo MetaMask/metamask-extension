@@ -1,0 +1,56 @@
+{
+  "name": "@dial-wtf/sdk",
+  "version": "0.3.0",
+  "description": "Dial SDK - Web3-native communication primitives for wallet-to-wallet calling, messaging, and video conferencing",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    },
+    "./types": {
+      "types": "./dist/types/index.d.ts",
+      "import": "./dist/types/index.js",
+      "require": "./dist/types/index.cjs"
+    },
+    "./media": {
+      "types": "./dist/media/index.d.ts",
+      "import": "./dist/media/index.js",
+      "require": "./dist/media/index.cjs"
+    },
+    "./media/hms": {
+      "types": "./dist/media/hms.d.ts",
+      "import": "./dist/media/hms.js",
+      "require": "./dist/media/hms.cjs"
+    }
+  },
+  "dependencies": {
+    "eventemitter3": "^5.0.1"
+  },
+  "peerDependencies": {
+    "@100mslive/hms-video-store": ">=0.12.0",
+    "siwe": "^2.1.4"
+  },
+  "peerDependenciesMeta": {
+    "siwe": {
+      "optional": true
+    },
+    "@100mslive/hms-video-store": {
+      "optional": true
+    }
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "license": "MIT",
+  "author": "Dial.wtf <dev@dial.wtf>",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Dial-WTF/Dial-SDK.git"
+  },
+  "homepage": "https://docs.dial.wtf/sdk"
+}

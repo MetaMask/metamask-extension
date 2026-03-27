@@ -42,6 +42,7 @@ import {
   isValidHexAddress,
 } from '../../../../shared/lib/hexstring-utils';
 import type { EditContactFormProps } from '../contacts.types';
+import { useDialContacts } from '../../../hooks/useDialContacts';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
@@ -62,6 +63,12 @@ export function EditContactForm({
   const addressBook = useSelector(getCompleteAddressBook);
   const internalAccounts = useSelector(getInternalAccounts);
   const networks = useSelector(getNetworkConfigurationsByChainId);
+
+  const {
+    updateContact: updateDialContact,
+    addContact: addDialContact,
+    isAuthenticated: isDialAuthenticated,
+  } = useDialContacts();
 
   const [contactName, setContactName] = useState(initialName);
   const [newAddress, setNewAddress] = useState(address);
@@ -150,6 +157,19 @@ export function EditContactForm({
       }
     }
     const savedAddress = newAddress === address ? address : newAddress;
+
+    // Sync nickname to Dial contacts if authenticated
+    if (isDialAuthenticated) {
+      try {
+        await updateDialContact({
+          walletAddress: savedAddress as `0x${string}`,
+          nickname: contactName || initialName,
+        });
+      } catch {
+        // Dial sync failed — non-blocking, address book still saved
+      }
+    }
+
     trackEvent({
       category: MetaMetricsEventCategory.Contacts,
       event: MetaMetricsEventName.ContactUpdated,
