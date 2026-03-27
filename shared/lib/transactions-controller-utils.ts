@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js';
-import { TransactionEnvelopeType } from '@metamask/transaction-controller';
+import { TransactionMeta } from '@metamask/transaction-controller';
 
 import { EtherDenomination } from '../constants/common';
 import { Numeric } from './Numeric';
@@ -15,7 +15,10 @@ export const TRANSFER_SINFLE_LOG_TOPIC_HASH =
 
 export const TEN_SECONDS_IN_MILLISECONDS = 10_000;
 
-export function calcGasTotal(gasLimit = '0', gasPrice = '0') {
+export function calcGasTotal(
+  gasLimit: string | number = '0',
+  gasPrice: string | number = '0',
+): string {
   return new Numeric(gasLimit, 16).times(new Numeric(gasPrice, 16)).toString();
 }
 
@@ -24,42 +27,51 @@ export function calcGasTotal(gasLimit = '0', gasPrice = '0') {
  * significant digits, but without any trailing zeros after the decimal point To be used when wishing
  * to display only as much digits to the user as necessary
  *
- * @param {string | number | BigNumber} n - The number to format
- * @param {number} precision - The maximum number of significant digits in the return value
- * @returns {string} The number in decimal form, with <= precision significant digits and no decimal trailing zeros
+ * @param n - The number to format
+ * @param precision - The maximum number of significant digits in the return value
+ * @returns The number in decimal form, with <= precision significant digits and no decimal trailing zeros
  */
-export function toPrecisionWithoutTrailingZeros(n, precision) {
-  return new BigNumber(n)
+export function toPrecisionWithoutTrailingZeros(
+  n: string | number | BigNumber,
+  precision: number,
+): string {
+  return new BigNumber(n as string | number)
     .toPrecision(precision)
     .replace(/(\.[0-9]*[1-9])0*|(\.0*)/u, '$1');
 }
 
 /**
- * @param {number|string|BigNumber} value
- * @param {number=} decimals
- * @returns {BigNumber}
+ * @param value - The token amount value
+ * @param decimals - The number of decimals for the token
+ * @returns The token amount as a BigNumber
  */
-export function calcTokenAmount(value, decimals) {
+export function calcTokenAmount(
+  value: string | number | BigNumber,
+  decimals: number | undefined,
+): BigNumber {
   const divisor = new BigNumber(10).pow(decimals ?? 0);
   return new BigNumber(String(value)).div(divisor);
 }
 
 export function getSwapsTokensReceivedFromTxMeta(
-  tokenSymbol,
-  txMeta,
-  tokenAddress,
-  senderAddress,
-  tokenDecimals,
-  approvalTxMeta,
-  chainId,
-  precision = 6,
-) {
+  tokenSymbol?: string,
+  txMeta?: TransactionMeta | null,
+  tokenAddress?: string | null,
+  senderAddress?: string,
+  tokenDecimals?: number | string,
+  approvalTxMeta?: TransactionMeta | null,
+  chainId?: string | number,
+  precision: number | null = 6,
+): string | null {
   const accountAddress = txMeta?.swapAndSendRecipient ?? senderAddress;
 
   const txReceipt = txMeta?.txReceipt;
-  const networkAndAccountSupports1559 =
-    txMeta?.txReceipt?.type === TransactionEnvelopeType.feeMarket;
-  if (isSwapsDefaultTokenSymbol(tokenSymbol, chainId)) {
+  // The `type` property is not in the official TransactionReceipt type but is
+  // set by MetaMask to reflect the EIP-2718 envelope type of the transaction.
+  const txReceiptType = (txReceipt as { type?: string } | undefined)?.type;
+  const networkAndAccountSupports1559 = txReceiptType === 'fee-market';
+
+  if (isSwapsDefaultTokenSymbol(tokenSymbol as string, chainId as string)) {
     if (
       !txReceipt ||
       !txMeta ||
@@ -72,17 +84,20 @@ export function getSwapsTokensReceivedFromTxMeta(
     if (txMeta.swapMetaData && txMeta.preTxBalance === txMeta.postTxBalance) {
       // If preTxBalance and postTxBalance are equal, postTxBalance hasn't been updated on time
       // because of the RPC provider delay, so we return an estimated receiving amount instead.
-      return txMeta.swapMetaData.token_to_amount;
+      return txMeta.swapMetaData.token_to_amount as string;
     }
 
     let approvalTxGasCost = new Numeric('0x0', 16);
     if (approvalTxMeta && approvalTxMeta.txReceipt) {
+      const approvalTxReceiptType = (
+        approvalTxMeta.txReceipt as { type?: string }
+      )?.type;
       approvalTxGasCost = new Numeric(
         calcGasTotal(
           approvalTxMeta.txReceipt.gasUsed,
-          networkAndAccountSupports1559
+          approvalTxReceiptType === 'fee-market'
             ? approvalTxMeta.txReceipt.effectiveGasPrice // Base fee + priority fee.
-            : approvalTxMeta.txParams.gasPrice,
+            : approvalTxMeta.txParams?.gasPrice,
         ),
         16,
       );
@@ -92,7 +107,7 @@ export function getSwapsTokensReceivedFromTxMeta(
       txReceipt.gasUsed,
       networkAndAccountSupports1559
         ? txReceipt.effectiveGasPrice
-        : txMeta.txParams.gasPrice,
+        : txMeta.txParams?.gasPrice,
     );
     const totalGasCost = new Numeric(gasCost, 16).add(approvalTxGasCost);
 
@@ -111,30 +126,42 @@ export function getSwapsTokensReceivedFromTxMeta(
 
     return (
       precision === null ? ethReceived : ethReceived.round(precision)
-    ).toFixed();
+    ).toString();
   }
   const txReceiptLogs = txReceipt?.logs;
   if (txReceiptLogs && txReceipt?.status !== '0x0') {
-    const tokenTransferLog = txReceiptLogs.find((txReceiptLog) => {
-      const isTokenTransfer =
-        txReceiptLog.topics &&
-        txReceiptLog.topics[0] === TOKEN_TRANSFER_LOG_TOPIC_HASH;
-      const isTransferFromGivenToken =
-        txReceiptLog.address?.toLowerCase() === tokenAddress?.toLowerCase();
-      const isTransferFromGivenAddress =
-        txReceiptLog.topics &&
-        txReceiptLog.topics[2] &&
-        (txReceiptLog.topics[2] === accountAddress ||
-          txReceiptLog.topics[2].match(accountAddress?.slice(2)));
-      return (
-        isTokenTransfer &&
-        isTransferFromGivenToken &&
-        isTransferFromGivenAddress
-      );
-    });
+    // The `Log.topics` type in @metamask/transaction-controller is `string`
+    // but in practice it is an array of hex strings per the Ethereum spec.
+    type LogWithTopicsArray = {
+      topics?: string[];
+      address?: string;
+      data?: string;
+    };
+    const tokenTransferLog = (txReceiptLogs as LogWithTopicsArray[]).find(
+      (txReceiptLog) => {
+        const isTokenTransfer =
+          txReceiptLog.topics &&
+          txReceiptLog.topics[0] === TOKEN_TRANSFER_LOG_TOPIC_HASH;
+        const isTransferFromGivenToken =
+          txReceiptLog.address?.toLowerCase() === tokenAddress?.toLowerCase();
+        const isTransferFromGivenAddress =
+          txReceiptLog.topics &&
+          txReceiptLog.topics[2] &&
+          (txReceiptLog.topics[2] === accountAddress ||
+            txReceiptLog.topics[2].match(accountAddress?.slice(2) ?? ''));
+        return (
+          isTokenTransfer &&
+          isTransferFromGivenToken &&
+          isTransferFromGivenAddress
+        );
+      },
+    );
 
     if (tokenTransferLog) {
-      const tokenAmount = calcTokenAmount(tokenTransferLog.data, tokenDecimals);
+      const tokenAmount = calcTokenAmount(
+        tokenTransferLog.data ?? '0',
+        tokenDecimals as number,
+      );
       return precision === null
         ? tokenAmount.toFixed()
         : toPrecisionWithoutTrailingZeros(tokenAmount, precision);
