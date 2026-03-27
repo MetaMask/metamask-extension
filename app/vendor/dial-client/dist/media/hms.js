@@ -1,6 +1,6 @@
 import { HMSReactiveStore, selectPeers, selectLocalPeer, HMSRoomState, selectRoomState } from '@100mslive/hms-video-store';
 
-/* @dial-wtf/sdk - Web3-native communication primitives */
+/* @dial-wtf/client - Universal TypeScript SDK */
 
 var HMSMediaProvider = class {
   hmsStore;
@@ -13,7 +13,7 @@ var HMSMediaProvider = class {
     this.hmsStore = hms.getStore();
     this.hmsActions = hms.getActions();
   }
-  // ── Connection lifecycle ──────────────────────────────────────────
+  // -- Connection lifecycle ---------------------------------------------------
   async connect(credentials, config) {
     this.connectionState = "connecting";
     this.emit("connection-state-changed", { state: "connecting" });
@@ -51,7 +51,7 @@ var HMSMediaProvider = class {
   getConnectionState() {
     return this.connectionState;
   }
-  // ── Local track controls ──────────────────────────────────────────
+  // -- Local track controls ---------------------------------------------------
   async setLocalAudioEnabled(enabled) {
     await this.hmsActions.setLocalAudioEnabled(enabled);
   }
@@ -64,7 +64,7 @@ var HMSMediaProvider = class {
   async stopScreenShare() {
     await this.hmsActions.setScreenShareEnabled(false);
   }
-  // ── Peers & tracks ────────────────────────────────────────────────
+  // -- Peers & tracks ---------------------------------------------------------
   getPeers() {
     const hmsPeers = this.hmsStore.getState(selectPeers);
     return hmsPeers.map((p) => this.mapPeer(p));
@@ -73,7 +73,7 @@ var HMSMediaProvider = class {
     const localPeer = this.hmsStore.getState(selectLocalPeer);
     return localPeer ? this.mapPeer(localPeer) : null;
   }
-  // ── Device management ─────────────────────────────────────────────
+  // -- Device management ------------------------------------------------------
   async getAudioDevices() {
     const devices = await navigator.mediaDevices.enumerateDevices();
     return devices.filter((d) => d.kind === "audioinput");
@@ -88,7 +88,7 @@ var HMSMediaProvider = class {
   async setVideoDevice(deviceId) {
     await this.hmsActions.setVideoSettings({ deviceId });
   }
-  // ── Events ────────────────────────────────────────────────────────
+  // -- Events -----------------------------------------------------------------
   on(event, callback) {
     if (!this.listeners.has(event)) {
       this.listeners.set(event, /* @__PURE__ */ new Set());
@@ -98,7 +98,7 @@ var HMSMediaProvider = class {
   off(event, callback) {
     this.listeners.get(event)?.delete(callback);
   }
-  // ── Private helpers ───────────────────────────────────────────────
+  // -- Private helpers --------------------------------------------------------
   emit(event, payload) {
     const callbacks = this.listeners.get(event);
     if (!callbacks) return;

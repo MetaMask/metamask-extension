@@ -1,0 +1,28 @@
+{
+  "name": "@dial-wtf/react",
+  "version": "0.3.0",
+  "description": "React hooks and context provider for the Dial SDK",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "sideEffects": false,
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "dependencies": {
+    "@dial-wtf/client": "file:../dial-client",
+    "@dial-wtf/core": "file:../dial-core"
+  },
+  "peerDependencies": {
+    "react": "^18.0.0 || ^19.0.0"
+  }
+}

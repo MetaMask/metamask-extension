@@ -157,4 +157,61 @@ We chose to integrate the Dial SDK exclusively in the extension popup UI layer r
 
 ---
 
+## Session 2 — 2026-03-27
+
+### Phase 8: SDK Upgrade (v0.3.0 Monorepo Refactor)
+
+| # | Time | Operation | Details | Result |
+|---|------|-----------|---------|--------|
+| 61 | T+0 | Commit v1 work | `git commit` — all initial integration files | OK — b49ff61a8b |
+| 62 | T+0 | Pull SDK updates | `git pull` in ~/Development/Metamask/Dial-SDK | OK — 136 files changed, monorepo refactor |
+| 63 | T+1 | Analyze new structure | SDK split into @dial-wtf/core, @dial-wtf/client, @dial-wtf/react | OK |
+| 64 | T+1 | Build SDK | `pnpm build` — core, client, react packages | OK — all 3 built |
+| 65 | T+2 | Vendor 3 packages | Replaced app/vendor/dial-sdk with dial-core, dial-client, dial-react | OK |
+| 66 | T+2 | Write vendored package.json | All 3 with `file:` inter-package references | OK |
+| 67 | T+3 | Update package.json | @dial-wtf/sdk → @dial-wtf/client + @dial-wtf/core + @dial-wtf/react, removed eventemitter3 | OK |
+| 68 | T+3 | Update dial.ts duck | Import types from @dial-wtf/core | OK |
+| 69 | T+3 | Update dial.ts selectors | Import types from @dial-wtf/core | OK |
+| 70 | T+4 | Rewrite useDialClient | Now useDialAuth — uses SDK's useAuth() + loginWithWallet() | OK |
+| 71 | T+4 | Rewrite useDialContacts | Uses UserDialerContext from @dial-wtf/react | OK |
+| 72 | T+4 | Rewrite useDialProfile | Uses UserDialerContext from @dial-wtf/react | OK |
+| 73 | T+4 | Rewrite useDialCall | Uses UserDialerContext from @dial-wtf/react | OK |
+| 74 | T+5 | Add DialProvider | Wrapped contacts router with DialProvider + Outlet layout | OK |
+
+### Key Changes in SDK v0.3.0 (Monorepo)
+
+**Audit fixes addressed:**
+- C1: siwe dynamically imported (won't crash if missing)
+- C2: Extension environment detection (`IS_EXTENSION`, `IS_BROWSER_LIKE`)
+- C4: AbortSignal composition with fallback
+- P2-4: `autoLoad` defaults to `false`
+- P2-5: Auto 401 refresh via `setSessionRefresher()`
+- P2-6: GET request deduplication
+- P2-7: Domain auto-detection for extensions
+- P2-8: `Contact.chainId` optional field added
+- P2-10: `Timestamp` narrowed to `string`
+
+**New: `@dial-wtf/react` package**
+- `DialProvider` context component
+- `useAuth()` with `loginWithWallet()`, `loginWithSolana()`
+- Service accessor hooks: `useContacts()`, `useProfile()`, `useCalls()`, etc.
+- `useDialEvent()` for event subscriptions
+
+### Files Changed (Session 2)
+
+**Replaced:**
+- `app/vendor/dial-sdk/` → `app/vendor/dial-core/`, `app/vendor/dial-client/`, `app/vendor/dial-react/`
+
+**Modified:**
+- `package.json` — Updated dependencies to 3-package model
+- `ui/ducks/dial/dial.ts` — Imports from @dial-wtf/core
+- `ui/selectors/dial.ts` — Imports from @dial-wtf/core
+- `ui/hooks/useDialClient.ts` — Rewritten as useDialAuth, uses SDK's useAuth()
+- `ui/hooks/useDialContacts.ts` — Uses UserDialerContext
+- `ui/hooks/useDialProfile.ts` — Uses UserDialerContext
+- `ui/hooks/useDialCall.ts` — Uses UserDialerContext
+- `ui/pages/contacts/contacts-router.tsx` — Added DialProvider + Outlet layout
+
+---
+
 *This log is updated as operations are performed.*

@@ -1,45 +1,61 @@
-import { ResolvedClientConfig, RequestOptions, WalletAddress, AuthResult, AuthCredentials, SessionData, QueryPartyLinesOptions, PartyLinesResponse, PartyLine, CreatePartyLineOptions, CreatePartyLineResult, PaginationParams, ConferenceRoom, DialProfile, StartCallOptions, Call, DeclineCallOptions, CallRecording, SendMessageOptions, Message, Conversation, GetConversationOptions, GetMessagesOptions, Thread, CreateThreadOptions, CreateGroupOptions, Group, UpdateProfileOptions, ProfileStatus, SetStatusOptions, StatusInfo, ProfilePreferences, PrivacySettings, NotificationSettings, DoNotDisturbOptions, AddContactOptions, Contact, UpdateContactOptions, StartRecordingOptions, RecordingSession, Voicemail, GetVoicemailsOptions, Transcription, WaveformData, SetGreetingOptions, VoicemailGreeting, VoicemailNotificationPreferences, CreateRoomOptions, JoinRoomOptions, JoinByUrlOptions, Participant, RoomRecording, SendRoomMessageOptions, RoomMessage, LayoutOption, SetLayoutOptions, CreateBreakoutRoomsOptions, BreakoutRoom, CreatePollOptions, Poll, PollResults, VideoQualitySettings, RoomStats, IContactsBookProvider, ContactsBookConfig, ContactsBookEvents, DialEventType, EventListener, DialClientConfig } from './types/index.cjs';
-export { API_BASE_URLS, ApiErrorResponse, ApiResponse, CallQuality, CallStatus, CallType, Chain, DEFAULT_NETWORK, DeclineReason, DialEventPayloads, EthAddress, MediaAttachment, MediaType, MessageStatus, MessagingProvider, Network, NonceResponse, NotificationChannelSettings, PaginatedResponse, PaginationInfo, PartyLineCategory, PollOption, ProfileLinks, ProfileVisibility, Reaction, RoomSettings, RoomStatus, SDK_VERSION, SiweCredentials, SiwsCredentials, SolAddress, ThreadModel, Timestamp, TypingIndicator, VerifiedStatus, VideoQuality, VideoQualityOption } from './types/index.cjs';
-import { IMediaProvider, MediaProviderConfig } from './media/index.cjs';
-export { MediaConnectionState, MediaPeer, MediaProviderEvents, MediaSessionCredentials, MediaTrack } from './media/index.cjs';
+import { IHttpTransport, ResolvedClientConfig, RequestOptions, WalletAddress, AuthResult, AuthCredentials, SessionData, QueryPartyLinesOptions, PartyLinesResponse, PartyLine, CreatePartyLineOptions, CreatePartyLineResult, PaginationParams, ConferenceRoom, DialProfile, StartCallOptions, Call, DeclineCallOptions, CallRecording, SendMessageOptions, Message, Conversation, GetConversationOptions, GetMessagesOptions, Thread, CreateThreadOptions, CreateGroupOptions, Group, UpdateProfileOptions, ProfileStatus, SetStatusOptions, StatusInfo, ProfilePreferences, PrivacySettings, NotificationSettings, DoNotDisturbOptions, AddContactOptions, Contact, UpdateContactOptions, StartRecordingOptions, RecordingSession, Voicemail, GetVoicemailsOptions, Transcription, WaveformData, SetGreetingOptions, VoicemailGreeting, VoicemailNotificationPreferences, IMediaProvider, MediaProviderConfig, CreateRoomOptions, JoinRoomOptions, JoinByUrlOptions, Participant, RoomRecording, SendRoomMessageOptions, RoomMessage, LayoutOption, SetLayoutOptions, CreateBreakoutRoomsOptions, BreakoutRoom, CreatePollOptions, Poll, PollResults, VideoQualitySettings, RoomStats, IContactsBookProvider, ContactsBookConfig, ContactsBookEvents, DialEventType, EventListener, DialClientConfig, DialEventPayloads, IDialStorage } from '@dial-wtf/core';
+export { API_BASE_URLS, AddContactOptions, ApiError, ApiErrorResponse, ApiResponse, AuthCredentials, AuthError, AuthResult, BreakoutRoom, BrowserStorage, Call, CallEventPayloads, CallEventType, CallQuality, CallRecording, CallStatus, CallType, Chain, ChatEventPayloads, ChatEventType, ChatProvider, ConferenceEventPayloads, ConferenceEventType, ConferenceRoom, Contact, ContactsBookConfig, ContactsBookEvents, Conversation, CreateBreakoutRoomsOptions, CreateGroupOptions, CreatePartyLineOptions, CreatePartyLineResult, CreatePollOptions, CreateRoomOptions, CreateThreadOptions, DEFAULT_NETWORK, DeclineCallOptions, DeclineReason, DialClientConfig, DialError, DialEventEmitterInterface, DialEventPayloads, DialEventType, DialMediaDeviceInfo, DialProfile, DoNotDisturbOptions, ENVIRONMENT, Environment, EthAddress, EventListener, GetConversationOptions, GetMessagesOptions, GetVoicemailsOptions, Group, HttpMethod, IContactsBookProvider, IDialStorage, IHttpTransport, IMediaProvider, IS_BROWSER, IS_BROWSER_LIKE, IS_EXTENSION, IS_NODE, JoinByUrlOptions, JoinRoomOptions, LayoutOption, MediaAttachment, MediaConnectionState, MediaPeer, MediaProviderConfig, MediaProviderEvents, MediaSessionCredentials, MediaTrack, MediaType, MemoryStorage, Message, MessageEventPayloads, MessageEventType, MessageStatus, MessagingProvider, Network, NetworkError, NonceResponse, NotFoundError, NotificationChannelSettings, NotificationSettings, PaginatedResponse, PaginationInfo, PaginationParams, Participant, PartyLine, PartyLineCategory, PartyLinesResponse, PermissionDeniedError, Poll, PollOption, PollResults, PrivacySettings, ProfileEventPayloads, ProfileEventType, ProfileLinks, ProfilePreferences, ProfileStatus, ProfileVisibility, QueryPartyLinesOptions, RateLimitError, Reaction, RecordingSession, RequestOptions, ResolvedClientConfig, RoomMessage, RoomRecording, RoomSettings, RoomStats, RoomStatus, SDK_VERSION, SendMessageOptions, SendRoomMessageOptions, SessionData, SessionExpiredError, SetGreetingOptions, SetLayoutOptions, SetStatusOptions, SiweCredentials, SiwsCredentials, SolAddress, StartCallOptions, StartRecordingOptions, StatusInfo, Thread, ThreadModel, ThreadType, TimeoutError, Timestamp, Transcription, TypingIndicator, UpdateContactOptions, UpdateProfileOptions, ValidationError, VerifiedStatus, VideoQuality, VideoQualityOption, VideoQualitySettings, Voicemail, VoicemailEventPayloads, VoicemailEventType, VoicemailGreeting, VoicemailNotificationPreferences, WalletAddress, WaveformData, detectEnvironment, getFetch } from '@dial-wtf/core';
 
 /**
- * HTTP Client for Dial API
+ * @file client.ts
+ * @description HTTP client for Dial API with AbortSignal composition.
+ * @layer HTTP
+ *
+ * Addresses audit finding C4: composes caller signal with internal timeout signal
+ * using AbortSignal.any() where available, with a polyfill fallback.
  */
 
-/** HTTP client for making API requests */
-declare class HttpClient {
+/** Callback to refresh a session and return a new auth token. */
+type SessionRefresher = () => Promise<string>;
+/** HTTP client implementing IHttpTransport */
+declare class HttpClient implements IHttpTransport {
     private readonly config;
     private authToken?;
+    private sessionRefresher?;
+    private refreshPromise?;
+    private readonly inflightGets;
     constructor(config: ResolvedClientConfig);
-    /** Set the authentication token for requests */
     setAuthToken(token: string | undefined): void;
-    /** Get the current auth token */
     getAuthToken(): string | undefined;
-    /** Build full URL for an endpoint */
+    /**
+     * Register a callback to refresh the session on 401 (P2-5 fix).
+     * The callback should refresh the session and return the new auth token.
+     */
+    setSessionRefresher(refresher: SessionRefresher | undefined): void;
     private buildUrl;
-    /** Build request headers */
     private buildHeaders;
-    /** Make an HTTP request */
-    request<T>(endpoint: string, options?: RequestOptions): Promise<T>;
-    /** Handle error responses */
+    /**
+     * Compose multiple AbortSignals into one.
+     * Uses AbortSignal.any() where available (Node 20+, modern browsers),
+     * falls back to manual composition.
+     */
+    private composeSignals;
+    request<T>(endpoint: string, options?: RequestOptions, _isRetry?: boolean): Promise<T>;
+    /**
+     * Refresh session, deduplicating concurrent refresh calls.
+     * @internal
+     */
+    private refreshSession;
     private handleErrorResponse;
-    /** Extract error message from response body */
     private getErrorMessage;
-    /** GET request */
     get<T>(endpoint: string, params?: Record<string, unknown>, options?: Omit<RequestOptions, 'method' | 'body'>): Promise<T>;
-    /** POST request */
+    private executeGet;
+    private toUrlParams;
     post<T>(endpoint: string, body?: unknown, options?: Omit<RequestOptions, 'method'>): Promise<T>;
-    /** PUT request */
     put<T>(endpoint: string, body?: unknown, options?: Omit<RequestOptions, 'method'>): Promise<T>;
-    /** PATCH request */
     patch<T>(endpoint: string, body?: unknown, options?: Omit<RequestOptions, 'method'>): Promise<T>;
-    /** DELETE request */
     delete<T>(endpoint: string, options?: Omit<RequestOptions, 'method' | 'body'>): Promise<T>;
 }
 
 /**
- * Base service class
+ * @file base.ts
+ * @description Base service class.
+ * @layer Services
  */
 
 /** Base service that all services extend */
@@ -47,405 +63,233 @@ declare abstract class BaseService {
     protected readonly http: HttpClient;
     protected readonly apiVersion: string;
     constructor(http: HttpClient, apiVersion?: string);
-    /** Build endpoint path */
     protected endpoint(path: string): string;
-    /** Build endpoint path without version prefix */
     protected rawEndpoint(path: string): string;
 }
 
 /**
- * Authentication Service
+ * @file auth.ts
+ * @description Authentication service with dynamic siwe import.
+ * @layer Services
+ *
+ * Addresses audit finding C1: siwe is now dynamically imported only when
+ * verifySiwe() is called, so the SDK loads without siwe installed.
  */
 
 /** Authentication service for SIWE/SIWS */
 declare class AuthService extends BaseService {
     constructor(http: HttpClient);
-    /**
-     * Get a nonce for authentication
-     * The nonce should be used in the SIWE/SIWS message
-     *
-     * @param address - The wallet address to get a nonce for
-     */
     getNonce(address: WalletAddress): Promise<string>;
     /**
-     * Verify SIWE credentials and create session
+     * Verify SIWE credentials and create session.
      *
-     * Parses the SIWE message to extract address, chainId, and nonce
-     * as required by the PeerSpeak verify endpoint.
+     * Uses dynamic import() for siwe to avoid crashing if not installed (C1 fix).
      */
     verifySiwe(message: string, signature: string): Promise<AuthResult>;
-    /**
-     * Verify SIWS credentials and create session
-     */
     verifySiws(message: string, signature: string): Promise<AuthResult>;
-    /**
-     * Authenticate with provided credentials
-     * Returns session data on success
-     */
     authenticate(credentials: AuthCredentials): Promise<AuthResult>;
-    /**
-     * Validate an existing session
-     */
     validateSession(session: SessionData): Promise<boolean>;
-    /**
-     * Refresh session token
-     */
     refreshSession(session: SessionData): Promise<SessionData>;
-    /**
-     * Logout and invalidate session
-     */
     logout(): Promise<void>;
-    /**
-     * Get wallet address from session data
-     */
     getWalletAddress(session: SessionData): WalletAddress;
+    /**
+     * Fallback SIWE message parser when the siwe package is not installed.
+     * Extracts address, chainId, and nonce from the EIP-4361 formatted string.
+     */
+    private parseSiweFields;
 }
 
 /**
- * Party Lines Service - Matches PeerSpeak v1 API
+ * @file party-lines.ts
+ * @description Party Lines service - matches PeerSpeak v1 API.
+ * @layer Services
  */
 
-/** Party Lines service - direct mapping to PeerSpeak v1 API */
 declare class PartyLinesService extends BaseService {
     constructor(http: HttpClient);
-    /**
-     * Query party lines with filtering and pagination
-     * No authentication required for read-only access
-     */
     query(options?: QueryPartyLinesOptions): Promise<PartyLinesResponse>;
-    /**
-     * Get all party lines (convenience method)
-     */
     getAll(options?: QueryPartyLinesOptions): Promise<PartyLine[]>;
-    /**
-     * Get active party lines
-     */
     getActive(options?: Omit<QueryPartyLinesOptions, 'isActive'>): Promise<PartyLine[]>;
-    /**
-     * Search party lines by name or description
-     */
     search(searchTerm: string, options?: Omit<QueryPartyLinesOptions, 'search'>): Promise<PartyLine[]>;
-    /**
-     * Create a new party line
-     * Requires API key authentication
-     */
     create(options: CreatePartyLineOptions): Promise<CreatePartyLineResult>;
-    /**
-     * Get a party line by room code
-     */
     getByRoomCode(roomCode: string): Promise<PartyLine>;
-    /**
-     * Get a party line by ID
-     */
     getById(id: string): Promise<PartyLine>;
 }
 
 /**
- * Registry Service - Public registry features (no auth required)
+ * @file registry.ts
+ * @description Registry service - public features (no auth required).
+ * @layer Services
  */
 
-/** Profile search result */
 interface ProfileSearchResult {
     walletAddress: string;
     displayName: string;
     avatar?: string;
     bio?: string;
 }
-/** Registry service for public features */
 declare class RegistryService extends BaseService {
     constructor(http: HttpClient);
-    /**
-     * List public rooms
-     */
     listPublicRooms(params?: PaginationParams): Promise<ConferenceRoom[]>;
-    /**
-     * Get token info
-     */
     getTokenInfo(contractAddress: string): Promise<{
         name: string;
         symbol: string;
         decimals: number;
         totalSupply: string;
     }>;
-    /**
-     * Search profiles
-     */
     searchProfiles(options: {
         query: string;
         limit?: number;
     }): Promise<ProfileSearchResult[]>;
-    /**
-     * Get profile by ENS name
-     */
     getProfileByENS(ensName: string): Promise<DialProfile>;
+    /**
+     * Batch lookup profiles by wallet addresses.
+     * Fetches up to 100 profiles in a single HTTP request.
+     *
+     * @example
+     * ```typescript
+     * const profiles = await dial.registry.getProfiles({
+     *   addresses: ['0xabc...', '0xdef...']
+     * });
+     * ```
+     */
+    getProfiles(options: {
+        addresses: WalletAddress[];
+    }): Promise<Map<WalletAddress, DialProfile>>;
+    /**
+     * Resolve the verified on-chain primary ENS name for an address.
+     * Returns null if no reverse ENS record is set.
+     *
+     * @example
+     * ```typescript
+     * const ens = await dial.registry.resolveENS('0x123...');
+     * // => { ensName: 'vitalik.eth', verified: true }
+     * ```
+     */
+    resolveENS(address: WalletAddress): Promise<{
+        ensName: string;
+        verified: boolean;
+    } | null>;
 }
 
 /**
- * Calls Service - Wallet-to-Wallet Calling
+ * @file calls.ts
+ * @description Calls service - Wallet-to-Wallet Calling.
+ * @layer Services
  */
 
-/** Calls service for wallet-to-wallet calling */
 declare class CallsService extends BaseService {
     private localStream?;
     private remoteStreams;
     constructor(http: HttpClient);
-    /**
-     * Start a call to another wallet address
-     */
     start(options: StartCallOptions): Promise<Call>;
-    /**
-     * Answer an incoming call
-     */
     answer(callId: string): Promise<Call>;
-    /**
-     * Decline an incoming call
-     */
     decline(callId: string, options?: DeclineCallOptions): Promise<void>;
-    /**
-     * End an active call
-     */
     end(callId: string): Promise<void>;
-    /**
-     * Get call by ID
-     */
     get(callId: string): Promise<Call>;
-    /**
-     * Get call history
-     */
     getHistory(params?: PaginationParams & {
         with?: WalletAddress;
     }): Promise<Call[]>;
-    /**
-     * Mute your microphone
-     */
     mute(callId: string): Promise<void>;
-    /**
-     * Unmute your microphone
-     */
     unmute(callId: string): Promise<void>;
-    /**
-     * Toggle mute state
-     */
     toggleMute(callId: string): Promise<void>;
-    /**
-     * Disable video
-     */
     disableVideo(callId: string): Promise<void>;
-    /**
-     * Enable video
-     */
     enableVideo(callId: string): Promise<void>;
-    /**
-     * Toggle video state
-     */
     toggleVideo(callId: string): Promise<void>;
-    /**
-     * Set speaker (earpiece or speaker)
-     */
     setSpeaker(callId: string, enabled: boolean): Promise<void>;
-    /**
-     * Get local media stream for a call
-     */
     getLocalStream(_callId: string): MediaStream | undefined;
-    /**
-     * Get remote media stream for a call
-     */
     getRemoteStream(callId: string): MediaStream | undefined;
-    /**
-     * Start recording the call
-     */
     startRecording(callId: string): Promise<CallRecording>;
-    /**
-     * Stop recording the call
-     */
     stopRecording(callId: string): Promise<CallRecording>;
-    /**
-     * Set custom ringtone
-     */
     setRingtone(audioUrl: string): void;
-    /**
-     * Internal: Set local stream (called by WebRTC layer)
-     * @internal
-     */
+    /** @internal */
     _setLocalStream(stream: MediaStream): void;
-    /**
-     * Internal: Set remote stream (called by WebRTC layer)
-     * @internal
-     */
+    /** @internal */
     _setRemoteStream(callId: string, stream: MediaStream): void;
-    /**
-     * Internal: Clear streams when call ends
-     * @internal
-     */
+    /** @internal */
     _clearStreams(callId: string): void;
 }
 
 /**
- * Chats Service - E2EE DMs and Groups
- *
- * @see specs/04-chats.md for full specification
- * @see specs/04a-chats-architecture.md for provider details
+ * @file chats.ts
+ * @description Chat service - E2EE DMs and Groups.
+ * @layer Services
  */
 
-/** Chat service for E2EE DMs and Groups */
 declare class ChatService extends BaseService {
     constructor(http: HttpClient);
-    /**
-     * Send a message to a wallet address
-     */
     send(options: SendMessageOptions): Promise<Message>;
-    /**
-     * Send message with media attachment
-     */
     private sendWithMedia;
-    /**
-     * Get all threads (DMs and Groups)
-     */
     listThreads(params?: PaginationParams): Promise<Conversation[]>;
-    /**
-     * Get conversation with a specific wallet
-     * @deprecated Use listThreads() instead
-     */
+    /** @deprecated Use listThreads() */
     getConversations(params?: PaginationParams): Promise<Conversation[]>;
-    /**
-     * Get thread with a specific wallet
-     */
     getThread(options: GetConversationOptions): Promise<Conversation>;
-    /**
-     * Get conversation with a specific wallet
-     * @deprecated Use getThread() instead
-     */
+    /** @deprecated Use getThread() */
     getConversation(options: GetConversationOptions): Promise<Conversation>;
-    /**
-     * Get messages with pagination
-     */
     listMessages(options: GetMessagesOptions): Promise<Message[]>;
-    /**
-     * Get messages with pagination
-     * @deprecated Use listMessages() instead
-     */
+    /** @deprecated Use listMessages() */
     getMessages(options: GetMessagesOptions): Promise<Message[]>;
-    /**
-     * Mark a message as read
-     */
     markAsRead(messageId: string): Promise<void>;
-    /**
-     * Add reaction to a message
-     */
     addReaction(options: {
         messageId: string;
         emoji: string;
     }): Promise<void>;
-    /**
-     * Remove reaction from a message
-     */
     removeReaction(options: {
         messageId: string;
         emoji: string;
     }): Promise<void>;
-    /**
-     * Start typing indicator
-     */
     startTyping(options: {
         threadId: string;
     }): Promise<void>;
-    /**
-     * Stop typing indicator
-     */
     stopTyping(options: {
         threadId: string;
     }): Promise<void>;
-    /**
-     * Create a DM thread
-     */
     createDM(options: {
         otherDialUserId: WalletAddress;
     }): Promise<Thread>;
-    /**
-     * Create a topic-based thread
-     * @deprecated Use createDM() or createGroup() instead
-     */
+    /** @deprecated Use createDM() or createGroup() */
     createThread(options: CreateThreadOptions): Promise<Thread>;
-    /**
-     * Create a managed thread (for platform developers)
-     */
     createManagedThread(options: {
         participants: WalletAddress[];
         topic: string;
         metadata?: Record<string, unknown>;
     }): Promise<Thread>;
-    /**
-     * List managed threads
-     */
     listManagedThreads(options?: {
         filters?: Record<string, unknown>;
     } & PaginationParams): Promise<Thread[]>;
-    /**
-     * Archive a thread
-     */
     archiveThread(threadId: string): Promise<void>;
-    /**
-     * Create a group
-     */
     createGroup(options: CreateGroupOptions): Promise<Group>;
-    /**
-     * Invite users to a group
-     */
     inviteToGroup(options: {
         groupId: string;
         addresses: WalletAddress[];
     }): Promise<void>;
-    /**
-     * Add member to group
-     */
     addMember(options: {
         threadId: string;
         address: WalletAddress;
     }): Promise<void>;
-    /**
-     * Add member to group
-     * @deprecated Use addMember() instead
-     */
+    /** @deprecated Use addMember() */
     addGroupMember(options: {
         groupId: string;
         address: WalletAddress;
     }): Promise<void>;
-    /**
-     * Remove member from group
-     */
     removeMember(options: {
         threadId: string;
         address: WalletAddress;
     }): Promise<void>;
-    /**
-     * Remove member from group
-     * @deprecated Use removeMember() instead
-     */
+    /** @deprecated Use removeMember() */
     removeGroupMember(options: {
         groupId: string;
         address: WalletAddress;
     }): Promise<void>;
-    /**
-     * Leave a group
-     */
     leaveGroup(threadId: string): Promise<void>;
-    /**
-     * Update group info
-     */
     updateGroup(options: {
         threadId: string;
         name?: string;
         avatar?: File | Blob;
     }): Promise<Group>;
-    /**
-     * Delete a message
-     */
     delete(messageId: string, options?: {
         forEveryone?: boolean;
     }): Promise<void>;
-    /**
-     * Search messages (local only - server-side search incompatible with E2EE)
-     */
     search(options: {
         query: string;
         threadId?: string;
@@ -454,186 +298,87 @@ declare class ChatService extends BaseService {
 }
 
 /**
- * Profile Service - Dial Profile Management
+ * @file profile.ts
+ * @description Profile service - Dial Profile Management.
+ * @layer Services
  */
 
-/** Profile service for managing Dial profiles */
 declare class ProfileService extends BaseService {
     constructor(http: HttpClient);
-    /**
-     * Get the current user's profile
-     */
     get(): Promise<DialProfile>;
-    /**
-     * Get profile by wallet address
-     */
     getProfile(options: {
         walletAddress: WalletAddress;
     }): Promise<DialProfile>;
-    /**
-     * Update the current user's profile
-     */
     update(options: UpdateProfileOptions): Promise<DialProfile>;
-    /**
-     * Update avatar
-     */
     updateAvatar(_options: {
         file: File | Blob;
     }): Promise<DialProfile>;
-    /**
-     * Set status
-     */
     setStatus(status: ProfileStatus, options?: SetStatusOptions): Promise<void>;
-    /**
-     * Get current status
-     */
     getStatus(): Promise<StatusInfo>;
-    /**
-     * Update preferences
-     */
     updatePreferences(preferences: Partial<ProfilePreferences>): Promise<void>;
-    /**
-     * Update privacy settings
-     */
     updatePrivacy(privacy: Partial<PrivacySettings>): Promise<void>;
-    /**
-     * Update notification settings
-     */
     updateNotificationSettings(settings: Partial<NotificationSettings>): Promise<void>;
-    /**
-     * Enable Do Not Disturb
-     */
     enableDoNotDisturb(options?: DoNotDisturbOptions): Promise<void>;
-    /**
-     * Disable Do Not Disturb
-     */
     disableDoNotDisturb(): Promise<void>;
-    /**
-     * Block a user
-     */
     blockUser(walletAddress: WalletAddress): Promise<void>;
-    /**
-     * Unblock a user
-     */
     unblockUser(walletAddress: WalletAddress): Promise<void>;
-    /**
-     * Get blocked users
-     */
     getBlockedUsers(): Promise<WalletAddress[]>;
-    /**
-     * Link ENS name
-     */
     linkENS(options: {
         ensName: string;
     }): Promise<void>;
-    /**
-     * Verify Twitter
-     */
     verifyTwitter(options: {
         handle: string;
     }): Promise<void>;
-    /**
-     * Verify GitHub
-     */
     verifyGithub(options: {
         username: string;
     }): Promise<void>;
     /**
-     * Add contact
+     * @deprecated Use `userDialer.contacts.add()` instead. ProfileService contact
+     * methods bypass ContactsBook's cache and event system, causing stale reads.
      */
     addContact(options: AddContactOptions): Promise<Contact>;
     /**
-     * Get contacts
+     * @deprecated Use `userDialer.contacts.getAll()` instead. ProfileService contact
+     * methods bypass ContactsBook's cache and event system, causing stale reads.
      */
     getContacts(params?: PaginationParams): Promise<Contact[]>;
     /**
-     * Update contact
+     * @deprecated Use `userDialer.contacts.update()` instead. ProfileService contact
+     * methods bypass ContactsBook's cache and event system, causing stale reads.
      */
     updateContact(options: UpdateContactOptions): Promise<Contact>;
     /**
-     * Remove contact
+     * @deprecated Use `userDialer.contacts.remove()` instead. ProfileService contact
+     * methods bypass ContactsBook's cache and event system, causing stale reads.
      */
     removeContact(walletAddress: WalletAddress): Promise<void>;
 }
 
 /**
- * Voicemail Service
+ * @file voicemail.ts
+ * @description Voicemail service.
+ * @layer Services
  */
 
-/** Voicemail service */
 declare class VoicemailService extends BaseService {
     constructor(http: HttpClient);
-    /**
-     * Start recording a voicemail
-     */
     startRecording(options: StartRecordingOptions): Promise<RecordingSession>;
-    /**
-     * Stop recording a voicemail
-     */
     stopRecording(voicemailId: string): Promise<Voicemail>;
-    /**
-     * Record a voicemail (convenience method)
-     */
     record(options: StartRecordingOptions): Promise<RecordingSession>;
-    /**
-     * Get all voicemails
-     */
     getAll(options?: GetVoicemailsOptions): Promise<Voicemail[]>;
-    /**
-     * Get a specific voicemail
-     */
     get(voicemailId: string): Promise<Voicemail>;
-    /**
-     * Mark voicemail as read
-     */
     markAsRead(voicemailId: string): Promise<void>;
-    /**
-     * Request transcription for a voicemail
-     */
     transcribe(voicemailId: string): Promise<Transcription>;
-    /**
-     * Delete a voicemail
-     */
     delete(voicemailId: string): Promise<void>;
-    /**
-     * Archive a voicemail
-     */
     archive(voicemailId: string): Promise<void>;
-    /**
-     * Get archived voicemails
-     */
     getArchived(): Promise<Voicemail[]>;
-    /**
-     * Download voicemail audio
-     */
     download(voicemailId: string): Promise<Blob>;
-    /**
-     * Get waveform data for visualization
-     */
     getWaveform(voicemailId: string): Promise<WaveformData>;
-    /**
-     * Set greeting
-     */
     setGreeting(options: SetGreetingOptions): Promise<VoicemailGreeting>;
-    /**
-     * Get current greeting
-     */
     getGreeting(): Promise<VoicemailGreeting>;
-    /**
-     * Enable voicemail
-     */
     enable(): Promise<void>;
-    /**
-     * Disable voicemail
-     */
     disable(): Promise<void>;
-    /**
-     * Check if voicemail is enabled
-     */
     isEnabled(): Promise<boolean>;
-    /**
-     * Set notification preferences
-     */
     setNotificationPreferences(preferences: VoicemailNotificationPreferences): Promise<void>;
 }
 
@@ -641,194 +386,53 @@ declare class VoicemailService extends BaseService {
  * @file conference.ts
  * @description Conference service for multi-party video conferencing rooms.
  * @layer Services
- *
- * Handles REST signaling (source of truth for server state) and optionally
- * delegates real-time media operations to a pluggable IMediaProvider (e.g. HMS).
- *
- * Dual-dispatch pattern: methods like muteAudio() do both the REST call AND
- * the media provider call. REST is authoritative — media errors are logged
- * but don't prevent the REST operation from succeeding.
- *
- * NOTE: This service is for multi-party conference rooms and party lines.
- * 1:1 P2P calls use PeerJS via CallsService — a completely separate system.
  */
 
-/** Conference service for video conferencing */
 declare class ConferenceService extends BaseService {
     private participantStreams;
     private _mediaProvider;
     constructor(http: HttpClient);
-    /**
-     * Set the active media provider for real-time audio/video.
-     * Pass null to detach.
-     */
     setMediaProvider(provider: IMediaProvider | null): void;
-    /** Get the current media provider, or null if none is set */
     get mediaProvider(): IMediaProvider | null;
-    /**
-     * Connect to the media session for a room.
-     * Requires room.mediaToken (returned by the backend join route).
-     * This is a separate step from join() so that join() stays isomorphic (REST-only).
-     */
     connectMedia(room: ConferenceRoom, userName: string, config?: MediaProviderConfig): Promise<void>;
-    /**
-     * Disconnect from the media session.
-     * Safe to call even if no provider is set or not connected.
-     */
     disconnectMedia(): Promise<void>;
-    /**
-     * Create a conference room
-     */
     create(options: CreateRoomOptions): Promise<ConferenceRoom>;
-    /**
-     * Join a conference room by ID.
-     * Maps backend field names (token, role) to SDK field names (mediaToken, mediaRole).
-     */
     join(options: JoinRoomOptions): Promise<ConferenceRoom>;
-    /**
-     * Join a conference room by URL.
-     * Maps backend field names (token, role) to SDK field names (mediaToken, mediaRole).
-     */
     joinByUrl(options: JoinByUrlOptions): Promise<ConferenceRoom>;
-    /**
-     * Normalize backend response fields to SDK ConferenceRoom shape.
-     * Backend returns `token` and `role`; SDK uses `mediaToken` and `mediaRole`.
-     */
     private normalizeRoomResponse;
-    /**
-     * Leave a conference room.
-     * Also disconnects from media session if a provider is active.
-     */
     leave(roomId: string): Promise<void>;
-    /**
-     * Get participants in a room
-     */
     getParticipants(roomId: string): Promise<Participant[]>;
-    /**
-     * Get participant's media stream
-     */
     getParticipantStream(roomId: string, participantId: string): MediaStream | undefined;
-    /**
-     * Mute your audio
-     */
     muteAudio(roomId: string): Promise<void>;
-    /**
-     * Unmute your audio
-     */
     unmuteAudio(roomId: string): Promise<void>;
-    /**
-     * Mute a specific participant (host only)
-     */
     muteParticipant(roomId: string, participantId: string): Promise<void>;
-    /**
-     * Mute all participants (host only)
-     */
     muteAll(roomId: string): Promise<void>;
-    /**
-     * Disable your video
-     */
     disableVideo(roomId: string): Promise<void>;
-    /**
-     * Enable your video
-     */
     enableVideo(roomId: string): Promise<void>;
-    /**
-     * Request participant to enable video
-     */
     requestVideo(roomId: string, participantId: string): Promise<void>;
-    /**
-     * Start screen share
-     */
     startScreenShare(roomId: string): Promise<void>;
-    /**
-     * Stop screen share
-     */
     stopScreenShare(roomId: string): Promise<void>;
-    /**
-     * Start recording
-     */
     startRecording(roomId: string): Promise<RoomRecording>;
-    /**
-     * Stop recording
-     */
     stopRecording(roomId: string): Promise<RoomRecording>;
-    /**
-     * Get recordings for a room
-     */
     getRecordings(roomId: string): Promise<RoomRecording[]>;
-    /**
-     * Send message in room
-     */
     sendMessage(roomId: string, options: SendRoomMessageOptions): Promise<RoomMessage>;
-    /**
-     * Set room layout
-     */
     setLayout(roomId: string, layout: LayoutOption, options?: SetLayoutOptions): Promise<void>;
-    /**
-     * End room (host only)
-     */
     end(roomId: string): Promise<void>;
-    /**
-     * Remove participant (host only)
-     */
     removeParticipant(roomId: string, participantId: string): Promise<void>;
-    /**
-     * Transfer host role
-     */
     transferHost(roomId: string, newHostParticipantId: string): Promise<void>;
-    /**
-     * Create breakout rooms
-     */
     createBreakoutRooms(roomId: string, options: CreateBreakoutRoomsOptions): Promise<BreakoutRoom[]>;
-    /**
-     * Move participant to breakout room
-     */
     moveToBreakout(roomId: string, participantId: string, breakoutRoomId: string): Promise<void>;
-    /**
-     * Close all breakout rooms
-     */
     closeBreakoutRooms(roomId: string): Promise<void>;
-    /**
-     * Create poll
-     */
     createPoll(roomId: string, options: CreatePollOptions): Promise<Poll>;
-    /**
-     * Vote on poll
-     */
     vote(roomId: string, pollId: string, optionIndex: number): Promise<void>;
-    /**
-     * Get poll results
-     */
     getPollResults(roomId: string, pollId: string): Promise<PollResults>;
-    /**
-     * Raise hand
-     */
     raiseHand(roomId: string): Promise<void>;
-    /**
-     * Lower hand
-     */
     lowerHand(roomId: string): Promise<void>;
-    /**
-     * Set video quality
-     */
     setVideoQuality(roomId: string, settings: VideoQualitySettings): Promise<void>;
-    /**
-     * Enable/disable adaptive quality
-     */
     setAdaptiveQuality(roomId: string, enabled: boolean): Promise<void>;
-    /**
-     * Get room statistics
-     */
     getStats(roomId: string): Promise<RoomStats>;
-    /**
-     * Internal: Set participant stream
-     * @internal
-     */
+    /** @internal */
     _setParticipantStream(roomId: string, participantId: string, stream: MediaStream): void;
-    /**
-     * Fire-and-forget media provider call.
-     * Logs errors but doesn't throw — REST is the source of truth.
-     */
     private _mediaDispatch;
 }
 
@@ -847,25 +451,15 @@ declare class ContactsBook {
     private cache;
     private loaded;
     constructor(provider: IContactsBookProvider, config?: ContactsBookConfig);
-    /** Load (or reload) all contacts from the provider into cache */
     load(): Promise<Contact[]>;
-    /** Get all contacts (from cache if loaded, otherwise loads first) */
     getAll(): Promise<Contact[]>;
-    /** Get a single contact by wallet address */
     get(walletAddress: WalletAddress): Promise<Contact | null>;
-    /** Check if a wallet address is in the contacts book */
     has(walletAddress: WalletAddress): Promise<boolean>;
-    /** Add a contact */
     add(options: AddContactOptions): Promise<Contact>;
-    /** Update a contact's nickname, tags, or notes */
     update(options: UpdateContactOptions): Promise<Contact>;
-    /** Remove a contact */
     remove(walletAddress: WalletAddress): Promise<void>;
-    /** Subscribe to a contacts book event */
     on<K extends keyof ContactsBookEvents>(event: K, callback: (payload: ContactsBookEvents[K]) => void): void;
-    /** Unsubscribe from a contacts book event */
     off<K extends keyof ContactsBookEvents>(event: K, callback?: (payload: ContactsBookEvents[K]) => void): void;
-    /** Remove all event listeners */
     removeAllListeners(): void;
     private emit;
 }
@@ -890,7 +484,7 @@ declare class ContactsBook {
  * await userDialer.calls.start({ to: '0x...', type: 'audio' });
  * ```
  *
- * @module @dial/sdk/client/user-dialer
+ * @module @dial-wtf/client/user-dialer
  */
 
 /**
@@ -901,7 +495,7 @@ declare class ContactsBook {
  */
 declare class UserDialer {
     private readonly http;
-    private readonly session;
+    private session;
     private readonly events;
     /** @internal */
     private readonly authService;
@@ -1022,13 +616,13 @@ declare class UserDialer {
      * ```
      */
     contacts: ContactsBook;
-    constructor(http: HttpClient, session: SessionData, contactsProvider?: IContactsBookProvider, contactsConfig?: ContactsBookConfig);
+    constructor(http: HttpClient, session: SessionData, contactsProvider?: IContactsBookProvider, contactsConfig?: ContactsBookConfig, authService?: AuthService);
     /**
      * Replace the contacts book provider at runtime
      *
      * @example
      * ```typescript
-     * import { ApiContactsBookProvider } from '@dial-wtf/sdk';
+     * import { ApiContactsBookProvider } from '@dial-wtf/client';
      * userDialer.setContactsProvider(new ApiContactsBookProvider(httpClient));
      * ```
      */
@@ -1097,7 +691,7 @@ declare class UserDialer {
  *
  * @example
  * ```typescript
- * import { DialClient } from '@dial/sdk';
+ * import { DialClient } from '@dial-wtf/client';
  *
  * // Initialize universal client
  * const dial = new DialClient({
@@ -1114,7 +708,7 @@ declare class UserDialer {
  * });
  * ```
  *
- * @module @dial/sdk
+ * @module @dial-wtf/client
  */
 
 /**
@@ -1279,6 +873,18 @@ declare class DialClient {
         uri?: string;
     }): Promise<UserDialer>;
     /**
+     * Auto-detect the SIWE/SIWS domain from the current environment.
+     * Returns the hostname for browsers, the extension origin for extensions,
+     * or 'dial.wtf' as the fallback.
+     * @internal
+     */
+    private detectDomain;
+    /**
+     * Auto-detect the SIWE/SIWS URI from the current environment.
+     * @internal
+     */
+    private detectUri;
+    /**
      * Simple base58 encoding for signatures
      * @internal
      */
@@ -1286,23 +892,70 @@ declare class DialClient {
 }
 
 /**
- * @file contacts-book-local.ts
- * @description LocalContactsBookProvider — localStorage-backed contacts storage.
- * @layer Services
+ * Event Emitter for Dial SDK
  *
- * Default provider that persists contacts per-wallet in localStorage (browser)
- * or an in-memory Map (Node.js). Works offline with zero backend dependencies.
+ * Provides type-safe event emission for real-time updates.
+ * Works in both browser and Node.js environments.
+ *
+ * @module @dial-wtf/client/event-emitter
  */
 
-/** Options for the local provider */
+/**
+ * Type-safe event emitter for Dial SDK events
+ */
+declare class DialEventEmitter {
+    private readonly emitter;
+    constructor();
+    /**
+     * Subscribe to an event
+     */
+    on<T extends DialEventType>(event: T, listener: EventListener<T>): void;
+    /**
+     * Subscribe to an event (only fires once)
+     */
+    once<T extends DialEventType>(event: T, listener: EventListener<T>): void;
+    /**
+     * Unsubscribe from an event
+     */
+    off<T extends DialEventType>(event: T, listener?: EventListener<T>): void;
+    /**
+     * Emit an event
+     */
+    emit<T extends DialEventType>(event: T, payload: DialEventPayloads[T]): void;
+    /**
+     * Remove all listeners
+     */
+    removeAllListeners(event?: DialEventType): void;
+    /**
+     * Get listener count for an event
+     */
+    listenerCount(event: DialEventType): number;
+}
+
+/**
+ * @file contacts-book-local.ts
+ * @description LocalContactsBookProvider — IDialStorage-backed contacts storage.
+ * @layer Services
+ *
+ * Default provider that persists contacts per-wallet via IDialStorage (platform-agnostic).
+ * Uses BrowserStorage by default in browsers, MemoryStorage as fallback.
+ * Works offline with zero backend dependencies.
+ *
+ * Addresses audit finding C3: no direct localStorage usage — works in
+ * Chrome Extension MV3 service workers when given a chrome.storage adapter.
+ */
+
 interface LocalContactsBookProviderOptions {
     /** Owner wallet address — used to namespace storage keys */
     walletAddress: WalletAddress;
     /** Storage key prefix (default: 'dial_contacts') */
     storagePrefix?: string;
+    /** Custom storage backend (default: BrowserStorage in browsers, MemoryStorage elsewhere) */
+    storage?: IDialStorage;
 }
 declare class LocalContactsBookProvider implements IContactsBookProvider {
     private readonly storageKey;
+    private readonly storage;
     private cache;
     private loaded;
     constructor(options: LocalContactsBookProviderOptions);
@@ -1322,13 +975,33 @@ declare class LocalContactsBookProvider implements IContactsBookProvider {
  * @layer Services
  *
  * Provider that delegates CRUD operations to the PeerSpeak /profile/contacts
- * API routes via the SDK HttpClient. Use this when the backend is available.
+ * API routes. Accepts either an HttpClient instance or a config object
+ * so consumers can construct it without internal SDK plumbing (P2-3 fix).
  */
 
+/** Config for constructing an ApiContactsBookProvider without an HttpClient. */
+interface ApiContactsBookProviderConfig {
+    /** API key for authentication. */
+    apiKey?: string;
+    /** Base URL of the Dial API (e.g., 'https://api.dial.wtf/v1'). */
+    baseUrl: string;
+    /** Bearer token for the authenticated session. */
+    token: string;
+    /** API version prefix (default: 'v1'). */
+    apiVersion?: string;
+}
 declare class ApiContactsBookProvider implements IContactsBookProvider {
     private readonly http;
     private readonly apiVersion;
+    /**
+     * Create with an existing HttpClient instance (internal SDK usage).
+     */
     constructor(http: HttpClient, apiVersion?: string);
+    /**
+     * Create with a config object (external consumer usage).
+     * No need to import or construct HttpClient yourself.
+     */
+    constructor(config: ApiContactsBookProviderConfig);
     getAll(params?: PaginationParams): Promise<Contact[]>;
     get(walletAddress: WalletAddress): Promise<Contact | null>;
     add(options: AddContactOptions): Promise<Contact>;
@@ -1338,103 +1011,4 @@ declare class ApiContactsBookProvider implements IContactsBookProvider {
     private endpoint;
 }
 
-/**
- * Dial SDK Error types
- */
-/** Base SDK error */
-declare class DialError extends Error {
-    readonly code: string;
-    readonly statusCode: number | undefined;
-    readonly details: Record<string, unknown> | undefined;
-    constructor(message: string, code: string, statusCode?: number, details?: Record<string, unknown>);
-    toJSON(): Record<string, unknown>;
-}
-/** Authentication error */
-declare class AuthError extends DialError {
-    constructor(message: string, code?: string, details?: Record<string, unknown>);
-}
-/** API request error */
-declare class ApiError extends DialError {
-    constructor(message: string, statusCode: number, code?: string, details?: Record<string, unknown>);
-    static fromResponse(status: number, body: unknown): ApiError;
-}
-/** Network/connection error */
-declare class NetworkError extends DialError {
-    constructor(message: string, details?: Record<string, unknown>);
-}
-/** Timeout error */
-declare class TimeoutError extends DialError {
-    constructor(message?: string);
-}
-/** Validation error */
-declare class ValidationError extends DialError {
-    readonly field: string | undefined;
-    constructor(message: string, field?: string, details?: Record<string, unknown>);
-}
-/** Rate limit error */
-declare class RateLimitError extends DialError {
-    readonly retryAfter: number | undefined;
-    constructor(message?: string, retryAfter?: number);
-}
-/** Session expired error */
-declare class SessionExpiredError extends AuthError {
-    constructor();
-}
-/** Not found error */
-declare class NotFoundError extends DialError {
-    constructor(message: string, resourceType?: string);
-}
-/** Permission denied error */
-declare class PermissionDeniedError extends DialError {
-    constructor(message?: string, requiredPermission?: string);
-}
-
-/**
- * Environment Detection Utilities
- *
- * The Dial SDK is designed to be isomorphic, meaning it can run in both
- * browser and Node.js environments. However, certain features are only
- * available in specific environments.
- *
- * @module @dial/sdk/utils/environment
- */
-/** Environment type */
-type Environment = "browser" | "node" | "unknown";
-/**
- * Detect the current runtime environment
- */
-declare function detectEnvironment(): Environment;
-/** Current environment (cached) */
-declare const ENVIRONMENT: Environment;
-/** Check if running in browser */
-declare const IS_BROWSER: boolean;
-/** Check if running in Node.js */
-declare const IS_NODE: boolean;
-/**
- * Features that are only available in browser environment
- *
- * @remarks
- * These features require browser-specific APIs like MediaStream, WebRTC, etc.
- * - Audio/Video streaming (requires MediaStream API)
- * - Screen sharing (requires Screen Capture API)
- * - Local media streams (requires getUserMedia)
- * - Real-time call events via WebSocket
- * - Push notifications (requires Service Workers)
- */
-declare const BROWSER_ONLY_FEATURES: readonly ["calls.getLocalStream", "calls.getRemoteStream", "conference.getParticipantStream", "conference.startScreenShare", "voicemail.download", "profile.updateAvatar"];
-/**
- * Features that work in both environments (isomorphic)
- *
- * @remarks
- * These features use only HTTP APIs and work identically in both environments.
- * - All authentication (SIWE/SIWS message verification)
- * - Profile management
- * - Messaging (send, receive, history)
- * - Call management (start, end, mute) - but not media streams
- * - Voicemail management
- * - Conference room management
- * - Party Lines queries
- */
-declare const ISOMORPHIC_FEATURES: readonly ["auth.*", "profile.*", "messages.*", "calls.start", "calls.answer", "calls.decline", "calls.end", "calls.mute", "calls.unmute", "calls.getHistory", "voicemail.getAll", "voicemail.get", "voicemail.markAsRead", "voicemail.transcribe", "conference.create", "conference.join", "conference.leave", "conference.getParticipants", "partyLines.*", "registry.*"];
-
-export { AddContactOptions, ApiContactsBookProvider, ApiError, AuthCredentials, AuthError, AuthResult, BROWSER_ONLY_FEATURES, BreakoutRoom, Call, CallRecording, ConferenceRoom, Contact, ContactsBook, ContactsBookConfig, ContactsBookEvents, Conversation, CreateBreakoutRoomsOptions, CreateGroupOptions, CreatePartyLineOptions, CreatePartyLineResult, CreatePollOptions, CreateRoomOptions, CreateThreadOptions, DeclineCallOptions, DialClient, DialClientConfig, DialError, DialEventType, DialProfile, DoNotDisturbOptions, ENVIRONMENT, EventListener, GetConversationOptions, GetMessagesOptions, GetVoicemailsOptions, Group, IContactsBookProvider, IMediaProvider, ISOMORPHIC_FEATURES, IS_BROWSER, IS_NODE, JoinByUrlOptions, JoinRoomOptions, LayoutOption, LocalContactsBookProvider, MediaProviderConfig, Message, NetworkError, NotFoundError, NotificationSettings, PaginationParams, Participant, PartyLine, PartyLinesResponse, PermissionDeniedError, Poll, PollResults, PrivacySettings, ProfilePreferences, type ProfileSearchResult, ProfileStatus, QueryPartyLinesOptions, RateLimitError, RecordingSession, RoomMessage, RoomRecording, RoomStats, SendMessageOptions, SendRoomMessageOptions, SessionData, SessionExpiredError, SetGreetingOptions, SetLayoutOptions, SetStatusOptions, StartCallOptions, StartRecordingOptions, StatusInfo, Thread, TimeoutError, Transcription, UpdateContactOptions, UpdateProfileOptions, UserDialer, ValidationError, VideoQualitySettings, Voicemail, VoicemailGreeting, VoicemailNotificationPreferences, WalletAddress, WaveformData, detectEnvironment };
+export { ApiContactsBookProvider, type ApiContactsBookProviderConfig, AuthService, CallsService, ChatService, ConferenceService, ContactsBook, DialClient, DialEventEmitter, HttpClient, LocalContactsBookProvider, type LocalContactsBookProviderOptions, PartyLinesService, type ProfileSearchResult, ProfileService, RegistryService, UserDialer, VoicemailService };

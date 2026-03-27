@@ -1,6 +1,7 @@
-import { useCallback, useEffect } from 'react';
+import { useCallback, useContext, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import type { Contact, AddContactOptions, UpdateContactOptions } from '@dial-wtf/sdk';
+import { UserDialerContext } from '@dial-wtf/react';
+import type { Contact, AddContactOptions, UpdateContactOptions } from '@dial-wtf/core';
 import {
   setContacts,
   setContactsLoading,
@@ -10,11 +11,9 @@ import {
 } from '../ducks/dial';
 import {
   getDialContactsList,
-  getDialContactByAddress,
   getDialContactsLoading,
   getDialIsAuthenticated,
 } from '../selectors/dial';
-import { useDialClient } from './useDialClient';
 
 /**
  * Hook to manage Dial contacts sync with the address book.
@@ -33,7 +32,8 @@ export function useDialContacts(): {
   refreshContacts: () => Promise<void>;
 } {
   const dispatch = useDispatch();
-  const { userDialer } = useDialClient();
+  const userDialerCtx = useContext(UserDialerContext);
+  const userDialer = userDialerCtx?.userDialer ?? null;
   const isAuthenticated = useSelector(getDialIsAuthenticated);
   const contacts = useSelector(getDialContactsList);
   const isLoading = useSelector(getDialContactsLoading);

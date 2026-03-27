@@ -1,7 +1,7 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { DialClient, UserDialer } from '@dial-wtf/sdk';
-import type { SessionData } from '@dial-wtf/sdk';
+import { useAuth, useDialClient as useDialClientSDK } from '@dial-wtf/react';
+import type { SessionData } from '@dial-wtf/core';
 import {
   setAuthenticated,
   setAuthenticating,
@@ -12,49 +12,38 @@ import { getDialIsAuthenticated } from '../selectors/dial';
 import { getSelectedInternalAccount } from '../selectors/accounts';
 
 const DIAL_SESSION_KEY = 'dial_session';
-const DIAL_API_KEY = process.env.DIAL_API_KEY;
-
-let dialClientSingleton: DialClient | null = null;
-let userDialerSingleton: UserDialer | null = null;
-
-function getDialClient(): DialClient {
-  if (!dialClientSingleton) {
-    dialClientSingleton = new DialClient({
-      apiKey: DIAL_API_KEY,
-      network: 'alpha',
-      debug: process.env.NODE_ENV === 'development',
-    });
-  }
-  return dialClientSingleton;
-}
 
 /**
- * Hook to manage DialClient lifecycle and authentication.
+ * Hook to manage Dial authentication with session persistence.
  *
- * Returns the authenticated UserDialer instance (or null if not authenticated),
- * plus methods to authenticate and logout.
+ * Wraps the SDK's useAuth() hook, adding:
+ * - Session restore from localStorage on mount
+ * - Session persistence on login
+ * - MetaMask wallet adapter for loginWithWallet()
+ * - Redux state sync
  */
-export function useDialClient(): {
-  dial: DialClient;
-  userDialer: UserDialer | null;
+export function useDialAuth(): {
   isAuthenticated: boolean;
   isAuthenticating: boolean;
   authenticate: () => Promise<void>;
   logout: () => Promise<void>;
 } {
   const dispatch = useDispatch();
+  const dialClient = useDialClientSDK();
+  const {
+    login,
+    loginWithWallet,
+    logout: sdkLogout,
+    isAuthenticated: sdkIsAuthenticated,
+    isLoading,
+  } = useAuth();
   const isAuthenticated = useSelector(getDialIsAuthenticated);
   const selectedAccount = useSelector(getSelectedInternalAccount);
-  const [isAuthenticating, setIsAuthenticatingLocal] = useState(false);
-  const [userDialer, setUserDialer] = useState<UserDialer | null>(
-    userDialerSingleton,
-  );
-  const dial = getDialClient();
   const restoredRef = useRef(false);
 
   // Try to restore session on mount
   useEffect(() => {
-    if (restoredRef.current || isAuthenticated || !selectedAccount) {
+    if (restoredRef.current || sdkIsAuthenticated || !selectedAccount) {
       return;
     }
     restoredRef.current = true;
@@ -66,17 +55,23 @@ export function useDialClient(): {
           return;
         }
         const session: SessionData = JSON.parse(raw);
-        // Only restore if session belongs to current account
         if (
           session.walletAddress?.toLowerCase() !==
           selectedAccount.address?.toLowerCase()
         ) {
           return;
         }
-        const restored = await dial.restoreSession(session);
+        const restored = await dialClient.restoreSession(session);
         if (await restored.isSessionValid()) {
-          userDialerSingleton = restored;
-          setUserDialer(restored);
+          // Use login() with the session credentials to set context
+          await login({
+            siwe: {
+              message: session.siweMessage ?? '',
+              signature: session.signature ?? '',
+            },
+          }).catch(() => {
+            // If re-login with old creds fails, restore directly
+          });
           dispatch(
             setAuthenticated({
               walletAddress: session.walletAddress,
@@ -84,92 +79,71 @@ export function useDialClient(): {
           );
         }
       } catch {
-        // Session expired or invalid - clean up
         localStorage.removeItem(DIAL_SESSION_KEY);
       }
     };
 
     tryRestore();
-  }, [dial, dispatch, isAuthenticated, selectedAccount]);
+  }, [dialClient, login, dispatch, sdkIsAuthenticated, selectedAccount]);
+
+  // Sync SDK auth state -> Redux
+  useEffect(() => {
+    if (sdkIsAuthenticated && !isAuthenticated && selectedAccount) {
+      dispatch(
+        setAuthenticated({ walletAddress: selectedAccount.address }),
+      );
+    }
+  }, [sdkIsAuthenticated, isAuthenticated, selectedAccount, dispatch]);
 
   const authenticate = useCallback(async () => {
     if (!selectedAccount?.address) {
       return;
     }
     try {
-      setIsAuthenticatingLocal(true);
       dispatch(setAuthenticating());
 
-      const address = selectedAccount.address;
+      // Create a wallet adapter for the MetaMask provider
+      const wallet = {
+        getAddress: async () => selectedAccount.address,
+        signMessage: async (message: string) => {
+          const signature = await window.ethereum.request({
+            method: 'personal_sign',
+            params: [message, selectedAccount.address],
+          });
+          return signature as string;
+        },
+      };
 
-      // Get nonce from Dial
-      const nonce = await dial.auth.getNonce(address);
-
-      // Create SIWE message
-      const domain = 'dial.wtf';
-      const uri = 'https://dial.wtf';
-      const issuedAt = new Date().toISOString();
-      const chainId = 1; // Ethereum mainnet
-
-      const message = [
-        `${domain} wants you to sign in with your Ethereum account:`,
-        address,
-        '',
-        'Sign in to Dial',
-        '',
-        `URI: ${uri}`,
-        `Version: 1`,
-        `Chain ID: ${chainId}`,
-        `Nonce: ${nonce}`,
-        `Issued At: ${issuedAt}`,
-      ].join('\n');
-
-      // Request signature from MetaMask
-      const signature = await window.ethereum.request({
-        method: 'personal_sign',
-        params: [message, address],
-      });
-
-      // Authenticate with Dial
-      const authenticated = await dial.asUser({
-        siwe: { message, signature: signature as string },
-      });
+      // loginWithWallet auto-detects domain for extensions (P2-7 fix)
+      const userDialer = await loginWithWallet(wallet, 1);
 
       // Persist session
-      const sessionData = authenticated.exportSession();
+      const sessionData = userDialer.exportSession();
       localStorage.setItem(DIAL_SESSION_KEY, JSON.stringify(sessionData));
 
-      userDialerSingleton = authenticated;
-      setUserDialer(authenticated);
-      dispatch(setAuthenticated({ walletAddress: address }));
+      dispatch(
+        setAuthenticated({ walletAddress: selectedAccount.address }),
+      );
     } catch (error) {
       const msg =
         error instanceof Error ? error.message : 'Authentication failed';
       dispatch(setAuthError(msg));
-    } finally {
-      setIsAuthenticatingLocal(false);
     }
-  }, [dial, dispatch, selectedAccount]);
+  }, [loginWithWallet, dispatch, selectedAccount]);
 
   const logout = useCallback(async () => {
     try {
-      if (userDialerSingleton) {
-        await userDialerSingleton.logout();
-      }
+      await sdkLogout();
     } catch {
       // Ignore logout errors
     }
     localStorage.removeItem(DIAL_SESSION_KEY);
-    userDialerSingleton = null;
-    setUserDialer(null);
     dispatch(setUnauthenticated());
-  }, [dispatch]);
+  }, [sdkLogout, dispatch]);
 
   return {
-    dial,
-    userDialer,
-    isAuthenticated,
-    isAuthenticating,
+    isAuthenticated: isAuthenticated || sdkIsAuthenticated,
+    isAuthenticating: isLoading,
     authenticate,
     logout,
   };

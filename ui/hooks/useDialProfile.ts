@@ -1,9 +1,9 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useContext, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import type { DialProfile } from '@dial-wtf/sdk';
+import { UserDialerContext } from '@dial-wtf/react';
+import type { DialProfile } from '@dial-wtf/core';
 import { setProfile } from '../ducks/dial';
 import { getDialProfileByAddress, getDialIsAuthenticated } from '../selectors/dial';
-import { useDialClient } from './useDialClient';
 
 /**
  * Hook to fetch and cache a Dial profile for a given wallet address.
@@ -18,7 +18,8 @@ export function useDialProfile(address: string | undefined): {
   refetch: () => Promise<void>;
 } {
   const dispatch = useDispatch();
-  const { userDialer } = useDialClient();
+  const userDialerCtx = useContext(UserDialerContext);
+  const userDialer = userDialerCtx?.userDialer ?? null;
   const isAuthenticated = useSelector(getDialIsAuthenticated);
   const cachedProfile = useSelector((state: any) =>
     address ? getDialProfileByAddress(state, address) : undefined,

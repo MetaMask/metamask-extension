@@ -1,5 +1,5 @@
 import type { DialState } from '../ducks/dial/dial';
-import type { Contact, DialProfile, Call } from '@dial-wtf/sdk';
+import type { Contact, DialProfile, Call } from '@dial-wtf/core';
 
 interface StateWithDial {
   dial: DialState;

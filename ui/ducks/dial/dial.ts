@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
-import type { DialProfile, Contact, Call } from '@dial-wtf/sdk';
+import type { DialProfile, Contact, Call } from '@dial-wtf/core';
 
 // ── Types ────────────────────────────────────────────────────────
 

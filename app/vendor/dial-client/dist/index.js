@@ -1,143 +1,31 @@
-import { SiweMessage } from 'siwe';
+import { TimeoutError, AuthError, ApiError, NotFoundError, RateLimitError, PermissionDeniedError, NetworkError, ValidationError, BrowserStorage, MemoryStorage, IS_BROWSER, SDK_VERSION, DEFAULT_NETWORK, API_BASE_URLS, getFetch, detectEnvironment } from '@dial-wtf/core';
+export { API_BASE_URLS, ApiError, AuthError, BrowserStorage, DEFAULT_NETWORK, DialError, ENVIRONMENT, IS_BROWSER, IS_BROWSER_LIKE, IS_EXTENSION, IS_NODE, MemoryStorage, NetworkError, NotFoundError, PermissionDeniedError, RateLimitError, SDK_VERSION, SessionExpiredError, TimeoutError, ValidationError, detectEnvironment, getFetch } from '@dial-wtf/core';
 import EventEmitter3 from 'eventemitter3';
 
-/* @dial-wtf/sdk - Web3-native communication primitives */
+/* @dial-wtf/client - Universal TypeScript SDK */
 
-// src/types/client.ts
-var SDK_VERSION = "0.3.0";
-var API_BASE_URLS = {
-  mainnet: "https://dial.wtf/api",
-  alpha: "https://alpha.dial.wtf/api",
-  staging: "https://staging.dial.wtf/api",
-  testnet: "https://testnet.dial.wtf/api",
-  devnet: "https://dev.dial.wtf/api"
-};
-var DEFAULT_NETWORK = "alpha";
-
-// src/errors.ts
-var DialError = class _DialError extends Error {
-  code;
-  statusCode;
-  details;
-  constructor(message, code, statusCode, details) {
-    super(message);
-    this.name = "DialError";
-    this.code = code;
-    this.statusCode = statusCode;
-    this.details = details;
-    Object.setPrototypeOf(this, _DialError.prototype);
-  }
-  toJSON() {
-    return {
-      name: this.name,
-      message: this.message,
-      code: this.code,
-      statusCode: this.statusCode,
-      details: this.details
-    };
-  }
-};
-var AuthError = class _AuthError extends DialError {
-  constructor(message, code, details) {
-    super(message, code ?? "AUTH_ERROR", 401, details);
-    this.name = "AuthError";
-    Object.setPrototypeOf(this, _AuthError.prototype);
-  }
-};
-var ApiError = class _ApiError extends DialError {
-  constructor(message, statusCode, code, details) {
-    super(message, code ?? "API_ERROR", statusCode, details);
-    this.name = "ApiError";
-    Object.setPrototypeOf(this, _ApiError.prototype);
-  }
-  static fromResponse(status, body) {
-    if (typeof body === "object" && body !== null) {
-      const errorBody = body;
-      return new _ApiError(
-        String(errorBody["error"] ?? errorBody["message"] ?? "Unknown API error"),
-        status,
-        String(errorBody["code"] ?? "API_ERROR"),
-        errorBody["details"]
-      );
-    }
-    return new _ApiError("Unknown API error", status);
-  }
-};
-var NetworkError = class _NetworkError extends DialError {
-  constructor(message, details) {
-    super(message, "NETWORK_ERROR", void 0, details);
-    this.name = "NetworkError";
-    Object.setPrototypeOf(this, _NetworkError.prototype);
-  }
-};
-var TimeoutError = class _TimeoutError extends DialError {
-  constructor(message) {
-    super(message ?? "Request timed out", "TIMEOUT_ERROR", 408);
-    this.name = "TimeoutError";
-    Object.setPrototypeOf(this, _TimeoutError.prototype);
-  }
-};
-var ValidationError = class _ValidationError extends DialError {
-  field;
-  constructor(message, field, details) {
-    super(message, "VALIDATION_ERROR", 400, details);
-    this.name = "ValidationError";
-    this.field = field;
-    Object.setPrototypeOf(this, _ValidationError.prototype);
-  }
-};
-var RateLimitError = class _RateLimitError extends DialError {
-  retryAfter;
-  constructor(message, retryAfter) {
-    super(message ?? "Rate limit exceeded", "RATE_LIMIT_ERROR", 429);
-    this.name = "RateLimitError";
-    this.retryAfter = retryAfter;
-    Object.setPrototypeOf(this, _RateLimitError.prototype);
-  }
-};
-var SessionExpiredError = class _SessionExpiredError extends AuthError {
-  constructor() {
-    super("Session expired. Please re-authenticate.", "SESSION_EXPIRED");
-    this.name = "SessionExpiredError";
-    Object.setPrototypeOf(this, _SessionExpiredError.prototype);
-  }
-};
-var NotFoundError = class _NotFoundError extends DialError {
-  constructor(message, resourceType) {
-    super(message, "NOT_FOUND", 404, resourceType ? { resourceType } : void 0);
-    this.name = "NotFoundError";
-    Object.setPrototypeOf(this, _NotFoundError.prototype);
-  }
-};
-var PermissionDeniedError = class _PermissionDeniedError extends DialError {
-  constructor(message, requiredPermission) {
-    super(
-      message ?? "Permission denied",
-      "PERMISSION_DENIED",
-      403,
-      requiredPermission ? { requiredPermission } : void 0
-    );
-    this.name = "PermissionDeniedError";
-    Object.setPrototypeOf(this, _PermissionDeniedError.prototype);
-  }
-};
-
-// src/http/client.ts
 var HttpClient = class {
   config;
   authToken;
+  sessionRefresher;
+  refreshPromise;
+  inflightGets = /* @__PURE__ */ new Map();
   constructor(config) {
     this.config = config;
   }
-  /** Set the authentication token for requests */
   setAuthToken(token) {
     this.authToken = token;
   }
-  /** Get the current auth token */
   getAuthToken() {
     return this.authToken;
   }
-  /** Build full URL for an endpoint */
+  /**
+   * Register a callback to refresh the session on 401 (P2-5 fix).
+   * The callback should refresh the session and return the new auth token.
+   */
+  setSessionRefresher(refresher) {
+    this.sessionRefresher = refresher;
+  }
   buildUrl(endpoint, params) {
     const base = this.config.baseUrl.replace(/\/+$/, "");
     const path = endpoint.startsWith("/") ? endpoint : `/${endpoint}`;
@@ -151,12 +39,11 @@ var HttpClient = class {
     }
     return url.toString();
   }
-  /** Build request headers */
   buildHeaders(customHeaders) {
     const headers = {
       "Content-Type": "application/json",
       "Accept": "application/json",
-      "User-Agent": `@dial/sdk`
+      "User-Agent": `@dial-wtf/client`
     };
     if (this.config.apiKey) {
       headers["x-api-key"] = this.config.apiKey;
@@ -169,14 +56,56 @@ var HttpClient = class {
     }
     return headers;
   }
-  /** Make an HTTP request */
-  async request(endpoint, options = {}) {
+  /**
+   * Compose multiple AbortSignals into one.
+   * Uses AbortSignal.any() where available (Node 20+, modern browsers),
+   * falls back to manual composition.
+   */
+  composeSignals(signals) {
+    const filtered = signals.filter(Boolean);
+    if (filtered.length === 0) {
+      const controller2 = new AbortController();
+      return { signal: controller2.signal, cleanup: () => {
+      } };
+    }
+    if (filtered.length === 1) {
+      return { signal: filtered[0], cleanup: () => {
+      } };
+    }
+    if ("any" in AbortSignal) {
+      return {
+        signal: AbortSignal.any(filtered),
+        cleanup: () => {
+        }
+      };
+    }
+    const controller = new AbortController();
+    const onAbort = () => controller.abort();
+    for (const sig of filtered) {
+      if (sig.aborted) {
+        controller.abort();
+        return { signal: controller.signal, cleanup: () => {
+        } };
+      }
+      sig.addEventListener("abort", onAbort, { once: true });
+    }
+    const cleanup = () => {
+      for (const sig of filtered) {
+        sig.removeEventListener("abort", onAbort);
+      }
+    };
+    return { signal: controller.signal, cleanup };
+  }
+  async request(endpoint, options = {}, _isRetry = false) {
     const { method = "GET", headers, body, timeout, signal } = options;
     const url = this.buildUrl(endpoint);
     const requestHeaders = this.buildHeaders(headers);
-    const controller = new AbortController();
+    const timeoutController = new AbortController();
     const timeoutMs = timeout ?? this.config.timeout;
-    const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
+    const timeoutId = setTimeout(() => timeoutController.abort(), timeoutMs);
+    const signals = [timeoutController.signal];
+    if (signal) signals.push(signal);
+    const { signal: composedSignal, cleanup } = this.composeSignals(signals);
     try {
       if (this.config.debug) {
         console.log(`[Dial SDK] ${method} ${url}`);
@@ -185,9 +114,10 @@ var HttpClient = class {
         method,
         headers: requestHeaders,
         body: body ? JSON.stringify(body) : void 0,
-        signal: signal ?? controller.signal
+        signal: composedSignal
       });
       clearTimeout(timeoutId);
+      cleanup();
       const contentType = response.headers.get("content-type");
       let data;
       if (contentType?.includes("application/json")) {
@@ -196,6 +126,11 @@ var HttpClient = class {
         data = await response.text();
       }
       if (!response.ok) {
+        if (response.status === 401 && !_isRetry && this.sessionRefresher) {
+          const newToken = await this.refreshSession();
+          this.setAuthToken(newToken);
+          return this.request(endpoint, options, true);
+        }
         this.handleErrorResponse(response.status, data, response.headers);
       }
       if (typeof data === "object" && data !== null && "data" in data) {
@@ -204,9 +139,15 @@ var HttpClient = class {
       return data;
     } catch (error) {
       clearTimeout(timeoutId);
+      cleanup();
       if (error instanceof Error) {
         if (error.name === "AbortError") {
           throw new TimeoutError();
+        }
+        if (error instanceof AuthError && !_isRetry && this.sessionRefresher) {
+          const newToken = await this.refreshSession();
+          this.setAuthToken(newToken);
+          return this.request(endpoint, options, true);
         }
         if (error instanceof ApiError || error instanceof AuthError || error instanceof NotFoundError || error instanceof RateLimitError || error instanceof PermissionDeniedError) {
           throw error;
@@ -216,7 +157,18 @@ var HttpClient = class {
       throw new NetworkError("Unknown network error");
     }
   }
-  /** Handle error responses */
+  /**
+   * Refresh session, deduplicating concurrent refresh calls.
+   * @internal
+   */
+  async refreshSession() {
+    if (!this.refreshPromise) {
+      this.refreshPromise = this.sessionRefresher().finally(() => {
+        this.refreshPromise = void 0;
+      });
+    }
+    return this.refreshPromise;
+  }
   handleErrorResponse(status, body, headers) {
     switch (status) {
       case 401:
@@ -236,7 +188,6 @@ var HttpClient = class {
         throw ApiError.fromResponse(status, body);
     }
   }
-  /** Extract error message from response body */
   getErrorMessage(body, fallback) {
     if (typeof body === "object" && body !== null) {
       const errorBody = body;
@@ -249,21 +200,18 @@ var HttpClient = class {
     }
     return fallback;
   }
-  /** GET request */
   async get(endpoint, params, options) {
+    const cacheKey = params ? this.buildUrl(endpoint, this.toUrlParams(params)) : endpoint;
+    const inflight = this.inflightGets.get(cacheKey);
+    if (inflight) return inflight;
+    const promise = this.executeGet(endpoint, params, options);
+    this.inflightGets.set(cacheKey, promise);
+    promise.finally(() => this.inflightGets.delete(cacheKey));
+    return promise;
+  }
+  async executeGet(endpoint, params, options) {
     if (params) {
-      const urlParams = {};
-      for (const [key, value] of Object.entries(params)) {
-        if (value !== void 0 && value !== null) {
-          if (value instanceof Date) {
-            urlParams[key] = value.toISOString();
-          } else if (typeof value === "string" || typeof value === "number" || typeof value === "boolean") {
-            urlParams[key] = value;
-          } else {
-            urlParams[key] = String(value);
-          }
-        }
-      }
+      const urlParams = this.toUrlParams(params);
       const url = this.buildUrl(endpoint, urlParams);
       return this.request(url.replace(this.config.baseUrl, ""), {
         ...options,
@@ -275,7 +223,21 @@ var HttpClient = class {
       method: "GET"
     });
   }
-  /** POST request */
+  toUrlParams(params) {
+    const urlParams = {};
+    for (const [key, value] of Object.entries(params)) {
+      if (value !== void 0 && value !== null) {
+        if (value instanceof Date) {
+          urlParams[key] = value.toISOString();
+        } else if (typeof value === "string" || typeof value === "number" || typeof value === "boolean") {
+          urlParams[key] = value;
+        } else {
+          urlParams[key] = String(value);
+        }
+      }
+    }
+    return urlParams;
+  }
   async post(endpoint, body, options) {
     return this.request(endpoint, {
       ...options,
@@ -283,7 +245,6 @@ var HttpClient = class {
       body
     });
   }
-  /** PUT request */
   async put(endpoint, body, options) {
     return this.request(endpoint, {
       ...options,
@@ -291,7 +252,6 @@ var HttpClient = class {
       body
     });
   }
-  /** PATCH request */
   async patch(endpoint, body, options) {
     return this.request(endpoint, {
       ...options,
@@ -299,7 +259,6 @@ var HttpClient = class {
       body
     });
   }
-  /** DELETE request */
   async delete(endpoint, options) {
     return this.request(endpoint, {
       ...options,
@@ -316,27 +275,17 @@ var BaseService = class {
     this.http = http;
     this.apiVersion = apiVersion;
   }
-  /** Build endpoint path */
   endpoint(path) {
     return `/${this.apiVersion}${path}`;
   }
-  /** Build endpoint path without version prefix */
   rawEndpoint(path) {
     return path;
   }
 };
-
-// src/services/auth.ts
 var AuthService = class extends BaseService {
   constructor(http) {
     super(http);
   }
-  /**
-   * Get a nonce for authentication
-   * The nonce should be used in the SIWE/SIWS message
-   *
-   * @param address - The wallet address to get a nonce for
-   */
   async getNonce(address) {
     const response = await this.http.get(
       this.rawEndpoint("/siwe/nonce"),
@@ -345,13 +294,23 @@ var AuthService = class extends BaseService {
     return response.nonce;
   }
   /**
-   * Verify SIWE credentials and create session
+   * Verify SIWE credentials and create session.
    *
-   * Parses the SIWE message to extract address, chainId, and nonce
-   * as required by the PeerSpeak verify endpoint.
+   * Uses dynamic import() for siwe to avoid crashing if not installed (C1 fix).
    */
   async verifySiwe(message, signature) {
-    const parsed = new SiweMessage(message);
+    let parsed;
+    try {
+      const { SiweMessage } = await import('siwe');
+      const siweMsg = new SiweMessage(message);
+      parsed = {
+        address: siweMsg.address,
+        chainId: siweMsg.chainId,
+        nonce: siweMsg.nonce
+      };
+    } catch {
+      parsed = this.parseSiweFields(message);
+    }
     const response = await this.http.post(
       this.rawEndpoint("/siwe/verify"),
       {
@@ -364,9 +323,6 @@ var AuthService = class extends BaseService {
     );
     return response;
   }
-  /**
-   * Verify SIWS credentials and create session
-   */
   async verifySiws(message, signature) {
     const response = await this.http.post(
       this.rawEndpoint("/siws/verify"),
@@ -374,10 +330,6 @@ var AuthService = class extends BaseService {
     );
     return response;
   }
-  /**
-   * Authenticate with provided credentials
-   * Returns session data on success
-   */
   async authenticate(credentials) {
     if (credentials.siwe) {
       return this.verifySiwe(
@@ -395,9 +347,6 @@ var AuthService = class extends BaseService {
       "Either siwe or siws credentials must be provided"
     );
   }
-  /**
-   * Validate an existing session
-   */
   async validateSession(session) {
     try {
       const expiresAt = new Date(session.expiresAt);
@@ -413,9 +362,6 @@ var AuthService = class extends BaseService {
       return false;
     }
   }
-  /**
-   * Refresh session token
-   */
   async refreshSession(session) {
     if (!session.refreshToken) {
       throw new AuthError("No refresh token available");
@@ -426,17 +372,34 @@ var AuthService = class extends BaseService {
     );
     return response;
   }
-  /**
-   * Logout and invalidate session
-   */
   async logout() {
     await this.http.post(this.rawEndpoint("/auth/logout"));
   }
-  /**
-   * Get wallet address from session data
-   */
   getWalletAddress(session) {
     return session.walletAddress;
+  }
+  /**
+   * Fallback SIWE message parser when the siwe package is not installed.
+   * Extracts address, chainId, and nonce from the EIP-4361 formatted string.
+   */
+  parseSiweFields(message) {
+    const lines = message.split("\n");
+    let address = "";
+    let chainId = 1;
+    let nonce = "";
+    for (let i = 0; i < lines.length; i++) {
+      const line = lines[i].trim();
+      if (i === 1 && /^0x[a-fA-F0-9]{40}$/.test(line)) {
+        address = line;
+      }
+      if (line.startsWith("Chain ID:")) {
+        chainId = parseInt(line.replace("Chain ID:", "").trim(), 10);
+      }
+      if (line.startsWith("Nonce:")) {
+        nonce = line.replace("Nonce:", "").trim();
+      }
+    }
+    return { address, chainId, nonce };
   }
 };
 
@@ -445,71 +408,34 @@ var PartyLinesService = class extends BaseService {
   constructor(http) {
     super(http);
   }
-  /**
-   * Query party lines with filtering and pagination
-   * No authentication required for read-only access
-   */
   async query(options) {
-    const response = await this.http.get(
-      this.endpoint("/party-lines"),
-      {
-        isActive: options?.isActive,
-        search: options?.search,
-        limit: options?.limit,
-        offset: options?.offset
-      }
-    );
-    return response;
+    return this.http.get(this.endpoint("/party-lines"), {
+      isActive: options?.isActive,
+      search: options?.search,
+      limit: options?.limit,
+      offset: options?.offset
+    });
   }
-  /**
-   * Get all party lines (convenience method)
-   */
   async getAll(options) {
     const response = await this.query(options);
     return response.partyLines;
   }
-  /**
-   * Get active party lines
-   */
   async getActive(options) {
     const response = await this.query({ ...options, isActive: true });
     return response.partyLines;
   }
-  /**
-   * Search party lines by name or description
-   */
   async search(searchTerm, options) {
     const response = await this.query({ ...options, search: searchTerm });
     return response.partyLines;
   }
-  /**
-   * Create a new party line
-   * Requires API key authentication
-   */
   async create(options) {
-    const response = await this.http.post(
-      this.endpoint("/party-lines"),
-      options
-    );
-    return response;
+    return this.http.post(this.endpoint("/party-lines"), options);
   }
-  /**
-   * Get a party line by room code
-   */
   async getByRoomCode(roomCode) {
-    const response = await this.http.get(
-      this.endpoint(`/party-lines/code/${roomCode}`)
-    );
-    return response;
+    return this.http.get(this.endpoint(`/party-lines/code/${roomCode}`));
   }
-  /**
-   * Get a party line by ID
-   */
   async getById(id) {
-    const response = await this.http.get(
-      this.endpoint(`/party-lines/${id}`)
-    );
-    return response;
+    return this.http.get(this.endpoint(`/party-lines/${id}`));
   }
 };
 
@@ -518,43 +444,58 @@ var RegistryService = class extends BaseService {
   constructor(http) {
     super(http);
   }
-  /**
-   * List public rooms
-   */
   async listPublicRooms(params) {
-    const response = await this.http.get(
-      this.endpoint("/registry/rooms"),
-      params ? { limit: params.limit, offset: params.offset } : void 0
-    );
-    return response;
+    return this.http.get(this.endpoint("/registry/rooms"), params ? { limit: params.limit, offset: params.offset } : void 0);
   }
-  /**
-   * Get token info
-   */
   async getTokenInfo(contractAddress) {
-    const response = await this.http.get(
-      this.endpoint(`/registry/tokens/${contractAddress}`)
-    );
-    return response;
+    return this.http.get(this.endpoint(`/registry/tokens/${contractAddress}`));
   }
-  /**
-   * Search profiles
-   */
   async searchProfiles(options) {
-    const response = await this.http.get(
-      this.endpoint("/registry/profiles/search"),
-      options
-    );
-    return response;
+    return this.http.get(this.endpoint("/registry/profiles/search"), options);
+  }
+  async getProfileByENS(ensName) {
+    return this.http.get(this.endpoint(`/registry/ens/${ensName}`));
   }
   /**
-   * Get profile by ENS name
+   * Batch lookup profiles by wallet addresses.
+   * Fetches up to 100 profiles in a single HTTP request.
+   *
+   * @example
+   * ```typescript
+   * const profiles = await dial.registry.getProfiles({
+   *   addresses: ['0xabc...', '0xdef...']
+   * });
+   * ```
    */
-  async getProfileByENS(ensName) {
-    const response = await this.http.get(
-      this.endpoint(`/registry/ens/${ensName}`)
+  async getProfiles(options) {
+    const profiles = await this.http.post(
+      this.endpoint("/registry/profiles/batch"),
+      { addresses: options.addresses }
     );
-    return response;
+    const map = /* @__PURE__ */ new Map();
+    for (const p of profiles) {
+      map.set(p.walletAddress, p);
+    }
+    return map;
+  }
+  /**
+   * Resolve the verified on-chain primary ENS name for an address.
+   * Returns null if no reverse ENS record is set.
+   *
+   * @example
+   * ```typescript
+   * const ens = await dial.registry.resolveENS('0x123...');
+   * // => { ensName: 'vitalik.eth', verified: true }
+   * ```
+   */
+  async resolveENS(address) {
+    try {
+      return await this.http.get(
+        this.endpoint(`/registry/ens/resolve/${address}`)
+      );
+    } catch {
+      return null;
+    }
   }
 };
 var DialEventEmitter = class {
@@ -615,66 +556,31 @@ var CallsService = class extends BaseService {
   constructor(http) {
     super(http);
   }
-  /**
-   * Start a call to another wallet address
-   */
   async start(options) {
-    const response = await this.http.post(
-      this.endpoint("/calls"),
-      options
-    );
-    return response;
+    return this.http.post(this.endpoint("/calls"), options);
   }
-  /**
-   * Answer an incoming call
-   */
   async answer(callId) {
-    const response = await this.http.post(
-      this.endpoint(`/calls/${callId}/answer`)
-    );
-    return response;
+    return this.http.post(this.endpoint(`/calls/${callId}/answer`));
   }
-  /**
-   * Decline an incoming call
-   */
   async decline(callId, options) {
-    await this.http.post(
-      this.endpoint(`/calls/${callId}/decline`),
-      options
-    );
+    await this.http.post(this.endpoint(`/calls/${callId}/decline`), options);
   }
-  /**
-   * End an active call
-   */
   async end(callId) {
     await this.http.post(this.endpoint(`/calls/${callId}/end`));
   }
-  /**
-   * Get call by ID
-   */
   async get(callId) {
-    const response = await this.http.get(
-      this.endpoint(`/calls/${callId}`)
-    );
-    return response;
+    return this.http.get(this.endpoint(`/calls/${callId}`));
   }
-  /**
-   * Get call history
-   */
   async getHistory(params) {
-    const queryParams = params ? { ...params } : void 0;
     const response = await this.http.get(
       this.endpoint("/calls"),
-      queryParams
+      params ? { ...params } : void 0
     );
     if (!Array.isArray(response) && "calls" in response) {
       return response.calls;
     }
     return response;
   }
-  /**
-   * Mute your microphone
-   */
   async mute(callId) {
     await this.http.post(this.endpoint(`/calls/${callId}/mute`));
     if (this.localStream) {
@@ -683,9 +589,6 @@ var CallsService = class extends BaseService {
       });
     }
   }
-  /**
-   * Unmute your microphone
-   */
   async unmute(callId) {
     await this.http.post(this.endpoint(`/calls/${callId}/unmute`));
     if (this.localStream) {
@@ -694,15 +597,9 @@ var CallsService = class extends BaseService {
       });
     }
   }
-  /**
-   * Toggle mute state
-   */
   async toggleMute(callId) {
     await this.http.post(this.endpoint(`/calls/${callId}/toggle-mute`));
   }
-  /**
-   * Disable video
-   */
   async disableVideo(callId) {
     await this.http.post(this.endpoint(`/calls/${callId}/disable-video`));
     if (this.localStream) {
@@ -711,9 +608,6 @@ var CallsService = class extends BaseService {
       });
     }
   }
-  /**
-   * Enable video
-   */
   async enableVideo(callId) {
     await this.http.post(this.endpoint(`/calls/${callId}/enable-video`));
     if (this.localStream) {
@@ -722,78 +616,39 @@ var CallsService = class extends BaseService {
       });
     }
   }
-  /**
-   * Toggle video state
-   */
   async toggleVideo(callId) {
     await this.http.post(this.endpoint(`/calls/${callId}/toggle-video`));
   }
-  /**
-   * Set speaker (earpiece or speaker)
-   */
   async setSpeaker(callId, enabled) {
-    await this.http.post(
-      this.endpoint(`/calls/${callId}/speaker`),
-      { enabled }
-    );
+    await this.http.post(this.endpoint(`/calls/${callId}/speaker`), { enabled });
   }
-  /**
-   * Get local media stream for a call
-   */
   getLocalStream(_callId) {
     return this.localStream;
   }
-  /**
-   * Get remote media stream for a call
-   */
   getRemoteStream(callId) {
     return this.remoteStreams.get(callId);
   }
-  /**
-   * Start recording the call
-   */
   async startRecording(callId) {
-    const response = await this.http.post(
-      this.endpoint(`/calls/${callId}/recording/start`)
-    );
-    return response;
+    return this.http.post(this.endpoint(`/calls/${callId}/recording/start`));
   }
-  /**
-   * Stop recording the call
-   */
   async stopRecording(callId) {
-    const response = await this.http.post(
-      this.endpoint(`/calls/${callId}/recording/stop`)
-    );
-    return response;
+    return this.http.post(this.endpoint(`/calls/${callId}/recording/stop`));
   }
-  /**
-   * Set custom ringtone
-   */
   setRingtone(audioUrl) {
     if (typeof window !== "undefined" && typeof Audio !== "undefined") {
       const audio = new Audio(audioUrl);
       audio.preload = "auto";
     }
   }
-  /**
-   * Internal: Set local stream (called by WebRTC layer)
-   * @internal
-   */
+  /** @internal */
   _setLocalStream(stream) {
     this.localStream = stream;
   }
-  /**
-   * Internal: Set remote stream (called by WebRTC layer)
-   * @internal
-   */
+  /** @internal */
   _setRemoteStream(callId, stream) {
     this.remoteStreams.set(callId, stream);
   }
-  /**
-   * Internal: Clear streams when call ends
-   * @internal
-   */
+  /** @internal */
   _clearStreams(callId) {
     this.remoteStreams.delete(callId);
   }
@@ -804,293 +659,136 @@ var ChatService = class extends BaseService {
   constructor(http) {
     super(http);
   }
-  /**
-   * Send a message to a wallet address
-   */
   async send(options) {
     if (options.media?.file) {
       return this.sendWithMedia(options);
     }
-    const response = await this.http.post(
-      this.endpoint("/chat/messages"),
-      {
-        to: options.to,
-        content: options.content,
-        type: options.type ?? "text",
-        threadId: options.threadId,
-        provider: options.provider,
-        encrypted: options.encrypted,
-        replyTo: options.replyTo,
-        mentions: options.mentions
-      }
-    );
-    return response;
+    return this.http.post(this.endpoint("/chat/messages"), {
+      to: options.to,
+      content: options.content,
+      type: options.type ?? "text",
+      threadId: options.threadId,
+      provider: options.provider,
+      encrypted: options.encrypted,
+      replyTo: options.replyTo,
+      mentions: options.mentions
+    });
   }
-  /**
-   * Send message with media attachment
-   */
   async sendWithMedia(options) {
-    const response = await this.http.post(
-      this.endpoint("/chat/messages"),
-      {
-        to: options.to,
-        content: options.media?.caption ?? options.content,
-        type: options.type,
-        threadId: options.threadId,
-        provider: options.provider,
-        encrypted: options.encrypted,
-        replyTo: options.replyTo,
-        mentions: options.mentions,
-        // Media will be uploaded separately in a real implementation
-        hasMedia: true,
-        mediaDuration: options.media?.duration
-      }
-    );
-    return response;
+    return this.http.post(this.endpoint("/chat/messages"), {
+      to: options.to,
+      content: options.media?.caption ?? options.content,
+      type: options.type,
+      threadId: options.threadId,
+      provider: options.provider,
+      encrypted: options.encrypted,
+      replyTo: options.replyTo,
+      mentions: options.mentions,
+      hasMedia: true,
+      mediaDuration: options.media?.duration
+    });
   }
-  /**
-   * Get all threads (DMs and Groups)
-   */
   async listThreads(params) {
-    const response = await this.http.get(
-      this.endpoint("/chat/threads"),
-      params ? { ...params } : void 0
-    );
-    return response;
+    return this.http.get(this.endpoint("/chat/threads"), params ? { ...params } : void 0);
   }
-  /**
-   * Get conversation with a specific wallet
-   * @deprecated Use listThreads() instead
-   */
+  /** @deprecated Use listThreads() */
   async getConversations(params) {
     return this.listThreads(params);
   }
-  /**
-   * Get thread with a specific wallet
-   */
   async getThread(options) {
-    const response = await this.http.get(
-      this.endpoint("/chat/threads"),
-      {
-        with: options.with,
-        threadModel: options.threadModel,
-        provider: options.provider
-      }
-    );
-    return response;
+    return this.http.get(this.endpoint("/chat/threads"), {
+      with: options.with,
+      threadModel: options.threadModel,
+      provider: options.provider
+    });
   }
-  /**
-   * Get conversation with a specific wallet
-   * @deprecated Use getThread() instead
-   */
+  /** @deprecated Use getThread() */
   async getConversation(options) {
     return this.getThread(options);
   }
-  /**
-   * Get messages with pagination
-   */
   async listMessages(options) {
-    const response = await this.http.get(
-      this.endpoint("/chat/messages"),
-      {
-        with: options.with,
-        threadId: options.threadId,
-        before: options.before?.toString(),
-        after: options.after?.toString(),
-        limit: options.limit,
-        offset: options.offset
-      }
-    );
-    return response;
+    return this.http.get(this.endpoint("/chat/messages"), {
+      with: options.with,
+      threadId: options.threadId,
+      before: options.before?.toString(),
+      after: options.after?.toString(),
+      limit: options.limit,
+      offset: options.offset
+    });
   }
-  /**
-   * Get messages with pagination
-   * @deprecated Use listMessages() instead
-   */
+  /** @deprecated Use listMessages() */
   async getMessages(options) {
     return this.listMessages(options);
   }
-  /**
-   * Mark a message as read
-   */
   async markAsRead(messageId) {
     await this.http.post(this.endpoint(`/chat/messages/${messageId}/read`));
   }
-  /**
-   * Add reaction to a message
-   */
   async addReaction(options) {
-    await this.http.post(
-      this.endpoint(`/chat/messages/${options.messageId}/reactions`),
-      { emoji: options.emoji }
-    );
+    await this.http.post(this.endpoint(`/chat/messages/${options.messageId}/reactions`), { emoji: options.emoji });
   }
-  /**
-   * Remove reaction from a message
-   */
   async removeReaction(options) {
-    await this.http.delete(
-      this.endpoint(`/chat/messages/${options.messageId}/reactions/${encodeURIComponent(options.emoji)}`)
-    );
+    await this.http.delete(this.endpoint(`/chat/messages/${options.messageId}/reactions/${encodeURIComponent(options.emoji)}`));
   }
-  /**
-   * Start typing indicator
-   */
   async startTyping(options) {
-    await this.http.post(
-      this.endpoint("/chat/typing"),
-      { threadId: options.threadId, isTyping: true }
-    );
+    await this.http.post(this.endpoint("/chat/typing"), { threadId: options.threadId, isTyping: true });
   }
-  /**
-   * Stop typing indicator
-   */
   async stopTyping(options) {
-    await this.http.post(
-      this.endpoint("/chat/typing"),
-      { threadId: options.threadId, isTyping: false }
-    );
+    await this.http.post(this.endpoint("/chat/typing"), { threadId: options.threadId, isTyping: false });
   }
-  /**
-   * Create a DM thread
-   */
   async createDM(options) {
-    const response = await this.http.post(
-      this.endpoint("/chat/threads"),
-      {
-        type: "dm",
-        participants: [options.otherDialUserId]
-      }
-    );
-    return response;
+    return this.http.post(this.endpoint("/chat/threads"), { type: "dm", participants: [options.otherDialUserId] });
   }
-  /**
-   * Create a topic-based thread
-   * @deprecated Use createDM() or createGroup() instead
-   */
+  /** @deprecated Use createDM() or createGroup() */
   async createThread(options) {
-    const response = await this.http.post(
-      this.endpoint("/chat/threads"),
-      options
-    );
-    return response;
+    return this.http.post(this.endpoint("/chat/threads"), options);
   }
-  /**
-   * Create a managed thread (for platform developers)
-   */
   async createManagedThread(options) {
-    const response = await this.http.post(
-      this.endpoint("/chat/threads/managed"),
-      options
-    );
-    return response;
+    return this.http.post(this.endpoint("/chat/threads/managed"), options);
   }
-  /**
-   * List managed threads
-   */
   async listManagedThreads(options) {
-    const response = await this.http.get(
-      this.endpoint("/chat/threads/managed"),
-      options?.filters
-    );
-    return response;
+    return this.http.get(this.endpoint("/chat/threads/managed"), options?.filters);
   }
-  /**
-   * Archive a thread
-   */
   async archiveThread(threadId) {
     await this.http.post(this.endpoint(`/chat/threads/${threadId}/archive`));
   }
-  /**
-   * Create a group
-   */
   async createGroup(options) {
-    const response = await this.http.post(
-      this.endpoint("/chat/threads"),
-      {
-        type: "group",
-        name: options.name,
-        participants: options.participants,
-        provider: options.provider
-        // Avatar would be uploaded separately
-      }
-    );
-    return response;
+    return this.http.post(this.endpoint("/chat/threads"), {
+      type: "group",
+      name: options.name,
+      participants: options.participants,
+      provider: options.provider
+    });
   }
-  /**
-   * Invite users to a group
-   */
   async inviteToGroup(options) {
-    await this.http.post(
-      this.endpoint(`/chat/threads/${options.groupId}/invite`),
-      { addresses: options.addresses }
-    );
+    await this.http.post(this.endpoint(`/chat/threads/${options.groupId}/invite`), { addresses: options.addresses });
   }
-  /**
-   * Add member to group
-   */
   async addMember(options) {
-    await this.http.post(
-      this.endpoint(`/chat/threads/${options.threadId}/members`),
-      { address: options.address }
-    );
+    await this.http.post(this.endpoint(`/chat/threads/${options.threadId}/members`), { address: options.address });
   }
-  /**
-   * Add member to group
-   * @deprecated Use addMember() instead
-   */
+  /** @deprecated Use addMember() */
   async addGroupMember(options) {
     return this.addMember({ threadId: options.groupId, address: options.address });
   }
-  /**
-   * Remove member from group
-   */
   async removeMember(options) {
-    await this.http.delete(
-      this.endpoint(`/chat/threads/${options.threadId}/members/${options.address}`)
-    );
+    await this.http.delete(this.endpoint(`/chat/threads/${options.threadId}/members/${options.address}`));
   }
-  /**
-   * Remove member from group
-   * @deprecated Use removeMember() instead
-   */
+  /** @deprecated Use removeMember() */
   async removeGroupMember(options) {
     return this.removeMember({ threadId: options.groupId, address: options.address });
   }
-  /**
-   * Leave a group
-   */
   async leaveGroup(threadId) {
     await this.http.post(this.endpoint(`/chat/threads/${threadId}/leave`));
   }
-  /**
-   * Update group info
-   */
   async updateGroup(options) {
-    const response = await this.http.patch(
-      this.endpoint(`/chat/threads/${options.threadId}`),
-      { name: options.name }
-    );
-    return response;
+    return this.http.patch(this.endpoint(`/chat/threads/${options.threadId}`), { name: options.name });
   }
-  /**
-   * Delete a message
-   */
   async delete(messageId, options) {
-    await this.http.delete(
-      this.endpoint(`/chat/messages/${messageId}`),
-      { headers: options?.forEveryone ? { "X-Delete-For-Everyone": "true" } : void 0 }
-    );
+    await this.http.delete(this.endpoint(`/chat/messages/${messageId}`), {
+      headers: options?.forEveryone ? { "X-Delete-For-Everyone": "true" } : void 0
+    });
   }
-  /**
-   * Search messages (local only - server-side search incompatible with E2EE)
-   */
   async search(options) {
-    const response = await this.http.get(
-      this.endpoint("/chat/messages/search"),
-      options
-    );
-    return response;
+    return this.http.get(this.endpoint("/chat/messages/search"), options);
   }
 };
 
@@ -1099,197 +797,84 @@ var ProfileService = class extends BaseService {
   constructor(http) {
     super(http);
   }
-  /**
-   * Get the current user's profile
-   */
   async get() {
-    const response = await this.http.get(
-      this.endpoint("/profile")
-    );
-    return response;
+    return this.http.get(this.endpoint("/profile"));
   }
-  /**
-   * Get profile by wallet address
-   */
   async getProfile(options) {
-    const response = await this.http.get(
-      this.endpoint(`/profiles/${options.walletAddress}`)
-    );
-    return response;
+    return this.http.get(this.endpoint(`/profiles/${options.walletAddress}`));
   }
-  /**
-   * Update the current user's profile
-   */
   async update(options) {
-    const response = await this.http.patch(
-      this.endpoint("/profile"),
-      options
-    );
-    return response;
+    return this.http.patch(this.endpoint("/profile"), options);
   }
-  /**
-   * Update avatar
-   */
   async updateAvatar(_options) {
-    const response = await this.http.post(
-      this.endpoint("/profile/avatar"),
-      { hasAvatar: true }
-    );
-    return response;
+    return this.http.post(this.endpoint("/profile/avatar"), { hasAvatar: true });
   }
-  /**
-   * Set status
-   */
   async setStatus(status, options) {
-    await this.http.post(
-      this.endpoint("/profile/status"),
-      { status, customMessage: options?.customMessage }
-    );
+    await this.http.post(this.endpoint("/profile/status"), { status, customMessage: options?.customMessage });
   }
-  /**
-   * Get current status
-   */
   async getStatus() {
-    const response = await this.http.get(
-      this.endpoint("/profile/status")
-    );
-    return response;
+    return this.http.get(this.endpoint("/profile/status"));
   }
-  /**
-   * Update preferences
-   */
   async updatePreferences(preferences) {
-    await this.http.patch(
-      this.endpoint("/profile/preferences"),
-      preferences
-    );
+    await this.http.patch(this.endpoint("/profile/preferences"), preferences);
   }
-  /**
-   * Update privacy settings
-   */
   async updatePrivacy(privacy) {
-    await this.http.patch(
-      this.endpoint("/profile/privacy"),
-      privacy
-    );
+    await this.http.patch(this.endpoint("/profile/privacy"), privacy);
   }
-  /**
-   * Update notification settings
-   */
   async updateNotificationSettings(settings) {
-    await this.http.patch(
-      this.endpoint("/profile/notifications"),
-      settings
-    );
+    await this.http.patch(this.endpoint("/profile/notifications"), settings);
   }
-  /**
-   * Enable Do Not Disturb
-   */
   async enableDoNotDisturb(options) {
-    await this.http.post(
-      this.endpoint("/profile/dnd"),
-      { enabled: true, ...options }
-    );
+    await this.http.post(this.endpoint("/profile/dnd"), { enabled: true, ...options });
   }
-  /**
-   * Disable Do Not Disturb
-   */
   async disableDoNotDisturb() {
-    await this.http.post(
-      this.endpoint("/profile/dnd"),
-      { enabled: false }
-    );
+    await this.http.post(this.endpoint("/profile/dnd"), { enabled: false });
   }
-  /**
-   * Block a user
-   */
   async blockUser(walletAddress) {
-    await this.http.post(
-      this.endpoint("/profile/blocked"),
-      { walletAddress }
-    );
+    await this.http.post(this.endpoint("/profile/blocked"), { walletAddress });
   }
-  /**
-   * Unblock a user
-   */
   async unblockUser(walletAddress) {
-    await this.http.delete(
-      this.endpoint(`/profile/blocked/${walletAddress}`)
-    );
+    await this.http.delete(this.endpoint(`/profile/blocked/${walletAddress}`));
   }
-  /**
-   * Get blocked users
-   */
   async getBlockedUsers() {
-    const response = await this.http.get(
-      this.endpoint("/profile/blocked")
-    );
-    return response;
+    return this.http.get(this.endpoint("/profile/blocked"));
   }
-  /**
-   * Link ENS name
-   */
   async linkENS(options) {
-    await this.http.post(
-      this.endpoint("/profile/verify/ens"),
-      options
-    );
+    await this.http.post(this.endpoint("/profile/verify/ens"), options);
   }
-  /**
-   * Verify Twitter
-   */
   async verifyTwitter(options) {
-    await this.http.post(
-      this.endpoint("/profile/verify/twitter"),
-      options
-    );
+    await this.http.post(this.endpoint("/profile/verify/twitter"), options);
   }
-  /**
-   * Verify GitHub
-   */
   async verifyGithub(options) {
-    await this.http.post(
-      this.endpoint("/profile/verify/github"),
-      options
-    );
+    await this.http.post(this.endpoint("/profile/verify/github"), options);
   }
   /**
-   * Add contact
+   * @deprecated Use `userDialer.contacts.add()` instead. ProfileService contact
+   * methods bypass ContactsBook's cache and event system, causing stale reads.
    */
   async addContact(options) {
-    const response = await this.http.post(
-      this.endpoint("/profile/contacts"),
-      options
-    );
-    return response;
+    return this.http.post(this.endpoint("/profile/contacts"), options);
   }
   /**
-   * Get contacts
+   * @deprecated Use `userDialer.contacts.getAll()` instead. ProfileService contact
+   * methods bypass ContactsBook's cache and event system, causing stale reads.
    */
   async getContacts(params) {
-    const response = await this.http.get(
-      this.endpoint("/profile/contacts"),
-      params ? { ...params } : void 0
-    );
-    return response;
+    return this.http.get(this.endpoint("/profile/contacts"), params ? { ...params } : void 0);
   }
   /**
-   * Update contact
+   * @deprecated Use `userDialer.contacts.update()` instead. ProfileService contact
+   * methods bypass ContactsBook's cache and event system, causing stale reads.
    */
   async updateContact(options) {
-    const response = await this.http.patch(
-      this.endpoint(`/profile/contacts/${options.walletAddress}`),
-      options
-    );
-    return response;
+    return this.http.patch(this.endpoint(`/profile/contacts/${options.walletAddress}`), options);
   }
   /**
-   * Remove contact
+   * @deprecated Use `userDialer.contacts.remove()` instead. ProfileService contact
+   * methods bypass ContactsBook's cache and event system, causing stale reads.
    */
   async removeContact(walletAddress) {
-    await this.http.delete(
-      this.endpoint(`/profile/contacts/${walletAddress}`)
-    );
+    await this.http.delete(this.endpoint(`/profile/contacts/${walletAddress}`));
   }
 };
 
@@ -1298,167 +883,62 @@ var VoicemailService = class extends BaseService {
   constructor(http) {
     super(http);
   }
-  /**
-   * Start recording a voicemail
-   */
   async startRecording(options) {
-    const response = await this.http.post(
-      this.endpoint("/voicemails/record"),
-      options
-    );
-    return response;
+    return this.http.post(this.endpoint("/voicemails/record"), options);
   }
-  /**
-   * Stop recording a voicemail
-   */
   async stopRecording(voicemailId) {
-    const response = await this.http.post(
-      this.endpoint(`/voicemails/${voicemailId}/stop`)
-    );
-    return response;
+    return this.http.post(this.endpoint(`/voicemails/${voicemailId}/stop`));
   }
-  /**
-   * Record a voicemail (convenience method)
-   */
   async record(options) {
     return this.startRecording(options);
   }
-  /**
-   * Get all voicemails
-   */
   async getAll(options) {
-    const response = await this.http.get(
-      this.endpoint("/voicemails"),
-      {
-        unreadOnly: options?.unreadOnly,
-        limit: options?.limit,
-        offset: options?.offset
-      }
-    );
-    return response;
+    return this.http.get(this.endpoint("/voicemails"), { unreadOnly: options?.unreadOnly, limit: options?.limit, offset: options?.offset });
   }
-  /**
-   * Get a specific voicemail
-   */
   async get(voicemailId) {
-    const response = await this.http.get(
-      this.endpoint(`/voicemails/${voicemailId}`)
-    );
-    return response;
+    return this.http.get(this.endpoint(`/voicemails/${voicemailId}`));
   }
-  /**
-   * Mark voicemail as read
-   */
   async markAsRead(voicemailId) {
     await this.http.post(this.endpoint(`/voicemails/${voicemailId}/read`));
   }
-  /**
-   * Request transcription for a voicemail
-   */
   async transcribe(voicemailId) {
-    const response = await this.http.post(
-      this.endpoint(`/voicemails/${voicemailId}/transcribe`)
-    );
-    return response;
+    return this.http.post(this.endpoint(`/voicemails/${voicemailId}/transcribe`));
   }
-  /**
-   * Delete a voicemail
-   */
   async delete(voicemailId) {
     await this.http.delete(this.endpoint(`/voicemails/${voicemailId}`));
   }
-  /**
-   * Archive a voicemail
-   */
   async archive(voicemailId) {
     await this.http.post(this.endpoint(`/voicemails/${voicemailId}/archive`));
   }
-  /**
-   * Get archived voicemails
-   */
   async getArchived() {
-    const response = await this.http.get(
-      this.endpoint("/voicemails/archived")
-    );
-    return response;
+    return this.http.get(this.endpoint("/voicemails/archived"));
   }
-  /**
-   * Download voicemail audio
-   */
   async download(voicemailId) {
     const voicemail = await this.get(voicemailId);
     const response = await fetch(voicemail.audioUrl);
     return response.blob();
   }
-  /**
-   * Get waveform data for visualization
-   */
   async getWaveform(voicemailId) {
-    const response = await this.http.get(
-      this.endpoint(`/voicemails/${voicemailId}/waveform`)
-    );
-    return response;
+    return this.http.get(this.endpoint(`/voicemails/${voicemailId}/waveform`));
   }
-  /**
-   * Set greeting
-   */
   async setGreeting(options) {
-    const response = await this.http.post(
-      this.endpoint("/voicemails/greeting"),
-      {
-        text: options.text,
-        voice: options.voice,
-        duration: options.duration,
-        // Audio file would be uploaded separately
-        hasAudioFile: !!options.audioFile
-      }
-    );
-    return response;
+    return this.http.post(this.endpoint("/voicemails/greeting"), { text: options.text, voice: options.voice, duration: options.duration, hasAudioFile: !!options.audioFile });
   }
-  /**
-   * Get current greeting
-   */
   async getGreeting() {
-    const response = await this.http.get(
-      this.endpoint("/voicemails/greeting")
-    );
-    return response;
+    return this.http.get(this.endpoint("/voicemails/greeting"));
   }
-  /**
-   * Enable voicemail
-   */
   async enable() {
-    await this.http.post(
-      this.endpoint("/voicemails/settings"),
-      { enabled: true }
-    );
+    await this.http.post(this.endpoint("/voicemails/settings"), { enabled: true });
   }
-  /**
-   * Disable voicemail
-   */
   async disable() {
-    await this.http.post(
-      this.endpoint("/voicemails/settings"),
-      { enabled: false }
-    );
+    await this.http.post(this.endpoint("/voicemails/settings"), { enabled: false });
   }
-  /**
-   * Check if voicemail is enabled
-   */
   async isEnabled() {
-    const response = await this.http.get(
-      this.endpoint("/voicemails/settings")
-    );
-    return response.enabled;
+    const r = await this.http.get(this.endpoint("/voicemails/settings"));
+    return r.enabled;
   }
-  /**
-   * Set notification preferences
-   */
   async setNotificationPreferences(preferences) {
-    await this.http.post(
-      this.endpoint("/voicemails/notifications"),
-      preferences
-    );
+    await this.http.post(this.endpoint("/voicemails/notifications"), preferences);
   }
 };
 
@@ -1469,43 +949,17 @@ var ConferenceService = class extends BaseService {
   constructor(http) {
     super(http);
   }
-  // ── Media Provider ──────────────────────────────────────────────────
-  /**
-   * Set the active media provider for real-time audio/video.
-   * Pass null to detach.
-   */
   setMediaProvider(provider) {
     this._mediaProvider = provider;
   }
-  /** Get the current media provider, or null if none is set */
   get mediaProvider() {
     return this._mediaProvider;
   }
-  /**
-   * Connect to the media session for a room.
-   * Requires room.mediaToken (returned by the backend join route).
-   * This is a separate step from join() so that join() stays isomorphic (REST-only).
-   */
   async connectMedia(room, userName, config) {
-    if (!this._mediaProvider) {
-      throw new Error("No media provider set. Call setMediaProvider() first.");
-    }
-    if (!room.mediaToken) {
-      throw new Error("Room has no mediaToken. Backend may not have HMS integration enabled.");
-    }
-    await this._mediaProvider.connect(
-      {
-        authToken: room.mediaToken,
-        userName,
-        roomId: room.hmsRoomId
-      },
-      config
-    );
+    if (!this._mediaProvider) throw new Error("No media provider set. Call setMediaProvider() first.");
+    if (!room.mediaToken) throw new Error("Room has no mediaToken. Backend may not have HMS integration enabled.");
+    await this._mediaProvider.connect({ authToken: room.mediaToken, userName, roomId: room.hmsRoomId }, config);
   }
-  /**
-   * Disconnect from the media session.
-   * Safe to call even if no provider is set or not connected.
-   */
   async disconnectMedia() {
     if (!this._mediaProvider) return;
     try {
@@ -1514,328 +968,126 @@ var ConferenceService = class extends BaseService {
       console.warn("[Dial SDK] Media disconnect error (non-fatal):", err);
     }
   }
-  // ── Room Lifecycle ──────────────────────────────────────────────────
-  /**
-   * Create a conference room
-   */
   async create(options) {
-    const response = await this.http.post(
-      this.endpoint("/conference/rooms"),
-      options
-    );
-    return response;
+    return this.http.post(this.endpoint("/conference/rooms"), options);
   }
-  /**
-   * Join a conference room by ID.
-   * Maps backend field names (token, role) to SDK field names (mediaToken, mediaRole).
-   */
   async join(options) {
-    const response = await this.http.post(
-      this.endpoint(`/conference/rooms/${options.roomId}/join`),
-      {
-        video: options.video,
-        audio: options.audio,
-        displayName: options.displayName
-      }
-    );
+    const response = await this.http.post(this.endpoint(`/conference/rooms/${options.roomId}/join`), { video: options.video, audio: options.audio, displayName: options.displayName });
     return this.normalizeRoomResponse(response);
   }
-  /**
-   * Join a conference room by URL.
-   * Maps backend field names (token, role) to SDK field names (mediaToken, mediaRole).
-   */
   async joinByUrl(options) {
-    const response = await this.http.post(
-      this.endpoint("/conference/rooms/join-by-url"),
-      options
-    );
+    const response = await this.http.post(this.endpoint("/conference/rooms/join-by-url"), options);
     return this.normalizeRoomResponse(response);
   }
-  /**
-   * Normalize backend response fields to SDK ConferenceRoom shape.
-   * Backend returns `token` and `role`; SDK uses `mediaToken` and `mediaRole`.
-   */
   normalizeRoomResponse(response) {
     const { token, role, ...rest } = response;
-    return {
-      ...rest,
-      mediaToken: rest.mediaToken ?? token,
-      mediaRole: rest.mediaRole ?? role
-    };
+    return { ...rest, mediaToken: rest.mediaToken ?? token, mediaRole: rest.mediaRole ?? role };
   }
-  /**
-   * Leave a conference room.
-   * Also disconnects from media session if a provider is active.
-   */
   async leave(roomId) {
     await this.http.post(this.endpoint(`/conference/rooms/${roomId}/leave`));
     this.participantStreams.delete(roomId);
     await this.disconnectMedia();
   }
-  /**
-   * Get participants in a room
-   */
   async getParticipants(roomId) {
-    const response = await this.http.get(
-      this.endpoint(`/conference/rooms/${roomId}/participants`)
-    );
-    return response;
+    return this.http.get(this.endpoint(`/conference/rooms/${roomId}/participants`));
   }
-  /**
-   * Get participant's media stream
-   */
   getParticipantStream(roomId, participantId) {
     return this.participantStreams.get(`${roomId}:${participantId}`);
   }
-  // ── Audio Controls (dual dispatch: REST + media provider) ───────────
-  /**
-   * Mute your audio
-   */
   async muteAudio(roomId) {
     await this.http.post(this.endpoint(`/conference/rooms/${roomId}/mute-audio`));
     this._mediaDispatch(() => this._mediaProvider.setLocalAudioEnabled(false));
   }
-  /**
-   * Unmute your audio
-   */
   async unmuteAudio(roomId) {
     await this.http.post(this.endpoint(`/conference/rooms/${roomId}/unmute-audio`));
     this._mediaDispatch(() => this._mediaProvider.setLocalAudioEnabled(true));
   }
-  /**
-   * Mute a specific participant (host only)
-   */
   async muteParticipant(roomId, participantId) {
-    await this.http.post(
-      this.endpoint(`/conference/rooms/${roomId}/participants/${participantId}/mute`)
-    );
+    await this.http.post(this.endpoint(`/conference/rooms/${roomId}/participants/${participantId}/mute`));
   }
-  /**
-   * Mute all participants (host only)
-   */
   async muteAll(roomId) {
     await this.http.post(this.endpoint(`/conference/rooms/${roomId}/mute-all`));
   }
-  // ── Video Controls (dual dispatch: REST + media provider) ──────────
-  /**
-   * Disable your video
-   */
   async disableVideo(roomId) {
     await this.http.post(this.endpoint(`/conference/rooms/${roomId}/disable-video`));
     this._mediaDispatch(() => this._mediaProvider.setLocalVideoEnabled(false));
   }
-  /**
-   * Enable your video
-   */
   async enableVideo(roomId) {
     await this.http.post(this.endpoint(`/conference/rooms/${roomId}/enable-video`));
     this._mediaDispatch(() => this._mediaProvider.setLocalVideoEnabled(true));
   }
-  /**
-   * Request participant to enable video
-   */
   async requestVideo(roomId, participantId) {
-    await this.http.post(
-      this.endpoint(`/conference/rooms/${roomId}/participants/${participantId}/request-video`)
-    );
+    await this.http.post(this.endpoint(`/conference/rooms/${roomId}/participants/${participantId}/request-video`));
   }
-  // ── Screen Sharing (dual dispatch: REST + media provider) ──────────
-  /**
-   * Start screen share
-   */
   async startScreenShare(roomId) {
     await this.http.post(this.endpoint(`/conference/rooms/${roomId}/screen-share/start`));
     this._mediaDispatch(() => this._mediaProvider.startScreenShare());
   }
-  /**
-   * Stop screen share
-   */
   async stopScreenShare(roomId) {
     await this.http.post(this.endpoint(`/conference/rooms/${roomId}/screen-share/stop`));
     this._mediaDispatch(() => this._mediaProvider.stopScreenShare());
   }
-  // ── Recording ───────────────────────────────────────────────────────
-  /**
-   * Start recording
-   */
   async startRecording(roomId) {
-    const response = await this.http.post(
-      this.endpoint(`/conference/rooms/${roomId}/recording/start`)
-    );
-    return response;
+    return this.http.post(this.endpoint(`/conference/rooms/${roomId}/recording/start`));
   }
-  /**
-   * Stop recording
-   */
   async stopRecording(roomId) {
-    const response = await this.http.post(
-      this.endpoint(`/conference/rooms/${roomId}/recording/stop`)
-    );
-    return response;
+    return this.http.post(this.endpoint(`/conference/rooms/${roomId}/recording/stop`));
   }
-  /**
-   * Get recordings for a room
-   */
   async getRecordings(roomId) {
-    const response = await this.http.get(
-      this.endpoint(`/conference/rooms/${roomId}/recordings`)
-    );
-    return response;
+    return this.http.get(this.endpoint(`/conference/rooms/${roomId}/recordings`));
   }
-  // ── In-Room Messaging ───────────────────────────────────────────────
-  /**
-   * Send message in room
-   */
   async sendMessage(roomId, options) {
-    const response = await this.http.post(
-      this.endpoint(`/conference/rooms/${roomId}/messages`),
-      options
-    );
-    return response;
+    return this.http.post(this.endpoint(`/conference/rooms/${roomId}/messages`), options);
   }
-  // ── Layout ──────────────────────────────────────────────────────────
-  /**
-   * Set room layout
-   */
   async setLayout(roomId, layout, options) {
-    await this.http.post(
-      this.endpoint(`/conference/rooms/${roomId}/layout`),
-      { layout, ...options }
-    );
+    await this.http.post(this.endpoint(`/conference/rooms/${roomId}/layout`), { layout, ...options });
   }
-  // ── Room Management ─────────────────────────────────────────────────
-  /**
-   * End room (host only)
-   */
   async end(roomId) {
     await this.http.post(this.endpoint(`/conference/rooms/${roomId}/end`));
   }
-  /**
-   * Remove participant (host only)
-   */
   async removeParticipant(roomId, participantId) {
-    await this.http.delete(
-      this.endpoint(`/conference/rooms/${roomId}/participants/${participantId}`)
-    );
+    await this.http.delete(this.endpoint(`/conference/rooms/${roomId}/participants/${participantId}`));
   }
-  /**
-   * Transfer host role
-   */
   async transferHost(roomId, newHostParticipantId) {
-    await this.http.post(
-      this.endpoint(`/conference/rooms/${roomId}/transfer-host`),
-      { participantId: newHostParticipantId }
-    );
+    await this.http.post(this.endpoint(`/conference/rooms/${roomId}/transfer-host`), { participantId: newHostParticipantId });
   }
-  // ── Breakout Rooms ──────────────────────────────────────────────────
-  /**
-   * Create breakout rooms
-   */
   async createBreakoutRooms(roomId, options) {
-    const response = await this.http.post(
-      this.endpoint(`/conference/rooms/${roomId}/breakout-rooms`),
-      options
-    );
-    return response;
+    return this.http.post(this.endpoint(`/conference/rooms/${roomId}/breakout-rooms`), options);
   }
-  /**
-   * Move participant to breakout room
-   */
   async moveToBreakout(roomId, participantId, breakoutRoomId) {
-    await this.http.post(
-      this.endpoint(`/conference/rooms/${roomId}/breakout-rooms/${breakoutRoomId}/move`),
-      { participantId }
-    );
+    await this.http.post(this.endpoint(`/conference/rooms/${roomId}/breakout-rooms/${breakoutRoomId}/move`), { participantId });
   }
-  /**
-   * Close all breakout rooms
-   */
   async closeBreakoutRooms(roomId) {
     await this.http.post(this.endpoint(`/conference/rooms/${roomId}/breakout-rooms/close`));
   }
-  // ── Polls ───────────────────────────────────────────────────────────
-  /**
-   * Create poll
-   */
   async createPoll(roomId, options) {
-    const response = await this.http.post(
-      this.endpoint(`/conference/rooms/${roomId}/polls`),
-      options
-    );
-    return response;
+    return this.http.post(this.endpoint(`/conference/rooms/${roomId}/polls`), options);
   }
-  /**
-   * Vote on poll
-   */
   async vote(roomId, pollId, optionIndex) {
-    await this.http.post(
-      this.endpoint(`/conference/rooms/${roomId}/polls/${pollId}/vote`),
-      { optionIndex }
-    );
+    await this.http.post(this.endpoint(`/conference/rooms/${roomId}/polls/${pollId}/vote`), { optionIndex });
   }
-  /**
-   * Get poll results
-   */
   async getPollResults(roomId, pollId) {
-    const response = await this.http.get(
-      this.endpoint(`/conference/rooms/${roomId}/polls/${pollId}/results`)
-    );
-    return response;
+    return this.http.get(this.endpoint(`/conference/rooms/${roomId}/polls/${pollId}/results`));
   }
-  // ── Hand Raising ────────────────────────────────────────────────────
-  /**
-   * Raise hand
-   */
   async raiseHand(roomId) {
     await this.http.post(this.endpoint(`/conference/rooms/${roomId}/raise-hand`));
   }
-  /**
-   * Lower hand
-   */
   async lowerHand(roomId) {
     await this.http.post(this.endpoint(`/conference/rooms/${roomId}/lower-hand`));
   }
-  // ── Quality Settings ────────────────────────────────────────────────
-  /**
-   * Set video quality
-   */
   async setVideoQuality(roomId, settings) {
-    await this.http.post(
-      this.endpoint(`/conference/rooms/${roomId}/quality`),
-      settings
-    );
+    await this.http.post(this.endpoint(`/conference/rooms/${roomId}/quality`), settings);
   }
-  /**
-   * Enable/disable adaptive quality
-   */
   async setAdaptiveQuality(roomId, enabled) {
-    await this.http.post(
-      this.endpoint(`/conference/rooms/${roomId}/adaptive-quality`),
-      { enabled }
-    );
+    await this.http.post(this.endpoint(`/conference/rooms/${roomId}/adaptive-quality`), { enabled });
   }
-  // ── Analytics ───────────────────────────────────────────────────────
-  /**
-   * Get room statistics
-   */
   async getStats(roomId) {
-    const response = await this.http.get(
-      this.endpoint(`/conference/rooms/${roomId}/stats`)
-    );
-    return response;
+    return this.http.get(this.endpoint(`/conference/rooms/${roomId}/stats`));
   }
-  /**
-   * Internal: Set participant stream
-   * @internal
-   */
+  /** @internal */
   _setParticipantStream(roomId, participantId, stream) {
     this.participantStreams.set(`${roomId}:${participantId}`, stream);
   }
-  // ── Private helpers ─────────────────────────────────────────────────
-  /**
-   * Fire-and-forget media provider call.
-   * Logs errors but doesn't throw — REST is the source of truth.
-   */
   _mediaDispatch(fn) {
     if (!this._mediaProvider) return;
     fn().catch((err) => {
@@ -1850,13 +1102,11 @@ var ContactsBook = class {
   loaded = false;
   constructor(provider, config) {
     this.provider = provider;
-    if (config?.autoLoad !== false) {
+    if (config?.autoLoad === true) {
       this.load().catch(() => {
       });
     }
   }
-  // ── Read operations ──────────────────────────────────────────────
-  /** Load (or reload) all contacts from the provider into cache */
   async load() {
     const contacts = await this.provider.getAll();
     this.cache.clear();
@@ -1867,48 +1117,38 @@ var ContactsBook = class {
     this.emit("contacts:loaded", { contacts });
     return contacts;
   }
-  /** Get all contacts (from cache if loaded, otherwise loads first) */
   async getAll() {
     if (!this.loaded) await this.load();
     return Array.from(this.cache.values());
   }
-  /** Get a single contact by wallet address */
   async get(walletAddress) {
     if (!this.loaded) await this.load();
     return this.cache.get(walletAddress.toLowerCase()) ?? null;
   }
-  /** Check if a wallet address is in the contacts book */
   async has(walletAddress) {
     if (!this.loaded) await this.load();
     return this.cache.has(walletAddress.toLowerCase());
   }
-  // ── Write operations ─────────────────────────────────────────────
-  /** Add a contact */
   async add(options) {
     const contact = await this.provider.add(options);
     this.cache.set(contact.walletAddress.toLowerCase(), contact);
     this.emit("contact:added", { contact });
     return contact;
   }
-  /** Update a contact's nickname, tags, or notes */
   async update(options) {
     const contact = await this.provider.update(options);
     this.cache.set(contact.walletAddress.toLowerCase(), contact);
     this.emit("contact:updated", { contact });
     return contact;
   }
-  /** Remove a contact */
   async remove(walletAddress) {
     await this.provider.remove(walletAddress);
     this.cache.delete(walletAddress.toLowerCase());
     this.emit("contact:removed", { walletAddress });
   }
-  // ── Events ───────────────────────────────────────────────────────
-  /** Subscribe to a contacts book event */
   on(event, callback) {
     this.emitter.on(event, callback);
   }
-  /** Unsubscribe from a contacts book event */
   off(event, callback) {
     if (callback) {
       this.emitter.off(event, callback);
@@ -1916,7 +1156,6 @@ var ContactsBook = class {
       this.emitter.removeAllListeners(event);
     }
   }
-  /** Remove all event listeners */
   removeAllListeners() {
     this.emitter.removeAllListeners();
   }
@@ -1924,69 +1163,15 @@ var ContactsBook = class {
     this.emitter.emit(event, payload);
   }
 };
-
-// src/utils/environment.ts
-function detectEnvironment() {
-  if (typeof window !== "undefined" && typeof document !== "undefined") {
-    return "browser";
-  }
-  if (typeof process !== "undefined" && process.versions?.node) {
-    return "node";
-  }
-  return "unknown";
-}
-var ENVIRONMENT = detectEnvironment();
-var IS_BROWSER = ENVIRONMENT === "browser";
-var IS_NODE = ENVIRONMENT === "node";
-var BROWSER_ONLY_FEATURES = [
-  "calls.getLocalStream",
-  "calls.getRemoteStream",
-  "conference.getParticipantStream",
-  "conference.startScreenShare",
-  "voicemail.download",
-  // Uses Blob
-  "profile.updateAvatar"
-  // Uses File API
-];
-var ISOMORPHIC_FEATURES = [
-  "auth.*",
-  "profile.*",
-  "messages.*",
-  "calls.start",
-  "calls.answer",
-  "calls.decline",
-  "calls.end",
-  "calls.mute",
-  "calls.unmute",
-  "calls.getHistory",
-  "voicemail.getAll",
-  "voicemail.get",
-  "voicemail.markAsRead",
-  "voicemail.transcribe",
-  "conference.create",
-  "conference.join",
-  "conference.leave",
-  "conference.getParticipants",
-  "partyLines.*",
-  "registry.*"
-];
-function getFetch() {
-  if (typeof globalThis.fetch !== "undefined") {
-    return globalThis.fetch.bind(globalThis);
-  }
-  throw new Error(
-    "[Dial SDK] No fetch implementation found. Please use Node.js 18+ or provide a custom fetch implementation."
-  );
-}
-
-// src/services/contacts-book-local.ts
 var LocalContactsBookProvider = class {
   storageKey;
+  storage;
   cache = /* @__PURE__ */ new Map();
   loaded = false;
   constructor(options) {
     const prefix = options.storagePrefix ?? "dial_contacts";
     this.storageKey = `${prefix}:${options.walletAddress.toLowerCase()}`;
+    this.storage = options.storage ?? (IS_BROWSER ? new BrowserStorage() : new MemoryStorage());
   }
   async getAll() {
     await this.ensureLoaded();
@@ -2013,7 +1198,7 @@ var LocalContactsBookProvider = class {
       addedAt: (/* @__PURE__ */ new Date()).toISOString()
     };
     this.cache.set(key, contact);
-    this.persist();
+    await this.persist();
     return contact;
   }
   async update(options) {
@@ -2030,25 +1215,23 @@ var LocalContactsBookProvider = class {
       notes: options.notes ?? existing.notes
     };
     this.cache.set(key, updated);
-    this.persist();
+    await this.persist();
     return updated;
   }
   async remove(walletAddress) {
     await this.ensureLoaded();
     this.cache.delete(walletAddress.toLowerCase());
-    this.persist();
+    await this.persist();
   }
   async has(walletAddress) {
     await this.ensureLoaded();
     return this.cache.has(walletAddress.toLowerCase());
   }
-  // ── Private helpers ──────────────────────────────────────────────
   async ensureLoaded() {
     if (this.loaded) return;
     this.loaded = true;
-    if (!IS_BROWSER) return;
     try {
-      const raw = localStorage.getItem(this.storageKey);
+      const raw = await this.storage.getItem(this.storageKey);
       if (raw) {
         const contacts = JSON.parse(raw);
         for (const c of contacts) {
@@ -2059,11 +1242,10 @@ var LocalContactsBookProvider = class {
       this.cache.clear();
     }
   }
-  persist() {
-    if (!IS_BROWSER) return;
+  async persist() {
     try {
       const contacts = Array.from(this.cache.values());
-      localStorage.setItem(this.storageKey, JSON.stringify(contacts));
+      await this.storage.setItem(this.storageKey, JSON.stringify(contacts));
     } catch {
     }
   }
@@ -2078,11 +1260,11 @@ var UserDialer = class {
   authService;
   /**
    * Calls service - wallet-to-wallet audio/video calling
-   * 
+   *
    * @remarks
    * - `start()`, `answer()`, `decline()`, `end()` - Isomorphic
    * - `getLocalStream()`, `getRemoteStream()` - Browser only
-   * 
+   *
    * @example
    * ```typescript
    * // Start a video call
@@ -2128,10 +1310,10 @@ var UserDialer = class {
   messages;
   /**
    * Profile service - manage user profiles
-   * 
+   *
    * @remarks
    * All methods are isomorphic except `updateAvatar()` which uses File API.
-   * 
+   *
    * @example
    * ```typescript
    * // Get current profile
@@ -2141,11 +1323,11 @@ var UserDialer = class {
   profile;
   /**
    * Voicemail service - manage voicemails
-   * 
+   *
    * @remarks
    * - `getAll()`, `get()`, `markAsRead()`, `transcribe()` - Isomorphic
    * - `download()` - Browser only (uses Blob)
-   * 
+   *
    * @example
    * ```typescript
    * // Get all voicemails
@@ -2193,18 +1375,25 @@ var UserDialer = class {
    * ```
    */
   contacts;
-  constructor(http, session, contactsProvider, contactsConfig) {
+  constructor(http, session, contactsProvider, contactsConfig, authService) {
     this.http = http;
     this.session = session;
     this.events = new DialEventEmitter();
     this.http.setAuthToken(session.token);
-    this.authService = new AuthService(http);
+    this.authService = authService ?? new AuthService(http);
     this.calls = new CallsService(http);
     this.chat = new ChatService(http);
     this.messages = this.chat;
     this.profile = new ProfileService(http);
     this.voicemail = new VoicemailService(http);
     this.conference = new ConferenceService(http);
+    if (session.refreshToken) {
+      this.http.setSessionRefresher(async () => {
+        const newSession = await this.authService.refreshSession(this.session);
+        this.session = { ...this.session, ...newSession };
+        return newSession.token;
+      });
+    }
     const provider = contactsProvider ?? new LocalContactsBookProvider({
       walletAddress: session.walletAddress
     });
@@ -2215,7 +1404,7 @@ var UserDialer = class {
    *
    * @example
    * ```typescript
-   * import { ApiContactsBookProvider } from '@dial-wtf/sdk';
+   * import { ApiContactsBookProvider } from '@dial-wtf/client';
    * userDialer.setContactsProvider(new ApiContactsBookProvider(httpClient));
    * ```
    */
@@ -2237,10 +1426,10 @@ var UserDialer = class {
   }
   /**
    * Export session data for persistence
-   * 
+   *
    * @remarks
    * Store this data securely (e.g., localStorage, secure cookie) to restore sessions later.
-   * 
+   *
    * @example
    * ```typescript
    * const sessionData = userDialer.exportSession();
@@ -2260,7 +1449,7 @@ var UserDialer = class {
   }
   /**
    * Subscribe to events
-   * 
+   *
    * @example
    * ```typescript
    * userDialer.on('call:incoming', (call) => {
@@ -2402,7 +1591,7 @@ var DialClient = class {
       );
     }
     const authResult = await this.auth.authenticate(credentials);
-    return new UserDialer(this.http, authResult.session);
+    return new UserDialer(this.http, authResult.session, void 0, void 0, this.auth);
   }
   /**
    * Restore a session from exported session data
@@ -2431,7 +1620,7 @@ var DialClient = class {
     if (expiresAt <= /* @__PURE__ */ new Date()) {
       throw new ValidationError("Session has expired");
     }
-    return new UserDialer(this.http, session);
+    return new UserDialer(this.http, session, void 0, void 0, this.auth);
   }
   /**
    * Simple SIWE authentication helper
@@ -2452,8 +1641,8 @@ var DialClient = class {
   async authenticateWithWallet(options) {
     const address = await options.wallet.getAddress();
     const nonce = await this.auth.getNonce(address);
-    const domain = options.domain ?? "dial.wtf";
-    const uri = options.uri ?? "https://dial.wtf";
+    const domain = options.domain ?? this.detectDomain();
+    const uri = options.uri ?? this.detectUri();
     const issuedAt = (/* @__PURE__ */ new Date()).toISOString();
     const message = [
       `${domain} wants you to sign in with your Ethereum account:`,
@@ -2489,8 +1678,8 @@ var DialClient = class {
   async authenticateWithSolana(options) {
     const address = options.wallet.publicKey.toBase58();
     const nonce = await this.auth.getNonce(address);
-    const domain = options.domain ?? "dial.wtf";
-    const uri = options.uri ?? "https://dial.wtf";
+    const domain = options.domain ?? this.detectDomain();
+    const uri = options.uri ?? this.detectUri();
     const issuedAt = (/* @__PURE__ */ new Date()).toISOString();
     const message = [
       `${domain} wants you to sign in with your Solana account:`,
@@ -2510,6 +1699,44 @@ var DialClient = class {
     return this.asUser({
       siws: { message, signature }
     });
+  }
+  /**
+   * Auto-detect the SIWE/SIWS domain from the current environment.
+   * Returns the hostname for browsers, the extension origin for extensions,
+   * or 'dial.wtf' as the fallback.
+   * @internal
+   */
+  detectDomain() {
+    const env = detectEnvironment();
+    if (env === "extension") {
+      const chrome = globalThis["chrome"];
+      const runtime = chrome?.["runtime"];
+      const id = runtime?.["id"];
+      if (id) return `chrome-extension://${id}`;
+    }
+    if (env === "browser") {
+      const location = globalThis["location"];
+      if (location?.hostname) return location.hostname;
+    }
+    return "dial.wtf";
+  }
+  /**
+   * Auto-detect the SIWE/SIWS URI from the current environment.
+   * @internal
+   */
+  detectUri() {
+    const env = detectEnvironment();
+    if (env === "extension") {
+      const chrome = globalThis["chrome"];
+      const runtime = chrome?.["runtime"];
+      const id = runtime?.["id"];
+      if (id) return `chrome-extension://${id}`;
+    }
+    if (env === "browser") {
+      const location = globalThis["location"];
+      if (location?.origin) return location.origin;
+    }
+    return "https://dial.wtf";
   }
   /**
    * Simple base58 encoding for signatures
@@ -2536,46 +1763,45 @@ var DialClient = class {
     return result;
   }
 };
-
-// src/services/contacts-book-api.ts
 var ApiContactsBookProvider = class {
-  constructor(http, apiVersion = "v1") {
-    this.http = http;
-    this.apiVersion = apiVersion;
-  }
+  http;
   apiVersion;
+  constructor(httpOrConfig, apiVersion) {
+    if (httpOrConfig instanceof HttpClient) {
+      this.http = httpOrConfig;
+      this.apiVersion = apiVersion ?? "v1";
+    } else {
+      const config = {
+        baseUrl: httpOrConfig.baseUrl,
+        apiKey: httpOrConfig.apiKey,
+        timeout: 3e4,
+        debug: false,
+        fetch: getFetch()
+      };
+      this.http = new HttpClient(config);
+      this.http.setAuthToken(httpOrConfig.token);
+      this.apiVersion = httpOrConfig.apiVersion ?? "v1";
+    }
+  }
   async getAll(params) {
-    return this.http.get(
-      this.endpoint("/profile/contacts"),
-      params ? { ...params } : void 0
-    );
+    return this.http.get(this.endpoint("/profile/contacts"), params ? { ...params } : void 0);
   }
   async get(walletAddress) {
     try {
       const contacts = await this.getAll();
-      return contacts.find(
-        (c) => c.walletAddress.toLowerCase() === walletAddress.toLowerCase()
-      ) ?? null;
+      return contacts.find((c) => c.walletAddress.toLowerCase() === walletAddress.toLowerCase()) ?? null;
     } catch {
       return null;
     }
   }
   async add(options) {
-    return this.http.post(
-      this.endpoint("/profile/contacts"),
-      options
-    );
+    return this.http.post(this.endpoint("/profile/contacts"), options);
   }
   async update(options) {
-    return this.http.patch(
-      this.endpoint(`/profile/contacts/${options.walletAddress}`),
-      options
-    );
+    return this.http.patch(this.endpoint(`/profile/contacts/${options.walletAddress}`), options);
   }
   async remove(walletAddress) {
-    await this.http.delete(
-      this.endpoint(`/profile/contacts/${walletAddress}`)
-    );
+    await this.http.delete(this.endpoint(`/profile/contacts/${walletAddress}`));
   }
   async has(walletAddress) {
     const contact = await this.get(walletAddress);
@@ -2586,6 +1812,6 @@ var ApiContactsBookProvider = class {
   }
 };
 
-export { API_BASE_URLS, ApiContactsBookProvider, ApiError, AuthError, BROWSER_ONLY_FEATURES, ContactsBook, DEFAULT_NETWORK, DialClient, DialError, ENVIRONMENT, ISOMORPHIC_FEATURES, IS_BROWSER, IS_NODE, LocalContactsBookProvider, NetworkError, NotFoundError, PermissionDeniedError, RateLimitError, SDK_VERSION, SessionExpiredError, TimeoutError, UserDialer, ValidationError, detectEnvironment };
+export { ApiContactsBookProvider, AuthService, CallsService, ChatService, ConferenceService, ContactsBook, DialClient, DialEventEmitter, HttpClient, LocalContactsBookProvider, PartyLinesService, ProfileService, RegistryService, UserDialer, VoicemailService };
 //# sourceMappingURL=index.js.map
 //# sourceMappingURL=index.js.map

@@ -1,0 +1,21 @@
+{
+  "name": "@dial-wtf/core",
+  "version": "0.3.0",
+  "description": "Dial SDK core - Platform-agnostic types, errors, and protocol interfaces",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "sideEffects": false,
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

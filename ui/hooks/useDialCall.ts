@@ -1,9 +1,9 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useContext, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import type { Call, CallType } from '@dial-wtf/sdk';
+import { UserDialerContext } from '@dial-wtf/react';
+import type { Call, CallType } from '@dial-wtf/core';
 import { setActiveCall } from '../ducks/dial';
 import { getDialActiveCall, getDialIsAuthenticated } from '../selectors/dial';
-import { useDialClient } from './useDialClient';
 
 /**
  * Hook to manage wallet-to-wallet calls via the Dial SDK.
@@ -20,7 +20,8 @@ export function useDialCall(): {
   toggleMute: () => Promise<void>;
 } {
   const dispatch = useDispatch();
-  const { userDialer } = useDialClient();
+  const userDialerCtx = useContext(UserDialerContext);
+  const userDialer = userDialerCtx?.userDialer ?? null;
   const isAuthenticated = useSelector(getDialIsAuthenticated);
   const activeCall = useSelector(getDialActiveCall);
   const [isStartingCall, setIsStartingCall] = useState(false);

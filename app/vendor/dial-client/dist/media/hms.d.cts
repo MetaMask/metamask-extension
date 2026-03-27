@@ -1,4 +1,4 @@
-import { IMediaProvider, MediaSessionCredentials, MediaProviderConfig, MediaConnectionState, MediaPeer, MediaProviderEvents } from './index.js';
+import { IMediaProvider, MediaSessionCredentials, MediaProviderConfig, MediaConnectionState, MediaPeer, DialMediaDeviceInfo, MediaProviderEvents } from '@dial-wtf/core';
 
 /**
  * @file hms-media-provider.ts
@@ -12,7 +12,7 @@ import { IMediaProvider, MediaSessionCredentials, MediaProviderConfig, MediaConn
  * layer or directly by consumers building React apps.
  *
  * NOTE: This is for multi-party conference rooms only. 1:1 P2P calls use
- * PeerJS via CallsService — a completely separate system.
+ * PeerJS via CallsService -- a completely separate system.
  */
 
 type EventCallback<K extends keyof MediaProviderEvents> = (payload: MediaProviderEvents[K]) => void;
@@ -38,8 +38,8 @@ declare class HMSMediaProvider implements IMediaProvider {
     stopScreenShare(): Promise<void>;
     getPeers(): MediaPeer[];
     getLocalPeer(): MediaPeer | null;
-    getAudioDevices(): Promise<MediaDeviceInfo[]>;
-    getVideoDevices(): Promise<MediaDeviceInfo[]>;
+    getAudioDevices(): Promise<DialMediaDeviceInfo[]>;
+    getVideoDevices(): Promise<DialMediaDeviceInfo[]>;
     setAudioDevice(deviceId: string): Promise<void>;
     setVideoDevice(deviceId: string): Promise<void>;
     on<K extends keyof MediaProviderEvents>(event: K, callback: EventCallback<K>): void;
