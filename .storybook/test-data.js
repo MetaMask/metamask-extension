@@ -383,6 +383,7 @@ const state = {
                 },
                 hidden: false,
                 pinned: false,
+                lastSelected: 0,
               },
             },
           },
