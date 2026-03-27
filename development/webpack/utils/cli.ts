@@ -57,6 +57,40 @@ const coerceThreads = (value: string) => coerceAutoNumber(value, 'threads', 0);
 const coerceJobsPerThread = (value: string) =>
   coerceAutoNumber(value, 'jobsPerThread', 1);
 
+function resolveThreadOptions({
+  generatePolicy,
+  reactCompilerVerbose,
+  threads,
+  jobsPerThread,
+}: {
+  generatePolicy: boolean;
+  reactCompilerVerbose: boolean;
+  threads: AutoNumberOption;
+  jobsPerThread: AutoNumberOption | 0;
+}) {
+  const resolvedThreads = resolveEffectiveThreads({
+    generatePolicy,
+    reactCompilerVerbose,
+    threads,
+  });
+
+  if (resolvedThreads === 0) {
+    return {
+      threads: 0,
+      jobsPerThread:
+        jobsPerThread === 'auto' || jobsPerThread === 0 ? 0 : jobsPerThread,
+    };
+  }
+
+  return {
+    threads: resolvedThreads,
+    jobsPerThread:
+      jobsPerThread === 'auto'
+        ? resolveAutoJobs(resolvedThreads)
+        : jobsPerThread,
+  };
+}
+
 function resolveEffectiveThreads({
   generatePolicy,
   reactCompilerVerbose,
@@ -398,13 +432,12 @@ function getOptions(
   const isProduction = mode === 'production';
   const prodDefaultDesc =
     "If `mode` is 'production', `true`, otherwise `false`";
-  const effectiveThreads = resolveEffectiveThreads({
+  const defaultThreadOptions = resolveThreadOptions({
     generatePolicy,
     reactCompilerVerbose,
     threads,
+    jobsPerThread: 'auto',
   });
-  const defaultJobsPerThread =
-    effectiveThreads === 0 ? 0 : resolveAutoJobs(effectiveThreads);
   return {
     watch: {
       alias: 'w',
@@ -461,28 +494,31 @@ function getOptions(
     },
     threads: {
       ...prerequisites.threads,
-      default: effectiveThreads,
+      default: defaultThreadOptions.threads,
       coerce: (value: string) => {
-        const coercedThreads = coerceThreads(value);
-        return coercedThreads === 'auto' || effectiveThreads === 0
-          ? effectiveThreads
-          : coercedThreads;
+        return resolveThreadOptions({
+          generatePolicy,
+          reactCompilerVerbose,
+          threads: coerceThreads(value),
+          jobsPerThread: 'auto',
+        }).threads;
       },
     },
     jobsPerThread: {
       array: false,
-      default: defaultJobsPerThread,
+      default: defaultThreadOptions.jobsPerThread,
       description:
         'Number of parallel jobs per thread-loader worker. ' +
         '`auto` derives from thread count. Ignored when `threads` is `0`.',
       group: toOrange('Developer assistance:'),
       type: 'string',
       coerce: (value: string | number) => {
-        if (value === 0) {
-          return 0;
-        }
-        const jobsPerThread = coerceJobsPerThread(String(value));
-        return jobsPerThread === 'auto' ? defaultJobsPerThread : jobsPerThread;
+        return resolveThreadOptions({
+          generatePolicy,
+          reactCompilerVerbose,
+          threads,
+          jobsPerThread: value === 0 ? 0 : coerceJobsPerThread(String(value)),
+        }).jobsPerThread;
       },
     },
 
