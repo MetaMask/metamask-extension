@@ -8,6 +8,7 @@ import {
   DAPP_URL,
   WINDOW_TITLES,
 } from '../../constants';
+import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { login } from '../../page-objects/flows/login.flow';
@@ -20,7 +21,7 @@ import ReviewPermissionsConfirmation from '../../page-objects/pages/confirmation
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import { TestDappMmConnect as TestDapp } from '../../page-objects/pages/test-dapp-mm-connect';
 
-const OPTIMISM_CHAIN_ID = 10;
+const OPTIMISM_CHAIN_ID = parseInt(CHAIN_IDS.OPTIMISM, 16);
 
 // ── Shared fixture options ─────────────────────────────────────────────────
 
@@ -216,15 +217,15 @@ describe('MM Connect-EVM', function (this: Suite) {
           const initialChainId = await testDapp.getLegacyChainId();
 
           // Switch the dapp's network to Linea via MetaMask's connection menu.
-          // MetaMask fires chainChanged('0xe708') on the dapp's provider.
+          // MetaMask fires chainChanged(CHAIN_IDS.LINEA_MAINNET) on the dapp's provider.
           await switchChainFromWallet(driver, 'Linea');
 
           // Back on the dapp: chain-ID display must show Linea's hex chain ID.
           await testDapp.switchTo();
-          await testDapp.waitForLegacyChainId('0xe708');
+          await testDapp.waitForLegacyChainId(CHAIN_IDS.LINEA_MAINNET);
           assert.notStrictEqual(
             initialChainId,
-            '0xe708',
+            CHAIN_IDS.LINEA_MAINNET,
             'Initial chain should differ from Linea so we can confirm the switch occurred',
           );
         },
@@ -260,7 +261,7 @@ describe('MM Connect-EVM', function (this: Suite) {
 
           // Back on the dapp: chain-ID display must show Polygon's hex chain ID.
           await testDapp.switchTo();
-          await testDapp.waitForLegacyChainId('0x89');
+          await testDapp.waitForLegacyChainId(CHAIN_IDS.POLYGON);
 
           // Open the MetaMask popup from the dapp's context and verify the
           // connection menu popover shows Polygon — confirming the wallet's
