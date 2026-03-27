@@ -1,5 +1,14 @@
 import { strict as assert } from 'assert';
+import { Hex } from '@metamask/utils';
+import { toAssetId } from '../../../../../shared/lib/asset-utils';
+import { ASSET_ROUTE } from '../../../../../shared/lib/deep-links/routes/route';
+import { toChecksumHexAddress } from '../../../../../shared/lib/hexstring-utils';
 import { Driver } from '../../../webdriver/driver';
+import { EXPECTED_INPUT_CHANGES } from '../../../tests/bridge/constants';
+import { EventTypes } from '../../../tests/bridge/bridge-test-utils';
+import { MockedEndpoint } from '../../../mock-e2e';
+import { getEventPayloads } from '../../../helpers';
+import TokenOverviewPage from '../token-overview-page';
 
 export type BridgeQuote = {
   amount: string;
@@ -15,7 +24,7 @@ class BridgeQuotePage {
 
   public sourceAssetPickerButton = '[data-testid="bridge-source-button"]';
 
-  private destinationAssetPickerButton =
+  public destinationAssetPickerButton =
     '[data-testid="bridge-destination-button"]';
 
   private mutlichainAssetPicker =
@@ -148,6 +157,76 @@ class BridgeQuotePage {
     );
   };
 
+  findSrcAsset = async (
+    token: string,
+    chainId: Hex,
+    address: string,
+    assetPicker = this.sourceAssetPickerButton,
+  ) => {
+    const expectedAssetId = toAssetId(address, chainId)?.toLowerCase();
+    const expectedUrl = `${ASSET_ROUTE}/${chainId}/${encodeURIComponent(toChecksumHexAddress(address))}`;
+
+    console.log(`Opening asset picker`);
+    await this.driver.clickElement(assetPicker);
+    await this.driver.fill(this.assetPrickerSearchInput, token);
+    console.log(`Filled search input with ${token}`);
+    const assetElement = await this.driver.findElement({
+      css: this.tokenButton,
+      text: token,
+    });
+    return assetElement;
+  };
+
+  goToAssetPage = async (
+    token: string,
+    chainId: Hex,
+    address: string,
+    assetPicker = this.sourceAssetPickerButton,
+  ) => {
+    const expectedAssetId = toAssetId(address, chainId)?.toLowerCase();
+    const expectedUrl = `${ASSET_ROUTE}/${chainId}/${encodeURIComponent(toChecksumHexAddress(address))}`;
+
+    console.log(`Opening asset picker`);
+    await this.driver.clickElement(assetPicker);
+    await this.driver.fill(this.assetPrickerSearchInput, token);
+    console.log(`Filled search input with ${token}`);
+    const assetElement = await this.driver.findElement({
+      tag: 'button',
+      testId: `bridge-asset-info-icon-${expectedAssetId}`,
+    });
+    console.log(`Clicked link to the asset page`);
+    await assetElement.click();
+    await this.driver.waitForUrlContaining({
+      url: expectedUrl,
+    });
+    const assetPage = new TokenOverviewPage(this.driver);
+    await assetPage.checkPageIsLoaded();
+  };
+
+  checkAssetsAreSelected = async (sourceToken: string, destToken: string) => {
+    await this.driver.waitForSelector({
+      css: this.sourceAssetPickerButton,
+      text: sourceToken,
+    });
+    console.log(`Expected source asset ${sourceToken} is selected`);
+    await this.driver.waitForSelector({
+      css: this.destinationAssetPickerButton,
+      text: destToken,
+    });
+    console.log(`Expected dest asset ${destToken} is selected`);
+  };
+
+  checkAssetPickerModalIsReopened = async () => {
+    await this.driver.waitForSelector({
+      testId: 'bridge-asset-picker-modal',
+    });
+    console.log('Asset picker modal is visible');
+    await this.driver.clickElementAndWaitToDisappear({
+      testId: 'bridge-asset-picker-modal__close-button',
+    });
+    console.log('Asset picker modal closed');
+  };
+
   waitForQuote = async () => {
     await this.driver.waitForSelector(this.submitButton, { timeout: 30000 });
   };
@@ -266,6 +345,43 @@ class BridgeQuotePage {
   async selectNetwork(network: string): Promise<void> {
     await this.driver.clickElement(this.networkSelector);
     await this.driver.clickElement(this.networkNameSelector(network));
+  }
+
+  async checkInputChangedEvents(
+    type: keyof typeof EXPECTED_INPUT_CHANGES,
+    driver: Driver,
+    mockedEndpoints: MockedEndpoint[],
+    startIndex: number = 0,
+  ): Promise<number> {
+    const expectedInputChanges1 = EXPECTED_INPUT_CHANGES[type];
+
+    const receivedInputChanges1 = (
+      await getEventPayloads(driver, mockedEndpoints)
+    )
+      .filter((e) => e?.event === EventTypes.SwapBridgeInputChanged)
+      .slice(startIndex)
+      .map((event) => ({
+        [event.properties.input]: event.properties.input_value,
+      }));
+    assert.equal(
+      receivedInputChanges1.length,
+      expectedInputChanges1.length,
+      `Should have ${expectedInputChanges1.length} input change events, but got ${receivedInputChanges1.length}`,
+    );
+    expectedInputChanges1
+      .flatMap(Object.entries)
+      .forEach(([expectedKey, expectedValue], index) => {
+        const receivedInputChange = receivedInputChanges1.find(
+          (receivedInputChange: { [key: string]: string }) =>
+            receivedInputChange[expectedKey] === expectedValue,
+        );
+        assert.ok(
+          receivedInputChange,
+          `Expected input change ${expectedKey} with value ${expectedValue} not found at index ${index}`,
+        );
+      });
+
+    return expectedInputChanges1.length;
   }
 }
 

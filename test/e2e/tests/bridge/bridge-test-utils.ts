@@ -123,6 +123,8 @@ export const bridgeTransaction = async ({
   await homePage.startSwapFlow();
 
   const bridgePage = new BridgeQuotePage(driver);
+
+  // await bridgePage.checkAssetsAreSelected('ETH', 'mUSD');
   await bridgePage.enterBridgeQuote(quote);
   await bridgePage.waitForQuote();
   await bridgePage.checkExpectedNetworkFeeIsDisplayed();
@@ -310,6 +312,19 @@ const toBridgeTokenResponse = (
       token.assetId ?? `eip155:${chainId}/erc20:${token.address.toLowerCase()}`,
   };
 };
+
+async function mockHistoricalPrices(mockServer: Mockttp) {
+  return mockServer.forGet(/historical-prices/u).thenCallback(() => ({
+    statusCode: 200,
+    json: {
+      prices: [
+        { timestamp: 1717566000000, price: 1 },
+        { timestamp: 1717566322300, price: 2 },
+        { timestamp: 1717566611338, price: 3 },
+      ],
+    },
+  }));
+}
 
 async function mockGetPopularTokens(mockServer: Mockttp) {
   return await mockServer.forPost(/getTokens\/popular/u).thenCallback(() => ({
@@ -995,6 +1010,7 @@ export const getBridgeFixtures = (
         await mockSwapTokensLinea(mockServer),
         await mockSwapTokensArbitrum(mockServer),
         await mockSwapAggregatorMetadataArbitrum(mockServer),
+        await mockHistoricalPrices(mockServer),
       ];
 
       standardMocks.push(...(await mockSearchTokens(mockServer)));

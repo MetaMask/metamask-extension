@@ -38,8 +38,10 @@ describe('Bridge tests', function (this: Suite) {
         await login(driver, { expectedBalance: '0' });
 
         const homePage = new HomePage(driver);
+        const bridgePage = new BridgeQuotePage(driver);
 
         // QUOTE REQUEST #1
+        console.log('Starting 1st Swap flow');
         await bridgeTransaction({
           driver,
           quote,
@@ -47,15 +49,37 @@ describe('Bridge tests', function (this: Suite) {
           expectedDestAmount: '0.0157',
         });
 
-        // Start the flow again
+        const inputChangesCount1 = await bridgePage.checkInputChangedEvents(
+          'quote_request_1',
+          driver,
+          mockedEndpoints,
+        );
+
+        // QUOTE REQUEST #2 - Start the flow again
+        console.log('Starting 2nd Swap flow');
         await homePage.startSwapFlow();
 
-        const bridgePage = new BridgeQuotePage(driver);
-        // QUOTE REQUEST #2
+        const inputChangesCount2 = await bridgePage.checkInputChangedEvents(
+          'reset_bridge_page',
+          driver,
+          mockedEndpoints,
+          inputChangesCount1,
+        );
+
+        console.log('Entering 2nd Swap quote');
         await bridgePage.enterBridgeQuote(quote);
         await bridgePage.waitForQuote();
         await bridgePage.checkExpectedNetworkFeeIsDisplayed();
+
+        const inputChangesCount3 = await bridgePage.checkInputChangedEvents(
+          'quote_request_2',
+          driver,
+          mockedEndpoints,
+          inputChangesCount1 + inputChangesCount2,
+        );
+
         // QUOTE REQUEST #3
+        console.log('Switching tokens');
         await bridgePage.switchTokens();
 
         let events = await getEventPayloads(driver, mockedEndpoints);
@@ -100,45 +124,30 @@ describe('Bridge tests', function (this: Suite) {
               'Unified SwapBridge',
         );
 
+        const inputChangesCount4 = await bridgePage.checkInputChangedEvents(
+          'switch_tokens',
+          driver,
+          mockedEndpoints,
+          inputChangesCount3 + inputChangesCount2 + inputChangesCount1,
+        );
+
+        // Check total input change events
         const swapBridgeInputChanged = findEventsByName(
           EventTypes.SwapBridgeInputChanged,
         );
-        /**
-         * token_source
-         * chain_source
-         * slippage
-         * token_destination
-         * chain_destination
-         */
-
-        assert(
-          swapBridgeInputChanged.length === 16,
-          `Should have 16 input change events, but got ${swapBridgeInputChanged.length}`,
+        const expectedInputChangeLength =
+          inputChangesCount1 +
+          inputChangesCount2 +
+          inputChangesCount3 +
+          inputChangesCount4;
+        assert.equal(
+          swapBridgeInputChanged.length,
+          expectedInputChangeLength,
+          `Should have ${expectedInputChangeLength} total input change events, but got ${swapBridgeInputChanged.length}`,
         );
-
-        const swapBridgeInputChangedKeys = new Set(
-          swapBridgeInputChanged.map((event) => event.properties.input),
+        console.log(
+          `${expectedInputChangeLength} expected Input Change events found`,
         );
-
-        const inputTypes = [
-          'token_source',
-          'chain_source',
-          'slippage',
-          'token_destination',
-          'chain_destination',
-        ];
-
-        assert.ok(
-          swapBridgeInputChangedKeys.size === 5,
-          'Should have 5 input types',
-        );
-
-        inputTypes.forEach((inputType) => {
-          assert.ok(
-            swapBridgeInputChangedKeys.has(inputType),
-            `Missing input type: ${inputType}`,
-          );
-        });
 
         const swapBridgeQuotesRequested = findEventsByName(
           EventTypes.SwapBridgeQuotesRequested,

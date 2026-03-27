@@ -183,7 +183,10 @@ export const BridgeAssetPicker = ({
           }}
         >
           <ModalHeader
-            closeButtonProps={{ size: ButtonIconSize.Sm }}
+            closeButtonProps={{
+              size: ButtonIconSize.Sm,
+              'data-testid': 'bridge-asset-picker-modal__close-button',
+            }}
             onClose={handleClose}
           >
             {header}
