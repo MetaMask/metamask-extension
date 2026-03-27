@@ -2182,6 +2182,114 @@ describe('MetaMaskController', () => {
       });
     });
 
+    describe('#sortAccountIdsByLastSelected', () => {
+      const setupParseMock = (mapping) => {
+        jest.mocked(parseCaipAccountId).mockImplementation((id) => mapping[id]);
+      };
+
+      it('returns the input as-is when there is one account or less', () => {
+        expect(
+          metamaskController.sortAccountIdsByLastSelected([
+            'eip155:1:0xaaa',
+          ]),
+        ).toStrictEqual(['eip155:1:0xaaa']);
+
+        expect(
+          metamaskController.sortAccountIdsByLastSelected([]),
+        ).toStrictEqual([]);
+      });
+
+      it('sorts CAIP account IDs by their address lastSelected value', () => {
+        setupParseMock({
+          'eip155:1:0xaaa': { address: '0xaaa' },
+          'eip155:1:0xccc': { address: '0xccc' },
+          'eip155:1:0xbbb': { address: '0xbbb' },
+        });
+        jest
+          .spyOn(metamaskController, 'sortMultichainAccountsByLastSelected')
+          .mockReturnValue(['0xccc', '0xbbb', '0xaaa']);
+
+        const result = metamaskController.sortAccountIdsByLastSelected([
+          'eip155:1:0xaaa',
+          'eip155:1:0xccc',
+          'eip155:1:0xbbb',
+        ]);
+
+        expect(
+          metamaskController.sortMultichainAccountsByLastSelected,
+        ).toHaveBeenCalledWith(['0xaaa', '0xccc', '0xbbb']);
+
+        expect(result).toStrictEqual([
+          'eip155:1:0xccc',
+          'eip155:1:0xbbb',
+          'eip155:1:0xaaa',
+        ]);
+      });
+
+      it('deduplicates addresses across different chains before sorting', () => {
+        setupParseMock({
+          'eip155:1:0xaaa': { address: '0xaaa' },
+          'eip155:137:0xaaa': { address: '0xaaa' },
+          'eip155:1:0xbbb': { address: '0xbbb' },
+        });
+        const sortSpy = jest
+          .spyOn(metamaskController, 'sortMultichainAccountsByLastSelected')
+          .mockImplementation((addresses) => addresses);
+
+        metamaskController.sortAccountIdsByLastSelected([
+          'eip155:1:0xaaa',
+          'eip155:137:0xaaa',
+          'eip155:1:0xbbb',
+        ]);
+
+        expect(sortSpy).toHaveBeenCalledWith(['0xaaa', '0xbbb']);
+      });
+
+      it('preserves relative order of account IDs sharing the same address', () => {
+        setupParseMock({
+          'eip155:1:0xaaa': { address: '0xaaa' },
+          'eip155:137:0xaaa': { address: '0xaaa' },
+          'eip155:1:0xbbb': { address: '0xbbb' },
+          'eip155:137:0xbbb': { address: '0xbbb' },
+        });
+        jest
+          .spyOn(metamaskController, 'sortMultichainAccountsByLastSelected')
+          .mockReturnValue(['0xbbb', '0xaaa']);
+
+        const result = metamaskController.sortAccountIdsByLastSelected([
+          'eip155:1:0xaaa',
+          'eip155:137:0xaaa',
+          'eip155:1:0xbbb',
+          'eip155:137:0xbbb',
+        ]);
+
+        expect(result).toStrictEqual([
+          'eip155:1:0xbbb',
+          'eip155:137:0xbbb',
+          'eip155:1:0xaaa',
+          'eip155:137:0xaaa',
+        ]);
+      });
+
+      it('does not mutate the original array', () => {
+        setupParseMock({
+          'eip155:1:0xaaa': { address: '0xaaa' },
+          'eip155:1:0xbbb': { address: '0xbbb' },
+        });
+        jest
+          .spyOn(metamaskController, 'sortMultichainAccountsByLastSelected')
+          .mockReturnValue(['0xbbb', '0xaaa']);
+
+        const original = ['eip155:1:0xaaa', 'eip155:1:0xbbb'];
+        metamaskController.sortAccountIdsByLastSelected(original);
+
+        expect(original).toStrictEqual([
+          'eip155:1:0xaaa',
+          'eip155:1:0xbbb',
+        ]);
+      });
+    });
+
     describe('NetworkConfiguration is removed', () => {
       it('should remove the permitted chain from all existing permissions', () => {
         jest
