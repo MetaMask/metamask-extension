@@ -658,6 +658,9 @@
       }
     },
     "@metamask/assets-controller": {
+      "globals": {
+        "performance.now": true
+      },
       "packages": {
         "@metamask/controller-utils": true,
         "@metamask/utils": true,
