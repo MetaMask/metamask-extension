@@ -1487,7 +1487,7 @@ export function connectHardware(
 export function unlockHardwareWalletAccounts(
   indexes: number[],
   deviceName: HardwareDeviceNames,
-  hdPath: string,
+  hdPath: string | null,
   hdPathDescription: string,
 ): ThunkAction<Promise<undefined>, MetaMaskReduxState, unknown, AnyAction> {
   log.debug(

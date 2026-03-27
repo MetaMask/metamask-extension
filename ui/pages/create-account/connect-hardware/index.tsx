@@ -525,7 +525,7 @@ const ConnectHardwareForm = () => {
           actions.unlockHardwareWalletAccounts(
             selectedAccountIndexes,
             deviceName as HardwareDeviceNames,
-            path || '',
+            path || null,
             description,
           ),
         );

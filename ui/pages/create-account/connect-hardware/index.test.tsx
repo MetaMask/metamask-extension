@@ -1,4 +1,4 @@
-import { act, fireEvent, waitFor, screen } from '@testing-library/react';
+import { act, cleanup, fireEvent, waitFor, screen } from '@testing-library/react';
 import thunk from 'redux-thunk';
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
@@ -28,6 +28,7 @@ const mockConnectHardware = jest.fn();
 const mockConnectHardwareAction = jest.fn();
 const mockCheckHardwareStatus = jest.fn().mockResolvedValue(false);
 const mockForgetDevice = jest.fn().mockResolvedValue(undefined);
+const mockUnlockHardwareWalletAccountsAction = jest.fn();
 const mockUnlockHardwareWalletAccounts = jest.fn().mockResolvedValue(undefined);
 
 jest.mock('../../../store/actions', () => ({
@@ -39,7 +40,10 @@ jest.mock('../../../store/actions', () => ({
   forgetDevice: () => mockForgetDevice,
   showAlert: () => ({ type: 'SHOW_ALERT', payload: '' }),
   hideAlert: () => ({ type: 'HIDE_ALERT' }),
-  unlockHardwareWalletAccounts: () => mockUnlockHardwareWalletAccounts,
+  unlockHardwareWalletAccounts: (...args: unknown[]) => {
+    mockUnlockHardwareWalletAccountsAction(...args);
+    return mockUnlockHardwareWalletAccounts;
+  },
   setHardwareWalletDefaultHdPath: () => ({
     type: 'SET_HARDWARE_WALLET_DEFAULT_HD_PATH',
   }),
@@ -701,6 +705,56 @@ describe('ConnectHardwareForm', () => {
 
         await waitFor(() => {
           expect(screen.getByText('Unlock failed')).toBeInTheDocument();
+        });
+      });
+
+      it('passes a null hd path fallback when no path is selected', async () => {
+        mockConnectHardware.mockResolvedValue(MOCK_ACCOUNTS);
+        cleanup();
+
+        const storeWithEmptyPath = configureMockStore([thunk])(
+          createMockState({
+            appState: {
+              ...createMockState().appState,
+              defaultHdPaths: {
+                [HardwareDeviceNames.lattice]: DEFAULT_HD_PATH,
+                [HardwareDeviceNames.ledger]: DEFAULT_HD_PATH,
+                [HardwareDeviceNames.oneKey]: DEFAULT_HD_PATH,
+                [HardwareDeviceNames.trezor]: '',
+              },
+            },
+          }),
+        );
+
+        renderWithProvider(<ConnectHardwareForm />, storeWithEmptyPath);
+
+        connectToDevice(tEn('trezor'));
+
+        await waitFor(() => {
+          expect(
+            screen.getAllByText(tEn('selectAnAccount')).length,
+          ).toBeGreaterThan(0);
+        });
+
+        const checkboxes = screen.getAllByTestId('hw-account-list__item');
+        const firstCheckbox = checkboxes[0].querySelector(
+          'input[type="checkbox"]',
+        );
+        if (firstCheckbox) {
+          fireEvent.click(firstCheckbox);
+        }
+
+        fireEvent.click(
+          screen.getByTestId('connect-hardware-account-list-unlock-btn'),
+        );
+
+        await waitFor(() => {
+          expect(mockUnlockHardwareWalletAccountsAction).toHaveBeenCalledWith(
+            [0],
+            HardwareDeviceNames.trezor,
+            null,
+            '',
+          );
         });
       });
     });
