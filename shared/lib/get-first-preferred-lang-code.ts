@@ -1,5 +1,4 @@
 import browser from 'webextension-polyfill';
-// TODO: Remove restricted import
 // eslint-disable-next-line import-x/no-restricted-paths
 import allLocales from '../../app/_locales/index.json';
 
@@ -8,7 +7,7 @@ const existingLocaleCodes: Record<string, string> = { zh: 'zh_CN' };
 
 // mapping some browsers return hyphen instead underscore in locale codes (e.g. zh_TW -> zh-tw)
 allLocales.forEach((locale) => {
-  if (locale && locale.code) {
+  if (locale?.code) {
     existingLocaleCodes[locale.code.toLowerCase().replace('_', '-')] =
       locale.code;
   }
@@ -27,6 +26,7 @@ export default async function getFirstPreferredLangCode(): Promise<string> {
     userPreferredLocaleCodes = await browser.i18n.getAcceptLanguages();
   } catch (e) {
     // Brave currently throws when calling getAcceptLanguages, so this handles that.
+    console.error('Failed to get accepted languages from browser', e);
     userPreferredLocaleCodes = [];
   }
 
