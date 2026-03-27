@@ -41,6 +41,7 @@ import { endTrace, TraceName } from '../../../../shared/lib/trace';
 import { hexToDecimal } from '../../../../shared/lib/conversion.utils';
 import { toChecksumHexAddress } from '../../../../shared/lib/hexstring-utils';
 import TokenCell from '../../../components/app/assets/token-cell';
+import { MUSD_EVENTS_CONSTANTS } from '../../../components/app/musd/musd-events';
 import { MarketClosedModal } from '../../../components/app/assets/market-closed-modal';
 import {
   TokenFiatDisplayInfo,
@@ -363,6 +364,9 @@ const AssetPage = ({
             token={tokenWithFiatAmount as TokenWithFiatAmount}
             safeChains={safeChains}
             showMerklBadge
+            merklClaimCtaLocation={
+              MUSD_EVENTS_CONSTANTS.EVENT_LOCATIONS.ASSET_OVERVIEW
+            }
           />
         )}
         {/* mUSD Conversion CTA - shows for eligible stablecoins */}
