@@ -3,7 +3,7 @@ import { sentryLogger as log } from '../../../shared/lib/sentry';
 
 type SentryAppStateSnapshot = Record<string, unknown>;
 
-type MetaMetricsParticipation = {
+export type MetaMetricsParticipation = {
   participateInMetaMetrics: boolean;
   metaMetricsId?: string;
 } | null;

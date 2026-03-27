@@ -7,7 +7,7 @@ import { isManifestV3 } from '../../../shared/lib/mv3.utils';
 import { getManifestFlags } from '../../../shared/lib/manifestFlags';
 import { getSentryRelease } from '../../../shared/lib/sentry-release';
 import extractEthjsErrorMessage from './extractEthjsErrorMessage';
-import { filterEvents } from './sentry-filter-events';
+import { metaMetricsIntegration } from './sentry-metametrics';
 import {
   getMetaMetricsState,
   getMetaMetricsStateFromAppState,
@@ -87,9 +87,8 @@ function getClientOptions() {
           return !url.match(/^https?:\/\/([\w\d.@-]+\.)?sentry\.io(\/|$)/u);
         },
       }),
-      filterEvents({
-        getMetaMetricsEnabled: async () =>
-          Boolean((await getMetaMetricsState())?.participateInMetaMetrics),
+      metaMetricsIntegration({
+        getMetaMetricsState,
         log,
       }),
     ],
@@ -298,8 +297,7 @@ export function removeUrlsFromBreadCrumb(breadcrumb) {
 
 /**
  * Receives a Sentry event object and modifies it before the error is sent to Sentry.
- * Sanitizes messages/URLs, attaches app state, and sets `report.user.id` from the MetaMetrics id
- * in the Sentry debug snapshot when the user has opted in and the id is present.
+ * Sanitizes messages/URLs and attaches app state.
  *
  * @param {object} report - A Sentry event object: https://develop.sentry.dev/sdk/event-payloads/
  * @returns {object} The modified report (same reference).
@@ -319,13 +317,6 @@ export function rewriteReport(report) {
     rewriteReportUrls(report);
 
     const appState = getState();
-    const metaMetricsState = getMetaMetricsStateFromAppState(appState);
-    if (
-      metaMetricsState?.participateInMetaMetrics &&
-      metaMetricsState.metaMetricsId
-    ) {
-      report.user = { id: metaMetricsState.metaMetricsId };
-    }
 
     if (!report.extra) {
       report.extra = {};
