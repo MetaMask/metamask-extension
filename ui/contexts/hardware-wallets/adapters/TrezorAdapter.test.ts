@@ -17,7 +17,6 @@ jest.mock('../webConnectionUtils', () => ({
   ...jest.requireActual('../webConnectionUtils'),
   getConnectedTrezorDevices: jest.fn(),
   isWebUsbAvailable: jest.fn(),
-  subscribeToWebUsbEvents: jest.fn(),
 }));
 
 const mockGetTrezorFeatures = getTrezorFeatures as jest.MockedFunction<
@@ -30,10 +29,6 @@ const mockGetConnectedTrezorDevices =
 const mockIsWebUsbAvailable =
   webConnectionUtils.isWebUsbAvailable as jest.MockedFunction<
     typeof webConnectionUtils.isWebUsbAvailable
-  >;
-const mockSubscribeToWebUsbEvents =
-  webConnectionUtils.subscribeToWebUsbEvents as jest.MockedFunction<
-    typeof webConnectionUtils.subscribeToWebUsbEvents
   >;
 
 type TrezorFeaturesPayload = {
@@ -66,11 +61,8 @@ const createMockFeaturesResponse = (
 describe('TrezorAdapter', () => {
   let adapter: TrezorAdapter;
   let mockOptions: HardwareWalletAdapterOptions;
-  let mockUnsubscribe: jest.Mock;
   let consoleLogSpy: jest.SpyInstance;
   let consoleErrorSpy: jest.SpyInstance;
-  let capturedOnConnect: ((device: USBDevice) => void) | null = null;
-  let capturedOnDisconnect: ((device: USBDevice) => void) | null = null;
 
   const createMockOptions = (): HardwareWalletAdapterOptions => ({
     onDisconnect: jest.fn(),
@@ -83,24 +75,12 @@ describe('TrezorAdapter', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockOptions = createMockOptions();
-    mockUnsubscribe = jest.fn();
     consoleLogSpy = jest
       .spyOn(console, 'log')
       .mockImplementation(() => undefined);
     consoleErrorSpy = jest
       .spyOn(console, 'error')
       .mockImplementation(() => undefined);
-    capturedOnConnect = null;
-    capturedOnDisconnect = null;
-
-    mockSubscribeToWebUsbEvents.mockImplementation(
-      (_walletType, onConnect, onDisconnect) => {
-        capturedOnConnect = onConnect;
-        capturedOnDisconnect = onDisconnect;
-        return mockUnsubscribe;
-      },
-    );
-
     mockIsWebUsbAvailable.mockReturnValue(true);
     mockGetConnectedTrezorDevices.mockResolvedValue([{} as USBDevice]);
     mockGetTrezorFeatures.mockResolvedValue(createMockFeaturesResponse());
@@ -116,35 +96,8 @@ describe('TrezorAdapter', () => {
   });
 
   describe('constructor and events', () => {
-    it('subscribes to WebUSB events', () => {
-      expect(mockSubscribeToWebUsbEvents).toHaveBeenCalledWith(
-        'trezor',
-        expect.any(Function),
-        expect.any(Function),
-      );
-    });
-
-    it('emits Disconnected event when unplugged while connected', async () => {
-      await adapter.connect();
-      (mockOptions.onDeviceEvent as jest.Mock).mockClear();
-
-      capturedOnDisconnect?.({} as USBDevice);
-
-      expect(mockOptions.onDeviceEvent).toHaveBeenCalledWith({
-        event: DeviceEvent.Disconnected,
-      });
+    it('initializes disconnected state', () => {
       expect(adapter.isConnected()).toBe(false);
-    });
-
-    it('does not emit unplug event when not connected', () => {
-      capturedOnDisconnect?.({} as USBDevice);
-      expect(mockOptions.onDeviceEvent).not.toHaveBeenCalled();
-    });
-
-    it('keeps onConnect callback as no-op', () => {
-      capturedOnConnect?.({} as USBDevice);
-      expect(adapter.isConnected()).toBe(false);
-      expect(mockOptions.onDeviceEvent).not.toHaveBeenCalled();
     });
   });
 
@@ -208,9 +161,9 @@ describe('TrezorAdapter', () => {
       expect(adapter.isConnected()).toBe(false);
     });
 
-    it('unsubscribes from WebUSB events on destroy', () => {
+    it('resets connected state on destroy', () => {
       adapter.destroy();
-      expect(mockUnsubscribe).toHaveBeenCalledTimes(1);
+      expect(adapter.isConnected()).toBe(false);
     });
   });
 

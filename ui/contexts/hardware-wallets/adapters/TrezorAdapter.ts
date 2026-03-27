@@ -12,7 +12,6 @@ import {
 import {
   getConnectedTrezorDevices,
   isWebUsbAvailable,
-  subscribeToWebUsbEvents,
 } from '../webConnectionUtils';
 
 const TREZOR_MODEL_ONE_MAX_MESSAGE_BYTES = 1024;
@@ -40,37 +39,8 @@ export class TrezorAdapter implements HardwareWalletAdapter {
 
   private connected = false;
 
-  private unsubscribeUsbEvents: (() => void) | null = null;
-
   constructor(options: HardwareWalletAdapterOptions) {
     this.options = options;
-    this.setupUsbEventListeners();
-  }
-
-  /**
-   * Set up WebUSB event listeners for proactive disconnect detection.
-   * This allows the UI to immediately reflect when the device is unplugged,
-   * rather than waiting until the next operation attempt.
-   */
-  private setupUsbEventListeners(): void {
-    this.unsubscribeUsbEvents = subscribeToWebUsbEvents(
-      HardwareWalletType.Trezor,
-      // onConnect - device plugged in (could be used for auto-reconnect in the future)
-      () => {
-        // Currently no-op: we don't auto-reconnect when device is plugged in
-        // The user will trigger connect through UI action
-      },
-      // onDisconnect - device unplugged
-      () => {
-        // Only emit disconnect if we were tracking a connection
-        if (this.connected) {
-          this.connected = false;
-          this.options.onDeviceEvent({
-            event: DeviceEvent.Disconnected,
-          });
-        }
-      },
-    );
   }
 
   /**
@@ -150,10 +120,6 @@ export class TrezorAdapter implements HardwareWalletAdapter {
    * Clean up resources
    */
   destroy(): void {
-    // Unsubscribe from WebUSB events
-    this.unsubscribeUsbEvents?.();
-    this.unsubscribeUsbEvents = null;
-
     this.connected = false;
   }
 
