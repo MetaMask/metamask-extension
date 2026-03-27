@@ -212,8 +212,23 @@ export class TestDappMmConnect {
   async selectNetworks(desiredChainIds: string[]): Promise<void> {
     for (const chainId of MM_CONNECT_FEATURED_CHAIN_IDS) {
       const selector = this.checkboxSelector(chainId);
-      const el = await this.driver.waitForSelector(selector);
-      const isChecked = await el.isSelected();
+      let isChecked = false;
+      await this.driver.waitUntil(
+        async () => {
+          try {
+            const element = await this.driver.findElement(selector);
+            isChecked = await element.isSelected();
+            return true;
+          } catch (error) {
+            const err = error as { name?: string };
+            if (err.name === 'StaleElementReferenceError') {
+              return false;
+            }
+            throw error;
+          }
+        },
+        { interval: 500, timeout: this.driver.timeout },
+      );
       const shouldBeChecked = desiredChainIds.includes(chainId);
       if (isChecked !== shouldBeChecked) {
         await this.driver.clickElement(selector);
@@ -332,11 +347,42 @@ export class TestDappMmConnect {
       this.resultDetailsSelector(scope, 'signMessage'),
     );
 
-    const resultEl = await this.driver.waitForSelector(
-      this.resultCodeSelector(scope, 'signMessage'),
+    const cssSelector = this.resultCodeSelector(scope, 'signMessage');
+    let resultText = '';
+    let parsed: Record<string, unknown> = {};
+    // Both the emptiness check and JSON.parse are kept inside the polling
+    // callback so transient states are retried rather than surfaced as errors:
+    //  - Empty text: the <details> element may briefly have no text content
+    //    immediately after the <summary> is clicked to expand it.
+    //  - SyntaxError: the renderer may flush partial/incomplete JSON before
+    //    the full result string is available.
+    // Only when getText() returns a non-empty, fully parseable JSON string do
+    // we capture both `parsed` and `resultText` and exit the loop, ensuring
+    // the assert.ok calls below always operate on valid data.
+    await this.driver.waitUntil(
+      async () => {
+        try {
+          const element = await this.driver.findElement(cssSelector);
+          const text = await element.getText();
+          if (!text) {
+            return false;
+          }
+          parsed = JSON.parse(text) as Record<string, unknown>;
+          resultText = text;
+          return true;
+        } catch (error) {
+          const err = error as { name?: string };
+          if (
+            err.name === 'StaleElementReferenceError' ||
+            err.name === 'SyntaxError'
+          ) {
+            return false;
+          }
+          throw error;
+        }
+      },
+      { interval: 500, timeout: this.driver.timeout },
     );
-    const resultText = await resultEl.getText();
-    const parsed = JSON.parse(resultText) as Record<string, unknown>;
 
     assert.ok(
       typeof parsed.signature === 'string',
