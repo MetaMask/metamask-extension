@@ -50,7 +50,7 @@ import {
 export {
   getInstallType,
   initInstallType,
-} from '../../shared/lib/sentry/install-type';
+} from '../../../shared/lib/sentry/install-type';
 export { getEnvironmentType } from '../../../shared/lib/environment-type';
 
 /**
