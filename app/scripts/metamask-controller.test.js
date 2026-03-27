@@ -2189,9 +2189,7 @@ describe('MetaMaskController', () => {
 
       it('returns the input as-is when there is one account or less', () => {
         expect(
-          metamaskController.sortAccountIdsByLastSelected([
-            'eip155:1:0xaaa',
-          ]),
+          metamaskController.sortAccountIdsByLastSelected(['eip155:1:0xaaa']),
         ).toStrictEqual(['eip155:1:0xaaa']);
 
         expect(
@@ -2283,10 +2281,7 @@ describe('MetaMaskController', () => {
         const original = ['eip155:1:0xaaa', 'eip155:1:0xbbb'];
         metamaskController.sortAccountIdsByLastSelected(original);
 
-        expect(original).toStrictEqual([
-          'eip155:1:0xaaa',
-          'eip155:1:0xbbb',
-        ]);
+        expect(original).toStrictEqual(['eip155:1:0xaaa', 'eip155:1:0xbbb']);
       });
     });
 
