@@ -1,5 +1,4 @@
 import {
-  calculateTBT,
   getTBTRating,
   getLongTaskMetrics,
   getLongTaskMetricsWithTBT,
@@ -16,33 +15,6 @@ describe('performance-observers', () => {
     resetLongTaskMetrics();
     disconnectLongTaskObserver();
     jest.clearAllMocks();
-  });
-
-  describe('calculateTBT', () => {
-    it('returns 0 for empty array', () => {
-      expect(calculateTBT([])).toBe(0);
-    });
-
-    it('returns 0 when all tasks are under 50ms', () => {
-      const tasks = [{ duration: 30 }, { duration: 40 }, { duration: 50 }];
-      expect(calculateTBT(tasks)).toBe(0);
-    });
-
-    it('calculates TBT correctly for tasks over 50ms', () => {
-      const tasks = [
-        { duration: 80 }, // 80 - 50 = 30ms blocking
-        { duration: 150 }, // 150 - 50 = 100ms blocking
-        { duration: 40 }, // not a long task, excluded
-        { duration: 200 }, // 200 - 50 = 150ms blocking
-      ];
-      // TBT = 30 + 100 + 150 = 280ms
-      expect(calculateTBT(tasks)).toBe(280);
-    });
-
-    it('handles single long task', () => {
-      const tasks = [{ duration: 100 }];
-      expect(calculateTBT(tasks)).toBe(50);
-    });
   });
 
   describe('getTBTRating', () => {

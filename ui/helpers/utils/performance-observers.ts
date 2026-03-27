@@ -175,21 +175,6 @@ export function resetLongTaskMetrics(): void {
 }
 
 /**
- * Calculate Total Blocking Time (TBT) from Long Tasks.
- * TBT = sum of (duration - 50ms) for all long tasks.
- *
- * @param tasks - Array of task objects with duration property
- * @returns Total Blocking Time in milliseconds
- */
-export function calculateTBT(tasks: { duration: number }[]): number {
-  return tasks.reduce(
-    (total, task) =>
-      total + Math.max(0, task.duration - LONG_TASK_THRESHOLD_MS),
-    0,
-  );
-}
-
-/**
  * Get TBT rating based on Lighthouse thresholds.
  *
  * @param tbt - Total Blocking Time in milliseconds
