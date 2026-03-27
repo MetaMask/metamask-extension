@@ -84,6 +84,16 @@ export const NonEvmActivityListItem = ({ transaction, onClick }: Props) => {
     category = TransactionGroupCategory.interaction;
   }
 
+  console.log('++++', {
+    amount,
+    unit,
+    category,
+    statusKey,
+    title,
+    timestamp,
+    isRedeposit,
+  });
+
   return (
     <LegacyActivityListItem
       data-testid="activity-list-item"

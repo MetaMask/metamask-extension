@@ -36,6 +36,16 @@ export const ActivityListItem = ({ transaction, onClick }: Props) => {
       ? TransactionStatus.failed
       : TransactionStatus.confirmed;
 
+  console.log('++++', {
+    amount,
+    token,
+    fiatAmount,
+    transactionStatus,
+    title,
+    chainId,
+    status,
+  });
+
   return (
     <Box
       className="px-4 py-3 bg-background-default cursor-pointer hover:bg-hover activity-list-item"

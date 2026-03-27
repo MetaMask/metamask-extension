@@ -6,6 +6,7 @@ import NetworkManager from '../../page-objects/pages/network-manager';
 import NonEvmHomepage from '../../page-objects/pages/home/non-evm-homepage';
 import ActivityListPage from '../../page-objects/pages/home/activity-list';
 import SwapPage from '../../page-objects/pages/swap/swap-page';
+import { mockPriceApiSolana } from '../tokens/utils/mocks';
 import { mockTokensV2SupportedNetworks } from '../btc/mocks';
 import {
   mockGetMultipleAccounts,
@@ -52,6 +53,7 @@ async function mockSwapUSDCtoSOL(
     await mockGetMinimumBalanceForRentExemption(mockServer),
     await mockQuoteFromUSDCtoSOL(mockServer),
     await mockMultiCoinPrice(mockServer),
+    await mockTokensV2SupportedNetworks(mockServer),
     await mockPriceApiSpotPriceSwap(mockServer),
     await mockPriceApiExchangeRates(mockServer),
     await mockGetMultipleAccounts(mockServer),
@@ -63,8 +65,7 @@ async function mockSwapUSDCtoSOL(
     await mockTokenApiAssets(mockServer),
     await mockBridgeGetTokens(mockServer),
     await mockBridgeSearchTokens(mockServer),
-    await mockTokensV2SupportedNetworks(mockServer),
-    await mockTokensV3Assets(mockServer),
+    // await mockTokensV3Assets(mockServer),
   ];
 }
 
@@ -80,14 +81,14 @@ async function mockSwapNoQuotes(
     await mockGetMinimumBalanceForRentExemption(mockServer),
     await mockNoQuotesAvailable(mockServer),
     await mockMultiCoinPrice(mockServer),
+    await mockTokensV2SupportedNetworks(mockServer),
     await mockPriceApiSpotPriceSwap(mockServer),
     await mockPriceApiExchangeRates(mockServer),
     await mockGetMultipleAccounts(mockServer),
     await mockTokenApiAssets(mockServer),
     await mockBridgeGetTokens(mockServer),
     await mockBridgeSearchTokens(mockServer),
-    await mockTokensV2SupportedNetworks(mockServer),
-    await mockTokensV3Assets(mockServer),
+    // await mockTokensV3Assets(mockServer),
   ];
 }
 
@@ -105,6 +106,7 @@ async function mockSwapSOLtoUSDCFailed(
     await mockGetMinimumBalanceForRentExemption(mockServer),
     await mockQuoteFromSoltoUSDC(mockServer),
     await mockMultiCoinPrice(mockServer),
+    await mockTokensV2SupportedNetworks(mockServer),
     await mockPriceApiSpotPriceSwap(mockServer),
     await mockPriceApiExchangeRates(mockServer),
     await mockGetMultipleAccounts(mockServer),
@@ -115,8 +117,7 @@ async function mockSwapSOLtoUSDCFailed(
     await mockTokenApiAssets(mockServer),
     await mockBridgeGetTokens(mockServer),
     await mockBridgeSearchTokens(mockServer),
-    await mockTokensV2SupportedNetworks(mockServer),
-    await mockTokensV3Assets(mockServer),
+    // await mockTokensV3Assets(mockServer),
   ];
 }
 
@@ -127,6 +128,7 @@ async function mockSwapSOLtoUSDC(
 
   return [
     await mockGetTokenAccountsUSDCOnly(mockServer, signatureHolder),
+    await mockTokensV2SupportedNetworks(mockServer),
     await simulateSolanaTransaction(mockServer),
     await mockSolanaBalanceQuote({ mockServer }),
     await mockGetFeeForMessage(mockServer),
@@ -134,6 +136,8 @@ async function mockSwapSOLtoUSDC(
     await mockGetMinimumBalanceForRentExemption(mockServer),
     await mockQuoteFromSoltoUSDC(mockServer),
     await mockMultiCoinPrice(mockServer),
+    // await mockPriceApiSolana(mockServer, 168.88),
+    await mockPriceApiExchangeRates(mockServer),
     await mockGetMultipleAccounts(mockServer),
     await mockSendSwapSolanaTransaction(mockServer, signatureHolder),
     await mockGetSOLUSDCTransaction(mockServer, signatureHolder),
@@ -143,8 +147,21 @@ async function mockSwapSOLtoUSDC(
     await mockTokenApiAssets(mockServer),
     await mockBridgeGetTokens(mockServer),
     await mockBridgeSearchTokens(mockServer),
-    await mockTokensV2SupportedNetworks(mockServer),
-    await mockTokensV3Assets(mockServer),
+    // await mockTokensV3Assets(mockServer),
+  ];
+}
+
+/**
+ * Full SOL→USDC swap mocks plus configurable Price API v3 spot prices for SOL/USDC.
+ *
+ * @param mockServer - Mockttp instance.
+ */
+async function mockSwapSOLtoUSDCWithSolSpotPrice(
+  mockServer: Mockttp,
+): Promise<MockedEndpoint[]> {
+  return [
+    ...(await mockSwapSOLtoUSDC(mockServer)),
+    await mockPriceApiSolana(mockServer, 168.88),
   ];
 }
 
@@ -226,10 +243,11 @@ describe('Swap on Solana', function () {
           // .withAssetsController(SOLANA_SWAP_ASSETS_CONTROLLER_FIXTURE)
           .build(),
         title: this.test?.fullTitle(),
-        testSpecificMock: mockSwapSOLtoUSDC,
+        testSpecificMock: mockSwapSOLtoUSDCWithSolSpotPrice,
       },
       async ({ driver }) => {
         await login(driver);
+        // await driver.delay(100000);
 
         // Switch to Solana network
         const networkManager = new NetworkManager(driver);
