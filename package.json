@@ -263,8 +263,8 @@
     "fast-xml-parser": "^5.5.7",
     "minimatch@npm:^10.1.1": "10.2.4",
     "@metamask/snaps-controllers": "^18.0.4",
-    "@metamask/multichain-account-service@npm:^7.0.0": "patch:@metamask/multichain-account-service@npm%3A7.1.0#~/.yarn/patches/@metamask-multichain-account-service-npm-7.1.0-4b0ce989c3.patch",
-    "@metamask/multichain-account-service@npm:^7.1.0": "patch:@metamask/multichain-account-service@npm%3A7.1.0#~/.yarn/patches/@metamask-multichain-account-service-npm-7.1.0-4b0ce989c3.patch",
+    "@metamask/messenger@npm:^0.3.0": "^1.0.0",
+    "@metamask/account-tree-controller@npm:^5.0.1": "^6.0.0",
     "node-forge": "^1.4.0"
   },
   "dependencies": {
