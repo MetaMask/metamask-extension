@@ -104,6 +104,13 @@ export const DEVELOPER_TOOLS_ITEMS = {
   'delete-activity-and-nonce-data': 'deleteActivityAndNonceData',
 } as const;
 
+export const ABOUT_ITEMS = {
+  'terms-of-use': 'terms',
+  'privacy-policy': 'privacyMsg',
+  'support-center': 'supportCenter',
+  'contact-us': 'contactUs',
+} as const;
+
 // ── Registry (auto-derived) ─────────────────────────────────────────────
 
 export const SETTINGS_V2_SEARCH_CONFIG: TabSearchConfig[] = [
@@ -137,4 +144,5 @@ export const SETTINGS_V2_SEARCH_CONFIG: TabSearchConfig[] = [
     tabId: 'developer-tools',
     items: createSearchItemMeta(DEVELOPER_TOOLS_ITEMS),
   },
+  { tabId: 'about-us', items: createSearchItemMeta(ABOUT_ITEMS) },
 ];

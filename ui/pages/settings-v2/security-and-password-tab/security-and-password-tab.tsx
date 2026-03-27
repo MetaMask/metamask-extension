@@ -44,6 +44,7 @@ export const AutoLockItem = createSelectItem({
       t as (key: string, substitutions?: string[]) => string,
     ),
   route: AUTO_LOCK_ROUTE,
+  dataTestId: 'auto-lock-button',
 });
 
 const SECURITY_AND_PASSWORD_SETTING_ITEMS: SettingItemConfig[] = [

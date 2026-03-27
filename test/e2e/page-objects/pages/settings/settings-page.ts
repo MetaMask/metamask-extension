@@ -1,6 +1,7 @@
 import {
   ADVANCED_ROUTE,
   DEFAULT_ROUTE,
+  SETTINGS_V2_ROUTE,
 } from '../../../../../ui/helpers/constants/routes';
 import HomePage from '../home/homepage';
 import { Driver } from '../../../webdriver/driver';
@@ -10,6 +11,8 @@ class SettingsPage {
 
   private readonly aboutViewButton =
     '[data-testid="settings-v2-tab-item-about-us"]';
+
+  private readonly autoLockSettingsButton = '[data-testid="auto-lock-button"]';
 
   private readonly assetsSettingsButton =
     '[data-testid="settings-v2-tab-item-assets"]';
@@ -27,8 +30,7 @@ class SettingsPage {
     '[data-testid="settings-v2-tab-item-experimental"]';
 
   private readonly noMatchingResultsFoundMessage = {
-    text: 'No matching results found',
-    tag: 'span',
+    text: 'No matching results found.',
   };
 
   private readonly privacySettingsButton =
@@ -39,8 +41,6 @@ class SettingsPage {
 
   private readonly searchResultItem =
     '[data-testid="settings-v2-search-result-item"]';
-
-  private readonly legacySearchSettingsInput = '#search-settings';
 
   private readonly searchSettingsInput =
     '[data-testid="settings-v2-header-search-input"]';
@@ -83,14 +83,6 @@ class SettingsPage {
     return elements.length > 0;
   }
 
-  async getSearchInputLocator() {
-    if (await this.hasElement(this.searchSettingsInput)) {
-      return this.searchSettingsInput;
-    }
-
-    return this.legacySearchSettingsInput;
-  }
-
   async isOnSettingsPage() {
     return await this.hasElement(this.settingsPageFullscreenRoot);
   }
@@ -124,30 +116,16 @@ class SettingsPage {
 
   async fillSearchSettingsInput(text: string): Promise<void> {
     console.log(`Filling search settings input with ${text}`);
-    if (
-      !(await this.hasElement(this.searchSettingsInput)) &&
-      !(await this.hasElement(this.legacySearchSettingsInput))
-    ) {
-      await this.openSearch();
-    }
-    await this.driver.wait(async () => {
-      return (
-        (await this.hasElement(this.searchSettingsInput)) ||
-        (await this.hasElement(this.legacySearchSettingsInput))
-      );
-    });
-    await this.driver.fill(await this.getSearchInputLocator(), text);
+    await this.openSearch();
+    await this.driver.waitForSelector(this.searchSettingsInput);
+    await this.driver.fill(this.searchSettingsInput, text);
   }
 
   async openSearch(): Promise<void> {
     console.log('Opening settings search');
     await this.driver.clickElement(this.searchButton);
-    await this.driver.wait(async () => {
-      return (
-        (await this.hasElement(this.searchSettingsInput)) ||
-        (await this.hasElement(this.legacySearchSettingsInput))
-      );
-    });
+    await this.driver.waitForSelector(this.searchSettingsInput);
+    console.log('Search input is opened');
   }
 
   async toggleShowFiatOnTestnets(): Promise<void> {
@@ -172,6 +150,11 @@ class SettingsPage {
   async goToAssetsSettings(): Promise<void> {
     console.log('Navigating to Assets Settings page');
     await this.driver.clickElement(this.assetsSettingsButton);
+  }
+
+  async goToAutoLockSettings(): Promise<void> {
+    console.log('Navigating to Auto-lock settings page');
+    await this.driver.clickElement(this.autoLockSettingsButton);
   }
 
   async goToDeveloperOptions(): Promise<void> {

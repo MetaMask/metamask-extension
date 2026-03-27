@@ -3,6 +3,7 @@ import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import AboutPage from '../../page-objects/pages/settings/about-page';
 import ExperimentalSettings from '../../page-objects/pages/settings/experimental-settings';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
+import PreferencesAndDisplaySettings from '../../page-objects/pages/settings/preferences-and-display-settings';
 import PrivacySettings from '../../page-objects/pages/settings/privacy-settings';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import { login } from '../../page-objects/flows/login.flow';
@@ -12,7 +13,7 @@ describe('Settings Search', function () {
     assets: 'Show native token as main balance',
     privacy: 'State logs',
     securityAndPassword: 'Manage wallet recovery',
-    experimental: 'Snaps',
+    experimental: 'Add account Snap',
     about: 'Terms of Use',
   };
 
@@ -31,9 +32,9 @@ describe('Settings Search', function () {
         await settingsPage.fillSearchSettingsInput(settingsSearch.assets);
 
         await settingsPage.goToSearchResultPage('Assets');
-        await driver.waitForSelector(
-          '[data-testid="show-native-token-as-main-balance"]',
-        );
+        await new PreferencesAndDisplaySettings(
+          driver,
+        ).checkAssetsPageIsLoaded();
       },
     );
   });

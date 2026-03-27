@@ -41,6 +41,9 @@ class NftListPage {
 
   private readonly toastBanner = '.toasts-container__banner-base';
 
+  private readonly toastCloseButton =
+    '.toasts-container__banner-base button[aria-label="Close"]';
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
@@ -57,8 +60,9 @@ class NftListPage {
   }
 
   async clickNFTIconOnActivityList() {
+    await this.driver.clickElementSafe(this.toastCloseButton);
     await this.driver.assertElementNotPresent(this.toastBanner, {
-      timeout: 5000,
+      timeout: 15000,
       waitAtLeastGuard: 250,
     });
     await this.driver.clickElement(this.nftIconOnActivityList);
