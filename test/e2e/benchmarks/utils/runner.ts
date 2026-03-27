@@ -140,8 +140,11 @@ export async function runBenchmarkWithIterations(
   const perRunTotalDurations: number[] = [];
   for (const result of allResults) {
     if (result.success && result.timers.length > 0) {
+      // Exclude long task diagnostic metrics (tagged with unit) from the
+      // per-run total. They represent blocking time already captured within
+      // the timed steps and would double-count if summed.
       const runTotal = result.timers
-        .filter((t) => t.unit !== 'count')
+        .filter((t) => !t.unit)
         .reduce((acc, t) => acc + t.duration, 0);
       perRunTotalDurations.push(runTotal);
     }

@@ -83,9 +83,9 @@ describe('long-task-helper', () => {
 
       expect(results).toEqual([
         { id: 'longTaskCount', duration: 0, unit: 'count' },
-        { id: 'longTaskTotalDuration', duration: 0 },
-        { id: 'longTaskMaxDuration', duration: 0 },
-        { id: 'tbt', duration: 0 },
+        { id: 'longTaskTotalDuration', duration: 0, unit: 'ms' },
+        { id: 'longTaskMaxDuration', duration: 0, unit: 'ms' },
+        { id: 'tbt', duration: 0, unit: 'ms' },
       ]);
     });
 
@@ -105,9 +105,9 @@ describe('long-task-helper', () => {
 
       expect(results).toEqual([
         { id: 'longTaskCount', duration: 3, unit: 'count' },
-        { id: 'longTaskTotalDuration', duration: 250 },
-        { id: 'longTaskMaxDuration', duration: 120 },
-        { id: 'tbt', duration: 100 },
+        { id: 'longTaskTotalDuration', duration: 250, unit: 'ms' },
+        { id: 'longTaskMaxDuration', duration: 120, unit: 'ms' },
+        { id: 'tbt', duration: 100, unit: 'ms' },
       ]);
     });
 
@@ -143,9 +143,9 @@ describe('long-task-helper', () => {
 
       expect(results).toEqual([
         { id: 'longTaskCount', duration: 8, unit: 'count' },
-        { id: 'longTaskTotalDuration', duration: 660 },
-        { id: 'longTaskMaxDuration', duration: 150 },
-        { id: 'tbt', duration: 260 },
+        { id: 'longTaskTotalDuration', duration: 660, unit: 'ms' },
+        { id: 'longTaskMaxDuration', duration: 150, unit: 'ms' },
+        { id: 'tbt', duration: 260, unit: 'ms' },
       ]);
     });
 
@@ -201,10 +201,12 @@ describe('long-task-helper', () => {
       expect(results).toContainEqual({
         id: 'longTaskCount',
         duration: 2,
+        unit: 'count',
       });
       expect(results).toContainEqual({
         id: 'longTaskMaxDuration',
         duration: 110,
+        unit: 'ms',
       });
     });
   });
