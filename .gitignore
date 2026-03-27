@@ -1,7 +1,9 @@
 .yalc
 yalc.lock
 
+# Ocap Kernel
 /ocap-kernel
+/docs/ocap-kernel
 *.env
 
 npm-debug.log
