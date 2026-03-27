@@ -420,7 +420,6 @@ import { AlertControllerInit } from './controller-init/alert-controller-init';
 import { MetaMetricsDataDeletionControllerInit } from './controller-init/metametrics-data-deletion-controller-init';
 import { LoggingControllerInit } from './controller-init/logging-controller-init';
 import { AppMetadataControllerInit } from './controller-init/app-metadata-controller-init';
-import { ErrorReportingServiceInit } from './controller-init/error-reporting-service-init';
 import { StorageServiceInit } from './controller-init/storage-service-init';
 import { ApprovalControllerInit } from './controller-init/confirmations/approval-controller-init';
 import { AddressBookControllerInit } from './controller-init/confirmations/address-book-controller-init';
@@ -577,7 +576,6 @@ export default class MetamaskController extends EventEmitter {
     const controllerInitFunctions = {
       ApprovalController: ApprovalControllerInit,
       LoggingController: LoggingControllerInit,
-      ErrorReportingService: ErrorReportingServiceInit,
       StorageService: StorageServiceInit,
       AppMetadataController: AppMetadataControllerInit,
       PreferencesController: PreferencesControllerInit,
@@ -3311,6 +3309,9 @@ export default class MetamaskController extends EventEmitter {
         await phishingController.maybeUpdateState();
 
         return phishingController.test(website);
+      },
+      scanUrlForPhishing: async (origin) => {
+        return phishingController.scanUrl(origin);
       },
       deleteInterface: this.controllerMessenger.call.bind(
         this.controllerMessenger,
