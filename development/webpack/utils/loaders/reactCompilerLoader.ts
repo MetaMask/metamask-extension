@@ -10,8 +10,8 @@ const getWrapperPath = () => require.resolve('./reactCompilerLoaderWrapper');
 /**
  * React Compiler result status stored in module.buildMeta.
  * This allows statistics to be collected from all modules after compilation.
- * NOTE: worker-thread executions still cannot contribute buildMeta events
- * because `this._module` is unavailable in that context.
+ * NOTE: buildMeta tracking only works without thread-loader (this._module is
+ * null in worker contexts), so it is only active in verbose mode.
  */
 export type ReactCompilerStatus =
   | 'compiled'
