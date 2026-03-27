@@ -2971,9 +2971,6 @@
   "from": {
     "message": "Kimden"
   },
-  "fromTokenLists": {
-    "message": "Token listelerinden: $1"
-  },
   "function": {
     "message": "İşlev: $1"
   },
@@ -3366,12 +3363,6 @@
   "id": {
     "message": "Kimlik"
   },
-  "ignoreAll": {
-    "message": "Tümünü yoksay"
-  },
-  "ignoreTokenWarning": {
-    "message": "Gizlediğiniz tokenlar cüzdanınızda gösterilmez. Ancak, yine de onları bulup ekleyebilirsiniz."
-  },
   "imToken": {
     "message": "imToken"
   },
@@ -3431,12 +3422,6 @@
   "importSecretRecoveryPhrase": {
     "message": "Gizli Kurtarma İfadesini İçe Aktar"
   },
-  "importSelectedTokens": {
-    "message": "Seçilen tokenları içe aktar?"
-  },
-  "importSelectedTokensDescription": {
-    "message": "Sadece seçtiğiniz tokenlar cüzdanınızda gösterilecek. Dilediğiniz zaman onları arayarak gizli tokenları içe aktarabilirsiniz."
-  },
   "importTokenQuestion": {
     "message": "Tokeni içe aktar?"
   },
@@ -3455,10 +3440,6 @@
   "importWalletSuccess": {
     "message": "Cüzdan $1 içe aktarıldı",
     "description": "$1 is the index of the secret recovery phrase"
-  },
-  "importWithCount": {
-    "message": "$1 tokeni içe aktar",
-    "description": "$1 will the number of detected tokens that are selected for importing, if all of them are selected then $1 will be all"
   },
   "imported": {
     "message": "İçe aktarıldı",
@@ -4786,13 +4767,6 @@
   "notificationsSettingsPageAllowNotificationsLink": {
     "message": "Nasıl olduğunu öğrenin"
   },
-  "numberOfNewTokensDetectedPlural": {
-    "message": "Bu hesapta $1 yeni token bulundu",
-    "description": "$1 is the number of new tokens detected"
-  },
-  "numberOfNewTokensDetectedSingular": {
-    "message": "Bu hesapta 1 yeni token bulundu"
-  },
   "numberOfTokens": {
     "message": "Token sayısı"
   },
@@ -5851,10 +5825,6 @@
   },
   "pleaseConfirm": {
     "message": "Lütfen onayla"
-  },
-  "plusXMore": {
-    "message": "+ $1 tane daha",
-    "description": "$1 is a number of additional but unshown items in a list- this message will be shown in place of those items"
   },
   "pna25ModalBlogPostLink": {
     "message": "blog yayınımızda okuyabilirsiniz."
@@ -8719,9 +8689,6 @@
   "tokenDetails": {
     "message": "Token bilgileri"
   },
-  "tokenFoundTitle": {
-    "message": "1 yeni token bulundu"
-  },
   "tokenId": {
     "message": "Token Kimliği"
   },
@@ -8763,10 +8730,6 @@
   "tokensCount": {
     "message": "token'lar",
     "description": "is the count of tokens used for token transfers (plural form)"
-  },
-  "tokensFoundTitle": {
-    "message": "$1 yeni token bulundu",
-    "description": "$1 is the number of new tokens detected"
   },
   "tokensInCollection": {
     "message": "Koleksiyondaki tokenlar"
