@@ -1981,8 +1981,11 @@ export default class MetamaskController extends EventEmitter {
 
         // TODO: Remove this setTimeout once https://github.com/MetaMask/core/pull/8261 is released
         setTimeout(() => {
-          for (const [origin, authorization] of authorizationsByOrigin.entries()) {
-          this._notifyAuthorizationChange(origin, authorization);
+          for (const [
+            origin,
+            authorization,
+          ] of authorizationsByOrigin.entries()) {
+            this._notifyAuthorizationChange(origin, authorization);
           }
         }, 1000);
 
@@ -7769,7 +7772,8 @@ export default class MetamaskController extends EventEmitter {
               ),
             },
           }),
-        sortAccountIdsByLastSelected: this.sortAccountIdsByLastSelected.bind(this),
+        sortAccountIdsByLastSelected:
+          this.sortAccountIdsByLastSelected.bind(this),
       }),
     );
 
@@ -8835,7 +8839,8 @@ export default class MetamaskController extends EventEmitter {
   async _notifyAuthorizationChange(origin, newAuthorization) {
     const sessionScopes = getSessionScopes(newAuthorization, {
       getNonEvmSupportedMethods: this.getNonEvmSupportedMethods.bind(this),
-      sortAccountIdsByLastSelected: this.sortAccountIdsByLastSelected.bind(this),
+      sortAccountIdsByLastSelected:
+        this.sortAccountIdsByLastSelected.bind(this),
     });
 
     this.notifyConnections(
@@ -8843,13 +8848,12 @@ export default class MetamaskController extends EventEmitter {
       {
         method: MultichainApiNotifications.sessionChanged,
         params: {
-          sessionScopes
+          sessionScopes,
         },
       },
       API_TYPE.CAIP_MULTICHAIN,
     );
   }
-
 
   /**
    * Sorts CAIP account IDs by the associated account address lastSelected value.
@@ -8870,7 +8874,8 @@ export default class MetamaskController extends EventEmitter {
     );
 
     const addresses = [...new Set(addressByCaipAccountId.values())];
-    const sortedAddresses = this.sortMultichainAccountsByLastSelected(addresses);
+    const sortedAddresses =
+      this.sortMultichainAccountsByLastSelected(addresses);
     const rankByAddress = new Map(
       sortedAddresses.map((address, index) => [address, index]),
     );

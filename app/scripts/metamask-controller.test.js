@@ -5729,14 +5729,12 @@ describe('MetaMaskController', () => {
         sessionProperties: {},
       };
 
-      jest
-        .mocked(getAuthorizedScopesByOrigin)
-        .mockReturnValue(
-          new Map([
-            ['https://a.example', authA],
-            ['https://b.example', authB],
-          ]),
-        );
+      jest.mocked(getAuthorizedScopesByOrigin).mockReturnValue(
+        new Map([
+          ['https://a.example', authA],
+          ['https://b.example', authB],
+        ]),
+      );
       jest
         .spyOn(metamaskController, '_notifyAuthorizationChange')
         .mockImplementation(() => undefined);
@@ -5745,20 +5743,18 @@ describe('MetaMaskController', () => {
         'AccountTreeController:selectedAccountGroupChange',
         'group-1',
       );
-        // TODO: Remove this setTimeout once https://github.com/MetaMask/core/pull/8261 is released
+      // TODO: Remove this setTimeout once https://github.com/MetaMask/core/pull/8261 is released
       jest.advanceTimersByTime(1000);
 
-      expect(metamaskController._notifyAuthorizationChange).toHaveBeenCalledWith(
-        'https://a.example',
-        authA,
-      );
-      expect(metamaskController._notifyAuthorizationChange).toHaveBeenCalledWith(
-        'https://b.example',
-        authB,
-      );
-      expect(metamaskController._notifyAuthorizationChange).toHaveBeenCalledTimes(
-        2,
-      );
+      expect(
+        metamaskController._notifyAuthorizationChange,
+      ).toHaveBeenCalledWith('https://a.example', authA);
+      expect(
+        metamaskController._notifyAuthorizationChange,
+      ).toHaveBeenCalledWith('https://b.example', authB);
+      expect(
+        metamaskController._notifyAuthorizationChange,
+      ).toHaveBeenCalledTimes(2);
 
       jest.useRealTimers();
     });
