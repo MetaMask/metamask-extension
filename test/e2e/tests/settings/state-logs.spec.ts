@@ -201,6 +201,9 @@ describe('State logs', function () {
 
         // Verify download and get state logs
         const stateLogs = await getDownloadedStateLogs(driver, downloadsFolder);
+
+        // We need to replace placeholders in the reference logs with actual account IDs from the downloaded
+        // logs before comparing them.
         const referenceLogs =
           await replacePlaceholderInReferenceLogs(stateLogs);
 
