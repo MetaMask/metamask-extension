@@ -179,7 +179,6 @@ import { getAlertControllerMessenger } from './alert-controller-messenger';
 import { getMetaMetricsDataDeletionControllerMessenger } from './metametrics-data-deletion-controller-messenger';
 import { getLoggingControllerMessenger } from './logging-controller-messenger';
 import { getAppMetadataControllerMessenger } from './app-metadata-controller-messenger';
-import { getErrorReportingServiceMessenger } from './error-reporting-service-messenger';
 import { getApprovalControllerMessenger } from './approval-controller-messenger';
 import { getAddressBookControllerMessenger } from './address-book-controller-messenger';
 import { getDecryptMessageManagerMessenger } from './decrypt-message-manager-messenger';
@@ -278,8 +277,6 @@ export {
   getEnsControllerMessenger,
   getEnsControllerInitMessenger,
 } from './ens-controller-messenger';
-export type { ErrorReportingServiceMessenger } from './error-reporting-service-messenger';
-export { getErrorReportingServiceMessenger } from './error-reporting-service-messenger';
 export type { StorageServiceMessenger } from './storage-service-messenger';
 export { getStorageServiceMessenger } from './storage-service-messenger';
 export type {
@@ -523,10 +520,6 @@ export const CONTROLLER_MESSENGERS = {
   EnsController: {
     getMessenger: getEnsControllerMessenger,
     getInitMessenger: getEnsControllerInitMessenger,
-  },
-  ErrorReportingService: {
-    getMessenger: getErrorReportingServiceMessenger,
-    getInitMessenger: noop,
   },
   StorageService: {
     getMessenger: getStorageServiceMessenger,
