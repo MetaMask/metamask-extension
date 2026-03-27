@@ -370,9 +370,7 @@ describe('PerpsWithdrawPage', () => {
     await user.clear(amountInput);
     await user.type(amountInput, '1');
 
-    expect(
-      await screen.findByText(/Minimum withdrawal/iu),
-    ).toBeInTheDocument();
+    expect(await screen.findByText(/Minimum withdrawal/iu)).toBeInTheDocument();
   });
 
   it('shows insufficient balance when amount exceeds available Perps balance', async () => {
@@ -459,9 +457,7 @@ describe('PerpsWithdrawPage', () => {
 
     await awaitSubmitPromisesForMethod('perpsValidateWithdrawal');
 
-    expect(
-      await screen.findByText('blocked_by_provider'),
-    ).toBeInTheDocument();
+    expect(await screen.findByText('blocked_by_provider')).toBeInTheDocument();
     expect(mockSubmit).not.toHaveBeenCalledWith(
       'perpsWithdraw',
       expect.any(Array),
@@ -547,7 +543,10 @@ describe('PerpsWithdrawPage', () => {
 
     await awaitSubmitPromisesForMethod('perpsValidateWithdrawal');
     await waitFor(() => {
-      expect(mockSubmit).toHaveBeenCalledWith('perpsWithdraw', expect.any(Array));
+      expect(mockSubmit).toHaveBeenCalledWith(
+        'perpsWithdraw',
+        expect.any(Array),
+      );
     });
     const withdrawCallIndex = mockSubmit.mock.calls.findIndex(
       (call) => call[0] === 'perpsWithdraw',

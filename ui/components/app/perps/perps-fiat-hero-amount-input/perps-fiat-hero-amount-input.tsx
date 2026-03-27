@@ -50,14 +50,14 @@ const MAX_PARTIAL_FIAT_AMOUNT_LENGTH = 48;
 /**
  * Partial amount while typing: digits with at most one `,` or `.` separator.
  * Linear-time (no regex) so pathological strings cannot burn CPU.
+ * @param raw
  */
 export function isValidPartialFiatAmountInput(raw: string): boolean {
   if (raw.length > MAX_PARTIAL_FIAT_AMOUNT_LENGTH) {
     return false;
   }
   let sawSeparator = false;
-  for (let i = 0; i < raw.length; i++) {
-    const c = raw[i];
+  for (const c of raw) {
     if (c >= '0' && c <= '9') {
       continue;
     }

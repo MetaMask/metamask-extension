@@ -3,6 +3,7 @@ const PERPS_WITHDRAW_AMOUNT_DECIMALS = 6;
 /**
  * Drops trailing fractional zeros and the decimal point when the fraction is empty.
  * Linear in string length; `toFixed` output is bounded by decimal count (no regex).
+ * @param formatted
  */
 export function stripInsignificantFractionZeros(formatted: string): string {
   const dotIndex = formatted.indexOf('.');

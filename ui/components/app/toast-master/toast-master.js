@@ -5,7 +5,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useLocation } from 'react-router-dom';
 import classnames from 'clsx';
 import { getAllScopesFromCaip25CaveatValue } from '@metamask/chain-agnostic-permission';
-import { AvatarNetwork, AvatarNetworkSize } from '@metamask/design-system-react';
+import {
+  AvatarNetwork,
+  AvatarNetworkSize,
+} from '@metamask/design-system-react';
 import { PRODUCT_TYPES } from '@metamask/subscription-controller';
 import { MILLISECOND, SECOND } from '../../../../shared/constants/time';
 import {
