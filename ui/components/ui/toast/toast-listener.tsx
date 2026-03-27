@@ -16,6 +16,7 @@ import {
   selectBridgeHistoryForToast,
   selectNonEvmBridgeSourceTxIds,
 } from '../../../ducks/bridge-status/selectors';
+import { useTransactionLifecycle } from '../../../hooks/useTransactionLifecycle';
 import {
   isFailed,
   isPending,
@@ -44,88 +45,37 @@ const options = {
   duration: Infinity,
 };
 
-function useBridgeApprovalTxIds() {
-  const bridgeHistory = useSelector(selectBridgeHistoryForToast);
-  return useMemo(() => {
-    const ids = new Set<string>();
-    for (const item of Object.values(bridgeHistory ?? {})) {
-      if (item.approvalTxId) {
-        ids.add(item.approvalTxId.toLowerCase());
-      }
-    }
-    return ids;
-  }, [bridgeHistory]);
-}
-
+/**
+ * Watches EVM transactions for status transitions and shows toast notifications
+ */
 function useEvmTransactionToasts() {
-  const evmTransactions = useSelector(selectEvmTransactionsForToast);
-  const bridgeApprovalTxIds = useBridgeApprovalTxIds();
+  const transactions = useSelector(selectEvmTransactionsForToast);
 
-  const prevEvmTransactionsRef = useRef<readonly TransactionLike[] | null>(
-    null,
+  const handlers = useMemo(
+    () => ({
+      onPending: (tx: TransactionLike) => {
+        toast.loading(<ToastContent status="pending" />, {
+          id: `tx-${tx.id}`,
+          ...options,
+        });
+      },
+      onSuccess: (tx: TransactionLike) => {
+        toast.success(<ToastContent status="success" />, {
+          id: `tx-${tx.id}`,
+          ...options,
+        });
+      },
+      onFailure: (tx: TransactionLike) => {
+        toast.error(<ToastContent status="failed" />, {
+          id: `tx-${tx.id}`,
+          ...options,
+        });
+      },
+    }),
+    [],
   );
 
-  useEffect(() => {
-    if (
-      prevEvmTransactionsRef.current === null ||
-      (prevEvmTransactionsRef.current.length === 0 &&
-        evmTransactions.length > 0)
-    ) {
-      prevEvmTransactionsRef.current = evmTransactions;
-      return;
-    }
-
-    const previousEvmTransactions = prevEvmTransactionsRef.current;
-
-    for (const tx of evmTransactions) {
-      // Skip bridge approval txns
-      if (bridgeApprovalTxIds.has(tx.id?.toLowerCase())) {
-        continue;
-      }
-
-      const previousTx = previousEvmTransactions.find(
-        (ptx) => ptx.id === tx.id,
-      );
-
-      const becamePending =
-        isPending(tx.status) && (!previousTx || !isPending(previousTx.status));
-
-      const becameSuccess =
-        Boolean(previousTx) &&
-        isSuccess(tx.status) &&
-        !isSuccess(previousTx?.status ?? '');
-
-      const becameFailed =
-        Boolean(previousTx) &&
-        isFailed(tx.status) &&
-        !isFailed(previousTx?.status ?? '');
-
-      if (!becamePending && !becameSuccess && !becameFailed) {
-        continue;
-      }
-
-      const id = `tx-${tx.id}`;
-
-      if (becamePending) {
-        toast.loading(<ToastContent status="pending" />, {
-          id,
-          ...options,
-        });
-      } else if (becameSuccess) {
-        toast.success(<ToastContent status="success" />, {
-          id,
-          ...options,
-        });
-      } else if (becameFailed) {
-        toast.error(<ToastContent status="failed" />, {
-          id,
-          ...options,
-        });
-      }
-    }
-
-    prevEvmTransactionsRef.current = evmTransactions;
-  }, [evmTransactions, bridgeApprovalTxIds]);
+  useTransactionLifecycle(transactions, handlers);
 }
 
 function useNonEvmTransactionToasts() {

@@ -24,6 +24,7 @@ import {
   createShallowEqualInputAndResultSelector,
   createParameterizedShallowEqualSelector,
 } from '../../shared/lib/selectors/selector-creators';
+import { selectBridgeApprovalTxIds } from './evm-transaction-ids';
 import { getSelectedInternalAccount } from './accounts';
 import { hasPendingApprovals, getApprovalRequestsByType } from './approvals';
 import { EMPTY_ARRAY, EMPTY_OBJECT } from './shared';
@@ -45,37 +46,28 @@ export const getTransactions = createSelector(
 );
 
 /**
- * Returns EVM transactions for toast notifications
+ * Returns EVM transactions eligible for toast notifications.
+ * Excludes transaction types in TOAST_EXCLUDED_TRANSACTION_TYPES and
+ * bridge approval transactions (tracked separately via bridge history).
  *
  * @param {object} state - Root state
  * @returns {object[]} Filtered array of transaction objects
  */
 export const selectEvmTransactionsForToast = createSelector(
   getTransactions,
-  (transactions) => {
+  selectBridgeApprovalTxIds,
+  (transactions, bridgeApprovalIds) => {
     if (transactions.length === 0) {
       return EMPTY_ARRAY;
     }
 
     return transactions.filter(
-      (transaction) =>
-        Boolean(transaction.type) &&
-        !TOAST_EXCLUDED_TRANSACTION_TYPES.has(transaction.type),
+      (tx) =>
+        Boolean(tx.type) &&
+        !TOAST_EXCLUDED_TRANSACTION_TYPES.has(tx.type) &&
+        !bridgeApprovalIds.has(tx.id?.toLowerCase()),
     );
   },
-);
-
-/**
- * Returns all EVM transaction IDs for the selected account, including
- * transaction types excluded from toast (e.g. bridge) so that bridge history
- * entries can be cross-referenced against live transactions.
- *
- * @param {object} state - Root state
- * @returns {Set<string>} Set of transaction IDs
- */
-export const selectCurrentAccountEvmTransactionIds = createSelector(
-  getTransactions,
-  (transactions) => new Set(transactions.map((tx) => tx.id)),
 );
 
 /**

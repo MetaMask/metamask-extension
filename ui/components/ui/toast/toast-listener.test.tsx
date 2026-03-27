@@ -129,20 +129,6 @@ describe('ToastListener', () => {
         expect.objectContaining({ id: 'tx-tx1' }),
       );
     });
-
-    it('skips bridge approval txs', () => {
-      state.bridgeHistory = {
-        'order-1': makeBridgeItem(1, 10, 'PENDING', {
-          approvalTxId: 'approval-tx',
-        }),
-      };
-      const { rerender } = render(<ToastListener />);
-
-      state.evmTxs = [{ id: 'approval-tx', status: 'submitted' }];
-      rerender(<ToastListener />);
-
-      expect(toast.loading).not.toHaveBeenCalled();
-    });
   });
 
   describe('non-EVM transactions', () => {
