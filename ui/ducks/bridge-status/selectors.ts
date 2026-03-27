@@ -14,7 +14,7 @@ import {
 } from '../../selectors/multichain-accounts/account-tree';
 import { EMPTY_OBJECT } from '../../selectors/shared';
 import { selectCurrentAccountNonEvmTransactions } from '../../selectors/multichain-transactions';
-import { selectCurrentAccountEvmTransactionIds } from '../../selectors/evm-transaction-ids';
+import { selectTransactionIds } from '../../selectors/evm-transaction-ids';
 
 type BridgeStatusAppState = {
   metamask: BridgeStatusControllerState & TransactionControllerState;
@@ -89,7 +89,7 @@ export const selectBridgeHistoryForToast = createSelector(
   [
     selectBridgeHistoryForAccountGroup,
     selectCurrentAccountNonEvmTransactions,
-    selectCurrentAccountEvmTransactionIds,
+    selectTransactionIds,
   ],
   (bridgeHistory, nonEvmTxs, evmTxIds) => {
     if (!bridgeHistory) {

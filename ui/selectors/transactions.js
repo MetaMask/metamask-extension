@@ -46,27 +46,36 @@ export const getTransactions = createSelector(
 );
 
 /**
- * Returns EVM transactions eligible for toast notifications.
- * Excludes transaction types in TOAST_EXCLUDED_TRANSACTION_TYPES and
- * bridge approval transactions (tracked separately via bridge history).
+ * Returns deduplicated EVM transactions eligible for toast notifications.
+ * Swap polling inserts duplicate entries for the same tx id into raw state;
+ * this selector keeps only the first occurrence per id.
  *
  * @param {object} state - Root state
- * @returns {object[]} Filtered array of transaction objects
+ * @returns {object[]} Filtered, deduplicated array of transaction objects
  */
 export const selectEvmTransactionsForToast = createSelector(
-  getTransactions,
+  (state) => state.metamask?.transactions,
   selectBridgeApprovalTxIds,
-  (transactions, bridgeApprovalIds) => {
-    if (transactions.length === 0) {
+  (rawTransactions, bridgeApprovalIds) => {
+    if (!rawTransactions?.length) {
       return EMPTY_ARRAY;
     }
-
-    return transactions.filter(
-      (tx) =>
-        Boolean(tx.type) &&
+    const seen = new Set();
+    const result = [];
+    for (const tx of rawTransactions) {
+      if (seen.has(tx.id)) {
+        continue; // skip duplicate entries for the same tx id
+      }
+      seen.add(tx.id);
+      if (
+        tx.type &&
         !TOAST_EXCLUDED_TRANSACTION_TYPES.has(tx.type) &&
-        !bridgeApprovalIds.has(tx.id?.toLowerCase()),
-    );
+        !bridgeApprovalIds.has(tx.id?.toLowerCase())
+      ) {
+        result.push(tx);
+      }
+    }
+    return result.length > 0 ? result : EMPTY_ARRAY;
   },
 );
 

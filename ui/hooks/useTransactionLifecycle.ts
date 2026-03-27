@@ -7,20 +7,17 @@ import {
 
 type TransactionWithStatus = { id: string; status: string };
 
-type Handlers<T extends TransactionWithStatus> = {
-  onPending?: (tx: T) => void;
-  onSuccess?: (tx: T) => void;
-  onFailure?: (tx: T) => void;
+type Handlers<Ttxn extends TransactionWithStatus> = {
+  onPending?: (tx: Ttxn) => void;
+  onSuccess?: (tx: Ttxn) => void;
+  onFailure?: (tx: Ttxn) => void;
 };
 
-/**
- * Generic hook that detects transaction lifecycle transitions.
- */
-export function useTransactionLifecycle<T extends TransactionWithStatus>(
-  transactions: readonly T[],
-  handlers: Handlers<T>,
+export function useTransactionLifecycle<Ttxn extends TransactionWithStatus>(
+  transactions: readonly Ttxn[],
+  handlers: Handlers<Ttxn>,
 ) {
-  const ref = useRef<Map<string, T> | null>(null);
+  const ref = useRef<Map<string, Ttxn> | null>(null);
 
   useEffect(() => {
     const snapshot = ref.current;

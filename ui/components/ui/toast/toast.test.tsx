@@ -3,7 +3,7 @@ import { render, screen } from '@testing-library/react';
 import { ToastContent } from './toast';
 
 jest.mock('../../../helpers/utils/transaction-display', () => ({
-  useTransactionStatusDisplay: (variant: string) => ({
+  useTransactionDisplay: (variant: string) => ({
     title: `${variant} title`,
   }),
 }));
