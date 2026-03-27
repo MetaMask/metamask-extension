@@ -115,6 +115,7 @@ describe('EthOverview', () => {
                   name: 'Account 1',
                   hidden: false,
                   pinned: false,
+                  lastSelected: 0,
                 },
               },
             },
