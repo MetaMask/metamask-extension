@@ -7,7 +7,8 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
+  pull-requests: write
 
 jobs:
   check-feature-flag-registry:
@@ -15,6 +16,8 @@ jobs:
     environment: default-branch
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    outputs:
+      has-drift: ${{ steps.check.outputs.HAS_DRIFT }}
     steps:
       - name: Checkout and setup environment
         uses: MetaMask/action-checkout-and-setup@v3
@@ -35,29 +38,52 @@ jobs:
           # Succeed for 0 (no drift) and 1 (drift); fail for 2 (API/script error)
           [ "$EXIT" -eq 0 ] || [ "$EXIT" -eq 1 ] || exit "$EXIT"
 
+      - name: Update registry and prepare artifacts
+        if: steps.check.outputs.HAS_DRIFT == 'true'
+        shell: bash
+        run: |
+          yarn feature-flags:sync:update
+          cp sync-report.json report.json
+
       - name: Upload drift report
         if: steps.check.outputs.HAS_DRIFT == 'true'
         uses: actions/upload-artifact@v4
         with:
           name: drift-report
-          path: sync-report.json
+          path: report.json
 
-      - name: Notify Slack on drift
-        if: ${{ always() && steps.check.outputs.HAS_DRIFT == 'true' }}
-        uses: slackapi/slack-github-action@91efab103c0de0a537f72a35f6b8cda0ee76bf0a
+      - name: Upload updated registry
+        if: steps.check.outputs.HAS_DRIFT == 'true'
+        uses: actions/upload-artifact@v4
         with:
-          webhook: ${{ secrets.SLACK_WEBHOOK_FEATURE_FLAG_DRIFT }}
-          webhook-type: incoming-webhook
-          payload: |
-            {
-              "text": "*[MetaMask Extension] Feature Flags Drift Detected in E2E tests vs Prod* :warning:\n\nCheck the workflow run for details: download the drift report JSON artifact and review the report.\n\nYou can run command `yarn feature-flags:sync:update` locally to update the registry.\n\n<https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}|View workflow run>",
-              "blocks": [
-                {
-                  "type": "section",
-                  "text": {
-                    "type": "mrkdwn",
-                    "text": "*[MetaMask Extension] Feature Flags Drift Detected in E2E tests vs Prod* :warning:\n\nCheck the workflow run for details: download the drift report JSON artifact and review the report.\n\nYou can run command `yarn feature-flags:sync:update` locally to update the registry.\n\n<https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}|View workflow run>"
-                  }
-                }
-              ]
-            }
+          name: updated-registry
+          path: test/e2e/feature-flags/feature-flag-registry.ts
+
+  create-drift-pr:
+    name: Create PR for feature flag registry drift
+    needs: check-feature-flag-registry
+    if: needs.check-feature-flag-registry.outputs.has-drift == 'true'
+    uses: MetaMask/github-tools/.github/workflows/create-pr-feature-flag-registry-drift.yml@main
+    with:
+      repository: metamask-extension
+      registry-file-path: test/e2e/feature-flags/feature-flag-registry.ts
+      registry-artifact-name: updated-registry
+      report-artifact-name: drift-report
+      workflow-run-url: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+    secrets:
+      github-token: ${{ secrets.GITHUB_TOKEN }}
+
+  notify-slack:
+    name: Notify Slack on drift
+    needs: [check-feature-flag-registry, create-drift-pr]
+    if: always() && needs.check-feature-flag-registry.outputs.has-drift == 'true' && !cancelled()
+    runs-on: ubuntu-latest
+    environment: default-branch
+    steps:
+      - name: Send Slack notification
+        uses: MetaMask/github-tools/.github/actions/feature-flag-drift-slack-noti@main
+        with:
+          title: MetaMask Extension
+          slack-webhook: ${{ secrets.SLACK_WEBHOOK_FEATURE_FLAG_DRIFT }}
+          workflow-run-url: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          pr-url: ${{ needs.create-drift-pr.outputs.pr-url || '' }}

@@ -89,6 +89,7 @@ const blocklistedHosts = [
   'linea-sepolia.infura.io',
   'mainnet.infura.io',
   'optimism-mainnet.infura.io',
+  'polygon-mainnet.infura.io',
   'sei-mainnet.infura.io',
   'sepolia.infura.io',
   'testnet-rpc.monad.xyz',
