@@ -345,10 +345,7 @@ export class PageLoadBenchmark {
             metrics.count += 1;
             metrics.totalDuration += entry.duration;
             metrics.maxDuration = Math.max(metrics.maxDuration, entry.duration);
-            metrics.tbt += Math.max(
-              0,
-              entry.duration - LONG_TASK_THRESHOLD_MS,
-            );
+            metrics.tbt += Math.max(0, entry.duration - LONG_TASK_THRESHOLD_MS);
           }
         });
         obs.observe({ type: 'longtask', buffered: true });
@@ -356,7 +353,7 @@ export class PageLoadBenchmark {
         // longtask not supported in this browser
       }
       // @ts-expect-error Injected property for benchmark metric collection
-      window.__longTaskMetrics = metrics;
+      window.longTaskMetricsData = metrics;
     });
 
     await page.goto(url, { waitUntil: 'networkidle' });
@@ -367,6 +364,21 @@ export class PageLoadBenchmark {
 
     // Collect performance metrics
     const metrics: BenchmarkMetrics = await page.evaluate(() => {
+      function rateTbt(
+        tbt?: number,
+      ): 'good' | 'needs-improvement' | 'poor' | undefined {
+        if (tbt === undefined) {
+          return undefined;
+        }
+        if (tbt < 200) {
+          return 'good';
+        }
+        if (tbt < 600) {
+          return 'needs-improvement';
+        }
+        return 'poor';
+      }
+
       const navigation = performance.getEntriesByType(
         'navigation',
       )[0] as PerformanceNavigationTiming;
@@ -378,14 +390,14 @@ export class PageLoadBenchmark {
       // Read Long Task / TBT metrics from the injected page-level observer
       const longTaskMetricsRaw = (
         window as typeof window & {
-          __longTaskMetrics?: {
+          longTaskMetricsData?: {
             count: number;
             totalDuration: number;
             maxDuration: number;
             tbt: number;
           };
         }
-      ).__longTaskMetrics;
+      ).longTaskMetricsData;
 
       return {
         pageLoadTime: navigation.loadEventEnd - navigation.startTime,
@@ -409,13 +421,7 @@ export class PageLoadBenchmark {
         tbt: longTaskMetricsRaw?.tbt,
         // Thresholds (200/600ms) must match TBT_GOOD_THRESHOLD_MS and
         // TBT_NEEDS_IMPROVEMENT_THRESHOLD_MS in performance-observers.ts
-        tbtRating: longTaskMetricsRaw
-          ? longTaskMetricsRaw.tbt < 200
-            ? 'good'
-            : longTaskMetricsRaw.tbt < 600
-              ? 'needs-improvement'
-              : 'poor'
-          : undefined,
+        tbtRating: rateTbt(longTaskMetricsRaw?.tbt),
       };
     });
 
