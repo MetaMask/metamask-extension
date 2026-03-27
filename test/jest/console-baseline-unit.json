@@ -31,6 +31,7 @@
       "error: Error: Migration 186: Invalid NetworkController": 1,
       "error: Error: Migration 189: Invalid NetworkController": 1,
       "error: Error: Migration 193: SnapController not": 1,
+      "error: Error: Migration 196: NetworkEnablementController not": 1,
       "error: Error: Migration 197: Invalid NetworkController": 1,
       "error: Error: No INFURA_PROJECT_ID set!": 1,
       "warn: Migration 139: typeof state.SelectedNetworkController is": 1,
@@ -42,11 +43,7 @@
       "error: Error occurred while creating snap": 1
     },
     "app/scripts/lib/snap-keyring/utils/isBlockedUrl.test.ts": {
-      "Test errors: Fetch failures": 6
-    },
-    "app/scripts/messenger-client-init/confirmations/transaction-controller-init.test.ts": {
-      "error: Failed to record sentinel_relay metrics": 1,
-      "error: Failed to record sentinel_stx metrics": 3
+      "Test errors: Fetch failures": 2
     },
     "app/scripts/messenger-client-init/core-backend/backend-websocket-service-init.test.ts": {
       "MetaMask: Backend WebSocket warnings": 1
@@ -70,6 +67,7 @@
       "error: Error: NetworkController state is invalid:": 1,
       "error: Error: invalid address (argument=\"address\", value=\"0x\",": 2,
       "error: This browser doesn't support cancelAnimationFrame.": 1,
+      "error: TypeError: Cannot convert undefined or": 2,
       "error: {": 1,
       "warn: Error during SnapController initialization. AssertionError:": 2,
       "warn: Unable to create some accounts": 1,
@@ -165,6 +163,8 @@
     },
     "app/scripts/migrations/196.test.ts": {
       "error: Error: Migration 196: NetworkEnablementController is": 1,
+      "error: Error: Migration 196: NetworkEnablementController missing": 1,
+      "error: Error: Migration 196: NetworkEnablementController not": 1,
       "error: Error: Migration 196: NetworkEnablementController.nativeAsse...": 1
     },
     "app/scripts/migrations/197.test.ts": {
@@ -215,7 +215,7 @@
       "Test errors: Uncaught Errors": 1
     },
     "ui/components/app/assets/asset-list/asset-list-control-bar/asset-list-control-bar.test.tsx": {
-      "MetaMask: Background connection not initialized": 7
+      "MetaMask: Background connection not initialized": 9
     },
     "ui/components/app/assets/asset-list/asset-list.test.tsx": {
       "Reselect: Identity function warnings": 1
@@ -275,16 +275,11 @@
       "React: Act warnings (component updates not wrapped)": 1
     },
     "ui/components/app/musd/hooks/useMerklRewards.test.ts": {
-      "React: State updates on unmounted components": 1
+      "React: State updates on unmounted components": 1,
+      "error: Error: Network error": 1
     },
     "ui/components/app/name/name-details/name-details.test.tsx": {
       "React: Act warnings (component updates not wrapped)": 12
-    },
-    "ui/components/app/perps/cancel-order/cancel-order-modal.test.tsx": {
-      "React: Act warnings (component updates not wrapped)": 16
-    },
-    "ui/components/app/perps/close-position/close-position-modal.test.tsx": {
-      "React: Act warnings (component updates not wrapped)": 4
     },
     "ui/components/app/perps/order-entry/components/auto-close-section/auto-close-section.test.tsx": {
       "React: componentWill* lifecycle deprecations": 1
@@ -292,14 +287,14 @@
     "ui/components/app/perps/order-entry/order-entry.test.tsx": {
       "React: componentWill* lifecycle deprecations": 1
     },
-    "ui/components/app/perps/perps-tutorial-modal/PerpsTutorialModal.test.tsx": {
-      "MetaMask: Background connection not initialized": 4
-    },
     "ui/components/app/qr-hardware-popover/base-reader.test.js": {
       "React: Component update warnings": 1
     },
     "ui/components/app/rewards/onboarding/OnboardingIntroStep.test.tsx": {
       "error: Warning: React does not recognize": 1
+    },
+    "ui/components/app/rewards/onboarding/OnboardingStep4.test.tsx": {
+      "React: Missing key props in lists": 1
     },
     "ui/components/app/selected-account/selected-account-component.test.js": {
       "React: DOM nesting violations": 1
@@ -317,16 +312,16 @@
       "Reselect: Identity function warnings": 1
     },
     "ui/components/app/snaps/snap-ui-renderer/components/account-selector.test.ts": {
-      "MetaMask: Background connection not initialized": 2,
+      "MetaMask: Background connection not initialized": 4,
       "React: DOM nesting violations": 1,
       "Reselect: Identity function warnings": 2
     },
     "ui/components/app/snaps/snap-ui-renderer/components/address-input.test.ts": {
-      "MetaMask: Background connection not initialized": 4,
+      "MetaMask: Background connection not initialized": 8,
       "Reselect: Identity function warnings": 3
     },
     "ui/components/app/snaps/snap-ui-renderer/components/asset-selector.test.ts": {
-      "MetaMask: Background connection not initialized": 2,
+      "MetaMask: Background connection not initialized": 4,
       "Reselect: Identity function warnings": 4
     },
     "ui/components/app/snaps/snap-ui-renderer/components/date-time-picker.test.ts": {
@@ -382,17 +377,9 @@
     "ui/components/multichain-accounts/add-multichain-account/add-multichain-account.test.tsx": {
       "React: Act warnings (component updates not wrapped)": 3
     },
-    "ui/components/multichain-accounts/multichain-account-cell/multichain-account-cell.test.tsx": {
-      "Reselect: Identity function warnings": 1
-    },
     "ui/components/multichain-accounts/multichain-account-list/multichain-account-list.test.tsx": {
+      "MetaMask: Background connection not initialized": 73,
       "Reselect: Identity function warnings": 1
-    },
-    "ui/components/multichain-accounts/multichain-address-rows-triggered-list/default-address.test.tsx": {
-      "React: componentWill* lifecycle deprecations": 1
-    },
-    "ui/components/multichain-accounts/multichain-address-rows-triggered-list/multichain-triggered-address-rows-list.test.tsx": {
-      "React: componentWill* lifecycle deprecations": 1
     },
     "ui/components/multichain-accounts/multichain-private-key-list/multichain-private-key-list.test.tsx": {
       "React: Missing key props in lists": 1
@@ -429,7 +416,8 @@
     "ui/components/multichain/account-menu/account-menu.test.tsx": {
       "MetaMask: Background connection not initialized": 2,
       "React: Act warnings (component updates not wrapped)": 3,
-      "React: State updates on unmounted components": 1
+      "React: State updates on unmounted components": 1,
+      "Reselect: Input stability warnings": 2
     },
     "ui/components/multichain/account-overview/account-overview-eth.test.tsx": {
       "React: Act warnings (component updates not wrapped)": 1,
@@ -451,12 +439,12 @@
       "React: DOM nesting violations": 1
     },
     "ui/components/multichain/app-header/app-header-unlocked-content.test.tsx": {
-      "React: componentWill* lifecycle deprecations": 1,
+      "React: Act warnings (component updates not wrapped)": 2,
       "Reselect: Identity function warnings": 1,
       "Reselect: Input stability warnings": 4
     },
     "ui/components/multichain/app-header/app-header.test.js": {
-      "React: Act warnings (component updates not wrapped)": 4,
+      "React: Act warnings (component updates not wrapped)": 6,
       "Reselect: Identity function warnings": 1,
       "Reselect: Input stability warnings": 4
     },
@@ -472,6 +460,12 @@
     "ui/components/multichain/connected-site-popover/connected-site-popover.test.tsx": {
       "React: Act warnings (component updates not wrapped)": 4
     },
+    "ui/components/multichain/create-eth-account/create-eth-account.test.js": {
+      "Reselect: Input stability warnings": 1
+    },
+    "ui/components/multichain/create-snap-account/create-snap-account.test.tsx": {
+      "Reselect: Input stability warnings": 1
+    },
     "ui/components/multichain/disconnect-permissions-modal/disconnect-permissions-modal.test.tsx": {
       "Reselect: Identity function warnings": 1
     },
@@ -480,7 +474,8 @@
       "React: Act warnings (component updates not wrapped)": 1,
       "React: PropTypes validation failures": 1,
       "React: State updates on unmounted components": 1,
-      "Reselect: Identity function warnings": 1
+      "Reselect: Identity function warnings": 1,
+      "Reselect: Input stability warnings": 2
     },
     "ui/components/multichain/edit-networks-modal/edit-networks-modal.test.js": {
       "React: Missing key props in lists": 1,
@@ -559,6 +554,9 @@
     "ui/helpers/utils/tags.test.ts": {
       "Reselect: Input stability warnings": 1
     },
+    "ui/hooks/accounts/useAccountsOperationsLoadingStates.test.ts": {
+      "MetaMask: Background connection not initialized": 2
+    },
     "ui/hooks/bridge/usePopularTokens.test.ts": {
       "React: Act warnings (component updates not wrapped)": 16,
       "Reselect: Input stability warnings": 1
@@ -634,9 +632,6 @@
       "Reselect: Identity function warnings": 1,
       "error: Unexpected key \"DNS\" found in": 1
     },
-    "ui/hooks/useHardwareWalletRecoveryLocation.test.tsx": {
-      "Reselect: Identity function warnings": 1
-    },
     "ui/hooks/useMultiPolling.test.ts": {
       "error: Error: Network error": 1
     },
@@ -672,6 +667,10 @@
     "ui/pages/asset/components/asset-page.test.tsx": {
       "React: DOM nesting violations": 2,
       "Reselect: Identity function warnings": 2
+    },
+    "ui/pages/asset/hooks/useHistoricalPrices.test.ts": {
+      "MetaMask: Background connection not initialized": 6,
+      "React: Act warnings (component updates not wrapped)": 1
     },
     "ui/pages/bridge/hooks/useEnableMissingNetwork.test.ts": {
       "MetaMask: Background connection not initialized": 1
@@ -712,6 +711,9 @@
     "ui/pages/confirm-decrypt-message/confirm-decrypt-message.component.test.js": {
       "React: Act warnings (component updates not wrapped)": 16
     },
+    "ui/pages/confirmations/cancel-speedup/cancel-speedup.test.tsx": {
+      "React: PropTypes validation failures": 2
+    },
     "ui/pages/confirmations/components/UI/send-hero/send-hero.test.tsx": {
       "React: Act warnings (component updates not wrapped)": 7,
       "error: Warning: React does not recognize": 5
@@ -732,6 +734,7 @@
       "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/components/confirm/footer/footer.test.tsx": {
+      "MetaMask: Background connection not initialized": 2,
       "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/components/confirm/footer/shield-footer-agreement.test.tsx": {
@@ -816,13 +819,12 @@
       "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/components/confirm/info/hooks/useFeeCalculations.test.ts": {
-      "MetaMask: Background connection not initialized": 48,
+      "MetaMask: Background connection not initialized": 42,
       "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/components/confirm/info/hooks/useGasFeeToken.test.ts": {
-      "MetaMask: Background connection not initialized": 96,
-      "Reselect: Identity function warnings": 3,
-      "warn: ⚠️ React Router Future Flag": 2
+      "MetaMask: Background connection not initialized": 84,
+      "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/components/confirm/info/hooks/useIsUpgradeTransaction.test.ts": {
       "Reselect: Identity function warnings": 3
@@ -883,6 +885,9 @@
       "MetaMask: Background connection not initialized": 114,
       "Reselect: Identity function warnings": 4
     },
+    "ui/pages/confirmations/components/confirm/info/shared/edit-gas-icon/edit-gas-icon-button.test.tsx": {
+      "warn: ⚠️ React Router Future Flag": 2
+    },
     "ui/pages/confirmations/components/confirm/info/shared/gas-fee-token-icon/gas-fee-token-icon.test.tsx": {
       "Reselect: Identity function warnings": 4
     },
@@ -891,16 +896,16 @@
       "Reselect: Identity function warnings": 4
     },
     "ui/pages/confirmations/components/confirm/info/shared/gas-fee-token-modal/gas-fee-token-modal.test.tsx": {
-      "MetaMask: Background connection not initialized": 138,
-      "Reselect: Identity function warnings": 4,
-      "warn: ⚠️ React Router Future Flag": 2
+      "MetaMask: Background connection not initialized": 126,
+      "Reselect: Identity function warnings": 4
     },
     "ui/pages/confirmations/components/confirm/info/shared/gas-fee-token-toast/gas-fee-token-toast.test.tsx": {
       "MetaMask: Background connection not initialized": 12,
+      "React: Missing key props in lists": 1,
       "Reselect: Identity function warnings": 4
     },
     "ui/pages/confirmations/components/confirm/info/shared/gas-fees-details/gas-fees-details.test.tsx": {
-      "MetaMask: Background connection not initialized": 364,
+      "MetaMask: Background connection not initialized": 416,
       "Reselect: Identity function warnings": 5
     },
     "ui/pages/confirmations/components/confirm/info/shared/gas-fees-row/gas-fees-row.test.tsx": {
@@ -923,9 +928,8 @@
       "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/components/confirm/info/shared/selected-gas-fee-token/selected-gas-fee-token.test.tsx": {
-      "MetaMask: Background connection not initialized": 84,
-      "Reselect: Identity function warnings": 4,
-      "warn: ⚠️ React Router Future Flag": 2
+      "MetaMask: Background connection not initialized": 66,
+      "Reselect: Identity function warnings": 4
     },
     "ui/pages/confirmations/components/confirm/info/shared/send-heading/send-heading.test.tsx": {
       "React: Act warnings (component updates not wrapped)": 1,
@@ -987,22 +991,20 @@
       "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/components/confirm/info/typed-sign/typed-sign-permission/total-exposure.test.tsx": {
-      "Reselect: Identity function warnings": 4
-    },
-    "ui/pages/confirmations/components/confirm/info/typed-sign/typed-sign-permission/typed-sign-permission.test.tsx": {
-      "React: Act warnings (component updates not wrapped)": 6,
       "Reselect: Identity function warnings": 4,
-      "Test errors: Uncaught Errors": 6
+      "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/confirmations/components/confirm/info/typed-sign/typed-sign-v4-simulation/decoded-simulation/decoded-simulation.test.tsx": {
       "MetaMask: Background connection not initialized": 4,
       "React: Act warnings (component updates not wrapped)": 4,
+      "React: Missing key props in lists": 1,
       "Reselect: Identity function warnings": 4
     },
     "ui/pages/confirmations/components/confirm/info/typed-sign/typed-sign-v4-simulation/permit-simulation/permit-simulation.test.tsx": {
       "Reselect: Identity function warnings": 4
     },
     "ui/pages/confirmations/components/confirm/info/typed-sign/typed-sign-v4-simulation/typed-sign-v4-simulation.test.tsx": {
+      "React: Missing key props in lists": 1,
       "Reselect: Identity function warnings": 4
     },
     "ui/pages/confirmations/components/confirm/info/typed-sign/typed-sign-v4-simulation/value-display/value-display.test.tsx": {
@@ -1036,6 +1038,7 @@
       "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/components/confirm/snaps/snaps-section/snaps-section.test.tsx": {
+      "React: Missing key props in lists": 1,
       "Reselect: Identity function warnings": 5
     },
     "ui/pages/confirmations/components/confirm/title/hooks/useCurrentSpendingCap.test.ts": {
@@ -1082,21 +1085,16 @@
     "ui/pages/confirmations/components/priority-fee-input/priority-fee-input.test.tsx": {
       "Reselect: Identity function warnings": 3
     },
-    "ui/pages/confirmations/components/rows/account-flow-row/account-flow-row.test.tsx": {
-      "Reselect: Identity function warnings": 3
-    },
     "ui/pages/confirmations/components/rows/bridge-fee-row/bridge-fee-row.test.tsx": {
       "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/components/rows/claimable-bonus-row/claimable-bonus-row.test.tsx": {
       "React: Act warnings (component updates not wrapped)": 1,
-      "Reselect: Identity function warnings": 3
+      "Reselect: Identity function warnings": 3,
+      "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/confirmations/components/rows/enforced-simulations-row/enforced-simulations-row.test.tsx": {
       "Reselect: Identity function warnings": 3
-    },
-    "ui/pages/confirmations/components/rows/musd-claim-account-row/musd-claim-account-row.test.tsx": {
-      "Reselect: Identity function warnings": 4
     },
     "ui/pages/confirmations/components/rows/pay-with-row/pay-with-row.test.tsx": {
       "warn: ⚠️ React Router Future Flag": 2
@@ -1142,8 +1140,8 @@
       "Reselect: Identity function warnings": 4
     },
     "ui/pages/confirmations/confirm/confirm.test.tsx": {
-      "MetaMask: Background connection not initialized": 235,
-      "React: Act warnings (component updates not wrapped)": 3,
+      "MetaMask: Background connection not initialized": 262,
+      "React: Act warnings (component updates not wrapped)": 4,
       "Reselect: Identity function warnings": 7
     },
     "ui/pages/confirmations/confirmation/templates/create-snap-account.test.js": {
@@ -1186,6 +1184,7 @@
       "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/hooks/alerts/transactions/useGasFeeLowAlerts.test.tsx": {
+      "MetaMask: Background connection not initialized": 27,
       "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/hooks/alerts/transactions/useGasSponsorshipWarningAlerts.test.ts": {
@@ -1195,7 +1194,7 @@
       "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/hooks/alerts/transactions/useInsufficientBalanceAlerts.test.ts": {
-      "MetaMask: Background connection not initialized": 90,
+      "MetaMask: Background connection not initialized": 84,
       "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/hooks/alerts/transactions/useInsufficientPayTokenBalanceAlert.test.ts": {
@@ -1230,7 +1229,8 @@
     },
     "ui/pages/confirmations/hooks/alerts/transactions/useTokenContractAlert.test.ts": {
       "React: Act warnings (component updates not wrapped)": 7,
-      "Reselect: Identity function warnings": 3
+      "Reselect: Identity function warnings": 3,
+      "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/confirmations/hooks/alerts/useAddressTrustSignalAlerts.test.ts": {
       "Reselect: Identity function warnings": 3
@@ -1242,7 +1242,7 @@
       "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/hooks/alerts/useNetworkAndOriginSwitchingAlerts.test.ts": {
-      "MetaMask: Background connection not initialized": 6,
+      "MetaMask: Background connection not initialized": 7,
       "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/hooks/alerts/useOriginTrustSignalAlerts.test.ts": {
@@ -1310,7 +1310,11 @@
     "ui/pages/confirmations/hooks/transactions/useEnableShieldCoverageChecks.test.ts": {
       "Reselect: Identity function warnings": 3
     },
+    "ui/pages/confirmations/hooks/transactions/useShieldConfirm.test.ts": {
+      "warn: ⚠️ React Router Future Flag": 2
+    },
     "ui/pages/confirmations/hooks/transactions/useTransactionConfirm.test.ts": {
+      "MetaMask: Background connection not initialized": 96,
       "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/hooks/transactions/useTransactionCustomAmount.test.ts": {
@@ -1323,7 +1327,8 @@
       "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/hooks/useAutomaticGasFeeTokenSelect.test.ts": {
-      "Reselect: Identity function warnings": 3
+      "Reselect: Identity function warnings": 3,
+      "Test errors: Uncaught TypeErrors": 1
     },
     "ui/pages/confirmations/hooks/useConfirmActions.test.ts": {
       "Reselect: Identity function warnings": 3
@@ -1333,7 +1338,7 @@
     },
     "ui/pages/confirmations/hooks/useConfirmationAlerts.test.ts": {
       "MetaMask: Background connection not initialized": 7,
-      "React: Act warnings (component updates not wrapped)": 3,
+      "React: Act warnings (component updates not wrapped)": 4,
       "Reselect: Identity function warnings": 6
     },
     "ui/pages/confirmations/hooks/useConfirmationNetworkInfo.test.ts": {
@@ -1362,6 +1367,9 @@
     },
     "ui/pages/confirmations/hooks/useHasInsufficientBalance.test.ts": {
       "MetaMask: Background connection not initialized": 30,
+      "Reselect: Identity function warnings": 3
+    },
+    "ui/pages/confirmations/hooks/useIsEnforcedSimulationsEligible.test.ts": {
       "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/hooks/useLedgerConnection.test.ts": {
@@ -1394,22 +1402,19 @@
     "ui/pages/contacts/edit-contact-page.test.tsx": {
       "Reselect: Identity function warnings": 1
     },
-    "ui/pages/create-account/connect-hardware/select-hardware.test.tsx": {
-      "warn: ⚠️ React Router Future Flag": 2
-    },
     "ui/pages/defi/components/defi-details-list.test.tsx": {
       "React: Act warnings (component updates not wrapped)": 2,
       "React: State updates on unmounted components": 1,
       "Reselect: Identity function warnings": 2
     },
     "ui/pages/defi/components/defi-details-page.test.tsx": {
-      "Reselect: Identity function warnings": 2
+      "React: Act warnings (component updates not wrapped)": 1,
+      "React: State updates on unmounted components": 1,
+      "Reselect: Identity function warnings": 3,
+      "Reselect: Input stability warnings": 1
     },
     "ui/pages/error-page/error-component.test.tsx": {
       "React: Act warnings (component updates not wrapped)": 2
-    },
-    "ui/pages/home/home.container.test.tsx": {
-      "Reselect: Input stability warnings": 1
     },
     "ui/pages/multichain-accounts/account-list/account-list.test.tsx": {
       "Reselect: Identity function warnings": 1
@@ -1418,6 +1423,7 @@
       "React: Missing key props in lists": 1
     },
     "ui/pages/multichain-accounts/multichain-accounts-connect-page/multichain-accounts-connect-page.test.tsx": {
+      "MetaMask: Background connection not initialized": 3,
       "React: DOM nesting violations": 3,
       "Reselect: Identity function warnings": 1
     },
@@ -1426,10 +1432,12 @@
       "React: Act warnings (component updates not wrapped)": 2
     },
     "ui/pages/multichain-accounts/wallet-details-page/wallet-details-page.test.tsx": {
+      "MetaMask: Background connection not initialized": 4,
       "Reselect: Identity function warnings": 1
     },
     "ui/pages/musd/index.test.tsx": {
-      "Reselect: Identity function warnings": 1
+      "Reselect: Identity function warnings": 1,
+      "warn: No routes matched location \"/\"": 2
     },
     "ui/pages/musd/screens/education.test.tsx": {
       "React: Act warnings (component updates not wrapped)": 3
@@ -1451,11 +1459,25 @@
     "ui/pages/notifications/notifications.test.tsx": {
       "Reselect: Input stability warnings": 3
     },
+    "ui/pages/onboarding-flow/account-exist/account-exist.test.tsx": {
+      "MetaMask: Background connection not initialized": 1
+    },
+    "ui/pages/onboarding-flow/account-not-found/account-not-found.test.tsx": {
+      "MetaMask: Background connection not initialized": 1
+    },
     "ui/pages/onboarding-flow/create-password/create-password.test.tsx": {
+      "MetaMask: Background connection not initialized": 1,
+      "React: DOM nesting violations": 1
+    },
+    "ui/pages/onboarding-flow/import-srp/import-srp.test.tsx": {
       "MetaMask: Background connection not initialized": 1
     },
     "ui/pages/onboarding-flow/metametrics/metametrics.test.tsx": {
       "React: Act usage warnings (incorrect await)": 4
+    },
+    "ui/pages/onboarding-flow/onboarding-flow.test.tsx": {
+      "MetaMask: Background connection not initialized": 13,
+      "warn: No routes matched location \"/\"": 1
     },
     "ui/pages/onboarding-flow/privacy-settings/privacy-settings.test.tsx": {
       "React: componentWill* lifecycle deprecations": 1,
@@ -1470,14 +1492,10 @@
       "React: DOM nesting violations": 3
     },
     "ui/pages/perps/perps-market-detail-page.test.tsx": {
-      "React: Act warnings (component updates not wrapped)": 5,
-      "React: State updates on unmounted components": 1
+      "React: Act warnings (component updates not wrapped)": 5
     },
     "ui/pages/perps/perps-order-entry-page.test.tsx": {
       "React: componentWill* lifecycle deprecations": 1
-    },
-    "ui/pages/perps/perps-withdraw-page.test.tsx": {
-      "React: Act warnings (component updates not wrapped)": 15
     },
     "ui/pages/remove-snap-account/remove-snap-account.test.tsx": {
       "Reselect: Identity function warnings": 1
@@ -1486,14 +1504,15 @@
       "Reselect: Identity function warnings": 1
     },
     "ui/pages/routes/routes.component.test.js": {
-      "React: Act warnings (component updates not wrapped)": 10,
-      "React: PropTypes validation failures": 1,
-      "Reselect: Identity function warnings": 1
+      "MetaMask: Background connection not initialized": 8,
+      "MetaMask: Balance not found warnings": 8,
+      "React: Act warnings (component updates not wrapped)": 18,
+      "React: PropTypes validation failures": 2,
+      "Reselect: Identity function warnings": 3,
+      "Reselect: Input stability warnings": 4,
+      "warn: Could not find asset type": 4
     },
     "ui/pages/settings-v2/assets-tab/assets-tab.test.tsx": {
-      "React: componentWill* lifecycle deprecations": 1
-    },
-    "ui/pages/settings-v2/developer-tools-tab/developer-tools-tab.test.tsx": {
       "React: componentWill* lifecycle deprecations": 1
     },
     "ui/pages/settings-v2/preferences-and-display-tab/account-identicon-item.test.tsx": {
@@ -1515,6 +1534,12 @@
     "ui/pages/settings-v2/privacy-tab/data-collection-item.test.tsx": {
       "React: componentWill* lifecycle deprecations": 1
     },
+    "ui/pages/settings-v2/privacy-tab/delete-metametrics-data-item.test.tsx": {
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/pages/settings-v2/privacy-tab/download-state-logs-item.test.tsx": {
+      "warn: ⚠️ React Router Future Flag": 2
+    },
     "ui/pages/settings-v2/privacy-tab/metametrics-item.test.tsx": {
       "React: componentWill* lifecycle deprecations": 1
     },
@@ -1524,8 +1549,18 @@
     "ui/pages/settings-v2/privacy-tab/third-party-apis-sub-page.test.tsx": {
       "React: componentWill* lifecycle deprecations": 1
     },
+    "ui/pages/settings-v2/security-and-password-tab/auto-lock-item.test.tsx": {
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/pages/settings-v2/security-and-password-tab/auto-lock-sub-page.test.tsx": {
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/pages/settings-v2/security-and-password-tab/manage-wallet-recovery-item.test.tsx": {
+      "warn: ⚠️ React Router Future Flag": 2
+    },
     "ui/pages/settings-v2/security-and-password-tab/security-and-password-tab.test.tsx": {
-      "React: componentWill* lifecycle deprecations": 1
+      "React: componentWill* lifecycle deprecations": 1,
+      "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/settings-v2/settings-v2.test.tsx": {
       "React: componentWill* lifecycle deprecations": 1
@@ -1539,9 +1574,13 @@
     "ui/pages/settings-v2/shared/display-nft-media-item.test.tsx": {
       "React: componentWill* lifecycle deprecations": 1
     },
+    "ui/pages/settings-v2/shared/settings-v2-header.test.tsx": {
+      "warn: ⚠️ React Router Future Flag": 2
+    },
     "ui/pages/settings-v2/transactions-tab/transactions-tab.test.tsx": {
       "React: componentWill* lifecycle deprecations": 1,
-      "Reselect: Identity function warnings": 1
+      "Reselect: Identity function warnings": 1,
+      "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/settings/advanced-tab/advanced-tab.component.test.js": {
       "React: Missing key props in lists": 1,
@@ -1581,7 +1620,7 @@
     },
     "ui/pages/settings/security-tab/security-tab.test.js": {
       "MetaMask: Background connection not initialized": 36,
-      "React: PropTypes validation failures": 3,
+      "React: PropTypes validation failures": 4,
       "React: componentWill* lifecycle deprecations": 1,
       "Reselect: Input stability warnings": 1
     },
@@ -1639,9 +1678,6 @@
     },
     "ui/pages/trust-signals/hooks/useTrustSignalMetrics.test.ts": {
       "Reselect: Identity function warnings": 3
-    },
-    "ui/pages/unlock-page/reset-password-modal.test.tsx": {
-      "React: DOM nesting violations": 1
     },
     "ui/pages/unlock-page/unlock-page.test.tsx": {
       "MetaMask: Background connection not initialized": 1,

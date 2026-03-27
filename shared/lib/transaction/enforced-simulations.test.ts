@@ -4,16 +4,19 @@ import {
   TransactionMeta,
   TransactionStatus,
 } from '@metamask/transaction-controller';
-import { ResultType } from '../trust-signals';
+import { CachedScanAddressResponse, ResultType } from '../trust-signals';
 import {
+  EnforcedSimulationsState,
   getEnforcedSimulationsSlippage,
   getIsEnforcedSimulationsEligible,
-  isAddressTrusted,
 } from './enforced-simulations';
 
 const ETHEREUM_CHAIN_ID = '0x1';
 const UNSUPPORTED_CHAIN_ID = '0xdeadbeef';
 const TO_ADDRESS = '0xRecipientAddress';
+const NESTED_ADDRESS_A = '0xNestedAddressA';
+const NESTED_ADDRESS_B = '0xNestedAddressB';
+const CACHE_KEY = `ethereum:${TO_ADDRESS.toLowerCase()}`;
 
 const BASE_TRANSACTION_META: TransactionMeta = {
   id: 'test-tx-id',
@@ -38,6 +41,36 @@ const BASE_TRANSACTION_META: TransactionMeta = {
   },
 };
 
+function buildCacheEntry(resultType: ResultType) {
+  return {
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    result_type: resultType,
+    label: resultType.toLowerCase(),
+    timestamp: Date.now(),
+  };
+}
+
+function buildState(resultType: ResultType): EnforcedSimulationsState {
+  return {
+    addressSecurityAlertResponses: {
+      [CACHE_KEY]: buildCacheEntry(resultType),
+    },
+  };
+}
+
+function buildStateForAddresses(
+  entries: Record<string, ResultType>,
+): EnforcedSimulationsState {
+  const responses: Record<string, CachedScanAddressResponse> = {};
+
+  for (const [address, resultType] of Object.entries(entries)) {
+    const key = `ethereum:${address.toLowerCase()}`;
+    responses[key] = buildCacheEntry(resultType);
+  }
+
+  return { addressSecurityAlertResponses: responses };
+}
+
 describe('enforced-simulations', () => {
   describe('getEnforcedSimulationsSlippage', () => {
     it('returns the default slippage percentage', () => {
@@ -54,7 +87,7 @@ describe('enforced-simulations', () => {
       delete process.env.ENABLE_ENFORCED_SIMULATIONS;
     });
 
-    it('returns true when all conditions are met', () => {
+    it('returns true when all conditions are met and no state provided', () => {
       expect(getIsEnforcedSimulationsEligible(BASE_TRANSACTION_META)).toBe(
         true,
       );
@@ -132,57 +165,162 @@ describe('enforced-simulations', () => {
         }),
       ).toBe(true);
     });
-  });
 
-  describe('isAddressTrusted', () => {
-    it('returns true when address has trusted result type', () => {
-      const cacheKey = `ethereum:${TO_ADDRESS.toLowerCase()}`;
+    describe('with trust signal state', () => {
+      it('returns true when address is not trusted', () => {
+        expect(
+          getIsEnforcedSimulationsEligible(
+            BASE_TRANSACTION_META,
+            buildState(ResultType.Benign),
+          ),
+        ).toBe(true);
+      });
 
-      expect(
-        isAddressTrusted(TO_ADDRESS, ETHEREUM_CHAIN_ID, {
-          addressSecurityAlertResponses: {
-            [cacheKey]: {
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              result_type: ResultType.Trusted,
-              label: 'trusted',
-              timestamp: Date.now(),
+      it('returns true when address is malicious', () => {
+        expect(
+          getIsEnforcedSimulationsEligible(
+            BASE_TRANSACTION_META,
+            buildState(ResultType.Malicious),
+          ),
+        ).toBe(true);
+      });
+
+      it('returns false when address is trusted', () => {
+        expect(
+          getIsEnforcedSimulationsEligible(
+            BASE_TRANSACTION_META,
+            buildState(ResultType.Trusted),
+          ),
+        ).toBe(false);
+      });
+
+      it('returns false when trust signal is still loading', () => {
+        expect(
+          getIsEnforcedSimulationsEligible(
+            BASE_TRANSACTION_META,
+            buildState(ResultType.Loading),
+          ),
+        ).toBe(false);
+      });
+
+      it('returns false when no cache entry exists', () => {
+        expect(
+          getIsEnforcedSimulationsEligible(BASE_TRANSACTION_META, {
+            addressSecurityAlertResponses: {},
+          }),
+        ).toBe(false);
+      });
+
+      it('returns false when chain is not supported', () => {
+        expect(
+          getIsEnforcedSimulationsEligible(
+            { ...BASE_TRANSACTION_META, chainId: UNSUPPORTED_CHAIN_ID },
+            buildState(ResultType.Benign),
+          ),
+        ).toBe(false);
+      });
+
+      it('returns false when no to addresses exist', () => {
+        expect(
+          getIsEnforcedSimulationsEligible(
+            {
+              ...BASE_TRANSACTION_META,
+              txParams: { ...BASE_TRANSACTION_META.txParams, to: undefined },
+              nestedTransactions: undefined,
             },
-          },
-        }),
-      ).toBe(true);
+            buildState(ResultType.Benign),
+          ),
+        ).toBe(false);
+      });
     });
 
-    it('returns false when address has malicious result type', () => {
-      const cacheKey = `ethereum:${TO_ADDRESS.toLowerCase()}`;
-
-      expect(
-        isAddressTrusted(TO_ADDRESS, ETHEREUM_CHAIN_ID, {
-          addressSecurityAlertResponses: {
-            [cacheKey]: {
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              result_type: ResultType.Malicious,
-              label: 'malicious',
-              timestamp: Date.now(),
+    describe('with nested transactions', () => {
+      it('returns true when primary is trusted but a nested address is not', () => {
+        expect(
+          getIsEnforcedSimulationsEligible(
+            {
+              ...BASE_TRANSACTION_META,
+              nestedTransactions: [{ to: NESTED_ADDRESS_A as `0x${string}` }],
             },
-          },
-        }),
-      ).toBe(false);
-    });
+            buildStateForAddresses({
+              [TO_ADDRESS]: ResultType.Trusted,
+              [NESTED_ADDRESS_A]: ResultType.Benign,
+            }),
+          ),
+        ).toBe(true);
+      });
 
-    it('returns false when no cache entry exists', () => {
-      expect(
-        isAddressTrusted(TO_ADDRESS, ETHEREUM_CHAIN_ID, {
-          addressSecurityAlertResponses: {},
-        }),
-      ).toBe(false);
-    });
+      it('returns true when no primary to but nested address is untrusted', () => {
+        expect(
+          getIsEnforcedSimulationsEligible(
+            {
+              ...BASE_TRANSACTION_META,
+              txParams: { ...BASE_TRANSACTION_META.txParams, to: undefined },
+              nestedTransactions: [{ to: NESTED_ADDRESS_A as `0x${string}` }],
+            },
+            buildStateForAddresses({
+              [NESTED_ADDRESS_A]: ResultType.Malicious,
+            }),
+          ),
+        ).toBe(true);
+      });
 
-    it('returns false when chain is not supported', () => {
-      expect(
-        isAddressTrusted(TO_ADDRESS, UNSUPPORTED_CHAIN_ID, {
-          addressSecurityAlertResponses: {},
-        }),
-      ).toBe(false);
+      it('returns false when all addresses including nested are trusted', () => {
+        expect(
+          getIsEnforcedSimulationsEligible(
+            {
+              ...BASE_TRANSACTION_META,
+              nestedTransactions: [
+                { to: NESTED_ADDRESS_A as `0x${string}` },
+                { to: NESTED_ADDRESS_B as `0x${string}` },
+              ],
+            },
+            buildStateForAddresses({
+              [TO_ADDRESS]: ResultType.Trusted,
+              [NESTED_ADDRESS_A]: ResultType.Trusted,
+              [NESTED_ADDRESS_B]: ResultType.Trusted,
+            }),
+          ),
+        ).toBe(false);
+      });
+
+      it('returns false when nested addresses are all loading', () => {
+        expect(
+          getIsEnforcedSimulationsEligible(
+            {
+              ...BASE_TRANSACTION_META,
+              txParams: { ...BASE_TRANSACTION_META.txParams, to: undefined },
+              nestedTransactions: [
+                { to: NESTED_ADDRESS_A as `0x${string}` },
+                { to: NESTED_ADDRESS_B as `0x${string}` },
+              ],
+            },
+            buildStateForAddresses({
+              [NESTED_ADDRESS_A]: ResultType.Loading,
+              [NESTED_ADDRESS_B]: ResultType.Loading,
+            }),
+          ),
+        ).toBe(false);
+      });
+
+      it('returns true with mix of trusted and untrusted nested addresses', () => {
+        expect(
+          getIsEnforcedSimulationsEligible(
+            {
+              ...BASE_TRANSACTION_META,
+              nestedTransactions: [
+                { to: NESTED_ADDRESS_A as `0x${string}` },
+                { to: NESTED_ADDRESS_B as `0x${string}` },
+              ],
+            },
+            buildStateForAddresses({
+              [TO_ADDRESS]: ResultType.Trusted,
+              [NESTED_ADDRESS_A]: ResultType.Trusted,
+              [NESTED_ADDRESS_B]: ResultType.Warning,
+            }),
+          ),
+        ).toBe(true);
+      });
     });
   });
 });

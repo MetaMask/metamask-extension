@@ -10,7 +10,7 @@ import {
 const DEFAULT_ENFORCED_SIMULATIONS_SLIPPAGE = 10;
 
 /**
- * State required by the enforced simulations eligibility check.
+ * State required by the enforced simulations trust signal check.
  */
 export type EnforcedSimulationsState = {
   addressSecurityAlertResponses: Record<string, CachedScanAddressResponse>;
@@ -28,11 +28,19 @@ export function getEnforcedSimulationsSlippage(): number {
 /**
  * Determines whether a transaction is eligible for enforced simulations.
  *
+ * When state is provided, also requires that the trust signal for the
+ * recipient address is loaded and is not trusted. When state is omitted
+ * (e.g. background hook without trust signal data), only the base
+ * eligibility checks are applied.
+ *
  * @param transactionMeta - The transaction metadata.
+ * @param state - Optional trust signal state. When provided, the trust
+ * signal for the recipient must be loaded and not trusted.
  * @returns Whether the transaction is eligible for enforced simulations.
  */
 export function getIsEnforcedSimulationsEligible(
   transactionMeta: TransactionMeta,
+  state?: EnforcedSimulationsState,
 ): boolean {
   const { delegationAddress, origin, simulationData } = transactionMeta;
 
@@ -52,24 +60,61 @@ export function getIsEnforcedSimulationsEligible(
     return false;
   }
 
+  if (state) {
+    const { chainId, txParams, nestedTransactions } = transactionMeta;
+
+    const supportedChain = chainId
+      ? mapChainIdToSupportedEVMChain(chainId)
+      : undefined;
+
+    if (!supportedChain) {
+      return false;
+    }
+
+    const toAddresses = getToAddresses(txParams?.to, nestedTransactions);
+
+    if (toAddresses.length === 0) {
+      return false;
+    }
+
+    const hasUntrustedAddress = toAddresses.some((address) => {
+      const cacheKey = createCacheKey(supportedChain, address);
+      const cached = state.addressSecurityAlertResponses[cacheKey];
+
+      if (!cached || cached.result_type === ResultType.Loading) {
+        return false;
+      }
+
+      return cached.result_type !== ResultType.Trusted;
+    });
+
+    if (!hasUntrustedAddress) {
+      return false;
+    }
+  }
+
   return true;
 }
 
-export function isAddressTrusted(
-  address: string,
-  chainId: string,
-  state: EnforcedSimulationsState,
-): boolean {
-  const supportedChain = mapChainIdToSupportedEVMChain(chainId);
+function getToAddresses(
+  primaryTo: string | undefined,
+  nestedTransactions: TransactionMeta['nestedTransactions'],
+): string[] {
+  const addresses: string[] = [];
 
-  if (!supportedChain) {
-    return false;
+  if (primaryTo) {
+    addresses.push(primaryTo);
   }
 
-  const cacheKey = createCacheKey(supportedChain, address);
-  const cached = state.addressSecurityAlertResponses[cacheKey];
+  if (nestedTransactions) {
+    for (const nested of nestedTransactions) {
+      if (nested.to) {
+        addresses.push(nested.to);
+      }
+    }
+  }
 
-  return cached?.result_type === ResultType.Trusted;
+  return addresses;
 }
 
 function hasBalanceChanges(

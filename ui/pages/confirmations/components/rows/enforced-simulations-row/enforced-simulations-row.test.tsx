@@ -27,21 +27,16 @@ const useI18nContextMock = jest.mocked(useI18nContext);
 
 function render({
   isEligible = true,
-  isDefaultEnabled = true,
   containerTypes,
   origin,
   delegationAddress,
 }: {
   isEligible?: boolean;
-  isDefaultEnabled?: boolean;
   containerTypes?: TransactionContainerType[];
   origin?: string;
   delegationAddress?: string;
 } = {}) {
-  useIsEnforcedSimulationsEligibleMock.mockReturnValue({
-    isEligible,
-    isDefaultEnabled,
-  });
+  useIsEnforcedSimulationsEligibleMock.mockReturnValue(isEligible);
 
   useI18nContextMock.mockReturnValue(((key: string) => {
     const translations: Record<string, string> = {

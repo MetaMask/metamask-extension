@@ -3,18 +3,10 @@ import { useSelector } from 'react-redux';
 import {
   EnforcedSimulationsState,
   getIsEnforcedSimulationsEligible,
-  isAddressTrusted,
 } from '../../../../shared/lib/transaction/enforced-simulations';
-import {
-  createCacheKey,
-  mapChainIdToSupportedEVMChain,
-} from '../../../../shared/lib/trust-signals';
 import { useConfirmContext } from '../context/confirm';
 
-export function useIsEnforcedSimulationsEligible(): {
-  isEligible: boolean;
-  isDefaultEnabled: boolean;
-} {
+export function useIsEnforcedSimulationsEligible(): boolean {
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
 
   const addressSecurityAlertResponses = useSelector(
@@ -24,38 +16,10 @@ export function useIsEnforcedSimulationsEligible(): {
   );
 
   if (!currentConfirmation) {
-    return { isEligible: false, isDefaultEnabled: false };
+    return false;
   }
 
-  const isEligible = getIsEnforcedSimulationsEligible(currentConfirmation);
-
-  if (!isEligible) {
-    return { isEligible: false, isDefaultEnabled: false };
-  }
-
-  const { chainId, txParams } = currentConfirmation;
-  const toAddress = txParams?.to;
-
-  if (!toAddress || !chainId) {
-    return { isEligible: true, isDefaultEnabled: false };
-  }
-
-  const supportedChain = mapChainIdToSupportedEVMChain(chainId);
-
-  if (!supportedChain) {
-    return { isEligible: true, isDefaultEnabled: true };
-  }
-
-  const cacheKey = createCacheKey(supportedChain, toAddress);
-  const isLoaded = cacheKey in addressSecurityAlertResponses;
-
-  if (!isLoaded) {
-    return { isEligible: true, isDefaultEnabled: false };
-  }
-
-  const isTrusted = isAddressTrusted(toAddress, chainId, {
+  return getIsEnforcedSimulationsEligible(currentConfirmation, {
     addressSecurityAlertResponses,
   });
-
-  return { isEligible: true, isDefaultEnabled: !isTrusted };
 }

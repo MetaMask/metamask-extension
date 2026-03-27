@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/naming-convention */
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import {
   TransactionContainerType,
   TransactionMeta,
@@ -34,26 +34,22 @@ export function EnforcedSimulationsRow() {
 
   const { containerTypes, id: transactionId } = currentConfirmation ?? {};
 
-  const { isEligible, isDefaultEnabled } = useIsEnforcedSimulationsEligible();
-
-  const hasAppliedDefault = useRef(false);
+  const isEligible = useIsEnforcedSimulationsEligible();
 
   const isEnabled = containerTypes?.includes(
     TransactionContainerType.EnforcedSimulations,
   );
 
   useEffect(() => {
-    if (!isDefaultEnabled || hasAppliedDefault.current || !transactionId) {
+    if (!isEligible || isEnabled || !transactionId) {
       return;
     }
-
-    hasAppliedDefault.current = true;
 
     applyTransactionContainersExisting(transactionId, [
       ...(containerTypes ?? []),
       TransactionContainerType.EnforcedSimulations,
     ]);
-  }, [isDefaultEnabled, transactionId, containerTypes]);
+  }, [isEligible, isEnabled, transactionId, containerTypes]);
 
   if (!isEligible) {
     return null;
