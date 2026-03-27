@@ -411,3 +411,4 @@ export const DeepLink = () => {
     </Container>
   );
 };
+export { DeepLink as Component };

@@ -70,7 +70,6 @@ import type { MetaMaskReduxDispatch } from '../../store/store';
 import { useTheme } from '../../hooks/useTheme';
 import { ThemeType } from '../../../shared/constants/preferences';
 import { isFlask } from '../../../shared/lib/build-types';
-import { mmLazy } from '../../helpers/utils/mm-lazy';
 import OnboardingFlowSwitch from './onboarding-flow-switch/onboarding-flow-switch';
 import CreatePassword from './create-password/create-password';
 import ReviewRecoveryPhrase from './recovery-phrase/review-recovery-phrase';
@@ -89,9 +88,12 @@ import OnboardingDownloadApp from './download-app/download-app';
 // Lazy-load ExperimentalArea so the flask/ module is only fetched in Flask builds.
 // This is not just for performance, it is necessary so non-Flask builds don't try
 // to import Flask-only code and fail.
-const ExperimentalArea = mmLazy(
-  // eslint-disable-next-line import-x/extensions, import-x/no-useless-path-segments -- these are needed for mmLazy
-  () => import('../../components/app/flask/experimental-area/index.js'),
+const ExperimentalArea = React.lazy(
+  // eslint-disable-next-line import-x/extensions, import-x/no-useless-path-segments -- these are needed for lazy
+  () =>
+    import('../../components/app/flask/experimental-area').then((m) => ({
+      default: m.Component,
+    })),
 ) as React.LazyExoticComponent<React.ComponentType<{ redirectTo: string }>>;
 
 // Helper to convert onboarding paths to relative paths for nested route matching

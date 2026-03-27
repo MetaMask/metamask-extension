@@ -1,1 +1,1 @@
-export { default } from './confirmation';
+export { default as Component } from './confirmation.component';

@@ -228,3 +228,4 @@ export const ReviewGatorPermissionsPage = () => {
     </Page>
   );
 };
+export { ReviewGatorPermissionsPage as Component };

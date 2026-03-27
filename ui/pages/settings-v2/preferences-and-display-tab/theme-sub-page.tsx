@@ -83,3 +83,4 @@ const ThemeSubPage = () => {
 };
 
 export default ThemeSubPage;
+export { ThemeSubPage as Component };

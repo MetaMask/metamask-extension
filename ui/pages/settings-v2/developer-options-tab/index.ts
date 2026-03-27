@@ -1,1 +1,1 @@
-export { default } from './developer-options-tab';
+export { default as Component } from './developer-options-tab.component';

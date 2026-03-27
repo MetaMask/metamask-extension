@@ -25,7 +25,6 @@ export enum TraceName {
   ImportNfts = 'Import Nfts',
   ImportTokens = 'Import Tokens',
   InitialActions = 'Initial Actions',
-  LazyLoadComponent = 'Lazy Load Component',
   LoadScripts = 'Load Scripts',
   Middleware = 'Middleware',
   NestedTest1 = 'Nested Test 1',

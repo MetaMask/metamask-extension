@@ -1,11 +1,11 @@
 import { createModuleLogger } from '@metamask/utils';
-import * as Sentry from '@sentry/browser';
+import * as Sentry from '@sentry/react';
 import { logger } from '@sentry/utils';
 import browser from 'webextension-polyfill';
-import { sentryLogger as log } from '../../../shared/lib/sentry';
-import { isManifestV3 } from '../../../shared/lib/mv3.utils';
-import { getManifestFlags } from '../../../shared/lib/manifestFlags';
-import { getSentryRelease } from '../../../shared/lib/sentry-release';
+import { sentryLogger as log } from '../sentry';
+import { isManifestV3 } from '../mv3.utils';
+import { getManifestFlags } from '../manifestFlags';
+import { getSentryRelease } from '../sentry-release';
 import extractEthjsErrorMessage from './extractEthjsErrorMessage';
 import { filterEvents } from './sentry-filter-events';
 import { getInstallType, initInstallType } from './install-type';
@@ -37,7 +37,13 @@ export const ERROR_URL_ALLOWLIST = {
   SEGMENT: 'segment.io',
 };
 
-export default function setupSentry() {
+/**
+ * Initializes Sentry for error reporting and performance tracing.
+ *
+ * @param {import('@sentry/types').Integration[]} [extraIntegrations] - Optional additional integrations to include.
+ * @returns {object | undefined} The Sentry object if initialized, or undefined otherwise.
+ */
+export default function setupSentry(extraIntegrations = []) {
   if (!RELEASE) {
     throw new Error('Missing release');
   }
@@ -54,7 +60,7 @@ export default function setupSentry() {
   initInstallType();
 
   integrateLogging();
-  setSentryClient();
+  setSentryClient(extraIntegrations);
 
   return {
     ...Sentry,
@@ -62,7 +68,7 @@ export default function setupSentry() {
   };
 }
 
-function getClientOptions() {
+function getClientOptions(extraIntegrations = []) {
   const environment = getSentryEnvironment();
   const sentryTarget = getSentryTarget();
 
@@ -83,6 +89,7 @@ function getClientOptions() {
         },
       }),
       filterEvents({ getMetaMetricsEnabled, log }),
+      ...extraIntegrations,
     ],
     release: RELEASE,
     // Client reports are automatically sent when a page's visibility changes to
@@ -278,8 +285,8 @@ async function getMetaMetricsEnabled() {
   }
 }
 
-function setSentryClient() {
-  const clientOptions = getClientOptions();
+function setSentryClient(extraIntegrations = []) {
+  const clientOptions = getClientOptions(extraIntegrations);
   const { dsn, environment, release, tracesSampleRate } = clientOptions;
 
   /**

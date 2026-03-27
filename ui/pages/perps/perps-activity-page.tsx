@@ -201,3 +201,4 @@ const PerpsActivityPage: React.FC = () => {
 };
 
 export default PerpsActivityPage;
+export { PerpsActivityPage as Component };

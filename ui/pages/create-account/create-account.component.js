@@ -12,3 +12,4 @@ export default function CreateAccountPage() {
     </Box>
   );
 }
+export { CreateAccountPage as Component };

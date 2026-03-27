@@ -229,3 +229,4 @@ export const GatorPermissionsPage = () => {
     </Page>
   );
 };
+export { GatorPermissionsPage as Component };

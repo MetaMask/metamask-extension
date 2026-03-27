@@ -1,1 +1,1 @@
-export { SmartAccountPage } from './smart-account-page';
+export { default as Component } from './smart-account-page.component';

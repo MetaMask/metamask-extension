@@ -189,3 +189,4 @@ function RestoreVaultPage() {
 }
 
 export default RestoreVaultPage;
+export { RestoreVaultPage as Component };

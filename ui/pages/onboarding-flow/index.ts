@@ -1,1 +1,1 @@
-export { default } from './onboarding-flow';
+export { default as Component } from './onboarding-flow';

@@ -1,3 +1,1 @@
-import UnlockPage from './unlock-page.container';
-
-export default UnlockPage;
+export { default as Component } from './unlock-page';

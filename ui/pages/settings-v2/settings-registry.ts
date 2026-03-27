@@ -1,6 +1,6 @@
 /* eslint-disable import-x/no-useless-path-segments */
 /* eslint-disable import-x/extensions */
-import { type ComponentType } from 'react';
+import React, { type ComponentType } from 'react';
 import { IconName } from '@metamask/design-system-react';
 import {
   ACCOUNT_IDENTICON_ROUTE,
@@ -20,7 +20,6 @@ import {
   PRIVACY_ROUTE,
   THIRD_PARTY_APIS_ROUTE,
 } from '../../helpers/constants/routes';
-import { mmLazy } from '../../helpers/utils/mm-lazy';
 
 /**
  * Route definition for a Settings V2 page.
@@ -52,30 +51,39 @@ export const SETTINGS_V2_ROUTES: Record<string, SettingsV2RouteMeta> = {
   [PREFERENCES_AND_DISPLAY_ROUTE]: {
     labelKey: 'preferencesAndDisplay',
     parentPath: SETTINGS_V2_ROUTE,
-    component: mmLazy(() => import('./preferences-and-display-tab/index.ts')),
+    component: React.lazy(() =>
+      import('./preferences-and-display-tab/index.ts').then((m) => ({
+        default: m.Component,
+      })),
+    ),
     isTab: true,
     iconName: IconName.Customize,
   },
   [THEME_ROUTE]: {
     labelKey: 'theme',
     parentPath: PREFERENCES_AND_DISPLAY_ROUTE,
-    component: mmLazy(
-      () => import('./preferences-and-display-tab/theme-sub-page.tsx'),
+    component: React.lazy(() =>
+      import('./preferences-and-display-tab/theme-sub-page.tsx').then((m) => ({
+        default: m.Component,
+      })),
     ),
   },
   [LANGUAGE_ROUTE]: {
     labelKey: 'language',
     parentPath: PREFERENCES_AND_DISPLAY_ROUTE,
-    component: mmLazy(
-      () => import('./preferences-and-display-tab/language-sub-page.tsx'),
+    component: React.lazy(() =>
+      import('./preferences-and-display-tab/language-sub-page.tsx').then(
+        (m) => ({ default: m.Component }),
+      ),
     ),
   },
   [ACCOUNT_IDENTICON_ROUTE]: {
     labelKey: 'accountIdenticon',
     parentPath: PREFERENCES_AND_DISPLAY_ROUTE,
-    component: mmLazy(
-      () =>
-        import('./preferences-and-display-tab/account-identicon-sub-page.tsx'),
+    component: React.lazy(() =>
+      import(
+        './preferences-and-display-tab/account-identicon-sub-page.tsx'
+      ).then((m) => ({ default: m.Component })),
     ),
   },
 
@@ -83,8 +91,10 @@ export const SETTINGS_V2_ROUTES: Record<string, SettingsV2RouteMeta> = {
   [NOTIFICATIONS_SETTINGS_ROUTE]: {
     labelKey: 'notifications',
     parentPath: SETTINGS_V2_ROUTE,
-    component: mmLazy(
-      () => import('../notifications-settings/notifications-settings.tsx'),
+    component: React.lazy(() =>
+      import('../notifications-settings/notifications-settings.tsx').then(
+        (m) => ({ default: m.Component }),
+      ),
     ),
     isTab: true,
     iconName: IconName.Notification,
@@ -94,15 +104,21 @@ export const SETTINGS_V2_ROUTES: Record<string, SettingsV2RouteMeta> = {
   [SECURITY_AND_PASSWORD_ROUTE]: {
     labelKey: 'securityAndPassword',
     parentPath: SETTINGS_V2_ROUTE,
-    component: mmLazy(() => import('./security-and-password-tab/index.ts')),
+    component: React.lazy(() =>
+      import('./security-and-password-tab/index.ts').then((m) => ({
+        default: m.Component,
+      })),
+    ),
     isTab: true,
     iconName: IconName.SecurityKey,
   },
   [AUTO_LOCK_ROUTE]: {
     labelKey: 'autoLock',
     parentPath: SECURITY_AND_PASSWORD_ROUTE,
-    component: mmLazy(
-      () => import('./security-and-password-tab/auto-lock-sub-page.tsx'),
+    component: React.lazy(() =>
+      import('./security-and-password-tab/auto-lock-sub-page.tsx').then(
+        (m) => ({ default: m.Component }),
+      ),
     ),
   },
 
@@ -110,15 +126,19 @@ export const SETTINGS_V2_ROUTES: Record<string, SettingsV2RouteMeta> = {
   [PRIVACY_ROUTE]: {
     labelKey: 'privacy',
     parentPath: SETTINGS_V2_ROUTE,
-    component: mmLazy(() => import('./privacy-tab/index.ts')),
+    component: React.lazy(() =>
+      import('./privacy-tab/index.ts').then((m) => ({ default: m.Component })),
+    ),
     isTab: true,
     iconName: IconName.Lock,
   },
   [THIRD_PARTY_APIS_ROUTE]: {
     labelKey: 'thirdPartyApis',
     parentPath: PRIVACY_ROUTE,
-    component: mmLazy(
-      () => import('./privacy-tab/third-party-apis-sub-page.tsx'),
+    component: React.lazy(() =>
+      import('./privacy-tab/third-party-apis-sub-page.tsx').then((m) => ({
+        default: m.Component,
+      })),
     ),
   },
 
@@ -126,8 +146,10 @@ export const SETTINGS_V2_ROUTES: Record<string, SettingsV2RouteMeta> = {
   [BACKUPANDSYNC_ROUTE]: {
     labelKey: 'backupAndSync',
     parentPath: SETTINGS_V2_ROUTE,
-    component: mmLazy(
-      () => import('../settings/backup-and-sync-tab/backup-and-sync-tab.tsx'),
+    component: React.lazy(() =>
+      import('../settings/backup-and-sync-tab/backup-and-sync-tab.tsx').then(
+        (m) => ({ default: m.Component }),
+      ),
     ),
     isTab: true,
     iconName: IconName.SecurityTime,
@@ -137,21 +159,31 @@ export const SETTINGS_V2_ROUTES: Record<string, SettingsV2RouteMeta> = {
   [ASSETS_ROUTE]: {
     labelKey: 'assets',
     parentPath: SETTINGS_V2_ROUTE,
-    component: mmLazy(() => import('./assets-tab/index.ts')),
+    component: React.lazy(() =>
+      import('./assets-tab/index.ts').then((m) => ({ default: m.Component })),
+    ),
     isTab: true,
     iconName: IconName.Coin,
   },
   [CURRENCY_ROUTE]: {
     labelKey: 'localCurrency',
     parentPath: ASSETS_ROUTE,
-    component: mmLazy(() => import('./assets-tab/currency-sub-page.tsx')),
+    component: React.lazy(() =>
+      import('./assets-tab/currency-sub-page.tsx').then((m) => ({
+        default: m.Component,
+      })),
+    ),
   },
 
   // --- Transactions tab ---
   [TRANSACTIONS_ROUTE]: {
     labelKey: 'transactions',
     parentPath: SETTINGS_V2_ROUTE,
-    component: mmLazy(() => import('./transactions-tab/index.ts')),
+    component: React.lazy(() =>
+      import('./transactions-tab/index.ts').then((m) => ({
+        default: m.Component,
+      })),
+    ),
     isTab: true,
     iconName: IconName.SwapVertical,
   },
@@ -160,8 +192,10 @@ export const SETTINGS_V2_ROUTES: Record<string, SettingsV2RouteMeta> = {
   [EXPERIMENTAL_ROUTE]: {
     labelKey: 'experimental',
     parentPath: SETTINGS_V2_ROUTE,
-    component: mmLazy(
-      () => import('../settings/experimental-tab/experimental-tab.tsx'),
+    component: React.lazy(() =>
+      import('../settings/experimental-tab/experimental-tab.tsx').then((m) => ({
+        default: m.Component,
+      })),
     ),
     isTab: true,
     iconName: IconName.Flask,
@@ -171,7 +205,11 @@ export const SETTINGS_V2_ROUTES: Record<string, SettingsV2RouteMeta> = {
   [DEVELOPER_OPTIONS_V2_ROUTE]: {
     labelKey: 'developerOptions',
     parentPath: SETTINGS_V2_ROUTE,
-    component: mmLazy(() => import('./developer-options-tab/index.ts')),
+    component: React.lazy(() =>
+      import('./developer-options-tab/index.ts').then((m) => ({
+        default: m.Component,
+      })),
+    ),
     isTab: true,
     iconName: IconName.Code,
   },

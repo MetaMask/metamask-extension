@@ -1,1 +1,1 @@
-export { default } from './privacy-tab';
+export { default as Component } from './privacy-tab.component';

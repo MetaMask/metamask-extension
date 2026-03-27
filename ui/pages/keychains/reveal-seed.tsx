@@ -456,3 +456,4 @@ function RevealSeedPage() {
 }
 
 export default RevealSeedPage;
+export { RevealSeedConfirmation as Component };

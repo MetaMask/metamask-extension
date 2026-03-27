@@ -100,3 +100,4 @@ const ThirdPartyApisSubPage = () => {
 };
 
 export default ThirdPartyApisSubPage;
+export { ThirdPartyApisSubPage as Component };

@@ -1,1 +1,1 @@
-export { default } from './components/defi-details-page';
+export { default as Component } from './defi.component';

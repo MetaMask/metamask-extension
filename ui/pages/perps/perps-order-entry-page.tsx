@@ -721,3 +721,4 @@ const PerpsOrderEntryPage: React.FC = () => {
 };
 
 export default PerpsOrderEntryPage;
+export { PerpsOrderEntryPage as Component };

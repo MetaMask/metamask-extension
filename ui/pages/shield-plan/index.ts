@@ -1,1 +1,1 @@
-export { default } from './shield-plan';
+export { default as Component } from './shield-plan.component';

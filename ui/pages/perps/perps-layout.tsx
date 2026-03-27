@@ -5,7 +5,7 @@ import { usePerpsViewActive } from '../../hooks/perps/stream/usePerpsViewActive'
 /**
  * Layout wrapper for all Perps pages.
  *
- * This component is lazy-loaded via mmLazy in routes so that
+ * This component is lazy-loaded via the React Router `lazy` field in routeConfig so that
  * the Perps dependency chain (PerpsStreamManager, etc.) is excluded from
  * the common bundle and only loaded when a user first navigates to a Perps route.
  *
@@ -18,3 +18,4 @@ export default function PerpsLayout() {
 
   return <Outlet />;
 }
+export { PerpsLayout as Component };

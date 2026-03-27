@@ -259,3 +259,4 @@ const PermissionsPage = () => {
 };
 
 export default PermissionsPage;
+export { PermissionsPage as Component };

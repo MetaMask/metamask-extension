@@ -144,3 +144,4 @@ export default function NftFullImage() {
     </Box>
   );
 }
+export { NftFullImage as Component };

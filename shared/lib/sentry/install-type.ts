@@ -1,5 +1,5 @@
 import browser from 'webextension-polyfill';
-import { INSTALL_TYPE, type InstallType } from '../../../shared/constants/app';
+import { INSTALL_TYPE, type InstallType } from '../../constants/app';
 
 /**
  * Cached install type value.
