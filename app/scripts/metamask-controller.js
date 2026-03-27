@@ -648,7 +648,7 @@ export default class MetamaskController extends EventEmitter {
       MultichainBalancesController: MultichainBalancesControllerInit,
       MultichainTransactionsController: MultichainTransactionsControllerInit,
       MultichainAccountService: MultichainAccountServiceInit,
-      MultichainRouter: MultichainRoutingServiceInit,
+      MultichainRoutingService: MultichainRoutingServiceInit,
       AuthenticationController: AuthenticationControllerInit,
       UserStorageController: UserStorageControllerInit,
       NotificationServicesController: NotificationServicesControllerInit,
@@ -6141,7 +6141,7 @@ export default class MetamaskController extends EventEmitter {
 
   getNonEvmSupportedMethods(scope) {
     return this.controllerMessenger.call(
-      'MultichainRouter:getSupportedMethods',
+      'MultichainRoutingService:getSupportedMethods',
       scope,
     );
   }
@@ -7736,16 +7736,19 @@ export default class MetamaskController extends EventEmitter {
         getNonEvmSupportedMethods: this.getNonEvmSupportedMethods.bind(this),
         isNonEvmScopeSupported: this.controllerMessenger.call.bind(
           this.controllerMessenger,
-          'MultichainRouter:isSupportedScope',
+          'MultichainRoutingService:isSupportedScope',
         ),
         handleNonEvmRequestForOrigin: (params) =>
-          this.controllerMessenger.call('MultichainRouter:handleRequest', {
-            ...params,
-            origin,
-          }),
+          this.controllerMessenger.call(
+            'MultichainRoutingService:handleRequest',
+            {
+              ...params,
+              origin,
+            },
+          ),
         getNonEvmAccountAddresses: this.controllerMessenger.call.bind(
           this.controllerMessenger,
-          'MultichainRouter:getSupportedAccounts',
+          'MultichainRoutingService:getSupportedAccounts',
         ),
         trackSessionCreatedEvent: (approvedCaip25CaveatValue) =>
           this.metaMetricsController.trackEvent({

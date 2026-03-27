@@ -3,8 +3,8 @@ import {
   MessengerActions,
   MessengerEvents,
 } from '@metamask/messenger';
-import { RootMessenger } from '../../../lib/messenger';
 import { MultichainRoutingServiceMessenger } from '@metamask/snaps-controllers';
+import { RootMessenger } from '../../../lib/messenger';
 
 /**
  * Get a restricted messenger for the multichain router. This is scoped to the
@@ -20,7 +20,7 @@ export function getMultichainRoutingServiceMessenger(
   >,
 ) {
   const routerMessenger: MultichainRoutingServiceMessenger = new Messenger({
-    namespace: 'MultichainRouter',
+    namespace: 'MultichainRoutingService',
     parent: messenger,
   });
   messenger.delegate({

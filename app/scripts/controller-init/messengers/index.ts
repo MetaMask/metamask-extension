@@ -577,7 +577,7 @@ export const CONTROLLER_MESSENGERS = {
     getMessenger: getMultichainNetworkControllerMessenger,
     getInitMessenger: noop,
   },
-  MultichainRouter: {
+  MultichainRoutingService: {
     getMessenger: getMultichainRoutingServiceMessenger,
     getInitMessenger: noop,
   },

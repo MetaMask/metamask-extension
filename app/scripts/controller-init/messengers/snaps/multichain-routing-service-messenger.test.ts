@@ -2,12 +2,12 @@ import { Messenger } from '@metamask/messenger';
 import { getRootMessenger } from '../../../lib/messenger';
 import { getMultichainRoutingServiceMessenger } from './multichain-routing-service-messenger';
 
-describe('getMultichainRouterMessenger', () => {
+describe('getMultichainRoutingServiceMessenger', () => {
   it('returns a restricted messenger', () => {
     const messenger = getRootMessenger<never, never>();
-    const MultichainRouterMessenger =
+    const MultichainRoutingServiceMessenger =
       getMultichainRoutingServiceMessenger(messenger);
 
-    expect(MultichainRouterMessenger).toBeInstanceOf(Messenger);
+    expect(MultichainRoutingServiceMessenger).toBeInstanceOf(Messenger);
   });
 });
