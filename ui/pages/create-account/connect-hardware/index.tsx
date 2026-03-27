@@ -352,37 +352,10 @@ const ConnectHardwareForm = () => {
     ],
   );
 
-  // Check if device is already unlocked on mount
   useEffect(() => {
-    const checkIfUnlocked = async () => {
-      for (const deviceName of [
-        HardwareDeviceNames.trezor,
-        HardwareDeviceNames.oneKey,
-        HardwareDeviceNames.ledger,
-        HardwareDeviceNames.lattice,
-      ]) {
-        const path = defaultHdPaths[deviceName];
-        const isUnlocked = await dispatch(
-          actions.checkHardwareStatus(deviceName, path),
-        );
-        if (
-          isUnlocked &&
-          latestHardwareAccounts.current.length === 0 &&
-          !latestDevice.current &&
-          !latestPendingDevice.current
-        ) {
-          getPage(deviceName, 0, path, false, false).catch(() => undefined);
-          return;
-        }
-      }
-    };
-
     if (/Firefox/u.test(window.navigator.userAgent)) {
       setIsFirefox(true);
     }
-    checkIfUnlocked().catch(() => undefined);
-    // We only want this to run on mount
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
