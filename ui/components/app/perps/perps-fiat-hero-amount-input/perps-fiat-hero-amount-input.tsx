@@ -8,6 +8,7 @@ import {
   Text,
   TextAlign,
   TextColor,
+  twMerge,
 } from '@metamask/design-system-react';
 import { Skeleton } from '../../../component-library/skeleton';
 import { getCurrencySymbol } from '../../../../helpers/utils/common.util';
@@ -73,26 +74,17 @@ export function isValidPartialFiatAmountInput(raw: string): boolean {
   return true;
 }
 
-function getHeroAmountColors(
+function getHeroAmountTextColor(
   hasAlert: boolean,
   disabled: boolean,
-): { textColor: TextColor; inputColor: string } {
+): TextColor {
   if (hasAlert) {
-    return {
-      textColor: TextColor.ErrorDefault,
-      inputColor: 'var(--color-error-default)',
-    };
+    return TextColor.ErrorDefault;
   }
   if (disabled) {
-    return {
-      textColor: TextColor.TextMuted,
-      inputColor: 'var(--color-text-muted)',
-    };
+    return TextColor.TextMuted;
   }
-  return {
-    textColor: TextColor.TextDefault,
-    inputColor: 'var(--color-text-default)',
-  };
+  return TextColor.TextDefault;
 }
 
 export const PerpsFiatHeroAmountSkeleton: React.FC = () => (
@@ -135,7 +127,7 @@ export const PerpsFiatHeroAmountInput: React.FC<PerpsFiatHeroAmountInputProps> =
 
       const fontSize = getFontSize(amountLength);
       const lineHeight = getLineHeight(amountLength);
-      const { textColor, inputColor } = getHeroAmountColors(hasAlert, disabled);
+      const textColor = getHeroAmountTextColor(hasAlert, disabled);
 
       return (
         <Box
@@ -160,18 +152,17 @@ export const PerpsFiatHeroAmountInput: React.FC<PerpsFiatHeroAmountInputProps> =
             value={value}
             onChange={handleChange}
             disabled={disabled}
+            className={twMerge(
+              textColor,
+              'border-none bg-transparent text-left outline-none',
+              disabled ? 'cursor-default' : 'cursor-text',
+            )}
             style={
               {
                 fontSize,
                 lineHeight,
                 fontWeight: 500,
-                color: inputColor,
-                textAlign: 'left',
-                border: 'none',
-                background: 'transparent',
-                outline: 'none',
                 width: `${Math.max(1, amountLength)}ch`,
-                cursor: disabled ? 'default' : 'text',
               } as React.CSSProperties
             }
           />
