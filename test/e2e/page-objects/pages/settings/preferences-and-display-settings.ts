@@ -67,7 +67,10 @@ class PreferencesAndDisplaySettings {
         this.showNativeTokenAsMainBalanceToggleLabel,
       ]);
     } catch (e) {
-      console.log('Timeout while waiting for Assets settings page to be loaded', e);
+      console.log(
+        'Timeout while waiting for Assets settings page to be loaded',
+        e,
+      );
       throw e;
     }
     console.log('Assets settings page is loaded');

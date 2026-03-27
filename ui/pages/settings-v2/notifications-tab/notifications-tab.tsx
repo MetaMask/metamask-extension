@@ -8,7 +8,7 @@ const NOTIFICATIONS_SETTING_ITEMS: SettingItemConfig[] = [
 ];
 
 const NotificationsTab = () => {
-  return <SettingsTab items={NOTIFICATIONS_SETTING_ITEMS} />
+  return <SettingsTab items={NOTIFICATIONS_SETTING_ITEMS} />;
 };
 
 export default NotificationsTab;

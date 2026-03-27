@@ -1,1 +1,1 @@
-export { default } from './debug-tab.tsx';
+export { default } from './debug-tab';

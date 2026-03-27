@@ -15,7 +15,8 @@ export default class ShieldClaimPage {
     text: accountName,
   });
 
-  private readonly backButton = '[data-testid="settings-v2-header-back-button"]';
+  private readonly backButton =
+    '[data-testid="settings-v2-header-back-button"]';
 
   private readonly legacyBackButton = '[data-testid="settings-back-button"]';
 

@@ -8,7 +8,7 @@ const ABOUT_US_SETTING_ITEMS: SettingItemConfig[] = [
 ];
 
 const AboutTab = () => {
-  return <SettingsTab items={ABOUT_US_SETTING_ITEMS} />
+  return <SettingsTab items={ABOUT_US_SETTING_ITEMS} />;
 };
 
 export default AboutTab;

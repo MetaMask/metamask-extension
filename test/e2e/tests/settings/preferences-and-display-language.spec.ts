@@ -112,7 +112,6 @@ describe('Settings V2 - Preferences and display', function (this: Suite) {
           true,
           'Water text in the search box does not match with the selected language',
         );
-
       },
     );
   });
