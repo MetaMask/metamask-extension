@@ -535,7 +535,7 @@ describe('collectWebVitals', () => {
       expect(readScript).not.toContain('result.inp = 0');
     });
 
-    it('read script gates CLS = 0 fallback on clsSupported', async () => {
+    it('read script gates CLS fallback on clsSupported', async () => {
       const execScript = jest
         .fn()
         .mockResolvedValueOnce(undefined)
@@ -547,7 +547,9 @@ describe('collectWebVitals', () => {
       const readScript = execScript.mock.calls[1][0] as string;
       expect(readScript).toContain('result.cls === null');
       expect(readScript).toContain('cwv.clsSupported');
-      expect(readScript).toContain('result.cls = 0');
+      // clsVal starts at 0, so when observer fires but no shifts occurred,
+      // result.cls = clsVal gives 0 (perfect stability)
+      expect(readScript).toContain('result.cls = clsVal');
     });
   });
 

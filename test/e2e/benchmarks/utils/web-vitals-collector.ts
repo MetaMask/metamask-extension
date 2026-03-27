@@ -118,7 +118,7 @@ if (cwv.fcp !== null) {
   result.fcpRating = rate(cwv.fcp, 1800, 3000);
 }
 
-// Check stateHooks for INP/LCP/CLS from web-vitals library.
+// Check stateHooks for INP/FCP/LCP/CLS from web-vitals library.
 // The onINP observer has been running since page startup with
 // { reportAllChanges: true }, so it captures real benchmark interactions.
 var sh = window.stateHooks;
@@ -130,6 +130,7 @@ if (sh && sh.getWebVitalsMetrics) {
     result.inp = m.inp;
     result.inpRating = m.inpRating;
   }
+  if (m.fcp !== null) { result.fcp = m.fcp; result.fcpRating = m.fcpRating; }
   if (m.lcp !== null) { result.lcp = m.lcp; result.lcpRating = m.lcpRating; }
   if (m.cls !== null) { result.cls = m.cls; result.clsRating = m.clsRating; }
   sh.resetWebVitalsMetrics && sh.resetWebVitalsMetrics();
@@ -170,7 +171,9 @@ if (result.lcp === null) {
   } catch(e) {}
 }
 
-// CLS: from layout-shift entries
+// CLS: from layout-shift entries (sum non-recent-input shifts).
+// When clsSupported but no entries, clsVal stays 0 (perfect stability).
+// When !clsSupported, keep null — observer didn't fire.
 if (result.cls === null && cwv.clsSupported) {
   var clsVal = 0;
   for (var j = 0; j < cwv.cls.length; j++) {
@@ -178,13 +181,6 @@ if (result.cls === null && cwv.clsSupported) {
   }
   result.cls = clsVal;
   result.clsRating = rate(clsVal, 0.1, 0.25);
-}
-
-// Only fallback to 0 when layout-shift observer was supported but no entries
-// (no shifts occurred). When clsSupported is false, keep null — observer didn't fire.
-if (result.cls === null && cwv.clsSupported) {
-  result.cls = 0;
-  result.clsRating = 'good';
 }
 
 for (var k = 0; k < cwv.observers.length; k++) cwv.observers[k].disconnect();

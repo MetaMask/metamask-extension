@@ -229,10 +229,8 @@ export function initFCPObserver(): void {
 
         const attributionData: Record<string, unknown> = {};
         if (attribution) {
-          attributionData.timeToFirstByte =
-            attribution.timeToFirstByte ?? null;
-          attributionData.firstByteToFCP =
-            attribution.firstByteToFCP ?? null;
+          attributionData.timeToFirstByte = attribution.timeToFirstByte ?? null;
+          attributionData.firstByteToFCP = attribution.firstByteToFCP ?? null;
           attributionData.loadState = attribution.loadState ?? null;
         }
 

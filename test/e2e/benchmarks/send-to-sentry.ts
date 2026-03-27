@@ -51,6 +51,7 @@ const WEB_VITALS_METRICS = [
  *
  * Aggregated summary goes as a structured log for dashboards.
  *
+ * @param type - The benchmark type (e.g. 'performance', 'userAction')
  * @param benchmarkName - The benchmark identifier (e.g. 'loadNewAccount')
  * @param webVitals - Full web vitals summary with per-run data and aggregates
  * @param persona - The persona used for the benchmark
@@ -58,6 +59,7 @@ const WEB_VITALS_METRICS = [
  * @param ciAttributes - CI metadata attributes
  */
 function sendWebVitalsToSentry(
+  type: string,
   benchmarkName: string,
   webVitals: WebVitalsSummary,
   persona: string,
@@ -68,7 +70,7 @@ function sendWebVitalsToSentry(
   for (const run of webVitals.runs) {
     Sentry.startSpan(
       {
-        name: `benchmark.${benchmarkName}.webVitals`,
+        name: `${type}.${benchmarkName}.webVitals`,
         op: 'benchmark.webvitals',
         attributes: {
           ...ciAttributes,
@@ -120,7 +122,7 @@ function sendWebVitalsToSentry(
     }
   }
 
-  Sentry.logger.info(`benchmark.${benchmarkName}.webVitals.summary`, {
+  Sentry.logger.info(`${type}.${benchmarkName}.webVitals.summary`, {
     ...ciAttributes,
     'ci.persona': persona,
     'ci.testTitle': testTitle ?? benchmarkName,
@@ -247,6 +249,7 @@ async function main() {
       // Web vitals: separate reporting path via spans
       if (benchmark.webVitals) {
         sendWebVitalsToSentry(
+          type,
           name,
           benchmark.webVitals,
           benchmark.persona || BENCHMARK_PERSONA.STANDARD,
@@ -288,6 +291,7 @@ async function main() {
           aggregated: aggregateWebVitals([userAction.webVitals]),
         };
         sendWebVitalsToSentry(
+          type,
           name,
           webVitalsSummary,
           userAction.persona || BENCHMARK_PERSONA.STANDARD,

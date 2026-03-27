@@ -1,7 +1,8 @@
 // @ts-expect-error suppress CommonJS vs ECMAScript error
-import { onINP, onLCP, onCLS } from 'web-vitals/attribution';
+import { onINP, onFCP, onLCP, onCLS } from 'web-vitals/attribution';
 import {
   initINPObserver,
+  initFCPObserver,
   initLCPObserver,
   initCLSObserver,
   initWebVitals,
@@ -11,11 +12,13 @@ import {
 
 jest.mock('web-vitals/attribution', () => ({
   onINP: jest.fn(),
+  onFCP: jest.fn(),
   onLCP: jest.fn(),
   onCLS: jest.fn(),
 }));
 
 const mockOnINP = onINP as jest.Mock;
+const mockOnFCP = onFCP as jest.Mock;
 const mockOnLCP = onLCP as jest.Mock;
 const mockOnCLS = onCLS as jest.Mock;
 
@@ -118,6 +121,75 @@ describe('web-vitals', () => {
 
       // Should not throw
       expect(() => callback({ value: 100, attribution: {} })).not.toThrow();
+    });
+  });
+
+  describe('initFCPObserver', () => {
+    it('registers FCP callback with reportAllChanges', () => {
+      initFCPObserver();
+      expect(mockOnFCP).toHaveBeenCalledTimes(1);
+      expect(typeof mockOnFCP.mock.calls[0][0]).toBe('function');
+      expect(mockOnFCP.mock.calls[0][1]).toEqual({
+        reportAllChanges: true,
+      });
+    });
+
+    it('enriches Sentry with rating tag and attribution for good FCP', () => {
+      const mockSentry = {
+        setTag: jest.fn(),
+        setContext: jest.fn(),
+        addBreadcrumb: jest.fn(),
+      };
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (globalThis as any).sentry = mockSentry;
+
+      initFCPObserver();
+      const callback = mockOnFCP.mock.calls[0][0];
+
+      // Simulate good FCP (< 1800ms)
+      callback({
+        value: 800,
+        attribution: {
+          timeToFirstByte: 5,
+          firstByteToFCP: 795,
+          loadState: 'complete',
+        },
+      });
+
+      expect(mockSentry.setTag).toHaveBeenCalledWith('fcp.rating', 'good');
+      expect(mockSentry.setContext).toHaveBeenCalledWith(
+        'fcp_attribution',
+        expect.objectContaining({
+          timeToFirstByte: 5,
+          firstByteToFCP: 795,
+        }),
+      );
+      // Good metrics should not add breadcrumb
+      expect(mockSentry.addBreadcrumb).not.toHaveBeenCalled();
+    });
+
+    it('adds warning breadcrumb for poor FCP', () => {
+      const mockSentry = {
+        setTag: jest.fn(),
+        setContext: jest.fn(),
+        addBreadcrumb: jest.fn(),
+      };
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (globalThis as any).sentry = mockSentry;
+
+      initFCPObserver();
+      const callback = mockOnFCP.mock.calls[0][0];
+
+      // Simulate poor FCP (> 3000ms)
+      callback({ value: 4000, attribution: {} });
+
+      expect(mockSentry.setTag).toHaveBeenCalledWith('fcp.rating', 'poor');
+      expect(mockSentry.addBreadcrumb).toHaveBeenCalledWith(
+        expect.objectContaining({
+          category: 'performance.fcp',
+          level: 'warning',
+        }),
+      );
     });
   });
 
@@ -261,6 +333,7 @@ describe('web-vitals', () => {
       initWebVitals();
 
       expect(mockOnINP).toHaveBeenCalledTimes(1);
+      expect(mockOnFCP).toHaveBeenCalledTimes(1);
       expect(mockOnLCP).toHaveBeenCalledTimes(1);
       expect(mockOnCLS).toHaveBeenCalledTimes(1);
     });
@@ -322,6 +395,17 @@ describe('web-vitals', () => {
       const metrics = getWebVitalsMetrics();
       expect(metrics.lcp).toBe(2000);
       expect(metrics.lcpRating).toBe('good');
+    });
+
+    it('returns stored FCP value after callback fires', () => {
+      initFCPObserver();
+      const callback = mockOnFCP.mock.calls[0][0];
+
+      callback({ value: 800, attribution: {} });
+
+      const metrics = getWebVitalsMetrics();
+      expect(metrics.fcp).toBe(800);
+      expect(metrics.fcpRating).toBe('good');
     });
 
     it('returns stored CLS value after callback fires', () => {
@@ -396,6 +480,17 @@ describe('web-vitals', () => {
       const metrics = getWebVitalsMetrics();
       expect(metrics.inp).toBe(300);
       expect(metrics.inpRating).toBe('needs-improvement');
+    });
+
+    it('stores needs-improvement FCP rating', () => {
+      initFCPObserver();
+      const callback = mockOnFCP.mock.calls[0][0];
+
+      callback({ value: 2500, attribution: {} }); // 1800-3000ms is needs-improvement
+
+      const metrics = getWebVitalsMetrics();
+      expect(metrics.fcp).toBe(2500);
+      expect(metrics.fcpRating).toBe('needs-improvement');
     });
 
     it('stores poor LCP rating', () => {
