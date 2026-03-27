@@ -490,7 +490,10 @@ export const LEARN_MORE_CONFIG = {
   CtaKey: 'perps.learn_more.cta',
 } as const;
 
-export { SUPPORT_CONFIG, FEEDBACK_CONFIG } from '../../../../shared/constants/perps';
+export {
+  SUPPORT_CONFIG,
+  FEEDBACK_CONFIG,
+} from '../../../../shared/constants/perps';
 
 /**
  * Support article URLs

@@ -20,7 +20,10 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../../shared/constants/metametrics';
-import { FEEDBACK_CONFIG, SUPPORT_CONFIG } from '../../../../../shared/constants/perps';
+import {
+  FEEDBACK_CONFIG,
+  SUPPORT_CONFIG,
+} from '../../../../../shared/constants/perps';
 import { setTutorialModalOpen } from '../../../../ducks/perps';
 
 const LIST_ITEM_BASE =
@@ -89,7 +92,7 @@ export const PerpsSupportLearn: React.FC = () => {
         contextPropsIntoEventProperties: [MetaMetricsContextProp.PageTitle],
       },
     );
-    global.platform.openTab({ url: SUPPORT_CONFIG.Url });
+    globalThis.platform.openTab({ url: SUPPORT_CONFIG.Url });
   }, [trackEvent]);
 
   const handleFeedback = useCallback(() => {
@@ -107,7 +110,7 @@ export const PerpsSupportLearn: React.FC = () => {
         contextPropsIntoEventProperties: [MetaMetricsContextProp.PageTitle],
       },
     );
-    global.platform.openTab({ url: FEEDBACK_CONFIG.Url });
+    globalThis.platform.openTab({ url: FEEDBACK_CONFIG.Url });
   }, [trackEvent]);
 
   return (
