@@ -74,7 +74,6 @@
   "app/scripts/lib/ens-ipfs/resolver.js",
   "app/scripts/lib/ens-ipfs/setup.js",
   "app/scripts/lib/extractEthjsErrorMessage.js",
-  "app/scripts/lib/get-first-preferred-lang-code.js",
   "app/scripts/lib/getObjStructure.js",
   "app/scripts/lib/local-store.js",
   "app/scripts/lib/message-manager.js",

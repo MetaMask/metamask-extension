@@ -4,7 +4,7 @@ import browser from 'webextension-polyfill';
 import allLocales from '../../app/_locales/index.json';
 
 // ensure that we default users with browser language code 'zh' to the supported 'zh_CN' language code
-const existingLocaleCodes = { zh: 'zh_CN' };
+const existingLocaleCodes: Record<string, string> = { zh: 'zh_CN' };
 
 // mapping some browsers return hyphen instead underscore in locale codes (e.g. zh_TW -> zh-tw)
 allLocales.forEach((locale) => {
@@ -18,10 +18,10 @@ allLocales.forEach((locale) => {
  * Returns a preferred language code, based on settings within the user's browser. If we have no translations for the
  * users preferred locales, 'en' is returned.
  *
- * @returns {Promise<string>} Promises a locale code, either one from the user's preferred list that we have a translation for, or 'en'
+ * @returns Promises a locale code, either one from the user's preferred list that we have a translation for, or 'en'
  */
-export default async function getFirstPreferredLangCode() {
-  let userPreferredLocaleCodes;
+export default async function getFirstPreferredLangCode(): Promise<string> {
+  let userPreferredLocaleCodes: string[] | undefined;
 
   try {
     userPreferredLocaleCodes = await browser.i18n.getAcceptLanguages();
@@ -54,5 +54,5 @@ export default async function getFirstPreferredLangCode() {
     firstPreferredLangCode = firstPreferredLangCode.split('-')[0];
   }
 
-  return existingLocaleCodes[firstPreferredLangCode] || 'en';
+  return existingLocaleCodes[firstPreferredLangCode ?? ''] || 'en';
 }
