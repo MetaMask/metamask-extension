@@ -513,10 +513,16 @@ describe('performance-observers', () => {
   describe('exposeLongTaskMetricsForTesting', () => {
     const originalStateHooks = globalThis.stateHooks;
     const originalInTest = process.env.IN_TEST;
+    const originalMetaMaskDebug = process.env.METAMASK_DEBUG;
 
     afterEach(() => {
       globalThis.stateHooks = originalStateHooks;
       process.env.IN_TEST = originalInTest;
+      if (originalMetaMaskDebug === undefined) {
+        delete process.env.METAMASK_DEBUG;
+      } else {
+        process.env.METAMASK_DEBUG = originalMetaMaskDebug;
+      }
     });
 
     it('exposes metrics functions on stateHooks when IN_TEST is set', () => {
