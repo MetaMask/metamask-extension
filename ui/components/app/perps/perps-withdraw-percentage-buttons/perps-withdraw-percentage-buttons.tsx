@@ -1,3 +1,4 @@
+import React, { useCallback } from 'react';
 import {
   Box,
   BoxFlexDirection,
@@ -7,7 +8,6 @@ import {
   ButtonSize,
   ButtonVariant,
 } from '@metamask/design-system-react';
-import React, { useCallback } from 'react';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 
 const QUICK_PERCENTAGES = [10, 25, 50] as const;

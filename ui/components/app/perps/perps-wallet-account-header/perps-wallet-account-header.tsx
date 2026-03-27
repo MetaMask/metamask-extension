@@ -1,3 +1,4 @@
+import React, { useMemo } from 'react';
 import type { Hex } from '@metamask/utils';
 import {
   AvatarNetwork,
@@ -11,7 +12,6 @@ import {
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
-import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import {
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
@@ -185,7 +185,11 @@ export const PerpsWalletAccountHeader: React.FC = () => {
         </Box>
       </Box>
       {/* Right column reserved to match confirmations header grid; deposit shows HeaderInfo here. */}
-      <Box alignItems={BoxAlignItems.End} flexDirection={BoxFlexDirection.Row} padding={4} />
+      <Box
+        alignItems={BoxAlignItems.End}
+        flexDirection={BoxFlexDirection.Row}
+        padding={4}
+      />
     </Box>
   );
 };

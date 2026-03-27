@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useLocation } from 'react-router-dom';
 import classnames from 'clsx';
 import { getAllScopesFromCaip25CaveatValue } from '@metamask/chain-agnostic-permission';
-import { AvatarAccountSize } from '@metamask/design-system-react';
+import { AvatarNetwork, AvatarNetworkSize } from '@metamask/design-system-react';
 import { PRODUCT_TYPES } from '@metamask/subscription-controller';
 import { MILLISECOND, SECOND } from '../../../../shared/constants/time';
 import {
@@ -13,7 +13,6 @@ import {
   SURVEY_LINK,
 } from '../../../../shared/lib/ui-utils';
 import {
-  BorderColor,
   BorderRadius,
   IconColor,
   TextVariant,
@@ -40,12 +39,7 @@ import {
   addPermittedAccount,
   hidePermittedNetworkToast,
 } from '../../../store/actions';
-import {
-  AvatarNetwork,
-  Icon,
-  IconName,
-  IconSize,
-} from '../../component-library';
+import { Icon, IconName, IconSize } from '../../component-library';
 import { PreferredAvatar } from '../preferred-avatar';
 import { Toast, ToastContainer } from '../../multichain';
 import { SurveyToast } from '../../ui/survey-toast';
@@ -397,8 +391,8 @@ function PermittedNetworkToast() {
         key="switched-permitted-network-toast"
         startAdornment={
           <AvatarNetwork
-            size={AvatarAccountSize.Md}
-            borderColor={BorderColor.transparent}
+            size={AvatarNetworkSize.Md}
+            className="border-transparent"
             src={getNetworkImageUrl()}
             name={displayNetwork?.name || displayNetwork?.nickname}
           />
