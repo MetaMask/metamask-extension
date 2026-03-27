@@ -17,6 +17,52 @@ Use these two mechanisms together:
 - `test/e2e/feature-flags/feature-flag-registry.ts`
 - `test/e2e/tests/remote-feature-flag/remote-feature-flag.spec.ts`
 
+## Agent Skill Entrypoints
+
+Use these entrypoints:
+
+- SSOT policy + execution standard: this document
+- OpenAI/Codex skill entrypoint: `.agents/skills/ab-testing-implementation/SKILL.md` (`$ab-testing-implementation`)
+- Claude skill entrypoint: `.claude/skills/ab-testing-implementation/SKILL.md`
+- Cursor skill entrypoint: `.claude/skills/ab-testing-implementation/SKILL.md`
+- Compliance check: `bash .agents/skills/ab-testing-implementation/scripts/check-ab-testing-compliance.sh --staged`
+- If no files are staged, the checker automatically falls back to changed working-tree files.
+- Windsurf and other harnesses: start prompts with `Follow docs/ab-testing.md section "Agent Execution Standard (SSOT)".`
+
+## Agent Execution Standard (SSOT)
+
+For agent implementation or review tasks, follow this workflow exactly:
+
+1. Run discovery before edits:
+
+```bash
+rg -n "useABTest\\(|active_ab_tests|ab_tests|Abtest|feature-flag-registry|RemoteFeatureFlagController" app shared ui test docs
+rg -n "Experiment Viewed|ExperimentViewed" app shared ui
+```
+
+2. Keep experiment config centralized when reused across multiple files, preferably in a dedicated config module (`abTestConfig.ts` pattern).
+3. Use `useABTest(flagKey, variants)` and normalize unresolved assignments to `control`.
+4. Do not manually emit `Experiment Viewed` when using `useABTest`.
+5. For business events, use `active_ab_tests: [{ key, value }]` only when assignment is active.
+6. Do not add new payloads under `ab_tests`.
+   - Compliance checker behavior is strict at diff-line level: adding any `ab_tests:` line in changed code fails by default.
+   - For rare legacy touchpoints that cannot be migrated in the same change, use `LEGACY_AB_TEST_ALLOWED` on the line and include rationale in the PR or agent output.
+7. Update tests when behavior, analytics integration, or flag plumbing changes.
+   - If the change is copy-only or config-only, you may skip new tests with a brief rationale.
+8. Run compliance check:
+
+```bash
+bash .agents/skills/ab-testing-implementation/scripts/check-ab-testing-compliance.sh --staged
+```
+
+Required agent response sections:
+
+1. `Implementation Checklist`
+2. `Files To Modify`
+3. `Analytics Payload Changes`
+4. `Tests To Run`
+5. `Compliance Check Result`
+
 ---
 
 ## How Variant Assignment Works
