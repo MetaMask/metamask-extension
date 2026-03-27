@@ -281,7 +281,8 @@ export function printReport(result: {
         console.log(`${COMPARISON_SEVERITY.Pass.icon} [Show logs]`);
       } else {
         for (const line of issueLines) {
-          console.log(`${line.icon} ${line.metric}`);
+          const details = line.details ? ` | ${line.details}` : '';
+          console.log(`${line.icon} ${line.metric}${details}`);
         }
       }
     }
