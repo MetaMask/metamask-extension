@@ -301,7 +301,7 @@ const BENCHMARK_THRESHOLDS = {
  *
  * To add a new benchmark:
  * - Add to BENCHMARK_THRESHOLDS with a camelCase key matching the filename
- * - Platform and buildType are now stored as separate fields in BenchmarkResults
+ * - All benchmarks now use simple keys; platform/buildType are stored as data fields
  */
 export const THRESHOLD_REGISTRY: Record<string, ThresholdConfig> = {
   ...BENCHMARK_THRESHOLDS,
