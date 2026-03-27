@@ -2,25 +2,39 @@
   "name": "@dial-wtf/client",
   "version": "0.3.0",
   "description": "Dial SDK client - Universal TypeScript SDK for wallet-to-wallet communication",
-  "type": "module",
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
-  "types": "./dist/index.d.ts",
+  "types": "./dist/index.d.cts",
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js",
-      "require": "./dist/index.cjs"
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
     },
     "./media": {
-      "types": "./dist/media/index.d.ts",
-      "import": "./dist/media/index.js",
-      "require": "./dist/media/index.cjs"
+      "import": {
+        "types": "./dist/media/index.d.ts",
+        "default": "./dist/media/index.js"
+      },
+      "require": {
+        "types": "./dist/media/index.d.cts",
+        "default": "./dist/media/index.cjs"
+      }
     },
     "./media/hms": {
-      "types": "./dist/media/hms.d.ts",
-      "import": "./dist/media/hms.js",
-      "require": "./dist/media/hms.cjs"
+      "import": {
+        "types": "./dist/media/hms.d.ts",
+        "default": "./dist/media/hms.js"
+      },
+      "require": {
+        "types": "./dist/media/hms.d.cts",
+        "default": "./dist/media/hms.cjs"
+      }
     }
   },
   "sideEffects": false,

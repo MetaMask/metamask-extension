@@ -1,6 +1,10 @@
-import { useCallback, useEffect, useRef } from 'react';
+import { useCallback, useContext, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useAuth, useDialClient as useDialClientSDK } from '@dial-wtf/react';
+import {
+  useAuth,
+  useDialClient as useDialClientSDK,
+  UserDialerContext,
+} from '@dial-wtf/react';
 import type { SessionData } from '@dial-wtf/core';
 import {
   setAuthenticated,
@@ -30,8 +34,8 @@ export function useDialAuth(): {
 } {
   const dispatch = useDispatch();
   const dialClient = useDialClientSDK();
+  const userDialerCtx = useContext(UserDialerContext);
   const {
-    login,
     loginWithWallet,
     logout: sdkLogout,
     isAuthenticated: sdkIsAuthenticated,
@@ -63,15 +67,8 @@ export function useDialAuth(): {
         }
         const restored = await dialClient.restoreSession(session);
         if (await restored.isSessionValid()) {
-          // Use login() with the session credentials to set context
-          await login({
-            siwe: {
-              message: session.siweMessage ?? '',
-              signature: session.signature ?? '',
-            },
-          }).catch(() => {
-            // If re-login with old creds fails, restore directly
-          });
+          // Set the UserDialer in the SDK's React context
+          userDialerCtx?.setUserDialer(restored);
           dispatch(
             setAuthenticated({
               walletAddress: session.walletAddress,
@@ -84,7 +81,7 @@ export function useDialAuth(): {
     };
 
     tryRestore();
-  }, [dialClient, login, dispatch, sdkIsAuthenticated, selectedAccount]);
+  }, [dialClient, userDialerCtx, dispatch, sdkIsAuthenticated, selectedAccount]);
 
   // Sync SDK auth state -> Redux
   useEffect(() => {
@@ -106,11 +103,20 @@ export function useDialAuth(): {
       const wallet = {
         getAddress: async () => selectedAccount.address,
         signMessage: async (message: string) => {
-          const signature = await window.ethereum.request({
+          const signature = await (
+            window as unknown as {
+              ethereum: {
+                request: (args: {
+                  method: string;
+                  params: string[];
+                }) => Promise<string>;
+              };
+            }
+          ).ethereum.request({
             method: 'personal_sign',
             params: [message, selectedAccount.address],
           });
-          return signature as string;
+          return signature;
         },
       };
 
