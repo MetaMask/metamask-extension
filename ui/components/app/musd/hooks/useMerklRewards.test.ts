@@ -375,10 +375,13 @@ describe('useMerklRewards', () => {
       { wrapper: createWrapper() },
     );
 
+    // Wait for the rejected promise to be processed — the mock being called
+    // proves react-query ran the queryFn and settled (not just default state).
     await waitFor(() => {
-      expect(result.current.hasClaimableReward).toBe(false);
+      expect(mockFetchMerklRewardsForAsset).toHaveBeenCalled();
     });
 
+    expect(result.current.hasClaimableReward).toBe(false);
     expect(result.current.hasClaimedBefore).toBe(false);
     expect(result.current.claimableRewardDisplay).toBeNull();
   });
@@ -474,14 +477,16 @@ describe('useMerklRewards', () => {
     expect(result.current.claimableRewardDisplay).toBe('0.01');
   });
 
-  it('returns false and skips API call when user is geoblocked', async () => {
+  it('returns false and skips API call when user is geoblocked', () => {
     useMusdGeoBlocking.mockReturnValue({
       isBlocked: true,
       userCountry: 'GB',
       isLoading: false,
     });
 
-    const { result, waitFor } = renderHook(
+    // Query is disabled when geoblocked (enabled: false), so state is
+    // synchronous — no async cycle to wait for.
+    const { result } = renderHook(
       () =>
         useMerklRewards({
           tokenAddress: MUSD_TOKEN_ADDRESS,
@@ -491,10 +496,7 @@ describe('useMerklRewards', () => {
       { wrapper: createWrapper() },
     );
 
-    await waitFor(() => {
-      expect(result.current.hasClaimableReward).toBe(false);
-    });
-
+    expect(result.current.hasClaimableReward).toBe(false);
     expect(result.current.hasClaimedBefore).toBe(false);
     expect(result.current.claimableRewardDisplay).toBeNull();
     expect(mockFetchMerklRewardsForAsset).not.toHaveBeenCalled();
