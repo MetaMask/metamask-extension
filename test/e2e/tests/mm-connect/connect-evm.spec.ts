@@ -10,7 +10,7 @@ import {
 } from '../../constants';
 import { withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 import { Driver, PAGES } from '../../webdriver/driver';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import ConnectAccountConfirmation from '../../page-objects/pages/confirmations/connect-account-confirmation';
@@ -93,7 +93,7 @@ describe('MM Connect-EVM', function (this: Suite) {
           dappOptions: MM_CONNECT_TEST_DAPP_OPTIONS,
         },
         async ({ driver }: { driver: Driver }) => {
-          await loginWithBalanceValidation(driver);
+          await login(driver);
 
           const testDapp = new TestDapp(driver);
           await testDapp.openPage();
@@ -131,7 +131,7 @@ describe('MM Connect-EVM', function (this: Suite) {
           dappOptions: MM_CONNECT_TEST_DAPP_OPTIONS,
         },
         async ({ driver }: { driver: Driver }) => {
-          await loginWithBalanceValidation(driver);
+          await login(driver);
 
           const testDapp = new TestDapp(driver);
           await testDapp.openPage();
@@ -169,7 +169,7 @@ describe('MM Connect-EVM', function (this: Suite) {
           dappOptions: MM_CONNECT_TEST_DAPP_OPTIONS,
         },
         async ({ driver }: { driver: Driver }) => {
-          await loginWithBalanceValidation(driver);
+          await login(driver);
 
           const testDapp = new TestDapp(driver);
           await testDapp.openPage();
@@ -203,7 +203,7 @@ describe('MM Connect-EVM', function (this: Suite) {
           dappOptions: MM_CONNECT_TEST_DAPP_OPTIONS,
         },
         async ({ driver }: { driver: Driver }) => {
-          await loginWithBalanceValidation(driver);
+          await login(driver);
 
           const testDapp = new TestDapp(driver);
           await testDapp.openPage();
@@ -239,7 +239,7 @@ describe('MM Connect-EVM', function (this: Suite) {
           dappOptions: MM_CONNECT_TEST_DAPP_OPTIONS,
         },
         async ({ driver }: { driver: Driver }) => {
-          await loginWithBalanceValidation(driver);
+          await login(driver);
 
           const testDapp = new TestDapp(driver);
           await testDapp.openPage();
@@ -284,7 +284,7 @@ describe('MM Connect-EVM', function (this: Suite) {
           dappOptions: MM_CONNECT_TEST_DAPP_OPTIONS,
         },
         async ({ driver }: { driver: Driver }) => {
-          await loginWithBalanceValidation(driver);
+          await login(driver);
 
           const testDapp = new TestDapp(driver);
           await testDapp.openPage();
@@ -322,7 +322,7 @@ describe('MM Connect-EVM', function (this: Suite) {
           dappOptions: MM_CONNECT_TEST_DAPP_OPTIONS,
         },
         async ({ driver }: { driver: Driver }) => {
-          await loginWithBalanceValidation(driver);
+          await login(driver);
 
           const testDapp = new TestDapp(driver);
           await testDapp.openPage();
@@ -354,7 +354,7 @@ describe('MM Connect-EVM', function (this: Suite) {
           dappOptions: MM_CONNECT_TEST_DAPP_OPTIONS,
         },
         async ({ driver }: { driver: Driver }) => {
-          await loginWithBalanceValidation(driver);
+          await login(driver);
 
           const testDapp = new TestDapp(driver);
           await testDapp.openPage();
@@ -391,7 +391,7 @@ describe('MM Connect-EVM', function (this: Suite) {
           dappOptions: MM_CONNECT_TEST_DAPP_OPTIONS,
         },
         async ({ driver }: { driver: Driver }) => {
-          await loginWithBalanceValidation(driver);
+          await login(driver);
 
           const testDapp = new TestDapp(driver);
           await testDapp.openPage();
@@ -427,7 +427,7 @@ describe('MM Connect-EVM', function (this: Suite) {
           dappOptions: MM_CONNECT_TEST_DAPP_OPTIONS,
         },
         async ({ driver }: { driver: Driver }) => {
-          await loginWithBalanceValidation(driver);
+          await login(driver);
 
           const testDapp = new TestDapp(driver);
           await testDapp.openPage();

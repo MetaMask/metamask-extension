@@ -368,26 +368,20 @@ export class TestDappMmConnect {
 
   /** Return the current chain ID text without waiting for a specific value. */
   async getLegacyChainId(): Promise<string> {
-    const el = await this.driver.findElement(this.legacyChainIdValue);
+    const el = await this.driver.waitForSelector(this.legacyChainIdValue);
     return el.getText();
   }
 
   /**
-   * Poll until the legacy active-account element shows the expected address.
-   * The comparison is case-insensitive to handle checksummed vs lowercase addresses.
+   * Wait until the legacy active-account element shows the expected address.
    *
    * @param expectedAddress - The address to wait for
    */
   async waitForLegacyActiveAccount(expectedAddress: string): Promise<void> {
-    await this.driver.wait(async () => {
-      try {
-        const el = await this.driver.findElement(this.legacyActiveAccount);
-        const text = await el.getText();
-        return text.toLowerCase().includes(expectedAddress.toLowerCase());
-      } catch {
-        return false;
-      }
-    }, this.driver.timeout);
+    await this.driver.waitForSelector({
+      css: this.legacyActiveAccount,
+      text: expectedAddress,
+    });
   }
 
   /**
@@ -462,26 +456,20 @@ export class TestDappMmConnect {
 
   /** Return the current wagmi chain ID text without waiting for a specific value. */
   async getWagmiChainId(): Promise<string> {
-    const el = await this.driver.findElement(this.wagmiChainIdValue);
+    const el = await this.driver.waitForSelector(this.wagmiChainIdValue);
     return el.getText();
   }
 
   /**
-   * Poll until the wagmi active-account element shows the expected address.
-   * The comparison is case-insensitive to handle checksummed vs lowercase addresses.
+   * Wait until the wagmi active-account element shows the expected address.
    *
    * @param expectedAddress - The address to wait for
    */
   async waitForWagmiActiveAccount(expectedAddress: string): Promise<void> {
-    await this.driver.wait(async () => {
-      try {
-        const el = await this.driver.findElement(this.wagmiActiveAccount);
-        const text = await el.getText();
-        return text.toLowerCase().includes(expectedAddress.toLowerCase());
-      } catch {
-        return false;
-      }
-    }, this.driver.timeout);
+    await this.driver.waitForSelector({
+      css: this.wagmiActiveAccount,
+      text: expectedAddress,
+    });
   }
 
   /**
