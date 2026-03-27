@@ -7,6 +7,7 @@ import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useScrollContainer } from '../../../contexts/scroll-container';
 import { TransactionActivityEmptyState } from '../../app/transaction-activity-empty-state';
+import { TabEmptyState } from '../../ui/tab-empty-state';
 import { PENDING_STATUS_HASH } from '../../../helpers/constants/transactions';
 import { selectLocalTransactions } from '../../../selectors/activity';
 import { selectEvmAddress } from '../../../selectors/accounts';
@@ -65,6 +66,8 @@ export const ActivityList = ({ filter }: Props) => {
   const {
     data,
     isInitialLoading,
+    isError,
+    refetch,
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
@@ -274,7 +277,16 @@ export const ActivityList = ({ filter }: Props) => {
         </>
       )}
 
-      {!isInitialLoading && flattenedItems.length === 0 && (
+      {!isInitialLoading && isError && flattenedItems.length === 0 && (
+        <TabEmptyState
+          className="mx-auto mt-5 mb-6"
+          description={t('somethingWentWrong')}
+          actionButtonText={t('tryAgain')}
+          onAction={refetch}
+        />
+      )}
+
+      {!isInitialLoading && !isError && flattenedItems.length === 0 && (
         <TransactionActivityEmptyState className="mx-auto mt-5 mb-6" />
       )}
 

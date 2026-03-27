@@ -4149,8 +4149,8 @@
     "description": "Label for the claimable bonus row in the mUSD conversion confirmation screen"
   },
   "musdClaimableBonusTooltip": {
-    "message": "Bonificación anualizada del $1 % que has ganado por mantener mUSD. Puedes reclamar tu bono diariamente en Linea. Desarrollado por Relay. $2",
-    "description": "$1 is the APY percentage, $2 is the 'Terms apply' link"
+    "message": "La bonificación anualizada que has ganado por mantener mUSD. Puedes reclamar tu bono diariamente en Linea. $1",
+    "description": "$1 is the 'Terms apply' link"
   },
   "musdConversionActivityTitle": {
     "message": "Convertir $1 a mUSD",
@@ -4174,16 +4174,12 @@
     "message": "Convierte y obtén un $1 %",
     "description": "$1 is the bonus percentage (e.g., 3)"
   },
-  "musdEarnBonusPercentage": {
-    "message": "Gana un bono del $1 %",
-    "description": "$1 is the bonus percentage (e.g., 3)"
-  },
   "musdEducationGetStarted": {
     "message": "Comenzar"
   },
   "musdEducationHeadline": {
     "message": "OBTÉN $1 % EN MONEDAS ESTABLES",
-    "description": "$1 is the bonus APY percentage"
+    "description": "$1 is the bonus APY percentage. Line break between ON and STABLECOINS matches splash layout."
   },
   "musdEducationNotNow": {
     "message": "Ahora no"
