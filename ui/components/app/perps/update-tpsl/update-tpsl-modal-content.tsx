@@ -86,7 +86,7 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
 
   const entryPriceForEdit = useMemo(() => {
     if (position?.entryPrice) {
-      return parseFloat(position.entryPrice.replace(/,/gu, ''));
+      return Number.parseFloat(position.entryPrice.replaceAll(',', ''));
     }
     return currentPrice;
   }, [position, currentPrice]);
@@ -95,7 +95,7 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
     if (!position) {
       return 'long';
     }
-    return parseFloat(position.size) >= 0 ? 'long' : 'short';
+    return Number.parseFloat(position.size) >= 0 ? 'long' : 'short';
   }, [position]);
 
   const formatEditPrice = useCallback(
@@ -121,8 +121,8 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
       if (!price || !entryPriceForEdit) {
         return '';
       }
-      const cleanPrice = price.replace(/,/gu, '');
-      const priceNum = parseFloat(cleanPrice);
+      const cleanPrice = price.replaceAll(',', '');
+      const priceNum = Number.parseFloat(cleanPrice);
       if (Number.isNaN(priceNum) || priceNum <= 0) {
         return '';
       }
@@ -164,16 +164,16 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
   );
 
   const signedSize = useMemo(
-    () => parseFloat(position.size.replace(/,/gu, '')) || 0,
+    () => Number.parseFloat(position.size.replaceAll(',', '')) || 0,
     [position.size],
   );
 
   const estimatedPnlAtTp = useMemo(() => {
-    const clean = editingTpPrice.replace(/,/gu, '').trim();
+    const clean = editingTpPrice.replaceAll(',', '').trim();
     if (!clean) {
       return null;
     }
-    const exitPrice = parseFloat(clean);
+    const exitPrice = Number.parseFloat(clean);
     if (Number.isNaN(exitPrice) || exitPrice <= 0 || !entryPriceForEdit) {
       return null;
     }
@@ -181,11 +181,11 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
   }, [editingTpPrice, signedSize, entryPriceForEdit]);
 
   const estimatedPnlAtSl = useMemo(() => {
-    const clean = editingSlPrice.replace(/,/gu, '').trim();
+    const clean = editingSlPrice.replaceAll(',', '').trim();
     if (!clean) {
       return null;
     }
-    const exitPrice = parseFloat(clean);
+    const exitPrice = Number.parseFloat(clean);
     if (Number.isNaN(exitPrice) || exitPrice <= 0 || !entryPriceForEdit) {
       return null;
     }
@@ -212,7 +212,7 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
     (event: React.ChangeEvent<HTMLInputElement>) => {
       const { value } = event.target;
       if (value === '' || /^-?\d*(?:\.\d*)?$/u.test(value)) {
-        const numValue = parseFloat(value);
+        const numValue = Number.parseFloat(value);
         if (value === '' || value === '-') {
           setEditingTpPrice('');
         } else if (!Number.isNaN(numValue)) {
@@ -228,7 +228,7 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
     (event: React.ChangeEvent<HTMLInputElement>) => {
       const { value } = event.target;
       if (value === '' || /^-?\d*(?:\.\d*)?$/u.test(value)) {
-        const numValue = parseFloat(value);
+        const numValue = Number.parseFloat(value);
         if (value === '' || value === '-') {
           setEditingSlPrice('');
         } else if (!Number.isNaN(numValue)) {
@@ -242,7 +242,7 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
 
   const handleTpPriceBlur = useCallback(() => {
     if (editingTpPrice) {
-      const numValue = parseFloat(editingTpPrice.replace(/,/gu, ''));
+      const numValue = Number.parseFloat(editingTpPrice.replaceAll(',', ''));
       if (!Number.isNaN(numValue) && numValue > 0) {
         setEditingTpPrice(formatEditPrice(numValue));
       }
@@ -251,7 +251,7 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
 
   const handleSlPriceBlur = useCallback(() => {
     if (editingSlPrice) {
-      const numValue = parseFloat(editingSlPrice.replace(/,/gu, ''));
+      const numValue = Number.parseFloat(editingSlPrice.replaceAll(',', ''));
       if (!Number.isNaN(numValue) && numValue > 0) {
         setEditingSlPrice(formatEditPrice(numValue));
       }
@@ -265,8 +265,8 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
     setIsSaving(true);
     setTpslError(null);
     try {
-      const cleanTpPrice = editingTpPrice.replace(/,/gu, '').trim();
-      const cleanSlPrice = editingSlPrice.replace(/,/gu, '').trim();
+      const cleanTpPrice = editingTpPrice.replaceAll(',', '').trim();
+      const cleanSlPrice = editingSlPrice.replaceAll(',', '').trim();
       const result = await submitRequestToBackground<{
         success: boolean;
         error?: string;
