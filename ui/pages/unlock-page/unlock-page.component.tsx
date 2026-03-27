@@ -26,6 +26,12 @@ import {
   Button,
   ButtonVariant,
   ButtonSize,
+  ButtonIcon,
+  ButtonIconVariant,
+  IconName,
+  ButtonIconSize,
+  IconColor,
+  IconSize,
 } from '@metamask/design-system-react';
 import {
   FormTextField,
@@ -88,6 +94,7 @@ type UnlockPageState = {
   unlockDelayPeriod: number;
   showLoginErrorModal: boolean;
   showConnectionsRemovedModal: boolean;
+  showPasswordForm: boolean;
 };
 
 type UnlockPageContext = {
@@ -201,6 +208,7 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
     unlockDelayPeriod: 0,
     showLoginErrorModal: false,
     showConnectionsRemovedModal: false,
+    showPasswordForm: false,
   };
 
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
@@ -577,6 +585,36 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
     this.props.navigate(DEFAULT_ROUTE, { replace: true });
   };
 
+  handlePasswordForm = () => {
+    this.setState({ showPasswordForm: true });
+  };
+
+  renderLogoSection(isRehydrationFlow: boolean) {
+    const { t } = this.context as UnlockPageContext;
+    return (
+      <Box
+        className="unlock-page__mascot-container"
+        marginBottom={isBeta() || isFlask() ? 6 : 0}
+      >
+        {isRehydrationFlow ? (
+          this.renderMascot()
+        ) : (
+          <MetamaskWordmarkLogo isPopup={this.props.isPopup ?? false} />
+        )}
+        {isBeta() ? (
+          <Text
+            className="unlock-page__mascot-container__beta bg-primary-default rounded-lg p-1"
+            color={TextColor.PrimaryInverse}
+            textTransform={TextTransform.Uppercase}
+            fontWeight={FontWeight.Medium}
+          >
+            {t('beta')}
+          </Text>
+        ) : null}
+      </Box>
+    );
+  }
+
   render() {
     const {
       password,
@@ -585,6 +623,7 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
       showResetPasswordModal,
       showLoginErrorModal,
       showConnectionsRemovedModal,
+      showPasswordForm,
     } = this.state;
     const { isOnboardingCompleted, isSocialLoginFlow } = this.props;
     const { t } = this.context as UnlockPageContext;
@@ -618,146 +657,178 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
         )}
         <Box
           flexDirection={BoxFlexDirection.Column}
-          justifyContent={BoxJustifyContent.Center}
           alignItems={BoxAlignItems.Center}
           padding={4}
           className="unlock-page w-full"
           data-testid="unlock-page"
-          asChild
         >
-          <form onSubmit={this.handleSubmit}>
-            <Box
-              flexDirection={BoxFlexDirection.Column}
-              className="w-full"
-              alignItems={BoxAlignItems.Center}
-            >
-              <Box
-                className="unlock-page__mascot-container"
-                marginBottom={isBeta() || isFlask() ? 6 : 0}
+          {this.renderLogoSection(isRehydrationFlow)}
+
+          <Box
+            flexDirection={BoxFlexDirection.Column}
+            alignItems={BoxAlignItems.Center}
+            className="min-h-[250px] w-full"
+          >
+            {showPasswordForm ? (
+              <form
+                onSubmit={this.handleSubmit}
+                className="w-full flex flex-col items-center"
               >
-                {isRehydrationFlow ? (
-                  this.renderMascot()
-                ) : (
-                  <MetamaskWordmarkLogo isPopup={this.props.isPopup ?? false} />
-                )}
-                {isBeta() ? (
+                {isRehydrationFlow && (
                   <Text
-                    className="unlock-page__mascot-container__beta bg-primary-default rounded-lg p-1"
-                    color={TextColor.PrimaryInverse}
-                    textTransform={TextTransform.Uppercase}
+                    data-testid="unlock-page-title"
+                    variant={TextVariant.DisplayMd}
+                    className="mb-12"
                     fontWeight={FontWeight.Medium}
+                    color={TextColor.TextDefault}
+                    textAlign={TextAlign.Center}
                   >
-                    {t('beta')}
+                    {t('welcomeBack')}
                   </Text>
-                ) : null}
-              </Box>
-              {isRehydrationFlow && (
-                <Text
-                  data-testid="unlock-page-title"
-                  variant={TextVariant.DisplayMd}
-                  className="mb-12"
-                  fontWeight={FontWeight.Medium}
-                  color={TextColor.TextDefault}
-                  textAlign={TextAlign.Center}
-                >
-                  {t('welcomeBack')}
-                </Text>
-              )}
-              <FormTextField
-                id="password"
-                placeholder={
-                  this.props.isSocialLoginFlow
-                    ? t('enterYourPasswordSocialLoginFlow')
-                    : t('enterYourPassword')
-                }
-                size={FormTextFieldSize.Lg}
-                inputProps={{
-                  'data-testid': 'unlock-password',
-                  'aria-label': t('password'),
-                }}
-                textFieldProps={{
-                  disabled: isLocked,
-                }}
-                onChange={(event) =>
-                  this.handleInputChange(event as ChangeEvent<HTMLInputElement>)
-                }
-                type={TextFieldType.Password}
-                value={password}
-                error={Boolean(error)}
-                helpText={this.renderHelpText()}
-                autoComplete={false}
-                autoFocus
-                width={BlockSize.Full}
-                marginBottom={4}
-              />
-              <Button
-                variant={ButtonVariant.Primary}
-                size={ButtonSize.Lg}
-                className="w-full mb-6"
-                type="submit"
-                data-testid="unlock-submit"
-                disabled={!password || isLocked}
-              >
-                {this.context.t('unlock')}
-              </Button>
+                )}
 
-              <TextButton
-                data-testid="unlock-forgot-password-button"
-                key="import-account"
-                type="button"
-                onClick={this.onForgotPasswordOrLoginWithDiffMethods}
-                className="mb-4"
-                color={
-                  isRehydrationFlow
-                    ? TextColor.TextDefault
-                    : TextColor.PrimaryDefault
-                }
-              >
-                {isRehydrationFlow
-                  ? t('useDifferentLoginMethod')
-                  : t('forgotPassword')}
-              </TextButton>
-
-              {isRehydrationFlow && (
-                <Text
-                  variant={TextVariant.BodyMd}
-                  color={TextColor.TextDefault}
+                <Box
+                  flexDirection={BoxFlexDirection.Row}
+                  alignItems={BoxAlignItems.Center}
+                  justifyContent={BoxJustifyContent.Center}
+                  gap={2}
+                  className="w-full"
                 >
-                  {t('needHelp', [
-                    <TextButton
-                      key="need-help-link"
-                      onClick={() => {
-                        this.context.trackEvent(
-                          {
-                            category: MetaMetricsEventCategory.Navigation,
-                            event: MetaMetricsEventName.SupportLinkClicked,
-                            properties: {
-                              url: SUPPORT_LINK,
+                  <FormTextField
+                    id="password"
+                    placeholder={
+                      this.props.isSocialLoginFlow
+                        ? t('enterYourPasswordSocialLoginFlow')
+                        : t('enterYourPassword')
+                    }
+                    size={FormTextFieldSize.Lg}
+                    inputProps={{
+                      'data-testid': 'unlock-password',
+                      'aria-label': t('password'),
+                    }}
+                    textFieldProps={{
+                      disabled: isLocked,
+                    }}
+                    onChange={(event) =>
+                      this.handleInputChange(
+                        event as ChangeEvent<HTMLInputElement>,
+                      )
+                    }
+                    type={TextFieldType.Password}
+                    value={password}
+                    error={Boolean(error)}
+                    helpText={this.renderHelpText()}
+                    autoComplete={false}
+                    autoFocus
+                    width={BlockSize.Full}
+                    marginBottom={4}
+                  />
+                  <ButtonIcon
+                    variant={ButtonIconVariant.Filled}
+                    ariaLabel={'biometric'}
+                    iconName={IconName.Fingerprint}
+                    size={ButtonIconSize.Lg}
+                    color={IconColor.IconAlternative}
+                    iconProps={{
+                      color: IconColor.IconAlternative,
+                      size: IconSize.Lg,
+                    }}
+                    className="flex self-center mb-4 h-12 w-12 rounded-lg"
+                  />
+                </Box>
+
+                <Button
+                  variant={ButtonVariant.Primary}
+                  size={ButtonSize.Lg}
+                  className="w-full mb-4"
+                  type="submit"
+                  data-testid="unlock-submit"
+                  disabled={!password || isLocked}
+                >
+                  {this.context.t('unlock')}
+                </Button>
+
+                <Button
+                  variant={ButtonVariant.Tertiary}
+                  data-testid="unlock-forgot-password-button"
+                  key="import-account"
+                  type="button"
+                  onClick={this.onForgotPasswordOrLoginWithDiffMethods}
+                  className={`mb-4 w-full ${isRehydrationFlow ? 'text-default' : 'text-primary-default'}`}
+                >
+                  {isRehydrationFlow
+                    ? t('useDifferentLoginMethod')
+                    : t('forgotPassword')}
+                </Button>
+
+                {isRehydrationFlow && (
+                  <Text
+                    variant={TextVariant.BodyMd}
+                    color={TextColor.TextDefault}
+                  >
+                    {t('needHelp', [
+                      <TextButton
+                        key="need-help-link"
+                        onClick={() => {
+                          this.context.trackEvent(
+                            {
+                              category: MetaMetricsEventCategory.Navigation,
+                              event: MetaMetricsEventName.SupportLinkClicked,
+                              properties: {
+                                url: SUPPORT_LINK,
+                              },
                             },
-                          },
-                          {
-                            contextPropsIntoEventProperties: [
-                              MetaMetricsContextProp.PageTitle,
-                            ],
-                          },
-                        );
-                      }}
-                      asChild
-                    >
-                      <a
-                        href={SUPPORT_LINK}
-                        type="button"
-                        target="_blank"
-                        rel="noopener noreferrer"
+                            {
+                              contextPropsIntoEventProperties: [
+                                MetaMetricsContextProp.PageTitle,
+                              ],
+                            },
+                          );
+                        }}
+                        asChild
                       >
-                        {needHelpText}
-                      </a>
-                    </TextButton>,
-                  ])}
-                </Text>
-              )}
-            </Box>
-          </form>
+                        <a
+                          href={SUPPORT_LINK}
+                          type="button"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          {needHelpText}
+                        </a>
+                      </TextButton>,
+                    ])}
+                  </Text>
+                )}
+              </form>
+            ) : (
+              <Box
+                flexDirection={BoxFlexDirection.Column}
+                className="w-full"
+                alignItems={BoxAlignItems.Center}
+                gap={4}
+              >
+                <Button
+                  variant={ButtonVariant.Primary}
+                  size={ButtonSize.Lg}
+                  className="w-full"
+                  type="button"
+                  data-testid="unlock-biometrics"
+                >
+                  {t('unlockWithBiometrics')}
+                </Button>
+                <Button
+                  variant={ButtonVariant.Tertiary}
+                  data-testid="unlock-forgot-password-button"
+                  key="import-account"
+                  type="button"
+                  onClick={this.handlePasswordForm}
+                  className="w-full"
+                >
+                  {t('usePassword')}
+                </Button>
+              </Box>
+            )}
+          </Box>
         </Box>
         {!isRehydrationFlow && (
           <Suspense fallback={<Box />}>

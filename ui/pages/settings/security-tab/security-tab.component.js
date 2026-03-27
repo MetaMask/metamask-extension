@@ -1288,6 +1288,46 @@ export default class SecurityTab extends PureComponent {
     );
   };
 
+  renderBiometricsToggle() {
+    const { t } = this.context;
+    const { useExternalServices } = this.props;
+
+    return (
+      <Box
+        ref={this.settingsRefs[0]}
+        className="settings-page__content-row"
+        display={Display.Flex}
+        flexDirection={FlexDirection.Row}
+        justifyContent={JustifyContent.spaceBetween}
+        gap={4}
+        data-testid="advanced-setting-show-testnet-conversion"
+      >
+        <div className="settings-page__content-item">
+          <Box
+            display={Display.Flex}
+            justifyContent={JustifyContent.spaceBetween}
+            alignItems={AlignItems.center}
+            marginBottom={2}
+          >
+            <Text variant={TextVariant.headingSm}>
+              {t('unlockWithBiometricsToggle')}
+            </Text>
+            <ToggleButton
+              value={useExternalServices}
+              offLabel={t('off')}
+              onLabel={t('on')}
+            />
+          </Box>
+          <Text marginBottom={2} color={TextColor.textAlternative}>
+            {t('biometricsToggleDescription')}
+          </Text>
+        </div>
+
+        <div className="settings-page__content-item-col"></div>
+      </Box>
+    );
+  }
+
   render() {
     const { dataCollectionForMarketing } = this.props;
     const { showDataCollectionDisclaimer } = this.state;
@@ -1303,7 +1343,11 @@ export default class SecurityTab extends PureComponent {
         </span>
         {this.renderSeedWords()}
         {getIsSeedlessOnboardingFeatureEnabled() && this.renderChangePassword()}
+
         {this.renderSecurityAlertsToggle()}
+
+        {this.renderBiometricsToggle()}
+
         <span className="settings-page__security-tab-sub-header__bold">
           {this.context.t('privacy')}
         </span>

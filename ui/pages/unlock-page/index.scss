@@ -14,6 +14,14 @@
   }
 
 
+  &__content-slot {
+    // Fixed minimum height so the logo above never shifts when toggling
+    // between the biometrics view (~108px) and the password form (~180px)
+    // or rehydration form (~290px). All states expand to this floor,
+    // keeping the total block height constant for flex centering.
+    min-height: 300px;
+  }
+
   &__mascot-container {
     position: relative;
 

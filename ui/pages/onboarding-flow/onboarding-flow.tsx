@@ -34,6 +34,7 @@ import {
   SECURITY_ROUTE,
   ONBOARDING_REVEAL_SRP_ROUTE,
   ONBOARDING_DOWNLOAD_APP_ROUTE,
+  ONBOARDING_BIOMETRICS_ROUTE,
 } from '../../helpers/constants/routes';
 import { toRelativeRoutePath } from '../routes/utils';
 import {
@@ -85,6 +86,7 @@ import AccountExist from './account-exist/account-exist';
 import AccountNotFound from './account-not-found/account-not-found';
 import RevealRecoveryPhrase from './recovery-phrase/reveal-recovery-phrase';
 import OnboardingDownloadApp from './download-app/download-app';
+import Biometrics from './biometrics/biometrics';
 
 // Lazy-load ExperimentalArea so the flask/ module is only fetched in Flask builds.
 // This is not just for performance, it is necessary so non-Flask builds don't try
@@ -351,6 +353,10 @@ export default function OnboardingFlow() {
                   secretRecoveryPhrase={secretRecoveryPhrase}
                 />
               }
+            />
+            <Route
+              path={toRelativePath(ONBOARDING_BIOMETRICS_ROUTE)}
+              element={<Biometrics />}
             />
             <Route
               path={toRelativePath(ONBOARDING_REVEAL_SRP_ROUTE)}

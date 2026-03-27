@@ -959,6 +959,12 @@
   "betaTerms": {
     "message": "Beta Terms of Use"
   },
+  "biometricsDescription": {
+    "message": "Use Face ID or your fingerprint to unlock MetaMask on this device instead of entering your password. This creates a secure passkey stored on your device."
+  },
+  "biometricsToggleDescription": {
+    "message": "Use biometrics to unlock MetaMask on this device instead of your password. When turned on, we’ll store a secure passkey on this device"
+  },
   "blockExplorerAccountAction": {
     "message": "Account",
     "description": "This is used with viewOnEtherscan and viewInExplorer e.g View Account in Explorer"
@@ -3950,6 +3956,9 @@
   "maxFeeTooltip": {
     "message": "A maximum fee provided to pay for the transaction."
   },
+  "maybeLater": {
+    "message": "Maybe later"
+  },
   "medium": {
     "message": "Market"
   },
@@ -6841,6 +6850,9 @@
     "message": "Set up",
     "description": "Action label for Smart Accounts. Used on multichain details page."
   },
+  "setUpBiometrics": {
+    "message": "Set up biometrics"
+  },
   "settingAddSnapAccount": {
     "message": "Add account Snap"
   },
@@ -9079,6 +9091,12 @@
     "message": "Unlock to reveal",
     "description": "Label used for Private Keys row on multichain account details page."
   },
+  "unlockWithBiometrics": {
+    "message": "Unlock with biometrics"
+  },
+  "unlockWithBiometricsToggle": {
+    "message": "Unlock with biometrics"
+  },
   "unpin": {
     "message": "Unpin"
   },
@@ -9167,6 +9185,9 @@
   },
   "useNftDetectionDescriptionText": {
     "message": "Let MetaMask add NFTs you own using third-party services. Autodetecting NFTs exposes your IP and account address to these services. Enabling this feature could associate your IP address with your Ethereum address and display fake NFTs airdropped by scammers. You can add tokens manually to avoid this risk."
+  },
+  "usePassword": {
+    "message": "Use password"
   },
   "usePhishingDetection": {
     "message": "Use phishing detection"

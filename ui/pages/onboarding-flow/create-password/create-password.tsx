@@ -10,6 +10,7 @@ import {
   ONBOARDING_METAMETRICS,
   ONBOARDING_REVIEW_SRP_ROUTE,
   ONBOARDING_WELCOME_ROUTE,
+  ONBOARDING_BIOMETRICS_ROUTE,
 } from '../../../helpers/constants/routes';
 import {
   getFirstTimeFlowType,
@@ -207,7 +208,7 @@ export default function CreatePassword({
     if (isFirefox || isSocialLoginFlow) {
       navigate(ONBOARDING_COMPLETION_ROUTE, { replace: true });
     } else {
-      navigate(ONBOARDING_METAMETRICS, { replace: true });
+      navigate(ONBOARDING_BIOMETRICS_ROUTE, { replace: true });
     }
   };
 
@@ -271,7 +272,7 @@ export default function CreatePassword({
       }
       navigate(ONBOARDING_DOWNLOAD_APP_ROUTE, { replace: true });
     } else {
-      navigate(ONBOARDING_REVIEW_SRP_ROUTE, { replace: true });
+      navigate(ONBOARDING_BIOMETRICS_ROUTE, { replace: true });
     }
   };
 
