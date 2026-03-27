@@ -65,7 +65,8 @@ describe('Browser Runtime Utils', () => {
       expect(spy).toHaveBeenCalled();
     });
 
-    it.each<[string, string, string]>([
+    // @ts-expect-error This is missing from the Mocha type definitions
+    it.each([
       ['windows', '112.0.0.0', 'Windows NT 10.0; Win64; x64'],
       ['windows', '120.0.0.0', 'Windows NT 10.0; Win64; x64'],
       ['macos', '112.0.0.0', 'Macintosh; Intel Mac OS X 10_16_0'],
@@ -74,7 +75,7 @@ describe('Browser Runtime Utils', () => {
       ['linux', '121.0.0.0', 'X11; Linux x86_64'],
     ])(
       'returns false when given a chrome browser with working prerender in %s on version %s',
-      (_, version, os) => {
+      (_: string, version: string, os: string) => {
         const bowser = Bowser.getParser(
           `Mozilla/5.0 (${os}) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/${version} Safari/537.36`,
         );
@@ -83,7 +84,8 @@ describe('Browser Runtime Utils', () => {
       },
     );
 
-    it.each<[string, string, string]>([
+    // @ts-expect-error This is missing from the Mocha type definitions
+    it.each([
       ['windows', '113.0.0.0', 'Windows NT 10.0; Win64; x64'],
       ['windows', '119.0.0.0', 'Windows NT 10.0; Win64; x64'],
       ['macos', '113.0.0.0', 'Macintosh; Intel Mac OS X 10_16_0'],
@@ -92,7 +94,7 @@ describe('Browser Runtime Utils', () => {
       ['linux', '120.0.0.0', 'X11; Linux x86_64'],
     ])(
       'returns true when given a chrome browser with broken prerender in %s on version %s',
-      (_, version, os) => {
+      (_: string, version: string, os: string) => {
         const bowser = Bowser.getParser(
           `Mozilla/5.0 (${os}) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/${version} Safari/537.36`,
         );
@@ -101,7 +103,8 @@ describe('Browser Runtime Utils', () => {
       },
     );
 
-    it.each<[string, string, string]>([
+    // @ts-expect-error This is missing from the Mocha type definitions
+    it.each([
       ['windows', '112.0.0.0', 'Windows NT 10.0; Win64; x64'],
       ['windows', '120.0.0.0', 'Windows NT 10.0; Win64; x64'],
       ['macos', '112.0.0.0', 'Macintosh; Intel Mac OS X 10_16_0'],
@@ -110,7 +113,7 @@ describe('Browser Runtime Utils', () => {
       ['linux', '121.0.0.0', 'X11; Linux x86_64'],
     ])(
       'returns false when given an edge browser with working prerender in %s on version %s',
-      (_, version, os) => {
+      (_: string, version: string, os: string) => {
         const bowser = Bowser.getParser(
           `Mozilla/5.0 (${os}) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/i${version} Safari/537.36 Edg/${version}`,
         );
@@ -119,7 +122,8 @@ describe('Browser Runtime Utils', () => {
       },
     );
 
-    it.each<[string, string, string]>([
+    // @ts-expect-error This is missing from the Mocha type definitions
+    it.each([
       ['windows', '113.0.0.0', 'Windows NT 10.0; Win64; x64'],
       ['windows', '119.0.0.0', 'Windows NT 10.0; Win64; x64'],
       ['macos', '113.0.0.0', 'Macintosh; Intel Mac OS X 10_16_0'],
@@ -128,7 +132,7 @@ describe('Browser Runtime Utils', () => {
       ['linux', '120.0.0.0', 'X11; Linux x86_64'],
     ])(
       'returns true when given an edge browser with broken prerender in %s on version %s',
-      (_, version, os) => {
+      (_: string, version: string, os: string) => {
         const bowser = Bowser.getParser(
           `Mozilla/5.0 (${os}) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/i${version} Safari/537.36 Edg/${version}`,
         );
