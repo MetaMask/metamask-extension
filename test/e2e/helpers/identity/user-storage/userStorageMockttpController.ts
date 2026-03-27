@@ -76,9 +76,9 @@ const determineIfFeatureEntryFromURL = (url: string) => {
     // If `url` is an absolute URL, extract the pathname, otherwise use as-is
     const pathname = url.startsWith('http') ? new URL(url).pathname : url;
     // Match trailing 64-character hex (typical hashed keys used in tests)
-    return /\/([0-9a-f]{64})$/.test(pathname);
+    return /\/([0-9a-f]{64})$/u.test(pathname);
   } catch (_err) {
-    return /\/([0-9a-f]{64})$/.test(url);
+    return /\/([0-9a-f]{64})$/u.test(url);
   }
 };
 

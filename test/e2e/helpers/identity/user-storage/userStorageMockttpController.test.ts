@@ -1,24 +1,3 @@
-// Ensure `crypto.randomUUID` exists for Node versions that lack it (mockttp uses it).
-if (!globalThis.crypto) {
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
-  globalThis.crypto = {};
-}
-if (!globalThis.crypto.randomUUID) {
-  // Use Node's crypto to polyfill UUIDv4
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
-  const { randomBytes } = require('crypto');
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
-  globalThis.crypto.randomUUID = () => {
-    const bytes = randomBytes(16);
-    bytes[6] = (bytes[6] & 0x0f) | 0x40;
-    bytes[8] = (bytes[8] & 0x3f) | 0x80;
-    const hex = bytes.toString('hex');
-    return `${hex.substr(0, 8)}-${hex.substr(8, 4)}-${hex.substr(12, 4)}-${hex.substr(16, 4)}-${hex.substr(20, 12)}`;
-  };
-}
-
 import * as mockttp from 'mockttp';
 import { USER_STORAGE_FEATURE_NAMES } from '@metamask/profile-sync-controller/sdk';
 import { MOCK_SRP_E2E_IDENTIFIER_BASE_KEY } from '../../../tests/identity/mocks';
