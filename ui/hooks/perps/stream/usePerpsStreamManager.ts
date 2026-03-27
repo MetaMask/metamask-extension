@@ -12,7 +12,6 @@
 import { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { getSelectedInternalAccount } from '../../../selectors/accounts';
-import { submitRequestToBackground } from '../../../store/background-connection';
 import {
   getPerpsStreamManager,
   type PerpsStreamManager,
@@ -70,32 +69,42 @@ export function usePerpsStreamManager(): UsePerpsStreamManagerReturn {
     if (!selectedAddress) {
       setIsReady(false);
       setError(new Error('No account selected'));
-      return;
+      return undefined;
     }
 
     // Already initialized by a previous call
     if (streamManager.isInitialized(selectedAddress)) {
       setIsReady(true);
       setError(null);
-      return;
+      return undefined;
     }
+
+    let cancelled = false;
 
     setIsReady(false);
     setError(null);
 
-    // Clear stale cached data from the previous account immediately,
-    // before the async init completes, so we never briefly show wrong data.
-    streamManager.clearAllCaches();
-
-    submitRequestToBackground('perpsInit')
+    // initForAddress deduplicates: multiple hooks sharing this singleton
+    // only trigger a single perpsInit RPC + channel reset round-trip.
+    streamManager
+      .initForAddress(selectedAddress)
       .then(() => {
-        streamManager.init(selectedAddress);
+        if (cancelled) {
+          return;
+        }
         setIsReady(true);
       })
       .catch((err: unknown) => {
+        if (cancelled) {
+          return;
+        }
         console.error('[usePerpsStreamManager] Init failed:', err);
         setError(err instanceof Error ? err : new Error(String(err)));
       });
+
+    return () => {
+      cancelled = true;
+    };
   }, [selectedAddress, streamManager]);
 
   return {

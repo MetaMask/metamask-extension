@@ -13,7 +13,7 @@ import { noop } from '../utils/helpers';
 import { ManifestPlugin } from '../utils/plugins/ManifestPlugin';
 import { getLatestCommit } from '../utils/git';
 import { ManifestPluginOptions } from '../utils/plugins/ManifestPlugin/types';
-import { MANIFEST_DEV_KEY } from '../../build/constants';
+import { CHROME_MANIFEST_KEY_NON_PRODUCTION } from '../utils/constants';
 
 function getWebpackInstance(config: Configuration) {
   // webpack logs a warning if we pass config.watch to it without a callback
@@ -162,7 +162,7 @@ ${Object.entries(env)
           js: ['scripts/contentscript.js', 'scripts/inpage.js'],
         },
       ],
-      key: MANIFEST_DEV_KEY,
+      key: CHROME_MANIFEST_KEY_NON_PRODUCTION,
     });
     assert.strictEqual(manifestPlugin.options.zip, false);
     const manifestOpts = manifestPlugin.options as ManifestPluginOptions<true>;
@@ -180,6 +180,9 @@ ${Object.entries(env)
       [
         '--mode',
         'production',
+        '--env',
+        'production',
+        '--no-validateEnv',
         '--watch',
         '--stats',
         '--no-progress',

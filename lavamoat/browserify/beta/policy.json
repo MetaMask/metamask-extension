@@ -2007,6 +2007,13 @@
         "@metamask/utils": true
       }
     },
+    "@metamask/react-data-query": {
+      "packages": {
+        "@metamask/utils": true,
+        "@tanstack/react-query>@tanstack/query-core": true,
+        "@tanstack/react-query": true
+      }
+    },
     "@metamask/remote-feature-flag-controller": {
       "globals": {
         "TextEncoder": true
@@ -2133,7 +2140,7 @@
         "@metamask/permission-controller": true,
         "@metamask/post-message-stream": true,
         "@metamask/rpc-errors": true,
-        "@metamask/snaps-utils>@metamask/snaps-registry": true,
+        "@metamask/snaps-registry": true,
         "@metamask/snaps-rpc-methods": true,
         "@metamask/snaps-sdk": true,
         "@metamask/snaps-utils": true,
@@ -2163,7 +2170,7 @@
         "@metamask/utils": true
       }
     },
-    "@metamask/snaps-utils>@metamask/snaps-registry": {
+    "@metamask/snaps-registry": {
       "globals": {
         "crypto": true
       },

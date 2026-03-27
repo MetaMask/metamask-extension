@@ -24,6 +24,7 @@ import { getProviderConfig } from '../../../../../shared/lib/selectors/networks'
 import { useIsOriginalTokenSymbol } from '../../../../hooks/useIsOriginalTokenSymbol';
 import { getIntlLocale } from '../../../../ducks/locale/locale';
 import { TokenWithFiatAmount } from '../types';
+import { TOKEN_LIST_CELL_MUSD_OPTIONS } from '../../musd/musd-events';
 import { TokenCellProps } from './token-cell';
 import TokenCell from '.';
 
@@ -69,6 +70,8 @@ jest.mock('react-router-dom', () => {
 const mockUseMerklRewards = jest.fn().mockReturnValue({
   isEligible: false,
   hasClaimableReward: false,
+  hasClaimedBefore: false,
+  claimableRewardDisplay: null,
   refetch: jest.fn(),
 });
 jest.mock('../../musd', () => ({
@@ -158,7 +161,9 @@ describe('Token Cell', () => {
     token: {
       ...propToken,
     },
-    showMerklBadge: true,
+    musd: {
+      merklClaimBonus: TOKEN_LIST_CELL_MUSD_OPTIONS.merklClaimBonus,
+    },
     onClick: jest.fn(),
   };
   const propAnotherToken: Partial<TokenWithFiatAmount> & {
@@ -180,7 +185,9 @@ describe('Token Cell', () => {
     token: {
       ...propAnotherToken,
     },
-    showMerklBadge: true,
+    musd: {
+      merklClaimBonus: TOKEN_LIST_CELL_MUSD_OPTIONS.merklClaimBonus,
+    },
     onClick: jest.fn(),
   };
   const mockProviderConfig = jest.fn().mockReturnValue({
@@ -276,8 +283,8 @@ describe('Token Cell', () => {
     expect(amountElement.textContent).toBe('5.00M TEST');
   });
 
-  describe('showMusdConvertCta', () => {
-    it('does not show the mUSD convert CTA by default', () => {
+  describe('musd.convert', () => {
+    it('does not show the mUSD convert CTA when musd.convert is not passed', () => {
       mockShouldShowTokenListItemCta.mockReturnValue(true);
 
       const { queryByTestId } = renderWithProvider(
@@ -288,22 +295,28 @@ describe('Token Cell', () => {
       expect(queryByTestId('musd-convert-link-mock')).not.toBeInTheDocument();
     });
 
-    it('shows the mUSD convert CTA when showMusdConvertCta is true and token is eligible', () => {
+    it('shows the mUSD convert CTA when musd.convert is set and token is eligible', () => {
       mockShouldShowTokenListItemCta.mockReturnValue(true);
 
       const { queryByTestId } = renderWithProvider(
-        <TokenCell {...(props as TokenCellProps)} showMusdConvertCta />,
+        <TokenCell
+          {...(props as TokenCellProps)}
+          musd={TOKEN_LIST_CELL_MUSD_OPTIONS}
+        />,
         mockStore,
       );
 
       expect(queryByTestId('musd-convert-link-mock')).toBeInTheDocument();
     });
 
-    it('does not show the mUSD convert CTA when showMusdConvertCta is true but token is not eligible', () => {
+    it('does not show the mUSD convert CTA when musd.convert is set but token is not eligible', () => {
       mockShouldShowTokenListItemCta.mockReturnValue(false);
 
       const { queryByTestId } = renderWithProvider(
-        <TokenCell {...(props as TokenCellProps)} showMusdConvertCta />,
+        <TokenCell
+          {...(props as TokenCellProps)}
+          musd={TOKEN_LIST_CELL_MUSD_OPTIONS}
+        />,
         mockStore,
       );
 
@@ -316,6 +329,8 @@ describe('Token Cell', () => {
       mockUseMerklRewards.mockReturnValue({
         isEligible: false,
         hasClaimableReward: false,
+        hasClaimedBefore: false,
+        claimableRewardDisplay: null,
         refetch: jest.fn(),
       });
     });
@@ -324,6 +339,8 @@ describe('Token Cell', () => {
       mockUseMerklRewards.mockReturnValue({
         isEligible: true,
         hasClaimableReward: true,
+        hasClaimedBefore: false,
+        claimableRewardDisplay: '10.50',
         refetch: jest.fn(),
       });
 
@@ -339,6 +356,8 @@ describe('Token Cell', () => {
       mockUseMerklRewards.mockReturnValue({
         isEligible: false,
         hasClaimableReward: true,
+        hasClaimedBefore: false,
+        claimableRewardDisplay: null,
         refetch: jest.fn(),
       });
 
@@ -354,6 +373,8 @@ describe('Token Cell', () => {
       mockUseMerklRewards.mockReturnValue({
         isEligible: true,
         hasClaimableReward: false,
+        hasClaimedBefore: false,
+        claimableRewardDisplay: null,
         refetch: jest.fn(),
       });
 

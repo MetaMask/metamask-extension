@@ -207,6 +207,7 @@ import {
   getIsSeedlessOnboardingFeatureEnabled,
   getEnabledAdvancedPermissions,
   getIsPerpsIncludedInBuild,
+  getIsAssetsUnifiedStateIncludedInBuild,
 } from '../../shared/lib/environment';
 import { isSnapPreinstalled } from '../../shared/lib/snaps/snaps';
 import { toChecksumHexAddress } from '../../shared/lib/hexstring-utils';
@@ -219,6 +220,8 @@ import { createSentryError } from '../../shared/lib/error';
 import {
   getAccountTrackerControllerAccountsByChainId,
   getTokensControllerAllTokens,
+  getRatesControllerRates,
+  getRatesControllerFiatCurrency,
 } from '../../shared/lib/selectors/assets-migration';
 import {
   isUserRejectedHardwareWalletError,
@@ -417,7 +420,6 @@ import { AlertControllerInit } from './controller-init/alert-controller-init';
 import { MetaMetricsDataDeletionControllerInit } from './controller-init/metametrics-data-deletion-controller-init';
 import { LoggingControllerInit } from './controller-init/logging-controller-init';
 import { AppMetadataControllerInit } from './controller-init/app-metadata-controller-init';
-import { ErrorReportingServiceInit } from './controller-init/error-reporting-service-init';
 import { StorageServiceInit } from './controller-init/storage-service-init';
 import { ApprovalControllerInit } from './controller-init/confirmations/approval-controller-init';
 import { AddressBookControllerInit } from './controller-init/confirmations/address-book-controller-init';
@@ -493,13 +495,6 @@ export default class MetamaskController extends EventEmitter {
     this.platform = opts.platform;
     this.notificationManager = opts.notificationManager;
     const initState = opts.initState || {};
-    const assetsUnifyFlag =
-      initState?.RemoteFeatureFlagController?.remoteFeatureFlags
-        ?.assetsUnifyState;
-    const shouldInitAssetsController = isAssetsUnifyStateFeatureEnabled(
-      assetsUnifyFlag,
-      ASSETS_UNIFY_STATE_VERSION_1,
-    );
     const version = process.env.METAMASK_VERSION;
     this.featureFlags = opts.featureFlags;
 
@@ -581,7 +576,6 @@ export default class MetamaskController extends EventEmitter {
     const controllerInitFunctions = {
       ApprovalController: ApprovalControllerInit,
       LoggingController: LoggingControllerInit,
-      ErrorReportingService: ErrorReportingServiceInit,
       StorageService: StorageServiceInit,
       AppMetadataController: AppMetadataControllerInit,
       PreferencesController: PreferencesControllerInit,
@@ -682,7 +676,7 @@ export default class MetamaskController extends EventEmitter {
       ProfileMetricsService: ProfileMetricsServiceInit,
       // ClientController must be initialized before AssetsController (AssetsController subscribes to ClientController:stateChange).
       ClientController: ClientControllerInit,
-      ...(shouldInitAssetsController
+      ...(getIsAssetsUnifiedStateIncludedInBuild()
         ? { AssetsController: AssetsControllerInit }
         : {}),
     };
@@ -1592,7 +1586,8 @@ export default class MetamaskController extends EventEmitter {
     if (
       !isEvmAccountType(
         this.accountsController.getSelectedMultichainAccount().type,
-      )
+      ) &&
+      !this.#isAssetsUnifyStateEnabled()
     ) {
       this.multichainRatesController.start();
     }
@@ -1609,7 +1604,9 @@ export default class MetamaskController extends EventEmitter {
   stopNetworkRequests() {
     this.txController.stopIncomingTransactionPolling();
     this.tokenDetectionController.disable();
-    this.multichainRatesController.stop();
+    if (!this.#isAssetsUnifyStateEnabled()) {
+      this.multichainRatesController.stop();
+    }
     if (getIsPerpsIncludedInBuild()) {
       this.controllerApi.perpsStopEligibilityMonitoring?.()?.catch((error) => {
         console.error(error);
@@ -2258,6 +2255,10 @@ export default class MetamaskController extends EventEmitter {
    * and subscribes to account changes.
    */
   setupMultichainDataAndSubscriptions() {
+    if (this.#isAssetsUnifyStateEnabled()) {
+      return;
+    }
+
     this.controllerMessenger.subscribe(
       'AccountsController:selectedAccountChange',
       (selectedAccount) => {
@@ -4117,10 +4118,10 @@ export default class MetamaskController extends EventEmitter {
     let isPasswordOutdated = false;
     if (isSocialLoginFlow) {
       try {
-        isPasswordOutdated =
-          await this.seedlessOnboardingController.checkIsPasswordOutdated({
-            skipCache: false,
-          });
+        isPasswordOutdated = await this.checkIsSeedlessPasswordOutdated({
+          skipCache: false,
+          captureSentryError: true,
+        });
       } catch (error) {
         // we don't want to block the unlock flow if the password outdated check fails
         log.error('error while checking if password is outdated', error);
@@ -4132,19 +4133,11 @@ export default class MetamaskController extends EventEmitter {
     if (!isSocialLoginFlow || !isPasswordOutdated) {
       await this.submitPassword(password);
       if (isSocialLoginFlow) {
-        // renew seedless refresh token asynchronously
+        // try to revoke pending refresh tokens asynchronously
         this.seedlessOnboardingController
-          .renewRefreshToken(password)
+          .revokePendingRefreshTokens()
           .catch((err) => {
-            log.error('error while revoking seedless refresh token', err);
-          })
-          .finally(() => {
-            // try to revoke pending refresh tokens asynchronously
-            this.seedlessOnboardingController
-              .revokePendingRefreshTokens()
-              .catch((err) => {
-                log.error('error while revoking pending refresh tokens', err);
-              });
+            log.error('error while revoking pending refresh tokens', err);
           });
       }
       return;
@@ -4173,7 +4166,6 @@ export default class MetamaskController extends EventEmitter {
           maxKeyChainLength: 20,
         })
         .catch((err) => {
-          log.error(`error while submitting global password: ${err.message}`);
           if (err instanceof RecoveryError) {
             // Keyring controller password verification succeeds and seedless controller failed.
             if (
@@ -4187,6 +4179,7 @@ export default class MetamaskController extends EventEmitter {
             }
             throw new JsonRpcError(-32603, err.message, err.data);
           }
+          log.error(`error while submitting global password: ${err.message}`);
           throw err;
         });
 
@@ -4214,23 +4207,16 @@ export default class MetamaskController extends EventEmitter {
         await this.syncKeyringEncryptionKey();
 
         // check password outdated again skip cache to reset the cache after successful syncing
-        await this.seedlessOnboardingController.checkIsPasswordOutdated({
+        await this.checkIsSeedlessPasswordOutdated({
           skipCache: true,
+          captureSentryError: true,
         });
 
-        // revoke seedless refresh token asynchronously
+        // revoke pending refresh tokens asynchronously
         this.seedlessOnboardingController
-          .renewRefreshToken(password)
+          .revokePendingRefreshTokens()
           .catch((err) => {
-            log.error('error while revoking seedless refresh token', err);
-          })
-          .finally(() => {
-            // try to revoke pending refresh tokens asynchronously
-            this.seedlessOnboardingController
-              .revokePendingRefreshTokens()
-              .catch((err) => {
-                log.error('error while revoking pending refresh tokens', err);
-              });
+            log.error('error while revoking pending refresh tokens', err);
           });
       } catch (err) {
         this.controllerMessenger?.captureException?.(
@@ -4269,10 +4255,14 @@ export default class MetamaskController extends EventEmitter {
   /**
    * Checks if the seedless password is outdated.
    *
-   * @param {boolean} skipCache - whether to skip the cache
+   * @param {object} args - The arguments for the checkIsSeedlessPasswordOutdated method.
+   * @param {boolean} args.skipCache - whether to skip the cache @default false
+   * @param {boolean} args.captureSentryError - whether to capture the sentry error. @default false
    * @returns {Promise<boolean | undefined>} true if the password is outdated, false otherwise, undefined if the flow is not seedless
    */
-  async checkIsSeedlessPasswordOutdated(skipCache = false) {
+  async checkIsSeedlessPasswordOutdated(args) {
+    const skipCache = args?.skipCache || false;
+    const captureSentryError = args?.captureSentryError || false;
     try {
       const isSocialLoginFlow =
         this.onboardingController.getIsSocialLoginFlow();
@@ -4289,12 +4279,14 @@ export default class MetamaskController extends EventEmitter {
         });
       return isPasswordOutdated;
     } catch (error) {
-      this.controllerMessenger?.captureException?.(
-        createSentryError(
-          'Failed to check if seedless password is outdated',
-          error,
-        ),
-      );
+      if (captureSentryError) {
+        this.controllerMessenger?.captureException?.(
+          createSentryError(
+            'Failed to check if seedless password is outdated',
+            error,
+          ),
+        );
+      }
       throw error;
     }
   }
@@ -6442,13 +6434,7 @@ export default class MetamaskController extends EventEmitter {
   }) => {
     switch (type) {
       case ERC20: {
-        const assetsUnifyFlag =
-          this.remoteFeatureFlagController.state.remoteFeatureFlags
-            ?.assetsUnifyState;
-        const unifyWatchAsset = isAssetsUnifyStateFeatureEnabled(
-          assetsUnifyFlag,
-          ASSETS_UNIFY_STATE_VERSION_1,
-        );
+        const unifyWatchAsset = this.#isAssetsUnifyStateEnabled();
         if (unifyWatchAsset) {
           this.#validateUnifiedWatchAssetRequest(asset, networkClientId);
         }
@@ -7540,8 +7526,9 @@ export default class MetamaskController extends EventEmitter {
           origin,
         ),
         getCurrencyRate: (currency) => {
-          const rate = this.multichainRatesController.state.rates[currency];
-          const { fiatCurrency } = this.multichainRatesController.state;
+          const state = this._getMetaMaskState();
+          const fiatCurrency = getRatesControllerFiatCurrency(state);
+          const rate = getRatesControllerRates(state)[currency];
 
           if (!rate) {
             return undefined;
@@ -9423,5 +9410,17 @@ export default class MetamaskController extends EventEmitter {
       isSupported,
       upgradeContractAddress,
     };
+  }
+
+  #isAssetsUnifyStateEnabled() {
+    const assetsUnifyFlag =
+      this.remoteFeatureFlagController?.state?.remoteFeatureFlags
+        ?.assetsUnifyState;
+    return (
+      isAssetsUnifyStateFeatureEnabled(
+        assetsUnifyFlag,
+        ASSETS_UNIFY_STATE_VERSION_1,
+      ) && getIsAssetsUnifiedStateIncludedInBuild()
+    );
   }
 }
