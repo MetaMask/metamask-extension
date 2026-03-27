@@ -4,14 +4,20 @@
 
 /* eslint-disable import-x/no-nodejs-modules */
 import { spawnSync } from 'child_process';
-import { appendFileSync, mkdtempSync, mkdirSync, rmSync, writeFileSync } from 'fs';
+import {
+  appendFileSync,
+  mkdtempSync,
+  mkdirSync,
+  rmSync,
+  writeFileSync,
+} from 'fs';
 import { tmpdir } from 'os';
 import path from 'path';
 
-interface CommandResult {
+type CommandResult = {
   status: number;
   output: string;
-}
+};
 
 const checkerPath = path.resolve(
   __dirname,
@@ -20,7 +26,11 @@ const checkerPath = path.resolve(
 
 const tempRepos: string[] = [];
 
-const runCommand = (cwd: string, cmd: string, args: string[]): CommandResult => {
+const runCommand = (
+  cwd: string,
+  cmd: string,
+  args: string[],
+): CommandResult => {
   const result = spawnSync(cmd, args, {
     cwd,
     encoding: 'utf8',
@@ -85,12 +95,17 @@ describe('check-ab-testing-compliance.sh', () => {
 
   it('falls back to worktree files in staged mode', () => {
     const repo = createRepo();
-    appendFileSync(path.join(repo, 'app/sample.ts'), 'export const changed = 2;\n');
+    appendFileSync(
+      path.join(repo, 'app/sample.ts'),
+      'export const changed = 2;\n',
+    );
 
     const result = runChecker(repo, ['--staged']);
 
     expect(result.status).toBe(0);
-    expect(result.output).toContain('falling back to working-tree changed files');
+    expect(result.output).toContain(
+      'falling back to working-tree changed files',
+    );
   });
 
   it('fails when new ab_tests payload is added', () => {
@@ -185,6 +200,46 @@ describe('check-ab-testing-compliance.sh', () => {
     expect(result.output).not.toContain("added 'ab_tests' payload");
     expect(result.output).not.toContain(
       'inline useABTest variants object is missing control',
+    );
+  });
+
+  it('ignores invalid A/B examples in spec files', () => {
+    const repo = createRepo();
+    writeFileSync(
+      path.join(repo, 'app/sample.spec.ts'),
+      [
+        "const payload = { ab_tests: { example: 'control' } };",
+        "const invalidActive = { active_ab_tests: [{ key: 'swapsSWAPS9999AbtestFoo' }] };",
+        "const assignment = useABTest('swapsSWAPS9999AbtestFoo', { treatment: { label: 'x' } });",
+        '',
+      ].join('\n'),
+    );
+
+    const result = runChecker(repo, ['--staged']);
+
+    expect(result.status).toBe(0);
+    expect(result.output).not.toContain("added 'ab_tests' payload");
+    expect(result.output).not.toContain(
+      'inline useABTest variants object is missing control',
+    );
+  });
+
+  it('counts spec files as test updates when risky A/B changes are present', () => {
+    const repo = createRepo();
+    appendFileSync(
+      path.join(repo, 'app/sample.ts'),
+      "const assignment = useABTest('swapsSWAPS9999AbtestFoo', { control: {}, treatment: {} });\n",
+    );
+    writeFileSync(
+      path.join(repo, 'app/sample.spec.ts'),
+      "describe('sample', () => expect(true).toBe(true));\n",
+    );
+
+    const result = runChecker(repo, ['--staged']);
+
+    expect(result.status).toBe(0);
+    expect(result.output).not.toContain(
+      'Risky A/B integration changes were detected without any test-file updates',
     );
   });
 

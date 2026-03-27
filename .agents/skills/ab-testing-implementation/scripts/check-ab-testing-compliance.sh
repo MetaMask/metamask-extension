@@ -103,7 +103,8 @@ is_code_file() {
 
 is_test_file() {
   local file="$1"
-  [[ "$file" =~ \.test\.(ts|tsx|js|jsx)$ ]] || [[ "$file" =~ /__tests__/ ]]
+  [[ "$file" =~ \.(test|spec)\.(ts|tsx|js|jsx)$ ]] ||
+    [[ "$file" =~ /__tests__/ ]]
 }
 
 is_valid_flag_key() {
