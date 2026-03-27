@@ -27,6 +27,7 @@ import { Numeric } from '../../shared/lib/Numeric';
 import {
   getMultichainAssetsRatesControllerConversionRates,
   getMultiChainBalancesControllerBalances,
+  getRatesControllerRates,
 } from '../../shared/lib/selectors/assets-migration';
 import {
   getConversionRate,
@@ -332,9 +333,7 @@ export function getMultichainIsTestnet(
 // TODO: Update all references to use asset-migration.ts
 export { getMultiChainBalancesControllerBalances as getMultichainBalances };
 
-export const getMultichainCoinRates = (state: MultichainState) => {
-  return state.metamask.rates;
-};
+export { getRatesControllerRates as getMultichainCoinRates };
 
 function getNonEvmCachedBalance(
   state: MultichainState,
