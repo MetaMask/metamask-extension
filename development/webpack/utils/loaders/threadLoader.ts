@@ -66,10 +66,6 @@ export function getThreadLoader(
   const resolvedJobs =
     jobsPerThread === 'auto' ? resolveAutoJobs(resolvedThreads) : jobsPerThread;
 
-  console.log(
-    `Thread loader auto configuration: ${resolvedThreads} workers, ${resolvedJobs} jobs per worker, ${Math.floor(getAvailableMemoryMB())}MB free RAM`,
-  );
-
   return {
     loader: 'thread-loader',
     options: {
