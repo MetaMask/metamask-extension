@@ -238,40 +238,14 @@ const tsxLoader = getSwcLoader('typescript', true, safeVariables, swcConfig);
 const jsxLoader = getSwcLoader('ecmascript', true, safeVariables, swcConfig);
 const npmLoader = getSwcLoader('ecmascript', false, {}, swcConfig);
 const cjsLoader = getSwcLoader('ecmascript', false, {}, swcConfig, 'commonjs');
-const threadLoaderConfig = getThreadLoader({
-  threads: args.threads,
-  jobsPerThread: args.jobsPerThread,
-  watch: args.watch,
-});
-const reactCompilerConfig = getReactCompilerLoader({
+
+const threadLoader = getThreadLoader(args);
+const reactCompiler = getReactCompilerLoader({
   target: '17',
   verbose: args.reactCompilerVerbose,
   debug: args.reactCompilerDebug,
-  threadLoaderEnabled: threadLoaderConfig !== null,
+  threadLoaderEnabled: threadLoader !== null,
 });
-
-const threadLoaderRule = threadLoaderConfig
-  ? [{ test: UI_COMPONENT_RE, include: UI_DIR_RE, use: [threadLoaderConfig] }]
-  : [];
-const reactCompilerRule = [
-  { test: UI_COMPONENT_RE, include: UI_DIR_RE, use: [reactCompilerConfig] },
-];
-
-const envValidationRule = args.validateEnv
-  ? [
-      {
-        test: /\.(?:[jt]s|m[jt]s|[jt]sx)$/u,
-        exclude: NODE_MODULES_RE,
-        enforce: 'pre' as const,
-        use: [
-          {
-            loader: require.resolve('./utils/loaders/envValidationLoader'),
-            options: { declarations: Array.from(buildEnvVarDeclarations) },
-          },
-        ],
-      },
-    ]
-  : [];
 
 const config = {
   // All entries are added dynamically by ManifestPlugin
@@ -388,9 +362,23 @@ const config = {
       },
       // Source preprocessing (enforce: 'pre' ensures these run before normal
       // loaders; options must be JSON-serializable for thread-loader compatibility)
-      ...envValidationRule,
+      args.validateEnv && {
+        test: /\.(?:[jt]s|m[jt]s|[jt]sx)$/u,
+        exclude: NODE_MODULES_RE,
+        enforce: 'pre' as const,
+        use: [
+          {
+            loader: require.resolve('./utils/loaders/envValidationLoader'),
+            options: { declarations: [...buildEnvVarDeclarations] },
+          },
+        ],
+      },
       // thread-loader pool for UI component files (must appear before SWC rules)
-      ...threadLoaderRule,
+      threadLoader && {
+        test: UI_COMPONENT_RE,
+        include: UI_DIR_RE,
+        use: threadLoader,
+      },
       // own typescript, and own typescript with jsx
       {
         test: /\.(?:ts|mts|tsx)$/u,
@@ -404,7 +392,7 @@ const config = {
         use: jsxLoader,
       },
       // React Compiler for UI component files (must appear after SWC rules)
-      ...reactCompilerRule,
+      { test: UI_COMPONENT_RE, include: UI_DIR_RE, use: reactCompiler },
       // vendor javascript. We must transform all npm modules to ensure browser
       // compatibility.
       {

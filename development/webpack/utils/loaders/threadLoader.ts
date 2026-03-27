@@ -53,9 +53,7 @@ export function resolveAutoJobs(threads: number): number {
  * @param config - Thread-loader options including thread/job counts and watch mode.
  * @returns A thread-loader `RuleSetUseItem`, or `null` when disabled.
  */
-export function getThreadLoader(
-  config: ThreadLoaderConfig,
-): RuleSetUseItem | null {
+export function getThreadLoader(config: ThreadLoaderConfig) {
   const { threads, jobsPerThread, watch } = config;
 
   if (threads === 0) {
@@ -73,5 +71,5 @@ export function getThreadLoader(
       workerParallelJobs: resolvedJobs,
       poolTimeout: watch ? Number(Infinity) : 2000,
     },
-  };
+  } satisfies RuleSetUseItem;
 }
