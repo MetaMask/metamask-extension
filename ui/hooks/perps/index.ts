@@ -23,3 +23,9 @@ export type {
   UsePerpsMarginCalculationsReturn,
   MarginRiskAssessment,
 } from './usePerpsMarginCalculations';
+
+export { usePerpsEventTracking } from './usePerpsEventTracking';
+export type {
+  PerpsTrackEventFn,
+  UsePerpsEventTrackingDeclarativeOptions,
+} from './usePerpsEventTracking';

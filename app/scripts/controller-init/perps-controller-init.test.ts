@@ -2,6 +2,10 @@ import {
   PerpsController,
   type PerpsControllerState,
 } from '@metamask/perps-controller';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../shared/constants/metametrics';
 import { createPerpsInfrastructure } from '../controllers/perps/infrastructure';
 import { buildControllerInitRequestMock } from './test/utils';
 import { PerpsControllerInit } from './perps-controller-init';
@@ -118,7 +122,9 @@ type InitRequest = jest.Mocked<
 function getInitRequestMock(): InitRequest {
   return {
     ...buildControllerInitRequestMock(),
-    controllerMessenger: {} as PerpsControllerMessenger,
+    controllerMessenger: {
+      call: jest.fn(),
+    } as unknown as PerpsControllerMessenger,
     initMessenger: undefined as never,
   };
 }
@@ -247,9 +253,40 @@ describe('PerpsControllerInit', () => {
       expect(constructorCall.state).toBe(persistedState);
     });
 
-    it('calls createPerpsInfrastructure', () => {
+    it('calls createPerpsInfrastructure with trackEvent', () => {
       PerpsControllerInit(getInitRequestMock());
-      expect(createPerpsInfrastructure).toHaveBeenCalled();
+      expect(createPerpsInfrastructure).toHaveBeenCalledWith({
+        trackEvent: expect.any(Function),
+      });
+    });
+
+    it('trackEvent from createPerpsInfrastructure delegates to MetaMetricsController:trackEvent', () => {
+      const call = jest.fn();
+      const request = getInitRequestMock();
+      request.controllerMessenger = {
+        call,
+      } as unknown as PerpsControllerMessenger;
+
+      jest.mocked(createPerpsInfrastructure).mockImplementationOnce(
+        (deps: { trackEvent: (payload: unknown) => void }) => {
+          deps.trackEvent({
+            event: MetaMetricsEventName.PerpsScreenViewed,
+            category: MetaMetricsEventCategory.Perps,
+            properties: {},
+          });
+          return {};
+        },
+      );
+
+      PerpsControllerInit(request);
+
+      expect(call).toHaveBeenCalledWith(
+        'MetaMetricsController:trackEvent',
+        expect.objectContaining({
+          event: MetaMetricsEventName.PerpsScreenViewed,
+          category: MetaMetricsEventCategory.Perps,
+        }),
+      );
     });
   });
 
