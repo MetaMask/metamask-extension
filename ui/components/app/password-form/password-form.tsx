@@ -148,11 +148,11 @@ export default function PasswordForm({
         }}
         helpText={confirmPasswordError}
         value={confirmPassword}
+        inputRef={confirmPasswordRef}
         inputProps={{
           'data-testid':
             confirmPwdInputTestId || 'create-password-confirm-input',
           type: showConfirmPassword ? InputType.Text : InputType.Password,
-          ref: confirmPasswordRef,
         }}
         onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
           handleConfirmPasswordChange(e.target.value);
