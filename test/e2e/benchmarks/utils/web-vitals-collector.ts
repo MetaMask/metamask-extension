@@ -132,8 +132,15 @@ export async function collectWebVitals(
       WINDOW_TITLES.ExtensionInFullScreenView,
     );
   } catch {
-    // Fallback: try MetaMask Dialog (e.g. confirmation popup)
-    await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+    try {
+      // Fallback: try MetaMask Dialog (e.g. confirmation popup)
+      await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+    } catch {
+      // Neither window found — proceed with current context
+      console.warn(
+        '[web-vitals-collector] No extension or dialog window found, using current context',
+      );
+    }
   }
 
   await driver.executeScript(SETUP_SCRIPT);
