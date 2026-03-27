@@ -2,7 +2,7 @@ import { AllProperties } from '../../../shared/lib/object.utils';
 
 type SentryMaskValue =
   | boolean
-  | { [key: string | symbol]: SentryMaskValue }
+  | { [key: string]: SentryMaskValue }
   | SentryMaskValue[];
 
 type StrictSentryMaskObject = {
@@ -12,8 +12,8 @@ type StrictSentryMaskObject = {
 
 type SentryBackgroundStateMask = Record<string, StrictSentryMaskObject>;
 
-type SentryUiStateMask = StrictSentryMaskObject & {
-  metamask: StrictSentryMaskObject;
+type SentryUiStateMask = ObjectMask & {
+  metamask: ObjectMask;
 };
 
 // This describes the subset of background controller state attached to errors
