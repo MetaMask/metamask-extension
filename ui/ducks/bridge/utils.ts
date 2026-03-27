@@ -207,6 +207,7 @@ export const toBridgeToken = (
     tokenFiatAmount,
     accountType,
     rwaData,
+    isVerified,
   } = payload;
   const { chainId } = parseCaipAssetType(assetId);
   return {
@@ -220,6 +221,7 @@ export const toBridgeToken = (
     tokenFiatAmount: tokenMetadata?.tokenFiatAmount ?? tokenFiatAmount,
     accountType: tokenMetadata?.accountType ?? accountType,
     rwaData: tokenMetadata?.rwaData ?? rwaData,
+    isVerified: tokenMetadata?.isVerified ?? isVerified,
   };
 };
 
