@@ -1,4 +1,5 @@
-import React, { useState, useMemo, useCallback, useEffect } from 'react';
+import React, { useState, useMemo, useCallback, useEffect, useRef } from 'react';
+import { PERPS_EVENT_PROPERTY, PERPS_EVENT_VALUE } from '@metamask/perps-controller';
 import { useSelector } from 'react-redux';
 import { Navigate, useNavigate } from 'react-router-dom';
 import {
@@ -28,6 +29,8 @@ import {
 } from '../../components/app/perps/utils';
 import type { PerpsTransactionFilter } from '../../components/app/perps/types';
 import { usePerpsTransactionHistory } from '../../hooks/perps/usePerpsTransactionHistory';
+import { usePerpsEventTracking } from '../../hooks/perps';
+import { MetaMetricsEventName } from '../../../shared/constants/metametrics';
 import {
   Dropdown,
   type DropdownOption,
@@ -44,6 +47,8 @@ const PerpsActivityPage: React.FC = () => {
   const isPerpsExperienceAvailable = useSelector(getIsPerpsExperienceAvailable);
   const [activeFilter, setActiveFilter] =
     useState<PerpsTransactionFilter>('trade');
+  const { track } = usePerpsEventTracking();
+  const screenViewTrackedRef = useRef(false);
 
   // Fetch real transaction data from the Perps controller
   const { transactions, isLoading, error, refetch } =
@@ -53,6 +58,17 @@ const PerpsActivityPage: React.FC = () => {
   useEffect(() => {
     refetch();
   }, [refetch]);
+
+  useEffect(() => {
+    if (isLoading || screenViewTrackedRef.current) {
+      return;
+    }
+    screenViewTrackedRef.current = true;
+    track(MetaMetricsEventName.PerpsScreenViewed, {
+      [PERPS_EVENT_PROPERTY.SCREEN_TYPE]:
+        PERPS_EVENT_VALUE.SCREEN_TYPE.ACTIVITY,
+    });
+  }, [isLoading, track]);
 
   // Filter options for dropdown
   const filterOptions: DropdownOption<PerpsTransactionFilter>[] = useMemo(

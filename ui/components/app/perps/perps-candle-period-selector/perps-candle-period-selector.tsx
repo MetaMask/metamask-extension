@@ -1,4 +1,8 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useCallback } from 'react';
+import {
+  PERPS_EVENT_PROPERTY,
+  PERPS_EVENT_VALUE,
+} from '@metamask/perps-controller';
 import {
   twMerge,
   Box,
@@ -15,6 +19,8 @@ import {
   ButtonBase,
 } from '@metamask/design-system-react';
 import { Popover, PopoverPosition } from '../../../component-library';
+import { MetaMetricsEventName } from '../../../../../shared/constants/metametrics';
+import { usePerpsEventTracking } from '../../../../hooks/perps';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
   CandlePeriod,
@@ -41,6 +47,7 @@ const PerpsCandlePeriodSelector: React.FC<PerpsCandlePeriodSelectorProps> = ({
   onPeriodChange,
 }) => {
   const t = useI18nContext();
+  const { track } = usePerpsEventTracking();
   const [isMoreOpen, setIsMoreOpen] = useState(false);
   const moreButtonRef = useRef<HTMLButtonElement>(null);
 
@@ -49,8 +56,20 @@ const PerpsCandlePeriodSelector: React.FC<PerpsCandlePeriodSelectorProps> = ({
     (period) => period.value?.toLowerCase() === selectedPeriod?.toLowerCase(),
   );
 
+  const emitPeriodChange = useCallback(
+    (period: CandlePeriod) => {
+      track(MetaMetricsEventName.PerpsUiInteraction, {
+        [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
+          PERPS_EVENT_VALUE.INTERACTION_TYPE.CANDLE_PERIOD_CHANGED,
+        [PERPS_EVENT_PROPERTY.CANDLE_PERIOD]: period,
+      });
+      onPeriodChange?.(period);
+    },
+    [onPeriodChange, track],
+  );
+
   const handleMorePeriodSelect = (period: CandlePeriod) => {
-    onPeriodChange?.(period);
+    emitPeriodChange(period);
     setIsMoreOpen(false);
   };
 
@@ -79,7 +98,7 @@ const PerpsCandlePeriodSelector: React.FC<PerpsCandlePeriodSelectorProps> = ({
               isSelected && 'bg-muted',
             )}
             onClick={() => {
-              onPeriodChange?.(period.value);
+              emitPeriodChange(period.value);
             }}
             data-testid={`perps-candle-period-${period.value}`}
           >

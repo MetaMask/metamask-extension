@@ -1,4 +1,8 @@
-import React, { useState, useCallback, useMemo } from 'react';
+import React, { useState, useCallback, useMemo, useEffect, useRef } from 'react';
+import {
+  PERPS_EVENT_PROPERTY,
+  PERPS_EVENT_VALUE,
+} from '@metamask/perps-controller';
 import {
   Box,
   BoxFlexDirection,
@@ -19,6 +23,8 @@ import {
   ModalBody,
   ModalFooter,
 } from '../../../component-library';
+import { MetaMetricsEventName } from '../../../../../shared/constants/metametrics';
+import { usePerpsEventTracking } from '../../../../hooks/perps';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { submitRequestToBackground } from '../../../../store/background-connection';
 import { getPerpsStreamManager } from '../../../../providers/perps';
@@ -67,8 +73,26 @@ export const ReversePositionModal: React.FC<ReversePositionModalProps> = ({
   currentPrice: _currentPrice,
 }) => {
   const t = useI18nContext();
+  const { track } = usePerpsEventTracking();
+  const reverseScreenTrackedRef = useRef(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!isOpen) {
+      reverseScreenTrackedRef.current = false;
+      return;
+    }
+    if (reverseScreenTrackedRef.current) {
+      return;
+    }
+    reverseScreenTrackedRef.current = true;
+    track(MetaMetricsEventName.PerpsScreenViewed, {
+      [PERPS_EVENT_PROPERTY.SCREEN_TYPE]:
+        PERPS_EVENT_VALUE.SCREEN_TYPE.INCREASE_EXPOSURE,
+      [PERPS_EVENT_PROPERTY.ASSET]: position.symbol,
+    });
+  }, [isOpen, position.symbol, track]);
 
   const direction = getPositionDirection(position.size);
   const directionLabel =

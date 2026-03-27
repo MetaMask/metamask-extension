@@ -1,4 +1,5 @@
-import React, { useState, useCallback, useMemo } from 'react';
+import React, { useState, useCallback, useMemo, useRef, useEffect } from 'react';
+import { PERPS_EVENT_PROPERTY, PERPS_EVENT_VALUE } from '@metamask/perps-controller';
 import { useSelector } from 'react-redux';
 import { useNavigate, Navigate, useSearchParams } from 'react-router-dom';
 import {
@@ -42,6 +43,8 @@ import {
   VALID_MARKET_FILTERS,
   type MarketFilter,
 } from '../../../../shared/constants/perps';
+import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
+import { usePerpsEventTracking } from '../../../hooks/perps';
 import { MarketRow } from './components/market-row';
 import { MarketRowSkeleton } from './components/market-row-skeleton';
 import {
@@ -147,6 +150,8 @@ export const MarketListView: React.FC = () => {
   const [searchParams] = useSearchParams();
   const isPerpsExperienceAvailable = useSelector(getIsPerpsExperienceAvailable);
   const allowedHip3Sources = useSelector(getHip3AllowedSourcesSet);
+  const { track } = usePerpsEventTracking();
+  const screenViewTrackedRef = useRef(false);
 
   // Use stream hooks for real-time market data
   const { markets: allMarkets, isInitialLoading: marketsLoading } =
@@ -178,6 +183,17 @@ export const MarketListView: React.FC = () => {
 
   // Use stream loading state
   const isLoading = marketsLoading;
+
+  useEffect(() => {
+    if (isLoading || screenViewTrackedRef.current) {
+      return;
+    }
+    screenViewTrackedRef.current = true;
+    track(MetaMetricsEventName.PerpsScreenViewed, {
+      [PERPS_EVENT_PROPERTY.SCREEN_TYPE]:
+        PERPS_EVENT_VALUE.SCREEN_TYPE.MARKET_LIST,
+    });
+  }, [isLoading, track]);
 
   // Check if there are any uncategorized HIP-3 markets (for showing "New" filter)
   const hasUncategorizedMarkets = useMemo(() => {
@@ -236,18 +252,38 @@ export const MarketListView: React.FC = () => {
     [],
   );
 
-  const handleFilterChange = useCallback((filter: MarketFilter) => {
-    setSelectedFilter(filter);
-  }, []);
+  const handleFilterChange = useCallback(
+    (filter: MarketFilter) => {
+      track(MetaMetricsEventName.PerpsUiInteraction, {
+        [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
+          PERPS_EVENT_VALUE.INTERACTION_TYPE.BUTTON_CLICKED,
+        [PERPS_EVENT_PROPERTY.TAB_NAME]: filter,
+      });
+      setSelectedFilter(filter);
+    },
+    [track],
+  );
 
   const handleMarketSelect = useCallback(
     (market: PerpsMarketData) => {
+      track(MetaMetricsEventName.PerpsUiInteraction, {
+        [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
+          PERPS_EVENT_VALUE.INTERACTION_TYPE.TAP,
+        [PERPS_EVENT_PROPERTY.ASSET]: market.symbol,
+      });
       navigate(
         `${PERPS_MARKET_DETAIL_ROUTE}/${encodeURIComponent(market.symbol)}`,
       );
     },
-    [navigate],
+    [navigate, track],
   );
+
+  const handleSearchFocus = useCallback(() => {
+    track(MetaMetricsEventName.PerpsUiInteraction, {
+      [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
+        PERPS_EVENT_VALUE.INTERACTION_TYPE.SEARCH_CLICKED,
+    });
+  }, [track]);
 
   // Guard: redirect if perps feature is disabled
   if (!isPerpsExperienceAvailable) {
@@ -292,6 +328,7 @@ export const MarketListView: React.FC = () => {
           value={searchQuery}
           onChange={handleSearchChange}
           onClear={handleSearchClear}
+          onInputFocus={handleSearchFocus}
           autoFocus
         />
       </Box>

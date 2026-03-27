@@ -1,4 +1,8 @@
-import React, { useState, useMemo, useCallback, useEffect } from 'react';
+import React, { useState, useMemo, useCallback, useEffect, useRef } from 'react';
+import {
+  PERPS_EVENT_PROPERTY,
+  PERPS_EVENT_VALUE,
+} from '@metamask/perps-controller';
 import {
   Box,
   BoxFlexDirection,
@@ -26,6 +30,8 @@ import {
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useFormatters } from '../../../../hooks/useFormatters';
 import { submitRequestToBackground } from '../../../../store/background-connection';
+import { MetaMetricsEventName } from '../../../../../shared/constants/metametrics';
+import { usePerpsEventTracking } from '../../../../hooks/perps';
 import { getDisplayName } from '../utils';
 import { PERPS_MARKET_ORDER_FEE_RATE } from '../constants';
 import { CloseAmountSection } from '../order-entry';
@@ -45,6 +51,8 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
   currentPrice,
 }) => {
   const t = useI18nContext();
+  const { track } = usePerpsEventTracking();
+  const positionCloseScreenTrackedRef = useRef(false);
   const { formatCurrencyWithMinThreshold, formatTokenQuantity } =
     useFormatters();
 
@@ -59,6 +67,22 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
       setError(null);
     }
   }, [isOpen]);
+
+  useEffect(() => {
+    if (!isOpen) {
+      positionCloseScreenTrackedRef.current = false;
+      return;
+    }
+    if (positionCloseScreenTrackedRef.current) {
+      return;
+    }
+    positionCloseScreenTrackedRef.current = true;
+    track(MetaMetricsEventName.PerpsScreenViewed, {
+      [PERPS_EVENT_PROPERTY.SCREEN_TYPE]:
+        PERPS_EVENT_VALUE.SCREEN_TYPE.POSITION_CLOSE,
+      [PERPS_EVENT_PROPERTY.ASSET]: position.symbol,
+    });
+  }, [isOpen, position.symbol, track]);
 
   const displayName = getDisplayName(position.symbol);
 
@@ -121,17 +145,40 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
         error?: string;
       }>('perpsClosePosition', [params]);
       if (!result.success) {
-        throw new Error(result.error || 'Failed to close position');
+        const message = result.error || 'Failed to close position';
+        track(MetaMetricsEventName.PerpsPositionCloseTransaction, {
+          [PERPS_EVENT_PROPERTY.ASSET]: position.symbol,
+          [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.FAILED,
+          [PERPS_EVENT_PROPERTY.FAILURE_REASON]: message,
+        });
+        throw new Error(message);
       }
+      track(MetaMetricsEventName.PerpsPositionCloseTransaction, {
+        [PERPS_EVENT_PROPERTY.ASSET]: position.symbol,
+        [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.SUCCESS,
+        [PERPS_EVENT_PROPERTY.PERCENTAGE_CLOSED]: closePercent,
+      });
       onClose();
     } catch (err) {
-      setError(
-        err instanceof Error ? err.message : 'An unknown error occurred',
-      );
+      const errMessage =
+        err instanceof Error ? err.message : 'An unknown error occurred';
+      setError(errMessage);
+      track(MetaMetricsEventName.PerpsError, {
+        [PERPS_EVENT_PROPERTY.ERROR_TYPE]:
+          PERPS_EVENT_VALUE.ERROR_TYPE.BACKEND,
+        [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: errMessage,
+      });
     } finally {
       setIsSubmitting(false);
     }
-  }, [isSubmitDisabled, position.symbol, closePercent, closeSize, onClose]);
+  }, [
+    isSubmitDisabled,
+    position.symbol,
+    closePercent,
+    closeSize,
+    onClose,
+    track,
+  ]);
 
   const handlePercentChange = useCallback((percent: number) => {
     setClosePercent(percent);

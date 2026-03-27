@@ -13,7 +13,11 @@ import {
   IconSize,
   IconColor,
 } from '@metamask/design-system-react';
-import type { Position as PerpsPosition } from '@metamask/perps-controller';
+import {
+  PERPS_EVENT_PROPERTY,
+  PERPS_EVENT_VALUE,
+  type Position as PerpsPosition,
+} from '@metamask/perps-controller';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { TextField, TextFieldSize } from '../../../component-library';
 import {
@@ -21,7 +25,11 @@ import {
   BackgroundColor,
 } from '../../../../helpers/constants/design-system';
 import { useFormatters } from '../../../../hooks/useFormatters';
-import { usePerpsEligibility } from '../../../../hooks/perps';
+import {
+  usePerpsEligibility,
+  usePerpsEventTracking,
+} from '../../../../hooks/perps';
+import { MetaMetricsEventName } from '../../../../../shared/constants/metametrics';
 import { submitRequestToBackground } from '../../../../store/background-connection';
 import { getPerpsStreamManager } from '../../../../providers/perps';
 import type { Position } from '../types';
@@ -72,6 +80,7 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
   onSubmitStateChange,
 }) => {
   const t = useI18nContext();
+  const { track } = usePerpsEventTracking();
   const { formatNumber, formatCurrencyWithMinThreshold } = useFormatters();
   const { isEligible } = usePerpsEligibility();
 
@@ -278,8 +287,18 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
         },
       ]);
       if (!result.success) {
-        throw new Error(result.error || 'Failed to update TP/SL');
+        const failMessage = result.error || 'Failed to update TP/SL';
+        track(MetaMetricsEventName.PerpsRiskManagement, {
+          [PERPS_EVENT_PROPERTY.ASSET]: position.symbol,
+          [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.FAILED,
+          [PERPS_EVENT_PROPERTY.FAILURE_REASON]: failMessage,
+        });
+        throw new Error(failMessage);
       }
+      track(MetaMetricsEventName.PerpsRiskManagement, {
+        [PERPS_EVENT_PROPERTY.ASSET]: position.symbol,
+        [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.SUCCESS,
+      });
       const streamManager = getPerpsStreamManager();
       streamManager.setOptimisticTPSL(
         position.symbol,
@@ -315,7 +334,7 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
     } finally {
       setIsSaving(false);
     }
-  }, [isEligible, position, editingTpPrice, editingSlPrice, onClose]);
+  }, [isEligible, position, editingTpPrice, editingSlPrice, onClose, track]);
 
   useLayoutEffect(() => {
     onSubmitStateChange?.({

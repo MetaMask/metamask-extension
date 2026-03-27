@@ -1,4 +1,8 @@
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback, useMemo, useEffect, useRef } from 'react';
+import {
+  PERPS_EVENT_PROPERTY,
+  PERPS_EVENT_VALUE,
+} from '@metamask/perps-controller';
 import { useSelector, useDispatch } from 'react-redux';
 import {
   Modal,
@@ -26,6 +30,8 @@ import { useTheme } from '../../../../hooks/useTheme';
 // eslint-disable-next-line import-x/no-restricted-paths
 import { getEnvironmentType } from '../../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../../shared/constants/app';
+import { MetaMetricsEventName } from '../../../../../shared/constants/metametrics';
+import { usePerpsEventTracking } from '../../../../hooks/perps';
 import WhatArePerpsStep from './steps/WhatArePerpsStep';
 import GoLongShortStep from './steps/GoLongShortStep';
 import ChooseLeverageStep from './steps/ChooseLeverageStep';
@@ -44,6 +50,8 @@ const PerpsTutorialModal: React.FC<PerpsTutorialModalProps> = ({ onClose }) => {
   const activeStep = useSelector(selectTutorialActiveStep);
   const dispatch = useDispatch();
   const theme = useTheme();
+  const { track } = usePerpsEventTracking();
+  const tutorialOpenTrackedRef = useRef(false);
   const isPopup = getEnvironmentType() === ENVIRONMENT_TYPE_POPUP;
 
   // Use a shorter height for popup to avoid scroll
@@ -59,6 +67,25 @@ const PerpsTutorialModal: React.FC<PerpsTutorialModalProps> = ({ onClose }) => {
     [currentStepIndex],
   );
 
+  useEffect(() => {
+    if (!isOpen) {
+      tutorialOpenTrackedRef.current = false;
+      return;
+    }
+    if (tutorialOpenTrackedRef.current) {
+      return;
+    }
+    tutorialOpenTrackedRef.current = true;
+    track(MetaMetricsEventName.PerpsScreenViewed, {
+      [PERPS_EVENT_PROPERTY.SCREEN_TYPE]:
+        PERPS_EVENT_VALUE.SCREEN_TYPE.TUTORIAL,
+    });
+    track(MetaMetricsEventName.PerpsUiInteraction, {
+      [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
+        PERPS_EVENT_VALUE.INTERACTION_TYPE.TUTORIAL_STARTED,
+    });
+  }, [isOpen, track]);
+
   const handleClose = useCallback(() => {
     dispatch(setTutorialModalOpen(false));
     dispatch(setTutorialActiveStep(PerpsTutorialStep.WhatArePerps));
@@ -67,12 +94,22 @@ const PerpsTutorialModal: React.FC<PerpsTutorialModalProps> = ({ onClose }) => {
 
   const handleContinue = useCallback(() => {
     if (isLastStep) {
+      track(MetaMetricsEventName.PerpsUiInteraction, {
+        [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
+          PERPS_EVENT_VALUE.INTERACTION_TYPE.TUTORIAL_COMPLETED,
+      });
       dispatch(markTutorialCompleted());
     } else {
       const nextStep = TUTORIAL_STEPS_ORDER[currentStepIndex + 1];
+      track(MetaMetricsEventName.PerpsUiInteraction, {
+        [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
+          PERPS_EVENT_VALUE.INTERACTION_TYPE.TUTORIAL_NAVIGATION,
+        [PERPS_EVENT_PROPERTY.PREVIOUS_SCREEN]: activeStep,
+        [PERPS_EVENT_PROPERTY.CURRENT_SCREEN]: nextStep,
+      });
       dispatch(setTutorialActiveStep(nextStep));
     }
-  }, [dispatch, isLastStep, currentStepIndex]);
+  }, [dispatch, isLastStep, currentStepIndex, activeStep, track]);
 
   const handleSkip = useCallback(() => {
     dispatch(setTutorialModalOpen(false));

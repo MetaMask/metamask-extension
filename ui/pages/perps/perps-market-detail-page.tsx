@@ -26,7 +26,12 @@ import {
   ButtonSize,
 } from '@metamask/design-system-react';
 import { brandColor } from '@metamask/design-tokens';
-import type { Position, PriceUpdate } from '@metamask/perps-controller';
+import {
+  PERPS_EVENT_PROPERTY,
+  PERPS_EVENT_VALUE,
+  type Position,
+  type PriceUpdate,
+} from '@metamask/perps-controller';
 import { getIsPerpsExperienceAvailable } from '../../selectors/perps/feature-flags';
 import { getSelectedInternalAccount } from '../../selectors/accounts';
 import { useI18nContext } from '../../hooks/useI18nContext';
@@ -41,7 +46,7 @@ import {
   usePerpsLiveMarketData,
   usePerpsLiveCandles,
 } from '../../hooks/perps/stream';
-import { usePerpsEligibility } from '../../hooks/perps';
+import { usePerpsEligibility, usePerpsEventTracking } from '../../hooks/perps';
 import { getPerpsStreamManager } from '../../providers/perps';
 import { submitRequestToBackground } from '../../store/background-connection';
 import { OrderCard } from '../../components/app/perps/order-card';
@@ -73,6 +78,7 @@ import { ClosePositionModal } from '../../components/app/perps/close-position';
 import InfoTooltip from '../../components/ui/info-tooltip/info-tooltip';
 import { BorderRadius } from '../../helpers/constants/design-system';
 import type { MetaMaskReduxState } from '../../store/store';
+import { MetaMetricsEventName } from '../../../shared/constants/metametrics';
 import {
   type PerpsState,
   selectPerpsIsWatchlistMarket,
@@ -180,6 +186,8 @@ const PerpsMarketDetailPage: React.FC = () => {
   const selectedAccount = useSelector(getSelectedInternalAccount);
   const selectedAddress = selectedAccount?.address;
   const { isEligible } = usePerpsEligibility();
+  const { track } = usePerpsEventTracking();
+  const assetDetailScreenTrackedRef = useRef(false);
   const {
     formatCurrencyWithMinThreshold,
     formatNumber,
@@ -580,12 +588,17 @@ const PerpsMarketDetailPage: React.FC = () => {
     if (!decodedSymbol) {
       return;
     }
+    track(MetaMetricsEventName.PerpsUiInteraction, {
+      [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
+        PERPS_EVENT_VALUE.INTERACTION_TYPE.FAVORITE_TOGGLED,
+      [PERPS_EVENT_PROPERTY.ASSET]: decodedSymbol,
+    });
     submitRequestToBackground('perpsToggleWatchlistMarket', [
       decodedSymbol,
     ]).catch((e) => {
       console.warn('[Perps] Toggle watchlist failed:', e);
     });
-  }, [decodedSymbol]);
+  }, [decodedSymbol, track]);
 
   // Refetch positions when tab becomes visible (catch changes made elsewhere)
   useEffect(() => {
@@ -606,6 +619,22 @@ const PerpsMarketDetailPage: React.FC = () => {
     return () =>
       document.removeEventListener('visibilitychange', handleVisibility);
   }, [selectedAddress]);
+
+  useEffect(() => {
+    if (
+      marketsLoading ||
+      !decodedSymbol ||
+      assetDetailScreenTrackedRef.current
+    ) {
+      return;
+    }
+    assetDetailScreenTrackedRef.current = true;
+    track(MetaMetricsEventName.PerpsScreenViewed, {
+      [PERPS_EVENT_PROPERTY.SCREEN_TYPE]:
+        PERPS_EVENT_VALUE.SCREEN_TYPE.ASSET_DETAILS,
+      [PERPS_EVENT_PROPERTY.ASSET]: decodedSymbol,
+    });
+  }, [marketsLoading, decodedSymbol, track]);
 
   // No-op handler for order cards - orders on detail page are already
   // filtered to current market, so clicking should not navigate anywhere
