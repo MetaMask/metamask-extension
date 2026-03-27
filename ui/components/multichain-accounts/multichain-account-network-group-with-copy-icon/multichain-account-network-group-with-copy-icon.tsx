@@ -50,7 +50,7 @@ export const MultichainAccountNetworkGroupWithCopyIcon = ({
   const showDefaultAddressPreference = useSelector(
     getShowDefaultAddressPreference,
   );
-  const { defaultAddress, defaultScopes } = useSelector((state) =>
+  const { defaultAddress } = useSelector((state) =>
     getDefaultScopeAndAddressByAccountGroupId(state, groupId),
   );
   const shouldShowDefaultAddress =
@@ -78,28 +78,24 @@ export const MultichainAccountNetworkGroupWithCopyIcon = ({
       padding={1}
       gap={1}
       className={classnames(
-        'rounded-lg inline-flex',
+        'rounded-lg h-6',
         shouldShowDefaultAddress && 'cursor-pointer',
       )}
       data-testid="network-group-with-copy-icon"
     >
       <MultichainAccountNetworkGroup
         groupId={groupId}
-        chainIds={
-          shouldShowDefaultAddress && defaultScopes.length > 0
-            ? defaultScopes.slice(0, MAX_NETWORK_AVATARS)
-            : undefined
-        }
         limit={MAX_NETWORK_AVATARS}
       />
       {shouldShowDefaultAddress && (
         <Text
+          ellipsis
           variant={TextVariant.BodySm}
           fontWeight={FontWeight.Medium}
           color={
             addressCopied ? TextColor.SuccessDefault : TextColor.TextAlternative
           }
-          style={{ lineHeight: 0 }}
+          className="flex-1"
           data-testid="default-address-container"
         >
           {addressCopied

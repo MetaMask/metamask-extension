@@ -5,6 +5,7 @@ import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { Driver } from '../../webdriver/driver';
 import { login } from '../../page-objects/flows/login.flow';
 import NonEvmHomepage from '../../page-objects/pages/home/non-evm-homepage';
+import HomePage from '../../page-objects/pages/home/homepage';
 import NetworkManager from '../../page-objects/pages/network-manager';
 import { mockTronApis } from './mocks/common-tron';
 
@@ -19,14 +20,16 @@ describe('Check balance', function (this: Suite) {
       },
       async ({ driver }: { driver: Driver }) => {
         await login(driver);
+        const homePage = new HomePage(driver);
+        await homePage.waitForNonEvmAccountsLoaded();
 
         const networkManager = new NetworkManager(driver);
         await networkManager.openNetworkManager();
         await networkManager.selectTab('Popular');
         await networkManager.selectNetworkByNameWithWait('Tron');
 
-        const homePage = new NonEvmHomepage(driver);
-        await homePage.checkPageIsLoaded({ amount: '0 TRX' });
+        const nonEvmHomePage = new NonEvmHomepage(driver);
+        await nonEvmHomePage.checkPageIsLoaded({ amount: '0 TRX' });
       },
     );
   });
@@ -42,15 +45,17 @@ describe('Check balance', function (this: Suite) {
       },
       async ({ driver }: { driver: Driver }) => {
         await login(driver, { validateBalance: false });
+        const homePage = new HomePage(driver);
+        await homePage.waitForNonEvmAccountsLoaded();
 
         const networkManager = new NetworkManager(driver);
         await networkManager.openNetworkManager();
         await networkManager.selectTab('Popular');
         await networkManager.selectNetworkByNameWithWait('Tron');
 
-        const homePage = new NonEvmHomepage(driver);
+        const nonEvmHomePage = new NonEvmHomepage(driver);
         // TRX_BALANCE = 6072392 SUN = ~6.07 TRX * $0.29469 = ~$1.79
-        await homePage.checkPageIsLoaded({ amount: '$10.18' });
+        await nonEvmHomePage.checkPageIsLoaded({ amount: '$10.18' });
       },
     );
   });
@@ -64,15 +69,17 @@ describe('Check balance', function (this: Suite) {
       },
       async ({ driver }: { driver: Driver }) => {
         await login(driver);
+        const homePage = new HomePage(driver);
+        await homePage.waitForNonEvmAccountsLoaded();
 
         const networkManager = new NetworkManager(driver);
         await networkManager.openNetworkManager();
         await networkManager.selectTab('Popular');
         await networkManager.selectNetworkByNameWithWait('Tron');
 
-        const homePage = new NonEvmHomepage(driver);
+        const nonEvmHomePage = new NonEvmHomepage(driver);
         // TRX_BALANCE = 6072392 SUN = ~6.07 TRX
-        await homePage.checkPageIsLoaded({ amount: '6.072 TRX' });
+        await nonEvmHomePage.checkPageIsLoaded({ amount: '6.072 TRX' });
       },
     );
   });
