@@ -1,5 +1,5 @@
 import React from 'react';
-import { act, fireEvent, waitFor } from '@testing-library/react';
+import { act, cleanup, fireEvent, waitFor } from '@testing-library/react';
 import { CHAIN_IDS } from '@metamask/transaction-controller';
 import { ERC20 } from '@metamask/controller-utils';
 import * as bridgeControllerModule from '@metamask/bridge-controller';
@@ -10,6 +10,10 @@ import {
   getTokenStandardAndDetailsByChain,
   setPendingTokens,
   setConfirmationExchangeRates,
+  importCustomAssetsBatch,
+  addImportedTokens,
+  hideImportTokensModal,
+  setNewTokensImported,
 } from '../../../store/actions';
 import mockState from '../../../../test/data/mock-state.json';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
@@ -37,20 +41,72 @@ jest.mock('../../../store/actions', () => ({
   getTokenStandardAndDetailsByChain: jest
     .fn()
     .mockImplementation(() => Promise.resolve({ standard: 'ERC20' })),
-  setPendingTokens: jest
-    .fn()
-    .mockImplementation(() => ({ type: 'SET_PENDING_TOKENS' })),
+  setPendingTokens: jest.fn().mockImplementation((pendingTokens) => {
+    const {
+      customToken,
+      selectedTokens = {},
+      tokenAddressList = [],
+    } = pendingTokens;
+    const tokens =
+      customToken?.address &&
+      customToken?.symbol &&
+      Boolean(customToken?.decimals >= 0 && customToken?.decimals <= 36)
+        ? {
+            ...selectedTokens,
+            [customToken.address]: {
+              ...customToken,
+              isCustom: true,
+            },
+          }
+        : selectedTokens;
+    Object.keys(tokens).forEach((tokenAddress) => {
+      const found = tokenAddressList.find(
+        (addr) => addr.toLowerCase() === tokenAddress.toLowerCase(),
+      );
+      tokens[tokenAddress] = { ...tokens[tokenAddress], unlisted: !found };
+    });
+    return { type: 'SET_PENDING_TOKENS', payload: tokens };
+  }),
   clearPendingTokens: jest
     .fn()
     .mockImplementation(() => ({ type: 'CLEAR_PENDING_TOKENS' })),
   setConfirmationExchangeRates: jest
     .fn()
     .mockImplementation(() => ({ type: 'SET_CONFIRMATION_EXCHANGE_RATES' })),
+  importCustomAssetsBatch: jest
+    .fn()
+    .mockImplementation(() => ({ type: 'IMPORT_CUSTOM_ASSETS_BATCH' })),
+  addImportedTokens: jest
+    .fn()
+    .mockImplementation(() => ({ type: 'ADD_IMPORTED_TOKENS' })),
+  hideImportTokensModal: jest
+    .fn()
+    .mockImplementation(() => ({ type: 'HIDE_IMPORT_TOKENS_MODAL' })),
+  setNewTokensImported: jest
+    .fn()
+    .mockImplementation(() => ({ type: 'SET_NEW_TOKENS_IMPORTED' })),
+  setNewTokensImportedError: jest
+    .fn()
+    .mockImplementation(() => ({ type: 'SET_NEW_TOKENS_IMPORTED_ERROR' })),
+  showImportNftsModal: jest
+    .fn()
+    .mockImplementation(() => ({ type: 'SHOW_IMPORT_NFTS_MODAL' })),
+  getTokenSymbol: jest.fn().mockImplementation(() => Promise.resolve('META')),
 }));
 
 describe('ImportTokensModal', () => {
+  afterEach(() => {
+    cleanup();
+  });
+
   beforeEach(() => {
     jest.clearAllMocks();
+
+    // Re-set the default implementation after clearAllMocks to avoid leakage
+    // from tests that override it (e.g. the NFT detection test).
+    getTokenStandardAndDetailsByChain.mockImplementation(() =>
+      Promise.resolve({ standard: 'ERC20' }),
+    );
 
     useTokensWithFiltering.mockReturnValue({
       *filteredTokenListGenerator() {
@@ -82,9 +138,17 @@ describe('ImportTokensModal', () => {
         }
         return chainId;
       });
+
+    jest
+      .spyOn(assetUtilsModule, 'toAssetId')
+      .mockImplementation((address, _chainId) => `eip155:5/erc20:${address}`);
   });
 
-  const render = (metamaskStateChanges = {}, onClose = jest.fn()) => {
+  const render = (
+    metamaskStateChanges = {},
+    onClose = jest.fn(),
+    { appStateChanges = {} } = {},
+  ) => {
     const store = configureStore({
       ...mockState,
       metamask: {
@@ -96,6 +160,10 @@ describe('ImportTokensModal', () => {
             data: {},
           },
         },
+      },
+      appState: {
+        ...mockState.appState,
+        ...appStateChanges,
       },
     });
     return renderWithProvider(<ImportTokensModal onClose={onClose} />, store);
@@ -463,6 +531,226 @@ describe('ImportTokensModal', () => {
       const { getByTestId } = render();
 
       expect(getByTestId('import-tokens-button-next')).toBeDisabled();
+    });
+  });
+
+  describe('Import confirmation with pendingMetadataByAssetId', () => {
+    const tokenAddress = '0x617b3f8050a0BD94b6b1da02B4384eE5B4DF13F4';
+
+    const enableAssetsUnifyState = {
+      remoteFeatureFlags: {
+        assetsUnifyState: {
+          enabled: true,
+          featureVersion: '1',
+        },
+      },
+    };
+
+    /**
+     * Helper to go through the custom token flow up to the confirmation view.
+     * Fills in address/symbol/decimals, clicks Next, and waits for the Import button.
+     *
+     * @param {object} renderResult - @testing-library/react render result for the modal.
+     * @param {object} [options]
+     * @param {string} [options.address] - Token contract address.
+     * @param {string} [options.symbol] - Token symbol.
+     * @param {string} [options.decimals] - Token decimals as string for the input field.
+     */
+    const navigateToConfirmation = async (
+      renderResult,
+      { address = tokenAddress, symbol = 'META', decimals = '2' } = {},
+    ) => {
+      const { getByText, getByTestId } = renderResult;
+
+      // Switch to custom token tab
+      fireEvent.click(getByText(messages.customToken.message));
+
+      // Fill address
+      await act(async () => {
+        fireEvent.change(getByTestId('import-tokens-modal-custom-address'), {
+          target: { value: address },
+        });
+      });
+
+      // Wait for symbol/decimals to appear
+      await waitFor(() =>
+        expect(
+          getByTestId('import-tokens-modal-custom-symbol'),
+        ).toBeInTheDocument(),
+      );
+
+      // Fill symbol
+      fireEvent.change(getByTestId('import-tokens-modal-custom-symbol'), {
+        target: { value: symbol },
+      });
+
+      // Fill decimals
+      fireEvent.change(getByTestId('import-tokens-modal-custom-decimals'), {
+        target: { value: decimals },
+      });
+
+      // Click Next
+      await act(async () => {
+        fireEvent.click(getByText(messages.next.message));
+      });
+
+      // Wait for confirmation view
+      await waitFor(() => {
+        expect(
+          getByTestId('import-tokens-modal-import-button'),
+        ).toBeInTheDocument();
+      });
+    };
+
+    it('passes pendingMetadataByAssetId to importCustomAssetsBatch when assetsUnifyState is enabled', async () => {
+      const result = render({
+        ...enableAssetsUnifyState,
+        tokens: [],
+        tokenList: {},
+      });
+
+      await navigateToConfirmation(result);
+
+      await act(async () => {
+        fireEvent.click(
+          result.getByTestId('import-tokens-modal-import-button'),
+        );
+      });
+
+      await waitFor(() => {
+        expect(importCustomAssetsBatch).toHaveBeenCalledWith(
+          'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+          [
+            expect.objectContaining({
+              assetId: `eip155:5/erc20:${tokenAddress}`,
+            }),
+          ],
+          expect.objectContaining({
+            [`eip155:5/erc20:${tokenAddress}`]: expect.objectContaining({
+              address: tokenAddress,
+              symbol: 'META',
+              decimals: 2,
+            }),
+          }),
+        );
+      });
+    });
+
+    it('includes iconUrl and unlisted fields in metadata', async () => {
+      const result = render({
+        ...enableAssetsUnifyState,
+        tokens: [],
+        tokenList: {},
+      });
+
+      await navigateToConfirmation(result);
+
+      await act(async () => {
+        fireEvent.click(
+          result.getByTestId('import-tokens-modal-import-button'),
+        );
+      });
+
+      await waitFor(() => {
+        const metadataArg = importCustomAssetsBatch.mock.calls[0][2];
+        const assetKey = Object.keys(metadataArg)[0];
+        const metadata = metadataArg[assetKey];
+        expect(metadata).toHaveProperty('iconUrl');
+        expect(metadata).toHaveProperty('unlisted');
+        expect(metadata).toHaveProperty('chainId');
+      });
+    });
+
+    it('uses token symbol as fallback name when name is null or undefined', async () => {
+      // For custom tokens, the name defaults to '' (empty string).
+      // The ?? operator only falls back for null/undefined, so '' stays as ''.
+      // This test verifies the fallback logic: name ?? symbol
+      const result = render({
+        ...enableAssetsUnifyState,
+        tokens: [],
+        tokenList: {},
+      });
+
+      await navigateToConfirmation(result);
+
+      await act(async () => {
+        fireEvent.click(
+          result.getByTestId('import-tokens-modal-import-button'),
+        );
+      });
+
+      await waitFor(() => {
+        const metadataArg = importCustomAssetsBatch.mock.calls[0][2];
+        const assetKey = Object.keys(metadataArg)[0];
+        // Custom tokens pass empty string as name; ?? does not override empty strings
+        expect(metadataArg[assetKey].name).toBe('');
+        // Verify the symbol is correctly stored separately
+        expect(metadataArg[assetKey].symbol).toBe('META');
+      });
+    });
+
+    it('does not call importCustomAssetsBatch when assetsUnifyState is disabled', async () => {
+      const result = render({ tokens: [], tokenList: {} });
+
+      await navigateToConfirmation(result);
+
+      await act(async () => {
+        fireEvent.click(
+          result.getByTestId('import-tokens-modal-import-button'),
+        );
+      });
+
+      await waitFor(() => {
+        expect(addImportedTokens).toHaveBeenCalled();
+      });
+
+      expect(importCustomAssetsBatch).not.toHaveBeenCalled();
+    });
+
+    it('calls addImportedTokens for EVM tokens when assetsUnifyState is disabled', async () => {
+      const result = render({ tokens: [], tokenList: {} });
+
+      await navigateToConfirmation(result);
+
+      await act(async () => {
+        fireEvent.click(
+          result.getByTestId('import-tokens-modal-import-button'),
+        );
+      });
+
+      await waitFor(() => {
+        expect(addImportedTokens).toHaveBeenCalledWith(
+          expect.arrayContaining([
+            expect.objectContaining({
+              address: tokenAddress,
+              symbol: 'META',
+            }),
+          ]),
+          expect.any(String),
+        );
+      });
+    });
+
+    it('dispatches setNewTokensImported and clearPendingTokens after successful import', async () => {
+      const result = render({
+        ...enableAssetsUnifyState,
+        tokens: [],
+        tokenList: {},
+      });
+
+      await navigateToConfirmation(result);
+
+      await act(async () => {
+        fireEvent.click(
+          result.getByTestId('import-tokens-modal-import-button'),
+        );
+      });
+
+      await waitFor(() => {
+        expect(setNewTokensImported).toHaveBeenCalledWith('META');
+        expect(clearPendingTokens).toHaveBeenCalled();
+        expect(hideImportTokensModal).toHaveBeenCalled();
+      });
     });
   });
 });

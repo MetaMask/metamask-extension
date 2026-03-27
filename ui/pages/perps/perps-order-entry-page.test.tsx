@@ -443,7 +443,7 @@ describe('PerpsOrderEntryPage', () => {
       );
     });
 
-    it('calls updatePositionTPSL when in modify mode', async () => {
+    it('calls updatePositionTPSL when in modify mode with amount 0', async () => {
       mockSearchParams.set('mode', 'modify');
       mockLivePositions.mockReturnValue({
         positions: mockPositions,
@@ -465,6 +465,38 @@ describe('PerpsOrderEntryPage', () => {
           }),
         ],
       );
+    });
+
+    it('navigates back after successful modify add-to-position market order', async () => {
+      mockSearchParams.set('mode', 'modify');
+      mockLivePositions.mockReturnValue({
+        positions: mockPositions,
+        isInitialLoading: false,
+      });
+
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      const amountContainer = screen.getByTestId('amount-input-field');
+      const input = amountContainer.querySelector('input');
+      fireEvent.change(input as HTMLInputElement, {
+        target: { value: '500' },
+      });
+
+      await act(async () => {
+        fireEvent.click(screen.getByTestId('submit-order-button'));
+      });
+
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'perpsPlaceOrder',
+        expect.arrayContaining([
+          expect.objectContaining({
+            symbol: 'ETH',
+            orderType: 'market',
+          }),
+        ]),
+      );
+      expect(mockUseNavigate).toHaveBeenCalledWith('/perps/market/ETH');
     });
 
     it('does not submit when currentPrice is 0', async () => {
