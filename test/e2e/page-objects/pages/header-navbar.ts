@@ -16,11 +16,6 @@ class HeaderNavbar {
   private readonly allPermissionsButton =
     '[data-testid="global-menu-connected-sites"]';
 
-  private readonly connectedSitePopoverNetworkButton =
-    '[data-testid="connected-site-popover-network-button"]';
-
-  private readonly connectionMenu = '[data-testid="connection-menu"]';
-
   private readonly copyAddressButton = '[aria-label="Copy address"]';
 
   private readonly drawerBackButton = '[data-testid="drawer-close-button"]';
@@ -33,6 +28,9 @@ class HeaderNavbar {
 
   private readonly globalNetworksMenu = '[data-testid="global-menu-networks"]';
 
+  private readonly dappNetworkButton =
+    '[data-testid="dapp-connection-control-bar__network-button"]';
+
   private readonly lockMetaMaskButton = '[data-testid="global-menu-lock"]';
 
   private readonly networkAddressesLink =
@@ -42,6 +40,9 @@ class HeaderNavbar {
     `[data-testid="${networkId}"]`;
 
   private readonly networkPicker = '.mm-picker-network';
+
+  private readonly toastBannerButton =
+    '.toasts-container__banner-base button[aria-label="Close"]';
 
   private readonly notificationCounterMenuIcon = {
     testId: 'notifications-tag-counter__unread-dot',
@@ -57,6 +58,8 @@ class HeaderNavbar {
     '[data-testid="account-list-menu-details"]';
 
   private readonly settingsButton = '[data-testid="global-menu-settings"]';
+
+  private readonly contactsButton = '[data-testid="global-menu-contacts"]';
 
   constructor(driver: Driver) {
     this.driver = driver;
@@ -156,6 +159,12 @@ class HeaderNavbar {
     await this.driver.clickElement(this.settingsButton);
   }
 
+  async openContactsPage(): Promise<void> {
+    console.log('Open contacts page');
+    await this.openGlobalMenu();
+    await this.driver.clickElement(this.contactsButton);
+  }
+
   async enableNotifications(): Promise<void> {
     console.log('Enabling notifications for the first time');
     await this.openGlobalMenu();
@@ -177,6 +186,14 @@ class HeaderNavbar {
   async checkNotificationCountInMenuOption(count: number): Promise<void> {
     await this.openGlobalMenu({ withNotificationCounter: true });
     await this.driver.findElement({
+      css: this.notificationCountOption,
+      text: count.toString(),
+    });
+  }
+
+  async clickNotificationCount(count: number): Promise<void> {
+    await this.openGlobalMenu({ withNotificationCounter: true });
+    await this.driver.clickElement({
       css: this.notificationCountOption,
       text: count.toString(),
     });
@@ -221,19 +238,13 @@ class HeaderNavbar {
   }
 
   /**
-   * Open the connection menu
+   * Open the dapp network selector from the connection control bar
    */
-  async openConnectionMenu(): Promise<void> {
-    console.log('Opening connection menu');
-    await this.driver.clickElement(this.connectionMenu);
-  }
-
-  /**
-   * Click the connected site popover network button
-   */
-  async clickConnectedSitePopoverNetworkButton(): Promise<void> {
-    console.log('Clicking connected site popover network button');
-    await this.driver.clickElement(this.connectedSitePopoverNetworkButton);
+  async openDappNetworkMenu(): Promise<void> {
+    console.log('Opening dapp network menu from control bar');
+    // the toast message automatically disappears after some seconds, so we need to use clickElementSafe to prevent race conditions
+    await this.driver.clickElementSafe(this.toastBannerButton, 3000);
+    await this.driver.clickElement(this.dappNetworkButton);
   }
 
   /**

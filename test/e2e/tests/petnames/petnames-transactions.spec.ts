@@ -1,7 +1,7 @@
 import { WINDOW_TITLES } from '../../constants';
 import { withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixtures/fixture-builder';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
+import { login } from '../../page-objects/flows/login.flow';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import Confirmation from '../../page-objects/pages/confirmations/confirmation';
 import { Driver } from '../../webdriver/driver';
@@ -17,7 +17,7 @@ describe('Petnames - Transactions', function () {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withPermissionControllerConnectedToTestDapp()
           .withNoNames()
           .build(),
@@ -26,7 +26,7 @@ describe('Petnames - Transactions', function () {
       async ({ driver }) => {
         const testDapp = new TestDapp(driver);
         const confirmation = new Confirmation(driver);
-        await loginWithBalanceValidation(driver);
+        await login(driver);
         await testDapp.openTestDappPage();
         await testDapp.clickSimpleSendButton();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
@@ -59,7 +59,7 @@ describe('Petnames - Transactions', function () {
   it('can save petnames for addresses in wallet send transactions', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withPreferencesController({
             featureFlags: {
               sendHexData: true,
@@ -71,7 +71,7 @@ describe('Petnames - Transactions', function () {
       },
       async ({ driver }) => {
         const confirmation = new Confirmation(driver);
-        await loginWithBalanceValidation(driver);
+        await login(driver);
         await createWalletSendTransaction(ADDRESS_MOCK, driver);
         await confirmation.checkAddressIsDisplayed(ADDRESS_MOCK_RENDERED);
 

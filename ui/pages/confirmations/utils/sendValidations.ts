@@ -9,6 +9,7 @@ import {
   isTronAddress,
 } from '../../../../shared/lib/multichain/accounts';
 import { getTokenStandardAndDetailsByChain } from '../../../store/actions';
+
 import { RecipientValidationResult } from '../types/send';
 import { LOWER_CASED_BURN_ADDRESSES } from '../constants/token';
 
@@ -78,6 +79,7 @@ export const validateEvmHexAddress = async (
     if (tokenDetails?.standard) {
       return {
         error: 'tokenContractError',
+        allowAcknowledge: true,
       };
     }
   }

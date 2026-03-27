@@ -1,3 +1,9 @@
+import type {
+  Funding,
+  Order,
+  OrderFill,
+  UserHistoryItem,
+} from '@metamask/perps-controller';
 import {
   FillType,
   PerpsOrderTransactionStatus,
@@ -14,12 +20,6 @@ import {
   type WithdrawalRequest,
   type DepositRequest,
 } from './transactionTransforms';
-import type {
-  Funding,
-  Order,
-  OrderFill,
-  UserHistoryItem,
-} from '@metamask/perps-controller';
 
 // Helper to create mock OrderFill
 const createMockFill = (overrides: Partial<OrderFill> = {}): OrderFill => ({
@@ -461,6 +461,8 @@ describe('Transaction Transform Utilities', () => {
       expect(result[0].type).toBe('withdrawal');
       expect(result[0].title).toBe('Withdrew 250.00 USDC');
       expect(result[0].depositWithdrawal?.amount).toBe('-$250.00');
+      expect(result[0].depositWithdrawal?.amountNumber).toBe(-250);
+      expect(result[0].depositWithdrawal?.isPositive).toBe(false);
     });
 
     it('filters out non-completed withdrawal requests', () => {

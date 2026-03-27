@@ -112,10 +112,6 @@
   "addToken": {
     "message": "Aggiungi Token"
   },
-  "addTokenByContractAddress": {
-    "message": "Non trovi un token? Puoi aggiungere qualsiasi token incollando il suo indirizzo. L'indirizzo del contratto del Token può essere trovato su $1",
-    "description": "$1 is a blockchain explorer for a specific network, e.g. Etherscan for Ethereum"
-  },
   "address": {
     "message": "Indirizzo"
   },
@@ -124,9 +120,6 @@
   },
   "advancedBaseGasFeeToolTip": {
     "message": "Quando la tua transazione viene inclusa nel blocco, ogni differenza tra la tua offerta massima di gas e il gas effettivamente utilizzato viene restituita a te. Il totale viene calcolato come offerta massima di gas (in GEWI) * limite di gas."
-  },
-  "advancedGasFeeModalTitle": {
-    "message": "Tariffa gas avanzata"
   },
   "advancedGasPriceTitle": {
     "message": "Prezzo gas"
@@ -240,9 +233,6 @@
   "browserNotSupported": {
     "message": "Il tuo Browser non è supportato..."
   },
-  "buildContactList": {
-    "message": "Costruisci la tua lista contatti"
-  },
   "builtAroundTheWorld": {
     "message": "MetaMask è progettato e costruito in tutto il mondo."
   },
@@ -257,14 +247,6 @@
   },
   "cancelPopoverTitle": {
     "message": "Annulla transazione"
-  },
-  "cancelSpeedUpLabel": {
-    "message": "Questa commissione di gas $1 l'originale.",
-    "description": "$1 is text 'replace' in bold"
-  },
-  "cancelSpeedUpTransactionTooltip": {
-    "message": "Per $1 una transazione la commissione di gas deve crescere almeno del 10% per essere riconosciuto dalla rete.",
-    "description": "$1 is string 'cancel' or 'speed up'"
   },
   "cancelled": {
     "message": "Annullata"
@@ -458,10 +440,6 @@
   "dappSuggestedShortLabel": {
     "message": "Sito"
   },
-  "dappSuggestedTooltip": {
-    "message": "$1 ha consigliato questo prezzo.",
-    "description": "$1 represents the Dapp's origin"
-  },
   "darkTheme": {
     "message": "Scuro"
   },
@@ -560,9 +538,6 @@
   },
   "editAddressNickname": {
     "message": "Modifica indirizzo nickname"
-  },
-  "editCancellationGasFeeModalTitle": {
-    "message": "Modifica la tassa di cancellazione del gas"
   },
   "editContact": {
     "message": "Modifica contatto"
@@ -792,9 +767,6 @@
   "links": {
     "message": "Collegamenti"
   },
-  "loadMore": {
-    "message": "Carica di più"
-  },
   "loading": {
     "message": "Caricamento..."
   },
@@ -846,9 +818,6 @@
   },
   "newAccount": {
     "message": "Nuovo Account"
-  },
-  "newContact": {
-    "message": "Nuovo contatto"
   },
   "newContract": {
     "message": "Nuovo Contratto"
@@ -1298,12 +1267,6 @@
   },
   "usedByClients": {
     "message": "Usato da una varietà di clients diversi"
-  },
-  "userName": {
-    "message": "Nome utente"
-  },
-  "viewContact": {
-    "message": "Visualizza contatto"
   },
   "visitWebSite": {
     "message": "Visita il nostro sito web"

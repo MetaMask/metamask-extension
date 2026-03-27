@@ -6,7 +6,7 @@ import { Driver } from '../webdriver/driver';
 import FixtureBuilderV2 from '../fixtures/fixture-builder-v2';
 import ContractAddressRegistry from '../seeder/contract-address-registry';
 import { SMART_CONTRACTS } from '../seeder/smart-contracts';
-import { loginWithBalanceValidation } from '../page-objects/flows/login.flow';
+import { login } from '../page-objects/flows/login.flow';
 import { Anvil } from '../seeder/anvil';
 import { Ganache } from '../seeder/ganache';
 
@@ -35,7 +35,7 @@ describe('eth_call', function () {
         contractRegistry: ContractAddressRegistry;
       }) => {
         const contract = contractRegistry.getContractAddress(smartContract);
-        await loginWithBalanceValidation(driver, localNodes[0]);
+        await login(driver, { localNode: localNodes[0] });
 
         // eth_call
         await driver.openNewPage(`http://127.0.0.1:8080`);

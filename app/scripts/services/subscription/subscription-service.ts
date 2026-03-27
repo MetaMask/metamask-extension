@@ -24,13 +24,13 @@ import { isEqualCaseInsensitive } from '@metamask/controller-utils';
 import ExtensionPlatform from '../../platforms/extension';
 import { WebAuthenticator } from '../oauth/types';
 import { isSendBundleSupported } from '../../lib/transaction/sentinel-api';
-import { getIsSmartTransaction } from '../../../../shared/modules/selectors';
+import { getIsSmartTransaction } from '../../../../shared/lib/selectors';
 import {
   formatCaptureShieldPaymentMethodChangeEventProps,
   getSubscriptionRequestTrackingProps,
   getUserAccountTypeAndCategory,
   getUserBalanceCategory,
-} from '../../../../shared/modules/shield/metrics';
+} from '../../../../shared/lib/shield/metrics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -40,8 +40,8 @@ import {
   getIsShieldSubscriptionActive,
   getIsShieldSubscriptionPaused,
   getShieldSubscription,
+  SHIELD_ERROR,
 } from '../../../../shared/lib/shield';
-import { SHIELD_ERROR } from '../../../../shared/modules/shield';
 import {
   SubscriptionServiceAction,
   SubscriptionServiceEvent,
@@ -464,6 +464,7 @@ export class SubscriptionService {
 
       await this.#messenger.call(
         'SubscriptionController:submitShieldSubscriptionCryptoApproval',
+        // @ts-expect-error type is resolved when @metamask/subscription-controller upgrades to @metamask/transaction-controller v63
         txMeta,
         isSponsored,
         rewardAccountId,

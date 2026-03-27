@@ -1,7 +1,7 @@
 import { Mockttp, MockedEndpoint } from 'mockttp';
 import { withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixtures/fixture-builder';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
+import { login } from '../../page-objects/flows/login.flow';
 import NetworkManager from '../../page-objects/pages/network-manager';
 import NonEvmHomepage from '../../page-objects/pages/home/non-evm-homepage';
 import ActivityListPage from '../../page-objects/pages/home/activity-list';
@@ -126,8 +126,6 @@ async function mockSwapSOLtoUSDC(
     await mockGetMinimumBalanceForRentExemption(mockServer),
     await mockQuoteFromSoltoUSDC(mockServer),
     await mockMultiCoinPrice(mockServer),
-    await mockPriceApiSpotPriceSwap(mockServer),
-    await mockPriceApiExchangeRates(mockServer),
     await mockGetMultipleAccounts(mockServer),
     await mockSendSwapSolanaTransaction(mockServer, signatureHolder),
     await mockGetSOLUSDCTransaction(mockServer, signatureHolder),
@@ -144,12 +142,31 @@ describe('Swap on Solana', function () {
   it('Completes a Swap between SOL and USDC', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilderV2()
+          .withConversionRates({
+            'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501': {
+              conversionTime: 1770832998.066,
+              rate: '168.88',
+            },
+            'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v':
+              {
+                conversionTime: 1770832998.066,
+                rate: '0.999761',
+              },
+          })
+          .withCurrencyRates({
+            ETH: {
+              conversionDate: 1770832998.066,
+              conversionRate: 1932.163232734,
+              usdConversionRate: 1932.163232734,
+            },
+          })
+          .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockSwapSOLtoUSDC,
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         // Switch to Solana network
         const networkManager = new NetworkManager(driver);
@@ -174,18 +191,16 @@ describe('Swap on Solana', function () {
         await swapPage.clickOnMoreQuotes();
 
         await swapPage.checkQuote({
-          amount: '$32.00',
-          totalCost: '$168.88',
+          totalCost: '$32.00',
           receivedAmount: '136.9 USDC',
-          estimatedTime: '< 1 min',
+          receivedAmountInCurrency: '$136.88',
           provider: 'Dflow Via Li Fi',
         });
         await swapPage.checkQuote({
-          amount: '$32.00',
-          totalCost: '$168.88',
+          totalCost: '$32.00',
           receivedAmount: '136.9 USDC',
-          estimatedTime: '< 1 min',
           provider: 'Humidi Fi',
+          receivedAmountInCurrency: '$136.88',
         });
         await swapPage.closeQuotes();
 
@@ -209,12 +224,12 @@ describe('Swap on Solana', function () {
   it('Completes a Swap between USDC and SOL', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockSwapUSDCtoSOL,
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         // Switch to Solana network
         const networkManager = new NetworkManager(driver);
@@ -256,12 +271,12 @@ describe('Swap on Solana', function () {
   it('Swap has no quotes available', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockSwapNoQuotes,
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         // Switch to Solana network
         const networkManager = new NetworkManager(driver);
@@ -290,12 +305,12 @@ describe('Swap on Solana', function () {
   it('Swap transaction fails gracefully', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockSwapSOLtoUSDCFailed,
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         // Switch to Solana network
         const networkManager = new NetworkManager(driver);

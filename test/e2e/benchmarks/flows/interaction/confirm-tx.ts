@@ -5,7 +5,7 @@
 
 import FixtureBuilder from '../../../fixtures/fixture-builder';
 import { withFixtures } from '../../../helpers';
-import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
+import { login } from '../../../page-objects/flows/login.flow';
 import { createInternalTransaction } from '../../../page-objects/flows/transaction';
 import { Driver } from '../../../webdriver/driver';
 import { buildLongTaskTimerResults } from '../../utils/long-task-helper';
@@ -28,7 +28,7 @@ export async function run(): Promise<BenchmarkRunResult> {
         title: testTitle,
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         await createInternalTransaction({
           driver,

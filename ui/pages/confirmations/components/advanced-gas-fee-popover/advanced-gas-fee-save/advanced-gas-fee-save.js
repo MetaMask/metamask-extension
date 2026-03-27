@@ -1,6 +1,6 @@
 import React from 'react';
 import { PriorityLevels } from '../../../../../../shared/constants/gas';
-import { decGWEIToHexWEI } from '../../../../../../shared/modules/conversion.utils';
+import { decGWEIToHexWEI } from '../../../../../../shared/lib/conversion.utils';
 import { useTransactionModalContext } from '../../../../../contexts/transaction-modal';
 import { useGasFeeContext } from '../../../../../contexts/gasFee';
 import { useTransactionEventFragment } from '../../../hooks/useTransactionEventFragment';

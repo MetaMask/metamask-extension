@@ -15,7 +15,7 @@ import { getMostRecentOverviewPage } from '../../ducks/history/history';
 import { getNativeCurrency } from '../../ducks/metamask/metamask';
 import { MetaMetricsEventCategory } from '../../../shared/constants/metametrics';
 import { SECOND } from '../../../shared/constants/time';
-import { Numeric } from '../../../shared/modules/Numeric';
+import { Numeric } from '../../../shared/lib/Numeric';
 import { EtherDenomination } from '../../../shared/constants/common';
 import {
   ButtonIcon,

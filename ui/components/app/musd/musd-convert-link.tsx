@@ -5,7 +5,14 @@
  * Shows "Get X% bonus" text and navigates to the mUSD conversion flow.
  */
 
-import React, { useCallback, useContext } from 'react';
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
+import { useSelector } from 'react-redux';
 import type { Hex } from '@metamask/utils';
 import {
   FontWeight,
@@ -20,8 +27,15 @@ import {
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useMusdConversion } from '../../../hooks/musd';
+import { getMultichainNetworkConfigurationsByChainId } from '../../../selectors/multichain';
 import { MUSD_CONVERSION_APY } from './constants';
-import { MUSD_EVENTS_CONSTANTS } from './musd-events';
+import {
+  createMusdCtaClickedEventProperties,
+  musdConversionFlowEntryPointToCtaEventLocation,
+  MUSD_EVENTS_CONSTANTS,
+  resolveMusdConversionCtaRedirectsTo,
+  type MusdConvertLinkEntryPoint,
+} from './musd-events';
 
 // ============================================================================
 // Types
@@ -37,7 +51,7 @@ export type MusdConvertLinkProps = {
   /** Optional custom CTA text to display */
   ctaText?: string;
   /** Entry point for analytics tracking */
-  entryPoint?: 'token_list' | 'asset_overview';
+  entryPoint?: MusdConvertLinkEntryPoint;
 };
 
 // ============================================================================
@@ -63,7 +77,21 @@ export const MusdConvertLink: React.FC<MusdConvertLinkProps> = ({
 }) => {
   const t = useI18nContext();
   const { trackEvent } = useContext(MetaMetricsContext);
-  const { startConversionFlow } = useMusdConversion();
+  const { startConversionFlow, educationSeen } = useMusdConversion();
+  const networkConfigurationsByChainId = useSelector(
+    getMultichainNetworkConfigurationsByChainId,
+  );
+  const networkName =
+    networkConfigurationsByChainId[chainId as Hex]?.name ?? 'Unknown Network';
+  const [isLoading, setIsLoading] = useState(false);
+  const isMountedRef = useRef(true);
+
+  useEffect(() => {
+    isMountedRef.current = true;
+    return () => {
+      isMountedRef.current = false;
+    };
+  }, []);
 
   const displayText =
     ctaText ?? t('musdGetBonusPercentage', [String(MUSD_CONVERSION_APY)]);
@@ -73,36 +101,57 @@ export const MusdConvertLink: React.FC<MusdConvertLinkProps> = ({
       e.preventDefault();
       e.stopPropagation();
 
+      if (isLoading) {
+        return;
+      }
+
+      setIsLoading(true);
+
+      const redirectsTo = resolveMusdConversionCtaRedirectsTo({
+        intent: 'conversion',
+        educationSeen,
+      });
+      const eventLocation =
+        musdConversionFlowEntryPointToCtaEventLocation(entryPoint);
+
       trackEvent({
         event: MetaMetricsEventName.MusdConversionCtaClicked,
         category: MetaMetricsEventCategory.Tokens,
-        properties: {
-          location: MUSD_EVENTS_CONSTANTS.EVENT_LOCATIONS.TOKEN_LIST_ITEM,
-          /* eslint-disable @typescript-eslint/naming-convention */
-          cta_type: MUSD_EVENTS_CONSTANTS.MUSD_CTA_TYPES.SECONDARY,
-          cta_text: displayText,
-          cta_click_target:
-            MUSD_EVENTS_CONSTANTS.CTA_CLICK_TARGETS.CTA_TEXT_LINK,
-          chain_id: chainId,
-          token_symbol: tokenSymbol,
-          /* eslint-enable @typescript-eslint/naming-convention */
-        },
+        properties: createMusdCtaClickedEventProperties({
+          location: eventLocation,
+          redirectsTo,
+          ctaType: MUSD_EVENTS_CONSTANTS.MUSD_CTA_TYPES.SECONDARY,
+          ctaText: displayText,
+          chainId,
+          chainName: networkName,
+          assetSymbol: tokenSymbol,
+          clickTarget: MUSD_EVENTS_CONSTANTS.CTA_CLICK_TARGETS.CTA_TEXT_LINK,
+        }),
       });
 
-      await startConversionFlow({
-        preferredToken: {
-          address: tokenAddress as Hex,
-          chainId: chainId as Hex,
-        },
-        entryPoint,
-      });
+      try {
+        await startConversionFlow({
+          preferredToken: {
+            address: tokenAddress as Hex,
+            chainId: chainId as Hex,
+          },
+          entryPoint,
+        });
+      } finally {
+        if (isMountedRef.current) {
+          setIsLoading(false);
+        }
+      }
     },
     [
+      isLoading,
       chainId,
       tokenAddress,
       tokenSymbol,
       displayText,
       entryPoint,
+      educationSeen,
+      networkName,
       trackEvent,
       startConversionFlow,
     ],
@@ -112,6 +161,7 @@ export const MusdConvertLink: React.FC<MusdConvertLinkProps> = ({
     <button
       type="button"
       onClick={handleClick}
+      disabled={isLoading}
       data-testid={`musd-convert-link-${chainId}`}
       className="musd-convert-link"
     >
@@ -120,6 +170,7 @@ export const MusdConvertLink: React.FC<MusdConvertLinkProps> = ({
         color={TextColor.PrimaryDefault}
         fontWeight={FontWeight.Medium}
         data-testid="musd-convert-link-text"
+        style={isLoading ? { opacity: 0.5 } : undefined}
       >
         {displayText}
       </Text>

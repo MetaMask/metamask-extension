@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { CaipChainId, NonEmptyArray, Hex } from '@metamask/utils';
 import {
   getAllScopesFromCaip25CaveatValue,
@@ -14,7 +14,7 @@ import {
   FlexDirection,
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { getAllNetworkConfigurationsByCaipChainId } from '../../../../../shared/modules/selectors/networks';
+import { getAllNetworkConfigurationsByCaipChainId } from '../../../../../shared/lib/selectors/networks';
 import {
   getAllPermittedChainsForSelectedTab,
   getConnectedSitesList,
@@ -45,10 +45,7 @@ import { NoConnectionContent } from '../../../multichain/pages/connections/compo
 import { Content, Footer, Page } from '../../../multichain/pages/page';
 import { SubjectsType } from '../../../multichain/pages/connections/components/connections.types';
 import { CONNECT_ROUTE } from '../../../../helpers/constants/routes';
-import {
-  DisconnectAllModal,
-  DisconnectType,
-} from '../../../multichain/disconnect-all-modal/disconnect-all-modal';
+import { DisconnectAllModal } from '../../../multichain/disconnect-all-modal/disconnect-all-modal';
 import { DisconnectPermissionsModal } from '../../../multichain/disconnect-permissions-modal/disconnect-permissions-modal';
 import { PermissionsHeader } from '../../../multichain/permissions-header/permissions-header';
 import { EvmAndMultichainNetworkConfigurationsWithCaipChainId } from '../../../../selectors/selectors.types';
@@ -65,7 +62,7 @@ import {
   getPermissionMetaDataByOrigin,
 } from '../../../../selectors/gator-permissions/gator-permissions';
 import { PermissionsCell } from '../../../multichain/pages/gator-permissions/components';
-import { isGatorPermissionsRevocationFeatureEnabled } from '../../../../../shared/modules/environment';
+import { isGatorPermissionsRevocationFeatureEnabled } from '../../../../../shared/lib/environment';
 import { useRevokeGatorPermissionsMultiChain } from '../../../../hooks/gator-permissions/useRevokeGatorPermissionsMultiChain';
 
 export enum MultichainReviewPermissionsPageMode {
@@ -77,10 +74,10 @@ export const MultichainReviewPermissions = () => {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const urlParams = useParams<{ origin: string }>();
+  const [searchParams] = useSearchParams();
 
-  // @ts-expect-error TODO: Fix this type error by handling undefined parameters
-  const securedOrigin = decodeURIComponent(urlParams.origin);
+  const originParam = searchParams.get('origin');
+  const securedOrigin = decodeURIComponent(originParam ?? '');
   const [showAccountToast, setShowAccountToast] = useState(false);
   const [showNetworkToast, setShowNetworkToast] = useState(false);
   const [showDisconnectAllModal, setShowDisconnectAllModal] = useState(false);
@@ -382,8 +379,6 @@ export const MultichainReviewPermissions = () => {
 
           {showDisconnectAllModal ? (
             <DisconnectAllModal
-              type={DisconnectType.Account}
-              hostname={activeTabOrigin}
               onClose={() => setShowDisconnectAllModal(false)}
               onClick={() => {
                 setShowDisconnectAllModal(false);

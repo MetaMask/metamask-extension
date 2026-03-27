@@ -332,9 +332,6 @@
   "links": {
     "message": "Odkazy"
   },
-  "loadMore": {
-    "message": "Načítať viac"
-  },
   "loading": {
     "message": "Načítám..."
   },
@@ -369,9 +366,6 @@
   "newAccountNumberName": {
     "message": "Účet $1",
     "description": "Default name of next account to be created on create account screen"
-  },
-  "newContact": {
-    "message": "Nový kontakt"
   },
   "newContract": {
     "message": "Nový kontrakt"
@@ -621,12 +615,6 @@
   },
   "usedByClients": {
     "message": "Používána různými klienty"
-  },
-  "userName": {
-    "message": "Meno používateľa"
-  },
-  "viewContact": {
-    "message": "Zobraziť kontakt"
   },
   "visitWebSite": {
     "message": "Navštivte naši stránku"

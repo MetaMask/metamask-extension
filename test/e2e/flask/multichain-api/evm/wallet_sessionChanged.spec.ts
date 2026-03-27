@@ -8,14 +8,14 @@ import {
 import { toEvmCaipAccountId } from '../../../../../shared/lib/multichain/scope-utils';
 import { withFixtures } from '../../../helpers';
 import { Driver } from '../../../webdriver/driver';
-import FixtureBuilder from '../../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
 import ConnectAccountConfirmation from '../../../page-objects/pages/confirmations/connect-account-confirmation';
 import EditConnectedAccountsModal from '../../../page-objects/pages/dialog/edit-connected-accounts-modal';
 import HomePage from '../../../page-objects/pages/home/homepage';
 import PermissionListPage from '../../../page-objects/pages/permission/permission-list-page';
 import SitePermissionPage from '../../../page-objects/pages/permission/site-permission-page';
 import TestDappMultichain from '../../../page-objects/pages/test-dapp-multichain';
-import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
+import { login } from '../../../page-objects/flows/login.flow';
 import { openPermissionsPageFlow } from '../../../page-objects/flows/permissions.flow';
 import {
   DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
@@ -36,7 +36,7 @@ describe('Call `wallet_createSession`, then update the accounts and/or scopes in
     await withFixtures(
       {
         title: this.test?.fullTitle(),
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withNetworkControllerTripleNode()
           .build(),
         ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
@@ -48,7 +48,7 @@ describe('Call `wallet_createSession`, then update the accounts and/or scopes in
         driver: Driver;
         extensionId: string;
       }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         const testDapp = new TestDappMultichain(driver);
         await testDapp.openTestDappPage();

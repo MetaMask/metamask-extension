@@ -12,6 +12,7 @@ import {
   UpdateSnapState,
   CreateInterface,
   GetInterface,
+  SnapInterfaceControllerSetInterfaceDisplayedAction,
 } from '@metamask/snaps-controllers';
 import {
   KeyringControllerGetKeyringsByTypeAction,
@@ -51,6 +52,7 @@ export type SnapPermissionSpecificationsActions =
   | MaybeUpdateState
   | PreferencesControllerGetStateAction
   | RateLimitControllerCallApiAction<RateLimitedApiMap>
+  | SnapInterfaceControllerSetInterfaceDisplayedAction
   | TestOrigin
   | UpdateSnapState;
 
@@ -278,6 +280,11 @@ export function getSnapPermissionSpecifications(
 
           return snapKeyring;
         },
+
+        setInterfaceDisplayed: messenger.call.bind(
+          messenger,
+          'SnapInterfaceController:setInterfaceDisplayed',
+        ),
       },
     ),
   };

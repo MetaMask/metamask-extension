@@ -408,7 +408,7 @@ function PermittedNetworkToast() {
         actionText={t('editPermissions')}
         onActionClick={() => {
           dispatch(hidePermittedNetworkToast());
-          navigate(`${REVIEW_PERMISSIONS}/${safeEncodedHost}`);
+          navigate(`${REVIEW_PERMISSIONS}?origin=${safeEncodedHost}`);
         }}
         onClose={() => dispatch(hidePermittedNetworkToast())}
       />

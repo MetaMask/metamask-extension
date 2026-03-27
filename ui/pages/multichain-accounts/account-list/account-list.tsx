@@ -34,7 +34,7 @@ import {
 } from '../../../selectors/multichain-accounts/account-tree';
 import {
   getAllPermittedAccountsForCurrentTab,
-  getShowDefaultAddress,
+  getIsDefaultAddressEnabled,
 } from '../../../selectors';
 import { PREVIOUS_ROUTE } from '../../../helpers/constants/routes';
 import { AddWalletModal } from '../../../components/multichain-accounts/add-wallet-modal';
@@ -64,7 +64,7 @@ export const AccountList = () => {
   const [searchPattern, setSearchPattern] = useState<string>('');
   const groupsMetadata = useSelector(getNormalizedGroupsMetadata);
   const permittedAccounts = useSelector(getAllPermittedAccountsForCurrentTab);
-  const showDefaultAddress = useSelector(getShowDefaultAddress);
+  const isDefaultAddressEnabled = useSelector(getIsDefaultAddressEnabled);
 
   const {
     isAccountTreeSyncingInProgress,
@@ -171,7 +171,7 @@ export const AccountList = () => {
               isInSearchMode={Boolean(searchPattern)}
               displayWalletHeader={hasMultipleWallets}
               showConnectionStatus={permittedAccounts.length > 0}
-              showDefaultAddress={showDefaultAddress}
+              showHoverableNetworkGroup={isDefaultAddressEnabled}
             />
           ) : (
             <Box

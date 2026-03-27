@@ -13,12 +13,11 @@ import ToggleButton from '../../components/ui/toggle-button';
 
 export type SettingsToggleItemProps = {
   title: string;
-  description?: React.ReactNode;
+  description?: string | React.ReactNode;
   value: boolean;
   onToggle: (value: boolean) => void;
   containerDataTestId?: string;
   dataTestId: string;
-  sectionRef?: React.RefObject<HTMLDivElement>;
   disabled?: boolean;
 };
 
@@ -29,15 +28,9 @@ export const SettingsToggleItem = ({
   onToggle,
   containerDataTestId,
   dataTestId,
-  sectionRef,
   disabled,
 }: SettingsToggleItemProps) => (
-  <Box
-    ref={sectionRef}
-    flexDirection={BoxFlexDirection.Column}
-    gap={1}
-    paddingVertical={3}
-  >
+  <Box flexDirection={BoxFlexDirection.Column} gap={1} paddingVertical={3}>
     <Box
       flexDirection={BoxFlexDirection.Row}
       justifyContent={BoxJustifyContent.Between}
@@ -56,10 +49,19 @@ export const SettingsToggleItem = ({
         />
       </div>
     </Box>
-    {description && (
-      <Text variant={TextVariant.BodyMd} color={TextColor.TextAlternative}>
-        {description}
-      </Text>
-    )}
+    {description &&
+      (typeof description === 'string' ? (
+        <Text variant={TextVariant.BodyMd} color={TextColor.TextAlternative}>
+          {description}
+        </Text>
+      ) : (
+        <Text
+          variant={TextVariant.BodyMd}
+          color={TextColor.TextAlternative}
+          asChild
+        >
+          <div>{description}</div>
+        </Text>
+      ))}
   </Box>
 );

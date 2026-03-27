@@ -18,7 +18,7 @@ import { useGasFeeContext } from '../../../../../contexts/gasFee';
 import { useAdvancedGasFeePopoverContext } from '../context';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { Checkbox, Box } from '../../../../../components/component-library';
-import { Numeric } from '../../../../../../shared/modules/Numeric';
+import { Numeric } from '../../../../../../shared/lib/Numeric';
 
 const AdvancedGasFeeDefaults = () => {
   const t = useI18nContext();

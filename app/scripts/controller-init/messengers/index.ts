@@ -179,7 +179,6 @@ import { getAlertControllerMessenger } from './alert-controller-messenger';
 import { getMetaMetricsDataDeletionControllerMessenger } from './metametrics-data-deletion-controller-messenger';
 import { getLoggingControllerMessenger } from './logging-controller-messenger';
 import { getAppMetadataControllerMessenger } from './app-metadata-controller-messenger';
-import { getErrorReportingServiceMessenger } from './error-reporting-service-messenger';
 import { getApprovalControllerMessenger } from './approval-controller-messenger';
 import { getAddressBookControllerMessenger } from './address-book-controller-messenger';
 import { getDecryptMessageManagerMessenger } from './decrypt-message-manager-messenger';
@@ -209,6 +208,7 @@ import { getClaimsServiceMessenger } from './claims/claims-service-messenger';
 import { getProfileMetricsControllerMessenger } from './profile-metrics-controller-messenger';
 import { getProfileMetricsServiceMessenger } from './profile-metrics-service-messenger';
 import { getStorageServiceMessenger } from './storage-service-messenger';
+import { getPerpsControllerMessenger } from './perps-controller-messenger';
 
 export type { AccountOrderControllerMessenger } from './account-order-controller-messenger';
 export { getAccountOrderControllerMessenger } from './account-order-controller-messenger';
@@ -277,8 +277,6 @@ export {
   getEnsControllerMessenger,
   getEnsControllerInitMessenger,
 } from './ens-controller-messenger';
-export type { ErrorReportingServiceMessenger } from './error-reporting-service-messenger';
-export { getErrorReportingServiceMessenger } from './error-reporting-service-messenger';
 export type { StorageServiceMessenger } from './storage-service-messenger';
 export { getStorageServiceMessenger } from './storage-service-messenger';
 export type {
@@ -332,6 +330,8 @@ export {
 } from './permission-controller-messenger';
 export type { PermissionLogControllerMessenger } from './permission-log-controller-messenger';
 export { getPermissionLogControllerMessenger } from './permission-log-controller-messenger';
+export type { PerpsControllerMessenger } from './perps-controller-messenger';
+export { getPerpsControllerMessenger } from './perps-controller-messenger';
 export type { PhishingControllerMessenger } from './phishing-controller-messenger';
 export { getPhishingControllerMessenger } from './phishing-controller-messenger';
 export type {
@@ -521,10 +521,6 @@ export const CONTROLLER_MESSENGERS = {
     getMessenger: getEnsControllerMessenger,
     getInitMessenger: getEnsControllerInitMessenger,
   },
-  ErrorReportingService: {
-    getMessenger: getErrorReportingServiceMessenger,
-    getInitMessenger: noop,
-  },
   StorageService: {
     getMessenger: getStorageServiceMessenger,
     getInitMessenger: noop,
@@ -615,6 +611,10 @@ export const CONTROLLER_MESSENGERS = {
   },
   PermissionLogController: {
     getMessenger: getPermissionLogControllerMessenger,
+    getInitMessenger: noop,
+  },
+  PerpsController: {
+    getMessenger: getPerpsControllerMessenger,
     getInitMessenger: noop,
   },
   PhishingController: {

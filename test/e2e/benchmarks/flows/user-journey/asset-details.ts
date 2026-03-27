@@ -5,7 +5,7 @@
 
 import { generateWalletState } from '../../../../../app/scripts/fixtures/generate-wallet-state';
 import { withFixtures } from '../../../helpers';
-import { loginWithoutBalanceValidation } from '../../../page-objects/flows/login.flow';
+import { login } from '../../../page-objects/flows/login.flow';
 import { switchToNetworkFromNetworkSelect } from '../../../page-objects/flows/network.flow';
 import AccountListPage from '../../../page-objects/pages/account-list-page';
 import HeaderNavbar from '../../../page-objects/pages/header-navbar';
@@ -50,7 +50,7 @@ export async function runAssetDetailsBenchmark(): Promise<BenchmarkRunResult> {
       },
       async ({ driver }: { driver: Driver }) => {
         // Login flow
-        await loginWithoutBalanceValidation(driver);
+        await login(driver, { validateBalance: false });
 
         // Verify power user accounts are loaded correctly
         const headerNavbar = new HeaderNavbar(driver);

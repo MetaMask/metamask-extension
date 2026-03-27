@@ -345,9 +345,6 @@
   "links": {
     "message": "Посилання"
   },
-  "loadMore": {
-    "message": "Завантажити більше"
-  },
   "loading": {
     "message": "Завантаження..."
   },
@@ -394,9 +391,6 @@
   "newAccountNumberName": {
     "message": "Обліковий запис $1",
     "description": "Default name of next account to be created on create account screen"
-  },
-  "newContact": {
-    "message": "Новий контакт"
   },
   "newContract": {
     "message": "Новий контракт"
@@ -655,12 +649,6 @@
   },
   "usedByClients": {
     "message": "Використовується низкою різних клієнтів"
-  },
-  "userName": {
-    "message": "Ім’я користувача"
-  },
-  "viewContact": {
-    "message": "Переглянути контакт"
   },
   "visitWebSite": {
     "message": "Відвідайте наш веб-сайт"

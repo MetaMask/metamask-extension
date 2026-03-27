@@ -1,7 +1,12 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { screen, fireEvent, act } from '@testing-library/react';
+import { screen, fireEvent, act, waitFor } from '@testing-library/react';
+import type {
+  AccountState,
+  Position,
+  PerpsMarketData,
+} from '@metamask/perps-controller';
 import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
 import mockState from '../../../test/data/mock-state.json';
 import { enLocale as messages } from '../../../test/lib/i18n-helpers';
@@ -16,28 +21,38 @@ jest.mock('../../hooks/perps/usePerpsEligibility', () => ({
   usePerpsEligibility: () => ({ isEligible: true }),
 }));
 
-const mockGetPerpsController = jest.fn();
-jest.mock('../../providers/perps', () => ({
-  getPerpsController: (...args: unknown[]) => mockGetPerpsController(...args),
-  PerpsControllerProvider: ({ children }: { children: React.ReactNode }) =>
-    children,
+const mockStreamManagerBase = {
+  positions: {
+    getCachedData: () => [],
+    pushData: jest.fn(),
+    subscribe: jest.fn(() => jest.fn()),
+  },
+  orders: { getCachedData: () => [], pushData: jest.fn() },
+  account: { getCachedData: () => null, pushData: jest.fn() },
+  markets: { getCachedData: () => [], pushData: jest.fn() },
+  prices: { subscribe: jest.fn(() => jest.fn()), getCachedData: () => [] },
+  orderBook: { subscribe: jest.fn(() => jest.fn()), getCachedData: () => null },
+  setOptimisticTPSL: jest.fn(),
+  clearOptimisticTPSL: jest.fn(),
+  pushPositionsWithOverrides: jest.fn(),
+  prewarm: jest.fn(),
+  cleanupPrewarm: jest.fn(),
+  isInitialized: () => true,
+  init: jest.fn(),
+};
+const mockGetPerpsStreamManager = jest.fn(() => mockStreamManagerBase);
+
+const mockSubmitRequestToBackground = jest.fn().mockResolvedValue(undefined);
+jest.mock('../../store/background-connection', () => ({
+  submitRequestToBackground: (...args: unknown[]) =>
+    mockSubmitRequestToBackground(...args),
 }));
 
-jest.mock('../../providers/perps/PerpsStreamManager', () => ({
-  getPerpsStreamManager: () => ({
-    positions: { getCachedData: () => [], pushData: jest.fn() },
-    orders: { getCachedData: () => [], pushData: jest.fn() },
-    account: { getCachedData: () => null, pushData: jest.fn() },
-    markets: { getCachedData: () => [], pushData: jest.fn() },
-    setOptimisticTPSL: jest.fn(),
-    clearOptimisticTPSL: jest.fn(),
-    pushPositionsWithOverrides: jest.fn(),
-    prewarm: jest.fn(),
-    cleanupPrewarm: jest.fn(),
-    isInitialized: () => true,
-    init: jest.fn().mockResolvedValue(undefined),
-  }),
-}));
+jest.mock('../../providers/perps', () => {
+  return {
+    getPerpsStreamManager: () => mockGetPerpsStreamManager(),
+  };
+});
 
 const mockLivePositions = jest.fn<
   { positions: Position[]; isInitialLoading: boolean },
@@ -69,6 +84,18 @@ jest.mock('../../hooks/perps/stream', () => ({
   }),
   usePerpsLiveAccount: () => mockLiveAccount(),
   usePerpsLiveMarketData: () => mockLiveMarketData(),
+  usePerpsLiveCandles: () => ({
+    candleData: {
+      symbol: 'ETH',
+      interval: '5m',
+      candles: [],
+    },
+    isInitialLoading: false,
+    isLoadingMore: false,
+    hasHistoricalData: false,
+    error: null,
+    fetchMoreHistory: jest.fn(),
+  }),
 }));
 
 jest.mock('../../hooks/perps/useUserHistory', () => ({
@@ -104,14 +131,8 @@ jest.mock('react-router-dom', () => ({
   },
 }));
 
-// eslint-disable-next-line import/first
+// eslint-disable-next-line import-x/first
 import PerpsOrderEntryPage from './perps-order-entry-page';
-// eslint-disable-next-line import/first
-import type {
-  AccountState,
-  Position,
-  PerpsMarketData,
-} from '@metamask/perps-controller';
 
 describe('PerpsOrderEntryPage', () => {
   const middlewares = [thunk];
@@ -316,18 +337,8 @@ describe('PerpsOrderEntryPage', () => {
   });
 
   describe('order submission', () => {
-    const mockPlaceOrder = jest.fn().mockResolvedValue({ success: true });
-    const mockClosePosition = jest.fn().mockResolvedValue({ success: true });
-    const mockUpdateTPSL = jest.fn().mockResolvedValue({ success: true });
-
     beforeEach(() => {
-      mockGetPerpsController.mockResolvedValue({
-        placeOrder: mockPlaceOrder,
-        closePosition: mockClosePosition,
-        updatePositionTPSL: mockUpdateTPSL,
-        subscribeToPrices: jest.fn(() => jest.fn()),
-        subscribeToOrderBook: jest.fn(() => jest.fn()),
-      });
+      mockSubmitRequestToBackground.mockResolvedValue({ success: true });
     });
 
     it('calls placeOrder on submit for new market order', async () => {
@@ -344,19 +355,27 @@ describe('PerpsOrderEntryPage', () => {
         fireEvent.click(screen.getByTestId('submit-order-button'));
       });
 
-      expect(mockPlaceOrder).toHaveBeenCalledWith(
-        expect.objectContaining({
-          symbol: 'ETH',
-          isBuy: true,
-          orderType: 'market',
-        }),
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'perpsPlaceOrder',
+        [
+          expect.objectContaining({
+            symbol: 'ETH',
+            isBuy: true,
+            orderType: 'market',
+          }),
+        ],
       );
     });
 
     it('shows error when order fails', async () => {
-      mockPlaceOrder.mockResolvedValueOnce({
-        success: false,
-        error: 'Insufficient margin',
+      mockSubmitRequestToBackground.mockImplementation((method: string) => {
+        if (method === 'perpsPlaceOrder') {
+          return Promise.resolve({
+            success: false,
+            error: 'Insufficient margin',
+          });
+        }
+        return Promise.resolve({ success: true });
       });
 
       const store = mockStore(createMockState());
@@ -376,7 +395,12 @@ describe('PerpsOrderEntryPage', () => {
     });
 
     it('shows error when controller throws', async () => {
-      mockPlaceOrder.mockRejectedValueOnce(new Error('Network error'));
+      mockSubmitRequestToBackground.mockImplementation((method: string) => {
+        if (method === 'perpsPlaceOrder') {
+          return Promise.reject(new Error('Network error'));
+        }
+        return Promise.resolve({ success: true });
+      });
 
       const store = mockStore(createMockState());
       renderWithProvider(<PerpsOrderEntryPage />, store);
@@ -408,15 +432,18 @@ describe('PerpsOrderEntryPage', () => {
         fireEvent.click(screen.getByTestId('submit-order-button'));
       });
 
-      expect(mockClosePosition).toHaveBeenCalledWith(
-        expect.objectContaining({
-          symbol: 'ETH',
-          orderType: 'market',
-        }),
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'perpsClosePosition',
+        [
+          expect.objectContaining({
+            symbol: 'ETH',
+            orderType: 'market',
+          }),
+        ],
       );
     });
 
-    it('calls updatePositionTPSL when in modify mode', async () => {
+    it('calls updatePositionTPSL when in modify mode with amount 0', async () => {
       mockSearchParams.set('mode', 'modify');
       mockLivePositions.mockReturnValue({
         positions: mockPositions,
@@ -430,11 +457,46 @@ describe('PerpsOrderEntryPage', () => {
         fireEvent.click(screen.getByTestId('submit-order-button'));
       });
 
-      expect(mockUpdateTPSL).toHaveBeenCalledWith(
-        expect.objectContaining({
-          symbol: 'ETH',
-        }),
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'perpsUpdatePositionTPSL',
+        [
+          expect.objectContaining({
+            symbol: 'ETH',
+          }),
+        ],
       );
+    });
+
+    it('navigates back after successful modify add-to-position market order', async () => {
+      mockSearchParams.set('mode', 'modify');
+      mockLivePositions.mockReturnValue({
+        positions: mockPositions,
+        isInitialLoading: false,
+      });
+
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      const amountContainer = screen.getByTestId('amount-input-field');
+      const input = amountContainer.querySelector('input');
+      fireEvent.change(input as HTMLInputElement, {
+        target: { value: '500' },
+      });
+
+      await act(async () => {
+        fireEvent.click(screen.getByTestId('submit-order-button'));
+      });
+
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'perpsPlaceOrder',
+        expect.arrayContaining([
+          expect.objectContaining({
+            symbol: 'ETH',
+            orderType: 'market',
+          }),
+        ]),
+      );
+      expect(mockUseNavigate).toHaveBeenCalledWith('/perps/market/ETH');
     });
 
     it('does not submit when currentPrice is 0', async () => {
@@ -453,7 +515,10 @@ describe('PerpsOrderEntryPage', () => {
         fireEvent.click(screen.getByTestId('submit-order-button'));
       });
 
-      expect(mockPlaceOrder).not.toHaveBeenCalled();
+      expect(mockSubmitRequestToBackground).not.toHaveBeenCalledWith(
+        'perpsPlaceOrder',
+        expect.anything(),
+      );
     });
   });
 
@@ -464,11 +529,7 @@ describe('PerpsOrderEntryPage', () => {
         positions: mockPositions,
         isInitialLoading: false,
       });
-      mockGetPerpsController.mockResolvedValue({
-        closePosition: jest.fn().mockResolvedValue({ success: true }),
-        subscribeToPrices: jest.fn(() => jest.fn()),
-        subscribeToOrderBook: jest.fn(() => jest.fn()),
-      });
+      mockSubmitRequestToBackground.mockResolvedValue({ success: true });
 
       const store = mockStore(createMockState());
       renderWithProvider(<PerpsOrderEntryPage />, store);
@@ -477,8 +538,10 @@ describe('PerpsOrderEntryPage', () => {
         fireEvent.click(screen.getByTestId('submit-order-button'));
       });
 
-      // Close mode uses closePosition, not placeOrder with params
-      expect(mockGetPerpsController.mock.results[0]?.value).toBeDefined();
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'perpsClosePosition',
+        expect.any(Array),
+      );
     });
   });
 
@@ -521,31 +584,35 @@ describe('PerpsOrderEntryPage', () => {
     let orderBookCallback: (book: unknown) => void;
 
     beforeEach(() => {
-      mockGetPerpsController.mockResolvedValue({
-        placeOrder: jest.fn().mockResolvedValue({ success: true }),
-        closePosition: jest.fn().mockResolvedValue({ success: true }),
-        updatePositionTPSL: jest.fn().mockResolvedValue({ success: true }),
-        subscribeToPrices: jest.fn(
-          (opts: { callback: (u: unknown[]) => void }) => {
-            priceCallback = opts.callback;
+      mockGetPerpsStreamManager.mockReturnValue({
+        ...mockStreamManagerBase,
+        prices: {
+          subscribe: jest.fn((cb: (updates: unknown[]) => void) => {
+            priceCallback = cb;
             return jest.fn();
-          },
-        ),
-        subscribeToOrderBook: jest.fn(
-          (opts: { callback: (b: unknown) => void }) => {
-            orderBookCallback = opts.callback;
+          }) as jest.Mock,
+          getCachedData: () => [],
+        },
+        orderBook: {
+          subscribe: jest.fn((cb: (book: unknown) => void) => {
+            orderBookCallback = cb;
             return jest.fn();
-          },
-        ),
+          }) as jest.Mock,
+          getCachedData: () => null,
+        },
       });
+    });
+
+    afterEach(() => {
+      mockGetPerpsStreamManager.mockReturnValue(mockStreamManagerBase);
     });
 
     it('processes price updates from subscribeToPrices callback', async () => {
       const store = mockStore(createMockState());
       renderWithProvider(<PerpsOrderEntryPage />, store);
 
-      await act(async () => {
-        await new Promise((r) => setTimeout(r, 10));
+      await waitFor(() => {
+        expect(typeof priceCallback).toBe('function');
       });
 
       act(() => {
@@ -566,8 +633,8 @@ describe('PerpsOrderEntryPage', () => {
       const store = mockStore(createMockState());
       renderWithProvider(<PerpsOrderEntryPage />, store);
 
-      await act(async () => {
-        await new Promise((r) => setTimeout(r, 10));
+      await waitFor(() => {
+        expect(typeof priceCallback).toBe('function');
       });
 
       act(() => {
@@ -586,8 +653,8 @@ describe('PerpsOrderEntryPage', () => {
       const store = mockStore(createMockState());
       renderWithProvider(<PerpsOrderEntryPage />, store);
 
-      await act(async () => {
-        await new Promise((r) => setTimeout(r, 10));
+      await waitFor(() => {
+        expect(typeof priceCallback).toBe('function');
       });
 
       act(() => {
@@ -603,8 +670,8 @@ describe('PerpsOrderEntryPage', () => {
       const store = mockStore(createMockState());
       renderWithProvider(<PerpsOrderEntryPage />, store);
 
-      await act(async () => {
-        await new Promise((r) => setTimeout(r, 10));
+      await waitFor(() => {
+        expect(typeof orderBookCallback).toBe('function');
       });
 
       act(() => {
@@ -622,8 +689,8 @@ describe('PerpsOrderEntryPage', () => {
       const store = mockStore(createMockState());
       renderWithProvider(<PerpsOrderEntryPage />, store);
 
-      await act(async () => {
-        await new Promise((r) => setTimeout(r, 10));
+      await waitFor(() => {
+        expect(typeof orderBookCallback).toBe('function');
       });
 
       act(() => {
@@ -639,18 +706,8 @@ describe('PerpsOrderEntryPage', () => {
   });
 
   describe('order submission error paths', () => {
-    const mockPlaceOrder = jest.fn().mockResolvedValue({ success: true });
-    const mockClosePosition = jest.fn().mockResolvedValue({ success: true });
-    const mockUpdateTPSL = jest.fn().mockResolvedValue({ success: true });
-
     beforeEach(() => {
-      mockGetPerpsController.mockResolvedValue({
-        placeOrder: mockPlaceOrder,
-        closePosition: mockClosePosition,
-        updatePositionTPSL: mockUpdateTPSL,
-        subscribeToPrices: jest.fn(() => jest.fn()),
-        subscribeToOrderBook: jest.fn(() => jest.fn()),
-      });
+      mockSubmitRequestToBackground.mockResolvedValue({ success: true });
     });
 
     it('shows error when closePosition fails', async () => {
@@ -659,9 +716,11 @@ describe('PerpsOrderEntryPage', () => {
         positions: mockPositions,
         isInitialLoading: false,
       });
-      mockClosePosition.mockResolvedValueOnce({
-        success: false,
-        error: 'Close failed',
+      mockSubmitRequestToBackground.mockImplementation((method: string) => {
+        if (method === 'perpsClosePosition') {
+          return Promise.resolve({ success: false, error: 'Close failed' });
+        }
+        return Promise.resolve({ success: true });
       });
 
       const store = mockStore(createMockState());
@@ -680,9 +739,14 @@ describe('PerpsOrderEntryPage', () => {
         positions: mockPositions,
         isInitialLoading: false,
       });
-      mockUpdateTPSL.mockResolvedValueOnce({
-        success: false,
-        error: 'TPSL update failed',
+      mockSubmitRequestToBackground.mockImplementation((method: string) => {
+        if (method === 'perpsUpdatePositionTPSL') {
+          return Promise.resolve({
+            success: false,
+            error: 'TPSL update failed',
+          });
+        }
+        return Promise.resolve({ success: true });
       });
 
       const store = mockStore(createMockState());
@@ -696,7 +760,13 @@ describe('PerpsOrderEntryPage', () => {
     });
 
     it('shows generic error for non-Error throws', async () => {
-      mockPlaceOrder.mockRejectedValueOnce('string error');
+      mockSubmitRequestToBackground.mockImplementation((method: string) => {
+        if (method === 'perpsPlaceOrder') {
+          // eslint-disable-next-line prefer-promise-reject-errors
+          return Promise.reject('string error');
+        }
+        return Promise.resolve({ success: true });
+      });
 
       const store = mockStore(createMockState());
       renderWithProvider(<PerpsOrderEntryPage />, store);
@@ -716,7 +786,6 @@ describe('PerpsOrderEntryPage', () => {
 
     it('navigates back after successful limit order', async () => {
       mockSearchParams.set('orderType', 'limit');
-      mockPlaceOrder.mockResolvedValueOnce({ success: true });
 
       const store = mockStore(createMockState());
       renderWithProvider(<PerpsOrderEntryPage />, store);
@@ -737,11 +806,14 @@ describe('PerpsOrderEntryPage', () => {
         fireEvent.click(screen.getByTestId('submit-order-button'));
       });
 
-      expect(mockPlaceOrder).toHaveBeenCalledWith(
-        expect.objectContaining({
-          orderType: 'limit',
-          price: '3000',
-        }),
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'perpsPlaceOrder',
+        [
+          expect.objectContaining({
+            orderType: 'limit',
+            price: '3000',
+          }),
+        ],
       );
       expect(mockUseNavigate).toHaveBeenCalledWith('/perps/market/ETH');
     });
@@ -750,13 +822,7 @@ describe('PerpsOrderEntryPage', () => {
   describe('pending order effects', () => {
     beforeEach(() => {
       jest.useFakeTimers();
-      mockGetPerpsController.mockResolvedValue({
-        placeOrder: jest.fn().mockResolvedValue({ success: true }),
-        closePosition: jest.fn().mockResolvedValue({ success: true }),
-        updatePositionTPSL: jest.fn().mockResolvedValue({ success: true }),
-        subscribeToPrices: jest.fn(() => jest.fn()),
-        subscribeToOrderBook: jest.fn(() => jest.fn()),
-      });
+      mockSubmitRequestToBackground.mockResolvedValue({ success: true });
     });
 
     afterEach(() => {

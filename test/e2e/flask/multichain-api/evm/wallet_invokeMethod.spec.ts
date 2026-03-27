@@ -8,9 +8,9 @@ import {
 } from '../../../constants';
 import { toEvmCaipAccountId } from '../../../../../shared/lib/multichain/scope-utils';
 import { convertETHToHexGwei, withFixtures } from '../../../helpers';
-import FixtureBuilder from '../../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
 import TestDappMultichain from '../../../page-objects/pages/test-dapp-multichain';
-import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
+import { login } from '../../../page-objects/flows/login.flow';
 import ActivityListPage from '../../../page-objects/pages/home/activity-list';
 import ConnectAccountConfirmation from '../../../page-objects/pages/confirmations/connect-account-confirmation';
 import HomePage from '../../../page-objects/pages/home/homepage';
@@ -43,13 +43,13 @@ describe('Multichain API', function () {
       await withFixtures(
         {
           title: this.test?.fullTitle(),
-          fixtures: new FixtureBuilder()
+          fixtures: new FixtureBuilderV2()
             .withNetworkControllerTripleNode()
             .build(),
           ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
         },
         async ({ driver, extensionId }: FixtureCallbackArgs) => {
-          await loginWithBalanceValidation(driver);
+          await login(driver);
 
           const testDapp = new TestDappMultichain(driver);
           await testDapp.openTestDappPage();
@@ -93,13 +93,13 @@ describe('Multichain API', function () {
         await withFixtures(
           {
             title: this.test?.fullTitle(),
-            fixtures: new FixtureBuilder()
+            fixtures: new FixtureBuilderV2()
               .withNetworkControllerTripleNode()
               .build(),
             ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
           },
           async ({ driver, extensionId }: FixtureCallbackArgs) => {
-            await loginWithBalanceValidation(driver);
+            await login(driver);
 
             const testDapp = new TestDappMultichain(driver);
             await testDapp.openTestDappPage();
@@ -146,13 +146,13 @@ describe('Multichain API', function () {
         await withFixtures(
           {
             title: this.test?.fullTitle(),
-            fixtures: new FixtureBuilder()
+            fixtures: new FixtureBuilderV2()
               .withNetworkControllerTripleNode()
               .build(),
             ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
           },
           async ({ driver, extensionId }: FixtureCallbackArgs) => {
-            await loginWithBalanceValidation(driver);
+            await login(driver);
 
             const testDapp = new TestDappMultichain(driver);
             await testDapp.openTestDappPage();
@@ -251,13 +251,13 @@ describe('Multichain API', function () {
         await withFixtures(
           {
             title: this.test?.fullTitle(),
-            fixtures: new FixtureBuilder()
+            fixtures: new FixtureBuilderV2()
               .withNetworkControllerTripleNode()
               .build(),
             ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
           },
           async ({ driver, extensionId }: FixtureCallbackArgs) => {
-            await loginWithBalanceValidation(driver);
+            await login(driver);
 
             const testDapp = new TestDappMultichain(driver);
             await testDapp.openTestDappPage();
@@ -396,8 +396,8 @@ describe('Multichain API', function () {
           {
             ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
             title: this.test?.fullTitle(),
-            fixtures: new FixtureBuilder()
-              .withPermissionControllerConnectedToMultichainTestDapp()
+            fixtures: new FixtureBuilderV2()
+              .withPermissionControllerConnectedToTestDapp()
               .build(),
             localNodeOptions: [
               {
@@ -415,7 +415,7 @@ describe('Multichain API', function () {
             const scope = GANACHE_SCOPES[0];
             const method = 'wallet_getCapabilities';
 
-            await loginWithBalanceValidation(driver);
+            await login(driver);
 
             const testDapp = new TestDappMultichain(driver);
             await testDapp.openTestDappPage();
@@ -444,8 +444,8 @@ describe('Multichain API', function () {
           {
             ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
             title: this.test?.fullTitle(),
-            fixtures: new FixtureBuilder()
-              .withPermissionControllerConnectedToMultichainTestDapp()
+            fixtures: new FixtureBuilderV2()
+              .withPermissionControllerConnectedToTestDapp()
               .build(),
             localNodeOptions: [
               {
@@ -463,7 +463,7 @@ describe('Multichain API', function () {
             const scope = GANACHE_SCOPES[0];
             const method = 'wallet_sendCalls';
 
-            await loginWithBalanceValidation(driver);
+            await login(driver);
 
             const testDapp = new TestDappMultichain(driver);
             await testDapp.openTestDappPage();
@@ -517,8 +517,8 @@ describe('Multichain API', function () {
           {
             ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
             title: this.test?.fullTitle(),
-            fixtures: new FixtureBuilder()
-              .withPermissionControllerConnectedToMultichainTestDapp()
+            fixtures: new FixtureBuilderV2()
+              .withPermissionControllerConnectedToTestDapp()
               .build(),
             localNodeOptions: [
               {
@@ -536,7 +536,7 @@ describe('Multichain API', function () {
             const scope = GANACHE_SCOPES[0];
             const method = 'wallet_sendCalls';
 
-            await loginWithBalanceValidation(driver);
+            await login(driver);
 
             const testDapp = new TestDappMultichain(driver);
             await testDapp.openTestDappPage();

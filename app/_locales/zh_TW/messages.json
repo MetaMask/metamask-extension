@@ -615,9 +615,6 @@
   "links": {
     "message": "連結"
   },
-  "loadMore": {
-    "message": "載入更多"
-  },
   "loading": {
     "message": "載入..."
   },
@@ -702,9 +699,6 @@
   "newAccountNumberName": {
     "message": "帳戶 $1",
     "description": "Default name of next account to be created on create account screen"
-  },
-  "newContact": {
-    "message": "新聯絡資訊"
   },
   "newContract": {
     "message": "建立新合約"
@@ -1086,12 +1080,6 @@
   },
   "usedByClients": {
     "message": "可用於各種不同的客戶端"
-  },
-  "userName": {
-    "message": "使用者名稱"
-  },
-  "viewContact": {
-    "message": "觀看聯絡資訊"
   },
   "viewOnCustomBlockExplorer": {
     "message": "在 $1 瀏覽",

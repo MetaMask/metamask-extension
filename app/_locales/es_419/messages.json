@@ -112,10 +112,6 @@
   "addToken": {
     "message": "Agregar token"
   },
-  "addTokenByContractAddress": {
-    "message": "¿No encuentra un token? Para agregar un token, copie su dirección. Puede encontrar la dirección de contrato del token en $1",
-    "description": "$1 is a blockchain explorer for a specific network, e.g. Etherscan for Ethereum"
-  },
   "address": {
     "message": "Dirección"
   },
@@ -124,9 +120,6 @@
   },
   "advancedBaseGasFeeToolTip": {
     "message": "Cuando su transacción se incluya en el bloque, se reembolsará cualquier diferencia entre su tarifa base máxima y la tarifa base real. El importe total se calcula como tarifa base máxima (en GWEI) * límite de gas."
-  },
-  "advancedGasFeeModalTitle": {
-    "message": "Tarifa de gas avanzada"
   },
   "advancedGasPriceTitle": {
     "message": "Precio del gas"
@@ -241,9 +234,6 @@
   "browserNotSupported": {
     "message": "El explorador no es compatible..."
   },
-  "buildContactList": {
-    "message": "Cree su lista de contactos"
-  },
   "builtAroundTheWorld": {
     "message": "MetaMask está diseñado y construido en todo el mundo."
   },
@@ -261,14 +251,6 @@
   },
   "cancelPopoverTitle": {
     "message": "Cancelar transacción"
-  },
-  "cancelSpeedUpLabel": {
-    "message": "Esta tarifa de gas va a $1 el original.",
-    "description": "$1 is text 'replace' in bold"
-  },
-  "cancelSpeedUpTransactionTooltip": {
-    "message": "Para $1 una transacción, la tarifa de gas debe aumentar al menos un 10% para que sea reconocida por la red.",
-    "description": "$1 is string 'cancel' or 'speed up'"
   },
   "cancelled": {
     "message": "Cancelado"
@@ -440,10 +422,6 @@
   "dappSuggestedShortLabel": {
     "message": "Sitio"
   },
-  "dappSuggestedTooltip": {
-    "message": "$1 ha recomendado este precio.",
-    "description": "$1 represents the Dapp's origin"
-  },
   "data": {
     "message": "Datos"
   },
@@ -537,9 +515,6 @@
   "editAddressNickname": {
     "message": "Editar apodo de dirección"
   },
-  "editCancellationGasFeeModalTitle": {
-    "message": "Editar tarifa de cancelación de gas"
-  },
   "editContact": {
     "message": "Editar contacto"
   },
@@ -598,9 +573,6 @@
   "editGasPriceTooltip": {
     "message": "Esta red requiere un campo \"Precio del gas\" cuando se envía una transacción. El precio del gas es la cantidad que se pagará por unidad de gas."
   },
-  "editGasSubTextFeeLabel": {
-    "message": "Tarifa máxima:"
-  },
   "editGasTitle": {
     "message": "Editar prioridad"
   },
@@ -612,9 +584,6 @@
   },
   "editNonceMessage": {
     "message": "Esta es una función avanzada, úsela con precaución."
-  },
-  "editSpeedUpEditGasFeeModalTitle": {
-    "message": "Editar la tarifa de aceleración de gas"
   },
   "enableAutoDetect": {
     "message": " Activar autodetección"
@@ -744,9 +713,6 @@
   },
   "gasLimitV2": {
     "message": "Límite de gas"
-  },
-  "gasOption": {
-    "message": "Opción de gas"
   },
   "gasPriceExcessive": {
     "message": "Su tarifa de gas es demasiado alta. Considere reducir el importe."
@@ -975,9 +941,6 @@
   "links": {
     "message": "Enlaces"
   },
-  "loadMore": {
-    "message": "Cargar más"
-  },
   "loading": {
     "message": "Cargando..."
   },
@@ -1011,9 +974,6 @@
   },
   "maxFee": {
     "message": "Tarifa máxima"
-  },
-  "maxPriorityFee": {
-    "message": "Tarifa máxima de prioridad"
   },
   "medium": {
     "message": "Mercado"
@@ -1073,9 +1033,6 @@
   "networkDetails": {
     "message": "Detalles de la red"
   },
-  "networkIsBusy": {
-    "message": "La red está ocupada. Los precios del gas son altos y las estimaciones son menos precisas."
-  },
   "networkName": {
     "message": "Nombre de la red"
   },
@@ -1120,9 +1077,6 @@
   "newAccountNumberName": {
     "message": "Cuenta $1",
     "description": "Default name of next account to be created on create account screen"
-  },
-  "newContact": {
-    "message": "Contacto nuevo"
   },
   "newContract": {
     "message": "Contrato nuevo"
@@ -1760,9 +1714,6 @@
   "transactionDetailGasHeading": {
     "message": "Tarifa estimada de gas"
   },
-  "transactionDetailMultiLayerTotalSubtitle": {
-    "message": "Monto + cargos"
-  },
   "transactionError": {
     "message": "Error de transacción. Excepción generada en el código de contrato."
   },
@@ -1853,12 +1804,6 @@
   },
   "usedByClients": {
     "message": "Usado por una variedad de clientes distintos"
-  },
-  "userName": {
-    "message": "Nombre de usuario"
-  },
-  "viewContact": {
-    "message": "Ver contacto"
   },
   "viewOnBlockExplorer": {
     "message": "Ver en el explorador de bloques"

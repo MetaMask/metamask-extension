@@ -12,13 +12,6 @@
  * - Same API as real PerpsStreamManager for drop-in replacement
  */
 
-import {
-  mockPositions,
-  mockOrders,
-  mockAccountState,
-  mockCryptoMarkets,
-  mockHip3Markets,
-} from '../../../components/app/perps/mocks';
 import type {
   Position,
   Order,
@@ -26,6 +19,13 @@ import type {
   PerpsMarketData,
   CandleData,
 } from '@metamask/perps-controller';
+import {
+  mockPositions,
+  mockOrders,
+  mockAccountState,
+  mockCryptoMarkets,
+  mockHip3Markets,
+} from '../../../components/app/perps/mocks';
 
 /**
  * Simple channel implementation for mock data
@@ -250,6 +250,15 @@ class MockPerpsStreamManager {
 
     this.currentAddress = address;
     console.log(`[MockPerpsStreamManager] Initialized for ${address}`);
+  }
+
+  /**
+   * Mock initForAddress — delegates to init().
+   *
+   * @param address - The selected account address
+   */
+  async initForAddress(address: string): Promise<void> {
+    return this.init(address);
   }
 
   /**

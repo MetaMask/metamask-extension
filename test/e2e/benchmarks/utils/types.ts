@@ -1,6 +1,7 @@
 import type {
   Persona,
   BenchmarkType,
+  ThresholdViolation,
 } from '../../../../shared/constants/benchmarks';
 
 export type TimerResult = {
@@ -48,13 +49,6 @@ export type Metrics = {
   tbt?: number;
 };
 
-export type {
-  StatisticalResult,
-  Persona,
-  BenchmarkType,
-  BenchmarkResults,
-} from '../../../../shared/constants/benchmarks';
-
 /** User action result with testTitle, persona and numeric timing metrics. */
 export type UserActionResult = {
   testTitle: string;
@@ -97,39 +91,6 @@ export type TimerStatistics = {
   samples: number;
   outliers: number;
   dataQuality: 'good' | 'poor' | 'unreliable';
-};
-
-/**
- * Threshold limits for a single percentile
- */
-export type PercentileThreshold = {
-  /** Threshold (ms) that triggers a warning */
-  warn: number;
-  /** Threshold (ms) that triggers a failure */
-  fail: number;
-};
-
-/**
- * Configuration for performance thresholds
- * Each metric can have thresholds for P75 and/or P95 values
- */
-export type ThresholdConfig = {
-  [metricName: string]: {
-    /** P75 thresholds - typical user experience */
-    p75?: PercentileThreshold;
-    /** P95 thresholds - worst-case guardrail */
-    p95?: PercentileThreshold;
-    /** Multiplier for CI environments (e.g., 1.5 for slower CI machines) */
-    ciMultiplier?: number;
-  };
-};
-
-export type ThresholdViolation = {
-  metricId: string;
-  percentile: 'p75' | 'p95';
-  value: number;
-  threshold: number;
-  severity: 'warn' | 'fail';
 };
 
 export type BenchmarkSummary = {

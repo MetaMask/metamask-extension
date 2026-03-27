@@ -7,9 +7,9 @@ import {
   PLATFORM_FIREFOX,
 } from '../../../shared/constants/app';
 // TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
+// eslint-disable-next-line import-x/no-restricted-paths
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
-import { getBrowserName } from '../../../shared/modules/browser-runtime.utils';
+import { getBrowserName } from '../../../shared/lib/browser-runtime.utils';
 
 class WebcamUtils {
   static async checkStatus() {

@@ -27,7 +27,7 @@ describe('AppHeaderUnlockedContent trace', () => {
     jest.clearAllMocks();
   });
 
-  it('calls trace ShowAccountList when AccountPicker is clicked in multichain mode', () => {
+  it('calls trace ShowAccountList when AccountPicker is clicked in multichain mode', async () => {
     const store = configureStore(mockDefaultState);
     const menuRef = { current: null } as React.RefObject<HTMLButtonElement>;
     renderWithProvider(
@@ -38,13 +38,15 @@ describe('AppHeaderUnlockedContent trace', () => {
       store,
     );
 
-    const accountName = screen.getByText('Account 1');
+    const accountName = await screen.findByText('Account 1');
     fireEvent.click(accountName);
 
     const traceLib = jest.requireMock('../../../../shared/lib/trace');
-    expect(traceLib.trace).toHaveBeenCalledWith(
-      expect.objectContaining({ name: traceLib.TraceName.ShowAccountList }),
-    );
+    await waitFor(() => {
+      expect(traceLib.trace).toHaveBeenCalledWith(
+        expect.objectContaining({ name: traceLib.TraceName.ShowAccountList }),
+      );
+    });
     expect(mockNavigate).toHaveBeenCalledWith('/account-list');
   });
 
@@ -85,12 +87,12 @@ describe('AppHeaderUnlockedContent trace', () => {
 });
 
 describe('Default address section', () => {
-  it('renders the default address when feature flag is on', async () => {
+  it('renders the default address when feature flag and preference is on', async () => {
     const stateWithFlagOn = {
       ...mockDefaultState,
       metamask: {
         ...mockDefaultState.metamask,
-        remoteFeatureFlags: { extensionUxDefaultAddress: true },
+        remoteFeatureFlags: { extensionUxDefaultAddressVersioned: true },
         preferences: {
           ...mockDefaultState.metamask.preferences,
           showDefaultAddress: true,
@@ -107,23 +109,26 @@ describe('Default address section', () => {
       store,
     );
 
-    const container = await screen.findByTestId('default-address-container');
-    await waitFor(() => expect(container).toBeVisible());
+    await waitFor(() => {
+      expect(
+        screen.queryByTestId('default-address-container'),
+      ).toBeInTheDocument();
+    });
   });
 
-  it('does not render the default address when feature flag is off', async () => {
-    const stateWithFlagOff = {
+  it('does not render the default address text when preference is off', async () => {
+    const stateWithPreferenceOff = {
       ...mockDefaultState,
       metamask: {
         ...mockDefaultState.metamask,
-        remoteFeatureFlags: { extensionUxDefaultAddress: false },
+        remoteFeatureFlags: { extensionUxDefaultAddressVersioned: true },
         preferences: {
           ...mockDefaultState.metamask.preferences,
-          showDefaultAddress: true,
+          showDefaultAddress: false,
         },
       },
     };
-    const store = configureStore(stateWithFlagOff);
+    const store = configureStore(stateWithPreferenceOff);
     const menuRef = { current: null } as React.RefObject<HTMLButtonElement>;
     renderWithProvider(
       <AppHeaderUnlockedContent

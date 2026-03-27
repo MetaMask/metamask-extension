@@ -339,9 +339,6 @@
   "lineaGoerli": {
     "message": "Linea-testnetværk"
   },
-  "loadMore": {
-    "message": "Indlæs Mere"
-  },
   "loading": {
     "message": "Indlæser..."
   },
@@ -382,9 +379,6 @@
   "newAccountNumberName": {
     "message": "Konto $1",
     "description": "Default name of next account to be created on create account screen"
-  },
-  "newContact": {
-    "message": "Ny kontakt"
   },
   "newContract": {
     "message": "Ny Kontrakt"
@@ -628,12 +622,6 @@
   },
   "usedByClients": {
     "message": "Brugt af forskellige kunder"
-  },
-  "userName": {
-    "message": "Brugernavn"
-  },
-  "viewContact": {
-    "message": "Vis kontakt"
   },
   "visitWebSite": {
     "message": "Besøg vores webside"

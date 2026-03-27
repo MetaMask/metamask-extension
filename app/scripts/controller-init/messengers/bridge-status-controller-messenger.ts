@@ -1,6 +1,7 @@
 import { Messenger } from '@metamask/messenger';
 import type { AccountsControllerGetAccountByAddressAction } from '@metamask/accounts-controller';
 import type { HandleSnapRequest } from '@metamask/snaps-controllers';
+import type { KeyringControllerSignTypedMessageAction } from '@metamask/keyring-controller';
 import type {
   NetworkControllerFindNetworkClientIdByChainIdAction,
   NetworkControllerGetNetworkClientByIdAction,
@@ -9,6 +10,7 @@ import type {
 import type { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
 import {
   type TransactionControllerGetStateAction,
+  type TransactionControllerIsAtomicBatchSupportedAction,
   TransactionControllerTransactionConfirmedEvent,
   TransactionControllerTransactionFailedEvent,
 } from '@metamask/transaction-controller';
@@ -17,8 +19,7 @@ import type {
   BridgeControllerAction,
 } from '@metamask/bridge-controller';
 import type { GetGasFeeState } from '@metamask/gas-fee-controller';
-import type { AuthenticationControllerGetBearerToken } from '@metamask/profile-sync-controller/auth';
-import { MultichainTransactionsControllerTransactionConfirmedEvent } from '@metamask/multichain-transactions-controller';
+import type { AuthenticationControllerGetBearerTokenAction } from '@metamask/profile-sync-controller/auth';
 import { RootMessenger } from '../../lib/messenger';
 
 type AllowedActions =
@@ -27,15 +28,16 @@ type AllowedActions =
   | NetworkControllerGetNetworkClientByIdAction
   | HandleSnapRequest
   | TransactionControllerGetStateAction
+  | TransactionControllerIsAtomicBatchSupportedAction
   | BridgeControllerAction<BridgeBackgroundAction.TRACK_METAMETRICS_EVENT>
   | BridgeControllerAction<BridgeBackgroundAction.STOP_POLLING_FOR_QUOTES>
   | GetGasFeeState
   | AccountsControllerGetAccountByAddressAction
   | RemoteFeatureFlagControllerGetStateAction
-  | AuthenticationControllerGetBearerToken;
+  | KeyringControllerSignTypedMessageAction
+  | AuthenticationControllerGetBearerTokenAction;
 
 type AllowedEvents =
-  | MultichainTransactionsControllerTransactionConfirmedEvent
   | TransactionControllerTransactionFailedEvent
   | TransactionControllerTransactionConfirmedEvent;
 
@@ -69,16 +71,17 @@ export function getBridgeStatusControllerMessenger(
       'NetworkController:getNetworkClientById',
       'NetworkController:findNetworkClientIdByChainId',
       'NetworkController:getState',
+      'KeyringController:signTypedMessage',
       'BridgeController:trackUnifiedSwapBridgeEvent',
       'BridgeController:stopPollingForQuotes',
       'GasFeeController:getState',
       'SnapController:handleRequest',
       'TransactionController:getState',
+      'TransactionController:isAtomicBatchSupported',
       'RemoteFeatureFlagController:getState',
       'AuthenticationController:getBearerToken',
     ],
     events: [
-      'MultichainTransactionsController:transactionConfirmed',
       'TransactionController:transactionFailed',
       'TransactionController:transactionConfirmed',
     ],

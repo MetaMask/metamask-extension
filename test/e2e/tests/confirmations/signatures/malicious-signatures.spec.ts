@@ -10,7 +10,7 @@ import { TestSuiteArguments } from '../transactions/shared';
 import Confirmation from '../../../page-objects/pages/confirmations/confirmation';
 import ConfirmAlertModal from '../../../page-objects/pages/dialog/confirm-alert';
 import TestDapp, { SignatureType } from '../../../page-objects/pages/test-dapp';
-import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
+import { login } from '../../../page-objects/flows/login.flow';
 import {
   BlockaidReason,
   BlockaidResultType,
@@ -27,7 +27,7 @@ describe('Malicious Confirmation Signature - Bad Domain', function (this: Suite)
         const alertModal = new ConfirmAlertModal(driver);
         const testDapp = new TestDapp(driver);
 
-        await loginWithBalanceValidation(driver);
+        await login(driver);
         await testDapp.openTestDappAndTriggerSignature(
           SignatureType.SIWE_BadDomain,
         );
@@ -38,8 +38,6 @@ describe('Malicious Confirmation Signature - Bad Domain', function (this: Suite)
         await alertModal.acknowledgeAlert();
 
         await scrollAndConfirmAndAssertConfirm(driver);
-
-        await alertModal.confirmFromAlertModal();
 
         await testDapp.assertVerifiedSiweMessage(
           '0x24e559452c37827008633f9ae50c68cdb28e33f547f795af687839b520b022e4093c38bf1dfebda875ded715f2754d458ed62a19248e5a9bd2205bd1cb66f9b51b',
@@ -58,7 +56,7 @@ describe('Malicious Confirmation Signature - Bad Domain', function (this: Suite)
         const confirmation = new Confirmation(driver);
         const testDapp = new TestDapp(driver);
 
-        await loginWithBalanceValidation(driver);
+        await login(driver);
         await testDapp.openTestDappAndTriggerSignature(
           SignatureType.SIWE_BadDomain,
         );
@@ -119,7 +117,7 @@ describe('Malicious Confirmation Signature - Bad Domain', function (this: Suite)
         const alertModal = new ConfirmAlertModal(driver);
         const testDapp = new TestDapp(driver);
 
-        await loginWithBalanceValidation(driver);
+        await login(driver);
         await testDapp.openTestDappAndTriggerSignature(
           SignatureType.SIWE_BadDomain,
         );

@@ -185,7 +185,7 @@ For each changed section, check for violations across severity levels. **Referen
 - [ ] No non-serializable values in state (no Promises, functions, Maps/Sets)
 - [ ] **No inline selector functions** in useSelector (extract to memoized selectors)
 - [ ] **No identity functions** used as the result function of a memoized selector.
-- [ ] **No unmemoized input selectors** that return unstable object or array references. Use `createSelector` from the `reselect` library or an appropriate selector creator method from `shared/modules/selectors/selector-creators.ts` to memoize selector output.
+- [ ] **No unmemoized input selectors** that return unstable object or array references. Use `createSelector` from the `reselect` library or an appropriate selector creator method from `shared/lib/selectors/selector-creators.ts` to memoize selector output.
 
 **Component Files** → See `.cursor/rules/front-end-performance-rendering.mdc`, `.cursor/rules/front-end-performance-hooks-effects.mdc`, `.cursor/rules/front-end-performance-react-compiler.mdc`, and `.cursor/rules/coding-guidelines.mdc` for details:
 
@@ -472,8 +472,6 @@ Output the analysis in this **concise format**:
 [Analyze the git diff and write a 2-3 sentence summary:
 1. What is the reason for the change?
 2. What is the improvement/solution?]
-
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/MetaMask/metamask-extension/pull/PR?quickstart=1)
 
 ## **Changelog**
 

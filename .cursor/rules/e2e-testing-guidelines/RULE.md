@@ -82,33 +82,63 @@ For new test code, use `FixtureBuilderV2` by default.
 
 `FixtureBuilderV2` currently supports:
 
+**General controller methods**:
+
 - `withAccountsController`
 - `withAddressBookController`
 - `withAppStateController`
 - `withCurrencyController`
 - `withKeyringController`
 - `withMetaMetricsController`
+- `withMultichainAssetsRatesController`
+- `withMultichainRatesController`
+- `withNameController`
 - `withNetworkController`
+- `withNetworkEnablementController`
+- `withNftController`
 - `withOnboardingController`
 - `withPermissionController`
 - `withPreferencesController`
 - `withSelectedNetworkController`
+- `withTokenBalancesController`
+- `withTokenListController`
+- `withTokensController`
 - `withTransactionController`
+
+**Custom convenience methods**:
+
 - `withConversionRateDisabled`
+- `withConversionRates`
+- `withCurrencyRates`
+- `withKeyringControllerAdditionalAccountVault`
+- `withKeyringControllerMultiSRP`
+- `withKeyringControllerOldVault`
 - `withEnabledNetworks`
 - `withLedgerAccount`
 - `withNetworkControllerDoubleNode`
 - `withNetworkControllerTripleNode`
+- `withNftControllerERC1155`
+- `withNftControllerERC721`
+- `withNoNames`
 - `withPermissionControllerConnectedToTestDapp`
+- `withPreferencesControllerTxSimulationsDisabled`
 - `withSelectedNetwork`
 - `withSelectedNetworkControllerPerDomain`
 - `withShowNativeTokenAsMainBalanceDisabled`
 - `withShowNativeTokenAsMainBalanceEnabled`
 - `withSmartTransactionsOptedOut`
+- `withSnapController`
+- `withSnapControllerOnStartLifecycleSnap`
+- `withSnapsPrivacyWarningAlreadyShown`
+- `withStorageServiceData`
+- `withTokensControllerERC20`
+- `withTokenListControllerStorageServiceData`
 - `withTransactionControllerApprovedTransaction`
 - `withTransactionControllerCompletedAndIncomingTransaction`
 - `withTransactionControllerCompletedTransaction`
 - `withTransactionControllerIncomingTransaction`
+- `withTrezorAccount`
+- `withUseBasicFunctionalityDisabled`
 
 If your test only needs these methods (or just `.build()`), prefer `FixtureBuilderV2` instead of the legacy builder.
 

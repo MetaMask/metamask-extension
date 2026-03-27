@@ -1,6 +1,6 @@
 import { renderHook, act } from '@testing-library/react-hooks';
-import { usePerpsTransactionHistory } from './usePerpsTransactionHistory';
 import type { Order, OrderFill, Funding } from '@metamask/perps-controller';
+import { usePerpsTransactionHistory } from './usePerpsTransactionHistory';
 
 // Mock responses
 const mockFills: OrderFill[] = [
@@ -43,26 +43,11 @@ const mockFunding: Funding[] = [
   },
 ];
 
-// Mock provider methods
-const mockGetOrderFills = jest.fn();
-const mockGetOrders = jest.fn();
-const mockGetFunding = jest.fn();
-const mockGetUserHistory = jest.fn();
+const mockSubmitRequestToBackground = jest.fn();
 
-const mockGetActiveProvider = jest.fn(() => ({
-  getOrderFills: mockGetOrderFills,
-  getOrders: mockGetOrders,
-  getFunding: mockGetFunding,
-  getUserHistory: mockGetUserHistory,
-}));
-
-const mockController = {
-  getActiveProvider: mockGetActiveProvider,
-  subscribeToOrderFills: jest.fn(() => jest.fn()),
-};
-
-jest.mock('../../providers/perps', () => ({
-  usePerpsController: () => mockController,
+jest.mock('../../store/background-connection', () => ({
+  submitRequestToBackground: (...args: unknown[]) =>
+    mockSubmitRequestToBackground(...args),
 }));
 
 // Mock useUserHistory
@@ -86,10 +71,19 @@ jest.mock('./stream/usePerpsLiveFills', () => ({
 describe('usePerpsTransactionHistory', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    mockGetOrderFills.mockResolvedValue(mockFills);
-    mockGetOrders.mockResolvedValue(mockOrders);
-    mockGetFunding.mockResolvedValue(mockFunding);
-    mockGetUserHistory.mockResolvedValue([]);
+    // Default: return appropriate data per method
+    mockSubmitRequestToBackground.mockImplementation((method: string) => {
+      if (method === 'perpsGetOrderFills') {
+        return Promise.resolve(mockFills);
+      }
+      if (method === 'perpsGetOrders') {
+        return Promise.resolve(mockOrders);
+      }
+      if (method === 'perpsGetFunding') {
+        return Promise.resolve(mockFunding);
+      }
+      return Promise.resolve(undefined);
+    });
   });
 
   it('initializes with empty transactions', () => {
@@ -112,10 +106,18 @@ describe('usePerpsTransactionHistory', () => {
       await result.current.refetch();
     });
 
-    // Should have called all provider methods
-    expect(mockGetOrderFills).toHaveBeenCalled();
-    expect(mockGetOrders).toHaveBeenCalled();
-    expect(mockGetFunding).toHaveBeenCalled();
+    expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+      'perpsGetOrderFills',
+      expect.anything(),
+    );
+    expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+      'perpsGetOrders',
+      expect.anything(),
+    );
+    expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+      'perpsGetFunding',
+      expect.anything(),
+    );
 
     // Should have transactions from fills, orders, and funding
     expect(result.current.transactions.length).toBeGreaterThan(0);
@@ -136,7 +138,12 @@ describe('usePerpsTransactionHistory', () => {
   });
 
   it('handles provider errors gracefully', async () => {
-    mockGetOrderFills.mockRejectedValue(new Error('API error'));
+    mockSubmitRequestToBackground.mockImplementation((method: string) => {
+      if (method === 'perpsGetOrderFills') {
+        return Promise.reject(new Error('API error'));
+      }
+      return Promise.resolve([]);
+    });
 
     const { result } = renderHook(() =>
       usePerpsTransactionHistory({ skipInitialFetch: true }),
@@ -148,22 +155,6 @@ describe('usePerpsTransactionHistory', () => {
 
     expect(result.current.error).toBe('API error');
     expect(result.current.transactions).toEqual([]);
-  });
-
-  it('handles missing provider gracefully', async () => {
-    mockGetActiveProvider.mockReturnValueOnce(
-      null as unknown as ReturnType<typeof mockGetActiveProvider>,
-    );
-
-    const { result } = renderHook(() =>
-      usePerpsTransactionHistory({ skipInitialFetch: true }),
-    );
-
-    await act(async () => {
-      await result.current.refetch();
-    });
-
-    expect(result.current.error).toBe('No active provider available');
   });
 
   it('passes params to provider methods', async () => {
@@ -180,20 +171,20 @@ describe('usePerpsTransactionHistory', () => {
       await result.current.refetch();
     });
 
-    expect(mockGetOrderFills).toHaveBeenCalledWith({
-      accountId: 'eip155:1:0xabc',
-      aggregateByTime: false,
-    });
+    expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+      'perpsGetOrderFills',
+      [{ accountId: 'eip155:1:0xabc', aggregateByTime: false }],
+    );
 
-    expect(mockGetOrders).toHaveBeenCalledWith({
-      accountId: 'eip155:1:0xabc',
-    });
+    expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+      'perpsGetOrders',
+      [{ accountId: 'eip155:1:0xabc' }],
+    );
 
-    expect(mockGetFunding).toHaveBeenCalledWith({
-      accountId: 'eip155:1:0xabc',
-      startTime: 1000,
-      endTime: 2000,
-    });
+    expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+      'perpsGetFunding',
+      [{ accountId: 'eip155:1:0xabc', startTime: 1000, endTime: 2000 }],
+    );
   });
 
   it('enriches fills with detailedOrderType from orders', async () => {
@@ -229,9 +220,15 @@ describe('usePerpsTransactionHistory', () => {
       },
     ];
 
-    mockGetOrderFills.mockResolvedValue(fillWithOrderId);
-    mockGetOrders.mockResolvedValue(ordersWithDetails);
-    mockGetFunding.mockResolvedValue([]);
+    mockSubmitRequestToBackground.mockImplementation((method: string) => {
+      if (method === 'perpsGetOrderFills') {
+        return Promise.resolve(fillWithOrderId);
+      }
+      if (method === 'perpsGetOrders') {
+        return Promise.resolve(ordersWithDetails);
+      }
+      return Promise.resolve([]);
+    });
 
     const { result } = renderHook(() =>
       usePerpsTransactionHistory({ skipInitialFetch: true }),
@@ -251,7 +248,6 @@ describe('usePerpsTransactionHistory', () => {
   });
 
   it('removes duplicate transactions by ID', async () => {
-    // Create fills with same timestamp to potentially create duplicate IDs
     const duplicateFills: OrderFill[] = [
       {
         orderId: 'order-001',
@@ -267,9 +263,12 @@ describe('usePerpsTransactionHistory', () => {
       },
     ];
 
-    mockGetOrderFills.mockResolvedValue(duplicateFills);
-    mockGetOrders.mockResolvedValue([]);
-    mockGetFunding.mockResolvedValue([]);
+    mockSubmitRequestToBackground.mockImplementation((method: string) => {
+      if (method === 'perpsGetOrderFills') {
+        return Promise.resolve(duplicateFills);
+      }
+      return Promise.resolve([]);
+    });
 
     const { result } = renderHook(() =>
       usePerpsTransactionHistory({ skipInitialFetch: true }),
