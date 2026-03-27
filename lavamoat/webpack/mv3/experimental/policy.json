@@ -658,6 +658,9 @@
       }
     },
     "@metamask/assets-controller": {
+      "globals": {
+        "performance.now": true
+      },
       "packages": {
         "@metamask/controller-utils": true,
         "@metamask/utils": true,
@@ -1157,7 +1160,7 @@
       },
       "packages": {
         "@metamask/base-controller": true,
-        "@metamask/connectivity-controller": true,
+        "@metamask/network-controller>@metamask/connectivity-controller": true,
         "@metamask/controller-utils": true,
         "@metamask/network-controller>@metamask/eth-block-tracker": true,
         "@metamask/network-controller>@metamask/eth-json-rpc-infura": true,
