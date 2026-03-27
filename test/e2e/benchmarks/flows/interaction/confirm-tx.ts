@@ -8,10 +8,13 @@ import { withFixtures } from '../../../helpers';
 import { login } from '../../../page-objects/flows/login.flow';
 import { createInternalTransaction } from '../../../page-objects/flows/transaction';
 import { Driver } from '../../../webdriver/driver';
-import { BENCHMARK_PERSONA, BENCHMARK_TYPE } from '../../utils/constants';
-import type { BenchmarkRunResult } from '../../utils/types';
-import { runUserActionBenchmark } from '../../utils/runner';
-import { collectWebVitals } from '../../utils/web-vitals-collector';
+import {
+  BENCHMARK_PERSONA,
+  BENCHMARK_TYPE,
+  runUserActionBenchmark,
+  collectWebVitals,
+} from '../../utils';
+import type { BenchmarkRunResult } from '../../utils';
 
 export const testTitle = 'benchmark-user-actions-confirm-tx';
 export const persona = BENCHMARK_PERSONA.STANDARD;

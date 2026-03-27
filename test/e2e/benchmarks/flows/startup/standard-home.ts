@@ -6,14 +6,18 @@
 import FixtureBuilder from '../../../fixtures/fixture-builder';
 import { withFixtures } from '../../../helpers';
 import { login } from '../../../page-objects/flows/login.flow';
+import {
+  BENCHMARK_PERSONA,
+  runPageLoadBenchmark,
+  collectWebVitals,
+} from '../../utils';
 import type {
   BenchmarkResults,
   WebVitalsMetrics,
-} from '../../../../../shared/constants/benchmarks';
-import type { Metrics, PageLoadBenchmarkOptions } from '../../utils/types';
-import { BENCHMARK_PERSONA } from '../../utils/constants';
-import { runPageLoadBenchmark, type MeasurePageResult } from '../../utils';
-import { collectWebVitals } from '../../utils/web-vitals-collector';
+  Metrics,
+  PageLoadBenchmarkOptions,
+  MeasurePageResult,
+} from '../../utils';
 
 async function measurePageStandard(
   pageName: string,

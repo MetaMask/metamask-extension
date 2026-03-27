@@ -17,11 +17,13 @@ import {
   getTestSpecificMock,
   shouldUseMockedRequests,
 } from '../../utils/mock-config';
-import { BENCHMARK_PERSONA, WITH_STATE_POWER_USER } from '../../utils';
-import { BENCHMARK_TYPE } from '../../utils/constants';
-import type { WebVitalsMetrics } from '../../../../../shared/constants/benchmarks';
-import type { BenchmarkRunResult } from '../../utils/types';
-import { collectWebVitals } from '../../utils/web-vitals-collector';
+import {
+  BENCHMARK_PERSONA,
+  BENCHMARK_TYPE,
+  WITH_STATE_POWER_USER,
+  collectWebVitals,
+} from '../../utils';
+import type { WebVitalsMetrics, BenchmarkRunResult } from '../../utils';
 
 const ETH_TOKEN_ADDRESS = '0x0000000000000000000000000000000000000000';
 export const testTitle = 'benchmark-asset-details-power-user';

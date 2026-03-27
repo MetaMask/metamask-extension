@@ -26,10 +26,12 @@ import {
   getTestSpecificMock,
   shouldUseMockedRequests,
 } from '../../utils/mock-config';
-import { BENCHMARK_PERSONA, BENCHMARK_TYPE } from '../../utils/constants';
-import type { WebVitalsMetrics } from '../../../../../shared/constants/benchmarks';
-import type { BenchmarkRunResult } from '../../utils/types';
-import { collectWebVitals } from '../../utils/web-vitals-collector';
+import {
+  BENCHMARK_PERSONA,
+  BENCHMARK_TYPE,
+  collectWebVitals,
+} from '../../utils';
+import type { WebVitalsMetrics, BenchmarkRunResult } from '../../utils';
 
 export const testTitle = 'benchmark-onboarding-new-wallet';
 export const persona = BENCHMARK_PERSONA.STANDARD;

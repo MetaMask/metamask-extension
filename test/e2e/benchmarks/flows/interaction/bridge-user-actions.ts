@@ -14,10 +14,13 @@ import {
   MOCK_TOKENS_ETHEREUM,
 } from '../../../tests/bridge/constants';
 import { Driver } from '../../../webdriver/driver';
-import { BENCHMARK_PERSONA, BENCHMARK_TYPE } from '../../utils/constants';
-import type { BenchmarkRunResult } from '../../utils/types';
-import { runUserActionBenchmark } from '../../utils/runner';
-import { collectWebVitals } from '../../utils/web-vitals-collector';
+import {
+  BENCHMARK_PERSONA,
+  BENCHMARK_TYPE,
+  runUserActionBenchmark,
+  collectWebVitals,
+} from '../../utils';
+import type { BenchmarkRunResult } from '../../utils';
 
 export const testTitle = 'benchmark-user-actions-bridge-user-actions';
 export const persona = BENCHMARK_PERSONA.STANDARD;
