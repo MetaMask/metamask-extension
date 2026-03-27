@@ -635,9 +635,10 @@ export function transformWithdrawalRequestsToTransactions(
       const amountBN = new BigNumber(amount);
       const displayAmount = `-$${amountBN.toFixed(2)}`;
 
-      // For completed withdrawals, status is always positive (green)
+      // Completion status is separate from amount polarity.
+      // Withdrawals are outflows, so they are always negative for styling.
       const statusText = 'Completed';
-      const isPositive = true;
+      const isPositive = false;
 
       return {
         id: `withdrawal-${id}`,
