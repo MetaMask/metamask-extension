@@ -603,7 +603,7 @@ export default class MetamaskController extends EventEmitter {
       ExecutionService: ExecutionServiceInit,
       InstitutionalSnapController: InstitutionalSnapControllerInit,
       RateLimitController: RateLimitControllerInit,
-      SnapsRegistry: SnapRegistryControllerInit,
+      SnapRegistryController: SnapRegistryControllerInit,
       CronjobController: CronjobControllerInit,
       SelectedNetworkController: SelectedNetworkControllerInit,
       SnapController: SnapControllerInit,
@@ -729,7 +729,7 @@ export default class MetamaskController extends EventEmitter {
     this.snapController = controllersByName.SnapController;
     this.snapInsightsController = controllersByName.SnapInsightsController;
     this.snapInterfaceController = controllersByName.SnapInterfaceController;
-    this.snapsRegistry = controllersByName.SnapsRegistry;
+    this.snapsRegistry = controllersByName.SnapRegistryController;
     this.ppomController = controllersByName.PPOMController;
     this.phishingController = controllersByName.PhishingController;
     this.onboardingController = controllersByName.OnboardingController;
@@ -1360,7 +1360,7 @@ export default class MetamaskController extends EventEmitter {
         MultichainRatesController: this.multichainRatesController,
         SnapController: this.snapController,
         CronjobController: this.cronjobController,
-        SnapsRegistry: this.snapsRegistry,
+        SnapRegistryController: this.snapsRegistry,
         SnapInterfaceController: this.snapInterfaceController,
         SnapInsightsController: this.snapInsightsController,
         NameController: this.nameController,

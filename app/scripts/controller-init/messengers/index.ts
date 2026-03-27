@@ -653,7 +653,7 @@ export const CONTROLLER_MESSENGERS = {
     getMessenger: getSnapsNameProviderMessenger,
     getInitMessenger: noop,
   },
-  SnapsRegistry: {
+  SnapRegistryController: {
     getMessenger: getSnapRegistryControllerMessenger,
     getInitMessenger: noop,
   },

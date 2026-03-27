@@ -3,8 +3,8 @@ import {
   MessengerActions,
   MessengerEvents,
 } from '@metamask/messenger';
-import { RootMessenger } from '../../../lib/messenger';
 import { SnapRegistryControllerMessenger } from '@metamask/snaps-controllers';
+import { RootMessenger } from '../../../lib/messenger';
 
 /**
  * Get a restricted messenger for the Snaps registry. This is scoped to the
@@ -20,7 +20,7 @@ export function getSnapRegistryControllerMessenger(
   >,
 ) {
   return new Messenger({
-    namespace: 'SnapsRegistry',
+    namespace: 'SnapRegistryController',
     parent: controllerMessenger,
   });
 }

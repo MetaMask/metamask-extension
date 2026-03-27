@@ -377,7 +377,7 @@
   },
   "SnapInsightsController": { "insights": "object" },
   "SnapInterfaceController": { "interfaces": "object" },
-  "SnapsRegistry": {
+  "SnapRegistryController": {
     "database": "object",
     "databaseUnavailable": "boolean",
     "lastUpdated": "number",

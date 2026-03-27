@@ -2075,7 +2075,7 @@
     "SnapInterfaceController": {
       "interfaces": {}
     },
-    "SnapsRegistry": {
+    "SnapRegistryController": {
       "database": null,
       "databaseUnavailable": false,
       "lastUpdated": null,
