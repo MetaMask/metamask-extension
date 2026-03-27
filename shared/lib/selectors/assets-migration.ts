@@ -22,6 +22,7 @@ import {
   CurrencyRateState,
   MarketDataDetails,
   TokenRatesControllerState,
+  RatesControllerState,
 } from '@metamask/assets-controllers';
 import { AccountsControllerState } from '@metamask/accounts-controller';
 import { isEvmAccountType } from '@metamask/keyring-api';
@@ -70,11 +71,11 @@ import { createDeepEqualSelector } from './selector-creators';
 // conversionRates: DONE
 // historicalPrices: TODO (This state should be removed)
 //
+// RatesController
+// rates: DONE
+//
 // TokenListController
 // tokensChainsCache: TODO (There are no plans to port this state)
-//
-// RatesController
-// rates: TODO (This state should be removed)
 
 // This utility type makes the selector forceably require just the state that was originally required
 // For selectors with custom state input, this prevents their input type from requiring additional state that will not be needed after the migration
@@ -880,6 +881,69 @@ export const getMultichainAssetsRatesControllerConversionRates =
     MultichainAssetsRatesControllerState,
     'conversionRates'
   >;
+
+export const getRatesControllerRates = createDeepEqualSelector(
+  [
+    getIsAssetsUnifyStateEnabled,
+    (state: { metamask: RatesControllerState }) => state.metamask.rates ?? {},
+    (state: { metamask: AssetsControllerState }) =>
+      state.metamask?.assetsInfo ?? {},
+    (state: { metamask: AssetsControllerState }) =>
+      state.metamask?.assetsPrice ?? {},
+  ],
+  (isAssetsUnifyStateEnabled, rates, assetsInfo, assetsPrice) => {
+    if (!isAssetsUnifyStateEnabled) {
+      return rates;
+    }
+
+    const result: RatesControllerState['rates'] = {};
+
+    for (const [assetId, metadata] of Object.entries(assetsInfo)) {
+      const symbol = metadata.symbol.toLowerCase();
+
+      // Skip if we already have an entry for this symbol
+      if (result[symbol]) {
+        continue;
+      }
+
+      const assetType = parseCaipAssetType(assetId as CaipAssetType);
+      const price = assetsPrice[assetId];
+
+      // Skip if not a native asset, if evm or if not fungible
+      if (
+        metadata.type !== 'native' ||
+        assetType.chain.namespace === KnownCaipNamespace.Eip155 ||
+        price?.assetPriceType !== 'fungible'
+      ) {
+        continue;
+      }
+
+      result[symbol] = {
+        conversionDate: price.lastUpdated,
+        conversionRate: price.price,
+        usdConversionRate: price.usdPrice,
+      };
+    }
+
+    return result;
+  },
+) as unknown as ControllerStateSelector<RatesControllerState, 'rates'>;
+
+export const getRatesControllerFiatCurrency = createDeepEqualSelector(
+  [
+    getIsAssetsUnifyStateEnabled,
+    (state: { metamask: RatesControllerState }) => state.metamask.fiatCurrency,
+    (state: { metamask: AssetsControllerState }) =>
+      state.metamask.selectedCurrency,
+  ],
+  (isAssetsUnifyStateEnabled, fiatCurrency, selectedCurrency) => {
+    if (!isAssetsUnifyStateEnabled) {
+      return fiatCurrency;
+    }
+
+    return selectedCurrency;
+  },
+) as unknown as ControllerStateSelector<RatesControllerState, 'fiatCurrency'>;
 
 function parseBalanceWithDecimals(
   balanceString: string,

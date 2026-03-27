@@ -5,7 +5,9 @@ import type { AccountsControllerState } from '@metamask/accounts-controller';
 import type { AddressBookControllerState } from '@metamask/address-book-controller';
 import type {
   CurrencyRateState,
+  MultichainAssetsRatesControllerState,
   NftControllerState,
+  RatesControllerState,
   TokenBalancesControllerState,
   TokenListMap,
   TokenListState,
@@ -103,6 +105,18 @@ type FixtureBuildResult = FixtureType & {
   storageServiceData?: Record<string, unknown>;
 };
 
+/**
+ * Like `Partial<MultichainAssetsRatesControllerState>`, but `conversionRates` may be a
+ * partial map (lodash `merge` fills the rest).
+ */
+type MultichainAssetsRatesControllerFixturePatch = Partial<
+  Omit<MultichainAssetsRatesControllerState, 'conversionRates'>
+> & {
+  conversionRates?: Partial<
+    MultichainAssetsRatesControllerState['conversionRates']
+  >;
+};
+
 class FixtureBuilderV2 {
   fixture: FixtureType;
 
@@ -154,6 +168,18 @@ class FixtureBuilderV2 {
 
   withMetaMetricsController(data: Partial<MetaMetricsControllerState>): this {
     merge(this.fixture.data.MetaMetricsController, data);
+    return this;
+  }
+
+  withMultichainAssetsRatesController(
+    data: MultichainAssetsRatesControllerFixturePatch,
+  ): this {
+    merge(this.fixture.data.MultichainAssetsRatesController, data);
+    return this;
+  }
+
+  withMultichainRatesController(data: Partial<RatesControllerState>): this {
+    merge(this.fixture.data.MultichainRatesController, data);
     return this;
   }
 
@@ -267,6 +293,22 @@ class FixtureBuilderV2 {
   withConversionRateDisabled(): this {
     return this.withPreferencesController({
       useCurrencyRateCheck: false,
+    });
+  }
+
+  withConversionRates(
+    conversionRates: Partial<
+      MultichainAssetsRatesControllerState['conversionRates']
+    > = {},
+  ): this {
+    return this.withMultichainAssetsRatesController({ conversionRates });
+  }
+
+  withCurrencyRates(
+    currencyRates: CurrencyRateState['currencyRates'] = {},
+  ): this {
+    return this.withCurrencyController({
+      currencyRates: { ...currencyRates },
     });
   }
 
