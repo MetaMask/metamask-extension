@@ -5413,9 +5413,6 @@
     "message": "available",
     "description": "is the available balance amount"
   },
-  "perpsAvailableBalance": {
-    "message": "Available na balanse"
-  },
   "perpsAvailableToClose": {
     "message": "Available para isara"
   },
@@ -5576,12 +5573,6 @@
   },
   "perpsMarkets": {
     "message": "Market"
-  },
-  "perpsMax": {
-    "message": "Pinakamataas"
-  },
-  "perpsMaxRemovable": {
-    "message": "Max na puwedeng alisin"
   },
   "perpsMid": {
     "message": "Mid"

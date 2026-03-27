@@ -5454,9 +5454,6 @@
     "message": "available",
     "description": "is the available balance amount"
   },
-  "perpsAvailableBalance": {
-    "message": "Available balance"
-  },
   "perpsAvailableToAdd": {
     "message": "Available to add"
   },
@@ -5624,12 +5621,6 @@
   "perpsMarkets": {
     "message": "Markets"
   },
-  "perpsMax": {
-    "message": "Max"
-  },
-  "perpsMaxRemovable": {
-    "message": "Max removable"
-  },
   "perpsMid": {
     "message": "Mid"
   },
@@ -5641,12 +5632,6 @@
   },
   "perpsMore": {
     "message": "More"
-  },
-  "perpsNewLiquidationDistance": {
-    "message": "New liq. distance"
-  },
-  "perpsNewLiquidationPrice": {
-    "message": "New liquidation price"
   },
   "perpsNoMarketsFound": {
     "message": "No markets found"

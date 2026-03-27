@@ -5413,9 +5413,6 @@
     "message": "使用可能",
     "description": "is the available balance amount"
   },
-  "perpsAvailableBalance": {
-    "message": "利用可能残高"
-  },
   "perpsAvailableToClose": {
     "message": "クローズに利用可能"
   },
@@ -5576,12 +5573,6 @@
   },
   "perpsMarkets": {
     "message": "市場"
-  },
-  "perpsMax": {
-    "message": "最大額"
-  },
-  "perpsMaxRemovable": {
-    "message": "減額可能額 (上限)"
   },
   "perpsMid": {
     "message": "中間値"
