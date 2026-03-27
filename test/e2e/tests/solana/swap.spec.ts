@@ -1,6 +1,6 @@
 import { Mockttp, MockedEndpoint } from 'mockttp';
 import { withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { login } from '../../page-objects/flows/login.flow';
 import NetworkManager from '../../page-objects/pages/network-manager';
 import NonEvmHomepage from '../../page-objects/pages/home/non-evm-homepage';
@@ -142,7 +142,7 @@ describe('Swap on Solana', function () {
   it('Completes a Swap between SOL and USDC', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withConversionRates({
             'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501': {
               conversionTime: 1770832998.066,
@@ -224,7 +224,7 @@ describe('Swap on Solana', function () {
   it('Completes a Swap between USDC and SOL', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockSwapUSDCtoSOL,
       },
@@ -271,7 +271,7 @@ describe('Swap on Solana', function () {
   it('Swap has no quotes available', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockSwapNoQuotes,
       },
@@ -305,7 +305,7 @@ describe('Swap on Solana', function () {
   it('Swap transaction fails gracefully', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockSwapSOLtoUSDCFailed,
       },
