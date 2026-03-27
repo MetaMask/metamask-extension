@@ -349,9 +349,9 @@ import {
   SnapInsightsControllerInit,
   SnapInterfaceControllerInit,
   SnapsNameProviderInit,
-  SnapsRegistryInit,
+  SnapRegistryControllerInit,
   WebSocketServiceInit,
-  MultichainRouterInit,
+  MultichainRoutingServiceInit,
 } from './controller-init/snaps';
 import {
   BackendWebSocketServiceInit,
@@ -603,7 +603,7 @@ export default class MetamaskController extends EventEmitter {
       ExecutionService: ExecutionServiceInit,
       InstitutionalSnapController: InstitutionalSnapControllerInit,
       RateLimitController: RateLimitControllerInit,
-      SnapsRegistry: SnapsRegistryInit,
+      SnapsRegistry: SnapRegistryControllerInit,
       CronjobController: CronjobControllerInit,
       SelectedNetworkController: SelectedNetworkControllerInit,
       SnapController: SnapControllerInit,
@@ -648,7 +648,7 @@ export default class MetamaskController extends EventEmitter {
       MultichainBalancesController: MultichainBalancesControllerInit,
       MultichainTransactionsController: MultichainTransactionsControllerInit,
       MultichainAccountService: MultichainAccountServiceInit,
-      MultichainRouter: MultichainRouterInit,
+      MultichainRouter: MultichainRoutingServiceInit,
       AuthenticationController: AuthenticationControllerInit,
       UserStorageController: UserStorageControllerInit,
       NotificationServicesController: NotificationServicesControllerInit,
@@ -3267,20 +3267,20 @@ export default class MetamaskController extends EventEmitter {
         multichainNetworkController,
       }),
 
-      // snaps
+      // Snaps
       disableSnap: this.controllerMessenger.call.bind(
         this.controllerMessenger,
-        'SnapController:disable',
+        'SnapController:disableSnap',
       ),
       enableSnap: this.controllerMessenger.call.bind(
         this.controllerMessenger,
-        'SnapController:enable',
+        'SnapController:enableSnap',
       ),
       updateSnap: (origin, requestedSnaps) => {
         // We deliberately do not await this promise as that would mean waiting for the update to complete
         // Instead we return null to signal to the UI that it is safe to redirect to the update flow
         this.controllerMessenger.call(
-          'SnapController:install',
+          'SnapController:installSnaps',
           origin,
           requestedSnaps,
         );
@@ -3288,12 +3288,12 @@ export default class MetamaskController extends EventEmitter {
       },
       removeSnap: this.controllerMessenger.call.bind(
         this.controllerMessenger,
-        'SnapController:remove',
+        'SnapController:removeSnap',
       ),
       handleSnapRequest: this.handleSnapRequest.bind(this),
       revokeDynamicSnapPermissions: this.controllerMessenger.call.bind(
         this.controllerMessenger,
-        'SnapController:revokeDynamicPermissions',
+        'SnapController:revokeDynamicSnapPermissions',
       ),
       disconnectOriginFromSnap: this.controllerMessenger.call.bind(
         this.controllerMessenger,
@@ -7250,7 +7250,7 @@ export default class MetamaskController extends EventEmitter {
       actions: [
         'KeyringController:getKeyringForAccount',
         'KeyringController:getState',
-        'SnapController:get',
+        'SnapController:getSnap',
         'AccountsController:getSelectedAccount',
       ],
     });
@@ -7410,7 +7410,7 @@ export default class MetamaskController extends EventEmitter {
         ),
         getSnaps: this.controllerMessenger.call.bind(
           this.controllerMessenger,
-          'SnapController:getPermitted',
+          'SnapController:getPermittedSnaps',
           origin,
         ),
         requestPermissions: async (requestedPermissions) =>
@@ -7424,7 +7424,7 @@ export default class MetamaskController extends EventEmitter {
         ),
         getSnapFile: this.controllerMessenger.call.bind(
           this.controllerMessenger,
-          'SnapController:getFile',
+          'SnapController:getSnapFile',
           origin,
         ),
         getSnapState: this.controllerMessenger.call.bind(
@@ -7439,7 +7439,7 @@ export default class MetamaskController extends EventEmitter {
         ),
         installSnaps: this.controllerMessenger.call.bind(
           this.controllerMessenger,
-          'SnapController:install',
+          'SnapController:installSnaps',
           origin,
         ),
         invokeSnap: this.permissionController.executeRestrictedMethod.bind(
@@ -7493,7 +7493,7 @@ export default class MetamaskController extends EventEmitter {
         ),
         getSnap: this.controllerMessenger.call.bind(
           this.controllerMessenger,
-          'SnapController:get',
+          'SnapController:getSnap',
         ),
         trackError: (error) => {
           // `captureException` imported from `@sentry/browser` does not seem to
@@ -7506,7 +7506,7 @@ export default class MetamaskController extends EventEmitter {
         ),
         getAllSnaps: this.controllerMessenger.call.bind(
           this.controllerMessenger,
-          'SnapController:getAll',
+          'SnapController:getAllSnaps',
         ),
         openWebSocket: this.controllerMessenger.call.bind(
           this.controllerMessenger,
@@ -7678,7 +7678,7 @@ export default class MetamaskController extends EventEmitter {
       actions: [
         'KeyringController:getKeyringForAccount',
         'KeyringController:getState',
-        'SnapController:get',
+        'SnapController:getSnap',
         'AccountsController:getSelectedAccount',
       ],
     });
@@ -8320,7 +8320,7 @@ export default class MetamaskController extends EventEmitter {
       actions: [
         'KeyringController:getKeyringForAccount',
         'KeyringController:getState',
-        'SnapController:get',
+        'SnapController:getSnap',
         'AccountsController:getSelectedAccount',
       ],
     });

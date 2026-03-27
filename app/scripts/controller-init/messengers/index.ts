@@ -6,7 +6,7 @@ import {
 import {
   getCronjobControllerMessenger,
   getExecutionServiceMessenger,
-  getMultichainRouterMessenger,
+  getMultichainRoutingServiceMessenger,
   getRateLimitControllerInitMessenger,
   getRateLimitControllerMessenger,
   getSnapControllerInitMessenger,
@@ -14,7 +14,7 @@ import {
   getSnapInsightsControllerMessenger,
   getSnapInterfaceControllerMessenger,
   getSnapsNameProviderMessenger,
-  getSnapsRegistryMessenger,
+  getSnapRegistryControllerMessenger,
   getWebSocketServiceMessenger,
 } from './snaps';
 import {
@@ -578,7 +578,7 @@ export const CONTROLLER_MESSENGERS = {
     getInitMessenger: noop,
   },
   MultichainRouter: {
-    getMessenger: getMultichainRouterMessenger,
+    getMessenger: getMultichainRoutingServiceMessenger,
     getInitMessenger: noop,
   },
   NameController: {
@@ -654,7 +654,7 @@ export const CONTROLLER_MESSENGERS = {
     getInitMessenger: noop,
   },
   SnapsRegistry: {
-    getMessenger: getSnapsRegistryMessenger,
+    getMessenger: getSnapRegistryControllerMessenger,
     getInitMessenger: noop,
   },
   SnapController: {

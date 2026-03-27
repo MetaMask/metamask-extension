@@ -1,6 +1,6 @@
 import { Messenger } from '@metamask/messenger';
 import type { AccountsControllerGetAccountByAddressAction } from '@metamask/accounts-controller';
-import type { HandleSnapRequest } from '@metamask/snaps-controllers';
+import type { SnapControllerHandleRequestAction } from '@metamask/snaps-controllers';
 import type { KeyringControllerSignTypedMessageAction } from '@metamask/keyring-controller';
 import type {
   NetworkControllerFindNetworkClientIdByChainIdAction,
@@ -26,7 +26,7 @@ type AllowedActions =
   | NetworkControllerFindNetworkClientIdByChainIdAction
   | NetworkControllerGetStateAction
   | NetworkControllerGetNetworkClientByIdAction
-  | HandleSnapRequest
+  | SnapControllerHandleRequestAction
   | TransactionControllerGetStateAction
   | TransactionControllerIsAtomicBatchSupportedAction
   | BridgeControllerAction<BridgeBackgroundAction.TRACK_METAMETRICS_EVENT>

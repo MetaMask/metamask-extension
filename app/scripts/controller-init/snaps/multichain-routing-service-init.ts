@@ -1,23 +1,22 @@
-import {
-  MultichainRouter,
-  MultichainRouterArgs,
-} from '@metamask/snaps-controllers';
 import { SnapKeyring } from '@metamask/eth-snap-keyring';
+import {
+  MultichainRoutingService,
+  MultichainRoutingServiceMessenger,
+} from '@metamask/snaps-controllers';
 import { ControllerInitFunction } from '../types';
-import { MultichainRouterMessenger } from '../messengers/snaps';
 import { KeyringType } from '../../../../shared/constants/keyring';
 
 /**
- * Initialize the multichain router.
+ * Initialize the multichain routing service.
  *
  * @param request - The request object.
  * @param request.controllerMessenger - The messenger to use for the service.
  * @param request.getController
  * @returns The initialized service.
  */
-export const MultichainRouterInit: ControllerInitFunction<
-  MultichainRouter,
-  MultichainRouterMessenger
+export const MultichainRoutingServiceInit: ControllerInitFunction<
+  MultichainRoutingService,
+  MultichainRoutingServiceMessenger
 > = ({ controllerMessenger, getController }) => {
   const keyringController = getController('KeyringController');
   const appStateController = getController('AppStateController');
@@ -54,7 +53,7 @@ export const MultichainRouterInit: ControllerInitFunction<
     return operation({ keyring });
   };
 
-  const controller = new MultichainRouter({
+  const controller = new MultichainRoutingService({
     messenger: controllerMessenger,
     withSnapKeyring,
   });

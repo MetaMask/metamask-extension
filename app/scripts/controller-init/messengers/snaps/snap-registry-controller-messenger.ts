@@ -1,9 +1,10 @@
-import { Messenger } from '@metamask/messenger';
+import {
+  Messenger,
+  MessengerActions,
+  MessengerEvents,
+} from '@metamask/messenger';
 import { RootMessenger } from '../../../lib/messenger';
-
-export type SnapsRegistryMessenger = ReturnType<
-  typeof getSnapsRegistryMessenger
->;
+import { SnapRegistryControllerMessenger } from '@metamask/snaps-controllers';
 
 /**
  * Get a restricted messenger for the Snaps registry. This is scoped to the
@@ -12,8 +13,11 @@ export type SnapsRegistryMessenger = ReturnType<
  * @param controllerMessenger - The messenger to restrict.
  * @returns The restricted messenger.
  */
-export function getSnapsRegistryMessenger(
-  controllerMessenger: RootMessenger<never, never>,
+export function getSnapRegistryControllerMessenger(
+  controllerMessenger: RootMessenger<
+    MessengerActions<SnapRegistryControllerMessenger>,
+    MessengerEvents<SnapRegistryControllerMessenger>
+  >,
 ) {
   return new Messenger({
     namespace: 'SnapsRegistry',

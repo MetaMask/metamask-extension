@@ -1,13 +1,10 @@
-import { Messenger } from '@metamask/messenger';
 import {
-  MultichainRouterEvents,
-  MultichainRouterAllowedActions,
-} from '@metamask/snaps-controllers';
+  Messenger,
+  MessengerActions,
+  MessengerEvents,
+} from '@metamask/messenger';
 import { RootMessenger } from '../../../lib/messenger';
-
-export type MultichainRouterMessenger = ReturnType<
-  typeof getMultichainRouterMessenger
->;
+import { MultichainRoutingServiceMessenger } from '@metamask/snaps-controllers';
 
 /**
  * Get a restricted messenger for the multichain router. This is scoped to the
@@ -16,25 +13,20 @@ export type MultichainRouterMessenger = ReturnType<
  * @param messenger - The messenger to restrict.
  * @returns The restricted messenger.
  */
-export function getMultichainRouterMessenger(
+export function getMultichainRoutingServiceMessenger(
   messenger: RootMessenger<
-    MultichainRouterAllowedActions,
-    MultichainRouterEvents
+    MessengerActions<MultichainRoutingServiceMessenger>,
+    MessengerEvents<MultichainRoutingServiceMessenger>
   >,
 ) {
-  const routerMessenger = new Messenger<
-    'MultichainRouter',
-    MultichainRouterAllowedActions,
-    MultichainRouterEvents,
-    typeof messenger
-  >({
+  const routerMessenger: MultichainRoutingServiceMessenger = new Messenger({
     namespace: 'MultichainRouter',
     parent: messenger,
   });
   messenger.delegate({
     messenger: routerMessenger,
     actions: [
-      'SnapController:getAll',
+      'SnapController:getRunnableSnaps',
       'SnapController:handleRequest',
       'PermissionController:getPermissions',
       'AccountsController:listMultichainAccounts',

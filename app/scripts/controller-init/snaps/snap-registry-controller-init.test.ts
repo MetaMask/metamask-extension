@@ -2,22 +2,22 @@ import { JsonSnapsRegistry } from '@metamask/snaps-controllers';
 import { ControllerInitRequest } from '../types';
 import { buildControllerInitRequestMock } from '../test/utils';
 import {
-  getSnapsRegistryMessenger,
-  SnapsRegistryMessenger,
+  getSnapRegistryControllerMessenger,
+  SnapRegistryControllerMessenger,
 } from '../messengers/snaps';
 import { getRootMessenger } from '../../lib/messenger';
-import { SnapsRegistryInit } from './snaps-registry-init';
+import { SnapRegistryControllerInit } from './snap-registry-controller-init.ts';
 
 jest.mock('@metamask/snaps-controllers');
 
 function getInitRequestMock(): jest.Mocked<
-  ControllerInitRequest<SnapsRegistryMessenger>
+  ControllerInitRequest<SnapRegistryControllerMessenger>
 > {
   const baseMessenger = getRootMessenger<never, never>();
 
   const requestMock = {
     ...buildControllerInitRequestMock(),
-    controllerMessenger: getSnapsRegistryMessenger(baseMessenger),
+    controllerMessenger: getSnapRegistryControllerMessenger(baseMessenger),
     initMessenger: undefined,
   };
 
@@ -35,12 +35,12 @@ describe('SnapsRegistryInit', () => {
   });
 
   it('initializes the controller', () => {
-    const { controller } = SnapsRegistryInit(getInitRequestMock());
+    const { controller } = SnapRegistryControllerInit(getInitRequestMock());
     expect(controller).toBeInstanceOf(JsonSnapsRegistry);
   });
 
   it('passes the proper arguments to the controller', () => {
-    SnapsRegistryInit(getInitRequestMock());
+    SnapRegistryControllerInit(getInitRequestMock());
 
     const controllerMock = jest.mocked(JsonSnapsRegistry);
     expect(controllerMock).toHaveBeenCalledWith({

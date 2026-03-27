@@ -5,7 +5,7 @@ import type {
   MultichainAssetsRatesControllerGetStateAction,
   TokenRatesControllerGetStateAction,
 } from '@metamask/assets-controllers';
-import type { HandleSnapRequest } from '@metamask/snaps-controllers';
+import type { SnapControllerHandleRequestAction } from '@metamask/snaps-controllers';
 import type { AuthenticationControllerGetBearerTokenAction } from '@metamask/profile-sync-controller/auth';
 import type {
   NetworkControllerFindNetworkClientIdByChainIdAction,
@@ -20,7 +20,7 @@ type AllowedActions =
   | GetCurrencyRateState
   | TokenRatesControllerGetStateAction
   | MultichainAssetsRatesControllerGetStateAction
-  | HandleSnapRequest
+  | SnapControllerHandleRequestAction
   | NetworkControllerFindNetworkClientIdByChainIdAction
   | NetworkControllerGetNetworkClientByIdAction
   | RemoteFeatureFlagControllerGetStateAction

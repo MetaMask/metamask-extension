@@ -1,6 +1,6 @@
 import { AccountsControllerGetAccountByAddressAction } from '@metamask/accounts-controller';
 import { Messenger } from '@metamask/messenger';
-import { HandleSnapRequest } from '@metamask/snaps-controllers';
+import { SnapControllerHandleRequestAction } from '@metamask/snaps-controllers';
 import { TransactionControllerUpdateCustodialTransactionAction } from '@metamask/transaction-controller';
 import { InstitutionalSnapController } from '../../../controllers/institutional-snap/InstitutionalSnapController';
 import { RootMessenger } from '../../../lib/messenger';
@@ -27,7 +27,7 @@ export type InstitutionalSnapRequestSearchParameters = {
 };
 
 type AllowedActions =
-  | HandleSnapRequest
+  | SnapControllerHandleRequestAction
   | AccountsControllerGetAccountByAddressAction
   | TransactionControllerUpdateCustodialTransactionAction;
 

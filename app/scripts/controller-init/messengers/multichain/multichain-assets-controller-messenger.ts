@@ -6,13 +6,16 @@ import {
 } from '@metamask/accounts-controller';
 import { Messenger } from '@metamask/messenger';
 import { GetPermissions } from '@metamask/permission-controller';
-import { GetAllSnaps, HandleSnapRequest } from '@metamask/snaps-controllers';
+import {
+  SnapControllerGetAllSnapsAction,
+  SnapControllerHandleRequestAction,
+} from '@metamask/snaps-controllers';
 import { PhishingControllerBulkScanTokensAction } from '@metamask/phishing-controller';
 import { RootMessenger } from '../../../lib/messenger';
 
 type Actions =
-  | HandleSnapRequest
-  | GetAllSnaps
+  | SnapControllerGetAllSnapsAction
+  | SnapControllerHandleRequestAction
   | GetPermissions
   | AccountsControllerListMultichainAccountsAction
   | PhishingControllerBulkScanTokensAction;
@@ -55,7 +58,7 @@ export function getMultichainAssetsControllerMessenger(
     actions: [
       'PermissionController:getPermissions',
       'SnapController:handleRequest',
-      'SnapController:getAll',
+      'SnapController:getAllSnaps',
       'AccountsController:listMultichainAccounts',
       'PhishingController:bulkScanTokens',
     ],
