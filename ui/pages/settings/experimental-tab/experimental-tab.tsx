@@ -83,4 +83,3 @@ const ExperimentalTab = () => {
 };
 
 export default ExperimentalTab;
-export { ExperimentalTab as Component };

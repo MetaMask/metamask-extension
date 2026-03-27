@@ -1,1 +1,1 @@
-export { default as Component } from './settings.component';
+export { default } from './settings.container';

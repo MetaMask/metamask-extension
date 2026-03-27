@@ -1,1 +1,1 @@
-export { default as Component } from './asset.component';
+export { default } from './asset';

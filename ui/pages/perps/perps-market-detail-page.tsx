@@ -1658,4 +1658,3 @@ const PerpsMarketDetailPage: React.FC = () => {
 };
 
 export default PerpsMarketDetailPage;
-export { PerpsMarketDetailPage as Component };

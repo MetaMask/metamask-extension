@@ -90,4 +90,3 @@ const CurrencySubPage = () => {
 };
 
 export default CurrencySubPage;
-export { CurrencySubPage as Component };

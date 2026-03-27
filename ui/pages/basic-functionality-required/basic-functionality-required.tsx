@@ -178,4 +178,3 @@ export const BasicFunctionalityOff = () => {
     </Container>
   );
 };
-export { BasicFunctionalityOff as Component };

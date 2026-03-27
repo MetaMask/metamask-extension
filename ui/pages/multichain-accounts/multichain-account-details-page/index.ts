@@ -1,1 +1,1 @@
-export { default as Component } from './multichain-account-details-page.component';
+export { MultichainAccountDetailsPage } from './multichain-account-details-page';

@@ -65,4 +65,3 @@ const Confirm: React.FC<{ confirmationId?: string }> = ({ confirmationId }) => (
 );
 
 export default Confirm;
-export { Confirm as Component };

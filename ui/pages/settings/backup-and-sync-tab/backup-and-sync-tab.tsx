@@ -32,4 +32,3 @@ const BackupAndSyncTab = () => {
 };
 
 export default BackupAndSyncTab;
-export { BackupAndSyncTab as Component };

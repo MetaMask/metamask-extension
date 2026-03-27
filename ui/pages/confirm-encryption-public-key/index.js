@@ -1,1 +1,1 @@
-export { default as Component } from './confirm-encryption-public-key.component';
+export { default } from './confirm-encryption-public-key.container';

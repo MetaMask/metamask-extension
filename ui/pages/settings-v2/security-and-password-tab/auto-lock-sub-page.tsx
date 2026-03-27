@@ -71,4 +71,3 @@ const AutoLockSubPage = () => {
 };
 
 export default AutoLockSubPage;
-export { AutoLockSubPage as Component };

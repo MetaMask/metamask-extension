@@ -1,1 +1,1 @@
-export { default as Component } from './confirm-decrypt-message.component';
+export { default } from './confirm-decrypt-message.component';

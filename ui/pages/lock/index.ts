@@ -1,1 +1,1 @@
-export { default as Component } from './lock';
+export { default } from './lock.container';

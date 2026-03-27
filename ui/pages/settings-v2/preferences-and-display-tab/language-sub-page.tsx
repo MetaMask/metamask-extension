@@ -76,4 +76,3 @@ const LanguageSubPage = () => {
 };
 
 export default LanguageSubPage;
-export { LanguageSubPage as Component };

@@ -1,1 +1,1 @@
-export { default as Component } from './transactions-tab.component';
+export { default } from './transactions-tab';

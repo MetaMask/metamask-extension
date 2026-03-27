@@ -1,1 +1,1 @@
-export { default as Component } from './import-srp';
+export { ImportSrp } from './import-srp';

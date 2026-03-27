@@ -88,4 +88,3 @@ const AccountIdenticonSubPage = () => {
 };
 
 export default AccountIdenticonSubPage;
-export { AccountIdenticonSubPage as Component };

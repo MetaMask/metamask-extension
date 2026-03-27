@@ -1,1 +1,1 @@
-export { default as Component } from './preferences-and-display-tab.component';
+export { default } from './preferences-and-display-tab';

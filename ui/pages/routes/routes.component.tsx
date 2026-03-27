@@ -123,6 +123,7 @@ import KeyringSnapRemovalResult from '../../components/app/modals/keyring-snap-r
 import { DeprecatedNetworkModal } from '../settings/deprecated-network-modal/DeprecatedNetworkModal';
 import NetworkConfirmationPopover from '../../components/multichain/network-list-menu/network-confirmation-popover/network-confirmation-popover';
 import { ToastMaster } from '../../components/app/toast-master/toast-master';
+import { mmLazy } from '../../helpers/utils/mm-lazy';
 import CrossChainSwapTxDetails from '../bridge/transaction-details/transaction-details';
 import {
   isCorrectDeveloperTransactionType,
@@ -148,6 +149,105 @@ import { ConfirmationHandler } from './confirmation-handler';
 import { Modals } from './modals';
 
 // Begin Lazy Routes
+const OnboardingFlow = mmLazy(() => import('../onboarding-flow/index.ts'));
+const Lock = mmLazy(() => import('../lock/index.ts'));
+const UnlockPage = mmLazy(() => import('../unlock-page/index.ts'));
+const RestoreVaultPage = mmLazy(() => import('../keychains/restore-vault.tsx'));
+const ImportSrpPage = mmLazy(() => import('../multi-srp/import-srp/index.ts'));
+const RevealSeedConfirmation = mmLazy(
+  () => import('../keychains/reveal-seed.tsx'),
+);
+const Settings = mmLazy(() => import('../settings/index.js'));
+const SettingsV2 = mmLazy(() => import('../settings-v2/index.ts'));
+const NotificationDetails = mmLazy(
+  () => import('../notification-details/index.js'),
+);
+const Notifications = mmLazy(() => import('../notifications/index.js'));
+const SnapList = mmLazy(() => import('../snaps/snaps-list/index.js'));
+const SnapView = mmLazy(() => import('../snaps/snap-view/index.js'));
+const ConfirmEncryptionPublicKey = mmLazy(
+  () => import('../confirm-encryption-public-key/index.js'),
+);
+const ConfirmDecryptMessage = mmLazy(
+  () => import('../confirm-decrypt-message/index.js'),
+);
+const Confirm = mmLazy(() => import('../confirmations/confirm/confirm.tsx'));
+const SendPage = mmLazy(() => import('../confirmations/send/index.ts'));
+const CrossChainSwap = mmLazy(() => import('../bridge/index.tsx'));
+const PermissionsConnect = mmLazy(
+  () => import('../permissions-connect/index.js'),
+);
+const ConfirmAddSuggestedTokenPage = mmLazy(
+  () => import('../confirm-add-suggested-token/index.js'),
+);
+const ConfirmAddSuggestedNftPage = mmLazy(
+  () => import('../confirm-add-suggested-nft/index.js'),
+);
+const ConfirmationPage = mmLazy(
+  () => import('../confirmations/confirmation/index.js'),
+);
+const CreateAccountPage = mmLazy(
+  () => import('../create-account/create-account.component.js'),
+);
+const NftFullImage = mmLazy(
+  () =>
+    import('../../components/app/assets/nfts/nft-details/nft-full-image.tsx'),
+);
+const Asset = mmLazy(() => import('../asset/index.js'));
+const DeFiPage = mmLazy(() => import('../defi/index.ts'));
+const PermissionsPage = mmLazy(
+  () =>
+    import(
+      '../../components/multichain/pages/permissions-page/permissions-page.js'
+    ),
+);
+const GatorPermissionsPage = mmLazy(
+  () =>
+    import(
+      '../../components/multichain/pages/gator-permissions/gator-permissions-page.tsx'
+    ),
+);
+const GatorPermissionsTokenTransferPermissionsPage = mmLazy(
+  () =>
+    import(
+      '../../components/multichain/pages/gator-permissions/token-transfer/token-transfer-page.tsx'
+    ),
+);
+const GatorPermissionsReviewPermissionsPage = mmLazy(
+  () =>
+    import(
+      '../../components/multichain/pages/gator-permissions/review-permissions/review-gator-permissions-page.tsx'
+    ),
+);
+const Home = mmLazy(() => import('../home/index.js'));
+const DeepLink = mmLazy(() => import('../deep-link/deep-link.tsx'));
+const BasicFunctionalityOff = mmLazy(
+  () =>
+    import('../basic-functionality-required/basic-functionality-required.tsx'),
+);
+const MultichainAccountDetailsPage = mmLazy(
+  () =>
+    import('../multichain-accounts/multichain-account-details-page/index.ts'),
+);
+const SmartAccountPage = mmLazy(
+  () => import('../multichain-accounts/smart-account-page/index.ts'),
+);
+const NonEvmBalanceCheck = mmLazy(
+  () => import('../nonevm-balance-check/index.tsx'),
+);
+const ShieldPlan = mmLazy(() => import('../shield-plan/index.ts'));
+const PerpsMarketDetailPage = mmLazy(
+  () => import('../perps/perps-market-detail-page.tsx'),
+);
+const MarketListView = mmLazy(() => import('../perps/market-list/index.tsx'));
+const PerpsActivityPage = mmLazy(
+  () => import('../perps/perps-activity-page.tsx'),
+);
+const PerpsOrderEntryPage = mmLazy(
+  () => import('../perps/perps-order-entry-page.tsx'),
+);
+const MusdConversionPage = mmLazy(() => import('../musd/index.tsx'));
+const PerpsLayout = mmLazy(() => import('../perps/perps-layout.tsx'));
 // End Lazy Routes
 
 export const routeConfig = [
@@ -156,35 +256,32 @@ export const routeConfig = [
     children: [
       {
         path: `${ONBOARDING_ROUTE}/*`,
-        lazy: () => import('../onboarding-flow/index.ts'),
+        element: <OnboardingFlow />,
       },
       {
         path: LOCK_ROUTE,
-        lazy: () => import('../lock/index.ts'),
+        element: <Lock />,
       },
       {
         element: <RequireOnboarded />,
         children: [
           {
             path: UNLOCK_ROUTE,
-            lazy: () => import('../unlock-page/index.ts'),
+            element: <UnlockPage />,
           },
         ],
       },
       {
         path: DEEP_LINK_ROUTE,
-        lazy: () => import('../deep-link/deep-link.tsx'),
+        element: <DeepLink />,
       },
       {
         path: BASIC_FUNCTIONALITY_OFF_ROUTE,
-        lazy: () =>
-          import(
-            '../basic-functionality-required/basic-functionality-required.tsx'
-          ),
+        element: <BasicFunctionalityOff />,
       },
       {
         path: RESTORE_VAULT_ROUTE,
-        lazy: () => import('../keychains/restore-vault.tsx'),
+        element: <RestoreVaultPage />,
       },
     ],
   },
@@ -193,94 +290,79 @@ export const routeConfig = [
     children: [
       {
         path: `${REVEAL_SEED_ROUTE}/:keyringId?`,
-        lazy: () => import('../keychains/reveal-seed.tsx'),
+        element: <RevealSeedConfirmation />,
       },
       {
         path: IMPORT_SRP_ROUTE,
-        lazy: () => import('../multi-srp/import-srp/index.ts'),
+        element: <ImportSrpPage />,
       },
       {
         path: `${SETTINGS_ROUTE}/*`,
-        lazy: () => import('../settings/index.js'),
+        element: <Settings />,
       },
       {
         path: `${SETTINGS_V2_ROUTE}/*`,
-        lazy: () => import('../settings-v2/index.ts'),
+        element: <SettingsV2 />,
       },
       {
         path: `${SEND_ROUTE}/:page?`,
-        lazy: () => import('../confirmations/send/index.ts'),
+        element: <SendPage />,
       },
       {
         path: `${CONFIRM_TRANSACTION_ROUTE}/:id?${DECRYPT_MESSAGE_REQUEST_PATH}`,
-        lazy: () => import('../confirm-decrypt-message/index.js'),
+        element: <ConfirmDecryptMessage />,
       },
       {
         path: `${CONFIRM_TRANSACTION_ROUTE}/:id?${ENCRYPTION_PUBLIC_KEY_REQUEST_PATH}`,
-        lazy: () => import('../confirm-encryption-public-key/index.js'),
+        element: <ConfirmEncryptionPublicKey />,
       },
       {
         path: `${CONFIRM_TRANSACTION_ROUTE}/:id?/*`,
-        lazy: () => import('../confirmations/confirm/confirm.tsx'),
+        element: <Confirm />,
       },
       {
         path: CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE,
-        lazy: () => import('../confirm-add-suggested-token/index.js'),
+        element: <ConfirmAddSuggestedTokenPage />,
       },
       {
         path: CONFIRM_ADD_SUGGESTED_NFT_ROUTE,
-        lazy: () => import('../confirm-add-suggested-nft/index.js'),
+        element: <ConfirmAddSuggestedNftPage />,
       },
       {
         path: `${CONFIRMATION_V_NEXT_ROUTE}/:id?`,
-        lazy: () => import('../confirmations/confirmation/index.js'),
+        element: <ConfirmationPage />,
       },
       {
         path: `${NEW_ACCOUNT_ROUTE}/*`,
-        lazy: () => import('../create-account/create-account.component.js'),
+        element: <CreateAccountPage />,
       },
       {
         path: `${CONNECT_ROUTE}/:id/*`,
-        lazy: () => import('../permissions-connect/index.js'),
+        element: <PermissionsConnect />,
       },
       {
         path: `${ASSET_ROUTE}/image/:asset/:id`,
-        lazy: () =>
-          import(
-            '../../components/app/assets/nfts/nft-details/nft-full-image.tsx'
-          ),
+        element: <NftFullImage />,
       },
       {
         path: `${ASSET_ROUTE}/:chainId/:asset?/:id?`,
-        lazy: () => import('../asset/index.js'),
+        element: <Asset />,
       },
       {
         path: PERMISSIONS,
-        lazy: () =>
-          import(
-            '../../components/multichain/pages/permissions-page/permissions-page.js'
-          ),
+        element: <PermissionsPage />,
       },
       {
         path: GATOR_PERMISSIONS,
-        lazy: () =>
-          import(
-            '../../components/multichain/pages/gator-permissions/gator-permissions-page.tsx'
-          ),
+        element: <GatorPermissionsPage />,
       },
       {
         path: `${TOKEN_TRANSFER_ROUTE}/:origin?`,
-        lazy: () =>
-          import(
-            '../../components/multichain/pages/gator-permissions/token-transfer/token-transfer-page.tsx'
-          ),
+        element: <GatorPermissionsTokenTransferPermissionsPage />,
       },
       {
         path: `${REVIEW_GATOR_PERMISSIONS_ROUTE}/:chainId/:permissionGroupName/:origin?`,
-        lazy: () =>
-          import(
-            '../../components/multichain/pages/gator-permissions/review-permissions/review-gator-permissions-page.tsx'
-          ),
+        element: <GatorPermissionsReviewPermissionsPage />,
       },
       {
         path: REVIEW_PERMISSIONS,
@@ -304,15 +386,11 @@ export const routeConfig = [
       },
       {
         path: MULTICHAIN_ACCOUNT_DETAILS_PAGE_ROUTE,
-        lazy: () =>
-          import(
-            '../multichain-accounts/multichain-account-details-page/index.ts'
-          ),
+        element: <MultichainAccountDetailsPage />,
       },
       {
         path: `${MULTICHAIN_SMART_ACCOUNT_PAGE_ROUTE}/:address`,
-        lazy: () =>
-          import('../multichain-accounts/smart-account-page/index.ts'),
+        element: <SmartAccountPage />,
       },
       {
         path: MULTICHAIN_WALLET_DETAILS_PAGE_ROUTE,
@@ -324,7 +402,7 @@ export const routeConfig = [
       },
       {
         path: DEFAULT_ROUTE,
-        lazy: () => import('../home/index.js'),
+        element: <Home />,
       },
       {
         element: <RequireBasicFunctionality />,
@@ -335,19 +413,19 @@ export const routeConfig = [
           },
           {
             path: `${NOTIFICATIONS_ROUTE}/:uuid`,
-            lazy: () => import('../notification-details/index.js'),
+            element: <NotificationDetails />,
           },
           {
             path: NOTIFICATIONS_ROUTE,
-            lazy: () => import('../notifications/index.js'),
+            element: <Notifications />,
           },
           {
             path: SNAPS_ROUTE,
-            lazy: () => import('../snaps/snaps-list/index.js'),
+            element: <SnapList />,
           },
           {
             path: SNAPS_VIEW_ROUTE,
-            lazy: () => import('../snaps/snap-view/index.js'),
+            element: <SnapView />,
           },
           {
             path: `${CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE}/:txHash`,
@@ -355,99 +433,48 @@ export const routeConfig = [
           },
           {
             path: `${CROSS_CHAIN_SWAP_ROUTE}/*`,
-            lazy: () => import('../bridge/index.tsx'),
+            element: <CrossChainSwap />,
           },
           {
             path: `${DEFI_ROUTE}/:chainId/:protocolId`,
-            lazy: () => import('../defi/index.ts'),
+            element: <DeFiPage />,
           },
           {
             path: `${MUSD_CONVERSION_ROUTE}/*`,
-            lazy: () => import('../musd/index.tsx'),
+            element: <MusdConversionPage />,
           },
           {
             path: NONEVM_BALANCE_CHECK_ROUTE,
-            lazy: () => import('../nonevm-balance-check/index.tsx'),
+            element: <NonEvmBalanceCheck />,
           },
           {
             path: SHIELD_PLAN_ROUTE,
-            lazy: () => import('../shield-plan/index.ts'),
+            element: <ShieldPlan />,
           },
           {
             path: REWARDS_ROUTE,
             element: <RewardsPage />,
           },
           {
-            path: `${PERPS_MARKET_DETAIL_ROUTE}/:symbol`,
-            lazy: async () => {
-              const [Layout, Page] = await Promise.all([
-                import('../perps/perps-layout.tsx'),
-                import('../perps/perps-market-detail-page.tsx'),
-              ]);
-              const LayoutComponent = Layout.Component;
-              const PageComponent = Page.Component;
-              return {
-                Component: () => (
-                  <LayoutComponent>
-                    <PageComponent />
-                  </LayoutComponent>
-                ),
-              };
-            },
-          },
-          {
-            path: `${PERPS_ORDER_ENTRY_ROUTE}/:symbol`,
-            lazy: async () => {
-              const [Layout, Page] = await Promise.all([
-                import('../perps/perps-layout.tsx'),
-                import('../perps/perps-order-entry-page.tsx'),
-              ]);
-              const LayoutComponent = Layout.Component;
-              const PageComponent = Page.Component;
-              return {
-                Component: () => (
-                  <LayoutComponent>
-                    <PageComponent />
-                  </LayoutComponent>
-                ),
-              };
-            },
-          },
-          {
-            path: PERPS_ACTIVITY_ROUTE,
-            lazy: async () => {
-              const [Layout, Page] = await Promise.all([
-                import('../perps/perps-layout.tsx'),
-                import('../perps/perps-activity-page.tsx'),
-              ]);
-              const LayoutComponent = Layout.Component;
-              const PageComponent = Page.Component;
-              return {
-                Component: () => (
-                  <LayoutComponent>
-                    <PageComponent />
-                  </LayoutComponent>
-                ),
-              };
-            },
-          },
-          {
-            path: PERPS_MARKET_LIST_ROUTE,
-            lazy: async () => {
-              const [Layout, Page] = await Promise.all([
-                import('../perps/perps-layout.tsx'),
-                import('../perps/market-list/index.tsx'),
-              ]);
-              const LayoutComponent = Layout.Component;
-              const PageComponent = Page.Component;
-              return {
-                Component: () => (
-                  <LayoutComponent>
-                    <PageComponent />
-                  </LayoutComponent>
-                ),
-              };
-            },
+            element: <PerpsLayout />,
+            children: [
+              {
+                path: `${PERPS_MARKET_DETAIL_ROUTE}/:symbol`,
+                element: <PerpsMarketDetailPage />,
+              },
+              {
+                path: `${PERPS_ORDER_ENTRY_ROUTE}/:symbol`,
+                element: <PerpsOrderEntryPage />,
+              },
+              {
+                path: PERPS_ACTIVITY_ROUTE,
+                element: <PerpsActivityPage />,
+              },
+              {
+                path: PERPS_MARKET_LIST_ROUTE,
+                element: <MarketListView />,
+              },
+            ],
           },
         ],
       },

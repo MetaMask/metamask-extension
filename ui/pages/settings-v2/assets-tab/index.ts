@@ -1,1 +1,1 @@
-export { default as Component } from './assets-tab.component';
+export { default } from './assets-tab';

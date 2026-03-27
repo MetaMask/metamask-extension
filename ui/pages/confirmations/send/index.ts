@@ -1,1 +1,1 @@
-export { default as Component } from './send.component';
+export { Send } from './send';

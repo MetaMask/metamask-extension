@@ -135,4 +135,3 @@ export const TokenTransferPage = () => {
     </Page>
   );
 };
-export { TokenTransferPage as Component };

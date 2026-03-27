@@ -1,1 +1,1 @@
-export { default as Component } from './confirm-add-suggested-nft.component';
+export { default } from './confirm-add-suggested-nft';

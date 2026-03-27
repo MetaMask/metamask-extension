@@ -146,4 +146,3 @@ export function NotificationsSettingsContent() {
 }
 
 export default NotificationsSettingsContent;
-export { NotificationsSettingsContent as Component };

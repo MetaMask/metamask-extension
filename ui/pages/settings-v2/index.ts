@@ -1,1 +1,1 @@
-export { default as Component } from './settings-v2.component';
+export { default } from './settings-v2';

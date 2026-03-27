@@ -29,27 +29,18 @@ import { mockNetworkState } from '../../../test/stub/networks';
 import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
 import OnboardingFlow from './onboarding-flow';
 
-// Mock React.lazy to return a synchronous component.
+// Mock mmLazy to return a synchronous component instead of React.lazy.
 // React 17's lazy resolution fires a state update after test cleanup unmounts
 // the tree, producing a spurious "state update on unmounted component" warning.
 //
-// NOTE: This mock hardcodes the ExperimentalArea import. If a second lazy
+// NOTE: This mock hardcodes the ExperimentalArea import. If a second mmLazy
 // call is added to onboarding-flow.tsx, this mock must be updated to dispatch
 // on the importFn (or replaced with a generic solution).
-jest.mock('react', () => {
-  const actualReact = jest.requireActual('react');
-  return {
-    ...actualReact,
-    lazy: (fn: () => Promise<unknown>) => {
-      if (fn.toString().includes('experimental-area')) {
-        return jest.requireActual(
-          '../../components/app/flask/experimental-area/index.js',
-        ).default;
-      }
-      return actualReact.lazy(fn);
-    },
-  };
-});
+jest.mock('../../helpers/utils/mm-lazy', () => ({
+  mmLazy: () =>
+    jest.requireActual('../../components/app/flask/experimental-area/index.js')
+      .default,
+}));
 
 const mockUseNavigate = jest.fn();
 

@@ -1,1 +1,1 @@
-export { default as Component } from './experimental-area.component';
+export { default } from './experimental-area';
