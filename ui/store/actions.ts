@@ -1001,8 +1001,16 @@ export function getIsSeedlessOnboardingUserAuthenticated(): ThunkAction<
   };
 }
 
+/**
+ * Checks if the seedless password is outdated.
+ *
+ * @param skipCache - whether to skip the cache @default false
+ * @param captureSentryError - whether to capture the sentry error. @default false
+ * @returns Promise<boolean | undefined> true if the password is outdated, false otherwise, undefined if the flow is not seedless
+ */
 export function checkIsSeedlessPasswordOutdated(
   skipCache = true,
+  captureSentryError = true,
 ): ThunkAction<boolean | undefined, MetaMaskReduxState, unknown, AnyAction> {
   return async (
     dispatch: MetaMaskReduxDispatch,
@@ -1017,7 +1025,7 @@ export function checkIsSeedlessPasswordOutdated(
     try {
       isPasswordOutdated = await submitRequestToBackground<boolean>(
         'checkIsSeedlessPasswordOutdated',
-        [skipCache],
+        [{ skipCache, captureSentryError }],
       );
       if (isPasswordOutdated) {
         await forceUpdateMetamaskState(dispatch);
