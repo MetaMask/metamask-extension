@@ -8736,14 +8736,8 @@
   "tokensInCollection": {
     "message": "Mga token sa koleksyon"
   },
-  "tooltipSatusConnected": {
-    "message": "nakakonekta"
-  },
   "tooltipSatusConnectedUpperCase": {
     "message": "Nakakonekta"
-  },
-  "tooltipSatusNotConnected": {
-    "message": "hindi konektado"
   },
   "total": {
     "message": "Kabuuan"

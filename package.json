@@ -1,6 +1,6 @@
 {
   "name": "metamask-crx",
-  "version": "13.25.0",
+  "version": "13.26.0",
   "private": true,
   "repository": {
     "type": "git",
@@ -325,7 +325,6 @@
     "@metamask/eip-7702-internal-rpc-middleware": "^0.1.0",
     "@metamask/ens-controller": "^19.1.0",
     "@metamask/ens-resolver-snap": "^1.1.0",
-    "@metamask/error-reporting-service": "^3.0.0",
     "@metamask/eth-hd-keyring": "^13.1.0",
     "@metamask/eth-json-rpc-filters": "^9.0.0",
     "@metamask/eth-json-rpc-middleware": "^23.1.0",
@@ -380,6 +379,7 @@
     "@metamask/profile-sync-controller": "^28.0.0",
     "@metamask/providers": "^22.1.1",
     "@metamask/rate-limit-controller": "^7.0.0",
+    "@metamask/react-data-query": "^0.2.0",
     "@metamask/remote-feature-flag-controller": "^4.1.0",
     "@metamask/rpc-errors": "^7.0.0",
     "@metamask/safe-event-emitter": "^3.1.1",
