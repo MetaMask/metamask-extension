@@ -292,7 +292,6 @@
   "shared/lib/network.utils.js",
   "shared/lib/object.utils.js",
   "shared/lib/random-id.js",
-  "shared/lib/rpc.utils.js",
   "shared/lib/siwe.js",
   "shared/lib/string-utils.js",
   "shared/lib/swaps.utils.js",

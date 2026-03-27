@@ -5541,6 +5541,14 @@
   "perpsEstSize": {
     "message": "Est. size"
   },
+  "perpsEstimatedPnlAtStopLoss": {
+    "message": "Est. P&L at stop loss",
+    "description": "Label for estimated profit or loss when stop loss is hit"
+  },
+  "perpsEstimatedPnlAtTakeProfit": {
+    "message": "Est. P&L at take profit",
+    "description": "Label for estimated profit or loss when take profit is hit"
+  },
   "perpsExploreMarkets": {
     "message": "Explore markets"
   },
