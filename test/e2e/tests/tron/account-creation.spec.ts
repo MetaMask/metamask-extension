@@ -35,7 +35,7 @@ describe('Tron account creation', function (this: Suite) {
         const accountListPage = new AccountListPage(driver);
         await accountListPage.checkPageIsLoaded();
         await accountListPage.addMultichainAccount();
-        await accountListPage.checkAccountDisplayedInAccountList('Tron 1');
+        await accountListPage.checkAccountDisplayedInAccountList('Account 2');
       },
     );
   });
@@ -63,7 +63,14 @@ describe('Tron account creation', function (this: Suite) {
         await networkManager.selectNetworkByNameWithWait('Tron');
 
         const headerNavbar = new HeaderNavbar(driver);
-        await headerNavbar.openAccountDetailsModalDetailsTab();
+        await headerNavbar.openAccountMenu();
+
+        const accountListPage = new AccountListPage(driver);
+        await accountListPage.checkPageIsLoaded();
+        await accountListPage.openMultichainAccountMenu({
+          accountLabel: 'Account 1',
+        });
+        await accountListPage.clickMultichainAccountMenuItem('Account details');
 
         const accountDetailsPage = new MultichainAccountDetailsPage(driver);
         await accountDetailsPage.checkPageIsLoaded();
