@@ -9,7 +9,8 @@ import NonEvmHomepage from '../../page-objects/pages/home/non-evm-homepage';
 import NetworkManager from '../../page-objects/pages/network-manager';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import AccountListPage from '../../page-objects/pages/account-list-page';
-import MultichainAccountDetailsPage from '../../page-objects/pages/multichain/multichain-account-details-page';
+import AddressListModal from '../../page-objects/pages/multichain/address-list-modal';
+import AccountAddressModal from '../../page-objects/pages/multichain/account-address-modal';
 import { mockTronApis, TRON_ACCOUNT_ADDRESS } from './mocks/common-tron';
 
 describe('Tron account creation', function (this: Suite) {
@@ -70,12 +71,16 @@ describe('Tron account creation', function (this: Suite) {
         await accountListPage.openMultichainAccountMenu({
           accountLabel: 'Account 1',
         });
-        await accountListPage.clickMultichainAccountMenuItem('Account details');
+        await accountListPage.clickMultichainAccountMenuItem('Addresses');
 
-        const accountDetailsPage = new MultichainAccountDetailsPage(driver);
-        await accountDetailsPage.checkPageIsLoaded();
+        const addressListModal = new AddressListModal(driver);
+        await addressListModal.checkPageIsLoaded();
+        await addressListModal.clickQRbutton();
 
-        const actualAddress = await accountDetailsPage.getAccountAddress();
+        const accountAddressModal = new AccountAddressModal(driver);
+        await accountAddressModal.checkPageIsLoaded();
+
+        const actualAddress = await accountAddressModal.getAccountAddress();
         assert.equal(
           actualAddress,
           TRON_ACCOUNT_ADDRESS,
