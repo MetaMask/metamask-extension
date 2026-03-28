@@ -83,7 +83,7 @@ function RouteErrorBoundary() {
 const sentryCreateHashRouter = Sentry.wrapCreateBrowserRouter(createHashRouter);
 
 // Initialize Sentry for the UI with React Router integration
-global.sentry = setupSentry([
+globalThis.sentry = setupSentry([
   Sentry.reactRouterV6BrowserTracingIntegration({
     useEffect,
     useLocation,

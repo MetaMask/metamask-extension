@@ -69,6 +69,30 @@ function getClientOptions(extraIntegrations = []) {
   const environment = getSentryEnvironment();
   const sentryTarget = getSentryTarget();
 
+  const hasTracingIntegration = extraIntegrations.some(
+    (integration) =>
+      integration.name.includes('Tracing') ||
+      integration.name.includes('Routing'),
+  );
+
+  const integrations = [
+    Sentry.dedupeIntegration(),
+    Sentry.extraErrorDataIntegration(),
+    filterEvents({ getMetaMetricsEnabled, log }),
+    ...extraIntegrations,
+  ];
+
+  if (!hasTracingIntegration) {
+    integrations.push(
+      Sentry.browserTracingIntegration({
+        shouldCreateSpanForRequest: (url) => {
+          // Do not create spans for outgoing requests to a 'sentry.io' domain.
+          return !url.match(/^https?:\/\/([\w\d.@-]+\.)?sentry\.io(\/|$)/u);
+        },
+      }),
+    );
+  }
+
   return {
     beforeBreadcrumb: beforeBreadcrumb(),
     beforeSend: (report) => rewriteReport(report),
@@ -76,18 +100,7 @@ function getClientOptions(extraIntegrations = []) {
     dist: isManifestV3 ? 'mv3' : 'mv2',
     dsn: sentryTarget,
     environment,
-    integrations: [
-      Sentry.dedupeIntegration(),
-      Sentry.extraErrorDataIntegration(),
-      Sentry.browserTracingIntegration({
-        shouldCreateSpanForRequest: (url) => {
-          // Do not create spans for outgoing requests to a 'sentry.io' domain.
-          return !url.match(/^https?:\/\/([\w\d.@-]+\.)?sentry\.io(\/|$)/u);
-        },
-      }),
-      filterEvents({ getMetaMetricsEnabled, log }),
-      ...extraIntegrations,
-    ],
+    integrations,
     release: RELEASE,
     // Client reports are automatically sent when a page's visibility changes to
     // "hidden", but cancelled (with an Error) that gets logged to the console.

@@ -4,4 +4,4 @@ import setupSentry from '../../shared/lib/sentry/setupSentry';
 global.stateHooks = global.stateHooks || {};
 
 // setup sentry error reporting
-global.sentry = setupSentry(global.sentryIntegrations || []);
+globalThis.sentry = setupSentry(global.sentryIntegrations || []);
