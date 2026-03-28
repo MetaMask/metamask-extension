@@ -7,10 +7,7 @@ import {
   selectEvmTransactionsForToast,
   selectNonEvmTransactionsForToast,
 } from '../../../selectors';
-import {
-  selectBridgeHistoryForAccountGroup,
-  selectNonEvmBridgeSourceTxIds,
-} from '../../../ducks/bridge-status/selectors';
+import { selectBridgeHistoryForToast } from '../../../ducks/bridge-status/selectors';
 import { ToastListener } from './toast-listener';
 
 jest.mock('react-redux', () => ({ useSelector: jest.fn() }));
@@ -30,13 +27,7 @@ jest.mock('../../../selectors', () => ({
 }));
 
 jest.mock('../../../ducks/bridge-status/selectors', () => ({
-  selectBridgeHistoryForAccountGroup: jest.fn(),
-  selectNonEvmBridgeSourceTxIds: jest.fn(),
-}));
-
-jest.mock('@metamask/bridge-controller', () => ({
-  isNonEvmChainId: jest.fn().mockReturnValue(false),
-  StatusTypes: { PENDING: 'PENDING', COMPLETE: 'COMPLETE', FAILED: 'FAILED' },
+  selectBridgeHistoryForToast: jest.fn(),
 }));
 
 jest.mock('./toast', () => ({ ToastContent: () => null }));
@@ -47,22 +38,15 @@ type TestState = {
   evmTxs: object[];
   nonEvmTxs: object[];
   bridgeHistory: Record<string, BridgeHistoryItem>;
-  nonEvmBridgeIds: Set<string>;
 };
 
 let state: TestState;
 
-const makeBridgeItem = (
-  srcChainId: number,
-  destChainId: number,
-  status: string,
-  extra: Record<string, unknown> = {},
-) =>
+const makeBridgeItem = (status: string) =>
   ({
-    quote: { srcChainId, destChainId },
+    quote: { srcChainId: 1, destChainId: 137 },
     status: { status },
     account: '0x123',
-    ...extra,
   }) as unknown as BridgeHistoryItem;
 
 beforeEach(() => {
@@ -71,7 +55,6 @@ beforeEach(() => {
     evmTxs: [],
     nonEvmTxs: [],
     bridgeHistory: {},
-    nonEvmBridgeIds: new Set(),
   };
   mockUseSelector.mockImplementation((selector: unknown) => {
     if (selector === selectEvmTransactionsForToast) {
@@ -80,11 +63,8 @@ beforeEach(() => {
     if (selector === selectNonEvmTransactionsForToast) {
       return state.nonEvmTxs;
     }
-    if (selector === selectBridgeHistoryForAccountGroup) {
+    if (selector === selectBridgeHistoryForToast) {
       return state.bridgeHistory;
-    }
-    if (selector === selectNonEvmBridgeSourceTxIds) {
-      return state.nonEvmBridgeIds;
     }
     return undefined;
   });
@@ -169,23 +149,13 @@ describe('ToastListener', () => {
         expect.objectContaining({ id: 'non-evm-tx-sol-tx1' }),
       );
     });
-
-    it('skips non-EVM txs that are tracked by bridge history', () => {
-      state.nonEvmBridgeIds = new Set(['sol-tx1']);
-      const { rerender } = render(<ToastListener />);
-
-      state.nonEvmTxs = [{ id: 'sol-tx1', status: 'submitted' }];
-      rerender(<ToastListener />);
-
-      expect(toast.loading).not.toHaveBeenCalled();
-    });
   });
 
-  describe.skip('bridge history', () => {
+  describe('bridge history', () => {
     it('shows a loading toast when a new pending bridge tx appears', () => {
       const { rerender } = render(<ToastListener />);
 
-      state.bridgeHistory = { 'bridge-1': makeBridgeItem(1, 137, 'PENDING') };
+      state.bridgeHistory = { 'bridge-1': makeBridgeItem('PENDING') };
       rerender(<ToastListener />);
 
       expect(toast.loading).toHaveBeenCalledWith(
@@ -195,10 +165,10 @@ describe('ToastListener', () => {
     });
 
     it('shows a success toast when a bridge tx becomes complete', () => {
-      state.bridgeHistory = { 'bridge-1': makeBridgeItem(1, 137, 'PENDING') };
+      state.bridgeHistory = { 'bridge-1': makeBridgeItem('PENDING') };
       const { rerender } = render(<ToastListener />);
 
-      state.bridgeHistory = { 'bridge-1': makeBridgeItem(1, 137, 'COMPLETE') };
+      state.bridgeHistory = { 'bridge-1': makeBridgeItem('COMPLETE') };
       rerender(<ToastListener />);
 
       expect(toast.success).toHaveBeenCalledWith(
@@ -208,27 +178,16 @@ describe('ToastListener', () => {
     });
 
     it('shows an error toast when a bridge tx becomes failed', () => {
-      state.bridgeHistory = { 'bridge-1': makeBridgeItem(1, 137, 'PENDING') };
+      state.bridgeHistory = { 'bridge-1': makeBridgeItem('PENDING') };
       const { rerender } = render(<ToastListener />);
 
-      state.bridgeHistory = { 'bridge-1': makeBridgeItem(1, 137, 'FAILED') };
+      state.bridgeHistory = { 'bridge-1': makeBridgeItem('FAILED') };
       rerender(<ToastListener />);
 
       expect(toast.error).toHaveBeenCalledWith(
         expect.anything(),
         expect.objectContaining({ id: 'bridge-tx-bridge-1' }),
       );
-    });
-
-    it('skips EVM same-chain swaps', () => {
-      const { rerender } = render(<ToastListener />);
-
-      state.bridgeHistory = {
-        'swap-1': makeBridgeItem(1, 1, 'PENDING'), // same chain, isNonEvmChainId=false → skip
-      };
-      rerender(<ToastListener />);
-
-      expect(toast.loading).not.toHaveBeenCalled();
     });
   });
 });
