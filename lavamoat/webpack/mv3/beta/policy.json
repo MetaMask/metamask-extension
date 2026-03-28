@@ -1710,7 +1710,7 @@
         "setTimeout": true
       },
       "packages": {
-        "@sentry/browser>@sentry/core": true,
+        "@sentry/react>@sentry/core": true,
         "@sentry/utils": true
       }
     },
@@ -1729,7 +1729,7 @@
         "setTimeout": true
       },
       "packages": {
-        "@sentry/browser>@sentry/core": true,
+        "@sentry/react>@sentry/core": true,
         "@sentry/utils": true
       }
     },
@@ -1748,7 +1748,7 @@
         "document": true
       },
       "packages": {
-        "@sentry/browser>@sentry/core": true,
+        "@sentry/react>@sentry/core": true,
         "@sentry/utils": true
       }
     },
@@ -1797,11 +1797,11 @@
       },
       "packages": {
         "@sentry/browser>@sentry-internal/browser-utils": true,
-        "@sentry/browser>@sentry/core": true,
+        "@sentry/react>@sentry/core": true,
         "@sentry/utils": true
       }
     },
-    "@sentry/browser": {
+    "@sentry/react>@sentry/browser": {
       "globals": {
         "PerformanceObserver.supportedEntryTypes": true,
         "Request": true,
@@ -1817,7 +1817,7 @@
       },
       "meta": {
         "webpack-optimization": [
-          "Dependency '@sentry/browser>@sentry/core' reexports from '@sentry/utils' and webpack collapsed that to a direct import."
+          "Dependency '@sentry/react>@sentry/core' reexports from '@sentry/utils' and webpack collapsed that to a direct import."
         ]
       },
       "packages": {
@@ -1825,11 +1825,11 @@
         "@sentry/browser>@sentry-internal/feedback": true,
         "@sentry/browser>@sentry-internal/replay-canvas": true,
         "@sentry/browser>@sentry-internal/replay": true,
-        "@sentry/browser>@sentry/core": true,
+        "@sentry/react>@sentry/core": true,
         "@sentry/utils": true
       }
     },
-    "@sentry/browser>@sentry/core": {
+    "@sentry/react>@sentry/core": {
       "globals": {
         "Headers": true,
         "Request": true,
@@ -1845,6 +1845,23 @@
       },
       "packages": {
         "@sentry/utils": true
+      }
+    },
+    "@sentry/react": {
+      "globals": {
+        "__SENTRY_DEBUG__": true
+      },
+      "meta": {
+        "webpack-optimization": [
+          "Dependency '@sentry/react>@sentry/browser' reexports from '@sentry/react>@sentry/core' and webpack collapsed that to a direct import."
+        ]
+      },
+      "packages": {
+        "@sentry/react>@sentry/browser": true,
+        "@sentry/react>@sentry/core": true,
+        "@sentry/utils": true,
+        "react-redux>hoist-non-react-statics": true,
+        "react": true
       }
     },
     "@sentry/utils": {
