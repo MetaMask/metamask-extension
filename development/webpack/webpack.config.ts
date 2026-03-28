@@ -366,12 +366,10 @@ const config = {
         test: /\.(?:[jt]s|m[jt]s|[jt]sx)$/u,
         exclude: NODE_MODULES_RE,
         enforce: 'pre' as const,
-        use: [
-          {
-            loader: require.resolve('./utils/loaders/envValidationLoader'),
-            options: { declarations: [...buildEnvVarDeclarations] },
-          },
-        ],
+        use: {
+          loader: require.resolve('./utils/loaders/envValidationLoader'),
+          options: { declarations: [...buildEnvVarDeclarations] },
+        },
       },
       // thread-loader pool for UI component files (must appear before SWC rules)
       threadLoader && {
