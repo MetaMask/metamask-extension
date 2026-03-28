@@ -1,11 +1,14 @@
 import { createModuleLogger } from '@metamask/utils';
 import * as Sentry from '@sentry/react';
+import { logger } from '@sentry/utils';
+import browser from 'webextension-polyfill';
 import { sentryLogger as log } from '../sentry';
 import { isManifestV3 } from '../mv3.utils';
 import { getManifestFlags } from '../manifestFlags';
 import { getSentryRelease } from '../sentry-release';
+import extractEthjsErrorMessage from './extractEthjsErrorMessage';
 import { filterEvents } from './sentry-filter-events';
-import { initInstallType } from './install-type';
+import { getInstallType, initInstallType } from './install-type';
 
 const internalLog = createModuleLogger(log, 'internal');
 
@@ -34,12 +37,6 @@ export const ERROR_URL_ALLOWLIST = {
   SEGMENT: 'segment.io',
 };
 
-/**
- * Initializes Sentry for error reporting and performance tracing.
- *
- * @param {import('@sentry/types').Integration[]} [extraIntegrations] - Optional additional integrations to include.
- * @returns {object | undefined} The Sentry object if initialized, or undefined otherwise.
- */
 export default function setupSentry(extraIntegrations = []) {
   if (!RELEASE) {
     throw new Error('Missing release');
@@ -69,12 +66,6 @@ function getClientOptions(extraIntegrations = []) {
   const environment = getSentryEnvironment();
   const sentryTarget = getSentryTarget();
 
-  const hasTracingIntegration = extraIntegrations.some(
-    (integration) =>
-      integration.name.includes('Tracing') ||
-      integration.name.includes('Routing'),
-  );
-
   const integrations = [
     Sentry.dedupeIntegration(),
     Sentry.extraErrorDataIntegration(),
@@ -82,7 +73,12 @@ function getClientOptions(extraIntegrations = []) {
     ...extraIntegrations,
   ];
 
-  if (!hasTracingIntegration) {
+  // Only add default browserTracingIntegration if no other tracing/routing integration is provided
+  if (
+    !extraIntegrations.some(
+      (i) => i.name.includes('Tracing') || i.name.includes('Routing'),
+    )
+  ) {
     integrations.push(
       Sentry.browserTracingIntegration({
         shouldCreateSpanForRequest: (url) => {
@@ -330,95 +326,290 @@ function setSentryClient(extraIntegrations = []) {
   return true;
 }
 
-function rewriteReport(report) {
-  try {
-    if (report.message) {
-      report.message = removeUrlsFromMessage(report.message);
-    }
-    if (report.exception && report.exception.values) {
-      report.exception.values.forEach((exception) => {
-        if (exception.value) {
-          exception.value = removeUrlsFromMessage(exception.value);
-        }
-      });
-    }
-    if (report.breadcrumbs) {
-      report.breadcrumbs.forEach((breadcrumb) => {
-        removeUrlsFromBreadCrumb(breadcrumb);
-      });
-    }
-    if (report.request && report.request.url) {
-      report.request.url = removeUrlsFromMessage(report.request.url);
-    }
-  } catch (err) {
-    internalLog('Error rewriting report', err);
+/**
+ * Receives a string and returns that string if it is a
+ * regex match for a url with a `chrome-extension` or `moz-extension`
+ * protocol, and an empty string otherwise.
+ *
+ * @param {string} url - The URL to check.
+ * @returns {string} An empty string if the URL was internal, or the unmodified URL otherwise.
+ */
+function hideUrlIfNotInternal(url) {
+  const re = /^(chrome-extension|moz-extension):\/\//u;
+  if (!url.match(re)) {
+    return '';
   }
-  return report;
+  return url;
 }
 
-function removeUrlsFromMessage(message) {
-  // eslint-disable-next-line no-useless-escape
-  return message.replace(/https?:\/\/[^\s]+/gu, '[URL]');
+/**
+ * Returns a method that handles the Sentry breadcrumb using a specific method to get the extension state
+ *
+ * @returns {(breadcrumb: object) => object} A method that modifies a Sentry breadcrumb object
+ */
+export function beforeBreadcrumb() {
+  return (breadcrumb) => {
+    if (!getState) {
+      return null;
+    }
+    const appState = getState();
+    if (
+      !getMetaMetricsEnabledFromAppState(appState) ||
+      breadcrumb?.category === 'ui.input'
+    ) {
+      return null;
+    }
+    const newBreadcrumb = removeUrlsFromBreadCrumb(breadcrumb);
+    return newBreadcrumb;
+  };
 }
 
+/**
+ * Receives a Sentry breadcrumb object and potentially removes urls
+ * from its `data` property, it particular those possibly found at
+ * data.from, data.to and data.url
+ *
+ * @param {object} breadcrumb - A Sentry breadcrumb object: https://develop.sentry.dev/sdk/event-payloads/breadcrumbs/
+ * @returns {object} A modified Sentry breadcrumb object.
+ */
 export function removeUrlsFromBreadCrumb(breadcrumb) {
-  if (breadcrumb.data && typeof breadcrumb.data === 'object') {
-    if (breadcrumb.data.url) {
-      breadcrumb.data.url = removeUrlsFromMessage(breadcrumb.data.url);
-    }
-    if (breadcrumb.data.from) {
-      breadcrumb.data.from = removeUrlsFromMessage(breadcrumb.data.from);
-    }
-    if (breadcrumb.data.to) {
-      breadcrumb.data.to = removeUrlsFromMessage(breadcrumb.data.to);
-    }
+  if (breadcrumb?.data?.url) {
+    breadcrumb.data.url = hideUrlIfNotInternal(breadcrumb.data.url);
+  }
+  if (breadcrumb?.data?.to) {
+    breadcrumb.data.to = hideUrlIfNotInternal(breadcrumb.data.to);
+  }
+  if (breadcrumb?.data?.from) {
+    breadcrumb.data.from = hideUrlIfNotInternal(breadcrumb.data.from);
   }
   return breadcrumb;
 }
 
-function integrateLogging() {
-  const originalConsoleError = console.error;
-  console.error = (...args) => {
-    Sentry.withScope((scope) => {
-      scope.setExtra('arguments', args);
-      Sentry.captureMessage('console.error', 'error');
+/**
+ * Receives a Sentry event object and modifies it before the
+ * error is sent to Sentry. Modifications include both sanitization
+ * of data via helper methods and addition of state data from the
+ * return value of the second parameter passed to the function.
+ *
+ * @param {object} report - A Sentry event object: https://develop.sentry.dev/sdk/event-payloads/
+ * @returns {object} A modified Sentry event object.
+ */
+export function rewriteReport(report) {
+  try {
+    // simplify certain complex error messages (e.g. Ethjs)
+    simplifyErrorMessages(report);
+    // remove urls from error message
+    sanitizeUrlsFromErrorMessages(report);
+    // Remove evm addresses from error message.
+    // Note that this is redundent with data scrubbing we do within our sentry dashboard,
+    // but putting the code here as well gives public visibility to how we are handling
+    // privacy with respect to sentry.
+    sanitizeAddressesFromErrorMessages(report);
+    // modify report urls
+    rewriteReportUrls(report);
+
+    // append app state
+    const appState = getState();
+
+    if (!report.extra) {
+      report.extra = {};
+    }
+    if (!report.tags) {
+      report.tags = {};
+    }
+
+    const installType = getInstallType();
+
+    Object.assign(report.extra, {
+      appState,
+      installType,
+      extensionId: browser.runtime?.id,
     });
-    originalConsoleError.apply(console, args);
-  };
+
+    report.tags.installType = installType;
+    report.tags.storageKind =
+      globalThis.stateHooks?.getStorageKind?.() ?? 'unknown';
+  } catch (err) {
+    log('Error rewriting report', err);
+  }
+  return report;
 }
 
-function makeTransport(options) {
-  return Sentry.makeBrowserOfflineTransport(Sentry.makeFetchTransport)(options);
+/**
+ * Receives a Sentry event object and modifies it so that urls are removed from any of its
+ * error messages.
+ *
+ * @param {object} report - the report to modify
+ */
+function sanitizeUrlsFromErrorMessages(report) {
+  rewriteErrorMessages(report, (errorMessage) => {
+    let newErrorMessage = errorMessage;
+    const re = /(([-.+a-zA-Z]+:\/\/)|(www\.))\S+[@:.]\S+/gu;
+    const urlsInMessage = newErrorMessage.match(re) || [];
+    urlsInMessage.forEach((url) => {
+      try {
+        const urlObj = new URL(url);
+        const { hostname } = urlObj;
+        if (
+          !Object.values(ERROR_URL_ALLOWLIST).some(
+            (allowedHostname) =>
+              hostname === allowedHostname ||
+              hostname.endsWith(`.${allowedHostname}`),
+          )
+        ) {
+          newErrorMessage = newErrorMessage.replace(url, '**');
+        }
+      } catch (e) {
+        newErrorMessage = newErrorMessage.replace(url, '**');
+      }
+    });
+    return newErrorMessage;
+  });
+}
+
+/**
+ * Receives a Sentry event object and modifies it so that ethereum addresses are removed from
+ * any of its error messages.
+ *
+ * @param {object} report - the report to modify
+ */
+function sanitizeAddressesFromErrorMessages(report) {
+  rewriteErrorMessages(report, (errorMessage) => {
+    const newErrorMessage = errorMessage.replace(/0x[A-Fa-f0-9]{40}/u, '0x**');
+    return newErrorMessage;
+  });
+}
+
+function simplifyErrorMessages(report) {
+  rewriteErrorMessages(report, (errorMessage) => {
+    // simplify ethjs error messages
+    let simplifiedErrorMessage = extractEthjsErrorMessage(errorMessage);
+    // simplify 'Transaction Failed: known transaction'
+    if (
+      simplifiedErrorMessage.indexOf(
+        'Transaction Failed: known transaction',
+      ) === 0
+    ) {
+      // cut the hash from the error message
+      simplifiedErrorMessage = 'Transaction Failed: known transaction';
+    }
+    return simplifiedErrorMessage;
+  });
+}
+
+function rewriteErrorMessages(report, rewriteFn) {
+  // rewrite top level message
+  if (typeof report.message === 'string') {
+    report.message = rewriteFn(report.message);
+  }
+  // rewrite each exception message
+  if (report.exception && report.exception.values) {
+    report.exception.values.forEach((item) => {
+      if (typeof item.value === 'string') {
+        item.value = rewriteFn(item.value);
+      }
+    });
+  }
+}
+
+function rewriteReportUrls(report) {
+  if (report.request?.url) {
+    // update request url
+    report.request.url = toMetamaskUrl(report.request.url);
+  }
+
+  // update exception stack trace
+  if (report.exception && report.exception.values) {
+    report.exception.values.forEach((item) => {
+      if (item.stacktrace) {
+        item.stacktrace.frames.forEach((frame) => {
+          frame.filename = toMetamaskUrl(frame.filename);
+        });
+      }
+    });
+  }
+}
+
+function toMetamaskUrl(origUrl) {
+  if (!globalThis.location?.origin) {
+    return origUrl;
+  }
+
+  const filePath = origUrl?.split(globalThis.location.origin)[1];
+  if (!filePath) {
+    return origUrl;
+  }
+  const metamaskUrl = `/metamask${filePath}`;
+  return metamaskUrl;
 }
 
 function getState() {
-  if (globalThis.stateHooks?.getAppState) {
-    return { state: globalThis.stateHooks.getAppState() };
-  }
-  return {};
+  return globalThis.stateHooks?.getSentryState?.() || {};
 }
 
-function beforeBreadcrumb() {
-  return (breadcrumb) => {
-    if (breadcrumb.category === 'fetch') {
-      const { url } = breadcrumb.data;
-      if (
-        url &&
-        Object.values(ERROR_URL_ALLOWLIST).some((u) => url.includes(u))
-      ) {
-        return breadcrumb;
-      }
-      return null;
-    }
-    return breadcrumb;
-  };
+function integrateLogging() {
+  if (!METAMASK_DEBUG) {
+    return;
+  }
+
+  for (const loggerType of ['log', 'error']) {
+    logger[loggerType] = (...args) => {
+      const message = args[0].replace(`Sentry Logger [${loggerType}]: `, '');
+      internalLog(message, ...args.slice(1));
+    };
+  }
+
+  log('Integrated logging');
 }
 
 function addDebugListeners() {
-  if (METAMASK_DEBUG) {
-    Sentry.addEventProcessor((event) => {
-      internalLog('Sentry event', event);
-      return event;
-    });
+  if (!METAMASK_DEBUG) {
+    return;
   }
+
+  const client = Sentry.getClient();
+
+  client?.on('beforeEnvelope', (event) => {
+    if (isCompletedSessionEnvelope(event)) {
+      log('Completed session', event);
+    }
+  });
+
+  client?.on('afterSendEvent', (event) => {
+    const type = getEventType(event);
+    log(type, event);
+  });
+
+  log('Added debug listeners');
+}
+
+function makeTransport(options) {
+  return Sentry.makeFetchTransport(options, async (...args) => {
+    const metricsEnabled = await getMetaMetricsEnabled();
+
+    if (!metricsEnabled) {
+      throw new Error('Network request skipped as metrics disabled');
+    }
+
+    return await fetch(...args);
+  });
+}
+
+function isCompletedSessionEnvelope(envelope) {
+  const type = envelope?.[1]?.[0]?.[0]?.type;
+  const data = envelope?.[1]?.[0]?.[1] ?? {};
+
+  return type === 'session' && data.status === 'exited';
+}
+
+function getEventType(event) {
+  if (event.type === 'transaction') {
+    return 'Trace';
+  }
+
+  if (event.level === 'error') {
+    return 'Error';
+  }
+
+  return 'Event';
 }
