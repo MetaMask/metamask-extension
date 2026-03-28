@@ -106,6 +106,15 @@ describe('Tron account creation', function (this: Suite) {
       async ({ driver }: { driver: Driver }) => {
         await login(driver);
 
+        const headerNavbar = new HeaderNavbar(driver);
+        await headerNavbar.openAccountMenu();
+
+        const accountListPage = new AccountListPage(driver);
+        await accountListPage.checkPageIsLoaded();
+        await accountListPage.addMultichainAccount();
+        await accountListPage.checkAccountDisplayedInAccountList('Account 2');
+        await accountListPage.selectAccount('Account 2');
+
         const networkManager = new NetworkManager(driver);
         await networkManager.openNetworkManager();
         await networkManager.selectTab('Popular');
