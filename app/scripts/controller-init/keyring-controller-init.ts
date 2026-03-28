@@ -15,7 +15,7 @@ import {
   LedgerKeyring,
 } from '@metamask/eth-ledger-bridge-keyring';
 import { hardwareKeyringBuilderFactory } from '../lib/hardware-keyring-builder-factory';
-import { isManifestV3 } from '../../../shared/modules/mv3.utils';
+import { isManifestV3 } from '../../../shared/lib/mv3.utils';
 import { qrKeyringBuilderFactory } from '../lib/qr-keyring-builder-factory';
 import { encryptorFactory } from '../lib/encryptor-factory';
 import { TrezorOffscreenBridge } from '../lib/offscreen-bridge/trezor-offscreen-bridge';
@@ -102,12 +102,10 @@ export const KeyringControllerInit: ControllerInitFunction<
     );
   }
 
-  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   const snapKeyringBuilder = getController('SnapKeyringBuilder');
 
   // @ts-expect-error: `addAccounts` is missing in `SnapKeyring` type.
   additionalKeyrings.push(snapKeyringBuilder);
-  ///: END:ONLY_INCLUDE_IF
 
   const controller = new KeyringController({
     state: persistedState.KeyringController,

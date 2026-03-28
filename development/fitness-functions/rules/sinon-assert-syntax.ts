@@ -16,12 +16,16 @@ const codeBlocks = [
 
 function preventSinonAssertSyntax(diff: string): boolean {
   const diffByFilePath = filterDiffByFilePath(diff, E2E_TESTS_REGEX);
-  const diffAdditions = filterDiffFileCreations(diffByFilePath);
+  const diffNotMdMdcJson = filterDiffByFilePath(
+    diffByFilePath,
+    /\.(md|mdc|json)$/u,
+  );
+  const diffAdditions = filterDiffFileCreations(diffNotMdMdcJson);
   const hashmap = hasNumberOfCodeBlocksIncreased(diffAdditions, codeBlocks);
 
-  const haveOccurencesOfAtLeastOneCodeBlockIncreased =
+  const haveOccurrencesOfAtLeastOneCodeBlockIncreased =
     Object.values(hashmap).includes(true);
-  if (haveOccurencesOfAtLeastOneCodeBlockIncreased) {
+  if (haveOccurrencesOfAtLeastOneCodeBlockIncreased) {
     return false;
   }
   return true;

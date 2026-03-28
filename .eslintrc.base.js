@@ -1,10 +1,7 @@
-const path = require('path');
-
 module.exports = {
-  extends: [
-    '@metamask/eslint-config',
-    path.resolve(__dirname, '.eslintrc.jsdoc.js'),
-  ],
+  extends: ['@metamask/eslint-config'],
+
+  plugins: ['@metamask/design-tokens'],
 
   globals: {
     document: 'readonly',
@@ -15,10 +12,13 @@ module.exports = {
     AggregateError: 'readonly',
   },
 
-  rules: {
-    // TODO: re-enable once the proposed feature at https://github.com/gajus/eslint-plugin-jsdoc/pull/964#issuecomment-1936470252 is available
-    'jsdoc/check-line-alignment': 'off',
+  settings: {
+    jsdoc: {
+      mode: 'typescript',
+    },
+  },
 
+  rules: {
     'default-param-last': 'off',
     'prefer-object-spread': 'error',
     'require-atomic-updates': 'off',
@@ -69,18 +69,108 @@ module.exports = {
     // It is common to import modules without assigning them to variables in
     // a browser context. For instance, we may import polyfills which change
     // global variables, or we may import stylesheets.
-    'import/no-unassigned-import': 'off',
+    'import-x/no-unassigned-import': 'off',
 
-    // import/no-named-as-default-member checks if default imports also have
+    // import-x/no-named-as-default-member checks if default imports also have
     // named exports matching properties used on the default import. Example:
     // in confirm-seed-phrase-component.test.js we import sinon from 'sinon'
     // and later access sinon.spy. spy is also exported from sinon directly and
     // thus triggers the error. Turning this rule off to prevent churn when
     // upgrading eslint and dependencies. This rule should be evaluated and
     // if agreeable turned on upstream in @metamask/eslint-config
-    'import/no-named-as-default-member': 'off',
+    'import-x/no-named-as-default-member': 'off',
 
     // This is necessary to run eslint on Windows and not get a thousand CRLF errors
     'prettier/prettier': ['error', { endOfLine: 'auto' }],
+
+    '@metamask/design-tokens/color-no-hex': 'error',
+    'import-x/no-restricted-paths': [
+      'error',
+      {
+        basePath: './',
+        zones: [
+          {
+            target: './app',
+            from: './ui',
+            message:
+              'Should not import from UI in background, use shared directory instead',
+          },
+          {
+            target: './ui',
+            from: './app',
+            message:
+              'Should not import from background in UI, use shared directory instead',
+          },
+          {
+            target: './shared',
+            from: './app',
+            message: 'Should not import from background in shared',
+          },
+          {
+            target: './shared',
+            from: './ui',
+            message: 'Should not import from UI in shared',
+          },
+        ],
+      },
+    ],
+
+    /* JSDoc plugin rules */
+
+    // TODO: re-enable once the proposed feature at https://github.com/gajus/eslint-plugin-jsdoc/pull/964#issuecomment-1936470252 is available
+    'jsdoc/check-line-alignment': 'off',
+
+    // Allow tag `jest-environment` to work around Jest bug
+    // See: https://github.com/facebook/jest/issues/7780
+    'jsdoc/check-tag-names': ['error', { definedTags: ['jest-environment'] }],
+
+    // TODO: Re-enable these
+    'jsdoc/match-description': 'off',
+    'jsdoc/require-description': 'off',
+    'jsdoc/require-jsdoc': 'off',
+    'jsdoc/require-param-description': 'off',
+    'jsdoc/require-param-type': 'off',
+    'jsdoc/require-returns-description': 'off',
+    'jsdoc/require-returns-type': 'off',
+    'jsdoc/require-returns': 'off',
+    'jsdoc/valid-types': 'off',
+
+    // These rule modifications are removing changes to our shared ESLint config made after
+    // version v9. This is a temporary measure to get us to ESLint v9 compatible versions,
+    // at which point we can restore the intended rules and use error suppression instead.
+    //
+    // TODO: Remove these modifications after the ESLint v9 update
+    'no-loss-of-precision': 'off',
+    'no-restricted-globals': ['error', 'event'],
+    'id-denylist': 'off',
+    'id-length': 'off',
+    'import-x/order': [
+      'error',
+      {
+        groups: ['builtin', 'external', 'parent', 'sibling', 'index'],
+        'newlines-between': 'ignore',
+        alphabetize: {
+          order: 'ignore',
+          caseInsensitive: false,
+        },
+      },
+    ],
+    'import-x/no-nodejs-modules': 'off',
+    'jsdoc/tag-lines': 'off',
+    'no-restricted-syntax': [
+      'error',
+      {
+        selector: 'WithStatement',
+        message: 'With statements are not allowed',
+      },
+      // {
+      //   selector: "BinaryExpression[operator='in']",
+      //   message: 'The "in" operator is not allowed',
+      // },
+      {
+        selector: 'SequenceExpression',
+        message: 'Sequence expressions are not allowed',
+      },
+    ],
   },
 };

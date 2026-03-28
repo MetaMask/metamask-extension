@@ -23,7 +23,7 @@ import {
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { MultichainAddressRow } from '../multichain-address-row/multichain-address-row';
 import { getInternalAccountListSpreadByScopesByGroupId } from '../../../selectors/multichain-accounts/account-tree';
-// eslint-disable-next-line import/no-restricted-paths
+// eslint-disable-next-line import-x/no-restricted-paths
 import { normalizeSafeAddress } from '../../../../app/scripts/lib/multichain/address';
 
 // Priority networks that should appear first (using CAIP chain IDs)
@@ -57,7 +57,9 @@ export const MultichainAddressRowsList = ({
 }: MultichainAddressRowsListProps) => {
   const t = useI18nContext();
   const [searchPattern, setSearchPattern] = React.useState<string>('');
-  const [, handleCopy] = useCopyToClipboard();
+
+  // useCopyToClipboard analysis: Copies one of your public addresses
+  const [, handleCopy] = useCopyToClipboard({ clearDelayMs: null });
 
   const getAccountsSpreadByNetworkByGroupId = useSelector((state) =>
     getInternalAccountListSpreadByScopesByGroupId(state, groupId),

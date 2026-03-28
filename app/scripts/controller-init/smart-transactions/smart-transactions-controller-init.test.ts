@@ -1,5 +1,6 @@
 import {
   SmartTransactionsController,
+  SmartTransactionsControllerMessenger,
   ClientId,
 } from '@metamask/smart-transactions-controller';
 import {
@@ -20,7 +21,6 @@ import type {
 import {
   getSmartTransactionsControllerInitMessenger,
   SmartTransactionsControllerInitMessenger,
-  SmartTransactionsControllerMessenger,
 } from '../messengers/smart-transactions-controller-messenger';
 import { ControllerFlatState } from '../controller-list';
 import type {
@@ -35,10 +35,7 @@ jest.mock('@metamask/smart-transactions-controller');
 type MockAccountsController = Pick<AccountsController, 'getSelectedAccount'>;
 type MockTransactionController = Pick<
   TransactionController,
-  | 'getNonceLock'
-  | 'confirmExternalTransaction'
-  | 'getTransactions'
-  | 'updateTransaction'
+  'getNonceLock' | 'getTransactions' | 'updateTransaction'
 >;
 
 type TestInitRequest = ControllerInitRequest<
@@ -96,7 +93,6 @@ describe('SmartTransactionsController Init', () => {
 
     const transactionController: MockTransactionController = {
       getNonceLock: jest.fn().mockResolvedValue({ releaseLock: jest.fn() }),
-      confirmExternalTransaction: jest.fn(),
       getTransactions: jest.fn().mockReturnValue([]),
       updateTransaction: jest.fn(),
     };
@@ -324,63 +320,6 @@ describe('SmartTransactionsController Init', () => {
     expect(listener).toHaveBeenCalledWith(testPayload);
   });
 
-  describe('getFeatureFlags', () => {
-    it('returns feature flags from state', () => {
-      const { fullRequest } = buildInitRequest();
-      SmartTransactionsControllerInit(fullRequest);
-
-      const constructorCall =
-        smartTransactionsControllerClassMock.mock.calls[0][0];
-      const { getFeatureFlags } = constructorCall;
-
-      const result = getFeatureFlags();
-
-      expect(fullRequest.getUIState).toHaveBeenCalled();
-      expect(result).toHaveProperty('smartTransactions');
-      expect(result.smartTransactions).toHaveProperty('extensionActive');
-      expect(result.smartTransactions).toHaveProperty('mobileActive');
-      expect(result.smartTransactions).toHaveProperty('expectedDeadline');
-      expect(result.smartTransactions).toHaveProperty('maxDeadline');
-      expect(result.smartTransactions).toHaveProperty(
-        'extensionReturnTxHashAsap',
-      );
-    });
-
-    it('returns default feature flags when getFeatureFlagsByChainId returns null', () => {
-      // To test the null case, we need to make getStateUI return a state
-      // that would cause getFeatureFlagsByChainId to return null
-      const { fullRequest } = buildInitRequest({
-        getUIState: jest.fn().mockReturnValue({
-          preferences: {},
-          selectedNetworkClientId: 'mainnet',
-          networkConfigurationsByChainId: {
-            '0x1': {
-              chainId: '0x1',
-              rpcEndpoints: [
-                {
-                  networkClientId: 'mainnet',
-                  url: 'https://mainnet.infura.io/v3/abc',
-                },
-              ],
-            },
-          },
-          // No swapsState to test null case
-        }),
-      });
-
-      SmartTransactionsControllerInit(fullRequest);
-
-      const constructorCall =
-        smartTransactionsControllerClassMock.mock.calls[0][0];
-      const { getFeatureFlags } = constructorCall;
-
-      const result = getFeatureFlags();
-
-      // When getFeatureFlagsByChainId returns null, the result should be null
-      expect(result).toBeNull();
-    });
-  });
-
   describe('getMetaMetricsProps', () => {
     it('returns correct meta metrics properties', async () => {
       const { fullRequest } = buildInitRequest();
@@ -447,6 +386,101 @@ describe('SmartTransactionsController Init', () => {
       );
       expect(fullRequest.getAccountType).toHaveBeenCalledWith(selectedAddress);
       expect(fullRequest.getDeviceModel).toHaveBeenCalledWith(selectedAddress);
+    });
+
+    it('returns undefined props when no selected account', async () => {
+      const { fullRequest } = buildInitRequest({
+        getUIState: jest.fn().mockReturnValue({
+          internalAccounts: {
+            selectedAccount: null,
+            accounts: {},
+          },
+          preferences: {},
+          swapsState: {},
+        }),
+      });
+
+      SmartTransactionsControllerInit(fullRequest);
+
+      const constructorCall =
+        smartTransactionsControllerClassMock.mock.calls[0][0];
+      const { getMetaMetricsProps } = constructorCall;
+
+      const result = await getMetaMetricsProps();
+
+      expect(result).toEqual({
+        accountHardwareType: undefined,
+        accountType: undefined,
+        deviceModel: undefined,
+      });
+      expect(fullRequest.getHardwareTypeForMetric).not.toHaveBeenCalled();
+      expect(fullRequest.getAccountType).not.toHaveBeenCalled();
+      expect(fullRequest.getDeviceModel).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('getBearerToken', () => {
+    it('passes getter that returns token when AuthenticationController returns one', async () => {
+      const bearerToken = 'test-bearer-token';
+      const { fullRequest } = buildInitRequest();
+      fullRequest.baseControllerMessenger.registerActionHandler(
+        'AuthenticationController:getBearerToken',
+        () => Promise.resolve(bearerToken),
+      );
+
+      SmartTransactionsControllerInit(fullRequest);
+
+      const constructorCall =
+        smartTransactionsControllerClassMock.mock.calls[0][0];
+      const getBearerToken = constructorCall.getBearerToken as () => Promise<
+        string | undefined
+      >;
+
+      const result = await getBearerToken();
+
+      expect(result).toBe(bearerToken);
+    });
+
+    it('passes getter that returns undefined when AuthenticationController returns undefined', async () => {
+      const { fullRequest } = buildInitRequest();
+      fullRequest.baseControllerMessenger.registerActionHandler(
+        'AuthenticationController:getBearerToken',
+        () => undefined as unknown as Promise<string>,
+      );
+
+      SmartTransactionsControllerInit(fullRequest);
+
+      const constructorCall =
+        smartTransactionsControllerClassMock.mock.calls[0][0];
+      const getBearerToken = constructorCall.getBearerToken as () => Promise<
+        string | undefined
+      >;
+
+      const result = await getBearerToken();
+
+      expect(result).toBeUndefined();
+    });
+
+    it('passes getter that returns undefined when AuthenticationController throws', async () => {
+      const { fullRequest } = buildInitRequest();
+      fullRequest.baseControllerMessenger.registerActionHandler(
+        'AuthenticationController:getBearerToken',
+        () => {
+          throw new Error('auth error');
+        },
+      );
+
+      SmartTransactionsControllerInit(fullRequest);
+
+      const constructorCall =
+        smartTransactionsControllerClassMock.mock.calls[0][0];
+      const getBearerToken = constructorCall.getBearerToken as () => Promise<
+        string | undefined
+      >;
+
+      const result = await getBearerToken();
+
+      expect(result).toBeUndefined();
     });
   });
 });

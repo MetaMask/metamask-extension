@@ -3,12 +3,16 @@ import { Mockttp } from 'mockttp';
 import { Driver } from '../../webdriver/driver';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import FixtureBuilder from '../../fixtures/fixture-builder';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
-import { withFixtures, WINDOW_TITLES, sentryRegEx } from '../../helpers';
+import { login } from '../../page-objects/flows/login.flow';
+import {
+  DAPP_PATH,
+  MOCK_META_METRICS_ID,
+  WINDOW_TITLES,
+} from '../../constants';
+import { withFixtures, sentryRegEx } from '../../helpers';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import PreinstalledExampleSettings from '../../page-objects/pages/settings/preinstalled-example-settings';
 import { TestSnaps } from '../../page-objects/pages/test-snaps';
-import { DAPP_PATH, MOCK_META_METRICS_ID } from '../../constants';
 import { mockTestSnapsSite } from '../../mock-response-data/snaps/snap-local-sites/test-snaps-site-mocks';
 import { TEST_SNAPS_WEBSITE_URL } from '../../snaps/enums';
 
@@ -62,7 +66,7 @@ describe('Preinstalled example Snap', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
         const preInstalledExample = new PreinstalledExampleSettings(driver);
         await navigateToPreInstalledExample(driver);
 
@@ -107,7 +111,7 @@ describe('Preinstalled example Snap', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         const testSnaps = new TestSnaps(driver);
         // We cannot go to localhost directly because snap permissions doen't allow localhost (but they do metamask.github.io).
@@ -150,7 +154,7 @@ describe('Preinstalled example Snap', function () {
         },
       },
       async ({ driver, mockedEndpoint }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         const testSnaps = new TestSnaps(driver);
         // We cannot go to localhost directly because snap permissions doen't allow localhost (but they do metamask.github.io).
@@ -199,7 +203,7 @@ describe('Preinstalled example Snap', function () {
         },
       },
       async ({ driver, mockedEndpoint }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         const testSnaps = new TestSnaps(driver);
         // We cannot go to localhost directly because snap permissions doen't allow localhost (but they do metamask.github.io).
@@ -250,7 +254,7 @@ describe('Preinstalled example Snap', function () {
         },
       },
       async ({ driver, mockedEndpoint }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         const testSnaps = new TestSnaps(driver);
         // We cannot go to localhost directly because snap permissions doen't allow localhost (but they do metamask.github.io).

@@ -1,7 +1,7 @@
 import { configureStore, Store } from '@reduxjs/toolkit';
 import RampAPI from '../../helpers/ramps/rampApi/rampAPI';
 import { getUseExternalServices } from '../../selectors';
-import { getCurrentChainId } from '../../../shared/modules/selectors/networks';
+import { getCurrentChainId } from '../../../shared/lib/selectors/networks';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import {
   getMultichainIsBitcoin,
@@ -19,12 +19,13 @@ import { defaultBuyableChains } from './constants';
 jest.mock('../../helpers/ramps/rampApi/rampAPI');
 const mockedRampAPI = RampAPI as jest.Mocked<typeof RampAPI>;
 
-jest.mock('../../../shared/modules/selectors/networks', () => ({
+jest.mock('../../../shared/lib/selectors/networks', () => ({
   getCurrentChainId: jest.fn(),
   getNetworkConfigurationsByChainId: jest.fn(),
   getSelectedNetworkClientId: jest.fn(),
   selectDefaultNetworkClientIdsByChainId: jest.fn(),
   getNetworksMetadata: jest.fn(),
+  getProviderConfig: jest.fn(() => ({ chainId: '0x1' })),
 }));
 
 jest.mock('../../selectors', () => ({

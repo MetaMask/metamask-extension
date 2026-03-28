@@ -5,6 +5,10 @@ import {
   NetworkControllerNetworkAddedEvent,
   NetworkControllerNetworkDidChangeEvent,
 } from '@metamask/network-controller';
+import {
+  NetworkEnablementControllerGetStateAction,
+  NetworkEnablementControllerListPopularEvmNetworksAction,
+} from '@metamask/network-enablement-controller';
 import { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
 import {
   AccountsControllerGetSelectedAccountAction,
@@ -15,7 +19,11 @@ import {
   TransactionControllerTransactionConfirmedEvent,
   TransactionControllerUnapprovedTransactionAddedEvent,
 } from '@metamask/transaction-controller';
-import { KeyringControllerUnlockEvent } from '@metamask/keyring-controller';
+import {
+  KeyringControllerGetStateAction,
+  KeyringControllerLockEvent,
+  KeyringControllerUnlockEvent,
+} from '@metamask/keyring-controller';
 import { RootMessenger } from '../../lib/messenger';
 import { PreferencesControllerGetStateAction } from '../../controllers/preferences-controller';
 
@@ -28,13 +36,17 @@ type AllowedActions =
   | AccountsControllerListAccountsAction
   | NetworkControllerGetNetworkClientByIdAction
   | NetworkControllerGetStateAction
-  | PreferencesControllerGetStateAction;
+  | NetworkEnablementControllerGetStateAction
+  | NetworkEnablementControllerListPopularEvmNetworksAction
+  | PreferencesControllerGetStateAction
+  | KeyringControllerGetStateAction;
 
 type AllowedEvents =
   | AccountsControllerSelectedEvmAccountChangeEvent
   | TransactionControllerTransactionConfirmedEvent
   | TransactionControllerUnapprovedTransactionAddedEvent
   | NetworkControllerNetworkAddedEvent
+  | KeyringControllerLockEvent
   | KeyringControllerUnlockEvent;
 
 /**
@@ -63,13 +75,17 @@ export function getAccountTrackerControllerMessenger(
       'AccountsController:listAccounts',
       'NetworkController:getNetworkClientById',
       'NetworkController:getState',
+      'NetworkEnablementController:getState',
+      'NetworkEnablementController:listPopularEvmNetworks',
       'PreferencesController:getState',
+      'KeyringController:getState',
     ],
     events: [
       'AccountsController:selectedEvmAccountChange',
       'TransactionController:transactionConfirmed',
       'TransactionController:unapprovedTransactionAdded',
       'NetworkController:networkAdded',
+      'KeyringController:lock',
       'KeyringController:unlock',
     ],
   });

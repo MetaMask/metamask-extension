@@ -4,18 +4,18 @@ import {
   USER_STORAGE_WALLETS_FEATURE_KEY,
 } from '@metamask/account-tree-controller';
 import { withFixtures } from '../../../helpers';
-import FixtureBuilder from '../../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
 import { mockIdentityServices } from '../mocks';
 import {
   UserStorageMockttpController,
   UserStorageMockttpControllerEvents,
 } from '../../../helpers/identity/user-storage/userStorageMockttpController';
-import { loginWithoutBalanceValidation } from '../../../page-objects/flows/login.flow';
+import { login } from '../../../page-objects/flows/login.flow';
 import HeaderNavbar from '../../../page-objects/pages/header-navbar';
 import AccountListPage from '../../../page-objects/pages/account-list-page';
 import HomePage from '../../../page-objects/pages/home/homepage';
 import { IDENTITY_TEAM_SEED_PHRASE_2 } from '../constants';
-import { mockMultichainAccountsFeatureFlagStateTwo } from '../../multichain-accounts/common';
+import { skipOnFirefox } from '../helpers';
 import { arrangeTestUtils } from './helpers';
 
 describe('Account syncing - Multiple SRPs', function () {
@@ -32,6 +32,8 @@ describe('Account syncing - Multiple SRPs', function () {
    * Phase 2: Login to a fresh app instance and verify all accounts from both SRPs persist and are visible after importing the second SRP.
    */
   it('adds accounts across multiple SRPs and sync them', async function () {
+    skipOnFirefox(this);
+
     const userStorageMockttpController = new UserStorageMockttpController();
 
     const sharedMockSetup = (server: Mockttp) => {
@@ -43,19 +45,18 @@ describe('Account syncing - Multiple SRPs', function () {
         USER_STORAGE_WALLETS_FEATURE_KEY,
         server,
       );
-      mockMultichainAccountsFeatureFlagStateTwo(server);
       return mockIdentityServices(server, userStorageMockttpController);
     };
 
     // Phase 1: Add a second account to the first SRP
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().withBackupAndSyncSettings().build(),
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
         testSpecificMock: sharedMockSetup,
       },
       async ({ driver }) => {
-        await loginWithoutBalanceValidation(driver);
+        await login(driver, { validateBalance: false });
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
         await homePage.checkExpectedTokenBalanceIsDisplayed('25', 'ETH');
@@ -144,12 +145,12 @@ describe('Account syncing - Multiple SRPs', function () {
     // Phase 2: Login to fresh instance, import second SRP and verify all accounts persist
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().withBackupAndSyncSettings().build(),
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
         testSpecificMock: sharedMockSetup,
       },
       async ({ driver }) => {
-        await loginWithoutBalanceValidation(driver);
+        await login(driver, { validateBalance: false });
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
         await homePage.checkExpectedTokenBalanceIsDisplayed('25', 'ETH');

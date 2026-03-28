@@ -21,6 +21,8 @@ class GeneralSettings {
     text: 'Jazzicons',
   };
 
+  private readonly loadingOverlay = '.loading-overlay';
+
   private readonly loadingOverlaySpinner = '.loading-overlay__spinner';
 
   private readonly selectLanguageField = '[data-testid="locale-select"]';
@@ -30,6 +32,12 @@ class GeneralSettings {
     blockies: '[data-testid="blockie_icon"]',
     jazzicon: '[data-testid="jazz_icon"]',
   };
+
+  private readonly toggleNativeTokenAsMainBalance =
+    '[id="toggle-show-native-token-as-main-balance"] .toggle-button';
+
+  private readonly showDefaultAddressToggle =
+    '[id="show-default-address"] .toggle-button';
 
   constructor(driver: Driver) {
     this.driver = driver;
@@ -100,12 +108,32 @@ class GeneralSettings {
     await this.driver.waitForSelector(activeSelector);
   }
 
+  async assertLoadingOverlayNotPresent(): Promise<void> {
+    await this.driver.assertElementNotPresent(this.loadingOverlay);
+  }
+
   async checkNoLoadingOverlaySpinner(): Promise<void> {
     await this.driver.assertElementNotPresent(this.loadingOverlaySpinner);
   }
 
   async toggleHideTokensWithoutBalance(): Promise<void> {
     await this.driver.clickElement(this.hideTokensWithoutBalanceToggle);
+  }
+
+  async toggleShowNativeTokenAsMainBalance(): Promise<void> {
+    await this.driver.clickElement(this.toggleNativeTokenAsMainBalance);
+  }
+
+  async toggleShowDefaultAddress(): Promise<void> {
+    await this.driver.clickElement(this.showDefaultAddressToggle);
+  }
+
+  async checkShowDefaultAddressSectionIsDisplayed(): Promise<void> {
+    await this.driver.waitForSelector(this.showDefaultAddressToggle);
+  }
+
+  async checkShowDefaultAddressSectionIsNotDisplayed(): Promise<void> {
+    await this.driver.assertElementNotPresent(this.showDefaultAddressToggle);
   }
 }
 

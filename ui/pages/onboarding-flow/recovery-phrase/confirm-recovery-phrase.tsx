@@ -17,18 +17,14 @@ import {
   ButtonVariant,
   IconName,
   Text,
-} from '../../../components/component-library';
-import {
   TextVariant,
-  JustifyContent,
-  BlockSize,
   TextColor,
   IconColor,
-  Display,
-  FlexDirection,
-  AlignItems,
   TextAlign,
-} from '../../../helpers/constants/design-system';
+  BoxFlexDirection,
+  BoxJustifyContent,
+  BoxAlignItems,
+} from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { setSeedPhraseBackedUp } from '../../../store/actions';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
@@ -46,7 +42,8 @@ import {
 } from '../../../helpers/constants/routes';
 import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
 import { TraceName } from '../../../../shared/lib/trace';
-import { getBrowserName } from '../../../../shared/modules/browser-runtime.utils';
+import { getBrowserName } from '../../../../shared/lib/browser-runtime.utils';
+import { getSeedPhraseBackedUp } from '../../../ducks/metamask/metamask';
 import ConfirmSrpModal from './confirm-srp-modal';
 import RecoveryPhraseChips from './recovery-phrase-chips';
 
@@ -85,9 +82,9 @@ export default function ConfirmRecoveryPhrase({ secretRecoveryPhrase = '' }) {
   const navigate = useNavigate();
   const { search } = useLocation();
   const t = useI18nContext();
-  const trackEvent = useContext(MetaMetricsContext);
-  const { bufferedEndTrace } = trackEvent;
+  const { trackEvent, bufferedEndTrace } = useContext(MetaMetricsContext);
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
+  const hasSeedPhraseBackedUp = useSelector(getSeedPhraseBackedUp);
 
   const splitSecretRecoveryPhrase = useMemo(
     () => (secretRecoveryPhrase ? secretRecoveryPhrase.split(' ') : []),
@@ -121,8 +118,23 @@ export default function ConfirmRecoveryPhrase({ secretRecoveryPhrase = '' }) {
         }`,
         { replace: true },
       );
+    } else if (hasSeedPhraseBackedUp) {
+      const isFirefox = getBrowserName() === PLATFORM_FIREFOX;
+      // if user has already done the Secure Wallet flow, we can redirect to the next page
+      navigate(
+        isFirefox || isFromReminder
+          ? ONBOARDING_COMPLETION_ROUTE
+          : ONBOARDING_METAMETRICS,
+        { replace: true },
+      );
     }
-  }, [navigate, secretRecoveryPhrase, nextRouteQueryString]);
+  }, [
+    navigate,
+    secretRecoveryPhrase,
+    nextRouteQueryString,
+    hasSeedPhraseBackedUp,
+    isFromReminder,
+  ]);
 
   const resetQuizWords = useCallback(() => {
     const newQuizWords = generateQuizWords(splitSecretRecoveryPhrase);
@@ -191,12 +203,10 @@ export default function ConfirmRecoveryPhrase({ secretRecoveryPhrase = '' }) {
 
   return (
     <Box
-      display={Display.Flex}
-      flexDirection={FlexDirection.Column}
-      justifyContent={JustifyContent.spaceBetween}
-      height={BlockSize.Full}
+      flexDirection={BoxFlexDirection.Column}
+      justifyContent={BoxJustifyContent.Between}
       gap={6}
-      className="recovery-phrase recovery-phrase__confirm"
+      className="recovery-phrase recovery-phrase__confirm h-full"
       data-testid="confirm-recovery-phrase"
     >
       <Box>
@@ -212,27 +222,25 @@ export default function ConfirmRecoveryPhrase({ secretRecoveryPhrase = '' }) {
         )}
         {isFromReminder && isFromSettingsSecurity ? (
           <Box
-            className="recovery-phrase__header"
-            display={Display.Grid}
-            alignItems={AlignItems.center}
+            className="recovery-phrase__header grid w-full"
+            alignItems={BoxAlignItems.Center}
             gap={1}
             marginBottom={4}
-            width={BlockSize.Full}
           >
             <ButtonIcon
               iconName={IconName.ArrowLeft}
-              color={IconColor.iconDefault}
+              color={IconColor.IconDefault}
               size={ButtonIconSize.Md}
               data-testid="reveal-recovery-phrase-confirm-back-button"
               onClick={() => navigate(PREVIOUS_ROUTE)}
               ariaLabel={t('back')}
             />
-            <Text variant={TextVariant.headingSm} textAlign={TextAlign.Center}>
+            <Text variant={TextVariant.HeadingSm} textAlign={TextAlign.Center}>
               {t('confirmRecoveryPhraseTitleSettings')}
             </Text>
             <ButtonIcon
               iconName={IconName.Close}
-              color={IconColor.iconDefault}
+              color={IconColor.IconDefault}
               size={ButtonIconSize.Md}
               data-testid="reveal-recovery-phrase-confirm-close-button"
               onClick={onClose}
@@ -242,13 +250,14 @@ export default function ConfirmRecoveryPhrase({ secretRecoveryPhrase = '' }) {
         ) : (
           <>
             <Box
-              justifyContent={JustifyContent.flexStart}
+              flexDirection={BoxFlexDirection.Row}
+              justifyContent={BoxJustifyContent.Start}
               marginBottom={4}
-              width={BlockSize.Full}
+              className="w-full"
             >
               <ButtonIcon
                 iconName={IconName.ArrowLeft}
-                color={IconColor.iconDefault}
+                color={IconColor.IconDefault}
                 size={ButtonIconSize.Md}
                 data-testid="confirm-recovery-phrase-back-button"
                 onClick={() => navigate(PREVIOUS_ROUTE)}
@@ -256,18 +265,19 @@ export default function ConfirmRecoveryPhrase({ secretRecoveryPhrase = '' }) {
               />
             </Box>
             <Box
-              justifyContent={JustifyContent.flexStart}
+              flexDirection={BoxFlexDirection.Row}
+              justifyContent={BoxJustifyContent.Start}
               marginBottom={4}
-              width={BlockSize.Full}
+              className="w-full"
             >
-              <Text variant={TextVariant.headingLg} as="h2">
+              <Text variant={TextVariant.HeadingLg}>
                 {t('confirmRecoveryPhraseTitle')}
               </Text>
             </Box>
           </>
         )}
-        <Box marginBottom={6}>
-          <Text variant={TextVariant.bodyMd} color={TextColor.textDefault}>
+        <Box>
+          <Text variant={TextVariant.BodyMd} color={TextColor.TextAlternative}>
             {t('confirmRecoveryPhraseDetails')}
           </Text>
         </Box>
@@ -280,13 +290,12 @@ export default function ConfirmRecoveryPhrase({ secretRecoveryPhrase = '' }) {
           />
         )}
       </Box>
-      <Box width={BlockSize.Full}>
+      <Box className="w-full">
         <Button
           variant={ButtonVariant.Primary}
-          width={BlockSize.Full}
           data-testid="recovery-phrase-confirm"
           size={ButtonSize.Lg}
-          className="recovery-phrase__footer__confirm--button"
+          className="recovery-phrase__footer__confirm--button w-full"
           onClick={() => onContinue()}
           disabled={answerSrp.trim() === ''}
         >

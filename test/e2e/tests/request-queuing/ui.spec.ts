@@ -3,20 +3,20 @@ import {
   CaveatConstraint,
   PermissionConstraint,
 } from '@metamask/permission-controller';
+import {
+  DAPP_ONE_URL,
+  DAPP_TWO_URL,
+  DAPP_URL,
+  DEFAULT_LOCAL_NODE_ETH_BALANCE_DEC,
+  NETWORK_CLIENT_ID,
+  WINDOW_TITLES,
+} from '../../constants';
 import NetworkManager, {
   NetworkId,
 } from '../../page-objects/pages/network-manager';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
-import FixtureBuilder from '../../fixtures/fixture-builder';
-import { DEFAULT_LOCAL_NODE_ETH_BALANCE_DEC } from '../../constants';
-import {
-  withFixtures,
-  DAPP_URL,
-  DAPP_ONE_URL,
-  WINDOW_TITLES,
-  veryLargeDelayMs,
-  DAPP_TWO_URL,
-} from '../../helpers';
+import { login } from '../../page-objects/flows/login.flow';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
+import { withFixtures, veryLargeDelayMs } from '../../helpers';
 import { Driver, PAGES } from '../../webdriver/driver';
 import { PermissionNames } from '../../../../app/scripts/controllers/permissions';
 import { CaveatTypes } from '../../../../shared/constants/permissions';
@@ -25,11 +25,11 @@ import { Anvil } from '../../seeder/anvil';
 import HomePage from '../../page-objects/pages/home/homepage';
 import ActivityListPage from '../../page-objects/pages/home/activity-list';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
-import ConnectAccountConfirmation from '../../page-objects/pages/confirmations/redesign/connect-account-confirmation';
-import Confirmation from '../../page-objects/pages/confirmations/redesign/confirmation';
-import TokenTransferTransactionConfirmation from '../../page-objects/pages/confirmations/redesign/token-transfer-confirmation';
-import ReviewPermissionsConfirmation from '../../page-objects/pages/confirmations/redesign/review-permissions-confirmation';
-import TransactionConfirmation from '../../page-objects/pages/confirmations/redesign/transaction-confirmation';
+import ConnectAccountConfirmation from '../../page-objects/pages/confirmations/connect-account-confirmation';
+import Confirmation from '../../page-objects/pages/confirmations/confirmation';
+import TokenTransferTransactionConfirmation from '../../page-objects/pages/confirmations/token-transfer-confirmation';
+import ReviewPermissionsConfirmation from '../../page-objects/pages/confirmations/review-permissions-confirmation';
+import TransactionConfirmation from '../../page-objects/pages/confirmations/transaction-confirmation';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 
 // Window handle adjustments will need to be made for Non-MV3 Firefox
@@ -136,6 +136,7 @@ async function selectDappClickPersonalSign(
 
   const testDapp = new TestDapp(driver);
   await testDapp.clickPersonalSign();
+  await driver.waitForWindowWithTitleToBePresent(WINDOW_TITLES.Dialog);
 }
 
 async function switchToDialogPopoverValidateDetailsRedesign(
@@ -195,7 +196,7 @@ describe('Request-queue UI changes', function () {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 2 },
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withNetworkControllerDoubleNode()
           .build(),
         localNodeOptions: [
@@ -214,7 +215,7 @@ describe('Request-queue UI changes', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         // Open the first dapp
         await openDappAndSwitchChain(driver, DAPP_URL, '0x539');
@@ -259,16 +260,8 @@ describe('Request-queue UI changes', function () {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 3 },
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withNetworkControllerTripleNode()
-          .withPreferencesController({
-            preferences: { showTestNetworks: true },
-          })
-          .withEnabledNetworks({
-            eip155: {
-              '0x539': true,
-            },
-          })
           .build(),
         localNodeOptions: [
           {
@@ -293,7 +286,7 @@ describe('Request-queue UI changes', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         // Open the first dapp
         await openDappAndSwitchChain(driver, DAPP_URL, '0x539');
@@ -402,7 +395,7 @@ describe('Request-queue UI changes', function () {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 2 },
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withNetworkControllerDoubleNode()
           .withPreferencesController({
             preferences: { showTestNetworks: true },
@@ -425,7 +418,7 @@ describe('Request-queue UI changes', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         // Open the first dapp
         await openDappAndSwitchChain(driver, DAPP_URL, '0x539');
@@ -471,13 +464,13 @@ describe('Request-queue UI changes', function () {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
         driverOptions: { constrainWindowSize: true },
       },
       async ({ driver }: { driver: Driver }) => {
         // Navigate to extension home screen
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         // Open the first dapp which starts on chain '0x539
         await openDappAndSwitchChain(driver, DAPP_URL, '0x539');
@@ -490,9 +483,8 @@ describe('Request-queue UI changes', function () {
         // Open the popup with shimmed activeTabOrigin
         await openPopupWithActiveTabOrigin(driver, DAPP_URL);
 
-        // Switch to mainnet using per-dapp connected network flow
-        await headerNavbar.openConnectionMenu();
-        await headerNavbar.clickConnectedSitePopoverNetworkButton();
+        // Switch to mainnet using control bar per-dapp network selector
+        await headerNavbar.openDappNetworkMenu();
         await headerNavbar.selectNetwork('Ethereum');
 
         // Switch back to the Dapp tab
@@ -510,7 +502,7 @@ describe('Request-queue UI changes', function () {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 2 },
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withNetworkControllerDoubleNode()
           .withEnabledNetworks({
             eip155: {
@@ -543,7 +535,7 @@ describe('Request-queue UI changes', function () {
         driver: Driver;
         localNodes: Anvil[];
       }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         // Open the first dapp
         await openDappAndSwitchChain(driver, DAPP_URL, '0x539');
@@ -560,7 +552,6 @@ describe('Request-queue UI changes', function () {
         const networkManager = new NetworkManager(driver);
         await networkManager.openNetworkManager();
         await networkManager.selectTab('Popular');
-        await networkManager.checkNetworkIsSelected(NetworkId.ETHEREUM);
         await networkManager.closeNetworkManager();
 
         // Kill local node servers
@@ -591,9 +582,9 @@ describe('Request-queue UI changes', function () {
         dappOptions: { numberOfTestDapps: 2 },
         // Presently confirmations take up to 10 seconds to display on a dead network
         driverOptions: { timeOut: 30000 },
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withNetworkControllerDoubleNode()
-          .withNetworkControllerOnMainnet()
+          .withSelectedNetwork(NETWORK_CLIENT_ID.MAINNET)
           .withEnabledNetworks({
             eip155: {
               '0x1': true,
@@ -619,12 +610,9 @@ describe('Request-queue UI changes', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver, localNodes }) => {
-        await loginWithBalanceValidation(
-          driver,
-          undefined,
-          undefined,
-          DEFAULT_LOCAL_NODE_ETH_BALANCE_DEC,
-        );
+        await login(driver, {
+          expectedBalance: DEFAULT_LOCAL_NODE_ETH_BALANCE_DEC,
+        });
 
         // Open the first dapp
         await openDappAndSwitchChain(driver, DAPP_URL, '0x539');

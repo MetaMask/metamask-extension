@@ -1,10 +1,8 @@
 @use "design-system";
 
-@import 'info-tab/index';
 @import 'developer-options-tab/index';
 @import 'networks-tab/index';
 @import 'settings-tab/index';
-@import 'contact-list-tab/index';
 @import 'security-tab/index';
 @import 'transaction-shield-tab/index';
 
@@ -66,15 +64,10 @@
       }
 
       &__title {
-        @include design-system.screen-sm-min {
-          margin-right: 16px;
-        }
-
         @include design-system.screen-sm-max {
           text-overflow: ellipsis;
           overflow: hidden;
           white-space: nowrap;
-          max-width: 250px;
         }
       }
     }
@@ -176,14 +169,6 @@
     color: var(--color-primary-default);
   }
 
-  &__subheader--break {
-    margin-inline-start: 4px;
-    white-space: nowrap;
-    width: 100%;
-    max-width: calc(100% - 125px - 85px);
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
 
   &__sub-header {
     height: 72px;
@@ -236,7 +221,6 @@
     flex-flow: row nowrap;
     height: 100%;
     overflow: auto;
-    scrollbar-color: var(--color-icon-muted) transparent;
 
     &__tabs {
       display: flex;
@@ -369,15 +353,6 @@
     margin-left: auto;
   }
 
-  &__address-book-button {
-    @include design-system.H5;
-
-    padding: 0;
-  }
-
-  &__address-book-button + &__address-book-button {
-    margin-left: 1.875rem;
-  }
 
   &__inline-link {
     @include design-system.H6;

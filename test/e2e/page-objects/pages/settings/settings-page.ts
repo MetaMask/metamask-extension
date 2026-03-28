@@ -11,13 +11,8 @@ class SettingsPage {
   private readonly closeSettingsPageButton =
     '.settings-page__header__title-container__close-button';
 
-  private readonly contactsButton = {
-    text: 'Contacts',
-    css: '.tab-bar__tab__content__title',
-  };
-
   private readonly developerOptionsButton = {
-    text: 'Developer Options',
+    text: 'Developer options',
     css: '.tab-bar__tab__content__title',
   };
 
@@ -101,11 +96,6 @@ class SettingsPage {
     await this.driver.fill(this.searchSettingsInput, text);
   }
 
-  async goToContactsSettings(): Promise<void> {
-    console.log('Navigating to Contacts page settings');
-    await this.driver.clickElement(this.contactsButton);
-  }
-
   async toggleShowFiatOnTestnets(): Promise<void> {
     console.log('Toggling Show Fiat on Testnets setting');
     await this.driver.clickElement(
@@ -138,7 +128,7 @@ class SettingsPage {
   }
 
   async goToDeveloperOptions(): Promise<void> {
-    console.log('Navigating to Developer Options page');
+    console.log('Navigating to Developer options page');
     await this.driver.clickElement(this.developerOptionsButton);
   }
 

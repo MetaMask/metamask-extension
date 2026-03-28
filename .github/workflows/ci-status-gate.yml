@@ -1,0 +1,113 @@
+# Aggregates all CI job results and posts a commit status.
+#
+# Called exclusively by main.yml via workflow_call. Extracted to keep
+# main.yml lean, not for reuse — it is tightly coupled to Main's
+# job graph and event context.
+#
+# Responsibilities:
+#   1. Check that all jobs passed (from caller's needs-json)
+#   2. Post "All jobs pass" commit status (success or failure)
+#   3. Fail the job if any checks failed
+#   4. Log merge group failures to Google Sheets
+
+name: CI status gate (controls all-jobs-pass)
+
+on:
+  workflow_call:
+    inputs:
+      needs-json:
+        description: JSON-encoded needs context from the caller (toJson(needs)). Used to check that all upstream jobs passed.
+        required: true
+        type: string
+      builds-from-run:
+        description: Run ID that produced the build artifacts. Used to warn when builds come from a different run (builds-from-run shortcut).
+        required: true
+        type: string
+
+jobs:
+  gate:
+    name: CI status gate (controls all-jobs-pass)
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    permissions:
+      statuses: write
+    env:
+      RUN_ID: ${{ github.run_id }}
+      HEAD_COMMIT_HASH: ${{ github.event.pull_request.head.sha || github.sha }}
+    steps:
+      # NOTE on output naming: actions/github-script@v8 reserves
+      # outputs.result for the script's return value (JSON.stringified).
+      # We use 'checkResult' to avoid that collision.
+      - name: Check that all jobs have passed
+        id: check
+        uses: actions/github-script@v8
+        env:
+          NEEDS_JSON: ${{ inputs.needs-json }}
+          BUILDS_FROM_RUN: ${{ inputs.builds-from-run }}
+        with:
+          script: |
+            const needs = JSON.parse(process.env.NEEDS_JSON);
+            let allPassed = true;
+
+            for (const [job, { result }] of Object.entries(needs)) {
+              if (!result) {
+                core.error(`Could not determine result for job: ${job}`);
+                allPassed = false;
+              } else if (result !== 'success' && result !== 'skipped') {
+                core.error(`${job} did not succeed (result: ${result})`);
+                allPassed = false;
+              }
+            }
+
+            if (process.env.BUILDS_FROM_RUN !== process.env.RUN_ID) {
+              core.warning(`Builds were used from a different GHA run: ${process.env.BUILDS_FROM_RUN}`);
+              core.info('Right now you can use this feature to test and iterate faster, but to merge a PR, you have to disable it.');
+              allPassed = false;
+            }
+
+            core.setOutput('checkResult', allPassed ? 'success' : 'failure');
+
+      # Post a commit status named "All jobs pass".
+      #
+      # Why a commit status instead of a check run?
+      # The Checks API (checks.create) assigns new check runs to a
+      # non-deterministic check suite. On merge_group branches, multiple
+      # suites exist (one per triggered workflow), and the check can land
+      # in the wrong suite — one the merge queue doesn't monitor. Commit
+      # statuses have no suites, so they always work reliably.
+      #
+      # No continue-on-error here: if the API call fails, we WANT the job
+      # to fail so check-retry-ci can re-run it. Adding continue-on-error
+      # would make the job "succeed" without posting the status, leaving
+      # the merge queue stuck.
+      - name: Post commit status
+        uses: actions/github-script@v8
+        env:
+          STATUS_STATE: ${{ steps.check.outputs.checkResult }}
+        with:
+          script: |
+            const state = process.env.STATUS_STATE;
+            await github.rest.repos.createCommitStatus({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              sha: process.env.HEAD_COMMIT_HASH,
+              state,
+              context: 'All jobs pass',
+              description: state === 'success'
+                ? 'All CI jobs completed successfully'
+                : 'One or more CI jobs failed',
+            });
+            core.info(`Posted commit status: ${state}`);
+
+      - name: Fail job if checks failed
+        if: ${{ steps.check.outputs.checkResult == 'failure' }}
+        run: exit 1
+
+      - name: Log merge group failure
+        if: ${{ github.event_name == 'merge_group' && failure() && !github.event.repository.fork }}
+        uses: MetaMask/github-tools/.github/actions/log-merge-group-failure@v1
+        with:
+          google-application-credentials: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
+          google-service-account: ${{ secrets.GOOGLE_SERVICE_ACCOUNT }}
+          spreadsheet-id: ${{ secrets.GOOGLE_MERGE_QUEUE_SPREADSHEET_ID }}
+          sheet-name: ${{ secrets.GOOGLE_MERGE_QUEUE_SHEET_NAME }}

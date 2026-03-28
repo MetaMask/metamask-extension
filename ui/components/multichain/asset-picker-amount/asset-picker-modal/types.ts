@@ -5,7 +5,6 @@ import type {
   AssetType,
   TokenStandard,
 } from '../../../../../shared/constants/transaction';
-import type { Asset } from '../../../../ducks/send';
 import {
   CHAIN_ID_TO_CURRENCY_SYMBOL_MAP,
   CHAIN_ID_TOKEN_IMAGE_MAP,
@@ -64,6 +63,7 @@ export type AssetWithDisplayData<T extends ERC20Asset | NativeAsset> = T & {
   balance: string; // raw balance
   string: string | undefined; // normalized balance as a stringified number
   accountType?: KeyringAccountType; // Bitcoin account type (e.g., P2wpkh for Native SegWit)
+  rwaData?: TokenWithFiatAmount['rwaData'];
 } & Pick<TokenListToken, 'decimals'> & {
     tokenFiatAmount?: TokenWithFiatAmount['tokenFiatAmount'];
   };
@@ -79,4 +79,24 @@ export type Collection = {
  */
 export type TokenWithBalance = Token & { balance?: string; string?: string };
 
-export { Asset };
+/**
+ * Asset type representing native or ERC20 tokens.
+ * Previously imported from ducks/send, now defined locally.
+ */
+export type Asset = {
+  type: AssetType;
+  address?: string;
+  symbol?: string;
+  decimals?: number;
+  image?: string;
+  balance?: string;
+  details?: {
+    address?: string;
+    symbol?: string;
+    decimals?: number;
+    image?: string;
+    standard?: TokenStandard;
+    tokenId?: string;
+  };
+  error?: string | null;
+};

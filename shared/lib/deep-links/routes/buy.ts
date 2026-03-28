@@ -1,7 +1,7 @@
 import { BaseUrl } from '../../../constants/urls';
 import { Route } from './route';
 
-export default new Route({
+export const buy = new Route({
   pathname: '/buy',
   getTitle: (_: URLSearchParams) => 'deepLink_theBuyPage',
   handler: function handler(params: URLSearchParams) {

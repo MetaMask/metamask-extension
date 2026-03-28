@@ -22,6 +22,9 @@ export enum EXPERIENCES_TYPE {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
   METAMASK_SWAPS = 'MetaMask Swaps',
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  METAMASK_TRANSACTION_SHIELD = 'MetaMask Transaction Shield',
 }
 
 /**
@@ -63,5 +66,8 @@ export const FIRST_PARTY_CONTRACT_NAMES: Record<
     [CHAIN_IDS.OPTIMISM]: '0x9dDA6Ef3D919c9bC8885D5560999A3640431e8e6',
     [CHAIN_IDS.ZKSYNC_ERA]: '0xf504c1fe13d14DF615E66dcd0ABF39e60c697f34',
     [CHAIN_IDS.LINEA_MAINNET]: '0x9dDA6Ef3D919c9bC8885D5560999A3640431e8e6',
+  },
+  [EXPERIENCES_TYPE.METAMASK_TRANSACTION_SHIELD]: {
+    [CHAIN_IDS.MAINNET]: '0x15Dac0Bc513d89D54dd14F476e4bCB4cD7eED2eA',
   },
 };

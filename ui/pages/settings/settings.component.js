@@ -6,7 +6,7 @@ import {
   matchPath,
   Navigate,
 } from 'react-router-dom';
-import classnames from 'classnames';
+import classnames from 'clsx';
 import TabBar from '../../components/app/tab-bar';
 
 import {
@@ -16,10 +16,6 @@ import {
   ABOUT_US_ROUTE,
   SETTINGS_ROUTE,
   NETWORKS_ROUTE,
-  CONTACT_LIST_ROUTE,
-  CONTACT_ADD_ROUTE,
-  CONTACT_EDIT_ROUTE,
-  CONTACT_VIEW_ROUTE,
   DEVELOPER_OPTIONS_ROUTE,
   EXPERIMENTAL_ROUTE,
   ADD_NETWORK_ROUTE,
@@ -32,6 +28,8 @@ import {
   SECURITY_PASSWORD_CHANGE_ROUTE,
   TRANSACTION_SHIELD_ROUTE,
   TRANSACTION_SHIELD_CLAIM_ROUTES,
+  TRANSACTION_SHIELD_MANAGE_PLAN_ROUTE,
+  TRANSACTION_SHIELD_MANAGE_PAST_PLAN_ROUTE,
 } from '../../helpers/constants/routes';
 import { getSettingsRoutes } from '../../helpers/utils/settings-search';
 import {
@@ -52,7 +50,7 @@ import {
 } from '../../helpers/constants/design-system';
 import MetafoxLogo from '../../components/ui/metafox-logo';
 // TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
+// eslint-disable-next-line import-x/no-restricted-paths
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
 import {
   ENVIRONMENT_TYPE_POPUP,
@@ -63,11 +61,11 @@ import { SnapSettingsRenderer } from '../../components/app/snaps/snap-settings-p
 import PasswordOutdatedModal from '../../components/app/password-outdated-modal';
 import ShieldEntryModal from '../../components/app/shield-entry-modal';
 import { toRelativeRoutePath } from '../routes/utils';
+import { NotificationsSettingsContent } from '../notifications-settings/notifications-settings';
 import SettingsTab from './settings-tab';
 import AdvancedTab from './advanced-tab';
 import InfoTab from './info-tab';
 import SecurityTab from './security-tab';
-import ContactListTab from './contact-list-tab';
 import DeveloperOptionsTab from './developer-options-tab';
 import ExperimentalTab from './experimental-tab';
 import SettingsSearch from './settings-search';
@@ -77,6 +75,7 @@ import BackupAndSyncTab from './backup-and-sync-tab';
 import ChangePassword from './security-tab/change-password';
 import ClaimsArea from './transaction-shield-tab/claims-area';
 import TransactionShield from './transaction-shield-tab';
+import ManageShieldPlan from './transaction-shield-tab/manage-shield-plan';
 
 // Helper component for network routes that need side effects
 const NetworkRouteHandler = ({ onMount }) => {
@@ -94,12 +93,11 @@ NetworkRouteHandler.propTypes = {
 class SettingsPage extends PureComponent {
   static propTypes = {
     addNewNetwork: PropTypes.bool,
-    addressName: PropTypes.string,
     backRoute: PropTypes.string,
     conversionDate: PropTypes.number,
     currentPath: PropTypes.string,
+    currentSnapId: PropTypes.string,
     hasSubscribedToShield: PropTypes.bool,
-    isAddressEntryPage: PropTypes.bool,
     isMetaMaskShieldFeatureEnabled: PropTypes.bool,
     isPasswordChangePage: PropTypes.bool,
     isPopup: PropTypes.bool,
@@ -268,12 +266,9 @@ class SettingsPage extends PureComponent {
 
   renderTitle() {
     const { t } = this.context;
-    const { isPopup, pathnameI18nKey, addressName, snapSettingsTitle } =
-      this.props;
+    const { isPopup, pathnameI18nKey, snapSettingsTitle } = this.props;
     let titleText;
-    if (isPopup && addressName) {
-      titleText = t('details');
-    } else if (pathnameI18nKey && isPopup) {
+    if (pathnameI18nKey && isPopup) {
       titleText = t(pathnameI18nKey);
     } else if (snapSettingsTitle) {
       titleText = snapSettingsTitle;
@@ -333,24 +328,8 @@ class SettingsPage extends PureComponent {
 
   renderSubHeader() {
     const { t } = this.context;
-    const {
-      currentPath,
-      isPopup,
-      isAddressEntryPage,
-      pathnameI18nKey,
-      addressName,
-      backRoute,
-      navigate,
-    } = this.props;
-    let subheaderText;
-
-    if (isPopup && isAddressEntryPage) {
-      subheaderText = t('settings');
-    } else if (isAddressEntryPage) {
-      subheaderText = t('contacts');
-    } else {
-      subheaderText = t(pathnameI18nKey || 'general');
-    }
+    const { currentPath, pathnameI18nKey, backRoute, navigate } = this.props;
+    const subheaderText = t(pathnameI18nKey || 'general');
 
     // Show back button only on inner pages of the settings page
     const showBackButton = backRoute !== SETTINGS_ROUTE;
@@ -372,15 +351,10 @@ class SettingsPage extends PureComponent {
               onClick={() => navigate(backRoute)}
               marginRight={2}
               size={ButtonIconSize.Md}
+              data-testid="settings-back-button"
             />
           )}
           <Text variant={TextVariant.headingSm}>{subheaderText}</Text>
-          {isAddressEntryPage && (
-            <div className="settings-page__subheader--break">
-              <span>{' > '}</span>
-              {addressName}
-            </div>
-          )}
         </Box>
       )
     );
@@ -390,6 +364,7 @@ class SettingsPage extends PureComponent {
     const {
       navigate,
       currentPath,
+      currentSnapId,
       useExternalServices,
       settingsPageSnaps,
       isMetaMaskShieldFeatureEnabled,
@@ -407,7 +382,7 @@ class SettingsPage extends PureComponent {
             style={{ '--size': '20px' }}
           />
         ),
-        key: `${SNAP_SETTINGS_ROUTE}/${encodeURIComponent(id)}`,
+        key: `${SNAP_SETTINGS_ROUTE}?snapId=${encodeURIComponent(id)}`,
       };
     });
 
@@ -427,11 +402,6 @@ class SettingsPage extends PureComponent {
         content: t('backupAndSync'),
         icon: <Icon name={IconName.SecurityTime} />,
         key: BACKUPANDSYNC_ROUTE,
-      },
-      {
-        content: t('contacts'),
-        icon: <Icon name={IconName.Book} />,
-        key: CONTACT_LIST_ROUTE,
       },
       {
         content: t('securityAndPrivacy'),
@@ -481,12 +451,17 @@ class SettingsPage extends PureComponent {
           if (key === GENERAL_ROUTE && currentPath === SETTINGS_ROUTE) {
             return true;
           }
+
           if (
-            key === CONTACT_LIST_ROUTE &&
-            currentPath.includes(CONTACT_LIST_ROUTE)
+            currentPath === SNAP_SETTINGS_ROUTE &&
+            key.startsWith(`${SNAP_SETTINGS_ROUTE}?`)
           ) {
-            return true;
+            const keySnapId = new URLSearchParams(key.split('?')[1]).get(
+              'snapId',
+            );
+            return keySnapId === currentSnapId;
           }
+
           return matchPath(key, currentPath);
         }}
         onSelect={(key) => {
@@ -518,7 +493,7 @@ class SettingsPage extends PureComponent {
           element={<InfoTab />}
         />
         <Route
-          path={`${toRelativeRoutePath(SNAP_SETTINGS_ROUTE, SETTINGS_ROUTE)}/:snapId`}
+          path={toRelativeRoutePath(SNAP_SETTINGS_ROUTE, SETTINGS_ROUTE)}
           element={<SnapSettingsRenderer />}
         />
         <Route
@@ -568,6 +543,14 @@ class SettingsPage extends PureComponent {
           element={<ClaimsArea />}
         />
         <Route
+          path={`${toRelativeRoutePath(TRANSACTION_SHIELD_MANAGE_PLAN_ROUTE, SETTINGS_ROUTE)}/*`}
+          element={<ManageShieldPlan />}
+        />
+        <Route
+          path={`${toRelativeRoutePath(TRANSACTION_SHIELD_MANAGE_PAST_PLAN_ROUTE, SETTINGS_ROUTE)}/*`}
+          element={<ManageShieldPlan isPastPlan />}
+        />
+        <Route
           path={toRelativeRoutePath(EXPERIMENTAL_ROUTE, SETTINGS_ROUTE)}
           element={<ExperimentalTab />}
         />
@@ -579,20 +562,11 @@ class SettingsPage extends PureComponent {
           />
         )}
         <Route
-          path={toRelativeRoutePath(CONTACT_LIST_ROUTE, SETTINGS_ROUTE)}
-          element={<ContactListTab />}
-        />
-        <Route
-          path={toRelativeRoutePath(CONTACT_ADD_ROUTE, SETTINGS_ROUTE)}
-          element={<ContactListTab />}
-        />
-        <Route
-          path={`${toRelativeRoutePath(CONTACT_EDIT_ROUTE, SETTINGS_ROUTE)}/:id`}
-          element={<ContactListTab />}
-        />
-        <Route
-          path={`${toRelativeRoutePath(CONTACT_VIEW_ROUTE, SETTINGS_ROUTE)}/:id`}
-          element={<ContactListTab />}
+          path={toRelativeRoutePath(
+            NOTIFICATIONS_SETTINGS_ROUTE,
+            SETTINGS_ROUTE,
+          )}
+          element={<NotificationsSettingsContent />}
         />
         <Route
           path={toRelativeRoutePath(REVEAL_SRP_LIST_ROUTE, SETTINGS_ROUTE)}

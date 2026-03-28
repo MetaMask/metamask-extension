@@ -3,6 +3,7 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 
+import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import AdvancedGasControls from './advanced-gas-controls.component';
 
 const renderComponent = (props) => {
@@ -21,7 +22,9 @@ describe('AdvancedGasControls Component', () => {
 
   it('should render gasLimit and gasPrice inputs', () => {
     const { queryByText } = renderComponent();
-    expect(queryByText('Gas limit')).toBeInTheDocument();
-    expect(queryByText('Gas price')).toBeInTheDocument();
+    expect(queryByText(messages.gasLimit.message)).toBeInTheDocument();
+    expect(
+      queryByText(messages.advancedGasPriceTitle.message),
+    ).toBeInTheDocument();
   });
 });

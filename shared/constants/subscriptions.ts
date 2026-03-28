@@ -29,22 +29,14 @@ export const SUPPORTED_PAYMENT_TOKEN_IMAGES: Record<string, string> = {
 /**
  * The source where the Shield entry modal is triggered from
  */
-export enum EntryModalSourceEnum {
+export enum ShieldMetricsSourceEnum {
   Notification = 'notification',
   Carousel = 'carousel',
   Homepage = 'homepage',
   Settings = 'settings',
   Marketing = 'marketing', // from marketing campaign
   PostTransaction = 'post_transaction', // after a transaction
-}
-
-export enum ShieldCtaSourceEnum {
-  Notification = 'notification',
-  Carousel = 'carousel',
-  Homepage = 'homepage',
-  Settings = 'settings',
-  Marketing = 'marketing', // from marketing campaign
-  PostTransaction = 'post_transaction', // after a transaction
+  ShieldSettings = 'shield_settings', // from shield settings page
 }
 
 export enum ShieldUserAccountCategoryEnum {
@@ -58,6 +50,11 @@ export enum ShieldUserAccountTypeEnum {
   ERC4337 = 'SmartAccount',
   // in case user current selected account could be non evm like bitcoin, solana
   OTHER = 'Other',
+}
+
+export enum ShieldSubscriptionRequestSubscriptionStateEnum {
+  New = 'new',
+  Renew = 'renew',
 }
 
 export enum ShieldCtaActionClickedEnum {
@@ -91,3 +88,11 @@ export enum ShieldUnexpectedErrorEventLocationEnum {
   ShieldPlanPage = 'shield_plan_page',
   Other = 'other',
 }
+
+/**
+ * The input used to poll for subscriptions.
+ *
+ * We need to provide this value to compute the subscription requests polling `key` in the polling controller.
+ * We need to provide this value to start/stop the polling for subscriptions.
+ */
+export const SUBSCRIPTIONS_POLLING_INPUT = 'subscriptionsPollingInput';

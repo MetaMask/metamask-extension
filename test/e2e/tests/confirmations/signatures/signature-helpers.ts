@@ -1,20 +1,12 @@
 import { strict as assert } from 'assert';
 import { MockedEndpoint } from 'mockttp';
-import {
-  WINDOW_TITLES,
-  getEventPayloads,
-  unlockWallet,
-} from '../../../helpers';
+import { getEventPayloads } from '../../../helpers';
 import { Driver } from '../../../webdriver/driver';
-import TestDapp from '../../../page-objects/pages/test-dapp';
-import { DAPP_URL } from '../../../constants';
-import Confirmation from '../../../page-objects/pages/confirmations/redesign/confirmation';
-import AccountDetailsModal from '../../../page-objects/pages/confirmations/redesign/accountDetailsModal';
 import {
   BlockaidReason,
   BlockaidResultType,
 } from '../../../../../shared/constants/security-provider';
-import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
+import { ResultType } from '../../../../../shared/lib/trust-signals';
 
 type EventPayload = {
   event: string;
@@ -23,18 +15,6 @@ type EventPayload = {
 
 export const WALLET_ADDRESS = '0x5CfE73b6021E818B776b421B1c4Db2474086a7e1';
 export const WALLET_ETH_BALANCE = '25';
-export enum SignatureType {
-  PersonalSign = '#personalSign',
-  Permit = '#signPermit',
-  NFTPermit = '#sign721Permit',
-  SignTypedDataV3 = '#signTypedDataV3',
-  SignTypedDataV4 = '#signTypedDataV4',
-  SignTypedData = '#signTypedData',
-  SIWE = '#siwe',
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  SIWE_BadDomain = '#siweBadDomain',
-}
 
 type AssertSignatureMetricsOptions = {
   driver: Driver;
@@ -100,6 +80,9 @@ type SignatureEventProperty = {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
   api_source?: string;
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  address_alert_response?: string;
 };
 
 const signatureAnonProperties = {
@@ -113,14 +96,6 @@ const signatureAnonProperties = {
   // eslint-disable-next-line @typescript-eslint/naming-convention
   eip712_domain_name: 'Ether Mail',
 };
-
-let testDapp: TestDapp;
-let accountDetailsModal: AccountDetailsModal;
-
-export async function initializePages(driver: Driver) {
-  testDapp = new TestDapp(driver);
-  accountDetailsModal = new AccountDetailsModal(driver);
-}
 
 /**
  * Generates expected signature metric properties
@@ -174,13 +149,16 @@ function getSignatureEventProperty(
     security_alert_source: securityAlertSource,
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
     // eslint-disable-next-line @typescript-eslint/naming-convention
-    ui_customizations: uiCustomizations,
+    ...(uiCustomizations.length > 0 && { ui_customizations: uiCustomizations }),
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
     // eslint-disable-next-line @typescript-eslint/naming-convention
     hd_entropy_index: 0,
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
     // eslint-disable-next-line @typescript-eslint/naming-convention
     api_source: requestedThrough,
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    address_alert_response: ResultType.Loading,
   };
 
   if (primaryType !== '') {
@@ -220,7 +198,7 @@ export async function assertSignatureConfirmedMetrics({
   mockedEndpoints,
   signatureType,
   primaryType = '',
-  uiCustomizations = ['redesigned_confirmation'],
+  uiCustomizations = [],
   withAnonEvents = false,
   securityAlertReason,
   securityAlertResponse,
@@ -269,7 +247,7 @@ export async function assertSignatureRejectedMetrics({
   mockedEndpoints,
   signatureType,
   primaryType = '',
-  uiCustomizations = ['redesigned_confirmation'],
+  uiCustomizations = [],
   location,
   expectedProps = {},
   withAnonEvents = false,
@@ -281,6 +259,21 @@ export async function assertSignatureRejectedMetrics({
   decodingDescription,
   requestedThrough,
 }: AssertSignatureMetricsOptions) {
+  console.log('assertSignatureRejectedMetrics', {
+    signatureType,
+    primaryType,
+    uiCustomizations,
+    location,
+    expectedProps,
+    withAnonEvents,
+    securityAlertReason,
+    securityAlertResponse,
+    securityAlertSource,
+    decodingChangeTypes,
+    decodingResponse,
+    decodingDescription,
+    requestedThrough,
+  });
   const events = await getEventPayloads(driver, mockedEndpoints);
   const signatureEventProperty = getSignatureEventProperty(
     signatureType,
@@ -375,11 +368,11 @@ function compareSecurityAlertProperties(
 ) {
   if (
     expectedProperties.security_alert_response &&
-    (expectedProperties.security_alert_response === 'loading' ||
+    (expectedProperties.security_alert_response === 'Loading' ||
       expectedProperties.security_alert_response === 'Benign')
   ) {
     if (
-      actualProperties.security_alert_response !== 'loading' &&
+      actualProperties.security_alert_response !== 'Loading' &&
       actualProperties.security_alert_response !== 'Benign'
     ) {
       assert.fail(
@@ -455,89 +448,4 @@ function compareDecodingAPIResponse(
   delete actualProperties.decoding_response;
   delete actualProperties.decoding_description;
   delete actualProperties.decoding_latency;
-}
-
-export async function clickHeaderInfoBtn(driver: Driver) {
-  const confirmation = new Confirmation(driver);
-  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-  confirmation.clickHeaderAccountDetailsButton();
-}
-
-export async function assertHeaderInfoBalance() {
-  accountDetailsModal.assertHeaderInfoBalance(WALLET_ETH_BALANCE);
-}
-
-export async function copyAddressAndPasteWalletAddress(driver: Driver) {
-  await accountDetailsModal.clickAddressCopyButton();
-  await driver.delay(500); // Added delay to avoid error Element is not clickable at point (x,y) because another element obscures it, happens as soon as the mouse hovers over the close button
-  await accountDetailsModal.clickAccountDetailsModalCloseButton();
-  await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
-  await testDapp.pasteIntoEip747ContractAddressInput();
-}
-
-export async function assertPastedAddress() {
-  await testDapp.assertEip747ContractAddressInputValue(WALLET_ADDRESS);
-}
-
-export async function assertRejectedSignature() {
-  testDapp.assertUserRejectedRequest();
-}
-
-export async function openDappAndTriggerSignature(
-  driver: Driver,
-  type: string,
-) {
-  await loginWithBalanceValidation(driver);
-  await testDapp.openTestDappPage({ url: DAPP_URL });
-  await testDapp.checkPageIsLoaded();
-  await triggerSignature(type);
-  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-}
-
-export async function openDappAndTriggerDeploy(driver: Driver) {
-  await unlockWallet(driver);
-  await testDapp.openTestDappPage({ url: DAPP_URL });
-  await driver.clickElement('#deployNFTsButton');
-  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-}
-
-export async function triggerSignature(type: string) {
-  switch (type) {
-    case SignatureType.PersonalSign:
-      await testDapp.clickPersonalSign();
-      break;
-    case SignatureType.Permit:
-      await testDapp.clickPermit();
-      break;
-    case SignatureType.SignTypedData:
-      await testDapp.clickSignTypedData();
-      break;
-    case SignatureType.SignTypedDataV3:
-      await testDapp.clickSignTypedDatav3();
-      break;
-    case SignatureType.SignTypedDataV4:
-      await testDapp.clickSignTypedDatav4();
-      break;
-    case SignatureType.SIWE:
-      await testDapp.clickSiwe();
-      break;
-    case SignatureType.SIWE_BadDomain:
-      await testDapp.clickSwieBadDomain();
-      break;
-    case SignatureType.NFTPermit:
-      await testDapp.clickERC721Permit();
-      break;
-    default:
-      throw new Error('Invalid signature type');
-  }
-}
-
-export async function assertVerifiedSiweMessage(
-  driver: Driver,
-  message: string,
-) {
-  await driver.waitUntilXWindowHandles(2);
-  await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
-
-  await testDapp.checkSuccessSiwe(message);
 }

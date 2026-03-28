@@ -1,8 +1,9 @@
 import { Suite } from 'mocha';
 import { Hex } from '@metamask/utils';
 import FixtureBuilder from '../../fixtures/fixture-builder';
-import { withFixtures, WINDOW_TITLES } from '../../helpers';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { WINDOW_TITLES } from '../../constants';
+import { withFixtures } from '../../helpers';
+import { login } from '../../page-objects/flows/login.flow';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import TokenList from '../../page-objects/pages/token-list';
 import ConfirmAlertModal from '../../page-objects/pages/dialog/confirm-alert';
@@ -77,7 +78,7 @@ networkConfigs.forEach((config) => {
           title: this.test?.fullTitle(),
         },
         async ({ driver }: { driver: Driver }) => {
-          await loginWithBalanceValidation(driver);
+          await login(driver);
 
           const tokenList = new TokenList(driver);
           await driver.switchToWindowWithTitle(

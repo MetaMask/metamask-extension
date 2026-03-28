@@ -1,16 +1,22 @@
 import { Suite } from 'mocha';
 import { Mockttp } from 'mockttp';
-import { PRIVATE_KEY_TWO, WINDOW_TITLES, withFixtures } from '../../helpers';
-import { DAPP_PATH, DEFAULT_FIXTURE_ACCOUNT } from '../../constants';
+import {
+  DAPP_PATH,
+  DEFAULT_FIXTURE_ACCOUNT,
+  PRIVATE_KEY_TWO,
+  WINDOW_TITLES,
+} from '../../constants';
+import { withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import ActivityListPage from '../../page-objects/pages/home/activity-list';
 import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import HomePage from '../../page-objects/pages/home/homepage';
 import SnapSimpleKeyringPage from '../../page-objects/pages/snap-simple-keyring-page';
 import { installSnapSimpleKeyring } from '../../page-objects/flows/snap-simple-keyring.flow';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 import { sendRedesignedTransactionWithSnapAccount } from '../../page-objects/flows/send-transaction.flow';
 import { mockPriceApi } from '../tokens/utils/mocks';
 import { mockSnapSimpleKeyringAndSite } from './snap-keyring-site-mocks';
@@ -44,7 +50,7 @@ describe.skip('Snap Account Transfers', function (this: Suite) {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
 
@@ -82,7 +88,11 @@ describe.skip('Snap Account Transfers', function (this: Suite) {
 
         // Account balance doesn't update after transaction is completed
         // await accountList.checkMultichainAccountBalanceDisplayed('$88,426');
-        await accountList.checkMultichainAccountBalanceDisplayed('$81,623');
+        await accountList.checkMultichainAccountBalanceDisplayed({
+          wallet: 'MetaMask Simple Snap Keyring',
+          account: 'Snap Account 1',
+          balance: '$81,623',
+        });
       },
     );
   });
@@ -105,7 +115,7 @@ describe.skip('Snap Account Transfers', function (this: Suite) {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
 
@@ -146,7 +156,11 @@ describe.skip('Snap Account Transfers', function (this: Suite) {
 
         // Account balance doesn't update after transaction is completed
         // await accountList.checkMultichainAccountBalanceDisplayed('$88,426');
-        await accountList.checkMultichainAccountBalanceDisplayed('$81,623');
+        await accountList.checkMultichainAccountBalanceDisplayed({
+          wallet: 'MetaMask Simple Snap Keyring',
+          account: 'Snap Account 1',
+          balance: '$81,623',
+        });
       },
     );
   });
@@ -154,7 +168,7 @@ describe.skip('Snap Account Transfers', function (this: Suite) {
   it('can import a private key and transfer 1 ETH (async flow reject)', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilderV2().build(),
         testSpecificMock: mockSnapSimpleKeyringAndSiteWithSpotPrices,
         dappOptions: {
           customDappPaths: [DAPP_PATH.SNAP_SIMPLE_KEYRING_SITE],
@@ -163,7 +177,7 @@ describe.skip('Snap Account Transfers', function (this: Suite) {
         ignoredConsoleErrors: ['Request rejected by user or snap.'],
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
 

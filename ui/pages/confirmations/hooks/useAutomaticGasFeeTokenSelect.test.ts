@@ -16,7 +16,7 @@ import { useHasInsufficientBalance } from './useHasInsufficientBalance';
 
 jest.mock('../../../store/controller-actions/transaction-controller');
 jest.mock('./useHasInsufficientBalance');
-jest.mock('../../../../shared/modules/selectors');
+jest.mock('../../../../shared/lib/selectors');
 jest.mock('./gas/useIsGaslessSupported');
 
 jest.mock('../../../store/actions', () => ({
@@ -239,13 +239,16 @@ describe('useAutomaticGasFeeTokenSelect', () => {
 
   it('does not select if transactionId is falsy', async () => {
     const state = getMockConfirmStateForTransaction(
-      genUnapprovedContractInteractionConfirmation({
-        gasFeeTokens: [GAS_FEE_TOKEN_MOCK],
-        selectedGasFeeToken: undefined,
-      }),
+      // Remove transactionId
+      Object.assign(
+        genUnapprovedContractInteractionConfirmation({
+          gasFeeTokens: [GAS_FEE_TOKEN_MOCK],
+          selectedGasFeeToken: undefined,
+        }),
+        { id: '' },
+      ),
     );
-    // Remove transactionId
-    state.metamask.transactions = [];
+
     renderHookWithConfirmContextProvider(useAutomaticGasFeeTokenSelect, state);
 
     await flushAsyncUpdates();

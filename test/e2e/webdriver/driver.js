@@ -15,7 +15,7 @@ const { sprintf } = require('sprintf-js');
 const lodash = require('lodash');
 const { retry } = require('../../../development/lib/retry');
 const { quoteXPathText } = require('../../helpers/quoteXPathText');
-const { isManifestV3 } = require('../../../shared/modules/mv3.utils');
+const { isManifestV3 } = require('../../../shared/lib/mv3.utils');
 const { WindowHandles } = require('../background-socket/window-handles');
 const {
   getServerMochaToBackground,
@@ -853,6 +853,24 @@ class Driver {
   }
 
   /**
+   * Clicks a nested button element by its text content.
+   * First attempts to click a button with the exact text, then falls back
+   * to finding an element containing the text and clicking its parent button.
+   *
+   * @param {string} buttonText - The text content of the button to click
+   * @returns {Promise<void>}
+   */
+  async clickNestedButton(buttonText) {
+    try {
+      await this.clickElement({ text: buttonText, tag: 'button' });
+    } catch (error) {
+      await this.clickElement({
+        xpath: `//*[contains(text(),"${buttonText}")]/parent::button`,
+      });
+    }
+  }
+
+  /**
    * Can fix instances where a normal click produces ElementClickInterceptedError
    *
    * @param rawLocator
@@ -953,10 +971,12 @@ class Driver {
    * @param {object} options - Options for the wait.
    * @param {number} options.timeout - The maximum amount of time (in milliseconds) to wait for the condition to be met.
    * @param {number} options.interval - The interval (in milliseconds) between checks for the condition.
+   * @param {number} [options.stableFor] - If provided, after the condition is met, waits this many milliseconds
+   * and re-checks to ensure the condition remains stable. Useful for UI states that may fluctuate before settling.
    * @returns {Promise<void>} A promise that resolves when the condition is met or the timeout is reached.
    * @throws {Error} Throws an error if the condition is not met within the timeout period.
    */
-  async waitUntil(condition, { interval, timeout }) {
+  async waitUntil(condition, { interval, timeout, stableFor = 0 }) {
     const startTime = Date.now();
     const endTime = startTime + timeout;
 
@@ -965,7 +985,17 @@ class Driver {
     while (true) {
       const result = await condition();
       if (result === true) {
-        return; // Condition met
+        // If stableFor is set, verify the condition remains stable
+        if (stableFor > 0) {
+          await this.delay(stableFor);
+          const stableResult = await condition();
+          if (stableResult === true) {
+            return; // Condition met and stable
+          }
+          // Condition became unstable, continue waiting
+        } else {
+          return; // Condition met
+        }
       }
 
       const currentTime = Date.now();
@@ -1018,9 +1048,31 @@ class Driver {
   }
 
   /**
+   * Retrieves the content of the clipboard.
+   *
+   * @returns {Promise<string>} promise that resolves to the clipboard content
+   * @throws {Error} throws an error if the clipboard content cannot be read
+   */
+  async getClipboardContent() {
+    try {
+      const clipboardText = await this.driver.executeScript(`
+        return navigator.clipboard.readText();
+      `);
+      console.log('Clipboard:', clipboardText || '(empty)');
+      return clipboardText;
+    } catch (error) {
+      console.log(
+        'Could not read clipboard - permission denied or not supported',
+        error,
+      );
+      return '';
+    }
+  }
+
+  /**
    * Paste a string into a field.
    *
-   * @param {string} rawLocator  - Element locator
+   * @param {string | object} rawLocator  - Element locator
    * @param {string} contentToPaste - content to paste
    * @returns {Promise<WebElement>}  promise that resolves to the WebElement
    */
@@ -1056,7 +1108,10 @@ class Driver {
    */
   async navigate(
     page = PAGES.HOME,
-    { waitForControllers = true, waitForControllersTimeout = 10000 } = {},
+    {
+      waitForControllers = true,
+      waitForControllersTimeout = this.timeout,
+    } = {},
   ) {
     const response = await this.driver.get(`${this.extensionUrl}/${page}.html`);
     // Wait for asynchronous JavaScript to load
@@ -1167,6 +1222,16 @@ class Driver {
   }
 
   /**
+   * Switches the WebDriver's context back to the default content (main page).
+   * Use this after interacting with an iframe to return to the parent document.
+   *
+   * @returns {Promise<void>} promise that resolves once the switch is complete
+   */
+  async switchToDefaultContent() {
+    await this.driver.switchTo().defaultContent();
+  }
+
+  /**
    * Retrieves the handles of all open window tabs in the browser session.
    *
    * @returns {Promise<Array<string>>} A promise that will
@@ -1177,6 +1242,15 @@ class Driver {
       return await this.windowHandles.getAllWindowHandles();
     }
     return await this.driver.getAllWindowHandles();
+  }
+
+  /**
+   * Retrieves the handle of the current active window or tab.
+   *
+   * @returns {Promise<string>} A promise that resolves with the current window handle.
+   */
+  async getCurrentWindowHandle() {
+    return await this.driver.getWindowHandle();
   }
 
   /**
@@ -1665,6 +1739,9 @@ class Driver {
       'Event fragment with id transaction-added-',
       // Sidepanel
       'GL Context was lost',
+      // Null/empty URLs that Chrome blocks before reaching the proxy
+      'net::ERR_BLOCKED_BY_CLIENT',
+      'null is blocked',
     ]);
 
     const cdpConnection = await this.driver.createCDPConnection('page');

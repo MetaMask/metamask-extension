@@ -9,7 +9,12 @@ import React, {
 } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { Box } from '../../../components/component-library';
+import {
+  Box,
+  BoxFlexDirection,
+  BoxAlignItems,
+  BoxJustifyContent,
+} from '@metamask/design-system-react';
 import {
   ONBOARDING_COMPLETION_ROUTE,
   ONBOARDING_CREATE_PASSWORD_ROUTE,
@@ -28,6 +33,7 @@ import {
 } from '../../../selectors';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { ENVIRONMENT } from '../../../../development/build/constants';
 import {
   setFirstTimeFlowType,
   startOAuthLogin,
@@ -40,21 +46,14 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import { getIsSeedlessOnboardingFeatureEnabled } from '../../../../shared/modules/environment';
-import { getBrowserName } from '../../../../shared/modules/browser-runtime.utils';
+import { getIsSeedlessOnboardingFeatureEnabled } from '../../../../shared/lib/environment';
+import { getBrowserName } from '../../../../shared/lib/browser-runtime.utils';
 import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
 import {
   isUserCancelledLoginError,
   OAuthErrorMessages,
-} from '../../../../shared/modules/error';
+} from '../../../../shared/lib/error';
 import { TraceName, TraceOperation } from '../../../../shared/lib/trace';
-import {
-  AlignItems,
-  Display,
-  FlexDirection,
-  JustifyContent,
-  BlockSize,
-} from '../../../helpers/constants/design-system';
 import { useRiveWasmContext } from '../../../contexts/rive-wasm';
 import { getIsWalletResetInProgress } from '../../../ducks/metamask/metamask';
 import WelcomeLogin from './welcome-login';
@@ -106,7 +105,8 @@ export default function OnboardingWelcome() {
 
   const { animationCompleted } = useRiveWasmContext();
   const shouldSkipAnimation = Boolean(
-    animationCompleted?.MetamaskWordMarkAnimation,
+    animationCompleted?.MetamaskWordMarkAnimation ||
+      process.env.METAMASK_ENVIRONMENT === ENVIRONMENT.TESTING,
   );
 
   // In test environments or when returning from another page, skip animations
@@ -180,9 +180,12 @@ export default function OnboardingWelcome() {
     isSocialLoginFLow,
   ]);
 
-  const trackEvent = useContext(MetaMetricsContext);
-  const { bufferedTrace, bufferedEndTrace, onboardingParentContext } =
-    trackEvent;
+  const {
+    trackEvent,
+    bufferedTrace,
+    bufferedEndTrace,
+    onboardingParentContext,
+  } = useContext(MetaMetricsContext);
 
   const onCreateClick = useCallback(async () => {
     setIsLoggingIn(true);
@@ -258,7 +261,7 @@ export default function OnboardingWelcome() {
   );
 
   const handleSocialLoginError = useCallback(
-    (error, socialConnectionType) => {
+    (error) => {
       const errorMessage =
         error instanceof Error ? error.message : 'Unknown error';
 
@@ -268,13 +271,6 @@ export default function OnboardingWelcome() {
         return;
       }
 
-      bufferedTrace?.({
-        name: TraceName.OnboardingSocialLoginError,
-        op: TraceOperation.OnboardingError,
-        tags: { provider: socialConnectionType, errorMessage },
-        parentContext: onboardingParentContext?.current,
-      });
-      bufferedEndTrace?.({ name: TraceName.OnboardingSocialLoginError });
       bufferedEndTrace?.({
         name: TraceName.OnboardingSocialLoginAttempt,
         data: { success: false },
@@ -285,17 +281,14 @@ export default function OnboardingWelcome() {
         return;
       }
 
-      if (
-        errorMessage === OAuthErrorMessages.NO_REDIRECT_URL_FOUND_ERROR ||
-        errorMessage === OAuthErrorMessages.NO_AUTH_CODE_FOUND_ERROR
-      ) {
+      if (errorMessage === OAuthErrorMessages.NO_REDIRECT_URL_FOUND_ERROR) {
         setLoginError(LOGIN_ERROR.UNABLE_TO_CONNECT);
         return;
       }
 
       setLoginError(LOGIN_ERROR.GENERIC);
     },
-    [onboardingParentContext, bufferedTrace, bufferedEndTrace],
+    [bufferedEndTrace],
   );
 
   const onSocialLoginCreateClick = useCallback(
@@ -337,7 +330,7 @@ export default function OnboardingWelcome() {
           navigate(ONBOARDING_ACCOUNT_EXIST, { replace: true });
         }
       } catch (error) {
-        handleSocialLoginError(error, socialConnectionType);
+        handleSocialLoginError(error);
       } finally {
         setIsLoggingIn(false);
       }
@@ -388,10 +381,10 @@ export default function OnboardingWelcome() {
             parentContext: onboardingParentContext?.current,
           });
           await dispatch(setFirstTimeFlowType(FirstTimeFlowType.socialImport));
-          navigate(ONBOARDING_UNLOCK_ROUTE);
+          navigate(ONBOARDING_UNLOCK_ROUTE, { replace: true });
         }
       } catch (error) {
-        handleSocialLoginError(error, socialConnectionType);
+        handleSocialLoginError(error);
       } finally {
         setIsLoggingIn(false);
       }
@@ -438,18 +431,21 @@ export default function OnboardingWelcome() {
           return;
         }
 
+        if (!isFireFox) {
+          // automatically set participate in meta metrics to true for social login users in chrome
+          dispatch(setParticipateInMetaMetrics(true));
+        }
+
         if (loginOption === LOGIN_OPTION.NEW) {
           await onSocialLoginCreateClick(loginType);
         } else if (loginOption === LOGIN_OPTION.EXISTING) {
           await onSocialLoginImportClick(loginType);
         }
 
-        if (!isFireFox) {
-          // automatically set participate in meta metrics to true for social login users in chrome
-          dispatch(setParticipateInMetaMetrics(true));
+        if (!isFireFox && process.env.EXTENSION_UX_PNA25) {
           // Set pna25Acknowledged to true for social login users if feature flag is enabled
           if (process.env.EXTENSION_UX_PNA25) {
-            dispatch(setPna25Acknowledged(true));
+            dispatch(setPna25Acknowledged(true, true));
           }
         }
       } catch (error) {
@@ -470,13 +466,10 @@ export default function OnboardingWelcome() {
 
   return (
     <Box
-      display={Display.Flex}
-      flexDirection={FlexDirection.Column}
-      justifyContent={JustifyContent.center}
-      alignItems={AlignItems.center}
-      height={BlockSize.Full}
-      width={BlockSize.Full}
-      className="welcome-container"
+      flexDirection={BoxFlexDirection.Column}
+      justifyContent={BoxJustifyContent.Center}
+      alignItems={BoxAlignItems.Center}
+      className="welcome-container h-full w-full"
     >
       {!isLoggingIn && (
         <Suspense fallback={<Box />}>

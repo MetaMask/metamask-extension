@@ -11,22 +11,18 @@ module.exports = {
   features: {
     buildStoriesJson: true,
   },
-  stories: [
-    '../ui/**/*.stories.js',
-    '../ui/**/*.stories.tsx',
-    '../ui/**/*.stories.mdx',
-    './*.stories.mdx',
-  ],
+  stories: ['../ui/**/*.stories.js', '../ui/**/*.stories.tsx'],
   addons: [
     '@storybook/addon-essentials',
-    '@storybook/addon-actions',
     '@storybook/addon-a11y',
+    '@storybook/addon-docs',
     './i18n-party-addon/register.js',
   ],
   staticDirs: ['../app', './images'],
   env: (config) => ({
     ...config,
     INFURA_PROJECT_ID: process.env.INFURA_STORYBOOK_PROJECT_ID || '',
+    ENABLE_ENFORCED_SIMULATIONS: process.env.ENABLE_ENFORCED_SIMULATIONS || '',
   }),
   // Uses babel.config.js settings and prevents "Missing class properties transform" error
   babel: async (options) => ({
@@ -48,9 +44,6 @@ module.exports = {
     );
     config.resolve.alias['../../../store/actions'] = require.resolve(
       '../ui/__mocks__/actions.js',
-    );
-    config.resolve.alias['./useNftCollectionsMetadata'] = require.resolve(
-      '../ui/__mocks__/useNftCollectionsMetadata.js',
     );
     config.resolve.fallback = {
       child_process: false,
@@ -127,7 +120,7 @@ module.exports = {
     return config;
   },
   docs: {
-    autodocs: true,
+    autodocs: 'tag',
   },
   framework: {
     name: '@storybook/react-webpack5',

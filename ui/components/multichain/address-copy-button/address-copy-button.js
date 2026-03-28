@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
 import PropTypes from 'prop-types';
-import classnames from 'classnames';
+import classnames from 'clsx';
 import { ButtonBase, IconName, Box } from '../../component-library';
 import {
   AlignItems,
@@ -15,9 +15,8 @@ import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { shortenAddress } from '../../../helpers/utils/util';
 import Tooltip from '../../ui/tooltip/tooltip';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { MINUTE } from '../../../../shared/constants/time';
 // TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
+// eslint-disable-next-line import-x/no-restricted-paths
 import { normalizeSafeAddress } from '../../../../app/scripts/lib/multichain/address';
 
 function AddressCopyButton({ address, shorten = false, wrap = false }) {
@@ -25,7 +24,9 @@ function AddressCopyButton({ address, shorten = false, wrap = false }) {
   const displayAddress = shorten
     ? shortenAddress(checksummedAddress)
     : checksummedAddress;
-  const [copied, handleCopy] = useCopyToClipboard(MINUTE);
+
+  // useCopyToClipboard analysis: Copies a public address
+  const [copied, handleCopy] = useCopyToClipboard({ clearDelayMs: null });
   const t = useI18nContext();
 
   const tooltipText = copied ? t('copiedExclamation') : t('copyToClipboard');

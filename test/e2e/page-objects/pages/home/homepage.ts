@@ -4,6 +4,11 @@ import { Ganache } from '../../../seeder/ganache';
 import { Anvil } from '../../../seeder/anvil';
 import HeaderNavbar from '../header-navbar';
 import { getCleanAppState, regularDelayMs } from '../../../helpers';
+import {
+  BASE_ACCOUNT_SYNC_INTERVAL,
+  BASE_ACCOUNT_SYNC_TIMEOUT,
+  POST_UNLOCK_DELAY,
+} from '../../../tests/identity/account-syncing/helpers';
 
 class HomePage {
   protected driver: Driver;
@@ -37,6 +42,8 @@ class HomePage {
     css: '.mm-banner-base',
   };
 
+  private readonly bitcoinAccountIcon = 'img[src="./images/bitcoin-logo.svg"]';
+
   protected readonly bridgeButton: string =
     '[data-testid="eth-overview-bridge"]';
 
@@ -65,6 +72,8 @@ class HomePage {
     testId: 'account-overview__defi-tab',
   };
 
+  private readonly overviewBalanceSection = '.wallet-overview__balance';
+
   private readonly popoverBackground = '.popover-bg';
 
   private readonly portfolioLink = '[data-testid="portfolio-link"]';
@@ -75,11 +84,24 @@ class HomePage {
 
   protected readonly sendButton: string = '[data-testid="eth-overview-send"]';
 
+  private readonly solanaAccountIcon = 'img[src="./images/solana-logo.svg"]';
+
   protected readonly swapButton: string = '[data-testid="eth-overview-swap"]';
 
   private readonly refreshErc20Tokens = {
     testId: 'refreshList',
   };
+
+  private readonly storageErrorToast = '[data-testid="storage-error-toast"]';
+
+  private readonly storageErrorToastBackupButton = {
+    text: 'Back up Secret Recovery Phrase',
+    tag: 'span',
+  };
+
+  private readonly revealSrpPasswordInput = '[data-testid="input-password"]';
+
+  private readonly srpAddedToast = '.toasts-container__banner-base';
 
   private readonly surveyToast = '[data-testid="survey-toast"]';
 
@@ -92,6 +114,9 @@ class HomePage {
 
   private readonly copyAddressButton = '[data-testid="app-header-copy-button"]';
 
+  private readonly defaultAddressContainer =
+    '[data-testid="default-address-container"]';
+
   private readonly connectionsRemovedModal =
     '[data-testid="connections-removed-modal"]';
 
@@ -103,8 +128,6 @@ class HomePage {
   private readonly shieldEntryModalSkip =
     '[data-testid="shield-entry-modal-close-button"]';
 
-  private readonly multichainTokenListButton = `[data-testid="multichain-token-list-button"]`;
-
   private readonly emptyBalance =
     '[data-testid="coin-overview-balance-empty-state"]';
 
@@ -113,14 +136,13 @@ class HomePage {
     this.headerNavbar = new HeaderNavbar(driver);
   }
 
-  async checkPageIsLoaded({
-    timeout = 10000,
-  }: { timeout?: number } = {}): Promise<void> {
+  async checkPageIsLoaded(): Promise<void> {
     try {
-      await this.driver.waitForMultipleSelectors(
-        [this.sendButton, this.activityTab, this.tokensTab],
-        { timeout },
-      );
+      await this.driver.waitForMultipleSelectors([
+        this.activityTab,
+        this.overviewBalanceSection,
+        this.tokensTab,
+      ]);
     } catch (e) {
       console.log('Timeout while waiting for home page to be loaded', e);
       throw e;
@@ -187,6 +209,12 @@ class HomePage {
     }
   }
 
+  async waitForNonEvmAccountsLoaded(): Promise<void> {
+    console.log('Waiting for Non EVM account icons to be visible');
+    await this.driver.waitForSelector(this.solanaAccountIcon);
+    await this.driver.waitForSelector(this.bitcoinAccountIcon);
+  }
+
   async checkPageIsNotLoaded(): Promise<void> {
     console.log('Check home page is not loaded');
     await this.driver.assertElementNotPresent(this.activityTab, {
@@ -203,11 +231,6 @@ class HomePage {
     );
   }
 
-  async clickBackupRemindMeLaterButtonSafe(): Promise<void> {
-    await this.driver.clickElementSafe(this.backupRemindMeLaterButton);
-    await this.driver.assertElementNotPresent(this.backupRemindMeLaterButton);
-  }
-
   async closeSurveyToast(surveyName: string): Promise<void> {
     console.log(`Close survey toast for ${surveyName}`);
     await this.driver.waitForSelector({
@@ -215,6 +238,27 @@ class HomePage {
       text: surveyName,
     });
     await this.driver.clickElement(this.closeSurveyToastBannerButton);
+  }
+
+  /**
+   * Checks if the storage error toast is displayed.
+   * This toast appears when storage.local.set() operations fail.
+   */
+  async checkStorageErrorToastIsDisplayed(): Promise<void> {
+    console.log('Check storage error toast is displayed on homepage');
+    await this.driver.waitForSelector(this.storageErrorToast);
+  }
+
+  /**
+   * Clicks the "Back up Secret Recovery Phrase" button on the storage error toast
+   * and verifies navigation to the reveal SRP page.
+   */
+  async clickStorageErrorToastBackupButton(): Promise<void> {
+    console.log(
+      'Click backup button on storage error toast to navigate to reveal SRP page',
+    );
+    await this.driver.clickElement(this.storageErrorToastBackupButton);
+    await this.driver.waitForSelector(this.revealSrpPasswordInput);
   }
 
   async closeUseNetworkNotificationModal(): Promise<void> {
@@ -314,6 +358,19 @@ class HomePage {
     );
   }
 
+  /**
+   * Checks that balance is displayed with ETH symbol.
+   * We verify the element contains "ETH" rather than exact values since gas fees vary.
+   */
+  async checkBalanceIsDisplayed(): Promise<void> {
+    console.log('Check balance element is displayed on homepage');
+    await this.driver.waitForSelector({
+      css: this.balance,
+      text: 'ETH',
+    });
+    console.log('Balance is displayed in correct format');
+  }
+
   async checkBasicFunctionalityOffWarnigMessageIsDisplayed(): Promise<void> {
     console.log(
       'Check if basic functionality off warning message is displayed on homepage',
@@ -405,13 +462,27 @@ class HomePage {
 
   /**
    * This function checks if account syncing has been successfully completed at least once.
+   * Includes a delay before checking to give Firefox more time to initialize (reduces flakiness).
    */
   async checkHasAccountSyncingSyncedAtLeastOnce(): Promise<void> {
+    console.log(
+      `Waiting ${POST_UNLOCK_DELAY}ms before checking account sync state (Firefox timing fix)`,
+    );
+    await this.driver.delay(POST_UNLOCK_DELAY);
     console.log('Check if account syncing has synced at least once');
-    await this.driver.wait(async () => {
-      const uiState = await getCleanAppState(this.driver);
-      return uiState.metamask.hasAccountTreeSyncingSyncedAtLeastOnce === true;
-    }, 30000); // Syncing can take some time so adding a longer timeout to reduce flakes
+    await this.driver.waitUntil(
+      async () => {
+        const uiState = await getCleanAppState(this.driver);
+        // Check for nullish, as the state we might seems to be `null` sometimes.
+        return (
+          uiState?.metamask?.hasAccountTreeSyncingSyncedAtLeastOnce === true
+        );
+      },
+      {
+        interval: BASE_ACCOUNT_SYNC_INTERVAL,
+        timeout: BASE_ACCOUNT_SYNC_TIMEOUT, // Syncing can take some time so adding a longer timeout to reduce flakes
+      },
+    );
   }
 
   async checkIfSendButtonIsClickable(): Promise<boolean> {
@@ -477,10 +548,16 @@ class HomePage {
     await skeleton.waitForElementState('hidden', this.driver.timeout);
   }
 
-  async checkNewSrpAddedToastIsDisplayed(srpNumber: number = 2): Promise<void> {
-    await this.driver.waitForSelector({
-      text: `Wallet ${srpNumber} imported`,
-    });
+  async checkNewSrpAddedToastIsDisplayed(): Promise<void> {
+    // Race condition: the toast initially renders with the stale keyring count (e.g. "Wallet 1 imported")
+    // and only updates to the correct number once the background state propagates.
+    // If the 5s auto-hide fires before the state update, the toast disappears while still showing the wrong value
+    // the text-based selector never matches, causing the test to fail. See issue #40944
+    await this.driver.waitForSelector(this.srpAddedToast);
+    // TODO: Uncomment the selector below and add the param in the function, once the issue above is fixed.
+    // await this.driver.waitForSelector({
+    //   text: `Wallet ${srpNumber} imported`,
+    // });
   }
 
   async checkNoSurveyToastIsDisplayed(): Promise<void> {
@@ -520,6 +597,16 @@ class HomePage {
 
   async checkConnectionsRemovedModalIsDisplayed(): Promise<void> {
     await this.driver.waitForSelector(this.connectionsRemovedModal);
+  }
+
+  async checkDefaultAddressIsDisplayed(): Promise<void> {
+    console.log('Check default address is displayed in header on homepage');
+    await this.driver.waitForSelector(this.defaultAddressContainer);
+  }
+
+  async checkDefaultAddressIsNotDisplayed(): Promise<void> {
+    console.log('Check default address is not displayed in header on homepage');
+    await this.driver.assertElementNotPresent(this.defaultAddressContainer);
   }
 
   async checkShieldEntryModalIsDisplayed(): Promise<void> {

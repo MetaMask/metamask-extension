@@ -1,4 +1,5 @@
 import { Controller as AuthenticationController } from '@metamask/profile-sync-controller/auth';
+import { Env } from '@metamask/profile-sync-controller/sdk';
 import { buildControllerInitRequestMock } from '../test/utils';
 import { ControllerInitRequest } from '../types';
 import {
@@ -57,6 +58,9 @@ describe('AuthenticationControllerInit', () => {
       metametrics: {
         getMetaMetricsId: expect.any(Function),
         agent: 'extension',
+      },
+      config: {
+        env: Env.PRD,
       },
     });
   });

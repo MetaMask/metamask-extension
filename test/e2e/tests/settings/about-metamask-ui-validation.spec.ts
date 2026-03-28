@@ -1,5 +1,5 @@
 import { Suite } from 'mocha';
-import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import packageJson from '../../../../package.json';
@@ -7,18 +7,18 @@ import AboutPage from '../../page-objects/pages/settings/about-page';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import HomePage from '../../page-objects/pages/home/homepage';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 
 // Test case to validate the view in the "About" - MetaMask.
 describe('Setting - About MetaMask :', function (this: Suite) {
   it('validate the view', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         // navigate to settings and click on about page
         await new HeaderNavbar(driver).openSettingsPage();

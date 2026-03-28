@@ -5,6 +5,7 @@ import {
   PRODUCT_TYPES,
   StartSubscriptionRequest,
   Subscription,
+  SubscriptionServiceError,
   UpdatePaymentMethodOpts,
 } from '@metamask/subscription-controller';
 import {
@@ -23,16 +24,13 @@ import { isEqualCaseInsensitive } from '@metamask/controller-utils';
 import ExtensionPlatform from '../../platforms/extension';
 import { WebAuthenticator } from '../oauth/types';
 import { isSendBundleSupported } from '../../lib/transaction/sentinel-api';
-import { getIsSmartTransaction } from '../../../../shared/modules/selectors';
-// TODO: Migrate to shared directory and remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
-import { fetchSwapsFeatureFlags } from '../../../../ui/pages/swaps/swaps.util';
-import { SwapsControllerState } from '../../controllers/swaps/swaps.types';
+import { getIsSmartTransaction } from '../../../../shared/lib/selectors';
 import {
+  formatCaptureShieldPaymentMethodChangeEventProps,
   getSubscriptionRequestTrackingProps,
   getUserAccountTypeAndCategory,
   getUserBalanceCategory,
-} from '../../../../shared/modules/shield/metrics';
+} from '../../../../shared/lib/shield/metrics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -41,8 +39,9 @@ import { SECOND } from '../../../../shared/constants/time';
 import {
   getIsShieldSubscriptionActive,
   getIsShieldSubscriptionPaused,
+  getShieldSubscription,
+  SHIELD_ERROR,
 } from '../../../../shared/lib/shield';
-import { SHIELD_ERROR } from '../../../../shared/modules/shield';
 import {
   SubscriptionServiceAction,
   SubscriptionServiceEvent,
@@ -89,59 +88,83 @@ export class SubscriptionService {
     params: Extract<UpdatePaymentMethodOpts, { paymentType: 'card' }>,
     currentTabId?: number,
   ) {
-    const { paymentType } = params;
-    if (paymentType !== PAYMENT_TYPES.byCard) {
-      throw new Error('Only card payment type is supported');
-    }
-
-    const redirectUrl = this.#webAuthenticator.getRedirectURL();
-
-    const { redirectUrl: checkoutSessionUrl } = (await this.#messenger.call(
-      'SubscriptionController:updatePaymentMethod',
-      {
-        ...params,
-        successUrl: redirectUrl,
-      },
-    )) as { redirectUrl: string };
-
-    // skipping redirect and open new tab in test environment
-    if (!process.env.IN_TEST) {
-      await this.#openAndWaitForTabToClose({
-        url: checkoutSessionUrl,
-        successUrl: redirectUrl,
-      });
-
-      if (!currentTabId) {
-        // open extension browser shield settings if open from pop up (no current tab)
-        this.#platform.openExtensionInBrowser('/settings/transaction-shield');
+    try {
+      const { paymentType } = params;
+      if (paymentType !== PAYMENT_TYPES.byCard) {
+        throw new Error('Only card payment type is supported');
       }
+
+      const redirectUrl = this.#webAuthenticator.getRedirectURL();
+      const cancelUrl = this.#getCancelUrl(redirectUrl);
+
+      const { redirectUrl: checkoutSessionUrl } = (await this.#messenger.call(
+        'SubscriptionController:updatePaymentMethod',
+        {
+          ...params,
+          successUrl: redirectUrl,
+          cancelUrl,
+        },
+      )) as { redirectUrl: string };
+
+      // skipping redirect and open new tab in test environment
+      if (!process.env.IN_TEST) {
+        try {
+          await this.#openAndWaitForTabToClose({
+            url: checkoutSessionUrl,
+            successUrl: redirectUrl,
+            cancelUrl,
+          });
+        } catch (error) {
+          const isTabClosed =
+            error instanceof Error &&
+            error.message.includes(SHIELD_ERROR.tabActionFailed);
+          // continue to refetch subscriptions if the tab is closed
+          // since stripe update payment method page doesn't automatically redirect to the success url
+          if (!isTabClosed) {
+            throw error;
+          }
+        }
+
+        if (!currentTabId) {
+          // open extension browser shield settings if open from pop up (no current tab)
+          this.#platform.openExtensionInBrowser('/settings/transaction-shield');
+        }
+      }
+
+      const subscriptions = await this.#messenger.call(
+        'SubscriptionController:getSubscriptions',
+      );
+
+      return subscriptions;
+    } catch (error) {
+      log.error('Failed to update subscription card payment method', error);
+      throw error;
     }
-
-    const subscriptions = await this.#messenger.call(
-      'SubscriptionController:getSubscriptions',
-    );
-
-    return subscriptions;
   }
 
   async updateSubscriptionCryptoPaymentMethod(
     params: Extract<UpdatePaymentMethodOpts, { paymentType: 'crypto' }>,
   ) {
-    const { paymentType } = params;
-    if (paymentType !== PAYMENT_TYPES.byCrypto) {
-      throw new Error('Only crypto payment type is supported');
+    try {
+      const { paymentType } = params;
+      if (paymentType !== PAYMENT_TYPES.byCrypto) {
+        throw new Error('Only crypto payment type is supported');
+      }
+
+      await this.#messenger.call(
+        'SubscriptionController:updatePaymentMethod',
+        params,
+      );
+
+      const subscriptions = await this.#messenger.call(
+        'SubscriptionController:getSubscriptions',
+      );
+
+      return subscriptions;
+    } catch (error) {
+      log.error('Failed to update subscription crypto payment method', error);
+      throw error;
     }
-
-    await this.#messenger.call(
-      'SubscriptionController:updatePaymentMethod',
-      params,
-    );
-
-    const subscriptions = await this.#messenger.call(
-      'SubscriptionController:getSubscriptions',
-    );
-
-    return subscriptions;
   }
 
   async startSubscriptionWithCard(
@@ -150,8 +173,11 @@ export class SubscriptionService {
     subscriptionPollInterval?: number,
     subscriptionPollTimeout?: number,
   ) {
+    const currentShieldSubscription =
+      await this.#getCurrentShieldSubscription();
     try {
       const redirectUrl = this.#webAuthenticator.getRedirectURL();
+      const cancelUrl = this.#getCancelUrl(redirectUrl);
 
       // check if the account is opted in to rewards
       const rewardAccountId = await this.#getRewardCaipAccountId();
@@ -161,16 +187,29 @@ export class SubscriptionService {
         {
           ...params,
           successUrl: redirectUrl,
+          cancelUrl,
           rewardAccountId,
         },
       );
 
       // skipping redirect and open new tab in test environment
       if (!process.env.IN_TEST) {
+        // Set pending redirect so the UI navigates back to shield plan page if user abandons checkout
+        this.#messenger.call('AppStateController:setPendingRedirectRoute', {
+          path: '/shield-plan',
+        });
+
         await this.#openAndWaitForTabToClose({
           url: checkoutSessionUrl,
           successUrl: redirectUrl,
+          cancelUrl,
         });
+
+        // Clear pending redirect on successful checkout
+        this.#messenger.call(
+          'AppStateController:setPendingRedirectRoute',
+          null,
+        );
 
         if (!currentTabId) {
           // open extension browser shield settings if open from pop up (no current tab)
@@ -186,7 +225,10 @@ export class SubscriptionService {
         subscriptionPollInterval,
         subscriptionPollTimeout,
       );
-      this.trackSubscriptionRequestEvent('completed');
+      this.#trackSubscriptionRequestEvent(
+        'completed',
+        currentShieldSubscription,
+      );
 
       // Track the shield opt in rewards event if the reward account id and reward points are provided
       if (rewardAccountId) {
@@ -196,16 +238,27 @@ export class SubscriptionService {
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : 'Unknown error';
-      this.trackSubscriptionRequestEvent('failed', undefined, {
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        error_message: errorMessage,
-      });
+      this.#trackSubscriptionRequestEvent(
+        'failed',
+        currentShieldSubscription,
+        undefined,
+        {
+          error: errorMessage,
+        },
+      );
+
+      // Clear cached payment method after failed/cancelled payment - metrics already captured
+      this.#messenger.call(
+        'SubscriptionController:clearLastSelectedPaymentMethod',
+        PRODUCT_TYPES.SHIELD,
+      );
 
       // fetch latest subscriptions to update the state in case subscription already created error (not when polling timed out)
       if (errorMessage.toLocaleLowerCase().includes('already exists')) {
         await this.#messenger.call('SubscriptionController:getSubscriptions');
       }
+
+      log.error('Failed to start subscription with card', error);
       throw error;
     }
   }
@@ -292,84 +345,40 @@ export class SubscriptionService {
           rewardPoints,
         );
       }
-    } catch (error) {
-      log.error('Failed to link reward to existing subscription', error);
+    } catch (err) {
+      log.error('Failed to link reward to existing subscription', err);
     }
   }
 
-  /**
-   * Track the subscription request event.
-   *
-   * @param requestStatus - The request status.
-   * @param transactionMeta - The transaction meta (for crypto subscription requests).
-   * @param extrasProps - The extra properties.
-   */
-  trackSubscriptionRequestEvent(
-    requestStatus: 'started' | 'completed' | 'failed',
-    transactionMeta?: TransactionMeta,
-    extrasProps?: Record<string, Json>,
-  ) {
-    if (
-      transactionMeta &&
-      transactionMeta.type !== TransactionType.shieldSubscriptionApprove
-    ) {
-      return;
-    }
-
-    const subscriptionControllerState = this.#messenger.call(
-      'SubscriptionController:getState',
-    );
-    const appStateControllerState = this.#messenger.call(
-      'AppStateController:getState',
-    );
-    const {
-      defaultSubscriptionPaymentOptions,
-      shieldSubscriptionMetricsProps,
-    } = appStateControllerState;
-
-    const accountTypeAndCategory = this.#getAccountTypeAndCategoryForMetrics();
-
-    const trackingProps = getSubscriptionRequestTrackingProps(
-      subscriptionControllerState,
-      defaultSubscriptionPaymentOptions,
-      shieldSubscriptionMetricsProps,
-      transactionMeta,
-    );
-
-    this.#messenger.call('MetaMetricsController:trackEvent', {
-      event: MetaMetricsEventName.ShieldSubscriptionRequest,
-      category: MetaMetricsEventCategory.Shield,
-      properties: {
-        ...accountTypeAndCategory,
-        ...trackingProps,
-        ...extrasProps,
-        status: requestStatus,
-      },
-    });
-  }
-
-  async #openAndWaitForTabToClose(params: { url: string; successUrl: string }) {
+  async #openAndWaitForTabToClose(params: {
+    url: string;
+    successUrl: string;
+    cancelUrl: string;
+  }) {
     const openedTab = await this.#platform.openTab({ url: params.url });
 
     await new Promise<void>((resolve, reject) => {
       let succeeded = false;
+      let cancelled = false;
       // Set up a listener to watch for navigation on that specific tab
       const onTabUpdatedListener = (
         tabId: number,
         changeInfo: { url: string },
       ) => {
         // We only care about updates to our specific checkout tab
-        if (
-          tabId === openedTab.id &&
-          changeInfo.url?.startsWith(params.successUrl)
-        ) {
-          // Payment was successful!
-          succeeded = true;
-
-          // Clean up: close the tab
-          this.#platform.closeTab(tabId);
+        if (tabId === openedTab.id) {
+          if (changeInfo.url?.startsWith(params.cancelUrl)) {
+            // Payment was cancelled!
+            cancelled = true;
+            // Clean up: close the tab
+            this.#platform.closeTab(tabId);
+          } else if (changeInfo.url?.startsWith(params.successUrl)) {
+            // Payment was successful!
+            succeeded = true;
+            // Clean up: close the tab
+            this.#platform.closeTab(tabId);
+          }
         }
-        // TODO: handle cancel url ?
       };
       this.#platform.addTabUpdatedListener(onTabUpdatedListener);
 
@@ -383,6 +392,8 @@ export class SubscriptionService {
           cleanupListeners();
           if (succeeded) {
             resolve();
+          } else if (cancelled) {
+            reject(new Error(SHIELD_ERROR.stripePaymentCancelled));
           } else {
             reject(new Error(SHIELD_ERROR.tabActionFailed));
           }
@@ -428,50 +439,112 @@ export class SubscriptionService {
     const { isGasFeeSponsored, chainId } = txMeta;
     const bundlerSupported = await isSendBundleSupported(chainId);
     const isSponsored = Boolean(isGasFeeSponsored && bundlerSupported);
+    const currentShieldSubscription =
+      await this.#getCurrentShieldSubscription();
+    const isCurrentShieldSubscriptionActive = getIsShieldSubscriptionActive(
+      currentShieldSubscription ?? [],
+    );
 
     try {
-      this.trackSubscriptionRequestEvent('started', txMeta, {
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        has_sufficient_crypto_balance: true,
-      });
+      if (!isCurrentShieldSubscriptionActive) {
+        // If there is no active subscription, we can assume this is a new/renew subscription request
+        this.#trackSubscriptionRequestEvent(
+          'started',
+          currentShieldSubscription,
+          txMeta,
+          {
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            has_sufficient_crypto_balance: true,
+          },
+        );
+      }
 
       const rewardAccountId = await this.#getRewardCaipAccountId();
 
       await this.#messenger.call(
         'SubscriptionController:submitShieldSubscriptionCryptoApproval',
+        // @ts-expect-error type is resolved when @metamask/subscription-controller upgrades to @metamask/transaction-controller v63
         txMeta,
         isSponsored,
         rewardAccountId,
       );
 
-      this.trackSubscriptionRequestEvent('completed', txMeta, {
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        gas_sponsored: isSponsored || false,
-      });
+      if (currentShieldSubscription && isCurrentShieldSubscriptionActive) {
+        // If there is an active subscription, we can assume this is a Payment Method Change request
+        this.#trackPaymentMethodChangeRequestEvent(
+          'succeeded',
+          currentShieldSubscription,
+          txMeta,
+        );
+      } else {
+        // If there is no active subscription, we can assume this is a new/renew subscription request
+        this.#trackSubscriptionRequestEvent(
+          'completed',
+          currentShieldSubscription,
+          txMeta,
+          {
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            gas_sponsored: isSponsored || false,
+          },
+        );
+      }
     } catch (error) {
       log.error('Error on Shield subscription approval transaction', error);
       const errorMessage =
         error instanceof Error ? error.message : 'Unknown error';
-      this.trackSubscriptionRequestEvent('failed', txMeta, {
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        error_message: errorMessage,
+      const cause =
+        error instanceof SubscriptionServiceError ? error.cause : undefined;
+
+      if (currentShieldSubscription && isCurrentShieldSubscriptionActive) {
+        // If there is an active subscription, we can assume this is a Payment Method Change request
+        this.#trackPaymentMethodChangeRequestEvent(
+          'failed',
+          currentShieldSubscription,
+          txMeta,
+          {
+            error: errorMessage,
+            cause: cause?.message ?? '',
+          },
+        );
+      } else {
+        // If there is no active subscription, we can assume this is a new/renew subscription request
+        this.#trackSubscriptionRequestEvent(
+          'failed',
+          currentShieldSubscription,
+          txMeta,
+          {
+            error: errorMessage,
+            cause: cause?.message ?? '',
+          },
+        );
+      }
+
+      // Clear cached payment method after failed crypto payment - metrics already captured
+      this.#messenger.call(
+        'SubscriptionController:clearLastSelectedPaymentMethod',
+        PRODUCT_TYPES.SHIELD,
+      );
+
+      // Surface subscription error to UI
+      const subscriptionErrorMessage = cause?.message ?? errorMessage;
+      this.#messenger.call('AppStateController:setShieldSubscriptionError', {
+        message: subscriptionErrorMessage,
       });
+
       throw error;
     }
   }
 
   async #getIsSmartTransactionEnabled(chainId: `0x${string}`) {
-    const swapsControllerState = await this.#getSwapsFeatureFlagsFromNetwork();
     const uiState = {
       metamask: {
-        ...swapsControllerState,
         ...this.#messenger.call('AccountsController:getState'),
         ...this.#messenger.call('PreferencesController:getState'),
         ...this.#messenger.call('SmartTransactionsController:getState'),
         ...this.#messenger.call('NetworkController:getState'),
+        ...this.#messenger.call('RemoteFeatureFlagController:getState'),
       },
     };
     // @ts-expect-error Smart transaction selector types does not match controller state
@@ -479,34 +552,6 @@ export class SubscriptionService {
     const isSendBundleSupportedChain = await isSendBundleSupported(chainId);
 
     return isSendBundleSupportedChain && isSmartTransaction;
-  }
-
-  async #getSwapsFeatureFlagsFromNetwork(): Promise<
-    SwapsControllerState | undefined
-  > {
-    const swapsControllerState = this.#messenger.call(
-      'SwapsController:getState',
-    );
-    const { swapsFeatureFlags } = swapsControllerState.swapsState;
-    try {
-      if (!swapsFeatureFlags || Object.keys(swapsFeatureFlags).length === 0) {
-        const updatedSwapsFeatureFlags = await fetchSwapsFeatureFlags();
-        if (!updatedSwapsFeatureFlags) {
-          return swapsControllerState;
-        }
-        return {
-          ...swapsControllerState,
-          swapsState: {
-            ...swapsControllerState.swapsState,
-            swapsFeatureFlags: updatedSwapsFeatureFlags,
-          },
-        };
-      }
-    } catch (error) {
-      log.error('Failed to fetch swaps feature flags', error);
-      return swapsControllerState;
-    }
-    return swapsControllerState;
   }
 
   #getAccountTypeAndCategoryForMetrics() {
@@ -555,6 +600,15 @@ export class SubscriptionService {
       );
       return hasAccountOptedIn ? primaryCaipAccountId : undefined;
     } catch (error) {
+      if (
+        error instanceof Error &&
+        // if the error is because the current season metadata is not found, return undefined
+        error.message.includes(
+          'No valid season metadata could be found for type',
+        )
+      ) {
+        return undefined;
+      }
       log.warn('Failed to get reward season metadata', error);
       return undefined;
     }
@@ -635,7 +689,9 @@ export class SubscriptionService {
 
       const { pendingShieldCohort, shieldSubscriptionMetricsProps } =
         this.#messenger.call('AppStateController:getState');
-      if (isPostTxTransaction && !pendingShieldCohort) {
+      const hasSetPostTxPendingCohort =
+        pendingShieldCohort === COHORT_NAMES.POST_TX;
+      if (isPostTxTransaction && !hasSetPostTxPendingCohort) {
         this.#messenger.call(
           'AppStateController:setPendingShieldCohort',
           COHORT_NAMES.POST_TX,
@@ -662,6 +718,104 @@ export class SubscriptionService {
     } catch (error) {
       log.error('Failed to assign post tx cohort', error);
     }
+  }
+
+  /**
+   * Track the subscription request event.
+   *
+   * @param requestStatus - The request status.
+   * @param currentShieldSubscription - The current Shield subscription (before making new subscription request).
+   * @param transactionMeta - The transaction meta (for crypto subscription requests).
+   * @param extrasProps - The extra properties.
+   */
+  #trackSubscriptionRequestEvent(
+    requestStatus: 'started' | 'completed' | 'failed',
+    currentShieldSubscription?: Subscription,
+    transactionMeta?: TransactionMeta,
+    extrasProps?: Record<string, Json>,
+  ) {
+    if (
+      transactionMeta &&
+      transactionMeta.type !== TransactionType.shieldSubscriptionApprove
+    ) {
+      return;
+    }
+
+    const subscriptionControllerState = this.#messenger.call(
+      'SubscriptionController:getState',
+    );
+    const appStateControllerState = this.#messenger.call(
+      'AppStateController:getState',
+    );
+    const {
+      defaultSubscriptionPaymentOptions,
+      shieldSubscriptionMetricsProps,
+    } = appStateControllerState;
+
+    const accountTypeAndCategory = this.#getAccountTypeAndCategoryForMetrics();
+
+    const trackingProps = getSubscriptionRequestTrackingProps(
+      subscriptionControllerState,
+      currentShieldSubscription || subscriptionControllerState.lastSubscription,
+      defaultSubscriptionPaymentOptions,
+      shieldSubscriptionMetricsProps,
+      transactionMeta,
+    );
+
+    this.#messenger.call('MetaMetricsController:trackEvent', {
+      event: MetaMetricsEventName.ShieldSubscriptionRequest,
+      category: MetaMetricsEventCategory.Shield,
+      properties: {
+        ...accountTypeAndCategory,
+        ...trackingProps,
+        ...extrasProps,
+        status: requestStatus,
+      },
+    });
+  }
+
+  /**
+   * Track the subscription payment method change request event.
+   *
+   * @param changeStatus - The change status.
+   * @param previousSubscription - The previous active subscription (before the payment method change request).
+   * @param transactionMeta - The transaction meta (for crypto subscription requests).
+   * @param extrasProps - The extra properties.
+   */
+  #trackPaymentMethodChangeRequestEvent(
+    changeStatus: 'succeeded' | 'failed',
+    previousSubscription: Subscription,
+    transactionMeta?: TransactionMeta,
+    extrasProps?: Record<string, Json>,
+  ) {
+    if (
+      transactionMeta &&
+      transactionMeta.type !== TransactionType.shieldSubscriptionApprove
+    ) {
+      return;
+    }
+
+    const subscriptionControllerState = this.#messenger.call(
+      'SubscriptionController:getState',
+    );
+
+    const accountTypeAndCategory = this.#getAccountTypeAndCategoryForMetrics();
+    const trackingProps = formatCaptureShieldPaymentMethodChangeEventProps(
+      subscriptionControllerState,
+      previousSubscription,
+      transactionMeta,
+    );
+
+    this.#messenger.call('MetaMetricsController:trackEvent', {
+      event: MetaMetricsEventName.ShieldPaymentMethodChange,
+      category: MetaMetricsEventCategory.Shield,
+      properties: {
+        ...accountTypeAndCategory,
+        ...trackingProps,
+        ...extrasProps,
+        status: changeStatus,
+      },
+    });
   }
 
   #trackShieldOptInRewardsEvent(
@@ -698,5 +852,22 @@ export class SubscriptionService {
         rewards_opt_in_type: rewardsOptInType,
       },
     });
+  }
+
+  async #getCurrentShieldSubscription(): Promise<Subscription | undefined> {
+    const subscriptions = await this.#messenger.call(
+      'SubscriptionController:getSubscriptions',
+    );
+    return getShieldSubscription(subscriptions);
+  }
+
+  /**
+   * Get the cancel URL for stripe checkout session (when user press back/cancel button) not to confuse with cancel subscription request.
+   *
+   * @param redirectUrl - The redirect URL.
+   * @returns The cancel URL.
+   */
+  #getCancelUrl(redirectUrl: string): string {
+    return `${redirectUrl}?cancel=true`;
   }
 }

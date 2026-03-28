@@ -23,7 +23,7 @@ import {
 } from '../../../../../helpers/constants/design-system';
 import { PreferredAvatar } from '../../../../../components/app/preferred-avatar';
 import {
-  isValidDomainName,
+  isResolvableName,
   shortenAddress,
 } from '../../../../../helpers/utils/util';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
@@ -52,9 +52,12 @@ export const RecipientInput = ({
   const {
     recipientConfusableCharacters,
     recipientError,
+    recipientErrorAllowAcknowledge,
     recipientResolvedLookup,
     toAddressValidated,
   } = recipientValidationResult;
+  const isWarning = Boolean(recipientErrorAllowAcknowledge);
+  const isHardError = Boolean(recipientError) && !isWarning;
   const avatarSeedAddress =
     accountAddressSeedIconMap.get(to?.toLowerCase() as string) ||
     recipientResolvedLookup ||
@@ -93,7 +96,7 @@ export const RecipientInput = ({
       (recipient) => recipient.address.toLowerCase() === to?.toLowerCase(),
     );
 
-    return to && isValidDomainName(to)
+    return to && isResolvableName(to)
       ? to
       : matchingRecipient?.contactName || matchingRecipient?.accountGroupName;
   }, [recipients, to]);
@@ -125,7 +128,7 @@ export const RecipientInput = ({
                   confusableCharacters={recipientConfusableCharacters}
                 />
               ) : (
-                <Text variant={TextVariant.bodyMd}>
+                <Text variant={TextVariant.bodyMd} className="break-all">
                   {recipientName ?? resolvedAddress}
                 </Text>
               )}
@@ -149,7 +152,9 @@ export const RecipientInput = ({
         </Box>
       ) : (
         <TextField
-          error={Boolean(recipientError)}
+          error={isHardError}
+          // TODO: @MetaMask/design-system-engineers: This seems to be the only current use case for a TextField warning state; align on whether TextField should support warning styling (or if there’s a preferred DS pattern).
+          className={isWarning ? '!border-warning-default' : undefined}
           endAccessory={
             recipients.length > 0 ? (
               <ButtonIcon
@@ -163,6 +168,7 @@ export const RecipientInput = ({
           }
           onChange={onToChange}
           placeholder={t('recipientPlaceholderText')}
+          testId="recipient-address-input"
           ref={recipientInputRef}
           value={to}
           width={BlockSize.Full}

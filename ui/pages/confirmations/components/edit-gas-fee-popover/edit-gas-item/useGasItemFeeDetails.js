@@ -5,7 +5,7 @@ import {
   EditGasModes,
   PriorityLevels,
 } from '../../../../../../shared/constants/gas';
-import { getMaximumGasTotalInHexWei } from '../../../../../../shared/modules/gas.utils';
+import { getMaximumGasTotalInHexWei } from '../../../../../../shared/lib/gas.utils';
 import {
   addTenPercentAndRound,
   gasEstimateGreaterThanGasUsedPlusTenPercent,
@@ -16,7 +16,7 @@ import {
   decGWEIToHexWEI,
   decimalToHex,
   hexWEIToDecGWEI,
-} from '../../../../../../shared/modules/conversion.utils';
+} from '../../../../../../shared/lib/conversion.utils';
 import { useCustomTimeEstimate } from './useCustomTimeEstimate';
 
 export const useGasItemFeeDetails = (priorityLevel) => {

@@ -66,12 +66,16 @@ const ShieldIllustrationAnimation = ({
         rive.play();
       }
     }
+  }, [rive, isWasmReady, bufferLoading, buffer]);
+
+  // Stop animation on unmount
+  useEffect(() => {
     return () => {
       if (rive) {
-        rive.stop();
+        rive.cleanup();
       }
     };
-  }, [rive, isWasmReady, bufferLoading, buffer]);
+  }, []);
 
   // Don't render Rive component until WASM and buffer are ready to avoid errors
   if (

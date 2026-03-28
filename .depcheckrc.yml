@@ -11,8 +11,6 @@ ignores:
   - 'react-compiler-runtime'
   - '@fortawesome/fontawesome-free'
   - 'punycode'
-  # injected via build system
-  - '@metamask/kernel-shims'
 
   #
   # dev deps
@@ -24,6 +22,7 @@ ignores:
   - '@lavamoat/preinstall-always-fail'
   # used in testing + ci
   - '@metamask/auto-changelog' # invoked as `auto-changelog`
+  - '@metamask/browser-playground' # used by MM Connect E2E tests
   - '@metamask/forwarder'
   - '@metamask/phishing-warning' # statically hosted as part of some e2e tests
   - '@metamask/test-dapp'
@@ -56,6 +55,7 @@ ignores:
   - '@storybook/core'
   - '@storybook/addon-essentials'
   - '@storybook/addon-a11y'
+  - '@storybook/addon-docs'
   - '@storybook/builder-webpack5'
   - '@storybook/manager-webpack5'
   - '@storybook/react-webpack5'
@@ -83,7 +83,11 @@ ignores:
   - 'nyc' # coverage
   - 'core-js-pure' # polyfills
   - 'react-compiler-webpack' # build tool
+  - 'thread-loader' # build tool
   # babel
+  - '@babel/plugin-transform-class-properties'
+  - '@babel/plugin-transform-private-methods'
+  - '@babel/plugin-transform-private-property-in-object'
   - '@babel/plugin-transform-logical-assignment-operators'
   - 'babel-plugin-react-compiler'
   # used in image optimization script
@@ -104,6 +108,8 @@ ignores:
   - '@metamask/institutional-wallet-snap'
   - '@metamask/gator-permissions-snap'
   - '@metamask/permissions-kernel-snap'
+  # perps poc
+  - '@metamask/perps-controller'
 
 # files depcheck should not parse
 ignorePatterns:

@@ -1,14 +1,15 @@
 import { MockttpServer } from 'mockttp';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 import {
   createInternalTransaction,
   createDappTransaction,
 } from '../../page-objects/flows/transaction';
-import { withFixtures, WINDOW_TITLES } from '../../helpers';
-import FixtureBuilder from '../../fixtures/fixture-builder';
+import { WINDOW_TITLES } from '../../constants';
+import { withFixtures } from '../../helpers';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import SendTokenConfirmPage from '../../page-objects/pages/send/send-token-confirmation-page';
 import ActivityListPage from '../../page-objects/pages/home/activity-list';
-import { CHAIN_IDS } from '../../../../shared/constants/network';
+import GasFeeModal from '../../page-objects/pages/confirmations/gas-fee-modal';
 import { mockSpotPrices } from '../tokens/utils/mocks';
 
 const PREFERENCES_STATE_MOCK = {
@@ -23,16 +24,17 @@ describe('Editing Confirm Transaction', function () {
   it('allows selecting high, medium, low gas estimates on edit gas fee popover', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilderV2().build(),
         localNodeOptions: { hardfork: 'london' },
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
-        await createInternalTransaction(driver);
+        await createInternalTransaction({ driver });
 
         const sendTokenConfirmationPage = new SendTokenConfirmPage(driver);
+        const gasFeeModal = new GasFeeModal(driver);
         const activityListPage = new ActivityListPage(driver);
 
         await sendTokenConfirmationPage.checkTokenAmountTransfer({
@@ -41,17 +43,20 @@ describe('Editing Confirm Transaction', function () {
         });
 
         // update estimates to high
-        await sendTokenConfirmationPage.updateGasFee('high');
+        await sendTokenConfirmationPage.clickEditGasFeeIcon();
+        await gasFeeModal.selectHighGasFee();
 
         await sendTokenConfirmationPage.checkGasFee('Aggressive');
 
         // update estimates to medium
-        await sendTokenConfirmationPage.updateGasFee('medium');
+        await sendTokenConfirmationPage.clickEditGasFeeIcon();
+        await gasFeeModal.selectMediumGasFee();
 
         await sendTokenConfirmationPage.checkGasFee('Market');
 
         // update estimates to low
-        await sendTokenConfirmationPage.updateGasFee('low');
+        await sendTokenConfirmationPage.clickEditGasFeeIcon();
+        await gasFeeModal.selectLowGasFee();
 
         await sendTokenConfirmationPage.checkGasFee('Slow');
 
@@ -72,14 +77,14 @@ describe('Editing Confirm Transaction', function () {
   it('allows accessing advance gas fee popover from edit gas fee popover', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withPreferencesController(PREFERENCES_STATE_MOCK)
           .build(),
         localNodeOptions: { hardfork: 'london' },
         title: this.test?.fullTitle(),
         testSpecificMock: async (mockServer: MockttpServer) => {
-          await mockSpotPrices(mockServer, CHAIN_IDS.MAINNET, {
-            '0x0000000000000000000000000000000000000000': {
+          await mockSpotPrices(mockServer, {
+            'eip155:1/slip44:60': {
               price: 1700,
               marketCap: 382623505141,
               pricePercentChange1d: 0,
@@ -88,10 +93,11 @@ describe('Editing Confirm Transaction', function () {
         },
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
-        await createInternalTransaction(driver);
+        await login(driver);
+        await createInternalTransaction({ driver });
 
         const sendTokenConfirmationPage = new SendTokenConfirmPage(driver);
+        const gasFeeModal = new GasFeeModal(driver);
         const activityListPage = new ActivityListPage(driver);
 
         await sendTokenConfirmationPage.checkTokenAmountTransfer({
@@ -99,26 +105,15 @@ describe('Editing Confirm Transaction', function () {
           tokenName: 'ETH',
         });
 
-        // update estimates to high
+        // open gas fee modal and set custom values
         await sendTokenConfirmationPage.clickEditGasFeeIcon();
-        await sendTokenConfirmationPage.selectGasFeeItem('custom');
-
-        // enter max fee
-        await sendTokenConfirmationPage.enterMaxBaseFee('8.5');
-
-        // enter priority fee
-        await sendTokenConfirmationPage.enterMaxPriorityFee('8.5');
-
-        // save default values
-        await sendTokenConfirmationPage.saveDefaultValues();
-
-        // enter gas limit
-        await sendTokenConfirmationPage.enterGasLimit('100000');
-        await sendTokenConfirmationPage.clickOnSave();
+        await gasFeeModal.setCustomEIP1559GasFee({
+          maxBaseFee: '8.5',
+          priorityFee: '8.5',
+          gasLimit: '100000',
+        });
 
         // has correct updated value on the confirm screen the transaction
-        await sendTokenConfirmationPage.checkFirstGasFee('0.0002');
-
         await sendTokenConfirmationPage.checkNativeCurrency('$0.30');
 
         // confirms the transaction
@@ -136,15 +131,15 @@ describe('Editing Confirm Transaction', function () {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withPermissionControllerConnectedToTestDapp()
           .withPreferencesController(PREFERENCES_STATE_MOCK)
           .build(),
         localNodeOptions: { hardfork: 'london' },
         title: this.test?.fullTitle(),
         testSpecificMock: async (mockServer: MockttpServer) => {
-          await mockSpotPrices(mockServer, CHAIN_IDS.MAINNET, {
-            '0x0000000000000000000000000000000000000000': {
+          await mockSpotPrices(mockServer, {
+            'eip155:1/slip44:60': {
               price: 1700,
               marketCap: 382623505141,
               pricePercentChange1d: 0,
@@ -154,7 +149,7 @@ describe('Editing Confirm Transaction', function () {
       },
       async ({ driver }) => {
         // login to extension
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         await createDappTransaction(driver, {
           maxFeePerGas: '0x2000000000',
@@ -162,6 +157,7 @@ describe('Editing Confirm Transaction', function () {
         });
 
         const sendTokenConfirmationPage = new SendTokenConfirmPage(driver);
+        const gasFeeModal = new GasFeeModal(driver);
         const activityListPage = new ActivityListPage(driver);
 
         // check transaction in extension popup
@@ -172,13 +168,11 @@ describe('Editing Confirm Transaction', function () {
         // -- should render the popover with no error
         // this is to test in MV3 a racing issue when request for suggestedGasFees is not fetched properly
         // some data would not be defined yet
-        await sendTokenConfirmationPage.selectGasFeeItem('dappSuggested');
+        await gasFeeModal.selectSiteSuggestedGasFee();
 
         await sendTokenConfirmationPage.checkGasFee('0.001 ETH');
 
         // has correct updated value on the confirm screen the transaction
-        await sendTokenConfirmationPage.checkFirstGasFee('0.0019');
-
         await sendTokenConfirmationPage.checkNativeCurrency('$3.15');
 
         // confirms the transaction

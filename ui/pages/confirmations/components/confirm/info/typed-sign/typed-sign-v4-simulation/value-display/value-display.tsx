@@ -80,9 +80,9 @@ const PermitSimulationValueDisplay: React.FC<
 }) => {
   const t = useI18nContext();
 
-  const exchangeRate = useTokenExchangeRate(tokenContract);
+  const exchangeRate = useTokenExchangeRate(tokenContract, chainId);
 
-  const tokenDetails = useGetTokenStandardAndDetails(tokenContract);
+  const tokenDetails = useGetTokenStandardAndDetails(tokenContract, chainId);
   useTrackERC20WithoutDecimalInformation(
     chainId,
     tokenContract,

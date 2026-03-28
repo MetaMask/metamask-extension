@@ -15,13 +15,15 @@ import {
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import mockState from '../../../../test/data/mock-state.json';
 import configureStore from '../../../store/store';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import { createMockMultichainAccountsState } from '../../../selectors/multichain-accounts/test-utils';
 import {
   getAllNetworkConfigurationsByCaipChainId,
   type EvmAndMultichainNetworkConfigurationsWithCaipChainId,
-} from '../../../../shared/modules/selectors/networks';
+} from '../../../../shared/lib/selectors/networks';
 import { getMultichainNetwork } from '../../../selectors/multichain';
 
+import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 import {
   MultichainAccountsConnectPage,
   MultichainConnectPageProps,
@@ -185,8 +187,8 @@ jest.mock('../../../hooks/useAccountGroupsForPermissions', () => ({
   },
 }));
 
-jest.mock('../../../../shared/modules/selectors/networks', () => ({
-  ...jest.requireActual('../../../../shared/modules/selectors/networks'),
+jest.mock('../../../../shared/lib/selectors/networks', () => ({
+  ...jest.requireActual('../../../../shared/lib/selectors/networks'),
   getAllNetworkConfigurationsByCaipChainId: jest.fn(() => ({
     'eip155:1': {
       chainId: 'eip155:1',
@@ -464,15 +466,10 @@ describe('MultichainConnectPage', () => {
   });
 
   it('renders image icon correctly', () => {
-    const { getAllByAltText } = render();
+    const { getByAltText } = render();
 
-    const images = getAllByAltText('metamask.github.io logo');
-    expect(images.length).toBe(2);
-    expect(images[0]).toHaveAttribute(
-      'src',
-      'https://metamask.github.io/test-dapp/metamask-fox.svg',
-    );
-    expect(images[1]).toHaveAttribute(
+    const image = getByAltText('metamask.github.io logo');
+    expect(image).toHaveAttribute(
       'src',
       'https://metamask.github.io/test-dapp/metamask-fox.svg',
     );
@@ -514,20 +511,20 @@ describe('MultichainConnectPage', () => {
 
   it('renders subtitle correctly', () => {
     const { getByText } = render();
-    expect(getByText('Connect this website with MetaMask')).toBeDefined();
+    expect(getByText(messages.connectionDescription.message)).toBeDefined();
   });
 
   it('renders accounts tab correctly', () => {
     const { getByText } = render();
 
-    expect(getByText('Accounts')).toBeDefined();
-    expect(getByText('Edit accounts')).toBeDefined();
+    expect(getByText(messages.accounts.message)).toBeDefined();
+    expect(getByText(messages.editAccounts.message)).toBeDefined();
   });
 
   it('renders permissions tab correctly', () => {
     const { getByText } = render();
 
-    const permissionsTab = getByText('Permissions');
+    const permissionsTab = getByText(messages.permissions.message);
     fireEvent.click(permissionsTab);
 
     // The permissions tab should be clickable and render content
@@ -537,7 +534,7 @@ describe('MultichainConnectPage', () => {
   it('renders edit accounts modal when edit button is clicked', () => {
     const { getByText } = render();
 
-    const editAccountsButton = getByText('Edit accounts');
+    const editAccountsButton = getByText(messages.editAccounts.message);
     fireEvent.click(editAccountsButton);
 
     // The modal should open when edit button is clicked
@@ -547,7 +544,7 @@ describe('MultichainConnectPage', () => {
   it('closes edit accounts modal when close button is clicked', () => {
     const { getByText } = render();
 
-    const editAccountsButton = getByText('Edit accounts');
+    const editAccountsButton = getByText(messages.editAccounts.message);
     fireEvent.click(editAccountsButton);
 
     // The modal should be interactive
@@ -557,8 +554,8 @@ describe('MultichainConnectPage', () => {
   it('renders confirm and cancel buttons', () => {
     const { getByText } = render();
 
-    const confirmButton = getByText('Connect');
-    const cancelButton = getByText('Cancel');
+    const confirmButton = getByText(messages.connect.message);
+    const cancelButton = getByText(messages.cancel.message);
 
     expect(confirmButton).toBeDefined();
     expect(cancelButton).toBeDefined();
@@ -572,7 +569,7 @@ describe('MultichainConnectPage', () => {
       },
     });
 
-    const cancelButton = getByText('Cancel');
+    const cancelButton = getByText(messages.cancel.message);
     fireEvent.click(cancelButton);
 
     expect(mockRejectPermissionsRequest).toHaveBeenCalledWith('1');
@@ -586,7 +583,7 @@ describe('MultichainConnectPage', () => {
       },
     });
 
-    const connectButton = getByText('Connect');
+    const connectButton = getByText(messages.connect.message);
     fireEvent.click(connectButton);
 
     expect(mockApproveConnection).toHaveBeenCalled();
@@ -654,7 +651,7 @@ describe('MultichainConnectPage', () => {
   it('handles account group selection correctly', () => {
     const { getByText } = render();
 
-    const editAccountsButton = getByText('Edit accounts');
+    const editAccountsButton = getByText(messages.editAccounts.message);
     fireEvent.click(editAccountsButton);
 
     // The modal should be interactive for account group selection
@@ -664,7 +661,7 @@ describe('MultichainConnectPage', () => {
   it('handles permissions tab interactions', () => {
     const { getByText } = render();
 
-    const permissionsTab = getByText('Permissions');
+    const permissionsTab = getByText(messages.permissions.message);
     fireEvent.click(permissionsTab);
 
     // The permissions tab should be interactive
@@ -870,6 +867,82 @@ describe('MultichainConnectPage', () => {
       expect(actualChainIds).toContain(
         'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
       );
+    });
+
+    it('returns all default networks for Tron Wallet Adapter requests', () => {
+      const TRON_CAIP_CHAIN_ID = MultichainNetworks.TRON;
+
+      mockGetCaip25CaveatValueFromPermissions.mockReturnValue({
+        requiredScopes: {},
+        optionalScopes: {
+          [TRON_CAIP_CHAIN_ID]: {
+            accounts: [],
+          },
+        },
+        sessionProperties: {
+          [KnownSessionProperties.TronAccountChangedNotifications]: true,
+        },
+        isMultichainOrigin: true,
+      });
+
+      mockGetAllScopesFromCaip25CaveatValue.mockReturnValue([
+        TRON_CAIP_CHAIN_ID,
+      ]);
+
+      mockGetAllNetworkConfigurationsByCaipChainId.mockReturnValue({
+        'eip155:1': {
+          chainId: 'eip155:1',
+          name: 'Ethereum Mainnet',
+          nativeCurrency: 'ETH',
+        } as unknown as EvmAndMultichainNetworkConfigurationsWithCaipChainId,
+        [TRON_CAIP_CHAIN_ID]: {
+          chainId: TRON_CAIP_CHAIN_ID,
+          name: 'Tron Mainnet',
+          nativeCurrency: 'TRX',
+        } as unknown as EvmAndMultichainNetworkConfigurationsWithCaipChainId,
+      });
+
+      render({
+        props: {
+          request: {
+            permissions: {
+              'endowment:caip25': {
+                caveats: [
+                  {
+                    type: 'restrictNetworkSwitching',
+                    value: {
+                      requiredScopes: {},
+                      optionalScopes: {
+                        [TRON_CAIP_CHAIN_ID]: {
+                          accounts: [],
+                        },
+                      },
+                      sessionProperties: {
+                        [KnownSessionProperties.TronAccountChangedNotifications]: true, // Tron Wallet Adapter indicator
+                      },
+                      isMultichainOrigin: true,
+                    },
+                  },
+                ],
+              },
+            },
+            metadata: {
+              id: '1',
+              origin: mockTargetSubjectMetadata.origin,
+            },
+          },
+        },
+      });
+
+      // For Tron Wallet Adapter requests, should return all default networks (EVM + Tron)
+      // even though only Tron was explicitly requested
+      const { calls } = mockUseAccountGroupsForPermissions.mock;
+      expect(calls.length).toBeGreaterThan(0);
+      const actualChainIds = calls[0]?.[2] as string[] | undefined;
+      expect(actualChainIds).toBeDefined();
+      // Should include both EVM and Tron networks by default
+      expect(actualChainIds).toContain('eip155:1');
+      expect(actualChainIds).toContain(TRON_CAIP_CHAIN_ID);
     });
 
     it('returns all default networks when EIP-1193 request with no specific chain IDs requested', () => {

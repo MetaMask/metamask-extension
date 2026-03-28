@@ -6,6 +6,8 @@ import type { ControllerInitFunction } from './types';
 
 const isTestEnvironment = Boolean(process.env.IN_TEST);
 
+const initialDelayDuration = isTestEnvironment ? 1000 : 10 * 60 * 1000;
+
 /**
  * Initialize the profile metrics controller.
  *
@@ -35,6 +37,7 @@ export const ProfileMetricsControllerInit: ControllerInitFunction<
     messenger: controllerMessenger,
     state: persistedState.ProfileMetricsController,
     interval: isTestEnvironment ? 1000 : 10 * 1000,
+    initialDelayDuration,
     assertUserOptedIn,
     getMetaMetricsId: () => metaMetricsController.getMetaMetricsId(),
   });

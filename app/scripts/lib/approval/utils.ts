@@ -6,9 +6,7 @@ import { ApprovalType } from '@metamask/controller-utils';
 import { DIALOG_APPROVAL_TYPES } from '@metamask/snaps-rpc-methods';
 import { providerErrors } from '@metamask/rpc-errors';
 import { createProjectLogger, Json } from '@metamask/utils';
-///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 import { SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES } from '../../../../shared/constants/app';
-///: END:ONLY_INCLUDE_IF
 
 const log = createProjectLogger('approval-utils');
 
@@ -73,28 +71,26 @@ function rejectApproval({
     case ApprovalType.SnapDialogPrompt:
     case DIALOG_APPROVAL_TYPES.default:
       log('Rejecting snap dialog', { id, interfaceId, origin, type });
-      approvalController.accept(id, null);
+      approvalController.acceptRequest(id, null);
       deleteInterface?.(interfaceId);
       break;
 
     case ApprovalType.SnapDialogConfirmation:
       log('Rejecting snap confirmation', { id, interfaceId, origin, type });
-      approvalController.accept(id, false);
+      approvalController.acceptRequest(id, false);
       deleteInterface?.(interfaceId);
       break;
 
-    ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     case SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.confirmAccountCreation:
     case SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.confirmAccountRemoval:
     case SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.showSnapAccountRedirect:
       log('Rejecting snap account confirmation', { id, origin, type });
-      approvalController.accept(id, false);
+      approvalController.acceptRequest(id, false);
       break;
-    ///: END:ONLY_INCLUDE_IF
 
     default:
       log('Rejecting pending approval', { id, origin, type });
-      approvalController.reject(
+      approvalController.rejectRequest(
         id,
         providerErrors.userRejectedRequest({
           data: {

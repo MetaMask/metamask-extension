@@ -2,7 +2,7 @@ import {
   PRODUCT_TYPES,
   SUBSCRIPTION_STATUSES,
 } from '@metamask/subscription-controller';
-import { renderHookWithProvider } from '../../../../../test/lib/render-helpers-navigate';
+import { renderHookWithConfirmContextProvider } from '../../../../../test/lib/confirmations/render-helpers';
 import { useEnableShieldCoverageChecks } from './useEnableShieldCoverageChecks';
 
 jest.mock('../../../../hooks/subscription/useSubscription', () => ({
@@ -44,7 +44,7 @@ describe('useEnableShieldCoverageChecks', () => {
       error: null,
     });
 
-    const { result } = renderHookWithProvider(
+    const { result } = renderHookWithConfirmContextProvider(
       () => useEnableShieldCoverageChecks(),
       {
         metamask: {
@@ -69,7 +69,7 @@ describe('useEnableShieldCoverageChecks', () => {
       error: null,
     });
 
-    const { result } = renderHookWithProvider(
+    const { result } = renderHookWithConfirmContextProvider(
       () => useEnableShieldCoverageChecks(),
       {
         metamask: {
@@ -90,7 +90,7 @@ describe('useEnableShieldCoverageChecks', () => {
       error: null,
     });
 
-    const { result } = renderHookWithProvider(
+    const { result } = renderHookWithConfirmContextProvider(
       () => useEnableShieldCoverageChecks(),
       {
         metamask: {
@@ -116,7 +116,7 @@ describe('useEnableShieldCoverageChecks', () => {
       error: null,
     });
 
-    const { result } = renderHookWithProvider(
+    const { result } = renderHookWithConfirmContextProvider(
       () => useEnableShieldCoverageChecks(),
       {
         metamask: {

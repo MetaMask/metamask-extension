@@ -5,14 +5,14 @@ import { mockNetworkState } from '../../../../test/stub/networks';
 import {
   parseApprovalTransactionData,
   parseTypedDataMessage,
-} from '../../../../shared/modules/transaction.utils';
+} from '../../../../shared/lib/transaction.utils';
 import { ResultType } from '../../../../shared/lib/trust-signals';
 import { createTrustSignalsMiddleware } from './trust-signals-middleware';
 import { scanAddressAndAddToCache } from './security-alerts-api';
 import { getChainId } from './trust-signals-util';
 
 jest.mock('./security-alerts-api');
-jest.mock('../../../../shared/modules/transaction.utils');
+jest.mock('../../../../shared/lib/transaction.utils');
 process.env.SECURITY_ALERTS_API_ENABLED = 'true';
 
 // Test constants
@@ -20,6 +20,7 @@ const TEST_ADDRESSES = {
   TO: '0x1234567890123456789012345678901234567890',
   FROM: '0xabcdef0123456789012345678901234567890123',
   SPENDER: '0x9876543210987654321098765432109876543210',
+  DELEGATE: '0xfedcba9876543210fedcba9876543210fedcba98',
 };
 
 const MOCK_SCAN_RESPONSES = {
@@ -676,10 +677,8 @@ describe('createTrustSignalsMiddleware', () => {
       expect(next).toHaveBeenCalled();
     });
 
-    it('handles all eth_signTypedData variants', async () => {
+    it('handles eth_signTypedData_v3 and v4 variants', async () => {
       const variants = [
-        MESSAGE_TYPE.ETH_SIGN_TYPED_DATA,
-        MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V1,
         MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V3,
         MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4,
       ];
@@ -710,6 +709,30 @@ describe('createTrustSignalsMiddleware', () => {
           appStateController.addAddressSecurityAlertResponse,
           getChainId(networkController),
         );
+        expect(phishingController.scanUrl).toHaveBeenCalled();
+        expect(next).toHaveBeenCalled();
+      }
+    });
+
+    it('does not scan addresses for eth_signTypedData v1 variants (different param format)', async () => {
+      const variants = [
+        MESSAGE_TYPE.ETH_SIGN_TYPED_DATA,
+        MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V1,
+      ];
+
+      for (const method of variants) {
+        const { middleware, phishingController } = createMiddleware();
+
+        const req = createMockRequest(
+          method,
+          createTypedDataParams(TEST_ADDRESSES.TO),
+        );
+        const res = createMockResponse();
+        const next = jest.fn();
+
+        await middleware(req, res, next);
+
+        expect(scanAddressMockAndAddToCache).not.toHaveBeenCalled();
         expect(phishingController.scanUrl).toHaveBeenCalled();
         expect(next).toHaveBeenCalled();
       }
@@ -957,6 +980,145 @@ describe('createTrustSignalsMiddleware', () => {
         }
       });
     });
+
+    describe('delegation signatures', () => {
+      const createDelegationTypedData = (delegate?: string) => ({
+        domain: {
+          name: 'DelegationManager',
+          version: '1',
+          chainId: 1,
+          verifyingContract: TEST_ADDRESSES.TO,
+        },
+        primaryType: 'Delegation',
+        message: {
+          delegate: delegate || TEST_ADDRESSES.DELEGATE,
+          delegator: TEST_ADDRESSES.FROM,
+          authority:
+            '0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff',
+          caveats: [],
+          salt: 12345,
+        },
+        types: {
+          EIP712Domain: [
+            { name: 'name', type: 'string' },
+            { name: 'version', type: 'string' },
+            { name: 'chainId', type: 'uint256' },
+            { name: 'verifyingContract', type: 'address' },
+          ],
+          Caveat: [
+            { name: 'enforcer', type: 'address' },
+            { name: 'terms', type: 'bytes' },
+          ],
+          Delegation: [
+            { name: 'delegate', type: 'address' },
+            { name: 'delegator', type: 'address' },
+            { name: 'authority', type: 'bytes32' },
+            { name: 'caveats', type: 'Caveat[]' },
+            { name: 'salt', type: 'uint256' },
+          ],
+        },
+      });
+
+      it('scans both verifying contract and delegate addresses for delegation signatures', async () => {
+        scanAddressMockAndAddToCache.mockResolvedValue(
+          MOCK_SCAN_RESPONSES.BENIGN,
+        );
+        const {
+          middleware,
+          appStateController,
+          networkController,
+          phishingController,
+        } = createMiddleware();
+
+        const delegationData = createDelegationTypedData();
+        const req = createMockRequest(MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4, [
+          TEST_ADDRESSES.FROM,
+          delegationData,
+        ]);
+        const res = createMockResponse();
+        const next = jest.fn();
+
+        await middleware(req, res, next);
+
+        // Should scan both the verifying contract and the delegate
+        expect(scanAddressMockAndAddToCache).toHaveBeenCalledTimes(2);
+        expect(scanAddressMockAndAddToCache).toHaveBeenCalledWith(
+          TEST_ADDRESSES.TO,
+          appStateController.getAddressSecurityAlertResponse,
+          appStateController.addAddressSecurityAlertResponse,
+          getChainId(networkController),
+        );
+        expect(scanAddressMockAndAddToCache).toHaveBeenCalledWith(
+          TEST_ADDRESSES.DELEGATE,
+          appStateController.getAddressSecurityAlertResponse,
+          appStateController.addAddressSecurityAlertResponse,
+          getChainId(networkController),
+        );
+        expect(phishingController.scanUrl).toHaveBeenCalled();
+        expect(next).toHaveBeenCalled();
+      });
+
+      it('handles delegation delegate scanning errors gracefully', async () => {
+        scanAddressMockAndAddToCache
+          .mockResolvedValueOnce(MOCK_SCAN_RESPONSES.BENIGN) // Contract scan succeeds
+          .mockRejectedValueOnce(new Error('Delegate scan failed')); // Delegate scan fails
+
+        const { middleware, phishingController } = createMiddleware();
+
+        const delegationData = createDelegationTypedData();
+        const req = createMockRequest(MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4, [
+          TEST_ADDRESSES.FROM,
+          delegationData,
+        ]);
+        const res = createMockResponse();
+        const next = jest.fn();
+
+        await middleware(req, res, next);
+
+        expect(scanAddressMockAndAddToCache).toHaveBeenCalledTimes(2);
+        expect(phishingController.scanUrl).toHaveBeenCalled();
+        expect(next).toHaveBeenCalled();
+
+        // Wait for async error handling
+        await new Promise((resolve) => setTimeout(resolve, 0));
+
+        expect(consoleErrorSpy).toHaveBeenCalledWith(
+          '[createTrustSignalsMiddleware] error scanning delegate address for delegation:',
+          expect.any(Error),
+        );
+      });
+
+      it('does not scan delegate when delegate address is not present in delegation', async () => {
+        scanAddressMockAndAddToCache.mockResolvedValue(
+          MOCK_SCAN_RESPONSES.BENIGN,
+        );
+        const { middleware, appStateController, networkController } =
+          createMiddleware();
+
+        const delegationDataWithoutDelegate = createDelegationTypedData();
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        delete (delegationDataWithoutDelegate.message as any).delegate;
+
+        const req = createMockRequest(MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4, [
+          TEST_ADDRESSES.FROM,
+          delegationDataWithoutDelegate,
+        ]);
+        const res = createMockResponse();
+        const next = jest.fn();
+
+        await middleware(req, res, next);
+
+        // Should only scan the verifying contract
+        expect(scanAddressMockAndAddToCache).toHaveBeenCalledTimes(1);
+        expect(scanAddressMockAndAddToCache).toHaveBeenCalledWith(
+          TEST_ADDRESSES.TO,
+          appStateController.getAddressSecurityAlertResponse,
+          appStateController.addAddressSecurityAlertResponse,
+          getChainId(networkController),
+        );
+        expect(next).toHaveBeenCalled();
+      });
+    });
   });
 
   describe('eth_request_accounts', () => {
@@ -1095,6 +1257,44 @@ describe('createTrustSignalsMiddleware', () => {
 
       expect(phishingController.scanUrl).not.toHaveBeenCalled();
       expect(next).toHaveBeenCalled();
+    });
+  });
+
+  describe('EIP-7715 advanced permissions', () => {
+    const eip7715Methods = [
+      MESSAGE_TYPE.WALLET_REQUEST_EXECUTION_PERMISSIONS,
+      MESSAGE_TYPE.WALLET_GET_SUPPORTED_EXECUTION_PERMISSIONS,
+      MESSAGE_TYPE.WALLET_GET_GRANTED_EXECUTION_PERMISSIONS,
+    ] as const;
+
+    eip7715Methods.forEach((method) => {
+      describe(method, () => {
+        it('scans URL when origin is present', async () => {
+          const { middleware, phishingController } = createMiddleware();
+          const origin = 'https://example.com';
+          const req = createMockRequest(method, [], origin);
+          const res = createMockResponse();
+          const next = jest.fn();
+
+          await middleware(req, res, next);
+
+          expect(phishingController.scanUrl).toHaveBeenCalledWith(origin);
+          expect(next).toHaveBeenCalled();
+        });
+
+        it('does not scan URL when origin is not present', async () => {
+          const { middleware, phishingController } = createMiddleware();
+          const req = createMockRequest(method);
+          req.origin = undefined;
+          const res = createMockResponse();
+          const next = jest.fn();
+
+          await middleware(req, res, next);
+
+          expect(phishingController.scanUrl).not.toHaveBeenCalled();
+          expect(next).toHaveBeenCalled();
+        });
+      });
     });
   });
 

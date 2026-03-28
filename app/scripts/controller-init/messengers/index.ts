@@ -6,9 +6,7 @@ import {
 import {
   getCronjobControllerMessenger,
   getExecutionServiceMessenger,
-  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   getMultichainRouterMessenger,
-  ///: END:ONLY_INCLUDE_IF
   getRateLimitControllerInitMessenger,
   getRateLimitControllerMessenger,
   getSnapControllerInitMessenger,
@@ -56,6 +54,9 @@ import {
   getTokenRatesControllerMessenger,
   getAssetsContractControllerInitMessenger,
   getNetworkEnablementControllerInitMessenger,
+  getAssetsControllerMessenger,
+  getAssetsControllerInitMessenger,
+  getClientControllerMessenger,
 } from './assets';
 import {
   getNotificationServicesControllerMessenger,
@@ -93,6 +94,7 @@ import {
   getSubscriptionControllerInitMessenger,
   getSubscriptionControllerMessenger,
 } from './subscription';
+import { getConnectivityControllerMessenger } from './connectivity';
 import { getGatorPermissionsControllerMessenger } from './gator-permissions/gator-permissions-controller-messenger';
 import { getMetaMetricsControllerMessenger } from './metametrics-controller-messenger';
 import { getUserStorageControllerInitMessenger } from './identity/user-storage-controller-messenger';
@@ -112,6 +114,10 @@ import {
   getTokenBalancesControllerInitMessenger,
   getTokenBalancesControllerMessenger,
 } from './token-balances-controller-messenger';
+import {
+  getStaticAssetsControllerInitMessenger,
+  getStaticAssetsControllerMessenger,
+} from './static-assets-controller-messenger';
 import { getRatesControllerMessenger } from './rates-controller-messenger';
 import {
   getCurrencyRateControllerInitMessenger,
@@ -144,10 +150,6 @@ import {
   getRewardsControllerMessenger,
 } from './rewards-controller-messenger';
 import {
-  getSwapsControllerInitMessenger,
-  getSwapsControllerMessenger,
-} from './swaps-controller-messenger';
-import {
   getBridgeControllerInitMessenger,
   getBridgeControllerMessenger,
 } from './bridge-controller-messenger';
@@ -177,7 +179,6 @@ import { getAlertControllerMessenger } from './alert-controller-messenger';
 import { getMetaMetricsDataDeletionControllerMessenger } from './metametrics-data-deletion-controller-messenger';
 import { getLoggingControllerMessenger } from './logging-controller-messenger';
 import { getAppMetadataControllerMessenger } from './app-metadata-controller-messenger';
-import { getErrorReportingServiceMessenger } from './error-reporting-service-messenger';
 import { getApprovalControllerMessenger } from './approval-controller-messenger';
 import { getAddressBookControllerMessenger } from './address-book-controller-messenger';
 import { getDecryptMessageManagerMessenger } from './decrypt-message-manager-messenger';
@@ -206,6 +207,8 @@ import {
 import { getClaimsServiceMessenger } from './claims/claims-service-messenger';
 import { getProfileMetricsControllerMessenger } from './profile-metrics-controller-messenger';
 import { getProfileMetricsServiceMessenger } from './profile-metrics-service-messenger';
+import { getStorageServiceMessenger } from './storage-service-messenger';
+import { getPerpsControllerMessenger } from './perps-controller-messenger';
 
 export type { AccountOrderControllerMessenger } from './account-order-controller-messenger';
 export { getAccountOrderControllerMessenger } from './account-order-controller-messenger';
@@ -274,8 +277,8 @@ export {
   getEnsControllerMessenger,
   getEnsControllerInitMessenger,
 } from './ens-controller-messenger';
-export type { ErrorReportingServiceMessenger } from './error-reporting-service-messenger';
-export { getErrorReportingServiceMessenger } from './error-reporting-service-messenger';
+export type { StorageServiceMessenger } from './storage-service-messenger';
+export { getStorageServiceMessenger } from './storage-service-messenger';
 export type {
   GasFeeControllerMessenger,
   GasFeeControllerInitMessenger,
@@ -298,10 +301,7 @@ export type { MetaMetricsControllerMessenger } from './metametrics-controller-me
 export { getMetaMetricsControllerMessenger } from './metametrics-controller-messenger';
 export type { MetaMetricsDataDeletionControllerMessenger } from './metametrics-data-deletion-controller-messenger';
 export { getMetaMetricsDataDeletionControllerMessenger } from './metametrics-data-deletion-controller-messenger';
-export type {
-  NetworkControllerMessenger,
-  NetworkControllerInitMessenger,
-} from './network-controller-messenger';
+export type { NetworkControllerInitMessenger } from './network-controller-messenger';
 export {
   getNetworkControllerMessenger,
   getNetworkControllerInitMessenger,
@@ -330,6 +330,8 @@ export {
 } from './permission-controller-messenger';
 export type { PermissionLogControllerMessenger } from './permission-log-controller-messenger';
 export { getPermissionLogControllerMessenger } from './permission-log-controller-messenger';
+export type { PerpsControllerMessenger } from './perps-controller-messenger';
+export { getPerpsControllerMessenger } from './perps-controller-messenger';
 export type { PhishingControllerMessenger } from './phishing-controller-messenger';
 export { getPhishingControllerMessenger } from './phishing-controller-messenger';
 export type {
@@ -359,14 +361,6 @@ export type {
 } from './rewards-controller-messenger';
 export { getRewardsControllerMessenger } from './rewards-controller-messenger';
 export type {
-  SwapsControllerMessenger,
-  SwapsControllerInitMessenger,
-} from './swaps-controller-messenger';
-export {
-  getSwapsControllerMessenger,
-  getSwapsControllerInitMessenger,
-} from './swaps-controller-messenger';
-export type {
   TokenBalancesControllerMessenger,
   TokenBalancesControllerInitMessenger,
 } from './token-balances-controller-messenger';
@@ -374,6 +368,14 @@ export {
   getTokenBalancesControllerMessenger,
   getTokenBalancesControllerInitMessenger,
 } from './token-balances-controller-messenger';
+export type {
+  StaticAssetsControllerMessenger,
+  StaticAssetsControllerInitMessenger,
+} from './static-assets-controller-messenger';
+export {
+  getStaticAssetsControllerMessenger,
+  getStaticAssetsControllerInitMessenger,
+} from './static-assets-controller-messenger';
 export type {
   TokenDetectionControllerMessenger,
   TokenDetectionControllerInitMessenger,
@@ -451,6 +453,10 @@ export const CONTROLLER_MESSENGERS = {
     getMessenger: getAppStateControllerMessenger,
     getInitMessenger: noop,
   },
+  AssetsController: {
+    getMessenger: getAssetsControllerMessenger,
+    getInitMessenger: getAssetsControllerInitMessenger,
+  },
   AuthenticationController: {
     getMessenger: getAuthenticationControllerMessenger,
     getInitMessenger: getAuthenticationControllerInitMessenger,
@@ -463,12 +469,20 @@ export const CONTROLLER_MESSENGERS = {
     getMessenger: getBridgeStatusControllerMessenger,
     getInitMessenger: noop,
   },
+  ConnectivityController: {
+    getMessenger: getConnectivityControllerMessenger,
+    getInitMessenger: noop,
+  },
   ClaimsController: {
     getMessenger: getClaimsControllerMessenger,
     getInitMessenger: getClaimsControllerInitMessenger,
   },
   ClaimsService: {
     getMessenger: getClaimsServiceMessenger,
+    getInitMessenger: noop,
+  },
+  ClientController: {
+    getMessenger: getClientControllerMessenger,
     getInitMessenger: noop,
   },
   CronjobController: {
@@ -507,8 +521,8 @@ export const CONTROLLER_MESSENGERS = {
     getMessenger: getEnsControllerMessenger,
     getInitMessenger: getEnsControllerInitMessenger,
   },
-  ErrorReportingService: {
-    getMessenger: getErrorReportingServiceMessenger,
+  StorageService: {
+    getMessenger: getStorageServiceMessenger,
     getInitMessenger: noop,
   },
   ExecutionService: {
@@ -563,12 +577,10 @@ export const CONTROLLER_MESSENGERS = {
     getMessenger: getMultichainNetworkControllerMessenger,
     getInitMessenger: noop,
   },
-  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   MultichainRouter: {
     getMessenger: getMultichainRouterMessenger,
     getInitMessenger: noop,
   },
-  ///: END:ONLY_INCLUDE_IF
   NameController: {
     getMessenger: getNameControllerMessenger,
     getInitMessenger: getNameControllerInitMessenger,
@@ -599,6 +611,10 @@ export const CONTROLLER_MESSENGERS = {
   },
   PermissionLogController: {
     getMessenger: getPermissionLogControllerMessenger,
+    getInitMessenger: noop,
+  },
+  PerpsController: {
+    getMessenger: getPerpsControllerMessenger,
     getInitMessenger: noop,
   },
   PhishingController: {
@@ -657,6 +673,10 @@ export const CONTROLLER_MESSENGERS = {
     getMessenger: getSnapKeyringBuilderMessenger,
     getInitMessenger: getSnapKeyringBuilderInitMessenger,
   },
+  StaticAssetsController: {
+    getMessenger: getStaticAssetsControllerMessenger,
+    getInitMessenger: getStaticAssetsControllerInitMessenger,
+  },
   SubjectMetadataController: {
     getMessenger: getSubjectMetadataControllerMessenger,
     getInitMessenger: noop,
@@ -676,10 +696,6 @@ export const CONTROLLER_MESSENGERS = {
   RewardsController: {
     getMessenger: getRewardsControllerMessenger,
     getInitMessenger: getRewardsControllerInitMessenger,
-  },
-  SwapsController: {
-    getMessenger: getSwapsControllerMessenger,
-    getInitMessenger: getSwapsControllerInitMessenger,
   },
   PPOMController: {
     getMessenger: getPPOMControllerMessenger,

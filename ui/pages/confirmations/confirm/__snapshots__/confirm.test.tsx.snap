@@ -62,11 +62,6 @@ exports[`Confirm matches snapshot for signature - personal sign type 1`] = `
                 </div>
               </div>
             </div>
-            <div
-              class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network confirm_header__avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-goerli mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
-            >
-              G
-            </div>
           </div>
           <div
             class="mm-box mm-box--margin-top-0 mm-box--margin-inline-start-4"
@@ -75,13 +70,13 @@ exports[`Confirm matches snapshot for signature - personal sign type 1`] = `
               class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-default"
               data-testid="header-account-name"
             >
-              Test Account
+              Account 1
             </p>
             <p
               class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative"
               data-testid="header-network-display-name"
             >
-              Goerli
+              Wallet 1
             </p>
           </div>
         </div>
@@ -94,7 +89,7 @@ exports[`Confirm matches snapshot for signature - personal sign type 1`] = `
           >
             <div>
               <div
-                aria-describedby="tippy-tooltip-6"
+                aria-describedby="tippy-tooltip-5"
                 class=""
                 data-original-title="Account details"
                 data-tooltipped=""
@@ -142,10 +137,48 @@ exports[`Confirm matches snapshot for signature - personal sign type 1`] = `
               style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
             >
               <div
-                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+                style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
               >
                 <div
                   class="mm-box mm-box--display-flex mm-box--align-items-center"
+                  style="flex-shrink: 0;"
+                >
+                  <p
+                    class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                  >
+                    Network
+                  </p>
+                </div>
+              </div>
+              <div
+                class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+              >
+                <div
+                  class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
+                  style="border-width: 0px;"
+                >
+                  G
+                </div>
+                <p
+                  class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+                  data-testid="confirmation__details-network-name"
+                >
+                  Goerli
+                </p>
+              </div>
+            </div>
+            <div
+              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+              style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
+            >
+              <div
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+                style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
+              >
+                <div
+                  class="mm-box mm-box--display-flex mm-box--align-items-center"
+                  style="flex-shrink: 0;"
                 >
                   <p
                     class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -154,7 +187,7 @@ exports[`Confirm matches snapshot for signature - personal sign type 1`] = `
                   </p>
                   <div>
                     <div
-                      aria-describedby="tippy-tooltip-7"
+                      aria-describedby="tippy-tooltip-6"
                       class=""
                       data-original-title="This is the site asking for your signature."
                       data-tooltipped=""
@@ -209,10 +242,12 @@ exports[`Confirm matches snapshot for signature - personal sign type 1`] = `
                 />
               </button>
               <div
-                class="mm-box mm-box--padding-right-12 mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
+                class="mm-box mm-box--padding-right-12 mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+                style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
               >
                 <div
                   class="mm-box mm-box--display-flex mm-box--align-items-center"
+                  style="flex-shrink: 0;"
                 >
                   <p
                     class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -270,78 +305,6 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitB
       class="mm-box multichain-page__inner-container confirm_wrapper mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full mm-box--background-color-background-default"
     >
       <div
-        class="mm-box confirm_header__wrapper mm-box--display-flex mm-box--justify-content-space-between mm-box--align-items-center"
-        data-testid="confirm-header"
-      >
-        <div
-          class="mm-box mm-box--padding-4 mm-box--display-flex mm-box--align-items-flex-start"
-        >
-          <div
-            class="mm-box mm-box--margin-top-2 mm-box--display-flex"
-          >
-            <div
-              class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
-            >
-              <div
-                class="flex [&>div]:!rounded-none"
-              />
-            </div>
-            <div
-              class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network confirm_header__avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-goerli mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
-            >
-              <img
-                alt="Goerli logo"
-                class="mm-avatar-network__network-image"
-              />
-            </div>
-          </div>
-          <div
-            class="mm-box mm-box--margin-top-0 mm-box--margin-inline-start-4"
-          >
-            <p
-              class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-default"
-              data-testid="header-account-name"
-            />
-            <p
-              class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative"
-              data-testid="header-network-display-name"
-            >
-              Goerli
-            </p>
-          </div>
-        </div>
-        <div
-          class="mm-box mm-box--padding-4 mm-box--display-flex mm-box--align-items-flex-end"
-        >
-          <div
-            class="mm-box mm-box--display-flex mm-box--gap-4 mm-box--justify-content-flex-end"
-            style="align-self: flex-end;"
-          >
-            <div>
-              <div
-                aria-describedby="tippy-tooltip-19"
-                class=""
-                data-original-title="Account details"
-                data-tooltipped=""
-                style="display: inline;"
-                tabindex="0"
-              >
-                <button
-                  aria-label="Account details"
-                  class="mm-box mm-button-icon mm-button-icon--size-md mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
-                  data-testid="header-info__account-details-button"
-                >
-                  <span
-                    class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
-                    style="mask-image: url('./images/icons/info.svg');"
-                  />
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div
         class="mm-box mm-box--width-full mm-box--height-full mm-box--background-color-background-default"
         style="min-height: 0; overflow: hidden; position: relative;"
       >
@@ -349,6 +312,16 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitB
           class="mm-box mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full"
           style="overflow: auto;"
         >
+          <h2
+            class="mm-box mm-text mm-text--heading-lg mm-text--text-align-center mm-box--padding-top-4 mm-box--padding-bottom-2 mm-box--color-text-default"
+          >
+            Spending cap request
+          </h2>
+          <p
+            class="mm-box mm-text mm-text--body-md mm-text--text-align-center mm-box--padding-bottom-4 mm-box--color-text-alternative"
+          >
+            This site wants permission to spend your tokens.
+          </p>
           <div
             class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
             data-testid="confirmation__simulation_section"
@@ -358,10 +331,12 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitB
               style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
             >
               <div
-                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+                style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
               >
                 <div
                   class="mm-box mm-box--display-flex mm-box--align-items-center"
+                  style="flex-shrink: 0;"
                 >
                   <p
                     class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -370,7 +345,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitB
                   </p>
                   <div>
                     <div
-                      aria-describedby="tippy-tooltip-20"
+                      aria-describedby="tippy-tooltip-16"
                       class=""
                       data-original-title="Estimated changes are what might happen if you go through with this transaction. This is just a prediction, not a guarantee."
                       data-tooltipped=""
@@ -401,10 +376,12 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitB
               style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
             >
               <div
-                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+                style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
               >
                 <div
                   class="mm-box mm-box--display-flex mm-box--align-items-center"
+                  style="flex-shrink: 0;"
                 >
                   <p
                     class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -434,7 +411,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitB
                           style="min-width: 0;"
                         >
                           <div
-                            aria-describedby="tippy-tooltip-21"
+                            aria-describedby="tippy-tooltip-17"
                             class=""
                             data-original-title="1,461,501,637,330,902,918,203,684,832,716,283,019,655,932,542,975"
                             data-tooltipped=""
@@ -487,7 +464,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitB
                           style="min-width: 0;"
                         >
                           <div
-                            aria-describedby="tippy-tooltip-22"
+                            aria-describedby="tippy-tooltip-18"
                             class=""
                             data-original-title="2,461,501,637,330,902,918,203,684,832,716,283,019,655,932,542,975"
                             data-tooltipped=""
@@ -539,10 +516,12 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitB
               style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
             >
               <div
-                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+                style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
               >
                 <div
                   class="mm-box mm-box--display-flex mm-box--align-items-center"
+                  style="flex-shrink: 0;"
                 >
                   <p
                     class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -585,10 +564,51 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitB
               style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
             >
               <div
-                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+                style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
               >
                 <div
                   class="mm-box mm-box--display-flex mm-box--align-items-center"
+                  style="flex-shrink: 0;"
+                >
+                  <p
+                    class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                  >
+                    Network
+                  </p>
+                </div>
+              </div>
+              <div
+                class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+              >
+                <div
+                  class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
+                  style="border-width: 0px;"
+                >
+                  <img
+                    alt="Goerli logo"
+                    class="mm-avatar-network__network-image"
+                  />
+                </div>
+                <p
+                  class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+                  data-testid="confirmation__details-network-name"
+                >
+                  Goerli
+                </p>
+              </div>
+            </div>
+            <div
+              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+              style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
+            >
+              <div
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+                style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
+              >
+                <div
+                  class="mm-box mm-box--display-flex mm-box--align-items-center"
+                  style="flex-shrink: 0;"
                 >
                   <p
                     class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -597,7 +617,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitB
                   </p>
                   <div>
                     <div
-                      aria-describedby="tippy-tooltip-23"
+                      aria-describedby="tippy-tooltip-19"
                       class=""
                       data-original-title="This is the site asking for your signature."
                       data-tooltipped=""
@@ -627,10 +647,12 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitB
               style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
             >
               <div
-                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+                style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
               >
                 <div
                   class="mm-box mm-box--display-flex mm-box--align-items-center"
+                  style="flex-shrink: 0;"
                 >
                   <p
                     class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -639,7 +661,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitB
                   </p>
                   <div>
                     <div
-                      aria-describedby="tippy-tooltip-24"
+                      aria-describedby="tippy-tooltip-20"
                       class=""
                       data-original-title="This is the contract you're interacting with. Protect yourself from scammers by verifying the details."
                       data-tooltipped=""
@@ -707,10 +729,12 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitB
                 />
               </button>
               <div
-                class="mm-box mm-box--padding-right-12 mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
+                class="mm-box mm-box--padding-right-12 mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+                style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
               >
                 <div
                   class="mm-box mm-box--display-flex mm-box--align-items-center"
+                  style="flex-shrink: 0;"
                 >
                   <p
                     class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -758,78 +782,6 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitS
       class="mm-box multichain-page__inner-container confirm_wrapper mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full mm-box--background-color-background-default"
     >
       <div
-        class="mm-box confirm_header__wrapper mm-box--display-flex mm-box--justify-content-space-between mm-box--align-items-center"
-        data-testid="confirm-header"
-      >
-        <div
-          class="mm-box mm-box--padding-4 mm-box--display-flex mm-box--align-items-flex-start"
-        >
-          <div
-            class="mm-box mm-box--margin-top-2 mm-box--display-flex"
-          >
-            <div
-              class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
-            >
-              <div
-                class="flex [&>div]:!rounded-none"
-              />
-            </div>
-            <div
-              class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network confirm_header__avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-goerli mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
-            >
-              <img
-                alt="Goerli logo"
-                class="mm-avatar-network__network-image"
-              />
-            </div>
-          </div>
-          <div
-            class="mm-box mm-box--margin-top-0 mm-box--margin-inline-start-4"
-          >
-            <p
-              class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-default"
-              data-testid="header-account-name"
-            />
-            <p
-              class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative"
-              data-testid="header-network-display-name"
-            >
-              Goerli
-            </p>
-          </div>
-        </div>
-        <div
-          class="mm-box mm-box--padding-4 mm-box--display-flex mm-box--align-items-flex-end"
-        >
-          <div
-            class="mm-box mm-box--display-flex mm-box--gap-4 mm-box--justify-content-flex-end"
-            style="align-self: flex-end;"
-          >
-            <div>
-              <div
-                aria-describedby="tippy-tooltip-14"
-                class=""
-                data-original-title="Account details"
-                data-tooltipped=""
-                style="display: inline;"
-                tabindex="0"
-              >
-                <button
-                  aria-label="Account details"
-                  class="mm-box mm-button-icon mm-button-icon--size-md mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
-                  data-testid="header-info__account-details-button"
-                >
-                  <span
-                    class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
-                    style="mask-image: url('./images/icons/info.svg');"
-                  />
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div
         class="mm-box mm-box--width-full mm-box--height-full mm-box--background-color-background-default"
         style="min-height: 0; overflow: hidden; position: relative;"
       >
@@ -837,6 +789,16 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitS
           class="mm-box mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full"
           style="overflow: auto;"
         >
+          <h2
+            class="mm-box mm-text mm-text--heading-lg mm-text--text-align-center mm-box--padding-top-4 mm-box--padding-bottom-2 mm-box--color-text-default"
+          >
+            Spending cap request
+          </h2>
+          <p
+            class="mm-box mm-text mm-text--body-md mm-text--text-align-center mm-box--padding-bottom-4 mm-box--color-text-alternative"
+          >
+            This site wants permission to spend your tokens.
+          </p>
           <div
             class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
             data-testid="confirmation__simulation_section"
@@ -846,10 +808,12 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitS
               style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
             >
               <div
-                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+                style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
               >
                 <div
                   class="mm-box mm-box--display-flex mm-box--align-items-center"
+                  style="flex-shrink: 0;"
                 >
                   <p
                     class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -858,7 +822,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitS
                   </p>
                   <div>
                     <div
-                      aria-describedby="tippy-tooltip-15"
+                      aria-describedby="tippy-tooltip-12"
                       class=""
                       data-original-title="Estimated changes are what might happen if you go through with this transaction. This is just a prediction, not a guarantee."
                       data-tooltipped=""
@@ -889,10 +853,12 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitS
               style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
             >
               <div
-                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+                style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
               >
                 <div
                   class="mm-box mm-box--display-flex mm-box--align-items-center"
+                  style="flex-shrink: 0;"
                 >
                   <p
                     class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -922,7 +888,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitS
                           style="min-width: 0;"
                         >
                           <div
-                            aria-describedby="tippy-tooltip-16"
+                            aria-describedby="tippy-tooltip-13"
                             class=""
                             data-original-title="1,461,501,637,330,902,918,203,684,832,716,283,019,655,932,542,975"
                             data-tooltipped=""
@@ -974,10 +940,12 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitS
               style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
             >
               <div
-                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+                style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
               >
                 <div
                   class="mm-box mm-box--display-flex mm-box--align-items-center"
+                  style="flex-shrink: 0;"
                 >
                   <p
                     class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -1020,10 +988,51 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitS
               style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
             >
               <div
-                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+                style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
               >
                 <div
                   class="mm-box mm-box--display-flex mm-box--align-items-center"
+                  style="flex-shrink: 0;"
+                >
+                  <p
+                    class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                  >
+                    Network
+                  </p>
+                </div>
+              </div>
+              <div
+                class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+              >
+                <div
+                  class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
+                  style="border-width: 0px;"
+                >
+                  <img
+                    alt="Goerli logo"
+                    class="mm-avatar-network__network-image"
+                  />
+                </div>
+                <p
+                  class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+                  data-testid="confirmation__details-network-name"
+                >
+                  Goerli
+                </p>
+              </div>
+            </div>
+            <div
+              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+              style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
+            >
+              <div
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+                style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
+              >
+                <div
+                  class="mm-box mm-box--display-flex mm-box--align-items-center"
+                  style="flex-shrink: 0;"
                 >
                   <p
                     class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -1032,7 +1041,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitS
                   </p>
                   <div>
                     <div
-                      aria-describedby="tippy-tooltip-17"
+                      aria-describedby="tippy-tooltip-14"
                       class=""
                       data-original-title="This is the site asking for your signature."
                       data-tooltipped=""
@@ -1062,10 +1071,12 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitS
               style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
             >
               <div
-                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+                style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
               >
                 <div
                   class="mm-box mm-box--display-flex mm-box--align-items-center"
+                  style="flex-shrink: 0;"
                 >
                   <p
                     class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -1074,7 +1085,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitS
                   </p>
                   <div>
                     <div
-                      aria-describedby="tippy-tooltip-18"
+                      aria-describedby="tippy-tooltip-15"
                       class=""
                       data-original-title="This is the contract you're interacting with. Protect yourself from scammers by verifying the details."
                       data-tooltipped=""
@@ -1142,10 +1153,12 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitS
                 />
               </button>
               <div
-                class="mm-box mm-box--padding-right-12 mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
+                class="mm-box mm-box--padding-right-12 mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+                style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
               >
                 <div
                   class="mm-box mm-box--display-flex mm-box--align-items-center"
+                  style="flex-shrink: 0;"
                 >
                   <p
                     class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -1245,11 +1258,6 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
                 </div>
               </div>
             </div>
-            <div
-              class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network confirm_header__avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-goerli mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
-            >
-              G
-            </div>
           </div>
           <div
             class="mm-box mm-box--margin-top-0 mm-box--margin-inline-start-4"
@@ -1258,13 +1266,13 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
               class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-default"
               data-testid="header-account-name"
             >
-              Test Account
+              Account 1
             </p>
             <p
               class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative"
               data-testid="header-network-display-name"
             >
-              Goerli
+              Wallet 1
             </p>
           </div>
         </div>
@@ -1277,7 +1285,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
           >
             <div>
               <div
-                aria-describedby="tippy-tooltip-11"
+                aria-describedby="tippy-tooltip-9"
                 class=""
                 data-original-title="Account details"
                 data-tooltipped=""
@@ -1326,10 +1334,48 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
               style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
             >
               <div
-                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+                style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
               >
                 <div
                   class="mm-box mm-box--display-flex mm-box--align-items-center"
+                  style="flex-shrink: 0;"
+                >
+                  <p
+                    class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                  >
+                    Network
+                  </p>
+                </div>
+              </div>
+              <div
+                class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+              >
+                <div
+                  class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
+                  style="border-width: 0px;"
+                >
+                  G
+                </div>
+                <p
+                  class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+                  data-testid="confirmation__details-network-name"
+                >
+                  Goerli
+                </p>
+              </div>
+            </div>
+            <div
+              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+              style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
+            >
+              <div
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+                style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
+              >
+                <div
+                  class="mm-box mm-box--display-flex mm-box--align-items-center"
+                  style="flex-shrink: 0;"
                 >
                   <p
                     class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -1338,7 +1384,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
                   </p>
                   <div>
                     <div
-                      aria-describedby="tippy-tooltip-12"
+                      aria-describedby="tippy-tooltip-10"
                       class=""
                       data-original-title="This is the site asking for your signature."
                       data-tooltipped=""
@@ -1368,10 +1414,12 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
               style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
             >
               <div
-                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+                style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
               >
                 <div
                   class="mm-box mm-box--display-flex mm-box--align-items-center"
+                  style="flex-shrink: 0;"
                 >
                   <p
                     class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -1380,7 +1428,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
                   </p>
                   <div>
                     <div
-                      aria-describedby="tippy-tooltip-13"
+                      aria-describedby="tippy-tooltip-11"
                       class=""
                       data-original-title="This is the contract you're interacting with. Protect yourself from scammers by verifying the details."
                       data-tooltipped=""
@@ -1437,10 +1485,12 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
                 />
               </button>
               <div
-                class="mm-box mm-box--padding-right-6 mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
+                class="mm-box mm-box--padding-right-6 mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+                style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
               >
                 <div
                   class="mm-box mm-box--display-flex mm-box--align-items-center"
+                  style="flex-shrink: 0;"
                 >
                   <p
                     class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -1457,10 +1507,12 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
                   style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-left: 0px; padding-right: 0px;"
                 >
                   <div
-                    class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
+                    class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+                    style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
                   >
                     <div
                       class="mm-box mm-box--display-flex mm-box--align-items-center"
+                      style="flex-shrink: 0;"
                     >
                       <p
                         class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -1493,10 +1545,12 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
                       style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                     >
                       <div
-                        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
+                        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+                        style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
                       >
                         <div
                           class="mm-box mm-box--display-flex mm-box--align-items-center"
+                          style="flex-shrink: 0;"
                         >
                           <p
                             class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -1522,10 +1576,12 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
                       style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                     >
                       <div
-                        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
+                        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+                        style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
                       >
                         <div
                           class="mm-box mm-box--display-flex mm-box--align-items-center"
+                          style="flex-shrink: 0;"
                         >
                           <p
                             class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -1543,10 +1599,12 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
                           style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                         >
                           <div
-                            class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
+                            class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+                            style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
                           >
                             <div
                               class="mm-box mm-box--display-flex mm-box--align-items-center"
+                              style="flex-shrink: 0;"
                             >
                               <p
                                 class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -1572,10 +1630,12 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
                           style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                         >
                           <div
-                            class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
+                            class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+                            style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
                           >
                             <div
                               class="mm-box mm-box--display-flex mm-box--align-items-center"
+                              style="flex-shrink: 0;"
                             >
                               <p
                                 class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -1593,10 +1653,12 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
                               style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                             >
                               <div
-                                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
+                                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+                                style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
                               >
                                 <div
                                   class="mm-box mm-box--display-flex mm-box--align-items-center"
+                                  style="flex-shrink: 0;"
                                 >
                                   <p
                                     class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -1633,10 +1695,12 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
                               style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                             >
                               <div
-                                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
+                                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+                                style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
                               >
                                 <div
                                   class="mm-box mm-box--display-flex mm-box--align-items-center"
+                                  style="flex-shrink: 0;"
                                 >
                                   <p
                                     class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -1673,10 +1737,12 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
                               style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                             >
                               <div
-                                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
+                                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+                                style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
                               >
                                 <div
                                   class="mm-box mm-box--display-flex mm-box--align-items-center"
+                                  style="flex-shrink: 0;"
                                 >
                                   <p
                                     class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -1717,10 +1783,12 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
                       style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                     >
                       <div
-                        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
+                        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+                        style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
                       >
                         <div
                           class="mm-box mm-box--display-flex mm-box--align-items-center"
+                          style="flex-shrink: 0;"
                         >
                           <p
                             class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -1738,10 +1806,12 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
                           style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                         >
                           <div
-                            class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
+                            class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+                            style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
                           >
                             <div
                               class="mm-box mm-box--display-flex mm-box--align-items-center"
+                              style="flex-shrink: 0;"
                             >
                               <p
                                 class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -1759,10 +1829,12 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
                               style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                             >
                               <div
-                                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
+                                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+                                style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
                               >
                                 <div
                                   class="mm-box mm-box--display-flex mm-box--align-items-center"
+                                  style="flex-shrink: 0;"
                                 >
                                   <p
                                     class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -1788,10 +1860,12 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
                               style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                             >
                               <div
-                                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
+                                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+                                style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
                               >
                                 <div
                                   class="mm-box mm-box--display-flex mm-box--align-items-center"
+                                  style="flex-shrink: 0;"
                                 >
                                   <p
                                     class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -1809,10 +1883,12 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
                                   style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                                 >
                                   <div
-                                    class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
+                                    class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+                                    style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
                                   >
                                     <div
                                       class="mm-box mm-box--display-flex mm-box--align-items-center"
+                                      style="flex-shrink: 0;"
                                     >
                                       <p
                                         class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -1849,10 +1925,12 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
                                   style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                                 >
                                   <div
-                                    class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
+                                    class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+                                    style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
                                   >
                                     <div
                                       class="mm-box mm-box--display-flex mm-box--align-items-center"
+                                      style="flex-shrink: 0;"
                                     >
                                       <p
                                         class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -1889,10 +1967,12 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
                                   style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                                 >
                                   <div
-                                    class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
+                                    class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+                                    style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
                                   >
                                     <div
                                       class="mm-box mm-box--display-flex mm-box--align-items-center"
+                                      style="flex-shrink: 0;"
                                     >
                                       <p
                                         class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -1971,111 +2051,6 @@ exports[`Confirm should match snapshot for signature - typed sign - permit 1`] =
       class="mm-box multichain-page__inner-container confirm_wrapper mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full mm-box--background-color-background-default"
     >
       <div
-        class="mm-box confirm_header__wrapper mm-box--display-flex mm-box--justify-content-space-between mm-box--align-items-center"
-        data-testid="confirm-header"
-      >
-        <div
-          class="mm-box mm-box--padding-4 mm-box--display-flex mm-box--align-items-flex-start"
-        >
-          <div
-            class="mm-box mm-box--margin-top-2 mm-box--display-flex"
-          >
-            <div
-              class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
-            >
-              <div
-                class="flex [&>div]:!rounded-none"
-              >
-                <div
-                  style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(200, 20, 59);"
-                >
-                  <svg
-                    height="32"
-                    width="32"
-                    x="0"
-                    y="0"
-                  >
-                    <rect
-                      fill="#017B8E"
-                      height="32"
-                      transform="translate(0.79944606935671 -0.82160111569698) rotate(317.9 16.00000000000000 16.00000000000000)"
-                      width="32"
-                      x="0"
-                      y="0"
-                    />
-                    <rect
-                      fill="#F2B602"
-                      height="32"
-                      transform="translate(-7.49339603691225 11.40993542828480) rotate(134.1 16.00000000000000 16.00000000000000)"
-                      width="32"
-                      x="0"
-                      y="0"
-                    />
-                    <rect
-                      fill="#FA8E00"
-                      height="32"
-                      transform="translate(-25.71227269075480 -11.55888104326888) rotate(364.0 16.00000000000000 16.00000000000000)"
-                      width="32"
-                      x="0"
-                      y="0"
-                    />
-                  </svg>
-                </div>
-              </div>
-            </div>
-            <div
-              class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network confirm_header__avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-goerli mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
-            >
-              G
-            </div>
-          </div>
-          <div
-            class="mm-box mm-box--margin-top-0 mm-box--margin-inline-start-4"
-          >
-            <p
-              class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-default"
-              data-testid="header-account-name"
-            />
-            <p
-              class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative"
-              data-testid="header-network-display-name"
-            >
-              Goerli
-            </p>
-          </div>
-        </div>
-        <div
-          class="mm-box mm-box--padding-4 mm-box--display-flex mm-box--align-items-flex-end"
-        >
-          <div
-            class="mm-box mm-box--display-flex mm-box--gap-4 mm-box--justify-content-flex-end"
-            style="align-self: flex-end;"
-          >
-            <div>
-              <div
-                aria-describedby="tippy-tooltip-1"
-                class=""
-                data-original-title="Account details"
-                data-tooltipped=""
-                style="display: inline;"
-                tabindex="0"
-              >
-                <button
-                  aria-label="Account details"
-                  class="mm-box mm-button-icon mm-button-icon--size-md mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
-                  data-testid="header-info__account-details-button"
-                >
-                  <span
-                    class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
-                    style="mask-image: url('./images/icons/info.svg');"
-                  />
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div
         class="mm-box mm-box--width-full mm-box--height-full mm-box--background-color-background-default"
         style="min-height: 0; overflow: hidden; position: relative;"
       >
@@ -2102,10 +2077,12 @@ exports[`Confirm should match snapshot for signature - typed sign - permit 1`] =
               style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
             >
               <div
-                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+                style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
               >
                 <div
                   class="mm-box mm-box--display-flex mm-box--align-items-center"
+                  style="flex-shrink: 0;"
                 >
                   <p
                     class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -2114,7 +2091,7 @@ exports[`Confirm should match snapshot for signature - typed sign - permit 1`] =
                   </p>
                   <div>
                     <div
-                      aria-describedby="tippy-tooltip-2"
+                      aria-describedby="tippy-tooltip-1"
                       class=""
                       data-original-title="Estimated changes are what might happen if you go through with this transaction. This is just a prediction, not a guarantee."
                       data-tooltipped=""
@@ -2145,10 +2122,12 @@ exports[`Confirm should match snapshot for signature - typed sign - permit 1`] =
               style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
             >
               <div
-                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+                style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
               >
                 <div
                   class="mm-box mm-box--display-flex mm-box--align-items-center"
+                  style="flex-shrink: 0;"
                 >
                   <p
                     class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -2175,9 +2154,9 @@ exports[`Confirm should match snapshot for signature - typed sign - permit 1`] =
                         style="min-width: 0;"
                       >
                         <div
-                          aria-describedby="tippy-tooltip-3"
+                          aria-describedby="tippy-tooltip-2"
                           class=""
-                          data-original-title="30"
+                          data-original-title="3,000"
                           data-tooltipped=""
                           style="display: inline;"
                           tabindex="0"
@@ -2187,7 +2166,7 @@ exports[`Confirm should match snapshot for signature - typed sign - permit 1`] =
                             data-testid="simulation-token-value"
                             style="padding-top: 1px; padding-bottom: 1px;"
                           >
-                            30
+                            3,000
                           </p>
                         </div>
                       </div>
@@ -2226,10 +2205,12 @@ exports[`Confirm should match snapshot for signature - typed sign - permit 1`] =
               style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
             >
               <div
-                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+                style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
               >
                 <div
                   class="mm-box mm-box--display-flex mm-box--align-items-center"
+                  style="flex-shrink: 0;"
                 >
                   <p
                     class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -2272,10 +2253,48 @@ exports[`Confirm should match snapshot for signature - typed sign - permit 1`] =
               style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
             >
               <div
-                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+                style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
               >
                 <div
                   class="mm-box mm-box--display-flex mm-box--align-items-center"
+                  style="flex-shrink: 0;"
+                >
+                  <p
+                    class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                  >
+                    Network
+                  </p>
+                </div>
+              </div>
+              <div
+                class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+              >
+                <div
+                  class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
+                  style="border-width: 0px;"
+                >
+                  G
+                </div>
+                <p
+                  class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+                  data-testid="confirmation__details-network-name"
+                >
+                  Goerli
+                </p>
+              </div>
+            </div>
+            <div
+              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+              style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
+            >
+              <div
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+                style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
+              >
+                <div
+                  class="mm-box mm-box--display-flex mm-box--align-items-center"
+                  style="flex-shrink: 0;"
                 >
                   <p
                     class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -2284,7 +2303,7 @@ exports[`Confirm should match snapshot for signature - typed sign - permit 1`] =
                   </p>
                   <div>
                     <div
-                      aria-describedby="tippy-tooltip-4"
+                      aria-describedby="tippy-tooltip-3"
                       class=""
                       data-original-title="This is the site asking for your signature."
                       data-tooltipped=""
@@ -2314,10 +2333,12 @@ exports[`Confirm should match snapshot for signature - typed sign - permit 1`] =
               style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
             >
               <div
-                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+                style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
               >
                 <div
                   class="mm-box mm-box--display-flex mm-box--align-items-center"
+                  style="flex-shrink: 0;"
                 >
                   <p
                     class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -2326,7 +2347,7 @@ exports[`Confirm should match snapshot for signature - typed sign - permit 1`] =
                   </p>
                   <div>
                     <div
-                      aria-describedby="tippy-tooltip-5"
+                      aria-describedby="tippy-tooltip-4"
                       class=""
                       data-original-title="This is the contract you're interacting with. Protect yourself from scammers by verifying the details."
                       data-tooltipped=""
@@ -2394,10 +2415,12 @@ exports[`Confirm should match snapshot for signature - typed sign - permit 1`] =
                 />
               </button>
               <div
-                class="mm-box mm-box--padding-right-12 mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
+                class="mm-box mm-box--padding-right-12 mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+                style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
               >
                 <div
                   class="mm-box mm-box--display-flex mm-box--align-items-center"
+                  style="flex-shrink: 0;"
                 >
                   <p
                     class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -2445,111 +2468,6 @@ exports[`Confirm should match snapshot signature - typed sign - order 1`] = `
       class="mm-box multichain-page__inner-container confirm_wrapper mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full mm-box--background-color-background-default"
     >
       <div
-        class="mm-box confirm_header__wrapper mm-box--display-flex mm-box--justify-content-space-between mm-box--align-items-center"
-        data-testid="confirm-header"
-      >
-        <div
-          class="mm-box mm-box--padding-4 mm-box--display-flex mm-box--align-items-flex-start"
-        >
-          <div
-            class="mm-box mm-box--margin-top-2 mm-box--display-flex"
-          >
-            <div
-              class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
-            >
-              <div
-                class="flex [&>div]:!rounded-none"
-              >
-                <div
-                  style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(200, 20, 59);"
-                >
-                  <svg
-                    height="32"
-                    width="32"
-                    x="0"
-                    y="0"
-                  >
-                    <rect
-                      fill="#017B8E"
-                      height="32"
-                      transform="translate(0.79944606935671 -0.82160111569698) rotate(317.9 16.00000000000000 16.00000000000000)"
-                      width="32"
-                      x="0"
-                      y="0"
-                    />
-                    <rect
-                      fill="#F2B602"
-                      height="32"
-                      transform="translate(-7.49339603691225 11.40993542828480) rotate(134.1 16.00000000000000 16.00000000000000)"
-                      width="32"
-                      x="0"
-                      y="0"
-                    />
-                    <rect
-                      fill="#FA8E00"
-                      height="32"
-                      transform="translate(-25.71227269075480 -11.55888104326888) rotate(364.0 16.00000000000000 16.00000000000000)"
-                      width="32"
-                      x="0"
-                      y="0"
-                    />
-                  </svg>
-                </div>
-              </div>
-            </div>
-            <div
-              class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network confirm_header__avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-goerli mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
-            >
-              G
-            </div>
-          </div>
-          <div
-            class="mm-box mm-box--margin-top-0 mm-box--margin-inline-start-4"
-          >
-            <p
-              class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-default"
-              data-testid="header-account-name"
-            />
-            <p
-              class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative"
-              data-testid="header-network-display-name"
-            >
-              Goerli
-            </p>
-          </div>
-        </div>
-        <div
-          class="mm-box mm-box--padding-4 mm-box--display-flex mm-box--align-items-flex-end"
-        >
-          <div
-            class="mm-box mm-box--display-flex mm-box--gap-4 mm-box--justify-content-flex-end"
-            style="align-self: flex-end;"
-          >
-            <div>
-              <div
-                aria-describedby="tippy-tooltip-8"
-                class=""
-                data-original-title="Account details"
-                data-tooltipped=""
-                style="display: inline;"
-                tabindex="0"
-              >
-                <button
-                  aria-label="Account details"
-                  class="mm-box mm-button-icon mm-button-icon--size-md mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
-                  data-testid="header-info__account-details-button"
-                >
-                  <span
-                    class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
-                    style="mask-image: url('./images/icons/info.svg');"
-                  />
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div
         class="mm-box mm-box--width-full mm-box--height-full mm-box--background-color-background-default"
         style="min-height: 0; overflow: hidden; position: relative;"
       >
@@ -2576,10 +2494,48 @@ exports[`Confirm should match snapshot signature - typed sign - order 1`] = `
               style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
             >
               <div
-                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+                style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
               >
                 <div
                   class="mm-box mm-box--display-flex mm-box--align-items-center"
+                  style="flex-shrink: 0;"
+                >
+                  <p
+                    class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                  >
+                    Network
+                  </p>
+                </div>
+              </div>
+              <div
+                class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+              >
+                <div
+                  class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
+                  style="border-width: 0px;"
+                >
+                  G
+                </div>
+                <p
+                  class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+                  data-testid="confirmation__details-network-name"
+                >
+                  Goerli
+                </p>
+              </div>
+            </div>
+            <div
+              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+              style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
+            >
+              <div
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+                style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
+              >
+                <div
+                  class="mm-box mm-box--display-flex mm-box--align-items-center"
+                  style="flex-shrink: 0;"
                 >
                   <p
                     class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -2588,7 +2544,7 @@ exports[`Confirm should match snapshot signature - typed sign - order 1`] = `
                   </p>
                   <div>
                     <div
-                      aria-describedby="tippy-tooltip-9"
+                      aria-describedby="tippy-tooltip-7"
                       class=""
                       data-original-title="This is the site asking for your signature."
                       data-tooltipped=""
@@ -2618,10 +2574,12 @@ exports[`Confirm should match snapshot signature - typed sign - order 1`] = `
               style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
             >
               <div
-                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+                style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
               >
                 <div
                   class="mm-box mm-box--display-flex mm-box--align-items-center"
+                  style="flex-shrink: 0;"
                 >
                   <p
                     class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -2630,7 +2588,7 @@ exports[`Confirm should match snapshot signature - typed sign - order 1`] = `
                   </p>
                   <div>
                     <div
-                      aria-describedby="tippy-tooltip-10"
+                      aria-describedby="tippy-tooltip-8"
                       class=""
                       data-original-title="This is the contract you're interacting with. Protect yourself from scammers by verifying the details."
                       data-tooltipped=""
@@ -2698,10 +2656,12 @@ exports[`Confirm should match snapshot signature - typed sign - order 1`] = `
                 />
               </button>
               <div
-                class="mm-box mm-box--padding-right-12 mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
+                class="mm-box mm-box--padding-right-12 mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+                style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
               >
                 <div
                   class="mm-box mm-box--display-flex mm-box--align-items-center"
+                  style="flex-shrink: 0;"
                 >
                   <p
                     class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -2718,10 +2678,12 @@ exports[`Confirm should match snapshot signature - typed sign - order 1`] = `
                   style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-left: 0px; padding-right: 0px;"
                 >
                   <div
-                    class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
+                    class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+                    style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
                   >
                     <div
                       class="mm-box mm-box--display-flex mm-box--align-items-center"
+                      style="flex-shrink: 0;"
                     >
                       <p
                         class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -2754,10 +2716,12 @@ exports[`Confirm should match snapshot signature - typed sign - order 1`] = `
                       style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                     >
                       <div
-                        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
+                        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+                        style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
                       >
                         <div
                           class="mm-box mm-box--display-flex mm-box--align-items-center"
+                          style="flex-shrink: 0;"
                         >
                           <p
                             class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -2783,10 +2747,12 @@ exports[`Confirm should match snapshot signature - typed sign - order 1`] = `
                       style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                     >
                       <div
-                        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
+                        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+                        style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
                       >
                         <div
                           class="mm-box mm-box--display-flex mm-box--align-items-center"
+                          style="flex-shrink: 0;"
                         >
                           <p
                             class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -2802,18 +2768,63 @@ exports[`Confirm should match snapshot signature - typed sign - order 1`] = `
                           class="mm-box overflow-hidden mm-box--display-flex mm-box--flex-direction-column"
                         >
                           <div
-                            class="name name__clickable name__missing"
+                            class="name name__recognized_unsaved"
                           >
-                            <span
-                              class="mm-box name__icon mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
-                              style="mask-image: url('./images/icons/question.svg');"
-                            />
-                            <p
-                              class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
+                            <div
+                              class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section h-4 w-4 rounded-md"
                             >
-                              0x0DCD5...3E7bc
+                              <div
+                                class="flex [&>div]:!rounded-none"
+                              >
+                                <div
+                                  style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 16px; height: 16px; display: inline-block; background: rgb(250, 58, 0);"
+                                >
+                                  <svg
+                                    height="16"
+                                    width="16"
+                                    x="0"
+                                    y="0"
+                                  >
+                                    <rect
+                                      fill="#18CDF2"
+                                      height="16"
+                                      transform="translate(-0.52419675189697 -1.65214203473025) rotate(328.9 8.00000000000000 8.00000000000000)"
+                                      width="16"
+                                      x="0"
+                                      y="0"
+                                    />
+                                    <rect
+                                      fill="#035E56"
+                                      height="16"
+                                      transform="translate(-9.14923085441602 5.29623093587430) rotate(176.2 8.00000000000000 8.00000000000000)"
+                                      width="16"
+                                      x="0"
+                                      y="0"
+                                    />
+                                    <rect
+                                      fill="#F26602"
+                                      height="16"
+                                      transform="translate(8.33392100911196 -7.10256986149854) rotate(468.9 8.00000000000000 8.00000000000000)"
+                                      width="16"
+                                      x="0"
+                                      y="0"
+                                    />
+                                  </svg>
+                                </div>
+                              </div>
+                            </div>
+                            <p
+                              class="mm-box mm-text name__name mm-text--body-md mm-box--color-text-default"
+                            >
+                              Account 1
                             </p>
                           </div>
+                          <p
+                            class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
+                            style="text-align: right;"
+                          >
+                            Wallet 1
+                          </p>
                         </div>
                       </div>
                     </div>
@@ -2823,10 +2834,12 @@ exports[`Confirm should match snapshot signature - typed sign - order 1`] = `
                       style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                     >
                       <div
-                        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
+                        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+                        style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
                       >
                         <div
                           class="mm-box mm-box--display-flex mm-box--align-items-center"
+                          style="flex-shrink: 0;"
                         >
                           <p
                             class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -2863,10 +2876,12 @@ exports[`Confirm should match snapshot signature - typed sign - order 1`] = `
                       style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                     >
                       <div
-                        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
+                        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+                        style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
                       >
                         <div
                           class="mm-box mm-box--display-flex mm-box--align-items-center"
+                          style="flex-shrink: 0;"
                         >
                           <p
                             class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -2892,10 +2907,12 @@ exports[`Confirm should match snapshot signature - typed sign - order 1`] = `
                       style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                     >
                       <div
-                        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
+                        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+                        style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
                       >
                         <div
                           class="mm-box mm-box--display-flex mm-box--align-items-center"
+                          style="flex-shrink: 0;"
                         >
                           <p
                             class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -2921,10 +2938,12 @@ exports[`Confirm should match snapshot signature - typed sign - order 1`] = `
                       style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                     >
                       <div
-                        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
+                        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+                        style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
                       >
                         <div
                           class="mm-box mm-box--display-flex mm-box--align-items-center"
+                          style="flex-shrink: 0;"
                         >
                           <p
                             class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -2961,10 +2980,12 @@ exports[`Confirm should match snapshot signature - typed sign - order 1`] = `
                       style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                     >
                       <div
-                        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
+                        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+                        style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
                       >
                         <div
                           class="mm-box mm-box--display-flex mm-box--align-items-center"
+                          style="flex-shrink: 0;"
                         >
                           <p
                             class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -2990,10 +3011,12 @@ exports[`Confirm should match snapshot signature - typed sign - order 1`] = `
                       style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                     >
                       <div
-                        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
+                        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+                        style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
                       >
                         <div
                           class="mm-box mm-box--display-flex mm-box--align-items-center"
+                          style="flex-shrink: 0;"
                         >
                           <p
                             class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -3012,10 +3035,12 @@ exports[`Confirm should match snapshot signature - typed sign - order 1`] = `
                       style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                     >
                       <div
-                        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
+                        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+                        style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
                       >
                         <div
                           class="mm-box mm-box--display-flex mm-box--align-items-center"
+                          style="flex-shrink: 0;"
                         >
                           <p
                             class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -3052,10 +3077,12 @@ exports[`Confirm should match snapshot signature - typed sign - order 1`] = `
                       style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                     >
                       <div
-                        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
+                        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+                        style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
                       >
                         <div
                           class="mm-box mm-box--display-flex mm-box--align-items-center"
+                          style="flex-shrink: 0;"
                         >
                           <p
                             class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -3081,10 +3108,12 @@ exports[`Confirm should match snapshot signature - typed sign - order 1`] = `
                       style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                     >
                       <div
-                        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
+                        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+                        style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
                       >
                         <div
                           class="mm-box mm-box--display-flex mm-box--align-items-center"
+                          style="flex-shrink: 0;"
                         >
                           <p
                             class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -3145,26 +3174,36 @@ exports[`Confirm should render SmartTransactionsBannerAlert for transaction type
         <div
           class="mm-box mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full"
           style="overflow: auto;"
-        />
-      </div>
-      <div
-        class="mm-box multichain-page-footer confirm-footer_page-footer mm-box--padding-4 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-column mm-box--width-full"
-      >
-        <div
-          class="mm-box mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row"
         >
-          <button
-            class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--block mm-button-secondary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-muted mm-box--rounded-xl"
-            data-testid="confirm-footer-cancel-button"
+          <div
+            class="mm-box mm-box--padding-top-4 mm-box--padding-bottom-4 mm-box--display-flex mm-box--flex-direction-column mm-box--align-items-center"
           >
-            Cancel
-          </button>
-          <button
-            class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--block mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-inverse mm-box--background-color-icon-default mm-box--rounded-xl"
-            data-testid="confirm-footer-button"
-          >
-            Confirm
-          </button>
+            <div
+              class="mm-box mm-skeleton mm-box--background-color-icon-alternative mm-box--rounded-sm"
+              style="height: 24px; width: 200px;"
+            />
+          </div>
+          <div
+            class="mm-box mm-skeleton mm-box--background-color-icon-alternative mm-box--rounded-sm"
+            style="margin-top: 32px; margin-bottom: 10px; border-radius: 50%; justify-self: center; align-self: center; height: 60px; width: 60px;"
+          />
+          <div
+            class="mm-box mm-skeleton mm-box--background-color-icon-alternative mm-box--rounded-sm"
+            style="margin-bottom: 20px; justify-self: center; align-self: center; height: 32px; width: 200px;"
+          />
+          <div
+            class="mm-box mm-skeleton mm-box--background-color-icon-alternative mm-box--rounded-sm"
+            data-testid="confirmation__info_skeleton"
+            style="margin-bottom: 12px; height: 72px; width: 100%;"
+          />
+          <div
+            class="mm-box mm-skeleton mm-box--background-color-icon-alternative mm-box--rounded-sm"
+            style="margin-bottom: 12px; height: 72px; width: 100%;"
+          />
+          <div
+            class="mm-box mm-skeleton mm-box--background-color-icon-alternative mm-box--rounded-sm"
+            style="margin-bottom: 12px; height: 72px; width: 100%;"
+          />
         </div>
       </div>
     </div>
@@ -3198,14 +3237,6 @@ exports[`Confirm should render SmartTransactionsBannerAlert for transaction type
                 class="flex [&>div]:!rounded-none"
               />
             </div>
-            <div
-              class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network confirm_header__avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-goerli mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
-            >
-              <img
-                alt="Goerli logo"
-                class="mm-avatar-network__network-image"
-              />
-            </div>
           </div>
           <div
             class="mm-box mm-box--margin-top-0 mm-box--margin-inline-start-4"
@@ -3214,13 +3245,13 @@ exports[`Confirm should render SmartTransactionsBannerAlert for transaction type
               class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-default"
               data-testid="header-account-name"
             >
-              Test Account
+              Account 1
             </p>
             <p
               class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative"
               data-testid="header-network-display-name"
             >
-              Goerli
+              Wallet 1
             </p>
           </div>
         </div>
@@ -3233,7 +3264,7 @@ exports[`Confirm should render SmartTransactionsBannerAlert for transaction type
           >
             <div>
               <div
-                aria-describedby="tippy-tooltip-25"
+                aria-describedby="tippy-tooltip-21"
                 class=""
                 data-original-title="Account details"
                 data-tooltipped=""
@@ -3263,6 +3294,16 @@ exports[`Confirm should render SmartTransactionsBannerAlert for transaction type
           class="mm-box mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full"
           style="overflow: auto;"
         >
+          <h2
+            class="mm-box mm-text mm-text--heading-lg mm-text--text-align-center mm-box--padding-top-4 mm-box--padding-bottom-2 mm-box--color-text-default"
+          >
+            Signature request
+          </h2>
+          <p
+            class="mm-box mm-text mm-text--body-md mm-text--text-align-center mm-box--padding-bottom-4 mm-box--color-text-alternative"
+          >
+            Review request details before you confirm.
+          </p>
           <div
             class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
             data-testid="confirmation_request-section"
@@ -3272,10 +3313,51 @@ exports[`Confirm should render SmartTransactionsBannerAlert for transaction type
               style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
             >
               <div
-                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+                style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
               >
                 <div
                   class="mm-box mm-box--display-flex mm-box--align-items-center"
+                  style="flex-shrink: 0;"
+                >
+                  <p
+                    class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                  >
+                    Network
+                  </p>
+                </div>
+              </div>
+              <div
+                class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+              >
+                <div
+                  class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
+                  style="border-width: 0px;"
+                >
+                  <img
+                    alt="Goerli logo"
+                    class="mm-avatar-network__network-image"
+                  />
+                </div>
+                <p
+                  class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+                  data-testid="confirmation__details-network-name"
+                >
+                  Goerli
+                </p>
+              </div>
+            </div>
+            <div
+              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+              style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
+            >
+              <div
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+                style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
+              >
+                <div
+                  class="mm-box mm-box--display-flex mm-box--align-items-center"
+                  style="flex-shrink: 0;"
                 >
                   <p
                     class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -3284,7 +3366,7 @@ exports[`Confirm should render SmartTransactionsBannerAlert for transaction type
                   </p>
                   <div>
                     <div
-                      aria-describedby="tippy-tooltip-26"
+                      aria-describedby="tippy-tooltip-22"
                       class=""
                       data-original-title="This is the site asking for your signature."
                       data-tooltipped=""
@@ -3314,10 +3396,12 @@ exports[`Confirm should render SmartTransactionsBannerAlert for transaction type
               style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
             >
               <div
-                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+                style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
               >
                 <div
                   class="mm-box mm-box--display-flex mm-box--align-items-center"
+                  style="flex-shrink: 0;"
                 >
                   <p
                     class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -3326,7 +3410,7 @@ exports[`Confirm should render SmartTransactionsBannerAlert for transaction type
                   </p>
                   <div>
                     <div
-                      aria-describedby="tippy-tooltip-27"
+                      aria-describedby="tippy-tooltip-23"
                       class=""
                       data-original-title="This is the contract you're interacting with. Protect yourself from scammers by verifying the details."
                       data-tooltipped=""
@@ -3383,10 +3467,12 @@ exports[`Confirm should render SmartTransactionsBannerAlert for transaction type
                 />
               </button>
               <div
-                class="mm-box mm-box--padding-right-6 mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
+                class="mm-box mm-box--padding-right-6 mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+                style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
               >
                 <div
                   class="mm-box mm-box--display-flex mm-box--align-items-center"
+                  style="flex-shrink: 0;"
                 >
                   <p
                     class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -3403,10 +3489,12 @@ exports[`Confirm should render SmartTransactionsBannerAlert for transaction type
                   style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-left: 0px; padding-right: 0px;"
                 >
                   <div
-                    class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
+                    class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+                    style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
                   >
                     <div
                       class="mm-box mm-box--display-flex mm-box--align-items-center"
+                      style="flex-shrink: 0;"
                     >
                       <p
                         class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -3439,10 +3527,12 @@ exports[`Confirm should render SmartTransactionsBannerAlert for transaction type
                       style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                     >
                       <div
-                        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
+                        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+                        style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
                       >
                         <div
                           class="mm-box mm-box--display-flex mm-box--align-items-center"
+                          style="flex-shrink: 0;"
                         >
                           <p
                             class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -3468,10 +3558,12 @@ exports[`Confirm should render SmartTransactionsBannerAlert for transaction type
                       style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                     >
                       <div
-                        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
+                        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+                        style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
                       >
                         <div
                           class="mm-box mm-box--display-flex mm-box--align-items-center"
+                          style="flex-shrink: 0;"
                         >
                           <p
                             class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -3489,10 +3581,12 @@ exports[`Confirm should render SmartTransactionsBannerAlert for transaction type
                           style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                         >
                           <div
-                            class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
+                            class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+                            style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
                           >
                             <div
                               class="mm-box mm-box--display-flex mm-box--align-items-center"
+                              style="flex-shrink: 0;"
                             >
                               <p
                                 class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -3518,10 +3612,12 @@ exports[`Confirm should render SmartTransactionsBannerAlert for transaction type
                           style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                         >
                           <div
-                            class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
+                            class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+                            style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
                           >
                             <div
                               class="mm-box mm-box--display-flex mm-box--align-items-center"
+                              style="flex-shrink: 0;"
                             >
                               <p
                                 class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -3539,10 +3635,12 @@ exports[`Confirm should render SmartTransactionsBannerAlert for transaction type
                               style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                             >
                               <div
-                                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
+                                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+                                style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
                               >
                                 <div
                                   class="mm-box mm-box--display-flex mm-box--align-items-center"
+                                  style="flex-shrink: 0;"
                                 >
                                   <p
                                     class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -3579,10 +3677,12 @@ exports[`Confirm should render SmartTransactionsBannerAlert for transaction type
                               style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                             >
                               <div
-                                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
+                                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+                                style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
                               >
                                 <div
                                   class="mm-box mm-box--display-flex mm-box--align-items-center"
+                                  style="flex-shrink: 0;"
                                 >
                                   <p
                                     class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -3619,10 +3719,12 @@ exports[`Confirm should render SmartTransactionsBannerAlert for transaction type
                               style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                             >
                               <div
-                                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
+                                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+                                style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
                               >
                                 <div
                                   class="mm-box mm-box--display-flex mm-box--align-items-center"
+                                  style="flex-shrink: 0;"
                                 >
                                   <p
                                     class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -3663,10 +3765,12 @@ exports[`Confirm should render SmartTransactionsBannerAlert for transaction type
                       style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                     >
                       <div
-                        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
+                        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+                        style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
                       >
                         <div
                           class="mm-box mm-box--display-flex mm-box--align-items-center"
+                          style="flex-shrink: 0;"
                         >
                           <p
                             class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -3684,10 +3788,12 @@ exports[`Confirm should render SmartTransactionsBannerAlert for transaction type
                           style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                         >
                           <div
-                            class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
+                            class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+                            style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
                           >
                             <div
                               class="mm-box mm-box--display-flex mm-box--align-items-center"
+                              style="flex-shrink: 0;"
                             >
                               <p
                                 class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -3705,10 +3811,12 @@ exports[`Confirm should render SmartTransactionsBannerAlert for transaction type
                               style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                             >
                               <div
-                                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
+                                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+                                style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
                               >
                                 <div
                                   class="mm-box mm-box--display-flex mm-box--align-items-center"
+                                  style="flex-shrink: 0;"
                                 >
                                   <p
                                     class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -3734,10 +3842,12 @@ exports[`Confirm should render SmartTransactionsBannerAlert for transaction type
                               style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                             >
                               <div
-                                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
+                                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+                                style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
                               >
                                 <div
                                   class="mm-box mm-box--display-flex mm-box--align-items-center"
+                                  style="flex-shrink: 0;"
                                 >
                                   <p
                                     class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -3755,10 +3865,12 @@ exports[`Confirm should render SmartTransactionsBannerAlert for transaction type
                                   style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                                 >
                                   <div
-                                    class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
+                                    class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+                                    style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
                                   >
                                     <div
                                       class="mm-box mm-box--display-flex mm-box--align-items-center"
+                                      style="flex-shrink: 0;"
                                     >
                                       <p
                                         class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -3795,10 +3907,12 @@ exports[`Confirm should render SmartTransactionsBannerAlert for transaction type
                                   style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                                 >
                                   <div
-                                    class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
+                                    class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+                                    style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
                                   >
                                     <div
                                       class="mm-box mm-box--display-flex mm-box--align-items-center"
+                                      style="flex-shrink: 0;"
                                     >
                                       <p
                                         class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -3835,10 +3949,12 @@ exports[`Confirm should render SmartTransactionsBannerAlert for transaction type
                                   style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                                 >
                                   <div
-                                    class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
+                                    class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+                                    style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
                                   >
                                     <div
                                       class="mm-box mm-box--display-flex mm-box--align-items-center"
+                                      style="flex-shrink: 0;"
                                     >
                                       <p
                                         class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"

@@ -4,8 +4,8 @@ import { Driver } from '../../webdriver/driver';
 import { mockSnapSimpleKeyringAndSite } from '../account/snap-keyring-site-mocks';
 import { installSnapSimpleKeyring } from '../../page-objects/flows/snap-simple-keyring.flow';
 import SnapSimpleKeyringPage from '../../page-objects/pages/snap-simple-keyring-page';
-import { DAPP_PATH } from '../../constants';
-import { WINDOW_TITLES } from '../../helpers';
+import HeaderNavbar from '../../page-objects/pages/header-navbar';
+import { DAPP_PATH, WINDOW_TITLES } from '../../constants';
 import { AccountType, withMultichainAccountsDesignEnabled } from './common';
 
 describe('Multichain Accounts - Multichain accounts list page', function (this: Suite) {
@@ -23,7 +23,17 @@ describe('Multichain Accounts - Multichain accounts list page', function (this: 
         await accountListPage.checkWalletDisplayedInAccountListMenu('Ledger');
 
         // Ensure that accounts within the wallets are displayed
-        await accountListPage.checkMultichainAccountBalanceDisplayed('$0.00');
+        // The balance is not loaded for a non-selected account (which was never selected before)
+        await accountListPage.checkMultichainAccountBalanceDisplayed({
+          wallet: 'Wallet 1',
+          account: 'Account 1',
+          balance: '$0.00',
+        });
+        await accountListPage.checkMultichainAccountBalanceDisplayed({
+          wallet: 'Ledger',
+          account: 'Ledger 1',
+          balance: '$0.00',
+        });
         await accountListPage.checkMultichainAccountNameDisplayed('Account 1');
         await accountListPage.checkMultichainAccountNameDisplayed('Ledger 1');
       },
@@ -52,6 +62,9 @@ describe('Multichain Accounts - Multichain accounts list page', function (this: 
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
 
+        const headerNavbar = new HeaderNavbar(driver);
+        await headerNavbar.openAccountMenu();
+
         const accountListPage = new AccountListPage(driver);
 
         // Ensure that wallet information is displayed
@@ -61,7 +74,16 @@ describe('Multichain Accounts - Multichain accounts list page', function (this: 
         );
 
         // Ensure that an SSK account within the wallet is displayed
-        await accountListPage.checkMultichainAccountBalanceDisplayed('$0.00');
+        await accountListPage.checkMultichainAccountBalanceDisplayed({
+          wallet: 'Wallet 1',
+          account: 'Account 1',
+          balance: '$85,025.00',
+        });
+        await accountListPage.checkMultichainAccountBalanceDisplayed({
+          wallet: 'MetaMask Simple Snap Keyring',
+          account: 'Snap Account 1',
+          balance: '$0.00',
+        });
         await accountListPage.checkMultichainAccountNameDisplayed('Account 1');
         await accountListPage.checkMultichainAccountNameDisplayed(
           'Snap Account 1',

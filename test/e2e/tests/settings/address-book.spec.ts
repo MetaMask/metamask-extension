@@ -2,21 +2,16 @@ import { Suite } from 'mocha';
 import { Mockttp } from 'mockttp';
 import { withFixtures } from '../../helpers';
 import { shortenAddress } from '../../../../ui/helpers/utils/util';
-import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import ActivityListPage from '../../page-objects/pages/home/activity-list';
 import ContactsPage from '../../page-objects/pages/settings/contacts-settings';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
-import HomePage from '../../page-objects/pages/home/homepage';
-import SendTokenPage from '../../page-objects/pages/send/send-token-page';
-import SettingsPage from '../../page-objects/pages/settings/settings-page';
-import TransactionConfirmation from '../../page-objects/pages/confirmations/redesign/transaction-confirmation';
-import {
-  loginWithBalanceValidation,
-  loginWithoutBalanceValidation,
-} from '../../page-objects/flows/login.flow';
-import AssetPicker from '../../page-objects/pages/asset-picker';
+import TransactionConfirmation from '../../page-objects/pages/confirmations/transaction-confirmation';
+import { login } from '../../page-objects/flows/login.flow';
 import NetworkManager from '../../page-objects/pages/network-manager';
 import { TOKENS_API_MOCK_RESULT } from '../../../data/mock-data';
+import { createInternalTransaction } from '../../page-objects/flows/transaction';
+import { NETWORK_CLIENT_ID } from '../../constants';
 
 async function mockTokenList(mockServer: Mockttp) {
   return await mockServer
@@ -33,7 +28,7 @@ describe('Address Book', function (this: Suite) {
   it('Sends to an address book entry', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withAddressBookController({
             addressBook: {
               '0x539': {
@@ -51,16 +46,16 @@ describe('Address Book', function (this: Suite) {
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
-        const homePage = new HomePage(driver);
-        await homePage.checkPageIsLoaded();
-        await homePage.startSendFlow();
+        await login(driver);
 
-        const sendTokenPage = new SendTokenPage(driver);
-        await sendTokenPage.checkPageIsLoaded();
-        await sendTokenPage.selectContactItem('Test Name 1');
-        await sendTokenPage.fillAmount('2');
-        await sendTokenPage.goToNextScreen();
+        await createInternalTransaction({
+          driver,
+          chainId: '0x539',
+          symbol: 'ETH',
+          recipientName: 'Test Name 1',
+          amount: '2',
+        });
+
         await new TransactionConfirmation(driver).clickFooterConfirmButton();
 
         const activityList = new ActivityListPage(driver);
@@ -74,14 +69,14 @@ describe('Address Book', function (this: Suite) {
   it('Sends to an address book entry on a different network', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
-          .withNetworkControllerOnMainnet()
+        fixtures: new FixtureBuilderV2()
+          .withSelectedNetwork(NETWORK_CLIENT_ID.LINEA_MAINNET)
           .withAddressBookController({
             addressBook: {
-              '0x1': {
+              '0x539': {
                 '0x2f318C334780961FB129D2a6c30D0763d9a5C970': {
                   address: '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
-                  chainId: '0x1',
+                  chainId: '0x539',
                   isEns: false,
                   memo: '',
                   name: 'Test Name 1',
@@ -91,7 +86,6 @@ describe('Address Book', function (this: Suite) {
           })
           .withEnabledNetworks({
             eip155: {
-              '0x1': true,
               '0xe708': true,
             },
           })
@@ -100,27 +94,30 @@ describe('Address Book', function (this: Suite) {
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await loginWithoutBalanceValidation(driver);
-        const homePage = new HomePage(driver);
-        await homePage.checkPageIsLoaded();
-        await homePage.startSendFlow();
+        // Start on Linea
+        await login(driver);
 
-        const sendTokenPage = new SendTokenPage(driver);
-        await sendTokenPage.checkPageIsLoaded();
+        // Send transaction on Localhost
+        await createInternalTransaction({
+          driver,
+          chainId: '0x539',
+          symbol: 'ETH',
+          recipientName: 'Test Name 1',
+          amount: '2',
+        });
 
-        await sendTokenPage.selectContactItem('Test Name 1');
+        await new TransactionConfirmation(driver).clickFooterConfirmButton();
 
-        const assetPicker = new AssetPicker(driver);
-        await assetPicker.openAssetPicker('source');
-
-        await sendTokenPage.clickMultichainAssetPickerNetwork();
-
+        // Select Linea to check the Activity list
         const networkSelector = new NetworkManager(driver);
+        await networkSelector.openNetworkManager();
+        await networkSelector.selectTab('Custom');
+        await networkSelector.selectNetworkByName('Localhost 8545');
 
-        await networkSelector.selectNetworkByChainId('0xe708');
-
-        // dest should be cleared
-        await sendTokenPage.checkPageIsLoaded();
+        const activityList = new ActivityListPage(driver);
+        await activityList.checkConfirmedTxNumberDisplayedInActivity(1);
+        await activityList.checkTxAction({ action: 'Sent' });
+        await activityList.checkTxAmountInActivity(`-2 ETH`, 1);
       },
     );
   });
@@ -128,17 +125,13 @@ describe('Address Book', function (this: Suite) {
   it('Adds a new contact to the address book', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
-        await new HeaderNavbar(driver).openSettingsPage();
-        const settingsPage = new SettingsPage(driver);
-        await settingsPage.checkPageIsLoaded();
-        await settingsPage.goToContactsSettings();
-
+        await new HeaderNavbar(driver).openContactsPage();
         const contactsPage = new ContactsPage(driver);
         await contactsPage.checkPageIsLoaded();
         await contactsPage.addContact(
@@ -156,17 +149,13 @@ describe('Address Book', function (this: Suite) {
   it('Adds a new contact to the address book on a different chain', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
-        await new HeaderNavbar(driver).openSettingsPage();
-        const settingsPage = new SettingsPage(driver);
-        await settingsPage.checkPageIsLoaded();
-        await settingsPage.goToContactsSettings();
-
+        await new HeaderNavbar(driver).openContactsPage();
         const contactsPage = new ContactsPage(driver);
         await contactsPage.checkPageIsLoaded();
         await contactsPage.addContactNewChain(
@@ -185,7 +174,7 @@ describe('Address Book', function (this: Suite) {
   it('Edit entry in address book', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withAddressBookController({
             addressBook: {
               '0x539': {
@@ -203,20 +192,15 @@ describe('Address Book', function (this: Suite) {
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
-        await new HeaderNavbar(driver).openSettingsPage();
-        const settingsPage = new SettingsPage(driver);
-        await settingsPage.checkPageIsLoaded();
-        await settingsPage.goToContactsSettings();
-
+        await new HeaderNavbar(driver).openContactsPage();
         const contactsPage = new ContactsPage(driver);
         await contactsPage.checkPageIsLoaded();
         await contactsPage.editContact({
           existingContactName: 'Test Name 1',
           newContactName: 'Test Name Edit',
           newContactAddress: '0x74cE91B75935D6Bedc27eE002DeFa566c5946f74',
-          newNetwork: 'Sepolia',
         });
         await contactsPage.checkContactDisplayed({
           contactName: 'Test Name Edit',
@@ -228,7 +212,7 @@ describe('Address Book', function (this: Suite) {
   it('Deletes existing entry from address book', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withAddressBookController({
             addressBook: {
               '0x539': {
@@ -246,13 +230,9 @@ describe('Address Book', function (this: Suite) {
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
-        await new HeaderNavbar(driver).openSettingsPage();
-        const settingsPage = new SettingsPage(driver);
-        await settingsPage.checkPageIsLoaded();
-        await settingsPage.goToContactsSettings();
-
+        await new HeaderNavbar(driver).openContactsPage();
         const contactsPage = new ContactsPage(driver);
         await contactsPage.checkPageIsLoaded();
         await contactsPage.deleteContact('Test Name 1');
@@ -270,17 +250,13 @@ describe('Address Book', function (this: Suite) {
   it('User can add same address contacts on different chains', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
-        await new HeaderNavbar(driver).openSettingsPage();
-        const settingsPage = new SettingsPage(driver);
-        await settingsPage.checkPageIsLoaded();
-        await settingsPage.goToContactsSettings();
-
+        await new HeaderNavbar(driver).openContactsPage();
         const contactsPage = new ContactsPage(driver);
         await contactsPage.checkPageIsLoaded();
         await contactsPage.addContact(
@@ -292,7 +268,6 @@ describe('Address Book', function (this: Suite) {
           address: shortenAddress('0x56A355d3427bC2B1E22c78197AF091230919Cc2A'),
         });
 
-        await contactsPage.checkPageIsLoaded();
         await contactsPage.addContactNewChain(
           'Test User 2',
           '0x56A355d3427bC2B1E22c78197AF091230919Cc2A',

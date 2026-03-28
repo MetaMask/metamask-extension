@@ -24,12 +24,7 @@ import {
   toEvmCaipChainId,
   type MultichainNetworkConfiguration,
 } from '@metamask/multichain-network-controller';
-import {
-  type CaipChainId,
-  type Hex,
-  parseCaipChainId,
-  KnownCaipNamespace,
-} from '@metamask/utils';
+import { type CaipChainId, type Hex } from '@metamask/utils';
 import { ChainId } from '@metamask/controller-utils';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useAccountCreationOnNetworkChange } from '../../../hooks/accounts/useAccountCreationOnNetworkChange';
@@ -48,14 +43,18 @@ import {
   addPermittedChain,
   setTokenNetworkFilter,
   detectNfts,
-  setEnabledNetworks,
 } from '../../../store/actions';
 import {
   FEATURED_RPCS,
   TEST_CHAINS,
   CHAIN_ID_PORTFOLIO_LANDING_PAGE_URL_MAP,
+  BUILT_IN_NETWORKS,
+  CAIP_FORMATTED_TEST_CHAINS,
 } from '../../../../shared/constants/network';
-import { MULTICHAIN_NETWORK_TO_ACCOUNT_TYPE_NAME } from '../../../../shared/constants/multichain/networks';
+import {
+  MULTICHAIN_NETWORK_TO_ACCOUNT_TYPE_NAME,
+  MultichainNetworks,
+} from '../../../../shared/constants/multichain/networks';
 import {
   getShowTestNetworks,
   getOriginOfCurrentTab,
@@ -72,6 +71,7 @@ import {
   getNetworkDiscoverButtonEnabled,
   getAllChainsToPoll,
 } from '../../../selectors';
+import { selectAdditionalNetworksBlacklistFeatureFlag } from '../../../selectors/network-blacklist/network-blacklist';
 import ToggleButton from '../../ui/toggle-button';
 import {
   Display,
@@ -104,7 +104,8 @@ import {
   getNetworkIcon,
   getRpcDataByChainId,
   sortNetworksByPrioity,
-} from '../../../../shared/modules/network.utils';
+  getFilteredFeaturedNetworks,
+} from '../../../../shared/lib/network.utils';
 import {
   getCompletedOnboarding,
   getIsUnlocked,
@@ -154,7 +155,7 @@ type NetworkListMenuProps = {
 export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
   const { hasAnyAccountsInNetwork } = useAccountCreationOnNetworkChange();
 
   const { tokenNetworkFilter } = useSelector(getPreferences);
@@ -194,6 +195,10 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
   );
 
   const allChainIds = useSelector(getAllChainsToPoll);
+  // Get blacklisted chain IDs from feature flag
+  const blacklistedChainIds = useSelector(
+    selectAdditionalNetworksBlacklistFeatureFlag,
+  );
   const canSelectNetwork: boolean =
     Boolean(selectedTabOrigin) &&
     Boolean(domains[selectedTabOrigin]) &&
@@ -203,13 +208,8 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
     endTrace({ name: TraceName.NetworkList });
   }, []);
 
-  const currentlyOnTestnet = useMemo(() => {
-    const { namespace } = parseCaipChainId(currentChainId);
-    if (namespace === KnownCaipNamespace.Eip155) {
-      return TEST_CHAINS.includes(convertCaipToHexChainId(currentChainId));
-    }
-    return NON_EVM_TESTNET_IDS.includes(currentChainId);
-  }, [currentChainId]);
+  const currentlyOnTestnet =
+    CAIP_FORMATTED_TEST_CHAINS.includes(currentChainId);
 
   const [nonTestNetworks, testNetworks] = useMemo(
     () =>
@@ -283,13 +283,21 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
     }
   };
 
-  const featuredNetworksNotYetEnabled = useMemo(
-    () =>
-      FEATURED_RPCS.filter(({ chainId }) => !evmNetworks[chainId]).sort(
-        (a, b) => a.name.localeCompare(b.name),
-      ),
-    [evmNetworks],
-  );
+  const featuredNetworksNotYetEnabled = useMemo(() => {
+    // Filter out networks that are already enabled
+    const availableNetworks = FEATURED_RPCS.filter(
+      ({ chainId }) => !evmNetworks[chainId],
+    );
+
+    // Apply blacklist filter to exclude blacklisted networks
+    const filteredNetworks = getFilteredFeaturedNetworks(
+      blacklistedChainIds,
+      availableNetworks,
+    );
+
+    // Sort alphabetically
+    return filteredNetworks.sort((a, b) => a.name.localeCompare(b.name));
+  }, [evmNetworks, blacklistedChainIds]);
 
   // This value needs to be tracked in case the user changes to a Non EVM
   // network and there is no account created for that network. This will
@@ -362,8 +370,9 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
           dispatch(showPermittedNetworkToast());
         }
 
-        dispatch(
-          setNetworkClientIdForDomain(selectedTabOrigin, finalNetworkClientId),
+        await setNetworkClientIdForDomain(
+          selectedTabOrigin,
+          finalNetworkClientId,
         );
       }
 
@@ -384,8 +393,6 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
         );
         dispatch(setTokenNetworkFilter(allOpts));
       }
-
-      dispatch(setEnabledNetworks(hexChainId));
     } finally {
       dispatch(toggleNetworkMenu());
     }
@@ -395,9 +402,6 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
     if (hasAnyAccountsInNetwork(chainId)) {
       dispatch(toggleNetworkMenu());
       dispatch(setActiveNetwork(chainId));
-
-      dispatch(setEnabledNetworks(chainId));
-
       return;
     }
 
@@ -423,6 +427,28 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
       ? convertCaipToHexChainId(currentChainId)
       : currentChainId;
 
+    // Check if the destination network is custom (not built-in, featured, or multichain)
+    const hexChainId = chain.isEvm
+      ? convertCaipToHexChainId(chain.chainId)
+      : chain.chainId;
+
+    const isBuiltInNetwork = Object.values(BUILT_IN_NETWORKS).some(
+      (builtInNetwork) => builtInNetwork.chainId === hexChainId,
+    );
+    const isFeaturedRpc = FEATURED_RPCS.some(
+      (featuredRpc) => featuredRpc.chainId === hexChainId,
+    );
+    const isMultichainProviderConfig = Object.values(MultichainNetworks).some(
+      (multichainNetwork) =>
+        multichainNetwork === chain.chainId ||
+        (chain.isEvm
+          ? convertCaipToHexChainId(chain.chainId)
+          : chain.chainId) === multichainNetwork,
+    );
+
+    const isCustomNetwork =
+      !isBuiltInNetwork && !isFeaturedRpc && !isMultichainProviderConfig;
+
     trackEvent({
       event: MetaMetricsEventName.NavNetworkSwitched,
       category: MetaMetricsEventCategory.Network,
@@ -437,6 +463,9 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
         // eslint-disable-next-line @typescript-eslint/naming-convention
         to_network: chainIdToTrack,
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        custom_network: isCustomNetwork,
       },
     });
   };

@@ -1,0 +1,38 @@
+name: QA Stats
+
+on:
+  schedule:
+    - cron: '0 4 * * *'
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  collect-qa-stats:
+    name: Collect QA Stats
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout and setup environment
+        uses: MetaMask/action-checkout-and-setup@v3
+        with:
+          is-high-risk-environment: false
+          skip-allow-scripts: true
+
+      - name: Set optional run ID override
+        if: ${{ vars.RUN_ID_TO_COLLECT != '' }}
+        run: echo "RUN_ID_TO_COLLECT=${{ vars.RUN_ID_TO_COLLECT }}" >> "$GITHUB_ENV"
+
+      - name: Collect QA stats
+        run: yarn tsx .github/scripts/collect-qa-stats.ts
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+
+      - name: Upload QA stats artifact
+        uses: actions/upload-artifact@v6
+        with:
+          name: qa-stats
+          path: ./qa-stats.json
+          if-no-files-found: error

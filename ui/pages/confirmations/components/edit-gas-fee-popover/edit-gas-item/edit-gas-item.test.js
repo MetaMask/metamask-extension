@@ -11,6 +11,7 @@ import { GasFeeContextProvider } from '../../../../../contexts/gasFee';
 
 import { CHAIN_IDS } from '../../../../../../shared/constants/network';
 import { mockNetworkState } from '../../../../../../test/stub/networks';
+import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
 import EditGasItem from './edit-gas-item';
 
 jest.mock('../../../../../store/actions', () => ({
@@ -58,13 +59,15 @@ const render = async ({
   componentProps,
   transactionProps,
   contextProps,
+  chainId = CHAIN_IDS.GOERLI,
+  gasFeeEstimates = MOCK_FEE_ESTIMATE,
 } = {}) => {
   const store = configureStore({
     metamask: {
       currencyRates: {},
-      ...mockNetworkState({ chainId: CHAIN_IDS.GOERLI, ticker: 'ETH' }),
+      ...mockNetworkState({ chainId, ticker: 'ETH' }),
       accountsByChainId: {
-        [CHAIN_IDS.GOERLI]: {
+        [chainId]: {
           '0xAddress': {
             address: '0xAddress',
             balance: '0x176e5b6f173ebe66',
@@ -103,15 +106,15 @@ const render = async ({
       },
       featureFlags: { advancedInlineGas: true },
       gasEstimateType: 'fee-market',
-      gasFeeEstimates: MOCK_FEE_ESTIMATE,
+      gasFeeEstimates,
       gasFeeEstimatesByChainId: {
-        [CHAIN_IDS.GOERLI]: {
-          gasFeeEstimates: MOCK_FEE_ESTIMATE,
+        [chainId]: {
+          gasFeeEstimates,
           gasEstimateType: 'fee-market',
         },
       },
       advancedGasFee: {
-        [CHAIN_IDS.GOERLI]: {
+        [chainId]: {
           maxBaseFee: '100',
           priorityFee: '2',
         },
@@ -125,7 +128,11 @@ const render = async ({
     async () =>
       (result = renderWithProvider(
         <GasFeeContextProvider
-          transaction={{ txParams: { gas: '0x5208' }, ...transactionProps }}
+          transaction={{
+            txParams: { gas: '0x5208' },
+            chainId,
+            ...transactionProps,
+          }}
           {...contextProps}
         >
           <EditGasItem priorityLevel="low" {...componentProps} />
@@ -140,9 +147,11 @@ const render = async ({
 describe('EditGasItem', () => {
   it('should renders low gas estimate option for priorityLevel low', async () => {
     await render({ componentProps: { priorityLevel: PriorityLevels.low } });
-    expect(screen.queryByRole('button', { name: 'low' })).toBeInTheDocument();
+    expect(
+      screen.queryByRole('button', { name: messages.lowLowercase.message }),
+    ).toBeInTheDocument();
     expect(screen.queryByText('🐢')).toBeInTheDocument();
-    expect(screen.queryByText('Low')).toBeInTheDocument();
+    expect(screen.queryByText(messages.low.message)).toBeInTheDocument();
     expect(screen.queryByText('5 min')).toBeInTheDocument();
     expect(screen.queryByTitle('0.001113 ETH')).toBeInTheDocument();
   });
@@ -155,16 +164,18 @@ describe('EditGasItem', () => {
       screen.queryByRole('button', { name: 'medium' }),
     ).toBeInTheDocument();
     expect(screen.queryByText('🦊')).toBeInTheDocument();
-    expect(screen.queryByText('Market')).toBeInTheDocument();
+    expect(screen.queryByText(messages.medium.message)).toBeInTheDocument();
     expect(screen.queryByText('5 min')).toBeInTheDocument();
     expect(screen.queryByTitle('0.00147 ETH')).toBeInTheDocument();
   });
 
   it('should renders aggressive gas estimate option for priorityLevel high', async () => {
     await render({ componentProps: { priorityLevel: PriorityLevels.high } });
-    expect(screen.queryByRole('button', { name: 'high' })).toBeInTheDocument();
+    expect(
+      screen.queryByRole('button', { name: messages.highLowercase.message }),
+    ).toBeInTheDocument();
     expect(screen.queryByText('🦍')).toBeInTheDocument();
-    expect(screen.queryByText('Aggressive')).toBeInTheDocument();
+    expect(screen.queryByText(messages.high.message)).toBeInTheDocument();
     expect(screen.queryByText('15 sec')).toBeInTheDocument();
     expect(screen.queryByTitle('0.0021 ETH')).toBeInTheDocument();
   });
@@ -174,9 +185,13 @@ describe('EditGasItem', () => {
       componentProps: { priorityLevel: PriorityLevels.high },
       contextProps: { editGasMode: EditGasModes.swaps },
     });
-    expect(screen.queryByRole('button', { name: 'high' })).toBeInTheDocument();
+    expect(
+      screen.queryByRole('button', { name: messages.highLowercase.message }),
+    ).toBeInTheDocument();
     expect(screen.queryByText('🔄')).toBeInTheDocument();
-    expect(screen.queryByText('Swap suggested')).toBeInTheDocument();
+    expect(
+      screen.queryByText(messages.swapSuggested.message),
+    ).toBeInTheDocument();
     expect(screen.queryByText('15 sec')).not.toBeInTheDocument();
     expect(screen.queryByTitle('0.0021 ETH')).toBeInTheDocument();
   });
@@ -200,7 +215,9 @@ describe('EditGasItem', () => {
       screen.queryByRole('button', { name: 'dappSuggested' }),
     ).toBeInTheDocument();
     expect(screen.queryByText('🌐')).toBeInTheDocument();
-    expect(screen.queryByText('Site')).toBeInTheDocument();
+    expect(
+      screen.queryByText(messages.dappSuggestedShortLabel.message),
+    ).toBeInTheDocument();
     expect(screen.queryByTitle('0.0000315 ETH')).toBeInTheDocument();
   });
 
@@ -227,12 +244,31 @@ describe('EditGasItem', () => {
       transactionProps: { userFeeLevel: 'high' },
     });
     expect(
-      screen.queryByRole('button', { name: 'custom' }),
+      screen.queryByRole('button', { name: messages.swapCustom.message }),
     ).toBeInTheDocument();
     expect(screen.queryByText('⚙️')).toBeInTheDocument();
-    expect(screen.queryByText('Advanced')).toBeInTheDocument();
+    expect(screen.queryByText(messages.advanced.message)).toBeInTheDocument();
     // below value of custom gas fee estimate is default obtained from state.metamask.advancedGasFee
     expect(screen.queryByTitle('0.0021 ETH')).toBeInTheDocument();
+  });
+
+  it('should render sub-second time estimate on fast confirmation chains', async () => {
+    const subSecondFeeEstimate = {
+      ...MOCK_FEE_ESTIMATE,
+      high: {
+        ...MOCK_FEE_ESTIMATE.high,
+        minWaitTimeEstimate: 500,
+      },
+    };
+    await render({
+      componentProps: { priorityLevel: PriorityLevels.high },
+      transactionProps: { chainId: CHAIN_IDS.MEGAETH_TESTNET },
+      gasFeeEstimates: subSecondFeeEstimate,
+    });
+    expect(
+      screen.queryByRole('button', { name: messages.highLowercase.message }),
+    ).toBeInTheDocument();
+    expect(screen.queryByText('0.5 sec')).toBeInTheDocument();
   });
 
   it('should renders +10% gas estimate option for priorityLevel minimum', async () => {
@@ -247,7 +283,9 @@ describe('EditGasItem', () => {
     expect(
       screen.queryByRole('button', { name: 'tenPercentIncreased' }),
     ).toBeInTheDocument();
-    expect(screen.queryByText('10% increase')).toBeInTheDocument();
+    expect(
+      screen.queryByText(messages.tenPercentIncreased.message),
+    ).toBeInTheDocument();
     expect(screen.queryByTitle('0.00003465 ETH')).toBeInTheDocument();
   });
 });

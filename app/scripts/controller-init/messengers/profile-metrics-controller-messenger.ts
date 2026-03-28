@@ -32,7 +32,7 @@ export function getProfileMetricsControllerMessenger(
   messenger.delegate({
     messenger: controllerMessenger,
     actions: [
-      'AccountsController:listAccounts',
+      'AccountsController:getState',
       'ProfileMetricsService:submitMetrics',
     ],
     events: [
@@ -40,6 +40,7 @@ export function getProfileMetricsControllerMessenger(
       'AccountsController:accountRemoved',
       'KeyringController:lock',
       'KeyringController:unlock',
+      'TransactionController:transactionSubmitted',
     ],
   });
   return controllerMessenger;

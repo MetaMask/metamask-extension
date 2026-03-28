@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-var-requires, @typescript-eslint/no-require-imports, import/no-commonjs */
+/* eslint-disable @typescript-eslint/no-var-requires, @typescript-eslint/no-require-imports, import-x/no-commonjs */
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import type { To } from 'react-router-dom';
@@ -78,7 +78,7 @@ export type SRPQuizProps = {
 export default function SRPQuiz(props: SRPQuizProps): JSX.Element {
   const [stage, setStage] = useState<QuizStage>(QuizStage.introduction);
 
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
   const t = useI18nContext();
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
 

@@ -1,4 +1,4 @@
-import React, { memo, useMemo, useRef } from 'react';
+import React, { memo, useEffect, useMemo, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import { Container } from '@metamask/snaps-sdk/jsx';
@@ -56,6 +56,9 @@ const SnapUIRendererComponent = ({
   // eslint-disable-next-line react-compiler/react-compiler
   'use no memo';
 
+  const scrollableContainerRef = useRef(null);
+  const scrollRef = useRef(null);
+
   const t = useI18nContext();
   const locale = useSelector(getIntlLocale);
 
@@ -65,6 +68,23 @@ const SnapUIRendererComponent = ({
     // We do this to avoid useless re-renders.
     (oldState, newState) => isEqual(oldState.content, newState.content),
   );
+
+  useEffect(() => {
+    if (scrollableContainerRef.current) {
+      scrollableContainerRef.current.scrollTo?.(0, scrollRef.current);
+    }
+  }, [interfaceState?.content]);
+
+  /**
+   * Sets the scroll position to the current scroll position of the scrollable container.
+   * This is used to restore the scroll position when the content changes.
+   */
+  const setScroll = () => {
+    if (scrollableContainerRef.current) {
+      scrollRef.current = scrollableContainerRef.current.scrollTop;
+    }
+  };
+
   const rawContent = interfaceState?.content;
   const content =
     rawContent?.type === 'Container' || !rawContent
@@ -98,6 +118,8 @@ const SnapUIRendererComponent = ({
         t,
         contentBackgroundColor: backgroundColor,
         componentMap: COMPONENT_MAPPING,
+        setScroll,
+        scrollableContainerRef,
       }),
     [content, onCancel, useFooter, promptLegacyProps, t, backgroundColor],
   );
@@ -118,10 +140,6 @@ const SnapUIRendererComponent = ({
 
   const { state: initialState } = interfaceState;
 
-  // The renderer should only have a footer if there is a default cancel action
-  // or if the footer component has been used.
-  const hasFooter = onCancel || content?.props?.children?.[1] !== undefined;
-
   return (
     <SnapInterfaceContextProvider
       snapId={snapId}
@@ -136,7 +154,6 @@ const SnapUIRendererComponent = ({
             backgroundColor={backgroundColor}
             style={{
               overflowY: 'auto',
-              marginBottom: useFooter && hasFooter ? '80px' : '0',
             }}
           >
             <MetaMaskTemplateRenderer sections={sections} />

@@ -28,7 +28,6 @@ const ENVIRONMENT = {
 const TASKS = {
   ...BUILD_TARGETS,
   CLEAN: 'clean',
-  LINT_SCSS: 'lint-scss',
   MANIFEST_DEV: 'manifest:dev',
   MANIFEST_PROD: 'manifest:prod',
   MANIFEST_SCRIPT_DIST: 'manifest:scriptDist',

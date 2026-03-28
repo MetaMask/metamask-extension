@@ -1,8 +1,8 @@
 import { strict as assert } from 'assert';
 import { Mockttp } from 'mockttp';
-import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { withFixtures } from '../../helpers';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 import { Driver } from '../../webdriver/driver';
 import { MockedEndpoint } from '../../mock-e2e';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
@@ -34,11 +34,6 @@ const mockSendFeatureFlag = (enabled: boolean) => (mockServer: Mockttp) =>
         json: [
           {
             extensionUxPna25: enabled,
-            enableMultichainAccountsState2: {
-              enabled: true,
-              featureVersion: '2',
-              minimumVersion: '12.19.0',
-            },
           },
         ],
       };
@@ -82,11 +77,10 @@ async function waitForEndpointToBeCalled(
 
 describe('Profile Metrics', function () {
   describe('when MetaMetrics is enabled, the feature flag is on, and the user acknowledged the privacy change', function () {
-    it('sends exising accounts to the API on wallet unlock after activating MetaMetrics', async function () {
+    it('sends existing accounts to the API on wallet unlock after activating MetaMetrics and an initial delay', async function () {
       await withFixtures(
         {
-          forceBip44Version: false,
-          fixtures: new FixtureBuilder()
+          fixtures: new FixtureBuilderV2()
             .withMetaMetricsController({
               participateInMetaMetrics: true,
             })
@@ -107,11 +101,14 @@ describe('Profile Metrics', function () {
           driver: Driver;
           mockedEndpoint: MockedEndpoint[];
         }) => {
-          await loginWithBalanceValidation(driver);
+          await login(driver);
           await driver.delay(1000);
 
           const [authCall] = mockedEndpoint;
-          await waitForEndpointToBeCalled(driver, authCall);
+          // There are 2 PUT requests:
+          // 1. One for default EVM Account 1 alone
+          // 2. One for default Solana Account 1 (which is generated after the EVM Account is added)
+          await waitForEndpointToBeCalled(driver, authCall, 2);
 
           const requests = await authCall.getSeenRequests();
           assert.equal(
@@ -126,8 +123,7 @@ describe('Profile Metrics', function () {
     it('sends new accounts to the API when they are created after wallet unlock', async function () {
       await withFixtures(
         {
-          forceBip44Version: false,
-          fixtures: new FixtureBuilder()
+          fixtures: new FixtureBuilderV2()
             .withMetaMetricsController({
               participateInMetaMetrics: true,
             })
@@ -148,20 +144,27 @@ describe('Profile Metrics', function () {
           driver: Driver;
           mockedEndpoint: MockedEndpoint[];
         }) => {
-          await loginWithBalanceValidation(driver);
+          await login(driver);
 
           const headerNavbar = new HeaderNavbar(driver);
           await headerNavbar.openAccountMenu();
           const accountListPage = new AccountListPage(driver);
           await accountListPage.checkPageIsLoaded();
           await accountListPage.addMultichainAccount();
+          await accountListPage.checkAccountDisplayedInAccountList('Account 2');
+          await accountListPage.closeMultichainAccountsPage();
           const [authCall] = mockedEndpoint;
-          await waitForEndpointToBeCalled(driver, authCall, 2);
+
+          // There are 3 PUT requests:
+          // 1. One for default EVM Account 1 alone
+          // 2. One for default Solana Account 1 (which is generated after the EVM Account is added)
+          // 3. One for Account 2 (Solana + EVM Accounts in one request)
+          await waitForEndpointToBeCalled(driver, authCall, 3);
 
           const requests = await authCall.getSeenRequests();
           assert.equal(
             requests.length,
-            2,
+            3,
             'Expected two requests to the auth API.',
           );
         },
@@ -194,7 +197,7 @@ describe('Profile Metrics', function () {
         it('does not send existing accounts to the API on wallet unlock', async function () {
           await withFixtures(
             {
-              fixtures: new FixtureBuilder()
+              fixtures: new FixtureBuilderV2()
                 .withMetaMetricsController({
                   participateInMetaMetrics,
                 })
@@ -215,7 +218,7 @@ describe('Profile Metrics', function () {
               driver: Driver;
               mockedEndpoint: MockedEndpoint[];
             }) => {
-              await loginWithBalanceValidation(driver);
+              await login(driver);
 
               await driver.delay(5000);
 

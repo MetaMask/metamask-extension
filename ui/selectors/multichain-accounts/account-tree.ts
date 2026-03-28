@@ -6,7 +6,10 @@ import {
 import { isEvmAccountType, EthAccountType } from '@metamask/keyring-api';
 import { AccountId } from '@metamask/accounts-controller';
 import { createSelector } from 'reselect';
-import { AccountGroupObject } from '@metamask/account-tree-controller';
+import {
+  type AccountWalletObject,
+  type AccountGroupObject,
+} from '@metamask/account-tree-controller';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import {
   type Hex,
@@ -16,12 +19,17 @@ import {
 import { type MultichainNetworkConfiguration } from '@metamask/multichain-network-controller';
 import { type NetworkConfiguration } from '@metamask/network-controller';
 
-import { createDeepEqualSelector } from '../../../shared/modules/selectors/util';
+import { createDeepEqualSelector } from '../../../shared/lib/selectors/util';
+import {
+  createParameterizedSelector,
+  createParameterizedShallowEqualSelector,
+} from '../../../shared/lib/selectors/selector-creators';
 import {
   getMetaMaskAccountsOrdered,
   getOrderedConnectedAccountsForActiveTab,
   getPinnedAccountsList,
   getHiddenAccountsList,
+  getPreferences,
 } from '../selectors';
 import { MergedInternalAccount } from '../selectors.types';
 import {
@@ -30,10 +38,13 @@ import {
   getSelectedInternalAccount,
 } from '../accounts';
 
+import type { MetaMaskReduxState } from '../../store/store';
 import { getMultichainNetworkConfigurationsByChainId } from '../multichain/networks';
 import { isTestNetwork } from '../../helpers/utils/network-helper';
+import { DefaultAddressScope } from '../../../shared/constants/default-address';
 import {
   AccountGroupWithInternalAccounts,
+  AccountListStats,
   AccountTreeState,
   ConsolidatedWallets,
   MultichainAccountGroupScopeToCaipAccountId,
@@ -43,6 +54,14 @@ import {
   NormalizedGroupMetadata,
 } from './account-tree.types';
 import { getSanitizedChainId, extractWalletIdFromGroupId } from './utils';
+
+// LRU cache sizes for parameterized selectors.
+// Values reflect the maximum number of unique parameter values
+// expected to be live in a single render pass.
+const ACCOUNT_LRU_CACHE_SIZE = 20; // one entry per address (worst case: simulation details with ~20 balance-change addresses)
+const GROUP_LRU_CACHE_SIZE = 20; // one entry per visible account group (multichain-account-list renders all groups simultaneously)
+const CHAIN_LRU_CACHE_SIZE = 10; // one entry per unique chain/scope (max ~8 chains active simultaneously across all consumers)
+const SINGLE_LOOKUP_LRU_CACHE_SIZE = 5; // selectors used for individual lookups, never rendered in a list
 
 /**
  * Retrieve account tree state.
@@ -57,116 +76,13 @@ export const getAccountTree = (
 ): AccountTreeState => state.metamask.accountTree;
 
 /**
- * Common function to create consolidated wallets with accounts.
- *
- * @param internalAccounts - All available internal accounts.
- * @param accountTree - Account tree state.
- * @param connectedAccounts - Connected accounts for active tab.
- * @param selectedAccount - Currently selected account.
- * @param pinnedAccounts - List of pinned account addresses.
- * @param hiddenAccounts - List of hidden account addresses.
- * @param getAccountsForGroup - Function to determine which accounts belong to each group.
- * @returns Consolidated wallet collection with accounts metadata.
- */
-const createConsolidatedWallets = (
-  internalAccounts: MergedInternalAccount[],
-  accountTree: AccountTreeState,
-  connectedAccounts: InternalAccount[],
-  selectedAccount: InternalAccount,
-  pinnedAccounts: string[],
-  hiddenAccounts: string[],
-  getAccountsForGroup: (
-    groupAccounts: string[],
-    groupIndex: number,
-    allAccountIdsInWallet: string[],
-    accountsById: Record<string, MergedInternalAccount>,
-  ) => string[],
-): ConsolidatedWallets => {
-  // Precompute lookups for pinned and hidden accounts
-  const pinnedAccountsSet = new Set(pinnedAccounts);
-  const hiddenAccountsSet = new Set(hiddenAccounts);
-
-  // Precompute connected account IDs for faster lookup
-  const connectedAccountIdsSet = new Set(
-    connectedAccounts.map((account) => account.id),
-  );
-
-  // Create a mapping of accounts by ID for quick access
-  const accountsById = internalAccounts.reduce(
-    (accounts: Record<string, MergedInternalAccount>, account) => {
-      accounts[account.id] = account;
-      return accounts;
-    },
-    {},
-  );
-
-  const { wallets } = accountTree;
-
-  return Object.entries(wallets).reduce(
-    (consolidatedWallets: ConsolidatedWallets, [walletId, wallet]) => {
-      consolidatedWallets[walletId as AccountWalletId] = {
-        id: walletId as AccountWalletId,
-        type: wallet.type,
-        metadata: wallet.metadata,
-        groups: {},
-      };
-
-      // Collect all accountIds used in any group's accounts array for this wallet
-      const allAccountIdsInWallet = Array.from(
-        new Set(
-          Object.values(wallet.groups).flatMap((group) => group.accounts),
-        ),
-      );
-
-      Object.entries(wallet.groups).forEach(([groupId, group], groupIndex) => {
-        const accountIds = getAccountsForGroup(
-          group.accounts,
-          groupIndex,
-          allAccountIdsInWallet,
-          accountsById,
-        );
-
-        const accountsFromGroup = accountIds.map((accountId) => {
-          const accountWithMetadata = { ...accountsById[accountId] };
-
-          // Set flags for pinned, hidden, and active accounts
-          accountWithMetadata.pinned = pinnedAccountsSet.has(
-            accountWithMetadata.address,
-          );
-          accountWithMetadata.hidden = hiddenAccountsSet.has(
-            accountWithMetadata.address,
-          );
-          accountWithMetadata.active =
-            selectedAccount.id === accountWithMetadata.id &&
-            connectedAccountIdsSet.has(accountWithMetadata.id);
-
-          return accountWithMetadata;
-        });
-
-        consolidatedWallets[walletId as AccountWalletId].groups[
-          groupId as AccountGroupId
-        ] = {
-          id: groupId as AccountGroupId,
-          type: group.type,
-          metadata: group.metadata,
-          accounts: accountsFromGroup,
-        };
-      });
-
-      return consolidatedWallets;
-    },
-    {} as ConsolidatedWallets,
-  );
-};
-
-/**
  * Retrieve all wallets and their accounts with metadata in consolidated data structure.
  *
  * @param internalAccounts - All available internal accounts.
  * @param accountTree - Account tree state.
  * @returns Consolidated wallet collection with accounts metadata.
  */
-export const getWalletsWithAccounts = createDeepEqualSelector(
+export const getWalletsWithAccounts = createSelector(
   getMetaMaskAccountsOrdered,
   getAccountTree,
   getOrderedConnectedAccountsForActiveTab,
@@ -181,15 +97,64 @@ export const getWalletsWithAccounts = createDeepEqualSelector(
     pinnedAccounts: string[],
     hiddenAccounts: string[],
   ): ConsolidatedWallets => {
-    return createConsolidatedWallets(
-      internalAccounts,
-      accountTree,
-      connectedAccounts,
-      selectedAccount,
-      pinnedAccounts,
-      hiddenAccounts,
-      // Standard behavior: use the group's original accounts
-      (groupAccounts) => groupAccounts,
+    // Precompute lookups for pinned and hidden accounts
+    const pinnedAccountsSet = new Set(pinnedAccounts);
+    const hiddenAccountsSet = new Set(hiddenAccounts);
+
+    // Precompute connected account IDs for faster lookup
+    const connectedAccountIdsSet = new Set(
+      connectedAccounts.map((account) => account.id),
+    );
+
+    // Create a mapping of accounts by ID for quick access
+    const accountsById = internalAccounts.reduce(
+      (accounts: Record<string, MergedInternalAccount>, account) => {
+        accounts[account.id] = account;
+        return accounts;
+      },
+      {},
+    );
+
+    const { wallets } = accountTree;
+
+    return Object.values(wallets).reduce(
+      (consolidatedWallets: ConsolidatedWallets, wallet) => {
+        consolidatedWallets[wallet.id] = {
+          id: wallet.id,
+          type: wallet.type,
+          metadata: wallet.metadata,
+          groups: {},
+        };
+
+        Object.values(wallet.groups).forEach((group: AccountGroupObject) => {
+          const accountsFromGroup = group.accounts.map((accountId) => {
+            const accountWithMetadata = { ...accountsById[accountId] };
+
+            // Set flags for pinned, hidden, and active accounts
+            accountWithMetadata.pinned = pinnedAccountsSet.has(
+              accountWithMetadata.address,
+            );
+            accountWithMetadata.hidden = hiddenAccountsSet.has(
+              accountWithMetadata.address,
+            );
+            accountWithMetadata.active =
+              selectedAccount.id === accountWithMetadata.id &&
+              connectedAccountIdsSet.has(accountWithMetadata.id);
+
+            return accountWithMetadata;
+          });
+
+          consolidatedWallets[wallet.id].groups[group.id] = {
+            id: group.id,
+            type: group.type,
+            metadata: group.metadata,
+            accounts: accountsFromGroup,
+          };
+        });
+
+        return consolidatedWallets;
+      },
+      {} as ConsolidatedWallets,
     );
   },
 );
@@ -201,7 +166,7 @@ export const getWalletsWithAccounts = createDeepEqualSelector(
  * @param internalAccountsObject - The internal accounts object.
  * @returns The normalized group metadata.
  */
-export const getNormalizedGroupsMetadata = createDeepEqualSelector(
+export const getNormalizedGroupsMetadata = createSelector(
   getAccountTree,
   getInternalAccountsObject,
   (
@@ -227,60 +192,15 @@ export const getNormalizedGroupsMetadata = createDeepEqualSelector(
 );
 
 /**
- * This selector is a temporary solution to avoid a regression in the account order UI while Multichain Accounts V2 is not completed.
- * It takes the ordered accounts from the MetaMask state and combines them with the account tree data
- * bypassing the respective groups inside a wallet and just adding all accounts inside the first group.
- *
- * To use the correct and intended functionality for Multichain Accounts V2, use `getWalletsWithAccounts` instead.
- *
- * @param internalAccounts - All available internal accounts.
- * @param accountTree - Account tree state.
- * @returns Consolidated wallet collection with accounts metadata.
- */
-export const getWalletsWithAccountsSimplified = createDeepEqualSelector(
-  getMetaMaskAccountsOrdered,
-  getAccountTree,
-  getOrderedConnectedAccountsForActiveTab,
-  getSelectedInternalAccount,
-  getPinnedAccountsList,
-  getHiddenAccountsList,
-  (
-    internalAccounts: MergedInternalAccount[],
-    accountTree: AccountTreeState,
-    connectedAccounts: InternalAccount[],
-    selectedAccount: InternalAccount,
-    pinnedAccounts: string[],
-    hiddenAccounts: string[],
-  ): ConsolidatedWallets => {
-    return createConsolidatedWallets(
-      internalAccounts,
-      accountTree,
-      connectedAccounts,
-      selectedAccount,
-      pinnedAccounts,
-      hiddenAccounts,
-      // Simplified behavior: first group gets all accounts in order, others get empty arrays
-      (_, groupIndex, allAccountIdsInWallet, accountsById) => {
-        if (groupIndex === 0) {
-          // For first group, include only those accountIds present in accountsById, preserving accountsById order
-          return Object.keys(accountsById).filter((accountId) =>
-            allAccountIdsInWallet.includes(accountId),
-          );
-        }
-        return [];
-      },
-    );
-  },
-);
-
-/**
  * Retrieve the wallet ID and name for an account with a given address.
  *
  * @param walletsWithAccounts - The consolidated wallets with accounts.
  * @param address - The address of the account to find.
  * @returns The wallet ID and name for the account, or null if not found.
  */
-export const getWalletIdAndNameByAccountAddress = createDeepEqualSelector(
+export const getWalletIdAndNameByAccountAddress = createParameterizedSelector(
+  ACCOUNT_LRU_CACHE_SIZE,
+)(
   getWalletsWithAccounts,
   (_, address: string) => address,
   (walletsWithAccounts: ConsolidatedWallets, address: string) => {
@@ -309,7 +229,9 @@ export const getWalletIdAndNameByAccountAddress = createDeepEqualSelector(
  * @param accountId - The account group ID to find.
  * @returns The multichain account group object, or undefined if not found.
  */
-export const getMultichainAccountGroupById = createDeepEqualSelector(
+export const getMultichainAccountGroupById = createParameterizedSelector(
+  SINGLE_LOOKUP_LRU_CACHE_SIZE,
+)(
   getAccountTree,
   (_, accountId: AccountGroupId) => accountId,
   (accountTree: AccountTreeState, accountId: AccountGroupId) => {
@@ -332,7 +254,7 @@ export const getMultichainAccountGroupById = createDeepEqualSelector(
  * @param accountTree - Account tree state.
  * @returns Array of all account groups.
  */
-export const getAllAccountGroups = createDeepEqualSelector(
+export const getAllAccountGroups = createSelector(
   getAccountTree,
   (accountTree: AccountTreeState) => {
     const { wallets } = accountTree;
@@ -353,7 +275,7 @@ export const getAllAccountGroups = createDeepEqualSelector(
  * @param accountGroups - Array of all account groups.
  * @returns Array of multichain account groups.
  */
-export const getMultichainAccountGroups = createDeepEqualSelector(
+export const getMultichainAccountGroups = createSelector(
   getAllAccountGroups,
   (accountGroups: AccountGroupObject[]) => {
     return accountGroups.filter((group) =>
@@ -368,7 +290,7 @@ export const getMultichainAccountGroups = createDeepEqualSelector(
  * @param accountGroups - Array of all account groups.
  * @returns Array of non-multichain account groups.
  */
-export const getSingleAccountGroups = createDeepEqualSelector(
+export const getSingleAccountGroups = createSelector(
   getAllAccountGroups,
   (accountGroups: AccountGroupObject[]) => {
     return accountGroups.filter(
@@ -384,7 +306,7 @@ export const getSingleAccountGroups = createDeepEqualSelector(
  * @param internalAccounts - Array of internal accounts.
  * @returns Array of account groups with internal accounts instead of account IDs.
  */
-export const getAccountGroupWithInternalAccounts = createDeepEqualSelector(
+export const getAccountGroupWithInternalAccounts = createSelector(
   getAllAccountGroups,
   getInternalAccounts,
   (
@@ -416,7 +338,7 @@ export const getAccountGroupWithInternalAccounts = createDeepEqualSelector(
  * @param internalAccounts - Array of internal accounts.
  * @returns Map from multichain account group IDs to scope-to-CAIP account ID mappings.
  */
-export const getMultichainAccountsToScopesMap = createDeepEqualSelector(
+export const getMultichainAccountsToScopesMap = createSelector(
   getMultichainAccountGroups,
   getInternalAccounts,
   (
@@ -466,22 +388,20 @@ export const getMultichainAccountsToScopesMap = createDeepEqualSelector(
  * @param scope - The CAIP chain ID scope to find.
  * @returns The CAIP-25 account ID, or undefined if not found.
  */
-export const getCaip25IdByAccountGroupAndScope = createDeepEqualSelector(
+export const getCaip25IdByAccountGroupAndScope = createParameterizedSelector(
+  SINGLE_LOOKUP_LRU_CACHE_SIZE,
+)(
   getMultichainAccountsToScopesMap,
-  (_, accountGroup: AccountGroupObject, scope: CaipChainId) => ({
-    accountGroup,
-    scope,
-  }),
+  (_state, accountGroup: AccountGroupObject, _scope: CaipChainId) =>
+    accountGroup.id,
+  (_state, _accountGroup: AccountGroupObject, scope: CaipChainId) => scope,
   (
     multichainAccountsToScopesMap: MultichainAccountGroupToScopesMap,
-    {
-      accountGroup,
-      scope,
-    }: { accountGroup: AccountGroupObject; scope: CaipChainId },
+    accountGroupId: AccountGroupId,
+    scope: CaipChainId,
   ) => {
-    const multichainAccountGroup = multichainAccountsToScopesMap.get(
-      accountGroup.id,
-    );
+    const multichainAccountGroup =
+      multichainAccountsToScopesMap.get(accountGroupId);
     if (!multichainAccountGroup) {
       return undefined;
     }
@@ -594,20 +514,18 @@ const getInternalAccountFromGroup = (
  * @param caipChainId - The CAIP chain ID to search for.
  * @returns The internal account object, or null if not found.
  */
-export const getInternalAccountByGroupAndCaip = createDeepEqualSelector(
+export const getInternalAccountByGroupAndCaip = createParameterizedSelector(
+  CHAIN_LRU_CACHE_SIZE,
+)(
   getAccountTree,
   getInternalAccountsObject,
-  (_, groupId: AccountGroupId, caipChainId: CaipChainId) => ({
-    groupId,
-    caipChainId,
-  }),
+  (_state, groupId: AccountGroupId) => groupId,
+  (_state, _groupId: AccountGroupId, caipChainId: CaipChainId) => caipChainId,
   (
     accountTree: AccountTreeState,
     internalAccounts: Record<AccountId, InternalAccount>,
-    {
-      groupId,
-      caipChainId,
-    }: { groupId: AccountGroupId; caipChainId: CaipChainId },
+    groupId: AccountGroupId,
+    caipChainId: CaipChainId,
   ) => {
     const { wallets } = accountTree;
     const group = getGroupByGroupId(wallets, groupId);
@@ -622,7 +540,7 @@ export const getInternalAccountByGroupAndCaip = createDeepEqualSelector(
  * @param accountTree - The account tree state.
  * @returns The selected account group, or null if not found.
  */
-export const getSelectedAccountGroup = createDeepEqualSelector(
+export const getSelectedAccountGroup = createSelector(
   getAccountTree,
   (accountTree: AccountTreeState) => accountTree.selectedAccountGroup,
 );
@@ -634,7 +552,7 @@ export const getSelectedAccountGroup = createDeepEqualSelector(
  * @returns The internal account object, or null if not found.
  */
 export const getInternalAccountBySelectedAccountGroupAndCaip =
-  createDeepEqualSelector(
+  createParameterizedSelector(CHAIN_LRU_CACHE_SIZE)(
     getAccountTree,
     getInternalAccountsObject,
     getSelectedAccountGroup,
@@ -700,7 +618,9 @@ export const getMultichainAccountsByWalletId = createSelector(
  * @param groupId - The ID of the account group.
  * @returns Array of internal accounts in the specified group, or empty array if not found.
  */
-export const getInternalAccountsFromGroupById = createSelector(
+export const getInternalAccountsFromGroupById = createParameterizedSelector(
+  GROUP_LRU_CACHE_SIZE,
+)(
   getAccountTree,
   getInternalAccountsObject,
   (_, groupId: AccountGroupId) => groupId,
@@ -769,7 +689,7 @@ export const getAccountGroupsByAddress = createDeepEqualSelector(
  * @returns An array of internal accounts spread across different network scopes.
  */
 export const getInternalAccountListSpreadByScopesByGroupId =
-  createDeepEqualSelector(
+  createParameterizedShallowEqualSelector(GROUP_LRU_CACHE_SIZE)(
     [
       getInternalAccountsFromGroupById,
       getMultichainNetworkConfigurationsByChainId,
@@ -833,7 +753,9 @@ export const getInternalAccountListSpreadByScopesByGroupId =
  * @param groupId - The account group ID.
  * @returns The number of accounts in the group, or 0 if the group is not found.
  */
-export const getNetworkAddressCount = createDeepEqualSelector(
+export const getNetworkAddressCount = createParameterizedSelector(
+  SINGLE_LOOKUP_LRU_CACHE_SIZE,
+)(
   [getInternalAccountListSpreadByScopesByGroupId],
   (
     accounts: {
@@ -858,24 +780,63 @@ export const getNetworkAddressCount = createDeepEqualSelector(
  * @returns The address to be used as seed for the icon generation.
  * @throws If no accounts are found in the specified group.
  */
-export const getIconSeedAddressByAccountGroupId = createDeepEqualSelector(
-  [getInternalAccountsFromGroupById],
-  (accounts: InternalAccount[]): string => {
-    if (!accounts || accounts.length === 0) {
-      return '';
-    }
-
-    for (const account of accounts) {
-      if (isEvmAccountType(account.type)) {
-        // Prefer an EVM account if available
-        return account.address;
+export const getIconSeedAddressByAccountGroupId =
+  createParameterizedShallowEqualSelector(GROUP_LRU_CACHE_SIZE)(
+    [getInternalAccountsFromGroupById],
+    (accounts: InternalAccount[]): string => {
+      if (!accounts || accounts.length === 0) {
+        return '';
       }
-    }
 
-    // In case there are no EVM accounts in the group. We return the first account's address.
-    return accounts[0].address;
-  },
-);
+      for (const account of accounts) {
+        if (isEvmAccountType(account.type)) {
+          // Prefer an EVM account if available
+          return account.address;
+        }
+      }
+
+      // In case there are no EVM accounts in the group. We return the first account's address.
+      return accounts[0].address;
+    },
+  );
+
+/**
+ * Get the address and scopes for the account group that matches the user's default address scope
+ * (e.g. eip155, bip122). Used when showing the "default address" in the UI.
+ *
+ * @param state
+ * @returns Object with address (or null if none) and scopes (list of matching scope IDs).
+ */
+export const getDefaultScopeAndAddressByAccountGroupId =
+  createParameterizedSelector(GROUP_LRU_CACHE_SIZE)(
+    [
+      getInternalAccountListSpreadByScopesByGroupId,
+      (state: MetaMaskReduxState) => getPreferences(state).defaultAddressScope,
+    ],
+    (
+      spreadList: {
+        account: InternalAccount;
+        scope: CaipChainId;
+        networkName: string;
+      }[],
+      defaultScope: DefaultAddressScope,
+    ): { defaultAddress: string | null; defaultScopes: CaipChainId[] } => {
+      let defaultAddress: string | null = null;
+      const defaultScopes: CaipChainId[] = [];
+      for (const x of spreadList) {
+        if (!String(x.scope).startsWith(defaultScope)) {
+          continue;
+        }
+        if (defaultAddress === null) {
+          defaultAddress = x.account.address;
+        }
+        if (x.account.address === defaultAddress) {
+          defaultScopes.push(x.scope);
+        }
+      }
+      return { defaultAddress, defaultScopes };
+    },
+  );
 
 /**
  * Get the seed addresses for multiple account groups at once.
@@ -906,3 +867,103 @@ export const getIconSeedAddressesByAccountGroups = (
 
   return seedAddresses;
 };
+
+/**
+ * Retrieve wallet IDs from account tree state by type.
+ * In case no type is provided it returns all wallet IDs.
+ *
+ * @param state - Redux state.
+ * @param state.metamask - MetaMask state object.
+ * @param state.metamask.accountTree - Account tree state object.
+ * @param walletId - The ID of the wallet to retrieve.
+ * @returns Wallet object from account tree state.
+ */
+export const getWalletIdsByType = createSelector(
+  (state: MultichainAccountsState) => state.metamask?.accountTree?.wallets,
+  (_, walletType?: AccountWalletType) => walletType,
+  (
+    wallets: Record<AccountWalletId, AccountWalletObject>,
+    walletType?: AccountWalletType,
+  ): AccountWalletId[] => {
+    if (!wallets) {
+      return [];
+    }
+
+    if (!walletType) {
+      // return all wallet IDs if no type is specified
+      return Object.keys(wallets) as AccountWalletId[];
+    }
+
+    return Object.entries(wallets)
+      .filter(([, wallet]) => wallet.type === walletType)
+      .map(([walletId]) => walletId) as AccountWalletId[];
+  },
+);
+
+/**
+ * Get the account group display name for a given address.
+ * Returns the account group name (e.g., "Account 3") rather than
+ * the internal account name (e.g., "Snap Account 11").
+ *
+ * @param state - Redux state.
+ * @param address - The address to look up.
+ * @returns The account group name, internal account name, or undefined.
+ */
+export function selectAccountGroupNameByAddress(
+  state: unknown,
+  address?: string,
+) {
+  if (!address) {
+    return undefined;
+  }
+
+  const typedState = state as MultichainAccountsState;
+  const internalAccounts = getInternalAccounts(typedState);
+  const accountGroups = getAllAccountGroups(typedState);
+
+  const internalAccount = internalAccounts.find(
+    (acc) => acc.address.toLowerCase() === address.toLowerCase(),
+  );
+
+  if (!internalAccount) {
+    return undefined;
+  }
+
+  const accountGroup = accountGroups.find((group) =>
+    group.accounts.includes(internalAccount.id),
+  );
+
+  return accountGroup?.metadata.name ?? internalAccount.metadata.name;
+}
+
+/**
+ * Get account list statistics (pinned count, hidden count, total accounts).
+ * Used for analytics tracking in the account list views.
+ *
+ * @param accountTree - Account tree state.
+ * @returns Object with pinnedCount, hiddenCount, and totalAccounts.
+ */
+export const getAccountListStats = createSelector(
+  getAccountTree,
+  (accountTree: AccountTreeState): AccountListStats => {
+    let pinnedCount = 0;
+    let hiddenCount = 0;
+    let totalAccounts = 0;
+
+    if (accountTree?.wallets) {
+      for (const wallet of Object.values(accountTree.wallets)) {
+        for (const group of Object.values(wallet.groups || {})) {
+          totalAccounts += 1;
+          if (group.metadata?.pinned) {
+            pinnedCount += 1;
+          }
+          if (group.metadata?.hidden) {
+            hiddenCount += 1;
+          }
+        }
+      }
+    }
+
+    return { pinnedCount, hiddenCount, totalAccounts };
+  },
+);

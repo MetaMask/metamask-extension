@@ -1,191 +1,48 @@
 import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
 
-import SendSolanaPage from '../../page-objects/pages/send/solana-send-page';
-import ConfirmSolanaTxPage from '../../page-objects/pages/send/solana-confirm-tx-page';
-import SolanaTxresultPage from '../../page-objects/pages/send/solana-tx-result-page';
+import SendPage from '../../page-objects/pages/send/send-page';
+import SnapTransactionConfirmation from '../../page-objects/pages/confirmations/snap-transaction-confirmation';
+import ActivityListPage from '../../page-objects/pages/home/activity-list';
 import NonEvmHomepage from '../../page-objects/pages/home/non-evm-homepage';
-import { withSolanaAccountSnap } from './common-solana';
+import { SOLANA_MAINNET_SCOPE } from '../../constants';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
+import { withFixtures } from '../../helpers';
+import { login } from '../../page-objects/flows/login.flow';
+import { switchToNetworkFromNetworkSelect } from '../../page-objects/flows/network.flow';
+import { buildSolanaTestSpecificMock } from './common-solana';
 
 const commonSolanaAddress = 'GYP1hGem9HBkYKEWNUQUxEwfmu4hhjuujRgGnj5LrHna';
 
-// BUG #37824 - With BIP44 turned on mocking Solana network responses no longer works
-// eslint-disable-next-line mocha/no-skipped-tests
-describe.skip('Send flow', function (this: Suite) {
+describe('Send flow', function (this: Suite) {
   it('with some field validation', async function () {
     this.timeout(120000);
-    await withSolanaAccountSnap(
+    await withFixtures(
       {
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
-        showNativeTokenAsMainBalance: true,
-        mockZeroBalance: true,
       },
-      async (driver) => {
+      async ({ driver }) => {
+        await login(driver);
         const homePage = new NonEvmHomepage(driver);
+        const sendPage = new SendPage(driver);
+
+        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Solana');
         await homePage.checkPageIsLoaded({ amount: '0' });
         await homePage.clickOnSendButton();
-        const sendSolanaPage = new SendSolanaPage(driver);
-        await sendSolanaPage.checkPageIsLoaded();
+        await sendPage.checkSolanaNetworkIsPresent();
+        await sendPage.selectToken(SOLANA_MAINNET_SCOPE, 'SOL');
+
+        await sendPage.fillRecipient('2433asd');
+        await sendPage.checkInvalidAddressError();
+
+        await sendPage.fillRecipient(commonSolanaAddress);
+        await sendPage.fillAmount('1');
+        await sendPage.checkInsufficientFundsError();
         assert.equal(
-          await sendSolanaPage.isContinueButtonEnabled(),
+          await sendPage.isContinueButtonEnabled(),
           false,
           'Continue button is enabled and it shouldn`t',
-        );
-        await sendSolanaPage.setToAddress('2433asd');
-        assert.equal(
-          await sendSolanaPage.checkValidationErrorAppears(
-            'Invalid Solana address or domain name',
-          ),
-          true,
-          'Invalid Solana address should appear and it does not',
-        );
-        await sendSolanaPage.clearToAddress();
-        await sendSolanaPage.setToAddress(commonSolanaAddress);
-        await sendSolanaPage.setAmount('1');
-        assert.equal(
-          await sendSolanaPage.checkValidationErrorAppears(
-            'Insufficient balance',
-          ),
-          true,
-          'Insufficient balance text is not displayed',
-        );
-        await sendSolanaPage.clearToAddress();
-        assert.equal(
-          await sendSolanaPage.isContinueButtonEnabled(),
-          false,
-          'Continue button is enabled and it shouldn`t',
-        );
-        assert.equal(
-          await sendSolanaPage.isAmountInputDisplayed(),
-          false,
-          'Amount input should appear and it does not',
-        );
-      },
-    );
-  });
-
-  it('full flow of USD with a positive balance account', async function () {
-    this.timeout(120000);
-    await withSolanaAccountSnap(
-      {
-        title: this.test?.fullTitle(),
-        showNativeTokenAsMainBalance: true,
-        mockGetTransactionSuccess: true,
-      },
-      async (driver) => {
-        const homePage = new NonEvmHomepage(driver);
-        await homePage.checkPageIsLoaded({ amount: '50' });
-        assert.equal(
-          await homePage.checkIfSendButtonIsClickable(),
-          true,
-          'Send button is not enabled and it should',
-        );
-        assert.equal(
-          await homePage.checkIfSwapButtonIsClickable(),
-          true,
-          'Swap button is not enabled and it should',
-        );
-        await homePage.clickOnSendButton();
-        const sendSolanaPage = new SendSolanaPage(driver);
-        await sendSolanaPage.checkPageIsLoaded();
-        assert.equal(
-          await sendSolanaPage.isContinueButtonEnabled(),
-          false,
-          'Continue button is enabled when no address nor amount',
-        );
-        await sendSolanaPage.setToAddress(commonSolanaAddress);
-        assert.equal(
-          await sendSolanaPage.isContinueButtonEnabled(),
-          false,
-          'Continue button is enabled when no address',
-        );
-        await sendSolanaPage.clickOnSwapCurrencyButton();
-        assert.equal(
-          await sendSolanaPage.isContinueButtonEnabled(),
-          false,
-          'Continue button is enabled when no address nor amount',
-        );
-
-        await sendSolanaPage.setAmount('10');
-
-        const confirmSolanaPage = new ConfirmSolanaTxPage(driver);
-        await sendSolanaPage.clickOnContinue();
-        assert.equal(
-          await confirmSolanaPage.checkAmountDisplayed('0.0886'),
-          true,
-          'Check amount displayed is wrong',
-        );
-        assert.equal(
-          await confirmSolanaPage.isTransactionDetailDisplayed('From'),
-          true,
-          'From is not displayed and it should',
-        );
-
-        assert.equal(
-          await confirmSolanaPage.isTransactionDetailDisplayed('Recipient'),
-          true,
-          'Recipient is not displayed and it should',
-        );
-        assert.equal(
-          await confirmSolanaPage.isTransactionDetailDisplayed('Network'),
-          true,
-          'Network is not displayed and it should',
-        );
-        assert.equal(
-          await confirmSolanaPage.isTransactionDetailDisplayed(
-            'Transaction speed',
-          ),
-          true,
-          'Transaction speed is not displayed and it should',
-        );
-
-        assert.equal(
-          await confirmSolanaPage.isTransactionDetailDisplayed('Network fee'),
-          true,
-          'Network fee is not displayed and it should',
-        );
-        await confirmSolanaPage.clickOnSend();
-
-        const sentTxPage = new SolanaTxresultPage(driver);
-        assert.equal(
-          await sentTxPage.checkTransactionStatusText('0.0886', true),
-          true,
-          'Transaction amount is not correct',
-        );
-        assert.equal(
-          await sentTxPage.checkTransactionStatus(true),
-          true,
-          'Transaction was not sent as expected',
-        );
-        assert.equal(
-          await sentTxPage.isTransactionDetailDisplayed('From'),
-          true,
-          'From field not displayed and it should',
-        );
-        assert.equal(
-          await sentTxPage.isTransactionDetailDisplayed('Recipient'),
-          true,
-          'Recipient field not displayed and it should',
-        );
-        assert.equal(
-          await sentTxPage.isTransactionDetailDisplayed('Network'),
-          true,
-          'Network field not displayed and it should',
-        );
-        assert.equal(
-          await sentTxPage.isTransactionDetailDisplayed('Transaction speed'),
-          true,
-          'Transaction field not displayed and it should',
-        );
-        assert.equal(
-          await sentTxPage.isTransactionDetailDisplayed('Network fee'),
-          true,
-          'Network fee field not displayed',
-        );
-        assert.equal(
-          await sentTxPage.checkIsViewTransactionLinkDisplayed(),
-          true,
-          'View transaction link is not displayed and it should',
         );
       },
     );
@@ -193,179 +50,100 @@ describe.skip('Send flow', function (this: Suite) {
 
   it('full flow of SOL with a positive balance account', async function () {
     this.timeout(120000);
-    await withSolanaAccountSnap(
+    await withFixtures(
       {
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
-        showNativeTokenAsMainBalance: true,
-        mockGetTransactionSuccess: true,
+        testSpecificMock: buildSolanaTestSpecificMock({
+          mockGetTransactionSuccess: true,
+        }),
       },
-      async (driver) => {
+      async ({ driver }) => {
+        await login(driver);
         const homePage = new NonEvmHomepage(driver);
+        const sendPage = new SendPage(driver);
+
+        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Solana');
         await homePage.checkPageIsLoaded({ amount: '50' });
-        assert.equal(
-          await homePage.checkIfSendButtonIsClickable(),
-          true,
-          'Send button is not enabled and it should',
-        );
-        assert.equal(
-          await homePage.checkIfSwapButtonIsClickable(),
-          true,
-          'Swap button is not enabled and it should',
-        );
         await homePage.clickOnSendButton();
-        const sendSolanaPage = new SendSolanaPage(driver);
-        // await sendSolanaPage.checkPageIsLoaded('50 SOL');
+        await sendPage.checkSolanaNetworkIsPresent();
+        await sendPage.selectToken(SOLANA_MAINNET_SCOPE, 'SOL');
+
         assert.equal(
-          await sendSolanaPage.isContinueButtonEnabled(),
+          await sendPage.isContinueButtonEnabled(),
           false,
           'Continue button is enabled when no address nor amount',
         );
-        await sendSolanaPage.setToAddress(commonSolanaAddress);
+        await sendPage.fillRecipient(commonSolanaAddress);
+        await sendPage.fillAmount('0.1');
         assert.equal(
-          await sendSolanaPage.isContinueButtonEnabled(),
-          false,
-          'Continue button is enabled when no address',
-        );
-        await sendSolanaPage.setAmount('0.1');
-        const confirmSolanaPage = new ConfirmSolanaTxPage(driver);
-        await sendSolanaPage.clickOnContinue();
-        assert.equal(
-          await confirmSolanaPage.checkAmountDisplayed('0.1'),
+          await sendPage.isContinueButtonEnabled(),
           true,
-          'Check amount displayed is wrong',
-        );
-        assert.equal(
-          await confirmSolanaPage.isTransactionDetailDisplayed('From'),
-          true,
-          'From is not displayed and it should',
-        );
-        assert.equal(
-          await confirmSolanaPage.isTransactionDetailDisplayed('Recipient'),
-          true,
-          'Recipient is not displayed and it should',
-        );
-        assert.equal(
-          await confirmSolanaPage.isTransactionDetailDisplayed('Network'),
-          true,
-          'Network is not displayed and it should',
-        );
-        assert.equal(
-          await confirmSolanaPage.isTransactionDetailDisplayed(
-            'Transaction speed',
-          ),
-          true,
-          'Transaction speed is not displayed and it should',
+          'Continue button should be enabled',
         );
 
-        assert.equal(
-          await confirmSolanaPage.isTransactionDetailDisplayed('Network fee'),
-          true,
-          'Network fee is not displayed and it should',
-        );
-        await confirmSolanaPage.clickOnSend();
-        const sentTxPage = new SolanaTxresultPage(driver);
-        assert.equal(
-          await sentTxPage.checkTransactionStatusText('0.1', true),
-          true,
-          'Transaction amount is not correct',
-        );
-        assert.equal(
-          await sentTxPage.checkTransactionStatus(true),
-          true,
-          'Transaction was not sent as expected',
-        );
-        assert.equal(
-          await sentTxPage.isTransactionDetailDisplayed('From'),
-          true,
-          'From field not displayed and it should',
-        );
-        assert.equal(
-          await sentTxPage.isTransactionDetailDisplayed('Recipient'),
-          true,
-          'Recipient field not displayed and it should',
-        );
-        assert.equal(
-          await sentTxPage.isTransactionDetailDisplayed('Network'),
-          true,
-          'Network field not displayed and it should',
-        );
-        assert.equal(
-          await sentTxPage.isTransactionDetailDisplayed('Transaction speed'),
-          true,
-          'Transaction field not displayed and it should',
-        );
-        assert.equal(
-          await sentTxPage.isTransactionDetailDisplayed('Network fee'),
-          true,
-          'Network fee field not displayed',
-        );
-        assert.equal(
-          await sentTxPage.checkIsViewTransactionLinkDisplayed(),
-          true,
-          'View transaction link is not displayed and it should',
-        );
+        await sendPage.pressContinueButton();
+
+        const confirmation = new SnapTransactionConfirmation(driver);
+        await confirmation.checkPageIsLoaded();
+        await confirmation.checkAccountIsDisplayed('Account 1');
+        await confirmation.clickFooterConfirmButton();
+
+        const activityList = new ActivityListPage(driver);
+        await activityList.checkTxAction({ action: 'Sent' });
+        await activityList.checkTxAmountInActivity('-0.00708 SOL', 1);
+        await activityList.checkNoFailedTransactions();
       },
     );
   });
 
   it('and transaction fails', async function () {
     this.timeout(120000);
-    await withSolanaAccountSnap(
+    await withFixtures(
       {
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
-        showNativeTokenAsMainBalance: true,
-        mockGetTransactionFailed: true,
+        testSpecificMock: buildSolanaTestSpecificMock({
+          mockGetTransactionFailed: true,
+        }),
       },
-      async (driver) => {
+      async ({ driver }) => {
+        await login(driver);
         const homePage = new NonEvmHomepage(driver);
-        await homePage.checkGetBalance('50', 'SOL');
+        const sendPage = new SendPage(driver);
+
+        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Solana');
+        await homePage.checkPageIsLoaded({ amount: '50' });
         await homePage.clickOnSendButton();
+        await sendPage.checkSolanaNetworkIsPresent();
+        await sendPage.selectToken(SOLANA_MAINNET_SCOPE, 'SOL');
 
-        const sendSolanaPage = new SendSolanaPage(driver);
-        // await sendSolanaPage.checkPageIsLoaded('50 SOL');
-        await sendSolanaPage.setToAddress(commonSolanaAddress);
-        await sendSolanaPage.setAmount('0.1');
-        // assert.equal(await sendSolanaPage.isContinueButtonEnabled(), true, "Continue button is not enabled when address and amount are set");
-        await sendSolanaPage.clickOnContinue();
-        const confirmSolanaPage = new ConfirmSolanaTxPage(driver);
+        assert.equal(
+          await sendPage.isContinueButtonEnabled(),
+          false,
+          'Continue button is enabled when no address nor amount',
+        );
+        await sendPage.fillRecipient(commonSolanaAddress);
+        await sendPage.fillAmount('0.1');
+        assert.equal(
+          await sendPage.isContinueButtonEnabled(),
+          true,
+          'Continue button should be enabled',
+        );
 
-        await confirmSolanaPage.clickOnSend();
-        const failedTxPage = new SolanaTxresultPage(driver);
-        assert.equal(
-          await failedTxPage.checkTransactionStatusText('0.1', false),
-          true,
-          'Transaction amount is not correct',
-        );
-        assert.equal(
-          await failedTxPage.checkTransactionStatus(false),
-          true,
-          'Transaction did not fail as expected',
-        );
-        assert.equal(
-          await failedTxPage.isTransactionDetailDisplayed('From'),
-          true,
-          'From field not displayed and it should',
-        );
-        assert.equal(
-          await failedTxPage.isTransactionDetailDisplayed('Recipient'),
-          true,
-          'Recipient field not displayed and it should',
-        );
-        assert.equal(
-          await failedTxPage.isTransactionDetailDisplayed('Network'),
-          true,
-          'Network field not displayed and it should',
-        );
-        assert.equal(
-          await failedTxPage.isTransactionDetailDisplayed('Transaction speed'),
-          true,
-          'Transaction field not displayed and it should',
-        );
-        assert.equal(
-          await failedTxPage.isTransactionDetailDisplayed('Network fee'),
-          true,
-          'Network fee field not displayed and it should',
-        );
+        await sendPage.pressContinueButton();
+
+        const confirmation = new SnapTransactionConfirmation(driver);
+        await confirmation.checkPageIsLoaded();
+        await confirmation.checkAccountIsDisplayed('Account 1');
+        await confirmation.checkSecurityAlertsErrorIsDisplayed();
+        await confirmation.clickFooterConfirmButton();
+        const activityList = new ActivityListPage(driver);
+        await activityList.checkFailedTxNumberDisplayedInActivity();
+        await activityList.checkTxAction({
+          action: 'Interaction',
+          confirmedTx: 0,
+        });
       },
     );
   });

@@ -159,9 +159,6 @@
     "message": "U moet een bestand selecteren om te importeren.",
     "description": "User is important an account and needs to add a file to continue"
   },
-  "negativeETH": {
-    "message": "Kan geen negatieve hoeveelheden ETH verzenden."
-  },
   "networks": {
     "message": "netwerken"
   },

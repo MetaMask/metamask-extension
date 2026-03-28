@@ -1,19 +1,15 @@
-import React, { type ReactNode } from 'react';
-import { Header } from './header';
+import React from 'react';
+import { Outlet } from 'react-router-dom';
 
 /**
  * Temporary layout until we migrate each page that uses this.
  *
- * @param props - Props
- * @param props.children - Child component to render
  * @returns Component wrapped in legacy structure
  */
-export const LegacyLayout = ({ children }: { children: ReactNode }) => {
+export const LegacyLayout = () => {
   return (
-    <>
-      <Header />
-
-      <div className="mm-box main-container-wrapper">{children}</div>
-    </>
+    <div className="mm-box main-container-wrapper">
+      <Outlet />
+    </div>
   );
 };

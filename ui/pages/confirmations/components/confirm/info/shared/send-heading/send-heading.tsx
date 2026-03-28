@@ -8,13 +8,12 @@ import {
   Box,
   Text,
 } from '../../../../../../../components/component-library';
+import { Skeleton } from '../../../../../../../components/component-library/skeleton';
 import Tooltip from '../../../../../../../components/ui/tooltip';
 import {
   AlignItems,
   BackgroundColor,
   Display,
-  FlexDirection,
-  JustifyContent,
   TextColor,
   TextVariant,
 } from '../../../../../../../helpers/constants/design-system';
@@ -24,6 +23,7 @@ import { useConfirmContext } from '../../../../../context/confirm';
 import { useTokenValues } from '../../hooks/use-token-values';
 import { useSendingValueMetric } from '../../hooks/useSendingValueMetric';
 import { useTokenDetails } from '../../hooks/useTokenDetails';
+import SendHeadingLayout from '../send-heading-layout/send-heading-layout';
 
 const SendHeading = () => {
   const t = useI18nContext();
@@ -35,6 +35,7 @@ const SendHeading = () => {
     displayTransferValue,
     fiatDisplayValue,
     fiatValue,
+    pending,
   } = useTokenValues(transactionMeta);
 
   type TestNetChainId = (typeof TEST_CHAINS)[number];
@@ -61,45 +62,61 @@ const SendHeading = () => {
     />
   );
 
+  const TokenValueSkeleton = (
+    <Box display={Display.InlineFlex} alignItems={AlignItems.center} gap={2}>
+      <Skeleton width={40} height={32} />
+      {tokenSymbol}
+    </Box>
+  );
+
+  const TokenValueContent = pending
+    ? TokenValueSkeleton
+    : `${displayTransferValue} ${tokenSymbol}`;
+
   const TokenValue =
-    displayTransferValue === decodedTransferValue ? (
+    pending || displayTransferValue === decodedTransferValue ? (
       <Text
         variant={TextVariant.headingLg}
         color={TextColor.inherit}
-        marginTop={3}
-      >{`${displayTransferValue} ${tokenSymbol}`}</Text>
+        paddingBottom={1}
+      >
+        {TokenValueContent}
+      </Text>
     ) : (
       <Tooltip title={decodedTransferValue} position="right">
         <Text
           variant={TextVariant.headingLg}
           color={TextColor.inherit}
-          marginTop={3}
-        >{`${displayTransferValue} ${tokenSymbol}`}</Text>
+          paddingBottom={1}
+        >
+          {TokenValueContent}
+        </Text>
       </Tooltip>
     );
 
-  const TokenFiatValue = Boolean(fiatDisplayValue) &&
-    (!isTestnet || showFiatInTestnets) && (
-      <Text variant={TextVariant.bodyMd} color={TextColor.textAlternative}>
-        {fiatDisplayValue}
-      </Text>
-    );
+  const showFiatValue = !isTestnet || showFiatInTestnets;
+
+  const TokenFiatValueSkeleton = (
+    <Skeleton width={48} height={22} style={{ marginBottom: '2px' }} />
+  );
+
+  const TokenFiatValue =
+    showFiatValue &&
+    (pending
+      ? TokenFiatValueSkeleton
+      : Boolean(fiatDisplayValue) && (
+          <Text variant={TextVariant.bodyMd} color={TextColor.textAlternative}>
+            {fiatDisplayValue}
+          </Text>
+        ));
 
   useSendingValueMetric({ transactionMeta, fiatValue });
 
   return (
-    <Box
-      display={Display.Flex}
-      flexDirection={FlexDirection.Column}
-      justifyContent={JustifyContent.center}
-      alignItems={AlignItems.center}
-      padding={4}
-      marginBottom={2}
-    >
-      {TokenImage}
+    <SendHeadingLayout image={TokenImage}>
       {TokenValue}
       {TokenFiatValue}
-    </Box>
+    </SendHeadingLayout>
   );
 };
 

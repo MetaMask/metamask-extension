@@ -11,12 +11,12 @@ import {
   veryLargeDelayMs,
 } from '../../helpers';
 import { WINDOW_TITLES } from '../../constants';
-import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { Driver } from '../../webdriver/driver';
 import HomePage from '../../page-objects/pages/home/homepage';
 import MockedPage from '../../page-objects/pages/mocked-page';
 import PhishingWarningPage from '../../page-objects/pages/phishing-warning-page';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import {
   setupPhishingDetectionMocks,
@@ -53,7 +53,7 @@ describe('Phishing Detection', function (this: Suite) {
     }
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
         testSpecificMock: async (mockServer: Mockttp) => {
           return setupPhishingDetectionMocks(mockServer, {
@@ -67,7 +67,7 @@ describe('Phishing Detection', function (this: Suite) {
         dappOptions: { numberOfTestDapps: 1 },
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
 
@@ -91,7 +91,7 @@ describe('Phishing Detection', function (this: Suite) {
 
     const getFixtureOptions = (overrides: Record<string, unknown>) => {
       return {
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilderV2().build(),
         testSpecificMock: async (mockServer: Mockttp) => {
           return setupPhishingDetectionMocks(mockServer, {
             statusCode: 200,
@@ -121,7 +121,7 @@ describe('Phishing Detection', function (this: Suite) {
           },
         }),
         async ({ driver }) => {
-          await loginWithBalanceValidation(driver);
+          await login(driver);
           await driver.openNewPage(DAPP_WITH_IFRAMED_PAGE_ON_BLOCKLIST);
           // we don't expect the iframe because early-phishing-detection redirects
           // the top level frame automatically.
@@ -150,10 +150,14 @@ describe('Phishing Detection', function (this: Suite) {
           },
         }),
         async ({ driver }) => {
-          await loginWithBalanceValidation(driver);
+          await login(driver);
           await driver.openNewPage(DAPP_WITH_IFRAMED_PAGE_ON_BLOCKLIST);
           const phishingWarningPage = new PhishingWarningPage(driver);
           await phishingWarningPage.clickOpenWarningInNewTabLinkOnIframe();
+          await driver.switchToWindowWithTitle(
+            WINDOW_TITLES.ExtensionInFullScreenView,
+          );
+          await new HomePage(driver).checkPageIsLoaded();
 
           await driver.switchToWindowWithTitle('MetaMask Phishing Detection');
           await phishingWarningPage.checkPageIsLoaded();
@@ -167,7 +171,7 @@ describe('Phishing Detection', function (this: Suite) {
   it('should display the MetaMask Phishing Detection page in an iframe but should NOT take the user to the blocked page if it is not an accessible resource', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
         testSpecificMock: async (mockServer: Mockttp) => {
           return setupPhishingDetectionMocks(mockServer, {
@@ -185,7 +189,7 @@ describe('Phishing Detection', function (this: Suite) {
         },
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
         await driver.openNewPage(
           `http://localhost:8080?extensionUrl=${driver.extensionUrl}`,
         );
@@ -208,7 +212,7 @@ describe('Phishing Detection', function (this: Suite) {
   it('should navigate the user to eth-phishing-detect to dispute a block if the phishing warning page fails to identify the source', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
         testSpecificMock: (mockServer: Mockttp) => {
           setupPhishingDetectionMocks(mockServer, {
@@ -223,7 +227,7 @@ describe('Phishing Detection', function (this: Suite) {
         dappOptions: { numberOfTestDapps: 1 },
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
 
@@ -249,7 +253,7 @@ describe('Phishing Detection', function (this: Suite) {
 
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
         testSpecificMock: async (mockServer: Mockttp) => {
           return setupPhishingDetectionMocks(mockServer, {
@@ -263,7 +267,7 @@ describe('Phishing Detection', function (this: Suite) {
         dappOptions: { numberOfTestDapps: 1 },
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
         await driver.openNewPage(phishingSite.href);
 
         await driver.switchToWindowWithTitle('MetaMask Phishing Detection');
@@ -287,7 +291,7 @@ describe('Phishing Detection', function (this: Suite) {
   it('should open MetaMask Portfolio when clicking back to safety button', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
         testSpecificMock: async (mockServer: Mockttp) => {
           return setupPhishingDetectionMocks(mockServer, {
@@ -305,7 +309,7 @@ describe('Phishing Detection', function (this: Suite) {
         },
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
         await driver.openNewPage(
           `http://localhost:8080?extensionUrl=${driver.extensionUrl}`,
         );
@@ -327,7 +331,7 @@ describe('Phishing Detection', function (this: Suite) {
     const testPageURL = 'http://localhost:8080';
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
         testSpecificMock: async (mockServer: Mockttp) => {
           await mockServer.forAnyWebSocket().thenEcho();
@@ -342,7 +346,7 @@ describe('Phishing Detection', function (this: Suite) {
         dappOptions: { numberOfTestDapps: 1 },
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         await driver.openNewPage(testPageURL);
 
@@ -365,7 +369,7 @@ describe('Phishing Detection', function (this: Suite) {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
         testSpecificMock: async (mockServer: Mockttp) => {
           await mockServer.forAnyWebSocket().thenEcho();
@@ -379,7 +383,7 @@ describe('Phishing Detection', function (this: Suite) {
         },
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         await driver.openNewPage(testPageURL);
 
@@ -474,7 +478,7 @@ describe('Phishing Detection', function (this: Suite) {
       const { promise, resolve } = createDeferredPromise<Driver>();
       fixturePromise = withFixtures(
         {
-          fixtures: new FixtureBuilder().build(),
+          fixtures: new FixtureBuilderV2().build(),
           title: this.test?.fullTitle(),
           testSpecificMock: async (mockServer: Mockttp) => {
             await setupPhishingDetectionMocks(mockServer, {
@@ -496,7 +500,7 @@ describe('Phishing Detection', function (this: Suite) {
       // required to ensure MetaMask is fully started before running tests
       // if we had a way of detecting when the offscreen/background were ready
       // we could remove this
-      await loginWithBalanceValidation(driver);
+      await login(driver);
     });
     after('Shut down fixtures', async function () {
       deferredTestSuite.resolve(); // let the fixtures know tests are complete
@@ -545,7 +549,7 @@ describe('Phishing Detection', function (this: Suite) {
       it('displays the MetaMask Phishing Detection page when accessing a blocklisted path', async function () {
         await withFixtures(
           {
-            fixtures: new FixtureBuilder().build(),
+            fixtures: new FixtureBuilderV2().build(),
             title: this.test?.fullTitle(),
             testSpecificMock: async (mockServer: Mockttp) => {
               return setupPhishingDetectionMocks(mockServer, {
@@ -563,7 +567,7 @@ describe('Phishing Detection', function (this: Suite) {
             },
           },
           async ({ driver }) => {
-            await loginWithBalanceValidation(driver);
+            await login(driver);
 
             await driver.openNewPage('http://127.0.0.1:8080/path1/');
             await driver.switchToWindowWithTitle(WINDOW_TITLES.Phishing);
@@ -576,7 +580,7 @@ describe('Phishing Detection', function (this: Suite) {
       it('blocks access to blocklisted subpaths', async function () {
         await withFixtures(
           {
-            fixtures: new FixtureBuilder().build(),
+            fixtures: new FixtureBuilderV2().build(),
             title: this.test?.fullTitle(),
             testSpecificMock: async (mockServer: Mockttp) => {
               return setupPhishingDetectionMocks(mockServer, {
@@ -594,7 +598,7 @@ describe('Phishing Detection', function (this: Suite) {
             },
           },
           async ({ driver }) => {
-            await loginWithBalanceValidation(driver);
+            await login(driver);
 
             await driver.openNewPage('http://127.0.0.1:8080/path1/path2');
 
@@ -613,7 +617,7 @@ describe('Phishing Detection', function (this: Suite) {
         }
         await withFixtures(
           {
-            fixtures: new FixtureBuilder().build(),
+            fixtures: new FixtureBuilderV2().build(),
             title: this.test?.fullTitle(),
             testSpecificMock: async (mockServer: Mockttp) => {
               return setupPhishingDetectionMocks(mockServer, {
@@ -631,7 +635,7 @@ describe('Phishing Detection', function (this: Suite) {
             },
           },
           async ({ driver }) => {
-            await loginWithBalanceValidation(driver);
+            await login(driver);
 
             await driver.openNewPage('http://127.0.0.1:8080/path1/');
             await driver.switchToWindowWithTitle(WINDOW_TITLES.Phishing);
@@ -657,7 +661,7 @@ describe('Phishing Detection', function (this: Suite) {
         }
         await withFixtures(
           {
-            fixtures: new FixtureBuilder().build(),
+            fixtures: new FixtureBuilderV2().build(),
             title: this.test?.fullTitle(),
             testSpecificMock: async (mockServer: Mockttp) => {
               return setupPhishingDetectionMocks(mockServer, {
@@ -675,7 +679,7 @@ describe('Phishing Detection', function (this: Suite) {
             },
           },
           async ({ driver }) => {
-            await loginWithBalanceValidation(driver);
+            await login(driver);
 
             await driver.openNewPage('http://127.0.0.1:8080/path1/path2');
             await driver.switchToWindowWithTitle(WINDOW_TITLES.Phishing);

@@ -1,65 +1,42 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
+import { type AccountGroupId } from '@metamask/account-api';
+
 import mockState from '../../../../../test/data/mock-state.json';
-import { createMockInternalAccount } from '../../../../../test/jest/mocks';
-import { InternalAccountWithBalance } from '../../../../selectors';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
-import { shortenAddress } from '../../../../helpers/utils/util';
 import { SrpListItem } from './srp-list-item';
 
-const mockTotalFiatBalance = '100';
-const mockAccount: InternalAccountWithBalance = {
-  ...createMockInternalAccount({
-    name: 'Test Account',
-    address: '0xB1BAF6A2f4A808937bb97a2F12CCF08F1233e3D9',
-  }),
-  balance: mockTotalFiatBalance,
-};
-
-const mocks = {
-  useMultichainAccountTotalFiatBalance: jest.fn().mockReturnValue({
-    totalFiatBalance: mockTotalFiatBalance,
-  }),
-};
-
-jest.mock('../../../../hooks/useMultichainAccountTotalFiatBalance', () => ({
-  useMultichainAccountTotalFiatBalance: (account: InternalAccountWithBalance) =>
-    mocks.useMultichainAccountTotalFiatBalance(account),
-}));
-jest.mock('../../../../helpers/utils/util', () => ({
-  ...jest.requireActual('../../../../helpers/utils/util'),
-}));
+const mockAccountId = 'mock-account-id' as AccountGroupId;
+const mockAccountName = 'Mock Account Name';
+const mockBalance = '$100.00';
 
 const render = () => {
   const store = configureMockStore([thunk])(mockState);
-  return renderWithProvider(<SrpListItem account={mockAccount} />, store);
+  return renderWithProvider(
+    <SrpListItem
+      accountId={mockAccountId}
+      accountName={mockAccountName}
+      balance={mockBalance}
+    />,
+    store,
+  );
 };
 
 describe('SrpListItem', () => {
-  beforeEach(() => {
-    // Reset mock implementations before each test
-    mocks.useMultichainAccountTotalFiatBalance.mockReturnValue({
-      totalFiatBalance: mockTotalFiatBalance,
-    });
-  });
-
   afterEach(() => {
     jest.clearAllMocks();
   });
 
-  it('renders account name and shortened address', () => {
+  it('renders account name', () => {
     const { getByText } = render();
 
-    expect(getByText(mockAccount.metadata.name)).toBeInTheDocument();
-    expect(getByText(shortenAddress(mockAccount.address))).toBeInTheDocument();
+    expect(getByText(mockAccountName)).toBeInTheDocument();
   });
 
   it('calls useMultichainAccountTotalFiatBalance with correct account', () => {
-    render();
+    const { getByText } = render();
 
-    expect(mocks.useMultichainAccountTotalFiatBalance).toHaveBeenCalledWith(
-      mockAccount,
-    );
+    expect(getByText(mockBalance)).toBeInTheDocument();
   });
 });

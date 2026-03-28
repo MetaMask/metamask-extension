@@ -2,6 +2,7 @@ import React from 'react';
 import { screen } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import WebcamUtils from '../../../helpers/utils/webcam-utils';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import BaseReader from './base-reader';
 import EnhancedReader from './enhanced-reader';
 
@@ -47,7 +48,7 @@ describe('Base Reader', () => {
     );
     renderWithProvider(<BaseReader {...mockBaseReaderData} />);
     await screen.findByText(
-      'Place the QR code in front of your camera. The screen is blurred, but it will not affect the reading.',
+      messages.QRHardwareScanInstructions.message,
       undefined,
       {
         timeout: 5000,

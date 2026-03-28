@@ -53,7 +53,6 @@ describe('SnapControllerInit', () => {
     expect(controllerMock).toHaveBeenCalledWith({
       messenger: expect.any(Object),
       state: undefined,
-      closeAllConnections: expect.any(Function),
       encryptor: expect.any(Object),
       environmentEndowmentPermissions: expect.any(Array),
       excludedPermissions: expect.any(Object),

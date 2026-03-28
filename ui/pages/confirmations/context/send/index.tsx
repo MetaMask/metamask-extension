@@ -29,11 +29,13 @@ export type SendContextType = {
   from?: string;
   hexData?: Hex;
   maxValueMode?: boolean;
+  nonEVMSubmitError?: string;
   to?: string;
   toResolved?: string;
   updateAsset: (asset: Asset) => void;
   updateCurrentPage: (page: SendPages) => void;
   updateHexData: (data: Hex) => void;
+  updateNonEVMSubmitError: (error: string | undefined) => void;
   updateTo: (to: string) => void;
   updateToResolved: (to: string | undefined) => void;
   updateValue: (value: string, maxValueMode?: boolean) => void;
@@ -48,11 +50,13 @@ export const SendContext = createContext<SendContextType>({
   from: '',
   hexData: undefined,
   maxValueMode: undefined,
+  nonEVMSubmitError: undefined,
   to: undefined,
   toResolved: undefined,
   updateAsset: () => undefined,
   updateCurrentPage: () => undefined,
   updateHexData: () => undefined,
+  updateNonEVMSubmitError: () => undefined,
   updateTo: () => undefined,
   updateToResolved: () => undefined,
   updateValue: () => undefined,
@@ -70,7 +74,8 @@ export const SendContextProvider: React.FC<{
   const [fromAccount, updateFromAccount] = useState<InternalAccount>();
   const [hexData, updateHexData] = useState<Hex>();
   const [maxValueMode, updateMaxValueMode] = useState<boolean>();
-  const [to, updateTo] = useState<string>();
+  const [nonEVMSubmitError, updateNonEVMSubmitError] = useState<string>();
+  const [to, setTo] = useState<string>();
   const [toResolved, updateToResolved] = useState<string>();
   const [value, setValue] = useState<string>();
   const [currentPage, updateCurrentPage] = useState<SendPages>();
@@ -79,8 +84,23 @@ export const SendContextProvider: React.FC<{
     (val: string, maxMode?: boolean) => {
       updateMaxValueMode(maxMode ?? false);
       setValue(val);
+      // Clear submit error when user changes amount
+      if (nonEVMSubmitError) {
+        updateNonEVMSubmitError(undefined);
+      }
     },
-    [setValue, updateMaxValueMode],
+    [nonEVMSubmitError, setValue, updateMaxValueMode],
+  );
+
+  const updateTo = useCallback(
+    (newTo: string) => {
+      setTo(newTo);
+      // Clear submit error when user changes recipient
+      if (nonEVMSubmitError) {
+        updateNonEVMSubmitError(undefined);
+      }
+    },
+    [nonEVMSubmitError, setTo],
   );
 
   const updateAsset = useCallback(
@@ -134,11 +154,13 @@ export const SendContextProvider: React.FC<{
         from: fromAccount?.address,
         hexData,
         maxValueMode,
+        nonEVMSubmitError,
         to,
         toResolved: toResolved ?? to,
         updateAsset,
         updateCurrentPage,
         updateHexData,
+        updateNonEVMSubmitError,
         updateTo,
         updateToResolved,
         updateValue,

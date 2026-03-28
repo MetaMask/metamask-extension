@@ -70,6 +70,10 @@ const t = (key) => {
       return "This option is a workaround for a known issue in Firefox, where a dapp's Content-Security-Policy header may prevent the extension from loading properly. Disabling this option is not recommended unless required for specific web page compatibility.";
     case 'Contacts':
       return 'Contacts';
+    case 'contacts':
+      return 'Contacts';
+    case 'notifications':
+      return 'Notifications';
     case 'securityAndPrivacy':
       return 'Security & privacy';
     case 'revealSeedWords':
@@ -95,7 +99,7 @@ const t = (key) => {
     case 'localhost':
       return 'Localhost 8545';
     case 'developerOptions':
-      return 'Developer Options';
+      return 'Developer options';
     case 'experimental':
       return 'Experimental';
     case 'autoDetectTokens':
@@ -119,9 +123,9 @@ const t = (key) => {
     case 'links':
       return 'Links';
     case 'privacyMsg':
-      return 'Privacy policy';
+      return 'Privacy Policy';
     case 'terms':
-      return 'Terms of use';
+      return 'Terms of Use';
     case 'attributions':
       return 'Attributions';
     case 'supportCenter':
@@ -151,7 +155,7 @@ describe('Settings Search Utils', () => {
   describe('getSettingsRoutes', () => {
     it('should be an array of settings routes objects', () => {
       const NUM_OF_ENV_FEATURE_FLAG_SETTINGS = 6;
-      const NUM_OF_HIDDEN_SETTINGS = 1;
+      const NUM_OF_HIDDEN_SETTINGS = 3;
 
       expect(getSettingsRoutes()).toHaveLength(
         SETTINGS_CONSTANTS.length -
@@ -176,14 +180,10 @@ describe('Settings Search Utils', () => {
       ).toStrictEqual(3);
     });
 
-    it('returns "Contact" section count', () => {
-      expect(getNumberOfSettingRoutesInTab(t, t('contacts'))).toStrictEqual(1);
-    });
-
     it('returns "Security & privacy" section count', () => {
       expect(
         getNumberOfSettingRoutesInTab(t, t('securityAndPrivacy')),
-      ).toStrictEqual(22);
+      ).toStrictEqual(21);
     });
 
     it('returns "Network" section count', () => {
@@ -192,11 +192,11 @@ describe('Settings Search Utils', () => {
 
     it('returns "Experimental" section count', () => {
       expect(getNumberOfSettingRoutesInTab(t, t('experimental'))).toStrictEqual(
-        3,
+        2,
       );
     });
 
-    it('returns 0 "Developer Options" section count when env flag is disabled', () => {
+    it('returns 0 "Developer options" section count when env flag is disabled', () => {
       expect(
         getNumberOfSettingRoutesInTab(t, t('developerOptions')),
       ).toStrictEqual(0);

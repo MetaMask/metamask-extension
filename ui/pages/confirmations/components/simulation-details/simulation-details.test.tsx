@@ -13,6 +13,7 @@ import { cloneDeep } from 'lodash';
 import { TokenStandard } from '../../../../../shared/constants/transaction';
 import mockState from '../../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import { AlertMetricsProvider } from '../../../../components/app/alert-system/contexts/alertMetricsContext';
 import { BalanceChangeList } from './balance-change-list';
 import { SimulationDetails, StaticRow } from './simulation-details';
@@ -112,20 +113,20 @@ describe('SimulationDetails', () => {
     });
   });
 
-  it('renders loading indicator when simulation data is not available', () => {
-    renderSimulationDetails();
-    expect(screen.getByRole('progressbar')).toBeInTheDocument();
+  it('renders skeleton loader when simulation data is not available', () => {
+    const { container } = renderSimulationDetails();
+    expect(container.querySelector('.mm-skeleton')).toBeInTheDocument();
   });
 
-  it('renders loading indicator when balance changes are pending', () => {
+  it('renders skeleton loader when balance changes are pending', () => {
     (useBalanceChanges as jest.Mock).mockReturnValue({
       pending: true,
       value: [],
     });
 
-    renderSimulationDetails({});
+    const { container } = renderSimulationDetails({});
 
-    expect(screen.getByRole('progressbar')).toBeInTheDocument();
+    expect(container.querySelector('.mm-skeleton')).toBeInTheDocument();
   });
 
   it('renders error content when simulation error is reverted', () => {
@@ -396,6 +397,86 @@ describe('SimulationDetails', () => {
     );
   });
 
+  it('renders error instead of static rows when simulation is reverted', () => {
+    (useBalanceChanges as jest.Mock).mockReturnValue({
+      pending: false,
+      value: [],
+    });
+
+    const staticRows: StaticRow[] = [
+      {
+        label: 'Approve',
+        balanceChanges: [
+          {
+            asset: {
+              address: '0x123',
+              chainId: '0x321',
+              standard: TokenStandard.ERC20,
+            },
+            amount: new BigNumber(123),
+            fiatAmount: 456,
+            usdAmount: 789,
+          },
+        ],
+      },
+    ];
+
+    renderSimulationDetails(
+      { error: { code: SimulationErrorCode.Reverted, message: '' } },
+      false,
+      staticRows,
+    );
+
+    expect(
+      screen.getByText(/transaction is likely to fail/u),
+    ).toBeInTheDocument();
+    expect(BalanceChangeList).not.toHaveBeenCalled();
+  });
+
+  it('renders static rows when simulation error is chain not supported', () => {
+    (useBalanceChanges as jest.Mock).mockReturnValue({
+      pending: false,
+      value: [],
+    });
+
+    const staticRows: StaticRow[] = [
+      {
+        label: 'Approve',
+        balanceChanges: [
+          {
+            asset: {
+              address: '0x123',
+              chainId: '0x321',
+              standard: TokenStandard.ERC20,
+            },
+            amount: new BigNumber(123),
+            fiatAmount: 456,
+            usdAmount: 789,
+          },
+        ],
+      },
+    ];
+
+    renderSimulationDetails(
+      {
+        error: {
+          code: SimulationErrorCode.ChainNotSupported,
+          message: 'Chain is not supported',
+        },
+      },
+      false,
+      staticRows,
+    );
+
+    expect(BalanceChangeList).toHaveBeenCalledWith(
+      expect.objectContaining({
+        heading: 'Approve',
+        balanceChanges: staticRows[0].balanceChanges,
+      }),
+      {},
+    );
+  });
+
   it('indicates that simulation details are enforced', () => {
     (useBalanceChanges as jest.Mock).mockReturnValue({
       pending: false,
@@ -406,6 +487,8 @@ describe('SimulationDetails', () => {
       containerTypes: [TransactionContainerType.EnforcedSimulations],
     });
 
-    expect(getByText('Balance changes')).toBeInTheDocument();
+    expect(
+      getByText(messages.simulationDetailsTitleEnforced.message),
+    ).toBeInTheDocument();
   });
 });

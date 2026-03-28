@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
-import { HIGH_FEE_WARNING_MULTIPLIER } from '../../../../send-legacy/send.constants';
+import { HIGH_FEE_WARNING_MULTIPLIER } from '../../../../send-utils/send.constants';
 import {
   EditGasModes,
   PriorityLevels,
@@ -17,8 +17,8 @@ import Box from '../../../../../../components/ui/box';
 
 import { useAdvancedGasFeePopoverContext } from '../../context';
 import AdvancedGasFeeInputSubtext from '../../advanced-gas-fee-input-subtext';
-import { decGWEIToHexWEI } from '../../../../../../../shared/modules/conversion.utils';
-import { Numeric } from '../../../../../../../shared/modules/Numeric';
+import { decGWEIToHexWEI } from '../../../../../../../shared/lib/conversion.utils';
+import { Numeric } from '../../../../../../../shared/lib/Numeric';
 import { IGNORE_GAS_LIMIT_CHAIN_IDS } from '../../../../constants';
 
 const validatePriorityFee = (value, gasFeeEstimates, chainId) => {
@@ -93,6 +93,7 @@ const PriorityFeeInput = () => {
   const [priorityFeeInPrimaryCurrency] = useCurrencyDisplay(
     decGWEIToHexWEI(priorityFee * gasLimit),
     { currency, numberOfDecimals },
+    chainId,
   );
 
   const updatePriorityFee = (value) => {

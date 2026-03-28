@@ -1,5 +1,5 @@
-import React from 'react';
-import { useDispatch } from 'react-redux';
+import React, { useContext, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
@@ -26,6 +26,12 @@ import {
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import { lockMetamask } from '../../../store/actions';
 import { setShowPasswordChangeToast } from '../toast-master/utils';
+import { getIsSeedlessPasswordOutdated } from '../../../ducks/metamask/metamask';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -33,6 +39,17 @@ export default function PasswordOutdatedModal() {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const isSeedlessPwdOutdated = useSelector(getIsSeedlessPasswordOutdated);
+  const { trackEvent } = useContext(MetaMetricsContext);
+
+  useEffect(() => {
+    if (isSeedlessPwdOutdated) {
+      trackEvent({
+        event: MetaMetricsEventName.PasswordOutdatedModalViewed,
+        category: MetaMetricsEventCategory.App,
+      });
+    }
+  }, [isSeedlessPwdOutdated, trackEvent]);
 
   return (
     <Modal

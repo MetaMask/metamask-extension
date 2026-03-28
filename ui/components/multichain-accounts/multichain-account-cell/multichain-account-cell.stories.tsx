@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { StoryFn, Meta } from '@storybook/react';
 import { MultichainAccountCell } from './multichain-account-cell';
 import { MultichainAccountCellProps } from './multichain-account-cell';
@@ -79,6 +79,11 @@ export default {
       control: 'boolean',
       description: 'Whether the account is selected',
     },
+    showHoverableNetworkGroup: {
+      control: 'boolean',
+      description:
+        'Whether to show the network avatars and copy functionality with optional default address',
+    },
   },
   args: {
     accountId: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0',
@@ -98,7 +103,6 @@ const Template: StoryFn<typeof MultichainAccountCell> = (
 );
 
 export const Default = Template.bind({});
-Default.storyName = 'Default';
 
 export const Selected = Template.bind({});
 Selected.args = {
@@ -218,3 +222,19 @@ export const MultipleAccountsWithStartAccessories: StoryFn<
     />
   </div>
 );
+
+export const WithHoverableNetworkGroup = Template.bind({});
+WithHoverableNetworkGroup.args = {
+  accountId: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0',
+  accountName: 'Account with Networks',
+  balance: '$2,400.00',
+  showHoverableNetworkGroup: true,
+};
+WithHoverableNetworkGroup.parameters = {
+  docs: {
+    description: {
+      story:
+        'Shows the network avatars and copy functionality below the account name with optional default address.',
+    },
+  },
+};

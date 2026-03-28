@@ -10,13 +10,12 @@ import {
   getOriginOfCurrentTab,
   getTotalUnapprovedCount,
   getWeb3ShimUsageStateForOrigin,
-  getShowWhatsNewPopup,
-  getSortedAnnouncementsToShow,
   getShowRecoveryPhraseReminder,
   getShowTermsOfUse,
   getShowOutdatedBrowserWarning,
   getNewNetworkAdded,
   getIsSigningQRHardwareTransaction,
+  getIsHardwareWalletErrorModalVisible,
   getNewNftAddedMessage,
   getNewTokensImported,
   getRemoveNftMessage,
@@ -29,12 +28,12 @@ import {
   getIsSocialLoginFlow,
   getShowShieldEntryModal,
   getPendingShieldCohort,
+  getPendingRedirectRoute,
 } from '../../selectors';
-import { getInfuraBlocked } from '../../../shared/modules/selectors/networks';
+import { getInfuraBlocked } from '../../../shared/lib/selectors/networks';
 import {
   attemptCloseNotificationPopup,
   setConnectedStatusPopoverHasBeenShown,
-  setDefaultHomeActiveTabName,
   setWeb3ShimUsageAlertDismissed,
   setAlertEnabledness,
   setRecoveryPhraseReminderHasBeenShown,
@@ -51,32 +50,29 @@ import {
   setEditedNetwork,
   lookupSelectedNetworks,
   setPendingShieldCohort,
+  setPendingRedirectRoute,
 } from '../../store/actions';
-import {
-  hideWhatsNewPopup,
-  openBasicFunctionalityModal,
-} from '../../ducks/app/app';
+import { openBasicFunctionalityModal } from '../../ducks/app/app';
 import {
   getIsPrimarySeedPhraseBackedUp,
   getIsSeedlessPasswordOutdated,
   getWeb3ShimUsageAlertEnabledness,
 } from '../../ducks/metamask/metamask';
-import { getSwapsFeatureIsLive } from '../../ducks/swaps/swaps';
 import { fetchBuyableChains } from '../../ducks/ramps';
 import {
   selectRewardsEnabled,
   selectRewardsOnboardingEnabled,
+  selectOnboardingModalOpen,
 } from '../../ducks/rewards/selectors';
+import { selectShowPna25Modal } from '../../components/app/toast-master/selectors';
 // TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
+// eslint-disable-next-line import-x/no-restricted-paths
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
 import { getIsBrowserDeprecated } from '../../helpers/utils/util';
 import {
   ENVIRONMENT_TYPE_NOTIFICATION,
   ENVIRONMENT_TYPE_POPUP,
-  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES,
-  ///: END:ONLY_INCLUDE_IF
 } from '../../../shared/constants/app';
 import {
   AlertTypes,
@@ -86,7 +82,10 @@ import { getShouldShowSeedPhraseReminder } from '../../selectors/multi-srp/multi
 import {
   getRedirectAfterDefaultPage,
   clearRedirectAfterDefaultPage,
+  setRedirectAfterDefaultPage,
 } from '../../ducks/history/history';
+import { AppHeader } from '../../components/multichain/app-header';
+import { DappConnectionControlBar } from '../../components/multichain/dapp-connection-control-bar';
 import Home from './home.component';
 
 const mapStateToProps = (state) => {
@@ -94,7 +93,6 @@ const mapStateToProps = (state) => {
   const {
     seedPhraseBackedUp,
     connectedStatusPopoverHasBeenShown,
-    defaultHomeActiveTabName,
     dataCollectionForMarketing,
     participateInMetaMetrics,
     firstTimeFlowType,
@@ -104,7 +102,6 @@ const mapStateToProps = (state) => {
   const selectedAccount = getSelectedInternalAccount(state);
   const { address: selectedAddress } = selectedAccount;
   const totalUnapprovedCount = getTotalUnapprovedCount(state);
-  const swapsEnabled = getSwapsFeatureIsLive(state);
   const redirectAfterDefaultPage = getRedirectAfterDefaultPage(state);
 
   const envType = getEnvironmentType();
@@ -120,19 +117,10 @@ const mapStateToProps = (state) => {
       Web3ShimUsageAlertStates.recorded;
 
   const hasAllowedPopupRedirectApprovals = hasPendingApprovals(state, [
-    ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.confirmAccountCreation,
     SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.confirmAccountRemoval,
-    SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.showNameSnapAccount,
     SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.showSnapAccountRedirect,
-    ///: END:ONLY_INCLUDE_IF
   ]);
-
-  const TEMPORARY_DISABLE_WHATS_NEW = true;
-
-  const showWhatsNewPopup = TEMPORARY_DISABLE_WHATS_NEW
-    ? false
-    : getShowWhatsNewPopup(state);
 
   const shouldShowSeedPhraseReminder =
     selectedAccount && getShouldShowSeedPhraseReminder(state, selectedAccount);
@@ -141,8 +129,8 @@ const mapStateToProps = (state) => {
     useExternalServices: getUseExternalServices(state),
     isBasicConfigurationModalOpen: appState.showBasicFunctionalityModal,
     forgottenPassword,
-    swapsEnabled,
     shouldShowSeedPhraseReminder,
+    envType,
     isPopup,
     isNotification,
     dataCollectionForMarketing,
@@ -151,15 +139,12 @@ const mapStateToProps = (state) => {
     participateInMetaMetrics,
     hasApprovalFlows: getApprovalFlows(state)?.length > 0,
     connectedStatusPopoverHasBeenShown,
-    defaultHomeActiveTabName,
     firstTimeFlowType,
     completedOnboarding,
     isMainnet: getIsMainnet(state),
     originOfCurrentTab,
     shouldShowWeb3ShimUsageNotification,
     infuraBlocked: getInfuraBlocked(state),
-    announcementsToShow: getSortedAnnouncementsToShow(state).length > 0,
-    showWhatsNewPopup,
     showRecoveryPhraseReminder: getShowRecoveryPhraseReminder(state),
     showTermsOfUsePopup: getShowTermsOfUse(state),
     showOutdatedBrowserWarning:
@@ -168,6 +153,8 @@ const mapStateToProps = (state) => {
     newNetworkAddedName: getNewNetworkAdded(state),
     editedNetwork: getEditedNetwork(state),
     isSigningQRHardwareTransaction: getIsSigningQRHardwareTransaction(state),
+    isHardwareWalletErrorModalVisible:
+      getIsHardwareWalletErrorModalVisible(state),
     newNftAddedMessage: getNewNftAddedMessage(state),
     removeNftMessage: getRemoveNftMessage(state),
     newTokensImported: getNewTokensImported(state),
@@ -186,6 +173,9 @@ const mapStateToProps = (state) => {
     isSignedIn: state.metamask.isSignedIn,
     rewardsEnabled: selectRewardsEnabled(state),
     rewardsOnboardingEnabled: selectRewardsOnboardingEnabled(state),
+    rewardsOnboardingModalOpen: selectOnboardingModalOpen(state),
+    showPna25Modal: selectShowPna25Modal(state),
+    pendingRedirectRoute: getPendingRedirectRoute(state),
   };
 };
 
@@ -196,12 +186,10 @@ const mapDispatchToProps = (dispatch) => {
     attemptCloseNotificationPopup: () => attemptCloseNotificationPopup(),
     setConnectedStatusPopoverHasBeenShown: () =>
       dispatch(setConnectedStatusPopoverHasBeenShown()),
-    onTabClick: (name) => dispatch(setDefaultHomeActiveTabName(name)),
     setWeb3ShimUsageAlertDismissed: (origin) =>
       setWeb3ShimUsageAlertDismissed(origin),
     disableWeb3ShimUsageAlert: () =>
       setAlertEnabledness(AlertTypes.web3ShimUsage, false),
-    hideWhatsNewPopup: () => dispatch(hideWhatsNewPopup()),
     setRecoveryPhraseReminderHasBeenShown: () =>
       dispatch(setRecoveryPhraseReminderHasBeenShown()),
     setRecoveryPhraseReminderLastShown: (lastShown) =>
@@ -238,11 +226,14 @@ const mapDispatchToProps = (dispatch) => {
     setBasicFunctionalityModalOpen: () =>
       dispatch(openBasicFunctionalityModal()),
     fetchBuyableChains: () => dispatch(fetchBuyableChains()),
+    setRedirectAfterDefaultPage: (redirectAfterDefaultPage) =>
+      dispatch(setRedirectAfterDefaultPage(redirectAfterDefaultPage)),
     clearRedirectAfterDefaultPage: () =>
       dispatch(clearRedirectAfterDefaultPage()),
     lookupSelectedNetworks: () => dispatch(lookupSelectedNetworks()),
     setPendingShieldCohort: (cohort) =>
       dispatch(setPendingShieldCohort(cohort)),
+    clearPendingRedirectRoute: () => dispatch(setPendingRedirectRoute(null)),
   };
 };
 
@@ -253,7 +244,17 @@ const HomeWithRouter = ({ match: _match, ...props }) => {
   const { evaluateCohortEligibility } = useShieldSubscriptionContext();
 
   return (
-    <Home {...props} evaluateCohortEligibility={evaluateCohortEligibility} />
+    <>
+      <AppHeader />
+
+      <div className="flex flex-col flex-1 min-h-0">
+        <Home
+          {...props}
+          evaluateCohortEligibility={evaluateCohortEligibility}
+        />
+        <DappConnectionControlBar />
+      </div>
+    </>
   );
 };
 

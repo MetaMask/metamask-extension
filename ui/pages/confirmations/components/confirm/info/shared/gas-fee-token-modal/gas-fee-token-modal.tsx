@@ -1,6 +1,6 @@
 import React, { useCallback, useState } from 'react';
 import { GasFeeToken, TransactionMeta } from '@metamask/transaction-controller';
-import classnames from 'classnames';
+import classnames from 'clsx';
 
 import { NATIVE_TOKEN_ADDRESS } from '../../../../../../../../shared/constants/transaction';
 import {

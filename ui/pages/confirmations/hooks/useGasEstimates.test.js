@@ -2,11 +2,11 @@ import { renderHook } from '@testing-library/react-hooks';
 import {
   getMaximumGasTotalInHexWei,
   getMinimumGasTotalInHexWei,
-} from '../../../../shared/modules/gas.utils';
+} from '../../../../shared/lib/gas.utils';
 import {
   decGWEIToHexWEI,
   decimalToHex,
-} from '../../../../shared/modules/conversion.utils';
+} from '../../../../shared/lib/conversion.utils';
 
 import {
   FEE_MARKET_ESTIMATE_RETURN_VALUE,

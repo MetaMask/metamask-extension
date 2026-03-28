@@ -1,21 +1,16 @@
 import {
   SmartTransactionsController,
+  SmartTransactionsControllerMessenger,
   ClientId,
 } from '@metamask/smart-transactions-controller';
 import type { Hex } from '@metamask/utils';
 import type { TraceCallback } from '@metamask/controller-utils';
+import log from 'loglevel';
 import { getAllowedSmartTransactionsChainIds } from '../../../../shared/constants/smartTransactions';
-import { getFeatureFlagsByChainId } from '../../../../shared/modules/selectors';
-import { type ProviderConfigState } from '../../../../shared/modules/selectors/networks';
-import { type FeatureFlagsMetaMaskState } from '../../../../shared/modules/selectors/feature-flags';
-import type { FeatureFlags } from '../../lib/smart-transaction/smart-transactions';
 import { ControllerInitFunction, ControllerInitRequest } from '../types';
-import {
-  SmartTransactionsControllerInitMessenger,
-  SmartTransactionsControllerMessenger,
-} from '../messengers/smart-transactions-controller-messenger';
+import { SmartTransactionsControllerInitMessenger } from '../messengers/smart-transactions-controller-messenger';
 // This import is only used for the type.
-// eslint-disable-next-line import/no-restricted-paths
+// eslint-disable-next-line import-x/no-restricted-paths
 import type { MetaMaskReduxState } from '../../../../ui/store/store';
 
 type SmartTransactionsControllerInitRequest = ControllerInitRequest<
@@ -46,6 +41,28 @@ export const SmartTransactionsControllerInit: ControllerInitFunction<
     trace,
   } = request as SmartTransactionsControllerInitRequest;
 
+  /**
+   * Bearer token is only present when the user is signed in (AuthenticationController
+   * has a valid session). If getBearerToken returns undefined, no Authorization header is sent.
+   * To test with a real token: enable "Use external services" and "Backup and Sync" in Settings;
+   * see docs/testing-stx-authentication.md.
+   * To see [STX auth] logs: chrome://extensions → MetaMask → "Inspect views: Service worker", then reload the extension.
+   */
+  const getBearerToken = async (): Promise<string | undefined> => {
+    try {
+      const token = await Promise.resolve(
+        initMessenger.call('AuthenticationController:getBearerToken'),
+      );
+      if (token) {
+        return token;
+      }
+      return undefined;
+    } catch (err) {
+      log.warn('Failed to get bearer token', err);
+      return undefined;
+    }
+  };
+
   const smartTransactionsController = new SmartTransactionsController({
     supportedChainIds: getAllowedSmartTransactionsChainIds() as Hex[],
     clientId: ClientId.Extension,
@@ -57,12 +74,7 @@ export const SmartTransactionsControllerInit: ControllerInitFunction<
     >[0]['trackMetaMetricsEvent'],
     state: persistedState.SmartTransactionsController,
     messenger: controllerMessenger,
-    getFeatureFlags: () => {
-      const state = { metamask: getUIState() };
-      return getFeatureFlagsByChainId(
-        state as unknown as ProviderConfigState & FeatureFlagsMetaMaskState,
-      ) as unknown as FeatureFlags;
-    },
+    getBearerToken,
     getMetaMetricsProps: async () => {
       const metamask = getUIState();
       const { internalAccounts } = metamask;

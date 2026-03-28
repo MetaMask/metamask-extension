@@ -4,6 +4,7 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { Routes, Route } from 'react-router-dom';
 import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../test/lib/i18n-helpers';
 import {
   ONBOARDING_EXPERIMENTAL_AREA,
   ONBOARDING_CREATE_PASSWORD_ROUTE,
@@ -27,6 +28,19 @@ import {
 import { mockNetworkState } from '../../../test/stub/networks';
 import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
 import OnboardingFlow from './onboarding-flow';
+
+// Mock mmLazy to return a synchronous component instead of React.lazy.
+// React 17's lazy resolution fires a state update after test cleanup unmounts
+// the tree, producing a spurious "state update on unmounted component" warning.
+//
+// NOTE: This mock hardcodes the ExperimentalArea import. If a second mmLazy
+// call is added to onboarding-flow.tsx, this mock must be updated to dispatch
+// on the importFn (or replaced with a generic solution).
+jest.mock('../../helpers/utils/mm-lazy', () => ({
+  mmLazy: () =>
+    jest.requireActual('../../components/app/flask/experimental-area/index.js')
+      .default,
+}));
 
 const mockUseNavigate = jest.fn();
 
@@ -118,9 +132,7 @@ describe('Onboarding Flow', () => {
         { chainId: CHAIN_IDS.MAINNET },
         { chainId: CHAIN_IDS.LINEA_MAINNET },
       ),
-      preferences: {
-        petnamesEnabled: true,
-      },
+      preferences: {},
     },
     localeMessages: {
       currentLocale: 'en',
@@ -176,7 +188,9 @@ describe('Onboarding Flow', () => {
       ONBOARDING_ROUTE,
     );
 
-    expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE);
+    expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE, {
+      replace: true,
+    });
   });
 
   describe('Create Password', () => {
@@ -204,7 +218,7 @@ describe('Onboarding Flow', () => {
         ONBOARDING_CREATE_PASSWORD_ROUTE,
       );
 
-      const createPasswordText = queryByText('MetaMask password');
+      const createPasswordText = queryByText(messages.createPassword.message);
       expect(createPasswordText).toBeInTheDocument();
 
       const password = 'a-new-password';
@@ -294,8 +308,8 @@ describe('Onboarding Flow', () => {
       );
 
       const password = 'a-new-password';
-      const inputPassword = getByLabelText('Password');
-      const unlockButton = getByText('Unlock');
+      const inputPassword = getByLabelText(messages.password.message);
+      const unlockButton = getByText(messages.unlock.message);
 
       fireEvent.change(inputPassword, { target: { value: password } });
       fireEvent.click(unlockButton);
@@ -351,13 +365,18 @@ describe('Onboarding Flow', () => {
   });
 
   it('should render onboarding experimental screen', () => {
+    // Enable Flask mode for this test only
+    process.env.METAMASK_BUILD_TYPE = 'flask';
+
     const { queryByTestId } = renderWithProvider(
       <OnboardingFlowWithRouteContext />,
       store,
       ONBOARDING_EXPERIMENTAL_AREA,
     );
 
-    const onboardingMetametrics = queryByTestId('experimental-area');
-    expect(onboardingMetametrics).toBeInTheDocument();
+    expect(queryByTestId('experimental-area')).toBeInTheDocument();
+
+    // Restore build type
+    process.env.METAMASK_BUILD_TYPE = 'main';
   });
 });

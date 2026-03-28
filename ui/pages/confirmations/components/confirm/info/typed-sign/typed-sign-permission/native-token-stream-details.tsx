@@ -2,22 +2,22 @@ import { BigNumber } from 'bignumber.js';
 import { NativeTokenStreamPermission } from '@metamask/gator-permissions-controller';
 import type { Hex } from '@metamask/utils';
 import React from 'react';
-import { DefaultRootState, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import { DAY } from '../../../../../../../../shared/constants/time';
 import { ConfirmInfoSection } from '../../../../../../../components/app/confirm/info/row/section';
 import { ConfirmInfoRowDivider } from '../../../../../../../components/app/confirm/info/row';
-import { getNativeTokenInfo } from '../../../../../../../selectors';
+import {
+  getNativeTokenInfo,
+  MetaMaskReduxState,
+} from '../../../../../../../selectors';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../../../../shared/constants/network';
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 import { NativeAmountRow } from './native-amount-row';
 import { DateAndTimeRow } from './date-and-time-row';
-
-type NativeTokenInfo = {
-  symbol: string;
-  decimals: number;
-  name: string;
-};
+import { Expiry } from './expiry';
+import { TotalExposure } from './total-exposure';
+import { MAX_UINT256 } from './typed-sign-permission-util';
 
 /**
  * Component for displaying native token stream permission details.
@@ -47,8 +47,10 @@ export const NativeTokenStreamDetails: React.FC<{
   // DAY is in milliseconds, so we divide by 1000 to get seconds
   const amountPerDay = new BigNumber(amountPerSecond).mul(DAY / 1000);
 
-  const { symbol, decimals } = useSelector<DefaultRootState, NativeTokenInfo>(
-    (state) => getNativeTokenInfo(state, chainId) as NativeTokenInfo,
+  const hasMaxAmount = maxAmount && maxAmount.toLowerCase() !== MAX_UINT256;
+
+  const { symbol, decimals } = useSelector((state: MetaMaskReduxState) =>
+    getNativeTokenInfo(state.metamask.networkConfigurationsByChainId, chainId),
   );
 
   const tokenImageUrl = CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[chainId];
@@ -65,7 +67,7 @@ export const NativeTokenStreamDetails: React.FC<{
             imageUrl={tokenImageUrl}
           />
         )}
-        {maxAmount && (
+        {hasMaxAmount && (
           <NativeAmountRow
             label={t('confirmFieldMaxAllowance')}
             value={maxAmount}
@@ -81,12 +83,7 @@ export const NativeTokenStreamDetails: React.FC<{
           timestamp={startTime}
           label={t('confirmFieldStartDate')}
         />
-        {expiry && (
-          <DateAndTimeRow
-            timestamp={expiry}
-            label={t('confirmFieldExpiration')}
-          />
-        )}
+        <Expiry expiry={expiry} />
       </ConfirmInfoSection>
 
       <ConfirmInfoSection data-testid="native-token-stream-stream-rate-section">
@@ -100,6 +97,17 @@ export const NativeTokenStreamDetails: React.FC<{
         <NativeAmountRow
           label={t('confirmFieldAvailablePerDay')}
           value={amountPerDay}
+          symbol={symbol}
+          decimals={decimals}
+          imageUrl={tokenImageUrl}
+        />
+        <TotalExposure
+          variant="native"
+          initialAmount={initialAmount ?? undefined}
+          maxAmount={maxAmount ?? undefined}
+          amountPerSecond={amountPerSecond}
+          startTime={startTime}
+          expiry={expiry}
           symbol={symbol}
           decimals={decimals}
           imageUrl={tokenImageUrl}

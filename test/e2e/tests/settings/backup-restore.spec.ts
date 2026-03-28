@@ -1,11 +1,11 @@
 import { strict as assert } from 'assert';
 import { promises as fs } from 'fs';
 import { withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import AdvancedSettings from '../../page-objects/pages/settings/advanced-settings';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 
 const downloadsFolder = `${process.cwd()}/test-artifacts/downloads`;
 
@@ -55,11 +55,11 @@ describe('Backup and Restore', function () {
     }
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         // Download user settings
         await new HeaderNavbar(driver).openSettingsPage();

@@ -6,7 +6,7 @@ exports[`SnapsSection renders section for typed sign request 1`] = `
     class="mm-box mm-box--margin-bottom-4 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-column"
   >
     <div
-      class="mm-box delineator__wrapper mm-box--display-flex mm-box--flex-direction-column mm-box--background-color-background-default mm-box--rounded-lg"
+      class="mm-box delineator__wrapper mm-box--display-flex mm-box--flex-direction-column mm-box--background-color-background-section mm-box--rounded-lg"
     >
       <div
         class="mm-box delineator__header delineator__header--expanded mm-box--padding-top-2 mm-box--padding-right-4 mm-box--padding-bottom-0 mm-box--padding-left-4 mm-box--display-flex mm-box--justify-content-space-between mm-box--align-items-center"
@@ -39,17 +39,21 @@ exports[`SnapsSection renders section for typed sign request 1`] = `
         class="mm-box mm-box--padding-top-0 mm-box--padding-right-0 mm-box--padding-bottom-0 mm-box--padding-left-0 mm-box--flex-direction-column"
       >
         <div
-          class="mm-box snap-ui-renderer__content mm-box--height-full mm-box--background-color-background-default"
-          style="overflow-y: auto; margin-bottom: 0px;"
+          class="mm-box snap-ui-renderer__content mm-box--height-full mm-box--background-color-background-section"
+          style="overflow-y: auto;"
         >
           <div
             class="box snap-ui-renderer__container box--display-flex box--flex-direction-column"
           >
-            <p
-              class="mm-box mm-text snap-ui-renderer__text mm-text--body-md mm-text--font-weight-normal mm-text--overflow-wrap-break-word mm-box--color-inherit"
+            <div
+              class="box snap-ui-renderer__panel box--display-flex box--flex-direction-column box--justify-content-flex-start box--color-text-default"
             >
-              Hello world again!
-            </p>
+              <p
+                class="mm-box mm-text snap-ui-renderer__text mm-text--body-md mm-text--font-weight-normal mm-text--overflow-wrap-break-word mm-box--color-inherit"
+              >
+                Hello world again!
+              </p>
+            </div>
           </div>
         </div>
       </div>
@@ -64,7 +68,7 @@ exports[`SnapsSection renders section personal sign request 1`] = `
     class="mm-box mm-box--margin-bottom-4 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-column"
   >
     <div
-      class="mm-box delineator__wrapper mm-box--display-flex mm-box--flex-direction-column mm-box--background-color-background-default mm-box--rounded-lg"
+      class="mm-box delineator__wrapper mm-box--display-flex mm-box--flex-direction-column mm-box--background-color-background-section mm-box--rounded-lg"
     >
       <div
         class="mm-box delineator__header delineator__header--expanded mm-box--padding-top-2 mm-box--padding-right-4 mm-box--padding-bottom-0 mm-box--padding-left-4 mm-box--display-flex mm-box--justify-content-space-between mm-box--align-items-center"
@@ -97,17 +101,21 @@ exports[`SnapsSection renders section personal sign request 1`] = `
         class="mm-box mm-box--padding-top-0 mm-box--padding-right-0 mm-box--padding-bottom-0 mm-box--padding-left-0 mm-box--flex-direction-column"
       >
         <div
-          class="mm-box snap-ui-renderer__content mm-box--height-full mm-box--background-color-background-default"
-          style="overflow-y: auto; margin-bottom: 0px;"
+          class="mm-box snap-ui-renderer__content mm-box--height-full mm-box--background-color-background-section"
+          style="overflow-y: auto;"
         >
           <div
             class="box snap-ui-renderer__container box--display-flex box--flex-direction-column"
           >
-            <p
-              class="mm-box mm-text snap-ui-renderer__text mm-text--body-md mm-text--font-weight-normal mm-text--overflow-wrap-break-word mm-box--color-inherit"
+            <div
+              class="box snap-ui-renderer__panel box--display-flex box--flex-direction-column box--justify-content-flex-start box--color-text-default"
             >
-              Hello world!
-            </p>
+              <p
+                class="mm-box mm-text snap-ui-renderer__text mm-text--body-md mm-text--font-weight-normal mm-text--overflow-wrap-break-word mm-box--color-inherit"
+              >
+                Hello world!
+              </p>
+            </div>
           </div>
         </div>
       </div>

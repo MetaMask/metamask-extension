@@ -180,7 +180,12 @@ describe('useSeasonStatus', () => {
       });
     });
 
-    const INVALID_SUB_IDS = ['pending', 'retry', 'error'] as const;
+    const INVALID_SUB_IDS = [
+      'pending',
+      'retry',
+      'error',
+      'error-existing-subscription-hardware-wallet-explicit-sign',
+    ] as const;
     type InvalidSubId = (typeof INVALID_SUB_IDS)[number];
 
     INVALID_SUB_IDS.forEach((subId: InvalidSubId) => {
@@ -353,7 +358,12 @@ describe('useSeasonStatus', () => {
       expect(mockOnAuthorizationError).not.toHaveBeenCalled();
     });
 
-    const SUB_IDS = ['pending', 'retry', 'error'] as const;
+    const SUB_IDS = [
+      'pending',
+      'retry',
+      'error',
+      'error-existing-subscription-hardware-wallet-explicit-sign',
+    ] as const;
     type PendingState = (typeof SUB_IDS)[number];
 
     SUB_IDS.forEach((subId: PendingState) => {

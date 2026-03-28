@@ -33,6 +33,191 @@ describe('forwardRequestToSnap', () => {
     handleRequestMock.mockResolvedValue(INVOKE_RESULT_MOCK);
   });
 
+  describe('callback hooks', () => {
+    it('calls onBeforeRequest before forwarding and onAfterRequest after success', async () => {
+      const calls: string[] = [];
+      const onBeforeRequest = jest.fn(() => calls.push('before'));
+      handleRequestMock.mockImplementation(async () => {
+        calls.push('handle');
+        return INVOKE_RESULT_MOCK;
+      });
+      const onAfterRequest = jest.fn(() => calls.push('after'));
+
+      const result = await forwardRequestToSnap(
+        {
+          handleRequest: handleRequestMock,
+          snapId: SNAP_ID_MOCK,
+          onBeforeRequest,
+          onAfterRequest,
+        },
+        { id: ID_MOCK },
+        REQUEST_MOCK,
+        CONTEXT_MOCK,
+      );
+
+      expect(result).toBe(INVOKE_RESULT_MOCK);
+      expect(onBeforeRequest).toHaveBeenCalledTimes(1);
+      expect(handleRequestMock).toHaveBeenCalledTimes(1);
+      expect(onAfterRequest).toHaveBeenCalledTimes(1);
+      expect(calls).toEqual(['before', 'handle', 'after']);
+    });
+
+    it('calls onAfterRequest even if forwarding throws', async () => {
+      const error = new Error('failure');
+      const onBeforeRequest = jest.fn();
+      const onAfterRequest = jest.fn();
+      handleRequestMock.mockRejectedValueOnce(error);
+
+      await expect(
+        forwardRequestToSnap(
+          {
+            handleRequest: handleRequestMock,
+            snapId: SNAP_ID_MOCK,
+            onBeforeRequest,
+            onAfterRequest,
+          },
+          { id: ID_MOCK },
+          REQUEST_MOCK,
+          CONTEXT_MOCK,
+        ),
+      ).rejects.toThrow('failure');
+
+      expect(onBeforeRequest).toHaveBeenCalledTimes(1);
+      expect(onAfterRequest).toHaveBeenCalledTimes(1);
+    });
+
+    it('calls onAfterRequest even if onBeforeRequest throws', async () => {
+      const error = new Error('failure');
+      const onBeforeRequest = jest.fn(() => {
+        throw error;
+      });
+      const onAfterRequest = jest.fn();
+      handleRequestMock.mockResolvedValue(INVOKE_RESULT_MOCK);
+      await expect(
+        forwardRequestToSnap(
+          {
+            handleRequest: handleRequestMock,
+            snapId: SNAP_ID_MOCK,
+            onBeforeRequest,
+            onAfterRequest,
+          },
+          { id: ID_MOCK },
+          REQUEST_MOCK,
+          CONTEXT_MOCK,
+        ),
+      ).rejects.toThrow(error);
+
+      expect(onBeforeRequest).toHaveBeenCalledTimes(1);
+      expect(onAfterRequest).toHaveBeenCalledTimes(1);
+      expect(handleRequestMock).not.toHaveBeenCalled();
+    });
+
+    it('does not forward the request if onBeforeRequest throws', async () => {
+      const error = new Error('failure');
+
+      const onBeforeRequest = jest.fn(() => {
+        throw error;
+      });
+
+      handleRequestMock.mockResolvedValue(INVOKE_RESULT_MOCK);
+
+      await expect(
+        forwardRequestToSnap(
+          {
+            handleRequest: handleRequestMock,
+            snapId: SNAP_ID_MOCK,
+            onBeforeRequest,
+          },
+          { id: ID_MOCK },
+          REQUEST_MOCK,
+          CONTEXT_MOCK,
+        ),
+      ).rejects.toThrow(error);
+
+      expect(onBeforeRequest).toHaveBeenCalledTimes(1);
+      expect(handleRequestMock).not.toHaveBeenCalled();
+    });
+
+    it('propagates forwarding error even if onAfterRequest throws', async () => {
+      const onBeforeRequest = jest.fn();
+      const onAfterRequest = jest.fn(() => {
+        throw new Error('after failed');
+      });
+      handleRequestMock.mockRejectedValueOnce(new Error('forward failed'));
+
+      await expect(
+        forwardRequestToSnap(
+          {
+            handleRequest: handleRequestMock,
+            snapId: SNAP_ID_MOCK,
+            onBeforeRequest,
+            onAfterRequest,
+          },
+          { id: ID_MOCK },
+          REQUEST_MOCK,
+          CONTEXT_MOCK,
+        ),
+      ).rejects.toThrow('forward failed');
+
+      expect(onBeforeRequest).toHaveBeenCalledTimes(1);
+      expect(handleRequestMock).toHaveBeenCalledTimes(1);
+      expect(onAfterRequest).toHaveBeenCalledTimes(1);
+    });
+
+    it('throws error from onBeforeRequest when onBeforeRequest and onAfterRequest both throw', async () => {
+      const onBeforeRequest = jest.fn(() => {
+        throw new Error('before failed');
+      });
+      const onAfterRequest = jest.fn(() => {
+        throw new Error('after failed');
+      });
+
+      await expect(
+        forwardRequestToSnap(
+          {
+            handleRequest: handleRequestMock,
+            snapId: SNAP_ID_MOCK,
+            onBeforeRequest,
+            onAfterRequest,
+          },
+          { id: ID_MOCK },
+          REQUEST_MOCK,
+          CONTEXT_MOCK,
+        ),
+      ).rejects.toThrow('before failed');
+
+      expect(handleRequestMock).not.toHaveBeenCalled();
+      expect(onAfterRequest).toHaveBeenCalledTimes(1);
+    });
+
+    it('throws onAfterRequest error when it throws after successful forwarding', async () => {
+      const onBeforeRequest = jest.fn();
+      const onAfterRequest = jest.fn(() => {
+        throw new Error('after failed');
+      });
+      handleRequestMock.mockResolvedValueOnce(INVOKE_RESULT_MOCK);
+
+      await expect(
+        forwardRequestToSnap(
+          {
+            handleRequest: handleRequestMock,
+            snapId: SNAP_ID_MOCK,
+            onBeforeRequest,
+            onAfterRequest,
+          },
+          { id: ID_MOCK },
+          REQUEST_MOCK,
+          CONTEXT_MOCK,
+        ),
+      ).rejects.toThrow('after failed');
+
+      expect(onBeforeRequest).toHaveBeenCalledTimes(1);
+      expect(handleRequestMock).toHaveBeenCalledTimes(1);
+      // Called once after successful forwarding; not retried
+      expect(onAfterRequest).toHaveBeenCalledTimes(1);
+    });
+  });
+
   describe('when snapId is provided', () => {
     it('forwards the request to the snap with correct arguments', async () => {
       const result = await forwardRequestToSnap(

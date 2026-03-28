@@ -1,8 +1,8 @@
 import assert from 'assert';
 import { Mockttp, MockedEndpoint } from 'mockttp';
-import { CHAIN_IDS } from '@metamask/transaction-controller';
 import { withFixtures, isSidePanelEnabled } from '../../helpers';
-import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
+import { NETWORK_CLIENT_ID } from '../../constants';
 import AccountList from '../../page-objects/pages/account-list-page';
 import HomePage from '../../page-objects/pages/home/homepage';
 import OnboardingCompletePage from '../../page-objects/pages/onboarding/onboarding-complete-page';
@@ -40,8 +40,8 @@ async function mockApis(mockServer: Mockttp): Promise<MockedEndpoint[]> {
           json: [{ fakedata: true }],
         };
       }),
-    await mockSpotPrices(mockServer, CHAIN_IDS.MAINNET, {
-      '0x0000000000000000000000000000000000000000': {
+    await mockSpotPrices(mockServer, {
+      'eip155:1/slip44:60': {
         price: 1700,
         marketCap: 382623505141,
         pricePercentChange1d: 0,
@@ -62,9 +62,9 @@ describe('MetaMask onboarding ', function () {
   it('should prevent network requests to advanced functionality endpoints when the advanced assets functionality toggle is off', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder({ onboarding: true })
-          .withNetworkControllerOnMainnet()
-          .withPreferencesControllerShowNativeTokenAsMainBalanceEnabled()
+        fixtures: new FixtureBuilderV2({ onboarding: true })
+          .withSelectedNetwork(NETWORK_CLIENT_ID.MAINNET)
+          .withShowNativeTokenAsMainBalanceEnabled()
           .withEnabledNetworks({
             eip155: {
               '0x1': true,
@@ -104,6 +104,10 @@ describe('MetaMask onboarding ', function () {
         await homePage.checkPageIsLoaded();
 
         for (const m of mockedEndpoint) {
+          const mockUrl = m.toString();
+          if (mockUrl.includes('chainid.network')) {
+            continue;
+          }
           const requests = await m.getSeenRequests();
           assert.ok(
             requests.length === 0,
@@ -117,9 +121,9 @@ describe('MetaMask onboarding ', function () {
   it('should not prevent network requests to advanced functionality endpoints when the advanced assets functionality toggle is on', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder({ onboarding: true })
-          .withNetworkControllerOnMainnet()
-          .withPreferencesControllerShowNativeTokenAsMainBalanceEnabled()
+        fixtures: new FixtureBuilderV2({ onboarding: true })
+          .withSelectedNetwork(NETWORK_CLIENT_ID.MAINNET)
+          .withShowNativeTokenAsMainBalanceEnabled()
           .withEnabledNetworks({
             eip155: {
               '0x1': true,

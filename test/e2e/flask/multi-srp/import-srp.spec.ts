@@ -3,8 +3,9 @@ import { Suite } from 'mocha';
 import { Mockttp } from 'mockttp';
 import { Driver } from '../../webdriver/driver';
 import FixtureBuilder from '../../fixtures/fixture-builder';
-import { withFixtures, WALLET_PASSWORD as testPassword } from '../../helpers';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { WALLET_PASSWORD as testPassword } from '../../constants';
+import { withFixtures } from '../../helpers';
+import { login } from '../../page-objects/flows/login.flow';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import HomePage from '../../page-objects/pages/home/homepage';
@@ -40,7 +41,7 @@ describe('Multi SRP - Import SRP', function (this: Suite) {
       },
       async (driver: Driver) => {
         const accountListPage = new AccountListPage(driver);
-        await accountListPage.checkAccountBelongsToSrp('Account 2', 2);
+        await accountListPage.checkAccountBelongsToSrp('Account 1', 2);
       },
     );
   });
@@ -79,7 +80,7 @@ describe('Multi SRP - Import SRP', function (this: Suite) {
         dappOptions: { numberOfTestDapps: 1 },
       },
       async ({ driver }: { driver: Driver; mockServer?: Mockttp }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
 

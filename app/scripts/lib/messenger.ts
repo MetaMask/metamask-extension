@@ -3,6 +3,7 @@ import {
   EventConstraint,
   Messenger,
 } from '@metamask/messenger';
+import { captureException } from '../../../shared/lib/sentry';
 
 export const ROOT_MESSENGER_NAMESPACE = 'Root';
 
@@ -17,5 +18,6 @@ export const getRootMessenger = <
 >(): RootMessenger<AllowedActions, AllowedEvents> => {
   return new Messenger({
     namespace: ROOT_MESSENGER_NAMESPACE,
+    captureException,
   });
 };

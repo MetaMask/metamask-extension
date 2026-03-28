@@ -1,8 +1,8 @@
 import { strict as assert } from 'assert';
 import { withFixtures } from '../helpers';
-import FixtureBuilder from '../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../fixtures/fixture-builder-v2';
 import TestDapp from '../page-objects/pages/test-dapp';
-import { loginWithBalanceValidation } from '../page-objects/flows/login.flow';
+import { login } from '../page-objects/flows/login.flow';
 import { DEFAULT_FIXTURE_ACCOUNT } from '../constants';
 import { mockEip7702FeatureFlag } from '../tests/confirmations/helpers';
 
@@ -10,16 +10,15 @@ describe('wallet_getCapabilities', function () {
   it('should indicate auxiliaryFunds support for chains with bridge support', async function () {
     await withFixtures(
       {
-        forceBip44Version: false,
         dappOptions: { numberOfTestDapps: 1 },
-        fixtures: new FixtureBuilder()
-          .withPermissionControllerConnectedToTestDappWithChains(['0x1'])
+        fixtures: new FixtureBuilderV2()
+          .withPermissionControllerConnectedToTestDapp({ chainIds: [1] })
           .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockEip7702FeatureFlag,
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
         await testDapp.checkPageIsLoaded();
@@ -42,16 +41,15 @@ describe('wallet_getCapabilities', function () {
   it('should not include auxiliaryFunds for chains without bridge support', async function () {
     await withFixtures(
       {
-        forceBip44Version: false,
         dappOptions: { numberOfTestDapps: 1 },
-        fixtures: new FixtureBuilder()
-          .withPermissionControllerConnectedToTestDappWithChains(['0x539'])
+        fixtures: new FixtureBuilderV2()
+          .withPermissionControllerConnectedToTestDapp()
           .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockEip7702FeatureFlag,
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
         await testDapp.checkPageIsLoaded();

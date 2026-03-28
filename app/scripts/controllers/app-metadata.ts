@@ -10,6 +10,17 @@ import type { Messenger } from '@metamask/messenger';
 const controllerName = 'AppMetadataController';
 
 /**
+ * Information about when MetaMask was first installed.
+ * This is recorded on first installation and never changes.
+ */
+export type FirstTimeInfo = {
+  /** The MetaMask version when first installed */
+  version: string;
+  /** Timestamp (Date.now()) when first installed */
+  date: number;
+};
+
+/**
  * The options that AppMetadataController takes.
  */
 export type AppMetadataControllerOptions = {
@@ -27,6 +38,8 @@ export type AppMetadataControllerState = {
   previousAppVersion: string;
   previousMigrationVersion: number;
   currentMigrationVersion: number;
+  /** Installation version and date - set once on first install, never changes */
+  firstTimeInfo?: FirstTimeInfo;
 };
 
 /**
@@ -38,6 +51,7 @@ export const getDefaultAppMetadataControllerState =
     previousAppVersion: '',
     previousMigrationVersion: 0,
     currentMigrationVersion: 0,
+    firstTimeInfo: undefined,
   });
 
 /**
@@ -114,6 +128,12 @@ const controllerMetadata: StateMetadata<AppMetadataControllerState> = {
     includeInDebugSnapshot: true,
     usedInUi: false,
   },
+  firstTimeInfo: {
+    includeInStateLogs: true,
+    persist: true,
+    includeInDebugSnapshot: true,
+    usedInUi: false,
+  },
 };
 
 /**
@@ -185,6 +205,24 @@ export default class AppMetadataController extends BaseController<
       this.update((state) => {
         state.previousMigrationVersion = oldCurrentMigrationVersion;
         state.currentMigrationVersion = maybeNewMigrationVersion;
+      });
+    }
+  }
+
+  /**
+   * Records the first time info if it hasn't been set yet.
+   * This captures the version and date when MetaMask was first installed.
+   * Once set, this value never changes.
+   *
+   * @param version - The current MetaMask version
+   */
+  maybeRecordFirstTimeInfo(version: string): void {
+    if (!this.state.firstTimeInfo) {
+      this.update((state) => {
+        state.firstTimeInfo = {
+          version,
+          date: Date.now(),
+        };
       });
     }
   }

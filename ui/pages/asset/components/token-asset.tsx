@@ -14,8 +14,8 @@ import { InternalAccount } from '@metamask/keyring-internal-api';
 import { formatChainIdToCaip } from '@metamask/bridge-controller';
 import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
 import { AssetType } from '../../../../shared/constants/transaction';
-import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/networks';
-import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
+import { getNetworkConfigurationsByChainId } from '../../../../shared/lib/selectors/networks';
+import { isEqualCaseInsensitive } from '../../../../shared/lib/string-utils';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   getURLHostName,
@@ -66,7 +66,7 @@ const TokenAsset = ({ token, chainId }: { token: Token; chainId: Hex }) => {
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
 
   // Fetch token data from tokenList
   const tokenData = Object.values(tokenList).find(

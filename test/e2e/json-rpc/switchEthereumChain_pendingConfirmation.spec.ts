@@ -1,20 +1,21 @@
-import { withFixtures, WINDOW_TITLES } from '../helpers';
-import FixtureBuilder from '../fixtures/fixture-builder';
-import Confirmation from '../page-objects/pages/confirmations/redesign/confirmation';
+import { WINDOW_TITLES } from '../constants';
+import { withFixtures } from '../helpers';
+import FixtureBuilderV2 from '../fixtures/fixture-builder-v2';
+import Confirmation from '../page-objects/pages/confirmations/confirmation';
 import NetworkSwitchAlertModal from '../page-objects/pages/dialog/network-switch-alert-modal';
-import ReviewPermissionsConfirmation from '../page-objects/pages/confirmations/redesign/review-permissions-confirmation';
-import SwitchNetworkConfirmation from '../page-objects/pages/confirmations/redesign/switch-network-confirmation';
+import ReviewPermissionsConfirmation from '../page-objects/pages/confirmations/review-permissions-confirmation';
+import SwitchNetworkConfirmation from '../page-objects/pages/confirmations/switch-network-confirmation';
 import TestDapp from '../page-objects/pages/test-dapp';
-import { loginWithBalanceValidation } from '../page-objects/flows/login.flow';
+import { login } from '../page-objects/flows/login.flow';
 
 describe('Switch Ethereum Chain for two dapps with pending confirmation in the old network', function () {
   it('show alerts on permission network if user does not have permission on new network', async function () {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 2 },
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withNetworkControllerDoubleNode()
-          .withPermissionControllerConnectedToTestDappWithChains(['0x539'])
+          .withPermissionControllerConnectedToTestDapp()
           .build(),
         localNodeOptions: [
           {
@@ -35,11 +36,12 @@ describe('Switch Ethereum Chain for two dapps with pending confirmation in the o
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
         await testDapp.checkPageIsLoaded();
         await testDapp.clickPersonalSign();
+        await driver.waitForWindowWithTitleToBePresent(WINDOW_TITLES.Dialog);
 
         // switchEthereumChain request
         const switchEthereumChainRequest = JSON.stringify({
@@ -89,12 +91,11 @@ describe('Switch Ethereum Chain for two dapps with pending confirmation in the o
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 2 },
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withNetworkControllerDoubleNode()
-          .withPermissionControllerConnectedToTestDappWithChains([
-            '0x539',
-            '0x53a',
-          ])
+          .withPermissionControllerConnectedToTestDapp({
+            chainIds: [1337, 1338],
+          })
           .build(),
         localNodeOptions: [
           {
@@ -115,12 +116,13 @@ describe('Switch Ethereum Chain for two dapps with pending confirmation in the o
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
         await testDapp.checkPageIsLoaded();
         await testDapp.clickPersonalSign();
+        await driver.waitForWindowWithTitleToBePresent(WINDOW_TITLES.Dialog);
 
         // switchEthereumChain request
         const switchEthereumChainRequest = JSON.stringify({

@@ -4,15 +4,23 @@ import {
 } from '@metamask/accounts-controller';
 import { ApprovalControllerActions } from '@metamask/approval-controller';
 import {
-  Messenger,
-  MessengerActions,
-  MessengerEvents,
-} from '@metamask/messenger';
+  AccountTrackerControllerGetStateAction,
+  CurrencyRateControllerActions,
+} from '@metamask/assets-controllers';
+import {
+  BridgeStatusControllerActions,
+  BridgeStatusControllerStateChangeEvent,
+} from '@metamask/bridge-status-controller';
 import { DelegationControllerSignDelegationAction } from '@metamask/delegation-controller';
 import {
   KeyringControllerSignEip7702AuthorizationAction,
   KeyringControllerSignTypedMessageAction,
 } from '@metamask/keyring-controller';
+import {
+  Messenger,
+  MessengerActions,
+  MessengerEvents,
+} from '@metamask/messenger';
 import {
   NetworkControllerFindNetworkClientIdByChainIdAction,
   NetworkControllerGetEIP1559CompatibilityAction,
@@ -22,11 +30,16 @@ import {
 import type { AuthenticationController } from '@metamask/profile-sync-controller';
 import { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
 import { SmartTransactionsControllerSmartTransactionEvent } from '@metamask/smart-transactions-controller';
+import { SubscriptionControllerActions } from '@metamask/subscription-controller';
 import {
+  TransactionControllerAddTransactionAction,
+  TransactionControllerAddTransactionBatchAction,
   TransactionControllerEstimateGasAction,
+  TransactionControllerGetNonceLockAction,
   TransactionControllerGetStateAction,
   TransactionControllerMessenger,
   TransactionControllerPostTransactionBalanceUpdatedEvent,
+  TransactionControllerStateChangeEvent,
   TransactionControllerTransactionApprovedEvent,
   TransactionControllerTransactionConfirmedEvent,
   TransactionControllerTransactionDroppedEvent,
@@ -36,14 +49,14 @@ import {
   TransactionControllerTransactionRejectedEvent,
   TransactionControllerTransactionSubmittedEvent,
   TransactionControllerUnapprovedTransactionAddedEvent,
+  TransactionControllerUpdateTransactionAction,
 } from '@metamask/transaction-controller';
-import { SubscriptionControllerActions } from '@metamask/subscription-controller';
+import {
+  TransactionPayControllerGetStateAction,
+  TransactionPayControllerGetStrategyAction,
+} from '@metamask/transaction-pay-controller';
 import { RootMessenger } from '../../lib/messenger';
 import { AppStateControllerGetStateAction } from '../../controllers/app-state-controller';
-import {
-  SwapsControllerSetApproveTxIdAction,
-  SwapsControllerSetTradeTxIdAction,
-} from '../../controllers/swaps/swaps.types';
 import { SubscriptionServiceAction } from '../../services/subscription/types';
 import {
   InstitutionalSnapControllerBeforeCheckPendingTransactionHookAction,
@@ -81,17 +94,26 @@ export function getTransactionControllerMessenger(
       'NetworkController:getNetworkClientById',
       'RemoteFeatureFlagController:getState',
     ],
-    events: [`NetworkController:stateChange`],
+    events: [
+      'AccountActivityService:transactionUpdated',
+      'AccountActivityService:statusChanged',
+      'AccountsController:selectedAccountChange',
+      'BackendWebSocketService:connectionStateChanged',
+      'NetworkController:stateChange',
+    ],
   });
   return controllerMessenger;
 }
 
 type InitMessengerActions =
-  | ApprovalControllerActions
   | AccountsControllerGetSelectedAccountAction
   | AccountsControllerGetStateAction
+  | AccountTrackerControllerGetStateAction
+  | ApprovalControllerActions
   | AppStateControllerGetStateAction
-  | AuthenticationController.AuthenticationControllerGetBearerToken
+  | AuthenticationController.AuthenticationControllerGetBearerTokenAction
+  | BridgeStatusControllerActions
+  | CurrencyRateControllerActions
   | DelegationControllerSignDelegationAction
   | InstitutionalSnapControllerPublishHookAction
   | InstitutionalSnapControllerBeforeCheckPendingTransactionHookAction
@@ -101,14 +123,23 @@ type InitMessengerActions =
   | NetworkControllerGetEIP1559CompatibilityAction
   | NetworkControllerGetNetworkClientByIdAction
   | RemoteFeatureFlagControllerGetStateAction
-  | SwapsControllerSetApproveTxIdAction
-  | SwapsControllerSetTradeTxIdAction
-  | TransactionControllerEstimateGasAction
-  | TransactionControllerGetStateAction
   | SubscriptionControllerActions
-  | SubscriptionServiceAction;
+  | SubscriptionServiceAction
+  | TransactionControllerAddTransactionAction
+  | TransactionControllerAddTransactionBatchAction
+  | TransactionControllerEstimateGasAction
+  | TransactionControllerGetNonceLockAction
+  | TransactionControllerGetStateAction
+  | TransactionControllerUpdateTransactionAction
+  | TransactionPayControllerGetStateAction
+  | TransactionPayControllerGetStrategyAction;
 
 type InitMessengerEvents =
+  | BridgeStatusControllerStateChangeEvent
+  | NetworkControllerStateChangeEvent
+  | SmartTransactionsControllerSmartTransactionEvent
+  | TransactionControllerPostTransactionBalanceUpdatedEvent
+  | TransactionControllerStateChangeEvent
   | TransactionControllerTransactionApprovedEvent
   | TransactionControllerTransactionConfirmedEvent
   | TransactionControllerTransactionDroppedEvent
@@ -117,10 +148,7 @@ type InitMessengerEvents =
   | TransactionControllerTransactionNewSwapEvent
   | TransactionControllerTransactionRejectedEvent
   | TransactionControllerTransactionSubmittedEvent
-  | TransactionControllerPostTransactionBalanceUpdatedEvent
-  | TransactionControllerUnapprovedTransactionAddedEvent
-  | NetworkControllerStateChangeEvent
-  | SmartTransactionsControllerSmartTransactionEvent;
+  | TransactionControllerUnapprovedTransactionAddedEvent;
 
 export function getTransactionControllerInitMessenger(
   messenger: RootMessenger<InitMessengerActions, InitMessengerEvents>,
@@ -137,7 +165,10 @@ export function getTransactionControllerInitMessenger(
   messenger.delegate({
     messenger: controllerInitMessenger,
     events: [
+      'BridgeStatusController:stateChange',
       'SmartTransactionsController:smartTransaction',
+      'TransactionController:postTransactionBalanceUpdated',
+      'TransactionController:stateChange',
       'TransactionController:transactionApproved',
       'TransactionController:transactionConfirmed',
       'TransactionController:transactionDropped',
@@ -146,10 +177,10 @@ export function getTransactionControllerInitMessenger(
       'TransactionController:transactionNewSwap',
       'TransactionController:transactionRejected',
       'TransactionController:transactionSubmitted',
-      'TransactionController:postTransactionBalanceUpdated',
       'TransactionController:unapprovedTransactionAdded',
     ],
     actions: [
+      'AccountTrackerController:getState',
       'ApprovalController:acceptRequest',
       'ApprovalController:addRequest',
       'ApprovalController:endFlow',
@@ -157,19 +188,28 @@ export function getTransactionControllerInitMessenger(
       'ApprovalController:updateRequestState',
       'AppStateController:getState',
       'AuthenticationController:getBearerToken',
+      'BridgeStatusController:getState',
+      'BridgeStatusController:submitTx',
+      'CurrencyRateController:getState',
       'DelegationController:signDelegation',
       'InstitutionalSnapController:beforeCheckPendingTransactionHook',
       'InstitutionalSnapController:publishHook',
       'KeyringController:signEip7702Authorization',
       'KeyringController:signTypedMessage',
+      'NetworkController:findNetworkClientIdByChainId',
       'NetworkController:getEIP1559Compatibility',
+      'NetworkController:getNetworkClientById',
       'RemoteFeatureFlagController:getState',
-      'SwapsController:setApproveTxId',
-      'SwapsController:setTradeTxId',
-      'TransactionController:estimateGas',
-      'TransactionController:getState',
       'SubscriptionController:getSubscriptionByProduct',
       'SubscriptionService:submitSubscriptionSponsorshipIntent',
+      'TransactionController:addTransaction',
+      'TransactionController:addTransactionBatch',
+      'TransactionController:estimateGas',
+      'TransactionController:getNonceLock',
+      'TransactionController:getState',
+      'TransactionController:updateTransaction',
+      'TransactionPayController:getState',
+      'TransactionPayController:getStrategy',
     ],
   });
   return controllerInitMessenger;

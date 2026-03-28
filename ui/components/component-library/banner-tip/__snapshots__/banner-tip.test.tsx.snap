@@ -19,7 +19,7 @@ exports[`BannerTip should render BannerTip element correctly 1`] = `
       class="mm-box mm-box--min-width-0"
     >
       <p
-        class="mm-box mm-text mm-text--body-lg-medium mm-box--color-text-default"
+        class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-default"
       >
         BannerTip test
       </p>

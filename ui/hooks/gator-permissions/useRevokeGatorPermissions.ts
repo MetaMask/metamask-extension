@@ -5,12 +5,8 @@ import {
   TransactionType,
 } from '@metamask/transaction-controller';
 import { Hex } from '@metamask/utils';
-import {
-  PermissionTypesWithCustom,
-  Signer,
-  StoredGatorPermissionSanitized,
-} from '@metamask/gator-permissions-controller';
-import { getMemoizedInternalAccountByAddress } from '../../selectors/accounts';
+import { PermissionInfoWithMetadata } from '@metamask/gator-permissions-controller';
+import { getInternalAccountByAddress } from '../../selectors';
 import {
   addTransaction,
   findNetworkClientIdByChainId,
@@ -21,7 +17,7 @@ import {
 } from '../../../shared/lib/delegation/delegation';
 import {
   addPendingRevocation,
-  submitRevocation,
+  submitDirectRevocation,
   checkDelegationDisabled,
 } from '../../store/controller-actions/gator-permissions-controller';
 import { useGatorPermissionRedirect } from './useGatorPermissionRedirect';
@@ -61,9 +57,7 @@ export function useRevokeGatorPermissions({
    */
   const assertNotEmptyGatorPermission = useCallback(
     (
-      dataToAssert:
-        | StoredGatorPermissionSanitized<Signer, PermissionTypesWithCustom>
-        | StoredGatorPermissionSanitized<Signer, PermissionTypesWithCustom>[],
+      dataToAssert: PermissionInfoWithMetadata | PermissionInfoWithMetadata[],
     ) => {
       if (Array.isArray(dataToAssert)) {
         if (dataToAssert.length === 0) {
@@ -88,12 +82,7 @@ export function useRevokeGatorPermissions({
    * @throws An error if the chain ID does not match.
    */
   const assertCorrectChainId = useCallback(
-    (
-      gatorPermission: StoredGatorPermissionSanitized<
-        Signer,
-        PermissionTypesWithCustom
-      >,
-    ) => {
+    (gatorPermission: PermissionInfoWithMetadata) => {
       if (gatorPermission.permissionResponse.chainId !== chainId) {
         throw new Error('Chain ID does not match');
       }
@@ -109,15 +98,12 @@ export function useRevokeGatorPermissions({
    */
   const buildRevokeGatorPermissionArgs = useCallback(
     (
-      gatorPermission: StoredGatorPermissionSanitized<
-        Signer,
-        PermissionTypesWithCustom
-      >,
+      gatorPermission: PermissionInfoWithMetadata,
     ): RevokeGatorPermissionArgs => {
       const { permissionResponse } = gatorPermission;
-      const internalAccount = getMemoizedInternalAccountByAddress(
+      const internalAccount = getInternalAccountByAddress(
         store.getState(),
-        permissionResponse.address as Hex,
+        permissionResponse.from as Hex,
       );
       if (!internalAccount) {
         throw new Error(
@@ -126,8 +112,7 @@ export function useRevokeGatorPermissions({
       }
       return {
         permissionContext: permissionResponse.context,
-        delegationManagerAddress:
-          permissionResponse.signerMeta.delegationManager,
+        delegationManagerAddress: permissionResponse.delegationManager,
         accountAddress: internalAccount.address as Hex,
       };
     },
@@ -142,10 +127,7 @@ export function useRevokeGatorPermissions({
    */
   const addRevokeGatorPermissionTransaction = useCallback(
     async (
-      gatorPermission: StoredGatorPermissionSanitized<
-        Signer,
-        PermissionTypesWithCustom
-      >,
+      gatorPermission: PermissionInfoWithMetadata,
     ): Promise<TransactionMeta | null> => {
       const permissionChainId = gatorPermission.permissionResponse.chainId;
 
@@ -172,9 +154,10 @@ export function useRevokeGatorPermissions({
         delegationHash,
         networkClientId,
       );
+
       if (isDisabled) {
-        await submitRevocation({ permissionContext });
         // Return null since no actual transaction is needed when already disabled
+        await submitDirectRevocation({ permissionContext });
         return null;
       }
 
@@ -223,10 +206,7 @@ export function useRevokeGatorPermissions({
    */
   const revokeGatorPermission = useCallback(
     async (
-      gatorPermission: StoredGatorPermissionSanitized<
-        Signer,
-        PermissionTypesWithCustom
-      >,
+      gatorPermission: PermissionInfoWithMetadata,
     ): Promise<TransactionMeta | null> => {
       assertNotEmptyGatorPermission(gatorPermission);
       assertCorrectChainId(gatorPermission);
@@ -255,10 +235,7 @@ export function useRevokeGatorPermissions({
    */
   const revokeGatorPermissionBatch = useCallback(
     async (
-      gatorPermissions: StoredGatorPermissionSanitized<
-        Signer,
-        PermissionTypesWithCustom
-      >[],
+      gatorPermissions: PermissionInfoWithMetadata[],
     ): Promise<TransactionMeta[]> => {
       assertNotEmptyGatorPermission(gatorPermissions);
 

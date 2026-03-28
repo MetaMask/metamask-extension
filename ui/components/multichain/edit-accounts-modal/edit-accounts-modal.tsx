@@ -37,7 +37,7 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
+import { isEqualCaseInsensitive } from '../../../../shared/lib/string-utils';
 import {
   WalletClientType,
   EVM_WALLET_TYPE,
@@ -65,7 +65,7 @@ export const EditAccountsModal: React.FC<EditAccountsModalProps> = ({
   onSubmit,
 }) => {
   const t = useI18nContext();
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
   const [modalStage, setModalStage] = useState<EditAccountModalStage>(
     EditAccountModalStage.AccountList,
   );

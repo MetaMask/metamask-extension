@@ -1,5 +1,11 @@
 import { Json } from '@metamask/utils';
-import type { EnvironmentType } from './app';
+import type {
+  DeviceType,
+  EnvironmentType,
+  InstallType,
+  Os,
+  Platform,
+} from './app';
 import { LedgerTransportTypes } from './hardware-wallets';
 
 type JsonWithUndefined =
@@ -504,19 +510,25 @@ export type MetaMetricsUserTraits = {
    */
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
-  is_metrics_opted_in?: boolean;
+  is_metrics_opted_in?: boolean | null;
   /**
    * Does the user accepted marketing consent
    */
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
-  has_marketing_consent?: boolean;
+  has_marketing_consent?: boolean | null;
   /**
    * The date the extension was installed.
    */
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
   install_date_ext?: string;
+  /**
+   * The persistence storage kind currently in use.
+   */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  storage_kind?: 'data' | 'split';
   /**
    * Whether the security provider feature has been enabled.
    */
@@ -559,6 +571,26 @@ export type MetaMetricsUserTraits = {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
   rewards_referral_code_used?: string;
+  /**
+   * The platform (browser) where the extension is running.
+   */
+  platform?: Platform;
+  /**
+   * The installation type of the extension.
+   */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  install_type?: InstallType;
+  /**
+   * Whether the device is mobile or desktop.
+   */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  device_type?: DeviceType;
+  /**
+   * The operating system (normalized).
+   */
+  os?: Os;
 };
 
 export enum MetaMetricsUserTrait {
@@ -578,6 +610,10 @@ export enum MetaMetricsUserTrait {
    * Identified when the user installed the extension.
    */
   InstallDateExt = 'install_date_ext',
+  /**
+   * Identifies which persistence storage kind is in use.
+   */
+  StorageKind = 'storage_kind',
   /**
    * Identified when the Ledger Live connection type is changed.
    */
@@ -671,6 +707,24 @@ export enum MetaMetricsUserTrait {
   HasRewardsOptedIn = 'has_rewards_opted_in',
   RewardsReferred = 'rewards_referred',
   RewardsReferralCodeUsed = 'rewards_referral_code_used',
+  /**
+   * The platform (browser) where the extension is running.
+   */
+  Platform = 'platform',
+  /**
+   * The installation type of the extension.
+   */
+  InstallType = 'install_type',
+  /**
+   * Whether the device is mobile or desktop.
+   */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  DeviceType = 'device_type',
+  /**
+   * The operating system (normalized).
+   */
+  Os = 'os',
 }
 
 /**
@@ -705,6 +759,8 @@ export enum MetaMetricsEventName {
   AccountImportFailed = 'Account Import Failed',
   AccountDetailsOpened = 'Account Details Opened',
   AccountPasswordCreated = 'Account Password Created',
+  AccountPinned = 'Account Pinned',
+  AccountHidden = 'Account Hidden',
   AccountReset = 'Account Reset',
   AccountRenamed = 'Account Renamed',
   AccountsSyncAdded = 'Accounts Sync Added',
@@ -714,6 +770,7 @@ export enum MetaMetricsEventName {
   ActivityDetailsOpened = 'Activity Details Opened',
   ActivityDetailsClosed = 'Activity Details Closed',
   AnalyticsPreferenceSelected = 'Analytics Preference Selected',
+  ExperimentViewed = 'Experiment Viewed',
   AppInstalled = 'App Installed',
   AppOpened = 'App Opened',
   AppUnlocked = 'App Unlocked',
@@ -738,11 +795,15 @@ export enum MetaMetricsEventName {
   EmptyReceiveBannerDisplayed = 'Empty Receive Banner Displayed',
   EmptyReceiveBannerClicked = 'Empty Receive Banner Clicked',
   EmptyNftsBannerClicked = 'Empty NFTs Banner Clicked',
+  EnabledDisabledOpenSea = 'Enabled/Disable OpenSea',
   EncryptionPublicKeyApproved = 'Encryption Approved',
   EncryptionPublicKeyRejected = 'Encryption Rejected',
   EncryptionPublicKeyRequested = 'Encryption Requested',
   ErrorOccured = 'Error occured',
   ExternalLinkClicked = 'External Link Clicked',
+  ForceUpgradeUpdateNeededPromptViewed = 'Force Upgrade Update Needed Prompt Viewed',
+  ForceUpgradeSkipped = 'Force Upgrade Skipped',
+  ForceUpgradeClickedUpdateToLatestVersion = 'Force Upgrade Clicked Update to Latest Version',
   ImportSecretRecoveryPhrase = 'Import Secret Recovery Phrase',
   KeyExportSelected = 'Key Export Selected',
   KeyExportRequested = 'Key Export Requested',
@@ -758,15 +819,38 @@ export enum MetaMetricsEventName {
   MetricsOptIn = 'Metrics Opt In',
   MetricsOptOut = 'Metrics Opt Out',
   MetricsDataDeletionRequest = 'Delete MetaMetrics Data Request Submitted',
+  MusdClaimBonusButtonClicked = 'MUSD Claim Bonus Button Clicked',
+  MusdClaimBonusCtaDisplayed = 'mUSD Claim Bonus CTA Displayed',
+  MusdClaimBonusStatusUpdated = 'MUSD Claim Bonus Status Updated',
+  MusdConversionCompleted = 'MUSD Conversion Completed',
+  MusdConversionCtaClicked = 'MUSD Conversion CTA Clicked',
+  MusdConversionFailed = 'MUSD Conversion Failed',
+  MusdConversionQuoteError = 'MUSD Conversion Quote Error',
+  MusdConversionQuoteReceived = 'MUSD Conversion Quote Received',
+  MusdConversionQuoteRequested = 'MUSD Conversion Quote Requested',
+  MusdConversionStarted = 'MUSD Conversion Started',
+  MusdConversionStatusUpdated = 'MUSD Conversion Status Updated',
+  MusdFullscreenAnnouncementButtonClicked = 'MUSD Fullscreen Announcement Button Clicked',
+  MusdBonusTermsOfUsePressed = 'MUSD Bonus Terms of Use Pressed',
+  MusdFullscreenAnnouncementDisplayed = 'MUSD Fullscreen Announcement Displayed',
   NavAccountMenuOpened = 'Account Menu Opened',
   NavConnectedSitesOpened = 'Connected Sites Opened',
   NavMainMenuOpened = 'Main Menu Opened',
   NavPermissionsOpened = 'Permissions Opened',
   NetworkConnectionBannerShown = 'Network Connection Banner Shown',
   NetworkConnectionBannerUpdateRpcClicked = 'Network Connection Banner Update RPC Clicked',
+  NetworkConnectionBannerSwitchToMetaMaskDefaultRpcClicked = 'Network Connection Banner Switch To MetaMask Default RPC Clicked',
   NetworkConnectionBannerRpcUpdated = 'Network Connection Banner RPC Updated',
   UpdatePermissionedNetworks = 'Update Permissioned Networks',
   UpdatePermissionedAccounts = 'Update Permissioned Accounts',
+  StorageErrorToastViewed = 'Storage Error Toast Viewed',
+  StorageErrorToastDismissed = 'Storage Error Toast Dismissed',
+  StorageErrorToastBackupSrpButtonPressed = 'Storage Error Toast Backup SRP Button Pressed',
+  StateMigrationSucceeded = 'State Migration Succeeded',
+  StateMigrationFailed = 'State Migration Failed',
+  VaultCorruptionDetected = 'Vault Corruption Detected',
+  VaultCorruptionRestoreWalletScreenViewed = 'Vault Corruption Restore Wallet Screen Viewed',
+  VaultCorruptionRestoreWalletButtonPressed = 'Vault Corruption Restore Wallet Button Pressed',
   ViewPermissionedNetworks = 'View Permissioned Networks',
   ViewPermissionedAccounts = 'View Permissioned Accounts',
   NavNetworkMenuOpened = 'Network Menu Opened',
@@ -778,6 +862,8 @@ export enum MetaMetricsEventName {
   NavSwapButtonClicked = 'Swap Button Clicked',
   NavReceiveButtonClicked = 'Receive Button Clicked',
   NftAdded = 'NFT Added',
+  NftDetected = 'NFT Detected',
+  NoticeUpdateDisplayed = 'Notice Update Displayed',
   OnboardingWalletSecurityStarted = 'SRP Backup Selected',
   OnboardingWalletSecuritySkipInitiated = 'SRP Skip Backup Selected',
   OnboardingWalletSecuritySkipConfirmed = 'SRP Backup Skipped',
@@ -786,6 +872,7 @@ export enum MetaMetricsEventName {
   OnboardingWalletSecurityPhraseWrittenDown = 'SRP Backup Confirm Display',
   OnboardingWalletSecurityPhraseConfirmed = 'SRP Backup Confirmed',
   OnboardingWalletVideoPlay = 'SRP Intro Video Played',
+  OnboardingCompleted = 'Onboarding Completed',
   OnrampProviderSelected = 'On-ramp Provider Selected',
   PasswordChanged = 'Password Changed',
   ForgotPasswordClicked = 'Forgot Password Clicked',
@@ -832,6 +919,7 @@ export enum MetaMetricsEventName {
   SrpHoldToRevealClickStarted = 'Reveal SRP Click Started',
   SrpHoldToRevealCloseClicked = 'Closes Hold To Reveal SRP',
   SrpHoldToRevealCompleted = 'Reveal SRP Completed',
+  SrpRevealMaliciousSiteDetected = 'Reveal SRP Malicious Site Detected',
   SrpViewsSrpQR = 'Views SRP QR Code',
   SrpViewSrpText = 'Views SRP',
   SrpCopiedToClipboard = 'Copies SRP to clipboard',
@@ -842,12 +930,14 @@ export enum MetaMetricsEventName {
   SupportLinkClicked = 'Support Link Clicked',
   TermsOfUseShown = 'Terms of Use Shown',
   TermsOfUseAccepted = 'Terms of Use Accepted',
+  ThemeChanged = 'Theme Changed',
   TokenImportButtonClicked = 'Import Token Button Clicked',
   TokenScreenOpened = 'Token Screen Opened',
   TokenAdded = 'Token Added',
   TokenSortPreference = 'Token Sort Preference Updated',
   EmptyNFTTabButtonClicked = 'Empty NFT Tab Button Clicked',
   TokenDetected = 'Token Detected',
+  AssetsFirstInitFetchCompleted = 'Assets First Init Fetch Completed',
   TokenHidden = 'Token Hidden',
   TokenImportCanceled = 'Token Import Canceled',
   TokenImportClicked = 'Token Import Clicked',
@@ -869,9 +959,8 @@ export enum MetaMetricsEventName {
   RehydrationCompleted = 'Rehydration Completed',
   RehydrationPasswordFailed = 'Rehydration Password Failed',
   UseDifferentLoginMethodClicked = 'Use Different Login Method Clicked',
-  // BEGIN:ONLY_INCLUDE_IF(build-flask,build-experimental)
+  PasswordOutdatedModalViewed = 'Password Outdated Modal Viewed',
   WatchEthereumAccountsToggled = 'Watch Ethereum Accounts Toggled',
-  // END:ONLY_INCLUDE_IF
   AccountDetailMenuOpened = 'Account Details Menu Opened',
   BlockExplorerLinkClicked = 'Block Explorer Clicked',
   AccountRemoved = 'Account Removed',
@@ -884,6 +973,7 @@ export enum MetaMetricsEventName {
   DeFiScreenOpened = 'DeFi Screen Opened',
   DeFiDetailsOpened = 'DeFi Details Opened',
   ActivityScreenOpened = 'Activity Screen Opened',
+  PerpsScreenOpened = 'Perps Screen Opened',
   WhatsNewViewed = `What's New Viewed`,
   WhatsNewClicked = `What's New Link Clicked`,
   PrepareSwapPageLoaded = 'Prepare Swap Page Loaded',
@@ -913,7 +1003,6 @@ export enum MetaMetricsEventName {
   SnapUpdated = 'Snap Updated',
   SnapExportUsed = 'Snap Export Used',
   InsightSnapViewed = 'Insight Snap Viewed',
-  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   AddSnapAccountEnabled = 'Add Snap Account Enabled',
   AddSnapAccountViewed = 'Add Snap Account Viewed',
   AddSnapAccountConfirmed = 'Add Snap Account Confirmed',
@@ -930,7 +1019,6 @@ export enum MetaMetricsEventName {
   SnapAccountTransactionFinalizeRedirectGoToSiteClicked = 'Snap Account Transaction Finalize Redirect "Go To Site" Clicked',
   SnapAccountTransactionFinalizeRedirectSnapUrlClicked = 'Snap Account Transaction Finalize Redirect "Snap URL" Clicked',
   SnapAccountTransactionFinalizeClosed = 'Snap Account Transaction Finalize Closed',
-  ///: END:ONLY_INCLUDE_IF
   TurnOnMetaMetrics = 'MetaMetrics Turned On',
   TurnOffMetaMetrics = 'MetaMetrics Turned Off',
   // Notifications
@@ -964,7 +1052,6 @@ export enum MetaMetricsEventName {
   Wallet5792Called = 'EIP-5792 API Called',
   // Delete Wallet Modal
   WalletRestored = 'Wallet Restored',
-  ExtensionPinned = 'Extension Pinned',
   // Extension Port Stream
   PortStreamChunked = 'Port Stream Chunked',
   // Hardware Wallets
@@ -978,6 +1065,9 @@ export enum MetaMetricsEventName {
   HardwareWalletForgotten = 'Hardware Wallet Forgotten',
   HardwareWalletMarketingButtonClicked = 'Hardware Wallet Marketing Button Clicked',
   HardwareWalletConnectionFailed = 'Hardware Wallet Connection Failed',
+  HardwareWalletRecoveryModalViewed = 'Hardware Wallet Recovery Modal Viewed',
+  HardwareWalletRecoverySuccessModalViewed = 'Hardware Wallet Recovery Success Modal Viewed',
+  HardwareWalletRecoveryCtaClicked = 'Hardware Wallet Recovery CTA Clicked',
   ViewportSwitched = 'Viewport Switched',
   // Rewards
   RewardsOptInStarted = 'REWARDS_OPT_IN_STARTED',
@@ -1004,15 +1094,58 @@ export enum MetaMetricsEventName {
   ShieldEligibilityCohortTimeout = 'Shield Eligibility Cohort Timeout',
   ShieldSubscriptionUnexpectedErrorEvent = 'Shield Subscription Unexpected Error',
   ShieldOptInRewards = 'Shield Opt In Rewards',
+  // Contacts (address book)
+  ContactsPageViewed = 'Contacts Page Viewed',
+  ContactDetailsViewed = 'Contact Details Viewed',
+  AddContactClicked = 'Add Contact Clicked',
+  ContactAddQrScannerClicked = 'Contact Add QR Scanner Clicked',
+  ContactAdded = 'Contact Added',
+  EditContactClicked = 'Edit Contact Clicked',
+  ContactUpdated = 'Contact Updated',
+  DeleteContactClicked = 'Delete Contact Clicked',
+  ContactDeleted = 'Contact Deleted',
+}
+
+/**
+ * Segment `location` for hardware wallet recovery.
+ * String values must match `segment-schema/libraries/properties/metamask-hardware-wallet-recovery-globals.yaml` (`location` enum).
+ */
+export enum MetaMetricsHardwareWalletRecoveryLocation {
+  Connection = 'Connection',
+  Transaction = 'Transaction',
+  Message = 'Message',
+  Swaps = 'Swaps',
+  Send = 'Send',
+}
+
+/**
+ * Segment `error_type` for hardware wallet recovery.
+ * String values must match `metamask-hardware-wallet-recovery-globals` / `metamask-hardware-wallet-recovery-error-globals` enums in segment-schema.
+ */
+export enum MetaMetricsHardwareWalletRecoveryErrorType {
+  DeviceLocked = 'Device Locked',
+  DeviceDisconnected = 'Device Disconnected',
+  EthereumAppNotOpened = 'Ethereum App Not Opened',
+  BlindSigningNotEnabled = 'Blind Signing Not Enabled',
+  GenericError = 'Generic Error',
+}
+
+/**
+ * Segment `device_type` (manufacturer) for hardware wallet events.
+ * String values must match `segment-schema/libraries/properties/metamask-hardware-wallet-globals.yaml` (`device_type` enum).
+ */
+export enum MetaMetricsHardwareWalletDeviceType {
+  Ledger = 'Ledger',
+  Trezor = 'Trezor',
+  QrHardware = 'QR Hardware',
+  Lattice = 'Lattice',
 }
 
 export enum MetaMetricsEventAccountType {
   Default = 'metamask',
   Hardware = 'hardware',
   Imported = 'imported',
-  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   Snap = 'snap',
-  ///: END:ONLY_INCLUDE_IF
 }
 
 export enum QueueType {
@@ -1028,9 +1161,11 @@ export enum MetaMetricsEventAccountImportType {
 
 export enum MetaMetricsEventCategory {
   Accounts = 'Accounts',
+  Analytics = 'Analytics',
   App = 'App',
   Auth = 'Auth',
   Background = 'Background',
+  StateMigration = 'State Migration',
   Banner = 'Banner',
   // The TypeScript ESLint rule is incorrectly marking this line.
   /* eslint-disable-next-line @typescript-eslint/no-shadow */
@@ -1043,6 +1178,7 @@ export enum MetaMetricsEventCategory {
   MultichainApi = 'multichain_api',
   Keys = 'Keys',
   Messages = 'Messages',
+  MusdConversion = 'MUSD Conversion',
   Navigation = 'Navigation',
   Network = 'Network',
   Onboarding = 'Onboarding',
@@ -1066,6 +1202,7 @@ export enum MetaMetricsEventCategory {
   Transactions = 'Transactions',
   Wallet = 'Wallet',
   Confirmations = 'Confirmations',
+  Contacts = 'Contacts',
   CrossChainSwaps = 'Cross Chain Swaps',
   PortStream = 'Port Stream',
   Rewards = 'Rewards',
@@ -1139,7 +1276,6 @@ export enum MetaMetricsEventUiCustomization {
   FlaggedAsWarning = 'flagged_as_warning',
   GasEstimationFailed = 'gas_estimation_failed',
   Order = 'order',
-  RedesignedConfirmation = 'redesigned_confirmation',
   SecurityAlertError = 'security_alert_error',
   Siwe = 'sign_in_with_ethereum',
   Permit = 'permit',
@@ -1167,6 +1303,12 @@ export enum DeleteRegulationStatus {
   Running = 'RUNNING',
   Unknown = 'UNKNOWN',
 }
+
+export const DATA_DELETION_REQUESTED_STATUSES: DeleteRegulationStatus[] = [
+  DeleteRegulationStatus.Initialized,
+  DeleteRegulationStatus.Running,
+  DeleteRegulationStatus.Finished,
+];
 
 export enum MetaMetricsEventTransactionEstimateType {
   DappProposed = 'dapp_proposed',

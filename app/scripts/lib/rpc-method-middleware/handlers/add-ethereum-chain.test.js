@@ -1,5 +1,8 @@
 import { rpcErrors } from '@metamask/rpc-errors';
-import { CHAIN_IDS } from '../../../../../shared/constants/network';
+import {
+  CHAIN_IDS,
+  FEATURED_RPCS,
+} from '../../../../../shared/constants/network';
 import addEthereumChain from './add-ethereum-chain';
 import EthChainUtils from './ethereum-chain-utils';
 
@@ -155,6 +158,47 @@ describe('addEthereumChainHandler', () => {
     expect(end).toHaveBeenCalledWith(
       rpcErrors.invalidParams(new Error('failed to validate params')),
     );
+  });
+
+  it('should deduplicate the featured endpoint if the URL `firstValidRPCUrl` send from client is the same as the one in FEATURED_RPCS', async () => {
+    const rpcUrl = FEATURED_RPCS.find(
+      (f) => f.chainId === CHAIN_IDS.LINEA_MAINNET,
+    )?.rpcEndpoints[0].url;
+    const { handler, mocks } = createMockedHandler();
+
+    const request = {
+      origin: 'example.com',
+      params: [
+        {
+          chainId: CHAIN_IDS.LINEA_MAINNET,
+          chainName: 'Linea',
+          rpcUrls: [rpcUrl],
+          nativeCurrency: {
+            symbol: 'ETH',
+            decimals: 18,
+          },
+          blockExplorerUrls: ['https://etherscan.io'],
+        },
+      ],
+    };
+
+    await handler(request);
+
+    expect(mocks.addNetwork).toHaveBeenCalledWith({
+      blockExplorerUrls: ['https://etherscan.io'],
+      defaultBlockExplorerUrlIndex: 0,
+      chainId: CHAIN_IDS.LINEA_MAINNET,
+      defaultRpcEndpointIndex: 0,
+      name: 'Linea',
+      nativeCurrency: 'ETH',
+      rpcEndpoints: [
+        {
+          url: rpcUrl,
+          name: 'Linea',
+          type: 'custom',
+        },
+      ],
+    });
   });
 
   it('creates a new network configuration for the given chainid and switches to it if no networkConfigurations with the same chainId exist', async () => {

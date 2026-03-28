@@ -1,4 +1,5 @@
 import React from 'react';
+import { isValidUrl } from '@metamask/snaps-utils';
 
 export type SnapUIImageProps = {
   value: string;
@@ -15,7 +16,9 @@ export const SnapUIImage = ({
   style,
   borderRadius,
 }: SnapUIImageProps) => {
-  const src = `data:image/svg+xml;utf8,${encodeURIComponent(value)}`;
+  const src = isValidUrl(value)
+    ? value
+    : `data:image/svg+xml;utf8,${encodeURIComponent(value)}`;
 
   return (
     <img

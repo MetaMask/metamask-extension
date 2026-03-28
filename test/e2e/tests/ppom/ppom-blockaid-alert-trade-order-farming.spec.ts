@@ -1,10 +1,11 @@
 import { Suite } from 'mocha';
 import { MockttpServer } from 'mockttp';
-import FixtureBuilder from '../../fixtures/fixture-builder';
-import { WINDOW_TITLES, withFixtures } from '../../helpers';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
+import { NETWORK_CLIENT_ID, WINDOW_TITLES } from '../../constants';
+import { withFixtures } from '../../helpers';
 import TestDapp from '../../page-objects/pages/test-dapp';
-import TransactionConfirmation from '../../page-objects/pages/confirmations/redesign/transaction-confirmation';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import TransactionConfirmation from '../../page-objects/pages/confirmations/transaction-confirmation';
+import { login } from '../../page-objects/flows/login.flow';
 import { SECURITY_ALERTS_PROD_API_BASE_URL } from './constants';
 import { mockServerJsonRpc } from './mocks/mock-server-json-rpc';
 
@@ -106,7 +107,7 @@ async function mockSecurityAlertsRequest(server: MockttpServer): Promise<void> {
   };
 
   await server
-    .forPost(`${SECURITY_ALERTS_PROD_API_BASE_URL}/validate/0x539`)
+    .forPost(`${SECURITY_ALERTS_PROD_API_BASE_URL}/validate/0x1`)
     .withJsonBodyIncluding(request)
     .thenJson(response.statusCode ?? 201, response.body);
 }
@@ -118,29 +119,24 @@ describe('PPOM Blockaid Alert - Set Trade farming order', function (this: Suite)
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
+          .withSelectedNetwork(NETWORK_CLIENT_ID.MAINNET)
           .withPermissionControllerConnectedToTestDapp({
             useLocalhostHostname: true,
-          })
-          .withNetworkController({
-            selectedNetworkClientId: 'networkConfigurationId',
+            chainIds: [1],
           })
           .withEnabledNetworks({
             eip155: {
-              '0x539': true,
+              '0x1': true,
             },
           })
-          .withPreferencesController({
-            securityAlertsEnabled: true,
-          })
-          // .withNetworkControllerOnMainnet()
           .build(),
         testSpecificMock: mockInfura,
         title: this.test?.fullTitle(),
       },
 
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver, { expectedBalance: '1.37T ETH' });
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage({ url: 'http://localhost:8080' });
         await testDapp.checkPageIsLoaded();

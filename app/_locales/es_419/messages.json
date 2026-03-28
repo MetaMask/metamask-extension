@@ -79,9 +79,6 @@
   "activity": {
     "message": "Actividad"
   },
-  "activityLog": {
-    "message": "Registro de actividad"
-  },
   "add": {
     "message": "Añadir"
   },
@@ -115,10 +112,6 @@
   "addToken": {
     "message": "Agregar token"
   },
-  "addTokenByContractAddress": {
-    "message": "¿No encuentra un token? Para agregar un token, copie su dirección. Puede encontrar la dirección de contrato del token en $1",
-    "description": "$1 is a blockchain explorer for a specific network, e.g. Etherscan for Ethereum"
-  },
   "address": {
     "message": "Dirección"
   },
@@ -127,9 +120,6 @@
   },
   "advancedBaseGasFeeToolTip": {
     "message": "Cuando su transacción se incluya en el bloque, se reembolsará cualquier diferencia entre su tarifa base máxima y la tarifa base real. El importe total se calcula como tarifa base máxima (en GWEI) * límite de gas."
-  },
-  "advancedGasFeeModalTitle": {
-    "message": "Tarifa de gas avanzada"
   },
   "advancedGasPriceTitle": {
     "message": "Precio del gas"
@@ -142,10 +132,6 @@
   },
   "alerts": {
     "message": "Alertas"
-  },
-  "allowWithdrawAndSpend": {
-    "message": "Permitir que se retire $1 y gastar hasta el siguiente importe:",
-    "description": "The url of the site that requested permission to 'withdraw and spend'"
   },
   "amount": {
     "message": "Importe"
@@ -248,9 +234,6 @@
   "browserNotSupported": {
     "message": "El explorador no es compatible..."
   },
-  "buildContactList": {
-    "message": "Cree su lista de contactos"
-  },
   "builtAroundTheWorld": {
     "message": "MetaMask está diseñado y construido en todo el mundo."
   },
@@ -268,14 +251,6 @@
   },
   "cancelPopoverTitle": {
     "message": "Cancelar transacción"
-  },
-  "cancelSpeedUpLabel": {
-    "message": "Esta tarifa de gas va a $1 el original.",
-    "description": "$1 is text 'replace' in bold"
-  },
-  "cancelSpeedUpTransactionTooltip": {
-    "message": "Para $1 una transacción, la tarifa de gas debe aumentar al menos un 10% para que sea reconocida por la red.",
-    "description": "$1 is string 'cancel' or 'speed up'"
   },
   "cancelled": {
     "message": "Cancelado"
@@ -322,9 +297,6 @@
   },
   "connect": {
     "message": "Conectar"
-  },
-  "connectAccountOrCreate": {
-    "message": "Conectar cuenta o crear nueva"
   },
   "connectManually": {
     "message": "Conectarse manualmente al sitio actual"
@@ -437,9 +409,6 @@
   "custom": {
     "message": "Avanzado"
   },
-  "customSpendLimit": {
-    "message": "Límite de gastos personalizado"
-  },
   "customToken": {
     "message": "Token personalizado"
   },
@@ -452,10 +421,6 @@
   },
   "dappSuggestedShortLabel": {
     "message": "Sitio"
-  },
-  "dappSuggestedTooltip": {
-    "message": "$1 ha recomendado este precio.",
-    "description": "$1 represents the Dapp's origin"
   },
   "data": {
     "message": "Datos"
@@ -550,9 +515,6 @@
   "editAddressNickname": {
     "message": "Editar apodo de dirección"
   },
-  "editCancellationGasFeeModalTitle": {
-    "message": "Editar tarifa de cancelación de gas"
-  },
   "editContact": {
     "message": "Editar contacto"
   },
@@ -611,9 +573,6 @@
   "editGasPriceTooltip": {
     "message": "Esta red requiere un campo \"Precio del gas\" cuando se envía una transacción. El precio del gas es la cantidad que se pagará por unidad de gas."
   },
-  "editGasSubTextFeeLabel": {
-    "message": "Tarifa máxima:"
-  },
   "editGasTitle": {
     "message": "Editar prioridad"
   },
@@ -625,12 +584,6 @@
   },
   "editNonceMessage": {
     "message": "Esta es una función avanzada, úsela con precaución."
-  },
-  "editPermission": {
-    "message": "Editar permiso"
-  },
-  "editSpeedUpEditGasFeeModalTitle": {
-    "message": "Editar la tarifa de aceleración de gas"
   },
   "enableAutoDetect": {
     "message": " Activar autodetección"
@@ -655,9 +608,6 @@
   },
   "ensUnknownError": {
     "message": "Error al buscar ENS."
-  },
-  "enterMaxSpendLimit": {
-    "message": "Escribir límite máximo de gastos"
   },
   "enterPasswordContinue": {
     "message": "Escribir contraseña para continuar"
@@ -684,9 +634,6 @@
   },
   "ethGasPriceFetchWarning": {
     "message": "Se muestra el precio del gas de respaldo, ya que el servicio para calcular el precio del gas principal no se encuentra disponible en este momento."
-  },
-  "ethereumPublicAddress": {
-    "message": "Dirección pública de Ethereum"
   },
   "etherscan": {
     "message": "Etherscan"
@@ -766,9 +713,6 @@
   },
   "gasLimitV2": {
     "message": "Límite de gas"
-  },
-  "gasOption": {
-    "message": "Opción de gas"
   },
   "gasPriceExcessive": {
     "message": "Su tarifa de gas es demasiado alta. Considere reducir el importe."
@@ -875,17 +819,11 @@
     "message": "MetaMask no se pudo conectar al host de la cadena de bloques. Revise las razones posibles $1.",
     "description": "$1 is a clickable link with with text defined by the 'here' key"
   },
-  "initialTransactionConfirmed": {
-    "message": "La red confirmó la transacción inicial. Haga clic en Aceptar para volver."
-  },
   "insufficientBalance": {
     "message": "Saldo insuficiente."
   },
   "insufficientFunds": {
     "message": "Fondos insuficientes."
-  },
-  "insufficientFundsForGas": {
-    "message": "Fondos insuficientes para el gas"
   },
   "insufficientTokens": {
     "message": "Tokens insuficientes."
@@ -947,9 +885,6 @@
   "knownTokenWarning": {
     "message": "Esta acción editará tokens que ya estén enumerados en la cartera y que se pueden usar para engañarlo. Apruebe solo si está seguro de que quiere cambiar lo que representan estos tokens."
   },
-  "lastConnected": {
-    "message": "Última conexión"
-  },
   "learnMore": {
     "message": "más información"
   },
@@ -1006,9 +941,6 @@
   "links": {
     "message": "Enlaces"
   },
-  "loadMore": {
-    "message": "Cargar más"
-  },
   "loading": {
     "message": "Cargando..."
   },
@@ -1034,10 +966,6 @@
   "makeAnotherSwap": {
     "message": "Crear un nuevo swap"
   },
-  "makeSureNoOneWatching": {
-    "message": "Asegúrese de que nadie está viendo su pantalla",
-    "description": "Warning to users to be care while creating and saving their new Secret Recovery Phrase"
-  },
   "max": {
     "message": "Máx."
   },
@@ -1046,9 +974,6 @@
   },
   "maxFee": {
     "message": "Tarifa máxima"
-  },
-  "maxPriorityFee": {
-    "message": "Tarifa máxima de prioridad"
   },
   "medium": {
     "message": "Mercado"
@@ -1105,20 +1030,11 @@
     "message": "Debe seleccionar un archivo para la importación.",
     "description": "User is important an account and needs to add a file to continue"
   },
-  "negativeETH": {
-    "message": "No se pueden enviar cantidades negativas de ETH."
-  },
   "networkDetails": {
     "message": "Detalles de la red"
   },
-  "networkIsBusy": {
-    "message": "La red está ocupada. Los precios del gas son altos y las estimaciones son menos precisas."
-  },
   "networkName": {
     "message": "Nombre de la red"
-  },
-  "networkNameBSC": {
-    "message": "BSC"
   },
   "networkNameDefinition": {
     "message": "El nombre asociado a esta red."
@@ -1128,9 +1044,6 @@
   },
   "networkNamePolygon": {
     "message": "Polygon"
-  },
-  "networkNameTestnet": {
-    "message": "Red de prueba"
   },
   "networkStatus": {
     "message": "Estado de la red"
@@ -1165,9 +1078,6 @@
     "message": "Cuenta $1",
     "description": "Default name of next account to be created on create account screen"
   },
-  "newContact": {
-    "message": "Contacto nuevo"
-  },
   "newContract": {
     "message": "Contrato nuevo"
   },
@@ -1191,9 +1101,6 @@
   },
   "noAccountsFound": {
     "message": "No se encuentran cuentas para la consulta de búsqueda determinada"
-  },
-  "noConversionRateAvailable": {
-    "message": "No hay tasa de conversión disponible"
   },
   "noWebcamFound": {
     "message": "No se encontró la cámara web del equipo. Vuelva a intentarlo."
@@ -1241,9 +1148,6 @@
   "openFullScreenForLedgerWebHid": {
     "message": "Abra MetaMask en pantalla completa para conectar su Ledger a través de WebHID.",
     "description": "Shown to the user on the confirm screen when they are viewing MetaMask in a popup window but need to connect their ledger via webhid."
-  },
-  "optional": {
-    "message": "Opcional"
   },
   "origin": {
     "message": "Origen"
@@ -1312,9 +1216,6 @@
   "proceedWithTransaction": {
     "message": "Quiero continuar de todos modos"
   },
-  "proposedApprovalLimit": {
-    "message": "Límite de aprobación propuesto"
-  },
   "provide": {
     "message": "Proporcionar"
   },
@@ -1351,12 +1252,6 @@
   "rejectAll": {
     "message": "Rechazar todo"
   },
-  "rejectTxsDescription": {
-    "message": "Está a punto de rechazar $1 transacciones en lote."
-  },
-  "rejectTxsN": {
-    "message": "Rechazar $1 transacciones"
-  },
   "rejected": {
     "message": "Rechazado"
   },
@@ -1365,9 +1260,6 @@
   },
   "removeAccount": {
     "message": "Quitar cuenta"
-  },
-  "removeAccountDescription": {
-    "message": "Esta cuenta se quitará de la cartera. Antes de continuar, asegúrese de tener la frase secreta de recuperación original o la clave privada de esta cuenta importada. Puede importar o crear cuentas nuevamente en la lista desplegable de la cuenta. "
   },
   "removeNFT": {
     "message": "Eliminar NFT"
@@ -1415,9 +1307,6 @@
   "search": {
     "message": "Buscar"
   },
-  "searchAccounts": {
-    "message": "Buscar cuentas"
-  },
   "secretRecoveryPhrase": {
     "message": "Frase secreta de recuperación"
   },
@@ -1429,9 +1318,6 @@
   },
   "seedPhraseReq": {
     "message": "Las frases secretas de recuperación contienen 12, 15, 18, 21 o 24 palabras"
-  },
-  "selectAccounts": {
-    "message": "Seleccione la(s) cuenta(s) a usar en este sitio"
   },
   "selectAll": {
     "message": "Seleccionar todo"
@@ -1453,9 +1339,6 @@
   },
   "selectType": {
     "message": "Seleccionar tipo"
-  },
-  "selectingAllWillAllow": {
-    "message": "Seleccionar todo permitirá que este sitio vea todas las cuentas actuales. Asegúrese de que este sitio sea de confianza."
   },
   "send": {
     "message": "Enviar"
@@ -1523,25 +1406,6 @@
   },
   "speedUpTooltipText": {
     "message": "Nueva tarifa de gas"
-  },
-  "speedUpTransaction": {
-    "message": "Acelerar esta transacción"
-  },
-  "spendLimitInsufficient": {
-    "message": "Límite de gastos insuficiente"
-  },
-  "spendLimitInvalid": {
-    "message": "El límite de gastos no es válido, debe ser un número positivo"
-  },
-  "spendLimitPermission": {
-    "message": "Permiso de límite de gastos"
-  },
-  "spendLimitRequestedBy": {
-    "message": "Límite de gastos solicitado por $1",
-    "description": "Origin of the site requesting the spend limit"
-  },
-  "spendLimitTooLarge": {
-    "message": "El límite de gastos es demasiado alto"
   },
   "stable": {
     "message": "Estable"
@@ -1624,10 +1488,6 @@
     "message": "Aprobar $1 para canjes",
     "description": "Used in the transaction display list to describe a transaction that is an approve call on a token that is to be swapped.. $1 is the symbol of a token that has been approved."
   },
-  "swapApproveNeedMoreTokens": {
-    "message": "Necesita $1 más $2 para realizar este canje",
-    "description": "Tells the user how many more of a given token they need for a specific swap. $1 is an amount of tokens and $2 is the token symbol."
-  },
   "swapConfirmWithHwWallet": {
     "message": "Confirmar con la cartera de hardware"
   },
@@ -1683,18 +1543,8 @@
     "message": "El canje de $1 por $2",
     "description": "Tells a user that they need to confirm on their hardware wallet a swap of 2 tokens. $1 is a source token and $2 is a destination token"
   },
-  "swapGasFeesDetails": {
-    "message": "Las tarifas de gas son estimadas y fluctuarán en función del tráfico de la red y la complejidad de las transacciones."
-  },
-  "swapGasFeesLearnMore": {
-    "message": "Más información sobre las tarifas de gas"
-  },
   "swapGasFeesSplit": {
     "message": "Las tarifas de gas de la pantalla anterior se dividen entre estas dos transacciones."
-  },
-  "swapGasFeesSummary": {
-    "message": "Las tarifas de gas se pagan a los mineros de criptomonedas que procesan transacciones en la red $1. MetaMask no se beneficia de las tarifas de gas.",
-    "description": "$1 is the selected network, e.g. Ethereum or BSC"
   },
   "swapIncludesMMFee": {
     "message": "Incluye una tasa de MetaMask del $1%.",
@@ -1714,27 +1564,9 @@
     "message": "$1 cotizaciones.",
     "description": "$1 is the number of quotes that the user can select from when opening the list of quotes on the 'view quote' screen"
   },
-  "swapNewQuoteIn": {
-    "message": "Cotizaciones nuevas en $1",
-    "description": "Tells the user the amount of time until the currently displayed quotes are update. $1 is a time that is counting down from 1:00 to 0:00"
-  },
   "swapOnceTransactionHasProcess": {
     "message": "Su $1 se agregará a la cuenta una vez que se procese esta transacción.",
     "description": "This message communicates the token that is being transferred. It is shown on the awaiting swap screen. The $1 will be a token symbol."
-  },
-  "swapPriceDifference": {
-    "message": "Está por canjear $1 $2 (~$3) por $4 $5 (~$6).",
-    "description": "This message represents the price slippage for the swap.  $1 and $4 are a number (ex: 2.89), $2 and $5 are symbols (ex: ETH), and $3 and $6 are fiat currency amounts."
-  },
-  "swapPriceDifferenceTitle": {
-    "message": "Diferencia de precio de ~$1 %",
-    "description": "$1 is a number (ex: 1.23) that represents the price difference."
-  },
-  "swapPriceUnavailableDescription": {
-    "message": "No se pudo determinar el impacto sobre el precio debido a la falta de datos de los precios del mercado. Antes de realizar el canje, confirme que está de acuerdo con la cantidad de tokens que está a punto de recibir."
-  },
-  "swapPriceUnavailableTitle": {
-    "message": "Antes de continuar, verifique su tasa"
   },
   "swapProcessing": {
     "message": "Procesamiento"
@@ -1790,15 +1622,6 @@
   "swapSuggestedGasSettingToolTipMessage": {
     "message": "Los swaps son transacciones complejas y urgentes. Recomendamos esta tarifa de gas para lograr un buen equilibrio entre el costo y la garantía de un swap exitoso."
   },
-  "swapSwapFrom": {
-    "message": "Canjear de"
-  },
-  "swapSwapSwitch": {
-    "message": "Intercambiar de y a tokens"
-  },
-  "swapSwapTo": {
-    "message": "Canjear a"
-  },
   "swapToConfirmWithHwWallet": {
     "message": "para confirmar con la cartera de hardware"
   },
@@ -1806,17 +1629,9 @@
     "message": "Su $1 se agregó a la cuenta.",
     "description": "This message is shown after a swap is successful and communicates the exact amount of tokens the user has received for a swap. The $1 is a decimal number of tokens followed by the token symbol."
   },
-  "swapTokenBalanceUnavailable": {
-    "message": "No se pudo recuperar su saldo de $1",
-    "description": "This message communicates to the user that their balance of a given token is currently unavailable. $1 will be replaced by a token symbol"
-  },
   "swapTokenToToken": {
     "message": "Canjear $1 por $2",
     "description": "Used in the transaction display list to describe a swap. $1 and $2 are the symbols of tokens in involved in a swap."
-  },
-  "swapTooManyDecimalsError": {
-    "message": "$1 permite hasta $2 decimales",
-    "description": "$1 is a token symbol and $2 is the max. number of decimals allowed for the token"
   },
   "swapTransactionComplete": {
     "message": "Transacción completa"
@@ -1890,44 +1705,20 @@
   "tokenSymbol": {
     "message": "Símbolo del token"
   },
-  "tooltipApproveButton": {
-    "message": "Comprendo"
-  },
   "total": {
     "message": "Total"
   },
   "transaction": {
     "message": "transacción"
   },
-  "transactionCancelAttempted": {
-    "message": "Se intentó cancelar la transacción con una tarifa de gas de $1 en $2"
-  },
-  "transactionCancelSuccess": {
-    "message": "La transacción se canceló correctamente en $2"
-  },
-  "transactionConfirmed": {
-    "message": "La transacción se confirmó en $2."
-  },
-  "transactionCreated": {
-    "message": "La transacción se creó con un valor de $1 en $2."
-  },
   "transactionDetailGasHeading": {
     "message": "Tarifa estimada de gas"
-  },
-  "transactionDetailMultiLayerTotalSubtitle": {
-    "message": "Monto + cargos"
-  },
-  "transactionDropped": {
-    "message": "La transacción se abandonó en $2."
   },
   "transactionError": {
     "message": "Error de transacción. Excepción generada en el código de contrato."
   },
   "transactionErrorNoContract": {
     "message": "Intentando llamar a una función en una dirección sin contrato."
-  },
-  "transactionErrored": {
-    "message": "La transacción encontró un error."
   },
   "transactionHistoryBaseFee": {
     "message": "Tarifa base (GWEI)"
@@ -1949,15 +1740,6 @@
   },
   "transactionHistoryTotalGasFee": {
     "message": "Tarifa total de gas"
-  },
-  "transactionResubmitted": {
-    "message": "Transacción reenviada con la tarifa de gas aumentada a $1 en $2"
-  },
-  "transactionSubmitted": {
-    "message": "Transacción enviada con una tarifa de gas de $1 en $2."
-  },
-  "transactionUpdated": {
-    "message": "La transacción se actualizó en $2."
   },
   "transfer": {
     "message": "Transferir"
@@ -2023,15 +1805,6 @@
   "usedByClients": {
     "message": "Usado por una variedad de clientes distintos"
   },
-  "userName": {
-    "message": "Nombre de usuario"
-  },
-  "viewContact": {
-    "message": "Ver contacto"
-  },
-  "viewMore": {
-    "message": "Ver más"
-  },
   "viewOnBlockExplorer": {
     "message": "Ver en el explorador de bloques"
   },
@@ -2072,8 +1845,5 @@
   },
   "youNeedToAllowCameraAccess": {
     "message": "Necesita permitir el acceso a la cámara para usar esta función."
-  },
-  "yourPrivateSeedPhrase": {
-    "message": "Su frase secreta de recuperación privada"
   }
 }

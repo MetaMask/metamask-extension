@@ -86,12 +86,8 @@ export const ApproveDetails = ({
       <NetworkRow isShownWithAlertsOnly={!isBIP44} />
       <OriginRow />
       <SigningInWithRow />
-      {showAdvancedDetails && (
-        <>
-          <RecipientRow />
-          <MethodDataRow />
-        </>
-      )}
+      <RecipientRow />
+      {showAdvancedDetails && <MethodDataRow />}
     </ConfirmInfoSection>
   );
 };

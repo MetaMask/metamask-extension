@@ -2,38 +2,27 @@ import type { Provider } from '@metamask/network-controller';
 import type { FetchGasFeeEstimateOptions } from '@metamask/gas-fee-controller';
 import type { SmartTransaction } from '@metamask/smart-transactions-controller';
 import type { TransactionMeta } from '@metamask/transaction-controller';
-import { Hex } from 'viem';
+import type { Hex } from 'viem';
 import {
   PaymentType,
   RecurringInterval,
+  SubscriptionStatus,
 } from '@metamask/subscription-controller';
-import type {
-  MetaMetricsEventFragment,
-  MetaMetricsPageObject,
-  MetaMetricsReferrerObject,
-} from '../constants/metametrics';
+import type { MetaMetricsEventFragment } from '../constants/metametrics';
 import type { TokenStandard } from '../constants/transaction';
 import type { HardwareKeyringType } from '../constants/hardware-wallets';
 // TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
+// eslint-disable-next-line import-x/no-restricted-paths
 import type { SnapAndHardwareMessenger } from '../../app/scripts/lib/snap-keyring/metrics';
-import { EntryModalSourceEnum } from '../constants/subscriptions';
+import { ShieldMetricsSourceEnum } from '../constants/subscriptions';
+import type { ScanAddressResponse } from '../lib/trust-signals';
 
 export type TransactionMetricsRequest = {
-  createEventFragment: (
-    options: Omit<MetaMetricsEventFragment, 'id'>,
-  ) => MetaMetricsEventFragment;
-  finalizeEventFragment: (
-    fragmentId: string,
-    options?: {
-      abandoned?: boolean;
-      page?: MetaMetricsPageObject;
-      referrer?: MetaMetricsReferrerObject;
-    },
-  ) => void;
-  getEventFragmentById: (fragmentId: string) => MetaMetricsEventFragment;
-  updateEventFragment: (
-    fragmentId: string,
+  getTransactionUIMetricsFragment: (
+    transactionId: string,
+  ) => Partial<MetaMetricsEventFragment> | undefined;
+  upsertTransactionUIMetricsFragment: (
+    transactionId: string,
     payload: Partial<MetaMetricsEventFragment>,
   ) => void;
   getAccountBalance: (account: Hex, chainId: Hex) => Hex;
@@ -45,7 +34,7 @@ export type TransactionMetricsRequest = {
   ) => Promise<'ledger' | 'lattice' | 'N/A' | string>;
   getHardwareTypeForMetric: (address: string) => Promise<HardwareKeyringType>;
   // According to the type GasFeeState returned from getEIP1559GasFeeEstimates
-  // doesn't include some properties used in buildEventFragmentProperties,
+  // doesn't include some properties used in transaction metrics assembly,
   // hence returning any here to avoid type errors.
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -74,6 +63,10 @@ export type TransactionMetricsRequest = {
   getNetworkRpcUrl: (chainId: Hex) => string;
   getFeatureFlags: () => Record<string, unknown>;
   getPna25Acknowledged: () => boolean;
+  getAddressSecurityAlertResponse: (
+    cacheKey: string,
+  ) => ScanAddressResponse | undefined;
+  getSecurityAlertsEnabled: () => boolean;
 };
 
 export type TransactionEventPayload = {
@@ -102,7 +95,47 @@ export type DefaultSubscriptionPaymentOptions = {
  */
 export type ShieldSubscriptionMetricsPropsFromUI = {
   userBalanceInUSD: number;
-  source: EntryModalSourceEnum;
+  source: ShieldMetricsSourceEnum;
   rewardPoints?: number;
   marketingUtmParams?: Record<string, string>;
 };
+
+export type ExistingSubscriptionEventParams = {
+  /**
+   * Current subscription status before restarting the subscription. (e.g. cancelled, expired, etc.)
+   */
+  subscriptionStatus: SubscriptionStatus;
+
+  /**
+   * The payment type used for the previous subscription.
+   */
+  paymentType: PaymentType;
+
+  /**
+   * The billing interval used for the previous subscription.
+   */
+  billingInterval: RecurringInterval;
+
+  /**
+   * The crypto payment chain used for the previous subscription.
+   */
+  cryptoPaymentChain?: string;
+
+  /**
+   * The crypto payment currency used for the previous subscription.
+   */
+  cryptoPaymentCurrency?: string;
+};
+
+/**
+ * Capture the event when the payment method is changed whilst the membership is active.
+ */
+export type CaptureShieldPaymentMethodChangeEventParams =
+  ExistingSubscriptionEventParams & {
+    newPaymentType: PaymentType;
+    newBillingInterval: RecurringInterval;
+    newPaymentCurrency: string;
+    newCryptoPaymentChain?: string;
+    changeStatus: 'succeeded' | 'failed';
+    errorMessage?: string;
+  };

@@ -1,7 +1,10 @@
 import { NativeTokenPeriodicPermission } from '@metamask/gator-permissions-controller';
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
-import { renderWithConfirmContextProvider } from '../../../../../../../../test/lib/confirmations/render-helpers';
+import {
+  renderWithConfirmContextProvider,
+  renderWithConfirmContext,
+} from '../../../../../../../../test/lib/confirmations/render-helpers';
 import { getMockTypedSignPermissionConfirmState } from '../../../../../../../../test/data/confirmations/helper';
 
 import { NativeTokenPeriodicDetails } from './native-token-periodic-details';
@@ -26,10 +29,7 @@ describe('NativeTokenPeriodicDetails', () => {
       },
     },
     chainId: '0x1',
-    signer: {
-      type: 'account',
-      data: { address: '0xCdD6132d1a6efA06bce1A89b0fEa6b08304A3829' },
-    },
+    to: '0xCdD6132d1a6efA06bce1A89b0fEa6b08304A3829',
   } as const;
 
   const mockPermission =
@@ -77,7 +77,8 @@ describe('NativeTokenPeriodicDetails', () => {
       });
 
       expect(detailsSection).toBeInTheDocument();
-      expect(detailsSection?.textContent?.includes('Expiration')).toBe(false);
+      expect(detailsSection?.textContent?.includes('Expiration')).toBe(true);
+      expect(detailsSection?.textContent?.includes('Never expires')).toBe(true);
     });
   });
 
@@ -92,7 +93,7 @@ describe('NativeTokenPeriodicDetails', () => {
       };
 
       expect(() =>
-        renderWithConfirmContextProvider(
+        renderWithConfirmContext(
           <NativeTokenPeriodicDetails
             {...defaultProps}
             permission={permissionWithoutStartTime}
@@ -251,7 +252,7 @@ describe('NativeTokenPeriodicDetails', () => {
       };
 
       expect(() =>
-        renderWithConfirmContextProvider(
+        renderWithConfirmContext(
           <NativeTokenPeriodicDetails
             {...defaultProps}
             permission={permissionWithNullStartTime}
@@ -275,13 +276,14 @@ describe('NativeTokenPeriodicDetails', () => {
       expect(detailsSection?.textContent?.includes('Expiration')).toBe(true);
     });
 
-    it('does not render expiry when null', () => {
+    it('renders "Never expires" when expiry is null', () => {
       const detailsSection = renderAndGetDetailsSection({
         ...defaultProps,
         expiry: null,
       });
       expect(detailsSection).toBeInTheDocument();
-      expect(detailsSection?.textContent?.includes('Expiration')).toBe(false);
+      expect(detailsSection?.textContent?.includes('Expiration')).toBe(true);
+      expect(detailsSection?.textContent?.includes('Never expires')).toBe(true);
     });
   });
 });

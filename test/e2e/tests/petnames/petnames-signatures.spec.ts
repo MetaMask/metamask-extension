@@ -1,14 +1,14 @@
 import { Suite } from 'mocha';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 import { withSignatureFixtures } from '../confirmations/helpers';
 import { TestSuiteArguments } from '../confirmations/transactions/shared';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import { openTestSnapClickButtonAndInstall } from '../../page-objects/flows/install-test-snap.flow';
-import { withFixtures, WINDOW_TITLES } from '../../helpers';
+import { DAPP_ONE_URL, DAPP_PATH, WINDOW_TITLES } from '../../constants';
+import { withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixtures/fixture-builder';
 import { mockLookupSnap } from '../../mock-response-data/snaps/snap-binary-mocks';
-import Confirmation from '../../page-objects/pages/confirmations/redesign/confirmation';
-import { DAPP_ONE_URL, DAPP_PATH } from '../../constants';
+import Confirmation from '../../page-objects/pages/confirmations/confirmation';
 
 describe('Petnames - Signatures', function (this: Suite) {
   it('can save names for addresses in type 3 signatures', async function () {
@@ -17,7 +17,7 @@ describe('Petnames - Signatures', function (this: Suite) {
       async ({ driver }: TestSuiteArguments) => {
         const testDapp = new TestDapp(driver);
         const confirmation = new Confirmation(driver);
-        await loginWithBalanceValidation(driver);
+        await login(driver);
         await testDapp.openTestDappPage();
         await testDapp.clickSignTypedDatav3();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
@@ -54,7 +54,7 @@ describe('Petnames - Signatures', function (this: Suite) {
       async ({ driver }: TestSuiteArguments) => {
         const testDapp = new TestDapp(driver);
         const confirmation = new Confirmation(driver);
-        await loginWithBalanceValidation(driver);
+        await login(driver);
         await testDapp.openTestDappPage();
         await testDapp.clickSignTypedDatav4();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
@@ -106,7 +106,7 @@ describe('Petnames - Signatures', function (this: Suite) {
       async ({ driver }) => {
         const testDapp = new TestDapp(driver);
         const confirmation = new Confirmation(driver);
-        await loginWithBalanceValidation(driver);
+        await login(driver);
         await testDapp.openTestDappPage();
         await openTestSnapClickButtonAndInstall(
           driver,

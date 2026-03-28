@@ -20,7 +20,12 @@ const unsafeEntries: Set<string> = new Set([
 export const lavamoatPlugin = (args: Args) =>
   new LavaMoatPlugin({
     rootDir,
-    policyLocation: join('lavamoat', 'webpack', `mv${args.manifest_version}`),
+    policyLocation: join(
+      'lavamoat',
+      'webpack',
+      `mv${args.manifest_version}`,
+      args.type,
+    ),
     diagnosticsVerbosity: 0,
     generatePolicyOnly: args.generatePolicy,
     runChecks: true, // Candidate to disable later for performance. useful in debugging invalid JS errors, but unless the audit proves me wrong this is probably not improving security.
@@ -38,7 +43,6 @@ export const lavamoatPlugin = (args: Args) =>
       errorTrapping: 'none',
       reporting: 'none',
     },
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     runtimeConfigurationPerChunk_experimental: (chunk: Chunk) => {
       if (chunk.name && unsafeEntries.has(chunk.name)) {
         // unsafeEntries are running outside of LavaMoat
@@ -119,9 +123,6 @@ export const lavamoatPlugin = (args: Args) =>
         'Promise',
         'JSON',
         'Date',
-        'setTimeout',
-        'clearTimeout',
-        'ResizeObserver',
         // globals sentry needs to function
         '__SENTRY__',
         'appState',
@@ -130,15 +131,20 @@ export const lavamoatPlugin = (args: Args) =>
         'sentryHooks',
         'sentry',
         'logEncryptedVault',
-        'history', // needed by Sentry and react-router-dom v6 HashRouter
+        // needed by Sentry and react-router-dom v6 HashRouter
+        'history',
         // globals used by react-dom
         'getSelection',
         // globals opera needs to function
         'opr',
+        // for @popperjs/core and snap simple keyring site
+        'devicePixelRatio',
+        // for @tanstack/react-virtual
+        'ResizeObserver',
+        'setTimeout',
+        'clearTimeout',
         // globals used by e2e
-        ...(args.test
-          ? ['ret_nodes', 'browser', 'chrome', 'indexedDB', 'devicePixelRatio']
-          : []),
+        ...(args.test ? ['ret_nodes', 'browser', 'chrome', 'indexedDB'] : []),
       ],
     },
   });
@@ -152,7 +158,6 @@ export const lavamoatUnsafeLayerRule = {
 // Unsafe layer plugin that applies the layer and assigns the unsafeEntries to it
 export const lavamoatUnsafeLayerPlugin: WebpackPluginInstance = {
   apply: (compiler) => {
-    compiler.options.experiments.layers = true;
     compiler.options.module.rules.push(lavamoatUnsafeLayerRule);
     compiler.hooks.thisCompilation.tap('Layer', (compilation) => {
       compilation.hooks.addEntry.tap('Layer', (entry, options) => {

@@ -206,14 +206,6 @@
       height: 1px;
       background-color: var(--color-text-alternative);
     }
-
-    &-text {
-      background-color: var(--welcome-bg-light);
-
-      @media (prefers-color-scheme: dark) {
-        background-color: var(--color-accent02-dark);
-      }
-    }
   }
 
   &__plain-button {

@@ -3,7 +3,10 @@
 import 'navigator.locks';
 import log from 'loglevel';
 
-import { captureException } from '../../../../shared/lib/sentry';
+import {
+  captureException,
+  captureMessage,
+} from '../../../../shared/lib/sentry';
 import { MISSING_VAULT_ERROR } from '../../../../shared/constants/errors';
 import { PersistenceManager } from './persistence-manager';
 import ExtensionStore from './extension-store';
@@ -12,20 +15,35 @@ import { MetaMaskStateType } from './base-store';
 const MOCK_DATA = { config: { foo: 'bar' } };
 
 const mockStoreSet = jest.fn();
+const mockStoreSetKeyValues = jest.fn();
 const mockStoreGet = jest.fn();
+const mockStoreReset = jest.fn();
 
 jest.mock('./extension-store', () => {
   return jest.fn().mockImplementation(() => {
-    return { set: mockStoreSet, get: mockStoreGet };
+    return {
+      set: mockStoreSet,
+      setKeyValues: mockStoreSetKeyValues,
+      get: mockStoreGet,
+      reset: mockStoreReset,
+    };
   });
 });
 jest.mock('loglevel', () => ({
   error: jest.fn(),
+  info: jest.fn(),
 }));
 jest.mock('../../../../shared/lib/sentry', () => ({
   captureException: jest.fn(),
+  captureMessage: jest.fn(),
+}));
+jest.mock('../../../../shared/lib/trace', () => ({
+  trace: jest.fn(),
+  endTrace: jest.fn(),
+  TraceName: {},
 }));
 const mockedCaptureException = jest.mocked(captureException);
+const mockedCaptureMessage = jest.mocked(captureMessage);
 
 describe('PersistenceManager', () => {
   let manager: PersistenceManager;
@@ -36,6 +54,9 @@ describe('PersistenceManager', () => {
   });
 
   describe('set', () => {
+    beforeEach(() => {
+      manager.storageKind = 'data';
+    });
     it('throws if state is missing', async () => {
       await expect(
         manager.set(undefined as unknown as MetaMaskStateType),
@@ -51,13 +72,15 @@ describe('PersistenceManager', () => {
     it('calls localStore.set with the correct arguments once metadata is set', async () => {
       manager.setMetadata({ version: 10 });
 
-      await manager.set({ appState: { test: true } });
+      const [result, error] = await manager.set({ appState: { test: true } });
 
       expect(mockStoreSet).toHaveBeenCalledTimes(1);
       expect(mockStoreSet).toHaveBeenCalledWith({
         data: { appState: { test: true } },
         meta: { version: 10 },
       });
+      expect(result).toBe(true);
+      expect(error).toBeUndefined();
     });
 
     it('logs error and captures exception if store.set throws', async () => {
@@ -66,8 +89,15 @@ describe('PersistenceManager', () => {
       const error = new Error('store.set error');
       mockStoreSet.mockRejectedValueOnce(error);
 
-      await manager.set({ appState: { broken: true } });
-      expect(mockedCaptureException).toHaveBeenCalledWith(error);
+      const [result, persistError] = await manager.set({
+        appState: { broken: true },
+      });
+      expect(mockedCaptureException).toHaveBeenCalledWith(error, {
+        tags: { 'persistence.error': 'set-failed' },
+        fingerprint: ['persistence-error', 'set-failed'],
+      });
+      expect(result).toBe(false);
+      expect(persistError).toBe(error);
       expect(log.error).toHaveBeenCalledWith(
         'error setting state in local store:',
         error,
@@ -105,18 +135,55 @@ describe('PersistenceManager', () => {
 
       expect(mockedCaptureException).toHaveBeenCalledTimes(2);
     });
+
+    it('tracks recovery with captureMessage when store.set fails then succeeds', async () => {
+      manager.setMetadata({ version: 17 });
+
+      const error = new Error('store.set error');
+      mockStoreSet.mockRejectedValueOnce(error);
+
+      // First set fails
+      await manager.set({ appState: { broken: true } });
+
+      expect(mockedCaptureException).toHaveBeenCalledTimes(1);
+      expect(mockedCaptureMessage).not.toHaveBeenCalled();
+
+      // Second set succeeds - should trigger recovery tracking
+      mockStoreSet.mockResolvedValueOnce(undefined);
+      await manager.set({ appState: { fixed: true } });
+
+      expect(mockedCaptureMessage).toHaveBeenCalledTimes(1);
+      expect(mockedCaptureMessage).toHaveBeenCalledWith(
+        'Data persistence recovered after temporary failure',
+        {
+          level: 'info',
+          tags: { 'persistence.event': 'set-recovered' },
+          fingerprint: ['persistence-event', 'set-recovered'],
+        },
+      );
+    });
+
+    it('does not track recovery if set never failed', async () => {
+      manager.setMetadata({ version: 17 });
+
+      // Set succeeds without prior failure
+      mockStoreSet.mockResolvedValueOnce(undefined);
+      await manager.set({ appState: { working: true } });
+
+      expect(mockedCaptureMessage).not.toHaveBeenCalled();
+    });
   });
 
   describe('get', () => {
     it('returns undefined and clears mostRecentRetrievedState if store returns empty', async () => {
-      mockStoreGet.mockReturnValueOnce({});
+      mockStoreGet.mockResolvedValueOnce({});
       const result = await manager.get({ validateVault: false });
       expect(result).toBeUndefined();
       expect(manager.mostRecentRetrievedState).toBeNull();
     });
 
     it('returns undefined if store returns null', async () => {
-      mockStoreGet.mockReturnValueOnce(null);
+      mockStoreGet.mockResolvedValueOnce(null);
       const result = await manager.get({ validateVault: false });
       expect(result).toBeUndefined();
       expect(manager.mostRecentRetrievedState).toBeNull();
@@ -133,6 +200,7 @@ describe('PersistenceManager', () => {
     });
 
     it('does not overwrite mostRecentRetrievedState if already initialized', async () => {
+      manager.storageKind = 'data';
       mockStoreGet.mockResolvedValueOnce({ data: MOCK_DATA });
       // First call to get -> sets isExtensionInitialized = false -> sets mostRecentRetrievedState
       await manager.get({ validateVault: false });
@@ -207,6 +275,123 @@ describe('PersistenceManager', () => {
       );
     });
   });
+  describe('persist', () => {
+    it('throws if storageKind is not split', async () => {
+      manager.storageKind = 'data';
+
+      await expect(manager.persist()).rejects.toThrow(
+        'MetaMask - cannot use `persist` when storageKind is not "split"',
+      );
+    });
+
+    it('throws if metadata has not been set', async () => {
+      await expect(manager.persist()).rejects.toThrow(
+        'MetaMask - metadata must be set before calling "persist"',
+      );
+    });
+
+    it('calls localStore.setKeyValues with pending pairs', async () => {
+      manager.setMetadata({ version: 10, storageKind: 'split' });
+      manager.update('FooController', { foo: 'bar' });
+      manager.update('BarController', undefined);
+
+      const [result, error] = await manager.persist();
+
+      expect(mockStoreSetKeyValues).toHaveBeenCalledTimes(1);
+      expect(result).toBe(true);
+      expect(error).toBeUndefined();
+      const passedMap = mockStoreSetKeyValues.mock.calls[0][0] as Map<
+        string,
+        unknown
+      >;
+      expect(passedMap.get('meta')).toEqual({
+        version: 10,
+        storageKind: 'split',
+      });
+      expect(passedMap.get('FooController')).toEqual({ foo: 'bar' });
+      expect(passedMap.has('BarController')).toBe(true);
+      expect(passedMap.get('BarController')).toBeUndefined();
+    });
+
+    it('logs error and captures exception if store.setKeyValues throws', async () => {
+      manager.setMetadata({ version: 10 });
+      manager.update('FooController', { foo: 'bar' });
+
+      const error = new Error('store.setKeyValues error');
+      mockStoreSetKeyValues.mockRejectedValueOnce(error);
+
+      const [result, persistError] = await manager.persist();
+
+      expect(mockedCaptureException).toHaveBeenCalledWith(error, {
+        tags: { 'persistence.error': 'persist-failed' },
+        fingerprint: ['persistence-error', 'persist-failed'],
+      });
+      expect(result).toBe(false);
+      expect(persistError).toBe(error);
+      expect(log.error).toHaveBeenCalledWith(
+        'error setting state in local store:',
+        error,
+      );
+    });
+
+    it('retries pending updates when store.setKeyValues throws', async () => {
+      manager.setMetadata({ version: 10 });
+      manager.update('FooController', { foo: 'bar' });
+
+      const error = new Error('store.setKeyValues error');
+      mockStoreSetKeyValues.mockRejectedValueOnce(error);
+
+      const [firstResult, firstError] = await manager.persist();
+
+      mockStoreSetKeyValues.mockResolvedValueOnce(undefined);
+
+      const [secondResult, secondError] = await manager.persist();
+
+      expect(mockStoreSetKeyValues).toHaveBeenCalledTimes(2);
+      expect(firstResult).toBe(false);
+      expect(firstError).toBe(error);
+      expect(secondResult).toBe(true);
+      expect(secondError).toBeUndefined();
+      const retryMap = mockStoreSetKeyValues.mock.calls[1][0] as Map<
+        string,
+        unknown
+      >;
+
+      expect(retryMap.get('meta')).toEqual({ version: 10 });
+      expect(retryMap.get('FooController')).toEqual({ foo: 'bar' });
+    });
+
+    it('captures exception only once if store.setKeyValues throws multiple times', async () => {
+      manager.setMetadata({ version: 10 });
+      manager.update('FooController', { foo: 'bar' });
+
+      const error = new Error('store.setKeyValues error');
+      mockStoreSetKeyValues.mockRejectedValue(error);
+
+      await manager.persist();
+      await manager.persist();
+
+      expect(mockedCaptureException).toHaveBeenCalledTimes(1);
+    });
+
+    it('captures exception twice if store.setKeyValues fails, then succeeds and then fails again', async () => {
+      manager.setMetadata({ version: 17 });
+      manager.update('FooController', { foo: 'bar' });
+
+      const error = new Error('store.setKeyValues error');
+      mockStoreSetKeyValues.mockRejectedValueOnce(error);
+
+      await manager.persist();
+
+      mockStoreSetKeyValues.mockResolvedValueOnce(undefined);
+      await manager.persist();
+
+      mockStoreSetKeyValues.mockRejectedValueOnce(error);
+      await manager.persist();
+
+      expect(mockedCaptureException).toHaveBeenCalledTimes(2);
+    });
+  });
 
   describe('cleanUpMostRecentRetrievedState', () => {
     it('sets mostRecentRetrievedState to null if previously set', async () => {
@@ -226,6 +411,7 @@ describe('PersistenceManager', () => {
 
   describe('Locks', () => {
     it('should acquire a lock when setting state', async () => {
+      manager.storageKind = 'data';
       manager.setMetadata({ version: 10 });
 
       manager.open = jest.fn().mockResolvedValue(undefined);
@@ -287,7 +473,6 @@ describe('PersistenceManager', () => {
 
     it('Handles DOMException InvalidStateError: A mutation operation was attempted on a database that did not allow mutations.', async () => {
       const consoleWarnSpy = jest.spyOn(console, 'warn').mockImplementation();
-      const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
 
       const domException = new DOMException(
         'A mutation operation was attempted on a database that did not allow mutations.',
@@ -304,11 +489,13 @@ describe('PersistenceManager', () => {
       // returns `undefined`
       expect(await brokenManager.getBackup()).toBeUndefined();
 
-      expect(mockedCaptureException).toHaveBeenCalledWith(domException);
+      expect(mockedCaptureException).toHaveBeenCalledWith(domException, {
+        tags: { 'persistence.error': 'backup-db-open-failed' },
+        fingerprint: ['persistence-error', 'backup-db-open-failed'],
+      });
       expect(consoleWarnSpy).toHaveBeenCalledWith(
         'Could not open backup database; automatic vault recovery will not be available.',
       );
-      expect(consoleErrorSpy).toHaveBeenCalledWith(domException);
     });
 
     it('Bubbles up IndexedDB error on initialization', async () => {

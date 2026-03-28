@@ -10,9 +10,16 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import HoldToRevealButton from './hold-to-reveal-button';
 
 const mockTrackEvent = jest.fn();
+const mockMetaMetricsContext = {
+  trackEvent: mockTrackEvent,
+  bufferedTrace: jest.fn(),
+  bufferedEndTrace: jest.fn(),
+  onboardingParentContext: { current: null },
+};
 
 describe('HoldToRevealButton', () => {
   const mockStore = configureMockState([thunk])(mockState);
@@ -23,7 +30,7 @@ describe('HoldToRevealButton', () => {
 
     props = {
       onLongPressed: mockOnLongPressed,
-      buttonText: 'Hold to reveal SRP',
+      buttonText: messages.holdToRevealSRP.message,
     };
   });
 
@@ -34,13 +41,13 @@ describe('HoldToRevealButton', () => {
   it('should render a button with label', () => {
     const { getByText } = render(<HoldToRevealButton {...props} />);
 
-    expect(getByText('Hold to reveal SRP')).toBeInTheDocument();
+    expect(getByText(messages.holdToRevealSRP.message)).toBeInTheDocument();
   });
 
   it('should render a button when mouse is down and up', () => {
     const { getByText } = render(<HoldToRevealButton {...props} />);
 
-    const button = getByText('Hold to reveal SRP');
+    const button = getByText(messages.holdToRevealSRP.message);
 
     fireEvent.mouseDown(button);
 
@@ -53,23 +60,27 @@ describe('HoldToRevealButton', () => {
 
   it('should show the locked padlock when a button is long pressed and then should show it after it was lifted off before the animation concludes', async () => {
     const { getByText, queryByLabelText } = renderWithProvider(
-      <MetaMetricsContext.Provider value={mockTrackEvent}>
+      <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
         <HoldToRevealButton {...props} />
       </MetaMetricsContext.Provider>,
       mockStore,
     );
 
-    const button = getByText('Hold to reveal SRP');
+    const button = getByText(messages.holdToRevealSRP.message);
 
     fireEvent.mouseDown(button);
-    const circleLocked = queryByLabelText('hold to reveal circle locked');
+    const circleLocked = queryByLabelText(
+      messages.holdToRevealLockedLabel.message,
+    );
 
     await waitFor(() => {
       expect(circleLocked).toBeInTheDocument();
     });
 
     fireEvent.mouseUp(button);
-    const circleUnlocked = queryByLabelText('hold to reveal circle unlocked');
+    const circleUnlocked = queryByLabelText(
+      messages.holdToRevealUnlockedLabel.message,
+    );
 
     await waitFor(() => {
       expect(circleUnlocked).not.toBeInTheDocument();
@@ -78,20 +89,24 @@ describe('HoldToRevealButton', () => {
 
   it('should show the unlocked padlock when a button is long pressed for the duration of the animation', async () => {
     const { getByText, queryByLabelText, getByLabelText } = renderWithProvider(
-      <MetaMetricsContext.Provider value={mockTrackEvent}>
+      <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
         <HoldToRevealButton {...props} />
       </MetaMetricsContext.Provider>,
       mockStore,
     );
 
-    const button = getByText('Hold to reveal SRP');
+    const button = getByText(messages.holdToRevealSRP.message);
 
     fireEvent.pointerDown(button);
 
-    const circleLocked = getByLabelText('hold to reveal circle locked');
+    const circleLocked = getByLabelText(
+      messages.holdToRevealLockedLabel.message,
+    );
     fireEvent.transitionEnd(circleLocked);
 
-    const circleUnlocked = queryByLabelText('hold to reveal circle unlocked');
+    const circleUnlocked = queryByLabelText(
+      messages.holdToRevealUnlockedLabel.message,
+    );
     fireEvent.animationEnd(circleUnlocked);
 
     await waitFor(() => {

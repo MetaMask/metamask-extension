@@ -4,6 +4,7 @@ import configureMockStore from 'redux-mock-store';
 import { getMockTypedSignPermissionConfirmState } from '../../../../../../../../test/data/confirmations/helper';
 import { renderWithConfirmContextProvider } from '../../../../../../../../test/lib/confirmations/render-helpers';
 import { NativeTokenStreamDetails } from './native-token-stream-details';
+import { MAX_UINT256 } from './typed-sign-permission-util';
 
 describe('NativeTokenStreamDetails', () => {
   const mockDecodedPermission = {
@@ -21,10 +22,7 @@ describe('NativeTokenStreamDetails', () => {
       justification: 'Test justification',
     },
     chainId: '0x1',
-    signer: {
-      type: 'account',
-      data: { address: '0xCdD6132d1a6efA06bce1A89b0fEa6b08304A3829' },
-    },
+    to: '0xCdD6132d1a6efA06bce1A89b0fEa6b08304A3829',
   } as const;
 
   const mockPermission =
@@ -106,11 +104,17 @@ describe('NativeTokenStreamDetails', () => {
         expiry: null,
       });
       expect(detailsSection).toBeInTheDocument();
-      expect(detailsSection?.textContent?.includes('Expiration')).toBe(false);
+      expect(detailsSection?.textContent?.includes('Expiration')).toBe(true);
+      expect(detailsSection?.textContent?.includes('Never expires')).toBe(true);
     });
   });
 
   describe('data display', () => {
+    it('displays total exposure in stream rate section', () => {
+      const { streamRateSection } = renderAndGetSections(defaultProps);
+      expect(streamRateSection?.textContent).toContain('Total exposure');
+    });
+
     it('displays correct test IDs', () => {
       const { detailsSection, streamRateSection } =
         renderAndGetSections(defaultProps);
@@ -153,6 +157,31 @@ describe('NativeTokenStreamDetails', () => {
       expect(
         streamRateSection?.textContent?.includes('Available per day'),
       ).toBe(true);
+    });
+  });
+
+  describe('max amount display', () => {
+    it('does not display max allowance row when maxAmount equals uint256 max', () => {
+      const permissionWithMaxUint256 = {
+        ...mockPermission,
+        data: {
+          ...mockPermission.data,
+          maxAmount: MAX_UINT256,
+        },
+      } as const;
+
+      const { detailsSection } = renderAndGetSections({
+        ...defaultProps,
+        permission: permissionWithMaxUint256,
+      });
+
+      expect(detailsSection?.textContent).not.toContain('Max allowance');
+    });
+
+    it('displays max allowance row when maxAmount is not uint256 max', () => {
+      const { detailsSection } = renderAndGetSections(defaultProps);
+
+      expect(detailsSection?.textContent).toContain('Max allowance');
     });
   });
 

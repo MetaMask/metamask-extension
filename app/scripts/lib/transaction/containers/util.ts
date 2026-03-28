@@ -5,7 +5,7 @@ import {
 } from '@metamask/transaction-controller';
 import { cloneDeep } from 'lodash';
 import { createProjectLogger } from '@metamask/utils';
-import { Hex } from 'viem';
+import type { Hex } from 'viem';
 import { TransactionControllerInitMessenger } from '../../../controller-init/messengers/transaction-controller-messenger';
 import { enforceSimulations } from './enforced-simulations';
 
@@ -55,13 +55,19 @@ export async function applyTransactionContainers({
 
     log('Estimated gas', gas);
 
-    newGas = gas;
+    newGas = gas as Hex;
   }
 
   return {
     updateTransaction: (transaction: TransactionMeta) => {
       transaction.containerTypes = types;
-      transaction.txParams = cloneDeep(finalMetadata.txParams);
+
+      // Only update the fields modified by container wrapping.
+      // Preserves gas fees, nonce, gasLimit, type, chainId,
+      // authorizationList, and other fields set by the approval flow.
+      transaction.txParams.data = finalMetadata.txParams.data;
+      transaction.txParams.to = finalMetadata.txParams.to;
+      transaction.txParams.value = finalMetadata.txParams.value;
 
       if (newGas) {
         transaction.txParams.gas = newGas;
@@ -108,7 +114,11 @@ export async function applyTransactionContainersExisting({
     containerTypes,
     data: newTransactionMeta.txParams.data,
     gas: newTransactionMeta.txParams.gas,
+    gasPrice: transactionMeta.txParams.gasPrice,
+    maxFeePerGas: transactionMeta.txParams.maxFeePerGas,
+    maxPriorityFeePerGas: transactionMeta.txParams.maxPriorityFeePerGas,
     to: newTransactionMeta.txParams.to,
+    updateType: false,
     value: newTransactionMeta.txParams.value,
   });
 }

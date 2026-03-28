@@ -1,13 +1,15 @@
 /* eslint-disable camelcase */
 import { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch, useSelector, shallowEqual } from 'react-redux';
 import {
   getQuotesReceivedProperties,
   UnifiedSwapBridgeEventName,
 } from '@metamask/bridge-controller';
 import {
   getBridgeQuotes,
+  getFromTokenBalanceInUsd,
   getWarningLabels,
+  type BridgeAppState,
 } from '../../ducks/bridge/selectors';
 import { trackUnifiedSwapBridgeEvent } from '../../ducks/bridge/actions';
 import { useIsTxSubmittable } from './useIsTxSubmittable';
@@ -23,7 +25,11 @@ export const useQuoteFetchEvents = () => {
     recommendedQuote,
   } = useSelector(getBridgeQuotes);
   const isTxSubmittable = useIsTxSubmittable();
-  const warnings = useSelector(getWarningLabels);
+  const warnings = useSelector(
+    (state) => getWarningLabels(state as BridgeAppState, Date.now()),
+    shallowEqual,
+  );
+  const fromTokenBalanceInUsd = useSelector(getFromTokenBalanceInUsd);
 
   // Emitted each time quotes are fetched successfully
   useEffect(() => {
@@ -32,10 +38,12 @@ export const useQuoteFetchEvents = () => {
         trackUnifiedSwapBridgeEvent(
           UnifiedSwapBridgeEventName.QuotesReceived,
           getQuotesReceivedProperties(
-            activeQuote,
+            activeQuote ?? null,
+            // @ts-expect-error 'market_closed' will be added to QuoteWarning in the controller
             warnings,
             isTxSubmittable,
             recommendedQuote,
+            fromTokenBalanceInUsd,
           ),
         ),
       );

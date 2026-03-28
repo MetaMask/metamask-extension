@@ -40,7 +40,7 @@ export default function TermsOfUsePopup({ onClose, onAccept }) {
   const [isTermsOfUseChecked, setIsTermsOfUseChecked] = useState(false);
   const [isScrolledToBottom, setIsScrolledToBottom] = useState(false);
 
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
   const bottomRef = useRef(null);
   const scrollContainerRef = useRef(null);
 

@@ -1,19 +1,15 @@
 import { MockttpServer, Mockttp } from 'mockttp';
 import { withFixtures } from '../../helpers';
 import { mockServerJsonRpc } from '../ppom/mocks/mock-server-json-rpc';
-import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import AssetListPage from '../../page-objects/pages/home/asset-list';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import HomePage from '../../page-objects/pages/home/homepage';
-import { switchToNetworkFromSendFlow } from '../../page-objects/flows/network.flow';
+import { switchToNetworkFromNetworkSelect } from '../../page-objects/flows/network.flow';
 import { mockSpotPrices } from '../tokens/utils/mocks';
-import {
-  loginWithBalanceValidation,
-  loginWithoutBalanceValidation,
-} from '../../page-objects/flows/login.flow';
-import { CHAIN_IDS } from '../../../../shared/constants/network';
+import { login } from '../../page-objects/flows/login.flow';
 
 const infuraSepoliaUrl =
   'https://sepolia.infura.io/v3/00000000000000000000000000000000';
@@ -38,25 +34,8 @@ async function mockInfura(mockServer: Mockttp): Promise<void> {
 
 async function mockInfuraResponses(mockServer: Mockttp): Promise<void> {
   await mockInfura(mockServer);
-  // Mock spot-prices for mainnet (for aggregated balance calculation)
-  await mockSpotPrices(mockServer, CHAIN_IDS.MAINNET, {
-    '0x0000000000000000000000000000000000000000': {
-      price: 1700,
-      marketCap: 382623505141,
-      pricePercentChange1d: 0,
-    },
-  });
-  // Mock spot-prices for localhost (where test starts)
-  await mockSpotPrices(mockServer, CHAIN_IDS.LOCALHOST, {
-    '0x0000000000000000000000000000000000000000': {
-      price: 1700,
-      marketCap: 382623505141,
-      pricePercentChange1d: 0,
-    },
-  });
-  // Mock spot-prices for Sepolia (where test switches to)
-  await mockSpotPrices(mockServer, CHAIN_IDS.SEPOLIA, {
-    '0x0000000000000000000000000000000000000000': {
+  await mockSpotPrices(mockServer, {
+    'eip155:1/slip44:60': {
       price: 1700,
       marketCap: 382623505141,
       pricePercentChange1d: 0,
@@ -66,14 +45,12 @@ async function mockInfuraResponses(mockServer: Mockttp): Promise<void> {
 
 async function mockPriceApi(mockServer: Mockttp) {
   const spotPricesMockEth = await mockServer
-    .forGet(
-      /^https:\/\/price\.api\.cx\.metamask\.io\/v2\/chains\/\d+\/spot-prices/u,
-    )
-
+    .forGet(/^https:\/\/price\.api\.cx\.metamask\.io\/v3\/spot-prices/u)
+    .always()
     .thenCallback(() => ({
       statusCode: 200,
       json: {
-        '0x0000000000000000000000000000000000000000': {
+        'eip155:1/slip44:60': {
           id: 'ethereum',
           price: 1,
           marketCap: 112500000,
@@ -85,6 +62,7 @@ async function mockPriceApi(mockServer: Mockttp) {
     }));
   const mockExchangeRates = await mockServer
     .forGet('https://price.api.cx.metamask.io/v1/exchange-rates')
+    .always()
     .thenCallback(() => ({
       statusCode: 200,
       json: {
@@ -109,8 +87,8 @@ describe('Settings', function () {
   it('Should match the value of token list item and account list item for eth conversion', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
-          .withPreferencesControllerShowNativeTokenAsMainBalanceDisabled()
+        fixtures: new FixtureBuilderV2()
+          .withShowNativeTokenAsMainBalanceDisabled()
           .withEnabledNetworks({ eip155: { '0x1': true } })
           .build(),
         testSpecificMock: async (mockServer: MockttpServer) => {
@@ -120,16 +98,11 @@ describe('Settings', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(
-          driver,
-          undefined,
-          undefined,
-          '$42,500.00',
-        );
+        await login(driver, { expectedBalance: '$42,500.00' });
         await new HeaderNavbar(driver).openAccountMenu();
         await new AccountListPage(
           driver,
-        ).checkMultichainAccountBalanceDisplayed('$42,500.00');
+        ).checkMultichainAccountBalanceDisplayed({ balance: '$42,500.00' });
       },
     );
   });
@@ -137,13 +110,12 @@ describe('Settings', function () {
   it('Should match the value of token list item and account list item for fiat conversion', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
-          .withPreferencesControllerShowNativeTokenAsMainBalanceDisabled()
-          .withShowFiatTestnetEnabled()
-          .withEnabledNetworks({ eip155: { '0x1': true } })
+        fixtures: new FixtureBuilderV2()
+          .withShowNativeTokenAsMainBalanceDisabled()
           .withPreferencesController({
-            preferences: { showTestNetworks: true },
+            preferences: { showFiatInTestnets: true, showTestNetworks: true },
           })
+          .withEnabledNetworks({ eip155: { '0x1': true } })
           .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: async (mockServer: Mockttp) => {
@@ -152,7 +124,7 @@ describe('Settings', function () {
         },
       },
       async ({ driver }) => {
-        await loginWithoutBalanceValidation(driver);
+        await login(driver, { validateBalance: false });
         const homePage = new HomePage(driver);
         await homePage.checkExpectedBalanceIsDisplayed('42,500.00', 'USD');
         await new AssetListPage(driver).checkTokenFiatAmountIsDisplayed(
@@ -170,7 +142,7 @@ describe('Settings', function () {
         // it will show the total that the test is expecting.
 
         // I think we can slightly modify this test to switch to Sepolia network before checking the account List item value
-        await switchToNetworkFromSendFlow(driver, 'Sepolia');
+        await switchToNetworkFromNetworkSelect(driver, 'Custom', 'Sepolia');
 
         await homePage.headerNavbar.openSettingsPage();
         const settingsPage = new SettingsPage(driver);
@@ -185,7 +157,11 @@ describe('Settings', function () {
   it('Should show crypto value when price checker setting is off', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().withShowFiatTestnetEnabled().build(),
+        fixtures: new FixtureBuilderV2()
+          .withPreferencesController({
+            preferences: { showFiatInTestnets: true },
+          })
+          .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: async (mockServer: Mockttp) => {
           await mockPriceApi(mockServer);
@@ -193,7 +169,7 @@ describe('Settings', function () {
         },
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
         const homePage = new HomePage(driver);
         await homePage.checkExpectedBalanceIsDisplayed('25', 'ETH');
       },

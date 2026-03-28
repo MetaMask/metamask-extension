@@ -1,61 +1,53 @@
-import { Messenger } from '@metamask/messenger';
-import type {
-  TransactionControllerConfirmExternalTransactionAction,
-  TransactionControllerGetNonceLockAction,
-  TransactionControllerGetTransactionsAction,
-  TransactionControllerUpdateTransactionAction,
-} from '@metamask/transaction-controller';
 import {
-  NetworkControllerGetNetworkClientByIdAction,
-  NetworkControllerGetStateAction,
-  NetworkControllerStateChangeEvent,
-} from '@metamask/network-controller';
+  Messenger,
+  MessengerActions,
+  MessengerEvents,
+} from '@metamask/messenger';
+import { SmartTransactionsControllerMessenger } from '@metamask/smart-transactions-controller';
+import type { AuthenticationControllerGetBearerTokenAction } from '@metamask/profile-sync-controller/auth';
 import { MetaMetricsControllerTrackEventAction } from '../../controllers/metametrics-controller';
 import { RootMessenger } from '../../lib/messenger';
 
-type MessengerActions =
-  | NetworkControllerGetNetworkClientByIdAction
-  | NetworkControllerGetStateAction
-  | TransactionControllerGetNonceLockAction
-  | TransactionControllerGetTransactionsAction
-  | TransactionControllerUpdateTransactionAction
-  | TransactionControllerConfirmExternalTransactionAction;
-
-type MessengerEvents = NetworkControllerStateChangeEvent;
-
-export type SmartTransactionsControllerMessenger = ReturnType<
-  typeof getSmartTransactionsControllerMessenger
->;
-
+/**
+ * Get the messenger for the smart transactions controller. This is scoped to the
+ * actions and events that the smart transactions controller is allowed to handle.
+ *
+ * @param rootMessenger - The root messenger.
+ * @returns The SmartTransactionsControllerMessenger.
+ */
 export function getSmartTransactionsControllerMessenger(
-  messenger: RootMessenger<MessengerActions, MessengerEvents>,
-) {
+  rootMessenger: RootMessenger,
+): SmartTransactionsControllerMessenger {
   const controllerMessenger = new Messenger<
     'SmartTransactionsController',
-    MessengerActions,
-    MessengerEvents,
-    typeof messenger
+    MessengerActions<SmartTransactionsControllerMessenger>,
+    MessengerEvents<SmartTransactionsControllerMessenger>,
+    RootMessenger
   >({
     namespace: 'SmartTransactionsController',
-    parent: messenger,
+    parent: rootMessenger,
   });
-  messenger.delegate({
+  rootMessenger.delegate({
     messenger: controllerMessenger,
     actions: [
       'NetworkController:getNetworkClientById',
       'NetworkController:getState',
+      'RemoteFeatureFlagController:getState',
       'TransactionController:getNonceLock',
-      'TransactionController:confirmExternalTransaction',
       'TransactionController:getTransactions',
       'TransactionController:updateTransaction',
     ],
-    events: ['NetworkController:stateChange'],
+    events: [
+      'NetworkController:stateChange',
+      'RemoteFeatureFlagController:stateChange',
+    ],
   });
   return controllerMessenger;
 }
 
 export type AllowedInitializationActions =
-  MetaMetricsControllerTrackEventAction;
+  | MetaMetricsControllerTrackEventAction
+  | AuthenticationControllerGetBearerTokenAction;
 
 export type SmartTransactionsControllerInitMessenger = ReturnType<
   typeof getSmartTransactionsControllerInitMessenger
@@ -83,7 +75,10 @@ export function getSmartTransactionsControllerInitMessenger(
   });
   messenger.delegate({
     messenger: controllerInitMessenger,
-    actions: ['MetaMetricsController:trackEvent'],
+    actions: [
+      'MetaMetricsController:trackEvent',
+      'AuthenticationController:getBearerToken',
+    ],
   });
   return controllerInitMessenger;
 }

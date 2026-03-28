@@ -1,9 +1,9 @@
 import { strict as assert } from 'assert';
 import { withFixtures } from '../../../helpers';
-import FixtureBuilder from '../../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
 import { DEFAULT_FIXTURE_ACCOUNT } from '../../../constants';
 import TestDappMultichain from '../../../page-objects/pages/test-dapp-multichain';
-import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
+import { login } from '../../../page-objects/flows/login.flow';
 import {
   DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
   getExpectedSessionScope,
@@ -16,17 +16,19 @@ describe('Multichain API', function () {
       await withFixtures(
         {
           title: this.test?.fullTitle(),
-          fixtures: new FixtureBuilder().withPopularNetworks().build(),
+          fixtures: new FixtureBuilderV2().build(),
           ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
         },
         async ({ driver, extensionId }: FixtureCallbackArgs) => {
-          await loginWithBalanceValidation(driver);
+          await login(driver);
 
           const testDapp = new TestDappMultichain(driver);
           await testDapp.openTestDappPage();
           await testDapp.checkPageIsLoaded();
           await testDapp.connectExternallyConnectable(extensionId);
-          const parsedResult = await testDapp.getSession();
+          const parsedResult = await testDapp.getSession({
+            numberOfResultItems: 1,
+          });
 
           assert.deepStrictEqual(
             parsedResult.sessionScopes,
@@ -43,8 +45,7 @@ describe('Multichain API', function () {
       await withFixtures(
         {
           title: this.test?.fullTitle(),
-          fixtures: new FixtureBuilder()
-            .withPopularNetworks()
+          fixtures: new FixtureBuilderV2()
             .withPermissionControllerConnectedToTestDapp()
             .build(),
           ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
@@ -55,13 +56,15 @@ describe('Multichain API', function () {
            */
           const DEFAULT_SCOPE = 'eip155:1337';
 
-          await loginWithBalanceValidation(driver);
+          await login(driver);
 
           const testDapp = new TestDappMultichain(driver);
           await testDapp.openTestDappPage();
           await testDapp.checkPageIsLoaded();
           await testDapp.connectExternallyConnectable(extensionId);
-          const parsedResult = await testDapp.getSession();
+          const parsedResult = await testDapp.getSession({
+            numberOfResultItems: 1,
+          });
 
           const sessionScope = parsedResult.sessionScopes[DEFAULT_SCOPE];
           const expectedSessionScope = getExpectedSessionScope(DEFAULT_SCOPE, [

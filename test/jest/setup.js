@@ -9,6 +9,26 @@ jest.mock('webextension-polyfill', () => {
   };
 });
 
+/**
+ * Mock the BrowserStorageAdapter to use an InMemoryStorageAdapter globally for all unit tests.
+ * This is necessary because the BrowserStorageAdapter uses the browser.storage.local API,
+ * which is not available in the test environment.
+ * The InMemoryStorageAdapter is a simple in-memory storage adapter that can be used in the test environment.
+ *
+ * Note: Tests that specifically need to test BrowserStorageAdapter itself should use
+ * jest.unmock() or jest.requireActual() to access the real implementation.
+ */
+jest.mock('../../app/scripts/lib/stores/browser-storage-adapter', () => {
+  const { InMemoryStorageAdapter } = jest.requireActual(
+    '@metamask/storage-service',
+  );
+
+  // Return InMemoryStorageAdapter as the BrowserStorageAdapter
+  return {
+    BrowserStorageAdapter: InMemoryStorageAdapter,
+  };
+});
+
 const UNRESOLVED = Symbol('timedOut');
 
 // Store this in case it gets stubbed later

@@ -14,6 +14,9 @@ import { getUseTransactionSimulations } from '../../../../../selectors';
 import { useConfirmContext } from '../../../context/confirm';
 import { useIsGaslessSupported } from '../../gas/useIsGaslessSupported';
 import { useHasInsufficientBalance } from '../../useHasInsufficientBalance';
+import { useTransactionPayHasSourceAmount } from '../../pay/useTransactionPayHasSourceAmount';
+import { useTransactionPayPrimaryRequiredToken } from '../../pay/useTransactionPayData';
+import { useTransactionPayToken } from '../../pay/useTransactionPayToken';
 
 export function useInsufficientBalanceAlerts({
   ignoreGasFeeToken,
@@ -32,6 +35,13 @@ export function useInsufficientBalanceAlerts({
     pending: isGaslessSupportedPending,
   } = useIsGaslessSupported();
 
+  const isUsingPay = useTransactionPayHasSourceAmount();
+  const { payToken } = useTransactionPayToken();
+  const primaryRequiredToken = useTransactionPayPrimaryRequiredToken();
+
+  const isPayPendingInput =
+    Boolean(payToken) && primaryRequiredToken?.amountRaw === '0';
+
   const isGasFeeTokensEmpty = gasFeeTokens?.length === 0;
 
   // Check if gasless check has completed (regardless of result)
@@ -46,14 +56,20 @@ export function useInsufficientBalanceAlerts({
   // Check if user has selected a gas fee token (or we're ignoring that check)
   const hasNoGasFeeTokenSelected = ignoreGasFeeToken || !selectedGasFeeToken;
 
-  // Show alert when gasless check is done and either:
-  // - Gasless is NOT supported (user needs native currency for gas)
-  // - Gasless IS supported but gasFeeTokens is empty (no alternative tokens available)
+  // Gasless check is complete AND one of:
+  //  - Gasless is NOT supported (native currency needed for gas)
+  //  - Gasless IS supported but no alternative gas fee tokens are available
+  //  - Gas fee tokens are available but none is selected
   const shouldCheckGaslessConditions =
-    isGaslessCheckComplete && (!isGaslessSupported || isGasFeeTokensEmpty);
+    isGaslessCheckComplete &&
+    (!isGaslessSupported ||
+      isGasFeeTokensEmpty ||
+      (!isGasFeeTokensEmpty && !selectedGasFeeToken));
 
   const showAlert =
     hasInsufficientBalance &&
+    !isUsingPay &&
+    !isPayPendingInput &&
     isSimulationComplete &&
     hasNoGasFeeTokenSelected &&
     shouldCheckGaslessConditions &&

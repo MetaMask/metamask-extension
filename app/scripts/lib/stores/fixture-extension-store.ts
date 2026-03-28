@@ -1,5 +1,6 @@
+import browser from 'webextension-polyfill';
 import log from 'loglevel';
-import getFetchWithTimeout from '../../../../shared/modules/fetch-with-timeout';
+import getFetchWithTimeout from '../../../../shared/lib/fetch-with-timeout';
 import ExtensionStore from './extension-store';
 import type { MetaMaskStorageStructure } from './base-store';
 
@@ -17,18 +18,67 @@ export class FixtureExtensionStore extends ExtensionStore {
 
   #initializing?: Promise<void>;
 
-  constructor() {
+  /**
+   * Construct a FixtureExtensionStore.
+   *
+   * If the `initialize` argument is `false`, the store is assumed to be initialized already.
+   *
+   * @param args - Arguments
+   * @param args.initialize - Whether to initialize the store by reading and setting fixtures.
+   */
+  constructor({ initialize = false }: { initialize?: boolean } = {}) {
     super();
-    this.#initializing = this.#init();
+
+    if (initialize) {
+      this.#initializing = this.#init();
+    } else {
+      this.#initializing = Promise.resolve();
+      this.#initialized = true;
+    }
   }
 
+  /**
+   * Sets multiple key-value pairs in the state object.
+   * Only works if the state is an object.
+   *
+   * @param pairs - Map of key-value pairs to set
+   */
+  async setKeyValues(pairs: Map<string, unknown>): Promise<void> {
+    if (!this.#initialized) {
+      await this.#initializing;
+    }
+    return super.setKeyValues(pairs);
+  }
+
+  /**
+   * Declares this store as compatible with the current browser
+   */
+  isSupported = true;
+
+  /**
+   * Initializes by loading state from the network
+   */
   async #init() {
     try {
       const response = await fetchWithTimeout(FIXTURE_SERVER_URL);
 
       if (response.ok) {
         const state = await response.json();
-        await super.set(state);
+
+        // Write StorageService entries directly to browser.storage.local
+        // so controllers can read them outside the main extension state.
+        if (Object.keys(state.storageServiceData ?? {}).length > 0) {
+          await browser.storage.local.set(state.storageServiceData);
+        }
+
+        if (state.meta?.storageKind === 'split') {
+          // If fixture is already in split state format, convert it properly
+          const kvs = new Map(Object.entries(state.data));
+          kvs.set('meta', state.meta);
+          await super.setKeyValues(kvs);
+        } else {
+          await super.set(state);
+        }
       } else {
         log.debug(
           `Received response with a status of ${response.status} ${response.statusText}`,

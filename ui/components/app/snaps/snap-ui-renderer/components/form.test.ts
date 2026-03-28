@@ -251,4 +251,78 @@ describe('SnapUIForm', () => {
 
     expect(container).toMatchSnapshot();
   });
+
+  it('submits correctly when button has no name', () => {
+    const { getByRole } = renderInterface(
+      Box({
+        children: Form({
+          name: 'form',
+          children: [
+            Field({ label: 'My Input', children: Input({ name: 'input' }) }),
+            Field({
+              label: 'Checkbox',
+              children: Checkbox({ name: 'checkbox' }),
+            }),
+            Button({ type: 'submit', children: 'Submit' }),
+          ],
+        }),
+      }),
+    );
+
+    const input = getByRole('textbox');
+    fireEvent.change(input, { target: { value: 'abc' } });
+
+    const checkbox = getByRole('checkbox');
+    fireEvent.click(checkbox);
+
+    const button = getByRole('button');
+    fireEvent.click(button);
+
+    expect(submitRequestToBackground).toHaveBeenNthCalledWith(
+      5,
+      'handleSnapRequest',
+      [
+        {
+          handler: 'onUserInput',
+          origin: 'metamask',
+          request: {
+            jsonrpc: '2.0',
+            method: ' ',
+            params: {
+              event: { type: 'ButtonClickEvent' },
+              id: MOCK_INTERFACE_ID,
+            },
+          },
+          snapId: MOCK_SNAP_ID,
+        },
+      ],
+    );
+
+    expect(submitRequestToBackground).toHaveBeenNthCalledWith(
+      6,
+      'handleSnapRequest',
+      [
+        {
+          handler: 'onUserInput',
+          origin: 'metamask',
+          request: {
+            jsonrpc: '2.0',
+            method: ' ',
+            params: {
+              event: {
+                name: 'form',
+                type: 'FormSubmitEvent',
+                value: {
+                  checkbox: true,
+                  input: 'abc',
+                },
+              },
+              id: MOCK_INTERFACE_ID,
+            },
+          },
+          snapId: MOCK_SNAP_ID,
+        },
+      ],
+    );
+  });
 });

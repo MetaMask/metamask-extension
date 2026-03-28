@@ -1,31 +1,20 @@
 import React, { useCallback, useContext, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-///: BEGIN:ONLY_INCLUDE_IF(multichain)
-import { isEvmAccountType } from '@metamask/keyring-api';
-import { CaipAssetType } from '@metamask/utils';
-///: END:ONLY_INCLUDE_IF
-import { InternalAccount } from '@metamask/keyring-internal-api';
 import { I18nContext } from '../../../contexts/i18n';
-import { startNewDraftTransaction } from '../../../ducks/send';
 import useRamps from '../../../hooks/ramps/useRamps/useRamps';
-import {
-  getNetworkConfigurationIdByChainId,
-  getSelectedMultichainNetworkConfiguration,
-  getIsMultichainAccountsState2Enabled,
-  getUseExternalServices,
-} from '../../../selectors';
+import { getUseExternalServices } from '../../../selectors';
 import useBridging from '../../../hooks/bridge/useBridging';
 
 import { INVALID_ASSET_TYPE } from '../../../helpers/constants/error-keys';
-import { showModal, setActiveNetworkWithError } from '../../../store/actions';
+import { showModal } from '../../../store/actions';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { AssetType } from '../../../../shared/constants/transaction';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
   MetaMetricsSwapsEventSource,
 } from '../../../../shared/constants/metametrics';
-import { AssetType } from '../../../../shared/constants/transaction';
 import {
   Display,
   IconColor,
@@ -40,59 +29,33 @@ import {
 } from '../../../components/component-library';
 import { getIsNativeTokenBuyable } from '../../../ducks/ramps';
 
-///: BEGIN:ONLY_INCLUDE_IF(multichain)
-import { useHandleSendNonEvm } from '../../../components/app/wallet-overview/hooks/useHandleSendNonEvm';
-///: END:ONLY_INCLUDE_IF
-
-import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
 import { Asset } from '../types/asset';
 import { navigateToSendRoute } from '../../confirmations/utils/send';
 import { isEvmChainId } from '../../../../shared/lib/asset-utils';
-import { useRedesignedSendFlow } from '../../confirmations/hooks/useRedesignedSendFlow';
 
 const TokenButtons = ({
   token,
-  account,
+  disableSendForNonEvm = false,
+  isMarketClosed = false,
 }: {
   token: Asset & { type: AssetType.token };
-  account: InternalAccount;
+  /** When true, disables the send button for non-EVM chains (used on asset page) */
+  disableSendForNonEvm?: boolean;
+  /** When true, disables the swap button because the stock market is closed */
+  isMarketClosed?: boolean;
 }) => {
   const dispatch = useDispatch();
   const t = useContext(I18nContext);
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
   const navigate = useNavigate();
   const isExternalServicesEnabled = useSelector(getUseExternalServices);
   const isEvm = isEvmChainId(token.chainId);
-  const isMultichainAccountsState2Enabled = useSelector(
-    getIsMultichainAccountsState2Enabled,
-  );
-  const { enabled: isSendRedesignEnabled } = useRedesignedSendFlow();
-  const { chainId: multichainChainId } = useSelector(
-    getSelectedMultichainNetworkConfiguration,
-  );
 
-  const currentEvmChainId = useSelector(getCurrentChainId);
-
-  const currentChainId = (() => {
-    if (isMultichainAccountsState2Enabled) {
-      return token.chainId;
-    }
-
-    return isEvm ? currentEvmChainId : multichainChainId;
-  })();
-
-  const networks = useSelector(getNetworkConfigurationIdByChainId) as Record<
-    string,
-    string
-  >;
+  const currentChainId = token.chainId;
 
   const isBuyableChain = useSelector(getIsNativeTokenBuyable);
   const { openBuyCryptoInPdapp } = useRamps();
   const { openBridgeExperience } = useBridging();
-
-  ///: BEGIN:ONLY_INCLUDE_IF(multichain)
-  const handleSendNonEvm = useHandleSendNonEvm(token.address as CaipAssetType);
-  ///: END:ONLY_INCLUDE_IF
 
   useEffect(() => {
     if (token.isERC721) {
@@ -104,37 +67,6 @@ const TokenButtons = ({
       );
     }
   }, [token.isERC721, token.address, dispatch]);
-
-  // TODO BIP 44 Refactor: Remove this code
-  const setCorrectChain = useCallback(async () => {
-    // If we aren't presently on the chain of the asset, change to it
-    if (
-      currentEvmChainId !== token.chainId &&
-      multichainChainId !== token.chainId &&
-      !isMultichainAccountsState2Enabled
-    ) {
-      try {
-        const networkConfigurationId = networks[token.chainId];
-        await dispatch(setActiveNetworkWithError(networkConfigurationId));
-      } catch (err) {
-        console.error(`Failed to switch chains.
-        Target chainId: ${token.chainId}, Current chainId: ${currentEvmChainId}.
-        ${
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
-          // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-          err
-        }`);
-        throw err;
-      }
-    }
-  }, [
-    isMultichainAccountsState2Enabled,
-    currentEvmChainId,
-    multichainChainId,
-    networks,
-    token.chainId,
-    dispatch,
-  ]);
 
   const handleBuyAndSellOnClick = useCallback(() => {
     openBuyCryptoInPdapp();
@@ -173,23 +105,8 @@ const TokenButtons = ({
       { excludeMetaMetricsId: false },
     );
 
-    ///: BEGIN:ONLY_INCLUDE_IF(multichain)
-    if (!isEvmAccountType(account.type) && !isSendRedesignEnabled) {
-      await handleSendNonEvm();
-      // Early return, not to let the non-EVM flow slip into the native send flow.
-      return;
-    }
-    ///: END:ONLY_INCLUDE_IF
-
     try {
-      await setCorrectChain();
-      await dispatch(
-        startNewDraftTransaction({
-          type: AssetType.token,
-          details: token,
-        }),
-      );
-      navigateToSendRoute(navigate, isSendRedesignEnabled, {
+      navigateToSendRoute(navigate, {
         address: token.address,
         chainId: token.chainId,
       });
@@ -201,24 +118,11 @@ const TokenButtons = ({
         throw err;
       }
     }
-  }, [
-    trackEvent,
-    dispatch,
-    navigate,
-    token,
-    setCorrectChain,
-    account,
-    ///: BEGIN:ONLY_INCLUDE_IF(multichain)
-    handleSendNonEvm,
-    ///: END:ONLY_INCLUDE_IF
-    isSendRedesignEnabled,
-  ]);
+  }, [trackEvent, navigate, token]);
 
   const handleSwapOnClick = useCallback(async () => {
-    await setCorrectChain();
-    // Handle clicking from the asset details page
     openBridgeExperience(MetaMetricsSwapsEventSource.TokenView, token);
-  }, [token, setCorrectChain, openBridgeExperience]);
+  }, [token, openBridgeExperience]);
 
   return (
     <Box
@@ -255,7 +159,10 @@ const TokenButtons = ({
         }
         label={t('send')}
         data-testid="eth-overview-send"
-        disabled={token.isERC721}
+        disabled={
+          token.isERC721 ||
+          (disableSendForNonEvm && !isEvm && !isExternalServicesEnabled)
+        }
       />
 
       <IconButton
@@ -270,7 +177,7 @@ const TokenButtons = ({
         onClick={handleSwapOnClick}
         data-testid="token-overview-swap"
         label={t('swap')}
-        disabled={!isExternalServicesEnabled}
+        disabled={!isExternalServicesEnabled || isMarketClosed}
       />
     </Box>
   );

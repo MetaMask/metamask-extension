@@ -3,19 +3,19 @@ import { isHexString } from '@metamask/utils';
 import {
   ACCOUNT_1,
   ACCOUNT_2,
-  convertETHToHexGwei,
+  DEFAULT_LOCAL_NODE_ETH_BALANCE_DEC,
   WINDOW_TITLES,
-  withFixtures,
-} from '../../../helpers';
-import FixtureBuilder from '../../../fixtures/fixture-builder';
-import { DEFAULT_LOCAL_NODE_ETH_BALANCE_DEC } from '../../../constants';
+} from '../../../constants';
+import { toEvmCaipAccountId } from '../../../../../shared/lib/multichain/scope-utils';
+import { convertETHToHexGwei, withFixtures } from '../../../helpers';
+import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
 import TestDappMultichain from '../../../page-objects/pages/test-dapp-multichain';
-import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
+import { login } from '../../../page-objects/flows/login.flow';
 import ActivityListPage from '../../../page-objects/pages/home/activity-list';
-import ConnectAccountConfirmation from '../../../page-objects/pages/confirmations/redesign/connect-account-confirmation';
+import ConnectAccountConfirmation from '../../../page-objects/pages/confirmations/connect-account-confirmation';
 import HomePage from '../../../page-objects/pages/home/homepage';
-import TransactionConfirmation from '../../../page-objects/pages/confirmations/redesign/transaction-confirmation';
-import Eip7702AndSendCalls from '../../../page-objects/pages/confirmations/redesign/batch-confirmation';
+import TransactionConfirmation from '../../../page-objects/pages/confirmations/transaction-confirmation';
+import Eip7702AndSendCalls from '../../../page-objects/pages/confirmations/batch-confirmation';
 import { mockEip7702FeatureFlag } from '../../../tests/confirmations/helpers';
 import {
   DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
@@ -25,7 +25,10 @@ import {
 
 describe('Multichain API', function () {
   const GANACHE_SCOPES = ['eip155:1337', 'eip155:1338', 'eip155:1000'];
-  const CAIP_ACCOUNT_IDS = [`eip155:0:${ACCOUNT_1}`, `eip155:0:${ACCOUNT_2}`];
+  const CAIP_ACCOUNT_IDS = [
+    toEvmCaipAccountId(ACCOUNT_1),
+    toEvmCaipAccountId(ACCOUNT_2),
+  ];
   const DEFAULT_INITIAL_BALANCE_HEX = convertETHToHexGwei(
     DEFAULT_LOCAL_NODE_ETH_BALANCE_DEC,
   );
@@ -40,13 +43,13 @@ describe('Multichain API', function () {
       await withFixtures(
         {
           title: this.test?.fullTitle(),
-          fixtures: new FixtureBuilder()
+          fixtures: new FixtureBuilderV2()
             .withNetworkControllerTripleNode()
             .build(),
           ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
         },
         async ({ driver, extensionId }: FixtureCallbackArgs) => {
-          await loginWithBalanceValidation(driver);
+          await login(driver);
 
           const testDapp = new TestDappMultichain(driver);
           await testDapp.openTestDappPage();
@@ -90,13 +93,13 @@ describe('Multichain API', function () {
         await withFixtures(
           {
             title: this.test?.fullTitle(),
-            fixtures: new FixtureBuilder()
+            fixtures: new FixtureBuilderV2()
               .withNetworkControllerTripleNode()
               .build(),
             ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
           },
           async ({ driver, extensionId }: FixtureCallbackArgs) => {
-            await loginWithBalanceValidation(driver);
+            await login(driver);
 
             const testDapp = new TestDappMultichain(driver);
             await testDapp.openTestDappPage();
@@ -143,13 +146,13 @@ describe('Multichain API', function () {
         await withFixtures(
           {
             title: this.test?.fullTitle(),
-            fixtures: new FixtureBuilder()
+            fixtures: new FixtureBuilderV2()
               .withNetworkControllerTripleNode()
               .build(),
             ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
           },
           async ({ driver, extensionId }: FixtureCallbackArgs) => {
-            await loginWithBalanceValidation(driver);
+            await login(driver);
 
             const testDapp = new TestDappMultichain(driver);
             await testDapp.openTestDappPage();
@@ -248,13 +251,13 @@ describe('Multichain API', function () {
         await withFixtures(
           {
             title: this.test?.fullTitle(),
-            fixtures: new FixtureBuilder()
+            fixtures: new FixtureBuilderV2()
               .withNetworkControllerTripleNode()
               .build(),
             ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
           },
           async ({ driver, extensionId }: FixtureCallbackArgs) => {
-            await loginWithBalanceValidation(driver);
+            await login(driver);
 
             const testDapp = new TestDappMultichain(driver);
             await testDapp.openTestDappPage();
@@ -393,8 +396,8 @@ describe('Multichain API', function () {
           {
             ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
             title: this.test?.fullTitle(),
-            fixtures: new FixtureBuilder()
-              .withPermissionControllerConnectedToMultichainTestDapp()
+            fixtures: new FixtureBuilderV2()
+              .withPermissionControllerConnectedToTestDapp()
               .build(),
             localNodeOptions: [
               {
@@ -412,7 +415,7 @@ describe('Multichain API', function () {
             const scope = GANACHE_SCOPES[0];
             const method = 'wallet_getCapabilities';
 
-            await loginWithBalanceValidation(driver);
+            await login(driver);
 
             const testDapp = new TestDappMultichain(driver);
             await testDapp.openTestDappPage();
@@ -441,8 +444,8 @@ describe('Multichain API', function () {
           {
             ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
             title: this.test?.fullTitle(),
-            fixtures: new FixtureBuilder()
-              .withPermissionControllerConnectedToMultichainTestDapp()
+            fixtures: new FixtureBuilderV2()
+              .withPermissionControllerConnectedToTestDapp()
               .build(),
             localNodeOptions: [
               {
@@ -460,7 +463,7 @@ describe('Multichain API', function () {
             const scope = GANACHE_SCOPES[0];
             const method = 'wallet_sendCalls';
 
-            await loginWithBalanceValidation(driver);
+            await login(driver);
 
             const testDapp = new TestDappMultichain(driver);
             await testDapp.openTestDappPage();
@@ -483,7 +486,6 @@ describe('Multichain API', function () {
             const upgradeAndBatchTxConfirmation = new Eip7702AndSendCalls(
               driver,
             );
-            await upgradeAndBatchTxConfirmation.clickUseSmartAccountButton();
             await upgradeAndBatchTxConfirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
 
             await driver.switchToWindowWithTitle(
@@ -515,8 +517,8 @@ describe('Multichain API', function () {
           {
             ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
             title: this.test?.fullTitle(),
-            fixtures: new FixtureBuilder()
-              .withPermissionControllerConnectedToMultichainTestDapp()
+            fixtures: new FixtureBuilderV2()
+              .withPermissionControllerConnectedToTestDapp()
               .build(),
             localNodeOptions: [
               {
@@ -534,7 +536,7 @@ describe('Multichain API', function () {
             const scope = GANACHE_SCOPES[0];
             const method = 'wallet_sendCalls';
 
-            await loginWithBalanceValidation(driver);
+            await login(driver);
 
             const testDapp = new TestDappMultichain(driver);
             await testDapp.openTestDappPage();
@@ -557,7 +559,6 @@ describe('Multichain API', function () {
             const upgradeAndBatchTxConfirmation = new Eip7702AndSendCalls(
               driver,
             );
-            await upgradeAndBatchTxConfirmation.clickUseSmartAccountButton();
             await upgradeAndBatchTxConfirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
 
             await driver.switchToWindowWithTitle(

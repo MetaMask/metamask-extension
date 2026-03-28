@@ -201,9 +201,6 @@
     "message": "คุณต้องเลือกไฟล์ที่จะนำเข้า",
     "description": "User is important an account and needs to add a file to continue"
   },
-  "negativeETH": {
-    "message": "ไม่สามารถส่งอีเธอร์เป็นจำนวนติดลบได้"
-  },
   "networks": {
     "message": "เครือข่าย"
   },
@@ -330,12 +327,6 @@
   },
   "total": {
     "message": "รวม"
-  },
-  "transactionCancelSuccess": {
-    "message": "ยกเลิกธุรกรรมเรียบร้อยแล้วเมื่อ $2"
-  },
-  "transactionDropped": {
-    "message": "ธุรกรรมถูกยกเลิกเมื่อ $2"
   },
   "unknown": {
     "message": "ไม่รู้จัก"

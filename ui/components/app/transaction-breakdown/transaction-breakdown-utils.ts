@@ -1,20 +1,20 @@
 import {
   TransactionMeta,
+  TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
 import { getShouldShowFiat } from '../../../selectors';
 import { getNativeCurrency } from '../../../ducks/metamask/metamask';
-import { isEIP1559Transaction } from '../../../../shared/modules/transaction.utils';
+import { isEIP1559Transaction } from '../../../../shared/lib/transaction.utils';
 
 import {
   subtractHexes,
   sumHexes,
-} from '../../../../shared/modules/conversion.utils';
+} from '../../../../shared/lib/conversion.utils';
 import {
   calcTokenAmount,
   getSwapsTokensReceivedFromTxMeta,
 } from '../../../../shared/lib/transactions-controller-utils';
-import { CONFIRMED_STATUS } from '../transaction-activity-log/transaction-activity-log.constants';
 import { MetaMaskReduxState } from '../../../store/store';
 import { calcHexGasTotal } from '../../../../shared/lib/transaction-breakdown-utils';
 
@@ -40,6 +40,7 @@ export const getTransactionBreakdownData = ({
     destinationTokenSymbol,
     status,
     type,
+    isGasFeeSponsored,
   } = transaction;
 
   const sourceTokenAmount =
@@ -90,7 +91,7 @@ export const getTransactionBreakdownData = ({
       ? `${sourceTokenAmount} ${sourceTokenSymbol}`
       : undefined;
   const destinationAmountFormatted =
-    destinationTokenAmount && status === CONFIRMED_STATUS
+    destinationTokenAmount && status === TransactionStatus.confirmed
       ? `${destinationTokenAmount} ${destinationTokenSymbol}`
       : undefined;
 
@@ -121,6 +122,7 @@ export const getTransactionBreakdownData = ({
     priorityFee,
     baseFee: baseFeePerGas,
     isEIP1559Transaction: isEIP1559Transaction(transaction),
+    isGasFeeSponsored,
     l1HexGasTotal,
     sourceAmountFormatted,
     destinationAmountFormatted,

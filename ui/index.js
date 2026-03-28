@@ -8,23 +8,25 @@ import { isInternalAccountInPermittedAccountIds } from '@metamask/chain-agnostic
 import { captureException } from '../shared/lib/sentry';
 import { withResolvers } from '../shared/lib/promise-with-resolvers';
 // TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
+// eslint-disable-next-line import-x/no-restricted-paths
 import { getEnvironmentType } from '../app/scripts/lib/util';
 import { AlertTypes } from '../shared/constants/alerts';
-import { maskObject } from '../shared/modules/object.utils';
+import { maskObject } from '../shared/lib/object.utils';
 // TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
+// eslint-disable-next-line import-x/no-restricted-paths
 import { SENTRY_UI_STATE } from '../app/scripts/constants/sentry-state';
 import {
   ENVIRONMENT_TYPE_POPUP,
   ENVIRONMENT_TYPE_SIDEPANEL,
 } from '../shared/constants/app';
-import { getBrowserName } from '../shared/modules/browser-runtime.utils';
+import { getBrowserName } from '../shared/lib/browser-runtime.utils';
 import { COPY_OPTIONS } from '../shared/constants/copy';
+import { START_UI_SYNC } from '../shared/constants/ui-initialization';
 import { switchDirection } from '../shared/lib/switch-direction';
 import { setupLocale } from '../shared/lib/error-utils';
 import { trace, TraceName } from '../shared/lib/trace';
-import { getCurrentChainId } from '../shared/modules/selectors/networks';
+import { getCurrentChainId } from '../shared/lib/selectors/networks';
+import { MESSENGER_SUBSCRIPTION_NOTIFICATION } from '../shared/constants/messages';
 import * as actions from './store/actions';
 import configureStore from './store/store';
 import {
@@ -46,14 +48,13 @@ import txHelper from './helpers/utils/tx-helper';
 import { setBackgroundConnection } from './store/background-connection';
 import { getStartupTraceTags } from './helpers/utils/tags';
 import { SEEDLESS_PASSWORD_OUTDATED_CHECK_INTERVAL_MS } from './constants';
+import { getPerpsStreamManager } from './providers/perps';
 
 export { CriticalStartupErrorHandler } from './helpers/utils/critical-startup-error-handler';
 export {
-  displayCriticalError,
+  displayCriticalErrorMessage,
   CriticalErrorTranslationKey,
 } from './helpers/utils/display-critical-error';
-
-const METHOD_START_UI_SYNC = 'startUISync';
 
 log.setLevel(global.METAMASK_DEBUG ? 'debug' : 'warn', false);
 
@@ -78,9 +79,11 @@ export const connectToBackground = (
     if (method === 'sendUpdate') {
       const store = await reduxStore.promise;
       store.dispatch(actions.updateMetamaskState(data.params[0]));
-    } else if (method === METHOD_START_UI_SYNC) {
-      await handleStartUISync();
-    } else {
+    } else if (method === START_UI_SYNC) {
+      await handleStartUISync(data.params[0]);
+    } else if (method === 'perpsStreamUpdate') {
+      getPerpsStreamManager().handleBackgroundUpdate(data.params[0]);
+    } else if (method !== MESSENGER_SUBSCRIPTION_NOTIFICATION) {
       throw new Error(
         `Internal JSON-RPC Notification Not Handled:\n\n ${JSON.stringify(
           data,
@@ -90,17 +93,12 @@ export const connectToBackground = (
   });
 };
 
-export default async function launchMetamaskUi(opts) {
-  const { backgroundConnection, traceContext } = opts;
+export async function launchMetamaskUi(opts) {
+  const { backgroundConnection, initialState } = opts;
 
-  const metamaskState = await trace(
-    { name: TraceName.GetState, parentContext: traceContext },
-    backgroundConnection.getState.bind(backgroundConnection),
-  );
+  const store = await startApp(initialState, opts);
 
-  const store = await startApp(metamaskState, opts);
-
-  await backgroundConnection.startPatches();
+  await backgroundConnection.startSendingPatches();
 
   setupStateHooks(store);
 
@@ -242,7 +240,7 @@ async function startApp(metamaskState, opts) {
   return store;
 }
 
-async function runInitialActions(store) {
+export async function runInitialActions(store) {
   const initialState = store.getState();
 
   // Update browser environment with accurate browser detection from UI
@@ -285,7 +283,9 @@ async function runInitialActions(store) {
     const validateSeedlessPasswordOutdated = async (state) => {
       const isUnlocked = getIsUnlocked(state);
       if (isUnlocked) {
-        await store.dispatch(actions.checkIsSeedlessPasswordOutdated());
+        await store.dispatch(
+          actions.checkIsSeedlessPasswordOutdated(false, false), // don't skip cache, don't capture sentry error, we don't want to report to sentry if the check fails
+        );
       }
     };
     await validateSeedlessPasswordOutdated(initialState);
@@ -382,6 +382,15 @@ function setupStateHooks(store) {
     };
   }
 
+  /**
+   * Reload the extension.
+   *
+   * This is used for the `first-install` E2E test, which uses a production-like build. This
+   * function must be present even if `process.env.IN_TEST` is false.
+   */
+  window.stateHooks.reloadExtension = () => {
+    browser.runtime.reload();
+  };
   window.stateHooks.getCleanAppState = async function () {
     return getCleanAppState(store);
   };
@@ -402,31 +411,29 @@ function setupStateHooks(store) {
   };
 }
 
-window.logStateString = async function (cb) {
+/**
+ * Returns the extension state as a formatted JSON string for debugging.
+ * Includes app state, logs, and platform info.
+ *
+ * @returns {Promise<string>} The state as a JSON string
+ */
+window.logStateString = async function () {
   const state = await window.stateHooks.getCleanAppState();
-  const logs = window.stateHooks.getLogs();
-  browser.runtime
-    .getPlatformInfo()
-    .then((platform) => {
-      state.platform = platform;
-      state.logs = logs;
-      const stateString = JSON.stringify(state, null, 2);
-      cb(null, stateString);
-    })
-    .catch((err) => {
-      cb(err);
-    });
+  state.logs = window.stateHooks.getLogs();
+  state.platform = await browser.runtime.getPlatformInfo();
+  return JSON.stringify(state, null, 2);
 };
 
-window.logState = function (toClipboard) {
-  return window.logStateString((err, result) => {
-    if (err) {
-      console.error(err.message);
-    } else if (toClipboard) {
+window.logState = async function (toClipboard) {
+  try {
+    const result = await window.logStateString();
+    if (toClipboard) {
       copyToClipboard(result, COPY_OPTIONS);
       console.log('State log copied');
     } else {
       console.log(result);
     }
-  });
+  } catch (err) {
+    console.error(err.message);
+  }
 };

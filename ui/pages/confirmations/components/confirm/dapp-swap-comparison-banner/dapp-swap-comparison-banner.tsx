@@ -51,8 +51,7 @@ const SwapTabs = React.memo(
 
     return (
       <Tabs
-        defaultActiveTabKey={activeTabKey}
-        activeTabKey={activeTabKey}
+        activeTab={activeTabKey}
         onTabClick={onTabClick}
         tabListProps={{
           className: 'dapp-swap__tabs',
@@ -75,7 +74,11 @@ const SwapTabs = React.memo(
   },
 );
 
-const DappSwapComparisonInner = () => {
+const DappSwapComparisonInner = ({
+  dappSwapComparisonInfoResult,
+}: {
+  dappSwapComparisonInfoResult: ReturnType<typeof useDappSwapComparisonInfo>;
+}) => {
   const t = useI18nContext();
   const {
     fiatRates,
@@ -85,7 +88,7 @@ const DappSwapComparisonInner = () => {
     sourceTokenAmount,
     tokenAmountDifference,
     tokenDetails,
-  } = useDappSwapComparisonInfo();
+  } = dappSwapComparisonInfoResult;
   const { captureDappSwapComparisonDisplayProperties } =
     useDappSwapComparisonMetrics();
   const { dappSwapUi, dappSwapQa } = useSelector(getRemoteFeatureFlags) as {
@@ -140,7 +143,8 @@ const DappSwapComparisonInner = () => {
 
   const swapComparisonDisplayed =
     dappSwapUi?.enabled &&
-    (selectedQuoteValueDifference >= dappSwapUi?.threshold ||
+    ((selectedQuoteValueDifference &&
+      selectedQuoteValueDifference >= dappSwapUi?.threshold) ||
       (dappSwapQa?.enabled && selectedQuote));
 
   useEffect(() => {
@@ -172,6 +176,7 @@ const DappSwapComparisonInner = () => {
           padding={3}
           role="button"
           onClick={updateSwapToSelectedQuote}
+          data-testid="dapp-swap-banner"
         >
           {dappTypeSelected && (
             <>
@@ -244,6 +249,23 @@ const DappSwapComparisonInner = () => {
   );
 };
 
+const DappSwapComparisonWrapper = () => {
+  const dappSwapComparisonInfoResult = useDappSwapComparisonInfo();
+  const { dappSwapUi } = useSelector(getRemoteFeatureFlags) as {
+    dappSwapUi: DappSwapUiFlag;
+  };
+
+  if (!dappSwapUi?.enabled) {
+    return null;
+  }
+
+  return (
+    <DappSwapComparisonInner
+      dappSwapComparisonInfoResult={dappSwapComparisonInfoResult}
+    />
+  );
+};
+
 export const DappSwapComparisonBanner = () => {
   const { isSwapToBeCompared } = useDappSwapCheck();
 
@@ -251,5 +273,5 @@ export const DappSwapComparisonBanner = () => {
     return null;
   }
 
-  return <DappSwapComparisonInner />;
+  return <DappSwapComparisonWrapper />;
 };

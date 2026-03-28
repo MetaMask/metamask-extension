@@ -13,6 +13,7 @@ jest.mock(
     useEnableShieldCoverageChecks: jest.fn(() => ({
       isEnabled: true,
       isPaused: false,
+      isShowCoverageIndicator: true,
     })),
   }),
 );
@@ -45,6 +46,6 @@ describe('ShieldFooterCoverageIndicator', () => {
       store,
     );
 
-    expect(getByText(tEn('transactionShield') as string)).toBeInTheDocument();
+    expect(getByText(tEn('transactionShield'))).toBeInTheDocument();
   });
 });

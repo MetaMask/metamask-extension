@@ -20,9 +20,9 @@ import { shortenAddress } from '../../../helpers/utils/util';
 
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { CopyParams } from '../multichain-address-row/multichain-address-row';
-import { getNetworksByScopes } from '../../../../shared/modules/selectors/networks';
+import { getNetworksByScopes } from '../../../../shared/lib/selectors/networks';
 import { MultichainAccountNetworkGroup } from '../multichain-account-network-group';
-// eslint-disable-next-line import/no-restricted-paths
+// eslint-disable-next-line import-x/no-restricted-paths
 import { normalizeSafeAddress } from '../../../../app/scripts/lib/multichain/address';
 
 type MultichainAggregatedAddressListRowProps = {
@@ -149,7 +149,7 @@ export const MultichainAggregatedAddressListRow = ({
       flexDirection={BoxFlexDirection.Row}
       alignItems={BoxAlignItems.Center}
       justifyContent={BoxJustifyContent.Between}
-      gap={3}
+      gap={2}
       paddingTop={1}
       paddingBottom={1}
       data-testid="multichain-address-row"
@@ -159,12 +159,12 @@ export const MultichainAggregatedAddressListRow = ({
       onMouseLeave={() => setIsHovered(false)}
     >
       <Box
-        gap={3}
+        gap={2}
         flexDirection={BoxFlexDirection.Row}
         alignItems={BoxAlignItems.Center}
       >
         <MultichainAccountNetworkGroup chainIds={chainIds} limit={4} />
-        <Text variant={TextVariant.BodySm} fontWeight={FontWeight.Bold}>
+        <Text variant={TextVariant.BodySm} fontWeight={FontWeight.Medium}>
           {groupName}
         </Text>
       </Box>
@@ -175,19 +175,19 @@ export const MultichainAggregatedAddressListRow = ({
         alignItems={BoxAlignItems.Center}
       >
         <Text
-          variant={TextVariant.BodyXs}
+          variant={TextVariant.BodySm}
           fontWeight={FontWeight.Medium}
           textAlign={TextAlign.Right}
           color={getTextColor()}
           style={{
-            width: '100px',
+            minWidth: '100px',
           }}
         >
           {displayText}
         </Text>
         <Icon
           name={copyIcon}
-          size={IconSize.Xs}
+          size={IconSize.Sm}
           color={getIconColor()}
           aria-label={t('copyAddressShort')}
         />

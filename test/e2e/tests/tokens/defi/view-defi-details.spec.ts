@@ -1,24 +1,20 @@
 import { withFixtures } from '../../../helpers';
-
-import FixtureBuilder from '../../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
 import Homepage from '../../../page-objects/pages/home/homepage';
 import DeFiDetailsPage from '../../../page-objects/pages/defi-details-page';
 import DeFiTab from '../../../page-objects/pages/defi-tab';
-import { loginWithoutBalanceValidation } from '../../../page-objects/flows/login.flow';
+import { login } from '../../../page-objects/flows/login.flow';
 import { Driver } from '../../../webdriver/driver';
 import { mockDeFiPositionFeatureFlag } from '../../confirmations/helpers';
 
-import { switchToNetworkFromSendFlow } from '../../../page-objects/flows/network.flow';
 import { CHAIN_IDS } from '../../../../../shared/constants/network';
-import NetworkManager from '../../../page-objects/pages/network-manager';
 
 describe('View DeFi details', function () {
   it('user should be able to view Aave Positions details', async function () {
     await withFixtures(
       {
-        forceBip44Version: false,
         dappOptions: { numberOfTestDapps: 1 },
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withEnabledNetworks({
             eip155: {
               [CHAIN_IDS.MAINNET]: true,
@@ -31,19 +27,11 @@ describe('View DeFi details', function () {
         testSpecificMock: mockDeFiPositionFeatureFlag,
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithoutBalanceValidation(driver);
+        await login(driver, { validateBalance: false });
 
         await new Homepage(driver).goToDeFiTab();
 
         const defiTab = new DeFiTab(driver);
-
-        // check ethereum positions present
-        await switchToNetworkFromSendFlow(driver, 'Ethereum');
-
-        const networkManager = new NetworkManager(driver);
-
-        await networkManager.openNetworkManager();
-        await networkManager.selectAllNetworks();
 
         await defiTab.checkGroupIconIsDisplayed();
         await defiTab.defiTabCells.checkTokenName('Aave V3');

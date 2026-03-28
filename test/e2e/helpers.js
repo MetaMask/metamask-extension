@@ -8,38 +8,29 @@ const WebSocket = require('ws');
 const createStaticServer = require('../../development/create-static-server');
 const { setupMocking } = require('./mock-e2e');
 const { setupMockingPassThrough } = require('./mock-e2e-pass-through');
-const { Anvil } = require('./seeder/anvil');
-const { Ganache } = require('./seeder/ganache');
 const FixtureServer = require('./fixtures/fixture-server');
 const PhishingWarningPageServer = require('./phishing-warning-page-server');
 const { buildWebDriver } = require('./webdriver');
 const { PAGES } = require('./webdriver/driver');
-const AnvilSeeder = require('./seeder/anvil-seeder');
-const GanacheSeeder = require('./seeder/ganache-seeder');
 const { Bundler } = require('./bundler');
 const { SMART_CONTRACTS } = require('./seeder/smart-contracts');
 const { setManifestFlags } = require('./set-manifest-flags');
-const {
-  ERC_4337_ACCOUNT,
-  DAPP_HOST_ADDRESS,
-  DAPP_URL,
-  DAPP_ONE_URL,
-  DAPP_TWO_URL,
-  TEST_SEED_PHRASE,
-  TEST_SEED_PHRASE_TWO,
-  PRIVATE_KEY,
-  PRIVATE_KEY_TWO,
-  ACCOUNT_1,
-  ACCOUNT_2,
-  WALLET_PASSWORD,
-  WINDOW_TITLES,
-  DAPP_PATHS,
-} = require('./constants');
+const { DAPP_PATHS, ERC_4337_ACCOUNT } = require('./constants');
 const {
   getServerMochaToBackground,
 } = require('./background-socket/server-mocha-to-background');
-const LocalWebSocketServer = require('./websocket-server').default;
-const { setupSolanaWebsocketMocks } = require('./websocket-solana-mocks');
+const WebSocketRegistry = require('./websocket/registry').default;
+const { solanaWebSocketConfig } = require('./websocket/solana-mocks');
+const {
+  accountActivityWebSocketConfig,
+} = require('./websocket/account-activity-mocks');
+const { perpsWebSocketConfig } = require('./websocket/perps-mocks');
+const { WEBSOCKET_SERVICES } = require('./websocket/constants');
+
+// Register each WebSocket service explicitly.
+WebSocketRegistry.register(solanaWebSocketConfig);
+WebSocketRegistry.register(accountActivityWebSocketConfig);
+WebSocketRegistry.register(perpsWebSocketConfig);
 
 const tinyDelayMs = 200;
 const regularDelayMs = tinyDelayMs * 2;
@@ -55,10 +46,6 @@ const createDownloadFolder = async (downloadsFolder) => {
 const convertToHexValue = (val) => `0x${new BigNumber(val, 10).toString(16)}`;
 
 const convertETHToHexGwei = (eth) => convertToHexValue(eth * 10 ** 18);
-
-const {
-  mockMultichainAccountsFeatureFlagStateTwo,
-} = require('./tests/multichain-accounts/feature-flag-mocks');
 
 /**
  * Normalizes the localNodeOptions into a consistent format to handle different data structures.
@@ -173,7 +160,9 @@ async function withFixtures(options, testSuite) {
     monConversionInUsd,
     manifestFlags,
     solanaWebSocketSpecificMocks = [],
-    forceBip44Version = true,
+    accountActivityWebSocketSpecificMocks = [],
+    perpsWebSocketSpecificMocks = [],
+    extendedTimeoutMultiplier = 1,
   } = options;
 
   // Normalize localNodeOptions
@@ -210,8 +199,6 @@ async function withFixtures(options, testSuite) {
   let localNode;
   const localNodes = [];
 
-  let webSocketServer;
-
   try {
     // Start servers based on the localNodes array
     for (let i = 0; i < localNodeOptsNormalized.length; i++) {
@@ -220,12 +207,16 @@ async function withFixtures(options, testSuite) {
 
       switch (nodeType) {
         case 'anvil':
+          // eslint-disable-next-line n/global-require, no-case-declarations -- load this module conditionally
+          const { Anvil } = require('./seeder/anvil');
           localNode = new Anvil();
           await localNode.start(nodeOptions);
           localNodes.push(localNode);
           break;
 
         case 'ganache':
+          // eslint-disable-next-line n/global-require, no-case-declarations -- load this module conditionally
+          const { Ganache } = require('./seeder/ganache');
           localNode = new Ganache();
           await localNode.start(nodeOptions);
           localNodes.push(localNode);
@@ -250,10 +241,14 @@ async function withFixtures(options, testSuite) {
     if (smartContract) {
       switch (localNodeOptsNormalized[0].type) {
         case 'anvil':
+          // eslint-disable-next-line n/global-require, no-case-declarations -- load this module conditionally
+          const AnvilSeeder = require('./seeder/anvil-seeder');
           seeder = new AnvilSeeder(localNodes[0].getProvider());
           break;
 
         case 'ganache':
+          // eslint-disable-next-line n/global-require, no-case-declarations -- load this module conditionally
+          const GanacheSeeder = require('./seeder/ganache-seeder');
           seeder = new GanacheSeeder(localNodes[0].getProvider());
           break;
 
@@ -328,15 +323,14 @@ async function withFixtures(options, testSuite) {
       }
     }
 
-    // Start WebSocket server and apply Solana mocks (defaults + overrides)
-    webSocketServer = LocalWebSocketServer.getServerInstance();
-    webSocketServer.start();
-    await setupSolanaWebsocketMocks(solanaWebSocketSpecificMocks);
-
-    if (forceBip44Version) {
-      console.log('BIP-44 stage 2 enabled');
-      await mockMultichainAccountsFeatureFlagStateTwo(mockServer);
-    }
+    // Start all registered WebSocket servers and apply mocks
+    await WebSocketRegistry.startAll({
+      [WEBSOCKET_SERVICES.solana]: { mocks: solanaWebSocketSpecificMocks },
+      [WEBSOCKET_SERVICES.accountActivity]: {
+        mocks: accountActivityWebSocketSpecificMocks,
+      },
+      [WEBSOCKET_SERVICES.perps]: { mocks: perpsWebSocketSpecificMocks },
+    });
 
     // Decide between the regular setupMocking and the passThrough version
     const mockingSetupFunction = useMockingPassThrough
@@ -362,13 +356,47 @@ async function withFixtures(options, testSuite) {
     }
     await mockServer.start(8000);
 
+    // Log every request hitting the mock server.
+    // In pass-through mode (benchmarks), group duplicates by host to reduce noise.
+    const requestLogLabel = useMockingPassThrough
+      ? 'Request going to a live server ============'
+      : 'Request sent to mock server ============';
+    const hostCounts = useMockingPassThrough ? new Map() : null;
+    const logColor = useMockingPassThrough ? '\x1b[32m' : '\x1b[38;5;216m';
+    mockServer.on('request', (req) => {
+      if (hostCounts) {
+        let host;
+        try {
+          host = new URL(req.url).host;
+        } catch {
+          host = req.url;
+        }
+        const count = (hostCounts.get(host) || 0) + 1;
+        hostCounts.set(host, count);
+        if (count <= 3) {
+          console.log(`${logColor}${requestLogLabel} ${req.url}\x1b[0m`);
+        } else if (count === 4) {
+          console.log(
+            `\x1b[33m${requestLogLabel} ${host} (repeated, suppressing further logs)\x1b[0m`,
+          );
+        }
+      } else {
+        console.log(`${logColor}${requestLogLabel} ${req.url}\x1b[0m`);
+      }
+    });
+
     await setManifestFlags(manifestFlags);
 
     const wd = await buildWebDriver({
       ...driverOptions,
       disableServerMochaToBackground,
     });
+
     driver = wd.driver;
+    driver.timeout =
+      extendedTimeoutMultiplier > 1
+        ? driver.timeout * extendedTimeoutMultiplier
+        : driver.timeout;
     extensionId = wd.extensionId;
     webDriver = driver.driver;
 
@@ -388,6 +416,7 @@ async function withFixtures(options, testSuite) {
                 `${new Date().toISOString()} [driver] Called '${prop}' with arguments ${JSON.stringify(
                   args,
                 ).slice(0, 224)}`, // limit the length of the log entry to 224 characters
+                false,
               );
               return originalProperty.bind(target)(...args);
             };
@@ -535,14 +564,9 @@ async function withFixtures(options, testSuite) {
       shutdownTasks.push(
         (async () => {
           try {
-            if (
-              webSocketServer &&
-              typeof webSocketServer.stopAndCleanup === 'function'
-            ) {
-              await webSocketServer.stopAndCleanup();
-            }
+            await WebSocketRegistry.stopAll();
           } catch (e) {
-            console.log('WebSocket server already stopped or not initialized');
+            console.log('WebSocket servers already stopped or not initialized');
           }
         })(),
       );
@@ -563,59 +587,6 @@ async function withFixtures(options, testSuite) {
       }
     }
   }
-}
-
-const openDapp = async (driver, contract = null, dappURL = DAPP_URL) => {
-  return contract
-    ? await driver.openNewPage(`${dappURL}/?contract=${contract}`)
-    : await driver.openNewPage(dappURL);
-};
-
-const switchToOrOpenDapp = async (
-  driver,
-  contract = null,
-  dappURL = DAPP_URL,
-) => {
-  const handle = await driver.windowHandles.switchToWindowIfKnown(
-    WINDOW_TITLES.TestDApp,
-  );
-
-  if (!handle) {
-    await openDapp(driver, contract, dappURL);
-  }
-};
-
-const clickNestedButton = async (driver, tabName) => {
-  try {
-    await driver.clickElement({ text: tabName, tag: 'button' });
-  } catch (error) {
-    await driver.clickElement({
-      xpath: `//*[contains(text(),"${tabName}")]/parent::button`,
-    });
-  }
-};
-
-/**
- * Unlocks the wallet using the provided password.
- * This method is intended to replace driver.navigate and should not be called after driver.navigate.
- *
- * @param {WebDriver} driver - The webdriver instance
- * @param {object} [options] - Options for unlocking the wallet
- * @param {boolean} [options.navigate] - Whether to navigate to the root page prior to unlocking - defaults to true
- * @param {string} [options.password] - Password to unlock wallet - defaults to shared WALLET_PASSWORD
- */
-async function unlockWallet(
-  driver,
-  { navigate = true, password = WALLET_PASSWORD } = {},
-) {
-  if (navigate) {
-    await driver.navigate();
-  }
-
-  await driver.waitForSelector('#password', { state: 'enabled' });
-  await driver.fill('#password', password);
-  await driver.press('#password', driver.Key.ENTER);
-  await driver.assertElementNotPresent('[data-testid="unlock-page"]');
 }
 
 /**
@@ -759,10 +730,18 @@ async function initBundler(
 ) {
   try {
     const nodeType = localNodeOptsNormalized[0].type;
-    const seeder =
-      nodeType === 'ganache'
-        ? new GanacheSeeder(localNodeServer.getProvider())
-        : new AnvilSeeder(localNodeServer.getProvider());
+
+    let seeder;
+
+    if (nodeType === 'ganache') {
+      // eslint-disable-next-line n/global-require -- load this module conditionally
+      const GanacheSeeder = require('./seeder/ganache-seeder');
+      seeder = new GanacheSeeder(localNodeServer.getProvider());
+    } else {
+      // eslint-disable-next-line n/global-require -- load this module conditionally
+      const AnvilSeeder = require('./seeder/anvil-seeder');
+      seeder = new AnvilSeeder(localNodeServer.getProvider());
+    }
 
     await seeder.deploySmartContract(SMART_CONTRACTS.ENTRYPOINT);
 
@@ -794,9 +773,8 @@ const sentryRegEx = /^https:\/\/sentry\.io\/api\/\d+\/envelope/gu;
  */
 async function isSidePanelEnabled() {
   try {
-    const hasSidepanel =
-      process.env.SELENIUM_BROWSER === 'chrome' &&
-      process.env.IS_SIDEPANEL === 'true';
+    // Check if browser is Chrome (sidepanel is only supported in Chrome)
+    const hasSidepanel = process.env.SELENIUM_BROWSER === 'chrome';
 
     // Log for debugging
     console.log(`Sidepanel check: ${hasSidepanel ? 'enabled' : 'disabled'}`);
@@ -809,37 +787,69 @@ async function isSidePanelEnabled() {
   }
 }
 
+/**
+ * Check if a key should be ignored based on various rules
+ *
+ * @param {string} key - The key to check
+ * @param {string[]} ignoredKeys - Array of keys/prefixes to ignore
+ * @returns {boolean} True if the key should be ignored
+ */
+const shouldIgnoreKey = (key, ignoredKeys) => {
+  const hasNonZeroArrayIndex = key.split('.').some((part) => {
+    const matches = part.match(/\[(\d+)\]/gu);
+    return (
+      matches?.some((match) => {
+        const index = Number(match.slice(1, -1));
+        return Number.isNaN(index) === false && index !== 0;
+      }) ?? false
+    );
+  });
+  if (hasNonZeroArrayIndex) {
+    return true;
+  }
+
+  // Ignore entropy keys in account tree (dynamic entropy IDs)
+  if (key.match(/entropy:[A-Z0-9]+/u)) {
+    return true;
+  }
+
+  // Check if any part of the key path should be ignored
+  const keyParts = key.split('.');
+  const shouldIgnore = ignoredKeys.some((ignoredKey) => {
+    const ignoredParts = ignoredKey.split('.');
+
+    // Ignore if the ignored key is an exact prefix of the current key
+    // OR if the current key exactly matches the ignored key
+    // OR if the current key starts with the ignored key (for nested properties)
+    const isExactPrefix = ignoredParts.every(
+      (part, index) => keyParts[index] === part,
+    );
+    const isExactMatch = key === ignoredKey;
+    const startsWithIgnoredKey =
+      key.startsWith(`${ignoredKey}.`) || key.startsWith(`${ignoredKey}[`);
+
+    return isExactPrefix || isExactMatch || startsWithIgnoredKey;
+  });
+
+  return shouldIgnore;
+};
+
 module.exports = {
-  DAPP_HOST_ADDRESS,
-  DAPP_URL,
-  DAPP_ONE_URL,
-  DAPP_TWO_URL,
-  TEST_SEED_PHRASE,
-  TEST_SEED_PHRASE_TWO,
-  PRIVATE_KEY,
-  PRIVATE_KEY_TWO,
-  ACCOUNT_1,
-  ACCOUNT_2,
+  assertInAnyOrder,
+  convertETHToHexGwei,
   convertToHexValue,
-  tinyDelayMs,
-  regularDelayMs,
+  createDownloadFolder,
+  createWebSocketConnection,
+  generateRandNumBetween,
+  getCleanAppState,
+  getEventPayloads,
+  isSidePanelEnabled,
   largeDelayMs,
+  regularDelayMs,
+  roundToXDecimalPlaces,
+  sentryRegEx,
+  shouldIgnoreKey,
+  tinyDelayMs,
   veryLargeDelayMs,
   withFixtures,
-  createDownloadFolder,
-  openDapp,
-  switchToOrOpenDapp,
-  unlockWallet,
-  WALLET_PASSWORD,
-  WINDOW_TITLES,
-  convertETHToHexGwei,
-  roundToXDecimalPlaces,
-  generateRandNumBetween,
-  getEventPayloads,
-  assertInAnyOrder,
-  getCleanAppState,
-  clickNestedButton,
-  sentryRegEx,
-  createWebSocketConnection,
-  isSidePanelEnabled,
 };

@@ -5,7 +5,10 @@
         "$root$": true,
         "@babel/preset-env": true,
         "@babel/preset-react": true,
+        "@babel/plugin-transform-class-properties": true,
         "@babel/plugin-transform-logical-assignment-operators": true,
+        "@babel/plugin-transform-private-property-in-object": true,
+        "@babel/plugin-transform-private-methods": true,
         "@babel/plugin-transform-runtime": true,
         "@babel/plugin-proposal-class-properties": true,
         "@babel/plugin-proposal-nullish-coalescing-operator": true,
@@ -71,7 +74,7 @@
         "eslint-config-prettier": true,
         "eslint-plugin-import": true,
         "eslint-plugin-jsdoc": true,
-        "eslint-plugin-node": true,
+        "eslint-plugin-n": true,
         "eslint-plugin-prettier": true,
         "eslint-plugin-react": true,
         "eslint-plugin-react-hooks": true
@@ -101,18 +104,15 @@
         "path": true
       },
       "packages": {
-        "eslint-plugin-jest>@typescript-eslint/experimental-utils>@typescript-eslint/types": true,
         "eslint>@eslint-community/eslint-utils": true,
         "eslint-plugin-jest>@typescript-eslint/utils>@typescript-eslint/types": true,
         "eslint-plugin-jest>@typescript-eslint/utils>@typescript-eslint/scope-manager": true,
-        "eslint-plugin-jest>@typescript-eslint/utils>webpack>eslint-scope": true,
         "eslint-plugin-mocha>eslint-utils": true,
         "@typescript-eslint/parser>@typescript-eslint/types": true,
         "eslint": true,
         "semver": true,
         "@typescript-eslint/parser>@typescript-eslint/scope-manager": true,
         "eslint>eslint-scope": true,
-        "eslint>eslint-utils": true,
         "webpack>eslint-scope": true
       }
     },
@@ -134,7 +134,6 @@
         "path": true
       },
       "packages": {
-        "eslint>eslint-utils": true,
         "eslint-plugin-mocha>eslint-utils": true,
         "@typescript-eslint/parser>@typescript-eslint/types": true,
         "eslint": true,
@@ -157,13 +156,11 @@
         "path": true
       },
       "packages": {
-        "eslint-plugin-jest>@typescript-eslint/experimental-utils>@typescript-eslint/types": true,
         "eslint-plugin-jest>@typescript-eslint/experimental-utils>eslint-utils": true,
         "@typescript-eslint/parser>@typescript-eslint/types": true,
         "eslint": true,
         "@typescript-eslint/parser>@typescript-eslint/scope-manager": true,
         "eslint>eslint-scope": true,
-        "eslint>eslint-utils": true,
         "webpack>eslint-scope": true
       }
     },
@@ -367,7 +364,8 @@
     },
     "chokidar": {
       "packages": {
-        "chokidar>fsevents": true
+        "chokidar>fsevents": true,
+        "tsx>fsevents": true
       }
     },
     "gulp-watch>chokidar": {
@@ -592,6 +590,20 @@
       },
       "packages": {
         "@babel/core>@babel/types": true
+      }
+    },
+    "tsx>fsevents": {
+      "globals": {
+        "console.assert": true,
+        "process.platform": true
+      },
+      "native": true
+    },
+    "@metamask/core-backend>@tanstack/query-core": {
+      "globals": {
+        "document": false,
+        "document.visibilityState": true,
+        "addEventListener": false
       }
     }
   }

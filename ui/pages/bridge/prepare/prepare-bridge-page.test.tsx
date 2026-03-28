@@ -1,14 +1,22 @@
 import React from 'react';
 import type { Provider } from '@metamask/network-controller';
-import { act } from '@testing-library/react';
+import { act, render } from '@testing-library/react';
+import { formatChainIdToCaip } from '@metamask/bridge-controller';
 import * as reactRouterUtils from 'react-router-dom';
 import { userEvent } from '@testing-library/user-event';
-import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
+import { Provider as ReduxProvider } from 'react-redux';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
+import { toAssetId } from '../../../../shared/lib/asset-utils';
 import configureStore from '../../../store/store';
 import { createBridgeMockStore } from '../../../../test/data/bridge/mock-bridge-store';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { createTestProviderTools } from '../../../../test/stub/provider';
+import { setBackgroundConnection } from '../../../store/background-connection';
+import {
+  ConnectionStatus,
+  HardwareConnectionPermissionState,
+  HardwareWalletProvider,
+} from '../../../contexts/hardware-wallets';
 import PrepareBridgePage from './prepare-bridge-page';
 
 // Mock the bridge hooks
@@ -19,6 +27,23 @@ jest.mock('../hooks/useGasIncluded7702', () => ({
 jest.mock('../hooks/useIsSendBundleSupported', () => ({
   useIsSendBundleSupported: jest.fn().mockReturnValue(false),
 }));
+
+const mockUseHardwareWalletConfig = jest.fn();
+const mockUseHardwareWalletActions = jest.fn();
+const mockUseHardwareWalletState = jest.fn();
+
+jest.mock('../../../contexts/hardware-wallets', () => ({
+  ...jest.requireActual('../../../contexts/hardware-wallets'),
+  useHardwareWalletConfig: () => mockUseHardwareWalletConfig(),
+  useHardwareWalletActions: () => mockUseHardwareWalletActions(),
+  useHardwareWalletState: () => mockUseHardwareWalletState(),
+}));
+
+setBackgroundConnection({
+  resetState: async () => jest.fn(),
+  getStatePatches: async () => jest.fn(),
+  updateBridgeQuoteRequestParams: async () => jest.fn(),
+} as never);
 
 describe('PrepareBridgePage', () => {
   beforeAll(() => {
@@ -32,6 +57,20 @@ describe('PrepareBridgePage', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    mockUseHardwareWalletConfig.mockReturnValue({
+      isHardwareWalletAccount: false,
+      walletType: null,
+      hardwareConnectionPermissionState:
+        HardwareConnectionPermissionState.Unknown,
+      isWebHidAvailable: false,
+      isWebUsbAvailable: false,
+    });
+    mockUseHardwareWalletActions.mockReturnValue({
+      ensureDeviceReady: jest.fn().mockResolvedValue(true),
+    });
+    mockUseHardwareWalletState.mockReturnValue({
+      connectionState: { status: ConnectionStatus.Disconnected },
+    });
   });
 
   it('should render the component, with initial state', async () => {
@@ -44,7 +83,7 @@ describe('PrepareBridgePage', () => {
           chains: {
             [CHAIN_IDS.MAINNET]: {
               isActiveSrc: true,
-              isActiveDest: false,
+              isActiveDest: true,
             },
             [CHAIN_IDS.OPTIMISM]: {
               isActiveSrc: true,
@@ -68,7 +107,9 @@ describe('PrepareBridgePage', () => {
       },
     });
     const { container, getByRole, getByTestId } = renderWithProvider(
-      <PrepareBridgePage onOpenSettings={jest.fn()} />,
+      <HardwareWalletProvider>
+        <PrepareBridgePage onOpenSettings={jest.fn()} />
+      </HardwareWalletProvider>,
       configureStore(mockStore),
     );
 
@@ -103,13 +144,17 @@ describe('PrepareBridgePage', () => {
           chains: {
             [CHAIN_IDS.MAINNET]: {
               isActiveSrc: true,
-              isActiveDest: false,
+              isActiveDest: true,
             },
             [CHAIN_IDS.LINEA_MAINNET]: {
               isActiveSrc: true,
               isActiveDest: true,
             },
           },
+          chainRanking: [
+            { chainId: formatChainIdToCaip(CHAIN_IDS.MAINNET) },
+            { chainId: formatChainIdToCaip(CHAIN_IDS.LINEA_MAINNET) },
+          ],
         },
       },
       bridgeSliceOverrides: {
@@ -117,15 +162,24 @@ describe('PrepareBridgePage', () => {
         fromToken: {
           address: '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984',
           decimals: 6,
-          chainId: CHAIN_IDS.MAINNET,
+          symbol: 'USDC',
+          chainId: formatChainIdToCaip(CHAIN_IDS.MAINNET),
+          assetId: toAssetId(
+            '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984',
+            formatChainIdToCaip(CHAIN_IDS.MAINNET),
+          ),
         },
         toToken: {
           iconUrl: 'http://url',
           symbol: 'UNI',
           address: '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984',
           decimals: 6,
+          chainId: formatChainIdToCaip(CHAIN_IDS.LINEA_MAINNET),
+          assetId: toAssetId(
+            '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984',
+            formatChainIdToCaip(CHAIN_IDS.LINEA_MAINNET),
+          ),
         },
-        toChainId: toEvmCaipChainId(CHAIN_IDS.LINEA_MAINNET),
       },
       bridgeStateOverrides: {
         quoteRequest: {
@@ -139,14 +193,16 @@ describe('PrepareBridgePage', () => {
       },
     });
     const { container, getByRole, getByTestId } = renderWithProvider(
-      <PrepareBridgePage onOpenSettings={jest.fn()} />,
+      <HardwareWalletProvider>
+        <PrepareBridgePage onOpenSettings={jest.fn()} />
+      </HardwareWalletProvider>,
       configureStore(mockStore),
     );
 
     expect(container).toMatchSnapshot();
 
-    expect(getByRole('button', { name: /ETH/u })).toBeInTheDocument();
-    expect(getByRole('button', { name: /mUSD/u })).toBeInTheDocument();
+    expect(getByRole('button', { name: /USDC/u })).toBeInTheDocument();
+    expect(getByRole('button', { name: /UNI/u })).toBeInTheDocument();
 
     expect(getByTestId('from-amount')).toBeInTheDocument();
     expect(getByTestId('from-amount').closest('input')).not.toBeDisabled();
@@ -173,6 +229,14 @@ describe('PrepareBridgePage', () => {
   });
 
   it('should throw an error if token decimals are not defined', async () => {
+    jest
+      .spyOn(reactRouterUtils, 'useSearchParams')
+      .mockReturnValue([{ get: () => null }] as never);
+
+    const consoleSpy = jest
+      .spyOn(console, 'error')
+      .mockImplementation(() => undefined);
+
     const mockStore = createBridgeMockStore({
       featureFlagOverrides: {
         bridgeConfig: {
@@ -196,17 +260,22 @@ describe('PrepareBridgePage', () => {
           symbol: 'UNI',
           address: '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984',
           decimals: 6,
+          chainId: CHAIN_IDS.LINEA_MAINNET,
         },
-        toChainId: toEvmCaipChainId(CHAIN_IDS.LINEA_MAINNET),
       },
     });
 
     expect(() =>
-      renderWithProvider(
-        <PrepareBridgePage onOpenSettings={jest.fn()} />,
-        configureStore(mockStore),
+      render(
+        <ReduxProvider store={configureStore(mockStore)}>
+          <HardwareWalletProvider>
+            <PrepareBridgePage onOpenSettings={jest.fn()} />
+          </HardwareWalletProvider>
+        </ReduxProvider>,
       ),
     ).toThrow();
+
+    consoleSpy.mockRestore();
   });
 
   it('should validate src amount on change', async () => {
@@ -219,14 +288,16 @@ describe('PrepareBridgePage', () => {
           chains: {
             [CHAIN_IDS.MAINNET]: {
               isActiveSrc: true,
-              isActiveDest: false,
+              isActiveDest: true,
             },
           },
         },
       },
     });
     const { getByTestId } = renderWithProvider(
-      <PrepareBridgePage onOpenSettings={jest.fn()} />,
+      <HardwareWalletProvider>
+        <PrepareBridgePage onOpenSettings={jest.fn()} />
+      </HardwareWalletProvider>,
       configureStore(mockStore),
     );
 

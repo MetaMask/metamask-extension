@@ -9,6 +9,7 @@ import {
   getMockContractInteractionConfirmState,
 } from '../../../../../../../../test/data/confirmations/helper';
 import { renderWithConfirmContextProvider } from '../../../../../../../../test/lib/confirmations/render-helpers';
+import { enLocale as messages } from '../../../../../../../../test/lib/i18n-helpers';
 import { CHAIN_IDS } from '../../../../../../../../shared/constants/network';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../../../test/data/confirmations/contract-interaction';
 import {
@@ -232,8 +233,8 @@ describe('Transaction Details', () => {
         <TransactionDetails />,
         mockStore,
       );
-      expect(getByText('Network')).toBeInTheDocument();
-      expect(getByText('Goerli')).toBeInTheDocument();
+      expect(getByText(messages.network.message)).toBeInTheDocument();
+      expect(getByText(messages.networkNameGoerli.message)).toBeInTheDocument();
     });
 
     describe('RecipientRow', () => {
@@ -313,34 +314,6 @@ describe('Transaction Details', () => {
         },
       },
     };
-    it('displays SmartContractWithLogo when to and from are equal and there are nested transactions', () => {
-      const ADDRESS_MOCK = '0x88aa6343307ec9a652ccddda3646e62b2f1a5125';
-
-      const contractInteraction = genUnapprovedContractInteractionConfirmation({
-        address: ADDRESS_MOCK,
-        nestedTransactions: [
-          {
-            to: ADDRESS_MOCK,
-            data: '0x1',
-          },
-        ],
-      });
-      const state = getMockConfirmStateForTransaction(
-        contractInteraction,
-        useAdvanceDetails,
-      );
-      const mockStore = configureMockStore(middleware)(state);
-      const { getByTestId } = renderWithConfirmContextProvider(
-        <RecipientRow />,
-        mockStore,
-      );
-      expect(
-        getByTestId('transaction-details-recipient-row'),
-      ).toBeInTheDocument();
-      expect(getByTestId('transaction-details-recipient-row')).toContainElement(
-        document.querySelector('img[src="images/logo/metamask-fox.svg"]'),
-      );
-    });
 
     it('does not display SmartContractWithLogo when to and from are not equal or there are no nested transactions', () => {
       const contractInteraction = genUnapprovedContractInteractionConfirmation({

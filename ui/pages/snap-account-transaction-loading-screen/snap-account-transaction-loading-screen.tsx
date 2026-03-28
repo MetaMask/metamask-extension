@@ -14,7 +14,7 @@ const SnapAccountTransactionLoadingScreen = ({
   internalAccount: InternalAccount;
 }) => {
   const t = useI18nContext();
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
 
   useEffect(() => {
     trackEvent({

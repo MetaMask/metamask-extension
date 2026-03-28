@@ -24,6 +24,9 @@ import type {
   SeasonStateDto,
   MobileLoginDto,
   MobileOptinDto,
+  SiweLoginDto,
+  SiweJoinDto,
+  ChallengeDto,
 } from './rewards-controller.types';
 
 // Mock ExtensionPlatform
@@ -128,6 +131,10 @@ describe('RewardsDataService', () => {
         expect.any(Function),
       );
       expect(registerSpy).toHaveBeenCalledWith(
+        'RewardsDataService:siweLogin',
+        expect.any(Function),
+      );
+      expect(registerSpy).toHaveBeenCalledWith(
         'RewardsDataService:estimatePoints',
         expect.any(Function),
       );
@@ -152,6 +159,10 @@ describe('RewardsDataService', () => {
         expect.any(Function),
       );
       expect(registerSpy).toHaveBeenCalledWith(
+        'RewardsDataService:siweJoin',
+        expect.any(Function),
+      );
+      expect(registerSpy).toHaveBeenCalledWith(
         'RewardsDataService:getOptInStatus',
         expect.any(Function),
       );
@@ -161,6 +172,10 @@ describe('RewardsDataService', () => {
       );
       expect(registerSpy).toHaveBeenCalledWith(
         'RewardsDataService:getDiscoverSeasons',
+        expect.any(Function),
+      );
+      expect(registerSpy).toHaveBeenCalledWith(
+        'RewardsDataService:generateChallenge',
         expect.any(Function),
       );
     });
@@ -550,6 +565,23 @@ describe('RewardsDataService', () => {
       );
     });
 
+    it('should not throw AuthorizationFailedError on 403 without a subscription token', async () => {
+      service = createService();
+      const mockResponse = {
+        ok: false,
+        status: 403,
+        json: jest.fn().mockResolvedValue({ message: 'Forbidden' }),
+      } as unknown as Response;
+      mockFetch.mockResolvedValue(mockResponse);
+
+      await expect(service.login(mockLoginRequest)).rejects.toThrow(
+        'Login failed: 403',
+      );
+      await expect(service.login(mockLoginRequest)).rejects.not.toThrow(
+        AuthorizationFailedError,
+      );
+    });
+
     it('should throw AccountAlreadyRegisteredError when account is already registered (409)', async () => {
       service = createService();
       const mockResponse = {
@@ -831,13 +863,11 @@ describe('RewardsDataService', () => {
       ).rejects.toThrow('Get season state failed: 404');
     });
 
-    it('should throw AuthorizationFailedError when rewards authorization fails', async () => {
+    it('should throw AuthorizationFailedError when response status is 403', async () => {
       const mockResponse = {
         ok: false,
-        status: 401,
-        json: jest.fn().mockResolvedValue({
-          message: 'Rewards authorization failed',
-        }),
+        status: 403,
+        json: jest.fn().mockResolvedValue({}),
       } as unknown as Response;
       mockFetch.mockResolvedValue(mockResponse);
 
@@ -851,25 +881,7 @@ describe('RewardsDataService', () => {
       expect(caughtError).toBeInstanceOf(AuthorizationFailedError);
       const authError = caughtError as AuthorizationFailedError;
       expect(authError.name).toBe('AuthorizationFailedError');
-      expect(authError.message).toBe(
-        'Rewards authorization failed. Please login and try again.',
-      );
-    });
-
-    it('should detect authorization failure when message contains the phrase', async () => {
-      const mockResponse = {
-        ok: false,
-        status: 403,
-        json: jest.fn().mockResolvedValue({
-          message:
-            'Some other error: Rewards authorization failed due to expiry',
-        }),
-      } as unknown as Response;
-      mockFetch.mockResolvedValue(mockResponse);
-
-      await expect(
-        service.getSeasonStatus(mockSeasonId, mockSubscriptionId),
-      ).rejects.toBeInstanceOf(AuthorizationFailedError);
+      expect(authError.message).toBe('Authorization failed: 403');
     });
 
     it('should throw SeasonNotFoundError when season is not found', async () => {
@@ -1807,6 +1819,365 @@ describe('RewardsDataService', () => {
       await expect(service.getSeasonMetadata(mockSeasonId)).rejects.toThrow(
         'Network error',
       );
+    });
+  });
+
+  describe('siweLogin', () => {
+    const mockSiweLoginBody: SiweLoginDto = {
+      challengeId: '019717cb-7d10-771e-8052-10c9be058a86',
+      signature: '0xabcdef1234567890',
+    };
+
+    const mockLoginResponse: LoginResponseDto = {
+      sessionId: 'test-session-id',
+      subscription: {
+        id: 'test-subscription-id',
+        referralCode: 'test-referral-code',
+        accounts: [],
+        createdAt: new Date().toISOString(),
+      },
+    };
+
+    beforeEach(() => {
+      service = createService();
+    });
+
+    it('successfully performs SIWE login', async () => {
+      const mockResponse = {
+        ok: true,
+        json: jest.fn().mockResolvedValue(mockLoginResponse),
+      } as unknown as Response;
+      mockFetch.mockResolvedValue(mockResponse);
+
+      const result = await service.siweLogin(mockSiweLoginBody);
+
+      expect(result).toEqual(mockLoginResponse);
+      expect(mockFetch).toHaveBeenCalledWith(
+        `${REWARDS_API_URL.UAT}/auth/login`,
+        expect.objectContaining({
+          method: 'POST',
+          body: JSON.stringify(mockSiweLoginBody),
+          headers: expect.objectContaining({
+            'Content-Type': 'application/json',
+          }),
+        }),
+      );
+    });
+
+    it('successfully performs SIWE login with referral code', async () => {
+      const bodyWithReferral: SiweLoginDto = {
+        ...mockSiweLoginBody,
+        referralCode: 'REF123',
+      };
+
+      const mockResponse = {
+        ok: true,
+        json: jest.fn().mockResolvedValue(mockLoginResponse),
+      } as unknown as Response;
+      mockFetch.mockResolvedValue(mockResponse);
+
+      const result = await service.siweLogin(bodyWithReferral);
+
+      expect(result).toEqual(mockLoginResponse);
+      expect(mockFetch).toHaveBeenCalledWith(
+        expect.stringContaining('/auth/login'),
+        expect.objectContaining({
+          body: JSON.stringify(bodyWithReferral),
+        }),
+      );
+    });
+
+    it('throws AccountAlreadyRegisteredError when account is already registered (409)', async () => {
+      const mockResponse = {
+        ok: false,
+        status: 409,
+        json: jest.fn().mockResolvedValue({
+          message: 'Account is already registered',
+        }),
+      } as unknown as Response;
+      mockFetch.mockResolvedValue(mockResponse);
+
+      await expect(service.siweLogin(mockSiweLoginBody)).rejects.toThrow(
+        AccountAlreadyRegisteredError,
+      );
+    });
+
+    it('throws error for failed SIWE login', async () => {
+      const mockResponse = {
+        ok: false,
+        status: 401,
+        json: jest.fn().mockResolvedValue({ message: 'Unauthorized' }),
+      } as unknown as Response;
+      mockFetch.mockResolvedValue(mockResponse);
+
+      await expect(service.siweLogin(mockSiweLoginBody)).rejects.toThrow(
+        'SIWE login failed: 401',
+      );
+    });
+
+    it('handles network errors', async () => {
+      mockFetch.mockRejectedValue(new Error('Network error'));
+
+      await expect(service.siweLogin(mockSiweLoginBody)).rejects.toThrow(
+        'Network error',
+      );
+    });
+
+    it('handles server errors', async () => {
+      const mockResponse = {
+        ok: false,
+        status: 500,
+        json: jest.fn().mockResolvedValue({ message: 'Internal server error' }),
+      } as unknown as Response;
+      mockFetch.mockResolvedValue(mockResponse);
+
+      await expect(service.siweLogin(mockSiweLoginBody)).rejects.toThrow(
+        'SIWE login failed: 500',
+      );
+    });
+  });
+
+  describe('siweJoin', () => {
+    const mockSiweJoinBody: SiweJoinDto = {
+      challengeId: '019717cb-7d10-771e-8052-10c9be058a86',
+      signature: '0xabcdef1234567890',
+    };
+
+    const mockSubscriptionToken = 'test-subscription-token';
+
+    const mockSubscriptionResponse = {
+      id: 'subscription-id',
+      referralCode: 'REF123',
+      accounts: ['0x1234567890123456789012345678901234567890'],
+      createdAt: new Date().toISOString(),
+    };
+
+    beforeEach(() => {
+      service = createService();
+    });
+
+    it('successfully joins account to subscription via SIWE', async () => {
+      const mockResponse = {
+        ok: true,
+        json: jest.fn().mockResolvedValue(mockSubscriptionResponse),
+      } as unknown as Response;
+      mockFetch.mockResolvedValue(mockResponse);
+
+      const result = await service.siweJoin(
+        mockSiweJoinBody,
+        mockSubscriptionToken,
+      );
+
+      expect(result).toEqual(mockSubscriptionResponse);
+      expect(mockFetch).toHaveBeenCalledWith(
+        `${REWARDS_API_URL.UAT}/wr/subscriptions/join`,
+        expect.objectContaining({
+          method: 'POST',
+          body: JSON.stringify(mockSiweJoinBody),
+          headers: expect.objectContaining({
+            'rewards-access-token': mockSubscriptionToken,
+          }),
+        }),
+      );
+    });
+
+    it('throws AccountAlreadyRegisteredError when account is already registered (409)', async () => {
+      const mockResponse = {
+        ok: false,
+        status: 409,
+        json: jest.fn().mockResolvedValue({
+          message: 'Account is already registered',
+        }),
+      } as unknown as Response;
+      mockFetch.mockResolvedValue(mockResponse);
+
+      await expect(
+        service.siweJoin(mockSiweJoinBody, mockSubscriptionToken),
+      ).rejects.toThrow(AccountAlreadyRegisteredError);
+    });
+
+    it('throws error for failed SIWE join', async () => {
+      const mockResponse = {
+        ok: false,
+        status: 400,
+        json: jest.fn().mockResolvedValue({ message: 'Bad request' }),
+      } as unknown as Response;
+      mockFetch.mockResolvedValue(mockResponse);
+
+      await expect(
+        service.siweJoin(mockSiweJoinBody, mockSubscriptionToken),
+      ).rejects.toThrow('SIWE join failed: 400 Bad request');
+    });
+
+    it('handles server errors', async () => {
+      const mockResponse = {
+        ok: false,
+        status: 500,
+        json: jest.fn().mockResolvedValue({ message: 'Server error' }),
+      } as unknown as Response;
+      mockFetch.mockResolvedValue(mockResponse);
+
+      await expect(
+        service.siweJoin(mockSiweJoinBody, mockSubscriptionToken),
+      ).rejects.toThrow('SIWE join failed: 500 Server error');
+    });
+
+    it('handles network errors', async () => {
+      mockFetch.mockRejectedValue(new Error('Network error'));
+
+      await expect(
+        service.siweJoin(mockSiweJoinBody, mockSubscriptionToken),
+      ).rejects.toThrow('Network error');
+    });
+
+    it('throws AuthorizationFailedError on 403 response', async () => {
+      const mockResponse = {
+        ok: false,
+        status: 403,
+        json: jest.fn().mockResolvedValue({}),
+      } as unknown as Response;
+      mockFetch.mockResolvedValue(mockResponse);
+
+      await expect(
+        service.siweJoin(mockSiweJoinBody, mockSubscriptionToken),
+      ).rejects.toBeInstanceOf(AuthorizationFailedError);
+    });
+  });
+
+  describe('generateChallenge', () => {
+    const mockAddress = '0xbd7d160C18b51527fEBd3D6B667143B5C519C32E';
+
+    const mockChallengeResponse: Omit<ChallengeDto, 'nonce'> & {
+      nonce: string;
+    } = {
+      id: '019717cb-7d10-771e-8052-10c9be058a86',
+      address: mockAddress,
+      domain: 'example.com',
+      nonce: '1234567890',
+      issuedAt: '2025-01-01T00:00:00.000Z',
+      expirationTime: '2025-01-01T01:00:00.000Z',
+      message:
+        'example.com wants you to sign in with your Ethereum account: 0xbd7d160C18b51527fEBd3D6B667143B5C519C32E',
+    };
+
+    beforeEach(() => {
+      service = createService();
+    });
+
+    it('successfully generates a challenge', async () => {
+      const mockResponse = {
+        ok: true,
+        json: jest.fn().mockResolvedValue(mockChallengeResponse),
+      } as unknown as Response;
+      mockFetch.mockResolvedValue(mockResponse);
+
+      const result = await service.generateChallenge({ address: mockAddress });
+
+      expect(result.id).toBe(mockChallengeResponse.id);
+      expect(result.address).toBe(mockAddress);
+      expect(result.domain).toBe(mockChallengeResponse.domain);
+      expect(result.nonce).toBe(BigInt(mockChallengeResponse.nonce));
+      expect(result.issuedAt).toBe(mockChallengeResponse.issuedAt);
+      expect(result.expirationTime).toBe(mockChallengeResponse.expirationTime);
+      expect(result.message).toBe(mockChallengeResponse.message);
+
+      expect(mockFetch).toHaveBeenCalledWith(
+        `${REWARDS_API_URL.UAT}/auth/challenge/generate`,
+        expect.objectContaining({
+          method: 'POST',
+          body: JSON.stringify({ address: mockAddress }),
+          headers: expect.objectContaining({
+            'Content-Type': 'application/json',
+          }),
+        }),
+      );
+    });
+
+    it('converts string nonce to BigInt', async () => {
+      const mockResponse = {
+        ok: true,
+        json: jest.fn().mockResolvedValue({
+          ...mockChallengeResponse,
+          nonce: '9876543210123456789',
+        }),
+      } as unknown as Response;
+      mockFetch.mockResolvedValue(mockResponse);
+
+      const result = await service.generateChallenge({ address: mockAddress });
+
+      expect(typeof result.nonce).toBe('bigint');
+      expect(result.nonce).toBe(BigInt('9876543210123456789'));
+    });
+
+    it('preserves BigInt nonce if already BigInt', async () => {
+      const mockResponse = {
+        ok: true,
+        json: jest.fn().mockResolvedValue({
+          ...mockChallengeResponse,
+          nonce: BigInt('1234567890'),
+        }),
+      } as unknown as Response;
+      mockFetch.mockResolvedValue(mockResponse);
+
+      const result = await service.generateChallenge({ address: mockAddress });
+
+      expect(typeof result.nonce).toBe('bigint');
+    });
+
+    it('throws error for failed challenge generation', async () => {
+      const mockResponse = {
+        ok: false,
+        status: 400,
+      } as Response;
+      mockFetch.mockResolvedValue(mockResponse);
+
+      await expect(
+        service.generateChallenge({ address: mockAddress }),
+      ).rejects.toThrow('Generate challenge failed: 400');
+    });
+
+    it('handles server errors', async () => {
+      const mockResponse = {
+        ok: false,
+        status: 500,
+      } as Response;
+      mockFetch.mockResolvedValue(mockResponse);
+
+      await expect(
+        service.generateChallenge({ address: mockAddress }),
+      ).rejects.toThrow('Generate challenge failed: 500');
+    });
+
+    it('handles network errors', async () => {
+      mockFetch.mockRejectedValue(new Error('Network error'));
+
+      await expect(
+        service.generateChallenge({ address: mockAddress }),
+      ).rejects.toThrow('Network error');
+    });
+  });
+
+  describe('fetchGeoLocation error handling', () => {
+    beforeEach(() => {
+      service = createService();
+    });
+
+    it('returns UNKNOWN on network failure', async () => {
+      mockFetch.mockRejectedValue(new Error('Network error'));
+
+      const result = await service.fetchGeoLocation();
+
+      expect(result).toBe('UNKNOWN');
+    });
+
+    it('returns UNKNOWN when fetch throws an exception', async () => {
+      mockFetch.mockImplementation(() => {
+        throw new Error('Fetch exception');
+      });
+
+      const result = await service.fetchGeoLocation();
+
+      expect(result).toBe('UNKNOWN');
     });
   });
 });

@@ -48,6 +48,10 @@ export const AccountTrackerControllerInit: ControllerInitFunction<
         : [];
     },
     fetchingEnabled: () => onboardingController().state.completedOnboarding,
+    isOnboarded: () => {
+      const { completedOnboarding } = onboardingController().state;
+      return completedOnboarding;
+    },
   });
 
   return {

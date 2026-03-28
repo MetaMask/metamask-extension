@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
-import { HIGH_FEE_WARNING_MULTIPLIER } from '../../../../send-legacy/send.constants';
+import { HIGH_FEE_WARNING_MULTIPLIER } from '../../../../send-utils/send.constants';
 import {
   EditGasModes,
   PriorityLevels,
@@ -17,8 +17,8 @@ import FormField from '../../../../../../components/ui/form-field';
 
 import { useAdvancedGasFeePopoverContext } from '../../context';
 import AdvancedGasFeeInputSubtext from '../../advanced-gas-fee-input-subtext';
-import { decGWEIToHexWEI } from '../../../../../../../shared/modules/conversion.utils';
-import { Numeric } from '../../../../../../../shared/modules/Numeric';
+import { decGWEIToHexWEI } from '../../../../../../../shared/lib/conversion.utils';
+import { Numeric } from '../../../../../../../shared/lib/Numeric';
 import { IGNORE_GAS_LIMIT_CHAIN_IDS } from '../../../../constants';
 
 const validateBaseFee = (
@@ -96,6 +96,7 @@ const BaseFeeInput = () => {
   const [baseFeeInPrimaryCurrency] = useCurrencyDisplay(
     decGWEIToHexWEI(baseFee * gasLimit),
     { currency, numberOfDecimals },
+    chainId,
   );
 
   const updateBaseFee = useCallback(

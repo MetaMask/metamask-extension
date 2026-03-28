@@ -1,6 +1,6 @@
 import { createSelector } from 'reselect';
 
-export const selectFragments = (state) => state.metamask.fragments;
+const selectFragments = (state) => state.metamask.fragments;
 
 // return true if user has set their marketing consent preference or if they are a social login user
 export const getDataCollectionForMarketing = (state) =>

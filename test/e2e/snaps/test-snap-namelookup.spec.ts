@@ -1,16 +1,14 @@
 import { Mockttp } from 'mockttp';
 
-import { CHAIN_IDS } from '../../../shared/constants/network';
 import { Driver } from '../webdriver/driver';
 import HomePage from '../page-objects/pages/home/homepage';
-import FixtureBuilder from '../fixtures/fixture-builder';
-import { loginWithoutBalanceValidation } from '../page-objects/flows/login.flow';
-import { withFixtures, WINDOW_TITLES } from '../helpers';
+import FixtureBuilderV2 from '../fixtures/fixture-builder-v2';
+import { login } from '../page-objects/flows/login.flow';
+import { DAPP_PATH, WINDOW_TITLES } from '../constants';
+import { withFixtures } from '../helpers';
 import { openTestSnapClickButtonAndInstall } from '../page-objects/flows/install-test-snap.flow';
-import { mockSendRedesignFeatureFlag } from '../tests/send/common';
 import { mockLookupSnap } from '../mock-response-data/snaps/snap-binary-mocks';
 import SendPage from '../page-objects/pages/send/send-page';
-import { DAPP_PATH } from '../constants';
 
 describe('Name lookup', function () {
   it('validate the recipient address appears in the send flow', async function () {
@@ -19,18 +17,17 @@ describe('Name lookup', function () {
         dappOptions: {
           customDappPaths: [DAPP_PATH.TEST_SNAPS],
         },
-        forceBip44Version: false,
-        fixtures: new FixtureBuilder({
-          inputChainId: CHAIN_IDS.MAINNET,
-        }).build(),
+        fixtures: new FixtureBuilderV2()
+          .withSelectedNetwork()
+          .withSnapsPrivacyWarningAlreadyShown()
+          .build(),
         testSpecificMock: async (mockServer: Mockttp) => [
           await mockLookupSnap(mockServer),
-          await mockSendRedesignFeatureFlag(mockServer),
         ],
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithoutBalanceValidation(driver);
+        await login(driver, { validateBalance: false });
 
         const homePage = new HomePage(driver);
         const sendPage = new SendPage(driver);

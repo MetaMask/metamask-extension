@@ -1,19 +1,26 @@
 import { openTestSnapClickButtonAndInstall } from '../../page-objects/flows/install-test-snap.flow';
 import { DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS } from '../multichain-api/testHelpers';
-import { DAPP_ONE_URL, WINDOW_TITLES } from '../../helpers';
-import { withSolanaAccountSnap } from '../../tests/solana/common-solana';
-import ConnectAccountConfirmation from '../../page-objects/pages/confirmations/redesign/connect-account-confirmation';
+import { DAPP_ONE_URL, WINDOW_TITLES } from '../../constants';
+import { buildSolanaTestSpecificMock } from '../../tests/solana/common-solana';
+import { withFixtures } from '../../helpers';
+import FixtureBuilder from '../../fixtures/fixture-builder';
+import { login } from '../../page-objects/flows/login.flow';
+import ConnectAccountConfirmation from '../../page-objects/pages/confirmations/connect-account-confirmation';
 import TestDappMultichain from '../../page-objects/pages/test-dapp-multichain';
 
 describe('Test Protocol Snaps', function () {
   it('can call getBlockHeight exposed by Snap', async function () {
-    await withSolanaAccountSnap(
+    await withFixtures(
       {
+        fixtures: new FixtureBuilder().build(),
         title: this.test?.fullTitle(),
-        withProtocolSnap: true,
         ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
+        testSpecificMock: buildSolanaTestSpecificMock({
+          withProtocolSnap: true,
+        }),
       },
-      async (driver, mockServer, extensionId) => {
+      async ({ driver, mockServer, extensionId }) => {
+        await login(driver);
         const mockBlockHeight = 368556246;
         await mockServer
           .forPost('https://api.devnet.solana.com/')

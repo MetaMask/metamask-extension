@@ -15,6 +15,8 @@ export default class ShieldClaimPage {
     text: accountName,
   });
 
+  private readonly backButton = '[data-testid="settings-back-button"]';
+
   private readonly claimErrorToast = '[data-testid="claim-submit-toast-error"]';
 
   private readonly claimSuccessToast = {
@@ -22,11 +24,13 @@ export default class ShieldClaimPage {
     tag: 'p',
   };
 
-  private readonly descriptionError =
-    '[data-testid="shield-claim-description-error"]';
+  private readonly deleteDraftButton =
+    '[data-testid="shield-claim-delete-draft-button"]';
 
   private readonly descriptionTextarea =
     '[data-testid="shield-claim-description-textarea"]';
+
+  private readonly draftSavedToast = '[data-testid="claim-draft-saved-toast"]';
 
   private readonly emailInput = '[data-testid="shield-claim-email-input"]';
 
@@ -48,6 +52,9 @@ export default class ShieldClaimPage {
 
   private readonly reimbursementWalletAddressInput =
     '[data-testid="shield-claim-reimbursement-wallet-address-input"]';
+
+  private readonly saveDraftButton =
+    '[data-testid="shield-claim-save-draft-button"]';
 
   private readonly submitButton = '[data-testid="shield-claim-submit-button"]';
 
@@ -310,5 +317,36 @@ export default class ShieldClaimPage {
     await this.clickSubmitButton();
 
     console.log('Claim form submitted');
+  }
+
+  /**
+   * Click the back button to navigate back to the claims list
+   */
+  async clickBackButton(): Promise<void> {
+    console.log('Clicking back button on claim detail page');
+    await this.driver.clickElement(this.backButton);
+  }
+
+  async clickDeleteDraftButton(): Promise<void> {
+    console.log('Clicking delete draft button');
+    await this.driver.clickElement(this.deleteDraftButton);
+  }
+
+  async clickSaveDraftButton(): Promise<void> {
+    console.log('Clicking save draft button');
+    await this.driver.clickElement(this.saveDraftButton);
+  }
+
+  async checkDraftSavedToast(): Promise<void> {
+    console.log('Checking draft saved toast is displayed');
+    await this.driver.waitForSelector(this.draftSavedToast);
+  }
+
+  async waitForDraftSavedToastToDisappear(): Promise<void> {
+    console.log('Waiting for draft saved toast to disappear');
+    await this.driver.assertElementNotPresent(this.draftSavedToast, {
+      waitAtLeastGuard: 1000,
+      timeout: 10000,
+    });
   }
 }

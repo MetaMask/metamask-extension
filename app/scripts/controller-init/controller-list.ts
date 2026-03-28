@@ -30,6 +30,7 @@ import {
   TokenRatesController,
   TokensController,
 } from '@metamask/assets-controllers';
+import { AssetsController } from '@metamask/assets-controller';
 import { MultichainNetworkController } from '@metamask/multichain-network-controller';
 import { MultichainTransactionsController } from '@metamask/multichain-transactions-controller';
 import {
@@ -70,7 +71,7 @@ import { PermissionLogController } from '@metamask/permission-log-controller';
 import { AnnouncementController } from '@metamask/announcement-controller';
 import { PhishingController } from '@metamask/phishing-controller';
 import { LoggingController } from '@metamask/logging-controller';
-import { ErrorReportingService } from '@metamask/error-reporting-service';
+import { StorageService } from '@metamask/storage-service';
 import { AddressBookController } from '@metamask/address-book-controller';
 import {
   DecryptMessageManager,
@@ -83,13 +84,15 @@ import {
   BackendWebSocketService,
 } from '@metamask/core-backend';
 import { ClaimsController, ClaimsService } from '@metamask/claims-controller';
+import { ClientController } from '@metamask/client-controller';
+import { ConnectivityController } from '@metamask/connectivity-controller';
 import {
   ProfileMetricsController,
   ProfileMetricsService,
 } from '@metamask/profile-metrics-controller';
+import { PerpsController } from '@metamask/perps-controller';
 import OnboardingController from '../controllers/onboarding';
 import { PreferencesController } from '../controllers/preferences-controller';
-import SwapsController from '../controllers/swaps';
 import { InstitutionalSnapController } from '../controllers/institutional-snap/InstitutionalSnapController';
 import { NetworkOrderController } from '../controllers/network-order';
 import OAuthService from '../services/oauth/oauth-service';
@@ -106,6 +109,7 @@ import DecryptMessageController from '../controllers/decrypt-message';
 import EncryptionPublicKeyController from '../controllers/encryption-public-key';
 import { RewardsDataService } from '../controllers/rewards/rewards-data-service';
 import { RewardsController } from '../controllers/rewards/rewards-controller';
+import { StaticAssetsController } from '../controllers/static-assets-controller';
 
 /**
  * Union of all controllers supporting or required by modular initialization.
@@ -120,6 +124,7 @@ export type Controller =
   | AppMetadataController
   | ApprovalController
   | AppStateController
+  | AssetsController
   | AuthenticationController
   | BridgeController
   | BridgeStatusController
@@ -133,7 +138,7 @@ export type Controller =
   | EncryptionPublicKeyController
   | EncryptionPublicKeyManager
   | EnsController
-  | ErrorReportingService
+  | StorageService
   | ExecutionService
   | GasFeeController
   | GatorPermissionsController
@@ -160,6 +165,7 @@ export type Controller =
       CaveatSpecificationConstraint
     >
   | PermissionLogController
+  | PerpsController
   | PhishingController
   | PPOMController
   | PreferencesController
@@ -181,7 +187,6 @@ export type Controller =
   | SnapsNameProvider
   | SubjectMetadataController
   | SubscriptionService
-  | SwapsController
   | TokenBalancesController
   | TokenDetectionController
   | TokenListController
@@ -202,8 +207,11 @@ export type Controller =
   | MultichainAccountService
   | NetworkEnablementController
   | ClaimsService
+  | ClientController
+  | StaticAssetsController
   | ProfileMetricsController
-  | ProfileMetricsService;
+  | ProfileMetricsService
+  | ConnectivityController;
 
 /**
  * Flat state object for all controllers supporting or required by modular initialization.
@@ -218,10 +226,12 @@ export type ControllerFlatState = AccountOrderController['state'] &
   AppMetadataController['state'] &
   ApprovalController['state'] &
   AppStateController['state'] &
+  AssetsController['state'] &
   AuthenticationController['state'] &
   BridgeController['state'] &
   BridgeStatusController['state'] &
   ClaimsController['state'] &
+  ClientController['state'] &
   CronjobController['state'] &
   CurrencyRateController['state'] &
   DeFiPositionsController['state'] &
@@ -248,6 +258,7 @@ export type ControllerFlatState = AccountOrderController['state'] &
     CaveatSpecificationConstraint
   >['state'] &
   PermissionLogController['state'] &
+  PerpsController['state'] &
   PhishingController['state'] &
   PPOMController['state'] &
   PreferencesController['state'] &
@@ -263,11 +274,11 @@ export type ControllerFlatState = AccountOrderController['state'] &
   SnapInsightsController['state'] &
   SnapInterfaceController['state'] &
   SubscriptionController['state'] &
-  SwapsController['state'] &
   TokenBalancesController['state'] &
   TokenDetectionController['state'] &
   TokenListController['state'] &
   TokensController['state'] &
+  StaticAssetsController['state'] &
   TransactionController['state'] &
   TransactionPayController['state'] &
   UserOperationController['state'] &

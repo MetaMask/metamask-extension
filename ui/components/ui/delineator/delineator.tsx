@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from 'react';
-import classnames from 'classnames';
+import classnames from 'clsx';
 import {
   BorderRadius,
   AlignItems,
@@ -127,7 +127,7 @@ const Container = ({
       className="delineator__wrapper"
       display={Display.Flex}
       flexDirection={FlexDirection.Column}
-      backgroundColor={BackgroundColor.backgroundDefault}
+      backgroundColor={BackgroundColor.backgroundSection}
       borderRadius={BorderRadius.LG}
       {...wrapperBoxProps}
     >

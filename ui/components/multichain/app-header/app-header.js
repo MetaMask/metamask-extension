@@ -1,5 +1,5 @@
 import React, { useCallback, useContext, useRef } from 'react';
-import classnames from 'classnames';
+import classnames from 'clsx';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { matchPath } from 'react-router-dom';
@@ -10,7 +10,8 @@ import {
 } from '../../../../shared/constants/metametrics';
 import {
   CONFIRM_TRANSACTION_ROUTE,
-  SWAPS_ROUTE,
+  SEND_ROUTE,
+  CROSS_CHAIN_SWAP_ROUTE,
 } from '../../../helpers/constants/routes';
 
 import {
@@ -25,23 +26,22 @@ import { getUnapprovedTransactions } from '../../../selectors';
 
 import { toggleNetworkMenu } from '../../../store/actions';
 // TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
+// eslint-disable-next-line import-x/no-restricted-paths
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import {
   ENVIRONMENT_TYPE_POPUP,
   ENVIRONMENT_TYPE_SIDEPANEL,
 } from '../../../../shared/constants/app';
 import { getIsUnlocked } from '../../../ducks/metamask/metamask';
-import { SEND_STAGES, getSendStage } from '../../../ducks/send';
 import { getSelectedMultichainNetworkConfiguration } from '../../../selectors/multichain/networks';
-import { getNetworkIcon } from '../../../../shared/modules/network.utils';
+import { getNetworkIcon } from '../../../../shared/lib/network.utils';
 import { MultichainMetaFoxLogo } from './multichain-meta-fox-logo';
 import { AppHeaderContainer } from './app-header-container';
 import { AppHeaderUnlockedContent } from './app-header-unlocked-content';
 import { AppHeaderLockedContent } from './app-header-locked-content';
 
 export const AppHeader = ({ location }) => {
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
   const menuRef = useRef(null);
   const isUnlocked = useSelector(getIsUnlocked);
 
@@ -60,23 +60,23 @@ export const AppHeader = ({ location }) => {
 
   // Disable the network and account pickers if the user is in
   // a critical flow
-  const sendStage = useSelector(getSendStage);
-  const isTransactionEditPage = [
-    SEND_STAGES.EDIT,
-    SEND_STAGES.DRAFT,
-    SEND_STAGES.ADD_RECIPIENT,
-  ].includes(sendStage);
   const isConfirmationPage = Boolean(
     matchPath(
       {
         path: CONFIRM_TRANSACTION_ROUTE,
         end: false,
       },
-      location.pathname,
+      location?.pathname || '',
     ),
   );
   const isSwapsPage = Boolean(
-    matchPath({ path: SWAPS_ROUTE, end: false }, location.pathname),
+    matchPath(
+      { path: CROSS_CHAIN_SWAP_ROUTE, end: false },
+      location?.pathname || '',
+    ),
+  );
+  const isSendPage = Boolean(
+    matchPath({ path: SEND_ROUTE, end: false }, location?.pathname || ''),
   );
 
   const unapprovedTransactions = useSelector(getUnapprovedTransactions);
@@ -88,8 +88,8 @@ export const AppHeader = ({ location }) => {
 
   const disableNetworkPicker =
     isSwapsPage ||
-    isTransactionEditPage ||
     isConfirmationPage ||
+    isSendPage ||
     hasUnapprovedTransactions;
 
   // Callback for network dropdown

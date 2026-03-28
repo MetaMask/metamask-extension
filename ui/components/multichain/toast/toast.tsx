@@ -37,6 +37,7 @@ export const Toast = ({
   onClose,
   borderRadius,
   textVariant,
+  textClassName,
   autoHideTime,
   onAutoHideToast,
   dataTestId,
@@ -52,6 +53,8 @@ export const Toast = ({
   onClose: () => void;
   borderRadius?: BorderRadius;
   textVariant?: TextVariant;
+  /** Tailwind classes for the message text (e.g. "text-base") */
+  textClassName?: string;
   autoHideTime?: number;
   onAutoHideToast?: () => void;
   dataTestId?: string;
@@ -102,11 +105,19 @@ export const Toast = ({
         data-testid={dataTestId}
         {...contentProps}
       >
-        {startAdornment}
+        {startAdornment && (
+          <Box className="flex-shrink-0">{startAdornment}</Box>
+        )}
         <Box>
           <Text
-            className="toast-text"
-            variant={textVariant || TextVariant.bodyMdMedium}
+            className={
+              textClassName ? `toast-text ${textClassName}` : 'toast-text'
+            }
+            variant={
+              textClassName
+                ? undefined
+                : textVariant || TextVariant.bodyMdMedium
+            }
           >
             {text}
           </Text>

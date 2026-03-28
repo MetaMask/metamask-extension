@@ -1,6 +1,7 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { BigNumber } from 'bignumber.js';
 import { useSelector } from 'react-redux';
+import { Hex } from '@metamask/utils';
 import { calcTokenAmount } from '../../../../../../../shared/lib/transactions-controller-utils';
 import useTokenExchangeRate from '../../../../../../components/app/currency-input/hooks/useTokenExchangeRate';
 import { getIntlLocale } from '../../../../../../ducks/locale/locale';
@@ -12,7 +13,10 @@ import { useTokenTransactionData } from './useTokenTransactionData';
 export const useTokenValues = (transactionMeta: TransactionMeta) => {
   const locale = useSelector(getIntlLocale);
   const parsedTransactionData = useTokenTransactionData();
-  const exchangeRate = useTokenExchangeRate(transactionMeta?.txParams?.to);
+  const exchangeRate = useTokenExchangeRate(
+    transactionMeta?.txParams?.to,
+    transactionMeta?.chainId as Hex,
+  );
   const fiatFormatter = useFiatFormatter();
 
   const { decimals } = useAssetDetails(
@@ -47,10 +51,18 @@ export const useTokenValues = (transactionMeta: TransactionMeta) => {
     new BigNumber(decodedTransferValue),
   );
 
+  // Fiat value is pending if token data hasn't loaded yet.
+  // Note: We don't include !exchangeRate here because exchange rates can be
+  // legitimately unavailable (API failed or token not supported), and we don't
+  // want to show a skeleton indefinitely. When exchange rate is unavailable,
+  // fiatDisplayValue will be undefined and nothing will render.
+  const pending = decimals === undefined || !value;
+
   return {
     decodedTransferValue,
     displayTransferValue,
     fiatDisplayValue,
     fiatValue,
+    pending,
   };
 };

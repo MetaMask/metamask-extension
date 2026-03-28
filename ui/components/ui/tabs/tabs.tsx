@@ -6,17 +6,38 @@ import {
   BoxJustifyContent,
   twMerge,
 } from '@metamask/design-system-react';
+import { getBrowserName } from '../../../../shared/lib/browser-runtime.utils';
+import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
 import { TabsProps, TabChild } from './tabs.types';
 
+async function startTransition(
+  direction: 'forward' | 'backward',
+  update: () => void,
+) {
+  if (document.startViewTransition && getBrowserName() !== PLATFORM_FIREFOX) {
+    document.documentElement.dataset.tabTransitionDirection = direction;
+
+    const transition = document.startViewTransition(update);
+
+    try {
+      await transition.finished;
+    } finally {
+      delete document.documentElement.dataset.tabTransitionDirection;
+    }
+  } else {
+    update();
+  }
+}
+
 export const Tabs = <TKey extends string = string>({
-  defaultActiveTabKey,
-  activeTabKey,
+  activeTab,
   onTabClick,
   children,
   subHeader = null,
   tabListProps = {},
   tabContentProps = {},
   className = '',
+  animated,
   ...props
 }: TabsProps<TKey>) => {
   // Helper function to get valid children, filtering out null/undefined/false values
@@ -47,20 +68,30 @@ export const Tabs = <TKey extends string = string>({
   );
 
   const [activeTabIndex, setActiveTabIndex] = useState<number>(() =>
-    Math.max(findChildByKey(defaultActiveTabKey), 0),
+    Math.max(findChildByKey(activeTab), 0),
   );
 
   useEffect(() => {
-    const childIndex = findChildByKey(activeTabKey);
+    const childIndex = findChildByKey(activeTab);
     if (childIndex >= 0 && activeTabIndex !== childIndex) {
       setActiveTabIndex(childIndex);
     }
-  }, [activeTabKey, findChildByKey, activeTabIndex]);
+  }, [activeTab, findChildByKey, activeTabIndex]);
 
   const handleTabClick = (tabIndex: number, tabKey: TKey): void => {
     if (tabIndex !== activeTabIndex) {
-      setActiveTabIndex(tabIndex);
-      onTabClick?.(tabKey);
+      const direction = tabIndex > activeTabIndex ? 'forward' : 'backward';
+
+      const applyUpdate = () => {
+        setActiveTabIndex(tabIndex);
+        onTabClick?.(tabKey);
+      };
+
+      if (animated) {
+        startTransition(direction, applyUpdate);
+      } else {
+        applyUpdate();
+      }
     }
   };
 
@@ -109,7 +140,14 @@ export const Tabs = <TKey extends string = string>({
         {renderTabs()}
       </Box>
       {subHeader}
-      <Box role="tabpanel" {...tabContentProps}>
+      <Box
+        role="tabpanel"
+        {...tabContentProps}
+        style={{
+          ...tabContentProps?.style,
+          ...(animated ? { viewTransitionName: 'tab-content' } : undefined),
+        }}
+      >
         {renderActiveTabContent()}
       </Box>
     </Box>

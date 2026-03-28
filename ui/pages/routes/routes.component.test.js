@@ -2,7 +2,6 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { BtcAccountType, SolAccountType } from '@metamask/keyring-api';
-import { SEND_STAGES } from '../../ducks/send';
 import {
   CONFIRMATION_V_NEXT_ROUTE,
   DEFAULT_ROUTE,
@@ -61,12 +60,6 @@ jest.mock('react-redux', () => {
   };
 });
 
-jest.mock('../../ducks/send', () => ({
-  ...jest.requireActual('../../ducks/send'),
-  resetSendState: () => ({ type: 'XXX' }),
-  getGasPrice: jest.fn(),
-}));
-
 jest.mock('../../ducks/domains', () => ({
   ...jest.requireActual('../../ducks/domains'),
   initializeDomainSlice: () => ({ type: 'XXX' }),
@@ -87,13 +80,77 @@ jest.mock(
   () => () => mockFetchWithCache,
 );
 
+jest.mock('../../hooks/musd', () => ({
+  useMusdCtaVisibility: () => ({
+    shouldShowTokenListItemCta: jest.fn().mockReturnValue(false),
+    shouldShowAssetOverviewCta: jest.fn().mockReturnValue(false),
+    shouldShowBuyGetMusdCta: jest.fn().mockReturnValue({
+      shouldShowCta: false,
+      selectedChainId: null,
+      isEmptyWallet: false,
+      variant: null,
+    }),
+    isTokenWithCta: jest.fn().mockReturnValue(false),
+    getCtaKey: jest.fn().mockReturnValue(''),
+    isGeoBlocked: false,
+    isGeoBlockingLoading: false,
+  }),
+  useMusdBalance: () => ({
+    hasMusdBalance: false,
+    totalMusdBalance: '0',
+    musdBalancesByChain: {},
+    isLoading: false,
+  }),
+  useMusdNetworkFilter: () => ({
+    isPopularNetworksFilterActive: false,
+    selectedChainId: null,
+    enabledChainIds: [],
+  }),
+  useMusdConversionTokens: () => ({
+    tokens: [],
+    isLoading: false,
+  }),
+  useMusdConversion: () => ({
+    startConversionFlow: jest.fn(),
+    educationSeen: false,
+  }),
+  useMusdGeoBlocking: () => ({
+    isBlocked: false,
+    userCountry: 'US',
+    isLoading: false,
+    error: null,
+    blockedRegions: [],
+    blockedMessage: null,
+    refreshGeolocation: jest.fn(),
+  }),
+  useMusdConversionToastStatus: () => ({
+    shouldShowToast: false,
+    toastMessage: null,
+    dismissToast: jest.fn(),
+  }),
+  useCanBuyMusd: () => ({
+    canBuyMusd: false,
+  }),
+  useCustomAmount: () => ({
+    customAmount: null,
+    setCustomAmount: jest.fn(),
+  }),
+  BuyGetMusdCtaVariant: { BUY: 'buy', GET: 'get' },
+  isTokenInWildcardList: jest.fn().mockReturnValue(false),
+  checkTokenAllowed: jest.fn().mockReturnValue(false),
+  isMerklClaimTransaction: jest.fn().mockReturnValue(false),
+}));
+
 jest.mock('../../hooks/useMultiPolling', () => ({
   __esModule: true,
   default: jest.fn(),
 }));
 
-jest.mock('../confirmations/hooks/useRedesignedSendFlow', () => ({
-  useRedesignedSendFlow: jest.fn().mockReturnValue({ enabled: false }),
+jest.mock('../../contexts/shield/shield-subscription', () => ({
+  ...jest.requireActual('../../contexts/shield/shield-subscription'),
+  useShieldSubscriptionContext: () => ({
+    evaluateCohortEligibility: jest.fn(),
+  }),
 }));
 
 const mockIntersectionObserver = jest.fn();
@@ -158,6 +215,7 @@ describe('Routes Component', () => {
           ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
           newPrivacyPolicyToastShownDate: new Date('0'),
           preferences: {
+            defaultAddressScope: 'eip155',
             tokenSortConfig: {
               key: 'token-sort-key',
               order: 'dsc',
@@ -170,7 +228,12 @@ describe('Routes Component', () => {
             },
           },
           tokenBalances: {
-            '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': '0x176270e2b862e4ed3',
+            '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': {
+              '0x1': {
+                '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48': '0xbdbd',
+                '0x0bc529c00C6401aEF6D220BE8C6Ea1667F6Ad93e': '0x501b4176a64d6',
+              },
+            },
           },
           permissionHistory: {
             'https://metamask.github.io': {
@@ -182,16 +245,12 @@ describe('Routes Component', () => {
             },
           },
         },
-        send: {
-          ...mockSendState.send,
-          stage: SEND_STAGES.INACTIVE,
-        },
         localeMessages: {
           currentLocale: 'en',
         },
       };
-      const { getByTestId } = render(undefined, state);
-      expect(getByTestId('account-menu-icon')).not.toBeDisabled();
+      const { container } = render(undefined, state);
+      expect(container.querySelector('.app')).toBeInTheDocument();
     });
   });
 });
@@ -219,6 +278,9 @@ describe('toast display', () => {
 
   const getToastDisplayTestState = (date) => ({
     ...mockState,
+    rewards: {
+      onboardingModalOpen: false,
+    },
     metamask: {
       ...mockState.metamask,
       allTokens: {},
@@ -228,6 +290,7 @@ describe('toast display', () => {
       pendingApprovals: {},
       pendingApprovalCount: 0,
       preferences: {
+        defaultAddressScope: 'eip155',
         tokenSortConfig: {
           key: 'token-sort-key',
           order: 'dsc',
@@ -253,6 +316,9 @@ describe('toast display', () => {
 
   const getToastConnectAccountDisplayTestState = (selectedAccountId) => ({
     ...mockState,
+    rewards: {
+      onboardingModalOpen: false,
+    },
     metamask: {
       ...mockState.metamask,
       announcements: {},
@@ -265,6 +331,7 @@ describe('toast display', () => {
       isRampCardClosed: false,
       newPrivacyPolicyToastClickedOrClosed: true,
       preferences: {
+        defaultAddressScope: 'eip155',
         tokenSortConfig: {
           key: 'token-sort-key',
           order: 'dsc',
@@ -285,7 +352,12 @@ describe('toast display', () => {
       },
       termsOfUseLastAgreed: new Date(0).getTime(),
       tokenBalances: {
-        '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': '0x176270e2b862e4ed3',
+        '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': {
+          '0x1': {
+            '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48': '0xbdbd',
+            '0x0bc529c00C6401aEF6D220BE8C6Ea1667F6Ad93e': '0x501b4176a64d6',
+          },
+        },
       },
       accountTree: {
         wallets: {
@@ -435,15 +507,6 @@ describe('toast display', () => {
     const { getByTestId } = render(
       DEFAULT_ROUTE,
       getToastConnectAccountDisplayTestState(mockAccount2.id),
-    );
-    const toastContainer = getByTestId('connect-account-toast');
-    expect(toastContainer).toBeInTheDocument();
-  });
-
-  it('does render toastContainer if the unconnected selected account is Solana', () => {
-    const { getByTestId } = render(
-      DEFAULT_ROUTE,
-      getToastConnectAccountDisplayTestState(mockSolanaAccount.id),
     );
     const toastContainer = getByTestId('connect-account-toast');
     expect(toastContainer).toBeInTheDocument();

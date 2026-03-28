@@ -61,6 +61,7 @@ const TRANSACTION_PARAMS_MOCK: TransactionParams = {
 
 const TRANSACTION_OPTIONS_MOCK: AddTransactionOptions = {
   actionId: 'mockActionId',
+  requestId: 'mockActionId',
   networkClientId: 'mockNetworkClientId',
   origin: 'mockOrigin',
   requireApproval: false,
@@ -533,6 +534,40 @@ describe('Transaction Utils', () => {
           ...TRANSACTION_OPTIONS_MOCK,
           type: TransactionType.swapApproval,
         });
+
+        expect(validateRequestWithPPOMMock).toHaveBeenCalledTimes(0);
+      });
+
+      it('does not call PPOM if is a transfer to self and value is zero', async () => {
+        const INTERNAL_ACCOUNT_ADDRESS_2 =
+          '0x68d3ad12ea94779cb37262be1c179dbd8e208afe';
+        const sendRequest = {
+          ...request,
+          internalAccounts: [
+            createMockInternalAccount({
+              address: INTERNAL_ACCOUNT_ADDRESS_2,
+            }),
+          ],
+          transactionParams: {
+            ...request.transactionParams,
+            data: '0xa9059cbb00000000000000000000000068d3ad12ea94779cb37262be1c179dbd8e208afe00000000000000000000000000000000000000000000000000000000000f4240',
+            value: '0x0',
+          },
+        };
+
+        await addTransaction({
+          ...sendRequest,
+          transactionOptions: {
+            ...TRANSACTION_OPTIONS_MOCK,
+            type: TransactionType.tokenMethodTransfer,
+          },
+          securityAlertsEnabled: true,
+          chainId: '0x1',
+        });
+
+        expect(
+          request.transactionController.addTransaction,
+        ).toHaveBeenCalledTimes(1);
 
         expect(validateRequestWithPPOMMock).toHaveBeenCalledTimes(0);
       });
