@@ -5,6 +5,7 @@ import {
   TransactionType,
 } from '@metamask/transaction-controller';
 import { SmartTransactionStatuses } from '@metamask/smart-transactions-controller';
+import { isCorrectDeveloperTransactionType } from '../../shared/lib/confirmation.utils';
 import {
   PRIORITY_STATUS_HASH,
   PENDING_STATUS_HASH,
@@ -760,3 +761,9 @@ function getProviderConfigSafe(state) {
     return null;
   }
 }
+
+export const selectIsTransactionTypeRedesigned = createSelector(
+  (state, transactionId) =>
+    selectTransactionMetadata(state, transactionId)?.type,
+  (transactionType) => isCorrectDeveloperTransactionType(transactionType),
+);
