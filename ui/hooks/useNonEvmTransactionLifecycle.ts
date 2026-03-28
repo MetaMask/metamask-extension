@@ -1,14 +1,9 @@
 import { useEffect, useRef } from 'react';
 import { TransactionStatus as Status } from '@metamask/keyring-api';
+import type { Handlers } from '../components/ui/toast/types';
 
 const isSuccess = (status: string) => status === Status.Confirmed;
 const isFailed = (status: string) => status === Status.Failed;
-
-type Handlers<TTxn> = {
-  onPending?: (tx: TTxn) => void;
-  onSuccess?: (tx: TTxn) => void;
-  onFailure?: (tx: TTxn) => void;
-};
 
 export function useNonEvmTransactionLifecycle<
   TTxn extends { id: string; status: string },

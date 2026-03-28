@@ -9,8 +9,6 @@ import {
   PRIORITY_STATUS_HASH,
   PENDING_STATUS_HASH,
   EXCLUDED_TRANSACTION_TYPES,
-  TOAST_EXCLUDED_TRANSACTION_TYPES,
-  TOAST_EXCLUDED_NON_EVM_TRANSACTION_TYPES,
 } from '../helpers/constants/transactions';
 import txHelper from '../helpers/utils/tx-helper';
 import { SmartTransactionStatus } from '../../shared/constants/transaction';
@@ -24,10 +22,6 @@ import {
   createShallowEqualInputAndResultSelector,
   createParameterizedShallowEqualSelector,
 } from '../../shared/lib/selectors/selector-creators';
-import {
-  selectBridgeApprovalTxIds,
-  selectCrossChainBridgeSourceTxIds,
-} from './evm-transaction-ids';
 import { getSelectedInternalAccount } from './accounts';
 import { hasPendingApprovals, getApprovalRequestsByType } from './approvals';
 import { EMPTY_ARRAY, EMPTY_OBJECT } from './shared';
@@ -45,73 +39,6 @@ export const getTransactions = createSelector(
       return EMPTY_ARRAY;
     }
     return [...transactions].sort((a, b) => a.time - b.time); // Ascending
-  },
-);
-
-/**
- * Returns deduplicated EVM transactions eligible for toast notifications.
- * Swap polling inserts duplicate entries for the same tx id into raw state;
- * this selector keeps only the first occurrence per id.
- *
- * @param {object} state - Root state
- * @returns {object[]} Filtered, deduplicated array of transaction objects
- */
-export const selectEvmTransactionsForToast = createSelector(
-  (state) => state.metamask?.transactions,
-  selectBridgeApprovalTxIds,
-  selectCrossChainBridgeSourceTxIds,
-  (rawTransactions, bridgeApprovalIds, crossChainBridgeIds) => {
-    if (!rawTransactions?.length) {
-      return EMPTY_ARRAY;
-    }
-    const seen = new Set();
-    const result = [];
-    for (const tx of rawTransactions) {
-      if (seen.has(tx.id)) {
-        continue; // skip duplicate entries for the same tx id
-      }
-      seen.add(tx.id);
-      if (
-        tx.type &&
-        !TOAST_EXCLUDED_TRANSACTION_TYPES.has(tx.type) &&
-        !bridgeApprovalIds.has(tx.id?.toLowerCase()) &&
-        !crossChainBridgeIds.has(tx.id)
-      ) {
-        result.push(tx);
-      }
-    }
-    return result.length > 0 ? result : EMPTY_ARRAY;
-  },
-);
-
-/**
- * Returns non-EVM transactions for toast notifications
- *
- * @param {object} state - Root state
- * @returns {object[]} Filtered array of non-EVM transaction objects
- */
-export const selectNonEvmTransactionsForToast = createDeepEqualSelector(
-  (state) => state.metamask?.nonEvmTransactions,
-  selectCrossChainBridgeSourceTxIds,
-  (nonEvmTransactionsMap, crossChainBridgeIds) => {
-    if (!nonEvmTransactionsMap) {
-      return EMPTY_ARRAY;
-    }
-
-    return Object.values(nonEvmTransactionsMap)
-      .flatMap((byChainMap) =>
-        Object.values(byChainMap ?? {}).flatMap(
-          (entry) => entry?.transactions ?? EMPTY_ARRAY,
-        ),
-      )
-      .filter((transaction) => {
-        const type = transaction?.type;
-        return (
-          Boolean(type) &&
-          !TOAST_EXCLUDED_NON_EVM_TRANSACTION_TYPES.has(type) &&
-          !crossChainBridgeIds.has(transaction.id)
-        );
-      });
   },
 );
 

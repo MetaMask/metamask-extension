@@ -4,12 +4,7 @@ import {
   isPending,
   isSuccess,
 } from '../helpers/constants/transactions';
-
-type Handlers<TTxn> = {
-  onPending?: (tx: TTxn) => void;
-  onSuccess?: (tx: TTxn) => void;
-  onFailure?: (tx: TTxn) => void;
-};
+import type { Handlers } from '../components/ui/toast/types';
 
 export function useTransactionLifecycle<
   TTxn extends { id: string; status: string },

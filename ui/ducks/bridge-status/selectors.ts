@@ -14,7 +14,7 @@ import {
 } from '../../selectors/multichain-accounts/account-tree';
 import { EMPTY_OBJECT } from '../../selectors/shared';
 import { selectCurrentAccountNonEvmTransactions } from '../../selectors/multichain-transactions';
-import { selectTransactionIds } from '../../selectors/evm-transaction-ids';
+import { selectTransactionIds } from '../../selectors/toast';
 
 type BridgeStatusAppState = {
   metamask: BridgeStatusControllerState & TransactionControllerState;
@@ -76,15 +76,6 @@ export const selectBridgeHistoryForAccountGroup = createSelector(
   },
 );
 
-/**
- * Returns bridge history filtered to only items that have a matching live
- * transaction for the currently selected account (EVM or non-EVM). Items
- * without a corresponding transaction are orphaned and should never produce
- * a toast notification.
- *
- * Same-chain EVM swaps are excluded here as those are handled entirely by the
- * EVM transaction watcher.
- */
 export const selectBridgeHistoryForToast = createSelector(
   [
     selectBridgeHistoryForAccountGroup,
@@ -101,24 +92,14 @@ export const selectBridgeHistoryForToast = createSelector(
     return Object.entries(bridgeHistory).reduce<
       Record<string, BridgeHistoryItem>
     >((acc, [key, item]) => {
-      // Same-chain EVM swaps are handled by the EVM transaction watcher
-      if (
-        item.quote.srcChainId === item.quote.destChainId &&
-        !isNonEvmChainId(item.quote.srcChainId)
-      ) {
+      if (!item.quote) {
         return acc;
       }
-      // Same-chain non-EVM swaps (e.g. Solana SOL→USDC) are handled by
-      // the non-EVM transaction watcher — bridge status may never reach
-      // COMPLETE for same-chain swaps, so let the non-EVM hook drive toasts
-      if (
-        item.quote.srcChainId === item.quote.destChainId &&
-        isNonEvmChainId(item.quote.srcChainId)
-      ) {
+      // Same-chain swaps are handled by their respective transaction watchers
+      if (item.quote.srcChainId === item.quote.destChainId) {
         return acc;
       }
-      // Only include items whose source transaction exists in the current
-      // account's active transactions — orphaned items are silently dropped
+      // Only include items whose source transaction exists in transactions
       const hasMatchingTx = isNonEvmChainId(item.quote.srcChainId)
         ? nonEvmTxIds.has(key)
         : evmTxIds.has(key);

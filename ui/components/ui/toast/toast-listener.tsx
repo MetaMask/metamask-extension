@@ -1,18 +1,19 @@
 import React, { useMemo } from 'react';
-import { type TransactionMeta } from '@metamask/transaction-controller';
 import { toast } from 'react-hot-toast';
 import { useSelector } from 'react-redux';
 import {
   selectNonEvmTransactionsForToast,
   selectEvmTransactionsForToast,
-} from '../../../selectors';
+} from '../../../selectors/toast';
 import { selectBridgeHistoryForToast } from '../../../ducks/bridge-status/selectors';
 import { useTransactionLifecycle } from '../../../hooks/useTransactionLifecycle';
 import { useNonEvmTransactionLifecycle } from '../../../hooks/useNonEvmTransactionLifecycle';
 import { useBridgeHistoryLifecycle } from '../../../hooks/useBridgeHistoryLifecycle';
 import { ToastContent } from './toast';
+import type { Handlers } from './types';
 
-type TransactionLike = Pick<TransactionMeta, 'id' | 'status' | 'type'>;
+type EvmTx = ReturnType<typeof selectEvmTransactionsForToast>[number];
+type NonEvmTx = ReturnType<typeof selectNonEvmTransactionsForToast>[number];
 
 /**
  * Watches EVM transactions for status transitions and shows toast notifications
@@ -20,19 +21,19 @@ type TransactionLike = Pick<TransactionMeta, 'id' | 'status' | 'type'>;
 function useEvmTransactionToasts() {
   const data = useSelector(selectEvmTransactionsForToast);
 
-  const handlers = useMemo(
+  const handlers = useMemo<Handlers<EvmTx>>(
     () => ({
-      onPending: (tx: TransactionLike) => {
+      onPending: (tx) => {
         toast.loading(<ToastContent status="pending" />, {
           id: `tx-${tx.id}`,
         });
       },
-      onSuccess: (tx: TransactionLike) => {
+      onSuccess: (tx) => {
         toast.success(<ToastContent status="success" />, {
           id: `tx-${tx.id}`,
         });
       },
-      onFailure: (tx: TransactionLike) => {
+      onFailure: (tx) => {
         toast.error(<ToastContent status="failed" />, {
           id: `tx-${tx.id}`,
         });
@@ -50,19 +51,19 @@ function useEvmTransactionToasts() {
 function useNonEvmTransactionToasts() {
   const data = useSelector(selectNonEvmTransactionsForToast);
 
-  const handlers = useMemo(
+  const handlers = useMemo<Handlers<NonEvmTx>>(
     () => ({
-      onPending: (tx: TransactionLike) => {
+      onPending: (tx) => {
         toast.loading(<ToastContent status="pending" />, {
           id: `non-evm-tx-${tx.id}`,
         });
       },
-      onSuccess: (tx: TransactionLike) => {
+      onSuccess: (tx) => {
         toast.success(<ToastContent status="success" />, {
           id: `non-evm-tx-${tx.id}`,
         });
       },
-      onFailure: (tx: TransactionLike) => {
+      onFailure: (tx) => {
         toast.error(<ToastContent status="failed" />, {
           id: `non-evm-tx-${tx.id}`,
         });

@@ -6,7 +6,7 @@ import { toast } from 'react-hot-toast';
 import {
   selectEvmTransactionsForToast,
   selectNonEvmTransactionsForToast,
-} from '../../../selectors';
+} from '../../../selectors/toast';
 import { selectBridgeHistoryForToast } from '../../../ducks/bridge-status/selectors';
 import { ToastListener } from './toast-listener';
 
