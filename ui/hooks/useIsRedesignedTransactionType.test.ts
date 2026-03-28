@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
 import {
   oldestPendingConfirmationSelector,
+  getPendingApprovals,
   selectIsTransactionTypeRedesigned,
 } from '../selectors';
 import { isCorrectSignatureApprovalType } from '../../shared/lib/confirmation.utils';
@@ -18,12 +19,16 @@ jest.mock('react-router-dom', () => ({
 
 jest.mock('../selectors', () => ({
   oldestPendingConfirmationSelector: jest.fn(),
+  getPendingApprovals: jest.fn(),
   selectIsTransactionTypeRedesigned: jest.fn(),
 }));
 
 jest.mock('../../shared/lib/confirmation.utils', () => ({
   isCorrectSignatureApprovalType: jest.fn(),
 }));
+
+const OLDEST_APPROVAL = { id: 'oldest-id', type: 'PersonalSign' };
+const OTHER_APPROVAL = { id: 'other-id', type: 'EthSignTypedData' };
 
 describe('useIsRedesignedConfirmationType', () => {
   const useSelectorMock = jest.mocked(useSelector);
@@ -48,7 +53,10 @@ describe('useIsRedesignedConfirmationType', () => {
 
     useSelectorMock.mockImplementation((selector) => {
       if (selector === oldestPendingConfirmationSelector) {
-        return { id: 'fallback-id', type: 'PersonalSign' };
+        return OLDEST_APPROVAL;
+      }
+      if (selector === getPendingApprovals) {
+        return [OLDEST_APPROVAL, OTHER_APPROVAL];
       }
       return selector({});
     });
@@ -92,7 +100,26 @@ describe('useIsRedesignedConfirmationType', () => {
     expect(result.current).toBe(false);
     expect(selectIsTransactionTypeRedesignedMock).toHaveBeenCalledWith(
       {},
-      'fallback-id',
+      'oldest-id',
+    );
+  });
+
+  it('checks the URL-matched approval type, not the oldest approval', () => {
+    // URL points to the non-oldest approval
+    useLocationMock.mockReturnValue(
+      buildLocation('/confirm-transaction/other-id'),
+    );
+    selectIsTransactionTypeRedesignedMock.mockReturnValue(false);
+    isCorrectSignatureApprovalTypeMock.mockReturnValue(false);
+
+    renderHook(() => useIsRedesignedConfirmationType());
+
+    // Must be called with the type from OTHER_APPROVAL, not OLDEST_APPROVAL
+    expect(isCorrectSignatureApprovalTypeMock).toHaveBeenCalledWith(
+      OTHER_APPROVAL.type,
+    );
+    expect(isCorrectSignatureApprovalTypeMock).not.toHaveBeenCalledWith(
+      OLDEST_APPROVAL.type,
     );
   });
 });
