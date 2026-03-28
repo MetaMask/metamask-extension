@@ -76,6 +76,22 @@ class AddressListModal {
     await qrButton.click();
   }
 
+  async clickQRbuttonForNetwork(networkName: string): Promise<void> {
+    console.log(`Click QR button for network "${networkName}"`);
+    const networkNameElements = await this.driver.findElements(
+      this.networkName,
+    );
+    for (const [index, networkElement] of networkNameElements.entries()) {
+      const text = (await networkElement.getText()).trim();
+      if (text === networkName) {
+        await this.clickQRbutton(index);
+        return;
+      }
+    }
+
+    throw new Error(`Network row "${networkName}" was not found`);
+  }
+
   async getTruncatedAccountAddress(addressIndex: number = 0): Promise<string> {
     console.log('Get truncated account address');
     const addressElements = await this.driver.findElements(this.accountAddress);

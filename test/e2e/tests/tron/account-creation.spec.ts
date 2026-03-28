@@ -75,7 +75,7 @@ describe('Tron account creation', function (this: Suite) {
 
         const addressListModal = new AddressListModal(driver);
         await addressListModal.checkPageIsLoaded();
-        await addressListModal.clickQRbutton();
+        await addressListModal.clickQRbuttonForNetwork('Tron');
 
         const accountAddressModal = new AccountAddressModal(driver);
         await accountAddressModal.checkPageIsLoaded();
