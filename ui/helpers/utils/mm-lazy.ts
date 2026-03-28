@@ -1,11 +1,4 @@
 import React from 'react';
-import { getManifestFlags } from '../../../shared/lib/manifestFlags';
-import {
-  endTrace,
-  getPerformanceTimestamp,
-  trace,
-  TraceName,
-} from '../../../shared/lib/trace';
 import type { IsNever, IsUnion } from '../../../shared/types/type-level-utils';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any -- required due to contravariant parameter bound
@@ -116,13 +109,8 @@ export type InferComponent<
     : FromNamedExport,
 > = InferredComponent;
 
-// This only has to happen once per app load, so do it outside a function
-const lazyLoadSubSampleRate = getManifestFlags().sentry?.lazyLoadSubSampleRate;
-
 /**
- * A wrapper around React.lazy that adds two things:
- * 1. Sentry tracing for how long it takes to load the component (not render, just load)
- * 2. React.lazy can only deal with default exports, but the wrapper can handle named exports too
+ * A wrapper around React.lazy that allows for named exports to be used as the component.
  *
  * For typed modules (`.ts`/`.tsx`), component props are fully inferred.
  * For untyped modules (`.js` without declarations), `Module` is inferred
@@ -149,23 +137,9 @@ export function mmLazy<
   Component extends AnyComponent = InferComponent<Module, true>,
 >(fn: () => Promise<Module>): React.LazyExoticComponent<Component> {
   return React.lazy(async () => {
-    // We can't start the trace here because we don't have the componentName yet, so we just hold the startTime.
-    const startTime = getPerformanceTimestamp();
-
     const importedModule = await fn();
-    const { componentName, component } =
+    const { component } =
       convertToDefaultExportModule<Component>(importedModule);
-
-    // Only trace load time of lazy-loaded components if the manifestFlag is set, and then do it by Math.random probability
-    if (lazyLoadSubSampleRate && Math.random() < lazyLoadSubSampleRate) {
-      trace({
-        name: TraceName.LazyLoadComponent,
-        data: { componentName },
-        startTime,
-      });
-
-      endTrace({ name: TraceName.LazyLoadComponent });
-    }
 
     return component;
   });
