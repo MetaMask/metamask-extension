@@ -1,9 +1,8 @@
 import { useEffect, useRef } from 'react';
-import {
-  isFailed,
-  isPending,
-  isSuccess,
-} from '../helpers/constants/transactions';
+import { TransactionStatus as Status } from '@metamask/keyring-api';
+
+const isSuccess = (status: string) => status === Status.Confirmed;
+const isFailed = (status: string) => status === Status.Failed;
 
 type Handlers<TTxn> = {
   onPending?: (tx: TTxn) => void;
@@ -11,7 +10,7 @@ type Handlers<TTxn> = {
   onFailure?: (tx: TTxn) => void;
 };
 
-export function useTransactionLifecycle<
+export function useNonEvmTransactionLifecycle<
   TTxn extends { id: string; status: string },
 >(transactions: readonly TTxn[], handlers: Handlers<TTxn>) {
   const ref = useRef<Map<string, TTxn> | null>(null);
@@ -28,28 +27,21 @@ export function useTransactionLifecycle<
       const previous = baseline.get(tx.id);
 
       if (!previous) {
-        if (isPending(tx.status)) {
-          handlers.onPending?.(tx);
+        if (isFailed(tx.status)) {
+          handlers.onFailure?.(tx);
         } else if (isSuccess(tx.status)) {
           handlers.onSuccess?.(tx);
-        } else if (isFailed(tx.status)) {
-          handlers.onFailure?.(tx);
+        } else {
+          handlers.onPending?.(tx);
         }
         continue;
       }
 
-      if (!isPending(previous.status) && isPending(tx.status)) {
-        handlers.onPending?.(tx);
-      }
-
-      if (isPending(previous.status) && isSuccess(tx.status)) {
+      if (!isSuccess(previous.status) && isSuccess(tx.status)) {
         handlers.onSuccess?.(tx);
       }
 
-      if (
-        (isPending(previous.status) || previous.status === 'signed') &&
-        isFailed(tx.status)
-      ) {
+      if (!isFailed(previous.status) && isFailed(tx.status)) {
         handlers.onFailure?.(tx);
       }
     }

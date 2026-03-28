@@ -56,6 +56,7 @@ const TRANSACTION_SUCCESS_STATUSES = [
 
 const TRANSACTION_FAILED_STATUSES = [
   TransactionStatus.failed,
+  TransactionStatus.dropped,
   SmartTransactionStatus.cancelled,
 ];
 

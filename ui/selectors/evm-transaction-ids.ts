@@ -8,7 +8,15 @@ const selectTransactions = (state: {
 }) => state.metamask?.transactions ?? [];
 
 const selectTxHistory = (state: {
-  metamask?: { txHistory?: Record<string, { approvalTxId?: string }> };
+  metamask?: {
+    txHistory?: Record<
+      string,
+      {
+        approvalTxId?: string;
+        quote?: { srcChainId?: number | string; destChainId?: number | string };
+      }
+    >;
+  };
 }) => state.metamask?.txHistory;
 
 export const selectTransactionIds = createSelector(
@@ -23,6 +31,19 @@ export const selectBridgeApprovalTxIds = createSelector(
     for (const item of Object.values(txHistory ?? {})) {
       if (item.approvalTxId) {
         ids.add(item.approvalTxId.toLowerCase());
+      }
+    }
+    return ids;
+  },
+);
+
+export const selectCrossChainBridgeSourceTxIds = createSelector(
+  selectTxHistory,
+  (txHistory) => {
+    const ids = new Set<string>();
+    for (const [key, item] of Object.entries(txHistory ?? {})) {
+      if (item.quote?.srcChainId !== item.quote?.destChainId) {
+        ids.add(key);
       }
     }
     return ids;

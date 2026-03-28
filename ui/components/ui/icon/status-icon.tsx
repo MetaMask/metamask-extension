@@ -30,8 +30,12 @@ export function StatusIcon({ state, className }: Props) {
       return;
     }
 
-    // eslint-disable-next-line react-compiler/react-compiler
-    darkInput.value = isDark;
+    try {
+      // eslint-disable-next-line react-compiler/react-compiler
+      darkInput.value = isDark;
+    } catch {
+      // Rive WASM runtime may have been cleaned up
+    }
   }, [rive, darkInput, isDark]);
 
   useEffect(() => {
@@ -39,9 +43,13 @@ export function StatusIcon({ state, className }: Props) {
       return;
     }
 
-    const inputs = rive.stateMachineInputs(stateMachine);
-    const trigger = inputs?.find((i) => i.name.toLowerCase() === state);
-    trigger?.fire();
+    try {
+      const inputs = rive.stateMachineInputs(stateMachine);
+      const trigger = inputs?.find((i) => i.name.toLowerCase() === state);
+      trigger?.fire();
+    } catch {
+      // Rive WASM runtime may have been cleaned up
+    }
   }, [rive, state]);
 
   useEffect(() => {

@@ -24,7 +24,10 @@ import {
   createShallowEqualInputAndResultSelector,
   createParameterizedShallowEqualSelector,
 } from '../../shared/lib/selectors/selector-creators';
-import { selectBridgeApprovalTxIds } from './evm-transaction-ids';
+import {
+  selectBridgeApprovalTxIds,
+  selectCrossChainBridgeSourceTxIds,
+} from './evm-transaction-ids';
 import { getSelectedInternalAccount } from './accounts';
 import { hasPendingApprovals, getApprovalRequestsByType } from './approvals';
 import { EMPTY_ARRAY, EMPTY_OBJECT } from './shared';
@@ -56,7 +59,8 @@ export const getTransactions = createSelector(
 export const selectEvmTransactionsForToast = createSelector(
   (state) => state.metamask?.transactions,
   selectBridgeApprovalTxIds,
-  (rawTransactions, bridgeApprovalIds) => {
+  selectCrossChainBridgeSourceTxIds,
+  (rawTransactions, bridgeApprovalIds, crossChainBridgeIds) => {
     if (!rawTransactions?.length) {
       return EMPTY_ARRAY;
     }
@@ -70,7 +74,8 @@ export const selectEvmTransactionsForToast = createSelector(
       if (
         tx.type &&
         !TOAST_EXCLUDED_TRANSACTION_TYPES.has(tx.type) &&
-        !bridgeApprovalIds.has(tx.id?.toLowerCase())
+        !bridgeApprovalIds.has(tx.id?.toLowerCase()) &&
+        !crossChainBridgeIds.has(tx.id)
       ) {
         result.push(tx);
       }
@@ -87,7 +92,8 @@ export const selectEvmTransactionsForToast = createSelector(
  */
 export const selectNonEvmTransactionsForToast = createDeepEqualSelector(
   (state) => state.metamask?.nonEvmTransactions,
-  (nonEvmTransactionsMap) => {
+  selectCrossChainBridgeSourceTxIds,
+  (nonEvmTransactionsMap, crossChainBridgeIds) => {
     if (!nonEvmTransactionsMap) {
       return EMPTY_ARRAY;
     }
@@ -101,7 +107,9 @@ export const selectNonEvmTransactionsForToast = createDeepEqualSelector(
       .filter((transaction) => {
         const type = transaction?.type;
         return (
-          Boolean(type) && !TOAST_EXCLUDED_NON_EVM_TRANSACTION_TYPES.has(type)
+          Boolean(type) &&
+          !TOAST_EXCLUDED_NON_EVM_TRANSACTION_TYPES.has(type) &&
+          !crossChainBridgeIds.has(transaction.id)
         );
       });
   },
