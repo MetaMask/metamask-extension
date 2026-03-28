@@ -1,3 +1,4 @@
+import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
 import { Mockttp } from 'mockttp';
 import { withFixtures } from '../../helpers';
@@ -8,6 +9,7 @@ import NonEvmHomepage from '../../page-objects/pages/home/non-evm-homepage';
 import NetworkManager from '../../page-objects/pages/network-manager';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import AccountListPage from '../../page-objects/pages/account-list-page';
+import MultichainAccountDetailsPage from '../../page-objects/pages/multichain/multichain-account-details-page';
 import { mockTronApis, TRON_ACCOUNT_ADDRESS } from './mocks/common-tron';
 
 describe('Tron account creation', function (this: Suite) {
@@ -32,21 +34,7 @@ describe('Tron account creation', function (this: Suite) {
 
         const accountListPage = new AccountListPage(driver);
         await accountListPage.checkPageIsLoaded();
-
-        // Click the "Add account" action button, then select "Tron account"
-        await driver.clickElement(
-          '[data-testid="multichain-account-menu-popover-action-button"]',
-        );
-        await driver.clickElement({
-          text: 'Tron account',
-          tag: 'button',
-        });
-        await driver.clickElementAndWaitToDisappear(
-          '[data-testid="submit-add-account-with-name"]',
-        );
-
-        // Re-open account menu and verify the Tron account appears
-        await headerNavbar.openAccountMenu();
+        await accountListPage.addMultichainAccount();
         await accountListPage.checkAccountDisplayedInAccountList('Tron 1');
       },
     );
@@ -74,10 +62,18 @@ describe('Tron account creation', function (this: Suite) {
         await networkManager.selectTab('Popular');
         await networkManager.selectNetworkByNameWithWait('Tron');
 
-        // Verify the shortened Tron address is displayed in the header
         const headerNavbar = new HeaderNavbar(driver);
-        const shortenedAddress = `${TRON_ACCOUNT_ADDRESS.slice(0, 5)}...${TRON_ACCOUNT_ADDRESS.slice(-4)}`;
-        await headerNavbar.checkAccountAddress(shortenedAddress);
+        await headerNavbar.openAccountDetailsModalDetailsTab();
+
+        const accountDetailsPage = new MultichainAccountDetailsPage(driver);
+        await accountDetailsPage.checkPageIsLoaded();
+
+        const actualAddress = await accountDetailsPage.getAccountAddress();
+        assert.equal(
+          actualAddress,
+          TRON_ACCOUNT_ADDRESS,
+          `Expected Tron address "${TRON_ACCOUNT_ADDRESS}" but got "${actualAddress}"`,
+        );
       },
     );
   });
