@@ -11,7 +11,6 @@ export const useIsRedesignedConfirmationType = () => {
   const location = useLocation();
   const oldestPendingApproval = useSelector(oldestPendingConfirmationSelector);
 
-  // Extract confirmationId from URL or use oldest pending approval
   const paramsConfirmationId = location.pathname.split(
     '/confirm-transaction/',
   )[1];
