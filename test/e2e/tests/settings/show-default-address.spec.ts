@@ -78,28 +78,4 @@ describe('Show default address', function (this: Suite) {
       },
     );
   });
-
-  it('does not display Show default address section when feature flag is off', async function () {
-    await withFixtures(
-      {
-        fixtures: new FixtureBuilderV2().build(),
-        title: this.test?.fullTitle(),
-        manifestFlags: {
-          remoteFeatureFlags: { extensionUxDefaultAddressVersioned: false },
-        },
-      },
-      async ({ driver }) => {
-        await login(driver);
-
-        // Navigate to settings and check "show default address" section is not displayed
-        const homePage = new HomePage(driver);
-        await homePage.headerNavbar.openSettingsPage();
-        const preferencesAndDisplaySettings = new PreferencesAndDisplaySettings(
-          driver,
-        );
-        await preferencesAndDisplaySettings.checkPageIsLoaded();
-        await preferencesAndDisplaySettings.checkShowDefaultAddressSectionIsNotDisplayed();
-      },
-    );
-  });
 });

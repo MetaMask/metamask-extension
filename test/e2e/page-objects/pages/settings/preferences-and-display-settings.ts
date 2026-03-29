@@ -22,22 +22,23 @@ class PreferencesAndDisplaySettings {
   private readonly localeSelectList = '[data-testid="locale-select-list"]';
 
   private readonly identicons = {
-    maskicon: '[data-testid="maskicon_icon"]',
-    blockies: '[data-testid="blockie_icon"]',
-    jazzicon: '[data-testid="jazz_icon"]',
+    maskicon: '[data-testid="account-identicon-option-maskicon"]',
+    blockies: '[data-testid="account-identicon-option-blockies"]',
+    jazzicon: '[data-testid="account-identicon-option-jazzicon"]',
   };
 
   /**
    * Visible toggle: `data-testid="show-native-token-as-main-balance"` is on the
    * hidden input inside ToggleButton; click the wrapping label.
    */
-  private readonly showNativeTokenAsMainBalanceToggleLabel = {
-    xpath:
-      "//label[contains(@class,'toggle-button')][.//*[@data-testid='show-native-token-as-main-balance']]",
-  };
+  private readonly showNativeTokenAsMainBalanceToggleLabel =
+    "label.toggle-button:has([data-testid='show-native-token-as-main-balance'])";
 
   private readonly showDefaultAddressToggle =
     '[data-testid="show-default-address-toggle"]';
+
+  private readonly showDefaultAddressToggleLabel =
+    "label.toggle-button:has([data-testid='show-default-address-toggle'])";
 
   constructor(driver: Driver) {
     this.driver = driver;
@@ -110,6 +111,7 @@ class PreferencesAndDisplaySettings {
       `Checking if ${identicon} identicon is active on preferences and display settings page`,
     );
     await this.navigateToRoute(ACCOUNT_IDENTICON_ROUTE);
+    await this.driver.waitForSelector('[data-testid="account-identicon-list"]');
     const activeSelector = this.identicons[identicon];
     await this.driver.waitForSelector(activeSelector);
   }
@@ -136,7 +138,8 @@ class PreferencesAndDisplaySettings {
 
   async toggleShowDefaultAddress(): Promise<void> {
     await this.navigateToRoute(PREFERENCES_AND_DISPLAY_ROUTE);
-    await this.driver.clickElement(this.showDefaultAddressToggle);
+    await this.driver.waitForSelector(this.showDefaultAddressToggleLabel);
+    await this.driver.clickElement(this.showDefaultAddressToggleLabel);
   }
 
   async checkShowDefaultAddressSectionIsDisplayed(): Promise<void> {

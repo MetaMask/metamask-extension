@@ -17,14 +17,8 @@ class SettingsPage {
   private readonly assetsSettingsButton =
     '[data-testid="settings-v2-tab-item-assets"]';
 
-  private readonly backSettingsPageButton =
-    '[data-testid="settings-v2-header-back-button"]';
-
-  private readonly developerOptionsButton =
-    '[data-testid="settings-v2-tab-item-debug"]';
-
   private readonly developerToolsSettingsButton =
-    '[data-testid="settings-v2-tab-item-developer-options"]';
+    '[data-testid="settings-v2-tab-item-developer-tools"]';
 
   private readonly experimentalSettingsButton =
     '[data-testid="settings-v2-tab-item-experimental"]';
@@ -99,6 +93,11 @@ class SettingsPage {
     await new HomePage(this.driver).checkPageIsLoaded();
   }
 
+  /** @deprecated Prefer {@link clickBackButton}; alias for legacy E2E specs. */
+  async exitSettings(): Promise<void> {
+    await this.clickBackButton();
+  }
+
   async waitForTransactionShieldButtonReady(): Promise<void> {
     console.log('Waiting for Transaction Shield button to be ready');
     await this.driver.findClickableElement(this.transactionShieldButton);
@@ -168,7 +167,7 @@ class SettingsPage {
 
   async goToDeveloperOptions(): Promise<void> {
     console.log('Navigating to Debug page');
-    await this.driver.clickElement(this.developerOptionsButton);
+    await this.driver.clickElement(this.developerToolsSettingsButton);
   }
 
   async goToSecurityAndPasswordSettings(): Promise<void> {
