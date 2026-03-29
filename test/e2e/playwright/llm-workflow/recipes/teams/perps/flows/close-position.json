@@ -1,0 +1,80 @@
+{
+  "title": "Close {{percent}}% of {{symbol}} position",
+  "inputs": {
+    "symbol": {
+      "type": "string",
+      "default": "ETH",
+      "description": "Market symbol"
+    },
+    "percent": {
+      "type": "string",
+      "default": "100",
+      "description": "Close percentage (25, 50, 75, 100)"
+    }
+  },
+  "validate": {
+    "runtime": {
+      "pre_conditions": [
+        "wallet.unlocked",
+        "perps.feature_enabled"
+      ],
+      "steps": [
+        {
+          "id": "nav-perps",
+          "action": "press",
+          "test_id": "account-overview__perps-tab"
+        },
+        {
+          "id": "wait-market",
+          "action": "wait_for",
+          "test_id": "explore-crypto-{{symbol}}",
+          "timeout_ms": 10000
+        },
+        {
+          "id": "select-market",
+          "action": "press",
+          "test_id": "explore-crypto-{{symbol}}"
+        },
+        {
+          "id": "wait-close-btn",
+          "action": "wait_for",
+          "test_id": "perps-close-cta-button",
+          "timeout_ms": 10000
+        },
+        {
+          "id": "click-close",
+          "action": "press",
+          "test_id": "perps-close-cta-button"
+        },
+        {
+          "id": "wait-modal",
+          "action": "wait_for",
+          "test_id": "close-percent-preset-100",
+          "timeout_ms": 10000
+        },
+        {
+          "id": "select-percent",
+          "action": "press",
+          "test_id": "close-percent-preset-{{percent}}"
+        },
+        {
+          "id": "confirm-close",
+          "action": "press",
+          "test_id": "perps-close-position-modal-submit"
+        },
+        {
+          "id": "wait-closed",
+          "action": "wait_for",
+          "test_id": "perps-close-position-modal",
+          "visible": false,
+          "timeout_ms": 15000
+        },
+        {
+          "id": "screenshot-result",
+          "action": "screenshot",
+          "filename": "close-position-{{symbol}}-{{percent}}pct"
+        }
+      ]
+    }
+  }
+}

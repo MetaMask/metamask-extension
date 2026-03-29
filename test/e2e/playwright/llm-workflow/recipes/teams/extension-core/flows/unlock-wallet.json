@@ -1,0 +1,41 @@
+{
+  "title": "Unlock wallet with default password",
+  "validate": {
+    "runtime": {
+      "steps": [
+        {
+          "id": "wait-password-input",
+          "action": "wait_for",
+          "test_id": "unlock-password",
+          "timeout_ms": 10000
+        },
+        {
+          "id": "type-password",
+          "action": "set_input",
+          "test_id": "unlock-password",
+          "value": "qwerasdf"
+        },
+        {
+          "id": "press-unlock",
+          "action": "press",
+          "test_id": "unlock-submit"
+        },
+        {
+          "id": "wait-home",
+          "action": "wait_for",
+          "test_id": "account-menu-icon",
+          "timeout_ms": 15000
+        },
+        {
+          "id": "verify-unlocked",
+          "action": "ext_check_dom",
+          "test_id": "account-menu-icon",
+          "visible": true,
+          "assert": {
+            "operator": "not_null"
+          }
+        }
+      ]
+    }
+  }
+}
