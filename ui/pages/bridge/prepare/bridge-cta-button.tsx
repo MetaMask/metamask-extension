@@ -1,6 +1,5 @@
 import React, { useContext, useMemo } from 'react';
 import { useDispatch, useSelector, shallowEqual } from 'react-redux';
-import { ErrorCode } from '@metamask/hw-wallet-sdk';
 import {
   Button,
   ButtonLink,
@@ -31,24 +30,13 @@ import { useIsTxSubmittable } from '../../../hooks/bridge/useIsTxSubmittable';
 import { Row } from '../layout';
 import {
   ConnectionStatus,
-  createHardwareWalletError,
-  HardwareWalletType,
   useHardwareWalletConfig,
   useHardwareWalletState,
 } from '../../../contexts/hardware-wallets';
 import { setWasTxDeclined } from '../../../ducks/bridge/actions';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-  MetaMetricsHardwareWalletRecoveryLocation,
-} from '../../../../shared/constants/metametrics';
-import {
-  buildHardwareWalletRecoverySegmentProperties,
-  getHardwareWalletMetricDeviceModel,
-  mapHardwareWalletRecoveryErrorType,
-  mapHardwareWalletTypeToMetricDeviceType,
-} from '../../../../shared/lib/hardware-wallet-recovery-metrics';
+import { trackHardwareWalletRecoveryConnectCtaClicked } from '../../../helpers/utils/track-hardware-wallet-recovery-connect-cta-clicked';
+import { MetaMetricsHardwareWalletRecoveryLocation } from '../../../../shared/constants/metametrics';
 
 export const BridgeCTAButton = ({
   onFetchNewQuotes,
@@ -224,39 +212,11 @@ export const BridgeCTAButton = ({
             onOpenPriceImpactWarningModal();
           } else {
             if (isHardwareWalletAccount && !isHardwareWalletReady) {
-              const connectionError =
-                connectionState.status === ConnectionStatus.ErrorState
-                  ? connectionState.error
-                  : undefined;
-              const walletTypeForMetrics =
-                walletType ?? HardwareWalletType.Ledger;
-              const errorForMetrics =
-                connectionError ??
-                createHardwareWalletError(
-                  ErrorCode.DeviceDisconnected,
-                  walletTypeForMetrics,
-                );
-              const errorType =
-                mapHardwareWalletRecoveryErrorType(errorForMetrics);
-              const deviceType =
-                mapHardwareWalletTypeToMetricDeviceType(walletType);
-              if (deviceType) {
-                trackEvent({
-                  category: MetaMetricsEventCategory.Accounts,
-                  event: MetaMetricsEventName.HardwareWalletRecoveryCtaClicked,
-                  properties: buildHardwareWalletRecoverySegmentProperties({
-                    location: MetaMetricsHardwareWalletRecoveryLocation.Swaps,
-                    deviceType,
-                    deviceModel:
-                      getHardwareWalletMetricDeviceModel(errorForMetrics),
-                    errorType,
-                    errorTypeViewCount: 1,
-                    error: errorForMetrics,
-                  }),
-                }).catch(() => {
-                  // Analytics must not block or surface errors to the user.
-                });
-              }
+              trackHardwareWalletRecoveryConnectCtaClicked(trackEvent, {
+                location: MetaMetricsHardwareWalletRecoveryLocation.Swaps,
+                walletType,
+                connectionState,
+              });
             }
             await submitBridgeTransaction(activeQuote);
           }

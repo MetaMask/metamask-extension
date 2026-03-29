@@ -6,18 +6,7 @@ import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { PRODUCT_TYPES } from '@metamask/subscription-controller';
 import { useNavigate } from 'react-router-dom';
-import { ErrorCode } from '@metamask/hw-wallet-sdk';
-import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventLocation,
-  MetaMetricsEventName,
-} from '../../../../../../shared/constants/metametrics';
-import {
-  buildHardwareWalletRecoverySegmentProperties,
-  getHardwareWalletMetricDeviceModel,
-  mapHardwareWalletRecoveryErrorType,
-  mapHardwareWalletTypeToMetricDeviceType,
-} from '../../../../../../shared/lib/hardware-wallet-recovery-metrics';
+import { MetaMetricsEventLocation } from '../../../../../../shared/constants/metametrics';
 import { isCorrectDeveloperTransactionType } from '../../../../../../shared/lib/confirmation.utils';
 import { ConfirmAlertModal } from '../../../../../components/app/alert-system/confirm-alert-modal';
 import {
@@ -58,13 +47,11 @@ import { getConfirmationSender } from '../utils';
 import { useUserSubscriptions } from '../../../../../hooks/subscription/useSubscription';
 import { MetaMetricsContext } from '../../../../../contexts/metametrics';
 import {
-  ConnectionStatus,
-  createHardwareWalletError,
-  HardwareWalletType,
   useHardwareFooter,
   useHardwareWalletError,
   useHardwareWalletState,
 } from '../../../../../contexts/hardware-wallets';
+import { trackHardwareWalletRecoveryConnectCtaClicked } from '../../../../../helpers/utils/track-hardware-wallet-recovery-connect-cta-clicked';
 import { useHardwareWalletRecoveryLocation } from '../../../../../hooks/useHardwareWalletRecoveryLocation';
 import OriginThrottleModal from './origin-throttle-modal';
 import ShieldFooterAgreement from './shield-footer-agreement';
@@ -332,35 +319,11 @@ const Footer = () => {
     !hasUnconfirmedDangerAlerts;
 
   const onReconnectHardwareWalletCta = useCallback(async () => {
-    const connectionError =
-      connectionState.status === ConnectionStatus.ErrorState
-        ? connectionState.error
-        : undefined;
-    const walletTypeForMetrics = walletType ?? HardwareWalletType.Ledger;
-    const errorForMetrics =
-      connectionError ??
-      createHardwareWalletError(
-        ErrorCode.DeviceDisconnected,
-        walletTypeForMetrics,
-      );
-    const errorType = mapHardwareWalletRecoveryErrorType(errorForMetrics);
-    const deviceType = mapHardwareWalletTypeToMetricDeviceType(walletType);
-    const deviceModel = getHardwareWalletMetricDeviceModel(errorForMetrics);
-
-    if (deviceType) {
-      await trackEvent({
-        category: MetaMetricsEventCategory.Accounts,
-        event: MetaMetricsEventName.HardwareWalletRecoveryCtaClicked,
-        properties: buildHardwareWalletRecoverySegmentProperties({
-          location: hardwareWalletRecoveryLocation,
-          deviceType,
-          deviceModel,
-          errorType,
-          errorTypeViewCount: 1,
-          error: errorForMetrics,
-        }),
-      });
-    }
+    trackHardwareWalletRecoveryConnectCtaClicked(trackEvent, {
+      location: hardwareWalletRecoveryLocation,
+      walletType,
+      connectionState,
+    });
     await onSubmitPreflightCheck();
   }, [
     connectionState,
