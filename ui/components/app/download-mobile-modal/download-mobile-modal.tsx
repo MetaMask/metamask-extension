@@ -43,7 +43,7 @@ const DownloadMobileAppModal = ({ onClose }: { onClose: () => void }) => {
             {t('downloadMetaMaskMobileDescription')}
           </Text>
           <Box
-            className="download-mobile-app-modal__qr-code-wrapper mx-auto w-fit rounded-2xl"
+            className="mx-auto w-fit rounded-2xl"
             flexDirection={BoxFlexDirection.Row}
             justifyContent={BoxJustifyContent.Center}
             alignItems={BoxAlignItems.Center}
