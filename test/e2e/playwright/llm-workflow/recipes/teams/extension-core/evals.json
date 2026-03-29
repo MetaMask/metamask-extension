@@ -1,0 +1,17 @@
+{
+  "wallet-state": {
+    "description": "Get wallet setup state from KeyringController and OnboardingController. Note: isUnlocked is runtime-only and not persisted to storage — use mm_get_state for live lock status.",
+    "expression": "(async () => { const s = await chrome.storage.local.get('data'); const kc = s?.data?.KeyringController; const oc = s?.data?.OnboardingController; return JSON.stringify({ hasVault: !!kc?.vault, completedOnboarding: oc?.completedOnboarding ?? false }); })()",
+    "async": true
+  },
+  "accounts": {
+    "description": "Get selected account from AccountsController",
+    "expression": "(async () => { const s = await chrome.storage.local.get('data'); const accts = s?.data?.AccountsController?.internalAccounts; const selId = accts?.selectedAccount; return JSON.stringify({ selectedAccount: accts?.accounts?.[selId] ?? null, selectedAccountId: selId ?? null }); })()",
+    "async": true
+  },
+  "network": {
+    "description": "Get selected network from NetworkController",
+    "expression": "(async () => { const s = await chrome.storage.local.get('data'); const n = s?.data?.NetworkController; return JSON.stringify({ selectedNetworkClientId: n?.selectedNetworkClientId ?? null, chainId: n?.providerConfig?.chainId ?? null }); })()",
+    "async": true
+  }
+}
