@@ -43,13 +43,12 @@ const DownloadMobileAppModal = ({ onClose }: { onClose: () => void }) => {
             {t('downloadMetaMaskMobileDescription')}
           </Text>
           <Box
-            className="download-mobile-app-modal__qr-code-wrapper w-full rounded-2xl"
+            className="download-mobile-app-modal__qr-code-wrapper mx-auto w-fit rounded-2xl"
+            flexDirection={BoxFlexDirection.Row}
             justifyContent={BoxJustifyContent.Center}
             alignItems={BoxAlignItems.Center}
             borderWidth={1}
-            paddingHorizontal={0}
-            paddingTop={3}
-            paddingBottom={3}
+            padding={3}
             borderColor={BoxBorderColor.BorderMuted}
           >
             <img
@@ -57,12 +56,9 @@ const DownloadMobileAppModal = ({ onClose }: { onClose: () => void }) => {
               width={300}
               height={300}
               alt={t('downloadMetaMaskMobileTitle')}
-              style={{
-                alignSelf: 'center',
-              }}
+              className="block"
             />
           </Box>
-          <Box justifyContent={BoxJustifyContent.Center} />
           <Text variant={TextVariant.BodyMd} textAlign={TextAlign.Center}>
             {t('downloadMetaMaskMobileQrNote')}
           </Text>
