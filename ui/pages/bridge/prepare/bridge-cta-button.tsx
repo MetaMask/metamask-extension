@@ -238,22 +238,25 @@ export const BridgeCTAButton = ({
                 );
               const errorType =
                 mapHardwareWalletRecoveryErrorType(errorForMetrics);
-              trackEvent({
-                category: MetaMetricsEventCategory.Accounts,
-                event: MetaMetricsEventName.HardwareWalletRecoveryCtaClicked,
-                properties: buildHardwareWalletRecoverySegmentProperties({
-                  location: MetaMetricsHardwareWalletRecoveryLocation.Swaps,
-                  deviceType:
-                    mapHardwareWalletTypeToMetricDeviceType(walletType),
-                  deviceModel:
-                    getHardwareWalletMetricDeviceModel(errorForMetrics),
-                  errorType,
-                  errorTypeViewCount: 1,
-                  error: errorForMetrics,
-                }),
-              }).catch(() => {
-                // Analytics must not block or surface errors to the user.
-              });
+              const deviceType =
+                mapHardwareWalletTypeToMetricDeviceType(walletType);
+              if (deviceType) {
+                trackEvent({
+                  category: MetaMetricsEventCategory.Accounts,
+                  event: MetaMetricsEventName.HardwareWalletRecoveryCtaClicked,
+                  properties: buildHardwareWalletRecoverySegmentProperties({
+                    location: MetaMetricsHardwareWalletRecoveryLocation.Swaps,
+                    deviceType,
+                    deviceModel:
+                      getHardwareWalletMetricDeviceModel(errorForMetrics),
+                    errorType,
+                    errorTypeViewCount: 1,
+                    error: errorForMetrics,
+                  }),
+                }).catch(() => {
+                  // Analytics must not block or surface errors to the user.
+                });
+              }
             }
             await submitBridgeTransaction(activeQuote);
           }

@@ -347,18 +347,20 @@ const Footer = () => {
     const deviceType = mapHardwareWalletTypeToMetricDeviceType(walletType);
     const deviceModel = getHardwareWalletMetricDeviceModel(errorForMetrics);
 
-    await trackEvent({
-      category: MetaMetricsEventCategory.Accounts,
-      event: MetaMetricsEventName.HardwareWalletRecoveryCtaClicked,
-      properties: buildHardwareWalletRecoverySegmentProperties({
-        location: hardwareWalletRecoveryLocation,
-        deviceType,
-        deviceModel,
-        errorType,
-        errorTypeViewCount: 1,
-        error: errorForMetrics,
-      }),
-    });
+    if (deviceType) {
+      await trackEvent({
+        category: MetaMetricsEventCategory.Accounts,
+        event: MetaMetricsEventName.HardwareWalletRecoveryCtaClicked,
+        properties: buildHardwareWalletRecoverySegmentProperties({
+          location: hardwareWalletRecoveryLocation,
+          deviceType,
+          deviceModel,
+          errorType,
+          errorTypeViewCount: 1,
+          error: errorForMetrics,
+        }),
+      });
+    }
     await onSubmitPreflightCheck();
   }, [
     connectionState,
