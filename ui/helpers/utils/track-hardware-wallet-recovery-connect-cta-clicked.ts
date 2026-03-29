@@ -23,7 +23,8 @@ import {
  * uses a primary “Connect [device]” style CTA while the hardware wallet is not ready
  * (e.g. bridge submit, confirmation reconnect).
  *
- * No-ops when `walletType` does not map to a Segment `device_type` (required property).
+ * No-ops when `walletType` is null/undefined or does not map to a Segment `device_type`
+ * (required property). Synthetic errors are only built after those guards.
  * Swallows tracking failures so callers are not blocked.
  *
  * @param trackEvent - UI `trackEvent` from {@link MetaMetricsContext}.
@@ -41,21 +42,23 @@ export function trackHardwareWalletRecoveryConnectCtaClicked(
   },
 ): void {
   const { location, walletType, connectionState } = options;
-  const connectionError =
-    connectionState.status === ConnectionStatus.ErrorState
-      ? connectionState.error
-      : undefined;
-  const walletTypeForMetrics = walletType ?? HardwareWalletType.Ledger;
-  const errorForMetrics =
-    connectionError ??
-    createHardwareWalletError(
-      ErrorCode.DeviceDisconnected,
-      walletTypeForMetrics,
-    );
+
+  if (!walletType) {
+    return;
+  }
+
   const deviceType = mapHardwareWalletTypeToMetricDeviceType(walletType);
   if (!deviceType) {
     return;
   }
+
+  const connectionError =
+    connectionState.status === ConnectionStatus.ErrorState
+      ? connectionState.error
+      : undefined;
+  const errorForMetrics =
+    connectionError ??
+    createHardwareWalletError(ErrorCode.DeviceDisconnected, walletType);
 
   trackEvent({
     category: MetaMetricsEventCategory.Accounts,
