@@ -1,6 +1,7 @@
 import {
   ADVANCED_ROUTE,
   DEFAULT_ROUTE,
+  NETWORKS_ROUTE,
   SETTINGS_V2_ROUTE,
 } from '../../../../../ui/helpers/constants/routes';
 import HomePage from '../home/homepage';
@@ -124,6 +125,17 @@ class SettingsPage {
     console.log('Navigating to Advanced Settings page');
     await this.driver.executeScript(
       `window.location.hash = ${JSON.stringify(ADVANCED_ROUTE)};`,
+    );
+  }
+
+  /**
+   * Opens the Networks settings route, which launches the network list menu
+   * (same UI as the account menu → Networks entry).
+   */
+  async goToNetworksSettings(): Promise<void> {
+    console.log('Navigating to Networks settings');
+    await this.driver.executeScript(
+      `window.location.hash = ${JSON.stringify(NETWORKS_ROUTE)};`,
     );
   }
 

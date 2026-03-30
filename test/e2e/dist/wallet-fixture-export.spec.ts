@@ -15,7 +15,6 @@ import {
 } from '../fixtures/fixture-validation';
 import {
   addCustomNetworkInOnboardingPrivacySettings,
-  handleSidepanelPostOnboarding,
   importSRPOnboardingFlow,
 } from '../page-objects/flows/onboarding.flow';
 import { enableNativeTokenAsMainBalance } from '../page-objects/flows/settings.flow';
@@ -171,9 +170,6 @@ describe('Wallet State', function () {
           currencySymbol,
           networkUrl,
         });
-
-        // Handle sidepanel navigation if needed
-        await handleSidepanelPostOnboarding(driver);
 
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();

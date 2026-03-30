@@ -52,7 +52,8 @@ class SelectNetwork {
     tag: 'h4',
   };
 
-  private readonly toggleButton = '.toggle-button > div';
+  private readonly showTestNetworksToggle =
+    'label.toggle-button:has([data-testid="network-menu-show-test-networks"])';
 
   private readonly addPopularNetworkByChainIdIcon = (chainId: string) =>
     `[data-testid="popular-network-${chainId}"] [data-testid="test-add-button"] button`;
@@ -185,7 +186,8 @@ class SelectNetwork {
 
   async toggleShowTestNetwork(): Promise<void> {
     console.log('Toggle show test network in select network dialog');
-    await this.driver.clickElement(this.toggleButton);
+    await this.driver.waitForSelector(this.showTestNetworksToggle);
+    await this.driver.clickElement(this.showTestNetworksToggle);
   }
 
   /**
