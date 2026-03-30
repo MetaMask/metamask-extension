@@ -20,10 +20,10 @@ describe('buildErrorContent', () => {
 
     const content = buildErrorContent(error, HardwareWalletType.Ledger, t);
 
-    expect(content.variant).toBe('recovery');
-    expect(content.recoveryInstructions[0]).toBe(
-      'hardwareWalletErrorRecoveryUnlock1:Ledger',
-    );
+    expect(content).toMatchObject({
+      variant: 'recovery',
+      recoveryInstructions: ['hardwareWalletErrorRecoveryUnlock1:Ledger'],
+    });
     expect(t).toHaveBeenCalledWith('hardwareWalletErrorRecoveryUnlock1', [
       'Ledger',
     ]);
