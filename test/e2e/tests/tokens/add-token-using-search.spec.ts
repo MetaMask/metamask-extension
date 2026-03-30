@@ -2,7 +2,10 @@ import { MockedEndpoint, Mockttp } from 'mockttp';
 import { withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { NETWORK_CLIENT_ID } from '../../constants';
-import { CHAIN_IDS } from '../../../../shared/constants/network';
+import {
+  BSC_DISPLAY_NAME,
+  CHAIN_IDS,
+} from '../../../../shared/constants/network';
 import AssetListPage from '../../page-objects/pages/home/asset-list';
 import { login } from '../../page-objects/flows/login.flow';
 
@@ -123,7 +126,10 @@ describe('Add existing token using search', function () {
         await login(driver);
         const assetListPage = new AssetListPage(driver);
         await assetListPage.checkTokenAmountIsDisplayed('25 BNB');
-        await assetListPage.importTokenBySearch('BAT');
+        await assetListPage.importTokenBySearch({
+          tokenName: 'BAT',
+          networkName: BSC_DISPLAY_NAME,
+        });
         await assetListPage.checkTokenAmountInTokenDetailsModal(
           'Basic Attention Token',
           '0 BAT',
