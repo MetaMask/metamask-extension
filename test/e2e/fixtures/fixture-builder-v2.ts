@@ -313,10 +313,12 @@ class FixtureBuilderV2 {
   }
 
   withEnabledNetworks(
-    data: NetworkEnablementControllerState['enabledNetworkMap'],
+    data: Partial<NetworkEnablementControllerState['enabledNetworkMap']>,
   ): this {
-    this.fixture.data.NetworkEnablementController.enabledNetworkMap =
-      data as FixtureType['data']['NetworkEnablementController']['enabledNetworkMap'];
+    merge(
+      this.fixture.data.NetworkEnablementController.enabledNetworkMap,
+      data,
+    );
     return this;
   }
 
