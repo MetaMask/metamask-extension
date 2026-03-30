@@ -118,6 +118,9 @@ export const selectNonEvmBridgeSourceTxIds = createSelector(
     const ids = new Set<string>();
 
     for (const [key, item] of Object.entries(bridgeHistory ?? {})) {
+      if (!item.quote) {
+        continue;
+      }
       if (!isNonEvmChainId(item.quote.srcChainId)) {
         continue;
       }

@@ -40,7 +40,7 @@ const getEnvironmentTypeMemo = memoize((url: string) => {
 export const getEnvironmentType = (url = window.location.href): string =>
   getEnvironmentTypeMemo(url);
 
-export const isInteractiveUI = (url = window.location.href) => {
+export const isInteractiveUI = (url = globalThis.location.href) => {
   const environmentType = getEnvironmentType(url);
 
   return (

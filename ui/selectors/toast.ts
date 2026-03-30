@@ -5,13 +5,16 @@ import {
   TOAST_EXCLUDED_TRANSACTION_TYPES,
   TOAST_EXCLUDED_NON_EVM_TRANSACTION_TYPES,
 } from '../helpers/constants/transactions';
-import { EMPTY_ARRAY } from './shared';
+import { EMPTY_ARRAY, EMPTY_OBJECT } from './shared';
 
 const selectTransactions = (state: MetaMaskReduxState) =>
-  state.metamask?.transactions ?? [];
+  state.metamask?.transactions ?? EMPTY_ARRAY;
 
 const selectTxHistory = (state: MetaMaskReduxState) =>
-  state.metamask?.txHistory;
+  state.metamask?.txHistory ?? EMPTY_OBJECT;
+
+const selectNonEvmTransactions = (state: MetaMaskReduxState) =>
+  state.metamask?.nonEvmTransactions ?? EMPTY_OBJECT;
 
 export const selectTransactionIds = createSelector(
   selectTransactions,
@@ -22,7 +25,7 @@ export const selectBridgeApprovalTxIds = createSelector(
   selectTxHistory,
   (txHistory) => {
     const ids = new Set<string>();
-    for (const item of Object.values(txHistory ?? {})) {
+    for (const item of Object.values(txHistory)) {
       if (item.approvalTxId) {
         ids.add(item.approvalTxId.toLowerCase());
       }
@@ -35,8 +38,8 @@ export const selectCrossChainBridgeSourceTxIds = createSelector(
   selectTxHistory,
   (txHistory) => {
     const ids = new Set<string>();
-    for (const [key, item] of Object.entries(txHistory ?? {})) {
-      if (item.quote?.srcChainId !== item.quote?.destChainId) {
+    for (const [key, item] of Object.entries(txHistory)) {
+      if (item.quote && item.quote.srcChainId !== item.quote.destChainId) {
         ids.add(key);
       }
     }
@@ -53,19 +56,22 @@ export const selectCrossChainBridgeSourceTxIds = createSelector(
  * @returns {object[]} Filtered, deduplicated array of transaction objects
  */
 export const selectEvmTransactionsForToast = createSelector(
-  (state: MetaMaskReduxState) => state.metamask?.transactions,
+  selectTransactions,
   selectBridgeApprovalTxIds,
   selectCrossChainBridgeSourceTxIds,
   (rawTransactions, bridgeApprovalIds, crossChainBridgeIds) => {
     if (!rawTransactions?.length) {
       return EMPTY_ARRAY;
     }
+
     const seen = new Set<string>();
     const result = [];
+
     for (const tx of rawTransactions) {
       if (seen.has(tx.id)) {
         continue; // skip duplicate entries for the same tx id
       }
+
       seen.add(tx.id);
       if (
         tx.type &&
@@ -76,6 +82,7 @@ export const selectEvmTransactionsForToast = createSelector(
         result.push(tx);
       }
     }
+
     return result;
   },
 );
@@ -87,7 +94,7 @@ export const selectEvmTransactionsForToast = createSelector(
  * @returns {object[]} Filtered array of non-EVM transaction objects
  */
 export const selectNonEvmTransactionsForToast = createDeepEqualSelector(
-  (state: MetaMaskReduxState) => state.metamask?.nonEvmTransactions,
+  selectNonEvmTransactions,
   selectCrossChainBridgeSourceTxIds,
   (nonEvmTransactionsMap, crossChainBridgeIds) => {
     if (!nonEvmTransactionsMap) {
