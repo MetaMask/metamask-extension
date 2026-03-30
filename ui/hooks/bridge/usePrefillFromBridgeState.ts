@@ -6,7 +6,7 @@ import { getEnvironmentType } from '../../../shared/lib/environment-type';
 import {
   rehydrateBridgeStore,
   resetBridgeController,
-  resetBridgeStoreAndCache,
+  resetInputFields,
   restoreQuoteRequestFromState,
   setFromToken,
   setToToken,
@@ -36,7 +36,7 @@ export const usePrefillFromBridgeState = () => {
 
   const resetControllerAndCache = () => {
     dispatch(resetBridgeController());
-    dispatch(resetBridgeStoreAndCache());
+    dispatch(resetInputFields());
   };
 
   useEffect(() => {

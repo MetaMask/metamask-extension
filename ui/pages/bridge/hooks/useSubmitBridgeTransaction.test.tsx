@@ -171,10 +171,7 @@ const submitIntentSpy = jest.spyOn(bridgeStatusActions, 'submitBridgeIntent');
 const isHardwareWalletSpy = sharedSelectors.isHardwareWallet as jest.Mock;
 const captureExceptionSpy = jest.spyOn(sentry, 'captureException');
 const mockResetState = jest.fn();
-const resetBridgeStoreSpy = jest.spyOn(
-  bridgeActions,
-  'resetBridgeStoreAndCache',
-);
+const resetBridgeStoreSpy = jest.spyOn(bridgeActions, 'resetInputFields');
 
 describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
   describe('submitBridgeTransaction', () => {

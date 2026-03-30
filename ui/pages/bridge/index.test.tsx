@@ -14,10 +14,7 @@ import {
 import * as bridgeActions from '../../ducks/bridge/actions';
 import CrossChainSwap from '.';
 
-const mockResetBridgeStore = jest.spyOn(
-  bridgeActions,
-  'resetBridgeStoreAndCache',
-);
+const mockResetBridgeStore = jest.spyOn(bridgeActions, 'resetInputFields');
 const mockResetBridgeState = jest.fn();
 const mockUseHardwareWalletConfig = jest.fn();
 const mockUseHardwareWalletActions = jest.fn();

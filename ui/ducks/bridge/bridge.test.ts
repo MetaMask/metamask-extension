@@ -16,11 +16,11 @@ import {
   setFromToken,
   setFromTokenInputValue,
   setToToken,
-  resetInputFields,
   updateQuoteRequestParams,
   setWasTxDeclined,
   setSlippage,
   resetBridgeController,
+  resetInputFieldsAction,
 } from './actions';
 
 const middleware = [thunk];
@@ -133,7 +133,7 @@ describe('Ducks - Bridge', () => {
   describe('resetInputFields', () => {
     it('resets to initalState', async () => {
       const state = store.getState().bridge;
-      store.dispatch(resetInputFields());
+      store.dispatch(resetInputFieldsAction() as never);
       const actions = store.getActions();
       expect(actions[0].type).toStrictEqual('bridge/resetInputFields');
       const newState = bridgeReducer(state, actions[0]);
@@ -206,7 +206,7 @@ describe('Ducks - Bridge', () => {
     });
   });
 
-  describe('resetBridgeState', () => {
+  describe('resetBridgeController', () => {
     it('dispatches action to the bridge controller', () => {
       // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -243,7 +243,7 @@ describe('Ducks - Bridge', () => {
       );
       const state = mockStore.getState().bridge;
 
-      mockStore.dispatch(resetInputFields() as never);
+      mockStore.dispatch(resetInputFieldsAction() as never);
 
       const actions = mockStore.getActions();
       expect(actions[0].type).toStrictEqual('bridge/resetInputFields');
