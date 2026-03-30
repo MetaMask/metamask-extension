@@ -1065,6 +1065,9 @@ export enum MetaMetricsEventName {
   HardwareWalletForgotten = 'Hardware Wallet Forgotten',
   HardwareWalletMarketingButtonClicked = 'Hardware Wallet Marketing Button Clicked',
   HardwareWalletConnectionFailed = 'Hardware Wallet Connection Failed',
+  HardwareWalletRecoveryModalViewed = 'Hardware Wallet Recovery Modal Viewed',
+  HardwareWalletRecoverySuccessModalViewed = 'Hardware Wallet Recovery Success Modal Viewed',
+  HardwareWalletRecoveryCtaClicked = 'Hardware Wallet Recovery CTA Clicked',
   ViewportSwitched = 'Viewport Switched',
   // Rewards
   RewardsOptInStarted = 'REWARDS_OPT_IN_STARTED',
@@ -1101,6 +1104,41 @@ export enum MetaMetricsEventName {
   ContactUpdated = 'Contact Updated',
   DeleteContactClicked = 'Delete Contact Clicked',
   ContactDeleted = 'Contact Deleted',
+}
+
+/**
+ * Segment `location` for hardware wallet recovery.
+ * String values must match `segment-schema/libraries/properties/metamask-hardware-wallet-recovery-globals.yaml` (`location` enum).
+ */
+export enum MetaMetricsHardwareWalletRecoveryLocation {
+  Connection = 'Connection',
+  Transaction = 'Transaction',
+  Message = 'Message',
+  Swaps = 'Swaps',
+  Send = 'Send',
+}
+
+/**
+ * Segment `error_type` for hardware wallet recovery.
+ * String values must match `metamask-hardware-wallet-recovery-globals` / `metamask-hardware-wallet-recovery-error-globals` enums in segment-schema.
+ */
+export enum MetaMetricsHardwareWalletRecoveryErrorType {
+  DeviceLocked = 'Device Locked',
+  DeviceDisconnected = 'Device Disconnected',
+  EthereumAppNotOpened = 'Ethereum App Not Opened',
+  BlindSigningNotEnabled = 'Blind Signing Not Enabled',
+  GenericError = 'Generic Error',
+}
+
+/**
+ * Segment `device_type` (manufacturer) for hardware wallet events.
+ * String values must match `segment-schema/libraries/properties/metamask-hardware-wallet-globals.yaml` (`device_type` enum).
+ */
+export enum MetaMetricsHardwareWalletDeviceType {
+  Ledger = 'Ledger',
+  Trezor = 'Trezor',
+  QrHardware = 'QR Hardware',
+  Lattice = 'Lattice',
 }
 
 export enum MetaMetricsEventAccountType {
