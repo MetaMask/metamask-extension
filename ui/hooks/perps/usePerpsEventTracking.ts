@@ -1,10 +1,4 @@
-import {
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useRef,
-} from 'react';
+import { useCallback, useContext, useEffect, useMemo, useRef } from 'react';
 import { Json } from '@metamask/utils';
 import { PERPS_EVENT_PROPERTY } from '@metamask/perps-controller';
 import { MetaMetricsContext } from '../../contexts/metametrics';
@@ -39,7 +33,17 @@ export function usePerpsEventTracking(
 
   const track = useCallback<PerpsTrackEventFn>(
     (eventName, properties) => {
-      void trackEvent({
+      console.log('usePerpsEventTracking', eventName, properties);
+      console.log('SEGMENT_WRITE_KEY', process.env.SEGMENT_WRITE_KEY);
+      console.log({
+        event: eventName,
+        category: MetaMetricsEventCategory.Perps,
+        properties: {
+          ...properties,
+          [PERPS_EVENT_PROPERTY.TIMESTAMP]: Date.now(),
+        },
+      });
+      trackEvent({
         event: eventName,
         category: MetaMetricsEventCategory.Perps,
         properties: {
@@ -65,7 +69,7 @@ export function usePerpsEventTracking(
     }
 
     hasFiredDeclarativeRef.current = true;
-    void trackEvent({
+    trackEvent({
       event: eventName,
       category: MetaMetricsEventCategory.Perps,
       properties: {

@@ -1,5 +1,14 @@
-import React, { useState, useMemo, useCallback, useEffect, useRef } from 'react';
-import { PERPS_EVENT_PROPERTY, PERPS_EVENT_VALUE } from '@metamask/perps-controller';
+import React, {
+  useState,
+  useMemo,
+  useCallback,
+  useEffect,
+  useRef,
+} from 'react';
+import {
+  PERPS_EVENT_PROPERTY,
+  PERPS_EVENT_VALUE,
+} from '@metamask/perps-controller';
 import { useSelector } from 'react-redux';
 import { Navigate, useNavigate } from 'react-router-dom';
 import {

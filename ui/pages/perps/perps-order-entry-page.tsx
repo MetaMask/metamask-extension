@@ -1,4 +1,10 @@
-import React, { useMemo, useCallback, useState, useEffect, useRef } from 'react';
+import React, {
+  useMemo,
+  useCallback,
+  useState,
+  useEffect,
+  useRef,
+} from 'react';
 import {
   PERPS_EVENT_PROPERTY,
   PERPS_EVENT_VALUE,
@@ -212,8 +218,7 @@ const PerpsOrderEntryPage: React.FC = () => {
     }
     tradingScreenTrackedRef.current = true;
     track(MetaMetricsEventName.PerpsScreenViewed, {
-      [PERPS_EVENT_PROPERTY.SCREEN_TYPE]:
-        PERPS_EVENT_VALUE.SCREEN_TYPE.TRADING,
+      [PERPS_EVENT_PROPERTY.SCREEN_TYPE]: PERPS_EVENT_VALUE.SCREEN_TYPE.TRADING,
       [PERPS_EVENT_PROPERTY.ASSET]: decodedSymbol,
     });
   }, [marketsLoading, decodedSymbol, track]);

@@ -267,16 +267,18 @@ describe('PerpsControllerInit', () => {
         call,
       } as unknown as PerpsControllerMessenger;
 
-      jest.mocked(createPerpsInfrastructure).mockImplementationOnce(
-        (deps: { trackEvent: (payload: unknown) => void }) => {
-          deps.trackEvent({
-            event: MetaMetricsEventName.PerpsScreenViewed,
-            category: MetaMetricsEventCategory.Perps,
-            properties: {},
-          });
-          return {};
-        },
-      );
+      jest
+        .mocked(createPerpsInfrastructure)
+        .mockImplementationOnce(
+          (deps: { trackEvent: (payload: unknown) => void }) => {
+            deps.trackEvent({
+              event: MetaMetricsEventName.PerpsScreenViewed,
+              category: MetaMetricsEventCategory.Perps,
+              properties: {},
+            });
+            return {};
+          },
+        );
 
       PerpsControllerInit(request);
 
