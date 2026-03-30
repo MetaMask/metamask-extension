@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 import { cloneDeep } from 'lodash';
 import {
   Caip25CaveatType,
@@ -7,6 +8,7 @@ import {
   getPermittedAccountsByOrigin,
   getPermittedChainsByOrigin,
   getOriginsWithSessionProperty,
+  type PermissionControllerState,
 } from './selectors';
 
 describe('PermissionController selectors', () => {
@@ -102,30 +104,46 @@ describe('PermissionController selectors', () => {
         ['baz.fizz', ['0x1', '0x2']],
       ]);
 
-      const selected1 = getPermittedAccountsByOrigin(state1);
+      const selected1 = getPermittedAccountsByOrigin(
+        state1 as unknown as PermissionControllerState,
+      );
 
       expect(selected1).toStrictEqual(expected1);
       // The selector should return the memoized value if state.subjects is
       // the same object
-      expect(selected1).toBe(getPermittedAccountsByOrigin(state1));
+      expect(selected1).toBe(
+        getPermittedAccountsByOrigin(
+          state1 as unknown as Parameters<
+            typeof getPermittedAccountsByOrigin
+          >[0],
+        ),
+      );
 
       // If we mutate the state, the selector return value should be different
       // from the first.
       const state2 = cloneDeep(state1);
-      delete state2.subjects['foo.bar'];
+      delete (state2.subjects as Record<string, unknown>)['foo.bar'];
 
       const expected2 = new Map([
         ['bar.baz', ['0x2']],
         ['baz.fizz', ['0x1', '0x2']],
       ]);
 
-      const selected2 = getPermittedAccountsByOrigin(state2);
+      const selected2 = getPermittedAccountsByOrigin(
+        state2 as unknown as PermissionControllerState,
+      );
 
       expect(selected2).toStrictEqual(expected2);
       expect(selected2).not.toBe(selected1);
       // Since we didn't mutate the state at this point, the value should once
       // again be the memoized.
-      expect(selected2).toBe(getPermittedAccountsByOrigin(state2));
+      expect(selected2).toBe(
+        getPermittedAccountsByOrigin(
+          state2 as unknown as Parameters<
+            typeof getPermittedAccountsByOrigin
+          >[0],
+        ),
+      );
     });
   });
 
@@ -219,30 +237,42 @@ describe('PermissionController selectors', () => {
         ['baz.fizz', ['0x1', '0x2']],
       ]);
 
-      const selected1 = getPermittedChainsByOrigin(state1);
+      const selected1 = getPermittedChainsByOrigin(
+        state1 as unknown as PermissionControllerState,
+      );
 
       expect(selected1).toStrictEqual(expected1);
       // The selector should return the memoized value if state.subjects is
       // the same object
-      expect(selected1).toBe(getPermittedChainsByOrigin(state1));
+      expect(selected1).toBe(
+        getPermittedChainsByOrigin(
+          state1 as unknown as PermissionControllerState,
+        ),
+      );
 
       // If we mutate the state, the selector return value should be different
       // from the first.
       const state2 = cloneDeep(state1);
-      delete state2.subjects['foo.bar'];
+      delete (state2.subjects as Record<string, unknown>)['foo.bar'];
 
       const expected2 = new Map([
         ['bar.baz', ['0x2']],
         ['baz.fizz', ['0x1', '0x2']],
       ]);
 
-      const selected2 = getPermittedChainsByOrigin(state2);
+      const selected2 = getPermittedChainsByOrigin(
+        state2 as unknown as PermissionControllerState,
+      );
 
       expect(selected2).toStrictEqual(expected2);
       expect(selected2).not.toBe(selected1);
       // Since we didn't mutate the state at this point, the value should once
       // again be the memoized.
-      expect(selected2).toBe(getPermittedChainsByOrigin(state2));
+      expect(selected2).toBe(
+        getPermittedChainsByOrigin(
+          state2 as unknown as PermissionControllerState,
+        ),
+      );
     });
   });
 
@@ -292,7 +322,7 @@ describe('PermissionController selectors', () => {
       };
 
       const result = getOriginsWithSessionProperty(
-        state,
+        state as unknown as PermissionControllerState,
         'solana_accountChanged_notifications',
       );
 
@@ -327,7 +357,7 @@ describe('PermissionController selectors', () => {
       };
 
       const result = getOriginsWithSessionProperty(
-        state,
+        state as unknown as PermissionControllerState,
         'non_existent_property',
       );
 
@@ -398,7 +428,7 @@ describe('PermissionController selectors', () => {
       };
 
       const result = getOriginsWithSessionProperty(
-        state,
+        state as unknown as PermissionControllerState,
         'solana_accountChanged_notifications',
       );
 
@@ -442,7 +472,7 @@ describe('PermissionController selectors', () => {
       };
 
       const result = getOriginsWithSessionProperty(
-        state,
+        state as unknown as PermissionControllerState,
         'solana_accountChanged_notifications',
       );
 
@@ -494,7 +524,7 @@ describe('PermissionController selectors', () => {
       };
 
       const result = getOriginsWithSessionProperty(
-        state,
+        state as unknown as PermissionControllerState,
         'solana_accountChanged_notifications',
       );
 
@@ -508,7 +538,10 @@ describe('PermissionController selectors', () => {
         subjects: {},
       };
 
-      const result = getOriginsWithSessionProperty(state, 'any_property');
+      const result = getOriginsWithSessionProperty(
+        state as unknown as PermissionControllerState,
+        'any_property',
+      );
 
       expect(result).toStrictEqual({});
     });
