@@ -125,7 +125,9 @@ export type TokenResolution =
   | { kind: 'native' }
   | {
       kind: 'erc20';
-      getTokenAddress: (permission: { data: Record<string, unknown> }) => string;
+      getTokenAddress: (permission: {
+        data: Record<string, unknown>;
+      }) => string;
     }
   | { kind: 'none' };
 

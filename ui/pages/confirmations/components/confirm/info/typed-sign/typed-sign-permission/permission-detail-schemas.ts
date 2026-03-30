@@ -1,7 +1,10 @@
 import { BigNumber } from 'bignumber.js';
 import type { Hex } from '@metamask/utils';
 import { DAY } from '../../../../../../../../shared/constants/time';
-import { formatPeriodDuration, MAX_UINT256 } from './typed-sign-permission-util';
+import {
+  formatPeriodDuration,
+  MAX_UINT256,
+} from './typed-sign-permission-util';
 import type {
   PermissionContext,
   PermissionSchemaEntry,

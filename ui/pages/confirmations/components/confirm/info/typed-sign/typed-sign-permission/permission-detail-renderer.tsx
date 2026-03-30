@@ -190,7 +190,7 @@ function renderTotalExposure(
     );
   }
 
-  const data = ctx.permission.data;
+  const { data } = ctx.permission;
   return (
     <TotalExposure
       key={index}
@@ -265,8 +265,6 @@ export const PermissionDetailRenderer: React.FC<{
   };
 
   return (
-    <>
-      {schemaEntry.sections.map((section) => renderSection(section, ctx))}
-    </>
+    <>{schemaEntry.sections.map((section) => renderSection(section, ctx))}</>
   );
 };
