@@ -11,8 +11,13 @@ import {
   HardwareConnectionPermissionState,
   HardwareWalletProvider,
 } from '../../contexts/hardware-wallets';
+import * as bridgeActions from '../../ducks/bridge/actions';
 import CrossChainSwap from '.';
 
+const mockResetBridgeStore = jest.spyOn(
+  bridgeActions,
+  'resetBridgeStoreAndCache',
+);
 const mockResetBridgeState = jest.fn();
 const mockUseHardwareWalletConfig = jest.fn();
 const mockUseHardwareWalletActions = jest.fn();
@@ -126,6 +131,7 @@ describe('Bridge', () => {
 
     expect(getByText(messages.swap.message)).toBeInTheDocument();
     expect(container).toMatchSnapshot();
-    expect(mockResetBridgeState).toHaveBeenCalledTimes(1);
+    expect(mockResetBridgeStore).toHaveBeenCalledTimes(0);
+    expect(mockResetBridgeState).toHaveBeenCalledTimes(0);
   });
 });

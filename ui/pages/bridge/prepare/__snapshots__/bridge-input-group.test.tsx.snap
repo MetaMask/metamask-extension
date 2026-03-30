@@ -826,6 +826,7 @@ exports[`BridgeInputGroup should search for tokens 1`] = `
               <button
                 aria-label="View token details"
                 class="inline-flex items-center justify-center p-0 h-8 w-8 rounded-lg bg-transparent hover:bg-hover active:bg-pressed text-icon-default bridge-asset-info-icon"
+                data-testid="bridge-asset-info-icon-eip155:1/erc20:0xaf88d065e77c8cC2239327C5EDb3A432268e5831"
               >
                 <svg
                   class="inline-block w-4 h-4 text-inherit"
@@ -919,6 +920,7 @@ exports[`BridgeInputGroup should search for tokens 1`] = `
               <button
                 aria-label="View token details"
                 class="inline-flex items-center justify-center p-0 h-8 w-8 rounded-lg bg-transparent hover:bg-hover active:bg-pressed text-icon-default bridge-asset-info-icon"
+                data-testid="bridge-asset-info-icon-eip155:1/erc20:0xaf88d065e77c8cC2239327C5EDb3A432268e5832"
               >
                 <svg
                   class="inline-block w-4 h-4 text-inherit"
@@ -1206,6 +1208,7 @@ exports[`BridgeInputGroup should search for tokens 5`] = `
               <button
                 aria-label="View token details"
                 class="inline-flex items-center justify-center p-0 h-8 w-8 rounded-lg bg-transparent hover:bg-hover active:bg-pressed text-icon-default bridge-asset-info-icon"
+                data-testid="bridge-asset-info-icon-eip155:1/erc20:0xaf88d065e77c8cC2239327C5EDb3A432268e5831"
               >
                 <svg
                   class="inline-block w-4 h-4 text-inherit"
@@ -1299,6 +1302,7 @@ exports[`BridgeInputGroup should search for tokens 5`] = `
               <button
                 aria-label="View token details"
                 class="inline-flex items-center justify-center p-0 h-8 w-8 rounded-lg bg-transparent hover:bg-hover active:bg-pressed text-icon-default bridge-asset-info-icon"
+                data-testid="bridge-asset-info-icon-eip155:1/erc20:0xaf88d065e77c8cC2239327C5EDb3A432268e5832"
               >
                 <svg
                   class="inline-block w-4 h-4 text-inherit"
@@ -1392,6 +1396,7 @@ exports[`BridgeInputGroup should search for tokens 5`] = `
               <button
                 aria-label="View token details"
                 class="inline-flex items-center justify-center p-0 h-8 w-8 rounded-lg bg-transparent hover:bg-hover active:bg-pressed text-icon-default bridge-asset-info-icon"
+                data-testid="bridge-asset-info-icon-eip155:59144/erc20:0xaf88d065e77c8cC2239327C5EDb3A432268e5833"
               >
                 <svg
                   class="inline-block w-4 h-4 text-inherit"

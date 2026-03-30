@@ -78,10 +78,16 @@ const callBridgeControllerMethod = (
 };
 
 // Background actions
-export const resetBridgeControllerAndCache = () => {
+export const resetBridgeController = () => {
   return async (dispatch: MetaMaskReduxDispatch) => {
     dispatch(callBridgeControllerMethod(BridgeBackgroundAction.RESET_STATE));
+  };
+};
+
+export const resetBridgeStoreAndCache = () => {
+  return async (dispatch: MetaMaskReduxDispatch) => {
     await clearAllBridgeCacheItems();
+    dispatch(resetInputFields());
   };
 };
 

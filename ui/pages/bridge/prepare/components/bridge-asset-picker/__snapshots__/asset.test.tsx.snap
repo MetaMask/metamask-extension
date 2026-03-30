@@ -79,6 +79,7 @@ exports[`BridgeAsset should render ERC20 asset 1`] = `
   <button
     aria-label="View token details"
     class="inline-flex items-center justify-center p-0 h-8 w-8 rounded-lg bg-transparent hover:bg-hover active:bg-pressed text-icon-default bridge-asset-info-icon"
+    data-testid="bridge-asset-info-icon-eip155:1/erc20:0xacA92E438df0B2401fF60dA7E4337B687a2435DA"
   >
     <svg
       class="inline-block w-4 h-4 text-inherit"
@@ -182,6 +183,7 @@ exports[`BridgeAsset should render asset with accountType 1`] = `
   <button
     aria-label="View token details"
     class="inline-flex items-center justify-center p-0 h-8 w-8 rounded-lg bg-transparent hover:bg-hover active:bg-pressed text-icon-default bridge-asset-info-icon"
+    data-testid="bridge-asset-info-icon-bip122:000000000019d6689c085ae165831e93/slip44:0"
   >
     <svg
       class="inline-block w-4 h-4 text-inherit"
@@ -280,6 +282,7 @@ exports[`BridgeAsset should render asset with balance 1`] = `
   <button
     aria-label="View token details"
     class="inline-flex items-center justify-center p-0 h-8 w-8 rounded-lg bg-transparent hover:bg-hover active:bg-pressed text-icon-default bridge-asset-info-icon"
+    data-testid="bridge-asset-info-icon-eip155:1/erc20:0xacA92E438df0B2401fF60dA7E4337B687a2435DA"
   >
     <svg
       class="inline-block w-4 h-4 text-inherit"
@@ -378,6 +381,7 @@ exports[`BridgeAsset should render native asset 1`] = `
   <button
     aria-label="View token details"
     class="inline-flex items-center justify-center p-0 h-8 w-8 rounded-lg bg-transparent hover:bg-hover active:bg-pressed text-icon-default bridge-asset-info-icon"
+    data-testid="bridge-asset-info-icon-eip155:1/slip44:60"
   >
     <svg
       class="inline-block w-4 h-4 text-inherit"
@@ -483,6 +487,7 @@ exports[`BridgeAsset should render verified badge when isVerified is true 1`] = 
   <button
     aria-label="View token details"
     class="inline-flex items-center justify-center p-0 h-8 w-8 rounded-lg bg-transparent hover:bg-hover active:bg-pressed text-icon-default bridge-asset-info-icon"
+    data-testid="bridge-asset-info-icon-eip155:1/erc20:0xacA92E438df0B2401fF60dA7E4337B687a2435DA"
   >
     <svg
       class="inline-block w-4 h-4 text-inherit"

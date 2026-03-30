@@ -3,13 +3,16 @@ import { useDispatch, useSelector } from 'react-redux';
 import { formatChainIdToCaip } from '@metamask/bridge-controller';
 import {
   rehydrateBridgeStore,
-  resetBridgeControllerAndCache,
+  resetBridgeController,
+  resetBridgeStoreAndCache,
   restoreQuoteRequestFromState,
   setFromToken,
   setToToken,
 } from '../../ducks/bridge/actions';
 import { getBridgeQuotes, getFromChains } from '../../ducks/bridge/selectors';
 import { useBridgeNavigation } from './useBridgeNavigation';
+import { ENVIRONMENT_TYPE_POPUP } from '../../../shared/constants/app';
+import { getEnvironmentType } from '../../../shared/lib/environment-type';
 
 /**
  * This sets the inital state of the bridge page on load.
@@ -27,10 +30,13 @@ export const usePrefillFromBridgeState = () => {
   const { resetLocationState, token, bridgeState } = useBridgeNavigation();
 
   const shouldRehydrateFromLocationState = bridgeState || token;
-  const shouldRestoreInputsFromQuote = !bridgeState && activeQuote;
+  const envType = getEnvironmentType();
+  const isPopup = envType === ENVIRONMENT_TYPE_POPUP;
+  const shouldRestoreInputsFromQuote = !bridgeState && activeQuote && isPopup;
 
   const resetControllerAndCache = () => {
-    dispatch(resetBridgeControllerAndCache());
+    dispatch(resetBridgeController());
+    dispatch(resetBridgeStoreAndCache());
   };
 
   useEffect(() => {
@@ -68,9 +74,6 @@ export const usePrefillFromBridgeState = () => {
       resetLocationState();
     } else if (shouldRestoreInputsFromQuote) {
       dispatch(restoreQuoteRequestFromState(activeQuote));
-    } else {
-      // Reset controller and cache on load if there's no restored active quote or token object
-      resetControllerAndCache();
     }
 
     // Reset controller and inputs before unloading the page

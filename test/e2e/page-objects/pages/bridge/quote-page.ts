@@ -224,9 +224,7 @@ class BridgeQuotePage {
       testId: 'bridge-asset-picker-modal',
     });
     console.log('Asset picker modal is visible');
-    await this.driver.clickElementAndWaitToDisappear({
-      testId: 'bridge-asset-picker-modal__close-button',
-    });
+    await this.driver.clickElementAndWaitToDisappear('[aria-label="Close"]');
     console.log('Asset picker modal closed');
   };
 
