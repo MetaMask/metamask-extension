@@ -535,15 +535,14 @@ export const getInternalAccountByGroupAndCaip = createParameterizedSelector(
 );
 
 /**
- * Get the selected account group from the account tree.
+ * Get the selected account group from the state.
  *
- * @param accountTree - The account tree state.
+ * @param state - The multichain accounts state.
  * @returns The selected account group, or null if not found.
  */
-export const getSelectedAccountGroup = createSelector(
-  getAccountTree,
-  (accountTree: AccountTreeState) => accountTree.selectedAccountGroup,
-);
+export const getSelectedAccountGroup = (
+  state: MultichainAccountsState,
+): AccountGroupId => state.metamask.selectedAccountGroup;
 
 /**
  * Get an internal account from the account tree by its selected account group and CAIP chain ID.

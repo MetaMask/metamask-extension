@@ -3,8 +3,18 @@ import { screen } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
+import { usePerpsTransactionHistory } from '../../../hooks/perps/usePerpsTransactionHistory';
 import * as mocks from './mocks';
 import { PerpsView } from './perps-view';
+
+jest.mock('../../../hooks/perps/usePerpsTransactionHistory', () => ({
+  usePerpsTransactionHistory: jest.fn(() => ({
+    transactions: [],
+    isLoading: false,
+    error: null,
+    refetch: jest.fn(),
+  })),
+}));
 
 jest.mock('../../../store/background-connection', () => ({
   submitRequestToBackground: jest.fn().mockResolvedValue(undefined),
@@ -144,6 +154,22 @@ describe('PerpsView', () => {
 
       expect(
         screen.getByTestId('perps-recent-activity-empty'),
+      ).toBeInTheDocument();
+    });
+
+    it('shows Recent Activity list when transaction history has items', () => {
+      jest.mocked(usePerpsTransactionHistory).mockReturnValueOnce({
+        transactions: mocks.mockTransactions,
+        isLoading: false,
+        error: null,
+        refetch: jest.fn(),
+      });
+
+      renderWithProvider(<PerpsView />, mockStore);
+
+      expect(screen.getByTestId('perps-recent-activity')).toBeInTheDocument();
+      expect(
+        screen.getByTestId('perps-recent-activity-see-all'),
       ).toBeInTheDocument();
     });
 

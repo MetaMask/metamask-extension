@@ -81,6 +81,7 @@ export function useTransactionsQuery(filter?: ActivityListFilter) {
       Boolean(useExternalServices) &&
       networks.length > 0 &&
       accountAddresses.length > 0,
+    retry: false,
     keepPreviousData: true,
     refetchOnMount: true,
     refetchOnWindowFocus: true,
@@ -116,10 +117,12 @@ export function usePrefetchTransactions() {
       return;
     }
 
-    // @ts-expect-error apiClient returns v5 types, repo still in v4
-    queryClient.prefetchInfiniteQuery(queryOptions).catch(() => {
-      // Prefetch is opportunistic
-    });
+    queryClient
+      // @ts-expect-error apiClient returns v5 types, repo still in v4
+      .prefetchInfiniteQuery({ ...queryOptions, retry: false })
+      .catch(() => {
+        // Prefetch is opportunistic
+      });
   }, [evmAddress, queryOptions, queryClient, useExternalServices]);
 }
 

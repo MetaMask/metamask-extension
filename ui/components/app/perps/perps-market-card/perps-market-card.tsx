@@ -60,9 +60,11 @@ export const PerpsMarketCard: React.FC<PerpsMarketCardProps> = ({
         gap={1}
       >
         <Text fontWeight={FontWeight.Medium}>{displayName}</Text>
-        <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
-          {displaySymbol}-USD
-        </Text>
+        {volume ? (
+          <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
+            {volume}
+          </Text>
+        ) : null}
       </Box>
       <Box
         className="shrink-0"
@@ -81,11 +83,6 @@ export const PerpsMarketCard: React.FC<PerpsMarketCardProps> = ({
         >
           {change24hPercent}
         </Text>
-        {volume && (
-          <Text variant={TextVariant.BodyXs} color={TextColor.TextAlternative}>
-            {volume}
-          </Text>
-        )}
       </Box>
     </ButtonBase>
   );

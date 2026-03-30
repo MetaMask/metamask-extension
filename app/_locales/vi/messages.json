@@ -411,9 +411,6 @@
     "message": "Lưu các giá trị này làm giá trị mặc định cho mạng $1.",
     "description": "$1 is the current network name."
   },
-  "advancedGasFeeModalTitle": {
-    "message": "Phí gas nâng cao"
-  },
   "advancedGasPriceModalTitle": {
     "message": "Phí mạng nâng cao"
   },
@@ -1348,17 +1345,6 @@
   "cancel": {
     "message": "Hủy"
   },
-  "cancelPopoverTitle": {
-    "message": "Hủy giao dịch"
-  },
-  "cancelSpeedUpLabel": {
-    "message": "Phí gas này sẽ $1 phí gas ban đầu.",
-    "description": "$1 is text 'replace' in bold"
-  },
-  "cancelSpeedUpTransactionTooltip": {
-    "message": "Để $1 giao dịch, phí gas phải tăng thêm ít nhất 10% để được mạng lưới ghi nhận.",
-    "description": "$1 is string 'cancel' or 'speed up'"
-  },
   "cancelTransactionDescription": {
     "message": "Giao dịch này sẽ bị hủy và phí mạng này sẽ thay thế phí ban đầu."
   },
@@ -2072,10 +2058,6 @@
   "dappSuggestedShortLabel": {
     "message": "Trang web"
   },
-  "dappSuggestedTooltip": {
-    "message": "$1 đã đề xuất mức giá này.",
-    "description": "$1 represents the Dapp's origin"
-  },
   "dappSwapAdvantage": {
     "message": "Tiết kiệm và kiếm tiền với MetaMask Hoán đổi"
   },
@@ -2526,9 +2508,6 @@
   "editAddressNickname": {
     "message": "Chỉnh sửa biệt danh địa chỉ"
   },
-  "editCancellationGasFeeModalTitle": {
-    "message": "Chỉnh sửa phí gas hủy"
-  },
   "editContact": {
     "message": "Sửa người liên hệ"
   },
@@ -2541,9 +2520,6 @@
   "editGasLimitOutOfBoundsV2": {
     "message": "Hạn mức phí gas phải lớn hơn $1 và nhỏ hơn $2",
     "description": "$1 is the minimum limit for gas and $2 is the maximum limit"
-  },
-  "editGasLimitTooltip": {
-    "message": "Hạn mức phí gas là đơn vị gas tối đa mà bạn sẵn sàng sử dụng. Đơn vị gas là hệ số nhân của \"Phí ưu tiên tối đa\" và \"Phí tối đa\"."
   },
   "editGasMaxBaseFeeGWEIImbalance": {
     "message": "Phí cơ sở tối đa không thể thấp hơn phí ưu tiên"
@@ -2584,15 +2560,6 @@
   "editGasPriceTooLow": {
     "message": "Giá gas phải lớn hơn 0"
   },
-  "editGasPriceTooltip": {
-    "message": "Mạng này yêu cầu trường \"Giá gas\" khi gửi giao dịch. Giá gas là số tiền bạn sẽ trả cho mỗi đơn vị gas."
-  },
-  "editGasSubTextFeeLabel": {
-    "message": "Phí tối đa:"
-  },
-  "editGasTitle": {
-    "message": "Chỉnh sửa mức ưu tiên"
-  },
   "editGasTooLow": {
     "message": "Thời gian xử lý không xác định"
   },
@@ -2616,9 +2583,6 @@
   },
   "editPermissions": {
     "message": "Chỉnh sửa quyền"
-  },
-  "editSpeedUpEditGasFeeModalTitle": {
-    "message": "Chỉnh sửa phí gas tăng tốc"
   },
   "editSpendingCap": {
     "message": "Chỉnh sửa hạn mức chi tiêu"
@@ -3008,27 +2972,14 @@
   "gas": {
     "message": "Gas"
   },
-  "gasDisplayAcknowledgeDappButtonText": {
-    "message": "Sửa phí gas được đề xuất"
-  },
-  "gasDisplayDappWarning": {
-    "message": "Phí gas này được $1 đề xuất. Việc ghi đè phí gas có thể gây ra sự cố cho giao dịch của bạn. Vui lòng liên hệ $1 nếu bạn có câu hỏi.",
-    "description": "$1 represents the Dapp's origin"
-  },
   "gasLimit": {
     "message": "Hạn mức phí gas"
-  },
-  "gasLimitRecommended": {
-    "message": "Giới hạn gas được đề xuất là $1. Có thể dẫn đến kết quả thất bại nếu giới hạn gas thấp hơn."
   },
   "gasLimitTooLow": {
     "message": "Hạn mức phí gas ít nhất phải là 21000"
   },
   "gasLimitV2": {
     "message": "Hạn mức phí gas"
-  },
-  "gasOption": {
-    "message": "Tùy chọn phí gas"
   },
   "gasPrice": {
     "message": "Giá gas"
@@ -3962,9 +3913,6 @@
   "maxFeeTooltip": {
     "message": "Một khoản phí tối đa được cung cấp để thanh toán cho giao dịch."
   },
-  "maxPriorityFee": {
-    "message": "Phí ưu tiên tối đa"
-  },
   "medium": {
     "message": "Thị trường"
   },
@@ -4179,8 +4127,8 @@
     "description": "Label for the claimable bonus row in the mUSD conversion confirmation screen"
   },
   "musdClaimableBonusTooltip": {
-    "message": "$1% phần thưởng quy đổi theo năm bạn đã nhận được khi nắm giữ mUSD. Bạn có thể nhận thưởng hằng ngày trên Linea. Được hỗ trợ bởi Relay. $2",
-    "description": "$1 is the APY percentage, $2 is the 'Terms apply' link"
+    "message": "Phần thưởng quy đổi theo năm bạn đã nhận được khi nắm giữ mUSD. Bạn có thể nhận thưởng hằng ngày trên Linea. $1",
+    "description": "$1 is the 'Terms apply' link"
   },
   "musdConversionActivityTitle": {
     "message": "Chuyển đổi $1 sang mUSD",
@@ -4204,16 +4152,12 @@
     "message": "Chuyển đổi và nhận $1%",
     "description": "$1 is the bonus percentage (e.g., 3)"
   },
-  "musdEarnBonusPercentage": {
-    "message": "Nhận thưởng $1%",
-    "description": "$1 is the bonus percentage (e.g., 3)"
-  },
   "musdEducationGetStarted": {
     "message": "Bắt đầu"
   },
   "musdEducationHeadline": {
     "message": "NHẬN $1% TRÊN SỐ LƯỢNG ĐỒNG ỔN ĐỊNH",
-    "description": "$1 is the bonus APY percentage"
+    "description": "$1 is the bonus APY percentage. Line break between ON and STABLECOINS matches splash layout."
   },
   "musdEducationNotNow": {
     "message": "Không phải bây giờ"
@@ -4390,9 +4334,6 @@
   },
   "networkFeeExplanationTitle": {
     "message": "Phí mạng"
-  },
-  "networkIsBusy": {
-    "message": "Mạng đang bận. Phí gas cao và ước tính kém chính xác hơn."
   },
   "networkMenu": {
     "message": "Trình đơn mạng"
@@ -5672,9 +5613,6 @@
   },
   "perpsPosition": {
     "message": "Vị thế"
-  },
-  "perpsPositionClosedReverseOrderFailed": {
-    "message": "Vị thế của bạn đã được đóng nhưng lệnh đảo chiều thất bại. Bạn có thể cần mở một vị thế mới theo cách thủ công"
   },
   "perpsPositionSize": {
     "message": "Kích thước vị thế"
@@ -7959,15 +7897,6 @@
   "speedUpCancellation": {
     "message": "Tăng tốc lệnh hủy này"
   },
-  "speedUpExplanation": {
-    "message": "Chúng tôi đã cập nhật phí gas dựa trên tình trạng mạng hiện tại và đã tăng ít nhất 10% (theo yêu cầu của mạng)."
-  },
-  "speedUpPopoverTitle": {
-    "message": "Tăng tốc giao dịch"
-  },
-  "speedUpTooltipText": {
-    "message": "Phí gas mới"
-  },
   "speedUpTransactionDescription": {
     "message": "Phí mạng này sẽ thay thế phí ban đầu."
   },
@@ -8807,14 +8736,8 @@
   "tokensInCollection": {
     "message": "Token trong bộ sưu tập"
   },
-  "tooltipSatusConnected": {
-    "message": "đã kết nối"
-  },
   "tooltipSatusConnectedUpperCase": {
     "message": "Đã kết nối"
-  },
-  "tooltipSatusNotConnected": {
-    "message": "chưa kết nối"
   },
   "total": {
     "message": "Tổng cộng"
