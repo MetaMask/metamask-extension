@@ -33,14 +33,6 @@ describe('compare-benchmarks', () => {
       expect(config).toHaveProperty('importWalletToSocialScreen');
     });
 
-    it('resolves startup benchmarks with platform prefix', () => {
-      const config = resolveThresholdConfig(
-        'chrome-browserify-startupStandardHome',
-      );
-      expect(config).toBeDefined();
-      expect(config).toHaveProperty('uiStartup');
-    });
-
     it('returns undefined for unknown benchmarks', () => {
       expect(resolveThresholdConfig('non-existent-benchmark')).toBeUndefined();
     });
@@ -124,7 +116,7 @@ describe('compare-benchmarks', () => {
         {
           name: 'benchmark-chrome-browserify-startupStandardHome',
           data: {
-            standardHome: makeBenchmarkResults({
+            startupStandardHome: makeBenchmarkResults({
               p75: { uiStartup: 1800 },
               p95: { uiStartup: 2200 },
               mean: { uiStartup: 1500 },
@@ -187,6 +179,14 @@ describe('compare-benchmarks', () => {
       );
       expect(config).toBeDefined();
       expect(config).toHaveProperty('importWalletToSocialScreen');
+    });
+
+    it('strips benchmark-chrome-browserify prefix for startup benchmarks', () => {
+      const config = resolveThresholdConfig(
+        'benchmark-chrome-browserify-startupStandardHome',
+      );
+      expect(config).toBeDefined();
+      expect(config).toHaveProperty('uiStartup');
     });
   });
 

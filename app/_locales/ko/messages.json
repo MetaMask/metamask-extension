@@ -1345,9 +1345,6 @@
   "cancel": {
     "message": "취소"
   },
-  "cancelPopoverTitle": {
-    "message": "트랜잭션 취소"
-  },
   "cancelTransactionDescription": {
     "message": "거래는 취소되며 이 네트워크 수수료가 기존 수수료를 대신하게 됩니다."
   },
@@ -2524,9 +2521,6 @@
     "message": "가스 한도는 $1보다 크고 $2 미만이어야 합니다.",
     "description": "$1 is the minimum limit for gas and $2 is the maximum limit"
   },
-  "editGasLimitTooltip": {
-    "message": "가스 한도는 사용하려는 가스의 최대 단위입니다. 가스 단위는 \"최대 우선 요금\" 및 \"최대 요금\"의 승수입니다."
-  },
   "editGasMaxBaseFeeGWEIImbalance": {
     "message": "최대 기본 요금이 우선 요금보다 낮을 수 없습니다."
   },
@@ -2565,12 +2559,6 @@
   },
   "editGasPriceTooLow": {
     "message": "가스 가격은 0보다 커야 합니다."
-  },
-  "editGasPriceTooltip": {
-    "message": "이 네트워크에서는 트랜잭션을 제출할 때 \"가스 가격\"을 필수 입력해야 합니다. 가스 가격은 가스 단위당 지급할 금액입니다."
-  },
-  "editGasTitle": {
-    "message": "우선 순위 편집"
   },
   "editGasTooLow": {
     "message": "확인되지 않은 처리 시간"
@@ -2984,18 +2972,8 @@
   "gas": {
     "message": "가스"
   },
-  "gasDisplayAcknowledgeDappButtonText": {
-    "message": "추천 가스비 편집"
-  },
-  "gasDisplayDappWarning": {
-    "message": "이 가스비는 $1에 의해 제안된 것입니다. 이를 무시하면 트랜잭션에 문제가 생길 수 있습니다. 질문이 있으시면 $1에 문의하세요.",
-    "description": "$1 represents the Dapp's origin"
-  },
   "gasLimit": {
     "message": "가스 한도"
-  },
-  "gasLimitRecommended": {
-    "message": "권장 가스비 한도는 $1입니다. 가스 한도가 이보다 낮으면 실패할 수 있습니다."
   },
   "gasLimitTooLow": {
     "message": "가스 한도는 21000 이상이어야 합니다."
@@ -7918,15 +7896,6 @@
   },
   "speedUpCancellation": {
     "message": "이 취소 가속화"
-  },
-  "speedUpExplanation": {
-    "message": "현재 네트워크 상태를 기반으로 가스비를 업데이트하고 최소 10% 인상했습니다(네트워크에서 요구함)."
-  },
-  "speedUpPopoverTitle": {
-    "message": "트랜잭션 속도 향상"
-  },
-  "speedUpTooltipText": {
-    "message": "신규 가스비"
   },
   "speedUpTransactionDescription": {
     "message": "이 네트워크 수수료가 기존 수수료를 대체합니다."
