@@ -61,8 +61,8 @@ import {
   getDisplayName,
   safeDecodeURIComponent,
   getChangeColor,
+  normalizeMarketDetailsOrders,
 } from '../../components/app/perps/utils';
-import { normalizeMarketDetailsOrders } from '../../components/app/perps/utils/orderUtils';
 import { PerpsDetailPageSkeleton } from '../../components/app/perps/perps-skeletons';
 import { Skeleton } from '../../components/component-library/skeleton';
 import { Popover, PopoverPosition } from '../../components/component-library';
