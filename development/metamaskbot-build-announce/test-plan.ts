@@ -32,6 +32,9 @@ type TestingPlan = {
 
 /**
  * Fetches the test plan JSON from the given URL
+ *
+ * @param url - The URL to fetch the test plan from
+ * @returns The parsed test plan or null if fetch fails
  */
 async function fetchTestPlan(url: string): Promise<TestingPlan | null> {
   try {
@@ -42,13 +45,18 @@ async function fetchTestPlan(url: string): Promise<TestingPlan | null> {
     }
     return (await response.json()) as TestingPlan;
   } catch (error) {
-    console.warn(`Error fetching test plan: ${error}`);
+    const message = error instanceof Error ? error.message : String(error);
+    console.warn(`Error fetching test plan: ${message}`);
     return null;
   }
 }
 
 /**
  * Formats a single scenario as markdown
+ *
+ * @param scenario - The testing scenario to format
+ * @param index - The scenario index number
+ * @returns Formatted markdown string
  */
 function formatScenarioMarkdown(
   scenario: TestingScenario,
@@ -67,6 +75,10 @@ function formatScenarioMarkdown(
 
 /**
  * Formats scenarios by risk level into collapsible sections
+ *
+ * @param scenarios - Array of testing scenarios to format
+ * @param sectionTitle - Title for the collapsible section
+ * @returns Formatted markdown string with collapsible details
  */
 function formatScenariosSection(
   scenarios: TestingScenario[],
@@ -110,6 +122,9 @@ function formatScenariosSection(
 /**
  * Extracts team names from scenarios based on area keywords.
  * Uses word boundary matching to avoid false positives (e.g., "sign" in "design").
+ *
+ * @param scenarios - Array of testing scenarios to extract teams from
+ * @returns Sorted array of unique team names
  */
 function extractTeamsFromScenarios(scenarios: TestingScenario[]): string[] {
   const teamKeywords: Record<string, string> = {
@@ -144,7 +159,7 @@ function extractTeamsFromScenarios(scenarios: TestingScenario[]): string[] {
     const areaLower = scenario.area.toLowerCase();
     Object.entries(teamKeywords).forEach(([keyword, team]) => {
       // Use word boundary regex to avoid substring false positives
-      const regex = new RegExp(`\\b${keyword}\\b`, 'i');
+      const regex = new RegExp(String.raw`\b${keyword}\b`, 'iu');
       if (regex.test(areaLower)) {
         teams.add(team);
       }
@@ -155,11 +170,14 @@ function extractTeamsFromScenarios(scenarios: TestingScenario[]): string[] {
     teams.add('Extension Platform');
   }
 
-  return Array.from(teams).sort();
+  return Array.from(teams).sort((a, b) => a.localeCompare(b));
 }
 
 /**
  * Converts the test plan JSON to formatted markdown
+ *
+ * @param plan - The test plan object to convert
+ * @returns Formatted markdown string
  */
 function convertTestPlanToMarkdown(plan: TestingPlan): string {
   const { summary, testScenarios } = plan;
@@ -197,7 +215,7 @@ function convertTestPlanToMarkdown(plan: TestingPlan): string {
   md += `<details>\n<summary><strong>Teams Sign-off Status</strong></summary>\n\n`;
   md += `**Signed off:** None yet\n\n`;
   md += `**Awaiting sign-off (${teams.length}):**\n`;
-  md += teams.join(', ') + '\n\n';
+  md += `${teams.join(', ')}\n\n`;
   md += `</details>\n\n`;
 
   // Footer
@@ -210,6 +228,10 @@ function convertTestPlanToMarkdown(plan: TestingPlan): string {
 /**
  * Builds the test plan section for the PR comment.
  * Fetches JSON, converts to markdown, and returns both the markdown and JSON link.
+ *
+ * @param hostUrl - The base URL where test plan artifacts are hosted
+ * @param testPlanVersion - The version identifier for the test plan
+ * @returns Formatted markdown section with test plan content and JSON link
  */
 export async function buildTestPlanSection(
   hostUrl: string,
