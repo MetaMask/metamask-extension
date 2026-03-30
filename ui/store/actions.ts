@@ -28,6 +28,7 @@ import { PayloadAction } from '@reduxjs/toolkit';
 import { GasFeeController } from '@metamask/gas-fee-controller';
 import { PermissionsRequest } from '@metamask/permission-controller';
 import { NonEmptyArray } from '@metamask/controller-utils';
+import type { PhishingDetectionScanResult } from '@metamask/phishing-controller';
 import {
   SetNameRequest,
   UpdateProposedNamesRequest,
@@ -2173,6 +2174,12 @@ export function updateSnap(
 
 export async function getPhishingResult(website: string) {
   return await submitRequestToBackground('getPhishingResult', [website]);
+}
+
+export async function scanUrlForPhishing(
+  origin: string,
+): Promise<PhishingDetectionScanResult | null> {
+  return await submitRequestToBackground('scanUrlForPhishing', [origin]);
 }
 
 // TODO: Clean this up.

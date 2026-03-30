@@ -71,7 +71,6 @@ import { PermissionLogController } from '@metamask/permission-log-controller';
 import { AnnouncementController } from '@metamask/announcement-controller';
 import { PhishingController } from '@metamask/phishing-controller';
 import { LoggingController } from '@metamask/logging-controller';
-import { ErrorReportingService } from '@metamask/error-reporting-service';
 import { StorageService } from '@metamask/storage-service';
 import { AddressBookController } from '@metamask/address-book-controller';
 import {
@@ -139,7 +138,6 @@ export type Controller =
   | EncryptionPublicKeyController
   | EncryptionPublicKeyManager
   | EnsController
-  | ErrorReportingService
   | StorageService
   | ExecutionService
   | GasFeeController
