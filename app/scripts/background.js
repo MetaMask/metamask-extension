@@ -2414,7 +2414,6 @@ async function startExtensionInitialization() {
     testingFlags?.simulateBackgroundStateSyncHang ||
     testingFlags?.simulateBackgroundInitializationHang
   ) {
-    await persistenceManager.open();
     backup = await persistenceManager.getBackup().catch(() => null);
   }
 

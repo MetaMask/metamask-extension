@@ -188,6 +188,12 @@ export class PersistenceManager {
   #open: boolean = false;
 
   /**
+   * When non-undefined, an open of the backup IndexedDB is in flight. Concurrent
+   * callers of {@link open} await this same promise so only one open runs.
+   */
+  #openPromise: Promise<void> | undefined;
+
+  /**
    * Callback to be invoked when a set operation fails (storage.local or IndexedDB).
    * This allows the background script to notify the UI about the failure.
    * The callback receives the storage write error type.
@@ -255,41 +261,55 @@ export class PersistenceManager {
     return error instanceof Error ? error : new Error(String(error));
   }
 
-  async open() {
-    if (!this.#open) {
-      try {
-        const db = new IndexedDBStore();
-        await db.open('metamask-backup', 1);
-        this.#backupDb = db;
-      } catch (error) {
-        // `indexedDB` can't be used by addons in FF in some instances of
-        // private browsing mode due to this bug:
-        // https://bugzilla.mozilla.org/show_bug.cgi?id=1982707. In these
-        // cases we just won't have a backup vault.
-        if (
-          isObject(error) &&
-          error instanceof DOMException &&
-          error.name === 'InvalidStateError' &&
-          error.message ===
-            'A mutation operation was attempted on a database that did not allow mutations.'
-        ) {
-          // Custom fingerprint prevents Sentry's deduplication from dropping
-          // this event when other persistence errors with the same underlying
-          // error message (e.g., "An unexpected error occurred") are reported.
-          captureException(error, {
-            tags: { 'persistence.error': 'backup-db-open-failed' },
-            fingerprint: ['persistence-error', 'backup-db-open-failed'],
-          });
-          console.warn(
-            'Could not open backup database; automatic vault recovery will not be available.',
-          );
-        } else {
-          // rethrow since we couldn't handle it here.
-          throw error;
-        }
-      }
-      this.#open = true;
+  async open(): Promise<void> {
+    if (this.#open) {
+      return;
     }
+    if (this.#openPromise) {
+      await this.#openPromise;
+      return;
+    }
+    this.#openPromise = this.#openBackupDatabase();
+    try {
+      await this.#openPromise;
+    } finally {
+      this.#openPromise = undefined;
+    }
+  }
+
+  async #openBackupDatabase(): Promise<void> {
+    try {
+      const db = new IndexedDBStore();
+      await db.open('metamask-backup', 1);
+      this.#backupDb = db;
+    } catch (error) {
+      // `indexedDB` can't be used by addons in FF in some instances of
+      // private browsing mode due to this bug:
+      // https://bugzilla.mozilla.org/show_bug.cgi?id=1982707. In these
+      // cases we just won't have a backup vault.
+      if (
+        isObject(error) &&
+        error instanceof DOMException &&
+        error.name === 'InvalidStateError' &&
+        error.message ===
+          'A mutation operation was attempted on a database that did not allow mutations.'
+      ) {
+        // Custom fingerprint prevents Sentry's deduplication from dropping
+        // this event when other persistence errors with the same underlying
+        // error message (e.g., "An unexpected error occurred") are reported.
+        captureException(error, {
+          tags: { 'persistence.error': 'backup-db-open-failed' },
+          fingerprint: ['persistence-error', 'backup-db-open-failed'],
+        });
+        console.warn(
+          'Could not open backup database; automatic vault recovery will not be available.',
+        );
+      } else {
+        // rethrow since we couldn't handle it here.
+        throw error;
+      }
+    }
+    this.#open = true;
   }
 
   /**
@@ -789,6 +809,7 @@ export class PersistenceManager {
    * Retrieves the backup object containing the state of various controllers.
    */
   async getBackup(): Promise<Backup | undefined> {
+    await this.open();
     const backupDb = this.#backupDb;
     if (!backupDb) {
       return undefined;
