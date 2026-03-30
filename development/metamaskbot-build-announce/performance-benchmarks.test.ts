@@ -787,7 +787,7 @@ describe('buildPerformanceBenchmarksSection', () => {
     expect(html).toContain('⚡ Performance Benchmarks');
   });
 
-  it('includes the health legend badge in the outer <summary> tag', async () => {
+  it('includes total pass/warn/fail counts in the outer <summary> tag', async () => {
     mockFetch.mockResolvedValue({
       ok: true,
       json: () => Promise.resolve(MOCK_PAYLOAD),
@@ -795,8 +795,11 @@ describe('buildPerformanceBenchmarksSection', () => {
 
     const html = await buildPerformanceBenchmarksSection(HOST);
 
-    expect(html).toContain(
-      `<summary>⚡ Performance Benchmarks (${COMPARISON_SEVERITY.Pass.icon} pass · ${COMPARISON_SEVERITY.Warn.icon} warn · ${COMPARISON_SEVERITY.Regression.icon} fail)</summary>`,
+    expect(html).toMatch(
+      new RegExp(
+        `<summary>⚡ Performance Benchmarks \\(Total: ${COMPARISON_SEVERITY.Pass.icon} \\d+ pass · ${COMPARISON_SEVERITY.Warn.icon} \\d+ warn · ${COMPARISON_SEVERITY.Regression.icon} \\d+ fail\\)</summary>`,
+      'u',
+      ),
     );
   });
 

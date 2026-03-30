@@ -958,9 +958,6 @@ export async function buildPerformanceBenchmarksSection(
     runUrl,
   );
 
-  const healthBadge = `(${HEALTH_ICON[EntryHealth.Pass]} pass · ${HEALTH_ICON[EntryHealth.Warn]} warn · ${HEALTH_ICON[EntryHealth.Fail]} fail)`;
-  const summaryText = `${sectionTitle} ${healthBadge}`;
-
   const { passes, failures, warnings } = countHealthEntries(
     allEntries,
     resolvedBaseline,
@@ -994,17 +991,13 @@ export async function buildPerformanceBenchmarksSection(
   const baselineLogsUrl =
     'https://raw.githubusercontent.com/MetaMask/extension_benchmark_stats/main/stats/main/performance_data.json';
   const baselineLogsLink = `<a href="${baselineLogsUrl}">Baseline logs</a>`;
-  const commitInfo = `\n<p><strong>Baseline (latest main)</strong>: ${commitLink} | <strong>Date</strong>: ${commitDate} | <strong>Pipeline</strong>: ${pipelineLink} | ${baselineLogsLink}</p>\n\n`;
+  const commitInfo = `\n\n<p><strong>Baseline (latest main)</strong>: ${commitLink} | <strong>Date</strong>: ${commitDate} | <strong>Pipeline</strong>: ${pipelineLink} | ${baselineLogsLink}</p>\n\n`;
 
-  const totalSummary = `<p><strong>Total</strong>: ${HEALTH_ICON[EntryHealth.Pass]} ${passes} pass · ${HEALTH_ICON[EntryHealth.Warn]} ${warnings} warn · ${HEALTH_ICON[EntryHealth.Fail]} ${failures} fail</p>\n\n`;
-
+  // Plain text only inside <summary> (no block elements like <p>).
+  const summaryLine = `${sectionTitle} (Total: ${HEALTH_ICON[EntryHealth.Pass]} ${passes} pass · ${HEALTH_ICON[EntryHealth.Warn]} ${warnings} warn · ${HEALTH_ICON[EntryHealth.Fail]} ${failures} fail)`;
   const subsectionsHtml = interactionHtml + startupHtml + userJourneyHtml;
   const content =
-    commitInfo +
-    totalSummary +
-    matrixHtml +
-    regressionDetailsHtml +
-    subsectionsHtml;
+    commitInfo + matrixHtml + regressionDetailsHtml + subsectionsHtml;
 
-  return `<details><summary>${summaryText}</summary>\n<blockquote>\n${content}</blockquote>\n</details>\n\n`;
+  return `<details><summary>${summaryLine}</summary>\n<blockquote>\n${content}</blockquote>\n</details>\n\n`;
 }
