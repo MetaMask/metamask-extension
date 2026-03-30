@@ -60,7 +60,7 @@ export const PermissionControllerInit: ControllerInitFunction<
       getNonEvmAccountAddresses: initMessenger.call.bind(
         initMessenger,
         'MultichainRouter:getSupportedAccounts',
-      ) as Caip25CaveatBuilderOptions['getNonEvmAccountAddresses'],
+      ),
     }),
     permissionSpecifications: {
       ...getPermissionSpecifications(),
