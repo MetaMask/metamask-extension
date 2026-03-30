@@ -108,15 +108,16 @@ function formatScenariosSection(
 }
 
 /**
- * Extracts team names from scenarios based on area keywords
+ * Extracts team names from scenarios based on area keywords.
+ * Uses word boundary matching to avoid false positives (e.g., "sign" in "design").
  */
 function extractTeamsFromScenarios(scenarios: TestingScenario[]): string[] {
   const teamKeywords: Record<string, string> = {
     account: 'Accounts',
     wallet: 'Wallet',
     transaction: 'Transactions',
-    confirm: 'Confirmations',
-    sign: 'Confirmations',
+    confirmation: 'Confirmations',
+    signing: 'Confirmations',
     swap: 'Swaps',
     bridge: 'Swaps and Bridge',
     network: 'Networks',
@@ -124,13 +125,13 @@ function extractTeamsFromScenarios(scenarios: TestingScenario[]): string[] {
     nft: 'Assets',
     asset: 'Assets',
     permission: 'Permissions',
-    connect: 'Wallet Integrations',
+    dapp: 'Wallet Integrations',
     snap: 'Snaps',
     setting: 'Settings',
     security: 'Security',
     privacy: 'Security',
-    onboard: 'Onboarding',
-    import: 'Onboarding',
+    onboarding: 'Onboarding',
+    'seed phrase': 'Onboarding',
     backup: 'Onboarding',
     notification: 'Notifications',
     phishing: 'Product Safety',
@@ -142,7 +143,9 @@ function extractTeamsFromScenarios(scenarios: TestingScenario[]): string[] {
   scenarios.forEach((scenario) => {
     const areaLower = scenario.area.toLowerCase();
     Object.entries(teamKeywords).forEach(([keyword, team]) => {
-      if (areaLower.includes(keyword)) {
+      // Use word boundary regex to avoid substring false positives
+      const regex = new RegExp(`\\b${keyword}\\b`, 'i');
+      if (regex.test(areaLower)) {
         teams.add(team);
       }
     });
