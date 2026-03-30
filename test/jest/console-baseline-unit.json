@@ -639,6 +639,9 @@
       "Reselect: Identity function warnings": 1,
       "error: Unexpected key \"DNS\" found in": 1
     },
+    "ui/hooks/useHardwareWalletRecoveryLocation.test.tsx": {
+      "Reselect: Identity function warnings": 1
+    },
     "ui/hooks/useMultiPolling.test.ts": {
       "error: Error: Network error": 1
     },
@@ -826,7 +829,7 @@
       "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/components/confirm/info/hooks/useFeeCalculations.test.ts": {
-      "MetaMask: Background connection not initialized": 42,
+      "MetaMask: Background connection not initialized": 48,
       "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/components/confirm/info/hooks/useGasFeeToken.test.ts": {
@@ -1428,6 +1431,9 @@
     },
     "ui/pages/error-page/error-component.test.tsx": {
       "React: Act warnings (component updates not wrapped)": 2
+    },
+    "ui/pages/home/home.container.test.tsx": {
+      "Reselect: Input stability warnings": 1
     },
     "ui/pages/multichain-accounts/account-list/account-list.test.tsx": {
       "Reselect: Identity function warnings": 1

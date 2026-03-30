@@ -1636,6 +1636,7 @@ const PerpsMarketDetailPage: React.FC = () => {
       {/* TP/SL update modal (from Auto Close row) */}
       {position && isTPSLModalOpen && (
         <UpdateTPSLModal
+          key={position.symbol}
           isOpen={isTPSLModalOpen}
           onClose={handleCloseTPSLModal}
           position={position}

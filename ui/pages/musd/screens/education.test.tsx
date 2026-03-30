@@ -145,7 +145,11 @@ describe('MusdEducationScreen', () => {
     const store = createMockStore();
     renderWithProvider(<MusdEducationScreen />, store);
 
-    expect(screen.getByText('GET 3% ON STABLECOINS')).toBeInTheDocument();
+    const heading = screen.getByRole('heading', { level: 1 });
+    expect(heading).toHaveStyle({ whiteSpace: 'pre-line' });
+    expect(heading.textContent?.replace(/\s+/gu, ' ').trim()).toBe(
+      'GET 3% ON STABLECOINS',
+    );
   });
 
   it('renders the body copy', () => {

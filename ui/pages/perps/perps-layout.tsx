@@ -1,9 +1,6 @@
-import React, { type ReactNode } from 'react';
+import React from 'react';
+import { Outlet } from 'react-router-dom';
 import { usePerpsViewActive } from '../../hooks/perps/stream/usePerpsViewActive';
-
-type PerpsLayoutProps = {
-  children: ReactNode;
-};
 
 /**
  * Layout wrapper for all Perps pages.
@@ -15,12 +12,9 @@ type PerpsLayoutProps = {
  * It is the single point that gates background stream emission: mounting
  * signals the background to start forwarding WebSocket data to this connection,
  * and unmounting signals it to stop.
- *
- * @param options0 - Component props
- * @param options0.children - Child elements to render inside the layout
  */
-export default function PerpsLayout({ children }: PerpsLayoutProps) {
+export default function PerpsLayout() {
   usePerpsViewActive('PerpsLayout');
 
-  return <>{children}</>;
+  return <Outlet />;
 }
