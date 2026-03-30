@@ -1329,7 +1329,7 @@
         "@metamask/keyring-utils": true,
         "@metamask/superstruct": true,
         "@metamask/utils": true,
-        "@metamask/keyring-api>async-mutex": true,
+        "mockttp>async-mutex": true,
         "@metamask/accounts-controller>@metamask/eth-snap-keyring>uuid": true
       }
     },
