@@ -78,21 +78,25 @@ describe('DataCollectionToggleItem', () => {
     const mockStore = createMockStore({ dataCollectionForMarketing: true });
     renderWithProvider(<DataCollectionToggleItem />, mockStore);
 
-    expect(screen.getByRole('checkbox')).toHaveAttribute('value', 'true');
+    expect(
+      screen.getByTestId('data-collection-for-marketing-toggle'),
+    ).toHaveAttribute('value', 'true');
   });
 
   it('renders toggle in disabled state', () => {
     const mockStore = createMockStore({ dataCollectionForMarketing: false });
     renderWithProvider(<DataCollectionToggleItem />, mockStore);
 
-    expect(screen.getByRole('checkbox')).toHaveAttribute('value', 'false');
+    expect(
+      screen.getByTestId('data-collection-for-marketing-toggle'),
+    ).toHaveAttribute('value', 'false');
   });
 
   it('calls setDataCollectionForMarketing with true when toggled on', () => {
     const mockStore = createMockStore({ dataCollectionForMarketing: false });
     renderWithProvider(<DataCollectionToggleItem />, mockStore);
 
-    fireEvent.click(screen.getByRole('checkbox'));
+    fireEvent.click(screen.getByTestId('data-collection-for-marketing-toggle'));
 
     expect(mockSetDataCollectionForMarketing).toHaveBeenCalledWith(true);
   });
@@ -101,7 +105,7 @@ describe('DataCollectionToggleItem', () => {
     const mockStore = createMockStore({ dataCollectionForMarketing: true });
     renderWithProvider(<DataCollectionToggleItem />, mockStore);
 
-    fireEvent.click(screen.getByRole('checkbox'));
+    fireEvent.click(screen.getByTestId('data-collection-for-marketing-toggle'));
 
     expect(mockSetDataCollectionForMarketing).toHaveBeenCalledWith(false);
   });
