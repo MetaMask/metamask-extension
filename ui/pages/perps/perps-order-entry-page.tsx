@@ -329,11 +329,36 @@ const PerpsOrderEntryPage: React.FC = () => {
     return false;
   }, [orderType, orderFormState, orderDirection, currentPrice]);
 
+  const isNearLiquidation = useMemo(() => {
+    if (orderType !== 'limit' || !orderFormState || currentPrice <= 0) {
+      return false;
+    }
+    const liqPrice = orderCalculations?.liquidationPriceRaw;
+    if (liqPrice === null || liqPrice === undefined || liqPrice <= 0) {
+      return false;
+    }
+    const cleaned = orderFormState.limitPrice?.replace(/,/gu, '') ?? '';
+    const parsed = parseFloat(cleaned);
+    if (!cleaned || isNaN(parsed) || parsed <= 0) {
+      return false;
+    }
+    return orderDirection === 'long'
+      ? currentPrice <= liqPrice
+      : currentPrice >= liqPrice;
+  }, [
+    orderType,
+    orderFormState,
+    orderDirection,
+    currentPrice,
+    orderCalculations,
+  ]);
+
   const isSubmitDisabled =
     !isEligible ||
     isOrderPending ||
     isLimitPriceInvalid ||
     isLimitPriceUnfavorable ||
+    isNearLiquidation ||
     currentPrice <= 0;
 
   const maxLeverage = useMemo(() => {
