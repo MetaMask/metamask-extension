@@ -8,7 +8,10 @@ import {
 } from '@metamask/chain-agnostic-permission';
 import { flushPromises } from '../../../../test/lib/timer-helpers';
 import * as NetworkSelectors from '../../../../shared/lib/selectors/networks';
-import { getPermissionBackgroundApiMethods } from './background-api';
+import {
+  getPermissionBackgroundApiMethods,
+  PermissionBackgroundApiOptions,
+} from './background-api';
 
 jest.mock('../../../../shared/lib/selectors/networks', () => ({
   ...jest.requireActual('../../../../shared/lib/selectors/networks'),
@@ -16,7 +19,13 @@ jest.mock('../../../../shared/lib/selectors/networks', () => ({
 }));
 const MockNetworkSelectors = jest.mocked(NetworkSelectors);
 
-const setupPermissionBackgroundApiMethods = (overrides) => {
+const setupPermissionBackgroundApiMethods = (
+  overrides: Partial<{
+    [K in keyof PermissionBackgroundApiOptions]: Partial<
+      PermissionBackgroundApiOptions[K]
+    >;
+  }> = {},
+) => {
   const params = {
     permissionController: {
       getCaveat: jest.fn(),
@@ -46,7 +55,9 @@ const setupPermissionBackgroundApiMethods = (overrides) => {
     ...overrides,
   };
 
-  return getPermissionBackgroundApiMethods(params);
+  return getPermissionBackgroundApiMethods(
+    params as PermissionBackgroundApiOptions,
+  );
 };
 
 describe('permission background API methods', () => {

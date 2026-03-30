@@ -3,8 +3,6 @@
   "app/scripts/app-init.js",
   "app/scripts/background.js",
   "app/scripts/contentscript.js",
-  "app/scripts/controllers/permissions/background-api.js",
-  "app/scripts/controllers/permissions/background-api.test.js",
   "app/scripts/controllers/permissions/index.js",
   "app/scripts/controllers/permissions/selectors.js",
   "app/scripts/controllers/permissions/selectors.test.js",
