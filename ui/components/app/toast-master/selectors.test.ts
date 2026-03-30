@@ -122,6 +122,7 @@ describe('#selectShowConnectAccountGroupToast', () => {
       entropy: {
         groupIndex: 0,
       },
+      lastSelected: 0,
     },
     walletName: 'MetaMask HD Wallet',
     walletId: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ' as AccountWalletId,
