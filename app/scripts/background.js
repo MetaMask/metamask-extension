@@ -124,8 +124,13 @@ const BADGE_COLOR_APPROVAL = '#0376C9';
 const BADGE_MAX_COUNT = 9;
 
 const inTest = process.env.IN_TEST;
-let inTestRestoreInProgress = false;
-let inTestHasVault = false;
+/**
+ * Test-only state shared across startup and later port handling (hang simulations).
+ * `null` in production builds so we do not keep loose mutable test globals.
+ */
+const inTestState = inTest
+  ? { restoreInProgress: false, hasVaultAtStartup: false }
+  : null;
 const { safePersist, requestSafeReload, evacuate } =
   getRequestSafeReload(persistenceManager);
 
@@ -608,8 +613,8 @@ const handleOnConnect = async (port) => {
     if (
       inTest &&
       getManifestFlags().testing?.simulateBackgroundStateSyncHang &&
-      !inTestRestoreInProgress &&
-      inTestHasVault
+      !inTestState?.restoreInProgress &&
+      inTestState?.hasVaultAtStartup
     ) {
       return;
     }
@@ -2377,7 +2382,7 @@ async function initBackground(backup) {
       inTest &&
       !backup &&
       getManifestFlags().testing?.simulateBackgroundInitializationHang &&
-      inTestHasVault
+      inTestState?.hasVaultAtStartup
     ) {
       log.info(
         'Simulating initialization hang (simulateBackgroundInitializationHang flag is set, backup exists)',
@@ -2424,14 +2429,16 @@ async function initOrRestoreBackground() {
     testingFlags?.simulateBackgroundStateSyncHang ||
     testingFlags?.simulateBackgroundInitializationHang
   ) {
-    inTestHasVault = backupHasVault;
+    if (inTestState) {
+      inTestState.hasVaultAtStartup = backupHasVault;
+    }
   }
 
   if (restoreInProgress) {
     await clearCriticalErrorRestoreSession(browser);
     if (backupHasVault) {
-      if (inTest) {
-        inTestRestoreInProgress = true;
+      if (inTestState) {
+        inTestState.restoreInProgress = true;
       }
       const handoffPayload = {
         tabId: restoreInProgress.tabId,
