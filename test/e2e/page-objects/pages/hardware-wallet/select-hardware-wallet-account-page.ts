@@ -57,14 +57,7 @@ class SelectHardwareWalletAccountPage {
 
   async selectAccount(accountIndex: number): Promise<void> {
     console.log(`Select account ${accountIndex}`);
-    const accountCheckboxes = await this.driver.findElements(
-      this.accountCheckbox,
-    );
-    // Click on the actual checkbox input element inside the container
-    const checkboxInput = await accountCheckboxes[accountIndex - 1].findElement(
-      { css: 'input[type="checkbox"]' },
-    );
-    await checkboxInput.click();
+    await this.driver.clickElement(`label[for="address-${accountIndex - 1}"]`);
   }
 
   async unlockAccount(accountIndex: number): Promise<void> {
