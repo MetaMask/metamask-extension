@@ -389,20 +389,22 @@ export function getAccountByAddress(accounts = [], targetAddress) {
 }
 
 /**
- * Sort the given list of account their selecting order (descending). Meaning the
- * first account of the sorted list will be the last selected account.
+ * Sort the given list of accounts by their AccountGroup's lastSelected timestamp
+ * (descending). The first account of the sorted list will be the last selected account.
  *
  * @param {import('@metamask/keyring-api').InternalAccount[]} accounts - The internal accounts list.
+ * @param {Record<string, number | undefined>} groupLastSelectedById - Mapping of account ID to the
+ *   AccountGroup's lastSelected timestamp.
  * @returns {import('@metamask/keyring-api').InternalAccount[]} The sorted internal account list.
  */
-export function sortSelectedInternalAccounts(accounts) {
-  // This logic comes from the `AccountsController`:
-  // TODO: Expose a free function from this controller and use it here
+export function sortSelectedInternalAccounts(
+  accounts,
+  groupLastSelectedById = {},
+) {
   return accounts.sort((accountA, accountB) => {
-    // Sort by `.lastSelected` in descending order
     return (
-      (accountB.metadata.lastSelected ?? 0) -
-      (accountA.metadata.lastSelected ?? 0)
+      (groupLastSelectedById[accountB.id] ?? 0) -
+      (groupLastSelectedById[accountA.id] ?? 0)
     );
   });
 }

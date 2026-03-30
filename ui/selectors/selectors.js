@@ -678,12 +678,41 @@ export const getEvmInternalAccounts = createSelector(
   },
 );
 
+/**
+ * Builds a mapping from account ID to the lastSelected value of its containing
+ * AccountGroup. Used to sort accounts by group-level last-selected timestamp.
+ *
+ * @param {object} state - Redux state.
+ * @returns {Record<string, number | undefined>} Mapping of account ID to the group's lastSelected.
+ */
+export const getAccountIdToGroupLastSelected = createSelector(
+  (state) => state.metamask.accountTree,
+  (accountTree) => {
+    const result = {};
+    if (accountTree?.wallets) {
+      for (const wallet of Object.values(accountTree.wallets)) {
+        for (const group of Object.values(wallet.groups || {})) {
+          const groupLastSelected = group.metadata?.lastSelected;
+          for (const accountId of group.accounts) {
+            result[accountId] = groupLastSelected;
+          }
+        }
+      }
+    }
+    return result;
+  },
+);
+
 export const getSelectedEvmInternalAccount = createSelector(
   getEvmInternalAccounts,
-  (accounts) => {
+  getAccountIdToGroupLastSelected,
+  (accounts, groupLastSelectedById) => {
     // We should always have 1 EVM account (if not, it would be `undefined`, same
     // as `getSelectedInternalAccount` selector.
-    const [evmAccountSelected] = sortSelectedInternalAccounts(accounts);
+    const [evmAccountSelected] = sortSelectedInternalAccounts(
+      accounts,
+      groupLastSelectedById,
+    );
     return evmAccountSelected;
   },
 );

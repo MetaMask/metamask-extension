@@ -9,6 +9,8 @@ import {
 import { MergedInternalAccountWithCaipAccountId } from '../../../selectors/selectors.types';
 import { sortSelectedInternalAccounts } from '../../../helpers/utils/util';
 
+type GroupLastSelectedById = Record<string, number | undefined>;
+
 export type PermissionsRequest = Record<
   string,
   { caveats?: { type: string; value: Caip25CaveatValue }[] }
@@ -82,11 +84,13 @@ export function getCaip25PermissionsResponse(
  * @param requestedNamespaces - The namespaces requested.
  * @param supportedRequestedAccounts - The supported requested accounts.
  * @param allAccounts - All available accounts.
+ * @param groupLastSelectedById - Mapping of account ID to AccountGroup lastSelected timestamp.
  */
 export function getDefaultAccounts(
   requestedNamespaces: CaipNamespace[],
   supportedRequestedAccounts: MergedInternalAccountWithCaipAccountId[],
   allAccounts: MergedInternalAccountWithCaipAccountId[],
+  groupLastSelectedById: GroupLastSelectedById = {},
 ): MergedInternalAccountWithCaipAccountId[] {
   const defaultAccounts: MergedInternalAccountWithCaipAccountId[] = [];
   const satisfiedNamespaces = new Set<CaipNamespace>();
@@ -106,8 +110,10 @@ export function getDefaultAccounts(
   );
 
   if (unsatisfiedNamespaces.length > 0) {
-    const allAccountsSortedByLastSelected =
-      sortSelectedInternalAccounts(allAccounts);
+    const allAccountsSortedByLastSelected = sortSelectedInternalAccounts(
+      allAccounts,
+      groupLastSelectedById,
+    );
 
     for (const namespace of unsatisfiedNamespaces) {
       const defaultAccountForNamespace = allAccountsSortedByLastSelected.find(

@@ -77,10 +77,32 @@ const mockAccountsState = (accounts) => {
     return map;
   }, {});
 
+  const groups = {};
+  accounts.forEach((account, index) => {
+    const groupId = `group-${index}`;
+    groups[groupId] = {
+      id: groupId,
+      accounts: [account.id],
+      metadata: {
+        lastSelected: account.metadata?.lastSelected,
+        name: account.metadata?.name ?? '',
+      },
+    };
+  });
+
   return {
     metamask: {
       internalAccounts: {
         accounts: accountsMap,
+      },
+      accountTree: {
+        wallets: {
+          'wallet-0': {
+            id: 'wallet-0',
+            groups,
+            metadata: { name: 'Wallet' },
+          },
+        },
       },
     },
   };

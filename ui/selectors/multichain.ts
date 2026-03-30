@@ -57,6 +57,7 @@ import {
   isSolanaAccount,
 } from './accounts';
 import {
+  getAccountIdToGroupLastSelected,
   getIsMainnet,
   getNativeCurrencyImage,
   getSelectedAccountCachedBalance,
@@ -523,12 +524,14 @@ export const getMemoizedMultichainNetworkConfigurationsByChainId =
 
 export const getLastSelectedNonEvmAccount = createSelector(
   getInternalAccounts,
-  (nonEvmAccounts) => {
-    const sortedNonEvmAccounts = nonEvmAccounts
+  getAccountIdToGroupLastSelected,
+  (accounts, groupLastSelectedById) => {
+    const sortedNonEvmAccounts = accounts
       .filter((account) => !isEvmAccountType(account.type))
       .sort(
         (a, b) =>
-          (b.metadata.lastSelected ?? 0) - (a.metadata.lastSelected ?? 0),
+          (groupLastSelectedById[b.id] ?? 0) -
+          (groupLastSelectedById[a.id] ?? 0),
       );
     return sortedNonEvmAccounts.length > 0
       ? sortedNonEvmAccounts[0]
@@ -538,15 +541,17 @@ export const getLastSelectedNonEvmAccount = createSelector(
 
 export const getLastSelectedSolanaAccount = createSelector(
   getInternalAccounts,
-  (nonEvmAccounts) => {
-    const sortedNonEvmAccounts = nonEvmAccounts
+  getAccountIdToGroupLastSelected,
+  (accounts, groupLastSelectedById) => {
+    const sortedSolanaAccounts = accounts
       .filter((account) => isSolanaAccount(account))
       .sort(
         (a, b) =>
-          (b.metadata.lastSelected ?? 0) - (a.metadata.lastSelected ?? 0),
+          (groupLastSelectedById[b.id] ?? 0) -
+          (groupLastSelectedById[a.id] ?? 0),
       );
-    return sortedNonEvmAccounts.length > 0
-      ? sortedNonEvmAccounts[0]
+    return sortedSolanaAccounts.length > 0
+      ? sortedSolanaAccounts[0]
       : undefined;
   },
 );

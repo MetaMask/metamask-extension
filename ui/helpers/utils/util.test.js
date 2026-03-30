@@ -1386,6 +1386,14 @@ describe('util', () => {
       lastSelected: -1,
     });
 
+    const groupLastSelectedById = {
+      [account1.id]: 1,
+      [account2.id]: 2,
+      [account3.id]: 3,
+      [accountWithBigSelectedIndexGap.id]: 108912379837,
+      [accountWithNegativeSelectedIndex.id]: -1,
+    };
+
     const orderedAccounts = [account3, account2, account1];
 
     it.each([
@@ -1393,13 +1401,19 @@ describe('util', () => {
       { accounts: [account2, account3, account1] },
       { accounts: [account3, account2, account1] },
     ])('sorts accounts by descending order: $accounts', ({ accounts }) => {
-      const sortedAccount = util.sortSelectedInternalAccounts(accounts);
+      const sortedAccount = util.sortSelectedInternalAccounts(
+        accounts,
+        groupLastSelectedById,
+      );
       expect(sortedAccount).toStrictEqual(orderedAccounts);
     });
 
     it('sorts accounts with bigger gap', () => {
       const accounts = [account1, accountWithBigSelectedIndexGap, account3];
-      const sortedAccount = util.sortSelectedInternalAccounts(accounts);
+      const sortedAccount = util.sortSelectedInternalAccounts(
+        accounts,
+        groupLastSelectedById,
+      );
       expect(sortedAccount.length).toBeGreaterThan(0);
       expect(sortedAccount).toHaveLength(accounts.length);
       expect(sortedAccount[0]).toStrictEqual(accountWithBigSelectedIndexGap);
@@ -1407,7 +1421,10 @@ describe('util', () => {
 
     it('sorts accounts with negative `lastSelected` index', () => {
       const accounts = [account1, accountWithNegativeSelectedIndex, account3];
-      const sortedAccount = util.sortSelectedInternalAccounts(accounts);
+      const sortedAccount = util.sortSelectedInternalAccounts(
+        accounts,
+        groupLastSelectedById,
+      );
       expect(sortedAccount.length).toBeGreaterThan(0); // Required since we using `length - 1`
       expect(sortedAccount).toHaveLength(accounts.length);
       expect(sortedAccount[sortedAccount.length - 1]).toStrictEqual(
@@ -1416,7 +1433,7 @@ describe('util', () => {
     });
 
     it('succeed with no accounts', () => {
-      const sortedAccount = util.sortSelectedInternalAccounts([]);
+      const sortedAccount = util.sortSelectedInternalAccounts([], {});
       expect(sortedAccount).toStrictEqual([]);
     });
   });
