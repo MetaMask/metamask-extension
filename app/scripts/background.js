@@ -615,10 +615,7 @@ const handleOnConnect = async (port) => {
     }
 
     // This is set in `setupController`, which is called as part of initialization
-    connectWindowPostMessage(
-      port,
-      isMetaMaskUIPort ? removeCriticalErrorListeners : undefined,
-    );
+    connectWindowPostMessage(port, removeCriticalErrorListeners);
   } catch (error) {
     sentry?.captureException(error);
 
