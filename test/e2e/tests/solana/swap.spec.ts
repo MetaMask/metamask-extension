@@ -34,6 +34,7 @@ import {
   mockBridgeGetTokens,
   mockBridgeSearchTokens,
 } from './common-solana';
+import HomePage from 'test/e2e/page-objects/pages/home/homepage';
 
 async function mockSwapUSDCtoSOL(
   mockServer: Mockttp,
@@ -168,13 +169,15 @@ describe('Swap on Solana', function () {
       async ({ driver }) => {
         await login(driver);
 
+        const homePage = new NonEvmHomepage(driver);
+        await homePage.waitForNonEvmAccountsLoaded();
+
         // Switch to Solana network
         const networkManager = new NetworkManager(driver);
         await networkManager.openNetworkManager();
         await networkManager.selectTab('Popular');
         await networkManager.selectNetworkByNameWithWait('Solana');
 
-        const homePage = new NonEvmHomepage(driver);
         await homePage.checkPageIsLoaded({ amount: '50' });
 
         // Create swap
@@ -231,13 +234,15 @@ describe('Swap on Solana', function () {
       async ({ driver }) => {
         await login(driver);
 
+        const homePage = new NonEvmHomepage(driver);
+        await homePage.waitForNonEvmAccountsLoaded();
+
         // Switch to Solana network
         const networkManager = new NetworkManager(driver);
         await networkManager.openNetworkManager();
         await networkManager.selectTab('Popular');
         await networkManager.selectNetworkByNameWithWait('Solana');
 
-        const homePage = new NonEvmHomepage(driver);
         await homePage.checkPageIsLoaded({ amount: '50' });
 
         // Create swap USDC → SOL
@@ -278,13 +283,15 @@ describe('Swap on Solana', function () {
       async ({ driver }) => {
         await login(driver);
 
+        const homePage = new NonEvmHomepage(driver);
+        await homePage.waitForNonEvmAccountsLoaded();
+
         // Switch to Solana network
         const networkManager = new NetworkManager(driver);
         await networkManager.openNetworkManager();
         await networkManager.selectTab('Popular');
         await networkManager.selectNetworkByNameWithWait('Solana');
 
-        const homePage = new NonEvmHomepage(driver);
         await homePage.checkPageIsLoaded({ amount: '50' });
 
         // Create swap and verify no quotes message
@@ -312,13 +319,15 @@ describe('Swap on Solana', function () {
       async ({ driver }) => {
         await login(driver);
 
+        const homePage = new NonEvmHomepage(driver);
+        await homePage.waitForNonEvmAccountsLoaded();
+
         // Switch to Solana network
         const networkManager = new NetworkManager(driver);
         await networkManager.openNetworkManager();
         await networkManager.selectTab('Popular');
         await networkManager.selectNetworkByNameWithWait('Solana');
 
-        const homePage = new NonEvmHomepage(driver);
         await homePage.checkPageIsLoaded({ amount: '50' });
 
         // Create swap SOL → USDC
