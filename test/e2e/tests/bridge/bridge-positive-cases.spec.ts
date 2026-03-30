@@ -253,7 +253,6 @@ describe('Bridge tests', function (this: Suite) {
         await srcAssetElement.click();
         console.log('Selected source asset mUSD');
 
-        // TODO how many times does reset get called if window close
         console.log('Checking that asset picker is visible');
         await bridgePage.goToAssetPage(
           'USDC',
@@ -298,7 +297,6 @@ describe('Bridge tests', function (this: Suite) {
         ).click();
         console.log('Selected dest asset USDC');
 
-        // TODO how many times does reset get called if window close
         await bridgePage.goToAssetPage(
           'DAI',
           '0x1',

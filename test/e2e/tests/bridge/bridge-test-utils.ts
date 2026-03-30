@@ -124,7 +124,7 @@ export const bridgeTransaction = async ({
 
   const bridgePage = new BridgeQuotePage(driver);
 
-  // await bridgePage.checkAssetsAreSelected('ETH', 'mUSD');
+  await bridgePage.checkAssetsAreSelected('ETH', 'mUSD');
   await bridgePage.enterBridgeQuote(quote);
   await bridgePage.waitForQuote();
   await bridgePage.checkExpectedNetworkFeeIsDisplayed();
