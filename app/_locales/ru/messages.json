@@ -1345,9 +1345,6 @@
   "cancel": {
     "message": "Отмена"
   },
-  "cancelPopoverTitle": {
-    "message": "Отменить транзакцию"
-  },
   "cancelTransactionDescription": {
     "message": "Эта транзакция будет отменена, и эта комиссия сети заменит исходную."
   },
@@ -2524,9 +2521,6 @@
     "message": "Лимит газа должен быть больше $1 и меньше $2",
     "description": "$1 is the minimum limit for gas and $2 is the maximum limit"
   },
-  "editGasLimitTooltip": {
-    "message": "Лимит газа — это максимальное количество единиц газа, которое вы готовы использовать. Единицы газа являются множителем «Максимальной платы за приоритет» и «Максимальной комиссии»."
-  },
   "editGasMaxBaseFeeGWEIImbalance": {
     "message": "Максимальная базовая комиссия не может быть ниже платы за приоритет."
   },
@@ -2565,12 +2559,6 @@
   },
   "editGasPriceTooLow": {
     "message": "Цена газа должна быть больше 0"
-  },
-  "editGasPriceTooltip": {
-    "message": "В этой сети необходимо заполнить поле «Цена газа» при отправке транзакции. Цена газа — это сумма, которую вы будете платить за единицу газа."
-  },
-  "editGasTitle": {
-    "message": "Изменить приоритет"
   },
   "editGasTooLow": {
     "message": "Время обработки неизвестно"
@@ -2984,18 +2972,8 @@
   "gas": {
     "message": "Газ"
   },
-  "gasDisplayAcknowledgeDappButtonText": {
-    "message": "Изменить рекомендуемую плату за газ"
-  },
-  "gasDisplayDappWarning": {
-    "message": "Эта плата за газ была предложена $1. Ее изменение может привести к проблемам с вашей транзакцией. При наличии вопросов обратитесь к $1.",
-    "description": "$1 represents the Dapp's origin"
-  },
   "gasLimit": {
     "message": "Лимит газа"
-  },
-  "gasLimitRecommended": {
-    "message": "Рекомендуемый лимит газа — $1. Если лимит газа меньше, успешность транзакции снижается."
   },
   "gasLimitTooLow": {
     "message": "Лимит газа должен быть не менее 21 000"
@@ -4149,8 +4127,8 @@
     "description": "Label for the claimable bonus row in the mUSD conversion confirmation screen"
   },
   "musdClaimableBonusTooltip": {
-    "message": "Бонус в размере $1% годовых от суммы вашего накопленного бонуса за владение mUSD. Ваш бонус можно получить ежедневно на Linea. Работает на платформе Relay. $2",
-    "description": "$1 is the APY percentage, $2 is the 'Terms apply' link"
+    "message": "Годовой бонус, который вы получили за владение mUSD. Ваш бонус можно получать ежедневно на Linea. $1",
+    "description": "$1 is the 'Terms apply' link"
   },
   "musdConversionActivityTitle": {
     "message": "Конвертировать $1 в mUSD",
@@ -4174,16 +4152,12 @@
     "message": "Конвертируйте и получите $1%",
     "description": "$1 is the bonus percentage (e.g., 3)"
   },
-  "musdEarnBonusPercentage": {
-    "message": "Заработайте бонус $1%",
-    "description": "$1 is the bonus percentage (e.g., 3)"
-  },
   "musdEducationGetStarted": {
     "message": "С чего начать"
   },
   "musdEducationHeadline": {
     "message": "ПОЛУЧИТЕ $1% НА СТЕЙБЛКОИНАХ",
-    "description": "$1 is the bonus APY percentage"
+    "description": "$1 is the bonus APY percentage. Line break between ON and STABLECOINS matches splash layout."
   },
   "musdEducationNotNow": {
     "message": "Не сейчас"
@@ -7923,15 +7897,6 @@
   "speedUpCancellation": {
     "message": "Ускорить эту отмену"
   },
-  "speedUpExplanation": {
-    "message": "Мы обновили плату за газ с учетом текущих условий сети и увеличили ее как минимум на 10% (это требование сети)."
-  },
-  "speedUpPopoverTitle": {
-    "message": "Ускорить транзакцию"
-  },
-  "speedUpTooltipText": {
-    "message": "Новая плата за газ"
-  },
   "speedUpTransactionDescription": {
     "message": "Эта комиссия сети заменит исходную."
   },
@@ -8771,14 +8736,8 @@
   "tokensInCollection": {
     "message": "Токены в коллекции"
   },
-  "tooltipSatusConnected": {
-    "message": "подключен"
-  },
   "tooltipSatusConnectedUpperCase": {
     "message": "Подключено"
-  },
-  "tooltipSatusNotConnected": {
-    "message": "не подключено"
   },
   "total": {
     "message": "Итого"

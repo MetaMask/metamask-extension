@@ -1345,9 +1345,6 @@
   "cancel": {
     "message": "Cancelar"
   },
-  "cancelPopoverTitle": {
-    "message": "Cancelar transação"
-  },
   "cancelTransactionDescription": {
     "message": "Esta transação será cancelada e esta taxa de rede substituirá a original."
   },
@@ -2524,9 +2521,6 @@
     "message": "O limite de gás deve ser superior a $1 e inferior a $2",
     "description": "$1 is the minimum limit for gas and $2 is the maximum limit"
   },
-  "editGasLimitTooltip": {
-    "message": "O limite de gás são as unidades máximas de gás que você está disposto a utilizar. Unidades de gás são um multiplicador para “Taxa de prioridade máxima” e “Taxa máxima”."
-  },
   "editGasMaxBaseFeeGWEIImbalance": {
     "message": "A taxa-base máxima não pode ser inferior à taxa de prioridade"
   },
@@ -2565,12 +2559,6 @@
   },
   "editGasPriceTooLow": {
     "message": "O preço do gás deve ser superior a 0"
-  },
-  "editGasPriceTooltip": {
-    "message": "Essa rede requer um campo de \"preço do gás\" ao enviar uma transação. O preço do gás é o valor pago por unidade de gás."
-  },
-  "editGasTitle": {
-    "message": "Editar prioridade"
   },
   "editGasTooLow": {
     "message": "Tempo de processamento desconhecido"
@@ -2984,18 +2972,8 @@
   "gas": {
     "message": "Gás"
   },
-  "gasDisplayAcknowledgeDappButtonText": {
-    "message": "Editar taxa de gás sugerida"
-  },
-  "gasDisplayDappWarning": {
-    "message": "Essa taxa de gás foi sugerida por $1. Sua substituição pode causar um problema com a sua transação. Entre em contato com $1 se tiver perguntas.",
-    "description": "$1 represents the Dapp's origin"
-  },
   "gasLimit": {
     "message": "Limite de gás"
-  },
-  "gasLimitRecommended": {
-    "message": "O limite de gás recomendado é de $1. Um limite de gás inferior pode resultar em falha."
   },
   "gasLimitTooLow": {
     "message": "O limite de gás deve ser de pelo menos 21000"
@@ -4149,8 +4127,8 @@
     "description": "Label for the claimable bonus row in the mUSD conversion confirmation screen"
   },
   "musdClaimableBonusTooltip": {
-    "message": "Você ganhou $1% de bônus anualizado por manter mUSD. Seu bônus pode ser resgatado diariamente na Linea. Desenvolvido por Relay. $2",
-    "description": "$1 is the APY percentage, $2 is the 'Terms apply' link"
+    "message": "O bônus anualizado que você ganhou por manter mUSD. Seu bônus pode ser resgatado diariamente na Linea. $1",
+    "description": "$1 is the 'Terms apply' link"
   },
   "musdConversionActivityTitle": {
     "message": "Converter $1 para mUSD",
@@ -4174,16 +4152,12 @@
     "message": "Converta e ganhe $1%",
     "description": "$1 is the bonus percentage (e.g., 3)"
   },
-  "musdEarnBonusPercentage": {
-    "message": "Ganhe um bônus de $1%",
-    "description": "$1 is the bonus percentage (e.g., 3)"
-  },
   "musdEducationGetStarted": {
     "message": "Comece já"
   },
   "musdEducationHeadline": {
     "message": "OBTENHA $1% SOBRE STABLECOINS",
-    "description": "$1 is the bonus APY percentage"
+    "description": "$1 is the bonus APY percentage. Line break between ON and STABLECOINS matches splash layout."
   },
   "musdEducationNotNow": {
     "message": "Agora não"
@@ -7923,15 +7897,6 @@
   "speedUpCancellation": {
     "message": "Acelerar esse cancelamento"
   },
-  "speedUpExplanation": {
-    "message": "Atualizamos a taxa de gás baseada nas condições atuais da rede e a aumentamos em pelo menos 10% (exigido pela rede)."
-  },
-  "speedUpPopoverTitle": {
-    "message": "Acelerar a transação"
-  },
-  "speedUpTooltipText": {
-    "message": "Nova taxa de gás"
-  },
   "speedUpTransactionDescription": {
     "message": "Esta taxa de rede substituirá a original."
   },
@@ -8771,14 +8736,8 @@
   "tokensInCollection": {
     "message": "Tokens na coleção"
   },
-  "tooltipSatusConnected": {
-    "message": "conectado"
-  },
   "tooltipSatusConnectedUpperCase": {
     "message": "Conectado"
-  },
-  "tooltipSatusNotConnected": {
-    "message": "não conectado"
   },
   "total": {
     "message": "Total"

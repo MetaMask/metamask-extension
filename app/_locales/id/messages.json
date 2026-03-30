@@ -1345,9 +1345,6 @@
   "cancel": {
     "message": "Batal"
   },
-  "cancelPopoverTitle": {
-    "message": "Batalkan transaksi"
-  },
   "cancelTransactionDescription": {
     "message": "Transaksi ini akan dibatalkan dan biaya jaringan ini akan menggantikan biaya awal."
   },
@@ -2524,9 +2521,6 @@
     "message": "Batas gas harus lebih besar dari $1 dan kurang dari $2",
     "description": "$1 is the minimum limit for gas and $2 is the maximum limit"
   },
-  "editGasLimitTooltip": {
-    "message": "Batas gas merupakan unit maksimum gas yang ingin Anda gunakan. Unit gas adalah pengganda untuk “Biaya prioritas maks” dan “Biaya maks”."
-  },
   "editGasMaxBaseFeeGWEIImbalance": {
     "message": "Biaya dasar maks tidak boleh lebih rendah dari biaya prioritas"
   },
@@ -2565,12 +2559,6 @@
   },
   "editGasPriceTooLow": {
     "message": "Harga gas harus lebih besar dari 0"
-  },
-  "editGasPriceTooltip": {
-    "message": "Jaringan ini memerlukan kolom “Harga gas” saat mengirimkan transaksi. Harga gas merupakan jumlah yang akan Anda bayar per unit gas."
-  },
-  "editGasTitle": {
-    "message": "Edit prioritas"
   },
   "editGasTooLow": {
     "message": "Waktu pemrosesan tidak diketahui"
@@ -2984,18 +2972,8 @@
   "gas": {
     "message": "Gas"
   },
-  "gasDisplayAcknowledgeDappButtonText": {
-    "message": "Edit biaya gas yang disarankan"
-  },
-  "gasDisplayDappWarning": {
-    "message": "Biaya gas ini telah disarankan oleh $1. Mengubahnya dapat menyebabkan masalah pada transaksi Anda. Jika ada pertanyaan, hubungi $1.",
-    "description": "$1 represents the Dapp's origin"
-  },
   "gasLimit": {
     "message": "Batas gas"
-  },
-  "gasLimitRecommended": {
-    "message": "Batas gas yang disarankan adalah $1. Jika batas gas kurang dari itu, maka berpotensi gagal."
   },
   "gasLimitTooLow": {
     "message": "Batas gas minimum adalah 21000"
@@ -4149,8 +4127,8 @@
     "description": "Label for the claimable bonus row in the mUSD conversion confirmation screen"
   },
   "musdClaimableBonusTooltip": {
-    "message": "Bonus tahunan sebesar $1% yang Anda peroleh karena memiliki mUSD. Bonus dapat diklaim setiap hari di Linea. Didukung oleh Relay. $2",
-    "description": "$1 is the APY percentage, $2 is the 'Terms apply' link"
+    "message": "Bonus tahunan yang Anda peroleh karena memiliki mUSD. Bonus dapat diklaim setiap hari di Linea. $1",
+    "description": "$1 is the 'Terms apply' link"
   },
   "musdConversionActivityTitle": {
     "message": "Konversikan $1 ke mUSD",
@@ -4174,16 +4152,12 @@
     "message": "Konversikan dan dapatkan $1%",
     "description": "$1 is the bonus percentage (e.g., 3)"
   },
-  "musdEarnBonusPercentage": {
-    "message": "Dapatkan bonus sebesar $1%",
-    "description": "$1 is the bonus percentage (e.g., 3)"
-  },
   "musdEducationGetStarted": {
     "message": "Mulai"
   },
   "musdEducationHeadline": {
     "message": "DAPATKAN $1% UNTUK STABLECOIN",
-    "description": "$1 is the bonus APY percentage"
+    "description": "$1 is the bonus APY percentage. Line break between ON and STABLECOINS matches splash layout."
   },
   "musdEducationNotNow": {
     "message": "Tidak sekarang"
@@ -7923,15 +7897,6 @@
   "speedUpCancellation": {
     "message": "Percepat pembatalan ini"
   },
-  "speedUpExplanation": {
-    "message": "Kami telah memperbarui biaya gas berdasarkan kondisi jaringan saat ini dan telah meningkatkannya minimal 10% (diperlukan oleh jaringan)."
-  },
-  "speedUpPopoverTitle": {
-    "message": "Percepat transaksi"
-  },
-  "speedUpTooltipText": {
-    "message": "Biaya gas baru"
-  },
   "speedUpTransactionDescription": {
     "message": "Biaya jaringan ini akan menggantikan biaya awal."
   },
@@ -8771,14 +8736,8 @@
   "tokensInCollection": {
     "message": "Token dalam koleksi"
   },
-  "tooltipSatusConnected": {
-    "message": "terhubung"
-  },
   "tooltipSatusConnectedUpperCase": {
     "message": "Terhubung"
-  },
-  "tooltipSatusNotConnected": {
-    "message": "tidak terhubung"
   },
   "total": {
     "message": "Total"

@@ -69,18 +69,32 @@ export function useCancelSpeedupInitialGas({
       txParams?.maxPriorityFeePerGas &&
       (txParams?.gasLimit || txParams?.gas);
 
+    const hasLegacyGas =
+      !hasEIP1559Gas &&
+      txParams?.gasPrice &&
+      (txParams?.gasLimit || txParams?.gas);
+
     if (
-      hasEIP1559Gas &&
       storedPreviousGasForTransactionIdRef.current !== effectiveTransaction.id
     ) {
-      dispatch(
-        updatePreviousGasParams(effectiveTransaction.id, {
-          maxFeePerGas: txParams.maxFeePerGas,
-          maxPriorityFeePerGas: txParams.maxPriorityFeePerGas,
-          gasLimit: txParams.gasLimit ?? txParams.gas,
-        }),
-      );
-      storedPreviousGasForTransactionIdRef.current = effectiveTransaction.id;
+      if (hasEIP1559Gas) {
+        dispatch(
+          updatePreviousGasParams(effectiveTransaction.id, {
+            maxFeePerGas: txParams.maxFeePerGas,
+            maxPriorityFeePerGas: txParams.maxPriorityFeePerGas,
+            gasLimit: txParams.gasLimit ?? txParams.gas,
+          }),
+        );
+        storedPreviousGasForTransactionIdRef.current = effectiveTransaction.id;
+      } else if (hasLegacyGas) {
+        dispatch(
+          updatePreviousGasParams(effectiveTransaction.id, {
+            gasPrice: txParams.gasPrice,
+            gasLimit: txParams.gasLimit ?? txParams.gas,
+          }),
+        );
+        storedPreviousGasForTransactionIdRef.current = effectiveTransaction.id;
+      }
     }
 
     if (
@@ -104,6 +118,7 @@ export function useCancelSpeedupInitialGas({
     }
     appliedInitialGasForTransactionIdRef.current = effectiveTransaction.id;
   }, [
+    dispatch,
     effectiveTransaction.id,
     effectiveTransaction.previousGas,
     effectiveTransaction.txParams,
