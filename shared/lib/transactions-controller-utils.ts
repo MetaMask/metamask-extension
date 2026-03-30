@@ -1,5 +1,8 @@
 import BigNumber from 'bignumber.js';
-import { TransactionMeta } from '@metamask/transaction-controller';
+import {
+  TransactionEnvelopeType,
+  TransactionMeta,
+} from '@metamask/transaction-controller';
 
 import { EtherDenomination } from '../constants/common';
 import { Numeric } from './Numeric';
@@ -69,7 +72,8 @@ export function getSwapsTokensReceivedFromTxMeta(
   // The `type` property is not in the official TransactionReceipt type but is
   // set by MetaMask to reflect the EIP-2718 envelope type of the transaction.
   const txReceiptType = (txReceipt as { type?: string } | undefined)?.type;
-  const networkAndAccountSupports1559 = txReceiptType === 'fee-market';
+  const networkAndAccountSupports1559 =
+    txReceiptType === TransactionEnvelopeType.feeMarket;
 
   if (isSwapsDefaultTokenSymbol(tokenSymbol as string, chainId as string)) {
     if (
@@ -89,13 +93,10 @@ export function getSwapsTokensReceivedFromTxMeta(
 
     let approvalTxGasCost = new Numeric('0x0', 16);
     if (approvalTxMeta && approvalTxMeta.txReceipt) {
-      const approvalTxReceiptType = (
-        approvalTxMeta.txReceipt as { type?: string }
-      )?.type;
       approvalTxGasCost = new Numeric(
         calcGasTotal(
           approvalTxMeta.txReceipt.gasUsed,
-          approvalTxReceiptType === 'fee-market'
+          networkAndAccountSupports1559
             ? approvalTxMeta.txReceipt.effectiveGasPrice // Base fee + priority fee.
             : approvalTxMeta.txParams?.gasPrice,
         ),
