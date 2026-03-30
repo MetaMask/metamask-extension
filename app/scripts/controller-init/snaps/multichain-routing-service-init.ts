@@ -43,14 +43,17 @@ export const MultichainRoutingServiceInit: ControllerInitFunction<
   // locked, it would cause a deadlock. This is a temporary fix until we can
   // refactor how we handle requests to the Snaps Keyring.
   // @ts-expect-error: Types of `SnapKeyring` are incompatible.
-  const withSnapKeyring: ConstructorParameters<MultichainRoutingService>[0]['withSnapKeyring'] =
-    async <Type extends (options: { keyring: SnapKeyring }) => unknown>(
-      operation: Type,
-    ) => {
-      const keyring = await getSnapKeyring();
+  const withSnapKeyring: ConstructorParameters<
+    typeof MultichainRoutingService
+  >[0]['withSnapKeyring'] = async <
+    Type extends (options: { keyring: SnapKeyring }) => unknown,
+  >(
+    operation: Type,
+  ) => {
+    const keyring = await getSnapKeyring();
 
-      return operation({ keyring });
-    };
+    return operation({ keyring });
+  };
 
   const controller = new MultichainRoutingService({
     messenger: controllerMessenger,
