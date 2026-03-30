@@ -84,7 +84,7 @@ describe('PerpsView', () => {
     it('renders the perps tab view', () => {
       renderWithProvider(<PerpsView />, mockStore);
 
-      expect(screen.getByTestId('perps-tab-view')).toBeInTheDocument();
+      expect(screen.getByTestId('perps-view')).toBeInTheDocument();
     });
 
     it('renders the balance dropdown', () => {
@@ -201,7 +201,7 @@ describe('PerpsView', () => {
       expect(ordersSection).toBeInTheDocument();
 
       // Positions should come before orders in the DOM
-      const view = screen.getByTestId('perps-tab-view');
+      const view = screen.getByTestId('perps-view');
       const children = view.querySelectorAll('[data-testid]');
       const childTestIds = Array.from(children).map((child) =>
         child.getAttribute('data-testid'),

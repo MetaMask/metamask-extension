@@ -31,6 +31,7 @@ import {
 import { PerpsSupportLearn } from './perps-support-learn';
 import { PerpsTutorialModal } from './perps-tutorial-modal';
 import { PerpsWatchlist } from './perps-watchlist';
+import { PerpsToastProvider } from './perps-toast';
 
 /**
  * PerpsView component displays the perpetuals trading view
@@ -167,7 +168,7 @@ export const PerpsView: React.FC = () => {
       <Box
         flexDirection={BoxFlexDirection.Column}
         gap={4}
-        data-testid="perps-tab-view-loading"
+        data-testid="perps-view-loading"
       >
         <PerpsControlBarSkeleton />
         <PerpsSectionSkeleton cardCount={5} showStartTradeCta />
@@ -180,56 +181,58 @@ export const PerpsView: React.FC = () => {
   }
 
   return (
-    <Box
-      flexDirection={BoxFlexDirection.Column}
-      gap={4}
-      data-testid="perps-tab-view"
-    >
-      {/* Balance header with Add funds / Withdraw dropdown */}
-      <PerpsBalanceDropdown
-        hasPositions={hasPositions}
-        onAddFunds={triggerDeposit}
-        onWithdraw={triggerWithdraw}
-      />
+    <PerpsToastProvider>
+      <Box
+        flexDirection={BoxFlexDirection.Column}
+        gap={4}
+        data-testid="perps-view"
+      >
+        {/* Balance header with Add funds / Withdraw dropdown */}
+        <PerpsBalanceDropdown
+          hasPositions={hasPositions}
+          onAddFunds={triggerDeposit}
+          onWithdraw={triggerWithdraw}
+        />
 
-      {batchActionError ? (
-        <Text variant={TextVariant.BodySm} color={TextColor.ErrorDefault}>
-          {batchActionError}
-        </Text>
-      ) : null}
+        {/* Positions + Orders sections */}
+        {batchActionError ? (
+          <Text variant={TextVariant.BodySm} color={TextColor.ErrorDefault}>
+            {batchActionError}
+          </Text>
+        ) : null}
 
-      {/* Positions + Orders sections */}
-      <PerpsPositionsOrders
-        positions={positions}
-        orders={orders}
-        onCloseAllPositions={handleCloseAllPositions}
-        onCancelAllOrders={handleCancelAllOrders}
-        isCloseAllPending={isCloseAllPending}
-        isCancelAllPending={isCancelAllPending}
-      />
+        <PerpsPositionsOrders
+          positions={positions}
+          orders={orders}
+          onCloseAllPositions={handleCloseAllPositions}
+          onCancelAllOrders={handleCancelAllOrders}
+          isCloseAllPending={isCloseAllPending}
+          isCancelAllPending={isCancelAllPending}
+        />
 
-      {/* Watchlist */}
-      <PerpsWatchlist />
+        {/* Watchlist */}
+        <PerpsWatchlist />
 
-      {/* Explore markets */}
-      <PerpsExploreMarkets
-        cryptoMarkets={cryptoMarkets}
-        hip3Markets={hip3Markets}
-      />
+        {/* Explore markets */}
+        <PerpsExploreMarkets
+          cryptoMarkets={cryptoMarkets}
+          hip3Markets={hip3Markets}
+        />
 
-      {/* Recent Activity */}
-      <PerpsRecentActivity
-        transactions={recentActivityTransactions}
-        maxTransactions={PERPS_RECENT_ACTIVITY_MAX_TRANSACTIONS}
-        isLoading={recentActivityLoading}
-        error={recentActivityError}
-      />
+        {/* Recent Activity */}
+        <PerpsRecentActivity
+          transactions={recentActivityTransactions}
+          maxTransactions={PERPS_RECENT_ACTIVITY_MAX_TRANSACTIONS}
+          isLoading={recentActivityLoading}
+          error={recentActivityError}
+        />
 
-      {/* Support & Learn */}
-      <PerpsSupportLearn />
-      {/* Tutorial Modal */}
-      <PerpsTutorialModal />
-    </Box>
+        {/* Support & Learn */}
+        <PerpsSupportLearn />
+        {/* Tutorial Modal */}
+        <PerpsTutorialModal />
+      </Box>
+    </PerpsToastProvider>
   );
 };
 
