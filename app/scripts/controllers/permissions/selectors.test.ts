@@ -185,7 +185,7 @@ describe('PermissionController selectors', () => {
   });
 
   describe('getPermittedAccountsForScopesByOrigin', () => {
-    const scopesEip155_1 = ['eip155:1'] as const;
+    const scopesEip155Mainnet = ['eip155:1'] as const;
 
     it('returns origins whose caveat includes accounts for the requested scopes', () => {
       const state = {
@@ -243,7 +243,7 @@ describe('PermissionController selectors', () => {
 
       const selected = getPermittedAccountsForScopesByOrigin(
         state as unknown as PermissionControllerState,
-        [...scopesEip155_1],
+        [...scopesEip155Mainnet],
       );
 
       expect(selected).toStrictEqual(
