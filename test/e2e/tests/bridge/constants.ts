@@ -2657,6 +2657,18 @@ export const EXPECTED_INPUT_CHANGES = {
   ],
   reset_bridge_page: [
     {
+      token_source: 'eip155:1/slip44:60',
+    },
+    {
+      chain_destination: 'eip155:1',
+    },
+    {
+      token_destination:
+        'eip155:1/erc20:0xacA92E438df0B2401fF60dA7E4337B687a2435DA',
+    },
+  ],
+  quote_request_2: [
+    {
       token_source: 'eip155:1/erc20:0x6B175474E89094C44Da98b954EedeAC495271d0F',
     },
     {
@@ -2665,14 +2677,7 @@ export const EXPECTED_INPUT_CHANGES = {
     {
       chain_destination: 'eip155:59144',
     },
-    {
-      chain_source: 'eip155:1',
-    },
-    {
-      slippage: 2,
-    },
   ],
-  quote_request_2: [],
   switch_tokens: [
     {
       token_source: 'eip155:59144/slip44:60',
