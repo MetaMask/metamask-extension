@@ -346,7 +346,7 @@
     "@babel/plugin-transform-class-properties": {
       "packages": {
         "@babel/plugin-transform-private-methods>@babel/helper-create-class-features-plugin": true,
-        "@babel/preset-env>@babel/helper-plugin-utils": true
+        "@babel/plugin-transform-class-properties>@babel/helper-plugin-utils": true
       }
     },
     "@babel/preset-env>@babel/plugin-transform-class-static-block": {
@@ -549,14 +549,14 @@
     "@babel/plugin-transform-private-methods": {
       "packages": {
         "@babel/plugin-transform-private-methods>@babel/helper-create-class-features-plugin": true,
-        "@babel/preset-env>@babel/helper-plugin-utils": true
+        "@babel/plugin-transform-private-methods>@babel/helper-plugin-utils": true
       }
     },
     "@babel/plugin-transform-private-property-in-object": {
       "packages": {
         "@babel/plugin-transform-private-property-in-object>@babel/helper-annotate-as-pure": true,
         "@babel/plugin-transform-private-methods>@babel/helper-create-class-features-plugin": true,
-        "@babel/preset-env>@babel/helper-plugin-utils": true
+        "@babel/plugin-transform-private-property-in-object>@babel/helper-plugin-utils": true
       }
     },
     "@babel/preset-env>@babel/plugin-transform-property-literals": {
@@ -779,6 +779,13 @@
     "@babel/core>@babel/template": {
       "packages": {
         "@babel/code-frame": true,
+        "@babel/core>@babel/template>@babel/parser": true,
+        "@babel/core>@babel/types": true
+      }
+    },
+    "depcheck>@babel/traverse>@babel/template": {
+      "packages": {
+        "@babel/code-frame": true,
         "@babel/core>@babel/parser": true,
         "@babel/core>@babel/types": true
       }
@@ -792,7 +799,7 @@
         "@babel/core>@babel/generator": true,
         "depcheck>@babel/traverse>@babel/helper-globals": true,
         "@babel/core>@babel/parser": true,
-        "@babel/core>@babel/template": true,
+        "depcheck>@babel/traverse>@babel/template": true,
         "@babel/core>@babel/types": true,
         "babel/preset-env>b@babel/types": true,
         "nock>debug": true

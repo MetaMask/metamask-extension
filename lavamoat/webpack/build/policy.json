@@ -206,6 +206,13 @@
     "@babel/core>@babel/template": {
       "packages": {
         "@babel/code-frame": true,
+        "@babel/core>@babel/template>@babel/parser": true,
+        "@babel/core>@babel/types": true
+      }
+    },
+    "depcheck>@babel/traverse>@babel/template": {
+      "packages": {
+        "@babel/code-frame": true,
         "@babel/core>@babel/parser": true,
         "@babel/core>@babel/types": true
       }
@@ -220,6 +227,7 @@
         "depcheck>@babel/traverse>@babel/helper-globals": true,
         "@babel/core>@babel/parser": true,
         "@babel/core>@babel/template": true,
+        "depcheck>@babel/traverse>@babel/template": true,
         "@babel/core>@babel/types": true,
         "depcheck>@babel": true,
         "nock>debug": true
