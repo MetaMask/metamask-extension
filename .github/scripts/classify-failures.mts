@@ -72,11 +72,7 @@ interface Annotation {
   title?: string;
 }
 
-type Category =
-  | 'alwaysRetryable'
-  | 'retryableOnTransientError'
-  | 'usuallyNotFlaky'
-  | 'optional';
+type Category = 'alwaysRetryable' | 'retryableOnTransientError' | 'optional';
 
 interface JobClassification {
   jobName: string;
@@ -127,7 +123,7 @@ if (flags.help) {
 const GITHUB_TOKEN = getGitHubToken();
 const MAIN_RUN_ID = positionals[0] || process.env.MAIN_RUN_ID || '';
 const REPO = flags.repo || process.env.REPO || 'MetaMask/metamask-extension';
-const ATTEMPT = flags.attempt || process.env.RUN_ATTEMPT || '1';
+const ATTEMPT = flags.attempt || process.env.RUN_ATTEMPT || '';
 const WORKFLOW_EVENT = process.env.WORKFLOW_EVENT ?? '';
 const HEAD_BRANCH = process.env.HEAD_BRANCH ?? '';
 const PR_NUMBER_FROM_EVENT = process.env.PR_NUMBER_FROM_EVENT ?? '';
@@ -200,11 +196,15 @@ async function flushSentry(
   sentry: typeof import('@sentry/node'),
   label: string,
 ): Promise<void> {
-  const flushed = await sentry.flush(5000);
-  if (flushed) {
-    console.log(`Sent ${label} to Sentry`);
-  } else {
-    console.warn('Sentry flush timed out');
+  try {
+    const flushed = await sentry.flush(5000);
+    if (flushed) {
+      console.log(`Sent ${label} to Sentry`);
+    } else {
+      console.warn('Sentry flush timed out');
+    }
+  } catch (err) {
+    console.warn(`Sentry flush failed (${label}):`, err);
   }
 }
 
@@ -214,8 +214,11 @@ async function flushSentry(
 
 /**
  * Strip full-line // comments and trailing commas from JSONC for JSON.parse().
- * This is a lightweight approach that does NOT handle // inside string values.
- * Safe for our config file which has no URLs or // in values.
+ *
+ * Limitations (acceptable for our config file):
+ *   - Does NOT handle // inside string values (no URLs in values).
+ *   - Trailing-comma regex operates on full text, so ,] or ,} inside a
+ *     string value would be corrupted. No current patterns contain these.
  */
 function stripJsonComments(jsonc: string): string {
   return jsonc
@@ -234,7 +237,6 @@ const config: RetryConfig = JSON.parse(
 const categoryOrder: Category[] = [
   'alwaysRetryable',
   'retryableOnTransientError',
-  'usuallyNotFlaky',
   'optional',
 ];
 
@@ -269,6 +271,7 @@ function ghApi(
   path: string,
   opts?: {
     paginate?: boolean;
+    jq?: string;
     method?: string;
     body?: Record<string, unknown>;
     token?: string;
@@ -276,6 +279,7 @@ function ghApi(
 ): string {
   const args = ['api', path];
   if (opts?.paginate) args.push('--paginate');
+  if (opts?.jq) args.push('--jq', opts.jq);
   if (opts?.method) args.push('--method', opts.method);
   if (opts?.body) args.push('--input', '-');
   const env = opts?.token ? { ...process.env, GH_TOKEN: opts.token } : ghEnv;
@@ -303,8 +307,12 @@ function getFailedJobs(): Job[] {
   const jobsPath = ATTEMPT
     ? `${repoApi}/actions/runs/${MAIN_RUN_ID}/attempts/${ATTEMPT}/jobs?per_page=100`
     : `${repoApi}/actions/runs/${MAIN_RUN_ID}/jobs?per_page=100`;
-  const response = JSON.parse(ghApi(jobsPath, { paginate: true }));
-  return (response.jobs as Job[]).filter((j) => j.conclusion === 'failure');
+  // --jq '.jobs' extracts the array from each page so --paginate
+  // concatenates them into a single valid JSON array (without it,
+  // multi-page responses produce concatenated JSON objects which
+  // break JSON.parse).
+  const jobs = JSON.parse(ghApi(jobsPath, { paginate: true, jq: '.jobs' }));
+  return (jobs as Job[]).filter((j) => j.conclusion === 'failure');
 }
 
 function getAnnotations(jobId: number): Annotation[] {
@@ -395,7 +403,7 @@ function classifyJob(job: Job): JobClassification {
     };
   }
 
-  // retryableOnTransientError / usuallyNotFlaky: check annotations, then logs
+  // retryableOnTransientError: check annotations, then logs
   const annotations = getAnnotations(jobId);
   const annotationText = annotations
     .map((a) => `${a.message ?? ''} ${a.title ?? ''}`)
@@ -469,6 +477,28 @@ if (WORKFLOW_CONCLUSION === 'cancelled' && Number(ATTEMPT) > 1) {
   console.log(
     `Run ${MAIN_RUN_ID} was cancelled on attempt ${ATTEMPT} — emitting cancelled event.`,
   );
+
+  // If ci-status-gate deferred the "All jobs pass" commit status on an
+  // earlier attempt (merge_group + retry-ci), it's still pending. Post a
+  // failure status so the merge queue can eject instead of stalling.
+  // Harmless if the queue already moved past this SHA (preemption).
+  if (WORKFLOW_EVENT === 'merge_group') {
+    const headSha = getRunHeadSha();
+    try {
+      ghApi(`${repoApi}/statuses/${headSha}`, {
+        method: 'POST',
+        body: {
+          state: 'failure',
+          context: 'All jobs pass',
+          description: `Retry attempt ${ATTEMPT} was cancelled`,
+        },
+      });
+      console.log(`Posted deferred failure commit status on ${headSha}`);
+    } catch (err) {
+      console.warn('Failed to post deferred failure commit status:', err);
+    }
+  }
+
   if (GITHUB_OUTPUT) {
     appendFileSync(
       GITHUB_OUTPUT,
@@ -501,6 +531,12 @@ console.log(`Classifying failures for run ${MAIN_RUN_ID}...`);
 const failedJobs = getFailedJobs();
 
 if (failedJobs.length === 0) {
+  // No jobs with conclusion === 'failure'. This is the normal path for
+  // cancelled runs on attempt 1 (cancelled jobs have conclusion 'cancelled',
+  // not 'failure'). Safe to exit: if the run was cancelled before
+  // ci-status-gate could defer the commit status, there's nothing stuck —
+  // deferral requires ci-status-gate to run its retry-gate step, which
+  // makes the overall conclusion 'failure', not 'cancelled'.
   console.log('No failed jobs found.');
   if (GITHUB_OUTPUT) {
     appendFileSync(
@@ -532,7 +568,20 @@ for (const job of blockerJobs) {
   );
   if (!result.jobRetryable) {
     blockedBy = job.name;
-    break; // No point checking further
+    // Tag remaining unclassified blockers as cascade
+    const remaining = blockerJobs.slice(blockerJobs.indexOf(job) + 1);
+    for (const rem of remaining) {
+      const { category: cat, unmatched: um } = matchCategory(rem.name);
+      classifications.push({
+        jobName: rem.name,
+        jobId: rem.id,
+        category: cat,
+        jobRetryable: false,
+        reason: `Cascade — blocked by ${blockedBy}`,
+        unmatched: um,
+      });
+    }
+    break;
   }
 }
 
@@ -760,11 +809,19 @@ if (!isRetryable && prNumber) {
 // can't eject, and auto-merge re-queues the PR in an infinite loop.
 // ---------------------------------------------------------------------------
 
-if (WORKFLOW_EVENT === 'merge_group' && !willRetry && hasRetryLabel) {
+// The gate defers when: merge_group + failure + retry-ci + attempt < MAX_ATTEMPTS.
+// We can't re-check hasRetryLabel here because the API call might fail (rate
+// limit, transient outage), and if it does, the deferred status would never
+// post — leaving the queue stuck. Instead, post on any merge_group where we
+// won't retry. If the gate didn't actually defer (no label), this posts a
+// redundant failure status — harmless, since ci-status-gate already posted one.
+if (WORKFLOW_EVENT === 'merge_group' && !willRetry) {
   const headSha = getRunHeadSha();
   const description = atMaxAttempts
     ? `Retry limit reached (attempt ${ATTEMPT} of ${MAX_ATTEMPTS})`
-    : 'Non-retryable failures detected';
+    : isRetryable
+      ? 'Retryable failures, but no retry-ci label'
+      : 'Non-retryable failures detected';
   try {
     ghApi(`${repoApi}/statuses/${headSha}`, {
       method: 'POST',

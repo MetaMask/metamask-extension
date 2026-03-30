@@ -26,7 +26,8 @@
     },
 
     // Jobs that are normally deterministic but can fail due to infrastructure
-    // issues. Retried only if error matches a transient pattern.
+    // issues (OOM, network errors, etc.). Retried only if error matches a
+    // transient pattern from the global transientErrorPatterns list.
     "retryableOnTransientError": {
       "patterns": [
         "^build-",
@@ -41,19 +42,14 @@
         "^Prepare dependencies$",
         "^Publish",
         "^repository-health-checks",
+        "^Run tests",
         "^sonarcloud",
         "^store-benchmark-stats",
         "^Test lint$",
+        "^Test storybook",
         "^Trigger Regression",
         "^validate-lavamoat-policies"
       ]
-    },
-
-    // Jobs that are usually deterministic and should not be retried unless
-    // we have strong evidence of a transient error.
-    "usuallyNotFlaky": {
-      "patterns": ["^Run tests", "^Test storybook"],
-      "transientErrorPatterns": ["Exceeded timeout of \\d+ ms for a test"]
     },
 
     // Optional jobs — their failure does not influence the retry decision.
@@ -65,10 +61,9 @@
     }
   },
 
-  // Patterns to detect transient errors in job logs. If a job classified as
-  // retryableOnTransientError fails and its logs match any of these patterns,
-  // it will be marked jobRetryable=true. Jobs in other categories will not be retried
-  // even if they match these patterns, but the patterns can be used for reporting and debugging.
+  // Patterns to detect transient errors in job logs. If a
+  // retryableOnTransientError job fails and its logs match any of these,
+  // it will be marked jobRetryable=true.
   "transientErrorPatterns": [
     "429 Too Many Requests",
     "502 Bad Gateway",
@@ -83,6 +78,7 @@
     "ENOMEM",
     "ESOCKETTIMEDOUT",
     "ETIMEDOUT",
+    "Exceeded timeout of \\d+ ms for a test",
     "fatal: unable to access",
     "heap out of memory",
     "JavaScript heap out of memory",

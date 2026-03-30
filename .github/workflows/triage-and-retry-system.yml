@@ -97,6 +97,8 @@ jobs:
     timeout-minutes: 5
     permissions:
       actions: write
+      checks: write
+      contents: read
       pull-requests: write
       statuses: write
     env:
@@ -147,15 +149,49 @@ jobs:
       # -- Label-gated retry: requires `retry-ci` label on the originating PR --
       # The classify step already checked for the label and outputs will-retry,
       # has-retry-label, and pr-number. This step just acts on those outputs.
+      #
+      # Order matters: rerun BEFORE removing the label. If the rerun API
+      # call fails, the label stays on the PR — signaling that the retry
+      # was attempted but didn't go through.
       - name: Retry (if retry-ci label)
         id: retry
         if: ${{ steps.classify.outputs.will-retry == 'true' }}
         run: |
           PR="${{ steps.classify.outputs.pr-number }}"
 
-          echo "Removing retry-ci label from PR #$PR..."
-          gh pr edit "$PR" --repo "$REPO" --remove-label "retry-ci"
-
           echo "Rerunning failed jobs..."
           gh run rerun "$MAIN_RUN_ID" --failed --repo "$REPO"
           echo "Rerun triggered."
+
+          echo "Removing retry-ci label from PR #$PR..."
+          gh pr edit "$PR" --repo "$REPO" --remove-label "retry-ci" \
+            || echo "::warning::Failed to remove retry-ci label from PR #$PR — label stays"
+
+      # -- Rescue: post deferred failure status when triage job fails --
+      #
+      # If ci-status-gate deferred the commit status (merge_group + retry-ci)
+      # and anything in this job failed or timed out, "All jobs pass" is
+      # stuck pending. Post it as failure so the merge queue can eject
+      # instead of stalling.
+      #
+      # Includes cancelled() for the timeout case: when timeout-minutes is
+      # hit, GitHub cancels the job (failure() returns false).
+      #
+      # The retry step makes label removal non-fatal (|| warning), so if
+      # the rerun succeeds the step still passes and failure() stays false.
+      # The rescue only fires when the classify step crashes, the rerun
+      # API call itself fails, or the job times out.
+      #
+      # Safe even when ci-status-gate didn't actually defer — posting a
+      # redundant failure status is harmless.
+      - name: Post deferred failure status (rescue)
+        if: ${{ (failure() || cancelled()) && env.WORKFLOW_EVENT == 'merge_group' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh api "repos/$REPO/statuses/$HEAD_SHA" \
+            --method POST \
+            -f state=failure \
+            -f context="All jobs pass" \
+            -f description="Triage failed — posting deferred failure status"
+          echo "Posted rescue failure commit status on $HEAD_SHA"
