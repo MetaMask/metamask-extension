@@ -33,7 +33,6 @@ const DEFAULT_BLOCKED_DOMAIN =
   'a379a6f6eeafb9a55e378c118034e2751e682fab9f2d30ab13d2125586ce1947';
 
 describe('Phishing Detection', function (this: Suite) {
-  this.timeout(500000); // This test is very long, so we need an unusually high timeout
   describe('Phishing Detection Mock', function () {
     it('should be updated to use v1 of the API', function () {
       // Update the fixture in phishing-controller/mocks.js if this test fails

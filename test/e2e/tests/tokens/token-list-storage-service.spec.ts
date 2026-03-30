@@ -10,6 +10,7 @@ import { Driver } from '../../webdriver/driver';
 import HomePage from '../../page-objects/pages/home/homepage';
 import AssetListPage from '../../page-objects/pages/home/asset-list';
 import { login } from '../../page-objects/flows/login.flow';
+import { waitFor } from '@testing-library/react';
 
 describe('Token List via StorageService', function () {
   const chainId = CHAIN_IDS.MAINNET;
@@ -51,6 +52,7 @@ describe('Token List via StorageService', function () {
         const assetListPage = new AssetListPage(driver);
 
         await homePage.checkPageIsLoaded();
+        await homePage.waitForNonEvmAccountsLoaded();
         await assetListPage.importTokenBySearch({
           tokenName,
           networkName: MAINNET_DISPLAY_NAME,
