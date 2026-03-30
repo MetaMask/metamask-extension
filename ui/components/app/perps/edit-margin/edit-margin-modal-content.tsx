@@ -37,12 +37,6 @@ import { getDisplayName } from '../utils';
 import { floorToDecimals } from '../utils/number';
 
 const MARGIN_PRESETS = [25, 50, 100] as const;
-const MARGIN_FAILED_FALLBACK_ERROR_PATTERNS = [
-  /^an unknown error occurred$/iu,
-  /^failed to update margin$/iu,
-  /^unknown error$/iu,
-  /^error$/iu,
-];
 
 export type EditMarginModalContentProps = {
   position: Position;
@@ -59,8 +53,6 @@ export type EditMarginModalContentProps = {
   onSaveEnabledChange?: (enabled: boolean) => void;
   /** Called when the saving state changes (true = save in progress, false = done). */
   onSavingChange?: (saving: boolean) => void;
-  /** Whether perps in-app toasts are enabled (fallback to inline errors when false). */
-  isPerpsInAppToastsEnabled?: boolean;
 };
 
 /**
@@ -76,7 +68,6 @@ export type EditMarginModalContentProps = {
  * @param options0.onSaveRef
  * @param options0.onSaveEnabledChange
  * @param options0.onSavingChange
- * @param options0.isPerpsInAppToastsEnabled
  */
 export const EditMarginModalContent: React.FC<EditMarginModalContentProps> = ({
   position,
@@ -88,7 +79,6 @@ export const EditMarginModalContent: React.FC<EditMarginModalContentProps> = ({
   onSaveRef,
   onSaveEnabledChange,
   onSavingChange,
-  isPerpsInAppToastsEnabled = false,
 }) => {
   const t = useI18nContext();
   const { formatNumber, formatCurrencyWithMinThreshold } = useFormatters();
@@ -302,24 +292,7 @@ export const EditMarginModalContent: React.FC<EditMarginModalContentProps> = ({
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : 'An unknown error occurred';
-      if (isPerpsInAppToastsEnabled) {
-        setMarginError(null);
-        const normalizedErrorMessage = errorMessage.trim();
-        const shouldUseFallbackDescription =
-          normalizedErrorMessage.length === 0 ||
-          MARGIN_FAILED_FALLBACK_ERROR_PATTERNS.some((pattern) =>
-            pattern.test(normalizedErrorMessage),
-          );
-
-        replacePerpsToastByKey({
-          key: PERPS_TOAST_KEYS.MARGIN_ADJUSTMENT_FAILED,
-          description: shouldUseFallbackDescription
-            ? t('perpsToastMarginAdjustmentFailedDescriptionFallback')
-            : normalizedErrorMessage,
-        });
-      } else {
-        setMarginError(errorMessage);
-      }
+      setMarginError(errorMessage);
     } finally {
       setIsSaving(false);
       onSavingChange?.(false);
@@ -330,12 +303,10 @@ export const EditMarginModalContent: React.FC<EditMarginModalContentProps> = ({
     marginAmount,
     isAmountValid,
     parsedAmount,
-    isPerpsInAppToastsEnabled,
     position.symbol,
     onClose,
     onSavingChange,
     replacePerpsToastByKey,
-    t,
   ]);
 
   const showRiskWarning =
@@ -531,7 +502,7 @@ export const EditMarginModalContent: React.FC<EditMarginModalContentProps> = ({
       )}
 
       {/* Error message */}
-      {!isPerpsInAppToastsEnabled && marginError && (
+      {marginError && (
         <Box
           className="bg-error-muted rounded-lg px-3 py-2"
           flexDirection={BoxFlexDirection.Row}

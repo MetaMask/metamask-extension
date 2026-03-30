@@ -32,10 +32,7 @@ import {
 } from '@metamask/design-system-react';
 import { brandColor } from '@metamask/design-tokens';
 import type { Position, PriceUpdate } from '@metamask/perps-controller';
-import {
-  getIsPerpsExperienceAvailable,
-  getIsPerpsInAppToastsEnabled,
-} from '../../selectors/perps/feature-flags';
+import { getIsPerpsExperienceAvailable } from '../../selectors/perps/feature-flags';
 import { getSelectedInternalAccount } from '../../selectors/accounts';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import {
@@ -235,7 +232,6 @@ const PerpsMarketDetailPage: React.FC = () => {
   const location = useLocation();
   const { symbol } = useParams<{ symbol: string }>();
   const isPerpsExperienceAvailable = useSelector(getIsPerpsExperienceAvailable);
-  const isPerpsInAppToastsEnabled = useSelector(getIsPerpsInAppToastsEnabled);
   const selectedAccount = useSelector(getSelectedInternalAccount);
   const selectedAddress = selectedAccount?.address;
   const { isEligible } = usePerpsEligibility();
@@ -1706,7 +1702,6 @@ const PerpsMarketDetailPage: React.FC = () => {
           account={account}
           currentPrice={currentPrice}
           mode={marginModalMode}
-          isPerpsInAppToastsEnabled={isPerpsInAppToastsEnabled}
         />
       )}
 
@@ -1728,7 +1723,6 @@ const PerpsMarketDetailPage: React.FC = () => {
           onClose={handleCloseTPSLModal}
           position={position}
           currentPrice={currentPrice}
-          isPerpsInAppToastsEnabled={isPerpsInAppToastsEnabled}
         />
       )}
 

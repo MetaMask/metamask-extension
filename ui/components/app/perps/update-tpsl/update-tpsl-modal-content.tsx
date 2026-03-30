@@ -61,7 +61,6 @@ export type UpdateTPSLModalContentProps = {
   onClose: () => void;
   /** Wired by UpdateTPSLModal to place the primary action in ModalFooter */
   onSubmitStateChange?: (state: UpdateTPSLSubmitState) => void;
-  isPerpsInAppToastsEnabled?: boolean;
 };
 
 /**
@@ -74,14 +73,12 @@ export type UpdateTPSLModalContentProps = {
  * @param options0.currentPrice
  * @param options0.onClose
  * @param options0.onSubmitStateChange
- * @param options0.isPerpsInAppToastsEnabled
  */
 export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
   position,
   currentPrice,
   onClose,
   onSubmitStateChange,
-  isPerpsInAppToastsEnabled = false,
 }) => {
   const t = useI18nContext();
   const { formatNumber, formatCurrencyWithMinThreshold } = useFormatters();
@@ -340,24 +337,14 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
         }
       }, 2500);
 
-      if (isPerpsInAppToastsEnabled) {
-        replacePerpsToastByKey({
-          key: PERPS_TOAST_KEYS.UPDATE_SUCCESS,
-        });
-      }
+      replacePerpsToastByKey({
+        key: PERPS_TOAST_KEYS.UPDATE_SUCCESS,
+      });
       onClose();
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : 'An unknown error occurred';
-      if (isPerpsInAppToastsEnabled) {
-        if (isMountedRef.current) {
-          setTpslError(null);
-        }
-        replacePerpsToastByKey({
-          key: PERPS_TOAST_KEYS.UPDATE_FAILED,
-          description: errorMessage,
-        });
-      } else if (isMountedRef.current) {
+      if (isMountedRef.current) {
         setTpslError(errorMessage);
       }
     } finally {
@@ -368,7 +355,6 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
   }, [
     editingSlPrice,
     editingTpPrice,
-    isPerpsInAppToastsEnabled,
     isEligible,
     onClose,
     position,
@@ -608,7 +594,7 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
         )}
       </Box>
 
-      {!isPerpsInAppToastsEnabled && tpslError && (
+      {tpslError && (
         <Box
           className="bg-error-muted rounded-lg px-3 py-2"
           flexDirection={BoxFlexDirection.Row}

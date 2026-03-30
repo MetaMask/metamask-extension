@@ -205,10 +205,7 @@ describe('PerpsOrderEntryPage', () => {
   const middlewares = [thunk];
   const mockStore = configureMockStore(middlewares);
 
-  const createMockState = (
-    perpsEnabled = true,
-    perpsInAppToastsEnabled = true,
-  ) => ({
+  const createMockState = (perpsEnabled = true) => ({
     ...mockState,
     metamask: {
       ...mockState.metamask,
@@ -217,7 +214,6 @@ describe('PerpsOrderEntryPage', () => {
         perpsEnabledVersion: perpsEnabled
           ? { enabled: true, minimumVersion: '0.0.0' }
           : { enabled: false, minimumVersion: '99.99.99' },
-        perpsInAppToastsEnabled,
       },
     },
   });
@@ -766,7 +762,7 @@ describe('PerpsOrderEntryPage', () => {
       expect(hasPlaceOrderCall).toBe(false);
     });
 
-    it('shows error when order fails', async () => {
+    it('shows inline error when order fails', async () => {
       mockSubmitRequestToBackground.mockImplementation((method: string) => {
         if (method === 'perpsActivateStreaming') {
           return Promise.resolve(undefined);
@@ -793,14 +789,15 @@ describe('PerpsOrderEntryPage', () => {
         fireEvent.click(screen.getByTestId('submit-order-button'));
       });
 
-      expect(screen.queryByText('Insufficient margin')).not.toBeInTheDocument();
-      expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
-        key: 'perpsToastOrderFailed',
-        description: 'Insufficient margin',
-      });
+      expect(screen.getByText('Insufficient margin')).toBeInTheDocument();
+      expect(mockReplacePerpsToastByKey).not.toHaveBeenCalledWith(
+        expect.objectContaining({
+          key: 'perpsToastOrderFailed',
+        }),
+      );
     });
 
-    it('shows error when controller throws', async () => {
+    it('shows inline error when controller throws', async () => {
       mockSubmitRequestToBackground.mockImplementation((method: string) => {
         if (method === 'perpsActivateStreaming') {
           return Promise.resolve(undefined);
@@ -824,165 +821,12 @@ describe('PerpsOrderEntryPage', () => {
         fireEvent.click(screen.getByTestId('submit-order-button'));
       });
 
-      expect(screen.queryByText('Network error')).not.toBeInTheDocument();
-      expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
-        key: 'perpsToastOrderFailed',
-        description: 'Network error',
-      });
-    });
-
-    it('shows inline submit error when perps toast flag is disabled', async () => {
-      mockSubmitRequestToBackground.mockImplementation((method: string) => {
-        if (method === 'perpsPlaceOrder') {
-          return Promise.resolve({
-            success: false,
-            error: 'Insufficient margin',
-          });
-        }
-        return Promise.resolve({ success: true });
-      });
-
-      const store = mockStore(createMockState(true, false));
-      renderWithProvider(<PerpsOrderEntryPage />, store);
-
-      const amountContainer = screen.getByTestId('amount-input-field');
-      const input = amountContainer.querySelector('input');
-      fireEvent.change(input as HTMLInputElement, {
-        target: { value: '1000' },
-      });
-
-      await act(async () => {
-        fireEvent.click(screen.getByTestId('submit-order-button'));
-      });
-
-      expect(screen.getByText('Insufficient margin')).toBeInTheDocument();
-      expect(mockReplacePerpsToastByKey).not.toHaveBeenCalledWith({
-        key: 'perpsToastOrderFailed',
-        description: 'Insufficient margin',
-      });
-    });
-
-    it('uses funds-returned fallback description when order failure is generic', async () => {
-      mockSubmitRequestToBackground.mockImplementation((method: string) => {
-        if (method === 'perpsPlaceOrder') {
-          return Promise.resolve({
-            success: false,
-          });
-        }
-        return Promise.resolve({ success: true });
-      });
-
-      const store = mockStore(createMockState());
-      renderWithProvider(<PerpsOrderEntryPage />, store);
-
-      const amountContainer = screen.getByTestId('amount-input-field');
-      const input = amountContainer.querySelector('input');
-      fireEvent.change(input as HTMLInputElement, {
-        target: { value: '1000' },
-      });
-
-      await act(async () => {
-        fireEvent.click(screen.getByTestId('submit-order-button'));
-      });
-
-      await waitFor(() => {
-        expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
+      expect(screen.getByText('Network error')).toBeInTheDocument();
+      expect(mockReplacePerpsToastByKey).not.toHaveBeenCalledWith(
+        expect.objectContaining({
           key: 'perpsToastOrderFailed',
-          description: 'Your funds have been returned to you',
-        });
-      });
-    });
-
-    it('uses funds-returned fallback description for non-user-facing technical errors', async () => {
-      mockSubmitRequestToBackground.mockImplementation((method: string) => {
-        if (method === 'perpsPlaceOrder') {
-          return Promise.resolve({
-            success: false,
-            error: 'Unexpected internal provider exception: code 0xdeadbeef',
-          });
-        }
-        return Promise.resolve({ success: true });
-      });
-
-      const store = mockStore(createMockState());
-      renderWithProvider(<PerpsOrderEntryPage />, store);
-
-      const amountContainer = screen.getByTestId('amount-input-field');
-      const input = amountContainer.querySelector('input');
-      fireEvent.change(input as HTMLInputElement, {
-        target: { value: '1000' },
-      });
-
-      await act(async () => {
-        fireEvent.click(screen.getByTestId('submit-order-button'));
-      });
-
-      await waitFor(() => {
-        expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
-          key: 'perpsToastOrderFailed',
-          description: 'Your funds have been returned to you',
-        });
-      });
-    });
-
-    it('keeps service unavailable errors as user-facing order failure descriptions', async () => {
-      mockSubmitRequestToBackground.mockImplementation((method: string) => {
-        if (method === 'perpsPlaceOrder') {
-          return Promise.resolve({
-            success: false,
-            error: 'Service unavailable (503)',
-          });
-        }
-        return Promise.resolve({ success: true });
-      });
-
-      const store = mockStore(createMockState());
-      renderWithProvider(<PerpsOrderEntryPage />, store);
-
-      const amountContainer = screen.getByTestId('amount-input-field');
-      const input = amountContainer.querySelector('input');
-      fireEvent.change(input as HTMLInputElement, {
-        target: { value: '1000' },
-      });
-
-      await act(async () => {
-        fireEvent.click(screen.getByTestId('submit-order-button'));
-      });
-
-      expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
-        key: 'perpsToastOrderFailed',
-        description: 'Service unavailable (503)',
-      });
-    });
-
-    it('keeps IOC cancel liquidity errors as user-facing order failure descriptions', async () => {
-      mockSubmitRequestToBackground.mockImplementation((method: string) => {
-        if (method === 'perpsPlaceOrder') {
-          return Promise.resolve({
-            success: false,
-            error: 'IOC order would cancel due to no liquidity',
-          });
-        }
-        return Promise.resolve({ success: true });
-      });
-
-      const store = mockStore(createMockState());
-      renderWithProvider(<PerpsOrderEntryPage />, store);
-
-      const amountContainer = screen.getByTestId('amount-input-field');
-      const input = amountContainer.querySelector('input');
-      fireEvent.change(input as HTMLInputElement, {
-        target: { value: '1000' },
-      });
-
-      await act(async () => {
-        fireEvent.click(screen.getByTestId('submit-order-button'));
-      });
-
-      expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
-        key: 'perpsToastOrderFailed',
-        description: 'IOC order would cancel due to no liquidity',
-      });
+        }),
+      );
     });
 
     it('calls closePosition when in close mode', async () => {
@@ -1470,7 +1314,7 @@ describe('PerpsOrderEntryPage', () => {
       setBackgroundRequestDefaults();
     });
 
-    it('shows error when closePosition fails', async () => {
+    it('shows inline error when closePosition fails', async () => {
       mockSearchParams.set('mode', 'close');
       mockLivePositions.mockReturnValue({
         positions: mockPositions,
@@ -1496,14 +1340,15 @@ describe('PerpsOrderEntryPage', () => {
         fireEvent.click(screen.getByTestId('submit-order-button'));
       });
 
-      expect(screen.queryByText('Close failed')).not.toBeInTheDocument();
-      expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
-        key: 'perpsToastCloseFailed',
-        description: 'Close failed',
-      });
+      expect(screen.getByText('Close failed')).toBeInTheDocument();
+      expect(mockReplacePerpsToastByKey).not.toHaveBeenCalledWith(
+        expect.objectContaining({
+          key: 'perpsToastCloseFailed',
+        }),
+      );
     });
 
-    it('shows error when updatePositionTPSL fails', async () => {
+    it('shows inline error when updatePositionTPSL fails', async () => {
       mockSearchParams.set('mode', 'modify');
       mockLivePositions.mockReturnValue({
         positions: mockPositions,
@@ -1529,14 +1374,15 @@ describe('PerpsOrderEntryPage', () => {
         fireEvent.click(screen.getByTestId('submit-order-button'));
       });
 
-      expect(screen.queryByText('TPSL update failed')).not.toBeInTheDocument();
-      expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
-        key: 'perpsToastUpdateFailed',
-        description: 'TPSL update failed',
-      });
+      expect(screen.getByText('TPSL update failed')).toBeInTheDocument();
+      expect(mockReplacePerpsToastByKey).not.toHaveBeenCalledWith(
+        expect.objectContaining({
+          key: 'perpsToastUpdateFailed',
+        }),
+      );
     });
 
-    it('shows generic error for non-Error throws', async () => {
+    it('shows generic inline error for non-Error throws', async () => {
       const nonErrorReason: unknown = 'string error';
       mockSubmitRequestToBackground.mockImplementation((method: string) => {
         if (method === 'perpsActivateStreaming') {
@@ -1561,13 +1407,12 @@ describe('PerpsOrderEntryPage', () => {
         fireEvent.click(screen.getByTestId('submit-order-button'));
       });
 
-      expect(
-        screen.queryByText('An unknown error occurred'),
-      ).not.toBeInTheDocument();
-      expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
-        key: 'perpsToastOrderFailed',
-        description: 'Your funds have been returned to you',
-      });
+      expect(screen.getByText('An unknown error occurred')).toBeInTheDocument();
+      expect(mockReplacePerpsToastByKey).not.toHaveBeenCalledWith(
+        expect.objectContaining({
+          key: 'perpsToastOrderFailed',
+        }),
+      );
     });
 
     it('navigates back after successful limit order', async () => {

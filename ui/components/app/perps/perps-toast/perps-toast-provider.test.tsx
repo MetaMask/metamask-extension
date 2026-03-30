@@ -153,7 +153,7 @@ const ToastHarness = () => {
   );
 };
 
-const getStore = (perpsInAppToastsEnabled = true) =>
+const getStore = () =>
   configureStore({
     metamask: {
       ...mockState.metamask,
@@ -163,7 +163,6 @@ const getStore = (perpsInAppToastsEnabled = true) =>
           enabled: true,
           minimumVersion: '0.0.0',
         },
-        perpsInAppToastsEnabled,
       },
     },
   });
@@ -519,17 +518,5 @@ describe('PerpsToastProvider', () => {
     expect(
       screen.queryByText(messages.perpsToastMarginAdjustmentFailed.message),
     ).not.toBeInTheDocument();
-  });
-
-  it('does not show toasts when perps toast flag is disabled', () => {
-    renderWithProvider(
-      <PerpsToastProvider>
-        <ToastHarness />
-      </PerpsToastProvider>,
-      getStore(false),
-    );
-
-    fireEvent.click(screen.getByRole('button', { name: 'Show Info' }));
-    expect(screen.queryByText('Submitting order...')).not.toBeInTheDocument();
   });
 });
