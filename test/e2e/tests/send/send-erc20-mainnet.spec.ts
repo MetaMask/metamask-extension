@@ -26,6 +26,9 @@ describe('Send ERC20 - Mainnet', function () {
               '0x1': true,
             },
           })
+          .withAppStateController({
+            newPrivacyPolicyToastClickedOrClosed: true,
+          })
           .build(),
         title: this.test?.fullTitle(),
         localNodeOptions: [
@@ -45,6 +48,10 @@ describe('Send ERC20 - Mainnet', function () {
         const assetListPage = new AssetListPage(driver);
         await homePage.checkPageIsLoaded();
         await assetListPage.importTokenBySearch('DAI');
+        await driver.clickElementSafe(
+          '.toasts-container__banner-base button[aria-label="Close"]',
+          3000,
+        );
         await assetListPage.clickOnAsset('Dai Stablecoin');
 
         // Send DAI
