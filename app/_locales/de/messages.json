@@ -3183,7 +3183,8 @@
     "message": "Fahren Sie fort, um Folgendes sicherzustellen:"
   },
   "hardwareWalletErrorRecoveryUnlock1": {
-    "message": "Ihr Ledger ist entsperrt"
+    "message": "Ihr Ledger ist entsperrt",
+    "description": "$1 is the hardware wallet type"
   },
   "hardwareWalletErrorRecoveryUnlock2": {
     "message": "Die Ethereum-App ist geöffnet"

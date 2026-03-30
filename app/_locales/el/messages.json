@@ -3183,7 +3183,8 @@
     "message": "Συνεχίστε για να βεβαιωθείτε ότι:"
   },
   "hardwareWalletErrorRecoveryUnlock1": {
-    "message": "Το Ledger σας είναι ξεκλείδωτο"
+    "message": "Το Ledger σας είναι ξεκλείδωτο",
+    "description": "$1 is the hardware wallet type"
   },
   "hardwareWalletErrorRecoveryUnlock2": {
     "message": "Η εφαρμογή Ethereum είναι ανοιχτή"
