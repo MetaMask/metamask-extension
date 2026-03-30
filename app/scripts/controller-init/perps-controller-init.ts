@@ -18,6 +18,24 @@ function getFallbackBlockedRegions(): string[] {
     .filter(Boolean);
 }
 
+/**
+ * Read HyperLiquid builder fee wallet addresses from env vars.
+ * Returns undefined when neither env var is set (package defaults apply).
+ */
+function getHyperLiquidBuilderAddresses():
+  | { builderAddressMainnet?: string; builderAddressTestnet?: string }
+  | undefined {
+  const mainnet = process.env.MM_PERPS_HL_BUILDER_ADDRESS_MAINNET;
+  const testnet = process.env.MM_PERPS_HL_BUILDER_ADDRESS_TESTNET;
+  if (!mainnet && !testnet) {
+    return undefined;
+  }
+  return {
+    ...(mainnet ? { builderAddressMainnet: mainnet } : {}),
+    ...(testnet ? { builderAddressTestnet: testnet } : {}),
+  };
+}
+
 export const PerpsControllerInit: ControllerInitFunction<
   PerpsController,
   PerpsControllerMessenger
@@ -37,6 +55,9 @@ export const PerpsControllerInit: ControllerInitFunction<
       fallbackHip3Enabled: true,
       fallbackHip3AllowlistMarkets: [],
       fallbackBlockedRegions,
+      providerCredentials: {
+        hyperliquid: getHyperLiquidBuilderAddresses(),
+      },
     },
     deferEligibilityCheck: !completedOnboarding || !useExternalServices,
   });

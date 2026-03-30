@@ -14,6 +14,10 @@ METAMASK_SHIELD_ENABLED='false'
 ; Set to `false` to match main/beta/flask builds that omit perps at compile time.
 PERPS_ENABLED='true'
 
+; HyperLiquid builder fee wallet addresses (empty = uses hardcoded defaults)
+;MM_PERPS_HL_BUILDER_ADDRESS_MAINNET=0xea2c82b5aba243ab631c0ce151763d5e38df75b3
+;MM_PERPS_HL_BUILDER_ADDRESS_TESTNET=
+
 ; Set to `true` to enable AssetsController unified state population.
 ; When false, AssetsController is still instantiated but state remains empty.
 ASSETS_UNIFIED_STATE_ENABLED='false'

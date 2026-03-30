@@ -138,6 +138,8 @@ describe('PerpsControllerInit', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     delete process.env.MM_PERPS_BLOCKED_REGIONS;
+    delete process.env.MM_PERPS_HL_BUILDER_ADDRESS_MAINNET;
+    delete process.env.MM_PERPS_HL_BUILDER_ADDRESS_TESTNET;
   });
 
   describe('controller instantiation', () => {
@@ -161,6 +163,9 @@ describe('PerpsControllerInit', () => {
           fallbackHip3Enabled: true,
           fallbackHip3AllowlistMarkets: [],
           fallbackBlockedRegions: [],
+          providerCredentials: {
+            hyperliquid: undefined,
+          },
         },
         deferEligibilityCheck: true,
       });
@@ -294,6 +299,55 @@ describe('PerpsControllerInit', () => {
         'US',
         'GB',
       ]);
+    });
+  });
+
+  describe('getHyperLiquidBuilderAddresses', () => {
+    it('returns undefined when no env vars are set', () => {
+      PerpsControllerInit(getInitRequestMock());
+
+      const constructorCall = PerpsControllerMock.mock.calls[0][0];
+      expect(
+        constructorCall.clientConfig?.providerCredentials?.hyperliquid,
+      ).toBeUndefined();
+    });
+
+    it('passes mainnet builder address from env var', () => {
+      process.env.MM_PERPS_HL_BUILDER_ADDRESS_MAINNET = '0xabc123';
+      PerpsControllerInit(getInitRequestMock());
+
+      const constructorCall = PerpsControllerMock.mock.calls[0][0];
+      expect(
+        constructorCall.clientConfig?.providerCredentials?.hyperliquid,
+      ).toEqual({
+        builderAddressMainnet: '0xabc123',
+      });
+    });
+
+    it('passes testnet builder address from env var', () => {
+      process.env.MM_PERPS_HL_BUILDER_ADDRESS_TESTNET = '0xdef456';
+      PerpsControllerInit(getInitRequestMock());
+
+      const constructorCall = PerpsControllerMock.mock.calls[0][0];
+      expect(
+        constructorCall.clientConfig?.providerCredentials?.hyperliquid,
+      ).toEqual({
+        builderAddressTestnet: '0xdef456',
+      });
+    });
+
+    it('passes both builder addresses when both env vars are set', () => {
+      process.env.MM_PERPS_HL_BUILDER_ADDRESS_MAINNET = '0xabc123';
+      process.env.MM_PERPS_HL_BUILDER_ADDRESS_TESTNET = '0xdef456';
+      PerpsControllerInit(getInitRequestMock());
+
+      const constructorCall = PerpsControllerMock.mock.calls[0][0];
+      expect(
+        constructorCall.clientConfig?.providerCredentials?.hyperliquid,
+      ).toEqual({
+        builderAddressMainnet: '0xabc123',
+        builderAddressTestnet: '0xdef456',
+      });
     });
   });
 
