@@ -286,10 +286,6 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
         <ModalFooter
           onCancel={onClose}
           onSubmit={handleClose}
-          cancelButtonProps={{
-            'data-testid': 'perps-close-position-modal-cancel',
-            children: t('cancel'),
-          }}
           submitButtonProps={{
             'data-testid': 'perps-close-position-modal-submit',
             children: t('perpsClosePosition'),

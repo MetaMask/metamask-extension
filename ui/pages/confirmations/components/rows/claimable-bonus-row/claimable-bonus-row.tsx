@@ -63,11 +63,11 @@ export function ClaimableBonusRow({
           iconColor={Color.iconAlternative}
           iconMarginLeft={1}
           plainIcon
+          ariaLabel={t('musdClaimableBonusTooltipAria') as string}
           data-testid="claimable-bonus-tooltip-popover"
         >
           <Text variant={TextVariant.BodyMd} color={TextColor.InfoInverse}>
             {t('musdClaimableBonusTooltip', [
-              MUSD_CONVERSION_APY,
               <TextButton
                 key="terms-link"
                 size={TextButtonSize.BodyMd}
