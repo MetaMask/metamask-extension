@@ -1,3 +1,4 @@
+import { caip25CaveatBuilder } from '@metamask/chain-agnostic-permission';
 import {
   CaveatSpecificationConstraint,
   PermissionController,
@@ -14,6 +15,8 @@ import {
   PermissionControllerMessenger,
 } from './messengers';
 import { ControllerInitFunction } from './types';
+
+type Caip25CaveatBuilderOptions = Parameters<typeof caip25CaveatBuilder>[0];
 
 /**
  * Initialize the permission controller.
@@ -45,19 +48,19 @@ export const PermissionControllerInit: ControllerInitFunction<
       listAccounts: initMessenger.call.bind(
         initMessenger,
         'AccountsController:listAccounts',
-      ),
+      ) as Caip25CaveatBuilderOptions['listAccounts'],
       findNetworkClientIdByChainId: initMessenger.call.bind(
         initMessenger,
         'NetworkController:findNetworkClientIdByChainId',
-      ),
+      ) as Caip25CaveatBuilderOptions['findNetworkClientIdByChainId'],
       isNonEvmScopeSupported: initMessenger.call.bind(
         initMessenger,
         'MultichainRouter:isSupportedScope',
-      ),
+      ) as Caip25CaveatBuilderOptions['isNonEvmScopeSupported'],
       getNonEvmAccountAddresses: initMessenger.call.bind(
         initMessenger,
         'MultichainRouter:getSupportedAccounts',
-      ),
+      ) as Caip25CaveatBuilderOptions['getNonEvmAccountAddresses'],
     }),
     permissionSpecifications: {
       ...getPermissionSpecifications(),
