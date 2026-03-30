@@ -1354,9 +1354,6 @@
   "cancel": {
     "message": "Cancel"
   },
-  "cancelPopoverTitle": {
-    "message": "Cancel transaction"
-  },
   "cancelTransactionDescription": {
     "message": "This transaction will be canceled and this network fee will replace the original."
   },
@@ -2545,9 +2542,6 @@
     "message": "Gas limit must be greater than $1 and less than $2",
     "description": "$1 is the minimum limit for gas and $2 is the maximum limit"
   },
-  "editGasLimitTooltip": {
-    "message": "Gas limit is the maximum units of gas you are willing to use. Units of gas are a multiplier to “Max priority fee” and “Max fee”."
-  },
   "editGasMaxBaseFeeGWEIImbalance": {
     "message": "Max base fee cannot be lower than priority fee"
   },
@@ -2586,12 +2580,6 @@
   },
   "editGasPriceTooLow": {
     "message": "Gas price must be greater than 0"
-  },
-  "editGasPriceTooltip": {
-    "message": "This network requires a “Gas price” field when submitting a transaction. Gas price is the amount you will pay pay per unit of gas."
-  },
-  "editGasTitle": {
-    "message": "Edit priority"
   },
   "editGasTooLow": {
     "message": "Unknown processing time"
@@ -3005,18 +2993,8 @@
   "gas": {
     "message": "Gas"
   },
-  "gasDisplayAcknowledgeDappButtonText": {
-    "message": "Edit suggested gas fee"
-  },
-  "gasDisplayDappWarning": {
-    "message": "This gas fee has been suggested by $1. Overriding this may cause a problem with your transaction. Please reach out to $1 if you have questions.",
-    "description": "$1 represents the Dapp's origin"
-  },
   "gasLimit": {
     "message": "Gas limit"
-  },
-  "gasLimitRecommended": {
-    "message": "Recommended gas limit is $1. If the gas limit is less than that, it may fail."
   },
   "gasLimitTooLow": {
     "message": "Gas limit must be at least 21000"
@@ -7991,15 +7969,6 @@
   },
   "speedUpCancellation": {
     "message": "Speed up this cancellation"
-  },
-  "speedUpExplanation": {
-    "message": "We’ve updated the gas fee based on current network conditions and have increased it by at least 10% (required by the network)."
-  },
-  "speedUpPopoverTitle": {
-    "message": "Speed up transaction"
-  },
-  "speedUpTooltipText": {
-    "message": "New gas fee"
   },
   "speedUpTransactionDescription": {
     "message": "This network fee will replace the original."

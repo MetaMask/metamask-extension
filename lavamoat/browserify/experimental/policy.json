@@ -853,6 +853,7 @@
       "globals": {
         "clearInterval": true,
         "console.error": true,
+        "performance.now": true,
         "setInterval": true
       },
       "packages": {
@@ -1099,6 +1100,11 @@
       }
     },
     "@metamask/connectivity-controller": {
+      "packages": {
+        "@metamask/base-controller": true
+      }
+    },
+    "@metamask/network-controller>@metamask/connectivity-controller": {
       "packages": {
         "@metamask/base-controller": true
       }
@@ -1648,6 +1654,7 @@
         "clearTimeout": true,
         "console.error": true,
         "console.warn": true,
+        "performance.now": true,
         "setTimeout": true
       },
       "packages": {
@@ -1724,7 +1731,7 @@
       },
       "packages": {
         "@metamask/base-controller": true,
-        "@metamask/connectivity-controller": true,
+        "@metamask/network-controller>@metamask/connectivity-controller": true,
         "@metamask/controller-utils": true,
         "@metamask/network-controller>@metamask/eth-block-tracker": true,
         "@metamask/network-controller>@metamask/eth-json-rpc-infura": true,

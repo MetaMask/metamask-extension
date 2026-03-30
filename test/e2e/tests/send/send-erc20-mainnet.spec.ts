@@ -15,6 +15,7 @@ import TokenOverviewPage from '../../page-objects/pages/token-overview-page';
 import TokenTransferTransactionConfirmation from '../../page-objects/pages/confirmations/token-transfer-confirmation';
 import { login } from '../../page-objects/flows/login.flow';
 import { NETWORK_CLIENT_ID } from '../../constants';
+import { MAINNET_DISPLAY_NAME } from '../../../../shared/constants/network';
 
 const DAI_ADDRESS = '0x6b175474e89094c44da98b954eedeac495271d0f';
 
@@ -47,8 +48,11 @@ describe('Send ERC20 - Mainnet', function () {
         const homePage = new HomePage(driver);
         const assetListPage = new AssetListPage(driver);
         await homePage.checkPageIsLoaded();
-        await assetListPage.importCustomTokenByChain('0x1', DAI_ADDRESS);
-        await homePage.dismissToastIfPresent();
+        await homePage.waitForNonEvmAccountsLoaded();
+        await assetListPage.importTokenBySearch({
+          tokenName: 'DAI',
+          networkName: MAINNET_DISPLAY_NAME,
+        });
         await assetListPage.clickOnAsset('Dai Stablecoin');
 
         // Send DAI
