@@ -1345,9 +1345,6 @@
   "cancel": {
     "message": "取消"
   },
-  "cancelPopoverTitle": {
-    "message": "取消交易"
-  },
   "cancelTransactionDescription": {
     "message": "这笔交易将被取消，且此网络费用将取代原有费用。"
   },
@@ -2524,9 +2521,6 @@
     "message": "燃料限制必须大于 $1 且小于 $2",
     "description": "$1 is the minimum limit for gas and $2 is the maximum limit"
   },
-  "editGasLimitTooltip": {
-    "message": "燃料限制是您愿意使用的最大燃料单位。燃料单位是“最大优先交易费用”和“最大费用”的乘数。"
-  },
   "editGasMaxBaseFeeGWEIImbalance": {
     "message": "最大基础费用不能低于优先费用"
   },
@@ -2565,12 +2559,6 @@
   },
   "editGasPriceTooLow": {
     "message": "燃料价格必须大于0"
-  },
-  "editGasPriceTooltip": {
-    "message": "此网络在提交交易时需要一个“燃料价格”字段。燃料价格是您支付的每单位燃料金额。"
-  },
-  "editGasTitle": {
-    "message": "编辑优先级"
   },
   "editGasTooLow": {
     "message": "处理时间未知"
@@ -2984,18 +2972,8 @@
   "gas": {
     "message": "燃料"
   },
-  "gasDisplayAcknowledgeDappButtonText": {
-    "message": "编辑建议的燃料费"
-  },
-  "gasDisplayDappWarning": {
-    "message": "这笔燃料费是由 $1 建议的。忽略它可能会导致您的交易出现问题。如果您有疑问，请联系 $1。",
-    "description": "$1 represents the Dapp's origin"
-  },
   "gasLimit": {
     "message": "燃料限额"
-  },
-  "gasLimitRecommended": {
-    "message": "建议的燃料限制是$1。如果燃料限制低于此值，则可能会失败。"
   },
   "gasLimitTooLow": {
     "message": "燃料限制至少为21000"
@@ -7918,15 +7896,6 @@
   },
   "speedUpCancellation": {
     "message": "加速该取消操作"
-  },
-  "speedUpExplanation": {
-    "message": "我们根据当前网络条件更新了燃料费用，将其提高了至少10%（网络要求）。"
-  },
-  "speedUpPopoverTitle": {
-    "message": "加速交易"
-  },
-  "speedUpTooltipText": {
-    "message": "新燃料费用"
   },
   "speedUpTransactionDescription": {
     "message": "此网络费用将取代原有费用。"
