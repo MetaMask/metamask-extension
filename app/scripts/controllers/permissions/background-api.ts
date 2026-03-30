@@ -14,7 +14,12 @@ import {
   setChainIdsInCaip25CaveatValue,
 } from '@metamask/chain-agnostic-permission';
 import { isSnapId } from '@metamask/snaps-utils';
-import { parseCaipAccountId, parseCaipChainId } from '@metamask/utils';
+import {
+  type CaipAccountId,
+  type CaipChainId,
+  parseCaipAccountId,
+  parseCaipChainId,
+} from '@metamask/utils';
 import type { InternalAccount } from '@metamask/keyring-internal-api';
 import type { AccountsControllerState } from '@metamask/accounts-controller';
 import type { NetworkState } from '@metamask/network-controller';
@@ -139,12 +144,14 @@ export function getPermissionBackgroundApiMethods({
     caipAccountIds.forEach((caipAccountAddress) => {
       const {
         chain: { namespace: accountNamespace },
-      } = parseCaipAccountId(caipAccountAddress);
+      } = parseCaipAccountId(caipAccountAddress as CaipAccountId);
 
       const existsSelectedChainForNamespace = updatedPermittedChainIds.some(
         (caipChainId) => {
           try {
-            const { namespace: chainNamespace } = parseCaipChainId(caipChainId);
+            const { namespace: chainNamespace } = parseCaipChainId(
+              caipChainId as CaipChainId,
+            );
             return accountNamespace === chainNamespace;
           } catch (err) {
             return false;
@@ -155,7 +162,9 @@ export function getPermissionBackgroundApiMethods({
       if (!existsSelectedChainForNamespace) {
         const chainIdsForNamespace = allNetworksList.filter((caipChainId) => {
           try {
-            const { namespace: chainNamespace } = parseCaipChainId(caipChainId);
+            const { namespace: chainNamespace } = parseCaipChainId(
+              caipChainId as CaipChainId,
+            );
             return accountNamespace === chainNamespace;
           } catch (err) {
             return false;
@@ -164,20 +173,20 @@ export function getPermissionBackgroundApiMethods({
 
         updatedPermittedChainIds = [
           ...updatedPermittedChainIds,
-          ...chainIdsForNamespace,
+          ...(chainIdsForNamespace as CaipChainId[]),
         ];
       }
     });
 
     const updatedCaveatValueWithChainIds = setChainIdsInCaip25CaveatValue(
       caip25Caveat.value,
-      updatedPermittedChainIds,
+      updatedPermittedChainIds as CaipChainId[],
     );
 
     const updatedCaveatValueWithAccountIds =
       setNonSCACaipAccountIdsInCaip25CaveatValue(
         updatedCaveatValueWithChainIds,
-        caipAccountIds,
+        caipAccountIds as CaipAccountId[],
       );
 
     permissionController.updateCaveat(
@@ -206,7 +215,7 @@ export function getPermissionBackgroundApiMethods({
     } else {
       const updatedCaveatValueWithChainIds = setChainIdsInCaip25CaveatValue(
         caip25Caveat.value,
-        chainIds,
+        chainIds as CaipChainId[],
       );
 
       const existingPermittedAccountIds =
@@ -254,7 +263,7 @@ export function getPermissionBackgroundApiMethods({
       new Set([...existingPermittedAccountIds, ...caipAccountIds]),
     );
 
-    setPermittedAccounts(origin, updatedAccountIds);
+    setPermittedAccounts(origin, updatedAccountIds as CaipAccountId[]);
   };
 
   const addMoreChains = (origin: string, chainIds: string[]): void => {
@@ -273,7 +282,7 @@ export function getPermissionBackgroundApiMethods({
       new Set([...existingPermittedChainIds, ...chainIds]),
     );
 
-    setPermittedChains(origin, updatedChainIds);
+    setPermittedChains(origin, updatedChainIds as CaipChainId[]);
   };
 
   const requestAccountsAndChainPermissions = async (
