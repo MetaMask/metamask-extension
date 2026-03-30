@@ -240,7 +240,7 @@ async function startApp(metamaskState, opts) {
   return store;
 }
 
-async function runInitialActions(store) {
+export async function runInitialActions(store) {
   const initialState = store.getState();
 
   // Update browser environment with accurate browser detection from UI
@@ -283,7 +283,9 @@ async function runInitialActions(store) {
     const validateSeedlessPasswordOutdated = async (state) => {
       const isUnlocked = getIsUnlocked(state);
       if (isUnlocked) {
-        await store.dispatch(actions.checkIsSeedlessPasswordOutdated());
+        await store.dispatch(
+          actions.checkIsSeedlessPasswordOutdated(false, false), // don't skip cache, don't capture sentry error, we don't want to report to sentry if the check fails
+        );
       }
     };
     await validateSeedlessPasswordOutdated(initialState);

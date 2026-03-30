@@ -473,8 +473,6 @@ Output the analysis in this **concise format**:
 1. What is the reason for the change?
 2. What is the improvement/solution?]
 
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/MetaMask/metamask-extension/pull/PR?quickstart=1)
-
 ## **Changelog**
 
 [If user-facing change:]

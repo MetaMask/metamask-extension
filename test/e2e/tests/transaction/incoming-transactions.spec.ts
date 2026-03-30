@@ -1,9 +1,9 @@
 import { Mockttp } from 'mockttp';
 import { login } from '../../page-objects/flows/login.flow';
 import { Driver } from '../../webdriver/driver';
-import { DEFAULT_FIXTURE_ACCOUNT } from '../../constants';
+import { DEFAULT_FIXTURE_ACCOUNT, NETWORK_CLIENT_ID } from '../../constants';
 import { withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import HomePage from '../../page-objects/pages/home/homepage';
 import ActivityListPage from '../../page-objects/pages/home/activity-list';
 
@@ -117,12 +117,11 @@ async function mockAccountsApi(
 }
 
 describe('Incoming Transactions', function () {
-  it('adds standard incoming transactions', async function () {
+  it('ignores incoming native transfer transactions', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
-          .withUseBasicFunctionalityEnabled()
-          .withNetworkControllerOnMainnet()
+        fixtures: new FixtureBuilderV2()
+          .withSelectedNetwork(NETWORK_CLIENT_ID.MAINNET)
           .withEnabledNetworks({
             eip155: {
               '0x1': true,
@@ -138,21 +137,7 @@ describe('Incoming Transactions', function () {
         await homepage.goToActivityList();
 
         const activityList = new ActivityListPage(driver);
-        await activityList.checkConfirmedTxNumberDisplayedInActivity(2);
-
-        await activityList.checkTxAction({
-          action: 'Received',
-          txIndex: 1,
-          confirmedTx: 2,
-        });
-        await activityList.checkTxAmountInActivity('1.23 ETH', 1);
-
-        await activityList.checkTxAction({
-          action: 'Received',
-          txIndex: 2,
-          confirmedTx: 2,
-        });
-        await activityList.checkTxAmountInActivity('2.34 ETH', 2);
+        await activityList.checkNoTxInActivity();
       },
     );
   });
@@ -160,8 +145,8 @@ describe('Incoming Transactions', function () {
   it('ignores token transfer transactions', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
-          .withUseBasicFunctionalityEnabled()
+        fixtures: new FixtureBuilderV2()
+          .withSelectedNetwork(NETWORK_CLIENT_ID.MAINNET)
           .withEnabledNetworks({
             eip155: {
               '0x1': true,
@@ -179,7 +164,7 @@ describe('Incoming Transactions', function () {
       },
       async ({ driver }: { driver: Driver }) => {
         const activityList = await changeNetworkAndGoToActivity(driver);
-        await activityList.checkConfirmedTxNumberDisplayedInActivity(1);
+        await activityList.checkNoTxInActivity();
       },
     );
   });
@@ -187,8 +172,8 @@ describe('Incoming Transactions', function () {
   it('adds outgoing transactions', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
-          .withUseBasicFunctionalityEnabled()
+        fixtures: new FixtureBuilderV2()
+          .withSelectedNetwork(NETWORK_CLIENT_ID.MAINNET)
           .withEnabledNetworks({
             eip155: {
               '0x1': true,
@@ -203,14 +188,14 @@ describe('Incoming Transactions', function () {
       },
       async ({ driver }: { driver: Driver }) => {
         const activityList = await changeNetworkAndGoToActivity(driver);
-        await activityList.checkConfirmedTxNumberDisplayedInActivity(2);
+        await activityList.checkConfirmedTxNumberDisplayedInActivity(1);
 
         await activityList.checkTxAction({
           action: 'Sent ETH',
-          txIndex: 2,
-          confirmedTx: 2,
+          txIndex: 1,
+          confirmedTx: 1,
         });
-        await activityList.checkTxAmountInActivity('-4.56 ETH', 2);
+        await activityList.checkTxAmountInActivity('-4.56 ETH', 1);
       },
     );
   });
@@ -218,8 +203,9 @@ describe('Incoming Transactions', function () {
   it('does nothing if preference disabled', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withUseBasicFunctionalityDisabled()
+          .withSelectedNetwork(NETWORK_CLIENT_ID.MAINNET)
           .withEnabledNetworks({
             eip155: {
               '0x1': true,
