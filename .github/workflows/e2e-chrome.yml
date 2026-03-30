@@ -136,7 +136,7 @@ jobs:
   test-e2e-chrome-flask-webpack:
     uses: ./.github/workflows/run-e2e.yml
     strategy:
-      fail-fast: false
+      fail-fast: ${{ github.event_name == 'merge_group' }}
       matrix: ${{ fromJson(inputs.use-matrix)['test-e2e-chrome-flask-webpack'] }}
     with:
       test-suite-name: test-e2e-chrome-flask-webpack
