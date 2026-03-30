@@ -11,6 +11,7 @@ import { createBridgeMockStore } from '../../../test/data/bridge/mock-bridge-sto
 import { setBackgroundConnection } from '../../store/background-connection';
 import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
 import { SlippageValue } from '../../pages/bridge/utils/slippage-service';
+import * as cacheUtils from '../../pages/bridge/utils/cache';
 import bridgeReducer, { initialState } from './bridge';
 import {
   setFromToken,
@@ -21,6 +22,7 @@ import {
   setSlippage,
   resetBridgeController,
   resetInputFieldsAction,
+  resetInputFields,
 } from './actions';
 
 const middleware = [thunk];
@@ -138,6 +140,15 @@ describe('Ducks - Bridge', () => {
       expect(actions[0].type).toStrictEqual('bridge/resetInputFields');
       const newState = bridgeReducer(state, actions[0]);
       expect(newState).toStrictEqual(initialState);
+    });
+
+    it('calls clearAllBridgeCacheItems', async () => {
+      const mockClearAllBridgeCacheItems = jest.spyOn(
+        cacheUtils,
+        'clearAllBridgeCacheItems',
+      );
+      store.dispatch(resetInputFields() as never);
+      expect(mockClearAllBridgeCacheItems).toHaveBeenCalledTimes(1);
     });
   });
 
