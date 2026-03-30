@@ -159,7 +159,8 @@ function extractTeamsFromScenarios(scenarios: TestingScenario[]): string[] {
     const areaLower = scenario.area.toLowerCase();
     Object.entries(teamKeywords).forEach(([keyword, team]) => {
       // Use word boundary regex to avoid substring false positives
-      const regex = new RegExp(String.raw`\b${keyword}\b`, 'iu');
+      // Allow optional trailing 's' to match plural forms (e.g., "token" matches "Tokens")
+      const regex = new RegExp(String.raw`\b${keyword}s?\b`, 'iu');
       if (regex.test(areaLower)) {
         teams.add(team);
       }
