@@ -115,13 +115,15 @@ These are the most critical anti-patterns to avoid. Each links to a detailed sec
   ❌ Incorrect:
 
   ```javascript
-  await driver.clickElement(this.parentDiv);
+  // Clicking a broad parent container — inner elements may refresh and cause stale errors
+  await this.driver.clickElement(this.tokenListItem);
   ```
 
   ✅ Correct:
 
   ```javascript
-  await driver.clickElement({ text: 'TST', tag: 'span' });
+  // Target the most specific child element using its selector
+  await this.driver.clickElement(this.tokenName);
   ```
 
 - **Don't assert element count immediately — elements may still be rendering. Wait for the expected element instead**
@@ -132,7 +134,7 @@ These are the most critical anti-patterns to avoid. Each links to a detailed sec
   ```
   ✅ Correct:
   ```javascript
-  await driver.waitForSelector(`${this.accountListItem}:nth-child(5)`);
+  await accountListPage.checkNumberOfAvailableAccounts(5);
   ```
 
 ---
