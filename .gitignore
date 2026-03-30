@@ -114,11 +114,3 @@ temp-llm-workflow-*
 
 # Local git worktrees
 .worktrees
-
-# Ignore injected agentic flows
-.task/
-.agent/
-.claude/mcp.json
-test/e2e/playwright/llm-workflow/
-.tool-versions
-CLAUDE.local.md
