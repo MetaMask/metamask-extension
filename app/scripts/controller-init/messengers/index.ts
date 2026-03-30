@@ -234,15 +234,11 @@ export type { AppStateControllerMessenger } from './app-state-controller-messeng
 export { getAppStateControllerMessenger } from './app-state-controller-messenger';
 export type { ApprovalControllerMessenger } from './approval-controller-messenger';
 export { getApprovalControllerMessenger } from './approval-controller-messenger';
-export type {
-  BridgeControllerMessenger,
-  BridgeControllerInitMessenger,
-} from './bridge-controller-messenger';
+export type { BridgeControllerInitMessenger } from './bridge-controller-messenger';
 export {
   getBridgeControllerMessenger,
   getBridgeControllerInitMessenger,
 } from './bridge-controller-messenger';
-export type { BridgeStatusControllerMessenger } from './bridge-status-controller-messenger';
 export { getBridgeStatusControllerMessenger } from './bridge-status-controller-messenger';
 export type {
   CurrencyRateControllerMessenger,
