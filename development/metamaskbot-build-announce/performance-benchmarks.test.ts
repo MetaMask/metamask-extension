@@ -798,7 +798,7 @@ describe('buildPerformanceBenchmarksSection', () => {
     expect(html).toMatch(
       new RegExp(
         `<summary>⚡ Performance Benchmarks \\(Total: ${COMPARISON_SEVERITY.Pass.icon} \\d+ pass · ${COMPARISON_SEVERITY.Warn.icon} \\d+ warn · ${COMPARISON_SEVERITY.Regression.icon} \\d+ fail\\)</summary>`,
-      'u',
+        'u',
       ),
     );
   });

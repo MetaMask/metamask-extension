@@ -668,7 +668,7 @@ export function buildBenchmarkSection(
         })
         .join('');
 
-      sectionBody = `<table style="width:100%;table-layout:auto"><thead>${headerRow}</thead><tbody>${dataRows}</tbody></table>\n`;
+      sectionBody = `<div style="overflow-x:auto;width:100%"><table style="width:100%;min-width:900px;table-layout:auto;border-collapse:collapse"><thead>${headerRow}</thead><tbody>${dataRows}</tbody></table></div>\n`;
     } else if (baseline) {
       sectionBody = `<p>✅ No regressions detected</p>\n`;
     }
