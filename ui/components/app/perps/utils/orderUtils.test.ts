@@ -4,10 +4,6 @@ import {
   shouldDisplayOrderInMarketDetailsOrders,
   buildDisplayOrdersWithSyntheticTpsl,
   normalizeMarketDetailsOrders,
-  resolveOrderDisplayPriceAndLabel,
-  getValidTriggerPrice,
-  getValidOrderPrice,
-  formatOrderLabel,
 } from './orderUtils';
 
 const makeOrder = (overrides: Partial<Order> = {}): Order => ({
@@ -39,40 +35,6 @@ const makePosition = (overrides: Partial<Position> = {}): Position =>
   }) as Position;
 
 describe('orderUtils', () => {
-  describe('getValidTriggerPrice', () => {
-    it('returns parsed trigger price for valid value', () => {
-      expect(getValidTriggerPrice(makeOrder({ triggerPrice: '100.5' }))).toBe(
-        100.5,
-      );
-    });
-
-    it('returns null for undefined trigger price', () => {
-      expect(getValidTriggerPrice(makeOrder({ triggerPrice: undefined }))).toBe(
-        null,
-      );
-    });
-
-    it('returns null for zero trigger price', () => {
-      expect(getValidTriggerPrice(makeOrder({ triggerPrice: '0' }))).toBe(null);
-    });
-
-    it('returns null for negative trigger price', () => {
-      expect(getValidTriggerPrice(makeOrder({ triggerPrice: '-10' }))).toBe(
-        null,
-      );
-    });
-  });
-
-  describe('getValidOrderPrice', () => {
-    it('returns parsed price for valid value', () => {
-      expect(getValidOrderPrice(makeOrder({ price: '3000.50' }))).toBe(3000.5);
-    });
-
-    it('returns null for empty price', () => {
-      expect(getValidOrderPrice(makeOrder({ price: '' }))).toBe(null);
-    });
-  });
-
   describe('isOrderAssociatedWithFullPosition', () => {
     it('returns false for non-reduce-only orders', () => {
       const order = makeOrder({ reduceOnly: false });
@@ -366,116 +328,6 @@ describe('orderUtils', () => {
         orders: [limitOrder],
       });
       expect(result).toHaveLength(3);
-    });
-  });
-
-  describe('resolveOrderDisplayPriceAndLabel', () => {
-    it('returns trigger price for trigger orders', () => {
-      const order = makeOrder({
-        isTrigger: true,
-        triggerPrice: '3200.00',
-        price: '3000.00',
-      });
-      const result = resolveOrderDisplayPriceAndLabel(order);
-      expect(result.priceValue).toBe(3200);
-      expect(result.labelKey).toBe('perpsTriggerPrice');
-    });
-
-    it('returns limit price for limit orders', () => {
-      const order = makeOrder({
-        orderType: 'limit',
-        price: '3000.00',
-      });
-      const result = resolveOrderDisplayPriceAndLabel(order);
-      expect(result.priceValue).toBe(3000);
-      expect(result.labelKey).toBe('perpsLimitPrice');
-    });
-
-    it('returns market price for market orders', () => {
-      const order = makeOrder({
-        orderType: 'market',
-        price: '3000.00',
-      });
-      const result = resolveOrderDisplayPriceAndLabel(order);
-      expect(result.priceValue).toBe(3000);
-      expect(result.labelKey).toBe('perpsMarket');
-    });
-
-    it('returns trigger price for TPSL order types', () => {
-      const order = makeOrder({
-        detailedOrderType: 'Take Profit Limit',
-        triggerPrice: '3500.00',
-        price: '3000.00',
-      });
-      const result = resolveOrderDisplayPriceAndLabel(order);
-      expect(result.priceValue).toBe(3500);
-      expect(result.labelKey).toBe('perpsTriggerPrice');
-    });
-  });
-
-  describe('formatOrderLabel', () => {
-    it('formats limit long', () => {
-      const order = makeOrder({ orderType: 'limit', side: 'buy' });
-      expect(formatOrderLabel(order)).toBe('Limit long');
-    });
-
-    it('formats limit short', () => {
-      const order = makeOrder({ orderType: 'limit', side: 'sell' });
-      expect(formatOrderLabel(order)).toBe('Limit short');
-    });
-
-    it('formats market long', () => {
-      const order = makeOrder({ orderType: 'market', side: 'buy' });
-      expect(formatOrderLabel(order)).toBe('Market long');
-    });
-
-    it('formats limit close long for reduce-only sell', () => {
-      const order = makeOrder({
-        orderType: 'limit',
-        side: 'sell',
-        reduceOnly: true,
-      });
-      expect(formatOrderLabel(order)).toBe('Limit close long');
-    });
-
-    it('formats stop market close short for reduce-only trigger buy', () => {
-      const order = makeOrder({
-        side: 'buy',
-        isTrigger: true,
-        reduceOnly: true,
-        detailedOrderType: 'Stop Market',
-      });
-      expect(formatOrderLabel(order)).toBe('Stop Market close short');
-    });
-
-    it('formats take profit limit close long for reduce-only trigger sell', () => {
-      const order = makeOrder({
-        side: 'sell',
-        isTrigger: true,
-        reduceOnly: true,
-        detailedOrderType: 'Take Profit Limit',
-      });
-      expect(formatOrderLabel(order)).toBe('Take Profit Limit close long');
-    });
-
-    it('formats stop market long for non-reduce-only trigger buy (stop-entry)', () => {
-      const order = makeOrder({
-        side: 'buy',
-        isTrigger: true,
-        reduceOnly: false,
-        detailedOrderType: 'Stop Market',
-      });
-      expect(formatOrderLabel(order)).toBe('Stop Market long');
-    });
-
-    it('formats stop limit short for non-reduce-only trigger sell (stop-entry)', () => {
-      const order = makeOrder({
-        side: 'sell',
-        isTrigger: true,
-        reduceOnly: false,
-        detailedOrderType: 'Stop Limit',
-      });
-      expect(formatOrderLabel(order)).toBe('Stop Limit short');
     });
   });
 });

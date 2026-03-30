@@ -21,8 +21,4 @@ export {
   shouldDisplayOrderInMarketDetailsOrders,
   buildDisplayOrdersWithSyntheticTpsl,
   isOrderAssociatedWithFullPosition,
-  resolveOrderDisplayPriceAndLabel,
-  getValidTriggerPrice,
-  getValidOrderPrice,
-  formatOrderLabel,
 } from './orderUtils';

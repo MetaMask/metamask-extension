@@ -1,20 +1,6 @@
 import BigNumber from 'bignumber.js';
 import type { Order, Position } from '@metamask/perps-controller';
 
-const TPSL_DETAILED_ORDER_TYPES = new Set([
-  'Stop Limit',
-  'Stop Market',
-  'Take Profit Limit',
-  'Take Profit Market',
-]);
-
-const isTPSLOrder = (detailedOrderType?: string): boolean => {
-  if (!detailedOrderType) {
-    return false;
-  }
-  return TPSL_DETAILED_ORDER_TYPES.has(detailedOrderType);
-};
-
 const FULL_POSITION_SIZE_TOLERANCE = new BigNumber('0.00000001');
 const ORDER_PRICE_MATCH_TOLERANCE = new BigNumber('0.00000001');
 const SYNTHETIC_TP_ID_SUFFIX = '-synthetic-tp';
@@ -37,28 +23,6 @@ const safeBigNumber = (value: string | undefined | null): BigNumber | null => {
   } catch {
     return null;
   }
-};
-
-/**
- * Parses the trigger price from an order, returning null when absent or invalid.
- *
- * @param order - The order to extract trigger price from
- * @returns The trigger price or null
- */
-export const getValidTriggerPrice = (order: Order): number | null => {
-  const parsed = Number.parseFloat(order.triggerPrice ?? '');
-  return Number.isFinite(parsed) && parsed > 0 ? parsed : null;
-};
-
-/**
- * Parses the execution/limit price from an order, returning null when absent or invalid.
- *
- * @param order - The order to extract price from
- * @returns The order price or null
- */
-export const getValidOrderPrice = (order: Order): number | null => {
-  const parsed = Number.parseFloat(order.price ?? '');
-  return Number.isFinite(parsed) && parsed > 0 ? parsed : null;
 };
 
 const getAbsoluteOrderSize = (order: Order): BigNumber | null => {
@@ -360,69 +324,4 @@ export const normalizeMarketDetailsOrders = ({
   return ordersWithSyntheticTpsl.filter((order) =>
     shouldDisplayOrderInMarketDetailsOrders(order, existingPosition),
   );
-};
-
-/**
- * Resolves the display price and label key for an order.
- *
- * Returns the appropriate price (trigger or limit) and a translation key
- * indicating the price type for display in compact order rows.
- *
- * @param order - The order to resolve display info for
- * @returns Object with priceValue and labelKey
- */
-export const resolveOrderDisplayPriceAndLabel = (
-  order: Order,
-): { priceValue: number | null; labelKey: string } => {
-  const detailedOrderType = order.detailedOrderType ?? '';
-  const normalizedDetailedOrderType = detailedOrderType.toLowerCase();
-  const isTriggerOrder = Boolean(
-    order.isTrigger || isTPSLOrder(order.detailedOrderType),
-  );
-  const isLimitOrder = Boolean(
-    order.orderType === 'limit' ||
-      normalizedDetailedOrderType.includes('limit'),
-  );
-  const validTriggerPrice = getValidTriggerPrice(order);
-  const validOrderPrice = getValidOrderPrice(order);
-
-  if (isTriggerOrder && validTriggerPrice !== null) {
-    return { priceValue: validTriggerPrice, labelKey: 'perpsTriggerPrice' };
-  }
-
-  if (isLimitOrder && validOrderPrice !== null) {
-    return { priceValue: validOrderPrice, labelKey: 'perpsLimitPrice' };
-  }
-
-  return { priceValue: validOrderPrice, labelKey: 'perpsMarket' };
-};
-
-/**
- * Format an order label following the pattern: [Type] [Close?] [Direction]
- *
- * Examples: "Limit long", "Market close short", "Stop Market close long"
- *
- * @param order - The order to format
- * @returns Formatted order label string
- */
-export const formatOrderLabel = (order: Order): string => {
-  const { side, detailedOrderType, orderType, reduceOnly } = order;
-  const isClosing = Boolean(reduceOnly);
-
-  let direction: string;
-  if (isClosing) {
-    direction = side === 'sell' ? 'long' : 'short';
-  } else {
-    direction = side === 'buy' ? 'long' : 'short';
-  }
-
-  const typeString =
-    detailedOrderType || (orderType === 'limit' ? 'Limit' : 'Market');
-
-  const capitalize = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
-
-  if (isClosing) {
-    return capitalize(`${typeString} close ${direction}`);
-  }
-  return capitalize(`${typeString} ${direction}`);
 };
