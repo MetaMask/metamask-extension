@@ -22,10 +22,14 @@ describe('buildErrorContent', () => {
 
     expect(content).toMatchObject({
       variant: 'recovery',
-      recoveryInstructions: ['hardwareWalletErrorRecoveryUnlock1:Ledger'],
+      recoveryInstructions: [
+        'hardwareWalletErrorRecoveryUnlock1:Ledger',
+        'hardwareWalletErrorRecoveryUnlock2',
+      ],
     });
     expect(t).toHaveBeenCalledWith('hardwareWalletErrorRecoveryUnlock1', [
       'Ledger',
     ]);
+    expect(t).toHaveBeenCalledWith('hardwareWalletErrorRecoveryUnlock2');
   });
 });
