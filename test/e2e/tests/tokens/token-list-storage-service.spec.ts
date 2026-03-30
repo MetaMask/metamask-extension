@@ -29,7 +29,7 @@ describe('Token List via StorageService', function () {
     },
   };
 
-  it('displays a token in the asset list injected via StorageService TEST', async function () {
+  it('displays a token in the asset list injected via StorageService', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilderV2()

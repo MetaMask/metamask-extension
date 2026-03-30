@@ -18,7 +18,7 @@ import { NETWORK_CLIENT_ID } from '../../constants';
 import { MAINNET_DISPLAY_NAME } from '../../../../shared/constants/network';
 
 describe('Send ERC20 - Mainnet', function () {
-  it('sends DAI with preloaded state TEST', async function () {
+  it('sends DAI with preloaded state', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilderV2()
