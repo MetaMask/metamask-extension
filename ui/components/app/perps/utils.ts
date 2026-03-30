@@ -182,6 +182,36 @@ export const safeDecodeURIComponent = (value: string): string | undefined => {
   }
 };
 
+type TpslPriceInput = {
+  takeProfitPrice?: string | null;
+  stopLossPrice?: string | null;
+};
+
+type TpslPriceOutput = {
+  takeProfitPrice?: string;
+  stopLossPrice?: string;
+};
+
+const normalizePriceInput = (value?: string | null): string | undefined => {
+  const cleanedValue = value?.replace(/,/gu, '').trim() ?? '';
+  return cleanedValue === '' ? undefined : cleanedValue;
+};
+
+/**
+ * Normalizes TP/SL input strings by removing formatting and mapping empty values to undefined.
+ *
+ * @param prices - The raw TP/SL input strings.
+ * @returns The normalized TP/SL values ready for controller calls.
+ */
+export const normalizeTpslPrices = (
+  prices: TpslPriceInput,
+): TpslPriceOutput => {
+  return {
+    takeProfitPrice: normalizePriceInput(prices.takeProfitPrice),
+    stopLossPrice: normalizePriceInput(prices.stopLossPrice),
+  };
+};
+
 // Transaction history utility types
 type GroupedTransactions = {
   date: string;

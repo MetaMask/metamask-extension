@@ -31,6 +31,7 @@ import AssetList from '../../app/assets/asset-list';
 import DeFiTab from '../../app/assets/defi-list/defi-tab';
 import NftsTab from '../../app/assets/nfts/nfts-tab';
 import { PerpsView, PerpsViewStreamBoundary } from '../../app/perps';
+import { PerpsToastProvider } from '../../app/perps';
 import { Tab, Tabs } from '../../ui/tabs';
 import { useTokenBalances } from '../../../hooks/useTokenBalances';
 import { ActivityList } from '../activity-v2/activity-list';
@@ -183,7 +184,9 @@ export const AccountOverviewTabs = ({
           >
             <ErrorBoundary key="perps">
               <PerpsViewStreamBoundary>
-                <PerpsView />
+                <PerpsToastProvider>
+                  <PerpsView />
+                </PerpsToastProvider>
               </PerpsViewStreamBoundary>
             </ErrorBoundary>
           </Tab>
