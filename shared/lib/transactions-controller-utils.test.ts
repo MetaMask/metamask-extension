@@ -89,7 +89,8 @@ describe('transaction controller utils', () => {
           '0x00',
           '8',
           undefined,
-          CHAIN_IDS.MAINNET as unknown as TransactionMeta,
+          undefined,
+          CHAIN_IDS.MAINNET,
         ),
       ).toBe(null);
     });
@@ -102,7 +103,8 @@ describe('transaction controller utils', () => {
           '0x00',
           '8',
           undefined,
-          CHAIN_IDS.MAINNET as unknown as TransactionMeta,
+          undefined,
+          CHAIN_IDS.MAINNET,
         ),
       ).toBe(null);
     });
@@ -115,7 +117,8 @@ describe('transaction controller utils', () => {
           '0x00',
           '8',
           undefined,
-          CHAIN_IDS.MAINNET as unknown as TransactionMeta,
+          undefined,
+          CHAIN_IDS.MAINNET,
         ),
       ).toBe(null);
     });
