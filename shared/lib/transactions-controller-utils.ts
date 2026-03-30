@@ -125,9 +125,9 @@ export function getSwapsTokensReceivedFromTxMeta(
       .toDenomination(EtherDenomination.ETH)
       .toBase(10);
 
-    return (
-      precision === null ? ethReceived : ethReceived.round(precision)
-    ).toString();
+    const formatted =
+      precision === null ? ethReceived : ethReceived.round(precision);
+    return formatted.value.toFixed();
   }
   const txReceiptLogs = txReceipt?.logs;
   if (txReceiptLogs && txReceipt?.status !== '0x0') {
