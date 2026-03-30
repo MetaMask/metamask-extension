@@ -11,9 +11,7 @@ type SentryMaskObject = {
 
 type SentryMaskValue = boolean | SentryMaskObject | SentryMaskValue[];
 
-type StrictSentryMaskObject = SentryMaskObject;
-
-type SentryBackgroundStateMask = Record<string, StrictSentryMaskObject>;
+type SentryBackgroundStateMask = Record<string, SentryMaskObject>;
 
 type SentryUiStateMask = ObjectMask & {
   metamask: ObjectMask;
@@ -391,7 +389,7 @@ export const SENTRY_BACKGROUND_STATE: SentryBackgroundStateMask = {
   },
 };
 
-const flattenedBackgroundStateMask: StrictSentryMaskObject = {};
+const flattenedBackgroundStateMask: SentryMaskObject = {};
 
 for (const controllerState of Object.values(SENTRY_BACKGROUND_STATE)) {
   // Copy only string keys to avoid leaking symbol-only wildcard masks into
