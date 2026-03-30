@@ -29,10 +29,7 @@ import type {
   OrderParams,
   PriceUpdate,
 } from '@metamask/perps-controller';
-import {
-  getIsPerpsExperienceAvailable,
-  getIsPerpsInAppToastsEnabled,
-} from '../../selectors/perps/feature-flags';
+import { getIsPerpsExperienceAvailable } from '../../selectors/perps/feature-flags';
 import { getSelectedInternalAccount } from '../../selectors/accounts';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import {
@@ -107,29 +104,6 @@ const ORDER_MODE_TOAST_KEYS: Record<
   },
 };
 
-const ORDER_FAILED_FALLBACK_ERROR_PATTERNS = [
-  /^an unknown error occurred$/iu,
-  /^failed to place order$/iu,
-  /^unknown error$/iu,
-  /^error$/iu,
-];
-
-const ORDER_FAILED_USER_FACING_ERROR_PATTERNS = [
-  /insufficient margin/iu,
-  /insufficient balance/iu,
-  /insufficient liquidity|IOC.*cancel/iu,
-  /\bno liquidity\b/iu,
-  /rate limit/iu,
-  /timeout/iu,
-  /network error/iu,
-  /slippage/iu,
-  /order rejected/iu,
-  /reduce only|reduceOnly/iu,
-  /position would flip/iu,
-  /service unavailable|503|temporarily unavailable/iu,
-  /fetch failed|connection failed/iu,
-];
-
 /**
  * Convert UI OrderFormState to PerpsController OrderParams
  *
@@ -192,7 +166,6 @@ const PerpsOrderEntryPage: React.FC = () => {
   const { symbol } = useParams<{ symbol: string }>();
   const [searchParams] = useSearchParams();
   const isPerpsExperienceAvailable = useSelector(getIsPerpsExperienceAvailable);
-  const isPerpsInAppToastsEnabled = useSelector(getIsPerpsInAppToastsEnabled);
   const selectedAccount = useSelector(getSelectedInternalAccount);
   const selectedAddress = selectedAccount?.address;
   const { isEligible } = usePerpsEligibility();
@@ -736,35 +709,12 @@ const PerpsOrderEntryPage: React.FC = () => {
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : 'An unknown error occurred';
-      if (isPerpsInAppToastsEnabled) {
-        setSubmitError(null);
-        const failedToastKey = ORDER_MODE_TOAST_KEYS[orderMode].failed;
-        const normalizedErrorMessage = errorMessage.trim();
-        const shouldUseOrderFailedFallback =
-          failedToastKey === PERPS_TOAST_KEYS.ORDER_FAILED &&
-          (normalizedErrorMessage.length === 0 ||
-            ORDER_FAILED_FALLBACK_ERROR_PATTERNS.some((pattern) =>
-              pattern.test(normalizedErrorMessage),
-            ) ||
-            !ORDER_FAILED_USER_FACING_ERROR_PATTERNS.some((pattern) =>
-              pattern.test(normalizedErrorMessage),
-            ));
-        const failedToastDescription = shouldUseOrderFailedFallback
-          ? t('perpsToastOrderFailedDescriptionFallback')
-          : normalizedErrorMessage;
-        replacePerpsToastByKey({
-          key: failedToastKey,
-          description: failedToastDescription,
-        });
-      } else {
-        setSubmitError(errorMessage);
-      }
+      setSubmitError(errorMessage);
     } finally {
       setIsSubmitting(false);
     }
   }, [
     isEligible,
-    isPerpsInAppToastsEnabled,
     orderFormState,
     orderMode,
     position,
@@ -773,7 +723,6 @@ const PerpsOrderEntryPage: React.FC = () => {
     getCloseSuccessToastDescription,
     handleBackClick,
     replacePerpsToastByKey,
-    t,
   ]);
 
   useEffect(() => {
@@ -986,7 +935,7 @@ const PerpsOrderEntryPage: React.FC = () => {
             liquidationPrice={orderCalculations.liquidationPrice}
           />
         )}
-        {!isPerpsInAppToastsEnabled && submitError && (
+        {submitError && (
           <Box
             className="bg-error-muted rounded-lg"
             padding={3}

@@ -2,13 +2,11 @@ import React, {
   createContext,
   useCallback,
   useContext,
-  useEffect,
   useMemo,
   useRef,
   useState,
   type ReactNode,
 } from 'react';
-import { useSelector } from 'react-redux';
 import { Toast } from '../../../multichain/toast';
 import {
   AvatarIcon,
@@ -25,7 +23,6 @@ import {
   TextColor,
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { getIsPerpsInAppToastsEnabled } from '../../../../selectors/perps/feature-flags';
 
 export type PerpsToastVariant = 'info' | 'success' | 'error';
 
@@ -244,7 +241,6 @@ type PerpsToastProviderProps = {
 
 export const PerpsToastProvider = ({ children }: PerpsToastProviderProps) => {
   const t = useI18nContext();
-  const isPerpsInAppToastsEnabled = useSelector(getIsPerpsInAppToastsEnabled);
   const [activeToast, setActiveToast] = useState<PerpsToastState | null>(null);
   const toastIdRef = useRef(0);
 
@@ -252,41 +248,24 @@ export const PerpsToastProvider = ({ children }: PerpsToastProviderProps) => {
     setActiveToast(null);
   }, []);
 
-  useEffect(() => {
-    if (!isPerpsInAppToastsEnabled) {
-      setActiveToast(null);
-    }
-  }, [isPerpsInAppToastsEnabled]);
+  const upsertPerpsToast = useCallback((config: PerpsToastConfig) => {
+    const variant = config.variant ?? 'info';
+    const presentation = PERPS_TOAST_PRESENTATION_BY_VARIANT[variant];
+    const autoHideTime =
+      config.autoHideTime ?? getDefaultAutoHideTime(presentation.variant);
 
-  const upsertPerpsToast = useCallback(
-    (config: PerpsToastConfig) => {
-      if (!isPerpsInAppToastsEnabled) {
-        return;
-      }
+    toastIdRef.current += 1;
 
-      const variant = config.variant ?? 'info';
-      const presentation = PERPS_TOAST_PRESENTATION_BY_VARIANT[variant];
-      const autoHideTime =
-        config.autoHideTime ?? getDefaultAutoHideTime(presentation.variant);
-
-      toastIdRef.current += 1;
-
-      setActiveToast({
-        id: toastIdRef.current,
-        ...config,
-        autoHideTime,
-        presentation,
-      });
-    },
-    [isPerpsInAppToastsEnabled],
-  );
+    setActiveToast({
+      id: toastIdRef.current,
+      ...config,
+      autoHideTime,
+      presentation,
+    });
+  }, []);
 
   const upsertPerpsToastByKey = useCallback(
     (config: PerpsToastKeyConfig) => {
-      if (!isPerpsInAppToastsEnabled) {
-        return;
-      }
-
       const { key, messageParams, ...rest } = config;
       const message =
         messageParams && messageParams.length > 0
@@ -306,7 +285,7 @@ export const PerpsToastProvider = ({ children }: PerpsToastProviderProps) => {
         presentation,
       });
     },
-    [isPerpsInAppToastsEnabled, t],
+    [t],
   );
 
   const contextValue = useMemo<PerpsToastContextValue>(
@@ -321,7 +300,7 @@ export const PerpsToastProvider = ({ children }: PerpsToastProviderProps) => {
   return (
     <PerpsToastContext.Provider value={contextValue}>
       {children}
-      {isPerpsInAppToastsEnabled && activeToast ? (
+      {activeToast ? (
         <Box className="toasts-container bottom-20 w-[calc(100%-32px)] max-w-[408px]">
           <Toast
             key={activeToast.id}
