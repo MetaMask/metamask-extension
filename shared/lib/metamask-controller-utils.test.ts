@@ -151,8 +151,7 @@ describe('getTokenValueParam', () => {
     const tokenData = {
       name: TransactionType.tokenMethodTransfer,
       args: {
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        // as ERC-20 arg name used by getTokenValueParam
+        // eslint-disable-next-line @typescript-eslint/naming-convention -- ERC-20 `_value` arg name used by getTokenValueParam
         _value: 200,
       },
     };
