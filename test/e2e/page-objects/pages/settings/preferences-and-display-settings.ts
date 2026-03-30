@@ -12,8 +12,11 @@ class PreferencesAndDisplaySettings {
   private readonly preferencesAndDisplayLanguageLink =
     'a[href="#/settings/preferences-and-display/language"]';
 
-  private readonly hideTokensWithoutBalanceToggle =
-    '[data-testid="toggle-zero-balance-button"]';
+  /**
+   * Hidden checkbox; click the wrapping label (same pattern as native-token toggle).
+   */
+  private readonly hideTokensWithoutBalanceToggleLabel =
+    "label.toggle-button:has([data-testid='toggle-zero-balance-button'])";
 
   private readonly loadingOverlay = '.loading-overlay';
 
@@ -126,7 +129,7 @@ class PreferencesAndDisplaySettings {
 
   async toggleHideTokensWithoutBalance(): Promise<void> {
     await this.checkAssetsPageIsLoaded();
-    await this.driver.clickElement(this.hideTokensWithoutBalanceToggle);
+    await this.driver.clickElement(this.hideTokensWithoutBalanceToggleLabel);
   }
 
   async toggleShowNativeTokenAsMainBalance(): Promise<void> {

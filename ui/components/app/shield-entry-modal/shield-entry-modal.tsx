@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom';
 import {
@@ -84,16 +84,8 @@ const ShieldEntryModal = ({
   const triggeringCohort = useSelector(getShieldEntryModalTriggeringCohort);
 
   const [actionLoading, setActionLoading] = useState(false);
-  const hasClosedRef = useRef(false);
-  const isMountedRef = useRef(true);
 
   const isPopup = getEnvironmentType() === ENVIRONMENT_TYPE_POPUP;
-
-  useEffect(() => {
-    return () => {
-      isMountedRef.current = false;
-    };
-  }, []);
 
   const determineEntryModalSource = useCallback((): ShieldMetricsSourceEnum => {
     const marketingUtmParams = getShieldMarketingUtmParamsForMetrics(search);
@@ -120,11 +112,6 @@ const ShieldEntryModal = ({
     ctaActionClicked: ShieldCtaActionClickedEnum = ShieldCtaActionClickedEnum.Dismiss,
   ) => {
     try {
-      if (!hasClosedRef.current) {
-        hasClosedRef.current = true;
-        onClose?.();
-      }
-
       const source = determineEntryModalSource();
       const marketingUtmParams = getShieldMarketingUtmParamsForMetrics(search);
       captureShieldEntryModalEvent({
@@ -143,6 +130,7 @@ const ShieldEntryModal = ({
       }
 
       if (skipEventSubmission) {
+        onClose?.();
         return;
       } else if (shouldSubmitEvent) {
         await dispatch(
@@ -162,9 +150,7 @@ const ShieldEntryModal = ({
     } catch (error) {
       log.error('[handleOnClose] error', error);
     } finally {
-      if (isMountedRef.current) {
-        setActionLoading(false);
-      }
+      setActionLoading(false);
     }
   };
 

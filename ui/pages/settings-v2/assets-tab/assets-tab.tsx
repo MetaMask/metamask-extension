@@ -69,6 +69,8 @@ const ASSET_SETTING_ITEMS: SettingItemConfig[] = [
   { id: 'autodetect-tokens', component: AutodetectTokensToggleItem },
 ];
 
-const AssetsTab = () => <SettingsTab items={ASSET_SETTING_ITEMS} />;
+const AssetsTab = () => {
+  return <SettingsTab items={ASSET_SETTING_ITEMS} />;
+};
 
 export default AssetsTab;

@@ -38,8 +38,10 @@ class AdvancedSettings {
     testId: 'transactions-show-hex-data-toggle',
   };
 
-  private readonly showConversionOnTestnetsToggle =
-    '[data-testid="developer-options-show-testnet-conversion-toggle"]';
+  private readonly showConversionOnTestnetsToggle = {
+    xpath:
+      "//label[contains(@class,'toggle-button')][.//*[@data-testid='developer-options-show-testnet-conversion-toggle']]",
+  };
 
   private readonly showTestnetsToggle =
     '[data-testid="advanced-setting-show-testnets"] .toggle-button';

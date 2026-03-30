@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
@@ -10,6 +10,7 @@ import {
   getIsSocialLoginFlow,
 } from '../../../selectors';
 import {
+  getMarketingConsent,
   setDataCollectionForMarketing,
   setMarketingConsent,
 } from '../../../store/actions';
@@ -30,6 +31,25 @@ export const DataCollectionToggleItem = () => {
   const useExternalServices = useSelector(getUseExternalServices);
   const socialLoginEnabled = useSelector(getIsSocialLoginFlow);
   const participateInMetaMetrics = useSelector(getParticipateInMetaMetrics);
+
+  // Match legacy Security tab: fetch remote marketing consent when the user is in
+  // a social login flow (firstTimeFlowType stays set after seedless import completes).
+  useEffect(() => {
+    if (!socialLoginEnabled) {
+      return;
+    }
+    let cancelled = false;
+    const fetchConsent = async () => {
+      const marketingConsentFromRemote = await getMarketingConsent();
+      if (!cancelled) {
+        dispatch(setDataCollectionForMarketing(marketingConsentFromRemote));
+      }
+    };
+    fetchConsent();
+    return () => {
+      cancelled = true;
+    };
+  }, [socialLoginEnabled, dispatch]);
 
   const isDisabled = !useExternalServices || !participateInMetaMetrics;
 

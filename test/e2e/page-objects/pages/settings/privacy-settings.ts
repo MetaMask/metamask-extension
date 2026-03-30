@@ -30,16 +30,6 @@ class PrivacySettings {
   private readonly dataCollectionForMarketingToggle =
     '[data-testid="data-collection-for-marketing-toggle"] .toggle-button';
 
-  private readonly dataCollectionWarningAckButton = {
-    text: 'Okay',
-    tag: 'button',
-  };
-
-  private readonly dataCollectionWarningMessage = {
-    text: 'You turned off data collection for our marketing purposes. This only applies to this device. ',
-    tag: 'p',
-  };
-
   private readonly deleteMetaMetricsDataButton =
     '[data-testid="delete-metametrics-data-button"]';
 
@@ -288,15 +278,15 @@ class PrivacySettings {
     await this.driver.waitForSelector(this.revealSrpQuizModalTitle);
   }
 
+  /**
+   * Settings V2 does not show the legacy “device only” popover when opting out;
+   * this only toggles the control off.
+   */
   async optOutDataCollectionForMarketing(): Promise<void> {
     console.log(
       'Opt out data collection for marketing on privacy settings page',
     );
     await this.toggleDataCollectionForMarketing({ targetState: 'off' });
-    await this.driver.waitForSelector(this.dataCollectionWarningMessage);
-    await this.driver.clickElementAndWaitToDisappear(
-      this.dataCollectionWarningAckButton,
-    );
   }
 
   async toggleAutodetectNft(): Promise<void> {

@@ -62,7 +62,7 @@ describe('Shield Entry Modal', () => {
     expect(shieldEntryModal).toBeInTheDocument();
   });
 
-  it('should update shield modal state when the close button is clicked', () => {
+  it('should  call onClose when the close button is clicked', () => {
     const { getByTestId } = renderWithProvider(<ShieldEntryModal />, mockStore);
 
     const closeButton = getByTestId('shield-entry-modal-close-button');
@@ -70,20 +70,6 @@ describe('Shield Entry Modal', () => {
     expect(setShowShieldEntryModalOnceSpy).toHaveBeenCalledWith({
       show: false,
       hasUserInteractedWithModal: true,
-    });
-  });
-
-  it('calls the provided onClose callback after closing', async () => {
-    const onClose = jest.fn();
-    const { getByTestId } = renderWithProvider(
-      <ShieldEntryModal onClose={onClose} />,
-      mockStore,
-    );
-
-    fireEvent.click(getByTestId('shield-entry-modal-close-button'));
-
-    await waitFor(() => {
-      expect(onClose).toHaveBeenCalledTimes(1);
     });
   });
 

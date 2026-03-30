@@ -3,7 +3,7 @@ import { withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
 import AssetListPage from '../../page-objects/pages/home/asset-list';
-import PreferencesAndDisplaySettings from '../../page-objects/pages/settings/preferences-and-display-settings';
+import AssetsSettingsPage from '../../page-objects/pages/settings/assets-settings-page';
 import HomePage from '../../page-objects/pages/home/homepage';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import { login } from '../../page-objects/flows/login.flow';
@@ -44,7 +44,7 @@ describe('Hide tokens without balance', function (this: Suite) {
 
         // Navigate to settings and toggle on "hide tokens without balance" feature
         await new HomePage(driver).headerNavbar.openSettingsPage();
-        const assetsSettings = new PreferencesAndDisplaySettings(driver);
+        const assetsSettings = new AssetsSettingsPage(driver);
         await assetsSettings.checkAssetsPageIsLoaded();
         await assetsSettings.toggleHideTokensWithoutBalance();
         const settingsPage = new SettingsPage(driver);

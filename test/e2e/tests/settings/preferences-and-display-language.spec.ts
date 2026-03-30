@@ -12,23 +12,28 @@ import ar from '../../../../app/_locales/ar/messages.json';
 import da from '../../../../app/_locales/da/messages.json';
 import de from '../../../../app/_locales/de/messages.json';
 import en from '../../../../app/_locales/en/messages.json';
-import hu from '../../../../app/_locales/hu/messages.json';
 import es from '../../../../app/_locales/es/messages.json';
 import hi from '../../../../app/_locales/hi/messages.json';
 import SendPage from '../../page-objects/pages/send/send-page';
 
 const selectors = {
-  currentLanguageDansk: { text: 'Dansk' },
-  currentLanguageDeutsch: { text: 'Deutsch' },
-  currentLanguageEnglish: { text: 'English' },
-  currentLanguageMagyar: { text: 'Magyar' },
-  currentLanguageSpanish: { text: 'Español' },
-  currentLanguageवर्तमान: { text: 'मानक हिन्दी' },
+  // Preferences V2 row uses `t('language')` (see create-select-item), not `currentLanguage`.
+  // Locales without `language` fall back to English for that key.
+  currentLanguageDansk: { tag: 'p', text: en.language.message },
+  currentLanguageDeutsch: { tag: 'p', text: de.language.message },
+  currentLanguageEnglish: { tag: 'p', text: en.language.message },
+  currentLanguageSpanish: { tag: 'p', text: es.language.message },
+  currentLanguageवर्तमान: { tag: 'p', text: hi.language.message },
+  advanceTextDansk: { text: da.advanced.message, tag: 'div' },
   waterTextDansk: `[placeholder="${da.search.message}"]`,
-  headerTextDansk: { text: da.settings.message.trim() },
-  dialogTextDeutsch: { text: de.invalidAddressRecipient.message, tag: 'p' },
+  headerTextDansk: { text: da.settings.message, tag: 'p' },
+  buttonTextDansk: {
+    testId: 'auto-lockout-button',
+    text: da.save.message,
+  },
+  dialogTextDeutsch: { text: de.invalidAddress.message, tag: 'p' },
   discoverTextवर्तमान: { text: hi.discover.message, tag: 'a' },
-  headerTextAr: { text: ar.settings.message },
+  headerTextAr: { text: ar.settings.message, tag: 'p' },
 };
 
 describe('Settings V2 - Preferences and display', function (this: Suite) {

@@ -20,6 +20,10 @@ class SettingsPage {
   private readonly developerToolsSettingsButton =
     '[data-testid="settings-v2-tab-item-developer-tools"]';
 
+  /** Full internal developer options (crash, remote flags, etc.); see `debug-tab.tsx`. */
+  private readonly debugSettingsButton =
+    '[data-testid="settings-v2-tab-item-debug"]';
+
   private readonly experimentalSettingsButton =
     '[data-testid="settings-v2-tab-item-experimental"]';
 
@@ -56,6 +60,11 @@ class SettingsPage {
   private readonly showNativeTokenAsMainBalanceToggleLabel = {
     xpath:
       "//label[contains(@class,'toggle-button')][.//*[@data-testid='show-native-token-as-main-balance']]",
+  };
+
+  private readonly showFiatOnTestnetsToggleLabel = {
+    xpath:
+      "//label[contains(@class,'toggle-button')][.//*[@data-testid='developer-options-show-testnet-conversion-toggle']]",
   };
 
   private readonly transactionsSettingsButton =
@@ -134,9 +143,8 @@ class SettingsPage {
 
   async toggleShowFiatOnTestnets(): Promise<void> {
     console.log('Toggling Show Fiat on Testnets setting');
-    await this.driver.clickElement(
-      '[data-testid="developer-options-show-testnet-conversion-toggle"]',
-    );
+    await this.driver.waitForSelector(this.showFiatOnTestnetsToggleLabel);
+    await this.driver.clickElement(this.showFiatOnTestnetsToggleLabel);
   }
 
   async toggleBalanceSetting(): Promise<void> {
@@ -165,9 +173,21 @@ class SettingsPage {
     await this.driver.clickElement(this.autoLockSettingsButton);
   }
 
+  /**
+   * Opens the Developer Tools tab (fiat on testnets, clear activity, etc.).
+   */
   async goToDeveloperOptions(): Promise<void> {
-    console.log('Navigating to Debug page');
+    console.log('Navigating to Developer Tools page');
     await this.driver.clickElement(this.developerToolsSettingsButton);
+  }
+
+  /**
+   * Opens the Debug tab, which embeds the legacy developer options page (crash
+   * generator, remote feature flags display, etc.).
+   */
+  async goToDebugSettings(): Promise<void> {
+    console.log('Navigating to Debug settings page');
+    await this.driver.clickElement(this.debugSettingsButton);
   }
 
   async goToSecurityAndPasswordSettings(): Promise<void> {
