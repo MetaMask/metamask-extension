@@ -182,7 +182,8 @@
                   "groupIndex": 0
                 },
                 "hidden": false,
-                "pinned": false
+                "pinned": false,
+                "lastSelected": 0
               }
             }
           },
