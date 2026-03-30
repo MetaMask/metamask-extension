@@ -12,7 +12,6 @@ import {
 } from '../../component-library';
 import {
   BackgroundColor,
-  BorderRadius,
   IconColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
@@ -288,7 +287,7 @@ export const NetworkConnectionBanner = () => {
 
     return (
       <BannerBase
-        className="network-connection-banner"
+        className="network-connection-banner rounded-md"
         backgroundColor={backgroundColor}
         startAccessory={
           <Icon
@@ -300,7 +299,6 @@ export const NetworkConnectionBanner = () => {
             data-testid="icon"
           />
         }
-        borderRadius={BorderRadius.MD}
       >
         {primaryMessage}
         {secondaryMessage}
