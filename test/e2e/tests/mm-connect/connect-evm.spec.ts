@@ -79,8 +79,7 @@ async function switchChainFromWallet(
     `${driver.extensionUrl}/${PAGES.POPUP}.html?activeTabOrigin=${DAPP_URL}`,
   );
   const headerNavbar = new HeaderNavbar(driver);
-  await headerNavbar.openConnectionMenu();
-  await headerNavbar.clickConnectedSitePopoverNetworkButton();
+  await headerNavbar.openDappNetworkMenu();
   await headerNavbar.selectNetwork(networkName);
 }
 

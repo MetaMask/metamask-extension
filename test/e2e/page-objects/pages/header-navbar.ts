@@ -39,6 +39,9 @@ class HeaderNavbar {
   private readonly networkOption = (networkId: string) =>
     `[data-testid="${networkId}"]`;
 
+  private readonly selectedNetworkItem = (networkName: string) =>
+    `.multichain-network-list-item--selected [data-testid="${networkName}"]`;
+
   private readonly networkPicker = '.mm-picker-network';
 
   private readonly toastBannerButton =
@@ -259,11 +262,10 @@ class HeaderNavbar {
     console.log(
       `Verify the connected site popover network is: ${expectedNetwork}`,
     );
-    await this.openConnectionMenu();
-    await this.driver.waitForSelector({
-      css: this.connectedSitePopoverNetworkButton,
-      text: expectedNetwork,
-    });
+    await this.openDappNetworkMenu();
+    await this.driver.waitForSelector(
+      this.selectedNetworkItem(expectedNetwork),
+    );
   }
 
   /**
