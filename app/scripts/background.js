@@ -2394,7 +2394,11 @@ async function initBackground(backup) {
     rejectInitialization(error);
   }
 }
-async function startExtensionInitialization() {
+/**
+ * Service worker entry for background startup: normal init, or critical-error
+ * restore (when a session and vault backup exist).
+ */
+async function initOrRestoreBackground() {
   if (process.env.SKIP_BACKGROUND_INITIALIZATION) {
     return;
   }
@@ -2453,8 +2457,8 @@ async function startExtensionInitialization() {
   initBackground(null);
 }
 
-startExtensionInitialization().catch((error) => {
-  log.error('startExtensionInitialization failed', error);
+initOrRestoreBackground().catch((error) => {
+  log.error('initOrRestoreBackground failed', error);
 });
 
 if (inTest) {
