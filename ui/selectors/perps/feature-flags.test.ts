@@ -1,10 +1,7 @@
 import semver from 'semver';
 import { PerpsFeatureFlag } from '../../../shared/lib/perps-feature-flags';
 import { getIsPerpsIncludedInBuild } from '../../../shared/lib/environment';
-import {
-  getIsPerpsExperienceAvailable,
-  getIsPerpsInAppToastsEnabled,
-} from './feature-flags';
+import { getIsPerpsExperienceAvailable } from './feature-flags';
 
 jest.mock('semver');
 jest.mock('../../../package.json', () => ({
@@ -22,20 +19,15 @@ const getIsPerpsIncludedInBuildMock = jest.mocked(getIsPerpsIncludedInBuild);
 type MockState = {
   metamask: {
     remoteFeatureFlags: {
-      perpsInAppToastsEnabled?: boolean;
       perpsEnabledVersion?: PerpsFeatureFlag;
     };
   };
 };
 
-const getMockState = (
-  perpsEnabledVersion?: PerpsFeatureFlag,
-  perpsInAppToastsEnabled?: boolean,
-): MockState => ({
+const getMockState = (perpsEnabledVersion?: PerpsFeatureFlag): MockState => ({
   metamask: {
     remoteFeatureFlags: {
       perpsEnabledVersion,
-      perpsInAppToastsEnabled,
     },
   },
 });
@@ -176,48 +168,6 @@ describe('Perps Feature Flags', () => {
         expect(getIsPerpsExperienceAvailable(state)).toBe(true);
         expect(semverGteMock).toHaveBeenCalledWith('12.5.0', '12.5.0-beta.1');
       });
-    });
-  });
-
-  describe('getIsPerpsInAppToastsEnabled', () => {
-    it('returns true when perps is enabled and toast kill-switch is undefined', () => {
-      semverGteMock.mockReturnValue(true);
-
-      const state = getMockState(
-        {
-          enabled: true,
-          minimumVersion: '12.0.0',
-        },
-        undefined,
-      );
-
-      expect(getIsPerpsInAppToastsEnabled(state)).toBe(true);
-    });
-
-    it('returns false when perps is disabled', () => {
-      const state = getMockState(
-        {
-          enabled: false,
-          minimumVersion: '12.0.0',
-        },
-        true,
-      );
-
-      expect(getIsPerpsInAppToastsEnabled(state)).toBe(false);
-    });
-
-    it('returns false when toast kill-switch is set to false', () => {
-      semverGteMock.mockReturnValue(true);
-
-      const state = getMockState(
-        {
-          enabled: true,
-          minimumVersion: '12.0.0',
-        },
-        false,
-      );
-
-      expect(getIsPerpsInAppToastsEnabled(state)).toBe(false);
     });
   });
 });
