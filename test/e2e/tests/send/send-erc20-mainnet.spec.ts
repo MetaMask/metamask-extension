@@ -15,6 +15,20 @@ import TokenOverviewPage from '../../page-objects/pages/token-overview-page';
 import TokenTransferTransactionConfirmation from '../../page-objects/pages/confirmations/token-transfer-confirmation';
 import { login } from '../../page-objects/flows/login.flow';
 
+const DAI_ADDRESS = '0x6b175474e89094c44da98b954eedeac495271d0f';
+
+const MAINNET_TOKEN_LIST_ENTRY = {
+  [DAI_ADDRESS]: {
+    name: 'Dai Stablecoin',
+    symbol: 'DAI',
+    decimals: 18,
+    address: DAI_ADDRESS,
+    occurrences: 1,
+    aggregators: [],
+    iconUrl: '',
+  },
+};
+
 describe('Send ERC20 - Mainnet', function () {
   it('sends DAI with preloaded state', async function () {
     await withFixtures(
@@ -26,8 +40,13 @@ describe('Send ERC20 - Mainnet', function () {
               '0x1': true,
             },
           })
-          .withAppStateController({
-            newPrivacyPolicyToastClickedOrClosed: true,
+          .withTokenListController({
+            tokensChainsCache: {
+              '0x1': {
+                timestamp: Date.now(),
+                data: MAINNET_TOKEN_LIST_ENTRY,
+              },
+            },
           })
           .build(),
         title: this.test?.fullTitle(),
@@ -48,10 +67,6 @@ describe('Send ERC20 - Mainnet', function () {
         const assetListPage = new AssetListPage(driver);
         await homePage.checkPageIsLoaded();
         await assetListPage.importTokenBySearch('DAI');
-        await driver.clickElementSafe(
-          '.toasts-container__banner-base button[aria-label="Close"]',
-          3000,
-        );
         await assetListPage.clickOnAsset('Dai Stablecoin');
 
         // Send DAI
