@@ -1,4 +1,10 @@
-import { act, cleanup, fireEvent, waitFor, screen } from '@testing-library/react';
+import {
+  act,
+  cleanup,
+  fireEvent,
+  waitFor,
+  screen,
+} from '@testing-library/react';
 import thunk from 'redux-thunk';
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
@@ -916,5 +922,4 @@ describe('ConnectHardwareForm', () => {
       });
     });
   });
-
 });
