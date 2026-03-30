@@ -5628,26 +5628,26 @@ export default class MetamaskController extends EventEmitter {
         throw new Error(`Missing identity for address: "${secondAddress}".`);
       }
 
-      const firstContext = this.accountTreeController.getAccountContext(
+      const firstAccountContext = this.accountTreeController.getAccountContext(
         firstAccount.id,
       );
-      const secondContext = this.accountTreeController.getAccountContext(
+      const secondAccountContext = this.accountTreeController.getAccountContext(
         secondAccount.id,
       );
 
-      const firstGroup = firstContext
+      const firstAccountGroup = firstAccountContext
         ? this.accountTreeController.getAccountGroupObject(
-            firstContext.groupId,
+            firstAccountContext.groupId,
           )
         : undefined;
-      const secondGroup = secondContext
+      const secondAccountGroup = secondAccountContext
         ? this.accountTreeController.getAccountGroupObject(
-            secondContext.groupId,
+            secondAccountContext.groupId,
           )
         : undefined;
 
-      const firstLastSelected = firstGroup?.metadata.lastSelected;
-      const secondLastSelected = secondGroup?.metadata.lastSelected;
+      const firstLastSelected = firstAccountGroup?.metadata.lastSelected;
+      const secondLastSelected = secondAccountGroup?.metadata.lastSelected;
 
       if (firstLastSelected === secondLastSelected) {
         return 0;
