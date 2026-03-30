@@ -584,6 +584,14 @@
     },
     "@lavamoat/lavadome-react": {
       "globals": {
+        "Document.prototype": true,
+        "DocumentFragment.prototype": true,
+        "Element.prototype": true,
+        "Event.prototype": true,
+        "EventTarget.prototype": true,
+        "NavigateEvent.prototype": true,
+        "NavigationDestination.prototype": true,
+        "Node.prototype": true,
         "console.warn": true,
         "document": true,
         "navigation": true
@@ -601,9 +609,6 @@
     "@ledgerhq/errors": {
       "globals": {
         "console.warn": true
-      },
-      "packages": {
-        "@swc/helpers": true
       }
     },
     "@ledgerhq/hw-app-eth>@ledgerhq/evm-tools": {
@@ -650,7 +655,6 @@
       "packages": {
         "@ledgerhq/errors": true,
         "@ledgerhq/hw-app-eth>@ledgerhq/logs": true,
-        "@swc/helpers": true,
         "buffer": true,
         "webpack>events": true
       }
@@ -667,9 +671,6 @@
       "globals": {
         "__ledgerLogsListen": "write",
         "console.error": true
-      },
-      "packages": {
-        "@swc/helpers": true
       }
     },
     "@material-ui/core": {
@@ -867,7 +868,7 @@
         "@metamask/polling-controller": true,
         "@metamask/assets-controller>@metamask/snaps-utils": true,
         "@metamask/utils": true,
-        "@metamask/keyring-api>async-mutex": true,
+        "mockttp>async-mutex": true,
         "@metamask/assets-controller>bignumber.js": true,
         "lodash": true,
         "@metamask/assets-controller>p-limit": true
@@ -907,7 +908,7 @@
         "@metamask/rpc-errors": true,
         "@metamask/assets-controllers>@metamask/snaps-utils": true,
         "@metamask/utils": true,
-        "@metamask/keyring-api>async-mutex": true,
+        "mockttp>async-mutex": true,
         "ethereumjs-util>bn.js": true,
         "immer": true,
         "lodash": true,
@@ -1229,7 +1230,7 @@
         "@metamask/controller-utils>@metamask/eth-query": true,
         "@metamask/json-rpc-engine": true,
         "@metamask/safe-event-emitter": true,
-        "@metamask/keyring-api>async-mutex": true,
+        "mockttp>async-mutex": true,
         "pify": true
       }
     },
@@ -1308,7 +1309,7 @@
         "@ethereumjs/tx>@ethereumjs/util": true,
         "@metamask/eth-qr-keyring>@keystonehq/bc-ur-registry-eth": true,
         "@metamask/utils": true,
-        "@metamask/keyring-api>async-mutex": true,
+        "mockttp>async-mutex": true,
         "buffer": true,
         "@metamask/eth-qr-keyring>hdkey": true,
         "@metamask/eth-qr-keyring>uuid": true
@@ -1368,7 +1369,7 @@
         "@metamask/keyring-utils": true,
         "@metamask/superstruct": true,
         "@metamask/utils": true,
-        "@metamask/keyring-api>async-mutex": true,
+        "mockttp>async-mutex": true,
         "@metamask/eth-snap-keyring>uuid": true
       }
     },
@@ -1525,7 +1526,7 @@
     },
     "@metamask/snaps-sdk>@metamask/key-tree": {
       "globals": {
-        "crypto": true,
+        "crypto.subtle": true,
         "ed25519": true,
         "ed25519Bip32": true,
         "secp256k1": true
@@ -1545,7 +1546,7 @@
         "@metamask/keyring-utils": true,
         "@metamask/superstruct": true,
         "@metamask/utils": true,
-        "@metamask/keyring-api>async-mutex": true,
+        "mockttp>async-mutex": true,
         "bitcoin-address-validation": true,
         "@metamask/keyring-api>uuid": true
       }
@@ -1561,7 +1562,7 @@
         "@metamask/eth-sig-util": true,
         "@metamask/keyring-controller>@metamask/eth-simple-keyring": true,
         "@metamask/utils": true,
-        "@metamask/keyring-api>async-mutex": true,
+        "mockttp>async-mutex": true,
         "@metamask/keyring-controller>ethereumjs-wallet": true,
         "lodash": true,
         "@metamask/keyring-controller>ulid": true
@@ -1670,7 +1671,7 @@
         "@metamask/keyring-snap-client": true,
         "@metamask/multichain-account-service>@metamask/snaps-utils": true,
         "@metamask/utils": true,
-        "@metamask/keyring-api>async-mutex": true,
+        "mockttp>async-mutex": true,
         "lodash": true
       }
     },
@@ -1724,7 +1725,7 @@
         "@metamask/base-controller": true,
         "@metamask/controller-utils": true,
         "@metamask/utils": true,
-        "@metamask/keyring-api>async-mutex": true
+        "mockttp>async-mutex": true
       }
     },
     "@metamask/network-controller": {
@@ -1935,7 +1936,7 @@
         "@metamask/polling-controller": true,
         "@metamask/profile-sync-controller": true,
         "@metamask/utils": true,
-        "@metamask/keyring-api>async-mutex": true
+        "mockttp>async-mutex": true
       }
     },
     "@metamask/profile-sync-controller": {
@@ -2036,7 +2037,7 @@
         "@metamask/utils": true,
         "@noble/ciphers": true,
         "@noble/curves": true,
-        "@metamask/keyring-api>async-mutex": true
+        "mockttp>async-mutex": true
       }
     },
     "@metamask/selected-network-controller": {
@@ -2136,9 +2137,8 @@
         "@metamask/snaps-sdk": true,
         "@metamask/snaps-utils": true,
         "@metamask/utils": true,
-        "@swc/helpers": true,
         "@metamask/snaps-controllers>@xstate/fsm": true,
-        "@metamask/keyring-api>async-mutex": true,
+        "mockttp>async-mutex": true,
         "@metamask/snaps-controllers>concat-stream": true,
         "cron-parser": true,
         "eslint>fast-deep-equal": true,
@@ -2178,7 +2178,7 @@
         "@metamask/superstruct": true,
         "@metamask/utils": true,
         "@noble/hashes": true,
-        "@metamask/keyring-api>async-mutex": true
+        "mockttp>async-mutex": true
       }
     },
     "@metamask/snaps-sdk": {
@@ -2189,7 +2189,6 @@
         "@metamask/rpc-errors": true,
         "@metamask/superstruct": true,
         "@metamask/utils": true,
-        "@swc/helpers": true,
         "luxon": true
       }
     },
@@ -2217,7 +2216,6 @@
         "@metamask/superstruct": true,
         "@metamask/utils": true,
         "@scure/base": true,
-        "@swc/helpers": true,
         "chalk": true,
         "cron-parser": true,
         "fast-json-stable-stringify": true,
@@ -2299,7 +2297,7 @@
         "@metamask/transaction-controller>@metamask/nonce-tracker": true,
         "@metamask/rpc-errors": true,
         "@metamask/utils": true,
-        "@metamask/keyring-api>async-mutex": true,
+        "mockttp>async-mutex": true,
         "@metamask/transaction-controller>bignumber.js": true,
         "ethereumjs-util>bn.js": true,
         "buffer": true,
@@ -2437,23 +2435,18 @@
       "packages": {
         "@metamask/perps-controller>@nktkas/hyperliquid>@nktkas/rews": true,
         "@metamask/perps-controller>@nktkas/hyperliquid>@noble/hashes": true,
-        "@swc/helpers": true,
-        "@metamask/perps-controller>@nktkas/hyperliquid>micro-eth-signer": true,
         "@metamask/perps-controller>@nktkas/hyperliquid>valibot": true
       }
     },
     "@metamask/perps-controller>@nktkas/hyperliquid>@nktkas/rews": {
       "globals": {
         "AbortController": true,
-        "AbortSignal": true,
+        "AbortSignal.timeout": true,
         "CustomEvent": true,
         "DOMException": true,
         "WebSocket": true,
         "clearTimeout": true,
         "setTimeout": true
-      },
-      "packages": {
-        "@swc/helpers": true
       }
     },
     "@noble/ciphers": {
@@ -2525,9 +2518,6 @@
       "globals": {
         "TextEncoder": true,
         "crypto": true
-      },
-      "packages": {
-        "@swc/helpers": true
       }
     },
     "@ethereumjs/tx>ethereum-cryptography>@noble/hashes": {
@@ -2973,9 +2963,6 @@
     "@solana/addresses>@solana/errors": {
       "globals": {
         "btoa": true
-      },
-      "packages": {
-        "@swc/helpers": true
       }
     },
     "@metamask/controller-utils>@spruceid/siwe-parser": {
@@ -3020,13 +3007,10 @@
         "clearInterval": true,
         "clearTimeout": true,
         "console.error": true,
-        "document": true,
+        "document.visibilityState": true,
         "removeEventListener": true,
         "setInterval": true,
         "setTimeout": true
-      },
-      "packages": {
-        "@swc/helpers": true
       }
     },
     "@tanstack/react-query>@tanstack/query-core": {
@@ -3135,7 +3119,6 @@
         "window": true
       },
       "packages": {
-        "@swc/helpers": true,
         "@trezor/connect-web>@trezor/connect-common>@trezor/env-utils": true,
         "@trezor/connect-web>@trezor/utils": true,
         "tslib": true
@@ -3171,7 +3154,6 @@
         "setTimeout": true
       },
       "packages": {
-        "@swc/helpers": true,
         "@trezor/connect-web>@trezor/connect-common": true,
         "@trezor/connect-web>@trezor/connect": true,
         "@trezor/connect-web>@trezor/utils": true,
@@ -3182,7 +3164,6 @@
     },
     "@trezor/connect-web>@trezor/connect": {
       "packages": {
-        "@swc/helpers": true,
         "@trezor/connect-web>@trezor/connect>@trezor/device-utils": true,
         "@trezor/connect-web>@trezor/connect>@trezor/protobuf": true,
         "@trezor/connect-web>@trezor/connect>@trezor/schema-utils": true,
@@ -3233,7 +3214,6 @@
       },
       "packages": {
         "@trezor/connect-web>@trezor/connect>@trezor/schema-utils>@sinclair/typebox": true,
-        "@swc/helpers": true,
         "buffer": true,
         "ts-mixer": true
       }
@@ -3257,7 +3237,6 @@
         "setTimeout": true
       },
       "packages": {
-        "@swc/helpers": true,
         "@trezor/connect-web>@trezor/utils>bignumber.js": true,
         "buffer": true,
         "webpack>events": true,
@@ -3271,7 +3250,6 @@
         "setTimeout": true
       },
       "packages": {
-        "@swc/helpers": true,
         "@trezor/connect-web>@trezor/utils": true,
         "webpack>events": true,
         "tslib": true
@@ -3381,7 +3359,7 @@
         "browserify>util": true
       }
     },
-    "@metamask/keyring-api>async-mutex": {
+    "@metamask/transaction-controller>@metamask/nonce-tracker>async-mutex": {
       "globals": {
         "clearTimeout": true,
         "setTimeout": true
@@ -3390,7 +3368,7 @@
         "tslib": true
       }
     },
-    "@metamask/transaction-controller>@metamask/nonce-tracker>async-mutex": {
+    "mockttp>async-mutex": {
       "globals": {
         "clearTimeout": true,
         "setTimeout": true
@@ -3757,8 +3735,7 @@
         "setTimeout": true
       },
       "packages": {
-        "chart.js>@kurkle/color": true,
-        "@swc/helpers": true
+        "chart.js>@kurkle/color": true
       }
     },
     "@ensdomains/content-hash>cids": {
@@ -4479,7 +4456,6 @@
       "packages": {
         "eth-lattice-keyring>gridplus-sdk>@ethereumjs/rlp": true,
         "@metamask/eth-sig-util": true,
-        "@swc/helpers": true,
         "viem>abitype": true,
         "eth-lattice-keyring>gridplus-sdk>aes-js": true,
         "bitcoin-address-validation>bech32": true,
@@ -4832,7 +4808,10 @@
         "document.getSelection": true,
         "getComputedStyle": true,
         "location.href": true,
-        "navigator": true,
+        "navigator.language": true,
+        "navigator.platform": true,
+        "navigator.userAgent.toLowerCase": true,
+        "navigator.userAgentData": true,
         "performance.now": true,
         "queueMicrotask": true,
         "requestAnimationFrame": true,
@@ -4933,9 +4912,6 @@
       "globals": {
         "console.error": true,
         "console.warn": true
-      },
-      "packages": {
-        "@swc/helpers": true
       }
     },
     "ethereumjs-util>create-hash>md5.js": {
@@ -5900,9 +5876,6 @@
       "globals": {
         "WeakRef": true,
         "console.warn": true
-      },
-      "packages": {
-        "@swc/helpers": true
       }
     },
     "@metamask/snaps-utils>rfdc": {

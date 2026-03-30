@@ -22,7 +22,6 @@ import {
   getAssetPreferences,
   getCustomAssets,
   getAssetsRates,
-  getHistoricalPrices,
   getMultiChainAssets,
   getMultichainNativeAssetType,
   getTokenByAccountAndAddressAndChainId,
@@ -357,26 +356,6 @@ describe('getAssetsRates', () => {
   it('should return undefined if state does not have metamask property', () => {
     const invalidState = {} as AssetsRatesState;
     expect(() => getAssetsRates(invalidState)).toThrow();
-  });
-});
-
-describe('getHistoricalPrices', () => {
-  it('should return the assetsRates from the state', () => {
-    const result = getHistoricalPrices(mockRatesState);
-    expect(result).toEqual(mockRatesState.metamask.historicalPrices);
-  });
-
-  it('should return an empty object if historicalPrices is empty', () => {
-    const emptyState: AssetsRatesState = {
-      metamask: { conversionRates: {}, historicalPrices: {} },
-    };
-    const result = getHistoricalPrices(emptyState);
-    expect(result).toEqual({});
-  });
-
-  it('should return undefined if state does not have metamask property', () => {
-    const invalidState = {} as AssetsRatesState;
-    expect(() => getHistoricalPrices(invalidState)).toThrow();
   });
 });
 
