@@ -311,6 +311,12 @@ module.exports = {
         },
       },
     },
+    {
+      files: ['.agents/**/*.ts'],
+      rules: {
+        'import-x/no-nodejs-modules': 'off',
+      },
+    },
     /**
      * == Everything else ==
      *

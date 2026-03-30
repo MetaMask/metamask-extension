@@ -1,4 +1,3 @@
-/* eslint-disable import-x/no-nodejs-modules */
 import { readFileSync } from 'fs';
 import process from 'process';
 import { spawnSync } from 'child_process';
@@ -21,6 +20,7 @@ const RISKY_CHANGE_REGEX =
 
 function usage(): string {
   return `Usage:
+  check-ab-testing-compliance.ts -h | --help
   check-ab-testing-compliance.ts --staged
   check-ab-testing-compliance.ts --files <file1,file2,...> [--base <git-ref>]
 

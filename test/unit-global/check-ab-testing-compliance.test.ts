@@ -48,7 +48,9 @@ const runCommand = (
 
 const runGit = (cwd: string, args: string[]) => {
   const result = runCommand(cwd, 'git', args);
-  expect(result.status).toBe(0);
+  if (result.status !== 0) {
+    throw new Error(`git ${args.join(' ')} failed:\n${result.output}`);
+  }
 };
 
 const runChecker = (cwd: string, args: string[]): CommandResult =>
