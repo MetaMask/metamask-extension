@@ -119,6 +119,26 @@ describe('critical-error-restore session', () => {
         CRITICAL_ERROR_RESTORE_KEY,
       );
     });
+
+    it('rejects with an explicit message and reports to Sentry when storage.local.remove rejects', async () => {
+      const removeError = new Error('storage remove failed');
+      (browser.storage.local.remove as jest.Mock).mockRejectedValueOnce(
+        removeError,
+      );
+
+      await expect(clearCriticalErrorRestoreSession(browser)).rejects.toThrow(
+        'critical-error-restore: failed to clear restore session from storage.local',
+      );
+
+      const captureArg = jest.mocked(captureException).mock.calls[0][0];
+      expect(captureArg).toEqual(
+        expect.objectContaining({
+          message:
+            'critical-error-restore: failed to clear restore session from storage.local',
+          cause: removeError,
+        }),
+      );
+    });
   });
 });
 

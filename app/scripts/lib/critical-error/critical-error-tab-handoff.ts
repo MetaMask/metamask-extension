@@ -39,10 +39,26 @@ export async function readCriticalErrorRestoreSession(
   }
 }
 
+/**
+ * Removes the restore session key. Rejects if `storage.local.remove` fails,
+ * after reporting a wrapped error to Sentry so failures are visible in logs and
+ * monitoring.
+ *
+ * @param browserApi - WebExtension `browser` API (injected for tests).
+ */
 export async function clearCriticalErrorRestoreSession(
   browserApi: typeof browser,
 ): Promise<void> {
-  await browserApi.storage.local.remove(CRITICAL_ERROR_RESTORE_KEY);
+  try {
+    await browserApi.storage.local.remove(CRITICAL_ERROR_RESTORE_KEY);
+  } catch (error) {
+    const wrapped = new Error(
+      'critical-error-restore: failed to clear restore session from storage.local',
+      { cause: error },
+    );
+    captureException(wrapped);
+    throw wrapped;
+  }
 }
 
 export async function openRestoringTabAndReload(
