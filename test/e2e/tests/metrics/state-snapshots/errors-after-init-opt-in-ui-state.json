@@ -193,7 +193,7 @@
     "hasAccountTreeSyncingSyncedAtLeastOnce": "boolean",
     "hasPlacedFirstOrder": "object",
     "hasShownMultichainAccountsIntroModal": "boolean",
-    "hiddenAccountList": {},
+    "hiddenAccountList": "object",
     "hip3ConfigVersion": "number",
     "historicalPrices": "object",
     "ignoredNfts": "object",
@@ -283,15 +283,7 @@
     "onboardingDate": null,
     "onboardingTabs": "object",
     "openSeaEnabled": true,
-    "orderedNetworkList": {
-      "0": "object",
-      "1": "object",
-      "2": "object",
-      "3": "object",
-      "4": "object",
-      "5": "object",
-      "6": "object"
-    },
+    "orderedNetworkList": "object",
     "orderedTransactionHistory": "object",
     "outdatedBrowserWarningLastShown": "object",
     "overrideContentSecurityPolicyHeader": true,
@@ -306,7 +298,7 @@
     "permissionActivityLog": "object",
     "permissionHistory": "object",
     "perpsBalances": "object",
-    "pinnedAccountList": {},
+    "pinnedAccountList": "object",
     "pna25Acknowledged": "boolean",
     "popupGasPollTokens": "object",
     "preferences": {
@@ -337,7 +329,7 @@
     "quoteRequest": {
       "srcTokenAddress": "0x0000000000000000000000000000000000000000"
     },
-    "quotes": {},
+    "quotes": "object",
     "quotesInitialLoadTime": null,
     "quotesLastFetched": null,
     "quotesLoadingStatus": null,
@@ -397,7 +389,7 @@
     "snapsAddSnapAccountModalDismissed": "boolean",
     "socialBackupsMetadata": "object",
     "srpSessionData": "object",
-    "storageMetadata": {},
+    "storageMetadata": "object",
     "storageWriteErrorType": null,
     "subjectMetadata": "object",
     "subjects": "object",
