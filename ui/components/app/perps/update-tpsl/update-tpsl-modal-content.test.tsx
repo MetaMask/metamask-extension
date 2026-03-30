@@ -13,6 +13,10 @@ import {
 const mockSubmitRequestToBackground = jest.fn();
 const mockGetPerpsStreamManager = jest.fn();
 
+jest.mock('../../../../providers/perps', () => ({
+  getPerpsStreamManager: () => mockGetPerpsStreamManager(),
+}));
+
 jest.mock('../../../../store/background-connection', () => ({
   submitRequestToBackground: (...args: unknown[]) =>
     mockSubmitRequestToBackground(...args),
@@ -20,10 +24,6 @@ jest.mock('../../../../store/background-connection', () => ({
 
 jest.mock('../../../../hooks/perps/usePerpsEligibility', () => ({
   usePerpsEligibility: () => ({ isEligible: true }),
-}));
-
-jest.mock('../../../../providers/perps', () => ({
-  getPerpsStreamManager: () => mockGetPerpsStreamManager(),
 }));
 
 const mockStore = configureStore({
@@ -89,7 +89,7 @@ describe('UpdateTPSLModalContent', () => {
       if (method === 'perpsGetPositions') {
         return Promise.resolve(mockPositions);
       }
-      return Promise.resolve(undefined);
+      return Promise.resolve({ success: true });
     });
     mockGetPerpsStreamManager.mockReturnValue({
       setOptimisticTPSL: jest.fn(),
@@ -358,18 +358,8 @@ describe('UpdateTPSLModalContent', () => {
   });
 
   describe('submit', () => {
-    it('calls updatePositionTPSL and onClose on successful save', async () => {
+    it('calls perpsUpdatePositionTPSL and onClose on successful save', async () => {
       const onClose = jest.fn();
-
-      mockSubmitRequestToBackground.mockImplementation((method: string) => {
-        if (method === 'perpsUpdatePositionTPSL') {
-          return Promise.resolve({ success: true });
-        }
-        if (method === 'perpsGetPositions') {
-          return Promise.resolve(mockPositions);
-        }
-        return Promise.resolve(undefined);
-      });
 
       renderTpslModalContent({ onClose });
 
@@ -394,16 +384,6 @@ describe('UpdateTPSLModalContent', () => {
     });
 
     it('sends undefined for empty TP/SL prices (clearing them)', async () => {
-      mockSubmitRequestToBackground.mockImplementation((method: string) => {
-        if (method === 'perpsUpdatePositionTPSL') {
-          return Promise.resolve({ success: true });
-        }
-        if (method === 'perpsGetPositions') {
-          return Promise.resolve(mockPositions);
-        }
-        return Promise.resolve(undefined);
-      });
-
       renderTpslModalContent({ position: positionWithoutTPSL });
 
       const saveButton = screen.getByText(messages.perpsSaveChanges.message);
@@ -451,7 +431,7 @@ describe('UpdateTPSLModalContent', () => {
   });
 
   describe('error handling', () => {
-    it('displays an error when updatePositionTPSL fails', async () => {
+    it('displays an error when perpsUpdatePositionTPSL fails', async () => {
       mockSubmitRequestToBackground.mockImplementation((method: string) => {
         if (method === 'perpsUpdatePositionTPSL') {
           return Promise.resolve({ success: false, error: 'Server error' });
@@ -459,7 +439,7 @@ describe('UpdateTPSLModalContent', () => {
         if (method === 'perpsGetPositions') {
           return Promise.resolve(mockPositions);
         }
-        return Promise.resolve(undefined);
+        return Promise.resolve({ success: true });
       });
 
       renderTpslModalContent();
@@ -472,12 +452,9 @@ describe('UpdateTPSLModalContent', () => {
     });
 
     it('displays a generic error when an exception is thrown', async () => {
-      mockSubmitRequestToBackground.mockImplementation((method: string) => {
-        if (method === 'perpsUpdatePositionTPSL') {
-          return Promise.reject(new Error('Network failure'));
-        }
-        return Promise.resolve(undefined);
-      });
+      mockSubmitRequestToBackground.mockRejectedValue(
+        new Error('Network failure'),
+      );
 
       renderTpslModalContent();
 
@@ -497,7 +474,7 @@ describe('UpdateTPSLModalContent', () => {
         if (method === 'perpsGetPositions') {
           return Promise.resolve(mockPositions);
         }
-        return Promise.resolve(undefined);
+        return Promise.resolve({ success: true });
       });
 
       renderTpslModalContent({ onClose });

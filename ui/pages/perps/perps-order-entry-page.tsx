@@ -29,7 +29,10 @@ import type {
   OrderParams,
   PriceUpdate,
 } from '@metamask/perps-controller';
-import { getIsPerpsExperienceAvailable } from '../../selectors/perps/feature-flags';
+import {
+  getIsPerpsExperienceAvailable,
+  getIsPerpsInAppToastsEnabled,
+} from '../../selectors/perps/feature-flags';
 import { getSelectedInternalAccount } from '../../selectors/accounts';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import {
@@ -55,6 +58,7 @@ import { useFormatters } from '../../hooks/useFormatters';
 import { usePerpsDepositConfirmation } from '../../components/app/perps/hooks/usePerpsDepositConfirmation';
 import { getPerpsStreamManager } from '../../providers/perps';
 import { submitRequestToBackground } from '../../store/background-connection';
+import type { PerpsBackgroundResult } from '../../components/app/perps/types';
 import {
   getDisplayName,
   getChangeColor,
@@ -113,13 +117,17 @@ const ORDER_FAILED_FALLBACK_ERROR_PATTERNS = [
 const ORDER_FAILED_USER_FACING_ERROR_PATTERNS = [
   /insufficient margin/iu,
   /insufficient balance/iu,
-  /insufficient liquidity/iu,
+  /insufficient liquidity|IOC.*cancel/iu,
   /\bno liquidity\b/iu,
   /rate limit/iu,
   /timeout/iu,
   /network error/iu,
   /slippage/iu,
   /order rejected/iu,
+  /reduce only|reduceOnly/iu,
+  /position would flip/iu,
+  /service unavailable|503|temporarily unavailable/iu,
+  /fetch failed|connection failed/iu,
 ];
 
 /**
@@ -184,6 +192,7 @@ const PerpsOrderEntryPage: React.FC = () => {
   const { symbol } = useParams<{ symbol: string }>();
   const [searchParams] = useSearchParams();
   const isPerpsExperienceAvailable = useSelector(getIsPerpsExperienceAvailable);
+  const isPerpsInAppToastsEnabled = useSelector(getIsPerpsInAppToastsEnabled);
   const selectedAccount = useSelector(getSelectedInternalAccount);
   const selectedAddress = selectedAccount?.address;
   const { isEligible } = usePerpsEligibility();
@@ -569,8 +578,8 @@ const PerpsOrderEntryPage: React.FC = () => {
     } else {
       const returnOnEquity = parseFloat(position.returnOnEquity);
       if (!Number.isNaN(returnOnEquity)) {
-        pnlRatio =
-          Math.abs(returnOnEquity) > 1 ? returnOnEquity / 100 : returnOnEquity;
+        // Controller/mobile ROE is a percent value (e.g. 15.79), while formatter expects a ratio.
+        pnlRatio = returnOnEquity / 100;
       }
     }
 
@@ -631,10 +640,10 @@ const PerpsOrderEntryPage: React.FC = () => {
           orderType: 'market' as const,
           currentPrice,
         };
-        const result = await submitRequestToBackground<{
-          success: boolean;
-          error?: string;
-        }>('perpsClosePosition', [closeParams]);
+        const result = await submitRequestToBackground<PerpsBackgroundResult>(
+          'perpsClosePosition',
+          [closeParams],
+        );
         if (!result.success) {
           throw new Error(result.error ?? 'Failed to close position');
         }
@@ -690,16 +699,10 @@ const PerpsOrderEntryPage: React.FC = () => {
             ? orderFormState.stopLossPrice
             : undefined,
         });
-        const result = await submitRequestToBackground<{
-          success: boolean;
-          error?: string;
-        }>('perpsUpdatePositionTPSL', [
-          {
-            symbol: orderFormState.asset,
-            takeProfitPrice,
-            stopLossPrice,
-          },
-        ]);
+        const result = await submitRequestToBackground<PerpsBackgroundResult>(
+          'perpsUpdatePositionTPSL',
+          [{ symbol: orderFormState.asset, takeProfitPrice, stopLossPrice }],
+        );
         if (!result.success) {
           throw new Error(result.error ?? 'Failed to update TP/SL');
         }
@@ -713,10 +716,10 @@ const PerpsOrderEntryPage: React.FC = () => {
         orderMode,
         position?.size,
       );
-      const result = await submitRequestToBackground<{
-        success: boolean;
-        error?: string;
-      }>('perpsPlaceOrder', [orderParams]);
+      const result = await submitRequestToBackground<PerpsBackgroundResult>(
+        'perpsPlaceOrder',
+        [orderParams],
+      );
       if (!result.success) {
         throw new Error(result.error ?? 'Failed to place order');
       }
@@ -733,30 +736,35 @@ const PerpsOrderEntryPage: React.FC = () => {
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : 'An unknown error occurred';
-      setSubmitError(errorMessage);
-      const failedToastKey = ORDER_MODE_TOAST_KEYS[orderMode].failed;
-      const normalizedErrorMessage = errorMessage.trim();
-      const shouldUseOrderFailedFallback =
-        failedToastKey === PERPS_TOAST_KEYS.ORDER_FAILED &&
-        (normalizedErrorMessage.length === 0 ||
-          ORDER_FAILED_FALLBACK_ERROR_PATTERNS.some((pattern) =>
-            pattern.test(normalizedErrorMessage),
-          ) ||
-          !ORDER_FAILED_USER_FACING_ERROR_PATTERNS.some((pattern) =>
-            pattern.test(normalizedErrorMessage),
-          ));
-      const failedToastDescription = shouldUseOrderFailedFallback
-        ? t('perpsToastOrderFailedDescriptionFallback')
-        : normalizedErrorMessage;
-      replacePerpsToastByKey({
-        key: failedToastKey,
-        description: failedToastDescription,
-      });
+      if (isPerpsInAppToastsEnabled) {
+        setSubmitError(null);
+        const failedToastKey = ORDER_MODE_TOAST_KEYS[orderMode].failed;
+        const normalizedErrorMessage = errorMessage.trim();
+        const shouldUseOrderFailedFallback =
+          failedToastKey === PERPS_TOAST_KEYS.ORDER_FAILED &&
+          (normalizedErrorMessage.length === 0 ||
+            ORDER_FAILED_FALLBACK_ERROR_PATTERNS.some((pattern) =>
+              pattern.test(normalizedErrorMessage),
+            ) ||
+            !ORDER_FAILED_USER_FACING_ERROR_PATTERNS.some((pattern) =>
+              pattern.test(normalizedErrorMessage),
+            ));
+        const failedToastDescription = shouldUseOrderFailedFallback
+          ? t('perpsToastOrderFailedDescriptionFallback')
+          : normalizedErrorMessage;
+        replacePerpsToastByKey({
+          key: failedToastKey,
+          description: failedToastDescription,
+        });
+      } else {
+        setSubmitError(errorMessage);
+      }
     } finally {
       setIsSubmitting(false);
     }
   }, [
     isEligible,
+    isPerpsInAppToastsEnabled,
     orderFormState,
     orderMode,
     position,
@@ -978,7 +986,7 @@ const PerpsOrderEntryPage: React.FC = () => {
             liquidationPrice={orderCalculations.liquidationPrice}
           />
         )}
-        {(insufficientBalanceError || submitError) && (
+        {!isPerpsInAppToastsEnabled && submitError && (
           <Box
             className="bg-error-muted rounded-lg"
             padding={3}

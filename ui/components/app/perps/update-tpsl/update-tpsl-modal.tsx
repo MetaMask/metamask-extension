@@ -20,6 +20,7 @@ export type UpdateTPSLModalProps = {
   onClose: () => void;
   position: Position;
   currentPrice: number;
+  isPerpsInAppToastsEnabled?: boolean;
 };
 
 /**
@@ -30,12 +31,14 @@ export type UpdateTPSLModalProps = {
  * @param options0.onClose
  * @param options0.position
  * @param options0.currentPrice
+ * @param options0.isPerpsInAppToastsEnabled
  */
 export const UpdateTPSLModal: React.FC<UpdateTPSLModalProps> = ({
   isOpen,
   onClose,
   position,
   currentPrice,
+  isPerpsInAppToastsEnabled = false,
 }) => {
   const t = useI18nContext();
   const [submitState, setSubmitState] = useState<UpdateTPSLSubmitState | null>(
@@ -70,6 +73,7 @@ export const UpdateTPSLModal: React.FC<UpdateTPSLModalProps> = ({
             currentPrice={currentPrice}
             onClose={onClose}
             onSubmitStateChange={handleSubmitStateChange}
+            isPerpsInAppToastsEnabled={isPerpsInAppToastsEnabled}
           />
         </ModalBody>
         <ModalFooter
