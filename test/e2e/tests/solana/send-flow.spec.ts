@@ -25,11 +25,11 @@ describe('Send flow', function (this: Suite) {
       async ({ driver }) => {
         await login(driver);
         const homePage = new NonEvmHomepage(driver);
+        await homePage.waitForNonEvmAccountsLoaded();
         const sendPage = new SendPage(driver);
 
         await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Solana');
         await homePage.checkPageIsLoaded({ amount: '0' });
-        await homePage.clickOnSendButton();
         await sendPage.checkSolanaNetworkIsPresent();
         await sendPage.selectToken(SOLANA_MAINNET_SCOPE, 'SOL');
 
@@ -61,6 +61,7 @@ describe('Send flow', function (this: Suite) {
       async ({ driver }) => {
         await login(driver);
         const homePage = new NonEvmHomepage(driver);
+        await homePage.waitForNonEvmAccountsLoaded();
         const sendPage = new SendPage(driver);
 
         await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Solana');
@@ -110,6 +111,7 @@ describe('Send flow', function (this: Suite) {
       async ({ driver }) => {
         await login(driver);
         const homePage = new NonEvmHomepage(driver);
+        await homePage.waitForNonEvmAccountsLoaded();
         const sendPage = new SendPage(driver);
 
         await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Solana');
