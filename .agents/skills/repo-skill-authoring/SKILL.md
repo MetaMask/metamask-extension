@@ -85,7 +85,10 @@ For agent implementation and review tasks, follow this workflow:
    - Add command shims only if slash-command discovery materially improves ergonomics.
    - Point every shim directly back to the canonical artifact or shared SSOT document.
 5. Sanity check the result.
-   - Confirm the skill and any shims all point to the same workflow.
+   - Confirm `SKILL.md` frontmatter `name` matches the folder name exactly.
+   - Confirm every shim points to either the canonical `SKILL.md` or its shared SSOT document.
+   - Confirm no shim duplicates the canonical workflow.
+   - Confirm `agents/openai.yaml` `default_prompt` contains the `$skill-name` invocation token.
    - If a docs SSOT exists, keep the doc and skill wording aligned.
 
 Authoring principle:
@@ -102,6 +105,8 @@ Required agent response sections:
 ## Minimal Examples
 
 ### Canonical Repo Skill
+
+See `.agents/skills/ab-testing-implementation/` for a concrete in-repo example of this structure.
 
 ```md
 ---
