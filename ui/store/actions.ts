@@ -886,7 +886,7 @@ export function restoreSocialBackupAndGetSeedPhrase(
       const marketingConsent = await getMarketingConsent();
       dispatch(setDataCollectionForMarketing(marketingConsent));
 
-      await trackEvent({
+      await trackEvent?.({
         category: MetaMetricsEventCategory.Onboarding,
         event: MetaMetricsEventName.AnalyticsPreferenceSelected,
         properties: {
