@@ -5,27 +5,114 @@ description: Implement and review MetaMask Extension A/B tests using the canonic
 
 # A/B Testing Implementation
 
-`docs/ab-testing.md` is the single source of truth.
+Canonical workflow for implementing and reviewing MetaMask Extension A/B
+tests.
 
-Do not use this skill for general analytics work that does not involve A/B test flags, `useABTest`, `active_ab_tests`, or related tests/docs.
+Do not use this skill for general analytics work that does not involve A/B
+test flags, `useABTest`, `active_ab_tests`, or related tests/docs.
 
-Follow `docs/ab-testing.md` section `Agent Execution Standard (SSOT)` for:
+## Required Response Sections
 
-- workflow
-- analytics rules
-- risk-based testing policy
-- required response sections
-- compliance command
+1. `Implementation Checklist`
+2. `Files To Modify`
+3. `Analytics Payload Changes`
+4. `Tests To Run`
+5. `Compliance Check Result`
 
-If that section is unavailable, apply these core rules:
+## Core Rules
 
 - Use `useABTest(flagKey, variants)` with a `control` variant.
-- Use `active_ab_tests: [{ key, value }]` for business events when assignment is active.
-- Do not add new `ab_tests:` payloads.
-- Run and report `node --import tsx .agents/skills/ab-testing-implementation/scripts/check-ab-testing-compliance.ts --staged`.
+- Normalize unresolved assignments to `control`.
+- Do not manually emit `Experiment Viewed` when using `useABTest`.
+- For business events, use `active_ab_tests: [{ key, value }]` only when
+  assignment is active.
+- Do not add new payloads under `ab_tests`.
+- New experiment keys should match `{teamName}{ticketId}Abtest{TestName}`.
 
-Run and report:
+## Agent Execution Standard
+
+For implementation or review tasks, follow this workflow:
+
+1. Run discovery before edits.
 
 ```bash
-node --import tsx .agents/skills/ab-testing-implementation/scripts/check-ab-testing-compliance.ts --staged
+rg -n "useABTest\\(|active_ab_tests|ab_tests|Abtest|feature-flag-registry|RemoteFeatureFlagController" app shared ui test docs
+rg -n "Experiment Viewed|ExperimentViewed" app shared ui
 ```
+
+2. Confirm the intended experiment shape.
+   - Use a threshold-array remote flag value for production defaults.
+   - Keep reused variants or metadata centralized in a config module when
+     multiple files need the same definitions.
+   - Use the same experiment key format as mobile:
+     `{teamName}{ticketId}Abtest{TestName}`.
+3. Implement the assignment logic correctly.
+   - Prefer `useABTest(flagKey, variants)` and keep a `control` variant in
+     the variants object.
+   - Use `variantName` and `isActive` from the hook for business-event
+     instrumentation.
+   - If assignment is missing, invalid, or unresolved, the hook falls back
+     to `control` and `isActive: false`.
+4. Implement analytics correctly.
+   - Rely on `useABTest` for the automatic `Experiment Viewed` exposure
+     event.
+   - Add `active_ab_tests` only to business events, and only when the
+     assignment is active.
+   - Never add new `ab_tests:` payloads. If a legacy touchpoint cannot be
+     migrated in the same change, keep the line annotated with
+     `LEGACY_AB_TEST_ALLOWED` and explain why.
+5. Use the canonical event payload shapes.
+
+```typescript
+const experiment = useABTest('swapsSWAPS4135AbtestNumpadQuickAmounts', {
+  control: { buttons: [25, 50, 75, 'MAX'] },
+  treatment: { buttons: [50, 75, 90, 'MAX'] },
+});
+
+const activeABTests = experiment.isActive
+  ? [
+      {
+        key: 'swapsSWAPS4135AbtestNumpadQuickAmounts',
+        value: experiment.variantName,
+      },
+    ]
+  : undefined;
+```
+
+6. Update tests and fixtures when behavior or flag plumbing changes.
+   - Register every new remote A/B test flag in
+     `test/e2e/feature-flags/feature-flag-registry.ts` with the production
+     default threshold-array JSON value.
+   - Use test overrides such as `manifestFlags.remoteFeatureFlags` or
+     `FixtureBuilder.withRemoteFeatureFlags(...)` when a test needs
+     deterministic assignment.
+   - If the change is copy-only or config-only, you may skip new tests with a brief rationale.
+7. Run the compliance checker and report the result.
+
+```bash
+# pre-commit / local implementation flow
+node --import tsx .agents/skills/ab-testing-implementation/scripts/check-ab-testing-compliance.ts --staged
+
+# review mode / explicit file set
+node --import tsx .agents/skills/ab-testing-implementation/scripts/check-ab-testing-compliance.ts --files app/path/to/file.ts,test/path/to/file.spec.ts --base origin/main
+```
+
+## Review Checklist
+
+- Confirm `useABTest` always has a `control` variant.
+- Confirm `Experiment Viewed` is not emitted manually when `useABTest` is in
+  use.
+- Confirm business events use `active_ab_tests` rather than `ab_tests`.
+- Confirm E2E flag registration and local test overrides remain production-accurate.
+- Confirm the compliance checker result is included in the final response.
+
+## Related Files
+
+- `ui/hooks/useABTest.ts`
+- `ui/hooks/useABTest.test.ts`
+- `ui/selectors/remote-feature-flags.ts`
+- `shared/constants/metametrics.ts`
+- `test/e2e/feature-flags/feature-flag-registry.ts`
+
+Use `docs/ab-testing.md` only when you need deeper background, additional
+examples, FAQ answers, or local override guidance beyond this workflow.
