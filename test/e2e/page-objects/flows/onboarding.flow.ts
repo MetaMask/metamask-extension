@@ -574,17 +574,6 @@ export const addCustomNetworkInOnboardingPrivacySettings = async ({
 
   await onboardingCompletePage.checkPageIsLoaded();
   await onboardingCompletePage.completeOnboarding();
-
-  if (process.env.SELENIUM_BROWSER === Browser.CHROME) {
-    await driver.delay(3000);
-  }
-
-  await handleSidepanelPostOnboarding(driver);
-
-  const homePage = new HomePage(driver);
-  await homePage.checkPageIsLoaded();
-
-  await enableTestNetworks(driver);
 };
 
 /**

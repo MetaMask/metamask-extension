@@ -128,17 +128,6 @@ class SettingsPage {
     );
   }
 
-  /**
-   * Opens the Networks settings route, which launches the network list menu
-   * (same UI as the account menu → Networks entry).
-   */
-  async goToNetworksSettings(): Promise<void> {
-    console.log('Navigating to Networks settings');
-    await this.driver.executeScript(
-      `window.location.hash = ${JSON.stringify(NETWORKS_ROUTE)};`,
-    );
-  }
-
   async fillSearchSettingsInput(text: string): Promise<void> {
     console.log(`Filling search settings input with ${text}`);
     await this.openSearch();
