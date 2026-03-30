@@ -1345,9 +1345,6 @@
   "cancel": {
     "message": "Kanselahin"
   },
-  "cancelPopoverTitle": {
-    "message": "Kanselahin ang transaksyon"
-  },
   "cancelTransactionDescription": {
     "message": "Makakansela ang transaksyong ito at papalitan ng bayad sa network na ito ang orihinal."
   },
@@ -2524,9 +2521,6 @@
     "message": "Ang limitasyon ng gas ay dapat na mas mataas sa $1 at hindi bababa sa $2",
     "description": "$1 is the minimum limit for gas and $2 is the maximum limit"
   },
-  "editGasLimitTooltip": {
-    "message": "Ang limitasyon ng gas ay ang pinakamataas na yunit ng gas na handa mong gamitin. Ang mga yunit ng gas ay multiplier sa “Pinakamataas na bayad sa priyoridad” at “Pinakamataas na bayad”."
-  },
   "editGasMaxBaseFeeGWEIImbalance": {
     "message": "Ang pinakamataas na batayang bayad ay hindi dapat na mas mababa sa bayad sa priyoridad"
   },
@@ -2565,12 +2559,6 @@
   },
   "editGasPriceTooLow": {
     "message": "Ang presyo ng gas ay dapat na mas mataas sa 0"
-  },
-  "editGasPriceTooltip": {
-    "message": "Ang network na ito ay nangangailangan ng field ng “Presyo ng gas” kapag nagsusumite ng transaksyon. Ang presyo ng gas ay ang halaga na babayaran mo kada yunit ng gas."
-  },
-  "editGasTitle": {
-    "message": "I-edit ang priyoridad"
   },
   "editGasTooLow": {
     "message": "Hindi alam na oras ng pagproseso"
@@ -2984,18 +2972,8 @@
   "gas": {
     "message": "Gas"
   },
-  "gasDisplayAcknowledgeDappButtonText": {
-    "message": "I-edit ang iminungkahing bayad sa gas"
-  },
-  "gasDisplayDappWarning": {
-    "message": "Ang bayad sa gas na ito ay iminungkahi ng $1. Ang pag-override nito ay maaaring magdulot ng problema sa iyong transaksyon. Mangyaring makipag-ugnayan sa $1 kung mayroon kang mga katanungan.",
-    "description": "$1 represents the Dapp's origin"
-  },
   "gasLimit": {
     "message": "Gas limit"
-  },
-  "gasLimitRecommended": {
-    "message": "Ang inirerekomendang limitasyon ng gas ay $1. Kung mas mababa dito ang limitasyon ng gas, maaaring mabigo."
   },
   "gasLimitTooLow": {
     "message": "Ang limitasyon ng gas ay dapat na hindi bababa sa 21000"
@@ -7918,15 +7896,6 @@
   },
   "speedUpCancellation": {
     "message": "Pabilisin ang pagkanselang ito"
-  },
-  "speedUpExplanation": {
-    "message": "Na-update na namin ang bayad sa gas batay sa kasalukuyang kundisyon ng network at tinaasan namin ito nang hindi bababa sa 10% (hinihingi ng network)."
-  },
-  "speedUpPopoverTitle": {
-    "message": "Pabilisin ang transaksyon"
-  },
-  "speedUpTooltipText": {
-    "message": "Bagong bayad sa gas"
   },
   "speedUpTransactionDescription": {
     "message": "Papalitan ng bayad sa network na ito ang orihinal."
