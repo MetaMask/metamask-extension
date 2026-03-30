@@ -678,41 +678,12 @@ export const getEvmInternalAccounts = createSelector(
   },
 );
 
-/**
- * Builds a mapping from account ID to the lastSelected value of its containing
- * AccountGroup. Used to sort accounts by group-level last-selected timestamp.
- *
- * @param {object} state - Redux state.
- * @returns {Record<string, number | undefined>} Mapping of account ID to the group's lastSelected.
- */
-export const getAccountIdToGroupLastSelected = createSelector(
-  (state) => state.metamask.accountTree,
-  (accountTree) => {
-    const result = {};
-    if (accountTree?.wallets) {
-      for (const wallet of Object.values(accountTree.wallets)) {
-        for (const group of Object.values(wallet.groups || {})) {
-          const groupLastSelected = group.metadata?.lastSelected;
-          for (const accountId of group.accounts) {
-            result[accountId] = groupLastSelected;
-          }
-        }
-      }
-    }
-    return result;
-  },
-);
-
 export const getSelectedEvmInternalAccount = createSelector(
   getEvmInternalAccounts,
-  getAccountIdToGroupLastSelected,
-  (accounts, groupLastSelectedById) => {
+  (accounts) => {
     // We should always have 1 EVM account (if not, it would be `undefined`, same
     // as `getSelectedInternalAccount` selector.
-    const [evmAccountSelected] = sortSelectedInternalAccounts(
-      accounts,
-      groupLastSelectedById,
-    );
+    const [evmAccountSelected] = sortSelectedInternalAccounts(accounts);
     return evmAccountSelected;
   },
 );
@@ -3262,14 +3233,12 @@ export const getOrderedConnectedAccountsForActiveTab = createSelector(
   (state) => state.metamask.permissionHistory,
   getMetaMaskAccountsOrderedWithoutBalance,
   getAllPermittedAccountsForCurrentTab,
-  getAccountIdToGroupLastSelected,
   (
     origin,
     permissionHistory,
     /** @type {import('@metamask/keyring-internal-api').InternalAccount[]} */
     orderedAccounts,
     connectedAccounts,
-    groupLastSelectedById,
   ) => {
     const permissionHistoryByAccount =
       permissionHistory[origin]?.eth_accounts?.accounts || {};
@@ -3298,19 +3267,19 @@ export const getOrderedConnectedAccountsForActiveTab = createSelector(
         },
         name: account.metadata?.name ?? '',
       }))
-      .sort((a, b) => {
-        const lastSelectedA = groupLastSelectedById[a.id];
-        const lastSelectedB = groupLastSelectedById[b.id];
-        if (lastSelectedA === lastSelectedB) {
-          return 0;
-        } else if (lastSelectedA === undefined) {
-          return 1;
-        } else if (lastSelectedB === undefined) {
-          return -1;
-        }
+      .sort(
+        ({ lastSelected: lastSelectedA }, { lastSelected: lastSelectedB }) => {
+          if (lastSelectedA === lastSelectedB) {
+            return 0;
+          } else if (lastSelectedA === undefined) {
+            return 1;
+          } else if (lastSelectedB === undefined) {
+            return -1;
+          }
 
-        return lastSelectedB - lastSelectedA;
-      });
+          return lastSelectedB - lastSelectedA;
+        },
+      );
 
     return result;
   },
@@ -3324,30 +3293,26 @@ export const getUpdatedAndSortedAccounts = createSelector(
   getPinnedAccountsList,
   getHiddenAccountsList,
   getOrderedConnectedAccountsForActiveTab,
-  getAccountIdToGroupLastSelected,
-  (
-    accounts,
-    pinnedAddresses,
-    hiddenAddresses,
-    connectedAccounts,
-    groupLastSelectedById,
-  ) => {
-    const connectedAccountIds = new Set(
-      connectedAccounts.map((connection) => connection.id),
-    );
+  (accounts, pinnedAddresses, hiddenAddresses, connectedAccounts) => {
+    const connectionMetadataById = new Map();
+    connectedAccounts.forEach((connection) => {
+      if (connection.metadata) {
+        connectionMetadataById.set(connection.id, {
+          connections: true,
+          lastSelected: connection.metadata.lastSelected,
+        });
+      }
+    });
 
     const accountsWithMetadata = accounts.map((account) => {
-      if (connectedAccountIds.has(account.id)) {
-        return {
-          ...account,
-          connections: true,
-          lastSelected: groupLastSelectedById[account.id],
-        };
+      const connectionData = connectionMetadataById.get(account.id);
+      if (connectionData) {
+        return { ...account, ...connectionData };
       }
       return account;
     });
 
-    // Find the account with the most recent lastSelected timestamp among connected accounts
+    // Find the account with the most recent lastSelected timestamp among accounts with metadata
     const accountsWithLastSelected = accountsWithMetadata.filter(
       (account) => account.connections && account.lastSelected,
     );
@@ -3825,7 +3790,6 @@ function getOrderedConnectedAccountsForConnectedDapp(state, activeTab) {
     state,
     activeTab,
   );
-  const groupLastSelectedById = getAccountIdToGroupLastSelected(state);
 
   return orderedAccounts
     .filter((account) => connectedAccounts.includes(account.address))
@@ -3837,19 +3801,19 @@ function getOrderedConnectedAccountsForConnectedDapp(state, activeTab) {
         lastActive: permissionHistoryByAccount?.[account.address],
       },
     }))
-    .sort((a, b) => {
-      const lastSelectedA = groupLastSelectedById[a.id];
-      const lastSelectedB = groupLastSelectedById[b.id];
-      if (lastSelectedA === lastSelectedB) {
-        return 0;
-      } else if (lastSelectedA === undefined) {
-        return 1;
-      } else if (lastSelectedB === undefined) {
-        return -1;
-      }
+    .sort(
+      ({ lastSelected: lastSelectedA }, { lastSelected: lastSelectedB }) => {
+        if (lastSelectedA === lastSelectedB) {
+          return 0;
+        } else if (lastSelectedA === undefined) {
+          return 1;
+        } else if (lastSelectedB === undefined) {
+          return -1;
+        }
 
-      return lastSelectedB - lastSelectedA;
-    });
+        return lastSelectedB - lastSelectedA;
+      },
+    );
 }
 
 export function getPermissionsForActiveTab(state) {

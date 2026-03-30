@@ -90,7 +90,6 @@ import { CreateSolanaAccountModal } from '../../../components/multichain/create-
 import { mergeCaip25CaveatValues } from '../../../../shared/lib/caip25-caveat-merger';
 import { useOriginTrustSignals } from '../../../hooks/useOriginTrustSignals';
 import { TrustSignalDisplayState } from '../../../hooks/useTrustSignals';
-import { getAccountIdToGroupLastSelected } from '../../../selectors';
 import {
   PermissionsRequest,
   getCaip25CaveatValueFromPermissions,
@@ -276,8 +275,6 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
     getUpdatedAndSortedAccountsWithCaipAccountId,
   ) as MergedInternalAccountWithCaipAccountId[];
 
-  const groupLastSelectedById = useSelector(getAccountIdToGroupLastSelected);
-
   const requestedNamespaces = getAllNamespacesFromCaip25CaveatValue(
     requestedCaip25CaveatValueWithExistingPermissions,
   );
@@ -309,7 +306,6 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
     requestedNamespacesWithoutWallet,
     supportedRequestedAccounts,
     supportedAccountsForRequestedNamespaces,
-    groupLastSelectedById,
   );
 
   const defaultCaipAccountAddresses = defaultAccounts.map(

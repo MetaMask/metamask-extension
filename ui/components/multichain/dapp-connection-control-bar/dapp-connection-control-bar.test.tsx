@@ -245,7 +245,6 @@ describe('DappConnectionControlBar', () => {
 
   describe('when an unconnected account group is selected', () => {
     it('falls back to the most recently selected connected account', () => {
-      const accountTreeWallets = mockState.metamask.accountTree.wallets;
       const state = {
         metamask: {
           ...mockState.metamask,
@@ -253,49 +252,28 @@ describe('DappConnectionControlBar', () => {
           accountTree: {
             ...mockState.metamask.accountTree,
             selectedAccountGroup: LEDGER_GROUP_ID,
-            wallets: {
-              ...accountTreeWallets,
-              'entropy:01JKAF3DSGM3AB87EM9N0K41AJ': {
-                ...accountTreeWallets['entropy:01JKAF3DSGM3AB87EM9N0K41AJ'],
-                groups: {
-                  ...accountTreeWallets['entropy:01JKAF3DSGM3AB87EM9N0K41AJ']
-                    .groups,
-                  [GROUP_1_ID]: {
-                    ...accountTreeWallets[
-                      'entropy:01JKAF3DSGM3AB87EM9N0K41AJ'
-                    ].groups[GROUP_1_ID],
-                    metadata: {
-                      ...accountTreeWallets[
-                        'entropy:01JKAF3DSGM3AB87EM9N0K41AJ'
-                      ].groups[GROUP_1_ID].metadata,
-                      lastSelected: 2000,
-                    },
-                  },
-                },
-              },
-              'entropy:01JKAF3PJ247KAM6C03G5Q0NP8': {
-                ...accountTreeWallets['entropy:01JKAF3PJ247KAM6C03G5Q0NP8'],
-                groups: {
-                  ...accountTreeWallets['entropy:01JKAF3PJ247KAM6C03G5Q0NP8']
-                    .groups,
-                  'entropy:01JKAF3PJ247KAM6C03G5Q0NP8/0': {
-                    ...accountTreeWallets[
-                      'entropy:01JKAF3PJ247KAM6C03G5Q0NP8'
-                    ].groups['entropy:01JKAF3PJ247KAM6C03G5Q0NP8/0'],
-                    metadata: {
-                      ...accountTreeWallets[
-                        'entropy:01JKAF3PJ247KAM6C03G5Q0NP8'
-                      ].groups['entropy:01JKAF3PJ247KAM6C03G5Q0NP8/0']
-                        .metadata,
-                      lastSelected: 1000,
-                    },
-                  },
-                },
-              },
-            },
           },
           internalAccounts: {
             ...mockState.metamask.internalAccounts,
+            accounts: {
+              ...mockState.metamask.internalAccounts.accounts,
+              [ACCOUNT_1_ID]: {
+                ...mockState.metamask.internalAccounts.accounts[ACCOUNT_1_ID],
+                metadata: {
+                  ...mockState.metamask.internalAccounts.accounts[ACCOUNT_1_ID]
+                    .metadata,
+                  lastSelected: 2000,
+                },
+              },
+              [ACCOUNT_2_ID]: {
+                ...mockState.metamask.internalAccounts.accounts[ACCOUNT_2_ID],
+                metadata: {
+                  ...mockState.metamask.internalAccounts.accounts[ACCOUNT_2_ID]
+                    .metadata,
+                  lastSelected: 1000,
+                },
+              },
+            },
             selectedAccount: ACCOUNT_2_ID,
           },
           subjects: {

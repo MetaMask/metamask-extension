@@ -109,21 +109,17 @@ export const DappConnectionControlBar: React.FC = () => {
       }
     }
     // Current account group is not connected — find the most recently
-    // selected permitted account group and return a permitted address from it.
-    let mostRecent:
-      | { address: string; lastSelected: number }
-      | undefined;
+    // selected permitted account across all connected account groups.
+    let mostRecent: { address: string; lastSelected: number } | undefined;
     for (const group of allPermittedAccountGroups) {
-      const groupLastSelected = group.metadata.lastSelected ?? 0;
-      if (!mostRecent || groupLastSelected > mostRecent.lastSelected) {
-        const permittedAccount = group.accounts.find((account) =>
-          isInternalAccountInPermittedAccountIds(account, permittedAccounts),
-        );
-        if (permittedAccount) {
-          mostRecent = {
-            address: permittedAccount.address,
-            lastSelected: groupLastSelected,
-          };
+      for (const account of group.accounts) {
+        if (
+          isInternalAccountInPermittedAccountIds(account, permittedAccounts)
+        ) {
+          const ts = account.metadata.lastSelected ?? 0;
+          if (!mostRecent || ts > mostRecent.lastSelected) {
+            mostRecent = { address: account.address, lastSelected: ts };
+          }
         }
       }
     }
