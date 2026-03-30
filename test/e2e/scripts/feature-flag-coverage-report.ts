@@ -442,8 +442,15 @@ function printReport(report: CoverageReport): void {
     console.log('  PARTIAL COVERAGE (only one state tested)');
     console.log(`  ${'-'.repeat(40)}`);
     for (const entry of partialFlags) {
-      const missing = entry.testedStates.true ? 'false' : 'true';
-      console.log(`  ${entry.flag}  (missing: ${missing} state)`);
+      const missingStates = [
+        !entry.testedStates.true && 'true',
+        !entry.testedStates.false && 'false',
+      ].filter(Boolean);
+      const missingLabel =
+        missingStates.length === 2
+          ? 'both true and false states'
+          : `${missingStates[0]} state`;
+      console.log(`  ${entry.flag}  (missing: ${missingLabel})`);
       for (const ref of entry.references) {
         const valueStr =
           ref.values.length > 0 ? ref.values.join(', ') : '(reference only)';
