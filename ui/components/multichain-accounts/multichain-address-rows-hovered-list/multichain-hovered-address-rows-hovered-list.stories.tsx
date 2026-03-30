@@ -119,6 +119,7 @@ const createMockState = () => ({
                 },
                 pinned: false,
                 hidden: false,
+                lastSelected: 0,
               },
               accounts: Object.keys(accounts).map(
                 (key) => accounts[key as keyof typeof accounts].id,
