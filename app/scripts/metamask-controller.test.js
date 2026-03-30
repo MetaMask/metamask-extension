@@ -1807,7 +1807,7 @@ describe('MetaMaskController', () => {
     });
 
     describe('#sortEvmAccountsByLastSelected', () => {
-      it('returns the keyring accounts in lastSelected order', () => {
+      it('returns the keyring accounts in lastSelected order using AccountGroup metadata', () => {
         jest
           .spyOn(metamaskController.accountsController, 'listAccounts')
           .mockReturnValueOnce([
@@ -1816,10 +1816,7 @@ describe('MetaMaskController', () => {
               id: '21066553-d8c8-4cdc-af33-efc921cd3ca9',
               metadata: {
                 name: 'Test Account',
-                lastSelected: 1,
-                keyring: {
-                  type: 'HD Key Tree',
-                },
+                keyring: { type: 'HD Key Tree' },
               },
               options: {},
               methods: ETH_EOA_METHODS,
@@ -1830,9 +1827,7 @@ describe('MetaMaskController', () => {
               id: '0bd7348e-bdfe-4f67-875c-de831a583857',
               metadata: {
                 name: 'Test Account',
-                keyring: {
-                  type: 'HD Key Tree',
-                },
+                keyring: { type: 'HD Key Tree' },
               },
               options: {},
               methods: ETH_EOA_METHODS,
@@ -1843,10 +1838,7 @@ describe('MetaMaskController', () => {
               id: 'ff8fda69-d416-4d25-80a2-efb77bc7d4ad',
               metadata: {
                 name: 'Test Account',
-                keyring: {
-                  type: 'HD Key Tree',
-                },
-                lastSelected: 3,
+                keyring: { type: 'HD Key Tree' },
               },
               options: {},
               methods: ETH_EOA_METHODS,
@@ -1854,19 +1846,41 @@ describe('MetaMaskController', () => {
             },
             {
               address: '0x04eBa9B766477d8eCA77F5f0e67AE1863C95a7E3',
-              id: '0bd7348e-bdfe-4f67-875c-de831a583857',
+              id: '4th-account-id',
               metadata: {
                 name: 'Test Account',
-                lastSelected: 3,
-                keyring: {
-                  type: 'HD Key Tree',
-                },
+                keyring: { type: 'HD Key Tree' },
               },
               options: {},
               methods: ETH_EOA_METHODS,
               type: EthAccountType.Eoa,
             },
           ]);
+        jest
+          .spyOn(metamaskController.accountTreeController, 'getAccountContext')
+          .mockImplementation((accountId) => {
+            const map = {
+              '21066553-d8c8-4cdc-af33-efc921cd3ca9': { groupId: 'group-1' },
+              '0bd7348e-bdfe-4f67-875c-de831a583857': { groupId: 'group-2' },
+              'ff8fda69-d416-4d25-80a2-efb77bc7d4ad': { groupId: 'group-3' },
+              '4th-account-id': { groupId: 'group-4' },
+            };
+            return map[accountId];
+          });
+        jest
+          .spyOn(
+            metamaskController.accountTreeController,
+            'getAccountGroupObject',
+          )
+          .mockImplementation((groupId) => {
+            const map = {
+              'group-1': { metadata: { lastSelected: 1 } },
+              'group-2': { metadata: { lastSelected: undefined } },
+              'group-3': { metadata: { lastSelected: 3 } },
+              'group-4': { metadata: { lastSelected: 3 } },
+            };
+            return map[groupId];
+          });
         jest
           .spyOn(metamaskController, 'captureKeyringTypesWithMissingIdentities')
           .mockImplementation(() => {
@@ -2006,13 +2020,10 @@ describe('MetaMaskController', () => {
     });
 
     describe('#sortMultichainAccountsByLastSelected', () => {
-      const EVM_EOA_TYPE = 'eip155:eoa';
-
       const setupMocks = ({
         addressToAccount,
         accountIdToGroupId,
         groups,
-        accountIdToAccount,
       }) => {
         jest
           .spyOn(metamaskController.accountsController, 'getAccountByAddress')
@@ -2031,13 +2042,9 @@ describe('MetaMaskController', () => {
             'getAccountGroupObject',
           )
           .mockImplementation((groupId) => groups[groupId]);
-
-        jest
-          .spyOn(metamaskController.accountsController, 'getAccount')
-          .mockImplementation((accountId) => accountIdToAccount[accountId]);
       };
 
-      it('returns the accounts in lastSelected order', () => {
+      it('returns the accounts in lastSelected order using AccountGroup metadata', () => {
         setupMocks({
           addressToAccount: {
             addr1: { id: 'id-1', address: 'addr1' },
@@ -2052,32 +2059,10 @@ describe('MetaMaskController', () => {
             'id-4': 'group-4',
           },
           groups: {
-            'group-1': { accounts: ['id-1', 'id-1-evm'] },
-            'group-2': { accounts: ['id-2', 'id-2-evm'] },
-            'group-3': { accounts: ['id-3', 'id-3-evm'] },
-            'group-4': { accounts: ['id-4', 'id-4-evm'] },
-          },
-          accountIdToAccount: {
-            'id-1': { type: 'solana:data-account' },
-            'id-1-evm': {
-              type: EVM_EOA_TYPE,
-              metadata: { lastSelected: 1 },
-            },
-            'id-2': { type: 'solana:data-account' },
-            'id-2-evm': {
-              type: EVM_EOA_TYPE,
-              metadata: { lastSelected: undefined },
-            },
-            'id-3': { type: 'solana:data-account' },
-            'id-3-evm': {
-              type: EVM_EOA_TYPE,
-              metadata: { lastSelected: 3 },
-            },
-            'id-4': { type: 'solana:data-account' },
-            'id-4-evm': {
-              type: EVM_EOA_TYPE,
-              metadata: { lastSelected: 3 },
-            },
+            'group-1': { metadata: { lastSelected: 1 } },
+            'group-2': { metadata: { lastSelected: undefined } },
+            'group-3': { metadata: { lastSelected: 3 } },
+            'group-4': { metadata: { lastSelected: 3 } },
           },
         });
 
@@ -2101,14 +2086,7 @@ describe('MetaMaskController', () => {
             'id-1': 'group-1',
           },
           groups: {
-            'group-1': { accounts: ['id-1', 'id-1-evm'] },
-          },
-          accountIdToAccount: {
-            'id-1': { type: 'solana:data-account' },
-            'id-1-evm': {
-              type: EVM_EOA_TYPE,
-              metadata: { lastSelected: 5 },
-            },
+            'group-1': { metadata: { lastSelected: 5 } },
           },
         });
 
@@ -2131,14 +2109,7 @@ describe('MetaMaskController', () => {
             'id-2': undefined,
           },
           groups: {
-            'group-1': { accounts: ['id-1', 'id-1-evm'] },
-          },
-          accountIdToAccount: {
-            'id-1': { type: 'solana:data-account' },
-            'id-1-evm': {
-              type: EVM_EOA_TYPE,
-              metadata: { lastSelected: 10 },
-            },
+            'group-1': { metadata: { lastSelected: 10 } },
           },
         });
 
@@ -2161,13 +2132,7 @@ describe('MetaMaskController', () => {
             'id-2': 'group-unknown',
           },
           groups: {
-            'group-1': { accounts: ['id-1-evm'] },
-          },
-          accountIdToAccount: {
-            'id-1-evm': {
-              type: EVM_EOA_TYPE,
-              metadata: { lastSelected: 7 },
-            },
+            'group-1': { metadata: { lastSelected: 7 } },
           },
         });
 

@@ -5596,64 +5596,13 @@ export default class MetamaskController extends EventEmitter {
 
   /**
    * Sorts a list of evm account addresses by most recently selected by using
-   * the lastSelected value for the matching InternalAccount object stored in state.
+   * the lastSelected value for the matching AccountGroup's metadata.
    *
    * @param {Hex[]} [addresses] - The list of evm accounts addresses to sort.
    * @returns {Hex[]} The sorted evm accounts addresses.
    */
   sortEvmAccountsByLastSelected(addresses) {
     const internalAccounts = this.accountsController.listAccounts();
-    return this.sortAddressesWithInternalAccounts(addresses, internalAccounts);
-  }
-
-  /**
-   * Sorts a list of multichain account addresses by most recently selected by using
-   * the lastSelected value for the matching InternalAccount object stored in state.
-   *
-   * @param {string[]} [addresses] - The list of addresses (not full CAIP-10 Account IDs) to sort.
-   * @returns {string[]} The sorted accounts addresses.
-   */
-  sortMultichainAccountsByLastSelected(addresses) {
-    const getLastSelected = (address) => {
-      const account = this.accountsController.getAccountByAddress(address);
-      if (!account) {
-        return undefined;
-      }
-      const context = this.accountTreeController.getAccountContext(account.id);
-      if (!context) {
-        return undefined;
-      }
-      // Get the group object to find the EOA account having lastSelected set
-      const group = this.accountTreeController.getAccountGroupObject(
-        context.groupId,
-      );
-      if (!group) {
-        return undefined;
-      }
-      // Find the EVM EOA account in this group, as it's the only one with lastSelected
-      for (const accountId of group.accounts) {
-        const groupAccount = this.accountsController.getAccount(accountId);
-        if (groupAccount && isEvmAccountType(groupAccount.type)) {
-          return groupAccount.metadata.lastSelected;
-        }
-      }
-      return undefined;
-    };
-
-    return addresses.sort(
-      (a, b) => (getLastSelected(b) ?? 0) - (getLastSelected(a) ?? 0),
-    );
-  }
-
-  /**
-   * Sorts a list of addresses by most recently selected by using the lastSelected value for
-   * the matching InternalAccount object from the list of internalAccounts provided.
-   *
-   * @param {string[]} [addresses] - The list of caip accounts addresses to sort.
-   * @param {InternalAccount[]} [internalAccounts] - The list of InternalAccounts to determine lastSelected from.
-   * @returns {string[]} The sorted accounts addresses.
-   */
-  sortAddressesWithInternalAccounts(addresses, internalAccounts) {
     return addresses.sort((firstAddress, secondAddress) => {
       const firstAccount = internalAccounts.find(
         (internalAccount) =>
@@ -5677,21 +5626,70 @@ export default class MetamaskController extends EventEmitter {
           addresses,
         );
         throw new Error(`Missing identity for address: "${secondAddress}".`);
-      } else if (
-        firstAccount.metadata.lastSelected ===
-        secondAccount.metadata.lastSelected
-      ) {
+      }
+
+      const firstContext = this.accountTreeController.getAccountContext(
+        firstAccount.id,
+      );
+      const secondContext = this.accountTreeController.getAccountContext(
+        secondAccount.id,
+      );
+
+      const firstGroup = firstContext
+        ? this.accountTreeController.getAccountGroupObject(
+            firstContext.groupId,
+          )
+        : undefined;
+      const secondGroup = secondContext
+        ? this.accountTreeController.getAccountGroupObject(
+            secondContext.groupId,
+          )
+        : undefined;
+
+      const firstLastSelected = firstGroup?.metadata.lastSelected;
+      const secondLastSelected = secondGroup?.metadata.lastSelected;
+
+      if (firstLastSelected === secondLastSelected) {
         return 0;
-      } else if (firstAccount.metadata.lastSelected === undefined) {
+      } else if (firstLastSelected === undefined) {
         return 1;
-      } else if (secondAccount.metadata.lastSelected === undefined) {
+      } else if (secondLastSelected === undefined) {
         return -1;
       }
 
-      return (
-        secondAccount.metadata.lastSelected - firstAccount.metadata.lastSelected
-      );
+      return secondLastSelected - firstLastSelected;
     });
+  }
+
+  /**
+   * Sorts a list of multichain account addresses by most recently selected by using
+   * the lastSelected value for the matching AccountGroup's metadata.
+   *
+   * @param {string[]} [addresses] - The list of addresses (not full CAIP-10 Account IDs) to sort.
+   * @returns {string[]} The sorted accounts addresses.
+   */
+  sortMultichainAccountsByLastSelected(addresses) {
+    const getLastSelected = (address) => {
+      const account = this.accountsController.getAccountByAddress(address);
+      if (!account) {
+        return undefined;
+      }
+      const context = this.accountTreeController.getAccountContext(account.id);
+      if (!context) {
+        return undefined;
+      }
+      const group = this.accountTreeController.getAccountGroupObject(
+        context.groupId,
+      );
+      if (!group) {
+        return undefined;
+      }
+      return group.metadata.lastSelected;
+    };
+
+    return addresses.sort(
+      (a, b) => (getLastSelected(b) ?? 0) - (getLastSelected(a) ?? 0),
+    );
   }
 
   /**
