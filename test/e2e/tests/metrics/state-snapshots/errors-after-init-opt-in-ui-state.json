@@ -364,6 +364,7 @@
     "securityAlertsEnabled": "boolean",
     "seedPhraseBackedUp": null,
     "segmentApiCalls": "object",
+    "selectedAccountGroup": "string",
     "selectedMultichainNetworkChainId": "string",
     "selectedNetworkClientId": "string",
     "selectedPaymentToken": null,
