@@ -41,29 +41,41 @@ function supportsIterations(filePath: string): boolean {
 }
 
 /**
+ * Extracts platform and buildType from output filename.
+ * Expected format: benchmark-{platform}-{buildType}-{preset}.json
+ * @param outputFilename - Output filename from --out arg
+ * @returns Object with platform and buildType, or empty object if not found
+ */
+function extractPlatformBuildType(outputFilename?: string): {
+  platform?: string;
+  buildType?: string;
+} {
+  if (!outputFilename) {
+    return {};
+  }
+
+  const outputBasename = path.basename(outputFilename, '.json');
+  const match = outputBasename.match(/^benchmark-([^-]+)-([^-]+)-/u);
+  if (match) {
+    const [, platform, buildType] = match;
+    return { platform, buildType };
+  }
+
+  return {};
+}
+
+/**
  * Builds the registry key for threshold lookup and JSON output.
- *
- * Startup benchmarks require platform-buildType prefix because:
- * - Each platform/buildType combo has its own baseline (platform-specific performance)
- * - JSON output keys are: 'chrome-webpack-startupStandardHome'
- * - Registry keys are: 'chrome-webpack-startupStandardHome'
- *
- * Other benchmarks use simple camelCase:
- * - All platforms share one baseline (platform-agnostic performance)
- * - JSON output keys are: 'loadNewAccount', 'onboardingImportWallet'
- * - Registry keys are: 'loadNewAccount', 'onboardingImportWallet'
  *
  * @param fileName - Benchmark flow filename (e.g., 'standard-home', 'load-new-account')
  * @param filePath - Full file path (to detect startup benchmarks)
  * @param preset - Preset name (e.g., 'startupStandardHome', 'interactionUserActions')
- * @param outputFilename - Output filename from --out arg (used to extract platform/buildType)
- * @returns Registry key (e.g., 'chrome-webpack-startupStandardHome', 'loadNewAccount')
+ * @returns Registry key (e.g., 'startupStandardHome', 'loadNewAccount', 'onboardingImportWallet')
  */
 function buildRegistryKey(
   fileName: string,
   filePath: string,
   preset?: string,
-  outputFilename?: string,
 ): string {
   const baseName = toCamelCase(fileName);
   const isStartup =
@@ -74,14 +86,6 @@ function buildRegistryKey(
     filePath.includes('/startup/');
 
   if (isStartup) {
-    if (outputFilename) {
-      const outputBasename = path.basename(outputFilename, '.json');
-      const match = outputBasename.match(/^benchmark-([^-]+)-([^-]+)-/u);
-      if (match) {
-        const [, platform, buildType] = match;
-        return `${platform}-${buildType}-startup${baseName.charAt(0).toUpperCase()}${baseName.slice(1)}`;
-      }
-    }
     return `startup${baseName.charAt(0).toUpperCase()}${baseName.slice(1)}`;
   }
 
@@ -163,18 +167,15 @@ async function runBenchmarkFile(
   }
 
   const { run: runFn } = benchmark;
-  const registryKey = buildRegistryKey(
-    fileName,
-    filePath,
-    preset,
-    outputFilename,
-  );
+  const registryKey = buildRegistryKey(fileName, filePath, preset);
   const thresholdConfig = THRESHOLD_REGISTRY[registryKey];
   if (!thresholdConfig) {
     throw new Error(
       `No threshold config for "${fileName}" (registry key "${registryKey}"). Add an entry to THRESHOLD_REGISTRY in constants.ts.`,
     );
   }
+
+  const { platform, buildType } = extractPlatformBuildType(outputFilename);
 
   let result: BenchmarkResults;
   let violations: ThresholdViolation[];
@@ -205,9 +206,15 @@ async function runBenchmarkFile(
       testTitle,
       persona,
       summary.benchmarkType,
+      platform,
+      buildType,
     );
   } else {
-    result = (await runFn(options)) as BenchmarkResults;
+    result = (await runFn({
+      ...options,
+      platform,
+      buildType,
+    })) as BenchmarkResults;
     violations = validateResultThresholds(result, thresholdConfig).violations;
   }
 
@@ -325,12 +332,7 @@ async function main(): Promise<void> {
 
   for (const filePath of filesToRun) {
     const fileName = path.basename(filePath, path.extname(filePath));
-    const resultKey = buildRegistryKey(
-      fileName,
-      filePath,
-      argv.preset,
-      argv.out,
-    );
+    const resultKey = buildRegistryKey(fileName, filePath, argv.preset);
 
     try {
       const result = await runBenchmarkFile(
