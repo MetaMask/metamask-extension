@@ -48,6 +48,7 @@ const mockState = {
                 name: 'Test Account',
                 pinned: false,
                 hidden: false,
+                lastSelected: 0,
               },
             },
           },
@@ -514,7 +515,7 @@ describe('MultichainAccountMenu', () => {
   });
 
   describe('tracing', () => {
-    const groupId = mockDefaultState.metamask.accountTree
+    const groupId = mockDefaultState.metamask
       .selectedAccountGroup as AccountGroupId;
 
     beforeEach(() => {

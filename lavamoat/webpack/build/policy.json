@@ -451,6 +451,101 @@
         "eslint>@nodelib/fs.walk>fastq": true
       }
     },
+    "mockttp>@peculiar/x509>@peculiar/asn1-cms": {
+      "packages": {
+        "mockttp>@peculiar/asn1-schema": true,
+        "mockttp>@peculiar/x509>@peculiar/asn1-cms>@peculiar/asn1-x509-attr": true,
+        "mockttp>@peculiar/asn1-x509": true,
+        "mockttp>@peculiar/x509>@peculiar/asn1-cms>tslib": true
+      }
+    },
+    "mockttp>@peculiar/x509>@peculiar/asn1-csr": {
+      "packages": {
+        "mockttp>@peculiar/asn1-schema": true,
+        "mockttp>@peculiar/asn1-x509": true,
+        "mockttp>@peculiar/x509>@peculiar/asn1-csr>tslib": true
+      }
+    },
+    "mockttp>@peculiar/x509>@peculiar/asn1-ecc": {
+      "packages": {
+        "mockttp>@peculiar/asn1-schema": true,
+        "mockttp>@peculiar/asn1-x509": true,
+        "mockttp>@peculiar/x509>@peculiar/asn1-ecc>tslib": true
+      }
+    },
+    "mockttp>@peculiar/x509>@peculiar/asn1-pkcs9>@peculiar/asn1-pfx": {
+      "packages": {
+        "mockttp>@peculiar/x509>@peculiar/asn1-cms": true,
+        "mockttp>@peculiar/asn1-pkcs8": true,
+        "mockttp>@peculiar/x509>@peculiar/asn1-rsa": true,
+        "mockttp>@peculiar/asn1-schema": true,
+        "mockttp>@peculiar/x509>@peculiar/asn1-pkcs9>@peculiar/asn1-pfx>tslib": true
+      }
+    },
+    "mockttp>@peculiar/asn1-pkcs8": {
+      "packages": {
+        "mockttp>@peculiar/asn1-schema": true,
+        "mockttp>@peculiar/asn1-x509": true,
+        "mockttp>@peculiar/asn1-pkcs8>tslib": true
+      }
+    },
+    "mockttp>@peculiar/x509>@peculiar/asn1-pkcs9": {
+      "packages": {
+        "mockttp>@peculiar/x509>@peculiar/asn1-cms": true,
+        "mockttp>@peculiar/x509>@peculiar/asn1-pkcs9>@peculiar/asn1-pfx": true,
+        "mockttp>@peculiar/asn1-pkcs8": true,
+        "mockttp>@peculiar/asn1-schema": true,
+        "mockttp>@peculiar/x509>@peculiar/asn1-cms>@peculiar/asn1-x509-attr": true,
+        "mockttp>@peculiar/asn1-x509": true,
+        "mockttp>@peculiar/x509>@peculiar/asn1-pkcs9>tslib": true
+      }
+    },
+    "mockttp>@peculiar/x509>@peculiar/asn1-rsa": {
+      "packages": {
+        "mockttp>@peculiar/asn1-schema": true,
+        "mockttp>@peculiar/asn1-x509": true,
+        "mockttp>@peculiar/x509>@peculiar/asn1-rsa>tslib": true
+      }
+    },
+    "mockttp>@peculiar/asn1-schema": {
+      "packages": {
+        "mockttp>@peculiar/asn1-x509>asn1js": true,
+        "mockttp>@peculiar/x509>pvtsutils": true,
+        "mockttp>@peculiar/asn1-schema>tslib": true
+      }
+    },
+    "mockttp>@peculiar/x509>@peculiar/asn1-cms>@peculiar/asn1-x509-attr": {
+      "packages": {
+        "mockttp>@peculiar/asn1-schema": true,
+        "mockttp>@peculiar/asn1-x509": true,
+        "mockttp>@peculiar/x509>@peculiar/asn1-cms>@peculiar/asn1-x509-attr>tslib": true
+      }
+    },
+    "mockttp>@peculiar/asn1-x509": {
+      "packages": {
+        "mockttp>@peculiar/asn1-schema": true,
+        "mockttp>@peculiar/x509>pvtsutils": true,
+        "mockttp>@peculiar/asn1-x509>tslib": true
+      }
+    },
+    "mockttp>@peculiar/x509": {
+      "globals": {
+        "crypto": true
+      },
+      "packages": {
+        "mockttp>@peculiar/x509>@peculiar/asn1-cms": true,
+        "mockttp>@peculiar/x509>@peculiar/asn1-csr": true,
+        "mockttp>@peculiar/x509>@peculiar/asn1-ecc": true,
+        "mockttp>@peculiar/x509>@peculiar/asn1-pkcs9": true,
+        "mockttp>@peculiar/x509>@peculiar/asn1-rsa": true,
+        "mockttp>@peculiar/asn1-schema": true,
+        "mockttp>@peculiar/asn1-x509": true,
+        "mockttp>@peculiar/x509>pvtsutils": true,
+        "mockttp>@peculiar/x509>reflect-metadata": true,
+        "mockttp>@peculiar/x509>tslib": true,
+        "mockttp>@peculiar/x509>tsyringe": true
+      }
+    },
     "@pmmmwh/react-refresh-webpack-plugin": {
       "builtin": {
         "node:path.dirname": true,
@@ -665,6 +760,12 @@
         "micromatch>picomatch": true
       }
     },
+    "mockttp>@peculiar/asn1-x509>asn1js": {
+      "packages": {
+        "mockttp>@peculiar/x509>pvtsutils": true,
+        "mockttp>@peculiar/asn1-x509>asn1js>pvutils": true
+      }
+    },
     "autoprefixer": {
       "globals": {
         "console": true,
@@ -743,7 +844,7 @@
         "mockttp>body-parser>debug": true,
         "koa>cookies>depd": true,
         "koa>destroy": true,
-        "mockttp>body-parser>http-errors": true,
+        "koa>http-errors": true,
         "mockttp>body-parser>iconv-lite": true,
         "koa>on-finished": true,
         "mockttp>express>qs": true,
@@ -994,16 +1095,15 @@
     },
     "webpack-dev-server>compression": {
       "builtin": {
-        "zlib.createDeflate": true,
-        "zlib.createGzip": true
+        "zlib": true
       },
       "packages": {
-        "koa>accepts": true,
-        "webpack-dev-server>compression>bytes": true,
+        "mockttp>body-parser>bytes": true,
         "webpack-dev-server>compression>compressible": true,
         "webpack-dev-server>compression>debug": true,
+        "webpack-dev-server>compression>negotiator": true,
         "webpack-dev-server>compression>on-headers": true,
-        "webpack-dev-server>compression>safe-buffer": true,
+        "koa>content-disposition>safe-buffer": true,
         "koa>vary": true
       }
     },
@@ -1446,7 +1546,7 @@
         "mockttp>express>etag": true,
         "mockttp>express>finalhandler": true,
         "koa>fresh": true,
-        "mockttp>express>http-errors": true,
+        "koa>http-errors": true,
         "mockttp>express>merge-descriptors": true,
         "mockttp>express>methods": true,
         "koa>on-finished": true,
@@ -1459,7 +1559,7 @@
         "mockttp>express>send": true,
         "mockttp>express>serve-static": true,
         "koa>http-errors>setprototypeof": true,
-        "mockttp>express>statuses": true,
+        "koa>statuses": true,
         "mockttp>express>type-is": true,
         "mockttp>connect>utils-merge": true,
         "koa>vary": true
@@ -1569,7 +1669,7 @@
         "koa>escape-html": true,
         "koa>on-finished": true,
         "koa>parseurl": true,
-        "mockttp>express>statuses": true,
+        "koa>statuses": true,
         "mockttp>body-parser>unpipe": true
       }
     },
@@ -1740,21 +1840,12 @@
         "terser": true
       }
     },
-    "mockttp>body-parser>http-errors": {
+    "koa>http-errors": {
       "packages": {
         "koa>cookies>depd": true,
         "pumpify>inherits": true,
         "koa>http-errors>setprototypeof": true,
-        "mockttp>body-parser>http-errors>statuses": true,
-        "koa>http-errors>toidentifier": true
-      }
-    },
-    "mockttp>express>http-errors": {
-      "packages": {
-        "koa>cookies>depd": true,
-        "pumpify>inherits": true,
-        "koa>http-errors>setprototypeof": true,
-        "mockttp>express>statuses": true,
+        "koa>statuses": true,
         "koa>http-errors>toidentifier": true
       }
     },
@@ -2186,31 +2277,6 @@
         "setTimeout": true
       }
     },
-    "mockttp>node-forge": {
-      "builtin": {
-        "crypto": true
-      },
-      "globals": {
-        "Blob": true,
-        "Buffer": true,
-        "MutationObserver": true,
-        "QuotaExceededError": true,
-        "URL": true,
-        "Worker": true,
-        "addEventListener": true,
-        "console": "write",
-        "document": true,
-        "jQuery": true,
-        "localStorage": true,
-        "location": true,
-        "navigator": true,
-        "postMessage": true,
-        "process": true,
-        "removeEventListener": true,
-        "setImmediate": true,
-        "setTimeout": true
-      }
-    },
     "lavamoat>node-gyp-build": {
       "builtin": {
         "fs.existsSync": true,
@@ -2255,6 +2321,11 @@
       },
       "packages": {
         "koa>on-finished>ee-first": true
+      }
+    },
+    "webpack-dev-server>compression>on-headers": {
+      "builtin": {
+        "http.ServerResponse.prototype.appendHeader": true
       }
     },
     "eslint>@eslint/eslintrc>import-fresh>parent-module": {
@@ -2426,6 +2497,13 @@
         "react-devtools>internal-ip>ipaddr.js": true
       }
     },
+    "mockttp>@peculiar/x509>pvtsutils": {
+      "globals": {
+        "Buffer.from": true,
+        "atob": true,
+        "btoa": true
+      }
+    },
     "mockttp>express>qs": {
       "packages": {
         "string.prototype.matchall>side-channel": true
@@ -2441,7 +2519,7 @@
       },
       "packages": {
         "mockttp>body-parser>bytes": true,
-        "mockttp>body-parser>http-errors": true,
+        "koa>http-errors": true,
         "mockttp>body-parser>iconv-lite": true,
         "mockttp>body-parser>unpipe": true
       }
@@ -2468,6 +2546,12 @@
       },
       "packages": {
         "micromatch>picomatch": true
+      }
+    },
+    "mockttp>@peculiar/x509>reflect-metadata": {
+      "globals": {
+        "crypto": true,
+        "msCrypto": true
       }
     },
     "html-bundler-webpack-plugin>html-minifier-terser>relateurl": {
@@ -2578,11 +2662,6 @@
         "setTimeout": true
       }
     },
-    "webpack-dev-server>compression>safe-buffer": {
-      "builtin": {
-        "buffer": true
-      }
-    },
     "koa>content-disposition>safe-buffer": {
       "builtin": {
         "buffer": true
@@ -2656,8 +2735,16 @@
       }
     },
     "webpack-dev-server>selfsigned": {
+      "builtin": {
+        "crypto.createPrivateKey": true,
+        "crypto.webcrypto": true
+      },
+      "globals": {
+        "Buffer.from": true,
+        "console.warn": true
+      },
       "packages": {
-        "mockttp>node-forge": true
+        "mockttp>@peculiar/x509": true
       }
     },
     "semver": {
@@ -2703,16 +2790,16 @@
         "mockttp>express>debug": true,
         "koa>cookies>depd": true,
         "koa>destroy": true,
-        "mockttp>express>send>encodeurl": true,
+        "koa>encodeurl": true,
         "koa>escape-html": true,
         "mockttp>express>etag": true,
         "koa>fresh": true,
-        "mockttp>express>http-errors": true,
+        "koa>http-errors": true,
         "http-server>mime": true,
         "mocha>ms": true,
         "koa>on-finished": true,
         "mockttp>express>range-parser": true,
-        "mockttp>express>statuses": true
+        "koa>statuses": true
       }
     },
     "copy-webpack-plugin>serialize-javascript": {
@@ -3055,9 +3142,107 @@
         "Buffer": true
       }
     },
+    "mockttp>@peculiar/x509>@peculiar/asn1-cms>tslib": {
+      "globals": {
+        "AsyncIterator": true,
+        "Iterator": true,
+        "SuppressedError": true,
+        "define": true
+      }
+    },
+    "mockttp>@peculiar/x509>@peculiar/asn1-csr>tslib": {
+      "globals": {
+        "AsyncIterator": true,
+        "Iterator": true,
+        "SuppressedError": true,
+        "define": true
+      }
+    },
+    "mockttp>@peculiar/x509>@peculiar/asn1-ecc>tslib": {
+      "globals": {
+        "AsyncIterator": true,
+        "Iterator": true,
+        "SuppressedError": true,
+        "define": true
+      }
+    },
+    "mockttp>@peculiar/x509>@peculiar/asn1-pkcs9>@peculiar/asn1-pfx>tslib": {
+      "globals": {
+        "AsyncIterator": true,
+        "Iterator": true,
+        "SuppressedError": true,
+        "define": true
+      }
+    },
+    "mockttp>@peculiar/asn1-pkcs8>tslib": {
+      "globals": {
+        "AsyncIterator": true,
+        "Iterator": true,
+        "SuppressedError": true,
+        "define": true
+      }
+    },
+    "mockttp>@peculiar/x509>@peculiar/asn1-pkcs9>tslib": {
+      "globals": {
+        "AsyncIterator": true,
+        "Iterator": true,
+        "SuppressedError": true,
+        "define": true
+      }
+    },
+    "mockttp>@peculiar/x509>@peculiar/asn1-rsa>tslib": {
+      "globals": {
+        "AsyncIterator": true,
+        "Iterator": true,
+        "SuppressedError": true,
+        "define": true
+      }
+    },
+    "mockttp>@peculiar/asn1-schema>tslib": {
+      "globals": {
+        "AsyncIterator": true,
+        "Iterator": true,
+        "SuppressedError": true,
+        "define": true
+      }
+    },
+    "mockttp>@peculiar/x509>@peculiar/asn1-cms>@peculiar/asn1-x509-attr>tslib": {
+      "globals": {
+        "AsyncIterator": true,
+        "Iterator": true,
+        "SuppressedError": true,
+        "define": true
+      }
+    },
+    "mockttp>@peculiar/asn1-x509>tslib": {
+      "globals": {
+        "AsyncIterator": true,
+        "Iterator": true,
+        "SuppressedError": true,
+        "define": true
+      }
+    },
+    "mockttp>@peculiar/x509>tslib": {
+      "globals": {
+        "AsyncIterator": true,
+        "Iterator": true,
+        "SuppressedError": true,
+        "define": true
+      }
+    },
     "webpack>chrome-trace-event>tslib": {
       "globals": {
         "define": true
+      }
+    },
+    "mockttp>@peculiar/x509>tsyringe>tslib": {
+      "globals": {
+        "define": true
+      }
+    },
+    "mockttp>@peculiar/x509>tsyringe": {
+      "packages": {
+        "mockttp>@peculiar/x509>tsyringe>tslib": true
       }
     },
     "mockttp>body-parser>type-is": {
@@ -3334,17 +3519,17 @@
     },
     "webpack-dev-server": {
       "builtin": {
-        "net.Socket": true,
-        "net.createServer": true,
-        "os.hostname": true,
-        "os.networkInterfaces": true,
-        "os.tmpdir": true,
-        "path.dirname": true,
-        "path.join": true,
-        "path.resolve": true,
-        "url.format": true,
-        "url.parse": true,
-        "util.deprecate": true
+        "node:net.Socket": true,
+        "node:net.createServer": true,
+        "node:os.hostname": true,
+        "node:os.networkInterfaces": true,
+        "node:os.tmpdir": true,
+        "node:path.dirname": true,
+        "node:path.join": true,
+        "node:path.resolve": true,
+        "node:url.format": true,
+        "node:url.parse": true,
+        "node:util.deprecate": true
       },
       "globals": {
         "Buffer.isBuffer": true,
