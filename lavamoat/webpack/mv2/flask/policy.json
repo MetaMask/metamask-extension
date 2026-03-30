@@ -1644,7 +1644,7 @@
         "@metamask/keyring-api": true,
         "@metamask/keyring-controller": true,
         "@metamask/keyring-snap-client": true,
-        "@metamask/multichain-account-service>@metamask/snaps-utils": true,
+        "@metamask/snaps-utils": true,
         "@metamask/utils": true,
         "mockttp>async-mutex": true,
         "lodash": true
