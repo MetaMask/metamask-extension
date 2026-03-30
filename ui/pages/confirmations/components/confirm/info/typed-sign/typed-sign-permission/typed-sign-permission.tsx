@@ -1,9 +1,3 @@
-import {
-  Erc20TokenPeriodicPermission,
-  Erc20TokenStreamPermission,
-  NativeTokenPeriodicPermission,
-  NativeTokenStreamPermission,
-} from '@metamask/gator-permissions-controller';
 import React from 'react';
 import { isSnapId } from '@metamask/snaps-utils';
 
@@ -20,11 +14,7 @@ import { ConfirmInfoAlertRow } from '../../../../../../../components/app/confirm
 import { RowAlertKey } from '../../../../../../../components/app/confirm/info/row/constants';
 import { SigningInWithRow } from '../../shared/sign-in-with-row/sign-in-with-row';
 
-import { NativeTokenStreamDetails } from './native-token-stream-details';
-import { NativeTokenPeriodicDetails } from './native-token-periodic-details';
-import { Erc20TokenPeriodicDetails } from './erc20-token-periodic-details';
-import { Erc20TokenStreamDetails } from './erc20-token-stream-details';
-import { Erc20TokenRevocationDetails } from './erc20-token-revocation-details';
+import { PermissionDetailRenderer } from './permission-detail-renderer';
 
 /**
  * Main component for displaying typed signature permission information.
@@ -43,74 +33,7 @@ const TypedSignPermissionInfo: React.FC = () => {
     throw new Error('Decoded permission is undefined');
   }
 
-  let permissionDetail: React.ReactNode;
-
   const { expiry, chainId } = decodedPermission;
-
-  switch (decodedPermission.permission.type) {
-    case 'native-token-periodic': {
-      const permission =
-        decodedPermission.permission as NativeTokenPeriodicPermission;
-
-      permissionDetail = (
-        <NativeTokenPeriodicDetails
-          permission={permission}
-          expiry={expiry}
-          chainId={chainId}
-        />
-      );
-
-      break;
-    }
-    case 'native-token-stream': {
-      const permission =
-        decodedPermission.permission as NativeTokenStreamPermission;
-
-      permissionDetail = (
-        <NativeTokenStreamDetails
-          permission={permission}
-          expiry={expiry}
-          chainId={chainId}
-        />
-      );
-
-      break;
-    }
-    case 'erc20-token-periodic': {
-      const permission =
-        decodedPermission.permission as Erc20TokenPeriodicPermission;
-
-      permissionDetail = (
-        <Erc20TokenPeriodicDetails
-          permission={permission}
-          expiry={expiry}
-          chainId={chainId}
-        />
-      );
-
-      break;
-    }
-    case 'erc20-token-stream': {
-      const permission =
-        decodedPermission.permission as Erc20TokenStreamPermission;
-
-      permissionDetail = (
-        <Erc20TokenStreamDetails
-          permission={permission}
-          expiry={expiry}
-          chainId={chainId}
-        />
-      );
-
-      break;
-    }
-    case 'erc20-token-revocation': {
-      permissionDetail = <Erc20TokenRevocationDetails expiry={expiry} />;
-      break;
-    }
-    default:
-      throw new Error('Invalid permission type');
-  }
 
   const requestFromTooltipMessage = isSnapId(decodedPermission.origin)
     ? t('requestFromInfoSnap')
@@ -152,7 +75,11 @@ const TypedSignPermissionInfo: React.FC = () => {
         <NetworkRow />
       </ConfirmInfoSection>
 
-      {permissionDetail}
+      <PermissionDetailRenderer
+        permission={decodedPermission.permission}
+        expiry={expiry}
+        chainId={chainId}
+      />
     </>
   );
 };
