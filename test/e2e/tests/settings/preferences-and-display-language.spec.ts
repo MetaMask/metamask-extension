@@ -31,7 +31,12 @@ const selectors = {
     testId: 'auto-lockout-button',
     text: da.save.message,
   },
-  dialogTextDeutsch: { text: de.invalidAddress.message, tag: 'p' },
+  // Send recipient errors render in HelpText (.mm-help-text). Use css+text so the
+  // driver matches nested text; plain tag+p uses contains(text()) on direct nodes only.
+  dialogTextDeutsch: {
+    css: '.mm-help-text',
+    text: de.invalidAddress.message,
+  },
   discoverTextवर्तमान: { text: hi.discover.message, tag: 'a' },
   headerTextAr: { text: ar.settings.message, tag: 'p' },
 };
@@ -153,14 +158,8 @@ describe('Settings V2 - Preferences and display', function (this: Suite) {
         await sendPage.selectToken('0x539', 'ETH');
         await sendPage.fillRecipient('0xAAA');
 
-        const isDialogMessageChanged = await driver.isElementPresent(
-          selectors.dialogTextDeutsch,
-        );
-        assert.equal(
-          isDialogMessageChanged,
-          true,
-          'Language change is not reflected in dialog message',
-        );
+        // Recipient validation is debounced (~500ms); waitForSelector waits for the German error.
+        await driver.waitForSelector(selectors.dialogTextDeutsch);
       },
     );
   });
