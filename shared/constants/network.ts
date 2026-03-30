@@ -226,6 +226,7 @@ export const CHAIN_IDS = {
   TEMPO_TESTNET: '0xa5bf',
   TEMPO_MAINNET: '0x1079',
   STABLE_MAINNET: '0x3dc',
+  HYPEREVM: '0x3e7',
 } as const;
 
 export const CHAINLIST_CHAIN_IDS_MAP = {

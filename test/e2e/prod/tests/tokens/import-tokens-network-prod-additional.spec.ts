@@ -53,23 +53,18 @@ async function runTokenImportTest(
 ): Promise<NetworkTestResult | null> {
   let testResult: NetworkTestResult | null = null;
 
-  // await withProductionFixtures(
-  //   {
-  //     fixtures: new FixtureBuilder().withNetworkControllerOnMainnet().build(),
-  //     title:
-  //       testContext.test?.fullTitle() ??
-  //       `${networkConfig.networkName} Token Import Test`,
-  //   },
-    await withProductionFixtures(
-      {
-        fixtures: new FixtureBuilder()
-          .withNetworkControllerOnMonad()
-          .build(),
-        title:
-          testContext.test?.fullTitle() ||
-          'Add Base network, import account and send USDC production test',
-        extendedTimeoutMultiplier: 2,
-      },
+  await withProductionFixtures(
+    {
+      fixtures: networkConfig.fixtureSetupMethod
+        ? new FixtureBuilder()[
+            networkConfig.fixtureSetupMethod as keyof typeof FixtureBuilder
+          ]?.call(new FixtureBuilder()).build()
+        : new FixtureBuilder().build(),
+      title:
+        testContext.test?.fullTitle() ||
+        `${networkConfig.networkName} - Import Tokens Production Test`,
+      extendedTimeoutMultiplier: 2,
+    },
     async ({ driver }: { driver: Driver }) => {
       // Login
       await loginWithoutBalanceValidation(driver);
@@ -78,80 +73,43 @@ async function runTokenImportTest(
         `[PROD TEST] Starting ${networkConfig.networkName} network addition...`,
       );
 
-      // // Open network menu and navigate to add custom network
-      // await switchToEditRPCViaGlobalMenuNetworks(driver);
-
-      // const selectNetworkDialog = new SelectNetwork(driver);
-      // await selectNetworkDialog.checkPageIsLoaded();
-      // await selectNetworkDialog.openAddCustomNetworkModal();
-
-      // console.log(
-      //   `[PROD TEST] Adding ${networkConfig.networkName} network details...`,
-      // );
-
-      // // Fill in network details using page object
-      // const addEditNetworkModal = new AddEditNetworkModal(driver);
-      // await addEditNetworkModal.checkPageIsLoaded();
-      // await addEditNetworkModal.fillNetworkNameInputField(
-      //   networkConfig.networkName,
-      // );
-      // await addEditNetworkModal.fillNetworkChainIdInputField(
-      //   toHex(networkConfig.chainId).toString(),
-      // );
-      // await addEditNetworkModal.fillCurrencySymbolInputField(
-      //   networkConfig.symbol,
-      // );
-
-      // // Add RPC URL
-      // await addEditNetworkModal.openAddRpcUrlModal();
-
-      // const addRpcUrlModal = new AddNetworkRpcUrlModal(driver);
-      // await addRpcUrlModal.checkPageIsLoaded();
-      // await addRpcUrlModal.fillAddRpcUrlInput(networkConfig.rpcUrl);
-      // await addRpcUrlModal.fillAddRpcNameInput(networkConfig.rpcName);
-      // await addRpcUrlModal.saveAddRpcUrl();
-
-      // // Save the network
-      // await addEditNetworkModal.saveEditedNetwork();
-
       // Verify network was added
       const homepage = new HomePage(driver);
       await homepage.checkPageIsLoaded();
       await driver.delay(PROD_DELAYS.API_RESPONSE); // Wait for network to stabilize
 
-      const symbol = 'MON';
-      const chainIdHex = '0x8f';
+      // const symbol = 'MON';
+      // const chainIdHex = '0x8f';
 
       console.log('[PROD TEST] Opening all network list..');
       const networkManager = new NetworkManager(driver);
       await networkManager.openNetworkManager();
+      console.log(`[PROD TEST] ✅ Clicked on Network manager successfully`);
       await networkManager.selectTab("Popular");
-      await networkManager.selectNetworkByNameWithWait("Monad");
+      await networkManager.selectNetworkByNameWithWait(
+        networkConfig.networkName,
+      );
 
       // Wait for account to be imported
       await driver.delay(PROD_DELAYS.API_RESPONSE * 2);
-
-      // await homepage.checkAddNetworkMessageIsDisplayed(
-      //   networkConfig.networkName,
-      // );
 
       console.log(
         `[PROD TEST] ✅ ${networkConfig.networkName} network added successfully`,
       );
 
-      // // Wait for RPC to connect
-      // await driver.delay(PROD_DELAYS.RPC_RESPONSE);
+      // Wait for RPC to connect
+      await driver.delay(PROD_DELAYS.RPC_RESPONSE);
 
-      // // Verify we're on the correct network
-      // try {
-      //   const networkDisplay = await driver.findElement(
-      //     '[data-testid="network-display"]',
-      //   );
-      //   const networkText = await networkDisplay.getText();
-      //   console.log(`[PROD TEST] Current network: ${networkText}`);
-      // } catch (error) {
-      //   console.log('[PROD TEST] Error:', error);
-      // }
+      // Verify we're on the correct network
+      try {
+        const networkDisplay = await driver.findElement(
+          '[data-testid="network-display"]',
+        );
+        const networkText = await networkDisplay.getText();
+        console.log(`[PROD TEST] Current network: ${networkText}`);
+      } catch (error) {
+        console.log('[PROD TEST] Error:', error);
+      }
 
       console.log(
         `[PROD TEST] Fetching ${networkConfig.networkName} tokenlist...`,
@@ -853,7 +811,7 @@ describe('Production E2E: Import Tokens for Additional Networks', function (this
       // Add a small delay between tests to ensure proper cleanup
       await new Promise((resolve) => setTimeout(resolve, 2000));
     });
-  });
+    });
 
   // Cleanup hook to ensure all browsers are closed
   afterEach(async function () {

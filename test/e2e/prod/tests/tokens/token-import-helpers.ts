@@ -568,8 +568,20 @@ export async function fetchTokenList(
   tokenlistUrl: string,
   chainId: number,
 ): Promise<Token[]> {
-  const response = await fetch(tokenlistUrl);
-  const data = await response.json();
+  let data: any;
+
+  // Handle both remote URLs and local file:// URLs
+  if (tokenlistUrl.startsWith('file://')) {
+    // For local files, use fs module instead of fetch
+    const fs = await import('fs').then((m) => m.promises);
+    const filePath = tokenlistUrl.replace('file://', '');
+    const fileContent = await fs.readFile(filePath, 'utf-8');
+    data = JSON.parse(fileContent);
+  } else {
+    // For remote URLs, use fetch as normal
+    const response = await fetch(tokenlistUrl);
+    data = await response.json();
+  }
 
   let tokensArray: Token[] = [];
 

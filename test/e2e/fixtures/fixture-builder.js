@@ -397,6 +397,26 @@ class FixtureBuilder {
     });
   }
 
+  withNetworkControllerOnHyperEVM() {
+    return this.withNetworkController({
+      selectedNetworkClientId: 'hyperevm',
+      networkConfigurations: {
+        'hyperevm-mainnet': {
+          chainId: CHAIN_IDS.HYPEREVM,
+          nickname: 'HyperEVM Mainnet',
+          rpcUrl: `https://hyperevm-mainnet.infura.io/v3/${getInfuraProjectId()}`,
+          ticker: 'HYPE',
+          rpcPrefs: {
+            blockExplorerUrl: 'https://hyperevmscan.io/',
+          },
+          id: 'hyperevm-mainnet',
+          type: 'rpc',
+          isCustom: true,
+        },
+      },
+    });
+  }
+
   withNftController(data) {
     merge(
       this.fixture.data.NftController

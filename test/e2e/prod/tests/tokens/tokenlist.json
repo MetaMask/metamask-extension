@@ -1,0 +1,97 @@
+{
+  "name": "MetaMask E2E Test Token List",
+  "version": {
+    "major": 1,
+    "minor": 0,
+    "patch": 0
+  },
+  "timestamp": "2026-03-27T00:00:00.000Z",
+  "logoURI": "",
+  "keywords": ["e2e", "test", "tokens"],
+  "tokens": [
+    {
+      "chainId": 999,
+      "address": "0xb88339CB7199b77E23DB6E890353E22632Ba630f",
+      "name": "USDC",
+      "symbol": "USDC",
+      "decimals": 6
+    },
+    {
+      "chainId": 999,
+      "address": "0xB8CE59FC3717ada4C02eaDF9682A9e934F625ebb",
+      "name": "Tether",
+      "symbol": "USDT0",
+      "decimals": 6
+    },
+    {
+      "chainId": 999,
+      "address": "0x5555555555555555555555555555555555555555",
+      "name": "Wrapped HYPE",
+      "symbol": "WHYPE",
+      "decimals": 6
+    },
+    {
+      "chainId": 999,
+      "address": "0x9FDBdA0A5e284c32744D2f17Ee5c74B284993463",
+      "name": "Unit Bitcoin",
+      "symbol": "BTC",
+      "decimals": 8
+    },
+    {
+      "chainId": 999,
+      "address": "0xBe6727B535545C67d5cAa73dEa54865B92CF7907",
+      "name": "Unit Ethereum",
+      "symbol": "ETH",
+      "decimals": 18
+    },
+    {
+      "chainId": 999,
+      "address": "0x9b498C3c8A0b8CD8BA1D9851d40D186F1872b44E",
+      "name": "PURR",
+      "symbol": "PURR",
+      "decimals": 6
+    },
+    {
+      "chainId": 999,
+      "address": "0xfD739d4e423301CE9385c1fb8850539D657C296D",
+      "name": "Kinetiq HYPE",
+      "symbol": "KQ",
+      "decimals": 6
+    },
+    {
+      "chainId": 999,
+      "address": "0x02c6a2fA58cC01A18B8D9E00eA48d65E4dF26c70",
+      "name": "Felix USD",
+      "symbol": "FUSD",
+      "decimals": 6
+    },
+    {
+      "chainId": 999,
+      "address": "0x5d3a1Ff2b6BAb83b63cd9AD0787074081a52ef34",
+      "name": "USDE OFT",
+      "symbol": "USDE",
+      "decimals": 18
+    },
+    {
+      "chainId": 999,
+      "address": "0x3B4575E689DEd21CAAD31d64C4df1f10F3B2CedF",
+      "name": "Unit Fartcoin",
+      "symbol": "FART",
+      "decimals": 6
+    },
+    {
+      "chainId": 999,
+      "address": "0x068f321Fa8Fb9f0D135f290Ef6a3e2813e1c8A29",
+      "name": "Unit Solana",
+      "symbol": "SOL",
+      "decimals": 9
+    },
+    {
+      "chainId": 999,
+      "address": "0xf4D9235269a96aaDaFc9aDAe454a0618eBE37949",
+      "name": "Tether Gold",
+      "symbol": "XAUT",
+      "decimals": 6
+    }
+  ]
+}

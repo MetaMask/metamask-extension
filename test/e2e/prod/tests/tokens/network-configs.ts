@@ -261,6 +261,12 @@ export type NetworkConfigAdditional = {
   tokenlistUrl: string;
 
   /**
+   * Optional: Fixture setup method name (from FixtureBuilder)
+   * Example: 'withNetworkControllerOnHyperEVM'
+   */
+  fixtureSetupMethod?: string;
+
+  /**
    * Optional: Block explorer URL
    */
   blockExplorerUrl?: string;
@@ -444,17 +450,17 @@ export const NETWORK_CONFIGS: NetworkConfig[] = [
   //   tokenlistUrl: 'https://raw.githubusercontent.com/okx/xlayer-tokenlist/main/xlayer.tokenlist.json',
   //   blockExplorerUrl: 'https://www.oklink.com/xlayer',
   // },
-  {
-    networkId: 'Chiliz',
-    networkName: 'Chiliz Chain',
-    chainId: 88888,
-    symbol: 'CHZ',
-    rpcUrl: 'https://rpc.ankr.com/chiliz',
-    rpcName: 'Chiliz RPC',
-    tokenlistUrl:
-      'https://raw.githubusercontent.com/chiliz-chain/token-list/main/tokenlist.json',
-    blockExplorerUrl: 'https://scan.chiliz.com',
-  },
+  // {
+  //   networkId: 'Chiliz',
+  //   networkName: 'Chiliz Chain',
+  //   chainId: 88888,
+  //   symbol: 'CHZ',
+  //   rpcUrl: 'https://rpc.ankr.com/chiliz',
+  //   rpcName: 'Chiliz RPC',
+  //   tokenlistUrl:
+  //     'https://raw.githubusercontent.com/chiliz-c hain/token-list/main/tokenlist.json',
+  //   blockExplorerUrl: 'https://scan.chiliz.com',
+  // },
   // {
   //   networkId: 'Tempo Mainnet',
   //   networkName: 'Tempo Mainnet',
@@ -524,7 +530,15 @@ export const NETWORK_CONFIGS_ADDITIONAL: NetworkConfigAdditional[] = [
     networkName: 'Monad',
     chainId: 143,
     tokenlistUrl: 'https://raw.githubusercontent.com/monad-crypto/token-list/refs/heads/main/tokenlist-mainnet.json',
+    fixtureSetupMethod: 'withNetworkControllerOnMonad',
   },
+  // {
+  //   networkId: 'HYPE',
+  //   networkName: 'HyperEVM',
+  //   chainId: 999,
+  //   tokenlistUrl: `file://${__dirname}/tokenlist.json`,
+  //   fixtureSetupMethod: 'withNetworkControllerOnHyperEVM',
+  // },
 ];
 
 /**
