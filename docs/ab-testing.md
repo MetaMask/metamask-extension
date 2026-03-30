@@ -31,6 +31,14 @@ Use these entrypoints:
 
 ## Agent Execution Standard (SSOT)
 
+Required agent response sections:
+
+1. `Implementation Checklist`
+2. `Files To Modify`
+3. `Analytics Payload Changes`
+4. `Tests To Run`
+5. `Compliance Check Result`
+
 For agent implementation or review tasks, follow this workflow exactly:
 
 1. Run discovery before edits:
@@ -52,16 +60,12 @@ rg -n "Experiment Viewed|ExperimentViewed" app shared ui
 8. Run compliance check:
 
 ```bash
+# pre-commit / local implementation flow
 node --import tsx .agents/skills/ab-testing-implementation/scripts/check-ab-testing-compliance.ts --staged
+
+# review mode / explicit file set
+node --import tsx .agents/skills/ab-testing-implementation/scripts/check-ab-testing-compliance.ts --files app/path/to/file.ts,test/path/to/file.spec.ts --base origin/main
 ```
-
-Required agent response sections:
-
-1. `Implementation Checklist`
-2. `Files To Modify`
-3. `Analytics Payload Changes`
-4. `Tests To Run`
-5. `Compliance Check Result`
 
 ---
 
