@@ -34,6 +34,12 @@ import { PerpsSlider } from '../perps-slider';
 import { getDisplayName } from '../utils';
 
 const MARGIN_PRESETS = [25, 50, 100] as const;
+const MARGIN_FAILED_FALLBACK_ERROR_PATTERNS = [
+  /^an unknown error occurred$/iu,
+  /^failed to update margin$/iu,
+  /^unknown error$/iu,
+  /^error$/iu,
+];
 
 export type EditMarginModalContentProps = {
   position: Position;
@@ -84,7 +90,6 @@ export const EditMarginModalContent: React.FC<EditMarginModalContentProps> = ({
 
   const [marginAmount, setMarginAmount] = useState<string>('');
   const [isSaving, setIsSaving] = useState(false);
-  const [marginError, setMarginError] = useState<string | null>(null);
 
   const calculations = usePerpsMarginCalculations({
     position,
@@ -245,7 +250,6 @@ export const EditMarginModalContent: React.FC<EditMarginModalContentProps> = ({
 
     setIsSaving(true);
     onSavingChange?.(true);
-    setMarginError(null);
 
     try {
       const signedAmount =
@@ -286,7 +290,19 @@ export const EditMarginModalContent: React.FC<EditMarginModalContentProps> = ({
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : 'An unknown error occurred';
-      setMarginError(errorMessage);
+      const normalizedErrorMessage = errorMessage.trim();
+      const shouldUseFallbackDescription =
+        normalizedErrorMessage.length === 0 ||
+        MARGIN_FAILED_FALLBACK_ERROR_PATTERNS.some((pattern) =>
+          pattern.test(normalizedErrorMessage),
+        );
+
+      replacePerpsToastByKey({
+        key: PERPS_TOAST_KEYS.MARGIN_ADJUSTMENT_FAILED,
+        description: shouldUseFallbackDescription
+          ? t('perpsToastMarginAdjustmentFailedDescriptionFallback')
+          : normalizedErrorMessage,
+      });
     } finally {
       setIsSaving(false);
       onSavingChange?.(false);
@@ -300,6 +316,7 @@ export const EditMarginModalContent: React.FC<EditMarginModalContentProps> = ({
     onClose,
     onSavingChange,
     replacePerpsToastByKey,
+    t,
   ]);
 
   const showRiskWarning =
@@ -493,25 +510,6 @@ export const EditMarginModalContent: React.FC<EditMarginModalContentProps> = ({
           />
           <Text variant={TextVariant.BodySm} color={TextColor.WarningDefault}>
             {t('perpsMarginRiskWarning')}
-          </Text>
-        </Box>
-      )}
-
-      {/* Error message */}
-      {marginError && (
-        <Box
-          className="bg-error-muted rounded-lg px-3 py-2"
-          flexDirection={BoxFlexDirection.Row}
-          alignItems={BoxAlignItems.Center}
-          gap={2}
-        >
-          <Icon
-            name={IconName.Warning}
-            size={IconSize.Sm}
-            color={IconColor.ErrorDefault}
-          />
-          <Text variant={TextVariant.BodySm} color={TextColor.ErrorDefault}>
-            {marginError}
           </Text>
         </Box>
       )}

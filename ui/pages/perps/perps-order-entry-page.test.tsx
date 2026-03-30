@@ -553,7 +553,7 @@ describe('PerpsOrderEntryPage', () => {
       );
     });
 
-    it('shows inline error when order fails', async () => {
+    it('shows order failure toast when order fails', async () => {
       mockSubmitRequestToBackground.mockImplementation((method: string) => {
         if (method === 'perpsPlaceOrder') {
           return Promise.resolve({
@@ -577,16 +577,15 @@ describe('PerpsOrderEntryPage', () => {
         fireEvent.click(screen.getByTestId('submit-order-button'));
       });
 
-      expect(screen.getByText('Insufficient margin')).toBeInTheDocument();
+      expect(screen.queryByText('Insufficient margin')).not.toBeInTheDocument();
       expect(mockHidePerpsToast).toHaveBeenCalledTimes(1);
-      expect(mockReplacePerpsToastByKey).not.toHaveBeenCalledWith(
-        expect.objectContaining({
-          key: 'perpsToastOrderFailed',
-        }),
-      );
+      expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
+        key: 'perpsToastOrderFailed',
+        description: 'Insufficient margin',
+      });
     });
 
-    it('shows inline error when controller throws', async () => {
+    it('shows order failure toast when controller throws', async () => {
       mockSubmitRequestToBackground.mockImplementation((method: string) => {
         if (method === 'perpsPlaceOrder') {
           return Promise.reject(new Error('Network error'));
@@ -607,13 +606,12 @@ describe('PerpsOrderEntryPage', () => {
         fireEvent.click(screen.getByTestId('submit-order-button'));
       });
 
-      expect(screen.getByText('Network error')).toBeInTheDocument();
+      expect(screen.queryByText('Network error')).not.toBeInTheDocument();
       expect(mockHidePerpsToast).toHaveBeenCalledTimes(1);
-      expect(mockReplacePerpsToastByKey).not.toHaveBeenCalledWith(
-        expect.objectContaining({
-          key: 'perpsToastOrderFailed',
-        }),
-      );
+      expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
+        key: 'perpsToastOrderFailed',
+        description: 'Network error',
+      });
     });
 
     it('calls closePosition when in close mode', async () => {
@@ -1075,7 +1073,7 @@ describe('PerpsOrderEntryPage', () => {
       mockSubmitRequestToBackground.mockResolvedValue({ success: true });
     });
 
-    it('shows inline error when closePosition fails', async () => {
+    it('shows close failure toast when closePosition fails', async () => {
       mockSearchParams.set('mode', 'close');
       mockLivePositions.mockReturnValue({
         positions: mockPositions,
@@ -1095,16 +1093,15 @@ describe('PerpsOrderEntryPage', () => {
         fireEvent.click(screen.getByTestId('submit-order-button'));
       });
 
-      expect(screen.getByText('Close failed')).toBeInTheDocument();
+      expect(screen.queryByText('Close failed')).not.toBeInTheDocument();
       expect(mockHidePerpsToast).toHaveBeenCalledTimes(1);
-      expect(mockReplacePerpsToastByKey).not.toHaveBeenCalledWith(
-        expect.objectContaining({
-          key: 'perpsToastCloseFailed',
-        }),
-      );
+      expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
+        key: 'perpsToastCloseFailed',
+        description: 'Close failed',
+      });
     });
 
-    it('shows inline error when updatePositionTPSL fails', async () => {
+    it('shows update failure toast when updatePositionTPSL fails', async () => {
       mockSearchParams.set('mode', 'modify');
       mockLivePositions.mockReturnValue({
         positions: mockPositions,
@@ -1127,16 +1124,15 @@ describe('PerpsOrderEntryPage', () => {
         fireEvent.click(screen.getByTestId('submit-order-button'));
       });
 
-      expect(screen.getByText('TPSL update failed')).toBeInTheDocument();
+      expect(screen.queryByText('TPSL update failed')).not.toBeInTheDocument();
       expect(mockHidePerpsToast).not.toHaveBeenCalled();
-      expect(mockReplacePerpsToastByKey).not.toHaveBeenCalledWith(
-        expect.objectContaining({
-          key: 'perpsToastUpdateFailed',
-        }),
-      );
+      expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
+        key: 'perpsToastUpdateFailed',
+        description: 'TPSL update failed',
+      });
     });
 
-    it('shows generic inline error for non-Error throws', async () => {
+    it('shows fallback order failure toast for non-Error throws', async () => {
       mockSubmitRequestToBackground.mockImplementation((method: string) => {
         if (method === 'perpsPlaceOrder') {
           // eslint-disable-next-line prefer-promise-reject-errors
@@ -1158,13 +1154,14 @@ describe('PerpsOrderEntryPage', () => {
         fireEvent.click(screen.getByTestId('submit-order-button'));
       });
 
-      expect(screen.getByText('An unknown error occurred')).toBeInTheDocument();
+      expect(
+        screen.queryByText('An unknown error occurred'),
+      ).not.toBeInTheDocument();
       expect(mockHidePerpsToast).toHaveBeenCalledTimes(1);
-      expect(mockReplacePerpsToastByKey).not.toHaveBeenCalledWith(
-        expect.objectContaining({
-          key: 'perpsToastOrderFailed',
-        }),
-      );
+      expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
+        key: 'perpsToastOrderFailed',
+        description: 'Your funds have been returned to you',
+      });
     });
 
     it('navigates back after successful limit order', async () => {

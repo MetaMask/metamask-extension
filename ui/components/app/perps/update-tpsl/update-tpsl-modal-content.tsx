@@ -15,10 +15,6 @@ import {
   TextVariant,
   TextColor,
   FontWeight,
-  Icon,
-  IconName,
-  IconSize,
-  IconColor,
 } from '@metamask/design-system-react';
 import type { Position as PerpsPosition } from '@metamask/perps-controller';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
@@ -93,7 +89,6 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
     () => position.stopLossPrice ?? '',
   );
   const [isSaving, setIsSaving] = useState(false);
-  const [tpslError, setTpslError] = useState<string | null>(null);
   const isMountedRef = useRef(true);
 
   const entryPriceForEdit = useMemo(() => {
@@ -281,7 +276,6 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
       return;
     }
     setIsSaving(true);
-    setTpslError(null);
 
     const { takeProfitPrice: cleanTpPrice, stopLossPrice: cleanSlPrice } =
       normalizeTpslPrices({
@@ -340,9 +334,10 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : 'An unknown error occurred';
-      if (isMountedRef.current) {
-        setTpslError(errorMessage);
-      }
+      replacePerpsToastByKey({
+        key: PERPS_TOAST_KEYS.UPDATE_FAILED,
+        description: errorMessage,
+      });
     } finally {
       if (isMountedRef.current) {
         setIsSaving(false);
@@ -589,24 +584,6 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
           </Box>
         )}
       </Box>
-
-      {tpslError && (
-        <Box
-          className="bg-error-muted rounded-lg px-3 py-2"
-          flexDirection={BoxFlexDirection.Row}
-          alignItems={BoxAlignItems.Center}
-          gap={2}
-        >
-          <Icon
-            name={IconName.Warning}
-            size={IconSize.Sm}
-            color={IconColor.ErrorDefault}
-          />
-          <Text variant={TextVariant.BodySm} color={TextColor.ErrorDefault}>
-            {tpslError}
-          </Text>
-        </Box>
-      )}
     </Box>
   );
 };

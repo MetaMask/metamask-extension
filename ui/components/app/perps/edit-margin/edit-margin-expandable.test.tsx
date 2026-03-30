@@ -252,7 +252,7 @@ describe('EditMarginExpandable', () => {
   });
 
   describe('error display', () => {
-    it('shows inline margin error when updateMargin fails', async () => {
+    it('shows margin adjustment failure toast when updateMargin fails', async () => {
       mockSubmitRequestToBackground.mockResolvedValueOnce({
         success: false,
         error: 'Insufficient balance',
@@ -272,14 +272,41 @@ describe('EditMarginExpandable', () => {
       fireEvent.click(confirmButton);
 
       await waitFor(() => {
-        expect(screen.getByText('Insufficient balance')).toBeInTheDocument();
+        expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
+          key: 'perpsToastMarginAdjustmentFailed',
+          description: 'Insufficient balance',
+        });
       });
 
-      expect(mockReplacePerpsToastByKey).not.toHaveBeenCalledWith(
-        expect.objectContaining({
-          key: 'perpsToastMarginAdjustmentFailed',
-        }),
+      expect(
+        screen.queryByText('Insufficient balance'),
+      ).not.toBeInTheDocument();
+    });
+
+    it('uses fallback margin adjustment description when backend returns no margin error', async () => {
+      mockSubmitRequestToBackground.mockResolvedValueOnce({
+        success: false,
+      });
+
+      renderWithProvider(
+        <EditMarginExpandable {...defaultProps} isExpanded />,
+        mockStore,
       );
+
+      const input = screen.getByPlaceholderText('0.00');
+      fireEvent.change(input, { target: { value: '100' } });
+
+      const confirmButton = screen.getByRole('button', {
+        name: /Add Margin/iu,
+      });
+      fireEvent.click(confirmButton);
+
+      await waitFor(() => {
+        expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
+          key: 'perpsToastMarginAdjustmentFailed',
+          description: 'Unable to adjust margin. Please try again.',
+        });
+      });
     });
   });
 });

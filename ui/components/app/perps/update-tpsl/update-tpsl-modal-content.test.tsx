@@ -12,6 +12,7 @@ import {
 
 const mockSubmitRequestToBackground = jest.fn();
 const mockGetPerpsStreamManager = jest.fn();
+const mockReplacePerpsToastByKey = jest.fn();
 
 jest.mock('../../../../providers/perps', () => ({
   getPerpsStreamManager: () => mockGetPerpsStreamManager(),
@@ -24,6 +25,12 @@ jest.mock('../../../../store/background-connection', () => ({
 
 jest.mock('../../../../hooks/perps/usePerpsEligibility', () => ({
   usePerpsEligibility: () => ({ isEligible: true }),
+}));
+
+jest.mock('../perps-toast', () => ({
+  usePerpsToast: () => ({
+    replacePerpsToastByKey: mockReplacePerpsToastByKey,
+  }),
 }));
 
 const mockStore = configureStore({
@@ -82,6 +89,7 @@ function renderTpslModalContent(
 describe('UpdateTPSLModalContent', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockReplacePerpsToastByKey.mockReset();
     mockSubmitRequestToBackground.mockImplementation((method: string) => {
       if (method === 'perpsUpdatePositionTPSL') {
         return Promise.resolve({ success: true });
@@ -476,7 +484,7 @@ describe('UpdateTPSLModalContent', () => {
   });
 
   describe('error handling', () => {
-    it('displays an error when perpsUpdatePositionTPSL fails', async () => {
+    it('shows toast error when perpsUpdatePositionTPSL fails', async () => {
       mockSubmitRequestToBackground.mockImplementation((method: string) => {
         if (method === 'perpsUpdatePositionTPSL') {
           return Promise.resolve({ success: false, error: 'Server error' });
@@ -492,11 +500,15 @@ describe('UpdateTPSLModalContent', () => {
       fireEvent.click(screen.getByText(messages.perpsSaveChanges.message));
 
       await waitFor(() => {
-        expect(screen.getByText('Server error')).toBeInTheDocument();
+        expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
+          key: 'perpsToastUpdateFailed',
+          description: 'Server error',
+        });
       });
+      expect(screen.queryByText('Server error')).not.toBeInTheDocument();
     });
 
-    it('displays a generic error when an exception is thrown', async () => {
+    it('shows generic toast error when an exception is thrown', async () => {
       mockSubmitRequestToBackground.mockRejectedValue(
         new Error('Network failure'),
       );
@@ -506,8 +518,12 @@ describe('UpdateTPSLModalContent', () => {
       fireEvent.click(screen.getByText(messages.perpsSaveChanges.message));
 
       await waitFor(() => {
-        expect(screen.getByText('Network failure')).toBeInTheDocument();
+        expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
+          key: 'perpsToastUpdateFailed',
+          description: 'Network failure',
+        });
       });
+      expect(screen.queryByText('Network failure')).not.toBeInTheDocument();
     });
 
     it('does not call onClose when save fails', async () => {
@@ -527,7 +543,10 @@ describe('UpdateTPSLModalContent', () => {
       fireEvent.click(screen.getByText(messages.perpsSaveChanges.message));
 
       await waitFor(() => {
-        expect(screen.getByText('fail')).toBeInTheDocument();
+        expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
+          key: 'perpsToastUpdateFailed',
+          description: 'fail',
+        });
       });
       expect(onClose).not.toHaveBeenCalled();
     });
