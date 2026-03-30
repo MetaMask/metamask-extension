@@ -124,7 +124,6 @@ describe('LedgerAdapter', () => {
       expect(newAdapter.isConnected()).toBe(false);
       newAdapter.destroy();
     });
-
   });
 
   describe('connect', () => {
