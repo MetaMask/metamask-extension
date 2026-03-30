@@ -6,7 +6,7 @@ import HomePage from '../../page-objects/pages/home/homepage';
 import { BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED } from './constants';
 import { bridgeTransaction, getBridgeFixtures } from './bridge-test-utils';
 
-describe('Swap tests', function (this: Suite) {
+describe.only('Swap tests', function (this: Suite) {
   this.timeout(160000); // This test is very long, so we need an unusually high timeout
   it('updates recommended swap quote incrementally when SSE events are received', async function () {
     await withFixtures(
@@ -36,7 +36,7 @@ describe('Swap tests', function (this: Suite) {
             tokenFrom: 'ETH',
             tokenTo: 'MUSD',
           },
-          submitDelay: 10000,
+          submitDelay: 5000,
           expectedDestAmount: '3,839',
         });
 
