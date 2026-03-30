@@ -93,7 +93,7 @@ describe('Bridge tests', function (this: Suite) {
         DEFAULT_BRIDGE_FEATURE_FLAGS,
         false,
       ),
-      async ({ driver }) => {
+      async ({ driver, mockedEndpoint }) => {
         await login(driver, { expectedBalance: '$225,730.11' });
         const networkManager = new NetworkManager(driver);
 
@@ -109,8 +109,13 @@ describe('Bridge tests', function (this: Suite) {
           fromChain: 'Linea',
           toChain: 'Ethereum',
         });
+        const finalQuoteRequestTimestamp = Date.now();
 
         await bridgePage.goBack();
+        await bridgePage.checkQuoteRequestsAreNotMadeAfterTimestamp(
+          finalQuoteRequestTimestamp,
+          mockedEndpoint,
+        );
 
         // check if the Linea network is selected
         await networkManager.openNetworkManager();
@@ -128,7 +133,7 @@ describe('Bridge tests', function (this: Suite) {
         BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
         false,
       ),
-      async ({ driver }) => {
+      async ({ driver, mockedEndpoint }) => {
         await login(driver, { expectedBalance: '$225,730.11' });
 
         const homePage = new HomePage(driver);
@@ -149,10 +154,15 @@ describe('Bridge tests', function (this: Suite) {
           expectedTransactionsCount: 2,
           expectedDestAmount: '9.9',
         });
+        const finalQuoteRequestTimestamp = Date.now();
+        const bridgePage = new BridgeQuotePage(driver);
+        await bridgePage.checkQuoteRequestsAreNotMadeAfterTimestamp(
+          finalQuoteRequestTimestamp,
+          mockedEndpoint,
+        );
 
         // console.log('Navigating back to Swap page');
         // await homePage.startSwapFlow();
-        // const bridgePage = new BridgeQuotePage(driver);
         // await bridgePage.checkAssetsAreSelected('ETH', 'mUSD');
         // console.log('Checked that assets have been reset to defaults');
       },

@@ -4,7 +4,10 @@ import { toAssetId } from '../../../../../shared/lib/asset-utils';
 import { ASSET_ROUTE } from '../../../../../shared/lib/deep-links/routes/route';
 import { toChecksumHexAddress } from '../../../../../shared/lib/hexstring-utils';
 import { Driver } from '../../../webdriver/driver';
-import { EXPECTED_INPUT_CHANGES } from '../../../tests/bridge/constants';
+import {
+  EXPECTED_INPUT_CHANGES,
+  BRIDGE_REFRESH_RATE,
+} from '../../../tests/bridge/constants';
 import { EventTypes } from '../../../tests/bridge/bridge-test-utils';
 import { MockedEndpoint } from '../../../mock-e2e';
 import { getEventPayloads } from '../../../helpers';
@@ -225,6 +228,47 @@ class BridgeQuotePage {
       testId: 'bridge-asset-picker-modal__close-button',
     });
     console.log('Asset picker modal closed');
+  };
+
+  checkQuoteRequestsAreNotMadeAfterTimestamp = async (
+    timestamp: number,
+    mockedEndpoints: ({
+      rule: {
+        matchers: { type: string; regexSource: string }[];
+        requestCount: number;
+      };
+    } & MockedEndpoint)[],
+  ) => {
+    await this.driver.delay(2 * BRIDGE_REFRESH_RATE + 1000);
+
+    // Find all getQuote mocked endpoints
+    const getQuoteMocks = mockedEndpoints.filter(
+      ({ rule: { matchers, requestCount } }) =>
+        matchers.some(
+          (matcher) =>
+            matcher.type === 'regex-path' &&
+            matcher.regexSource.includes('getQuote') &&
+            requestCount > 0,
+        ),
+    );
+
+    // Filter requests made after the timestamp
+    for (const mock of getQuoteMocks) {
+      const seenRequests = await mock.getSeenRequests();
+      assert.ok(
+        seenRequests.length > 0,
+        'At least one request should be made to getQuote',
+      );
+
+      const seenRequestsAfterTimestamp = seenRequests.filter(
+        (request) => request.timingEvents.startTime > timestamp,
+      );
+      assert.equal(
+        seenRequestsAfterTimestamp.length,
+        0,
+        'No requests should be made to getQuote after timestamp',
+      );
+    }
   };
 
   waitForQuote = async () => {

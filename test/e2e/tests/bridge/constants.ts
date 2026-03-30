@@ -4,11 +4,12 @@ import {
 } from '@metamask/bridge-controller';
 
 export const SSE_RESPONSE_HEADER = { 'Content-Type': 'text/event-stream' };
+export const BRIDGE_REFRESH_RATE = 5000;
 
 export const DEFAULT_BRIDGE_FEATURE_FLAGS: FeatureFlagResponse & {
   minimumVersion: string;
 } = {
-  refreshRate: 30000,
+  refreshRate: BRIDGE_REFRESH_RATE,
   minimumVersion: '0.0.0',
   maxRefreshCount: 5,
   support: true,
