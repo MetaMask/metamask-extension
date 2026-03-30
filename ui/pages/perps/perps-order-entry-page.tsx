@@ -87,16 +87,44 @@ const ORDER_MODE_TOAST_KEYS: Record<
   OrderMode,
   {
     inProgress?: PerpsToastKey;
+    failed: PerpsToastKey;
   }
 > = {
   new: {
     inProgress: PERPS_TOAST_KEYS.SUBMIT_IN_PROGRESS,
+    failed: PERPS_TOAST_KEYS.ORDER_FAILED,
   },
-  modify: {},
+  modify: {
+    failed: PERPS_TOAST_KEYS.UPDATE_FAILED,
+  },
   close: {
     inProgress: PERPS_TOAST_KEYS.CLOSE_IN_PROGRESS,
+    failed: PERPS_TOAST_KEYS.CLOSE_FAILED,
   },
 };
+
+const ORDER_FAILED_FALLBACK_ERROR_PATTERNS = [
+  /^an unknown error occurred$/iu,
+  /^failed to place order$/iu,
+  /^unknown error$/iu,
+  /^error$/iu,
+];
+
+const ORDER_FAILED_USER_FACING_ERROR_PATTERNS = [
+  /insufficient margin/iu,
+  /insufficient balance/iu,
+  /insufficient liquidity|IOC.*cancel/iu,
+  /\bno liquidity\b/iu,
+  /rate limit/iu,
+  /timeout/iu,
+  /network error/iu,
+  /slippage/iu,
+  /order rejected/iu,
+  /reduce only|reduceOnly/iu,
+  /position would flip/iu,
+  /service unavailable|503|temporarily unavailable/iu,
+  /fetch failed|connection failed/iu,
+];
 
 /**
  * Convert UI OrderFormState to PerpsController OrderParams
@@ -210,7 +238,6 @@ const PerpsOrderEntryPage: React.FC = () => {
   const [orderCalculations, setOrderCalculations] =
     useState<OrderCalculations | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitError, setSubmitError] = useState<string | null>(null);
   const [pendingOrderSymbol, setPendingOrderSymbol] = useState<string | null>(
     null,
   );
@@ -562,7 +589,6 @@ const PerpsOrderEntryPage: React.FC = () => {
     }
 
     setIsSubmitting(true);
-    setSubmitError(null);
     setPendingOrderToastDescription(null);
 
     const tradeActionToastDescription = getTradeActionToastDescription();
@@ -696,7 +722,25 @@ const PerpsOrderEntryPage: React.FC = () => {
       }
       const errorMessage =
         error instanceof Error ? error.message : 'An unknown error occurred';
-      setSubmitError(errorMessage);
+      const failedToastKey = ORDER_MODE_TOAST_KEYS[orderMode].failed;
+      const normalizedErrorMessage = errorMessage.trim();
+      const shouldUseOrderFailedFallback =
+        failedToastKey === PERPS_TOAST_KEYS.ORDER_FAILED &&
+        (normalizedErrorMessage.length === 0 ||
+          ORDER_FAILED_FALLBACK_ERROR_PATTERNS.some((pattern) =>
+            pattern.test(normalizedErrorMessage),
+          ) ||
+          !ORDER_FAILED_USER_FACING_ERROR_PATTERNS.some((pattern) =>
+            pattern.test(normalizedErrorMessage),
+          ));
+      const failedToastDescription = shouldUseOrderFailedFallback
+        ? t('perpsToastOrderFailedDescriptionFallback')
+        : normalizedErrorMessage;
+
+      replacePerpsToastByKey({
+        key: failedToastKey,
+        description: failedToastDescription,
+      });
     } finally {
       setIsSubmitting(false);
     }
@@ -712,6 +756,7 @@ const PerpsOrderEntryPage: React.FC = () => {
     handleBackClick,
     hidePerpsToast,
     replacePerpsToastByKey,
+    t,
   ]);
 
   useEffect(() => {
@@ -924,24 +969,6 @@ const PerpsOrderEntryPage: React.FC = () => {
             estimatedFees={orderCalculations.estimatedFees}
             liquidationPrice={orderCalculations.liquidationPrice}
           />
-        )}
-        {submitError && (
-          <Box
-            className="bg-error-muted rounded-lg"
-            padding={3}
-            flexDirection={BoxFlexDirection.Row}
-            alignItems={BoxAlignItems.Center}
-            gap={2}
-          >
-            <Icon
-              name={IconName.Warning}
-              size={IconSize.Sm}
-              color={IconColor.ErrorDefault}
-            />
-            <Text variant={TextVariant.BodySm} color={TextColor.ErrorDefault}>
-              {submitError}
-            </Text>
-          </Box>
         )}
         <Button
           variant={ButtonVariant.Primary}

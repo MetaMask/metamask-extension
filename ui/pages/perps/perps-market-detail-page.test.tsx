@@ -784,7 +784,7 @@ describe('PerpsMarketDetailPage', () => {
       });
     });
 
-    it('shows inline TP/SL error when saving fails', async () => {
+    it('shows TP/SL failure toast when saving fails', async () => {
       const consoleErrorSpy = jest
         .spyOn(console, 'error')
         .mockImplementation(() => undefined);
@@ -808,14 +808,13 @@ describe('PerpsMarketDetailPage', () => {
       });
 
       await waitFor(() => {
-        expect(screen.getByText('TP/SL rejected')).toBeInTheDocument();
+        expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
+          key: 'perpsToastUpdateFailed',
+          description: 'TP/SL rejected',
+        });
       });
 
-      expect(mockReplacePerpsToastByKey).not.toHaveBeenCalledWith(
-        expect.objectContaining({
-          key: 'perpsToastUpdateFailed',
-        }),
-      );
+      expect(screen.queryByText('TP/SL rejected')).not.toBeInTheDocument();
       consoleErrorSpy.mockRestore();
     });
   });
