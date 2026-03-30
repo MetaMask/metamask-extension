@@ -57,10 +57,6 @@ describe('Token List via StorageService', function () {
 
         await homePage.checkPageIsLoaded();
         await assetListPage.importTokenBySearch(tokenName);
-        await driver.clickElementSafe(
-          '.toasts-container__banner-base button[aria-label="Close"]',
-          3000,
-        );
         await assetListPage.checkTokenExistsInList(tokenSymbol);
       },
     );
