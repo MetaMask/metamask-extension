@@ -56,6 +56,10 @@ import {
   getChangeColor,
   safeDecodeURIComponent,
 } from '../../components/app/perps/utils';
+import {
+  isLimitPriceUnfavorable as checkLimitPriceUnfavorable,
+  isNearLiquidationPrice as checkNearLiquidationPrice,
+} from '../../components/app/perps/order-entry/limit-price-warnings';
 import { PerpsDetailPageSkeleton } from '../../components/app/perps/perps-skeletons';
 import {
   OrderEntry,
@@ -312,39 +316,25 @@ const PerpsOrderEntryPage: React.FC = () => {
   const availableBalance = account ? parseFloat(account.availableBalance) : 0;
 
   const isLimitPriceUnfavorable = useMemo(() => {
-    if (orderType !== 'limit' || !orderFormState || currentPrice <= 0) {
+    if (orderType !== 'limit' || !orderFormState) {
       return false;
     }
-    const cleaned = orderFormState.limitPrice?.replace(/,/gu, '') ?? '';
-    const parsed = parseFloat(cleaned);
-    if (!cleaned || isNaN(parsed) || parsed <= 0) {
-      return false;
-    }
-    if (orderDirection === 'long' && parsed > currentPrice) {
-      return true;
-    }
-    if (orderDirection === 'short' && parsed < currentPrice) {
-      return true;
-    }
-    return false;
+    return checkLimitPriceUnfavorable(
+      orderFormState.limitPrice ?? '',
+      currentPrice,
+      orderDirection,
+    );
   }, [orderType, orderFormState, orderDirection, currentPrice]);
 
   const isNearLiquidation = useMemo(() => {
-    if (orderType !== 'limit' || !orderFormState || currentPrice <= 0) {
+    if (orderType !== 'limit' || !orderFormState) {
       return false;
     }
-    const liqPrice = orderCalculations?.liquidationPriceRaw;
-    if (liqPrice === null || liqPrice === undefined || liqPrice <= 0) {
-      return false;
-    }
-    const cleaned = orderFormState.limitPrice?.replace(/,/gu, '') ?? '';
-    const parsed = parseFloat(cleaned);
-    if (!cleaned || isNaN(parsed) || parsed <= 0) {
-      return false;
-    }
-    return orderDirection === 'long'
-      ? currentPrice <= liqPrice
-      : currentPrice >= liqPrice;
+    return checkNearLiquidationPrice(
+      currentPrice,
+      orderCalculations?.liquidationPriceRaw,
+      orderDirection,
+    );
   }, [
     orderType,
     orderFormState,

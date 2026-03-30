@@ -23,6 +23,10 @@ import {
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
 import { useFormatters } from '../../../../../../hooks/useFormatters';
 import type { OrderDirection } from '../../order-entry.types';
+import {
+  isLimitPriceUnfavorable,
+  isNearLiquidationPrice,
+} from '../../limit-price-warnings';
 
 /**
  * Props for LimitPriceInput component
@@ -100,57 +104,20 @@ export const LimitPriceInput: React.FC<LimitPriceInputProps> = ({
   }, [midPrice, onLimitPriceChange, formatPrice]);
 
   const limitPriceWarning = useMemo(() => {
-    const parsedLimit = Number.parseFloat(
-      limitPrice.replaceAll(',', '').replaceAll('$', ''),
-    );
-    if (
-      !limitPrice ||
-      Number.isNaN(parsedLimit) ||
-      !currentPrice ||
-      currentPrice <= 0
-    ) {
+    if (!isLimitPriceUnfavorable(limitPrice, currentPrice, direction)) {
       return null;
     }
-
-    if (direction === 'long' && parsedLimit > currentPrice) {
-      return t('perpsLimitPriceAboveCurrentPrice');
-    }
-    if (direction === 'short' && parsedLimit < currentPrice) {
-      return t('perpsLimitPriceBelowCurrentPrice');
-    }
-    return null;
+    return direction === 'long'
+      ? t('perpsLimitPriceAboveCurrentPrice')
+      : t('perpsLimitPriceBelowCurrentPrice');
   }, [limitPrice, currentPrice, direction, t]);
 
   const liquidationWarning = useMemo(() => {
-    if (
-      liquidationPrice === null ||
-      liquidationPrice === undefined ||
-      liquidationPrice <= 0
-    ) {
+    if (!isNearLiquidationPrice(currentPrice, liquidationPrice, direction)) {
       return null;
     }
-    const parsedLimit = Number.parseFloat(
-      limitPrice.replaceAll(',', '').replaceAll('$', ''),
-    );
-    if (
-      !limitPrice ||
-      Number.isNaN(parsedLimit) ||
-      !currentPrice ||
-      currentPrice <= 0
-    ) {
-      return null;
-    }
-
-    const isLong = direction === 'long';
-    const isCurrentNearLiquidation = isLong
-      ? currentPrice <= liquidationPrice
-      : currentPrice >= liquidationPrice;
-
-    if (isCurrentNearLiquidation) {
-      return t('perpsLimitPriceNearLiquidation');
-    }
-    return null;
-  }, [limitPrice, currentPrice, liquidationPrice, direction, t]);
+    return t('perpsLimitPriceNearLiquidation');
+  }, [currentPrice, liquidationPrice, direction, t]);
 
   return (
     <Box
