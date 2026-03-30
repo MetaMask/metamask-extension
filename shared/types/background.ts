@@ -162,6 +162,7 @@ export type ControllerStatePropertiesEnumerated = {
   quotesRefreshCount: BridgeControllerState['quotesRefreshCount'];
   minimumBalanceForRentExemptionInLamports: BridgeControllerState['minimumBalanceForRentExemptionInLamports'];
   assetExchangeRates: BridgeControllerState['assetExchangeRates'];
+  tokenWarnings: BridgeControllerState['tokenWarnings'];
   txHistory: BridgeStatusControllerState['txHistory'];
   events: CronjobControllerState['events'];
   currentCurrency: CurrencyRateState['currentCurrency'];
