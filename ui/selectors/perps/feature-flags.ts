@@ -89,3 +89,20 @@ export const getHip3AllowedSourcesSet = createSelector(
   getHip3AllowedSources,
   (allowedSources): Set<string> => new Set(allowedSources),
 );
+
+/**
+ * Get whether Perps in-app toasts are enabled.
+ *
+ * This feature is tied to Perps enablement and supports an optional remote
+ * kill-switch via `perpsInAppToastsEnabled === false`.
+ *
+ * @param _state - The MetaMask state object
+ * @returns `true` if Perps is enabled and the toasts kill-switch is not off
+ */
+export const getIsPerpsInAppToastsEnabled = createSelector(
+  getIsPerpsExperienceAvailable,
+  getRemoteFeatureFlags,
+  (isPerpsExperienceAvailable, remoteFeatureFlags): boolean =>
+    isPerpsExperienceAvailable &&
+    remoteFeatureFlags.perpsInAppToastsEnabled !== false,
+);

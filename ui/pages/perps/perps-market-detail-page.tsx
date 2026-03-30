@@ -61,6 +61,7 @@ import {
   getDisplayName,
   safeDecodeURIComponent,
   getChangeColor,
+  normalizeTpslPrices,
 } from '../../components/app/perps/utils';
 import { normalizeMarketDetailsOrders } from '../../components/app/perps/utils/orderUtils';
 import { PerpsDetailPageSkeleton } from '../../components/app/perps/perps-skeletons';
@@ -187,7 +188,6 @@ const PerpsMarketDetailPage: React.FC = () => {
     formatPercentWithMinThreshold,
   } = useFormatters();
   const fundingCountdown = useFundingCountdown();
-
   // Use stream hooks for real-time data
   const { positions: allPositions } = usePerpsLivePositions();
   const { orders: allOrders } = usePerpsLiveOrders();
