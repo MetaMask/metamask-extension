@@ -289,6 +289,7 @@ const createMockAccountGroup = (
     },
     pinned: false,
     hidden: false,
+    lastSelected: 0,
   },
   accounts,
 });

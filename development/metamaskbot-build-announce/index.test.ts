@@ -1,14 +1,3 @@
-/**
- * Tests for index.ts (the `start()` entry point).
- *
- * `start()` is immediately invoked when the module is loaded. Each test:
- * 1. Sets the required environment variables.
- * 2. Calls `jest.resetModules()` so the module loads fresh.
- * 3. Requires (dynamically) `./index` which triggers `start()`.
- * 4. Flushes the microtask queue so `start()` has time to finish.
- * 5. Asserts via the stable jest.mock references.
- */
-
 jest.mock('./artifacts');
 jest.mock('./bundle-size');
 jest.mock('./dapp-benchmarks');

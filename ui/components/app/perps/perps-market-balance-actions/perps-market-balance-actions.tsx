@@ -21,6 +21,8 @@ import { usePerpsLiveAccount } from '../../../../hooks/perps/stream';
 type PerpsMarketBalanceActionsProps = {
   /** Whether to show the action buttons (Add funds, Withdraw) */
   showActionButtons?: boolean;
+  /** Whether add funds transaction creation is in progress */
+  isAddFundsLoading?: boolean;
   /** Callback when Add funds button is pressed */
   onAddFunds?: () => void;
   /** Callback when Withdraw button is pressed */
@@ -31,6 +33,7 @@ type PerpsMarketBalanceActionsProps = {
 
 const PerpsMarketBalanceActions: React.FC<PerpsMarketBalanceActionsProps> = ({
   showActionButtons = true,
+  isAddFundsLoading = false,
   onAddFunds,
   onWithdraw,
   onLearnMore,
@@ -117,8 +120,9 @@ const PerpsMarketBalanceActions: React.FC<PerpsMarketBalanceActionsProps> = ({
           <Button
             variant={ButtonVariant.Primary}
             size={ButtonSize.Lg}
+            isLoading={isAddFundsLoading}
             onClick={handleAddFunds}
-            disabled={!isEligible}
+            disabled={!isEligible || isAddFundsLoading}
             title={isEligible ? undefined : t('perpsGeoBlockedTooltip')}
             style={{ width: '100%' }}
             data-testid="perps-balance-actions-add-funds-empty"
@@ -183,8 +187,9 @@ const PerpsMarketBalanceActions: React.FC<PerpsMarketBalanceActionsProps> = ({
           <Button
             variant={ButtonVariant.Primary}
             size={ButtonSize.Lg}
+            isLoading={isAddFundsLoading}
             onClick={handleAddFunds}
-            disabled={!isEligible}
+            disabled={!isEligible || isAddFundsLoading}
             title={isEligible ? undefined : t('perpsGeoBlockedTooltip')}
             style={{ flex: 1 }}
             data-testid="perps-balance-actions-add-funds"

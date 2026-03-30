@@ -2,7 +2,7 @@ import { Suite } from 'mocha';
 import { Mockttp } from 'mockttp';
 import { Driver } from '../../webdriver/driver';
 import { withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { login } from '../../page-objects/flows/login.flow';
 import HomePage from '../../page-objects/pages/home/homepage';
 import { switchToNetworkFromNetworkSelect } from '../../page-objects/flows/network.flow';
@@ -17,16 +17,7 @@ describe('Switch network - ', function (this: Suite) {
   it('Switch networks to existing and new networks', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
-          .withPreferencesController({
-            preferences: { showTestNetworks: true },
-          })
-          .withEnabledNetworks({
-            eip155: {
-              '0x539': true,
-            },
-          })
-          .build(),
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
         testSpecificMock: async (mockServer: Mockttp) => {
           const standardMocks = [

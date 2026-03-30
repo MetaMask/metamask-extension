@@ -69,7 +69,7 @@ export type UsePerpsOrderFormReturn = {
 };
 
 /**
- * Custom hook for managing perps order form state
+ * Custom hook for managing perps order form state.
  *
  * Encapsulates all form state, handlers, and calculations for the order entry form.
  * Supports three modes: 'new', 'modify', and 'close'.
@@ -83,7 +83,7 @@ export type UsePerpsOrderFormReturn = {
  * @param options.availableBalance - Available balance for trading
  * @param options.onFormStateChange - Callback when form state changes
  * @param options.onSubmit - Callback when order is submitted
- * @param options.orderType - Order type: 'market' or 'limit' (defaults to 'market')
+ * @param options.orderType - Order type: 'market' or 'limit'
  * @returns Form state, handlers, and calculated values
  */
 export function usePerpsOrderForm({
@@ -104,29 +104,19 @@ export function usePerpsOrderForm({
   const [closePercent, setClosePercent] = useState<number>(100);
 
   /**
-   * Compute margin, balance percent, and TP/SL from an existing position.
-   * Uses the position's own entry price (not the volatile live price) so the
-   * result is stable across re-renders caused by price ticks.
+   * Compute TP/SL and leverage from an existing position for modify mode.
+   * Amount is left empty so the user enters the size INCREASE (additional margin
+   * to add), not the total position size.
    *
    * @param pos - Existing position data
-   * @param balance - Available balance for computing percent
    */
   function deriveModifyFields(
     pos: ExistingPositionData,
-    balance: number,
   ): Partial<OrderFormState> {
-    const entryPrice = parseFloat(pos.entryPrice.replace(/,/gu, '')) || 0;
-    const absSize = Math.abs(parseFloat(pos.size.replace(/,/gu, ''))) || 0;
-    const margin =
-      entryPrice > 0 && pos.leverage > 0
-        ? (absSize * entryPrice) / pos.leverage
-        : 0;
-    const balancePercent =
-      balance > 0 ? Math.min(Math.round((margin / balance) * 100), 100) : 0;
     return {
-      amount: margin > 0 ? margin.toFixed(2) : '',
+      amount: '',
+      balancePercent: 0,
       leverage: pos.leverage,
-      balancePercent,
       takeProfitPrice: pos.takeProfitPrice ?? '',
       stopLossPrice: pos.stopLossPrice ?? '',
       autoCloseEnabled: Boolean(pos.takeProfitPrice || pos.stopLossPrice),
@@ -141,7 +131,7 @@ export function usePerpsOrderForm({
         asset,
         direction: initialDirection,
         type: orderType,
-        ...deriveModifyFields(existingPosition, availableBalance),
+        ...deriveModifyFields(existingPosition),
       };
     }
     return {
@@ -157,50 +147,77 @@ export function usePerpsOrderForm({
     setFormState((prev) => ({ ...prev, type: orderType }));
   }, [orderType]);
 
-  // Ref so the reset effect can read the latest balance without depending on
-  // it, preventing live price ticks from wiping user edits.
+  // Refs so the reset effect can read latest values without depending on them,
+  // preventing stream updates (new object refs) from wiping user edits.
   const availableBalanceRef = useRef(availableBalance);
   availableBalanceRef.current = availableBalance;
+  const existingPositionRef = useRef(existingPosition);
+  existingPositionRef.current = existingPosition;
+  const orderTypeRef = useRef(orderType);
+  orderTypeRef.current = orderType;
 
+  // Track which deps trigger a full form reset. orderType changes should NOT
+  // reset amount/leverage—only the effect above updates formState.type.
+  // Ref starts null so the first effect run always applies. `existingPosition`
+  // uses undefined vs JSON digest so async hydration cannot collide with a size
+  // string like "none" the way a single concatenated key could.
+  const prevResetDepsRef = useRef<{
+    mode: OrderMode;
+    asset: string;
+    initialDirection: 'long' | 'short';
+    existingPositionDigest: string | undefined;
+  } | null>(null);
   useEffect(() => {
+    const existingPositionDigest =
+      existingPosition === undefined
+        ? undefined
+        : JSON.stringify({
+            size: existingPosition.size,
+            entryPrice: existingPosition.entryPrice,
+            leverage: existingPosition.leverage,
+            takeProfitPrice: existingPosition.takeProfitPrice ?? null,
+            stopLossPrice: existingPosition.stopLossPrice ?? null,
+          });
+
+    const prev = prevResetDepsRef.current;
+    if (
+      prev !== null &&
+      prev.mode === mode &&
+      prev.asset === asset &&
+      prev.initialDirection === initialDirection &&
+      prev.existingPositionDigest === existingPositionDigest
+    ) {
+      return;
+    }
+
+    prevResetDepsRef.current = {
+      mode,
+      asset,
+      initialDirection,
+      existingPositionDigest,
+    };
+
     setClosePercent(100);
 
-    if (mode === 'modify' && existingPosition) {
+    const pos = existingPositionRef.current;
+    const typeForReset = orderTypeRef.current;
+    if (mode === 'modify' && pos) {
       setFormState({
         ...mockOrderFormDefaults,
         asset,
         direction: initialDirection,
-        type: orderType,
-        ...deriveModifyFields(existingPosition, availableBalanceRef.current),
+        type: typeForReset,
+        ...deriveModifyFields(pos),
       });
     } else {
       setFormState({
         ...mockOrderFormDefaults,
         asset,
         direction: initialDirection,
-        type: orderType,
+        type: typeForReset,
       });
     }
-  }, [mode, existingPosition, asset, initialDirection, orderType]);
-
-  // Re-derive modify fields when availableBalance transitions from 0 to a
-  // real value (e.g. account data loading after mount).
-  const prevBalanceRef = useRef(availableBalance);
-  useEffect(() => {
-    const wasZero = prevBalanceRef.current === 0;
-    prevBalanceRef.current = availableBalance;
-    if (
-      wasZero &&
-      availableBalance > 0 &&
-      mode === 'modify' &&
-      existingPosition
-    ) {
-      setFormState((prev) => ({
-        ...prev,
-        ...deriveModifyFields(existingPosition, availableBalance),
-      }));
-    }
-  }, [availableBalance, mode, existingPosition]);
+  }, [mode, asset, initialDirection]);
 
   // Notify parent of form state changes
   useEffect(() => {
@@ -242,12 +259,24 @@ export function usePerpsOrderForm({
       };
     }
 
+    // For limit orders, use the user-specified limit price for calculations.
+    // Fall back to current market price if limit price is empty/invalid.
+    let effectivePrice = currentPrice;
+    if (formState.type === 'limit' && formState.limitPrice) {
+      const parsedLimitPrice = Number.parseFloat(
+        formState.limitPrice.replaceAll(',', ''),
+      );
+      if (!Number.isNaN(parsedLimitPrice) && parsedLimitPrice > 0) {
+        effectivePrice = parsedLimitPrice;
+      }
+    }
+
     // User enters MARGIN amount. Position value = margin × leverage
     const positionValue = amount * formState.leverage;
-    const positionSize = calculatePositionSize(positionValue, currentPrice);
+    const positionSize = calculatePositionSize(positionValue, effectivePrice);
     const marginRequired = amount; // The entered amount IS the margin
     const liquidationPrice = estimateLiquidationPrice(
-      currentPrice,
+      effectivePrice,
       formState.leverage,
       formState.direction === 'long',
     );
@@ -265,6 +294,8 @@ export function usePerpsOrderForm({
     formState.amount,
     formState.leverage,
     formState.direction,
+    formState.type,
+    formState.limitPrice,
     currentPrice,
     mode,
     existingPosition,
@@ -304,6 +335,7 @@ export function usePerpsOrderForm({
     setClosePercent(percent);
   }, []);
 
+  // Limit price change handler (for limit order mode)
   const handleLimitPriceChange = useCallback((limitPrice: string) => {
     setFormState((prev) => ({ ...prev, limitPrice }));
   }, []);

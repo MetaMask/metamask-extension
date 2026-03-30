@@ -339,6 +339,9 @@
   "addWallet": {
     "message": "Adicionar carteira"
   },
+  "addedProtectionOptionalBadge": {
+    "message": "Opcional"
+  },
   "additionalNetworks": {
     "message": "Redes adicionais"
   },
@@ -407,9 +410,6 @@
   "advancedGasFeeDefaultOptIn": {
     "message": "Salvar esses valores como padrão para a rede $1.",
     "description": "$1 is the current network name."
-  },
-  "advancedGasFeeModalTitle": {
-    "message": "Taxa de gás avançada"
   },
   "advancedGasPriceModalTitle": {
     "message": "Taxa de rede avançada"
@@ -756,6 +756,27 @@
   "autoDetectTokensDescriptionV2": {
     "message": "Exibe novos tokens enviados para sua carteira."
   },
+  "autoLock": {
+    "message": "Bloqueio automático"
+  },
+  "autoLockAfter15Seconds": {
+    "message": "Após 15 segundos"
+  },
+  "autoLockAfter1Minute": {
+    "message": "Após 1 minuto"
+  },
+  "autoLockAfter30Seconds": {
+    "message": "Após 30 segundos"
+  },
+  "autoLockAfter5Minutes": {
+    "message": "Após 5 minutos"
+  },
+  "autoLockAfterMinutes": {
+    "message": "Após $1 minutos"
+  },
+  "autoLockNever": {
+    "message": "Nunca"
+  },
   "autoLockTimeLimit": {
     "message": "Timer com bloqueio automático (minutos)"
   },
@@ -773,6 +794,9 @@
   },
   "backToHome": {
     "message": "Volta à página inicial"
+  },
+  "backUpIncomplete": {
+    "message": "Backup incompleto"
   },
   "backup": {
     "message": "Backup"
@@ -853,6 +877,12 @@
   },
   "basicConfigurationModalCheckbox": {
     "message": "Entendo e quero continuar"
+  },
+  "basicConfigurationModalDisclaimerOffPart1": {
+    "message": "Isso significa que você não otimizará totalmente seu tempo na MetaMask. Os recursos básicos (como detalhes de tokens, configurações ideais de gás e outros) não estarão disponíveis."
+  },
+  "basicConfigurationModalDisclaimerOffPart2": {
+    "message": "Desativar essa opção também desabilita alguns recursos relacionados à privacidade, backup e sincronização, e também as notificações."
   },
   "basicConfigurationModalDisclaimerOn": {
     "message": "Para otimizar seu tempo na MetaMask, você precisará ativar este recurso. As funções básicas (como detalhes dos tokens, configurações ideais de gás e outras) são importantes para a experiência na web3."
@@ -1064,7 +1094,10 @@
     "message": "Custo mais baixo"
   },
   "bridgeMarketClosedAction": {
-    "message": "O mercado está fechado"
+    "message": "Mercado fechado"
+  },
+  "bridgeMarketClosedDescription": {
+    "message": "No momento, este token de ações está fora do horário de negociação. Tente novamente quando o mercado reabrir."
   },
   "bridgeMarketClosedModalDescription": {
     "message": "No momento, o mercado que dá suporte a este token está fechado. Tokens podem ser transferidos em rede a qualquer momento."
@@ -1157,6 +1190,9 @@
   },
   "bridgeSelectNetwork": {
     "message": "Selecionar rede"
+  },
+  "bridgeSelectQuote": {
+    "message": "Selecionar cotação"
   },
   "bridgeSelectTokenAmountAndAccount": {
     "message": "Selecione token, valor e conta de destino"
@@ -1308,17 +1344,6 @@
   },
   "cancel": {
     "message": "Cancelar"
-  },
-  "cancelPopoverTitle": {
-    "message": "Cancelar transação"
-  },
-  "cancelSpeedUpLabel": {
-    "message": "Essa taxa de gás vai $1 a original.",
-    "description": "$1 is text 'replace' in bold"
-  },
-  "cancelSpeedUpTransactionTooltip": {
-    "message": "Para $1 uma transação, a taxa de gás deve ser aumentada em pelo menos 10% para que seja reconhecida pela rede.",
-    "description": "$1 is string 'cancel' or 'speed up'"
   },
   "cancelTransactionDescription": {
     "message": "Esta transação será cancelada e esta taxa de rede substituirá a original."
@@ -1524,6 +1549,9 @@
   },
   "confirmFieldTooltipPaymaster": {
     "message": "A taxa dessa transação será paga pelo contrato inteligente do tesoureiro."
+  },
+  "confirmFieldTotalExposure": {
+    "message": "Exposição total"
   },
   "confirmGasFeeTokenBalance": {
     "message": "Saldo:"
@@ -1809,6 +1837,9 @@
   "contactDetails": {
     "message": "Detalhes do contato"
   },
+  "contactUpdated": {
+    "message": "Contato atualizado"
+  },
   "contactUs": {
     "message": "Fale conosco"
   },
@@ -1892,6 +1923,10 @@
   },
   "createPasswordDetails": {
     "message": "Desbloqueia a MetaMask somente neste dispositivo."
+  },
+  "createPasswordDetailsSocial": {
+    "message": "Perder esta senha significa perder o acesso à carteira em todos os dispositivos, $1",
+    "description": "$1 is the text 'MetaMask can't reset it.'"
   },
   "createPasswordDetailsSocialReset": {
     "message": "a MetaMask não pode redefini-la."
@@ -2022,10 +2057,6 @@
   },
   "dappSuggestedShortLabel": {
     "message": "Site"
-  },
-  "dappSuggestedTooltip": {
-    "message": "$1 recomendou esse preço.",
-    "description": "$1 represents the Dapp's origin"
   },
   "dappSwapAdvantage": {
     "message": "Economize e ganhe com swaps da MetaMask"
@@ -2237,17 +2268,31 @@
     "message": "Isso excluirá dados históricos do MetaMetrics associados ao seu uso neste dispositivo. Sua carteira e contas continuarão exatamente como estão agora após a exclusão desses dados. Esse processo pode levar até 30 dias. Veja nossa $1.",
     "description": "$1 will have text saying Privacy Policy "
   },
+  "deleteMetaMetricsDataDescriptionV2": {
+    "message": "Isso excluirá os dados históricos do MetaMetrics associados à sua carteira. O MetaMetrics inclui dados de uso e de diagnóstico anonimizados. Sua carteira e suas contas permanecerão as mesmas. Esse processo pode levar até 30 dias. Consulte nossa $1.",
+    "description": "$1 will have text saying Privacy Policy "
+  },
   "deleteMetaMetricsDataErrorDesc": {
     "message": "Essa solicitação não pode ser concluída no momento devido a um problema no servidor do sistema de análise. Por favor, tente novamente mais tarde."
   },
   "deleteMetaMetricsDataErrorTitle": {
     "message": "Não podemos excluir esses dados no momento"
   },
+  "deleteMetaMetricsDataErrorToast": {
+    "message": "Não foi possível excluir"
+  },
   "deleteMetaMetricsDataModalDesc": {
     "message": "Estamos prestes a remover todos os seus dados do MetaMetrics. Tem certeza?"
   },
   "deleteMetaMetricsDataModalTitle": {
     "message": "Excluir dados do MetaMetrics?"
+  },
+  "deleteMetaMetricsDataRequestedDescription": {
+    "message": "Você iniciou a exclusão em $1. Esse processo pode levar até 30 dias. Consulte nossa $2.",
+    "description": "$1 will be the date on which teh deletion is requested and $2 will have text saying Privacy Policy "
+  },
+  "deleteMetaMetricsDataToast": {
+    "message": "Os dados serão excluídos em 30 dias"
   },
   "deleteNetworkIntro": {
     "message": "Se você excluir esta rede, precisará adicioná-la de novo para visualizar seus ativos nela"
@@ -2463,9 +2508,6 @@
   "editAddressNickname": {
     "message": "Editar apelido do endereço"
   },
-  "editCancellationGasFeeModalTitle": {
-    "message": "Editar taxa de gás por cancelamento"
-  },
   "editContact": {
     "message": "Editar contato"
   },
@@ -2478,9 +2520,6 @@
   "editGasLimitOutOfBoundsV2": {
     "message": "O limite de gás deve ser superior a $1 e inferior a $2",
     "description": "$1 is the minimum limit for gas and $2 is the maximum limit"
-  },
-  "editGasLimitTooltip": {
-    "message": "O limite de gás são as unidades máximas de gás que você está disposto a utilizar. Unidades de gás são um multiplicador para “Taxa de prioridade máxima” e “Taxa máxima”."
   },
   "editGasMaxBaseFeeGWEIImbalance": {
     "message": "A taxa-base máxima não pode ser inferior à taxa de prioridade"
@@ -2521,15 +2560,6 @@
   "editGasPriceTooLow": {
     "message": "O preço do gás deve ser superior a 0"
   },
-  "editGasPriceTooltip": {
-    "message": "Essa rede requer um campo de \"preço do gás\" ao enviar uma transação. O preço do gás é o valor pago por unidade de gás."
-  },
-  "editGasSubTextFeeLabel": {
-    "message": "Taxa máxima:"
-  },
-  "editGasTitle": {
-    "message": "Editar prioridade"
-  },
   "editGasTooLow": {
     "message": "Tempo de processamento desconhecido"
   },
@@ -2553,9 +2583,6 @@
   },
   "editPermissions": {
     "message": "Editar permissões"
-  },
-  "editSpeedUpEditGasFeeModalTitle": {
-    "message": "Editar taxa de gás para aceleração"
   },
   "editSpendingCap": {
     "message": "Editar limite de gastos"
@@ -2811,6 +2838,9 @@
   "externalNameSourcesSettingDescription": {
     "message": "Buscaremos os apelidos propostos para os endereços com os quais você interage em fontes terceirizadas como Etherscan, Infura e Lens Protocol. Essas fontes poderão ver esses endereços e o seu endereço IP. O endereço da sua conta não será exposto a terceiros."
   },
+  "externalNameSourcesSettingDescriptionV2": {
+    "message": "Busca apelidos sugeridos para endereços com os quais você interage a partir de fontes de terceiros, como Etherscan, Infura e protocolo Lens."
+  },
   "failed": {
     "message": "Falha"
   },
@@ -2828,9 +2858,6 @@
   },
   "fast": {
     "message": "Rápido"
-  },
-  "feeDetails": {
-    "message": "Detalhes da taxa"
   },
   "fieldRequired": {
     "message": "$1 é obrigatório"
@@ -2945,27 +2972,14 @@
   "gas": {
     "message": "Gás"
   },
-  "gasDisplayAcknowledgeDappButtonText": {
-    "message": "Editar taxa de gás sugerida"
-  },
-  "gasDisplayDappWarning": {
-    "message": "Essa taxa de gás foi sugerida por $1. Sua substituição pode causar um problema com a sua transação. Entre em contato com $1 se tiver perguntas.",
-    "description": "$1 represents the Dapp's origin"
-  },
   "gasLimit": {
     "message": "Limite de gás"
-  },
-  "gasLimitRecommended": {
-    "message": "O limite de gás recomendado é de $1. Um limite de gás inferior pode resultar em falha."
   },
   "gasLimitTooLow": {
     "message": "O limite de gás deve ser de pelo menos 21000"
   },
   "gasLimitV2": {
     "message": "Limite de gás"
-  },
-  "gasOption": {
-    "message": "Opção de gás"
   },
   "gasPrice": {
     "message": "Preço do gás (GWEI)"
@@ -3152,6 +3166,9 @@
   "hardwareWalletErrorRecoveryUnlock2": {
     "message": "O app Ethereum esteja aberto"
   },
+  "hardwareWalletErrorTitleBlindSignNotSupported": {
+    "message": "Habilitar assinatura cega"
+  },
   "hardwareWalletErrorTitleBlindSignNotSupportedInstruction1": {
     "message": "O app Ethereum esteja aberto em sua Ledger"
   },
@@ -3191,6 +3208,9 @@
   },
   "hardwareWalletSupportLinkConversion": {
     "message": "clique aqui"
+  },
+  "hardwareWalletTitleEthAppNotOpen": {
+    "message": "Abra o aplicativo Ethereum"
   },
   "hardwareWalletTypeConnected": {
     "message": "$1 conectada",
@@ -3317,6 +3337,9 @@
   "hyperliquidReferralSubtitle": {
     "message": "Economize até 4% em negociações com um código de indicação da MetaMask.",
     "description": "The subtitle of the Hyperliquid referral confirmation screen"
+  },
+  "iUnderstand": {
+    "message": "Eu compreendo"
   },
   "id": {
     "message": "ID"
@@ -3547,6 +3570,9 @@
   "ipfsGatewayDescription": {
     "message": "A MetaMask usa serviços terceirizados para exibir imagens de seus NFTs armazenados no IPFS, exibir informações relacionadas a endereços ENS inseridos na barra de endereço do seu navegador e buscar ícones para diferentes tokens. Seu endereço IP pode ser exposto a esses serviços ao usá-los."
   },
+  "ipfsGatewayDescriptionV2": {
+    "message": "Utiliza serviços de terceiros para exibir imagens dos seus NFTs armazenados no IPFS, mostrar informações relacionadas aos endereços ENS inseridos na barra de endereços do seu navegador e buscar ícones para diferentes tokens. Escolha seu gateway IPFS preferido abaixo."
+  },
   "ipfsToggleModalDescriptionOne": {
     "message": "Nós usamos serviços de terceiros para exibir imagens dos seus NFTs armazenados em IPFS, exibir informações relacionadas aos endereços ENS inseridos na barra de endereços do seu navegador e buscar ícones para diferentes tokens. Seu endereço IP poderá ficar exposto a esses serviços quando você os utilizar."
   },
@@ -3600,18 +3626,6 @@
   "knownTokenWarning": {
     "message": "Essa ação editará os tokens já listados na sua carteira, que podem ser usados para praticar phishing contra você. Só aprove se você tiver certeza de que quer alterar o que esses tokens representam. Saiba mais sobre $1"
   },
-  "l1Fee": {
-    "message": "Taxa da L1"
-  },
-  "l1FeeTooltip": {
-    "message": "Taxa de gás da L1"
-  },
-  "l2Fee": {
-    "message": "Taxa da L2"
-  },
-  "l2FeeTooltip": {
-    "message": "Taxa de gás da L2"
-  },
   "language": {
     "message": "Idioma"
   },
@@ -3624,12 +3638,6 @@
   },
   "lavaDomeCopyWarning": {
     "message": "Para sua segurança, não é possível selecionar este texto no momento."
-  },
-  "layer1Fees": {
-    "message": "Taxas de camada 1"
-  },
-  "layer2Fees": {
-    "message": "Taxas da Layer 2"
   },
   "learnHow": {
     "message": "Saiba como"
@@ -3763,9 +3771,6 @@
   "links": {
     "message": "Links"
   },
-  "loadMore": {
-    "message": "Carregar mais"
-  },
   "loading": {
     "message": "Carregando..."
   },
@@ -3851,6 +3856,12 @@
   "makeAnotherSwap": {
     "message": "Criar nova troca"
   },
+  "makeSmartContractsEasier": {
+    "message": "Torne os contratos inteligentes mais fáceis de serem lidos"
+  },
+  "makeSmartContractsEasierDescription": {
+    "message": "O MetaMask utiliza o 4byte.directory e o Sourceify para traduzir essas informações."
+  },
   "manage": {
     "message": "Gerenciar"
   },
@@ -3868,6 +3879,9 @@
   },
   "managePermissions": {
     "message": "Gerenciar permissões"
+  },
+  "manageWalletRecovery": {
+    "message": "Gerenciar recuperação de carteira"
   },
   "marketCap": {
     "message": "Capitalização de mercado"
@@ -3898,9 +3912,6 @@
   },
   "maxFeeTooltip": {
     "message": "Uma taxa máxima fornecida para pagar pela transação."
-  },
-  "maxPriorityFee": {
-    "message": "Taxa de prioridade máxima"
   },
   "medium": {
     "message": "Mercado"
@@ -4096,10 +4107,6 @@
     "message": "$1 quer usar Snaps de $2",
     "description": "$1 is the dapp and $2 is the number of snaps it wants to connect to."
   },
-  "musdBoostDescription": {
-    "message": "Converta suas stablecoins em mUSD e receba um bônus de até $1%.",
-    "description": "$1 is the bonus percentage (e.g., 3)"
-  },
   "musdBoostTitle": {
     "message": "Obtenha $1% sobre suas stablecoins",
     "description": "$1 is the bonus percentage (e.g., 3)"
@@ -4119,6 +4126,10 @@
     "message": "Bônus resgatável",
     "description": "Label for the claimable bonus row in the mUSD conversion confirmation screen"
   },
+  "musdClaimableBonusTooltip": {
+    "message": "O bônus anualizado que você ganhou por manter mUSD. Seu bônus pode ser resgatado diariamente na Linea. $1",
+    "description": "$1 is the 'Terms apply' link"
+  },
   "musdConversionActivityTitle": {
     "message": "Converter $1 para mUSD",
     "description": "$1 is the source token symbol (e.g., USDC)"
@@ -4134,14 +4145,11 @@
     "message": "Convertendo $1 → mUSD",
     "description": "$1 is the source token symbol (e.g., USDC)"
   },
-  "musdConversionToastSuccess": {
-    "message": "Seu mUSD está aqui!"
-  },
   "musdConvert": {
     "message": "Converter"
   },
-  "musdEarnBonusPercentage": {
-    "message": "Ganhe um bônus de $1%",
+  "musdConvertAndGetBonus": {
+    "message": "Converta e ganhe $1%",
     "description": "$1 is the bonus percentage (e.g., 3)"
   },
   "musdEducationGetStarted": {
@@ -4149,10 +4157,14 @@
   },
   "musdEducationHeadline": {
     "message": "OBTENHA $1% SOBRE STABLECOINS",
-    "description": "$1 is the bonus APY percentage"
+    "description": "$1 is the bonus APY percentage. Line break between ON and STABLECOINS matches splash layout."
   },
   "musdEducationNotNow": {
     "message": "Agora não"
+  },
+  "musdGetBonusPercentage": {
+    "message": "Receba $1% de bônus em mUSD",
+    "description": "$1 is the bonus percentage (e.g., 3)"
   },
   "musdGetMusd": {
     "message": "Obter mUSD"
@@ -4322,9 +4334,6 @@
   },
   "networkFeeExplanationTitle": {
     "message": "Taxa de rede"
-  },
-  "networkIsBusy": {
-    "message": "A rede está ocupada. Os preços de gás estão altos e as estimativas estão menos exatas."
   },
   "networkMenu": {
     "message": "Menu da rede"
@@ -5605,9 +5614,6 @@
   "perpsPosition": {
     "message": "Posição"
   },
-  "perpsPositionClosedReverseOrderFailed": {
-    "message": "Sua posição foi fechada, mas a ordem reversa falhou. Talvez seja necessário abrir uma nova posição manualmente"
-  },
   "perpsPositionSize": {
     "message": "Tamanho da posição"
   },
@@ -6076,6 +6082,9 @@
   },
   "quizIntroduction": {
     "message": "Para revelar sua Frase de Recuperação Secreta, você precisa responder corretamente duas perguntas."
+  },
+  "quotedTotalCost": {
+    "message": "Custo total: $1"
   },
   "rank": {
     "message": "Classificação"
@@ -6591,6 +6600,9 @@
   },
   "securityAlertsDescriptionV2": {
     "message": "Esse recurso alerta você sobre atividades mal-intencionadas analisando ativamente as solicitações de transações e assinaturas. $1"
+  },
+  "securityAndPassword": {
+    "message": "Segurança e senha"
   },
   "securityAndPrivacy": {
     "message": "Segurança e Privacidade"
@@ -7416,6 +7428,10 @@
   "showFiatConversionInTestnetsDescription": {
     "message": "Selecione essa opção para exibir a conversão de moeda fiduciária nas redes de teste"
   },
+  "showFiatConversionInTestnetsDescriptionV2": {
+    "message": "Exibe tokens de rede como moeda local em redes de teste. Caso alguém tenha lhe pedido para ativar esse recurso, você pode estar sendo vítima de um golpe. Apenas para fins de teste. $1",
+    "description": "$1 is the 'Learn more' link"
+  },
   "showHexData": {
     "message": "Exibir dados hexa"
   },
@@ -7540,6 +7556,9 @@
   "simulationsSettingDescription": {
     "message": "Ative esta opção para estimar alterações de saldo pelas transações e assinaturas antes de confirmá-las. Isso não garante o resultado final de suas transações. $1"
   },
+  "simulationsSettingDescriptionV2": {
+    "message": "Estima as alterações de saldo das transações antes de você confirmá-las. Isso não garante o resultado final das suas transações. $1"
+  },
   "simulationsSettingSubHeader": {
     "message": "Estimar alterações de saldo"
   },
@@ -7594,14 +7613,32 @@
   "smartAccount": {
     "message": "Conta inteligente"
   },
+  "smartAccountDappRequestsDescription": {
+    "message": "Permite que dapps (aplicativos descentralizados) solicitem recursos de conta inteligente para contas padrão. Isso não afetará contas que já são contas inteligentes."
+  },
+  "smartAccountDappRequestsTitle": {
+    "message": "Solicitações de conta inteligente vindas de dapps"
+  },
   "smartAccountLabel": {
     "message": "Conta inteligente"
+  },
+  "smartAccountRequestsFromDapps": {
+    "message": "Solicitações de conta inteligente vindas de dapps"
+  },
+  "smartAccountRequestsFromDappsDescription": {
+    "message": "Permite que dapps (aplicativos descentralizados) solicitem recursos de conta inteligente para contas padrão. Isso não afetará contas que já são contas inteligentes."
   },
   "smartAccountUpgradeBannerDescription": {
     "message": "Mesmo endereço. Recursos mais inteligentes."
   },
   "smartAccountUpgradeBannerTitle": {
     "message": "Mudar para conta inteligente"
+  },
+  "smartContractAddress": {
+    "message": "Endereço de contrato inteligente"
+  },
+  "smartContractAddressWarning": {
+    "message": "O endereço do destinatário pode não aceitar transferências diretas de tokens, o que pode resultar na perda de fundos. Prossiga apenas se tiver certeza de que este contrato pode receber sua transferência."
   },
   "smartContracts": {
     "message": "Contratos inteligentes"
@@ -7860,15 +7897,6 @@
   "speedUpCancellation": {
     "message": "Acelerar esse cancelamento"
   },
-  "speedUpExplanation": {
-    "message": "Atualizamos a taxa de gás baseada nas condições atuais da rede e a aumentamos em pelo menos 10% (exigido pela rede)."
-  },
-  "speedUpPopoverTitle": {
-    "message": "Acelerar a transação"
-  },
-  "speedUpTooltipText": {
-    "message": "Nova taxa de gás"
-  },
   "speedUpTransactionDescription": {
     "message": "Esta taxa de rede substituirá a original."
   },
@@ -8073,6 +8101,9 @@
   "stateCorruptionTheseInstructionsLinkTitle": {
     "message": "Como recuperar sua Frase de Recuperação Secreta"
   },
+  "stateLogError": {
+    "message": "Erro ao recuperar registros de estado. Tente novamente mais tarde."
+  },
   "stateLogFileName": {
     "message": "Logs de estado da MetaMask"
   },
@@ -8081,6 +8112,9 @@
   },
   "stateLogsDescription": {
     "message": "Os registros de estado contêm os endereços da sua conta pública e as transações enviadas."
+  },
+  "stateLogsModalDescription": {
+    "message": "Os registros de estado podem nos ajudar a identificar problemas que você possa encontrar. Envie-os somente para o suporte da MetaMask, pois os registros de estado contêm o endereço público da sua conta e suas transações."
   },
   "status": {
     "message": "Status"
@@ -8153,6 +8187,9 @@
   "stxFailureDescription": {
     "message": "Mudanças repentinas no mercado podem causar falhas. Se o problema persistir, entre em contato com $1.",
     "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
+  },
+  "stxOptInDescriptionV2": {
+    "message": "Ative as transações inteligentes para realizar transações mais confiáveis ​​e seguras. $1"
   },
   "stxOptInSupportedNetworksDescription": {
     "message": "Ative as transações inteligentes para realizar transações mais confiáveis ​​e seguras em redes suportadas. $1"
@@ -8591,6 +8628,12 @@
   "themeDescription": {
     "message": "Escolha o seu tema preferido para a MetaMask."
   },
+  "thirdPartyApis": {
+    "message": "APIs de terceiros"
+  },
+  "thirdPartyApisDescription": {
+    "message": "Escolha como você compartilha seu endereço de IP ou endereço Ethereum com APIs de terceiros. As alterações afetarão a sua experiência com a MetaMask."
+  },
   "thirdPartySoftware": {
     "message": "Aviso de software de terceiros",
     "description": "Title of a popup modal displayed when installing a snap for the first time."
@@ -8624,6 +8667,9 @@
   },
   "tokenContractError": {
     "message": "Este endereço é um endereço de contrato de token. Se você enviar tokens para este endereço, você os perderá."
+  },
+  "tokenContractWarning": {
+    "message": "Aviso sobre contrato de token"
   },
   "tokenCount": {
     "message": "token",
@@ -8690,14 +8736,8 @@
   "tokensInCollection": {
     "message": "Tokens na coleção"
   },
-  "tooltipSatusConnected": {
-    "message": "conectado"
-  },
   "tooltipSatusConnectedUpperCase": {
     "message": "Conectado"
-  },
-  "tooltipSatusNotConnected": {
-    "message": "não conectado"
   },
   "total": {
     "message": "Total"
@@ -8713,9 +8753,6 @@
   },
   "transactionDetailGasHeading": {
     "message": "Taxa de gás estimada"
-  },
-  "transactionDetailMultiLayerTotalSubtitle": {
-    "message": "Valor + taxas"
   },
   "transactionError": {
     "message": "Erro de transação. Exceção gerada no código do contrato."
@@ -8907,6 +8944,9 @@
     "message": "Não é possível conectar-se à $1.",
     "description": "Message shown when network connection fails. $1 is the network name."
   },
+  "unableToDownload": {
+    "message": "Não foi possível baixar"
+  },
   "unapproved": {
     "message": "Não aprovado"
   },
@@ -9059,6 +9099,9 @@
   },
   "useSafeChainsListValidationDescription": {
     "message": "A MetaMask usa um serviço terceirizado chamado $1 para exibir dados precisos e padronizados das redes. Isso reduz suas chances de se conectar a uma rede mal-intencionada ou incorreta. Ao usar esse recurso, seu endereço IP é exposto à chainid.network."
+  },
+  "useSafeChainsListValidationDescriptionV2": {
+    "message": "Reduz as chances de você se conectar a uma rede maliciosa ou incorreta. A MetaMask usa $1 para exibir detalhes de rede precisos e padronizados."
   },
   "useSafeChainsListValidationWebsite": {
     "message": "chainid.network",

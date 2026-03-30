@@ -1,6 +1,6 @@
 import { WINDOW_TITLES } from '../../constants';
 import { withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
 import AddTokenConfirmation from '../../page-objects/pages/confirmations/add-token-confirmations';
 import AssetListPage from '../../page-objects/pages/home/asset-list';
@@ -14,7 +14,7 @@ describe('Add token using wallet_watchAsset', function () {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
         smartContract,
@@ -59,9 +59,8 @@ describe('Add token using wallet_watchAsset', function () {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withPermissionControllerConnectedToTestDapp()
-          .withEnabledNetworks({ eip155: { '0x539': true } })
           .build(),
         smartContract,
         title: this.test?.fullTitle(),

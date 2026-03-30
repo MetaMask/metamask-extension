@@ -2,7 +2,8 @@ export { PerpsBalanceDropdown } from './perps-balance-dropdown';
 export type { PerpsBalanceDropdownProps } from './perps-balance-dropdown';
 export { PerpsRecentActivity } from './perps-recent-activity';
 export type { PerpsRecentActivityProps } from './perps-recent-activity';
-export { PerpsTabView } from './perps-tab-view';
+export { PerpsView } from './perps-view';
+export { PerpsViewStreamBoundary } from './perps-view-stream-boundary';
 export { PerpsTutorialModal } from './perps-tutorial-modal';
 export { PerpsWatchlist } from './perps-watchlist';
 export { PerpsPositionsOrders } from './perps-positions-orders';
@@ -52,6 +53,7 @@ export { UpdateTPSLModal, UpdateTPSLModalContent } from './update-tpsl';
 export type {
   UpdateTPSLModalProps,
   UpdateTPSLModalContentProps,
+  UpdateTPSLSubmitState,
 } from './update-tpsl';
 
 // Order Entry components

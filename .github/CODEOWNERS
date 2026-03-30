@@ -48,7 +48,7 @@ development/circular-deps.ts         @MetaMask/extension-security-team
 
 # For now, restricting approvals inside the .devcontainer folder to devs
 # who were involved with the Codespaces project.
-.devcontainer/                       @MetaMask/extension-security-team @HowardBraham
+.devcontainer/                       @MetaMask/extension-platform @HowardBraham
 
 # Design System to own code for the component-library folder
 # Slack handle: @metamask-design-system-team | Slack channel: #metamask-design-system
@@ -152,6 +152,7 @@ app/scripts/lib/transaction                                                     
 ui/pages/confirmations                                                              @MetaMask/confirmations
 ui/components/multichain/pages/send                                                 @MetaMask/confirmations
 ui/pages/confirmations/components/confirm/footer                                    @MetaMask/confirmations
+ui/pages/confirmations/components/confirm/info/typed-sign/typed-sign-permission     @MetaMask/confirmations @MetaMask/delegation
 ui/pages/confirmations/components/confirm/footer/shield-footer-coverage-indicator   @MetaMask/confirmations @MetaMask/web3auth
 ui/pages/confirmations/components/confirm/footer/shield-footer-agreement*           @MetaMask/confirmations @MetaMask/web3auth
 ui/pages/confirmations/components/confirm/info/shield-subscription-approve          @MetaMask/confirmations @MetaMask/web3auth
@@ -210,8 +211,8 @@ app/scripts/lib/createMainFrameOriginMiddleware.ts                    @MetaMask/
 app/scripts/lib/createTracingMiddleware.ts                            @MetaMask/wallet-integrations
 
 # mUSD
-**/musd/** @MetaMask/metamask-earn
-shared/lib/deep-links/routes/musd.ts @MetaMask/metamask-earn
+**/musd/** @MetaMask/earn
+shared/lib/deep-links/routes/musd.ts @MetaMask/earn
 
 # Extension Platform owns build, development tooling,
 # CI, background process, and platform infrastructure. Changes to

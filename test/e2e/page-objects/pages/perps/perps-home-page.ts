@@ -1,11 +1,12 @@
 import { PerpsPositionsBase } from './perps-positions-base';
 
 /**
- * Page object for the Perps Home view (balance, positions, explore markets, tutorial).
- * Use this when the user is already on the Perps tab and you interact with the tab content.
- * For opening the Perps tab from account overview, use PerpsTabPage first (e.g. openPerpsTab), then use this page.
+ * Page object for the Perps tab (wallet home with Perps tab selected).
+ * Use this when the user is already on the Perps tab and interacting with
+ * balance, positions, explore markets, and tutorial content.
+ * For opening the Perps tab from account overview, use PerpsTabPage first.
  *
- * @see ui/components/app/perps/perps-tab-view.tsx
+ * @see ui/components/app/perps/perps-view.tsx
  */
 export class PerpsHomePage extends PerpsPositionsBase {
   private readonly addFundsButton = {
@@ -88,7 +89,7 @@ export class PerpsHomePage extends PerpsPositionsBase {
 
   /**
    * Clicks the "See All" link in the Recent Activity section (navigates to Perps Activity).
-   * Requires positions so Recent Activity section is visible.
+   * Requires at least one perps transaction so the non-empty list and See All are shown.
    */
   async clickRecentActivitySeeAll(): Promise<void> {
     await this.driver.clickElement(this.perpsRecentActivitySeeAll);
@@ -157,7 +158,8 @@ export class PerpsHomePage extends PerpsPositionsBase {
   }
 
   /**
-   * Waits for the Recent Activity section to be visible (when user has positions).
+   * Waits for the Recent Activity list (non-empty) to be visible.
+   * When there is no history, the section uses `perps-recent-activity-empty` instead.
    */
   async waitForRecentActivitySection(): Promise<void> {
     await this.driver.waitForSelector(this.perpsRecentActivity);
