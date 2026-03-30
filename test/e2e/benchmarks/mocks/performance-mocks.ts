@@ -686,7 +686,7 @@ export async function mockBenchmarkEndpoints(
       .forPost(/^https:\/\/mainnet\.infura\.io/u)
       .asPriority(MOCK_PRIORITIES.TEST_OVERRIDE)
       .always()
-      .thenCallback(delayedResponse(650, jsonRpcResponse('0x0'))),
+      .thenCallback(delayedResponse(800, jsonRpcResponse('0x0'))),
   );
 
   endpoints.push(
@@ -694,7 +694,7 @@ export async function mockBenchmarkEndpoints(
       .forPost(/polygon-mainnet\.infura\.io/u)
       .asPriority(MOCK_PRIORITIES.TEST_OVERRIDE)
       .always()
-      .thenCallback(delayedResponse(650, jsonRpcResponse('0x0'))),
+      .thenCallback(delayedResponse(500, jsonRpcResponse('0x0'))),
   );
 
   endpoints.push(
@@ -710,7 +710,7 @@ export async function mockBenchmarkEndpoints(
       .forPost(/optimism-mainnet\.infura\.io/u)
       .asPriority(MOCK_PRIORITIES.TEST_OVERRIDE)
       .always()
-      .thenCallback(delayedResponse(650, jsonRpcResponse('0x0'))),
+      .thenCallback(delayedResponse(475, jsonRpcResponse('0x0'))),
   );
 
   endpoints.push(
@@ -742,7 +742,7 @@ export async function mockBenchmarkEndpoints(
       .forPost(/avalanche-mainnet\.infura\.io/u)
       .asPriority(MOCK_PRIORITIES.TEST_OVERRIDE)
       .always()
-      .thenCallback(delayedResponse(900, jsonRpcResponse('0x0'))),
+      .thenCallback(delayedResponse(550, jsonRpcResponse('0x0'))),
   );
 
   endpoints.push(
@@ -766,7 +766,7 @@ export async function mockBenchmarkEndpoints(
       .forPost(/https:\/\/celo-mainnet\.infura\.io\/v3\/.*/u)
       .asPriority(MOCK_PRIORITIES.TEST_OVERRIDE)
       .always()
-      .thenCallback(delayedResponse(300, jsonRpcResponse('0x0'))),
+      .thenCallback(delayedResponse(750, jsonRpcResponse('0x0'))),
   );
 
   endpoints.push(
@@ -782,7 +782,7 @@ export async function mockBenchmarkEndpoints(
       .forPost(/mainnet\.era\.zksync\.io/u)
       .asPriority(MOCK_PRIORITIES.TEST_OVERRIDE)
       .always()
-      .thenCallback(delayedResponse(900, jsonRpcResponse('0x0'))),
+      .thenCallback(delayedResponse(375, jsonRpcResponse('0x0'))),
   );
 
   endpoints.push(
@@ -1046,6 +1046,14 @@ export async function mockBenchmarkEndpoints(
       .thenCallback(delayedResponse(550, ACCOUNTS_BALANCES)),
   );
 
+  // Solana RPC mock delays calibrated to real-world infura solana-mainnet latency:
+  //   getSlot / getHealth / simple calls : ~50–150 ms  → 100 ms
+  //   getBalance / getAccountInfo        : p50 ~100–250 ms → 150 ms
+  //   getTokenAccountsByOwner            : scan, ~100–300 ms → 200 ms
+  //   simulateTransaction                : heavy, ~200–400 ms → 300 ms
+  //   getSignaturesForAddress            : tx history, ~200–500 ms → 350 ms
+  //   catch-all (any other method)       : real p95 ~300–600 ms → 450 ms
+  //                                        (previously 1500 ms — 2.5–5× too high)
   endpoints.push(
     await server
       .forPost(SOLANA_URL_REGEX)
@@ -1054,7 +1062,7 @@ export async function mockBenchmarkEndpoints(
       .always()
       .thenCallback(async (req) => {
         const body = (await req.body.getJson()) as { id?: string };
-        await new Promise((resolve) => setTimeout(resolve, 100));
+        await new Promise((resolve) => setTimeout(resolve, 150));
         return solanaGetBalanceResponse(body.id || '1337');
       }),
   );
@@ -1067,7 +1075,7 @@ export async function mockBenchmarkEndpoints(
       .always()
       .thenCallback(async (req) => {
         const body = (await req.body.getJson()) as { id?: string };
-        await new Promise((resolve) => setTimeout(resolve, 100));
+        await new Promise((resolve) => setTimeout(resolve, 150));
         return solanaGetAccountInfoResponse(body.id || '1337');
       }),
   );
@@ -1107,7 +1115,7 @@ export async function mockBenchmarkEndpoints(
       .withJsonBodyIncluding({ method: 'getTokenAccountsByOwner' })
       .asPriority(MOCK_PRIORITIES.HIGH_PRIORITY)
       .always()
-      .thenCallback(delayedResponse(100, SOLANA_GET_TOKEN_ACCOUNTS_BY_OWNER)),
+      .thenCallback(delayedResponse(200, SOLANA_GET_TOKEN_ACCOUNTS_BY_OWNER)),
   );
 
   endpoints.push(
@@ -1116,7 +1124,7 @@ export async function mockBenchmarkEndpoints(
       .withJsonBodyIncluding({ method: 'simulateTransaction' })
       .asPriority(MOCK_PRIORITIES.HIGH_PRIORITY)
       .always()
-      .thenCallback(delayedResponse(100, SOLANA_SIMULATE_TRANSACTION)),
+      .thenCallback(delayedResponse(300, SOLANA_SIMULATE_TRANSACTION)),
   );
 
   endpoints.push(
@@ -1125,7 +1133,7 @@ export async function mockBenchmarkEndpoints(
       .withJsonBodyIncluding({ method: 'getSignaturesForAddress' })
       .asPriority(MOCK_PRIORITIES.HIGH_PRIORITY)
       .always()
-      .thenCallback(delayedResponse(100, SOLANA_GET_SIGNATURES_FOR_ADDRESS)),
+      .thenCallback(delayedResponse(350, SOLANA_GET_SIGNATURES_FOR_ADDRESS)),
   );
 
   endpoints.push(
@@ -1135,7 +1143,7 @@ export async function mockBenchmarkEndpoints(
       .always()
       .thenCallback(async (req) => {
         const body = (await req.body.getJson()) as { id?: string };
-        await new Promise((resolve) => setTimeout(resolve, 1500));
+        await new Promise((resolve) => setTimeout(resolve, 450));
         return solanaCatchAllResponse(body.id || '1337');
       }),
   );
