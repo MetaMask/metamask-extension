@@ -34,7 +34,6 @@ import {
   mockBridgeGetTokens,
   mockBridgeSearchTokens,
 } from './common-solana';
-import HomePage from 'test/e2e/page-objects/pages/home/homepage';
 
 async function mockSwapUSDCtoSOL(
   mockServer: Mockttp,
