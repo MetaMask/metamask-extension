@@ -1,6 +1,8 @@
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { formatChainIdToCaip } from '@metamask/bridge-controller';
+import { ENVIRONMENT_TYPE_POPUP } from '../../../shared/constants/app';
+import { getEnvironmentType } from '../../../shared/lib/environment-type';
 import {
   rehydrateBridgeStore,
   resetBridgeController,
@@ -11,8 +13,6 @@ import {
 } from '../../ducks/bridge/actions';
 import { getBridgeQuotes, getFromChains } from '../../ducks/bridge/selectors';
 import { useBridgeNavigation } from './useBridgeNavigation';
-import { ENVIRONMENT_TYPE_POPUP } from '../../../shared/constants/app';
-import { getEnvironmentType } from '../../../shared/lib/environment-type';
 
 /**
  * This sets the inital state of the bridge page on load.

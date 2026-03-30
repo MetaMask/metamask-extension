@@ -214,13 +214,7 @@ describe('Bridge tests', function (this: Suite) {
         await homePage.startSwapFlow();
         const bridgePage = new BridgeQuotePage(driver);
 
-        await (
-          await bridgePage.findSrcAsset(
-            'DAI',
-            '0x1',
-            '0x6B175474E89094C44Da98b954EedeAC495271d0F',
-          )
-        ).click();
+        await (await bridgePage.searchForAsset('DAI')).click();
         console.log('Selected source asset DAI');
 
         const tokenOverviewPage = new TokenOverviewPage(driver);
@@ -255,11 +249,7 @@ describe('Bridge tests', function (this: Suite) {
 
         const tokenOverviewPage = new TokenOverviewPage(driver);
 
-        const srcAssetElement = await bridgePage.findSrcAsset(
-          'mUSD',
-          '0x1',
-          '0xacA92E438df0B2401fF60dA7E4337B687a2435DA',
-        );
+        const srcAssetElement = await bridgePage.searchForAsset('mUSD');
         await srcAssetElement.click();
         console.log('Selected source asset mUSD');
 
@@ -297,20 +287,12 @@ describe('Bridge tests', function (this: Suite) {
 
         const tokenOverviewPage = new TokenOverviewPage(driver);
 
-        await (
-          await bridgePage.findSrcAsset(
-            'DAI',
-            '0x1',
-            '0x6B175474E89094C44Da98b954EedeAC495271d0F',
-          )
-        ).click();
+        await (await bridgePage.searchForAsset('DAI')).click();
         console.log('Selected source asset DAI');
 
         await (
-          await bridgePage.findSrcAsset(
+          await bridgePage.searchForAsset(
             'USDC',
-            '0xe708',
-            '0x176211869cA2b568f2A7D4EE941E073a821EE1ff',
             bridgePage.destinationAssetPickerButton,
           )
         ).click();

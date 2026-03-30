@@ -160,15 +160,10 @@ class BridgeQuotePage {
     );
   };
 
-  findSrcAsset = async (
+  searchForAsset = async (
     token: string,
-    chainId: Hex,
-    address: string,
     assetPicker = this.sourceAssetPickerButton,
   ) => {
-    const expectedAssetId = toAssetId(address, chainId)?.toLowerCase();
-    const expectedUrl = `${ASSET_ROUTE}/${chainId}/${encodeURIComponent(toChecksumHexAddress(address))}`;
-
     console.log(`Opening asset picker`);
     await this.driver.clickElement(assetPicker);
     await this.driver.fill(this.assetPrickerSearchInput, token);
