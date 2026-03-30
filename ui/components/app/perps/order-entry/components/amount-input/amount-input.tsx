@@ -88,10 +88,7 @@ export const AmountInput: React.FC<AmountInputProps> = ({
         if (cleanValue && maxSize > 0) {
           const numValue = parseFloat(cleanValue);
           if (!isNaN(numValue) && numValue > 0) {
-            const pct = Math.min(
-              Math.round((numValue / maxSize) * 100),
-              100,
-            );
+            const pct = Math.min(Math.round((numValue / maxSize) * 100), 100);
             onBalancePercentChange(pct);
             setPercentInputValue(String(pct));
           } else {
@@ -146,10 +143,7 @@ export const AmountInput: React.FC<AmountInputProps> = ({
         onAmountChange(formatAmount(usdSize));
         const maxSize = availableBalance * leverage;
         if (maxSize > 0) {
-          const pct = Math.min(
-            Math.round((usdSize / maxSize) * 100),
-            100,
-          );
+          const pct = Math.min(Math.round((usdSize / maxSize) * 100), 100);
           onBalancePercentChange(pct);
           setPercentInputValue(String(pct));
         } else {
@@ -185,7 +179,13 @@ export const AmountInput: React.FC<AmountInputProps> = ({
         onAmountChange(formatAmount(newAmount));
       }
     },
-    [onAmountChange, onBalancePercentChange, availableBalance, leverage, formatAmount],
+    [
+      onAmountChange,
+      onBalancePercentChange,
+      availableBalance,
+      leverage,
+      formatAmount,
+    ],
   );
 
   const handlePercentInputChange = useCallback(
@@ -206,7 +206,13 @@ export const AmountInput: React.FC<AmountInputProps> = ({
         }
       }
     },
-    [onAmountChange, onBalancePercentChange, availableBalance, leverage, formatAmount],
+    [
+      onAmountChange,
+      onBalancePercentChange,
+      availableBalance,
+      leverage,
+      formatAmount,
+    ],
   );
 
   const handlePercentInputBlur = useCallback(() => {

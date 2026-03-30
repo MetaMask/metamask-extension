@@ -317,13 +317,10 @@ export function usePerpsOrderForm({
   const handleLeverageChange = useCallback(
     (leverage: number) => {
       setFormState((prev) => {
-        const amount =
-          parseFloat(prev.amount.replace(/,/gu, '')) || 0;
+        const amount = parseFloat(prev.amount.replace(/,/gu, '')) || 0;
         const maxSize = availableBalance * leverage;
         const balancePercent =
-          maxSize > 0
-            ? Math.min(Math.round((amount / maxSize) * 100), 100)
-            : 0;
+          maxSize > 0 ? Math.min(Math.round((amount / maxSize) * 100), 100) : 0;
         return { ...prev, leverage, balancePercent };
       });
     },
