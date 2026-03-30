@@ -10,10 +10,12 @@ import {
   getHardwareWalletMetricDeviceModel,
   mapHardwareWalletRecoveryErrorType,
   mapHardwareWalletTypeToMetricDeviceType,
+  nextHardwareWalletRecoveryInlineCtaViewCount,
 } from '../../../shared/lib/hardware-wallet-recovery-metrics';
 import {
   ConnectionStatus,
   createHardwareWalletError,
+  getHardwareWalletErrorCode,
   HardwareWalletType,
   type HardwareWalletConnectionState,
 } from '../../contexts/hardware-wallets';
@@ -25,6 +27,11 @@ import {
  *
  * No-ops when `walletType` is null/undefined or does not map to a Segment `device_type`
  * (required property). Synthetic errors are only built after those guards.
+ *
+ * `error_type_view_count` increments on each call for the same error identity (location,
+ * wallet type, error code, normalized error type), matching the modal recovery pattern.
+ * It resets when `resetHardwareWalletRecoveryInlineCtaViewCount` runs (e.g. device ready
+ * or full disconnect).
  * Swallows tracking failures so callers are not blocked.
  *
  * @param trackEvent - UI `trackEvent` from {@link MetaMetricsContext}.
@@ -60,6 +67,12 @@ export function trackHardwareWalletRecoveryConnectCtaClicked(
     connectionError ??
     createHardwareWalletError(ErrorCode.DeviceDisconnected, walletType);
 
+  const errorCode = getHardwareWalletErrorCode(errorForMetrics);
+  const errorType = mapHardwareWalletRecoveryErrorType(errorForMetrics);
+  const errorIdentityKey = `${location}:${walletType}:${String(errorCode)}:${errorType}`;
+  const errorTypeViewCount =
+    nextHardwareWalletRecoveryInlineCtaViewCount(errorIdentityKey);
+
   trackEvent({
     category: MetaMetricsEventCategory.Accounts,
     event: MetaMetricsEventName.HardwareWalletRecoveryCtaClicked,
@@ -67,8 +80,8 @@ export function trackHardwareWalletRecoveryConnectCtaClicked(
       location,
       deviceType,
       deviceModel: getHardwareWalletMetricDeviceModel(errorForMetrics),
-      errorType: mapHardwareWalletRecoveryErrorType(errorForMetrics),
-      errorTypeViewCount: 1,
+      errorType,
+      errorTypeViewCount,
       error: errorForMetrics,
     }),
   }).catch(() => {

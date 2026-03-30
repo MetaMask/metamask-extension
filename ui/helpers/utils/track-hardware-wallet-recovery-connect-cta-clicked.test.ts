@@ -16,10 +16,15 @@ import {
   ConnectionStatus,
   HardwareWalletType,
 } from '../../contexts/hardware-wallets';
+import { resetHardwareWalletRecoveryInlineCtaViewCount } from '../../../shared/lib/hardware-wallet-recovery-metrics';
 import { trackHardwareWalletRecoveryConnectCtaClicked } from './track-hardware-wallet-recovery-connect-cta-clicked';
 
 describe('trackHardwareWalletRecoveryConnectCtaClicked', () => {
   const disconnectedState = { status: ConnectionStatus.Disconnected as const };
+
+  beforeEach(() => {
+    resetHardwareWalletRecoveryInlineCtaViewCount();
+  });
 
   it('fires HardwareWalletRecoveryCtaClicked with full Segment properties when device is disconnected', () => {
     const trackEvent = jest.fn().mockResolvedValue(undefined);
@@ -106,6 +111,57 @@ describe('trackHardwareWalletRecoveryConnectCtaClicked', () => {
     });
 
     expect(trackEvent).not.toHaveBeenCalled();
+  });
+
+  it('increments error_type_view_count on repeated CTA for the same error identity', () => {
+    const trackEvent = jest.fn().mockResolvedValue(undefined);
+    const options = {
+      location: MetaMetricsHardwareWalletRecoveryLocation.Swaps,
+      walletType: HardwareWalletType.Ledger,
+      connectionState: disconnectedState,
+    };
+
+    trackHardwareWalletRecoveryConnectCtaClicked(trackEvent, options);
+    trackHardwareWalletRecoveryConnectCtaClicked(trackEvent, options);
+
+    expect(trackEvent).toHaveBeenNthCalledWith(
+      1,
+      expect.objectContaining({
+        properties: expect.objectContaining({
+          error_type_view_count: 1,
+        }),
+      }),
+    );
+    expect(trackEvent).toHaveBeenNthCalledWith(
+      2,
+      expect.objectContaining({
+        properties: expect.objectContaining({
+          error_type_view_count: 2,
+        }),
+      }),
+    );
+  });
+
+  it('starts error_type_view_count at 1 again after reset for the same identity', () => {
+    const trackEvent = jest.fn().mockResolvedValue(undefined);
+    const options = {
+      location: MetaMetricsHardwareWalletRecoveryLocation.Swaps,
+      walletType: HardwareWalletType.Ledger,
+      connectionState: disconnectedState,
+    };
+
+    trackHardwareWalletRecoveryConnectCtaClicked(trackEvent, options);
+    resetHardwareWalletRecoveryInlineCtaViewCount();
+    trackHardwareWalletRecoveryConnectCtaClicked(trackEvent, options);
+
+    expect(trackEvent).toHaveBeenNthCalledWith(
+      2,
+      expect.objectContaining({
+        properties: expect.objectContaining({
+          error_type_view_count: 1,
+        }),
+      }),
+    );
   });
 
   it('does not surface errors when trackEvent rejects', async () => {
