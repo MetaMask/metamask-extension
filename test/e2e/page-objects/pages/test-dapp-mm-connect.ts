@@ -176,6 +176,69 @@ export class TestDappMmConnect {
   }
 
   // ──────────────────────────────────────────────────────────────────────────
+  // Private shared interaction helpers
+  // ──────────────────────────────────────────────────────────────────────────
+
+  /**
+   * Wait until the element identified by `selector` contains `expectedAddress`
+   * (case-insensitive). Retries on stale-element errors.
+   *
+   * @param selector - CSS selector for the active-account element.
+   * @param expectedAddress - Address substring to wait for.
+   */
+  private async waitForActiveAccount(
+    selector: string,
+    expectedAddress: string,
+  ): Promise<void> {
+    await this.driver.waitUntil(
+      async () => {
+        try {
+          const el = await this.driver.findElement(selector);
+          const text = await el.getText();
+          return text.toLowerCase().includes(expectedAddress.toLowerCase());
+        } catch {
+          return false;
+        }
+      },
+      { interval: 500, timeout: this.driver.timeout },
+    );
+  }
+
+  /**
+   * Assert that the element identified by `selector` is absent from the DOM.
+   *
+   * @param selector - CSS selector for the active-account element.
+   */
+  private async checkAccountNotConnected(selector: string): Promise<void> {
+    await this.driver.assertElementNotPresent(selector);
+  }
+
+  /**
+   * Wait for the element at `selector` to show `expectedChainId`.
+   *
+   * @param selector - CSS selector for the chain-ID display element.
+   * @param expectedChainId - Chain ID string to wait for, e.g. '0x89' or '10'.
+   */
+  private async waitForChainId(
+    selector: string,
+    expectedChainId: string,
+  ): Promise<void> {
+    await this.driver.waitForSelector({ css: selector, text: expectedChainId });
+  }
+
+  /**
+   * Return the current text of the element at `selector` without waiting for
+   * a specific value.
+   *
+   * @param selector - CSS selector for the chain-ID display element.
+   * @returns The raw text content of the element.
+   */
+  private async getChainId(selector: string): Promise<string> {
+    const el = await this.driver.waitForSelector(selector);
+    return el.getText();
+  }
+
+  // ──────────────────────────────────────────────────────────────────────────
   // Navigation
   // ──────────────────────────────────────────────────────────────────────────
 
@@ -417,16 +480,12 @@ export class TestDappMmConnect {
    * @param expectedChainId - Hex chain ID to wait for, e.g. '0x89'
    */
   async waitForLegacyChainId(expectedChainId: string): Promise<void> {
-    await this.driver.waitForSelector({
-      css: this.legacyChainIdValue,
-      text: expectedChainId,
-    });
+    await this.waitForChainId(this.legacyChainIdValue, expectedChainId);
   }
 
   /** Return the current chain ID text without waiting for a specific value. */
   async getLegacyChainId(): Promise<string> {
-    const el = await this.driver.waitForSelector(this.legacyChainIdValue);
-    return el.getText();
+    return this.getChainId(this.legacyChainIdValue);
   }
 
   /**
@@ -437,18 +496,7 @@ export class TestDappMmConnect {
    * @param expectedAddress - The address to wait for
    */
   async waitForLegacyActiveAccount(expectedAddress: string): Promise<void> {
-    await this.driver.waitUntil(
-      async () => {
-        try {
-          const el = await this.driver.findElement(this.legacyActiveAccount);
-          const text = await el.getText();
-          return text.toLowerCase().includes(expectedAddress.toLowerCase());
-        } catch {
-          return false;
-        }
-      },
-      { interval: 500, timeout: this.driver.timeout },
-    );
+    await this.waitForActiveAccount(this.legacyActiveAccount, expectedAddress);
   }
 
   /**
@@ -456,7 +504,7 @@ export class TestDappMmConnect {
    * This is the expected state after accountsChanged([]) fires (no permission).
    */
   async checkLegacyAccountNotConnected(): Promise<void> {
-    await this.driver.assertElementNotPresent(this.legacyActiveAccount);
+    await this.checkAccountNotConnected(this.legacyActiveAccount);
   }
 
   /**
@@ -515,16 +563,12 @@ export class TestDappMmConnect {
    * @param expectedChainId - Decimal or string chain ID to wait for, e.g. '10'
    */
   async waitForWagmiChainId(expectedChainId: string): Promise<void> {
-    await this.driver.waitForSelector({
-      css: this.wagmiChainIdValue,
-      text: expectedChainId,
-    });
+    await this.waitForChainId(this.wagmiChainIdValue, expectedChainId);
   }
 
   /** Return the current wagmi chain ID text without waiting for a specific value. */
   async getWagmiChainId(): Promise<string> {
-    const el = await this.driver.waitForSelector(this.wagmiChainIdValue);
-    return el.getText();
+    return this.getChainId(this.wagmiChainIdValue);
   }
 
   /**
@@ -535,18 +579,7 @@ export class TestDappMmConnect {
    * @param expectedAddress - The address to wait for
    */
   async waitForWagmiActiveAccount(expectedAddress: string): Promise<void> {
-    await this.driver.waitUntil(
-      async () => {
-        try {
-          const el = await this.driver.findElement(this.wagmiActiveAccount);
-          const text = await el.getText();
-          return text.toLowerCase().includes(expectedAddress.toLowerCase());
-        } catch {
-          return false;
-        }
-      },
-      { interval: 500, timeout: this.driver.timeout },
-    );
+    await this.waitForActiveAccount(this.wagmiActiveAccount, expectedAddress);
   }
 
   /**
@@ -554,7 +587,7 @@ export class TestDappMmConnect {
    * Expected after accountsChanged([]) fires (wagmi disconnects).
    */
   async checkWagmiAccountNotConnected(): Promise<void> {
-    await this.driver.assertElementNotPresent(this.wagmiActiveAccount);
+    await this.checkAccountNotConnected(this.wagmiActiveAccount);
   }
 
   /**
