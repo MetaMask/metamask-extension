@@ -8,6 +8,7 @@
 
 export {
   getIsPerpsExperienceAvailable,
+  getIsPerpsInAppToastsEnabled,
   getHip3AllowedSources,
   getHip3AllowedSourcesSet,
 } from './feature-flags';
