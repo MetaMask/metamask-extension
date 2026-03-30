@@ -5,7 +5,7 @@ const VERSION = version;
 const OLD_VERSION = VERSION - 1;
 
 describe(`migration #${VERSION}`, () => {
-  it('moves `SnapsRegistry` state to `SnapRegistryContorller`', async () => {
+  it('moves `SnapsRegistry` state to `SnapRegistryController`', async () => {
     const oldStorage = {
       meta: { version: OLD_VERSION },
       data: {
@@ -30,29 +30,6 @@ describe(`migration #${VERSION}`, () => {
     expect(changedControllers).toStrictEqual(
       new Set(['SnapRegistryController', 'SnapsRegistry']),
     );
-  });
-
-  it('does nothing when showDefaultAddress is already true', async () => {
-    const oldStorage = {
-      meta: { version: OLD_VERSION },
-      data: {
-        PreferencesController: {
-          preferences: {
-            showDefaultAddress: true,
-          },
-          currentLocale: 'en',
-        },
-      },
-    };
-
-    const versionedData = cloneDeep(oldStorage);
-    const changedControllers = new Set<string>();
-
-    await migrate(versionedData, changedControllers);
-
-    expect(versionedData.meta.version).toBe(VERSION);
-    expect(versionedData.data).toStrictEqual(oldStorage.data);
-    expect(changedControllers.size).toBe(0);
   });
 
   it('does nothing if `SnapsRegistry` is not present', async () => {
