@@ -323,6 +323,48 @@ describe('usePerpsOrderForm', () => {
       );
     });
 
+    it('sets orderValue equal to size (not size × leverage)', () => {
+      const { result } = renderHookWithProvider(
+        () => usePerpsOrderForm(defaultOptions),
+        mockStateWithLocale,
+      );
+
+      act(() => {
+        result.current.handleAmountChange('5000');
+        result.current.handleLeverageChange(5);
+      });
+
+      // orderValue should be $5000 (the size), not $25000 (size × leverage)
+      expect(result.current.calculations.orderValue).toContain('5,000');
+      expect(result.current.calculations.orderValue).not.toContain('25,000');
+    });
+
+    it('recalculates balancePercent when leverage changes', () => {
+      const { result } = renderHookWithProvider(
+        () =>
+          usePerpsOrderForm({
+            ...defaultOptions,
+            availableBalance: 1000,
+          }),
+        mockStateWithLocale,
+      );
+
+      act(() => {
+        result.current.handleAmountChange('5000');
+        result.current.handleLeverageChange(10);
+      });
+
+      // Size $5000, available $1000, leverage 10x → maxSize $10000 → 50%
+      expect(result.current.formState.balancePercent).toBe(50);
+
+      act(() => {
+        result.current.handleLeverageChange(5);
+      });
+
+      // Same size $5000, now leverage 5x → maxSize $5000 → 100%
+      expect(result.current.formState.balancePercent).toBe(100);
+    });
+
     it('recalculates when closePercent changes', () => {
       const existingPosition = {
         size: '2.0',

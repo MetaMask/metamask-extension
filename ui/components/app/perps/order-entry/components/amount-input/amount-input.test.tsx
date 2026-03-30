@@ -178,6 +178,25 @@ describe('AmountInput', () => {
     });
   });
 
+  describe('token display', () => {
+    it('displays token amount as size divided by price (not multiplied by leverage)', () => {
+      renderWithProvider(
+        <AmountInput
+          {...defaultProps}
+          amount="9000"
+          leverage={10}
+          currentPrice={45000}
+        />,
+        mockStore,
+      );
+
+      const container = screen.getByTestId('amount-input-token-field');
+      const input = container.querySelector('input');
+      // Size $9000 / price $45000 = 0.2 BTC (not 0.2 × 10 = 2)
+      expect(input).toHaveValue('0.2');
+    });
+  });
+
   describe('leveraged size calculations', () => {
     it('computes balance percent using max size (available × leverage)', () => {
       const onBalancePercentChange = jest.fn();
