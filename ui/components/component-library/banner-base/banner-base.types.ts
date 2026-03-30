@@ -77,6 +77,10 @@ export interface BannerBaseStyleUtilityProps extends StyleUtilityProps {
   className?: string;
 }
 
+/**
+ * @deprecated This type has been deprecated in favor of the one from @metamask/design-system-react
+ * @see {@link https://github.com/MetaMask/metamask-design-system/blob/main/packages/design-system-react/MIGRATION.md#bannerbase-component | Migration Guide}
+ */
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export type BannerBaseProps<C extends React.ElementType> =
