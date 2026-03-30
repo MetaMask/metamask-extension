@@ -11,7 +11,7 @@ import { Mockttp } from 'mockttp';
 import { mockedSourcifyTokenSend } from '../confirmations/helpers';
 import { DAPP_URL, WINDOW_TITLES } from '../../constants';
 import { withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
 import { login } from '../../page-objects/flows/login.flow';
 import ActivityListPage from '../../page-objects/pages/home/activity-list';
@@ -35,13 +35,7 @@ describe('Send ERC20 - Gas Customization', function () {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
-        fixtures: new FixtureBuilder()
-          .withEnabledNetworks({
-            eip155: {
-              '0x539': true,
-            },
-          })
-          .build(),
+        fixtures: new FixtureBuilderV2().build(),
         localNodeOptions: { hardfork: 'muirGlacier' },
         smartContract,
         title: this.test?.fullTitle(),
@@ -100,13 +94,8 @@ describe('Send ERC20 - Gas Customization', function () {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withPermissionControllerConnectedToTestDapp()
-          .withEnabledNetworks({
-            eip155: {
-              '0x539': true,
-            },
-          })
           .build(),
         localNodeOptions: { hardfork: 'muirGlacier' },
         smartContract,
@@ -177,13 +166,8 @@ describe('Send ERC20 - Gas Customization', function () {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withPermissionControllerConnectedToTestDapp()
-          .withEnabledNetworks({
-            eip155: {
-              '0x539': true,
-            },
-          })
           .build(),
         smartContract,
         title: this.test?.fullTitle(),

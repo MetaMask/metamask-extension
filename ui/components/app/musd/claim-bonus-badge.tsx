@@ -1,28 +1,29 @@
-import React, { useCallback, useContext } from 'react';
-import type { Hex } from '@metamask/utils';
-import { useSelector } from 'react-redux';
 import {
-  Text,
-  TextVariant,
-  TextColor,
   FontWeight,
   Icon,
+  IconColor,
   IconName,
   IconSize,
-  IconColor,
+  Text,
+  TextColor,
+  TextVariant,
 } from '@metamask/design-system-react';
-import { useI18nContext } from '../../../hooks/useI18nContext';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
+import type { Hex } from '@metamask/utils';
+import React, { useCallback, useContext, useEffect, useRef } from 'react';
+import { useSelector } from 'react-redux';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getMultichainNetworkConfigurationsByChainId } from '../../../selectors/multichain';
 import { useMerklClaim } from './hooks/useMerklClaim';
 import { useOnMerklClaimConfirmed } from './hooks/useOnMerklClaimConfirmed';
 import {
-  MUSD_EVENTS_CONSTANTS,
+  type MerklClaimBonusAnalyticsLocation,
   type MusdClaimBonusButtonClickedEventProperties,
+  type MusdClaimBonusCtaDisplayedEventProperties,
 } from './musd-events';
 
 export const ClaimBonusBadge = ({
@@ -30,14 +31,23 @@ export const ClaimBonusBadge = ({
   tokenAddress,
   chainId,
   refetchRewards,
+  analyticsLocation,
+  assetSymbol,
+  bonusAmountRange,
+  hasClaimedBefore,
 }: {
   label: string;
   tokenAddress: string;
   chainId: Hex;
   refetchRewards: () => void;
+  analyticsLocation: MerklClaimBonusAnalyticsLocation;
+  assetSymbol: string;
+  bonusAmountRange: string;
+  hasClaimedBefore: boolean;
 }) => {
   const t = useI18nContext();
   const { trackEvent } = useContext(MetaMetricsContext);
+  const hasFiredCtaDisplayedEvent = useRef(false);
 
   // Get network name for analytics
   const networkConfigurationsByChainId = useSelector(
@@ -53,6 +63,49 @@ export const ClaimBonusBadge = ({
     tokenAddress,
     chainId,
   });
+
+  useEffect(() => {
+    if (
+      hasFiredCtaDisplayedEvent.current ||
+      isClaiming ||
+      error ||
+      !bonusAmountRange
+    ) {
+      return;
+    }
+    hasFiredCtaDisplayedEvent.current = true;
+
+    /* eslint-disable @typescript-eslint/naming-convention */
+    const impressionProperties: MusdClaimBonusCtaDisplayedEventProperties = {
+      location: analyticsLocation,
+      view_trigger: 'component_mounted',
+      button_text: label,
+      network_chain_id: chainId,
+      network_name: networkName,
+      asset_symbol: assetSymbol,
+      bonus_amount_range: bonusAmountRange,
+      has_claimed_before: hasClaimedBefore,
+    };
+    /* eslint-enable @typescript-eslint/naming-convention */
+
+    trackEvent({
+      event: MetaMetricsEventName.MusdClaimBonusCtaDisplayed,
+      category: MetaMetricsEventCategory.MusdConversion,
+      properties: impressionProperties,
+    });
+  }, [
+    assetSymbol,
+    bonusAmountRange,
+    chainId,
+    error,
+    hasClaimedBefore,
+    isClaiming,
+    label,
+    analyticsLocation,
+    networkName,
+    trackEvent,
+  ]);
+
   // Trigger the claim transaction directly, routing to the confirmation page.
   const handleBadgeClick = useCallback(
     (e: React.MouseEvent) => {
@@ -60,8 +113,7 @@ export const ClaimBonusBadge = ({
 
       /* eslint-disable @typescript-eslint/naming-convention */
       const eventProperties: MusdClaimBonusButtonClickedEventProperties = {
-        location:
-          MUSD_EVENTS_CONSTANTS.EVENT_LOCATIONS.CLAIM_BONUS_BOTTOM_SHEET,
+        location: analyticsLocation,
         claim_amount: label,
         network_chain_id: chainId,
         network_name: networkName,
@@ -77,7 +129,7 @@ export const ClaimBonusBadge = ({
 
       claimRewards();
     },
-    [claimRewards, trackEvent, label, chainId, networkName],
+    [claimRewards, trackEvent, label, chainId, networkName, analyticsLocation],
   );
 
   if (isClaiming) {
