@@ -13,7 +13,7 @@ import {
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { PerpsTokenLogo } from '../perps-token-logo';
-import { getDisplayName, getTransactionAmountColor } from '../utils';
+import { getDisplayName } from '../utils';
 import type { PerpsTransaction } from '../types';
 
 export type TransactionCardProps = {
@@ -61,25 +61,28 @@ export const TransactionCard: React.FC<TransactionCardProps> = ({
 
   // Determine the amount to display based on transaction type
   const getAmountDisplay = (): { text: string; color: TextColor } => {
-    if (transaction.fill?.pnl) {
+    if (transaction.fill) {
       return {
-        text: `${transaction.fill.pnl.startsWith('-') ? '-' : '+'}$${transaction.fill.pnl.replace(/^[+-]/u, '')}`,
-        color: getTransactionAmountColor(transaction.fill.pnl),
+        text: transaction.fill.amount,
+        color: transaction.fill.isPositive
+          ? TextColor.SuccessDefault
+          : TextColor.ErrorDefault,
       };
     }
     if (transaction.fundingAmount) {
-      const { fee } = transaction.fundingAmount;
-      const isNegative = fee.startsWith('-');
       return {
-        text: `${isNegative ? '-' : '+'}$${fee.replace(/^[+-]/u, '')}`,
-        color: isNegative ? TextColor.ErrorDefault : TextColor.SuccessDefault,
+        text: transaction.fundingAmount.fee,
+        color: transaction.fundingAmount.isPositive
+          ? TextColor.SuccessDefault
+          : TextColor.ErrorDefault,
       };
     }
     if (transaction.depositWithdrawal) {
-      const isWithdrawal = transaction.type === 'withdrawal';
       return {
-        text: `${isWithdrawal ? '-' : '+'}$${transaction.depositWithdrawal.amount}`,
-        color: isWithdrawal ? TextColor.ErrorDefault : TextColor.SuccessDefault,
+        text: transaction.depositWithdrawal.amount,
+        color: transaction.depositWithdrawal.isPositive
+          ? TextColor.SuccessDefault
+          : TextColor.ErrorDefault,
       };
     }
     // For trades without realized PnL, return empty (don't show symbol)

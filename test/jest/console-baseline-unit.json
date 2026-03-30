@@ -639,6 +639,9 @@
       "Reselect: Identity function warnings": 1,
       "error: Unexpected key \"DNS\" found in": 1
     },
+    "ui/hooks/useHardwareWalletRecoveryLocation.test.tsx": {
+      "Reselect: Identity function warnings": 1
+    },
     "ui/hooks/useMultiPolling.test.ts": {
       "error: Error: Network error": 1
     },
