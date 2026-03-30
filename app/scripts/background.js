@@ -2444,16 +2444,9 @@ async function startExtensionInitialization() {
         return;
       }
 
-      try {
-        controller.onboardingController.setFirstTimeFlowType(
-          FirstTimeFlowType.restore,
-        );
-      } catch (error) {
-        log.error(
-          'critical-error-restore: failed to set restore flow type',
-          error,
-        );
-      }
+      controller.onboardingController.setFirstTimeFlowType(
+        FirstTimeFlowType.restore,
+      );
 
       await handoffRestoringTabToExtension(platform, handoffPayload);
       return;
