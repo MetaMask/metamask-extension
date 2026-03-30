@@ -10,7 +10,6 @@ import BitcoinHomepage from '../../page-objects/pages/home/bitcoin-homepage';
 import BitcoinReviewTxPage from '../../page-objects/pages/send/bitcoin-review-tx-page';
 import SendPage from '../../page-objects/pages/send/send-page';
 import {
-  mockBitcoinFeatureFlag,
   mockExchangeRates,
   mockCurrencyExchangeRates,
   mockFiatExchangeRates,
@@ -22,7 +21,6 @@ import { mockPriceMulti, mockPriceMultiBtcAndSol } from '../btc/mocks/min-api';
 
 async function mockBtcSendMocks(mockServer: Mockttp) {
   return [
-    await mockBitcoinFeatureFlag(mockServer),
     await mockInitialFullScan(mockServer),
     await mockExchangeRates(mockServer),
     await mockCurrencyExchangeRates(mockServer),
@@ -37,7 +35,6 @@ async function mockBtcSendMocks(mockServer: Mockttp) {
 describe('BTC Account - Send', function (this: Suite) {
   const recipientAddress = 'bc1qsqvczpxkgvp3lw230p7jffuuqnw9pp4j5tawmf';
   const bitcoinChainId = 'bip122:000000000019d6689c085ae165831e93';
-  this.timeout(120000);
 
   it('fields validation', async function () {
     await withFixtures(
@@ -48,7 +45,7 @@ describe('BTC Account - Send', function (this: Suite) {
         testSpecificMock: mockBtcSendMocks,
       },
       async ({ driver }) => {
-        await login(driver, { validateBalance: false });
+        await login(driver);
         const homePage = new BitcoinHomepage(driver);
         await homePage.waitForNonEvmAccountsLoaded();
         await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Bitcoin');
@@ -76,7 +73,7 @@ describe('BTC Account - Send', function (this: Suite) {
         testSpecificMock: mockBtcSendMocks,
       },
       async ({ driver }) => {
-        await login(driver, { validateBalance: false });
+        await login(driver);
         const homePage = new BitcoinHomepage(driver);
         await homePage.waitForNonEvmAccountsLoaded();
         await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Bitcoin');
@@ -110,7 +107,7 @@ describe('BTC Account - Send', function (this: Suite) {
         testSpecificMock: mockBtcSendMocks,
       },
       async ({ driver }) => {
-        await login(driver, { validateBalance: false });
+        await login(driver);
         const homePage = new BitcoinHomepage(driver);
         await homePage.waitForNonEvmAccountsLoaded();
         await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Bitcoin');

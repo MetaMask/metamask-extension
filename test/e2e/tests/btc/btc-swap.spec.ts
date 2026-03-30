@@ -64,7 +64,7 @@ describe('BTC Account - Swap (Bridge)', function (this: Suite) {
         testSpecificMock: mockBtcSwapMocks,
       },
       async ({ driver }) => {
-        await login(driver, { validateBalance: false });
+        await login(driver);
         const homePage = new BitcoinHomepage(driver);
         await homePage.waitForNonEvmAccountsLoaded();
         await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Bitcoin');
@@ -96,7 +96,7 @@ describe('BTC Account - Swap (Bridge)', function (this: Suite) {
         testSpecificMock: mockBtcSwapMocks,
       },
       async ({ driver }) => {
-        await login(driver, { validateBalance: false });
+        await login(driver);
         const homePage = new BitcoinHomepage(driver);
         await homePage.waitForNonEvmAccountsLoaded();
         await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Bitcoin');
@@ -137,7 +137,7 @@ describe('BTC Account - Swap (Bridge)', function (this: Suite) {
         testSpecificMock: mockBtcSwapMocks,
       },
       async ({ driver }) => {
-        await login(driver, { validateBalance: false });
+        await login(driver);
         const homePage = new BitcoinHomepage(driver);
         await homePage.waitForNonEvmAccountsLoaded();
         await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Bitcoin');
@@ -174,7 +174,7 @@ describe('BTC Account - Swap (Bridge)', function (this: Suite) {
         testSpecificMock: mockBtcSwapMocksNoQuotes,
       },
       async ({ driver }) => {
-        await login(driver, { validateBalance: false });
+        await login(driver);
         const homePage = new BitcoinHomepage(driver);
         await homePage.waitForNonEvmAccountsLoaded();
         await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Bitcoin');
@@ -212,7 +212,7 @@ describe('BTC Account - Swap (Bridge)', function (this: Suite) {
         testSpecificMock: mockBtcSwapMocks,
       },
       async ({ driver }) => {
-        await login(driver, { validateBalance: false });
+        await login(driver);
         const homePage = new BitcoinHomepage(driver);
         await homePage.waitForNonEvmAccountsLoaded();
         await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Bitcoin');
