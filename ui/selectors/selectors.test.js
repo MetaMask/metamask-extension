@@ -1495,7 +1495,7 @@ describe('Selectors', () => {
         hidden: false,
         active: false,
         connections: true,
-        lastSelected: undefined,
+        lastSelected: 0,
       },
       {
         address: '0xc42edfcc21ed14dda456aa0756c153f7985d8813',

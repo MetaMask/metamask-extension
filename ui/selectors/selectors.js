@@ -3262,12 +3262,14 @@ export const getOrderedConnectedAccountsForActiveTab = createSelector(
   (state) => state.metamask.permissionHistory,
   getMetaMaskAccountsOrderedWithoutBalance,
   getAllPermittedAccountsForCurrentTab,
+  getAccountIdToGroupLastSelected,
   (
     origin,
     permissionHistory,
     /** @type {import('@metamask/keyring-internal-api').InternalAccount[]} */
     orderedAccounts,
     connectedAccounts,
+    groupLastSelectedById,
   ) => {
     const permissionHistoryByAccount =
       permissionHistory[origin]?.eth_accounts?.accounts || {};
@@ -3296,19 +3298,19 @@ export const getOrderedConnectedAccountsForActiveTab = createSelector(
         },
         name: account.metadata?.name ?? '',
       }))
-      .sort(
-        ({ lastSelected: lastSelectedA }, { lastSelected: lastSelectedB }) => {
-          if (lastSelectedA === lastSelectedB) {
-            return 0;
-          } else if (lastSelectedA === undefined) {
-            return 1;
-          } else if (lastSelectedB === undefined) {
-            return -1;
-          }
+      .sort((a, b) => {
+        const lastSelectedA = groupLastSelectedById[a.id];
+        const lastSelectedB = groupLastSelectedById[b.id];
+        if (lastSelectedA === lastSelectedB) {
+          return 0;
+        } else if (lastSelectedA === undefined) {
+          return 1;
+        } else if (lastSelectedB === undefined) {
+          return -1;
+        }
 
-          return lastSelectedB - lastSelectedA;
-        },
-      );
+        return lastSelectedB - lastSelectedA;
+      });
 
     return result;
   },
@@ -3322,26 +3324,30 @@ export const getUpdatedAndSortedAccounts = createSelector(
   getPinnedAccountsList,
   getHiddenAccountsList,
   getOrderedConnectedAccountsForActiveTab,
-  (accounts, pinnedAddresses, hiddenAddresses, connectedAccounts) => {
-    const connectionMetadataById = new Map();
-    connectedAccounts.forEach((connection) => {
-      if (connection.metadata) {
-        connectionMetadataById.set(connection.id, {
-          connections: true,
-          lastSelected: connection.metadata.lastSelected,
-        });
-      }
-    });
+  getAccountIdToGroupLastSelected,
+  (
+    accounts,
+    pinnedAddresses,
+    hiddenAddresses,
+    connectedAccounts,
+    groupLastSelectedById,
+  ) => {
+    const connectedAccountIds = new Set(
+      connectedAccounts.map((connection) => connection.id),
+    );
 
     const accountsWithMetadata = accounts.map((account) => {
-      const connectionData = connectionMetadataById.get(account.id);
-      if (connectionData) {
-        return { ...account, ...connectionData };
+      if (connectedAccountIds.has(account.id)) {
+        return {
+          ...account,
+          connections: true,
+          lastSelected: groupLastSelectedById[account.id],
+        };
       }
       return account;
     });
 
-    // Find the account with the most recent lastSelected timestamp among accounts with metadata
+    // Find the account with the most recent lastSelected timestamp among connected accounts
     const accountsWithLastSelected = accountsWithMetadata.filter(
       (account) => account.connections && account.lastSelected,
     );
@@ -3819,6 +3825,7 @@ function getOrderedConnectedAccountsForConnectedDapp(state, activeTab) {
     state,
     activeTab,
   );
+  const groupLastSelectedById = getAccountIdToGroupLastSelected(state);
 
   return orderedAccounts
     .filter((account) => connectedAccounts.includes(account.address))
@@ -3830,19 +3837,19 @@ function getOrderedConnectedAccountsForConnectedDapp(state, activeTab) {
         lastActive: permissionHistoryByAccount?.[account.address],
       },
     }))
-    .sort(
-      ({ lastSelected: lastSelectedA }, { lastSelected: lastSelectedB }) => {
-        if (lastSelectedA === lastSelectedB) {
-          return 0;
-        } else if (lastSelectedA === undefined) {
-          return 1;
-        } else if (lastSelectedB === undefined) {
-          return -1;
-        }
+    .sort((a, b) => {
+      const lastSelectedA = groupLastSelectedById[a.id];
+      const lastSelectedB = groupLastSelectedById[b.id];
+      if (lastSelectedA === lastSelectedB) {
+        return 0;
+      } else if (lastSelectedA === undefined) {
+        return 1;
+      } else if (lastSelectedB === undefined) {
+        return -1;
+      }
 
-        return lastSelectedB - lastSelectedA;
-      },
-    );
+      return lastSelectedB - lastSelectedA;
+    });
 }
 
 export function getPermissionsForActiveTab(state) {
