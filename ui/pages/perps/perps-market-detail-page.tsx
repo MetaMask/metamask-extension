@@ -6,7 +6,12 @@ import React, {
   useEffect,
 } from 'react';
 import { useSelector } from 'react-redux';
-import { Navigate, useNavigate, useParams } from 'react-router-dom';
+import {
+  Navigate,
+  useLocation,
+  useNavigate,
+  useParams,
+} from 'react-router-dom';
 import {
   Box,
   BoxFlexDirection,
@@ -72,6 +77,11 @@ import { EditMarginModal } from '../../components/app/perps/edit-margin';
 import { ReversePositionModal } from '../../components/app/perps/reverse-position';
 import { UpdateTPSLModal } from '../../components/app/perps/update-tpsl';
 import { ClosePositionModal } from '../../components/app/perps/close-position';
+import {
+  PERPS_TOAST_KEYS,
+  type PerpsToastKey,
+  usePerpsToast,
+} from '../../components/app/perps/perps-toast';
 import InfoTooltip from '../../components/ui/info-tooltip/info-tooltip';
 import { BorderRadius } from '../../helpers/constants/design-system';
 import type { MetaMaskReduxState } from '../../store/store';
@@ -169,6 +179,49 @@ const PopoverMenuItem: React.FC<PopoverMenuItemProps> = ({
   </Box>
 );
 
+const PERPS_TOAST_KEY_SET: Set<string> = new Set(
+  Object.values(PERPS_TOAST_KEYS),
+);
+
+const isPerpsToastKey = (value: unknown): value is PerpsToastKey => {
+  return typeof value === 'string' && PERPS_TOAST_KEY_SET.has(value);
+};
+
+type ParsedPerpsToastRouteState = {
+  perpsToastDescription?: string;
+  perpsToastKey: PerpsToastKey;
+  remainingState?: Record<string, unknown>;
+};
+
+const parsePerpsToastRouteState = (
+  state: unknown,
+): ParsedPerpsToastRouteState | null => {
+  if (!state || typeof state !== 'object') {
+    return null;
+  }
+
+  const routeState = state as Record<string, unknown>;
+  if (!isPerpsToastKey(routeState.perpsToastKey)) {
+    return null;
+  }
+
+  const { perpsToastKey, perpsToastDescription, ...remainingState } =
+    routeState;
+
+  const routeToastDescription =
+    typeof perpsToastDescription === 'string' && perpsToastDescription
+      ? perpsToastDescription
+      : undefined;
+
+  return {
+    perpsToastKey,
+    ...(routeToastDescription
+      ? { perpsToastDescription: routeToastDescription }
+      : {}),
+    ...(Object.keys(remainingState).length > 0 ? { remainingState } : {}),
+  };
+};
+
 /**
  * PerpsMarketDetailPage component
  * Displays detailed market information for a specific perps market
@@ -177,6 +230,7 @@ const PopoverMenuItem: React.FC<PopoverMenuItemProps> = ({
 const PerpsMarketDetailPage: React.FC = () => {
   const t = useI18nContext();
   const navigate = useNavigate();
+  const location = useLocation();
   const { symbol } = useParams<{ symbol: string }>();
   const isPerpsExperienceAvailable = useSelector(getIsPerpsExperienceAvailable);
   const selectedAccount = useSelector(getSelectedInternalAccount);
@@ -188,6 +242,33 @@ const PerpsMarketDetailPage: React.FC = () => {
     formatPercentWithMinThreshold,
   } = useFormatters();
   const fundingCountdown = useFundingCountdown();
+  const { replacePerpsToastByKey } = usePerpsToast();
+
+  useEffect(() => {
+    const parsedRouteState = parsePerpsToastRouteState(location.state);
+    if (!parsedRouteState) {
+      return;
+    }
+
+    replacePerpsToastByKey({
+      key: parsedRouteState.perpsToastKey,
+      ...(parsedRouteState.perpsToastDescription
+        ? { description: parsedRouteState.perpsToastDescription }
+        : {}),
+    });
+
+    navigate(`${location.pathname}${location.search}`, {
+      replace: true,
+      state: parsedRouteState.remainingState ?? undefined,
+    });
+  }, [
+    location.pathname,
+    location.search,
+    location.state,
+    navigate,
+    replacePerpsToastByKey,
+  ]);
+
   // Use stream hooks for real-time data
   const { positions: allPositions } = usePerpsLivePositions();
   const { orders: allOrders } = usePerpsLiveOrders();

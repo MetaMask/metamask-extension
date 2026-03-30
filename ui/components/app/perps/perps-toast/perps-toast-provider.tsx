@@ -9,9 +9,21 @@ import React, {
   type ReactNode,
 } from 'react';
 import { useSelector } from 'react-redux';
-import { Toast, ToastContainer } from '../../../multichain';
-import { Icon, IconName, IconSize } from '../../../component-library';
-import { IconColor } from '../../../../helpers/constants/design-system';
+import { Toast } from '../../../multichain';
+import {
+  AvatarIcon,
+  AvatarIconSize,
+  Box,
+  Icon,
+  IconName,
+  IconSize,
+} from '../../../component-library';
+import {
+  AlignItems,
+  BackgroundColor,
+  IconColor,
+  TextColor,
+} from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { getIsPerpsInAppToastsEnabled } from '../../../../selectors/perps/feature-flags';
 
@@ -20,7 +32,11 @@ export type PerpsToastVariant = 'info' | 'success' | 'error';
 export const PERPS_TOAST_KEYS = {
   CLOSE_FAILED: 'perpsToastCloseFailed',
   CLOSE_IN_PROGRESS: 'perpsToastCloseInProgress',
+  MARGIN_ADD_SUCCESS: 'perpsToastMarginAddSuccess',
+  MARGIN_REMOVE_SUCCESS: 'perpsToastMarginRemoveSuccess',
   ORDER_FAILED: 'perpsToastOrderFailed',
+  ORDER_FILLED: 'perpsToastOrderFilled',
+  ORDER_PLACED: 'perpsToastOrderPlaced',
   ORDER_SUBMITTED: 'perpsToastOrderSubmitted',
   SUBMIT_IN_PROGRESS: 'perpsToastSubmitInProgress',
   TRADE_SUCCESS: 'perpsToastTradeSuccess',
@@ -31,6 +47,11 @@ export const PERPS_TOAST_KEYS = {
 
 export type PerpsToastKey =
   (typeof PERPS_TOAST_KEYS)[keyof typeof PERPS_TOAST_KEYS];
+
+export type PerpsToastRouteState = {
+  perpsToastKey?: PerpsToastKey;
+  perpsToastDescription?: string;
+};
 
 export type PerpsToastConfig = {
   autoHideTime?: number;
@@ -45,35 +66,29 @@ export type PerpsToastKeyConfig = Omit<
   'message' | 'variant'
 > & {
   key: PerpsToastKey;
-  messageParams?: unknown[];
+  messageParams?: (string | number)[];
 };
 
 type PerpsToastState = Omit<PerpsToastConfig, 'variant'> & {
   id: number;
-  variant: PerpsToastVariant;
+  presentation: PerpsToastPresentation;
 };
 
 type PerpsToastContextValue = {
   hidePerpsToast: () => void;
   replacePerpsToast: (config: PerpsToastConfig) => void;
   replacePerpsToastByKey: (config: PerpsToastKeyConfig) => void;
-  showPerpsToast: (config: PerpsToastConfig) => void;
-  showPerpsToastByKey: (config: PerpsToastKeyConfig) => void;
 };
 
 const DEFAULT_SUCCESS_AUTO_HIDE_TIME = 3000;
 const DEFAULT_ERROR_AUTO_HIDE_TIME = 5000;
 
 const noop = () => undefined;
-const noopShow = (_config: PerpsToastConfig) => undefined;
-const noopShowByKey = (_config: PerpsToastKeyConfig) => undefined;
 
 const PERPS_TOAST_CONTEXT_DEFAULT: PerpsToastContextValue = {
   hidePerpsToast: noop,
-  replacePerpsToast: noopShow,
-  replacePerpsToastByKey: noopShowByKey,
-  showPerpsToast: noopShow,
-  showPerpsToastByKey: noopShowByKey,
+  replacePerpsToast: noop,
+  replacePerpsToastByKey: noop,
 };
 
 export const PerpsToastContext = createContext<PerpsToastContextValue>(
@@ -94,45 +109,145 @@ const getDefaultAutoHideTime = (
   return undefined;
 };
 
-const PERPS_TOAST_VARIANT_BY_KEY: Record<PerpsToastKey, PerpsToastVariant> = {
-  [PERPS_TOAST_KEYS.CLOSE_FAILED]: 'error',
-  [PERPS_TOAST_KEYS.CLOSE_IN_PROGRESS]: 'info',
-  [PERPS_TOAST_KEYS.ORDER_FAILED]: 'error',
-  [PERPS_TOAST_KEYS.ORDER_SUBMITTED]: 'info',
-  [PERPS_TOAST_KEYS.SUBMIT_IN_PROGRESS]: 'info',
-  [PERPS_TOAST_KEYS.TRADE_SUCCESS]: 'success',
-  [PERPS_TOAST_KEYS.UPDATE_FAILED]: 'error',
-  [PERPS_TOAST_KEYS.UPDATE_IN_PROGRESS]: 'info',
-  [PERPS_TOAST_KEYS.UPDATE_SUCCESS]: 'success',
+type PerpsToastIconConfig =
+  | {
+      className?: string;
+      color: IconColor;
+      dataTestId: string;
+      name: IconName;
+      type: 'icon';
+    }
+  | {
+      color: IconColor;
+      dataTestId: string;
+      name: IconName;
+      type: 'spinner';
+    }
+  | {
+      backgroundColor: BackgroundColor;
+      className?: string;
+      color: TextColor;
+      dataTestId: string;
+      name: IconName;
+      size: AvatarIconSize;
+      type: 'avatar-icon';
+    };
+
+type PerpsToastPresentation = {
+  icon: PerpsToastIconConfig;
+  variant: PerpsToastVariant;
 };
 
-const getToastIcon = (variant: PerpsToastVariant): ReactNode => {
-  if (variant === 'success') {
+const PERPS_TOAST_PRESENTATION_BY_VARIANT: Record<
+  PerpsToastVariant,
+  PerpsToastPresentation
+> = {
+  error: {
+    variant: 'error',
+    icon: {
+      type: 'icon',
+      name: IconName.Warning,
+      color: IconColor.errorDefault,
+      dataTestId: 'perps-toast-icon-warning',
+    },
+  },
+  info: {
+    variant: 'info',
+    icon: {
+      type: 'spinner',
+      name: IconName.Loading,
+      color: IconColor.primaryDefault,
+      dataTestId: 'perps-toast-icon-loading',
+    },
+  },
+  success: {
+    variant: 'success',
+    icon: {
+      type: 'avatar-icon',
+      name: IconName.CheckBold,
+      color: TextColor.successDefault,
+      backgroundColor: BackgroundColor.successMuted,
+      className: 'perps-toast__success-icon',
+      size: AvatarIconSize.Md,
+      dataTestId: 'perps-toast-icon-check-bold',
+    },
+  },
+};
+
+const PERPS_ORDER_FAILED_PRESENTATION: PerpsToastPresentation = {
+  variant: 'error',
+  icon: {
+    type: 'avatar-icon',
+    name: IconName.Warning,
+    color: TextColor.errorDefault,
+    backgroundColor: BackgroundColor.errorMuted,
+    size: AvatarIconSize.Md,
+    dataTestId: 'perps-toast-icon-warning',
+  },
+};
+
+const PERPS_TOAST_PRESENTATION_BY_KEY: Record<
+  PerpsToastKey,
+  PerpsToastPresentation
+> = {
+  [PERPS_TOAST_KEYS.CLOSE_FAILED]: PERPS_TOAST_PRESENTATION_BY_VARIANT.error,
+  [PERPS_TOAST_KEYS.CLOSE_IN_PROGRESS]:
+    PERPS_TOAST_PRESENTATION_BY_VARIANT.info,
+  [PERPS_TOAST_KEYS.MARGIN_ADD_SUCCESS]:
+    PERPS_TOAST_PRESENTATION_BY_VARIANT.success,
+  [PERPS_TOAST_KEYS.MARGIN_REMOVE_SUCCESS]:
+    PERPS_TOAST_PRESENTATION_BY_VARIANT.success,
+  [PERPS_TOAST_KEYS.ORDER_FAILED]: PERPS_ORDER_FAILED_PRESENTATION,
+  [PERPS_TOAST_KEYS.ORDER_FILLED]: PERPS_TOAST_PRESENTATION_BY_VARIANT.success,
+  [PERPS_TOAST_KEYS.ORDER_PLACED]: PERPS_TOAST_PRESENTATION_BY_VARIANT.success,
+  [PERPS_TOAST_KEYS.ORDER_SUBMITTED]: PERPS_TOAST_PRESENTATION_BY_VARIANT.info,
+  [PERPS_TOAST_KEYS.SUBMIT_IN_PROGRESS]:
+    PERPS_TOAST_PRESENTATION_BY_VARIANT.info,
+  [PERPS_TOAST_KEYS.TRADE_SUCCESS]: PERPS_TOAST_PRESENTATION_BY_VARIANT.success,
+  [PERPS_TOAST_KEYS.UPDATE_FAILED]: PERPS_TOAST_PRESENTATION_BY_VARIANT.error,
+  [PERPS_TOAST_KEYS.UPDATE_IN_PROGRESS]:
+    PERPS_TOAST_PRESENTATION_BY_VARIANT.info,
+  [PERPS_TOAST_KEYS.UPDATE_SUCCESS]:
+    PERPS_TOAST_PRESENTATION_BY_VARIANT.success,
+};
+
+const getToastIcon = ({ icon }: PerpsToastPresentation): ReactNode => {
+  if (icon.type === 'spinner') {
     return (
-      <Icon
-        name={IconName.Confirmation}
-        size={IconSize.Xl}
-        color={IconColor.successDefault}
-      />
+      <Box
+        className="flex h-8 w-8 items-center justify-center"
+        data-testid={icon.dataTestId}
+      >
+        <Icon
+          name={icon.name}
+          size={IconSize.Xl}
+          color={icon.color}
+          className="animate-spin"
+        />
+      </Box>
     );
   }
 
-  if (variant === 'error') {
+  if (icon.type === 'avatar-icon') {
     return (
-      <Icon
-        name={IconName.Danger}
-        size={IconSize.Xl}
-        color={IconColor.errorDefault}
+      <AvatarIcon
+        iconName={icon.name}
+        size={icon.size}
+        color={icon.color}
+        backgroundColor={icon.backgroundColor}
+        className={icon.className}
+        data-testid={icon.dataTestId}
       />
     );
   }
 
   return (
     <Icon
-      name={IconName.Loading}
+      name={icon.name}
       size={IconSize.Xl}
-      color={IconColor.primaryDefault}
-      className="animate-spin"
+      color={icon.color}
+      className={icon.className}
+      data-testid={icon.dataTestId}
     />
   );
 };
@@ -157,15 +272,16 @@ export const PerpsToastProvider = ({ children }: PerpsToastProviderProps) => {
     }
   }, [isPerpsInAppToastsEnabled]);
 
-  const showOrReplacePerpsToast = useCallback(
+  const upsertPerpsToast = useCallback(
     (config: PerpsToastConfig) => {
       if (!isPerpsInAppToastsEnabled) {
         return;
       }
 
       const variant = config.variant ?? 'info';
+      const presentation = PERPS_TOAST_PRESENTATION_BY_VARIANT[variant];
       const autoHideTime =
-        config.autoHideTime ?? getDefaultAutoHideTime(variant);
+        config.autoHideTime ?? getDefaultAutoHideTime(presentation.variant);
 
       toastIdRef.current += 1;
 
@@ -173,56 +289,67 @@ export const PerpsToastProvider = ({ children }: PerpsToastProviderProps) => {
         id: toastIdRef.current,
         ...config,
         autoHideTime,
-        variant,
+        presentation,
       });
     },
     [isPerpsInAppToastsEnabled],
   );
 
-  const showOrReplacePerpsToastByKey = useCallback(
+  const upsertPerpsToastByKey = useCallback(
     (config: PerpsToastKeyConfig) => {
+      if (!isPerpsInAppToastsEnabled) {
+        return;
+      }
+
       const { key, messageParams, ...rest } = config;
       const message =
         messageParams && messageParams.length > 0
           ? t(key, messageParams)
           : t(key);
+      const presentation = PERPS_TOAST_PRESENTATION_BY_KEY[key];
+      const autoHideTime =
+        rest.autoHideTime ?? getDefaultAutoHideTime(presentation.variant);
 
-      showOrReplacePerpsToast({
+      toastIdRef.current += 1;
+
+      setActiveToast({
+        id: toastIdRef.current,
         ...rest,
+        autoHideTime,
         message,
-        variant: PERPS_TOAST_VARIANT_BY_KEY[key],
+        presentation,
       });
     },
-    [showOrReplacePerpsToast, t],
+    [isPerpsInAppToastsEnabled, t],
   );
 
   const contextValue = useMemo<PerpsToastContextValue>(
     () => ({
       hidePerpsToast,
-      replacePerpsToast: showOrReplacePerpsToast,
-      replacePerpsToastByKey: showOrReplacePerpsToastByKey,
-      showPerpsToast: showOrReplacePerpsToast,
-      showPerpsToastByKey: showOrReplacePerpsToastByKey,
+      replacePerpsToast: upsertPerpsToast,
+      replacePerpsToastByKey: upsertPerpsToastByKey,
     }),
-    [hidePerpsToast, showOrReplacePerpsToast, showOrReplacePerpsToastByKey],
+    [hidePerpsToast, upsertPerpsToast, upsertPerpsToastByKey],
   );
 
   return (
     <PerpsToastContext.Provider value={contextValue}>
       {children}
       {isPerpsInAppToastsEnabled && activeToast ? (
-        <ToastContainer className="toasts-container--perps">
+        <Box className="toasts-container bottom-20 w-[calc(100%-32px)] max-w-[408px]">
           <Toast
             key={activeToast.id}
-            startAdornment={getToastIcon(activeToast.variant)}
+            startAdornment={getToastIcon(activeToast.presentation)}
             text={activeToast.message}
             description={activeToast.description}
+            className="perps-toast"
+            contentProps={{ alignItems: AlignItems.center }}
             autoHideTime={activeToast.autoHideTime}
             onClose={hidePerpsToast}
             onAutoHideToast={hidePerpsToast}
             dataTestId={activeToast.dataTestId ?? 'perps-toast'}
           />
-        </ToastContainer>
+        </Box>
       ) : null}
     </PerpsToastContext.Provider>
   );
