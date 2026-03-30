@@ -495,11 +495,17 @@ function main(): void {
   const report = generateReport(repoRoot);
   printReport(report);
 
+  const jsonOutputDir = path.join(repoRoot, 'test', 'test-results', 'e2e');
+  if (!fs.existsSync(jsonOutputDir)) {
+    fs.mkdirSync(jsonOutputDir, { recursive: true });
+  }
   const jsonOutputPath = path.join(
-    scriptDir,
+    jsonOutputDir,
     'feature-flag-coverage-report.json',
   );
   writeJsonReport(report, jsonOutputPath);
 }
 
-main();
+if (require.main === module) {
+  main();
+}
