@@ -50,6 +50,14 @@ describe('getFirstPreferredLangCode', () => {
   });
 
   describe('when getAcceptLanguages throws (Brave browser)', () => {
+    beforeEach(() => {
+      jest.spyOn(console, 'error').mockImplementation(() => undefined);
+    });
+
+    afterEach(() => {
+      jest.mocked(console.error).mockRestore();
+    });
+
     it('returns en', async () => {
       mockGetAcceptLanguages.mockRejectedValue(new Error('Not implemented'));
 
