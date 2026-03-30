@@ -303,6 +303,26 @@ describe('usePerpsOrderForm', () => {
       expect(result.current.calculations.liquidationPrice).toBeNull();
     });
 
+    it('calculates margin as size divided by leverage', () => {
+      const { result } = renderHookWithProvider(
+        () => usePerpsOrderForm(defaultOptions),
+        mockStateWithLocale,
+      );
+
+      act(() => {
+        result.current.handleAmountChange('10000');
+        result.current.handleLeverageChange(10);
+      });
+
+      // Size = $10000, leverage = 10x → margin = $1000
+      // marginRequired should NOT equal the amount (size) when leverage > 1
+      expect(result.current.calculations.marginRequired).not.toBeNull();
+      expect(result.current.calculations.marginRequired).toContain('1,000');
+      expect(result.current.calculations.marginRequired).not.toContain(
+        '10,000',
+      );
+    });
+
     it('recalculates when closePercent changes', () => {
       const existingPosition = {
         size: '2.0',

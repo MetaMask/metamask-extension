@@ -178,6 +178,53 @@ describe('AmountInput', () => {
     });
   });
 
+  describe('leveraged size calculations', () => {
+    it('computes balance percent using max size (available × leverage)', () => {
+      const onBalancePercentChange = jest.fn();
+      renderWithProvider(
+        <AmountInput
+          {...defaultProps}
+          onBalancePercentChange={onBalancePercentChange}
+          availableBalance={1000}
+          leverage={10}
+        />,
+        mockStore,
+      );
+
+      const container = screen.getByTestId('amount-input-field');
+      const input = container.querySelector('input');
+      // Size $5000 with available $1000 × 10x leverage = max size $10000
+      // So $5000 / $10000 = 50%
+      fireEvent.change(input as HTMLInputElement, {
+        target: { value: '5000' },
+      });
+
+      expect(onBalancePercentChange).toHaveBeenCalledWith(50);
+    });
+
+    it('caps percent at 100% when size exceeds max leveraged size', () => {
+      const onBalancePercentChange = jest.fn();
+      renderWithProvider(
+        <AmountInput
+          {...defaultProps}
+          onBalancePercentChange={onBalancePercentChange}
+          availableBalance={1000}
+          leverage={5}
+        />,
+        mockStore,
+      );
+
+      const container = screen.getByTestId('amount-input-field');
+      const input = container.querySelector('input');
+      // Max size = $1000 × 5 = $5000. Entering $6000 should cap at 100%
+      fireEvent.change(input as HTMLInputElement, {
+        target: { value: '6000' },
+      });
+
+      expect(onBalancePercentChange).toHaveBeenCalledWith(100);
+    });
+  });
+
   describe('slider', () => {
     it('renders the slider container', () => {
       renderWithProvider(<AmountInput {...defaultProps} />, mockStore);

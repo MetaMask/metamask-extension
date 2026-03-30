@@ -65,9 +65,8 @@ export const AmountInput: React.FC<AmountInputProps> = ({
     if (numAmount === 0 || currentPrice === 0) {
       return null;
     }
-    const positionValue = numAmount * leverage;
-    return currentPrice > 0 ? positionValue / currentPrice : null;
-  }, [amount, currentPrice, leverage]);
+    return currentPrice > 0 ? numAmount / currentPrice : null;
+  }, [amount, currentPrice]);
 
   const tokenDisplayValue = useMemo(() => {
     if (tokenAmount === null || tokenAmount === 0) {
@@ -85,11 +84,12 @@ export const AmountInput: React.FC<AmountInputProps> = ({
       if (value === '' || /^[\d,]*\.?\d*$/u.test(value)) {
         onAmountChange(value);
         const cleanValue = value.replace(/,/gu, '');
-        if (cleanValue && availableBalance > 0) {
+        const maxSize = availableBalance * leverage;
+        if (cleanValue && maxSize > 0) {
           const numValue = parseFloat(cleanValue);
           if (!isNaN(numValue) && numValue > 0) {
             const pct = Math.min(
-              Math.round((numValue / availableBalance) * 100),
+              Math.round((numValue / maxSize) * 100),
               100,
             );
             onBalancePercentChange(pct);
@@ -104,7 +104,7 @@ export const AmountInput: React.FC<AmountInputProps> = ({
         }
       }
     },
-    [onAmountChange, onBalancePercentChange, availableBalance],
+    [onAmountChange, onBalancePercentChange, availableBalance, leverage],
   );
 
   const formatAmount = useCallback(
@@ -136,22 +136,18 @@ export const AmountInput: React.FC<AmountInputProps> = ({
           return;
         }
         const numToken = parseFloat(value);
-        if (
-          isNaN(numToken) ||
-          numToken <= 0 ||
-          currentPrice === 0 ||
-          leverage === 0
-        ) {
+        if (isNaN(numToken) || numToken <= 0 || currentPrice === 0) {
           onAmountChange('');
           onBalancePercentChange(0);
           setPercentInputValue('0');
           return;
         }
-        const usdMargin = (numToken * currentPrice) / leverage;
-        onAmountChange(formatAmount(usdMargin));
-        if (availableBalance > 0) {
+        const usdSize = numToken * currentPrice;
+        onAmountChange(formatAmount(usdSize));
+        const maxSize = availableBalance * leverage;
+        if (maxSize > 0) {
           const pct = Math.min(
-            Math.round((usdMargin / availableBalance) * 100),
+            Math.round((usdSize / maxSize) * 100),
             100,
           );
           onBalancePercentChange(pct);
@@ -184,11 +180,12 @@ export const AmountInput: React.FC<AmountInputProps> = ({
       if (percent === 0) {
         onAmountChange('');
       } else {
-        const newAmount = (availableBalance * percent) / 100;
+        const maxSize = availableBalance * leverage;
+        const newAmount = (maxSize * percent) / 100;
         onAmountChange(formatAmount(newAmount));
       }
     },
-    [onAmountChange, onBalancePercentChange, availableBalance, formatAmount],
+    [onAmountChange, onBalancePercentChange, availableBalance, leverage, formatAmount],
   );
 
   const handlePercentInputChange = useCallback(
@@ -202,13 +199,14 @@ export const AmountInput: React.FC<AmountInputProps> = ({
           if (num === 0) {
             onAmountChange('');
           } else {
-            const newAmount = (availableBalance * num) / 100;
+            const maxSize = availableBalance * leverage;
+            const newAmount = (maxSize * num) / 100;
             onAmountChange(formatAmount(newAmount));
           }
         }
       }
     },
-    [onAmountChange, onBalancePercentChange, availableBalance, formatAmount],
+    [onAmountChange, onBalancePercentChange, availableBalance, leverage, formatAmount],
   );
 
   const handlePercentInputBlur = useCallback(() => {
@@ -220,7 +218,7 @@ export const AmountInput: React.FC<AmountInputProps> = ({
     } else if (num > 100) {
       onBalancePercentChange(100);
       setPercentInputValue('100');
-      onAmountChange(formatAmount(availableBalance));
+      onAmountChange(formatAmount(availableBalance * leverage));
     } else {
       onBalancePercentChange(num);
       setPercentInputValue(String(num));
@@ -230,6 +228,7 @@ export const AmountInput: React.FC<AmountInputProps> = ({
     onAmountChange,
     onBalancePercentChange,
     availableBalance,
+    leverage,
     formatAmount,
   ]);
 
