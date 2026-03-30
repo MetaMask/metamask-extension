@@ -308,16 +308,6 @@ export function getDefiPositions(
 }
 
 /**
- * Gets non-EVM assets historical prices.
- *
- * @param state - Redux state object.
- * @returns An object containing non-EVM assets historical prices per asset types (CAIP-19).
- */
-export function getHistoricalPrices(state: AssetsRatesState) {
-  return state.metamask.historicalPrices;
-}
-
-/**
  * @deprecated use selectBalanceByAccountGroup instead
  */
 export const getTokenBalancesEvm = createDeepEqualSelector(
@@ -825,10 +815,10 @@ const selectTokenRatesStateForBalances = createSelector(
  * Provides conversion rates and historical prices with stable fallbacks.
  */
 const selectMultichainRatesStateForBalances = createSelector(
-  [getMultichainAssetsRatesControllerConversionRates, getHistoricalPrices],
-  (conversionRates, historicalPrices) => ({
+  [getMultichainAssetsRatesControllerConversionRates],
+  (conversionRates) => ({
     conversionRates: conversionRates ?? EMPTY_OBJECT,
-    historicalPrices: historicalPrices ?? EMPTY_OBJECT,
+    historicalPrices: EMPTY_OBJECT,
   }),
 );
 
