@@ -1,5 +1,6 @@
 import {
   PERPS_EVENT_PROPERTY,
+  PERPS_EVENT_VALUE,
   PerpsAnalyticsEvent,
 } from '@metamask/perps-controller';
 import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
@@ -39,7 +40,8 @@ describe('createPerpsInfrastructure', () => {
       const infrastructure = createPerpsInfrastructure(getDeps());
 
       infrastructure.metrics.trackPerpsEvent(PerpsAnalyticsEvent.ScreenViewed, {
-        screen_type: 'market_list',
+        [PERPS_EVENT_PROPERTY.SCREEN_TYPE]:
+          PERPS_EVENT_VALUE.SCREEN_TYPE.MARKET_LIST,
       });
 
       expect(mockTrackEvent).toHaveBeenCalledTimes(1);
@@ -47,7 +49,8 @@ describe('createPerpsInfrastructure', () => {
         event: PerpsAnalyticsEvent.ScreenViewed,
         category: MetaMetricsEventCategory.Perps,
         properties: {
-          screen_type: 'market_list',
+          [PERPS_EVENT_PROPERTY.SCREEN_TYPE]:
+            PERPS_EVENT_VALUE.SCREEN_TYPE.MARKET_LIST,
           [PERPS_EVENT_PROPERTY.TIMESTAMP]: expect.any(Number),
         },
       });

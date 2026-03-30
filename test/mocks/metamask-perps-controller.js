@@ -1,4 +1,5 @@
 /* eslint-env node */
+/* eslint-disable import-x/unambiguous -- Jest manual mock uses `module.exports`; ESLint parses this glob as `sourceType: 'module'`. */
 /**
  * Jest stub for `@metamask/perps-controller`.
  *
@@ -11,9 +12,15 @@
  * Tests that need the real controller (or a fuller fake) should call
  * `jest.mock('@metamask/perps-controller', () => ({ ... }))` in that file; it
  * overrides this mapping for that suite.
+ *
+ * The objects below are named `mock…` so it is obvious they are not the real
+ * `@metamask/perps-controller` module. `module.exports` still uses the real
+ * export names (`PERPS_EVENT_PROPERTY`, etc.) so `import { … } from '@metamask/perps-controller'`
+ * resolves correctly under Jest.
  */
 
-const PERPS_EVENT_PROPERTY = {
+/** @type {Record<string, string>} Minimal mock property keys for tests (subset of the real package). */
+const mockPerpsEventPropertyKeys = {
   TIMESTAMP: 'perps_timestamp',
   SCREEN_TYPE: 'screen_type',
   INTERACTION_TYPE: 'interaction_type',
@@ -34,7 +41,8 @@ const PERPS_EVENT_PROPERTY = {
   LEVERAGE: 'leverage',
 };
 
-const PERPS_EVENT_VALUE = {
+/** @type {Record<string, Record<string, string>>} Minimal mock enum-like values for tests (subset of the real package). */
+const mockPerpsEventValueLiterals = {
   SCREEN_TYPE: {
     MARKET_LIST: 'market_list',
     TRADING: 'trading',
@@ -75,8 +83,8 @@ const PERPS_EVENT_VALUE = {
   },
 };
 
-/** Mirrors `PerpsAnalyticsEvent` in the controller package / ui manual mock. */
-const PerpsAnalyticsEvent = {
+/** @type {Record<string, string>} Mock analytics event name strings (subset of `PerpsAnalyticsEvent`). */
+const mockPerpsAnalyticsEventNames = {
   WithdrawalTransaction: 'Perp Withdrawal Transaction',
   TradeTransaction: 'Perp Trade Transaction',
   PositionCloseTransaction: 'Perp Position Close Transaction',
@@ -88,7 +96,7 @@ const PerpsAnalyticsEvent = {
 };
 
 module.exports = {
-  PERPS_EVENT_PROPERTY,
-  PERPS_EVENT_VALUE,
-  PerpsAnalyticsEvent,
+  PERPS_EVENT_PROPERTY: mockPerpsEventPropertyKeys,
+  PERPS_EVENT_VALUE: mockPerpsEventValueLiterals,
+  PerpsAnalyticsEvent: mockPerpsAnalyticsEventNames,
 };
