@@ -5,6 +5,7 @@ import {
 } from '@metamask/permission-controller';
 import {
   Caip25CaveatType,
+  Caip25CaveatValue,
   Caip25EndowmentPermissionName,
   setNonSCACaipAccountIdsInCaip25CaveatValue,
   getCaipAccountIdsFromCaip25CaveatValue,
@@ -13,8 +14,65 @@ import {
   setChainIdsInCaip25CaveatValue,
 } from '@metamask/chain-agnostic-permission';
 import { isSnapId } from '@metamask/snaps-utils';
-import { parseCaipAccountId, parseCaipChainId } from '@metamask/utils';
+import {
+  type CaipAccountId,
+  type CaipChainId,
+  parseCaipAccountId,
+  parseCaipChainId,
+} from '@metamask/utils';
+import type { InternalAccount } from '@metamask/keyring-internal-api';
+import type { AccountsControllerState } from '@metamask/accounts-controller';
+import type { NetworkState } from '@metamask/network-controller';
+import type { MultichainNetworkControllerState } from '@metamask/multichain-network-controller';
 import { getNetworkConfigurationsByCaipChainId } from '../../../../shared/lib/selectors/networks';
+
+export type PermissionBackgroundApiOptions = {
+  permissionController: {
+    getCaveat(
+      origin: string,
+      targetName: string,
+      caveatType: string,
+    ): { value: Caip25CaveatValue };
+    updateCaveat(
+      origin: string,
+      targetName: string,
+      caveatType: string,
+      caveatValue: Caip25CaveatValue,
+    ): void;
+    grantPermissions(options: {
+      subject: { origin: string };
+      approvedPermissions: Record<string, unknown>;
+    }): void;
+    revokePermission(origin: string, targetName: string): void;
+  };
+  approvalController: {
+    addAndShowApprovalRequest(options: {
+      id: string;
+      origin: string;
+      requestData: {
+        metadata: { id: string; origin: string };
+        permissions: Record<string, unknown>;
+      };
+      type: string;
+    }): Promise<{ permissions: Record<string, unknown> }>;
+  };
+  accountsController: {
+    getAccountByAddress(address: string): InternalAccount;
+    state: {
+      internalAccounts: AccountsControllerState['internalAccounts'];
+    };
+  };
+  networkController: {
+    state: {
+      networkConfigurationsByChainId: NetworkState['networkConfigurationsByChainId'];
+    };
+  };
+  multichainNetworkController: {
+    state: {
+      multichainNetworkConfigurationsByChainId: MultichainNetworkControllerState['multichainNetworkConfigurationsByChainId'];
+    };
+  };
+};
 
 export function getPermissionBackgroundApiMethods({
   permissionController,
@@ -22,9 +80,11 @@ export function getPermissionBackgroundApiMethods({
   accountsController,
   networkController,
   multichainNetworkController,
-}) {
+}: PermissionBackgroundApiOptions) {
   // Returns the CAIP-25 caveat or undefined if it does not exist
-  const getCaip25Caveat = (origin) => {
+  const getCaip25Caveat = (
+    origin: string,
+  ): { value: Caip25CaveatValue } | undefined => {
     let caip25Caveat;
     try {
       caip25Caveat = permissionController.getCaveat(
@@ -43,7 +103,10 @@ export function getPermissionBackgroundApiMethods({
     return caip25Caveat;
   };
 
-  const setPermittedAccounts = (origin, caipAccountIds) => {
+  const setPermittedAccounts = (
+    origin: string,
+    caipAccountIds: string[],
+  ): void => {
     const caip25Caveat = getCaip25Caveat(origin);
     if (!caip25Caveat) {
       throw new Error(
@@ -81,12 +144,14 @@ export function getPermissionBackgroundApiMethods({
     caipAccountIds.forEach((caipAccountAddress) => {
       const {
         chain: { namespace: accountNamespace },
-      } = parseCaipAccountId(caipAccountAddress);
+      } = parseCaipAccountId(caipAccountAddress as CaipAccountId);
 
       const existsSelectedChainForNamespace = updatedPermittedChainIds.some(
         (caipChainId) => {
           try {
-            const { namespace: chainNamespace } = parseCaipChainId(caipChainId);
+            const { namespace: chainNamespace } = parseCaipChainId(
+              caipChainId as CaipChainId,
+            );
             return accountNamespace === chainNamespace;
           } catch (err) {
             return false;
@@ -97,7 +162,9 @@ export function getPermissionBackgroundApiMethods({
       if (!existsSelectedChainForNamespace) {
         const chainIdsForNamespace = allNetworksList.filter((caipChainId) => {
           try {
-            const { namespace: chainNamespace } = parseCaipChainId(caipChainId);
+            const { namespace: chainNamespace } = parseCaipChainId(
+              caipChainId as CaipChainId,
+            );
             return accountNamespace === chainNamespace;
           } catch (err) {
             return false;
@@ -106,20 +173,20 @@ export function getPermissionBackgroundApiMethods({
 
         updatedPermittedChainIds = [
           ...updatedPermittedChainIds,
-          ...chainIdsForNamespace,
+          ...(chainIdsForNamespace as CaipChainId[]),
         ];
       }
     });
 
     const updatedCaveatValueWithChainIds = setChainIdsInCaip25CaveatValue(
       caip25Caveat.value,
-      updatedPermittedChainIds,
+      updatedPermittedChainIds as CaipChainId[],
     );
 
     const updatedCaveatValueWithAccountIds =
       setNonSCACaipAccountIdsInCaip25CaveatValue(
         updatedCaveatValueWithChainIds,
-        caipAccountIds,
+        caipAccountIds as CaipAccountId[],
       );
 
     permissionController.updateCaveat(
@@ -130,7 +197,7 @@ export function getPermissionBackgroundApiMethods({
     );
   };
 
-  const setPermittedChains = (origin, chainIds) => {
+  const setPermittedChains = (origin: string, chainIds: string[]): void => {
     const caip25Caveat = getCaip25Caveat(origin);
     if (!caip25Caveat) {
       throw new Error(
@@ -148,7 +215,7 @@ export function getPermissionBackgroundApiMethods({
     } else {
       const updatedCaveatValueWithChainIds = setChainIdsInCaip25CaveatValue(
         caip25Caveat.value,
-        chainIds,
+        chainIds as CaipChainId[],
       );
 
       const existingPermittedAccountIds =
@@ -169,7 +236,7 @@ export function getPermissionBackgroundApiMethods({
     }
   };
 
-  const addMoreAccounts = (origin, addresses) => {
+  const addMoreAccounts = (origin: string, addresses: string[]): void => {
     const caip25Caveat = getCaip25Caveat(origin);
     if (!caip25Caveat) {
       throw new Error(
@@ -196,10 +263,10 @@ export function getPermissionBackgroundApiMethods({
       new Set([...existingPermittedAccountIds, ...caipAccountIds]),
     );
 
-    setPermittedAccounts(origin, updatedAccountIds);
+    setPermittedAccounts(origin, updatedAccountIds as CaipAccountId[]);
   };
 
-  const addMoreChains = (origin, chainIds) => {
+  const addMoreChains = (origin: string, chainIds: string[]): void => {
     const caip25Caveat = getCaip25Caveat(origin);
     if (!caip25Caveat) {
       throw new Error(
@@ -215,10 +282,13 @@ export function getPermissionBackgroundApiMethods({
       new Set([...existingPermittedChainIds, ...chainIds]),
     );
 
-    setPermittedChains(origin, updatedChainIds);
+    setPermittedChains(origin, updatedChainIds as CaipChainId[]);
   };
 
-  const requestAccountsAndChainPermissions = async (origin, id) => {
+  const requestAccountsAndChainPermissions = async (
+    origin: string,
+    id: string,
+  ): Promise<void> => {
     /**
      * Note that we are purposely requesting an approval from the ApprovalController
      * and then manually forming the permission that is then granted via the
@@ -260,13 +330,13 @@ export function getPermissionBackgroundApiMethods({
   };
 
   return {
-    addPermittedAccount: (origin, address) =>
+    addPermittedAccount: (origin: string, address: string) =>
       addMoreAccounts(origin, [address]),
 
-    addPermittedAccounts: (origin, addresses) =>
+    addPermittedAccounts: (origin: string, addresses: string[]) =>
       addMoreAccounts(origin, addresses),
 
-    removePermittedAccount: (origin, address) => {
+    removePermittedAccount: (origin: string, address: string) => {
       const caip25Caveat = getCaip25Caveat(origin);
       if (!caip25Caveat) {
         throw new Error(
@@ -297,11 +367,13 @@ export function getPermissionBackgroundApiMethods({
 
     setPermittedAccounts,
 
-    addPermittedChain: (origin, chainId) => addMoreChains(origin, [chainId]),
+    addPermittedChain: (origin: string, chainId: string) =>
+      addMoreChains(origin, [chainId]),
 
-    addPermittedChains: (origin, chainIds) => addMoreChains(origin, chainIds),
+    addPermittedChains: (origin: string, chainIds: string[]) =>
+      addMoreChains(origin, chainIds),
 
-    removePermittedChain: (origin, chainId) => {
+    removePermittedChain: (origin: string, chainId: string) => {
       const caip25Caveat = getCaip25Caveat(origin);
       if (!caip25Caveat) {
         throw new Error(
@@ -326,7 +398,7 @@ export function getPermissionBackgroundApiMethods({
 
     setPermittedChains,
 
-    requestAccountsAndChainPermissionsWithId: (origin) => {
+    requestAccountsAndChainPermissionsWithId: (origin: string) => {
       const id = nanoid();
       requestAccountsAndChainPermissions(origin, id);
       return id;
