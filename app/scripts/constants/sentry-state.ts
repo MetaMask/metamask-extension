@@ -1,14 +1,17 @@
-import { AllProperties } from '../../../shared/lib/object.utils';
+import {
+  AllProperties,
+  type ObjectMask,
+} from '../../../shared/lib/object.utils';
 
-type SentryMaskValue =
-  | boolean
-  | { [key: string]: SentryMaskValue }
-  | SentryMaskValue[];
-
-type StrictSentryMaskObject = {
+type SentryMaskObject = {
   [key: string]: SentryMaskValue;
-  [key: symbol]: never;
+} & {
+  [AllProperties]?: SentryMaskValue;
 };
+
+type SentryMaskValue = boolean | SentryMaskObject | SentryMaskValue[];
+
+type StrictSentryMaskObject = SentryMaskObject;
 
 type SentryBackgroundStateMask = Record<string, StrictSentryMaskObject>;
 

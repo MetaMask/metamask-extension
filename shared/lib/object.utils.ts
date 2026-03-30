@@ -3,9 +3,9 @@
  */
 export const AllProperties: unique symbol = Symbol('*');
 
-type MaskValue = boolean | ObjectMask;
+type MaskValue = boolean | ObjectMask | readonly unknown[];
 
-type ObjectMask = {
+export type ObjectMask = {
   [key: string]: MaskValue;
 } & {
   [AllProperties]?: MaskValue;
@@ -51,8 +51,11 @@ export function maskObject(
     const maskKey = maskAllProperties ? mask[AllProperties] : mask[key];
     if (maskKey === true) {
       state[key] = obj[key];
+    } else if (Array.isArray(maskKey)) {
+      // Array masks (e.g. empty `[]` in Sentry state) — surface typeof only, like `false`.
+      state[key] = obj[key] === null ? null : typeof obj[key];
     } else if (maskKey && typeof maskKey === 'object') {
-      state[key] = maskObject(obj[key], maskKey);
+      state[key] = maskObject(obj[key], maskKey as ObjectMask);
     } else if (maskKey === undefined || maskKey === false) {
       // As typeof null (misleadingly) returns "object," it would be more readable to display "null" instead of "object."
       state[key] = obj[key] === null ? null : typeof obj[key];
