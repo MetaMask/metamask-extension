@@ -81,7 +81,7 @@ export const EditAccountAddAccountForm: React.FC<
       default:
         return { clientType: null, chainId: null, networkName: null };
     }
-  }, [accountType]);
+  }, [accountType, t]);
 
   return (
     <ModalContent>

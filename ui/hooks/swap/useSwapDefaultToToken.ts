@@ -47,7 +47,7 @@ function useSwapDefaultToToken(): UseSwapDefaultToTokenReturnType {
     }
 
     return chainIdDefaultToken;
-  }, [chainId, fromToken?.address]);
+  }, [chainId, fromToken]);
 
   if (!defaultToToken) {
     console.warn(`No Swap default token found for chainId: ${chainId}`);
