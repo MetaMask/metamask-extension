@@ -8,6 +8,7 @@ import { useGasFeeEstimates } from '../../../hooks/useGasFeeEstimates';
 import { useCancelSpeedupGasState } from './useCancelSpeedupGasState';
 
 import { useTransactionFunctions } from './useTransactionFunctions';
+import { useLegacyCancelSpeedupFlow } from './useLegacyCancelSpeedupFlow';
 
 jest.mock('../../../hooks/useGasFeeEstimates', () => ({
   useGasFeeEstimates: jest.fn(),
@@ -16,6 +17,12 @@ jest.mock('../../../hooks/useGasFeeEstimates', () => ({
 jest.mock('./useTransactionFunctions', () => ({
   useTransactionFunctions: jest.fn(),
 }));
+
+jest.mock('./useLegacyCancelSpeedupFlow', () => ({
+  useLegacyCancelSpeedupFlow: jest.fn(),
+}));
+
+const mockUseLegacyCancelSpeedupFlow = jest.mocked(useLegacyCancelSpeedupFlow);
 
 const mockUseGasFeeEstimates = jest.mocked(useGasFeeEstimates);
 const mockUseTransactionFunctions = jest.mocked(useTransactionFunctions);
@@ -37,6 +44,7 @@ jest.mock('../../../selectors', () => ({
 jest.mock('react-redux', () => ({
   useSelector: (selector: (state: unknown) => unknown) =>
     selector?.({}) ?? undefined,
+  useDispatch: () => jest.fn(),
 }));
 
 function createMockTransaction(overrides: Partial<TransactionMeta> = {}) {
@@ -62,6 +70,11 @@ describe('useCancelSpeedupGasState', () => {
   const mockUpdateTransaction = jest.fn();
   const mockUpdateTransactionUsingDAPPSuggestedValues = jest.fn();
 
+  const mockLegacyCancelTransaction = jest.fn();
+  const mockLegacySpeedUpTransaction = jest.fn();
+  const mockLegacyUpdateTenPercent = jest.fn();
+  const mockLegacyUpdateUsingEstimate = jest.fn();
+
   beforeEach(() => {
     jest.clearAllMocks();
     mockSelectNetworkConfigurationByChainId.mockReturnValue(mockNetwork);
@@ -81,6 +94,12 @@ describe('useCancelSpeedupGasState', () => {
       updateTransactionUsingDAPPSuggestedValues:
         mockUpdateTransactionUsingDAPPSuggestedValues,
       updateTransactionUsingEstimate: mockUpdateTransactionUsingEstimate,
+    });
+    mockUseLegacyCancelSpeedupFlow.mockReturnValue({
+      cancelTransaction: mockLegacyCancelTransaction,
+      speedUpTransaction: mockLegacySpeedUpTransaction,
+      updateTransactionToTenPercentIncreasedGasFee: mockLegacyUpdateTenPercent,
+      updateTransactionUsingEstimate: mockLegacyUpdateUsingEstimate,
     });
   });
 
@@ -166,5 +185,72 @@ describe('useCancelSpeedupGasState', () => {
         }),
       }),
     );
+  });
+
+  describe('legacy and EIP-1559 flows', () => {
+    it('returns EIP-1559 functions when transaction has maxFeePerGas', () => {
+      const transaction = createMockTransaction();
+
+      const { result } = renderHook(() =>
+        useCancelSpeedupGasState(transaction, EditGasModes.speedUp),
+      );
+
+      expect(result.current.cancelTransaction).toBe(mockCancelTransaction);
+      expect(result.current.speedUpTransaction).toBe(mockSpeedUpTransaction);
+      expect(result.current.updateTransactionToTenPercentIncreasedGasFee).toBe(
+        mockUpdateTransactionToTenPercentIncreasedGasFee,
+      );
+      expect(result.current.updateTransactionUsingEstimate).toBe(
+        mockUpdateTransactionUsingEstimate,
+      );
+    });
+
+    it('returns legacy functions when transaction has no maxFeePerGas (gasPrice only)', () => {
+      const legacyTransaction = createMockTransaction({
+        txParams: {
+          gas: '0x5208',
+          gasLimit: '0x5208',
+          gasPrice: '0x2540be400',
+        } as TransactionMeta['txParams'],
+      });
+
+      const { result } = renderHook(() =>
+        useCancelSpeedupGasState(legacyTransaction, EditGasModes.cancel),
+      );
+
+      expect(result.current.cancelTransaction).toBe(
+        mockLegacyCancelTransaction,
+      );
+      expect(result.current.speedUpTransaction).toBe(
+        mockLegacySpeedUpTransaction,
+      );
+      expect(result.current.updateTransactionToTenPercentIncreasedGasFee).toBe(
+        mockLegacyUpdateTenPercent,
+      );
+      expect(result.current.updateTransactionUsingEstimate).toBe(
+        mockLegacyUpdateUsingEstimate,
+      );
+    });
+
+    it('calls useLegacyCancelSpeedupFlow with effectiveTransaction and gasFeeEstimates', () => {
+      const legacyTransaction = createMockTransaction({
+        txParams: {
+          gas: '0x5208',
+          gasPrice: '0x2540be400',
+        } as TransactionMeta['txParams'],
+      });
+
+      renderHook(() =>
+        useCancelSpeedupGasState(legacyTransaction, EditGasModes.speedUp),
+      );
+
+      expect(mockUseLegacyCancelSpeedupFlow).toHaveBeenCalledWith(
+        expect.objectContaining({
+          transaction: expect.objectContaining({
+            id: legacyTransaction.id,
+          }),
+        }),
+      );
+    });
   });
 });

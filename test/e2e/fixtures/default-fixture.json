@@ -72,7 +72,8 @@
     "AccountTreeController": {
       "accountGroupsMetadata": {},
       "accountWalletsMetadata": {},
-      "hasAccountTreeSyncingSyncedAtLeastOnce": true
+      "hasAccountTreeSyncingSyncedAtLeastOnce": true,
+      "selectedAccountGroup": "entropy:01KMMTZZ3ZEF3008S2RXXR2CXS/0"
     },
     "AccountsController": {
       "internalAccounts": {
