@@ -107,7 +107,6 @@ export type HistoricalBaselineMetrics = Omit<
 export type RelativeThresholds = {
   regressionPercent: number;
   warnPercent: number;
-  improvementPercent: number;
 };
 
 /**
@@ -118,7 +117,6 @@ export type RelativeThresholds = {
 export const DEFAULT_RELATIVE_THRESHOLDS: RelativeThresholds = {
   regressionPercent: 0.1,
   warnPercent: 0.05,
-  improvementPercent: 0.1,
 };
 
 export const BENCHMARK_PLATFORMS = {

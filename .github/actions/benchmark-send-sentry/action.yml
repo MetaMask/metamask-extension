@@ -1,0 +1,28 @@
+name: Send benchmark results to Sentry
+description: Runs test/e2e/benchmarks/send-to-sentry.ts with CI branch metadata (GITHUB_REF_NAME).
+
+inputs:
+  results-path:
+    description: Path to benchmark JSON under the workspace (e.g. test-artifacts/benchmarks/foo.json)
+    required: true
+  browser:
+    description: Browser label for Sentry attributes (e.g. chrome)
+    required: true
+  build-type:
+    description: Build label for Sentry attributes (e.g. browserify)
+    required: true
+
+runs:
+  composite: true
+  steps:
+    - name: Send benchmark results to Sentry
+      run: |
+        export GITHUB_REF_NAME="${GH_HEAD_REF:-$GH_REF_NAME}"
+        yarn tsx test/e2e/benchmarks/send-to-sentry.ts \
+          --results "${{ inputs.results-path }}" \
+          --browser "${{ inputs.browser }}" \
+          --buildType "${{ inputs.build-type }}"
+      shell: bash
+      env:
+        GH_HEAD_REF: ${{ github.head_ref }}
+        GH_REF_NAME: ${{ github.ref_name }}

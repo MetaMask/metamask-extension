@@ -80,6 +80,11 @@ export type TimerStatistics = {
   dataQuality: 'good' | 'poor' | 'unreliable';
 };
 
+/**
+ * Aggregated timer statistics for Selenium performance benchmarks (startup, interaction, user journey).
+ * Produced by `runBenchmarkWithIterations` and converted to `BenchmarkResults` in `runner.ts`
+ * (`convertSummaryToResults`).
+ */
 export type BenchmarkSummary = {
   name: string;
   iterations: number;
@@ -96,6 +101,44 @@ export type BenchmarkSummary = {
   thresholdsPassed: boolean;
   /** Benchmark type extracted from the first successful run */
   benchmarkType?: BenchmarkType;
+};
+
+/**
+ * Web vitals–style metrics for one Playwright dapp page-load sample (ms unless noted).
+ */
+export type DappPageLoadMetric = {
+  /** Navigation start → load event end */
+  pageLoadTime: number;
+  domContentLoaded: number;
+  firstPaint: number;
+  firstContentfulPaint: number;
+  largestContentfulPaint: number;
+  memoryUsage?: {
+    usedJSHeapSize: number;
+    totalJSHeapSize: number;
+    jsHeapSizeLimit: number;
+  };
+};
+
+/**
+ * One raw measurement from a Playwright dapp page-load benchmark run.
+ */
+export type DappPageLoadSample = {
+  page: string;
+  run: number;
+  metrics: DappPageLoadMetric;
+  timestamp: number;
+};
+
+/**
+ * Aggregated web-vitals per URL for the Playwright dapp benchmark, using the same
+ * {@link TimerStatistics} concept as {@link BenchmarkSummary} (`timers` array).
+ * Aggregate with `aggregateDappPageLoadStatistics` in `test/e2e/benchmarks/flows/dapp-page-load/dapp-page-load-stats.ts`,
+ * then convert via `dappPageLoadStatsToBenchmarkResults`.
+ */
+export type DappPageLoadStats = {
+  page: string;
+  timers: TimerStatistics[];
 };
 
 export type PerformanceBenchmarkResults = {

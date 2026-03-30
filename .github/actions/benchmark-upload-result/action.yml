@@ -1,0 +1,40 @@
+name: Upload benchmark JSON to S3 and GitHub Actions artifacts
+description: Uploads one benchmark result file to S3 (optional AWS vars) and as a workflow artifact.
+
+inputs:
+  result-filename:
+    description: Basename of the file in test-artifacts/benchmarks/ (e.g. benchmark-chrome-browserify-foo.json)
+    required: true
+  aws-region:
+    description: AWS region for upload-s3
+    required: false
+    default: ''
+  aws-role-to-assume:
+    description: IAM role for upload-s3
+    required: false
+    default: ''
+  aws-s3-bucket:
+    description: S3 bucket name (first segment; key path includes repo and run id)
+    required: false
+    default: ''
+
+runs:
+  composite: true
+  steps:
+    - name: Upload benchmark to S3
+      if: ${{ inputs.aws-region != '' && inputs.aws-role-to-assume != '' && inputs.aws-s3-bucket != '' }}
+      uses: MetaMask/github-tools/.github/actions/upload-s3@v1
+      with:
+        aws-region: ${{ inputs.aws-region }}
+        role-to-assume: ${{ inputs.aws-role-to-assume }}
+        s3-bucket: ${{ inputs.aws-s3-bucket }}/${{ github.event.repository.name }}/${{ github.run_id }}/benchmarks/${{ inputs.result-filename }}
+        path: test-artifacts/benchmarks/${{ inputs.result-filename }}
+
+    - name: Upload benchmark result as GitHub artifact
+      if: ${{ always() }}
+      uses: actions/upload-artifact@v6
+      with:
+        name: ${{ inputs.result-filename }}
+        path: test-artifacts/benchmarks/${{ inputs.result-filename }}
+        retention-days: 7
+        if-no-files-found: ignore

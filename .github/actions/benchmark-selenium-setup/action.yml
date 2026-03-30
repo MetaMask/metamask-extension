@@ -1,0 +1,52 @@
+name: Benchmark Selenium setup
+description: >
+  Checkout repo, restore .metamask (optional anvil), download extension build artifact,
+  start Xvfb, install AWS CLI — shared by Selenium benchmark matrix jobs.
+
+inputs:
+  artifact-name:
+    description: Name of the downloaded build artifact (e.g. build-test-browserify)
+    required: true
+  builds-run-id:
+    description: Workflow run ID to download artifacts from
+    required: true
+  github-token:
+    description: Token for actions/download-artifact
+    required: true
+
+runs:
+  composite: true
+  steps:
+    - name: Checkout and setup environment
+      uses: MetaMask/action-checkout-and-setup@v3
+      with:
+        is-high-risk-environment: false
+        skip-allow-scripts: true
+
+    - name: Restore .metamask folder
+      id: restore-metamask
+      uses: actions/cache/restore@v5
+      with:
+        path: .metamask
+        key: .metamask-${{ hashFiles('yarn.lock') }}
+        fail-on-cache-miss: false
+
+    - name: Install anvil if cache missed
+      if: ${{ steps.restore-metamask.outputs.cache-hit != 'true' }}
+      run: yarn mm-foundryup
+      shell: bash
+
+    - name: Download build artifact
+      uses: actions/download-artifact@v7
+      with:
+        name: ${{ inputs.artifact-name }}
+        github-token: ${{ inputs.github-token }}
+        run-id: ${{ inputs.builds-run-id }}
+
+    - name: Configure Xvfb
+      run: Xvfb -ac :99 -screen 0 1280x1024x16 &
+      shell: bash
+
+    - name: Install AWS CLI (needed in the container)
+      run: sudo apt-get update && sudo apt-get install python3-pip && sudo pip install awscli --break-system-packages
+      shell: bash

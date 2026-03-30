@@ -30,6 +30,31 @@ export const USER_JOURNEY_PRESETS = {
   TRANSACTIONS: 'userJourneyTransactions',
 } as const;
 
+export const DAPP_PAGE_LOAD_PRESETS = {
+  PAGE_LOAD: 'pageLoadBenchmark',
+} as const;
+
+/** Basename of the Playwright entry spec for the dapp page-load benchmark. */
+export const DAPP_PAGE_LOAD_BENCHMARK_SPEC_BASENAME =
+  'dapp-page-load-benchmark.spec.ts';
+
+/**
+ * Repo-relative directory containing the dapp page-load implementation and Playwright spec.
+ * Used as Playwright `testDir` for the `benchmark` project (`playwright.config.ts`).
+ */
+export const DAPP_PAGE_LOAD_BENCHMARK_DIR =
+  'test/e2e/benchmarks/flows/dapp-page-load';
+
+/** Repo-relative path to the Playwright spec (from repository root). */
+export const DAPP_PAGE_LOAD_BENCHMARK_SPEC_PATH = `${DAPP_PAGE_LOAD_BENCHMARK_DIR}/${DAPP_PAGE_LOAD_BENCHMARK_SPEC_BASENAME}`;
+
+/**
+ * Default filename for the merged page-load benchmark JSON (Chrome + Browserify).
+ * Keep in sync with `.github/workflows/run-benchmarks.yml` (`DAPP_BENCHMARK_JSON`).
+ */
+export const DAPP_PAGE_LOAD_BENCHMARK_ARTIFACT_FILENAME =
+  'benchmark-chrome-browserify-pageLoadBenchmark.json';
+
 export const DEFAULT_NUM_BROWSER_LOADS = 10;
 export const DEFAULT_NUM_PAGE_LOADS = 10;
 
@@ -271,6 +296,24 @@ const BRIDGE_USER_ACTIONS: ThresholdConfig = {
     ciMultiplier: DEFAULT_CI_MULTIPLIER,
   },
 };
+
+const DAPP_PAGE_LOAD: ThresholdConfig = {
+  pageLoadTime: {
+    p75: { warn: 1450, fail: 1700 },
+    p95: { warn: 1700, fail: 2000 },
+    ciMultiplier: DEFAULT_CI_MULTIPLIER,
+  },
+  domContentLoaded: {
+    p75: { warn: 1000, fail: 1200 },
+    p95: { warn: 1300, fail: 1500 },
+    ciMultiplier: DEFAULT_CI_MULTIPLIER,
+  },
+  firstContentfulPaint: {
+    p75: { warn: 125, fail: 150 },
+    p95: { warn: 130, fail: 150 },
+    ciMultiplier: DEFAULT_CI_MULTIPLIER,
+  },
+};
 /* eslint-enable @typescript-eslint/naming-convention */
 
 /**
@@ -290,6 +333,9 @@ const BENCHMARK_THRESHOLDS = {
   solanaAssetDetails: SOLANA_ASSET_DETAILS,
   sendTransactions: SEND_TRANSACTIONS,
   swap: SWAP,
+
+  // Dapp page load benchmarks (chrome-browserify)
+  dappPageLoad: DAPP_PAGE_LOAD,
 
   // Startup benchmarks (platform/buildType now stored in data, not in key)
   startupStandardHome: STANDARD_HOME,

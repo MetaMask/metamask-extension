@@ -33,7 +33,7 @@ yarn test:e2e:benchmark --preset userJourneyOnboardingNew --out results.json
 | `userJourneyAssets`            | Asset detail page loads         | `asset-details.ts`, `solana-asset-details.ts`                    |
 | `userJourneyAccountManagement` | Login from home (import SRP)    | `import-srp-home.ts`                                             |
 | `userJourneyTransactions`      | Send and swap transaction flows | `send-transactions.ts`, `swap.ts`                                |
-| `pageLoadBenchmark`            | Playwright dapp page load       | `dapp-page-load-benchmark.spec.ts`                               |
+| `pageLoadBenchmark`            | Dapp page load (Playwright)     | `dapp-page-load/` (see below)                                    |
 | `all`                          | All benchmarks                  | Everything above                                                 |
 
 ### User journey benchmarks: browserify vs webpack
@@ -41,11 +41,60 @@ yarn test:e2e:benchmark --preset userJourneyOnboardingNew --out results.json
 - **PRs:** User journey benchmarks run on **Chrome + Browserify** only.
 - **Push to main/release:** User journey benchmarks also run on **Chrome + Webpack** (separate `benchmarks-webpack-perf` job) so we can compare build systems before releasing webpack to production.
 
+### Dapp page load (`pageLoadBenchmark`) — Playwright
+
+The **`pageLoadBenchmark`** preset measures Core Web Vitals against the test dapp using **Playwright**, not the Selenium **`run()`** pattern used by other flows in this directory. Strategy notes: [gist](https://gist.github.com/ffmcgee725/2c4f67a5a3d6255ea985635510d19d47).
+
+- **Implementation:** `test/e2e/benchmarks/flows/dapp-page-load/` — Playwright spec, `PageLoadBenchmark` runner, stats aggregation, and unit tests. The Playwright **`benchmark`** project sets `testDir` to this folder (`playwright.config.ts`). `run-benchmark.ts` points at `dapp-page-load-benchmark.spec.ts`.
+- **CI:** **Chrome + Browserify only** (job `dapp-page-load-benchmark` in `.github/workflows/run-benchmarks.yml`). Results merge into the same performance benchmark artifacts / `performance_data.json` as Selenium presets. Output artifact: `benchmark-chrome-browserify-pageLoadBenchmark.json`.
+
+| File | Role |
+| ---- | ---- |
+| `dapp-page-load-benchmark.ts` | `PageLoadBenchmark` — browser, extension, dapp server, sampling |
+| `dapp-page-load-stats.ts` | Aggregate samples → `TimerStatistics` / `BenchmarkResults` JSON |
+| `dapp-page-load-stats.test.ts` | Unit tests for aggregation |
+| `dapp-page-load-benchmark.spec.ts` | Playwright test entry |
+
+**Metrics:** page load time, DOM content loaded, first paint, first contentful paint, largest contentful paint, JavaScript heap usage (where available).
+
+**Run (same preset as above):** `yarn test:e2e:benchmark --preset pageLoadBenchmark` (or `--preset all`). First-time Playwright may need `yarn playwright install chromium`; the extension should be built (`yarn build:test`). To invoke Playwright directly: `yarn playwright test --project=benchmark` (optional: `BENCHMARK_BROWSER_LOADS`, `BENCHMARK_PAGE_LOADS`). Debug: `DEBUG=pw:api yarn playwright test --project=benchmark`.
+
+**Output file:** `test-artifacts/benchmarks/benchmark-chrome-browserify-pageLoadBenchmark.json` — example shape:
+
+```json
+{
+  "dappPageLoad": {
+    "testTitle": "dappPageLoad",
+    "persona": "powerUser",
+    "benchmarkType": "performance",
+    "mean": { "pageLoadTime": 1200, "domContentLoaded": 400 },
+    "stdDev": { ... },
+    "p75": { ... },
+    "p95": { ... },
+    "min": { ... },
+    "max": { ... }
+  }
+}
+```
+
+**Troubleshooting:** extension build failures, timeouts (raise `playwright.config.ts` benchmark project timeout), memory (lower browser/page loads), network access to the dapp. Questions: Consensys Slack `#wallet-api-sdk`.
+
 ### Special CI Requirements
 
 | Preset                         | Requirement                                                                       |
 | ------------------------------ | --------------------------------------------------------------------------------- |
 | `userJourneyAccountManagement` | Requires `TEST_SRP_2` secret (12-word seed phrase). Set as a CI secret in GitHub. |
+
+### Benchmark Categories and Types
+
+Each benchmark belongs to a category and has a `BENCHMARK_TYPE`:
+
+| Category           | Directory       | BENCHMARK_TYPE   | Description                                               |
+| ------------------ | --------------- | ---------------- | --------------------------------------------------------- |
+| **Startup**        | `startup/`      | `BENCHMARK`      | Extension cold-start and initialization times             |
+| **Interaction**    | `interaction/`  | `USER_ACTION`    | Single discrete user interaction timings                  |
+| **User Journey**   | `user-journey/` | `PERFORMANCE`    | Multi-step E2E user flows with multiple timers            |
+| **Dapp Page Load** | `dapp-page-load/` | `PERFORMANCE` | Playwright-based dapp page load metrics (Core Web Vitals) |
 
 ### 1. Create a new file in the appropriate subdirectory
 
@@ -54,6 +103,7 @@ Choose the category that best fits your benchmark:
 - `startup/` - For measuring extension cold-start and page load times
 - `interaction/` - For measuring single discrete user interaction timings
 - `user-journey/` - For E2E multi-step user flows with multiple timers
+- `dapp-page-load/` - For Playwright-based dapp page load benchmarks (Core Web Vitals); not a Selenium `run()` flow. The Playwright `benchmark` project sets `testDir` to this folder.
 
 ### 2. Export a `run` function
 

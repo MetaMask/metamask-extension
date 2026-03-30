@@ -19,6 +19,7 @@ import {
   STARTUP_PRESETS,
   INTERACTION_PRESETS,
   USER_JOURNEY_PRESETS,
+  DAPP_PAGE_LOAD_PRESETS,
   THRESHOLD_REGISTRY,
 } from '../../test/e2e/benchmarks/utils/constants';
 import { validateResultThresholds } from '../../test/e2e/benchmarks/utils/statistics';
@@ -107,6 +108,30 @@ export function getUserJourneyBenchmarkBuildTypesForCurrentRun(): readonly strin
 
   return [BENCHMARK_BUILD_TYPES.BROWSERIFY];
 }
+
+/**
+ * Platform/buildType sets for startup benchmarks (all 4 combos in CI).
+ * Interaction uses ENTRY_BENCHMARK_PLATFORMS/BUILD_TYPES (chrome-browserify).
+ *
+ * User journey: always chrome × browserify in CI. Webpack user-journey JSON is only
+ * uploaded on **push to `main` or `release/*`** (`benchmarks-webpack-perf` in
+ * `run-benchmarks.yml`).
+ */
+const STARTUP_BENCHMARK_PLATFORMS = [
+  BENCHMARK_PLATFORMS.CHROME,
+  BENCHMARK_PLATFORMS.FIREFOX,
+] as const;
+const STARTUP_BENCHMARK_BUILD_TYPES = [
+  BENCHMARK_BUILD_TYPES.BROWSERIFY,
+  BENCHMARK_BUILD_TYPES.WEBPACK,
+] as const;
+
+const DAPP_PAGE_LOAD_BENCHMARK_PLATFORMS = [
+  BENCHMARK_PLATFORMS.CHROME,
+] as const;
+const DAPP_PAGE_LOAD_BENCHMARK_BUILD_TYPES = [
+  BENCHMARK_BUILD_TYPES.BROWSERIFY,
+] as const;
 
 /**
  * Fetches benchmark JSON artifact for a given preset/platform/buildType.
@@ -897,28 +922,39 @@ export async function buildPerformanceBenchmarksSection(
       ? `${process.env.GITHUB_SERVER_URL}/${process.env.GITHUB_REPOSITORY}/actions/runs/${benchmarkRunId}`
       : undefined;
 
-  const [interactionResult, startupResult, userJourneyResult, baselineResult] =
-    await Promise.all([
-      fetchBenchmarkEntries(
-        hostUrl,
-        Object.values(INTERACTION_PRESETS),
-        ENTRY_BENCHMARK_PLATFORMS,
-        ENTRY_BENCHMARK_BUILD_TYPES,
-      ),
-      fetchBenchmarkEntries(
-        hostUrl,
-        Object.values(STARTUP_PRESETS),
-        Object.values(BENCHMARK_PLATFORMS),
-        Object.values(BENCHMARK_BUILD_TYPES),
-      ),
-      fetchBenchmarkEntries(
-        hostUrl,
-        Object.values(USER_JOURNEY_PRESETS),
-        USER_JOURNEY_BENCHMARK_PLATFORMS,
-        getUserJourneyBenchmarkBuildTypesForCurrentRun(),
-      ),
-      fetchHistoricalPerformanceDataFromMain(),
-    ]);
+  const [
+    interactionResult,
+    startupResult,
+    userJourneyResult,
+    dappPageLoadResult,
+    baselineResult,
+  ] = await Promise.all([
+    fetchBenchmarkEntries(
+      hostUrl,
+      Object.values(INTERACTION_PRESETS),
+      ENTRY_BENCHMARK_PLATFORMS,
+      ENTRY_BENCHMARK_BUILD_TYPES,
+    ),
+    fetchBenchmarkEntries(
+      hostUrl,
+      Object.values(STARTUP_PRESETS),
+      STARTUP_BENCHMARK_PLATFORMS,
+      STARTUP_BENCHMARK_BUILD_TYPES,
+    ),
+    fetchBenchmarkEntries(
+      hostUrl,
+      Object.values(USER_JOURNEY_PRESETS),
+      USER_JOURNEY_BENCHMARK_PLATFORMS,
+      getUserJourneyBenchmarkBuildTypesForCurrentRun(),
+    ),
+    fetchBenchmarkEntries(
+      hostUrl,
+      Object.values(DAPP_PAGE_LOAD_PRESETS),
+      DAPP_PAGE_LOAD_BENCHMARK_PLATFORMS,
+      DAPP_PAGE_LOAD_BENCHMARK_BUILD_TYPES,
+    ),
+    fetchHistoricalPerformanceDataFromMain(),
+  ]);
 
   const resolvedBaseline = baselineResult?.baseline ?? undefined;
   const baselineCommit = baselineResult?.latestCommit;
@@ -928,13 +964,15 @@ export async function buildPerformanceBenchmarksSection(
     ...startupResult.entries,
     ...interactionResult.entries,
     ...userJourneyResult.entries,
+    ...dappPageLoadResult.entries,
   ];
 
   if (
     allEntries.length === 0 &&
     interactionResult.missingPresets.length === 0 &&
     startupResult.missingPresets.length === 0 &&
-    userJourneyResult.missingPresets.length === 0
+    userJourneyResult.missingPresets.length === 0 &&
+    dappPageLoadResult.missingPresets.length === 0
   ) {
     return '';
   }
@@ -954,6 +992,12 @@ export async function buildPerformanceBenchmarksSection(
   const userJourneyHtml = buildBenchmarkSection(
     userJourneyResult,
     'User Journey Benchmarks',
+    resolvedBaseline,
+    runUrl,
+  );
+  const dappPageLoadHtml = buildBenchmarkSection(
+    dappPageLoadResult,
+    'Dapp Page Load Benchmarks',
     resolvedBaseline,
     runUrl,
   );
@@ -995,7 +1039,8 @@ export async function buildPerformanceBenchmarksSection(
 
   // Plain text only inside <summary> (no block elements like <p>).
   const summaryLine = `${sectionTitle} (Total: ${HEALTH_ICON[EntryHealth.Pass]} ${passes} pass · ${HEALTH_ICON[EntryHealth.Warn]} ${warnings} warn · ${HEALTH_ICON[EntryHealth.Fail]} ${failures} fail)`;
-  const subsectionsHtml = interactionHtml + startupHtml + userJourneyHtml;
+  const subsectionsHtml =
+    interactionHtml + startupHtml + userJourneyHtml + dappPageLoadHtml;
   const content =
     commitInfo + matrixHtml + regressionDetailsHtml + subsectionsHtml;
 
