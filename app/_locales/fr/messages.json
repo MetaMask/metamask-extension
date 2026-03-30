@@ -411,9 +411,6 @@
     "message": "Enregistrer ces valeurs comme valeurs par défaut pour le réseau $1.",
     "description": "$1 is the current network name."
   },
-  "advancedGasFeeModalTitle": {
-    "message": "Frais de carburant avancés"
-  },
   "advancedGasPriceModalTitle": {
     "message": "Frais de réseau avancés"
   },
@@ -1348,17 +1345,6 @@
   "cancel": {
     "message": "Annuler"
   },
-  "cancelPopoverTitle": {
-    "message": "Annuler la transaction"
-  },
-  "cancelSpeedUpLabel": {
-    "message": "Ces gas fees vont $1 les frais initiaux.",
-    "description": "$1 is text 'replace' in bold"
-  },
-  "cancelSpeedUpTransactionTooltip": {
-    "message": "Pour $1 une transaction, les frais de gaz doivent être augmentés de 10 % minimum pour qu’elle soit reconnue par le réseau.",
-    "description": "$1 is string 'cancel' or 'speed up'"
-  },
   "cancelTransactionDescription": {
     "message": "Cette transaction sera annulée et ces frais de réseau remplaceront les frais initiaux."
   },
@@ -2072,10 +2058,6 @@
   "dappSuggestedShortLabel": {
     "message": "Site"
   },
-  "dappSuggestedTooltip": {
-    "message": "$1 a recommandé ce prix.",
-    "description": "$1 represents the Dapp's origin"
-  },
   "dappSwapAdvantage": {
     "message": "Économisez et gagnez avec MetaMask Swaps"
   },
@@ -2526,9 +2508,6 @@
   "editAddressNickname": {
     "message": "Modifier le pseudo de l’adresse"
   },
-  "editCancellationGasFeeModalTitle": {
-    "message": "Modifier l’annulation des frais de gaz"
-  },
   "editContact": {
     "message": "Modifier le contact"
   },
@@ -2541,9 +2520,6 @@
   "editGasLimitOutOfBoundsV2": {
     "message": "La limite de carburant doit être supérieure à $1 et inférieure à $2",
     "description": "$1 is the minimum limit for gas and $2 is the maximum limit"
-  },
-  "editGasLimitTooltip": {
-    "message": "La limite de carburant correspond au maximum d’unités de carburant que vous consentez à utiliser. Celles-ci servent de multiplicateur aux « Frais de priorité maximaux » et aux « Frais maximaux »."
   },
   "editGasMaxBaseFeeGWEIImbalance": {
     "message": "Les frais de base maximaux ne peuvent pas être inférieurs aux frais de priorité"
@@ -2584,15 +2560,6 @@
   "editGasPriceTooLow": {
     "message": "Les frais de carburant doivent être supérieurs à 0"
   },
-  "editGasPriceTooltip": {
-    "message": "Ce réseau exige un champ « Prix du carburant » lors de la soumission d’une transaction. Le prix du carburant correspond au montant que vous paierez par unité de carburant."
-  },
-  "editGasSubTextFeeLabel": {
-    "message": "Frais maximums:"
-  },
-  "editGasTitle": {
-    "message": "Modifier la priorité"
-  },
   "editGasTooLow": {
     "message": "Délai de traitement inconnu"
   },
@@ -2616,9 +2583,6 @@
   },
   "editPermissions": {
     "message": "Modifier les autorisations"
-  },
-  "editSpeedUpEditGasFeeModalTitle": {
-    "message": "Modifier l’accélération des frais de gaz"
   },
   "editSpendingCap": {
     "message": "Modifier le plafond des dépenses"
@@ -3008,27 +2972,14 @@
   "gas": {
     "message": "Carburant"
   },
-  "gasDisplayAcknowledgeDappButtonText": {
-    "message": "Modifier les frais de gaz suggérés"
-  },
-  "gasDisplayDappWarning": {
-    "message": "Ces frais de gaz ont été suggérés par $1. Si vous n’en tenez pas compte, vous risquez de rencontrer des difficultés lors de votre transaction. Veuillez contacter $1 pour toute question.",
-    "description": "$1 represents the Dapp's origin"
-  },
   "gasLimit": {
     "message": "Limite de gaz"
-  },
-  "gasLimitRecommended": {
-    "message": "La limite de gaz recommandée est $1. Si la limite de gaz est inférieure à cette valeur, un échec peut en résulter."
   },
   "gasLimitTooLow": {
     "message": "La limite de carburant doit être d’au moins 21000"
   },
   "gasLimitV2": {
     "message": "Montant maximal des frais de transaction"
-  },
-  "gasOption": {
-    "message": "Option de carburant"
   },
   "gasPrice": {
     "message": "Prix du gaz (GWEI)"
@@ -3962,9 +3913,6 @@
   "maxFeeTooltip": {
     "message": "Frais maximums prévus pour le traitement de la transaction."
   },
-  "maxPriorityFee": {
-    "message": "Frais de priorité maximums"
-  },
   "medium": {
     "message": "Marché"
   },
@@ -4179,8 +4127,8 @@
     "description": "Label for the claimable bonus row in the mUSD conversion confirmation screen"
   },
   "musdClaimableBonusTooltip": {
-    "message": "Bonus annualisé de $1 % que vous avez gagné en détenant des mUSD. Vous pouvez réclamer votre bonus quotidiennement sur Linea. $2",
-    "description": "$1 is the APY percentage, $2 is the 'Terms apply' link"
+    "message": "Le bonus annualisé que vous avez gagné en détenant des mUSD. Vous pouvez réclamer votre bonus quotidiennement sur Linea. $1",
+    "description": "$1 is the 'Terms apply' link"
   },
   "musdConversionActivityTitle": {
     "message": "Convertir des $1 en mUSD",
@@ -4204,16 +4152,12 @@
     "message": "Convertissez et obtenez un bonus de $1 %",
     "description": "$1 is the bonus percentage (e.g., 3)"
   },
-  "musdEarnBonusPercentage": {
-    "message": "Obtenez un bonus de $1 %",
-    "description": "$1 is the bonus percentage (e.g., 3)"
-  },
   "musdEducationGetStarted": {
     "message": "Commencer"
   },
   "musdEducationHeadline": {
     "message": "OBTENEZ UN BONUS DE $1 % SUR LES STABLECOINS",
-    "description": "$1 is the bonus APY percentage"
+    "description": "$1 is the bonus APY percentage. Line break between ON and STABLECOINS matches splash layout."
   },
   "musdEducationNotNow": {
     "message": "Pas maintenant"
@@ -4390,9 +4334,6 @@
   },
   "networkFeeExplanationTitle": {
     "message": "Frais de réseau"
-  },
-  "networkIsBusy": {
-    "message": "Le réseau est occupé. Les gas fees sont élevés et les estimations sont moins précises."
   },
   "networkMenu": {
     "message": "Menu du réseau"
@@ -5672,9 +5613,6 @@
   },
   "perpsPosition": {
     "message": "Position"
-  },
-  "perpsPositionClosedReverseOrderFailed": {
-    "message": "Votre position a été clôturée, mais l’ordre inverse n’a pas pu être exécuté. Vous devrez envisager d’ouvrir manuellement une nouvelle position"
   },
   "perpsPositionSize": {
     "message": "Taille de la position"
@@ -7959,15 +7897,6 @@
   "speedUpCancellation": {
     "message": "Accélérer cette annulation"
   },
-  "speedUpExplanation": {
-    "message": "Nous avons mis à jour le prix du carburant selon les conditions actuelles du réseau et l’avons augmenté d’au moins 10 % (requis par le réseau)."
-  },
-  "speedUpPopoverTitle": {
-    "message": "Accélérer la transaction"
-  },
-  "speedUpTooltipText": {
-    "message": "Nouveaux frais de gaz"
-  },
   "speedUpTransactionDescription": {
     "message": "Ces frais de réseau remplaceront les frais initiaux."
   },
@@ -8807,14 +8736,8 @@
   "tokensInCollection": {
     "message": "Jetons dans la collection"
   },
-  "tooltipSatusConnected": {
-    "message": "connecté"
-  },
   "tooltipSatusConnectedUpperCase": {
     "message": "Connecté"
-  },
-  "tooltipSatusNotConnected": {
-    "message": "non connecté"
   },
   "total": {
     "message": "Total"

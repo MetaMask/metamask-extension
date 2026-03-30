@@ -1,5 +1,6 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { render } from '@testing-library/react';
+import { createMemoryRouterWrapper } from '../../../test/lib/render-helpers-navigate';
 import { submitRequestToBackground } from '../../store/background-connection';
 import PerpsLayout from './perps-layout';
 
@@ -15,13 +16,10 @@ describe('PerpsLayout', () => {
   });
 
   it('signals perpsViewActive on mount and unmount', () => {
-    const { unmount } = render(
-      <PerpsLayout>
-        <div data-testid="child" />
-      </PerpsLayout>,
-    );
+    const { unmount } = render(<PerpsLayout />, {
+      wrapper: createMemoryRouterWrapper(),
+    });
 
-    expect(screen.getByTestId('child')).toBeInTheDocument();
     expect(mockSubmitRequestToBackground).toHaveBeenNthCalledWith(
       1,
       'perpsViewActive',

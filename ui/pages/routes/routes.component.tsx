@@ -456,36 +456,25 @@ export const routeConfig = [
             element: <RewardsPage />,
           },
           {
-            path: `${PERPS_MARKET_DETAIL_ROUTE}/:symbol`,
-            element: (
-              <PerpsLayout>
-                <PerpsMarketDetailPage />
-              </PerpsLayout>
-            ),
-          },
-          {
-            path: `${PERPS_ORDER_ENTRY_ROUTE}/:symbol`,
-            element: (
-              <PerpsLayout>
-                <PerpsOrderEntryPage />
-              </PerpsLayout>
-            ),
-          },
-          {
-            path: PERPS_ACTIVITY_ROUTE,
-            element: (
-              <PerpsLayout>
-                <PerpsActivityPage />
-              </PerpsLayout>
-            ),
-          },
-          {
-            path: PERPS_MARKET_LIST_ROUTE,
-            element: (
-              <PerpsLayout>
-                <MarketListView />
-              </PerpsLayout>
-            ),
+            element: <PerpsLayout />,
+            children: [
+              {
+                path: `${PERPS_MARKET_DETAIL_ROUTE}/:symbol`,
+                element: <PerpsMarketDetailPage />,
+              },
+              {
+                path: `${PERPS_ORDER_ENTRY_ROUTE}/:symbol`,
+                element: <PerpsOrderEntryPage />,
+              },
+              {
+                path: PERPS_ACTIVITY_ROUTE,
+                element: <PerpsActivityPage />,
+              },
+              {
+                path: PERPS_MARKET_LIST_ROUTE,
+                element: <MarketListView />,
+              },
+            ],
           },
         ],
       },

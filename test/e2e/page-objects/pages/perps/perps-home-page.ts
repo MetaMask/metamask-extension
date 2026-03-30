@@ -89,7 +89,7 @@ export class PerpsHomePage extends PerpsPositionsBase {
 
   /**
    * Clicks the "See All" link in the Recent Activity section (navigates to Perps Activity).
-   * Requires positions so Recent Activity section is visible.
+   * Requires at least one perps transaction so the non-empty list and See All are shown.
    */
   async clickRecentActivitySeeAll(): Promise<void> {
     await this.driver.clickElement(this.perpsRecentActivitySeeAll);
@@ -158,7 +158,8 @@ export class PerpsHomePage extends PerpsPositionsBase {
   }
 
   /**
-   * Waits for the Recent Activity section to be visible (when user has positions).
+   * Waits for the Recent Activity list (non-empty) to be visible.
+   * When there is no history, the section uses `perps-recent-activity-empty` instead.
    */
   async waitForRecentActivitySection(): Promise<void> {
     await this.driver.waitForSelector(this.perpsRecentActivity);

@@ -18,6 +18,8 @@ import {
   getCurrencyRateControllerCurrencyRates,
   getTokenRatesControllerMarketData,
   getMultichainAssetsRatesControllerConversionRates,
+  getRatesControllerRates,
+  getRatesControllerFiatCurrency,
 } from './assets-migration';
 
 const mockAccountId = 'mock-account-id-1';
@@ -40,9 +42,7 @@ const solanaTokenAssetId =
   'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v';
 
 const nativePolygonAssetId = 'eip155:137/slip44:966';
-/* eslint-disable @typescript-eslint/no-unused-vars -- shared helpers for future tests */
 const bitcoinNativeAssetId = 'bip122:000000000019d6689c085ae165831e93/slip44:0';
-/* eslint-enable @typescript-eslint/no-unused-vars */
 const mockAccountId3 = 'mock-account-id-3';
 const mockAccountAddressLowercase2: Hex =
   '0x1234567890abcdef1234567890abcdef12345678';
@@ -55,8 +55,6 @@ const enabledFlags = {
   },
 };
 
-/** Shared helper for future token-rates / market-data tests */
-/* eslint-disable @typescript-eslint/no-unused-vars */
 function makeMockPrice(overrides: Partial<Record<string, unknown>> = {}) {
   return {
     assetPriceType: 'fungible',
@@ -83,7 +81,6 @@ function makeMockPrice(overrides: Partial<Record<string, unknown>> = {}) {
     ...overrides,
   };
 }
-/* eslint-enable @typescript-eslint/no-unused-vars */
 
 describe('getAccountTrackerControllerAccountsByChainId', () => {
   describe('when assets unify state feature is disabled', () => {
@@ -1556,67 +1553,6 @@ describe('getCurrencyRateControllerCurrencyRates', () => {
         },
       });
     });
-
-    it('falls back to chain-specific slip44 key in assetsPrice when assetsInfo uses slip44:60', () => {
-      const lastUpdated = 1700000000000;
-      const avaxInfoAssetId = 'eip155:43114/slip44:60';
-      const avaxPriceAssetId = 'eip155:43114/slip44:9005';
-      const state = {
-        metamask: {
-          remoteFeatureFlags: {
-            [ASSETS_UNIFY_STATE_FLAG]: {
-              enabled: true,
-              featureVersion: ASSETS_UNIFY_STATE_VERSION_1,
-            },
-          },
-          currentCurrency: 'usd',
-          selectedCurrency: 'usd',
-          currencyRates: {},
-          assetsInfo: {
-            [avaxInfoAssetId]: {
-              type: 'native',
-              symbol: 'AVAX',
-              decimals: 18,
-            },
-          },
-          assetsPrice: {
-            [avaxPriceAssetId]: {
-              assetPriceType: 'fungible',
-              id: 'avax-price',
-              price: 25,
-              usdPrice: 25,
-              lastUpdated,
-              marketCap: 0,
-              allTimeHigh: 0,
-              allTimeLow: 0,
-              totalVolume: 0,
-              high1d: 0,
-              low1d: 0,
-              circulatingSupply: 0,
-              dilutedMarketCap: 0,
-              marketCapPercentChange1d: 0,
-              priceChange1d: 0,
-              pricePercentChange1h: 0,
-              pricePercentChange1d: 0,
-              pricePercentChange7d: 0,
-              pricePercentChange14d: 0,
-              pricePercentChange30d: 0,
-              pricePercentChange200d: 0,
-              pricePercentChange1y: 0,
-            },
-          },
-        },
-      };
-      const result = getCurrencyRateControllerCurrencyRates(state);
-
-      expect(result).toStrictEqual({
-        AVAX: {
-          conversionDate: lastUpdated / 1000,
-          conversionRate: 25,
-          usdConversionRate: 25,
-        },
-      });
-    });
   });
 });
 
@@ -1748,106 +1684,6 @@ describe('getTokenRatesControllerMarketData', () => {
       expect(marketData.price).toBe(usdcPriceInUsd / ethPriceInUsd);
       expect(marketData.currency).toBe('ETH');
       expect(marketData.tokenAddress).toBe(erc20AssetAddressChecksummed);
-    });
-
-    it('falls back to slip44:60 key in assetsInfo when assetsPrice uses a chain-specific slip44', () => {
-      const lastUpdated = 1700000000000;
-      const avaxInfoAssetId = 'eip155:43114/slip44:60';
-      const avaxPriceAssetId = 'eip155:43114/slip44:9005';
-      const avaxPrice = 25;
-      const usdtPriceInUsd = 1;
-      const usdtAddress = '0x9702230A8Ea53601f5cD2dc00fDBc13d4dF4A8c7';
-      const usdtAssetId = `eip155:43114/erc20:${usdtAddress.toLowerCase()}`;
-      const usdtChecksummed = toChecksumHexAddress(
-        usdtAddress.toLowerCase(),
-      ) as Hex;
-      const state = {
-        metamask: {
-          remoteFeatureFlags: {
-            [ASSETS_UNIFY_STATE_FLAG]: {
-              enabled: true,
-              featureVersion: ASSETS_UNIFY_STATE_VERSION_1,
-            },
-          },
-          marketData: {},
-          currentCurrency: 'usd',
-          selectedCurrency: 'usd',
-          currencyRates: {},
-          assetsInfo: {
-            [avaxInfoAssetId]: {
-              type: 'native',
-              symbol: 'AVAX',
-              decimals: 18,
-            },
-            [usdtAssetId]: {
-              type: 'erc20',
-              symbol: 'USDT',
-              decimals: 6,
-            },
-          },
-          assetsPrice: {
-            [avaxPriceAssetId]: {
-              assetPriceType: 'fungible',
-              id: 'avax-price',
-              price: avaxPrice,
-              usdPrice: avaxPrice,
-              lastUpdated,
-              marketCap: 0,
-              allTimeHigh: 0,
-              allTimeLow: 0,
-              totalVolume: 0,
-              high1d: 0,
-              low1d: 0,
-              circulatingSupply: 0,
-              dilutedMarketCap: 0,
-              marketCapPercentChange1d: 0,
-              priceChange1d: 0,
-              pricePercentChange1h: 0,
-              pricePercentChange1d: 0,
-              pricePercentChange7d: 0,
-              pricePercentChange14d: 0,
-              pricePercentChange30d: 0,
-              pricePercentChange200d: 0,
-              pricePercentChange1y: 0,
-            },
-            [usdtAssetId]: {
-              assetPriceType: 'fungible',
-              id: 'usdt-price',
-              price: usdtPriceInUsd,
-              usdPrice: usdtPriceInUsd,
-              lastUpdated,
-              marketCap: 0,
-              allTimeHigh: 0,
-              allTimeLow: 0,
-              totalVolume: 0,
-              high1d: 0,
-              low1d: 0,
-              circulatingSupply: 0,
-              dilutedMarketCap: 0,
-              marketCapPercentChange1d: 0,
-              priceChange1d: 0,
-              pricePercentChange1h: 0,
-              pricePercentChange1d: 0,
-              pricePercentChange7d: 0,
-              pricePercentChange14d: 0,
-              pricePercentChange30d: 0,
-              pricePercentChange200d: 0,
-              pricePercentChange1y: 0,
-            },
-          },
-          networkConfigurationsByChainId: {
-            '0xa86a': { nativeCurrency: 'AVAX' },
-          },
-        },
-      };
-      const result = getTokenRatesControllerMarketData(state);
-
-      const avaxMarketData = result['0xa86a'];
-      expect(avaxMarketData).toBeDefined();
-      expect(avaxMarketData[usdtChecksummed].price).toBe(
-        usdtPriceInUsd / avaxPrice,
-      );
-      expect(avaxMarketData[usdtChecksummed].currency).toBe('AVAX');
     });
   });
 
@@ -2282,6 +2118,131 @@ describe('getMultichainAssetsRatesControllerConversionRates', () => {
       const result = getMultichainAssetsRatesControllerConversionRates(state);
 
       expect(result).toStrictEqual({});
+    });
+  });
+});
+
+describe('getRatesControllerRates', () => {
+  const solanaNativeAssetId =
+    'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501';
+
+  describe('when assets unify state feature is disabled', () => {
+    it('returns rates from state unchanged', () => {
+      const legacyRates = {
+        btc: {
+          conversionDate: 1700000000000,
+          conversionRate: 71052.43,
+          usdConversionRate: 71052.43,
+        },
+        sol: {
+          conversionDate: 1700000000000,
+          conversionRate: 91.69,
+          usdConversionRate: 91.69,
+        },
+      };
+      const state = {
+        metamask: {
+          rates: legacyRates,
+        },
+      };
+      const result = getRatesControllerRates(state);
+
+      expect(result).toBe(legacyRates);
+      expect(result).toStrictEqual(legacyRates);
+    });
+  });
+
+  describe('when assets unify state feature is enabled (happy path)', () => {
+    it('derives rates from assetsInfo and assetsPrice for non-EVM native assets', () => {
+      const lastUpdated = 1700000000000;
+      const state = {
+        metamask: {
+          ...enabledFlags,
+          rates: {},
+          assetsInfo: {
+            [nativeEthAssetId]: {
+              type: 'native',
+              symbol: 'ETH',
+              decimals: 18,
+            },
+            [bitcoinNativeAssetId]: {
+              type: 'native',
+              symbol: 'BTC',
+              decimals: 8,
+            },
+            [solanaNativeAssetId]: {
+              type: 'native',
+              symbol: 'SOL',
+              decimals: 9,
+            },
+          },
+          assetsPrice: {
+            [nativeEthAssetId]: makeMockPrice({
+              id: 'eth',
+              price: 2000,
+              usdPrice: 2000,
+              lastUpdated,
+            }),
+            [bitcoinNativeAssetId]: makeMockPrice({
+              id: 'btc',
+              price: 71052.43,
+              usdPrice: 71052.43,
+              lastUpdated,
+            }),
+            [solanaNativeAssetId]: makeMockPrice({
+              id: 'sol',
+              price: 91.69,
+              usdPrice: 91.69,
+              lastUpdated,
+            }),
+          },
+        },
+      };
+      const result = getRatesControllerRates(state);
+
+      expect(result.eth).toBeUndefined();
+      expect(result).toStrictEqual({
+        btc: {
+          conversionDate: lastUpdated,
+          conversionRate: 71052.43,
+          usdConversionRate: 71052.43,
+        },
+        sol: {
+          conversionDate: lastUpdated,
+          conversionRate: 91.69,
+          usdConversionRate: 91.69,
+        },
+      });
+    });
+  });
+});
+
+describe('getRatesControllerFiatCurrency', () => {
+  describe('when assets unify state feature is disabled', () => {
+    it('returns fiatCurrency from state unchanged', () => {
+      const state = {
+        metamask: {
+          fiatCurrency: 'eur',
+        },
+      };
+      const result = getRatesControllerFiatCurrency(state);
+
+      expect(result).toBe('eur');
+    });
+  });
+
+  describe('when assets unify state feature is enabled', () => {
+    it('returns selectedCurrency from new state', () => {
+      const state = {
+        metamask: {
+          ...enabledFlags,
+          fiatCurrency: 'eur',
+          selectedCurrency: 'usd',
+        },
+      };
+      const result = getRatesControllerFiatCurrency(state);
+
+      expect(result).toBe('usd');
     });
   });
 });
