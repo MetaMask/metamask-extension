@@ -131,6 +131,18 @@ jest.mock('react-router-dom', () => ({
   },
 }));
 
+const mockIsNearLiquidationPrice = jest.fn();
+jest.mock('../../components/app/perps/order-entry/limit-price-warnings', () => {
+  const actual = jest.requireActual(
+    '../../components/app/perps/order-entry/limit-price-warnings',
+  );
+  return {
+    ...actual,
+    isNearLiquidationPrice: (...args: unknown[]) =>
+      mockIsNearLiquidationPrice(...args),
+  };
+});
+
 // eslint-disable-next-line import-x/first
 import PerpsOrderEntryPage from './perps-order-entry-page';
 
@@ -152,6 +164,11 @@ describe('PerpsOrderEntryPage', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    const { isNearLiquidationPrice: realIsNearLiquidation } =
+      jest.requireActual(
+        '../../components/app/perps/order-entry/limit-price-warnings',
+      );
+    mockIsNearLiquidationPrice.mockImplementation(realIsNearLiquidation);
     mockUseParams.mockReturnValue({ symbol: 'ETH' });
     mockSearchParams.delete('direction');
     mockSearchParams.delete('mode');
@@ -408,6 +425,8 @@ describe('PerpsOrderEntryPage', () => {
     });
 
     it('disables submit when limit order would be near liquidation', async () => {
+      mockIsNearLiquidationPrice.mockReturnValue(true);
+
       mockSearchParams.set('orderType', 'limit');
       mockSearchParams.set('direction', 'long');
       const store = mockStore(createMockState());
@@ -419,15 +438,23 @@ describe('PerpsOrderEntryPage', () => {
         target: { value: '1000' },
       });
 
+      // Favorable limit price (below currentPrice ~$3,025.50) so the
+      // button is NOT disabled by the unfavorable-price guard.
       const limitContainer = screen.getByTestId('limit-price-input');
       const limitInput = limitContainer.querySelector('input');
       fireEvent.change(limitInput as HTMLInputElement, {
-        target: { value: '6000' },
+        target: { value: '3000' },
       });
 
       await waitFor(() => {
         expect(screen.getByTestId('submit-order-button')).toBeDisabled();
       });
+      expect(
+        screen.queryByTestId('limit-price-warning'),
+      ).not.toBeInTheDocument();
+      expect(
+        screen.getByTestId('limit-price-liquidation-warning'),
+      ).toBeInTheDocument();
     });
   });
 
