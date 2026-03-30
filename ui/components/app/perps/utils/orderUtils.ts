@@ -406,8 +406,8 @@ export const resolveOrderDisplayPriceAndLabel = (
  * @returns Formatted order label string
  */
 export const formatOrderLabel = (order: Order): string => {
-  const { side, detailedOrderType, orderType, reduceOnly, isTrigger } = order;
-  const isClosing = Boolean(reduceOnly || isTrigger);
+  const { side, detailedOrderType, orderType, reduceOnly } = order;
+  const isClosing = Boolean(reduceOnly);
 
   let direction: string;
   if (isClosing) {

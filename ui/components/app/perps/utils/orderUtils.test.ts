@@ -438,22 +438,44 @@ describe('orderUtils', () => {
       expect(formatOrderLabel(order)).toBe('Limit close long');
     });
 
-    it('formats stop market close short for trigger buy', () => {
+    it('formats stop market close short for reduce-only trigger buy', () => {
       const order = makeOrder({
         side: 'buy',
         isTrigger: true,
+        reduceOnly: true,
         detailedOrderType: 'Stop Market',
       });
       expect(formatOrderLabel(order)).toBe('Stop Market close short');
     });
 
-    it('formats take profit limit close long for trigger sell', () => {
+    it('formats take profit limit close long for reduce-only trigger sell', () => {
       const order = makeOrder({
         side: 'sell',
         isTrigger: true,
+        reduceOnly: true,
         detailedOrderType: 'Take Profit Limit',
       });
       expect(formatOrderLabel(order)).toBe('Take Profit Limit close long');
+    });
+
+    it('formats stop market long for non-reduce-only trigger buy (stop-entry)', () => {
+      const order = makeOrder({
+        side: 'buy',
+        isTrigger: true,
+        reduceOnly: false,
+        detailedOrderType: 'Stop Market',
+      });
+      expect(formatOrderLabel(order)).toBe('Stop Market long');
+    });
+
+    it('formats stop limit short for non-reduce-only trigger sell (stop-entry)', () => {
+      const order = makeOrder({
+        side: 'sell',
+        isTrigger: true,
+        reduceOnly: false,
+        detailedOrderType: 'Stop Limit',
+      });
+      expect(formatOrderLabel(order)).toBe('Stop Limit short');
     });
   });
 });
