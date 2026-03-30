@@ -7,6 +7,8 @@ description: Implement and review MetaMask Extension A/B tests using the canonic
 
 `docs/ab-testing.md` is the single source of truth.
 
+Do not use this skill for general analytics work that does not involve A/B test flags, `useABTest`, `active_ab_tests`, or related tests/docs.
+
 Follow `docs/ab-testing.md` section `Agent Execution Standard (SSOT)` for:
 
 - workflow
@@ -14,6 +16,13 @@ Follow `docs/ab-testing.md` section `Agent Execution Standard (SSOT)` for:
 - risk-based testing policy
 - required response sections
 - compliance command
+
+If that section is unavailable, apply these core rules:
+
+- Use `useABTest(flagKey, variants)` with a `control` variant.
+- Use `active_ab_tests: [{ key, value }]` for business events when assignment is active.
+- Do not add new `ab_tests:` payloads.
+- Run and report `node --import tsx .agents/skills/ab-testing-implementation/scripts/check-ab-testing-compliance.ts --staged`.
 
 Run and report:
 
