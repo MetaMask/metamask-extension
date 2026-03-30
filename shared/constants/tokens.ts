@@ -1,4 +1,4 @@
-import contractMap from '@metamask/contract-metadata';
+import contractMap from '@metamask/contract-metadata/contract-map.json';
 import BigNumber from 'bignumber.js';
 
 /**
