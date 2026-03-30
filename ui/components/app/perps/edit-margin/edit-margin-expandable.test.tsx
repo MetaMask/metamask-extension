@@ -24,6 +24,7 @@ jest.mock('../../../../hooks/perps/usePerpsEligibility', () => ({
 jest.mock('../perps-toast', () => ({
   PERPS_TOAST_KEYS: {
     MARGIN_ADD_SUCCESS: 'perpsToastMarginAddSuccess',
+    MARGIN_ADJUSTMENT_FAILED: 'perpsToastMarginAdjustmentFailed',
     MARGIN_REMOVE_SUCCESS: 'perpsToastMarginRemoveSuccess',
   },
   usePerpsToast: () => ({
@@ -46,6 +47,7 @@ const defaultProps = {
   account: mockAccountState,
   currentPrice: 2900,
   isExpanded: true,
+  isPerpsInAppToastsEnabled: true,
   onToggle: jest.fn(),
 };
 
@@ -296,7 +298,7 @@ describe('EditMarginExpandable', () => {
   });
 
   describe('error display', () => {
-    it('shows error message when updateMargin fails', async () => {
+    it('shows margin adjustment failure toast when updateMargin fails and toasts are enabled', async () => {
       mockSubmitRequestToBackground.mockResolvedValueOnce({
         success: false,
         error: 'Insufficient balance',
@@ -316,7 +318,104 @@ describe('EditMarginExpandable', () => {
       fireEvent.click(confirmButton);
 
       await waitFor(() => {
+        expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
+          key: 'perpsToastMarginAdjustmentFailed',
+          description: 'Insufficient balance',
+        });
+      });
+
+      expect(
+        screen.queryByText('Insufficient balance'),
+      ).not.toBeInTheDocument();
+    });
+
+    it('shows inline margin error when perps toast flag is disabled', async () => {
+      mockSubmitRequestToBackground.mockResolvedValueOnce({
+        success: false,
+        error: 'Insufficient balance',
+      });
+
+      renderWithProvider(
+        <EditMarginExpandable
+          {...defaultProps}
+          isExpanded
+          isPerpsInAppToastsEnabled={false}
+        />,
+        mockStore,
+      );
+
+      const input = screen.getByPlaceholderText('0.00');
+      fireEvent.change(input, { target: { value: '100' } });
+
+      const confirmButton = screen.getByRole('button', {
+        name: /Add Margin/iu,
+      });
+      fireEvent.click(confirmButton);
+
+      await waitFor(() => {
         expect(screen.getByText('Insufficient balance')).toBeInTheDocument();
+      });
+
+      expect(mockReplacePerpsToastByKey).not.toHaveBeenCalledWith({
+        key: 'perpsToastMarginAdjustmentFailed',
+        description: 'Insufficient balance',
+      });
+    });
+
+    it('shows inline margin error by default when toast flag prop is omitted', async () => {
+      mockSubmitRequestToBackground.mockResolvedValueOnce({
+        success: false,
+        error: 'Insufficient balance',
+      });
+
+      const {
+        isPerpsInAppToastsEnabled: _isPerpsInAppToastsEnabled,
+        ...propsWithoutToastFlag
+      } = defaultProps;
+
+      renderWithProvider(
+        <EditMarginExpandable {...propsWithoutToastFlag} isExpanded />,
+        mockStore,
+      );
+
+      const input = screen.getByPlaceholderText('0.00');
+      fireEvent.change(input, { target: { value: '100' } });
+
+      const confirmButton = screen.getByRole('button', {
+        name: /Add Margin/iu,
+      });
+      fireEvent.click(confirmButton);
+
+      await waitFor(() => {
+        expect(screen.getByText('Insufficient balance')).toBeInTheDocument();
+      });
+
+      expect(mockReplacePerpsToastByKey).not.toHaveBeenCalled();
+    });
+
+    it('uses fallback margin adjustment description when backend returns no margin error', async () => {
+      mockSubmitRequestToBackground.mockResolvedValueOnce({
+        success: false,
+      });
+
+      renderWithProvider(
+        <EditMarginExpandable {...defaultProps} isExpanded />,
+        mockStore,
+      );
+
+      const input = screen.getByPlaceholderText('0.00');
+      fireEvent.change(input, { target: { value: '100' } });
+
+      const confirmButton = screen.getByRole('button', {
+        name: /Add Margin/iu,
+      });
+      fireEvent.click(confirmButton);
+
+      await waitFor(() => {
+        expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
+          key: 'perpsToastMarginAdjustmentFailed',
+          description: 'Unable to adjust margin. Please try again.',
+        });
       });
     });
   });

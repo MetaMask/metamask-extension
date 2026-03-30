@@ -1,4 +1,11 @@
-import React, { useState, useCallback, useMemo, useLayoutEffect } from 'react';
+import React, {
+  useState,
+  useCallback,
+  useMemo,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+} from 'react';
 import {
   Box,
   BoxAlignItems,
@@ -24,7 +31,9 @@ import { useFormatters } from '../../../../hooks/useFormatters';
 import { usePerpsEligibility } from '../../../../hooks/perps';
 import { submitRequestToBackground } from '../../../../store/background-connection';
 import { getPerpsStreamManager } from '../../../../providers/perps';
-import type { Position } from '../types';
+import { usePerpsToast } from '../perps-toast';
+import { PERPS_TOAST_KEYS } from '../perps-toast/perps-toast-provider';
+import type { Position, PerpsBackgroundResult } from '../types';
 
 const TP_PRESETS = [10, 25, 50, 100];
 const SL_PRESETS = [10, 25, 50, 75];
@@ -52,6 +61,7 @@ export type UpdateTPSLModalContentProps = {
   onClose: () => void;
   /** Wired by UpdateTPSLModal to place the primary action in ModalFooter */
   onSubmitStateChange?: (state: UpdateTPSLSubmitState) => void;
+  isPerpsInAppToastsEnabled?: boolean;
 };
 
 /**
@@ -64,16 +74,19 @@ export type UpdateTPSLModalContentProps = {
  * @param options0.currentPrice
  * @param options0.onClose
  * @param options0.onSubmitStateChange
+ * @param options0.isPerpsInAppToastsEnabled
  */
 export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
   position,
   currentPrice,
   onClose,
   onSubmitStateChange,
+  isPerpsInAppToastsEnabled = false,
 }) => {
   const t = useI18nContext();
   const { formatNumber, formatCurrencyWithMinThreshold } = useFormatters();
   const { isEligible } = usePerpsEligibility();
+  const { replacePerpsToastByKey } = usePerpsToast();
 
   const [editingTpPrice, setEditingTpPrice] = useState(
     () => position.takeProfitPrice ?? '',
@@ -83,6 +96,10 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
   );
   const [isSaving, setIsSaving] = useState(false);
   const [tpslError, setTpslError] = useState<string | null>(null);
+  const isMountedRef = useRef(true);
+  const delayedRefetchTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(
+    null,
+  );
 
   const entryPriceForEdit = useMemo(() => {
     if (position?.entryPrice) {
@@ -192,6 +209,17 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
     return signedSize * (exitPrice - entryPriceForEdit);
   }, [editingSlPrice, signedSize, entryPriceForEdit]);
 
+  useEffect(() => {
+    isMountedRef.current = true;
+    return () => {
+      isMountedRef.current = false;
+      if (delayedRefetchTimeoutRef.current) {
+        clearTimeout(delayedRefetchTimeoutRef.current);
+        delayedRefetchTimeoutRef.current = null;
+      }
+    };
+  }, []);
+
   const handleTpPresetClick = useCallback(
     (percent: number) => {
       const newPrice = percentToPriceForEdit(percent, true);
@@ -264,22 +292,25 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
     }
     setIsSaving(true);
     setTpslError(null);
+
+    const cleanTpPrice = editingTpPrice.replace(/,/gu, '').trim();
+    const cleanSlPrice = editingSlPrice.replace(/,/gu, '').trim();
+
     try {
-      const cleanTpPrice = editingTpPrice.replaceAll(',', '').trim();
-      const cleanSlPrice = editingSlPrice.replaceAll(',', '').trim();
-      const result = await submitRequestToBackground<{
-        success: boolean;
-        error?: string;
-      }>('perpsUpdatePositionTPSL', [
-        {
-          symbol: position.symbol,
-          takeProfitPrice: cleanTpPrice || undefined,
-          stopLossPrice: cleanSlPrice || undefined,
-        },
-      ]);
+      const result = await submitRequestToBackground<PerpsBackgroundResult>(
+        'perpsUpdatePositionTPSL',
+        [
+          {
+            symbol: position.symbol,
+            takeProfitPrice: cleanTpPrice || undefined,
+            stopLossPrice: cleanSlPrice || undefined,
+          },
+        ],
+      );
       if (!result.success) {
         throw new Error(result.error || 'Failed to update TP/SL');
       }
+
       const streamManager = getPerpsStreamManager();
       streamManager.setOptimisticTPSL(
         position.symbol,
@@ -297,7 +328,8 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
           : p,
       );
       streamManager.positions.pushData(optimisticallyUpdatedPositions);
-      setTimeout(async () => {
+
+      delayedRefetchTimeoutRef.current = setTimeout(async () => {
         try {
           const freshPositions = await submitRequestToBackground<
             PerpsPosition[]
@@ -307,15 +339,41 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
           console.warn('[Perps] Delayed TP/SL refetch failed:', e);
         }
       }, 2500);
+
+      if (isPerpsInAppToastsEnabled) {
+        replacePerpsToastByKey({
+          key: PERPS_TOAST_KEYS.UPDATE_SUCCESS,
+        });
+      }
       onClose();
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : 'An unknown error occurred';
-      setTpslError(errorMessage);
+      if (isPerpsInAppToastsEnabled) {
+        if (isMountedRef.current) {
+          setTpslError(null);
+        }
+        replacePerpsToastByKey({
+          key: PERPS_TOAST_KEYS.UPDATE_FAILED,
+          description: errorMessage,
+        });
+      } else if (isMountedRef.current) {
+        setTpslError(errorMessage);
+      }
     } finally {
-      setIsSaving(false);
+      if (isMountedRef.current) {
+        setIsSaving(false);
+      }
     }
-  }, [isEligible, position, editingTpPrice, editingSlPrice, onClose]);
+  }, [
+    editingSlPrice,
+    editingTpPrice,
+    isPerpsInAppToastsEnabled,
+    isEligible,
+    onClose,
+    position,
+    replacePerpsToastByKey,
+  ]);
 
   useLayoutEffect(() => {
     onSubmitStateChange?.({
@@ -550,7 +608,7 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
         )}
       </Box>
 
-      {tpslError && (
+      {!isPerpsInAppToastsEnabled && tpslError && (
         <Box
           className="bg-error-muted rounded-lg px-3 py-2"
           flexDirection={BoxFlexDirection.Row}

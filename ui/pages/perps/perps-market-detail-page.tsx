@@ -32,7 +32,10 @@ import {
 } from '@metamask/design-system-react';
 import { brandColor } from '@metamask/design-tokens';
 import type { Position, PriceUpdate } from '@metamask/perps-controller';
-import { getIsPerpsExperienceAvailable } from '../../selectors/perps/feature-flags';
+import {
+  getIsPerpsExperienceAvailable,
+  getIsPerpsInAppToastsEnabled,
+} from '../../selectors/perps/feature-flags';
 import { getSelectedInternalAccount } from '../../selectors/accounts';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import {
@@ -66,7 +69,6 @@ import {
   getDisplayName,
   safeDecodeURIComponent,
   getChangeColor,
-  normalizeTpslPrices,
 } from '../../components/app/perps/utils';
 import { normalizeMarketDetailsOrders } from '../../components/app/perps/utils/orderUtils';
 import { PerpsDetailPageSkeleton } from '../../components/app/perps/perps-skeletons';
@@ -233,6 +235,7 @@ const PerpsMarketDetailPage: React.FC = () => {
   const location = useLocation();
   const { symbol } = useParams<{ symbol: string }>();
   const isPerpsExperienceAvailable = useSelector(getIsPerpsExperienceAvailable);
+  const isPerpsInAppToastsEnabled = useSelector(getIsPerpsInAppToastsEnabled);
   const selectedAccount = useSelector(getSelectedInternalAccount);
   const selectedAddress = selectedAccount?.address;
   const { isEligible } = usePerpsEligibility();
@@ -999,8 +1002,9 @@ const PerpsMarketDetailPage: React.FC = () => {
                         : TextColor.ErrorDefault
                     }
                   >
+                    {/* Controller/mobile ROE is percent (e.g. 15.79), formatter expects ratio. */}
                     {formatPercentWithMinThreshold(
-                      parseFloat(position.returnOnEquity),
+                      parseFloat(position.returnOnEquity) / 100,
                     )}
                   </Text>
                 </Box>
@@ -1702,6 +1706,7 @@ const PerpsMarketDetailPage: React.FC = () => {
           account={account}
           currentPrice={currentPrice}
           mode={marginModalMode}
+          isPerpsInAppToastsEnabled={isPerpsInAppToastsEnabled}
         />
       )}
 
@@ -1723,6 +1728,7 @@ const PerpsMarketDetailPage: React.FC = () => {
           onClose={handleCloseTPSLModal}
           position={position}
           currentPrice={currentPrice}
+          isPerpsInAppToastsEnabled={isPerpsInAppToastsEnabled}
         />
       )}
 

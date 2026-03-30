@@ -1,6 +1,7 @@
 import React from 'react';
 import { act, fireEvent, screen } from '@testing-library/react';
 import mockState from '../../../../../test/data/mock-state.json';
+import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../../store/store';
 import {
@@ -70,12 +71,43 @@ const ToastHarness = () => {
         type="button"
         onClick={() => {
           replacePerpsToastByKey({
+            key: PERPS_TOAST_KEYS.CLOSE_FAILED,
+          });
+        }}
+      >
+        Show Key Close Failed
+      </button>
+      <button
+        type="button"
+        onClick={() => {
+          replacePerpsToastByKey({
+            key: PERPS_TOAST_KEYS.UPDATE_FAILED,
+          });
+        }}
+      >
+        Show Key Update Failed
+      </button>
+      <button
+        type="button"
+        onClick={() => {
+          replacePerpsToastByKey({
             key: PERPS_TOAST_KEYS.MARGIN_ADD_SUCCESS,
             messageParams: ['100', 'ETH'],
           });
         }}
       >
         Show Key Margin Add Success
+      </button>
+      <button
+        type="button"
+        onClick={() => {
+          replacePerpsToastByKey({
+            key: PERPS_TOAST_KEYS.MARGIN_ADJUSTMENT_FAILED,
+            description: 'Unable to adjust margin',
+          });
+        }}
+      >
+        Show Key Margin Adjustment Failed
       </button>
       <button
         type="button"
@@ -166,6 +198,12 @@ const expectLoadingToastIcon = () => {
   expect(spinnerIcon).toBeInTheDocument();
 };
 
+const expectErrorAvatarToastIcon = () => {
+  const warningIcon = screen.getByTestId('perps-toast-icon-warning');
+  expect(warningIcon).toHaveClass('mm-avatar-icon');
+  expect(warningIcon).toHaveClass('mm-avatar-base--size-md');
+};
+
 describe('PerpsToastProvider', () => {
   afterEach(() => {
     jest.useRealTimers();
@@ -233,7 +271,9 @@ describe('PerpsToastProvider', () => {
     );
 
     fireEvent.click(screen.getByRole('button', { name: 'Show Key Info' }));
-    expect(screen.getByText('Order submitted')).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.perpsToastOrderSubmitted.message),
+    ).toBeInTheDocument();
     expectLoadingToastIcon();
     expectPerpsToastLayout();
 
@@ -241,7 +281,9 @@ describe('PerpsToastProvider', () => {
       jest.advanceTimersByTime(10000);
     });
 
-    expect(screen.getByText('Order submitted')).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.perpsToastOrderSubmitted.message),
+    ).toBeInTheDocument();
   });
 
   it('maps trade success key to success variant with auto-hide', () => {
@@ -255,7 +297,9 @@ describe('PerpsToastProvider', () => {
     );
 
     fireEvent.click(screen.getByRole('button', { name: 'Show Key Success' }));
-    expect(screen.getByText('Position closed')).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.perpsToastTradeSuccess.message),
+    ).toBeInTheDocument();
     expectSuccessToastIcon();
     expectPerpsToastLayout();
 
@@ -263,7 +307,9 @@ describe('PerpsToastProvider', () => {
       jest.advanceTimersByTime(3000);
     });
 
-    expect(screen.queryByText('Position closed')).not.toBeInTheDocument();
+    expect(
+      screen.queryByText(messages.perpsToastTradeSuccess.message),
+    ).not.toBeInTheDocument();
   });
 
   it('maps order placed key to success variant with auto-hide', () => {
@@ -279,14 +325,18 @@ describe('PerpsToastProvider', () => {
     fireEvent.click(
       screen.getByRole('button', { name: 'Show Key Order Placed' }),
     );
-    expect(screen.getByText('Order placed')).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.perpsToastOrderPlaced.message),
+    ).toBeInTheDocument();
     expectSuccessToastIcon();
 
     act(() => {
       jest.advanceTimersByTime(3000);
     });
 
-    expect(screen.queryByText('Order placed')).not.toBeInTheDocument();
+    expect(
+      screen.queryByText(messages.perpsToastOrderPlaced.message),
+    ).not.toBeInTheDocument();
   });
 
   it('maps order filled key to success variant with auto-hide', () => {
@@ -302,14 +352,18 @@ describe('PerpsToastProvider', () => {
     fireEvent.click(
       screen.getByRole('button', { name: 'Show Key Order Filled' }),
     );
-    expect(screen.getByText('Order filled')).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.perpsToastOrderFilled.message),
+    ).toBeInTheDocument();
     expectSuccessToastIcon();
 
     act(() => {
       jest.advanceTimersByTime(3000);
     });
 
-    expect(screen.queryByText('Order filled')).not.toBeInTheDocument();
+    expect(
+      screen.queryByText(messages.perpsToastOrderFilled.message),
+    ).not.toBeInTheDocument();
   });
 
   it('maps order failed key to error variant with auto-hide', () => {
@@ -325,16 +379,72 @@ describe('PerpsToastProvider', () => {
     fireEvent.click(
       screen.getByRole('button', { name: 'Show Key Order Failed' }),
     );
-    expect(screen.getByText('Order failed')).toBeInTheDocument();
-    const warningIcon = screen.getByTestId('perps-toast-icon-warning');
-    expect(warningIcon).toHaveClass('mm-avatar-icon');
-    expect(warningIcon).toHaveClass('mm-avatar-base--size-md');
+    expect(
+      screen.getByText(messages.perpsToastOrderFailed.message),
+    ).toBeInTheDocument();
+    expectErrorAvatarToastIcon();
 
     act(() => {
       jest.advanceTimersByTime(5000);
     });
 
-    expect(screen.queryByText('Order failed')).not.toBeInTheDocument();
+    expect(
+      screen.queryByText(messages.perpsToastOrderFailed.message),
+    ).not.toBeInTheDocument();
+  });
+
+  it('maps close failed key to avatar warning error variant with auto-hide', () => {
+    jest.useFakeTimers();
+
+    renderWithProvider(
+      <PerpsToastProvider>
+        <ToastHarness />
+      </PerpsToastProvider>,
+      getStore(),
+    );
+
+    fireEvent.click(
+      screen.getByRole('button', { name: 'Show Key Close Failed' }),
+    );
+    expect(
+      screen.getByText(messages.perpsToastCloseFailed.message),
+    ).toBeInTheDocument();
+    expectErrorAvatarToastIcon();
+
+    act(() => {
+      jest.advanceTimersByTime(5000);
+    });
+
+    expect(
+      screen.queryByText(messages.perpsToastCloseFailed.message),
+    ).not.toBeInTheDocument();
+  });
+
+  it('maps update failed key to avatar warning error variant with auto-hide', () => {
+    jest.useFakeTimers();
+
+    renderWithProvider(
+      <PerpsToastProvider>
+        <ToastHarness />
+      </PerpsToastProvider>,
+      getStore(),
+    );
+
+    fireEvent.click(
+      screen.getByRole('button', { name: 'Show Key Update Failed' }),
+    );
+    expect(
+      screen.getByText(messages.perpsToastUpdateFailed.message),
+    ).toBeInTheDocument();
+    expectErrorAvatarToastIcon();
+
+    act(() => {
+      jest.advanceTimersByTime(5000);
+    });
+
+    expect(
+      screen.queryByText(messages.perpsToastUpdateFailed.message),
+    ).not.toBeInTheDocument();
   });
 
   it('maps margin add success key to success variant with auto-hide', () => {
@@ -381,6 +491,34 @@ describe('PerpsToastProvider', () => {
     });
 
     expect(screen.queryByText('Removed 50 ETH margin')).not.toBeInTheDocument();
+  });
+
+  it('maps margin adjustment failed key to error variant with auto-hide', () => {
+    jest.useFakeTimers();
+
+    renderWithProvider(
+      <PerpsToastProvider>
+        <ToastHarness />
+      </PerpsToastProvider>,
+      getStore(),
+    );
+
+    fireEvent.click(
+      screen.getByRole('button', { name: 'Show Key Margin Adjustment Failed' }),
+    );
+    expect(
+      screen.getByText(messages.perpsToastMarginAdjustmentFailed.message),
+    ).toBeInTheDocument();
+    expect(screen.getByText('Unable to adjust margin')).toBeInTheDocument();
+    expectErrorAvatarToastIcon();
+
+    act(() => {
+      jest.advanceTimersByTime(5000);
+    });
+
+    expect(
+      screen.queryByText(messages.perpsToastMarginAdjustmentFailed.message),
+    ).not.toBeInTheDocument();
   });
 
   it('does not show toasts when perps toast flag is disabled', () => {

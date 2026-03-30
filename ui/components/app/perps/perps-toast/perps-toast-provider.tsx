@@ -9,7 +9,7 @@ import React, {
   type ReactNode,
 } from 'react';
 import { useSelector } from 'react-redux';
-import { Toast } from '../../../multichain';
+import { Toast } from '../../../multichain/toast';
 import {
   AvatarIcon,
   AvatarIconSize,
@@ -33,6 +33,7 @@ export const PERPS_TOAST_KEYS = {
   CLOSE_FAILED: 'perpsToastCloseFailed',
   CLOSE_IN_PROGRESS: 'perpsToastCloseInProgress',
   MARGIN_ADD_SUCCESS: 'perpsToastMarginAddSuccess',
+  MARGIN_ADJUSTMENT_FAILED: 'perpsToastMarginAdjustmentFailed',
   MARGIN_REMOVE_SUCCESS: 'perpsToastMarginRemoveSuccess',
   ORDER_FAILED: 'perpsToastOrderFailed',
   ORDER_FILLED: 'perpsToastOrderFilled',
@@ -111,13 +112,6 @@ const getDefaultAutoHideTime = (
 
 type PerpsToastIconConfig =
   | {
-      className?: string;
-      color: IconColor;
-      dataTestId: string;
-      name: IconName;
-      type: 'icon';
-    }
-  | {
       color: IconColor;
       dataTestId: string;
       name: IconName;
@@ -145,9 +139,11 @@ const PERPS_TOAST_PRESENTATION_BY_VARIANT: Record<
   error: {
     variant: 'error',
     icon: {
-      type: 'icon',
+      type: 'avatar-icon',
       name: IconName.Warning,
-      color: IconColor.errorDefault,
+      color: TextColor.errorDefault,
+      backgroundColor: BackgroundColor.errorMuted,
+      size: AvatarIconSize.Md,
       dataTestId: 'perps-toast-icon-warning',
     },
   },
@@ -174,7 +170,8 @@ const PERPS_TOAST_PRESENTATION_BY_VARIANT: Record<
   },
 };
 
-const PERPS_ORDER_FAILED_PRESENTATION: PerpsToastPresentation = {
+// Shared avatar-style error presentation for perps failed toasts.
+const PERPS_ERROR_PRESENTATION: PerpsToastPresentation = {
   variant: 'error',
   icon: {
     type: 'avatar-icon',
@@ -190,21 +187,22 @@ const PERPS_TOAST_PRESENTATION_BY_KEY: Record<
   PerpsToastKey,
   PerpsToastPresentation
 > = {
-  [PERPS_TOAST_KEYS.CLOSE_FAILED]: PERPS_TOAST_PRESENTATION_BY_VARIANT.error,
+  [PERPS_TOAST_KEYS.CLOSE_FAILED]: PERPS_ERROR_PRESENTATION,
   [PERPS_TOAST_KEYS.CLOSE_IN_PROGRESS]:
     PERPS_TOAST_PRESENTATION_BY_VARIANT.info,
   [PERPS_TOAST_KEYS.MARGIN_ADD_SUCCESS]:
     PERPS_TOAST_PRESENTATION_BY_VARIANT.success,
+  [PERPS_TOAST_KEYS.MARGIN_ADJUSTMENT_FAILED]: PERPS_ERROR_PRESENTATION,
   [PERPS_TOAST_KEYS.MARGIN_REMOVE_SUCCESS]:
     PERPS_TOAST_PRESENTATION_BY_VARIANT.success,
-  [PERPS_TOAST_KEYS.ORDER_FAILED]: PERPS_ORDER_FAILED_PRESENTATION,
+  [PERPS_TOAST_KEYS.ORDER_FAILED]: PERPS_ERROR_PRESENTATION,
   [PERPS_TOAST_KEYS.ORDER_FILLED]: PERPS_TOAST_PRESENTATION_BY_VARIANT.success,
   [PERPS_TOAST_KEYS.ORDER_PLACED]: PERPS_TOAST_PRESENTATION_BY_VARIANT.success,
   [PERPS_TOAST_KEYS.ORDER_SUBMITTED]: PERPS_TOAST_PRESENTATION_BY_VARIANT.info,
   [PERPS_TOAST_KEYS.SUBMIT_IN_PROGRESS]:
     PERPS_TOAST_PRESENTATION_BY_VARIANT.info,
   [PERPS_TOAST_KEYS.TRADE_SUCCESS]: PERPS_TOAST_PRESENTATION_BY_VARIANT.success,
-  [PERPS_TOAST_KEYS.UPDATE_FAILED]: PERPS_TOAST_PRESENTATION_BY_VARIANT.error,
+  [PERPS_TOAST_KEYS.UPDATE_FAILED]: PERPS_ERROR_PRESENTATION,
   [PERPS_TOAST_KEYS.UPDATE_IN_PROGRESS]:
     PERPS_TOAST_PRESENTATION_BY_VARIANT.info,
   [PERPS_TOAST_KEYS.UPDATE_SUCCESS]:
@@ -228,24 +226,12 @@ const getToastIcon = ({ icon }: PerpsToastPresentation): ReactNode => {
     );
   }
 
-  if (icon.type === 'avatar-icon') {
-    return (
-      <AvatarIcon
-        iconName={icon.name}
-        size={icon.size}
-        color={icon.color}
-        backgroundColor={icon.backgroundColor}
-        className={icon.className}
-        data-testid={icon.dataTestId}
-      />
-    );
-  }
-
   return (
-    <Icon
-      name={icon.name}
-      size={IconSize.Xl}
+    <AvatarIcon
+      iconName={icon.name}
+      size={icon.size}
       color={icon.color}
+      backgroundColor={icon.backgroundColor}
       className={icon.className}
       data-testid={icon.dataTestId}
     />
