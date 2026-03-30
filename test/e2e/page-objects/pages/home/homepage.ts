@@ -143,6 +143,7 @@ class HomePage {
         this.overviewBalanceSection,
         this.tokensTab,
       ]);
+      await this.waitForNonEvmAccountsLoaded();
     } catch (e) {
       console.log('Timeout while waiting for home page to be loaded', e);
       throw e;
