@@ -5,7 +5,9 @@ import {
   Caip25EndowmentPermissionName,
 } from '@metamask/chain-agnostic-permission';
 import {
+  getAuthorizedScopesByOrigin,
   getPermittedAccountsByOrigin,
+  getPermittedAccountsForScopesByOrigin,
   getPermittedChainsByOrigin,
   getOriginsWithSessionProperty,
   type PermissionControllerState,
@@ -144,6 +146,322 @@ describe('PermissionController selectors', () => {
           >[0],
         ),
       );
+    });
+
+    it('reads the CAIP-25 caveat when it is not the first caveat', () => {
+      const state = {
+        subjects: {
+          'multi.caveat': {
+            origin: 'multi.caveat',
+            permissions: {
+              [Caip25EndowmentPermissionName]: {
+                caveats: [
+                  { type: 'someOtherCaveat', value: {} },
+                  {
+                    type: Caip25CaveatType,
+                    value: {
+                      requiredScopes: {
+                        'eip155:1': {
+                          accounts: ['eip155:1:0xabc'],
+                        },
+                      },
+                      optionalScopes: {},
+                      isMultichainOrigin: false,
+                    },
+                  },
+                ],
+              },
+            },
+          },
+        },
+      };
+
+      const selected = getPermittedAccountsByOrigin(
+        state as unknown as PermissionControllerState,
+      );
+
+      expect(selected).toStrictEqual(new Map([['multi.caveat', ['0xabc']]]));
+    });
+  });
+
+  describe('getPermittedAccountsForScopesByOrigin', () => {
+    const scopesEip155_1 = ['eip155:1'] as const;
+
+    it('returns origins whose caveat includes accounts for the requested scopes', () => {
+      const state = {
+        subjects: {
+          'has.match': {
+            origin: 'has.match',
+            permissions: {
+              [Caip25EndowmentPermissionName]: {
+                caveats: [
+                  {
+                    type: Caip25CaveatType,
+                    value: {
+                      requiredScopes: {
+                        'eip155:1': {
+                          accounts: ['eip155:1:0x111'],
+                        },
+                      },
+                      optionalScopes: {},
+                      isMultichainOrigin: false,
+                    },
+                  },
+                ],
+              },
+            },
+          },
+          'no.matching.scope': {
+            origin: 'no.matching.scope',
+            permissions: {
+              [Caip25EndowmentPermissionName]: {
+                caveats: [
+                  {
+                    type: Caip25CaveatType,
+                    value: {
+                      requiredScopes: {
+                        'eip155:2': {
+                          accounts: ['eip155:2:0x222'],
+                        },
+                      },
+                      optionalScopes: {},
+                      isMultichainOrigin: false,
+                    },
+                  },
+                ],
+              },
+            },
+          },
+          'no.caip25': {
+            origin: 'no.caip25',
+            permissions: {
+              other_permission: {},
+            },
+          },
+        },
+      };
+
+      const selected = getPermittedAccountsForScopesByOrigin(
+        state as unknown as PermissionControllerState,
+        [...scopesEip155_1],
+      );
+
+      expect(selected).toStrictEqual(
+        new Map([['has.match', ['eip155:1:0x111']]]),
+      );
+    });
+
+    it('includes accounts from optionalScopes when the scope matches', () => {
+      const state = {
+        subjects: {
+          'opt.only': {
+            origin: 'opt.only',
+            permissions: {
+              [Caip25EndowmentPermissionName]: {
+                caveats: [
+                  {
+                    type: Caip25CaveatType,
+                    value: {
+                      requiredScopes: {},
+                      optionalScopes: {
+                        'eip155:1': {
+                          accounts: ['eip155:1:0xaaa'],
+                        },
+                      },
+                      isMultichainOrigin: false,
+                    },
+                  },
+                ],
+              },
+            },
+          },
+        },
+      };
+
+      const selected = getPermittedAccountsForScopesByOrigin(
+        state as unknown as PermissionControllerState,
+        ['eip155:1'],
+      );
+
+      expect(selected).toStrictEqual(
+        new Map([['opt.only', ['eip155:1:0xaaa']]]),
+      );
+    });
+
+    it('omits origins when the requested scopes yield no accounts', () => {
+      const state = {
+        subjects: {
+          'only.eip155_2': {
+            origin: 'only.eip155_2',
+            permissions: {
+              [Caip25EndowmentPermissionName]: {
+                caveats: [
+                  {
+                    type: Caip25CaveatType,
+                    value: {
+                      requiredScopes: {
+                        'eip155:2': {
+                          accounts: ['eip155:2:0x222'],
+                        },
+                      },
+                      optionalScopes: {},
+                      isMultichainOrigin: false,
+                    },
+                  },
+                ],
+              },
+            },
+          },
+        },
+      };
+
+      const selected = getPermittedAccountsForScopesByOrigin(
+        state as unknown as PermissionControllerState,
+        ['eip155:1'],
+      );
+
+      expect(selected).toStrictEqual(new Map());
+    });
+
+    it('memoizes when state.subjects and scopes are unchanged', () => {
+      const state = {
+        subjects: {
+          'a.com': {
+            origin: 'a.com',
+            permissions: {
+              [Caip25EndowmentPermissionName]: {
+                caveats: [
+                  {
+                    type: Caip25CaveatType,
+                    value: {
+                      requiredScopes: {
+                        'eip155:1': {
+                          accounts: ['eip155:1:0x1'],
+                        },
+                      },
+                      optionalScopes: {},
+                      isMultichainOrigin: false,
+                    },
+                  },
+                ],
+              },
+            },
+          },
+        },
+      };
+
+      const scopes = ['eip155:1'];
+      const first = getPermittedAccountsForScopesByOrigin(
+        state as unknown as PermissionControllerState,
+        scopes,
+      );
+      const second = getPermittedAccountsForScopesByOrigin(
+        state as unknown as PermissionControllerState,
+        scopes,
+      );
+
+      expect(second).toBe(first);
+    });
+  });
+
+  describe('getAuthorizedScopesByOrigin', () => {
+    it('returns a map of each origin to its CAIP-25 caveat value', () => {
+      const caveatValueA = {
+        requiredScopes: {
+          'eip155:1': {
+            accounts: ['eip155:1:0x1'],
+          },
+        },
+        optionalScopes: {},
+        isMultichainOrigin: false,
+      };
+      const caveatValueB = {
+        requiredScopes: {},
+        optionalScopes: {
+          'eip155:1': {
+            accounts: ['eip155:1:0x2'],
+          },
+        },
+        isMultichainOrigin: false,
+      };
+
+      const state = {
+        subjects: {
+          'a.com': {
+            origin: 'a.com',
+            permissions: {
+              [Caip25EndowmentPermissionName]: {
+                caveats: [
+                  {
+                    type: Caip25CaveatType,
+                    value: caveatValueA,
+                  },
+                ],
+              },
+            },
+          },
+          'b.com': {
+            origin: 'b.com',
+            permissions: {
+              [Caip25EndowmentPermissionName]: {
+                caveats: [
+                  {
+                    type: Caip25CaveatType,
+                    value: caveatValueB,
+                  },
+                ],
+              },
+            },
+          },
+          'no.caip': {
+            origin: 'no.caip',
+            permissions: {
+              other: {},
+            },
+          },
+        },
+      };
+
+      const selected = getAuthorizedScopesByOrigin(
+        state as unknown as PermissionControllerState,
+      );
+
+      expect(selected.get('a.com')).toStrictEqual(caveatValueA);
+      expect(selected.get('b.com')).toStrictEqual(caveatValueB);
+      expect(selected.has('no.caip')).toBe(false);
+    });
+
+    it('memoizes when state.subjects is unchanged', () => {
+      const state = {
+        subjects: {
+          'x.com': {
+            origin: 'x.com',
+            permissions: {
+              [Caip25EndowmentPermissionName]: {
+                caveats: [
+                  {
+                    type: Caip25CaveatType,
+                    value: {
+                      requiredScopes: {},
+                      optionalScopes: {},
+                      isMultichainOrigin: true,
+                    },
+                  },
+                ],
+              },
+            },
+          },
+        },
+      };
+
+      const first = getAuthorizedScopesByOrigin(
+        state as unknown as PermissionControllerState,
+      );
+      const second = getAuthorizedScopesByOrigin(
+        state as unknown as PermissionControllerState,
+      );
+
+      expect(second).toBe(first);
     });
   });
 
