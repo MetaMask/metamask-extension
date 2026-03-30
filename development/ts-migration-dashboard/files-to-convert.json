@@ -284,7 +284,6 @@
   "shared/lib/swaps-utils.js",
   "shared/lib/swaps-utils.test.js",
   "shared/lib/swaps.utils.js",
-  "shared/lib/switch-direction.js",
   "shared/lib/transaction-controller-utils.test.js",
   "shared/lib/transaction.utils.test.js",
   "shared/lib/transactions-controller-utils.js",
