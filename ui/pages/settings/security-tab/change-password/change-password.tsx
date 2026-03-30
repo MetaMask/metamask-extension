@@ -7,20 +7,19 @@ import {
   Button,
   ButtonSize,
   Checkbox,
+  Text,
+  TextVariant,
+  TextColor,
+  BoxFlexDirection,
+  BoxJustifyContent,
+  BoxAlignItems,
+  FontWeight,
+} from '@metamask/design-system-react';
+import {
   FormTextField,
   FormTextFieldSize,
-  Text,
   TextFieldType,
 } from '../../../../components/component-library';
-import {
-  AlignItems,
-  BlockSize,
-  Display,
-  FlexDirection,
-  JustifyContent,
-  TextColor,
-  TextVariant,
-} from '../../../../helpers/constants/design-system';
 import { isBeta, isFlask } from '../../../../../shared/lib/build-types';
 import Mascot from '../../../../components/ui/mascot';
 import Spinner from '../../../../components/ui/spinner';
@@ -164,134 +163,143 @@ const ChangePassword = () => {
     <Box padding={4} className="change-password">
       {step === ChangePasswordSteps.VerifyCurrentPassword && (
         <Box
-          as="form"
-          display={Display.Flex}
-          flexDirection={FlexDirection.Column}
+          flexDirection={BoxFlexDirection.Column}
           gap={6}
-          justifyContent={JustifyContent.spaceBetween}
-          height={BlockSize.Full}
-          onSubmit={(e: React.FormEvent<HTMLFormElement>) => {
-            e.preventDefault();
-            handleSubmitCurrentPassword();
-          }}
+          justifyContent={BoxJustifyContent.Between}
+          asChild
+          className="h-full"
         >
-          <FormTextField
-            id="current-password"
-            label={t('enterPasswordCurrent')}
-            textFieldProps={{ type: TextFieldType.Password }}
-            size={FormTextFieldSize.Lg}
-            labelProps={{
-              marginBottom: 1,
+          <form
+            onSubmit={(e: React.FormEvent<HTMLFormElement>) => {
+              e.preventDefault();
+              handleSubmitCurrentPassword();
             }}
-            inputProps={{
-              autoFocus: true,
-              'data-testid': 'verify-current-password-input',
-            }}
-            value={currentPassword}
-            error={isIncorrectPasswordError}
-            helpText={
-              isIncorrectPasswordError ? t('unlockPageIncorrectPassword') : null
-            }
-            onChange={(e) => {
-              setCurrentPassword(e.target.value);
-              setIsIncorrectPasswordError(false);
-            }}
-          />
-
-          <Button
-            type="submit"
-            block
-            size={ButtonSize.Lg}
-            disabled={isIncorrectPasswordError || !currentPassword}
-            data-testid="verify-current-password-button"
           >
-            {t('continue')}
-          </Button>
+            <FormTextField
+              id="current-password"
+              label={t('enterPasswordCurrent')}
+              textFieldProps={{ type: TextFieldType.Password }}
+              size={FormTextFieldSize.Lg}
+              labelProps={{
+                marginBottom: 1,
+              }}
+              inputProps={{
+                autoFocus: true,
+                'data-testid': 'verify-current-password-input',
+              }}
+              value={currentPassword}
+              error={isIncorrectPasswordError}
+              helpText={
+                isIncorrectPasswordError
+                  ? t('unlockPageIncorrectPassword')
+                  : null
+              }
+              onChange={(e) => {
+                setCurrentPassword(e.target.value);
+                setIsIncorrectPasswordError(false);
+              }}
+            />
+            <Button
+              type="submit"
+              className="w-full"
+              size={ButtonSize.Lg}
+              disabled={isIncorrectPasswordError || !currentPassword}
+              data-testid="verify-current-password-button"
+            >
+              {t('continue')}
+            </Button>
+          </form>
         </Box>
       )}
 
       {step === ChangePasswordSteps.ChangePassword && (
         <Box
-          as="form"
-          display={Display.Flex}
-          flexDirection={FlexDirection.Column}
+          flexDirection={BoxFlexDirection.Column}
           gap={6}
-          justifyContent={JustifyContent.spaceBetween}
-          height={BlockSize.Full}
-          onSubmit={(e: React.FormEvent<HTMLFormElement>) => {
-            e.preventDefault();
-            if (isSocialLoginFlow) {
-              setShowChangePasswordWarning(true);
-            } else {
-              onChangePassword();
-            }
-          }}
+          justifyContent={BoxJustifyContent.Between}
+          className="h-full"
+          asChild
         >
-          <Box>
-            <Text
-              variant={TextVariant.bodyMd}
-              color={TextColor.textAlternative}
-              marginBottom={4}
-              as="h2"
-            >
-              {isSocialLoginFlow
-                ? t('changePasswordDetailsSocial')
-                : t('createPasswordDetails')}
-            </Text>
-            <PasswordForm
-              onChange={(password) => setNewPassword(password)}
-              pwdInputTestId="change-password-input"
-              confirmPwdInputTestId="change-password-confirm-input"
-            />
-            <Box
-              className="create-password__terms-container"
-              alignItems={AlignItems.center}
-              justifyContent={JustifyContent.spaceBetween}
-              marginTop={6}
-            >
-              <Checkbox
-                inputProps={{ 'data-testid': 'change-password-terms' }}
-                alignItems={AlignItems.flexStart}
-                isChecked={termsChecked}
-                onChange={() => {
-                  setTermsChecked(!termsChecked);
-                }}
-                label={
-                  <>
-                    {isSocialLoginFlow
-                      ? t('passwordTermsWarningSocial')
-                      : t('passwordTermsWarning')}
-                    &nbsp;
-                    {createPasswordLink}
-                  </>
-                }
-              />
-            </Box>
-          </Box>
-          <Button
-            type="submit"
-            disabled={!currentPassword || !newPassword || !termsChecked}
-            data-testid="change-password-button"
-            block
+          <form
+            onSubmit={(e: React.FormEvent<HTMLFormElement>) => {
+              e.preventDefault();
+              if (isSocialLoginFlow) {
+                setShowChangePasswordWarning(true);
+              } else {
+                onChangePassword();
+              }
+            }}
           >
-            {t('save')}
-          </Button>
+            <Box>
+              <Text
+                variant={TextVariant.BodyMd}
+                color={TextColor.TextAlternative}
+                className="mb-4"
+              >
+                {isSocialLoginFlow
+                  ? t('changePasswordDetailsSocial')
+                  : t('createPasswordDetails')}
+              </Text>
+              <PasswordForm
+                onChange={(password) => setNewPassword(password)}
+                pwdInputTestId="change-password-input"
+                confirmPwdInputTestId="change-password-confirm-input"
+              />
+              <Box
+                className="create-password__terms-container"
+                flexDirection={BoxFlexDirection.Row}
+                alignItems={BoxAlignItems.Center}
+                justifyContent={BoxJustifyContent.Between}
+                marginTop={6}
+              >
+                <Checkbox
+                  id="change-password-terms"
+                  data-testid="change-password-terms"
+                  isSelected={termsChecked}
+                  onChange={() => {
+                    setTermsChecked(!termsChecked);
+                  }}
+                  label={
+                    <>
+                      {isSocialLoginFlow
+                        ? t('passwordTermsWarningSocial')
+                        : t('passwordTermsWarning')}
+                      &nbsp;
+                      {createPasswordLink}
+                    </>
+                  }
+                  className="items-start flex"
+                />
+              </Box>
+            </Box>
+            <Button
+              type="submit"
+              disabled={!currentPassword || !newPassword || !termsChecked}
+              data-testid="change-password-button"
+              className="w-full"
+            >
+              {t('save')}
+            </Button>
+          </form>
         </Box>
       )}
 
       {step === ChangePasswordSteps.ChangePasswordLoading && (
         <Box
-          display={Display.Flex}
-          flexDirection={FlexDirection.Column}
-          alignItems={AlignItems.center}
+          flexDirection={BoxFlexDirection.Column}
+          alignItems={BoxAlignItems.Center}
           marginTop={12}
         >
-          <div>{renderMascot()}</div>
+          <Box>{renderMascot()}</Box>
           <Spinner className="change-password__spinner" />
-          <Text variant={TextVariant.bodyLgMedium} marginBottom={4}>
+          <Text
+            variant={TextVariant.BodyLg}
+            fontWeight={FontWeight.Medium}
+            className="mb-4"
+          >
             {t('changePasswordLoading')}
           </Text>
-          <Text variant={TextVariant.bodySm} color={TextColor.textAlternative}>
+          <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
             {t('changePasswordLoadingNote')}
           </Text>
         </Box>

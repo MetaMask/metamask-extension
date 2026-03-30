@@ -2,7 +2,6 @@ import { compose } from 'redux';
 import { connect } from 'react-redux';
 import withRouterHooks from '../../helpers/higher-order-components/with-router-hooks/with-router-hooks';
 import {
-  getAddressBookEntryOrAccountName,
   getSettingsPageSnapsIds,
   getSnapsMetadata,
   getUseExternalServices,
@@ -15,10 +14,6 @@ import {
 // eslint-disable-next-line import-x/no-restricted-paths
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
 import { getMostRecentOverviewPage } from '../../ducks/history/history';
-import {
-  isValidHexAddress,
-  isBurnAddress,
-} from '../../../shared/lib/hexstring-utils';
 
 import {
   ABOUT_US_ROUTE,
@@ -91,8 +86,6 @@ const mapStateToProps = (state, ownProps) => {
     searchParams.get(SHIELD_QUERY_PARAMS.showShieldEntryModal) === 'true';
   const snapIdFromSearch = searchParams.get('snapId');
 
-  const pathNameTail = pathname.match(/[^/]+$/u)?.[0] || '';
-  const isAddressEntryPage = pathNameTail.includes('0x');
   const isRevealSrpListPage = Boolean(pathname.match(REVEAL_SRP_LIST_ROUTE));
   const isPasswordChangePage = Boolean(
     pathname.match(SECURITY_PASSWORD_CHANGE_ROUTE),
@@ -173,13 +166,6 @@ const mapStateToProps = (state, ownProps) => {
     backRoute = TRANSACTION_SHIELD_ROUTE;
   }
 
-  const addressName = getAddressBookEntryOrAccountName(
-    state,
-    !isBurnAddress(pathNameTail) &&
-      isValidHexAddress(pathNameTail, { mixedCaseUseChecksum: true })
-      ? pathNameTail
-      : '',
-  );
   const useExternalServices = getUseExternalServices(state);
 
   const snapNameGetter = getSnapName(snapsMetadata);
@@ -196,13 +182,11 @@ const mapStateToProps = (state, ownProps) => {
 
   return {
     addNewNetwork,
-    addressName,
     backRoute,
     conversionDate,
     currentPath: pathname,
     currentSnapId: snapIdFromSearch,
     hasSubscribedToShield: getHasSubscribedToShield(state),
-    isAddressEntryPage,
     isMetaMaskShieldFeatureEnabled: getIsMetaMaskShieldFeatureEnabled(),
     isPasswordChangePage,
     isPopup,

@@ -28,14 +28,6 @@ export type LaunchOptions = {
   viewportHeight?: number;
   slowMo?: number;
   headless?: boolean;
-  /**
-   * Whether to automatically build the extension before launching.
-   * This option is handled by the MCP session manager (BuildCapability) and is ignored by the launcher.
-   * The launcher only validates that the extension is already built.
-   *
-   * @default true (when using MCP workflow with BuildCapability)
-   */
-  autoBuild?: boolean;
   screenshotDir?: string;
   stateMode?: StateMode;
   network?: NetworkConfig;

@@ -81,7 +81,7 @@ describe('TransactionCard', () => {
   });
 
   describe('Trade transactions', () => {
-    it('shows pnl with profit color for positive values', () => {
+    it('shows trade amount with profit color for positive values', () => {
       const transaction = createMockTransaction({
         type: 'trade',
         category: 'position_close',
@@ -105,10 +105,12 @@ describe('TransactionCard', () => {
         mockStore,
       );
 
-      expect(screen.getByText('+$125.00')).toBeInTheDocument();
+      const amountElement = screen.getByText('+$125.00');
+      expect(amountElement).toBeInTheDocument();
+      expect(amountElement).toHaveClass('text-success-default');
     });
 
-    it('shows pnl with loss color for negative values', () => {
+    it('shows trade amount with loss color for negative values', () => {
       const transaction = createMockTransaction({
         type: 'trade',
         category: 'position_close',
@@ -132,7 +134,38 @@ describe('TransactionCard', () => {
         mockStore,
       );
 
-      expect(screen.getByText('-$45.50')).toBeInTheDocument();
+      const amountElement = screen.getByText('-$45.50');
+      expect(amountElement).toBeInTheDocument();
+      expect(amountElement).toHaveClass('text-error-default');
+    });
+
+    it('uses amount polarity for color when pnl string is unsigned', () => {
+      const transaction = createMockTransaction({
+        type: 'trade',
+        category: 'position_close',
+        fill: {
+          shortTitle: 'Closed long',
+          amount: '+$125.00',
+          amountNumber: 125,
+          isPositive: true,
+          size: '0.5',
+          entryPrice: '45250.00',
+          points: '0',
+          pnl: '125.00',
+          fee: '22.63',
+          action: 'Closed',
+          feeToken: 'USDC',
+          fillType: FillType.Standard,
+        },
+      });
+      renderWithProvider(
+        <TransactionCard transaction={transaction} />,
+        mockStore,
+      );
+
+      const amountElement = screen.getByText('+$125.00');
+      expect(amountElement).toBeInTheDocument();
+      expect(amountElement).toHaveClass('text-success-default');
     });
 
     it('displays size and symbol in subtitle for trades', () => {
@@ -172,7 +205,7 @@ describe('TransactionCard', () => {
         fill: undefined,
         fundingAmount: {
           isPositive: true,
-          fee: '+8.30',
+          fee: '+$8.30',
           feeNumber: 8.3,
           rate: '0.0001',
         },
@@ -193,7 +226,7 @@ describe('TransactionCard', () => {
         fill: undefined,
         fundingAmount: {
           isPositive: false,
-          fee: '-3.10',
+          fee: '-$3.10',
           feeNumber: -3.1,
           rate: '-0.00005',
         },
@@ -217,7 +250,7 @@ describe('TransactionCard', () => {
         title: 'Deposited 5000 USDC',
         fill: undefined,
         depositWithdrawal: {
-          amount: '5000.00',
+          amount: '+$5000.00',
           amountNumber: 5000,
           isPositive: true,
           asset: 'USDC',
@@ -231,7 +264,9 @@ describe('TransactionCard', () => {
         mockStore,
       );
 
-      expect(screen.getByText('+$5000.00')).toBeInTheDocument();
+      const amountElement = screen.getByText('+$5000.00');
+      expect(amountElement).toBeInTheDocument();
+      expect(amountElement).toHaveClass('text-success-default');
     });
 
     it('shows withdrawal amount with negative sign', () => {
@@ -243,7 +278,7 @@ describe('TransactionCard', () => {
         title: 'Withdrew 2000 USDC',
         fill: undefined,
         depositWithdrawal: {
-          amount: '2000.00',
+          amount: '-$2000.00',
           amountNumber: 2000,
           isPositive: false,
           asset: 'USDC',
@@ -257,7 +292,9 @@ describe('TransactionCard', () => {
         mockStore,
       );
 
-      expect(screen.getByText('-$2000.00')).toBeInTheDocument();
+      const amountElement = screen.getByText('-$2000.00');
+      expect(amountElement).toBeInTheDocument();
+      expect(amountElement).toHaveClass('text-error-default');
     });
 
     it('shows "Completed" status for deposits', () => {
@@ -268,7 +305,7 @@ describe('TransactionCard', () => {
         title: 'Deposited 5000 USDC',
         fill: undefined,
         depositWithdrawal: {
-          amount: '5000.00',
+          amount: '+$5000.00',
           amountNumber: 5000,
           isPositive: true,
           asset: 'USDC',
