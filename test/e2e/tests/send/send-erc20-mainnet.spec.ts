@@ -17,7 +17,7 @@ import { login } from '../../page-objects/flows/login.flow';
 import { NETWORK_CLIENT_ID } from '../../constants';
 
 describe('Send ERC20 - Mainnet', function () {
-  it('sends DAI with preloaded state', async function () {
+  it('sends DAI with preloaded state TEST', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilderV2()
