@@ -10,7 +10,6 @@ import { Driver } from '../../webdriver/driver';
 import HomePage from '../../page-objects/pages/home/homepage';
 import AssetListPage from '../../page-objects/pages/home/asset-list';
 import { login } from '../../page-objects/flows/login.flow';
-import { waitFor } from '@testing-library/react';
 
 describe('Token List via StorageService', function () {
   const chainId = CHAIN_IDS.MAINNET;
