@@ -103,6 +103,9 @@ class HomePage {
 
   private readonly srpAddedToast = '.toasts-container__banner-base';
 
+  private readonly toastCloseButton =
+    '.toasts-container__banner-base button[aria-label="Close"]';
+
   private readonly surveyToast = '[data-testid="survey-toast"]';
 
   private readonly tokensTab = {
@@ -546,6 +549,11 @@ class HomePage {
     },
   ): Promise<void> {
     await skeleton.waitForElementState('hidden', this.driver.timeout);
+  }
+
+  async dismissToastIfPresent(): Promise<void> {
+    console.log('Dismissing toast banner if present');
+    await this.driver.clickElementSafe(this.toastCloseButton, 3000);
   }
 
   async checkNewSrpAddedToastIsDisplayed(): Promise<void> {

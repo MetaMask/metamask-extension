@@ -17,18 +17,6 @@ import { login } from '../../page-objects/flows/login.flow';
 
 const DAI_ADDRESS = '0x6b175474e89094c44da98b954eedeac495271d0f';
 
-const MAINNET_TOKEN_LIST_ENTRY = {
-  [DAI_ADDRESS]: {
-    name: 'Dai Stablecoin',
-    symbol: 'DAI',
-    decimals: 18,
-    address: DAI_ADDRESS,
-    occurrences: 1,
-    aggregators: [],
-    iconUrl: '',
-  },
-};
-
 describe('Send ERC20 - Mainnet', function () {
   it('sends DAI with preloaded state', async function () {
     await withFixtures(
@@ -38,14 +26,6 @@ describe('Send ERC20 - Mainnet', function () {
           .withEnabledNetworks({
             eip155: {
               '0x1': true,
-            },
-          })
-          .withTokenListController({
-            tokensChainsCache: {
-              '0x1': {
-                timestamp: Date.now(),
-                data: MAINNET_TOKEN_LIST_ENTRY,
-              },
             },
           })
           .build(),
@@ -66,7 +46,8 @@ describe('Send ERC20 - Mainnet', function () {
         const homePage = new HomePage(driver);
         const assetListPage = new AssetListPage(driver);
         await homePage.checkPageIsLoaded();
-        await assetListPage.importTokenBySearch('DAI');
+        await assetListPage.importCustomTokenByChain('0x1', DAI_ADDRESS);
+        await homePage.dismissToastIfPresent();
         await assetListPage.clickOnAsset('Dai Stablecoin');
 
         // Send DAI
