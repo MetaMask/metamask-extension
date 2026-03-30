@@ -161,10 +161,10 @@ describe('Bridge tests', function (this: Suite) {
           mockedEndpoint,
         );
 
-        // console.log('Navigating back to Swap page');
-        // await homePage.startSwapFlow();
-        // await bridgePage.checkAssetsAreSelected('ETH', 'mUSD');
-        // console.log('Checked that assets have been reset to defaults');
+        console.log('Navigating back to Swap page');
+        await homePage.startSwapFlow();
+        await bridgePage.checkAssetsAreSelected('ETH', 'mUSD');
+        console.log('Checked that assets have been reset to defaults');
       },
     );
   });
