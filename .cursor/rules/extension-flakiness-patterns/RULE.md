@@ -100,7 +100,7 @@ These are the most critical anti-patterns to avoid. Each links to a detailed sec
   ```javascript
   await driver.switchToWindowWithUrl(dappUrl);
   const currentWindowHandles = await driver.getAllWindowHandles();
-  await driver.clickElement('#sendButton');
+  await testDapp.clickSendButton();
   ```
 
   ✅ Correct:
@@ -110,7 +110,7 @@ These are the most critical anti-patterns to avoid. Each links to a detailed sec
   const expectedWindowHandles = 3;
   await driver.waitUntilXWindowHandles(expectedWindowHandles);
   const currentWindowHandles = await driver.getAllWindowHandles();
-  await driver.clickElement('#sendButton');
+  await testDapp.clickSendButton();
   ```
 
 - **Get window title undefined**
@@ -454,7 +454,7 @@ await server
   ```javascript
   async ({ driver, mockedEndpoint }) => {
     await driver.navigate();
-    await driver.findElement('#password');
+    await driver.findElement(this.passwordInput);
     await driver.executeScript(
   ```
 
@@ -514,7 +514,7 @@ await server
   await driver.findElement({ text: 'Reject all' });
 
   await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
-  await driver.clickElement('#signTypedDataV4');
+  await testDapp.clickSignTypedDataV4();
   await driver.waitUntilXWindowHandles(3);
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
   ```
@@ -527,7 +527,7 @@ await server
   await driver.waitForSelector(By.xpath("//div[normalize-space(.)='1 of 2']"));
 
   await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
-  await driver.clickElement('#signTypedDataV4');
+  await testDapp.clickSignTypedDataV4();
   await driver.waitUntilXWindowHandles(3);
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
   await driver.waitForSelector(By.xpath("//div[normalize-space(.)='1 of 3']"));
@@ -593,7 +593,7 @@ await server
     tag: 'button',
   });
 
-  await driver.waitForSelector({ css: '[id="chainId"]', text: '0x539' });
+  await testDapp.check_chainId('0x539');
   ```
 
 - **The notification (red dot) appears on top of the menu, blocking clicks on the menu button**
@@ -826,7 +826,7 @@ await server
 
   ```javascript
   await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
-  await driver.clickElement('#sendButton');
+  await testDapp.clickSendButton();
   await driver.switchToWindowWithUrl(secondDappUrl); // switches too fast
   ```
 
@@ -834,7 +834,7 @@ await server
 
   ```javascript
   await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
-  await driver.clickElement('#sendButton');
+  await testDapp.clickSendButton();
   await driver.waitUntilXWindowHandles(4); // wait for dialog to appear first
   await driver.switchToWindowWithUrl(secondDappUrl);
   ```
@@ -1004,8 +1004,8 @@ await server
   ❌ Incorrect:
 
   ```javascript
-  await driver.clickElement('#action-one');
-  await driver.clickElement('#action-two');
+  await testDapp.clickActionOne();
+  await testDapp.clickActionTwo();
   // event for action-two may arrive before action-one
   const events = await mockedEndpoint.getSeenRequests();
   assert.equal(events[0].body.event, 'Action One');
@@ -1014,12 +1014,12 @@ await server
   ✅ Correct:
 
   ```javascript
-  await driver.clickElement('#action-one');
+  await testDapp.clickActionOne();
   await driver.wait(async () => {
     const events = await mockedEndpoint.getSeenRequests();
     return events.length >= 1;
   }, 5000);
-  await driver.clickElement('#action-two');
+  await testDapp.clickActionTwo();
   ```
 
 - **Importing a function from another spec file causes the tests from that spec file to also be run, causing long test runs and possible timeouts**
@@ -1066,7 +1066,7 @@ await server
   await driver.executeScript('chrome.runtime.reload()');
   await driver.waitUntilXWindowHandles(1);
   await driver.navigate();
-  await driver.waitForSelector('#password');
+  await driver.waitForSelector(this.passwordInput);
   ```
 
 - **Background API requests (auth, profile sync) may not complete before the next action — wait for the request or ignore the benign error**
@@ -1105,18 +1105,18 @@ await server
 - **Triggering several transactions from different dapps without waiting individually can cause transactions to appear in a different order**
   ❌ Incorrect:
   ```javascript
-  await dapp1.clickElement('#sendButton');
-  await dapp2.clickElement('#sendButton');
-  await dapp3.clickElement('#sendButton');
+  await dapp1.clickSendButton();
+  await dapp2.clickSendButton();
+  await dapp3.clickSendButton();
   // Transaction order in activity list may not match submission order
   ```
   ✅ Correct:
   ```javascript
-  await dapp1.clickElement('#sendButton');
+  await dapp1.clickSendButton();
   await driver.waitUntilXWindowHandles(4);
-  await dapp2.clickElement('#sendButton');
+  await dapp2.clickSendButton();
   await driver.waitUntilXWindowHandles(4);
-  await dapp3.clickElement('#sendButton');
+  await dapp3.clickSendButton();
   ```
 
 ---
@@ -1128,7 +1128,7 @@ await server
 
   ```javascript
   // Clicking the button hits the inner span, which may not trigger the handler
-  await driver.clickElement('#connectSnap');
+  await driver.clickElement(this.connectSnapButton);
   ```
 
   ✅ Correct:
@@ -1142,16 +1142,16 @@ await server
   ❌ Incorrect:
   ```javascript
   await driver.navigate(PHISHING_PAGE_URL);
-  await driver.clickElement('#proceed-link'); // event listener not yet attached
+  await driver.clickElement(this.proceedLink); // event listener not yet attached
   ```
   ✅ Correct:
   ```javascript
   await driver.navigate(PHISHING_PAGE_URL);
-  await driver.waitForSelector('#proceed-link');
+  await driver.waitForSelector(this.proceedLink);
   // Retry clicking until the event listener is attached and the navigation succeeds
   await driver.waitUntil(
     async () => {
-      await driver.clickElement('#proceed-link');
+      await driver.clickElement(this.proceedLink);
       const currentUrl = await driver.getCurrentUrl();
       return !currentUrl.includes('phishing');
     },
