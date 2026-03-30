@@ -21,30 +21,34 @@ export function useTransactionLifecycle<
 
     for (const tx of transactions) {
       const previous = baseline.get(tx.id);
+      const isNowPending = isPending(tx.status);
+      const isNowSuccess = isSuccess(tx.status);
+      const isNowFailed = isFailed(tx.status);
 
       if (!previous) {
-        if (isPending(tx.status)) {
+        if (isNowPending) {
           handlers.onPending?.(tx);
-        } else if (isSuccess(tx.status)) {
+        } else if (isNowSuccess) {
           handlers.onSuccess?.(tx);
-        } else if (isFailed(tx.status)) {
+        } else if (isNowFailed) {
           handlers.onFailure?.(tx);
         }
         continue;
       }
 
-      if (!isPending(previous.status) && isPending(tx.status)) {
+      const wasPending = isPending(previous.status);
+
+      if (!wasPending && isNowPending) {
         handlers.onPending?.(tx);
+        continue;
       }
 
-      if (isPending(previous.status) && isSuccess(tx.status)) {
+      if (wasPending && isNowSuccess) {
         handlers.onSuccess?.(tx);
+        continue;
       }
 
-      if (
-        (isPending(previous.status) || previous.status === 'signed') &&
-        isFailed(tx.status)
-      ) {
+      if ((wasPending || previous.status === 'signed') && isNowFailed) {
         handlers.onFailure?.(tx);
       }
     }

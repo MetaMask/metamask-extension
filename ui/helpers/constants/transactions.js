@@ -61,8 +61,8 @@ const TRANSACTION_FAILED_STATUSES = [
 ];
 
 export const isPending = (status) =>
-  TRANSACTION_PENDING_STATUSES.some((s) => s === status);
+  TRANSACTION_PENDING_STATUSES.includes(status);
 export const isSuccess = (status) =>
-  TRANSACTION_SUCCESS_STATUSES.some((s) => s === status);
+  TRANSACTION_SUCCESS_STATUSES.includes(status);
 export const isFailed = (status) =>
-  TRANSACTION_FAILED_STATUSES.some((s) => s === status);
+  TRANSACTION_FAILED_STATUSES.includes(status);
