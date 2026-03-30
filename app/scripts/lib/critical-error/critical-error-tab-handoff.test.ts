@@ -3,6 +3,7 @@ import {
   CRITICAL_ERROR_RESTORE_KEY,
   METAMASK_RESTORING_PAGE_URL,
 } from '../../../../shared/constants/critical-error-restore-session';
+import { captureException } from '../../../../shared/lib/sentry';
 import {
   readCriticalErrorRestoreSession,
   clearCriticalErrorRestoreSession,
@@ -10,6 +11,10 @@ import {
   handoffRestoringTabToExtension,
   type ExtensionPlatformLike,
 } from './critical-error-tab-handoff';
+
+jest.mock('../../../../shared/lib/sentry', () => ({
+  captureException: jest.fn(),
+}));
 
 jest.mock('webextension-polyfill', () => ({
   storage: {
@@ -86,6 +91,19 @@ describe('critical-error-restore session', () => {
         tabId: undefined,
         tabUrl,
       });
+    });
+
+    it('returns null when storage.local.get rejects', async () => {
+      const storageError = new Error('storage failed');
+      (browser.storage.local.get as jest.Mock).mockRejectedValueOnce(
+        storageError,
+      );
+
+      await expect(
+        readCriticalErrorRestoreSession(browser),
+      ).resolves.toBeNull();
+
+      expect(jest.mocked(captureException)).toHaveBeenCalledWith(storageError);
     });
   });
 

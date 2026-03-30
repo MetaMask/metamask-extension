@@ -1,6 +1,7 @@
 import browser from 'webextension-polyfill';
 import { v4 as uuidv4 } from 'uuid';
 import log from 'loglevel';
+import { captureException } from '../../../../shared/lib/sentry';
 import {
   CRITICAL_ERROR_RESTORE_KEY,
   METAMASK_RESTORING_PAGE_URL,
@@ -14,23 +15,28 @@ export type CriticalErrorRestoreSession = {
 export async function readCriticalErrorRestoreSession(
   browserApi: typeof browser,
 ): Promise<CriticalErrorRestoreSession | null> {
-  // storage.local survives runtime.reload(); storage.session does not
-  const data = await browserApi.storage.local.get(CRITICAL_ERROR_RESTORE_KEY);
-  const session = data[CRITICAL_ERROR_RESTORE_KEY];
+  try {
+    // storage.local survives runtime.reload(); storage.session does not
+    const data = await browserApi.storage.local.get(CRITICAL_ERROR_RESTORE_KEY);
+    const session = data[CRITICAL_ERROR_RESTORE_KEY];
 
-  if (!session || typeof session !== 'object') {
+    if (!session || typeof session !== 'object') {
+      return null;
+    }
+
+    const { tabUrl, tabId } = session as Record<string, unknown>;
+    if (typeof tabUrl !== 'string') {
+      return null;
+    }
+
+    return {
+      tabId: typeof tabId === 'number' ? tabId : undefined,
+      tabUrl,
+    };
+  } catch (error) {
+    captureException(error);
     return null;
   }
-
-  const { tabUrl, tabId } = session as Record<string, unknown>;
-  if (typeof tabUrl !== 'string') {
-    return null;
-  }
-
-  return {
-    tabId: typeof tabId === 'number' ? tabId : undefined,
-    tabUrl,
-  };
 }
 
 export async function clearCriticalErrorRestoreSession(
