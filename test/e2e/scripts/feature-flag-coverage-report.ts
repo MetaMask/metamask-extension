@@ -47,6 +47,8 @@ export type CoverageReport = {
   summary: {
     totalFlags: number;
     activeFlags: number;
+    deprecatedFlags: number;
+    inProdFlags: number;
     fullCoverage: number;
     partialCoverage: number;
     defaultOnlyCoverage: number;
@@ -303,9 +305,13 @@ export function generateReport(repoRoot: string): CoverageReport {
     return a.flag.localeCompare(b.flag);
   });
 
-  const activeFlags = flagResults.filter(
+  const activeFlagCount = flagResults.filter(
     (f) => f.status === FeatureFlagStatus.Active,
-  );
+  ).length;
+  const deprecatedFlagCount = flagResults.filter(
+    (f) => f.status === FeatureFlagStatus.Deprecated,
+  ).length;
+  const inProdFlagCount = flagResults.filter((f) => f.inProd).length;
   const fullCount = flagResults.filter((f) => f.coverage === 'full').length;
   const partialCount = flagResults.filter(
     (f) => f.coverage === 'partial',
@@ -318,7 +324,9 @@ export function generateReport(repoRoot: string): CoverageReport {
     generatedAt: new Date().toISOString(),
     summary: {
       totalFlags: flagResults.length,
-      activeFlags: activeFlags.length,
+      activeFlags: activeFlagCount,
+      deprecatedFlags: deprecatedFlagCount,
+      inProdFlags: inProdFlagCount,
       fullCoverage: fullCount,
       partialCoverage: partialCount,
       defaultOnlyCoverage: defaultOnlyCount,
@@ -366,6 +374,8 @@ function printReport(report: CoverageReport): void {
   console.log(`  ${'-'.repeat(40)}`);
   console.log(`  Total flags:       ${summary.totalFlags}`);
   console.log(`  Active flags:      ${summary.activeFlags}`);
+  console.log(`  Deprecated flags:  ${summary.deprecatedFlags}`);
+  console.log(`  In production:     ${summary.inProdFlags}`);
   console.log(`  Full coverage:     ${summary.fullCoverage}`);
   console.log(`  Partial coverage:  ${summary.partialCoverage}`);
   console.log(`  Default-only:      ${summary.defaultOnlyCoverage}`);

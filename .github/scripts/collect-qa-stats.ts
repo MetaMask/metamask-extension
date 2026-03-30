@@ -919,6 +919,8 @@ async function collectFeatureFlagCoverage(): Promise<Record<string, number>> {
   return {
     total_flags: summary.totalFlags,
     active_flags: summary.activeFlags,
+    deprecated_flags: summary.deprecatedFlags,
+    in_prod_flags: summary.inProdFlags,
     full_coverage_flags: summary.fullCoverage,
     partial_coverage_flags: summary.partialCoverage,
     default_only_flags: summary.defaultOnlyCoverage,
