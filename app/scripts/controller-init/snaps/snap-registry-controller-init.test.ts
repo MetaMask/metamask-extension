@@ -1,30 +1,30 @@
-import { JsonSnapsRegistry } from '@metamask/snaps-controllers';
+import {
+  SnapRegistryController,
+  SnapRegistryControllerMessenger,
+} from '@metamask/snaps-controllers';
 import { ControllerInitRequest } from '../types';
 import { buildControllerInitRequestMock } from '../test/utils';
-import {
-  getSnapsRegistryMessenger,
-  SnapsRegistryMessenger,
-} from '../messengers/snaps';
+import { getSnapRegistryControllerMessenger } from '../messengers/snaps';
 import { getRootMessenger } from '../../lib/messenger';
-import { SnapsRegistryInit } from './snaps-registry-init';
+import { SnapRegistryControllerInit } from './snap-registry-controller-init';
 
 jest.mock('@metamask/snaps-controllers');
 
 function getInitRequestMock(): jest.Mocked<
-  ControllerInitRequest<SnapsRegistryMessenger>
+  ControllerInitRequest<SnapRegistryControllerMessenger>
 > {
   const baseMessenger = getRootMessenger<never, never>();
 
   const requestMock = {
     ...buildControllerInitRequestMock(),
-    controllerMessenger: getSnapsRegistryMessenger(baseMessenger),
+    controllerMessenger: getSnapRegistryControllerMessenger(baseMessenger),
     initMessenger: undefined,
   };
 
   return requestMock;
 }
 
-describe('SnapsRegistryInit', () => {
+describe('SnapRegistryControllerInit', () => {
   const metamaskVersion = process.env.METAMASK_VERSION;
   beforeAll(() => {
     process.env.METAMASK_VERSION = '13.9.0-flask.0';
@@ -35,14 +35,14 @@ describe('SnapsRegistryInit', () => {
   });
 
   it('initializes the controller', () => {
-    const { controller } = SnapsRegistryInit(getInitRequestMock());
-    expect(controller).toBeInstanceOf(JsonSnapsRegistry);
+    const { controller } = SnapRegistryControllerInit(getInitRequestMock());
+    expect(controller).toBeInstanceOf(SnapRegistryController);
   });
 
   it('passes the proper arguments to the controller', () => {
-    SnapsRegistryInit(getInitRequestMock());
+    SnapRegistryControllerInit(getInitRequestMock());
 
-    const controllerMock = jest.mocked(JsonSnapsRegistry);
+    const controllerMock = jest.mocked(SnapRegistryController);
     expect(controllerMock).toHaveBeenCalledWith({
       messenger: expect.any(Object),
       state: undefined,
