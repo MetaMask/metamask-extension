@@ -441,9 +441,6 @@
   "pending": {
     "message": "বাকি"
   },
-  "perpsClosePartialMinNotional": {
-    "message": "Partial closes must be at least $1 in USD value. Increase the close amount or set the slider to 100%."
-  },
   "personalAddressDetected": {
     "message": "ব্যক্তিগত ঠিকানা সনাক্তিকৃত হয়েছে। টোকেন কন্ট্র্যাক্ট অ্যাড্রেসটি লিখুন।"
   },

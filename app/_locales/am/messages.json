@@ -432,9 +432,6 @@
   "pending": {
     "message": "በእንጥልጥል ላይ ያለ"
   },
-  "perpsClosePartialMinNotional": {
-    "message": "Partial closes must be at least $1 in USD value. Increase the close amount or set the slider to 100%."
-  },
   "personalAddressDetected": {
     "message": "የግል አድራሻ ተገኝቷል። የተለዋጭ ስም የመገኛ አድራሻን ያስገቡ።"
   },

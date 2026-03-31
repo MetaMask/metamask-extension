@@ -441,9 +441,6 @@
   "pending": {
     "message": "ootel"
   },
-  "perpsClosePartialMinNotional": {
-    "message": "Partial closes must be at least $1 in USD value. Increase the close amount or set the slider to 100%."
-  },
   "personalAddressDetected": {
     "message": "Leiti isiklik aadress. Sisestage loa kontaktaadress."
   },

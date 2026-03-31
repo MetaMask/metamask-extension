@@ -438,9 +438,6 @@
   "pending": {
     "message": "în așteptare"
   },
-  "perpsClosePartialMinNotional": {
-    "message": "Partial closes must be at least $1 in USD value. Increase the close amount or set the slider to 100%."
-  },
   "personalAddressDetected": {
     "message": "A fost detectată o adresă personală. Introduceți adresa de contract indicativ."
   },

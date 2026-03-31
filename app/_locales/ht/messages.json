@@ -314,9 +314,6 @@
   "pending": {
     "message": "l ap mache"
   },
-  "perpsClosePartialMinNotional": {
-    "message": "Partial closes must be at least $1 in USD value. Increase the close amount or set the slider to 100%."
-  },
   "personalAddressDetected": {
     "message": "Adrès pèsonèl detekte. Antre adrès kontra token la."
   },

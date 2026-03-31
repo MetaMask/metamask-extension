@@ -429,9 +429,6 @@
   "pending": {
     "message": "inasubiri"
   },
-  "perpsClosePartialMinNotional": {
-    "message": "Partial closes must be at least $1 in USD value. Increase the close amount or set the slider to 100%."
-  },
   "personalAddressDetected": {
     "message": "Anwani binafsi imegunduliwa. Weka anwani ya mkataba ya kianzio."
   },

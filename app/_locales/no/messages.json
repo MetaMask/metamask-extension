@@ -435,9 +435,6 @@
   "pending": {
     "message": "i påvente "
   },
-  "perpsClosePartialMinNotional": {
-    "message": "Partial closes must be at least $1 in USD value. Increase the close amount or set the slider to 100%."
-  },
   "personalAddressDetected": {
     "message": "Personlig adresse oppdaget. Skriv inn token-kontraktadressen."
   },

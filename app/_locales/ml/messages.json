@@ -103,9 +103,6 @@
   "password": {
     "message": "പാസ്‌വേഡ്"
   },
-  "perpsClosePartialMinNotional": {
-    "message": "Partial closes must be at least $1 in USD value. Increase the close amount or set the slider to 100%."
-  },
   "reject": {
     "message": "നിരസിക്കുക"
   },

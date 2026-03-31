@@ -110,9 +110,6 @@
   "password": {
     "message": "Palavra-passe"
   },
-  "perpsClosePartialMinNotional": {
-    "message": "Partial closes must be at least $1 in USD value. Increase the close amount or set the slider to 100%."
-  },
   "privacyMsg": {
     "message": "Política de Privacidade"
   },
