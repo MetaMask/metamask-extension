@@ -106,7 +106,7 @@ describe('createPerpsInfrastructure', () => {
 
     describe('when sentry is available', () => {
       it('calls startSpanManual on trace', () => {
-        const mockSpan = { end: jest.fn() };
+        const mockSpan = { setAttribute: jest.fn(), end: jest.fn() };
         const startSpanManual = jest.fn((_opts, cb) => cb(mockSpan));
         (globalThis as Record<string, unknown>).sentry = { startSpanManual };
 
@@ -129,7 +129,7 @@ describe('createPerpsInfrastructure', () => {
       });
 
       it('merges tags and data into span attributes', () => {
-        const mockSpan = { end: jest.fn() };
+        const mockSpan = { setAttribute: jest.fn(), end: jest.fn() };
         const startSpanManual = jest.fn((_opts, cb) => cb(mockSpan));
         (globalThis as Record<string, unknown>).sentry = { startSpanManual };
 
@@ -153,7 +153,7 @@ describe('createPerpsInfrastructure', () => {
       });
 
       it('ends the span on endTrace', () => {
-        const mockSpan = { end: jest.fn() };
+        const mockSpan = { setAttribute: jest.fn(), end: jest.fn() };
         const startSpanManual = jest.fn((_opts, cb) => cb(mockSpan));
         (globalThis as Record<string, unknown>).sentry = { startSpanManual };
 
@@ -180,8 +180,34 @@ describe('createPerpsInfrastructure', () => {
         ).not.toThrow();
       });
 
+      it('sets attributes from data before ending the span', () => {
+        const mockSpan = { setAttribute: jest.fn(), end: jest.fn() };
+        const startSpanManual = jest.fn((_opts, cb) => cb(mockSpan));
+        (globalThis as Record<string, unknown>).sentry = { startSpanManual };
+
+        const { tracer } = createPerpsInfrastructure();
+        tracer.trace({
+          name: 'Perps Place Order' as never,
+          id: 'abc',
+          op: 'perps.order',
+        });
+
+        tracer.endTrace({
+          name: 'Perps Place Order' as never,
+          id: 'abc',
+          data: { result: 'success', latency: 42 },
+        });
+
+        expect(mockSpan.setAttribute).toHaveBeenCalledWith(
+          'result',
+          'success',
+        );
+        expect(mockSpan.setAttribute).toHaveBeenCalledWith('latency', 42);
+        expect(mockSpan.end).toHaveBeenCalled();
+      });
+
       it('removes the span after endTrace', () => {
-        const mockSpan = { end: jest.fn() };
+        const mockSpan = { setAttribute: jest.fn(), end: jest.fn() };
         const startSpanManual = jest.fn((_opts, cb) => cb(mockSpan));
         (globalThis as Record<string, unknown>).sentry = { startSpanManual };
 

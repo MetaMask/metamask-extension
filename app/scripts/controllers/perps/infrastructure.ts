@@ -58,7 +58,10 @@ function createPerformance(): PerpsPerformance {
 }
 
 function createTracer(): PerpsTracer {
-  const pendingSpans = new Map<string, { end: () => void }>();
+  const pendingSpans = new Map<
+    string,
+    { setAttribute: (key: string, value: PerpsTraceValue) => void; end: () => void }
+  >();
 
   return {
     trace: (params: {
@@ -78,10 +81,11 @@ function createTracer(): PerpsTracer {
           op: params.op,
           attributes: { ...params.tags, ...params.data },
         },
-        (span: { end: () => void }) => {
-          pendingSpans.set(`${params.name}:${params.id}`, {
-            end: () => span.end(),
-          });
+        (span: {
+          setAttribute: (key: string, value: PerpsTraceValue) => void;
+          end: () => void;
+        }) => {
+          pendingSpans.set(`${params.name}:${params.id}`, span);
         },
       );
     },
@@ -93,6 +97,11 @@ function createTracer(): PerpsTracer {
       const key = `${params.name}:${params.id}`;
       const pending = pendingSpans.get(key);
       if (pending) {
+        if (params.data) {
+          for (const [attrKey, attrValue] of Object.entries(params.data)) {
+            pending.setAttribute(attrKey, attrValue);
+          }
+        }
         pending.end();
         pendingSpans.delete(key);
       }
