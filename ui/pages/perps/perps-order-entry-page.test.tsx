@@ -1,21 +1,23 @@
-import React from 'react';
-import configureMockStore from 'redux-mock-store';
-import thunk from 'redux-thunk';
-import { screen, fireEvent, act, waitFor } from '@testing-library/react';
 import type {
   AccountState,
   Position,
   PerpsMarketData,
 } from '@metamask/perps-controller';
-import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
+import { screen, fireEvent, act, waitFor } from '@testing-library/react';
+import React from 'react';
+import configureMockStore from 'redux-mock-store';
+import thunk from 'redux-thunk';
+
 import mockState from '../../../test/data/mock-state.json';
 import { enLocale as messages } from '../../../test/lib/i18n-helpers';
+import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
 import {
   mockPositions,
   mockAccountState,
   mockCryptoMarkets,
   mockHip3Markets,
 } from '../../components/app/perps/mocks';
+import PerpsOrderEntryPage from './perps-order-entry-page';
 
 jest.mock('../../hooks/perps/usePerpsEligibility', () => ({
   usePerpsEligibility: () => ({ isEligible: true }),
@@ -142,10 +144,6 @@ jest.mock('../../components/app/perps/order-entry/limit-price-warnings', () => {
       mockIsNearLiquidationPrice(...args),
   };
 });
-
-// eslint-disable-next-line import-x/first
-import PerpsOrderEntryPage from './perps-order-entry-page';
-
 describe('PerpsOrderEntryPage', () => {
   const middlewares = [thunk];
   const mockStore = configureMockStore(middlewares);
@@ -159,6 +157,17 @@ describe('PerpsOrderEntryPage', () => {
           ? { enabled: true, minimumVersion: '0.0.0' }
           : { enabled: false, minimumVersion: '99.99.99' },
       },
+    },
+  });
+
+  const createMockStateWithLocale = (
+    locale: string,
+    perpsEnabled = true,
+  ): ReturnType<typeof createMockState> => ({
+    ...createMockState(perpsEnabled),
+    localeMessages: {
+      ...(createMockState(perpsEnabled).localeMessages ?? {}),
+      currentLocale: locale,
     },
   });
 
@@ -621,6 +630,89 @@ describe('PerpsOrderEntryPage', () => {
       expect(mockUseNavigate).toHaveBeenCalledWith('/perps/market/ETH');
     });
 
+    it('submits normalized TP/SL values when modified', async () => {
+      mockSearchParams.set('mode', 'modify');
+      mockLivePositions.mockReturnValue({
+        positions: mockPositions,
+        isInitialLoading: false,
+      });
+
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      const tpContainer = screen.getByTestId('tp-price-input');
+      const tpInput = tpContainer.querySelector('input');
+      fireEvent.change(tpInput as HTMLInputElement, {
+        target: { value: '3300.1' },
+      });
+      fireEvent.blur(tpInput as HTMLInputElement);
+
+      const slContainer = screen.getByTestId('sl-price-input');
+      const slInput = slContainer.querySelector('input');
+      fireEvent.change(slInput as HTMLInputElement, {
+        target: { value: '2500' },
+      });
+      fireEvent.blur(slInput as HTMLInputElement);
+
+      await act(async () => {
+        fireEvent.click(screen.getByTestId('submit-order-button'));
+      });
+
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'perpsUpdatePositionTPSL',
+        [
+          expect.objectContaining({
+            symbol: 'ETH',
+            takeProfitPrice: '3300.1',
+            stopLossPrice: '2500',
+          }),
+        ],
+      );
+    });
+
+    it('submits undefined TP/SL values when fields are cleared', async () => {
+      mockSearchParams.set('mode', 'modify');
+      mockLivePositions.mockReturnValue({
+        positions: mockPositions,
+        isInitialLoading: false,
+      });
+
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      const tpContainer = screen.getByTestId('tp-price-input');
+      const tpInput = tpContainer.querySelector('input');
+      fireEvent.change(tpInput as HTMLInputElement, {
+        target: { value: '' },
+      });
+      fireEvent.blur(tpInput as HTMLInputElement);
+
+      const slContainer = screen.getByTestId('sl-price-input');
+      const slInput = slContainer.querySelector('input');
+      fireEvent.change(slInput as HTMLInputElement, {
+        target: { value: '' },
+      });
+      fireEvent.blur(slInput as HTMLInputElement);
+
+      await act(async () => {
+        fireEvent.click(screen.getByTestId('submit-order-button'));
+      });
+
+      const updateCall = mockSubmitRequestToBackground.mock.calls.find(
+        ([method]) => method === 'perpsUpdatePositionTPSL',
+      );
+      expect(updateCall).toBeDefined();
+
+      const payload = updateCall?.[1]?.[0] as {
+        symbol?: string;
+        takeProfitPrice?: string;
+        stopLossPrice?: string;
+      };
+      expect(payload.symbol).toBe('ETH');
+      expect(payload.takeProfitPrice).toBeUndefined();
+      expect(payload.stopLossPrice).toBeUndefined();
+    });
+
     it('does not submit when currentPrice is 0', async () => {
       mockLiveMarketData.mockReturnValue({
         markets: mockCryptoMarkets.map((m) => ({
@@ -938,6 +1030,36 @@ describe('PerpsOrderEntryPage', () => {
         ],
       );
       expect(mockUseNavigate).toHaveBeenCalledWith('/perps/market/ETH');
+    });
+
+    it('does not submit a limit order when locale-formatted limit price is entered', async () => {
+      mockSearchParams.set('orderType', 'limit');
+
+      const store = mockStore(createMockStateWithLocale('de'));
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      const amountContainer = screen.getByTestId('amount-input-field');
+      const amountInput = amountContainer.querySelector('input');
+      fireEvent.change(amountInput as HTMLInputElement, {
+        target: { value: '500' },
+      });
+
+      const limitContainer = screen.getByTestId('limit-price-input');
+      const limitInput = limitContainer.querySelector('input');
+      fireEvent.focus(limitInput as HTMLInputElement);
+      fireEvent.change(limitInput as HTMLInputElement, {
+        target: { value: '45.050,00' },
+      });
+      fireEvent.blur(limitInput as HTMLInputElement);
+
+      await act(async () => {
+        fireEvent.click(screen.getByTestId('submit-order-button'));
+      });
+
+      const placeOrderCalls = mockSubmitRequestToBackground.mock.calls.filter(
+        ([method]) => method === 'perpsPlaceOrder',
+      );
+      expect(placeOrderCalls).toHaveLength(0);
     });
   });
 
