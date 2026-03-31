@@ -96,7 +96,7 @@ describe('DataCollectionToggleItem', () => {
     const mockStore = createMockStore({ dataCollectionForMarketing: false });
     renderWithProvider(<DataCollectionToggleItem />, mockStore);
 
-    fireEvent.click(screen.getByTestId('data-collection-for-marketing-toggle'));
+    fireEvent.click(screen.getByTestId('data-collection-for-marketing-input'));
 
     expect(mockSetDataCollectionForMarketing).toHaveBeenCalledWith(true);
   });
@@ -105,7 +105,7 @@ describe('DataCollectionToggleItem', () => {
     const mockStore = createMockStore({ dataCollectionForMarketing: true });
     renderWithProvider(<DataCollectionToggleItem />, mockStore);
 
-    fireEvent.click(screen.getByTestId('data-collection-for-marketing-toggle'));
+    fireEvent.click(screen.getByTestId('data-collection-for-marketing-input'));
 
     expect(mockSetDataCollectionForMarketing).toHaveBeenCalledWith(false);
   });

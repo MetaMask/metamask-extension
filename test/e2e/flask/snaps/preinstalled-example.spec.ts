@@ -1,8 +1,7 @@
 import { strict as assert } from 'assert';
 import { Mockttp } from 'mockttp';
 import { Driver } from '../../webdriver/driver';
-import HeaderNavbar from '../../page-objects/pages/header-navbar';
-import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { login } from '../../page-objects/flows/login.flow';
 import {
   DAPP_PATH,
@@ -10,9 +9,12 @@ import {
   WINDOW_TITLES,
 } from '../../constants';
 import { withFixtures, sentryRegEx } from '../../helpers';
+import SettingsPage from '../../page-objects/pages/settings/settings-page';
+import PreinstalledExampleSettings from '../../page-objects/pages/settings/preinstalled-example-settings';
 import { TestSnaps } from '../../page-objects/pages/test-snaps';
 import { mockTestSnapsSite } from '../../mock-response-data/snaps/snap-local-sites/test-snaps-site-mocks';
 import { TEST_SNAPS_WEBSITE_URL } from '../../snaps/enums';
+import HeaderNavbar from '../../page-objects/pages/header-navbar';
 
 async function mockSentryTestError(mockServer: Mockttp) {
   return await mockServer
@@ -53,13 +55,57 @@ async function mockSegment(mockServer: Mockttp) {
 }
 
 describe('Preinstalled example Snap', function () {
+  it('displays the Snap settings page', async function () {
+    await withFixtures(
+      {
+        dappOptions: {
+          customDappPaths: [DAPP_PATH.TEST_SNAPS],
+        },
+        fixtures: new FixtureBuilderV2().build(),
+        testSpecificMock: mockTestSnapsSite,
+        title: this.test?.fullTitle(),
+      },
+      async ({ driver }: { driver: Driver }) => {
+        await login(driver);
+        const settingsPage = new SettingsPage(driver);
+        const preInstalledExample = new PreinstalledExampleSettings(driver);
+        await navigateToPreInstalledExample(driver);
+
+        await preInstalledExample.clickToggleButtonOn();
+        await preInstalledExample.selectRadioOption('Option 2');
+        await preInstalledExample.selectDropdownOption('Option 2');
+        await preInstalledExample.checkIsToggleOn();
+        await preInstalledExample.checkSelectedRadioOption('option2');
+        await preInstalledExample.checkSelectedDropdownOption('option2');
+        await settingsPage.clickBackButton();
+
+        // Navigate to `test-snaps` page, we don't need to connect because the Snap uses
+        // initialConnections to pre-approve the dapp.
+        const testSnaps = new TestSnaps(driver);
+        // We cannot go to localhost directly because snap permissions doen't allow localhost (but they do metamask.github.io).
+        // So instead, we go to the real URL and we use a proxy it so the responses come from the localhost test-snap server.
+        await driver.openNewPage(TEST_SNAPS_WEBSITE_URL);
+        await testSnaps.clickButton('getSettingsStateButton');
+        const jsonTextValidation = JSON.stringify(
+          { setting1: true, setting2: 'option2', setting3: 'option2' },
+          null,
+          2,
+        );
+        await testSnaps.checkMessageResultSpan(
+          'rpcResultSpan',
+          jsonTextValidation,
+        );
+      },
+    );
+  });
+
   it('uses `initialConnections` to allow JSON-RPC', async function () {
     await withFixtures(
       {
         dappOptions: {
           customDappPaths: [DAPP_PATH.TEST_SNAPS],
         },
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilderV2().build(),
         testSpecificMock: mockTestSnapsSite,
         title: this.test?.fullTitle(),
       },
@@ -90,7 +136,7 @@ describe('Preinstalled example Snap', function () {
         dappOptions: {
           customDappPaths: [DAPP_PATH.TEST_SNAPS],
         },
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withMetaMetricsController({
             metaMetricsId: MOCK_META_METRICS_ID,
             participateInMetaMetrics: true,
@@ -142,7 +188,7 @@ describe('Preinstalled example Snap', function () {
         dappOptions: {
           customDappPaths: [DAPP_PATH.TEST_SNAPS],
         },
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withMetaMetricsController({
             metaMetricsId: MOCK_META_METRICS_ID,
             participateInMetaMetrics: true,
@@ -190,7 +236,7 @@ describe('Preinstalled example Snap', function () {
         dappOptions: {
           customDappPaths: [DAPP_PATH.TEST_SNAPS],
         },
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withMetaMetricsController({
             metaMetricsId: MOCK_META_METRICS_ID,
             participateInMetaMetrics: true,
@@ -239,3 +285,12 @@ describe('Preinstalled example Snap', function () {
     );
   });
 });
+
+async function navigateToPreInstalledExample(driver: Driver) {
+  const headerNavbar = new HeaderNavbar(driver);
+  const settingsPage = new SettingsPage(driver);
+  const preInstalledExample = new PreinstalledExampleSettings(driver);
+  await headerNavbar.openSettingsPage();
+  await settingsPage.goToPreInstalledExample();
+  await preInstalledExample.checkPageIsLoaded();
+}

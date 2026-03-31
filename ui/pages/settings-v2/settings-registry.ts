@@ -20,6 +20,7 @@ import {
   SECURITY_AND_PASSWORD_ROUTE,
   SECURITY_PASSWORD_CHANGE_V2_ROUTE,
   SETTINGS_V2_ROUTE,
+  SNAP_SETTINGS_ROUTE,
   TRANSACTION_SHIELD_CLAIM_ROUTES,
   TRANSACTION_SHIELD_MANAGE_PAST_PLAN_ROUTE,
   TRANSACTION_SHIELD_MANAGE_PLAN_ROUTE,
@@ -309,6 +310,12 @@ export const SETTINGS_V2_ROUTES: Record<string, SettingsV2RouteMeta> = {
     component: mmLazy(() => import('./about-tab/index.ts')),
     isTab: true,
     iconName: IconName.Info,
+  },
+
+  // --- Snap settings (navigated via URL, not shown as a tab) ---
+  [SNAP_SETTINGS_ROUTE]: {
+    labelKey: 'snaps',
+    parentPath: SETTINGS_V2_ROUTE,
   },
 };
 

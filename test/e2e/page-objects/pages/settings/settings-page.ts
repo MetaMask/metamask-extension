@@ -1,8 +1,6 @@
 import {
   ADVANCED_ROUTE,
   DEFAULT_ROUTE,
-  NETWORKS_ROUTE,
-  SETTINGS_V2_ROUTE,
 } from '../../../../../ui/helpers/constants/routes';
 import HomePage from '../home/homepage';
 import { Driver } from '../../../webdriver/driver';
@@ -146,6 +144,14 @@ class SettingsPage {
     console.log('Toggling Show Fiat on Testnets setting');
     await this.driver.waitForSelector(this.showFiatOnTestnetsToggleLabel);
     await this.driver.clickElement(this.showFiatOnTestnetsToggleLabel);
+  }
+
+  async goToPreInstalledExample(): Promise<void> {
+    console.log('Navigating to Preinstalled Example Snap settings page');
+    await this.driver.clickElement({
+      text: 'Preinstalled Example Snap',
+      tag: 'p',
+    });
   }
 
   async toggleBalanceSetting(): Promise<void> {
