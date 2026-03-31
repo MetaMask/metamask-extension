@@ -593,16 +593,7 @@ const handleOnConnect = async (port) => {
     // Notify UI that background initialization is complete, before sending state.
     // This is sent on the raw port (like ALIVE) so the UI can distinguish between
     // "background still initializing" vs "background initialized but state sync failed".
-    try {
-      port.postMessage({
-        data: { method: BACKGROUND_INITIALIZED_METHOD },
-        name: 'background-initialized',
-      });
-    } catch (e) {
-      log.error(
-        'MetaMask - background-initialized: Failed to message to port',
-        e,
-      );
+    if (!tryPostMessage(port, BACKGROUND_INITIALIZED_METHOD)) {
       return;
     }
 
