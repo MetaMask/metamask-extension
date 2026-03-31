@@ -162,7 +162,7 @@ describe('Bridge', () => {
       PREPARE_SWAP_ROUTE,
     );
 
-    const backButton = getByRole('button', { name: 'Back' });
+    const backButton = getByRole('button', { name: messages.back.message });
     await act(async () => {
       fireEvent.click(backButton);
     });
