@@ -34,10 +34,10 @@ async function waitForPhishingBlocklistToBeLoaded(
       'return window.stateHooks.getPersistedState()',
     );
     const persisted = state as Record<string, Record<string, unknown>>;
-    const fetched = (
+    const lists = (
       persisted?.data?.PhishingController as Record<string, unknown>
-    )?.stalelistLastFetched;
-    return typeof fetched === 'number' && fetched > 0;
+    )?.phishingLists;
+    return Array.isArray(lists) && lists.length > 0;
   }, 10000);
 }
 
