@@ -29,6 +29,9 @@ class SelectNetwork {
     testId: 'network-list-item-options-discover',
   };
 
+  private readonly drawerOverlay =
+    'div[class*="bg-[var(--color-overlay-default)]"]';
+
   private readonly editNetworkButton =
     '[data-testid="network-list-item-options-edit"]';
 
@@ -123,6 +126,10 @@ class SelectNetwork {
     await this.openNetworkListOptions(chainId);
     await this.driver.clickElementAndWaitToDisappear(this.deleteNetworkButton);
     await this.driver.waitForSelector(this.confirmDeleteNetworkModal);
+    // Ensure drawer overlay is not present to avoid ElementClickInterceptedError
+    await this.driver.assertElementNotPresent(this.drawerOverlay, {
+      waitAtLeastGuard: 200,
+    });
     await this.driver.clickElementAndWaitToDisappear(
       this.confirmDeleteNetworkButton,
     );

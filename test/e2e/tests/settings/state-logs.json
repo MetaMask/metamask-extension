@@ -1405,6 +1405,7 @@
         "timestamp": "number"
       }
     },
+    "tokenWarnings": [],
     "tradeConfigurations": {
       "testnet": {},
       "mainnet": {}

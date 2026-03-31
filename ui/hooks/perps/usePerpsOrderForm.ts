@@ -1,16 +1,17 @@
-import { useState, useCallback, useMemo, useEffect, useRef } from 'react';
 import type { OrderType } from '@metamask/perps-controller';
-import { useFormatters } from '../useFormatters';
-import type {
-  OrderFormState,
-  OrderMode,
-  ExistingPositionData,
-} from '../../components/app/perps/order-entry/order-entry.types';
+import { useState, useCallback, useMemo, useEffect, useRef } from 'react';
+
 import {
   mockOrderFormDefaults,
   calculatePositionSize,
   estimateLiquidationPrice,
 } from '../../components/app/perps/order-entry/order-entry.mocks';
+import type {
+  OrderFormState,
+  OrderMode,
+  ExistingPositionData,
+} from '../../components/app/perps/order-entry/order-entry.types';
+import { useFormatters } from '../useFormatters';
 
 export type UsePerpsOrderFormOptions = {
   /** Asset symbol */
@@ -43,6 +44,7 @@ export type UsePerpsOrderFormReturn = {
     positionSize: string | null;
     marginRequired: string | null;
     liquidationPrice: string | null;
+    liquidationPriceRaw: number | null;
     orderValue: string | null;
     estimatedFees: string | null;
   };
@@ -239,21 +241,21 @@ export function usePerpsOrderForm({
         positionSize: formatTokenQuantity(closeAmount, asset),
         marginRequired: null, // Not relevant for closing
         liquidationPrice: null, // Not relevant for closing
+        liquidationPriceRaw: null,
         orderValue: formatCurrencyWithMinThreshold(closeValueUsd, 'USD'),
         estimatedFees: formatCurrencyWithMinThreshold(estimatedFees, 'USD'),
       };
     }
 
-    // For new/modify modes, calculate based on form amount
-    // Remove commas from formatted amount for parsing
-    const cleanAmount = formState.amount.replace(/,/gu, '');
-    const amount = parseFloat(cleanAmount.replace(/,/gu, '')) || 0;
+    // For new/modify modes, calculate based on normalized amount input
+    const amount = Number.parseFloat(formState.amount) || 0;
 
     if (amount === 0) {
       return {
         positionSize: null,
         marginRequired: null,
         liquidationPrice: null,
+        liquidationPriceRaw: null,
         orderValue: null,
         estimatedFees: null,
       };
@@ -263,10 +265,8 @@ export function usePerpsOrderForm({
     // Fall back to current market price if limit price is empty/invalid.
     let effectivePrice = currentPrice;
     if (formState.type === 'limit' && formState.limitPrice) {
-      const parsedLimitPrice = Number.parseFloat(
-        formState.limitPrice.replaceAll(',', ''),
-      );
-      if (!Number.isNaN(parsedLimitPrice) && parsedLimitPrice > 0) {
+      const parsedLimitPrice = Number.parseFloat(formState.limitPrice);
+      if (Number.isFinite(parsedLimitPrice) && parsedLimitPrice > 0) {
         effectivePrice = parsedLimitPrice;
       }
     }
@@ -287,6 +287,7 @@ export function usePerpsOrderForm({
       positionSize: formatTokenQuantity(positionSize, asset),
       marginRequired: formatCurrencyWithMinThreshold(marginRequired, 'USD'),
       liquidationPrice: formatCurrencyWithMinThreshold(liquidationPrice, 'USD'),
+      liquidationPriceRaw: liquidationPrice,
       orderValue: formatCurrencyWithMinThreshold(positionValue, 'USD'),
       estimatedFees: formatCurrencyWithMinThreshold(estimatedFees, 'USD'),
     };
