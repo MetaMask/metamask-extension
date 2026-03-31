@@ -1,4 +1,5 @@
 import { ReadableStream as ReadableStreamWeb } from 'stream/web';
+import { strict as assert } from 'assert';
 import { Readable } from 'stream';
 import { MockedEndpoint, Mockttp } from 'mockttp';
 import { type FeatureFlagResponse } from '@metamask/bridge-controller';
@@ -1343,8 +1344,8 @@ export const checkInputChangedEvents = async (
     .flatMap(Object.entries)
     .forEach(([expectedKey, expectedValue], index) => {
       const receivedInputChange = receivedInputChanges.find(
-        (receivedInputChange: { [key: string]: string }) =>
-          receivedInputChange[expectedKey] === expectedValue,
+        (event: { [key: string]: string }) =>
+          event[expectedKey] === expectedValue,
       );
       assert.equal(
         Boolean(receivedInputChange),
