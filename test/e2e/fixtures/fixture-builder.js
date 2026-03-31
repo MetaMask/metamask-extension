@@ -2018,6 +2018,10 @@ class FixtureBuilder {
         version: FIXTURE_STATE_METADATA_VERSION,
       };
     }
+    // Auto-generate the account tree from AccountsController if not already set
+    if (!this.fixture.data?.AccountTreeController?.accountTree) {
+      this.withAccountTreeController();
+    }
     return this.fixture;
   }
 }
