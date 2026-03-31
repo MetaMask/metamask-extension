@@ -104,10 +104,7 @@ describe('Send ETH - Max Amount', function () {
           await sendTokenConfirmPage.checkNativeCurrency('$1.00');
 
           // verify max amount after gas fee changes
-          await driver.waitForSelector({
-            text: '$42,494.90',
-            tag: 'p',
-          });
+          await transactionConfirmation.checkSendAmountConversion('$42,494.90');
 
           // confirms the transaction
           await transactionConfirmation.clickFooterConfirmButtonAndWaitToDisappear();
@@ -233,6 +230,7 @@ describe('Send ETH - Max Amount', function () {
 
         // verify initial max amount
         await transactionConfirmation.checkSendAmount('25 ETH');
+        await transactionConfirmation.checkSendAmountConversion('$42,498.19');
 
         // confirms the transaction
         await transactionConfirmation.clickFooterConfirmButtonAndWaitToDisappear();
