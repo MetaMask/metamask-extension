@@ -18,7 +18,7 @@ import {
   KeyringControllerUnlockEvent,
 } from '@metamask/keyring-controller';
 import { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
-import type { HandleSnapRequest } from '@metamask/snaps-controllers';
+import type { SnapControllerHandleRequestAction } from '@metamask/snaps-controllers';
 import { PreferencesControllerGetStateAction } from '../../controllers/preferences-controller';
 import {
   RewardsDataServiceGetOptInStatusAction,
@@ -107,7 +107,7 @@ type AllowedActions =
   | RewardsDataServiceGetDiscoverSeasonsAction
   | RewardsDataServiceGenerateChallengeAction
   | AccountTreeControllerGetAccountsFromSelectedAccountGroupAction
-  | HandleSnapRequest;
+  | SnapControllerHandleRequestAction;
 
 type AllowedEvents =
   | KeyringControllerUnlockEvent

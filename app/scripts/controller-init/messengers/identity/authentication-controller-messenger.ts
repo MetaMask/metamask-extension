@@ -4,11 +4,13 @@ import {
   KeyringControllerLockEvent,
   KeyringControllerUnlockEvent,
 } from '@metamask/keyring-controller';
-import { HandleSnapRequest } from '@metamask/snaps-controllers';
+import { SnapControllerHandleRequestAction } from '@metamask/snaps-controllers';
 import { MetaMetricsControllerGetMetaMetricsIdAction } from '../../../controllers/metametrics-controller';
 import { RootMessenger } from '../../../lib/messenger';
 
-type MessengerActions = KeyringControllerGetStateAction | HandleSnapRequest;
+type MessengerActions =
+  | KeyringControllerGetStateAction
+  | SnapControllerHandleRequestAction;
 
 type MessengerEvents =
   | KeyringControllerLockEvent
