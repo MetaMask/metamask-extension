@@ -58,7 +58,7 @@ async function mockApis(mockServer: Mockttp): Promise<MockedEndpoint[]> {
     */
   ];
 }
-describe('MetaMask onboarding TEST', function () {
+describe('MetaMask onboarding ', function () {
   it('should prevent network requests to advanced functionality endpoints when the advanced assets functionality toggle is off', async function () {
     await withFixtures(
       {
