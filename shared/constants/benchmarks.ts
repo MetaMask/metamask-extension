@@ -37,25 +37,32 @@ export type BenchmarkResults = {
   p95: StatisticalResult;
 };
 
-export const StatKey = {
+export const STAT_KEY = {
   Mean: 'mean',
+  StdDev: 'stdDev',
   P75: 'p75',
   P95: 'p95',
 } as const;
-export type StatKey = (typeof StatKey)[keyof typeof StatKey];
+export type StatKey = (typeof STAT_KEY)[keyof typeof STAT_KEY];
 
-export const PercentileKey = {
-  P75: StatKey.P75,
-  P95: StatKey.P95,
+export const PERCENTILE_KEY = {
+  P75: STAT_KEY.P75,
+  P95: STAT_KEY.P95,
 } as const;
-export type PercentileKey = (typeof PercentileKey)[keyof typeof PercentileKey];
+export type PercentileKey =
+  (typeof PERCENTILE_KEY)[keyof typeof PERCENTILE_KEY];
 
-export const ThresholdSeverity = {
+export type ComparisonKey =
+  | PercentileKey
+  | typeof STAT_KEY.Mean
+  | typeof STAT_KEY.StdDev;
+
+export const THRESHOLD_SEVERITY = {
   Warn: 'warn',
   Fail: 'fail',
 } as const;
 export type ThresholdSeverity =
-  (typeof ThresholdSeverity)[keyof typeof ThresholdSeverity];
+  (typeof THRESHOLD_SEVERITY)[keyof typeof THRESHOLD_SEVERITY];
 
 /**
  * Threshold limits for a single percentile.
@@ -90,7 +97,12 @@ export type ThresholdViolation = {
  * Aggregated historical baseline for a single metric,
  * with values for each stat key (mean, p75, p95).
  */
-export type HistoricalBaselineMetrics = Record<StatKey, number>;
+export type HistoricalBaselineMetrics = Omit<
+  Record<StatKey, number>,
+  'stdDev'
+> & {
+  stdDev?: number;
+};
 
 export type RelativeThresholds = {
   regressionPercent: number;
@@ -101,10 +113,7 @@ export type RelativeThresholds = {
 /**
  * Uniform relative thresholds applied to all metrics.
  * These are informational only (do not affect pass/fail).
- *
- * Assumption: all benchmark metrics have similar run-to-run stability,
- * so a single set of percentages is sufficient. If specific metrics
- * prove noisier, consider making thresholds per-metric or per-percentile.
+ * Per-metric overrides can be set via relativeThresholds in ThresholdConfig.
  */
 export const DEFAULT_RELATIVE_THRESHOLDS: RelativeThresholds = {
   regressionPercent: 0.1,
@@ -122,12 +131,14 @@ export const BENCHMARK_BUILD_TYPES = {
   WEBPACK: 'webpack',
 } as const;
 
-/**
- * Platform and build-type combinations for which entry benchmarks
- * (interaction & user journey) are currently collected.
- * Extend these arrays here to automatically include more combos in
- * both the PR comment builder and the benchmark gate checks.
- */
+export const ALL_BENCHMARK_COMBOS: readonly string[] = Object.values(
+  BENCHMARK_PLATFORMS,
+).flatMap((platform) =>
+  Object.values(BENCHMARK_BUILD_TYPES).map(
+    (buildType) => `${platform}-${buildType}`,
+  ),
+);
+
 export const ENTRY_BENCHMARK_PLATFORMS: readonly (typeof BENCHMARK_PLATFORMS)[keyof typeof BENCHMARK_PLATFORMS][] =
   [BENCHMARK_PLATFORMS.CHROME];
 
