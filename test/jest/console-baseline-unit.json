@@ -1516,6 +1516,9 @@
     "ui/pages/perps/perps-order-entry-page.test.tsx": {
       "React: componentWill* lifecycle deprecations": 1
     },
+    "ui/pages/perps/perps-withdraw-page.test.tsx": {
+      "React: Act warnings (component updates not wrapped)": 10
+    },
     "ui/pages/remove-snap-account/remove-snap-account.test.tsx": {
       "Reselect: Identity function warnings": 1
     },
