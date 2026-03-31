@@ -8,7 +8,11 @@ import HomePage from '../../page-objects/pages/home/homepage';
 import PhishingWarningPage from '../../page-objects/pages/phishing-warning-page';
 import { login } from '../../page-objects/flows/login.flow';
 import { setupPhishingDetectionMocks } from './mocks';
-import { DEFAULT_BLOCKED_DOMAIN, BlockProvider } from './helpers';
+import {
+  DEFAULT_BLOCKED_DOMAIN,
+  BlockProvider,
+  waitForPhishingBlocklistToBeLoaded,
+} from './helpers';
 
 describe('Phishing Detection - Path-based URLs', function (this: Suite) {
   describe('blocklisted paths', function () {
@@ -36,6 +40,7 @@ describe('Phishing Detection - Path-based URLs', function (this: Suite) {
           await login(driver);
           const homePage = new HomePage(driver);
           await homePage.checkPageIsLoaded();
+          await waitForPhishingBlocklistToBeLoaded(driver);
 
           await driver.openNewPage('http://127.0.0.1:8080/path1/');
           await driver.switchToWindowWithTitle(WINDOW_TITLES.Phishing);
@@ -69,6 +74,7 @@ describe('Phishing Detection - Path-based URLs', function (this: Suite) {
           await login(driver);
           const homePage = new HomePage(driver);
           await homePage.checkPageIsLoaded();
+          await waitForPhishingBlocklistToBeLoaded(driver);
 
           await driver.openNewPage('http://127.0.0.1:8080/path1/path2');
 
@@ -108,6 +114,7 @@ describe('Phishing Detection - Path-based URLs', function (this: Suite) {
           await login(driver);
           const homePage = new HomePage(driver);
           await homePage.checkPageIsLoaded();
+          await waitForPhishingBlocklistToBeLoaded(driver);
 
           await driver.openNewPage('http://127.0.0.1:8080/path1/');
           await driver.switchToWindowWithTitle(WINDOW_TITLES.Phishing);
@@ -154,6 +161,7 @@ describe('Phishing Detection - Path-based URLs', function (this: Suite) {
           await login(driver);
           const homePage = new HomePage(driver);
           await homePage.checkPageIsLoaded();
+          await waitForPhishingBlocklistToBeLoaded(driver);
 
           await driver.openNewPage('http://127.0.0.1:8080/path1/path2');
           await driver.switchToWindowWithTitle(WINDOW_TITLES.Phishing);

@@ -14,7 +14,6 @@ import MockedPage from '../../page-objects/pages/mocked-page';
 import PhishingWarningPage from '../../page-objects/pages/phishing-warning-page';
 import { login } from '../../page-objects/flows/login.flow';
 import TestDapp from '../../page-objects/pages/test-dapp';
-import { Driver } from '../../webdriver/driver';
 import {
   setupPhishingDetectionMocks,
   mockConfigLookupOnWarningPage,
@@ -24,22 +23,8 @@ import {
   METAMASK_STALELIST_URL,
   BlockProvider,
   DEFAULT_BLOCKED_DOMAIN,
+  waitForPhishingBlocklistToBeLoaded,
 } from './helpers';
-
-async function waitForPhishingBlocklistToBeLoaded(
-  driver: Driver,
-): Promise<void> {
-  await driver.wait(async () => {
-    const state = await driver.executeScript(
-      'return window.stateHooks.getPersistedState()',
-    );
-    const persisted = state as Record<string, Record<string, unknown>>;
-    const lists = (
-      persisted?.data?.PhishingController as Record<string, unknown>
-    )?.phishingLists;
-    return Array.isArray(lists) && lists.length > 0;
-  }, 10000);
-}
 
 describe('Phishing Detection', function (this: Suite) {
   describe('Phishing Detection Mock', function () {

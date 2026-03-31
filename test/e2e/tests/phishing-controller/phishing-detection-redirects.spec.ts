@@ -9,7 +9,11 @@ import { Driver } from '../../webdriver/driver';
 import { login } from '../../page-objects/flows/login.flow';
 import HomePage from '../../page-objects/pages/home/homepage';
 import { setupPhishingDetectionMocks } from './mocks';
-import { DEFAULT_BLOCKED_DOMAIN, BlockProvider } from './helpers';
+import {
+  DEFAULT_BLOCKED_DOMAIN,
+  BlockProvider,
+  waitForPhishingBlocklistToBeLoaded,
+} from './helpers';
 
 describe('Phishing Detection - Redirect protections', function (this: Suite) {
   /**
@@ -123,6 +127,7 @@ describe('Phishing Detection - Redirect protections', function (this: Suite) {
     await login(driver);
     const homePage = new HomePage(driver);
     await homePage.checkPageIsLoaded();
+    await waitForPhishingBlocklistToBeLoaded(driver);
   });
   after('Shut down fixtures', async function () {
     deferredTestSuite.resolve(); // let the fixtures know tests are complete
