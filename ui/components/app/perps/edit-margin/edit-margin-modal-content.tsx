@@ -1,4 +1,3 @@
-import React, { useState, useCallback, useEffect, useMemo } from 'react';
 import {
   Box,
   BoxFlexDirection,
@@ -17,19 +16,22 @@ import {
   IconColor,
 } from '@metamask/design-system-react';
 import type { Position as PerpsPosition } from '@metamask/perps-controller';
-import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { TextField, TextFieldSize } from '../../../component-library';
+import React, { useState, useCallback, useEffect, useMemo } from 'react';
+
 import {
   BorderRadius,
   BackgroundColor,
 } from '../../../../helpers/constants/design-system';
-import { submitRequestToBackground } from '../../../../store/background-connection';
-import { getPerpsStreamManager } from '../../../../providers/perps';
-import { useFormatters } from '../../../../hooks/useFormatters';
 import { usePerpsEligibility } from '../../../../hooks/perps';
+import { MARGIN_ADJUSTMENT_CONFIG } from '../../../../hooks/perps/marginUtils';
 import { usePerpsMarginCalculations } from '../../../../hooks/perps/usePerpsMarginCalculations';
-import type { Position, AccountState } from '../types';
+import { useFormatters } from '../../../../hooks/useFormatters';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { getPerpsStreamManager } from '../../../../providers/perps';
+import { submitRequestToBackground } from '../../../../store/background-connection';
+import { TextField, TextFieldSize } from '../../../component-library';
 import { PerpsSlider } from '../perps-slider';
+import type { Position, AccountState } from '../types';
 
 export type EditMarginModalContentProps = {
   position: Position;
@@ -96,8 +98,14 @@ export const EditMarginModalContent: React.FC<EditMarginModalContentProps> = ({
     anchorLiquidationDistance,
     estimatedLiquidationDistance,
     riskAssessment,
-    isValid,
   } = calculations;
+  const flooredMaxAmount = Math.floor(maxAmount * 100) / 100;
+  const amountNum = Number.parseFloat(marginAmount.replaceAll(',', '')) || 0;
+  const currentMargin = Number.parseFloat(position.marginUsed) || 0;
+  const isAmountValid =
+    amountNum >= MARGIN_ADJUSTMENT_CONFIG.MinAdjustmentAmount &&
+    amountNum <= flooredMaxAmount &&
+    (marginMode === 'add' || amountNum <= currentMargin);
 
   const amountNumForDisplay = useMemo(
     () => Number.parseFloat(marginAmount.replaceAll(',', '')) || 0,
@@ -194,16 +202,16 @@ export const EditMarginModalContent: React.FC<EditMarginModalContentProps> = ({
       const { value } = e.target;
       if (value === '' || /^[\d,]*\.?\d{0,2}$/u.test(value)) {
         let cleaned = value.replaceAll(',', '');
-        if (marginMode === 'remove' && maxAmount > 0) {
+        if (marginMode === 'remove' && flooredMaxAmount > 0) {
           const num = Number.parseFloat(cleaned) || 0;
-          if (num > maxAmount) {
-            cleaned = maxAmount.toFixed(2);
+          if (num > flooredMaxAmount) {
+            cleaned = flooredMaxAmount.toFixed(2);
           }
         }
         setMarginAmount(cleaned);
       }
     },
-    [marginMode, maxAmount],
+    [marginMode, flooredMaxAmount],
   );
 
   const handleSliderChange = useCallback(
@@ -228,12 +236,11 @@ export const EditMarginModalContent: React.FC<EditMarginModalContentProps> = ({
   );
 
   const handleSaveMargin = useCallback(async () => {
-    if (!isEligible || !isValid) {
+    if (!isEligible || !isAmountValid) {
       return;
     }
 
     const rawMarginAmount = marginAmount.replaceAll(',', '');
-    const amountNum = Number.parseFloat(rawMarginAmount) || 0;
     if (amountNum <= 0) {
       return;
     }
@@ -281,7 +288,8 @@ export const EditMarginModalContent: React.FC<EditMarginModalContentProps> = ({
     isEligible,
     marginMode,
     marginAmount,
-    isValid,
+    isAmountValid,
+    amountNum,
     position.symbol,
     onClose,
     onSavingChange,
@@ -294,10 +302,7 @@ export const EditMarginModalContent: React.FC<EditMarginModalContentProps> = ({
       riskAssessment.riskLevel === 'danger');
 
   const confirmDisabled =
-    !isEligible ||
-    !isValid ||
-    isSaving ||
-    Number.parseFloat(marginAmount.replaceAll(',', '')) <= 0;
+    !isEligible || !isAmountValid || isSaving || amountNum <= 0;
 
   useEffect(() => {
     if (onSaveRef) {

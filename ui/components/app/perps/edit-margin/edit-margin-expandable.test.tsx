@@ -1,11 +1,12 @@
-import React from 'react';
 import { screen, fireEvent, waitFor } from '@testing-library/react';
-import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
-import configureStore from '../../../../store/store';
+import React from 'react';
+
+import { EditMarginExpandable } from './edit-margin-expandable';
 import mockState from '../../../../../test/data/mock-state.json';
 import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
+import configureStore from '../../../../store/store';
 import { mockPositions, mockAccountState } from '../mocks';
-import { EditMarginExpandable } from './edit-margin-expandable';
 
 const mockGetPerpsStreamManager = jest.fn();
 const mockSubmitRequestToBackground = jest.fn();
@@ -144,6 +145,29 @@ describe('EditMarginExpandable', () => {
       expect(
         screen.getByText(messages.perpsAvailableToAdd.message),
       ).toBeInTheDocument();
+    });
+  });
+
+  describe('slider', () => {
+    it('keeps add margin submit enabled when max slider value floors to 2dp', () => {
+      renderWithProvider(
+        <EditMarginExpandable
+          {...defaultProps}
+          account={{ ...mockAccountState, availableBalance: '3.066' }}
+          isExpanded
+        />,
+        mockStore,
+      );
+
+      fireEvent.keyDown(screen.getByRole('slider'), {
+        key: 'End',
+        code: 'End',
+      });
+
+      expect(screen.getByPlaceholderText('0.00')).toHaveValue('3.06');
+      expect(
+        screen.getByRole('button', { name: /Add Margin/iu }),
+      ).not.toBeDisabled();
     });
   });
 
