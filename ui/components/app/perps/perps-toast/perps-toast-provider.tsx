@@ -7,21 +7,17 @@ import React, {
   useState,
   type ReactNode,
 } from 'react';
-import { Toast } from '../../../multichain/toast';
 import {
   AvatarIcon,
+  AvatarIconSeverity,
   AvatarIconSize,
   Box,
   Icon,
+  IconColor,
   IconName,
   IconSize,
-} from '../../../component-library';
-import {
-  AlignItems,
-  BackgroundColor,
-  IconColor,
-  TextColor,
-} from '../../../../helpers/constants/design-system';
+} from '@metamask/design-system-react';
+import { Toast } from '../../../multichain/toast';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 
 export type PerpsToastVariant = 'info' | 'success' | 'error';
@@ -115,11 +111,10 @@ type PerpsToastIconConfig =
       type: 'spinner';
     }
   | {
-      backgroundColor: BackgroundColor;
       className?: string;
-      color: TextColor;
       dataTestId: string;
       name: IconName;
+      severity: AvatarIconSeverity;
       size: AvatarIconSize;
       type: 'avatar-icon';
     };
@@ -138,8 +133,7 @@ const PERPS_TOAST_PRESENTATION_BY_VARIANT: Record<
     icon: {
       type: 'avatar-icon',
       name: IconName.Warning,
-      color: TextColor.errorDefault,
-      backgroundColor: BackgroundColor.errorMuted,
+      severity: AvatarIconSeverity.Error,
       size: AvatarIconSize.Md,
       dataTestId: 'perps-toast-icon-warning',
     },
@@ -149,7 +143,7 @@ const PERPS_TOAST_PRESENTATION_BY_VARIANT: Record<
     icon: {
       type: 'spinner',
       name: IconName.Loading,
-      color: IconColor.primaryDefault,
+      color: IconColor.PrimaryDefault,
       dataTestId: 'perps-toast-icon-loading',
     },
   },
@@ -158,8 +152,7 @@ const PERPS_TOAST_PRESENTATION_BY_VARIANT: Record<
     icon: {
       type: 'avatar-icon',
       name: IconName.CheckBold,
-      color: TextColor.successDefault,
-      backgroundColor: BackgroundColor.successMuted,
+      severity: AvatarIconSeverity.Success,
       className: 'perps-toast__success-icon',
       size: AvatarIconSize.Md,
       dataTestId: 'perps-toast-icon-check-bold',
@@ -173,8 +166,7 @@ const PERPS_ERROR_PRESENTATION: PerpsToastPresentation = {
   icon: {
     type: 'avatar-icon',
     name: IconName.Warning,
-    color: TextColor.errorDefault,
-    backgroundColor: BackgroundColor.errorMuted,
+    severity: AvatarIconSeverity.Error,
     size: AvatarIconSize.Md,
     dataTestId: 'perps-toast-icon-warning',
   },
@@ -227,8 +219,7 @@ const getToastIcon = ({ icon }: PerpsToastPresentation): ReactNode => {
     <AvatarIcon
       iconName={icon.name}
       size={icon.size}
-      color={icon.color}
-      backgroundColor={icon.backgroundColor}
+      severity={icon.severity}
       className={icon.className}
       data-testid={icon.dataTestId}
     />
@@ -308,7 +299,7 @@ export const PerpsToastProvider = ({ children }: PerpsToastProviderProps) => {
             text={activeToast.message}
             description={activeToast.description}
             className="perps-toast"
-            contentProps={{ alignItems: AlignItems.center }}
+            contentProps={{ className: 'items-center' }}
             autoHideTime={activeToast.autoHideTime}
             onClose={hidePerpsToast}
             onAutoHideToast={hidePerpsToast}

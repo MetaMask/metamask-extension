@@ -169,19 +169,21 @@ const getStore = () =>
 
 const expectSuccessToastIcon = () => {
   const successIcon = screen.getByTestId('perps-toast-icon-check-bold');
-  expect(successIcon).toHaveClass('mm-avatar-icon');
-  expect(successIcon).toHaveClass('mm-avatar-base--size-md');
+  expect(successIcon).toHaveClass(
+    'inline-flex',
+    'h-8',
+    'w-8',
+    'bg-success-muted',
+  );
   expect(successIcon).toHaveClass('perps-toast__success-icon');
-  expect(successIcon.querySelector('.mm-icon')).toBeInTheDocument();
+  expect(successIcon.querySelector('svg')).toBeInTheDocument();
 };
 
 const expectPerpsToastLayout = () => {
   expect(screen.getByTestId('perps-toast-banner-base')).toHaveClass(
     'perps-toast',
   );
-  expect(screen.getByTestId('perps-toast')).toHaveClass(
-    'mm-box--align-items-center',
-  );
+  expect(screen.getByTestId('perps-toast')).toHaveClass('items-center');
 };
 
 const expectLoadingToastIcon = () => {
@@ -194,13 +196,19 @@ const expectLoadingToastIcon = () => {
     'justify-center',
   );
   const spinnerIcon = loadingIcon.querySelector('.mm-icon');
-  expect(spinnerIcon).toBeInTheDocument();
+  expect(spinnerIcon).not.toBeInTheDocument();
+  expect(loadingIcon.querySelector('svg')).toBeInTheDocument();
 };
 
 const expectErrorAvatarToastIcon = () => {
   const warningIcon = screen.getByTestId('perps-toast-icon-warning');
-  expect(warningIcon).toHaveClass('mm-avatar-icon');
-  expect(warningIcon).toHaveClass('mm-avatar-base--size-md');
+  expect(warningIcon).toHaveClass(
+    'inline-flex',
+    'h-8',
+    'w-8',
+    'bg-error-muted',
+  );
+  expect(warningIcon.querySelector('svg')).toBeInTheDocument();
 };
 
 describe('PerpsToastProvider', () => {
