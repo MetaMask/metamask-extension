@@ -1,8 +1,10 @@
-import { JsonSnapsRegistry } from '@metamask/snaps-controllers';
+import {
+  SnapRegistryController,
+  SnapRegistryControllerMessenger,
+} from '@metamask/snaps-controllers';
 import { SemVerVersion } from '@metamask/utils';
 import { parse } from 'semver';
 import { ControllerInitFunction } from '../types';
-import { SnapsRegistryMessenger } from '../messengers/snaps';
 import { getBooleanFlag } from '../../lib/util';
 
 /**
@@ -13,9 +15,9 @@ import { getBooleanFlag } from '../../lib/util';
  * @param request.persistedState - The persisted state of the extension.
  * @returns The initialized controller.
  */
-export const SnapsRegistryInit: ControllerInitFunction<
-  JsonSnapsRegistry,
-  SnapsRegistryMessenger
+export const SnapRegistryControllerInit: ControllerInitFunction<
+  SnapRegistryController,
+  SnapRegistryControllerMessenger
 > = ({ controllerMessenger, persistedState }) => {
   const requireAllowlist = getBooleanFlag(process.env.REQUIRE_SNAPS_ALLOWLIST);
 
@@ -28,11 +30,11 @@ export const SnapsRegistryInit: ControllerInitFunction<
       : originalVersion
   ) as SemVerVersion;
 
-  const controller = new JsonSnapsRegistry({
-    // @ts-expect-error: `persistedState.SnapsRegistry` is not compatible
-    // with the expected type.
+  const controller = new SnapRegistryController({
+    // @ts-expect-error: `persistedState.SnapRegistryController` is not
+    // compatible with the expected type.
     // TODO: Look into the type mismatch.
-    state: persistedState.SnapsRegistry,
+    state: persistedState.SnapRegistryController,
     messenger: controllerMessenger,
     refetchOnAllowlistMiss: requireAllowlist,
     clientConfig: {

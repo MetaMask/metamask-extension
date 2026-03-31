@@ -1,11 +1,11 @@
 import { ControllerInitRequest } from '../types';
 import { buildControllerInitRequestMock } from '../test/utils';
-import {
-  getSnapsNameProviderMessenger,
-  SnapsNameProviderMessenger,
-} from '../messengers/snaps';
+import { getSnapsNameProviderMessenger } from '../messengers/snaps';
 import { getRootMessenger } from '../../lib/messenger';
-import { SnapsNameProvider } from '../../lib/SnapsNameProvider';
+import {
+  SnapsNameProvider,
+  SnapsNameProviderMessenger,
+} from '../../lib/SnapsNameProvider';
 import { SnapsNameProviderInit } from './snaps-name-provider-init';
 
 jest.mock('../../lib/SnapsNameProvider');
