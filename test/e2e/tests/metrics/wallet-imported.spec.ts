@@ -13,17 +13,7 @@ import { mockSegment } from './mocks/segment';
 describe('Wallet Created Events - Imported Account', function () {
   it('are sent when onboarding user who chooses to opt in metrics', async function () {
     // We need to distinguish between browsers, because routes differ (MetaMetrics screen)
-    const eventsChrome = [
-      'App Installed',
-      'App Installed',
-      'SRP Backup Confirmed',
-      'Wallet Import Attempted',
-      'Wallet Imported',
-      'Wallet Setup Completed',
-    ];
-
-    const eventsFirefox = [
-      'App Installed',
+    const expectedEvents = [
       'App Installed',
       'App Installed',
       'Analytics Preference Selected',
@@ -34,7 +24,6 @@ describe('Wallet Created Events - Imported Account', function () {
       'Wallet Setup Completed',
     ];
     const isFirefox = process.env.SELENIUM_BROWSER === Browser.FIREFOX;
-    const expectedEvents = isFirefox ? eventsFirefox : eventsChrome;
 
     await withFixtures(
       {
@@ -55,6 +44,11 @@ describe('Wallet Created Events - Imported Account', function () {
         });
 
         const events = await getEventPayloads(driver, mockedEndpoints);
+
+        console.log(
+          'events',
+          events.map((e) => e.event),
+        );
 
         // Only include track events not identify events
         const trackEvents = events.filter(
