@@ -1,11 +1,12 @@
 import { Messenger } from '@metamask/messenger';
 import { getRootMessenger } from '../../../lib/messenger';
-import { getSnapsRegistryMessenger } from './snaps-registry-messenger';
+import { getSnapRegistryControllerMessenger } from './snap-registry-controller-messenger';
 
-describe('getSnapsRegistryMessenger', () => {
+describe('getSnapRegistryControllerMessenger', () => {
   it('returns a restricted controller messenger', () => {
     const messenger = getRootMessenger<never, never>();
-    const snapsRegistryMessenger = getSnapsRegistryMessenger(messenger);
+    const snapsRegistryMessenger =
+      getSnapRegistryControllerMessenger(messenger);
 
     expect(snapsRegistryMessenger).toBeInstanceOf(Messenger);
   });

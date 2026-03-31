@@ -119,6 +119,7 @@ export const OrderEntry: React.FC<OrderEntryProps> = ({
         a.positionSize !== b.positionSize ||
         a.marginRequired !== b.marginRequired ||
         a.liquidationPrice !== b.liquidationPrice ||
+        a.liquidationPriceRaw !== b.liquidationPriceRaw ||
         a.orderValue !== b.orderValue ||
         a.estimatedFees !== b.estimatedFees
       );
@@ -248,6 +249,8 @@ export const OrderEntry: React.FC<OrderEntryProps> = ({
             onLimitPriceChange={handleLimitPriceChange}
             currentPrice={currentPrice}
             midPrice={midPrice}
+            direction={formState.direction}
+            liquidationPrice={calculations.liquidationPriceRaw}
           />
         )}
 

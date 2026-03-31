@@ -93,14 +93,14 @@ describe('EditMarginExpandable', () => {
       expect(buttons.length).toBeGreaterThanOrEqual(1);
     });
 
-    it('shows Available balance in add mode', () => {
+    it('shows Available Perps balance in add mode', () => {
       renderWithProvider(
         <EditMarginExpandable {...defaultProps} isExpanded />,
         mockStore,
       );
 
       expect(
-        screen.getByText(messages.perpsAvailableBalance.message),
+        screen.getByText(messages.perpsAvailableBalance.message.trim()),
       ).toBeInTheDocument();
     });
 
@@ -142,7 +142,7 @@ describe('EditMarginExpandable', () => {
       fireEvent.click(screen.getByText(messages.perpsAddMargin.message));
 
       expect(
-        screen.getByText(messages.perpsAvailableBalance.message),
+        screen.getByText(messages.perpsAvailableBalance.message.trim()),
       ).toBeInTheDocument();
     });
   });
