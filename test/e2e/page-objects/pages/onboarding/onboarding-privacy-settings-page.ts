@@ -21,6 +21,9 @@ class OnboardingPrivacySettingsPage {
   private readonly basicFunctionalityToggle =
     '[data-testid="basic-functionality-toggle"] .toggle-button';
 
+  private readonly basicFunctionalityToggleOffState =
+    '[data-testid="basic-functionality-toggle"] .toggle-button.toggle-button--off';
+
   private readonly basicFunctionalityTurnOffButton =
     '[data-testid="basic-configuration-modal-toggle-button"]';
 
@@ -76,6 +79,10 @@ class OnboardingPrivacySettingsPage {
 
   // Assets settings
   private readonly assetsPrivacyToggle = '.toggle-button.toggle-button--on';
+
+  private assetsPrivacyToggleState(state: 'on' | 'off') {
+    return `.toggle-button.toggle-button--${state}`;
+  }
 
   private readonly assetsSettingsMessage = { text: 'Assets', tag: 'h2' };
 
@@ -194,42 +201,19 @@ class OnboardingPrivacySettingsPage {
       ),
     );
 
-    const expectedClass = `toggle-button--${targetState}`;
-    const oppositeClass = `toggle-button--${targetState === 'off' ? 'on' : 'off'}`;
-
     console.log(`Verify all asset privacy toggles are ${targetState}`);
-    await this.driver.waitUntil(
-      async () => {
-        const toggles = await this.driver.findElements('.toggle-button');
-        if (toggles.length === 0) {
-          return false;
-        }
-        for (const toggle of toggles) {
-          const className = await toggle.getAttribute('class');
-          if (
-            !className.includes(expectedClass) ||
-            className.includes(oppositeClass)
-          ) {
-            return false;
-          }
-        }
-        return true;
-      },
-      { interval: 500, timeout: 5000 },
+    const oppositeState = targetState === 'off' ? 'on' : 'off';
+    await this.driver.assertElementNotPresent(
+      this.assetsPrivacyToggleState(oppositeState),
     );
 
     await this.navigateBackToSettingsPage();
   }
 
   /**
-   * Go to general settings and toggle options, then navigate back.
-   *
-   * @param targetState - The expected state of the toggle after clicking.
-   * Defaults to 'off'.
+   * Go to general settings and toggle basic functionality off, then navigate back.
    */
-  async toggleBasicFunctionalitySettings(
-    targetState: 'on' | 'off' = 'off',
-  ): Promise<void> {
+  async toggleBasicFunctionalitySettings(): Promise<void> {
     console.log('Toggle basic functionality settings in privacy settings');
     await this.navigateToGeneralSettings();
     await this.driver.clickElement(this.basicFunctionalityToggle);
@@ -237,18 +221,8 @@ class OnboardingPrivacySettingsPage {
     await this.driver.clickElement(this.basicFunctionalityCheckbox);
     await this.driver.clickElement(this.basicFunctionalityTurnOffButton);
 
-    console.log(`Verify basic functionality toggle is ${targetState}`);
-    const expectedClass = `toggle-button--${targetState}`;
-    await this.driver.waitUntil(
-      async () => {
-        const toggle = await this.driver.findElement(
-          this.basicFunctionalityToggle,
-        );
-        const className = await toggle.getAttribute('class');
-        return className.includes(expectedClass);
-      },
-      { interval: 500, timeout: 5000 },
-    );
+    console.log('Verify basic functionality toggle is off');
+    await this.driver.waitForSelector(this.basicFunctionalityToggleOffState);
 
     await this.navigateBackToSettingsPage();
   }
