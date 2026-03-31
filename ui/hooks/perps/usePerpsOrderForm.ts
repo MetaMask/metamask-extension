@@ -31,6 +31,8 @@ export type UsePerpsOrderFormOptions = {
   onSubmit?: (formState: OrderFormState) => void;
   /** Order type: 'market' or 'limit' (defaults to 'market') */
   orderType?: OrderType;
+  /** Initial leverage for new orders (e.g. last used leverage for this market) */
+  initialLeverage?: number;
 };
 
 export type UsePerpsOrderFormReturn = {
@@ -85,6 +87,7 @@ export type UsePerpsOrderFormReturn = {
  * @param options.onFormStateChange - Callback when form state changes
  * @param options.onSubmit - Callback when order is submitted
  * @param options.orderType - Order type: 'market' or 'limit'
+ * @param options.initialLeverage
  * @returns Form state, handlers, and calculated values
  */
 export function usePerpsOrderForm({
@@ -97,6 +100,7 @@ export function usePerpsOrderForm({
   onFormStateChange,
   onSubmit,
   orderType = 'market',
+  initialLeverage,
 }: UsePerpsOrderFormOptions): UsePerpsOrderFormReturn {
   const { formatCurrencyWithMinThreshold, formatTokenQuantity } =
     useFormatters();
@@ -140,6 +144,7 @@ export function usePerpsOrderForm({
       asset,
       direction: initialDirection,
       type: orderType,
+      ...(initialLeverage !== undefined && { leverage: initialLeverage }),
     };
   });
 
@@ -216,9 +221,10 @@ export function usePerpsOrderForm({
         asset,
         direction: initialDirection,
         type: typeForReset,
+        ...(initialLeverage !== undefined && { leverage: initialLeverage }),
       });
     }
-  }, [mode, asset, initialDirection]);
+  }, [mode, asset, initialDirection, initialLeverage]);
 
   // Notify parent of form state changes
   useEffect(() => {

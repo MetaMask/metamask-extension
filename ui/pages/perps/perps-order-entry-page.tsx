@@ -70,6 +70,10 @@ import {
   type OrderMode,
   type OrderCalculations,
 } from '../../components/app/perps/order-entry';
+import {
+  getLastLeverage,
+  saveLastLeverage,
+} from '../../hooks/perps/usePerpsLastLeverage';
 
 /**
  * Convert UI OrderFormState to PerpsController OrderParams
@@ -358,6 +362,13 @@ const PerpsOrderEntryPage: React.FC = () => {
     return parseInt(market.maxLeverage.replace('x', ''), 10);
   }, [market]);
 
+  const initialLeverage = useMemo(() => {
+    if (!decodedSymbol || orderMode !== 'new') {
+      return undefined;
+    }
+    return Math.min(getLastLeverage(decodedSymbol), maxLeverage);
+  }, [decodedSymbol, orderMode, maxLeverage]);
+
   const existingPositionForOrder = useMemo(() => {
     if (!position) {
       return undefined;
@@ -451,6 +462,8 @@ const PerpsOrderEntryPage: React.FC = () => {
             throw new Error(result.error || 'Failed to add to position');
           }
 
+          saveLastLeverage(orderFormState.asset, orderFormState.leverage);
+
           // Existing position is already in `allPositions`, so pending-order
           // confirmation would resolve immediately; navigate like limit orders.
           handleBackClick();
@@ -493,6 +506,8 @@ const PerpsOrderEntryPage: React.FC = () => {
         if (!result.success) {
           throw new Error(result.error || 'Failed to place order');
         }
+
+        saveLastLeverage(orderFormState.asset, orderFormState.leverage);
 
         if (orderFormState.type === 'limit') {
           handleBackClick();
@@ -700,6 +715,7 @@ const PerpsOrderEntryPage: React.FC = () => {
           midPrice={topOfBook?.midPrice}
           onOrderTypeChange={setOrderType}
           onAddFunds={triggerDeposit}
+          initialLeverage={initialLeverage}
         />
       </Box>
 
