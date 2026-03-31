@@ -55,8 +55,15 @@ describe('Phishing Detection - Redirect protections', function (this: Suite) {
               // it is meant to test for regressions in our redirect
               // protection due to changes in either MetaMask or browsers.
               document.location.href = "${destination}";
-              alert("trying to prevent phishing protection");
-              while(true){}
+              // Delay the canary to avoid a race condition for HTTP 200
+              // responses: the browser renders the body before the phishing
+              // content script can redirect, so a synchronous alert() fires
+              // before the extension has a chance to act. The setTimeout
+              // yields to the event loop, giving the redirect time to land.
+              setTimeout(() => {
+                alert("trying to prevent phishing protection");
+                while(true){}
+              }, 500);
             </script>
           </head>
           <body>

@@ -11,7 +11,6 @@ import { setupPhishingDetectionMocks } from './mocks';
 import { DEFAULT_BLOCKED_DOMAIN, BlockProvider } from './helpers';
 
 describe('Phishing Detection - Path-based URLs', function (this: Suite) {
-  this.timeout(160000); // This test is very long, so we need an unusually high timeout
   describe('blocklisted paths', function () {
     it('displays the MetaMask Phishing Detection page when accessing a blocklisted path', async function () {
       await withFixtures(
