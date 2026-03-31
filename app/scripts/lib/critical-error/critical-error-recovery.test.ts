@@ -132,6 +132,7 @@ describe('CriticalErrorHandler', () => {
         MetaMetricsEventName.CriticalErrorRestoreWalletButtonPressed,
         CriticalErrorType.BackgroundInitTimeout,
       );
+      expect(handler.connectedPorts.size).toBe(0);
     });
 
     it('uses backup from params for analytics', async () => {
@@ -214,6 +215,7 @@ describe('CriticalErrorHandler', () => {
       expect(config1.port.onMessage.removeListener).toHaveBeenCalled();
       expect(config2.port.onMessage.removeListener).toHaveBeenCalled();
       expect(sharedRestore).toHaveBeenCalledTimes(1);
+      expect(handler.connectedPorts.size).toBe(0);
     });
   });
 

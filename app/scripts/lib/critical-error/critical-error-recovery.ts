@@ -110,10 +110,9 @@ export class CriticalErrorHandler {
 
     // only allow the restore process once, unregister
     // listeners from all UI windows
-    this.connectedPorts.forEach((connectedPort) => {
-      connectedPort.onMessage.removeListener(this.#restoreListener);
-      connectedPort.onMessage.removeListener(this.#handleMessageListener);
-    });
+    for (const connectedPort of [...this.connectedPorts]) {
+      this.removeListenersForPort(connectedPort);
+    }
 
     const criticalErrorType = getCriticalErrorType(params);
 
