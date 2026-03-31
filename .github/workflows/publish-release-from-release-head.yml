@@ -9,7 +9,7 @@ on:
 
 permissions:
   contents: read # publish-release uses EXTENSION_PUBLISH_TOKEN for write operations
-  checks: read # Required to verify CI check-runs on the SHA
+  statuses: read # Required by verify-ci-checks.sh to read commit statuses
   actions: read # Required to download artifacts from build jobs
   id-token: write # Required for OIDC authentication in S3 uploads
 
@@ -94,8 +94,6 @@ jobs:
     with:
       build-name: build-dist-mv2-browserify
       build-command: yarn build prod
-      mozilla-lint: true
-      enable-mv3: false
       builds-from-run: ${{ github.run_id }}
     secrets: inherit
 
@@ -120,8 +118,6 @@ jobs:
     with:
       build-name: build-flask-mv2-browserify
       build-command: yarn build --build-type flask prod
-      mozilla-lint: true
-      enable-mv3: false
       builds-from-run: ${{ github.run_id }}
     secrets: inherit
 

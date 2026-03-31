@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import { useNavigate, Navigate } from 'react-router-dom';
+import { useNavigate, Navigate, useSearchParams } from 'react-router-dom';
 import {
   Box,
   BoxFlexDirection,
@@ -30,7 +30,7 @@ import {
   PERPS_MARKET_DETAIL_ROUTE,
 } from '../../../helpers/constants/routes';
 import {
-  getIsPerpsEnabled,
+  getIsPerpsExperienceAvailable,
   getHip3AllowedSourcesSet,
 } from '../../../selectors/perps/feature-flags';
 import {
@@ -38,6 +38,10 @@ import {
   type SortField,
   type SortDirection,
 } from '../utils/sortMarkets';
+import {
+  VALID_MARKET_FILTERS,
+  type MarketFilter,
+} from '../../../../shared/constants/perps';
 import { MarketRow } from './components/market-row';
 import { MarketRowSkeleton } from './components/market-row-skeleton';
 import {
@@ -46,7 +50,7 @@ import {
   type SortOptionId,
 } from './components/sort-dropdown';
 import { SearchInput } from './components/search-input';
-import { FilterSelect, type MarketFilter } from './components/filter-select';
+import { FilterSelect } from './components/filter-select';
 
 /**
  * Get the resolved market type for a market.
@@ -140,18 +144,32 @@ const filterByType = (
 export const MarketListView: React.FC = () => {
   const t = useI18nContext();
   const navigate = useNavigate();
-  const isPerpsEnabled = useSelector(getIsPerpsEnabled);
+  const [searchParams] = useSearchParams();
+  const isPerpsExperienceAvailable = useSelector(getIsPerpsExperienceAvailable);
   const allowedHip3Sources = useSelector(getHip3AllowedSourcesSet);
 
   // Use stream hooks for real-time market data
   const { markets: allMarkets, isInitialLoading: marketsLoading } =
     usePerpsLiveMarketData();
 
+  // Read initial filter from URL params (set by deeplink)
+  const initialFilter = useMemo<MarketFilter>(() => {
+    const filterParam = searchParams.get('filter');
+    if (
+      filterParam &&
+      VALID_MARKET_FILTERS.includes(filterParam as MarketFilter)
+    ) {
+      return filterParam as MarketFilter;
+    }
+    return 'all';
+  }, [searchParams]);
+
   // State
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedSortId, setSelectedSortId] =
     useState<SortOptionId>('volumeHigh');
-  const [selectedFilter, setSelectedFilter] = useState<MarketFilter>('all');
+  const [selectedFilter, setSelectedFilter] =
+    useState<MarketFilter>(initialFilter);
 
   // Get current sort option
   const currentSortOption = SORT_OPTIONS.find(
@@ -232,7 +250,7 @@ export const MarketListView: React.FC = () => {
   );
 
   // Guard: redirect if perps feature is disabled
-  if (!isPerpsEnabled) {
+  if (!isPerpsExperienceAvailable) {
     return <Navigate to={DEFAULT_ROUTE} replace />;
   }
 

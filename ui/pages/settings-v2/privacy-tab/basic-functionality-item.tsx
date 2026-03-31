@@ -1,6 +1,5 @@
 import React, { useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { TextButton } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getUseExternalServices } from '../../../selectors';
 import { toggleExternalServices } from '../../../store/actions';
@@ -11,6 +10,8 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
+import { PrivacyPolicyLink } from '../shared';
+import { PRIVACY_ITEMS } from '../search-config';
 
 export const BasicFunctionalityToggleItem = () => {
   const t = useI18nContext();
@@ -41,20 +42,12 @@ export const BasicFunctionalityToggleItem = () => {
   };
 
   const description = t('basicConfigurationDescriptionV2', [
-    <TextButton asChild key="privacy-link">
-      <a
-        href="https://consensys.io/privacy-policy"
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        {t('privacyMsg')}
-      </a>
-    </TextButton>,
+    <PrivacyPolicyLink key="basic-functionality-privacy-link" />,
   ]);
 
   return (
     <SettingsToggleItem
-      title={t('basicConfigurationLabel')}
+      title={t(PRIVACY_ITEMS['basic-functionality'])}
       description={description}
       value={useExternalServices}
       onToggle={handleToggle}

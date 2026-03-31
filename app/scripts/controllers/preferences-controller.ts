@@ -83,7 +83,6 @@ export type Preferences = {
   dismissSmartAccountSuggestionEnabled: boolean;
   featureNotificationsEnabled: boolean;
   hideZeroBalanceTokens: boolean;
-  petnamesEnabled: boolean;
   privacyMode: boolean;
   showConfirmationAdvancedDetails: boolean;
   showDefaultAddress: boolean;
@@ -181,10 +180,9 @@ export const getDefaultPreferencesControllerState =
       dismissSmartAccountSuggestionEnabled: false,
       featureNotificationsEnabled: false,
       hideZeroBalanceTokens: false,
-      petnamesEnabled: true,
       privacyMode: false,
       showConfirmationAdvancedDetails: false,
-      showDefaultAddress: false,
+      showDefaultAddress: true,
       defaultAddressScope: 'eip155',
       showExtensionInFullSizeView: false,
       showFiatInTestnets: false,

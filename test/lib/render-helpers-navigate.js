@@ -5,7 +5,7 @@ import { Provider } from 'react-redux';
 import { render } from '@testing-library/react';
 import { renderHook } from '@testing-library/react-hooks';
 import { userEvent } from '@testing-library/user-event';
-import { MemoryRouter } from 'react-router-dom';
+import { createMemoryRouter, RouterProvider } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import PropTypes from 'prop-types';
 import { noop } from 'lodash';
@@ -56,7 +56,38 @@ I18nProvider.defaultProps = {
   children: undefined,
 };
 
-function createProviderWrapper(
+export function createMemoryRouterWrapper(options = {}) {
+  const { initialEntries = ['/'], store, routePath = '*' } = options;
+
+  function Wrapper({ children }) {
+    const router = createMemoryRouter(
+      [
+        {
+          path: routePath,
+          element: children,
+        },
+      ],
+      { initialEntries },
+    );
+
+    const container = (
+      <RouterProvider
+        router={router}
+        future={{ v7_startTransition: true, v7_relativeSplatPath: true }}
+      />
+    );
+
+    return store ? <Provider store={store}>{container}</Provider> : container;
+  }
+
+  Wrapper.propTypes = {
+    children: PropTypes.node,
+  };
+
+  return Wrapper;
+}
+
+export function createProviderWrapper(
   store,
   pathname = '/',
   getMockTrackEvent = () => jest.fn().mockResolvedValue(undefined),
@@ -68,9 +99,14 @@ function createProviderWrapper(
     defaultOptions: { queries: { retry: false } },
   });
 
-  const Wrapper = ({ children }) => {
-    const container = (
-      <MemoryRouter initialEntries={[pathname]}>
+  const MemoryRouter = createMemoryRouterWrapper({
+    initialEntries: [pathname],
+    store,
+  });
+
+  function Wrapper({ children }) {
+    return (
+      <MemoryRouter>
         <I18nProvider currentLocale="en" current={en} en={en}>
           <LegacyI18nProvider>
             <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
@@ -84,9 +120,7 @@ function createProviderWrapper(
         </I18nProvider>
       </MemoryRouter>
     );
-
-    return store ? <Provider store={store}>{container}</Provider> : container;
-  };
+  }
 
   Wrapper.propTypes = {
     children: PropTypes.node,
@@ -99,8 +133,13 @@ export function renderWithProvider(
   store,
   pathname = '/',
   renderer = render,
+  getMockTrackEvent,
 ) {
-  const wrapper = createProviderWrapper(store, pathname);
+  const wrapper = createProviderWrapper(
+    store,
+    pathname,
+    getMockTrackEvent ?? (() => jest.fn().mockResolvedValue(undefined)),
+  );
 
   return renderer(component, { wrapper });
 }

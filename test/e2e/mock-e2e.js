@@ -23,6 +23,9 @@ const { ALLOWLISTED_URLS } = require('./mock-e2e-allowlist');
 const {
   getProductionRemoteFlagApiResponse,
 } = require('./feature-flags/feature-flag-registry');
+const {
+  setupSnapRegistryMocks,
+} = require('./mock-response-data/snaps/snap-registry-mocks');
 
 const CDN_CONFIG_PATH = 'test/e2e/mock-cdn/cdn-config.txt';
 const CDN_STALE_DIFF_PATH = 'test/e2e/mock-cdn/cdn-stale-diff.txt';
@@ -80,18 +83,20 @@ const blocklistedHosts = [
   'arbitrum-mainnet.infura.io',
   'avalanche-mainnet.infura.io',
   'bsc-dataseed.binance.org',
+  'bsc-mainnet.infura.io',
+  'carrot.megaeth.com',
   'linea-mainnet.infura.io',
   'linea-sepolia.infura.io',
-  'testnet-rpc.monad.xyz',
-  'carrot.megaeth.com',
-  'sei-mainnet.infura.io',
   'mainnet.infura.io',
+  'optimism-mainnet.infura.io',
+  'polygon-mainnet.infura.io',
+  'sei-mainnet.infura.io',
   'sepolia.infura.io',
+  'testnet-rpc.monad.xyz',
 ];
 const {
   mockEmptyStalelistAndHotlist,
 } = require('./tests/phishing-controller/mocks');
-const { mockNotificationServices } = require('./tests/notifications/mocks');
 const { mockIdentityServices } = require('./tests/identity/mocks');
 
 const emptyHtmlPage = () => `<!DOCTYPE html>
@@ -197,6 +202,9 @@ async function setupMocking(
 
   const mockedEndpoint = await testSpecificMock(server);
   // Mocks below this line can be overridden by test-specific mocks
+
+  // Snaps execution ACL registry
+  await setupSnapRegistryMocks(server);
 
   // remote feature flags — production-accurate defaults from the registry
   // FF will apply to all environments: rc, prod and dev
@@ -1053,13 +1061,12 @@ async function setupMocking(
       };
     });
 
-  // Notification APIs
-  await mockNotificationServices(server);
-
-  // Override notification list with empty response to prevent unread dot
-  // Notification-specific tests re-register this endpoint via testSpecificMock
+  // Override notification list with empty response to prevent unread dot.
+  // .always() ensures every fetch returns [] (not just the first one).
+  // Notification-specific tests re-register this endpoint via testSpecificMock.
   await server
     .forPost('https://notification.api.cx.metamask.io/api/v3/notifications')
+    .always()
     .thenCallback(() => ({ statusCode: 200, json: [] }));
 
   // Identity APIs

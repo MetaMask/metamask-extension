@@ -2,6 +2,7 @@ import { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query';
 import type { CaipChainId } from '@metamask/utils';
+import { TransactionType } from '@metamask/transaction-controller';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import type {
   Token,
@@ -17,7 +18,10 @@ import { selectEnabledNetworksAsCaipChainIds } from '../../../selectors/multicha
 import { selectRequiredTransactionHashes } from '../../../selectors/transactionController';
 import { useBridgeActivityData } from '../../../hooks/bridge/useBridgeActivityData';
 import { apiClient } from '../../../helpers/api-client';
-import { calculateFiatFromMarketRates } from './helpers';
+import {
+  calculateFiatFromMarketRates,
+  resolveTransactionType,
+} from './helpers';
 import type { ActivityListFilter } from './helpers';
 
 function useTransactionParams(caipChainId?: CaipChainId) {
@@ -77,6 +81,7 @@ export function useTransactionsQuery(filter?: ActivityListFilter) {
       Boolean(useExternalServices) &&
       networks.length > 0 &&
       accountAddresses.length > 0,
+    retry: false,
     keepPreviousData: true,
     refetchOnMount: true,
     refetchOnWindowFocus: true,
@@ -112,10 +117,12 @@ export function usePrefetchTransactions() {
       return;
     }
 
-    // @ts-expect-error apiClient returns v5 types, repo still in v4
-    queryClient.prefetchInfiniteQuery(queryOptions).catch(() => {
-      // Prefetch is opportunistic
-    });
+    queryClient
+      // @ts-expect-error apiClient returns v5 types, repo still in v4
+      .prefetchInfiniteQuery({ ...queryOptions, retry: false })
+      .catch(() => {
+        // Prefetch is opportunistic
+      });
   }, [evmAddress, queryOptions, queryClient, useExternalServices]);
 }
 
@@ -163,6 +170,11 @@ export function useGetTitle(transaction: TransactionViewModel): string {
   const { sourceTokenSymbol, destNetwork, isBridgeTx } = useBridgeActivityData({
     transaction,
   });
+
+  const resolvedType = resolveTransactionType(transaction);
+  if (resolvedType === TransactionType.musdClaim) {
+    return t('musdClaimTitle');
+  }
 
   const { transactionCategory, transactionType, transactionProtocol } =
     transaction;

@@ -138,6 +138,7 @@ jest.mock('../../hooks/musd', () => ({
   BuyGetMusdCtaVariant: { BUY: 'buy', GET: 'get' },
   isTokenInWildcardList: jest.fn().mockReturnValue(false),
   checkTokenAllowed: jest.fn().mockReturnValue(false),
+  isMerklClaimTransaction: jest.fn().mockReturnValue(false),
 }));
 
 jest.mock('../../hooks/useMultiPolling', () => ({
@@ -358,6 +359,7 @@ describe('toast display', () => {
           },
         },
       },
+      selectedAccountGroup: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0',
       accountTree: {
         wallets: {
           'entropy:01JKAF3DSGM3AB87EM9N0K41AJ': {
@@ -375,6 +377,7 @@ describe('toast display', () => {
                   },
                   hidden: false,
                   pinned: false,
+                  lastSelected: 0,
                 },
               },
             },
@@ -386,7 +389,6 @@ describe('toast display', () => {
             },
           },
         },
-        selectedAccountGroup: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0',
       },
       internalAccounts: {
         accounts: {

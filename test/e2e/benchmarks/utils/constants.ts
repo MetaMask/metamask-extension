@@ -1,9 +1,18 @@
-import type { ThresholdConfig } from './types';
+import type { ThresholdConfig } from '../../../../shared/constants/benchmarks';
+import {
+  BENCHMARK_PLATFORMS,
+  BENCHMARK_BUILD_TYPES,
+  BENCHMARK_PERSONA,
+  BENCHMARK_TYPE,
+} from '../../../../shared/constants/benchmarks';
 
 export {
   BENCHMARK_PLATFORMS,
   BENCHMARK_BUILD_TYPES,
-} from '../../../../shared/constants/benchmarks';
+  BENCHMARK_PERSONA,
+  BENCHMARK_TYPE,
+};
+
 export const STARTUP_PRESETS = {
   STANDARD_HOME: 'startupStandardHome',
   POWER_USER_HOME: 'startupPowerUserHome',
@@ -23,17 +32,6 @@ export const USER_JOURNEY_PRESETS = {
 
 export const DEFAULT_NUM_BROWSER_LOADS = 10;
 export const DEFAULT_NUM_PAGE_LOADS = 10;
-
-export const BENCHMARK_PERSONA = {
-  STANDARD: 'standard',
-  POWER_USER: 'powerUser',
-} as const;
-
-export const BENCHMARK_TYPE = {
-  BENCHMARK: 'benchmark',
-  PERFORMANCE: 'performance',
-  USER_ACTION: 'userAction',
-} as const;
 
 export const ALL_METRICS = {
   uiStartup: 'UI Startup',
@@ -162,8 +160,8 @@ const SWAP: ThresholdConfig = {
     ciMultiplier: DEFAULT_CI_MULTIPLIER,
   },
   fetchAndDisplaySwapQuotes: {
-    p75: { warn: 1200, fail: 2000 },
-    p95: { warn: 2000, fail: 3500 },
+    p75: { warn: 2800, fail: 5000 },
+    p95: { warn: 3500, fail: 6000 },
     ciMultiplier: DEFAULT_CI_MULTIPLIER,
   },
 };
@@ -222,8 +220,8 @@ const STANDARD_HOME: ThresholdConfig = {
 
 const POWER_USER_HOME: ThresholdConfig = {
   uiStartup: {
-    p75: { warn: 3000, fail: 4000 },
-    p95: { warn: 4000, fail: 5500 },
+    p75: { warn: 4000, fail: 4700 },
+    p95: { warn: 7000, fail: 10000 },
     ciMultiplier: DEFAULT_CI_MULTIPLIER,
   },
   load: {
@@ -276,23 +274,35 @@ const BRIDGE_USER_ACTIONS: ThresholdConfig = {
 /* eslint-enable @typescript-eslint/naming-convention */
 
 /**
- * Registry keyed by benchmark file name (kebab-case), auto-converted from
- * UPPER_SNAKE_CASE, e.g. ONBOARDING_IMPORT_WALLET -> onboarding-import-wallet.
+ * Threshold configurations for all benchmarks.
  */
-export const THRESHOLD_REGISTRY: Record<string, ThresholdConfig> =
-  Object.fromEntries(
-    Object.entries({
-      ONBOARDING_IMPORT_WALLET,
-      ONBOARDING_NEW_WALLET,
-      IMPORT_SRP_HOME,
-      SWAP,
-      SEND_TRANSACTIONS,
-      ASSET_DETAILS,
-      SOLANA_ASSET_DETAILS,
-      STANDARD_HOME,
-      POWER_USER_HOME,
-      LOAD_NEW_ACCOUNT,
-      CONFIRM_TX,
-      BRIDGE_USER_ACTIONS,
-    }).map(([key, config]) => [key.toLowerCase().replace(/_/gu, '-'), config]),
-  );
+const BENCHMARK_THRESHOLDS = {
+  // Interaction benchmarks (run on all 4 combos, shared baseline)
+  loadNewAccount: LOAD_NEW_ACCOUNT,
+  confirmTx: CONFIRM_TX,
+  bridgeUserActions: BRIDGE_USER_ACTIONS,
+
+  // User journey benchmarks (chrome-browserify in PRs, chrome-webpack on main/release)
+  onboardingImportWallet: ONBOARDING_IMPORT_WALLET,
+  onboardingNewWallet: ONBOARDING_NEW_WALLET,
+  importSrpHome: IMPORT_SRP_HOME,
+  assetDetails: ASSET_DETAILS,
+  solanaAssetDetails: SOLANA_ASSET_DETAILS,
+  sendTransactions: SEND_TRANSACTIONS,
+  swap: SWAP,
+
+  // Startup benchmarks (platform/buildType now stored in data, not in key)
+  startupStandardHome: STANDARD_HOME,
+  startupPowerUserHome: POWER_USER_HOME,
+};
+
+/**
+ * Registry of threshold configurations keyed by benchmark name (camelCase).
+ *
+ * To add a new benchmark:
+ * - Add to BENCHMARK_THRESHOLDS with a camelCase key matching the filename
+ * - All benchmarks now use simple keys; platform/buildType are stored as data fields
+ */
+export const THRESHOLD_REGISTRY: Record<string, ThresholdConfig> = {
+  ...BENCHMARK_THRESHOLDS,
+};

@@ -8,8 +8,8 @@ import {
   StateMetadata,
 } from '@metamask/base-controller';
 import {
-  AcceptRequest,
-  AddApprovalRequest,
+  ApprovalControllerAcceptRequestAction,
+  ApprovalControllerAddRequestAction,
 } from '@metamask/approval-controller';
 import {
   DeferredPromise,
@@ -239,8 +239,8 @@ export type AppStateControllerActions =
  * Actions that this controller is allowed to call.
  */
 export type AllowedActions =
-  | AddApprovalRequest
-  | AcceptRequest
+  | ApprovalControllerAddRequestAction
+  | ApprovalControllerAcceptRequestAction
   | KeyringControllerGetStateAction
   | PreferencesControllerGetStateAction
   | ProfileMetricsControllerSkipInitialDelayAction;

@@ -47,8 +47,13 @@ import { useRewards } from '../../../hooks/bridge/useRewards';
 import { RewardsBadge } from '../../../components/app/rewards/RewardsBadge';
 import AddRewardsAccount from '../../../components/app/rewards/AddRewardsAccount';
 import { Skeleton } from '../../../components/component-library/skeleton';
-import { getGasFeesSponsoredNetworkEnabled } from '../../../selectors/selectors';
+import {
+  getGasFeesSponsoredNetworkEnabled,
+  isHardwareWallet,
+} from '../../../selectors/selectors';
 import { BridgeQuotesModal } from './bridge-quotes-modal';
+
+export { MultichainBridgeQuoteCardSkeleton } from './multichain-bridge-quote-card-skeleton';
 
 const getTimerColor = (timeInSeconds: number) => {
   if (timeInSeconds <= 3) {
@@ -94,6 +99,7 @@ export const MultichainBridgeQuoteCard = ({
     useSelector(getValidationErrors, shallowEqual);
 
   const isToOrFromNonEvm = useSelector(getIsToOrFromNonEvm);
+  const isHardwareWalletAccount = useSelector(isHardwareWallet);
   const gasFeesSponsoredNetworkEnabled = useSelector(
     getGasFeesSponsoredNetworkEnabled,
   );
@@ -103,6 +109,11 @@ export const MultichainBridgeQuoteCard = ({
 
   const [showAllQuotes, setShowAllQuotes] = useState(false);
   const gasSponsored = activeQuote?.quote?.gasSponsored ?? false;
+  const isCrossChainBridge = Boolean(
+    fromToken?.chainId &&
+      toToken?.chainId &&
+      fromToken.chainId !== toToken.chainId,
+  );
 
   const isCurrentNetworkGasSponsored = useMemo(() => {
     if (!fromChain?.chainId || !gasFeesSponsoredNetworkEnabled) {
@@ -116,13 +127,18 @@ export const MultichainBridgeQuoteCard = ({
   }, [fromChain?.chainId, gasFeesSponsoredNetworkEnabled]);
 
   const shouldShowGasSponsored = useMemo(() => {
+    // HW wallets cannot use any form of gas sponsorship. Gate early as
+    // defense-in-depth even though request-time gating should prevent the
+    // backend from returning gasSponsored=true for HW accounts.
+    if (isHardwareWalletAccount) {
+      return false;
+    }
+
     if (gasSponsored) {
       return true;
     }
 
-    // For the insufficientBal workaround, validate it's a same-chain swap
     if (insufficientBal && isCurrentNetworkGasSponsored) {
-      // Gas sponsorship only applies to same-chain swaps, not cross-chain bridges
       const isSameChain =
         fromToken?.chainId &&
         toToken?.chainId &&
@@ -133,6 +149,7 @@ export const MultichainBridgeQuoteCard = ({
     return false;
   }, [
     gasSponsored,
+    isHardwareWalletAccount,
     insufficientBal,
     isCurrentNetworkGasSponsored,
     fromToken?.chainId,
@@ -463,7 +480,7 @@ export const MultichainBridgeQuoteCard = ({
         )}
 
         {/* Recipient */}
-        {isToOrFromNonEvm && selectedDestinationAccount && (
+        {isCrossChainBridge && selectedDestinationAccount && (
           <Row justifyContent={JustifyContent.spaceBetween}>
             <Text
               variant={TextVariant.bodySm}

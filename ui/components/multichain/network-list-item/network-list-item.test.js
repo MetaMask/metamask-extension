@@ -6,6 +6,10 @@ import {
   POL_TOKEN_IMAGE_URL,
   POLYGON_DISPLAY_NAME,
 } from '../../../../shared/constants/network';
+import {
+  getGasFeesSponsoredNetworkEnabled,
+  isHardwareWallet,
+} from '../../../selectors';
 import { NetworkListItem } from '.';
 
 const DEFAULT_PROPS = {
@@ -109,15 +113,25 @@ describe('NetworkListItem', () => {
 });
 
 describe('NetworkListItem - Gas fees sponsored', () => {
+  const mockUseSelector = (gasFeesSponsoredMap, isHw = false) => {
+    useSelector.mockImplementation((selector) => {
+      if (selector === getGasFeesSponsoredNetworkEnabled) {
+        return gasFeesSponsoredMap;
+      }
+      if (selector === isHardwareWallet) {
+        return isHw;
+      }
+      return undefined;
+    });
+  };
+
   beforeEach(() => {
     useSelector.mockClear();
     useSelector.mockReturnValue(undefined);
   });
 
   it('renders "No network fee" label when gas fees are sponsored for the network', () => {
-    useSelector.mockReturnValue({
-      '0x1': true, // Mainnet has gas fees sponsored
-    });
+    mockUseSelector({ '0x1': true });
 
     const { getByText } = render(
       <NetworkListItem {...DEFAULT_PROPS} chainId="0x1" />,
@@ -126,9 +140,7 @@ describe('NetworkListItem - Gas fees sponsored', () => {
   });
 
   it('does not render "No network fee" label when gas fees sponsored for the network is false', () => {
-    useSelector.mockReturnValue({
-      '0x1': false, // Mainnet has gas fees sponsored
-    });
+    mockUseSelector({ '0x1': false });
 
     const { queryByText } = render(
       <NetworkListItem {...DEFAULT_PROPS} chainId="0x1" />,
@@ -137,7 +149,6 @@ describe('NetworkListItem - Gas fees sponsored', () => {
   });
 
   it('does not render "No network fee" label when feature flag is not set', () => {
-    // useSelector already returns undefined by default from beforeEach
     const { queryByText } = render(
       <NetworkListItem {...DEFAULT_PROPS} chainId="0x1" />,
     );
@@ -146,9 +157,7 @@ describe('NetworkListItem - Gas fees sponsored', () => {
   });
 
   it('handles CAIP format chainId for gas fees sponsored check', () => {
-    useSelector.mockReturnValue({
-      '0x1': true, // Mainnet has gas fees sponsored
-    });
+    mockUseSelector({ '0x1': true });
 
     const { getByText } = render(
       <NetworkListItem {...DEFAULT_PROPS} chainId="eip155:1" />,
@@ -158,12 +167,20 @@ describe('NetworkListItem - Gas fees sponsored', () => {
   });
 
   it('does not render "No network fee" label when chainId is undefined', () => {
-    useSelector.mockReturnValue({
-      '0x1': true,
-    });
+    mockUseSelector({ '0x1': true });
 
     const { queryByText } = render(
       <NetworkListItem {...DEFAULT_PROPS} chainId={undefined} />,
+    );
+
+    expect(queryByText('[noNetworkFee]')).not.toBeInTheDocument();
+  });
+
+  it('does not render "No network fee" label for hardware wallet accounts', () => {
+    mockUseSelector({ '0x1': true }, true);
+
+    const { queryByText } = render(
+      <NetworkListItem {...DEFAULT_PROPS} chainId="0x1" />,
     );
 
     expect(queryByText('[noNetworkFee]')).not.toBeInTheDocument();

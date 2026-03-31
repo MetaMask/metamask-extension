@@ -1,5 +1,10 @@
 #!/usr/bin/env bash
-# Verifies 'all-jobs-pass' CI check has passed on RELEASE_SHA.
+# Verifies the 'All jobs pass' commit status has succeeded on RELEASE_SHA.
+#
+# ci-status-gate.yml posts a commit status with context "All jobs pass"
+# after every CI run. This script queries the commit statuses API to
+# confirm the release SHA passed CI before publishing.
+#
 # Required env: GITHUB_TOKEN, GITHUB_REPOSITORY, RELEASE_SHA
 
 set -euo pipefail
@@ -19,60 +24,45 @@ if [[ -z "${RELEASE_SHA:-}" ]]; then
     exit 1
 fi
 
-echo "Verifying CI checks on SHA: ${RELEASE_SHA}"
+echo "Verifying CI status on SHA: ${RELEASE_SHA}"
 
-# Fetch all check runs for the commit
-CHECK_RUNS=$(
+# Fetch the combined status (latest state per context) for this commit.
+COMBINED_STATUS=$(
   gh api \
     -H "Accept: application/vnd.github+json" \
-    "/repos/${GITHUB_REPOSITORY}/commits/${RELEASE_SHA}/check-runs" \
-    --paginate |
-    jq -s '{check_runs: [.[].check_runs[]]}'
+    "/repos/${GITHUB_REPOSITORY}/commits/${RELEASE_SHA}/status"
 )
 
-print_check_run_names() {
+print_commit_statuses() {
     echo ""
-    echo "=== Check runs found on SHA ${RELEASE_SHA} ==="
-    echo "${CHECK_RUNS}" | jq -r '.check_runs[] | "\(.name) (status: \(.status), conclusion: \(.conclusion))"' | sort -u
+    echo "=== Commit statuses found on SHA ${RELEASE_SHA} ==="
+    echo "${COMBINED_STATUS}" | jq -r '.statuses[] | "\(.context) (state: \(.state))"' | sort -u
 }
 
-# Look for 'all-jobs-pass' or 'All jobs pass' (the check that gates all CI)
-# Prefer the most recent check-run (reruns can create multiple).
-CHECK_RESULT=$(
-    echo "${CHECK_RUNS}" | jq -c '
-      [.check_runs[] | select(.name == "all-jobs-pass" or .name == "All jobs pass")]
-      | sort_by(.completed_at // .started_at // "")
-      | reverse
-      | .[0]
-      | if . == null then empty else {name: .name, status: .status, conclusion: .conclusion} end
+# Find the "All jobs pass" commit status (posted by ci-status-gate.yml).
+STATUS_STATE=$(
+    echo "${COMBINED_STATUS}" | jq -r '
+      .statuses[]
+      | select(.context == "All jobs pass")
+      | .state
     '
 )
 
-if [[ -z "${CHECK_RESULT}" ]]; then
-    echo "::error::Required check 'all-jobs-pass' not found on SHA ${RELEASE_SHA}"
+if [[ -z "${STATUS_STATE}" ]]; then
+    echo "::error::Required commit status 'All jobs pass' not found on SHA ${RELEASE_SHA}"
     echo "::error::Ensure CI has run on this SHA before publishing."
-    print_check_run_names
+    print_commit_statuses
     exit 1
 fi
 
-CHECK_NAME=$(echo "${CHECK_RESULT}" | jq -r '.name')
-STATUS=$(echo "${CHECK_RESULT}" | jq -r '.status')
-CONCLUSION=$(echo "${CHECK_RESULT}" | jq -r '.conclusion')
+echo "Found commit status: All jobs pass (state: ${STATUS_STATE})"
 
-echo "Found check: ${CHECK_NAME} (status: ${STATUS}, conclusion: ${CONCLUSION})"
-
-if [[ "${STATUS}" != "completed" ]]; then
-    echo "::error::Check '${CHECK_NAME}' is still running (status: ${STATUS})"
-    echo "::error::Wait for CI to complete before publishing."
-    exit 1
-fi
-
-if [[ "${CONCLUSION}" != "success" ]]; then
-    echo "::error::Check '${CHECK_NAME}' did not succeed (conclusion: ${CONCLUSION})"
+if [[ "${STATUS_STATE}" != "success" ]]; then
+    echo "::error::Commit status 'All jobs pass' did not succeed (state: ${STATUS_STATE})"
     echo "::error::All CI checks must pass before publishing."
-    print_check_run_names
+    print_commit_statuses
     exit 1
 fi
 
 echo ""
-echo "✅ CI check '${CHECK_NAME}' passed - all required checks verified"
+echo "✅ Commit status 'All jobs pass' succeeded — all required checks verified"

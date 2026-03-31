@@ -2,7 +2,7 @@
  * MusdBuyGetCta Component
  *
  * Primary banner CTA that appears above the token list.
- * Shows "Buy mUSD" for empty wallets or "Get mUSD" for users with convertible tokens.
+ * Headline shows the MetaMask USD product name; the button shows "Buy mUSD" or "Get mUSD" by variant.
  *
  * Based on mobile's MusdConversionAssetListCta component.
  */
@@ -11,21 +11,23 @@ import React, { useCallback, useContext, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import type { Hex } from '@metamask/utils';
 import {
-  AvatarNetwork,
-  AvatarNetworkSize,
-  AvatarToken,
-  BadgeWrapper,
   Box,
   BoxAlignItems,
   BoxFlexDirection,
   Button,
   ButtonSize,
   ButtonVariant,
-  FontWeight,
   Text,
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
+import {
+  AvatarNetwork,
+  AvatarNetworkSize,
+  AvatarToken,
+  BadgeWrapper,
+} from '../../component-library';
+import { BackgroundColor } from '../../../helpers/constants/design-system';
 import type { ChainId } from '../../../../shared/constants/network';
 import {
   MetaMetricsEventCategory,
@@ -33,7 +35,10 @@ import {
 } from '../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { useMusdConversion } from '../../../hooks/musd';
+import {
+  useMusdConversion,
+  useMusdConversionTokens,
+} from '../../../hooks/musd';
 import { BuyGetMusdCtaVariant } from '../../../hooks/musd/useMusdCtaVisibility';
 import {
   getMultichainNetworkConfigurationsByChainId,
@@ -50,7 +55,7 @@ import {
 import {
   createMusdCtaClickedEventProperties,
   MUSD_EVENTS_CONSTANTS,
-  type MusdCtaClickedEventProperties,
+  resolveMusdConversionCtaRedirectsTo,
 } from './musd-events';
 
 // ============================================================================
@@ -71,7 +76,7 @@ export type MusdBuyGetCtaProps = {
 /**
  * Primary banner CTA for mUSD acquisition
  *
- * Shows different content based on variant:
+ * Shows different button labels and destinations based on variant:
  * - BUY: For empty wallets, routes to Ramp to buy mUSD
  * - GET: For users with convertible tokens, routes to conversion flow
  *
@@ -86,6 +91,7 @@ export const MusdBuyGetCta: React.FC<MusdBuyGetCtaProps> = ({
   const t = useI18nContext();
   const { trackEvent } = useContext(MetaMetricsContext);
   const { startConversionFlow, educationSeen } = useMusdConversion();
+  const { defaultPaymentToken } = useMusdConversionTokens();
   const { openBuyCryptoInPdapp } = useRamps();
 
   // Get network configuration for icon
@@ -113,7 +119,7 @@ export const MusdBuyGetCta: React.FC<MusdBuyGetCtaProps> = ({
   /**
    * CTA text based on variant
    */
-  const ctaText = useMemo(() => {
+  const ctaButtonText = useMemo(() => {
     switch (variant) {
       case BuyGetMusdCtaVariant.BUY:
         return t('musdBuyMusd');
@@ -124,57 +130,62 @@ export const MusdBuyGetCta: React.FC<MusdBuyGetCtaProps> = ({
     }
   }, [variant, t]);
 
-  /**
-   * Subtitle text with bonus percentage
-   */
-  const subtitleText = t('musdEarnBonusPercentage', [
-    String(MUSD_CONVERSION_APY),
-  ]);
+  // Product name line (same for BUY and GET); action copy is ctaButtonText.
+  const ctaText = t('musdMetaMaskUsd');
 
   /**
    * Handle CTA click
    */
   const handleClick = useCallback(() => {
-    const { REDIRECT_DESTINATIONS } = MUSD_EVENTS_CONSTANTS;
-    let redirectsTo: MusdCtaClickedEventProperties['redirects_to'];
-    if (variant === BuyGetMusdCtaVariant.BUY) {
-      redirectsTo = REDIRECT_DESTINATIONS.BUY_SCREEN;
-    } else if (educationSeen) {
-      redirectsTo = REDIRECT_DESTINATIONS.CUSTOM_AMOUNT_SCREEN;
-    } else {
-      redirectsTo = REDIRECT_DESTINATIONS.CONVERSION_EDUCATION_SCREEN;
-    }
+    const redirectsTo = resolveMusdConversionCtaRedirectsTo(
+      variant === BuyGetMusdCtaVariant.BUY
+        ? { intent: 'buy' }
+        : { intent: 'conversion', educationSeen },
+    );
+
+    const eventProperties = createMusdCtaClickedEventProperties({
+      location: MUSD_EVENTS_CONSTANTS.EVENT_LOCATIONS.HOME_SCREEN,
+      redirectsTo,
+      ctaType: MUSD_EVENTS_CONSTANTS.MUSD_CTA_TYPES.PRIMARY,
+      ctaText: ctaButtonText,
+      chainId: selectedChainId,
+      chainName: networkName,
+      clickTarget: MUSD_EVENTS_CONSTANTS.CTA_CLICK_TARGETS.CTA_BUTTON,
+    });
 
     trackEvent({
       event: MetaMetricsEventName.MusdConversionCtaClicked,
       category: MetaMetricsEventCategory.Tokens,
-      properties: createMusdCtaClickedEventProperties({
-        location: MUSD_EVENTS_CONSTANTS.EVENT_LOCATIONS.HOME_SCREEN,
-        redirectsTo,
-        ctaType: MUSD_EVENTS_CONSTANTS.MUSD_CTA_TYPES.PRIMARY,
-        ctaText,
-        chainId: selectedChainId,
-        chainName: networkName,
-        clickTarget: MUSD_EVENTS_CONSTANTS.CTA_CLICK_TARGETS.CTA_BUTTON,
-      }),
+      properties: eventProperties,
     });
 
     if (variant === BuyGetMusdCtaVariant.BUY) {
       openBuyCryptoInPdapp((selectedChainId as ChainId) ?? undefined);
     } else if (variant === BuyGetMusdCtaVariant.GET) {
+      if (!defaultPaymentToken) {
+        console.error(
+          '[MUSD] No default payment token was found for conversion',
+        );
+        return;
+      }
       startConversionFlow({
         entryPoint: 'home',
+        preferredToken: {
+          address: defaultPaymentToken.address,
+          chainId: defaultPaymentToken.chainId,
+        },
       });
     }
   }, [
     variant,
     selectedChainId,
     networkName,
-    ctaText,
+    ctaButtonText,
     educationSeen,
     trackEvent,
     openBuyCryptoInPdapp,
     startConversionFlow,
+    defaultPaymentToken,
   ]);
 
   // Don't render if no variant
@@ -205,11 +216,13 @@ export const MusdBuyGetCta: React.FC<MusdBuyGetCtaProps> = ({
               size={AvatarNetworkSize.Xs}
               name={networkName}
               src={networkIcon}
-              className="musd-buy-get-cta__avatar-network"
+              backgroundColor={BackgroundColor.backgroundDefault}
+              borderWidth={2}
             />
           ) : undefined
         }
-        className="musd-buy-get-cta__badge"
+        marginRight={4}
+        style={{ alignSelf: 'center' }}
         data-testid="musd-buy-get-cta-icon"
       >
         <AvatarToken name="mUSD" src={musdIconUrl} />
@@ -219,16 +232,16 @@ export const MusdBuyGetCta: React.FC<MusdBuyGetCtaProps> = ({
         flexDirection={BoxFlexDirection.Column}
         className="musd-buy-get-cta__text"
       >
-        <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
+        <Text variant={TextVariant.BodyMd} color={TextColor.TextDefault}>
           {ctaText}
         </Text>
-        <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
-          {subtitleText}
+        <Text variant={TextVariant.BodySm} color={TextColor.PrimaryDefault}>
+          {t('musdEarnBonusPercentage', [String(MUSD_CONVERSION_APY)])}
         </Text>
       </Box>
 
       <Button
-        variant={ButtonVariant.Primary}
+        variant={ButtonVariant.Secondary}
         size={ButtonSize.Sm}
         onClick={(e: React.MouseEvent) => {
           e.stopPropagation();
@@ -237,7 +250,7 @@ export const MusdBuyGetCta: React.FC<MusdBuyGetCtaProps> = ({
         }}
         className="musd-buy-get-cta__button"
       >
-        {ctaText}
+        {ctaButtonText}
       </Button>
     </Box>
   );

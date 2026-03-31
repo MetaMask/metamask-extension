@@ -616,6 +616,7 @@ describe('Bridge selectors', () => {
         symbol: 'ETH',
         tokenFiatAmount: undefined,
         rwaData: undefined,
+        isVerified: undefined,
       });
     });
   });
@@ -648,6 +649,7 @@ describe('Bridge selectors', () => {
           "chainId": "eip155:1",
           "decimals": 18,
           "iconUrl": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0x567.png",
+          "isVerified": undefined,
           "name": "DEST",
           "rwaData": undefined,
           "symbol": "DEST",
@@ -682,6 +684,7 @@ describe('Bridge selectors', () => {
         symbol: 'mUSD',
         tokenFiatAmount: undefined,
         rwaData: undefined,
+        isVerified: undefined,
       });
     });
 
@@ -749,6 +752,7 @@ describe('Bridge selectors', () => {
         symbol: 'ETH',
         tokenFiatAmount: undefined,
         rwaData: undefined,
+        isVerified: undefined,
       });
     });
   });
@@ -1834,6 +1838,109 @@ describe('Bridge selectors', () => {
         expect(result.isPriceImpactError).toBe(isPriceImpactError);
       },
     );
+
+    it('should treat gasless quote as non-gasless for hardware wallets', () => {
+      const state = createBridgeMockStore({
+        bridgeSliceOverrides: {
+          toToken: toBridgeToken(getNativeAssetForChainId('0x1')),
+          fromTokenInputValue: '0.001',
+          fromToken: toBridgeToken(getNativeAssetForChainId(CHAIN_IDS.MAINNET)),
+          fromNativeBalance: '10000000000000',
+        },
+        bridgeStateOverrides: {
+          quotesLastFetched: Date.now(),
+          quoteRequest: { srcTokenAmount: '10000000000000000' },
+        },
+        metamaskStateOverrides: {
+          internalAccounts: {
+            selectedAccount: MOCK_LEDGER_ACCOUNT.id,
+          },
+        },
+      });
+      const result = getValidationErrors(state as never);
+
+      expect(result.isInsufficientGasBalance).toStrictEqual(true);
+    });
+
+    it('should return isInsufficientGasBalance=true for gasIncluded7702 on Monad when native balance after trade < 10 MON', () => {
+      const state = createBridgeMockStore({
+        bridgeSliceOverrides: {
+          toToken: toBridgeToken(getNativeAssetForChainId(CHAIN_IDS.MONAD)),
+          fromTokenInputValue: '95',
+          fromToken: toBridgeToken(getNativeAssetForChainId(CHAIN_IDS.MONAD)),
+          // 100 MON in wei
+          fromNativeBalance: '100000000000000000000',
+        },
+        bridgeStateOverrides: {
+          quotesLastFetched: Date.now(),
+          quoteRequest: {
+            srcChainId: CHAIN_IDS.MONAD,
+            srcTokenAmount: '95000000000000000000',
+            gasIncluded7702: true,
+          },
+        },
+        metamaskStateOverrides: {
+          ...mockNetworkState({ chainId: CHAIN_IDS.MONAD }),
+        },
+      });
+      const result = getValidationErrors(state as never);
+
+      // 100 - 95 = 5 MON remaining, which is < 10 MON reserve
+      expect(result.isInsufficientGasBalance).toStrictEqual(true);
+    });
+
+    it('should return isInsufficientGasBalance=false for non-sponsored Monad swap even when remaining balance < 10 MON', () => {
+      const state = createBridgeMockStore({
+        bridgeSliceOverrides: {
+          toToken: toBridgeToken(getNativeAssetForChainId(CHAIN_IDS.MONAD)),
+          fromTokenInputValue: '95',
+          fromToken: toBridgeToken(getNativeAssetForChainId(CHAIN_IDS.MONAD)),
+          fromNativeBalance: '100000000000000000000',
+        },
+        bridgeStateOverrides: {
+          quotesLastFetched: Date.now(),
+          quoteRequest: {
+            srcChainId: CHAIN_IDS.MONAD,
+            srcTokenAmount: '95000000000000000000',
+            gasIncluded7702: false,
+          },
+        },
+        metamaskStateOverrides: {
+          ...mockNetworkState({ chainId: CHAIN_IDS.MONAD }),
+        },
+      });
+      const result = getValidationErrors(state as never);
+
+      // 100 - 95 = 5 MON remaining, but no 7702 sponsorship so no reserve applies
+      expect(result.isInsufficientGasBalance).toStrictEqual(false);
+    });
+
+    it('should return isInsufficientGasBalance=false for gasIncluded7702 on Monad when native balance after trade >= 10 MON', () => {
+      const state = createBridgeMockStore({
+        bridgeSliceOverrides: {
+          toToken: toBridgeToken(getNativeAssetForChainId(CHAIN_IDS.MONAD)),
+          fromTokenInputValue: '80',
+          fromToken: toBridgeToken(getNativeAssetForChainId(CHAIN_IDS.MONAD)),
+          // 100 MON in wei
+          fromNativeBalance: '100000000000000000000',
+        },
+        bridgeStateOverrides: {
+          quotesLastFetched: Date.now(),
+          quoteRequest: {
+            srcChainId: CHAIN_IDS.MONAD,
+            srcTokenAmount: '80000000000000000000',
+            gasIncluded7702: true,
+          },
+        },
+        metamaskStateOverrides: {
+          ...mockNetworkState({ chainId: CHAIN_IDS.MONAD }),
+        },
+      });
+      const result = getValidationErrors(state as never);
+
+      // 100 - 80 = 20 MON remaining, which is >= 10 MON reserve
+      expect(result.isInsufficientGasBalance).toStrictEqual(false);
+    });
   });
 
   describe('getFromTokenBalance', () => {
@@ -1946,10 +2053,8 @@ describe('Bridge selectors', () => {
           internalAccounts: {
             selectedAccount: MOCK_EVM_ACCOUNT.id,
           },
-          accountTree: {
-            // This account group only has 1 Solana account
-            selectedAccountGroup: 'entropy:01K2FF18CTTXJYD34R78X4N1N1/2',
-          },
+          // This account group only has 1 Solana account
+          selectedAccountGroup: 'entropy:01K2FF18CTTXJYD34R78X4N1N1/2',
         },
       });
 

@@ -71,7 +71,6 @@ import { PermissionLogController } from '@metamask/permission-log-controller';
 import { AnnouncementController } from '@metamask/announcement-controller';
 import { PhishingController } from '@metamask/phishing-controller';
 import { LoggingController } from '@metamask/logging-controller';
-import { ErrorReportingService } from '@metamask/error-reporting-service';
 import { StorageService } from '@metamask/storage-service';
 import { AddressBookController } from '@metamask/address-book-controller';
 import {
@@ -91,6 +90,7 @@ import {
   ProfileMetricsController,
   ProfileMetricsService,
 } from '@metamask/profile-metrics-controller';
+import { PerpsController } from '@metamask/perps-controller';
 import OnboardingController from '../controllers/onboarding';
 import { PreferencesController } from '../controllers/preferences-controller';
 import { InstitutionalSnapController } from '../controllers/institutional-snap/InstitutionalSnapController';
@@ -138,7 +138,6 @@ export type Controller =
   | EncryptionPublicKeyController
   | EncryptionPublicKeyManager
   | EnsController
-  | ErrorReportingService
   | StorageService
   | ExecutionService
   | GasFeeController
@@ -166,6 +165,7 @@ export type Controller =
       CaveatSpecificationConstraint
     >
   | PermissionLogController
+  | PerpsController
   | PhishingController
   | PPOMController
   | PreferencesController
@@ -258,6 +258,7 @@ export type ControllerFlatState = AccountOrderController['state'] &
     CaveatSpecificationConstraint
   >['state'] &
   PermissionLogController['state'] &
+  PerpsController['state'] &
   PhishingController['state'] &
   PPOMController['state'] &
   PreferencesController['state'] &

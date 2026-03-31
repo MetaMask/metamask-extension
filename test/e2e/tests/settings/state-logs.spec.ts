@@ -4,14 +4,11 @@ import { Mockttp } from 'mockttp';
 import { CHAIN_IDS } from '@metamask/transaction-controller';
 import { createDownloadFolder, withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
-import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import AdvancedSettings from '../../page-objects/pages/settings/advanced-settings';
-import {
-  loginWithBalanceValidation,
-  loginWithoutBalanceValidation,
-} from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 import { mockPriceApi } from '../tokens/utils/mocks';
 
 import referenceStateLogsDefinition from './state-logs.json';
@@ -20,6 +17,7 @@ import {
   createTypeMap,
   createTypeMapFromDefinition,
   getDownloadedStateLogs,
+  MinimalStateLogsJson,
   StateLogsTypeDefinition,
   StateLogsTypeMap,
 } from './state-logs-helpers';
@@ -69,6 +67,44 @@ async function mockStateLogsMocks(server: Mockttp) {
   await mockPriceApi(server);
 }
 
+async function replacePlaceholderInReferenceLogs(
+  stateLogs: MinimalStateLogsJson,
+): Promise<StateLogsTypeDefinition> {
+  // We'll use this mapping to replace placeholders in the reference logs with actual account IDs
+  // from the downloaded logs (e.g "<bitcoin-account-1>" -> "75ad4470-156b-4f7f-b0a5-ffe6cd114ac9").
+  const accountsMapping: Record<'solana' | 'bitcoin' | 'tron', string[]> = {
+    tron: [],
+    solana: [],
+    bitcoin: [],
+  };
+
+  for (const [id, account] of Object.entries(
+    stateLogs.metamask.internalAccounts.accounts,
+  )) {
+    if (account.type.startsWith('bip122')) {
+      accountsMapping.bitcoin.push(id);
+    } else if (account.type.startsWith('solana')) {
+      accountsMapping.solana.push(id);
+    } else if (account.type.startsWith('tron')) {
+      accountsMapping.tron.push(id);
+    }
+  }
+
+  let referenceLogsText = JSON.stringify(referenceStateLogsDefinition);
+  for (const [network, ids] of Object.entries(accountsMapping)) {
+    for (const [index, id] of ids.entries()) {
+      const placeholder = `<${network}-account-${index + 1}>`;
+      referenceLogsText = referenceLogsText.replaceAll(
+        // Use regex to replace all occurrences of the placeholder, not only the first one.
+        new RegExp(placeholder, 'gu'),
+        id,
+      );
+    }
+  }
+
+  return JSON.parse(referenceLogsText);
+}
+
 describe('State logs', function () {
   it('should download state logs for the account', async function () {
     if (process.env.SELENIUM_BROWSER === 'chrome') {
@@ -77,7 +113,7 @@ describe('State logs', function () {
     }
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withPreferencesController({
             preferences: {
               showFiatInTestnets: true,
@@ -95,7 +131,7 @@ describe('State logs', function () {
       },
       async ({ driver }: { driver: Driver }) => {
         await createDownloadFolder(downloadsFolder);
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         // Download state logs
         await new HeaderNavbar(driver).openSettingsPage();
@@ -126,7 +162,7 @@ describe('State logs', function () {
     }
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withPreferencesController({
             preferences: {
               showFiatInTestnets: true,
@@ -149,7 +185,7 @@ describe('State logs', function () {
       },
       async ({ driver }: { driver: Driver }) => {
         await createDownloadFolder(downloadsFolder);
-        await loginWithoutBalanceValidation(driver);
+        await login(driver, { validateBalance: false });
 
         // Add hardcoded delay to stabilize the test and ensure values for properties are loaded
         await driver.delay(15000);
@@ -166,19 +202,10 @@ describe('State logs', function () {
         // Verify download and get state logs
         const stateLogs = await getDownloadedStateLogs(driver, downloadsFolder);
 
-        // Get new account ID for Solana
-        const newAccountId = Object.keys(
-          stateLogs.metamask.internalAccounts.accounts,
-        )[1];
-
-        let referenceLogsText = JSON.stringify(referenceStateLogsDefinition);
-
-        // Replace ID in reference logs
-        referenceLogsText = referenceLogsText.replaceAll(
-          '3c62fe60-6f00-4227-86f4-33d0b1f4c39e',
-          newAccountId,
-        );
-        const referenceLogs = JSON.parse(referenceLogsText);
+        // We need to replace placeholders in the reference logs with actual account IDs from the downloaded
+        // logs before comparing them.
+        const referenceLogs =
+          await replacePlaceholderInReferenceLogs(stateLogs);
 
         // Create type maps for comparison
         const currentTypeMap = createTypeMap(stateLogs);

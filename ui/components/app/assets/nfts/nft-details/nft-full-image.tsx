@@ -26,7 +26,7 @@ import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import useGetAssetImageUrl from '../../../../../hooks/useGetAssetImageUrl';
 import useFetchNftDetailsFromTokenURI from '../../../../../hooks/useFetchNftDetailsFromTokenURI';
 // TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
+// eslint-disable-next-line import-x/no-restricted-paths
 import { isWebUrl } from '../../../../../../app/scripts/lib/util';
 import { getNetworkConfigurationsByChainId } from '../../../../../../shared/lib/selectors/networks';
 import { getImageForChainId } from '../../../../../selectors/multichain';
@@ -133,7 +133,6 @@ export default function NftFullImage() {
                 src={isImageHosted ? image || imageFromTokenURI : nftImageURL}
                 alt={nftImageAlt}
                 name={name ?? ''}
-                tokenId={tokenId}
                 networkName={nftChainNetwork?.name ?? ''}
                 networkSrc={nftChainImage}
                 isIpfsURL={isIpfsURL}

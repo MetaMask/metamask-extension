@@ -121,9 +121,6 @@
   "advancedBaseGasFeeToolTip": {
     "message": "Cuando su transacción se incluya en el bloque, se reembolsará cualquier diferencia entre su tarifa base máxima y la tarifa base real. El importe total se calcula como tarifa base máxima (en GWEI) * límite de gas."
   },
-  "advancedGasFeeModalTitle": {
-    "message": "Tarifa de gas avanzada"
-  },
   "advancedGasPriceTitle": {
     "message": "Precio del gas"
   },
@@ -251,17 +248,6 @@
   },
   "cancel": {
     "message": "Cancelar"
-  },
-  "cancelPopoverTitle": {
-    "message": "Cancelar transacción"
-  },
-  "cancelSpeedUpLabel": {
-    "message": "Esta tarifa de gas va a $1 el original.",
-    "description": "$1 is text 'replace' in bold"
-  },
-  "cancelSpeedUpTransactionTooltip": {
-    "message": "Para $1 una transacción, la tarifa de gas debe aumentar al menos un 10% para que sea reconocida por la red.",
-    "description": "$1 is string 'cancel' or 'speed up'"
   },
   "cancelled": {
     "message": "Cancelado"
@@ -433,10 +419,6 @@
   "dappSuggestedShortLabel": {
     "message": "Sitio"
   },
-  "dappSuggestedTooltip": {
-    "message": "$1 ha recomendado este precio.",
-    "description": "$1 represents the Dapp's origin"
-  },
   "data": {
     "message": "Datos"
   },
@@ -530,9 +512,6 @@
   "editAddressNickname": {
     "message": "Editar apodo de dirección"
   },
-  "editCancellationGasFeeModalTitle": {
-    "message": "Editar tarifa de cancelación de gas"
-  },
   "editContact": {
     "message": "Editar contacto"
   },
@@ -545,9 +524,6 @@
   "editGasLimitOutOfBoundsV2": {
     "message": "El límite de gas debe ser superior a $1 e inferior a $2",
     "description": "$1 is the minimum limit for gas and $2 is the maximum limit"
-  },
-  "editGasLimitTooltip": {
-    "message": "El límite de gas es el máximo de unidades de gas que está dispuesto a utilizar. Las unidades de gas son un multiplicador de la \"Tarifa de prioridad máxima\" y de la \"Tarifa máxima\"."
   },
   "editGasMaxBaseFeeGWEIImbalance": {
     "message": "La tarifa base máxima no puede ser inferior a la tarifa de prioridad"
@@ -588,15 +564,6 @@
   "editGasPriceTooLow": {
     "message": "El precio del gas debe ser superior a 0"
   },
-  "editGasPriceTooltip": {
-    "message": "Esta red requiere un campo \"Precio del gas\" cuando se envía una transacción. El precio del gas es la cantidad que se pagará por unidad de gas."
-  },
-  "editGasSubTextFeeLabel": {
-    "message": "Tarifa máxima:"
-  },
-  "editGasTitle": {
-    "message": "Editar prioridad"
-  },
   "editGasTooLow": {
     "message": "Tiempo de procesamiento desconocido"
   },
@@ -605,9 +572,6 @@
   },
   "editNonceMessage": {
     "message": "Esta es una función avanzada, úsela con precaución."
-  },
-  "editSpeedUpEditGasFeeModalTitle": {
-    "message": "Editar la tarifa de aceleración de gas"
   },
   "enableAutoDetect": {
     "message": " Activar autodetección"
@@ -722,13 +686,6 @@
   "gas": {
     "message": "Gas"
   },
-  "gasDisplayAcknowledgeDappButtonText": {
-    "message": "Editar tarifa de gas sugerida"
-  },
-  "gasDisplayDappWarning": {
-    "message": "Esta tarifa de gas ha sido sugerida por $1. Anularla puede causar un problema con su transacción. Comuníquese con $1 si tiene preguntas.",
-    "description": "$1 represents the Dapp's origin"
-  },
   "gasLimit": {
     "message": "Límite de gas"
   },
@@ -737,9 +694,6 @@
   },
   "gasLimitV2": {
     "message": "Límite de gas"
-  },
-  "gasOption": {
-    "message": "Opción de gas"
   },
   "gasPriceExcessive": {
     "message": "Su tarifa de gas es demasiado alta. Considere reducir el importe."
@@ -968,9 +922,6 @@
   "links": {
     "message": "Enlaces"
   },
-  "loadMore": {
-    "message": "Cargar más"
-  },
   "loading": {
     "message": "Cargando..."
   },
@@ -1004,9 +955,6 @@
   },
   "maxFee": {
     "message": "Tarifa máxima"
-  },
-  "maxPriorityFee": {
-    "message": "Tarifa máxima de prioridad"
   },
   "medium": {
     "message": "Mercado"
@@ -1065,9 +1013,6 @@
   },
   "networkDetails": {
     "message": "Detalles de la red"
-  },
-  "networkIsBusy": {
-    "message": "La red está ocupada. Los precios del gas son altos y las estimaciones son menos precisas."
   },
   "networkName": {
     "message": "Nombre de la red"
@@ -1434,15 +1379,6 @@
   "speedUpCancellation": {
     "message": "Acelerar esta cancelación"
   },
-  "speedUpExplanation": {
-    "message": "Hemos actualizado la tarifa de gas en función de las condiciones actuales de la red y la hemos aumentado al menos un 10% (exigido por la red)."
-  },
-  "speedUpPopoverTitle": {
-    "message": "Acelerar la transacción"
-  },
-  "speedUpTooltipText": {
-    "message": "Nueva tarifa de gas"
-  },
   "stable": {
     "message": "Estable"
   },
@@ -1749,9 +1685,6 @@
   },
   "transactionDetailGasHeading": {
     "message": "Tarifa estimada de gas"
-  },
-  "transactionDetailMultiLayerTotalSubtitle": {
-    "message": "Monto + cargos"
   },
   "transactionError": {
     "message": "Error de transacción. Excepción generada en el código de contrato."

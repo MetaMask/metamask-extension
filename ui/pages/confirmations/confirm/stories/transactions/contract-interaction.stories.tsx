@@ -42,7 +42,6 @@ export const UserOperationStory = () => {
     metamask: {
       preferences: {
         ...mockState.metamask.preferences,
-        petnamesEnabled: true,
       },
       userOperations: {
         [confirmation.id]: {

@@ -9,7 +9,6 @@ import {
   type SessionState,
   type SessionMetadata,
   type ScreenshotResult,
-  type BuildCapability,
   type FixtureCapability,
   type ChainCapability,
   type ContractSeedingCapability,
@@ -22,7 +21,6 @@ import {
   knowledgeStore,
   MockServerCapability,
 } from '@metamask/client-mcp-core';
-
 import { MetaMaskExtensionLauncher } from '..';
 import {
   createMetaMaskE2EContext,
@@ -39,6 +37,7 @@ import { MetaMaskContractSeedingCapability } from '../capabilities/seeding';
 
 const DEFAULT_ANVIL_PORT = 8545;
 const DEFAULT_FIXTURE_SERVER_PORT = 12345;
+const HEADLESS = true;
 
 export class MetaMaskSessionManager implements ISessionManager {
   private activeSession: {
@@ -70,8 +69,8 @@ export class MetaMaskSessionManager implements ISessionManager {
     return this.workflowContext?.config?.environment ?? 'e2e';
   }
 
-  getBuildCapability(): BuildCapability | undefined {
-    return this.workflowContext?.build;
+  getBuildCapability(): undefined {
+    return undefined;
   }
 
   getFixtureCapability(): FixtureCapability | undefined {
@@ -157,9 +156,6 @@ export class MetaMaskSessionManager implements ISessionManager {
     const hasSession = this.hasActiveSession();
 
     const availableCapabilities: string[] = [];
-    if (this.getBuildCapability()) {
-      availableCapabilities.push('build');
-    }
     if (this.getFixtureCapability()) {
       availableCapabilities.push('fixture');
     }
@@ -289,7 +285,10 @@ export class MetaMaskSessionManager implements ISessionManager {
 
     const extPrefix = `chrome-extension://${extensionId}`;
     if (url.startsWith(extPrefix)) {
-      return url.includes('notification.html') ? 'notification' : 'extension';
+      if (url.includes('notification.html')) {
+        return 'notification';
+      }
+      return 'extension';
     }
     if (url.startsWith('http')) {
       return 'dapp';
@@ -346,11 +345,10 @@ export class MetaMaskSessionManager implements ISessionManager {
 
     const sessionId = generateSessionId();
     const stateMode = input.stateMode ?? 'default';
-    const autoBuild = input.autoBuild ?? true;
     const environment = this.workflowContext?.config?.environment ?? 'e2e';
     const isProdMode = environment === 'prod';
 
-    let { extensionPath } = input;
+    const { extensionPath } = input;
 
     // In prod mode, reject fixture-related options (no fixtures available)
     if (isProdMode && (input.fixturePreset || input.fixture)) {
@@ -361,32 +359,6 @@ export class MetaMaskSessionManager implements ISessionManager {
           '  2. Use stateMode: "onboarding" for fresh wallet setup\n' +
           '  3. Switch to e2e environment for fixture support',
       );
-    }
-
-    // Handle build logic
-    if (autoBuild) {
-      const buildCapability = this.getBuildCapability();
-      if (!buildCapability) {
-        throw new Error(
-          'autoBuild is enabled but BuildCapability is not available.\n\n' +
-            'Options:\n' +
-            '  1. Use mm_build tool first to build the extension\n' +
-            '  2. Set autoBuild: false and provide extensionPath\n' +
-            '  3. Ensure BuildCapability is registered in the workflow context',
-        );
-      }
-
-      const buildResult = await buildCapability.build({ force: false });
-      if (!buildResult.success) {
-        throw new Error(
-          `Build failed: ${buildResult.error ?? 'Unknown error'}\n\n` +
-            'Use mm_build tool to diagnose build issues.',
-        );
-      }
-
-      if (!extensionPath && buildResult.extensionPath) {
-        extensionPath = buildResult.extensionPath;
-      }
     }
 
     const fixtureCapability = this.getMetaMaskFixtureCapability();
@@ -460,6 +432,7 @@ export class MetaMaskSessionManager implements ISessionManager {
       }
 
       const launchOptions: LauncherLaunchOptions = {
+        headless: HEADLESS,
         stateMode,
         slowMo: input.slowMo ?? 0,
         extensionPath,
@@ -518,10 +491,6 @@ export class MetaMaskSessionManager implements ISessionManager {
       goal: input.goal,
       flowTags: input.flowTags ?? [],
       tags: input.tags ?? [],
-      build: {
-        buildType: 'build:test',
-        extensionPathResolved: extensionPath,
-      },
       launch: {
         stateMode,
         fixturePreset: input.fixturePreset ?? null,
@@ -653,13 +622,15 @@ export class MetaMaskSessionManager implements ISessionManager {
       throw new Error(ErrorCodes.MM_NO_ACTIVE_SESSION);
     }
 
+    const notificationPath = HEADLESS ? 'sidepanel' : 'notification';
+
     const context = this.getContext();
     const { extensionId } = this.activeSession.state;
-    const notificationUrl = `chrome-extension://${extensionId}/notification.html`;
+    const notificationUrl = `chrome-extension://${extensionId}/${notificationPath}.html`;
 
     const existingNotification = context
       .pages()
-      .find((p) => p.url().includes('notification.html'));
+      .find((p) => p.url().includes(`${notificationPath}.html`));
 
     if (existingNotification) {
       await existingNotification.bringToFront();
@@ -679,10 +650,12 @@ export class MetaMaskSessionManager implements ISessionManager {
     if (!this.activeSession) {
       throw new Error(ErrorCodes.MM_NO_ACTIVE_SESSION);
     }
-    const notificationPage =
-      await this.activeSession.launcher.waitForNotificationPage(timeoutMs);
-    this.setActivePage(notificationPage);
-    return notificationPage;
+    const page = await this.activeSession.launcher.waitForNotificationPage(
+      HEADLESS,
+      timeoutMs,
+    );
+    this.setActivePage(page);
+    return page;
   }
 
   async screenshot(

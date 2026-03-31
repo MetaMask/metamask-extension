@@ -1,5 +1,13 @@
 import get from 'lodash/get';
 import { retry } from '../../../../development/lib/retry';
+import type {
+  BenchmarkResults,
+  BenchmarkType,
+  Persona,
+  StatisticalResult,
+  ThresholdConfig,
+} from '../../../../shared/constants/benchmarks';
+import { BENCHMARK_PERSONA } from '../../../../shared/constants/benchmarks';
 import {
   ALL_METRICS,
   DEFAULT_NUM_BROWSER_LOADS,
@@ -19,14 +27,9 @@ import {
 } from './statistics';
 import type {
   BenchmarkFunction,
-  BenchmarkResults,
   BenchmarkRunResult,
   BenchmarkSummary,
-  BenchmarkType,
   Metrics,
-  Persona,
-  StatisticalResult,
-  ThresholdConfig,
   TimerResult,
   TimerStatistics,
 } from './types';
@@ -187,12 +190,16 @@ export async function runBenchmarkWithIterations(
  * @param testTitle
  * @param persona
  * @param benchmarkType
+ * @param platform
+ * @param buildType
  */
 export function convertSummaryToResults(
   summary: BenchmarkSummary,
   testTitle: string,
-  persona: Persona = 'standard',
+  persona: Persona = BENCHMARK_PERSONA.STANDARD,
   benchmarkType?: BenchmarkType,
+  platform?: string,
+  buildType?: string,
 ): BenchmarkResults {
   const mean: StatisticalResult = {};
   const min: StatisticalResult = {};
@@ -214,6 +221,8 @@ export function convertSummaryToResults(
     testTitle,
     persona,
     benchmarkType,
+    platform,
+    buildType,
     mean,
     min,
     max,
@@ -238,18 +247,22 @@ export async function runPageLoadBenchmark(
     browserLoads?: number;
     pageLoads?: number;
     retries?: number;
+    platform?: string;
+    buildType?: string;
   },
 ): Promise<BenchmarkResults> {
   const {
     browserLoads = DEFAULT_NUM_BROWSER_LOADS,
     pageLoads = DEFAULT_NUM_PAGE_LOADS,
     retries = 0,
+    platform,
+    buildType,
   } = options;
 
   const pageName = 'home';
   let runResults: Metrics[] = [];
   let testTitle = '';
-  let resultPersona: Persona = 'standard';
+  let resultPersona: Persona = BENCHMARK_PERSONA.STANDARD;
 
   for (let i = 0; i < browserLoads; i += 1) {
     console.log('Starting browser load', i + 1, 'of', browserLoads);
@@ -284,6 +297,8 @@ export async function runPageLoadBenchmark(
   return {
     testTitle,
     persona: resultPersona,
+    platform,
+    buildType,
     mean: calcMeanResult(result),
     min: calcMinResult(result),
     max: calcMaxResult(result),
