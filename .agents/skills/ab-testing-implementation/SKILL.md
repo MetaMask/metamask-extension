@@ -19,16 +19,6 @@ test flags, `useABTest`, `active_ab_tests`, or related tests/docs.
 4. `Tests To Run`
 5. `Compliance Check Result`
 
-## Core Rules
-
-- Use `useABTest(flagKey, variants)` with a `control` variant.
-- Normalize unresolved assignments to `control`.
-- Do not manually emit `Experiment Viewed` when using `useABTest`.
-- For business events, use `active_ab_tests: [{ key, value }]` only when
-  assignment is active.
-- Do not add new payloads under `ab_tests`.
-- New experiment keys should match `{teamName}{ticketId}Abtest{TestName}`.
-
 ## Agent Execution Standard
 
 For implementation or review tasks, follow this workflow:
