@@ -130,7 +130,10 @@ export default function useSubmitBridgeTransaction() {
             accountAddress: fromAccount.address,
           }),
         );
-        navigate(DEFAULT_ROUTE, { replace: true });
+        navigate(DEFAULT_ROUTE, {
+          state: { stayOnHomePage: true },
+          replace: true,
+        });
         return;
       }
 
@@ -160,7 +163,10 @@ export default function useSubmitBridgeTransaction() {
       setIsSubmitting(false);
     }
 
-    navigate(DEFAULT_ROUTE, { replace: true });
+    navigate(DEFAULT_ROUTE, {
+      state: { stayOnHomePage: true },
+      replace: true,
+    });
   };
 
   return {

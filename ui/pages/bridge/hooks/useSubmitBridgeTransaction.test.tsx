@@ -213,6 +213,9 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
             "/",
             {
               "replace": true,
+              "state": {
+                "stayOnHomePage": true,
+              },
             },
           ],
         ]
@@ -259,6 +262,9 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
             "/",
             {
               "replace": true,
+              "state": {
+                "stayOnHomePage": true,
+              },
             },
           ],
         ]
@@ -305,6 +311,9 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
             "/",
             {
               "replace": true,
+              "state": {
+                "stayOnHomePage": true,
+              },
             },
           ],
         ]
@@ -375,6 +384,9 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
       expect(submitTxSpy).not.toHaveBeenCalled();
       expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE, {
         replace: true,
+        state: {
+          stayOnHomePage: true,
+        },
       });
     });
 
@@ -414,6 +426,9 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
 
         expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE, {
           replace: true,
+          state: {
+            stayOnHomePage: true,
+          },
         });
       } finally {
         consoleErrorSpy.mockRestore();
@@ -453,6 +468,9 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
       );
       expect(mockUseNavigate).toHaveBeenNthCalledWith(2, DEFAULT_ROUTE, {
         replace: true,
+        state: {
+          stayOnHomePage: true,
+        },
       });
     });
   });
