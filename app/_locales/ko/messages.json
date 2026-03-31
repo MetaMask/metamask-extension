@@ -389,9 +389,6 @@
   "advanced": {
     "message": "고급"
   },
-  "advancedBaseGasFeeToolTip": {
-    "message": "트랜잭션이 블록에 포함되면 최대 기본 요금과 실제 기본 요금 간의 차액이 환불됩니다. 총 금액은 최대 기본 요금(GWEI 단위) 곱하기 가스 한도로 계산합니다."
-  },
   "advancedDetailsDataDesc": {
     "message": "데이터"
   },
@@ -407,10 +404,6 @@
   "advancedEIP1559ModalTitle": {
     "message": "고급 네트워크 수수료"
   },
-  "advancedGasFeeDefaultOptIn": {
-    "message": "이 수치를 $1 네트워크의 기본값으로 저장합니다.",
-    "description": "$1 is the current network name."
-  },
   "advancedGasPriceModalTitle": {
     "message": "고급 네트워크 수수료"
   },
@@ -422,9 +415,6 @@
   },
   "advancedPermissionsSmallCase": {
     "message": "고급 승인"
-  },
-  "advancedPriorityFeeToolTip": {
-    "message": "우선 요금(일명 \"채굴자 팁\")이란 내 트랜잭션을 우선 거래한 것에 대한 인센티브로 채굴자에게 직접 전달되는 금액입니다."
   },
   "airDropPatternDescription": {
     "message": "해당 토큰의 온체인 기록에서 의심스러운 에어드롭 활동이 확인되었습니다."
@@ -1996,9 +1986,6 @@
   "currentQuestion": {
     "message": "2개 중 $1번째 질문"
   },
-  "currentTitle": {
-    "message": "현재:"
-  },
   "currentlyUnavailable": {
     "message": "이 네트워크에서 사용할 수 없음"
   },
@@ -2051,12 +2038,6 @@
   },
   "dappSuggestedHigh": {
     "message": "사이트 제안"
-  },
-  "dappSuggestedHighShortLabel": {
-    "message": "사이트(높음)"
-  },
-  "dappSuggestedShortLabel": {
-    "message": "사이트"
   },
   "dappSwapAdvantage": {
     "message": "MetaMask 스왑으로 비용을 절감하고 수익을 창출하세요"
@@ -2422,9 +2403,6 @@
   "dontShowThisAgain": {
     "message": "다시 표시 안 함"
   },
-  "downArrow": {
-    "message": "하강 화살표"
-  },
   "download": {
     "message": "다운로드"
   },
@@ -2517,19 +2495,6 @@
   "editGasLimitOutOfBounds": {
     "message": "가스 한도는 $1 이상이어야 합니다."
   },
-  "editGasLimitOutOfBoundsV2": {
-    "message": "가스 한도는 $1보다 크고 $2 미만이어야 합니다.",
-    "description": "$1 is the minimum limit for gas and $2 is the maximum limit"
-  },
-  "editGasMaxBaseFeeGWEIImbalance": {
-    "message": "최대 기본 요금이 우선 요금보다 낮을 수 없습니다."
-  },
-  "editGasMaxBaseFeeHigh": {
-    "message": "최대 기본 요금이 필요 이상으로 높습니다."
-  },
-  "editGasMaxBaseFeeLow": {
-    "message": "최대 기본 요금이 현재 네트워크 조건에 비해 낮습니다."
-  },
   "editGasMaxFeeHigh": {
     "message": "최대 요금이 필요 이상으로 높습니다."
   },
@@ -2542,20 +2507,11 @@
   "editGasMaxPriorityFeeBelowMinimum": {
     "message": "최대 우선 요금은 0GWEI보다 커야 합니다."
   },
-  "editGasMaxPriorityFeeBelowMinimumV2": {
-    "message": "우선 요금은 0보다 커야 합니다."
-  },
   "editGasMaxPriorityFeeHigh": {
     "message": "최대 우선 요금이 필요 이상으로 높습니다. 필요 이상으로 지급될 수 있습니다."
   },
-  "editGasMaxPriorityFeeHighV2": {
-    "message": "우선 요금이 필요 이상으로 높습니다. 필요 이상으로 지급될 수 있습니다"
-  },
   "editGasMaxPriorityFeeLow": {
     "message": "최대 우선 요금이 현재 네트워크 조건에 비해 낮습니다."
-  },
-  "editGasMaxPriorityFeeLowV2": {
-    "message": "우선 요금이 현재 네트워크 조건에 비해 낮습니다."
   },
   "editGasPriceTooLow": {
     "message": "가스 가격은 0보다 커야 합니다."
@@ -2977,9 +2933,6 @@
   },
   "gasLimitTooLow": {
     "message": "가스 한도는 21000 이상이어야 합니다."
-  },
-  "gasLimitV2": {
-    "message": "가스 한도"
   },
   "gasPrice": {
     "message": "가스 가격(GWEI)"
@@ -3740,9 +3693,6 @@
   "ledgerWebHIDNotConnectedErrorMessage": {
     "message": "Ledger 장치가 연결되지 않았습니다. Ledger를 연결하려면 '계속'을 다시 클릭하고 HID 연결을 승인하세요.",
     "description": "An error message shown to the user during the hardware connect flow."
-  },
-  "levelArrow": {
-    "message": "수평 화살표"
   },
   "lightTheme": {
     "message": "밝게"
@@ -8505,9 +8455,6 @@
   "swapSource": {
     "message": "유동성 소스"
   },
-  "swapSuggested": {
-    "message": "제안 스왑"
-  },
   "swapSuggestedGasSettingToolTipMessage": {
     "message": "스왑은 복잡하고 시간에 민감한 트랜잭션입니다. 성공적인 스왑의 비용과 확신 사이의 적절한 균형을 위해 이 가스비를 권장합니다."
   },
@@ -8927,9 +8874,6 @@
   "tutorial": {
     "message": "튜토리얼"
   },
-  "twelveHrTitle": {
-    "message": "12시간:"
-  },
   "txAlertTitle": {
     "message": "이 트랜잭션은 되돌려집니다"
   },
@@ -9015,9 +8959,6 @@
   },
   "unstableTokenPriceTitle": {
     "message": "불안정한 토큰 가격"
-  },
-  "upArrow": {
-    "message": "상승 화살표"
   },
   "update": {
     "message": "업데이트"

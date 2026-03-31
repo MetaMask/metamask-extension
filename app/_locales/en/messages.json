@@ -398,9 +398,6 @@
   "advanced": {
     "message": "Advanced"
   },
-  "advancedBaseGasFeeToolTip": {
-    "message": "When your transaction gets included in the block, any difference between your max base fee and the actual base fee will be refunded. Total amount is calculated as max base fee (in GWEI) * gas limit."
-  },
   "advancedDetailsDataDesc": {
     "message": "Data"
   },
@@ -416,10 +413,6 @@
   "advancedEIP1559ModalTitle": {
     "message": "Advanced network fee"
   },
-  "advancedGasFeeDefaultOptIn": {
-    "message": "Save these values as my default for the $1 network.",
-    "description": "$1 is the current network name."
-  },
   "advancedGasPriceModalTitle": {
     "message": "Advanced network fee"
   },
@@ -431,9 +424,6 @@
   },
   "advancedPermissionsSmallCase": {
     "message": "advanced permissions"
-  },
-  "advancedPriorityFeeToolTip": {
-    "message": "Priority fee (aka “miner tip”) goes directly to miners and incentivizes them to prioritize your transaction."
   },
   "airDropPatternDescription": {
     "message": "The token's on-chain history reveals prior instances of suspicious airdrop activities."
@@ -2005,9 +1995,6 @@
   "currentQuestion": {
     "message": "Question $1 of 2"
   },
-  "currentTitle": {
-    "message": "Current:"
-  },
   "currentlyUnavailable": {
     "message": "Unavailable on this network"
   },
@@ -2066,12 +2053,6 @@
   },
   "dappSuggestedHigh": {
     "message": "Site suggested"
-  },
-  "dappSuggestedHighShortLabel": {
-    "message": "Site (high)"
-  },
-  "dappSuggestedShortLabel": {
-    "message": "Site"
   },
   "dappSwapAdvantage": {
     "message": "Save and earn with MetaMask Swaps"
@@ -2443,9 +2424,6 @@
   "dontShowThisAgain": {
     "message": "Don't show this again"
   },
-  "downArrow": {
-    "message": "down arrow"
-  },
   "download": {
     "message": "Download"
   },
@@ -2538,19 +2516,6 @@
   "editGasLimitOutOfBounds": {
     "message": "Gas limit must be at least $1"
   },
-  "editGasLimitOutOfBoundsV2": {
-    "message": "Gas limit must be greater than $1 and less than $2",
-    "description": "$1 is the minimum limit for gas and $2 is the maximum limit"
-  },
-  "editGasMaxBaseFeeGWEIImbalance": {
-    "message": "Max base fee cannot be lower than priority fee"
-  },
-  "editGasMaxBaseFeeHigh": {
-    "message": "Max base fee is higher than necessary"
-  },
-  "editGasMaxBaseFeeLow": {
-    "message": "Max base fee is low for current network conditions"
-  },
   "editGasMaxFeeHigh": {
     "message": "Max fee is higher than necessary"
   },
@@ -2563,20 +2528,11 @@
   "editGasMaxPriorityFeeBelowMinimum": {
     "message": "Max priority fee must be greater than 0 GWEI"
   },
-  "editGasMaxPriorityFeeBelowMinimumV2": {
-    "message": "Priority fee must be greater than 0."
-  },
   "editGasMaxPriorityFeeHigh": {
     "message": "Max priority fee is higher than necessary. You may pay more than needed."
   },
-  "editGasMaxPriorityFeeHighV2": {
-    "message": "Priority fee is higher than necessary. You may pay more than needed"
-  },
   "editGasMaxPriorityFeeLow": {
     "message": "Max priority fee is low for current network conditions"
-  },
-  "editGasMaxPriorityFeeLowV2": {
-    "message": "Priority fee is low for current network conditions"
   },
   "editGasPriceTooLow": {
     "message": "Gas price must be greater than 0"
@@ -2998,9 +2954,6 @@
   },
   "gasLimitTooLow": {
     "message": "Gas limit must be at least 21000"
-  },
-  "gasLimitV2": {
-    "message": "Gas limit"
   },
   "gasPrice": {
     "message": "Gas price"
@@ -3761,9 +3714,6 @@
   "ledgerWebHIDNotConnectedErrorMessage": {
     "message": "The ledger device was not connected. If you wish to connect your Ledger, please click 'Continue' again and approve HID connection",
     "description": "An error message shown to the user during the hardware connect flow."
-  },
-  "levelArrow": {
-    "message": "level arrow"
   },
   "lightTheme": {
     "message": "Light"
@@ -8632,9 +8582,6 @@
   "swapSource": {
     "message": "Liquidity source"
   },
-  "swapSuggested": {
-    "message": "Swap suggested"
-  },
   "swapSuggestedGasSettingToolTipMessage": {
     "message": "Swaps are complex and time sensitive transactions. We recommend this gas fee for a good balance between cost and confidence of a successful Swap."
   },
@@ -9054,9 +9001,6 @@
   "tutorial": {
     "message": "Tutorial"
   },
-  "twelveHrTitle": {
-    "message": "12hr:"
-  },
   "txAlertTitle": {
     "message": "This transaction will be reverted"
   },
@@ -9142,9 +9086,6 @@
   },
   "unstableTokenPriceTitle": {
     "message": "Unstable token price"
-  },
-  "upArrow": {
-    "message": "up arrow"
   },
   "update": {
     "message": "Update"
