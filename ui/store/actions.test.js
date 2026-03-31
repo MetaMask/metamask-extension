@@ -33,6 +33,7 @@ import { stripWalletTypePrefixFromWalletId } from '../hooks/multichain-accounts/
 import * as actions from './actions';
 import * as actionConstants from './actionConstants';
 import { setBackgroundConnection } from './background-connection';
+import { getStatePatches } from './patch-store-substream-connection';
 
 jest.mock('../../app/scripts/controller-init/perps-controller-init', () => ({
   PerpsControllerInit: jest.fn().mockReturnValue({
@@ -43,6 +44,9 @@ jest.mock('../../app/scripts/controller-init/perps-controller-init', () => ({
     api: {},
   }),
 }));
+jest.mock('./patch-store-substream-connection');
+
+const getStatePatchesMock = jest.mocked(getStatePatches);
 
 const { TRIGGER_TYPES } = NotificationServicesController.Constants;
 
@@ -221,7 +225,7 @@ describe('Actions', () => {
       expect(
         background.setDataCollectionForMarketing.calledOnceWith(true),
       ).toStrictEqual(true);
-      expect(background.getStatePatches.calledOnce).toStrictEqual(true);
+      expect(getStatePatchesMock).toHaveBeenCalled();
       expect(store.getActions()).toStrictEqual([
         {
           type: actionConstants.SET_DATA_COLLECTION_FOR_MARKETING,
