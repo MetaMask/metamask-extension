@@ -62,6 +62,14 @@ const setBackgroundRequestDefaults = () => {
   });
 };
 
+const getInsufficientBalanceMessage = (
+  requiredMargin: string,
+  availableBalance: string,
+) =>
+  messages.perpsOrderValidationInsufficientBalance.message
+    .replace('$1', requiredMargin)
+    .replace('$2', availableBalance);
+
 // Mock controller for usePerpsController() - delegates to submitRequestToBackground so test assertions pass
 const mockPerpsController = {
   placeOrder: jest
@@ -525,7 +533,35 @@ describe('PerpsOrderEntryPage', () => {
 
       expect(screen.getByTestId('submit-order-button')).toBeDisabled();
       expect(
-        screen.getByText('Insufficient balance: need 20.00, have 3.06'),
+        screen.getByText(getInsufficientBalanceMessage('20.00', '3.06')),
+      ).toBeInTheDocument();
+    });
+
+    it('disables submit in modify mode when add-to-position amount exceeds available balance', () => {
+      mockSearchParams.set('mode', 'modify');
+      mockLivePositions.mockReturnValue({
+        positions: mockPositions,
+        isInitialLoading: false,
+      });
+      mockLiveAccount.mockReturnValue({
+        account: {
+          ...mockAccountState,
+          availableBalance: '3.06',
+        },
+        isInitialLoading: false,
+      });
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      const amountContainer = screen.getByTestId('amount-input-field');
+      const input = amountContainer.querySelector('input');
+      fireEvent.change(input as HTMLInputElement, {
+        target: { value: '20' },
+      });
+
+      expect(screen.getByTestId('submit-order-button')).toBeDisabled();
+      expect(
+        screen.getByText(getInsufficientBalanceMessage('20.00', '3.06')),
       ).toBeInTheDocument();
     });
 
@@ -595,6 +631,39 @@ describe('PerpsOrderEntryPage', () => {
     });
 
     it('does not call placeOrder when amount exceeds available balance', async () => {
+      mockLiveAccount.mockReturnValue({
+        account: {
+          ...mockAccountState,
+          availableBalance: '3.06',
+        },
+        isInitialLoading: false,
+      });
+
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      const amountContainer = screen.getByTestId('amount-input-field');
+      const input = amountContainer.querySelector('input');
+      fireEvent.change(input as HTMLInputElement, {
+        target: { value: '20' },
+      });
+
+      await act(async () => {
+        fireEvent.click(screen.getByTestId('submit-order-button'));
+      });
+
+      const hasPlaceOrderCall = mockSubmitRequestToBackground.mock.calls.some(
+        (call) => call[0] === 'perpsPlaceOrder',
+      );
+      expect(hasPlaceOrderCall).toBe(false);
+    });
+
+    it('does not call placeOrder in modify mode when add-to-position amount exceeds available balance', async () => {
+      mockSearchParams.set('mode', 'modify');
+      mockLivePositions.mockReturnValue({
+        positions: mockPositions,
+        isInitialLoading: false,
+      });
       mockLiveAccount.mockReturnValue({
         account: {
           ...mockAccountState,

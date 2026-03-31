@@ -336,11 +336,14 @@ const PerpsOrderEntryPage: React.FC = () => {
   );
   const requiredMargin = Number.isFinite(parsedAmount) ? parsedAmount : 0;
   const isOrderPlacementMode = orderMode !== 'close' && orderMode !== 'modify';
+  const isModifyAddToPositionMode =
+    orderMode === 'modify' && Boolean(position) && requiredMargin > 0;
   const isPositionRequiredMode =
     orderMode === 'close' || orderMode === 'modify';
   const isPositionMissing = isPositionRequiredMode && !position;
   const isInsufficientBalance =
-    isOrderPlacementMode && requiredMargin > availableBalance;
+    (isOrderPlacementMode || isModifyAddToPositionMode) &&
+    requiredMargin > availableBalance;
   const insufficientBalanceError = isInsufficientBalance
     ? t('perpsOrderValidationInsufficientBalance', [
         requiredMargin.toFixed(2),
