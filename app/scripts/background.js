@@ -1022,7 +1022,15 @@ export async function loadStateFromPersistence(backup) {
   });
 
   let writeAllKeysToState = false;
-  if (!preMigrationVersionedData?.data && !preMigrationVersionedData?.meta) {
+  const hasValidMigratorData = isObject(preMigrationVersionedData?.data);
+  const isCompletelyEmpty =
+    !preMigrationVersionedData?.data && !preMigrationVersionedData?.meta;
+  // Orphan `meta` cannot be migrated: v2 migrations expect `state.data` to be an object.
+  // When we are not restoring from backup, treat as first-time install.
+  // (Backup restore always builds a `data` object in the branch above.)
+  const willGenerateInitialState =
+    isCompletelyEmpty || (!backup && !hasValidMigratorData);
+  if (willGenerateInitialState) {
     // brand new state; write all keys!
     writeAllKeysToState = true;
     preMigrationVersionedData = migrator.generateInitialState(firstTimeState);
