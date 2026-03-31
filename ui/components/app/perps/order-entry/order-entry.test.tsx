@@ -340,10 +340,7 @@ describe('OrderEntry', () => {
       );
 
       expect(
-        screen.getByText(messages.perpsPositionSize.message),
-      ).toBeInTheDocument();
-      expect(
-        screen.getByText(messages.perpsCloseAmount.message),
+        screen.getByText(messages.perpsAvailableToClose.message),
       ).toBeInTheDocument();
       expect(screen.getByTestId('close-amount-slider')).toBeInTheDocument();
     });
@@ -399,12 +396,12 @@ describe('OrderEntry', () => {
         mockStore,
       );
 
-      // Both the close amount display and the 100% preset button show "100%"
+      // Close amount chip reflects default 100% close
       const percentElements = screen.getAllByText(/100.*%/u);
       expect(percentElements.length).toBeGreaterThanOrEqual(1);
     });
 
-    it('shows close percentage preset buttons', () => {
+    it('does not render close percentage preset buttons', () => {
       renderWithProvider(
         <OrderEntry
           {...defaultProps}
@@ -414,12 +411,18 @@ describe('OrderEntry', () => {
         mockStore,
       );
 
-      expect(screen.getByTestId('close-percent-preset-25')).toBeInTheDocument();
-      expect(screen.getByTestId('close-percent-preset-50')).toBeInTheDocument();
-      expect(screen.getByTestId('close-percent-preset-75')).toBeInTheDocument();
       expect(
-        screen.getByTestId('close-percent-preset-100'),
-      ).toBeInTheDocument();
+        screen.queryByTestId('close-percent-preset-25'),
+      ).not.toBeInTheDocument();
+      expect(
+        screen.queryByTestId('close-percent-preset-50'),
+      ).not.toBeInTheDocument();
+      expect(
+        screen.queryByTestId('close-percent-preset-75'),
+      ).not.toBeInTheDocument();
+      expect(
+        screen.queryByTestId('close-percent-preset-100'),
+      ).not.toBeInTheDocument();
     });
   });
 
