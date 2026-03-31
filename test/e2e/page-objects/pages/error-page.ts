@@ -92,7 +92,7 @@ class ErrorPage {
 
   async consentDataToMetamaskSupport(): Promise<void> {
     await this.driver.waitForSelector(this.visitSupportDataConsentModal);
-    await this.#clickElementAndWaitToDisappear(
+    await this.driver.clickElementAndWaitToDisappear(
       this.visitSupportDataConsentModalAcceptButton,
     );
     // metamask, help page
@@ -101,14 +101,10 @@ class ErrorPage {
 
   async rejectDataToMetamaskSupport(): Promise<void> {
     await this.driver.waitForSelector(this.visitSupportDataConsentModal);
-    await this.#clickElementAndWaitToDisappear(
+    await this.driver.clickElementAndWaitToDisappear(
       this.visitSupportDataConsentModalRejectButton,
     );
     await this.driver.waitUntilXWindowHandles(2);
-  }
-
-  async #clickElementAndWaitToDisappear(rawLocator: string): Promise<void> {
-    await this.driver.clickElementAndWaitToDisappear(rawLocator);
   }
 
   async waitForSentrySuccessModal(): Promise<void> {
