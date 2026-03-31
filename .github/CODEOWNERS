@@ -246,7 +246,7 @@ shared/lib/trace.ts                                   @MetaMask/extension-platfo
 /.github/rules/                                       @MetaMask/extension-platform @HowardBraham @itsyoboieltr
 /.github/dependabot.yml                               @MetaMask/extension-platform
 development/fitness-functions/                        @MetaMask/extension-platform @HowardBraham @itsyoboieltr
-development/metamaskbot-build-announce/               @MetaMask/extension-platform @HowardBraham @itsyoboieltr
+development/metamaskbot-build-announce/               @MetaMask/extension-platform
 /codecov.yml                                          @MetaMask/extension-platform
 /sonar-project.properties                             @MetaMask/extension-platform
 
