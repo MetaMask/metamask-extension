@@ -5741,6 +5741,30 @@
   "perpsSize": {
     "message": "Size"
   },
+  "perpsSortByFundingRate": {
+    "message": "Funding rate"
+  },
+  "perpsSortByHighToLow": {
+    "message": "High to low"
+  },
+  "perpsSortByLowToHigh": {
+    "message": "Low to high"
+  },
+  "perpsSortByOpenInterest": {
+    "message": "Open interest"
+  },
+  "perpsSortByPriceChange": {
+    "message": "Price change"
+  },
+  "perpsSortBySection": {
+    "message": "Sort by"
+  },
+  "perpsSortByTitle": {
+    "message": "Sort"
+  },
+  "perpsSortByVolume": {
+    "message": "Volume"
+  },
   "perpsSortFundingRateHighToLow": {
     "message": "Funding rate: high to low"
   },
