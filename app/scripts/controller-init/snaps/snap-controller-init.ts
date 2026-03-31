@@ -1,4 +1,7 @@
-import { SnapController } from '@metamask/snaps-controllers';
+import {
+  SnapController,
+  SnapControllerMessenger,
+} from '@metamask/snaps-controllers';
 import { createDeferredPromise, Json } from '@metamask/utils';
 import { ControllerInitFunction } from '../types';
 import {
@@ -7,10 +10,7 @@ import {
   ExcludedSnapPermissions,
 } from '../../../../shared/constants/snaps/permissions';
 import { encryptorFactory } from '../../lib/encryptor-factory';
-import {
-  SnapControllerInitMessenger,
-  SnapControllerMessenger,
-} from '../messengers/snaps';
+import { SnapControllerInitMessenger } from '../messengers/snaps';
 import { getBooleanFlag } from '../../lib/util';
 import { OnboardingControllerState } from '../../controllers/onboarding';
 import { getMnemonicSeed } from '../../controllers/permissions/snaps/utils';
@@ -111,9 +111,6 @@ export const SnapControllerInit: ControllerInitFunction<
     // TODO: Look into the type mismatch.
     state: persistedState.SnapController,
 
-    // @ts-expect-error: `controllerMessenger` is not compatible with the
-    // expected type.
-    // TODO: Look into the type mismatch.
     messenger: controllerMessenger,
     featureFlags: {
       allowLocalSnaps,

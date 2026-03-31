@@ -1,9 +1,10 @@
-import { Messenger } from '@metamask/messenger';
+import {
+  Messenger,
+  MessengerActions,
+  MessengerEvents,
+} from '@metamask/messenger';
+import { ExecutionServiceMessenger } from '@metamask/snaps-controllers';
 import { RootMessenger } from '../../../lib/messenger';
-
-export type ExecutionServiceMessenger = ReturnType<
-  typeof getExecutionServiceMessenger
->;
 
 /**
  * Get a restricted messenger for the execution service. This is scoped to the
@@ -13,9 +14,12 @@ export type ExecutionServiceMessenger = ReturnType<
  * @returns The restricted messenger.
  */
 export function getExecutionServiceMessenger(
-  messenger: RootMessenger<never, never>,
+  messenger: RootMessenger<
+    MessengerActions<ExecutionServiceMessenger>,
+    MessengerEvents<ExecutionServiceMessenger>
+  >,
 ) {
-  return new Messenger<'ExecutionService', never, never, typeof messenger>({
+  return new Messenger({
     namespace: 'ExecutionService',
     parent: messenger,
   });

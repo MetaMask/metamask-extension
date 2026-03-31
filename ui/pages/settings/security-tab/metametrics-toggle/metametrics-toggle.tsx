@@ -10,6 +10,7 @@ import { selectIsBackupAndSyncEnabled } from '../../../../selectors/identity/bac
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
+  MetaMetricsUserTrait,
 } from '../../../../../shared/constants/metametrics';
 import { Box, Text } from '../../../../components/component-library';
 import ToggleButton from '../../../../components/ui/toggle-button';
@@ -67,7 +68,6 @@ const MetametricsToggle = ({
         await setDataCollectionForMarketing(false);
       }
 
-      await disableMetametrics();
       trackEvent({
         category: MetaMetricsEventCategory.Settings,
         event: MetaMetricsEventName.TurnOffMetaMetrics,
@@ -81,15 +81,13 @@ const MetametricsToggle = ({
         category: MetaMetricsEventCategory.Settings,
         event: MetaMetricsEventName.AnalyticsPreferenceSelected,
         properties: {
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          is_metrics_opted_in: false,
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          has_marketing_consent: false,
+          [MetaMetricsUserTrait.IsMetricsOptedIn]: false,
+          [MetaMetricsUserTrait.HasMarketingConsent]: false,
           location: 'Settings',
         },
       });
+
+      await disableMetametrics();
     }
   };
 

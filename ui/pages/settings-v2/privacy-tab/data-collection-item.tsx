@@ -19,6 +19,7 @@ import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
+  MetaMetricsUserTrait,
 } from '../../../../shared/constants/metametrics';
 
 export const DataCollectionToggleItem = () => {
@@ -47,8 +48,8 @@ export const DataCollectionToggleItem = () => {
       event: MetaMetricsEventName.AnalyticsPreferenceSelected,
       properties: {
         /* eslint-disable @typescript-eslint/naming-convention */
-        is_metrics_opted_in: true,
-        has_marketing_consent: Boolean(newValue),
+        [MetaMetricsUserTrait.IsMetricsOptedIn]: true,
+        [MetaMetricsUserTrait.HasMarketingConsent]: Boolean(newValue),
         /* eslint-enable @typescript-eslint/naming-convention */
         location: 'Settings',
       },
