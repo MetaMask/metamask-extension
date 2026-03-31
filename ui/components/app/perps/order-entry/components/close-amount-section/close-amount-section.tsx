@@ -1,9 +1,11 @@
 import React, { useCallback, useMemo } from 'react';
 import {
   Box,
+  BoxBackgroundColor,
   Text,
   TextVariant,
   TextColor,
+  TextAlign,
   FontWeight,
   BoxFlexDirection,
   BoxJustifyContent,
@@ -13,6 +15,9 @@ import { PerpsSlider } from '../../../perps-slider';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
 import { useFormatters } from '../../../../../../hooks/useFormatters';
 import type { CloseAmountSectionProps } from '../../order-entry.types';
+
+/** Fixed width (rem) for the close-% chip so the slider row layout stays stable as digits change */
+const CLOSE_PERCENT_CHIP_WIDTH_REM = 4.75;
 
 /**
  * CloseAmountSection - Section for selecting how much of a position to close
@@ -74,11 +79,9 @@ export const CloseAmountSection: React.FC<CloseAmountSectionProps> = ({
           {t('perpsCloseAmount')}
         </Text>
         <Box
-          className="bg-muted rounded-xl"
-          paddingLeft={4}
-          paddingRight={4}
-          paddingTop={4}
-          paddingBottom={4}
+          backgroundColor={BoxBackgroundColor.BackgroundMuted}
+          className="rounded-xl"
+          padding={4}
         >
           <Text
             variant={TextVariant.BodyMd}
@@ -95,7 +98,11 @@ export const CloseAmountSection: React.FC<CloseAmountSectionProps> = ({
         alignItems={BoxAlignItems.Center}
         gap={4}
       >
-        <Box className="flex-1 min-w-0 px-1" data-testid="close-amount-slider">
+        <Box
+          className="min-w-0 flex-1"
+          paddingHorizontal={1}
+          data-testid="close-amount-slider"
+        >
           <PerpsSlider
             min={0}
             max={100}
@@ -105,13 +112,23 @@ export const CloseAmountSection: React.FC<CloseAmountSectionProps> = ({
           />
         </Box>
         <Box
-          className="bg-muted flex w-[4.75rem] shrink-0 items-center justify-center rounded-lg px-2 py-1"
+          backgroundColor={BoxBackgroundColor.BackgroundMuted}
+          className="rounded-lg"
           flexDirection={BoxFlexDirection.Row}
+          alignItems={BoxAlignItems.Center}
+          justifyContent={BoxJustifyContent.Center}
+          paddingHorizontal={2}
+          paddingVertical={1}
+          style={{
+            width: `${CLOSE_PERCENT_CHIP_WIDTH_REM}rem`,
+            flexShrink: 0,
+          }}
         >
           <Text
-            className="w-full text-center tabular-nums"
             variant={TextVariant.BodySm}
             fontWeight={FontWeight.Medium}
+            textAlign={TextAlign.Center}
+            style={{ width: '100%', fontVariantNumeric: 'tabular-nums' }}
           >
             {closePercent} %
           </Text>

@@ -1,6 +1,7 @@
 import React, { useState, useMemo, useCallback, useEffect } from 'react';
 import {
   Box,
+  BoxBackgroundColor,
   BoxFlexDirection,
   BoxJustifyContent,
   BoxAlignItems,
@@ -99,7 +100,9 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
     if (closePercent >= 100) {
       return false;
     }
-    return closeNotionalUsd + 1e-9 < PERPS_MIN_MARKET_ORDER_USD;
+    const closeNotionalUsdRoundedCents =
+      Math.round(closeNotionalUsd * 100) / 100;
+    return closeNotionalUsdRoundedCents < PERPS_MIN_MARKET_ORDER_USD;
   }, [closePercent, closeNotionalUsd]);
 
   const youWillReceive = useMemo(
@@ -198,7 +201,8 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
 
             {isPartialCloseBelowMinNotional ? (
               <Box
-                className="bg-warning-muted rounded-lg"
+                backgroundColor={BoxBackgroundColor.WarningMuted}
+                className="rounded-lg"
                 padding={3}
                 flexDirection={BoxFlexDirection.Row}
                 alignItems={BoxAlignItems.Center}
@@ -254,19 +258,23 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
                     textAlign={TextAlign.Right}
                   >
                     {t('perpsIncludesPnl', [
-                      <span
+                      <Text
                         key="perps-close-margin-pnl"
-                        className={
+                        variant={TextVariant.BodyXs}
+                        color={
                           unrealizedPnl >= 0
-                            ? 'text-success-default'
-                            : 'text-error-default'
+                            ? TextColor.SuccessDefault
+                            : TextColor.ErrorDefault
                         }
+                        asChild
                       >
-                        {`${unrealizedPnl >= 0 ? '+' : '-'}${formatCurrencyWithMinThreshold(
-                          Math.abs(unrealizedPnl),
-                          'USD',
-                        )}`}
-                      </span>,
+                        <span>
+                          {`${unrealizedPnl >= 0 ? '+' : '-'}${formatCurrencyWithMinThreshold(
+                            Math.abs(unrealizedPnl),
+                            'USD',
+                          )}`}
+                        </span>
+                      </Text>,
                     ])}
                   </Text>
                 </Box>
@@ -319,7 +327,8 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
             {/* Error */}
             {error && (
               <Box
-                className="bg-error-muted rounded-lg"
+                backgroundColor={BoxBackgroundColor.ErrorMuted}
+                className="rounded-lg"
                 padding={3}
                 flexDirection={BoxFlexDirection.Row}
                 alignItems={BoxAlignItems.Center}
