@@ -1,5 +1,8 @@
-name: Upload benchmark JSON to S3 and GitHub Actions artifacts
-description: Uploads one benchmark result file to S3 (optional AWS vars) and as a workflow artifact.
+name: Performance benchmarks — publish results
+description: >
+  Uploads one E2E performance benchmark JSON from test-artifacts/benchmarks/ to S3 (optional)
+  and as a GitHub Actions artifact. These artifacts are downloaded by store-benchmark-stats
+  (benchmark-*.json) and merged into extension_benchmark_stats performance_data.json.
 
 inputs:
   result-filename:
