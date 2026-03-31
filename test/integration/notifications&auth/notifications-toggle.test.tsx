@@ -95,6 +95,7 @@ describe('Notifications Toggle', () => {
           ...mockedState,
           participateInMetaMetrics: true,
           dataCollectionForMarketing: false,
+          metaMetricsId: 'test-metametrics-id',
         },
         backgroundConnection: backgroundConnectionMocked,
       });
