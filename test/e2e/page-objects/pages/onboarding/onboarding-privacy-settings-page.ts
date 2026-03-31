@@ -80,8 +80,6 @@ class OnboardingPrivacySettingsPage {
   // Assets settings
   private readonly assetsPrivacyToggle = '.toggle-button.toggle-button--on';
 
-  private readonly assetsPrivacyToggleOn = '.toggle-button.toggle-button--on';
-
   private readonly assetsSettingsMessage = { text: 'Assets', tag: 'h2' };
 
   constructor(driver: Driver) {
@@ -196,7 +194,7 @@ class OnboardingPrivacySettingsPage {
       ),
     );
     console.log('Verify all asset privacy toggles are off');
-    await this.driver.assertElementNotPresent(this.assetsPrivacyToggleOn);
+    await this.driver.assertElementNotPresent(this.assetsPrivacyToggle);
 
     await this.navigateBackToSettingsPage();
   }
