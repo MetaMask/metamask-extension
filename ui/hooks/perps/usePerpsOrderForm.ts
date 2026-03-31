@@ -172,6 +172,7 @@ export function usePerpsOrderForm({
     asset: string;
     initialDirection: 'long' | 'short';
     existingPositionDigest: string | undefined;
+    initialLeverage: number | undefined;
   } | null>(null);
   useEffect(() => {
     const existingPositionDigest =
@@ -191,7 +192,8 @@ export function usePerpsOrderForm({
       prev.mode === mode &&
       prev.asset === asset &&
       prev.initialDirection === initialDirection &&
-      prev.existingPositionDigest === existingPositionDigest
+      prev.existingPositionDigest === existingPositionDigest &&
+      prev.initialLeverage === initialLeverage
     ) {
       return;
     }
@@ -201,6 +203,7 @@ export function usePerpsOrderForm({
       asset,
       initialDirection,
       existingPositionDigest,
+      initialLeverage,
     };
 
     setClosePercent(100);

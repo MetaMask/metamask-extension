@@ -58,6 +58,26 @@ describe('usePerpsOrderForm', () => {
       expect(result.current.formState.leverage).toBe(7);
     });
 
+    it('applies initialLeverage when it changes after initial render (async hydration)', () => {
+      const props = {
+        ...defaultOptions,
+        initialLeverage: undefined as number | undefined,
+      };
+      const { result, rerender } = renderHookWithProvider(
+        () => usePerpsOrderForm(props),
+        mockStateWithLocale,
+      );
+
+      expect(result.current.formState.leverage).toBe(3);
+
+      props.initialLeverage = 8;
+      act(() => {
+        rerender();
+      });
+
+      expect(result.current.formState.leverage).toBe(8);
+    });
+
     it('ignores initialLeverage in modify mode (uses position leverage)', () => {
       const existingPosition = {
         size: '1.0',
