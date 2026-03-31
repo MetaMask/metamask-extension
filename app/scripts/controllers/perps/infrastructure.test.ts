@@ -128,6 +128,30 @@ describe('createPerpsInfrastructure', () => {
         );
       });
 
+      it('merges tags and data into span attributes', () => {
+        const mockSpan = { end: jest.fn() };
+        const startSpanManual = jest.fn((_opts, cb) => cb(mockSpan));
+        (globalThis as Record<string, unknown>).sentry = { startSpanManual };
+
+        const { tracer } = createPerpsInfrastructure();
+        tracer.trace({
+          name: 'Perps Place Order' as never,
+          id: 'abc',
+          op: 'perps.order',
+          tags: { network: 'arbitrum' },
+          data: { coin: 'ETH' },
+        });
+
+        expect(startSpanManual).toHaveBeenCalledWith(
+          {
+            name: 'Perps Place Order',
+            op: 'perps.order',
+            attributes: { network: 'arbitrum', coin: 'ETH' },
+          },
+          expect.any(Function),
+        );
+      });
+
       it('ends the span on endTrace', () => {
         const mockSpan = { end: jest.fn() };
         const startSpanManual = jest.fn((_opts, cb) => cb(mockSpan));

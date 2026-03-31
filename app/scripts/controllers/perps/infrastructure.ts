@@ -76,7 +76,7 @@ function createTracer(): PerpsTracer {
         {
           name: params.name,
           op: params.op,
-          attributes: params.data,
+          attributes: { ...params.tags, ...params.data },
         },
         (span: { end: () => void }) => {
           pendingSpans.set(`${params.name}:${params.id}`, {
