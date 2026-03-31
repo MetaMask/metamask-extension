@@ -1345,9 +1345,6 @@
   "cancel": {
     "message": "Отмена"
   },
-  "cancelPopoverTitle": {
-    "message": "Отменить транзакцию"
-  },
   "cancelTransactionDescription": {
     "message": "Эта транзакция будет отменена, и эта комиссия сети заменит исходную."
   },
@@ -2524,9 +2521,6 @@
     "message": "Лимит газа должен быть больше $1 и меньше $2",
     "description": "$1 is the minimum limit for gas and $2 is the maximum limit"
   },
-  "editGasLimitTooltip": {
-    "message": "Лимит газа — это максимальное количество единиц газа, которое вы готовы использовать. Единицы газа являются множителем «Максимальной платы за приоритет» и «Максимальной комиссии»."
-  },
   "editGasMaxBaseFeeGWEIImbalance": {
     "message": "Максимальная базовая комиссия не может быть ниже платы за приоритет."
   },
@@ -2565,12 +2559,6 @@
   },
   "editGasPriceTooLow": {
     "message": "Цена газа должна быть больше 0"
-  },
-  "editGasPriceTooltip": {
-    "message": "В этой сети необходимо заполнить поле «Цена газа» при отправке транзакции. Цена газа — это сумма, которую вы будете платить за единицу газа."
-  },
-  "editGasTitle": {
-    "message": "Изменить приоритет"
   },
   "editGasTooLow": {
     "message": "Время обработки неизвестно"
@@ -2984,18 +2972,8 @@
   "gas": {
     "message": "Газ"
   },
-  "gasDisplayAcknowledgeDappButtonText": {
-    "message": "Изменить рекомендуемую плату за газ"
-  },
-  "gasDisplayDappWarning": {
-    "message": "Эта плата за газ была предложена $1. Ее изменение может привести к проблемам с вашей транзакцией. При наличии вопросов обратитесь к $1.",
-    "description": "$1 represents the Dapp's origin"
-  },
   "gasLimit": {
     "message": "Лимит газа"
-  },
-  "gasLimitRecommended": {
-    "message": "Рекомендуемый лимит газа — $1. Если лимит газа меньше, успешность транзакции снижается."
   },
   "gasLimitTooLow": {
     "message": "Лимит газа должен быть не менее 21 000"
@@ -7918,15 +7896,6 @@
   },
   "speedUpCancellation": {
     "message": "Ускорить эту отмену"
-  },
-  "speedUpExplanation": {
-    "message": "Мы обновили плату за газ с учетом текущих условий сети и увеличили ее как минимум на 10% (это требование сети)."
-  },
-  "speedUpPopoverTitle": {
-    "message": "Ускорить транзакцию"
-  },
-  "speedUpTooltipText": {
-    "message": "Новая плата за газ"
   },
   "speedUpTransactionDescription": {
     "message": "Эта комиссия сети заменит исходную."

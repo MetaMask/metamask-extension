@@ -56,6 +56,10 @@ import {
   getChangeColor,
   safeDecodeURIComponent,
 } from '../../components/app/perps/utils';
+import {
+  isLimitPriceUnfavorable as checkLimitPriceUnfavorable,
+  isNearLiquidationPrice as checkNearLiquidationPrice,
+} from '../../components/app/perps/order-entry/limit-price-warnings';
 import { PerpsDetailPageSkeleton } from '../../components/app/perps/perps-skeletons';
 import {
   OrderEntry,
@@ -311,8 +315,41 @@ const PerpsOrderEntryPage: React.FC = () => {
 
   const availableBalance = account ? parseFloat(account.availableBalance) : 0;
 
+  const isLimitPriceUnfavorable = useMemo(() => {
+    if (orderType !== 'limit' || !orderFormState) {
+      return false;
+    }
+    return checkLimitPriceUnfavorable(
+      orderFormState.limitPrice ?? '',
+      currentPrice,
+      orderDirection,
+    );
+  }, [orderType, orderFormState, orderDirection, currentPrice]);
+
+  const isNearLiquidation = useMemo(() => {
+    if (orderType !== 'limit' || !orderFormState) {
+      return false;
+    }
+    return checkNearLiquidationPrice(
+      currentPrice,
+      orderCalculations?.liquidationPriceRaw,
+      orderDirection,
+    );
+  }, [
+    orderType,
+    orderFormState,
+    orderDirection,
+    currentPrice,
+    orderCalculations,
+  ]);
+
   const isSubmitDisabled =
-    !isEligible || isOrderPending || isLimitPriceInvalid || currentPrice <= 0;
+    !isEligible ||
+    isOrderPending ||
+    isLimitPriceInvalid ||
+    isLimitPriceUnfavorable ||
+    isNearLiquidation ||
+    currentPrice <= 0;
 
   const maxLeverage = useMemo(() => {
     if (!market) {

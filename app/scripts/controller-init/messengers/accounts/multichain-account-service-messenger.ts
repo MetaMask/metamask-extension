@@ -3,13 +3,14 @@ import {
   AccountsControllerAccountAddedEvent,
   AccountsControllerAccountRemovedEvent,
   AccountsControllerGetAccountAction,
+  AccountsControllerGetAccountsAction,
   AccountsControllerGetAccountByAddressAction,
   AccountsControllerListMultichainAccountsAction,
 } from '@metamask/accounts-controller';
 import {
   SnapControllerStateChangeEvent,
   SnapControllerGetStateAction,
-  HandleSnapRequest as SnapControllerHandleRequestAction,
+  SnapControllerHandleRequestAction,
 } from '@metamask/snaps-controllers';
 import {
   KeyringControllerWithKeyringAction,
@@ -37,6 +38,7 @@ import { RootMessenger } from '../../../lib/messenger';
 type Actions =
   | AccountsControllerListMultichainAccountsAction
   | AccountsControllerGetAccountAction
+  | AccountsControllerGetAccountsAction
   | AccountsControllerGetAccountByAddressAction
   | SnapControllerGetStateAction
   | SnapControllerHandleRequestAction
@@ -93,6 +95,7 @@ export function getMultichainAccountServiceMessenger(
       'AccountsController:listMultichainAccounts',
       'AccountsController:getAccountByAddress',
       'AccountsController:getAccount',
+      'AccountsController:getAccounts',
       'SnapController:getState',
       'SnapController:handleRequest',
       'KeyringController:getState',

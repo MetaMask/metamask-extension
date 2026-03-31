@@ -1345,9 +1345,6 @@
   "cancel": {
     "message": "कैंसिल करें"
   },
-  "cancelPopoverTitle": {
-    "message": "ट्रांसेक्शन कैंसिल करें"
-  },
   "cancelTransactionDescription": {
     "message": "यह ट्रांसेक्शन कैंसिल कर दिया जाएगा और यह नेटवर्क फीस ओरिजिनल फीस की जगह लेगी।"
   },
@@ -2524,9 +2521,6 @@
     "message": "गैस लिमिट $1 से अधिक और $2 से कम होनी चाहिए",
     "description": "$1 is the minimum limit for gas and $2 is the maximum limit"
   },
-  "editGasLimitTooltip": {
-    "message": "गैस लिमिट, गैस की वो अधिकतम यूनिट है जिसका आप इस्तेमाल करना चाहते हैं। गैस की यूनिटें “अधिकतम प्रायोरिटी फी” और “अधिकतम फ़ीस” का मल्टीप्लायर होती हैं।"
-  },
   "editGasMaxBaseFeeGWEIImbalance": {
     "message": "अधिकतम बेस फ़ीस प्रायोरिटी फ़ीस से कम नहीं हो सकती है।"
   },
@@ -2565,12 +2559,6 @@
   },
   "editGasPriceTooLow": {
     "message": "गैस प्राइस 0 से अधिक होना चाहिए"
-  },
-  "editGasPriceTooltip": {
-    "message": "ट्रांसेक्शन सबमिट करते समय इस नेटवर्क को \"गैस प्राइस\" फील्ड की आवश्यकता होती है। गैस प्राइस वह अमाउंट है जो आप प्रति यूनिट गैस के लिए पेमेंट करेंगे।"
-  },
-  "editGasTitle": {
-    "message": "प्राथमिकता बदलें"
   },
   "editGasTooLow": {
     "message": "अज्ञात संस्करण समय"
@@ -2984,18 +2972,8 @@
   "gas": {
     "message": "गैस"
   },
-  "gasDisplayAcknowledgeDappButtonText": {
-    "message": "सुझाए गए गैस शुल्क को संपादित करें"
-  },
-  "gasDisplayDappWarning": {
-    "message": "यह गैस शुल्क $1 द्वारा सुझाया गया है। इसे ओवरराइड करने से आपके लेन-देन के साथ समस्या हो सकती है। यदि आपके पास सवाल हैं तो कृपया $1 तक पहुंचें।",
-    "description": "$1 represents the Dapp's origin"
-  },
   "gasLimit": {
     "message": "गैस लिमिट"
-  },
-  "gasLimitRecommended": {
-    "message": "अनुशंसित गैस सीमा $1 है। यदि गैस की सीमा इससे कम है, तो यह विफल हो सकता है।"
   },
   "gasLimitTooLow": {
     "message": "गैस लिमिट कम से कम 21000 होनी चाहिए"
@@ -7918,15 +7896,6 @@
   },
   "speedUpCancellation": {
     "message": "इस रद्दीकरण को गति दें"
-  },
-  "speedUpExplanation": {
-    "message": "हमने मौजूदा नेटवर्क स्थितियों के आधार पर गैस फ़ीस को अपडेट किया है और इसे कम से कम 10% (नेटवर्क के लिए जरूरी) बढ़ा दिया है।"
-  },
-  "speedUpPopoverTitle": {
-    "message": "लेन-देन की गति बढ़ाएं"
-  },
-  "speedUpTooltipText": {
-    "message": "नया गैस फ़ीस"
   },
   "speedUpTransactionDescription": {
     "message": "यह नेटवर्क फीस ओरिजिनल फीस की जगह लेगी।"

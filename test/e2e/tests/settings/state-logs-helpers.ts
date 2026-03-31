@@ -50,12 +50,13 @@ const createDifferenceMessage = (
 };
 
 // Minimal type definition for the specific fields we validate in the State Logs Account spec
-type MinimalStateLogsJson = {
+export type MinimalStateLogsJson = {
   metamask: {
     internalAccounts: {
       selectedAccount: string;
       accounts: {
         [key: string]: {
+          type: string;
           address: string;
         };
       };

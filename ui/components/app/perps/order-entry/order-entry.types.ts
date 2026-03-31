@@ -77,8 +77,10 @@ export type OrderCalculations = {
   positionSize: string | null;
   /** Margin required for the position */
   marginRequired: string | null;
-  /** Estimated liquidation price */
+  /** Estimated liquidation price (formatted) */
   liquidationPrice: string | null;
+  /** Raw estimated liquidation price as a number (for comparisons) */
+  liquidationPriceRaw: number | null;
   /** Total order value in USD */
   orderValue: string | null;
   /** Estimated trading fees */

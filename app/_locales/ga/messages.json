@@ -1062,9 +1062,6 @@
   "cancel": {
     "message": "Cealaigh"
   },
-  "cancelPopoverTitle": {
-    "message": "Cealaigh an t-idirbheart"
-  },
   "cancelled": {
     "message": "Cealaithe"
   },
@@ -2032,9 +2029,6 @@
     "message": "Ní mór teorainn gáis a bheith níos mó ná $1 agus níos lú ná $2",
     "description": "$1 is the minimum limit for gas and $2 is the maximum limit"
   },
-  "editGasLimitTooltip": {
-    "message": "Is é an teorainn gáis an líon uasta aonaid gáis atá tú sásta a úsáid. Is iolraitheoir iad na haonaid gháis idir an “Táille tosaíochta uasta” agus an “Táille uasta”."
-  },
   "editGasMaxBaseFeeGWEIImbalance": {
     "message": "Ní féidir leis an uastáille bhunúsach a bheith níos ísle ná an táille tosaíochta"
   },
@@ -2073,12 +2067,6 @@
   },
   "editGasPriceTooLow": {
     "message": "Ní mór praghas an gháis a bheith níos mó ná 0"
-  },
-  "editGasPriceTooltip": {
-    "message": "Éilíonn an líonra seo réimse “Praghas gáis” agus idirbheart á chur isteach. Is é praghas gáis an méid a íocfaidh tú in aghaidh an aonaid gháis."
-  },
-  "editGasTitle": {
-    "message": "Tosaíocht eagarthóireachta"
   },
   "editGasTooLow": {
     "message": "Am próiseála anaithnid"
@@ -2463,18 +2451,8 @@
   "gas": {
     "message": "Gás"
   },
-  "gasDisplayAcknowledgeDappButtonText": {
-    "message": "Cuir an táille gáis molta in eagar"
-  },
-  "gasDisplayDappWarning": {
-    "message": "Tá an táille gáis seo molta ag $1. Má sháraítear é seo, d’fhéadfadh fadhb a bheith ann le d’idirbheart. Téigh i dteagmháil le $1 má tá ceisteanna agat.",
-    "description": "$1 represents the Dapp's origin"
-  },
   "gasLimit": {
     "message": "Teorainn gáis"
-  },
-  "gasLimitRecommended": {
-    "message": "Is é $1 an teorainn gáis a mholtar. Má tá an teorainn gáis níos lú ná sin, d'fhéadfadh sé teip."
   },
   "gasLimitTooLow": {
     "message": "Ní mór teorainn gáis a bheith 21000 ar a laghad"
@@ -5785,15 +5763,6 @@
   },
   "speedUpCancellation": {
     "message": "Luasaigh an cealú seo"
-  },
-  "speedUpExplanation": {
-    "message": "Tá an táille gáis nuashonraithe againn bunaithe ar dhálaí reatha an líonra agus tá méadú 10% ar a laghad déanta againn uirthi (de réir mar a éilíonn an líonra)."
-  },
-  "speedUpPopoverTitle": {
-    "message": "Luasaigh an t-idirbheart"
-  },
-  "speedUpTooltipText": {
-    "message": "Táille nua gáis"
   },
   "spender": {
     "message": "Caiteoir"

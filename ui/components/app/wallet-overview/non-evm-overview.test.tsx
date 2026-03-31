@@ -142,6 +142,7 @@ const mockMetamaskStore = {
     selectedAccount: mockNonEvmAccount.id,
   },
   // Account tree required by CoinOverview/AccountGroupBalance after BIP-44 refactor
+  selectedAccountGroup: 'entropy:wallet1/group1',
   accountTree: {
     wallets: {
       'entropy:wallet1': {
@@ -155,12 +156,12 @@ const mockMetamaskStore = {
               name: 'Account',
               hidden: false,
               pinned: false,
+              lastSelected: 0,
             },
           },
         },
       },
     },
-    selectedAccountGroup: 'entropy:wallet1/group1',
   },
   // MultichainBalancesController
   balances: {
