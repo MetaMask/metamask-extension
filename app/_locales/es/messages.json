@@ -3161,7 +3161,7 @@
     "message": "Sigue asegurándote de que:"
   },
   "hardwareWalletErrorRecoveryUnlock1": {
-    "message": "Tu Ledger esté desbloqueada",
+    "message": "Tu $1 esté desbloqueada",
     "description": "$1 is the hardware wallet type"
   },
   "hardwareWalletErrorRecoveryUnlock2": {
