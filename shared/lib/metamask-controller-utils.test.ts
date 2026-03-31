@@ -3,9 +3,13 @@ import {
   Messenger,
   MockAnyNamespace,
 } from '@metamask/messenger';
+import { TransactionType } from '@metamask/transaction-controller';
 
 import { type OnboardingControllerState } from '../types/onboarding';
-import { createEnsureOnboardingCompleteCallback } from './metamask-controller-utils';
+import {
+  createEnsureOnboardingCompleteCallback,
+  getTokenValueParam,
+} from './metamask-controller-utils';
 
 /** Action/event types so the test messenger accepts OnboardingController actions and events. */
 type TestOnboardingAction = {
@@ -130,5 +134,41 @@ describe('createEnsureOnboardingCompleteCallback', () => {
     listener(COMPLETED_ONBOARDING_STATE);
 
     await Promise.all([promise1, promise2, promise3]);
+  });
+});
+
+describe('getTokenValueParam', () => {
+  it('returns the increment value as string when token data name is tokenMethodIncreaseAllowance', () => {
+    const tokenData = {
+      name: TransactionType.tokenMethodIncreaseAllowance,
+      args: { increment: 100 },
+    };
+    // Validates that the numeric value is converted to a string via toString()
+    expect(getTokenValueParam(tokenData)).toBe('100');
+  });
+
+  it('returns the _value as string when token data name is not tokenMethodIncreaseAllowance', () => {
+    const tokenData = {
+      name: TransactionType.tokenMethodTransfer,
+      args: {
+        // eslint-disable-next-line @typescript-eslint/naming-convention -- ERC-20 `_value` arg name used by getTokenValueParam
+        _value: 200,
+      },
+    };
+    expect(getTokenValueParam(tokenData)).toBe('200');
+  });
+
+  it('returns undefined when args are not provided', () => {
+    expect(
+      getTokenValueParam({ name: TransactionType.tokenMethodTransfer }),
+    ).toBeUndefined();
+  });
+
+  it('returns undefined when tokenData is empty', () => {
+    expect(getTokenValueParam({})).toBeUndefined();
+  });
+
+  it('returns undefined when called with no arguments', () => {
+    expect(getTokenValueParam()).toBeUndefined();
   });
 });
