@@ -1,11 +1,11 @@
 import { screen, fireEvent } from '@testing-library/react';
 import React from 'react';
 
-import { AmountInput } from './amount-input';
 import mockState from '../../../../../../../test/data/mock-state.json';
 import { enLocale as messages } from '../../../../../../../test/lib/i18n-helpers';
 import { renderWithProvider } from '../../../../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../../../../store/store';
+import { AmountInput } from './amount-input';
 
 const mockStore = configureStore({
   metamask: {

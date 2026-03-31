@@ -1,12 +1,12 @@
 import { screen, fireEvent, waitFor } from '@testing-library/react';
 import React from 'react';
 
-import { EditMarginExpandable } from './edit-margin-expandable';
 import mockState from '../../../../../test/data/mock-state.json';
 import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../../store/store';
 import { mockPositions, mockAccountState } from '../mocks';
+import { EditMarginExpandable } from './edit-margin-expandable';
 
 const mockGetPerpsStreamManager = jest.fn();
 const mockSubmitRequestToBackground = jest.fn();
