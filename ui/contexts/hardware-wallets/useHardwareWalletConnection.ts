@@ -408,10 +408,7 @@ export const useHardwareWalletConnection = ({
         return false;
       })();
 
-      refs.ensureDeviceReadyPromiseRef.current.set(
-        dedupKey,
-        ensurePromise,
-      );
+      refs.ensureDeviceReadyPromiseRef.current.set(dedupKey, ensurePromise);
 
       ensurePromise.finally(() => {
         const trackedPromise =

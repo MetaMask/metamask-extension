@@ -1028,7 +1028,9 @@ describe('rpcErrorUtils', () => {
   describe('extractTrezorCodeFromMessage', () => {
     it('extracts code from "code: ErrorCode" format', () => {
       expect(
-        extractTrezorCodeFromMessage('TrezorError: code: Failure_AppNotInstalled'),
+        extractTrezorCodeFromMessage(
+          'TrezorError: code: Failure_AppNotInstalled',
+        ),
       ).toBe('Failure_AppNotInstalled');
     });
 
@@ -1041,7 +1043,9 @@ describe('rpcErrorUtils', () => {
     });
 
     it('returns null when no code pattern is found', () => {
-      expect(extractTrezorCodeFromMessage('some random error message')).toBeNull();
+      expect(
+        extractTrezorCodeFromMessage('some random error message'),
+      ).toBeNull();
     });
 
     it('returns null for empty string', () => {
@@ -1050,7 +1054,9 @@ describe('rpcErrorUtils', () => {
 
     it('extracts multi-segment underscore code', () => {
       expect(
-        extractTrezorCodeFromMessage('error code: Some_Long_Error_Code happened'),
+        extractTrezorCodeFromMessage(
+          'error code: Some_Long_Error_Code happened',
+        ),
       ).toBe('Some_Long_Error_Code');
     });
 
@@ -1067,9 +1073,9 @@ describe('rpcErrorUtils', () => {
     });
 
     it('extracts message from objects with message property', () => {
-      expect(extractMessageFromUnknownError({ message: 'plain object error' })).toBe(
-        'plain object error',
-      );
+      expect(
+        extractMessageFromUnknownError({ message: 'plain object error' }),
+      ).toBe('plain object error');
     });
 
     it('returns string representation for primitives', () => {
@@ -1087,21 +1093,27 @@ describe('rpcErrorUtils', () => {
 
   describe('hasUserRejectedMessage', () => {
     it('detects "popup closed" in message', () => {
-      expect(hasUserRejectedMessage(new Error('popup closed by user'))).toBe(true);
-    });
-
-    it('detects "user rejected" in message', () => {
-      expect(hasUserRejectedMessage(new Error('user rejected the request'))).toBe(
+      expect(hasUserRejectedMessage(new Error('popup closed by user'))).toBe(
         true,
       );
     });
 
+    it('detects "user rejected" in message', () => {
+      expect(
+        hasUserRejectedMessage(new Error('user rejected the request')),
+      ).toBe(true);
+    });
+
     it('detects "cancelled" in message', () => {
-      expect(hasUserRejectedMessage(new Error('operation cancelled'))).toBe(true);
+      expect(hasUserRejectedMessage(new Error('operation cancelled'))).toBe(
+        true,
+      );
     });
 
     it('detects "canceled" (US spelling) in message', () => {
-      expect(hasUserRejectedMessage(new Error('operation canceled'))).toBe(true);
+      expect(hasUserRejectedMessage(new Error('operation canceled'))).toBe(
+        true,
+      );
     });
 
     it('detects rejection text in stack trace', () => {
@@ -1111,7 +1123,9 @@ describe('rpcErrorUtils', () => {
     });
 
     it('returns false for unrelated errors', () => {
-      expect(hasUserRejectedMessage(new Error('device disconnected'))).toBe(false);
+      expect(hasUserRejectedMessage(new Error('device disconnected'))).toBe(
+        false,
+      );
     });
 
     it('handles plain objects', () => {
