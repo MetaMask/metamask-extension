@@ -1069,6 +1069,7 @@ class FixtureBuilder {
                   pinned: false,
                   hidden: false,
                   entropy: { groupIndex: 0 },
+                  lastSelected: 0,
                 },
               },
             },
@@ -1103,6 +1104,7 @@ class FixtureBuilder {
               name: `${keyringType} Account 1`,
               pinned: false,
               hidden: false,
+              lastSelected: 0,
             },
           };
         }
@@ -1132,6 +1134,7 @@ class FixtureBuilder {
               name: `${account?.metadata?.snap?.name || 'Snap Account'} 1`,
               pinned: false,
               hidden: false,
+              lastSelected: 0,
             },
           };
         }
@@ -1165,8 +1168,10 @@ class FixtureBuilder {
 
     this.fixture.data.AccountTreeController ??= {};
 
+    const { selectedAccountGroup, wallets } = buildDefaultAccountTree();
     const defaultState = {
-      accountTree: buildDefaultAccountTree(),
+      selectedAccountGroup,
+      accountTree: { wallets },
       accountGroupsMetadata: {},
       accountWalletsMetadata: {},
     };

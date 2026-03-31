@@ -9,7 +9,8 @@
     "accountTree": "object",
     "accountWalletsMetadata": "object",
     "hasAccountTreeSyncingSyncedAtLeastOnce": "boolean",
-    "isAccountTreeSyncingInProgress": "boolean"
+    "isAccountTreeSyncingInProgress": "boolean",
+    "selectedAccountGroup": "string"
   },
   "AccountsController": {
     "accountIdByAddress": "object",
