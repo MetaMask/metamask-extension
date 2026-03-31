@@ -9,10 +9,7 @@ import { Driver } from '../../webdriver/driver';
 import { login } from '../../page-objects/flows/login.flow';
 import HomePage from '../../page-objects/pages/home/homepage';
 import { setupPhishingDetectionMocks } from './mocks';
-import {
-  DEFAULT_BLOCKED_DOMAIN,
-  BlockProvider,
-} from './helpers';
+import { DEFAULT_BLOCKED_DOMAIN, BlockProvider } from './helpers';
 
 describe('Phishing Detection - Redirect protections', function (this: Suite) {
   /**
