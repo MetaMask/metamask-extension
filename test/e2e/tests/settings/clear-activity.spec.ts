@@ -37,15 +37,8 @@ describe('Clear account activity', function (this: Suite) {
         const settingsPage = new SettingsPage(driver);
         await settingsPage.checkPageIsLoaded();
         await settingsPage.goToDeveloperOptions();
-        await driver.clickElement(
-          '[data-testid="developer-options-delete-activity-and-nonce-data"]',
-        );
-        await driver.waitForSelector(
-          '[data-testid="delete-activity-and-nonce-data-modal"]',
-        );
-        await driver.clickElementAndWaitToDisappear(
-          '[data-testid="delete-activity-and-nonce-data-button"]',
-        );
+        await settingsPage.clickDeveloperOptionsDeleteActivityAndNonceData();
+        await settingsPage.confirmDeleteActivityAndNonceModal();
         await settingsPage.clickBackButton();
 
         await activityList.checkNoTxInActivity();

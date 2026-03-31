@@ -62,6 +62,13 @@ class PrivacySettings {
   private readonly securityAndPasswordSettingsLoadedMarker =
     '[data-testid="reveal-seed-words"]';
 
+  private readonly selectSrpContainer = '[data-testid="select-srp-container"]';
+
+  private readonly privacyTabButton =
+    '[data-testid="settings-v2-tab-item-privacy"]';
+
+  private readonly thirdPartyApisSubpageLink = `a[href="#${THIRD_PARTY_APIS_ROUTE}"]`;
+
   // reveal SRP related locators
   private readonly displayedSrpText = '[data-testid="recovery-phrase-chip-0"]';
 
@@ -171,7 +178,7 @@ class PrivacySettings {
 
   async checkSrpListIsLoaded(): Promise<void> {
     console.log('Check SRP list is loaded on privacy settings page');
-    await this.driver.waitForSelector('[data-testid="select-srp-container"]');
+    await this.driver.waitForSelector(this.selectSrpContainer);
   }
 
   async downloadStateLogs(): Promise<void> {
@@ -285,7 +292,7 @@ class PrivacySettings {
 
   async openRevealSrpQuiz(srpIndex: number = 1): Promise<void> {
     await this.openSrpList();
-    await this.driver.waitForSelector('[data-testid="select-srp-container"]');
+    await this.driver.waitForSelector(this.selectSrpContainer);
     await this.driver.clickElement({
       css: '.select-srp__container',
       text: `Secret Recovery Phrase ${srpIndex.toString()}`,
@@ -327,11 +334,15 @@ class PrivacySettings {
     await this.driver.clickElement(this.ipfsGatewayToggle);
   }
 
+  /**
+   * Opens Third-party APIs (nested under Privacy) by clicking the sidebar Privacy
+   * tab when needed, then the in-page link — same path a user takes in Settings V2.
+   */
   async goToThirdPartyApisSettings(): Promise<void> {
     console.log('Go to Third-party APIs settings page');
-    await this.driver.executeScript(
-      `window.location.hash = ${JSON.stringify(THIRD_PARTY_APIS_ROUTE)};`,
-    );
+    await this.driver.clickElement(this.privacyTabButton);
+    await this.checkPageIsLoaded();
+    await this.driver.clickElement(this.thirdPartyApisSubpageLink);
     await this.driver.waitForSelector(this.ipfsGatewayToggle);
   }
 
@@ -343,21 +354,16 @@ class PrivacySettings {
   }
 
   /**
-   * Checks if the delete MetaMetrics data button is enabled on privacy settings page.
-   *
+   * Waits until the Delete MetaMetrics data button reaches the expected enabled/disabled state.
+   * Prefer this over reading `isEnabled()` immediately to avoid flakes on slow CI.
+   * @param expectedState
    */
-  async checkDeleteMetaMetricsDataButtonEnabled(): Promise<boolean> {
-    await this.driver.waitForSelector(this.deleteMetaMetricsDataButton);
-    const button = await this.driver.findElement(
-      this.deleteMetaMetricsDataButton,
-    );
-    const isEnabled = await button.isEnabled();
-
-    console.log(
-      `Delete MetaMetrics data button is ${isEnabled ? 'enabled' : 'disabled'}`,
-    );
-
-    return isEnabled;
+  async waitForDeleteMetaMetricsDataButtonState(
+    expectedState: 'enabled' | 'disabled',
+  ): Promise<void> {
+    await this.driver.waitForSelector(this.deleteMetaMetricsDataButton, {
+      state: expectedState,
+    });
   }
 
   async checkDisplayedSrpCanBeCopied(): Promise<void> {

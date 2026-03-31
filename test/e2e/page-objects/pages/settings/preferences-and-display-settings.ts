@@ -1,16 +1,21 @@
 import { Driver } from '../../../webdriver/driver';
 import {
   ACCOUNT_IDENTICON_ROUTE,
-  ASSETS_ROUTE,
   LANGUAGE_ROUTE,
-  PREFERENCES_AND_DISPLAY_ROUTE,
 } from '../../../../../ui/helpers/constants/routes';
 
 class PreferencesAndDisplaySettings {
   private readonly driver: Driver;
 
-  private readonly preferencesAndDisplayLanguageLink =
-    'a[href="#/settings/preferences-and-display/language"]';
+  private readonly preferencesTabButton =
+    '[data-testid="settings-v2-tab-item-preferences-and-display"]';
+
+  private readonly assetsTabButton =
+    '[data-testid="settings-v2-tab-item-assets"]';
+
+  private readonly languageSubpageLink = `a[href="#${LANGUAGE_ROUTE}"]`;
+
+  private readonly accountIdenticonSubpageLink = `a[href="#${ACCOUNT_IDENTICON_ROUTE}"]`;
 
   /**
    * Hidden checkbox; click the wrapping label (same pattern as native-token toggle).
@@ -23,6 +28,9 @@ class PreferencesAndDisplaySettings {
   private readonly loadingOverlaySpinner = '.loading-overlay__spinner';
 
   private readonly localeSelectList = '[data-testid="locale-select-list"]';
+
+  private readonly accountIdenticonList =
+    '[data-testid="account-identicon-list"]';
 
   private readonly identicons = {
     maskicon: '[data-testid="account-identicon-option-maskicon"]',
@@ -49,11 +57,9 @@ class PreferencesAndDisplaySettings {
 
   async checkPageIsLoaded(): Promise<void> {
     try {
-      await this.navigateToRoute(PREFERENCES_AND_DISPLAY_ROUTE);
+      await this.driver.clickElement(this.preferencesTabButton);
       await this.checkNoLoadingOverlaySpinner();
-      await this.driver.waitForMultipleSelectors([
-        this.preferencesAndDisplayLanguageLink,
-      ]);
+      await this.driver.waitForMultipleSelectors([this.languageSubpageLink]);
     } catch (e) {
       console.log(
         'Timeout while waiting for Preferences and Display settings page to be loaded',
@@ -66,7 +72,7 @@ class PreferencesAndDisplaySettings {
 
   async checkAssetsPageIsLoaded(): Promise<void> {
     try {
-      await this.navigateToRoute(ASSETS_ROUTE);
+      await this.driver.clickElement(this.assetsTabButton);
       await this.driver.waitForMultipleSelectors([
         this.showNativeTokenAsMainBalanceToggleLabel,
       ]);
@@ -86,7 +92,9 @@ class PreferencesAndDisplaySettings {
       languageToSelect,
       'on preferences and display settings page',
     );
-    await this.navigateToRoute(LANGUAGE_ROUTE);
+    await this.driver.clickElement(this.preferencesTabButton);
+    await this.checkNoLoadingOverlaySpinner();
+    await this.driver.clickElement(this.languageSubpageLink);
     await this.checkNoLoadingOverlaySpinner();
     await this.driver.waitForSelector(this.localeSelectList);
     await this.driver.clickElement({ text: languageToSelect });
@@ -97,8 +105,10 @@ class PreferencesAndDisplaySettings {
     console.log(
       'Checking if identicon options are displayed on preferences and display settings page',
     );
-    await this.navigateToRoute(ACCOUNT_IDENTICON_ROUTE);
-    await this.driver.waitForSelector('[data-testid="account-identicon-list"]');
+    await this.driver.clickElement(this.preferencesTabButton);
+    await this.checkNoLoadingOverlaySpinner();
+    await this.driver.clickElement(this.accountIdenticonSubpageLink);
+    await this.driver.waitForSelector(this.accountIdenticonList);
     await this.driver.waitForSelector(
       '[data-testid="account-identicon-option-blockies"]',
     );
@@ -113,8 +123,10 @@ class PreferencesAndDisplaySettings {
     console.log(
       `Checking if ${identicon} identicon is active on preferences and display settings page`,
     );
-    await this.navigateToRoute(ACCOUNT_IDENTICON_ROUTE);
-    await this.driver.waitForSelector('[data-testid="account-identicon-list"]');
+    await this.driver.clickElement(this.preferencesTabButton);
+    await this.checkNoLoadingOverlaySpinner();
+    await this.driver.clickElement(this.accountIdenticonSubpageLink);
+    await this.driver.waitForSelector(this.accountIdenticonList);
     const activeSelector = this.identicons[identicon];
     await this.driver.waitForSelector(activeSelector);
   }
@@ -140,25 +152,22 @@ class PreferencesAndDisplaySettings {
   }
 
   async toggleShowDefaultAddress(): Promise<void> {
-    await this.navigateToRoute(PREFERENCES_AND_DISPLAY_ROUTE);
+    await this.driver.clickElement(this.preferencesTabButton);
+    await this.checkNoLoadingOverlaySpinner();
     await this.driver.waitForSelector(this.showDefaultAddressToggleLabel);
     await this.driver.clickElement(this.showDefaultAddressToggleLabel);
   }
 
   async checkShowDefaultAddressSectionIsDisplayed(): Promise<void> {
-    await this.navigateToRoute(PREFERENCES_AND_DISPLAY_ROUTE);
+    await this.driver.clickElement(this.preferencesTabButton);
+    await this.checkNoLoadingOverlaySpinner();
     await this.driver.waitForSelector(this.showDefaultAddressToggle);
   }
 
   async checkShowDefaultAddressSectionIsNotDisplayed(): Promise<void> {
-    await this.navigateToRoute(PREFERENCES_AND_DISPLAY_ROUTE);
+    await this.driver.clickElement(this.preferencesTabButton);
+    await this.checkNoLoadingOverlaySpinner();
     await this.driver.assertElementNotPresent(this.showDefaultAddressToggle);
-  }
-
-  private async navigateToRoute(route: string): Promise<void> {
-    await this.driver.executeScript(
-      `window.location.hash = ${JSON.stringify(route)};`,
-    );
   }
 }
 

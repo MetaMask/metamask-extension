@@ -6,8 +6,14 @@ export default class TransactionsSettingsPage {
   private readonly hexDataToggle =
     '[data-testid="transactions-settings-hex-data-toggle"] .toggle-button';
 
+  private readonly securityAlertSection = '[data-testid="securityAlert"]';
+
   constructor(driver: Driver) {
     this.driver = driver;
+  }
+
+  async waitForSecurityAlertsSection(): Promise<void> {
+    await this.driver.waitForSelector(this.securityAlertSection);
   }
 
   async checkPageIsLoaded(): Promise<void> {

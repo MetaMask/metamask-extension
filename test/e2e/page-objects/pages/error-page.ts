@@ -92,7 +92,7 @@ class ErrorPage {
 
   async consentDataToMetamaskSupport(): Promise<void> {
     await this.driver.waitForSelector(this.visitSupportDataConsentModal);
-    await this.#scrollToAndClickElementAndWaitToDisappear(
+    await this.#clickElementAndWaitToDisappear(
       this.visitSupportDataConsentModalAcceptButton,
     );
     // metamask, help page
@@ -101,22 +101,13 @@ class ErrorPage {
 
   async rejectDataToMetamaskSupport(): Promise<void> {
     await this.driver.waitForSelector(this.visitSupportDataConsentModal);
-    await this.#scrollToAndClickElementAndWaitToDisappear(
+    await this.#clickElementAndWaitToDisappear(
       this.visitSupportDataConsentModalRejectButton,
     );
     await this.driver.waitUntilXWindowHandles(2);
   }
 
-  /**
-   * Ensures the control is in view before Selenium's visibility checks (long
-   * error stacks can push footer actions below the fold in the side panel).
-   * @param rawLocator
-   */
-  async #scrollToAndClickElementAndWaitToDisappear(
-    rawLocator: string,
-  ): Promise<void> {
-    const element = await this.driver.findElement(rawLocator);
-    await this.driver.scrollToElement(element);
+  async #clickElementAndWaitToDisappear(rawLocator: string): Promise<void> {
     await this.driver.clickElementAndWaitToDisappear(rawLocator);
   }
 

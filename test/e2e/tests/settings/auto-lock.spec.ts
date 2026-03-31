@@ -23,8 +23,8 @@ describe('Auto-Lock Timer', function () {
 
         // Set auto lock timer to the shortest V2 option: 15 seconds.
         await settingsPage.goToAutoLockSettings();
-        await driver.waitForSelector('[data-testid="auto-lock-options-list"]');
-        await driver.clickElement('[data-testid="auto-lock-option-0.25"]');
+        await settingsPage.waitForAutoLockOptionsList();
+        await settingsPage.selectQuarterMinuteAutoLockOption();
 
         // Necessary wait for the 15-second auto lockout to trigger.
         await driver.delay(16000);

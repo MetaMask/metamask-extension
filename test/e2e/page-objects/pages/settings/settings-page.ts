@@ -1,7 +1,3 @@
-import {
-  ADVANCED_ROUTE,
-  DEFAULT_ROUTE,
-} from '../../../../../ui/helpers/constants/routes';
 import HomePage from '../home/homepage';
 import { Driver } from '../../../webdriver/driver';
 
@@ -72,6 +68,32 @@ class SettingsPage {
   private readonly transactionShieldButton =
     '[data-testid="settings-v2-tab-item-transaction-shield"]';
 
+  private readonly settingsHeaderCloseButton =
+    '[data-testid="settings-v2-header-close-button"]';
+
+  private readonly settingsHeaderBackButton =
+    '[data-testid="settings-v2-header-back-button"]';
+
+  private readonly preinstalledExampleSnapSidebarItem = {
+    text: 'Preinstalled Example Snap',
+    tag: 'p',
+  } as const;
+
+  private readonly autoLockOptionsList =
+    '[data-testid="auto-lock-options-list"]';
+
+  private readonly autoLockOptionQuarterMinute =
+    '[data-testid="auto-lock-option-0.25"]';
+
+  private readonly developerOptionsDeleteActivityAndNonceData =
+    '[data-testid="developer-options-delete-activity-and-nonce-data"]';
+
+  private readonly deleteActivityAndNonceModal =
+    '[data-testid="delete-activity-and-nonce-data-modal"]';
+
+  private readonly deleteActivityAndNonceConfirmButton =
+    '[data-testid="delete-activity-and-nonce-data-button"]';
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
@@ -94,10 +116,21 @@ class SettingsPage {
     return await this.hasElement(this.settingsPageFullscreenRoot);
   }
 
+  /**
+   * Exits Settings the way users do: Close (popup sub-pages) or Back until
+   * leaving settings (fullscreen / root).
+   */
   async clickBackButton(): Promise<void> {
-    await this.driver.executeScript(
-      `window.location.hash = ${JSON.stringify(DEFAULT_ROUTE)};`,
-    );
+    const maxSteps = 15;
+    let steps = 0;
+    while ((await this.isOnSettingsPage()) && steps < maxSteps) {
+      if (await this.hasElement(this.settingsHeaderCloseButton)) {
+        await this.driver.clickElement(this.settingsHeaderCloseButton);
+      } else {
+        await this.driver.clickElement(this.settingsHeaderBackButton);
+      }
+      steps += 1;
+    }
     await new HomePage(this.driver).checkPageIsLoaded();
   }
 
@@ -119,11 +152,13 @@ class SettingsPage {
     await this.driver.clickElement(this.transactionShieldButton);
   }
 
+  /**
+   * Legacy V1 "Advanced" tab does not exist in Settings V2. Uses Developer Tools
+   * tab (closest surface for former advanced-style controls).
+   */
   async goToAdvancedSettings(): Promise<void> {
-    console.log('Navigating to Advanced Settings page');
-    await this.driver.executeScript(
-      `window.location.hash = ${JSON.stringify(ADVANCED_ROUTE)};`,
-    );
+    console.log('Navigating to Advanced Settings page (Developer Tools in V2)');
+    await this.goToDeveloperOptions();
   }
 
   async fillSearchSettingsInput(text: string): Promise<void> {
@@ -148,10 +183,28 @@ class SettingsPage {
 
   async goToPreInstalledExample(): Promise<void> {
     console.log('Navigating to Preinstalled Example Snap settings page');
-    await this.driver.clickElement({
-      text: 'Preinstalled Example Snap',
-      tag: 'p',
-    });
+    await this.driver.clickElement(this.preinstalledExampleSnapSidebarItem);
+  }
+
+  async waitForAutoLockOptionsList(): Promise<void> {
+    await this.driver.waitForSelector(this.autoLockOptionsList);
+  }
+
+  async selectQuarterMinuteAutoLockOption(): Promise<void> {
+    await this.driver.clickElement(this.autoLockOptionQuarterMinute);
+  }
+
+  async clickDeveloperOptionsDeleteActivityAndNonceData(): Promise<void> {
+    await this.driver.clickElement(
+      this.developerOptionsDeleteActivityAndNonceData,
+    );
+  }
+
+  async confirmDeleteActivityAndNonceModal(): Promise<void> {
+    await this.driver.waitForSelector(this.deleteActivityAndNonceModal);
+    await this.driver.clickElementAndWaitToDisappear(
+      this.deleteActivityAndNonceConfirmButton,
+    );
   }
 
   async toggleBalanceSetting(): Promise<void> {
