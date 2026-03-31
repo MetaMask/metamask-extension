@@ -1345,9 +1345,6 @@
   "cancel": {
     "message": "Stornieren"
   },
-  "cancelPopoverTitle": {
-    "message": "Transaktion stornieren"
-  },
   "cancelTransactionDescription": {
     "message": "Diese Transaktion wird storniert und diese Netzwerkgebühr ersetzt die ursprüngliche Gebühr."
   },
@@ -2524,9 +2521,6 @@
     "message": "Gas-Limit muss größer als $1 und kleiner als $2 sein",
     "description": "$1 is the minimum limit for gas and $2 is the maximum limit"
   },
-  "editGasLimitTooltip": {
-    "message": "Gas-Limit ist die maximale Gas-Einheit die Sie zu verwenden bereit sind. Gas-Einheiten sind ein Multiplikator der „Max. Prioritätsgebühr“ und der „Max. Gebühr“."
-  },
   "editGasMaxBaseFeeGWEIImbalance": {
     "message": "Die maximale Grundgebühr darf nicht niedriger sein als die Prioritätsgebühr."
   },
@@ -2565,12 +2559,6 @@
   },
   "editGasPriceTooLow": {
     "message": "Gas-Preis muss größer als 0 sein"
-  },
-  "editGasPriceTooltip": {
-    "message": "Dieses Netzwerk erfordert ein „Gas-Preis“-Feld beim Absenden einer Transaktion. Der Gas-Preis ist der Betrag, den Sie pro Gas-Einheit bezahlen."
-  },
-  "editGasTitle": {
-    "message": "Priorität bearbeiten"
   },
   "editGasTooLow": {
     "message": "Unbekannte Bearbeitungszeit"
@@ -2984,18 +2972,8 @@
   "gas": {
     "message": "Gas"
   },
-  "gasDisplayAcknowledgeDappButtonText": {
-    "message": "Vorgeschlagene Gas-Gebühr bearbeiten"
-  },
-  "gasDisplayDappWarning": {
-    "message": "Diese Gas-Gebühr wurde von $1 vorgeschlagen. Dies kann ein Problem mit Ihrer Transaktion verursachen. Bei Fragen wenden Sie sich bitte an $1.",
-    "description": "$1 represents the Dapp's origin"
-  },
   "gasLimit": {
     "message": "Gas-Limit"
-  },
-  "gasLimitRecommended": {
-    "message": "Das empfohlene Gas-Limit liegt bei $1. Wenn Ihr Gas-Limit unter diesem liegt, könnte die Transaktion fehlschlagen."
   },
   "gasLimitTooLow": {
     "message": "Gas-Limit muss mindestens 21.000 betragen"
@@ -7918,15 +7896,6 @@
   },
   "speedUpCancellation": {
     "message": "Diese Stornierung beschleunigen"
-  },
-  "speedUpExplanation": {
-    "message": "Wir haben die Gas-Gebühr auf der Grundlage der aktuellen Netzbedingungen aktualisiert und um mindestens 10 % erhöht (erforderlich durch das Netzwerk)."
-  },
-  "speedUpPopoverTitle": {
-    "message": "Transaktion beschleunigen"
-  },
-  "speedUpTooltipText": {
-    "message": "Neue Gas-Gebühr"
   },
   "speedUpTransactionDescription": {
     "message": "Diese Netzwerkgebühr ersetzt die ursprüngliche Gebühr."

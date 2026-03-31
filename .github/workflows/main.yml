@@ -125,7 +125,15 @@ jobs:
     needs:
       - get-requirements
       - prep-deps
-    if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
+    if: >-
+      ${{
+        !cancelled() &&
+        !contains(needs.*.result, 'failure') &&
+        (
+          needs.get-requirements.outputs.skip-everything != 'true' ||
+          needs.get-requirements.outputs.just-repository-health-checks == 'true'
+        )
+      }}
     permissions:
       contents: read
       issues: write
