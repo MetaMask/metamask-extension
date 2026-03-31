@@ -427,6 +427,32 @@ describe('PerpsOrderEntryPage', () => {
       expect(screen.getByTestId('submit-order-button')).toBeDisabled();
     });
 
+    it('disables submit when selected account address is missing', async () => {
+      const state = createMockState();
+      state.metamask.internalAccounts = {
+        ...state.metamask.internalAccounts,
+        selectedAccount: 'missing-account-id',
+      };
+      const store = mockStore(state);
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      const submitButton = screen.getByTestId('submit-order-button');
+      expect(submitButton).toBeDisabled();
+
+      await act(async () => {
+        fireEvent.click(submitButton);
+      });
+
+      expect(mockSubmitRequestToBackground).not.toHaveBeenCalledWith(
+        'perpsPlaceOrder',
+        expect.anything(),
+      );
+      expect(mockSubmitRequestToBackground).not.toHaveBeenCalledWith(
+        'perpsClosePosition',
+        expect.anything(),
+      );
+    });
+
     it('disables submit when long limit price is above current price', () => {
       mockSearchParams.set('orderType', 'limit');
       mockSearchParams.set('direction', 'long');
