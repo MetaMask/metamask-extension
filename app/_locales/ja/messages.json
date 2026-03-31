@@ -1345,9 +1345,6 @@
   "cancel": {
     "message": "キャンセル"
   },
-  "cancelPopoverTitle": {
-    "message": "トランザクションのキャンセル"
-  },
   "cancelTransactionDescription": {
     "message": "このトランザクションはキャンセルされ、このネットワーク手数料が元の手数料に代わって適用されます。"
   },
@@ -2524,9 +2521,6 @@
     "message": "ガスリミットは$1より大きく、$2未満でなければなりません",
     "description": "$1 is the minimum limit for gas and $2 is the maximum limit"
   },
-  "editGasLimitTooltip": {
-    "message": "ガスリミットは、使用しても構わないガスの最大単位数です。ガスの単位数は、「最大優先手数料」および「最大手数料」の乗数になります。"
-  },
   "editGasMaxBaseFeeGWEIImbalance": {
     "message": "最大基本料金を優先手数料よりも低くすることはできません"
   },
@@ -2565,12 +2559,6 @@
   },
   "editGasPriceTooLow": {
     "message": "ガス価格は0より高くなければなりません"
-  },
-  "editGasPriceTooltip": {
-    "message": "このネットワークは、トランザクションの送信時に「ガス価格」フィールドが必要です。ガス価格は、ガス1単位あたりに支払う金額です。"
-  },
-  "editGasTitle": {
-    "message": "優先度を編集"
   },
   "editGasTooLow": {
     "message": "処理時間不明"
@@ -2984,18 +2972,8 @@
   "gas": {
     "message": "ガス"
   },
-  "gasDisplayAcknowledgeDappButtonText": {
-    "message": "推奨ガス代を編集"
-  },
-  "gasDisplayDappWarning": {
-    "message": "このガス代は$1により推奨されています。これを上書きすると、トランザクションに問題が発生する可能性があります。ご質問がございましたら、$1 にお問い合わせください。",
-    "description": "$1 represents the Dapp's origin"
-  },
   "gasLimit": {
     "message": "ガスリミット"
-  },
-  "gasLimitRecommended": {
-    "message": "ガス代上限の推奨値は$1です。それ未満の場合は失敗する可能性があります。"
   },
   "gasLimitTooLow": {
     "message": "ガスリミットは21000以上にする必要があります"
@@ -7918,15 +7896,6 @@
   },
   "speedUpCancellation": {
     "message": "このキャンセルを高速化"
-  },
-  "speedUpExplanation": {
-    "message": "現在のネットワーク状況に基づきガス代を更新し、10%以上 (ネットワークによる要件) 増額させました。"
-  },
-  "speedUpPopoverTitle": {
-    "message": "トランザクションを高速化"
-  },
-  "speedUpTooltipText": {
-    "message": "新しいガス代"
   },
   "speedUpTransactionDescription": {
     "message": "このネットワーク手数料が元の手数料に代わって適用されます。"

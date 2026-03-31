@@ -1,14 +1,34 @@
 import { memoize, escape as lodashEscape } from 'lodash';
+import type { ErrorLike } from '../constants/errors';
+import type { I18NMessageDict } from './i18n';
 import { fetchLocale, loadRelativeTimeFormatLocaleData } from './i18n';
 import getFirstPreferredLangCode from './get-first-preferred-lang-code';
 import { switchDirectionForPreferredLocale } from './switch-direction';
 
 const defaultLocale = 'en';
-const _setupLocale = async (currentLocale) => {
+
+/**
+ * The context returned by {@link maybeGetLocaleContext} and accepted by
+ * {@link getErrorHtml}.
+ */
+export type LocaleContext = {
+  preferredLocale: string;
+  t: (key: string) => string | undefined;
+};
+
+const _setupLocale = async (
+  currentLocale: string | undefined,
+): Promise<{
+  currentLocaleMessages: I18NMessageDict;
+  enLocaleMessages: I18NMessageDict;
+}> => {
   const enRelativeTime = loadRelativeTimeFormatLocaleData(defaultLocale);
   const enLocale = fetchLocale(defaultLocale);
 
-  const promises = [enRelativeTime, enLocale];
+  const promises: Promise<I18NMessageDict | void>[] = [
+    enRelativeTime,
+    enLocale,
+  ];
   if (currentLocale === defaultLocale) {
     // enLocaleMessages and currentLocaleMessages are the same; reuse enLocale
     promises.push(enLocale); // currentLocaleMessages
@@ -18,18 +38,24 @@ const _setupLocale = async (currentLocale) => {
     promises.push(loadRelativeTimeFormatLocaleData(currentLocale));
   } else {
     // currentLocale is not set
-    promises.push(Promise.resolve({})); // currentLocaleMessages
+    promises.push(Promise.resolve({}) as Promise<I18NMessageDict>); // currentLocaleMessages
   }
 
   const [, enLocaleMessages, currentLocaleMessages] =
     await Promise.all(promises);
-  return { currentLocaleMessages, enLocaleMessages };
+  return {
+    currentLocaleMessages: currentLocaleMessages as I18NMessageDict,
+    enLocaleMessages: enLocaleMessages as I18NMessageDict,
+  };
 };
 
 export const setupLocale = memoize(_setupLocale);
 
-export const getLocaleContext = (currentLocaleMessages, enLocaleMessages) => {
-  return (key) => {
+export const getLocaleContext = (
+  currentLocaleMessages: I18NMessageDict,
+  enLocaleMessages: I18NMessageDict,
+): ((key: string) => string | undefined) => {
+  return (key: string) => {
     let message = currentLocaleMessages[key]?.message;
     if (!message && enLocaleMessages[key]) {
       message = enLocaleMessages[key].message;
@@ -38,7 +64,7 @@ export const getLocaleContext = (currentLocaleMessages, enLocaleMessages) => {
   };
 };
 
-export function getErrorHtmlBase(errorBody) {
+export function getErrorHtmlBase(errorBody: string): string {
   return `
     <div class="critical-error__container">
       <div class="critical-error">
@@ -67,11 +93,13 @@ export function getErrorHtmlBase(errorBody) {
  *
  * Does not throw.
  *
- * @param {string} [currentLocale] - The current locale
- * @returns {Promise<{preferredLocale: string, t: (any) => any}>} A promise that resolves to an object containing the preferred locale and a translation function.
+ * @param currentLocale - The current locale
+ * @returns A promise that resolves to an object containing the preferred locale and a translation function.
  */
-export async function maybeGetLocaleContext(currentLocale) {
-  let preferredLocale;
+export async function maybeGetLocaleContext(
+  currentLocale?: string,
+): Promise<LocaleContext> {
+  let preferredLocale: string | undefined;
   try {
     preferredLocale = currentLocale ?? (await getFirstPreferredLangCode());
     const response = await setupLocale(preferredLocale);
@@ -87,13 +115,18 @@ export async function maybeGetLocaleContext(currentLocale) {
 /**
  * Get the HTML for a critical error message.
  *
- * @param {import('../../ui/helpers/utils/display-critical-error').CriticalErrorTranslationKey} errorKey - The key for the error message.
- * @param {ErrorLike} error - The error object to log.
- * @param {{preferredLocale: string, t: (string) => string}} localeContext - The MetaMask state containing the current locale and translation function.
- * @param {string} [supportLink] - The support link to include in the footer.
- * @returns {string} The HTML string for the critical error message.
+ * @param errorKey - The key for the error message.
+ * @param error - The error object to log.
+ * @param localeContext - The MetaMask state containing the current locale and translation function.
+ * @param supportLink - The support link to include in the footer.
+ * @returns The HTML string for the critical error message.
  */
-export function getErrorHtml(errorKey, error, localeContext, supportLink) {
+export function getErrorHtml(
+  errorKey: string,
+  error: ErrorLike | undefined,
+  localeContext: LocaleContext,
+  supportLink?: string,
+): string {
   switchDirectionForPreferredLocale(localeContext.preferredLocale);
   const { t } = localeContext;
 
@@ -127,7 +160,7 @@ export function getErrorHtml(errorKey, error, localeContext, supportLink) {
 
   /**
    * The pattern ${errorKey === 'somethingIsWrong' ? t('somethingIsWrong') : ''}
-   * is necessary because we we need linter to see the string
+   * is necessary because we need linter to see the string
    * of the locale keys. If we use the variable directly, the linter will not
    * see the string and will not be able to check if the locale key exists.
    */

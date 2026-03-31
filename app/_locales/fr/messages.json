@@ -1345,9 +1345,6 @@
   "cancel": {
     "message": "Annuler"
   },
-  "cancelPopoverTitle": {
-    "message": "Annuler la transaction"
-  },
   "cancelTransactionDescription": {
     "message": "Cette transaction sera annulée et ces frais de réseau remplaceront les frais initiaux."
   },
@@ -2524,9 +2521,6 @@
     "message": "La limite de carburant doit être supérieure à $1 et inférieure à $2",
     "description": "$1 is the minimum limit for gas and $2 is the maximum limit"
   },
-  "editGasLimitTooltip": {
-    "message": "La limite de carburant correspond au maximum d’unités de carburant que vous consentez à utiliser. Celles-ci servent de multiplicateur aux « Frais de priorité maximaux » et aux « Frais maximaux »."
-  },
   "editGasMaxBaseFeeGWEIImbalance": {
     "message": "Les frais de base maximaux ne peuvent pas être inférieurs aux frais de priorité"
   },
@@ -2565,12 +2559,6 @@
   },
   "editGasPriceTooLow": {
     "message": "Les frais de carburant doivent être supérieurs à 0"
-  },
-  "editGasPriceTooltip": {
-    "message": "Ce réseau exige un champ « Prix du carburant » lors de la soumission d’une transaction. Le prix du carburant correspond au montant que vous paierez par unité de carburant."
-  },
-  "editGasTitle": {
-    "message": "Modifier la priorité"
   },
   "editGasTooLow": {
     "message": "Délai de traitement inconnu"
@@ -2984,18 +2972,8 @@
   "gas": {
     "message": "Carburant"
   },
-  "gasDisplayAcknowledgeDappButtonText": {
-    "message": "Modifier les frais de gaz suggérés"
-  },
-  "gasDisplayDappWarning": {
-    "message": "Ces frais de gaz ont été suggérés par $1. Si vous n’en tenez pas compte, vous risquez de rencontrer des difficultés lors de votre transaction. Veuillez contacter $1 pour toute question.",
-    "description": "$1 represents the Dapp's origin"
-  },
   "gasLimit": {
     "message": "Limite de gaz"
-  },
-  "gasLimitRecommended": {
-    "message": "La limite de gaz recommandée est $1. Si la limite de gaz est inférieure à cette valeur, un échec peut en résulter."
   },
   "gasLimitTooLow": {
     "message": "La limite de carburant doit être d’au moins 21000"
@@ -7918,15 +7896,6 @@
   },
   "speedUpCancellation": {
     "message": "Accélérer cette annulation"
-  },
-  "speedUpExplanation": {
-    "message": "Nous avons mis à jour le prix du carburant selon les conditions actuelles du réseau et l’avons augmenté d’au moins 10 % (requis par le réseau)."
-  },
-  "speedUpPopoverTitle": {
-    "message": "Accélérer la transaction"
-  },
-  "speedUpTooltipText": {
-    "message": "Nouveaux frais de gaz"
   },
   "speedUpTransactionDescription": {
     "message": "Ces frais de réseau remplaceront les frais initiaux."
