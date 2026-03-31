@@ -3,6 +3,7 @@ import { act } from 'react-dom/test-utils';
 import { CriticalErrorType } from '../../../shared/constants/state-corruption';
 import { CRITICAL_ERROR_SCREEN_VIEWED } from '../../../shared/constants/start-up-errors';
 import * as errorUtils from '../../../shared/lib/error-utils';
+import * as backupHelpers from '../../../shared/lib/backup';
 import {
   displayCriticalErrorMessage,
   displayCriticalErrorPage,
@@ -59,60 +60,6 @@ function mockGetErrorHtmlWithOptionalRestoreLink() {
   `;
 }
 
-/** Install IndexedDB mock that returns a vault backup. Returns a restore function to reset global. */
-function mockIndexedDBWithVault(): () => void {
-  const originalIndexedDB = global.indexedDB;
-  const mockKeyringResult = { vault: 'encrypted-vault-data' };
-  const mockStore = {
-    get: jest.fn().mockImplementation(() => {
-      const getRequest = {
-        result: mockKeyringResult,
-        onsuccess: null as (() => void) | null,
-        onerror: null as (() => void) | null,
-      };
-      setTimeout(() => getRequest.onsuccess?.(), 0);
-      return getRequest;
-    }),
-  };
-  const mockTransaction = { objectStore: jest.fn().mockReturnValue(mockStore) };
-  const mockDb = {
-    transaction: jest.fn().mockReturnValue(mockTransaction),
-    close: jest.fn(),
-  };
-  const mockOpen = jest.fn().mockImplementation(() => {
-    const request = {
-      result: mockDb,
-      onsuccess: null as (() => void) | null,
-      onerror: null as (() => void) | null,
-    };
-    setTimeout(() => request.onsuccess?.(), 0);
-    return request;
-  });
-  global.indexedDB = { open: mockOpen } as unknown as IDBFactory;
-  return () => {
-    global.indexedDB = originalIndexedDB;
-  };
-}
-
-/** Install IndexedDB mock that fails (no backup). Returns a restore function to reset global. */
-function mockIndexedDBNoBackup(): () => void {
-  const originalIndexedDB = global.indexedDB;
-  const mockOpen = jest.fn().mockImplementation(() => {
-    const request = {
-      result: null,
-      error: new Error('DB error'),
-      onsuccess: null as (() => void) | null,
-      onerror: null as (() => void) | null,
-    };
-    setTimeout(() => request.onerror?.(), 0);
-    return request;
-  });
-  global.indexedDB = { open: mockOpen } as unknown as IDBFactory;
-  return () => {
-    global.indexedDB = originalIndexedDB;
-  };
-}
-
 /** Minimal mock port for tests that pass port when possible (no backup in these tests). */
 const createMockPort = () =>
   ({
@@ -126,7 +73,6 @@ const createMockPort = () =>
 describe('displayCriticalError', () => {
   let rootContainer: HTMLElement;
   let container: HTMLElement;
-  let restoreIndexedDB: () => void;
   const MOCK_ERROR_MESSAGE = 'test error';
   const EXPECTED_ENVELOPE_URL = extractEnvelopeUrlFromDsn(MOCK_SENTRY_DSN_DEV);
 
@@ -143,8 +89,7 @@ describe('displayCriticalError', () => {
     rootContainer = document.createElement('div');
     rootContainer.appendChild(container);
 
-    // Mock IndexedDB (no backup) so passing port does not throw; hasBackup stays false.
-    restoreIndexedDB = mockIndexedDBNoBackup();
+    jest.spyOn(backupHelpers, 'safeGetVaultBackup').mockResolvedValue(null);
 
     global.fetch = jest.fn().mockResolvedValue({
       ok: true,
@@ -163,7 +108,6 @@ describe('displayCriticalError', () => {
   });
 
   afterEach(() => {
-    restoreIndexedDB?.();
     jest.clearAllMocks();
   });
 
@@ -386,8 +330,10 @@ describe('restore accounts link', () => {
   let rootContainer: HTMLElement;
   let container: HTMLElement;
   let mockPort: browser.Runtime.Port;
-  let restoreIndexedDB: (() => void) | null = null;
   const MOCK_ERROR_MESSAGE = 'Background initialization timeout';
+  const backupWithVault = {
+    KeyringController: { vault: 'encrypted-vault-data' },
+  };
 
   beforeEach(() => {
     container = document.createElement('div');
@@ -418,13 +364,13 @@ describe('restore accounts link', () => {
       localeMessages: {},
       enLocaleMessages: {},
     });
+
+    jest
+      .spyOn(backupHelpers, 'safeGetVaultBackup')
+      .mockResolvedValue(backupWithVault);
   });
 
   afterEach(() => {
-    if (restoreIndexedDB) {
-      restoreIndexedDB();
-      restoreIndexedDB = null;
-    }
     jest.clearAllMocks();
   });
 
@@ -433,7 +379,6 @@ describe('restore accounts link', () => {
       .spyOn(errorUtils, 'getErrorHtml')
       .mockImplementation(mockGetErrorHtmlWithOptionalRestoreLink());
 
-    restoreIndexedDB = mockIndexedDBWithVault();
     jest.spyOn(window, 'confirm').mockReturnValue(true);
 
     const error = new Error(MOCK_ERROR_MESSAGE);
@@ -486,7 +431,6 @@ describe('restore accounts link', () => {
       .spyOn(errorUtils, 'getErrorHtml')
       .mockImplementation(mockGetErrorHtmlWithOptionalRestoreLink());
 
-    restoreIndexedDB = mockIndexedDBWithVault();
     jest.spyOn(window, 'confirm').mockReturnValue(false);
 
     const error = new Error(MOCK_ERROR_MESSAGE);
@@ -530,7 +474,7 @@ describe('restore accounts link', () => {
       .spyOn(errorUtils, 'getErrorHtml')
       .mockImplementation(mockGetErrorHtmlWithOptionalRestoreLink());
 
-    restoreIndexedDB = mockIndexedDBNoBackup();
+    jest.mocked(backupHelpers.safeGetVaultBackup).mockResolvedValue(null);
 
     const error = new Error(MOCK_ERROR_MESSAGE);
 
