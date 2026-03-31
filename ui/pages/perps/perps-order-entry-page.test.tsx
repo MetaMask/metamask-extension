@@ -131,6 +131,18 @@ jest.mock('react-router-dom', () => ({
   },
 }));
 
+const mockIsNearLiquidationPrice = jest.fn();
+jest.mock('../../components/app/perps/order-entry/limit-price-warnings', () => {
+  const actual = jest.requireActual(
+    '../../components/app/perps/order-entry/limit-price-warnings',
+  );
+  return {
+    ...actual,
+    isNearLiquidationPrice: (...args: unknown[]) =>
+      mockIsNearLiquidationPrice(...args),
+  };
+});
+
 // eslint-disable-next-line import-x/first
 import PerpsOrderEntryPage from './perps-order-entry-page';
 
@@ -152,6 +164,11 @@ describe('PerpsOrderEntryPage', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    const { isNearLiquidationPrice: realIsNearLiquidation } =
+      jest.requireActual(
+        '../../components/app/perps/order-entry/limit-price-warnings',
+      );
+    mockIsNearLiquidationPrice.mockImplementation(realIsNearLiquidation);
     mockUseParams.mockReturnValue({ symbol: 'ETH' });
     mockSearchParams.delete('direction');
     mockSearchParams.delete('mode');
@@ -333,6 +350,111 @@ describe('PerpsOrderEntryPage', () => {
       renderWithProvider(<PerpsOrderEntryPage />, store);
 
       expect(screen.getByTestId('submit-order-button')).toBeDisabled();
+    });
+
+    it('disables submit when long limit price is above current price', () => {
+      mockSearchParams.set('orderType', 'limit');
+      mockSearchParams.set('direction', 'long');
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      const limitContainer = screen.getByTestId('limit-price-input');
+      const limitInput = limitContainer.querySelector('input');
+      fireEvent.change(limitInput as HTMLInputElement, {
+        target: { value: '99999' },
+      });
+
+      expect(screen.getByTestId('submit-order-button')).toBeDisabled();
+    });
+
+    it('disables submit when short limit price is below current price', () => {
+      mockSearchParams.set('orderType', 'limit');
+      mockSearchParams.set('direction', 'short');
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      const limitContainer = screen.getByTestId('limit-price-input');
+      const limitInput = limitContainer.querySelector('input');
+      fireEvent.change(limitInput as HTMLInputElement, {
+        target: { value: '1' },
+      });
+
+      expect(screen.getByTestId('submit-order-button')).toBeDisabled();
+    });
+
+    it('does not disable submit for favorable long limit price', () => {
+      mockSearchParams.set('orderType', 'limit');
+      mockSearchParams.set('direction', 'long');
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      const amountContainer = screen.getByTestId('amount-input-field');
+      const amountInput = amountContainer.querySelector('input');
+      fireEvent.change(amountInput as HTMLInputElement, {
+        target: { value: '100' },
+      });
+
+      const limitContainer = screen.getByTestId('limit-price-input');
+      const limitInput = limitContainer.querySelector('input');
+      fireEvent.change(limitInput as HTMLInputElement, {
+        target: { value: '1000' },
+      });
+
+      expect(screen.getByTestId('submit-order-button')).not.toBeDisabled();
+    });
+
+    it('does not disable submit for favorable short limit price', () => {
+      mockSearchParams.set('orderType', 'limit');
+      mockSearchParams.set('direction', 'short');
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      const amountContainer = screen.getByTestId('amount-input-field');
+      const amountInput = amountContainer.querySelector('input');
+      fireEvent.change(amountInput as HTMLInputElement, {
+        target: { value: '100' },
+      });
+
+      const limitContainer = screen.getByTestId('limit-price-input');
+      const limitInput = limitContainer.querySelector('input');
+      fireEvent.change(limitInput as HTMLInputElement, {
+        target: { value: '99999' },
+      });
+
+      expect(screen.getByTestId('submit-order-button')).not.toBeDisabled();
+    });
+
+    it('disables submit when limit order would be near liquidation', async () => {
+      mockIsNearLiquidationPrice.mockReturnValue(true);
+
+      mockSearchParams.set('orderType', 'limit');
+      mockSearchParams.set('direction', 'long');
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      const amountContainer = screen.getByTestId('amount-input-field');
+      const amountInput = amountContainer.querySelector('input');
+      fireEvent.change(amountInput as HTMLInputElement, {
+        target: { value: '1000' },
+      });
+
+      // Favorable limit price (below currentPrice ~$3,025.50) so the
+      // button is NOT disabled by the unfavorable-price guard.
+      const limitContainer = screen.getByTestId('limit-price-input');
+      const limitInput = limitContainer.querySelector('input');
+      fireEvent.change(limitInput as HTMLInputElement, {
+        target: { value: '3000' },
+      });
+
+      await waitFor(() => {
+        expect(screen.getByTestId('submit-order-button')).toBeDisabled();
+      });
+      expect(
+        screen.queryByTestId('limit-price-warning'),
+      ).not.toBeInTheDocument();
+      expect(
+        screen.getByTestId('limit-price-liquidation-warning'),
+      ).toBeInTheDocument();
     });
   });
 
