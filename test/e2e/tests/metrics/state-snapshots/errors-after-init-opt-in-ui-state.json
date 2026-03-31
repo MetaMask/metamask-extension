@@ -412,6 +412,7 @@
     "throttledOrigins": "object",
     "tokenBalances": "object",
     "tokenScanCache": "object",
+    "tokenWarnings": "object",
     "tokensChainsCache": { "0x539": "object" },
     "tracesBeforeMetricsOptIn": "object",
     "tradeConfigurations": "object",
