@@ -957,7 +957,7 @@ const PerpsMarketDetailPage: React.FC = () => {
                     {showSizeInFiat
                       ? formatCurrencyWithMinThreshold(
                           Math.abs(parseFloat(position.size)) *
-                            parseFloat(position.entryPrice),
+                            parseFloat(position.entryPrice.replace(/,/gu, '')),
                           'USD',
                         )
                       : `${formatNumber(Math.abs(parseFloat(position.size)), { maximumSignificantDigits: 4 })} ${getDisplayName(position.symbol)}`}
