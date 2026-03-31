@@ -93,7 +93,10 @@ import {
   getSelectedMultichainNetworkConfiguration,
   MultichainNetworkControllerState,
 } from './multichain/networks';
-import { getInternalAccountBySelectedAccountGroupAndCaip } from './multichain-accounts/account-tree';
+import {
+  getInternalAccountBySelectedAccountGroupAndCaip,
+  getSelectedAccountGroup,
+} from './multichain-accounts/account-tree';
 
 export type AssetsState = {
   metamask: MultichainAssetsControllerState;
@@ -207,6 +210,7 @@ export const selectAggregatedBalanceForSelectedAccount = createSelector(
     getCustomAssets,
     getCurrentCurrency,
     getSelectedInternalAccount,
+    getSelectedAccountGroup,
     getEnabledNetworks,
     (state: AggregatedBalanceState) => state.metamask?.accountTree,
     (state: AggregatedBalanceState) =>
@@ -238,6 +242,7 @@ export const selectAggregatedBalanceForSelectedAccount = createSelector(
     customAssets,
     selectedCurrency,
     selectedInternalAccount,
+    selectedAccountGroup,
     enabledNetworkMap,
     accountTree,
     isAccountTreeSyncingInProgress,
@@ -260,6 +265,7 @@ export const selectAggregatedBalanceForSelectedAccount = createSelector(
     };
     const accountTreeState: AccountTreeControllerState | undefined = accountTree
       ? {
+          selectedAccountGroup,
           accountTree,
           isAccountTreeSyncingInProgress:
             isAccountTreeSyncingInProgress ?? false,
@@ -749,7 +755,6 @@ const getMetamaskState = (state: BalanceCalculationState) =>
 
 const EMPTY_ACCOUNT_TREE = Object.freeze({
   wallets: {},
-  selectedAccountGroup: '',
 });
 
 // Renamed for clarity
@@ -764,12 +769,21 @@ const selectAccountTreeStateForBalances = createSelector(
     (state: BalanceCalculationState) => getMetamaskState(state).accountTree,
 
     (state: BalanceCalculationState) =>
+      getMetamaskState(state).selectedAccountGroup,
+
+    (state: BalanceCalculationState) =>
       getMetamaskState(state).accountGroupsMetadata,
 
     (state: BalanceCalculationState) =>
       getMetamaskState(state).accountWalletsMetadata,
   ],
-  (accountTree, accountGroupsMetadata, accountWalletsMetadata) => ({
+  (
+    accountTree,
+    selectedAccountGroup,
+    accountGroupsMetadata,
+    accountWalletsMetadata,
+  ) => ({
+    selectedAccountGroup: selectedAccountGroup ?? '',
     accountTree: accountTree ?? EMPTY_ACCOUNT_TREE,
     accountGroupsMetadata: accountGroupsMetadata ?? EMPTY_OBJECT,
     accountWalletsMetadata: accountWalletsMetadata ?? EMPTY_OBJECT,
@@ -1082,7 +1096,7 @@ export const selectBalanceChangeBySelectedAccountGroup = (
       currencyRateState,
       enabledNetworkMap,
     ): BalanceChangeResult | null => {
-      const groupId = accountTreeState?.accountTree?.selectedAccountGroup;
+      const groupId = accountTreeState?.selectedAccountGroup;
       if (!groupId) {
         return null;
       }
@@ -1191,7 +1205,7 @@ export const selectAccountGroupBalanceForEmptyState = createSelector(
     allMainnetNetworksMap,
     accountsByChainId,
   ): boolean => {
-    const selectedGroupId = accountTreeState?.accountTree?.selectedAccountGroup;
+    const selectedGroupId = accountTreeState?.selectedAccountGroup;
     if (!selectedGroupId) {
       return false;
     }
@@ -1336,7 +1350,7 @@ export const selectAccountGroupBalanceForEmptyState = createSelector(
 export const selectBalanceBySelectedAccountGroup = createSelector(
   [selectAccountTreeStateForBalances, selectBalanceForAllWallets],
   (accountTreeState, allBalances) => {
-    const selectedGroupId = accountTreeState?.accountTree?.selectedAccountGroup;
+    const selectedGroupId = accountTreeState?.selectedAccountGroup;
     if (!selectedGroupId) {
       return null;
     }
@@ -1402,6 +1416,7 @@ export const selectBalanceByWallet = (walletId: string) =>
 // eslint-disable-next-line @typescript-eslint/no-explicit-any -- There is no type for the root state
 const getStateForAssetSelector = ({ metamask }: any) => {
   const initialState = {
+    selectedAccountGroup: metamask.selectedAccountGroup,
     accountTree: metamask.accountTree,
     internalAccounts: metamask.internalAccounts,
     allTokens: getTokensControllerAllTokens({ metamask }),

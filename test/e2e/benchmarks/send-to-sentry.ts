@@ -19,7 +19,7 @@ import * as Sentry from '@sentry/node';
 import { isNullOrUndefined } from '@metamask/utils';
 import { hideBin } from 'yargs/helpers';
 import yargs from 'yargs/yargs';
-import { StatKey } from '../../../shared/constants/benchmarks';
+import { STAT_KEY } from '../../../shared/constants/benchmarks';
 import type {
   BenchmarkResults,
   WebVitalsSummary,
@@ -227,7 +227,7 @@ async function main() {
       }
 
       const allMetrics: Record<string, number> = {};
-      const statTypes = Object.values(StatKey);
+      const statTypes = Object.values(STAT_KEY);
       for (const statType of statTypes) {
         const statData = benchmark[statType];
         if (statData && Object.keys(statData).length > 0) {

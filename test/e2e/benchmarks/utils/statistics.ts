@@ -8,7 +8,7 @@
  * - Sanity checks for metric validation
  */
 
-import { ThresholdSeverity } from '../../../../shared/constants/benchmarks';
+import { THRESHOLD_SEVERITY } from '../../../../shared/constants/benchmarks';
 import type {
   BenchmarkResults,
   PercentileKey,
@@ -435,7 +435,7 @@ const validatePercentile = (
       percentile,
       value,
       threshold: failThreshold,
-      severity: ThresholdSeverity.Fail,
+      severity: THRESHOLD_SEVERITY.Fail,
     };
   }
 
@@ -445,7 +445,7 @@ const validatePercentile = (
       percentile,
       value,
       threshold: warnThreshold,
-      severity: ThresholdSeverity.Warn,
+      severity: THRESHOLD_SEVERITY.Warn,
     };
   }
 
@@ -526,7 +526,9 @@ export const validateThresholds = (
     violations.push(...timerViolations);
   }
 
-  const passed = !violations.some((v) => v.severity === ThresholdSeverity.Fail);
+  const passed = !violations.some(
+    (v) => v.severity === THRESHOLD_SEVERITY.Fail,
+  );
 
   return { violations, passed };
 };
@@ -574,7 +576,9 @@ export const validateResultThresholds = (
     }
   }
 
-  const passed = !violations.some((v) => v.severity === ThresholdSeverity.Fail);
+  const passed = !violations.some(
+    (v) => v.severity === THRESHOLD_SEVERITY.Fail,
+  );
   return { violations, passed };
 };
 
@@ -720,7 +724,7 @@ export function logThresholdResult(violations: ThresholdViolation[]): void {
   if (violations.length > 0) {
     console.log('\n  Threshold Violations:');
     violations.forEach((v) => {
-      const icon = v.severity === ThresholdSeverity.Fail ? '🔺' : '🔼';
+      const icon = v.severity === THRESHOLD_SEVERITY.Fail ? '🔺' : '🔼';
       console.log(
         `    ${icon} ${v.metricId} (${v.percentile}): ${v.value.toFixed(2)}ms > ${v.threshold}ms`,
       );
