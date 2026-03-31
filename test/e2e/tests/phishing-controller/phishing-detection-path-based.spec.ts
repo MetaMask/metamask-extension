@@ -2,7 +2,6 @@ import { until } from 'selenium-webdriver';
 import { Suite } from 'mocha';
 import { Mockttp } from 'mockttp';
 import { withFixtures } from '../../helpers';
-import { WINDOW_TITLES } from '../../constants';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import HomePage from '../../page-objects/pages/home/homepage';
 import PhishingWarningPage from '../../page-objects/pages/phishing-warning-page';
@@ -13,6 +12,9 @@ import {
   BlockProvider,
   waitForPhishingBlocklistToBeLoaded,
 } from './helpers';
+
+/** Matches the URL the extension uses after redirect (PhishingWarningPageServer, port 9999). */
+const PHISHING_WARNING_URL_SNIPPET = 'localhost:9999';
 
 describe('Phishing Detection - Path-based URLs', function (this: Suite) {
   describe('blocklisted paths', function () {
@@ -43,7 +45,9 @@ describe('Phishing Detection - Path-based URLs', function (this: Suite) {
           await waitForPhishingBlocklistToBeLoaded(driver);
 
           await driver.openNewPage('http://127.0.0.1:8080/path1/');
-          await driver.switchToWindowWithTitle(WINDOW_TITLES.Phishing);
+          await driver.waitForUrlContaining({
+            url: PHISHING_WARNING_URL_SNIPPET,
+          });
           const phishingWarningPage = new PhishingWarningPage(driver);
           await phishingWarningPage.checkPageIsLoaded();
         },
@@ -77,8 +81,9 @@ describe('Phishing Detection - Path-based URLs', function (this: Suite) {
           await waitForPhishingBlocklistToBeLoaded(driver);
 
           await driver.openNewPage('http://127.0.0.1:8080/path1/path2');
-
-          await driver.switchToWindowWithTitle(WINDOW_TITLES.Phishing);
+          await driver.waitForUrlContaining({
+            url: PHISHING_WARNING_URL_SNIPPET,
+          });
           const phishingWarningPage = new PhishingWarningPage(driver);
           await phishingWarningPage.checkPageIsLoaded();
         },
@@ -117,7 +122,9 @@ describe('Phishing Detection - Path-based URLs', function (this: Suite) {
           await waitForPhishingBlocklistToBeLoaded(driver);
 
           await driver.openNewPage('http://127.0.0.1:8080/path1/');
-          await driver.switchToWindowWithTitle(WINDOW_TITLES.Phishing);
+          await driver.waitForUrlContaining({
+            url: PHISHING_WARNING_URL_SNIPPET,
+          });
           const phishingWarningPage = new PhishingWarningPage(driver);
           await phishingWarningPage.checkPageIsLoaded();
           await phishingWarningPage.clickProceedAnywayButton();
@@ -164,7 +171,9 @@ describe('Phishing Detection - Path-based URLs', function (this: Suite) {
           await waitForPhishingBlocklistToBeLoaded(driver);
 
           await driver.openNewPage('http://127.0.0.1:8080/path1/path2');
-          await driver.switchToWindowWithTitle(WINDOW_TITLES.Phishing);
+          await driver.waitForUrlContaining({
+            url: PHISHING_WARNING_URL_SNIPPET,
+          });
           const phishingWarningPage = new PhishingWarningPage(driver);
           await phishingWarningPage.checkPageIsLoaded();
           await phishingWarningPage.clickProceedAnywayButton();
