@@ -62,7 +62,7 @@ describe('Shield Entry Modal', () => {
     expect(shieldEntryModal).toBeInTheDocument();
   });
 
-  it('should  call onClose when the close button is clicked', () => {
+  it('should call onClose when the close button is clicked', () => {
     const { getByTestId } = renderWithProvider(<ShieldEntryModal />, mockStore);
 
     const closeButton = getByTestId('shield-entry-modal-close-button');

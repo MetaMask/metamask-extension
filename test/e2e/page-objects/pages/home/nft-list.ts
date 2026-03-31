@@ -63,7 +63,7 @@ class NftListPage {
     await this.driver.clickElementSafe(this.toastCloseButton);
     await this.driver.assertElementNotPresent(this.toastBanner, {
       timeout: 15000,
-      waitAtLeastGuard: 250,
+      waitAtLeastGuard: 1000,
     });
     await this.driver.clickElement(this.nftIconOnActivityList);
   }
