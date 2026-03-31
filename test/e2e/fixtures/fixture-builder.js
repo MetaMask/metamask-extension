@@ -1060,9 +1060,9 @@ class FixtureBuilder {
         ([entropyId, groups], walletIndex) => {
           const walletId = `entropy:${entropyId}`;
           const walletGroups = {};
-          Object.entries(groups).forEach(([groupIndex, accounts]) => {
-            const gIdx = parseInt(groupIndex, 10);
-            const groupId = `${walletId}/${gIdx}`;
+          Object.entries(groups).forEach(([index, accounts]) => {
+            const groupIndex = parseInt(index, 10);
+            const groupId = `${walletId}/${groupIndex}`;
             const maxLastSelected = Math.max(
               ...accounts.map((a) => a.metadata?.lastSelected ?? 0),
             );
@@ -1071,10 +1071,10 @@ class FixtureBuilder {
               type: 'multichain-account',
               accounts: accounts.map((a) => a.id),
               metadata: {
-                name: gIdx === 0 ? 'Default' : `Account ${gIdx + 1}`,
+                name: groupIndex === 0 ? 'Default' : `Account ${groupIndex + 1}`,
                 pinned: false,
                 hidden: false,
-                entropy: { groupIndex: gIdx },
+                entropy: { groupIndex },
                 lastSelected: maxLastSelected,
               },
             };
