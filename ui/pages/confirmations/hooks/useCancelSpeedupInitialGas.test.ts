@@ -281,4 +281,87 @@ describe('useCancelSpeedupInitialGas', () => {
       );
     });
   });
+
+  describe('legacy transactions', () => {
+    function createLegacyTransaction(overrides: Partial<TransactionMeta> = {}) {
+      return {
+        id: 'legacy-tx-1',
+        txParams: {
+          gas: '0x5208',
+          gasLimit: '0x5208',
+          gasPrice: '0x2540be400',
+        },
+        ...overrides,
+      } as TransactionMeta;
+    }
+
+    it('dispatches updatePreviousGasParams with gasPrice and gasLimit for legacy tx', () => {
+      const effectiveTransaction = createLegacyTransaction();
+
+      renderHook(() =>
+        useCancelSpeedupInitialGas({
+          effectiveTransaction,
+          gasFeeEstimates: mockGasFeeEstimatesWithMedium,
+          updateTransactionUsingEstimate: mockUpdateTransactionUsingEstimate,
+          updateTransactionToTenPercentIncreasedGasFee:
+            mockUpdateTransactionToTenPercentIncreasedGasFee,
+          appIsLoading: false,
+          currentModal: CANCEL_SPEEDUP_MODAL,
+        }),
+      );
+
+      expect(mockDispatch).toHaveBeenCalled();
+      expect(mockUpdatePreviousGasParams).toHaveBeenCalledTimes(1);
+      expect(mockUpdatePreviousGasParams).toHaveBeenCalledWith('legacy-tx-1', {
+        gasPrice: '0x2540be400',
+        gasLimit: '0x5208',
+      });
+    });
+
+    it('does not store previousGas again on re-render for the same legacy transaction', () => {
+      const effectiveTransaction = createLegacyTransaction();
+
+      const { rerender } = renderHook(
+        ({ gasFeeEstimates }) =>
+          useCancelSpeedupInitialGas({
+            effectiveTransaction,
+            gasFeeEstimates,
+            updateTransactionUsingEstimate: mockUpdateTransactionUsingEstimate,
+            updateTransactionToTenPercentIncreasedGasFee:
+              mockUpdateTransactionToTenPercentIncreasedGasFee,
+            appIsLoading: false,
+            currentModal: CANCEL_SPEEDUP_MODAL,
+          }),
+        {
+          initialProps: { gasFeeEstimates: mockGasFeeEstimatesWithMedium },
+        },
+      );
+
+      expect(mockUpdatePreviousGasParams).toHaveBeenCalledTimes(1);
+
+      rerender({ gasFeeEstimates: { ...mockGasFeeEstimatesWithMedium } });
+
+      expect(mockUpdatePreviousGasParams).toHaveBeenCalledTimes(1);
+    });
+
+    it('does not dispatch previousGas when legacy tx has no gasPrice', () => {
+      const effectiveTransaction = createLegacyTransaction({
+        txParams: { gas: '0x5208' } as TransactionMeta['txParams'],
+      });
+
+      renderHook(() =>
+        useCancelSpeedupInitialGas({
+          effectiveTransaction,
+          gasFeeEstimates: mockGasFeeEstimatesWithMedium,
+          updateTransactionUsingEstimate: mockUpdateTransactionUsingEstimate,
+          updateTransactionToTenPercentIncreasedGasFee:
+            mockUpdateTransactionToTenPercentIncreasedGasFee,
+          appIsLoading: false,
+          currentModal: CANCEL_SPEEDUP_MODAL,
+        }),
+      );
+
+      expect(mockUpdatePreviousGasParams).not.toHaveBeenCalled();
+    });
+  });
 });
