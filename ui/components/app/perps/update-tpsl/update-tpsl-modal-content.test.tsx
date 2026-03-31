@@ -442,12 +442,11 @@ describe('UpdateTPSLModalContent', () => {
           pushPositionsWithOverrides,
         });
 
-        let unmountView: (() => void) | undefined;
-        const onClose = jest.fn(() => {
-          unmountView?.();
-        });
+        const onClose = jest.fn();
         const { unmount } = renderTpslModalContent({ onClose });
-        unmountView = unmount;
+        onClose.mockImplementation(() => {
+          unmount();
+        });
 
         fireEvent.click(screen.getByText(messages.perpsSaveChanges.message));
 
@@ -466,7 +465,9 @@ describe('UpdateTPSLModalContent', () => {
           );
         });
         await waitFor(() => {
-          expect(pushPositionsWithOverrides).toHaveBeenCalledWith(mockPositions);
+          expect(pushPositionsWithOverrides).toHaveBeenCalledWith(
+            mockPositions,
+          );
         });
       } finally {
         jest.useRealTimers();

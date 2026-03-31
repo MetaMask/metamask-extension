@@ -576,7 +576,12 @@ const PerpsOrderEntryPage: React.FC = () => {
   );
 
   const handleOrderSubmit = useCallback(async () => {
-    if (!isEligible || !orderFormState || !selectedAddress || currentPrice <= 0) {
+    if (
+      !isEligible ||
+      !orderFormState ||
+      !selectedAddress ||
+      currentPrice <= 0
+    ) {
       return;
     }
 
