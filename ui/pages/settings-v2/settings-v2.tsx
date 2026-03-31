@@ -1,5 +1,12 @@
 /* eslint-disable import-x/extensions */
-import React, { Fragment, Suspense, useMemo, useState } from 'react';
+import React, {
+  Fragment,
+  Suspense,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 import {
   Routes as RouterRoutes,
   Route,
@@ -22,10 +29,12 @@ import {
   TextVariant,
 } from '@metamask/design-system-react';
 import classnames from 'clsx';
+import { useSelector } from 'react-redux';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import {
   DEFAULT_ROUTE,
   SETTINGS_V2_ROUTE,
+  TRANSACTION_SHIELD_ROUTE,
 } from '../../helpers/constants/routes';
 // TODO: Remove restricted import
 // eslint-disable-next-line import-x/no-restricted-paths
@@ -34,6 +43,15 @@ import {
   ENVIRONMENT_TYPE_POPUP,
   ENVIRONMENT_TYPE_SIDEPANEL,
 } from '../../../shared/constants/app';
+import { getUseExternalServices } from '../../selectors';
+import { getHasSubscribedToShield } from '../../selectors/subscription/subscription';
+// TODO: Remove restricted import
+// eslint-disable-next-line import-x/no-restricted-paths
+import { getIsMetaMaskShieldFeatureEnabled } from '../../../shared/lib/environment';
+import ShieldEntryModal from '../../components/app/shield-entry-modal';
+// TODO: Remove restricted import
+// eslint-disable-next-line import-x/no-restricted-paths
+import { SHIELD_QUERY_PARAMS } from '../../../shared/lib/deep-links/routes/shield';
 import { toRelativeRoutePath } from '../routes/utils';
 import TabBar from './tab-bar';
 import {
@@ -84,6 +102,39 @@ const SettingsV2Layout = ({ children }: { children: React.ReactNode }) => {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchValue, setSearchValue] = useState('');
   const searchResults = useSettingsV2Search(searchValue);
+
+  // --- Shield entry modal interception ---
+  const hasSubscribedToShield = useSelector(getHasSubscribedToShield);
+  const useExternalServices = Boolean(useSelector(getUseExternalServices));
+  const isShieldFeatureEnabled = getIsMetaMaskShieldFeatureEnabled();
+  const [showShieldEntryModal, setShowShieldEntryModal] = useState(false);
+
+  const shouldInterceptShieldTab =
+    isShieldFeatureEnabled && useExternalServices && !hasSubscribedToShield;
+
+  // Handle ?showShieldEntryModal=true query param (e.g. from deep links)
+  useEffect(() => {
+    const searchParams = new URLSearchParams(location.search);
+    if (searchParams.get(SHIELD_QUERY_PARAMS.showShieldEntryModal) === 'true') {
+      if (hasSubscribedToShield) {
+        navigate(TRANSACTION_SHIELD_ROUTE, { replace: true });
+      } else {
+        setShowShieldEntryModal(true);
+      }
+    }
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps -- mount only
+
+  // Intercept Transaction Shield tab click for non-subscribed users
+  const handleTabClick = useCallback(
+    (key: string): boolean | void => {
+      if (key === TRANSACTION_SHIELD_ROUTE && shouldInterceptShieldTab) {
+        setShowShieldEntryModal(true);
+        return true; // prevent Link navigation
+      }
+      return undefined;
+    },
+    [shouldInterceptShieldTab],
+  );
 
   const currentPageLabelKey = meta?.labelKey;
 
@@ -171,7 +222,7 @@ const SettingsV2Layout = ({ children }: { children: React.ReactNode }) => {
   } else if (showRootLandingPage) {
     mainContent = (
       <Box className="flex-1 overflow-y-auto">
-        <SettingsV2Root />
+        <SettingsV2Root onBeforeNavigate={handleTabClick} />
       </Box>
     );
   } else {
@@ -212,6 +263,7 @@ const SettingsV2Layout = ({ children }: { children: React.ReactNode }) => {
               );
             }}
             removeFullscreenStyles={isPopupOrSidepanel}
+            onTabClick={handleTabClick}
           />
         </Box>
         <Box
@@ -296,6 +348,12 @@ const SettingsV2Layout = ({ children }: { children: React.ReactNode }) => {
       backgroundColor={BoxBackgroundColor.BackgroundDefault}
       className="h-full w-full shadow-xs"
     >
+      {showShieldEntryModal && (
+        <ShieldEntryModal
+          skipEventSubmission
+          onClose={() => setShowShieldEntryModal(false)}
+        />
+      )}
       <SettingsV2Header
         title={headerTitle}
         isPopupOrSidepanel={isPopupOrSidepanel}

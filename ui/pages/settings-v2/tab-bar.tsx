@@ -34,6 +34,8 @@ type TabBarProps = {
   isActive: (key: string, content?: React.ReactNode) => boolean;
   /** When true, disables fullscreen styles (active background, hidden caret) */
   removeFullscreenStyles?: boolean;
+  /** Called when a tab is clicked. Return `true` to prevent the default Link navigation. */
+  onTabClick?: (key: string) => boolean | void;
 };
 
 const TabBar = ({
@@ -41,6 +43,7 @@ const TabBar = ({
   sections = [],
   isActive,
   removeFullscreenStyles = false,
+  onTabClick,
 }: TabBarProps) => {
   const renderItems = (items: TabItem[]) =>
     items.map(({ key, content, iconName, dataTestId }) => {
@@ -63,6 +66,15 @@ const TabBar = ({
           textVariant={TextVariant.BodyMd}
           className={`!rounded-none focus:outline-none focus:[outline:none] focus-visible:outline-none focus-visible:[outline:none] focus:shadow-none ${activeClass}`}
           data-testid={dataTestId}
+          onClick={
+            onTabClick
+              ? (e?: React.MouseEvent) => {
+                  if (onTabClick(key) === true) {
+                    e?.preventDefault();
+                  }
+                }
+              : undefined
+          }
         >
           <Box
             flexDirection={BoxFlexDirection.Row}

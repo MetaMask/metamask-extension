@@ -26,7 +26,12 @@ type RootListItem = {
   labelKey: string;
 };
 
-export const SettingsV2Root = () => {
+type SettingsV2RootProps = {
+  /** Called before navigating. Return `true` to prevent navigation. */
+  onBeforeNavigate?: (path: string) => boolean | void;
+};
+
+export const SettingsV2Root = ({ onBeforeNavigate }: SettingsV2RootProps) => {
   const t = useI18nContext();
   const navigate = useNavigate();
 
@@ -45,6 +50,9 @@ export const SettingsV2Root = () => {
   }, []);
 
   const handleSelectItem = (item: RootListItem) => {
+    if (onBeforeNavigate?.(item.path) === true) {
+      return;
+    }
     navigate(item.path);
   };
 
