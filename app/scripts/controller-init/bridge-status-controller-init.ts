@@ -1,11 +1,13 @@
-import { BridgeStatusController } from '@metamask/bridge-status-controller';
+import {
+  BridgeStatusController,
+  BridgeStatusControllerMessenger,
+} from '@metamask/bridge-status-controller';
 import { handleFetch } from '@metamask/controller-utils';
 import { BridgeClientId } from '@metamask/bridge-controller';
 import { trace } from '../../../shared/lib/trace';
 import { BRIDGE_API_BASE_URL } from '../../../shared/constants/bridge';
 import { accountSupports7702 } from '../lib/account-supports-7702';
 import { ControllerInitFunction } from './types';
-import { BridgeStatusControllerMessenger } from './messengers';
 
 /**
  * Initialize the bridge status controller.
@@ -33,8 +35,6 @@ export const BridgeStatusControllerInit: ControllerInitFunction<
         ...requestOptions,
       });
     },
-    addTransactionFn: (...args) =>
-      transactionController.addTransaction(...args),
     addTransactionBatchFn: async (request, ...rest) => {
       const supports7702 = await accountSupports7702(
         request.from,
@@ -54,10 +54,6 @@ export const BridgeStatusControllerInit: ControllerInitFunction<
       }
       return transactionController.addTransactionBatch(request, ...rest);
     },
-    estimateGasFeeFn: (...args) =>
-      transactionController.estimateGasFee(...args),
-    updateTransactionFn: (...args) =>
-      transactionController.updateTransaction(...args),
 
     config: {
       customBridgeApiBaseUrl: BRIDGE_API_BASE_URL,
