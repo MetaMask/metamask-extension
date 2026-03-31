@@ -11,7 +11,7 @@ type BridgeStatusAppState = {
   metamask: BridgeStatusControllerState & TransactionControllerState;
 };
 
-const EMPTY = [];
+const EMPTY: never[] = [];
 
 jest.mock('../../selectors/multichain-accounts/account-tree', () => ({
   getSelectedAccountGroup: () => undefined,
