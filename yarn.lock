@@ -5156,15 +5156,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@lavamoat/node@https://github.com/LavaMoat/LavaMoat.git#branch=tmp/node-trials&workspace=@lavamoat/node":
+"@lavamoat/node@npm:1.0.0":
   version: 1.0.0
-  resolution: "@lavamoat/node@https://github.com/LavaMoat/LavaMoat.git#branch=tmp%2Fnode-trials&workspace=%40lavamoat%2Fnode&commit=5ed6202b61a0eb01694156ab9a291b7fcaa5044d"
+  resolution: "@lavamoat/node@npm:1.0.0"
   dependencies:
     "@babel/parser": "npm:7.27.3"
     "@endo/compartment-mapper": "npm:2.0.0"
     "@endo/evasive-transform": "npm:2.1.0"
     "@lavamoat/types": "npm:^1.0.0"
-    "@types/node": "npm:20.19.37"
+    "@types/node": "npm:20.19.34"
     chalk: "npm:4.1.2"
     lavamoat-core: "npm:^18.0.0"
     lavamoat-tofu: "npm:^9.0.0"
@@ -5175,7 +5175,7 @@ __metadata:
     yargs: "npm:17.7.2"
   bin:
     lavamoat: src/cli.js
-  checksum: 10/b5bb0c0bb77da9cf7d927aba39b9fc377e4999f65b7371d422f79c54b5c1780311a8f49ed83656b116c1237228cb41b39474acba05e50a03c1c6d1a76e15c111
+  checksum: 10/c165b0f7081814df3449010a118e20d73919a2c5da8c7ac069b3fda3000248ba908f8bee3bd30be6e6dc42d06063e6c7c2bede7ce8c1914ddb8359fbe1c47f7c
   languageName: node
   linkType: hard
 
@@ -16500,12 +16500,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:20.19.37":
-  version: 20.19.37
-  resolution: "@types/node@npm:20.19.37"
+"@types/node@npm:20.19.34":
+  version: 20.19.34
+  resolution: "@types/node@npm:20.19.34"
   dependencies:
     undici-types: "npm:~6.21.0"
-  checksum: 10/7e0d561d0d980109a0b64c6f797584a69d706421f18c0b24850206a15a4286443e676032abfa438590f25e4dfc3561ffc8d7f5c0c90edf08b705f6f9c35febba
+  checksum: 10/5a594d8ca55033f21aebe0ef92939837350149bf5ad24795d895ae80e755cf0b7d7bfe68f0ec2998ca3756a3ec3880aa1a6fd65a2fa90b34ffd74450780a8de3
   languageName: node
   linkType: hard
 
@@ -34170,7 +34170,7 @@ __metadata:
     "@lavamoat/lavadome-core": "npm:0.0.20"
     "@lavamoat/lavadome-react": "npm:0.0.20"
     "@lavamoat/lavapack": "npm:^7.0.22"
-    "@lavamoat/node": "https://github.com/LavaMoat/LavaMoat.git#branch=tmp/node-trials&workspace=@lavamoat/node"
+    "@lavamoat/node": "npm:1.0.0"
     "@lavamoat/snow": "npm:^2.0.4"
     "@lavamoat/webpack": "npm:1.5.8"
     "@ledgerhq/errors": "npm:^6.21.0"
