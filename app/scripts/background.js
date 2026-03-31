@@ -542,6 +542,14 @@ const criticalErrorHandler = new CriticalErrorHandler();
  */
 const handleOnConnect = async (port) => {
   const { isMetaMaskUIPort } = parsePortInfo(port);
+  let backupForCriticalError = null;
+
+  if (isMetaMaskUIPort) {
+    backupForCriticalError = await persistenceManager
+      .getBackup()
+      .catch(() => null);
+  }
+
   if (inTest) {
     const simulatedDelay =
       getManifestFlags().testing?.simulateDelayedBackgroundResponse;
@@ -563,6 +571,9 @@ const handleOnConnect = async (port) => {
     port.postMessage({
       data: {
         method: BACKGROUND_LIVENESS_METHOD,
+        params: {
+          backup: backupForCriticalError,
+        },
       },
       name: 'background-liveness',
     });

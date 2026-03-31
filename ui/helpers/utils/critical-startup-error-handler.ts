@@ -15,6 +15,7 @@ import {
   DISPLAY_GENERAL_STARTUP_ERROR,
   RELOAD_WINDOW,
 } from '../../../shared/constants/start-up-errors';
+import type { Backup } from '../../../shared/lib/backup';
 import { displayStateCorruptionError } from './state-corruption-html';
 import {
   displayCriticalErrorMessage,
@@ -78,6 +79,9 @@ export class CriticalStartupErrorHandler {
   // or a phase timeout). Prevents phase timeouts that fire later from calling
   // displayCriticalErrorMessage again (duplicate analytics, unhandled rejection).
   #criticalErrorAlreadyDisplayed = false;
+
+  // Backup snapshot sent by background in the ALIVE message.
+  #backupFromBackground?: Backup | null;
 
   /**
    * Creates an instance of CriticalStartupErrorHandler.
@@ -226,6 +230,7 @@ export class CriticalStartupErrorHandler {
         undefined,
         this.#port,
         CriticalErrorType.BackgroundInitTimeout,
+        this.#backupFromBackground,
       );
     } else if (!this.#uninstalled && !this.#startUiSyncCompleted) {
       await this.#startStateSyncCheck();
@@ -268,6 +273,7 @@ export class CriticalStartupErrorHandler {
         undefined,
         this.#port,
         CriticalErrorType.BackgroundStateSyncTimeout,
+        this.#backupFromBackground,
       );
     }
   }
@@ -296,6 +302,13 @@ export class CriticalStartupErrorHandler {
     if (method === APP_INIT_LIVENESS_METHOD) {
       this.#receivedAppInitPing = true;
     } else if (method === BACKGROUND_LIVENESS_METHOD) {
+      if (hasProperty(data, 'params') && isObject(data.params)) {
+        const { backup } = data.params as { backup?: Backup | null };
+        this.#backupFromBackground = backup ?? null;
+      } else {
+        this.#backupFromBackground = null;
+      }
+
       if (this.#onLivenessCheckCompleted) {
         this.#onLivenessCheckCompleted();
       } else if (!this.#criticalErrorAlreadyDisplayed) {
@@ -308,6 +321,7 @@ export class CriticalStartupErrorHandler {
           undefined,
           this.#port,
           CriticalErrorType.UnreachableLivenessCheck,
+          this.#backupFromBackground,
         );
       }
     } else if (method === BACKGROUND_INITIALIZED_METHOD) {
@@ -324,6 +338,7 @@ export class CriticalStartupErrorHandler {
           undefined,
           this.#port,
           CriticalErrorType.UnreachableInitializationCheck,
+          this.#backupFromBackground,
         );
       }
     } else if (method === RELOAD_WINDOW) {
@@ -375,6 +390,7 @@ export class CriticalStartupErrorHandler {
           currentLocale,
           this.#port,
           CriticalErrorType.GeneralStartupError,
+          this.#backupFromBackground,
         );
       }
     }

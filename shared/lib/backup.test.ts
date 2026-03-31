@@ -3,8 +3,6 @@ import {
   BACKUP_DB_VERSION,
   backedUpStateKeys,
   hasVault,
-  safeGetVaultBackup,
-  SAFE_GET_VAULT_BACKUP_TIMEOUT_MS,
   type Backup,
 } from './backup';
 
@@ -15,23 +13,12 @@ describe('backup', () => {
       expect(BACKUP_DB_VERSION).toBe(1);
     });
 
-    it('exports safe get vault backup timeout', () => {
-      expect(SAFE_GET_VAULT_BACKUP_TIMEOUT_MS).toStrictEqual(5_000);
-    });
-
     it('exports backedUpStateKeys', () => {
       expect(backedUpStateKeys).toStrictEqual([
         'KeyringController',
         'AppMetadataController',
         'MetaMetricsController',
       ]);
-    });
-  });
-
-  describe('safeGetVaultBackup', () => {
-    it('returns null when timeout is 0 (timeout wins the race)', async () => {
-      const result = await safeGetVaultBackup(0);
-      expect(result).toBeNull();
     });
   });
 

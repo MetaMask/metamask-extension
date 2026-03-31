@@ -174,6 +174,7 @@ describe('CriticalStartupErrorHandler', () => {
         undefined,
         port,
         CriticalErrorType.BackgroundInitTimeout,
+        null,
       );
     });
 
@@ -204,6 +205,31 @@ describe('CriticalStartupErrorHandler', () => {
 
       handler.uninstall();
     });
+
+    it('passes backup from ALIVE params to startup error display', async () => {
+      const handler = new CriticalStartupErrorHandler(port, container);
+      handler.install();
+
+      const backup = { KeyringController: { vault: 'encrypted' } };
+      port.simulateMessage({
+        data: { method: BACKGROUND_LIVENESS_METHOD, params: { backup } },
+      });
+      await flushMicrotasks();
+
+      await advanceTimersAndFlush(16_000);
+
+      expect(mockDisplayCriticalErrorMessage).toHaveBeenCalledWith(
+        container,
+        'troubleStarting',
+        expect.objectContaining({
+          message: 'Background initialization timeout',
+        }),
+        undefined,
+        port,
+        CriticalErrorType.BackgroundInitTimeout,
+        backup,
+      );
+    });
   });
 
   describe('Phase 3: State sync check', () => {
@@ -232,6 +258,7 @@ describe('CriticalStartupErrorHandler', () => {
         undefined,
         port,
         CriticalErrorType.BackgroundStateSyncTimeout,
+        null,
       );
     });
 
@@ -409,6 +436,7 @@ describe('CriticalStartupErrorHandler', () => {
         'en',
         port,
         CriticalErrorType.GeneralStartupError,
+        undefined,
       );
 
       handler.uninstall();

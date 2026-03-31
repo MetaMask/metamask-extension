@@ -8,7 +8,8 @@ export const APP_INIT_LIVENESS_METHOD = 'APP_INIT_ALIVE';
 
 /**
  * This is the method name used for a UI liveness check. This is sent from the background to the UI
- * automatically upon connection to prove that the connection is active.
+ * automatically upon connection to prove that the connection is active. It may include
+ * startup metadata in `params`, such as a backup snapshot used by critical error UI.
  */
 export const BACKGROUND_LIVENESS_METHOD = 'ALIVE';
 

@@ -12,7 +12,7 @@ import {
   METHOD_REPAIR_DATABASE_TIMEOUT,
 } from '../../../shared/constants/state-corruption';
 import { CRITICAL_ERROR_SCREEN_VIEWED } from '../../../shared/constants/start-up-errors';
-import { safeGetVaultBackup, hasVault } from '../../../shared/lib/backup';
+import { hasVault, type Backup } from '../../../shared/lib/backup';
 
 /**
  * Extracts the Sentry envelope URL from a Sentry DSN.
@@ -172,6 +172,7 @@ async function handleRestartAction(
  * @param currentLocale - Optional locale context for translations.
  * @param port - Optional port for background communication (needed for restore accounts functionality).
  * @param criticalErrorType - Optional type of critical error (for analytics). Defaults to Other.
+ * @param backupFromBackground - Backup from the background (e.g. ALIVE `params.backup`). If omitted or null, the UI does not read IndexedDB; restore is shown only when this object contains a vault.
  * @throws {ErrorLike} Throws the error after displaying the message.
  * @returns A promise that resolves to never, as it always throws an error.
  */
@@ -182,8 +183,9 @@ export async function displayCriticalErrorMessage(
   currentLocale?: string,
   port?: browser.Runtime.Port,
   criticalErrorType?: CriticalErrorType,
+  backupFromBackground?: Backup | null,
 ): Promise<never> {
-  const backup = port ? await safeGetVaultBackup() : null;
+  const backup = backupFromBackground ?? null;
   const canTriggerRestore = Boolean(port) && hasVault(backup);
 
   try {
