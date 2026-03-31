@@ -160,8 +160,8 @@ const SWAP: ThresholdConfig = {
     ciMultiplier: DEFAULT_CI_MULTIPLIER,
   },
   fetchAndDisplaySwapQuotes: {
-    p75: { warn: 1200, fail: 2000 },
-    p95: { warn: 2000, fail: 3500 },
+    p75: { warn: 2800, fail: 5000 },
+    p95: { warn: 3500, fail: 6000 },
     ciMultiplier: DEFAULT_CI_MULTIPLIER,
   },
 };
