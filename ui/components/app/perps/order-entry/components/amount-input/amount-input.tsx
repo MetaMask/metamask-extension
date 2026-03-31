@@ -123,12 +123,12 @@ export const AmountInput: React.FC<AmountInputProps> = ({
 
     const numValue = Number.parseFloat(amount);
     if (Number.isFinite(numValue) && numValue > 0) {
-      onAmountChange(numValue.toFixed(2));
+      onAmountChange(formatFlooredAmount(numValue));
       return;
     }
 
     onAmountChange('');
-  }, [amount, onAmountChange]);
+  }, [amount, onAmountChange, formatFlooredAmount]);
 
   const handleTokenAmountChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -153,7 +153,7 @@ export const AmountInput: React.FC<AmountInputProps> = ({
           return;
         }
         const usdMargin = (numToken * currentPrice) / leverage;
-        onAmountChange(usdMargin.toFixed(2));
+        onAmountChange(formatFlooredAmount(usdMargin));
         if (availableBalance > 0) {
           const pct = Math.min(
             Math.round((usdMargin / availableBalance) * 100),
@@ -173,6 +173,7 @@ export const AmountInput: React.FC<AmountInputProps> = ({
       availableBalance,
       onAmountChange,
       onBalancePercentChange,
+      formatFlooredAmount,
     ],
   );
 

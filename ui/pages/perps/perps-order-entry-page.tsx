@@ -29,6 +29,7 @@ import {
   useParams,
   useSearchParams,
 } from 'react-router-dom';
+
 import {
   selectPerpsTradeConfigurations,
   selectPerpsIsTestnet,
@@ -39,10 +40,6 @@ import {
 } from '../../components/app/perps/constants/chartConfig';
 import { usePerpsDepositConfirmation } from '../../components/app/perps/hooks/usePerpsDepositConfirmation';
 import {
-  isLimitPriceUnfavorable as checkLimitPriceUnfavorable,
-  isNearLiquidationPrice as checkNearLiquidationPrice,
-} from '../../components/app/perps/order-entry/limit-price-warnings';
-import {
   OrderEntry,
   DirectionTabs,
   OrderSummary,
@@ -51,6 +48,10 @@ import {
   type OrderMode,
   type OrderCalculations,
 } from '../../components/app/perps/order-entry';
+import {
+  isLimitPriceUnfavorable as checkLimitPriceUnfavorable,
+  isNearLiquidationPrice as checkNearLiquidationPrice,
+} from '../../components/app/perps/order-entry/limit-price-warnings';
 import { PerpsDetailPageSkeleton } from '../../components/app/perps/perps-skeletons';
 import {
   getDisplayName,
@@ -68,8 +69,8 @@ import {
   usePerpsLiveMarketData,
   usePerpsLiveCandles,
 } from '../../hooks/perps/stream';
-import { useI18nContext } from '../../hooks/useI18nContext';
 import { useFormatters } from '../../hooks/useFormatters';
+import { useI18nContext } from '../../hooks/useI18nContext';
 import { getPerpsStreamManager } from '../../providers/perps';
 import { getSelectedInternalAccount } from '../../selectors/accounts';
 import { getIsPerpsExperienceAvailable } from '../../selectors/perps/feature-flags';
@@ -82,6 +83,10 @@ function toNormalizedPositivePrice(value?: string): string | undefined {
   }
 
   return parsed.toString();
+}
+
+function formatFlooredUsd(value: number): string {
+  return (Math.floor(value * 100) / 100).toFixed(2);
 }
 
 /**
@@ -346,8 +351,8 @@ const PerpsOrderEntryPage: React.FC = () => {
     requiredMargin > availableBalance;
   const insufficientBalanceError = isInsufficientBalance
     ? t('perpsOrderValidationInsufficientBalance', [
-        requiredMargin.toFixed(2),
-        availableBalance.toFixed(2),
+        formatFlooredUsd(requiredMargin),
+        formatFlooredUsd(availableBalance),
       ])
     : null;
 

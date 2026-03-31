@@ -593,6 +593,32 @@ describe('PerpsOrderEntryPage', () => {
       ).not.toBeInTheDocument();
     });
 
+    it('shows floored available balance in insufficient balance message', () => {
+      mockLiveAccount.mockReturnValue({
+        account: {
+          ...mockAccountState,
+          availableBalance: '3.066',
+        },
+        isInitialLoading: false,
+      });
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      const amountContainer = screen.getByTestId('amount-input-field');
+      const input = amountContainer.querySelector('input');
+      fireEvent.change(input as HTMLInputElement, {
+        target: { value: '3.07' },
+      });
+
+      expect(screen.getByTestId('submit-order-button')).toBeDisabled();
+      expect(
+        screen.getByText(getInsufficientBalanceMessage('3.07', '3.06')),
+      ).toBeInTheDocument();
+      expect(
+        screen.queryByText(getInsufficientBalanceMessage('3.07', '3.07')),
+      ).not.toBeInTheDocument();
+    });
+
     it('does not disable submit when amount equals available balance', () => {
       mockLiveAccount.mockReturnValue({
         account: {
