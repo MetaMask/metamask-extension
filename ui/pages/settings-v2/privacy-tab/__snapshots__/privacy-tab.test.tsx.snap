@@ -286,7 +286,7 @@ exports[`PrivacyTab snapshot matches snapshot 1`] = `
             Data collection for marketing
           </p>
           <div
-            data-testid="data-collection-for-marketing-toggle-container"
+            data-testid="data-collection-for-marketing-toggle"
           >
             <label
               class="toggle-button toggle-button--off toggle-button--disabled"
@@ -313,7 +313,7 @@ exports[`PrivacyTab snapshot matches snapshot 1`] = `
                   />
                 </div>
                 <input
-                  data-testid="data-collection-for-marketing-toggle"
+                  data-testid="data-collection-for-marketing-input"
                   style="border: 0px; height: 1px; margin: -1px; overflow: hidden; padding: 0px; position: absolute; width: 1px;"
                   type="checkbox"
                   value="false"

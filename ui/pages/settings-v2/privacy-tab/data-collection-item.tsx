@@ -85,8 +85,8 @@ export const DataCollectionToggleItem = () => {
       description={description}
       value={dataCollectionForMarketing}
       onToggle={handleToggle}
-      dataTestId="data-collection-for-marketing-toggle"
-      containerDataTestId="data-collection-for-marketing-toggle-container"
+      dataTestId="data-collection-for-marketing-input"
+      containerDataTestId="data-collection-for-marketing-toggle"
       disabled={isDisabled}
     />
   );

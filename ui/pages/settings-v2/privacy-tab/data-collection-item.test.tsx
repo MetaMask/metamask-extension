@@ -79,7 +79,7 @@ describe('DataCollectionToggleItem', () => {
     renderWithProvider(<DataCollectionToggleItem />, mockStore);
 
     expect(
-      screen.getByTestId('data-collection-for-marketing-toggle'),
+      screen.getByTestId('data-collection-for-marketing-input'),
     ).toHaveAttribute('value', 'true');
   });
 
@@ -88,7 +88,7 @@ describe('DataCollectionToggleItem', () => {
     renderWithProvider(<DataCollectionToggleItem />, mockStore);
 
     expect(
-      screen.getByTestId('data-collection-for-marketing-toggle'),
+      screen.getByTestId('data-collection-for-marketing-input'),
     ).toHaveAttribute('value', 'false');
   });
 
