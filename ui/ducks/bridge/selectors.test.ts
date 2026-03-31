@@ -2053,10 +2053,8 @@ describe('Bridge selectors', () => {
           internalAccounts: {
             selectedAccount: MOCK_EVM_ACCOUNT.id,
           },
-          accountTree: {
-            // This account group only has 1 Solana account
-            selectedAccountGroup: 'entropy:01K2FF18CTTXJYD34R78X4N1N1/2',
-          },
+          // This account group only has 1 Solana account
+          selectedAccountGroup: 'entropy:01K2FF18CTTXJYD34R78X4N1N1/2',
         },
       });
 

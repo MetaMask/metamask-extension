@@ -1345,9 +1345,6 @@
   "cancel": {
     "message": "Hủy"
   },
-  "cancelPopoverTitle": {
-    "message": "Hủy giao dịch"
-  },
   "cancelTransactionDescription": {
     "message": "Giao dịch này sẽ bị hủy và phí mạng này sẽ thay thế phí ban đầu."
   },
@@ -2524,9 +2521,6 @@
     "message": "Hạn mức phí gas phải lớn hơn $1 và nhỏ hơn $2",
     "description": "$1 is the minimum limit for gas and $2 is the maximum limit"
   },
-  "editGasLimitTooltip": {
-    "message": "Hạn mức phí gas là đơn vị gas tối đa mà bạn sẵn sàng sử dụng. Đơn vị gas là hệ số nhân của \"Phí ưu tiên tối đa\" và \"Phí tối đa\"."
-  },
   "editGasMaxBaseFeeGWEIImbalance": {
     "message": "Phí cơ sở tối đa không thể thấp hơn phí ưu tiên"
   },
@@ -2565,12 +2559,6 @@
   },
   "editGasPriceTooLow": {
     "message": "Giá gas phải lớn hơn 0"
-  },
-  "editGasPriceTooltip": {
-    "message": "Mạng này yêu cầu trường \"Giá gas\" khi gửi giao dịch. Giá gas là số tiền bạn sẽ trả cho mỗi đơn vị gas."
-  },
-  "editGasTitle": {
-    "message": "Chỉnh sửa mức ưu tiên"
   },
   "editGasTooLow": {
     "message": "Thời gian xử lý không xác định"
@@ -2984,18 +2972,8 @@
   "gas": {
     "message": "Gas"
   },
-  "gasDisplayAcknowledgeDappButtonText": {
-    "message": "Sửa phí gas được đề xuất"
-  },
-  "gasDisplayDappWarning": {
-    "message": "Phí gas này được $1 đề xuất. Việc ghi đè phí gas có thể gây ra sự cố cho giao dịch của bạn. Vui lòng liên hệ $1 nếu bạn có câu hỏi.",
-    "description": "$1 represents the Dapp's origin"
-  },
   "gasLimit": {
     "message": "Hạn mức phí gas"
-  },
-  "gasLimitRecommended": {
-    "message": "Giới hạn gas được đề xuất là $1. Có thể dẫn đến kết quả thất bại nếu giới hạn gas thấp hơn."
   },
   "gasLimitTooLow": {
     "message": "Hạn mức phí gas ít nhất phải là 21000"
@@ -7918,15 +7896,6 @@
   },
   "speedUpCancellation": {
     "message": "Tăng tốc lệnh hủy này"
-  },
-  "speedUpExplanation": {
-    "message": "Chúng tôi đã cập nhật phí gas dựa trên tình trạng mạng hiện tại và đã tăng ít nhất 10% (theo yêu cầu của mạng)."
-  },
-  "speedUpPopoverTitle": {
-    "message": "Tăng tốc giao dịch"
-  },
-  "speedUpTooltipText": {
-    "message": "Phí gas mới"
   },
   "speedUpTransactionDescription": {
     "message": "Phí mạng này sẽ thay thế phí ban đầu."

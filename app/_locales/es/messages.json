@@ -1345,9 +1345,6 @@
   "cancel": {
     "message": "Cancelar"
   },
-  "cancelPopoverTitle": {
-    "message": "Cancelar transacción"
-  },
   "cancelTransactionDescription": {
     "message": "Esta transacción se cancelará y esta tarifa de red sustituirá a la original."
   },
@@ -2524,9 +2521,6 @@
     "message": "El límite de gas debe ser superior a $1 e inferior a $2",
     "description": "$1 is the minimum limit for gas and $2 is the maximum limit"
   },
-  "editGasLimitTooltip": {
-    "message": "El límite de gas es el máximo de unidades de gas que está dispuesto a utilizar. Las unidades de gas son un multiplicador de la \"Tarifa de prioridad máxima\" y de la \"Tarifa máxima\"."
-  },
   "editGasMaxBaseFeeGWEIImbalance": {
     "message": "La tarifa base máxima no puede ser inferior a la tarifa de prioridad"
   },
@@ -2565,12 +2559,6 @@
   },
   "editGasPriceTooLow": {
     "message": "El precio del gas debe ser superior a 0"
-  },
-  "editGasPriceTooltip": {
-    "message": "Esta red requiere un campo \"Precio del gas\" cuando se envía una transacción. El precio del gas es la cantidad que se pagará por unidad de gas."
-  },
-  "editGasTitle": {
-    "message": "Editar prioridad"
   },
   "editGasTooLow": {
     "message": "Tiempo de procesamiento desconocido"
@@ -2984,18 +2972,8 @@
   "gas": {
     "message": "Gas"
   },
-  "gasDisplayAcknowledgeDappButtonText": {
-    "message": "Editar tarifa de gas sugerida"
-  },
-  "gasDisplayDappWarning": {
-    "message": "Esta tarifa de gas ha sido sugerida por $1. Anularla puede causar un problema con su transacción. Comuníquese con $1 si tiene preguntas.",
-    "description": "$1 represents the Dapp's origin"
-  },
   "gasLimit": {
     "message": "Límite de gas"
-  },
-  "gasLimitRecommended": {
-    "message": "El límite de gas recomendado es de $1. Si el límite de gas está por debajo de ese nivel, puede fallar."
   },
   "gasLimitTooLow": {
     "message": "El límite de gas debe ser al menos 21 000"
@@ -7918,15 +7896,6 @@
   },
   "speedUpCancellation": {
     "message": "Acelerar esta cancelación"
-  },
-  "speedUpExplanation": {
-    "message": "Hemos actualizado la tarifa de gas en función de las condiciones actuales de la red y la hemos aumentado al menos un 10 % (exigido por la red)."
-  },
-  "speedUpPopoverTitle": {
-    "message": "Acelerar la transacción"
-  },
-  "speedUpTooltipText": {
-    "message": "Nueva tarifa de gas"
   },
   "speedUpTransactionDescription": {
     "message": "Esta tarifa de red sustituirá a la original."

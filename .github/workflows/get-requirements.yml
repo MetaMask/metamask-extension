@@ -27,6 +27,9 @@ on:
       needs-e2e:
         description: Whether E2E tests are needed
         value: ${{ jobs.detect-changes.outputs.needs-e2e }}
+      just-repository-health-checks:
+        description: Whether repository health checks are needed
+        value: ${{ jobs.detect-changes.outputs.just-repository-health-checks }}
 
 env:
   # For a `pull_request` event, the head commit hash is `github.event.pull_request.head.sha`.
@@ -37,6 +40,7 @@ env:
   RUN_ID: ${{ github.run_id }}
   IS_FORK: ${{ github.event.pull_request.head.repo.fork || github.event.repository.fork }}
   EVENT_NAME: ${{ github.event_name }}
+  PR_NUMBER: ${{ github.event.pull_request.number }}
 
 jobs:
   detect-changes:
@@ -52,6 +56,7 @@ jobs:
       needs-releases: ${{ steps.set-needs-releases.outputs.needs-releases || 'false'}}
       needs-benchmarks: ${{ steps.set-needs-benchmarks.outputs.needs-benchmarks || 'false'}}
       needs-e2e: ${{ steps.set-needs-e2e.outputs.needs-e2e || 'false'}}
+      just-repository-health-checks: ${{ steps.set-just-repository-health-checks.outputs.just-repository-health-checks || 'false'}}
     steps:
       - name: Check pull request merge queue status
         id: check-skip-merge-queue
@@ -116,10 +121,52 @@ jobs:
             echo "needs-locales=false" >> "$GITHUB_OUTPUT"
           fi
 
-      # skip-everything is a shortcut for up-to-date == 'true' || needs-locales == 'true'
+      - name: Compute just-repository-health-checks flag
+        id: set-just-repository-health-checks
+        if: >-
+          ${{
+            steps.check-skip-merge-queue.outputs.up-to-date != 'true' &&
+            steps.filter.outputs.repository_health_checks_related_count != '0' &&
+            steps.filter.outputs.all_changes_count == steps.filter.outputs.repository_health_checks_related_count
+          }}
+        run: echo "just-repository-health-checks=true" >> "$GITHUB_OUTPUT"
+
+      # If the only change is in package.json, and the only line changed is "version", then we can skip everything
+      - name: Compute just-package-json-version flag
+        id: set-just-package-json-version
+        if: >-
+          ${{
+            env.EVENT_NAME == 'pull_request' &&
+            steps.filter.outputs.package_json_count == '1' &&
+            steps.filter.outputs.all_changes_count == '1'
+          }}
+        run: |
+          # At this point we already know the *only* changed file is package.json.
+          # Emit true only if the diff is exactly a single "version" line replacement.
+          export GH_PAGER=cat
+          DIFF="$(gh pr diff "${PR_NUMBER}" || true)"
+          CHANGES="$(printf '%s\n' "$DIFF" | grep -E '^[+-]' | grep -vE '^(\+\+\+|---)' || true)"
+          CHANGES_COUNT="$(printf '%s\n' "$CHANGES" | sed '/^$/d' | wc -l | tr -d ' ')"
+
+          if [[ "$CHANGES_COUNT" == '2' ]] && \
+             printf '%s\n' "$CHANGES" | grep -Eq '^-[[:space:]]*"version"[[:space:]]*:' && \
+             printf '%s\n' "$CHANGES" | grep -Eq '^\+[[:space:]]*"version"[[:space:]]*:'; then
+            echo "The only change is in package.json, and the only line changed is 'version'."
+            echo "just-package-json-version=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      # skip-everything is a shortcut for up-to-date == 'true' || needs-locales == 'true' || just-repository-health-checks = 'true' || just-package-json-version == 'true'
       - name: Compute skip-everything flag
         id: set-skip-everything
-        if: ${{ env.IS_RUN_EVERYTHING_BRANCH == 'false' && (steps.check-skip-merge-queue.outputs.up-to-date == 'true' || steps.set-needs-locales.outputs.needs-locales == 'true') }}
+        if: >-
+          ${{
+            env.IS_RUN_EVERYTHING_BRANCH == 'false' && (
+              steps.check-skip-merge-queue.outputs.up-to-date == 'true' ||
+              steps.set-needs-locales.outputs.needs-locales == 'true' ||
+              steps.set-just-repository-health-checks.outputs.just-repository-health-checks == 'true' ||
+              steps.set-just-package-json-version.outputs.just-package-json-version == 'true'
+            )
+          }}
         run: echo "skip-everything=true" >> "$GITHUB_OUTPUT"
 
       # This is very simple right now (and equivalent to !skip-everything)
@@ -138,14 +185,24 @@ jobs:
       - name: Compute needs-releases flag
         id: set-needs-releases
         # Do not do releases on a fork
-        if: ${{ env.IS_FORK == 'false' && env.EVENT_NAME != 'merge_group' && steps.set-skip-everything.outputs.skip-everything != 'true' }}
+        if: >-
+          ${{
+            env.IS_FORK == 'false' &&
+            env.EVENT_NAME != 'merge_group' &&
+            steps.set-skip-everything.outputs.skip-everything != 'true'
+          }}
         run: echo "needs-releases=true" >> "$GITHUB_OUTPUT"
 
       # This is very simple right now, but is built to have future complexity
       - name: Compute needs-benchmarks flag
         id: set-needs-benchmarks
         # Do not run benchmarks on a fork or in the merge queue
-        if: ${{ env.IS_FORK == 'false' && env.EVENT_NAME != 'merge_group' && steps.set-skip-everything.outputs.skip-everything != 'true' }}
+        if: >-
+          ${{
+            env.IS_FORK == 'false' &&
+            env.EVENT_NAME != 'merge_group' &&
+            steps.set-skip-everything.outputs.skip-everything != 'true'
+          }}
         run: echo "needs-benchmarks=true" >> "$GITHUB_OUTPUT"
 
       - name: Compute needs-e2e flag
