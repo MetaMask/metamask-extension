@@ -164,6 +164,7 @@ describe('Phishing Detection - Path-based URLs', function (this: Suite) {
           await waitForPhishingBlocklistToBeLoaded(driver);
 
           await driver.openNewPage('http://127.0.0.1:8080/path1/path2');
+          // Note: unsure why it's needed but it stabilizes the test
           await driver.delay(veryLargeDelayMs);
           await driver.switchToWindowWithTitle(WINDOW_TITLES.Phishing);
           const phishingWarningPage = new PhishingWarningPage(driver);
