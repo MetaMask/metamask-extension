@@ -246,8 +246,12 @@ export async function buildTestPlanSection(
   const plan = await fetchTestPlan(testPlanUrl);
 
   if (plan) {
-    const markdown = convertTestPlanToMarkdown(plan);
-    return `${markdown}AI generated test plan (JSON): ${testPlanLink}\n\n`;
+    try {
+      const markdown = convertTestPlanToMarkdown(plan);
+      return `${markdown}AI generated test plan (JSON): ${testPlanLink}\n\n`;
+    } catch {
+      // If conversion fails (malformed JSON structure), fall through to link-only
+    }
   }
 
   // Fallback to just the link if fetch fails
