@@ -6084,6 +6084,11 @@ export async function getLedgerPublicKey(
   return await submitRequestToBackground('getLedgerPublicKey', [hdPath]);
 }
 
+/**
+ * Fetch the features/capabilities of the connected Trezor device.
+ *
+ * @returns The Trezor device features response including model, capabilities, and session info
+ */
 export async function getTrezorFeatures(): Promise<TrezorGetFeaturesResponse> {
   return await submitRequestToBackground('getTrezorFeatures');
 }
