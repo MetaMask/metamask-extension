@@ -80,9 +80,7 @@ class OnboardingPrivacySettingsPage {
   // Assets settings
   private readonly assetsPrivacyToggle = '.toggle-button.toggle-button--on';
 
-  private assetsPrivacyToggleState(state: 'on' | 'off') {
-    return `.toggle-button.toggle-button--${state}`;
-  }
+  private readonly assetsPrivacyToggleOn = '.toggle-button.toggle-button--on';
 
   private readonly assetsSettingsMessage = { text: 'Assets', tag: 'h2' };
 
@@ -198,15 +196,13 @@ class OnboardingPrivacySettingsPage {
       ),
     );
     console.log('Verify all asset privacy toggles are off');
-    await this.driver.assertElementNotPresent(
-      this.assetsPrivacyToggleState('on'),
-    );
+    await this.driver.assertElementNotPresent(this.assetsPrivacyToggleOn);
 
     await this.navigateBackToSettingsPage();
   }
 
   /**
-   * Go to general settings and toggle basic functionality off, then navigate back.
+   * Go to general settings and toggle options, then navigate back.
    */
   async toggleBasicFunctionalitySettings(): Promise<void> {
     console.log('Toggle basic functionality settings in privacy settings');
