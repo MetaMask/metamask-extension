@@ -185,7 +185,7 @@ class OnboardingPrivacySettingsPage {
   }
 
   /**
-   * Go to assets settings, toggle all options off, verify their state, then navigate back.
+   * Go to assets settings and toggle options, then navigate back.
    */
   async toggleAssetsSettings(): Promise<void> {
     console.log('Toggle advanced assets settings in privacy settings');
