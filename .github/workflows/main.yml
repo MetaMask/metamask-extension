@@ -451,7 +451,7 @@ jobs:
   bundle-size:
     needs:
       - get-requirements
-      - build-dist-browserify
+      - build-dist-webpack
     runs-on: ubuntu-latest
     timeout-minutes: 30
     environment: ${{ github.ref_name == 'main' && 'default-branch' || null }}
@@ -465,10 +465,10 @@ jobs:
           is-high-risk-environment: false
           skip-allow-scripts: true
 
-      - name: Download artifact 'build-dist-browserify'
+      - name: Download artifact 'build-dist-webpack'
         uses: actions/download-artifact@v7
         with:
-          name: build-dist-browserify
+          name: build-dist-webpack
           github-token: ${{ secrets.GITHUB_TOKEN }} # This is required when downloading artifacts from a different repository or from a different workflow run.
           run-id: ${{ needs.get-requirements.outputs.builds-from-run }} # Download from whatever run the get-requirements job said.
 
@@ -553,7 +553,7 @@ jobs:
     needs:
       - get-requirements
       - prep-deps
-      - build-dist-browserify
+      - build-dist-webpack
     if: ${{ needs.get-requirements.outputs.skip-everything != 'true' && github.event_name != 'merge_group' }}
     runs-on: ubuntu-latest
     timeout-minutes: 30
@@ -564,10 +564,10 @@ jobs:
           is-high-risk-environment: false
           skip-allow-scripts: true
 
-      - name: Download artifact 'build-dist-browserify'
+      - name: Download artifact 'build-dist-webpack'
         uses: actions/download-artifact@v7
         with:
-          name: build-dist-browserify
+          name: build-dist-webpack
           github-token: ${{ secrets.GITHUB_TOKEN }} # This is required when downloading artifacts from a different repository or from a different workflow run.
           run-id: ${{ needs.get-requirements.outputs.builds-from-run }} # Download from whatever run the get-requirements job said.
 
@@ -742,7 +742,7 @@ jobs:
     # Only run for release branches, not forks
     if: ${{ (startsWith(github.head_ref || github.ref_name, 'release/') && !(github.event.pull_request.head.repo.fork || github.event.repository.fork)) }}
     needs:
-      - build-dist-browserify
+      - build-dist-webpack
     runs-on: ubuntu-latest
     timeout-minutes: 5
     environment: release-ci

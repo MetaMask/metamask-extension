@@ -59,7 +59,7 @@ export function getArtifactLinks(
       label: 'Bundle Size Stats',
     },
     interactionStats: {
-      url: `${hostUrl}/benchmarks/benchmark-${BENCHMARK_PLATFORMS.CHROME}-${BENCHMARK_BUILD_TYPES.BROWSERIFY}-interactionUserActions.json`,
+      url: `${hostUrl}/benchmarks/benchmark-${BENCHMARK_PLATFORMS.CHROME}-${BENCHMARK_BUILD_TYPES.WEBPACK}-interactionUserActions.json`,
       label: 'Interaction Stats',
     },
     storybook: {

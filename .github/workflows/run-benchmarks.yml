@@ -255,10 +255,10 @@ jobs:
           is-high-risk-environment: false
           skip-allow-scripts: true
 
-      - name: Download artifact 'build-test-browserify'
+      - name: Download artifact 'build-test-webpack'
         uses: actions/download-artifact@v7
         with:
-          name: build-test-browserify
+          name: build-test-webpack
           github-token: ${{ secrets.GITHUB_TOKEN }}
           run-id: ${{ inputs.builds-from-run }}
 

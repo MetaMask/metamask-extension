@@ -60,7 +60,7 @@ assemble_performance_data() {
     # They are stored under the "pageLoad" group, keyed as "{browser}-{buildType}-{preset}"
     # so each combination has its own historical entry (e.g. "chrome-browserify-standardHome").
     #
-    # User action and performance presets only run on chrome-browserify (the canonical production
+    # User action and performance presets only run on chrome-webpack (the canonical production
     # target) and are stored under their own preset key (e.g. "userActions", "performanceAssets").
     local PAGE_LOAD_PRESETS=("startupStandardHome" "startupPowerUserHome")
 
@@ -108,12 +108,12 @@ assemble_performance_data() {
                 --arg key "${page_load_key}" \
                 --argjson data "${preset_data}" \
                 '. + {($key): $data}')
-        elif [[ "${browser}" == "chrome" && "${build_type}" == "browserify" ]]; then
-            # For user action and performance presets, only store chrome-browserify —
+        elif [[ "${browser}" == "chrome" && "${build_type}" == "webpack" ]]; then
+            # For user action and performance presets, only store chrome-webpack —
             # that is what the PR comment displays.
             local preset_data
             preset_data=$(jq . "${file}")
-            echo "  Adding preset '${preset_name}' (chrome-browserify)" >&2
+            echo "  Adding preset '${preset_name}' (chrome-webpack)" >&2
             presets_json=$(echo "${presets_json}" | jq \
                 --arg key "${preset_name}" \
                 --argjson data "${preset_data}" \
