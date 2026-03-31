@@ -1,13 +1,10 @@
-import { Messenger } from '@metamask/messenger';
 import {
-  WebSocketServiceEvents,
-  WebSocketServiceAllowedActions,
-} from '@metamask/snaps-controllers';
+  Messenger,
+  MessengerActions,
+  MessengerEvents,
+} from '@metamask/messenger';
+import { WebSocketServiceMessenger } from '@metamask/snaps-controllers';
 import { RootMessenger } from '../../../lib/messenger';
-
-export type WebSocketServiceMessenger = ReturnType<
-  typeof getWebSocketServiceMessenger
->;
 
 /**
  * Get a restricted messenger for the WebSocket service. This is scoped to the
@@ -18,16 +15,11 @@ export type WebSocketServiceMessenger = ReturnType<
  */
 export function getWebSocketServiceMessenger(
   messenger: RootMessenger<
-    WebSocketServiceAllowedActions,
-    WebSocketServiceEvents
+    MessengerActions<WebSocketServiceMessenger>,
+    MessengerEvents<WebSocketServiceMessenger>
   >,
 ) {
-  const serviceMessenger = new Messenger<
-    'WebSocketService',
-    WebSocketServiceAllowedActions,
-    WebSocketServiceEvents,
-    typeof messenger
-  >({
+  const serviceMessenger: WebSocketServiceMessenger = new Messenger({
     namespace: 'WebSocketService',
     parent: messenger,
   });

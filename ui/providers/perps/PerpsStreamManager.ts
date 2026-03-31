@@ -238,6 +238,13 @@ class PerpsStreamManager {
   }
 
   /**
+   * Clears all optimistic TP/SL overrides (e.g. after closing every position).
+   */
+  clearAllOptimisticTPSL(): void {
+    this.optimisticTPSLOverrides.clear();
+  }
+
+  /**
    * Push positions to the channel with optimistic overrides applied.
    * Use this instead of positions.pushData() when pushing data from REST
    * (delayed refetch, visibility refetch) so we don't overwrite with stale
