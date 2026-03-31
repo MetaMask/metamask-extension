@@ -952,7 +952,11 @@ const PerpsMarketDetailPage: React.FC = () => {
                     variant={TextVariant.BodyMd}
                     fontWeight={FontWeight.Medium}
                   >
-                    {`${formatNumber(Math.abs(parseFloat(position.size)), { maximumSignificantDigits: 4 })} ${getDisplayName(position.symbol)}`}
+                    {formatCurrencyWithMinThreshold(
+                      Math.abs(parseFloat(position.size)) *
+                        parseFloat(position.entryPrice),
+                      'USD',
+                    )}
                   </Text>
                 </Box>
 

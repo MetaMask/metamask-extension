@@ -91,18 +91,29 @@ describe('PositionCard', () => {
     expect(screen.getByText(/15x short/iu)).toBeInTheDocument();
   });
 
-  it('displays the absolute position size', () => {
-    const position = createMockPosition({ symbol: 'SOL', size: '-50.0' });
+  it('displays the position size in USD', () => {
+    const position = createMockPosition({
+      symbol: 'SOL',
+      size: '-50.0',
+      entryPrice: '100.00',
+    });
     renderWithProvider(<PositionCard position={position} />, mockStore);
 
-    // Should display absolute value without negative sign
-    expect(screen.getByText('50 SOL')).toBeInTheDocument();
+    // Should display size as USD value (50 * 100 = $5,000.00)
+    expect(screen.getByText('$5,000.00')).toBeInTheDocument();
   });
 
   it('displays the position value', () => {
-    const position = createMockPosition({ positionValue: '7125.00' });
+    const position = createMockPosition({
+      size: '2.5',
+      entryPrice: '2850.00',
+      positionValue: '7500.00',
+    });
     renderWithProvider(<PositionCard position={position} />, mockStore);
 
+    // Position value (mark price based) shown on right side
+    expect(screen.getByText('$7,500.00')).toBeInTheDocument();
+    // Size in USD (entry price based) shown on left side
     expect(screen.getByText('$7,125.00')).toBeInTheDocument();
   });
 
