@@ -389,9 +389,6 @@
   "advanced": {
     "message": "高度な設定"
   },
-  "advancedBaseGasFeeToolTip": {
-    "message": "トランザクションがブロックに含まれた場合、最大基本料金と実際の基本料金の差が返金されます。合計金額は、最大基本料金 (Gwei単位) * ガスリミットで計算されます。"
-  },
   "advancedDetailsDataDesc": {
     "message": "データ"
   },
@@ -407,10 +404,6 @@
   "advancedEIP1559ModalTitle": {
     "message": "詳細なネットワーク手数料"
   },
-  "advancedGasFeeDefaultOptIn": {
-    "message": "これらの値を$1ネットワークのデフォルトとして保存する",
-    "description": "$1 is the current network name."
-  },
   "advancedGasPriceModalTitle": {
     "message": "詳細なネットワーク手数料"
   },
@@ -422,9 +415,6 @@
   },
   "advancedPermissionsSmallCase": {
     "message": "高度なアクセス許可"
-  },
-  "advancedPriorityFeeToolTip": {
-    "message": "優先手数料 (別名「マイナーチップ」) はマイナーに直接支払われ、トランザクションを優先するインセンティブとなります。"
   },
   "airDropPatternDescription": {
     "message": "トークンのオンチェーン履歴で、不審なエアドロップアクティビティの以前のインスタンスを確認できます。"
@@ -1996,9 +1986,6 @@
   "currentQuestion": {
     "message": "問題 $1 / 2"
   },
-  "currentTitle": {
-    "message": "現在:"
-  },
   "currentlyUnavailable": {
     "message": "このネットワークでは利用できません"
   },
@@ -2051,12 +2038,6 @@
   },
   "dappSuggestedHigh": {
     "message": "おすすめのサイト"
-  },
-  "dappSuggestedHighShortLabel": {
-    "message": "サイト (高)"
-  },
-  "dappSuggestedShortLabel": {
-    "message": "サイト"
   },
   "dappSwapAdvantage": {
     "message": "MetaMaskスワップで貯めて収益化"
@@ -2422,9 +2403,6 @@
   "dontShowThisAgain": {
     "message": "今後表示しない"
   },
-  "downArrow": {
-    "message": "下矢印"
-  },
   "download": {
     "message": "ダウンロード"
   },
@@ -2517,19 +2495,6 @@
   "editGasLimitOutOfBounds": {
     "message": "ガスリミットは$1以上にする必要があります"
   },
-  "editGasLimitOutOfBoundsV2": {
-    "message": "ガスリミットは$1より大きく、$2未満でなければなりません",
-    "description": "$1 is the minimum limit for gas and $2 is the maximum limit"
-  },
-  "editGasMaxBaseFeeGWEIImbalance": {
-    "message": "最大基本料金を優先手数料よりも低くすることはできません"
-  },
-  "editGasMaxBaseFeeHigh": {
-    "message": "最大基本料金が必要以上です"
-  },
-  "editGasMaxBaseFeeLow": {
-    "message": "現在のネットワーク状況に対して最大基本料金が低いです"
-  },
   "editGasMaxFeeHigh": {
     "message": "最大手数料が必要以上です"
   },
@@ -2542,20 +2507,11 @@
   "editGasMaxPriorityFeeBelowMinimum": {
     "message": "最大優先手数料は0gweiより高くなければなりません"
   },
-  "editGasMaxPriorityFeeBelowMinimumV2": {
-    "message": "優先手数料は0より高くなければなりません。"
-  },
   "editGasMaxPriorityFeeHigh": {
     "message": "最大優先手数料が必要以上です。必要以上の額が支払われる可能性があります。"
   },
-  "editGasMaxPriorityFeeHighV2": {
-    "message": "優先手数料が必要以上です。必要以上の額が支払われる可能性があります。"
-  },
   "editGasMaxPriorityFeeLow": {
     "message": "現在のネットワーク状況に対して最大優先手数料が低いです"
-  },
-  "editGasMaxPriorityFeeLowV2": {
-    "message": "現在のネットワーク状況に対して優先手数料が低いです"
   },
   "editGasPriceTooLow": {
     "message": "ガス価格は0より高くなければなりません"
@@ -2977,9 +2933,6 @@
   },
   "gasLimitTooLow": {
     "message": "ガスリミットは21000以上にする必要があります"
-  },
-  "gasLimitV2": {
-    "message": "ガスリミット"
   },
   "gasPrice": {
     "message": "ガス価格 (gwei)"
@@ -3740,9 +3693,6 @@
   "ledgerWebHIDNotConnectedErrorMessage": {
     "message": "Ledgerデバイスが接続されていません。Ledgerに接続する場合は、もう一度「続行」をクリックして、HID接続を承認してください。",
     "description": "An error message shown to the user during the hardware connect flow."
-  },
-  "levelArrow": {
-    "message": "水平矢印"
   },
   "lightTheme": {
     "message": "ライト"
@@ -8505,9 +8455,6 @@
   "swapSource": {
     "message": "流動性の供給源"
   },
-  "swapSuggested": {
-    "message": "スワップが提案されました"
-  },
   "swapSuggestedGasSettingToolTipMessage": {
     "message": "スワップは複雑で急を要するトランザクションです。コストとスワップの確実な成功のバランスが取れたこのガス代をお勧めします。"
   },
@@ -8927,9 +8874,6 @@
   "tutorial": {
     "message": "チュートリアル"
   },
-  "twelveHrTitle": {
-    "message": "12時間:"
-  },
   "txAlertTitle": {
     "message": "このトランザクションは組み戻しされます"
   },
@@ -9015,9 +8959,6 @@
   },
   "unstableTokenPriceTitle": {
     "message": "トークン価格が不安定です"
-  },
-  "upArrow": {
-    "message": "上矢印"
   },
   "update": {
     "message": "更新"
