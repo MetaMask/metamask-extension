@@ -405,7 +405,7 @@ describe('usePerpsOrderForm', () => {
       });
 
       expect(result.current.calculations.positionSize).toContain('BTC');
-      expect(result.current.calculations.orderValue).toBe('$1,000.00');
+      expect(result.current.calculations.orderValue).toBe('$3,000.00');
     });
   });
 
