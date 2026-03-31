@@ -19,6 +19,15 @@ export const HYPERLIQUID_ASSET_ICONS_BASE_URL =
   'https://app.hyperliquid.xyz/coins/';
 
 /**
+ * Perps withdraw amount input: digits with optional decimal, max six fractional digits
+ * (aligned with HyperLiquid / controller expectations).
+ */
+export const PERPS_WITHDRAW_AMOUNT_REGEX = /^\d*\.?\d{0,6}$/u;
+
+export const isValidPerpsWithdrawAmount = (amount: string): boolean =>
+  PERPS_WITHDRAW_AMOUNT_REGEX.test(amount);
+
+/**
  * General perps display constants
  * Fallback values for when data is unavailable or invalid
  */

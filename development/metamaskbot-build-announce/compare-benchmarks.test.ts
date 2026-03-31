@@ -1,13 +1,22 @@
 import { promises as fs } from 'fs';
 import type { BenchmarkResults } from '../../shared/constants/benchmarks';
+import { THRESHOLD_SEVERITY } from '../../shared/constants/benchmarks';
 import {
-  resolveThresholdConfig,
   runComparison,
+  buildMetricLines,
   loadCurrentBenchmarks,
-  loadBaseline,
   printReport,
 } from './compare-benchmarks';
+import { COMPARISON_SEVERITY } from './comparison-utils';
+import type { BenchmarkEntryComparison } from './comparison-utils';
 import * as historicalComparison from './historical-comparison';
+
+jest.mock('fs', () => ({
+  promises: {
+    readdir: jest.fn(),
+    readFile: jest.fn(),
+  },
+}));
 
 function makeBenchmarkResults(
   overrides: Partial<BenchmarkResults> = {},
@@ -26,26 +35,6 @@ function makeBenchmarkResults(
 }
 
 describe('compare-benchmarks', () => {
-  describe('resolveThresholdConfig', () => {
-    it('resolves camelCase benchmark names', () => {
-      const config = resolveThresholdConfig('onboardingImportWallet');
-      expect(config).toBeDefined();
-      expect(config).toHaveProperty('importWalletToSocialScreen');
-    });
-
-    it('resolves startup benchmarks with platform prefix', () => {
-      const config = resolveThresholdConfig(
-        'chrome-browserify-startupStandardHome',
-      );
-      expect(config).toBeDefined();
-      expect(config).toHaveProperty('uiStartup');
-    });
-
-    it('returns undefined for unknown benchmarks', () => {
-      expect(resolveThresholdConfig('non-existent-benchmark')).toBeUndefined();
-    });
-  });
-
   describe('runComparison', () => {
     beforeEach(() => {
       jest.spyOn(console, 'warn').mockImplementation();
@@ -108,23 +97,36 @@ describe('compare-benchmarks', () => {
 
       const baseline = {
         'userJourneyOnboardingImport/onboardingImportWallet': {
-          importWalletToSocialScreen: { mean: 1100, p75: 1400, p95: 1900 },
+          importWalletToSocialScreen: {
+            mean: 1100,
+            stdDev: 50,
+            p75: 1400,
+            p95: 1900,
+          },
         },
       };
 
       const result = runComparison(benchmarks, baseline);
       const comparison = result.comparisons[0];
       expect(comparison.relativeMetrics.length).toBeGreaterThan(0);
-      expect(comparison.relativeMetrics[0].percentile).toBe('p75');
-      expect(comparison.relativeMetrics[0].baseline).toBe(1400);
+      const meanMetric = comparison.relativeMetrics.find(
+        (m) => m.percentile === 'mean',
+      );
+      const p75Metric = comparison.relativeMetrics.find(
+        (m) => m.percentile === 'p75',
+      );
+      expect(meanMetric).toBeDefined();
+      expect(meanMetric?.baseline).toBe(1100);
+      expect(p75Metric).toBeDefined();
+      expect(p75Metric?.baseline).toBe(1400);
     });
 
-    it('resolves page-load baseline by stripping benchmark- prefix from filename', () => {
+    it('resolves page-load baseline for startup benchmarks', () => {
       const benchmarks = [
         {
           name: 'benchmark-chrome-browserify-startupStandardHome',
           data: {
-            standardHome: makeBenchmarkResults({
+            startupStandardHome: makeBenchmarkResults({
               p75: { uiStartup: 1800 },
               p95: { uiStartup: 2200 },
               mean: { uiStartup: 1500 },
@@ -134,15 +136,22 @@ describe('compare-benchmarks', () => {
       ];
 
       const baseline = {
-        'pageLoad/chrome-browserify-startupStandardHome': {
-          uiStartup: { mean: 1400, p75: 1700, p95: 2100 },
+        'pageLoad/startupStandardHome': {
+          uiStartup: { mean: 1400, stdDev: 80, p75: 1700, p95: 2100 },
         },
       };
 
       const result = runComparison(benchmarks, baseline);
       const comparison = result.comparisons[0];
       expect(comparison.relativeMetrics.length).toBeGreaterThan(0);
-      expect(comparison.relativeMetrics[0].baseline).toBe(1700);
+      expect(
+        comparison.relativeMetrics.find((m) => m.percentile === 'mean')
+          ?.baseline,
+      ).toBe(1400);
+      expect(
+        comparison.relativeMetrics.find((m) => m.percentile === 'p75')
+          ?.baseline,
+      ).toBe(1700);
     });
 
     it('skips entries with no matching threshold config', () => {
@@ -159,418 +168,405 @@ describe('compare-benchmarks', () => {
       expect(result.comparisons).toHaveLength(0);
     });
   });
+});
 
-  describe('resolveThresholdConfig (additional)', () => {
-    it('resolves camelCase entry name via kebab conversion', () => {
-      const config = resolveThresholdConfig('onboardingImportWallet');
-      expect(config).toBeDefined();
-      expect(config).toHaveProperty('importWalletToSocialScreen');
-    });
+describe('loadCurrentBenchmarks', () => {
+  const mockReaddir = fs.readdir as jest.Mock;
+  const mockReadFile = fs.readFile as jest.Mock;
 
-    it('strips firefox-browserify prefix', () => {
-      const config = resolveThresholdConfig(
-        'benchmark-firefox-browserify-swap',
-      );
-      expect(config).toBeDefined();
-      expect(config).toHaveProperty('openSwapPageFromHome');
-    });
-
-    it('strips chrome-webpack prefix', () => {
-      const config = resolveThresholdConfig('benchmark-chrome-webpack-swap');
-      expect(config).toBeDefined();
-      expect(config).toHaveProperty('openSwapPageFromHome');
-    });
-
-    it('strips prefix then converts to kebab-case', () => {
-      const config = resolveThresholdConfig(
-        'benchmark-chrome-browserify-onboardingImportWallet',
-      );
-      expect(config).toBeDefined();
-      expect(config).toHaveProperty('importWalletToSocialScreen');
-    });
+  afterEach(() => {
+    mockReaddir.mockReset();
+    mockReadFile.mockReset();
   });
 
-  describe('loadCurrentBenchmarks', () => {
-    it('loads JSON files from a directory', async () => {
-      jest
-        .spyOn(fs, 'readdir')
-        .mockResolvedValue([
-          'bench-a.json',
-          'bench-b.json',
-          'readme.txt',
-        ] as never);
-      jest
-        .spyOn(fs, 'readFile')
-        .mockResolvedValue(JSON.stringify({ entry: makeBenchmarkResults() }));
+  it('reads all JSON files in the directory and parses them', async () => {
+    const payload: Record<string, BenchmarkResults> = {
+      standardHome: {
+        testTitle: 'standard-home',
+        persona: 'standard',
+        mean: { uiStartup: 1500 },
+        min: { uiStartup: 1000 },
+        max: { uiStartup: 2000 },
+        stdDev: { uiStartup: 200 },
+        p75: { uiStartup: 1800 },
+        p95: { uiStartup: 2200 },
+      },
+    };
 
-      const results = await loadCurrentBenchmarks('/fake/dir');
+    mockReaddir.mockResolvedValue(['benchmark-chrome.json', 'other.txt']);
+    mockReadFile.mockResolvedValue(JSON.stringify(payload));
 
-      expect(results).toHaveLength(2);
-      expect(results[0].name).toBe('bench-a');
-      expect(results[1].name).toBe('bench-b');
+    const results = await loadCurrentBenchmarks('/tmp/benchmarks');
 
-      jest.restoreAllMocks();
-    });
+    expect(results).toHaveLength(1);
+    expect(results[0].name).toBe('benchmark-chrome');
+    expect(results[0].data).toStrictEqual(payload);
   });
 
-  describe('loadBaseline', () => {
-    it('returns empty object when fetch returns null', async () => {
-      jest
-        .spyOn(historicalComparison, 'fetchHistoricalPerformanceData')
-        .mockResolvedValue(null);
+  it('returns an empty array when no JSON files are present', async () => {
+    mockReaddir.mockResolvedValue(['README.md', 'data.txt']);
 
-      const result = await loadBaseline();
+    const results = await loadCurrentBenchmarks('/tmp/benchmarks');
+    expect(results).toHaveLength(0);
+  });
+});
 
-      expect(result).toStrictEqual({});
+const makeComparison = (
+  overrides: Partial<BenchmarkEntryComparison> = {},
+): BenchmarkEntryComparison => ({
+  benchmarkName: 'standardHome',
+  relativeMetrics: [],
+  absoluteViolations: [],
+  hasRegression: false,
+  hasWarning: false,
+  absoluteFailed: false,
+  ...overrides,
+});
 
-      jest.restoreAllMocks();
-    });
+describe('printReport', () => {
+  let consoleSpy: jest.SpyInstance;
 
-    it('returns baseline data when fetch succeeds', async () => {
-      const mockBaseline = {
-        'test/metric': { uiStartup: { mean: 100, p75: 110, p95: 130 } },
-      };
-      jest
-        .spyOn(historicalComparison, 'fetchHistoricalPerformanceData')
-        .mockResolvedValue(mockBaseline);
-
-      const result = await loadBaseline();
-
-      expect(result).toBe(mockBaseline);
-
-      jest.restoreAllMocks();
-    });
+  beforeEach(() => {
+    consoleSpy = jest.spyOn(console, 'log').mockImplementation();
   });
 
-  describe('printReport', () => {
-    let logSpy: jest.SpyInstance;
+  afterEach(() => {
+    consoleSpy.mockRestore();
+  });
 
-    beforeEach(() => {
-      logSpy = jest.spyOn(console, 'log').mockImplementation();
+  it('prints PASS result when no comparison failed', () => {
+    printReport({ comparisons: [], anyFailed: false });
+
+    expect(consoleSpy).toHaveBeenCalledWith(
+      expect.stringContaining('PASS — all benchmarks within constant limits'),
+    );
+  });
+
+  it('prints FAIL result when anyFailed is true', () => {
+    printReport({
+      comparisons: [
+        makeComparison({
+          benchmarkName: 'standardHome',
+          absoluteFailed: true,
+        }),
+      ],
+      anyFailed: true,
     });
 
-    afterEach(() => {
-      jest.restoreAllMocks();
+    expect(consoleSpy).toHaveBeenCalledWith(
+      expect.stringContaining('FAIL — at least one benchmark'),
+    );
+    expect(consoleSpy).toHaveBeenCalledWith(expect.stringContaining('FAIL'));
+  });
+
+  it('prints the benchmark name and PASS status for a passing comparison', () => {
+    printReport({
+      comparisons: [
+        makeComparison({
+          benchmarkName: 'loadNewAccount',
+          absoluteFailed: false,
+        }),
+      ],
+      anyFailed: false,
     });
 
-    it('prints PASS when no benchmarks failed', () => {
-      printReport({ comparisons: [], anyFailed: false });
+    const allCalls = consoleSpy.mock.calls.flat().join('\n');
+    expect(allCalls).toContain('loadNewAccount');
+    expect(allCalls).toContain('PASS');
+  });
 
-      const output = logSpy.mock.calls.map((c: unknown[]) => c[0]).join('\n');
-      expect(output).toContain('RESULT: PASS');
+  it('prints the benchmark name and FAIL status for a failing comparison', () => {
+    printReport({
+      comparisons: [
+        makeComparison({
+          benchmarkName: 'loadNewAccount',
+          absoluteFailed: true,
+        }),
+      ],
+      anyFailed: true,
     });
 
-    it('prints FAIL when a benchmark failed', () => {
-      printReport({
-        comparisons: [
+    const allCalls = consoleSpy.mock.calls.flat().join('\n');
+    expect(allCalls).toContain('loadNewAccount');
+    expect(allCalls).toContain('FAIL');
+  });
+
+  it('prints (no historical baseline data) when comparison has no metric lines', () => {
+    printReport({
+      comparisons: [
+        makeComparison({ relativeMetrics: [], absoluteViolations: [] }),
+      ],
+      anyFailed: false,
+    });
+
+    expect(consoleSpy).toHaveBeenCalledWith(
+      expect.stringContaining('no historical baseline data'),
+    );
+  });
+
+  it('prints pass icon with [Show logs] when all metrics pass', () => {
+    const { COMPARISON_SEVERITY: SEV } = jest.requireActual(
+      './comparison-utils',
+    ) as typeof import('./comparison-utils');
+    printReport({
+      comparisons: [
+        makeComparison({
+          relativeMetrics: [
+            {
+              metric: 'uiStartup',
+              percentile: 'p95',
+              current: 1400,
+              baseline: 1400,
+              delta: 0,
+              deltaPercent: 0,
+              severity: SEV.Pass.value,
+              indication: SEV.Pass.icon,
+            },
+          ],
+        }),
+      ],
+      anyFailed: false,
+    });
+
+    const allCalls = consoleSpy.mock.calls.flat().join('\n');
+    expect(allCalls).toContain('[Show logs]');
+  });
+
+  it('prints issue metric lines for comparisons with violations', () => {
+    const { COMPARISON_SEVERITY: SEV } = jest.requireActual(
+      './comparison-utils',
+    ) as typeof import('./comparison-utils');
+    const { THRESHOLD_SEVERITY: TS } = jest.requireActual(
+      '../../shared/constants/benchmarks',
+    ) as typeof import('../../shared/constants/benchmarks');
+    printReport({
+      comparisons: [
+        makeComparison({
+          benchmarkName: 'standardHome',
+          absoluteFailed: true,
+          absoluteViolations: [
+            {
+              metricId: 'uiStartup',
+              percentile: 'p95',
+              value: 6000,
+              threshold: 4800,
+              severity: TS.Fail,
+            },
+          ],
+        }),
+      ],
+      anyFailed: true,
+    });
+
+    const allCalls = consoleSpy.mock.calls.flat().join('\n');
+    expect(allCalls).toContain('uiStartup');
+    expect(allCalls).toContain(SEV.Regression.icon);
+  });
+
+  it('reports correct total counts for failed and warned comparisons', () => {
+    const { THRESHOLD_SEVERITY: TS } = jest.requireActual(
+      '../../shared/constants/benchmarks',
+    ) as typeof import('../../shared/constants/benchmarks');
+    printReport({
+      comparisons: [
+        makeComparison({ benchmarkName: 'A', absoluteFailed: true }),
+        makeComparison({
+          benchmarkName: 'B',
+          absoluteFailed: false,
+          absoluteViolations: [
+            {
+              metricId: 'uiStartup',
+              percentile: 'p75',
+              value: 2100,
+              threshold: 2000,
+              severity: TS.Warn,
+            },
+          ],
+        }),
+        makeComparison({ benchmarkName: 'C', absoluteFailed: false }),
+      ],
+      anyFailed: true,
+    });
+
+    const allCalls = consoleSpy.mock.calls.flat().join('\n');
+    expect(allCalls).toContain('3 benchmarks');
+    expect(allCalls).toContain('1 failed');
+    expect(allCalls).toContain('1 warnings');
+  });
+});
+
+describe('buildMetricLines', () => {
+  it('returns empty array when comparison has no metrics or violations', () => {
+    expect(buildMetricLines(makeComparison())).toHaveLength(0);
+  });
+
+  it('formats a metric with baseline using relative delta and warn icon when has issue', () => {
+    const lines = buildMetricLines(
+      makeComparison({
+        relativeMetrics: [
           {
-            benchmarkName: 'test-bench',
-            relativeMetrics: [],
-            absoluteViolations: [],
-            hasRegression: false,
-            hasWarning: false,
-            absoluteFailed: true,
+            metric: 'uiStartup',
+            percentile: 'p95',
+            current: 1500,
+            baseline: 1400,
+            delta: 100,
+            deltaPercent: 0.071,
+            severity: COMPARISON_SEVERITY.Warn.value,
+            indication: COMPARISON_SEVERITY.Warn.icon,
           },
         ],
-        anyFailed: true,
-      });
+      }),
+    );
 
-      const output = logSpy.mock.calls.map((c: unknown[]) => c[0]).join('\n');
-      expect(output).toContain('FAIL  test-bench');
-      expect(output).toContain('RESULT: FAIL');
-    });
+    expect(lines).toHaveLength(1);
+    expect(lines[0].metric).toBe('uiStartup');
+    expect(lines[0].icon).toBe(COMPARISON_SEVERITY.Warn.icon);
+    expect(lines[0].hasIssue).toBe(true);
+    expect(lines[0].details).toContain('1500ms');
+    expect(lines[0].details).toContain('p95');
+  });
 
-    it('shows (no historical baseline data) when no relative metrics', () => {
-      printReport({
-        comparisons: [
+  it('overrides icon with 🔴 when absolute Fail violation matches the metric', () => {
+    const lines = buildMetricLines(
+      makeComparison({
+        relativeMetrics: [
           {
-            benchmarkName: 'test-bench',
-            relativeMetrics: [],
-            absoluteViolations: [],
-            hasRegression: false,
-            hasWarning: false,
-            absoluteFailed: false,
+            metric: 'uiStartup',
+            percentile: 'p95',
+            current: 6000,
+            baseline: 1400,
+            delta: 4600,
+            deltaPercent: 3.28,
+            severity: COMPARISON_SEVERITY.Regression.value,
+            indication: COMPARISON_SEVERITY.Regression.icon,
           },
         ],
-        anyFailed: false,
-      });
-
-      const output = logSpy.mock.calls.map((c: unknown[]) => c[0]).join('\n');
-      expect(output).toContain('(no historical baseline data)');
-    });
-
-    it('groups p75 and p95 on same line with indications', () => {
-      printReport({
-        comparisons: [
+        absoluteViolations: [
           {
-            benchmarkName: 'test-bench',
-            relativeMetrics: [
-              {
-                metric: 'uiStartup',
-                percentile: 'p75',
-                current: 1100,
-                baseline: 1000,
-                delta: 100,
-                deltaPercent: 0.1,
-                direction: 'slower',
-                severity: 'regression',
-                indication: '🔺',
-              },
-              {
-                metric: 'uiStartup',
-                percentile: 'p95',
-                current: 1300,
-                baseline: 1200,
-                delta: 100,
-                deltaPercent: 0.083,
-                direction: 'slower',
-                severity: 'warn',
-                indication: '🟡⬆️',
-              },
-            ],
-            absoluteViolations: [],
-            hasRegression: true,
-            hasWarning: true,
-            absoluteFailed: false,
+            metricId: 'uiStartup',
+            percentile: 'p95',
+            value: 6000,
+            threshold: 4800,
+            severity: THRESHOLD_SEVERITY.Fail,
           },
         ],
-        anyFailed: false,
-      });
+      }),
+    );
 
-      const output = logSpy.mock.calls.map((c: unknown[]) => c[0]).join('\n');
-      expect(output).toContain('uiStartup:');
-      expect(output).toContain('🟡⬆️ p75: 1100ms');
-      expect(output).toContain('🟡⬆️ p95: 1300ms');
-    });
+    expect(lines[0].icon).toBe(COMPARISON_SEVERITY.Regression.icon);
+    expect(lines[0].hasIssue).toBe(true);
+  });
 
-    it('uses 🔻 for absolute fail violations when metric is faster', () => {
-      printReport({
-        comparisons: [
+  it('overrides icon with 🟡 when absolute Warn violation matches the metric', () => {
+    const lines = buildMetricLines(
+      makeComparison({
+        relativeMetrics: [
           {
-            benchmarkName: 'faster-but-failing',
-            relativeMetrics: [
-              {
-                metric: 'uiStartup',
-                percentile: 'p75',
-                current: 7200,
-                baseline: 11164,
-                delta: -3964,
-                deltaPercent: -0.355,
-                direction: 'faster',
-                severity: 'improvement',
-                indication: '🟢⬇️',
-              },
-            ],
-            absoluteViolations: [
-              {
-                metricId: 'uiStartup',
-                percentile: 'p75',
-                value: 7200,
-                threshold: 4500,
-                severity: 'fail',
-              },
-            ],
-            hasRegression: false,
-            hasWarning: false,
-            absoluteFailed: true,
+            metric: 'uiStartup',
+            percentile: 'p75',
+            current: 3200,
+            baseline: 1400,
+            delta: 1800,
+            deltaPercent: 1.28,
+            severity: COMPARISON_SEVERITY.Regression.value,
+            indication: COMPARISON_SEVERITY.Regression.icon,
           },
         ],
-        anyFailed: true,
-      });
-
-      const output = logSpy.mock.calls.map((c: unknown[]) => c[0]).join('\n');
-      expect(output).toContain('🔻 p75: 7200ms (-35.5%)');
-    });
-
-    it('overrides indication with 🔺 for absolute fail violations', () => {
-      printReport({
-        comparisons: [
+        absoluteViolations: [
           {
-            benchmarkName: 'test-bench',
-            relativeMetrics: [
-              {
-                metric: 'uiStartup',
-                percentile: 'p75',
-                current: 99999,
-                baseline: 1000,
-                delta: 98999,
-                deltaPercent: 98.999,
-                direction: 'slower',
-                severity: 'regression',
-                indication: '🔺',
-              },
-              {
-                metric: 'uiStartup',
-                percentile: 'p95',
-                current: 99999,
-                baseline: 1200,
-                delta: 98799,
-                deltaPercent: 82.33,
-                direction: 'slower',
-                severity: 'regression',
-                indication: '🔺',
-              },
-            ],
-            absoluteViolations: [
-              {
-                metricId: 'uiStartup',
-                percentile: 'p75',
-                value: 99999,
-                threshold: 5000,
-                severity: 'fail',
-              },
-            ],
-            hasRegression: true,
-            hasWarning: false,
-            absoluteFailed: true,
+            metricId: 'uiStartup',
+            percentile: 'p75',
+            value: 3200,
+            threshold: 3000,
+            severity: THRESHOLD_SEVERITY.Warn,
           },
         ],
-        anyFailed: true,
-      });
+      }),
+    );
 
-      const output = logSpy.mock.calls.map((c: unknown[]) => c[0]).join('\n');
-      expect(output).toContain('🔺 p75: 99999ms');
-    });
+    expect(lines[0].icon).toBe(COMPARISON_SEVERITY.Warn.icon);
+    expect(lines[0].hasIssue).toBe(true);
+  });
 
-    it('shows absolute violations when no baseline data is available', () => {
-      printReport({
-        comparisons: [
+  it('shows violation value with (no baseline) when no relative metric exists for the key', () => {
+    const lines = buildMetricLines(
+      makeComparison({
+        absoluteViolations: [
           {
-            benchmarkName: 'no-baseline-bench',
-            relativeMetrics: [],
-            absoluteViolations: [
-              {
-                metricId: 'uiStartup',
-                percentile: 'p75',
-                value: 9000,
-                threshold: 5000,
-                severity: 'fail',
-              },
-              {
-                metricId: 'uiStartup',
-                percentile: 'p95',
-                value: 6000,
-                threshold: 5500,
-                severity: 'warn',
-              },
-            ],
-            hasRegression: false,
-            hasWarning: true,
-            absoluteFailed: true,
+            metricId: 'uiStartup',
+            percentile: 'p95',
+            value: 6000,
+            threshold: 4800,
+            severity: THRESHOLD_SEVERITY.Fail,
           },
         ],
-        anyFailed: true,
-      });
+      }),
+    );
 
-      const output = logSpy.mock.calls.map((c: unknown[]) => c[0]).join('\n');
-      expect(output).toContain('FAIL  no-baseline-bench');
-      expect(output).toContain(
-        'uiStartup: 🔺 p75: 9000ms (no baseline) | 🟡⬆️ p95: 6000ms (no baseline)',
-      );
-      expect(output).not.toContain('(no historical baseline data)');
-    });
+    expect(lines).toHaveLength(1);
+    expect(lines[0].icon).toBe(COMPARISON_SEVERITY.Regression.icon);
+    expect(lines[0].hasIssue).toBe(true);
+    expect(lines[0].details).toContain('no baseline');
+    expect(lines[0].details).toContain('6000ms');
+  });
 
-    it('shows violations for metrics missing from baseline when other metrics have baseline', () => {
-      printReport({
-        comparisons: [
+  it('shows 🟢 with (no baseline) for a violation-free metric absent from relative metrics', () => {
+    const lines = buildMetricLines(
+      makeComparison({
+        relativeMetrics: [],
+        absoluteViolations: [],
+      }),
+    );
+    expect(lines).toHaveLength(0);
+  });
+
+  it('shows only icon when metric passes (no timing details)', () => {
+    const lines = buildMetricLines(
+      makeComparison({
+        relativeMetrics: [
           {
-            benchmarkName: 'partial-baseline',
-            relativeMetrics: [
-              {
-                metric: 'metricA',
-                percentile: 'p75',
-                current: 1100,
-                baseline: 1000,
-                delta: 100,
-                deltaPercent: 0.1,
-                direction: 'slower',
-                severity: 'regression',
-                indication: '🔺',
-              },
-            ],
-            absoluteViolations: [
-              {
-                metricId: 'metricB',
-                percentile: 'p75',
-                value: 9000,
-                threshold: 5000,
-                severity: 'fail',
-              },
-            ],
-            hasRegression: true,
-            hasWarning: false,
-            absoluteFailed: true,
+            metric: 'uiStartup',
+            percentile: 'p95',
+            current: 1450,
+            baseline: 1400,
+            delta: 50,
+            deltaPercent: 0.036, // +3.6% → pass
+            severity: COMPARISON_SEVERITY.Pass.value,
+            indication: COMPARISON_SEVERITY.Pass.icon,
           },
         ],
-        anyFailed: true,
-      });
+        absoluteViolations: [],
+      }),
+    );
 
-      const output = logSpy.mock.calls.map((c: unknown[]) => c[0]).join('\n');
-      expect(output).toContain('metricA:');
-      expect(output).toContain('metricB: 🔺 p75: 9000ms (no baseline)');
-    });
+    expect(lines).toHaveLength(1);
+    expect(lines[0].icon).toBe(COMPARISON_SEVERITY.Pass.icon);
+    expect(lines[0].hasIssue).toBe(false);
+    expect(lines[0].details).toBeUndefined();
+  });
 
-    it('groups p75 and p95 violations on one line for metrics without baseline', () => {
-      printReport({
-        comparisons: [
+  it('shows 🟡 when relative regression exists but no absolute violation', () => {
+    const lines = buildMetricLines(
+      makeComparison({
+        relativeMetrics: [
           {
-            benchmarkName: 'no-baseline-grouped',
-            relativeMetrics: [],
-            absoluteViolations: [
-              {
-                metricId: 'load',
-                percentile: 'p75',
-                value: 8000,
-                threshold: 5000,
-                severity: 'fail',
-              },
-              {
-                metricId: 'load',
-                percentile: 'p95',
-                value: 12000,
-                threshold: 8000,
-                severity: 'fail',
-              },
-            ],
-            hasRegression: false,
-            hasWarning: false,
-            absoluteFailed: true,
+            metric: 'uiStartup',
+            percentile: 'p95',
+            current: 1560,
+            baseline: 1400,
+            delta: 160,
+            deltaPercent: 0.114, // +11.4% → regression
+            severity: COMPARISON_SEVERITY.Regression.value,
+            indication: COMPARISON_SEVERITY.Regression.icon,
           },
         ],
-        anyFailed: true,
-      });
+        absoluteViolations: [],
+      }),
+    );
 
-      const output = logSpy.mock.calls.map((c: unknown[]) => c[0]).join('\n');
-      expect(output).toContain(
-        'load: 🔺 p75: 8000ms (no baseline) | 🔺 p95: 12000ms (no baseline)',
-      );
-    });
-
-    it('counts warnings for benchmarks with warn-level violations', () => {
-      printReport({
-        comparisons: [
-          {
-            benchmarkName: 'warn-bench',
-            relativeMetrics: [],
-            absoluteViolations: [
-              {
-                metricId: 'uiStartup',
-                percentile: 'p75',
-                value: 5000,
-                threshold: 4500,
-                severity: 'warn',
-              },
-            ],
-            hasRegression: false,
-            hasWarning: true,
-            absoluteFailed: false,
-          },
-        ],
-        anyFailed: false,
-      });
-
-      const output = logSpy.mock.calls.map((c: unknown[]) => c[0]).join('\n');
-      expect(output).toContain('1 warnings');
-    });
+    expect(lines).toHaveLength(1);
+    expect(lines[0].icon).toBe(COMPARISON_SEVERITY.Warn.icon);
+    expect(lines[0].hasIssue).toBe(true);
+    expect(lines[0].details).toContain('1560ms');
   });
 });

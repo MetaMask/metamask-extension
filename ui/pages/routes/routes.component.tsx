@@ -4,15 +4,8 @@
 import classnames from 'clsx';
 import React, { Suspense, useEffect, useRef } from 'react';
 import { useDispatch } from 'react-redux';
-import {
-  useLocation,
-  useNavigationType,
-  Navigate,
-  Outlet,
-} from 'react-router-dom';
+import { useLocation, Navigate, Outlet } from 'react-router-dom';
 import IdleTimer from 'react-idle-timer';
-import type { ApprovalType } from '@metamask/controller-utils';
-import { TransactionMeta } from '@metamask/transaction-controller';
 
 import { useAppSelector } from '../../store/store';
 import Loading from '../../components/ui/loading-screen';
@@ -71,6 +64,7 @@ import {
   PERPS_MARKET_DETAIL_ROUTE,
   PERPS_ORDER_ENTRY_ROUTE,
   PERPS_ACTIVITY_ROUTE,
+  PERPS_WITHDRAW_ROUTE,
   CONTACTS_ROUTE,
   SETTINGS_V2_ROUTE,
 } from '../../helpers/constants/routes';
@@ -83,11 +77,9 @@ import {
   getShowExtensionInFullSizeView,
   getNetworkToAutomaticallySwitchTo,
   getNumberOfAllUnapprovedTransactionsAndMessages,
-  oldestPendingConfirmationSelector,
-  getUnapprovedTransactions,
-  getPendingApprovals,
 } from '../../selectors';
 import { useTheme } from '../../hooks/useTheme';
+import { useIsRedesignedConfirmationType } from '../../hooks/useIsRedesignedTransactionType';
 
 import {
   hideImportNftsModal,
@@ -125,10 +117,6 @@ import NetworkConfirmationPopover from '../../components/multichain/network-list
 import { ToastMaster } from '../../components/app/toast-master/toast-master';
 import { mmLazy } from '../../helpers/utils/mm-lazy';
 import CrossChainSwapTxDetails from '../bridge/transaction-details/transaction-details';
-import {
-  isCorrectDeveloperTransactionType,
-  isCorrectSignatureApprovalType,
-} from '../../../shared/lib/confirmation.utils';
 import { type Confirmation } from '../confirmations/types/confirm';
 import { MultichainAccountAddressListPage } from '../multichain-accounts/multichain-account-address-list-page';
 import { MultichainAccountPrivateKeyListPage } from '../multichain-accounts/multichain-account-private-key-list-page';
@@ -242,6 +230,9 @@ const PerpsMarketDetailPage = mmLazy(
 const MarketListView = mmLazy(() => import('../perps/market-list/index.tsx'));
 const PerpsActivityPage = mmLazy(
   () => import('../perps/perps-activity-page.tsx'),
+);
+const PerpsWithdrawPage = mmLazy(
+  () => import('../perps/perps-withdraw-page.tsx'),
 );
 const PerpsOrderEntryPage = mmLazy(
   () => import('../perps/perps-order-entry-page.tsx'),
@@ -474,6 +465,10 @@ export const routeConfig = [
                 path: PERPS_MARKET_LIST_ROUTE,
                 element: <MarketListView />,
               },
+              {
+                path: PERPS_WITHDRAW_ROUTE,
+                element: <PerpsWithdrawPage />,
+              },
             ],
           },
         ],
@@ -486,7 +481,6 @@ export const routeConfig = [
 export default function Routes() {
   const dispatch = useDispatch();
   const location = useLocation();
-  const navType = useNavigationType();
 
   const alertOpen = useAppSelector((state) => state.appState.alertOpen);
   const alertMessage = useAppSelector((state) => state.appState.alertMessage);
@@ -501,13 +495,6 @@ export default function Routes() {
   const networkToAutomaticallySwitchTo = useAppSelector(
     getNetworkToAutomaticallySwitchTo,
   );
-  const oldestPendingApproval = useAppSelector(
-    oldestPendingConfirmationSelector,
-  );
-  const pendingApprovals = useAppSelector(getPendingApprovals);
-  const transactionsMetadata = useAppSelector(
-    getUnapprovedTransactions,
-  ) as Record<string, TransactionMeta>;
 
   const textDirection = useAppSelector((state) => state.metamask.textDirection);
   const isUnlocked = useAppSelector(getIsUnlocked);
@@ -557,6 +544,8 @@ export default function Routes() {
   // Multichain intro modal logic (extracted to custom hook)
   const { showMultichainIntroModal, setShowMultichainIntroModal } =
     useMultichainAccountsIntroModal(isUnlocked, location);
+
+  const isUsingRedesignedConfirmationType = useIsRedesignedConfirmationType();
 
   const prevPropsRef = useRef({
     isUnlocked,
@@ -619,10 +608,8 @@ export default function Routes() {
 
   // Track location changes for metrics
   useEffect(() => {
-    if (navType === 'PUSH') {
-      dispatch(pageChanged(location.pathname));
-    }
-  }, [location.pathname, navType, dispatch]);
+    dispatch(pageChanged(location.pathname));
+  }, [location.pathname, dispatch]);
 
   useEffect(() => {
     setTheme(theme);
@@ -661,20 +648,6 @@ export default function Routes() {
     ? getConnectingLabel(loadingMessage, { providerType, providerId }, { t })
     : null;
 
-  const paramsConfirmationId: string = location.pathname.split(
-    '/confirm-transaction/',
-  )[1];
-  const confirmationId = paramsConfirmationId ?? oldestPendingApproval?.id;
-  const pendingApproval = pendingApprovals.find(
-    (approval) => approval.id === confirmationId,
-  );
-  const isCorrectApprovalType = isCorrectSignatureApprovalType(
-    pendingApproval?.type as ApprovalType | undefined,
-  );
-  const isCorrectTransactionType = isCorrectDeveloperTransactionType(
-    transactionsMetadata[confirmationId]?.type,
-  );
-
   const isShowingDeepLinkRoute = location.pathname === DEEP_LINK_ROUTE;
 
   const isLoadingShown =
@@ -687,8 +660,7 @@ export default function Routes() {
     ) &&
     // In the redesigned screens, we hide the general loading spinner and the
     // loading states are on a component by component basis.
-    !isCorrectApprovalType &&
-    !isCorrectTransactionType &&
+    !isUsingRedesignedConfirmationType &&
     // We don't want to show the loading screen on the deep link route, as it
     // is already a fullscreen interface.
     !isShowingDeepLinkRoute;
