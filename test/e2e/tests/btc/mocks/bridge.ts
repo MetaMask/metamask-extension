@@ -1,7 +1,5 @@
 import { Mockttp } from 'mockttp';
 
-import { BITCOIN_FEATURE_FLAGS } from './feature-flag';
-
 // Bitcoin mainnet chain ID formats
 export const BTC_CHAIN_ID = 'bip122:000000000019d6689c085ae165831e93';
 // Numeric chain ID used by bridge API for Bitcoin
@@ -96,28 +94,6 @@ export const MOCK_BRIDGE_QUOTE_BTC_TO_ETH = [
   },
 ];
 
-// Feature flags for BTC bridge
-export const BTC_BRIDGE_FEATURE_FLAGS = {
-  refreshRate: 30000,
-  minimumVersion: '0.0.0',
-  maxRefreshCount: 5,
-  support: true,
-  chains: {
-    '1': {
-      isActiveSrc: true,
-      isActiveDest: true,
-    },
-    [BTC_CHAIN_ID_NUMERIC.toString()]: {
-      isActiveSrc: true,
-      isActiveDest: false,
-    },
-  },
-  chainRanking: [
-    { chainId: 'eip155:1', name: 'Ethereum' },
-    { chainId: BTC_CHAIN_ID, name: 'Bitcoin' },
-  ],
-};
-
 // Mock tokens for BTC bridge
 export const MOCK_BTC_TOKENS = [BTC_NATIVE_ASSET];
 
@@ -137,25 +113,6 @@ export const MOCK_ETH_TOKENS_FOR_BRIDGE = [
       'https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48.png',
   },
 ];
-
-// Mock bridge API endpoints
-export async function mockBridgeFeatureFlags(mockServer: Mockttp) {
-  return await mockServer
-    .forGet('https://client-config.api.cx.metamask.io/v1/flags')
-    .always()
-    .thenCallback(() => {
-      return {
-        ok: true,
-        statusCode: 200,
-        json: [
-          {
-            bridgeConfig: BTC_BRIDGE_FEATURE_FLAGS,
-            ...BITCOIN_FEATURE_FLAGS,
-          },
-        ],
-      };
-    });
-}
 
 /**
  * Mock the getQuote endpoint for BTC bridge.
@@ -339,7 +296,6 @@ export async function mockAllBridgeEndpoints(
   const { returnQuotes = true } = options;
 
   return [
-    await mockBridgeFeatureFlags(mockServer),
     await mockBridgeGetQuote(mockServer, returnQuotes),
     await mockBridgeGetTokensBtc(mockServer),
     await mockBridgeGetTokensEth(mockServer),

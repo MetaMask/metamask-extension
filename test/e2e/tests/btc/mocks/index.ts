@@ -10,7 +10,6 @@ export {
 export { mockRampsDynamicFeatureFlag } from './ramps';
 export {
   mockAllBridgeEndpoints,
-  mockBridgeFeatureFlags,
   mockBridgeGetQuote,
   mockBridgeGetTokensBtc,
   mockBridgeGetTokensEth,

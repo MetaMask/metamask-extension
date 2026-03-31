@@ -53,8 +53,6 @@ async function mockBtcSwapMocksNoQuotes(mockServer: Mockttp) {
 }
 
 describe('BTC Account - Swap (Bridge)', function (this: Suite) {
-  this.timeout(180000); // Bridge tests need longer timeout
-
   it('can open the swap/bridge page from Bitcoin account', async function () {
     await withFixtures(
       {
