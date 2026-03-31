@@ -16,13 +16,15 @@ describe('toast selectors', () => {
         metamask: {
           transactions: [{ id: 'a' }, { id: 'b' }, { id: 'c' }],
         },
-      } as SelectorState;
+      } as unknown as SelectorState;
       const result = selectTransactionIds(state);
       expect(result).toStrictEqual(new Set(['a', 'b', 'c']));
     });
 
     it('returns an empty Set when there are no transactions', () => {
-      const result = selectTransactionIds({ metamask: {} } as SelectorState);
+      const result = selectTransactionIds({
+        metamask: {},
+      } as unknown as SelectorState);
       expect(result).toStrictEqual(new Set());
     });
   });
@@ -37,7 +39,7 @@ describe('toast selectors', () => {
             entry3: {},
           },
         },
-      } as SelectorState;
+      } as unknown as SelectorState;
       const result = selectBridgeApprovalTxIds(state);
       expect(result).toStrictEqual(new Set(['abc', 'def']));
     });
@@ -45,7 +47,7 @@ describe('toast selectors', () => {
     it('returns an empty Set when there is no txHistory', () => {
       const result = selectBridgeApprovalTxIds({
         metamask: {},
-      } as SelectorState);
+      } as unknown as SelectorState);
       expect(result).toStrictEqual(new Set());
     });
   });
@@ -64,7 +66,7 @@ describe('toast selectors', () => {
             noQuote: {},
           },
         },
-      } as SelectorState;
+      } as unknown as SelectorState;
       const result = selectCrossChainBridgeSourceTxIds(state);
       expect(result).toStrictEqual(new Set(['crossChain']));
     });
@@ -88,7 +90,7 @@ describe('toast selectors', () => {
             },
           ],
         },
-      } as SelectorState;
+      } as unknown as SelectorState;
 
       const results = selectEvmTransactionsForToast(state);
 
@@ -107,7 +109,7 @@ describe('toast selectors', () => {
             { id: '0', time: 2, type: TransactionType.simpleSend },
           ],
         },
-      } as SelectorState;
+      } as unknown as SelectorState;
       const results = selectEvmTransactionsForToast(state);
       expect(results).toHaveLength(1);
     });
@@ -127,7 +129,7 @@ describe('toast selectors', () => {
             },
           },
         },
-      } as SelectorState;
+      } as unknown as SelectorState;
       const results = selectEvmTransactionsForToast(state);
       expect(results).toStrictEqual([
         { id: 'normal-1', time: 3, type: TransactionType.simpleSend },
@@ -135,7 +137,9 @@ describe('toast selectors', () => {
     });
 
     it('returns an empty array if there are no transactions', () => {
-      const results = selectEvmTransactionsForToast({} as SelectorState);
+      const results = selectEvmTransactionsForToast(
+        {} as unknown as SelectorState,
+      );
       expect(results).toStrictEqual([]);
     });
   });
@@ -187,7 +191,7 @@ describe('toast selectors', () => {
             },
           },
         },
-      } as SelectorState;
+      } as unknown as SelectorState;
 
       const results = selectNonEvmTransactionsForToast(state);
 
@@ -206,13 +210,15 @@ describe('toast selectors', () => {
             'bridge-src': { quote: { srcChainId: 1, destChainId: 10 } },
           },
         },
-      } as SelectorState;
+      } as unknown as SelectorState;
       const results = selectNonEvmTransactionsForToast(state);
       expect(results).toStrictEqual([tx2]);
     });
 
     it('returns an empty array if non-EVM transactions do not exist', () => {
-      const results = selectNonEvmTransactionsForToast({} as SelectorState);
+      const results = selectNonEvmTransactionsForToast(
+        {} as unknown as SelectorState,
+      );
       expect(results).toStrictEqual([]);
     });
   });
