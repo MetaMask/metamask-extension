@@ -1,11 +1,3 @@
-import React, { useMemo, useCallback, useState, useEffect } from 'react';
-import { useSelector } from 'react-redux';
-import {
-  Navigate,
-  useNavigate,
-  useParams,
-  useSearchParams,
-} from 'react-router-dom';
 import {
   twMerge,
   Box,
@@ -29,38 +21,23 @@ import type {
   OrderParams,
   PriceUpdate,
 } from '@metamask/perps-controller';
-import { getIsPerpsExperienceAvailable } from '../../selectors/perps/feature-flags';
-import { getSelectedInternalAccount } from '../../selectors/accounts';
-import { useI18nContext } from '../../hooks/useI18nContext';
+import React, { useMemo, useCallback, useState, useEffect } from 'react';
+import { useSelector } from 'react-redux';
 import {
-  DEFAULT_ROUTE,
-  PERPS_MARKET_DETAIL_ROUTE,
-} from '../../helpers/constants/routes';
-import {
-  usePerpsLivePositions,
-  usePerpsLiveAccount,
-  usePerpsLiveMarketData,
-  usePerpsLiveCandles,
-} from '../../hooks/perps/stream';
+  Navigate,
+  useNavigate,
+  useParams,
+  useSearchParams,
+} from 'react-router-dom';
 import {
   CandlePeriod,
   TimeDuration,
 } from '../../components/app/perps/constants/chartConfig';
-import { usePerpsEligibility } from '../../hooks/perps';
-import { useFormatters } from '../../hooks/useFormatters';
 import { usePerpsDepositConfirmation } from '../../components/app/perps/hooks/usePerpsDepositConfirmation';
-import { getPerpsStreamManager } from '../../providers/perps';
-import { submitRequestToBackground } from '../../store/background-connection';
-import {
-  getDisplayName,
-  getChangeColor,
-  safeDecodeURIComponent,
-} from '../../components/app/perps/utils';
 import {
   isLimitPriceUnfavorable as checkLimitPriceUnfavorable,
   isNearLiquidationPrice as checkNearLiquidationPrice,
 } from '../../components/app/perps/order-entry/limit-price-warnings';
-import { PerpsDetailPageSkeleton } from '../../components/app/perps/perps-skeletons';
 import {
   OrderEntry,
   DirectionTabs,
@@ -70,6 +47,38 @@ import {
   type OrderMode,
   type OrderCalculations,
 } from '../../components/app/perps/order-entry';
+import { PerpsDetailPageSkeleton } from '../../components/app/perps/perps-skeletons';
+import {
+  getDisplayName,
+  getChangeColor,
+  safeDecodeURIComponent,
+} from '../../components/app/perps/utils';
+import {
+  DEFAULT_ROUTE,
+  PERPS_MARKET_DETAIL_ROUTE,
+} from '../../helpers/constants/routes';
+import { usePerpsEligibility } from '../../hooks/perps';
+import {
+  usePerpsLivePositions,
+  usePerpsLiveAccount,
+  usePerpsLiveMarketData,
+  usePerpsLiveCandles,
+} from '../../hooks/perps/stream';
+import { useI18nContext } from '../../hooks/useI18nContext';
+import { useFormatters } from '../../hooks/useFormatters';
+import { getPerpsStreamManager } from '../../providers/perps';
+import { getSelectedInternalAccount } from '../../selectors/accounts';
+import { getIsPerpsExperienceAvailable } from '../../selectors/perps/feature-flags';
+import { submitRequestToBackground } from '../../store/background-connection';
+
+function toNormalizedPositivePrice(value?: string): string | undefined {
+  const parsed = Number.parseFloat(value ?? '');
+  if (!Number.isFinite(parsed) || parsed <= 0) {
+    return undefined;
+  }
+
+  return parsed.toString();
+}
 
 /**
  * Convert UI OrderFormState to PerpsController OrderParams
@@ -86,14 +95,13 @@ function formStateToOrderParams(
   existingPositionSize?: string,
 ): OrderParams {
   const isBuy = formState.direction === 'long';
-  const marginAmount = parseFloat(formState.amount) || 0;
+  const marginAmount = Number.parseFloat(formState.amount) || 0;
   const positionSize =
     currentPrice > 0 ? (marginAmount * formState.leverage) / currentPrice : 0;
   const size =
     mode === 'close' && existingPositionSize
       ? Math.abs(parseFloat(existingPositionSize)).toString()
       : positionSize.toString();
-  const cleanAmount = formState.amount.replace(/,/gu, '');
 
   const params: OrderParams = {
     symbol: formState.asset,
@@ -102,17 +110,19 @@ function formStateToOrderParams(
     orderType: formState.type,
     leverage: formState.leverage,
     currentPrice,
-    usdAmount: cleanAmount,
+    usdAmount: marginAmount > 0 ? marginAmount.toFixed(2) : '0',
   };
 
   if (formState.type === 'limit' && formState.limitPrice) {
-    params.price = formState.limitPrice.replace(/,/gu, '');
+    params.price = toNormalizedPositivePrice(formState.limitPrice);
   }
   if (formState.autoCloseEnabled && formState.takeProfitPrice) {
-    params.takeProfitPrice = formState.takeProfitPrice.replace(/,/gu, '');
+    params.takeProfitPrice = toNormalizedPositivePrice(
+      formState.takeProfitPrice,
+    );
   }
   if (formState.autoCloseEnabled && formState.stopLossPrice) {
-    params.stopLossPrice = formState.stopLossPrice.replace(/,/gu, '');
+    params.stopLossPrice = toNormalizedPositivePrice(formState.stopLossPrice);
   }
   if (mode === 'close') {
     params.reduceOnly = true;
@@ -190,9 +200,8 @@ const PerpsOrderEntryPage: React.FC = () => {
     if (orderType !== 'limit' || !orderFormState) {
       return false;
     }
-    const cleaned = orderFormState.limitPrice?.replace(/,/gu, '') ?? '';
-    const parsed = parseFloat(cleaned);
-    return !cleaned || isNaN(parsed) || parsed <= 0;
+    const parsed = Number.parseFloat(orderFormState.limitPrice ?? '');
+    return !Number.isFinite(parsed) || parsed <= 0;
   }, [orderType, orderFormState]);
 
   const market = useMemo(() => {
@@ -460,11 +469,11 @@ const PerpsOrderEntryPage: React.FC = () => {
         // Amount is 0: only update TP/SL
         const cleanTp =
           orderFormState.autoCloseEnabled && orderFormState.takeProfitPrice
-            ? orderFormState.takeProfitPrice.replace(/,/gu, '')
+            ? toNormalizedPositivePrice(orderFormState.takeProfitPrice)
             : undefined;
         const cleanSl =
           orderFormState.autoCloseEnabled && orderFormState.stopLossPrice
-            ? orderFormState.stopLossPrice.replace(/,/gu, '')
+            ? toNormalizedPositivePrice(orderFormState.stopLossPrice)
             : undefined;
         const result = await submitRequestToBackground<{
           success: boolean;

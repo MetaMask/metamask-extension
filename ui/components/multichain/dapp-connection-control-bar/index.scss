@@ -45,10 +45,17 @@
       background-color: var(--color-background-hover);
     }
 
-    .mm-avatar-network {
-      border: none;
+    > * {
+      border: none !important;
       box-shadow: none;
+      background-color: transparent !important;
     }
+  }
+
+  &__network-icon {
+    width: 1.25rem !important;
+    height: 1.25rem !important;
+    border-radius: 0.375rem !important;
   }
 
   &__combined-actions {
@@ -77,7 +84,8 @@
 
   &__divider {
     width: 1px;
-    height: 16px;
+    height: 18px;
+    margin-bottom: 8px;
     background-color: var(--color-border-muted);
     flex-shrink: 0;
   }

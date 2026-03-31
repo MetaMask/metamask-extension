@@ -1,16 +1,17 @@
-import { useState, useCallback, useMemo, useEffect, useRef } from 'react';
 import type { OrderType } from '@metamask/perps-controller';
-import { useFormatters } from '../useFormatters';
-import type {
-  OrderFormState,
-  OrderMode,
-  ExistingPositionData,
-} from '../../components/app/perps/order-entry/order-entry.types';
+import { useState, useCallback, useMemo, useEffect, useRef } from 'react';
+
 import {
   mockOrderFormDefaults,
   calculatePositionSize,
   estimateLiquidationPrice,
 } from '../../components/app/perps/order-entry/order-entry.mocks';
+import type {
+  OrderFormState,
+  OrderMode,
+  ExistingPositionData,
+} from '../../components/app/perps/order-entry/order-entry.types';
+import { useFormatters } from '../useFormatters';
 
 export type UsePerpsOrderFormOptions = {
   /** Asset symbol */
@@ -246,10 +247,8 @@ export function usePerpsOrderForm({
       };
     }
 
-    // For new/modify modes, calculate based on form amount
-    // Remove commas from formatted amount for parsing
-    const cleanAmount = formState.amount.replace(/,/gu, '');
-    const amount = parseFloat(cleanAmount.replace(/,/gu, '')) || 0;
+    // For new/modify modes, calculate based on normalized amount input
+    const amount = Number.parseFloat(formState.amount) || 0;
 
     if (amount === 0) {
       return {
@@ -266,10 +265,8 @@ export function usePerpsOrderForm({
     // Fall back to current market price if limit price is empty/invalid.
     let effectivePrice = currentPrice;
     if (formState.type === 'limit' && formState.limitPrice) {
-      const parsedLimitPrice = Number.parseFloat(
-        formState.limitPrice.replaceAll(',', ''),
-      );
-      if (!Number.isNaN(parsedLimitPrice) && parsedLimitPrice > 0) {
+      const parsedLimitPrice = Number.parseFloat(formState.limitPrice);
+      if (Number.isFinite(parsedLimitPrice) && parsedLimitPrice > 0) {
         effectivePrice = parsedLimitPrice;
       }
     }
