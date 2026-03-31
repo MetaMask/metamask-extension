@@ -94,9 +94,6 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
   const [isSaving, setIsSaving] = useState(false);
   const [tpslError, setTpslError] = useState<string | null>(null);
   const isMountedRef = useRef(true);
-  const delayedRefetchTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(
-    null,
-  );
 
   const entryPriceForEdit = useMemo(() => {
     if (position?.entryPrice) {
@@ -207,13 +204,8 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
   }, [editingSlPrice, signedSize, entryPriceForEdit]);
 
   useEffect(() => {
-    isMountedRef.current = true;
     return () => {
       isMountedRef.current = false;
-      if (delayedRefetchTimeoutRef.current) {
-        clearTimeout(delayedRefetchTimeoutRef.current);
-        delayedRefetchTimeoutRef.current = null;
-      }
     };
   }, []);
 
@@ -326,7 +318,7 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
       );
       streamManager.positions.pushData(optimisticallyUpdatedPositions);
 
-      delayedRefetchTimeoutRef.current = setTimeout(async () => {
+      setTimeout(async () => {
         try {
           const freshPositions = await submitRequestToBackground<
             PerpsPosition[]
