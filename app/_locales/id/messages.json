@@ -389,9 +389,6 @@
   "advanced": {
     "message": "Lanjutan"
   },
-  "advancedBaseGasFeeToolTip": {
-    "message": "Saat transaksi Anda dimasukkan ke dalam blok, selisih antara biaya dasar maks dan biaya dasar aktual akan dikembalikan. Jumlah total dihitung sebagai biaya dasar maks (dalam GWEI) * batas gas."
-  },
   "advancedDetailsDataDesc": {
     "message": "Data"
   },
@@ -407,10 +404,6 @@
   "advancedEIP1559ModalTitle": {
     "message": "Biaya jaringan lanjutan"
   },
-  "advancedGasFeeDefaultOptIn": {
-    "message": "Simpan nilai ini sebagai default saya untuk jaringan $1.",
-    "description": "$1 is the current network name."
-  },
   "advancedGasPriceModalTitle": {
     "message": "Biaya jaringan lanjutan"
   },
@@ -422,9 +415,6 @@
   },
   "advancedPermissionsSmallCase": {
     "message": "izin lanjutan"
-  },
-  "advancedPriorityFeeToolTip": {
-    "message": "Biaya prioritas (alias “tip penambang”) langsung masuk ke penambang dan memberi insentif kepada mereka untuk memprioritaskan transaksi Anda."
   },
   "airDropPatternDescription": {
     "message": "Riwayat token on-chain menampilkan kejadian sebelumnya mengenai aktivitas airdrop yang mencurigakan."
@@ -1996,9 +1986,6 @@
   "currentQuestion": {
     "message": "Pertanyaan $1 dari 2"
   },
-  "currentTitle": {
-    "message": "Saat ini:"
-  },
   "currentlyUnavailable": {
     "message": "Tidak tersedia di jaringan ini"
   },
@@ -2051,12 +2038,6 @@
   },
   "dappSuggestedHigh": {
     "message": "Situs yang disarankan"
-  },
-  "dappSuggestedHighShortLabel": {
-    "message": "Situs (tinggi)"
-  },
-  "dappSuggestedShortLabel": {
-    "message": "Situs"
   },
   "dappSwapAdvantage": {
     "message": "Hemat dan dapatkan penghasilan dengan MetaMask Swap"
@@ -2422,9 +2403,6 @@
   "dontShowThisAgain": {
     "message": "Jangan tampilkan lagi"
   },
-  "downArrow": {
-    "message": "panah turun"
-  },
   "download": {
     "message": "Unduh"
   },
@@ -2517,19 +2495,6 @@
   "editGasLimitOutOfBounds": {
     "message": "Batas gas minimum adalah $1"
   },
-  "editGasLimitOutOfBoundsV2": {
-    "message": "Batas gas harus lebih besar dari $1 dan kurang dari $2",
-    "description": "$1 is the minimum limit for gas and $2 is the maximum limit"
-  },
-  "editGasMaxBaseFeeGWEIImbalance": {
-    "message": "Biaya dasar maks tidak boleh lebih rendah dari biaya prioritas"
-  },
-  "editGasMaxBaseFeeHigh": {
-    "message": "Biaya dasar maks lebih tinggi dari yang diperlukan"
-  },
-  "editGasMaxBaseFeeLow": {
-    "message": "Biaya dasar maks rendah untuk kondisi jaringan saat ini"
-  },
   "editGasMaxFeeHigh": {
     "message": "Biaya maks lebih tinggi dari yang diperlukan"
   },
@@ -2542,20 +2507,11 @@
   "editGasMaxPriorityFeeBelowMinimum": {
     "message": "Biaya prioritas maks harus lebih besar dari 0 GWEI"
   },
-  "editGasMaxPriorityFeeBelowMinimumV2": {
-    "message": "Biaya prioritas harus lebih besar dari 0."
-  },
   "editGasMaxPriorityFeeHigh": {
     "message": "Biaya prioritas maks lebih tinggi dari yang diperlukan. Anda mungkin akan membayar lebih dari yang dibutuhkan."
   },
-  "editGasMaxPriorityFeeHighV2": {
-    "message": "Biaya prioritas lebih tinggi dari yang diperlukan. Anda mungkin akan membayar lebih dari yang dibutuhkan"
-  },
   "editGasMaxPriorityFeeLow": {
     "message": "Biaya prioritas maks rendah untuk kondisi jaringan saat ini"
-  },
-  "editGasMaxPriorityFeeLowV2": {
-    "message": "Biaya prioritas rendah untuk kondisi jaringan saat ini"
   },
   "editGasPriceTooLow": {
     "message": "Harga gas harus lebih besar dari 0"
@@ -2977,9 +2933,6 @@
   },
   "gasLimitTooLow": {
     "message": "Batas gas minimum adalah 21000"
-  },
-  "gasLimitV2": {
-    "message": "Batas gas"
   },
   "gasPrice": {
     "message": "Harga gas"
@@ -3740,9 +3693,6 @@
   "ledgerWebHIDNotConnectedErrorMessage": {
     "message": "Perangkat ledger tidak terhubung. Jika ingin menghubungkan Ledger Anda, klik 'Lanjutkan' lagi dan setujui koneksi HID",
     "description": "An error message shown to the user during the hardware connect flow."
-  },
-  "levelArrow": {
-    "message": "panah tingkat"
   },
   "lightTheme": {
     "message": "Terang"
@@ -8505,9 +8455,6 @@
   "swapSource": {
     "message": "Sumber likuiditas"
   },
-  "swapSuggested": {
-    "message": "Pertukaran yang disarankan"
-  },
   "swapSuggestedGasSettingToolTipMessage": {
     "message": "Pertukaran adalah transaksi yang kompleks dan sensitif terhadap waktu. Kami merekomendasikan biaya gas ini untuk keseimbangan yang baik antara biaya dan konfidensi dari keberhasilan Pertukaran."
   },
@@ -8927,9 +8874,6 @@
   "tutorial": {
     "message": "Tutorial"
   },
-  "twelveHrTitle": {
-    "message": "12 j:"
-  },
   "txAlertTitle": {
     "message": "Transaksi ini akan dibatalkan"
   },
@@ -9015,9 +8959,6 @@
   },
   "unstableTokenPriceTitle": {
     "message": "Harga token tidak stabil"
-  },
-  "upArrow": {
-    "message": "panah naik"
   },
   "update": {
     "message": "Perbarui"

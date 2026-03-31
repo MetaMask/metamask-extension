@@ -389,9 +389,6 @@
   "advanced": {
     "message": "高级"
   },
-  "advancedBaseGasFeeToolTip": {
-    "message": "当您的交易被包含在区块中时，您的最大基础费用与实际基础费用之间的任何差额将被退还。总金额按最大基础费用（以GWEI为单位）*燃料限制计算。"
-  },
   "advancedDetailsDataDesc": {
     "message": "数据"
   },
@@ -407,10 +404,6 @@
   "advancedEIP1559ModalTitle": {
     "message": "高级网络费"
   },
-  "advancedGasFeeDefaultOptIn": {
-    "message": "将这些值保存为 $1 网络的默认值。",
-    "description": "$1 is the current network name."
-  },
   "advancedGasPriceModalTitle": {
     "message": "高级网络费"
   },
@@ -422,9 +415,6 @@
   },
   "advancedPermissionsSmallCase": {
     "message": "高级许可"
-  },
-  "advancedPriorityFeeToolTip": {
-    "message": "优先费用（又称“矿工费”）直接向矿工支付，激励他们优先处理您的交易。"
   },
   "airDropPatternDescription": {
     "message": "该代币的链上历史记录显示，此前存在可疑的空投活动实例。"
@@ -1996,9 +1986,6 @@
   "currentQuestion": {
     "message": "问题 $1/2"
   },
-  "currentTitle": {
-    "message": "当前："
-  },
   "currentlyUnavailable": {
     "message": "在此网络上不可用"
   },
@@ -2051,12 +2038,6 @@
   },
   "dappSuggestedHigh": {
     "message": "建议网站"
-  },
-  "dappSuggestedHighShortLabel": {
-    "message": "网站（高）"
-  },
-  "dappSuggestedShortLabel": {
-    "message": "网站"
   },
   "dappSwapAdvantage": {
     "message": "通过 MetaMask Swaps 节省成本并赚取奖励"
@@ -2422,9 +2403,6 @@
   "dontShowThisAgain": {
     "message": "不再显示此内容"
   },
-  "downArrow": {
-    "message": "向下箭头"
-  },
   "download": {
     "message": "下载"
   },
@@ -2517,19 +2495,6 @@
   "editGasLimitOutOfBounds": {
     "message": "燃料上限至少为 $1"
   },
-  "editGasLimitOutOfBoundsV2": {
-    "message": "燃料限制必须大于 $1 且小于 $2",
-    "description": "$1 is the minimum limit for gas and $2 is the maximum limit"
-  },
-  "editGasMaxBaseFeeGWEIImbalance": {
-    "message": "最大基础费用不能低于优先费用"
-  },
-  "editGasMaxBaseFeeHigh": {
-    "message": "最大基础费用高于必要水平"
-  },
-  "editGasMaxBaseFeeLow": {
-    "message": "对于当前网络条件而言，最大基础费用较低"
-  },
   "editGasMaxFeeHigh": {
     "message": "最大费用高于必要水平"
   },
@@ -2542,20 +2507,11 @@
   "editGasMaxPriorityFeeBelowMinimum": {
     "message": "最大优先费用必须大于0 GWEI。"
   },
-  "editGasMaxPriorityFeeBelowMinimumV2": {
-    "message": "优先费用必须大于0。"
-  },
   "editGasMaxPriorityFeeHigh": {
     "message": "最大优先费用高于必要水平。您可以支付超过所需的费用。"
   },
-  "editGasMaxPriorityFeeHighV2": {
-    "message": "优先费用高于必要水平。您可以支付超过所需的费用"
-  },
   "editGasMaxPriorityFeeLow": {
     "message": "对于当前网络条件而言，最大优先费用较低"
-  },
-  "editGasMaxPriorityFeeLowV2": {
-    "message": "对于当前网络条件而言，优先费用较低"
   },
   "editGasPriceTooLow": {
     "message": "燃料价格必须大于0"
@@ -2977,9 +2933,6 @@
   },
   "gasLimitTooLow": {
     "message": "燃料限制至少为21000"
-  },
-  "gasLimitV2": {
-    "message": "燃料上限"
   },
   "gasPrice": {
     "message": "Gas 价格（GWEI）"
@@ -3740,9 +3693,6 @@
   "ledgerWebHIDNotConnectedErrorMessage": {
     "message": "Ledger 设备未连接。如果您想要连接您的 Ledger，请再次点击“继续”并批准 HID 连接",
     "description": "An error message shown to the user during the hardware connect flow."
-  },
-  "levelArrow": {
-    "message": "水平箭头"
   },
   "lightTheme": {
     "message": "浅色"
@@ -8505,9 +8455,6 @@
   "swapSource": {
     "message": "流动性来源"
   },
-  "swapSuggested": {
-    "message": "建议的交换"
-  },
   "swapSuggestedGasSettingToolTipMessage": {
     "message": "交换是复杂和时间敏感的交易。我们建议使用此燃料费用，以便在成本和成功交换的信心之间保持良好的平衡。"
   },
@@ -8927,9 +8874,6 @@
   "tutorial": {
     "message": "教程"
   },
-  "twelveHrTitle": {
-    "message": "12小时："
-  },
   "txAlertTitle": {
     "message": "该交易将撤销"
   },
@@ -9015,9 +8959,6 @@
   },
   "unstableTokenPriceTitle": {
     "message": "代币价格不稳定"
-  },
-  "upArrow": {
-    "message": "向上箭头"
   },
   "update": {
     "message": "更新"
