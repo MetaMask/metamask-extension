@@ -7,6 +7,7 @@ import { withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { Driver } from '../../webdriver/driver';
 import { login } from '../../page-objects/flows/login.flow';
+import HomePage from 'test/e2e/page-objects/pages/home/homepage';
 import { setupPhishingDetectionMocks } from './mocks';
 import {
   DEFAULT_BLOCKED_DOMAIN,
@@ -116,6 +117,8 @@ describe('Phishing Detection - Redirect protections', function (this: Suite) {
     // if we had a way of detecting when the offscreen/background were ready
     // we could remove this
     await login(driver);
+    const homePage = new HomePage(driver);
+    await homePage.checkPageIsLoaded();
   });
   after('Shut down fixtures', async function () {
     deferredTestSuite.resolve(); // let the fixtures know tests are complete
