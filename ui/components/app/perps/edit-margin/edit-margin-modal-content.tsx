@@ -32,6 +32,7 @@ import { submitRequestToBackground } from '../../../../store/background-connecti
 import { TextField, TextFieldSize } from '../../../component-library';
 import { PerpsSlider } from '../perps-slider';
 import type { Position, AccountState } from '../types';
+import { floorToDecimals } from '../utils/number';
 
 export type EditMarginModalContentProps = {
   position: Position;
@@ -99,19 +100,18 @@ export const EditMarginModalContent: React.FC<EditMarginModalContentProps> = ({
     estimatedLiquidationDistance,
     riskAssessment,
   } = calculations;
-  const flooredMaxAmount = Math.floor(maxAmount * 100) / 100;
-  const amountNum = Number.parseFloat(marginAmount.replaceAll(',', '')) || 0;
-  const currentMargin = Number.parseFloat(position.marginUsed) || 0;
-  const isAmountValid =
-    amountNum >= MARGIN_ADJUSTMENT_CONFIG.MinAdjustmentAmount &&
-    amountNum <= flooredMaxAmount &&
-    (marginMode === 'add' || amountNum <= currentMargin);
-
-  const amountNumForDisplay = useMemo(
+  const flooredMaxAmount = floorToDecimals(maxAmount);
+  const parsedAmount = useMemo(
     () => Number.parseFloat(marginAmount.replaceAll(',', '')) || 0,
     [marginAmount],
   );
-  const showLiquidationComparison = amountNumForDisplay > 0;
+  const currentMargin = Number.parseFloat(position.marginUsed) || 0;
+  const isAmountValid =
+    parsedAmount >= MARGIN_ADJUSTMENT_CONFIG.MinAdjustmentAmount &&
+    parsedAmount <= flooredMaxAmount &&
+    (marginMode === 'add' || parsedAmount <= currentMargin);
+
+  const showLiquidationComparison = parsedAmount > 0;
 
   const liquidationPriceDisplay = useMemo(() => {
     if (
@@ -193,9 +193,8 @@ export const EditMarginModalContent: React.FC<EditMarginModalContentProps> = ({
     if (maxAmount <= 0) {
       return 0;
     }
-    const n = Number.parseFloat(marginAmount.replaceAll(',', '')) || 0;
-    return Math.min(100, Math.round((n / maxAmount) * 100));
-  }, [marginAmount, maxAmount]);
+    return Math.min(100, Math.round((parsedAmount / maxAmount) * 100));
+  }, [parsedAmount, maxAmount]);
 
   const handleAmountChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -225,7 +224,7 @@ export const EditMarginModalContent: React.FC<EditMarginModalContentProps> = ({
         return;
       }
       const raw = (maxAmount * percent) / 100;
-      const floored = Math.floor(raw * 100) / 100;
+      const floored = floorToDecimals(raw);
       if (floored <= 0) {
         setMarginAmount('');
         return;
@@ -241,7 +240,7 @@ export const EditMarginModalContent: React.FC<EditMarginModalContentProps> = ({
     }
 
     const rawMarginAmount = marginAmount.replaceAll(',', '');
-    if (amountNum <= 0) {
+    if (parsedAmount <= 0) {
       return;
     }
 
@@ -289,7 +288,7 @@ export const EditMarginModalContent: React.FC<EditMarginModalContentProps> = ({
     marginMode,
     marginAmount,
     isAmountValid,
-    amountNum,
+    parsedAmount,
     position.symbol,
     onClose,
     onSavingChange,
@@ -302,7 +301,7 @@ export const EditMarginModalContent: React.FC<EditMarginModalContentProps> = ({
       riskAssessment.riskLevel === 'danger');
 
   const confirmDisabled =
-    !isEligible || !isAmountValid || isSaving || amountNum <= 0;
+    !isEligible || !isAmountValid || isSaving || parsedAmount <= 0;
 
   useEffect(() => {
     if (onSaveRef) {

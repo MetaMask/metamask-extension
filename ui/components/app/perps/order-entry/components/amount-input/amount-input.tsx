@@ -21,6 +21,7 @@ import { useFormatters } from '../../../../../../hooks/useFormatters';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
 import { TextField, TextFieldSize } from '../../../../../component-library';
 import { PerpsSlider } from '../../../perps-slider';
+import { formatFlooredDecimals } from '../../../utils/number';
 import type { AmountInputProps } from '../../order-entry.types';
 import { isDigitsOnlyInput, isUnsignedDecimalInput } from '../../utils';
 
@@ -110,11 +111,6 @@ export const AmountInput: React.FC<AmountInputProps> = ({
     [availableBalance, onAmountChange, onBalancePercentChange],
   );
 
-  const formatFlooredAmount = useCallback(
-    (value: number): string => (Math.floor(value * 100) / 100).toFixed(2),
-    [],
-  );
-
   const handleAmountBlur = useCallback(() => {
     if (!amount) {
       onAmountChange('');
@@ -123,12 +119,12 @@ export const AmountInput: React.FC<AmountInputProps> = ({
 
     const numValue = Number.parseFloat(amount);
     if (Number.isFinite(numValue) && numValue > 0) {
-      onAmountChange(formatFlooredAmount(numValue));
+      onAmountChange(formatFlooredDecimals(numValue));
       return;
     }
 
     onAmountChange('');
-  }, [amount, onAmountChange, formatFlooredAmount]);
+  }, [amount, onAmountChange]);
 
   const handleTokenAmountChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -153,7 +149,7 @@ export const AmountInput: React.FC<AmountInputProps> = ({
           return;
         }
         const usdMargin = (numToken * currentPrice) / leverage;
-        onAmountChange(formatFlooredAmount(usdMargin));
+        onAmountChange(formatFlooredDecimals(usdMargin));
         if (availableBalance > 0) {
           const pct = Math.min(
             Math.round((usdMargin / availableBalance) * 100),
@@ -173,7 +169,6 @@ export const AmountInput: React.FC<AmountInputProps> = ({
       availableBalance,
       onAmountChange,
       onBalancePercentChange,
-      formatFlooredAmount,
     ],
   );
 
@@ -190,15 +185,10 @@ export const AmountInput: React.FC<AmountInputProps> = ({
         onAmountChange('');
       } else {
         const newAmount = (availableBalance * percent) / 100;
-        onAmountChange(formatFlooredAmount(newAmount));
+        onAmountChange(formatFlooredDecimals(newAmount));
       }
     },
-    [
-      onAmountChange,
-      onBalancePercentChange,
-      availableBalance,
-      formatFlooredAmount,
-    ],
+    [onAmountChange, onBalancePercentChange, availableBalance],
   );
 
   const handlePercentInputChange = useCallback(
@@ -213,17 +203,12 @@ export const AmountInput: React.FC<AmountInputProps> = ({
             onAmountChange('');
           } else {
             const newAmount = (availableBalance * num) / 100;
-            onAmountChange(formatFlooredAmount(newAmount));
+            onAmountChange(formatFlooredDecimals(newAmount));
           }
         }
       }
     },
-    [
-      onAmountChange,
-      onBalancePercentChange,
-      availableBalance,
-      formatFlooredAmount,
-    ],
+    [onAmountChange, onBalancePercentChange, availableBalance],
   );
 
   const handlePercentInputBlur = useCallback(() => {
@@ -235,7 +220,7 @@ export const AmountInput: React.FC<AmountInputProps> = ({
     } else if (num > 100) {
       onBalancePercentChange(100);
       setPercentInputValue('100');
-      onAmountChange(formatFlooredAmount(availableBalance));
+      onAmountChange(formatFlooredDecimals(availableBalance));
     } else {
       onBalancePercentChange(num);
       setPercentInputValue(String(num));
@@ -245,7 +230,6 @@ export const AmountInput: React.FC<AmountInputProps> = ({
     onAmountChange,
     onBalancePercentChange,
     availableBalance,
-    formatFlooredAmount,
   ]);
 
   return (

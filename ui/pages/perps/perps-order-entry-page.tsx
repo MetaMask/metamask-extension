@@ -58,6 +58,7 @@ import {
   getChangeColor,
   safeDecodeURIComponent,
 } from '../../components/app/perps/utils';
+import { formatFlooredDecimals } from '../../components/app/perps/utils/number';
 import {
   DEFAULT_ROUTE,
   PERPS_MARKET_DETAIL_ROUTE,
@@ -83,10 +84,6 @@ function toNormalizedPositivePrice(value?: string): string | undefined {
   }
 
   return parsed.toString();
-}
-
-function formatFlooredUsd(value: number): string {
-  return (Math.floor(value * 100) / 100).toFixed(2);
 }
 
 /**
@@ -351,8 +348,8 @@ const PerpsOrderEntryPage: React.FC = () => {
     requiredMargin > availableBalance;
   const insufficientBalanceError = isInsufficientBalance
     ? t('perpsOrderValidationInsufficientBalance', [
-        formatFlooredUsd(requiredMargin),
-        formatFlooredUsd(availableBalance),
+        formatFlooredDecimals(requiredMargin),
+        formatFlooredDecimals(availableBalance),
       ])
     : null;
 

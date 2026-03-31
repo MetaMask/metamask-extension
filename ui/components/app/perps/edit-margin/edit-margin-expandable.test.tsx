@@ -149,6 +149,27 @@ describe('EditMarginExpandable', () => {
   });
 
   describe('slider', () => {
+    it('does not underflow at max slider value for IEEE-754 edge balances', () => {
+      renderWithProvider(
+        <EditMarginExpandable
+          {...defaultProps}
+          account={{ ...mockAccountState, availableBalance: '1.15' }}
+          isExpanded
+        />,
+        mockStore,
+      );
+
+      fireEvent.keyDown(screen.getByRole('slider'), {
+        key: 'End',
+        code: 'End',
+      });
+
+      expect(screen.getByPlaceholderText('0.00')).toHaveValue('1.15');
+      expect(
+        screen.getByRole('button', { name: /Add Margin/iu }),
+      ).not.toBeDisabled();
+    });
+
     it('keeps add margin submit enabled when max slider value floors to 2dp', () => {
       renderWithProvider(
         <EditMarginExpandable
