@@ -5561,9 +5561,6 @@
   "perpsPosition": {
     "message": "Position"
   },
-  "perpsPositionSize": {
-    "message": "Taille de la position"
-  },
   "perpsPositions": {
     "message": "Positions"
   },

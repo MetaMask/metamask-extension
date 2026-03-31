@@ -339,7 +339,7 @@ describe('OrderEntry', () => {
       );
 
       expect(
-        screen.getByText(messages.perpsPositionSize.message),
+        screen.getByText(messages.perpsAvailableToClose.message),
       ).toBeInTheDocument();
       expect(screen.getByTestId('close-amount-slider')).toBeInTheDocument();
     });

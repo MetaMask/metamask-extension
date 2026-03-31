@@ -30,7 +30,7 @@ describe('CloseAmountSection', () => {
       renderWithProvider(<CloseAmountSection {...defaultProps} />, mockStore);
 
       expect(
-        screen.getByText(messages.perpsPositionSize.message),
+        screen.getByText(messages.perpsAvailableToClose.message),
       ).toBeInTheDocument();
       expect(
         screen.getByText(messages.perpsCloseAmount.message),

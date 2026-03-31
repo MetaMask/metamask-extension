@@ -23,7 +23,7 @@ const CLOSE_PERCENT_CHIP_WIDTH_REM = 4.75;
  * CloseAmountSection - Section for selecting how much of a position to close
  *
  * @param props - Component props
- * @param props.positionSize - Total position size (absolute value)
+ * @param props.positionSize - Total position size (absolute value); labeled "Available to close"
  * @param props.closePercent - Percentage of position to close (0-100)
  * @param props.onClosePercentChange - Callback when percentage changes
  * @param props.asset - Asset symbol for display
@@ -67,7 +67,7 @@ export const CloseAmountSection: React.FC<CloseAmountSectionProps> = ({
         alignItems={BoxAlignItems.Center}
       >
         <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
-          {t('perpsPositionSize')}
+          {t('perpsAvailableToClose')}
         </Text>
         <Text variant={TextVariant.BodySm} fontWeight={FontWeight.Medium}>
           {formatTokenQuantity(totalPositionSize, asset)}
