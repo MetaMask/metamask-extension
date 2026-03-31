@@ -97,11 +97,13 @@ async function fetchEntries(
   const res = await fetch(url);
   const json = await res.json();
 
-  if (json?.message?.includes('Unknown locale')) {
-    throw new UnknownLocaleError(json.message);
-  }
-
   if (!res.ok) {
+    if (
+      typeof json?.message === 'string' &&
+      json.message.includes('Unknown locale')
+    ) {
+      throw new UnknownLocaleError(json.message);
+    }
     throw new Error(`Contentful error: ${json?.message ?? res.statusText}`);
   }
 
