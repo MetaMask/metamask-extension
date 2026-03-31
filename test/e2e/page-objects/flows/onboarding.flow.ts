@@ -14,7 +14,6 @@ import HeaderNavbar from '../pages/header-navbar';
 import HomePage from '../pages/home/homepage';
 import LoginPage from '../pages/login-page';
 import TermsOfUseUpdateModal from '../pages/dialog/terms-of-use-update-modal';
-import { enableTestNetworks } from './settings.flow';
 
 /**
  * Helper function to handle post-onboarding navigation for sidepanel builds.
@@ -529,10 +528,7 @@ export const completeCreateNewWalletOnboardingFlowWithCustomSettings = async ({
 };
 
 /**
- * Add custom network in onboarding privacy settings, then finish onboarding,
- * navigate to home, and enable “Show test networks” from Settings → Networks
- * before any later flow that switches the asset list to Localhost (e.g. wallet
- * fixture export).
+ * Add custom network in onboarding privacy settings
  *
  * @param options - The options object.
  * @param options.driver - The WebDriver instance.

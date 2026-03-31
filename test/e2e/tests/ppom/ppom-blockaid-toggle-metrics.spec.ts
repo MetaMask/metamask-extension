@@ -80,24 +80,23 @@ describe('PPOM Blockaid Alert - Metrics', function () {
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
         await login(driver);
 
-        // toggle on
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.openSettingsPage();
 
         const settingsPage = new SettingsPage(driver);
         await settingsPage.checkPageIsLoaded();
-        await settingsPage.goToPrivacySettings();
+        await settingsPage.goToTransactionsSettings();
 
         const privacySettings = new PrivacySettings(driver);
-        await privacySettings.checkPageIsLoaded();
+        await driver.waitForSelector('[data-testid="securityAlert"]');
 
-        // toggle off
+        // Default fixture has security alerts enabled; first click turns them off.
         await privacySettings.toggleBlockaidAlerts();
 
         // wait for state to update
         await driver.delay(1000);
 
-        // toggle back ON
+        // Second click turns security alerts back on.
         await privacySettings.toggleBlockaidAlerts();
 
         await driver.delay(1000);

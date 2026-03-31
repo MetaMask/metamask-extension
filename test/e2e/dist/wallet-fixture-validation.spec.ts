@@ -17,10 +17,7 @@ import {
   handleSidepanelPostOnboarding,
   importSRPOnboardingFlow,
 } from '../page-objects/flows/onboarding.flow';
-import {
-  enableNativeTokenAsMainBalance,
-  enableTestNetworks,
-} from '../page-objects/flows/settings.flow';
+import { enableNativeTokenAsMainBalance } from '../page-objects/flows/settings.flow';
 import HomePage from '../page-objects/pages/home/homepage';
 import { switchToNetworkFromNetworkSelect } from '../page-objects/flows/network.flow';
 
@@ -151,8 +148,7 @@ describe('Wallet State', function () {
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
 
-        // Set the settings to match the desired fixture state:
-        // 1. enabled native balance and 2. enabled test networks
+        // Set the settings to match the desired fixture state (native token as main balance).
         await enableNativeTokenAsMainBalance(driver);
 
         // Action needed to apply the changes in the balance as doesn't happen right away (potential bug)
@@ -161,8 +157,6 @@ describe('Wallet State', function () {
           'Popular',
           'All popular networks',
         );
-
-        await enableTestNetworks(driver);
 
         await switchToNetworkFromNetworkSelect(
           driver,
