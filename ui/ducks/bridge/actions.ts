@@ -41,7 +41,7 @@ const {
   setFromToken: setFromTokenAction,
   setToToken: setToTokenAction,
   setFromTokenInputValue,
-  resetInputFields: resetInputFieldsAction,
+  resetInputFields,
   rehydrateBridgeStore,
   setSortOrder,
   setSelectedQuote,
@@ -53,10 +53,7 @@ const {
 } = bridgeSlice.actions;
 
 export {
-  /**
-   * Only exposed for testing purposes, use resetInputFields instead.
-   */
-  resetInputFieldsAction,
+  resetInputFields,
   rehydrateBridgeStore,
   setFromTokenInputValue,
   setSrcTokenExchangeRates,
@@ -84,13 +81,7 @@ const callBridgeControllerMethod = (
 export const resetBridgeController = () => {
   return async (dispatch: MetaMaskReduxDispatch) => {
     dispatch(callBridgeControllerMethod(BridgeBackgroundAction.RESET_STATE));
-  };
-};
-
-export const resetInputFields = () => {
-  return async (dispatch: MetaMaskReduxDispatch) => {
     await clearAllBridgeCacheItems();
-    dispatch(resetInputFieldsAction());
   };
 };
 

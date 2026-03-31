@@ -21,7 +21,6 @@ import {
   setWasTxDeclined,
   setSlippage,
   resetBridgeController,
-  resetInputFieldsAction,
   resetInputFields,
 } from './actions';
 
@@ -135,7 +134,7 @@ describe('Ducks - Bridge', () => {
   describe('resetInputFields', () => {
     it('resets to initalState', async () => {
       const state = store.getState().bridge;
-      store.dispatch(resetInputFieldsAction() as never);
+      store.dispatch(resetInputFields() as never);
       const actions = store.getActions();
       expect(actions[0].type).toStrictEqual('bridge/resetInputFields');
       const newState = bridgeReducer(state, actions[0]);
@@ -254,7 +253,7 @@ describe('Ducks - Bridge', () => {
       );
       const state = mockStore.getState().bridge;
 
-      mockStore.dispatch(resetInputFieldsAction() as never);
+      mockStore.dispatch(resetInputFields() as never);
 
       const actions = mockStore.getActions();
       expect(actions[0].type).toStrictEqual('bridge/resetInputFields');
