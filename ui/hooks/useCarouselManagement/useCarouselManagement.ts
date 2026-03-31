@@ -17,6 +17,7 @@ import {
   getSlides,
   getUseExternalServices,
 } from '../../selectors';
+import { getCurrentLocale } from '../../ducks/locale/locale';
 import { fetchCarouselSlidesFromContentful } from './fetchCarouselSlidesFromContentful';
 
 type UseSlideManagementProps = { testDate?: string; enabled?: boolean };
@@ -100,9 +101,12 @@ export const useCarouselManagement = ({
   const useExternalServices = useSelector(getUseExternalServices);
   const showDownloadMobileAppSlide = useSelector(getShowDownloadMobileAppSlide);
   const prevSlidesRef = useRef<CarouselSlide[]>();
+  const slidesRef = useRef(slides);
+  slidesRef.current = slides;
   const hasZeroBalance = new BigNumber(totalBalance ?? ZERO_BALANCE).eq(
     ZERO_BALANCE,
   );
+  const currentLocale = useSelector(getCurrentLocale);
   const contentfulEnabled =
     remoteFeatureFlags?.contentfulCarouselEnabled ?? false;
 
@@ -182,7 +186,7 @@ export const useCarouselManagement = ({
       if (contentfulEnabled) {
         try {
           const { prioritySlides, regularSlides } =
-            await fetchCarouselSlidesFromContentful();
+            await fetchCarouselSlidesFromContentful(currentLocale);
 
           const pRaw = [...prioritySlides];
           const rRaw = [...regularSlides];
@@ -192,7 +196,7 @@ export const useCarouselManagement = ({
 
           const normalizeList = (list: CarouselSlide[]) =>
             list
-              .map((s) => normalize(s, slides))
+              .map((s) => normalize(s, slidesRef.current ?? []))
               .filter((s): s is CarouselSlide => Boolean(s))
               .filter(isNowActive);
 
@@ -252,9 +256,9 @@ export const useCarouselManagement = ({
     dispatch,
     hasZeroBalance,
     contentfulEnabled,
+    currentLocale,
     testDate,
     inTest,
-    slides,
     downloadEligibilityReady,
   ]);
 
