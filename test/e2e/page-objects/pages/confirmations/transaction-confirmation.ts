@@ -81,6 +81,11 @@ class TransactionConfirmation extends Confirmation {
 
   private readonly saveButton: RawLocator = { tag: 'button', text: 'Save' };
 
+  private readonly sendAmountFiat = (amount: string): RawLocator => ({
+    text: amount,
+    css: '.text-alternative',
+  });
+
   private readonly senderAccount: RawLocator = '[data-testid="sender-address"]';
 
   private readonly siteSuggestedGasFee = (estimatedTime: string) => ({
@@ -332,6 +337,13 @@ class TransactionConfirmation extends Confirmation {
       text: amount,
       tag: 'h2',
     });
+  }
+
+  async checkSendAmountConversion(amountFiat: string) {
+    console.log(
+      `Checking send amount conversion ${amountFiat} on transaction confirmation page.`,
+    );
+    await this.driver.waitForSelector(this.sendAmountFiat(amountFiat));
   }
 
   async checkSiteSuggestedGas(time: string) {

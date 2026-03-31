@@ -179,9 +179,7 @@ export const getPriceImpactThresholds = createDeepEqualSelector(
   ],
   (priceImpactThreshold) => ({
     ...(priceImpactThreshold ?? {}),
-    // @ts-expect-error - priceImpactThreshold type has not been updated yet
     warning: priceImpactThreshold?.warning ?? 0.05,
-    // @ts-expect-error - priceImpactThreshold type has not been updated yet
     error: priceImpactThreshold?.error ?? 0.25,
   }),
 );
