@@ -145,6 +145,7 @@ import { createRouteWithLayout } from '../../layouts/route-with-layout';
 import Authenticated from '../../helpers/higher-order-components/authenticated/authenticated.container';
 import { contactsRoutes } from '../contacts';
 import { getCurrencyRateControllerCurrentCurrency } from '../../../shared/lib/selectors/assets-migration';
+import { ALLOWED_CAPABILITIES as NONEVM_BALANCE_CHECK_ROUTE_ALLOWED_CAPABILITIES } from '../nonevm-balance-check/messenger';
 import { getConnectingLabel, setTheme } from './utils';
 import { ConfirmationHandler } from './confirmation-handler';
 import { Modals } from './modals';
@@ -623,6 +624,7 @@ export const routeConfig = [
     authenticated: true,
     basicFunctionalityOpenPageCtaKey:
       'basicFunctionalityRequired_openCreateSnapAccountPage',
+    messenger: NONEVM_BALANCE_CHECK_ROUTE_ALLOWED_CAPABILITIES,
   }),
   createRouteWithLayout({
     path: SHIELD_PLAN_ROUTE,
