@@ -1,9 +1,9 @@
-const { addHexPrefix } = require('ethereumjs-util');
-const {
+import { addHexPrefix } from 'ethereumjs-util';
+import {
   getMaximumGasTotalInHexWei,
   getMinimumGasTotalInHexWei,
-} = require('./gas.utils');
-const { Numeric } = require('./Numeric');
+} from './gas.utils';
+import { Numeric } from './Numeric';
 
 const feesToTest = [10, 24, 90];
 const tipsToTest = [2, 10, 50];
@@ -129,6 +129,108 @@ describe('gas utils', () => {
           });
         });
       });
+    });
+  });
+
+  describe('error cases', () => {
+    describe('getMaximumGasTotalInHexWei', () => {
+      it('throws when neither gasPrice nor maxFeePerGas is provided', () => {
+        expect(() =>
+          getMaximumGasTotalInHexWei({ gasLimit: '0x5208' }),
+        ).toThrow(
+          'getMaximumGasTotalInHexWei requires gasPrice be provided to calculate legacy gas total',
+        );
+      });
+
+      it('throws when called with no arguments', () => {
+        expect(() => getMaximumGasTotalInHexWei()).toThrow(
+          'getMaximumGasTotalInHexWei requires gasPrice be provided to calculate legacy gas total',
+        );
+      });
+    });
+
+    describe('getMinimumGasTotalInHexWei', () => {
+      it('throws when both gasPrice and EIP-1559 fields are provided', () => {
+        expect(() =>
+          getMinimumGasTotalInHexWei({
+            gasLimitNoBuffer: '0x5208',
+            gasPrice: '0xa',
+            maxFeePerGas: '0xa',
+            maxPriorityFeePerGas: '0x2',
+            baseFeePerGas: '0x8',
+          }),
+        ).toThrow(
+          'getMinimumGasTotalInHexWei expects either gasPrice OR the EIP-1559 gas fields, but both were provided',
+        );
+      });
+
+      it('throws when neither gasPrice nor EIP-1559 fields are provided', () => {
+        expect(() =>
+          getMinimumGasTotalInHexWei({ gasLimitNoBuffer: '0x5208' }),
+        ).toThrow(
+          'getMinimumGasTotalInHexWei expects either gasPrice OR the EIP-1559 gas fields, but neither were provided',
+        );
+      });
+
+      it('throws when called with no arguments', () => {
+        expect(() => getMinimumGasTotalInHexWei()).toThrow(
+          'getMinimumGasTotalInHexWei expects either gasPrice OR the EIP-1559 gas fields, but neither were provided',
+        );
+      });
+
+      it('throws when EIP-1559 fields are present but baseFeePerGas is missing', () => {
+        expect(() =>
+          getMinimumGasTotalInHexWei({
+            gasLimitNoBuffer: '0x5208',
+            maxFeePerGas: '0xa',
+            maxPriorityFeePerGas: '0x2',
+          }),
+        ).toThrow(
+          'getMinimumGasTotalInHexWei requires baseFeePerGas be provided when calculating EIP-1559 totals',
+        );
+      });
+
+      it('throws when EIP-1559 fields are present but maxFeePerGas is missing', () => {
+        expect(() =>
+          getMinimumGasTotalInHexWei({
+            gasLimitNoBuffer: '0x5208',
+            maxPriorityFeePerGas: '0x2',
+            baseFeePerGas: '0x8',
+          }),
+        ).toThrow(
+          'getMinimumGasTotalInHexWei requires maxFeePerGas and maxPriorityFeePerGas be provided when calculating EIP-1559 totals',
+        );
+      });
+
+      it('throws when EIP-1559 fields are present but maxPriorityFeePerGas is missing', () => {
+        expect(() =>
+          getMinimumGasTotalInHexWei({
+            gasLimitNoBuffer: '0x5208',
+            maxFeePerGas: '0xa',
+            baseFeePerGas: '0x8',
+          }),
+        ).toThrow(
+          'getMinimumGasTotalInHexWei requires maxFeePerGas and maxPriorityFeePerGas be provided when calculating EIP-1559 totals',
+        );
+      });
+    });
+  });
+
+  describe('default parameter behaviour', () => {
+    it('getMaximumGasTotalInHexWei uses 0x0 as default gasLimit', () => {
+      const result = getMaximumGasTotalInHexWei({
+        maxFeePerGas: '0xa',
+      });
+      expect(new Numeric(result, 16).toBase(10).toString()).toStrictEqual('0');
+    });
+
+    it('getMinimumGasTotalInHexWei uses 0x0 as default gasLimitNoBuffer', () => {
+      const result = getMinimumGasTotalInHexWei({
+        maxFeePerGas: '0xa',
+        maxPriorityFeePerGas: '0x2',
+        baseFeePerGas: '0x8',
+      });
+      expect(new Numeric(result, 16).toBase(10).toString()).toStrictEqual('0');
     });
   });
 });

@@ -2,13 +2,18 @@
  * Artifact link construction and PR "Builds ready" section builder.
  */
 
+import {
+  BENCHMARK_PLATFORMS,
+  BENCHMARK_BUILD_TYPES,
+} from '../../shared/constants/benchmarks';
+
 /**
  * Check whether an artifact exists.
  *
  * @param url - The URL of the artifact to check.
  * @returns True if the artifact exists, false if it doesn't.
  */
-export async function artifactExists(url: string): Promise<boolean> {
+async function artifactExists(url: string): Promise<boolean> {
   const response = await fetch(url, { method: 'HEAD' });
   return response.ok;
 }
@@ -54,7 +59,7 @@ export function getArtifactLinks(
       label: 'Bundle Size Stats',
     },
     interactionStats: {
-      url: `${hostUrl}/benchmarks/benchmark-chrome-browserify-interactionUserActions.json`,
+      url: `${hostUrl}/benchmarks/benchmark-${BENCHMARK_PLATFORMS.CHROME}-${BENCHMARK_BUILD_TYPES.BROWSERIFY}-interactionUserActions.json`,
       label: 'Interaction Stats',
     },
     storybook: {
@@ -108,7 +113,7 @@ export type BuildLinks = {
  * @param options.releaseVersion - The (pre)release version of the extension, e.g., the `6` in `18.7.25-flask.6`.
  * @returns `{ browserify, webpack }` each mapping BuildType → BuildBrowser URLs.
  */
-export function getBuildLinks({
+function getBuildLinks({
   hostUrl,
   version,
   releaseVersion = '0',
@@ -179,7 +184,7 @@ export function getBuildLinks({
  * @param buildLinks - BuildLinks from getBuildLinks.
  * @returns Array of HTML strings, one per bundler/build type combination.
  */
-export function formatBuildLinks(buildLinks: BuildLinks): string[] {
+function formatBuildLinks(buildLinks: BuildLinks): string[] {
   return Object.entries(buildLinks).flatMap(([bundler, types]) => {
     const prefix = bundler === 'browserify' ? 'builds' : 'webpack builds';
     return (
@@ -213,9 +218,7 @@ const FILE_ROOTS = [
  * @param hostUrl - Base URL for hosted artifacts.
  * @returns HTML `<ul>` string of discovered bundle links.
  */
-export async function discoverBundleArtifacts(
-  hostUrl: string,
-): Promise<string> {
+async function discoverBundleArtifacts(hostUrl: string): Promise<string> {
   const bundles: Record<string, string[]> = {};
 
   for (const fileRoot of FILE_ROOTS) {
