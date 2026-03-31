@@ -1038,43 +1038,53 @@ class FixtureBuilder {
 
       const wallets = {};
 
-      // 1) Entropy (HD) wallets grouped by entropySource, defaulting to BIP-44 account index 0
-      const entropyToAccountIds = {};
+      // 1) Entropy (HD) wallets grouped by entropySource and groupIndex
+      const entropyGroups = {};
       for (const account of accountsList) {
         const keyringType = account?.metadata?.keyring?.type;
         if (keyringType === 'HD Key Tree') {
           const entropyId =
             account?.options?.entropySource || 'UNKNOWN_ENTROPY_SOURCE';
-          if (!entropyToAccountIds[entropyId]) {
-            entropyToAccountIds[entropyId] = [];
+          const groupIndex = account?.options?.groupIndex ?? 0;
+          if (!entropyGroups[entropyId]) {
+            entropyGroups[entropyId] = {};
           }
-          entropyToAccountIds[entropyId].push(account.id);
+          if (!entropyGroups[entropyId][groupIndex]) {
+            entropyGroups[entropyId][groupIndex] = [];
+          }
+          entropyGroups[entropyId][groupIndex].push(account);
         }
       }
 
-      Object.entries(entropyToAccountIds).forEach(
-        ([entropyId, accountIds], index) => {
+      Object.entries(entropyGroups).forEach(
+        ([entropyId, groups], walletIndex) => {
           const walletId = `entropy:${entropyId}`;
-          const groupId = `${walletId}/0`;
+          const walletGroups = {};
+          Object.entries(groups).forEach(([groupIndex, accounts]) => {
+            const gIdx = parseInt(groupIndex, 10);
+            const groupId = `${walletId}/${gIdx}`;
+            const maxLastSelected = Math.max(
+              ...accounts.map((a) => a.metadata?.lastSelected ?? 0),
+            );
+            walletGroups[groupId] = {
+              id: groupId,
+              type: 'multichain-account',
+              accounts: accounts.map((a) => a.id),
+              metadata: {
+                name: gIdx === 0 ? 'Default' : `Account ${gIdx + 1}`,
+                pinned: false,
+                hidden: false,
+                entropy: { groupIndex: gIdx },
+                lastSelected: maxLastSelected,
+              },
+            };
+          });
           wallets[walletId] = {
             id: walletId,
             type: 'entropy',
-            groups: {
-              [groupId]: {
-                id: groupId,
-                type: 'multichain-account',
-                accounts: accountIds,
-                metadata: {
-                  name: 'Default',
-                  pinned: false,
-                  hidden: false,
-                  entropy: { groupIndex: 0 },
-                  lastSelected: 0,
-                },
-              },
-            },
+            groups: walletGroups,
             metadata: {
-              name: `Wallet ${index + 1}`,
+              name: `Wallet ${walletIndex + 1}`,
               entropy: { id: entropyId },
             },
           };
@@ -1104,7 +1114,7 @@ class FixtureBuilder {
               name: `${keyringType} Account 1`,
               pinned: false,
               hidden: false,
-              lastSelected: 0,
+              lastSelected: account?.metadata?.lastSelected ?? 0,
             },
           };
         }
@@ -1134,7 +1144,7 @@ class FixtureBuilder {
               name: `${account?.metadata?.snap?.name || 'Snap Account'} 1`,
               pinned: false,
               hidden: false,
-              lastSelected: 0,
+              lastSelected: account?.metadata?.lastSelected ?? 0,
             },
           };
         }
