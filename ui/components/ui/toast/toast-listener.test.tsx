@@ -112,18 +112,6 @@ describe('ToastListener', () => {
   });
 
   describe('non-EVM transactions', () => {
-    it('shows a loading toast when a new pending non-EVM tx appears', () => {
-      const { rerender } = render(<ToastListener />);
-
-      state.nonEvmTxs = [{ id: 'sol-tx1', status: 'submitted' }];
-      rerender(<ToastListener />);
-
-      expect(toast.loading).toHaveBeenCalledWith(
-        expect.anything(),
-        expect.objectContaining({ id: 'non-evm-tx-sol-tx1' }),
-      );
-    });
-
     it('shows a success toast when a non-EVM tx becomes confirmed', () => {
       state.nonEvmTxs = [{ id: 'sol-tx1', status: 'submitted' }];
       const { rerender } = render(<ToastListener />);

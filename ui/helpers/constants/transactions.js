@@ -44,22 +44,18 @@ export const TOAST_EXCLUDED_NON_EVM_TRANSACTION_TYPES = new Set([
   'receive',
 ]);
 
-const TRANSACTION_PENDING_STATUSES = new Set([
+export const TRANSACTION_PENDING_STATUSES = new Set([
   TransactionStatus.submitted,
   SmartTransactionStatus.pending,
 ]);
 
-const TRANSACTION_SUCCESS_STATUSES = new Set([
+export const TRANSACTION_SUCCESS_STATUSES = new Set([
   TransactionStatus.confirmed,
   SmartTransactionStatus.success,
 ]);
 
-const TRANSACTION_FAILED_STATUSES = new Set([
+export const TRANSACTION_FAILED_STATUSES = new Set([
   TransactionStatus.failed,
   TransactionStatus.dropped,
   SmartTransactionStatus.cancelled,
 ]);
-
-export const isPending = (status) => TRANSACTION_PENDING_STATUSES.has(status);
-export const isSuccess = (status) => TRANSACTION_SUCCESS_STATUSES.has(status);
-export const isFailed = (status) => TRANSACTION_FAILED_STATUSES.has(status);

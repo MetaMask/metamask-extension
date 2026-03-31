@@ -1,13 +1,25 @@
 import { useEffect, useRef } from 'react';
+import { TransactionStatus } from '@metamask/transaction-controller';
 import {
-  isFailed,
-  isPending,
-  isSuccess,
+  TRANSACTION_FAILED_STATUSES,
+  TRANSACTION_PENDING_STATUSES,
+  TRANSACTION_SUCCESS_STATUSES,
 } from '../helpers/constants/transactions';
 import type { Handlers } from '../components/ui/toast/types';
+import { SmartTransactionStatus } from '../../shared/constants/transaction';
+
+export const isSuccess = (status: TransactionStatus | SmartTransactionStatus) =>
+  TRANSACTION_SUCCESS_STATUSES.has(status);
+export const isFailed = (status: TransactionStatus | SmartTransactionStatus) =>
+  TRANSACTION_FAILED_STATUSES.has(status);
+export const isPending = (status: TransactionStatus | SmartTransactionStatus) =>
+  TRANSACTION_PENDING_STATUSES.has(status);
 
 export function useTransactionLifecycle<
-  TTxn extends { id: string; status: string },
+  TTxn extends {
+    id: string;
+    status: TransactionStatus | SmartTransactionStatus;
+  },
 >(transactions: readonly TTxn[], handlers: Handlers<TTxn>) {
   const ref = useRef<Map<string, TTxn> | null>(null);
 

@@ -10,11 +10,11 @@ import { EMPTY_ARRAY, EMPTY_OBJECT } from './shared';
 const selectTransactions = (state: MetaMaskReduxState) =>
   state.metamask?.transactions ?? EMPTY_ARRAY;
 
-const selectTxHistory = (state: MetaMaskReduxState) =>
-  state.metamask?.txHistory ?? EMPTY_OBJECT;
-
 const selectNonEvmTransactions = (state: MetaMaskReduxState) =>
   state.metamask?.nonEvmTransactions ?? EMPTY_OBJECT;
+
+const selectTxHistory = (state: MetaMaskReduxState) =>
+  state.metamask?.txHistory ?? EMPTY_OBJECT;
 
 export const selectTransactionIds = createSelector(
   selectTransactions,
@@ -48,9 +48,7 @@ export const selectCrossChainBridgeSourceTxIds = createSelector(
 );
 
 /**
- * Returns deduplicated EVM transactions eligible for toast notifications.
- * Swap polling inserts duplicate entries for the same tx id into raw state;
- * this selector keeps only the first occurrence per id.
+ * Returns EVM transactions eligible for toast notifications.
  *
  * @param {object} state - Root state
  * @returns {object[]} Filtered, deduplicated array of transaction objects
@@ -65,25 +63,25 @@ export const selectEvmTransactionsForToast = createSelector(
     }
 
     const seen = new Set<string>();
-    const result = [];
 
-    for (const tx of rawTransactions) {
-      if (seen.has(tx.id)) {
-        continue; // skip duplicate entries for the same tx id
+    return rawTransactions.filter((transaction) => {
+      if (seen.has(transaction.id)) {
+        return false;
       }
 
-      seen.add(tx.id);
-      if (
-        tx.type &&
-        !TOAST_EXCLUDED_TRANSACTION_TYPES.has(tx.type) &&
-        !bridgeApprovalIds.has(tx.id?.toLowerCase()) &&
-        !crossChainBridgeIds.has(tx.id)
-      ) {
-        result.push(tx);
-      }
-    }
+      seen.add(transaction.id);
 
-    return result;
+      const type = transaction?.type;
+      if (typeof type !== 'string') {
+        return false;
+      }
+      return (
+        Boolean(type) &&
+        !TOAST_EXCLUDED_TRANSACTION_TYPES.has(type) &&
+        !bridgeApprovalIds.has(transaction.id?.toLowerCase()) &&
+        !crossChainBridgeIds.has(transaction.id)
+      );
+    });
   },
 );
 

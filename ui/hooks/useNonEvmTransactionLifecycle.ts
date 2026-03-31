@@ -5,8 +5,17 @@ import type { Handlers } from '../components/ui/toast/types';
 const isSuccess = (status: string) => status === Status.Confirmed;
 const isFailed = (status: string) => status === Status.Failed;
 
+const recencyThreshold = 60_000;
+const isRecent = (timestampSec?: number | null) => {
+  if (typeof timestampSec !== 'number') {
+    return false;
+  }
+
+  return Date.now() - timestampSec * 1000 <= recencyThreshold;
+};
+
 export function useNonEvmTransactionLifecycle<
-  TTxn extends { id: string; status: string },
+  TTxn extends { id: string; status: string; timestamp?: number | null },
 >(transactions: readonly TTxn[], handlers: Handlers<TTxn>) {
   const ref = useRef<Map<string, TTxn> | null>(null);
 
@@ -20,23 +29,28 @@ export function useNonEvmTransactionLifecycle<
 
     for (const tx of transactions) {
       const previous = baseline.get(tx.id);
+      const isNowSuccess = isSuccess(tx.status);
+      const isNowFailed = isFailed(tx.status);
 
       if (!previous) {
-        if (isFailed(tx.status)) {
-          handlers.onFailure?.(tx);
-        } else if (isSuccess(tx.status)) {
-          handlers.onSuccess?.(tx);
-        } else {
-          handlers.onPending?.(tx);
+        if (!isRecent(tx.timestamp)) {
+          continue;
         }
+
+        if (isNowFailed) {
+          handlers.onFailure?.(tx);
+        } else if (isNowSuccess) {
+          handlers.onSuccess?.(tx);
+        }
+
         continue;
       }
 
-      if (!isSuccess(previous.status) && isSuccess(tx.status)) {
+      if (!isSuccess(previous.status) && isNowSuccess) {
         handlers.onSuccess?.(tx);
       }
 
-      if (!isFailed(previous.status) && isFailed(tx.status)) {
+      if (!isFailed(previous.status) && isNowFailed) {
         handlers.onFailure?.(tx);
       }
     }
