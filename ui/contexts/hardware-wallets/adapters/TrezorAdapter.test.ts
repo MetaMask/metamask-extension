@@ -7,6 +7,11 @@ import {
 import { getTrezorFeatures } from '../../../store/actions';
 import { DeviceEvent, type HardwareWalletAdapterOptions } from '../types';
 import * as webConnectionUtils from '../webConnectionUtils';
+import {
+  getMissingCapabilities,
+  isTrezorModelOne,
+  isTrezorModelUsingTrezorSuite,
+} from './trezorUtils';
 import { TrezorAdapter } from './TrezorAdapter';
 
 jest.mock('../../../store/actions', () => ({
@@ -144,6 +149,15 @@ describe('TrezorAdapter', () => {
           }),
         }),
       );
+      expect(adapter.isConnected()).toBe(false);
+    });
+
+    it('converts unexpected errors during device check', async () => {
+      mockGetConnectedTrezorDevices.mockRejectedValue(
+        new Error('USB access denied'),
+      );
+
+      await expect(adapter.connect()).rejects.toThrow(HardwareWalletError);
       expect(adapter.isConnected()).toBe(false);
     });
   });
@@ -311,6 +325,93 @@ describe('TrezorAdapter', () => {
           error: expect.any(HardwareWalletError),
         }),
       );
+    });
+  });
+});
+
+describe('trezorUtils', () => {
+  describe('isTrezorModelUsingTrezorSuite', () => {
+    it('returns true for safe 7', () => {
+      expect(isTrezorModelUsingTrezorSuite('safe 7')).toBe(true);
+    });
+
+    it('returns true for Safe 7 (case insensitive)', () => {
+      expect(isTrezorModelUsingTrezorSuite('Safe 7')).toBe(true);
+    });
+
+    it('returns false for other models', () => {
+      expect(isTrezorModelUsingTrezorSuite('T')).toBe(false);
+      expect(isTrezorModelUsingTrezorSuite('1')).toBe(false);
+    });
+  });
+
+  describe('getMissingCapabilities', () => {
+    it('returns empty array when all capabilities are present', () => {
+      expect(
+        getMissingCapabilities([
+          'Capability_Bitcoin',
+          'Capability_Solana',
+          'Capability_Ethereum',
+        ]),
+      ).toEqual([]);
+    });
+
+    it('returns missing capabilities', () => {
+      expect(getMissingCapabilities(['Capability_Bitcoin'])).toEqual([
+        'Capability_Solana',
+        'Capability_Ethereum',
+      ]);
+    });
+
+    it('returns all capabilities when input is empty', () => {
+      expect(getMissingCapabilities([])).toEqual([
+        'Capability_Bitcoin',
+        'Capability_Solana',
+        'Capability_Ethereum',
+      ]);
+    });
+
+    it('handles non-array input', () => {
+      expect(getMissingCapabilities(null)).toEqual([
+        'Capability_Bitcoin',
+        'Capability_Solana',
+        'Capability_Ethereum',
+      ]);
+    });
+
+    it('filters out non-string entries', () => {
+      expect(
+        getMissingCapabilities([
+          'Capability_Bitcoin',
+          123,
+          'Capability_Ethereum',
+        ]),
+      ).toEqual(['Capability_Solana']);
+    });
+  });
+
+  describe('isTrezorModelOne', () => {
+    it('returns true for model "1"', () => {
+      expect(isTrezorModelOne('1')).toBe(true);
+    });
+
+    it('returns true for model "T1B1"', () => {
+      expect(isTrezorModelOne('T1B1')).toBe(true);
+    });
+
+    it('returns true for model containing "model one"', () => {
+      expect(isTrezorModelOne('Trezor Model One')).toBe(true);
+    });
+
+    it('returns false for other models', () => {
+      expect(isTrezorModelOne('T')).toBe(false);
+      expect(isTrezorModelOne('safe 7')).toBe(false);
+    });
+
+    it('returns false for non-string input', () => {
+      expect(isTrezorModelOne(123)).toBe(false);
+      expect(isTrezorModelOne(null)).toBe(false);
+      expect(isTrezorModelOne(undefined)).toBe(false);
     });
   });
 });
