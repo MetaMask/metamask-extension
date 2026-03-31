@@ -4,13 +4,6 @@ import { toAssetId } from '../../../../../shared/lib/asset-utils';
 import { ASSET_ROUTE } from '../../../../../shared/lib/deep-links/routes/route';
 import { toChecksumHexAddress } from '../../../../../shared/lib/hexstring-utils';
 import { Driver } from '../../../webdriver/driver';
-import {
-  EXPECTED_INPUT_CHANGES,
-  BRIDGE_REFRESH_RATE,
-} from '../../../tests/bridge/constants';
-import { EventTypes } from '../../../tests/bridge/bridge-test-utils';
-import { MockedEndpoint } from '../../../mock-e2e';
-import { getEventPayloads } from '../../../helpers';
 import TokenOverviewPage from '../token-overview-page';
 
 export type BridgeQuote = {
@@ -223,47 +216,6 @@ class BridgeQuotePage {
     console.log('Asset picker modal closed');
   };
 
-  checkQuoteRequestsAreNotMadeAfterTimestamp = async (
-    timestamp: number,
-    mockedEndpoints: ({
-      rule: {
-        matchers: { type: string; regexSource: string }[];
-        requestCount: number;
-      };
-    } & MockedEndpoint)[],
-  ) => {
-    await this.driver.delay(2 * BRIDGE_REFRESH_RATE + 1000);
-
-    // Find all getQuote mocked endpoints
-    const getQuoteMocks = mockedEndpoints.filter(
-      ({ rule: { matchers, requestCount } }) =>
-        matchers.some(
-          (matcher) =>
-            matcher.type === 'regex-path' &&
-            matcher.regexSource.includes('getQuote') &&
-            requestCount > 0,
-        ),
-    );
-
-    // Filter requests made after the timestamp
-    for (const mock of getQuoteMocks) {
-      const seenRequests = await mock.getSeenRequests();
-      assert.ok(
-        seenRequests.length > 0,
-        'At least one request should be made to getQuote',
-      );
-
-      const seenRequestsAfterTimestamp = seenRequests.filter(
-        (request) => request.timingEvents.startTime > timestamp,
-      );
-      assert.equal(
-        seenRequestsAfterTimestamp.length,
-        0,
-        'No requests should be made to getQuote after timestamp',
-      );
-    }
-  };
-
   waitForQuote = async () => {
     await this.driver.waitForSelector(this.submitButton, { timeout: 30000 });
   };
@@ -382,43 +334,6 @@ class BridgeQuotePage {
   async selectNetwork(network: string): Promise<void> {
     await this.driver.clickElement(this.networkSelector);
     await this.driver.clickElement(this.networkNameSelector(network));
-  }
-
-  async checkInputChangedEvents(
-    type: keyof typeof EXPECTED_INPUT_CHANGES,
-    driver: Driver,
-    mockedEndpoints: MockedEndpoint[],
-    startIndex: number = 0,
-  ): Promise<number> {
-    const expectedInputChanges1 = EXPECTED_INPUT_CHANGES[type];
-
-    const receivedInputChanges1 = (
-      await getEventPayloads(driver, mockedEndpoints)
-    )
-      .filter((e) => e?.event === EventTypes.SwapBridgeInputChanged)
-      .slice(startIndex)
-      .map((event) => ({
-        [event.properties.input]: event.properties.input_value,
-      }));
-    assert.equal(
-      receivedInputChanges1.length,
-      expectedInputChanges1.length,
-      `Should have ${expectedInputChanges1.length} input change events, but got ${receivedInputChanges1.length}`,
-    );
-    expectedInputChanges1
-      .flatMap(Object.entries)
-      .forEach(([expectedKey, expectedValue], index) => {
-        const receivedInputChange = receivedInputChanges1.find(
-          (receivedInputChange: { [key: string]: string }) =>
-            receivedInputChange[expectedKey] === expectedValue,
-        );
-        assert.ok(
-          receivedInputChange,
-          `Expected input change ${expectedKey} with value ${expectedValue} not found at index ${index}`,
-        );
-      });
-
-    return expectedInputChanges1.length;
   }
 }
 

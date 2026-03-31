@@ -12,6 +12,7 @@ import {
   getBridgeFixtures,
   EventTypes,
   EXPECTED_EVENT_TYPES,
+  checkInputChangedEvents,
 } from '../bridge/bridge-test-utils';
 import BridgeQuotePage from '../../page-objects/pages/bridge/quote-page';
 import { login } from '../../page-objects/flows/login.flow';
@@ -49,8 +50,8 @@ describe('Bridge tests', function (this: Suite) {
           expectedDestAmount: '0.0157',
         });
 
-        const inputChangesCount1 = await bridgePage.checkInputChangedEvents(
-          'quote_request_1',
+        const inputChangesCount1 = await checkInputChangedEvents(
+          'quoteRequest1',
           driver,
           mockedEndpoints,
         );
@@ -59,8 +60,8 @@ describe('Bridge tests', function (this: Suite) {
         console.log('Starting 2nd Swap flow');
         await homePage.startSwapFlow();
 
-        const inputChangesCount2 = await bridgePage.checkInputChangedEvents(
-          'reset_bridge_page',
+        const inputChangesCount2 = await checkInputChangedEvents(
+          'resetPage',
           driver,
           mockedEndpoints,
           inputChangesCount1,
@@ -71,8 +72,8 @@ describe('Bridge tests', function (this: Suite) {
         await bridgePage.waitForQuote();
         await bridgePage.checkExpectedNetworkFeeIsDisplayed();
 
-        const inputChangesCount3 = await bridgePage.checkInputChangedEvents(
-          'quote_request_2',
+        const inputChangesCount3 = await checkInputChangedEvents(
+          'quoteRequest2',
           driver,
           mockedEndpoints,
           inputChangesCount1 + inputChangesCount2,
@@ -124,8 +125,8 @@ describe('Bridge tests', function (this: Suite) {
               'Unified SwapBridge',
         );
 
-        const inputChangesCount4 = await bridgePage.checkInputChangedEvents(
-          'switch_tokens',
+        const inputChangesCount4 = await checkInputChangedEvents(
+          'switchTokens',
           driver,
           mockedEndpoints,
           inputChangesCount3 + inputChangesCount2 + inputChangesCount1,

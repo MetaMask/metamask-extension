@@ -9,7 +9,11 @@ import {
   BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
   DEFAULT_BRIDGE_FEATURE_FLAGS,
 } from './constants';
-import { bridgeTransaction, getBridgeFixtures } from './bridge-test-utils';
+import {
+  bridgeTransaction,
+  checkQuoteRequestsAreNotMadeAfterTimestamp,
+  getBridgeFixtures,
+} from './bridge-test-utils';
 
 describe('Bridge tests', function (this: Suite) {
   this.timeout(160000); // This test is very long, so we need an unusually high timeout
@@ -112,7 +116,8 @@ describe('Bridge tests', function (this: Suite) {
         const finalQuoteRequestTimestamp = Date.now();
 
         await bridgePage.goBack();
-        await bridgePage.checkQuoteRequestsAreNotMadeAfterTimestamp(
+        await checkQuoteRequestsAreNotMadeAfterTimestamp(
+          driver,
           finalQuoteRequestTimestamp,
           mockedEndpoint,
         );
@@ -156,7 +161,8 @@ describe('Bridge tests', function (this: Suite) {
         });
         const finalQuoteRequestTimestamp = Date.now();
         const bridgePage = new BridgeQuotePage(driver);
-        await bridgePage.checkQuoteRequestsAreNotMadeAfterTimestamp(
+        await checkQuoteRequestsAreNotMadeAfterTimestamp(
+          driver,
           finalQuoteRequestTimestamp,
           mockedEndpoint,
         );

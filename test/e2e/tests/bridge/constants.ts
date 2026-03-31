@@ -2631,7 +2631,7 @@ export const MOCK_SWAP_API_AGGREGATOR_LINEA = {
 };
 
 export const EXPECTED_INPUT_CHANGES = {
-  quote_request_1: [
+  quoteRequest1: [
     {
       token_destination:
         'eip155:1/erc20:0xacA92E438df0B2401fF60dA7E4337B687a2435DA',
@@ -2655,7 +2655,7 @@ export const EXPECTED_INPUT_CHANGES = {
       chain_destination: 'eip155:59144',
     },
   ],
-  reset_bridge_page: [
+  resetPage: [
     {
       token_source: 'eip155:1/slip44:60',
     },
@@ -2667,7 +2667,7 @@ export const EXPECTED_INPUT_CHANGES = {
         'eip155:1/erc20:0xacA92E438df0B2401fF60dA7E4337B687a2435DA',
     },
   ],
-  quote_request_2: [
+  quoteRequest2: [
     {
       token_source: 'eip155:1/erc20:0x6B175474E89094C44Da98b954EedeAC495271d0F',
     },
@@ -2678,7 +2678,7 @@ export const EXPECTED_INPUT_CHANGES = {
       chain_destination: 'eip155:59144',
     },
   ],
-  switch_tokens: [
+  switchTokens: [
     {
       token_source: 'eip155:59144/slip44:60',
     },
