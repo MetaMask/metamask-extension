@@ -161,6 +161,13 @@ describe('Bridge functionality', function (this: Suite) {
         await homePage.goToActivityList();
         const activityList = new ActivityListPage(driver);
         await activityList.checkPendingBridgeTransactionActivity();
+        await activityList.checkBridgeTransactionDetails(
+          'Bridged to Linea',
+          true,
+          'pending',
+          '1',
+          'ETH',
+        );
       },
     );
   });
@@ -194,6 +201,13 @@ describe('Bridge functionality', function (this: Suite) {
 
         const activityList = new ActivityListPage(driver);
         await activityList.checkFailedTxNumberDisplayedInActivity();
+        await activityList.checkBridgeTransactionDetails(
+          'Bridged to Linea',
+          true,
+          'failed',
+          '1',
+          'ETH',
+        );
       },
     );
   });
@@ -227,6 +241,13 @@ describe('Bridge functionality', function (this: Suite) {
 
         const activityList = new ActivityListPage(driver);
         await activityList.checkFailedTxNumberDisplayedInActivity();
+        await activityList.checkBridgeTransactionDetails(
+          'Bridged to Linea',
+          true,
+          'failed',
+          '1',
+          'ETH',
+        );
       },
     );
   });

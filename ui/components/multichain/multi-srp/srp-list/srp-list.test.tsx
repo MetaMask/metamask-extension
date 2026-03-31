@@ -53,6 +53,7 @@ const mockSecondWallet = {
         entropy: { groupIndex: 0 },
         hidden: false,
         pinned: false,
+        lastSelected: 0,
       },
     },
   },

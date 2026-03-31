@@ -77,8 +77,8 @@ function createStore({
 } = {}) {
   return configureMockStore()({
     metamask: {
+      selectedAccountGroup: 'entropy:01-group-1',
       accountTree: {
-        selectedAccountGroup: 'entropy:01-group-1',
         wallets: {
           'entropy:01': {
             id: 'entropy:01',

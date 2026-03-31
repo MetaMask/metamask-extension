@@ -1,31 +1,10 @@
-import { Messenger } from '@metamask/messenger';
 import {
-  DeleteInterface,
-  GetAllSnaps,
-  HandleSnapRequest,
-} from '@metamask/snaps-controllers';
-import { GetPermissions } from '@metamask/permission-controller';
-import {
-  TransactionControllerUnapprovedTransactionAddedEvent,
-  TransactionControllerTransactionStatusUpdatedEvent,
-} from '@metamask/transaction-controller';
-import { SignatureStateChange } from '@metamask/signature-controller';
+  Messenger,
+  MessengerActions,
+  MessengerEvents,
+} from '@metamask/messenger';
+import { SnapInsightsControllerMessenger } from '@metamask/snaps-controllers';
 import { RootMessenger } from '../../../lib/messenger';
-
-type Actions =
-  | HandleSnapRequest
-  | GetAllSnaps
-  | GetPermissions
-  | DeleteInterface;
-
-type Events =
-  | TransactionControllerUnapprovedTransactionAddedEvent
-  | TransactionControllerTransactionStatusUpdatedEvent
-  | SignatureStateChange;
-
-export type SnapInsightsControllerMessenger = ReturnType<
-  typeof getSnapInsightsControllerMessenger
->;
 
 /**
  * Get a restricted messenger for the Snap insights controller. This is scoped
@@ -36,14 +15,12 @@ export type SnapInsightsControllerMessenger = ReturnType<
  * @returns The restricted messenger.
  */
 export function getSnapInsightsControllerMessenger(
-  messenger: RootMessenger<Actions, Events>,
+  messenger: RootMessenger<
+    MessengerActions<SnapInsightsControllerMessenger>,
+    MessengerEvents<SnapInsightsControllerMessenger>
+  >,
 ) {
-  const controllerMessenger = new Messenger<
-    'SnapInsightsController',
-    Actions,
-    Events,
-    typeof messenger
-  >({
+  const controllerMessenger: SnapInsightsControllerMessenger = new Messenger({
     namespace: 'SnapInsightsController',
     parent: messenger,
   });
@@ -51,7 +28,7 @@ export function getSnapInsightsControllerMessenger(
     messenger: controllerMessenger,
     actions: [
       'SnapController:handleRequest',
-      'SnapController:getAll',
+      'SnapController:getRunnableSnaps',
       'PermissionController:getPermissions',
       'SnapInterfaceController:deleteInterface',
     ],

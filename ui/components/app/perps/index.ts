@@ -53,6 +53,7 @@ export { UpdateTPSLModal, UpdateTPSLModalContent } from './update-tpsl';
 export type {
   UpdateTPSLModalProps,
   UpdateTPSLModalContentProps,
+  UpdateTPSLSubmitState,
 } from './update-tpsl';
 
 // Order Entry components

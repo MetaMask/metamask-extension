@@ -118,14 +118,8 @@
   "advanced": {
     "message": "Avanzado"
   },
-  "advancedBaseGasFeeToolTip": {
-    "message": "Cuando su transacción se incluya en el bloque, se reembolsará cualquier diferencia entre su tarifa base máxima y la tarifa base real. El importe total se calcula como tarifa base máxima (en GWEI) * límite de gas."
-  },
   "advancedGasPriceTitle": {
     "message": "Precio del gas"
-  },
-  "advancedPriorityFeeToolTip": {
-    "message": "La tarifa de prioridad (también llamada “propina del minero”) va directamente a los mineros para incentivarlos a priorizar su transacción."
   },
   "alertDisableTooltip": {
     "message": "Esto se puede modificar en \"Configuración > Alertas\""
@@ -248,9 +242,6 @@
   },
   "cancel": {
     "message": "Cancelar"
-  },
-  "cancelPopoverTitle": {
-    "message": "Cancelar transacción"
   },
   "cancelled": {
     "message": "Cancelado"
@@ -400,9 +391,6 @@
   "currentLanguage": {
     "message": "Idioma actual"
   },
-  "currentTitle": {
-    "message": "Actual:"
-  },
   "currentlyUnavailable": {
     "message": "No disponible en esta red"
   },
@@ -418,9 +406,6 @@
   "dappSuggestedGasSettingToolTipMessage": {
     "message": "$1 ha sugerido este precio.",
     "description": "$1 is url for the dapp that has suggested gas settings"
-  },
-  "dappSuggestedShortLabel": {
-    "message": "Sitio"
   },
   "data": {
     "message": "Datos"
@@ -524,22 +509,6 @@
   "editGasLimitOutOfBounds": {
     "message": "El límite de gas debe ser al menos $1"
   },
-  "editGasLimitOutOfBoundsV2": {
-    "message": "El límite de gas debe ser superior a $1 e inferior a $2",
-    "description": "$1 is the minimum limit for gas and $2 is the maximum limit"
-  },
-  "editGasLimitTooltip": {
-    "message": "El límite de gas es el máximo de unidades de gas que está dispuesto a utilizar. Las unidades de gas son un multiplicador de la \"Tarifa de prioridad máxima\" y de la \"Tarifa máxima\"."
-  },
-  "editGasMaxBaseFeeGWEIImbalance": {
-    "message": "La tarifa base máxima no puede ser inferior a la tarifa de prioridad"
-  },
-  "editGasMaxBaseFeeHigh": {
-    "message": "La tarifa base máxima es más alta de lo necesario"
-  },
-  "editGasMaxBaseFeeLow": {
-    "message": "La tarifa base máxima es baja para las condiciones actuales de la red"
-  },
   "editGasMaxFeeHigh": {
     "message": "La tarifa base máxima es más alta de lo necesario"
   },
@@ -552,29 +521,14 @@
   "editGasMaxPriorityFeeBelowMinimum": {
     "message": "La tarifa máxima de prioridad debe ser superior a 0 GWEI"
   },
-  "editGasMaxPriorityFeeBelowMinimumV2": {
-    "message": "La tarifa de prioridad debe ser superior a 0."
-  },
   "editGasMaxPriorityFeeHigh": {
     "message": "La tarifa máxima de prioridad es más alta de lo necesario. Es posible que pague más de lo necesario."
-  },
-  "editGasMaxPriorityFeeHighV2": {
-    "message": "La tarifa de prioridad es más alta de lo necesario. Es posible que pague más de lo necesario"
   },
   "editGasMaxPriorityFeeLow": {
     "message": "La tarifa de prioridad máxima es baja para las condiciones actuales de la red"
   },
-  "editGasMaxPriorityFeeLowV2": {
-    "message": "La tarifa de prioridad es baja para las condiciones actuales de la red"
-  },
   "editGasPriceTooLow": {
     "message": "El precio del gas debe ser superior a 0"
-  },
-  "editGasPriceTooltip": {
-    "message": "Esta red requiere un campo \"Precio del gas\" cuando se envía una transacción. El precio del gas es la cantidad que se pagará por unidad de gas."
-  },
-  "editGasTitle": {
-    "message": "Editar prioridad"
   },
   "editGasTooLow": {
     "message": "Tiempo de procesamiento desconocido"
@@ -698,21 +652,11 @@
   "gas": {
     "message": "Gas"
   },
-  "gasDisplayAcknowledgeDappButtonText": {
-    "message": "Editar tarifa de gas sugerida"
-  },
-  "gasDisplayDappWarning": {
-    "message": "Esta tarifa de gas ha sido sugerida por $1. Anularla puede causar un problema con su transacción. Comuníquese con $1 si tiene preguntas.",
-    "description": "$1 represents the Dapp's origin"
-  },
   "gasLimit": {
     "message": "Límite de gas"
   },
   "gasLimitTooLow": {
     "message": "El límite de gas debe ser al menos 21 000"
-  },
-  "gasLimitV2": {
-    "message": "Límite de gas"
   },
   "gasPriceExcessive": {
     "message": "Su tarifa de gas es demasiado alta. Considere reducir el importe."
@@ -1398,15 +1342,6 @@
   "speedUpCancellation": {
     "message": "Acelerar esta cancelación"
   },
-  "speedUpExplanation": {
-    "message": "Hemos actualizado la tarifa de gas en función de las condiciones actuales de la red y la hemos aumentado al menos un 10% (exigido por la red)."
-  },
-  "speedUpPopoverTitle": {
-    "message": "Acelerar la transacción"
-  },
-  "speedUpTooltipText": {
-    "message": "Nueva tarifa de gas"
-  },
   "stable": {
     "message": "Estable"
   },
@@ -1616,9 +1551,6 @@
   "swapSource": {
     "message": "Fuente de liquidez"
   },
-  "swapSuggested": {
-    "message": "Swap sugerido"
-  },
   "swapSuggestedGasSettingToolTipMessage": {
     "message": "Los swaps son transacciones complejas y urgentes. Recomendamos esta tarifa de gas para lograr un buen equilibrio entre el costo y la garantía de un swap exitoso."
   },
@@ -1756,9 +1688,6 @@
   },
   "turnOnTokenDetection": {
     "message": "Activar la detección mejorada de tokens"
-  },
-  "twelveHrTitle": {
-    "message": "12 horas:"
   },
   "u2f": {
     "message": "U2F",
