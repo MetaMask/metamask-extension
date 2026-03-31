@@ -58,55 +58,33 @@ function createPerformance(): PerpsPerformance {
 }
 
 function createTracer(): PerpsTracer {
-  const pendingSpans = new Map<string, { end: () => void }>();
-
   return {
-    trace: (params: {
+    trace: (_params: {
       name: PerpsTraceName;
       id: string;
       op: string;
       tags?: Record<string, PerpsTraceValue>;
       data?: Record<string, PerpsTraceValue>;
     }) => {
-      const startSpanManual = globalThis.sentry?.startSpanManual;
-      if (!startSpanManual) {
-        return;
-      }
-      startSpanManual(
-        {
-          name: params.name,
-          op: params.op,
-          attributes: params.data,
-        },
-        (span: { end: () => void }) => {
-          pendingSpans.set(`${params.name}:${params.id}`, {
-            end: () => span.end(),
-          });
-        },
-      );
+      // TODO: Integrate with Sentry tracing when ready
     },
-    endTrace: (params: {
+    endTrace: (_params: {
       name: PerpsTraceName;
       id: string;
       data?: Record<string, PerpsTraceValue>;
     }) => {
-      const key = `${params.name}:${params.id}`;
-      const pending = pendingSpans.get(key);
-      if (pending) {
-        pending.end();
-        pendingSpans.delete(key);
-      }
+      // TODO: End Sentry span
     },
-    setMeasurement: (name: string, value: number, unit: string) => {
-      globalThis.sentry?.setMeasurement?.(name, value, unit);
+    setMeasurement: (_name: string, _value: number, _unit: string) => {
+      // TODO: Set Sentry measurement
     },
-    addBreadcrumb: (breadcrumb: {
+    addBreadcrumb: (_breadcrumb: {
       category: string;
       message: string;
       level: 'fatal' | 'error' | 'warning' | 'log' | 'info' | 'debug';
       data?: Record<string, unknown>;
     }) => {
-      globalThis.sentry?.addBreadcrumb?.(breadcrumb);
+      // TODO: Integrate with Sentry breadcrumbs when ready
     },
   };
 }
