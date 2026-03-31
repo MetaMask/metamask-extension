@@ -2284,6 +2284,7 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     status: FeatureFlagStatus.Active,
   },
 
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   confirmations_pay: {
     name: 'confirmations_pay',
     type: FeatureFlagType.Remote,
@@ -2294,6 +2295,7 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     status: FeatureFlagStatus.Active,
   },
 
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   confirmations_pay_dapps: {
     name: 'confirmations_pay_dapps',
     type: FeatureFlagType.Remote,
