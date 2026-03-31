@@ -17,8 +17,6 @@ export type MarketFilter = (typeof VALID_MARKET_FILTERS)[number];
  */
 export const SUPPORT_CONFIG = {
   Url: 'https://support.metamask.io',
-  TitleKey: 'perps.support.title',
-  DescriptionKey: 'perps.support.description',
 } as const;
 
 /**
@@ -26,5 +24,4 @@ export const SUPPORT_CONFIG = {
  */
 export const FEEDBACK_CONFIG = {
   Url: 'https://survey.alchemer.com/s3/8649911/MetaMask-Perps-Trading-Feedback',
-  TitleKey: 'perps.feedback.title',
 } as const;
