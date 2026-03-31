@@ -263,10 +263,9 @@ describe('BridgeCTAButton', () => {
       store,
     );
 
-    await userEvent.click(getByText(messages.bridgeFetchNewQuotes.message));
+    await userEvent.click(getByText(messages.bridgeGetNewQuote.message));
 
     expect(onFetchNewQuotes).toHaveBeenCalledTimes(1);
-    expect(store.getState().bridge.wasTxDeclined).toBe(false);
   });
 
   it('should render hardware wallet connect label with wallet name', () => {
@@ -515,7 +514,7 @@ describe('BridgeCTAButton', () => {
   it.each([
     [
       'quote is expired (no quotes)',
-      'Fetch a new one?',
+      'Get new quote',
       {
         quotes: [],
         quotesLastFetched: Date.now() - 35000,
@@ -532,10 +531,10 @@ describe('BridgeCTAButton', () => {
         quotesRefreshCount: 4,
       },
     ],
-    ['tx is declined', 'Fetch a new one?', {}, true],
+    ['tx is declined', 'Get new quote', {}, true],
     [
       'quote is expired',
-      'Fetch a new one?',
+      'Get new quote',
       {
         quotesLastFetched: Date.now() - 35000,
         quotesLoadingStatus: RequestStatus.FETCHED,
@@ -629,8 +628,7 @@ describe('BridgeCTAButton', () => {
       configureStore(mockStore),
     );
 
-    expect(getByText('Market closed')).toBeInTheDocument();
-    expect(getByText('Fetch a new one?')).toBeInTheDocument();
+    expect(getByText('Get new quote')).toBeInTheDocument();
   });
 
   it('should not disable the component when quotes are loading and there are existing quotes', () => {
@@ -673,11 +671,16 @@ describe('BridgeCTAButton', () => {
     expect(getByRole('button')).not.toBeDisabled();
     expect(getByRole('button')).toMatchInlineSnapshot(`
       <button
-        class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full mm-box--color-icon-inverse mm-box--background-color-icon-default mm-box--rounded-xl"
+        class="inline-flex items-center justify-center rounded-xl px-4 font-medium min-w-20 overflow-hidden relative h-12 w-full transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-icon-default text-primary-inverse hover:bg-icon-default-hover active:bg-icon-default-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default"
         data-testid="bridge-cta-button"
+        role="button"
         style="box-shadow: none;"
       >
-        Swap
+        <span
+          class="text-inherit text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+        >
+          Swap
+        </span>
       </button>
     `);
   });
