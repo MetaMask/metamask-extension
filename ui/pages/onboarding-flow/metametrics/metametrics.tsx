@@ -194,6 +194,11 @@ export default function OnboardingMetametrics() {
       if (isParticipateInMetaMetricsChecked) {
         await trackEvent({
           category: MetaMetricsEventCategory.Onboarding,
+          event: MetaMetricsEventName.AppInstalled,
+        });
+
+        await trackEvent({
+          category: MetaMetricsEventCategory.Onboarding,
           event: MetaMetricsEventName.AnalyticsPreferenceSelected,
           properties: {
             [MetaMetricsUserTrait.IsMetricsOptedIn]: true,
