@@ -13,6 +13,9 @@ import {
   toHardwareWalletError,
   isHardwareWalletError,
   isUserRejectedHardwareWalletError,
+  extractTrezorCodeFromMessage,
+  extractMessageFromUnknownError,
+  hasUserRejectedMessage,
 } from './rpcErrorUtils';
 
 describe('rpcErrorUtils', () => {
@@ -1019,6 +1022,107 @@ describe('rpcErrorUtils', () => {
       };
 
       expect(isUserRejectedHardwareWalletError(error)).toBe(false);
+    });
+  });
+
+  describe('extractTrezorCodeFromMessage', () => {
+    it('extracts code from "code: ErrorCode" format', () => {
+      expect(
+        extractTrezorCodeFromMessage('TrezorError: code: Failure_AppNotInstalled'),
+      ).toBe('Failure_AppNotInstalled');
+    });
+
+    it('extracts code from message with surrounding text', () => {
+      expect(
+        extractTrezorCodeFromMessage(
+          'Device error: code: Connection_ChannelDisconnected, please reconnect',
+        ),
+      ).toBe('Connection_ChannelDisconnected');
+    });
+
+    it('returns null when no code pattern is found', () => {
+      expect(extractTrezorCodeFromMessage('some random error message')).toBeNull();
+    });
+
+    it('returns null for empty string', () => {
+      expect(extractTrezorCodeFromMessage('')).toBeNull();
+    });
+
+    it('extracts multi-segment underscore code', () => {
+      expect(
+        extractTrezorCodeFromMessage('error code: Some_Long_Error_Code happened'),
+      ).toBe('Some_Long_Error_Code');
+    });
+
+    it('does not match code without underscore', () => {
+      expect(extractTrezorCodeFromMessage('code: InvalidCode')).toBeNull();
+    });
+  });
+
+  describe('extractMessageFromUnknownError', () => {
+    it('extracts message from Error instances', () => {
+      expect(extractMessageFromUnknownError(new Error('test error'))).toBe(
+        'test error',
+      );
+    });
+
+    it('extracts message from objects with message property', () => {
+      expect(extractMessageFromUnknownError({ message: 'plain object error' })).toBe(
+        'plain object error',
+      );
+    });
+
+    it('returns string representation for primitives', () => {
+      expect(extractMessageFromUnknownError(42)).toBe('42');
+      expect(extractMessageFromUnknownError(null)).toBe('null');
+      expect(extractMessageFromUnknownError(undefined)).toBe('undefined');
+    });
+
+    it('returns string representation for non-string message', () => {
+      expect(extractMessageFromUnknownError({ message: 123 })).toBe(
+        '[object Object]',
+      );
+    });
+  });
+
+  describe('hasUserRejectedMessage', () => {
+    it('detects "popup closed" in message', () => {
+      expect(hasUserRejectedMessage(new Error('popup closed by user'))).toBe(true);
+    });
+
+    it('detects "user rejected" in message', () => {
+      expect(hasUserRejectedMessage(new Error('user rejected the request'))).toBe(
+        true,
+      );
+    });
+
+    it('detects "cancelled" in message', () => {
+      expect(hasUserRejectedMessage(new Error('operation cancelled'))).toBe(true);
+    });
+
+    it('detects "canceled" (US spelling) in message', () => {
+      expect(hasUserRejectedMessage(new Error('operation canceled'))).toBe(true);
+    });
+
+    it('detects rejection text in stack trace', () => {
+      const error = new Error('something went wrong');
+      error.stack = 'Error: something went wrong\n    at popup closed handler';
+      expect(hasUserRejectedMessage(error)).toBe(true);
+    });
+
+    it('returns false for unrelated errors', () => {
+      expect(hasUserRejectedMessage(new Error('device disconnected'))).toBe(false);
+    });
+
+    it('handles plain objects', () => {
+      expect(hasUserRejectedMessage({ message: 'user rejected action' })).toBe(
+        true,
+      );
+    });
+
+    it('is case insensitive', () => {
+      expect(hasUserRejectedMessage(new Error('User Rejected'))).toBe(true);
+      expect(hasUserRejectedMessage(new Error('CANCELLED'))).toBe(true);
     });
   });
 });

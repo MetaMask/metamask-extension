@@ -437,7 +437,7 @@ function mapLedgerStatusCodeToErrorCode(statusCode: string): ErrorCode {
  * Handles common formats from TrezorError.toString() and wrapped error messages.
  * @param message
  */
-function extractTrezorCodeFromMessage(message: string): string | null {
+export function extractTrezorCodeFromMessage(message: string): string | null {
   const match = message.match(/(?:code:\s*)([A-Za-z]+_[A-Za-z0-9_]+)/u);
   return match?.[1] ?? null;
 }
@@ -449,7 +449,7 @@ function extractTrezorCodeFromMessage(message: string): string | null {
  * @param error - The error to inspect
  * @returns The error message string
  */
-function extractMessageFromUnknownError(error: unknown): string {
+export function extractMessageFromUnknownError(error: unknown): string {
   if (error instanceof Error) {
     return error.message;
   }
@@ -468,7 +468,7 @@ function extractMessageFromUnknownError(error: unknown): string {
  * @param error - The error to inspect
  * @returns True if the error text indicates a user cancellation/rejection
  */
-function hasUserRejectedMessage(error: unknown): boolean {
+export function hasUserRejectedMessage(error: unknown): boolean {
   const message = extractMessageFromUnknownError(error).toLowerCase();
   const stack = ((error as { stack?: unknown })?.stack ?? '')
     .toString()
