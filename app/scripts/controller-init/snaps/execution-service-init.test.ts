@@ -1,13 +1,11 @@
 import {
+  ExecutionServiceMessenger,
   IframeExecutionService,
   OffscreenExecutionService,
 } from '@metamask/snaps-controllers';
 import { ControllerInitRequest } from '../types';
 import { buildControllerInitRequestMock } from '../test/utils';
-import {
-  ExecutionServiceMessenger,
-  getExecutionServiceMessenger,
-} from '../messengers/snaps';
+import { getExecutionServiceMessenger } from '../messengers/snaps';
 import { getRootMessenger } from '../../lib/messenger';
 import { ExecutionServiceInit } from './execution-service-init';
 

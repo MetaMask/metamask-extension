@@ -1,6 +1,7 @@
 import {
   BridgeClientId,
   BridgeController,
+  BridgeControllerMessenger,
   UNIFIED_SWAP_BRIDGE_EVENT_CATEGORY,
 } from '@metamask/bridge-controller';
 import { handleFetch, HttpError } from '@metamask/controller-utils';
@@ -11,10 +12,7 @@ import fetchWithCache from '../../../shared/lib/fetch-with-cache';
 import { MINUTE, SECOND } from '../../../shared/constants/time';
 import { getEnvironmentType } from '../lib/util';
 import { ControllerInitFunction } from './types';
-import {
-  BridgeControllerInitMessenger,
-  BridgeControllerMessenger,
-} from './messengers';
+import { BridgeControllerInitMessenger } from './messengers';
 
 /**
  * Initialize the bridge controller.
