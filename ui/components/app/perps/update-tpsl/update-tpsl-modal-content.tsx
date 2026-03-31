@@ -34,6 +34,7 @@ import { getPerpsStreamManager } from '../../../../providers/perps';
 import { usePerpsToast } from '../perps-toast';
 import { PERPS_TOAST_KEYS } from '../perps-toast/perps-toast-provider';
 import type { Position, PerpsBackgroundResult } from '../types';
+import { normalizeTpslPrices } from '../utils';
 
 const TP_PRESETS = [10, 25, 50, 100];
 const SL_PRESETS = [10, 25, 50, 75];
@@ -282,8 +283,11 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
     setIsSaving(true);
     setTpslError(null);
 
-    const cleanTpPrice = editingTpPrice.replace(/,/gu, '').trim();
-    const cleanSlPrice = editingSlPrice.replace(/,/gu, '').trim();
+    const { takeProfitPrice: cleanTpPrice, stopLossPrice: cleanSlPrice } =
+      normalizeTpslPrices({
+        takeProfitPrice: editingTpPrice,
+        stopLossPrice: editingSlPrice,
+      });
 
     try {
       const result = await submitRequestToBackground<PerpsBackgroundResult>(
@@ -291,8 +295,8 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
         [
           {
             symbol: position.symbol,
-            takeProfitPrice: cleanTpPrice || undefined,
-            stopLossPrice: cleanSlPrice || undefined,
+            takeProfitPrice: cleanTpPrice,
+            stopLossPrice: cleanSlPrice,
           },
         ],
       );
@@ -303,16 +307,16 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
       const streamManager = getPerpsStreamManager();
       streamManager.setOptimisticTPSL(
         position.symbol,
-        cleanTpPrice || undefined,
-        cleanSlPrice || undefined,
+        cleanTpPrice,
+        cleanSlPrice,
       );
       const currentPositions = streamManager.positions.getCachedData();
       const optimisticallyUpdatedPositions = currentPositions.map((p) =>
         p.symbol === position.symbol
           ? {
               ...p,
-              takeProfitPrice: cleanTpPrice || undefined,
-              stopLossPrice: cleanSlPrice || undefined,
+              takeProfitPrice: cleanTpPrice,
+              stopLossPrice: cleanSlPrice,
             }
           : p,
       );
