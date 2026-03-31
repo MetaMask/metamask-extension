@@ -578,6 +578,7 @@ describe('PerpsOrderEntryPage', () => {
       });
 
       expect(screen.getByText('Insufficient margin')).toBeInTheDocument();
+      expect(mockHidePerpsToast).toHaveBeenCalledTimes(1);
       expect(mockReplacePerpsToastByKey).not.toHaveBeenCalledWith(
         expect.objectContaining({
           key: 'perpsToastOrderFailed',
@@ -607,6 +608,7 @@ describe('PerpsOrderEntryPage', () => {
       });
 
       expect(screen.getByText('Network error')).toBeInTheDocument();
+      expect(mockHidePerpsToast).toHaveBeenCalledTimes(1);
       expect(mockReplacePerpsToastByKey).not.toHaveBeenCalledWith(
         expect.objectContaining({
           key: 'perpsToastOrderFailed',
@@ -1094,6 +1096,7 @@ describe('PerpsOrderEntryPage', () => {
       });
 
       expect(screen.getByText('Close failed')).toBeInTheDocument();
+      expect(mockHidePerpsToast).toHaveBeenCalledTimes(1);
       expect(mockReplacePerpsToastByKey).not.toHaveBeenCalledWith(
         expect.objectContaining({
           key: 'perpsToastCloseFailed',
@@ -1125,6 +1128,7 @@ describe('PerpsOrderEntryPage', () => {
       });
 
       expect(screen.getByText('TPSL update failed')).toBeInTheDocument();
+      expect(mockHidePerpsToast).not.toHaveBeenCalled();
       expect(mockReplacePerpsToastByKey).not.toHaveBeenCalledWith(
         expect.objectContaining({
           key: 'perpsToastUpdateFailed',
@@ -1155,6 +1159,7 @@ describe('PerpsOrderEntryPage', () => {
       });
 
       expect(screen.getByText('An unknown error occurred')).toBeInTheDocument();
+      expect(mockHidePerpsToast).toHaveBeenCalledTimes(1);
       expect(mockReplacePerpsToastByKey).not.toHaveBeenCalledWith(
         expect.objectContaining({
           key: 'perpsToastOrderFailed',
