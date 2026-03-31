@@ -6,9 +6,14 @@ import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
 } from '@metamask/chain-agnostic-permission';
+import type { AccountsControllerState } from '@metamask/accounts-controller';
+import type { NetworkConfiguration } from '@metamask/network-controller';
 import { flushPromises } from '../../../../test/lib/timer-helpers';
 import * as NetworkSelectors from '../../../../shared/lib/selectors/networks';
-import { getPermissionBackgroundApiMethods } from './background-api';
+import {
+  getPermissionBackgroundApiMethods,
+  PermissionBackgroundApiOptions,
+} from './background-api';
 
 jest.mock('../../../../shared/lib/selectors/networks', () => ({
   ...jest.requireActual('../../../../shared/lib/selectors/networks'),
@@ -16,7 +21,21 @@ jest.mock('../../../../shared/lib/selectors/networks', () => ({
 }));
 const MockNetworkSelectors = jest.mocked(NetworkSelectors);
 
-const setupPermissionBackgroundApiMethods = (overrides) => {
+const MOCK_EMPTY_INTERNAL_ACCOUNTS: AccountsControllerState['internalAccounts'] =
+  {
+    accounts: {},
+    selectedAccount: '',
+  };
+
+const MOCK_NETWORK_CONFIG = {} as NetworkConfiguration;
+
+const setupPermissionBackgroundApiMethods = (
+  overrides: Partial<{
+    [K in keyof PermissionBackgroundApiOptions]: Partial<
+      PermissionBackgroundApiOptions[K]
+    >;
+  }> = {},
+) => {
   const params = {
     permissionController: {
       getCaveat: jest.fn(),
@@ -30,7 +49,7 @@ const setupPermissionBackgroundApiMethods = (overrides) => {
     accountsController: {
       getAccountByAddress: jest.fn(),
       state: {
-        internalAccounts: {},
+        internalAccounts: MOCK_EMPTY_INTERNAL_ACCOUNTS,
       },
     },
     networkController: {
@@ -46,7 +65,9 @@ const setupPermissionBackgroundApiMethods = (overrides) => {
     ...overrides,
   };
 
-  return getPermissionBackgroundApiMethods(params);
+  return getPermissionBackgroundApiMethods(
+    params as PermissionBackgroundApiOptions,
+  );
 };
 
 describe('permission background API methods', () => {
@@ -81,7 +102,10 @@ describe('permission background API methods', () => {
     it('throws an error if there is no existing CAIP-25 caveat', () => {
       const permissionController = {
         getCaveat: jest.fn().mockImplementation(() => {
-          throw new PermissionDoesNotExistError();
+          throw new PermissionDoesNotExistError(
+            'foo.com',
+            Caip25EndowmentPermissionName,
+          );
         }),
       };
 
@@ -125,7 +149,7 @@ describe('permission background API methods', () => {
       const accountsController = {
         getAccountByAddress: jest.fn(),
         state: {
-          internalAccounts: {},
+          internalAccounts: MOCK_EMPTY_INTERNAL_ACCOUNTS,
         },
       };
 
@@ -172,15 +196,15 @@ describe('permission background API methods', () => {
           scopes: ['solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp'],
         }),
         state: {
-          internalAccounts: {},
+          internalAccounts: MOCK_EMPTY_INTERNAL_ACCOUNTS,
         },
       };
 
       MockNetworkSelectors.getNetworkConfigurationsByCaipChainId.mockReturnValue(
         {
-          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': {},
-          'solana:foo': {},
-          'solana:bar': {},
+          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': MOCK_NETWORK_CONFIG,
+          'solana:foo': MOCK_NETWORK_CONFIG,
+          'solana:bar': MOCK_NETWORK_CONFIG,
         },
       );
 
@@ -255,7 +279,7 @@ describe('permission background API methods', () => {
           scopes: ['eip155:0'],
         }),
         state: {
-          internalAccounts: {},
+          internalAccounts: MOCK_EMPTY_INTERNAL_ACCOUNTS,
         },
       };
 
@@ -333,7 +357,10 @@ describe('permission background API methods', () => {
     it('throws an error if there is no existing CAIP-25 caveat', () => {
       const permissionController = {
         getCaveat: jest.fn().mockImplementation(() => {
-          throw new PermissionDoesNotExistError();
+          throw new PermissionDoesNotExistError(
+            'foo.com',
+            Caip25EndowmentPermissionName,
+          );
         }),
       };
 
@@ -377,7 +404,7 @@ describe('permission background API methods', () => {
       const accountsController = {
         getAccountByAddress: jest.fn(),
         state: {
-          internalAccounts: {},
+          internalAccounts: MOCK_EMPTY_INTERNAL_ACCOUNTS,
         },
       };
 
@@ -439,7 +466,7 @@ describe('permission background API methods', () => {
             scopes: ['eip155:0'],
           }),
         state: {
-          internalAccounts: {},
+          internalAccounts: MOCK_EMPTY_INTERNAL_ACCOUNTS,
         },
       };
 
@@ -529,15 +556,15 @@ describe('permission background API methods', () => {
             scopes: ['solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp'],
           }),
         state: {
-          internalAccounts: {},
+          internalAccounts: MOCK_EMPTY_INTERNAL_ACCOUNTS,
         },
       };
 
       MockNetworkSelectors.getNetworkConfigurationsByCaipChainId.mockReturnValue(
         {
-          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': {},
-          'solana:foo': {},
-          'solana:bar': {},
+          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': MOCK_NETWORK_CONFIG,
+          'solana:foo': MOCK_NETWORK_CONFIG,
+          'solana:bar': MOCK_NETWORK_CONFIG,
         },
       );
 
@@ -606,7 +633,10 @@ describe('permission background API methods', () => {
     it('throws an error if there is no existing CAIP-25 caveat', () => {
       const permissionController = {
         getCaveat: jest.fn().mockImplementation(() => {
-          throw new PermissionDoesNotExistError();
+          throw new PermissionDoesNotExistError(
+            'foo.com',
+            Caip25EndowmentPermissionName,
+          );
         }),
       };
 
@@ -650,7 +680,7 @@ describe('permission background API methods', () => {
       const accountsController = {
         getAccountByAddress: jest.fn(),
         state: {
-          internalAccounts: {},
+          internalAccounts: MOCK_EMPTY_INTERNAL_ACCOUNTS,
         },
       };
 
@@ -704,7 +734,7 @@ describe('permission background API methods', () => {
           scopes: ['eip155:0'],
         }),
         state: {
-          internalAccounts: {},
+          internalAccounts: MOCK_EMPTY_INTERNAL_ACCOUNTS,
         },
       };
 
@@ -746,7 +776,7 @@ describe('permission background API methods', () => {
           scopes: ['eip155:0'],
         }),
         state: {
-          internalAccounts: {},
+          internalAccounts: MOCK_EMPTY_INTERNAL_ACCOUNTS,
         },
       };
 
@@ -795,7 +825,7 @@ describe('permission background API methods', () => {
           scopes: ['eip155:0'],
         }),
         state: {
-          internalAccounts: {},
+          internalAccounts: MOCK_EMPTY_INTERNAL_ACCOUNTS,
         },
       };
 
@@ -857,7 +887,10 @@ describe('permission background API methods', () => {
     it('throws an error if there is no existing CAIP-25 caveat', () => {
       const permissionController = {
         getCaveat: jest.fn().mockImplementation(() => {
-          throw new PermissionDoesNotExistError();
+          throw new PermissionDoesNotExistError(
+            'foo.com',
+            Caip25EndowmentPermissionName,
+          );
         }),
       };
 
@@ -1106,7 +1139,10 @@ describe('permission background API methods', () => {
     it('throws an error if there is no existing CAIP-25 caveat', () => {
       const permissionController = {
         getCaveat: jest.fn().mockImplementation(() => {
-          throw new PermissionDoesNotExistError();
+          throw new PermissionDoesNotExistError(
+            'foo.com',
+            Caip25EndowmentPermissionName,
+          );
         }),
       };
 
@@ -1224,7 +1260,10 @@ describe('permission background API methods', () => {
     it('throws an error if there is no existing CAIP-25 caveat', () => {
       const permissionController = {
         getCaveat: jest.fn().mockImplementation(() => {
-          throw new PermissionDoesNotExistError();
+          throw new PermissionDoesNotExistError(
+            'foo.com',
+            Caip25EndowmentPermissionName,
+          );
         }),
       };
 
@@ -1345,7 +1384,10 @@ describe('permission background API methods', () => {
     it('throws an error if there is no existing CAIP-25 caveat', () => {
       const permissionController = {
         getCaveat: jest.fn().mockImplementation(() => {
-          throw new PermissionDoesNotExistError();
+          throw new PermissionDoesNotExistError(
+            'foo.com',
+            Caip25EndowmentPermissionName,
+          );
         }),
       };
 
@@ -1509,7 +1551,10 @@ describe('permission background API methods', () => {
     it('throws an error if there is no existing CAIP-25 caveat', () => {
       const permissionController = {
         getCaveat: jest.fn().mockImplementation(() => {
-          throw new PermissionDoesNotExistError();
+          throw new PermissionDoesNotExistError(
+            'foo.com',
+            Caip25EndowmentPermissionName,
+          );
         }),
       };
 
