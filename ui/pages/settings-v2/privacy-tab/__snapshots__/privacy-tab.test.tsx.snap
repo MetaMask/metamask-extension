@@ -257,7 +257,7 @@ exports[`PrivacyTab snapshot matches snapshot 1`] = `
                   />
                 </div>
                 <input
-                  data-testid="participate-in-meta-metrics-toggle"
+                  data-testid="participate-in-meta-metrics-input"
                   style="border: 0px; height: 1px; margin: -1px; overflow: hidden; padding: 0px; position: absolute; width: 1px;"
                   type="checkbox"
                   value="false"
