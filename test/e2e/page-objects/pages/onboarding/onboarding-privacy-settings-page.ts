@@ -185,12 +185,9 @@ class OnboardingPrivacySettingsPage {
   }
 
   /**
-   * Go to assets settings, toggle all options, verify their state, then navigate back.
-   *
-   * @param targetState - The expected state of all toggles after clicking.
-   * Defaults to 'off'.
+   * Go to assets settings, toggle all options off, verify their state, then navigate back.
    */
-  async toggleAssetsSettings(targetState: 'on' | 'off' = 'off'): Promise<void> {
+  async toggleAssetsSettings(): Promise<void> {
     console.log('Toggle advanced assets settings in privacy settings');
     await this.checkPageIsLoaded();
     await this.driver.clickElement(this.assetsSettings);
@@ -200,11 +197,9 @@ class OnboardingPrivacySettingsPage {
         (toggle) => toggle.click(),
       ),
     );
-
-    console.log(`Verify all asset privacy toggles are ${targetState}`);
-    const oppositeState = targetState === 'off' ? 'on' : 'off';
+    console.log('Verify all asset privacy toggles are off');
     await this.driver.assertElementNotPresent(
-      this.assetsPrivacyToggleState(oppositeState),
+      this.assetsPrivacyToggleState('on'),
     );
 
     await this.navigateBackToSettingsPage();
