@@ -24,15 +24,15 @@ import type {
 import React, { useMemo, useCallback, useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import {
-  selectPerpsTradeConfigurations,
-  selectPerpsIsTestnet,
-} from '../../selectors/perps-controller';
-import {
   Navigate,
   useNavigate,
   useParams,
   useSearchParams,
 } from 'react-router-dom';
+import {
+  selectPerpsTradeConfigurations,
+  selectPerpsIsTestnet,
+} from '../../selectors/perps-controller';
 import {
   CandlePeriod,
   TimeDuration,
