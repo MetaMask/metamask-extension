@@ -1070,6 +1070,22 @@
         "@metamask/keyring-api>uuid": true
       }
     },
+    "@metamask/keyring-internal-snap-client>@metamask/keyring-api": {
+      "packages": {
+        "@metamask/keyring-utils": true,
+        "@metamask/superstruct": true,
+        "@metamask/utils": true,
+        "bitcoin-address-validation": true
+      }
+    },
+    "@metamask/keyring-snap-client>@metamask/keyring-api": {
+      "packages": {
+        "@metamask/keyring-utils": true,
+        "@metamask/superstruct": true,
+        "@metamask/utils": true,
+        "bitcoin-address-validation": true
+      }
+    },
     "@metamask/keyring-controller": {
       "globals": {
         "console.error": true
@@ -1096,7 +1112,7 @@
     },
     "@metamask/keyring-internal-snap-client": {
       "packages": {
-        "@metamask/keyring-api": true,
+        "@metamask/keyring-internal-snap-client>@metamask/keyring-api": true,
         "@metamask/keyring-internal-api": true,
         "@metamask/keyring-snap-client": true,
         "@metamask/keyring-utils": true
@@ -1104,7 +1120,7 @@
     },
     "@metamask/keyring-snap-client": {
       "packages": {
-        "@metamask/keyring-api": true,
+        "@metamask/keyring-snap-client>@metamask/keyring-api": true,
         "@metamask/keyring-utils": true,
         "@metamask/superstruct": true,
         "@metamask/keyring-snap-client>uuid": true

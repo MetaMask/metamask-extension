@@ -5,13 +5,13 @@ import {
 import { ControllerGetStateAction } from '@metamask/base-controller';
 import { CurrencyRateController } from '@metamask/assets-controllers';
 import {
-  ClearSnapState,
-  GetSnap,
-  GetSnapState,
-  HandleSnapRequest,
-  UpdateSnapState,
-  CreateInterface,
-  GetInterface,
+  SnapControllerClearSnapStateAction,
+  SnapControllerGetSnapAction,
+  SnapControllerGetSnapStateAction,
+  SnapControllerHandleRequestAction,
+  SnapControllerUpdateSnapStateAction,
+  SnapInterfaceControllerCreateInterfaceAction,
+  SnapInterfaceControllerGetInterfaceAction,
   SnapInterfaceControllerSetInterfaceDisplayedAction,
 } from '@metamask/snaps-controllers';
 import {
@@ -37,16 +37,16 @@ import { getMnemonic, getMnemonicSeed } from './utils';
 
 export type SnapPermissionSpecificationsActions =
   | AppStateControllerGetUnlockPromiseAction
-  | ClearSnapState
+  | SnapControllerClearSnapStateAction
   | ControllerGetStateAction<
       'CurrencyRateController',
       CurrencyRateController['state']
     >
-  | CreateInterface
-  | GetInterface
-  | GetSnap
-  | GetSnapState
-  | HandleSnapRequest
+  | SnapInterfaceControllerCreateInterfaceAction
+  | SnapInterfaceControllerGetInterfaceAction
+  | SnapControllerGetSnapAction
+  | SnapControllerGetSnapStateAction
+  | SnapControllerHandleRequestAction
   | KeyringControllerGetKeyringsByTypeAction
   | KeyringControllerWithKeyringAction
   | MaybeUpdateState
@@ -54,7 +54,7 @@ export type SnapPermissionSpecificationsActions =
   | RateLimitControllerCallApiAction<RateLimitedApiMap>
   | SnapInterfaceControllerSetInterfaceDisplayedAction
   | TestOrigin
-  | UpdateSnapState;
+  | SnapControllerUpdateSnapStateAction;
 
 type SnapPermissionSpecificationsHooks = {
   addAndShowApprovalRequest(request: unknown): Promise<unknown>;
@@ -132,7 +132,7 @@ export function getSnapPermissionSpecifications(
           'AppStateController:getUnlockPromise',
         ),
 
-        getSnap: messenger.call.bind(messenger, 'SnapController:get'),
+        getSnap: messenger.call.bind(messenger, 'SnapController:getSnap'),
         handleSnapRpcRequest: messenger.call.bind(
           messenger,
           'SnapController:handleRequest',

@@ -1,5 +1,7 @@
-import { SnapsNameProvider } from '../../lib/SnapsNameProvider';
-import { SnapsNameProviderMessenger } from '../messengers/snaps';
+import {
+  SnapsNameProvider,
+  SnapsNameProviderMessenger,
+} from '../../lib/SnapsNameProvider';
 import { ControllerInitFunction } from '../types';
 
 /**

@@ -1,6 +1,8 @@
-import { SnapInterfaceController } from '@metamask/snaps-controllers';
+import {
+  SnapInterfaceController,
+  SnapInterfaceControllerMessenger,
+} from '@metamask/snaps-controllers';
 import { ControllerInitFunction } from '../types';
-import { SnapInterfaceControllerMessenger } from '../messengers/snaps';
 
 /**
  * Initialize the Snap interface controller.
@@ -19,9 +21,6 @@ export const SnapInterfaceControllerInit: ControllerInitFunction<
     // with the expected type.
     // TODO: Look into the type mismatch.
     state: persistedState.SnapInterfaceController,
-    // @ts-expect-error: `controllerMessenger` is not compatible with the
-    // expected type.
-    // TODO: Look into the type mismatch.
     messenger: controllerMessenger,
   });
 
