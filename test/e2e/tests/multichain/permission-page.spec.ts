@@ -5,7 +5,7 @@ import { openPermissionsPageFlow } from '../../page-objects/flows/permissions.fl
 import PermissionListPage from '../../page-objects/pages/permission/permission-list-page';
 import SitePermissionPage from '../../page-objects/pages/permission/site-permission-page';
 import GatorPermissionsPage from '../../page-objects/pages/permission/gator-permissions-page';
-import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 import HomePage from '../../page-objects/pages/home/homepage';
 
 describe('Permissions Page', function () {
@@ -19,7 +19,7 @@ describe('Permissions Page', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await loginWithoutBalanceValidation(driver);
+        await login(driver, { validateBalance: false });
         await openPermissionsPageFlow(driver);
         const permissionListPage = new PermissionListPage(driver);
         await permissionListPage.checkPageIsLoaded();
@@ -42,7 +42,7 @@ describe('Permissions Page', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await loginWithoutBalanceValidation(driver);
+        await login(driver, { validateBalance: false });
         await openPermissionsPageFlow(driver);
         const permissionListPage = new PermissionListPage(driver);
         const gatorPermissionsPage = new GatorPermissionsPage(driver);

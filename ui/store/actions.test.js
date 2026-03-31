@@ -19,7 +19,12 @@ import MetaMaskController from '../../app/scripts/metamask-controller';
 import { HardwareDeviceNames } from '../../shared/constants/hardware-wallets';
 import { GAS_LIMITS } from '../../shared/constants/gas';
 import { ORIGIN_METAMASK } from '../../shared/constants/app';
-import { MetaMetricsNetworkEventSource } from '../../shared/constants/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+  MetaMetricsNetworkEventSource,
+  MetaMetricsUserTrait,
+} from '../../shared/constants/metametrics';
 import { ETH_EOA_METHODS } from '../../shared/constants/eth-methods';
 import { mockNetworkState } from '../../test/stub/networks';
 import { CHAIN_IDS } from '../../shared/constants/network';
@@ -28,6 +33,16 @@ import { stripWalletTypePrefixFromWalletId } from '../hooks/multichain-accounts/
 import * as actions from './actions';
 import * as actionConstants from './actionConstants';
 import { setBackgroundConnection } from './background-connection';
+
+jest.mock('../../app/scripts/controller-init/perps-controller-init', () => ({
+  PerpsControllerInit: jest.fn().mockReturnValue({
+    controller: {
+      state: {},
+      name: 'PerpsController',
+    },
+    api: {},
+  }),
+}));
 
 const { TRIGGER_TYPES } = NotificationServicesController.Constants;
 
@@ -179,29 +194,74 @@ describe('Actions', () => {
     });
   });
 
-  describe('#restoreAndGetSeedPhrase', () => {
+  describe('#restoreSocialBackupAndGetSeedPhrase', () => {
     afterEach(() => {
       sinon.restore();
     });
 
-    it('fetches all seed phrases from the metadata store, restores the vault and updates the SocialbackupMetadata state', async () => {
+    it('returns the seed phrase and syncs marketing consent', async () => {
       const store = mockStore();
+      const mnemonic = 'seed phrase';
 
       const restoreSocialBackupAndGetSeedPhraseStub =
-        background.restoreSocialBackupAndGetSeedPhrase.resolves();
+        background.restoreSocialBackupAndGetSeedPhrase.resolves(mnemonic);
+      background.getMarketingConsent = sinon.stub().resolves(true);
+      background.setDataCollectionForMarketing = sinon.stub().resolves();
+
+      setBackgroundConnection(background);
+
+      const result = await store.dispatch(
+        actions.restoreSocialBackupAndGetSeedPhrase('password'),
+      );
+
+      expect(result).toStrictEqual(mnemonic);
+      expect(
+        restoreSocialBackupAndGetSeedPhraseStub.calledOnceWith('password'),
+      ).toStrictEqual(true);
+      expect(background.getMarketingConsent.calledOnce).toStrictEqual(true);
+      expect(
+        background.setDataCollectionForMarketing.calledOnceWith(true),
+      ).toStrictEqual(true);
+      expect(background.getStatePatches.calledOnce).toStrictEqual(true);
+      expect(store.getActions()).toStrictEqual([
+        {
+          type: actionConstants.SET_DATA_COLLECTION_FOR_MARKETING,
+          value: true,
+        },
+        {
+          type: actionConstants.HIDE_WARNING,
+        },
+      ]);
+    });
+
+    it('tracks the onboarding analytics preference event when a tracking function is provided', async () => {
+      const store = mockStore();
+      const trackEventStub = sinon.stub().resolves();
+
+      background.restoreSocialBackupAndGetSeedPhrase.resolves('seed phrase');
+      background.getMarketingConsent = sinon.stub().resolves(false);
+      background.setDataCollectionForMarketing = sinon.stub().resolves();
 
       setBackgroundConnection(background);
 
       await store.dispatch(
-        actions.restoreSocialBackupAndGetSeedPhrase('password'),
+        actions.restoreSocialBackupAndGetSeedPhrase('password', trackEventStub),
       );
 
-      expect(restoreSocialBackupAndGetSeedPhraseStub.callCount).toStrictEqual(
-        1,
-      );
+      expect(
+        trackEventStub.calledOnceWith({
+          category: MetaMetricsEventCategory.Onboarding,
+          event: MetaMetricsEventName.AnalyticsPreferenceSelected,
+          properties: {
+            [MetaMetricsUserTrait.IsMetricsOptedIn]: true,
+            [MetaMetricsUserTrait.HasMarketingConsent]: false,
+            location: 'onboarding_social_login_rehydration',
+          },
+        }),
+      ).toStrictEqual(true);
     });
 
-    it('errors when fetchAndRestoreSeedPhrase throws', async () => {
+    it('displays a warning when restoring the social backup fails', async () => {
       const store = mockStore();
 
       background.restoreSocialBackupAndGetSeedPhrase.rejects(
@@ -269,6 +329,12 @@ describe('Actions', () => {
       );
       expect(result).toStrictEqual(true);
       expect(checkIsSeedlessPasswordOutdated.callCount).toStrictEqual(1);
+      expect(checkIsSeedlessPasswordOutdated.firstCall.args).toStrictEqual([
+        {
+          skipCache: true,
+          captureSentryError: true,
+        },
+      ]);
     });
 
     it('should return false if the password is not outdated', async () => {
@@ -290,6 +356,34 @@ describe('Actions', () => {
       );
       expect(result).toStrictEqual(false);
       expect(checkIsSeedlessPasswordOutdated.callCount).toStrictEqual(1);
+    });
+
+    it('passes skipCache and captureSentryError to the background check', async () => {
+      const store = mockStore({
+        ...defaultState,
+        metamask: {
+          ...defaultState.metamask,
+          firstTimeFlowType: FirstTimeFlowType.socialCreate,
+        },
+      });
+
+      const checkIsSeedlessPasswordOutdated =
+        background.checkIsSeedlessPasswordOutdated.resolves(true);
+
+      setBackgroundConnection(background);
+
+      const result = await store.dispatch(
+        actions.checkIsSeedlessPasswordOutdated(false, false),
+      );
+
+      expect(result).toStrictEqual(true);
+      expect(checkIsSeedlessPasswordOutdated.callCount).toStrictEqual(1);
+      expect(checkIsSeedlessPasswordOutdated.firstCall.args).toStrictEqual([
+        {
+          skipCache: false,
+          captureSentryError: false,
+        },
+      ]);
     });
 
     it('should not throw an error if the checkIsSeedlessPasswordOutdated fails', async () => {
@@ -1979,6 +2073,7 @@ describe('Actions', () => {
       expect(addCustomAssetStub.firstCall.args).toStrictEqual([
         accountId,
         'eip155:1/erc20:0xbbb',
+        undefined,
       ]);
 
       const actionTypes = store.getActions().map((a) => a.type);
@@ -4774,6 +4869,38 @@ describe('Actions', () => {
         store.dispatch(actions.setPendingRedirectRoute({ path: '/test' })),
       ).rejects.toThrow('error');
       expect(store.getActions()).toStrictEqual(expectedActions);
+    });
+  });
+
+  describe('#setPna25Acknowledged', () => {
+    it('calls setPna25Acknowledged with acknowledged and disableDelay defaulting to false', async () => {
+      const store = mockStore();
+      background.setPna25Acknowledged = sinon.stub().resolves();
+
+      setBackgroundConnection(background);
+
+      await store.dispatch(actions.setPna25Acknowledged(true));
+
+      expect(background.setPna25Acknowledged.callCount).toStrictEqual(1);
+      expect(background.setPna25Acknowledged.getCall(0).args).toStrictEqual([
+        true,
+        false,
+      ]);
+    });
+
+    it('calls setPna25Acknowledged with disableDelay set to true', async () => {
+      const store = mockStore();
+      background.setPna25Acknowledged = sinon.stub().resolves();
+
+      setBackgroundConnection(background);
+
+      await store.dispatch(actions.setPna25Acknowledged(true, true));
+
+      expect(background.setPna25Acknowledged.callCount).toStrictEqual(1);
+      expect(background.setPna25Acknowledged.getCall(0).args).toStrictEqual([
+        true,
+        true,
+      ]);
     });
   });
 });

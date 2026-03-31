@@ -14,10 +14,12 @@ import {
   setMarketingConsent,
 } from '../../../store/actions';
 import { SettingsToggleItem } from '../../settings/settings-toggle-item';
+import { PRIVACY_ITEMS } from '../search-config';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
+  MetaMetricsUserTrait,
 } from '../../../../shared/constants/metametrics';
 
 export const DataCollectionToggleItem = () => {
@@ -46,8 +48,8 @@ export const DataCollectionToggleItem = () => {
       event: MetaMetricsEventName.AnalyticsPreferenceSelected,
       properties: {
         /* eslint-disable @typescript-eslint/naming-convention */
-        is_metrics_opted_in: true,
-        has_marketing_consent: Boolean(newValue),
+        [MetaMetricsUserTrait.IsMetricsOptedIn]: true,
+        [MetaMetricsUserTrait.HasMarketingConsent]: Boolean(newValue),
         /* eslint-enable @typescript-eslint/naming-convention */
         location: 'Settings',
       },
@@ -60,7 +62,7 @@ export const DataCollectionToggleItem = () => {
 
   return (
     <SettingsToggleItem
-      title={t('dataCollectionForMarketing')}
+      title={t(PRIVACY_ITEMS['data-collection'])}
       description={description}
       value={dataCollectionForMarketing}
       onToggle={handleToggle}

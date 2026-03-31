@@ -36,6 +36,7 @@ describe('LimitPriceInput', () => {
     onLimitPriceChange: jest.fn(),
     currentPrice: 45250.0,
     midPrice: 45050.0,
+    direction: 'long' as const,
   };
 
   beforeEach(() => {
@@ -121,6 +122,155 @@ describe('LimitPriceInput', () => {
       expect(defaultProps.onLimitPriceChange).toHaveBeenCalledWith(
         expect.stringContaining('45,050'),
       );
+    });
+  });
+
+  describe('limit price warnings', () => {
+    it('shows warning when long limit price is above current price', () => {
+      renderWithProvider(
+        <LimitPriceInput
+          {...defaultProps}
+          direction="long"
+          limitPrice="46000"
+        />,
+        mockStore,
+      );
+
+      expect(screen.getByTestId('limit-price-warning')).toBeInTheDocument();
+      expect(
+        screen.getByText(messages.perpsLimitPriceAboveCurrentPrice.message),
+      ).toBeInTheDocument();
+    });
+
+    it('shows warning when short limit price is below current price', () => {
+      renderWithProvider(
+        <LimitPriceInput
+          {...defaultProps}
+          direction="short"
+          limitPrice="44000"
+        />,
+        mockStore,
+      );
+
+      expect(screen.getByTestId('limit-price-warning')).toBeInTheDocument();
+      expect(
+        screen.getByText(messages.perpsLimitPriceBelowCurrentPrice.message),
+      ).toBeInTheDocument();
+    });
+
+    it('does not show warning when long limit price is below current price', () => {
+      renderWithProvider(
+        <LimitPriceInput
+          {...defaultProps}
+          direction="long"
+          limitPrice="44000"
+        />,
+        mockStore,
+      );
+
+      expect(
+        screen.queryByTestId('limit-price-warning'),
+      ).not.toBeInTheDocument();
+    });
+
+    it('does not show warning when short limit price is above current price', () => {
+      renderWithProvider(
+        <LimitPriceInput
+          {...defaultProps}
+          direction="short"
+          limitPrice="46000"
+        />,
+        mockStore,
+      );
+
+      expect(
+        screen.queryByTestId('limit-price-warning'),
+      ).not.toBeInTheDocument();
+    });
+
+    it('does not show warning when limit price is empty', () => {
+      renderWithProvider(
+        <LimitPriceInput {...defaultProps} limitPrice="" />,
+        mockStore,
+      );
+
+      expect(
+        screen.queryByTestId('limit-price-warning'),
+      ).not.toBeInTheDocument();
+    });
+  });
+
+  describe('liquidation price warnings', () => {
+    it('shows liquidation warning when current price is at or below liquidation price for long', () => {
+      renderWithProvider(
+        <LimitPriceInput
+          {...defaultProps}
+          direction="long"
+          limitPrice="44000"
+          currentPrice={100}
+          liquidationPrice={200}
+        />,
+        mockStore,
+      );
+
+      expect(
+        screen.getByTestId('limit-price-liquidation-warning'),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByText(messages.perpsLimitPriceNearLiquidation.message),
+      ).toBeInTheDocument();
+    });
+
+    it('shows liquidation warning when current price is at or above liquidation price for short', () => {
+      renderWithProvider(
+        <LimitPriceInput
+          {...defaultProps}
+          direction="short"
+          limitPrice="46000"
+          currentPrice={500}
+          liquidationPrice={400}
+        />,
+        mockStore,
+      );
+
+      expect(
+        screen.getByTestId('limit-price-liquidation-warning'),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByText(messages.perpsLimitPriceNearLiquidation.message),
+      ).toBeInTheDocument();
+    });
+
+    it('does not show liquidation warning when liquidation price is not provided', () => {
+      renderWithProvider(
+        <LimitPriceInput
+          {...defaultProps}
+          direction="long"
+          limitPrice="44000"
+        />,
+        mockStore,
+      );
+
+      expect(
+        screen.queryByTestId('limit-price-liquidation-warning'),
+      ).not.toBeInTheDocument();
+    });
+
+    it('does not show liquidation warning when current price is safely above liquidation for long', () => {
+      renderWithProvider(
+        <LimitPriceInput
+          {...defaultProps}
+          direction="long"
+          limitPrice="44000"
+          currentPrice={45250}
+          liquidationPrice={40000}
+        />,
+        mockStore,
+      );
+
+      expect(
+        screen.queryByTestId('limit-price-liquidation-warning'),
+      ).not.toBeInTheDocument();
     });
   });
 });

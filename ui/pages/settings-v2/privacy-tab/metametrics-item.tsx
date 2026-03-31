@@ -21,8 +21,10 @@ import {
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
+  MetaMetricsUserTrait,
 } from '../../../../shared/constants/metametrics';
 import { SettingsToggleItem } from '../../settings/settings-toggle-item';
+import { PRIVACY_ITEMS } from '../search-config';
 
 export const MetametricsToggleItem = () => {
   const t = useI18nContext();
@@ -78,8 +80,8 @@ export const MetametricsToggleItem = () => {
         event: MetaMetricsEventName.AnalyticsPreferenceSelected,
         properties: {
           /* eslint-disable @typescript-eslint/naming-convention */
-          is_metrics_opted_in: false,
-          has_marketing_consent: false,
+          [MetaMetricsUserTrait.IsMetricsOptedIn]: false,
+          [MetaMetricsUserTrait.HasMarketingConsent]: false,
           /* eslint-enable @typescript-eslint/naming-convention */
           location: 'Settings',
         },
@@ -90,7 +92,7 @@ export const MetametricsToggleItem = () => {
   return (
     <>
       <SettingsToggleItem
-        title={t('participateInMetaMetrics')}
+        title={t(PRIVACY_ITEMS.metametrics)}
         description={t('participateInMetaMetricsDescription')}
         value={participateInMetaMetrics}
         onToggle={handleToggle}

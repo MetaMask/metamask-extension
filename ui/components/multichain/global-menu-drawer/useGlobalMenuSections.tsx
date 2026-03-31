@@ -21,7 +21,6 @@ import { NewFeatureTag } from '../../../pages/notifications/NewFeatureTag';
 import {
   SETTINGS_ROUTE,
   // SETTINGS_V2_ROUTE,
-  DEFAULT_ROUTE,
   NOTIFICATIONS_ROUTE,
   SNAPS_ROUTE,
   PERMISSIONS,
@@ -511,15 +510,15 @@ export function useGlobalMenuSections(
           iconColor: IconColor.ErrorDefault,
           textColor: TextColor.ErrorDefault,
           label: t('logOut'),
-          onClick: () => {
-            navigate(DEFAULT_ROUTE);
-            dispatch(lockMetamask(t('lockMetaMaskLoadingMessage')));
+          onClick: async () => {
             trackEvent({
               category: MetaMetricsEventCategory.Navigation,
               event: MetaMetricsEventName.AppLocked,
               properties: { location: METRICS_LOCATION },
             });
             onClose();
+
+            await dispatch(lockMetamask(t('lockMetaMaskLoadingMessage')));
           },
         },
       ],

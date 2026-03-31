@@ -1,16 +1,24 @@
-import { screen, render } from '@testing-library/react';
+import { screen, render, fireEvent, waitFor } from '@testing-library/react';
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import mockState from '../../../test/data/mock-state.json';
-import { enLocale as messages } from '../../../test/lib/i18n-helpers';
 import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
 import { setBackgroundConnection } from '../../store/background-connection';
 import {
+  ASSETS_ROUTE,
   CURRENCY_ROUTE,
+  DEFAULT_ROUTE,
   SETTINGS_V2_ROUTE,
 } from '../../helpers/constants/routes';
 import SettingsV2 from './settings-v2';
+
+const mockNavigate = jest.fn();
+
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useNavigate: () => mockNavigate,
+}));
 
 let mockPathname = SETTINGS_V2_ROUTE;
 
@@ -34,41 +42,34 @@ describe('SettingsV2', () => {
     mockPathname = SETTINGS_V2_ROUTE;
   });
 
-  describe('rendering at settings root', () => {
-    it('renders the settings header', () => {
+  describe('navigation', () => {
+    it('navigates to home when back is clicked at settings root', async () => {
       renderSettingsV2(mockStore);
 
-      expect(screen.getByText(messages.settings.message)).toBeInTheDocument();
-    });
-
-    it('renders the close button', () => {
-      renderSettingsV2(mockStore);
-
-      expect(
-        screen.getByRole('button', { name: messages.close.message }),
-      ).toBeInTheDocument();
-    });
-
-    it('renders the Assets tab', () => {
-      renderSettingsV2(mockStore);
-
-      const assetElements = screen.getAllByText(messages.assets.message);
-      expect(assetElements.length).toBeGreaterThan(0);
-    });
-  });
-
-  describe('rendering at currency route', () => {
-    beforeEach(() => {
-      mockPathname = CURRENCY_ROUTE;
-    });
-
-    it('displays Local currency subheader', () => {
-      renderSettingsV2(mockStore);
-
-      const localCurrencyTexts = screen.getAllByText(
-        messages.localCurrency.message,
+      const backButton = await screen.findByTestId(
+        'settings-v2-header-back-button',
       );
-      expect(localCurrencyTexts.length).toBeGreaterThan(0);
+
+      fireEvent.click(backButton);
+
+      await waitFor(() => {
+        expect(mockNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE);
+      });
+    });
+
+    it('navigates to parent tab when back is clicked on a sub-page', async () => {
+      mockPathname = CURRENCY_ROUTE;
+      renderSettingsV2(mockStore);
+
+      const backButton = await screen.findByTestId(
+        'settings-v2-header-back-button',
+      );
+
+      fireEvent.click(backButton);
+
+      await waitFor(() => {
+        expect(mockNavigate).toHaveBeenCalledWith(ASSETS_ROUTE);
+      });
     });
   });
 });

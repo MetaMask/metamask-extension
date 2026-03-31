@@ -9,31 +9,31 @@ import {
   AccountsControllerSetSelectedAccountAction,
 } from '@metamask/accounts-controller';
 import type {
-  AcceptRequest,
-  AddApprovalRequest,
-  EndFlow,
-  RejectRequest,
-  ShowError,
-  ShowSuccess,
-  StartFlow,
+  ApprovalControllerAcceptRequestAction,
+  ApprovalControllerAddRequestAction,
+  ApprovalControllerEndFlowAction,
+  ApprovalControllerRejectRequestAction,
+  ApprovalControllerShowErrorAction,
+  ApprovalControllerShowSuccessAction,
+  ApprovalControllerStartFlowAction,
 } from '@metamask/approval-controller';
 import {
-  GetSnap,
-  HandleSnapRequest,
-  IsMinimumPlatformVersion,
+  SnapControllerGetSnapAction,
+  SnapControllerHandleRequestAction,
+  SnapControllerIsMinimumPlatformVersionAction,
 } from '@metamask/snaps-controllers';
 import { SnapKeyring } from '@metamask/eth-snap-keyring';
 import { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
 import { PreferencesControllerGetStateAction } from '../../controllers/preferences-controller';
 
 export type SnapKeyringBuilderAllowActions =
-  | StartFlow
-  | EndFlow
-  | ShowSuccess
-  | ShowError
-  | AddApprovalRequest
-  | AcceptRequest
-  | RejectRequest
+  | ApprovalControllerStartFlowAction
+  | ApprovalControllerEndFlowAction
+  | ApprovalControllerShowSuccessAction
+  | ApprovalControllerShowErrorAction
+  | ApprovalControllerAddRequestAction
+  | ApprovalControllerAcceptRequestAction
+  | ApprovalControllerRejectRequestAction
   | MaybeUpdateState
   | TestOrigin
   | KeyringControllerGetAccountsAction
@@ -42,16 +42,15 @@ export type SnapKeyringBuilderAllowActions =
   | AccountsControllerGetAccountByAddressAction
   | AccountsControllerSetAccountNameAction
   | AccountsControllerListMultichainAccountsAction
-  | HandleSnapRequest
-  | GetSnap
+  | SnapControllerHandleRequestAction
+  | SnapControllerGetSnapAction
   | PreferencesControllerGetStateAction
-  | IsMinimumPlatformVersion
+  | SnapControllerIsMinimumPlatformVersionAction
   | RemoteFeatureFlagControllerGetStateAction;
 
 export type SnapKeyringBuilderMessenger = Messenger<
   'SnapKeyring',
-  SnapKeyringBuilderAllowActions,
-  never
+  SnapKeyringBuilderAllowActions
 >;
 
 /**
