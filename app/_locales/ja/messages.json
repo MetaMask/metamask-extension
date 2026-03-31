@@ -5341,9 +5341,6 @@
     "message": "使用可能",
     "description": "is the available balance amount"
   },
-  "perpsAvailableBalance": {
-    "message": "利用可能残高"
-  },
   "perpsAvailableToClose": {
     "message": "クローズに利用可能"
   },

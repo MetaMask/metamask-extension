@@ -5341,9 +5341,6 @@
     "message": "verfügbar",
     "description": "is the available balance amount"
   },
-  "perpsAvailableBalance": {
-    "message": "Verfügbares Guthaben"
-  },
   "perpsAvailableToClose": {
     "message": "Zum Schließen verfügbar"
   },

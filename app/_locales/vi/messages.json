@@ -5341,9 +5341,6 @@
     "message": "khả dụng",
     "description": "is the available balance amount"
   },
-  "perpsAvailableBalance": {
-    "message": "Số dư khả dụng"
-  },
   "perpsAvailableToClose": {
     "message": "Có sẵn để đóng"
   },

@@ -5341,9 +5341,6 @@
     "message": "available",
     "description": "is the available balance amount"
   },
-  "perpsAvailableBalance": {
-    "message": "Available na balanse"
-  },
   "perpsAvailableToClose": {
     "message": "Available para isara"
   },

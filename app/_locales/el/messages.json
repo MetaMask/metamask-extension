@@ -5341,9 +5341,6 @@
     "message": "διαθέσιμο",
     "description": "is the available balance amount"
   },
-  "perpsAvailableBalance": {
-    "message": "Διαθέσιμο υπόλοιπο"
-  },
   "perpsAvailableToClose": {
     "message": "Διαθέσιμο ποσό για κλείσιμο"
   },

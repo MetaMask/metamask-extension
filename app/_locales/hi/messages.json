@@ -5341,9 +5341,6 @@
     "message": "उपलब्ध",
     "description": "is the available balance amount"
   },
-  "perpsAvailableBalance": {
-    "message": "उपलब्ध बैलेंस"
-  },
   "perpsAvailableToClose": {
     "message": "क्लोज़ करने के लिए उपलब्ध है"
   },

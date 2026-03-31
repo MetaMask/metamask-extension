@@ -5341,9 +5341,6 @@
     "message": "可用",
     "description": "is the available balance amount"
   },
-  "perpsAvailableBalance": {
-    "message": "可用余额"
-  },
   "perpsAvailableToClose": {
     "message": "可平仓"
   },
