@@ -1,6 +1,5 @@
 import HomePage from '../home/homepage';
 import { Driver } from '../../../webdriver/driver';
-import { DEFAULT_ROUTE } from 'ui/helpers/constants/routes';
 
 class SettingsPage {
   private readonly driver: Driver;
@@ -69,9 +68,6 @@ class SettingsPage {
   private readonly transactionShieldButton =
     '[data-testid="settings-v2-tab-item-transaction-shield"]';
 
-  private readonly settingsHeaderCloseButton =
-    '[data-testid="settings-v2-header-close-button"]';
-
   private readonly preinstalledExampleSnapSidebarItem = {
     text: 'Preinstalled Example Snap',
     tag: 'p',
@@ -115,19 +111,14 @@ class SettingsPage {
   }
 
   /**
-   * Exits Settings the way users do: Close (popup sub-pages) or Back until
-   * leaving settings (fullscreen / root).
+   * Navigates to wallet home (`/` — same path as app `DEFAULT_ROUTE`) and
+   * waits for the home page. Kept E2E-local to avoid importing `ui` routes.
    */
   async clickBackButton(): Promise<void> {
     await this.driver.executeScript(
-      `window.location.hash = ${JSON.stringify(DEFAULT_ROUTE)};`,
+      `window.location.hash = ${JSON.stringify('/')}`,
     );
     await new HomePage(this.driver).checkPageIsLoaded();
-  }
-
-  /** @deprecated Prefer {@link clickBackButton}; alias for legacy E2E specs. */
-  async exitSettings(): Promise<void> {
-    await this.clickBackButton();
   }
 
   async waitForTransactionShieldButtonReady(): Promise<void> {

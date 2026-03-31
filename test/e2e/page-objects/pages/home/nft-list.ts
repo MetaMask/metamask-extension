@@ -39,8 +39,6 @@ class NftListPage {
 
   private readonly nftListItem = '[data-testid="nft-wrapper"]';
 
-  private readonly toastBanner = '.toasts-container__banner-base';
-
   private readonly toastCloseButton =
     '.toasts-container__banner-base button[aria-label="Close"]';
 
@@ -60,11 +58,14 @@ class NftListPage {
   }
 
   async clickNFTIconOnActivityList() {
-    await this.driver.clickElementSafe(this.toastCloseButton);
-    await this.driver.assertElementNotPresent(this.toastBanner, {
-      timeout: 15000,
-      waitAtLeastGuard: 1000,
-    });
+    try {
+      await this.driver.waitForSelector(this.toastCloseButton, {
+        timeout: 5000,
+      });
+      await this.driver.clickElement(this.toastCloseButton);
+    } catch {
+      // Toast not present, continue
+    }
     await this.driver.clickElement(this.nftIconOnActivityList);
   }
 

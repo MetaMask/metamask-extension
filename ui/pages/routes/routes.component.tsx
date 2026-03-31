@@ -241,10 +241,6 @@ const MusdConversionPage = mmLazy(() => import('../musd/index.tsx'));
 const PerpsLayout = mmLazy(() => import('../perps/perps-layout.tsx'));
 // End Lazy Routes
 
-const NotificationsSettingsRedirect = () => (
-  <Navigate to={NOTIFICATIONS_SETTINGS_ROUTE} replace />
-);
-
 const SettingsV2LegacyRedirect = () => {
   const { pathname, search, hash } = useLocation();
   const canonicalPath = pathname.replace(
