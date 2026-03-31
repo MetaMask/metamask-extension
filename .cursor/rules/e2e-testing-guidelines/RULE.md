@@ -125,6 +125,7 @@ For new test code, use `FixtureBuilderV2` by default.
 - `withSmartTransactionsOptedOut`
 - `withSnapController`
 - `withSnapControllerOnStartLifecycleSnap`
+- `withSnapControllerStorageServiceSourceCode`
 - `withSnapsPrivacyWarningAlreadyShown`
 - `withStorageServiceData`
 - `withTokensControllerERC20`
