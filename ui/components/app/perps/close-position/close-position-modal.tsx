@@ -96,13 +96,17 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
     [closeSize, currentPrice],
   );
 
+  const isPriceValid = useMemo(
+    () => Number.isFinite(currentPrice) && currentPrice > 0,
+    [currentPrice],
+  );
+
   const isPartialCloseBelowMinNotional = useMemo(() => {
     if (closePercent >= 100) {
       return false;
     }
-    const closeNotionalUsdRoundedCents =
-      Math.round(closeNotionalUsd * 100) / 100;
-    return closeNotionalUsdRoundedCents < PERPS_MIN_MARKET_ORDER_USD;
+    // Compare unrounded notional: rounding to cents can lift e.g. $9.995 to $10.00 and wrongly allow submit.
+    return closeNotionalUsd < PERPS_MIN_MARKET_ORDER_USD;
   }, [closePercent, closeNotionalUsd]);
 
   const youWillReceive = useMemo(
@@ -111,6 +115,7 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
   );
 
   const isSubmitDisabled =
+    !isPriceValid ||
     closePercent <= 0 ||
     isSubmitting ||
     closeSize <= 0 ||

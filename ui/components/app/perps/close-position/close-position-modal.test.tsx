@@ -59,7 +59,83 @@ describe('ClosePositionModal', () => {
     });
   });
 
+  describe('invalid current price', () => {
+    it('disables submit when currentPrice is zero even at 100% close', () => {
+      renderWithProvider(
+        <ClosePositionModal
+          isOpen
+          onClose={jest.fn()}
+          position={basePosition}
+          currentPrice={0}
+        />,
+        mockStore,
+      );
+
+      expect(
+        screen.getByTestId('perps-close-position-modal-submit'),
+      ).toBeDisabled();
+    });
+
+    it('disables submit when currentPrice is NaN', async () => {
+      const user = userEvent.setup();
+      renderWithProvider(
+        <ClosePositionModal
+          isOpen
+          onClose={jest.fn()}
+          position={basePosition}
+          currentPrice={NaN}
+        />,
+        mockStore,
+      );
+
+      const slider = within(
+        screen.getByTestId('close-amount-slider'),
+      ).getByRole('slider');
+      slider.focus();
+      await user.keyboard('{ArrowLeft}');
+
+      expect(
+        screen.getByTestId('perps-close-position-modal-submit'),
+      ).toBeDisabled();
+    });
+  });
+
   describe('partial close below minimum USD notional', () => {
+    it('disables submit when partial notional is just under $10 even if rounded to cents it would be $10', async () => {
+      const user = userEvent.setup();
+      const positionOneUnit = {
+        ...basePosition,
+        size: '1',
+      };
+
+      renderWithProvider(
+        <ClosePositionModal
+          isOpen
+          onClose={jest.fn()}
+          position={positionOneUnit}
+          currentPrice={19.992}
+        />,
+        mockStore,
+      );
+
+      const slider = within(
+        screen.getByTestId('close-amount-slider'),
+      ).getByRole('slider');
+      slider.focus();
+      await user.keyboard(
+        Array.from({ length: 50 }, () => '{ArrowLeft}').join(''),
+      );
+
+      await waitFor(() => {
+        expect(
+          screen.getByText(PARTIAL_MIN_NOTIONAL_PATTERN),
+        ).toBeInTheDocument();
+        expect(
+          screen.getByTestId('perps-close-position-modal-submit'),
+        ).toBeDisabled();
+      });
+    });
+
     it('disables submit and shows warning when partial notional is under $10', async () => {
       const user = userEvent.setup();
       const smallPosition = {
