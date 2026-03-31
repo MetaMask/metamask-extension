@@ -1,10 +1,10 @@
-import { MultichainAssetsController } from '@metamask/assets-controllers';
+import {
+  MultichainAssetsController,
+  MultichainAssetsControllerMessenger,
+} from '@metamask/assets-controllers';
 import { buildControllerInitRequestMock } from '../test/utils';
 import { ControllerInitRequest } from '../types';
-import {
-  getMultichainAssetsControllerMessenger,
-  MultichainAssetsControllerMessenger,
-} from '../messengers/multichain';
+import { getMultichainAssetsControllerMessenger } from '../messengers/multichain';
 import { getRootMessenger } from '../../lib/messenger';
 import { MultichainAssetsControllerInit } from './multichain-assets-controller-init';
 

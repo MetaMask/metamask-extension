@@ -333,7 +333,7 @@ export const SENTRY_BACKGROUND_STATE: SentryBackgroundStateMask = {
   SnapInsightsController: {
     insights: false,
   },
-  SnapsRegistry: {
+  SnapRegistryController: {
     database: false,
     lastUpdated: false,
     databaseUnavailable: false,
