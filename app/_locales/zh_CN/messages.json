@@ -5555,9 +5555,6 @@
   "perpsPosition": {
     "message": "仓位"
   },
-  "perpsPositionSize": {
-    "message": "仓位规模"
-  },
   "perpsPositions": {
     "message": "头寸"
   },
