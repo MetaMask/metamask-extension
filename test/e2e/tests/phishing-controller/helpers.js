@@ -37,6 +37,10 @@ async function waitForPhishingBlocklistToBeLoaded(driver) {
     const lists = state?.data?.PhishingController?.phishingLists;
     return Array.isArray(lists) && lists.length > 0;
   }, 10000);
+  // The state being populated doesn't guarantee the extension's content
+  // script / webNavigation handlers are registered yet. A brief delay
+  // lets the browser finish activating its interception mechanisms.
+  await driver.delay(500);
 }
 
 module.exports = {
