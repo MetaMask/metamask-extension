@@ -37,6 +37,12 @@ class PrivacySettings {
   private readonly deleteMetaMetricsDataButton =
     '[data-testid="delete-metametrics-data-button"]';
 
+  private readonly downloadStateLogsButton =
+    '[data-testid="advanced-setting-state-logs-button"]';
+
+  private readonly downloadStateLogsModalButton =
+    '[data-testid="download-state-logs-modal-button"]';
+
   private readonly deleteMetaMetricsModalTitle = {
     text: 'Delete MetaMetrics data?',
     tag: 'h4',
@@ -166,6 +172,12 @@ class PrivacySettings {
   async checkSrpListIsLoaded(): Promise<void> {
     console.log('Check SRP list is loaded on privacy settings page');
     await this.driver.waitForSelector('[data-testid="select-srp-container"]');
+  }
+
+  async downloadStateLogs(): Promise<void> {
+    console.log('Downloading state logs on privacy settings page');
+    await this.driver.clickElement(this.downloadStateLogsButton);
+    await this.driver.clickElement(this.downloadStateLogsModalButton);
   }
 
   async deleteMetaMetrics(): Promise<void> {
