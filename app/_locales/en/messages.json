@@ -5761,10 +5761,6 @@
     "message": "Take Profit",
     "description": "Label for take profit price input"
   },
-  "perpsToastOrderFilled": {
-    "message": "Order filled",
-    "description": "Toast title shown when an order is filled"
-  },
   "perpsTotalBalance": {
     "message": "Total Balance"
   },

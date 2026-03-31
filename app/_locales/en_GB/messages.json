@@ -5630,6 +5630,10 @@
   "perpsOraclePriceTooltip": {
     "message": "The median of external prices reported by validators, used for computing funding rate"
   },
+  "perpsOrderValidationInsufficientBalance": {
+    "message": "Insufficient balance: need $1, have $2",
+    "description": "$1 is the required margin amount and $2 is the available balance amount"
+  },
   "perpsOrders": {
     "message": "Orders"
   },
