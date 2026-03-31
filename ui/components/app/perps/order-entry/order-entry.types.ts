@@ -123,6 +123,8 @@ export type OrderEntryProps = {
   onOrderTypeChange?: (orderType: OrderType) => void;
   /** Callback when add-funds icon is pressed in the amount input */
   onAddFunds?: () => void;
+  /** Initial leverage override for new orders (e.g. last used leverage for this market) */
+  initialLeverage?: number;
 };
 
 /**

@@ -29,7 +29,7 @@ describe('usePerpsOrderForm', () => {
         asset: 'BTC',
         direction: 'long',
         amount: '',
-        leverage: 1,
+        leverage: 3,
         type: 'market',
         autoCloseEnabled: false,
         takeProfitPrice: '',
@@ -44,6 +44,59 @@ describe('usePerpsOrderForm', () => {
       );
 
       expect(result.current.closePercent).toBe(100);
+    });
+
+    it('uses initialLeverage when provided for new orders', () => {
+      const { result } = renderHookWithProvider(
+        () =>
+          usePerpsOrderForm({
+            ...defaultOptions,
+            initialLeverage: 7,
+          }),
+        mockStateWithLocale,
+      );
+
+      expect(result.current.formState.leverage).toBe(7);
+    });
+
+    it('applies initialLeverage when it changes after initial render (async hydration)', () => {
+      const props = {
+        ...defaultOptions,
+        initialLeverage: undefined as number | undefined,
+      };
+      const { result, rerender } = renderHookWithProvider(
+        () => usePerpsOrderForm(props),
+        mockStateWithLocale,
+      );
+
+      expect(result.current.formState.leverage).toBe(3);
+
+      props.initialLeverage = 8;
+      act(() => {
+        rerender();
+      });
+
+      expect(result.current.formState.leverage).toBe(8);
+    });
+
+    it('ignores initialLeverage in modify mode (uses position leverage)', () => {
+      const existingPosition = {
+        size: '1.0',
+        leverage: 5,
+        entryPrice: '44000',
+      };
+      const { result } = renderHookWithProvider(
+        () =>
+          usePerpsOrderForm({
+            ...defaultOptions,
+            mode: 'modify',
+            existingPosition,
+            initialLeverage: 10,
+          }),
+        mockStateWithLocale,
+      );
+
+      expect(result.current.formState.leverage).toBe(5);
     });
 
     it('initializes with short direction when specified', () => {
@@ -352,7 +405,7 @@ describe('usePerpsOrderForm', () => {
       });
 
       expect(result.current.calculations.positionSize).toContain('BTC');
-      expect(result.current.calculations.orderValue).toBe('$1,000.00');
+      expect(result.current.calculations.orderValue).toBe('$3,000.00');
     });
   });
 

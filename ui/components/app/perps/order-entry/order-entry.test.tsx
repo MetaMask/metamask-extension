@@ -132,17 +132,18 @@ describe('OrderEntry', () => {
 
       const tokenContainer = screen.getByTestId('amount-input-token-field');
       const tokenInput = tokenContainer.querySelector('input');
-      expect(tokenInput).toHaveValue('1');
+      // Default leverage is 3x, so position size = ($45250 * 3) / $45250 = 3 BTC
+      expect(tokenInput).toHaveValue('3');
     });
   });
 
   describe('leverage slider', () => {
-    it('defaults to 1x leverage', () => {
+    it('defaults to 3x leverage', () => {
       renderWithProvider(<OrderEntry {...defaultProps} />, mockStore);
 
       const container = screen.getByTestId('leverage-input');
       const input = container.querySelector('input');
-      expect(input).toHaveValue('1');
+      expect(input).toHaveValue('3');
     });
   });
 
@@ -164,10 +165,10 @@ describe('OrderEntry', () => {
         target: { value: '1000' },
       });
 
-      // Should show calculated margin (1000 / 1 leverage = $1000)
+      // Should show calculated margin ($1,000 entered)
       expect(screen.getByText('$1,000.00')).toBeInTheDocument();
-      // Should show calculated fees (0.05% of 1000 = $0.50)
-      expect(screen.getByText('$0.50')).toBeInTheDocument();
+      // Should show calculated fees (0.05% of 3000 position value at 3x leverage = $1.50)
+      expect(screen.getByText('$1.50')).toBeInTheDocument();
     });
   });
 
