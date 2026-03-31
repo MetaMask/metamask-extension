@@ -45,7 +45,7 @@ const renderProvider = ({
     const { trackEvent } = useContext(MetaMetricsContext);
 
     useEffect(() => {
-      void trackEvent({
+      trackEvent({
         category: MetaMetricsEventCategory.Onboarding,
         event,
       });
@@ -70,17 +70,16 @@ const renderProvider = ({
 
   return render(
     <Provider store={store}>
-      <RouterProvider
-        router={router}
-        future={{ v7_startTransition: true }}
-      />
+      <RouterProvider router={router} />
     </Provider>,
   );
 };
 
 describe('MetaMetricsProvider', () => {
   const mockedTrackMetaMetricsEvent = jest.mocked(trackMetaMetricsEvent);
-  const mockedSubmitRequestToBackground = jest.mocked(submitRequestToBackground);
+  const mockedSubmitRequestToBackground = jest.mocked(
+    submitRequestToBackground,
+  );
 
   beforeEach(() => {
     jest.clearAllMocks();
