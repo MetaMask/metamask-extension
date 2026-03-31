@@ -140,15 +140,6 @@ describe('Ducks - Bridge', () => {
       const newState = bridgeReducer(state, actions[0]);
       expect(newState).toStrictEqual(initialState);
     });
-
-    it('calls clearAllBridgeCacheItems', async () => {
-      const mockClearAllBridgeCacheItems = jest.spyOn(
-        cacheUtils,
-        'clearAllBridgeCacheItems',
-      );
-      store.dispatch(resetInputFields() as never);
-      expect(mockClearAllBridgeCacheItems).toHaveBeenCalledTimes(1);
-    });
   });
 
   describe('updateQuoteRequestParams', () => {
@@ -217,7 +208,7 @@ describe('Ducks - Bridge', () => {
   });
 
   describe('resetBridgeController', () => {
-    it('dispatches action to the bridge controller', () => {
+    it('dispatches action to the bridge controller', async () => {
       // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const mockStore = configureMockStore<any>(middleware)(
@@ -226,19 +217,23 @@ describe('Ducks - Bridge', () => {
         }),
       );
       const mockResetBridgeState = jest.fn();
+      const mockClearAllBridgeCacheItems = jest.spyOn(
+        cacheUtils,
+        'clearAllBridgeCacheItems',
+      );
       setBackgroundConnection({
         [BridgeBackgroundAction.RESET_STATE]: mockResetBridgeState,
         getStatePatches: jest.fn(),
       } as never);
 
-      mockStore.dispatch(resetBridgeController() as never);
+      await mockStore.dispatch((await resetBridgeController()) as never);
 
       expect(mockResetBridgeState).toHaveBeenCalledTimes(1);
-      expect(mockResetBridgeState).toHaveBeenCalledWith();
       const actions = mockStore.getActions();
       expect(actions.map((action) => action.type)).not.toContain(
         'bridge/resetInputFields',
       );
+      expect(mockClearAllBridgeCacheItems).toHaveBeenCalledTimes(1);
     });
   });
 
