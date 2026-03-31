@@ -119,9 +119,65 @@ describe('LimitPriceInput', () => {
 
       fireEvent.click(screen.getByTestId('limit-price-mid-button'));
 
-      expect(defaultProps.onLimitPriceChange).toHaveBeenCalledWith(
-        expect.stringContaining('45,050'),
+      expect(defaultProps.onLimitPriceChange).toHaveBeenCalledWith('45050');
+    });
+  });
+
+  describe('locale handling', () => {
+    it('keeps raw dot-decimal value in de locale', () => {
+      const deStore = configureStore({
+        localeMessages: {
+          ...(mockState.localeMessages ?? {}),
+          currentLocale: 'de',
+        },
+      });
+
+      renderWithProvider(
+        <LimitPriceInput
+          {...defaultProps}
+          limitPrice="45050.00"
+          onLimitPriceChange={defaultProps.onLimitPriceChange}
+        />,
+        deStore,
       );
+
+      const container = screen.getByTestId('limit-price-input');
+      const input = container.querySelector('input');
+      expect(input).not.toBeNull();
+      expect(input).toHaveValue('45050.00');
+      fireEvent.blur(input as HTMLInputElement);
+
+      expect(defaultProps.onLimitPriceChange).toHaveBeenCalledWith('45050');
+    });
+
+    it('rejects non-en-US locale-formatted input while typing', () => {
+      const onLimitPriceChange = jest.fn();
+      const deStore = configureStore({
+        localeMessages: {
+          ...(mockState.localeMessages ?? {}),
+          currentLocale: 'de',
+        },
+      });
+
+      renderWithProvider(
+        <LimitPriceInput
+          {...defaultProps}
+          limitPrice=""
+          onLimitPriceChange={onLimitPriceChange}
+        />,
+        deStore,
+      );
+
+      const container = screen.getByTestId('limit-price-input');
+      const input = container.querySelector('input');
+      expect(input).not.toBeNull();
+
+      fireEvent.focus(input as HTMLInputElement);
+      fireEvent.change(input as HTMLInputElement, {
+        target: { value: '45.050,00' },
+      });
+
+      expect(onLimitPriceChange).not.toHaveBeenCalled();
     });
   });
 
