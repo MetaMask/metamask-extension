@@ -1,11 +1,11 @@
 import { screen, fireEvent } from '@testing-library/react';
 import React from 'react';
 
+import { AmountInput } from './amount-input';
 import mockState from '../../../../../../../test/data/mock-state.json';
 import { enLocale as messages } from '../../../../../../../test/lib/i18n-helpers';
 import { renderWithProvider } from '../../../../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../../../../store/store';
-import { AmountInput } from './amount-input';
 
 const mockStore = configureStore({
   metamask: {
@@ -231,6 +231,57 @@ describe('AmountInput', () => {
       renderWithProvider(<AmountInput {...defaultProps} />, mockStore);
 
       expect(screen.getByTestId('amount-slider')).toBeInTheDocument();
+    });
+  });
+
+  describe('percent input', () => {
+    it('floors generated 100% amount to 2 decimals', () => {
+      const onAmountChange = jest.fn();
+      const onBalancePercentChange = jest.fn();
+      renderWithProvider(
+        <AmountInput
+          {...defaultProps}
+          onAmountChange={onAmountChange}
+          onBalancePercentChange={onBalancePercentChange}
+          availableBalance={3.066}
+        />,
+        mockStore,
+      );
+
+      const container = screen.getByTestId('balance-percent-input');
+      const input = container.querySelector('input');
+      expect(input).not.toBeNull();
+      fireEvent.change(input as HTMLInputElement, {
+        target: { value: '100' },
+      });
+
+      expect(onBalancePercentChange).toHaveBeenCalledWith(100);
+      expect(onAmountChange).toHaveBeenCalledWith('3.06');
+    });
+
+    it('floors clamped amount when percent input is above 100 on blur', () => {
+      const onAmountChange = jest.fn();
+      const onBalancePercentChange = jest.fn();
+      renderWithProvider(
+        <AmountInput
+          {...defaultProps}
+          onAmountChange={onAmountChange}
+          onBalancePercentChange={onBalancePercentChange}
+          availableBalance={3.066}
+        />,
+        mockStore,
+      );
+
+      const container = screen.getByTestId('balance-percent-input');
+      const input = container.querySelector('input');
+      expect(input).not.toBeNull();
+      fireEvent.change(input as HTMLInputElement, {
+        target: { value: '101' },
+      });
+      fireEvent.blur(input as HTMLInputElement);
+
+      expect(onBalancePercentChange).toHaveBeenCalledWith(100);
+      expect(onAmountChange).toHaveBeenCalledWith('3.06');
     });
   });
 });

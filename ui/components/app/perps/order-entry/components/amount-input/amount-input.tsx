@@ -110,6 +110,11 @@ export const AmountInput: React.FC<AmountInputProps> = ({
     [availableBalance, onAmountChange, onBalancePercentChange],
   );
 
+  const formatFlooredAmount = useCallback(
+    (value: number): string => (Math.floor(value * 100) / 100).toFixed(2),
+    [],
+  );
+
   const handleAmountBlur = useCallback(() => {
     if (!amount) {
       onAmountChange('');
@@ -184,10 +189,15 @@ export const AmountInput: React.FC<AmountInputProps> = ({
         onAmountChange('');
       } else {
         const newAmount = (availableBalance * percent) / 100;
-        onAmountChange(newAmount.toFixed(2));
+        onAmountChange(formatFlooredAmount(newAmount));
       }
     },
-    [onAmountChange, onBalancePercentChange, availableBalance],
+    [
+      onAmountChange,
+      onBalancePercentChange,
+      availableBalance,
+      formatFlooredAmount,
+    ],
   );
 
   const handlePercentInputChange = useCallback(
@@ -202,12 +212,17 @@ export const AmountInput: React.FC<AmountInputProps> = ({
             onAmountChange('');
           } else {
             const newAmount = (availableBalance * num) / 100;
-            onAmountChange(newAmount.toFixed(2));
+            onAmountChange(formatFlooredAmount(newAmount));
           }
         }
       }
     },
-    [onAmountChange, onBalancePercentChange, availableBalance],
+    [
+      onAmountChange,
+      onBalancePercentChange,
+      availableBalance,
+      formatFlooredAmount,
+    ],
   );
 
   const handlePercentInputBlur = useCallback(() => {
@@ -219,7 +234,7 @@ export const AmountInput: React.FC<AmountInputProps> = ({
     } else if (num > 100) {
       onBalancePercentChange(100);
       setPercentInputValue('100');
-      onAmountChange(availableBalance.toFixed(2));
+      onAmountChange(formatFlooredAmount(availableBalance));
     } else {
       onBalancePercentChange(num);
       setPercentInputValue(String(num));
@@ -229,6 +244,7 @@ export const AmountInput: React.FC<AmountInputProps> = ({
     onAmountChange,
     onBalancePercentChange,
     availableBalance,
+    formatFlooredAmount,
   ]);
 
   return (

@@ -8,6 +8,7 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 
+import PerpsOrderEntryPage from './perps-order-entry-page';
 import mockState from '../../../test/data/mock-state.json';
 import { enLocale as messages } from '../../../test/lib/i18n-helpers';
 import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
@@ -17,7 +18,6 @@ import {
   mockCryptoMarkets,
   mockHip3Markets,
 } from '../../components/app/perps/mocks';
-import PerpsOrderEntryPage from './perps-order-entry-page';
 
 jest.mock('../../hooks/perps/usePerpsEligibility', () => ({
   usePerpsEligibility: () => ({ isEligible: true }),
@@ -563,6 +563,34 @@ describe('PerpsOrderEntryPage', () => {
       expect(
         screen.getByText(getInsufficientBalanceMessage('20.00', '3.06')),
       ).toBeInTheDocument();
+    });
+
+    it('does not disable submit in modify mode when 100% amount is floored to available balance', () => {
+      mockSearchParams.set('mode', 'modify');
+      mockLivePositions.mockReturnValue({
+        positions: mockPositions,
+        isInitialLoading: false,
+      });
+      mockLiveAccount.mockReturnValue({
+        account: {
+          ...mockAccountState,
+          availableBalance: '3.066',
+        },
+        isInitialLoading: false,
+      });
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      const percentContainer = screen.getByTestId('balance-percent-input');
+      const percentInput = percentContainer.querySelector('input');
+      fireEvent.change(percentInput as HTMLInputElement, {
+        target: { value: '100' },
+      });
+
+      expect(screen.getByTestId('submit-order-button')).not.toBeDisabled();
+      expect(
+        screen.queryByText(getInsufficientBalanceMessage('3.07', '3.07')),
+      ).not.toBeInTheDocument();
     });
 
     it('does not disable submit when amount equals available balance', () => {
