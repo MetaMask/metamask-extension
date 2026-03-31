@@ -5447,7 +5447,7 @@
     "description": "is the available balance amount"
   },
   "perpsAvailableBalance": {
-    "message": "Available balance"
+    "message": "Available Perps balance: "
   },
   "perpsAvailableToClose": {
     "message": "Available to close"
@@ -5866,6 +5866,51 @@
   },
   "perpsWithdraw": {
     "message": "Withdraw"
+  },
+  "perpsWithdrawEstimatedTime": {
+    "message": "Estimated time"
+  },
+  "perpsWithdrawFailed": {
+    "message": "Withdrawal could not be completed. Try again."
+  },
+  "perpsWithdrawFee": {
+    "message": "Provider Fee"
+  },
+  "perpsWithdrawInsufficient": {
+    "message": "Amount exceeds your available Perps balance."
+  },
+  "perpsWithdrawInvalidAmount": {
+    "message": "Enter a valid amount."
+  },
+  "perpsWithdrawMinNotice": {
+    "message": "Minimum withdrawal: $1 USDC",
+    "description": "$1 is the minimum amount (e.g. 1.01)"
+  },
+  "perpsWithdrawMinutesApprox": {
+    "message": "~$1 min",
+    "description": "$1 is the estimated number of minutes"
+  },
+  "perpsWithdrawNoAccount": {
+    "message": "No account selected. Select an account and try again."
+  },
+  "perpsWithdrawReceive": {
+    "message": "Receive"
+  },
+  "perpsWithdrawRoutesError": {
+    "message": "Could not load withdrawal limits. Try again later."
+  },
+  "perpsWithdrawToastErrorTitle": {
+    "message": "Withdrawal failed"
+  },
+  "perpsWithdrawToastSuccessDescription": {
+    "message": "We are processing $1. Funds typically arrive within a few minutes.",
+    "description": "$1 is the formatted withdrawal amount"
+  },
+  "perpsWithdrawToastSuccessTitle": {
+    "message": "Withdrawal submitted"
+  },
+  "perpsYouReceive": {
+    "message": "You receive"
   },
   "perpsYouWillReceive": {
     "message": "You'll receive"
