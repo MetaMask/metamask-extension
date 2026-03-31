@@ -1,5 +1,6 @@
 import HomePage from '../home/homepage';
 import { Driver } from '../../../webdriver/driver';
+import { DEFAULT_ROUTE } from 'ui/helpers/constants/routes';
 
 class SettingsPage {
   private readonly driver: Driver;
@@ -71,9 +72,6 @@ class SettingsPage {
   private readonly settingsHeaderCloseButton =
     '[data-testid="settings-v2-header-close-button"]';
 
-  private readonly settingsHeaderBackButton =
-    '[data-testid="settings-v2-header-back-button"]';
-
   private readonly preinstalledExampleSnapSidebarItem = {
     text: 'Preinstalled Example Snap',
     tag: 'p',
@@ -121,16 +119,9 @@ class SettingsPage {
    * leaving settings (fullscreen / root).
    */
   async clickBackButton(): Promise<void> {
-    const maxSteps = 15;
-    let steps = 0;
-    while ((await this.isOnSettingsPage()) && steps < maxSteps) {
-      if (await this.hasElement(this.settingsHeaderCloseButton)) {
-        await this.driver.clickElement(this.settingsHeaderCloseButton);
-      } else {
-        await this.driver.clickElement(this.settingsHeaderBackButton);
-      }
-      steps += 1;
-    }
+    await this.driver.executeScript(
+      `window.location.hash = ${JSON.stringify(DEFAULT_ROUTE)};`,
+    );
     await new HomePage(this.driver).checkPageIsLoaded();
   }
 
