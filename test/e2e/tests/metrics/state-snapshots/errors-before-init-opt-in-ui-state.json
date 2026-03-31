@@ -284,7 +284,7 @@
       "unencryptedSnapStates": "object"
     },
     "SnapInterfaceController": { "interfaces": "object" },
-    "SnapsRegistry": {
+    "SnapRegistryController": {
       "database": "object",
       "databaseUnavailable": "boolean",
       "lastUpdated": "number",
@@ -314,5 +314,5 @@
     },
     "config": "object"
   },
-  "meta": { "storageKind": "split", "version": 200 }
+  "meta": { "storageKind": "split", "version": 201 }
 }

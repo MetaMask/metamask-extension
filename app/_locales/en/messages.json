@@ -5590,6 +5590,15 @@
   "perpsLimitPrice": {
     "message": "Limit Price"
   },
+  "perpsLimitPriceAboveCurrentPrice": {
+    "message": "Limit price is above current price"
+  },
+  "perpsLimitPriceBelowCurrentPrice": {
+    "message": "Limit price is below current price"
+  },
+  "perpsLimitPriceNearLiquidation": {
+    "message": "Current price is near the estimated liquidation price"
+  },
   "perpsLiquidationDistance": {
     "message": "Liq. distance"
   },
