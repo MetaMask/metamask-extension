@@ -202,6 +202,8 @@ const PerpsMarketDetailPage: React.FC = () => {
     return safeDecodeURIComponent(symbol);
   }, [symbol]);
 
+  const [showSizeInFiat, setShowSizeInFiat] = useState(false);
+
   // Subscribe to live price data for current symbol (provides oracle price, live funding, OI)
   // Uses background streaming via perpsActivatePriceStream + PerpsStreamManager
   const [livePrice, setLivePrice] = useState<PriceUpdate | undefined>(
@@ -937,7 +939,7 @@ const PerpsMarketDetailPage: React.FC = () => {
                   className="flex-1 cursor-pointer rounded-xl bg-muted px-4 py-3 hover:bg-muted-hover active:bg-muted-pressed"
                   flexDirection={BoxFlexDirection.Column}
                   onClick={() => {
-                    // TODO: Handle size card press
+                    setShowSizeInFiat((prev) => !prev);
                   }}
                 >
                   <Box paddingBottom={1}>
@@ -952,11 +954,13 @@ const PerpsMarketDetailPage: React.FC = () => {
                     variant={TextVariant.BodyMd}
                     fontWeight={FontWeight.Medium}
                   >
-                    {formatCurrencyWithMinThreshold(
-                      Math.abs(parseFloat(position.size)) *
-                        parseFloat(position.entryPrice),
-                      'USD',
-                    )}
+                    {showSizeInFiat
+                      ? formatCurrencyWithMinThreshold(
+                          Math.abs(parseFloat(position.size)) *
+                            parseFloat(position.entryPrice),
+                          'USD',
+                        )
+                      : `${formatNumber(Math.abs(parseFloat(position.size)), { maximumSignificantDigits: 4 })} ${getDisplayName(position.symbol)}`}
                   </Text>
                 </Box>
 

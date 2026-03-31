@@ -41,9 +41,8 @@ export const PositionCard: React.FC<PositionCardProps> = ({
   const direction = getPositionDirection(position.size);
   const pnlNum = parseFloat(position.unrealizedPnl);
   const isProfit = pnlNum >= 0;
+  const absSize = Math.abs(parseFloat(position.size)).toString();
   const displayName = getDisplayName(position.symbol);
-  const sizeUsd =
-    Math.abs(parseFloat(position.size)) * parseFloat(position.entryPrice);
   const pnlPrefix = isProfit ? '+' : '-';
   const formattedPnl = `${pnlPrefix}${formatCurrencyWithMinThreshold(Math.abs(pnlNum), 'USD')}`;
 
@@ -97,7 +96,7 @@ export const PositionCard: React.FC<PositionCardProps> = ({
           </Text>
         </Box>
         <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
-          {formatCurrencyWithMinThreshold(sizeUsd, 'USD')}
+          {absSize} {displayName}
         </Text>
       </Box>
 
