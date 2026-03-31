@@ -61,7 +61,18 @@ export type CoverageReport = {
 // Configuration
 // ============================================================================
 
-const SCAN_DIRS = ['test/e2e/tests', 'test/e2e/benchmarks'];
+const SCAN_DIRS = [
+  'test/e2e/tests',
+  'test/e2e/benchmarks',
+  'test/e2e/flask',
+  'test/e2e/snaps',
+  'test/e2e/json-rpc',
+  'test/e2e/accounts',
+  'test/e2e/provider',
+  'test/e2e/multi-injected-provider',
+  'test/e2e/api-specs',
+  'test/e2e/background-socket',
+];
 const SCAN_EXTENSIONS = new Set(['.ts', '.js', '.mts', '.mjs']);
 const SKIP_DIRS = new Set(['node_modules', '.git', 'dist', 'build']);
 
