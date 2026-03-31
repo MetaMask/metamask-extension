@@ -63,8 +63,11 @@ describe('transaction controller utils', () => {
       ],
     ])(
       'returns the value %s divided by 10^%s = %s',
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (value: any, decimals: any, expected: any) => {
+      (
+        value: string | number | BigNumber,
+        decimals: number | undefined,
+        expected: string,
+      ) => {
         expect(calcTokenAmount(value, decimals).toString()).toBe(expected);
       },
     );
@@ -73,11 +76,7 @@ describe('transaction controller utils', () => {
   describe('getSwapsTokensReceivedFromTxMeta', () => {
     it('returns null if txMeta is not well formed', () => {
       expect(
-        getSwapsTokensReceivedFromTxMeta(
-          'ETH',
-          {} as unknown as TransactionMeta,
-          '0x00',
-        ),
+        getSwapsTokensReceivedFromTxMeta('ETH', {} as TransactionMeta, '0x00'),
       ).toBe(null);
     });
 
@@ -85,7 +84,7 @@ describe('transaction controller utils', () => {
       expect(
         getSwapsTokensReceivedFromTxMeta(
           'ETH',
-          {} as unknown as TransactionMeta,
+          {} as TransactionMeta,
           '0x00',
           '8',
           undefined,
@@ -99,7 +98,7 @@ describe('transaction controller utils', () => {
       expect(
         getSwapsTokensReceivedFromTxMeta(
           'ETH',
-          { txReceipt: {}, postTxBalance: '0xe' } as unknown as TransactionMeta,
+          { txReceipt: {}, postTxBalance: '0xe' } as TransactionMeta,
           '0x00',
           '8',
           undefined,
@@ -113,7 +112,7 @@ describe('transaction controller utils', () => {
       expect(
         getSwapsTokensReceivedFromTxMeta(
           'ETH',
-          { txReceipt: {}, preTxBalance: '0xe' } as unknown as TransactionMeta,
+          { txReceipt: {}, preTxBalance: '0xe' } as TransactionMeta,
           '0x00',
           '8',
           undefined,
@@ -132,11 +131,11 @@ describe('transaction controller utils', () => {
             preTxBalance: '0xe',
             postTxBalance: '0xe',
             swapMetaData: { token_to_amount: '0x1' },
-          } as unknown as TransactionMeta,
+          } as TransactionMeta,
           '0x00',
           '0x00',
           '8',
-          {} as unknown as TransactionMeta,
+          {} as TransactionMeta,
           CHAIN_IDS.MAINNET,
         ),
       ).toBe('0x1');
@@ -164,11 +163,11 @@ describe('transaction controller utils', () => {
             preTxBalance: preTxBalance.toPrefixedHexString(),
             postTxBalance: postTxBalance.toPrefixedHexString(),
             swapMetaData: { token_to_amount: '0x1' },
-          } as unknown as TransactionMeta,
+          } as TransactionMeta,
           '0x00',
           '0x00',
           '8',
-          {} as unknown as TransactionMeta,
+          {} as TransactionMeta,
           CHAIN_IDS.MAINNET,
         ),
       ).toBe(ethReceived.toString());
@@ -204,7 +203,7 @@ describe('transaction controller utils', () => {
             preTxBalance: preTxBalance.toPrefixedHexString(),
             postTxBalance: postTxBalance.toPrefixedHexString(),
             swapMetaData: { token_to_amount: '0x1' },
-          } as unknown as TransactionMeta,
+          } as TransactionMeta,
           '0x00',
           '0x00',
           '8',
@@ -214,7 +213,7 @@ describe('transaction controller utils', () => {
               effectiveGasPrice: effectiveGasPriceApproval,
               type: TransactionEnvelopeType.feeMarket,
             },
-          } as unknown as TransactionMeta,
+          } as TransactionMeta,
           CHAIN_IDS.MAINNET,
         ),
       ).toBe(ethReceived.toString());
@@ -249,7 +248,7 @@ describe('transaction controller utils', () => {
             preTxBalance: preTxBalance.toPrefixedHexString(),
             postTxBalance: postTxBalance.toPrefixedHexString(),
             swapMetaData: { token_to_amount: '0x1' },
-          } as unknown as TransactionMeta,
+          } as TransactionMeta,
           '0x00',
           '0x00',
           '8',
@@ -261,7 +260,7 @@ describe('transaction controller utils', () => {
             txParams: {
               gasPrice: gasPriceApproval,
             },
-          } as unknown as TransactionMeta,
+          } as TransactionMeta,
           CHAIN_IDS.MAINNET,
         ),
       ).toBe(ethReceived.toString());
@@ -280,13 +279,13 @@ describe('transaction controller utils', () => {
           'USDC',
           {
             txReceipt: { logs, status: '0x1' },
-          } as unknown as TransactionMeta,
+          } as TransactionMeta,
           '0x00',
           '0x00',
           '8',
           {
             txReceipt: {},
-          } as unknown as TransactionMeta,
+          } as TransactionMeta,
           CHAIN_IDS.MAINNET,
         ),
       ).toBe(calcTokenAmount(logs[0].data, 8).toString(10));
@@ -319,11 +318,11 @@ describe('transaction controller utils', () => {
           preTxBalance: preTxBalance.toPrefixedHexString(),
           postTxBalance: postTxBalance.toPrefixedHexString(),
           swapMetaData: { token_to_amount: '0x1' },
-        } as unknown as TransactionMeta,
+        } as TransactionMeta,
         '0x00',
         '0x00',
         '8',
-        {} as unknown as TransactionMeta,
+        {} as TransactionMeta,
         CHAIN_IDS.MAINNET,
         precision,
       );
@@ -346,11 +345,11 @@ describe('transaction controller utils', () => {
     const get = (precision: number | null) =>
       getSwapsTokensReceivedFromTxMeta(
         'USDC',
-        { txReceipt: { logs, status: '0x1' } } as unknown as TransactionMeta,
+        { txReceipt: { logs, status: '0x1' } } as TransactionMeta,
         '0x00',
         '0x00',
         '8',
-        { txReceipt: {} } as unknown as TransactionMeta,
+        { txReceipt: {} } as TransactionMeta,
         CHAIN_IDS.MAINNET,
         precision,
       );
