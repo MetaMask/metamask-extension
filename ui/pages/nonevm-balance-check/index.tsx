@@ -1,5 +1,10 @@
+//========
+// Changes to this file demonstrate how `useMessenger` is used in a route
+// entrypoint.
+//========
+
 import React, { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { CaipChainId } from '@metamask/utils';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { useLocation } from 'react-router-dom';
@@ -15,7 +20,6 @@ import {
   FlexDirection,
   JustifyContent,
 } from '../../helpers/constants/design-system';
-import { setSelectedAccount } from '../../store/actions';
 import { useMultichainBalances } from '../../hooks/useMultichainBalances';
 import { NonEvmQueryParams } from '../../../shared/lib/deep-links/routes/nonevm';
 import { SWAP_ROUTE } from '../../../shared/lib/deep-links/routes/route';
@@ -29,6 +33,7 @@ import {
 } from '../../selectors';
 import { BaseUrl } from '../../../shared/constants/urls';
 import AddNonEvmAccountModal from '../../components/multichain/network-list-menu/add-non-evm-account/add-non-evm-account';
+import { useMessenger, withMessenger } from './messenger';
 
 const { getExtensionURL } = globalThis.platform;
 
@@ -63,8 +68,11 @@ const getBuyUrl = (
   return buyUrl.toString();
 };
 
-export const NonEvmBalanceCheck = () => {
-  const dispatch = useDispatch();
+const NonEvmBalanceCheckWithoutMessenger = () => {
+  //========
+  // We first call `useMessenger` to get the messenger for the current route.
+  //========
+  const messenger = useMessenger();
   const location = useLocation();
   const metaMetricsId = useSelector(getMetaMetricsId);
   const isMetaMetricsEnabled = useSelector(getParticipateInMetaMetrics);
@@ -82,30 +90,40 @@ export const NonEvmBalanceCheck = () => {
   );
 
   useEffect(() => {
-    if (!chainId) {
-      return;
-    }
-
-    if (hasAccountForChain) {
-      // If we have a "last selected" non-EVM account that matches the chain -> switch to it
-      if (lastSelectedNonEvmAccount?.scopes?.includes(chainId)) {
-        dispatch(setSelectedAccount(lastSelectedNonEvmAccount.address));
+    const switchAccountAndUpdateLocation = async () => {
+      if (!chainId) {
+        return;
       }
 
-      const hasPositiveBalance = assetsWithBalance.some(
-        (asset) =>
-          asset.chainId === chainId && asset.balance && asset.balance !== '0',
-      );
-
-      window.location.href = hasPositiveBalance
-        ? getSwapUrl(chainId)
-        : getBuyUrl(
-            chainId,
-            metaMetricsId,
-            isMetaMetricsEnabled,
-            isMarketingEnabled,
+      if (hasAccountForChain) {
+        // If we have a "last selected" non-EVM account that matches the chain -> switch to it
+        if (lastSelectedNonEvmAccount?.scopes?.includes(chainId)) {
+          //========
+          // Having retrieved the messenger, we can now call an action.
+          //========
+          await messenger.call(
+            'AccountsController:setSelectedAccount',
+            lastSelectedNonEvmAccount.address,
           );
-    }
+        }
+
+        const hasPositiveBalance = assetsWithBalance.some(
+          (asset) =>
+            asset.chainId === chainId && asset.balance && asset.balance !== '0',
+        );
+
+        window.location.href = hasPositiveBalance
+          ? getSwapUrl(chainId)
+          : getBuyUrl(
+              chainId,
+              metaMetricsId,
+              isMetaMetricsEnabled,
+              isMarketingEnabled,
+            );
+      }
+    };
+
+    switchAccountAndUpdateLocation();
   }, [
     chainId,
     assetsWithBalance,
@@ -148,3 +166,7 @@ export const NonEvmBalanceCheck = () => {
 
   return null;
 };
+
+export const NonEvmBalanceCheck = withMessenger(
+  NonEvmBalanceCheckWithoutMessenger,
+);
