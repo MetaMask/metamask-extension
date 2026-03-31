@@ -17,8 +17,6 @@ import { login } from '../../page-objects/flows/login.flow';
 import { NETWORK_CLIENT_ID } from '../../constants';
 import { MAINNET_DISPLAY_NAME } from '../../../../shared/constants/network';
 
-const DAI_ADDRESS = '0x6b175474e89094c44da98b954eedeac495271d0f';
-
 describe('Send ERC20 - Mainnet', function () {
   it('sends DAI with preloaded state', async function () {
     await withFixtures(

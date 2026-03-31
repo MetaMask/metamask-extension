@@ -35,14 +35,6 @@ describe('Token List via StorageService', function () {
         fixtures: new FixtureBuilderV2()
           .withSelectedNetwork(NETWORK_CLIENT_ID.MAINNET)
           .withEnabledNetworks({ eip155: { [chainId]: true } })
-          .withTokenListController({
-            tokensChainsCache: {
-              [chainId]: {
-                timestamp: Date.now(),
-                data: tokenListData,
-              },
-            },
-          })
           .withTokenListControllerStorageServiceData([
             { chainId, data: tokenListData },
           ])
