@@ -2335,6 +2335,12 @@ if (inTest) {
       await evacuate();
       return { status: 'PERSISTENCE_STOPPED' };
     }
+    if (message.type === 'RESET_FIXTURE_STATE') {
+      await evacuate();
+      await persistenceManager.reset();
+      setTimeout(() => browser.runtime.reload(), 0);
+      return { status: 'FIXTURE_STATE_RESETTING' };
+    }
     return Promise.resolve();
   });
 }

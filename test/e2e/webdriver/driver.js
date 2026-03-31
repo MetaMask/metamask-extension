@@ -29,6 +29,7 @@ const PAGES = {
   POPUP: 'popup',
   SIDEPANEL: 'sidepanel',
 };
+const EXTENSION_FULL_SCREEN_TITLE = 'MetaMask';
 
 /**
  * Temporary workaround to patch selenium's element handle API with methods
@@ -1137,6 +1138,43 @@ class Driver {
       until.elementLocated(this.buildLocator('.controller-loaded')),
       timeout,
     );
+  }
+
+  /**
+   * Waits for the extension UI to become available on the home page and finish
+   * its initial controller/loading sequence.
+   *
+   * This is useful after actions that temporarily make the extension
+   * unavailable, such as `runtime.reload()`, background recovery flows, or
+   * shared fixture session resets. This method only waits for startup to
+   * complete; it does not trigger the restart itself.
+   *
+   * @param {number} [timeout] - The maximum time in milliseconds to wait for
+   * the extension to become ready. Defaults to the driver's timeout.
+   * @returns {Promise<void>} A promise that resolves once the extension home
+   * page is reachable, controllers are loaded, and the loading logo is gone.
+   */
+  async waitForExtensionStart(timeout = this.timeout) {
+    await this.waitUntil(
+      async () => {
+        try {
+          await this.navigate(PAGES.HOME, { waitForControllers: false });
+          const title = await this.driver.getTitle();
+          // The browser may briefly show an error page for `home.html` until
+          // the extension has finished starting again.
+          return title === EXTENSION_FULL_SCREEN_TITLE;
+        } catch {
+          return false;
+        }
+      },
+      {
+        interval: 100,
+        timeout,
+      },
+    );
+
+    await this.waitForControllersLoaded(timeout);
+    await this.assertElementNotPresent('.loading-logo', { timeout });
   }
 
   /**

@@ -1,5 +1,4 @@
 import { until } from 'selenium-webdriver';
-import { PAGES } from '../../webdriver/driver';
 import { WINDOW_TITLES } from '../../constants';
 import CriticalErrorPage from './critical-error-page';
 
@@ -84,20 +83,7 @@ class VaultRecoveryPage extends CriticalErrorPage {
    */
   async waitForPageAfterExtensionReload(): Promise<void> {
     console.log('Wait for vault recovery page after extension reload');
-    await this.driver.waitUntil(
-      async () => {
-        await this.driver.navigate(PAGES.HOME, { waitForControllers: false });
-        const title = await this.driver.driver.getTitle();
-        // the browser will return an error message for our UI's HOME page until
-        // the extension has restarted
-        return title === WINDOW_TITLES.ExtensionInFullScreenView;
-      },
-      // reload and check title as quickly a possible
-      { interval: 100, timeout: 10000 },
-    );
-    await this.driver.assertElementNotPresent('.loading-logo', {
-      timeout: 10000,
-    });
+    await this.driver.waitForExtensionStart();
   }
 }
 

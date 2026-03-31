@@ -405,6 +405,7 @@ describe('Phishing Detection', function (this: Suite) {
     'Phishing redirect protections',
     {
       fixtures: new FixtureBuilderV2().build(),
+      resetAfterEach: false,
       testSpecificMock: async (mockServer: Mockttp) => {
         await setupPhishingDetectionMocks(mockServer, {
           statusCode: 200,
