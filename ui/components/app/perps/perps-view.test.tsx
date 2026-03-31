@@ -24,6 +24,12 @@ jest.mock('../../../store/background-connection', () => ({
     mockSubmitRequestToBackground(...args),
 }));
 
+jest.mock('./perps-toast', () => ({
+  PerpsToastProvider: ({ children }: { children: React.ReactNode }) => (
+    <div data-testid="perps-toast-provider-mock">{children}</div>
+  ),
+}));
+
 jest.mock('../../../providers/perps', () => ({
   getPerpsStreamManager: () => mockGetPerpsStreamManager(),
   usePerpsController: () => ({
@@ -190,6 +196,14 @@ describe('PerpsView', () => {
   });
 
   describe('component structure', () => {
+    it('does not own a PerpsToastProvider wrapper', () => {
+      renderWithProvider(<PerpsView />, mockStore);
+
+      expect(
+        screen.queryByTestId('perps-toast-provider-mock'),
+      ).not.toBeInTheDocument();
+    });
+
     it('renders positions before orders', () => {
       renderWithProvider(<PerpsView />, mockStore);
 
