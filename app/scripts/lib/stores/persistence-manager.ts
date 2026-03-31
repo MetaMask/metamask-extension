@@ -20,7 +20,7 @@ import {
   type BackedUpStateKey,
   backedUpStateKeys,
 } from '../../../../shared/lib/backup';
-import { IndexedDBStore } from './indexeddb-store';
+import { IndexedDBStore } from '../../../../shared/lib/indexeddb-store';
 import type {
   MetaMaskStateType,
   MetaMaskStorageStructure,

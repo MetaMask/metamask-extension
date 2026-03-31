@@ -1,5 +1,7 @@
 import { hasProperty, isObject } from '@metamask/utils';
 
+import { IndexedDBStore } from './indexeddb-store';
+
 export const BACKUP_DB_NAME = 'metamask-backup';
 export const BACKUP_DB_VERSION = 1;
 
@@ -26,63 +28,34 @@ export type Backup = {
 export const SAFE_GET_VAULT_BACKUP_TIMEOUT_MS = 5_000;
 
 /**
- * Reads the backup from the IndexedDB backup database without requiring a
- * PersistenceManager instance. Use this when the backup is needed in a context
- * where PersistenceManager may not be initialized (e.g. the critical error UI
- * after initialization timeout).
+ * Loads the persisted vault backup snapshot from the IndexedDB backup database
+ * without requiring a PersistenceManager instance. Use when backup state is
+ * needed where PersistenceManager may not be initialized (e.g. critical error
+ * UI after initialization timeout).
  *
  * Opens the backup DB, reads the same keys as PersistenceManager.getBackup,
  * then closes the connection.
  *
  * @returns The backup object, or undefined on error or if the DB cannot be opened.
  */
-export async function readBackupFromIndexedDB(): Promise<Backup | undefined> {
-  let db: IDBDatabase | undefined;
+export async function getVaultBackup(): Promise<Backup | undefined> {
+  const store = new IndexedDBStore();
   try {
-    db = await new Promise<IDBDatabase>((resolve, reject) => {
-      const request = indexedDB.open(BACKUP_DB_NAME, BACKUP_DB_VERSION);
-      request.onupgradeneeded = () => {
-        const database = request.result;
-        if (!database.objectStoreNames.contains('store')) {
-          database.createObjectStore('store');
-        }
-      };
-      request.onsuccess = () => resolve(request.result);
-      request.onerror = () => reject(request.error);
-    });
-
+    await store.open(BACKUP_DB_NAME, BACKUP_DB_VERSION);
     const keys = [...backedUpStateKeys, 'meta'];
-    const tx = db.transaction('store', 'readonly');
-    const store = tx.objectStore('store');
-    const results = await Promise.all(
-      keys.map(
-        (key) =>
-          new Promise<unknown>((resolve, reject) => {
-            const req = store.get(key);
-            req.onsuccess = () => resolve(req.result);
-            req.onerror = () => reject(req.error);
-          }),
-      ),
-    );
-    db.close();
-
+    const results = await store.get(keys);
+    store.close();
     return Object.fromEntries(
       keys.map((key, i) => [key, results[i]]),
     ) as Backup;
   } catch {
-    if (db) {
-      try {
-        db.close();
-      } catch {
-        // Ignore close errors when cleaning up after a failed read
-      }
-    }
+    store.close();
     return undefined;
   }
 }
 
 /**
- * Reads the backup from IndexedDB with a timeout. Resolves to null on timeout or
+ * Calls {@link getVaultBackup} with a timeout race. Resolves to null on timeout or
  * error so the caller is never blocked by a hanging IndexedDB (e.g. critical
  * error page).
  *
@@ -95,7 +68,7 @@ export async function safeGetVaultBackup(
   const timeoutPromise = new Promise<Backup | null>((resolve) => {
     setTimeout(() => resolve(null), timeoutMs);
   });
-  const backupPromise = readBackupFromIndexedDB().then((b) => b ?? null);
+  const backupPromise = getVaultBackup().then((b) => b ?? null);
   return Promise.race([backupPromise, timeoutPromise]);
 }
 

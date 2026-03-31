@@ -8,8 +8,8 @@ import {
   captureMessage,
 } from '../../../../shared/lib/sentry';
 import { MISSING_VAULT_ERROR } from '../../../../shared/constants/errors';
+import { IndexedDBStore } from '../../../../shared/lib/indexeddb-store';
 import { PersistenceManager } from './persistence-manager';
-import { IndexedDBStore } from './indexeddb-store';
 import ExtensionStore from './extension-store';
 import { MetaMaskStateType } from './base-store';
 
