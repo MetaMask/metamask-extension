@@ -109,3 +109,6 @@ export const selectPerpsPerpsBalances = (state: PerpsState) =>
 
 export const selectPerpsMarketFilterPreferences = (state: PerpsState) =>
   state.metamask.marketFilterPreferences ?? null;
+
+export const selectPerpsTradeConfigurations = (state: PerpsState) =>
+  state.metamask.tradeConfigurations ?? { testnet: {}, mainnet: {} };

@@ -31,6 +31,10 @@ import type {
 } from '@metamask/perps-controller';
 import { getIsPerpsExperienceAvailable } from '../../selectors/perps/feature-flags';
 import { getSelectedInternalAccount } from '../../selectors/accounts';
+import {
+  selectPerpsTradeConfigurations,
+  selectPerpsIsTestnet,
+} from '../../selectors/perps-controller';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import {
   DEFAULT_ROUTE,
@@ -70,10 +74,6 @@ import {
   type OrderMode,
   type OrderCalculations,
 } from '../../components/app/perps/order-entry';
-import {
-  getLastLeverage,
-  saveLastLeverage,
-} from '../../hooks/perps/usePerpsLastLeverage';
 
 /**
  * Convert UI OrderFormState to PerpsController OrderParams
@@ -140,6 +140,8 @@ const PerpsOrderEntryPage: React.FC = () => {
   const selectedAccount = useSelector(getSelectedInternalAccount);
   const selectedAddress = selectedAccount?.address;
   const { isEligible } = usePerpsEligibility();
+  const tradeConfigurations = useSelector(selectPerpsTradeConfigurations);
+  const isTestnet = useSelector(selectPerpsIsTestnet);
   const { trigger: triggerDeposit } = usePerpsDepositConfirmation();
 
   const { positions: allPositions } = usePerpsLivePositions();
@@ -362,12 +364,16 @@ const PerpsOrderEntryPage: React.FC = () => {
     return parseInt(market.maxLeverage.replace('x', ''), 10);
   }, [market]);
 
+  const DEFAULT_LEVERAGE = 3;
   const initialLeverage = useMemo(() => {
     if (!decodedSymbol || orderMode !== 'new') {
       return undefined;
     }
-    return Math.min(getLastLeverage(decodedSymbol), maxLeverage);
-  }, [decodedSymbol, orderMode, maxLeverage]);
+    const env = isTestnet ? 'testnet' : 'mainnet';
+    const config = tradeConfigurations[env]?.[decodedSymbol];
+    const saved = config?.leverage ?? DEFAULT_LEVERAGE;
+    return Math.min(saved, maxLeverage);
+  }, [decodedSymbol, orderMode, maxLeverage, tradeConfigurations, isTestnet]);
 
   const existingPositionForOrder = useMemo(() => {
     if (!position) {
@@ -462,7 +468,12 @@ const PerpsOrderEntryPage: React.FC = () => {
             throw new Error(result.error || 'Failed to add to position');
           }
 
-          saveLastLeverage(orderFormState.asset, orderFormState.leverage);
+          submitRequestToBackground('perpsSaveTradeConfiguration', [
+            orderFormState.asset,
+            orderFormState.leverage,
+          ]).catch(() => {
+            // Non-critical — silently ignore
+          });
 
           // Existing position is already in `allPositions`, so pending-order
           // confirmation would resolve immediately; navigate like limit orders.
@@ -507,7 +518,12 @@ const PerpsOrderEntryPage: React.FC = () => {
           throw new Error(result.error || 'Failed to place order');
         }
 
-        saveLastLeverage(orderFormState.asset, orderFormState.leverage);
+        submitRequestToBackground('perpsSaveTradeConfiguration', [
+          orderFormState.asset,
+          orderFormState.leverage,
+        ]).catch(() => {
+          // Non-critical — silently ignore
+        });
 
         if (orderFormState.type === 'limit') {
           handleBackClick();
