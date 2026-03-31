@@ -61,6 +61,8 @@ describe('Phishing Detection', function (this: Suite) {
       },
       async ({ driver }) => {
         await login(driver);
+        const homePage = new HomePage(driver);
+        await homePage.checkPageIsLoaded();
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
 
@@ -115,6 +117,8 @@ describe('Phishing Detection', function (this: Suite) {
         }),
         async ({ driver }) => {
           await login(driver);
+          const homePage = new HomePage(driver);
+          await homePage.checkPageIsLoaded();
           await driver.openNewPage(DAPP_WITH_IFRAMED_PAGE_ON_BLOCKLIST);
           // we don't expect the iframe because early-phishing-detection redirects
           // the top level frame automatically.
@@ -144,6 +148,8 @@ describe('Phishing Detection', function (this: Suite) {
         }),
         async ({ driver }) => {
           await login(driver);
+          const homePage = new HomePage(driver);
+          await homePage.checkPageIsLoaded();
           await driver.openNewPage(DAPP_WITH_IFRAMED_PAGE_ON_BLOCKLIST);
           const phishingWarningPage = new PhishingWarningPage(driver);
           await phishingWarningPage.clickOpenWarningInNewTabLinkOnIframe();
@@ -183,6 +189,8 @@ describe('Phishing Detection', function (this: Suite) {
       },
       async ({ driver }) => {
         await login(driver);
+        const homePage = new HomePage(driver);
+        await homePage.checkPageIsLoaded();
         await driver.openNewPage(
           `http://localhost:8080?extensionUrl=${driver.extensionUrl}`,
         );
@@ -221,6 +229,8 @@ describe('Phishing Detection', function (this: Suite) {
       },
       async ({ driver }) => {
         await login(driver);
+        const homePage = new HomePage(driver);
+        await homePage.checkPageIsLoaded();
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
 
@@ -261,6 +271,8 @@ describe('Phishing Detection', function (this: Suite) {
       },
       async ({ driver }) => {
         await login(driver);
+        const homePage = new HomePage(driver);
+        await homePage.checkPageIsLoaded();
         await driver.openNewPage(phishingSite.href);
 
         await driver.switchToWindowWithTitle('MetaMask Phishing Detection');
@@ -303,6 +315,8 @@ describe('Phishing Detection', function (this: Suite) {
       },
       async ({ driver }) => {
         await login(driver);
+        const homePage = new HomePage(driver);
+        await homePage.checkPageIsLoaded();
         await driver.openNewPage(
           `http://localhost:8080?extensionUrl=${driver.extensionUrl}`,
         );
@@ -340,6 +354,8 @@ describe('Phishing Detection', function (this: Suite) {
       },
       async ({ driver }) => {
         await login(driver);
+        const homePage = new HomePage(driver);
+        await homePage.checkPageIsLoaded();
 
         await driver.openNewPage(testPageURL);
 
@@ -377,6 +393,8 @@ describe('Phishing Detection', function (this: Suite) {
       },
       async ({ driver }) => {
         await login(driver);
+        const homePage = new HomePage(driver);
+        await homePage.checkPageIsLoaded();
 
         await driver.openNewPage(testPageURL);
 

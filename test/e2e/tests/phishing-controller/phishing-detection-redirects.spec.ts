@@ -7,7 +7,7 @@ import { withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { Driver } from '../../webdriver/driver';
 import { login } from '../../page-objects/flows/login.flow';
-import HomePage from 'test/e2e/page-objects/pages/home/homepage';
+import HomePage from '../../page-objects/pages/home/homepage';
 import { setupPhishingDetectionMocks } from './mocks';
 import {
   DEFAULT_BLOCKED_DOMAIN,

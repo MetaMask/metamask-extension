@@ -4,6 +4,7 @@ import { Mockttp } from 'mockttp';
 import { withFixtures } from '../../helpers';
 import { WINDOW_TITLES } from '../../constants';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
+import HomePage from '../../page-objects/pages/home/homepage';
 import PhishingWarningPage from '../../page-objects/pages/phishing-warning-page';
 import { login } from '../../page-objects/flows/login.flow';
 import { setupPhishingDetectionMocks } from './mocks';
@@ -37,6 +38,8 @@ describe('Phishing Detection - Path-based URLs', function (this: Suite) {
         },
         async ({ driver }) => {
           await login(driver);
+          const homePage = new HomePage(driver);
+          await homePage.checkPageIsLoaded();
 
           await driver.openNewPage('http://127.0.0.1:8080/path1/');
           await driver.switchToWindowWithTitle(WINDOW_TITLES.Phishing);
@@ -68,6 +71,8 @@ describe('Phishing Detection - Path-based URLs', function (this: Suite) {
         },
         async ({ driver }) => {
           await login(driver);
+          const homePage = new HomePage(driver);
+          await homePage.checkPageIsLoaded();
 
           await driver.openNewPage('http://127.0.0.1:8080/path1/path2');
 
@@ -105,6 +110,8 @@ describe('Phishing Detection - Path-based URLs', function (this: Suite) {
         },
         async ({ driver }) => {
           await login(driver);
+          const homePage = new HomePage(driver);
+          await homePage.checkPageIsLoaded();
 
           await driver.openNewPage('http://127.0.0.1:8080/path1/');
           await driver.switchToWindowWithTitle(WINDOW_TITLES.Phishing);
@@ -149,6 +156,8 @@ describe('Phishing Detection - Path-based URLs', function (this: Suite) {
         },
         async ({ driver }) => {
           await login(driver);
+          const homePage = new HomePage(driver);
+          await homePage.checkPageIsLoaded();
 
           await driver.openNewPage('http://127.0.0.1:8080/path1/path2');
           await driver.switchToWindowWithTitle(WINDOW_TITLES.Phishing);
