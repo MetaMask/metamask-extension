@@ -26,7 +26,7 @@ describe('PerpsSupportLearn', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     // @ts-expect-error test platform
-    global.platform = {
+    globalThis.platform = {
       openTab: jest.fn(),
       closeCurrentWindow: jest.fn(),
     };
@@ -56,7 +56,7 @@ describe('PerpsSupportLearn', () => {
         contextPropsIntoEventProperties: expect.any(Array),
       }),
     );
-    expect(global.platform.openTab).toHaveBeenCalledWith({
+    expect(globalThis.platform.openTab).toHaveBeenCalledWith({
       url: SUPPORT_CONFIG.Url,
     });
   });
@@ -86,7 +86,7 @@ describe('PerpsSupportLearn', () => {
         contextPropsIntoEventProperties: expect.any(Array),
       }),
     );
-    expect(global.platform.openTab).toHaveBeenCalledWith({
+    expect(globalThis.platform.openTab).toHaveBeenCalledWith({
       url: FEEDBACK_CONFIG.Url,
     });
   });
