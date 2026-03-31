@@ -14,6 +14,7 @@ import MockedPage from '../../page-objects/pages/mocked-page';
 import PhishingWarningPage from '../../page-objects/pages/phishing-warning-page';
 import { login } from '../../page-objects/flows/login.flow';
 import TestDapp from '../../page-objects/pages/test-dapp';
+import { Driver } from '../../webdriver/driver';
 import {
   setupPhishingDetectionMocks,
   mockConfigLookupOnWarningPage,
@@ -24,6 +25,21 @@ import {
   BlockProvider,
   DEFAULT_BLOCKED_DOMAIN,
 } from './helpers';
+
+async function waitForPhishingBlocklistToBeLoaded(
+  driver: Driver,
+): Promise<void> {
+  await driver.wait(async () => {
+    const state = await driver.executeScript(
+      'return window.stateHooks.getPersistedState()',
+    );
+    const persisted = state as Record<string, Record<string, unknown>>;
+    const fetched = (
+      persisted?.data?.PhishingController as Record<string, unknown>
+    )?.stalelistLastFetched;
+    return typeof fetched === 'number' && fetched > 0;
+  }, 10000);
+}
 
 describe('Phishing Detection', function (this: Suite) {
   describe('Phishing Detection Mock', function () {
@@ -63,6 +79,7 @@ describe('Phishing Detection', function (this: Suite) {
         await login(driver);
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
+        await waitForPhishingBlocklistToBeLoaded(driver);
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
 
@@ -119,6 +136,7 @@ describe('Phishing Detection', function (this: Suite) {
           await login(driver);
           const homePage = new HomePage(driver);
           await homePage.checkPageIsLoaded();
+          await waitForPhishingBlocklistToBeLoaded(driver);
           await driver.openNewPage(DAPP_WITH_IFRAMED_PAGE_ON_BLOCKLIST);
           // we don't expect the iframe because early-phishing-detection redirects
           // the top level frame automatically.
@@ -150,6 +168,7 @@ describe('Phishing Detection', function (this: Suite) {
           await login(driver);
           const homePage = new HomePage(driver);
           await homePage.checkPageIsLoaded();
+          await waitForPhishingBlocklistToBeLoaded(driver);
           await driver.openNewPage(DAPP_WITH_IFRAMED_PAGE_ON_BLOCKLIST);
           const phishingWarningPage = new PhishingWarningPage(driver);
           await phishingWarningPage.clickOpenWarningInNewTabLinkOnIframe();
@@ -191,6 +210,7 @@ describe('Phishing Detection', function (this: Suite) {
         await login(driver);
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
+        await waitForPhishingBlocklistToBeLoaded(driver);
         await driver.openNewPage(
           `http://localhost:8080?extensionUrl=${driver.extensionUrl}`,
         );
@@ -231,6 +251,7 @@ describe('Phishing Detection', function (this: Suite) {
         await login(driver);
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
+        await waitForPhishingBlocklistToBeLoaded(driver);
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
 
@@ -273,6 +294,7 @@ describe('Phishing Detection', function (this: Suite) {
         await login(driver);
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
+        await waitForPhishingBlocklistToBeLoaded(driver);
         await driver.openNewPage(phishingSite.href);
 
         await driver.switchToWindowWithTitle('MetaMask Phishing Detection');
@@ -317,6 +339,7 @@ describe('Phishing Detection', function (this: Suite) {
         await login(driver);
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
+        await waitForPhishingBlocklistToBeLoaded(driver);
         await driver.openNewPage(
           `http://localhost:8080?extensionUrl=${driver.extensionUrl}`,
         );
@@ -356,6 +379,7 @@ describe('Phishing Detection', function (this: Suite) {
         await login(driver);
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
+        await waitForPhishingBlocklistToBeLoaded(driver);
 
         await driver.openNewPage(testPageURL);
 
@@ -395,6 +419,7 @@ describe('Phishing Detection', function (this: Suite) {
         await login(driver);
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
+        await waitForPhishingBlocklistToBeLoaded(driver);
 
         await driver.openNewPage(testPageURL);
 
