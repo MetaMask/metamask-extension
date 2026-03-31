@@ -720,6 +720,7 @@ const PerpsOrderEntryPage: React.FC = () => {
     getTradeActionToastDescription,
     getCloseSuccessToastDescription,
     handleBackClick,
+    hidePerpsToast,
     replacePerpsToastByKey,
   ]);
 
