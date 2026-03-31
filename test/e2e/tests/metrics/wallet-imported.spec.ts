@@ -8,8 +8,8 @@ import {
 } from '../../helpers';
 import FixtureBuilder from '../../fixtures/fixture-builder';
 import { completeImportSRPOnboardingFlow } from '../../page-objects/flows/onboarding.flow';
+import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
 import { mockSegment } from './mocks/segment';
-import { MetaMetricsEventName } from 'shared/constants/metametrics';
 
 describe('Wallet Created Events - Imported Account', function () {
   it('are sent when onboarding user who chooses to opt in metrics', async function () {
