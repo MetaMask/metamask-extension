@@ -947,7 +947,7 @@ const PerpsMarketDetailPage: React.FC = () => {
                     variant={TextVariant.BodyMd}
                     fontWeight={FontWeight.Medium}
                   >
-                    {showSizeInFiat
+                    {showSizeInFiat && Boolean(position.entryPrice)
                       ? formatCurrencyWithMinThreshold(
                           Math.abs(parseFloat(position.size)) *
                             parseFloat(position.entryPrice.replace(/,/gu, '')),
