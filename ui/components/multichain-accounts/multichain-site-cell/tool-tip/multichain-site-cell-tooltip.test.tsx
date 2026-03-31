@@ -66,6 +66,7 @@ describe('MultichainSiteCellTooltip', () => {
         name: 'Account 1',
         pinned: false,
         hidden: false,
+        lastSelected: 0,
       },
       accounts: [
         createMockInternalAccount({
@@ -84,6 +85,7 @@ describe('MultichainSiteCellTooltip', () => {
         name: 'Account 2',
         pinned: false,
         hidden: false,
+        lastSelected: 0,
       },
       accounts: [
         createMockInternalAccount({
@@ -98,6 +100,7 @@ describe('MultichainSiteCellTooltip', () => {
         name: 'Snap Account 1',
         pinned: false,
         hidden: false,
+        lastSelected: 0,
       },
       accounts: [
         createMockInternalAccount({
@@ -253,6 +256,7 @@ describe('MultichainSiteCellTooltip', () => {
         name: `Account ${index + 1}`,
         pinned: false,
         hidden: false,
+        lastSelected: 0,
       },
       accounts: [
         createMockInternalAccount({
@@ -323,6 +327,7 @@ describe('MultichainSiteCellTooltip', () => {
         name: `Account ${index + 1}`,
         pinned: false,
         hidden: false,
+        lastSelected: 0,
       },
       accounts: [
         createMockInternalAccount({

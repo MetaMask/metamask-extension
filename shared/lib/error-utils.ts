@@ -1,4 +1,6 @@
 import { memoize, escape as lodashEscape } from 'lodash';
+import type { ErrorLike } from '../constants/errors';
+import type { I18NMessageDict } from './i18n';
 import {
   fetchLocale,
   getMessage,
@@ -8,11 +10,33 @@ import getFirstPreferredLangCode from './get-first-preferred-lang-code';
 import { switchDirectionForPreferredLocale } from './switch-direction';
 
 const defaultLocale = 'en';
-const _setupLocale = async (currentLocale) => {
+
+/**
+ * The context returned by {@link maybeGetLocaleContext} and accepted by
+ * {@link getErrorHtml}.
+ */
+export type LocaleContext = {
+  preferredLocale: string;
+  t: (key: string) => string | undefined;
+  /** Current locale messages; used with {@link getMessage} for substituted strings. */
+  localeMessages: I18NMessageDict;
+  /** English fallback messages; used with {@link getMessage} for substituted strings. */
+  enLocaleMessages: I18NMessageDict;
+};
+
+const _setupLocale = async (
+  currentLocale: string | undefined,
+): Promise<{
+  currentLocaleMessages: I18NMessageDict;
+  enLocaleMessages: I18NMessageDict;
+}> => {
   const enRelativeTime = loadRelativeTimeFormatLocaleData(defaultLocale);
   const enLocale = fetchLocale(defaultLocale);
 
-  const promises = [enRelativeTime, enLocale];
+  const promises: Promise<I18NMessageDict | void>[] = [
+    enRelativeTime,
+    enLocale,
+  ];
   if (currentLocale === defaultLocale) {
     // enLocaleMessages and currentLocaleMessages are the same; reuse enLocale
     promises.push(enLocale); // currentLocaleMessages
@@ -22,18 +46,24 @@ const _setupLocale = async (currentLocale) => {
     promises.push(loadRelativeTimeFormatLocaleData(currentLocale));
   } else {
     // currentLocale is not set
-    promises.push(Promise.resolve({})); // currentLocaleMessages
+    promises.push(Promise.resolve({}) as Promise<I18NMessageDict>); // currentLocaleMessages
   }
 
   const [, enLocaleMessages, currentLocaleMessages] =
     await Promise.all(promises);
-  return { currentLocaleMessages, enLocaleMessages };
+  return {
+    currentLocaleMessages: currentLocaleMessages as I18NMessageDict,
+    enLocaleMessages: enLocaleMessages as I18NMessageDict,
+  };
 };
 
 export const setupLocale = memoize(_setupLocale);
 
-export const getLocaleContext = (currentLocaleMessages, enLocaleMessages) => {
-  return (key) => {
+export const getLocaleContext = (
+  currentLocaleMessages: I18NMessageDict,
+  enLocaleMessages: I18NMessageDict,
+): ((key: string) => string | undefined) => {
+  return (key: string) => {
     let message = currentLocaleMessages[key]?.message;
     if (!message && enLocaleMessages[key]) {
       message = enLocaleMessages[key].message;
@@ -42,7 +72,7 @@ export const getLocaleContext = (currentLocaleMessages, enLocaleMessages) => {
   };
 };
 
-export function getErrorHtmlBase(errorBody) {
+export function getErrorHtmlBase(errorBody: string): string {
   return `
     <div class="critical-error__container">
       <div class="critical-error">
@@ -71,11 +101,13 @@ export function getErrorHtmlBase(errorBody) {
  *
  * Does not throw.
  *
- * @param {string} [currentLocale] - The current locale
- * @returns {Promise<{preferredLocale: string, t: (string) => string, localeMessages: object, enLocaleMessages: object}>} A promise that resolves to an object containing the preferred locale, translation function, and message dicts for getMessage when needed.
+ * @param currentLocale - The current locale
+ * @returns A promise that resolves to an object containing the preferred locale, translation function, and message dicts for getMessage when needed.
  */
-export async function maybeGetLocaleContext(currentLocale) {
-  let preferredLocale;
+export async function maybeGetLocaleContext(
+  currentLocale?: string,
+): Promise<LocaleContext> {
+  let preferredLocale: string | undefined;
   try {
     preferredLocale = currentLocale ?? (await getFirstPreferredLangCode());
     const response = await setupLocale(preferredLocale);
@@ -101,20 +133,20 @@ export async function maybeGetLocaleContext(currentLocale) {
 /**
  * Get the HTML for a critical error message.
  *
- * @param {import('../../ui/helpers/utils/display-critical-error').CriticalErrorTranslationKey} errorKey - The key for the error message.
- * @param {ErrorLike} error - The error object to log.
- * @param {{preferredLocale: string, t: (string) => string, localeMessages: object, enLocaleMessages: object}} localeContext - The locale context from maybeGetLocaleContext (locale and translation function; message dicts used for getMessage when substituting $1/$2).
- * @param {string} [supportLink] - The support link to include in the footer.
- * @param {boolean} [hasBackup] - Whether a vault backup exists in IndexedDB.
- * @returns {string} The HTML string for the critical error message.
+ * @param errorKey - The key for the error message.
+ * @param error - The error object to log.
+ * @param localeContext - The MetaMask state containing the current locale and translation function.
+ * @param supportLink - The support link to include in the footer.
+ * @param hasBackup - Whether a vault backup exists in IndexedDB.
+ * @returns The HTML string for the critical error message.
  */
 export function getErrorHtml(
-  errorKey,
-  error,
-  localeContext,
-  supportLink,
+  errorKey: string,
+  error: ErrorLike | undefined,
+  localeContext: LocaleContext,
+  supportLink?: string,
   hasBackup = false,
-) {
+): string {
   switchDirectionForPreferredLocale(localeContext.preferredLocale);
   const { t, preferredLocale, localeMessages, enLocaleMessages } =
     localeContext;
@@ -147,7 +179,7 @@ export function getErrorHtml(
           href="#">${lodashEscape(t('stateCorruptionRestoreAccountsFromBackup'))}</a>`
     : '';
 
-  let footerContent;
+  let footerContent: string;
   if (supportPart && restorePart) {
     const footerSubstitutions = [
       supportPromptPart.trim(),
@@ -155,21 +187,21 @@ export function getErrorHtml(
       restorePart.trim(),
     ];
     const hardcodedFooter = `${footerSubstitutions[0]} ${footerSubstitutions[1]} or ${footerSubstitutions[2]}`;
-    let withSubstitutions;
+    let withSubstitutions: string | null | undefined;
     try {
       withSubstitutions =
-        getMessage(
+        (getMessage(
           preferredLocale,
           localeMessages,
           'criticalErrorFooter',
           footerSubstitutions,
-        ) ||
-        getMessage(
+        ) as string | null) ||
+        (getMessage(
           'en',
           enLocaleMessages,
           'criticalErrorFooter',
           footerSubstitutions,
-        );
+        ) as string | null);
     } catch {
       withSubstitutions = null;
     }
@@ -194,7 +226,7 @@ export function getErrorHtml(
 
   /**
    * The pattern ${errorKey === 'somethingIsWrong' ? t('somethingIsWrong') : ''}
-   * is necessary because we we need linter to see the string
+   * is necessary because we need linter to see the string
    * of the locale keys. If we use the variable directly, the linter will not
    * see the string and will not be able to check if the locale key exists.
    */
