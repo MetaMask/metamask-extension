@@ -127,22 +127,24 @@ export const getWalletsWithAccounts = createSelector(
         };
 
         Object.values(wallet.groups).forEach((group: AccountGroupObject) => {
-          const accountsFromGroup = group.accounts.map((accountId) => {
-            const accountWithMetadata = { ...accountsById[accountId] };
+          const accountsFromGroup = group.accounts
+            .filter((accountId) => accountsById[accountId] !== undefined)
+            .map((accountId) => {
+              const accountWithMetadata = { ...accountsById[accountId] };
 
-            // Set flags for pinned, hidden, and active accounts
-            accountWithMetadata.pinned = pinnedAccountsSet.has(
-              accountWithMetadata.address,
-            );
-            accountWithMetadata.hidden = hiddenAccountsSet.has(
-              accountWithMetadata.address,
-            );
-            accountWithMetadata.active =
-              selectedAccount.id === accountWithMetadata.id &&
-              connectedAccountIdsSet.has(accountWithMetadata.id);
+              // Set flags for pinned, hidden, and active accounts
+              accountWithMetadata.pinned = pinnedAccountsSet.has(
+                accountWithMetadata.address,
+              );
+              accountWithMetadata.hidden = hiddenAccountsSet.has(
+                accountWithMetadata.address,
+              );
+              accountWithMetadata.active =
+                selectedAccount.id === accountWithMetadata.id &&
+                connectedAccountIdsSet.has(accountWithMetadata.id);
 
-            return accountWithMetadata;
-          });
+              return accountWithMetadata;
+            });
 
           consolidatedWallets[wallet.id].groups[group.id] = {
             id: group.id,
@@ -208,7 +210,7 @@ export const getWalletIdAndNameByAccountAddress = createParameterizedSelector(
     for (const [walletId, wallet] of Object.entries(walletsWithAccounts)) {
       for (const group of Object.values(wallet.groups)) {
         const account = group.accounts.find(
-          (acc) => acc.address.toLowerCase() === address.toLowerCase(),
+          (acc) => acc.address?.toLowerCase() === address.toLowerCase(),
         );
         if (account) {
           return {
