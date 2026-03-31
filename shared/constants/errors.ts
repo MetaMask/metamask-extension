@@ -12,9 +12,13 @@ export const MISSING_VAULT_ERROR =
 export const CORRUPTION_BLOCK_CHECKSUM_MISMATCH =
   'Corruption: block checksum mismatch';
 
+// This error comes from the Firefox browser
+export const FIREFOX_STORAGE_UNEXPECTED_ERROR = 'An unexpected error occurred';
+
 export function isStateCorruptionError(err: ErrorLike) {
   return (
     err.message === MISSING_VAULT_ERROR ||
-    err.message === CORRUPTION_BLOCK_CHECKSUM_MISMATCH
+    err.message === CORRUPTION_BLOCK_CHECKSUM_MISMATCH ||
+    err.message === FIREFOX_STORAGE_UNEXPECTED_ERROR
   );
 }
