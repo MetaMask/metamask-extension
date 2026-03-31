@@ -92,6 +92,7 @@ const mockPerpsController = {
 };
 
 const mockReplacePerpsToastByKey = jest.fn();
+const mockHidePerpsToast = jest.fn();
 jest.mock('../../components/app/perps/perps-toast', () => {
   const { PERPS_TOAST_KEYS } = jest.requireActual(
     '../../components/app/perps/perps-toast/perps-toast-provider',
@@ -101,6 +102,7 @@ jest.mock('../../components/app/perps/perps-toast', () => {
     PERPS_TOAST_KEYS,
     usePerpsToast: () => ({
       replacePerpsToastByKey: mockReplacePerpsToastByKey,
+      hidePerpsToast: mockHidePerpsToast,
     }),
   };
 });
@@ -240,6 +242,7 @@ describe('PerpsOrderEntryPage', () => {
       );
     mockIsNearLiquidationPrice.mockImplementation(realIsNearLiquidation);
     mockReplacePerpsToastByKey.mockReset();
+    mockHidePerpsToast.mockReset();
     mockUseParams.mockReturnValue({ symbol: 'ETH' });
     mockSearchParams.delete('direction');
     mockSearchParams.delete('mode');
@@ -790,6 +793,7 @@ describe('PerpsOrderEntryPage', () => {
       });
 
       expect(screen.getByText('Insufficient margin')).toBeInTheDocument();
+      expect(mockHidePerpsToast).toHaveBeenCalledTimes(1);
       expect(mockReplacePerpsToastByKey).not.toHaveBeenCalledWith(
         expect.objectContaining({
           key: 'perpsToastOrderFailed',
@@ -822,6 +826,7 @@ describe('PerpsOrderEntryPage', () => {
       });
 
       expect(screen.getByText('Network error')).toBeInTheDocument();
+      expect(mockHidePerpsToast).toHaveBeenCalledTimes(1);
       expect(mockReplacePerpsToastByKey).not.toHaveBeenCalledWith(
         expect.objectContaining({
           key: 'perpsToastOrderFailed',
@@ -1341,6 +1346,7 @@ describe('PerpsOrderEntryPage', () => {
       });
 
       expect(screen.getByText('Close failed')).toBeInTheDocument();
+      expect(mockHidePerpsToast).toHaveBeenCalledTimes(1);
       expect(mockReplacePerpsToastByKey).not.toHaveBeenCalledWith(
         expect.objectContaining({
           key: 'perpsToastCloseFailed',
@@ -1375,6 +1381,7 @@ describe('PerpsOrderEntryPage', () => {
       });
 
       expect(screen.getByText('TPSL update failed')).toBeInTheDocument();
+      expect(mockHidePerpsToast).not.toHaveBeenCalled();
       expect(mockReplacePerpsToastByKey).not.toHaveBeenCalledWith(
         expect.objectContaining({
           key: 'perpsToastUpdateFailed',
@@ -1408,6 +1415,7 @@ describe('PerpsOrderEntryPage', () => {
       });
 
       expect(screen.getByText('An unknown error occurred')).toBeInTheDocument();
+      expect(mockHidePerpsToast).toHaveBeenCalledTimes(1);
       expect(mockReplacePerpsToastByKey).not.toHaveBeenCalledWith(
         expect.objectContaining({
           key: 'perpsToastOrderFailed',
@@ -1560,6 +1568,7 @@ describe('PerpsOrderEntryPage', () => {
         jest.advanceTimersByTime(15000);
       });
 
+      expect(mockHidePerpsToast).toHaveBeenCalledTimes(1);
       expect(mockUseNavigate).toHaveBeenCalledWith('/perps/market/ETH');
     });
   });
