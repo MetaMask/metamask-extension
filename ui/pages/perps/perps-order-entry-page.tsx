@@ -168,7 +168,7 @@ const PerpsOrderEntryPage: React.FC = () => {
   const isTestnet = useSelector(selectPerpsIsTestnet);
   const { trigger: triggerDeposit } = usePerpsDepositConfirmation();
   const { formatPercentWithMinThreshold } = useFormatters();
-  const { replacePerpsToastByKey } = usePerpsToast();
+  const { replacePerpsToastByKey, hidePerpsToast } = usePerpsToast();
 
   const { positions: allPositions } = usePerpsLivePositions();
   const { account } = usePerpsLiveAccount();
@@ -702,6 +702,9 @@ const PerpsOrderEntryPage: React.FC = () => {
       setPendingOrderToastDescription(tradeActionToastDescription ?? null);
       setPendingOrderSymbol(orderFormState.asset);
     } catch (error) {
+      if (inProgressToastKey) {
+        hidePerpsToast();
+      }
       const errorMessage =
         error instanceof Error ? error.message : 'An unknown error occurred';
       setSubmitError(errorMessage);
@@ -749,10 +752,11 @@ const PerpsOrderEntryPage: React.FC = () => {
       setPendingOrderSymbol(null);
       setPendingOrderToastDescription(null);
       setIsSubmitting(false);
+      hidePerpsToast();
       handleBackClick();
     }, 15000);
     return () => clearTimeout(timeout);
-  }, [pendingOrderSymbol, handleBackClick]);
+  }, [pendingOrderSymbol, handleBackClick, hidePerpsToast]);
 
   if (!isPerpsExperienceAvailable) {
     return <Navigate to={DEFAULT_ROUTE} replace />;
