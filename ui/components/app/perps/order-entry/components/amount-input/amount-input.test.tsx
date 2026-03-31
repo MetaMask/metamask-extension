@@ -1,9 +1,10 @@
-import React from 'react';
 import { screen, fireEvent } from '@testing-library/react';
-import { renderWithProvider } from '../../../../../../../test/lib/render-helpers-navigate';
-import { enLocale as messages } from '../../../../../../../test/lib/i18n-helpers';
-import configureStore from '../../../../../../store/store';
+import React from 'react';
+
 import mockState from '../../../../../../../test/data/mock-state.json';
+import { enLocale as messages } from '../../../../../../../test/lib/i18n-helpers';
+import { renderWithProvider } from '../../../../../../../test/lib/render-helpers-navigate';
+import configureStore from '../../../../../../store/store';
 import { AmountInput } from './amount-input';
 
 const mockStore = configureStore({
@@ -160,7 +161,7 @@ describe('AmountInput', () => {
       expect(onAmountChange).not.toHaveBeenCalled();
     });
 
-    it('allows formatted numbers with commas', () => {
+    it('rejects numbers with comma grouping', () => {
       const onAmountChange = jest.fn();
       renderWithProvider(
         <AmountInput {...defaultProps} onAmountChange={onAmountChange} />,
@@ -174,7 +175,54 @@ describe('AmountInput', () => {
         target: { value: '1,000' },
       });
 
-      expect(onAmountChange).toHaveBeenCalledWith('1,000');
+      expect(onAmountChange).not.toHaveBeenCalled();
+    });
+
+    it('rejects non-en-US locale-formatted input', () => {
+      const onAmountChange = jest.fn();
+      const deLocaleStore = configureStore({
+        metamask: {
+          ...mockState.metamask,
+        },
+        localeMessages: {
+          currentLocale: 'de',
+        },
+      });
+
+      renderWithProvider(
+        <AmountInput {...defaultProps} onAmountChange={onAmountChange} />,
+        deLocaleStore,
+      );
+
+      const container = screen.getByTestId('amount-input-field');
+      const input = container.querySelector('input');
+      expect(input).not.toBeNull();
+      fireEvent.focus(input as HTMLInputElement);
+      fireEvent.change(input as HTMLInputElement, {
+        target: { value: '1.000,50' },
+      });
+
+      expect(onAmountChange).not.toHaveBeenCalled();
+    });
+
+    it('keeps raw dot-decimal value in de locale', () => {
+      const deLocaleStore = configureStore({
+        metamask: {
+          ...mockState.metamask,
+        },
+        localeMessages: {
+          currentLocale: 'de',
+        },
+      });
+
+      renderWithProvider(
+        <AmountInput {...defaultProps} amount="1000.50" />,
+        deLocaleStore,
+      );
+
+      const container = screen.getByTestId('amount-input-field');
+      const input = container.querySelector('input');
+      expect(input).toHaveValue('1000.50');
     });
   });
 

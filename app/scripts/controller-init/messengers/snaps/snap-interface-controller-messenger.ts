@@ -1,39 +1,10 @@
-import { Messenger } from '@metamask/messenger';
 import {
-  AccountsControllerListMultichainAccountsAction,
-  GetSnap,
-} from '@metamask/snaps-controllers';
-import {
-  ApprovalControllerAcceptRequestAction,
-  ApprovalControllerHasRequestAction,
-} from '@metamask/approval-controller';
-import { MaybeUpdateState, TestOrigin } from '@metamask/phishing-controller';
-import { NotificationListUpdatedEvent } from '@metamask/notification-services-controller/notification-services';
-import { MultichainAssetsControllerGetStateAction } from '@metamask/assets-controllers';
-import {
-  AccountsControllerGetAccountByAddressAction,
-  AccountsControllerGetSelectedMultichainAccountAction,
-} from '@metamask/accounts-controller';
-import { HasPermission } from '@metamask/permission-controller';
+  Messenger,
+  MessengerActions,
+  MessengerEvents,
+} from '@metamask/messenger';
+import { SnapInterfaceControllerMessenger } from '@metamask/snaps-controllers';
 import { RootMessenger } from '../../../lib/messenger';
-
-type Actions =
-  | MaybeUpdateState
-  | TestOrigin
-  | ApprovalControllerHasRequestAction
-  | ApprovalControllerAcceptRequestAction
-  | GetSnap
-  | MultichainAssetsControllerGetStateAction
-  | AccountsControllerGetSelectedMultichainAccountAction
-  | AccountsControllerGetAccountByAddressAction
-  | AccountsControllerListMultichainAccountsAction
-  | HasPermission;
-
-type Events = NotificationListUpdatedEvent;
-
-export type SnapInterfaceControllerMessenger = ReturnType<
-  typeof getSnapInterfaceControllerMessenger
->;
 
 /**
  * Get a restricted messenger for the Snap interface controller. This is scoped
@@ -44,30 +15,27 @@ export type SnapInterfaceControllerMessenger = ReturnType<
  * @returns The restricted messenger.
  */
 export function getSnapInterfaceControllerMessenger(
-  messenger: RootMessenger<Actions, Events>,
+  messenger: RootMessenger<
+    MessengerActions<SnapInterfaceControllerMessenger>,
+    MessengerEvents<SnapInterfaceControllerMessenger>
+  >,
 ) {
-  const controllerMessenger = new Messenger<
-    'SnapInterfaceController',
-    Actions,
-    Events,
-    typeof messenger
-  >({
+  const controllerMessenger: SnapInterfaceControllerMessenger = new Messenger({
     namespace: 'SnapInterfaceController',
     parent: messenger,
   });
   messenger.delegate({
     messenger: controllerMessenger,
     actions: [
-      `PhishingController:maybeUpdateState`,
-      `PhishingController:testOrigin`,
-      `ApprovalController:hasRequest`,
-      `ApprovalController:acceptRequest`,
-      `SnapController:get`,
+      'PhishingController:testOrigin',
+      'ApprovalController:hasRequest',
+      'ApprovalController:acceptRequest',
+      'SnapController:getSnap',
       'MultichainAssetsController:getState',
-      `AccountsController:getSelectedMultichainAccount`,
-      `AccountsController:getAccountByAddress`,
-      `AccountsController:listMultichainAccounts`,
-      `PermissionController:hasPermission`,
+      'AccountsController:getSelectedMultichainAccount',
+      'AccountsController:getAccountByAddress',
+      'AccountsController:listMultichainAccounts',
+      'PermissionController:hasPermission',
     ],
     events: ['NotificationServicesController:notificationsListUpdated'],
   });
