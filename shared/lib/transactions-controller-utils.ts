@@ -75,7 +75,16 @@ export function getSwapsTokensReceivedFromTxMeta(
   const networkAndAccountSupports1559 =
     txReceiptType === TransactionEnvelopeType.feeMarket;
 
-  if (isSwapsDefaultTokenSymbol(tokenSymbol as string, chainId as string)) {
+  const isDefaultSwapsToken =
+    tokenSymbol !== undefined &&
+    chainId !== undefined &&
+    (typeof chainId === 'number'
+      ? chainId !== 0 &&
+        !Number.isNaN(chainId) &&
+        isSwapsDefaultTokenSymbol(tokenSymbol, `0x${chainId.toString(16)}`)
+      : isSwapsDefaultTokenSymbol(tokenSymbol, chainId));
+
+  if (isDefaultSwapsToken) {
     if (
       !txReceipt ||
       !txMeta ||
