@@ -1,13 +1,13 @@
-import { BridgeStatusController } from '@metamask/bridge-status-controller';
+import {
+  BridgeStatusController,
+  BridgeStatusControllerMessenger,
+} from '@metamask/bridge-status-controller';
 import { TransactionController } from '@metamask/transaction-controller';
 import { BRIDGE_API_BASE_URL } from '../../../shared/constants/bridge';
 import { getRootMessenger } from '../lib/messenger';
 import { ControllerInitRequest, ControllerName } from './types';
 import { buildControllerInitRequestMock } from './test/utils';
-import {
-  getBridgeStatusControllerMessenger,
-  BridgeStatusControllerMessenger,
-} from './messengers';
+import { getBridgeStatusControllerMessenger } from './messengers';
 import { BridgeStatusControllerInit } from './bridge-status-controller-init';
 
 jest.mock('@metamask/bridge-status-controller');
@@ -43,10 +43,7 @@ describe('BridgeStatusControllerInit', () => {
       config: {
         customBridgeApiBaseUrl: BRIDGE_API_BASE_URL,
       },
-      addTransactionFn: expect.any(Function),
       addTransactionBatchFn: expect.any(Function),
-      updateTransactionFn: expect.any(Function),
-      estimateGasFeeFn: expect.any(Function),
       fetchFn: expect.any(Function),
       traceFn: expect.any(Function),
     });

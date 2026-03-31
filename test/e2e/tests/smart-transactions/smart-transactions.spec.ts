@@ -1,7 +1,6 @@
-/* eslint-disable mocha/no-skipped-tests */
 import { MockttpServer } from 'mockttp';
-import FixtureBuilder from '../../fixtures/fixture-builder';
-import { WINDOW_TITLES } from '../../constants';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
+import { NETWORK_CLIENT_ID, WINDOW_TITLES } from '../../constants';
 import { withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import { login } from '../../page-objects/flows/login.flow';
@@ -41,9 +40,9 @@ async function withFixturesForSmartTransactions(
   await withFixtures(
     {
       dappOptions: { numberOfTestDapps: 1 },
-      fixtures: new FixtureBuilder()
-        .withPermissionControllerConnectedToTestDapp()
-        .withNetworkControllerOnMainnet()
+      fixtures: new FixtureBuilderV2()
+        .withPermissionControllerConnectedToTestDapp({ chainIds: [1] })
+        .withSelectedNetwork(NETWORK_CLIENT_ID.MAINNET)
         .withEnabledNetworks({
           eip155: {
             '0x1': true,

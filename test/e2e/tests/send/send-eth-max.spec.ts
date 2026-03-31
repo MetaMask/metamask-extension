@@ -9,11 +9,8 @@
 
 import { MockttpServer } from 'mockttp';
 import { withFixtures } from '../../helpers';
-import {
-  createInternalTransactionWithMaxAmount,
-  reviewTransaction,
-} from '../../page-objects/flows/transaction';
-import FixtureBuilder from '../../fixtures/fixture-builder';
+import { createInternalTransactionWithMaxAmount } from '../../page-objects/flows/transaction';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { GAS_API_BASE_URL } from '../../../../shared/constants/swaps';
 import { login } from '../../page-objects/flows/login.flow';
 import { validateTransaction } from '../../page-objects/flows/send-transaction.flow';
@@ -21,6 +18,7 @@ import { mockSpotPrices } from '../tokens/utils/mocks';
 import GasFeeModal from '../../page-objects/pages/confirmations/gas-fee-modal';
 import SendTokenConfirmPage from '../../page-objects/pages/send/send-token-confirmation-page';
 import SendPage from '../../page-objects/pages/send/send-page';
+import TransactionConfirmation from '../../page-objects/pages/confirmations/transaction-confirmation';
 
 const PREFERENCES_STATE_MOCK = {
   preferences: {
@@ -36,7 +34,7 @@ describe('Send ETH - Max Amount', function () {
   it.skip('sends with correct amount', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withPreferencesController(PREFERENCES_STATE_MOCK)
           .build(),
         localNodeOptions: { hardfork: 'london' },
@@ -56,12 +54,10 @@ describe('Send ETH - Max Amount', function () {
         await login(driver);
 
         await createInternalTransactionWithMaxAmount({ driver });
-        await reviewTransaction(driver);
+        const transactionConfirmation = new TransactionConfirmation(driver);
+        await transactionConfirmation.checkGasFeeFiat('$0.75');
 
-        await driver.clickElementAndWaitToDisappear({
-          text: 'Confirm',
-          tag: 'button',
-        });
+        await transactionConfirmation.clickFooterConfirmButtonAndWaitToDisappear();
         await validateTransaction(driver, '-24.99945808');
       },
     );
@@ -71,7 +67,7 @@ describe('Send ETH - Max Amount', function () {
     it('handles custom gas fee changes', async function () {
       await withFixtures(
         {
-          fixtures: new FixtureBuilder()
+          fixtures: new FixtureBuilderV2()
             .withPreferencesController(PREFERENCES_STATE_MOCK)
             .build(),
           localNodeOptions: { hardfork: 'london' },
@@ -90,7 +86,8 @@ describe('Send ETH - Max Amount', function () {
           await login(driver);
 
           await createInternalTransactionWithMaxAmount({ driver });
-          await reviewTransaction(driver);
+          const transactionConfirmation = new TransactionConfirmation(driver);
+          await transactionConfirmation.checkGasFeeFiat('$0.75');
 
           const sendTokenConfirmPage = new SendTokenConfirmPage(driver);
           const gasFeeModal = new GasFeeModal(driver);
@@ -104,20 +101,13 @@ describe('Send ETH - Max Amount', function () {
           });
 
           // has correct updated value on the confirm screen the transaction
-          await sendTokenConfirmPage.checkFirstGasFee('0.0006');
           await sendTokenConfirmPage.checkNativeCurrency('$1.00');
 
           // verify max amount after gas fee changes
-          await driver.waitForSelector({
-            text: '$42,494.90',
-            tag: 'p',
-          });
+          await transactionConfirmation.checkSendAmountConversion('$42,494.90');
 
           // confirms the transaction
-          await driver.clickElementAndWaitToDisappear({
-            text: 'Confirm',
-            tag: 'button',
-          });
+          await transactionConfirmation.clickFooterConfirmButtonAndWaitToDisappear();
 
           await validateTransaction(driver, '-24.997');
         },
@@ -127,7 +117,7 @@ describe('Send ETH - Max Amount', function () {
     it('handles market value changes - low', async function () {
       await withFixtures(
         {
-          fixtures: new FixtureBuilder()
+          fixtures: new FixtureBuilderV2()
             .withPreferencesController(PREFERENCES_STATE_MOCK)
             .build(),
           localNodeOptions: { hardfork: 'london' },
@@ -146,7 +136,8 @@ describe('Send ETH - Max Amount', function () {
           await login(driver);
 
           await createInternalTransactionWithMaxAmount({ driver });
-          await reviewTransaction(driver);
+          const transactionConfirmation = new TransactionConfirmation(driver);
+          await transactionConfirmation.checkGasFeeFiat('$0.75');
 
           const sendTokenConfirmPage = new SendTokenConfirmPage(driver);
           const gasFeeModal = new GasFeeModal(driver);
@@ -157,7 +148,6 @@ describe('Send ETH - Max Amount', function () {
           await gasFeeModal.selectLowGasFee();
 
           // has correct updated value on the confirm screen the transaction
-          await sendTokenConfirmPage.checkFirstGasFee('0.0004');
           await sendTokenConfirmPage.checkNativeCurrency('$0.73');
 
           // verify max amount after gas fee changes
@@ -167,10 +157,7 @@ describe('Send ETH - Max Amount', function () {
           });
 
           // confirms the transaction
-          await driver.clickElementAndWaitToDisappear({
-            text: 'Confirm',
-            tag: 'button',
-          });
+          await transactionConfirmation.clickFooterConfirmButtonAndWaitToDisappear();
 
           await validateTransaction(driver, '-24.99957065');
         },
@@ -181,7 +168,7 @@ describe('Send ETH - Max Amount', function () {
   it('adjusts max amount when gas estimations change', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withPreferencesController(PREFERENCES_STATE_MOCK)
           .build(),
         localNodeOptions: { hardfork: 'london' },
@@ -238,21 +225,15 @@ describe('Send ETH - Max Amount', function () {
           });
 
         // verify gas fee changed
-        await driver.waitForSelector({
-          text: '0.0009',
-        });
+        const transactionConfirmation = new TransactionConfirmation(driver);
+        await transactionConfirmation.checkGasFeeFiat('$1.46');
 
         // verify initial max amount
-        await driver.waitForSelector({
-          text: '$42,498.19',
-          tag: 'p',
-        });
+        await transactionConfirmation.checkSendAmount('25 ETH');
+        await transactionConfirmation.checkSendAmountConversion('$42,498.19');
 
         // confirms the transaction
-        await driver.clickElementAndWaitToDisappear({
-          text: 'Confirm',
-          tag: 'button',
-        });
+        await transactionConfirmation.clickFooterConfirmButtonAndWaitToDisappear();
         await validateTransaction(driver, '-24.99893303');
       },
     );
@@ -263,7 +244,7 @@ describe('Send ETH - Max Amount', function () {
   it.skip('updates transaction value when navigating back to edit', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withPreferencesController(PREFERENCES_STATE_MOCK)
           .build(),
         localNodeOptions: { hardfork: 'london' },
@@ -282,11 +263,10 @@ describe('Send ETH - Max Amount', function () {
         await login(driver);
 
         await createInternalTransactionWithMaxAmount({ driver });
-        await reviewTransaction(driver);
+        const transactionConfirmation = new TransactionConfirmation(driver);
+        await transactionConfirmation.checkGasFeeFiat('$0.75');
         // navigate back to edit
-        await driver.clickElement(
-          '[data-testid="wallet-initiated-header-back-button"]',
-        );
+        await transactionConfirmation.clickBackButton();
 
         const sendPage = new SendPage(driver);
         await sendPage.fillAmount('10'); // update the value

@@ -90,6 +90,8 @@ For new test code, use `FixtureBuilderV2` by default.
 - `withCurrencyController`
 - `withKeyringController`
 - `withMetaMetricsController`
+- `withMultichainAssetsRatesController`
+- `withMultichainRatesController`
 - `withNameController`
 - `withNetworkController`
 - `withNetworkEnablementController`
@@ -106,6 +108,8 @@ For new test code, use `FixtureBuilderV2` by default.
 **Custom convenience methods**:
 
 - `withConversionRateDisabled`
+- `withConversionRates`
+- `withCurrencyRates`
 - `withKeyringControllerAdditionalAccountVault`
 - `withKeyringControllerMultiSRP`
 - `withKeyringControllerOldVault`

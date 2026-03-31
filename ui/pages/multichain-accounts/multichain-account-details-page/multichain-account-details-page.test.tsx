@@ -236,7 +236,7 @@ describe('MultichainAccountDetailsPage', () => {
   describe('tracing', () => {
     it('calls ShowAccountAddressList trace when clicking network addresses link', () => {
       const store = configureStore(mockState);
-      const groupId = mockState.metamask.accountTree.selectedAccountGroup;
+      const groupId = mockState.metamask.selectedAccountGroup;
       setSearchParams(groupId);
       renderWithProvider(
         <MultichainAccountDetailsPage />,

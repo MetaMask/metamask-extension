@@ -19,6 +19,7 @@ import { submitRequestToBackground } from '../../../store/background-connection'
 import { getPerpsStreamManager } from '../../../providers/perps';
 
 import { usePerpsDepositConfirmation } from './hooks/usePerpsDepositConfirmation';
+import { usePerpsWithdrawNavigation } from './hooks/usePerpsWithdrawNavigation';
 import { PerpsBalanceDropdown } from './perps-balance-dropdown';
 import { PerpsExploreMarkets } from './perps-explore-markets';
 import { PerpsPositionsOrders } from './perps-positions-orders';
@@ -50,6 +51,7 @@ export const PerpsView: React.FC = () => {
   const [isCloseAllPending, setIsCloseAllPending] = useState(false);
   const [isCancelAllPending, setIsCancelAllPending] = useState(false);
   const [batchActionError, setBatchActionError] = useState<string | null>(null);
+  const { trigger: triggerWithdraw } = usePerpsWithdrawNavigation();
 
   // Stream hooks must run before any effects that touch PerpsStreamManager.
   // `usePerpsStreamManager` (inside these hooks) calls `perpsInit` then `init(address)`;
@@ -187,9 +189,7 @@ export const PerpsView: React.FC = () => {
       <PerpsBalanceDropdown
         hasPositions={hasPositions}
         onAddFunds={triggerDeposit}
-        onWithdraw={() => {
-          // TODO: Navigate to withdraw flow
-        }}
+        onWithdraw={triggerWithdraw}
       />
 
       {batchActionError ? (

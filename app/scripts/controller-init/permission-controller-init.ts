@@ -52,11 +52,11 @@ export const PermissionControllerInit: ControllerInitFunction<
       ),
       isNonEvmScopeSupported: initMessenger.call.bind(
         initMessenger,
-        'MultichainRouter:isSupportedScope',
+        'MultichainRoutingService:isSupportedScope',
       ),
       getNonEvmAccountAddresses: initMessenger.call.bind(
         initMessenger,
-        'MultichainRouter:getSupportedAccounts',
+        'MultichainRoutingService:getSupportedAccounts',
       ),
     }),
     permissionSpecifications: {

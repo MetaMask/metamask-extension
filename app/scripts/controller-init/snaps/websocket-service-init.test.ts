@@ -1,15 +1,15 @@
-import { WebSocketService } from '@metamask/snaps-controllers';
+import {
+  WebSocketService,
+  WebSocketServiceMessenger,
+} from '@metamask/snaps-controllers';
 import { ControllerInitRequest } from '../types';
 import { buildControllerInitRequestMock } from '../test/utils';
-import {
-  CronjobControllerMessenger,
-  getWebSocketServiceMessenger,
-} from '../messengers/snaps';
 import { getRootMessenger } from '../../lib/messenger';
+import { getWebSocketServiceMessenger } from '../messengers/snaps';
 import { WebSocketServiceInit } from './websocket-service-init';
 
 function getInitRequestMock(): jest.Mocked<
-  ControllerInitRequest<CronjobControllerMessenger>
+  ControllerInitRequest<WebSocketServiceMessenger>
 > {
   const baseMessenger = getRootMessenger<never, never>();
 
