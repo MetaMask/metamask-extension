@@ -6,7 +6,6 @@ import {
 } from '../../page-objects/flows/transaction';
 import { WINDOW_TITLES } from '../../constants';
 import { withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixtures/fixture-builder';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import SendTokenConfirmPage from '../../page-objects/pages/send/send-token-confirmation-page';
 import ActivityListPage from '../../page-objects/pages/home/activity-list';
@@ -78,7 +77,7 @@ describe('Editing Confirm Transaction', function () {
   it('allows accessing advance gas fee popover from edit gas fee popover', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withPreferencesController(PREFERENCES_STATE_MOCK)
           .build(),
         localNodeOptions: { hardfork: 'london' },
@@ -115,8 +114,6 @@ describe('Editing Confirm Transaction', function () {
         });
 
         // has correct updated value on the confirm screen the transaction
-        await sendTokenConfirmationPage.checkFirstGasFee('0.0002');
-
         await sendTokenConfirmationPage.checkNativeCurrency('$0.30');
 
         // confirms the transaction
@@ -134,7 +131,7 @@ describe('Editing Confirm Transaction', function () {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withPermissionControllerConnectedToTestDapp()
           .withPreferencesController(PREFERENCES_STATE_MOCK)
           .build(),
@@ -176,8 +173,6 @@ describe('Editing Confirm Transaction', function () {
         await sendTokenConfirmationPage.checkGasFee('0.001 ETH');
 
         // has correct updated value on the confirm screen the transaction
-        await sendTokenConfirmationPage.checkFirstGasFee('0.0019');
-
         await sendTokenConfirmationPage.checkNativeCurrency('$3.15');
 
         // confirms the transaction

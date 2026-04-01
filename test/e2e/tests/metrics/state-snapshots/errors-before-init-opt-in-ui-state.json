@@ -8,7 +8,8 @@
     "AccountTreeController": {
       "accountGroupsMetadata": "object",
       "accountWalletsMetadata": "object",
-      "hasAccountTreeSyncingSyncedAtLeastOnce": "boolean"
+      "hasAccountTreeSyncingSyncedAtLeastOnce": "boolean",
+      "selectedAccountGroup": "string"
     },
     "AccountsController": {
       "internalAccounts": { "accounts": "object", "selectedAccount": "string" }
@@ -283,7 +284,7 @@
       "unencryptedSnapStates": "object"
     },
     "SnapInterfaceController": { "interfaces": "object" },
-    "SnapsRegistry": {
+    "SnapRegistryController": {
       "database": "object",
       "databaseUnavailable": "boolean",
       "lastUpdated": "number",
@@ -313,5 +314,5 @@
     },
     "config": "object"
   },
-  "meta": { "storageKind": "split", "version": 200 }
+  "meta": { "storageKind": "split", "version": 201 }
 }
