@@ -4,6 +4,7 @@ import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
 } from '@metamask/chain-agnostic-permission';
+import type { CaipChainId } from '@metamask/utils';
 import {
   getAuthorizedScopesByOrigin,
   getPermittedAccountsByOrigin,
@@ -350,7 +351,7 @@ describe('PermissionController selectors', () => {
         },
       };
 
-      const scopes = ['eip155:1'];
+      const scopes: CaipChainId[] = ['eip155:1'];
       const first = getPermittedAccountsForScopesByOrigin(
         state as unknown as PermissionControllerState,
         scopes,
