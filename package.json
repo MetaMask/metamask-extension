@@ -616,6 +616,7 @@
     "@types/xml2js": "^0",
     "@types/yargs": "^17.0.32",
     "@types/yargs-parser": "^21.0.3",
+    "@types/yazl": "^3.3.0",
     "@typescript-eslint/eslint-plugin": "^8.1.0",
     "@typescript-eslint/parser": "^8.1.0",
     "@viem/anvil": "^0.0.10",
@@ -666,7 +667,6 @@
     "fake-indexeddb": "^6.1.0",
     "fancy-log": "^1.3.3",
     "fast-glob": "^3.2.2",
-    "fflate": "^0.8.2",
     "fs-extra": "^8.1.0",
     "ganache": "patch:ganache@npm%3A7.9.2#~/.yarn/patches/ganache-npm-7.9.2-a70dc8da34.patch",
     "gh-pages": "^5.0.0",
@@ -775,7 +775,8 @@
     "ws": "^8.17.1",
     "yaml": "^2.4.1",
     "yargs": "^17.7.2",
-    "yargs-parser": "^21.1.1"
+    "yargs-parser": "^21.1.1",
+    "yazl": "^3.3.1"
   },
   "engines": {
     "node": ">=24.13.0",
