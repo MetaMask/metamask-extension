@@ -43,14 +43,14 @@ async function measurePageStandard(
         await driver.navigate(pageName);
         await driver.delay(1000);
 
-        try {
-          const metricsThisLoad = await driver.collectMetrics();
-          metricsThisLoad.numNetworkReqs = getNetworkReport().numNetworkReqs;
-          metrics.push(metricsThisLoad);
+        const metricsThisLoad = await driver.collectMetrics();
+        metricsThisLoad.numNetworkReqs = getNetworkReport().numNetworkReqs;
+        metrics.push(metricsThisLoad);
 
+        try {
           webVitalsRuns.push(await collectWebVitals(driver));
         } catch (error) {
-          console.error(`Error collecting metrics for ${pageName}:`, error);
+          console.error(`Error collecting web vitals for ${pageName}:`, error);
         }
       }
     },
