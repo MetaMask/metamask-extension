@@ -40,7 +40,6 @@ ignores:
   - 'ganache-cli'
   - 'geckodriver'
   - 'jest'
-  - 'lavamoat-viz'
   - 'mocha-junit-reporter'
   - 'prettier-plugin-sort-json' # automatically imported by prettier
   - 'source-map-explorer'

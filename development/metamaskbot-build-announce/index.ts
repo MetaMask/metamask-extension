@@ -17,7 +17,6 @@ async function start(): Promise<void> {
     HEAD_COMMIT_HASH,
     MERGE_BASE_COMMIT_HASH,
     HOST_URL,
-    LAVAMOAT_POLICY_CHANGED,
     POST_NEW_BUILDS,
     TEST_PLAN_VERSION,
   } = process.env;
@@ -51,7 +50,6 @@ async function start(): Promise<void> {
     shortSha: HEAD_COMMIT_HASH.slice(0, 7),
     artifacts,
     postNewBuilds: POST_NEW_BUILDS === 'true',
-    lavamoatPolicyChanged: LAVAMOAT_POLICY_CHANGED === 'true',
   });
 
   let commentBody = artifactsBody;

@@ -696,7 +696,6 @@
     "jsonwebtoken": "^9.0.2",
     "koa": "^3.1.1",
     "lavamoat": "10.0.5",
-    "lavamoat-viz": "^7.0.5",
     "level": "^8.0.1",
     "lockfile-lint": "^4.10.6",
     "loose-envify": "^1.4.0",

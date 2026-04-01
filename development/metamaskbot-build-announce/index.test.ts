@@ -13,7 +13,6 @@ const BASE_ENV: Record<string, string> = {
   HEAD_COMMIT_HASH: 'abc1234567',
   MERGE_BASE_COMMIT_HASH: 'def7654321',
   HOST_URL: 'https://ci.example.com',
-  LAVAMOAT_POLICY_CHANGED: 'false',
   POST_NEW_BUILDS: 'false',
 };
 

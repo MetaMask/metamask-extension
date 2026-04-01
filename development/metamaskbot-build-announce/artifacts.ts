@@ -26,7 +26,6 @@ type ArtifactLinkMap = {
   interactionStats: ArtifactLink;
   storybook: ArtifactLink;
   tsMigrationDashboard: ArtifactLink;
-  depViz: ArtifactLink;
   allArtifacts: ArtifactLink;
 };
 
@@ -69,10 +68,6 @@ export function getArtifactLinks(
     tsMigrationDashboard: {
       url: `${hostUrl}/ts-migration-dashboard/index.html`,
       label: 'Dashboard',
-    },
-    depViz: {
-      url: `${hostUrl}/lavamoat-viz/index.html`,
-      label: 'Build System',
     },
     allArtifacts: {
       url: `https://github.com/${owner}/${repository}/actions/runs/${runId}#artifacts`,
@@ -249,7 +244,6 @@ async function discoverBundleArtifacts(hostUrl: string): Promise<string> {
  * @param options.shortSha - Abbreviated commit hash.
  * @param options.artifacts - Artifact links from getArtifactLinks.
  * @param options.postNewBuilds - Whether to include extension build links.
- * @param options.lavamoatPolicyChanged - Whether to include the LavaMoat viz link.
  * @returns Collapsible HTML string.
  */
 export async function buildArtifactsBody({
@@ -258,23 +252,17 @@ export async function buildArtifactsBody({
   shortSha,
   artifacts,
   postNewBuilds,
-  lavamoatPolicyChanged,
 }: {
   hostUrl: string;
   version: string;
   shortSha: string;
   artifacts: ArtifactLinks;
   postNewBuilds: boolean;
-  lavamoatPolicyChanged: boolean;
 }): Promise<string> {
   const contentRows: string[] = [];
 
   if (postNewBuilds) {
     contentRows.push(...formatBuildLinks(getBuildLinks({ hostUrl, version })));
-  }
-
-  if (lavamoatPolicyChanged) {
-    contentRows.push(`lavamoat build viz: ${artifacts.link('depViz')}`);
   }
 
   const bundleMarkup = await discoverBundleArtifacts(hostUrl);

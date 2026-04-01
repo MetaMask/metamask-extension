@@ -55,7 +55,6 @@ describe('buildArtifactsBody', () => {
       shortSha: 'abc1234',
       artifacts: makeArtifacts(),
       postNewBuilds: true,
-      lavamoatPolicyChanged: false,
     });
 
     expect(result).toContain(`metamask-chrome-${VERSION}.zip`);
@@ -69,23 +68,9 @@ describe('buildArtifactsBody', () => {
       shortSha: 'abc1234',
       artifacts: makeArtifacts(),
       postNewBuilds: false,
-      lavamoatPolicyChanged: false,
     });
 
     expect(result).not.toContain(`metamask-chrome-${VERSION}.zip`);
-  });
-
-  it('includes lavamoat viz link when lavamoatPolicyChanged is true', async () => {
-    const result = await buildArtifactsBody({
-      hostUrl: HOST,
-      version: VERSION,
-      shortSha: 'abc1234',
-      artifacts: makeArtifacts(),
-      postNewBuilds: false,
-      lavamoatPolicyChanged: true,
-    });
-
-    expect(result).toContain('lavamoat build viz');
   });
 
   it('wraps everything in a collapsible details element with the sha', async () => {
@@ -95,7 +80,6 @@ describe('buildArtifactsBody', () => {
       shortSha: 'abc1234',
       artifacts: makeArtifacts(),
       postNewBuilds: false,
-      lavamoatPolicyChanged: false,
     });
 
     expect(result).toContain('<details>');
