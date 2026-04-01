@@ -210,7 +210,7 @@ export const getWalletIdAndNameByAccountAddress = createParameterizedSelector(
     for (const [walletId, wallet] of Object.entries(walletsWithAccounts)) {
       for (const group of Object.values(wallet.groups)) {
         const account = group.accounts.find(
-          (acc) => acc.address?.toLowerCase() === address.toLowerCase(),
+          (acc) => acc.address.toLowerCase() === address.toLowerCase(),
         );
         if (account) {
           return {
