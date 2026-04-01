@@ -1,13 +1,18 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import type { Hex } from '@metamask/utils';
+import { isSnapId } from '@metamask/snaps-utils';
 import { Text, TextVariant } from '@metamask/design-system-react';
 
 import {
   ConfirmInfoRow,
   ConfirmInfoRowDivider,
 } from '../../../../../../../components/app/confirm/info/row';
+import { ConfirmInfoRowAddress } from '../../../../../../../components/app/confirm/info/row/address';
 import { ConfirmInfoSection } from '../../../../../../../components/app/confirm/info/row/section';
+import { ConfirmInfoRowUrl } from '../../../../../../../components/app/confirm/info/row/url';
+import { ConfirmInfoAlertRow } from '../../../../../../../components/app/confirm/info/row/alert-row/alert-row';
+import { RowAlertKey } from '../../../../../../../components/app/confirm/info/row/constants';
 import {
   getNativeTokenInfo,
   MetaMaskReduxState,
@@ -16,10 +21,14 @@ import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../../../../share
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 import { useAsyncResult } from '../../../../../../../hooks/useAsync';
 import { fetchErc20DecimalsOrThrow } from '../../../../../utils/token';
+import { NetworkRow } from '../../shared/network-row/network-row';
+import { SigningInWithRow } from '../../shared/sign-in-with-row/sign-in-with-row';
 
 import type {
+  AmountField,
   I18nFunction,
   PermissionContext,
+  PermissionSchemaEntry,
   SchemaElement,
   SchemaSection,
   TokenResolution,
@@ -40,7 +49,7 @@ import { TotalExposure } from './total-exposure';
 function useNativeTokenData(
   chainId: Hex,
   resolution: TokenResolution,
-): PermissionContext['nativeToken'] {
+): PermissionContext['tokenInfo'] {
   const { symbol, decimals } = useSelector((state: MetaMaskReduxState) =>
     getNativeTokenInfo(state.metamask.networkConfigurationsByChainId, chainId),
   );
@@ -85,9 +94,48 @@ function useErc20DecimalsResolved(
 // Element renderer — pure function, no hooks
 // ---------------------------------------------------------------------------
 
+function renderAmountField(
+  element: AmountField,
+  ctx: PermissionContext,
+  index: number,
+): React.ReactNode {
+  // If the field has getTokenAddress, it's an ERC20 amount
+  if (element.getTokenAddress) {
+    return (
+      <TokenAmountRow
+        key={index}
+        label={ctx.t(element.labelKey)}
+        value={element.getValue(ctx)}
+        tokenAddress={element.getTokenAddress(ctx)}
+        chainId={ctx.chainId}
+        decimals={ctx.tokenInfo?.decimals}
+        tooltip={element.tooltip}
+      />
+    );
+  }
+
+  // Native token amount — tokenInfo is guaranteed to be set for native schemas
+  const tokenInfo = ctx.tokenInfo as NonNullable<
+    PermissionContext['tokenInfo']
+  >;
+  return (
+    <NativeAmountRow
+      key={index}
+      label={ctx.t(element.labelKey)}
+      value={element.getValue(ctx)}
+      symbol={tokenInfo.symbol}
+      decimals={tokenInfo.decimals as number}
+      imageUrl={tokenInfo.imageUrl}
+      tooltip={element.tooltip}
+    />
+  );
+}
+
 function renderElement(
   element: SchemaElement,
   ctx: PermissionContext,
+  schemaEntry: PermissionSchemaEntry,
+  ownerId: string,
   index: number,
 ): React.ReactNode {
   // Check visibility predicate
@@ -96,34 +144,8 @@ function renderElement(
   }
 
   switch (element.type) {
-    case 'nativeAmount': {
-      const { symbol, decimals, imageUrl } = ctx.nativeToken!;
-      return (
-        <NativeAmountRow
-          key={index}
-          label={ctx.t(element.labelKey)}
-          value={element.getValue(ctx)}
-          symbol={symbol}
-          decimals={decimals}
-          imageUrl={imageUrl}
-          tooltip={element.tooltip}
-        />
-      );
-    }
-
-    case 'tokenAmount': {
-      return (
-        <TokenAmountRow
-          key={index}
-          label={ctx.t(element.labelKey)}
-          value={element.getValue(ctx)}
-          tokenAddress={element.getTokenAddress(ctx)}
-          chainId={ctx.chainId}
-          decimals={ctx.erc20Decimals}
-          tooltip={element.tooltip}
-        />
-      );
-    }
+    case 'amount':
+      return renderAmountField(element, ctx, index);
 
     case 'text': {
       return (
@@ -153,11 +175,63 @@ function renderElement(
     }
 
     case 'totalExposure': {
-      return renderTotalExposure(element, ctx, index);
+      return renderTotalExposure(element, ctx, schemaEntry, index);
     }
 
     case 'divider': {
       return <ConfirmInfoRowDivider key={index} />;
+    }
+
+    case 'justification': {
+      return (
+        <ConfirmInfoRow
+          key={index}
+          label="Justification"
+          tooltip={ctx.t('confirmFieldTooltipJustification')}
+        >
+          <Text variant={TextVariant.BodyMd}>
+            {ctx.permission.justification}
+          </Text>
+        </ConfirmInfoRow>
+      );
+    }
+
+    case 'signingInWith': {
+      return <SigningInWithRow key={index} />;
+    }
+
+    case 'origin': {
+      const tooltipMessage = isSnapId(ctx.origin)
+        ? ctx.t('requestFromInfoSnap')
+        : ctx.t('requestFromInfo');
+
+      return (
+        <ConfirmInfoAlertRow
+          key={index}
+          alertKey={RowAlertKey.RequestFrom}
+          ownerId={ownerId}
+          label={ctx.t('requestFrom')}
+          tooltip={tooltipMessage}
+        >
+          <ConfirmInfoRowUrl url={ctx.origin} />
+        </ConfirmInfoAlertRow>
+      );
+    }
+
+    case 'address': {
+      const address = element.getAddress(ctx);
+      if (!address) {
+        return null;
+      }
+      return (
+        <ConfirmInfoRow key={index} label={ctx.t(element.labelKey)}>
+          <ConfirmInfoRowAddress address={address} chainId={ctx.chainId} />
+        </ConfirmInfoRow>
+      );
+    }
+
+    case 'network': {
+      return <NetworkRow key={index} />;
     }
 
     default:
@@ -168,12 +242,15 @@ function renderElement(
 function renderTotalExposure(
   element: TotalExposureField,
   ctx: PermissionContext,
+  schemaEntry: PermissionSchemaEntry,
   index: number,
 ): React.ReactNode {
   const streamParams = element.getStreamParams(ctx);
 
-  if (element.variant === 'native') {
-    const { symbol, decimals, imageUrl } = ctx.nativeToken!;
+  if (schemaEntry.tokenVariant === 'native') {
+    const tokenInfo = ctx.tokenInfo as NonNullable<
+      PermissionContext['tokenInfo']
+    >;
     return (
       <TotalExposure
         key={index}
@@ -183,9 +260,9 @@ function renderTotalExposure(
         amountPerSecond={streamParams.amountPerSecond}
         startTime={streamParams.startTime}
         expiry={ctx.expiry}
-        symbol={symbol}
-        decimals={decimals}
-        imageUrl={imageUrl}
+        symbol={tokenInfo.symbol}
+        decimals={tokenInfo.decimals as number}
+        imageUrl={tokenInfo.imageUrl}
       />
     );
   }
@@ -202,7 +279,7 @@ function renderTotalExposure(
       expiry={ctx.expiry}
       tokenAddress={data.tokenAddress as Hex}
       chainId={ctx.chainId}
-      decimals={ctx.erc20Decimals}
+      decimals={ctx.tokenInfo?.decimals}
     />
   );
 }
@@ -214,11 +291,13 @@ function renderTotalExposure(
 function renderSection(
   section: SchemaSection,
   ctx: PermissionContext,
+  schemaEntry: PermissionSchemaEntry,
+  ownerId: string,
 ): React.ReactNode {
   return (
     <ConfirmInfoSection key={section.testId} data-testid={section.testId}>
       {section.elements.map((element, index) =>
-        renderElement(element, ctx, index),
+        renderElement(element, ctx, schemaEntry, ownerId, index),
       )}
     </ConfirmInfoSection>
   );
@@ -236,7 +315,10 @@ export const PermissionDetailRenderer: React.FC<{
   };
   expiry: number | null;
   chainId: Hex;
-}> = ({ permission, expiry, chainId }) => {
+  origin: string;
+  to?: string;
+  ownerId: string;
+}> = ({ permission, expiry, chainId, origin, to, ownerId }) => {
   const t = useI18nContext() as I18nFunction;
 
   const schemaEntry = PERMISSION_SCHEMAS[permission.type];
@@ -255,16 +337,31 @@ export const PermissionDetailRenderer: React.FC<{
     schemaEntry.tokenResolution,
   );
 
+  // Build tokenInfo from whichever resolution path is active
+  let tokenInfo: PermissionContext['tokenInfo'];
+  if (nativeToken) {
+    tokenInfo = nativeToken;
+  } else if (erc20Decimals === undefined) {
+    tokenInfo = undefined;
+  } else {
+    tokenInfo = { symbol: '', decimals: erc20Decimals };
+  }
+
   const ctx: PermissionContext = {
     permission,
     expiry,
     chainId,
+    origin,
+    to,
     t,
-    nativeToken,
-    erc20Decimals,
+    tokenInfo,
   };
 
   return (
-    <>{schemaEntry.sections.map((section) => renderSection(section, ctx))}</>
+    <>
+      {schemaEntry.sections.map((section) =>
+        renderSection(section, ctx, schemaEntry, ownerId),
+      )}
+    </>
   );
 };

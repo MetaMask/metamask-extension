@@ -11,9 +11,9 @@ function buildCtx(
     permission: { type: 'test', data: {} },
     expiry: null,
     chainId: '0x1',
+    origin: 'https://example.com',
     t: mockT,
-    nativeToken: { symbol: 'ETH', decimals: 18, imageUrl: 'eth.png' },
-    erc20Decimals: 18,
+    tokenInfo: { symbol: 'ETH', decimals: 18, imageUrl: 'eth.png' },
     ...overrides,
   };
 }
@@ -31,6 +31,72 @@ describe('PERMISSION_SCHEMAS', () => {
     });
   });
 
+  describe('common sections', () => {
+    const schema = PERMISSION_SCHEMAS['native-token-periodic'];
+    const justificationSection = schema.sections[0];
+    const permissionInfoSection = schema.sections[1];
+
+    it('justification is hidden when not present', () => {
+      const ctx = buildCtx({
+        permission: { type: 'test', data: {} },
+      });
+      const field = justificationSection.elements[0];
+      if ('visible' in field && field.visible) {
+        expect(field.visible(ctx)).toBe(false);
+      }
+    });
+
+    it('justification is visible when present', () => {
+      const ctx = buildCtx({
+        permission: {
+          type: 'test',
+          data: {},
+          justification: 'Monthly subscription',
+        },
+      });
+      const field = justificationSection.elements[0];
+      if ('visible' in field && field.visible) {
+        expect(field.visible(ctx)).toBe(true);
+      }
+    });
+
+    it('signingInWith field is always present', () => {
+      expect(justificationSection.elements[1].type).toBe('signingInWith');
+    });
+
+    it('origin field is first in permission info section', () => {
+      expect(permissionInfoSection.elements[0].type).toBe('origin');
+    });
+
+    it('address field is hidden when to is not present', () => {
+      const ctx = buildCtx();
+      const field = permissionInfoSection.elements[1];
+      if ('visible' in field && field.visible) {
+        expect(field.visible(ctx)).toBe(false);
+      }
+    });
+
+    it('address field is visible when to is present', () => {
+      const ctx = buildCtx({ to: '0x1234' });
+      const field = permissionInfoSection.elements[1];
+      if ('visible' in field && field.visible) {
+        expect(field.visible(ctx)).toBe(true);
+      }
+    });
+
+    it('address field extracts to from context', () => {
+      const ctx = buildCtx({ to: '0xRecipient' });
+      const field = permissionInfoSection.elements[1];
+      if (field.type === 'address' && 'getAddress' in field) {
+        expect(field.getAddress(ctx)).toBe('0xRecipient');
+      }
+    });
+
+    it('network field is last in permission info section', () => {
+      expect(permissionInfoSection.elements[2].type).toBe('network');
+    });
+  });
+
   describe('native-token-periodic', () => {
     const schema = PERMISSION_SCHEMAS['native-token-periodic'];
 
@@ -38,21 +104,29 @@ describe('PERMISSION_SCHEMAS', () => {
       expect(schema.tokenResolution).toEqual({ kind: 'native' });
     });
 
+    it('has native tokenVariant', () => {
+      expect(schema.tokenVariant).toBe('native');
+    });
+
     it('validate throws when startTime is missing', () => {
-      expect(() => schema.validate!({ data: {} })).toThrow(
+      expect(() => schema.validate?.({ data: {} })).toThrow(
         'Start time is required',
       );
     });
 
     it('validate does not throw when startTime is present', () => {
       expect(() =>
-        schema.validate!({ data: { startTime: 123 } }),
+        schema.validate?.({ data: { startTime: 123 } }),
       ).not.toThrow();
     });
 
-    it('has 1 section with correct testId', () => {
-      expect(schema.sections).toHaveLength(1);
+    it('has 3 sections (justification, permissionInfo, details)', () => {
+      expect(schema.sections).toHaveLength(3);
       expect(schema.sections[0].testId).toBe(
+        'confirmation_justification-section',
+      );
+      expect(schema.sections[1].testId).toBe('confirmation_permission-section');
+      expect(schema.sections[2].testId).toBe(
         'native-token-periodic-details-section',
       );
     });
@@ -64,9 +138,9 @@ describe('PERMISSION_SCHEMAS', () => {
           data: { periodAmount: '0xabc', periodDuration: 86400, startTime: 1 },
         },
       });
-      const allowanceField = schema.sections[0].elements[0];
-      expect(allowanceField.type).toBe('nativeAmount');
-      if (allowanceField.type === 'nativeAmount') {
+      const allowanceField = schema.sections[2].elements[0];
+      expect(allowanceField.type).toBe('amount');
+      if (allowanceField.type === 'amount') {
         expect(allowanceField.getValue(ctx)).toBe('0xabc');
       }
     });
@@ -80,7 +154,7 @@ describe('PERMISSION_SCHEMAS', () => {
         },
         t: tSpy as unknown as PermissionContext['t'],
       });
-      const freqField = schema.sections[0].elements[1];
+      const freqField = schema.sections[2].elements[1];
       if (freqField.type === 'text') {
         freqField.getValue(ctx);
         expect(tSpy).toHaveBeenCalledWith('confirmFieldPeriodDurationDaily');
@@ -94,7 +168,7 @@ describe('PERMISSION_SCHEMAS', () => {
           data: { periodAmount: '0x1', periodDuration: 86400, startTime: 999 },
         },
       });
-      const dateField = schema.sections[0].elements[3];
+      const dateField = schema.sections[2].elements[3];
       if (dateField.type === 'date') {
         expect(dateField.getTimestamp(ctx)).toBe(999);
       }
@@ -105,17 +179,17 @@ describe('PERMISSION_SCHEMAS', () => {
     const schema = PERMISSION_SCHEMAS['native-token-stream'];
 
     it('validate throws when startTime is missing', () => {
-      expect(() => schema.validate!({ data: {} })).toThrow(
+      expect(() => schema.validate?.({ data: {} })).toThrow(
         'Start time is required',
       );
     });
 
-    it('has 2 sections', () => {
-      expect(schema.sections).toHaveLength(2);
-      expect(schema.sections[0].testId).toBe(
+    it('has 4 sections (justification, permissionInfo, details, streamRate)', () => {
+      expect(schema.sections).toHaveLength(4);
+      expect(schema.sections[2].testId).toBe(
         'native-token-stream-details-section',
       );
-      expect(schema.sections[1].testId).toBe(
+      expect(schema.sections[3].testId).toBe(
         'native-token-stream-stream-rate-section',
       );
     });
@@ -127,7 +201,7 @@ describe('PERMISSION_SCHEMAS', () => {
           data: { amountPerSecond: '0x1', startTime: 1 },
         },
       });
-      const field = schema.sections[0].elements[0];
+      const field = schema.sections[2].elements[0];
       if ('visible' in field && field.visible) {
         expect(field.visible(ctx)).toBe(false);
       }
@@ -140,7 +214,7 @@ describe('PERMISSION_SCHEMAS', () => {
           data: { initialAmount: '0x1', amountPerSecond: '0x1', startTime: 1 },
         },
       });
-      const field = schema.sections[0].elements[0];
+      const field = schema.sections[2].elements[0];
       if ('visible' in field && field.visible) {
         expect(field.visible(ctx)).toBe(true);
       }
@@ -157,7 +231,7 @@ describe('PERMISSION_SCHEMAS', () => {
           },
         },
       });
-      const field = schema.sections[0].elements[1];
+      const field = schema.sections[2].elements[1];
       if ('visible' in field && field.visible) {
         expect(field.visible(ctx)).toBe(false);
       }
@@ -170,7 +244,7 @@ describe('PERMISSION_SCHEMAS', () => {
           data: { maxAmount: '0x1234', amountPerSecond: '0x1', startTime: 1 },
         },
       });
-      const field = schema.sections[0].elements[1];
+      const field = schema.sections[2].elements[1];
       if ('visible' in field && field.visible) {
         expect(field.visible(ctx)).toBe(true);
       }
@@ -188,9 +262,8 @@ describe('PERMISSION_SCHEMAS', () => {
           },
         },
       });
-      const field = schema.sections[1].elements[2];
+      const field = schema.sections[3].elements[2];
       if (field.type === 'totalExposure') {
-        expect(field.variant).toBe('native');
         expect(field.getStreamParams(ctx)).toEqual({
           initialAmount: '0xa',
           maxAmount: '0xb',
@@ -215,7 +288,11 @@ describe('PERMISSION_SCHEMAS', () => {
       }
     });
 
-    it('tokenAmount field extracts tokenAddress', () => {
+    it('has erc20 tokenVariant', () => {
+      expect(schema.tokenVariant).toBe('erc20');
+    });
+
+    it('amount field extracts tokenAddress via getTokenAddress', () => {
       const ctx = buildCtx({
         permission: {
           type: 'erc20-token-periodic',
@@ -227,9 +304,9 @@ describe('PERMISSION_SCHEMAS', () => {
           },
         },
       });
-      const field = schema.sections[0].elements[0];
-      if (field.type === 'tokenAmount') {
-        expect(field.getTokenAddress(ctx)).toBe('0xTok');
+      const field = schema.sections[2].elements[0];
+      if (field.type === 'amount') {
+        expect(field.getTokenAddress?.(ctx)).toBe('0xTok');
         expect(field.getValue(ctx)).toBe('0x1');
       }
     });
@@ -238,8 +315,8 @@ describe('PERMISSION_SCHEMAS', () => {
   describe('erc20-token-stream', () => {
     const schema = PERMISSION_SCHEMAS['erc20-token-stream'];
 
-    it('has 2 sections', () => {
-      expect(schema.sections).toHaveLength(2);
+    it('has 4 sections', () => {
+      expect(schema.sections).toHaveLength(4);
     });
 
     it('maxAmount visibility respects MAX_UINT256', () => {
@@ -254,17 +331,14 @@ describe('PERMISSION_SCHEMAS', () => {
           },
         },
       });
-      const field = schema.sections[0].elements[1];
+      const field = schema.sections[2].elements[1];
       if ('visible' in field && field.visible) {
         expect(field.visible(ctx)).toBe(false);
       }
     });
 
-    it('totalExposure has erc20 variant', () => {
-      const field = schema.sections[1].elements[2];
-      if (field.type === 'totalExposure') {
-        expect(field.variant).toBe('erc20');
-      }
+    it('totalExposure schema entry has erc20 tokenVariant', () => {
+      expect(schema.tokenVariant).toBe('erc20');
     });
   });
 
@@ -275,18 +349,22 @@ describe('PERMISSION_SCHEMAS', () => {
       expect(schema.tokenResolution).toEqual({ kind: 'none' });
     });
 
+    it('has none tokenVariant', () => {
+      expect(schema.tokenVariant).toBe('none');
+    });
+
     it('has no validate function', () => {
       expect(schema.validate).toBeUndefined();
     });
 
-    it('has 1 section with only expiry', () => {
-      expect(schema.sections).toHaveLength(1);
-      expect(schema.sections[0].elements).toHaveLength(1);
-      expect(schema.sections[0].elements[0].type).toBe('expiry');
+    it('has 3 sections (justification, permissionInfo, details)', () => {
+      expect(schema.sections).toHaveLength(3);
+      expect(schema.sections[2].elements).toHaveLength(1);
+      expect(schema.sections[2].elements[0].type).toBe('expiry');
     });
 
     it('has correct testId', () => {
-      expect(schema.sections[0].testId).toBe(
+      expect(schema.sections[2].testId).toBe(
         'erc20-token-revocation-details-section',
       );
     });

@@ -8,7 +8,7 @@ export type I18nFunction = (
 
 /**
  * The context object passed to all accessor functions in the schema.
- * Built by the renderer from the decoded permission plus pre-resolved async data.
+ * Built by each renderer from decoded permission data plus pre-resolved async data.
  */
 export type PermissionContext = {
   /** The permission object from the decoded permission. */
@@ -21,42 +21,44 @@ export type PermissionContext = {
   expiry: number | null;
   /** Chain ID in hex format. */
   chainId: Hex;
+  /** The origin URL of the request. */
+  origin: string;
+  /** The recipient / delegate address, if present. */
+  to?: string;
   /** i18n translation function. */
   t: I18nFunction;
-  /** Pre-resolved native token info. Present when tokenResolution.kind === 'native'. */
-  nativeToken?: {
+  /** Pre-resolved token info. Present when tokenResolution.kind is 'native' or 'erc20'. */
+  tokenInfo?: {
     symbol: string;
-    decimals: number;
+    decimals: number | undefined;
     imageUrl?: string;
   };
-  /** Pre-resolved ERC20 decimals. Present when tokenResolution.kind === 'erc20'. */
-  erc20Decimals?: number;
 };
 
 // ---------------------------------------------------------------------------
-// Field types — each maps to an existing rendering component
+// Token variant — distinguishes native vs ERC20 for amount rendering
 // ---------------------------------------------------------------------------
 
-/** Renders a native token amount using NativeAmountRow. */
-export type NativeAmountField = {
-  type: 'nativeAmount';
+/** Whether an amount field is for a native token or an ERC20 token. */
+export type TokenVariant = 'native' | 'erc20';
+
+// ---------------------------------------------------------------------------
+// Field types — view-agnostic, describe WHAT to show, not HOW
+// ---------------------------------------------------------------------------
+
+/** An amount field (native or ERC20). Renderers decide formatting. */
+export type AmountField = {
+  type: 'amount';
   labelKey: string;
+  /** Raw hex or BigNumber value. Each renderer formats this for its view. */
   getValue: (ctx: PermissionContext) => Hex | BigNumber;
+  /** For ERC20 amounts, returns the token contract address. */
+  getTokenAddress?: (ctx: PermissionContext) => string;
   tooltip?: string;
   visible?: (ctx: PermissionContext) => boolean;
 };
 
-/** Renders an ERC20 token amount using TokenAmountRow. */
-export type TokenAmountField = {
-  type: 'tokenAmount';
-  labelKey: string;
-  getValue: (ctx: PermissionContext) => Hex | BigNumber;
-  getTokenAddress: (ctx: PermissionContext) => string;
-  tooltip?: string;
-  visible?: (ctx: PermissionContext) => boolean;
-};
-
-/** Renders a plain text row using ConfirmInfoRow + Text. */
+/** A plain text row. */
 export type TextField = {
   type: 'text';
   labelKey: string;
@@ -65,7 +67,7 @@ export type TextField = {
   visible?: (ctx: PermissionContext) => boolean;
 };
 
-/** Renders a date row using DateAndTimeRow. */
+/** A date/time row. */
 export type DateField = {
   type: 'date';
   labelKey: string;
@@ -74,13 +76,13 @@ export type DateField = {
   visible?: (ctx: PermissionContext) => boolean;
 };
 
-/** Renders the Expiry component. */
+/** An expiry row. Renderers handle the "never expires" case. */
 export type ExpiryField = {
   type: 'expiry';
   visible?: (ctx: PermissionContext) => boolean;
 };
 
-/** Stream parameters needed by the TotalExposure component. */
+/** Stream parameters for total exposure calculation. */
 export type TotalExposureStreamParams = {
   initialAmount?: Hex | null;
   maxAmount?: Hex | null;
@@ -88,10 +90,9 @@ export type TotalExposureStreamParams = {
   startTime: number;
 };
 
-/** Renders the TotalExposure component. */
+/** Total exposure row for stream permissions. */
 export type TotalExposureField = {
   type: 'totalExposure';
-  variant: 'native' | 'erc20';
   getStreamParams: (ctx: PermissionContext) => TotalExposureStreamParams;
   visible?: (ctx: PermissionContext) => boolean;
 };
@@ -101,24 +102,63 @@ export type DividerElement = {
   type: 'divider';
 };
 
+// ---------------------------------------------------------------------------
+// Common fields — describe top-level decoded permission properties
+// ---------------------------------------------------------------------------
+
+/** Displays the justification text. */
+export type JustificationField = {
+  type: 'justification';
+  visible?: (ctx: PermissionContext) => boolean;
+};
+
+/** Displays the "signing in with" row (account selector). */
+export type SigningInWithField = {
+  type: 'signingInWith';
+};
+
+/** Displays the request origin URL. */
+export type OriginField = {
+  type: 'origin';
+  tooltip?: string;
+};
+
+/** Displays a recipient / delegate address. */
+export type AddressField = {
+  type: 'address';
+  labelKey: string;
+  getAddress: (ctx: PermissionContext) => string | undefined;
+  visible?: (ctx: PermissionContext) => boolean;
+};
+
+/** Displays the network row. */
+export type NetworkField = {
+  type: 'network';
+};
+
 /** Union of all renderable items within a section. */
 export type SchemaElement =
-  | NativeAmountField
-  | TokenAmountField
+  | AmountField
   | TextField
   | DateField
   | ExpiryField
   | TotalExposureField
-  | DividerElement;
+  | DividerElement
+  | JustificationField
+  | SigningInWithField
+  | OriginField
+  | AddressField
+  | NetworkField;
 
-/** A section groups elements visually (renders inside ConfirmInfoSection). */
+/** A section groups elements visually. */
 export type SchemaSection = {
+  /** Test ID for the section container. Each renderer maps this to its own wrapper. */
   testId: string;
   elements: SchemaElement[];
 };
 
 // ---------------------------------------------------------------------------
-// Token resolution — tells the renderer what async data to pre-resolve
+// Token resolution — tells renderers what async data to pre-resolve
 // ---------------------------------------------------------------------------
 
 export type TokenResolution =
@@ -137,11 +177,13 @@ export type TokenResolution =
 
 /** A complete schema entry for one permission type. */
 export type PermissionSchemaEntry = {
+  /** Whether this permission deals with a native token, ERC20 token, or neither. */
+  tokenVariant: TokenVariant | 'none';
   /** Declares what token data the renderer should resolve before rendering. */
   tokenResolution: TokenResolution;
   /** Optional validation run before rendering. Throw to trigger error boundary. */
   validate?: (permission: { data: Record<string, unknown> }) => void;
-  /** Sections to render (each maps to a ConfirmInfoSection). */
+  /** Sections to render. */
   sections: SchemaSection[];
 };
 

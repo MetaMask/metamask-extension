@@ -9,6 +9,7 @@ import type {
   PermissionContext,
   PermissionSchemaEntry,
   PermissionSchemaRegistry,
+  SchemaSection,
 } from './permission-detail-schema.types';
 
 // ---------------------------------------------------------------------------
@@ -27,18 +28,50 @@ const requireStartTime = (permission: {
 };
 
 // ---------------------------------------------------------------------------
+// Common sections — shared across all permission types
+// ---------------------------------------------------------------------------
+
+const justificationSection: SchemaSection = {
+  testId: 'confirmation_justification-section',
+  elements: [
+    {
+      type: 'justification',
+      visible: (ctx) => Boolean(ctx.permission.justification),
+    },
+    { type: 'signingInWith' },
+  ],
+};
+
+const permissionInfoSection: SchemaSection = {
+  testId: 'confirmation_permission-section',
+  elements: [
+    { type: 'origin' },
+    {
+      type: 'address',
+      labelKey: 'recipient',
+      getAddress: (ctx) => ctx.to,
+      visible: (ctx) => Boolean(ctx.to),
+    },
+    { type: 'network' },
+  ],
+};
+
+// ---------------------------------------------------------------------------
 // Schema definitions
 // ---------------------------------------------------------------------------
 
 const nativeTokenPeriodicSchema: PermissionSchemaEntry = {
+  tokenVariant: 'native',
   tokenResolution: { kind: 'native' },
   validate: requireStartTime,
   sections: [
+    justificationSection,
+    permissionInfoSection,
     {
       testId: 'native-token-periodic-details-section',
       elements: [
         {
-          type: 'nativeAmount',
+          type: 'amount',
           labelKey: 'confirmFieldAllowance',
           getValue: (ctx) => getData(ctx).periodAmount as Hex,
         },
@@ -61,20 +94,23 @@ const nativeTokenPeriodicSchema: PermissionSchemaEntry = {
 };
 
 const nativeTokenStreamSchema: PermissionSchemaEntry = {
+  tokenVariant: 'native',
   tokenResolution: { kind: 'native' },
   validate: requireStartTime,
   sections: [
+    justificationSection,
+    permissionInfoSection,
     {
       testId: 'native-token-stream-details-section',
       elements: [
         {
-          type: 'nativeAmount',
+          type: 'amount',
           labelKey: 'confirmFieldInitialAllowance',
           getValue: (ctx) => getData(ctx).initialAmount as Hex,
           visible: (ctx) => Boolean(getData(ctx).initialAmount),
         },
         {
-          type: 'nativeAmount',
+          type: 'amount',
           labelKey: 'confirmFieldMaxAllowance',
           getValue: (ctx) => getData(ctx).maxAmount as Hex,
           visible: (ctx) => {
@@ -95,12 +131,12 @@ const nativeTokenStreamSchema: PermissionSchemaEntry = {
       testId: 'native-token-stream-stream-rate-section',
       elements: [
         {
-          type: 'nativeAmount',
+          type: 'amount',
           labelKey: 'confirmFieldStreamRate',
           getValue: (ctx) => getData(ctx).amountPerSecond as Hex,
         },
         {
-          type: 'nativeAmount',
+          type: 'amount',
           labelKey: 'confirmFieldAvailablePerDay',
           getValue: (ctx) =>
             new BigNumber(getData(ctx).amountPerSecond as string).mul(
@@ -109,7 +145,6 @@ const nativeTokenStreamSchema: PermissionSchemaEntry = {
         },
         {
           type: 'totalExposure',
-          variant: 'native',
           getStreamParams: (ctx) => ({
             initialAmount: (getData(ctx).initialAmount as Hex) ?? undefined,
             maxAmount: (getData(ctx).maxAmount as Hex) ?? undefined,
@@ -123,17 +158,20 @@ const nativeTokenStreamSchema: PermissionSchemaEntry = {
 };
 
 const erc20TokenPeriodicSchema: PermissionSchemaEntry = {
+  tokenVariant: 'erc20',
   tokenResolution: {
     kind: 'erc20',
     getTokenAddress: (p) => p.data.tokenAddress as string,
   },
   validate: requireStartTime,
   sections: [
+    justificationSection,
+    permissionInfoSection,
     {
       testId: 'erc20-token-periodic-details-section',
       elements: [
         {
-          type: 'tokenAmount',
+          type: 'amount',
           labelKey: 'confirmFieldAllowance',
           getValue: (ctx) => getData(ctx).periodAmount as Hex,
           getTokenAddress: (ctx) => getData(ctx).tokenAddress as string,
@@ -157,24 +195,27 @@ const erc20TokenPeriodicSchema: PermissionSchemaEntry = {
 };
 
 const erc20TokenStreamSchema: PermissionSchemaEntry = {
+  tokenVariant: 'erc20',
   tokenResolution: {
     kind: 'erc20',
     getTokenAddress: (p) => p.data.tokenAddress as string,
   },
   validate: requireStartTime,
   sections: [
+    justificationSection,
+    permissionInfoSection,
     {
       testId: 'erc20-token-stream-details-section',
       elements: [
         {
-          type: 'tokenAmount',
+          type: 'amount',
           labelKey: 'confirmFieldInitialAllowance',
           getValue: (ctx) => getData(ctx).initialAmount as Hex,
           getTokenAddress: (ctx) => getData(ctx).tokenAddress as string,
           visible: (ctx) => Boolean(getData(ctx).initialAmount),
         },
         {
-          type: 'tokenAmount',
+          type: 'amount',
           labelKey: 'confirmFieldMaxAllowance',
           getValue: (ctx) => getData(ctx).maxAmount as Hex,
           getTokenAddress: (ctx) => getData(ctx).tokenAddress as string,
@@ -196,13 +237,13 @@ const erc20TokenStreamSchema: PermissionSchemaEntry = {
       testId: 'erc20-token-stream-stream-rate-section',
       elements: [
         {
-          type: 'tokenAmount',
+          type: 'amount',
           labelKey: 'confirmFieldStreamRate',
           getValue: (ctx) => getData(ctx).amountPerSecond as Hex,
           getTokenAddress: (ctx) => getData(ctx).tokenAddress as string,
         },
         {
-          type: 'tokenAmount',
+          type: 'amount',
           labelKey: 'confirmFieldAvailablePerDay',
           getValue: (ctx) =>
             new BigNumber(getData(ctx).amountPerSecond as string).mul(
@@ -212,7 +253,6 @@ const erc20TokenStreamSchema: PermissionSchemaEntry = {
         },
         {
           type: 'totalExposure',
-          variant: 'erc20',
           getStreamParams: (ctx) => ({
             initialAmount: getData(ctx).initialAmount as Hex | undefined,
             maxAmount: getData(ctx).maxAmount as Hex | undefined,
@@ -226,8 +266,11 @@ const erc20TokenStreamSchema: PermissionSchemaEntry = {
 };
 
 const erc20TokenRevocationSchema: PermissionSchemaEntry = {
+  tokenVariant: 'none',
   tokenResolution: { kind: 'none' },
   sections: [
+    justificationSection,
+    permissionInfoSection,
     {
       testId: 'erc20-token-revocation-details-section',
       elements: [{ type: 'expiry' }],

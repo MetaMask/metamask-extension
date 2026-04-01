@@ -21,8 +21,6 @@ import {
 import {
   Erc20TokenPeriodicPermission,
   Erc20TokenStreamPermission,
-  NativeTokenPeriodicPermission,
-  NativeTokenStreamPermission,
   PermissionInfoWithMetadata,
 } from '@metamask/gator-permissions-controller';
 import { Hex } from '@metamask/utils';
@@ -32,12 +30,9 @@ import Card from '../../../../ui/card';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { getInternalAccountByAddress } from '../../../../../selectors';
 import {
-  convertTimestampToReadableDate,
-  getPeriodFrequencyValueTranslationKey,
   convertAmountPerSecondToAmountPerPeriod,
   formatDecimalShiftedValue,
-  extractExpiryToReadableDate,
-  GatorPermissionRule,
+  getPeriodFrequencyValueTranslationKey,
 } from '../../../../../../shared/lib/gator-permissions';
 import { PreferredAvatar } from '../../../../app/preferred-avatar';
 import { BackgroundColor } from '../../../../../helpers/constants/design-system';
@@ -45,6 +40,7 @@ import { getPendingRevocations } from '../../../../../selectors/gator-permission
 import { useGatorPermissionTokenInfo } from '../../../../../hooks/gator-permissions/useGatorPermissionTokenInfo';
 import { CopyIcon } from '../../../../app/confirm/info/row/copy-icon';
 import { Skeleton } from '../../../../component-library/skeleton';
+import { ReviewPermissionRenderer } from './review-permission-renderer';
 
 // Shared row style for permission details
 const rowStyle = { flex: '1', alignSelf: 'center' } as const;
@@ -131,16 +127,7 @@ type ReviewGatorPermissionItemProps = {
   hasRevokeBeenClicked?: boolean;
 };
 
-type PermissionExpandedDetails = Record<
-  string,
-  {
-    translationKey: string;
-    value: string;
-    testId: string;
-  }
->;
-
-type PermissionDetails = {
+type CollapsedSummary = {
   amountLabel: {
     translationKey: string;
     value: string;
@@ -151,7 +138,6 @@ type PermissionDetails = {
     valueTranslationKey: string;
     testId: string;
   };
-  expandedDetails: PermissionExpandedDetails;
 };
 
 export const ReviewGatorPermissionItem = ({
@@ -206,38 +192,6 @@ export const ReviewGatorPermissionItem = ({
     setIsExpanded(!isExpanded);
   };
 
-  /**
-   * Returns the expiration date from the rules
-   */
-  const getExpirationDate = useCallback(
-    (rules: GatorPermissionRule[] | undefined | null): string => {
-      if (!rules?.length) {
-        return t('gatorPermissionNoExpiration');
-      }
-      const expiryDate = extractExpiryToReadableDate(rules);
-      return expiryDate || t('gatorPermissionNoExpiration');
-    },
-    [t],
-  );
-
-  const formatValueAsRatePerSecond = useCallback(
-    (value: Hex | null | undefined) => {
-      if (!value) {
-        return 'Unknown';
-      }
-
-      const { symbol, decimals } = tokenMetadata;
-
-      const formattedValueWithSymbol = `${formatDecimalShiftedValue(value, decimals)} ${symbol}`;
-      if (typeof decimals === 'number') {
-        return `${formattedValueWithSymbol}/sec`;
-      }
-
-      return `${formattedValueWithSymbol}/sec (raw units)`;
-    },
-    [tokenMetadata],
-  );
-
   const formatValue = useCallback(
     (value: Hex | null | undefined, placeholder: string = 'Unknown') => {
       if (!value) {
@@ -257,177 +211,70 @@ export const ReviewGatorPermissionItem = ({
   );
 
   /**
-   * Returns the token stream permission details
-   *
-   * @param permission - The stream permission data
-   * @returns The permission details
+   * Returns the collapsed summary for the permission (amount + frequency).
+   * This is a view-level concern specific to the review page layout.
    */
-  const getTokenStreamPermissionDetails = useCallback(
-    (
-      permission: NativeTokenStreamPermission | Erc20TokenStreamPermission,
-    ): PermissionDetails => {
-      const amountPerPeriod = convertAmountPerSecondToAmountPerPeriod(
-        permission.data.amountPerSecond,
-        'weekly',
-      );
-
-      return {
-        amountLabel: {
-          translationKey: 'gatorPermissionsStreamingAmountLabel',
-          value: formatValue(amountPerPeriod),
-          testId: 'review-gator-permission-amount-label',
-        },
-        frequencyLabel: {
-          translationKey: 'gatorPermissionTokenStreamFrequencyLabel',
-          valueTranslationKey: 'gatorPermissionWeeklyFrequency',
-          testId: 'review-gator-permission-frequency-label',
-        },
-        expandedDetails: {
-          initialAllowance: {
-            translationKey: 'gatorPermissionsInitialAllowance',
-            value: formatValue(
-              permission.data.initialAmount,
-              `0 ${tokenMetadata?.symbol}`,
-            ),
-            testId: 'review-gator-permission-initial-allowance',
-          },
-          maxAllowance: {
-            translationKey: 'gatorPermissionsMaxAllowance',
-            value: formatValue(permission.data.maxAmount, t('unlimited')),
-            testId: 'review-gator-permission-max-allowance',
-          },
-          startDate: {
-            translationKey: 'gatorPermissionsStartDate',
-            value: convertTimestampToReadableDate(
-              permission.data.startTime ?? 0,
-            ),
-            testId: 'review-gator-permission-start-date',
-          },
-          expirationDate: {
-            translationKey: 'gatorPermissionsExpirationDate',
-            value: getExpirationDate(permissionResponse.rules),
-            testId: 'review-gator-permission-expiration-date',
-          },
-          streamRate: {
-            translationKey: 'gatorPermissionsStreamRate',
-            value: formatValueAsRatePerSecond(permission.data.amountPerSecond),
-            testId: 'review-gator-permission-stream-rate',
-          },
-        },
-      };
-    },
-    [
-      t,
-      formatValue,
-      formatValueAsRatePerSecond,
-      getExpirationDate,
-      permissionResponse.rules,
-      tokenMetadata,
-    ],
-  );
-
-  /**
-   * Returns the token periodic permission details
-   *
-   * @param permission - The periodic permission data
-   * @returns The permission details
-   */
-  const getTokenPeriodicPermissionDetails = useCallback(
-    (
-      permission: NativeTokenPeriodicPermission | Erc20TokenPeriodicPermission,
-    ): PermissionDetails => {
-      return {
-        amountLabel: {
-          translationKey: 'amount',
-          value: formatValue(permission.data.periodAmount),
-          testId: 'review-gator-permission-amount-label',
-        },
-        frequencyLabel: {
-          translationKey: 'gatorPermissionTokenPeriodicFrequencyLabel',
-          valueTranslationKey: getPeriodFrequencyValueTranslationKey(
-            permission.data.periodDuration,
-          ),
-          testId: 'review-gator-permission-frequency-label',
-        },
-        expandedDetails: {
-          startDate: {
-            translationKey: 'gatorPermissionsStartDate',
-            value: convertTimestampToReadableDate(
-              permission.data.startTime ?? 0,
-            ),
-            testId: 'review-gator-permission-start-date',
-          },
-
-          expirationDate: {
-            translationKey: 'gatorPermissionsExpirationDate',
-            value: getExpirationDate(permissionResponse.rules),
-            testId: 'review-gator-permission-expiration-date',
-          },
-        },
-      };
-    },
-    [formatValue, getExpirationDate, permissionResponse.rules],
-  );
-
-  /**
-   * Returns the token revocation permission details
-   *
-   * @returns The permission details for erc20-token-revocation
-   */
-  const getTokenRevocationPermissionDetails =
-    useCallback((): PermissionDetails => {
-      return {
-        amountLabel: {
-          translationKey: 'revokeTokenApprovals',
-          value: t('allTokens'),
-          testId: 'review-gator-permission-amount-label',
-        },
-        frequencyLabel: {
-          translationKey: '',
-          valueTranslationKey: '',
-          testId: 'review-gator-permission-frequency-label',
-        },
-        expandedDetails: {
-          expirationDate: {
-            translationKey: 'gatorPermissionsExpirationDate',
-            value: getExpirationDate(permissionResponse.rules),
-            testId: 'review-gator-permission-expiration-date',
-          },
-        },
-      };
-    }, [t, getExpirationDate, permissionResponse.rules]);
-
-  /**
-   * Returns the permission details
-   *
-   * @returns The permission details
-   */
-  const permissionDetails = useMemo((): PermissionDetails => {
+  const collapsedSummary = useMemo((): CollapsedSummary => {
     switch (permissionType) {
       case 'native-token-stream':
-      case 'erc20-token-stream':
-        return getTokenStreamPermissionDetails(
-          permissionResponse.permission as Erc20TokenStreamPermission,
+      case 'erc20-token-stream': {
+        const permission =
+          permissionResponse.permission as Erc20TokenStreamPermission;
+        const amountPerPeriod = convertAmountPerSecondToAmountPerPeriod(
+          permission.data.amountPerSecond,
+          'weekly',
         );
+        return {
+          amountLabel: {
+            translationKey: 'gatorPermissionsStreamingAmountLabel',
+            value: formatValue(amountPerPeriod),
+            testId: 'review-gator-permission-amount-label',
+          },
+          frequencyLabel: {
+            translationKey: 'gatorPermissionTokenStreamFrequencyLabel',
+            valueTranslationKey: 'gatorPermissionWeeklyFrequency',
+            testId: 'review-gator-permission-frequency-label',
+          },
+        };
+      }
       case 'native-token-periodic':
-      case 'erc20-token-periodic':
-        return getTokenPeriodicPermissionDetails(
-          permissionResponse.permission as Erc20TokenPeriodicPermission,
-        );
+      case 'erc20-token-periodic': {
+        const permission =
+          permissionResponse.permission as Erc20TokenPeriodicPermission;
+        return {
+          amountLabel: {
+            translationKey: 'amount',
+            value: formatValue(permission.data.periodAmount),
+            testId: 'review-gator-permission-amount-label',
+          },
+          frequencyLabel: {
+            translationKey: 'gatorPermissionTokenPeriodicFrequencyLabel',
+            valueTranslationKey: getPeriodFrequencyValueTranslationKey(
+              permission.data.periodDuration,
+            ),
+            testId: 'review-gator-permission-frequency-label',
+          },
+        };
+      }
       case 'erc20-token-revocation':
-        return getTokenRevocationPermissionDetails();
+        return {
+          amountLabel: {
+            translationKey: 'revokeTokenApprovals',
+            value: t('allTokens'),
+            testId: 'review-gator-permission-amount-label',
+          },
+          frequencyLabel: {
+            translationKey: '',
+            valueTranslationKey: '',
+            testId: 'review-gator-permission-frequency-label',
+          },
+        };
       default:
         throw new Error(
           `Invalid permission type: ${permissionType as unknown as string}`,
         );
     }
-  }, [
-    permissionType,
-    getTokenStreamPermissionDetails,
-    permissionResponse.permission,
-    getTokenPeriodicPermissionDetails,
-    getTokenRevocationPermissionDetails,
-  ]);
+  }, [permissionType, permissionResponse.permission, formatValue, t]);
 
   return (
     <Card
@@ -478,16 +325,16 @@ export const ReviewGatorPermissionItem = ({
       {/* Permission details */}
       <Box backgroundColor={BoxBackgroundColor.BackgroundDefault}>
         <PermissionDetailRow
-          label={t(permissionDetails.amountLabel.translationKey)}
-          value={permissionDetails.amountLabel.value}
-          testId={permissionDetails.amountLabel.testId}
+          label={t(collapsedSummary.amountLabel.translationKey)}
+          value={collapsedSummary.amountLabel.value}
+          testId={collapsedSummary.amountLabel.testId}
           isLoading={loading}
         />
-        {permissionDetails.frequencyLabel.translationKey && (
+        {collapsedSummary.frequencyLabel.translationKey && (
           <PermissionDetailRow
-            label={t(permissionDetails.frequencyLabel.translationKey)}
-            value={t(permissionDetails.frequencyLabel.valueTranslationKey)}
-            testId={permissionDetails.frequencyLabel.testId}
+            label={t(collapsedSummary.frequencyLabel.translationKey)}
+            value={t(collapsedSummary.frequencyLabel.valueTranslationKey)}
+            testId={collapsedSummary.frequencyLabel.testId}
           />
         )}
         {/* Account row - custom layout with avatar and copy icon */}
@@ -607,24 +454,19 @@ export const ReviewGatorPermissionItem = ({
               </Box>
             </Box>
 
-            {Object.entries(permissionDetails.expandedDetails).map(
-              ([key, detail]) => {
-                const isLoadingValue =
-                  loading &&
-                  ['initialAllowance', 'maxAllowance', 'streamRate'].includes(
-                    key,
-                  );
-                return (
-                  <PermissionDetailRow
-                    key={key}
-                    label={t(detail.translationKey)}
-                    value={detail.value}
-                    testId={detail.testId}
-                    isLoading={isLoadingValue}
-                  />
-                );
-              },
-            )}
+            <ReviewPermissionRenderer
+              permissionType={permissionType}
+              permissionData={
+                permissionResponse.permission.data as unknown as Record<
+                  string,
+                  unknown
+                >
+              }
+              chainId={chainId}
+              tokenAddress={tokenAddress}
+              expiry={null}
+              rules={permissionResponse.rules}
+            />
           </>
         )}
       </Box>

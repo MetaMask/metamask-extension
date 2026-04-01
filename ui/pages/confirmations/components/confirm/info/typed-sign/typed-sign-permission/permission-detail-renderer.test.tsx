@@ -45,6 +45,8 @@ describe('PermissionDetailRenderer', () => {
           permission={permission}
           expiry={123456789}
           chainId="0x1"
+          origin="https://example.com"
+          ownerId="test-id"
         />,
         getMockStore(),
       );
@@ -59,6 +61,8 @@ describe('PermissionDetailRenderer', () => {
           permission={permission}
           expiry={null}
           chainId="0x1"
+          origin="https://example.com"
+          ownerId="test-id"
         />,
         getMockStore(),
       );
@@ -84,6 +88,8 @@ describe('PermissionDetailRenderer', () => {
           permission={permission}
           expiry={123456789}
           chainId="0x1"
+          origin="https://example.com"
+          ownerId="test-id"
         />,
         getMockStore(),
       );
@@ -105,6 +111,8 @@ describe('PermissionDetailRenderer', () => {
           permission={permissionNoInitial}
           expiry={123456789}
           chainId="0x1"
+          origin="https://example.com"
+          ownerId="test-id"
         />,
         getMockStore(),
       );
@@ -123,6 +131,8 @@ describe('PermissionDetailRenderer', () => {
           permission={permissionNoMax}
           expiry={123456789}
           chainId="0x1"
+          origin="https://example.com"
+          ownerId="test-id"
         />,
         getMockStore(),
       );
@@ -149,6 +159,8 @@ describe('PermissionDetailRenderer', () => {
           permission={permission}
           expiry={123456789}
           chainId="0x1"
+          origin="https://example.com"
+          ownerId="test-id"
         />,
         getMockStore(),
       );
@@ -176,6 +188,8 @@ describe('PermissionDetailRenderer', () => {
           permission={permission}
           expiry={123456789}
           chainId="0x1"
+          origin="https://example.com"
+          ownerId="test-id"
         />,
         getMockStore(),
       );
@@ -199,6 +213,8 @@ describe('PermissionDetailRenderer', () => {
           permission={permission}
           expiry={null}
           chainId="0x1"
+          origin="https://example.com"
+          ownerId="test-id"
         />,
         getMockStore(),
       );
