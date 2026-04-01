@@ -862,12 +862,22 @@ describe('Actions', () => {
   });
 
   describe('#connectHardware', () => {
+    const translateHardwareMessage = (key, substitutions = []) =>
+      key === 'hardwareWalletLookingForDevice'
+        ? enLocale.hardwareWalletLookingForDevice.message.replace(
+            '$1',
+            substitutions[0],
+          )
+        : `translated_${key}`;
+
     afterEach(() => {
       sinon.restore();
     });
 
     it('calls connectHardware in background', async () => {
       const store = mockStore();
+      const page = 0;
+      const hdPath = `m/44'/60'/0'/0`;
 
       const connectHardware = background.connectHardware.resolves();
 
@@ -876,15 +886,25 @@ describe('Actions', () => {
       await store.dispatch(
         actions.connectHardware(
           HardwareDeviceNames.ledger,
-          0,
-          `m/44'/60'/0'/0`,
+          page,
+          hdPath,
+          false,
+          translateHardwareMessage,
         ),
       );
-      expect(connectHardware.callCount).toStrictEqual(1);
+      expect(
+        connectHardware.calledOnceWith(
+          HardwareDeviceNames.ledger,
+          page,
+          hdPath,
+        ),
+      ).toStrictEqual(true);
     });
 
     it('shows loading indicator and displays error', async () => {
       const store = mockStore();
+      const page = 0;
+      const hdPath = `m/44'/60'/0'/0`;
 
       background.connectHardware.rejects(new Error('error'));
 
@@ -900,7 +920,15 @@ describe('Actions', () => {
       ];
 
       await expect(
-        store.dispatch(actions.connectHardware(HardwareDeviceNames.ledger)),
+        store.dispatch(
+          actions.connectHardware(
+            HardwareDeviceNames.ledger,
+            page,
+            hdPath,
+            false,
+            translateHardwareMessage,
+          ),
+        ),
       ).rejects.toThrow('error');
 
       expect(store.getActions()).toStrictEqual(expectedActions);
@@ -948,7 +976,7 @@ describe('Actions', () => {
           0,
           `m/44'/60'/0'/0`,
           true,
-          (key) => `translated_${key}`,
+          translateHardwareMessage,
         ),
       );
 
@@ -993,8 +1021,6 @@ describe('Actions', () => {
         { type: 'HIDE_LOADING_INDICATION' },
       ];
 
-      const mockTranslation = (key) => `translated_${key}`;
-
       await expect(
         store.dispatch(
           actions.connectHardware(
@@ -1002,7 +1028,7 @@ describe('Actions', () => {
             0,
             `m/44'/60'/0'/0`,
             true,
-            mockTranslation,
+            translateHardwareMessage,
           ),
         ),
       ).rejects.toThrow('translated_ledgerWebHIDNotConnectedErrorMessage');
@@ -1051,7 +1077,7 @@ describe('Actions', () => {
           0,
           `m/44'/60'/0'/0`,
           false,
-          (key) => `translated_${key}`,
+          translateHardwareMessage,
         ),
       );
 
@@ -1100,8 +1126,6 @@ describe('Actions', () => {
         { type: 'HIDE_LOADING_INDICATION' },
       ];
 
-      const mockTranslation = (key) => `translated_${key}`;
-
       await expect(
         store.dispatch(
           actions.connectHardware(
@@ -1109,7 +1133,7 @@ describe('Actions', () => {
             0,
             `m/44'/60'/0'/0`,
             true,
-            mockTranslation,
+            translateHardwareMessage,
           ),
         ),
       ).rejects.toThrow('translated_ledgerDeviceOpenFailureMessage');
@@ -1152,7 +1176,7 @@ describe('Actions', () => {
           0,
           `m/44'/60'/0'/0`,
           true,
-          (key) => `translated_${key}`,
+          translateHardwareMessage,
         ),
       );
 
