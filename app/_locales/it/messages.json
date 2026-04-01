@@ -118,14 +118,8 @@
   "advanced": {
     "message": "Avanzate"
   },
-  "advancedBaseGasFeeToolTip": {
-    "message": "Quando la tua transazione viene inclusa nel blocco, ogni differenza tra la tua offerta massima di gas e il gas effettivamente utilizzato viene restituita a te. Il totale viene calcolato come offerta massima di gas (in GEWI) * limite di gas."
-  },
   "advancedGasPriceTitle": {
     "message": "Prezzo gas"
-  },
-  "advancedPriorityFeeToolTip": {
-    "message": "La commissione di priorità avanzata (nota anche come \"suggerimento del minatore\") va direttamente ai minatori e li incentiva a dare la priorità alla tua commissione di transazione."
   },
   "alertDisableTooltip": {
     "message": "Può essere cambiato in \"Impostazioni > Avvisi\""
@@ -396,9 +390,6 @@
   "currentLanguage": {
     "message": "Lingua Corrente"
   },
-  "currentTitle": {
-    "message": "Corrente:"
-  },
   "currentlyUnavailable": {
     "message": "Non disponibile su questa Rete"
   },
@@ -433,9 +424,6 @@
   "dappSuggestedGasSettingToolTipMessage": {
     "message": "$1 ha suggerito questo prezzo.",
     "description": "$1 is url for the dapp that has suggested gas settings"
-  },
-  "dappSuggestedShortLabel": {
-    "message": "Sito"
   },
   "darkTheme": {
     "message": "Scuro"
@@ -512,9 +500,6 @@
   "dontShowThisAgain": {
     "message": "Non mostrare di nuovo"
   },
-  "downArrow": {
-    "message": "Freccia in giù"
-  },
   "downloadGoogleChrome": {
     "message": "Scarica Google Chrome"
   },
@@ -544,19 +529,6 @@
   },
   "editGasLimitOutOfBounds": {
     "message": "Il limite di gas deve essere almeno $1"
-  },
-  "editGasLimitOutOfBoundsV2": {
-    "message": "Il limite del gas deve essere maggiore di $1 e minore di $2",
-    "description": "$1 is the minimum limit for gas and $2 is the maximum limit"
-  },
-  "editGasMaxBaseFeeGWEIImbalance": {
-    "message": "La tariffa base massima non può essere inferiore alla tariffa prioritaria"
-  },
-  "editGasMaxBaseFeeHigh": {
-    "message": "La tariffa base massima è superiore al necessario"
-  },
-  "editGasMaxBaseFeeLow": {
-    "message": "La tariffa base massima è bassa per le condizioni di rete attuali"
   },
   "encryptionPublicKeyNotice": {
     "message": "$1 vorrebbe la tua chiave di cifratura pubblica. Consentendo, questo sito sarà in grado di comporre messaggi criptati per te.",

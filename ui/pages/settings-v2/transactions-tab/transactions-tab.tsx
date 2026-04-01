@@ -58,6 +58,7 @@ const SecurityAlertsItem = createToggleItem({
   selector: getIsSecurityAlertsEnabled,
   action: setSecurityAlertsEnabled,
   dataTestId: 'transactions-security-alerts-toggle',
+  containerDataTestId: 'securityAlert',
   disabledSelector: selectIsDisabledByShieldSubscription,
   trackEvent: {
     event: MetaMetricsEventName.SettingsUpdated,
@@ -109,6 +110,7 @@ const ShowHexDataItem = createToggleItem({
     Boolean(state.metamask?.featureFlags?.sendHexData),
   action: (value: boolean) => setFeatureFlag('sendHexData', value, ''),
   dataTestId: 'transactions-show-hex-data-toggle',
+  containerDataTestId: 'transactions-settings-hex-data-toggle',
 });
 
 const TRANSACTION_SETTING_ITEMS: SettingItemConfig[] = [
