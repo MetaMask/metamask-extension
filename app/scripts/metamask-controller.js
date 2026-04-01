@@ -439,7 +439,10 @@ import {
 import { MessengerSubscriptions } from './lib/MessengerSubscriptions';
 import { ProfileMetricsControllerInit } from './controller-init/profile-metrics-controller-init';
 import { ProfileMetricsServiceInit } from './controller-init/profile-metrics-service-init';
-import { getTempoExtraOptionsForChain } from './lib/transaction/tempo-tx-utils';
+import {
+  getTempoExtraOptionsForChain,
+  isTempoChain,
+} from './lib/transaction/tempo-tx-utils';
 import { accountSupports7702 } from './lib/account-supports-7702';
 
 export const METAMASK_CONTROLLER_EVENTS = {
@@ -1021,25 +1024,28 @@ export default class MetamaskController extends EventEmitter {
          * Gets chain-specific parameters that need to be injected in addTransaction/addTransactionBatch.
          * Done initially for Tempo.
          * Done gracefully - silencing errors - so it doesn't impact previous behavior.
+         * Skipped in case of account not supporting EIP-7702, such as hardware wallets.
          */
         let addTransactionExtraOptions = {};
         try {
-          const isEip7702SupportedByAccount = await accountSupports7702(
-            req.params?.[0].from,
-            this.keyringController,
-          );
-          if (isEip7702SupportedByAccount) {
-            const { chainId: currentRequestChainId } =
-              this.networkController.getNetworkConfigurationByNetworkClientId(
-                req.networkClientId,
+          const { chainId: currentRequestChainId } =
+            this.networkController.getNetworkConfigurationByNetworkClientId(
+              req.networkClientId,
+            );
+          if (isTempoChain(currentRequestChainId)) {
+            const isEip7702SupportedByAccount = await accountSupports7702(
+              req.params?.[0].from,
+              this.keyringController,
+            );
+            if (isEip7702SupportedByAccount) {
+              addTransactionExtraOptions = getTempoExtraOptionsForChain(
+                currentRequestChainId,
               );
-            addTransactionExtraOptions = getTempoExtraOptionsForChain(
-              currentRequestChainId,
-            );
-          } else {
-            console.warn(
-              'wallet_sendCalls: Tempo chain but wallet does not support 7702. Falling back to legacy transactions',
-            );
+            } else {
+              console.warn(
+                'wallet_sendCalls: Tempo chain but wallet does not support 7702. Falling back to legacy transactions',
+              );
+            }
           }
         } catch (err) {
           console.warn(
