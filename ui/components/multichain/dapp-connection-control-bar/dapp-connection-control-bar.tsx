@@ -298,7 +298,8 @@ export const DappConnectionControlBar: React.FC = () => {
               type="button"
             >
               <AvatarNetwork
-                size={AvatarNetworkSize.Sm}
+                className="dapp-connection-control-bar__network-icon"
+                size={AvatarNetworkSize.Xs}
                 name={
                   (dappActiveNetwork as { name?: string })?.name ??
                   (dappActiveNetwork as { nickname?: string })?.nickname ??

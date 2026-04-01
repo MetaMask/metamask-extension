@@ -23,3 +23,12 @@ export type {
   UsePerpsMarginCalculationsReturn,
   MarginRiskAssessment,
 } from './usePerpsMarginCalculations';
+
+export {
+  estimateLiquidationPrice,
+  liquidationDistancePercent,
+  maintenanceMarginRateFromMaxLeverage,
+  safeDenominator,
+  MARGIN_ADJUSTMENT_CONFIG,
+} from './marginUtils';
+export type { EstimateLiquidationPriceParams } from './marginUtils';

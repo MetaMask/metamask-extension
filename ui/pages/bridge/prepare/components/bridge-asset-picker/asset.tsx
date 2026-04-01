@@ -192,6 +192,7 @@ export const BridgeAsset = React.forwardRef(
           iconProps={{
             size: IconSize.Sm,
           }}
+          data-testid={`bridge-asset-info-icon-${asset.assetId}`}
         />
       </Row>
     );
