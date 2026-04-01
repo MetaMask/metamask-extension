@@ -44,9 +44,9 @@ export const BridgeCTAButton = ({
 }: {
   onFetchNewQuotes: () => void;
   needsDestinationAddress?: boolean;
-  onOpenRecipientModal?: () => void;
+  onOpenRecipientModal: () => void;
   onOpenPriceImpactWarningModal: () => void;
-  onOpenMarketClosedModal?: () => void;
+  onOpenMarketClosedModal: () => void;
 }) => {
   const t = useI18nContext();
   const dispatch = useDispatch();

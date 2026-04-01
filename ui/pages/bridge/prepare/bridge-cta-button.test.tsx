@@ -81,6 +81,8 @@ describe('BridgeCTAButton', () => {
         <BridgeCTAButton
           onFetchNewQuotes={jest.fn()}
           onOpenPriceImpactWarningModal={mockOnOpenPriceImpactWarningModal}
+          onOpenRecipientModal={jest.fn()}
+          onOpenMarketClosedModal={jest.fn()}
         />
       </HardwareWalletProvider>,
       configureStore(mockStore),
@@ -115,6 +117,8 @@ describe('BridgeCTAButton', () => {
         <BridgeCTAButton
           onFetchNewQuotes={jest.fn()}
           onOpenPriceImpactWarningModal={mockOnOpenPriceImpactWarningModal}
+          onOpenRecipientModal={jest.fn()}
+          onOpenMarketClosedModal={jest.fn()}
         />
       </HardwareWalletProvider>,
       configureStore(mockStore),
@@ -151,6 +155,8 @@ describe('BridgeCTAButton', () => {
         <BridgeCTAButton
           onFetchNewQuotes={jest.fn()}
           onOpenPriceImpactWarningModal={mockOnOpenPriceImpactWarningModal}
+          onOpenRecipientModal={jest.fn()}
+          onOpenMarketClosedModal={jest.fn()}
         />
       </HardwareWalletProvider>,
       configureStore(mockStore),
@@ -186,6 +192,8 @@ describe('BridgeCTAButton', () => {
         <BridgeCTAButton
           onFetchNewQuotes={jest.fn()}
           onOpenPriceImpactWarningModal={mockOnOpenPriceImpactWarningModal}
+          onOpenRecipientModal={jest.fn()}
+          onOpenMarketClosedModal={jest.fn()}
         />
       </HardwareWalletProvider>,
       configureStore(mockStore),
@@ -224,6 +232,8 @@ describe('BridgeCTAButton', () => {
         <BridgeCTAButton
           onFetchNewQuotes={jest.fn()}
           onOpenPriceImpactWarningModal={mockOnOpenPriceImpactWarningModal}
+          onOpenRecipientModal={jest.fn()}
+          onOpenMarketClosedModal={jest.fn()}
         />
       </HardwareWalletProvider>,
       configureStore(mockStore),
@@ -246,6 +256,8 @@ describe('BridgeCTAButton', () => {
         <BridgeCTAButton
           onFetchNewQuotes={onFetchNewQuotes}
           onOpenPriceImpactWarningModal={mockOnOpenPriceImpactWarningModal}
+          onOpenRecipientModal={jest.fn()}
+          onOpenMarketClosedModal={jest.fn()}
         />
       </HardwareWalletProvider>,
       store,
@@ -293,6 +305,8 @@ describe('BridgeCTAButton', () => {
         <BridgeCTAButton
           onFetchNewQuotes={jest.fn()}
           onOpenPriceImpactWarningModal={mockOnOpenPriceImpactWarningModal}
+          onOpenRecipientModal={jest.fn()}
+          onOpenMarketClosedModal={jest.fn()}
         />
       </HardwareWalletProvider>,
       configureStore(mockStore),
@@ -331,6 +345,8 @@ describe('BridgeCTAButton', () => {
         <BridgeCTAButton
           onFetchNewQuotes={jest.fn()}
           onOpenPriceImpactWarningModal={mockOnOpenPriceImpactWarningModal}
+          onOpenRecipientModal={jest.fn()}
+          onOpenMarketClosedModal={jest.fn()}
         />
       </HardwareWalletProvider>,
       configureStore(mockStore),
@@ -350,6 +366,28 @@ describe('BridgeCTAButton', () => {
     ],
     ['enable', 'the estimated return is low', { isEstimatedReturnLow: true }],
     ['enable', 'there are no validation errors', {}, messages.swap.message],
+    [
+      'enable',
+      'market is closed',
+      { isStockMarketClosed: true },
+      'Market closed',
+    ],
+    [
+      'enable',
+      'market is closed (no quotes after fetch)',
+      { isStockMarketClosed: true },
+      'Market closed',
+      { quotesLoadingStatus: RequestStatus.FETCHED },
+    ],
+    [
+      'enable',
+      'recipient address is not set',
+      { isStockMarketClosed: true },
+      'Select a destination account',
+      {},
+      { fromTokenInputValue: null },
+      { needsDestinationAddress: true },
+    ],
   ])(
     'should %s the component when quotes are loading and %s',
     async (
@@ -357,28 +395,24 @@ describe('BridgeCTAButton', () => {
       _: string,
       validationErrors: Record<string, boolean>,
       buttonLabel: string = messages.swap.message,
+      bridgeStateOverrides: Record<string, any> = {},
+      bridgeSliceOverrides: Record<string, any> = {},
+      propOverrides: Record<string, any> = {},
     ) => {
       const mockStore = createBridgeMockStore({
-        featureFlagOverrides: {
-          bridgeConfig: {
-            chainRanking: [
-              { chainId: formatChainIdToCaip(CHAIN_IDS.MAINNET) },
-              { chainId: formatChainIdToCaip(CHAIN_IDS.OPTIMISM) },
-              { chainId: formatChainIdToCaip(CHAIN_IDS.LINEA_MAINNET) },
-            ],
-          },
-        },
         bridgeSliceOverrides: {
           fromTokenInputValue: '1',
           fromToken: toBridgeToken(getNativeAssetForChainId(CHAIN_IDS.MAINNET)),
           toToken: toBridgeToken(
             getNativeAssetForChainId(CHAIN_IDS.LINEA_MAINNET),
           ),
+          ...bridgeSliceOverrides,
         },
         bridgeStateOverrides: {
           quotes: mockBridgeQuotesNativeErc20 as unknown as QuoteResponse[],
           quotesLastFetched: Date.now(),
           quotesLoadingStatus: RequestStatus.LOADING,
+          ...bridgeStateOverrides,
         },
       });
       jest.spyOn(bridgeSelectors, 'getValidationErrors').mockReturnValue({
@@ -394,16 +428,20 @@ describe('BridgeCTAButton', () => {
         isPriceImpactError: false,
         ...validationErrors,
       });
-      const { findByRole } = renderWithProvider(
+      const { findByRole, getByText } = renderWithProvider(
         <HardwareWalletProvider>
           <BridgeCTAButton
             onFetchNewQuotes={jest.fn()}
             onOpenPriceImpactWarningModal={mockOnOpenPriceImpactWarningModal}
+            onOpenRecipientModal={jest.fn()}
+            onOpenMarketClosedModal={jest.fn()}
+            {...propOverrides}
           />
         </HardwareWalletProvider>,
         configureStore(mockStore),
       );
 
+      expect(getByText(buttonLabel)).toBeInTheDocument();
       expect(await findByRole('button')).toHaveTextContent(buttonLabel);
       if (status === 'disable') {
         expect(await findByRole('button')).toBeDisabled();
@@ -412,6 +450,188 @@ describe('BridgeCTAButton', () => {
       }
     },
   );
+
+  // @ts-expect-error: each is a valid test function in jest
+  it.each([
+    ['market is closed (no quotes)', 'Market closed'],
+    [
+      'recipient address is not set (no quotes)',
+      'Select a destination account',
+      { fromTokenInputValue: null },
+      { needsDestinationAddress: true },
+    ],
+  ])(
+    'should render the component when quotes are loading and %s',
+    async (
+      _: string,
+      bridgeSliceOverrides: Record<string, any> = {},
+      propOverrides: Record<string, any> = {},
+    ) => {
+      const mockStore = createBridgeMockStore({
+        bridgeSliceOverrides: {
+          fromTokenInputValue: '1',
+          fromToken: toBridgeToken(getNativeAssetForChainId(CHAIN_IDS.MAINNET)),
+          toToken: toBridgeToken(
+            getNativeAssetForChainId(CHAIN_IDS.LINEA_MAINNET),
+          ),
+          ...bridgeSliceOverrides,
+        },
+        bridgeStateOverrides: {
+          quotes: [],
+          quotesLastFetched: Date.now(),
+          quotesLoadingStatus: RequestStatus.LOADING,
+        },
+      });
+      jest.spyOn(bridgeSelectors, 'getValidationErrors').mockReturnValue({
+        isTxAlertPresent: false,
+        isNoQuotesAvailable: false,
+        isInsufficientGasBalance: false,
+        isInsufficientGasForQuote: false,
+        isInsufficientBalance: false,
+        isEstimatedReturnLow: false,
+        isTxAlertLoading: false,
+        isPriceImpactWarning: false,
+        isPriceImpactError: false,
+        isStockMarketClosed: true,
+      });
+      const { container } = renderWithProvider(
+        <HardwareWalletProvider>
+          <BridgeCTAButton
+            onFetchNewQuotes={jest.fn()}
+            onOpenPriceImpactWarningModal={mockOnOpenPriceImpactWarningModal}
+            onOpenRecipientModal={jest.fn()}
+            onOpenMarketClosedModal={jest.fn()}
+            {...propOverrides}
+          />
+        </HardwareWalletProvider>,
+        configureStore(mockStore),
+      );
+
+      expect(container).toMatchSnapshot();
+    },
+  );
+
+  // @ts-expect-error: each is a valid test function in jest
+  it.each([
+    [
+      'quote is expired (no quotes)',
+      'Fetch a new one?',
+      {
+        quotes: [],
+        quotesLastFetched: Date.now() - 35000,
+        quotesRefreshCount: 5,
+      },
+    ],
+    [
+      'there are no quotes and quote fetch has an error',
+      'Select token',
+      {
+        quotes: [],
+        quotesLastFetched: Date.now() - 5000,
+        quotesLoadingStatus: RequestStatus.ERROR,
+        quotesRefreshCount: 4,
+      },
+    ],
+    ['tx is declined', 'Fetch a new one?', {}, true],
+    [
+      'quote is expired',
+      'Fetch a new one?',
+      {
+        quotesLastFetched: Date.now() - 35000,
+        quotesLoadingStatus: RequestStatus.FETCHED,
+        quotesRefreshCount: 5,
+      },
+    ],
+  ])(
+    'should show CTA when %s',
+    async (
+      _: string,
+      buttonLabel: string,
+      bridgeStateOverrides: Record<string, boolean>,
+      wasTxDeclined: boolean = false,
+    ) => {
+      const mockStore = createBridgeMockStore({
+        bridgeSliceOverrides: {
+          fromTokenInputValue: '1',
+          fromToken: toBridgeToken(getNativeAssetForChainId(CHAIN_IDS.MAINNET)),
+          toToken: toBridgeToken(
+            getNativeAssetForChainId(CHAIN_IDS.LINEA_MAINNET),
+          ),
+          wasTxDeclined: wasTxDeclined,
+        },
+        bridgeStateOverrides: {
+          quotes: mockBridgeQuotesNativeErc20 as unknown as QuoteResponse[],
+          quotesLastFetched: Date.now(),
+          quotesLoadingStatus: RequestStatus.FETCHED,
+          quoteRequest: {
+            insufficientBal: false,
+          },
+          ...bridgeStateOverrides,
+        },
+      });
+      const { findByText } = renderWithProvider(
+        <HardwareWalletProvider>
+          <BridgeCTAButton
+            onFetchNewQuotes={jest.fn()}
+            onOpenPriceImpactWarningModal={mockOnOpenPriceImpactWarningModal}
+            onOpenRecipientModal={jest.fn()}
+            onOpenMarketClosedModal={jest.fn()}
+          />
+        </HardwareWalletProvider>,
+        configureStore(mockStore),
+      );
+
+      expect(await findByText(buttonLabel)).toBeInTheDocument();
+    },
+  );
+
+  it('should show fetch-quotes CTA when quote is expired and market is closed', async () => {
+    const mockStore = createBridgeMockStore({
+      bridgeSliceOverrides: {
+        fromTokenInputValue: '1',
+        fromToken: toBridgeToken(getNativeAssetForChainId(CHAIN_IDS.MAINNET)),
+        toToken: toBridgeToken(
+          getNativeAssetForChainId(CHAIN_IDS.LINEA_MAINNET),
+        ),
+        wasTxDeclined: false,
+      },
+      bridgeStateOverrides: {
+        quotes: mockBridgeQuotesNativeErc20 as unknown as QuoteResponse[],
+        quotesLastFetched: Date.now() - 35000,
+        quotesLoadingStatus: RequestStatus.FETCHED,
+        quoteRequest: {
+          insufficientBal: false,
+        },
+        quotesRefreshCount: 5,
+      },
+    });
+    jest.spyOn(bridgeSelectors, 'getValidationErrors').mockReturnValue({
+      isTxAlertPresent: false,
+      isNoQuotesAvailable: false,
+      isInsufficientGasBalance: false,
+      isInsufficientGasForQuote: false,
+      isInsufficientBalance: false,
+      isEstimatedReturnLow: false,
+      isTxAlertLoading: false,
+      isPriceImpactWarning: false,
+      isPriceImpactError: false,
+      isStockMarketClosed: true,
+    });
+    const { getByText } = renderWithProvider(
+      <HardwareWalletProvider>
+        <BridgeCTAButton
+          onFetchNewQuotes={jest.fn()}
+          onOpenPriceImpactWarningModal={mockOnOpenPriceImpactWarningModal}
+          onOpenRecipientModal={jest.fn()}
+          onOpenMarketClosedModal={jest.fn()}
+        />
+      </HardwareWalletProvider>,
+      configureStore(mockStore),
+    );
+
+    expect(getByText('Market closed')).toBeInTheDocument();
+    expect(getByText('Fetch a new one?')).toBeInTheDocument();
+  });
 
   it('should not disable the component when quotes are loading and there are existing quotes', () => {
     const mockStore = createBridgeMockStore({
@@ -442,6 +662,8 @@ describe('BridgeCTAButton', () => {
         <BridgeCTAButton
           onFetchNewQuotes={jest.fn()}
           onOpenPriceImpactWarningModal={mockOnOpenPriceImpactWarningModal}
+          onOpenRecipientModal={jest.fn()}
+          onOpenMarketClosedModal={jest.fn()}
         />
       </HardwareWalletProvider>,
       configureStore(mockStore),
@@ -508,6 +730,8 @@ describe('BridgeCTAButton', () => {
           <BridgeCTAButton
             onFetchNewQuotes={jest.fn()}
             onOpenPriceImpactWarningModal={mockOnOpenPriceImpactWarningModal}
+            onOpenRecipientModal={jest.fn()}
+            onOpenMarketClosedModal={jest.fn()}
           />
         </HardwareWalletProvider>,
         configureStore(mockStore),
