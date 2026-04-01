@@ -20,16 +20,16 @@ on:
   workflow_dispatch:
     inputs:
       head_sha:
-        description: "Commit SHA to checkout (must include CHANGELOG.md / package.json for that RC)"
+        description: 'Commit SHA to checkout (must include CHANGELOG.md / package.json for that RC)'
         required: true
       semver:
-        description: "Semver X.Y.Z (same as release/X.Y.Z)"
+        description: 'Semver X.Y.Z (same as release/X.Y.Z)'
         required: true
       github_run_id:
-        description: "GitHub Actions run ID for CloudFront HOST_URL path and run link (e.g. from a recent Main run)"
+        description: 'GitHub Actions run ID for CloudFront HOST_URL path and run link (e.g. from a recent Main run)'
         required: true
       test_channel:
-        description: "Slack channel (#name or ID). Sets SLACK_RC_CHANNEL for the script. Bot must be in the channel."
+        description: 'Slack channel (#name or ID). Sets SLACK_RC_CHANNEL for the script. Bot must be in the channel.'
         required: true
 
 permissions:
