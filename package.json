@@ -266,9 +266,7 @@
     "@metamask/bridge-status-controller@npm:^69.0.0": "patch:@metamask/bridge-status-controller@patch%3A@metamask/bridge-status-controller@npm%253A69.0.0%23~/.yarn/patches/@metamask-bridge-status-controller-npm-69.0.0-15106ec5e0.patch%3A%3Aversion=69.0.0&hash=ca26bd#~/.yarn/patches/@metamask-bridge-status-controller-patch-b9566c90d6.patch",
     "@metamask/messenger@npm:^0.3.0": "^1.0.0",
     "@metamask/account-tree-controller@npm:^5.0.1": "^6.0.0",
-    "@metamask/transaction-controller": "npm:@metamask-previews/transaction-controller@63.3.1-preview-3f3a92d7b",
-    "@metamask/assets-controller": "npm:@metamask-previews/assets-controller@3.2.1-preview-4d8fce273",
-    "@metamask/assets-controllers": "npm:@metamask-previews/assets-controllers@103.0.0-preview-4d8fce273"
+    "@metamask/transaction-controller": "npm:@metamask-previews/transaction-controller@63.3.1-preview-3f3a92d7b"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.26.10#~/.yarn/patches/@babel-runtime-npm-7.26.10-fe8c62510a.patch",
@@ -302,8 +300,8 @@
     "@metamask/address-book-controller": "^7.1.0",
     "@metamask/announcement-controller": "^8.0.0",
     "@metamask/approval-controller": "^9.0.0",
-    "@metamask/assets-controller": "^3.2.0",
-    "@metamask/assets-controllers": "^102.0.0",
+    "@metamask/assets-controller": "^3.3.0",
+    "@metamask/assets-controllers": "^103.1.0",
     "@metamask/base-controller": "^9.0.1",
     "@metamask/bitcoin-wallet-snap": "^1.10.0",
     "@metamask/bridge-controller": "^68.0.0",
