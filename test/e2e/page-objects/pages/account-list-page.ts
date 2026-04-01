@@ -218,7 +218,7 @@ class AccountListPage {
 
   private readonly importSrpConfirmButton = {
     text: 'Continue',
-    tag: 'button',
+    tag: 'span',
   };
 
   private readonly exportSrpButton = {
