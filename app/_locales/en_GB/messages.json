@@ -6691,7 +6691,7 @@
     "message": "Security and password"
   },
   "securityAndPrivacy": {
-    "message": "Security & privacy"
+    "message": "Security and privacy"
   },
   "securityChangePassword": {
     "message": "Change password"
@@ -6709,7 +6709,7 @@
     "message": "New password saved"
   },
   "securityDefaultSettingsSocialLogin": {
-    "message": "Security & privacy"
+    "message": "Security and privacy"
   },
   "securityDescription": {
     "message": "Reduce your chances of joining unsafe networks and protect your accounts"
@@ -8896,6 +8896,9 @@
   },
   "transactions": {
     "message": "Transactions"
+  },
+  "transactionsandAssets": {
+    "message": "Transactions and assets"
   },
   "transfer": {
     "message": "Transfer"
