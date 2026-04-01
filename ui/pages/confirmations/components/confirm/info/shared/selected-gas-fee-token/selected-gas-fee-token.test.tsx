@@ -2,6 +2,7 @@ import React from 'react';
 import { GasFeeToken } from '@metamask/transaction-controller';
 import { act } from 'react-dom/test-utils';
 
+import { Hex } from '@metamask/utils';
 import { NATIVE_TOKEN_ADDRESS } from '../../../../../../../../shared/constants/transaction';
 import { getMockConfirmStateForTransaction } from '../../../../../../../../test/data/confirmations/helper';
 import configureStore from '../../../../../../../store/store';
@@ -25,14 +26,17 @@ function getStore({
   gasFeeTokens,
   noSelectedGasFeeToken,
   excludeNativeTokenForFee,
+  chainId,
 }: {
   gasFeeTokens?: GasFeeToken[];
   noSelectedGasFeeToken?: boolean;
   excludeNativeTokenForFee?: boolean;
+  chainId?: Hex;
 } = {}) {
   return configureStore(
     getMockConfirmStateForTransaction(
       genUnapprovedContractInteractionConfirmation({
+        chainId,
         gasFeeTokens: gasFeeTokens ?? [GAS_FEE_TOKEN_MOCK],
         excludeNativeTokenForFee,
         selectedGasFeeToken: noSelectedGasFeeToken
@@ -137,6 +141,20 @@ describe('SelectedGasFeeToken', () => {
     expect(
       result.getByTestId('selected-gas-fee-token-arrow'),
     ).toBeInTheDocument();
+  });
+
+  it('renders local native symbol if `gasFeeTokens` is empty and `excludeNativeTokenForFee` is set (Tempo)', () => {
+    const result = renderWithConfirmContextProvider(
+      <SelectedGasFeeToken />,
+      getStore({
+        chainId: '0x1079',
+        noSelectedGasFeeToken: true,
+        gasFeeTokens: [],
+        excludeNativeTokenForFee: true,
+      }),
+    );
+
+    expect(result.getByText('pathUSD')).toBeInTheDocument();
   });
 
   it('does not render arrow icon if gasless not supported', () => {
