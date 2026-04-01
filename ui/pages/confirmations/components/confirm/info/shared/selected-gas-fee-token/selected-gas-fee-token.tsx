@@ -2,6 +2,7 @@ import React, { useCallback, useMemo, useState } from 'react';
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { useSelector } from 'react-redux';
 
+import { getNativeTokenAddress } from '@metamask/assets-controllers';
 import { NATIVE_TOKEN_ADDRESS } from '../../../../../../../../shared/constants/transaction';
 import {
   Box,
@@ -24,6 +25,7 @@ import { useSelectedGasFeeToken } from '../../hooks/useGasFeeToken';
 import { GasFeeTokenIcon, GasFeeTokenIconSize } from '../gas-fee-token-icon';
 import { useIsGaslessSupported } from '../../../../../hooks/gas/useIsGaslessSupported';
 import { useIsInsufficientBalance } from '../../../../../hooks/useIsInsufficientBalance';
+import { CHAIN_ID_TO_CURRENCY_SYMBOL_MAP } from '../../../../../../../../shared/constants/network';
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -79,7 +81,33 @@ export function SelectedGasFeeToken() {
 
   const nativeTicker = networkConfiguration?.nativeCurrency;
   const gasFeeToken = useSelectedGasFeeToken();
-  const symbol = gasFeeToken?.symbol ?? nativeTicker;
+
+  const { gasTokenAddress, gasTokenSymbol } = useMemo(() => {
+    // For chains with no native token (signaled by `excludeNativeTokenForFee`):
+    // - We may set the symbol of a default fee token the chain config (ex: pathUSD).
+    // - We may set the address of a default fee token in the assets-controllers config (ex: 0x20c0000000000000000000000000000000000000)
+    // If one of them is not set, falling back to original behavior.
+    if (!gasFeeToken && excludeNativeTokenForFee) {
+      const localConfigSymbol =
+        CHAIN_ID_TO_CURRENCY_SYMBOL_MAP[
+          chainId as keyof typeof CHAIN_ID_TO_CURRENCY_SYMBOL_MAP
+        ];
+      const assetsControllerNativeTokenAddress = getNativeTokenAddress(chainId);
+      if (localConfigSymbol && assetsControllerNativeTokenAddress) {
+        return {
+          gasTokenSymbol: localConfigSymbol,
+          gasTokenAddress: assetsControllerNativeTokenAddress,
+        };
+      }
+    }
+    // Original behavior (most chains)
+    const symbol = gasFeeToken?.symbol ?? nativeTicker;
+    const address = gasFeeToken?.tokenAddress ?? NATIVE_TOKEN_ADDRESS;
+    return {
+      gasTokenSymbol: symbol,
+      gasTokenAddress: address,
+    };
+  }, [gasFeeToken, nativeTicker, chainId, excludeNativeTokenForFee]);
 
   return (
     <>
@@ -107,10 +135,10 @@ export function SelectedGasFeeToken() {
         }}
       >
         <GasFeeTokenIcon
-          tokenAddress={gasFeeToken?.tokenAddress ?? NATIVE_TOKEN_ADDRESS}
+          tokenAddress={gasTokenAddress}
           size={GasFeeTokenIconSize.Sm}
         />
-        <Text>{symbol}</Text>
+        <Text>{gasTokenSymbol}</Text>
         {hasMoreThanOneGasFeeTokenToChooseFrom && (
           <Icon
             data-testid="selected-gas-fee-token-arrow"
