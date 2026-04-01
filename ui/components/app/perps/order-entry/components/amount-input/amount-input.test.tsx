@@ -224,6 +224,50 @@ describe('AmountInput', () => {
       const input = container.querySelector('input');
       expect(input).toHaveValue('1000.50');
     });
+
+    it('floors amount to 2 decimals on blur', () => {
+      const onAmountChange = jest.fn();
+      renderWithProvider(
+        <AmountInput
+          {...defaultProps}
+          amount="3.067"
+          onAmountChange={onAmountChange}
+        />,
+        mockStore,
+      );
+
+      const container = screen.getByTestId('amount-input-field');
+      const input = container.querySelector('input');
+      expect(input).not.toBeNull();
+      fireEvent.blur(input as HTMLInputElement);
+
+      expect(onAmountChange).toHaveBeenCalledWith('3.06');
+    });
+  });
+
+  describe('token input', () => {
+    it('floors converted USD amount to 2 decimals', () => {
+      const onAmountChange = jest.fn();
+      renderWithProvider(
+        <AmountInput
+          {...defaultProps}
+          onAmountChange={onAmountChange}
+          availableBalance={3.066}
+          currentPrice={1}
+          leverage={1}
+        />,
+        mockStore,
+      );
+
+      const container = screen.getByTestId('amount-input-token-field');
+      const input = container.querySelector('input');
+      expect(input).not.toBeNull();
+      fireEvent.change(input as HTMLInputElement, {
+        target: { value: '3.067' },
+      });
+
+      expect(onAmountChange).toHaveBeenCalledWith('3.06');
+    });
   });
 
   describe('slider', () => {
@@ -231,6 +275,81 @@ describe('AmountInput', () => {
       renderWithProvider(<AmountInput {...defaultProps} />, mockStore);
 
       expect(screen.getByTestId('amount-slider')).toBeInTheDocument();
+    });
+  });
+
+  describe('percent input', () => {
+    it('does not underflow at 100% for IEEE-754 edge values', () => {
+      const onAmountChange = jest.fn();
+      const onBalancePercentChange = jest.fn();
+      renderWithProvider(
+        <AmountInput
+          {...defaultProps}
+          onAmountChange={onAmountChange}
+          onBalancePercentChange={onBalancePercentChange}
+          availableBalance={1.15}
+        />,
+        mockStore,
+      );
+
+      const container = screen.getByTestId('balance-percent-input');
+      const input = container.querySelector('input');
+      expect(input).not.toBeNull();
+      fireEvent.change(input as HTMLInputElement, {
+        target: { value: '100' },
+      });
+
+      expect(onBalancePercentChange).toHaveBeenCalledWith(100);
+      expect(onAmountChange).toHaveBeenCalledWith('1.15');
+    });
+
+    it('floors generated 100% amount to 2 decimals', () => {
+      const onAmountChange = jest.fn();
+      const onBalancePercentChange = jest.fn();
+      renderWithProvider(
+        <AmountInput
+          {...defaultProps}
+          onAmountChange={onAmountChange}
+          onBalancePercentChange={onBalancePercentChange}
+          availableBalance={3.066}
+        />,
+        mockStore,
+      );
+
+      const container = screen.getByTestId('balance-percent-input');
+      const input = container.querySelector('input');
+      expect(input).not.toBeNull();
+      fireEvent.change(input as HTMLInputElement, {
+        target: { value: '100' },
+      });
+
+      expect(onBalancePercentChange).toHaveBeenCalledWith(100);
+      expect(onAmountChange).toHaveBeenCalledWith('3.06');
+    });
+
+    it('floors clamped amount when percent input is above 100 on blur', () => {
+      const onAmountChange = jest.fn();
+      const onBalancePercentChange = jest.fn();
+      renderWithProvider(
+        <AmountInput
+          {...defaultProps}
+          onAmountChange={onAmountChange}
+          onBalancePercentChange={onBalancePercentChange}
+          availableBalance={3.066}
+        />,
+        mockStore,
+      );
+
+      const container = screen.getByTestId('balance-percent-input');
+      const input = container.querySelector('input');
+      expect(input).not.toBeNull();
+      fireEvent.change(input as HTMLInputElement, {
+        target: { value: '101' },
+      });
+      fireEvent.blur(input as HTMLInputElement);
+
+      expect(onBalancePercentChange).toHaveBeenCalledWith(100);
+      expect(onAmountChange).toHaveBeenCalledWith('3.06');
     });
   });
 });

@@ -5,6 +5,7 @@ import { createBridgeMockStore } from '../../../test/data/bridge/mock-bridge-sto
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { mockNetworkState } from '../../../test/stub/networks';
 
+import * as environmentTypeUtils from '../../../shared/lib/environment-type';
 import mockBridgeQuotesErc20Erc20 from '../../../test/data/bridge/mock-quotes-erc20-erc20.json';
 import { setBackgroundConnection } from '../../store/background-connection';
 import { usePrefillFromBridgeState } from './usePrefillFromBridgeState';
@@ -101,6 +102,9 @@ describe('usePrefillFromBridgeState', () => {
   });
 
   it('should restore inputs from quote', async () => {
+    jest
+      .spyOn(environmentTypeUtils, 'getEnvironmentType')
+      .mockReturnValue('popup');
     const mockStoreState = createBridgeMockStore({
       bridgeStateOverrides: {
         quotes: mockBridgeQuotesErc20Erc20 as unknown as QuoteResponse[],
@@ -171,7 +175,7 @@ describe('usePrefillFromBridgeState', () => {
     `);
   });
 
-  it('should reset controller when there is no quote or navigation state', async () => {
+  it('should not reset controller when there is no quote or navigation state', async () => {
     const resetState = jest.fn();
     setBackgroundConnection({
       resetState,
@@ -214,6 +218,6 @@ describe('usePrefillFromBridgeState', () => {
     });
 
     renderUseBridgeQueryParams(mockStoreState);
-    expect(resetState).toHaveBeenCalledTimes(1);
+    expect(resetState).not.toHaveBeenCalled();
   });
 });
