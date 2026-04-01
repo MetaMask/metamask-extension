@@ -163,6 +163,8 @@ const PerpsOrderEntryPage: React.FC = () => {
   const { track } = usePerpsEventTracking();
   const tradingScreenTrackedRef = useRef(false);
   const orderTypeInteractionSkippedRef = useRef(false);
+  const trackRef = useRef(track);
+  trackRef.current = track;
   const tradeConfigurations = useSelector(selectPerpsTradeConfigurations);
   const isTestnet = useSelector(selectPerpsIsTestnet);
   const { trigger: triggerDeposit } = usePerpsDepositConfirmation();
@@ -248,12 +250,13 @@ const PerpsOrderEntryPage: React.FC = () => {
       orderTypeInteractionSkippedRef.current = true;
       return;
     }
-    track(MetaMetricsEventName.PerpsUiInteraction, {
+    trackRef.current(MetaMetricsEventName.PerpsUiInteraction, {
       [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
         PERPS_EVENT_VALUE.INTERACTION_TYPE.ORDER_TYPE_SELECTED,
       [PERPS_EVENT_PROPERTY.SELECTED_ORDER_TYPE]: orderType,
     });
-  }, [orderType, track]);
+    // Intentionally omit `track`: stable ref avoids spurious events when MetaMetricsContext changes.
+  }, [orderType]);
 
   const position = useMemo(() => {
     if (!decodedSymbol) {
