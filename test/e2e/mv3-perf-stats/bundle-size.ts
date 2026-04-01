@@ -12,23 +12,12 @@ import {
  * The e2e test case is used to capture bundle time statistics for extension.
  */
 
-const backgroundFiles: string[] = [
-  'scripts/runtime-lavamoat.js',
-  'scripts/lockdown-more.js',
-  'scripts/sentry-install.js',
-  'scripts/policy-load.js',
-];
+// Webpack entry points that belong to the background / service-worker category.
+const BackgroundFileRegex =
+  /^(?:service-worker\.js|scripts\/contentscript\.js|scripts\/inpage\.js)$/u;
 
-const uiFiles: string[] = [
-  'scripts/sentry-install.js',
-  'scripts/runtime-lavamoat.js',
-  'scripts/lockdown-more.js',
-  'scripts/policy-load.js',
-];
-
-const BackgroundFileRegex = /background-[0-9]*.js/u;
-const CommonFileRegex = /common-[0-9]*.js/u;
-const UIFileRegex = /ui-[0-9]*.js/u;
+// Webpack entry point for the UI popup.
+const UIFileRegex = /^ui[.]/u;
 
 type FileStat = {
   name: string;
@@ -40,6 +29,27 @@ type BundleStats = {
   size: number;
   fileList: FileStat[];
 };
+
+/**
+ * Recursively collects all .js files under `dir`, returning paths relative to `base`.
+ *
+ * @param dir - The directory to scan.
+ * @param base - The base directory for computing relative paths.
+ * @returns Array of relative file paths.
+ */
+async function collectJsFiles(dir: string, base: string): Promise<string[]> {
+  const entries = await fs.readdir(dir, { withFileTypes: true });
+  const files: string[] = [];
+  for (const entry of entries) {
+    const full = path.join(dir, entry.name);
+    if (entry.isDirectory()) {
+      files.push(...(await collectJsFiles(full, base)));
+    } else if (entry.isFile() && entry.name.endsWith('.js')) {
+      files.push(path.relative(base, full));
+    }
+  }
+  return files;
+}
 
 async function main(): Promise<void> {
   const { argv } = yargs(hideBin(process.argv)).usage(
@@ -60,20 +70,16 @@ async function main(): Promise<void> {
   const uiFileList: FileStat[] = [];
   const commonFileList: FileStat[] = [];
 
-  const files = await fs.readdir(distFolder);
+  const files = await collectJsFiles(distFolder, distFolder);
   for (const file of files) {
-    if (CommonFileRegex.test(file)) {
-      const stats = await fs.stat(`${distFolder}/${file}`);
-      commonFileList.push({ name: file, size: stats.size });
-    } else if (
-      backgroundFiles.includes(file) ||
-      BackgroundFileRegex.test(file)
-    ) {
-      const stats = await fs.stat(`${distFolder}/${file}`);
-      backgroundFileList.push({ name: file, size: stats.size });
-    } else if (uiFiles.includes(file) || UIFileRegex.test(file)) {
-      const stats = await fs.stat(`${distFolder}/${file}`);
-      uiFileList.push({ name: file, size: stats.size });
+    const stats = await fs.stat(path.join(distFolder, file));
+    const entry = { name: file, size: stats.size };
+    if (BackgroundFileRegex.test(file)) {
+      backgroundFileList.push(entry);
+    } else if (UIFileRegex.test(file)) {
+      uiFileList.push(entry);
+    } else {
+      commonFileList.push(entry);
     }
   }
 
