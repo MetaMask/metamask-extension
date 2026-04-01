@@ -14,11 +14,14 @@ import {
 } from '@metamask/design-system-react';
 import { Link } from 'react-router-dom';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { REVEAL_SRP_LIST_ROUTE } from '../../../helpers/constants/routes';
 import { getIsPrimarySeedPhraseBackedUp } from '../../../ducks/metamask/metamask';
 import { SECURITY_ITEMS } from '../search-config';
 
-const ManageWalletRecoveryItem = () => {
+type ManageWalletRecoveryItemProps = {
+  route: string;
+};
+
+const ManageWalletRecoveryItem = ({ route }: ManageWalletRecoveryItemProps) => {
   const t = useI18nContext();
   const isSRPBackedUp = useSelector(getIsPrimarySeedPhraseBackedUp);
 
@@ -58,7 +61,7 @@ const ManageWalletRecoveryItem = () => {
         alignItems={BoxAlignItems.Center}
         className="shrink-0"
       >
-        <Link to={REVEAL_SRP_LIST_ROUTE} className="flex ml-1">
+        <Link to={route} className="flex ml-1" data-testid="reveal-seed-words">
           <Icon
             name={IconName.ArrowRight}
             size={IconSize.Sm}
