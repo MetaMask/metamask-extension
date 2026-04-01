@@ -21,13 +21,24 @@ type UseHardwareFooterArgs = {
   currentConfirmation?: TransactionMeta;
   currentConfirmationId?: string;
   onUserRejectedHardwareWalletError: () => Promise<void>;
+  onConnectCtaMetrics?: () => void;
+};
+
+export type SubmitPreflightCheckOptions = {
+  /**
+   * When true, runs the optional `onConnectCtaMetrics` callback before device readiness (e.g. dedicated “Connect device” CTA).
+   * Omit or set to false for preflight from the main Confirm action.
+   */
+  trackConnectCta?: boolean;
 };
 
 type UseHardwareFooterResult = {
   walletType: ReturnType<typeof useHardwareWalletConfig>['walletType'];
   shouldRunHardwareWalletPreflight: boolean;
   isHardwareWalletReady: boolean;
-  onSubmitPreflightCheck: () => Promise<boolean>;
+  onSubmitPreflightCheck: (
+    options?: SubmitPreflightCheckOptions,
+  ) => Promise<boolean>;
   withHardwareWalletModalHandling: (
     request: () => Promise<void>,
   ) => () => Promise<void>;
@@ -37,6 +48,7 @@ export const useHardwareFooter = ({
   currentConfirmation,
   currentConfirmationId,
   onUserRejectedHardwareWalletError,
+  onConnectCtaMetrics,
 }: UseHardwareFooterArgs): UseHardwareFooterResult => {
   const inE2e =
     process.env.IN_TEST && process.env.JEST_WORKER_ID === 'undefined';
@@ -105,21 +117,29 @@ export const useHardwareFooter = ({
     isHardwareWalletAccount,
   ]);
 
-  const onSubmitPreflightCheck = useCallback(async (): Promise<boolean> => {
-    if (inE2e || !isHardwareWalletAccount) {
-      return true;
-    }
+  const onSubmitPreflightCheck = useCallback(
+    async (options?: SubmitPreflightCheckOptions): Promise<boolean> => {
+      if (inE2e || !isHardwareWalletAccount) {
+        return true;
+      }
 
-    const isDeviceReady = await ensureDeviceReady(ensureDeviceReadyOptions);
-    setHasPreflightSucceeded(isDeviceReady);
+      if (options?.trackConnectCta) {
+        onConnectCtaMetrics?.();
+      }
 
-    return isDeviceReady;
-  }, [
-    inE2e,
-    isHardwareWalletAccount,
-    ensureDeviceReady,
-    ensureDeviceReadyOptions,
-  ]);
+      const isDeviceReady = await ensureDeviceReady(ensureDeviceReadyOptions);
+      setHasPreflightSucceeded(isDeviceReady);
+
+      return isDeviceReady;
+    },
+    [
+      inE2e,
+      isHardwareWalletAccount,
+      onConnectCtaMetrics,
+      ensureDeviceReady,
+      ensureDeviceReadyOptions,
+    ],
+  );
 
   const withHardwareWalletModalHandling = useCallback(
     (request: () => Promise<void>) => {

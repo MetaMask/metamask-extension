@@ -2,7 +2,7 @@ import {
   TransactionMeta,
   TransactionType,
 } from '@metamask/transaction-controller';
-import React, { useCallback, useContext, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { PRODUCT_TYPES } from '@metamask/subscription-controller';
 import { useNavigate } from 'react-router-dom';
@@ -45,14 +45,11 @@ import {
 import { isSignatureTransactionType } from '../../../utils';
 import { getConfirmationSender } from '../utils';
 import { useUserSubscriptions } from '../../../../../hooks/subscription/useSubscription';
-import { MetaMetricsContext } from '../../../../../contexts/metametrics';
 import {
   useHardwareFooter,
   useHardwareWalletError,
-  useHardwareWalletState,
+  useHardwareWalletMetrics,
 } from '../../../../../contexts/hardware-wallets';
-import { trackHardwareWalletRecoveryConnectCtaClicked } from '../../../../../helpers/utils/track-hardware-wallet-recovery-connect-cta-clicked';
-import { useHardwareWalletRecoveryLocation } from '../../../../../hooks/useHardwareWalletRecoveryLocation';
 import OriginThrottleModal from './origin-throttle-modal';
 import ShieldFooterAgreement from './shield-footer-agreement';
 import ShieldFooterCoverageIndicator from './shield-footer-coverage-indicator/shield-footer-coverage-indicator';
@@ -260,9 +257,7 @@ const Footer = () => {
 
   const { dismissErrorModal, setErrorModalSuppressed } =
     useHardwareWalletError();
-  const { connectionState } = useHardwareWalletState();
-  const hardwareWalletRecoveryLocation = useHardwareWalletRecoveryLocation();
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackConnectCtaClicked } = useHardwareWalletMetrics();
 
   useEffect(() => {
     return () => {
@@ -297,6 +292,7 @@ const Footer = () => {
     currentConfirmation,
     currentConfirmationId,
     onUserRejectedHardwareWalletError,
+    onConnectCtaMetrics: trackConnectCtaClicked,
   });
 
   useEffect(() => {
@@ -319,19 +315,8 @@ const Footer = () => {
     !hasUnconfirmedDangerAlerts;
 
   const onReconnectHardwareWalletCta = useCallback(async () => {
-    trackHardwareWalletRecoveryConnectCtaClicked(trackEvent, {
-      location: hardwareWalletRecoveryLocation,
-      walletType,
-      connectionState,
-    });
-    await onSubmitPreflightCheck();
-  }, [
-    connectionState,
-    hardwareWalletRecoveryLocation,
-    onSubmitPreflightCheck,
-    trackEvent,
-    walletType,
-  ]);
+    await onSubmitPreflightCheck({ trackConnectCta: true });
+  }, [onSubmitPreflightCheck]);
 
   const onSubmit = useCallback(async () => {
     if (!currentConfirmation) {

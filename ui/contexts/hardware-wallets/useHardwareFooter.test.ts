@@ -225,6 +225,51 @@ describe('useHardwareFooter', () => {
       expect(isReady).toBe(true);
       expect(mockEnsureDeviceReady).not.toHaveBeenCalled();
     });
+
+    it('invokes onConnectCtaMetrics when trackConnectCta is true', async () => {
+      mockConnectionState.status = ConnectionStatus.Connected;
+      mockEnsureDeviceReady.mockResolvedValue(true);
+      const onConnectCtaMetrics = jest.fn();
+
+      const { result } = renderHook(() =>
+        useHardwareFooter({
+          currentConfirmation: createConfirmation(TransactionType.simpleSend),
+          currentConfirmationId: 'confirmation-id',
+          onUserRejectedHardwareWalletError:
+            mockOnUserRejectedHardwareWalletError,
+          onConnectCtaMetrics,
+        }),
+      );
+
+      await act(async () => {
+        await result.current.onSubmitPreflightCheck({ trackConnectCta: true });
+      });
+
+      expect(onConnectCtaMetrics).toHaveBeenCalledTimes(1);
+      expect(mockEnsureDeviceReady).toHaveBeenCalled();
+    });
+
+    it('does not invoke onConnectCtaMetrics when trackConnectCta is omitted', async () => {
+      mockConnectionState.status = ConnectionStatus.Connected;
+      mockEnsureDeviceReady.mockResolvedValue(true);
+      const onConnectCtaMetrics = jest.fn();
+
+      const { result } = renderHook(() =>
+        useHardwareFooter({
+          currentConfirmation: createConfirmation(TransactionType.simpleSend),
+          currentConfirmationId: 'confirmation-id',
+          onUserRejectedHardwareWalletError:
+            mockOnUserRejectedHardwareWalletError,
+          onConnectCtaMetrics,
+        }),
+      );
+
+      await act(async () => {
+        await result.current.onSubmitPreflightCheck();
+      });
+
+      expect(onConnectCtaMetrics).not.toHaveBeenCalled();
+    });
   });
 
   describe('readiness reset behavior', () => {
