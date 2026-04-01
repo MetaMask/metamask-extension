@@ -2,21 +2,13 @@
  * Artifact link construction and PR "Builds ready" section builder.
  */
 
+import { readdir } from 'node:fs/promises';
+import { join } from 'node:path';
+
 import {
   BENCHMARK_PLATFORMS,
   BENCHMARK_BUILD_TYPES,
 } from '../../shared/constants/benchmarks';
-
-/**
- * Check whether an artifact exists.
- *
- * @param url - The URL of the artifact to check.
- * @returns True if the artifact exists, false if it doesn't.
- */
-async function artifactExists(url: string): Promise<boolean> {
-  const response = await fetch(url, { method: 'HEAD' });
-  return response.ok;
-}
 
 type ArtifactLink = { url: string; label: string };
 
@@ -198,41 +190,42 @@ function formatBuildLinks(buildLinks: BuildLinks): string[] {
   });
 }
 
-/** Bundle file roots used for source-map-explorer artifact discovery. */
-const FILE_ROOTS = [
-  'background',
-  'common',
-  'ui',
-  'content-script',
-  'offscreen',
-] as const;
+/** Local directory where source-map-explorer.sh writes HTML reports. */
+const SOURCE_MAP_EXPLORER_DIR = join(
+  __dirname,
+  '..',
+  '..',
+  'build-artifacts',
+  'source-map-explorer',
+);
 
 /**
- * Discovers source-map-explorer bundle artifacts and returns an HTML markup list.
+ * Discovers source-map-explorer bundle artifacts by reading the local
+ * build-artifacts directory and returns an HTML markup list.
  *
  * @param hostUrl - Base URL for hosted artifacts.
  * @returns HTML `<ul>` string of discovered bundle links.
  */
 async function discoverBundleArtifacts(hostUrl: string): Promise<string> {
-  const bundles: Record<string, string[]> = {};
-
-  for (const fileRoot of FILE_ROOTS) {
-    bundles[fileRoot] = [];
-    let fileIndex = 0;
-    let url = `${hostUrl}/source-map-explorer/${fileRoot}-${fileIndex}.html`;
-    console.log(`Verifying ${url}`);
-    while (await artifactExists(url)) {
-      bundles[fileRoot].push(`<a href="${url}">${fileIndex}</a>`);
-      fileIndex += 1;
-      url = `${hostUrl}/source-map-explorer/${fileRoot}-${fileIndex}.html`;
-      console.log(`Verifying ${url}`);
-    }
-    console.log(`Not found: ${url}`);
+  let files: string[];
+  try {
+    files = (await readdir(SOURCE_MAP_EXPLORER_DIR))
+      .filter((f) => f.endsWith('.html'))
+      .sort();
+  } catch {
+    console.log('No source-map-explorer artifacts found');
+    return '<ul></ul>';
   }
 
-  return `<ul>${Object.keys(bundles)
-    .map((key) => `<li>${key}: ${bundles[key].join(', ')}</li>`)
-    .join('')}</ul>`;
+  const links = files.map((file) => {
+    const label = file
+      .replace(/\.[0-9a-f]{20}\.html$/u, '')
+      .replace(/\.html$/u, '');
+    const url = `${hostUrl}/source-map-explorer/${file}`;
+    return `<a href="${url}">${label}</a>`;
+  });
+
+  return `<ul><li>${links.join(', ')}</li></ul>`;
 }
 
 /**

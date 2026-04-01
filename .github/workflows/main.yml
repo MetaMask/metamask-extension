@@ -573,6 +573,12 @@ jobs:
 
       - run: ./development/source-map-explorer.sh
 
+      - name: Upload 'source-map-explorer' artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: source-map-explorer
+          path: build-artifacts/source-map-explorer
+
       - name: Upload 'source-map-explorer' to S3
         if: ${{ vars.AWS_REGION && vars.AWS_IAM_ROLE && vars.AWS_S3_BUCKET }}
         uses: MetaMask/github-tools/.github/actions/upload-s3@v1
