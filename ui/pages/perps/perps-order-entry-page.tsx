@@ -76,7 +76,6 @@ import {
   type OrderMode,
   type OrderCalculations,
 } from '../../components/app/perps/order-entry';
-import { formatFlooredDecimals } from '../../components/app/perps/utils/number';
 import {
   PERPS_TOAST_KEYS,
   type PerpsToastKey,
@@ -347,28 +346,7 @@ const PerpsOrderEntryPage: React.FC = () => {
 
   const currentPrice = chartCurrentPrice > 0 ? chartCurrentPrice : marketPrice;
 
-  const availableBalance = account
-    ? parseFloat(account.availableBalance) || 0
-    : 0;
-  const parsedAmount = parseFloat(
-    orderFormState?.amount?.replace(/,/gu, '') ?? '',
-  );
-  const requiredMargin = Number.isFinite(parsedAmount) ? parsedAmount : 0;
-  const isOrderPlacementMode = orderMode !== 'close' && orderMode !== 'modify';
-  const isModifyAddToPositionMode =
-    orderMode === 'modify' && Boolean(position) && requiredMargin > 0;
-  const isPositionRequiredMode =
-    orderMode === 'close' || orderMode === 'modify';
-  const isPositionMissing = isPositionRequiredMode && !position;
-  const isInsufficientBalance =
-    (isOrderPlacementMode || isModifyAddToPositionMode) &&
-    requiredMargin > availableBalance;
-  const insufficientBalanceError = isInsufficientBalance
-    ? t('perpsOrderValidationInsufficientBalance', [
-        formatFlooredDecimals(requiredMargin),
-        formatFlooredDecimals(availableBalance),
-      ])
-    : null;
+  const availableBalance = account ? parseFloat(account.availableBalance) : 0;
 
   const isLimitPriceUnfavorable = useMemo(() => {
     if (orderType !== 'limit' || !orderFormState) {
@@ -405,9 +383,7 @@ const PerpsOrderEntryPage: React.FC = () => {
     isLimitPriceInvalid ||
     isLimitPriceUnfavorable ||
     isNearLiquidation ||
-    currentPrice <= 0 ||
-    isPositionMissing ||
-    isInsufficientBalance;
+    currentPrice <= 0;
 
   const maxLeverage = useMemo(() => {
     if (!market) {
@@ -608,7 +584,7 @@ const PerpsOrderEntryPage: React.FC = () => {
     }
 
     try {
-      if (orderMode === 'close') {
+      if (orderMode === 'close' && position) {
         const closeParams = {
           symbol: orderFormState.asset,
           orderType: 'market' as const,
@@ -963,7 +939,7 @@ const PerpsOrderEntryPage: React.FC = () => {
               color={IconColor.ErrorDefault}
             />
             <Text variant={TextVariant.BodySm} color={TextColor.ErrorDefault}>
-              {insufficientBalanceError ?? submitError}
+              {submitError}
             </Text>
           </Box>
         )}
