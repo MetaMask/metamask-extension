@@ -160,6 +160,13 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
     setIsSubmitting(true);
     setError(null);
 
+    const resolveCloseErrorDisplay = (raw: string): string =>
+      raw === 'ORDER_SIZE_MIN'
+        ? t('perpsClosePartialMinNotional', [
+            formatCurrencyWithMinThreshold(PERPS_MIN_MARKET_ORDER_USD, 'USD'),
+          ])
+        : raw;
+
     try {
       const params: {
         symbol: string;
@@ -187,7 +194,7 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
           [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.FAILED,
           [PERPS_EVENT_PROPERTY.FAILURE_REASON]: message,
         });
-        setError(message);
+        setError(resolveCloseErrorDisplay(message));
         return;
       }
       track(MetaMetricsEventName.PerpsPositionCloseTransaction, {
@@ -199,22 +206,11 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
     } catch (err) {
       const errMessage =
         err instanceof Error ? err.message : 'An unknown error occurred';
-      setError(errMessage);
       track(MetaMetricsEventName.PerpsError, {
         [PERPS_EVENT_PROPERTY.ERROR_TYPE]: PERPS_EVENT_VALUE.ERROR_TYPE.BACKEND,
         [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: errMessage,
       });
-      if (err instanceof Error && err.message === 'ORDER_SIZE_MIN') {
-        setError(
-          t('perpsClosePartialMinNotional', [
-            formatCurrencyWithMinThreshold(PERPS_MIN_MARKET_ORDER_USD, 'USD'),
-          ]),
-        );
-      } else {
-        setError(
-          err instanceof Error ? err.message : 'An unknown error occurred',
-        );
-      }
+      setError(resolveCloseErrorDisplay(errMessage));
     } finally {
       setIsSubmitting(false);
     }
