@@ -291,7 +291,7 @@ export function computeEntryHealth(
   entry: BenchmarkEntry,
   _baselineMetrics: HistoricalBaselineReference[string] | undefined,
 ): EntryHealth {
-  let health = EntryHealth.Pass;
+  let health: EntryHealth = EntryHealth.Pass;
 
   // Timer threshold checks
   const thresholdConfig = THRESHOLD_REGISTRY[entry.benchmarkName];
