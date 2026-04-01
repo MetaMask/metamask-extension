@@ -160,9 +160,7 @@ function renderElement(
         <GatorPermissionDetailRow
           key={rowKey}
           label={ctx.t(mapping.labelKey)}
-          value={convertTimestampToReadableDate(
-            element.getTimestamp(ctx) ?? 0,
-          )}
+          value={convertTimestampToReadableDate(element.getTimestamp(ctx) ?? 0)}
           testId={mapping.testId}
         />
       );
@@ -285,6 +283,14 @@ export type ReviewPermissionRendererProps = {
  * Review-page renderer that interprets the shared permission schema.
  * Renders each schema element as a detail row with string-formatted values.
  * Does not run schema `validate` (signing flow only); tolerates imperfect stored data.
+ * @param options0
+ * @param options0.permissionType
+ * @param options0.permissionData
+ * @param options0.chainId
+ * @param options0.expiry
+ * @param options0.rules
+ * @param options0.tokenInfo
+ * @param options0.tokenLoading
  */
 export const ReviewPermissionRenderer: React.FC<
   ReviewPermissionRendererProps

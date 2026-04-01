@@ -21,8 +21,7 @@ export { MAX_UINT256 };
 export const formatPeriodDuration = (
   i18nContext: ReturnType<typeof useI18nContext>,
   periodSeconds: number,
-): string =>
-  formatPermissionPeriodDuration(i18nContext, periodSeconds);
+): string => formatPermissionPeriodDuration(i18nContext, periodSeconds);
 
 /**
  * Retrieves ERC-20 token details (label and decimals) for a given token address and chain ID.

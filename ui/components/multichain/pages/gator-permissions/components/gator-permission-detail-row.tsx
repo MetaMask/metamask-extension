@@ -26,6 +26,11 @@ type GatorPermissionDetailRowProps = {
 
 /**
  * Row layout for gator permission review / expanded details (label left, value right + skeleton).
+ * @param options0
+ * @param options0.label
+ * @param options0.value
+ * @param options0.testId
+ * @param options0.isLoading
  */
 export const GatorPermissionDetailRow = ({
   label,

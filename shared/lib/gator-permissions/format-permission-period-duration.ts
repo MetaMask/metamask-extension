@@ -13,6 +13,8 @@ import type { I18nFunction } from './permission-detail-schema.types';
 /**
  * Formats a period duration in seconds to a human-readable string for permission UIs.
  * Same behavior as the confirmation typed-sign util; lives in shared for schema reuse.
+ * @param t
+ * @param periodSeconds
  */
 export function formatPermissionPeriodDuration(
   t: I18nFunction,
