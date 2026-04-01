@@ -1,6 +1,8 @@
-import { WebSocketService } from '@metamask/snaps-controllers';
+import {
+  WebSocketService,
+  WebSocketServiceMessenger,
+} from '@metamask/snaps-controllers';
 import { ControllerInitFunction } from '../types';
-import { WebSocketServiceMessenger } from '../messengers/snaps';
 
 /**
  * Initialize the WebSocket service.

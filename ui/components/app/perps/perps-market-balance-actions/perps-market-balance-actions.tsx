@@ -25,6 +25,10 @@ import {
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useFormatters } from '../../../../hooks/useFormatters';
 import { usePerpsLiveAccount } from '../../../../hooks/perps/stream';
+import {
+  invokePerpsBalanceAction,
+  type PerpsBalanceActionHandler,
+} from '../perps-balance-dropdown';
 
 type PerpsMarketBalanceActionsProps = {
   /** Whether to show the action buttons (Add funds, Withdraw) */
@@ -32,9 +36,9 @@ type PerpsMarketBalanceActionsProps = {
   /** Whether add funds transaction creation is in progress */
   isAddFundsLoading?: boolean;
   /** Callback when Add funds button is pressed */
-  onAddFunds?: () => void;
+  onAddFunds?: PerpsBalanceActionHandler;
   /** Callback when Withdraw button is pressed */
-  onWithdraw?: () => void;
+  onWithdraw?: PerpsBalanceActionHandler;
   /** Callback when Learn more button is pressed */
   onLearnMore?: () => void;
 };
@@ -71,7 +75,7 @@ const PerpsMarketBalanceActions: React.FC<PerpsMarketBalanceActionsProps> = ({
       [PERPS_EVENT_PROPERTY.BUTTON_CLICKED]:
         PERPS_EVENT_VALUE.BUTTON_CLICKED.DEPOSIT,
     });
-    onAddFunds?.();
+    invokePerpsBalanceAction(onAddFunds);
   }, [isEligible, onAddFunds, track]);
 
   const handleWithdraw = useCallback(() => {
@@ -81,7 +85,7 @@ const PerpsMarketBalanceActions: React.FC<PerpsMarketBalanceActionsProps> = ({
       [PERPS_EVENT_PROPERTY.BUTTON_CLICKED]:
         PERPS_EVENT_VALUE.BUTTON_CLICKED.WITHDRAW,
     });
-    onWithdraw?.();
+    invokePerpsBalanceAction(onWithdraw);
   }, [onWithdraw, track]);
 
   const handleLearnMore = useCallback(() => {

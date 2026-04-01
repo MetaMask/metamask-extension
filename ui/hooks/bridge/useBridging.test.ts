@@ -36,6 +36,8 @@ jest.mock('react-redux', () => ({
       mockDispatch(...args),
 }));
 
+const resetInputFieldsSpy = jest.spyOn(bridgeActions, 'resetInputFields');
+
 const MOCK_METAMETRICS_ID = '0xtestMetaMetricsId';
 const BRIDGE_PREPARE_PATH = `${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}`;
 
@@ -139,7 +141,10 @@ describe('useBridging', () => {
           .spyOn(bridgeActions, 'trackUnifiedSwapBridgeEvent')
           .mockImplementation((...args: unknown[]) => jest.fn()(...args));
         const resetBridgeControllerAndCacheSpy = jest
-          .spyOn(bridgeActions, 'resetBridgeControllerAndCache')
+          .spyOn(bridgeActions, 'resetInputFields')
+          .mockImplementation((...args: unknown[]) => jest.fn()(...args));
+        const resetBridgeControllerSpy = jest
+          .spyOn(bridgeActions, 'resetBridgeController')
           .mockImplementation((...args: unknown[]) => jest.fn()(...args));
         const openTabSpy = jest.spyOn(global.platform, 'openTab');
         const { result } = renderUseBridging(
@@ -184,13 +189,8 @@ describe('useBridging', () => {
 
         result.current.openBridgeExperience(location, token, isSwap);
 
-        expect(mockDispatch.mock.calls.length).toStrictEqual(4);
-        expect(mockDispatch.mock.calls[0]).toStrictEqual([
-          {
-            payload: undefined,
-            type: 'bridge/resetInputFields',
-          },
-        ]);
+        expect(mockDispatch.mock.calls.length).toStrictEqual(3);
+        expect(resetInputFieldsSpy).toHaveBeenCalledTimes(0);
         expect(trackUnifiedSwapBridgeEventSpy.mock.calls).toStrictEqual([
           [
             UnifiedSwapBridgeEventName.ButtonClicked,
@@ -363,7 +363,7 @@ describe('useBridging', () => {
           .spyOn(bridgeActions, 'trackUnifiedSwapBridgeEvent')
           .mockImplementation((...args: unknown[]) => jest.fn()(...args));
         const resetBridgeControllerAndCacheSpy = jest
-          .spyOn(bridgeActions, 'resetBridgeControllerAndCache')
+          .spyOn(bridgeActions, 'resetInputFields')
           .mockImplementation((...args: unknown[]) => jest.fn()(...args));
         const openTabSpy = jest.spyOn(global.platform, 'openTab');
         jest
@@ -415,13 +415,8 @@ describe('useBridging', () => {
 
         result.current.openBridgeExperience(location, token, true);
 
-        expect(mockDispatch.mock.calls.length).toStrictEqual(4);
-        expect(mockDispatch.mock.calls[0]).toStrictEqual([
-          {
-            payload: undefined,
-            type: 'bridge/resetInputFields',
-          },
-        ]);
+        expect(resetInputFieldsSpy).toHaveBeenCalledTimes(0);
+        expect(mockDispatch.mock.calls.length).toStrictEqual(3);
         expect(trackUnifiedSwapBridgeEventSpy.mock.calls).toStrictEqual([
           [
             UnifiedSwapBridgeEventName.ButtonClicked,

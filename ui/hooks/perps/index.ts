@@ -29,3 +29,11 @@ export type {
   PerpsTrackEventFn,
   UsePerpsEventTrackingDeclarativeOptions,
 } from './usePerpsEventTracking';
+export {
+  estimateLiquidationPrice,
+  liquidationDistancePercent,
+  maintenanceMarginRateFromMaxLeverage,
+  safeDenominator,
+  MARGIN_ADJUSTMENT_CONFIG,
+} from './marginUtils';
+export type { EstimateLiquidationPriceParams } from './marginUtils';

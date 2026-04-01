@@ -21,6 +21,7 @@ import { MetaMetricsEventName } from '../../../../../../../shared/constants/meta
 import { usePerpsEventTracking } from '../../../../../../hooks/perps';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
 import type { LeverageSliderProps } from '../../order-entry.types';
+import { isDigitsOnlyInput } from '../../utils';
 
 /**
  * LeverageSlider - Slider for selecting leverage multiplier
@@ -64,7 +65,7 @@ export const LeverageSlider: React.FC<LeverageSliderProps> = ({
   const handleInputChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       const { value } = event.target;
-      if (value === '' || /^\d*$/u.test(value)) {
+      if (value === '' || isDigitsOnlyInput(value)) {
         setInputValue(value);
         const num = parseInt(value, 10);
         if (!isNaN(num) && num >= minLeverage && num <= maxLeverage) {

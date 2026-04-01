@@ -1,4 +1,8 @@
-import { PerpsController, UserHistoryItem } from '@metamask/perps-controller';
+import {
+  PerpsController,
+  type RawLedgerUpdate,
+  type UserHistoryItem,
+} from '@metamask/perps-controller';
 import type { MetaMetricsEventPayload } from '../../../shared/constants/metametrics';
 import { createPerpsInfrastructure } from '../controllers/perps/infrastructure';
 import { ControllerInitFunction } from './types';
@@ -67,6 +71,12 @@ type PerpsActionName =
   | 'perpsUpdateMargin'
   | 'perpsFlipPosition'
   | 'perpsWithdraw'
+  | 'perpsValidateWithdrawal'
+  | 'perpsGetWithdrawalRoutes'
+  | 'perpsUpdateWithdrawalStatus'
+  | 'perpsUpdateWithdrawalProgress'
+  | 'perpsGetWithdrawalProgress'
+  | 'perpsGetUserNonFundingLedgerUpdates'
   | 'perpsDepositWithConfirmation'
   | 'perpsGetPositions'
   | 'perpsGetMarkets'
@@ -115,7 +125,8 @@ type PerpsActionName =
 // method, these can be removed and the mapped type will cover them automatically.
 type PerpsCustomApiNames =
   | 'perpsDepositWithConfirmation'
-  | 'perpsGetUserHistory';
+  | 'perpsGetUserHistory'
+  | 'perpsGetUserNonFundingLedgerUpdates';
 
 type PerpsBackgroundApi = {
   [ActionName in Exclude<
@@ -135,6 +146,11 @@ type PerpsBackgroundApi = {
     endTime?: number;
     accountId?: `${string}:${string}:${string}`;
   }) => Promise<UserHistoryItem[]>;
+  perpsGetUserNonFundingLedgerUpdates: (params?: {
+    startTime?: number;
+    endTime?: number;
+    accountId?: string;
+  }) => Promise<RawLedgerUpdate[]>;
 };
 
 function getApi(controller: PerpsController): PerpsBackgroundApi {
@@ -154,6 +170,14 @@ function getApi(controller: PerpsController): PerpsBackgroundApi {
     perpsUpdateMargin: controller.updateMargin.bind(controller),
     perpsFlipPosition: controller.flipPosition.bind(controller),
     perpsWithdraw: controller.withdraw.bind(controller),
+    perpsValidateWithdrawal: controller.validateWithdrawal.bind(controller),
+    perpsGetWithdrawalRoutes: controller.getWithdrawalRoutes.bind(controller),
+    perpsUpdateWithdrawalStatus:
+      controller.updateWithdrawalStatus.bind(controller),
+    perpsUpdateWithdrawalProgress:
+      controller.updateWithdrawalProgress.bind(controller),
+    perpsGetWithdrawalProgress:
+      controller.getWithdrawalProgress.bind(controller),
     perpsDepositWithConfirmation: async (
       ...args: Parameters<typeof controller.depositWithConfirmation>
     ) => {
@@ -228,6 +252,15 @@ function getApi(controller: PerpsController): PerpsBackgroundApi {
       accountId?: `${string}:${string}:${string}`;
     }) => {
       return controller.getActiveProvider().getUserHistory(params);
+    },
+    perpsGetUserNonFundingLedgerUpdates: async (params?: {
+      startTime?: number;
+      endTime?: number;
+      accountId?: string;
+    }) => {
+      return controller
+        .getActiveProvider()
+        .getUserNonFundingLedgerUpdates(params);
     },
 
     // -- Misc --
