@@ -77,13 +77,16 @@ const activeABTests = experiment.isActive
      `FixtureBuilder.withRemoteFeatureFlags(...)` when a test needs
      deterministic assignment.
    - If the change is copy-only or config-only, you may skip new tests with a brief rationale.
-7. Run the compliance checker and report the result.
+7. Run the A/B compliance checker using the repository's current supported
+   invocation and report the result.
+   - Checker path:
+     `.agents/skills/ab-testing-implementation/scripts/check-ab-testing-compliance.ts`
 
 ```bash
-# pre-commit / local implementation flow
+# Current pre-commit / local implementation example
 node --import tsx .agents/skills/ab-testing-implementation/scripts/check-ab-testing-compliance.ts --staged
 
-# review mode / explicit file set
+# Current review-mode / explicit file set example
 node --import tsx .agents/skills/ab-testing-implementation/scripts/check-ab-testing-compliance.ts --files app/path/to/file.ts,test/path/to/file.spec.ts --base origin/main
 ```
 
