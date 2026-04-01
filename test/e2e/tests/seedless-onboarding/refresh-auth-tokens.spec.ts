@@ -95,7 +95,7 @@ describe('Refresh Auth Tokens (Seedless Onboarding)', function () {
         assert.strictEqual(authServiceTokenRequests.length, 2);
 
         // close the settings page
-        await settingsPage.closeSettingsPage();
+        await settingsPage.clickBackButton();
 
         // Lock the wallet and wait for login page
         await lockAndWaitForLoginPage(driver);
