@@ -22,7 +22,7 @@ import { Toast } from '../../multichain';
 type Survey = {
   url: string;
   description: string;
-  description2?: string;
+  content?: string;
   cta: string;
   id: number;
 };
@@ -140,7 +140,7 @@ export function SurveyToast() {
       dataTestId="survey-toast"
       key="survey-toast"
       text={survey.description}
-      description={survey.description2}
+      description={survey.content}
       actionText={survey.cta}
       onActionClick={handleActionClick}
       onClose={handleClose}
