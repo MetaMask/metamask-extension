@@ -287,13 +287,10 @@ describe('Multichain API', function () {
           );
           await editConnectedAccountsModal.checkPageIsLoaded();
 
-          const isAccountSelected =
-            await editConnectedAccountsModal.checkIsAccountSelected(1);
-          assert.strictEqual(
-            isAccountSelected,
-            true,
-            'current active account in the wallet should be automatically selected',
-          );
+          await editConnectedAccountsModal.waitForAccountSelectedStatus({
+            accountIndex: 1,
+            status: 'selected',
+          });
         },
       );
     });
@@ -460,12 +457,7 @@ describe('Multichain API', function () {
           /**
            * Then we make sure to deselect the existing session scopes, and create session with new scopes
            */
-          OLD_SCOPES.forEach(
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-            // eslint-disable-next-line @typescript-eslint/no-misused-promises
-            async (scope) =>
-              await driver.clickElement(`input[name="${scope}"]`),
-          );
+          await testDapp.deselectScopes(OLD_SCOPES);
           await testDapp.initCreateSessionScopes(NEW_SCOPES, [
             toEvmCaipAccountId(TREZOR_ACCOUNT),
           ]);

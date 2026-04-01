@@ -1,6 +1,7 @@
 import { act } from '@testing-library/react-hooks';
-import { renderHookWithProvider } from '../../../test/lib/render-helpers-navigate';
+
 import mockState from '../../../test/data/mock-state.json';
+import { renderHookWithProvider } from '../../../test/lib/render-helpers-navigate';
 import { usePerpsOrderForm } from './usePerpsOrderForm';
 
 describe('usePerpsOrderForm', () => {
@@ -28,7 +29,7 @@ describe('usePerpsOrderForm', () => {
         asset: 'BTC',
         direction: 'long',
         amount: '',
-        leverage: 1,
+        leverage: 3,
         type: 'market',
         autoCloseEnabled: false,
         takeProfitPrice: '',
@@ -43,6 +44,59 @@ describe('usePerpsOrderForm', () => {
       );
 
       expect(result.current.closePercent).toBe(100);
+    });
+
+    it('uses initialLeverage when provided for new orders', () => {
+      const { result } = renderHookWithProvider(
+        () =>
+          usePerpsOrderForm({
+            ...defaultOptions,
+            initialLeverage: 7,
+          }),
+        mockStateWithLocale,
+      );
+
+      expect(result.current.formState.leverage).toBe(7);
+    });
+
+    it('applies initialLeverage when it changes after initial render (async hydration)', () => {
+      const props = {
+        ...defaultOptions,
+        initialLeverage: undefined as number | undefined,
+      };
+      const { result, rerender } = renderHookWithProvider(
+        () => usePerpsOrderForm(props),
+        mockStateWithLocale,
+      );
+
+      expect(result.current.formState.leverage).toBe(3);
+
+      props.initialLeverage = 8;
+      act(() => {
+        rerender();
+      });
+
+      expect(result.current.formState.leverage).toBe(8);
+    });
+
+    it('ignores initialLeverage in modify mode (uses position leverage)', () => {
+      const existingPosition = {
+        size: '1.0',
+        leverage: 5,
+        entryPrice: '44000',
+      };
+      const { result } = renderHookWithProvider(
+        () =>
+          usePerpsOrderForm({
+            ...defaultOptions,
+            mode: 'modify',
+            existingPosition,
+            initialLeverage: 10,
+          }),
+        mockStateWithLocale,
+      );
+
+      expect(result.current.formState.leverage).toBe(5);
     });
 
     it('initializes with short direction when specified', () => {
@@ -109,6 +163,21 @@ describe('usePerpsOrderForm', () => {
       );
 
       expect(result.current.formState.autoCloseEnabled).toBe(true);
+    });
+
+    it('initializes amount empty so user enters size increase, not total', () => {
+      const { result } = renderHookWithProvider(
+        () =>
+          usePerpsOrderForm({
+            ...defaultOptions,
+            mode: 'modify',
+            existingPosition,
+          }),
+        mockStateWithLocale,
+      );
+
+      expect(result.current.formState.amount).toBe('');
+      expect(result.current.formState.balancePercent).toBe(0);
     });
   });
 
@@ -315,6 +384,52 @@ describe('usePerpsOrderForm', () => {
       expect(result.current.calculations.positionSize).not.toBe(
         initialPositionSize,
       );
+    });
+
+    it('uses dot-decimal limit price correctly in calculations', () => {
+      const { result } = renderHookWithProvider(
+        () =>
+          usePerpsOrderForm({
+            ...defaultOptions,
+            orderType: 'limit',
+          }),
+        mockState,
+      );
+
+      act(() => {
+        result.current.handleAmountChange('1000');
+      });
+
+      act(() => {
+        result.current.handleLimitPriceChange('45050.00');
+      });
+
+      expect(result.current.calculations.positionSize).toContain('BTC');
+      expect(result.current.calculations.orderValue).toBe('$3,000.00');
+    });
+  });
+
+  describe('order type prop', () => {
+    it('preserves amount and leverage when orderType prop changes', () => {
+      let orderType: 'market' | 'limit' = 'market';
+      const { result, rerender } = renderHookWithProvider(
+        () => usePerpsOrderForm({ ...defaultOptions, orderType }),
+        mockStateWithLocale,
+      );
+
+      act(() => {
+        result.current.handleAmountChange('1000');
+        result.current.handleLeverageChange(10);
+      });
+
+      orderType = 'limit';
+      act(() => {
+        rerender();
+      });
+
+      expect(result.current.formState.amount).toBe('1000');
+      expect(result.current.formState.leverage).toBe(10);
+      expect(result.current.formState.type).toBe('limit');
     });
   });
 

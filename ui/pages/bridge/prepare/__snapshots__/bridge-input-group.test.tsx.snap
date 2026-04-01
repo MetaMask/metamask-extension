@@ -368,6 +368,7 @@ exports[`BridgeInputGroup should render popular tokens 2`] = `
         "chainId": "eip155:1",
         "decimals": 18,
         "iconUrl": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/slip44/60.png",
+        "isVerified": undefined,
         "name": "Ether",
         "rwaData": undefined,
         "symbol": "ETH",
@@ -380,6 +381,7 @@ exports[`BridgeInputGroup should render popular tokens 2`] = `
         "chainId": "eip155:1",
         "decimals": 10,
         "iconUrl": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0x1f9840a85d5af5bf1d1762f925bdaddc4201f984.png",
+        "isVerified": undefined,
         "name": "Uniswap",
         "rwaData": undefined,
         "symbol": "UNI",
@@ -392,6 +394,7 @@ exports[`BridgeInputGroup should render popular tokens 2`] = `
         "chainId": "eip155:1",
         "decimals": 9,
         "iconUrl": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0x514910771af9ca656af840dff83e8264ecf986ca.png",
+        "isVerified": undefined,
         "name": "Link",
         "rwaData": undefined,
         "symbol": "LINK",
@@ -823,6 +826,7 @@ exports[`BridgeInputGroup should search for tokens 1`] = `
               <button
                 aria-label="View token details"
                 class="inline-flex items-center justify-center p-0 h-8 w-8 rounded-lg bg-transparent hover:bg-hover active:bg-pressed text-icon-default bridge-asset-info-icon"
+                data-testid="bridge-asset-info-icon-eip155:1/erc20:0xaf88d065e77c8cC2239327C5EDb3A432268e5831"
               >
                 <svg
                   class="inline-block w-4 h-4 text-inherit"
@@ -916,6 +920,7 @@ exports[`BridgeInputGroup should search for tokens 1`] = `
               <button
                 aria-label="View token details"
                 class="inline-flex items-center justify-center p-0 h-8 w-8 rounded-lg bg-transparent hover:bg-hover active:bg-pressed text-icon-default bridge-asset-info-icon"
+                data-testid="bridge-asset-info-icon-eip155:1/erc20:0xaf88d065e77c8cC2239327C5EDb3A432268e5832"
               >
                 <svg
                   class="inline-block w-4 h-4 text-inherit"
@@ -977,6 +982,7 @@ exports[`BridgeInputGroup should search for tokens 4`] = `
         "chainId": "eip155:1",
         "decimals": 18,
         "iconUrl": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/slip44/60.png",
+        "isVerified": undefined,
         "name": "Ether",
         "rwaData": undefined,
         "symbol": "ETH",
@@ -989,6 +995,7 @@ exports[`BridgeInputGroup should search for tokens 4`] = `
         "chainId": "eip155:1",
         "decimals": 10,
         "iconUrl": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0x1f9840a85d5af5bf1d1762f925bdaddc4201f984.png",
+        "isVerified": undefined,
         "name": "Uniswap",
         "rwaData": undefined,
         "symbol": "UNI",
@@ -1001,6 +1008,7 @@ exports[`BridgeInputGroup should search for tokens 4`] = `
         "chainId": "eip155:1",
         "decimals": 9,
         "iconUrl": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0x514910771af9ca656af840dff83e8264ecf986ca.png",
+        "isVerified": undefined,
         "name": "Link",
         "rwaData": undefined,
         "symbol": "LINK",
@@ -1200,6 +1208,7 @@ exports[`BridgeInputGroup should search for tokens 5`] = `
               <button
                 aria-label="View token details"
                 class="inline-flex items-center justify-center p-0 h-8 w-8 rounded-lg bg-transparent hover:bg-hover active:bg-pressed text-icon-default bridge-asset-info-icon"
+                data-testid="bridge-asset-info-icon-eip155:1/erc20:0xaf88d065e77c8cC2239327C5EDb3A432268e5831"
               >
                 <svg
                   class="inline-block w-4 h-4 text-inherit"
@@ -1293,6 +1302,7 @@ exports[`BridgeInputGroup should search for tokens 5`] = `
               <button
                 aria-label="View token details"
                 class="inline-flex items-center justify-center p-0 h-8 w-8 rounded-lg bg-transparent hover:bg-hover active:bg-pressed text-icon-default bridge-asset-info-icon"
+                data-testid="bridge-asset-info-icon-eip155:1/erc20:0xaf88d065e77c8cC2239327C5EDb3A432268e5832"
               >
                 <svg
                   class="inline-block w-4 h-4 text-inherit"
@@ -1386,6 +1396,7 @@ exports[`BridgeInputGroup should search for tokens 5`] = `
               <button
                 aria-label="View token details"
                 class="inline-flex items-center justify-center p-0 h-8 w-8 rounded-lg bg-transparent hover:bg-hover active:bg-pressed text-icon-default bridge-asset-info-icon"
+                data-testid="bridge-asset-info-icon-eip155:59144/erc20:0xaf88d065e77c8cC2239327C5EDb3A432268e5833"
               >
                 <svg
                   class="inline-block w-4 h-4 text-inherit"
@@ -1424,6 +1435,7 @@ exports[`BridgeInputGroup should search for tokens with hasNextPage 3`] = `
         "chainId": "eip155:1",
         "decimals": 18,
         "iconUrl": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/slip44/60.png",
+        "isVerified": undefined,
         "name": "Ether",
         "rwaData": undefined,
         "symbol": "ETH",
@@ -1436,6 +1448,7 @@ exports[`BridgeInputGroup should search for tokens with hasNextPage 3`] = `
         "chainId": "eip155:1",
         "decimals": 10,
         "iconUrl": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0x1f9840a85d5af5bf1d1762f925bdaddc4201f984.png",
+        "isVerified": undefined,
         "name": "Uniswap",
         "rwaData": undefined,
         "symbol": "UNI",
@@ -1448,6 +1461,7 @@ exports[`BridgeInputGroup should search for tokens with hasNextPage 3`] = `
         "chainId": "eip155:1",
         "decimals": 9,
         "iconUrl": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0x514910771af9ca656af840dff83e8264ecf986ca.png",
+        "isVerified": undefined,
         "name": "Link",
         "rwaData": undefined,
         "symbol": "LINK",

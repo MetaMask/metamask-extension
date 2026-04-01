@@ -3,17 +3,17 @@
 exports[`Unlock Page should match snapshot 1`] = `
 <div>
   <div
-    class="mm-box mm-box--padding-bottom-12 mm-box--display-flex mm-box--flex-direction-column mm-box--justify-content-center mm-box--align-items-center mm-box--width-full mm-box--background-color-background-default"
+    class="flex flex-col items-center justify-center pb-12 bg-default w-full"
   >
     <form
-      class="mm-box unlock-page mm-box--padding-4 mm-box--display-flex mm-box--flex-direction-column mm-box--justify-content-center mm-box--align-items-center mm-box--width-full"
+      class="flex flex-col items-center justify-center p-4 unlock-page w-full"
       data-testid="unlock-page"
     >
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-column mm-box--align-items-center mm-box--width-full"
+        class="flex flex-col items-center w-full"
       >
         <div
-          class="mm-box unlock-page__mascot-container mm-box--margin-bottom-0"
+          class="mb-0 unlock-page__mascot-container"
         >
           <svg
             class="unlock-page__mascot-container__horizontal-logo "
@@ -49,24 +49,35 @@ exports[`Unlock Page should match snapshot 1`] = `
           </div>
         </div>
         <button
-          class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--disabled mm-button-base--block mm-button-primary mm-button-primary--disabled mm-text--body-md-medium mm-box--margin-bottom-6 mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-inverse mm-box--background-color-icon-default mm-box--rounded-xl"
+          class="inline-flex items-center justify-center rounded-xl px-4 font-medium min-w-20 overflow-hidden relative h-12 transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-icon-default text-primary-inverse hover:bg-icon-default-hover active:bg-icon-default-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default w-full mb-6"
           data-testid="unlock-submit"
           disabled=""
+          role="button"
           type="submit"
         >
-          Unlock
+          <span
+            class="text-inherit text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+          >
+            Unlock
+          </span>
         </button>
         <button
-          class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--margin-bottom-4 mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
+          class="inline-flex items-center justify-center font-medium min-w-20 overflow-hidden relative duration-100 ease-linear active:ease-[cubic-bezier(0.3,0.8,0.3,1)] h-auto rounded-none bg-transparent px-0 transform-none transition-none active:scale-100 text-primary-default hover:bg-hover hover:text-primary-default-hover hover:underline hover:decoration-primary-default-hover hover:decoration-2 hover:underline-offset-4 active:bg-pressed active:text-primary-default-pressed active:decoration-primary-default-pressed mb-4"
+          color="text-primary-default"
           data-testid="unlock-forgot-password-button"
+          role="button"
           type="button"
         >
-          Forgot password?
+          <span
+            class="text-inherit text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+          >
+            Forgot password?
+          </span>
         </button>
       </div>
     </form>
     <div
-      class="mm-box"
+      class=""
     />
   </div>
 </div>

@@ -77,6 +77,7 @@ export const PerpsWatchlist: React.FC = () => {
             name={market.name}
             price={market.price}
             change24hPercent={market.change24hPercent}
+            volume={market.volume}
             onClick={handleMarketClick}
             data-testid={`perps-watchlist-${market.symbol}`}
           />

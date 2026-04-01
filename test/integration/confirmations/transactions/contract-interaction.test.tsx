@@ -180,6 +180,7 @@ describe('Contract Interaction Confirmation', () => {
           ...mockedMetaMaskState,
           participateInMetaMetrics: true,
           dataCollectionForMarketing: false,
+          metaMetricsId: 'test-metametrics-id',
         },
         backgroundConnection: backgroundConnectionMocked,
       });

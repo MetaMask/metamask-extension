@@ -62,6 +62,7 @@ import {
   safeDecodeURIComponent,
   getChangeColor,
 } from '../../components/app/perps/utils';
+import { normalizeMarketDetailsOrders } from '../../components/app/perps/utils/orderUtils';
 import { PerpsDetailPageSkeleton } from '../../components/app/perps/perps-skeletons';
 import { Skeleton } from '../../components/component-library/skeleton';
 import { Popover, PopoverPosition } from '../../components/component-library';
@@ -202,6 +203,8 @@ const PerpsMarketDetailPage: React.FC = () => {
     return safeDecodeURIComponent(symbol);
   }, [symbol]);
 
+  const [showSizeInFiat, setShowSizeInFiat] = useState(false);
+
   // Subscribe to live price data for current symbol (provides oracle price, live funding, OI)
   // Uses background streaming via perpsActivatePriceStream + PerpsStreamManager
   const [livePrice, setLivePrice] = useState<PriceUpdate | undefined>(
@@ -278,34 +281,26 @@ const PerpsMarketDetailPage: React.FC = () => {
     positionRef.current = position;
   }, [position]);
 
-  // Find user-placed limit orders resting on the orderbook for this market.
-  // Excludes all position-attached orders:
-  // - isTrigger: TP/SL trigger orders
-  // - reduceOnly: close/reduce orders tied to positions
-  // - triggerPrice: any order with a trigger condition (TP/SL variant)
-  // - detailedOrderType containing "Take Profit" or "Stop" (belt-and-suspenders)
+  // Filter and sort open orders for this market, then normalize for display.
+  // Normalization adds synthetic TP/SL rows for parent orders and filters out
+  // full-position TP/SL (those stay on the position card / auto-close section).
   const orders = useMemo(() => {
     if (!decodedSymbol) {
       return [];
     }
-    return allOrders.filter((order) => {
-      if (order.symbol.toLowerCase() !== decodedSymbol.toLowerCase()) {
-        return false;
-      }
-      if (order.status !== 'open') {
-        return false;
-      }
-      // Exclude position-attached orders
-      if (order.isTrigger || order.reduceOnly || order.triggerPrice) {
-        return false;
-      }
-      const detailed = order.detailedOrderType?.toLowerCase() ?? '';
-      if (detailed.includes('take profit') || detailed.includes('stop')) {
-        return false;
-      }
-      return true;
+    const marketOrders = allOrders
+      .filter(
+        (order) =>
+          order.symbol.toLowerCase() === decodedSymbol.toLowerCase() &&
+          order.status === 'open',
+      )
+      .sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+
+    return normalizeMarketDetailsOrders({
+      orders: marketOrders,
+      existingPosition: position,
     });
-  }, [decodedSymbol, allOrders]);
+  }, [decodedSymbol, allOrders, position]);
 
   // Candle period state and chart ref
   const [selectedPeriod, setSelectedPeriod] = useState<CandlePeriod>(
@@ -937,7 +932,7 @@ const PerpsMarketDetailPage: React.FC = () => {
                   className="flex-1 cursor-pointer rounded-xl bg-muted px-4 py-3 hover:bg-muted-hover active:bg-muted-pressed"
                   flexDirection={BoxFlexDirection.Column}
                   onClick={() => {
-                    // TODO: Handle size card press
+                    setShowSizeInFiat((prev) => !prev);
                   }}
                 >
                   <Box paddingBottom={1}>
@@ -952,7 +947,13 @@ const PerpsMarketDetailPage: React.FC = () => {
                     variant={TextVariant.BodyMd}
                     fontWeight={FontWeight.Medium}
                   >
-                    {`${formatNumber(Math.abs(parseFloat(position.size)), { maximumSignificantDigits: 4 })} ${getDisplayName(position.symbol)}`}
+                    {showSizeInFiat && Boolean(position.entryPrice)
+                      ? formatCurrencyWithMinThreshold(
+                          Math.abs(parseFloat(position.size)) *
+                            parseFloat(position.entryPrice.replace(/,/gu, '')),
+                          'USD',
+                        )
+                      : `${formatNumber(Math.abs(parseFloat(position.size)), { maximumSignificantDigits: 4 })} ${getDisplayName(position.symbol)}`}
                   </Text>
                 </Box>
 
@@ -1636,6 +1637,7 @@ const PerpsMarketDetailPage: React.FC = () => {
       {/* TP/SL update modal (from Auto Close row) */}
       {position && isTPSLModalOpen && (
         <UpdateTPSLModal
+          key={position.symbol}
           isOpen={isTPSLModalOpen}
           onClose={handleCloseTPSLModal}
           position={position}
