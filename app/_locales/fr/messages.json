@@ -389,9 +389,6 @@
   "advanced": {
     "message": "Avancés"
   },
-  "advancedBaseGasFeeToolTip": {
-    "message": "Lorsque votre transaction est intégrée au bloc, toute différence entre vos frais de base maximaux et les frais de base réels vous sera remboursée. Le montant total est calculé comme suit : frais de base maximaux (en GWEI) × limite de carburant."
-  },
   "advancedDetailsDataDesc": {
     "message": "Données"
   },
@@ -407,10 +404,6 @@
   "advancedEIP1559ModalTitle": {
     "message": "Frais de réseau avancés"
   },
-  "advancedGasFeeDefaultOptIn": {
-    "message": "Enregistrer ces valeurs comme valeurs par défaut pour le réseau $1.",
-    "description": "$1 is the current network name."
-  },
   "advancedGasPriceModalTitle": {
     "message": "Frais de réseau avancés"
   },
@@ -422,9 +415,6 @@
   },
   "advancedPermissionsSmallCase": {
     "message": "autorisations avancées"
-  },
-  "advancedPriorityFeeToolTip": {
-    "message": "Les frais de priorité (aussi appelés « pourboire du mineur ») vont directement aux mineurs et les incitent à accorder la priorité à votre transaction."
   },
   "airDropPatternDescription": {
     "message": "L’historique du jeton sur la chaîne révèle des cas antérieurs d’activités d’airdrop suspectes."
@@ -1345,9 +1335,6 @@
   "cancel": {
     "message": "Annuler"
   },
-  "cancelPopoverTitle": {
-    "message": "Annuler la transaction"
-  },
   "cancelTransactionDescription": {
     "message": "Cette transaction sera annulée et ces frais de réseau remplaceront les frais initiaux."
   },
@@ -1999,9 +1986,6 @@
   "currentQuestion": {
     "message": "Question $1 sur 2"
   },
-  "currentTitle": {
-    "message": "Actuel:"
-  },
   "currentlyUnavailable": {
     "message": "Indisponible sur ce réseau"
   },
@@ -2054,12 +2038,6 @@
   },
   "dappSuggestedHigh": {
     "message": "Suggéré par le site"
-  },
-  "dappSuggestedHighShortLabel": {
-    "message": "Site (élevé)"
-  },
-  "dappSuggestedShortLabel": {
-    "message": "Site"
   },
   "dappSwapAdvantage": {
     "message": "Économisez et gagnez avec MetaMask Swaps"
@@ -2425,9 +2403,6 @@
   "dontShowThisAgain": {
     "message": "Ne plus afficher ceci"
   },
-  "downArrow": {
-    "message": "flèche vers le bas"
-  },
   "download": {
     "message": "Télécharger"
   },
@@ -2520,22 +2495,6 @@
   "editGasLimitOutOfBounds": {
     "message": "La limite de carburant doit être d’au moins $1"
   },
-  "editGasLimitOutOfBoundsV2": {
-    "message": "La limite de carburant doit être supérieure à $1 et inférieure à $2",
-    "description": "$1 is the minimum limit for gas and $2 is the maximum limit"
-  },
-  "editGasLimitTooltip": {
-    "message": "La limite de carburant correspond au maximum d’unités de carburant que vous consentez à utiliser. Celles-ci servent de multiplicateur aux « Frais de priorité maximaux » et aux « Frais maximaux »."
-  },
-  "editGasMaxBaseFeeGWEIImbalance": {
-    "message": "Les frais de base maximaux ne peuvent pas être inférieurs aux frais de priorité"
-  },
-  "editGasMaxBaseFeeHigh": {
-    "message": "Les frais de base maximaux sont plus élevés que nécessaire"
-  },
-  "editGasMaxBaseFeeLow": {
-    "message": "Les frais de base maximaux sont faibles par rapport aux conditions actuelles du réseau"
-  },
   "editGasMaxFeeHigh": {
     "message": "Les frais maximaux sont plus élevés que nécessaire"
   },
@@ -2548,29 +2507,14 @@
   "editGasMaxPriorityFeeBelowMinimum": {
     "message": "Les frais de priorité maximaux doivent être supérieurs à 0 GWEI"
   },
-  "editGasMaxPriorityFeeBelowMinimumV2": {
-    "message": "Les frais de priorité doivent être supérieurs à 0."
-  },
   "editGasMaxPriorityFeeHigh": {
     "message": "Les frais de priorité maximaux sont plus élevés que nécessaire. Vous risquez de payer plus que prévu."
-  },
-  "editGasMaxPriorityFeeHighV2": {
-    "message": "Les frais de priorité maximaux sont plus élevés que nécessaire. Vous risquez de payer plus que prévu"
   },
   "editGasMaxPriorityFeeLow": {
     "message": "Les frais de priorité maximaux sont faibles par rapport aux conditions actuelles du réseau"
   },
-  "editGasMaxPriorityFeeLowV2": {
-    "message": "Les frais de priorité sont faibles par rapport aux conditions actuelles du réseau"
-  },
   "editGasPriceTooLow": {
     "message": "Les frais de carburant doivent être supérieurs à 0"
-  },
-  "editGasPriceTooltip": {
-    "message": "Ce réseau exige un champ « Prix du carburant » lors de la soumission d’une transaction. Le prix du carburant correspond au montant que vous paierez par unité de carburant."
-  },
-  "editGasTitle": {
-    "message": "Modifier la priorité"
   },
   "editGasTooLow": {
     "message": "Délai de traitement inconnu"
@@ -2984,24 +2928,11 @@
   "gas": {
     "message": "Carburant"
   },
-  "gasDisplayAcknowledgeDappButtonText": {
-    "message": "Modifier les frais de gaz suggérés"
-  },
-  "gasDisplayDappWarning": {
-    "message": "Ces frais de gaz ont été suggérés par $1. Si vous n’en tenez pas compte, vous risquez de rencontrer des difficultés lors de votre transaction. Veuillez contacter $1 pour toute question.",
-    "description": "$1 represents the Dapp's origin"
-  },
   "gasLimit": {
     "message": "Limite de gaz"
   },
-  "gasLimitRecommended": {
-    "message": "La limite de gaz recommandée est $1. Si la limite de gaz est inférieure à cette valeur, un échec peut en résulter."
-  },
   "gasLimitTooLow": {
     "message": "La limite de carburant doit être d’au moins 21000"
-  },
-  "gasLimitV2": {
-    "message": "Montant maximal des frais de transaction"
   },
   "gasPrice": {
     "message": "Prix du gaz (GWEI)"
@@ -3762,9 +3693,6 @@
   "ledgerWebHIDNotConnectedErrorMessage": {
     "message": "Le dispositif Ledger n’est pas connecté. Si vous souhaitez le connecter, veuillez cliquer à nouveau sur « Continuer » et approuver la connexion au HID",
     "description": "An error message shown to the user during the hardware connect flow."
-  },
-  "levelArrow": {
-    "message": "flèche de niveau"
   },
   "lightTheme": {
     "message": "Clair"
@@ -5413,9 +5341,6 @@
     "message": "disponible",
     "description": "is the available balance amount"
   },
-  "perpsAvailableBalance": {
-    "message": "Solde disponible"
-  },
   "perpsAvailableToClose": {
     "message": "Disponible pour clôturer"
   },
@@ -5577,12 +5502,6 @@
   "perpsMarkets": {
     "message": "Marchés"
   },
-  "perpsMax": {
-    "message": "Maximum"
-  },
-  "perpsMaxRemovable": {
-    "message": "Montant maximal pouvant être retiré"
-  },
   "perpsMid": {
     "message": "Moyen"
   },
@@ -5635,9 +5554,6 @@
   },
   "perpsPosition": {
     "message": "Position"
-  },
-  "perpsPositionSize": {
-    "message": "Taille de la position"
   },
   "perpsPositions": {
     "message": "Positions"
@@ -7919,15 +7835,6 @@
   "speedUpCancellation": {
     "message": "Accélérer cette annulation"
   },
-  "speedUpExplanation": {
-    "message": "Nous avons mis à jour le prix du carburant selon les conditions actuelles du réseau et l’avons augmenté d’au moins 10 % (requis par le réseau)."
-  },
-  "speedUpPopoverTitle": {
-    "message": "Accélérer la transaction"
-  },
-  "speedUpTooltipText": {
-    "message": "Nouveaux frais de gaz"
-  },
   "speedUpTransactionDescription": {
     "message": "Ces frais de réseau remplaceront les frais initiaux."
   },
@@ -8536,9 +8443,6 @@
   "swapSource": {
     "message": "Source de liquidité"
   },
-  "swapSuggested": {
-    "message": "Swap proposé"
-  },
   "swapSuggestedGasSettingToolTipMessage": {
     "message": "Les swaps sont des transactions complexes et soumises à une contrainte de temps. Nous recommandons ce prix de carburant pour assurer un bon équilibre entre le coût et la garantie d’un swap réussi."
   },
@@ -8767,14 +8671,8 @@
   "tokensInCollection": {
     "message": "Jetons dans la collection"
   },
-  "tooltipSatusConnected": {
-    "message": "connecté"
-  },
   "tooltipSatusConnectedUpperCase": {
     "message": "Connecté"
-  },
-  "tooltipSatusNotConnected": {
-    "message": "non connecté"
   },
   "total": {
     "message": "Total"
@@ -8964,9 +8862,6 @@
   "tutorial": {
     "message": "Tutoriel"
   },
-  "twelveHrTitle": {
-    "message": "12 h :"
-  },
   "txAlertTitle": {
     "message": "Cette transaction sera annulée"
   },
@@ -9052,9 +8947,6 @@
   },
   "unstableTokenPriceTitle": {
     "message": "Prix du jeton instable"
-  },
-  "upArrow": {
-    "message": "flèche vers le haut"
   },
   "update": {
     "message": "Mise à jour"

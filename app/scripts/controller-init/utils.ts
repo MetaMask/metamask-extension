@@ -51,7 +51,7 @@ export type ControllersToInitialize =
   | 'NotificationServicesController'
   | 'NotificationServicesPushController'
   | 'RateLimitController'
-  | 'SnapsRegistry'
+  | 'SnapRegistryController'
   | 'SnapController'
   | 'SnapInsightsController'
   | 'SnapInterfaceController'

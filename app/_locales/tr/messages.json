@@ -389,9 +389,6 @@
   "advanced": {
     "message": "Gelişmiş"
   },
-  "advancedBaseGasFeeToolTip": {
-    "message": "İşleminiz bloka dahil edildiğinde maks. baz ücretiniz ile gerçek paz ücret arasındaki fark iade edilecektir. Toplam miktar, maks. baz ücret (GWEI'de) * gaz limiti olarak hesaplanacaktır."
-  },
   "advancedDetailsDataDesc": {
     "message": "Veri"
   },
@@ -407,10 +404,6 @@
   "advancedEIP1559ModalTitle": {
     "message": "Gelişmiş ağ ücreti"
   },
-  "advancedGasFeeDefaultOptIn": {
-    "message": "Bu değerleri $1 ağı için varsayılanım olarak kaydet.",
-    "description": "$1 is the current network name."
-  },
   "advancedGasPriceModalTitle": {
     "message": "Gelişmiş ağ ücreti"
   },
@@ -422,9 +415,6 @@
   },
   "advancedPermissionsSmallCase": {
     "message": "gelişmiş izinler"
-  },
-  "advancedPriorityFeeToolTip": {
-    "message": "Maks. öncelik ücreti (başka bir deyişle \"madenci bahşişi\") doğrudan madencilere gider ve işleminizin öncelikli olarak gerçekleştirilmesini teşvik eder."
   },
   "airDropPatternDescription": {
     "message": "Token'ın zincir içi geçmişi, daha önce şüpheli airdrop faaliyetlerinin olduğu durumları açığa çıkarır."
@@ -1345,9 +1335,6 @@
   "cancel": {
     "message": "İptal"
   },
-  "cancelPopoverTitle": {
-    "message": "İşlemi iptal et"
-  },
   "cancelTransactionDescription": {
     "message": "Bu işlem iptal edilecek ve bu ağ ücreti orijinalinin yerine geçecektir."
   },
@@ -1999,9 +1986,6 @@
   "currentQuestion": {
     "message": "Soru $1 / 2"
   },
-  "currentTitle": {
-    "message": "Mevcut:"
-  },
   "currentlyUnavailable": {
     "message": "Bu ağda kullanılamaz"
   },
@@ -2054,12 +2038,6 @@
   },
   "dappSuggestedHigh": {
     "message": "Önerilen site"
-  },
-  "dappSuggestedHighShortLabel": {
-    "message": "Site (yüksek)"
-  },
-  "dappSuggestedShortLabel": {
-    "message": "Site"
   },
   "dappSwapAdvantage": {
     "message": "MetaMask Swaps ile tasarruf et ve kazan"
@@ -2425,9 +2403,6 @@
   "dontShowThisAgain": {
     "message": "Tekrar gösterme"
   },
-  "downArrow": {
-    "message": "aşağı ok"
-  },
   "download": {
     "message": "İndir"
   },
@@ -2520,22 +2495,6 @@
   "editGasLimitOutOfBounds": {
     "message": "Gaz limiti en az $1 olmalıdır"
   },
-  "editGasLimitOutOfBoundsV2": {
-    "message": "Gaz limiti en az $1, en fazla $2 olmalıdır",
-    "description": "$1 is the minimum limit for gas and $2 is the maximum limit"
-  },
-  "editGasLimitTooltip": {
-    "message": "Gaz limiti, kullanmak istediğiniz maksimum gaz birimidir. Gaz birimleri \"Maks. öncelik ücreti\" ve \"Maks. ücretin\" bir çarpanıdır."
-  },
-  "editGasMaxBaseFeeGWEIImbalance": {
-    "message": "Maks. baz ücret, öncelik ücretinden daha düşük olamaz"
-  },
-  "editGasMaxBaseFeeHigh": {
-    "message": "Maks. baz ücret gerekenden daha yüksek"
-  },
-  "editGasMaxBaseFeeLow": {
-    "message": "Maks. baz ücret mevcut ağ koşulları için düşük"
-  },
   "editGasMaxFeeHigh": {
     "message": "Maks. ücret gerekenden daha yüksek"
   },
@@ -2548,29 +2507,14 @@
   "editGasMaxPriorityFeeBelowMinimum": {
     "message": "Maks. öncelik ücreti 0 GWEI üzerinde olmalıdır"
   },
-  "editGasMaxPriorityFeeBelowMinimumV2": {
-    "message": "Öncelik ücreti 0'dan fazla olmalıdır."
-  },
   "editGasMaxPriorityFeeHigh": {
     "message": "Maks. öncelik ücreti gerekenden yüksek. Gerekenden fazla ödeme yapabilirsiniz."
-  },
-  "editGasMaxPriorityFeeHighV2": {
-    "message": "Öncelik ücreti gerekenden yüksek. Gerekenden fazla ödeme yapabilirsiniz"
   },
   "editGasMaxPriorityFeeLow": {
     "message": "Maks. öncelik ücreti mevcut ağ koşulları için düşük"
   },
-  "editGasMaxPriorityFeeLowV2": {
-    "message": "Öncelik ücreti mevcut ağ koşulları için düşük"
-  },
   "editGasPriceTooLow": {
     "message": "Gaz fiyatı 0'dan büyük olmalıdır"
-  },
-  "editGasPriceTooltip": {
-    "message": "Bu ağ, bir işlem gönderirken bir \"Gaz fiyatı\" alanı gerektirir. Gaz fiyatı, gaz birimi başına ödeyeceğiniz miktardır."
-  },
-  "editGasTitle": {
-    "message": "Önceliği düzenle"
   },
   "editGasTooLow": {
     "message": "Bilinmeyen işlem süresi"
@@ -2984,24 +2928,11 @@
   "gas": {
     "message": "Gaz"
   },
-  "gasDisplayAcknowledgeDappButtonText": {
-    "message": "Önerilen gaz ücretini düzenle"
-  },
-  "gasDisplayDappWarning": {
-    "message": "Bu gaz ücreti $1 tarafından önerildi. Bunu geçersiz kılmak işleminizde bir soruna neden olabilir. Sorularınız olursa lütfen $1 adresine ulaşın.",
-    "description": "$1 represents the Dapp's origin"
-  },
   "gasLimit": {
     "message": "Gaz limiti"
   },
-  "gasLimitRecommended": {
-    "message": "Önerilen gaz limiti $1 kadardır. Gaz limiti bundan daha düşükse işlem başarısız olabilir."
-  },
   "gasLimitTooLow": {
     "message": "Gaz limiti en az 21000 olmalıdır"
-  },
-  "gasLimitV2": {
-    "message": "Gaz limiti"
   },
   "gasPrice": {
     "message": "Gaz fiyatı"
@@ -3762,9 +3693,6 @@
   "ledgerWebHIDNotConnectedErrorMessage": {
     "message": "Ledger cihazı bağlı değil. Kayıt Defterinizi bağlamak istiyorsanız lütfen \"Devam Et\" düğmesine yeniden tıklayın ve HID bağlantısını onaylayın",
     "description": "An error message shown to the user during the hardware connect flow."
-  },
-  "levelArrow": {
-    "message": "seviye oku"
   },
   "lightTheme": {
     "message": "Açık"
@@ -5413,9 +5341,6 @@
     "message": "kullanılabilir",
     "description": "is the available balance amount"
   },
-  "perpsAvailableBalance": {
-    "message": "Kullanılabilir bakiye"
-  },
   "perpsAvailableToClose": {
     "message": "Kapatılabilir"
   },
@@ -5577,12 +5502,6 @@
   "perpsMarkets": {
     "message": "Piyasalar"
   },
-  "perpsMax": {
-    "message": "Maksimum"
-  },
-  "perpsMaxRemovable": {
-    "message": "Maksimum kaldırılabilir"
-  },
   "perpsMid": {
     "message": "Orta"
   },
@@ -5635,9 +5554,6 @@
   },
   "perpsPosition": {
     "message": "Pozisyon"
-  },
-  "perpsPositionSize": {
-    "message": "Pozisyon Büyüklüğü"
   },
   "perpsPositions": {
     "message": "Pozisyonlar"
@@ -7919,15 +7835,6 @@
   "speedUpCancellation": {
     "message": "Bu iptal işlemini hızlandır"
   },
-  "speedUpExplanation": {
-    "message": "Mevcut ağ koşullarına göre gaz ücretini güncelledik ve en az %10 artırdık (ağ tarafından gereklidir)."
-  },
-  "speedUpPopoverTitle": {
-    "message": "İşlemi hızlandır"
-  },
-  "speedUpTooltipText": {
-    "message": "Yeni gaz ücreti"
-  },
   "speedUpTransactionDescription": {
     "message": "Bu ağ ücreti orijinalinin yerine geçecektir."
   },
@@ -8536,9 +8443,6 @@
   "swapSource": {
     "message": "Likidite kaynağı"
   },
-  "swapSuggested": {
-    "message": "Takas önerildi"
-  },
   "swapSuggestedGasSettingToolTipMessage": {
     "message": "Takas işlemleri karmaşık ve zaman hassasiyeti yüksek işlemlerdir. Başarılı bir Takas için maliyet ve güven arasında iyi bir denge için bu gaz ücretini öneririz."
   },
@@ -8767,14 +8671,8 @@
   "tokensInCollection": {
     "message": "Koleksiyondaki tokenlar"
   },
-  "tooltipSatusConnected": {
-    "message": "bağlandı"
-  },
   "tooltipSatusConnectedUpperCase": {
     "message": "Bağlandı"
-  },
-  "tooltipSatusNotConnected": {
-    "message": "bağlanmadı"
   },
   "total": {
     "message": "Toplam"
@@ -8964,9 +8862,6 @@
   "tutorial": {
     "message": "Öğretici"
   },
-  "twelveHrTitle": {
-    "message": "12 sa.:"
-  },
   "txAlertTitle": {
     "message": "Bu işlem geri alınacak"
   },
@@ -9052,9 +8947,6 @@
   },
   "unstableTokenPriceTitle": {
     "message": "İstikrarsız token fiyatı"
-  },
-  "upArrow": {
-    "message": "yukarı ok"
   },
   "update": {
     "message": "Güncelle"

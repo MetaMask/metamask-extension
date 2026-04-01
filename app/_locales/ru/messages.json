@@ -389,9 +389,6 @@
   "advanced": {
     "message": "Дополнительные"
   },
-  "advancedBaseGasFeeToolTip": {
-    "message": "После включения вашей транзакции в блок возмещается любая разница между вашей максимальной базовой комиссией и фактической базовой комиссией. Общая сумма рассчитывается следующим образом: максимальная базовая комиссия (в Гвей) x лимит газа."
-  },
   "advancedDetailsDataDesc": {
     "message": "Данные"
   },
@@ -407,10 +404,6 @@
   "advancedEIP1559ModalTitle": {
     "message": "Дополнительная комиссия сети"
   },
-  "advancedGasFeeDefaultOptIn": {
-    "message": "Сохраните эти значения как значения по умолчанию для сети $1.",
-    "description": "$1 is the current network name."
-  },
   "advancedGasPriceModalTitle": {
     "message": "Дополнительная комиссия сети"
   },
@@ -422,9 +415,6 @@
   },
   "advancedPermissionsSmallCase": {
     "message": "расширенные разрешения"
-  },
-  "advancedPriorityFeeToolTip": {
-    "message": "Плата за приоритет (также известная как «чаевые» майнеру) направляется непосредственно майнерам, чтобы они уделили приоритетное внимание вашей транзакции."
   },
   "airDropPatternDescription": {
     "message": "В истории токена в блокчейне уже были случаи подозрительных аирдропов."
@@ -1345,9 +1335,6 @@
   "cancel": {
     "message": "Отмена"
   },
-  "cancelPopoverTitle": {
-    "message": "Отменить транзакцию"
-  },
   "cancelTransactionDescription": {
     "message": "Эта транзакция будет отменена, и эта комиссия сети заменит исходную."
   },
@@ -1999,9 +1986,6 @@
   "currentQuestion": {
     "message": "Вопрос $1 из 2"
   },
-  "currentTitle": {
-    "message": "Текущая:"
-  },
   "currentlyUnavailable": {
     "message": "Недоступно в этой сети"
   },
@@ -2054,12 +2038,6 @@
   },
   "dappSuggestedHigh": {
     "message": "Рекомендовано сайтом"
-  },
-  "dappSuggestedHighShortLabel": {
-    "message": "Сайт (высокий)"
-  },
-  "dappSuggestedShortLabel": {
-    "message": "Сайт"
   },
   "dappSwapAdvantage": {
     "message": "Экономьте и зарабатывайте с MetaMask Swaps"
@@ -2425,9 +2403,6 @@
   "dontShowThisAgain": {
     "message": "Не показывать снова"
   },
-  "downArrow": {
-    "message": "стрелка «вниз»"
-  },
   "download": {
     "message": "Скачать"
   },
@@ -2520,22 +2495,6 @@
   "editGasLimitOutOfBounds": {
     "message": "Лимит газа должен быть не менее $1"
   },
-  "editGasLimitOutOfBoundsV2": {
-    "message": "Лимит газа должен быть больше $1 и меньше $2",
-    "description": "$1 is the minimum limit for gas and $2 is the maximum limit"
-  },
-  "editGasLimitTooltip": {
-    "message": "Лимит газа — это максимальное количество единиц газа, которое вы готовы использовать. Единицы газа являются множителем «Максимальной платы за приоритет» и «Максимальной комиссии»."
-  },
-  "editGasMaxBaseFeeGWEIImbalance": {
-    "message": "Максимальная базовая комиссия не может быть ниже платы за приоритет."
-  },
-  "editGasMaxBaseFeeHigh": {
-    "message": "Максимальная базовая комиссия выше необходимой"
-  },
-  "editGasMaxBaseFeeLow": {
-    "message": "Максимальная базовая комиссия низкая для текущих условий сети"
-  },
   "editGasMaxFeeHigh": {
     "message": "Максимальная комиссия выше, чем необходимо"
   },
@@ -2548,29 +2507,14 @@
   "editGasMaxPriorityFeeBelowMinimum": {
     "message": "Максимальная плата за приоритет должна быть больше 0 Гвей."
   },
-  "editGasMaxPriorityFeeBelowMinimumV2": {
-    "message": "Плата за приоритет должна быть больше 0."
-  },
   "editGasMaxPriorityFeeHigh": {
     "message": "Максимальная плата за приоритет выше необходимой. Вы можете заплатить больше, чем нужно."
-  },
-  "editGasMaxPriorityFeeHighV2": {
-    "message": "Плата за приоритет выше необходимой. Вы можете заплатить больше, чем нужно"
   },
   "editGasMaxPriorityFeeLow": {
     "message": "Максимальная плата за приоритет низкая для текущих условий сети"
   },
-  "editGasMaxPriorityFeeLowV2": {
-    "message": "Плата за приоритет низкая для текущих условий сети"
-  },
   "editGasPriceTooLow": {
     "message": "Цена газа должна быть больше 0"
-  },
-  "editGasPriceTooltip": {
-    "message": "В этой сети необходимо заполнить поле «Цена газа» при отправке транзакции. Цена газа — это сумма, которую вы будете платить за единицу газа."
-  },
-  "editGasTitle": {
-    "message": "Изменить приоритет"
   },
   "editGasTooLow": {
     "message": "Время обработки неизвестно"
@@ -2984,24 +2928,11 @@
   "gas": {
     "message": "Газ"
   },
-  "gasDisplayAcknowledgeDappButtonText": {
-    "message": "Изменить рекомендуемую плату за газ"
-  },
-  "gasDisplayDappWarning": {
-    "message": "Эта плата за газ была предложена $1. Ее изменение может привести к проблемам с вашей транзакцией. При наличии вопросов обратитесь к $1.",
-    "description": "$1 represents the Dapp's origin"
-  },
   "gasLimit": {
     "message": "Лимит газа"
   },
-  "gasLimitRecommended": {
-    "message": "Рекомендуемый лимит газа — $1. Если лимит газа меньше, успешность транзакции снижается."
-  },
   "gasLimitTooLow": {
     "message": "Лимит газа должен быть не менее 21 000"
-  },
-  "gasLimitV2": {
-    "message": "Лимит газа"
   },
   "gasPrice": {
     "message": "Цена газа (Гвей)"
@@ -3762,9 +3693,6 @@
   "ledgerWebHIDNotConnectedErrorMessage": {
     "message": "Ledger не подключен. Если хотите подключить Ledger, нажмите «Продолжить» еще раз и одобрите HID-подключение",
     "description": "An error message shown to the user during the hardware connect flow."
-  },
-  "levelArrow": {
-    "message": "стрелка «уровень»"
   },
   "lightTheme": {
     "message": "Светлая"
@@ -5413,9 +5341,6 @@
     "message": "доступные",
     "description": "is the available balance amount"
   },
-  "perpsAvailableBalance": {
-    "message": "Доступный баланс"
-  },
   "perpsAvailableToClose": {
     "message": "Доступно для закрытия"
   },
@@ -5577,12 +5502,6 @@
   "perpsMarkets": {
     "message": "Рынки"
   },
-  "perpsMax": {
-    "message": "Максимум"
-  },
-  "perpsMaxRemovable": {
-    "message": "Макс. для снятия"
-  },
   "perpsMid": {
     "message": "Сред."
   },
@@ -5635,9 +5554,6 @@
   },
   "perpsPosition": {
     "message": "Позиция"
-  },
-  "perpsPositionSize": {
-    "message": "Размер позиции"
   },
   "perpsPositions": {
     "message": "Позиции"
@@ -7919,15 +7835,6 @@
   "speedUpCancellation": {
     "message": "Ускорить эту отмену"
   },
-  "speedUpExplanation": {
-    "message": "Мы обновили плату за газ с учетом текущих условий сети и увеличили ее как минимум на 10% (это требование сети)."
-  },
-  "speedUpPopoverTitle": {
-    "message": "Ускорить транзакцию"
-  },
-  "speedUpTooltipText": {
-    "message": "Новая плата за газ"
-  },
   "speedUpTransactionDescription": {
     "message": "Эта комиссия сети заменит исходную."
   },
@@ -8536,9 +8443,6 @@
   "swapSource": {
     "message": "Источник ликвидности"
   },
-  "swapSuggested": {
-    "message": "Рекомендуется своп"
-  },
   "swapSuggestedGasSettingToolTipMessage": {
     "message": "Своп — это сложная транзакция, выполнение которой зависят от имеющегося времени. Мы рекомендуем эту плату за газ для хорошего баланса между стоимостью и уверенностью в успехе свопа."
   },
@@ -8767,14 +8671,8 @@
   "tokensInCollection": {
     "message": "Токены в коллекции"
   },
-  "tooltipSatusConnected": {
-    "message": "подключен"
-  },
   "tooltipSatusConnectedUpperCase": {
     "message": "Подключено"
-  },
-  "tooltipSatusNotConnected": {
-    "message": "не подключено"
   },
   "total": {
     "message": "Итого"
@@ -8964,9 +8862,6 @@
   "tutorial": {
     "message": "Руководство"
   },
-  "twelveHrTitle": {
-    "message": "12 ч:"
-  },
   "txAlertTitle": {
     "message": "Эта транзакция будет отменена"
   },
@@ -9052,9 +8947,6 @@
   },
   "unstableTokenPriceTitle": {
     "message": "Нестабильная цена токена"
-  },
-  "upArrow": {
-    "message": "стрелка «вверх»"
   },
   "update": {
     "message": "Обновить"

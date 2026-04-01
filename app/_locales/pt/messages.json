@@ -389,9 +389,6 @@
   "advanced": {
     "message": "Avançado"
   },
-  "advancedBaseGasFeeToolTip": {
-    "message": "Quando a sua transação for incluída no bloco, qualquer diferença entre a sua taxa-base máxima e a taxa-base real será reembolsada. O cálculo do valor total é feito da seguinte forma: taxa-base máxima (em GWEI) * limite de gás."
-  },
   "advancedDetailsDataDesc": {
     "message": "Dados"
   },
@@ -407,10 +404,6 @@
   "advancedEIP1559ModalTitle": {
     "message": "Taxa de rede avançada"
   },
-  "advancedGasFeeDefaultOptIn": {
-    "message": "Salvar esses valores como padrão para a rede $1.",
-    "description": "$1 is the current network name."
-  },
   "advancedGasPriceModalTitle": {
     "message": "Taxa de rede avançada"
   },
@@ -422,9 +415,6 @@
   },
   "advancedPermissionsSmallCase": {
     "message": "permissões avançadas"
-  },
-  "advancedPriorityFeeToolTip": {
-    "message": "A taxa de prioridade (ou seja, \"gorjeta do minerador\") vai diretamente para os mineradores e os incentiva a priorizar a sua transação."
   },
   "airDropPatternDescription": {
     "message": "O histórico do token na rede revela ocorrências anteriores de atividades de airdrop suspeitas."
@@ -1345,9 +1335,6 @@
   "cancel": {
     "message": "Cancelar"
   },
-  "cancelPopoverTitle": {
-    "message": "Cancelar transação"
-  },
   "cancelTransactionDescription": {
     "message": "Esta transação será cancelada e esta taxa de rede substituirá a original."
   },
@@ -1999,9 +1986,6 @@
   "currentQuestion": {
     "message": "Pergunta $1 de 2"
   },
-  "currentTitle": {
-    "message": "Atual:"
-  },
   "currentlyUnavailable": {
     "message": "Indisponível nessa rede"
   },
@@ -2054,12 +2038,6 @@
   },
   "dappSuggestedHigh": {
     "message": "Site sugerido"
-  },
-  "dappSuggestedHighShortLabel": {
-    "message": "Site (alto)"
-  },
-  "dappSuggestedShortLabel": {
-    "message": "Site"
   },
   "dappSwapAdvantage": {
     "message": "Economize e ganhe com swaps da MetaMask"
@@ -2425,9 +2403,6 @@
   "dontShowThisAgain": {
     "message": "Não exibir isso novamente"
   },
-  "downArrow": {
-    "message": "seta para baixo"
-  },
   "download": {
     "message": "Baixar"
   },
@@ -2520,22 +2495,6 @@
   "editGasLimitOutOfBounds": {
     "message": "O limite de gás deve ser de pelo menos $1"
   },
-  "editGasLimitOutOfBoundsV2": {
-    "message": "O limite de gás deve ser superior a $1 e inferior a $2",
-    "description": "$1 is the minimum limit for gas and $2 is the maximum limit"
-  },
-  "editGasLimitTooltip": {
-    "message": "O limite de gás são as unidades máximas de gás que você está disposto a utilizar. Unidades de gás são um multiplicador para “Taxa de prioridade máxima” e “Taxa máxima”."
-  },
-  "editGasMaxBaseFeeGWEIImbalance": {
-    "message": "A taxa-base máxima não pode ser inferior à taxa de prioridade"
-  },
-  "editGasMaxBaseFeeHigh": {
-    "message": "A taxa-base máxima está mais elevada que o necessário"
-  },
-  "editGasMaxBaseFeeLow": {
-    "message": "A taxa-base máxima está baixa para as condições atuais da rede"
-  },
   "editGasMaxFeeHigh": {
     "message": "A taxa máxima está mais elevada que o necessário"
   },
@@ -2548,29 +2507,14 @@
   "editGasMaxPriorityFeeBelowMinimum": {
     "message": "A taxa de prioridade máxima deve ser superior a 0 GWEI"
   },
-  "editGasMaxPriorityFeeBelowMinimumV2": {
-    "message": "A taxa de prioridade deve ser superior a 0."
-  },
   "editGasMaxPriorityFeeHigh": {
     "message": "A taxa de prioridade máxima está mais alta que o necessário. Talvez você pague mais que o necessário."
-  },
-  "editGasMaxPriorityFeeHighV2": {
-    "message": "A taxa de prioridade está mais alta que o necessário. Talvez você pague mais que o necessário"
   },
   "editGasMaxPriorityFeeLow": {
     "message": "A taxa de prioridade máxima está baixa para as condições atuais da rede"
   },
-  "editGasMaxPriorityFeeLowV2": {
-    "message": "A taxa de prioridade está baixa para as condições atuais da rede"
-  },
   "editGasPriceTooLow": {
     "message": "O preço do gás deve ser superior a 0"
-  },
-  "editGasPriceTooltip": {
-    "message": "Essa rede requer um campo de \"preço do gás\" ao enviar uma transação. O preço do gás é o valor pago por unidade de gás."
-  },
-  "editGasTitle": {
-    "message": "Editar prioridade"
   },
   "editGasTooLow": {
     "message": "Tempo de processamento desconhecido"
@@ -2984,24 +2928,11 @@
   "gas": {
     "message": "Gás"
   },
-  "gasDisplayAcknowledgeDappButtonText": {
-    "message": "Editar taxa de gás sugerida"
-  },
-  "gasDisplayDappWarning": {
-    "message": "Essa taxa de gás foi sugerida por $1. Sua substituição pode causar um problema com a sua transação. Entre em contato com $1 se tiver perguntas.",
-    "description": "$1 represents the Dapp's origin"
-  },
   "gasLimit": {
     "message": "Limite de gás"
   },
-  "gasLimitRecommended": {
-    "message": "O limite de gás recomendado é de $1. Um limite de gás inferior pode resultar em falha."
-  },
   "gasLimitTooLow": {
     "message": "O limite de gás deve ser de pelo menos 21000"
-  },
-  "gasLimitV2": {
-    "message": "Limite de gás"
   },
   "gasPrice": {
     "message": "Preço do gás (GWEI)"
@@ -3762,9 +3693,6 @@
   "ledgerWebHIDNotConnectedErrorMessage": {
     "message": "O dispositivo Ledger não foi conectado. Se deseja conectar seu Ledger, clique em \"Continuar\" novamente e aprove a conexão HID",
     "description": "An error message shown to the user during the hardware connect flow."
-  },
-  "levelArrow": {
-    "message": "seta de nível"
   },
   "lightTheme": {
     "message": "Claro"
@@ -5413,9 +5341,6 @@
     "message": "disponível",
     "description": "is the available balance amount"
   },
-  "perpsAvailableBalance": {
-    "message": "Saldo disponível"
-  },
   "perpsAvailableToClose": {
     "message": "Disponível para fechar"
   },
@@ -5577,12 +5502,6 @@
   "perpsMarkets": {
     "message": "Mercados"
   },
-  "perpsMax": {
-    "message": "Máx."
-  },
-  "perpsMaxRemovable": {
-    "message": "Máximo removível"
-  },
   "perpsMid": {
     "message": "Médio"
   },
@@ -5635,9 +5554,6 @@
   },
   "perpsPosition": {
     "message": "Posição"
-  },
-  "perpsPositionSize": {
-    "message": "Tamanho da posição"
   },
   "perpsPositions": {
     "message": "Posições"
@@ -7919,15 +7835,6 @@
   "speedUpCancellation": {
     "message": "Acelerar esse cancelamento"
   },
-  "speedUpExplanation": {
-    "message": "Atualizamos a taxa de gás baseada nas condições atuais da rede e a aumentamos em pelo menos 10% (exigido pela rede)."
-  },
-  "speedUpPopoverTitle": {
-    "message": "Acelerar a transação"
-  },
-  "speedUpTooltipText": {
-    "message": "Nova taxa de gás"
-  },
   "speedUpTransactionDescription": {
     "message": "Esta taxa de rede substituirá a original."
   },
@@ -8536,9 +8443,6 @@
   "swapSource": {
     "message": "Fonte de liquidez"
   },
-  "swapSuggested": {
-    "message": "Troca sugerida"
-  },
   "swapSuggestedGasSettingToolTipMessage": {
     "message": "Trocas são transações complexas e urgentes. Recomendamos essa taxa de gás para atingir o equilíbrio ideal entre o custo e a confiança de uma troca bem-sucedida."
   },
@@ -8767,14 +8671,8 @@
   "tokensInCollection": {
     "message": "Tokens na coleção"
   },
-  "tooltipSatusConnected": {
-    "message": "conectado"
-  },
   "tooltipSatusConnectedUpperCase": {
     "message": "Conectado"
-  },
-  "tooltipSatusNotConnected": {
-    "message": "não conectado"
   },
   "total": {
     "message": "Total"
@@ -8964,9 +8862,6 @@
   "tutorial": {
     "message": "Tutorial"
   },
-  "twelveHrTitle": {
-    "message": "12 h:"
-  },
   "txAlertTitle": {
     "message": "Esta transação será revertida"
   },
@@ -9052,9 +8947,6 @@
   },
   "unstableTokenPriceTitle": {
     "message": "Preço de token instável"
-  },
-  "upArrow": {
-    "message": "seta para cima"
   },
   "update": {
     "message": "Atualizar"

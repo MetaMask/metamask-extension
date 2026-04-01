@@ -389,9 +389,6 @@
   "advanced": {
     "message": "Για προχωρημένους"
   },
-  "advancedBaseGasFeeToolTip": {
-    "message": "Όταν η συναλλαγή σας συμπεριληφθεί στο μπλοκ, οποιαδήποτε διαφορά μεταξύ της μέγιστης βασικής χρέωσής σας και της πραγματικής βασικής χρέωσής θα επιστραφεί. Το συνολικό ποσό υπολογίζεται ως μέγιστο βασικό τέλος (σε GWEI) * όριο τελών συναλλαγής."
-  },
   "advancedDetailsDataDesc": {
     "message": "Δεδομένα"
   },
@@ -407,10 +404,6 @@
   "advancedEIP1559ModalTitle": {
     "message": "Τέλη δικτύου για προχωρημένους"
   },
-  "advancedGasFeeDefaultOptIn": {
-    "message": "Αποθηκεύστε αυτές τις τιμές ως προεπιλεγμένες για το δίκτυο $1.",
-    "description": "$1 is the current network name."
-  },
   "advancedGasPriceModalTitle": {
     "message": "Τέλη δικτύου για προχωρημένους"
   },
@@ -422,9 +415,6 @@
   },
   "advancedPermissionsSmallCase": {
     "message": "προηγμένες άδειες"
-  },
-  "advancedPriorityFeeToolTip": {
-    "message": "Το τέλος προτεραιότητας (γνωστό και ως “miner tip”) πηγαίνει άμεσα στους miner και τους ενθαρρύνει να δώσουν προτεραιότητα στη συναλλαγή σας."
   },
   "airDropPatternDescription": {
     "message": "Το ιστορικό του token στην αλυσίδα αποκαλύπτει προηγούμενες ύποπτες τακτικές airdrop."
@@ -1345,9 +1335,6 @@
   "cancel": {
     "message": "Άκυρο"
   },
-  "cancelPopoverTitle": {
-    "message": "Ακύρωση συναλλαγής"
-  },
   "cancelTransactionDescription": {
     "message": "Αυτή η συναλλαγή θα ακυρωθεί και αυτά τα τέλη δικτύου θα αντικαταστήσουν τα αρχικά."
   },
@@ -1999,9 +1986,6 @@
   "currentQuestion": {
     "message": "Ερώτηση $1 από 2"
   },
-  "currentTitle": {
-    "message": "Τρέχουσα:"
-  },
   "currentlyUnavailable": {
     "message": "Μη διαθέσιμο σε αυτό το δίκτυο"
   },
@@ -2054,12 +2038,6 @@
   },
   "dappSuggestedHigh": {
     "message": "Υπόδειξη ιστότοπου"
-  },
-  "dappSuggestedHighShortLabel": {
-    "message": "Ιστότοπος (υψηλό)"
-  },
-  "dappSuggestedShortLabel": {
-    "message": "Ιστότοπος"
   },
   "dappSwapAdvantage": {
     "message": "Εξοικονομήστε και κερδίστε με το MetaMask Swaps"
@@ -2425,9 +2403,6 @@
   "dontShowThisAgain": {
     "message": "Να μην εμφανιστεί ξανά"
   },
-  "downArrow": {
-    "message": "κάτω βέλος"
-  },
   "download": {
     "message": "Λήψη"
   },
@@ -2520,22 +2495,6 @@
   "editGasLimitOutOfBounds": {
     "message": "Το όριο τέλους συναλλαγής πρέπει να είναι τουλάχιστον $1"
   },
-  "editGasLimitOutOfBoundsV2": {
-    "message": "Το όριο τελών συναλλαγής πρέπει να είναι μεγαλύτερο από $1 και μικρότερο από $2",
-    "description": "$1 is the minimum limit for gas and $2 is the maximum limit"
-  },
-  "editGasLimitTooltip": {
-    "message": "Το όριο τελών συναλλαγής είναι οι μέγιστες μονάδες τελών συναλλαγής που είστε διατεθειμένοι να χρησιμοποιήσετε. Οι μονάδες των τελών συναλλαγής είναι ένας πολλαπλασιαστής στο \"Μέγιστο τέλος προτεραιότητας\" και το \"Μέγιστο τέλος\"."
-  },
-  "editGasMaxBaseFeeGWEIImbalance": {
-    "message": "Η μέγιστη βασική χρέωση δεν μπορεί να είναι χαμηλότερη από το τέλος προτεραιότητας"
-  },
-  "editGasMaxBaseFeeHigh": {
-    "message": "Η μέγιστη βασική χρέωση είναι υψηλότερη από ό,τι χρειάζεται"
-  },
-  "editGasMaxBaseFeeLow": {
-    "message": "Η μέγιστη βασική χρέωση τελών είναι χαμηλή για τις τρέχουσες συνθήκες του δικτύου"
-  },
   "editGasMaxFeeHigh": {
     "message": "Η μέγιστη χρέωση είναι υψηλότερη από ό,τι χρειάζεται"
   },
@@ -2548,29 +2507,14 @@
   "editGasMaxPriorityFeeBelowMinimum": {
     "message": "Το μέγιστο τέλος προτεραιότητας πρέπει να είναι μεγαλύτερο από 0 GWEI"
   },
-  "editGasMaxPriorityFeeBelowMinimumV2": {
-    "message": "Το τέλος προτεραιότητας πρέπει να είναι μεγαλύτερο από 0."
-  },
   "editGasMaxPriorityFeeHigh": {
     "message": "Το μέγιστο τέλος προτεραιότητας είναι υψηλότερο από ό,τι χρειάζεται. Μπορείτε να πληρώσετε περισσότερα από ό,τι χρειάζεται."
-  },
-  "editGasMaxPriorityFeeHighV2": {
-    "message": "Το τέλος προτεραιότητας είναι υψηλότερο από ό,τι χρειάζεται. Μπορείτε να πληρώσετε περισσότερα από ό,τι χρειάζεται"
   },
   "editGasMaxPriorityFeeLow": {
     "message": "Το μέγιστο τέλος προτεραιότητας είναι χαμηλό για τις τρέχουσες συνθήκες του δικτύου"
   },
-  "editGasMaxPriorityFeeLowV2": {
-    "message": "Το τέλος προτεραιότητας είναι χαμηλό για τις τρέχουσες συνθήκες του δικτύου"
-  },
   "editGasPriceTooLow": {
     "message": "Η τιμή τέλους συναλλαγής πρέπει να είναι μεγαλύτερη από 0"
-  },
-  "editGasPriceTooltip": {
-    "message": "Αυτό το δίκτυο απαιτεί ένα πεδίο \"Τέλος συναλλαγής\" κατά την υποβολή μιας συναλλαγής. Η τιμή τέλους συναλλαγής είναι το ποσό που θα πληρώσετε ανά μονάδα τέλους συναλλαγής."
-  },
-  "editGasTitle": {
-    "message": "Επεξεργασία προτεραιότητας"
   },
   "editGasTooLow": {
     "message": "Άγνωστος χρόνος επεξεργασίας"
@@ -2984,24 +2928,11 @@
   "gas": {
     "message": "Τέλος συναλλαγής"
   },
-  "gasDisplayAcknowledgeDappButtonText": {
-    "message": "Επεξεργασία προτεινόμενου τέλους συναλλαγής"
-  },
-  "gasDisplayDappWarning": {
-    "message": "Αυτό το τέλος συναλλαγής έχει προταθεί από το $1. Εάν το παραβλέψετε ίσως προκληθεί πρόβλημα με την συναλλαγή σας. Παρακαλούμε απευθυνθείτε στο $1 εάν έχετε ερωτήσεις.",
-    "description": "$1 represents the Dapp's origin"
-  },
   "gasLimit": {
     "message": "Όριο τέλους συναλλαγής"
   },
-  "gasLimitRecommended": {
-    "message": "Το συνιστώμενο όριο τέλους συναλλαγής είναι $1. Εάν το όριο τέλους συναλλαγής είναι μικρότερο από αυτό, η συναλλαγή ενδέχεται να αποτύχει."
-  },
   "gasLimitTooLow": {
     "message": "Το όριο τέλους συναλλαγής πρέπει να είναι τουλάχιστον 21000"
-  },
-  "gasLimitV2": {
-    "message": "Όριο τέλους συναλλαγής"
   },
   "gasPrice": {
     "message": "Τέλη συναλλαγών"
@@ -3762,9 +3693,6 @@
   "ledgerWebHIDNotConnectedErrorMessage": {
     "message": "Η συσκευή Ledger δεν συνδέθηκε. Εάν επιθυμείτε να συνδέσετε το Ledger σας, κάντε ξανά κλικ στο 'Συνέχεια' και εγκρίνετε τη σύνδεση HID.",
     "description": "An error message shown to the user during the hardware connect flow."
-  },
-  "levelArrow": {
-    "message": "βέλος επιπέδου"
   },
   "lightTheme": {
     "message": "Ανοιχτόχρωμο"
@@ -5413,9 +5341,6 @@
     "message": "διαθέσιμο",
     "description": "is the available balance amount"
   },
-  "perpsAvailableBalance": {
-    "message": "Διαθέσιμο υπόλοιπο"
-  },
   "perpsAvailableToClose": {
     "message": "Διαθέσιμο ποσό για κλείσιμο"
   },
@@ -5577,12 +5502,6 @@
   "perpsMarkets": {
     "message": "Αγορές"
   },
-  "perpsMax": {
-    "message": "Μεγ"
-  },
-  "perpsMaxRemovable": {
-    "message": "Μέγιστο που μπορεί να αφαιρεθεί"
-  },
   "perpsMid": {
     "message": "Ενδιάμεσα"
   },
@@ -5635,9 +5554,6 @@
   },
   "perpsPosition": {
     "message": "Θέση"
-  },
-  "perpsPositionSize": {
-    "message": "Μέγεθος θέσης"
   },
   "perpsPositions": {
     "message": "Θέσεις"
@@ -7919,15 +7835,6 @@
   "speedUpCancellation": {
     "message": "Επιτάχυνση αυτής της ακύρωσης"
   },
-  "speedUpExplanation": {
-    "message": "Ενημερώσαμε το τέλος συναλλαγής με βάση τις τρέχουσες συνθήκες του δικτύου και το αυξήσαμε κατά τουλάχιστον 10% (απαιτείται από το δίκτυο)."
-  },
-  "speedUpPopoverTitle": {
-    "message": "Επιτάχυνση συναλλαγής"
-  },
-  "speedUpTooltipText": {
-    "message": "Νέο τέλος συναλλαγής"
-  },
   "speedUpTransactionDescription": {
     "message": "Αυτά τα τέλη δικτύου θα αντικαταστήσουν τα αρχικά."
   },
@@ -8536,9 +8443,6 @@
   "swapSource": {
     "message": "Πηγή ρευστότητας"
   },
-  "swapSuggested": {
-    "message": "Προτεινόμενη ανταλλαγή"
-  },
   "swapSuggestedGasSettingToolTipMessage": {
     "message": "Οι ανταλλαγές είναι πολύπλοκες και με επείγοντα χαρακτήρα συναλλαγές. Συνιστούμε αυτό το τέλος συναλλαγής για μια καλή ισορροπία μεταξύ κόστους και εμπιστοσύνης σε μια επιτυχημένη Ανταλλαγή."
   },
@@ -8767,14 +8671,8 @@
   "tokensInCollection": {
     "message": "Token στη συλλογή"
   },
-  "tooltipSatusConnected": {
-    "message": "συνδεδεμένο"
-  },
   "tooltipSatusConnectedUpperCase": {
     "message": "Συνδεδεμένο"
-  },
-  "tooltipSatusNotConnected": {
-    "message": "μη συνδεδεμένο"
   },
   "total": {
     "message": "Σύνολο"
@@ -8964,9 +8862,6 @@
   "tutorial": {
     "message": "Εκμάθηση"
   },
-  "twelveHrTitle": {
-    "message": "12ώρες:"
-  },
   "txAlertTitle": {
     "message": "Αυτή η συναλλαγή θα ακυρωθεί"
   },
@@ -9052,9 +8947,6 @@
   },
   "unstableTokenPriceTitle": {
     "message": "Ασταθής τιμή token"
-  },
-  "upArrow": {
-    "message": "πάνω βέλος"
   },
   "update": {
     "message": "Ενημέρωση"

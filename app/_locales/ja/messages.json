@@ -389,9 +389,6 @@
   "advanced": {
     "message": "高度な設定"
   },
-  "advancedBaseGasFeeToolTip": {
-    "message": "トランザクションがブロックに含まれた場合、最大基本料金と実際の基本料金の差が返金されます。合計金額は、最大基本料金 (Gwei単位) * ガスリミットで計算されます。"
-  },
   "advancedDetailsDataDesc": {
     "message": "データ"
   },
@@ -407,10 +404,6 @@
   "advancedEIP1559ModalTitle": {
     "message": "詳細なネットワーク手数料"
   },
-  "advancedGasFeeDefaultOptIn": {
-    "message": "これらの値を$1ネットワークのデフォルトとして保存する",
-    "description": "$1 is the current network name."
-  },
   "advancedGasPriceModalTitle": {
     "message": "詳細なネットワーク手数料"
   },
@@ -422,9 +415,6 @@
   },
   "advancedPermissionsSmallCase": {
     "message": "高度なアクセス許可"
-  },
-  "advancedPriorityFeeToolTip": {
-    "message": "優先手数料 (別名「マイナーチップ」) はマイナーに直接支払われ、トランザクションを優先するインセンティブとなります。"
   },
   "airDropPatternDescription": {
     "message": "トークンのオンチェーン履歴で、不審なエアドロップアクティビティの以前のインスタンスを確認できます。"
@@ -1345,9 +1335,6 @@
   "cancel": {
     "message": "キャンセル"
   },
-  "cancelPopoverTitle": {
-    "message": "トランザクションのキャンセル"
-  },
   "cancelTransactionDescription": {
     "message": "このトランザクションはキャンセルされ、このネットワーク手数料が元の手数料に代わって適用されます。"
   },
@@ -1999,9 +1986,6 @@
   "currentQuestion": {
     "message": "問題 $1 / 2"
   },
-  "currentTitle": {
-    "message": "現在:"
-  },
   "currentlyUnavailable": {
     "message": "このネットワークでは利用できません"
   },
@@ -2054,12 +2038,6 @@
   },
   "dappSuggestedHigh": {
     "message": "おすすめのサイト"
-  },
-  "dappSuggestedHighShortLabel": {
-    "message": "サイト (高)"
-  },
-  "dappSuggestedShortLabel": {
-    "message": "サイト"
   },
   "dappSwapAdvantage": {
     "message": "MetaMaskスワップで貯めて収益化"
@@ -2425,9 +2403,6 @@
   "dontShowThisAgain": {
     "message": "今後表示しない"
   },
-  "downArrow": {
-    "message": "下矢印"
-  },
   "download": {
     "message": "ダウンロード"
   },
@@ -2520,22 +2495,6 @@
   "editGasLimitOutOfBounds": {
     "message": "ガスリミットは$1以上にする必要があります"
   },
-  "editGasLimitOutOfBoundsV2": {
-    "message": "ガスリミットは$1より大きく、$2未満でなければなりません",
-    "description": "$1 is the minimum limit for gas and $2 is the maximum limit"
-  },
-  "editGasLimitTooltip": {
-    "message": "ガスリミットは、使用しても構わないガスの最大単位数です。ガスの単位数は、「最大優先手数料」および「最大手数料」の乗数になります。"
-  },
-  "editGasMaxBaseFeeGWEIImbalance": {
-    "message": "最大基本料金を優先手数料よりも低くすることはできません"
-  },
-  "editGasMaxBaseFeeHigh": {
-    "message": "最大基本料金が必要以上です"
-  },
-  "editGasMaxBaseFeeLow": {
-    "message": "現在のネットワーク状況に対して最大基本料金が低いです"
-  },
   "editGasMaxFeeHigh": {
     "message": "最大手数料が必要以上です"
   },
@@ -2548,29 +2507,14 @@
   "editGasMaxPriorityFeeBelowMinimum": {
     "message": "最大優先手数料は0gweiより高くなければなりません"
   },
-  "editGasMaxPriorityFeeBelowMinimumV2": {
-    "message": "優先手数料は0より高くなければなりません。"
-  },
   "editGasMaxPriorityFeeHigh": {
     "message": "最大優先手数料が必要以上です。必要以上の額が支払われる可能性があります。"
-  },
-  "editGasMaxPriorityFeeHighV2": {
-    "message": "優先手数料が必要以上です。必要以上の額が支払われる可能性があります。"
   },
   "editGasMaxPriorityFeeLow": {
     "message": "現在のネットワーク状況に対して最大優先手数料が低いです"
   },
-  "editGasMaxPriorityFeeLowV2": {
-    "message": "現在のネットワーク状況に対して優先手数料が低いです"
-  },
   "editGasPriceTooLow": {
     "message": "ガス価格は0より高くなければなりません"
-  },
-  "editGasPriceTooltip": {
-    "message": "このネットワークは、トランザクションの送信時に「ガス価格」フィールドが必要です。ガス価格は、ガス1単位あたりに支払う金額です。"
-  },
-  "editGasTitle": {
-    "message": "優先度を編集"
   },
   "editGasTooLow": {
     "message": "処理時間不明"
@@ -2984,24 +2928,11 @@
   "gas": {
     "message": "ガス"
   },
-  "gasDisplayAcknowledgeDappButtonText": {
-    "message": "推奨ガス代を編集"
-  },
-  "gasDisplayDappWarning": {
-    "message": "このガス代は$1により推奨されています。これを上書きすると、トランザクションに問題が発生する可能性があります。ご質問がございましたら、$1 にお問い合わせください。",
-    "description": "$1 represents the Dapp's origin"
-  },
   "gasLimit": {
     "message": "ガスリミット"
   },
-  "gasLimitRecommended": {
-    "message": "ガス代上限の推奨値は$1です。それ未満の場合は失敗する可能性があります。"
-  },
   "gasLimitTooLow": {
     "message": "ガスリミットは21000以上にする必要があります"
-  },
-  "gasLimitV2": {
-    "message": "ガスリミット"
   },
   "gasPrice": {
     "message": "ガス価格 (gwei)"
@@ -3762,9 +3693,6 @@
   "ledgerWebHIDNotConnectedErrorMessage": {
     "message": "Ledgerデバイスが接続されていません。Ledgerに接続する場合は、もう一度「続行」をクリックして、HID接続を承認してください。",
     "description": "An error message shown to the user during the hardware connect flow."
-  },
-  "levelArrow": {
-    "message": "水平矢印"
   },
   "lightTheme": {
     "message": "ライト"
@@ -5413,9 +5341,6 @@
     "message": "使用可能",
     "description": "is the available balance amount"
   },
-  "perpsAvailableBalance": {
-    "message": "利用可能残高"
-  },
   "perpsAvailableToClose": {
     "message": "クローズに利用可能"
   },
@@ -5577,12 +5502,6 @@
   "perpsMarkets": {
     "message": "市場"
   },
-  "perpsMax": {
-    "message": "最大額"
-  },
-  "perpsMaxRemovable": {
-    "message": "減額可能額 (上限)"
-  },
   "perpsMid": {
     "message": "中間値"
   },
@@ -5635,9 +5554,6 @@
   },
   "perpsPosition": {
     "message": "ポジション"
-  },
-  "perpsPositionSize": {
-    "message": "ポジションサイズ"
   },
   "perpsPositions": {
     "message": "ポジション"
@@ -7919,15 +7835,6 @@
   "speedUpCancellation": {
     "message": "このキャンセルを高速化"
   },
-  "speedUpExplanation": {
-    "message": "現在のネットワーク状況に基づきガス代を更新し、10%以上 (ネットワークによる要件) 増額させました。"
-  },
-  "speedUpPopoverTitle": {
-    "message": "トランザクションを高速化"
-  },
-  "speedUpTooltipText": {
-    "message": "新しいガス代"
-  },
   "speedUpTransactionDescription": {
     "message": "このネットワーク手数料が元の手数料に代わって適用されます。"
   },
@@ -8536,9 +8443,6 @@
   "swapSource": {
     "message": "流動性の供給源"
   },
-  "swapSuggested": {
-    "message": "スワップが提案されました"
-  },
   "swapSuggestedGasSettingToolTipMessage": {
     "message": "スワップは複雑で急を要するトランザクションです。コストとスワップの確実な成功のバランスが取れたこのガス代をお勧めします。"
   },
@@ -8767,14 +8671,8 @@
   "tokensInCollection": {
     "message": "コレクションのトークン"
   },
-  "tooltipSatusConnected": {
-    "message": "接続済み"
-  },
   "tooltipSatusConnectedUpperCase": {
     "message": "接続済み"
-  },
-  "tooltipSatusNotConnected": {
-    "message": "未接続"
   },
   "total": {
     "message": "合計"
@@ -8964,9 +8862,6 @@
   "tutorial": {
     "message": "チュートリアル"
   },
-  "twelveHrTitle": {
-    "message": "12時間:"
-  },
   "txAlertTitle": {
     "message": "このトランザクションは組み戻しされます"
   },
@@ -9052,9 +8947,6 @@
   },
   "unstableTokenPriceTitle": {
     "message": "トークン価格が不安定です"
-  },
-  "upArrow": {
-    "message": "上矢印"
   },
   "update": {
     "message": "更新"

@@ -389,9 +389,6 @@
   "advanced": {
     "message": "Erweitert"
   },
-  "advancedBaseGasFeeToolTip": {
-    "message": "Wenn Ihre Transaktion in den Block aufgenommen wird, wird die Differenz zwischen Ihrer maximalen Grundgebühr und der tatsächlichen Grundgebühr erstattet. Der Gesamtbetrag wird berechnet als maximale Grundgebühr (in GWEI) * Gaslimit."
-  },
   "advancedDetailsDataDesc": {
     "message": "Daten"
   },
@@ -407,10 +404,6 @@
   "advancedEIP1559ModalTitle": {
     "message": "Erweiterte Netzwerkgebühr"
   },
-  "advancedGasFeeDefaultOptIn": {
-    "message": "Speichern Sie diese Werte als Standard für das $1-Netzwerk.",
-    "description": "$1 is the current network name."
-  },
   "advancedGasPriceModalTitle": {
     "message": "Erweiterte Netzwerkgebühr"
   },
@@ -422,9 +415,6 @@
   },
   "advancedPermissionsSmallCase": {
     "message": "Erweiterte Genehmigungen"
-  },
-  "advancedPriorityFeeToolTip": {
-    "message": "Prioritätsgebühr (alias „Miner Tip“) geht direkt an Miner und veranlasst sie, Ihre Transaktion zu priorisieren."
   },
   "airDropPatternDescription": {
     "message": "Der On-Chain-Verlauf des Tokens zeigt frühere Fälle von verdächtigen Airdrop-Aktivitäten."
@@ -1345,9 +1335,6 @@
   "cancel": {
     "message": "Stornieren"
   },
-  "cancelPopoverTitle": {
-    "message": "Transaktion stornieren"
-  },
   "cancelTransactionDescription": {
     "message": "Diese Transaktion wird storniert und diese Netzwerkgebühr ersetzt die ursprüngliche Gebühr."
   },
@@ -1999,9 +1986,6 @@
   "currentQuestion": {
     "message": "Frage $1 von 2"
   },
-  "currentTitle": {
-    "message": "Aktuell:"
-  },
   "currentlyUnavailable": {
     "message": "Nicht verfügbar in diesem Netzwerk"
   },
@@ -2054,12 +2038,6 @@
   },
   "dappSuggestedHigh": {
     "message": "Website vorgeschlagen"
-  },
-  "dappSuggestedHighShortLabel": {
-    "message": "Seite (hoch)"
-  },
-  "dappSuggestedShortLabel": {
-    "message": "Seite"
   },
   "dappSwapAdvantage": {
     "message": "Sparen und verdienen Sie mit MetaMask-Swaps"
@@ -2425,9 +2403,6 @@
   "dontShowThisAgain": {
     "message": "Nicht mehr anzeigen"
   },
-  "downArrow": {
-    "message": "Abwärtspfeil"
-  },
   "download": {
     "message": "Herunterladen"
   },
@@ -2520,22 +2495,6 @@
   "editGasLimitOutOfBounds": {
     "message": "Gas-Limit muss mindestens $1 betragen"
   },
-  "editGasLimitOutOfBoundsV2": {
-    "message": "Gas-Limit muss größer als $1 und kleiner als $2 sein",
-    "description": "$1 is the minimum limit for gas and $2 is the maximum limit"
-  },
-  "editGasLimitTooltip": {
-    "message": "Gas-Limit ist die maximale Gas-Einheit die Sie zu verwenden bereit sind. Gas-Einheiten sind ein Multiplikator der „Max. Prioritätsgebühr“ und der „Max. Gebühr“."
-  },
-  "editGasMaxBaseFeeGWEIImbalance": {
-    "message": "Die maximale Grundgebühr darf nicht niedriger sein als die Prioritätsgebühr."
-  },
-  "editGasMaxBaseFeeHigh": {
-    "message": "Die maximale Grundgebühr ist höher als erforderlich."
-  },
-  "editGasMaxBaseFeeLow": {
-    "message": "Die maximale Grundgebühr ist für aktuelle Netzwerkkonditionen niedrig."
-  },
   "editGasMaxFeeHigh": {
     "message": "Die maximale Grundgebühr ist höher als erforderlich."
   },
@@ -2548,29 +2507,14 @@
   "editGasMaxPriorityFeeBelowMinimum": {
     "message": "Die maximale Prioritätsgebühr muss größer als 0 GWEI sein."
   },
-  "editGasMaxPriorityFeeBelowMinimumV2": {
-    "message": "Die Prioritätsgebühr muss größer als 0 sein."
-  },
   "editGasMaxPriorityFeeHigh": {
-    "message": "Die maximale Prioritätsgebühr ist höher als nötig. Sie können mehr zahlen als nötig."
-  },
-  "editGasMaxPriorityFeeHighV2": {
     "message": "Die maximale Prioritätsgebühr ist höher als nötig. Sie können mehr zahlen als nötig."
   },
   "editGasMaxPriorityFeeLow": {
     "message": "Die maximale Prioritätsgebühr ist niedrig für aktuelle Netzwerkkonditionen."
   },
-  "editGasMaxPriorityFeeLowV2": {
-    "message": "Die Prioritätsgebühr ist niedrig für aktuelle Netzwerkkonditionen."
-  },
   "editGasPriceTooLow": {
     "message": "Gas-Preis muss größer als 0 sein"
-  },
-  "editGasPriceTooltip": {
-    "message": "Dieses Netzwerk erfordert ein „Gas-Preis“-Feld beim Absenden einer Transaktion. Der Gas-Preis ist der Betrag, den Sie pro Gas-Einheit bezahlen."
-  },
-  "editGasTitle": {
-    "message": "Priorität bearbeiten"
   },
   "editGasTooLow": {
     "message": "Unbekannte Bearbeitungszeit"
@@ -2984,24 +2928,11 @@
   "gas": {
     "message": "Gas"
   },
-  "gasDisplayAcknowledgeDappButtonText": {
-    "message": "Vorgeschlagene Gas-Gebühr bearbeiten"
-  },
-  "gasDisplayDappWarning": {
-    "message": "Diese Gas-Gebühr wurde von $1 vorgeschlagen. Dies kann ein Problem mit Ihrer Transaktion verursachen. Bei Fragen wenden Sie sich bitte an $1.",
-    "description": "$1 represents the Dapp's origin"
-  },
   "gasLimit": {
     "message": "Gas-Limit"
   },
-  "gasLimitRecommended": {
-    "message": "Das empfohlene Gas-Limit liegt bei $1. Wenn Ihr Gas-Limit unter diesem liegt, könnte die Transaktion fehlschlagen."
-  },
   "gasLimitTooLow": {
     "message": "Gas-Limit muss mindestens 21.000 betragen"
-  },
-  "gasLimitV2": {
-    "message": "Gas-Limit"
   },
   "gasPrice": {
     "message": "Gas-Preis"
@@ -3762,9 +3693,6 @@
   "ledgerWebHIDNotConnectedErrorMessage": {
     "message": "Das Gerät wurde nicht verbunden. Wenn Sie Ihren Ledger verbinden möchten, klicken Sie bitte erneut auf „Weiter“ und genehmigen Sie die HID-Verbindung",
     "description": "An error message shown to the user during the hardware connect flow."
-  },
-  "levelArrow": {
-    "message": "Richtungspfeil"
   },
   "lightTheme": {
     "message": "Leicht"
@@ -5413,9 +5341,6 @@
     "message": "verfügbar",
     "description": "is the available balance amount"
   },
-  "perpsAvailableBalance": {
-    "message": "Verfügbares Guthaben"
-  },
   "perpsAvailableToClose": {
     "message": "Zum Schließen verfügbar"
   },
@@ -5577,12 +5502,6 @@
   "perpsMarkets": {
     "message": "Märkte"
   },
-  "perpsMax": {
-    "message": "Max."
-  },
-  "perpsMaxRemovable": {
-    "message": "Maximal entfernbar"
-  },
   "perpsMid": {
     "message": "Mittelkurs"
   },
@@ -5635,9 +5554,6 @@
   },
   "perpsPosition": {
     "message": "Position"
-  },
-  "perpsPositionSize": {
-    "message": "Positionsgröße"
   },
   "perpsPositions": {
     "message": "Positionen"
@@ -7919,15 +7835,6 @@
   "speedUpCancellation": {
     "message": "Diese Stornierung beschleunigen"
   },
-  "speedUpExplanation": {
-    "message": "Wir haben die Gas-Gebühr auf der Grundlage der aktuellen Netzbedingungen aktualisiert und um mindestens 10 % erhöht (erforderlich durch das Netzwerk)."
-  },
-  "speedUpPopoverTitle": {
-    "message": "Transaktion beschleunigen"
-  },
-  "speedUpTooltipText": {
-    "message": "Neue Gas-Gebühr"
-  },
   "speedUpTransactionDescription": {
     "message": "Diese Netzwerkgebühr ersetzt die ursprüngliche Gebühr."
   },
@@ -8536,9 +8443,6 @@
   "swapSource": {
     "message": "Liquiditätsquelle"
   },
-  "swapSuggested": {
-    "message": "Swap vorgeschlagen"
-  },
   "swapSuggestedGasSettingToolTipMessage": {
     "message": "Swaps sind komplexe und zeitkritische Transaktionen. Wir empfehlen diese Gas-Gebühr für ein gutes Gleichgewicht zwischen Kosten und Vertrauen in einen erfolgreichen Swap."
   },
@@ -8767,14 +8671,8 @@
   "tokensInCollection": {
     "message": "Tokens in der Sammlung"
   },
-  "tooltipSatusConnected": {
-    "message": "verbunden"
-  },
   "tooltipSatusConnectedUpperCase": {
     "message": "Verbinden"
-  },
-  "tooltipSatusNotConnected": {
-    "message": "nicht verbunden"
   },
   "total": {
     "message": "Gesamt"
@@ -8964,9 +8862,6 @@
   "tutorial": {
     "message": "Tutorial"
   },
-  "twelveHrTitle": {
-    "message": "12 Std:"
-  },
   "txAlertTitle": {
     "message": "Diese Transaktion wird rückgängig gemacht"
   },
@@ -9052,9 +8947,6 @@
   },
   "unstableTokenPriceTitle": {
     "message": "Unbeständiger Token-Preis"
-  },
-  "upArrow": {
-    "message": "Pfeil nach oben"
   },
   "update": {
     "message": "Update"

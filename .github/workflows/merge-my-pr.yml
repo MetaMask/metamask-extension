@@ -13,12 +13,14 @@ jobs:
   merge-my-pr:
     # Only run if the comment is on a PR and the comment body matches exactly "Merge my PR"
     if: >-
-      github.event.issue.pull_request &&
-      github.event.comment.body == 'Merge my PR' &&
-      (
-        github.event.comment.author_association == 'MEMBER' ||
-        github.event.comment.author_association == 'OWNER'
-      )
+      ${{
+        github.event.issue.pull_request &&
+        github.event.comment.body == 'Merge my PR' &&
+        (
+          github.event.comment.author_association == 'MEMBER' ||
+          github.event.comment.author_association == 'OWNER'
+        )
+      }}
     runs-on: ubuntu-latest
     environment: default-branch
     permissions:

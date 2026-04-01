@@ -389,9 +389,6 @@
   "advanced": {
     "message": "Advanced"
   },
-  "advancedBaseGasFeeToolTip": {
-    "message": "Kapag nakasama ang iyong transaksyon sa block, ire-refund ang anumang difference sa pagitan ng iyong pinakamataas na batayang bayad at ang aktwal na batayang bayad. Ang kabuuang halaga ay kinakalkula bilang pinakamataas na batayang bayad (sa GWEI) * ng limitasyon ng gas."
-  },
   "advancedDetailsDataDesc": {
     "message": "Data"
   },
@@ -407,10 +404,6 @@
   "advancedEIP1559ModalTitle": {
     "message": "Advanced na bayad sa network"
   },
-  "advancedGasFeeDefaultOptIn": {
-    "message": "I-save ang mga value na ito bilang default ko para sa $1 network.",
-    "description": "$1 is the current network name."
-  },
   "advancedGasPriceModalTitle": {
     "message": "Advanced na bayad sa network"
   },
@@ -422,9 +415,6 @@
   },
   "advancedPermissionsSmallCase": {
     "message": "mga advanced na pahintulot"
-  },
-  "advancedPriorityFeeToolTip": {
-    "message": "Ang bayad sa priyoridad (kilala rin bilang “tip ng minero”) ay direktang napupunta sa mga minero at ginagawang insentibo ang mga ito upang unahin ang iyong mga transaksyon."
   },
   "airDropPatternDescription": {
     "message": "Isinasaad ng on-chain history ng token na may mga dati nang kahina-hinalang aktibidad ng airdrop."
@@ -1345,9 +1335,6 @@
   "cancel": {
     "message": "Kanselahin"
   },
-  "cancelPopoverTitle": {
-    "message": "Kanselahin ang transaksyon"
-  },
   "cancelTransactionDescription": {
     "message": "Makakansela ang transaksyong ito at papalitan ng bayad sa network na ito ang orihinal."
   },
@@ -1999,9 +1986,6 @@
   "currentQuestion": {
     "message": "Tanong $1 sa 2"
   },
-  "currentTitle": {
-    "message": "Current:"
-  },
   "currentlyUnavailable": {
     "message": "Hindi available sa network na ito"
   },
@@ -2054,12 +2038,6 @@
   },
   "dappSuggestedHigh": {
     "message": "Iminungkahing site"
-  },
-  "dappSuggestedHighShortLabel": {
-    "message": "Site (mataas)"
-  },
-  "dappSuggestedShortLabel": {
-    "message": "Site"
   },
   "dappSwapAdvantage": {
     "message": "Makatipid at kumita sa MetaMask Swaps"
@@ -2425,9 +2403,6 @@
   "dontShowThisAgain": {
     "message": "Huwag itong ipaklita ulit"
   },
-  "downArrow": {
-    "message": "arrow pababa"
-  },
   "download": {
     "message": "I-download"
   },
@@ -2520,22 +2495,6 @@
   "editGasLimitOutOfBounds": {
     "message": "Ang limitasyon ng gas ay dapat na hindi bababa sa $1"
   },
-  "editGasLimitOutOfBoundsV2": {
-    "message": "Ang limitasyon ng gas ay dapat na mas mataas sa $1 at hindi bababa sa $2",
-    "description": "$1 is the minimum limit for gas and $2 is the maximum limit"
-  },
-  "editGasLimitTooltip": {
-    "message": "Ang limitasyon ng gas ay ang pinakamataas na yunit ng gas na handa mong gamitin. Ang mga yunit ng gas ay multiplier sa “Pinakamataas na bayad sa priyoridad” at “Pinakamataas na bayad”."
-  },
-  "editGasMaxBaseFeeGWEIImbalance": {
-    "message": "Ang pinakamataas na batayang bayad ay hindi dapat na mas mababa sa bayad sa priyoridad"
-  },
-  "editGasMaxBaseFeeHigh": {
-    "message": "Ang pinakamataas na batayang bayad ay mas mataas kaysa kinakailangan"
-  },
-  "editGasMaxBaseFeeLow": {
-    "message": "Ang pinakamataas na batayang bayad ay mababa para sa kasalukuyang mga kundisyon ng network"
-  },
   "editGasMaxFeeHigh": {
     "message": "Ang pinakamataas na bayad ay mas mataas kaysa kinakailangan"
   },
@@ -2548,29 +2507,14 @@
   "editGasMaxPriorityFeeBelowMinimum": {
     "message": "Ang pinakamataas na bayad sa priyoridad ay dapat na mas mataas sa 0 GWEI"
   },
-  "editGasMaxPriorityFeeBelowMinimumV2": {
-    "message": "Ang bayad sa priyoridad ay dapat na mas mataas sa 0."
-  },
   "editGasMaxPriorityFeeHigh": {
     "message": "Ang pinakamataas na bayad sa priyoridad ay mas mataas sa kinakailangan. Maaari kang magbayad nang higit sa kinakailangan."
-  },
-  "editGasMaxPriorityFeeHighV2": {
-    "message": "Ang bayad sa priyoridad ay mas mataas sa kinakailangan. Maaari kang magbayad nang higit sa kinakailangan"
   },
   "editGasMaxPriorityFeeLow": {
     "message": "Ang pinakamataas na bayad sa priyoridad ay mababa para sa kasalukuyang mga kundisyon ng network"
   },
-  "editGasMaxPriorityFeeLowV2": {
-    "message": "Ang bayad sa priyoridad ay mababa para sa kasalukuyang mga kundisyon ng network"
-  },
   "editGasPriceTooLow": {
     "message": "Ang presyo ng gas ay dapat na mas mataas sa 0"
-  },
-  "editGasPriceTooltip": {
-    "message": "Ang network na ito ay nangangailangan ng field ng “Presyo ng gas” kapag nagsusumite ng transaksyon. Ang presyo ng gas ay ang halaga na babayaran mo kada yunit ng gas."
-  },
-  "editGasTitle": {
-    "message": "I-edit ang priyoridad"
   },
   "editGasTooLow": {
     "message": "Hindi alam na oras ng pagproseso"
@@ -2984,24 +2928,11 @@
   "gas": {
     "message": "Gas"
   },
-  "gasDisplayAcknowledgeDappButtonText": {
-    "message": "I-edit ang iminungkahing bayad sa gas"
-  },
-  "gasDisplayDappWarning": {
-    "message": "Ang bayad sa gas na ito ay iminungkahi ng $1. Ang pag-override nito ay maaaring magdulot ng problema sa iyong transaksyon. Mangyaring makipag-ugnayan sa $1 kung mayroon kang mga katanungan.",
-    "description": "$1 represents the Dapp's origin"
-  },
   "gasLimit": {
     "message": "Gas limit"
   },
-  "gasLimitRecommended": {
-    "message": "Ang inirerekomendang limitasyon ng gas ay $1. Kung mas mababa dito ang limitasyon ng gas, maaaring mabigo."
-  },
   "gasLimitTooLow": {
     "message": "Ang limitasyon ng gas ay dapat na hindi bababa sa 21000"
-  },
-  "gasLimitV2": {
-    "message": "Gas limit"
   },
   "gasPrice": {
     "message": "Presyo ng gas (GWEI)"
@@ -3762,9 +3693,6 @@
   "ledgerWebHIDNotConnectedErrorMessage": {
     "message": "Hindi nakakonekta ang ledger device. Kung nais mong ikonekta ang iyong Ledger, mangyaring i-click muli ang 'Magpatuloy' at aprubahan ang HID na koneksyon",
     "description": "An error message shown to the user during the hardware connect flow."
-  },
-  "levelArrow": {
-    "message": "arrow ng level"
   },
   "lightTheme": {
     "message": "Maliwanag"
@@ -5413,9 +5341,6 @@
     "message": "available",
     "description": "is the available balance amount"
   },
-  "perpsAvailableBalance": {
-    "message": "Available na balanse"
-  },
   "perpsAvailableToClose": {
     "message": "Available para isara"
   },
@@ -5577,12 +5502,6 @@
   "perpsMarkets": {
     "message": "Market"
   },
-  "perpsMax": {
-    "message": "Pinakamataas"
-  },
-  "perpsMaxRemovable": {
-    "message": "Max na puwedeng alisin"
-  },
   "perpsMid": {
     "message": "Mid"
   },
@@ -5635,9 +5554,6 @@
   },
   "perpsPosition": {
     "message": "Posisyon"
-  },
-  "perpsPositionSize": {
-    "message": "Laki ng Posisyon"
   },
   "perpsPositions": {
     "message": "Mga Posisyon"
@@ -7919,15 +7835,6 @@
   "speedUpCancellation": {
     "message": "Pabilisin ang pagkanselang ito"
   },
-  "speedUpExplanation": {
-    "message": "Na-update na namin ang bayad sa gas batay sa kasalukuyang kundisyon ng network at tinaasan namin ito nang hindi bababa sa 10% (hinihingi ng network)."
-  },
-  "speedUpPopoverTitle": {
-    "message": "Pabilisin ang transaksyon"
-  },
-  "speedUpTooltipText": {
-    "message": "Bagong bayad sa gas"
-  },
   "speedUpTransactionDescription": {
     "message": "Papalitan ng bayad sa network na ito ang orihinal."
   },
@@ -8536,9 +8443,6 @@
   "swapSource": {
     "message": "Pinagmumulan ng liquidity"
   },
-  "swapSuggested": {
-    "message": "Iminungkahi ang pag-swap"
-  },
   "swapSuggestedGasSettingToolTipMessage": {
     "message": "Ang mga swap ay kumplikado at sensitibo sa oras na mga transaksyon. Inirerekomenda namin ang bayad sa gas na ito para sa magandang balanse sa pagitan ng halaga at kumpiyansa ng matagumpay na Swap."
   },
@@ -8767,14 +8671,8 @@
   "tokensInCollection": {
     "message": "Mga token sa koleksyon"
   },
-  "tooltipSatusConnected": {
-    "message": "nakakonekta"
-  },
   "tooltipSatusConnectedUpperCase": {
     "message": "Nakakonekta"
-  },
-  "tooltipSatusNotConnected": {
-    "message": "hindi konektado"
   },
   "total": {
     "message": "Kabuuan"
@@ -8964,9 +8862,6 @@
   "tutorial": {
     "message": "Pagtuturo"
   },
-  "twelveHrTitle": {
-    "message": "12 oras:"
-  },
   "txAlertTitle": {
     "message": "Ibabalik ang transaksyong ito"
   },
@@ -9052,9 +8947,6 @@
   },
   "unstableTokenPriceTitle": {
     "message": "Pabago-bagong presyo ng token"
-  },
-  "upArrow": {
-    "message": "arrow pataas"
   },
   "update": {
     "message": "I-update"

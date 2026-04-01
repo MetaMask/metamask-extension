@@ -59,7 +59,7 @@ export const DeleteMetametricsDataItem = () => {
   return (
     <>
       <Button
-        data-testid="delete-metametrics-button"
+        data-testid="delete-metametrics-data-button"
         onClick={() =>
           isDataDeletionInProgress
             ? setShowDeletionInProgressModal(true)
