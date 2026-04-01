@@ -221,6 +221,11 @@ const STANDARD_HOME: ThresholdConfig = {
     p95: { warn: 1800, fail: 2400 },
     ciMultiplier: DEFAULT_CI_MULTIPLIER,
   },
+  tbt: {
+    p75: { warn: 200, fail: 600 },
+    p95: { warn: 600, fail: 1000 },
+    ciMultiplier: DEFAULT_CI_MULTIPLIER,
+  },
 };
 
 const POWER_USER_HOME: ThresholdConfig = {
@@ -237,6 +242,11 @@ const POWER_USER_HOME: ThresholdConfig = {
   loadScripts: {
     p75: { warn: 2000, fail: 2800 },
     p95: { warn: 2800, fail: 3800 },
+    ciMultiplier: DEFAULT_CI_MULTIPLIER,
+  },
+  tbt: {
+    p75: { warn: 400, fail: 1000 },
+    p95: { warn: 1000, fail: 2000 },
     ciMultiplier: DEFAULT_CI_MULTIPLIER,
   },
 };
