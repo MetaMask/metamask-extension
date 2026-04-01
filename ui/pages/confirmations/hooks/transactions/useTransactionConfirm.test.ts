@@ -83,10 +83,12 @@ function runHook({
   customNonceValue,
   gasFeeTokens,
   selectedGasFeeToken,
+  isGasFeeSponsored,
 }: {
   customNonceValue?: string;
   gasFeeTokens?: GasFeeToken[];
   selectedGasFeeToken?: Hex;
+  isGasFeeSponsored?: boolean;
 } = {}) {
   const { result } = renderHookWithConfirmContextProvider(
     useTransactionConfirm,
@@ -94,6 +96,7 @@ function runHook({
       genUnapprovedContractInteractionConfirmation({
         gasFeeTokens,
         selectedGasFeeToken,
+        isGasFeeSponsored,
       }),
       {
         appState: {
@@ -176,6 +179,21 @@ describe('useTransactionConfirm', () => {
     await onTransactionConfirm();
 
     expect(updateAndApproveTxMock).toHaveBeenCalledTimes(1);
+  });
+
+  it('clears isGasFeeSponsored when gasless is not supported so activity list does not show paid by MetaMask', async () => {
+    useIsGaslessSupportedMock.mockReturnValue({
+      isSupported: false,
+      isSmartTransaction: false,
+      pending: false,
+    });
+
+    const { onTransactionConfirm } = runHook({ isGasFeeSponsored: true });
+
+    await onTransactionConfirm();
+
+    const actual = updateAndApproveTxMock.mock.calls[0][0];
+    expect(actual.isGasFeeSponsored).toBe(false);
   });
 
   it('updates custom nonce', async () => {
