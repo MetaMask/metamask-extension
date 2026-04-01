@@ -14,6 +14,7 @@ import { noop } from '../utils/helpers';
 import { ManifestPlugin } from '../utils/plugins/ManifestPlugin';
 import { getLatestCommit } from '../utils/git';
 import { ManifestPluginOptions } from '../utils/plugins/ManifestPlugin/types';
+import { version as packageVersion } from '../../../package.json';
 import { CHROME_MANIFEST_KEY_NON_PRODUCTION } from '../utils/constants';
 
 function getWebpackInstance(config: Configuration) {
@@ -232,6 +233,10 @@ ${Object.entries(env)
     assert.deepStrictEqual(manifestPlugin.options.description, null);
     assert.deepStrictEqual(manifestPlugin.options.zip, true);
     assert(manifestPlugin.options.zipOptions, 'Zip options should be present');
+    assert.strictEqual(
+      manifestPlugin.options.zipOptions.outFilePath,
+      `../builds/metamask-[browser]-${packageVersion}.zip`,
+    );
     assert.deepStrictEqual(manifestPlugin.options.transform, undefined);
 
     const progressPlugin = instance.options.plugins.find(

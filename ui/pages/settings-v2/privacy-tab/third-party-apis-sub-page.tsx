@@ -27,6 +27,7 @@ const NetworkDetailsCheckToggleItem = createToggleItem({
     state.metamask.useSafeChainsListValidation,
   action: setUseSafeChainsListValidation,
   dataTestId: 'network-details-check-toggle',
+  containerDataTestId: 'useSafeChainsListValidation',
 });
 
 const ShowENSDomainsToggleItem = createToggleItem({
@@ -46,6 +47,7 @@ const ShowENSDomainsToggleItem = createToggleItem({
     state.metamask.useAddressBarEnsResolution,
   action: setUseAddressBarEnsResolution,
   dataTestId: 'ens-domains-toggle',
+  containerDataTestId: 'ipfs-gateway-resolution-container',
 });
 
 const MakeSmartContractsEasierToggleItem = createToggleItem({
