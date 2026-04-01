@@ -14,24 +14,30 @@ export const UNLOCK_ROUTE = '/unlock';
 export const LOCK_ROUTE = '/lock';
 export const ASSET_ROUTE = '/asset';
 export const SETTINGS_ROUTE = '/settings';
-export const SETTINGS_V2_ROUTE = '/settings-v2';
-export const ASSETS_ROUTE = '/settings-v2/assets';
-export const CURRENCY_ROUTE = '/settings-v2/assets/currency';
-export const TRANSACTIONS_ROUTE = '/settings-v2/transactions';
+export const LEGACY_SETTINGS_V2_ROUTE = '/settings-v2';
+export const SETTINGS_V2_ROUTE = SETTINGS_ROUTE;
+export const ASSETS_ROUTE = '/settings/assets';
+export const CURRENCY_ROUTE = '/settings/assets/currency';
+export const TRANSACTIONS_ROUTE = '/settings/transactions';
 export const PREFERENCES_AND_DISPLAY_ROUTE =
-  '/settings-v2/preferences-and-display';
-export const THEME_ROUTE = '/settings-v2/preferences-and-display/theme';
-export const LANGUAGE_ROUTE = '/settings-v2/preferences-and-display/language';
+  '/settings/preferences-and-display';
+export const THEME_ROUTE = '/settings/preferences-and-display/theme';
+export const LANGUAGE_ROUTE = '/settings/preferences-and-display/language';
 export const ACCOUNT_IDENTICON_ROUTE =
-  '/settings-v2/preferences-and-display/account-identicon';
-export const PRIVACY_ROUTE = '/settings-v2/privacy';
-export const THIRD_PARTY_APIS_ROUTE = '/settings-v2/privacy/third-party-apis';
-export const SECURITY_AND_PASSWORD_ROUTE = '/settings-v2/security-and-password';
-export const AUTO_LOCK_ROUTE = '/settings-v2/security-and-password/auto-lock';
-export const DEVELOPER_OPTIONS_V2_ROUTE = '/settings-v2/developer-options';
+  '/settings/preferences-and-display/account-identicon';
+export const PRIVACY_ROUTE = '/settings/privacy';
+export const THIRD_PARTY_APIS_ROUTE = '/settings/privacy/third-party-apis';
+export const SECURITY_AND_PASSWORD_ROUTE = '/settings/security-and-password';
+export const AUTO_LOCK_ROUTE = '/settings/security-and-password/auto-lock';
+export const MANAGE_WALLET_RECOVERY_V2_ROUTE =
+  '/settings/security-and-password/manage-wallet-recovery';
+export const SECURITY_PASSWORD_CHANGE_V2_ROUTE =
+  '/settings/security-and-password/password';
+export const DEVELOPER_TOOLS_ROUTE = '/settings/developer-tools';
+export const DEBUG_ROUTE = '/settings/debug';
 export const GENERAL_ROUTE = '/settings/general';
 export const ADVANCED_ROUTE = '/settings/advanced';
-export const DEVELOPER_OPTIONS_ROUTE = '/settings/developer-options';
+export const DEVELOPER_OPTIONS_ROUTE = DEBUG_ROUTE;
 export const EXPERIMENTAL_ROUTE = '/settings/experimental';
 export const TRANSACTION_SHIELD_ROUTE = '/settings/transaction-shield';
 export const TRANSACTION_SHIELD_MANAGE_PLAN_ROUTE =
@@ -235,7 +241,7 @@ export const ROUTES = [
   },
   { path: SETTINGS_ROUTE, label: 'Settings Page', trackInAnalytics: true },
   {
-    path: SETTINGS_V2_ROUTE,
+    path: LEGACY_SETTINGS_V2_ROUTE,
     label: 'Settings V2 Page',
     trackInAnalytics: true,
   },
@@ -243,6 +249,16 @@ export const ROUTES = [
   {
     path: CURRENCY_ROUTE,
     label: 'Currency Settings Page',
+    trackInAnalytics: true,
+  },
+  {
+    path: MANAGE_WALLET_RECOVERY_V2_ROUTE,
+    label: 'Manage Wallet Recovery Settings Page',
+    trackInAnalytics: true,
+  },
+  {
+    path: SECURITY_PASSWORD_CHANGE_V2_ROUTE,
+    label: 'Password Settings Page',
     trackInAnalytics: true,
   },
   {
