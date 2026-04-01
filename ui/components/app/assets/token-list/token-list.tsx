@@ -102,8 +102,6 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
         tokenFiatAmount: asset.fiat?.balance,
         secondary: null,
         title: asset.name,
-        address: 'address' in asset ? asset.address : (asset.assetId as Hex),
-        chainId: asset.chainId as Hex,
       };
 
       return token;

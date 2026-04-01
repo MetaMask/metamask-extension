@@ -1,6 +1,6 @@
 import React from 'react';
 import { KeyringAccountType } from '@metamask/keyring-api';
-import { Hex } from '@metamask/utils';
+import { CaipAssetType, Hex } from '@metamask/utils';
 import {
   AvatarToken,
   AvatarNetwork,
@@ -140,7 +140,7 @@ const TokenAsset = ({ asset, onClick, isSelected }: AssetProps) => {
         chainId: chainId as Hex,
         isNative,
         tokenImage: image ?? '',
-        assetId: assetId as Hex | undefined,
+        assetId: assetId as CaipAssetType,
       })
     : (image ?? '');
 

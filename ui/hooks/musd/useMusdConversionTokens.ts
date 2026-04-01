@@ -9,7 +9,7 @@
  */
 
 import { toHex } from '@metamask/controller-utils';
-import type { Hex } from '@metamask/utils';
+import { KnownCaipNamespace, type Hex } from '@metamask/utils';
 import { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { TransactionType } from '@metamask/transaction-controller';
@@ -142,21 +142,17 @@ export function useMusdConversionTokens(options?: {
 
   // Get all account tokens
   const allTokens = useMemo((): TokenWithFiatAmount[] => {
-    // Flatten account group assets; only include assets with address (EVM tokens)
-    // so the result satisfies TokenWithFiatAmount (BaseToken requires address)
+    // Flatten account group assets; only include EVM assets
     const flattened = Object.entries(accountGroupAssets).flatMap(
       ([chainId, assets]) =>
         (assets ?? [])
-          .filter(
-            (a) =>
-              'address' in a &&
-              typeof (a as { address: unknown }).address === 'string',
+          .filter((asset) =>
+            asset.accountType.startsWith(KnownCaipNamespace.Eip155),
           )
-          .map((a) => {
-            const asset = a as typeof a & { address: string };
+          .map((asset) => {
             return {
               ...asset,
-              address: asset.address as Hex,
+              address: asset.address,
               secondary: 0,
               title: asset.name ?? asset.symbol ?? '',
               chainId: chainId as Hex,
