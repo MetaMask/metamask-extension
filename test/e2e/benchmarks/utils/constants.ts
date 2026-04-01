@@ -282,7 +282,7 @@ const BENCHMARK_THRESHOLDS = {
   confirmTx: CONFIRM_TX,
   bridgeUserActions: BRIDGE_USER_ACTIONS,
 
-  // User journey benchmarks (chrome-browserify in PRs, chrome-webpack on main/release)
+  // User journey benchmarks (chrome-webpack)
   onboardingImportWallet: ONBOARDING_IMPORT_WALLET,
   onboardingNewWallet: ONBOARDING_NEW_WALLET,
   importSrpHome: IMPORT_SRP_HOME,
