@@ -225,14 +225,14 @@ export const BackupAndSyncToggle = () => {
       </Box>
       <div className="privacy-settings__setting__description">
         <Text
-          variant={TextVariant.bodySm}
+          variant={TextVariant.bodyMd}
           color={TextColor.textAlternative}
           as="div"
         >
           {t('backupAndSyncEnableDescription', [
             <Text
               as="a"
-              variant={TextVariant.bodySm}
+              variant={TextVariant.bodyMd}
               href={ZENDESK_URLS.PROFILE_PRIVACY}
               target="_blank"
               rel="noopener noreferrer"

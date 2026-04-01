@@ -107,6 +107,7 @@ describe('Settings', function () {
         // turns off IPFS setting and ENS domain resolution
         const privacySettings = new PrivacySettings(driver);
         await privacySettings.checkPageIsLoaded();
+        await privacySettings.goToThirdPartyApisSettings();
         await privacySettings.toggleIpfsGateway();
         await privacySettings.toggleEnsDomainResolution();
 
