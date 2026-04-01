@@ -101,7 +101,6 @@ jobs:
 
   test-e2e-chrome-webpack:
     uses: ./.github/workflows/run-e2e.yml
-    if: ${{ github.event_name != 'merge_group' }}
     secrets:
       INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
     strategy:
@@ -118,7 +117,6 @@ jobs:
 
   test-e2e-chrome-multiple-providers-webpack:
     uses: ./.github/workflows/run-e2e.yml
-    if: ${{ github.event_name != 'merge_group' }}
     with:
       test-suite-name: test-e2e-chrome-multiple-providers-webpack
       build-artifact: build-test-webpack
@@ -128,7 +126,6 @@ jobs:
 
   test-e2e-chrome-rpc-webpack:
     uses: ./.github/workflows/run-e2e.yml
-    if: ${{ github.event_name != 'merge_group' }}
     with:
       test-suite-name: test-e2e-chrome-rpc-webpack
       build-artifact: build-test-webpack
@@ -138,9 +135,8 @@ jobs:
 
   test-e2e-chrome-flask-webpack:
     uses: ./.github/workflows/run-e2e.yml
-    if: ${{ github.event_name != 'merge_group' }}
     strategy:
-      fail-fast: false
+      fail-fast: ${{ github.event_name == 'merge_group' }}
       matrix: ${{ fromJson(inputs.use-matrix)['test-e2e-chrome-flask-webpack'] }}
     with:
       test-suite-name: test-e2e-chrome-flask-webpack
@@ -152,7 +148,8 @@ jobs:
       matrix-total: ${{ strategy.job-total }}
 
   test-e2e-chrome-dist-webpack:
-    if: ${{ github.event_name != 'merge_group' && !(github.event.pull_request.head.repo.fork || github.event.repository.fork) }}
+    # This if statement is equivalent to !IS_FORK
+    if: ${{ !(github.event.pull_request.head.repo.fork || github.event.repository.fork) }}
     uses: ./.github/workflows/run-e2e.yml
     with:
       test-suite-name: test-e2e-chrome-dist-webpack
@@ -162,7 +159,6 @@ jobs:
 
   test-e2e-chrome-api-specs-webpack:
     uses: ./.github/workflows/run-e2e.yml
-    if: ${{ github.event_name != 'merge_group' }}
     with:
       test-suite-name: test-e2e-chrome-api-specs-webpack
       build-artifact: build-test-webpack
@@ -173,7 +169,6 @@ jobs:
 
   test-e2e-chrome-api-specs-multichain-webpack:
     uses: ./.github/workflows/run-e2e.yml
-    if: ${{ github.event_name != 'merge_group' }}
     with:
       test-suite-name: test-e2e-chrome-api-specs-multichain-webpack
       build-artifact: build-test-flask-webpack

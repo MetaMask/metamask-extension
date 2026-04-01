@@ -84,7 +84,9 @@ exports[`TransactionsTab snapshot matches snapshot 1`] = `
           >
             Security alerts
           </p>
-          <div>
+          <div
+            data-testid="securityAlert"
+          >
             <label
               class="toggle-button toggle-button--off"
               tabindex="0"
@@ -329,7 +331,9 @@ exports[`TransactionsTab snapshot matches snapshot 1`] = `
           >
             Show hex data
           </p>
-          <div>
+          <div
+            data-testid="transactions-settings-hex-data-toggle"
+          >
             <label
               class="toggle-button toggle-button--off"
               tabindex="0"

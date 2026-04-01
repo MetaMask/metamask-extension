@@ -2,7 +2,8 @@ import { useMemo } from 'react';
 import type { Position, AccountState } from '@metamask/perps-controller';
 import {
   calculateMaxRemovableMargin,
-  calculateNewLiquidationPrice,
+  estimateLiquidationPrice,
+  liquidationDistancePercent,
   assessMarginRemovalRisk,
   MARGIN_ADJUSTMENT_CONFIG,
 } from './marginUtils';
@@ -12,6 +13,7 @@ export type { MarginRiskAssessment } from './marginUtils';
 
 export type UsePerpsMarginCalculationsParams = {
   position: Position;
+  /** Live mark / current price for the symbol (extension: chart or market tick). */
   currentPrice: number;
   account: AccountState | null;
   mode: 'add' | 'remove';
@@ -20,20 +22,25 @@ export type UsePerpsMarginCalculationsParams = {
 
 export type UsePerpsMarginCalculationsReturn = {
   maxAmount: number;
-  newLiquidationPrice: number | null;
-  currentLiquidationDistance: number;
-  newLiquidationDistance: number | null;
+  /** Parsed `position.liquidationPrice` from provider (anchor). */
+  anchorLiquidationPrice: number | null;
+  /** `estimateLiquidationPrice` after applying adjustment amount. */
+  estimatedLiquidationPrice: number | null;
+  /** `liquidationDistancePercent(currentPrice, anchor)`. */
+  anchorLiquidationDistance: number;
+  /** `liquidationDistancePercent(currentPrice, estimated)` when estimated is finite. */
+  estimatedLiquidationDistance: number | null;
   riskAssessment: MarginRiskAssessment | null;
   isValid: boolean;
 };
 
 /**
- * Compute max addable/removable margin, new liquidation price, distances, and risk.
- * Used by the edit margin expandable to drive the info panel and validation.
+ * Compute max addable/removable margin, anchored + estimated liquidation, distances, and risk.
+ * Parity with mobile `usePerpsAdjustMarginData` / `marginUtils.estimateLiquidationPrice`.
  *
  * @param options0 - The hook parameters
  * @param options0.position - The current position to adjust margin for
- * @param options0.currentPrice - The current market price
+ * @param options0.currentPrice - Live price for distance (mark)
  * @param options0.account - The user's account state (null if not loaded)
  * @param options0.mode - Whether adding or removing margin
  * @param options0.amount - The margin adjustment amount as a string
@@ -47,19 +54,27 @@ export function usePerpsMarginCalculations({
   amount,
 }: UsePerpsMarginCalculationsParams): UsePerpsMarginCalculationsReturn {
   return useMemo(() => {
-    const currentMargin = parseFloat(position.marginUsed) || 0;
-    const positionSize = Math.abs(parseFloat(position.size)) || 0;
-    const entryPrice = parseFloat(position.entryPrice) || 0;
+    const currentMargin = Number.parseFloat(position.marginUsed) || 0;
+    const positionSize = Math.abs(Number.parseFloat(position.size)) || 0;
+    const entryPrice = Number.parseFloat(position.entryPrice) || 0;
     const positionLeverage =
       position.leverage?.value ?? MARGIN_ADJUSTMENT_CONFIG.FallbackMaxLeverage;
-    const currentLiqPrice = position.liquidationPrice
-      ? parseFloat(position.liquidationPrice)
-      : null;
-    const isLong = parseFloat(position.size) >= 0;
+    const maxLeverageForFormula =
+      position.maxLeverage ?? MARGIN_ADJUSTMENT_CONFIG.FallbackMaxLeverage;
+
+    let anchorLiquidationPrice: number | null = null;
+    if (position.liquidationPrice) {
+      const parsed = Number.parseFloat(position.liquidationPrice);
+      if (Number.isFinite(parsed)) {
+        anchorLiquidationPrice = parsed;
+      }
+    }
+
+    const isLong = Number.parseFloat(position.size) >= 0;
     const availableBalance = account
-      ? parseFloat(account.availableBalance) || 0
+      ? Number.parseFloat(account.availableBalance) || 0
       : 0;
-    const notionalValue = parseFloat(position.positionValue) || 0;
+    const notionalValue = Number.parseFloat(position.positionValue) || 0;
 
     const maxAmount =
       mode === 'add'
@@ -76,44 +91,48 @@ export function usePerpsMarginCalculations({
             }),
           );
 
-    const amountNum = parseFloat(amount) || 0;
+    const amountNum = Number.parseFloat(amount.replaceAll(',', '')) || 0;
     const newMargin =
-      mode === 'add' ? currentMargin + amountNum : currentMargin - amountNum;
+      mode === 'add'
+        ? currentMargin + amountNum
+        : Math.max(0, currentMargin - amountNum);
 
-    let newLiquidationPrice: number | null = null;
-    if (currentLiqPrice !== null && newMargin > 0 && positionSize > 0) {
-      newLiquidationPrice = calculateNewLiquidationPrice({
+    let estimatedLiquidationPrice: number | null = null;
+    if (anchorLiquidationPrice !== null) {
+      estimatedLiquidationPrice = estimateLiquidationPrice({
+        anchorLiquidationPrice,
+        currentMargin,
         newMargin,
         positionSize,
-        entryPrice,
         isLong,
-        currentLiquidationPrice: currentLiqPrice,
+        maxLeverage: maxLeverageForFormula,
       });
     }
 
-    const currentLiquidationDistance =
-      currentPrice > 0 && currentLiqPrice !== null
-        ? (Math.abs(currentPrice - currentLiqPrice) / currentPrice) * 100
-        : 0;
+    const anchorLiquidationDistance = liquidationDistancePercent(
+      currentPrice,
+      anchorLiquidationPrice,
+    );
 
-    let newLiquidationDistance: number | null = null;
+    let estimatedLiquidationDistance: number | null = null;
     if (
-      currentPrice > 0 &&
-      newLiquidationPrice !== null &&
-      Number.isFinite(newLiquidationPrice)
+      estimatedLiquidationPrice !== null &&
+      Number.isFinite(estimatedLiquidationPrice)
     ) {
-      newLiquidationDistance =
-        (Math.abs(currentPrice - newLiquidationPrice) / currentPrice) * 100;
+      estimatedLiquidationDistance = liquidationDistancePercent(
+        currentPrice,
+        estimatedLiquidationPrice,
+      );
     }
 
     let riskAssessment: MarginRiskAssessment | null = null;
     if (
       mode === 'remove' &&
-      newLiquidationPrice !== null &&
-      Number.isFinite(newLiquidationPrice)
+      estimatedLiquidationPrice !== null &&
+      Number.isFinite(estimatedLiquidationPrice)
     ) {
       riskAssessment = assessMarginRemovalRisk({
-        newLiquidationPrice,
+        newLiquidationPrice: estimatedLiquidationPrice,
         currentPrice,
         isLong,
       });
@@ -127,9 +146,10 @@ export function usePerpsMarginCalculations({
 
     return {
       maxAmount,
-      newLiquidationPrice,
-      currentLiquidationDistance,
-      newLiquidationDistance,
+      anchorLiquidationPrice,
+      estimatedLiquidationPrice,
+      anchorLiquidationDistance,
+      estimatedLiquidationDistance,
       riskAssessment,
       isValid,
     };
@@ -140,6 +160,7 @@ export function usePerpsMarginCalculations({
     position.positionValue,
     position.leverage?.value,
     position.liquidationPrice,
+    position.maxLeverage,
     currentPrice,
     account,
     mode,

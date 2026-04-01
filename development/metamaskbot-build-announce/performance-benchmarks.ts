@@ -1,36 +1,121 @@
-import startCase from 'lodash/startCase';
+import { readFile } from 'fs/promises';
+import { join } from 'path';
 import {
   ENTRY_BENCHMARK_PLATFORMS,
   ENTRY_BENCHMARK_BUILD_TYPES,
+  BENCHMARK_PLATFORMS,
+  BENCHMARK_BUILD_TYPES,
+  ALL_BENCHMARK_COMBOS,
+  STAT_KEY,
+  DEFAULT_RELATIVE_THRESHOLDS,
+  THRESHOLD_SEVERITY,
 } from '../../shared/constants/benchmarks';
 import type {
   BenchmarkResults,
+  ComparisonKey,
   StatisticalResult,
 } from '../../shared/constants/benchmarks';
 import {
   STARTUP_PRESETS,
   INTERACTION_PRESETS,
   USER_JOURNEY_PRESETS,
+  THRESHOLD_REGISTRY,
 } from '../../test/e2e/benchmarks/utils/constants';
+import { validateResultThresholds } from '../../test/e2e/benchmarks/utils/statistics';
+import {
+  compareMetric,
+  formatDeltaPercent,
+  COMPARISON_SEVERITY,
+} from './comparison-utils';
+import type { ComparisonSeverity } from './comparison-utils';
+import type {
+  HistoricalBaselineReference,
+  HistoricalBaselineResult,
+} from './historical-comparison';
+import { fetchHistoricalPerformanceDataFromMain } from './historical-comparison';
+import {
+  resolveBaseline,
+  buildEntryKey,
+  buildCombo,
+  buildArtifactFilename,
+  buildArtifactUrl,
+} from './utils';
 
-/** A parsed benchmark entry with its name and the stats we render. */
 export type BenchmarkEntry = {
   benchmarkName: string;
+  presetName: string;
+  platform: string;
+  buildType: string;
   mean: StatisticalResult;
-  min: StatisticalResult;
-  max: StatisticalResult;
   stdDev: StatisticalResult;
   p75: StatisticalResult;
   p95: StatisticalResult;
+  artifactUrl?: string;
 };
+
+export const EntryHealth = {
+  Pass: 'pass',
+  Warn: 'warn',
+  Fail: 'fail',
+} as const;
+
+export type EntryHealth = (typeof EntryHealth)[keyof typeof EntryHealth];
+
+type MetricStat = { icon: string; delta: string; severity: ComparisonSeverity };
+
+type RegressionInfo = {
+  metric: string;
+  mean: MetricStat | null;
+  p75: MetricStat | null;
+  p95: MetricStat | null;
+  worstSeverity: ComparisonSeverity;
+};
+
+export type FetchBenchmarkResult = {
+  entries: BenchmarkEntry[];
+  missingPresets: string[];
+};
+
+const HEALTH_ORDER: Record<EntryHealth, number> = {
+  [EntryHealth.Pass]: 0,
+  [EntryHealth.Warn]: 1,
+  [EntryHealth.Fail]: 2,
+};
+
+const HEALTH_ICON: Record<EntryHealth, string> = {
+  [EntryHealth.Fail]: COMPARISON_SEVERITY.Regression.icon,
+  [EntryHealth.Warn]: COMPARISON_SEVERITY.Warn.icon,
+  [EntryHealth.Pass]: COMPARISON_SEVERITY.Pass.icon,
+};
+
+const USER_JOURNEY_BENCHMARK_PLATFORMS = [BENCHMARK_PLATFORMS.CHROME] as const;
+
+/**
+ * Build types to fetch for user-journey presets in this workflow run.
+ * Mirrors whether `benchmarks-webpack-perf` runs (push to main/release only).
+ */
+export function getUserJourneyBenchmarkBuildTypesForCurrentRun(): readonly string[] {
+  const eventName = process.env.GITHUB_EVENT_NAME;
+  const ref = process.env.GITHUB_REF ?? '';
+  const webpackUserJourneyArtifactsExist =
+    eventName === 'push' &&
+    (ref === 'refs/heads/main' || ref.startsWith('refs/heads/release/'));
+
+  if (webpackUserJourneyArtifactsExist) {
+    return [BENCHMARK_BUILD_TYPES.BROWSERIFY, BENCHMARK_BUILD_TYPES.WEBPACK];
+  }
+
+  return [BENCHMARK_BUILD_TYPES.BROWSERIFY];
+}
 
 /**
  * Fetches benchmark JSON artifact for a given preset/platform/buildType.
- * Returns null if the artifact doesn't exist (preset not run or failed).
+ * Reads from local filesystem (BENCHMARK_RESULTS_DIR env) when set,
+ * otherwise falls back to fetching from hostUrl (S3/CloudFront).
  *
  * @param hostUrl - Base URL for CI artifacts.
- * @param platform - Browser platform (e.g. 'chrome', 'firefox').
- * @param buildType - Build type (e.g. 'browserify', 'webpack').
+ * @param platform - Browser platform (e.g. 'chrome').
+ * @param buildType - Build type (e.g. 'browserify').
  * @param preset - Benchmark preset name.
  * @returns Parsed JSON or null.
  */
@@ -42,14 +127,25 @@ export async function fetchBenchmarkJson<
   buildType: string,
   preset: string,
 ): Promise<Result | null> {
+  const fileName = buildArtifactFilename(platform, buildType, preset);
+  const localDir = process.env.BENCHMARK_RESULTS_DIR;
+
+  if (localDir) {
+    try {
+      const raw = await readFile(join(localDir, fileName), 'utf8');
+      return JSON.parse(raw) as Result;
+    } catch {
+      return null;
+    }
+  }
+
   try {
-    const url = `${hostUrl}/benchmarks/benchmark-${platform}-${buildType}-${preset}.json`;
+    const url = `${hostUrl}/benchmarks/${fileName}`;
     const response = await fetch(url);
     if (!response.ok) {
       return null;
     }
-    const data: Result = await response.json();
-    return data;
+    return (await response.json()) as Result;
   } catch {
     return null;
   }
@@ -59,51 +155,59 @@ export async function fetchBenchmarkJson<
  * Extracts benchmark entries from a fetched JSON artifact.
  *
  * @param data - Raw parsed JSON from a benchmark artifact.
+ * @param presetName - The preset name these entries were fetched under.
+ * @param platform - Browser platform (e.g. 'chrome').
+ * @param buildType - Build type (e.g. 'browserify').
+ * @param artifactUrl
  * @returns Flat BenchmarkEntry array with only the fields we render.
  */
 export function extractEntries(
-  data: Record<string, BenchmarkResults>,
+  data: Record<string, BenchmarkResults | null>,
+  presetName = '',
+  platform = '',
+  buildType = '',
+  artifactUrl?: string,
 ): BenchmarkEntry[] {
+  const hasValidMean = (
+    entry: [string, BenchmarkResults | null],
+  ): entry is [string, BenchmarkResults] => {
+    const [, raw] = entry;
+    return raw?.mean !== null && typeof raw?.mean === 'object';
+  };
+
   return Object.entries(data)
-    .filter(
-      ([, raw]) =>
-        raw?.mean !== undefined &&
-        raw.mean !== null &&
-        typeof raw.mean === 'object',
-    )
+    .filter(hasValidMean)
     .map(([name, raw]) => ({
       benchmarkName: name,
+      presetName,
+      platform,
+      buildType,
       mean: raw.mean,
-      min: raw.min,
-      max: raw.max,
       stdDev: raw.stdDev,
       p75: raw.p75,
       p95: raw.p95,
+      artifactUrl,
     }));
 }
 
-export type FetchBenchmarkResult = {
-  entries: BenchmarkEntry[];
-  missingPresets: string[];
-};
-
 /**
- * Fetches and aggregates benchmark entries for a given set of presets.
- * Iterates all platform/buildType combos defined in ENTRY_BENCHMARK_PLATFORMS
- * and ENTRY_BENCHMARK_BUILD_TYPES (shared/constants/benchmarks.ts), so adding
- * a new target only requires updating those constants.
+ * Fetches and aggregates benchmark entries for a given set of presets,
+ * platforms, and build types.
  *
- * Reports any preset/platform/buildType combos that returned no data.
  * @param hostUrl - Base URL for CI artifacts.
- * @param presets - Preset names to fetch (e.g. INTERACTION_PRESETS values).
+ * @param presets - Preset names to fetch.
+ * @param platforms - Platforms to fetch (defaults to ENTRY_BENCHMARK_PLATFORMS).
+ * @param buildTypes - Build types to fetch (defaults to ENTRY_BENCHMARK_BUILD_TYPES).
  * @returns Entries and a list of missing preset descriptions.
  */
 export async function fetchBenchmarkEntries(
   hostUrl: string,
   presets: string[],
+  platforms: readonly string[] = ENTRY_BENCHMARK_PLATFORMS,
+  buildTypes: readonly string[] = ENTRY_BENCHMARK_BUILD_TYPES,
 ): Promise<FetchBenchmarkResult> {
-  const fetches = ENTRY_BENCHMARK_PLATFORMS.flatMap((platform) =>
-    ENTRY_BENCHMARK_BUILD_TYPES.flatMap((buildType) =>
+  const fetches = platforms.flatMap((platform) =>
+    buildTypes.flatMap((buildType) =>
       presets.map(async (preset) => {
         const data = await fetchBenchmarkJson(
           hostUrl,
@@ -117,13 +221,17 @@ export async function fetchBenchmarkEntries(
   );
 
   const results = await Promise.all(fetches);
-
   const allEntries: BenchmarkEntry[] = [];
   const missingPresets: string[] = [];
 
   for (const { platform, buildType, preset, data } of results) {
     if (data) {
-      allEntries.push(...extractEntries(data));
+      const artifactUrl = process.env.BENCHMARK_RESULTS_DIR
+        ? undefined
+        : buildArtifactUrl(hostUrl, platform, buildType, preset);
+      allEntries.push(
+        ...extractEntries(data, preset, platform, buildType, artifactUrl),
+      );
     } else {
       missingPresets.push(`${platform}/${buildType}/${preset}`);
     }
@@ -133,96 +241,644 @@ export async function fetchBenchmarkEntries(
 }
 
 /**
- * Renders a single HTML table row cell value, rounding numbers or returning '-'.
+ * Computes the worst EntryHealth for a benchmark entry using the absolute gate only.
  *
- * @param stats - The stats record (e.g. entry.stdDev).
- * @param metric - The metric key.
- * @returns Rounded string or '-'.
+ * Validates P75/P95 against THRESHOLD_REGISTRY limits.
+ * Fail violation → EntryHealth.Fail; Warn violation → EntryHealth.Warn.
+ * Returns Pass when no threshold is registered or all values are within limits.
+ *
+ * Relative context is shown separately as informational deltas below each table,
+ * and does not affect the health badge.
+ *
+ * @param entry - The benchmark entry.
+ * @param _baselineMetrics - Unused; kept for call-site compatibility.
+ * @returns `EntryHealth.Fail` | `EntryHealth.Warn` | `EntryHealth.Pass`.
  */
-function formatCellValue(stats: StatisticalResult, metric: string): string {
-  const value = stats[metric];
-  return typeof value === 'number' ? Math.round(value).toString() : '-';
+export function computeEntryHealth(
+  entry: BenchmarkEntry,
+  _baselineMetrics: HistoricalBaselineReference[string] | undefined,
+): EntryHealth {
+  const thresholdConfig = THRESHOLD_REGISTRY[entry.benchmarkName];
+  if (thresholdConfig) {
+    const { violations } = validateResultThresholds(
+      { p75: entry.p75, p95: entry.p95 } as BenchmarkResults,
+      thresholdConfig,
+    );
+    if (violations.some((v) => v.severity === THRESHOLD_SEVERITY.Fail)) {
+      return EntryHealth.Fail;
+    }
+    if (violations.some((v) => v.severity === THRESHOLD_SEVERITY.Warn)) {
+      return EntryHealth.Warn;
+    }
+  }
+  return EntryHealth.Pass;
 }
 
 /**
- * Builds table rows from benchmark entries.
+ * Returns regression/warn items for a benchmark entry vs its baseline.
+ * Checks P75 and P95 only (Mean is excluded — it is noisier and already
+ * omitted from the health badge in computeEntryHealth).
  *
- * @param entries - Array of benchmark entries with names.
- * @returns Array of HTML table row strings.
+ * @param entry - The benchmark entry.
+ * @param baselineMetrics - Resolved baseline metrics for this entry.
+ * @returns Array of RegressionInfo (may be empty).
  */
-export function buildTableRows(entries: BenchmarkEntry[]): string[] {
-  const tableRows: string[] = [];
+function getEntryRegressions(
+  entry: BenchmarkEntry,
+  baselineMetrics: HistoricalBaselineReference[string] | undefined,
+): RegressionInfo[] {
+  if (!baselineMetrics) {
+    return [];
+  }
 
-  for (const { benchmarkName, mean, min, max, stdDev, p75, p95 } of entries) {
-    const metrics = Object.keys(mean);
-    for (let i = 0; i < metrics.length; i++) {
-      const metric = metrics[i];
-      let row = '';
-      if (i === 0) {
-        row += `<td rowspan="${metrics.length}">${startCase(benchmarkName)}</td>`;
+  const result: RegressionInfo[] = [];
+  const metrics = Object.keys(entry.p95).filter((m) => m !== 'total');
+
+  for (const metric of metrics) {
+    if (!baselineMetrics[metric]) {
+      continue;
+    }
+
+    const getStat = (
+      statsMap: StatisticalResult | undefined,
+      key: ComparisonKey,
+    ): MetricStat | null => {
+      const val = statsMap?.[metric];
+      const baselineVal = baselineMetrics[metric]?.[key];
+      if (val === undefined || baselineVal === undefined) {
+        return null;
       }
-      row += `<td>${metric}</td>`;
-      row += `<td align="right">${Math.round(mean[metric])}</td>`;
-      row += `<td align="right">${formatCellValue(min, metric)}</td>`;
-      row += `<td align="right">${formatCellValue(max, metric)}</td>`;
-      row += `<td align="right">${formatCellValue(stdDev, metric)}</td>`;
-      row += `<td align="right">${formatCellValue(p75, metric)}</td>`;
-      row += `<td align="right">${formatCellValue(p95, metric)}</td>`;
-      tableRows.push(`<tr>${row}</tr>`);
+      const cmp = compareMetric(
+        metric,
+        key,
+        val,
+        baselineVal,
+        DEFAULT_RELATIVE_THRESHOLDS,
+      );
+      const sev = Object.values(COMPARISON_SEVERITY).find(
+        (s) => s.value === cmp.severity,
+      );
+      return {
+        icon: sev?.icon ?? COMPARISON_SEVERITY.Pass.icon,
+        delta: formatDeltaPercent(cmp.deltaPercent),
+        severity: cmp.severity,
+      };
+    };
+
+    const meanStat = getStat(entry.mean, STAT_KEY.Mean as ComparisonKey);
+    const p75Stat = getStat(entry.p75, STAT_KEY.P75 as ComparisonKey);
+    const p95Stat = getStat(entry.p95, STAT_KEY.P95 as ComparisonKey);
+
+    // Only include this metric if p75 or p95 has a regression or warn.
+    const hasIssue = (s: MetricStat | null) =>
+      s?.severity === COMPARISON_SEVERITY.Regression.value ||
+      s?.severity === COMPARISON_SEVERITY.Warn.value;
+
+    if (![p75Stat, p95Stat].some(hasIssue)) {
+      continue;
+    }
+
+    let worstSeverity: ComparisonSeverity = COMPARISON_SEVERITY.Pass.value;
+    for (const s of [p75Stat, p95Stat]) {
+      if (s?.severity === COMPARISON_SEVERITY.Regression.value) {
+        worstSeverity = COMPARISON_SEVERITY.Regression.value;
+        break;
+      }
+      if (s?.severity === COMPARISON_SEVERITY.Warn.value) {
+        worstSeverity = COMPARISON_SEVERITY.Warn.value;
+      }
+    }
+
+    result.push({
+      metric,
+      mean: meanStat,
+      p75: p75Stat,
+      p95: p95Stat,
+      worstSeverity,
+    });
+  }
+  return result;
+}
+
+/**
+ * Aggregates the worst EntryHealth per "presetName|platform-buildType" key
+ * across all provided entries.
+ *
+ * @param entries - Benchmark entries to aggregate.
+ * @param baseline - Historical baseline (optional).
+ * @returns Map from "preset|platform-buildType" to worst EntryHealth.
+ */
+function buildHealthMap(
+  entries: BenchmarkEntry[],
+  baseline?: HistoricalBaselineReference,
+): Map<string, EntryHealth> {
+  const map = new Map<string, EntryHealth>();
+  for (const entry of entries) {
+    const baselineMetrics = baseline
+      ? resolveBaseline(baseline, entry.presetName, entry.benchmarkName)
+      : undefined;
+    const health = computeEntryHealth(entry, baselineMetrics);
+    const key = buildEntryKey(
+      entry.benchmarkName,
+      entry.platform,
+      entry.buildType,
+    );
+    const existing = map.get(key);
+    if (!existing || HEALTH_ORDER[health] > HEALTH_ORDER[existing]) {
+      map.set(key, health);
+    }
+  }
+  return map;
+}
+
+/**
+ * Extracts the display name from a benchmark name.
+ * For startup benchmarks with platform prefix (e.g., 'chrome-browserify-startupStandardHome'),
+ * returns just the metric name (e.g., 'startupStandardHome').
+ * For other benchmarks, returns the name as-is.
+ * @param benchmarkName
+ */
+function extractDisplayName(benchmarkName: string): string {
+  const match = benchmarkName.match(
+    /^(?:chrome|firefox)-(?:browserify|webpack)-(.+)$/u,
+  );
+  return match ? match[1] : benchmarkName;
+}
+
+/**
+ * Counts the number of failing and warning benchmark entries.
+ *
+ * @param allEntries - All benchmark entries to count.
+ * @param baseline - Historical baseline (optional).
+ * @returns Object with failure and warning counts.
+ */
+function countHealthEntries(
+  allEntries: BenchmarkEntry[],
+  baseline?: HistoricalBaselineReference,
+): { passes: number; failures: number; warnings: number } {
+  const presetComboMap = buildHealthMap(allEntries, baseline);
+
+  let passes = 0;
+  let failures = 0;
+  let warnings = 0;
+  for (const health of presetComboMap.values()) {
+    if (health === EntryHealth.Fail) {
+      failures += 1;
+    } else if (health === EntryHealth.Warn) {
+      warnings += 1;
+    } else if (health === EntryHealth.Pass) {
+      passes += 1;
+    }
+  }
+  return { passes, failures, warnings };
+}
+
+/**
+ * Formats timer details from StatisticalResult into a readable HTML list with traffic lights.
+ * Only returns timer breakdown if entry has multiple timers (user journey benchmarks).
+ *
+ * @param entry - Benchmark entry with all stats (mean, p75, p95)
+ * @param baselineMetrics - Historical baseline for comparison (optional)
+ * @param logHref
+ * @returns HTML string with timer breakdown, or empty string if single timer
+ */
+function formatTimerDetails(
+  entry: BenchmarkEntry,
+  baselineMetrics: HistoricalBaselineReference[string] | undefined,
+  logHref?: string,
+): string {
+  const timerCount = Object.keys(entry.mean).length;
+
+  if (timerCount <= 1) {
+    return '';
+  }
+
+  const thresholdConfig = THRESHOLD_REGISTRY[entry.benchmarkName];
+
+  const entries = Object.entries(entry.mean)
+    .map(([metricName, meanValue]) => {
+      let icon = HEALTH_ICON[EntryHealth.Pass];
+      let hasIssue = false;
+
+      if (thresholdConfig?.[metricName]) {
+        const metricResult = {
+          p75: { [metricName]: entry.p75[metricName] },
+          p95: { [metricName]: entry.p95[metricName] },
+        } as BenchmarkResults;
+
+        const { violations } = validateResultThresholds(metricResult, {
+          [metricName]: thresholdConfig[metricName],
+        });
+
+        const hasFail = violations.some(
+          (v) => v.severity === THRESHOLD_SEVERITY.Fail,
+        );
+        const hasWarn = violations.some(
+          (v) => v.severity === THRESHOLD_SEVERITY.Warn,
+        );
+
+        if (hasFail) {
+          icon = HEALTH_ICON[EntryHealth.Fail];
+          hasIssue = true;
+        } else if (hasWarn) {
+          icon = HEALTH_ICON[EntryHealth.Warn];
+          hasIssue = true;
+        }
+      }
+
+      if (!hasIssue) {
+        return null;
+      }
+
+      const logsLine = logHref
+        ? `<br><a href="${logHref}">[Show logs]</a>`
+        : '';
+      return `<div>${icon} <code>${metricName}</code>${logsLine}</div>`;
+    })
+    .filter((item) => item !== null)
+    .join('');
+
+  return entries
+    ? `<div style="text-align: left; margin: 4px 0 8px 0; padding-left: 8px;">${entries}</div>`
+    : '';
+}
+
+/**
+ * Builds an outer collapsible section (e.g. 'Interaction Benchmarks').
+ *
+ * @param result - Fetched entries and missing preset descriptions.
+ * @param summary - The collapsible header text.
+ * @param baseline - Historical baseline for relative delta annotations.
+ * @param runUrl - GitHub Actions run URL for "Show logs" links (optional).
+ * @returns HTML string or empty string if no data.
+ */
+
+/** Minimum absolute delta (%) to include a metric in the relative summary. */
+const RELATIVE_DELTA_MIN_PCT = 0.1;
+
+/**
+ * Builds a bullet-point summary of notable relative deltas vs the 5-commit baseline.
+ * Only metrics that changed by ≥10% (either direction) are shown.
+ * This is purely informational and does not affect any health badge.
+ *
+ * @param entries - All benchmark entries in this section.
+ * @param baseline - Historical baseline reference.
+ * @returns HTML string, or empty string if nothing notable.
+ */
+function buildRelativeDeltaSection(
+  entries: BenchmarkEntry[],
+  baseline: HistoricalBaselineReference | undefined,
+): string {
+  if (!baseline) {
+    return '';
+  }
+
+  const lines: string[] = [];
+
+  for (const entry of entries) {
+    // Try the current key format first (e.g. pageLoad/startupStandardHome).
+    // TODO: remove the legacy fallback once PR #41217 has merged into main and
+    // the historical stats file has fully transitioned to the new key format
+    const baselineMetrics =
+      resolveBaseline(baseline, entry.presetName, entry.benchmarkName) ??
+      (entry.presetName.startsWith('startup')
+        ? resolveBaseline(
+            baseline,
+            entry.presetName,
+            `${entry.platform}-${entry.buildType}-${entry.benchmarkName}`,
+          )
+        : undefined);
+    if (!baselineMetrics) {
+      continue;
+    }
+
+    for (const metric of Object.keys(entry.p75)) {
+      const baselineMetric = baselineMetrics[metric];
+      if (!baselineMetric) {
+        continue;
+      }
+      const cur = entry.p75[metric];
+      const base = baselineMetric.p75;
+      if (cur === undefined || !base) {
+        continue;
+      }
+      const deltaPercent = (cur - base) / base;
+      if (Math.abs(deltaPercent) < RELATIVE_DELTA_MIN_PCT) {
+        continue;
+      }
+      const sign = deltaPercent > 0 ? '+' : '';
+      const pct = `${sign}${(deltaPercent * 100).toFixed(0)}%`;
+      const arrow = deltaPercent > 0 ? '↑' : '↓';
+      lines.push(
+        `<li>${arrow} <code>${entry.benchmarkName}/${metric}</code>: ${pct}</li>`,
+      );
     }
   }
 
-  return tableRows;
-}
+  if (lines.length === 0) {
+    return '';
+  }
 
-/**
- * Builds a benchmark HTML section with a collapsible table.
- * Surfaces a warning for any missing presets so reviewers can see
- * exactly which data is absent (prevents silent bypass).
- *
- * @param result - Fetched entries and missing preset descriptions.
- * @param summary - The collapsible header text (e.g. '👆 Interaction Benchmarks').
- * @returns HTML string or empty string if no data at all.
- */
+  return `<p><b>📈 Results compared to the previous 5 runs on main</b></p><ul>${lines.join('')}</ul>\n`;
+}
 export function buildBenchmarkSection(
   result: FetchBenchmarkResult,
   summary: string,
+  baseline?: HistoricalBaselineReference,
+  runUrl?: string,
 ): string {
   try {
     const { entries, missingPresets } = result;
     if (entries.length === 0 && missingPresets.length === 0) {
       return '';
     }
-    const rows = buildTableRows(entries);
-    let warningHtml = '';
-    if (missingPresets.length > 0) {
-      warningHtml = `<p>⚠️ <b>Missing data:</b> ${missingPresets.join(', ')}</p>\n`;
+
+    const warningHtml =
+      missingPresets.length > 0
+        ? `<p>⚠️ <b>Missing data:</b> ${missingPresets.join(', ')}</p>\n`
+        : '';
+
+    const sectionCounts = countHealthEntries(entries, baseline);
+    const sectionBadge =
+      sectionCounts.failures > 0
+        ? ` ${HEALTH_ICON[EntryHealth.Fail]} ${sectionCounts.failures}`
+        : '';
+
+    const entryLookup = new Map<string, BenchmarkEntry>();
+    for (const entry of entries) {
+      entryLookup.set(
+        buildEntryKey(entry.benchmarkName, entry.platform, entry.buildType),
+        entry,
+      );
     }
-    const columns = [
-      'Benchmark',
-      'Metric',
-      'Mean (ms)',
-      'Min (ms)',
-      'Max (ms)',
-      'Std Dev (ms)',
-      'P75 (ms)',
-      'P95 (ms)',
-    ];
-    const header = `<thead><tr>${columns.map((c) => `<th>${c}</th>`).join('')}</tr></thead>`;
-    let content = warningHtml;
-    if (rows.length > 0) {
-      content += `<table>${header}<tbody>${rows.join('')}</tbody></table>\n`;
+
+    const benchmarkNames = [...new Set(entries.map((e) => e.benchmarkName))];
+    const usedCombos = new Set(
+      entries.map((e) => buildCombo(e.platform, e.buildType)),
+    );
+    const orderedCombos = ALL_BENCHMARK_COMBOS.filter((c) => usedCombos.has(c));
+
+    let sectionBody = '';
+    if (benchmarkNames.length > 0 && orderedCombos.length > 0) {
+      const headerRow = `<tr><th>Benchmark</th>${orderedCombos
+        .map((c) => `<th>${c}</th>`)
+        .join('')}</tr>`;
+
+      const dataRows = benchmarkNames
+        .map((benchmarkName: string) => {
+          const cells = orderedCombos
+            .map((combo: string) => {
+              const entry = entryLookup.get(`${benchmarkName}|${combo}`);
+              if (!entry) {
+                return `<td align="left">–</td>`;
+              }
+              const baselineMetrics = baseline
+                ? resolveBaseline(baseline, entry.presetName, benchmarkName)
+                : undefined;
+              const health = computeEntryHealth(entry, baselineMetrics);
+              const icon = HEALTH_ICON[health];
+              const logHref = entry.artifactUrl ?? runUrl;
+
+              const timerDetails = formatTimerDetails(
+                entry,
+                baselineMetrics,
+                logHref,
+              );
+
+              const logsLink = logHref
+                ? `<a href="${logHref}">[Show logs]</a>`
+                : '';
+
+              let cell: string;
+              switch (true) {
+                case Boolean(timerDetails):
+                  cell = timerDetails;
+                  break;
+                case Boolean(logHref):
+                  cell = `${icon} ${logsLink}`;
+                  break;
+                default:
+                  cell = icon;
+              }
+              return `<td align="left">${cell}</td>`;
+            })
+            .join('');
+          const displayName = extractDisplayName(benchmarkName);
+          return `<tr><td>${displayName}</td>${cells}</tr>`;
+        })
+        .join('');
+
+      sectionBody = `<div style="overflow-x:auto;width:100%"><table style="width:100%;min-width:900px;table-layout:auto;border-collapse:collapse"><thead>${headerRow}</thead><tbody>${dataRows}</tbody></table></div>\n`;
+    } else if (baseline) {
+      sectionBody = `<p>✅ No regressions detected</p>\n`;
     }
-    return `<details><summary>${summary}</summary>${content}</details>\n\n`;
+
+    const deltaSection = buildRelativeDeltaSection(entries, baseline);
+    const sectionContent = warningHtml + sectionBody + deltaSection;
+    return sectionContent
+      ? `<details><summary><b>${summary}${sectionBadge}</b></summary>\n${sectionContent}</details>\n`
+      : '';
   } catch (error: unknown) {
     console.log(`Failed to build ${summary}: ${String(error)}`);
     return '';
   }
 }
 
+type MatrixCellData = {
+  health: EntryHealth;
+  label: string;
+};
+
 /**
- * Builds the full ⚡ Performance Benchmarks collapsible section,
- * including 👆 Interaction, 🔌 Startup, and 🧭 User Journey sub-sections.
+ * Builds a summary health matrix table: benchmarkName rows × platform-buildType columns.
+ * Each cell shows the health icon and the worst metric(percentile) that triggered it.
+ * Only rows with at least one 🔴 Fail are included.
+ *
+ * @param allEntries - All benchmark entries across all sections.
+ * @param baseline - Historical baseline (optional).
+ * @returns HTML table string, or empty string if nothing to show.
+ */
+function buildHealthMatrixHtml(
+  allEntries: BenchmarkEntry[],
+  baseline: HistoricalBaselineReference | undefined,
+): string {
+  const cellMap = new Map<string, MatrixCellData>();
+  for (const entry of allEntries) {
+    const baselineMetrics = baseline
+      ? resolveBaseline(baseline, entry.presetName, entry.benchmarkName)
+      : undefined;
+    const health = computeEntryHealth(entry, baselineMetrics);
+    const key = buildEntryKey(
+      entry.benchmarkName,
+      entry.platform,
+      entry.buildType,
+    );
+    const existing = cellMap.get(key);
+    if (existing && HEALTH_ORDER[health] <= HEALTH_ORDER[existing.health]) {
+      continue;
+    }
+    const regs =
+      health === EntryHealth.Pass
+        ? []
+        : getEntryRegressions(entry, baselineMetrics);
+    const topReg =
+      regs.find(
+        (r) => r.worstSeverity === COMPARISON_SEVERITY.Regression.value,
+      ) ?? regs[0];
+    let label = '';
+    if (topReg) {
+      const p95IsTrigger =
+        topReg.p95?.severity === COMPARISON_SEVERITY.Regression.value ||
+        topReg.p95?.severity === COMPARISON_SEVERITY.Warn.value;
+      const percentile = p95IsTrigger ? 'p95' : 'p75';
+      label = `${topReg.metric}(${percentile})`;
+    }
+    cellMap.set(key, { health, label });
+  }
+
+  const usedCombos = new Set(
+    allEntries.map((e) => `${e.platform}-${e.buildType}`),
+  );
+  const orderedCombos = ALL_BENCHMARK_COMBOS.filter((c) => usedCombos.has(c));
+
+  const allBenchmarks = [...new Set(allEntries.map((e) => e.benchmarkName))];
+  const affectedBenchmarks = allBenchmarks.filter((benchmark) =>
+    orderedCombos.some(
+      (combo) =>
+        cellMap.get(`${benchmark}|${combo}`)?.health === EntryHealth.Fail,
+    ),
+  );
+
+  if (affectedBenchmarks.length === 0 || orderedCombos.length === 0) {
+    return '';
+  }
+
+  const headerRow = `<tr><th>Metrics</th>${orderedCombos
+    .map((c) => `<th>${c}</th>`)
+    .join('')}</tr>`;
+
+  const dataRows = affectedBenchmarks
+    .map((benchmark) => {
+      const cells = orderedCombos
+        .map((combo) => {
+          const data = cellMap.get(`${benchmark}|${combo}`);
+          if (!data) {
+            return `<td align="center">–</td>`;
+          }
+          const icon = HEALTH_ICON[data.health];
+          const entry = allEntries.find(
+            (e) =>
+              e.benchmarkName === benchmark &&
+              `${e.platform}-${e.buildType}` === combo,
+          );
+          const logHref = entry?.artifactUrl;
+          const label = data.label ? `${icon} ${data.label}` : icon;
+          const cell = logHref
+            ? `${label} <a href="${logHref}">[logs]</a>`
+            : label;
+          return `<td align="center">${cell}</td>`;
+        })
+        .join('');
+      return `<tr><td>${benchmark}</td>${cells}</tr>`;
+    })
+    .join('');
+
+  return `<table><thead>${headerRow}</thead><tbody>${dataRows}</tbody></table>\n`;
+}
+
+/**
+ * Returns the worst offending metric label for a failing entry, for use in the
+ * "View regression details" list.
+ *
+ * @param entry - The failing benchmark entry.
+ * @param baselineMetrics - Resolved baseline metrics (for Layer 2 fallback).
+ * @returns Label such as "initialActions(p95)", or empty string if none found.
+ */
+function getWorstViolationLabel(
+  entry: BenchmarkEntry,
+  baselineMetrics: HistoricalBaselineReference[string] | undefined,
+): string {
+  // Layer 1: find the threshold violation with the largest excess over the limit.
+  const thresholdConfig = THRESHOLD_REGISTRY[entry.benchmarkName];
+  if (thresholdConfig) {
+    const { violations } = validateResultThresholds(
+      { p75: entry.p75, p95: entry.p95 } as BenchmarkResults,
+      thresholdConfig,
+    );
+    const worst = violations
+      .filter((v) => v.severity === THRESHOLD_SEVERITY.Fail)
+      .sort((a, b) => b.value / b.threshold - a.value / a.threshold)[0];
+    if (worst) {
+      return `${worst.metricId}(${worst.percentile})`;
+    }
+  }
+
+  // Layer 2: fall back to the worst relative regression metric.
+  const regs = getEntryRegressions(entry, baselineMetrics);
+  const topReg =
+    regs.find(
+      (r) => r.worstSeverity === COMPARISON_SEVERITY.Regression.value,
+    ) ?? regs[0];
+  if (!topReg) {
+    return '';
+  }
+  const p95Worst =
+    topReg.p95?.severity === COMPARISON_SEVERITY.Regression.value ||
+    topReg.p95?.severity === COMPARISON_SEVERITY.Warn.value;
+  return `${topReg.metric}(${p95Worst ? 'p95' : 'p75'})`;
+}
+
+/**
+ * Builds the "View regression details" collapsible.
+ *
+ * @param allEntries - All benchmark entries across all sections.
+ * @param baseline - Historical baseline (optional).
+ * @param failures - Pre-computed failure count (from countHealthEntries).
+ * @param runUrl - Fallback log URL when an entry has no artifactUrl.
+ */
+function buildFailingItemsHtml(
+  allEntries: BenchmarkEntry[],
+  baseline: HistoricalBaselineReference | undefined,
+  failures: number,
+  runUrl: string | undefined,
+): string {
+  if (failures === 0) {
+    return '';
+  }
+
+  const failureSuffix = failures === 1 ? 'failure' : 'failures';
+  const failureLabel = `${HEALTH_ICON[EntryHealth.Fail]} ${failures} ${failureSuffix}`;
+
+  const listItems = allEntries
+    .flatMap((entry) => {
+      const baselineMetrics = baseline
+        ? resolveBaseline(baseline, entry.presetName, entry.benchmarkName)
+        : undefined;
+      if (computeEntryHealth(entry, baselineMetrics) !== EntryHealth.Fail) {
+        return [];
+      }
+      const worstLabel = getWorstViolationLabel(entry, baselineMetrics);
+      const labelPart = worstLabel ? ` — ${worstLabel}` : '';
+      const logHref = entry.artifactUrl ?? runUrl;
+      const logAnchor = logHref ? ` <a href="${logHref}">[Show logs]</a>` : '';
+      return [
+        `<li><b>${entry.benchmarkName}</b> · ${entry.platform}-${entry.buildType}${labelPart}${logAnchor}</li>`,
+      ];
+    })
+    .join('');
+
+  if (!listItems) {
+    return `<p>${failureLabel}</p>\n`;
+  }
+
+  return (
+    `<p><strong>Regressions (${failureLabel})</strong></p>\n` +
+    `<ul>${listItems}</ul>\n`
+  );
+}
+
+/**
+ * Builds the full ⚡ Performance Benchmarks collapsible section.
  *
  * @param hostUrl - Base URL for CI artifacts.
  * @returns HTML string for the collapsible section, or empty string.
@@ -232,33 +888,116 @@ export async function buildPerformanceBenchmarksSection(
 ): Promise<string> {
   const sectionTitle = '⚡ Performance Benchmarks';
 
-  const [interactionResult, startupResult, userJourneyResult] =
+  const benchmarkRunId =
+    process.env.BENCHMARK_WORKFLOW_RUN_ID ?? process.env.GITHUB_RUN_ID;
+  const runUrl =
+    process.env.GITHUB_SERVER_URL &&
+    process.env.GITHUB_REPOSITORY &&
+    benchmarkRunId
+      ? `${process.env.GITHUB_SERVER_URL}/${process.env.GITHUB_REPOSITORY}/actions/runs/${benchmarkRunId}`
+      : undefined;
+
+  const [interactionResult, startupResult, userJourneyResult, baselineResult] =
     await Promise.all([
-      fetchBenchmarkEntries(hostUrl, Object.values(INTERACTION_PRESETS)),
-      fetchBenchmarkEntries(hostUrl, Object.values(STARTUP_PRESETS)),
-      fetchBenchmarkEntries(hostUrl, Object.values(USER_JOURNEY_PRESETS)),
+      fetchBenchmarkEntries(
+        hostUrl,
+        Object.values(INTERACTION_PRESETS),
+        ENTRY_BENCHMARK_PLATFORMS,
+        ENTRY_BENCHMARK_BUILD_TYPES,
+      ),
+      fetchBenchmarkEntries(
+        hostUrl,
+        Object.values(STARTUP_PRESETS),
+        Object.values(BENCHMARK_PLATFORMS),
+        Object.values(BENCHMARK_BUILD_TYPES),
+      ),
+      fetchBenchmarkEntries(
+        hostUrl,
+        Object.values(USER_JOURNEY_PRESETS),
+        USER_JOURNEY_BENCHMARK_PLATFORMS,
+        getUserJourneyBenchmarkBuildTypesForCurrentRun(),
+      ),
+      fetchHistoricalPerformanceDataFromMain(),
     ]);
 
-  const interactionHtml = buildBenchmarkSection(
-    interactionResult,
-    '👆 Interaction Benchmarks',
-  );
-  const startupHtml = buildBenchmarkSection(
-    startupResult,
-    '🔌 Startup Benchmarks',
-  );
-  const userJourneyHtml = buildBenchmarkSection(
-    userJourneyResult,
-    '🧭 User Journey Benchmarks',
-  );
+  const resolvedBaseline = baselineResult?.baseline ?? undefined;
+  const baselineCommit = baselineResult?.latestCommit;
+  const baselineTimestamp = baselineResult?.latestTimestamp;
 
-  // TODO: Introduce a Traffic Light System for Regression Detection
-  // https://github.com/MetaMask/MetaMask-planning/issues/6993
+  const allEntries = [
+    ...startupResult.entries,
+    ...interactionResult.entries,
+    ...userJourneyResult.entries,
+  ];
 
-  if (!interactionHtml && !startupHtml && !userJourneyHtml) {
+  if (
+    allEntries.length === 0 &&
+    interactionResult.missingPresets.length === 0 &&
+    startupResult.missingPresets.length === 0 &&
+    userJourneyResult.missingPresets.length === 0
+  ) {
     return '';
   }
 
-  const content = `${interactionHtml}${startupHtml}${userJourneyHtml}`;
-  return `<details><summary>${sectionTitle}</summary>\n<blockquote>\n${content}</blockquote>\n</details>\n\n`;
+  const interactionHtml = buildBenchmarkSection(
+    interactionResult,
+    'Interaction Benchmarks',
+    resolvedBaseline,
+    runUrl,
+  );
+  const startupHtml = buildBenchmarkSection(
+    startupResult,
+    'Startup Benchmarks',
+    resolvedBaseline,
+    runUrl,
+  );
+  const userJourneyHtml = buildBenchmarkSection(
+    userJourneyResult,
+    'User Journey Benchmarks',
+    resolvedBaseline,
+    runUrl,
+  );
+
+  const { passes, failures, warnings } = countHealthEntries(
+    allEntries,
+    resolvedBaseline,
+  );
+  const regressionDetailsHtml = buildFailingItemsHtml(
+    allEntries,
+    resolvedBaseline,
+    failures,
+    runUrl,
+  );
+
+  const matrixHtml = buildHealthMatrixHtml(allEntries, resolvedBaseline);
+
+  const commitHash = baselineCommit?.slice(0, 7) ?? 'unknown';
+  const commitDate = baselineTimestamp
+    ? new Date(baselineTimestamp * 1000).toLocaleDateString('en-US', {
+        month: 'numeric',
+        day: 'numeric',
+        year: 'numeric',
+      })
+    : 'unknown';
+  const commitUrl = baselineCommit
+    ? `https://github.com/MetaMask/metamask-extension/commit/${baselineCommit}`
+    : undefined;
+  const commitLink = commitUrl
+    ? `<a href="${commitUrl}">${commitHash}</a>`
+    : commitHash;
+  const pipelineLink = runUrl
+    ? `<a href="${runUrl}">${benchmarkRunId}</a>`
+    : (benchmarkRunId ?? '');
+  const baselineLogsUrl =
+    'https://raw.githubusercontent.com/MetaMask/extension_benchmark_stats/main/stats/main/performance_data.json';
+  const baselineLogsLink = `<a href="${baselineLogsUrl}">Baseline logs</a>`;
+  const commitInfo = `\n\n<p><strong>Baseline (latest main)</strong>: ${commitLink} | <strong>Date</strong>: ${commitDate} | <strong>Pipeline</strong>: ${pipelineLink} | ${baselineLogsLink}</p>\n\n`;
+
+  // Plain text only inside <summary> (no block elements like <p>).
+  const summaryLine = `${sectionTitle} (Total: ${HEALTH_ICON[EntryHealth.Pass]} ${passes} pass · ${HEALTH_ICON[EntryHealth.Warn]} ${warnings} warn · ${HEALTH_ICON[EntryHealth.Fail]} ${failures} fail)`;
+  const subsectionsHtml = interactionHtml + startupHtml + userJourneyHtml;
+  const content =
+    commitInfo + matrixHtml + regressionDetailsHtml + subsectionsHtml;
+
+  return `<details><summary>${summaryLine}</summary>\n<blockquote>\n${content}</blockquote>\n</details>\n\n`;
 }
