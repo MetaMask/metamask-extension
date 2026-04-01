@@ -2,21 +2,13 @@
 
 import { Hex } from '@metamask/utils';
 import { useSelector } from 'react-redux';
-import {
-  DAY,
-  HOUR,
-  WEEK,
-  SECOND,
-  FORTNIGHT,
-  MONTH,
-  YEAR,
-} from '../../../../../../../../shared/constants/time';
+import { formatPermissionPeriodDuration } from '../../../../../../../../shared/lib/gator-permissions/format-permission-period-duration';
+import { MAX_UINT256 } from '../../../../../../../../shared/lib/gator-permissions/permission-constants';
 import { selectNetworkConfigurationByChainId } from '../../../../../../../selectors';
 import { getTokenByAccountAndAddressAndChainId } from '../../../../../../../selectors/assets';
 import type { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 
-export const MAX_UINT256 =
-  '0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff';
+export { MAX_UINT256 };
 
 /**
  * Formats a period duration in seconds to a human-readable string.
@@ -29,36 +21,8 @@ export const MAX_UINT256 =
 export const formatPeriodDuration = (
   i18nContext: ReturnType<typeof useI18nContext>,
   periodSeconds: number,
-) => {
-  if (periodSeconds === 0) {
-    throw new Error('Cannot format period duration of 0 seconds');
-  }
-
-  if (periodSeconds < 0) {
-    throw new Error('Cannot format negative period duration');
-  }
-
-  // multiply by 1000 to convert to milliseconds
-  const periodMilliseconds = periodSeconds * SECOND;
-
-  switch (periodMilliseconds) {
-    case HOUR:
-      return i18nContext('confirmFieldPeriodDurationHourly');
-    case DAY:
-      return i18nContext('confirmFieldPeriodDurationDaily');
-    case WEEK:
-      return i18nContext('confirmFieldPeriodDurationWeekly');
-    case FORTNIGHT:
-      return i18nContext('confirmFieldPeriodDurationBiWeekly');
-    case MONTH:
-      return i18nContext('confirmFieldPeriodDurationMonthly');
-    case YEAR:
-      return i18nContext('confirmFieldPeriodDurationYearly');
-    default:
-      // this should never happen, but we return the period in seconds as a fallback
-      return `${periodSeconds} ${i18nContext('confirmFieldPeriodDurationSeconds')}`;
-  }
-};
+): string =>
+  formatPermissionPeriodDuration(i18nContext, periodSeconds);
 
 /**
  * Retrieves ERC-20 token details (label and decimals) for a given token address and chain ID.

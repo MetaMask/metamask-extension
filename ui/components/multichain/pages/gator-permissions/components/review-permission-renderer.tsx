@@ -1,94 +1,23 @@
 import React from 'react';
 import type { Hex } from '@metamask/utils';
-import {
-  Box,
-  BoxFlexDirection,
-  BoxJustifyContent,
-  TextColor,
-  TextAlign,
-  TextVariant,
-  Text,
-  BoxAlignItems,
-} from '@metamask/design-system-react';
-
-import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import { useGatorPermissionTokenInfo } from '../../../../../hooks/gator-permissions/useGatorPermissionTokenInfo';
-import {
-  convertTimestampToReadableDate,
-  extractExpiryToReadableDate,
-  formatDecimalShiftedValue,
-  GatorPermissionRule,
-} from '../../../../../../shared/lib/gator-permissions';
-import { Skeleton } from '../../../../component-library/skeleton';
-
-import { PERMISSION_SCHEMAS } from '../../../../../pages/confirmations/components/confirm/info/typed-sign/typed-sign-permission/permission-detail-schemas';
+import { PERMISSION_SCHEMAS } from '../../../../../../shared/lib/gator-permissions/permission-detail-schemas';
 import type {
   AmountField,
   I18nFunction,
   PermissionContext,
   SchemaElement,
   SchemaSection,
-} from '../../../../../pages/confirmations/components/confirm/info/typed-sign/typed-sign-permission/permission-detail-schema.types';
+} from '../../../../../../shared/lib/gator-permissions/permission-detail-schema.types';
 
-// ---------------------------------------------------------------------------
-// Shared row style
-// ---------------------------------------------------------------------------
-
-const rowStyle = { flex: '1', alignSelf: 'center' } as const;
-
-// ---------------------------------------------------------------------------
-// Reusable row component (same as in ReviewGatorPermissionItem)
-// ---------------------------------------------------------------------------
-
-type PermissionDetailRowProps = {
-  label: string;
-  value: React.ReactNode;
-  testId?: string;
-  isLoading?: boolean;
-};
-
-const PermissionDetailRow = ({
-  label,
-  value,
-  testId,
-  isLoading = false,
-}: PermissionDetailRowProps): JSX.Element => {
-  return (
-    <Box
-      flexDirection={BoxFlexDirection.Row}
-      justifyContent={BoxJustifyContent.Between}
-      style={rowStyle}
-      gap={4}
-      marginTop={2}
-    >
-      <Text
-        textAlign={TextAlign.Left}
-        color={TextColor.TextAlternative}
-        variant={TextVariant.BodyMd}
-      >
-        {label}
-      </Text>
-      <Box
-        flexDirection={BoxFlexDirection.Row}
-        justifyContent={BoxJustifyContent.End}
-        style={rowStyle}
-        gap={2}
-        alignItems={BoxAlignItems.Center}
-      >
-        <Skeleton isLoading={isLoading} width="100px" height="16px">
-          <Text
-            variant={TextVariant.BodyMd}
-            color={TextColor.TextAlternative}
-            textAlign={TextAlign.Right}
-            data-testid={testId}
-          >
-            {value}
-          </Text>
-        </Skeleton>
-      </Box>
-    </Box>
-  );
-};
+import { useI18nContext } from '../../../../../hooks/useI18nContext';
+import type { GatorTokenInfo } from '../../../../../hooks/gator-permissions/useGatorPermissionTokenInfo';
+import {
+  convertTimestampToReadableDate,
+  extractExpiryToReadableDate,
+  formatDecimalShiftedValue,
+  GatorPermissionRule,
+} from '../../../../../../shared/lib/gator-permissions';
+import { GatorPermissionDetailRow } from './gator-permission-detail-row';
 
 // ---------------------------------------------------------------------------
 // Mapping from schema labelKeys to review-page i18n keys and testIds
@@ -103,7 +32,7 @@ type ReviewFieldMapping = {
 
 /**
  * Maps schema field labelKeys to review-page-specific labels and testIds.
- * Fields not in this map are rendered using the schema labelKey directly.
+ * Fields not listed here are omitted on the review page (see comments below).
  */
 const REVIEW_FIELD_MAP: Record<string, ReviewFieldMapping> = {
   confirmFieldInitialAllowance: {
@@ -123,9 +52,8 @@ const REVIEW_FIELD_MAP: Record<string, ReviewFieldMapping> = {
     testId: 'review-gator-permission-stream-rate',
     isRatePerSecond: true,
   },
-  // Note: confirmFieldAllowance, confirmFieldFrequency, confirmFieldAvailablePerDay
-  // are intentionally omitted — the review page shows these in the collapsed summary
-  // or not at all, so they are skipped by the renderer.
+  // confirmFieldAllowance, confirmFieldFrequency, confirmFieldAvailablePerDay:
+  // shown in the collapsed summary or skipped on purpose.
 };
 
 // ---------------------------------------------------------------------------
@@ -156,11 +84,28 @@ function formatRawAmount(
   return formatHexAmount(hexValue, decimals, symbol);
 }
 
+function schemaElementDomKey(
+  sectionTestId: string,
+  element: SchemaElement,
+  index: number,
+): string {
+  if (
+    element.type === 'amount' ||
+    element.type === 'text' ||
+    element.type === 'date' ||
+    element.type === 'address'
+  ) {
+    return `${sectionTestId}-${element.type}-${element.labelKey}`;
+  }
+  return `${sectionTestId}-${element.type}-${index}`;
+}
+
 // ---------------------------------------------------------------------------
 // Element renderer
 // ---------------------------------------------------------------------------
 
 function renderElement(
+  sectionTestId: string,
   element: SchemaElement,
   ctx: PermissionContext,
   tokenSymbol: string,
@@ -169,36 +114,36 @@ function renderElement(
   index: number,
   rules?: GatorPermissionRule[] | null,
 ): React.ReactNode {
+  const rowKey = schemaElementDomKey(sectionTestId, element, index);
+
   if ('visible' in element && element.visible && !element.visible(ctx)) {
     return null;
   }
 
   switch (element.type) {
     case 'amount': {
-      // Only render amount fields that have a review-page mapping
       const mapping = REVIEW_FIELD_MAP[element.labelKey];
       if (!mapping) {
         return null;
       }
       return renderAmountElement(
+        rowKey,
         element,
         ctx,
         tokenSymbol,
         tokenDecimals,
         loading,
-        index,
       );
     }
 
     case 'text': {
-      // Only render text fields that have a review-page mapping
       const mapping = REVIEW_FIELD_MAP[element.labelKey];
       if (!mapping) {
         return null;
       }
       return (
-        <PermissionDetailRow
-          key={index}
+        <GatorPermissionDetailRow
+          key={rowKey}
           label={ctx.t(mapping.labelKey)}
           value={element.getValue(ctx)}
           testId={mapping.testId}
@@ -212,19 +157,20 @@ function renderElement(
         return null;
       }
       return (
-        <PermissionDetailRow
-          key={index}
+        <GatorPermissionDetailRow
+          key={rowKey}
           label={ctx.t(mapping.labelKey)}
-          value={convertTimestampToReadableDate(element.getTimestamp(ctx))}
+          value={convertTimestampToReadableDate(
+            element.getTimestamp(ctx) ?? 0,
+          )}
           testId={mapping.testId}
         />
       );
     }
 
     case 'expiry':
-      return renderExpiryElement(ctx, index, rules);
+      return renderExpiryElement(rowKey, ctx, rules);
 
-    // These field types are not shown in the review page
     case 'totalExposure':
     case 'divider':
     case 'justification':
@@ -240,12 +186,12 @@ function renderElement(
 }
 
 function renderAmountElement(
+  rowKey: string,
   element: AmountField,
   ctx: PermissionContext,
   tokenSymbol: string,
   tokenDecimals: number | undefined,
   loading: boolean,
-  index: number,
 ): React.ReactNode {
   const mapping = REVIEW_FIELD_MAP[element.labelKey];
   const rawValue = element.getValue(ctx);
@@ -256,8 +202,8 @@ function renderAmountElement(
   }
 
   return (
-    <PermissionDetailRow
-      key={index}
+    <GatorPermissionDetailRow
+      key={rowKey}
       label={ctx.t(mapping?.labelKey ?? element.labelKey)}
       value={displayValue}
       testId={mapping?.testId}
@@ -267,8 +213,8 @@ function renderAmountElement(
 }
 
 function renderExpiryElement(
+  rowKey: string,
   ctx: PermissionContext,
-  index: number,
   rules?: GatorPermissionRule[] | null,
 ): React.ReactNode {
   let displayValue: string;
@@ -282,8 +228,8 @@ function renderExpiryElement(
   }
 
   return (
-    <PermissionDetailRow
-      key={index}
+    <GatorPermissionDetailRow
+      key={rowKey}
       label={ctx.t('gatorPermissionsExpirationDate')}
       value={displayValue}
       testId="review-gator-permission-expiration-date"
@@ -307,6 +253,7 @@ function renderSection(
     <React.Fragment key={section.testId}>
       {section.elements.map((element, index) =>
         renderElement(
+          section.testId,
           element,
           ctx,
           tokenSymbol,
@@ -328,23 +275,16 @@ export type ReviewPermissionRendererProps = {
   permissionType: string;
   permissionData: Record<string, unknown>;
   chainId: Hex;
-  tokenAddress?: string;
   expiry: number | null;
   rules?: GatorPermissionRule[] | null;
+  tokenInfo: Pick<GatorTokenInfo, 'symbol' | 'decimals'>;
+  tokenLoading: boolean;
 };
 
 /**
  * Review-page renderer that interprets the shared permission schema.
- * Renders each schema element as a `PermissionDetailRow` with string-formatted values.
- *
- * @param props - The component props
- * @param props.permissionType - The permission type string
- * @param props.permissionData - The permission data record
- * @param props.chainId - The chain ID in hex format
- * @param props.tokenAddress - Optional token contract address
- * @param props.expiry - Expiry timestamp or null
- * @param props.rules - Optional permission rules array
- * @returns JSX element containing the rendered permission details
+ * Renders each schema element as a detail row with string-formatted values.
+ * Does not run schema `validate` (signing flow only); tolerates imperfect stored data.
  */
 export const ReviewPermissionRenderer: React.FC<
   ReviewPermissionRendererProps
@@ -352,26 +292,16 @@ export const ReviewPermissionRenderer: React.FC<
   permissionType,
   permissionData,
   chainId,
-  tokenAddress,
   expiry,
   rules,
+  tokenInfo,
+  tokenLoading: loading,
 }) => {
   const t = useI18nContext() as I18nFunction;
-
-  // Hook must be called unconditionally (before any early returns)
-  const { tokenInfo, loading } = useGatorPermissionTokenInfo(
-    tokenAddress,
-    chainId,
-    permissionType,
-  );
 
   const schemaEntry = PERMISSION_SCHEMAS[permissionType];
   if (!schemaEntry) {
     return null;
-  }
-
-  if (schemaEntry.validate) {
-    schemaEntry.validate({ data: permissionData });
   }
 
   const ctx: PermissionContext = {

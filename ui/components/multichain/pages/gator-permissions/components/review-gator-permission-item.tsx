@@ -39,71 +39,30 @@ import { BackgroundColor } from '../../../../../helpers/constants/design-system'
 import { getPendingRevocations } from '../../../../../selectors/gator-permissions/gator-permissions';
 import { useGatorPermissionTokenInfo } from '../../../../../hooks/gator-permissions/useGatorPermissionTokenInfo';
 import { CopyIcon } from '../../../../app/confirm/info/row/copy-icon';
-import { Skeleton } from '../../../../component-library/skeleton';
+import {
+  GatorPermissionDetailRow,
+  gatorPermissionDetailRowStyle,
+} from './gator-permission-detail-row';
 import { ReviewPermissionRenderer } from './review-permission-renderer';
 
-// Shared row style for permission details
-const rowStyle = { flex: '1', alignSelf: 'center' } as const;
-
-type PermissionDetailRowProps = {
-  label: string;
-  value: React.ReactNode;
-  testId?: string;
-  isLoading?: boolean;
-};
-
 /**
- * Reusable row component for permission details
+ * Permission `data` for the shared schema renderer (single assertion at the boundary).
  *
- * @param options - The component options
- * @param options.label - The label text to display
- * @param options.value - The value to display
- * @param options.testId - Optional test ID for the value element
- * @param options.isLoading - Whether to show a loading skeleton
- * @returns The permission detail row component
+ * @param permission - Gator permission whose `data` is passed into `PERMISSION_SCHEMAS`.
+ * @param permission.data - Raw permission payload; coerced to a plain object for the schema.
  */
-const PermissionDetailRow = ({
-  label,
-  value,
-  testId,
-  isLoading = false,
-}: PermissionDetailRowProps): JSX.Element => {
-  return (
-    <Box
-      flexDirection={BoxFlexDirection.Row}
-      justifyContent={BoxJustifyContent.Between}
-      style={rowStyle}
-      gap={4}
-      marginTop={2}
-    >
-      <Text
-        textAlign={TextAlign.Left}
-        color={TextColor.TextAlternative}
-        variant={TextVariant.BodyMd}
-      >
-        {label}
-      </Text>
-      <Box
-        flexDirection={BoxFlexDirection.Row}
-        justifyContent={BoxJustifyContent.End}
-        style={rowStyle}
-        gap={2}
-        alignItems={BoxAlignItems.Center}
-      >
-        <Skeleton isLoading={isLoading} width="100px" height="16px">
-          <Text
-            variant={TextVariant.BodyMd}
-            color={TextColor.TextAlternative}
-            textAlign={TextAlign.Right}
-            data-testid={testId}
-          >
-            {value}
-          </Text>
-        </Skeleton>
-      </Box>
-    </Box>
-  );
-};
+function permissionDataForReview(permission: {
+  data: unknown;
+}): Record<string, unknown> {
+  if (
+    permission.data !== null &&
+    typeof permission.data === 'object' &&
+    !Array.isArray(permission.data)
+  ) {
+    return permission.data as Record<string, unknown>;
+  }
+  return {};
+}
 
 type ReviewGatorPermissionItemProps = {
   /**
@@ -324,14 +283,14 @@ export const ReviewGatorPermissionItem = ({
 
       {/* Permission details */}
       <Box backgroundColor={BoxBackgroundColor.BackgroundDefault}>
-        <PermissionDetailRow
+        <GatorPermissionDetailRow
           label={t(collapsedSummary.amountLabel.translationKey)}
           value={collapsedSummary.amountLabel.value}
           testId={collapsedSummary.amountLabel.testId}
           isLoading={loading}
         />
         {collapsedSummary.frequencyLabel.translationKey && (
-          <PermissionDetailRow
+          <GatorPermissionDetailRow
             label={t(collapsedSummary.frequencyLabel.translationKey)}
             value={t(collapsedSummary.frequencyLabel.valueTranslationKey)}
             testId={collapsedSummary.frequencyLabel.testId}
@@ -341,7 +300,7 @@ export const ReviewGatorPermissionItem = ({
         <Box
           flexDirection={BoxFlexDirection.Row}
           justifyContent={BoxJustifyContent.Between}
-          style={rowStyle}
+          style={gatorPermissionDetailRowStyle}
           gap={4}
           marginTop={2}
         >
@@ -355,7 +314,7 @@ export const ReviewGatorPermissionItem = ({
           <Box
             flexDirection={BoxFlexDirection.Row}
             justifyContent={BoxJustifyContent.End}
-            style={rowStyle}
+            style={gatorPermissionDetailRowStyle}
             gap={2}
             alignItems={BoxAlignItems.Center}
           >
@@ -409,7 +368,7 @@ export const ReviewGatorPermissionItem = ({
         {isExpanded && (
           <>
             {justification && (
-              <PermissionDetailRow
+              <GatorPermissionDetailRow
                 label={t('gatorPermissionsJustification')}
                 value={justification}
                 testId="review-gator-permission-justification"
@@ -420,7 +379,7 @@ export const ReviewGatorPermissionItem = ({
             <Box
               flexDirection={BoxFlexDirection.Row}
               justifyContent={BoxJustifyContent.Between}
-              style={rowStyle}
+              style={gatorPermissionDetailRowStyle}
               gap={4}
               marginTop={2}
             >
@@ -435,7 +394,7 @@ export const ReviewGatorPermissionItem = ({
                 flexDirection={BoxFlexDirection.Row}
                 alignItems={BoxAlignItems.Baseline}
                 justifyContent={BoxJustifyContent.End}
-                style={rowStyle}
+                style={gatorPermissionDetailRowStyle}
                 gap={2}
               >
                 <AvatarNetwork
@@ -456,16 +415,14 @@ export const ReviewGatorPermissionItem = ({
 
             <ReviewPermissionRenderer
               permissionType={permissionType}
-              permissionData={
-                permissionResponse.permission.data as unknown as Record<
-                  string,
-                  unknown
-                >
-              }
+              permissionData={permissionDataForReview(
+                permissionResponse.permission,
+              )}
               chainId={chainId}
-              tokenAddress={tokenAddress}
               expiry={null}
               rules={permissionResponse.rules}
+              tokenInfo={tokenMetadata}
+              tokenLoading={loading}
             />
           </>
         )}

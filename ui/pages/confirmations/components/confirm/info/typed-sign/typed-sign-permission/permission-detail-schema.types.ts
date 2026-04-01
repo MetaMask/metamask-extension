@@ -1,191 +1,22 @@
-import type { Hex } from '@metamask/utils';
-import type { BigNumber } from 'bignumber.js';
-
-export type I18nFunction = (
-  key: string,
-  args?: (string | number | undefined | null)[],
-) => string;
-
-/**
- * The context object passed to all accessor functions in the schema.
- * Built by each renderer from decoded permission data plus pre-resolved async data.
- */
-export type PermissionContext = {
-  /** The permission object from the decoded permission. */
-  permission: {
-    type: string;
-    data: Record<string, unknown>;
-    justification?: string;
-  };
-  /** Expiry timestamp in Unix seconds, or null if no expiry. */
-  expiry: number | null;
-  /** Chain ID in hex format. */
-  chainId: Hex;
-  /** The origin URL of the request. */
-  origin: string;
-  /** The recipient / delegate address, if present. */
-  to?: string;
-  /** i18n translation function. */
-  t: I18nFunction;
-  /** Pre-resolved token info. Present when tokenResolution.kind is 'native' or 'erc20'. */
-  tokenInfo?: {
-    symbol: string;
-    decimals: number | undefined;
-    imageUrl?: string;
-  };
-};
-
-// ---------------------------------------------------------------------------
-// Token variant — distinguishes native vs ERC20 for amount rendering
-// ---------------------------------------------------------------------------
-
-/** Whether an amount field is for a native token or an ERC20 token. */
-export type TokenVariant = 'native' | 'erc20';
-
-// ---------------------------------------------------------------------------
-// Field types — view-agnostic, describe WHAT to show, not HOW
-// ---------------------------------------------------------------------------
-
-/** An amount field (native or ERC20). Renderers decide formatting. */
-export type AmountField = {
-  type: 'amount';
-  labelKey: string;
-  /** Raw hex or BigNumber value. Each renderer formats this for its view. */
-  getValue: (ctx: PermissionContext) => Hex | BigNumber;
-  /** For ERC20 amounts, returns the token contract address. */
-  getTokenAddress?: (ctx: PermissionContext) => string;
-  tooltip?: string;
-  visible?: (ctx: PermissionContext) => boolean;
-};
-
-/** A plain text row. */
-export type TextField = {
-  type: 'text';
-  labelKey: string;
-  getValue: (ctx: PermissionContext) => string;
-  tooltip?: string;
-  visible?: (ctx: PermissionContext) => boolean;
-};
-
-/** A date/time row. */
-export type DateField = {
-  type: 'date';
-  labelKey: string;
-  getTimestamp: (ctx: PermissionContext) => number;
-  tooltip?: string;
-  visible?: (ctx: PermissionContext) => boolean;
-};
-
-/** An expiry row. Renderers handle the "never expires" case. */
-export type ExpiryField = {
-  type: 'expiry';
-  visible?: (ctx: PermissionContext) => boolean;
-};
-
-/** Stream parameters for total exposure calculation. */
-export type TotalExposureStreamParams = {
-  initialAmount?: Hex | null;
-  maxAmount?: Hex | null;
-  amountPerSecond: Hex;
-  startTime: number;
-};
-
-/** Total exposure row for stream permissions. */
-export type TotalExposureField = {
-  type: 'totalExposure';
-  getStreamParams: (ctx: PermissionContext) => TotalExposureStreamParams;
-  visible?: (ctx: PermissionContext) => boolean;
-};
-
-/** A visual divider between rows. */
-export type DividerElement = {
-  type: 'divider';
-};
-
-// ---------------------------------------------------------------------------
-// Common fields — describe top-level decoded permission properties
-// ---------------------------------------------------------------------------
-
-/** Displays the justification text. */
-export type JustificationField = {
-  type: 'justification';
-  visible?: (ctx: PermissionContext) => boolean;
-};
-
-/** Displays the "signing in with" row (account selector). */
-export type SigningInWithField = {
-  type: 'signingInWith';
-};
-
-/** Displays the request origin URL. */
-export type OriginField = {
-  type: 'origin';
-  tooltip?: string;
-};
-
-/** Displays a recipient / delegate address. */
-export type AddressField = {
-  type: 'address';
-  labelKey: string;
-  getAddress: (ctx: PermissionContext) => string | undefined;
-  visible?: (ctx: PermissionContext) => boolean;
-};
-
-/** Displays the network row. */
-export type NetworkField = {
-  type: 'network';
-};
-
-/** Union of all renderable items within a section. */
-export type SchemaElement =
-  | AmountField
-  | TextField
-  | DateField
-  | ExpiryField
-  | TotalExposureField
-  | DividerElement
-  | JustificationField
-  | SigningInWithField
-  | OriginField
-  | AddressField
-  | NetworkField;
-
-/** A section groups elements visually. */
-export type SchemaSection = {
-  /** Test ID for the section container. Each renderer maps this to its own wrapper. */
-  testId: string;
-  elements: SchemaElement[];
-};
-
-// ---------------------------------------------------------------------------
-// Token resolution — tells renderers what async data to pre-resolve
-// ---------------------------------------------------------------------------
-
-export type TokenResolution =
-  | { kind: 'native' }
-  | {
-      kind: 'erc20';
-      getTokenAddress: (permission: {
-        data: Record<string, unknown>;
-      }) => string;
-    }
-  | { kind: 'none' };
-
-// ---------------------------------------------------------------------------
-// Schema entry and registry
-// ---------------------------------------------------------------------------
-
-/** A complete schema entry for one permission type. */
-export type PermissionSchemaEntry = {
-  /** Whether this permission deals with a native token, ERC20 token, or neither. */
-  tokenVariant: TokenVariant | 'none';
-  /** Declares what token data the renderer should resolve before rendering. */
-  tokenResolution: TokenResolution;
-  /** Optional validation run before rendering. Throw to trigger error boundary. */
-  validate?: (permission: { data: Record<string, unknown> }) => void;
-  /** Sections to render. */
-  sections: SchemaSection[];
-};
-
-/** Maps permission type strings to their schema entries. */
-export type PermissionSchemaRegistry = Record<string, PermissionSchemaEntry>;
+export type {
+  AddressField,
+  AmountField,
+  DateField,
+  DividerElement,
+  ExpiryField,
+  I18nFunction,
+  JustificationField,
+  NetworkField,
+  OriginField,
+  PermissionContext,
+  PermissionSchemaEntry,
+  PermissionSchemaRegistry,
+  SchemaElement,
+  SchemaSection,
+  SigningInWithField,
+  TextField,
+  TokenResolution,
+  TokenVariant,
+  TotalExposureField,
+  TotalExposureStreamParams,
+} from '../../../../../../../../shared/lib/gator-permissions/permission-detail-schema.types';
