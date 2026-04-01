@@ -92,7 +92,7 @@ describe('SettingsV2', () => {
         screen.getByText(messages.securityAndPrivacy.message),
       ).toBeInTheDocument();
       expect(
-        screen.getByText(messages.transactionsandAssets.message),
+        screen.getByText(messages.transactionsAndAssets.message),
       ).toBeInTheDocument();
     });
 

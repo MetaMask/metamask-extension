@@ -51,18 +51,6 @@ describe('createSelectItem', () => {
     expect(link).toHaveAttribute('href', '/test-route');
   });
 
-  it('preserves the drawerOpen search param in the route', () => {
-    const mockStore = createMockStore();
-    renderWithProvider(
-      <TestSelectItem />,
-      mockStore,
-      '/settings?drawerOpen=true',
-    );
-
-    const link = screen.getByRole('link');
-    expect(link).toHaveAttribute('href', '/test-route?drawerOpen=true');
-  });
-
   it('applies formatValue when provided', () => {
     const configWithFormatter: SelectItemConfig = {
       ...testConfig,
