@@ -440,6 +440,7 @@ import { MessengerSubscriptions } from './lib/MessengerSubscriptions';
 import { ProfileMetricsControllerInit } from './controller-init/profile-metrics-controller-init';
 import { ProfileMetricsServiceInit } from './controller-init/profile-metrics-service-init';
 import { getTempoExtraOptionsForChain } from './lib/transaction/tempo-tx-utils';
+import { accountSupports7702 } from './lib/account-supports-7702';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -1023,13 +1024,23 @@ export default class MetamaskController extends EventEmitter {
          */
         let addTransactionExtraOptions = {};
         try {
-          const { chainId: currentRequestChainId } =
-            this.networkController.getNetworkConfigurationByNetworkClientId(
-              req.networkClientId,
-            );
-          addTransactionExtraOptions = getTempoExtraOptionsForChain(
-            currentRequestChainId,
+          const isEip7702SupportedByAccount = await accountSupports7702(
+            req.params?.[0].from,
+            this.keyringController,
           );
+          if (isEip7702SupportedByAccount) {
+            const { chainId: currentRequestChainId } =
+              this.networkController.getNetworkConfigurationByNetworkClientId(
+                req.networkClientId,
+              );
+            addTransactionExtraOptions = getTempoExtraOptionsForChain(
+              currentRequestChainId,
+            );
+          } else {
+            console.warn(
+              'wallet_sendCalls: Tempo chain but wallet does not support 7702. Falling back to legacy transactions',
+            );
+          }
         } catch (err) {
           console.warn(
             'wallet_sendCalls: Error while getting addTransaction extra options',
@@ -6273,6 +6284,7 @@ export default class MetamaskController extends EventEmitter {
         transactionParams.from,
       ),
       transactionController: this.txController,
+      keyringController: this.keyringController,
       transactionOptions,
       transactionParams,
       userOperationController: this.userOperationController,

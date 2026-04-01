@@ -15,6 +15,7 @@ import type { Hex, JsonRpcRequest } from '@metamask/utils';
 import { addHexPrefix } from 'ethereumjs-util';
 import { PPOMController } from '@metamask/ppom-validator';
 
+import { KeyringController } from '@metamask/keyring-controller';
 import {
   generateSecurityAlertId,
   handlePPOMError,
@@ -39,6 +40,7 @@ import {
   ScanAddressResponse,
 } from '../../../../shared/lib/trust-signals';
 import { getTransactionDataRecipient } from '../../../../shared/lib/transaction.utils';
+import { accountSupports7702 } from '../account-supports-7702';
 import {
   buildBatchTransactionsFromTempoTransactionCalls,
   checkIsValidTempoTransaction,
@@ -60,6 +62,7 @@ type BaseAddTransactionRequest = {
   selectedAccount: InternalAccount;
   transactionParams: TransactionParams;
   transactionController: TransactionController;
+  keyringController: KeyringController;
   updateSecurityAlertResponse: UpdateSecurityAlertResponse;
   userOperationController: UserOperationController;
   internalAccounts: InternalAccount[];
@@ -241,9 +244,19 @@ async function addTransactionOrUserOperation(
 ) {
   const { selectedAccount } = request;
 
-  const isTempoFlow = isTempoChain(request.chainId);
-  if (isTempoFlow) {
-    return addTransactionOnTempo(request);
+  const isTempoChainId = isTempoChain(request.chainId);
+  if (isTempoChainId) {
+    const { keyringController } = request;
+    const isEip7702SupportedByAccount = await accountSupports7702(
+      request.transactionParams.from,
+      keyringController as Parameters<typeof accountSupports7702>[1],
+    );
+    if (isEip7702SupportedByAccount) {
+      return addTransactionOnTempo(request);
+    }
+    console.warn(
+      'addTransactionOrUserOperation: Tempo chain but wallet does not support 7702. Falling back to legacy transactions',
+    );
   }
 
   const isSmartContractAccount =
