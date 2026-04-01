@@ -61,6 +61,11 @@ jest.mock('@metamask/perps-controller', () => ({
     updateMargin: jest.fn(),
     flipPosition: jest.fn(),
     withdraw: jest.fn(),
+    validateWithdrawal: jest.fn(),
+    getWithdrawalRoutes: jest.fn(),
+    updateWithdrawalStatus: jest.fn(),
+    updateWithdrawalProgress: jest.fn(),
+    getWithdrawalProgress: jest.fn(),
     depositWithConfirmation: jest.fn(),
     getPositions: jest.fn(),
     getMarkets: jest.fn(),
@@ -95,6 +100,7 @@ jest.mock('@metamask/perps-controller', () => ({
     getOrderBookGrouping: jest.fn(),
     getActiveProvider: jest.fn().mockReturnValue({
       getUserHistory: jest.fn(),
+      getUserNonFundingLedgerUpdates: jest.fn(),
     }),
     clearDepositResult: jest.fn(),
     clearWithdrawResult: jest.fn(),
@@ -311,6 +317,11 @@ describe('PerpsControllerInit', () => {
       ['perpsUpdateMargin', 'updateMargin'],
       ['perpsFlipPosition', 'flipPosition'],
       ['perpsWithdraw', 'withdraw'],
+      ['perpsValidateWithdrawal', 'validateWithdrawal'],
+      ['perpsGetWithdrawalRoutes', 'getWithdrawalRoutes'],
+      ['perpsUpdateWithdrawalStatus', 'updateWithdrawalStatus'],
+      ['perpsUpdateWithdrawalProgress', 'updateWithdrawalProgress'],
+      ['perpsGetWithdrawalProgress', 'getWithdrawalProgress'],
       ['perpsGetPositions', 'getPositions'],
       ['perpsGetMarkets', 'getMarkets'],
       ['perpsGetMarketDataWithPrices', 'getMarketDataWithPrices'],
@@ -396,6 +407,17 @@ describe('PerpsControllerInit', () => {
 
       expect(
         controller.getActiveProvider().getUserHistory,
+      ).toHaveBeenCalledWith(params);
+    });
+
+    it('perpsGetUserNonFundingLedgerUpdates calls provider.getUserNonFundingLedgerUpdates', async () => {
+      const { api, controller } = initWithApi();
+      const params = { startTime: 0 };
+
+      await api.perpsGetUserNonFundingLedgerUpdates(params);
+
+      expect(
+        controller.getActiveProvider().getUserNonFundingLedgerUpdates,
       ).toHaveBeenCalledWith(params);
     });
   });
