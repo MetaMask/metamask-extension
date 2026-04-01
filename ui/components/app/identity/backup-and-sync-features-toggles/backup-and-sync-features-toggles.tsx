@@ -193,7 +193,7 @@ export const BackupAndSyncFeaturesToggles = () => {
         {t('backupAndSyncManageWhatYouSync')}
       </Text>
       <Text
-        variant={TextVariant.bodySm}
+        variant={TextVariant.bodyMd}
         color={TextColor.textAlternative}
         as="div"
         marginBottom={4}

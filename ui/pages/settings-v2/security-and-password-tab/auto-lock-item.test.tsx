@@ -72,7 +72,7 @@ describe('AutoLockItem', () => {
     const link = screen.getByRole('link');
     expect(link).toHaveAttribute(
       'href',
-      '/settings-v2/security-and-password/auto-lock',
+      '/settings/security-and-password/auto-lock',
     );
   });
 });

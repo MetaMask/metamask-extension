@@ -747,7 +747,7 @@ exports[`BridgeInputGroup should search for tokens 1`] = `
             style="position: relative; height: 234px; overflow-y: scroll;"
           >
             <div
-              class="mm-box mm-container mm-container--max-width-undefined bridge-asset mm-box--padding-4 mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--width-full mm-box--height-max mm-box--background-color-transparent mm-box--rounded-none"
+              class="mm-box mm-container mm-container--max-width-undefined cursor-pointer bridge-asset mm-box--padding-4 mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--width-full mm-box--height-max mm-box--background-color-transparent mm-box--rounded-none"
               data-index="0"
               data-testid="bridge-asset"
               style="position: absolute; top: 0px; left: 0px; transform: translateY(0px);"
@@ -841,7 +841,7 @@ exports[`BridgeInputGroup should search for tokens 1`] = `
               </button>
             </div>
             <div
-              class="mm-box mm-container mm-container--max-width-undefined bridge-asset mm-box--padding-4 mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--width-full mm-box--height-max mm-box--background-color-transparent mm-box--rounded-none"
+              class="mm-box mm-container mm-container--max-width-undefined cursor-pointer bridge-asset mm-box--padding-4 mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--width-full mm-box--height-max mm-box--background-color-transparent mm-box--rounded-none"
               data-index="1"
               data-testid="bridge-asset"
               style="position: absolute; top: 0px; left: 0px; transform: translateY(78px);"
@@ -1129,7 +1129,7 @@ exports[`BridgeInputGroup should search for tokens 5`] = `
             style="position: relative; height: 234px; overflow-y: scroll;"
           >
             <div
-              class="mm-box mm-container mm-container--max-width-undefined bridge-asset mm-box--padding-4 mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--width-full mm-box--height-max mm-box--background-color-transparent mm-box--rounded-none"
+              class="mm-box mm-container mm-container--max-width-undefined cursor-pointer bridge-asset mm-box--padding-4 mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--width-full mm-box--height-max mm-box--background-color-transparent mm-box--rounded-none"
               data-index="0"
               data-testid="bridge-asset"
               style="position: absolute; top: 0px; left: 0px; transform: translateY(0px);"
@@ -1223,7 +1223,7 @@ exports[`BridgeInputGroup should search for tokens 5`] = `
               </button>
             </div>
             <div
-              class="mm-box mm-container mm-container--max-width-undefined bridge-asset mm-box--padding-4 mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--width-full mm-box--height-max mm-box--background-color-transparent mm-box--rounded-none"
+              class="mm-box mm-container mm-container--max-width-undefined cursor-pointer bridge-asset mm-box--padding-4 mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--width-full mm-box--height-max mm-box--background-color-transparent mm-box--rounded-none"
               data-index="1"
               data-testid="bridge-asset"
               style="position: absolute; top: 0px; left: 0px; transform: translateY(78px);"
@@ -1317,7 +1317,7 @@ exports[`BridgeInputGroup should search for tokens 5`] = `
               </button>
             </div>
             <div
-              class="mm-box mm-container mm-container--max-width-undefined bridge-asset mm-box--padding-4 mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--width-full mm-box--height-max mm-box--background-color-transparent mm-box--rounded-none"
+              class="mm-box mm-container mm-container--max-width-undefined cursor-pointer bridge-asset mm-box--padding-4 mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--width-full mm-box--height-max mm-box--background-color-transparent mm-box--rounded-none"
               data-index="2"
               data-testid="bridge-asset"
               style="position: absolute; top: 0px; left: 0px; transform: translateY(156px);"
