@@ -145,9 +145,9 @@ async function addTransactionOnTempo(
 ): AddTransactionResult {
   const { chainId } = request;
   const tempoConfig = getTempoConfig();
-  const tempoConfigForChain = tempoConfig.perChainConfig[chainId];
+  const chainTempoConfig = tempoConfig.perChainConfig[chainId];
 
-  if (!tempoConfigForChain) {
+  if (!chainTempoConfig) {
     throw new Error(`Tempo transactions not supported for chain: ${chainId}`);
   }
   // Classic transaction, we simply set pathUSD as default
@@ -163,9 +163,7 @@ async function addTransactionOnTempo(
   }
   // Checks and infer Tempo Transaction format for supported fields.
   checkIsValidTempoTransaction(request.transactionParams);
-
-  const { networkClientId, transactionController } = request;
-
+  const { networkClientId, transactionController, transactionParams } = request;
   const result = await transactionController.addTransactionBatch({
     ...request.transactionOptions,
     from: request.transactionParams.from as Hex,
@@ -174,14 +172,11 @@ async function addTransactionOnTempo(
     ),
     // If no token is provided, we force a default one so we don't fall in
     // fee preference algo: https://docs.tempo.xyz/protocol/fees/spec-fee#fee-token-preferences
-    gasFeeToken:
-      request.transactionParams.feeToken || tempoConfigForChain.defaultFeeToken,
+    gasFeeToken: transactionParams.feeToken || chainTempoConfig.defaultFeeToken,
     excludeNativeTokenForFee: true,
     networkClientId,
   });
-
   const { batchId } = result;
-
   // We've got a batchId but we want to return a tx hash to the dApp
   const transactionMeta = getTransactionByBatchId(
     batchId,
@@ -230,7 +225,6 @@ async function addTransactionOrUserOperation(
   request: FinalAddTransactionRequest,
 ) {
   const { selectedAccount } = request;
-
   const isTempoChainId = isTempoChain(request.chainId);
   if (isTempoChainId) {
     const { keyringController } = request;

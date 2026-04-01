@@ -171,6 +171,7 @@ function createUserOperationControllerMock() {
 describe('Transaction Utils', () => {
   let request: AddTransactionRequest;
   let dappRequest: AddDappTransactionRequest;
+  let tempoDappRequest: AddDappTransactionRequest;
   let transactionController: jest.Mocked<TransactionController>;
   let userOperationController: jest.Mocked<UserOperationController>;
   let getAddressSecurityAlertResponseMock: jest.Mock;
@@ -232,6 +233,18 @@ describe('Transaction Utils', () => {
       ...request,
       dappRequest: makeDappRequest(),
       requestContext: makeRequestContext(),
+    };
+
+    tempoDappRequest = {
+      ...dappRequest,
+      chainId: TEMPO_VALID_CHAIN_ID,
+      securityAlertsEnabled: true,
+      networkClientId: 'mockNetworkClientId',
+      transactionParams: TEMPO_TRANSACTION_PARAMS_MOCK,
+      dappRequest: {
+        ...dappRequest.dappRequest,
+        params: [TEMPO_TRANSACTION_PARAMS_MOCK],
+      },
     };
   });
 
@@ -835,18 +848,6 @@ describe('Transaction Utils', () => {
 
     describe('if transaction is Tempo Transaction (0x76)', () => {
       it('calls addTransactionBatch with converted Tempo-specific params', async () => {
-        const tempoDappRequest = {
-          ...dappRequest,
-          chainId: TEMPO_VALID_CHAIN_ID,
-          transactionOptions: undefined,
-          securityAlertsEnabled: true,
-          networkClientId: 'mockNetworkClientId',
-          transactionParams: TEMPO_TRANSACTION_PARAMS_MOCK,
-          dappRequest: {
-            ...dappRequest.dappRequest,
-            params: [TEMPO_TRANSACTION_PARAMS_MOCK],
-          },
-        };
         const result = await addDappTransaction(tempoDappRequest);
 
         expect(
@@ -873,18 +874,6 @@ describe('Transaction Utils', () => {
       });
 
       it('does not call addTransactionBatch if checkIsValidTempoTransaction throws', async () => {
-        const tempoDappRequest = {
-          ...dappRequest,
-          chainId: TEMPO_VALID_CHAIN_ID,
-          transactionOptions: undefined,
-          securityAlertsEnabled: true,
-          networkClientId: 'mockNetworkClientId',
-          transactionParams: TEMPO_TRANSACTION_PARAMS_MOCK,
-          dappRequest: {
-            ...dappRequest.dappRequest,
-            params: [TEMPO_TRANSACTION_PARAMS_MOCK],
-          },
-        };
         (checkIsValidTempoTransaction as jest.Mock).mockImplementation(() => {
           throw new Error('Tempo Transaction: Mock error');
         });

@@ -133,9 +133,7 @@ describe('tempo-tx-utils', () => {
         checkIsValidTempoTransaction({
           from: MOCK_FROM,
           type: '0x76',
-          calls: {
-            foo: 'bar',
-          },
+          calls: { foo: 'bar' },
         } as unknown as TransactionParams),
       ).toThrow(`Tempo Transaction: Missing or invalid field 'calls'`);
     });
