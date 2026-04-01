@@ -1,13 +1,8 @@
 import { useSelector } from 'react-redux';
-import { getIsMultichainAccountsState2Enabled } from '../../../selectors';
 import { getConfirmationSender } from '../components/confirm/utils';
 import { useConfirmContext } from '../context/confirm';
 import { MultichainAccountsState } from '../../../selectors/multichain-accounts/account-tree.types';
-import {
-  selectAccountGroupNameByInternalAccount,
-  selectInternalAccountNameByAddress,
-} from '../selectors/accounts';
-import { RootState } from '../selectors/preferences';
+import { selectAccountGroupNameByInternalAccount } from '../selectors/accounts';
 import {
   getWalletIdAndNameByAccountAddress,
   getWalletsWithAccounts,
@@ -15,9 +10,6 @@ import {
 
 function useConfirmationRecipientInfo() {
   const { currentConfirmation } = useConfirmContext();
-  const isMultichainAccountsState2Enabled = useSelector(
-    getIsMultichainAccountsState2Enabled,
-  );
 
   const { from } = getConfirmationSender(currentConfirmation);
   const senderAddress = from ?? '';
@@ -26,27 +18,18 @@ function useConfirmationRecipientInfo() {
     selectAccountGroupNameByInternalAccount(state, senderAddress),
   );
 
-  const internalAccountName = useSelector((state: RootState) =>
-    selectInternalAccountNameByAddress(state, senderAddress),
-  );
-
-  const walletInfo = useSelector((state: RootState) =>
+  const walletInfo = useSelector((state: MultichainAccountsState) =>
     getWalletIdAndNameByAccountAddress(state, senderAddress),
   );
 
   const walletsWithAccounts = useSelector(getWalletsWithAccounts);
 
-  const senderName = isMultichainAccountsState2Enabled
-    ? accountGroupName
-    : internalAccountName;
-
   const hasMoreThanOneWallet = Object.keys(walletsWithAccounts).length > 1;
 
   return {
     hasMoreThanOneWallet,
-    isBIP44: isMultichainAccountsState2Enabled,
     senderAddress,
-    senderName: senderName ?? '',
+    senderName: accountGroupName ?? '',
     walletName: walletInfo?.name ?? '',
   };
 }
