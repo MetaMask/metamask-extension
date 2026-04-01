@@ -28,6 +28,7 @@ const mockUseHardwareWalletConfig = jest.fn();
 const mockUseHardwareWalletActions = jest.fn();
 const mockUseHardwareWalletState = jest.fn();
 const mockOnOpenPriceImpactWarningModal = jest.fn();
+const mockResetState = jest.fn();
 
 jest.mock('../../../contexts/hardware-wallets', () => ({
   ...jest.requireActual('../../../contexts/hardware-wallets'),
@@ -48,6 +49,7 @@ setBackgroundConnection({
   submitTx: jest.fn(),
   setEnabledAllPopularNetworks: jest.fn(),
   getStatePatches: jest.fn(),
+  resetState: () => mockResetState(),
 } as never);
 
 describe('BridgeCTAButton', () => {
@@ -87,6 +89,7 @@ describe('BridgeCTAButton', () => {
     expect(container).toMatchSnapshot();
 
     expect(getByText(messages.swapSelectToken.message)).toBeInTheDocument();
+    expect(mockResetState).not.toHaveBeenCalled();
   });
 
   it('should render the component when amount is missing', () => {

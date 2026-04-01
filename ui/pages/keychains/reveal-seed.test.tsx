@@ -2,6 +2,7 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import { fireEvent, waitFor } from '@testing-library/react';
 import thunk from 'redux-thunk';
+import { RecommendedAction } from '@metamask/phishing-controller';
 import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
 import mockState from '../../../test/data/mock-state.json';
 import { MetaMetricsContext } from '../../contexts/metametrics';
@@ -39,6 +40,7 @@ const mockRequestRevealSeedWords = jest
   .mockImplementation(
     mockSuccessfulSrpReveal as () => (dispatch: jest.Mock) => Promise<string>,
   );
+const mockScanUrlForPhishing = jest.fn().mockResolvedValue(null);
 
 const password = 'password';
 
@@ -46,6 +48,7 @@ jest.mock('../../store/actions.ts', () => ({
   ...jest.requireActual('../../store/actions.ts'),
   requestRevealSeedWords: (userPassword: string, keyringId?: string) =>
     mockRequestRevealSeedWords(userPassword, keyringId),
+  scanUrlForPhishing: (...args: unknown[]) => mockScanUrlForPhishing(...args),
 }));
 
 type NavigateQuizToPasswordScreenArgs = {
@@ -86,6 +89,19 @@ async function navigateQuizToPasswordScreen({
   });
 }
 
+function createMockMetaMetricsContext() {
+  const mockTrackEvent = jest.fn();
+  return {
+    context: {
+      trackEvent: mockTrackEvent,
+      bufferedTrace: jest.fn(),
+      bufferedEndTrace: jest.fn(),
+      onboardingParentContext: { current: null },
+    },
+    mockTrackEvent,
+  };
+}
+
 describe('Reveal Seed Page', () => {
   const mockStore = configureMockStore([thunk])(mockState as object);
 
@@ -95,17 +111,25 @@ describe('Reveal Seed Page', () => {
   });
 
   afterEach(() => {
-    jest.clearAllMocks();
+    mockScanUrlForPhishing.mockReset().mockResolvedValue(null);
   });
 
-  it('should match snapshot', () => {
+  it('should match snapshot', async () => {
     const { container } = renderWithProvider(<RevealSeedPage />, mockStore);
+
+    await waitFor(() => {
+      expect(mockScanUrlForPhishing).toHaveBeenCalled();
+    });
 
     expect(container).toMatchSnapshot();
   });
 
-  it('shows quiz introduction first', () => {
+  it('shows quiz introduction first', async () => {
     const { getByText } = renderWithProvider(<RevealSeedPage />, mockStore);
+
+    await waitFor(() => {
+      expect(mockScanUrlForPhishing).toHaveBeenCalled();
+    });
 
     expect(
       getByText(messages.srpSecurityQuizGetStarted.message),
@@ -147,6 +171,32 @@ describe('Reveal Seed Page', () => {
 
     await waitFor(() => {
       expect(mockRequestRevealSeedWords).toHaveBeenCalled();
+    });
+  });
+
+  it('submits the password form via form submit', async () => {
+    const { queryByTestId, getByText } = renderWithProvider(
+      <RevealSeedPage />,
+      mockStore,
+    );
+
+    await navigateQuizToPasswordScreen({
+      getByText,
+      queryByTestId,
+      fireEvent,
+    });
+
+    fireEvent.change(queryByTestId('input-password') as HTMLElement, {
+      target: { value: password },
+    });
+
+    fireEvent.submit(queryByTestId('reveal-seed-password-form') as HTMLElement);
+
+    await waitFor(() => {
+      expect(mockRequestRevealSeedWords).toHaveBeenCalledWith(
+        password,
+        undefined,
+      );
     });
   });
 
@@ -222,15 +272,10 @@ describe('Reveal Seed Page', () => {
         ) => Promise<string>,
       );
 
-    const mockTrackEvent = jest.fn();
-    const mockMetaMetricsContext = {
-      trackEvent: mockTrackEvent,
-      bufferedTrace: jest.fn(),
-      bufferedEndTrace: jest.fn(),
-      onboardingParentContext: { current: null },
-    };
+    const { context: metricsContext, mockTrackEvent } =
+      createMockMetaMetricsContext();
     const { queryByTestId, getByText, getByRole } = renderWithProvider(
-      <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
+      <MetaMetricsContext.Provider value={metricsContext}>
         <RevealSeedPage />
       </MetaMetricsContext.Provider>,
       store,
@@ -430,15 +475,10 @@ describe('Reveal Seed Page', () => {
   });
 
   it('should emit event when back button is clicked', async () => {
-    const mockTrackEvent = jest.fn();
-    const mockMetaMetricsContext = {
-      trackEvent: mockTrackEvent,
-      bufferedTrace: jest.fn(),
-      bufferedEndTrace: jest.fn(),
-      onboardingParentContext: { current: null },
-    };
+    const { context: metricsContext, mockTrackEvent } =
+      createMockMetaMetricsContext();
     const { getByLabelText } = renderWithProvider(
-      <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
+      <MetaMetricsContext.Provider value={metricsContext}>
         <RevealSeedPage />
       </MetaMetricsContext.Provider>,
       mockStore,
@@ -460,6 +500,179 @@ describe('Reveal Seed Page', () => {
           hd_entropy_index: 0,
         },
       });
+    });
+  });
+
+  describe('dapp scan warning', () => {
+    function setupDappScanTest(
+      scanResult: {
+        recommendedAction: RecommendedAction;
+        hostname: string;
+      } | null = null,
+    ) {
+      mockScanUrlForPhishing.mockReset().mockResolvedValue(scanResult);
+    }
+
+    it('does not show dapp scan warning when scan returns no result', async () => {
+      setupDappScanTest();
+      const { queryByTestId, getByText } = renderWithProvider(
+        <RevealSeedPage />,
+        mockStore,
+      );
+
+      await navigateQuizToPasswordScreen({
+        getByText,
+        queryByTestId,
+        fireEvent,
+      });
+
+      await waitFor(() => {
+        expect(mockScanUrlForPhishing).toHaveBeenCalled();
+      });
+
+      expect(queryByTestId('dapp-scan-warning')).not.toBeInTheDocument();
+      expect(queryByTestId('reveal-seed-warning')).toBeInTheDocument();
+    });
+
+    it('shows dapp scan warning and hides generic warning when site is malicious', async () => {
+      setupDappScanTest({
+        recommendedAction: RecommendedAction.Block,
+        hostname: 'evil.com',
+      });
+
+      const { queryByTestId, getByText } = renderWithProvider(
+        <RevealSeedPage />,
+        mockStore,
+      );
+
+      await navigateQuizToPasswordScreen({
+        getByText,
+        queryByTestId,
+        fireEvent,
+      });
+
+      await waitFor(() => {
+        expect(queryByTestId('dapp-scan-warning')).toBeInTheDocument();
+      });
+
+      expect(queryByTestId('reveal-seed-warning')).not.toBeInTheDocument();
+    });
+
+    it('shows acknowledgment checkbox when site is malicious', async () => {
+      setupDappScanTest({
+        recommendedAction: RecommendedAction.Block,
+        hostname: 'evil.com',
+      });
+
+      const { queryByTestId, getByText } = renderWithProvider(
+        <RevealSeedPage />,
+        mockStore,
+      );
+
+      await navigateQuizToPasswordScreen({
+        getByText,
+        queryByTestId,
+        fireEvent,
+      });
+
+      await waitFor(() => {
+        expect(
+          queryByTestId('dapp-scan-acknowledge-checkbox'),
+        ).toBeInTheDocument();
+      });
+    });
+
+    it('continue button is disabled until checkbox is acknowledged on malicious site', async () => {
+      setupDappScanTest({
+        recommendedAction: RecommendedAction.Block,
+        hostname: 'evil.com',
+      });
+
+      const { queryByTestId, getByText } = renderWithProvider(
+        <RevealSeedPage />,
+        mockStore,
+      );
+
+      await navigateQuizToPasswordScreen({
+        getByText,
+        queryByTestId,
+        fireEvent,
+      });
+
+      await waitFor(() => {
+        expect(queryByTestId('dapp-scan-warning')).toBeInTheDocument();
+      });
+
+      fireEvent.change(queryByTestId('input-password') as HTMLElement, {
+        target: { value: password },
+      });
+
+      const continueButton = queryByTestId(
+        'reveal-seed-password-continue',
+      ) as HTMLElement;
+      expect(continueButton).toBeDisabled();
+
+      fireEvent.click(
+        queryByTestId('dapp-scan-acknowledge-checkbox') as HTMLElement,
+      );
+
+      expect(continueButton).toBeEnabled();
+    });
+
+    it('fires SrpRevealMaliciousSiteDetected metric only when site is malicious', async () => {
+      setupDappScanTest({
+        recommendedAction: RecommendedAction.Block,
+        hostname: 'evil.com',
+      });
+
+      const { context: metricsContext, mockTrackEvent } =
+        createMockMetaMetricsContext();
+
+      renderWithProvider(
+        <MetaMetricsContext.Provider value={metricsContext}>
+          <RevealSeedPage />
+        </MetaMetricsContext.Provider>,
+        mockStore,
+      );
+
+      await waitFor(() => {
+        expect(mockTrackEvent).toHaveBeenCalledWith({
+          category: MetaMetricsEventCategory.Keys,
+          event: MetaMetricsEventName.SrpRevealMaliciousSiteDetected,
+          properties: {
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            key_type: MetaMetricsEventKeyType.Srp,
+            hostname: 'evil.com',
+          },
+        });
+      });
+    });
+
+    it('does not fire metric event when site is not malicious', async () => {
+      setupDappScanTest({
+        recommendedAction: RecommendedAction.None,
+        hostname: 'safe-site.com',
+      });
+
+      const { context: metricsContext, mockTrackEvent } =
+        createMockMetaMetricsContext();
+
+      renderWithProvider(
+        <MetaMetricsContext.Provider value={metricsContext}>
+          <RevealSeedPage />
+        </MetaMetricsContext.Provider>,
+        mockStore,
+      );
+
+      await waitFor(() => {
+        expect(mockScanUrlForPhishing).toHaveBeenCalled();
+      });
+
+      expect(mockTrackEvent).not.toHaveBeenCalledWith(
+        expect.objectContaining({
+          event: MetaMetricsEventName.SrpRevealMaliciousSiteDetected,
+        }),
+      );
     });
   });
 

@@ -11,16 +11,17 @@ import { createBridgeMockStore } from '../../../test/data/bridge/mock-bridge-sto
 import { setBackgroundConnection } from '../../store/background-connection';
 import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
 import { SlippageValue } from '../../pages/bridge/utils/slippage-service';
+import * as cacheUtils from '../../pages/bridge/utils/cache';
 import bridgeReducer, { initialState } from './bridge';
 import {
   setFromToken,
   setFromTokenInputValue,
   setToToken,
-  resetInputFields,
   updateQuoteRequestParams,
-  resetBridgeControllerAndCache,
   setWasTxDeclined,
   setSlippage,
+  resetBridgeController,
+  resetInputFields,
 } from './actions';
 
 const middleware = [thunk];
@@ -76,6 +77,7 @@ describe('Ducks - Bridge', () => {
           "chainId": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
           "decimals": 9,
           "iconUrl": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/solana/5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token/So11111111111111111111111111111111111111112.png",
+          "isVerified": undefined,
           "name": "SYMBOL",
           "rwaData": undefined,
           "symbol": "SYMBOL",
@@ -109,6 +111,7 @@ describe('Ducks - Bridge', () => {
         balance: '0',
         chainId: 'eip155:10',
         rwaData: undefined,
+        isVerified: undefined,
         iconUrl:
           'https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/10/erc20/0x13341431.png',
       });
@@ -131,7 +134,7 @@ describe('Ducks - Bridge', () => {
   describe('resetInputFields', () => {
     it('resets to initalState', async () => {
       const state = store.getState().bridge;
-      store.dispatch(resetInputFields());
+      store.dispatch(resetInputFields() as never);
       const actions = store.getActions();
       expect(actions[0].type).toStrictEqual('bridge/resetInputFields');
       const newState = bridgeReducer(state, actions[0]);
@@ -204,8 +207,8 @@ describe('Ducks - Bridge', () => {
     });
   });
 
-  describe('resetBridgeState', () => {
-    it('dispatches action to the bridge controller', () => {
+  describe('resetBridgeController', () => {
+    it('dispatches action to the bridge controller', async () => {
       // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const mockStore = configureMockStore<any>(middleware)(
@@ -214,19 +217,23 @@ describe('Ducks - Bridge', () => {
         }),
       );
       const mockResetBridgeState = jest.fn();
+      const mockClearAllBridgeCacheItems = jest.spyOn(
+        cacheUtils,
+        'clearAllBridgeCacheItems',
+      );
       setBackgroundConnection({
         [BridgeBackgroundAction.RESET_STATE]: mockResetBridgeState,
         getStatePatches: jest.fn(),
       } as never);
 
-      mockStore.dispatch(resetBridgeControllerAndCache() as never);
+      await mockStore.dispatch((await resetBridgeController()) as never);
 
       expect(mockResetBridgeState).toHaveBeenCalledTimes(1);
-      expect(mockResetBridgeState).toHaveBeenCalledWith();
       const actions = mockStore.getActions();
       expect(actions.map((action) => action.type)).not.toContain(
         'bridge/resetInputFields',
       );
+      expect(mockClearAllBridgeCacheItems).toHaveBeenCalledTimes(1);
     });
   });
 

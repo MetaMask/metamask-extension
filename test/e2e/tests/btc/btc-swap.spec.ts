@@ -38,6 +38,7 @@ describe('BTC Account - Swap (Bridge)', function (this: Suite) {
     await withBtcAccountSnap(
       async (driver) => {
         const homePage = new BitcoinHomepage(driver);
+        await homePage.checkPageIsLoaded();
         await homePage.checkIsExpectedBitcoinBalanceDisplayed(
           DEFAULT_BTC_BALANCE,
         );

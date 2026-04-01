@@ -77,8 +77,10 @@ export type OrderCalculations = {
   positionSize: string | null;
   /** Margin required for the position */
   marginRequired: string | null;
-  /** Estimated liquidation price */
+  /** Estimated liquidation price (formatted) */
   liquidationPrice: string | null;
+  /** Raw estimated liquidation price as a number (for comparisons) */
+  liquidationPriceRaw: number | null;
   /** Total order value in USD */
   orderValue: string | null;
   /** Estimated trading fees */
@@ -121,6 +123,8 @@ export type OrderEntryProps = {
   onOrderTypeChange?: (orderType: OrderType) => void;
   /** Callback when add-funds icon is pressed in the amount input */
   onAddFunds?: () => void;
+  /** Initial leverage override for new orders (e.g. last used leverage for this market) */
+  initialLeverage?: number;
 };
 
 /**
