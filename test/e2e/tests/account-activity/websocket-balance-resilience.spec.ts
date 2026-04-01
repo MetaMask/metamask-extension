@@ -54,7 +54,7 @@ async function waitForBalanceUpdate(
 }
 
 describe('Account Activity WebSocket Balance Resilience', function (this: Suite) {
-  it.only('balance updates continue via REST polling when WebSocket disconnects', async function () {
+  it('balance updates continue via REST polling when WebSocket disconnects', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilderV2().build(),
