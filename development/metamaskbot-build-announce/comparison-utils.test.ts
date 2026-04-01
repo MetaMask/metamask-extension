@@ -3,14 +3,16 @@ import type {
   ThresholdConfig,
 } from '../../shared/constants/benchmarks';
 import { DEFAULT_RELATIVE_THRESHOLDS } from '../../shared/constants/benchmarks';
+import {
+  BENCHMARK_PERSONA,
+  THRESHOLD_REGISTRY,
+} from '../../test/e2e/benchmarks/utils/constants';
 
 import {
   compareMetric,
   compareBenchmarkEntries,
-  getTrafficLightIndication,
   formatDeltaPercent,
-  ComparisonSeverity,
-  ComparisonDirection,
+  COMPARISON_SEVERITY,
 } from './comparison-utils';
 
 describe('benchmark-comparison', () => {
@@ -23,14 +25,13 @@ describe('benchmark-comparison', () => {
         1000,
         DEFAULT_RELATIVE_THRESHOLDS,
       );
-      expect(result.severity).toBe(ComparisonSeverity.Regression);
-      expect(result.direction).toBe(ComparisonDirection.Slower);
-      expect(result.indication).toBe('🔺');
+      expect(result.severity).toBe(COMPARISON_SEVERITY.Regression.value);
+      expect(result.indication).toBe(COMPARISON_SEVERITY.Regression.icon);
       expect(result.deltaPercent).toBeCloseTo(0.1);
       expect(result.percentile).toBe('p75');
     });
 
-    it('classifies a >10% improvement', () => {
+    it('classifies a >10% improvement as pass', () => {
       const result = compareMetric(
         'uiStartup',
         'p75',
@@ -38,9 +39,8 @@ describe('benchmark-comparison', () => {
         1000,
         DEFAULT_RELATIVE_THRESHOLDS,
       );
-      expect(result.severity).toBe(ComparisonSeverity.Improvement);
-      expect(result.direction).toBe(ComparisonDirection.Faster);
-      expect(result.indication).toBe('🟢⬇️');
+      expect(result.severity).toBe(COMPARISON_SEVERITY.Pass.value);
+      expect(result.indication).toBe(COMPARISON_SEVERITY.Pass.icon);
     });
 
     it('classifies 5-10% as warn', () => {
@@ -51,13 +51,12 @@ describe('benchmark-comparison', () => {
         1000,
         DEFAULT_RELATIVE_THRESHOLDS,
       );
-      expect(result.severity).toBe(ComparisonSeverity.Warn);
-      expect(result.direction).toBe(ComparisonDirection.Slower);
-      expect(result.indication).toBe('🟡⬆️');
+      expect(result.severity).toBe(COMPARISON_SEVERITY.Warn.value);
+      expect(result.indication).toBe(COMPARISON_SEVERITY.Warn.icon);
       expect(result.percentile).toBe('p95');
     });
 
-    it('classifies <5% as neutral', () => {
+    it('classifies <5% change as pass', () => {
       const result = compareMetric(
         'uiStartup',
         'p75',
@@ -65,8 +64,20 @@ describe('benchmark-comparison', () => {
         1000,
         DEFAULT_RELATIVE_THRESHOLDS,
       );
-      expect(result.severity).toBe(ComparisonSeverity.Neutral);
-      expect(result.indication).toBe('➡️');
+      expect(result.severity).toBe(COMPARISON_SEVERITY.Pass.value);
+      expect(result.indication).toBe(COMPARISON_SEVERITY.Pass.icon);
+    });
+
+    it('classifies a 5-10% improvement as pass', () => {
+      const result = compareMetric(
+        'uiStartup',
+        'p75',
+        940,
+        1000,
+        DEFAULT_RELATIVE_THRESHOLDS,
+      );
+      expect(result.severity).toBe(COMPARISON_SEVERITY.Pass.value);
+      expect(result.indication).toBe(COMPARISON_SEVERITY.Pass.icon);
     });
 
     it('handles identical values', () => {
@@ -77,8 +88,7 @@ describe('benchmark-comparison', () => {
         1000,
         DEFAULT_RELATIVE_THRESHOLDS,
       );
-      expect(result.severity).toBe(ComparisonSeverity.Neutral);
-      expect(result.direction).toBe(ComparisonDirection.Same);
+      expect(result.severity).toBe(COMPARISON_SEVERITY.Pass.value);
       expect(result.delta).toBe(0);
     });
 
@@ -91,7 +101,7 @@ describe('benchmark-comparison', () => {
         DEFAULT_RELATIVE_THRESHOLDS,
       );
       expect(result.deltaPercent).toBe(0);
-      expect(result.severity).toBe(ComparisonSeverity.Neutral);
+      expect(result.severity).toBe(COMPARISON_SEVERITY.Pass.value);
     });
   });
 
@@ -107,7 +117,7 @@ describe('benchmark-comparison', () => {
     it('passes when within thresholds', () => {
       const results = {
         testTitle: 'test',
-        persona: 'standard' as const,
+        persona: BENCHMARK_PERSONA.STANDARD,
         mean: { uiStartup: 1500 },
         min: { uiStartup: 1000 },
         max: { uiStartup: 2000 },
@@ -129,7 +139,7 @@ describe('benchmark-comparison', () => {
     it('fails when p75 exceeds fail threshold', () => {
       const results = {
         testTitle: 'test',
-        persona: 'standard' as const,
+        persona: BENCHMARK_PERSONA.STANDARD,
         mean: { uiStartup: 2600 },
         min: { uiStartup: 2000 },
         max: { uiStartup: 3000 },
@@ -151,7 +161,7 @@ describe('benchmark-comparison', () => {
     it('warns but does not fail when p75 exceeds warn but not fail', () => {
       const results = {
         testTitle: 'test',
-        persona: 'standard' as const,
+        persona: BENCHMARK_PERSONA.STANDARD,
         mean: { uiStartup: 2100 },
         min: { uiStartup: 1800 },
         max: { uiStartup: 2400 },
@@ -168,13 +178,15 @@ describe('benchmark-comparison', () => {
 
       expect(comparison.absoluteFailed).toBe(false);
       expect(comparison.absoluteViolations.length).toBeGreaterThan(0);
-      expect(comparison.absoluteViolations[0].severity).toBe('warn');
+      expect(comparison.absoluteViolations[0].severity).toBe(
+        COMPARISON_SEVERITY.Warn.value,
+      );
     });
 
     it('includes relative metrics when baseline is provided', () => {
       const results = {
         testTitle: 'test',
-        persona: 'standard' as const,
+        persona: BENCHMARK_PERSONA.STANDARD,
         mean: { uiStartup: 1500 },
         min: { uiStartup: 1000 },
         max: { uiStartup: 2000 },
@@ -183,7 +195,7 @@ describe('benchmark-comparison', () => {
         p95: { uiStartup: 2200 },
       };
       const baseline = {
-        uiStartup: { mean: 1400, p75: 1700, p95: 2100 },
+        uiStartup: { mean: 1400, stdDev: 80, p75: 1700, p95: 2100 },
       };
 
       const comparison = compareBenchmarkEntries(
@@ -193,18 +205,21 @@ describe('benchmark-comparison', () => {
         baseline,
       );
 
-      expect(comparison.relativeMetrics).toHaveLength(2);
+      // stdDev is intentionally excluded from relative metrics (item 18).
+      expect(comparison.relativeMetrics).toHaveLength(3);
       expect(comparison.relativeMetrics[0].metric).toBe('uiStartup');
-      expect(comparison.relativeMetrics[0].percentile).toBe('p75');
+      expect(comparison.relativeMetrics[0].percentile).toBe('mean');
       expect(comparison.relativeMetrics[0].delta).toBeCloseTo(100);
-      expect(comparison.relativeMetrics[1].percentile).toBe('p95');
+      expect(comparison.relativeMetrics[1].percentile).toBe('p75');
       expect(comparison.relativeMetrics[1].delta).toBeCloseTo(100);
+      expect(comparison.relativeMetrics[2].percentile).toBe('p95');
+      expect(comparison.relativeMetrics[2].delta).toBeCloseTo(100);
     });
 
     it('omits relative metrics when no baseline', () => {
       const results = {
         testTitle: 'test',
-        persona: 'standard' as const,
+        persona: BENCHMARK_PERSONA.STANDARD,
         mean: { uiStartup: 1500 },
         min: { uiStartup: 1000 },
         max: { uiStartup: 2000 },
@@ -239,7 +254,7 @@ describe('benchmark-comparison', () => {
         p95: {},
       };
       const baseline = {
-        uiStartup: { mean: 1400, p75: 1700, p95: 2100 },
+        uiStartup: { mean: 1400, stdDev: 80, p75: 1700, p95: 2100 },
       };
 
       const comparison = compareBenchmarkEntries(
@@ -249,82 +264,127 @@ describe('benchmark-comparison', () => {
         baseline,
       );
 
-      expect(comparison.relativeMetrics).toHaveLength(1);
-      expect(comparison.relativeMetrics[0].percentile).toBe('p75');
+      expect(comparison.relativeMetrics).toHaveLength(2);
+      expect(comparison.relativeMetrics[0].percentile).toBe('mean');
+      expect(comparison.relativeMetrics[1].percentile).toBe('p75');
+    });
+
+    it('skips a stat key when its results map is missing (line 159)', () => {
+      const results = {
+        p75: { uiStartup: 1800 },
+        p95: { uiStartup: 2200 },
+      } as unknown as BenchmarkResults;
+
+      const comparison = compareBenchmarkEntries(
+        'standard-home',
+        results,
+        thresholdConfig,
+        { uiStartup: { mean: 1400, stdDev: 80, p75: 1700, p95: 2100 } },
+      );
+
+      expect(
+        comparison.relativeMetrics.some((m) => m.percentile === 'mean'),
+      ).toBe(false);
+      expect(
+        comparison.relativeMetrics.some((m) => m.percentile === 'p75'),
+      ).toBe(true);
+    });
+
+    it('skips a metric when its baseline value for a specific percentile is absent (line 166)', () => {
+      const results: BenchmarkResults = {
+        testTitle: 'test',
+        persona: 'standard',
+        mean: { uiStartup: 1500 },
+        min: { uiStartup: 1000 },
+        max: { uiStartup: 2000 },
+        stdDev: { uiStartup: 200 },
+        p75: { uiStartup: 1800 },
+        p95: { uiStartup: 2200 },
+      };
+
+      const comparison = compareBenchmarkEntries(
+        'standard-home',
+        results,
+        thresholdConfig,
+        {
+          uiStartup: { mean: 1400, stdDev: 80, p75: 1700 },
+        } as unknown as Parameters<typeof compareBenchmarkEntries>[3],
+      );
+
+      expect(
+        comparison.relativeMetrics.some((m) => m.percentile === 'p95'),
+      ).toBe(false);
+      expect(
+        comparison.relativeMetrics.some((m) => m.percentile === 'p75'),
+      ).toBe(true);
     });
   });
 
-  describe('getTrafficLightIndication', () => {
-    it('returns 🔺 for regression slower', () => {
-      expect(
-        getTrafficLightIndication(
-          ComparisonSeverity.Regression,
-          ComparisonDirection.Slower,
-        ),
-      ).toBe('🔺');
-    });
+  describe('compareBenchmarkEntries — no p75 in results', () => {
+    it('skips relative metrics when results.p75 is absent but baseline is provided', () => {
+      const p95OnlyConfig: import('../../shared/constants/benchmarks').ThresholdConfig =
+        {
+          uiStartup: { p95: { warn: 2500, fail: 3200 }, ciMultiplier: 1 },
+        };
+      const results = {
+        testTitle: 'test',
+        persona: 'standard',
+        mean: { uiStartup: 1500 },
+        min: { uiStartup: 1000 },
+        max: { uiStartup: 2000 },
+        stdDev: { uiStartup: 200 },
+        p95: { uiStartup: 2200 },
+      } as unknown as import('../../shared/constants/benchmarks').BenchmarkResults;
 
-    it('returns 🔻 for regression faster', () => {
-      expect(
-        getTrafficLightIndication(
-          ComparisonSeverity.Regression,
-          ComparisonDirection.Faster,
-        ),
-      ).toBe('🔻');
-    });
-
-    it('returns 🟡⬆️ for warn slower', () => {
-      expect(
-        getTrafficLightIndication(
-          ComparisonSeverity.Warn,
-          ComparisonDirection.Slower,
-        ),
-      ).toBe('🟡⬆️');
-    });
-
-    it('returns 🟡⬇️ for warn faster', () => {
-      expect(
-        getTrafficLightIndication(
-          ComparisonSeverity.Warn,
-          ComparisonDirection.Faster,
-        ),
-      ).toBe('🟡⬇️');
-    });
-
-    it('returns 🟢⬇️ for improvement faster', () => {
-      expect(
-        getTrafficLightIndication(
-          ComparisonSeverity.Improvement,
-          ComparisonDirection.Faster,
-        ),
-      ).toBe('🟢⬇️');
-    });
-
-    it('returns ➡️ for neutral', () => {
-      expect(
-        getTrafficLightIndication(
-          ComparisonSeverity.Neutral,
-          ComparisonDirection.Same,
-        ),
-      ).toBe('➡️');
+      const comparison = compareBenchmarkEntries(
+        'no-p75',
+        results,
+        p95OnlyConfig,
+        { uiStartup: { mean: 1400, stdDev: 80, p75: 1700, p95: 2100 } },
+      );
+      expect(comparison.relativeMetrics).toHaveLength(0);
     });
   });
 
   describe('formatDeltaPercent', () => {
-    it('formats slower as positive', () => {
-      expect(formatDeltaPercent(0.15, ComparisonDirection.Slower)).toBe(
-        '+15.0%',
-      );
+    it('formats a positive delta as +X%', () => {
+      expect(formatDeltaPercent(0.15)).toBe('+15%');
     });
 
-    it('formats faster as negative', () => {
-      expect(formatDeltaPercent(-0.08, ComparisonDirection.Faster)).toBe(
-        '-8.0%',
-      );
+    it('formats a negative delta as -X%', () => {
+      expect(formatDeltaPercent(-0.08)).toBe('-8%');
     });
 
-    it('formats same as 0.0%', () => {
-      expect(formatDeltaPercent(0, ComparisonDirection.Same)).toBe('0.0%');
+    it('formats zero as 0.0%', () => {
+      expect(formatDeltaPercent(0)).toBe('0.0%');
     });
+  });
+});
+
+describe('THRESHOLD_REGISTRY', () => {
+  it('has platform-agnostic keys for interaction (runs on 4 combos)', () => {
+    expect(THRESHOLD_REGISTRY.loadNewAccount).toBeDefined();
+    expect(THRESHOLD_REGISTRY.confirmTx).toBeDefined();
+    expect(THRESHOLD_REGISTRY.bridgeUserActions).toBeDefined();
+    expect(
+      THRESHOLD_REGISTRY['chrome-browserify-loadNewAccount'],
+    ).toBeUndefined();
+  });
+
+  it('has platform-agnostic keys for user journey (chrome-browserify + chrome-webpack)', () => {
+    expect(THRESHOLD_REGISTRY.onboardingImportWallet).toBeDefined();
+    expect(THRESHOLD_REGISTRY.swap).toBeDefined();
+    expect(THRESHOLD_REGISTRY['chrome-webpack-swap']).toBeUndefined();
+  });
+
+  it('has startup benchmarks without platform prefixes', () => {
+    expect(THRESHOLD_REGISTRY.startupStandardHome).toBeDefined();
+    expect(THRESHOLD_REGISTRY.startupPowerUserHome).toBeDefined();
+    expect(
+      THRESHOLD_REGISTRY['chrome-browserify-startupStandardHome'],
+    ).toBeUndefined();
+    expect(
+      THRESHOLD_REGISTRY['firefox-webpack-startupPowerUserHome'],
+    ).toBeUndefined();
   });
 });

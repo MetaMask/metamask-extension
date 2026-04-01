@@ -24,7 +24,6 @@
     "0xb552685e3d2790efd64a175b00d51f02cdafee5d": "c3deeb99-ba0d-4a4e-a0aa-033fc1f79ae3"
   },
   "accountTree": {
-    "selectedAccountGroup": "entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0",
     "wallets": {
       "entropy:01JKAF3DSGM3AB87EM9N0K41AJ": {
         "id": "entropy:01JKAF3DSGM3AB87EM9N0K41AJ",
@@ -44,7 +43,8 @@
                 "groupIndex": 0
               },
               "hidden": false,
-              "pinned": false
+              "pinned": false,
+              "lastSelected": 0
             }
           }
         },
@@ -840,6 +840,7 @@
   },
   "securityAlertsEnabled": true,
   "seedPhraseBackedUp": true,
+  "selectedAccountGroup": "entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0",
   "selectedMultichainNetworkChainId": "bip122:000000000019d6689c085ae165831e93",
   "selectedNetworkClientId": "sepolia",
   "showAccountBanner": false,
