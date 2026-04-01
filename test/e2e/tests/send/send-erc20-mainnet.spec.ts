@@ -74,6 +74,7 @@ describe('Send ERC20 - Mainnet', function () {
 
         await tokenTransferTransactionConfirmation.clickFooterConfirmButton();
         await homePage.checkPageIsLoaded();
+        await homePage.goToActivityList();
         const activityList = new ActivityListPage(driver);
         await activityList.checkConfirmedTxNumberDisplayedInActivity();
         await activityList.checkTxAmountInActivity('-10 DAI');

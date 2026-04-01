@@ -4422,6 +4422,14 @@
         "string.prototype.matchall>es-object-atoms": true
       }
     },
+    "react-hot-toast>goober": {
+      "globals": {
+        "__nonce__": true,
+        "_goober": true,
+        "document.createElement": true,
+        "document.head": true
+      }
+    },
     "eth-lattice-keyring>gridplus-sdk": {
       "globals": {
         "AbortController": true,
@@ -5408,6 +5416,18 @@
         "react-focus-lock>react-clientside-effect": true,
         "react-focus-lock>use-callback-ref": true,
         "react-focus-lock>use-sidecar": true
+      }
+    },
+    "react-hot-toast": {
+      "globals": {
+        "MutationObserver": true,
+        "clearTimeout": true,
+        "matchMedia": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "react-hot-toast>goober": true,
+        "react": true
       }
     },
     "react-idle-timer": {
