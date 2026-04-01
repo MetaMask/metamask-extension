@@ -19,7 +19,7 @@ Use these two mechanisms together:
 
 ## Agent Note
 
-Agent workflow now lives in `.agents/skills/ab-testing-implementation/SKILL.md`.
+Agent workflow lives in `.agents/skills/ab-testing-implementation/SKILL.md`.
 Keep this document focused on human-readable implementation guidance, background behavior, examples, and FAQ.
 
 ---
@@ -281,20 +281,20 @@ Recommended pattern:
 
 ## FAQ
 
-**Q: What is the fallback variant?**  
+**Q: What is the fallback variant?**
 `control`.
 
-**Q: When is `isActive` false?**  
+**Q: When is `isActive` false?**
 When the hook is using the fallback because the assignment is missing, invalid,
 or unresolved.
 
-**Q: Do I manually emit `Experiment Viewed`?**  
+**Q: Do I manually emit `Experiment Viewed`?**
 No, not when using `useABTest`.
 
-**Q: Should I send both `ab_tests` and `active_ab_tests`?**  
+**Q: Should I send both `ab_tests` and `active_ab_tests`?**
 No. Use `active_ab_tests`.
 
-**Q: What if basic functionality or metrics are unavailable?**  
+**Q: What if basic functionality or metrics are unavailable?**
 If the extension does not have a usable experiment assignment, `useABTest`
 falls back to `control` and does not emit an exposure event.
 
