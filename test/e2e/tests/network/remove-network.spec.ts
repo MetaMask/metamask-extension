@@ -13,7 +13,7 @@ import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import HomePage from '../../page-objects/pages/home/homepage';
 import { getPermittedChains } from './common';
 
-describe('Remove Network:', function (this: Suite) {
+describe('Remove Network', function (this: Suite) {
   it('should remove the chainId from existing permissions when a network configuration is removed entirely', async function () {
     await withFixtures(
       {

@@ -12,7 +12,7 @@ import {
   AuthenticationController,
   UserStorageController,
 } from '@metamask/profile-sync-controller';
-import { GetSnap as SnapControllerGet } from '@metamask/snaps-controllers';
+import { SnapControllerGetSnapAction } from '@metamask/snaps-controllers';
 import { KeyringControllerGetStateAction } from '@metamask/keyring-controller';
 import {
   MultichainAccountServiceCreateMultichainAccountGroupAction,
@@ -29,7 +29,7 @@ type Actions =
   | AccountsControllerGetSelectedMultichainAccountAction
   | AccountsControllerSetSelectedAccountAction
   | AccountsControllerListMultichainAccountsAction
-  | SnapControllerGet
+  | SnapControllerGetSnapAction
   | KeyringControllerGetStateAction
   | UserStorageController.UserStorageControllerGetStateAction
   | UserStorageController.UserStorageControllerPerformGetStorageAction
@@ -90,7 +90,7 @@ export function getAccountTreeControllerMessenger(
       'AuthenticationController:getSessionProfile',
       'MultichainAccountService:createMultichainAccountGroup',
       'MultichainAccountService:createMultichainAccountGroups',
-      'SnapController:get',
+      'SnapController:getSnap',
       'KeyringController:getState',
     ],
   });

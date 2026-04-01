@@ -55,6 +55,7 @@ import { CloseAmountSection } from './components/close-amount-section';
  * @param props.onOrderTypeChange
  * @param props.onCalculationsChange
  * @param props.onAddFunds
+ * @param props.initialLeverage
  */
 export const OrderEntry: React.FC<OrderEntryProps> = ({
   asset,
@@ -73,6 +74,7 @@ export const OrderEntry: React.FC<OrderEntryProps> = ({
   midPrice,
   onOrderTypeChange,
   onAddFunds,
+  initialLeverage,
 }) => {
   const t = useI18nContext();
 
@@ -101,6 +103,7 @@ export const OrderEntry: React.FC<OrderEntryProps> = ({
     onFormStateChange,
     onSubmit,
     orderType,
+    initialLeverage,
   });
 
   const isLong = formState.direction === 'long';
@@ -119,6 +122,7 @@ export const OrderEntry: React.FC<OrderEntryProps> = ({
         a.positionSize !== b.positionSize ||
         a.marginRequired !== b.marginRequired ||
         a.liquidationPrice !== b.liquidationPrice ||
+        a.liquidationPriceRaw !== b.liquidationPriceRaw ||
         a.orderValue !== b.orderValue ||
         a.estimatedFees !== b.estimatedFees
       );
@@ -248,6 +252,8 @@ export const OrderEntry: React.FC<OrderEntryProps> = ({
             onLimitPriceChange={handleLimitPriceChange}
             currentPrice={currentPrice}
             midPrice={midPrice}
+            direction={formState.direction}
+            liquidationPrice={calculations.liquidationPriceRaw}
           />
         )}
 

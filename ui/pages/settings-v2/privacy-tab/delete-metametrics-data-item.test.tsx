@@ -51,7 +51,9 @@ describe('DeleteMetametricsDataItem', () => {
     const store = configureStore({});
     renderWithProvider(<DeleteMetametricsDataItem />, store);
 
-    expect(screen.getByTestId('delete-metametrics-button')).toBeInTheDocument();
+    expect(
+      screen.getByTestId('delete-metametrics-data-button'),
+    ).toBeInTheDocument();
   });
 
   it('button is disabled when metametrics is not enabled', () => {
@@ -68,7 +70,7 @@ describe('DeleteMetametricsDataItem', () => {
     const store = configureStore({});
     renderWithProvider(<DeleteMetametricsDataItem />, store);
 
-    expect(screen.getByTestId('delete-metametrics-button')).toBeDisabled();
+    expect(screen.getByTestId('delete-metametrics-data-button')).toBeDisabled();
   });
 
   it('button is disabled when metaMetricsId is null', () => {
@@ -85,21 +87,21 @@ describe('DeleteMetametricsDataItem', () => {
     const store = configureStore({});
     renderWithProvider(<DeleteMetametricsDataItem />, store);
 
-    expect(screen.getByTestId('delete-metametrics-button')).toBeDisabled();
+    expect(screen.getByTestId('delete-metametrics-data-button')).toBeDisabled();
   });
 
   it('button is enabled when metametrics is enabled and has ID', () => {
     const store = configureStore({});
     renderWithProvider(<DeleteMetametricsDataItem />, store);
 
-    expect(screen.getByTestId('delete-metametrics-button')).toBeEnabled();
+    expect(screen.getByTestId('delete-metametrics-data-button')).toBeEnabled();
   });
 
   it('opens delete modal when button is clicked', async () => {
     const store = configureStore({});
     renderWithProvider(<DeleteMetametricsDataItem />, store);
 
-    fireEvent.click(screen.getByTestId('delete-metametrics-button'));
+    fireEvent.click(screen.getByTestId('delete-metametrics-data-button'));
 
     await waitFor(() => {
       expect(
@@ -132,7 +134,7 @@ describe('DeleteMetametricsDataItem', () => {
     const store = configureStore({});
     renderWithProvider(<DeleteMetametricsDataItem />, store);
 
-    fireEvent.click(screen.getByTestId('delete-metametrics-button'));
+    fireEvent.click(screen.getByTestId('delete-metametrics-data-button'));
 
     await waitFor(() => {
       expect(
@@ -165,7 +167,7 @@ describe('DeleteMetametricsDataItem', () => {
     const store = configureStore({});
     renderWithProvider(<DeleteMetametricsDataItem />, store);
 
-    fireEvent.click(screen.getByTestId('delete-metametrics-button'));
+    fireEvent.click(screen.getByTestId('delete-metametrics-data-button'));
 
     await waitFor(() => {
       expect(
@@ -198,7 +200,7 @@ describe('DeleteMetametricsDataItem', () => {
     const store = configureStore({});
     renderWithProvider(<DeleteMetametricsDataItem />, store);
 
-    fireEvent.click(screen.getByTestId('delete-metametrics-button'));
+    fireEvent.click(screen.getByTestId('delete-metametrics-data-button'));
 
     await waitFor(() => {
       expect(

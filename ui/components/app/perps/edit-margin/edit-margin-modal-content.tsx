@@ -1,4 +1,3 @@
-import React, { useState, useCallback, useEffect } from 'react';
 import {
   Box,
   BoxFlexDirection,
@@ -17,20 +16,23 @@ import {
   IconColor,
 } from '@metamask/design-system-react';
 import type { Position as PerpsPosition } from '@metamask/perps-controller';
-import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { TextField, TextFieldSize } from '../../../component-library';
+import React, { useState, useCallback, useEffect, useMemo } from 'react';
+
 import {
   BorderRadius,
   BackgroundColor,
 } from '../../../../helpers/constants/design-system';
-import { submitRequestToBackground } from '../../../../store/background-connection';
-import { getPerpsStreamManager } from '../../../../providers/perps';
-import { useFormatters } from '../../../../hooks/useFormatters';
 import { usePerpsEligibility } from '../../../../hooks/perps';
+import { MARGIN_ADJUSTMENT_CONFIG } from '../../../../hooks/perps/marginUtils';
 import { usePerpsMarginCalculations } from '../../../../hooks/perps/usePerpsMarginCalculations';
+import { useFormatters } from '../../../../hooks/useFormatters';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { getPerpsStreamManager } from '../../../../providers/perps';
+import { submitRequestToBackground } from '../../../../store/background-connection';
+import { TextField, TextFieldSize } from '../../../component-library';
+import { PerpsSlider } from '../perps-slider';
 import type { Position, AccountState } from '../types';
-
-const MARGIN_PRESETS = [25, 50, 100] as const;
+import { floorToDecimals } from '../utils/number';
 
 export type EditMarginModalContentProps = {
   position: Position;
@@ -50,7 +52,7 @@ export type EditMarginModalContentProps = {
 };
 
 /**
- * Shared margin form content: amount input, presets, liquidation info, risk warning, save.
+ * Shared margin form content: available line, slider + USD amount, new liquidation info, save.
  * Used inside EditMarginModal (and optionally EditMarginExpandable) with a fixed mode.
  * @param options0
  * @param options0.position
@@ -75,7 +77,7 @@ export const EditMarginModalContent: React.FC<EditMarginModalContentProps> = ({
   onSavingChange,
 }) => {
   const t = useI18nContext();
-  const { formatNumber } = useFormatters();
+  const { formatNumber, formatCurrencyWithMinThreshold } = useFormatters();
   const { isEligible } = usePerpsEligibility();
 
   const [marginAmount, setMarginAmount] = useState<string>('');
@@ -92,48 +94,153 @@ export const EditMarginModalContent: React.FC<EditMarginModalContentProps> = ({
 
   const {
     maxAmount,
-    newLiquidationPrice,
-    currentLiquidationDistance,
-    newLiquidationDistance,
+    anchorLiquidationPrice,
+    estimatedLiquidationPrice,
+    anchorLiquidationDistance,
+    estimatedLiquidationDistance,
     riskAssessment,
-    isValid,
   } = calculations;
+  const flooredMaxAmount = floorToDecimals(maxAmount);
+  const parsedAmount = useMemo(
+    () => Number.parseFloat(marginAmount.replaceAll(',', '')) || 0,
+    [marginAmount],
+  );
+  const currentMargin = Number.parseFloat(position.marginUsed) || 0;
+  const isAmountValid =
+    parsedAmount >= MARGIN_ADJUSTMENT_CONFIG.MinAdjustmentAmount &&
+    parsedAmount <= flooredMaxAmount &&
+    (marginMode === 'add' || parsedAmount <= currentMargin);
+
+  const showLiquidationComparison = parsedAmount > 0;
+
+  const liquidationPriceDisplay = useMemo(() => {
+    if (
+      anchorLiquidationPrice === null ||
+      !Number.isFinite(anchorLiquidationPrice)
+    ) {
+      return (
+        <Text variant={TextVariant.BodySm} fontWeight={FontWeight.Medium}>
+          -
+        </Text>
+      );
+    }
+    if (
+      showLiquidationComparison &&
+      estimatedLiquidationPrice !== null &&
+      Number.isFinite(estimatedLiquidationPrice)
+    ) {
+      return (
+        <Box
+          flexDirection={BoxFlexDirection.Row}
+          alignItems={BoxAlignItems.Center}
+          gap={1}
+          className="max-w-[65%] flex-wrap justify-end"
+        >
+          <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
+            $
+            {formatNumber(anchorLiquidationPrice, {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2,
+            })}
+          </Text>
+          <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
+            →
+          </Text>
+          <Text
+            variant={TextVariant.BodySm}
+            color={TextColor.TextDefault}
+            fontWeight={FontWeight.Medium}
+          >
+            $
+            {formatNumber(estimatedLiquidationPrice, {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2,
+            })}
+          </Text>
+        </Box>
+      );
+    }
+    return (
+      <Text
+        variant={TextVariant.BodySm}
+        color={TextColor.TextDefault}
+        fontWeight={FontWeight.Medium}
+      >
+        $
+        {formatNumber(estimatedLiquidationPrice ?? anchorLiquidationPrice, {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2,
+        })}
+      </Text>
+    );
+  }, [
+    anchorLiquidationPrice,
+    estimatedLiquidationPrice,
+    showLiquidationComparison,
+    formatNumber,
+  ]);
+
+  const formatAmount = useCallback(
+    (value: number): string =>
+      formatNumber(value, {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      }),
+    [formatNumber],
+  );
+
+  const marginPercent = useMemo(() => {
+    if (maxAmount <= 0) {
+      return 0;
+    }
+    return Math.min(100, Math.round((parsedAmount / maxAmount) * 100));
+  }, [parsedAmount, maxAmount]);
 
   const handleAmountChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const { value } = e.target;
       if (value === '' || /^[\d,]*\.?\d{0,2}$/u.test(value)) {
-        let cleaned = value.replace(/,/gu, '');
-        if (marginMode === 'remove' && maxAmount > 0) {
-          const num = parseFloat(cleaned) || 0;
-          if (num > maxAmount) {
-            cleaned = maxAmount.toFixed(2);
+        let cleaned = value.replaceAll(',', '');
+        if (marginMode === 'remove' && flooredMaxAmount > 0) {
+          const num = Number.parseFloat(cleaned) || 0;
+          if (num > flooredMaxAmount) {
+            cleaned = flooredMaxAmount.toFixed(2);
           }
         }
         setMarginAmount(cleaned);
       }
     },
-    [marginMode, maxAmount],
+    [marginMode, flooredMaxAmount],
   );
 
-  const handlePresetClick = useCallback(
-    (percent: number) => {
+  const handleSliderChange = useCallback(
+    (_event: React.ChangeEvent<unknown>, value: number | number[]) => {
       if (maxAmount <= 0) {
         return;
       }
-      const value = (maxAmount * percent) / 100;
-      setMarginAmount(value.toFixed(2));
+      const percent = Array.isArray(value) ? value[0] : value;
+      if (percent === 0) {
+        setMarginAmount('');
+        return;
+      }
+      const raw = (maxAmount * percent) / 100;
+      const floored = floorToDecimals(raw);
+      if (floored <= 0) {
+        setMarginAmount('');
+        return;
+      }
+      setMarginAmount(formatAmount(floored));
     },
-    [maxAmount],
+    [maxAmount, formatAmount],
   );
 
   const handleSaveMargin = useCallback(async () => {
-    if (!isEligible || !isValid) {
+    if (!isEligible || !isAmountValid) {
       return;
     }
 
-    const amountNum = parseFloat(marginAmount) || 0;
-    if (amountNum <= 0) {
+    const rawMarginAmount = marginAmount.replaceAll(',', '');
+    if (parsedAmount <= 0) {
       return;
     }
 
@@ -143,7 +250,7 @@ export const EditMarginModalContent: React.FC<EditMarginModalContentProps> = ({
 
     try {
       const signedAmount =
-        marginMode === 'add' ? marginAmount : `-${marginAmount}`;
+        marginMode === 'add' ? rawMarginAmount : `-${rawMarginAmount}`;
 
       const result = await submitRequestToBackground<{
         success: boolean;
@@ -180,15 +287,12 @@ export const EditMarginModalContent: React.FC<EditMarginModalContentProps> = ({
     isEligible,
     marginMode,
     marginAmount,
-    isValid,
+    isAmountValid,
+    parsedAmount,
     position.symbol,
     onClose,
     onSavingChange,
   ]);
-
-  const currentLiqPrice = position.liquidationPrice
-    ? parseFloat(position.liquidationPrice)
-    : null;
 
   const showRiskWarning =
     marginMode === 'remove' &&
@@ -197,7 +301,7 @@ export const EditMarginModalContent: React.FC<EditMarginModalContentProps> = ({
       riskAssessment.riskLevel === 'danger');
 
   const confirmDisabled =
-    !isEligible || !isValid || isSaving || parseFloat(marginAmount) <= 0;
+    !isEligible || !isAmountValid || isSaving || parsedAmount <= 0;
 
   useEffect(() => {
     if (onSaveRef) {
@@ -214,11 +318,29 @@ export const EditMarginModalContent: React.FC<EditMarginModalContentProps> = ({
   };
 
   const availableLabel =
-    marginMode === 'add' ? t('perpsAvailableBalance') : t('perpsMaxRemovable');
+    marginMode === 'add'
+      ? t('perpsAvailableToAdd')
+      : t('perpsAvailableToSubtract');
 
   return (
     <Box flexDirection={BoxFlexDirection.Column} gap={4}>
-      {/* Amount input */}
+      <Box
+        flexDirection={BoxFlexDirection.Row}
+        justifyContent={BoxJustifyContent.Between}
+        alignItems={BoxAlignItems.Center}
+      >
+        <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
+          {availableLabel}
+        </Text>
+        <Text
+          variant={TextVariant.BodySm}
+          fontWeight={FontWeight.Medium}
+          color={TextColor.TextAlternative}
+        >
+          {`${formatCurrencyWithMinThreshold(maxAmount, 'USD')} USDC`}
+        </Text>
+      </Box>
+
       <Box flexDirection={BoxFlexDirection.Column} gap={2}>
         <Text
           variant={TextVariant.BodySm}
@@ -227,111 +349,121 @@ export const EditMarginModalContent: React.FC<EditMarginModalContentProps> = ({
         >
           {t('perpsMargin')}
         </Text>
-        <TextField
-          size={TextFieldSize.Md}
-          value={marginAmount}
-          onChange={handleAmountChange}
-          placeholder="0.00"
-          borderRadius={BorderRadius.MD}
-          borderWidth={0}
-          backgroundColor={BackgroundColor.backgroundMuted}
-          className="w-full"
-          disabled={isSaving}
-          startAccessory={
-            <Text
-              variant={TextVariant.BodyMd}
-              color={TextColor.TextAlternative}
-            >
-              $
-            </Text>
-          }
-        />
-      </Box>
-
-      {/* Preset buttons: 25%, 50%, Max */}
-      <Box flexDirection={BoxFlexDirection.Row} gap={2}>
-        {MARGIN_PRESETS.map((preset) => (
+        <Box
+          flexDirection={BoxFlexDirection.Row}
+          alignItems={BoxAlignItems.Center}
+          gap={2}
+        >
           <Box
-            key={`margin-preset-${preset}`}
-            onClick={isSaving ? undefined : () => handlePresetClick(preset)}
-            className={`flex-1 py-1.5 rounded-lg bg-background-default cursor-pointer text-center hover:bg-muted-hover active:bg-muted-pressed border border-muted transition-colors duration-150${
-              isSaving
-                ? ' opacity-50 cursor-not-allowed pointer-events-none'
-                : ''
-            }`}
+            className="min-w-0 flex-1 px-3"
+            data-testid="perps-margin-amount-slider"
           >
-            <Text
-              variant={TextVariant.BodySm}
-              color={TextColor.TextAlternative}
-            >
-              {preset === 100 ? t('perpsMax') : `${preset}%`}
-            </Text>
+            <PerpsSlider
+              min={0}
+              max={100}
+              step={1}
+              value={marginPercent}
+              onChange={handleSliderChange}
+              disabled={maxAmount <= 0 || isSaving}
+            />
           </Box>
-        ))}
+          <Box className="w-[5.5rem] shrink-0">
+            <TextField
+              size={TextFieldSize.Md}
+              value={marginAmount}
+              onChange={handleAmountChange}
+              placeholder="0.00"
+              borderRadius={BorderRadius.MD}
+              borderWidth={0}
+              backgroundColor={BackgroundColor.backgroundMuted}
+              className="w-full"
+              disabled={isSaving}
+              inputProps={{ inputMode: 'decimal' }}
+              startAccessory={
+                <Text
+                  variant={TextVariant.BodyMd}
+                  color={TextColor.TextAlternative}
+                >
+                  $
+                </Text>
+              }
+            />
+          </Box>
+        </Box>
       </Box>
 
-      {/* Info rows */}
       <Box flexDirection={BoxFlexDirection.Column} gap={2}>
         <Box
           flexDirection={BoxFlexDirection.Row}
           justifyContent={BoxJustifyContent.Between}
           alignItems={BoxAlignItems.Center}
-        >
-          <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
-            {availableLabel}
-          </Text>
-          <Text variant={TextVariant.BodySm} fontWeight={FontWeight.Medium}>
-            $
-            {formatNumber(maxAmount, {
-              minimumFractionDigits: 2,
-              maximumFractionDigits: 2,
-            })}
-          </Text>
-        </Box>
-
-        <Box
-          flexDirection={BoxFlexDirection.Row}
-          justifyContent={BoxJustifyContent.Between}
-          alignItems={BoxAlignItems.Center}
+          gap={2}
         >
           <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
             {t('perpsLiquidationPrice')}
           </Text>
-          <Text variant={TextVariant.BodySm} fontWeight={FontWeight.Medium}>
-            {currentLiqPrice === null
-              ? '-'
-              : `$${formatNumber(currentLiqPrice, {
-                  minimumFractionDigits: 2,
-                  maximumFractionDigits: 2,
-                })}`}
-            {newLiquidationPrice !== null &&
-              ` → $${formatNumber(newLiquidationPrice, {
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2,
-              })}`}
-          </Text>
+          {liquidationPriceDisplay}
         </Box>
 
         <Box
           flexDirection={BoxFlexDirection.Row}
           justifyContent={BoxJustifyContent.Between}
           alignItems={BoxAlignItems.Center}
+          gap={2}
         >
           <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
             {t('perpsLiquidationDistance')}
           </Text>
-          <Text variant={TextVariant.BodySm} fontWeight={FontWeight.Medium}>
-            {formatNumber(currentLiquidationDistance, {
-              minimumFractionDigits: 1,
-              maximumFractionDigits: 1,
-            })}
-            %
-            {newLiquidationDistance !== null &&
-              ` → ${formatNumber(newLiquidationDistance, {
+          {showLiquidationComparison &&
+          estimatedLiquidationDistance !== null &&
+          Number.isFinite(estimatedLiquidationDistance) ? (
+            <Box
+              flexDirection={BoxFlexDirection.Row}
+              alignItems={BoxAlignItems.Center}
+              gap={1}
+              className="max-w-[65%] flex-wrap justify-end"
+            >
+              <Text
+                variant={TextVariant.BodySm}
+                color={TextColor.TextAlternative}
+              >
+                {formatNumber(anchorLiquidationDistance, {
+                  minimumFractionDigits: 1,
+                  maximumFractionDigits: 1,
+                })}
+                %
+              </Text>
+              <Text
+                variant={TextVariant.BodySm}
+                color={TextColor.TextAlternative}
+              >
+                →
+              </Text>
+              <Text
+                variant={TextVariant.BodySm}
+                color={TextColor.TextDefault}
+                fontWeight={FontWeight.Medium}
+              >
+                {formatNumber(estimatedLiquidationDistance, {
+                  minimumFractionDigits: 1,
+                  maximumFractionDigits: 1,
+                })}
+                %
+              </Text>
+            </Box>
+          ) : (
+            <Text
+              variant={TextVariant.BodySm}
+              color={TextColor.TextDefault}
+              fontWeight={FontWeight.Medium}
+            >
+              {formatNumber(anchorLiquidationDistance, {
                 minimumFractionDigits: 1,
                 maximumFractionDigits: 1,
-              })}%`}
-          </Text>
+              })}
+              %
+            </Text>
+          )}
         </Box>
       </Box>
 
