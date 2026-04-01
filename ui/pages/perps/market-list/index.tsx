@@ -287,7 +287,7 @@ export const MarketListView: React.FC = () => {
     [navigate, track],
   );
 
-  const handleSearchFocus = useCallback(() => {
+  const handleSearchClick = useCallback(() => {
     track(MetaMetricsEventName.PerpsUiInteraction, {
       [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
         PERPS_EVENT_VALUE.INTERACTION_TYPE.SEARCH_CLICKED,
@@ -337,7 +337,7 @@ export const MarketListView: React.FC = () => {
           value={searchQuery}
           onChange={handleSearchChange}
           onClear={handleSearchClear}
-          onInputFocus={handleSearchFocus}
+          onInputClick={handleSearchClick}
           autoFocus
         />
       </Box>

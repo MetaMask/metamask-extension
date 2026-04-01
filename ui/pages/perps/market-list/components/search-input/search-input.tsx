@@ -13,8 +13,8 @@ export type SearchInputProps = {
   onChange: (value: string) => void;
   /** Callback when clear button is pressed */
   onClear: () => void;
-  /** Called when the search input receives focus */
-  onInputFocus?: () => void;
+  /** Called when the search input is clicked (not on programmatic focus from autoFocus) */
+  onInputClick?: () => void;
   /** Auto-focus the input when mounted */
   autoFocus?: boolean;
 };
@@ -27,14 +27,14 @@ export type SearchInputProps = {
  * @param options0.value - Current search value
  * @param options0.onChange - Callback when search value changes
  * @param options0.onClear - Callback when clear button is pressed
- * @param options0.onInputFocus - Called when the search input receives focus
+ * @param options0.onInputClick - Called when the user clicks the search input
  * @param options0.autoFocus - Auto-focus the input when mounted
  */
 export const SearchInput: React.FC<SearchInputProps> = ({
   value,
   onChange,
   onClear,
-  onInputFocus,
+  onInputClick,
   autoFocus = false,
 }) => {
   const t = useI18nContext();
@@ -61,7 +61,7 @@ export const SearchInput: React.FC<SearchInputProps> = ({
       inputProps={{
         'data-testid': 'search-input',
         onKeyDown: handleKeyDown,
-        onFocus: onInputFocus,
+        onClick: onInputClick,
       }}
     />
   );
