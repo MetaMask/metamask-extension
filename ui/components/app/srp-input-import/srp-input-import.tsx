@@ -16,7 +16,7 @@ import {
   BoxJustifyContent,
   BoxBackgroundColor,
 } from '@metamask/design-system-react';
-import { TextField, TextFieldType } from '../../component-library/text-field';
+import { TextField, TextFieldType } from '../../component-library';
 import { Textarea, TextareaResize } from '../../component-library/textarea';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
