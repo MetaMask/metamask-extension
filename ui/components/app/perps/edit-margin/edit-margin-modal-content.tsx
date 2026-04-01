@@ -1,3 +1,4 @@
+import React, { useState, useCallback, useEffect, useMemo } from 'react';
 import {
   Box,
   BoxFlexDirection,
@@ -16,25 +17,21 @@ import {
   IconColor,
 } from '@metamask/design-system-react';
 import type { Position as PerpsPosition } from '@metamask/perps-controller';
-import React, { useState, useCallback, useEffect, useMemo } from 'react';
-
+import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { TextField, TextFieldSize } from '../../../component-library';
 import {
   BorderRadius,
   BackgroundColor,
 } from '../../../../helpers/constants/design-system';
-import { usePerpsEligibility } from '../../../../hooks/perps';
-import { MARGIN_ADJUSTMENT_CONFIG } from '../../../../hooks/perps/marginUtils';
-import { usePerpsMarginCalculations } from '../../../../hooks/perps/usePerpsMarginCalculations';
-import { useFormatters } from '../../../../hooks/useFormatters';
-import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { getPerpsStreamManager } from '../../../../providers/perps';
 import { submitRequestToBackground } from '../../../../store/background-connection';
-import { TextField, TextFieldSize } from '../../../component-library';
+import { getPerpsStreamManager } from '../../../../providers/perps';
+import { useFormatters } from '../../../../hooks/useFormatters';
+import { usePerpsEligibility } from '../../../../hooks/perps';
+import { usePerpsMarginCalculations } from '../../../../hooks/perps/usePerpsMarginCalculations';
 import { PERPS_TOAST_KEYS, usePerpsToast } from '../perps-toast';
-import { PerpsSlider } from '../perps-slider';
 import type { Position, AccountState, PerpsBackgroundResult } from '../types';
+import { PerpsSlider } from '../perps-slider';
 import { getDisplayName } from '../utils';
-import { floorToDecimals } from '../utils/number';
 
 const MARGIN_PRESETS = [25, 50, 100] as const;
 
@@ -104,19 +101,14 @@ export const EditMarginModalContent: React.FC<EditMarginModalContentProps> = ({
     anchorLiquidationDistance,
     estimatedLiquidationDistance,
     riskAssessment,
+    isValid,
   } = calculations;
-  const flooredMaxAmount = floorToDecimals(maxAmount);
-  const parsedAmount = useMemo(
+
+  const amountNumForDisplay = useMemo(
     () => Number.parseFloat(marginAmount.replaceAll(',', '')) || 0,
     [marginAmount],
   );
-  const currentMargin = Number.parseFloat(position.marginUsed) || 0;
-  const isAmountValid =
-    parsedAmount >= MARGIN_ADJUSTMENT_CONFIG.MinAdjustmentAmount &&
-    parsedAmount <= flooredMaxAmount &&
-    (marginMode === 'add' || parsedAmount <= currentMargin);
-
-  const showLiquidationComparison = parsedAmount > 0;
+  const showLiquidationComparison = amountNumForDisplay > 0;
 
   const liquidationPriceDisplay = useMemo(() => {
     if (
@@ -198,24 +190,25 @@ export const EditMarginModalContent: React.FC<EditMarginModalContentProps> = ({
     if (maxAmount <= 0) {
       return 0;
     }
-    return Math.min(100, Math.round((parsedAmount / maxAmount) * 100));
-  }, [parsedAmount, maxAmount]);
+    const n = Number.parseFloat(marginAmount.replaceAll(',', '')) || 0;
+    return Math.min(100, Math.round((n / maxAmount) * 100));
+  }, [marginAmount, maxAmount]);
 
   const handleAmountChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const { value } = e.target;
       if (value === '' || /^[\d,]*\.?\d{0,2}$/u.test(value)) {
         let cleaned = value.replaceAll(',', '');
-        if (marginMode === 'remove' && flooredMaxAmount > 0) {
+        if (marginMode === 'remove' && maxAmount > 0) {
           const num = Number.parseFloat(cleaned) || 0;
-          if (num > flooredMaxAmount) {
-            cleaned = flooredMaxAmount.toFixed(2);
+          if (num > maxAmount) {
+            cleaned = maxAmount.toFixed(2);
           }
         }
         setMarginAmount(cleaned);
       }
     },
-    [marginMode, flooredMaxAmount],
+    [marginMode, maxAmount],
   );
 
   const handleSliderChange = useCallback(
@@ -229,7 +222,7 @@ export const EditMarginModalContent: React.FC<EditMarginModalContentProps> = ({
         return;
       }
       const raw = (maxAmount * percent) / 100;
-      const floored = floorToDecimals(raw);
+      const floored = Math.floor(raw * 100) / 100;
       if (floored <= 0) {
         setMarginAmount('');
         return;
@@ -240,12 +233,13 @@ export const EditMarginModalContent: React.FC<EditMarginModalContentProps> = ({
   );
 
   const handleSaveMargin = useCallback(async () => {
-    if (!isEligible || !isAmountValid) {
+    if (!isEligible || !isValid) {
       return;
     }
 
     const rawMarginAmount = marginAmount.replaceAll(',', '');
-    if (parsedAmount <= 0) {
+    const amountNum = Number.parseFloat(rawMarginAmount) || 0;
+    if (amountNum <= 0) {
       return;
     }
 
@@ -301,8 +295,7 @@ export const EditMarginModalContent: React.FC<EditMarginModalContentProps> = ({
     isEligible,
     marginMode,
     marginAmount,
-    isAmountValid,
-    parsedAmount,
+    isValid,
     position.symbol,
     onClose,
     onSavingChange,
@@ -316,7 +309,10 @@ export const EditMarginModalContent: React.FC<EditMarginModalContentProps> = ({
       riskAssessment.riskLevel === 'danger');
 
   const confirmDisabled =
-    !isEligible || !isAmountValid || isSaving || parsedAmount <= 0;
+    !isEligible ||
+    !isValid ||
+    isSaving ||
+    Number.parseFloat(marginAmount.replaceAll(',', '')) <= 0;
 
   useEffect(() => {
     if (onSaveRef) {
