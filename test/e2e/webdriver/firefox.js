@@ -11,7 +11,7 @@ const {
   ThenableWebDriver, // eslint-disable-line no-unused-vars -- this is imported for JSDoc
 } = require('selenium-webdriver');
 const firefox = require('selenium-webdriver/firefox');
-const yazl = require('yazl');
+const { ZipFile } = require('yazl');
 const { retry } = require('../../../development/lib/retry');
 const { isHeadless } = require('../../helpers/env');
 
@@ -206,7 +206,7 @@ class FirefoxDriver {
   }
 
   static async _buildXpi(addonDir, xpiPath, manifest = {}) {
-    const zipFile = new yazl.ZipFile();
+    const zipFile = new ZipFile();
     await using outputStream = fs.createWriteStream(xpiPath);
     zipFile.outputStream.once('error', (error) => outputStream.destroy(error));
     zipFile.outputStream.pipe(outputStream);
@@ -217,34 +217,18 @@ class FirefoxDriver {
         mtime: manifest.mtime,
       });
     }
-    FirefoxDriver._addDirectoryToZip(zipFile, addonDir, addonDir, manifest);
-    zipFile.end();
-    await finished(outputStream);
-  }
-
-  static _addDirectoryToZip(zipFile, rootDir, currentDir, manifest = {}) {
-    const entries = fs.readdirSync(currentDir, { withFileTypes: true });
-
-    for (const entry of entries) {
-      const absoluteEntryPath = path.join(currentDir, entry.name);
-      const relativeEntryPath = path.relative(rootDir, absoluteEntryPath);
-
-      if (entry.isDirectory()) {
-        FirefoxDriver._addDirectoryToZip(
-          zipFile,
-          rootDir,
-          absoluteEntryPath,
-          manifest,
-        );
-      } else if (entry.isFile()) {
-        if (manifest.buffer && relativeEntryPath === MANIFEST_FILE_NAME) {
-          continue;
+    const readDirOptions = { recursive: true, withFileTypes: true };
+    for (const entry of fs.readdirSync(addonDir, readDirOptions)) {
+      if (entry.isFile()) {
+        const absPath = path.join(entry.parentPath, entry.name);
+        const relPath = path.relative(addonDir, absPath);
+        if (!manifest.buffer || relPath !== MANIFEST_FILE_NAME) {
+          zipFile.addFile(absPath, relPath, { compress: false });
         }
-        zipFile.addFile(absoluteEntryPath, relativeEntryPath, {
-          compress: false,
-        });
       }
     }
+    zipFile.end();
+    await finished(outputStream);
   }
 
   /**
