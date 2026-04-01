@@ -12,42 +12,23 @@ const require = createRequire(import.meta.url);
 const MANIFEST_FILE_NAME = 'manifest.json';
 const DEFAULT_ITERATIONS = 2;
 
-type XpiTemplateMetadata = {
-  capacity: number;
-  centralDirectoryCrcOffset: number;
-  dataOffset: number;
-  hash: string;
-  localFileHeaderCrcOffset: number;
-  version: number;
-};
-
 type FirefoxDriverInternal = {
   _buildXpiTemplate: (
     absDir: string,
     xpiPath: string,
     manifestBuffer: Buffer,
-    manifestHash: string,
   ) => Promise<string>;
-  _patchManifestInXpi: (
-    xpiPath: string,
-    manifestBuffer: Buffer,
-    templateMetadata: XpiTemplateMetadata,
-  ) => Promise<void>;
+  _patchManifest: (xpiPath: string, manifestBuffer: Buffer) => Promise<void>;
   _buildXpi: (
     addonDir: string,
     xpiPath: string,
     options?: {
       buffer?: Buffer;
-      comment?: Buffer;
       mode?: number;
       mtime?: Date;
     },
   ) => Promise<unknown>;
   _getOrBuildXpi: (addonDir: string) => Promise<string>;
-  _readMetadataFromXpi: (
-    xpiPath: string,
-    size: number,
-  ) => Promise<XpiTemplateMetadata>;
 };
 
 type BenchmarkSample = {
@@ -355,17 +336,12 @@ async function runOptimizedInternalBenchmark(
   const createManifestBuffer = fs.readFileSync(
     path.join(addonDir, MANIFEST_FILE_NAME),
   );
-  const createManifestHash = nodeCrypto
-    .createHash('sha256')
-    .update(createManifestBuffer)
-    .digest('hex');
 
   const templateBuildMeasurement = await measure(() =>
     FirefoxDriver._buildXpiTemplate(
       addonDir,
       templatePath,
       createManifestBuffer,
-      createManifestHash,
     ),
   );
   recordSample(
@@ -384,20 +360,9 @@ async function runOptimizedInternalBenchmark(
   const updateManifestBuffer = fs.readFileSync(
     path.join(addonDir, MANIFEST_FILE_NAME),
   );
-  const updateManifestHash = nodeCrypto
-    .createHash('sha256')
-    .update(updateManifestBuffer)
-    .digest('hex');
-  const templateMetadata = await FirefoxDriver._readMetadataFromXpi(
-    templatePath,
-    fs.statSync(templatePath).size,
-  );
 
   const manifestPatchMeasurement = await measure(() =>
-    FirefoxDriver._patchManifestInXpi(templatePath, updateManifestBuffer, {
-      ...templateMetadata,
-      hash: updateManifestHash,
-    }),
+    FirefoxDriver._patchManifest(templatePath, updateManifestBuffer),
   );
   recordSample(
     samples,

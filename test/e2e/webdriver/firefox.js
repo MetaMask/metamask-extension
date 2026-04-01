@@ -16,8 +16,13 @@ const { retry } = require('../../../development/lib/retry');
 const { isHeadless } = require('../../helpers/env');
 
 const MANIFEST_FILE_NAME = 'manifest.json';
-const XPI_TEMPLATE_VERSION = 1;
-const XPI_COMMENT_CAPACITY = 512;
+const XPI_TEMPLATE_VERSION = 2;
+const MANIFEST_SLOT_SIZE = 64 * 1024;
+const EOCD_SIZE = 22;
+const CD_OFFSET_IN_EOCD = 16;
+const DATA_OFFSET = 30 + MANIFEST_FILE_NAME.length;
+const CD_CRC32_OFFSET = 16;
+const LFH_CRC32_OFFSET = 14;
 
 /**
  * The prefix for temporary Firefox profiles. All Firefox profiles used for e2e tests
@@ -138,76 +143,33 @@ class FirefoxDriver {
       .digest('hex')
       .slice(0, 12);
     const manifest = fs.readFileSync(path.join(absDir, MANIFEST_FILE_NAME));
-    const hash = nodeCrypto.createHash('sha256').update(manifest).digest('hex');
-    const xpiPath = path.join(os.tmpdir(), `metamask-e2e-${dirHash}.xpi`);
+    const tmpName = `metamask-e2e-${dirHash}-v${XPI_TEMPLATE_VERSION}.xpi`;
+    const xpiPath = path.join(os.tmpdir(), tmpName);
 
     try {
-      const xpiStat = fs.statSync(xpiPath);
-      const meta = await FirefoxDriver._readMetadataFromXpi(
-        xpiPath,
-        xpiStat.size,
-      );
-      if (
-        meta.version === XPI_TEMPLATE_VERSION &&
-        meta.capacity >= manifest.length &&
-        !FirefoxDriver._hasNewerFile(
-          absDir,
-          xpiStat.mtimeMs,
-          MANIFEST_FILE_NAME,
-        )
-      ) {
-        if (meta.hash === hash) {
-          return xpiPath;
-        }
-
-        await FirefoxDriver._patchManifestInXpi(
-          xpiPath,
-          manifest,
-          { ...meta, hash },
-          xpiStat.size,
-        );
+      const xpiMtime = fs.statSync(xpiPath).mtimeMs;
+      if (!FirefoxDriver._hasNewerFile(absDir, xpiMtime, MANIFEST_FILE_NAME)) {
+        await FirefoxDriver._patchManifest(xpiPath, manifest);
         return xpiPath;
       }
     } catch {
       console.log('[Firefox E2E] Cache cold, building XPI');
     }
 
-    return FirefoxDriver._buildXpiTemplate(absDir, xpiPath, manifest, hash);
+    return FirefoxDriver._buildXpiTemplate(absDir, xpiPath, manifest);
   }
 
-  static async _buildXpiTemplate(addonDir, xpiPath, manifest, hash) {
+  static async _buildXpiTemplate(addonDir, xpiPath, manifest) {
     const manifestPath = path.join(addonDir, MANIFEST_FILE_NAME);
     const manifestStats = fs.statSync(manifestPath);
-    let capacity = 16 * 1024;
-    while (capacity < manifest.length) {
-      capacity *= 2;
-    }
-    const paddedManifestBuffer = FirefoxDriver._getPaddedBuffer(
-      manifest,
-      capacity,
-    );
+    const paddedManifest = FirefoxDriver._pad(manifest, MANIFEST_SLOT_SIZE);
     const tempXpiPath = `${xpiPath}.${process.pid}-${Date.now()}.tmp`;
 
     try {
-      const { entries, offsetOfStartOfCentralDirectory } =
-        await FirefoxDriver._buildXpi(addonDir, tempXpiPath, {
-          buffer: paddedManifestBuffer,
-          comment: Buffer.alloc(XPI_COMMENT_CAPACITY, 0x20),
-          mode: manifestStats.mode,
-          mtime: manifestStats.mtime,
-        });
-      const { utf8FileName, relativeOffsetOfLocalHeader } = entries.pop();
-      await using fileHandle = await fs.promises.open(tempXpiPath, 'r+');
-      await FirefoxDriver._writeMetadataComment(fileHandle, {
-        capacity,
-        directoryOffset:
-          offsetOfStartOfCentralDirectory +
-          entries.reduce((size, e) => size + 55 + e.utf8FileName.length, 0) +
-          16,
-        dataOffset: relativeOffsetOfLocalHeader + 30 + utf8FileName.length,
-        hash,
-        fileOffset: relativeOffsetOfLocalHeader + 12,
-        version: XPI_TEMPLATE_VERSION,
+      await FirefoxDriver._buildXpi(addonDir, tempXpiPath, {
+        buffer: paddedManifest,
+        mode: manifestStats.mode,
+        mtime: manifestStats.mtime,
       });
       fs.renameSync(tempXpiPath, xpiPath);
     } catch (error) {
@@ -218,50 +180,25 @@ class FirefoxDriver {
     return xpiPath;
   }
 
-  static async _readMetadataFromXpi(xpiPath, size) {
-    const metadataBuffer = Buffer.allocUnsafe(XPI_COMMENT_CAPACITY);
-    await using fileHandle = await fs.promises.open(xpiPath);
-    await fileHandle.read(
-      metadataBuffer,
-      0,
-      metadataBuffer.length,
-      size - metadataBuffer.length,
-    );
-    return JSON.parse(metadataBuffer.toString('utf8').trimEnd());
-  }
-
-  static async _writeMetadataComment(fileHandle, meta, size) {
-    const metadataBuffer = FirefoxDriver._getPaddedBuffer(
-      Buffer.from(JSON.stringify(meta)),
-      XPI_COMMENT_CAPACITY,
-    );
-    await fileHandle.write(
-      metadataBuffer,
-      0,
-      metadataBuffer.length,
-      (size ?? (await fileHandle.stat()).size) - metadataBuffer.length,
-    );
-  }
-
-  static async _patchManifestInXpi(xpiPath, manifest, meta, size) {
-    const paddedManifestBuffer = FirefoxDriver._getPaddedBuffer(
-      manifest,
-      meta.capacity,
-    );
-    const crc32Buffer = Buffer.allocUnsafe(4);
-    crc32Buffer.writeUInt32LE(zlib.crc32(paddedManifestBuffer), 0);
+  static async _patchManifest(xpiPath, manifest) {
+    const paddedManifest = FirefoxDriver._pad(manifest, MANIFEST_SLOT_SIZE);
+    const crc32 = Buffer.allocUnsafe(4);
+    crc32.writeUInt32LE(zlib.crc32(paddedManifest), 0);
     await using fileHandle = await fs.promises.open(xpiPath, 'r+');
+    const { size } = await fileHandle.stat();
+    const eocd = Buffer.allocUnsafe(EOCD_SIZE);
+    await fileHandle.read(eocd, 0, eocd.length, size - eocd.length);
+    const cdOffset = eocd.readUInt32LE(CD_OFFSET_IN_EOCD);
     for (const [buffer, position] of [
-      [paddedManifestBuffer, meta.dataOffset],
-      [crc32Buffer, meta.fileOffset],
-      [crc32Buffer, meta.directoryOffset],
+      [paddedManifest, DATA_OFFSET],
+      [crc32, LFH_CRC32_OFFSET],
+      [crc32, cdOffset + CD_CRC32_OFFSET],
     ]) {
       await fileHandle.write(buffer, 0, buffer.length, position);
     }
-    await FirefoxDriver._writeMetadataComment(fileHandle, meta, size);
   }
 
-  static _getPaddedBuffer(manifest, capacity) {
+  static _pad(manifest, capacity) {
     return Buffer.concat([
       manifest,
       Buffer.alloc(capacity - manifest.length, 0x20),
@@ -273,7 +210,6 @@ class FirefoxDriver {
     await using outputStream = fs.createWriteStream(xpiPath);
     zipFile.outputStream.once('error', (error) => outputStream.destroy(error));
     zipFile.outputStream.pipe(outputStream);
-    FirefoxDriver._addDirectoryToZip(zipFile, addonDir, addonDir, manifest);
     if (manifest.buffer) {
       zipFile.addBuffer(manifest.buffer, MANIFEST_FILE_NAME, {
         compress: false,
@@ -281,25 +217,17 @@ class FirefoxDriver {
         mtime: manifest.mtime,
       });
     }
-    zipFile.end(manifest.comment ? { comment: manifest.comment } : undefined);
+    FirefoxDriver._addDirectoryToZip(zipFile, addonDir, addonDir, manifest);
+    zipFile.end();
     await finished(outputStream);
-    return {
-      entries: zipFile.entries,
-      offsetOfStartOfCentralDirectory: zipFile.offsetOfStartOfCentralDirectory,
-    };
   }
 
   static _addDirectoryToZip(zipFile, rootDir, currentDir, manifest = {}) {
-    const entries = fs
-      .readdirSync(currentDir, { withFileTypes: true })
-      .sort((entryA, entryB) => entryA.name.localeCompare(entryB.name));
+    const entries = fs.readdirSync(currentDir, { withFileTypes: true });
 
     for (const entry of entries) {
       const absoluteEntryPath = path.join(currentDir, entry.name);
-      const relativeEntryPath = path
-        .relative(rootDir, absoluteEntryPath)
-        .split(path.sep)
-        .join('/');
+      const relativeEntryPath = path.relative(rootDir, absoluteEntryPath);
 
       if (entry.isDirectory()) {
         FirefoxDriver._addDirectoryToZip(
