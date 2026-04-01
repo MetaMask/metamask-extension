@@ -168,7 +168,11 @@ export async function runOnboardingImportWalletBenchmark(): Promise<BenchmarkRun
         });
         performanceTracker.addTimer(timerAccountListLoad);
 
-        webVitals = await collectWebVitals(driver);
+        try {
+          webVitals = await collectWebVitals(driver);
+        } catch (error) {
+          console.error('Error collecting web vitals:', error);
+        }
       },
     );
 

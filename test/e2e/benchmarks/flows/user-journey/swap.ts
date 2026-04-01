@@ -111,7 +111,11 @@ export async function runSwapBenchmark(): Promise<BenchmarkRunResult> {
         });
         performanceTracker.addTimer(timerQuoteFetching);
 
-        webVitals = await collectWebVitals(driver);
+        try {
+          webVitals = await collectWebVitals(driver);
+        } catch (error) {
+          console.error('Error collecting web vitals:', error);
+        }
       },
     );
 

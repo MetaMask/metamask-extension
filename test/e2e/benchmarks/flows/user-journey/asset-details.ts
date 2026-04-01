@@ -87,7 +87,11 @@ export async function runAssetDetailsBenchmark(): Promise<BenchmarkRunResult> {
         });
         performanceTracker.addTimer(timer);
 
-        webVitals = await collectWebVitals(driver);
+        try {
+          webVitals = await collectWebVitals(driver);
+        } catch (error) {
+          console.error('Error collecting web vitals:', error);
+        }
       },
     );
 

@@ -105,7 +105,11 @@ export async function runSendTransactionsBenchmark(): Promise<BenchmarkRunResult
         });
         performanceTracker.addTimer(timerReviewTransaction);
 
-        webVitals = await collectWebVitals(driver);
+        try {
+          webVitals = await collectWebVitals(driver);
+        } catch (error) {
+          console.error('Error collecting web vitals:', error);
+        }
       },
     );
 

@@ -101,7 +101,11 @@ export async function runImportSrpHomeBenchmark(): Promise<BenchmarkRunResult> {
         });
         performanceTracker.addTimer(timerHomeAfterImport);
 
-        webVitals = await collectWebVitals(driver);
+        try {
+          webVitals = await collectWebVitals(driver);
+        } catch (error) {
+          console.error('Error collecting web vitals:', error);
+        }
       },
     );
 
