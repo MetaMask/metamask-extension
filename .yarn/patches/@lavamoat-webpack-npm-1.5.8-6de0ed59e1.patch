@@ -1,0 +1,13 @@
+diff --git a/src/plugin.js b/src/plugin.js
+index 3ac3ffbd28199d728eacd987f1a63d4b8690b628..228f00eb53bbb38a5e79be1d4e656818e5686da4 100644
+--- a/src/plugin.js
++++ b/src/plugin.js
+@@ -564,7 +564,7 @@ class LavaMoatPlugin {
+           compilation.hooks.processAssets.tap(
+             {
+               name: PLUGIN_NAME,
+-              stage: Compilation.PROCESS_ASSETS_STAGE_OPTIMIZE_INLINE,
++              stage: Compilation.PROCESS_ASSETS_STAGE_DEV_TOOLING - 1,
+             },
+             sesPrefixFiles({
+               compilation,
