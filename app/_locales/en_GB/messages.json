@@ -5785,6 +5785,10 @@
     "message": "Order failed",
     "description": "Error toast text shown when placing a perps order fails"
   },
+  "perpsToastOrderFailedDescriptionFallback": {
+    "message": "Your funds have been returned to you",
+    "description": "Fallback order failure subtitle shown when no specific order error is available"
+  },
   "perpsToastOrderFilled": {
     "message": "Order filled",
     "description": "Success toast text shown when a perps market order is filled"
