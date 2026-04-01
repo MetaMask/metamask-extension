@@ -30,7 +30,9 @@ jest.mock('../hooks/useIsSendBundleSupported', () => ({
 }));
 
 jest.mock('../hooks/useBridgeUnavailableQuotesReason', () => ({
-  useBridgeUnavailableQuotesReason: jest.fn().mockReturnValue(null),
+  useBridgeUnavailableQuotesReason: jest
+    .fn()
+    .mockReturnValue('noOptionsAvailableMessage'),
 }));
 
 const mockUseHardwareWalletConfig = jest.fn();
@@ -66,7 +68,9 @@ describe('PrepareBridgePage', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    mockUseBridgeUnavailableQuotesReason.mockReturnValue(null);
+    mockUseBridgeUnavailableQuotesReason.mockReturnValue(
+      'noOptionsAvailableMessage',
+    );
     mockUseHardwareWalletConfig.mockReturnValue({
       isHardwareWalletAccount: false,
       walletType: null,

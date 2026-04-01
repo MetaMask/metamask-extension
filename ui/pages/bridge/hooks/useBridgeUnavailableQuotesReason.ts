@@ -7,5 +7,5 @@ export const useBridgeUnavailableQuotesReason = () => {
   const quoteStreamComplete = useSelector(getQuoteStreamComplete);
   const t = useI18nContext();
 
-  return quoteStreamComplete?.reason ? t(getQuoteStreamReasonString(quoteStreamComplete.reason)) : null
+  return quoteStreamComplete?.reason ? t(getQuoteStreamReasonString(quoteStreamComplete.reason)) : t('noOptionsAvailableMessage')
 }

@@ -27,16 +27,16 @@ describe('useBridgeUnavailableQuotesReason', () => {
     mockUseI18nContext.mockReturnValue(mockT as never);
   });
 
-  it('returns null when quoteStreamComplete is null', () => {
+  it('returns the generic fallback message when quoteStreamComplete is null', () => {
     mockGetQuoteStreamComplete.mockReturnValue(null);
 
     const { result } = renderHook();
 
-    expect(result.current).toBeNull();
-    expect(mockT).not.toHaveBeenCalled();
+    expect(mockT).toHaveBeenCalledWith('noOptionsAvailableMessage');
+    expect(result.current).toBe('noOptionsAvailableMessage');
   });
 
-  it('returns null when quoteStreamComplete has no reason', () => {
+  it('returns the generic fallback message when quoteStreamComplete has no reason', () => {
     mockGetQuoteStreamComplete.mockReturnValue({
       quoteCount: 2,
       hasQuotes: true,
@@ -44,11 +44,11 @@ describe('useBridgeUnavailableQuotesReason', () => {
 
     const { result } = renderHook();
 
-    expect(result.current).toBeNull();
-    expect(mockT).not.toHaveBeenCalled();
+    expect(mockT).toHaveBeenCalledWith('noOptionsAvailableMessage');
+    expect(result.current).toBe('noOptionsAvailableMessage');
   });
 
-  it('returns null when reason is undefined', () => {
+  it('returns the generic fallback message when reason is undefined', () => {
     mockGetQuoteStreamComplete.mockReturnValue({
       quoteCount: 0,
       hasQuotes: false,
@@ -57,7 +57,8 @@ describe('useBridgeUnavailableQuotesReason', () => {
 
     const { result } = renderHook();
 
-    expect(result.current).toBeNull();
+    expect(mockT).toHaveBeenCalledWith('noOptionsAvailableMessage');
+    expect(result.current).toBe('noOptionsAvailableMessage');
   });
 
   it.each([
