@@ -33,16 +33,6 @@ export function usePerpsEventTracking(
 
   const track = useCallback<PerpsTrackEventFn>(
     (eventName, properties) => {
-      console.log('usePerpsEventTracking', eventName, properties);
-      console.log('SEGMENT_WRITE_KEY', process.env.SEGMENT_WRITE_KEY);
-      console.log({
-        event: eventName,
-        category: MetaMetricsEventCategory.Perps,
-        properties: {
-          ...properties,
-          [PERPS_EVENT_PROPERTY.TIMESTAMP]: Date.now(),
-        },
-      });
       trackEvent({
         event: eventName,
         category: MetaMetricsEventCategory.Perps,

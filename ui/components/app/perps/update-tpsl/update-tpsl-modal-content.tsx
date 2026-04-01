@@ -293,7 +293,8 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
           [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.FAILED,
           [PERPS_EVENT_PROPERTY.FAILURE_REASON]: failMessage,
         });
-        throw new Error(failMessage);
+        setTpslError(failMessage);
+        return;
       }
       track(MetaMetricsEventName.PerpsRiskManagement, {
         [PERPS_EVENT_PROPERTY.ASSET]: position.symbol,

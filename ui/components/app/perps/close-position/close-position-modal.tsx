@@ -187,7 +187,8 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
           [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.FAILED,
           [PERPS_EVENT_PROPERTY.FAILURE_REASON]: message,
         });
-        throw new Error(message);
+        setError(message);
+        return;
       }
       track(MetaMetricsEventName.PerpsPositionCloseTransaction, {
         [PERPS_EVENT_PROPERTY.ASSET]: position.symbol,
