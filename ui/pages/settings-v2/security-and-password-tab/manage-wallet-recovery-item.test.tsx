@@ -5,6 +5,7 @@ import thunk from 'redux-thunk';
 import mockState from '../../../../test/data/mock-state.json';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
+import { MANAGE_WALLET_RECOVERY_V2_ROUTE } from '../../../helpers/constants/routes';
 import ManageWalletRecoveryItem from './manage-wallet-recovery-item';
 
 const createMockStore = (overrides = {}) =>
@@ -19,7 +20,10 @@ const createMockStore = (overrides = {}) =>
 describe('ManageWalletRecoveryItem', () => {
   it('renders the label', () => {
     const store = createMockStore();
-    renderWithProvider(<ManageWalletRecoveryItem />, store);
+    renderWithProvider(
+      <ManageWalletRecoveryItem route={MANAGE_WALLET_RECOVERY_V2_ROUTE} />,
+      store,
+    );
 
     expect(
       screen.getByText(messages.manageWalletRecovery.message),
@@ -28,13 +32,13 @@ describe('ManageWalletRecoveryItem', () => {
 
   it('renders the arrow link to reveal SRP page', () => {
     const store = createMockStore();
-    renderWithProvider(<ManageWalletRecoveryItem />, store);
+    renderWithProvider(
+      <ManageWalletRecoveryItem route={MANAGE_WALLET_RECOVERY_V2_ROUTE} />,
+      store,
+    );
 
     const link = screen.getByRole('link');
-    expect(link).toHaveAttribute(
-      'href',
-      '/settings/security-and-privacy/reveal-srp-list',
-    );
+    expect(link).toHaveAttribute('href', MANAGE_WALLET_RECOVERY_V2_ROUTE);
   });
 
   it('shows "Back up incomplete" tag when SRP is not backed up', () => {
@@ -42,7 +46,10 @@ describe('ManageWalletRecoveryItem', () => {
       firstTimeFlowType: 'create',
       seedPhraseBackedUp: false,
     });
-    renderWithProvider(<ManageWalletRecoveryItem />, store);
+    renderWithProvider(
+      <ManageWalletRecoveryItem route={MANAGE_WALLET_RECOVERY_V2_ROUTE} />,
+      store,
+    );
 
     expect(screen.getByTestId('backup-incomplete-tag')).toBeInTheDocument();
     expect(
@@ -55,7 +62,10 @@ describe('ManageWalletRecoveryItem', () => {
       firstTimeFlowType: 'create',
       seedPhraseBackedUp: true,
     });
-    renderWithProvider(<ManageWalletRecoveryItem />, store);
+    renderWithProvider(
+      <ManageWalletRecoveryItem route={MANAGE_WALLET_RECOVERY_V2_ROUTE} />,
+      store,
+    );
 
     expect(
       screen.queryByTestId('backup-incomplete-tag'),
@@ -67,7 +77,10 @@ describe('ManageWalletRecoveryItem', () => {
       firstTimeFlowType: 'import',
       seedPhraseBackedUp: false,
     });
-    renderWithProvider(<ManageWalletRecoveryItem />, store);
+    renderWithProvider(
+      <ManageWalletRecoveryItem route={MANAGE_WALLET_RECOVERY_V2_ROUTE} />,
+      store,
+    );
 
     expect(
       screen.queryByTestId('backup-incomplete-tag'),

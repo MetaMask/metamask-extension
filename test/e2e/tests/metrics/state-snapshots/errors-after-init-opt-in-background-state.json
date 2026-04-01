@@ -109,7 +109,8 @@
     "quotesInitialLoadTime": null,
     "quotesLastFetched": null,
     "quotesLoadingStatus": null,
-    "quotesRefreshCount": 0
+    "quotesRefreshCount": 0,
+    "tokenWarnings": "object"
   },
   "BridgeStatusController": { "txHistory": "object" },
   "ClaimsController": "object",
@@ -377,7 +378,7 @@
   },
   "SnapInsightsController": { "insights": "object" },
   "SnapInterfaceController": { "interfaces": "object" },
-  "SnapsRegistry": {
+  "SnapRegistryController": {
     "database": "object",
     "databaseUnavailable": "boolean",
     "lastUpdated": "number",

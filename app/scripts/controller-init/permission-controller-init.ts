@@ -55,11 +55,11 @@ export const PermissionControllerInit: ControllerInitFunction<
       ) as Caip25CaveatBuilderOptions['findNetworkClientIdByChainId'],
       isNonEvmScopeSupported: initMessenger.call.bind(
         initMessenger,
-        'MultichainRouter:isSupportedScope',
+        'MultichainRoutingService:isSupportedScope',
       ) as Caip25CaveatBuilderOptions['isNonEvmScopeSupported'],
       getNonEvmAccountAddresses: initMessenger.call.bind(
         initMessenger,
-        'MultichainRouter:getSupportedAccounts',
+        'MultichainRoutingService:getSupportedAccounts',
       ) as Caip25CaveatBuilderOptions['getNonEvmAccountAddresses'],
     }),
     permissionSpecifications: {
