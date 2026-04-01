@@ -1,21 +1,23 @@
-import React from 'react';
-import configureMockStore from 'redux-mock-store';
-import thunk from 'redux-thunk';
-import { screen, fireEvent, act, waitFor } from '@testing-library/react';
 import type {
   AccountState,
   Position,
   PerpsMarketData,
 } from '@metamask/perps-controller';
-import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
+import { screen, fireEvent, act, waitFor } from '@testing-library/react';
+import React from 'react';
+import configureMockStore from 'redux-mock-store';
+import thunk from 'redux-thunk';
+
 import mockState from '../../../test/data/mock-state.json';
 import { enLocale as messages } from '../../../test/lib/i18n-helpers';
+import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
 import {
   mockPositions,
   mockAccountState,
   mockCryptoMarkets,
   mockHip3Markets,
 } from '../../components/app/perps/mocks';
+import PerpsOrderEntryPage from './perps-order-entry-page';
 
 jest.mock('../../hooks/perps/usePerpsEligibility', () => ({
   usePerpsEligibility: () => ({ isEligible: true }),
@@ -48,9 +50,53 @@ jest.mock('../../store/background-connection', () => ({
     mockSubmitRequestToBackground(...args),
 }));
 
+let priceSubscriptionCallback: ((updates: unknown[]) => void) | undefined;
+let orderBookSubscriptionCallback: ((book: unknown) => void) | undefined;
+
+const setBackgroundRequestDefaults = () => {
+  mockSubmitRequestToBackground.mockImplementation((method: string) => {
+    if (method === 'perpsActivateStreaming') {
+      return Promise.resolve(undefined);
+    }
+    return Promise.resolve({ success: true });
+  });
+};
+
+const getInsufficientBalanceMessage = (
+  requiredMargin: string,
+  availableBalance: string,
+) =>
+  messages.perpsOrderValidationInsufficientBalance.message
+    .replace('$1', requiredMargin)
+    .replace('$2', availableBalance);
+
+// Mock controller for usePerpsController() - delegates to submitRequestToBackground so test assertions pass
+const mockPerpsController = {
+  placeOrder: jest
+    .fn()
+    .mockImplementation((...args: unknown[]) =>
+      mockSubmitRequestToBackground('perpsPlaceOrder', args),
+    ),
+  closePosition: jest
+    .fn()
+    .mockImplementation((...args: unknown[]) =>
+      mockSubmitRequestToBackground('perpsClosePosition', args),
+    ),
+  updatePositionTPSL: jest
+    .fn()
+    .mockImplementation((...args: unknown[]) =>
+      mockSubmitRequestToBackground('perpsUpdatePositionTPSL', args),
+    ),
+  subscribeToPrices: jest.fn(() => jest.fn()),
+  subscribeToOrderBook: jest.fn(() => jest.fn()),
+};
+
 jest.mock('../../providers/perps', () => {
   return {
     getPerpsStreamManager: () => mockGetPerpsStreamManager(),
+    PerpsControllerProvider: ({ children }: { children: React.ReactNode }) =>
+      children,
+    usePerpsController: () => mockPerpsController,
   };
 });
 
@@ -142,10 +188,6 @@ jest.mock('../../components/app/perps/order-entry/limit-price-warnings', () => {
       mockIsNearLiquidationPrice(...args),
   };
 });
-
-// eslint-disable-next-line import-x/first
-import PerpsOrderEntryPage from './perps-order-entry-page';
-
 describe('PerpsOrderEntryPage', () => {
   const middlewares = [thunk];
   const mockStore = configureMockStore(middlewares);
@@ -162,8 +204,22 @@ describe('PerpsOrderEntryPage', () => {
     },
   });
 
+  const createMockStateWithLocale = (
+    locale: string,
+    perpsEnabled = true,
+  ): ReturnType<typeof createMockState> => ({
+    ...createMockState(perpsEnabled),
+    localeMessages: {
+      ...(createMockState(perpsEnabled).localeMessages ?? {}),
+      currentLocale: locale,
+    },
+  });
+
   beforeEach(() => {
     jest.clearAllMocks();
+    setBackgroundRequestDefaults();
+    priceSubscriptionCallback = undefined;
+    orderBookSubscriptionCallback = undefined;
     const { isNearLiquidationPrice: realIsNearLiquidation } =
       jest.requireActual(
         '../../components/app/perps/order-entry/limit-price-warnings',
@@ -185,6 +241,7 @@ describe('PerpsOrderEntryPage', () => {
       markets: [...mockCryptoMarkets, ...mockHip3Markets],
       isInitialLoading: false,
     });
+    mockGetPerpsStreamManager.mockReturnValue(mockStreamManagerBase);
   });
 
   describe('rendering', () => {
@@ -456,11 +513,149 @@ describe('PerpsOrderEntryPage', () => {
         screen.getByTestId('limit-price-liquidation-warning'),
       ).toBeInTheDocument();
     });
+
+    it('disables submit and shows validation message when amount exceeds available balance', () => {
+      mockLiveAccount.mockReturnValue({
+        account: {
+          ...mockAccountState,
+          availableBalance: '3.06',
+        },
+        isInitialLoading: false,
+      });
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      const amountContainer = screen.getByTestId('amount-input-field');
+      const input = amountContainer.querySelector('input');
+      fireEvent.change(input as HTMLInputElement, {
+        target: { value: '20' },
+      });
+
+      expect(screen.getByTestId('submit-order-button')).toBeDisabled();
+      expect(
+        screen.getByText(getInsufficientBalanceMessage('20.00', '3.06')),
+      ).toBeInTheDocument();
+    });
+
+    it('disables submit in modify mode when add-to-position amount exceeds available balance', () => {
+      mockSearchParams.set('mode', 'modify');
+      mockLivePositions.mockReturnValue({
+        positions: mockPositions,
+        isInitialLoading: false,
+      });
+      mockLiveAccount.mockReturnValue({
+        account: {
+          ...mockAccountState,
+          availableBalance: '3.06',
+        },
+        isInitialLoading: false,
+      });
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      const amountContainer = screen.getByTestId('amount-input-field');
+      const input = amountContainer.querySelector('input');
+      fireEvent.change(input as HTMLInputElement, {
+        target: { value: '20' },
+      });
+
+      expect(screen.getByTestId('submit-order-button')).toBeDisabled();
+      expect(
+        screen.getByText(getInsufficientBalanceMessage('20.00', '3.06')),
+      ).toBeInTheDocument();
+    });
+
+    it('does not disable submit in modify mode when 100% amount is floored to available balance', () => {
+      mockSearchParams.set('mode', 'modify');
+      mockLivePositions.mockReturnValue({
+        positions: mockPositions,
+        isInitialLoading: false,
+      });
+      mockLiveAccount.mockReturnValue({
+        account: {
+          ...mockAccountState,
+          availableBalance: '3.066',
+        },
+        isInitialLoading: false,
+      });
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      const percentContainer = screen.getByTestId('balance-percent-input');
+      const percentInput = percentContainer.querySelector('input');
+      fireEvent.change(percentInput as HTMLInputElement, {
+        target: { value: '100' },
+      });
+
+      expect(screen.getByTestId('submit-order-button')).not.toBeDisabled();
+      expect(
+        screen.queryByText(getInsufficientBalanceMessage('3.07', '3.07')),
+      ).not.toBeInTheDocument();
+    });
+
+    it('shows floored available balance in insufficient balance message', () => {
+      mockLiveAccount.mockReturnValue({
+        account: {
+          ...mockAccountState,
+          availableBalance: '3.066',
+        },
+        isInitialLoading: false,
+      });
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      const amountContainer = screen.getByTestId('amount-input-field');
+      const input = amountContainer.querySelector('input');
+      fireEvent.change(input as HTMLInputElement, {
+        target: { value: '3.07' },
+      });
+
+      expect(screen.getByTestId('submit-order-button')).toBeDisabled();
+      expect(
+        screen.getByText(getInsufficientBalanceMessage('3.07', '3.06')),
+      ).toBeInTheDocument();
+      expect(
+        screen.queryByText(getInsufficientBalanceMessage('3.07', '3.07')),
+      ).not.toBeInTheDocument();
+    });
+
+    it('does not disable submit when amount equals available balance', () => {
+      mockLiveAccount.mockReturnValue({
+        account: {
+          ...mockAccountState,
+          availableBalance: '3.06',
+        },
+        isInitialLoading: false,
+      });
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      const amountContainer = screen.getByTestId('amount-input-field');
+      const input = amountContainer.querySelector('input');
+      fireEvent.change(input as HTMLInputElement, {
+        target: { value: '3.06' },
+      });
+
+      expect(screen.getByTestId('submit-order-button')).not.toBeDisabled();
+    });
+
+    it('disables submit in close mode when position is missing', () => {
+      mockSearchParams.set('mode', 'close');
+      mockLivePositions.mockReturnValue({
+        positions: [],
+        isInitialLoading: false,
+      });
+
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      expect(screen.getByTestId('submit-order-button')).toBeDisabled();
+    });
   });
 
   describe('order submission', () => {
     beforeEach(() => {
-      mockSubmitRequestToBackground.mockResolvedValue({ success: true });
+      setBackgroundRequestDefaults();
     });
 
     it('calls placeOrder on submit for new market order', async () => {
@@ -489,8 +684,72 @@ describe('PerpsOrderEntryPage', () => {
       );
     });
 
+    it('does not call placeOrder when amount exceeds available balance', async () => {
+      mockLiveAccount.mockReturnValue({
+        account: {
+          ...mockAccountState,
+          availableBalance: '3.06',
+        },
+        isInitialLoading: false,
+      });
+
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      const amountContainer = screen.getByTestId('amount-input-field');
+      const input = amountContainer.querySelector('input');
+      fireEvent.change(input as HTMLInputElement, {
+        target: { value: '20' },
+      });
+
+      await act(async () => {
+        fireEvent.click(screen.getByTestId('submit-order-button'));
+      });
+
+      const hasPlaceOrderCall = mockSubmitRequestToBackground.mock.calls.some(
+        (call) => call[0] === 'perpsPlaceOrder',
+      );
+      expect(hasPlaceOrderCall).toBe(false);
+    });
+
+    it('does not call placeOrder in modify mode when add-to-position amount exceeds available balance', async () => {
+      mockSearchParams.set('mode', 'modify');
+      mockLivePositions.mockReturnValue({
+        positions: mockPositions,
+        isInitialLoading: false,
+      });
+      mockLiveAccount.mockReturnValue({
+        account: {
+          ...mockAccountState,
+          availableBalance: '3.06',
+        },
+        isInitialLoading: false,
+      });
+
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      const amountContainer = screen.getByTestId('amount-input-field');
+      const input = amountContainer.querySelector('input');
+      fireEvent.change(input as HTMLInputElement, {
+        target: { value: '20' },
+      });
+
+      await act(async () => {
+        fireEvent.click(screen.getByTestId('submit-order-button'));
+      });
+
+      const hasPlaceOrderCall = mockSubmitRequestToBackground.mock.calls.some(
+        (call) => call[0] === 'perpsPlaceOrder',
+      );
+      expect(hasPlaceOrderCall).toBe(false);
+    });
+
     it('shows error when order fails', async () => {
       mockSubmitRequestToBackground.mockImplementation((method: string) => {
+        if (method === 'perpsActivateStreaming') {
+          return Promise.resolve(undefined);
+        }
         if (method === 'perpsPlaceOrder') {
           return Promise.resolve({
             success: false,
@@ -513,11 +772,16 @@ describe('PerpsOrderEntryPage', () => {
         fireEvent.click(screen.getByTestId('submit-order-button'));
       });
 
-      expect(screen.getByText('Insufficient margin')).toBeInTheDocument();
+      await waitFor(() => {
+        expect(screen.getByText('Insufficient margin')).toBeInTheDocument();
+      });
     });
 
     it('shows error when controller throws', async () => {
       mockSubmitRequestToBackground.mockImplementation((method: string) => {
+        if (method === 'perpsActivateStreaming') {
+          return Promise.resolve(undefined);
+        }
         if (method === 'perpsPlaceOrder') {
           return Promise.reject(new Error('Network error'));
         }
@@ -537,7 +801,9 @@ describe('PerpsOrderEntryPage', () => {
         fireEvent.click(screen.getByTestId('submit-order-button'));
       });
 
-      expect(screen.getByText('Network error')).toBeInTheDocument();
+      await waitFor(() => {
+        expect(screen.getByText('Network error')).toBeInTheDocument();
+      });
     });
 
     it('calls closePosition when in close mode', async () => {
@@ -621,6 +887,89 @@ describe('PerpsOrderEntryPage', () => {
       expect(mockUseNavigate).toHaveBeenCalledWith('/perps/market/ETH');
     });
 
+    it('submits normalized TP/SL values when modified', async () => {
+      mockSearchParams.set('mode', 'modify');
+      mockLivePositions.mockReturnValue({
+        positions: mockPositions,
+        isInitialLoading: false,
+      });
+
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      const tpContainer = screen.getByTestId('tp-price-input');
+      const tpInput = tpContainer.querySelector('input');
+      fireEvent.change(tpInput as HTMLInputElement, {
+        target: { value: '3300.1' },
+      });
+      fireEvent.blur(tpInput as HTMLInputElement);
+
+      const slContainer = screen.getByTestId('sl-price-input');
+      const slInput = slContainer.querySelector('input');
+      fireEvent.change(slInput as HTMLInputElement, {
+        target: { value: '2500' },
+      });
+      fireEvent.blur(slInput as HTMLInputElement);
+
+      await act(async () => {
+        fireEvent.click(screen.getByTestId('submit-order-button'));
+      });
+
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'perpsUpdatePositionTPSL',
+        [
+          expect.objectContaining({
+            symbol: 'ETH',
+            takeProfitPrice: '3300.1',
+            stopLossPrice: '2500',
+          }),
+        ],
+      );
+    });
+
+    it('submits undefined TP/SL values when fields are cleared', async () => {
+      mockSearchParams.set('mode', 'modify');
+      mockLivePositions.mockReturnValue({
+        positions: mockPositions,
+        isInitialLoading: false,
+      });
+
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      const tpContainer = screen.getByTestId('tp-price-input');
+      const tpInput = tpContainer.querySelector('input');
+      fireEvent.change(tpInput as HTMLInputElement, {
+        target: { value: '' },
+      });
+      fireEvent.blur(tpInput as HTMLInputElement);
+
+      const slContainer = screen.getByTestId('sl-price-input');
+      const slInput = slContainer.querySelector('input');
+      fireEvent.change(slInput as HTMLInputElement, {
+        target: { value: '' },
+      });
+      fireEvent.blur(slInput as HTMLInputElement);
+
+      await act(async () => {
+        fireEvent.click(screen.getByTestId('submit-order-button'));
+      });
+
+      const updateCall = mockSubmitRequestToBackground.mock.calls.find(
+        ([method]) => method === 'perpsUpdatePositionTPSL',
+      );
+      expect(updateCall).toBeDefined();
+
+      const payload = updateCall?.[1]?.[0] as {
+        symbol?: string;
+        takeProfitPrice?: string;
+        stopLossPrice?: string;
+      };
+      expect(payload.symbol).toBe('ETH');
+      expect(payload.takeProfitPrice).toBeUndefined();
+      expect(payload.stopLossPrice).toBeUndefined();
+    });
+
     it('does not submit when currentPrice is 0', async () => {
       mockLiveMarketData.mockReturnValue({
         markets: mockCryptoMarkets.map((m) => ({
@@ -642,6 +991,30 @@ describe('PerpsOrderEntryPage', () => {
         expect.anything(),
       );
     });
+
+    it('does not fall back to placeOrder in close mode when position is missing', async () => {
+      mockSearchParams.set('mode', 'close');
+      mockLivePositions.mockReturnValue({
+        positions: [],
+        isInitialLoading: false,
+      });
+
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      await act(async () => {
+        fireEvent.click(screen.getByTestId('submit-order-button'));
+      });
+
+      expect(mockSubmitRequestToBackground).not.toHaveBeenCalledWith(
+        'perpsPlaceOrder',
+        expect.anything(),
+      );
+      expect(mockSubmitRequestToBackground).not.toHaveBeenCalledWith(
+        'perpsClosePosition',
+        expect.anything(),
+      );
+    });
   });
 
   describe('formStateToOrderParams', () => {
@@ -651,7 +1024,7 @@ describe('PerpsOrderEntryPage', () => {
         positions: mockPositions,
         isInitialLoading: false,
       });
-      mockSubmitRequestToBackground.mockResolvedValue({ success: true });
+      setBackgroundRequestDefaults();
 
       const store = mockStore(createMockState());
       renderWithProvider(<PerpsOrderEntryPage />, store);
@@ -711,6 +1084,7 @@ describe('PerpsOrderEntryPage', () => {
         prices: {
           subscribe: jest.fn((cb: (updates: unknown[]) => void) => {
             priceCallback = cb;
+            priceSubscriptionCallback = cb;
             return jest.fn();
           }) as jest.Mock,
           getCachedData: () => [],
@@ -718,6 +1092,7 @@ describe('PerpsOrderEntryPage', () => {
         orderBook: {
           subscribe: jest.fn((cb: (book: unknown) => void) => {
             orderBookCallback = cb;
+            orderBookSubscriptionCallback = cb;
             return jest.fn();
           }) as jest.Mock,
           getCachedData: () => null,
@@ -734,11 +1109,11 @@ describe('PerpsOrderEntryPage', () => {
       renderWithProvider(<PerpsOrderEntryPage />, store);
 
       await waitFor(() => {
-        expect(typeof priceCallback).toBe('function');
+        expect(typeof priceSubscriptionCallback).toBe('function');
       });
 
       act(() => {
-        priceCallback([
+        priceSubscriptionCallback?.([
           {
             symbol: 'ETH',
             price: '3200.50',
@@ -756,11 +1131,11 @@ describe('PerpsOrderEntryPage', () => {
       renderWithProvider(<PerpsOrderEntryPage />, store);
 
       await waitFor(() => {
-        expect(typeof priceCallback).toBe('function');
+        expect(typeof priceSubscriptionCallback).toBe('function');
       });
 
       act(() => {
-        priceCallback([
+        priceSubscriptionCallback?.([
           {
             symbol: 'ETH',
             price: '3100.00',
@@ -776,11 +1151,11 @@ describe('PerpsOrderEntryPage', () => {
       renderWithProvider(<PerpsOrderEntryPage />, store);
 
       await waitFor(() => {
-        expect(typeof priceCallback).toBe('function');
+        expect(typeof priceSubscriptionCallback).toBe('function');
       });
 
       act(() => {
-        priceCallback([
+        priceSubscriptionCallback?.([
           { symbol: 'BTC', price: '50000.00', markPrice: '50001.00' },
         ]);
       });
@@ -793,11 +1168,11 @@ describe('PerpsOrderEntryPage', () => {
       renderWithProvider(<PerpsOrderEntryPage />, store);
 
       await waitFor(() => {
-        expect(typeof orderBookCallback).toBe('function');
+        expect(typeof orderBookSubscriptionCallback).toBe('function');
       });
 
       act(() => {
-        orderBookCallback({
+        orderBookSubscriptionCallback?.({
           bids: [{ price: '3199', size: '10' }],
           asks: [{ price: '3201', size: '10' }],
           midPrice: '3200.00',
@@ -812,11 +1187,11 @@ describe('PerpsOrderEntryPage', () => {
       renderWithProvider(<PerpsOrderEntryPage />, store);
 
       await waitFor(() => {
-        expect(typeof orderBookCallback).toBe('function');
+        expect(typeof orderBookSubscriptionCallback).toBe('function');
       });
 
       act(() => {
-        orderBookCallback({
+        orderBookSubscriptionCallback?.({
           bids: [],
           asks: [],
           midPrice: null,
@@ -829,7 +1204,7 @@ describe('PerpsOrderEntryPage', () => {
 
   describe('order submission error paths', () => {
     beforeEach(() => {
-      mockSubmitRequestToBackground.mockResolvedValue({ success: true });
+      setBackgroundRequestDefaults();
     });
 
     it('shows error when closePosition fails', async () => {
@@ -839,8 +1214,14 @@ describe('PerpsOrderEntryPage', () => {
         isInitialLoading: false,
       });
       mockSubmitRequestToBackground.mockImplementation((method: string) => {
+        if (method === 'perpsActivateStreaming') {
+          return Promise.resolve(undefined);
+        }
         if (method === 'perpsClosePosition') {
-          return Promise.resolve({ success: false, error: 'Close failed' });
+          return Promise.resolve({
+            success: false,
+            error: 'Close failed',
+          });
         }
         return Promise.resolve({ success: true });
       });
@@ -852,7 +1233,9 @@ describe('PerpsOrderEntryPage', () => {
         fireEvent.click(screen.getByTestId('submit-order-button'));
       });
 
-      expect(screen.getByText('Close failed')).toBeInTheDocument();
+      await waitFor(() => {
+        expect(screen.getByText('Close failed')).toBeInTheDocument();
+      });
     });
 
     it('shows error when updatePositionTPSL fails', async () => {
@@ -862,6 +1245,9 @@ describe('PerpsOrderEntryPage', () => {
         isInitialLoading: false,
       });
       mockSubmitRequestToBackground.mockImplementation((method: string) => {
+        if (method === 'perpsActivateStreaming') {
+          return Promise.resolve(undefined);
+        }
         if (method === 'perpsUpdatePositionTPSL') {
           return Promise.resolve({
             success: false,
@@ -878,14 +1264,19 @@ describe('PerpsOrderEntryPage', () => {
         fireEvent.click(screen.getByTestId('submit-order-button'));
       });
 
-      expect(screen.getByText('TPSL update failed')).toBeInTheDocument();
+      await waitFor(() => {
+        expect(screen.getByText('TPSL update failed')).toBeInTheDocument();
+      });
     });
 
     it('shows generic error for non-Error throws', async () => {
+      const nonErrorReason: unknown = 'string error';
       mockSubmitRequestToBackground.mockImplementation((method: string) => {
+        if (method === 'perpsActivateStreaming') {
+          return Promise.resolve(undefined);
+        }
         if (method === 'perpsPlaceOrder') {
-          // eslint-disable-next-line prefer-promise-reject-errors
-          return Promise.reject('string error');
+          return Promise.reject(nonErrorReason);
         }
         return Promise.resolve({ success: true });
       });
@@ -903,7 +1294,11 @@ describe('PerpsOrderEntryPage', () => {
         fireEvent.click(screen.getByTestId('submit-order-button'));
       });
 
-      expect(screen.getByText('An unknown error occurred')).toBeInTheDocument();
+      await waitFor(() => {
+        expect(
+          screen.getByText('An unknown error occurred'),
+        ).toBeInTheDocument();
+      });
     });
 
     it('navigates back after successful limit order', async () => {
@@ -939,12 +1334,42 @@ describe('PerpsOrderEntryPage', () => {
       );
       expect(mockUseNavigate).toHaveBeenCalledWith('/perps/market/ETH');
     });
+
+    it('does not submit a limit order when locale-formatted limit price is entered', async () => {
+      mockSearchParams.set('orderType', 'limit');
+
+      const store = mockStore(createMockStateWithLocale('de'));
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      const amountContainer = screen.getByTestId('amount-input-field');
+      const amountInput = amountContainer.querySelector('input');
+      fireEvent.change(amountInput as HTMLInputElement, {
+        target: { value: '500' },
+      });
+
+      const limitContainer = screen.getByTestId('limit-price-input');
+      const limitInput = limitContainer.querySelector('input');
+      fireEvent.focus(limitInput as HTMLInputElement);
+      fireEvent.change(limitInput as HTMLInputElement, {
+        target: { value: '45.050,00' },
+      });
+      fireEvent.blur(limitInput as HTMLInputElement);
+
+      await act(async () => {
+        fireEvent.click(screen.getByTestId('submit-order-button'));
+      });
+
+      const placeOrderCalls = mockSubmitRequestToBackground.mock.calls.filter(
+        ([method]) => method === 'perpsPlaceOrder',
+      );
+      expect(placeOrderCalls).toHaveLength(0);
+    });
   });
 
   describe('pending order effects', () => {
     beforeEach(() => {
       jest.useFakeTimers();
-      mockSubmitRequestToBackground.mockResolvedValue({ success: true });
+      setBackgroundRequestDefaults();
     });
 
     afterEach(() => {

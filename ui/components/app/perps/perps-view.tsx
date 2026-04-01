@@ -1,5 +1,12 @@
-import { Box, BoxFlexDirection } from '@metamask/design-system-react';
-import React, { useMemo } from 'react';
+import {
+  Box,
+  BoxFlexDirection,
+  Text,
+  TextVariant,
+  TextColor,
+} from '@metamask/design-system-react';
+import type { Order, Position } from '@metamask/perps-controller';
+import React, { useCallback, useMemo, useState } from 'react';
 import {
   usePerpsLivePositions,
   usePerpsLiveOrders,
@@ -7,6 +14,9 @@ import {
 } from '../../../hooks/perps/stream';
 import { usePerpsTransactionHistory } from '../../../hooks/perps/usePerpsTransactionHistory';
 import { PERPS_RECENT_ACTIVITY_MAX_TRANSACTIONS } from '../../../../shared/constants/perps';
+import { useI18nContext } from '../../../hooks/useI18nContext';
+import { submitRequestToBackground } from '../../../store/background-connection';
+import { getPerpsStreamManager } from '../../../providers/perps';
 
 import { usePerpsDepositConfirmation } from './hooks/usePerpsDepositConfirmation';
 import { usePerpsWithdrawNavigation } from './hooks/usePerpsWithdrawNavigation';
@@ -29,8 +39,18 @@ import { PerpsWatchlist } from './perps-watchlist';
  * Uses PerpsStreamManager for cached data, enabling smooth navigation
  * without loading skeletons when switching between views.
  */
+type BatchCloseResult = {
+  success: boolean;
+  successCount?: number;
+  failureCount?: number;
+};
+
 export const PerpsView: React.FC = () => {
+  const t = useI18nContext();
   const { trigger: triggerDeposit } = usePerpsDepositConfirmation();
+  const [isCloseAllPending, setIsCloseAllPending] = useState(false);
+  const [isCancelAllPending, setIsCancelAllPending] = useState(false);
+  const [batchActionError, setBatchActionError] = useState<string | null>(null);
   const { trigger: triggerWithdraw } = usePerpsWithdrawNavigation();
 
   // Stream hooks must run before any effects that touch PerpsStreamManager.
@@ -62,6 +82,70 @@ export const PerpsView: React.FC = () => {
   const orders = useMemo(() => {
     return allOrders.filter((order) => order.status === 'open');
   }, [allOrders]);
+
+  const applyPositionsSnapshot = useCallback((next: Position[]) => {
+    const streamManager = getPerpsStreamManager();
+    streamManager.clearAllOptimisticTPSL();
+    streamManager.pushPositionsWithOverrides(next);
+  }, []);
+
+  const applyOrdersSnapshot = useCallback((next: Order[]) => {
+    getPerpsStreamManager().orders.pushData(next);
+  }, []);
+
+  const handleCloseAllPositions = useCallback(async () => {
+    if (positions.length === 0) {
+      return;
+    }
+    setBatchActionError(null);
+    setIsCloseAllPending(true);
+    try {
+      const result = await submitRequestToBackground<BatchCloseResult>(
+        'perpsClosePositions',
+        [{ closeAll: true }],
+      );
+      if (!result?.success) {
+        setBatchActionError(t('somethingWentWrong'));
+        return;
+      }
+      const fresh = await submitRequestToBackground<Position[]>(
+        'perpsGetPositions',
+        [],
+      );
+      applyPositionsSnapshot(fresh ?? []);
+    } catch {
+      setBatchActionError(t('somethingWentWrong'));
+    } finally {
+      setIsCloseAllPending(false);
+    }
+  }, [applyPositionsSnapshot, positions.length, t]);
+
+  const handleCancelAllOrders = useCallback(async () => {
+    if (orders.length === 0) {
+      return;
+    }
+    setBatchActionError(null);
+    setIsCancelAllPending(true);
+    try {
+      const result = await submitRequestToBackground<BatchCloseResult>(
+        'perpsCancelOrders',
+        [{ cancelAll: true }],
+      );
+      if (!result?.success) {
+        setBatchActionError(t('somethingWentWrong'));
+        return;
+      }
+      const fresh = await submitRequestToBackground<Order[]>(
+        'perpsGetOpenOrders',
+        [],
+      );
+      applyOrdersSnapshot(fresh ?? []);
+    } catch {
+      setBatchActionError(t('somethingWentWrong'));
+    } finally {
+      setIsCancelAllPending(false);
+    }
+  }, [applyOrdersSnapshot, orders.length, t]);
 
   const hasPositions = positions.length > 0;
   const isLoading = positionsLoading || ordersLoading || marketsLoading;
@@ -108,8 +192,21 @@ export const PerpsView: React.FC = () => {
         onWithdraw={triggerWithdraw}
       />
 
+      {batchActionError ? (
+        <Text variant={TextVariant.BodySm} color={TextColor.ErrorDefault}>
+          {batchActionError}
+        </Text>
+      ) : null}
+
       {/* Positions + Orders sections */}
-      <PerpsPositionsOrders positions={positions} orders={orders} />
+      <PerpsPositionsOrders
+        positions={positions}
+        orders={orders}
+        onCloseAllPositions={handleCloseAllPositions}
+        onCancelAllOrders={handleCancelAllOrders}
+        isCloseAllPending={isCloseAllPending}
+        isCancelAllPending={isCancelAllPending}
+      />
 
       {/* Watchlist */}
       <PerpsWatchlist />
