@@ -235,6 +235,10 @@ const PerpsOrderEntryPage: React.FC = () => {
   }, [decodedSymbol, allMarkets]);
 
   useEffect(() => {
+    tradingScreenTrackedRef.current = false;
+  }, [decodedSymbol]);
+
+  useEffect(() => {
     if (marketsLoading || !decodedSymbol || tradingScreenTrackedRef.current) {
       return;
     }

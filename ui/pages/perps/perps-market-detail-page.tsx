@@ -616,6 +616,10 @@ const PerpsMarketDetailPage: React.FC = () => {
   }, [selectedAddress]);
 
   useEffect(() => {
+    assetDetailScreenTrackedRef.current = false;
+  }, [decodedSymbol]);
+
+  useEffect(() => {
     if (
       marketsLoading ||
       !decodedSymbol ||

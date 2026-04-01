@@ -63,8 +63,7 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
   const t = useI18nContext();
   const { track } = usePerpsEventTracking();
   const positionCloseScreenTrackedRef = useRef(false);
-  const { formatCurrencyWithMinThreshold, formatTokenQuantity } =
-    useFormatters();
+  const { formatCurrencyWithMinThreshold } = useFormatters();
 
   const [closePercent, setClosePercent] = useState(100);
   const [isSubmitting, setIsSubmitting] = useState(false);
