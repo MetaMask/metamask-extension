@@ -5341,9 +5341,6 @@
     "message": "khả dụng",
     "description": "is the available balance amount"
   },
-  "perpsAvailableBalance": {
-    "message": "Số dư khả dụng"
-  },
   "perpsAvailableToClose": {
     "message": "Có sẵn để đóng"
   },
@@ -5505,12 +5502,6 @@
   "perpsMarkets": {
     "message": "Thị trường"
   },
-  "perpsMax": {
-    "message": "Tối đa"
-  },
-  "perpsMaxRemovable": {
-    "message": "Mức tối đa có thể rút"
-  },
   "perpsMid": {
     "message": "Giá trung bình"
   },
@@ -5563,9 +5554,6 @@
   },
   "perpsPosition": {
     "message": "Vị thế"
-  },
-  "perpsPositionSize": {
-    "message": "Kích thước vị thế"
   },
   "perpsPositions": {
     "message": "Vị thế"

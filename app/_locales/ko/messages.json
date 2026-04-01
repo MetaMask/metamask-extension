@@ -5341,9 +5341,6 @@
     "message": "사용 가능",
     "description": "is the available balance amount"
   },
-  "perpsAvailableBalance": {
-    "message": "사용 가능한 잔액"
-  },
   "perpsAvailableToClose": {
     "message": "청산 가능"
   },
@@ -5505,12 +5502,6 @@
   "perpsMarkets": {
     "message": "시장"
   },
-  "perpsMax": {
-    "message": "최대"
-  },
-  "perpsMaxRemovable": {
-    "message": "최대 인출 가능"
-  },
   "perpsMid": {
     "message": "중간값"
   },
@@ -5563,9 +5554,6 @@
   },
   "perpsPosition": {
     "message": "포지션"
-  },
-  "perpsPositionSize": {
-    "message": "포지션 크기"
   },
   "perpsPositions": {
     "message": "포지션"

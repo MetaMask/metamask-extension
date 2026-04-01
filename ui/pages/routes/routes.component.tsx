@@ -4,12 +4,7 @@
 import classnames from 'clsx';
 import React, { Suspense, useEffect, useRef } from 'react';
 import { useDispatch } from 'react-redux';
-import {
-  useLocation,
-  useNavigationType,
-  Navigate,
-  Outlet,
-} from 'react-router-dom';
+import { useLocation, Navigate, Outlet } from 'react-router-dom';
 import IdleTimer from 'react-idle-timer';
 
 import { useAppSelector } from '../../store/store';
@@ -486,7 +481,6 @@ export const routeConfig = [
 export default function Routes() {
   const dispatch = useDispatch();
   const location = useLocation();
-  const navType = useNavigationType();
 
   const alertOpen = useAppSelector((state) => state.appState.alertOpen);
   const alertMessage = useAppSelector((state) => state.appState.alertMessage);
@@ -614,10 +608,8 @@ export default function Routes() {
 
   // Track location changes for metrics
   useEffect(() => {
-    if (navType === 'PUSH') {
-      dispatch(pageChanged(location.pathname));
-    }
-  }, [location.pathname, navType, dispatch]);
+    dispatch(pageChanged(location.pathname));
+  }, [location.pathname, dispatch]);
 
   useEffect(() => {
     setTheme(theme);

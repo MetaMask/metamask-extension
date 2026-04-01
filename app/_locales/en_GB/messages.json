@@ -5399,8 +5399,14 @@
   "perpsAvailableBalance": {
     "message": "Available Perps balance: "
   },
+  "perpsAvailableToAdd": {
+    "message": "Available to add"
+  },
   "perpsAvailableToClose": {
     "message": "Available to close"
+  },
+  "perpsAvailableToSubtract": {
+    "message": "Available to subtract"
   },
   "perpsAvailableToTrade": {
     "message": "Available to trade",
@@ -5417,6 +5423,9 @@
   },
   "perpsCloseLong": {
     "message": "Close Long"
+  },
+  "perpsClosePartialMinNotional": {
+    "message": "Partial closes must be at least $1 in USD value. Increase the close amount or set the slider to 100%."
   },
   "perpsClosePosition": {
     "message": "Close position"
@@ -5550,7 +5559,7 @@
     "message": "Current price is near the estimated liquidation price"
   },
   "perpsLiquidationDistance": {
-    "message": "Liq. distance"
+    "message": "Liquidation distance"
   },
   "perpsLiquidationPrice": {
     "message": "Liquidation price"
@@ -5576,12 +5585,6 @@
   },
   "perpsMarkets": {
     "message": "Markets"
-  },
-  "perpsMax": {
-    "message": "Max"
-  },
-  "perpsMaxRemovable": {
-    "message": "Max removable"
   },
   "perpsMid": {
     "message": "Mid"
@@ -5627,6 +5630,10 @@
   "perpsOraclePriceTooltip": {
     "message": "The median of external prices reported by validators, used for computing funding rate"
   },
+  "perpsOrderValidationInsufficientBalance": {
+    "message": "Insufficient balance: need $1, have $2",
+    "description": "$1 is the required margin amount and $2 is the available balance amount"
+  },
   "perpsOrders": {
     "message": "Orders"
   },
@@ -5635,9 +5642,6 @@
   },
   "perpsPosition": {
     "message": "Position"
-  },
-  "perpsPositionSize": {
-    "message": "Position Size"
   },
   "perpsPositions": {
     "message": "Positions"
