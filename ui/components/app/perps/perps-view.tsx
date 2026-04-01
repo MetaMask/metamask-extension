@@ -6,7 +6,8 @@ import {
   TextColor,
 } from '@metamask/design-system-react';
 import type { Order, Position } from '@metamask/perps-controller';
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   usePerpsLivePositions,
   usePerpsLiveOrders,
@@ -17,6 +18,11 @@ import { PERPS_RECENT_ACTIVITY_MAX_TRANSACTIONS } from '../../../../shared/const
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { submitRequestToBackground } from '../../../store/background-connection';
 import { getPerpsStreamManager } from '../../../providers/perps';
+import {
+  selectPerpsIsFirstTimeUser,
+  selectPerpsIsTestnet,
+} from '../../../selectors/perps-controller';
+import { setTutorialModalOpen } from '../../../ducks/perps';
 
 import { usePerpsDepositConfirmation } from './hooks/usePerpsDepositConfirmation';
 import { usePerpsWithdrawNavigation } from './hooks/usePerpsWithdrawNavigation';
@@ -47,6 +53,9 @@ type BatchCloseResult = {
 
 export const PerpsView: React.FC = () => {
   const t = useI18nContext();
+  const dispatch = useDispatch();
+  const isFirstTimeUser = useSelector(selectPerpsIsFirstTimeUser);
+  const isTestnet = useSelector(selectPerpsIsTestnet);
   const { trigger: triggerDeposit } = usePerpsDepositConfirmation();
   const [isCloseAllPending, setIsCloseAllPending] = useState(false);
   const [isCancelAllPending, setIsCancelAllPending] = useState(false);
@@ -149,6 +158,19 @@ export const PerpsView: React.FC = () => {
 
   const hasPositions = positions.length > 0;
   const isLoading = positionsLoading || ordersLoading || marketsLoading;
+
+  // Auto-open tutorial modal the first time a user enters the perps domain.
+  // Fires once loading resolves; the guard condition (isFirstTimeUser[network])
+  // prevents re-opening after the tutorial has been completed or skipped.
+  useEffect(() => {
+    if (isLoading) {
+      return;
+    }
+    const networkKey = isTestnet ? 'testnet' : 'mainnet';
+    if (isFirstTimeUser[networkKey]) {
+      dispatch(setTutorialModalOpen(true));
+    }
+  }, [dispatch, isFirstTimeUser, isLoading, isTestnet]);
 
   // Limit markets to 5 for explore sections
   const cryptoMarkets = useMemo(() => {

@@ -26,6 +26,7 @@ import { useTheme } from '../../../../hooks/useTheme';
 // eslint-disable-next-line import-x/no-restricted-paths
 import { getEnvironmentType } from '../../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../../shared/constants/app';
+import { submitRequestToBackground } from '../../../../store/background-connection';
 import WhatArePerpsStep from './steps/WhatArePerpsStep';
 import GoLongShortStep from './steps/GoLongShortStep';
 import ChooseLeverageStep from './steps/ChooseLeverageStep';
@@ -68,6 +69,7 @@ const PerpsTutorialModal: React.FC<PerpsTutorialModalProps> = ({ onClose }) => {
   const handleContinue = useCallback(() => {
     if (isLastStep) {
       dispatch(markTutorialCompleted());
+      submitRequestToBackground('perpsMarkTutorialCompleted', []);
     } else {
       const nextStep = TUTORIAL_STEPS_ORDER[currentStepIndex + 1];
       dispatch(setTutorialActiveStep(nextStep));
@@ -76,6 +78,7 @@ const PerpsTutorialModal: React.FC<PerpsTutorialModalProps> = ({ onClose }) => {
 
   const handleSkip = useCallback(() => {
     dispatch(setTutorialModalOpen(false));
+    submitRequestToBackground('perpsMarkTutorialCompleted', []);
   }, [dispatch]);
 
   const renderContent = useCallback(() => {
