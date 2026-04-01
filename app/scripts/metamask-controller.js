@@ -1051,8 +1051,6 @@ export default class MetamaskController extends EventEmitter {
                 }),
               addTransactionBatch: async (request) =>
                 this.txController.addTransactionBatch({
-                  // Adding actionId for batches, otherwise tx is missing from Activity tab.
-                  actionId: String(req.id),
                   ...request,
                   ...addTransactionExtraOptions,
                 }),

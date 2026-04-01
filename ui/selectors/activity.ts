@@ -56,20 +56,7 @@ export const selectLocalTransactions = createSelector(
       if (tx.hash && internalTxHashes.has(tx.hash.toLowerCase())) {
         return false;
       }
-
-      // Include pending transactions
-      // or locally submitted transactions (have actionId, origin=metamask, or no origin)
-      const isPending = tx.status in PENDING_STATUS_HASH;
-      const unsafeTx = tx as TransactionMeta & {
-        actionId?: unknown;
-        origin?: unknown;
-      };
-      const hasActionId = unsafeTx.actionId !== undefined;
-      const origin =
-        typeof unsafeTx.origin === 'string' ? unsafeTx.origin : undefined;
-      const isLocalOrigin = origin === 'metamask' || origin === undefined;
-
-      return isPending || hasActionId || isLocalOrigin;
+      return true;
     });
 
     const combined = [...filtered, ...smartTransactions];
