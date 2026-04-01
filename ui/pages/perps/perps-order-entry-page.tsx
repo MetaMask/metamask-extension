@@ -5,13 +5,6 @@ import React, {
   useEffect,
   useRef,
 } from 'react';
-import {
-  PERPS_EVENT_PROPERTY,
-  PERPS_EVENT_VALUE,
-  type OrderType,
-  type OrderParams,
-  type PriceUpdate,
-} from '@metamask/perps-controller';
 import { useSelector } from 'react-redux';
 import {
   Navigate,
@@ -37,34 +30,23 @@ import {
   ButtonVariant,
   ButtonSize,
 } from '@metamask/design-system-react';
-import { getIsPerpsExperienceAvailable } from '../../selectors/perps/feature-flags';
-import { getSelectedInternalAccount } from '../../selectors/accounts';
-import { useI18nContext } from '../../hooks/useI18nContext';
-import type {
-  OrderType,
-  OrderParams,
-  PriceUpdate,
+import {
+  PERPS_EVENT_PROPERTY,
+  PERPS_EVENT_VALUE,
+  type OrderType,
+  type OrderParams,
+  type PriceUpdate,
 } from '@metamask/perps-controller';
-import React, { useMemo, useCallback, useState, useEffect } from 'react';
-import { useSelector } from 'react-redux';
-import {
-  Navigate,
-  useNavigate,
-  useParams,
-  useSearchParams,
-} from 'react-router-dom';
-
-import {
-  selectPerpsTradeConfigurations,
-  selectPerpsIsTestnet,
-} from '../../selectors/perps-controller';
+import { MetaMetricsEventName } from '../../../shared/constants/metametrics';
 import {
   CandlePeriod,
   TimeDuration,
 } from '../../components/app/perps/constants/chartConfig';
-import { usePerpsEligibility, usePerpsEventTracking } from '../../hooks/perps';
-import { useFormatters } from '../../hooks/useFormatters';
 import { usePerpsDepositConfirmation } from '../../components/app/perps/hooks/usePerpsDepositConfirmation';
+import {
+  isLimitPriceUnfavorable as checkLimitPriceUnfavorable,
+  isNearLiquidationPrice as checkNearLiquidationPrice,
+} from '../../components/app/perps/order-entry/limit-price-warnings';
 import {
   OrderEntry,
   DirectionTabs,
@@ -74,11 +56,6 @@ import {
   type OrderMode,
   type OrderCalculations,
 } from '../../components/app/perps/order-entry';
-import { MetaMetricsEventName } from '../../../shared/constants/metametrics';
-import {
-  isLimitPriceUnfavorable as checkLimitPriceUnfavorable,
-  isNearLiquidationPrice as checkNearLiquidationPrice,
-} from '../../components/app/perps/order-entry/limit-price-warnings';
 import { PerpsDetailPageSkeleton } from '../../components/app/perps/perps-skeletons';
 import {
   getDisplayName,
@@ -90,7 +67,7 @@ import {
   DEFAULT_ROUTE,
   PERPS_MARKET_DETAIL_ROUTE,
 } from '../../helpers/constants/routes';
-import { usePerpsEligibility } from '../../hooks/perps';
+import { usePerpsEligibility, usePerpsEventTracking } from '../../hooks/perps';
 import {
   usePerpsLivePositions,
   usePerpsLiveAccount,
@@ -101,6 +78,10 @@ import { useFormatters } from '../../hooks/useFormatters';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { getPerpsStreamManager } from '../../providers/perps';
 import { getSelectedInternalAccount } from '../../selectors/accounts';
+import {
+  selectPerpsTradeConfigurations,
+  selectPerpsIsTestnet,
+} from '../../selectors/perps-controller';
 import { getIsPerpsExperienceAvailable } from '../../selectors/perps/feature-flags';
 import { submitRequestToBackground } from '../../store/background-connection';
 
