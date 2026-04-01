@@ -651,8 +651,8 @@ const PerpsOrderEntryPage: React.FC = () => {
           submitRequestToBackground('perpsSaveTradeConfiguration', [
             orderFormState.asset,
             orderFormState.leverage,
-          ]).catch(() => {
-            // Non-critical — silently ignore
+          ]).catch((e) => {
+            console.warn('[Perps] Save trade configuration failed:', e);
           });
 
           // Existing position is already in `allPositions`, so pending-order
@@ -697,6 +697,13 @@ const PerpsOrderEntryPage: React.FC = () => {
       if (!result.success) {
         throw new Error(result.error ?? 'Failed to place order');
       }
+
+      submitRequestToBackground('perpsSaveTradeConfiguration', [
+        orderFormState.asset,
+        orderFormState.leverage,
+      ]).catch((e) => {
+        console.warn('[Perps] Save trade configuration failed:', e);
+      });
 
       if (orderFormState.type === 'limit') {
         handleBackClick(
