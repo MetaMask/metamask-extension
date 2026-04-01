@@ -8838,6 +8838,9 @@
   "transaction": {
     "message": "transaction"
   },
+  "transactionConfirmed": {
+    "message": "Transaction confirmed"
+  },
   "transactionDataFunction": {
     "message": "Function"
   },
@@ -8849,6 +8852,9 @@
   },
   "transactionErrorNoContract": {
     "message": "Trying to call a function on a non-contract address."
+  },
+  "transactionFailed": {
+    "message": "Transaction failed"
   },
   "transactionFee": {
     "message": "Transaction fee"
@@ -8889,6 +8895,9 @@
   },
   "transactionShield": {
     "message": "Transaction Shield"
+  },
+  "transactionSubmitted": {
+    "message": "Transaction submitted"
   },
   "transactionTotalGasFee": {
     "message": "Total gas fee",

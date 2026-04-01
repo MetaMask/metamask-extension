@@ -11,6 +11,7 @@ import { MOCK_META_METRICS_ID } from '../../constants';
 import { login } from '../../page-objects/flows/login.flow';
 import { sendRedesignedTransactionToAddress } from '../../page-objects/flows/send-transaction.flow';
 import ActivityListPage from '../../page-objects/pages/home/activity-list';
+import HomePage from '../../page-objects/pages/home/homepage';
 
 const FEATURE_FLAGS_URL = 'https://client-config.api.cx.metamask.io/v1/flags';
 
@@ -180,6 +181,8 @@ describe('Transaction Finalized Event', function (this: Suite) {
         });
 
         // Get the transaction hash from the activity list
+        const homePage = new HomePage(driver);
+        await homePage.goToActivityList();
         const activityList = new ActivityListPage(driver);
         await activityList.checkCompletedTxNumberDisplayedInActivity(1);
         await activityList.clickOnActivity(1);
