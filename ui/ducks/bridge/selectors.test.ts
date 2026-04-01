@@ -3,6 +3,7 @@ import {
   ChainId,
   type QuoteMetadata,
   type QuoteResponse,
+  QuoteStreamCompleteReason,
   SortOrder,
   formatChainIdToCaip,
   getNativeAssetForChainId,
@@ -3324,7 +3325,7 @@ describe('Bridge selectors', () => {
       const quoteStreamCompleteData = {
         quoteCount: 0,
         hasQuotes: false,
-        reason: 'AMOUNT_TOO_HIGH',
+        reason: QuoteStreamCompleteReason.AMOUNT_TOO_HIGH,
       };
       const state = createBridgeMockStore({
         bridgeStateOverrides: {
@@ -3341,7 +3342,7 @@ describe('Bridge selectors', () => {
       const quoteStreamCompleteData = {
         quoteCount: 0,
         hasQuotes: false,
-        reason: 'RETRY',
+        reason: QuoteStreamCompleteReason.RETRY,
         context: { errorCode: 500 },
       };
       const state = createBridgeMockStore({
