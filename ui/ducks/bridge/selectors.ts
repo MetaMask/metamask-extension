@@ -17,6 +17,7 @@ import {
   isCrossChain,
   RequestStatus,
   isNonEvmChainId,
+  QuoteStreamCompleteData,
 } from '@metamask/bridge-controller';
 import type { RemoteFeatureFlagControllerState } from '@metamask/remote-feature-flag-controller';
 import type { AccountsControllerState } from '@metamask/accounts-controller';
@@ -710,6 +711,10 @@ export const getFormattedPriceImpact = createSelector(
   (priceImpact) => formatPriceImpact(priceImpact),
 );
 
+export const getQuoteStreamComplete = (
+  state: BridgeAppState,
+): QuoteStreamCompleteData | null => state.metamask.quoteStreamComplete ?? null;
+
 const _getBaseValidationErrors = createDeepEqualSelector(
   [
     getBridgeQuotes,
@@ -726,6 +731,7 @@ const _getBaseValidationErrors = createDeepEqualSelector(
     getPriceImpact,
     getPriceImpactThresholds,
     (state: BridgeAppState) => isHardwareWallet(state as never),
+    getQuoteStreamComplete,
   ],
   (
     { activeQuote, quotesLastFetchedMs, isLoading, quotesRefreshCount },
@@ -741,6 +747,7 @@ const _getBaseValidationErrors = createDeepEqualSelector(
     priceImpactNumber,
     { warning, error },
     isHardwareWalletAccount,
+    quoteStreamCompleteData,
   ) => {
     const { gasIncluded, gasIncluded7702, gasSponsored } =
       activeQuote?.quote ?? {};
@@ -773,13 +780,16 @@ const _getBaseValidationErrors = createDeepEqualSelector(
     return {
       isTxAlertPresent: Boolean(txAlert),
       isTxAlertLoading: txAlertStatus === RequestStatus.LOADING,
-      isNoQuotesAvailable: Boolean(
-        !activeQuote &&
-          isValidQuoteRequest(quoteRequest) &&
-          quotesLastFetchedMs &&
-          !isLoading &&
-          quotesRefreshCount > 0,
-      ),
+      isNoQuotesAvailable:
+        quoteStreamCompleteData?.hasQuotes === false ||
+        // TODO: do we still need this check?
+        Boolean(
+          !activeQuote &&
+            isValidQuoteRequest(quoteRequest) &&
+            quotesLastFetchedMs &&
+            !isLoading &&
+            quotesRefreshCount > 0,
+        ),
       // Shown prior to fetching quotes
       isInsufficientGasBalance: Boolean(
         nativeBalance &&
