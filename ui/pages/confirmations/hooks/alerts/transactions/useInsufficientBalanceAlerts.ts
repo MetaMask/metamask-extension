@@ -100,7 +100,7 @@ export function useInsufficientBalanceAlerts({
       CHAIN_ID_TO_CURRENCY_SYMBOL_MAP[
         chainId as keyof typeof CHAIN_ID_TO_CURRENCY_SYMBOL_MAP
       ];
-    return localConfigSymbol;
+    return localConfigSymbol ?? nativeCurrency;
   }, [excludeNativeTokenForFee, nativeCurrency, chainId]);
   return useMemo(() => {
     if (!showAlert) {

@@ -264,8 +264,7 @@
     "fast-xml-parser": "^5.5.7",
     "minimatch@npm:^10.1.1": "10.2.4",
     "@metamask/snaps-controllers": "^19.0.0",
-    "@metamask/messenger@npm:^0.3.0": "^1.0.0",
-    "@metamask/transaction-controller": "npm:@metamask-previews/transaction-controller@63.3.1-preview-3f3a92d7b"
+    "@metamask/messenger@npm:^0.3.0": "^1.0.0"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.26.10#~/.yarn/patches/@babel-runtime-npm-7.26.10-fe8c62510a.patch",
@@ -396,7 +395,7 @@
     "@metamask/solana-wallet-standard": "^0.6.0",
     "@metamask/storage-service": "^1.0.0",
     "@metamask/subscription-controller": "^6.0.0",
-    "@metamask/transaction-controller": "^63.0.0",
+    "@metamask/transaction-controller": "^64.0.0",
     "@metamask/transaction-pay-controller": "^19.0.0",
     "@metamask/tron-wallet-snap": "1.22.1",
     "@metamask/user-operation-controller": "^41.1.0",
