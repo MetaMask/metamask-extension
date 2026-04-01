@@ -9,9 +9,6 @@ import {
   Button,
   Text,
   TextVariant,
-  BoxFlexDirection,
-  BoxAlignItems,
-  BoxJustifyContent,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
