@@ -3,28 +3,26 @@ import { v4 as uuidv4 } from 'uuid';
 import { wordlist } from '@metamask/scure-bip39/dist/wordlists/english';
 import { isValidMnemonic } from '@ethersproject/hdnode';
 import browser from 'webextension-polyfill';
-
-import { Textarea, TextareaResize } from '../../component-library/textarea';
 import {
   Box,
   Button,
   ButtonVariant,
+  ButtonSize,
   Text,
-  TextField,
-  TextFieldType,
-} from '../../component-library';
+  TextAlign,
+  TextColor,
+  TextVariant,
+  BoxFlexDirection,
+  BoxJustifyContent,
+  BoxBackgroundColor,
+} from '@metamask/design-system-react';
+import { TextField, TextFieldType } from '../../component-library/text-field';
+import { Textarea, TextareaResize } from '../../component-library/textarea';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   BackgroundColor,
   BlockSize,
   BorderColor,
-  BorderRadius,
-  Display,
-  FlexDirection,
-  JustifyContent,
-  TextAlign,
-  TextColor,
-  TextVariant,
 } from '../../../helpers/constants/design-system';
 import {
   ENVIRONMENT_TYPE_SIDEPANEL,
@@ -366,21 +364,15 @@ export default function SrpInputImport({
 
   return (
     <>
-      <Box>
+      <Box flexDirection={BoxFlexDirection.Column} gap={1}>
         <Box
-          display={Display.Flex}
-          flexDirection={FlexDirection.Column}
-          backgroundColor={BackgroundColor.backgroundMuted}
-          borderRadius={BorderRadius.LG}
-          className="srp-input-import__container"
+          flexDirection={BoxFlexDirection.Column}
+          backgroundColor={BoxBackgroundColor.BackgroundMuted}
+          className="srp-input-import__container rounded-lg"
         >
           {draftSrp.length > 0 ? (
             <Box padding={4} style={{ flex: 1 }}>
-              <Box
-                display={Display.Grid}
-                className="srp-input-import__words-list"
-                gap={2}
-              >
+              <Box className="srp-input-import__words-list grid" gap={2}>
                 {draftSrp.map((word, index) => {
                   return (
                     <TextField
@@ -405,7 +397,7 @@ export default function SrpInputImport({
                       }
                       startAccessory={
                         <Text
-                          color={TextColor.textAlternative}
+                          color={TextColor.TextAlternative}
                           textAlign={TextAlign.Left}
                           className="srp-input-import__word-index"
                         >
@@ -444,9 +436,8 @@ export default function SrpInputImport({
           ) : (
             <Box
               padding={4}
-              className="srp-input-import__srp-note"
+              className="srp-input-import__srp-note rounded-lg"
               style={{ flex: 1 }}
-              borderRadius={BorderRadius.LG}
             >
               <Textarea
                 ref={textareaRef}
@@ -471,28 +462,29 @@ export default function SrpInputImport({
           )}
         </Box>
         <Box
-          display={Display.Flex}
           className="srp-input-import__actions"
-          justifyContent={JustifyContent.flexEnd}
-          paddingRight={2}
+          flexDirection={BoxFlexDirection.Row}
+          justifyContent={BoxJustifyContent.End}
         >
           {draftSrp.length > 0 ? (
             <Button
-              variant={ButtonVariant.Link}
+              variant={ButtonVariant.Tertiary}
               onClick={async () => {
                 setDraftSrp([]);
                 setMisSpelledWords([]);
                 setHasInvalidChecksum(false);
                 onClearCallback?.();
               }}
+              size={ButtonSize.Md}
             >
               {t('onboardingSrpInputClearAll')}
             </Button>
           ) : (
             <Button
               data-testid="srp-input-import__paste-button"
-              variant={ButtonVariant.Link}
+              variant={ButtonVariant.Tertiary}
               onClick={onTriggerPaste}
+              size={ButtonSize.Md}
             >
               {t('paste')}
             </Button>
@@ -501,7 +493,7 @@ export default function SrpInputImport({
       </Box>
       {misSpelledWords.length > 0 && (
         <Box marginTop={2}>
-          <Text color={TextColor.errorDefault} variant={TextVariant.bodySm}>
+          <Text color={TextColor.ErrorDefault} variant={TextVariant.BodySm}>
             {t('onboardingSrpImportError')}
           </Text>
         </Box>
@@ -509,8 +501,8 @@ export default function SrpInputImport({
       {hasInvalidChecksum && misSpelledWords.length === 0 && (
         <Box marginTop={2}>
           <Text
-            color={TextColor.errorDefault}
-            variant={TextVariant.bodySm}
+            color={TextColor.ErrorDefault}
+            variant={TextVariant.BodySm}
             data-testid="srp-input-import__invalid-checksum-error"
           >
             {t('invalidSeedPhraseNotFound')}
