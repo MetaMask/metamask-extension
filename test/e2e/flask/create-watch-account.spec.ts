@@ -303,7 +303,7 @@ describe.skip('Account-watcher snap', function (this: Suite) {
             'Toggle should be off by default',
           );
           await experimentalSettings.toggleWatchAccount();
-          await settingsPage.closeSettingsPage();
+          await settingsPage.clickBackButton();
 
           // verify the 'Watch and Ethereum account (Beta)' option is available
           await homePage.checkPageIsLoaded();
@@ -336,7 +336,7 @@ describe.skip('Account-watcher snap', function (this: Suite) {
           const experimentalSettings = new ExperimentalSettings(driver);
           await experimentalSettings.checkPageIsLoaded();
           await experimentalSettings.toggleWatchAccount();
-          await settingsPage.closeSettingsPage();
+          await settingsPage.clickBackButton();
 
           // verify the 'Watch and Ethereum account (Beta)' option is available
           await homePage.checkPageIsLoaded();
@@ -355,7 +355,7 @@ describe.skip('Account-watcher snap', function (this: Suite) {
           await settingsPage.goToExperimentalSettings();
           await experimentalSettings.checkPageIsLoaded();
           await experimentalSettings.toggleWatchAccount();
-          await settingsPage.closeSettingsPage();
+          await settingsPage.clickBackButton();
 
           // verify the 'Watch and Ethereum account (Beta)' option is not available
           await homePage.checkPageIsLoaded();

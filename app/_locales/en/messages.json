@@ -69,6 +69,9 @@
   "about": {
     "message": "About"
   },
+  "aboutMetaMask": {
+    "message": "About MetaMask"
+  },
   "accept": {
     "message": "Accept"
   },
@@ -1420,7 +1423,7 @@
     "message": "Clear activity tab data"
   },
   "clearActivityDescription": {
-    "message": "This resets the account's nonce and erases data from the activity tab in your wallet. Only the current account and network will be affected. Your balances and incoming transactions won't change."
+    "message": "Resets the account's nonce and erases data from the activity tab in your wallet. Only the current account and network will be affected. Your balances and incoming transactions won't change."
   },
   "clearFilters": {
     "message": "Clear filters"
@@ -2105,6 +2108,9 @@
   "debitCreditPurchaseOptions": {
     "message": "Debit or credit card purchase options"
   },
+  "debug": {
+    "message": "Debug"
+  },
   "decimal": {
     "message": "Token decimal"
   },
@@ -2263,6 +2269,9 @@
   "delete": {
     "message": "Delete"
   },
+  "deleteActivityAndNonceData": {
+    "message": "Delete activity and nonce data"
+  },
   "deleteMetaMetricsData": {
     "message": "Delete MetaMetrics data"
   },
@@ -2343,6 +2352,9 @@
   },
   "developerOptions": {
     "message": "Developer options"
+  },
+  "developerTools": {
+    "message": "Developer tools"
   },
   "disabledGasOptionToolTipMessage": {
     "message": "“$1” is disabled because it does not meet the minimum of a 10% increase from the original gas fee.",
@@ -5399,8 +5411,14 @@
   "perpsAvailableBalance": {
     "message": "Available Perps balance: "
   },
+  "perpsAvailableToAdd": {
+    "message": "Available to add"
+  },
   "perpsAvailableToClose": {
     "message": "Available to close"
+  },
+  "perpsAvailableToSubtract": {
+    "message": "Available to subtract"
   },
   "perpsAvailableToTrade": {
     "message": "Available to trade",
@@ -5417,6 +5435,9 @@
   },
   "perpsCloseLong": {
     "message": "Close Long"
+  },
+  "perpsClosePartialMinNotional": {
+    "message": "Partial closes must be at least $1 in USD value. Increase the close amount or set the slider to 100%."
   },
   "perpsClosePosition": {
     "message": "Close position"
@@ -5550,7 +5571,7 @@
     "message": "Current price is near the estimated liquidation price"
   },
   "perpsLiquidationDistance": {
-    "message": "Liq. distance"
+    "message": "Liquidation distance"
   },
   "perpsLiquidationPrice": {
     "message": "Liquidation price"
@@ -5576,12 +5597,6 @@
   },
   "perpsMarkets": {
     "message": "Markets"
-  },
-  "perpsMax": {
-    "message": "Max"
-  },
-  "perpsMaxRemovable": {
-    "message": "Max removable"
   },
   "perpsMid": {
     "message": "Mid"
@@ -5627,6 +5642,10 @@
   "perpsOraclePriceTooltip": {
     "message": "The median of external prices reported by validators, used for computing funding rate"
   },
+  "perpsOrderValidationInsufficientBalance": {
+    "message": "Insufficient balance: need $1, have $2",
+    "description": "$1 is the required margin amount and $2 is the available balance amount"
+  },
   "perpsOrders": {
     "message": "Orders"
   },
@@ -5635,9 +5654,6 @@
   },
   "perpsPosition": {
     "message": "Position"
-  },
-  "perpsPositionSize": {
-    "message": "Position Size"
   },
   "perpsPositions": {
     "message": "Positions"

@@ -5341,9 +5341,6 @@
     "message": "διαθέσιμο",
     "description": "is the available balance amount"
   },
-  "perpsAvailableBalance": {
-    "message": "Διαθέσιμο υπόλοιπο"
-  },
   "perpsAvailableToClose": {
     "message": "Διαθέσιμο ποσό για κλείσιμο"
   },
@@ -5505,12 +5502,6 @@
   "perpsMarkets": {
     "message": "Αγορές"
   },
-  "perpsMax": {
-    "message": "Μεγ"
-  },
-  "perpsMaxRemovable": {
-    "message": "Μέγιστο που μπορεί να αφαιρεθεί"
-  },
   "perpsMid": {
     "message": "Ενδιάμεσα"
   },
@@ -5563,9 +5554,6 @@
   },
   "perpsPosition": {
     "message": "Θέση"
-  },
-  "perpsPositionSize": {
-    "message": "Μέγεθος θέσης"
   },
   "perpsPositions": {
     "message": "Θέσεις"

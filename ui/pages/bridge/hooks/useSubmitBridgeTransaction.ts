@@ -29,6 +29,7 @@ import {
 import { isUserRejectedHardwareWalletError } from '../../../contexts/hardware-wallets/rpcErrorUtils';
 import { useBridgeNavigation } from '../../../hooks/bridge/useBridgeNavigation';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
+import { type MetaMaskReduxDispatch } from '../../../store/store';
 import { useEnableMissingNetwork } from './useEnableMissingNetwork';
 
 const ALLOWANCE_RESET_ERROR = 'Eth USDT allowance reset failed';
@@ -65,7 +66,7 @@ export default function useSubmitBridgeTransaction() {
   const navigate = useNavigate();
   const { navigateToBridgePage, navigateToHwSigningPage } =
     useBridgeNavigation();
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<MetaMaskReduxDispatch>();
   const hardwareWalletUsed = useSelector(isHardwareWallet);
 
   const smartTransactionsEnabled = useSelector(getIsStxEnabled);
@@ -130,28 +131,23 @@ export default function useSubmitBridgeTransaction() {
             accountAddress: fromAccount.address,
           }),
         );
-        navigate(DEFAULT_ROUTE, {
-          state: { stayOnHomePage: true },
-          replace: true,
-        });
-        return;
-      }
-
-      await dispatch(
-        submitBridgeTx(
-          fromAccount.address,
-          quoteResponse,
-          smartTransactionsEnabled,
-          getQuotesReceivedProperties(
+      } else {
+        await dispatch(
+          submitBridgeTx(
+            fromAccount.address,
             quoteResponse,
-            // @ts-expect-error 'market_closed' will be added to QuoteWarning in the controller
-            warnings,
-            true,
-            recommendedQuote,
-            fromTokenBalanceInUsd,
+            smartTransactionsEnabled,
+            getQuotesReceivedProperties(
+              quoteResponse,
+              // @ts-expect-error 'market_closed' will be added to QuoteWarning in the controller
+              warnings,
+              true,
+              recommendedQuote,
+              fromTokenBalanceInUsd,
+            ),
           ),
-        ),
-      );
+        );
+      }
     } catch (e) {
       captureException(e);
       if (hardwareWalletUsed && isHardwareWalletUserRejection(e)) {

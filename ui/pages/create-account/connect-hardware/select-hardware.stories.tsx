@@ -1,14 +1,24 @@
 import React from 'react';
 import { LedgerTransportTypes } from '../../../../shared/constants/hardware-wallets';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
 import SelectHardware from './select-hardware';
 
-const mockTrackEvent = (event, properties) => {
-  console.log('Mock track event:', { event, properties });
-  return Promise.resolve();
+const mockMetaMetricsContext = {
+  trackEvent: () => Promise.resolve(),
+  bufferedTrace: () => Promise.resolve(undefined),
+  bufferedEndTrace: () => undefined,
+  onboardingParentContext: { current: null },
 };
 
 export default {
   title: 'Pages/CreateAccount/ConnectHardware/SelectHardware',
+  decorators: [
+    (Story: () => JSX.Element) => (
+      <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
+        <Story />
+      </MetaMetricsContext.Provider>
+    ),
+  ],
 };
 
 export const DefaultStory = () => {
@@ -19,10 +29,7 @@ export const DefaultStory = () => {
       connectToHardwareWallet={() => {
         /* no-op */
       }}
-      ledgerTransportType={LedgerTransportTypes.live}
-      context={{
-        trackEvent: mockTrackEvent,
-      }}
+      ledgerTransportType={LedgerTransportTypes.webhid}
     />
   );
 };
@@ -35,10 +42,6 @@ export const BrowserNotSupported = () => {
       onCancel={() => null}
       browserSupported={false}
       connectToHardwareWallet={() => undefined}
-      ledgerTransportType={LedgerTransportTypes.live}
-      context={{
-        trackEvent: mockTrackEvent,
-      }}
     />
   );
 };

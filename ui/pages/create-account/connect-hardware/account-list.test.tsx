@@ -1,5 +1,5 @@
 import React from 'react';
-import { screen } from '@testing-library/react';
+import { fireEvent, screen } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
@@ -49,7 +49,7 @@ const render = () => {
       '0x27d17...a5B52E',
       '0x5E2003....98f417b',
     ].map((a) => a.toLowerCase()),
-    selectedAccounts: [],
+    selectedAccounts: [] as number[],
     chainId: '0x1',
     rpcPrefs: {},
     hdPaths: {
@@ -66,7 +66,10 @@ const render = () => {
     onCancel: jest.fn(),
     onAccountRestriction: jest.fn(),
   };
-  return renderWithProvider(<AccountList {...props} />, store);
+  return {
+    ...renderWithProvider(<AccountList {...props} />, store),
+    props,
+  };
 };
 
 describe('AccountList', () => {
@@ -96,6 +99,25 @@ describe('AccountList', () => {
 
     expect(
       screen.getByTestId('hw-list-pagination__prev-button'),
+    ).toBeDisabled();
+  });
+
+  it('calls onAccountChange when an unconnected account checkbox is clicked', () => {
+    const { props } = render();
+
+    fireEvent.click(screen.getByRole('checkbox', { name: /0x1B.*F917/iu }));
+
+    expect(props.onAccountChange).toHaveBeenCalledWith(4);
+  });
+
+  it('disables checkboxes for already connected accounts', () => {
+    render();
+
+    expect(
+      screen.getByRole('checkbox', { name: /0x5E.*417b/iu }),
+    ).toBeDisabled();
+    expect(
+      screen.getByRole('checkbox', { name: /0x27.*B52E/iu }),
     ).toBeDisabled();
   });
 });

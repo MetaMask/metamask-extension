@@ -29,6 +29,7 @@ import {
   RESTORE_VAULT_ROUTE,
   REVEAL_SEED_ROUTE,
   SEND_ROUTE,
+  LEGACY_SETTINGS_V2_ROUTE,
   SETTINGS_ROUTE,
   UNLOCK_ROUTE,
   CONFIRMATION_V_NEXT_ROUTE,
@@ -148,7 +149,6 @@ const ImportSrpPage = mmLazy(() => import('../multi-srp/import-srp/index.ts'));
 const RevealSeedConfirmation = mmLazy(
   () => import('../keychains/reveal-seed.tsx'),
 );
-const Settings = mmLazy(() => import('../settings/index.js'));
 const SettingsV2 = mmLazy(() => import('../settings-v2/index.ts'));
 const NotificationDetails = mmLazy(
   () => import('../notification-details/index.js'),
@@ -244,6 +244,16 @@ const MusdConversionPage = mmLazy(() => import('../musd/index.tsx'));
 const PerpsLayout = mmLazy(() => import('../perps/perps-layout.tsx'));
 // End Lazy Routes
 
+const SettingsV2LegacyRedirect = () => {
+  const { pathname, search, hash } = useLocation();
+  const canonicalPath = pathname.replace(
+    LEGACY_SETTINGS_V2_ROUTE,
+    SETTINGS_ROUTE,
+  );
+
+  return <Navigate to={`${canonicalPath}${search}${hash}`} replace />;
+};
+
 export const routeConfig = [
   {
     element: <LegacyLayout />,
@@ -292,11 +302,11 @@ export const routeConfig = [
       },
       {
         path: `${SETTINGS_ROUTE}/*`,
-        element: <Settings />,
+        element: <SettingsV2 />,
       },
       {
-        path: `${SETTINGS_V2_ROUTE}/*`,
-        element: <SettingsV2 />,
+        path: `${LEGACY_SETTINGS_V2_ROUTE}/*`,
+        element: <SettingsV2LegacyRedirect />,
       },
       {
         path: `${SEND_ROUTE}/:page?`,

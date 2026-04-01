@@ -1236,6 +1236,30 @@ describe('Actions', () => {
       expect(unlockHardwareWalletAccount.callCount).toStrictEqual(1);
     });
 
+    it('forwards a null hd path to the background handler', async () => {
+      const store = mockStore();
+      const unlockHardwareWalletAccount =
+        background.unlockHardwareWalletAccount.resolves();
+
+      setBackgroundConnection(background);
+
+      await store.dispatch(
+        actions.unlockHardwareWalletAccounts(
+          [0],
+          HardwareDeviceNames.trezor,
+          null,
+          '',
+        ),
+      );
+
+      expect(unlockHardwareWalletAccount.firstCall.args).toStrictEqual([
+        0,
+        HardwareDeviceNames.trezor,
+        null,
+        '',
+      ]);
+    });
+
     it('shows loading indicator and displays error', async () => {
       const store = mockStore();
 
