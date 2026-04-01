@@ -5777,6 +5777,14 @@
     "message": "Failed to close position",
     "description": "Error toast text shown when closing a perps position fails"
   },
+  "perpsToastCloseFailed": {
+    "message": "Failed to close position",
+    "description": "Error toast text shown when closing a perps position fails"
+  },
+  "perpsToastCloseInProgress": {
+    "message": "Closing position",
+    "description": "In-progress toast text shown while closing a perps position"
+  },
   "perpsToastCloseInProgress": {
     "message": "Closing position",
     "description": "In-progress toast text shown while closing a perps position"
@@ -5784,6 +5792,14 @@
   "perpsToastClosePnlSubtitle": {
     "message": "Your PnL is $1",
     "description": "$1 is the formatted PnL percentage for a closed position"
+  },
+  "perpsToastClosePnlSubtitle": {
+    "message": "Your PnL is $1",
+    "description": "$1 is the formatted PnL percentage for a closed position"
+  },
+  "perpsToastMarginAddSuccess": {
+    "message": "Added $1 $2 margin",
+    "description": "$1 is the amount and $2 is the asset symbol for successful margin addition"
   },
   "perpsToastMarginAddSuccess": {
     "message": "Added $1 $2 margin",
@@ -5797,68 +5813,13 @@
     "message": "Removed $1 $2 margin",
     "description": "$1 is the amount and $2 is the asset symbol for successful margin removal"
   },
-  "perpsToastOrderFailed": {
-    "message": "Order failed",
-    "description": "Error toast text shown when placing a perps order fails"
-  },
-  "perpsToastOrderFilled": {
-    "message": "Order filled",
-    "description": "Success toast text shown when a perps market order is filled"
-  },
-  "perpsToastOrderPlaced": {
-    "message": "Order placed",
-    "description": "Success toast text shown when a perps limit order is accepted"
-  },
-  "perpsToastOrderPlacementSubtitle": {
-    "message": "$1 $2 $3",
-    "description": "$1 is the order direction, $2 is the position size amount, and $3 is the asset symbol"
-  },
-  "perpsToastOrderSubmitted": {
-    "message": "Order submitted",
-    "description": "In-progress toast text shown while a perps order is being submitted"
-  },
-  "perpsToastSubmitInProgress": {
-    "message": "Submitting your trade",
-    "description": "In-progress toast text shown while a perps trade is being submitted"
-  },
-  "perpsToastTradeSuccess": {
-    "message": "Position closed",
-    "description": "Success toast text shown when a perps position is closed"
-  },
-  "perpsToastUpdateFailed": {
-    "message": "Failed to update TP/SL",
-    "description": "Error toast text shown when updating TP/SL settings fails"
-  },
-  "perpsToastUpdateInProgress": {
-    "message": "Updating TP/SL...",
-    "description": "In-progress toast text shown while updating TP/SL settings"
-  },
-  "perpsToastUpdateSuccess": {
-    "message": "TP/SL updated successfully",
-    "description": "Success toast text shown when TP/SL settings are updated"
-  },
-  "perpsTotalBalance": {
-    "message": "Total Balance"
-  },
-  "perpsToastCloseFailed": {
-    "message": "Failed to close position",
-    "description": "Error toast text shown when closing a perps position fails"
-  },
-  "perpsToastCloseInProgress": {
-    "message": "Closing position",
-    "description": "In-progress toast text shown while closing a perps position"
-  },
-  "perpsToastClosePnlSubtitle": {
-    "message": "Your PnL is $1",
-    "description": "$1 is the formatted PnL percentage for a closed position"
-  },
-  "perpsToastMarginAddSuccess": {
-    "message": "Added $1 $2 margin",
-    "description": "$1 is the amount and $2 is the asset symbol for successful margin addition"
-  },
   "perpsToastMarginRemoveSuccess": {
     "message": "Removed $1 $2 margin",
     "description": "$1 is the amount and $2 is the asset symbol for successful margin removal"
+  },
+  "perpsToastOrderFailed": {
+    "message": "Order failed",
+    "description": "Error toast text shown when placing a perps order fails"
   },
   "perpsToastOrderFailed": {
     "message": "Order failed",
@@ -5872,9 +5833,21 @@
     "message": "Order filled",
     "description": "Success toast text shown when a perps market order is filled"
   },
+  "perpsToastOrderFilled": {
+    "message": "Order filled",
+    "description": "Success toast text shown when a perps market order is filled"
+  },
   "perpsToastOrderPlaced": {
     "message": "Order placed",
     "description": "Success toast text shown when a perps limit order is accepted"
+  },
+  "perpsToastOrderPlaced": {
+    "message": "Order placed",
+    "description": "Success toast text shown when a perps limit order is accepted"
+  },
+  "perpsToastOrderPlacementSubtitle": {
+    "message": "$1 $2 $3",
+    "description": "$1 is the order direction, $2 is the position size amount, and $3 is the asset symbol"
   },
   "perpsToastOrderPlacementSubtitle": {
     "message": "$1 $2 $3",
@@ -5884,9 +5857,21 @@
     "message": "Order submitted",
     "description": "In-progress toast text shown while a perps order is being submitted"
   },
+  "perpsToastOrderSubmitted": {
+    "message": "Order submitted",
+    "description": "In-progress toast text shown while a perps order is being submitted"
+  },
   "perpsToastSubmitInProgress": {
     "message": "Submitting your trade",
     "description": "In-progress toast text shown while a perps trade is being submitted"
+  },
+  "perpsToastSubmitInProgress": {
+    "message": "Submitting your trade",
+    "description": "In-progress toast text shown while a perps trade is being submitted"
+  },
+  "perpsToastTradeSuccess": {
+    "message": "Position closed",
+    "description": "Success toast text shown when a perps position is closed"
   },
   "perpsToastTradeSuccess": {
     "message": "Position closed",
@@ -5896,6 +5881,14 @@
     "message": "Failed to update TP/SL",
     "description": "Error toast text shown when updating TP/SL settings fails"
   },
+  "perpsToastUpdateFailed": {
+    "message": "Failed to update TP/SL",
+    "description": "Error toast text shown when updating TP/SL settings fails"
+  },
+  "perpsToastUpdateInProgress": {
+    "message": "Updating TP/SL...",
+    "description": "In-progress toast text shown while updating TP/SL settings"
+  },
   "perpsToastUpdateInProgress": {
     "message": "Updating TP/SL...",
     "description": "In-progress toast text shown while updating TP/SL settings"
@@ -5903,6 +5896,13 @@
   "perpsToastUpdateSuccess": {
     "message": "TP/SL updated successfully",
     "description": "Success toast text shown when TP/SL settings are updated"
+  },
+  "perpsToastUpdateSuccess": {
+    "message": "TP/SL updated successfully",
+    "description": "Success toast text shown when TP/SL settings are updated"
+  },
+  "perpsTotalBalance": {
+    "message": "Total Balance"
   },
   "perpsTradePerps": {
     "message": "Trade perps"
