@@ -6691,7 +6691,7 @@
     "message": "Security and password"
   },
   "securityAndPrivacy": {
-    "message": "Security & privacy"
+    "message": "Security and privacy"
   },
   "securityChangePassword": {
     "message": "Change password"
@@ -8896,6 +8896,9 @@
   },
   "transactions": {
     "message": "Transactions"
+  },
+  "transactionsAndAssets": {
+    "message": "Transactions and assets"
   },
   "transfer": {
     "message": "Transfer"
