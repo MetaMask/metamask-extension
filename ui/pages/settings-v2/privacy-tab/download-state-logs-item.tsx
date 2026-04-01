@@ -19,7 +19,7 @@ export const DownloadStateLogsItem = () => {
   return (
     <>
       <Button
-        data-testid="download-state-logs-button"
+        data-testid="advanced-setting-state-logs-button"
         onClick={() => setShowModal(true)}
         className="text-text-default !bg-transparent p-0 text-left"
       >

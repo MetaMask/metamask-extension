@@ -48,7 +48,9 @@ const getBackupJson = async (): Promise<BackupData | null> => {
 };
 
 describe('Backup and Restore', function () {
-  it('should backup the account settings', async function () {
+  // Export button removed from settings page in v2 settings
+  // eslint-disable-next-line mocha/no-skipped-tests
+  it.skip('should backup the account settings', async function () {
     if (process.env.SELENIUM_BROWSER === 'chrome') {
       // Chrome shows OS level download prompt which can't be dismissed by Selenium
       this.skip();
@@ -65,7 +67,7 @@ describe('Backup and Restore', function () {
         await new HeaderNavbar(driver).openSettingsPage();
         const settingsPage = new SettingsPage(driver);
         await settingsPage.checkPageIsLoaded();
-        await settingsPage.clickAdvancedTab();
+        await settingsPage.goToAdvancedSettings();
         const advancedSettings = new AdvancedSettings(driver);
         await advancedSettings.checkPageIsLoaded();
         await advancedSettings.downloadData();

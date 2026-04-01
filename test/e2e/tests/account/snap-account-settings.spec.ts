@@ -36,9 +36,7 @@ describe('Add snap account experimental settings', function (this: Suite) {
         const experimentalSettings = new ExperimentalSettings(driver);
         await experimentalSettings.checkPageIsLoaded();
         await experimentalSettings.toggleAddAccountSnap();
-        await driver.clickElement(
-          '.settings-page__header__title-container__close-button',
-        );
+        await settingsPage.clickBackButton();
         // Make sure the "Add account Snap" button is visible.
         await headerNavbar.openAccountMenu();
         await accountListPage.addMultichainWallet();
