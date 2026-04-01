@@ -1,4 +1,4 @@
-import type { PersistenceManager as PersistenceManagerType } from './stores/persistence-manager';
+import type { PersistenceManager as PersistenceManagerType } from '../../../shared/lib/stores/persistence-manager';
 
 const mockGet = jest.fn();
 const mockGetBackup = jest.fn();
@@ -31,7 +31,7 @@ jest.mock('./stores/fixture-extension-store', () => ({
   FixtureExtensionStore: jest.fn().mockImplementation(() => ({})),
 }));
 
-jest.mock('./stores/persistence-manager', () => ({
+jest.mock('../../../shared/lib/stores/persistence-manager', () => ({
   PersistenceManager: jest.fn().mockImplementation(() => ({
     get: mockGet,
     getBackup: mockGetBackup,

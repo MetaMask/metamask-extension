@@ -4,9 +4,11 @@ import { getManifestFlags } from '../../../shared/lib/manifestFlags';
 import { maskObject } from '../../../shared/lib/object.utils';
 import ExtensionPlatform from '../platforms/extension';
 import { SENTRY_BACKGROUND_STATE } from '../constants/sentry-state';
+import { PersistenceManager } from '../../../shared/lib/stores/persistence-manager';
 import { FixtureExtensionStore } from './stores/fixture-extension-store';
 import ExtensionStore from './stores/extension-store';
-import { PersistenceManager } from './stores/persistence-manager';
+import { trackVaultCorruptionEvent } from './state-corruption/track-vault-corruption';
+import { trackEarlySegmentEvent } from './segment/early-segment-tracking';
 
 const platform = new ExtensionPlatform();
 
@@ -32,7 +34,13 @@ function createLocalStore() {
 const localStore = createLocalStore();
 
 // Single PersistenceManager per context: one in background, one per UI context.
-export const persistenceManager = new PersistenceManager({ localStore });
+export const persistenceManager = new PersistenceManager({
+  localStore,
+  segmentHooks: {
+    onVaultCorruptionEvent: trackVaultCorruptionEvent,
+    onEarlySegmentEvent: trackEarlySegmentEvent,
+  },
+});
 
 /**
  * Get the persisted wallet state.

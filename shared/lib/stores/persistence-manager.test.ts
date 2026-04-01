@@ -3,14 +3,10 @@
 import 'navigator.locks';
 import log from 'loglevel';
 
-import {
-  captureException,
-  captureMessage,
-} from '../../../../shared/lib/sentry';
-import { MISSING_VAULT_ERROR } from '../../../../shared/constants/errors';
+import { captureException, captureMessage } from '../sentry';
+import { MISSING_VAULT_ERROR } from '../../constants/errors';
 import { PersistenceManager } from './persistence-manager';
-import ExtensionStore from './extension-store';
-import { MetaMaskStateType } from './base-store';
+import type { BaseStore, MetaMaskStateType } from './base-store';
 
 const MOCK_DATA = { config: { foo: 'bar' } };
 
@@ -19,25 +15,21 @@ const mockStoreSetKeyValues = jest.fn();
 const mockStoreGet = jest.fn();
 const mockStoreReset = jest.fn();
 
-jest.mock('./extension-store', () => {
-  return jest.fn().mockImplementation(() => {
-    return {
-      set: mockStoreSet,
-      setKeyValues: mockStoreSetKeyValues,
-      get: mockStoreGet,
-      reset: mockStoreReset,
-    };
-  });
-});
+const mockLocalStore: BaseStore = {
+  set: mockStoreSet,
+  setKeyValues: mockStoreSetKeyValues,
+  get: mockStoreGet,
+  reset: mockStoreReset,
+};
 jest.mock('loglevel', () => ({
   error: jest.fn(),
   info: jest.fn(),
 }));
-jest.mock('../../../../shared/lib/sentry', () => ({
+jest.mock('../sentry', () => ({
   captureException: jest.fn(),
   captureMessage: jest.fn(),
 }));
-jest.mock('../../../../shared/lib/trace', () => ({
+jest.mock('../trace', () => ({
   trace: jest.fn(),
   endTrace: jest.fn(),
   TraceName: {},
@@ -50,7 +42,7 @@ describe('PersistenceManager', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    manager = new PersistenceManager({ localStore: new ExtensionStore() });
+    manager = new PersistenceManager({ localStore: mockLocalStore });
   });
 
   describe('set', () => {
@@ -264,11 +256,14 @@ describe('PersistenceManager', () => {
         },
       };
       mockStoreGet.mockResolvedValueOnce({ data: mockData });
-      manager.getBackup = jest.fn().mockResolvedValueOnce({
-        KeyringController: {
-          vault: 'vault',
-        },
-      });
+      jest
+        .spyOn(manager, 'getBackup')
+        .mockImplementation()
+        .mockResolvedValueOnce({
+          KeyringController: {
+            vault: 'vault',
+          },
+        });
 
       await expect(manager.get({ validateVault: true })).rejects.toThrow(
         MISSING_VAULT_ERROR,
@@ -304,11 +299,11 @@ describe('PersistenceManager', () => {
         string,
         unknown
       >;
-      expect(passedMap.get('meta')).toEqual({
+      expect(passedMap.get('meta')).toMatchObject({
         version: 10,
         storageKind: 'split',
       });
-      expect(passedMap.get('FooController')).toEqual({ foo: 'bar' });
+      expect(passedMap.get('FooController')).toMatchObject({ foo: 'bar' });
       expect(passedMap.has('BarController')).toBe(true);
       expect(passedMap.get('BarController')).toBeUndefined();
     });
@@ -357,8 +352,8 @@ describe('PersistenceManager', () => {
         unknown
       >;
 
-      expect(retryMap.get('meta')).toEqual({ version: 10 });
-      expect(retryMap.get('FooController')).toEqual({ foo: 'bar' });
+      expect(retryMap.get('meta')).toMatchObject({ version: 10 });
+      expect(retryMap.get('FooController')).toMatchObject({ foo: 'bar' });
     });
 
     it('captures exception only once if store.setKeyValues throws multiple times', async () => {
@@ -414,7 +409,10 @@ describe('PersistenceManager', () => {
       manager.storageKind = 'data';
       manager.setMetadata({ version: 10 });
 
-      manager.open = jest.fn().mockResolvedValue(undefined);
+      jest
+        .spyOn(manager, 'open')
+        .mockImplementation()
+        .mockResolvedValue(undefined);
 
       const { request } = navigator.locks;
       const mockCallback = jest.fn();
@@ -471,7 +469,7 @@ describe('PersistenceManager', () => {
       indexedDB.open = originalOpen;
     });
 
-    it('Handles DOMException InvalidStateError: A mutation operation was attempted on a database that did not allow mutations.', async () => {
+    it('handles DOMException InvalidStateError: A mutation operation was attempted on a database that did not allow mutations.', async () => {
       const consoleWarnSpy = jest.spyOn(console, 'warn').mockImplementation();
 
       const domException = new DOMException(
@@ -481,7 +479,7 @@ describe('PersistenceManager', () => {
       breakIndexedDbWithError(domException);
 
       brokenManager = new PersistenceManager({
-        localStore: new ExtensionStore(),
+        localStore: mockLocalStore,
       });
       await brokenManager.open();
 
@@ -498,7 +496,7 @@ describe('PersistenceManager', () => {
       );
     });
 
-    it('Bubbles up IndexedDB error on initialization', async () => {
+    it('bubbles up IndexedDB error on initialization', async () => {
       const consoleWarnSpy = jest.spyOn(console, 'warn').mockImplementation();
       const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
 
@@ -506,7 +504,7 @@ describe('PersistenceManager', () => {
       breakIndexedDbWithError(randomError);
 
       brokenManager = new PersistenceManager({
-        localStore: new ExtensionStore(),
+        localStore: mockLocalStore,
       });
       await expect(brokenManager.open()).rejects.toThrow(randomError);
       // in the application any other start up errors would be handled

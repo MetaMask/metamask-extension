@@ -5,7 +5,7 @@ import type {
   MetaMaskStorageStructure,
   BaseStore,
   MetaData,
-} from './base-store';
+} from '../../../../shared/lib/stores/base-store';
 
 const { sentry } = globalThis;
 

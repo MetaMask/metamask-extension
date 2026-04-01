@@ -1,9 +1,9 @@
 import browser from 'webextension-polyfill';
 import { captureException } from '../../../shared/lib/sentry';
 import { createSentryError } from '../../../shared/lib/error';
+import { PersistenceManager } from '../../../shared/lib/stores/persistence-manager';
+import { MetaMaskStateType } from '../../../shared/lib/stores/base-store';
 import { OperationSafener } from './operation-safener';
-import { PersistenceManager } from './stores/persistence-manager';
-import { MetaMaskStateType } from './stores/base-store';
 
 /**
  * Creates a request-safe reload mechanism for the given persistence manager.
