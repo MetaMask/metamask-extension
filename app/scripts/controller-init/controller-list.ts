@@ -36,11 +36,11 @@ import { MultichainTransactionsController } from '@metamask/multichain-transacti
 import {
   CronjobController,
   ExecutionService,
-  JsonSnapsRegistry,
-  MultichainRouter,
+  MultichainRoutingService,
   SnapController,
   SnapInsightsController,
   SnapInterfaceController,
+  SnapRegistryController,
   WebSocketService,
 } from '@metamask/snaps-controllers';
 import {
@@ -142,7 +142,6 @@ export type Controller =
   | ExecutionService
   | GasFeeController
   | GatorPermissionsController
-  | JsonSnapsRegistry
   | KeyringController
   | LoggingController
   | MetaMetricsController
@@ -152,7 +151,7 @@ export type Controller =
   | MultichainBalancesController
   | MultichainTransactionsController
   | MultichainNetworkController
-  | MultichainRouter
+  | MultichainRoutingService
   | NameController
   | NetworkController
   | NetworkOrderController
@@ -183,6 +182,7 @@ export type Controller =
   | SnapInterfaceController
   | SnapInsightsController
   | SnapKeyringBuilder
+  | SnapRegistryController
   | SubscriptionController
   | SnapsNameProvider
   | SubjectMetadataController
@@ -239,7 +239,6 @@ export type ControllerFlatState = AccountOrderController['state'] &
   EnsController['state'] &
   GasFeeController['state'] &
   GatorPermissionsController['state'] &
-  JsonSnapsRegistry['state'] &
   KeyringController['state'] &
   LoggingController['state'] &
   MetaMetricsController['state'] &
@@ -273,6 +272,7 @@ export type ControllerFlatState = AccountOrderController['state'] &
   SnapController['state'] &
   SnapInsightsController['state'] &
   SnapInterfaceController['state'] &
+  SnapRegistryController['state'] &
   SubscriptionController['state'] &
   TokenBalancesController['state'] &
   TokenDetectionController['state'] &

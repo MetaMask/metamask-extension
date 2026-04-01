@@ -20,12 +20,15 @@ type SettingsSelectItemProps = {
   value: string | ReactNode;
   /** Route to navigate to when the item is selected */
   to: string;
+  /** Optional test id for the clickable navigation control */
+  dataTestId?: string;
 };
 
 export const SettingsSelectItem = ({
   label,
   value,
   to,
+  dataTestId,
 }: SettingsSelectItemProps) => {
   return (
     <Box
@@ -53,7 +56,7 @@ export const SettingsSelectItem = ({
         ) : (
           value
         )}
-        <Link to={to} className="flex ml-1">
+        <Link to={to} className="flex ml-1" data-testid={dataTestId}>
           <Icon
             name={IconName.ArrowRight}
             size={IconSize.Sm}
