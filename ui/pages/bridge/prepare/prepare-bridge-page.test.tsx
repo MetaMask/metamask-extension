@@ -17,8 +17,8 @@ import {
   HardwareConnectionPermissionState,
   HardwareWalletProvider,
 } from '../../../contexts/hardware-wallets';
-import PrepareBridgePage from './prepare-bridge-page';
 import { useBridgeUnavailableQuotesReason } from '../hooks/useBridgeUnavailableQuotesReason';
+import PrepareBridgePage from './prepare-bridge-page';
 
 // Mock the bridge hooks
 jest.mock('../hooks/useGasIncluded7702', () => ({

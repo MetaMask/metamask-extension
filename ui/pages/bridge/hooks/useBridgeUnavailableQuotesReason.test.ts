@@ -61,11 +61,8 @@ describe('useBridgeUnavailableQuotesReason', () => {
     expect(result.current).toBe('noOptionsAvailableMessage');
   });
 
-  it.each([
-    [
-      QuoteStreamCompleteReason.RETRY,
-      'bridge_quote_stream_complete_retry',
-    ],
+  const reasonCases: [QuoteStreamCompleteReason, string][] = [
+    [QuoteStreamCompleteReason.RETRY, 'bridge_quote_stream_complete_retry'],
     [
       QuoteStreamCompleteReason.AMOUNT_TOO_HIGH,
       'bridge_quote_stream_complete_amount_too_high',
@@ -98,9 +95,10 @@ describe('useBridgeUnavailableQuotesReason', () => {
       QuoteStreamCompleteReason.RWA_MARKET_UNAVAILABLE,
       'bridge_quote_stream_complete_rwa_market_unavailable',
     ],
-  ])(
-    'returns translated string for reason %s',
-    (reason, expectedI18nKey) => {
+  ];
+
+  reasonCases.forEach(([reason, expectedI18nKey]) => {
+    it(`returns translated string for reason ${reason}`, () => {
       mockGetQuoteStreamComplete.mockReturnValue({
         quoteCount: 0,
         hasQuotes: false,
@@ -111,6 +109,6 @@ describe('useBridgeUnavailableQuotesReason', () => {
 
       expect(mockT).toHaveBeenCalledWith(expectedI18nKey);
       expect(result.current).toBe(expectedI18nKey);
-    },
-  );
+    });
+  });
 });

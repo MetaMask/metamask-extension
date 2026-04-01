@@ -5,24 +5,24 @@ export const getQuoteStreamReasonString = (
 ): string => {
   switch (reason) {
     case QuoteStreamCompleteReason.RETRY:
-      return 'bridge_quote_stream_complete_retry'
+      return 'bridge_quote_stream_complete_retry';
     case QuoteStreamCompleteReason.AMOUNT_TOO_HIGH:
-      return 'bridge_quote_stream_complete_amount_too_high'
+      return 'bridge_quote_stream_complete_amount_too_high';
     case QuoteStreamCompleteReason.AMOUNT_TOO_LOW:
-      return 'bridge_quote_stream_complete_amount_too_low'
+      return 'bridge_quote_stream_complete_amount_too_low';
     case QuoteStreamCompleteReason.SLIPPAGE_TOO_HIGH:
-      return 'bridge_quote_stream_complete_slippage_too_high'
+      return 'bridge_quote_stream_complete_slippage_too_high';
     case QuoteStreamCompleteReason.SLIPPAGE_TOO_LOW:
-      return 'bridge_quote_stream_complete_slippage_too_low'
+      return 'bridge_quote_stream_complete_slippage_too_low';
     case QuoteStreamCompleteReason.TOKEN_NOT_SUPPORTED:
-      return 'bridge_quote_stream_complete_token_not_supported'
+      return 'bridge_quote_stream_complete_token_not_supported';
     case QuoteStreamCompleteReason.RWA_GEO_RESTRICTED:
-      return 'bridge_quote_stream_complete_rwa_geo_restricted'
+      return 'bridge_quote_stream_complete_rwa_geo_restricted';
     case QuoteStreamCompleteReason.RWA_NATIVE_TOKEN_UNSUPPORTED:
-      return 'bridge_quote_stream_complete_rwa_native_token_unsupported'
+      return 'bridge_quote_stream_complete_rwa_native_token_unsupported';
     case QuoteStreamCompleteReason.RWA_MARKET_UNAVAILABLE:
-      return 'bridge_quote_stream_complete_rwa_market_unavailable'
+      return 'bridge_quote_stream_complete_rwa_market_unavailable';
     default:
-      return 'bridge_quote_stream_complete_retry'
+      return 'bridge_quote_stream_complete_retry';
   }
 };
