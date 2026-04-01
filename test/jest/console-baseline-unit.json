@@ -453,7 +453,7 @@
       "Reselect: Input stability warnings": 4
     },
     "ui/components/multichain/app-header/app-header.test.js": {
-      "React: Act warnings (component updates not wrapped)": 4,
+      "React: Act warnings (component updates not wrapped)": 6,
       "Reselect: Identity function warnings": 1,
       "Reselect: Input stability warnings": 4
     },
