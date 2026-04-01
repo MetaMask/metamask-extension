@@ -553,7 +553,8 @@ const PerpsOrderEntryPage: React.FC = () => {
             MetaMetricsEventName.PerpsPositionCloseTransaction,
             message,
           );
-          throw new Error(message);
+          setSubmitError(message);
+          return;
         }
         track(MetaMetricsEventName.PerpsPositionCloseTransaction, {
           [PERPS_EVENT_PROPERTY.ASSET]: orderFormState.asset,
@@ -581,7 +582,8 @@ const PerpsOrderEntryPage: React.FC = () => {
               MetaMetricsEventName.PerpsTradeTransaction,
               message,
             );
-            throw new Error(message);
+            setSubmitError(message);
+            return;
           }
 
           track(MetaMetricsEventName.PerpsTradeTransaction, {
@@ -628,7 +630,8 @@ const PerpsOrderEntryPage: React.FC = () => {
             MetaMetricsEventName.PerpsRiskManagement,
             message,
           );
-          throw new Error(message);
+          setSubmitError(message);
+          return;
         }
         track(MetaMetricsEventName.PerpsRiskManagement, {
           [PERPS_EVENT_PROPERTY.ASSET]: orderFormState.asset,
@@ -651,7 +654,8 @@ const PerpsOrderEntryPage: React.FC = () => {
             MetaMetricsEventName.PerpsTradeTransaction,
             message,
           );
-          throw new Error(message);
+          setSubmitError(message);
+          return;
         }
 
         track(MetaMetricsEventName.PerpsTradeTransaction, {
