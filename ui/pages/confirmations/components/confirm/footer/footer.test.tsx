@@ -184,7 +184,18 @@ jest.mock('../../../hooks/useConfirmSendNavigation', () => ({
 }));
 
 const mockUseNavigate = jest.fn();
-const mockUseLocation = jest.fn();
+
+/** Default `useLocation()` shape for `useHardwareWalletRecoveryLocation` (Footer → `useHardwareWalletMetrics`). */
+function getDefaultFooterTestLocation() {
+  return {
+    pathname: '/confirm-transaction',
+    search: '',
+    hash: '',
+    state: null,
+  };
+}
+
+const mockUseLocation = jest.fn(getDefaultFooterTestLocation);
 jest.mock('react-router-dom', () => {
   return {
     ...jest.requireActual('react-router-dom'),
@@ -287,12 +298,7 @@ describe('ConfirmFooter', () => {
       isGaslessLoading: false,
     });
 
-    mockUseLocation.mockReturnValue({
-      pathname: '/confirm-transaction',
-      search: '',
-      hash: '',
-      state: null,
-    });
+    mockUseLocation.mockImplementation(getDefaultFooterTestLocation);
     useUserSubscriptionsMock.mockReturnValue({
       trialedProducts: [],
       loading: false,
