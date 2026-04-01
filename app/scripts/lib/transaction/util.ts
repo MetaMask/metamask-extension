@@ -148,15 +148,8 @@ async function addTransactionOnTempo(
   const tempoConfigForChain = tempoConfig.perChainConfig[chainId];
 
   if (!tempoConfigForChain) {
-    throw new Error(
-      `Tempo transactions are not supported for chain: ${chainId}`,
-    );
+    throw new Error(`Tempo transactions not supported for chain: ${chainId}`);
   }
-
-  if (!tempoConfigForChain.enabled) {
-    throw new Error(`Tempo transactions are disabled for chain: ${chainId}`);
-  }
-
   // Classic transaction, we simply set pathUSD as default
   // and add excludeNativeTokenForFee to signal to ignore native.
   if (!isTempoTransactionType(request.transactionParams)) {
@@ -196,15 +189,9 @@ async function addTransactionOnTempo(
   );
 
   if (!transactionMeta) {
-    throw new Error(
-      `Batch submitted with id ${batchId} but no matching transaction found in transactionController.`,
-    );
-  }
-
-  if (!transactionMeta.hash) {
-    throw new Error(
-      `Batch submitted with id ${batchId} but transaction found in transactionController does not have a hash.`,
-    );
+    throw new Error(`Batch ${batchId}: No matching transaction found.`);
+  } else if (!transactionMeta.hash) {
+    throw new Error(`Batch ${batchId}: Hash missing from transaction object.`);
   }
 
   return {

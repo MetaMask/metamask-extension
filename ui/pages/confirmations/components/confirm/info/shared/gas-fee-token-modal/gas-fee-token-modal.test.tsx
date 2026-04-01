@@ -154,7 +154,6 @@ describe('GasFeeTokenModal', () => {
       <GasFeeTokenModal />,
       configureStore(getState({ excludeNativeTokenForFee: true })),
     );
-
     expect(result.queryByText('0.000066 ETH')).not.toBeInTheDocument();
   });
 

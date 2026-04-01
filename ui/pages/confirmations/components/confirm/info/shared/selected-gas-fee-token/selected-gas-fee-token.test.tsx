@@ -137,7 +137,6 @@ describe('SelectedGasFeeToken', () => {
         excludeNativeTokenForFee: true,
       }),
     );
-
     expect(
       result.getByTestId('selected-gas-fee-token-arrow'),
     ).toBeInTheDocument();
@@ -153,7 +152,6 @@ describe('SelectedGasFeeToken', () => {
         excludeNativeTokenForFee: true,
       }),
     );
-
     expect(result.getByText('pathUSD')).toBeInTheDocument();
   });
 

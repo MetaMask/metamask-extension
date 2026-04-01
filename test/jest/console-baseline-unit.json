@@ -48,7 +48,7 @@
       "error: Error occurred while creating snap": 1
     },
     "app/scripts/lib/snap-keyring/utils/isBlockedUrl.test.ts": {
-      "Test errors: Fetch failures": 2
+      "Test errors: Fetch failures": 6
     },
     "app/scripts/lib/stores/browser-storage-adapter.test.ts": {
       "error: StorageService: Failed to clear namespace": 1,

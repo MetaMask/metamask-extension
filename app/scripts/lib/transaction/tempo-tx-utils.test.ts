@@ -78,9 +78,7 @@ describe('tempo-tx-utils', () => {
           type: '0x02',
           calls: MOCK_TEMPO_CALLS,
         } as unknown as TransactionParams),
-      ).toThrow(
-        `Tempo Transaction: Transaction doesn't have Tempo transaction type (0x76)`,
-      );
+      ).toThrow(`Tempo Transaction: Transaction doesn't have type 0x76`);
     });
 
     it('throws when `type` has invalid format', () => {
@@ -90,9 +88,7 @@ describe('tempo-tx-utils', () => {
           type: 118,
           calls: MOCK_TEMPO_CALLS,
         } as unknown as TransactionParams),
-      ).toThrow(
-        `Tempo Transaction: Transaction doesn't have Tempo transaction type (0x76)`,
-      );
+      ).toThrow(`Tempo Transaction: Transaction doesn't have type 0x76`);
     });
 
     it('throws when `type` is missing', () => {
@@ -101,9 +97,7 @@ describe('tempo-tx-utils', () => {
           from: MOCK_FROM,
           calls: MOCK_TEMPO_CALLS,
         } as unknown as TransactionParams),
-      ).toThrow(
-        `Tempo Transaction: Transaction doesn't have Tempo transaction type (0x76)`,
-      );
+      ).toThrow(`Tempo Transaction: Transaction doesn't have type 0x76`);
     });
 
     it('throws when `from` is missing', () => {

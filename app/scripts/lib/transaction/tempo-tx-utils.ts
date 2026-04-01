@@ -8,7 +8,6 @@ const TEMPO_TRANSACTION_TYPE: Hex = '0x76';
 type TempoConfig = {
   perChainConfig: {
     [key: Hex]: {
-      enabled: boolean;
       defaultFeeToken: Hex;
     };
   };
@@ -17,11 +16,9 @@ type TempoConfig = {
 const TEMPO_CONFIG: TempoConfig = {
   perChainConfig: {
     '0x1079': {
-      enabled: true,
       defaultFeeToken: '0x20c0000000000000000000000000000000000000',
     },
     '0xa5bf': {
-      enabled: true,
       defaultFeeToken: '0x20c0000000000000000000000000000000000000',
     },
   },
@@ -57,7 +54,7 @@ export function getTempoExtraOptionsForChain(
 ): { gasFeeToken: Hex; excludeNativeTokenForFee: true } | {} {
   const tempoConfigForChain =
     isTempoChain(chainId) && getTempoConfig().perChainConfig[chainId];
-  if (!tempoConfigForChain || !tempoConfigForChain.enabled) {
+  if (!tempoConfigForChain) {
     return {};
   }
   return {
@@ -90,9 +87,7 @@ export function checkIsValidTempoTransaction(
   params: TransactionParams,
 ): asserts params is TempoTransactionParams {
   if (!isTempoTransactionType(params)) {
-    throw new Error(
-      `Tempo Transaction: Transaction doesn't have Tempo transaction type (0x76)`,
-    );
+    throw new Error(`Tempo Transaction: Transaction doesn't have type 0x76`);
   }
   if (typeof params.from !== 'string' || !params.from.startsWith('0x')) {
     throw new Error(`Tempo Transaction: Missing or invalid field 'from'`);
