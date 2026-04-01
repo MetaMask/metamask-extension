@@ -87,7 +87,7 @@ export function SelectedGasFeeToken() {
     // - We may set the symbol of a default fee token the chain config (ex: pathUSD).
     // - We may set the address of a default fee token in the assets-controllers config (ex: 0x20c0000000000000000000000000000000000000)
     // If one of them is not set, falling back to original behavior.
-    if (!gasFeeToken && excludeNativeTokenForFee) {
+    if (nonNativeGasFeeTokensLength === 0 && excludeNativeTokenForFee) {
       const localConfigSymbol =
         CHAIN_ID_TO_CURRENCY_SYMBOL_MAP[
           chainId as keyof typeof CHAIN_ID_TO_CURRENCY_SYMBOL_MAP
@@ -107,7 +107,13 @@ export function SelectedGasFeeToken() {
       gasTokenSymbol: symbol,
       gasTokenAddress: address,
     };
-  }, [gasFeeToken, nativeTicker, chainId, excludeNativeTokenForFee]);
+  }, [
+    gasFeeToken,
+    nativeTicker,
+    chainId,
+    excludeNativeTokenForFee,
+    nonNativeGasFeeTokensLength,
+  ]);
 
   return (
     <>
