@@ -19,7 +19,6 @@ import {
   getLastSelectedChainId,
 } from '../../ducks/bridge/selectors';
 import {
-  resetBridgeControllerAndCache,
   resetInputFields,
   trackUnifiedSwapBridgeEvent,
 } from '../../ducks/bridge/actions';
@@ -73,8 +72,7 @@ const useBridging = () => {
         chainId: GenericQuoteRequest['srcChainId'];
       },
     ) => {
-      dispatch(resetInputFields());
-      dispatch(resetBridgeControllerAndCache());
+      !bridgeState && dispatch(resetInputFields());
       trace({
         name: TraceName.SwapViewLoaded,
         startTime: Date.now(),

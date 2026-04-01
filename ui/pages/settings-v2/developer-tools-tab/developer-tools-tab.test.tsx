@@ -4,14 +4,14 @@ import thunk from 'redux-thunk';
 import mockState from '../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { setBackgroundConnection } from '../../../store/background-connection';
-import DeveloperOptionsTab from './developer-options-tab';
+import DeveloperToolsTab from './developer-tools-tab';
 
 const backgroundConnectionMock = new Proxy(
   {},
   { get: () => jest.fn().mockResolvedValue(undefined) },
 );
 
-describe('DeveloperOptionsTab', () => {
+describe('DeveloperToolsTab', () => {
   const mockStore = configureMockStore([thunk])(mockState);
 
   beforeEach(() => {
@@ -22,7 +22,7 @@ describe('DeveloperOptionsTab', () => {
   describe('snapshot', () => {
     it('matches snapshot', () => {
       const { container } = renderWithProvider(
-        <DeveloperOptionsTab />,
+        <DeveloperToolsTab />,
         mockStore,
       );
 

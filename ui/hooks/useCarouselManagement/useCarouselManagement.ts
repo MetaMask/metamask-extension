@@ -17,6 +17,7 @@ import {
   getSlides,
   getUseExternalServices,
 } from '../../selectors';
+import { getCurrentLocale } from '../../ducks/locale/locale';
 import { fetchCarouselSlidesFromContentful } from './fetchCarouselSlidesFromContentful';
 
 type UseSlideManagementProps = { testDate?: string; enabled?: boolean };
@@ -100,9 +101,12 @@ export const useCarouselManagement = ({
   const useExternalServices = useSelector(getUseExternalServices);
   const showDownloadMobileAppSlide = useSelector(getShowDownloadMobileAppSlide);
   const prevSlidesRef = useRef<CarouselSlide[]>();
+  const slidesRef = useRef(slides);
+  slidesRef.current = slides;
   const hasZeroBalance = new BigNumber(totalBalance ?? ZERO_BALANCE).eq(
     ZERO_BALANCE,
   );
+  const currentLocale = useSelector(getCurrentLocale);
   const contentfulEnabled =
     remoteFeatureFlags?.contentfulCarouselEnabled ?? false;
 
@@ -168,93 +172,97 @@ export const useCarouselManagement = ({
       }
       return;
     }
+    let cancelled = false;
+
     const maybeFetchContentful = async () => {
       // Early Return if Contentful is disabled
       if (!contentfulEnabled) {
         const empty: CarouselSlide[] = [];
-        if (!isEqual(prevSlidesRef.current, empty)) {
+        if (!cancelled && !isEqual(prevSlidesRef.current, empty)) {
           dispatch(updateSlides(empty));
           prevSlidesRef.current = empty;
         }
         return;
       }
 
-      if (contentfulEnabled) {
-        try {
-          const { prioritySlides, regularSlides } =
-            await fetchCarouselSlidesFromContentful();
+      try {
+        const { prioritySlides, regularSlides } =
+          await fetchCarouselSlidesFromContentful(currentLocale);
 
-          const pRaw = [...prioritySlides];
-          const rRaw = [...regularSlides];
+        if (cancelled) {
+          return;
+        }
 
-          const isNowActive = (s: CarouselSlide) =>
-            isActive(s, testDate ? new Date(testDate) : new Date());
+        const pRaw = [...prioritySlides];
+        const rRaw = [...regularSlides];
 
-          const normalizeList = (list: CarouselSlide[]) =>
-            list
-              .map((s) => normalize(s, slides))
-              .filter((s): s is CarouselSlide => Boolean(s))
-              .filter(isNowActive);
+        const isNowActive = (s: CarouselSlide) =>
+          isActive(s, testDate ? new Date(testDate) : new Date());
 
-          // Fund: force undismissable on zero balance
-          const fundCheck = (s: CarouselSlide): CarouselSlide => {
-            if (s.variableName === 'fund') {
-              return {
-                ...s,
-                undismissable: hasZeroBalance || s.undismissable,
-              };
-            }
-            return s;
-          };
+        const normalizeList = (list: CarouselSlide[]) =>
+          list
+            .map((s) => normalize(s, slidesRef.current ?? []))
+            .filter((s): s is CarouselSlide => Boolean(s))
+            .filter(isNowActive);
 
-          const isEligible = (s: CarouselSlide) => {
-            // Show Download Mobile App (only if not already on mobile + flags)
-            if (s.variableName === 'downloadMobileApp') {
-              return downloadEligible;
-            }
-            return true;
-          };
-
-          const activePrioritySlides = normalizeList(pRaw)
-            .map(fundCheck)
-            .filter(isEligible);
-          const activeRegularSlides = normalizeList(rRaw)
-            .map(fundCheck)
-            .filter(isEligible);
-
-          // Order based on cardPlacement
-          const orderedNonPriority = orderByCardPlacement(activeRegularSlides);
-          const mergedSlides = [...activePrioritySlides, ...orderedNonPriority];
-
-          if (!isEqual(prevSlidesRef.current, mergedSlides)) {
-            dispatch(updateSlides(mergedSlides));
-            prevSlidesRef.current = mergedSlides;
+        // Fund: force undismissable on zero balance
+        const fundCheck = (s: CarouselSlide): CarouselSlide => {
+          if (s.variableName === 'fund') {
+            return {
+              ...s,
+              undismissable: hasZeroBalance || s.undismissable,
+            };
           }
-        } catch (err) {
-          log.warn('Failed to fetch Contentful slides:', err);
-          if (!isEqual(prevSlidesRef.current, [])) {
-            dispatch(updateSlides([]));
-            prevSlidesRef.current = [];
+          return s;
+        };
+
+        const isEligible = (s: CarouselSlide) => {
+          // Show Download Mobile App (only if not already on mobile + flags)
+          if (s.variableName === 'downloadMobileApp') {
+            return downloadEligible;
           }
+          return true;
+        };
+
+        const activePrioritySlides = normalizeList(pRaw)
+          .map(fundCheck)
+          .filter(isEligible);
+        const activeRegularSlides = normalizeList(rRaw)
+          .map(fundCheck)
+          .filter(isEligible);
+
+        // Order based on cardPlacement
+        const orderedNonPriority = orderByCardPlacement(activeRegularSlides);
+        const mergedSlides = [...activePrioritySlides, ...orderedNonPriority];
+
+        if (!isEqual(prevSlidesRef.current, mergedSlides)) {
+          dispatch(updateSlides(mergedSlides));
+          prevSlidesRef.current = mergedSlides;
+        }
+      } catch (err) {
+        log.warn('Failed to fetch Contentful slides:', err);
+        if (!cancelled && !isEqual(prevSlidesRef.current, [])) {
+          dispatch(updateSlides([]));
+          prevSlidesRef.current = [];
         }
       }
     };
 
-    (async () => {
-      try {
-        await maybeFetchContentful();
-      } catch (err) {
-        log.warn('Failed to load carousel slides:', err);
-      }
-    })();
+    maybeFetchContentful().catch((err) => {
+      log.warn('Failed to load carousel slides:', err);
+    });
+
+    return () => {
+      cancelled = true;
+    };
   }, [
     enabled,
     dispatch,
     hasZeroBalance,
     contentfulEnabled,
+    currentLocale,
     testDate,
     inTest,
-    slides,
     downloadEligibilityReady,
   ]);
 
