@@ -1,12 +1,16 @@
 import {
   PerpsController,
   type PerpsControllerState,
+  type PerpsPlatformDependencies,
 } from '@metamask/perps-controller';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../shared/constants/metametrics';
-import { createPerpsInfrastructure } from '../controllers/perps/infrastructure';
+import {
+  createPerpsInfrastructure,
+  type InfrastructureDeps,
+} from '../controllers/perps/infrastructure';
 import { buildControllerInitRequestMock } from './test/utils';
 import { PerpsControllerInit } from './perps-controller-init';
 import type { PerpsControllerMessenger } from './messengers/perps-controller-messenger';
@@ -275,16 +279,14 @@ describe('PerpsControllerInit', () => {
 
       jest
         .mocked(createPerpsInfrastructure)
-        .mockImplementationOnce(
-          (deps: { trackEvent: (payload: unknown) => void }) => {
-            deps.trackEvent({
-              event: MetaMetricsEventName.PerpsScreenViewed,
-              category: MetaMetricsEventCategory.Perps,
-              properties: {},
-            });
-            return {};
-          },
-        );
+        .mockImplementationOnce((deps: InfrastructureDeps) => {
+          deps.trackEvent({
+            event: MetaMetricsEventName.PerpsScreenViewed,
+            category: MetaMetricsEventCategory.Perps,
+            properties: {},
+          });
+          return {} as PerpsPlatformDependencies;
+        });
 
       PerpsControllerInit(request);
 

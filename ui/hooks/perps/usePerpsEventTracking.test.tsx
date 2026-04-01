@@ -19,7 +19,9 @@ const mockMetaMetricsContext = {
   onboardingParentContext: { current: null },
 };
 
-const wrapper = ({ children }: { children: React.ReactNode }) =>
+const wrapper = ({
+  children,
+}: React.PropsWithChildren<{ conditions?: boolean }>) =>
   React.createElement(
     MetaMetricsContext.Provider,
     { value: mockMetaMetricsContext },

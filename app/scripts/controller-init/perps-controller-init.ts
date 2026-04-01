@@ -1,5 +1,6 @@
 import {
   PerpsController,
+  type PerpsControllerMessenger as PackagePerpsControllerMessenger,
   type RawLedgerUpdate,
   type UserHistoryItem,
 } from '@metamask/perps-controller';
@@ -38,7 +39,8 @@ export const PerpsControllerInit: ControllerInitFunction<
     persistedState.PreferencesController?.useExternalServices ?? false;
 
   const controller = new PerpsController({
-    messenger: controllerMessenger,
+    // Extension messenger delegates MetaMetrics; package allowed-actions union does not yet include it.
+    messenger: controllerMessenger as PackagePerpsControllerMessenger,
     state: persistedState.PerpsController,
     infrastructure,
     clientConfig: {
