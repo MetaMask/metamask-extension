@@ -17,6 +17,7 @@ import { PPOMController } from '@metamask/ppom-validator';
 
 import { KeyringController } from '@metamask/keyring-controller';
 import log from 'loglevel';
+import { NetworkController } from '@metamask/network-controller';
 import {
   generateSecurityAlertId,
   handlePPOMError,
@@ -44,6 +45,7 @@ import { getTransactionDataRecipient } from '../../../../shared/lib/transaction.
 import { accountSupports7702 } from '../account-supports-7702';
 import {
   getTempoEvmTransactionArgs,
+  getTempoExtraOptionsForChain,
   getTempoTransactionBatchArgs,
   isTempoChain,
   isTempoTransactionType,
@@ -486,4 +488,57 @@ function isInternalAccount(
   );
 
   return internalSet.has(normalized);
+}
+
+export async function addTransactionSendCallExtraOptions({
+  req,
+  networkController,
+  keyringController,
+}: {
+  req: {
+    networkClientId: string;
+    params?: [{ from: string }];
+  };
+  networkController: NetworkController;
+  keyringController: KeyringController;
+}) {
+  /**
+   * Gets chain-specific parameters that need to be injected in addTransaction/addTransactionBatch.
+   * Done initially for Tempo.
+   * Done gracefully - silencing errors - so it doesn't impact previous behavior.
+   * Skipped in case of account not supporting EIP-7702, such as hardware wallets.
+   */
+  try {
+    const networkConfiguration =
+      networkController.getNetworkConfigurationByNetworkClientId(
+        req.networkClientId,
+      );
+    if (!networkConfiguration) {
+      log.debug(
+        `addTransactionSendCallExtraOptions: No networkConfiguration for networkClientId ${req.networkClientId}`,
+      );
+      return {};
+    }
+    const { chainId: currentRequestChainId } = networkConfiguration;
+    if (isTempoChain(currentRequestChainId)) {
+      return {};
+    }
+    const isEip7702SupportedByAccount = await accountSupports7702(
+      req.params?.[0].from,
+      keyringController,
+    );
+    if (!isEip7702SupportedByAccount) {
+      log.debug(
+        'addTransactionSendCallExtraOptions: Tempo chain but wallet does not support 7702. Falling back to legacy transactions',
+      );
+      return {};
+    }
+    return getTempoExtraOptionsForChain(currentRequestChainId);
+  } catch (err) {
+    log.debug(
+      'addTransactionSendCallExtraOptions: Error while getting addTransaction extra options',
+      err,
+    );
+    return {};
+  }
 }

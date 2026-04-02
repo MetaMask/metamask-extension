@@ -293,7 +293,11 @@ import {
 } from './controllers/permissions';
 import createRPCMethodTrackingMiddleware from './lib/createRPCMethodTrackingMiddleware';
 import { getAccountsBySnapId } from './lib/snap-keyring';
-import { addDappTransaction, addTransaction } from './lib/transaction/util';
+import {
+  addDappTransaction,
+  addTransaction,
+  addTransactionSendCallExtraOptions,
+} from './lib/transaction/util';
 import { addTypedMessage, addPersonalMessage } from './lib/signature/util';
 import {
   METAMASK_CAIP_MULTICHAIN_PROVIDER,
@@ -439,11 +443,6 @@ import {
 import { MessengerSubscriptions } from './lib/MessengerSubscriptions';
 import { ProfileMetricsControllerInit } from './controller-init/profile-metrics-controller-init';
 import { ProfileMetricsServiceInit } from './controller-init/profile-metrics-service-init';
-import {
-  getTempoExtraOptionsForChain,
-  isTempoChain,
-} from './lib/transaction/tempo-tx-utils';
-import { accountSupports7702 } from './lib/account-supports-7702';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -1020,39 +1019,11 @@ export default class MetamaskController extends EventEmitter {
         }),
       ),
       wallet_sendCalls: createAsyncMiddleware(async (req, res) => {
-        /**
-         * Gets chain-specific parameters that need to be injected in addTransaction/addTransactionBatch.
-         * Done initially for Tempo.
-         * Done gracefully - silencing errors - so it doesn't impact previous behavior.
-         * Skipped in case of account not supporting EIP-7702, such as hardware wallets.
-         */
-        let addTransactionExtraOptions = {};
-        try {
-          const { chainId: currentRequestChainId } =
-            this.networkController.getNetworkConfigurationByNetworkClientId(
-              req.networkClientId,
-            );
-          if (isTempoChain(currentRequestChainId)) {
-            const isEip7702SupportedByAccount = await accountSupports7702(
-              req.params?.[0].from,
-              this.keyringController,
-            );
-            if (isEip7702SupportedByAccount) {
-              addTransactionExtraOptions = getTempoExtraOptionsForChain(
-                currentRequestChainId,
-              );
-            } else {
-              console.warn(
-                'wallet_sendCalls: Tempo chain but wallet does not support 7702. Falling back to legacy transactions',
-              );
-            }
-          }
-        } catch (err) {
-          console.warn(
-            'wallet_sendCalls: Error while getting addTransaction extra options',
-            err,
-          );
-        }
+        const addTransactionExtraOptions = addTransactionSendCallExtraOptions({
+          req,
+          networkController: this.networkController,
+          keyringController: this.keyringController,
+        });
         return await walletSendCalls(req, res, {
           getAccounts,
           getPermittedAccountsForOrigin: async () => {
