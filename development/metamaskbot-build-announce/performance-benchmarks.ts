@@ -1,16 +1,19 @@
 import { readFile } from 'fs/promises';
 import { join } from 'path';
 import {
-  ENTRY_BENCHMARK_PLATFORMS,
-  ENTRY_BENCHMARK_BUILD_TYPES,
-  BENCHMARK_PLATFORMS,
-  BENCHMARK_BUILD_TYPES,
   ALL_BENCHMARK_COMBOS,
-  STAT_KEY,
+  BENCHMARK_ANNOUNCE_SECTIONS,
+  BENCHMARK_BUILD_TYPES,
+  BENCHMARK_PLATFORMS,
   DEFAULT_RELATIVE_THRESHOLDS,
+  ENTRY_BENCHMARK_BUILD_TYPES,
+  ENTRY_BENCHMARK_PLATFORMS,
+  STAT_KEY,
   THRESHOLD_SEVERITY,
 } from '../../shared/constants/benchmarks';
 import type {
+  BenchmarkAnnounceSampleDefaults,
+  BenchmarkAnnounceSection,
   BenchmarkResults,
   ComparisonKey,
   StatisticalResult,
@@ -94,7 +97,8 @@ const USER_JOURNEY_BENCHMARK_PLATFORMS = [BENCHMARK_PLATFORMS.CHROME] as const;
 
 /**
  * Build types to fetch for user-journey presets in this workflow run.
- * Mirrors whether `benchmarks-webpack-perf` runs (push to main/release only).
+ * Mirrors whether webpack user-journey matrix rows run (push to main/release only;
+ * see `mainOnly` in `.github/workflows/run-benchmarks.yml`).
  */
 export function getUserJourneyBenchmarkBuildTypesForCurrentRun(): readonly string[] {
   const eventName = process.env.GITHUB_EVENT_NAME;
@@ -115,8 +119,8 @@ export function getUserJourneyBenchmarkBuildTypesForCurrentRun(): readonly strin
  * Interaction uses ENTRY_BENCHMARK_PLATFORMS/BUILD_TYPES (chrome-browserify).
  *
  * User journey: always chrome × browserify in CI. Webpack user-journey JSON is only
- * uploaded on **push to `main` or `release/*`** (`benchmarks-webpack-perf` in
- * `run-benchmarks.yml`).
+ * uploaded on **push to `main` or `release/*`** (webpack rows gated by `mainOnly` in
+ * `.github/workflows/run-benchmarks.yml`).
  */
 const STARTUP_BENCHMARK_PLATFORMS = [
   BENCHMARK_PLATFORMS.CHROME,
@@ -530,10 +534,10 @@ function formatTimerDetails(
 }
 
 /**
- * Builds an outer collapsible section (e.g. 'Interaction Benchmarks').
+ * Builds an outer collapsible benchmark subsection.
  *
  * @param result - Fetched entries and missing preset descriptions.
- * @param summary - The collapsible header text.
+ * @param section - `BENCHMARK_ANNOUNCE_SECTIONS.*` or a plain title string (no sample defaults).
  * @param baseline - Historical baseline for relative delta annotations.
  * @param runUrl - GitHub Actions run URL for "Show logs" links (optional).
  * @returns HTML string or empty string if no data.
@@ -541,6 +545,26 @@ function formatTimerDetails(
 
 /** Minimum absolute delta (%) to include a metric in the relative summary. */
 const RELATIVE_DELTA_MIN_PCT = 0.1;
+
+export type {
+  BenchmarkAnnounceSampleDefaults,
+  BenchmarkAnnounceSection,
+} from '../../shared/constants/benchmarks';
+export { BENCHMARK_ANNOUNCE_SECTIONS };
+
+/**
+ * Collapsible section title suffix from {@link BENCHMARK_ANNOUNCE_SECTIONS} (`sampleDefaults`).
+ *
+ * @param sampleDefaults - When set (named announce sections), appends the Samples line.
+ */
+function formatSectionSamplesLabel(
+  sampleDefaults?: BenchmarkAnnounceSampleDefaults,
+): string {
+  if (sampleDefaults) {
+    return ` · Samples: ${sampleDefaults.typical} (${sampleDefaults.note}, typical CI)`;
+  }
+  return '';
+}
 
 /**
  * Builds a bullet-point summary of notable relative deltas vs the 5-commit baseline.
@@ -609,10 +633,14 @@ function buildRelativeDeltaSection(
 }
 export function buildBenchmarkSection(
   result: FetchBenchmarkResult,
-  summary: string,
+  section: string | BenchmarkAnnounceSection,
   baseline?: HistoricalBaselineReference,
   runUrl?: string,
 ): string {
+  const summary = typeof section === 'string' ? section : section.title;
+  const sampleDefaults =
+    typeof section === 'string' ? undefined : section.sampleDefaults;
+
   try {
     const { entries, missingPresets } = result;
     if (entries.length === 0 && missingPresets.length === 0) {
@@ -625,6 +653,7 @@ export function buildBenchmarkSection(
         : '';
 
     const sectionCounts = countHealthEntries(entries, baseline);
+    const samplesLabel = formatSectionSamplesLabel(sampleDefaults);
     const sectionBadge =
       sectionCounts.failures > 0
         ? ` ${HEALTH_ICON[EntryHealth.Fail]} ${sectionCounts.failures}`
@@ -702,7 +731,7 @@ export function buildBenchmarkSection(
     const deltaSection = buildRelativeDeltaSection(entries, baseline);
     const sectionContent = warningHtml + sectionBody + deltaSection;
     return sectionContent
-      ? `<details><summary><b>${summary}${sectionBadge}</b></summary>\n${sectionContent}</details>\n`
+      ? `<details><summary><b>${summary}${samplesLabel}${sectionBadge}</b></summary>\n${sectionContent}</details>\n`
       : '';
   } catch (error: unknown) {
     console.log(`Failed to build ${summary}: ${String(error)}`);
@@ -980,25 +1009,25 @@ export async function buildPerformanceBenchmarksSection(
 
   const interactionHtml = buildBenchmarkSection(
     interactionResult,
-    'Interaction Benchmarks',
+    BENCHMARK_ANNOUNCE_SECTIONS.interaction,
     resolvedBaseline,
     runUrl,
   );
   const startupHtml = buildBenchmarkSection(
     startupResult,
-    'Startup Benchmarks',
+    BENCHMARK_ANNOUNCE_SECTIONS.startup,
     resolvedBaseline,
     runUrl,
   );
   const userJourneyHtml = buildBenchmarkSection(
     userJourneyResult,
-    'User Journey Benchmarks',
+    BENCHMARK_ANNOUNCE_SECTIONS.userJourney,
     resolvedBaseline,
     runUrl,
   );
   const dappPageLoadHtml = buildBenchmarkSection(
     dappPageLoadResult,
-    'Dapp Page Load Benchmarks',
+    BENCHMARK_ANNOUNCE_SECTIONS.dappPageLoad,
     resolvedBaseline,
     runUrl,
   );

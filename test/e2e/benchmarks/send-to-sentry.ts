@@ -14,10 +14,13 @@ import mapKeys from 'lodash/mapKeys';
 import * as Sentry from '@sentry/node';
 import { hideBin } from 'yargs/helpers';
 import yargs from 'yargs/yargs';
-import { STAT_KEY } from '../../../shared/constants/benchmarks';
+import {
+  BENCHMARK_PERSONA,
+  BENCHMARK_TYPE,
+  STAT_KEY,
+} from '../../../shared/constants/benchmarks';
 import type { BenchmarkResults } from '../../../shared/constants/benchmarks';
 import { getGitBranch, getGitCommitHash } from './utils/git';
-import { BENCHMARK_PERSONA, BENCHMARK_TYPE } from './utils/constants';
 import type { UserActionResult } from './utils/types';
 
 const packageJsonPath = path.resolve(__dirname, '../../../package.json');

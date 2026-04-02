@@ -2,6 +2,10 @@ import { promises as fs } from 'fs';
 import { execSync, spawn, ChildProcess } from 'child_process';
 import path from 'path';
 import { chromium, type BrowserContext, Browser } from '@playwright/test';
+import {
+  DEFAULT_BENCHMARK_BROWSER_LOADS,
+  DEFAULT_BENCHMARK_PAGE_LOADS,
+} from '../../../../../shared/constants/benchmarks';
 import type {
   DappPageLoadMetric,
   DappPageLoadSample,
@@ -267,13 +271,13 @@ export class PageLoadBenchmark {
    * and measures each URL multiple times to gather statistical data.
    *
    * @param urls - Array of URLs to test
-   * @param browserLoads - Number of browser load iterations (default: 10)
-   * @param pageLoads - Number of page loads per browser load (default: 10)
+   * @param browserLoads - Number of browser load iterations (default: {@link DEFAULT_BENCHMARK_BROWSER_LOADS})
+   * @param pageLoads - Number of page loads per browser load (default: {@link DEFAULT_BENCHMARK_PAGE_LOADS})
    */
   async runBenchmark(
     urls: string[],
-    browserLoads: number = 10,
-    pageLoads: number = 10,
+    browserLoads: number = DEFAULT_BENCHMARK_BROWSER_LOADS,
+    pageLoads: number = DEFAULT_BENCHMARK_PAGE_LOADS,
   ) {
     console.log(
       `Starting benchmark: ${browserLoads} browser loads, ${pageLoads} page loads per browser`,

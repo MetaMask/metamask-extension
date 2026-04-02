@@ -23,8 +23,8 @@ import {
 import {
   BENCHMARK_PERSONA,
   BENCHMARK_TYPE,
-  WITH_STATE_POWER_USER,
-} from '../../utils';
+} from '../../../../../shared/constants/benchmarks';
+import { WITH_STATE_POWER_USER } from '../../utils/constants';
 import type { BenchmarkRunResult } from '../../utils/types';
 
 const RECIPIENT_ADDRESS = 'GxSJqxAyTjCjyDmPxdBBfVE9QwuMhEoHrPLRTmMyqxnU';

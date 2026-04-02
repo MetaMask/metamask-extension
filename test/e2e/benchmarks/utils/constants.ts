@@ -1,17 +1,8 @@
-import type { ThresholdConfig } from '../../../../shared/constants/benchmarks';
 import {
-  BENCHMARK_PLATFORMS,
-  BENCHMARK_BUILD_TYPES,
-  BENCHMARK_PERSONA,
-  BENCHMARK_TYPE,
+  DEFAULT_BENCHMARK_BROWSER_LOADS,
+  DEFAULT_BENCHMARK_PAGE_LOADS,
+  type ThresholdConfig,
 } from '../../../../shared/constants/benchmarks';
-
-export {
-  BENCHMARK_PLATFORMS,
-  BENCHMARK_BUILD_TYPES,
-  BENCHMARK_PERSONA,
-  BENCHMARK_TYPE,
-};
 
 export const STARTUP_PRESETS = {
   STANDARD_HOME: 'startupStandardHome',
@@ -55,8 +46,10 @@ export const DAPP_PAGE_LOAD_BENCHMARK_SPEC_PATH = `${DAPP_PAGE_LOAD_BENCHMARK_DI
 export const DAPP_PAGE_LOAD_BENCHMARK_ARTIFACT_FILENAME =
   'benchmark-chrome-browserify-pageLoadBenchmark.json';
 
-export const DEFAULT_NUM_BROWSER_LOADS = 10;
-export const DEFAULT_NUM_PAGE_LOADS = 10;
+/** Same as {@link DEFAULT_BENCHMARK_BROWSER_LOADS} in `shared/constants/benchmarks`. */
+export const DEFAULT_NUM_BROWSER_LOADS = DEFAULT_BENCHMARK_BROWSER_LOADS;
+/** Same as {@link DEFAULT_BENCHMARK_PAGE_LOADS} in `shared/constants/benchmarks`. */
+export const DEFAULT_NUM_PAGE_LOADS = DEFAULT_BENCHMARK_PAGE_LOADS;
 
 export const ALL_METRICS = {
   uiStartup: 'UI Startup',

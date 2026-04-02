@@ -3,6 +3,7 @@ import type { BenchmarkResults } from '../../shared/constants/benchmarks';
 import * as historicalComparison from './historical-comparison';
 import { COMPARISON_SEVERITY } from './comparison-utils';
 import {
+  BENCHMARK_ANNOUNCE_SECTIONS,
   buildBenchmarkSection,
   extractEntries,
   fetchBenchmarkJson,
@@ -93,7 +94,7 @@ describe('getUserJourneyBenchmarkBuildTypesForCurrentRun', () => {
     ]);
   });
 
-  it('returns browserify and webpack on push to main (benchmarks-webpack-perf runs)', () => {
+  it('returns browserify and webpack on push to main (webpack user-journey matrix rows)', () => {
     process.env.GITHUB_EVENT_NAME = 'push';
     process.env.GITHUB_REF = 'refs/heads/main';
 
@@ -424,6 +425,7 @@ describe('buildBenchmarkSection', () => {
       BASELINE_PASS,
     );
 
+    expect(html).toContain('<summary><b>Test</b></summary>');
     expect(html).toContain('<table style=');
     expect(html).toContain('<th>chrome-browserify</th>');
     expect(html).toContain('<td>loadNewAccount</td>');
@@ -464,6 +466,44 @@ describe('buildBenchmarkSection', () => {
     const html = buildBenchmarkSection(withEntries([makeEntry()]), 'Test');
     expect(html).toContain('<table style=');
     expect(html).toContain(COMPARISON_SEVERITY.Pass.icon);
+  });
+
+  it('includes mapped sample semantics in the title for announce sections', () => {
+    const html = buildBenchmarkSection(
+      withEntries([
+        makeEntry(),
+        makeEntry({
+          benchmarkName: 'confirmTx',
+          mean: { confirmTx: 1 },
+          stdDev: { confirmTx: 1 },
+          p75: { confirmTx: 1 },
+          p95: { confirmTx: 1 },
+        }),
+      ]),
+      BENCHMARK_ANNOUNCE_SECTIONS.startup,
+    );
+    expect(html).toContain(
+      '<summary><b>Startup Benchmarks · Samples: 100 (10×10 loads, typical CI)</b></summary>',
+    );
+  });
+
+  it('uses interaction announce mapping for the Samples line', () => {
+    const html = buildBenchmarkSection(
+      withEntries([
+        makeEntry(),
+        makeEntry({
+          benchmarkName: 'confirmTx',
+          mean: { confirmTx: 1 },
+          stdDev: { confirmTx: 1 },
+          p75: { confirmTx: 1 },
+          p95: { confirmTx: 1 },
+        }),
+      ]),
+      BENCHMARK_ANNOUNCE_SECTIONS.interaction,
+    );
+    expect(html).toContain(
+      '<summary><b>Interaction Benchmarks · Samples: 5 (iterations, typical CI)</b></summary>',
+    );
   });
 
   it('shows – for combos where a benchmark has no data', () => {

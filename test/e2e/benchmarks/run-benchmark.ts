@@ -18,6 +18,11 @@ import type {
   BenchmarkResults,
   ThresholdViolation,
 } from '../../../shared/constants/benchmarks';
+import {
+  DEFAULT_BENCHMARK_BROWSER_LOADS,
+  DEFAULT_BENCHMARK_ITERATIONS,
+  DEFAULT_BENCHMARK_PAGE_LOADS,
+} from '../../../shared/constants/benchmarks';
 import { toCamelCase } from '../../../shared/lib/string-utils';
 import { runBenchmarkWithIterations, convertSummaryToResults } from './utils';
 import {
@@ -285,18 +290,18 @@ async function main(): Promise<void> {
     })
     .option('iterations', {
       alias: 'i',
-      default: 5,
+      default: DEFAULT_BENCHMARK_ITERATIONS,
       description:
         'Number of iterations (for performance and user-action benchmarks)',
       type: 'number',
     })
     .option('browserLoads', {
-      default: 10,
+      default: DEFAULT_BENCHMARK_BROWSER_LOADS,
       description: 'Number of browser loads (for page load benchmarks)',
       type: 'number',
     })
     .option('pageLoads', {
-      default: 10,
+      default: DEFAULT_BENCHMARK_PAGE_LOADS,
       description:
         'Number of page loads per browser (for page load benchmarks)',
       type: 'number',

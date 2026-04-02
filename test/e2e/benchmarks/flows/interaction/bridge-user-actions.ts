@@ -14,7 +14,10 @@ import {
   MOCK_TOKENS_ETHEREUM,
 } from '../../../tests/bridge/constants';
 import { Driver } from '../../../webdriver/driver';
-import { BENCHMARK_PERSONA, BENCHMARK_TYPE } from '../../utils/constants';
+import {
+  BENCHMARK_PERSONA,
+  BENCHMARK_TYPE,
+} from '../../../../../shared/constants/benchmarks';
 import type { BenchmarkRunResult } from '../../utils/types';
 import { runUserActionBenchmark } from '../../utils/runner';
 

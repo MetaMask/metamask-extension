@@ -17,8 +17,11 @@ import {
   getTestSpecificMock,
   shouldUseMockedRequests,
 } from '../../utils/mock-config';
-import { BENCHMARK_PERSONA, WITH_STATE_POWER_USER } from '../../utils';
-import { BENCHMARK_TYPE } from '../../utils/constants';
+import {
+  BENCHMARK_PERSONA,
+  BENCHMARK_TYPE,
+} from '../../../../../shared/constants/benchmarks';
+import { WITH_STATE_POWER_USER } from '../../utils/constants';
 import type { BenchmarkRunResult } from '../../utils/types';
 
 const ETH_TOKEN_ADDRESS = '0x0000000000000000000000000000000000000000';

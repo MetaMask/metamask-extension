@@ -131,7 +131,7 @@ export async function runBenchmarkWithIterations(
       MAX_EXCLUSION_RATE,
     );
 
-    if (!exclusionCheck.passed && stats.dataQuality !== 'unreliable') {
+    if (exclusionCheck.passed === false && stats.dataQuality !== 'unreliable') {
       // Mark as unreliable if too many exclusions (only if not already unreliable)
       stats.dataQuality = 'unreliable';
       excludedDueToQuality += 1;
@@ -305,14 +305,13 @@ export async function runPageLoadBenchmark(
 
   if (runResults.some((result) => result.navigation.length > 1)) {
     throw new Error(`Multiple navigations not supported`);
-  } else if (
-    runResults.some((result) => result.navigation[0].type !== 'navigate')
-  ) {
+  }
+  const firstNonNavigate = runResults.find(
+    (result) => result.navigation[0].type !== 'navigate',
+  );
+  if (firstNonNavigate !== undefined) {
     throw new Error(
-      `Navigation type ${
-        runResults.find((result) => result.navigation[0].type !== 'navigate')
-          ?.navigation[0].type
-      } not supported`,
+      `Navigation type ${firstNonNavigate.navigation[0].type} not supported`,
     );
   }
 

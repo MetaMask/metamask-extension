@@ -142,3 +142,72 @@ export const ENTRY_BENCHMARK_PLATFORMS: readonly (typeof BENCHMARK_PLATFORMS)[ke
 
 export const ENTRY_BENCHMARK_BUILD_TYPES: readonly (typeof BENCHMARK_BUILD_TYPES)[keyof typeof BENCHMARK_BUILD_TYPES][] =
   [BENCHMARK_BUILD_TYPES.BROWSERIFY];
+
+/**
+ * Default Selenium iteration count for `yarn test:e2e:benchmark` (`--iterations`).
+ * User-journey and interaction-style presets use this unless overridden.
+ */
+export const DEFAULT_BENCHMARK_ITERATIONS = 5;
+
+/**
+ * Default matrix dimensions for startup benchmarks and the dapp page-load flow
+ * (`--browserLoads`, `--pageLoads`). CI uses the same values in `run-benchmarks.yml`.
+ */
+export const DEFAULT_BENCHMARK_BROWSER_LOADS = 10;
+export const DEFAULT_BENCHMARK_PAGE_LOADS = 10;
+
+/**
+ * Total samples when reporting `browserLoads × pageLoads` (e.g. startup, dapp page load).
+ */
+export const DEFAULT_BENCHMARK_LOAD_MATRIX_SAMPLE_COUNT =
+  DEFAULT_BENCHMARK_BROWSER_LOADS * DEFAULT_BENCHMARK_PAGE_LOADS;
+
+const BENCHMARK_ANNOUNCE_LOAD_MATRIX_NOTE = `${DEFAULT_BENCHMARK_BROWSER_LOADS}×${DEFAULT_BENCHMARK_PAGE_LOADS} loads`;
+
+export type BenchmarkAnnounceSampleDefaults = {
+  typical: number;
+  note: string;
+};
+
+/**
+ * PR announce collapsible subsection: display title plus typical CI sample semantics
+ * for MetaMaskbot (`development/metamaskbot-build-announce`).
+ */
+export type BenchmarkAnnounceSection = {
+  title: string;
+  sampleDefaults: BenchmarkAnnounceSampleDefaults;
+};
+
+/**
+ * Named benchmark subsections for `buildPerformanceBenchmarksSection`.
+ */
+export const BENCHMARK_ANNOUNCE_SECTIONS = {
+  interaction: {
+    title: 'Interaction Benchmarks',
+    sampleDefaults: {
+      typical: DEFAULT_BENCHMARK_ITERATIONS,
+      note: 'iterations',
+    },
+  },
+  startup: {
+    title: 'Startup Benchmarks',
+    sampleDefaults: {
+      typical: DEFAULT_BENCHMARK_LOAD_MATRIX_SAMPLE_COUNT,
+      note: BENCHMARK_ANNOUNCE_LOAD_MATRIX_NOTE,
+    },
+  },
+  userJourney: {
+    title: 'User Journey Benchmarks',
+    sampleDefaults: {
+      typical: DEFAULT_BENCHMARK_ITERATIONS,
+      note: 'iterations',
+    },
+  },
+  dappPageLoad: {
+    title: 'Dapp Page Load Benchmarks',
+    sampleDefaults: {
+      typical: DEFAULT_BENCHMARK_LOAD_MATRIX_SAMPLE_COUNT,
+      note: BENCHMARK_ANNOUNCE_LOAD_MATRIX_NOTE,
+    },
+  },
+} as const satisfies Record<string, BenchmarkAnnounceSection>;

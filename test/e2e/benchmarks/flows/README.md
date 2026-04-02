@@ -39,14 +39,14 @@ yarn test:e2e:benchmark --preset userJourneyOnboardingNew --out results.json
 ### User journey benchmarks: browserify vs webpack
 
 - **PRs:** User journey benchmarks run on **Chrome + Browserify** only.
-- **Push to main/release:** User journey benchmarks also run on **Chrome + Webpack** (separate `benchmarks-webpack-perf` job) so we can compare build systems before releasing webpack to production.
+- **Push to main/release:** User journey benchmarks also run on **Chrome + Webpack** (extra `benchmarks` matrix rows with `mainOnly: true` in `run-benchmarks.yml`) so we can compare build systems before releasing webpack to production.
 
 ### Dapp page load (`pageLoadBenchmark`) — Playwright
 
 The **`pageLoadBenchmark`** preset measures Core Web Vitals against the test dapp using **Playwright**, not the Selenium **`run()`** pattern used by other flows in this directory. Strategy notes: [gist](https://gist.github.com/ffmcgee725/2c4f67a5a3d6255ea985635510d19d47).
 
 - **Implementation:** `test/e2e/benchmarks/flows/dapp-page-load/` — Playwright spec, `PageLoadBenchmark` runner, stats aggregation, and unit tests. The Playwright **`benchmark`** project sets `testDir` to this folder (`playwright.config.ts`). `run-benchmark.ts` points at `dapp-page-load-benchmark.spec.ts`.
-- **CI:** **Chrome + Browserify only** (job `dapp-page-load-benchmark` in `.github/workflows/run-benchmarks.yml`). Results merge into the same performance benchmark artifacts / `performance_data.json` as Selenium presets. Output artifact: `benchmark-chrome-browserify-pageLoadBenchmark.json`.
+- **CI:** **Chrome + Browserify only** (job id `benchmarks-page-load`, check name **`chrome-browserify-pageLoadBenchmark`**, same `browser-buildType-preset` style as other `run-benchmarks` matrix rows). Results merge into the same performance benchmark artifacts / `performance_data.json` as Selenium presets. Output artifact: `benchmark-chrome-browserify-pageLoadBenchmark.json`.
 
 | File | Role |
 | ---- | ---- |

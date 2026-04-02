@@ -26,7 +26,10 @@ import {
   getTestSpecificMock,
   shouldUseMockedRequests,
 } from '../../utils/mock-config';
-import { BENCHMARK_PERSONA, BENCHMARK_TYPE } from '../../utils/constants';
+import {
+  BENCHMARK_PERSONA,
+  BENCHMARK_TYPE,
+} from '../../../../../shared/constants/benchmarks';
 import type { BenchmarkRunResult } from '../../utils/types';
 
 export const testTitle = 'benchmark-onboarding-new-wallet';

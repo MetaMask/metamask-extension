@@ -8,7 +8,10 @@ import { withFixtures } from '../../../helpers';
 import { login } from '../../../page-objects/flows/login.flow';
 import { createInternalTransaction } from '../../../page-objects/flows/transaction';
 import { Driver } from '../../../webdriver/driver';
-import { BENCHMARK_PERSONA, BENCHMARK_TYPE } from '../../utils/constants';
+import {
+  BENCHMARK_PERSONA,
+  BENCHMARK_TYPE,
+} from '../../../../../shared/constants/benchmarks';
 import type { BenchmarkRunResult } from '../../utils/types';
 import { runUserActionBenchmark } from '../../utils/runner';
 
