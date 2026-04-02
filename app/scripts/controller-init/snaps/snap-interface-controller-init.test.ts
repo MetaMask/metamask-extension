@@ -1,10 +1,10 @@
-import { SnapInterfaceController } from '@metamask/snaps-controllers';
+import {
+  SnapInterfaceController,
+  SnapInterfaceControllerMessenger,
+} from '@metamask/snaps-controllers';
 import { ControllerInitRequest } from '../types';
 import { buildControllerInitRequestMock } from '../test/utils';
-import {
-  getSnapInterfaceControllerMessenger,
-  SnapInterfaceControllerMessenger,
-} from '../messengers/snaps';
+import { getSnapInterfaceControllerMessenger } from '../messengers/snaps';
 import { getRootMessenger } from '../../lib/messenger';
 import { SnapInterfaceControllerInit } from './snap-interface-controller-init';
 

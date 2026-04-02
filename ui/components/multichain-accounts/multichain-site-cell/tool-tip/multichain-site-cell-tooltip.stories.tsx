@@ -33,6 +33,7 @@ const mockAccountGroups: AccountGroupWithInternalAccounts[] = [
       entropy: {
         groupIndex: 0,
       },
+      lastSelected: 0,
     },
     accounts: [
       createMockInternalAccount({
@@ -54,6 +55,7 @@ const mockAccountGroups: AccountGroupWithInternalAccounts[] = [
       entropy: {
         groupIndex: 1,
       },
+      lastSelected: 0,
     },
     walletName: 'Test Wallet 1',
     walletId: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ',

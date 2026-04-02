@@ -6,6 +6,10 @@ import {
 } from '@metamask/transaction-controller';
 import { SmartTransactionStatuses } from '@metamask/smart-transactions-controller';
 import {
+  isCorrectDeveloperTransactionType,
+  isCorrectSignatureApprovalType,
+} from '../../shared/lib/confirmation.utils';
+import {
   PRIORITY_STATUS_HASH,
   PENDING_STATUS_HASH,
   EXCLUDED_TRANSACTION_TYPES,
@@ -22,8 +26,13 @@ import {
   createShallowEqualInputAndResultSelector,
   createParameterizedShallowEqualSelector,
 } from '../../shared/lib/selectors/selector-creators';
+import { oldestPendingConfirmationSelector } from '../pages/confirmations/selectors/confirm';
 import { getSelectedInternalAccount } from './accounts';
-import { hasPendingApprovals, getApprovalRequestsByType } from './approvals';
+import {
+  hasPendingApprovals,
+  getApprovalRequestsByType,
+  getPendingApprovals,
+} from './approvals';
 import { EMPTY_ARRAY, EMPTY_OBJECT } from './shared';
 
 /**
@@ -760,3 +769,22 @@ function getProviderConfigSafe(state) {
     return null;
   }
 }
+
+const selectIsTransactionTypeRedesigned = createSelector(
+  (state, transactionId) =>
+    selectTransactionMetadata(state, transactionId)?.type,
+  (transactionType) => isCorrectDeveloperTransactionType(transactionType),
+);
+
+export const selectIsRedesignedConfirmationType = createSelector(
+  (state, paramsId) => {
+    const id = paramsId ?? oldestPendingConfirmationSelector(state)?.id;
+    return selectIsTransactionTypeRedesigned(state, id);
+  },
+  (state, paramsId) => {
+    const id = paramsId ?? oldestPendingConfirmationSelector(state)?.id;
+    return getPendingApprovals(state).find((a) => a.id === id)?.type;
+  },
+  (isRedesignedTx, approvalType) =>
+    isRedesignedTx || isCorrectSignatureApprovalType(approvalType),
+);

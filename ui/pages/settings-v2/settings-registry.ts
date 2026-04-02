@@ -2,25 +2,36 @@
 /* eslint-disable import-x/extensions */
 import { type ComponentType } from 'react';
 import { IconName } from '@metamask/design-system-react';
+import { matchPath } from 'react-router-dom';
 import {
   ACCOUNT_IDENTICON_ROUTE,
+  ABOUT_US_ROUTE,
   ASSETS_ROUTE,
   AUTO_LOCK_ROUTE,
   BACKUPANDSYNC_ROUTE,
   CURRENCY_ROUTE,
-  DEVELOPER_OPTIONS_V2_ROUTE,
+  DEVELOPER_OPTIONS_ROUTE,
+  DEVELOPER_TOOLS_ROUTE,
+  MANAGE_WALLET_RECOVERY_V2_ROUTE,
   EXPERIMENTAL_ROUTE,
   LANGUAGE_ROUTE,
   NOTIFICATIONS_SETTINGS_ROUTE,
   PREFERENCES_AND_DISPLAY_ROUTE,
   SECURITY_AND_PASSWORD_ROUTE,
+  SECURITY_PASSWORD_CHANGE_V2_ROUTE,
   SETTINGS_V2_ROUTE,
+  SNAP_SETTINGS_ROUTE,
+  TRANSACTION_SHIELD_CLAIM_ROUTES,
+  TRANSACTION_SHIELD_MANAGE_PAST_PLAN_ROUTE,
+  TRANSACTION_SHIELD_MANAGE_PLAN_ROUTE,
+  TRANSACTION_SHIELD_ROUTE,
   TRANSACTIONS_ROUTE,
   THEME_ROUTE,
   PRIVACY_ROUTE,
   THIRD_PARTY_APIS_ROUTE,
 } from '../../helpers/constants/routes';
 import { mmLazy } from '../../helpers/utils/mm-lazy';
+import { CLAIMS_TAB_KEYS } from '../settings/transaction-shield-tab/types';
 
 /**
  * Route definition for a Settings V2 page.
@@ -37,6 +48,42 @@ export type SettingsV2RouteMeta = {
   /** Icon for TabBar (required if isTab is true) */
   iconName?: IconName;
 };
+
+export const SETTINGS_V2_ROOT_SECTIONS: readonly {
+  titleKeys: readonly string[];
+  paths: readonly string[];
+}[] = [
+  {
+    titleKeys: ['general'],
+    paths: [PREFERENCES_AND_DISPLAY_ROUTE, NOTIFICATIONS_SETTINGS_ROUTE],
+  },
+  {
+    titleKeys: ['securityAndPrivacy'],
+    paths: [SECURITY_AND_PASSWORD_ROUTE, PRIVACY_ROUTE, BACKUPANDSYNC_ROUTE],
+  },
+  {
+    titleKeys: ['transactionsAndAssets'],
+    paths: [TRANSACTION_SHIELD_ROUTE, ASSETS_ROUTE, TRANSACTIONS_ROUTE],
+  },
+  {
+    titleKeys: ['more'],
+    paths: [
+      EXPERIMENTAL_ROUTE,
+      DEVELOPER_OPTIONS_ROUTE,
+      DEVELOPER_TOOLS_ROUTE,
+      ABOUT_US_ROUTE,
+    ],
+  },
+] as const;
+
+const SHOW_DEBUG_SETTINGS = Boolean(
+  process.env.ENABLE_SETTINGS_PAGE_DEV_OPTIONS || process.env.IN_TEST,
+);
+
+const TRANSACTION_SHIELD_CLAIMS_WILDCARD_ROUTE = `${TRANSACTION_SHIELD_CLAIM_ROUTES.BASE}/*`;
+const TRANSACTION_SHIELD_EDIT_DRAFT_ROUTE = `${TRANSACTION_SHIELD_CLAIM_ROUTES.EDIT_DRAFT.FULL}/:draftId`;
+const TRANSACTION_SHIELD_VIEW_PENDING_ROUTE = `${TRANSACTION_SHIELD_CLAIM_ROUTES.VIEW_PENDING.FULL}/:claimId`;
+const TRANSACTION_SHIELD_VIEW_HISTORY_ROUTE = `${TRANSACTION_SHIELD_CLAIM_ROUTES.VIEW_HISTORY.FULL}/:claimId`;
 
 /**
  * Single source of truth for all Settings V2 routes.
@@ -83,9 +130,7 @@ export const SETTINGS_V2_ROUTES: Record<string, SettingsV2RouteMeta> = {
   [NOTIFICATIONS_SETTINGS_ROUTE]: {
     labelKey: 'notifications',
     parentPath: SETTINGS_V2_ROUTE,
-    component: mmLazy(
-      () => import('../notifications-settings/notifications-settings.tsx'),
-    ),
+    component: mmLazy(() => import('./notifications-tab/index.ts')),
     isTab: true,
     iconName: IconName.Notification,
   },
@@ -103,6 +148,23 @@ export const SETTINGS_V2_ROUTES: Record<string, SettingsV2RouteMeta> = {
     parentPath: SECURITY_AND_PASSWORD_ROUTE,
     component: mmLazy(
       () => import('./security-and-password-tab/auto-lock-sub-page.tsx'),
+    ),
+  },
+  [MANAGE_WALLET_RECOVERY_V2_ROUTE]: {
+    labelKey: 'manageWalletRecovery',
+    parentPath: SECURITY_AND_PASSWORD_ROUTE,
+    component: mmLazy(
+      () =>
+        import(
+          './security-and-password-tab/manage-wallet-recovery-sub-page.tsx'
+        ),
+    ),
+  },
+  [SECURITY_PASSWORD_CHANGE_V2_ROUTE]: {
+    labelKey: 'password',
+    parentPath: SECURITY_AND_PASSWORD_ROUTE,
+    component: mmLazy(
+      () => import('./security-and-password-tab/password-sub-page.tsx'),
     ),
   },
 
@@ -131,6 +193,58 @@ export const SETTINGS_V2_ROUTES: Record<string, SettingsV2RouteMeta> = {
     ),
     isTab: true,
     iconName: IconName.SecurityTime,
+  },
+
+  // --- Transaction Shield tab ---
+  [TRANSACTION_SHIELD_ROUTE]: {
+    labelKey: 'shieldTx',
+    parentPath: SETTINGS_V2_ROUTE,
+    component: mmLazy(
+      () => import('../settings/transaction-shield-tab/index.ts'),
+    ),
+    isTab: true,
+    iconName: IconName.ShieldLock,
+  },
+  [TRANSACTION_SHIELD_MANAGE_PLAN_ROUTE]: {
+    labelKey: 'shieldManagePlan',
+    parentPath: TRANSACTION_SHIELD_ROUTE,
+    component: mmLazy(
+      () => import('./transaction-shield-tab/manage-plan-sub-page.tsx'),
+    ),
+  },
+  [TRANSACTION_SHIELD_MANAGE_PAST_PLAN_ROUTE]: {
+    labelKey: 'shieldPastPlansTitle',
+    parentPath: TRANSACTION_SHIELD_ROUTE,
+    component: mmLazy(
+      () => import('./transaction-shield-tab/manage-past-plan-sub-page.tsx'),
+    ),
+  },
+  [TRANSACTION_SHIELD_CLAIM_ROUTES.BASE]: {
+    labelKey: 'shieldClaimsListTitle',
+    parentPath: TRANSACTION_SHIELD_ROUTE,
+  },
+  [TRANSACTION_SHIELD_CLAIMS_WILDCARD_ROUTE]: {
+    labelKey: 'shieldClaimsListTitle',
+    parentPath: TRANSACTION_SHIELD_ROUTE,
+    component: mmLazy(
+      () => import('../settings/transaction-shield-tab/claims-area/index.ts'),
+    ),
+  },
+  [TRANSACTION_SHIELD_CLAIM_ROUTES.NEW.FULL]: {
+    labelKey: 'shieldClaim',
+    parentPath: TRANSACTION_SHIELD_CLAIM_ROUTES.BASE,
+  },
+  [TRANSACTION_SHIELD_EDIT_DRAFT_ROUTE]: {
+    labelKey: 'shieldClaimsListTitle',
+    parentPath: `${TRANSACTION_SHIELD_CLAIM_ROUTES.BASE}?tab=${CLAIMS_TAB_KEYS.PENDING}`,
+  },
+  [TRANSACTION_SHIELD_VIEW_PENDING_ROUTE]: {
+    labelKey: 'shieldClaimsListTitle',
+    parentPath: `${TRANSACTION_SHIELD_CLAIM_ROUTES.BASE}?tab=${CLAIMS_TAB_KEYS.PENDING}`,
+  },
+  [TRANSACTION_SHIELD_VIEW_HISTORY_ROUTE]: {
+    labelKey: 'shieldClaimsListTitle',
+    parentPath: `${TRANSACTION_SHIELD_CLAIM_ROUTES.BASE}?tab=${CLAIMS_TAB_KEYS.HISTORY}`,
   },
 
   // --- Assets tab ---
@@ -167,13 +281,41 @@ export const SETTINGS_V2_ROUTES: Record<string, SettingsV2RouteMeta> = {
     iconName: IconName.Flask,
   },
 
-  // --- Developer Options tab ---
-  [DEVELOPER_OPTIONS_V2_ROUTE]: {
-    labelKey: 'developerOptions',
+  // --- Debug (internal) tab ---
+  ...(SHOW_DEBUG_SETTINGS
+    ? {
+        [DEVELOPER_OPTIONS_ROUTE]: {
+          labelKey: 'debug',
+          parentPath: SETTINGS_V2_ROUTE,
+          component: mmLazy(() => import('./debug-tab/index.ts')),
+          isTab: true,
+          iconName: IconName.Sparkle,
+        },
+      }
+    : {}),
+
+  // --- Developer Tools tab ---
+  [DEVELOPER_TOOLS_ROUTE]: {
+    labelKey: 'developerTools',
     parentPath: SETTINGS_V2_ROUTE,
-    component: mmLazy(() => import('./developer-options-tab/index.ts')),
+    component: mmLazy(() => import('./developer-tools-tab/index.ts')),
     isTab: true,
     iconName: IconName.Code,
+  },
+
+  // --- About tab ---
+  [ABOUT_US_ROUTE]: {
+    labelKey: 'aboutMetaMask',
+    parentPath: SETTINGS_V2_ROUTE,
+    component: mmLazy(() => import('./about-tab/index.ts')),
+    isTab: true,
+    iconName: IconName.Info,
+  },
+
+  // --- Snap settings (navigated via URL, not shown as a tab) ---
+  [SNAP_SETTINGS_ROUTE]: {
+    labelKey: 'snaps',
+    parentPath: SETTINGS_V2_ROUTE,
   },
 };
 
@@ -185,7 +327,31 @@ export const SETTINGS_V2_ROUTES: Record<string, SettingsV2RouteMeta> = {
 export function getSettingsV2RouteMeta(
   pathname: string,
 ): SettingsV2RouteMeta | null {
-  return SETTINGS_V2_ROUTES[pathname] ?? null;
+  if (!pathname) {
+    return null;
+  }
+
+  const exactMeta = SETTINGS_V2_ROUTES[pathname];
+  if (exactMeta) {
+    return exactMeta;
+  }
+
+  const matchingRoute = Object.keys(SETTINGS_V2_ROUTES)
+    .filter((routePath) => routePath.includes('*') || routePath.includes(':'))
+    .sort((routeA, routeB) => routeB.length - routeA.length)
+    .find((routePath) =>
+      Boolean(
+        matchPath(
+          {
+            path: routePath,
+            end: true,
+          },
+          pathname,
+        ),
+      ),
+    );
+
+  return matchingRoute ? SETTINGS_V2_ROUTES[matchingRoute] : null;
 }
 
 type TabRouteMeta = SettingsV2RouteMeta &

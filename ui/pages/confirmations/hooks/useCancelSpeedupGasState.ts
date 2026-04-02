@@ -20,6 +20,7 @@ import {
   hexWEIToDecGWEI,
 } from '../../../../shared/lib/conversion.utils';
 import { useTransactionFunctions } from './useTransactionFunctions';
+import { useLegacyCancelSpeedupFlow } from './useLegacyCancelSpeedupFlow';
 
 export type UseCancelSpeedupGasStateReturn = {
   effectiveTransaction: TransactionMeta;
@@ -39,8 +40,8 @@ export type UseCancelSpeedupGasStateReturn = {
 
 /**
  * Provides effective transaction state and action functions for the cancel/speedup flow.
- * Effective transaction comes from the store (after gas updates) or the prop.
- * Gas updates dispatch to the store so no local retry state is needed.
+ * Routes to the legacy (gasPrice) or EIP-1559 (maxFeePerGas) flow based on
+ * whether the transaction has EIP-1559 gas parameters.
  * @param transaction
  * @param editGasMode
  */
@@ -78,6 +79,9 @@ export function useCancelSpeedupGasState(
 
   const { gasFeeEstimates } = useGasFeeEstimates(networkClientId);
 
+  const isLegacy = !effectiveTransaction?.txParams?.maxFeePerGas;
+
+  // EIP-1559 flow
   const gasLimitNum = Number(
     hexToDecimal(
       effectiveTransaction?.txParams?.gasLimit ??
@@ -91,24 +95,36 @@ export function useCancelSpeedupGasState(
     ? hexWEIToDecGWEI(effectiveTransaction.txParams.maxPriorityFeePerGas)
     : '0';
 
-  const {
-    cancelTransaction,
-    speedUpTransaction,
-    updateTransactionToTenPercentIncreasedGasFee,
-    updateTransactionUsingEstimate,
-  } = useTransactionFunctions({
+  const effectiveGasFeeEstimates =
+    gasFeeEstimates ?? effectiveTransaction.gasFeeEstimates;
+
+  const eip1559Functions = useTransactionFunctions({
     defaultEstimateToUse: GasRecommendations.medium,
     editGasMode,
-    estimatedBaseFee: (gasFeeEstimates as GasFeeEstimates)?.estimatedBaseFee,
-    gasFeeEstimates: gasFeeEstimates ?? undefined,
+    estimatedBaseFee: (effectiveGasFeeEstimates as GasFeeEstimates)
+      ?.estimatedBaseFee,
+    gasFeeEstimates: effectiveGasFeeEstimates,
     gasLimit: gasLimitNum,
     maxPriorityFeePerGas: maxPriorityFeePerGasGwei,
     transaction: effectiveTransaction as TransactionMeta,
   });
 
+  // Legacy flow
+  const legacyFunctions = useLegacyCancelSpeedupFlow({
+    transaction: effectiveTransaction as TransactionMeta,
+    gasFeeEstimates: effectiveGasFeeEstimates,
+  });
+
+  const {
+    cancelTransaction,
+    speedUpTransaction,
+    updateTransactionToTenPercentIncreasedGasFee,
+    updateTransactionUsingEstimate,
+  } = isLegacy ? legacyFunctions : eip1559Functions;
+
   return {
     effectiveTransaction: effectiveTransaction as TransactionMeta,
-    gasFeeEstimates: gasFeeEstimates ?? null,
+    gasFeeEstimates: effectiveGasFeeEstimates ?? null,
     cancelTransaction,
     speedUpTransaction,
     updateTransactionToTenPercentIncreasedGasFee,

@@ -437,6 +437,14 @@
     },
     "@lavamoat/lavadome-react": {
       "globals": {
+        "Document.prototype": true,
+        "DocumentFragment.prototype": true,
+        "Element.prototype": true,
+        "Event.prototype": true,
+        "EventTarget.prototype": true,
+        "NavigateEvent.prototype": true,
+        "NavigationDestination.prototype": true,
+        "Node.prototype": true,
         "console.warn": true,
         "document": true,
         "navigation": true
@@ -465,9 +473,6 @@
     "@ledgerhq/errors": {
       "globals": {
         "console.warn": true
-      },
-      "packages": {
-        "@swc/helpers": true
       }
     },
     "@ledgerhq/hw-app-eth>@ledgerhq/evm-tools": {
@@ -514,7 +519,6 @@
       "packages": {
         "@ledgerhq/errors": true,
         "@ledgerhq/hw-app-eth>@ledgerhq/logs": true,
-        "@swc/helpers": true,
         "buffer": true,
         "webpack>events": true
       }
@@ -529,7 +533,6 @@
         "@ledgerhq/errors": true,
         "@ledgerhq/hw-transport": true,
         "@ledgerhq/hw-app-eth>@ledgerhq/logs": true,
-        "@swc/helpers": true,
         "buffer": true
       }
     },
@@ -545,9 +548,6 @@
       "globals": {
         "__ledgerLogsListen": "write",
         "console.error": true
-      },
-      "packages": {
-        "@swc/helpers": true
       }
     },
     "@material-ui/core": {
@@ -658,6 +658,9 @@
       }
     },
     "@metamask/assets-controller": {
+      "globals": {
+        "performance.now": true
+      },
       "packages": {
         "@metamask/controller-utils": true,
         "@metamask/utils": true,
@@ -876,7 +879,7 @@
         "@ethereumjs/tx>@ethereumjs/util": true,
         "@metamask/eth-qr-keyring>@keystonehq/bc-ur-registry-eth": true,
         "@metamask/utils": true,
-        "@metamask/keyring-api>async-mutex": true,
+        "mockttp>async-mutex": true,
         "buffer": true,
         "@metamask/eth-qr-keyring>hdkey": true,
         "@metamask/eth-qr-keyring>uuid": true
@@ -1042,7 +1045,7 @@
     },
     "@metamask/snaps-sdk>@metamask/key-tree": {
       "globals": {
-        "crypto": true,
+        "crypto.subtle": true,
         "ed25519": true,
         "ed25519Bip32": true,
         "secp256k1": true
@@ -1062,9 +1065,25 @@
         "@metamask/keyring-utils": true,
         "@metamask/superstruct": true,
         "@metamask/utils": true,
-        "@metamask/keyring-api>async-mutex": true,
+        "mockttp>async-mutex": true,
         "bitcoin-address-validation": true,
         "@metamask/keyring-api>uuid": true
+      }
+    },
+    "@metamask/keyring-internal-snap-client>@metamask/keyring-api": {
+      "packages": {
+        "@metamask/keyring-utils": true,
+        "@metamask/superstruct": true,
+        "@metamask/utils": true,
+        "bitcoin-address-validation": true
+      }
+    },
+    "@metamask/keyring-snap-client>@metamask/keyring-api": {
+      "packages": {
+        "@metamask/keyring-utils": true,
+        "@metamask/superstruct": true,
+        "@metamask/utils": true,
+        "bitcoin-address-validation": true
       }
     },
     "@metamask/keyring-controller": {
@@ -1078,7 +1097,7 @@
         "@metamask/eth-sig-util": true,
         "@metamask/keyring-controller>@metamask/eth-simple-keyring": true,
         "@metamask/utils": true,
-        "@metamask/keyring-api>async-mutex": true,
+        "mockttp>async-mutex": true,
         "@metamask/keyring-controller>ethereumjs-wallet": true,
         "lodash": true,
         "@metamask/keyring-controller>ulid": true
@@ -1093,7 +1112,7 @@
     },
     "@metamask/keyring-internal-snap-client": {
       "packages": {
-        "@metamask/keyring-api": true,
+        "@metamask/keyring-internal-snap-client>@metamask/keyring-api": true,
         "@metamask/keyring-internal-api": true,
         "@metamask/keyring-snap-client": true,
         "@metamask/keyring-utils": true
@@ -1101,7 +1120,7 @@
     },
     "@metamask/keyring-snap-client": {
       "packages": {
-        "@metamask/keyring-api": true,
+        "@metamask/keyring-snap-client>@metamask/keyring-api": true,
         "@metamask/keyring-utils": true,
         "@metamask/superstruct": true,
         "@metamask/keyring-snap-client>uuid": true
@@ -1157,7 +1176,7 @@
       },
       "packages": {
         "@metamask/base-controller": true,
-        "@metamask/connectivity-controller": true,
+        "@metamask/network-controller>@metamask/connectivity-controller": true,
         "@metamask/controller-utils": true,
         "@metamask/network-controller>@metamask/eth-block-tracker": true,
         "@metamask/network-controller>@metamask/eth-json-rpc-infura": true,
@@ -1275,6 +1294,12 @@
         "@metamask/providers>readable-stream": true
       }
     },
+    "@metamask/react-data-query": {
+      "packages": {
+        "@metamask/utils": true,
+        "@tanstack/react-query>@tanstack/query-core": true
+      }
+    },
     "@metamask/rpc-errors": {
       "packages": {
         "@metamask/utils": true,
@@ -1312,8 +1337,7 @@
       "packages": {
         "@metamask/post-message-stream": true,
         "@metamask/snaps-utils": true,
-        "@metamask/utils": true,
-        "@swc/helpers": true
+        "@metamask/utils": true
       }
     },
     "@metamask/snaps-rpc-methods": {
@@ -1358,7 +1382,6 @@
         "@metamask/superstruct": true,
         "@metamask/utils": true,
         "@scure/base": true,
-        "@swc/helpers": true,
         "chalk": true,
         "cron-parser": true,
         "fast-json-stable-stringify": true,
@@ -1392,7 +1415,7 @@
         "@metamask/transaction-controller>@metamask/nonce-tracker": true,
         "@metamask/rpc-errors": true,
         "@metamask/utils": true,
-        "@metamask/keyring-api>async-mutex": true,
+        "mockttp>async-mutex": true,
         "@metamask/transaction-controller>bignumber.js": true,
         "ethereumjs-util>bn.js": true,
         "buffer": true,
@@ -1905,9 +1928,6 @@
     "@solana/addresses>@solana/errors": {
       "globals": {
         "btoa": true
-      },
-      "packages": {
-        "@swc/helpers": true
       }
     },
     "@metamask/controller-utils>@spruceid/siwe-parser": {
@@ -1927,13 +1947,10 @@
         "clearInterval": true,
         "clearTimeout": true,
         "console.error": true,
-        "document": true,
+        "document.visibilityState": true,
         "removeEventListener": true,
         "setInterval": true,
         "setTimeout": true
-      },
-      "packages": {
-        "@swc/helpers": true
       }
     },
     "@tanstack/react-query>@tanstack/query-core": {
@@ -1988,7 +2005,6 @@
         "window": true
       },
       "packages": {
-        "@swc/helpers": true,
         "@trezor/connect-web>@trezor/connect-common>@trezor/env-utils": true,
         "@trezor/connect-web>@trezor/utils": true,
         "tslib": true
@@ -2018,7 +2034,6 @@
         "setTimeout": true
       },
       "packages": {
-        "@swc/helpers": true,
         "@trezor/connect-web>@trezor/connect-common": true,
         "@trezor/connect-web>@trezor/connect": true,
         "@trezor/connect-web>@trezor/utils": true,
@@ -2029,7 +2044,6 @@
     },
     "@trezor/connect-web>@trezor/connect": {
       "packages": {
-        "@swc/helpers": true,
         "@trezor/connect-web>@trezor/connect>@trezor/device-utils": true,
         "@trezor/connect-web>@trezor/connect>@trezor/protobuf": true,
         "@trezor/connect-web>@trezor/connect>@trezor/schema-utils": true,
@@ -2080,7 +2094,6 @@
       },
       "packages": {
         "@trezor/connect-web>@trezor/connect>@trezor/schema-utils>@sinclair/typebox": true,
-        "@swc/helpers": true,
         "buffer": true,
         "ts-mixer": true
       }
@@ -2104,7 +2117,6 @@
         "setTimeout": true
       },
       "packages": {
-        "@swc/helpers": true,
         "@trezor/connect-web>@trezor/utils>bignumber.js": true,
         "buffer": true,
         "webpack>events": true,
@@ -2118,7 +2130,6 @@
         "setTimeout": true
       },
       "packages": {
-        "@swc/helpers": true,
         "@trezor/connect-web>@trezor/utils": true,
         "webpack>events": true,
         "tslib": true
@@ -2217,12 +2228,6 @@
         "browserify>util": true
       }
     },
-    "@metamask/keyring-api>async-mutex": {
-      "globals": {
-        "clearTimeout": true,
-        "setTimeout": true
-      }
-    },
     "@metamask/transaction-controller>@metamask/nonce-tracker>async-mutex": {
       "globals": {
         "clearTimeout": true,
@@ -2230,6 +2235,12 @@
       },
       "packages": {
         "tslib": true
+      }
+    },
+    "mockttp>async-mutex": {
+      "globals": {
+        "clearTimeout": true,
+        "setTimeout": true
       }
     },
     "string.prototype.matchall>es-abstract>available-typed-arrays": {
@@ -2496,8 +2507,7 @@
         "setTimeout": true
       },
       "packages": {
-        "chart.js>@kurkle/color": true,
-        "@swc/helpers": true
+        "chart.js>@kurkle/color": true
       }
     },
     "ethereumjs-util>create-hash>cipher-base": {
@@ -3073,6 +3083,14 @@
         "string.prototype.matchall>es-object-atoms": true
       }
     },
+    "react-hot-toast>goober": {
+      "globals": {
+        "__nonce__": true,
+        "_goober": true,
+        "document.createElement": true,
+        "document.head": true
+      }
+    },
     "eslint-plugin-react>es-iterator-helpers>has-property-descriptors": {
       "packages": {
         "string.prototype.matchall>call-bind>es-define-property": true
@@ -3365,7 +3383,10 @@
         "document.getSelection": true,
         "getComputedStyle": true,
         "location.href": true,
-        "navigator": true,
+        "navigator.language": true,
+        "navigator.platform": true,
+        "navigator.userAgent.toLowerCase": true,
+        "navigator.userAgentData": true,
         "performance.now": true,
         "queueMicrotask": true,
         "requestAnimationFrame": true,
@@ -3466,9 +3487,6 @@
       "globals": {
         "console.error": true,
         "console.warn": true
-      },
-      "packages": {
-        "@swc/helpers": true
       }
     },
     "ethereumjs-util>create-hash>md5.js": {
@@ -3906,6 +3924,18 @@
         "react-focus-lock>use-sidecar": true
       }
     },
+    "react-hot-toast": {
+      "globals": {
+        "MutationObserver": true,
+        "clearTimeout": true,
+        "matchMedia": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "react-hot-toast>goober": true,
+        "react": true
+      }
+    },
     "react-idle-timer": {
       "globals": {
         "clearTimeout": true,
@@ -4315,9 +4345,6 @@
       "globals": {
         "WeakRef": true,
         "console.warn": true
-      },
-      "packages": {
-        "@swc/helpers": true
       }
     },
     "@metamask/snaps-utils>rfdc": {
