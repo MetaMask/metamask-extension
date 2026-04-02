@@ -43,6 +43,12 @@ class PrivacySettings {
   private readonly downloadStateLogsModalButton =
     '[data-testid="download-state-logs-modal-button"]';
 
+  private readonly exportYourDataButton =
+    '[data-testid="privacy-tab-export-your-data-button"]';
+
+  private readonly exportYourDataModalDownloadButton =
+    '[data-testid="export-your-data-modal-download-button"]';
+
   private readonly deleteMetaMetricsModalTitle = {
     text: 'Delete MetaMetrics data?',
     tag: 'h4',
@@ -185,6 +191,18 @@ class PrivacySettings {
     console.log('Downloading state logs on privacy settings page');
     await this.driver.clickElement(this.downloadStateLogsButton);
     await this.driver.clickElement(this.downloadStateLogsModalButton);
+  }
+
+  /**
+   * Settings V2 Privacy → Export your data: opens confirmation modal then downloads
+   * the JSON backup (preferences, accounts, address book, networks) from `backupUserData`.
+   */
+  async exportYourData(): Promise<void> {
+    console.log(
+      'Exporting user data (account settings backup) on privacy settings page',
+    );
+    await this.driver.clickElement(this.exportYourDataButton);
+    await this.driver.clickElement(this.exportYourDataModalDownloadButton);
   }
 
   async deleteMetaMetrics(): Promise<void> {

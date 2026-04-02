@@ -103,7 +103,7 @@ const SettingsV2Layout = ({ children }: { children: React.ReactNode }) => {
   const isOnSettingsRoot = normalizedPathname === SETTINGS_V2_ROUTE;
   const showRootLandingPage = isOnSettingsRoot && isPopupOrSidepanel;
   const backRoute = isOnSettingsRoot
-    ? DEFAULT_ROUTE
+    ? `${DEFAULT_ROUTE}?drawerOpen=true`
     : (meta?.parentPath ?? SETTINGS_V2_ROUTE);
 
   const [isSearchOpen, setIsSearchOpen] = useState(false);
