@@ -301,11 +301,13 @@ describe('PersistenceManager', () => {
         string,
         unknown
       >;
-      expect(passedMap.get('meta')).toMatchObject({
+      /* eslint-disable jest/prefer-strict-equal -- persist() uses structuredClone for map values; toEqual matches deep shape (stricter than toMatchObject); toStrictEqual fails on prototype */
+      expect(passedMap.get('meta')).toEqual({
         version: 10,
         storageKind: 'split',
       });
-      expect(passedMap.get('FooController')).toMatchObject({ foo: 'bar' });
+      expect(passedMap.get('FooController')).toEqual({ foo: 'bar' });
+      /* eslint-enable jest/prefer-strict-equal */
       expect(passedMap.has('BarController')).toBe(true);
       expect(passedMap.get('BarController')).toBeUndefined();
     });
@@ -354,8 +356,10 @@ describe('PersistenceManager', () => {
         unknown
       >;
 
-      expect(retryMap.get('meta')).toMatchObject({ version: 10 });
-      expect(retryMap.get('FooController')).toMatchObject({ foo: 'bar' });
+      /* eslint-disable jest/prefer-strict-equal -- see "calls localStore.setKeyValues with pending pairs" */
+      expect(retryMap.get('meta')).toEqual({ version: 10 });
+      expect(retryMap.get('FooController')).toEqual({ foo: 'bar' });
+      /* eslint-enable jest/prefer-strict-equal */
     });
 
     it('captures exception only once if store.setKeyValues throws multiple times', async () => {
