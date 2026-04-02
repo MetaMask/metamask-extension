@@ -30,7 +30,11 @@ import {
   getAssetsMetadata,
   getAssetsRates,
 } from '../../selectors/assets';
-import { getInternalAccountByGroupAndCaip } from '../../selectors/multichain-accounts/account-tree';
+import {
+  getAccountGroupsByAddress,
+  getInternalAccountByGroupAndCaip,
+} from '../../selectors/multichain-accounts/account-tree';
+import { EMPTY_ARRAY, EMPTY_OBJECT } from '../../selectors/shared';
 import { type BridgeAppState, getFromChains } from './selectors';
 import { type BridgeToken } from './types';
 import { getMaybeHexChainId } from './utils';
@@ -404,3 +408,23 @@ export const getBridgeBalancesByChainId = createSelector(
       return acc;
     }, {}),
 );
+
+export const getOwnedAssetsByAssetId = (
+  state: BridgeAppState,
+  accountAddress: string,
+) => {
+  const [accountGroup] = getAccountGroupsByAddress(state, [accountAddress]);
+  return accountGroup
+    ? getBridgeAssetsByAssetId(state, accountGroup.id)
+    : EMPTY_OBJECT;
+};
+
+export const getOwnedAssetsWithBalanceByAssetId = (
+  state: BridgeAppState,
+  accountAddress: string,
+) => {
+  const [accountGroup] = getAccountGroupsByAddress(state, [accountAddress]);
+  return accountGroup
+    ? getBridgeSortedAssets(state, accountGroup.id)
+    : EMPTY_ARRAY;
+};
