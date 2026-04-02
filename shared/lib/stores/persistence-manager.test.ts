@@ -6,7 +6,8 @@ import log from 'loglevel';
 import { captureException, captureMessage } from '../sentry';
 import { MISSING_VAULT_ERROR } from '../../constants/errors';
 import { PersistenceManager } from './persistence-manager';
-import type { BaseStore, MetaMaskStateType } from './base-store';
+import ExtensionStore from './extension-store';
+import { MetaMaskStateType } from './base-store';
 
 const MOCK_DATA = { config: { foo: 'bar' } };
 
@@ -15,12 +16,16 @@ const mockStoreSetKeyValues = jest.fn();
 const mockStoreGet = jest.fn();
 const mockStoreReset = jest.fn();
 
-const mockLocalStore: BaseStore = {
-  set: mockStoreSet,
-  setKeyValues: mockStoreSetKeyValues,
-  get: mockStoreGet,
-  reset: mockStoreReset,
-};
+jest.mock('./extension-store', () => {
+  return jest.fn().mockImplementation(() => {
+    return {
+      set: mockStoreSet,
+      setKeyValues: mockStoreSetKeyValues,
+      get: mockStoreGet,
+      reset: mockStoreReset,
+    };
+  });
+});
 jest.mock('loglevel', () => ({
   error: jest.fn(),
   info: jest.fn(),
@@ -42,7 +47,7 @@ describe('PersistenceManager', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    manager = new PersistenceManager({ localStore: mockLocalStore });
+    manager = new PersistenceManager({ localStore: new ExtensionStore() });
   });
 
   describe('set', () => {
@@ -256,14 +261,11 @@ describe('PersistenceManager', () => {
         },
       };
       mockStoreGet.mockResolvedValueOnce({ data: mockData });
-      jest
-        .spyOn(manager, 'getBackup')
-        .mockImplementation()
-        .mockResolvedValueOnce({
-          KeyringController: {
-            vault: 'vault',
-          },
-        });
+      jest.spyOn(manager, 'getBackup').mockResolvedValueOnce({
+        KeyringController: {
+          vault: 'vault',
+        },
+      });
 
       await expect(manager.get({ validateVault: true })).rejects.toThrow(
         MISSING_VAULT_ERROR,
@@ -479,7 +481,7 @@ describe('PersistenceManager', () => {
       breakIndexedDbWithError(domException);
 
       brokenManager = new PersistenceManager({
-        localStore: mockLocalStore,
+        localStore: new ExtensionStore(),
       });
       await brokenManager.open();
 
@@ -504,7 +506,7 @@ describe('PersistenceManager', () => {
       breakIndexedDbWithError(randomError);
 
       brokenManager = new PersistenceManager({
-        localStore: mockLocalStore,
+        localStore: new ExtensionStore(),
       });
       await expect(brokenManager.open()).rejects.toThrow(randomError);
       // in the application any other start up errors would be handled

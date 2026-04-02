@@ -4,9 +4,9 @@ import { getManifestFlags } from '../../../shared/lib/manifestFlags';
 import { maskObject } from '../../../shared/lib/object.utils';
 import ExtensionPlatform from '../platforms/extension';
 import { SENTRY_BACKGROUND_STATE } from '../constants/sentry-state';
-import { PersistenceManager } from '../../../shared/lib/stores/persistence-manager';
 import { FixtureExtensionStore } from '../../../shared/lib/stores/fixture-extension-store';
 import ExtensionStore from '../../../shared/lib/stores/extension-store';
+import { PersistenceManager } from '../../../shared/lib/stores/persistence-manager';
 import { trackVaultCorruptionEvent } from './state-corruption/track-vault-corruption';
 import { trackEarlySegmentEvent } from './segment/early-segment-tracking';
 

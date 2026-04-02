@@ -172,7 +172,7 @@ const STATE_LOCK = 'state-lock';
  *
  * Usage:
  * The `PersistenceManager` is instantiated with a `localStore`, which is an
- * implementation of `BaseStore` (e.g. `ExtensionStore` in `extension-store.ts`). It provides methods for setting and retrieving
+ * implementation of the `BaseStore` class (`ExtensionStore`). It provides methods for setting and retrieving
  * state, managing metadata, and handling cleanup tasks.
  */
 export class PersistenceManager {
