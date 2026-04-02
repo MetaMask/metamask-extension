@@ -1,5 +1,5 @@
 import { MockedEndpoint, MockttpServer } from 'mockttp';
-import { tinyDelayMs, withFixtures } from '../../helpers';
+import { getCleanAppState, tinyDelayMs, withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import LoginPage from '../../page-objects/pages/login-page';
@@ -44,14 +44,16 @@ describe('Settings', function () {
       async ({ driver }) => {
         await driver.navigate();
 
-        // Wait until the PreferencesController state has the expected ipfsGateway value
+        // Wait for the live controller state (via Redux) to confirm the
+        // ipfsGateway and useAddressBarEnsResolution settings are active.
+        // Unlike getPersistedState (which reads IndexedDB fixture data
+        // immediately), getCleanAppState reflects the running controller
+        // state that has been synced to the UI after background init.
         await driver.wait(async () => {
-          const persistedState = await driver.executeScript(
-            'return window.stateHooks.getPersistedState()',
-          );
+          const uiState = await getCleanAppState(driver);
           return (
-            persistedState?.data?.PreferencesController?.ipfsGateway ===
-            'dweb.link'
+            uiState?.metamask?.ipfsGateway === 'dweb.link' &&
+            uiState?.metamask?.useAddressBarEnsResolution === true
           );
         }, 10000);
 
