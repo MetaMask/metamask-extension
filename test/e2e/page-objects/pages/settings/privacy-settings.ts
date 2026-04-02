@@ -40,6 +40,9 @@ class PrivacySettings {
   private readonly downloadStateLogsButton =
     '[data-testid="advanced-setting-state-logs-button"]';
 
+  private readonly downloadStateLogsModalRoot =
+    '[data-testid="download-state-logs-modal"]';
+
   private readonly downloadStateLogsModalButton =
     '[data-testid="download-state-logs-modal-button"]';
 
@@ -189,7 +192,9 @@ class PrivacySettings {
 
   async downloadStateLogs(): Promise<void> {
     console.log('Downloading state logs on privacy settings page');
-    await this.driver.clickElement(this.downloadStateLogsButton);
+    await this.driver.findScrollToAndClickElement(this.downloadStateLogsButton);
+    await this.driver.waitForSelector(this.downloadStateLogsModalRoot);
+    await this.driver.waitForSelector(this.downloadStateLogsModalButton);
     await this.driver.clickElement(this.downloadStateLogsModalButton);
   }
 
