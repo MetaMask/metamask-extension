@@ -17,13 +17,7 @@ import {
   BoxBackgroundColor,
 } from '@metamask/design-system-react';
 import { TextField, TextFieldType } from '../../component-library';
-import { Textarea, TextareaResize } from '../../component-library/textarea';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import {
-  BackgroundColor,
-  BlockSize,
-  BorderColor,
-} from '../../../helpers/constants/design-system';
 import {
   ENVIRONMENT_TYPE_SIDEPANEL,
   PLATFORM_FIREFOX,
@@ -439,20 +433,14 @@ export default function SrpInputImport({
               className="srp-input-import__srp-note rounded-lg"
               style={{ flex: 1 }}
             >
-              <Textarea
+              <textarea
+                id="first-word-input-text-area"
                 ref={textareaRef}
                 data-testid="srp-input-import__srp-note"
-                borderColor={BorderColor.transparent}
-                backgroundColor={BackgroundColor.transparent}
-                width={BlockSize.Full}
+                className="srp-input-import__initial-input"
                 placeholder={t('onboardingSrpInputPlaceholder')}
                 rows={7}
-                resize={TextareaResize.None}
                 value={firstWord}
-                paddingTop={0}
-                paddingBottom={0}
-                paddingLeft={0}
-                paddingRight={0}
                 onChange={(e) => setFirstWord(e.target.value)}
                 onKeyDown={handleOnKeyDown}
                 onPaste={handleOnPaste}

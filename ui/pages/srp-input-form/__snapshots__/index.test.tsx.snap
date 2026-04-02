@@ -45,10 +45,10 @@ exports[`SrpInputForm render matches snapshot 1`] = `
               style="flex: 1;"
             >
               <textarea
-                class="mm-box mm-text mm-textarea mm-textarea--resize-none mm-text--body-md mm-box--padding-top-0 mm-box--padding-right-0 mm-box--padding-bottom-0 mm-box--padding-left-0 mm-box--width-full mm-box--color-text-default mm-box--background-color-transparent mm-box--rounded-sm mm-box--border-color-transparent mm-box--border-width-1 box--border-style-solid"
+                class="srp-input-import__initial-input"
                 data-testid="srp-input-import__srp-note"
+                id="first-word-input-text-area"
                 placeholder="Add a space between each word and make sure no one is watching."
-                resize="none"
                 rows="7"
               />
             </div>
