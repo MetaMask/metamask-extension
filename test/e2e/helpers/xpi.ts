@@ -104,7 +104,10 @@ export async function buildXpi(
         const absPath = join(entry.parentPath, entry.name);
         const relPath = relative(absExtDir, absPath);
         if (relPath !== MANIFEST_FILE_NAME) {
-          zipFile.addFile(absPath, relPath, { compress: false });
+          zipFile.addFile(absPath, relPath, {
+            compress: true,
+            compressionLevel: 1,
+          });
         }
       }
     }
