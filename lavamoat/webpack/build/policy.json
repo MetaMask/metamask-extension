@@ -914,6 +914,9 @@
       }
     },
     "yazl>buffer-crc32": {
+      "builtin": {
+        "buffer.Buffer": true
+      },
       "globals": {
         "Buffer.alloc": true,
         "Buffer.from": true,
