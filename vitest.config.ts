@@ -51,6 +51,7 @@ function fixImportAssert(): Plugin {
   };
 }
 
+
 export default defineConfig({
   plugins: [jestCompatPlugin(), jsxInJsFiles(), fixImportAssert()],
   resolve: {
@@ -100,7 +101,10 @@ export default defineConfig({
     },
     server: {
       deps: {
+        // Inline all workspace source so extensionless .js→.ts imports resolve
+        // through Vite rather than falling through to Node's strict ESM loader.
         inline: [
+          /^(?!.*\/node_modules\/)/,
           '@metamask/smart-transactions-controller',
           /@radix-ui/,
           /@metamask\/design-system-react/,

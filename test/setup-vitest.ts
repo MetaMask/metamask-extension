@@ -5,7 +5,23 @@
  * setupFilesAfterEnv combined.
  */
 import { vi } from 'vitest';
+import { createRequire } from 'module';
 import 'fake-indexeddb/auto';
+
+// ── Sync shim for jest.requireActual used outside vi.mock factories ─────────
+// Inside vi.mock factories the plugin inserts `await vi.importActual()`.
+// Outside factories (e.g. helpers, inline test code) we need a sync fallback.
+const _require = createRequire(import.meta.url);
+(globalThis as any).__vitest_requireActual = (moduleName: string) => {
+  try {
+    return _require(moduleName);
+  } catch {
+    throw new Error(
+      `__vitest_requireActual: cannot synchronously require "${moduleName}". ` +
+        `Move this call inside a vi.mock factory or use await vi.importActual().`,
+    );
+  }
+};
 import nock from 'nock';
 import '@testing-library/jest-dom/vitest';
 

@@ -3,12 +3,103 @@
  * compile time, BEFORE Vitest's static analysis hoists `vi.mock()` calls.
  *
  * Key challenge: `jest.requireActual()` is synchronous in Jest but maps
- * to the async `vi.importActual()` in Vitest. When used as
- * `...jest.requireActual('x')` inside a `jest.mock` factory, this plugin
- * transforms it to `...(await vi.importActual('x'))` and makes the factory
- * async.
+ * to the async `vi.importActual()` in Vitest.
+ *
+ * - Inside `jest.mock()` factories: transform to `await vi.importActual()`
+ *   and make the factory async.
+ * - Outside factories: transform to `__vitest_requireActual()` which is a
+ *   sync shim using Node's `createRequire` (provided by setup-vitest.ts).
  */
 import type { Plugin } from 'vite';
+
+/**
+ * Collapse multi-line `jest\n  .method` into `jest.method`.
+ */
+function collapseJestDotNewlines(code: string): string {
+  return code.replace(/\bjest\s*\n\s*\./g, 'jest.');
+}
+
+/**
+ * Find jest.mock() calls with factories that contain jest.requireActual,
+ * and transform them to async vi.mock factories with await vi.importActual.
+ */
+function transformMockFactories(code: string): string {
+  // Match jest.mock('path', () => { or jest.mock('path', () => (
+  const mockWithFactoryRe =
+    /\bjest\.mock\s*\(\s*(['"][^'"]+['"]),\s*\(\)\s*=>\s*(?:\{|\()/g;
+  let result = code;
+  let match;
+
+  while ((match = mockWithFactoryRe.exec(code)) !== null) {
+    const factoryBodyStart = match.index + match[0].length;
+    const openChar = code[factoryBodyStart - 1]; // '{' or '('
+    const closeChar = openChar === '{' ? '}' : ')';
+
+    // Find the matching close bracket for the factory body
+    let depth = 1;
+    let pos = factoryBodyStart;
+    while (depth > 0 && pos < code.length) {
+      const ch = code[pos];
+      if (ch === '{' || ch === '(') depth++;
+      else if (ch === '}' || ch === ')') depth--;
+      pos++;
+    }
+    // pos now points just past the closing char that zeroed depth.
+    // That closing char is the `)` of jest.mock(...).
+    // The factory's closing bracket is one level inside: we need to
+    // find where the factory body ends (before the mock's closing paren).
+
+    // Actually, the depth counter uses all brackets, so we need to be
+    // more careful. Let's re-do with a different approach: track only
+    // the factory's own bracket type, plus account for the outer mock's `)`.
+
+    // Simpler approach: after `() => (` or `() => {`, find the matching
+    // close for that specific bracket, then expect `)`  for jest.mock's close.
+    depth = 1;
+    pos = factoryBodyStart;
+    while (depth > 0 && pos < code.length) {
+      const ch = code[pos];
+      if (ch === openChar) depth++;
+      else if (ch === closeChar) depth--;
+      pos++;
+    }
+    // pos is now just past the factory body's closing bracket
+    const factoryEnd = pos; // includes the closeChar
+
+    // Skip whitespace and expect the closing `)` of jest.mock(...)
+    let mockEnd = pos;
+    while (mockEnd < code.length && /\s/.test(code[mockEnd])) mockEnd++;
+    if (code[mockEnd] === ')') mockEnd++; // consume the mock's closing paren
+
+    // Skip optional semicolon
+    if (code[mockEnd] === ';') mockEnd++;
+
+    const factoryBody = code.substring(factoryBodyStart, factoryEnd - 1);
+
+    if (
+      factoryBody.includes('jest.requireActual') ||
+      factoryBody.includes('jest.requireMock')
+    ) {
+      const modulePath = match[1];
+      let newBody = factoryBody.replace(
+        /\bjest\.requireActual\s*(?:<[^>]*>\s*)?\(\s*([^)]+)\s*\)/g,
+        '(await vi.importActual($1))',
+      );
+      newBody = newBody.replace(
+        /\bjest\.requireMock\s*(?:<[^>]*>\s*)?\(\s*([^)]+)\s*\)/g,
+        '(await vi.importMock($1))',
+      );
+
+      const fullMatch = code.substring(match.index, mockEnd);
+      const semi = fullMatch.endsWith(';') ? ';' : '';
+      const newMock = `vi.mock(${modulePath}, async () => ${openChar}${newBody}${closeChar})${semi}`;
+
+      result = result.replace(fullMatch, newMock);
+    }
+  }
+
+  return result;
+}
 
 const SIMPLE_REPLACEMENTS: [RegExp, string][] = [
   [/\bjest\.fn\b/g, 'vi.fn'],
@@ -17,6 +108,7 @@ const SIMPLE_REPLACEMENTS: [RegExp, string][] = [
   [/\bjest\.clearAllMocks\b/g, 'vi.clearAllMocks'],
   [/\bjest\.resetAllMocks\b/g, 'vi.resetAllMocks'],
   [/\bjest\.restoreAllMocks\b/g, 'vi.restoreAllMocks'],
+  [/\bjest\.clearAllTimers\b/g, 'vi.clearAllTimers'],
   [/\bjest\.useFakeTimers\b/g, 'vi.useFakeTimers'],
   [/\bjest\.useRealTimers\b/g, 'vi.useRealTimers'],
   [/\bjest\.advanceTimersByTime\b/g, 'vi.advanceTimersByTime'],
@@ -34,6 +126,7 @@ const SIMPLE_REPLACEMENTS: [RegExp, string][] = [
   [/\bjest\.unmock\b/g, 'vi.unmock'],
   [/\bjest\.doMock\b/g, 'vi.doMock'],
   [/\bjest\.doUnmock\b/g, 'vi.doUnmock'],
+  [/\bjest\.setTimeout\b/g, 'vi.setConfig'],
   [/@jest-environment\b/g, '@vitest-environment'],
   [/from\s+['"]@jest\/globals['"]/g, "from 'vitest'"],
 ];
@@ -45,71 +138,35 @@ export function jestCompatPlugin(): Plugin {
     transform(code, id) {
       if (id.includes('node_modules')) return null;
       if (
-        !code.includes('jest.') &&
-        !code.includes('jest-environment') &&
-        !code.includes('@jest/globals')
+        !/\bjest[\s.]/.test(code) &&
+        !code.includes('@jest/globals') &&
+        !code.includes('jest-environment')
       ) {
         return null;
       }
 
-      let transformed = code;
+      let transformed = collapseJestDotNewlines(code);
 
-      // Transform `jest.mock('module', () => ({ ...jest.requireActual('module'), ... }))`
-      // into `vi.mock('module', async () => ({ ...(await vi.importActual('module')), ... }))`
-      //
-      // Step 1: Replace jest.requireActual → (await vi.importActual)
+      // ── Step 1: Transform jest.mock factories with requireActual ──────
+      transformed = transformMockFactories(transformed);
+
+      // ── Step 2: Outside mock factories, replace remaining
+      // jest.requireActual with sync shim (handles TS generics too)
       transformed = transformed.replace(
-        /\bjest\.requireActual\s*\(/g,
-        '(await vi.importActual(',
-      );
-      // Close the extra paren: requireActual('x') → (await vi.importActual('x'))
-      // We need to find the matching closing paren after importActual( and add )
-      // Simple approach: jest.requireActual('x') becomes (await vi.importActual('x'))
-      // The replace above gives us `(await vi.importActual('x')` — need closing )
-      // Actually since requireActual('x') has its own closing paren, we get:
-      //   (await vi.importActual('x')  <-- missing closing )
-      // Let's use a more precise regex:
-      transformed = transformed.replace(
-        /\(await vi\.importActual\(([^)]+)\)/g,
-        '(await vi.importActual($1))',
+        /\bjest\.requireActual\s*(?:<[^>]*>\s*)?\(/g,
+        '__vitest_requireActual(',
       );
 
-      // Step 2: Make mock factories async if they contain `await`
-      // Pattern: jest.mock('x', () => { ... await ... })
-      // or: jest.mock('x', () => ({ ... await ... }))
-      // We need to replace the `() =>` with `async () =>`
-      // This is tricky with regex alone, but for the common pattern:
-      transformed = transformed.replace(
-        /\bjest\.mock\s*\(\s*(['"][^'"]+['"]),\s*\(\)\s*=>/g,
-        (match, modulePath) => {
-          // Check if the factory body contains `await`
-          // Find the factory body by looking ahead
-          const factoryStart = transformed.indexOf(match);
-          const afterArrow = factoryStart + match.length;
-          const restOfCode = transformed.substring(afterArrow);
-          // Simple heuristic: if there's an `await` before the next `jest.mock` or end of line
-          // with a reasonable scope, make it async
-          if (restOfCode.substring(0, 500).includes('await vi.importActual')) {
-            return `vi.mock(${modulePath}, async () =>`;
-          }
-          return `vi.mock(${modulePath}, () =>`;
-        },
-      );
-
-      // Step 3: Handle remaining jest.mock without requireActual
+      // ── Step 3: Handle remaining jest.mock ────────────────────────────
       transformed = transformed.replace(/\bjest\.mock\b/g, 'vi.mock');
 
-      // Step 4: Handle jest.requireMock
+      // ── Step 4: Handle jest.requireMock outside factories ─────────────
       transformed = transformed.replace(
-        /\bjest\.requireMock\s*\(/g,
-        '(await vi.importMock(',
-      );
-      transformed = transformed.replace(
-        /\(await vi\.importMock\(([^)]+)\)/g,
-        '(await vi.importMock($1))',
+        /\bjest\.requireMock\b/g,
+        'vi.importMock',
       );
 
-      // Step 5: Apply simple replacements
+      // ── Step 5: Apply simple replacements ─────────────────────────────
       for (const [pattern, replacement] of SIMPLE_REPLACEMENTS) {
         transformed = transformed.replace(pattern, replacement);
       }
