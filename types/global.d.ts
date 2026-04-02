@@ -241,10 +241,6 @@ declare class Chrome {
   runtime: Runtime;
 }
 
-type SentryObject = Sentry & {
-  getMetaMetricsEnabled: () => Promise<boolean>;
-};
-
 type StateHooks = {
   getCustomTraces?: () => { [name: string]: number };
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
@@ -259,6 +255,9 @@ type StateHooks = {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   getPersistedState: () => Promise<any>;
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  getBackupState?: () => Promise<any>;
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   getSentryAppState?: () => any;
@@ -294,7 +293,7 @@ type StateHooks = {
 export declare global {
   var platform: ExtensionPlatform;
   // Sentry is undefined in dev, so use optional chaining
-  var sentry: SentryObject | undefined;
+  var sentry: Sentry | undefined;
 
   var chrome: Chrome;
 

@@ -3183,6 +3183,10 @@
     "message": "(legacy)",
     "description": "Text representing the MEW path"
   },
+  "hardwareWalletLookingForDevice": {
+    "message": "Looking for your $1...",
+    "description": "$1 is the hardware wallet type"
+  },
   "hardwareWalletSubmissionWarningStep1": {
     "message": "Be sure your $1 is plugged in and to select the Ethereum app."
   },
@@ -4022,6 +4026,9 @@
   "moreAccounts": {
     "message": "+ $1 more accounts",
     "description": "$1 is the number of accounts"
+  },
+  "moreCapital": {
+    "message": "More"
   },
   "moreNetworks": {
     "message": "+ $1 more networks",
@@ -6691,7 +6698,7 @@
     "message": "Security and password"
   },
   "securityAndPrivacy": {
-    "message": "Security & privacy"
+    "message": "Security and privacy"
   },
   "securityChangePassword": {
     "message": "Change password"
@@ -8838,6 +8845,9 @@
   "transaction": {
     "message": "transaction"
   },
+  "transactionConfirmed": {
+    "message": "Transaction confirmed"
+  },
   "transactionDataFunction": {
     "message": "Function"
   },
@@ -8849,6 +8859,9 @@
   },
   "transactionErrorNoContract": {
     "message": "Trying to call a function on a non-contract address."
+  },
+  "transactionFailed": {
+    "message": "Transaction failed"
   },
   "transactionFee": {
     "message": "Transaction fee"
@@ -8890,12 +8903,18 @@
   "transactionShield": {
     "message": "Transaction Shield"
   },
+  "transactionSubmitted": {
+    "message": "Transaction submitted"
+  },
   "transactionTotalGasFee": {
     "message": "Total gas fee",
     "description": "Label for the total gas fee incurred in the transaction."
   },
   "transactions": {
     "message": "Transactions"
+  },
+  "transactionsAndAssets": {
+    "message": "Transactions and assets"
   },
   "transfer": {
     "message": "Transfer"

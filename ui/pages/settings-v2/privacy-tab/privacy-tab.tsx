@@ -14,6 +14,7 @@ import { MetametricsToggleItem } from './metametrics-item';
 import { DataCollectionToggleItem } from './data-collection-item';
 import { DeleteMetametricsDataItem } from './delete-metametrics-data-item';
 import { DownloadStateLogsItem } from './download-state-logs-item';
+import { ExportYourDataItem } from './export-your-data-item';
 
 const BatchAccountBalanceRequestsToggleItem = createToggleItem({
   name: 'BatchAccountBalanceRequestsToggleItem',
@@ -55,6 +56,10 @@ const PRIVACY_SETTING_ITEMS: SettingItemConfig[] = [
     id: 'download-state-logs',
     component: DownloadStateLogsItem,
     hasDividerBefore: true,
+  },
+  {
+    id: 'export-your-data',
+    component: ExportYourDataItem,
   },
 ];
 

@@ -80,7 +80,7 @@ export const BridgeAsset = React.forwardRef(
         className={`cursor-pointer bridge-asset${selected ? '--selected' : ''}`}
         height={BlockSize.Max}
         width={BlockSize.Full}
-        data-testid={'bridge-asset'}
+        data-testid={`bridge-asset--${asset.assetId}`}
       >
         {selected && (
           <Box
