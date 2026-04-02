@@ -1,3 +1,5 @@
+name: Run benchmarks
+
 on:
   workflow_call:
     inputs:
@@ -6,10 +8,15 @@ on:
         type: string
         description: The run ID to get builds from
 
+permissions:
+  contents: read
+  id-token: write
+
 jobs:
   benchmarks:
     if: ${{ github.event_name != 'merge_group' }} # Skip this job for the Merge Queue
     name: ${{ matrix.browser }}-${{ matrix.buildType }}-${{ matrix.pageType }}
+    continue-on-error: true
     strategy:
       fail-fast: false
       matrix:
@@ -60,44 +67,185 @@ jobs:
             buildType: webpack
             pageType: userJourneyAccountManagement
             mainOnly: true
-    uses: ./.github/workflows/benchmark-e2e-pipeline.yml
-    secrets: inherit
-    with:
-      mode: selenium
-      run-gated-steps: >-
-        ${{
-          !matrix.mainOnly || (
-            github.event_name == 'push' &&
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    container:
+      image: ghcr.io/metamask/metamask-extension-e2e-image:v24.13.0
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    env:
+      SELENIUM_BROWSER: ${{ matrix.browser }}
+      HEADLESS: false
+      INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
+      TEST_SRP_2: ${{ secrets.TEST_SRP_2 }}
+      SENTRY_DSN_PERFORMANCE: ${{ vars.SENTRY_DSN_PERFORMANCE }}
+      PR_NUMBER: ${{ github.event.pull_request.number || 'none' }}
+      HEAD_COMMIT_HASH: ${{ github.event.pull_request.head.sha || github.sha }}
+      GITHUB_REF_NAME: ${{ github.head_ref || github.ref_name }}
+      BENCHMARK_GATED: ${{ !matrix.mainOnly || (github.event_name == 'push' && (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/heads/release/'))) }}
+    steps:
+      - name: Checkout and setup environment
+        if: ${{ env.BENCHMARK_GATED == 'true' }}
+        uses: MetaMask/action-checkout-and-setup@v3
+        with:
+          is-high-risk-environment: false
+          skip-allow-scripts: true
+
+      - name: Restore .metamask folder
+        if: ${{ env.BENCHMARK_GATED == 'true' }}
+        id: restore-metamask
+        uses: actions/cache/restore@v5
+        with:
+          path: .metamask
+          key: .metamask-${{ hashFiles('yarn.lock') }}
+          fail-on-cache-miss: false
+
+      - name: Install anvil if cache missed
+        if: ${{ env.BENCHMARK_GATED == 'true' && steps.restore-metamask.outputs.cache-hit != 'true' }}
+        run: yarn mm-foundryup
+        shell: bash
+
+      - name: Download build artifact
+        if: ${{ env.BENCHMARK_GATED == 'true' }}
+        uses: actions/download-artifact@v7
+        with:
+          name: build-test${{ matrix.browser == 'firefox' && '-mv2' || '' }}-${{ matrix.buildType }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          run-id: ${{ inputs.builds-from-run }}
+
+      - name: Configure Xvfb
+        if: ${{ env.BENCHMARK_GATED == 'true' }}
+        run: Xvfb -ac :99 -screen 0 1280x1024x16 &
+        shell: bash
+
+      - name: Install AWS CLI (needed in the container)
+        if: ${{ env.BENCHMARK_GATED == 'true' }}
+        run: sudo apt-get update && sudo apt-get install python3-pip && sudo pip install awscli --break-system-packages
+        shell: bash
+
+      - name: Run the benchmark
+        if: ${{ env.BENCHMARK_GATED == 'true' }}
+        run: >-
+          ${{ matrix.pageType == 'startupPowerUserHome' && format('yarn test:e2e:benchmark --preset startupPowerUserHome --browserLoads 10 --pageLoads 10 --out test-artifacts/benchmarks/benchmark-{0}-{1}-startupPowerUserHome.json --retries 2', matrix.browser, matrix.buildType) || format('yarn test:e2e:benchmark --preset {2} --out test-artifacts/benchmarks/benchmark-{0}-{1}-{2}.json --retries 2', matrix.browser, matrix.buildType, matrix.pageType) }}
+        shell: bash
+
+      - name: Send benchmark results to Sentry
+        if: >-
+          ${{
+            vars.SENTRY_DSN_PERFORMANCE &&
             (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/heads/release/'))
-          )
-        }}
-      benchmark-command: >-
-        ${{ matrix.pageType == 'startupPowerUserHome' && format('yarn test:e2e:benchmark --preset startupPowerUserHome --browserLoads 10 --pageLoads 10 --out test-artifacts/benchmarks/benchmark-{0}-{1}-startupPowerUserHome.json --retries 2', matrix.browser, matrix.buildType) || format('yarn test:e2e:benchmark --preset {2} --out test-artifacts/benchmarks/benchmark-{0}-{1}-{2}.json --retries 2', matrix.browser, matrix.buildType, matrix.pageType) }}
-      run-sentry: >-
-        ${{
-          vars.SENTRY_DSN_PERFORMANCE &&
-          (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/heads/release/'))
-        }}
-      artifact-name: build-test${{ matrix.browser == 'firefox' && '-mv2' || '' }}-${{ matrix.buildType }}
-      builds-run-id: ${{ inputs.builds-from-run }}
-      result-filename: benchmark-${{ matrix.browser }}-${{ matrix.buildType }}-${{ matrix.pageType }}.json
-      browser: ${{ matrix.browser }}
-      build-type: ${{ matrix.buildType }}
+          }}
+        run: |
+          export GITHUB_REF_NAME="${GH_HEAD_REF:-$GH_REF_NAME}"
+          yarn tsx test/e2e/benchmarks/send-to-sentry.ts \
+            --results "test-artifacts/benchmarks/benchmark-${{ matrix.browser }}-${{ matrix.buildType }}-${{ matrix.pageType }}.json" \
+            --browser "${{ matrix.browser }}" \
+            --buildType "${{ matrix.buildType }}"
+        shell: bash
+        env:
+          GH_HEAD_REF: ${{ github.head_ref }}
+          GH_REF_NAME: ${{ github.ref_name }}
+
+      - name: Upload benchmark to S3
+        if: >-
+          ${{
+            env.BENCHMARK_GATED == 'true' &&
+            vars.AWS_REGION != '' &&
+            vars.AWS_IAM_ROLE != '' &&
+            vars.AWS_S3_BUCKET != ''
+          }}
+        uses: MetaMask/github-tools/.github/actions/upload-s3@v1
+        with:
+          aws-region: ${{ vars.AWS_REGION }}
+          role-to-assume: ${{ vars.AWS_IAM_ROLE }}
+          s3-bucket: ${{ vars.AWS_S3_BUCKET }}/${{ github.event.repository.name }}/${{ github.run_id }}/benchmarks/benchmark-${{ matrix.browser }}-${{ matrix.buildType }}-${{ matrix.pageType }}.json
+          path: test-artifacts/benchmarks/benchmark-${{ matrix.browser }}-${{ matrix.buildType }}-${{ matrix.pageType }}.json
+
+      - name: Upload benchmark result as GitHub artifact
+        if: ${{ always() && env.BENCHMARK_GATED == 'true' }}
+        uses: actions/upload-artifact@v6
+        with:
+          name: benchmark-${{ matrix.browser }}-${{ matrix.buildType }}-${{ matrix.pageType }}.json
+          path: test-artifacts/benchmarks/benchmark-${{ matrix.browser }}-${{ matrix.buildType }}-${{ matrix.pageType }}.json
+          retention-days: 7
+          if-no-files-found: ignore
 
   benchmarks-page-load:
     if: ${{ github.event_name != 'merge_group' }} # Skip this job for the Merge Queue
     name: chrome-browserify-pageLoadBenchmark
-    uses: ./.github/workflows/benchmark-e2e-pipeline.yml
-    secrets: inherit
-    with:
-      mode: dapp-page-load
-      builds-run-id: ${{ inputs.builds-from-run }}
-      run-sentry: >-
-        ${{
-          vars.SENTRY_DSN_PERFORMANCE &&
-          (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/heads/release/'))
-        }}
-      run-upload: true
+    continue-on-error: true
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    environment: ${{ github.ref_name == 'main' && 'default-branch' || null }}
+    env:
+      OWNER: ${{ github.repository_owner }}
+      REPOSITORY: ${{ github.event.repository.name }}
+      PR_NUMBER: ${{ github.event.pull_request.number || 'none' }}
+      HEAD_COMMIT_HASH: ${{ github.event.pull_request.head.sha || github.sha }}
+      SENTRY_DSN_PERFORMANCE: ${{ vars.SENTRY_DSN_PERFORMANCE }}
+      BENCHMARK_BROWSER_LOADS: '10'
+      BENCHMARK_PAGE_LOADS: '10'
+      DAPP_BENCHMARK_JSON: benchmark-chrome-browserify-pageLoadBenchmark.json
+    steps:
+      - name: Checkout and setup environment
+        uses: MetaMask/action-checkout-and-setup@v3
+        with:
+          is-high-risk-environment: false
+          skip-allow-scripts: true
+
+      - name: Download artifact 'build-test-browserify'
+        uses: actions/download-artifact@v7
+        with:
+          name: build-test-browserify
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          run-id: ${{ inputs.builds-from-run }}
+
+      - name: Install Playwright browsers
+        run: yarn playwright install chromium
+
+      - name: Run dapp page load benchmarks
+        run: yarn test:e2e:benchmark --preset=pageLoadBenchmark
+
+      - name: Send benchmark results to Sentry
+        if: >-
+          ${{
+            vars.SENTRY_DSN_PERFORMANCE &&
+            (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/heads/release/'))
+          }}
+        run: |
+          export GITHUB_REF_NAME="${GH_HEAD_REF:-$GH_REF_NAME}"
+          yarn tsx test/e2e/benchmarks/send-to-sentry.ts \
+            --results "test-artifacts/benchmarks/${{ env.DAPP_BENCHMARK_JSON }}" \
+            --browser "chrome" \
+            --buildType "browserify"
+        shell: bash
+        env:
+          GH_HEAD_REF: ${{ github.head_ref }}
+          GH_REF_NAME: ${{ github.ref_name }}
+
+      - name: Upload benchmark to S3
+        if: >-
+          ${{
+            vars.AWS_REGION != '' &&
+            vars.AWS_IAM_ROLE != '' &&
+            vars.AWS_S3_BUCKET != ''
+          }}
+        uses: MetaMask/github-tools/.github/actions/upload-s3@v1
+        with:
+          aws-region: ${{ vars.AWS_REGION }}
+          role-to-assume: ${{ vars.AWS_IAM_ROLE }}
+          s3-bucket: ${{ vars.AWS_S3_BUCKET }}/${{ github.event.repository.name }}/${{ github.run_id }}/benchmarks/${{ env.DAPP_BENCHMARK_JSON }}
+          path: test-artifacts/benchmarks/${{ env.DAPP_BENCHMARK_JSON }}
+
+      - name: Upload benchmark result as GitHub artifact
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v6
+        with:
+          name: ${{ env.DAPP_BENCHMARK_JSON }}
+          path: test-artifacts/benchmarks/${{ env.DAPP_BENCHMARK_JSON }}
+          retention-days: 7
+          if-no-files-found: ignore
 
   # Pushes benchmark results to extension_benchmark_stats (performance_data.json) for
   # historical comparison in PR comments. Runs on main/release branch pushes only.
