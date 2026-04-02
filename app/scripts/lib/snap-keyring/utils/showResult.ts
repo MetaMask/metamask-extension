@@ -2,9 +2,7 @@ import type {
   ResultComponent,
   ErrorResult,
 } from '@metamask/approval-controller';
-// TODO: Remove restricted import
-// eslint-disable-next-line import-x/no-restricted-paths
-import { IconName } from '../../../../../ui/components/component-library/icon';
+import { IconName } from '@metamask/design-system-react';
 import { SnapKeyringBuilderMessenger } from '../types';
 
 const snapAuthorshipHeader = (snapId: string): ResultComponent => {
