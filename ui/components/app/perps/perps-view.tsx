@@ -80,7 +80,10 @@ export const PerpsView: React.FC = () => {
   // - triggerPrice: any order with a trigger condition (TP/SL variant)
   // - detailedOrderType containing "Take Profit" or "Stop" (belt-and-suspenders)
   const orders = useMemo(() => {
-    return allOrders.filter((order) => order.status === 'open');
+    return allOrders.filter(
+      (order) =>
+        order.status === 'open' && !order.isTrigger && !order.isSynthetic,
+    );
   }, [allOrders]);
 
   const applyPositionsSnapshot = useCallback((next: Position[]) => {
@@ -132,8 +135,11 @@ export const PerpsView: React.FC = () => {
         [{ cancelAll: true }],
       );
       if (!result?.success) {
-        setBatchActionError(t('somethingWentWrong'));
-        return;
+        const failureCount = result?.failureCount ?? 0;
+        if (failureCount > 0 || result === undefined || result === null) {
+          setBatchActionError(t('somethingWentWrong'));
+          return;
+        }
       }
       const fresh = await submitRequestToBackground<Order[]>(
         'perpsGetOpenOrders',
