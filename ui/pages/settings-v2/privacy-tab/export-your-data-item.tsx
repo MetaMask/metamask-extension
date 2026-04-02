@@ -10,7 +10,7 @@ export const ExportYourDataItem = () => {
 
   return (
     <>
-      <Box className="mt-2">
+      <Box className="mt-2" marginHorizontal={4}>
         <Button
           data-testid="privacy-tab-export-your-data-button"
           onClick={() => setShowModal(true)}
