@@ -29,6 +29,7 @@ import {
   RESTORE_VAULT_ROUTE,
   REVEAL_SEED_ROUTE,
   SEND_ROUTE,
+  LEGACY_SETTINGS_V2_ROUTE,
   SETTINGS_ROUTE,
   UNLOCK_ROUTE,
   CONFIRMATION_V_NEXT_ROUTE,
@@ -104,6 +105,7 @@ import {
   ENVIRONMENT_TYPE_SIDEPANEL,
   SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES,
 } from '../../../shared/constants/app';
+import { isInteractiveUI } from '../../../shared/lib/environment-type';
 // TODO: Remove restricted import
 // eslint-disable-next-line import-x/no-restricted-paths
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
@@ -132,6 +134,8 @@ import { RequireOnboarded } from '../../layouts/require-onboarded';
 import { contactsRoutes } from '../contacts';
 import RequireBasicFunctionality from '../../helpers/higher-order-components/require-basic-functionality/require-basic-functionality';
 import { getCurrencyRateControllerCurrentCurrency } from '../../../shared/lib/selectors/assets-migration';
+import { Toaster } from '../../components/ui/toast/toast';
+import { ToastListener } from '../../components/ui/toast/toast-listener';
 import { getConnectingLabel, setTheme } from './utils';
 import { ConfirmationHandler } from './confirmation-handler';
 import { Modals } from './modals';
@@ -145,7 +149,6 @@ const ImportSrpPage = mmLazy(() => import('../multi-srp/import-srp/index.ts'));
 const RevealSeedConfirmation = mmLazy(
   () => import('../keychains/reveal-seed.tsx'),
 );
-const Settings = mmLazy(() => import('../settings/index.js'));
 const SettingsV2 = mmLazy(() => import('../settings-v2/index.ts'));
 const NotificationDetails = mmLazy(
   () => import('../notification-details/index.js'),
@@ -241,6 +244,16 @@ const MusdConversionPage = mmLazy(() => import('../musd/index.tsx'));
 const PerpsLayout = mmLazy(() => import('../perps/perps-layout.tsx'));
 // End Lazy Routes
 
+const SettingsV2LegacyRedirect = () => {
+  const { pathname, search, hash } = useLocation();
+  const canonicalPath = pathname.replace(
+    LEGACY_SETTINGS_V2_ROUTE,
+    SETTINGS_ROUTE,
+  );
+
+  return <Navigate to={`${canonicalPath}${search}${hash}`} replace />;
+};
+
 export const routeConfig = [
   {
     element: <LegacyLayout />,
@@ -289,11 +302,11 @@ export const routeConfig = [
       },
       {
         path: `${SETTINGS_ROUTE}/*`,
-        element: <Settings />,
+        element: <SettingsV2 />,
       },
       {
-        path: `${SETTINGS_V2_ROUTE}/*`,
-        element: <SettingsV2 />,
+        path: `${LEGACY_SETTINGS_V2_ROUTE}/*`,
+        element: <SettingsV2LegacyRedirect />,
       },
       {
         path: `${SEND_ROUTE}/:page?`,
@@ -665,7 +678,8 @@ export default function Routes() {
     // is already a fullscreen interface.
     !isShowingDeepLinkRoute;
 
-  const isSidepanel = getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL;
+  const environmentType = getEnvironmentType();
+  const isSidepanel = environmentType === ENVIRONMENT_TYPE_SIDEPANEL;
 
   return (
     <div
@@ -677,6 +691,8 @@ export default function Routes() {
       dir={textDirection}
     >
       <ConfirmationHandler />
+      {isInteractiveUI() && <ToastListener />}
+
       <QRHardwarePopover />
       <Modal />
       <Alert visible={alertOpen} msg={alertMessage} />
@@ -717,6 +733,8 @@ export default function Routes() {
 
       {isUnlocked ? <Alerts /> : null}
       <ToastMaster />
+
+      <Toaster />
       <Modals />
     </div>
   );

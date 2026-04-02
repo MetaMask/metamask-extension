@@ -84,6 +84,7 @@ describe('Send ERC20 - Gas Customization', function () {
         await tokenTransferRedesignedConfirmPage.clickConfirmButton();
 
         // check that transaction has completed correctly and is displayed in the activity list
+        await homePage.goToActivityList();
         await activityListPage.checkTxAction({ action: `Sent ${symbol}` });
         await activityListPage.checkTxAmountInActivity(valueWithSymbol('-1'));
       },
