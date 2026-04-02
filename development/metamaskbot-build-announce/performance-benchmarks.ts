@@ -91,6 +91,24 @@ const HEALTH_ICON: Record<EntryHealth, string> = {
 const USER_JOURNEY_BENCHMARK_PLATFORMS = [BENCHMARK_PLATFORMS.CHROME] as const;
 
 /**
+ * Build types to fetch for user-journey presets in this workflow run.
+ * Mirrors whether `benchmarks-webpack-perf` runs (push to main/release only).
+ */
+export function getUserJourneyBenchmarkBuildTypesForCurrentRun(): readonly string[] {
+  const eventName = process.env.GITHUB_EVENT_NAME;
+  const ref = process.env.GITHUB_REF ?? '';
+  const webpackUserJourneyArtifactsExist =
+    eventName === 'push' &&
+    (ref === 'refs/heads/main' || ref.startsWith('refs/heads/release/'));
+
+  if (webpackUserJourneyArtifactsExist) {
+    return [BENCHMARK_BUILD_TYPES.BROWSERIFY, BENCHMARK_BUILD_TYPES.WEBPACK];
+  }
+
+  return [BENCHMARK_BUILD_TYPES.BROWSERIFY];
+}
+
+/**
  * Fetches benchmark JSON artifact for a given preset/platform/buildType.
  * Reads from local filesystem (BENCHMARK_RESULTS_DIR env) when set,
  * otherwise falls back to fetching from hostUrl (S3/CloudFront).
@@ -897,7 +915,7 @@ export async function buildPerformanceBenchmarksSection(
         hostUrl,
         Object.values(USER_JOURNEY_PRESETS),
         USER_JOURNEY_BENCHMARK_PLATFORMS,
-        Object.values(BENCHMARK_BUILD_TYPES),
+        getUserJourneyBenchmarkBuildTypesForCurrentRun(),
       ),
       fetchHistoricalPerformanceDataFromMain(),
     ]);
