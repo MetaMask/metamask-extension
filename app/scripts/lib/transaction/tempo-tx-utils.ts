@@ -130,7 +130,6 @@ export function getTempoTransactionBatchArgs({
     throw new Error(`Tempo transactions not supported for chain: ${chainId}`);
   }
   checkIsValidTempoTransaction(request.transactionParams);
-  // const chainTempoConfig = getTempoConfig().perChainConfig[chainId];
   return {
     ...request.transactionOptions,
     from: request.transactionParams.from as Hex,

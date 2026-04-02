@@ -524,7 +524,7 @@ export async function addTransactionSendCallExtraOptions({
       return {};
     }
     const isEip7702SupportedByAccount = await accountSupports7702(
-      req.params?.[0].from,
+      req.params?.[0]?.from,
       keyringController,
     );
     if (!isEip7702SupportedByAccount) {
