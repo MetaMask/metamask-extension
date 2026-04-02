@@ -64,7 +64,6 @@ import {
   getIsStockMarketClosed,
   getWarningLabels,
   getIsQuoteExpired,
-  getQuoteStreamComplete,
   getBridgeUnavailableQuoteReason,
 } from './selectors';
 import { toBridgeToken } from './utils';
@@ -3287,73 +3286,6 @@ describe('Bridge selectors', () => {
       });
       const result = getIsQuoteExpired(state as never, Date.now());
       expect(typeof result).toBe('boolean');
-    });
-  });
-
-  describe('getQuoteStreamComplete', () => {
-    it('returns null when quoteStreamComplete is not set', () => {
-      const state = createBridgeMockStore({
-        bridgeStateOverrides: {
-          quoteStreamComplete: null,
-        },
-      });
-      const result = getQuoteStreamComplete(state as never);
-      expect(result).toBeNull();
-    });
-
-    it('returns null when quoteStreamComplete is undefined', () => {
-      const state = createBridgeMockStore({});
-      // quoteStreamComplete may be absent from default state — coerce to null
-      const result = getQuoteStreamComplete(state as never);
-      expect(result).toBeNull();
-    });
-
-    it('returns the quoteStreamComplete data when quotes are available', () => {
-      const quoteStreamCompleteData = {
-        quoteCount: 3,
-        hasQuotes: true,
-      };
-      const state = createBridgeMockStore({
-        bridgeStateOverrides: {
-          quoteStreamComplete: quoteStreamCompleteData,
-        },
-      });
-      const result = getQuoteStreamComplete(state as never);
-      expect(result).toStrictEqual(quoteStreamCompleteData);
-    });
-
-    it('returns the quoteStreamComplete data when no quotes are available', () => {
-      const quoteStreamCompleteData = {
-        quoteCount: 0,
-        hasQuotes: false,
-        reason: QuoteStreamCompleteReason.AMOUNT_TOO_HIGH,
-      };
-      const state = createBridgeMockStore({
-        bridgeStateOverrides: {
-          quoteStreamComplete: quoteStreamCompleteData,
-        },
-      });
-      const result = getQuoteStreamComplete(state as never);
-      expect(result).toStrictEqual(quoteStreamCompleteData);
-      expect(result?.hasQuotes).toBe(false);
-      expect(result?.reason).toBe('AMOUNT_TOO_HIGH');
-    });
-
-    it('returns quoteStreamComplete data with context field', () => {
-      const quoteStreamCompleteData = {
-        quoteCount: 0,
-        hasQuotes: false,
-        reason: QuoteStreamCompleteReason.RETRY,
-        context: { errorCode: 500 },
-      };
-      const state = createBridgeMockStore({
-        bridgeStateOverrides: {
-          quoteStreamComplete: quoteStreamCompleteData,
-        },
-      });
-      const result = getQuoteStreamComplete(state as never);
-      expect(result).toStrictEqual(quoteStreamCompleteData);
-      expect(result?.context).toStrictEqual({ errorCode: 500 });
     });
   });
 

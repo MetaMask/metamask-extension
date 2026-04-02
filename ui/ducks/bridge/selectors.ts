@@ -94,7 +94,7 @@ import {
   isTokenTradingOpenAt,
 } from '../../pages/bridge/hooks/useRWAToken';
 import { formatPriceImpact } from '../../pages/bridge/utils/price-impact';
-import { getQuoteStreamReasonString } from '../../pages/bridge/utils/getQuoteStreamReasonString';
+import { getQuoteStreamReasonString } from '../../pages/bridge/utils/quote-stream';
 import {
   exchangeRateFromMarketData,
   tokenPriceInNativeAsset,
@@ -712,9 +712,8 @@ export const getFormattedPriceImpact = createSelector(
   (priceImpact) => formatPriceImpact(priceImpact),
 );
 
-export const getQuoteStreamComplete = (
-  state: BridgeAppState,
-): QuoteStreamCompleteData | null => state.metamask.quoteStreamComplete ?? null;
+const getQuoteStreamComplete = (state: BridgeAppState) =>
+  state.metamask.quoteStreamComplete;
 
 const _getBaseValidationErrors = createDeepEqualSelector(
   [

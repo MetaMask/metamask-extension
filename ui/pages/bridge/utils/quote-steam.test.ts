@@ -1,5 +1,5 @@
 import { QuoteStreamCompleteReason } from '@metamask/bridge-controller';
-import { getQuoteStreamReasonString } from './getQuoteStreamReasonString';
+import { getQuoteStreamReasonString } from './quote-stream';
 
 describe('getQuoteStreamReasonString', () => {
   it('returns the retry key for RETRY', () => {
