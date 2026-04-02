@@ -80,52 +80,54 @@ exports[`Bridge renders the component with initial props 1`] = `
                 />
               </div>
               <button
-                class="mm-box mm-text mm-select-button mm-select-button--size-lg mm-text--body-md mm-box--padding-top-3 mm-box--padding-right-4 mm-box--padding-bottom-3 mm-box--padding-left-4 mm-box--display-flex mm-box--gap-2 mm-box--justify-content-space-between mm-box--align-items-center mm-box--height-full mm-box--color-text-default mm-box--background-color-background-default mm-box--rounded-pill mm-box--border-color-border-muted box--border-style-solid box--border-width-1"
+                class="mm-box mm-text mm-select-button mm-select-button--size-lg bridge-selected-asset-button mm-text--body-md mm-box--padding-top-3 mm-box--padding-right-4 mm-box--padding-bottom-3 mm-box--padding-left-4 mm-box--display-flex mm-box--gap-2 mm-box--justify-content-space-between mm-box--align-items-center mm-box--height-full mm-box--color-text-default mm-box--background-color-background-default mm-box--rounded-pill mm-box--border-color-border-muted box--border-style-solid box--border-width-1"
                 data-testid="bridge-source-button"
                 style="padding: 8px 11px 8px 8px; min-width: fit-content;"
               >
                 <div
-                  class="relative inline-flex self-start"
-                  style="margin-right: 2px;"
+                  class="flex items-center gap-2"
                 >
                   <div
-                    class="inline-flex"
+                    class="relative inline-flex self-start"
                   >
                     <div
-                      class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-full h-8 w-8"
+                      class="inline-flex"
                     >
-                      <img
-                        alt="ETH"
-                        class="size-full object-contain"
-                        src="https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/slip44/60.png"
-                      />
+                      <div
+                        class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-full h-8 w-8"
+                      >
+                        <img
+                          alt="ETH"
+                          class="size-full object-contain"
+                          src="https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/slip44/60.png"
+                        />
+                      </div>
                     </div>
-                  </div>
-                  <div
-                    class="absolute"
-                    style="bottom: 0px; right: 0px;"
-                  >
                     <div
-                      class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-sm h-[18px] w-[18px] border-background-default border"
-                      style="border-width: 1px; border-radius: 6px;"
+                      class="absolute"
+                      style="bottom: 0px; right: 0px;"
                     >
-                      <img
-                        alt="Ethereum"
-                        class="size-full object-contain"
-                        src="./images/eth_logo.svg"
-                      />
+                      <div
+                        class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-sm h-[18px] w-[18px] border-background-default border"
+                        style="border-width: 1px; border-radius: 6px;"
+                      >
+                        <img
+                          alt="Ethereum"
+                          class="size-full object-contain"
+                          src="./images/eth_logo.svg"
+                        />
+                      </div>
                     </div>
                   </div>
-                </div>
-                <span
-                  class="mm-box mm-select-button__content mm-box--display-flex mm-box--flex-direction-column mm-box--width-full"
-                >
                   <label
-                    class="mm-box mm-text mm-label mm-text--body-md mm-text--font-weight-medium mm-box--display-inline-flex mm-box--align-items-center mm-box--color-text-default"
+                    class="mm-box mm-text mm-label cursor-pointer mm-text--body-md mm-text--font-weight-medium mm-box--display-inline-flex mm-box--align-items-center mm-box--color-text-default"
                   >
                     ETH
                   </label>
-                </span>
+                </div>
+                <span
+                  class="mm-box mm-select-button__content mm-box--display-flex mm-box--flex-direction-column mm-box--width-full"
+                />
                 <span
                   class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
                   style="mask-image: url('./images/icons/arrow-down.svg'); display: none;"
@@ -190,52 +192,54 @@ exports[`Bridge renders the component with initial props 1`] = `
                   />
                 </div>
                 <button
-                  class="mm-box mm-text mm-select-button mm-select-button--size-lg mm-text--body-md mm-box--padding-top-3 mm-box--padding-right-4 mm-box--padding-bottom-3 mm-box--padding-left-4 mm-box--display-flex mm-box--gap-2 mm-box--justify-content-space-between mm-box--align-items-center mm-box--height-full mm-box--color-text-default mm-box--background-color-background-default mm-box--rounded-pill mm-box--border-color-border-muted box--border-style-solid box--border-width-1"
+                  class="mm-box mm-text mm-select-button mm-select-button--size-lg bridge-selected-asset-button mm-text--body-md mm-box--padding-top-3 mm-box--padding-right-4 mm-box--padding-bottom-3 mm-box--padding-left-4 mm-box--display-flex mm-box--gap-2 mm-box--justify-content-space-between mm-box--align-items-center mm-box--height-full mm-box--color-text-default mm-box--background-color-background-default mm-box--rounded-pill mm-box--border-color-border-muted box--border-style-solid box--border-width-1"
                   data-testid="bridge-destination-button"
                   style="padding: 8px 11px 8px 8px; min-width: fit-content;"
                 >
                   <div
-                    class="relative inline-flex self-start"
-                    style="margin-right: 2px;"
+                    class="flex items-center gap-2"
                   >
                     <div
-                      class="inline-flex"
+                      class="relative inline-flex self-start"
                     >
                       <div
-                        class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-full h-8 w-8"
+                        class="inline-flex"
                       >
-                        <img
-                          alt="mUSD"
-                          class="size-full object-contain"
-                          src="https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0xaca92e438df0b2401ff60da7e4337b687a2435da.png"
-                        />
+                        <div
+                          class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-full h-8 w-8"
+                        >
+                          <img
+                            alt="mUSD"
+                            class="size-full object-contain"
+                            src="https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0xaca92e438df0b2401ff60da7e4337b687a2435da.png"
+                          />
+                        </div>
                       </div>
-                    </div>
-                    <div
-                      class="absolute"
-                      style="bottom: 0px; right: 0px;"
-                    >
                       <div
-                        class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-sm h-[18px] w-[18px] border-background-default border"
-                        style="border-width: 1px; border-radius: 6px;"
+                        class="absolute"
+                        style="bottom: 0px; right: 0px;"
                       >
-                        <img
-                          alt="Ethereum"
-                          class="size-full object-contain"
-                          src="./images/eth_logo.svg"
-                        />
+                        <div
+                          class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-sm h-[18px] w-[18px] border-background-default border"
+                          style="border-width: 1px; border-radius: 6px;"
+                        >
+                          <img
+                            alt="Ethereum"
+                            class="size-full object-contain"
+                            src="./images/eth_logo.svg"
+                          />
+                        </div>
                       </div>
                     </div>
-                  </div>
-                  <span
-                    class="mm-box mm-select-button__content mm-box--display-flex mm-box--flex-direction-column mm-box--width-full"
-                  >
                     <label
-                      class="mm-box mm-text mm-label mm-text--body-md mm-text--font-weight-medium mm-box--display-inline-flex mm-box--align-items-center mm-box--color-text-default"
+                      class="mm-box mm-text mm-label cursor-pointer mm-text--body-md mm-text--font-weight-medium mm-box--display-inline-flex mm-box--align-items-center mm-box--color-text-default"
                     >
                       mUSD
                     </label>
-                  </span>
+                  </div>
+                  <span
+                    class="mm-box mm-select-button__content mm-box--display-flex mm-box--flex-direction-column mm-box--width-full"
+                  />
                   <span
                     class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
                     style="mask-image: url('./images/icons/arrow-down.svg'); display: none;"

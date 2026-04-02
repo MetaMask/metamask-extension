@@ -9,10 +9,10 @@ import type {
 import type { GetSubjectMetadata } from '@metamask/permission-controller';
 import { AccountsControllerListAccountsAction } from '@metamask/accounts-controller';
 import {
-  GetPermittedSnaps,
-  InstallSnaps,
-  MultichainRouterGetSupportedAccountsAction,
-  MultichainRouterIsSupportedScopeAction,
+  SnapControllerGetPermittedSnapsAction,
+  SnapControllerInstallSnapsAction,
+  MultichainRoutingServiceGetSupportedAccountsAction,
+  MultichainRoutingServiceIsSupportedScopeAction,
 } from '@metamask/snaps-controllers';
 import { SnapPermissionSpecificationsActions } from '../../controllers/permissions/snaps/specifications';
 import { RootMessenger } from '../../lib/messenger';
@@ -23,8 +23,8 @@ type AllowedActions =
   | ApprovalControllerAcceptRequestAction
   | ApprovalControllerRejectRequestAction
   | GetSubjectMetadata
-  | GetPermittedSnaps
-  | InstallSnaps;
+  | SnapControllerGetPermittedSnapsAction
+  | SnapControllerInstallSnapsAction;
 
 export type PermissionControllerMessenger = ReturnType<
   typeof getPermissionControllerMessenger
@@ -56,8 +56,8 @@ export function getPermissionControllerMessenger(
       'ApprovalController:hasRequest',
       'ApprovalController:acceptRequest',
       'ApprovalController:rejectRequest',
-      'SnapController:getPermitted',
-      'SnapController:install',
+      'SnapController:getPermittedSnaps',
+      'SnapController:installSnaps',
       'SubjectMetadataController:getSubjectMetadata',
     ],
   });
@@ -66,8 +66,8 @@ export function getPermissionControllerMessenger(
 
 type AllowedInitializationActions =
   | AccountsControllerListAccountsAction
-  | MultichainRouterIsSupportedScopeAction
-  | MultichainRouterGetSupportedAccountsAction
+  | MultichainRoutingServiceGetSupportedAccountsAction
+  | MultichainRoutingServiceIsSupportedScopeAction
   | NetworkControllerFindNetworkClientIdByChainIdAction
   | SnapPermissionSpecificationsActions;
 
@@ -102,15 +102,15 @@ export function getPermissionControllerInitMessenger(
       'CurrencyRateController:getState',
       'KeyringController:getKeyringsByType',
       'KeyringController:withKeyring',
-      'MultichainRouter:isSupportedScope',
-      'MultichainRouter:getSupportedAccounts',
+      'MultichainRoutingService:isSupportedScope',
+      'MultichainRoutingService:getSupportedAccounts',
       'NetworkController:findNetworkClientIdByChainId',
       'PhishingController:maybeUpdateState',
       'PhishingController:testOrigin',
       'PreferencesController:getState',
       'RateLimitController:call',
       'SnapController:clearSnapState',
-      'SnapController:get',
+      'SnapController:getSnap',
       'SnapController:getSnapState',
       'SnapController:handleRequest',
       'SnapController:updateSnapState',

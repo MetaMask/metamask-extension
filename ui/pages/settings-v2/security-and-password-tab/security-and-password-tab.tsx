@@ -5,7 +5,8 @@ import { getPreferences, getUsePhishDetect } from '../../../selectors';
 import { setUsePhishDetect } from '../../../store/actions';
 import {
   AUTO_LOCK_ROUTE,
-  SECURITY_PASSWORD_CHANGE_ROUTE,
+  MANAGE_WALLET_RECOVERY_V2_ROUTE,
+  SECURITY_PASSWORD_CHANGE_V2_ROUTE,
 } from '../../../helpers/constants/routes';
 import { DEFAULT_AUTO_LOCK_TIME_LIMIT } from '../../../../shared/constants/preferences';
 import { SECURITY_ITEMS } from '../search-config';
@@ -25,7 +26,8 @@ const PasswordItem = createSelectItem({
   name: 'PasswordItem',
   titleKey: SECURITY_ITEMS.password,
   valueSelector: () => '',
-  route: SECURITY_PASSWORD_CHANGE_ROUTE,
+  route: SECURITY_PASSWORD_CHANGE_V2_ROUTE,
+  dataTestId: 'change-password-button',
 });
 
 export const AutoLockItem = createSelectItem({
@@ -42,10 +44,16 @@ export const AutoLockItem = createSelectItem({
       t as (key: string, substitutions?: string[]) => string,
     ),
   route: AUTO_LOCK_ROUTE,
+  dataTestId: 'auto-lock-button',
 });
 
 const SECURITY_AND_PASSWORD_SETTING_ITEMS: SettingItemConfig[] = [
-  { id: 'manage-wallet-recovery', component: ManageWalletRecoveryItem },
+  {
+    id: 'manage-wallet-recovery',
+    component: () => (
+      <ManageWalletRecoveryItem route={MANAGE_WALLET_RECOVERY_V2_ROUTE} />
+    ),
+  },
   { id: 'password', component: PasswordItem },
   { id: 'auto-lock', component: AutoLockItem },
   { id: 'phishing-detection', component: PhishingDetectionItem },

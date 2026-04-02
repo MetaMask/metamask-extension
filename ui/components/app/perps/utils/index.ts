@@ -15,3 +15,10 @@ export {
   type WithdrawalRequest,
   type DepositRequest,
 } from './transactionTransforms';
+
+export {
+  normalizeMarketDetailsOrders,
+  shouldDisplayOrderInMarketDetailsOrders,
+  buildDisplayOrdersWithSyntheticTpsl,
+  isOrderAssociatedWithFullPosition,
+} from './orderUtils';

@@ -1,4 +1,3 @@
-import React, { useCallback, useMemo } from 'react';
 import {
   Box,
   Text,
@@ -9,16 +8,18 @@ import {
   BoxAlignItems,
   FontWeight,
 } from '@metamask/design-system-react';
-import { TextField, TextFieldSize } from '../../../../../component-library';
+import React, { useCallback, useMemo } from 'react';
+
 import {
   BorderRadius,
   BackgroundColor,
   TextVariant as TextVariantLegacy,
 } from '../../../../../../helpers/constants/design-system';
-import ToggleButton from '../../../../../ui/toggle-button';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
-import { useFormatters } from '../../../../../../hooks/useFormatters';
+import { TextField, TextFieldSize } from '../../../../../component-library';
+import ToggleButton from '../../../../../ui/toggle-button';
 import type { AutoCloseSectionProps } from '../../order-entry.types';
+import { isSignedDecimalInput, isUnsignedDecimalInput } from '../../utils';
 
 /**
  * AutoCloseSection - Collapsible section for Take Profit and Stop Loss configuration
@@ -51,31 +52,14 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
   entryPrice: entryPriceProp,
 }) => {
   const t = useI18nContext();
-  const { formatNumber } = useFormatters();
 
   // In modify mode use position's entry price; otherwise use current price
   const entryPrice = entryPriceProp ?? currentPrice;
 
-  // Format price for display (with locale-aware formatting)
-  const formatPrice = useCallback(
-    (value: number): string => {
-      return formatNumber(value, {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2,
-      });
-    },
-    [formatNumber],
-  );
-
-  // Format percentage for display
+  // Keep percent inputs in dot-decimal format to match strict input policy.
   const formatPercent = useCallback(
-    (value: number): string => {
-      return formatNumber(value, {
-        minimumFractionDigits: 1,
-        maximumFractionDigits: 1,
-      });
-    },
-    [formatNumber],
+    (value: number): string => value.toFixed(1),
+    [],
   );
 
   // Calculate percentage from price
@@ -84,9 +68,8 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
       if (!price || !entryPrice) {
         return '';
       }
-      const cleanPrice = price.replace(/,/gu, '');
-      const priceNum = parseFloat(cleanPrice);
-      if (isNaN(priceNum) || priceNum <= 0) {
+      const priceNum = Number.parseFloat(price);
+      if (!Number.isFinite(priceNum) || priceNum <= 0) {
         return '';
       }
 
@@ -120,9 +103,12 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
       }
 
       const price = entryPrice * multiplier;
-      return formatPrice(price);
+      const normalizedPrice = Number.parseFloat(price.toFixed(8));
+      return Number.isFinite(normalizedPrice) && normalizedPrice > 0
+        ? normalizedPrice.toString()
+        : '';
     },
-    [entryPrice, direction, formatPrice],
+    [entryPrice, direction],
   );
 
   const handleToggle = useCallback(
@@ -136,28 +122,33 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
   const handleTpPriceChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       const { value } = event.target;
-      if (value === '' || /^[\d,]*\.?\d*$/u.test(value)) {
+      if (value === '' || isUnsignedDecimalInput(value)) {
         onTakeProfitPriceChange(value);
       }
     },
     [onTakeProfitPriceChange],
   );
 
-  // Handle TP price blur - format the value
   const handleTpPriceBlur = useCallback(() => {
-    if (takeProfitPrice) {
-      const numValue = parseFloat(takeProfitPrice.replace(/,/gu, ''));
-      if (!isNaN(numValue) && numValue > 0) {
-        onTakeProfitPriceChange(formatPrice(numValue));
-      }
+    if (!takeProfitPrice) {
+      onTakeProfitPriceChange('');
+      return;
     }
-  }, [takeProfitPrice, onTakeProfitPriceChange, formatPrice]);
+
+    const parsed = Number.parseFloat(takeProfitPrice);
+    if (Number.isFinite(parsed) && parsed > 0) {
+      onTakeProfitPriceChange(parsed.toString());
+      return;
+    }
+
+    onTakeProfitPriceChange('');
+  }, [onTakeProfitPriceChange, takeProfitPrice]);
 
   // Handle TP percentage input change
   const handleTpPercentChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       const { value } = event.target;
-      if (value === '' || /^-?\d*(?:\.\d*)?$/u.test(value)) {
+      if (value === '' || isSignedDecimalInput(value)) {
         const numValue = parseFloat(value);
         if (value === '' || value === '-') {
           onTakeProfitPriceChange('');
@@ -174,28 +165,34 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
   const handleSlPriceChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       const { value } = event.target;
-      if (value === '' || /^[\d,]*(?:\.\d*)?$/u.test(value)) {
+      if (value === '' || isUnsignedDecimalInput(value)) {
         onStopLossPriceChange(value);
       }
     },
     [onStopLossPriceChange],
   );
 
-  // Handle SL price blur - format the value
+  // Handle SL price blur - commit normalized value
   const handleSlPriceBlur = useCallback(() => {
-    if (stopLossPrice) {
-      const numValue = parseFloat(stopLossPrice.replace(/,/gu, ''));
-      if (!isNaN(numValue) && numValue > 0) {
-        onStopLossPriceChange(formatPrice(numValue));
-      }
+    if (!stopLossPrice) {
+      onStopLossPriceChange('');
+      return;
     }
-  }, [stopLossPrice, onStopLossPriceChange, formatPrice]);
+
+    const parsed = Number.parseFloat(stopLossPrice);
+    if (Number.isFinite(parsed) && parsed > 0) {
+      onStopLossPriceChange(parsed.toString());
+      return;
+    }
+
+    onStopLossPriceChange('');
+  }, [onStopLossPriceChange, stopLossPrice]);
 
   // Handle SL percentage input change
   const handleSlPercentChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       const { value } = event.target;
-      if (value === '' || /^-?\d*(?:\.\d*)?$/u.test(value)) {
+      if (value === '' || isSignedDecimalInput(value)) {
         const numValue = parseFloat(value);
         if (value === '' || value === '-') {
           onStopLossPriceChange('');
@@ -269,7 +266,10 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
                   backgroundColor={BackgroundColor.backgroundMuted}
                   className="w-full"
                   data-testid="tp-price-input"
-                  inputProps={{ textVariant: TextVariantLegacy.bodySm }}
+                  inputProps={{
+                    textVariant: TextVariantLegacy.bodySm,
+                    inputMode: 'decimal',
+                  }}
                   startAccessory={
                     <Text
                       variant={TextVariant.BodySm}
@@ -336,7 +336,10 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
                   backgroundColor={BackgroundColor.backgroundMuted}
                   className="w-full"
                   data-testid="sl-price-input"
-                  inputProps={{ textVariant: TextVariantLegacy.bodySm }}
+                  inputProps={{
+                    textVariant: TextVariantLegacy.bodySm,
+                    inputMode: 'decimal',
+                  }}
                   startAccessory={
                     <Text
                       variant={TextVariant.BodySm}

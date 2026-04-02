@@ -78,6 +78,7 @@ export const GasFeesDetails = (): JSX.Element | null => {
                 chainId={transactionMeta.chainId}
                 maxFeePerGas={maxFeePerGas}
                 maxPriorityFeePerGas={maxPriorityFeePerGas}
+                userFeeLevelOverride={transactionMeta.userFeeLevel}
               />
             </Box>
           </ConfirmInfoAlertRow>

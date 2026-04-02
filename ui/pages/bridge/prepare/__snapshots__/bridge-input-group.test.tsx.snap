@@ -368,6 +368,7 @@ exports[`BridgeInputGroup should render popular tokens 2`] = `
         "chainId": "eip155:1",
         "decimals": 18,
         "iconUrl": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/slip44/60.png",
+        "isVerified": undefined,
         "name": "Ether",
         "rwaData": undefined,
         "symbol": "ETH",
@@ -380,6 +381,7 @@ exports[`BridgeInputGroup should render popular tokens 2`] = `
         "chainId": "eip155:1",
         "decimals": 10,
         "iconUrl": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0x1f9840a85d5af5bf1d1762f925bdaddc4201f984.png",
+        "isVerified": undefined,
         "name": "Uniswap",
         "rwaData": undefined,
         "symbol": "UNI",
@@ -392,6 +394,7 @@ exports[`BridgeInputGroup should render popular tokens 2`] = `
         "chainId": "eip155:1",
         "decimals": 9,
         "iconUrl": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0x514910771af9ca656af840dff83e8264ecf986ca.png",
+        "isVerified": undefined,
         "name": "Link",
         "rwaData": undefined,
         "symbol": "LINK",
@@ -744,9 +747,9 @@ exports[`BridgeInputGroup should search for tokens 1`] = `
             style="position: relative; height: 234px; overflow-y: scroll;"
           >
             <div
-              class="mm-box mm-container mm-container--max-width-undefined bridge-asset mm-box--padding-4 mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--width-full mm-box--height-max mm-box--background-color-transparent mm-box--rounded-none"
+              class="mm-box mm-container mm-container--max-width-undefined cursor-pointer bridge-asset mm-box--padding-4 mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--width-full mm-box--height-max mm-box--background-color-transparent mm-box--rounded-none"
               data-index="0"
-              data-testid="bridge-asset"
+              data-testid="bridge-asset--eip155:1/erc20:0xaf88d065e77c8cC2239327C5EDb3A432268e5831"
               style="position: absolute; top: 0px; left: 0px; transform: translateY(0px);"
             >
               <div
@@ -823,6 +826,7 @@ exports[`BridgeInputGroup should search for tokens 1`] = `
               <button
                 aria-label="View token details"
                 class="inline-flex items-center justify-center p-0 h-8 w-8 rounded-lg bg-transparent hover:bg-hover active:bg-pressed text-icon-default bridge-asset-info-icon"
+                data-testid="bridge-asset-info-icon-eip155:1/erc20:0xaf88d065e77c8cC2239327C5EDb3A432268e5831"
               >
                 <svg
                   class="inline-block w-4 h-4 text-inherit"
@@ -837,9 +841,9 @@ exports[`BridgeInputGroup should search for tokens 1`] = `
               </button>
             </div>
             <div
-              class="mm-box mm-container mm-container--max-width-undefined bridge-asset mm-box--padding-4 mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--width-full mm-box--height-max mm-box--background-color-transparent mm-box--rounded-none"
+              class="mm-box mm-container mm-container--max-width-undefined cursor-pointer bridge-asset mm-box--padding-4 mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--width-full mm-box--height-max mm-box--background-color-transparent mm-box--rounded-none"
               data-index="1"
-              data-testid="bridge-asset"
+              data-testid="bridge-asset--eip155:1/erc20:0xaf88d065e77c8cC2239327C5EDb3A432268e5832"
               style="position: absolute; top: 0px; left: 0px; transform: translateY(78px);"
             >
               <div
@@ -916,6 +920,7 @@ exports[`BridgeInputGroup should search for tokens 1`] = `
               <button
                 aria-label="View token details"
                 class="inline-flex items-center justify-center p-0 h-8 w-8 rounded-lg bg-transparent hover:bg-hover active:bg-pressed text-icon-default bridge-asset-info-icon"
+                data-testid="bridge-asset-info-icon-eip155:1/erc20:0xaf88d065e77c8cC2239327C5EDb3A432268e5832"
               >
                 <svg
                   class="inline-block w-4 h-4 text-inherit"
@@ -977,6 +982,7 @@ exports[`BridgeInputGroup should search for tokens 4`] = `
         "chainId": "eip155:1",
         "decimals": 18,
         "iconUrl": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/slip44/60.png",
+        "isVerified": undefined,
         "name": "Ether",
         "rwaData": undefined,
         "symbol": "ETH",
@@ -989,6 +995,7 @@ exports[`BridgeInputGroup should search for tokens 4`] = `
         "chainId": "eip155:1",
         "decimals": 10,
         "iconUrl": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0x1f9840a85d5af5bf1d1762f925bdaddc4201f984.png",
+        "isVerified": undefined,
         "name": "Uniswap",
         "rwaData": undefined,
         "symbol": "UNI",
@@ -1001,6 +1008,7 @@ exports[`BridgeInputGroup should search for tokens 4`] = `
         "chainId": "eip155:1",
         "decimals": 9,
         "iconUrl": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0x514910771af9ca656af840dff83e8264ecf986ca.png",
+        "isVerified": undefined,
         "name": "Link",
         "rwaData": undefined,
         "symbol": "LINK",
@@ -1121,9 +1129,9 @@ exports[`BridgeInputGroup should search for tokens 5`] = `
             style="position: relative; height: 234px; overflow-y: scroll;"
           >
             <div
-              class="mm-box mm-container mm-container--max-width-undefined bridge-asset mm-box--padding-4 mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--width-full mm-box--height-max mm-box--background-color-transparent mm-box--rounded-none"
+              class="mm-box mm-container mm-container--max-width-undefined cursor-pointer bridge-asset mm-box--padding-4 mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--width-full mm-box--height-max mm-box--background-color-transparent mm-box--rounded-none"
               data-index="0"
-              data-testid="bridge-asset"
+              data-testid="bridge-asset--eip155:1/erc20:0xaf88d065e77c8cC2239327C5EDb3A432268e5831"
               style="position: absolute; top: 0px; left: 0px; transform: translateY(0px);"
             >
               <div
@@ -1200,6 +1208,7 @@ exports[`BridgeInputGroup should search for tokens 5`] = `
               <button
                 aria-label="View token details"
                 class="inline-flex items-center justify-center p-0 h-8 w-8 rounded-lg bg-transparent hover:bg-hover active:bg-pressed text-icon-default bridge-asset-info-icon"
+                data-testid="bridge-asset-info-icon-eip155:1/erc20:0xaf88d065e77c8cC2239327C5EDb3A432268e5831"
               >
                 <svg
                   class="inline-block w-4 h-4 text-inherit"
@@ -1214,9 +1223,9 @@ exports[`BridgeInputGroup should search for tokens 5`] = `
               </button>
             </div>
             <div
-              class="mm-box mm-container mm-container--max-width-undefined bridge-asset mm-box--padding-4 mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--width-full mm-box--height-max mm-box--background-color-transparent mm-box--rounded-none"
+              class="mm-box mm-container mm-container--max-width-undefined cursor-pointer bridge-asset mm-box--padding-4 mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--width-full mm-box--height-max mm-box--background-color-transparent mm-box--rounded-none"
               data-index="1"
-              data-testid="bridge-asset"
+              data-testid="bridge-asset--eip155:1/erc20:0xaf88d065e77c8cC2239327C5EDb3A432268e5832"
               style="position: absolute; top: 0px; left: 0px; transform: translateY(78px);"
             >
               <div
@@ -1293,6 +1302,7 @@ exports[`BridgeInputGroup should search for tokens 5`] = `
               <button
                 aria-label="View token details"
                 class="inline-flex items-center justify-center p-0 h-8 w-8 rounded-lg bg-transparent hover:bg-hover active:bg-pressed text-icon-default bridge-asset-info-icon"
+                data-testid="bridge-asset-info-icon-eip155:1/erc20:0xaf88d065e77c8cC2239327C5EDb3A432268e5832"
               >
                 <svg
                   class="inline-block w-4 h-4 text-inherit"
@@ -1307,9 +1317,9 @@ exports[`BridgeInputGroup should search for tokens 5`] = `
               </button>
             </div>
             <div
-              class="mm-box mm-container mm-container--max-width-undefined bridge-asset mm-box--padding-4 mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--width-full mm-box--height-max mm-box--background-color-transparent mm-box--rounded-none"
+              class="mm-box mm-container mm-container--max-width-undefined cursor-pointer bridge-asset mm-box--padding-4 mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--width-full mm-box--height-max mm-box--background-color-transparent mm-box--rounded-none"
               data-index="2"
-              data-testid="bridge-asset"
+              data-testid="bridge-asset--eip155:59144/erc20:0xaf88d065e77c8cC2239327C5EDb3A432268e5833"
               style="position: absolute; top: 0px; left: 0px; transform: translateY(156px);"
             >
               <div
@@ -1386,6 +1396,7 @@ exports[`BridgeInputGroup should search for tokens 5`] = `
               <button
                 aria-label="View token details"
                 class="inline-flex items-center justify-center p-0 h-8 w-8 rounded-lg bg-transparent hover:bg-hover active:bg-pressed text-icon-default bridge-asset-info-icon"
+                data-testid="bridge-asset-info-icon-eip155:59144/erc20:0xaf88d065e77c8cC2239327C5EDb3A432268e5833"
               >
                 <svg
                   class="inline-block w-4 h-4 text-inherit"
@@ -1424,6 +1435,7 @@ exports[`BridgeInputGroup should search for tokens with hasNextPage 3`] = `
         "chainId": "eip155:1",
         "decimals": 18,
         "iconUrl": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/slip44/60.png",
+        "isVerified": undefined,
         "name": "Ether",
         "rwaData": undefined,
         "symbol": "ETH",
@@ -1436,6 +1448,7 @@ exports[`BridgeInputGroup should search for tokens with hasNextPage 3`] = `
         "chainId": "eip155:1",
         "decimals": 10,
         "iconUrl": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0x1f9840a85d5af5bf1d1762f925bdaddc4201f984.png",
+        "isVerified": undefined,
         "name": "Uniswap",
         "rwaData": undefined,
         "symbol": "UNI",
@@ -1448,6 +1461,7 @@ exports[`BridgeInputGroup should search for tokens with hasNextPage 3`] = `
         "chainId": "eip155:1",
         "decimals": 9,
         "iconUrl": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0x514910771af9ca656af840dff83e8264ecf986ca.png",
+        "isVerified": undefined,
         "name": "Link",
         "rwaData": undefined,
         "symbol": "LINK",

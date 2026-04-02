@@ -1,5 +1,4 @@
 import { createMetaMaskE2EContext, createMetaMaskProdContext } from './factory';
-import { MetaMaskBuildCapability } from './build';
 import { MetaMaskFixtureCapability } from './fixture';
 import { MetaMaskChainCapability, NoOpChainCapability } from './chain';
 import { MetaMaskContractSeedingCapability } from './seeding';
@@ -11,7 +10,6 @@ describe('Capability Factory', () => {
     it('creates context with all E2E capabilities', () => {
       const context = createMetaMaskE2EContext();
 
-      expect(context.build).toBeInstanceOf(MetaMaskBuildCapability);
       expect(context.fixture).toBeInstanceOf(MetaMaskFixtureCapability);
       expect(context.chain).toBeInstanceOf(MetaMaskChainCapability);
       expect(context.contractSeeding).toBeInstanceOf(
@@ -80,14 +78,6 @@ describe('Capability Factory', () => {
 
       expect(context.chain).toBeInstanceOf(MetaMaskChainCapability);
       expect(context.fixture).toBeInstanceOf(MetaMaskFixtureCapability);
-    });
-
-    it('uses custom build command when provided', () => {
-      const context = createMetaMaskE2EContext({
-        buildCommand: 'yarn build:flask',
-      });
-
-      expect(context.build).toBeDefined();
     });
 
     it('merges custom config with defaults', () => {
@@ -175,28 +165,6 @@ describe('Capability Factory', () => {
         );
       });
 
-      it('excludes build capability by default', () => {
-        const context = createMetaMaskProdContext();
-
-        expect(context.build).toBeUndefined();
-      });
-
-      it('includes build capability when includeBuild is true', () => {
-        const context = createMetaMaskProdContext({
-          includeBuild: true,
-        });
-
-        expect(context.build).toBeInstanceOf(MetaMaskBuildCapability);
-      });
-
-      it('excludes build capability when includeBuild is false', () => {
-        const context = createMetaMaskProdContext({
-          includeBuild: false,
-        });
-
-        expect(context.build).toBeUndefined();
-      });
-
       it('excludes chain capability when remoteChain is not provided', () => {
         const context = createMetaMaskProdContext();
 
@@ -243,16 +211,14 @@ describe('Capability Factory', () => {
         expect(context.chain).toBeInstanceOf(NoOpChainCapability);
       });
 
-      it('includes both build and chain when both options are provided', () => {
+      it('includes chain when remoteChain option is provided', () => {
         const context = createMetaMaskProdContext({
-          includeBuild: true,
           remoteChain: {
             rpcUrl: 'https://mainnet.infura.io/v3/test-key',
             chainId: 1,
           },
         });
 
-        expect(context.build).toBeInstanceOf(MetaMaskBuildCapability);
         expect(context.chain).toBeInstanceOf(NoOpChainCapability);
         expect(context.stateSnapshot).toBeInstanceOf(
           MetaMaskStateSnapshotCapability,
@@ -315,7 +281,6 @@ describe('Capability Factory', () => {
 
       it('passes prod context options when switching to prod', () => {
         sessionManager.setContext('prod', {
-          includeBuild: true,
           remoteChain: {
             rpcUrl: 'https://mainnet.infura.io/v3/test-key',
             chainId: 1,
@@ -325,7 +290,6 @@ describe('Capability Factory', () => {
         const context = sessionManager.getWorkflowContext();
 
         expect(context?.config.environment).toBe('prod');
-        expect(context?.build).toBeInstanceOf(MetaMaskBuildCapability);
         expect(context?.chain).toBeInstanceOf(NoOpChainCapability);
       });
 
@@ -358,7 +322,7 @@ describe('Capability Factory', () => {
       it('returns correct info for e2e context', () => {
         const info = sessionManager.getContextInfo();
         expect(info.currentContext).toBe('e2e');
-        expect(info.capabilities.available).toContain('build');
+        expect(info.capabilities.available).not.toContain('build');
       });
 
       it('returns canSwitchContext=false when session active', () => {
