@@ -1019,5 +1019,5 @@ export const getBridgeUnavailableQuoteReason = createSelector(
   (quoteStreamComplete) =>
     quoteStreamComplete?.reason
       ? getQuoteStreamReasonString(quoteStreamComplete.reason)
-      : 'noOptionsAvailableMessage'
+      : 'noOptionsAvailableMessage',
 );
