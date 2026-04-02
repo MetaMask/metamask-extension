@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useContext, useMemo } from 'react';
 import { useSelector, shallowEqual } from 'react-redux';
 import {
   Button,
@@ -9,6 +9,7 @@ import {
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
+import { MetaMetricsHardwareWalletRecoveryLocation } from '../../../../shared/constants/metametrics';
 import {
   getFromAmount,
   getToToken,
@@ -19,13 +20,15 @@ import {
   BridgeAppState,
 } from '../../../ducks/bridge/selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import useSubmitBridgeTransaction from '../hooks/useSubmitBridgeTransaction';
 import { useIsTxSubmittable } from '../../../hooks/bridge/useIsTxSubmittable';
 import {
   ConnectionStatus,
   useHardwareWalletConfig,
   useHardwareWalletState,
 } from '../../../contexts/hardware-wallets';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { trackHardwareWalletRecoveryConnectCtaClicked } from '../../../helpers/utils/track-hardware-wallet-recovery-connect-cta-clicked';
+import useSubmitBridgeTransaction from '../hooks/useSubmitBridgeTransaction';
 
 export const BridgeCTAButton = ({
   onFetchNewQuotes,
@@ -69,6 +72,8 @@ export const BridgeCTAButton = ({
   const wasTxDeclined = useSelector(getWasTxDeclined);
 
   const isTxSubmittable = useIsTxSubmittable();
+
+  const { trackEvent } = useContext(MetaMetricsContext);
 
   const { isHardwareWalletAccount, walletType } = useHardwareWalletConfig();
   const { connectionState } = useHardwareWalletState();
@@ -130,8 +135,16 @@ export const BridgeCTAButton = ({
       };
     }
 
-    const submitHandler = async () =>
+    const submitHandler = async () => {
+      if (isHardwareWalletAccount && !isHardwareWalletReady) {
+        trackHardwareWalletRecoveryConnectCtaClicked(trackEvent, {
+          location: MetaMetricsHardwareWalletRecoveryLocation.Swaps,
+          walletType,
+          connectionState,
+        });
+      }
       await submitBridgeTransaction(activeQuote);
+    };
 
     if (isHardwareWalletAccount && !isHardwareWalletReady) {
       return {
@@ -152,27 +165,29 @@ export const BridgeCTAButton = ({
     };
   }, [
     activeQuote,
-    isNoQuotesAvailable,
-    wasTxDeclined,
-    isQuoteExpired,
+    connectionState,
     isLoading,
     isMarketClosed,
+    isQuoteExpired,
     needsDestinationAddress,
     onOpenRecipientModal,
+    hardwareWalletName,
+    isHardwareWalletAccount,
+    isHardwareWalletReady,
     isInsufficientBalance,
     isInsufficientGasBalance,
     isInsufficientGasForQuote,
-    isTxSubmittable,
-    isSubmitting,
-    isHardwareWalletAccount,
-    isHardwareWalletReady,
-    hardwareWalletName,
     isPriceImpactError,
-    onOpenPriceImpactWarningModal,
-    submitBridgeTransaction,
+    isSubmitting,
+    isTxSubmittable,
     onFetchNewQuotes,
     onOpenMarketClosedModal,
+    onOpenPriceImpactWarningModal,
+    submitBridgeTransaction,
     t,
+    trackEvent,
+    walletType,
+    wasTxDeclined,
   ]);
 
   /**
