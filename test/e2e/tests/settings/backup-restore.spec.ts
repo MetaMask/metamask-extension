@@ -2,9 +2,9 @@ import { strict as assert } from 'assert';
 import { promises as fs } from 'fs';
 import { withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
-import AdvancedSettings from '../../page-objects/pages/settings/advanced-settings';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
+import PrivacySettings from '../../page-objects/pages/settings/privacy-settings';
 import { login } from '../../page-objects/flows/login.flow';
 
 const downloadsFolder = `${process.cwd()}/test-artifacts/downloads`;
@@ -48,9 +48,7 @@ const getBackupJson = async (): Promise<BackupData | null> => {
 };
 
 describe('Backup and Restore', function () {
-  // Export button removed from settings page in v2 settings
-  // eslint-disable-next-line mocha/no-skipped-tests
-  it.skip('should backup the account settings', async function () {
+  it('should backup the account settings', async function () {
     if (process.env.SELENIUM_BROWSER === 'chrome') {
       // Chrome shows OS level download prompt which can't be dismissed by Selenium
       this.skip();
@@ -63,16 +61,15 @@ describe('Backup and Restore', function () {
       async ({ driver }) => {
         await login(driver);
 
-        // Download user settings
         await new HeaderNavbar(driver).openSettingsPage();
         const settingsPage = new SettingsPage(driver);
         await settingsPage.checkPageIsLoaded();
-        await settingsPage.goToAdvancedSettings();
-        const advancedSettings = new AdvancedSettings(driver);
-        await advancedSettings.checkPageIsLoaded();
-        await advancedSettings.downloadData();
+        await settingsPage.goToPrivacySettings();
 
-        // Verify download
+        const privacySettings = new PrivacySettings(driver);
+        await privacySettings.checkPageIsLoaded();
+        await privacySettings.exportYourData();
+
         let info: BackupData | null = null;
         await driver.wait(async () => {
           info = await getBackupJson();
@@ -83,7 +80,6 @@ describe('Backup and Restore', function () {
           throw new Error('Backup data is null after waiting');
         }
         const backupData = info as BackupData;
-        // Verify Json
         assert.equal(
           backupData.network?.networkConfigurationsByChainId?.['0x539']
             ?.chainId,
