@@ -18,7 +18,7 @@ describe('BridgeAsset', () => {
     );
 
     expect(getByText('ETH')).toBeInTheDocument();
-    expect(getByTestId('bridge-asset')).toMatchSnapshot();
+    expect(getByTestId(/^bridge-asset--/u)).toMatchSnapshot();
   });
 
   it('should render ERC20 asset', () => {
@@ -32,7 +32,7 @@ describe('BridgeAsset', () => {
       configureStore(createBridgeMockStore({})),
     );
     expect(getByText('mUSD')).toBeInTheDocument();
-    expect(getByTestId('bridge-asset')).toMatchSnapshot();
+    expect(getByTestId(/^bridge-asset--/u)).toMatchSnapshot();
   });
 
   it('should render asset with balance', () => {
@@ -50,7 +50,7 @@ describe('BridgeAsset', () => {
       configureStore(createBridgeMockStore({})),
     );
     expect(getByText('mUSD')).toBeInTheDocument();
-    expect(getByTestId('bridge-asset')).toMatchSnapshot();
+    expect(getByTestId(/^bridge-asset--/u)).toMatchSnapshot();
   });
 
   it('should render asset with accountType', () => {
@@ -66,7 +66,7 @@ describe('BridgeAsset', () => {
     );
     expect(getByText('BTC')).toBeInTheDocument();
     expect(getByText('Native SegWit')).toBeInTheDocument();
-    expect(getByTestId('bridge-asset')).toMatchSnapshot();
+    expect(getByTestId(/^bridge-asset--/u)).toMatchSnapshot();
   });
 
   it('should render verified badge when isVerified is true', () => {
@@ -83,7 +83,7 @@ describe('BridgeAsset', () => {
       configureStore(createBridgeMockStore({})),
     );
     expect(getByTestId('bridge-asset-verified-badge')).toBeInTheDocument();
-    expect(getByTestId('bridge-asset')).toMatchSnapshot();
+    expect(getByTestId(/^bridge-asset--/u)).toMatchSnapshot();
   });
 
   it('does not render verified badge when isVerified is false', () => {

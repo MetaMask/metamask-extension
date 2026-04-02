@@ -32,5 +32,6 @@ describe('SecurityAndPasswordTab', () => {
     expect(
       screen.getByTestId('security-phishing-detection-toggle'),
     ).toBeInTheDocument();
+    expect(screen.getByTestId('auto-lock-button')).toBeInTheDocument();
   });
 });

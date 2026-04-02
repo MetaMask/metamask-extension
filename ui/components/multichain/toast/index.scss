@@ -21,3 +21,12 @@
 .toast-text {
   word-break: break-word;
 }
+
+/* react-hot-toast override */
+.toast-container {
+  view-transition-name: toast;
+
+  [role=status] {
+    justify-content: flex-start;
+  }
+}
