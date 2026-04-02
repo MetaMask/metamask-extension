@@ -26,7 +26,6 @@ import {
   THRESHOLD_SEVERITY,
   DEFAULT_RELATIVE_THRESHOLDS,
 } from '../../shared/constants/benchmarks';
-import { THRESHOLD_REGISTRY } from '../../test/e2e/benchmarks/utils/constants';
 import { validateResultThresholds } from '../../test/e2e/benchmarks/utils/statistics';
 
 export const COMPARISON_SEVERITY = {

@@ -55,7 +55,7 @@ The **`pageLoadBenchmark`** preset measures Core Web Vitals against the test dap
 | `dapp-page-load-stats.test.ts` | Unit tests for aggregation |
 | `dapp-page-load-benchmark.spec.ts` | Playwright test entry |
 
-**Metrics:** page load time, DOM content loaded, first paint, first contentful paint, largest contentful paint, JavaScript heap usage (where available).
+**Metrics:** page load time, DOM content loaded, first paint, first contentful paint, largest contentful paint.
 
 **Run (same preset as above):** `yarn test:e2e:benchmark --preset pageLoadBenchmark` (or `--preset all`). First-time Playwright may need `yarn playwright install chromium`; the extension should be built (`yarn build:test`). To invoke Playwright directly: `yarn playwright test --project=benchmark` (optional: `BENCHMARK_BROWSER_LOADS`, `BENCHMARK_PAGE_LOADS`). Debug: `DEBUG=pw:api yarn playwright test --project=benchmark`.
 
