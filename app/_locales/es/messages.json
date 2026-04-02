@@ -5341,9 +5341,6 @@
     "message": "disponible",
     "description": "is the available balance amount"
   },
-  "perpsAvailableBalance": {
-    "message": "Saldo disponible"
-  },
   "perpsAvailableToClose": {
     "message": "Disponible para cerrar"
   },
@@ -5505,12 +5502,6 @@
   "perpsMarkets": {
     "message": "Mercados"
   },
-  "perpsMax": {
-    "message": "Máx."
-  },
-  "perpsMaxRemovable": {
-    "message": "Máx. eliminable"
-  },
   "perpsMid": {
     "message": "Medio"
   },
@@ -5563,9 +5554,6 @@
   },
   "perpsPosition": {
     "message": "Posición"
-  },
-  "perpsPositionSize": {
-    "message": "Tamaño de la posición"
   },
   "perpsPositions": {
     "message": "Posiciones"

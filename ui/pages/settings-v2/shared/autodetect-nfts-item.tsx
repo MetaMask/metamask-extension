@@ -38,7 +38,8 @@ export const AutodetectNftsToggleItem = () => {
         }
         dispatch(setUseNftDetection(!value));
       }}
-      dataTestId="use-nft-detection"
+      dataTestId="use-nft-detection-input"
+      containerDataTestId="use-nft-detection"
     />
   );
 };

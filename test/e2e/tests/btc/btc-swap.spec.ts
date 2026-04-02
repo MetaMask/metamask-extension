@@ -161,6 +161,7 @@ describe('BTC Account - Swap (Bridge)', function (this: Suite) {
         await bridgePage.submitQuote();
 
         // Navigate to activity list and verify the bridge transaction
+        await homePage.goToActivityList();
         const activityListPage = new ActivityListPage(driver);
         await activityListPage.checkPendingBridgeTransactionActivity(1);
 

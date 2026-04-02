@@ -66,6 +66,7 @@ describe('Send ETH', function () {
 
           await sendTokenConfirmPage.clickOnConfirm();
 
+          await homePage.goToActivityList();
           await activityListPage.checkTransactionActivityByText('Sent');
           await activityListPage.checkCompletedTxNumberDisplayedInActivity(1);
           await activityListPage.checkTxAmountInActivity('-1 ETH');
@@ -144,6 +145,7 @@ describe('Send ETH', function () {
 
           const sendTokenConfirmationPage = new SendTokenConfirmPage(driver);
           const activityListPage = new ActivityListPage(driver);
+          const homePage = new HomePage(driver);
 
           await createInternalTransaction({
             driver,
@@ -154,6 +156,7 @@ describe('Send ETH', function () {
           });
 
           await sendTokenConfirmationPage.clickOnConfirm();
+          await homePage.goToActivityList();
           await activityListPage.checkTransactionActivityByText('Sent');
           await activityListPage.checkCompletedTxNumberDisplayedInActivity(1);
           await activityListPage.checkTxAmountInActivity('-1 ETH');

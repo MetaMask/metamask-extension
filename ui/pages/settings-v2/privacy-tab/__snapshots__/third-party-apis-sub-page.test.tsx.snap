@@ -22,7 +22,9 @@ exports[`ThirdPartyApisSubPage snapshot matches snapshot 1`] = `
           >
             Network details check
           </p>
-          <div>
+          <div
+            data-testid="useSafeChainsListValidation"
+          >
             <label
               class="toggle-button toggle-button--off"
               tabindex="0"
@@ -84,7 +86,9 @@ exports[`ThirdPartyApisSubPage snapshot matches snapshot 1`] = `
           >
             Show ENS domains in address bar
           </p>
-          <div>
+          <div
+            data-testid="ipfs-gateway-resolution-container"
+          >
             <label
               class="toggle-button toggle-button--off"
               tabindex="0"
@@ -206,7 +210,9 @@ exports[`ThirdPartyApisSubPage snapshot matches snapshot 1`] = `
             >
               IPFS gateway
             </p>
-            <div>
+            <div
+              data-testid="ipfsToggle"
+            >
               <label
                 class="toggle-button toggle-button--on"
                 tabindex="0"
@@ -338,7 +344,9 @@ exports[`ThirdPartyApisSubPage snapshot matches snapshot 1`] = `
           >
             Autodetect NFTs
           </p>
-          <div>
+          <div
+            data-testid="use-nft-detection"
+          >
             <label
               class="toggle-button toggle-button--on"
               tabindex="0"
@@ -364,7 +372,7 @@ exports[`ThirdPartyApisSubPage snapshot matches snapshot 1`] = `
                   />
                 </div>
                 <input
-                  data-testid="use-nft-detection"
+                  data-testid="use-nft-detection-input"
                   style="border: 0px; height: 1px; margin: -1px; overflow: hidden; padding: 0px; position: absolute; width: 1px;"
                   type="checkbox"
                   value="true"
