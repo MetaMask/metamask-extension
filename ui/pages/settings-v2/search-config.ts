@@ -90,7 +90,6 @@ export const BACKUP_AND_SYNC_ITEMS = {
 } as const;
 
 export const EXPERIMENTAL_ITEMS = {
-  notifications: 'notificationsFeatureToggle',
   'keyring-snaps': 'addSnapAccountToggle',
   'watch-account': 'watchEthereumAccountsToggle',
 } as const;
