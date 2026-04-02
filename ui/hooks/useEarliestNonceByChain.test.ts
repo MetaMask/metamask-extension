@@ -119,4 +119,25 @@ describe('useEarliestNonceByChain', () => {
       [CHAIN_IDS.GOERLI]: 5,
     });
   });
+
+  it('uses minimum nonce across all groups; ActivityList passes pending-only via pendingLocalTransactions', () => {
+    const transactionGroups = [
+      {
+        nonce: '0x18b',
+        initialTransaction: { chainId: CHAIN_IDS.SEPOLIA },
+      },
+      {
+        nonce: '0x18d',
+        initialTransaction: { chainId: CHAIN_IDS.SEPOLIA },
+      },
+    ];
+
+    const { result } = renderHook(() =>
+      useEarliestNonceByChain(transactionGroups),
+    );
+
+    expect(result.current).toEqual({
+      [CHAIN_IDS.SEPOLIA]: 395,
+    });
+  });
 });
