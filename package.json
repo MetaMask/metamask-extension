@@ -55,6 +55,8 @@
     "forwarder": "node ./development/static-server.js ./node_modules/@metamask/forwarder/dist/ --port 9010",
     "dapp-forwarder": "concurrently -k -n forwarder,dapp -p '[{time}][{name}]' 'yarn forwarder' 'yarn dapp'",
     "test:unit": "node --expose-gc ./node_modules/jest/bin/jest.js",
+    "test:unit:vitest": "vitest run",
+    "test:unit:vitest:watch": "vitest",
     "test:unit:update-baseline": "UPDATE_BASELINE=ratchet yarn test:unit",
     "test:unit:update-baseline:strict": "UPDATE_BASELINE=strict yarn test:unit",
     "anvil": "node_modules/.bin/anvil",
@@ -621,6 +623,7 @@
     "@typescript-eslint/eslint-plugin": "^8.1.0",
     "@typescript-eslint/parser": "^8.1.0",
     "@viem/anvil": "^0.0.10",
+    "@vitejs/plugin-react": "^6.0.1",
     "@welldone-software/why-did-you-render": "^8.0.3",
     "addons-linter": "^9.5.0",
     "autoprefixer": "^10.4.19",
@@ -767,6 +770,7 @@
     "vinyl-buffer": "^1.0.1",
     "vinyl-source-stream": "^2.0.0",
     "vinyl-sourcemaps-apply": "^0.2.1",
+    "vitest": "^4.1.2",
     "wait-on": "^7.0.1",
     "watchify": "^4.0.0",
     "webextension-polyfill": "^0.8.0",
@@ -816,7 +820,8 @@
       "ws>utf-8-validate": false,
       "@google/genai>protobufjs": false,
       "eth-lattice-keyring>gridplus-sdk>secp256k1": false,
-      "eslint-import-resolver-typescript>unrs-resolver": false
+      "eslint-import-resolver-typescript>unrs-resolver": false,
+      "vitest>vite>esbuild": false
     }
   },
   "packageManager": "yarn@4.12.0",
