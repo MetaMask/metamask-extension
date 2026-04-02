@@ -134,6 +134,8 @@
     "test-storybook": "test-storybook -c .storybook",
     "test-storybook:ci": "concurrently -k -s first -n \"SB,TEST\" -c \"magenta,blue\" \"yarn storybook:build && yarn http-server storybook-build --port 6006 \" \"wait-on tcp:6006 && echo 'Build done. Running storybook tests...' && yarn test-storybook\"",
     "githooks:install": "husky install",
+    "generate-method-action-types:institutional-snap": "messenger-generate-action-types app/scripts/controllers/institutional-snap",
+    "generate-method-action-types:metametrics-data-deletion": "messenger-generate-action-types app/scripts/controllers/metametrics-data-deletion",
     "fitness-functions": "tsx development/fitness-functions/index.ts",
     "generate-beta-commit": "node ./development/generate-beta-commit.js",
     "validate-branch-name": "validate-branch-name",
@@ -265,7 +267,7 @@
     "fast-xml-parser": "^5.5.7",
     "minimatch@npm:^10.1.1": "10.2.4",
     "@metamask/snaps-controllers": "^19.0.0",
-    "@metamask/messenger@npm:^0.3.0": "^1.0.0"
+    "@metamask/messenger@npm:^0.3.0": "^1.1.0"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.26.10#~/.yarn/patches/@babel-runtime-npm-7.26.10-fe8c62510a.patch",
@@ -351,7 +353,7 @@
     "@metamask/logo": "^4.0.0",
     "@metamask/message-manager": "^14.0.0",
     "@metamask/message-signing-snap": "1.1.4",
-    "@metamask/messenger": "^1.0.0",
+    "@metamask/messenger": "^1.1.0",
     "@metamask/metamask-eth-abis": "^3.1.1",
     "@metamask/multichain-account-service": "^8.0.1",
     "@metamask/multichain-api-client": "^0.10.1",
