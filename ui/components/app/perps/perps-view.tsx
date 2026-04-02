@@ -22,7 +22,10 @@ import {
   selectPerpsIsFirstTimeUser,
   selectPerpsIsTestnet,
 } from '../../../selectors/perps-controller';
-import { setTutorialModalOpen } from '../../../ducks/perps';
+import {
+  selectTutorialCompleted,
+  setTutorialModalOpen,
+} from '../../../ducks/perps';
 
 import { usePerpsDepositConfirmation } from './hooks/usePerpsDepositConfirmation';
 import { usePerpsWithdrawNavigation } from './hooks/usePerpsWithdrawNavigation';
@@ -56,6 +59,7 @@ export const PerpsView: React.FC = () => {
   const dispatch = useDispatch();
   const isFirstTimeUser = useSelector(selectPerpsIsFirstTimeUser);
   const isTestnet = useSelector(selectPerpsIsTestnet);
+  const tutorialCompleted = useSelector(selectTutorialCompleted);
   const { trigger: triggerDeposit } = usePerpsDepositConfirmation();
   const [isCloseAllPending, setIsCloseAllPending] = useState(false);
   const [isCancelAllPending, setIsCancelAllPending] = useState(false);
@@ -160,17 +164,18 @@ export const PerpsView: React.FC = () => {
   const isLoading = positionsLoading || ordersLoading || marketsLoading;
 
   // Auto-open tutorial modal the first time a user enters the perps domain.
-  // Fires once loading resolves; the guard condition (isFirstTimeUser[network])
-  // prevents re-opening after the tutorial has been completed or skipped.
+  // Guards on both the backend isFirstTimeUser flag (stable once propagated) and
+  // the local tutorialCompleted flag so that a skip/complete before the backend
+  // state propagates doesn't reopen the modal on the next effect run.
   useEffect(() => {
-    if (isLoading) {
+    if (isLoading || tutorialCompleted) {
       return;
     }
     const networkKey = isTestnet ? 'testnet' : 'mainnet';
     if (isFirstTimeUser[networkKey]) {
       dispatch(setTutorialModalOpen(true));
     }
-  }, [dispatch, isFirstTimeUser, isLoading, isTestnet]);
+  }, [dispatch, isFirstTimeUser, isLoading, isTestnet, tutorialCompleted]);
 
   // Limit markets to 5 for explore sections
   const cryptoMarkets = useMemo(() => {

@@ -221,7 +221,7 @@ describe('PerpsTutorialModal', () => {
       expect(mockDispatch).toHaveBeenCalledWith({
         type: 'perpsTutorial/markTutorialCompleted',
       });
-      expect(mockDispatch).toHaveBeenCalledWith({
+      expect(mockDispatch).not.toHaveBeenCalledWith({
         type: 'perpsTutorial/setTutorialModalOpen',
         payload: false,
       });
