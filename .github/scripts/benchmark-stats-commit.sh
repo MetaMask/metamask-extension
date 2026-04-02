@@ -121,7 +121,6 @@ assemble_performance_data() {
     fi
 
     # Merge the startup group into presets (only if any startup files were found).
-    # Key must remain "pageLoad" — see mapPresetToBaselineKey() in metamaskbot-build-announce/utils.ts.
     if [[ "${page_load_json}" != "{}" ]]; then
         presets_json=$(echo "${presets_json}" | jq --argjson pl "${page_load_json}" '. + {"pageLoad": $pl}')
     fi

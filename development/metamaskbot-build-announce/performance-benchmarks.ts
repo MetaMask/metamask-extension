@@ -12,7 +12,7 @@ import {
   THRESHOLD_SEVERITY,
 } from '../../shared/constants/benchmarks';
 import type {
-  BenchmarkAnnounceSampleDefaults,
+  BenchmarkAnnounceSamples,
   BenchmarkAnnounceSection,
   BenchmarkResults,
   ComparisonKey,
@@ -98,7 +98,6 @@ const USER_JOURNEY_BENCHMARK_PLATFORMS = [BENCHMARK_PLATFORMS.CHROME] as const;
 /**
  * Build types to fetch for user-journey presets in this workflow run.
  * Mirrors whether webpack user-journey matrix rows run (push to main/release only;
- * see `mainOnly` in `.github/workflows/run-benchmarks.yml`).
  */
 export function getUserJourneyBenchmarkBuildTypesForCurrentRun(): readonly string[] {
   const eventName = process.env.GITHUB_EVENT_NAME;
@@ -114,14 +113,6 @@ export function getUserJourneyBenchmarkBuildTypesForCurrentRun(): readonly strin
   return [BENCHMARK_BUILD_TYPES.BROWSERIFY];
 }
 
-/**
- * Platform/buildType sets for startup benchmarks (all 4 combos in CI).
- * Interaction uses ENTRY_BENCHMARK_PLATFORMS/BUILD_TYPES (chrome-browserify).
- *
- * User journey: always chrome × browserify in CI. Webpack user-journey JSON is only
- * uploaded on **push to `main` or `release/*`** (webpack rows gated by `mainOnly` in
- * `.github/workflows/run-benchmarks.yml`).
- */
 const STARTUP_BENCHMARK_PLATFORMS = [
   BENCHMARK_PLATFORMS.CHROME,
   BENCHMARK_PLATFORMS.FIREFOX,
@@ -537,7 +528,7 @@ function formatTimerDetails(
  * Builds an outer collapsible benchmark subsection.
  *
  * @param result - Fetched entries and missing preset descriptions.
- * @param section - `BENCHMARK_ANNOUNCE_SECTIONS.*` or a plain title string (no sample defaults).
+ * @param section - `BENCHMARK_ANNOUNCE_SECTIONS.*` or a plain title string (no announced samples).
  * @param baseline - Historical baseline for relative delta annotations.
  * @param runUrl - GitHub Actions run URL for "Show logs" links (optional).
  * @returns HTML string or empty string if no data.
@@ -547,23 +538,53 @@ function formatTimerDetails(
 const RELATIVE_DELTA_MIN_PCT = 0.1;
 
 export type {
-  BenchmarkAnnounceSampleDefaults,
+  BenchmarkAnnounceSamples,
   BenchmarkAnnounceSection,
 } from '../../shared/constants/benchmarks';
 export { BENCHMARK_ANNOUNCE_SECTIONS };
 
 /**
- * Collapsible section title suffix from {@link BENCHMARK_ANNOUNCE_SECTIONS} (`sampleDefaults`).
+ * User journey benchmarks use the real API on `main` and `release/*` branches; other
+ * branches use a mock API. Aligns with `BRANCH` / `GITHUB_HEAD_REF` in prerelease publish.
+ */
+export function getUserJourneyBenchmarkApiModeFromBranch(): 'mock' | 'real' {
+  const branch = (
+    process.env.BRANCH ??
+    process.env.GITHUB_HEAD_REF ??
+    process.env.GITHUB_REF_NAME ??
+    ''
+  ).trim();
+  if (branch === 'main' || branch.startsWith('release/')) {
+    return 'real';
+  }
+  return 'mock';
+}
+
+type SectionSamplesLabelOptions = {
+  /** When set (User Journey section only), appends ` · mock API` or ` · real API`. */
+  userJourneyApi?: 'mock' | 'real';
+};
+
+/**
+ * Collapsible section title suffix: ` · Samples: N` (and User Journey API mode when applicable).
  *
- * @param sampleDefaults - When set (named announce sections), appends the Samples line.
+ * @param announceSamples - When set (named announce sections), appends the Samples line.
+ * @param options - User Journey subsection only: mock vs real API from branch env.
  */
 function formatSectionSamplesLabel(
-  sampleDefaults?: BenchmarkAnnounceSampleDefaults,
+  announceSamples?: BenchmarkAnnounceSamples,
+  options?: SectionSamplesLabelOptions,
 ): string {
-  if (sampleDefaults) {
-    return ` · Samples: ${sampleDefaults.typical} (${sampleDefaults.note}, typical CI)`;
+  if (!announceSamples) {
+    return '';
   }
-  return '';
+  let label = ` · Samples: ${announceSamples.sampleQuantity}`;
+  if (options?.userJourneyApi === 'real') {
+    label += ' · real API';
+  } else if (options?.userJourneyApi === 'mock') {
+    label += ' · mock API';
+  }
+  return label;
 }
 
 /**
@@ -638,8 +659,8 @@ export function buildBenchmarkSection(
   runUrl?: string,
 ): string {
   const summary = typeof section === 'string' ? section : section.title;
-  const sampleDefaults =
-    typeof section === 'string' ? undefined : section.sampleDefaults;
+  const announceSamples =
+    typeof section === 'string' ? undefined : section.announceSamples;
 
   try {
     const { entries, missingPresets } = result;
@@ -653,7 +674,13 @@ export function buildBenchmarkSection(
         : '';
 
     const sectionCounts = countHealthEntries(entries, baseline);
-    const samplesLabel = formatSectionSamplesLabel(sampleDefaults);
+    const isUserJourneySection =
+      summary === BENCHMARK_ANNOUNCE_SECTIONS.userJourney.title;
+    const samplesLabel = formatSectionSamplesLabel(announceSamples, {
+      userJourneyApi: isUserJourneySection
+        ? getUserJourneyBenchmarkApiModeFromBranch()
+        : undefined,
+    });
     const sectionBadge =
       sectionCounts.failures > 0
         ? ` ${HEALTH_ICON[EntryHealth.Fail]} ${sectionCounts.failures}`
