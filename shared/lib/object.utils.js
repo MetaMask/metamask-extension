@@ -8,12 +8,13 @@ export const AllProperties = Symbol('*');
  * only the properties present in the mask.
  *
  * The mask is an object that mirrors the structure of the given object, except
- * the only values are `true`, `false, a sub-mask, or the 'AllProperties"
+ * the only values are `true`, `false`, a sub-mask, an array mask (treated like
+ * `false` for that key; e.g. empty `[]` in Sentry state), or the `AllProperties`
  * symbol. `true` implies the property should be included, and `false` will
  * exclude it. A sub-mask implies the property should be further masked
  * according to that sub-mask. The "AllProperties" symbol is used for objects
  * with dynamic keys, and applies a rule (either `true`, `false`, or a
- * sub-mask`) to every property in that object.
+ * `sub-mask`) to every property in that object.
  *
  * If a property is excluded, its type is included instead.
  *
@@ -38,6 +39,8 @@ export function maskObject(object, mask) {
     const maskKey = maskAllProperties ? mask[AllProperties] : mask[key];
     if (maskKey === true) {
       state[key] = object[key];
+    } else if (Array.isArray(maskKey)) {
+      state[key] = object[key] === null ? null : typeof object[key];
     } else if (maskKey && typeof maskKey === 'object') {
       state[key] = maskObject(object[key], maskKey);
     } else if (maskKey === undefined || maskKey === false) {
