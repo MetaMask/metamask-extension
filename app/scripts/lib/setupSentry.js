@@ -7,7 +7,13 @@ import { isManifestV3 } from '../../../shared/lib/mv3.utils';
 import { getManifestFlags } from '../../../shared/lib/manifestFlags';
 import { getSentryRelease } from '../../../shared/lib/sentry-release';
 import extractEthjsErrorMessage from './extractEthjsErrorMessage';
-import { filterEvents } from './sentry-filter-events';
+import { metaMetricsIntegration } from './sentry-metametrics';
+import {
+  getMetaMetricsState,
+  getMetaMetricsStateFromAppState,
+  getState,
+} from './sentry-get-state';
+import { makeTransport } from './sentry-make-transport';
 import { getInstallType, initInstallType } from './install-type';
 
 const internalLog = createModuleLogger(log, 'internal');
@@ -58,7 +64,6 @@ export default function setupSentry() {
 
   return {
     ...Sentry,
-    getMetaMetricsEnabled,
   };
 }
 
@@ -82,7 +87,10 @@ function getClientOptions() {
           return !url.match(/^https?:\/\/([\w\d.@-]+\.)?sentry\.io(\/|$)/u);
         },
       }),
-      filterEvents({ getMetaMetricsEnabled, log }),
+      metaMetricsIntegration({
+        getMetaMetricsState,
+        log,
+      }),
     ],
     release: RELEASE,
     // Client reports are automatically sent when a page's visibility changes to
@@ -157,55 +165,6 @@ function setCITags() {
   }
 }
 
-/**
- * Returns whether MetaMetrics is enabled, given the application state.
- *
- * @param {{ state: unknown} | { persistedState: unknown }} appState - Application state
- * @returns `true` if MetaMask's state has been initialized, and MetaMetrics
- * is enabled, `false` otherwise.
- */
-function getMetaMetricsEnabledFromAppState(appState) {
-  // during initialization after loading persisted state
-  if (appState.persistedState) {
-    return getMetaMetricsEnabledFromPersistedState(appState.persistedState);
-    // After initialization
-  } else if (appState.state) {
-    // UI
-    if (appState.state.metamask) {
-      return Boolean(appState.state.metamask.participateInMetaMetrics);
-    }
-    // background
-    return Boolean(
-      appState.state.MetaMetricsController?.participateInMetaMetrics,
-    );
-  }
-  // during initialization, before first persisted state is read
-  return false;
-}
-
-/**
- * Returns whether MetaMetrics is enabled, given the persisted state.
- *
- * @param {unknown} persistedState - Application state
- * @returns `true` if MetaMask's state has been initialized, and MetaMetrics
- * is enabled, `false` otherwise.
- */
-function getMetaMetricsEnabledFromPersistedState(persistedState) {
-  return Boolean(
-    persistedState?.data?.MetaMetricsController?.participateInMetaMetrics,
-  );
-}
-
-/**
- * Returns whether MetaMetrics is enabled, given the backup state.
- *
- * @param {unknown} backupState - Backup state from IndexedDB
- * @returns `true` if MetaMetrics is enabled in the backup, `false` otherwise.
- */
-function getMetaMetricsEnabledFromBackupState(backupState) {
-  return Boolean(backupState?.MetaMetricsController?.participateInMetaMetrics);
-}
-
 function getSentryEnvironment() {
   if (METAMASK_BUILD_TYPE === 'main') {
     return METAMASK_ENVIRONMENT;
@@ -239,43 +198,6 @@ function getSentryTarget() {
   }
 
   return SENTRY_DSN;
-}
-
-/**
- * Returns whether MetaMetrics is enabled. If the application hasn't yet
- * been initialized, the persisted state will be used (if any).
- *
- * @returns `true` if MetaMetrics is enabled, `false` otherwise.
- */
-async function getMetaMetricsEnabled() {
-  const flags = getManifestFlags();
-
-  if (flags.ci && flags.sentry.forceEnable) {
-    return true;
-  }
-
-  const appState = getState();
-
-  if (appState.state || appState.persistedState) {
-    return getMetaMetricsEnabledFromAppState(appState);
-  }
-
-  // If we reach here, it means the error was thrown before initialization
-  // completed, and before we loaded the persisted state for the first time.
-  try {
-    const persistedState = await globalThis.stateHooks.getPersistedState();
-    return getMetaMetricsEnabledFromPersistedState(persistedState);
-  } catch (error) {
-    log('Error retrieving persisted state, falling back to backup', error);
-    // Primary storage failed (e.g., database corruption) - check the backup
-    try {
-      const backupState = await globalThis.stateHooks.getBackupState();
-      return getMetaMetricsEnabledFromBackupState(backupState);
-    } catch (backupError) {
-      log('Error retrieving backup state', backupError);
-      return false;
-    }
-  }
 }
 
 function setSentryClient() {
@@ -340,8 +262,9 @@ export function beforeBreadcrumb() {
       return null;
     }
     const appState = getState();
+    const state = getMetaMetricsStateFromAppState(appState);
     if (
-      !getMetaMetricsEnabledFromAppState(appState) ||
+      !state?.participateInMetaMetrics ||
       breadcrumb?.category === 'ui.input'
     ) {
       return null;
@@ -373,13 +296,11 @@ export function removeUrlsFromBreadCrumb(breadcrumb) {
 }
 
 /**
- * Receives a Sentry event object and modifies it before the
- * error is sent to Sentry. Modifications include both sanitization
- * of data via helper methods and addition of state data from the
- * return value of the second parameter passed to the function.
+ * Receives a Sentry event object and modifies it before the error is sent to Sentry.
+ * Sanitizes messages/URLs and attaches app state.
  *
  * @param {object} report - A Sentry event object: https://develop.sentry.dev/sdk/event-payloads/
- * @returns {object} A modified Sentry event object.
+ * @returns {object} The modified report (same reference).
  */
 export function rewriteReport(report) {
   try {
@@ -395,7 +316,6 @@ export function rewriteReport(report) {
     // modify report urls
     rewriteReportUrls(report);
 
-    // append app state
     const appState = getState();
 
     if (!report.extra) {
@@ -530,10 +450,6 @@ function toMetamaskUrl(origUrl) {
   return metamaskUrl;
 }
 
-function getState() {
-  return globalThis.stateHooks?.getSentryState?.() || {};
-}
-
 function integrateLogging() {
   if (!METAMASK_DEBUG) {
     return;
@@ -568,18 +484,6 @@ function addDebugListeners() {
   });
 
   log('Added debug listeners');
-}
-
-function makeTransport(options) {
-  return Sentry.makeFetchTransport(options, async (...args) => {
-    const metricsEnabled = await getMetaMetricsEnabled();
-
-    if (!metricsEnabled) {
-      throw new Error('Network request skipped as metrics disabled');
-    }
-
-    return await fetch(...args);
-  });
 }
 
 function isCompletedSessionEnvelope(envelope) {
