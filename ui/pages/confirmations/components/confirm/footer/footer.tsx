@@ -48,7 +48,6 @@ import { useUserSubscriptions } from '../../../../../hooks/subscription/useSubsc
 import {
   useHardwareFooter,
   useHardwareWalletError,
-  useHardwareWalletMetrics,
 } from '../../../../../contexts/hardware-wallets';
 import OriginThrottleModal from './origin-throttle-modal';
 import ShieldFooterAgreement from './shield-footer-agreement';
@@ -257,7 +256,6 @@ const Footer = () => {
 
   const { dismissErrorModal, setErrorModalSuppressed } =
     useHardwareWalletError();
-  const { trackConnectCtaClicked } = useHardwareWalletMetrics();
 
   useEffect(() => {
     return () => {
@@ -292,7 +290,6 @@ const Footer = () => {
     currentConfirmation,
     currentConfirmationId,
     onUserRejectedHardwareWalletError,
-    onConnectCtaMetrics: trackConnectCtaClicked,
   });
 
   useEffect(() => {

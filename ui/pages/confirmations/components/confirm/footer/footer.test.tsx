@@ -185,7 +185,7 @@ jest.mock('../../../hooks/useConfirmSendNavigation', () => ({
 
 const mockUseNavigate = jest.fn();
 
-/** Default `useLocation()` shape for `useHardwareWalletRecoveryLocation` (Footer → `useHardwareWalletMetrics`). */
+/** Default `useLocation()` shape for `useHardwareWalletRecoveryLocation` */
 function getDefaultFooterTestLocation() {
   return {
     pathname: '/confirm-transaction',
