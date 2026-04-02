@@ -1853,7 +1853,6 @@
         "clearTimeout": true,
         "fetch": true,
         "performance.now": true,
-        "process": true,
         "setInterval": true,
         "setTimeout": true
       },
