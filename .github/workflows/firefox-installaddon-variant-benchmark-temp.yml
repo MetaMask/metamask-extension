@@ -1,0 +1,115 @@
+name: Firefox installAddon variant benchmark (temp)
+
+on:
+  workflow_dispatch:
+    inputs:
+      iterations:
+        description: Benchmark iterations per variant
+        required: false
+        default: '7'
+      target_ref:
+        description: Ref to build before benchmarking variants
+        required: false
+        default: codex/firefox-xpi-comment-metadata-spike
+  pull_request:
+    paths:
+      - .github/workflows/firefox-installaddon-variant-benchmark-temp.yml
+      - .github/scripts/firefox-installaddon-variant-benchmark.ts
+
+permissions:
+  contents: read
+
+jobs:
+  benchmark:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    container:
+      image: ghcr.io/metamask/metamask-extension-e2e-image:v24.13.0
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    env:
+      HEADLESS: false
+      INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
+      ITERATIONS: ${{ inputs.iterations || '7' }}
+      SELENIUM_BROWSER: firefox
+      TARGET_REF: ${{ inputs.target_ref || 'codex/firefox-xpi-comment-metadata-spike' }}
+    steps:
+      - name: Checkout harness branch
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Copy benchmark script to temp
+        run: cp .github/scripts/firefox-installaddon-variant-benchmark.ts /tmp/
+
+      - name: Checkout target ref
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ env.TARGET_REF }}
+          clean: true
+          persist-credentials: false
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: yarn
+
+      - name: Install dependencies
+        run: |
+          corepack enable
+          yarn install --immutable
+
+      - name: Create .metamaskrc
+        run: |
+          cp .metamaskrc.dist .metamaskrc
+          echo "INFURA_PROJECT_ID=${INFURA_PROJECT_ID}" >> .metamaskrc
+
+      - name: Configure Xvfb
+        run: Xvfb -ac :99 -screen 0 1280x1024x16 &
+
+      - name: Build Firefox test bundle
+        run: yarn build:test:mv2
+
+      - name: Run installAddon variant benchmark
+        env:
+          DISPLAY: :99
+        run: |
+          mkdir -p test-artifacts/benchmarks
+          yarn tsx /tmp/firefox-installaddon-variant-benchmark.ts \
+            --iterations "${ITERATIONS}" \
+            --ref-label "${TARGET_REF}" \
+            --out "test-artifacts/benchmarks/firefox-installaddon-variant-benchmark.json"
+
+      - name: Upload benchmark artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: firefox-installaddon-variant-benchmark
+          path: test-artifacts/benchmarks/firefox-installaddon-variant-benchmark.json
+          retention-days: 7
+
+      - name: Write step summary
+        run: |
+          node <<'EOF' >> "$GITHUB_STEP_SUMMARY"
+          const fs = require('fs');
+          const result = JSON.parse(
+            fs.readFileSync(
+              'test-artifacts/benchmarks/firefox-installaddon-variant-benchmark.json',
+              'utf8',
+            ),
+          );
+
+          console.log('# Firefox installAddon variant benchmark');
+          console.log('');
+          console.log(`Target ref: \`${result.gitRef}\``);
+          console.log(`SHA: \`${result.gitSha}\``);
+          console.log('');
+          console.log('| Variant | Size | Mean | Median | P95 |');
+          console.log('| --- | ---: | ---: | ---: | ---: |');
+          for (const [name, variant] of Object.entries(result.variants)) {
+            console.log(
+              `| ${name} | ${(variant.size / (1024 * 1024)).toFixed(1)} MiB | ${variant.summary.mean.toFixed(1)} ms | ${variant.summary.median.toFixed(1)} ms | ${variant.summary.p95.toFixed(1)} ms |`,
+            );
+          }
+          EOF
