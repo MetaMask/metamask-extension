@@ -42,6 +42,7 @@ import {
 } from '../../../../helpers/constants/design-system';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../shared/constants/network';
 import ZENDESK_URLS from '../../../../helpers/constants/zendesk-url';
+import { useBoolean } from '../../../../hooks/useBoolean';
 
 const PopularNetworkList = ({
   searchAddNetworkResults,
@@ -51,15 +52,7 @@ const PopularNetworkList = ({
   const t = useI18nContext();
   const isPopUp = getEnvironmentType() === ENVIRONMENT_TYPE_POPUP;
   const dispatch = useDispatch();
-  const [isOpen, setIsOpen] = useState(false);
-
-  const handleMouseEnter = () => {
-    setIsOpen(true);
-  };
-
-  const handleMouseLeave = () => {
-    setIsOpen(false);
-  };
+  const { value: isOpen, setTrue: open, setFalse: close } = useBoolean();
 
   const [referenceElement, setReferenceElement] = useState();
 
@@ -87,7 +80,7 @@ const PopularNetworkList = ({
             {t('additionalNetworks')}
           </Text>
 
-          <Box onMouseEnter={handleMouseEnter} marginTop={1}>
+          <Box onMouseEnter={open} marginTop={1}>
             <Icon
               className="add-network__warning-icon"
               name={IconName.Info}
@@ -104,7 +97,7 @@ const PopularNetworkList = ({
               isOpen={isOpen}
               flip
               backgroundColor={BackgroundColor.backgroundSection}
-              onMouseLeave={handleMouseLeave}
+              onMouseLeave={close}
               style={{
                 width: '326px',
               }}
@@ -153,7 +146,7 @@ const PopularNetworkList = ({
             paddingTop={4}
             className="new-network-list__list-of-networks"
             data-testid={`popular-network-${network.chainId}`}
-            onMouseEnter={handleMouseLeave}
+            onMouseEnter={close}
           >
             <Box display={Display.Flex} alignItems={AlignItems.center}>
               <AvatarNetwork

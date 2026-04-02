@@ -1,4 +1,4 @@
-import React, { useRef, useCallback, useEffect, useState } from 'react';
+import React, { useRef, useCallback, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   PopoverRole,
@@ -23,6 +23,7 @@ import {
 import { getPermissionsForActiveTab } from '../../../selectors';
 import { PermissionDetailsModal } from '../permission-details-modal/permission-details-modal';
 import { Identity } from './connected-accounts-menu.types';
+import { useBoolean } from '../../../hooks/useBoolean';
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -48,7 +49,11 @@ export const ConnectedAccountsMenu = ({
   const dispatch = useDispatch();
   const t = useI18nContext();
   const popoverDialogRef = useRef<HTMLDivElement | null>(null);
-  const [showPermissionModal, setShowPermissionModal] = useState(false);
+  const {
+    value: isModalOpen,
+    setTrue: showModal,
+    setFalse: hideModal,
+  } = useBoolean();
   const permissions = useSelector(getPermissionsForActiveTab);
 
   const handleClickOutside = useCallback(
@@ -105,7 +110,7 @@ export const ConnectedAccountsMenu = ({
                 iconName={IconName.SecurityTick}
                 data-testid="permission-details-menu-item"
                 onClick={() => {
-                  setShowPermissionModal(true);
+                  showModal();
                   onClose();
                 }}
               >
@@ -146,14 +151,14 @@ export const ConnectedAccountsMenu = ({
           </Box>
         </ModalFocus>
       </Popover>
-      {showPermissionModal ? (
+      {isModalOpen ? (
         <PermissionDetailsModal
-          isOpen={showPermissionModal}
+          isOpen={isModalOpen}
           account={account}
           onClick={() => {
             dispatch(removePermittedAccount(activeTabOrigin, account.address));
           }}
-          onClose={() => setShowPermissionModal(false)}
+          onClose={hideModal}
           permissions={permissions}
         />
       ) : null}

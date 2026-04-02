@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useRef } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { useSelector } from 'react-redux';
@@ -31,9 +31,14 @@ import { getDappActiveNetwork } from '../../../selectors/dapp';
 import { ConnectedSitePopover } from '../connected-site-popover';
 import { STATUS_CONNECTED } from '../../../helpers/constants/connected-sites';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../shared/constants/network';
+import { useBoolean } from '../../../hooks/useBoolean';
 
 export const ConnectedSiteMenu = ({ className, disabled, onClick, status }) => {
-  const [showPopover, setShowPopover] = useState(false);
+  const {
+    value: showPopover,
+    setTrue: openPopover,
+    setFalse: closePopover,
+  } = useBoolean();
 
   const referenceElement = useRef(null);
 
@@ -95,7 +100,7 @@ export const ConnectedSiteMenu = ({ className, disabled, onClick, status }) => {
         justifyContent={JustifyContent.center}
         backgroundColor={BackgroundColor.backgroundDefault}
         ref={referenceElement}
-        onClick={() => setShowPopover(true)}
+        onClick={openPopover}
         borderRadius={BorderRadius.LG}
       >
         <>{iconElement}</>
@@ -106,7 +111,7 @@ export const ConnectedSiteMenu = ({ className, disabled, onClick, status }) => {
           isOpen={showPopover}
           isConnected={status === STATUS_CONNECTED}
           onClick={onClick}
-          onClose={() => setShowPopover(false)}
+          onClose={closePopover}
           connectedOrigin={connectedOrigin}
         />
       )}
