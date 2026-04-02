@@ -29,6 +29,7 @@ import { readFileSync } from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { parseChangelog } from '@metamask/auto-changelog';
+import packageJson from '../../package.json';
 import { getBuildLinks } from '../../development/metamaskbot-build-announce/artifacts';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -213,20 +214,6 @@ function isValidUrl(url: string | undefined): boolean {
     return parsed.protocol === 'https:' || parsed.protocol === 'http:';
   } catch {
     return false;
-  }
-}
-
-function readPackageVersion(): string | null {
-  try {
-    const pkgPath = path.join(REPO_ROOT, 'package.json');
-    const pkg = JSON.parse(readFileSync(pkgPath, 'utf8')) as {
-      version: string;
-    };
-    return pkg.version;
-  } catch (e) {
-    const err = e as Error;
-    console.warn(`Could not read package.json version: ${err.message}`);
-    return null;
   }
 }
 
@@ -463,7 +450,7 @@ async function main(): Promise<void> {
   const hostUrl = process.env.HOST_URL?.trim();
   const channelOverride = getChannelOverride();
 
-  const packageVersion = readPackageVersion() ?? semver;
+  const packageVersion = packageJson.version ?? semver;
 
   const links: MainBrowserLinks = hostUrl
     ? getExtensionMainBuildLinks(hostUrl, packageVersion)
