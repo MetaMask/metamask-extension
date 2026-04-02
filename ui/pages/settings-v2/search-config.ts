@@ -63,6 +63,7 @@ export const PRIVACY_ITEMS = {
   'data-collection': 'dataCollectionForMarketing',
   'delete-metametrics-data': 'deleteMetaMetricsData',
   'download-state-logs': 'downloadStateLogs',
+  'export-your-data': 'exportYourData',
 } as const;
 
 export const THIRD_PARTY_API_ITEMS = {

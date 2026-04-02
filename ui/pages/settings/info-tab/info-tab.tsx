@@ -82,12 +82,14 @@ export default function InfoTab(): React.ReactElement {
 
     const linkProps = {
       size: TextButtonSize.BodyMd,
-      className: 'text-default',
+      className:
+        'w-full justify-start text-default !bg-transparent p-0 text-left',
     };
 
     const linkItemProps = {
       paddingTop: 3 as const,
       paddingBottom: 3 as const,
+      className: 'w-full',
     };
 
     return (
@@ -131,7 +133,7 @@ export default function InfoTab(): React.ReactElement {
         <Box ref={settingsRefs[4]} {...linkItemProps}>
           <TextButton asChild {...linkProps}>
             <a
-              href={`https://raw.githubusercontent.com/MetaMask/metamask-extension/v${version}/attribution.txt`}
+              href="https://raw.githubusercontent.com/MetaMask/metamask-extension/main/attribution.txt"
               target="_blank"
               rel="noopener noreferrer"
             >
