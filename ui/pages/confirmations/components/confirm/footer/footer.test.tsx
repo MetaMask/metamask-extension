@@ -1,6 +1,8 @@
 import React from 'react';
 import { fireEvent, waitFor } from '@testing-library/react';
 import { TransactionType } from '@metamask/transaction-controller';
+import { MetaMetricsHardwareWalletRecoveryLocation } from '../../../../../../shared/constants/metametrics';
+import { trackHardwareWalletRecoveryConnectCtaClicked } from '../../../../../helpers/utils/track-hardware-wallet-recovery-connect-cta-clicked';
 import { BlockaidResultType } from '../../../../../../shared/constants/security-provider';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../test/data/confirmations/contract-interaction';
 import {
@@ -68,6 +70,10 @@ const mockGetEnvironmentType = jest.fn();
 const mockNavigateNext = jest.fn();
 const mockNavigateToId = jest.fn();
 
+const mockTrackHardwareWalletRecoveryConnectCtaClicked = jest.mocked(
+  trackHardwareWalletRecoveryConnectCtaClicked,
+);
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 let mockStore: any = null;
 
@@ -114,7 +120,9 @@ jest.mock(
 );
 
 jest.mock('../../../hooks/useOriginThrottling');
-
+jest.mock(
+  '../../../../../helpers/utils/track-hardware-wallet-recovery-connect-cta-clicked',
+);
 jest.mock('../../../../../hooks/subscription/useSubscription');
 jest.mock(
   '../../../../../contexts/hardware-wallets/HardwareWalletContext',
@@ -176,7 +184,18 @@ jest.mock('../../../hooks/useConfirmSendNavigation', () => ({
 }));
 
 const mockUseNavigate = jest.fn();
-const mockUseLocation = jest.fn();
+
+/** Default `useLocation()` shape for `useHardwareWalletRecoveryLocation` */
+function getDefaultFooterTestLocation() {
+  return {
+    pathname: '/confirm-transaction',
+    search: '',
+    hash: '',
+    state: null,
+  };
+}
+
+const mockUseLocation = jest.fn(getDefaultFooterTestLocation);
 jest.mock('react-router-dom', () => {
   return {
     ...jest.requireActual('react-router-dom'),
@@ -185,11 +204,24 @@ jest.mock('react-router-dom', () => {
   };
 });
 
-const render = (args?: Record<string, unknown>) => {
+const render = (
+  args?: Record<string, unknown>,
+  options?: {
+    pathname?: string;
+    confirmationId?: string;
+    getMockTrackEvent?: () => jest.Mock;
+  },
+) => {
   const store = configureStore(args ?? getMockPersonalSignConfirmState());
   mockStore = store;
 
-  return renderWithConfirmContextProvider(<Footer />, store);
+  return renderWithConfirmContextProvider(
+    <Footer />,
+    store,
+    options?.pathname ?? DEFAULT_ROUTE,
+    options?.confirmationId,
+    options?.getMockTrackEvent,
+  );
 };
 
 const ALERT_MOCK = [
@@ -229,6 +261,7 @@ describe('ConfirmFooter', () => {
     mockUseHardwareWalletError.mockReset();
     mockIsHardwareWalletError.mockReset();
     mockIsUserRejectedHardwareWalletError.mockReset();
+    mockTrackHardwareWalletRecoveryConnectCtaClicked.mockReset();
 
     mockOnTransactionConfirm.mockResolvedValue(undefined);
     ensureDeviceReadyMock.mockResolvedValue(true);
@@ -265,12 +298,7 @@ describe('ConfirmFooter', () => {
       isGaslessLoading: false,
     });
 
-    mockUseLocation.mockReturnValue({
-      pathname: '/confirm-transaction',
-      search: '',
-      hash: '',
-      state: null,
-    });
+    mockUseLocation.mockImplementation(getDefaultFooterTestLocation);
     useUserSubscriptionsMock.mockReturnValue({
       trialedProducts: [],
       loading: false,
@@ -704,6 +732,43 @@ describe('ConfirmFooter', () => {
         getByTestId('reconnect-hardware-wallet-button'),
       ).toBeInTheDocument();
       expect(queryByTestId('confirm-footer-button')).not.toBeInTheDocument();
+    });
+
+    it('tracks hardware wallet recovery CTA when reconnect is clicked', async () => {
+      const mockTrackEvent = jest.fn().mockResolvedValue(undefined);
+      const connectionState = {
+        status: ConnectionStatus.Disconnected as const,
+      };
+      mockUseHardwareWalletConfig.mockReturnValue({
+        isHardwareWalletAccount: true,
+        walletType: HardwareWalletType.Ledger,
+      });
+      mockUseHardwareWalletState.mockReturnValue({
+        connectionState,
+      });
+      mockUseHardwareWalletError.mockReturnValue({
+        showErrorModal: showHardwareWalletErrorModalMock,
+        dismissErrorModal: dismissHardwareWalletErrorModalMock,
+        setErrorModalSuppressed: setErrorModalSuppressedMock,
+        isDeviceConnected: false,
+      });
+
+      const { getByTestId } = render(undefined, {
+        getMockTrackEvent: () => mockTrackEvent,
+      });
+
+      fireEvent.click(getByTestId('reconnect-hardware-wallet-button'));
+
+      await waitFor(() => {
+        expect(
+          mockTrackHardwareWalletRecoveryConnectCtaClicked,
+        ).toHaveBeenCalledWith(mockTrackEvent, {
+          location: MetaMetricsHardwareWalletRecoveryLocation.Send,
+          walletType: HardwareWalletType.Ledger,
+          connectionState,
+        });
+      });
+      expect(ensureDeviceReadyMock).toHaveBeenCalled();
     });
 
     it('does not confirm when hardware wallet preflight fails', async () => {

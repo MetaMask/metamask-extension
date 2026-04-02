@@ -100,7 +100,7 @@ export type BuildLinks = {
  * @param options.releaseVersion - The (pre)release version of the extension, e.g., the `6` in `18.7.25-flask.6`.
  * @returns `{ browserify, webpack }` each mapping BuildType → BuildBrowser URLs.
  */
-function getBuildLinks({
+export function getBuildLinks({
   hostUrl,
   version,
   releaseVersion = '0',

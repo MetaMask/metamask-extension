@@ -49,7 +49,7 @@ class SwapPage {
   private readonly assetPickerSearchInput =
     '[data-testid="bridge-asset-picker-search-input"]';
 
-  private readonly bridgeAsset = '[data-testid="bridge-asset"]';
+  private readonly bridgeAsset = '[data-testid^="bridge-asset--"]';
 
   private readonly moreQuotesButton = '[aria-label="More quotes"]';
 

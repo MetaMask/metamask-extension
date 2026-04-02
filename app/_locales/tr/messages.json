@@ -5341,9 +5341,6 @@
     "message": "kullanılabilir",
     "description": "is the available balance amount"
   },
-  "perpsAvailableBalance": {
-    "message": "Kullanılabilir bakiye"
-  },
   "perpsAvailableToClose": {
     "message": "Kapatılabilir"
   },
@@ -5505,12 +5502,6 @@
   "perpsMarkets": {
     "message": "Piyasalar"
   },
-  "perpsMax": {
-    "message": "Maksimum"
-  },
-  "perpsMaxRemovable": {
-    "message": "Maksimum kaldırılabilir"
-  },
   "perpsMid": {
     "message": "Orta"
   },
@@ -5563,9 +5554,6 @@
   },
   "perpsPosition": {
     "message": "Pozisyon"
-  },
-  "perpsPositionSize": {
-    "message": "Pozisyon Büyüklüğü"
   },
   "perpsPositions": {
     "message": "Pozisyonlar"

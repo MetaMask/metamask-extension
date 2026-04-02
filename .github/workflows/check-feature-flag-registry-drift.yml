@@ -70,6 +70,8 @@ jobs:
       registry-artifact-name: updated-registry
       report-artifact-name: drift-report
       workflow-run-url: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+      pr-title-prefix: 'test: Sync Feature Flag Registry'
+      pr-label: 'team-qa,no-changelog'
     secrets:
       github-token: ${{ secrets.GITHUB_TOKEN }}
 
