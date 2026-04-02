@@ -152,7 +152,9 @@ const PrepareBridgePage = ({
   const wasTxDeclined = useSelector(getWasTxDeclined);
   const isSrcAssetPickerOpen = useSelector(getIsSrcAssetPickerOpen);
   const isDestAssetPickerOpen = useSelector(getIsDestAssetPickerOpen);
-  const bridgeUnavailableQuotesReason = useSelector(getBridgeUnavailableQuoteReason);
+  const bridgeUnavailableQuotesReason = useSelector(
+    getBridgeUnavailableQuoteReason,
+  );
 
   // Determine if the current quote is expired or does not match the currently
   // selected destination asset/chain.
