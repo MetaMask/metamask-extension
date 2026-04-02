@@ -394,9 +394,9 @@ describe('BridgeCTAButton', () => {
       _: string,
       validationErrors: Record<string, boolean>,
       buttonLabel: string = messages.swap.message,
-      bridgeStateOverrides: Record<string, any> = {},
-      bridgeSliceOverrides: Record<string, any> = {},
-      propOverrides: Record<string, any> = {},
+      bridgeStateOverrides: Record<string, unknown> = {},
+      bridgeSliceOverrides: Record<string, unknown> = {},
+      propOverrides: Record<string, unknown> = {},
     ) => {
       const mockStore = createBridgeMockStore({
         bridgeSliceOverrides: {
@@ -462,8 +462,8 @@ describe('BridgeCTAButton', () => {
     'should render the component when quotes are loading and %s',
     async (
       _: string,
-      bridgeSliceOverrides: Record<string, any> = {},
-      propOverrides: Record<string, any> = {},
+      bridgeSliceOverrides: Record<string, unknown> = {},
+      propOverrides: Record<string, unknown> = {},
     ) => {
       const mockStore = createBridgeMockStore({
         bridgeSliceOverrides: {
@@ -555,7 +555,7 @@ describe('BridgeCTAButton', () => {
           toToken: toBridgeToken(
             getNativeAssetForChainId(CHAIN_IDS.LINEA_MAINNET),
           ),
-          wasTxDeclined: wasTxDeclined,
+          wasTxDeclined,
         },
         bridgeStateOverrides: {
           quotes: mockBridgeQuotesNativeErc20 as unknown as QuoteResponse[],
@@ -627,7 +627,7 @@ describe('BridgeCTAButton', () => {
       configureStore(mockStore),
     );
 
-    expect(getByText('Get new quote')).toBeInTheDocument();
+    expect(getByText(messages.bridgeGetNewQuote.message)).toBeInTheDocument();
   });
 
   it('should not disable the component when quotes are loading and there are existing quotes', () => {
