@@ -17,6 +17,8 @@ import {
   HARDWARE_WALLET_RECOVERY_SEGMENT_PAYLOAD_KEYS,
   mapHardwareWalletRecoveryErrorType,
   mapHardwareWalletTypeToMetricDeviceType,
+  nextHardwareWalletRecoveryInlineCtaViewCount,
+  resetHardwareWalletRecoveryInlineCtaViewCount,
 } from './hardware-wallet-recovery-metrics';
 
 describe('hardware-wallet-recovery-metrics', () => {
@@ -268,6 +270,39 @@ describe('hardware-wallet-recovery-metrics', () => {
       expect(Object.keys(props).sort()).toStrictEqual(
         [...HARDWARE_WALLET_RECOVERY_SEGMENT_PAYLOAD_KEYS].sort(),
       );
+    });
+  });
+
+  describe('inline CTA error_type_view_count', () => {
+    beforeEach(() => {
+      resetHardwareWalletRecoveryInlineCtaViewCount();
+    });
+
+    describe('nextHardwareWalletRecoveryInlineCtaViewCount', () => {
+      it('returns 1 on first use of an identity key', () => {
+        expect(nextHardwareWalletRecoveryInlineCtaViewCount('a')).toBe(1);
+      });
+
+      it('increments when the same identity key is used again', () => {
+        expect(nextHardwareWalletRecoveryInlineCtaViewCount('k')).toBe(1);
+        expect(nextHardwareWalletRecoveryInlineCtaViewCount('k')).toBe(2);
+        expect(nextHardwareWalletRecoveryInlineCtaViewCount('k')).toBe(3);
+      });
+
+      it('resets to 1 when the identity key changes', () => {
+        expect(nextHardwareWalletRecoveryInlineCtaViewCount('x')).toBe(1);
+        expect(nextHardwareWalletRecoveryInlineCtaViewCount('x')).toBe(2);
+        expect(nextHardwareWalletRecoveryInlineCtaViewCount('y')).toBe(1);
+      });
+    });
+
+    describe('resetHardwareWalletRecoveryInlineCtaViewCount', () => {
+      it('clears state so the next call starts at 1 for the prior key', () => {
+        expect(nextHardwareWalletRecoveryInlineCtaViewCount('z')).toBe(1);
+        expect(nextHardwareWalletRecoveryInlineCtaViewCount('z')).toBe(2);
+        resetHardwareWalletRecoveryInlineCtaViewCount();
+        expect(nextHardwareWalletRecoveryInlineCtaViewCount('z')).toBe(1);
+      });
     });
   });
 });

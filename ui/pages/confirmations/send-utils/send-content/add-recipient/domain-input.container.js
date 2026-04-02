@@ -5,13 +5,7 @@ import {
   initializeDomainSlice,
   resetDomainResolution,
 } from '../../../../../ducks/domains';
-import { getUseBlockie } from '../../../../../selectors';
 import DomainInput from './domain-input.component';
-
-// Trigger onChange when chainId changes using MapStateToProps
-function mapStateToProps(state) {
-  return { useBlockie: getUseBlockie(state) };
-}
 
 function mapDispatchToProps(dispatch) {
   return {
@@ -27,4 +21,4 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(DomainInput);
+export default connect(null, mapDispatchToProps)(DomainInput);
