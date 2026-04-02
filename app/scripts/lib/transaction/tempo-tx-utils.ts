@@ -1,6 +1,6 @@
 import { TransactionParams } from '@metamask/transaction-controller';
 import { Hex } from '@metamask/utils';
-import { FinalAddTransactionRequest } from './util';
+import type { FinalAddTransactionRequest } from './util';
 
 // Seem to be set by dApps only for batch calls.
 // For single-txs, this type doesn't appear.
