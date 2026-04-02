@@ -1445,7 +1445,9 @@ export function connectHardware(
     const { ledgerTransportType } = getState().metamask;
 
     dispatch(
-      showLoadingIndication(`Looking for your ${capitalize(deviceName)}...`),
+      showLoadingIndication(
+        t('hardwareWalletLookingForDevice', [capitalize(deviceName)]),
+      ),
     );
 
     let accounts: { address: string }[];
@@ -1510,9 +1512,9 @@ export function connectHardware(
 }
 
 export function unlockHardwareWalletAccounts(
-  indexes: string[],
+  indexes: number[],
   deviceName: HardwareDeviceNames,
-  hdPath: string,
+  hdPath: string | null,
   hdPathDescription: string,
 ): ThunkAction<Promise<undefined>, MetaMaskReduxState, unknown, AnyAction> {
   log.debug(

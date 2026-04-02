@@ -13,6 +13,7 @@ import {
 import { NameType } from '@metamask/name-controller';
 import { CHAIN_IDS } from '../../../../../shared/constants/network';
 import { mockNetworkState } from '../../../../../test/stub/networks';
+import { ConfirmContextProvider } from '../../context/confirm';
 
 const DUMMY_BALANCE_CHANGE = {
   previousBalance: '0xIGNORED' as Hex,
@@ -89,7 +90,19 @@ function createTransactionMeta(
 const meta: Meta<typeof SimulationDetails> = {
   title: 'Components/App/SimulationDetails',
   component: SimulationDetails,
-  decorators: [(story) => <Provider store={storeMock}>{story()}</Provider>],
+  decorators: [
+    (Story, context) => (
+      <Provider store={storeMock}>
+        <ConfirmContextProvider
+          currentConfirmationOverride={
+            context.args.transaction as TransactionMeta
+          }
+        >
+          <Story />
+        </ConfirmContextProvider>
+      </Provider>
+    ),
+  ],
 };
 
 export default meta;

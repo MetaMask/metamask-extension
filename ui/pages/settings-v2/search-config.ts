@@ -63,6 +63,7 @@ export const PRIVACY_ITEMS = {
   'data-collection': 'dataCollectionForMarketing',
   'delete-metametrics-data': 'deleteMetaMetricsData',
   'download-state-logs': 'downloadStateLogs',
+  'export-your-data': 'exportYourData',
 } as const;
 
 export const THIRD_PARTY_API_ITEMS = {
@@ -99,9 +100,16 @@ export const NOTIFICATIONS_ITEMS = {
   'account-activity': 'accountActivity',
 } as const;
 
-export const DEVELOPER_OPTIONS_ITEMS = {
+export const DEVELOPER_TOOLS_ITEMS = {
   'show-fiat-in-testnets': 'showFiatConversionInTestnets',
-  'auto-reset-account': 'clearActivity',
+  'delete-activity-and-nonce-data': 'deleteActivityAndNonceData',
+} as const;
+
+export const ABOUT_ITEMS = {
+  'terms-of-use': 'terms',
+  'privacy-policy': 'privacyMsg',
+  'support-center': 'supportCenter',
+  'contact-us': 'contactUs',
 } as const;
 
 // ── Registry (auto-derived) ─────────────────────────────────────────────
@@ -134,7 +142,8 @@ export const SETTINGS_V2_SEARCH_CONFIG: TabSearchConfig[] = [
   { tabId: 'experimental', items: createSearchItemMeta(EXPERIMENTAL_ITEMS) },
   { tabId: 'notifications', items: createSearchItemMeta(NOTIFICATIONS_ITEMS) },
   {
-    tabId: 'developer-options',
-    items: createSearchItemMeta(DEVELOPER_OPTIONS_ITEMS),
+    tabId: 'developer-tools',
+    items: createSearchItemMeta(DEVELOPER_TOOLS_ITEMS),
   },
+  { tabId: 'about-us', items: createSearchItemMeta(ABOUT_ITEMS) },
 ];

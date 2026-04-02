@@ -6,7 +6,7 @@ import { TestSuiteArguments } from '../confirmations/transactions/shared';
 import { login } from '../../page-objects/flows/login.flow';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
-import DevelopOptions from '../../page-objects/pages/developer-options-page';
+import DeveloperOptionsPage from '../../page-objects/pages/developer-options-page';
 import {
   MOCK_CUSTOMIZED_REMOTE_FEATURE_FLAGS,
   MOCK_META_METRICS_ID,
@@ -126,11 +126,12 @@ describe('Remote feature flag', function (this: Suite) {
         await headerNavbar.openSettingsPage();
         const settingsPage = new SettingsPage(driver);
         await settingsPage.checkPageIsLoaded();
-        await settingsPage.goToDeveloperOptions();
+        await settingsPage.goToDebugSettings();
 
-        const developOptionsPage = new DevelopOptions(driver);
-        await developOptionsPage.checkPageIsLoaded();
-        await developOptionsPage.validateRemoteFeatureFlagState();
+        // Debug tab embeds the legacy developer-options UI (remote flags, crash, etc.).
+        const developerOptionsPage = new DeveloperOptionsPage(driver);
+        await developerOptionsPage.checkPageIsLoaded();
+        await developerOptionsPage.validateRemoteFeatureFlagState();
       },
     );
   });

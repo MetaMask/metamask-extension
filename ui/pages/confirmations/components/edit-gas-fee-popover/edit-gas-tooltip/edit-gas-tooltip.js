@@ -19,8 +19,8 @@ const EditGasToolTip = ({
   gasLimit,
   priorityLevel,
   // maxFeePerGas & maxPriorityFeePerGas are derived from conditional logic
-  // related to the source of the estimates. We pass these values from the
-  // the parent component (edit-gas-item) rather than recalculate them
+  // related to the source of the estimates. We pass these values from
+  // the parent component rather than recalculate them
   maxFeePerGas,
   maxPriorityFeePerGas,
   transaction,

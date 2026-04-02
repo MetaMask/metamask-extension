@@ -95,11 +95,15 @@ export function useCancelSpeedupGasState(
     ? hexWEIToDecGWEI(effectiveTransaction.txParams.maxPriorityFeePerGas)
     : '0';
 
+  const effectiveGasFeeEstimates =
+    gasFeeEstimates ?? effectiveTransaction.gasFeeEstimates;
+
   const eip1559Functions = useTransactionFunctions({
     defaultEstimateToUse: GasRecommendations.medium,
     editGasMode,
-    estimatedBaseFee: (gasFeeEstimates as GasFeeEstimates)?.estimatedBaseFee,
-    gasFeeEstimates: gasFeeEstimates ?? undefined,
+    estimatedBaseFee: (effectiveGasFeeEstimates as GasFeeEstimates)
+      ?.estimatedBaseFee,
+    gasFeeEstimates: effectiveGasFeeEstimates,
     gasLimit: gasLimitNum,
     maxPriorityFeePerGas: maxPriorityFeePerGasGwei,
     transaction: effectiveTransaction as TransactionMeta,
@@ -108,7 +112,7 @@ export function useCancelSpeedupGasState(
   // Legacy flow
   const legacyFunctions = useLegacyCancelSpeedupFlow({
     transaction: effectiveTransaction as TransactionMeta,
-    gasFeeEstimates: gasFeeEstimates ?? undefined,
+    gasFeeEstimates: effectiveGasFeeEstimates,
   });
 
   const {
@@ -120,7 +124,7 @@ export function useCancelSpeedupGasState(
 
   return {
     effectiveTransaction: effectiveTransaction as TransactionMeta,
-    gasFeeEstimates: gasFeeEstimates ?? null,
+    gasFeeEstimates: effectiveGasFeeEstimates ?? null,
     cancelTransaction,
     speedUpTransaction,
     updateTransactionToTenPercentIncreasedGasFee,

@@ -6161,11 +6161,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/design-system-react@npm:^0.11.0":
-  version: 0.11.0
-  resolution: "@metamask/design-system-react@npm:0.11.0"
+"@metamask/design-system-react@npm:^0.12.0":
+  version: 0.12.0
+  resolution: "@metamask/design-system-react@npm:0.12.0"
   dependencies:
-    "@metamask/design-system-shared": "npm:^0.4.0"
+    "@metamask/design-system-shared": "npm:^0.5.0"
     "@metamask/jazzicon": "npm:^2.0.0"
     "@radix-ui/react-slot": "npm:^1.1.0"
     blo: "npm:^2.0.0"
@@ -6176,16 +6176,16 @@ __metadata:
     "@metamask/utils": ^11.10.0
     react: ^17.0.0 || ^18.0.0
     react-dom: ^17.0.0 || ^18.0.0
-  checksum: 10/f73cc6d61d3997d7c6f6a4e922841802343b5328828bd6186a22d1ff1ee94ef780f8705329c3e3c9a69a46279ed964d6cf0bbb9f4a48a90a4fbb9fa9f9786e7a
+  checksum: 10/f3b839c442645c97401e928cb6f4831ec507331df1527e39659593ee163366d9ebc916ce402d5056e0112af684cdbe7158525c784f3aa25c010d55546c5346a0
   languageName: node
   linkType: hard
 
-"@metamask/design-system-shared@npm:^0.4.0":
-  version: 0.4.0
-  resolution: "@metamask/design-system-shared@npm:0.4.0"
+"@metamask/design-system-shared@npm:^0.5.0":
+  version: 0.5.0
+  resolution: "@metamask/design-system-shared@npm:0.5.0"
   dependencies:
     "@metamask/utils": "npm:^11.10.0"
-  checksum: 10/e7799c011360295b6ae1cb458cd069e2df2ce27e836a6c604c3f2488ef7b76d00709afadc5c9462e47cb81a379751fd9da8684dcc704244e180870aa293cdd2b
+  checksum: 10/9b37df0e330429ecee6bc8fabe7aef0b9575383d5a86808b34ae76283c8938540a27c32f0cde9b72fdf076fbba1b926f00b58b8ec5699f3c87631b502972c870
   languageName: node
   linkType: hard
 
@@ -8394,10 +8394,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/tron-wallet-snap@npm:1.22.1":
-  version: 1.22.1
-  resolution: "@metamask/tron-wallet-snap@npm:1.22.1"
-  checksum: 10/035e044a023f887377da09e0431749aced5700903bb492191631f7f9f5b2ac1f81240885e795755dd48fb603ec6034063424ef734a8ebe4ded820b31049c4877
+"@metamask/tron-wallet-snap@npm:^1.25.0":
+  version: 1.25.0
+  resolution: "@metamask/tron-wallet-snap@npm:1.25.0"
+  checksum: 10/f87a48d2c21b9ea72dfba368ef2a66c73e692d7dfadde60e2606d7f631defcf9b6481c23e2ce17404028c58906c9245e8a60e22921155dd0f747d8330dd2c118
   languageName: node
   linkType: hard
 
@@ -16974,6 +16974,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/yazl@npm:^3.3.0":
+  version: 3.3.0
+  resolution: "@types/yazl@npm:3.3.0"
+  dependencies:
+    "@types/node": "npm:*"
+  checksum: 10/d7795b49d93d8ca42fbe073c19b6f6af130ee665975637974f5ee29cfc9ac493c52321d0aa142edc147d5cf5f2c115b17c7c63c3ee336a04e965859a9828147e
+  languageName: node
+  linkType: hard
+
 "@typescript-eslint/eslint-plugin@npm:^8.1.0":
   version: 8.55.0
   resolution: "@typescript-eslint/eslint-plugin@npm:8.55.0"
@@ -20788,6 +20797,13 @@ __metadata:
   version: 0.2.0
   resolution: "buffer-builder@npm:0.2.0"
   checksum: 10/16bd9eb8ac6630a05441bcb56522e956ae6a0724371ecc49b9a6bc10d35690489140df73573d0577e1e85c875737e560a4e2e67521fddd14714ddf4e0097d0ec
+  languageName: node
+  linkType: hard
+
+"buffer-crc32@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "buffer-crc32@npm:1.0.0"
+  checksum: 10/ef3b7c07622435085c04300c9a51e850ec34a27b2445f758eef69b859c7827848c2282f3840ca6c1eef3829145a1580ce540cab03ccf4433827a2b95d3b09ca7
   languageName: node
   linkType: hard
 
@@ -26623,13 +26639,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fflate@npm:^0.8.2":
-  version: 0.8.2
-  resolution: "fflate@npm:0.8.2"
-  checksum: 10/2bd26ba6d235d428de793c6a0cd1aaa96a06269ebd4e21b46c8fd1bd136abc631acf27e188d47c3936db090bf3e1ede11d15ce9eae9bffdc4bfe1b9dc66ca9cb
-  languageName: node
-  linkType: hard
-
 "file-entry-cache@npm:^5.0.1":
   version: 5.0.1
   resolution: "file-entry-cache@npm:5.0.1"
@@ -28183,6 +28192,15 @@ __metadata:
   bin:
     gonzales: bin/gonzales.js
   checksum: 10/d1676546bcaa4cb1c6c1fc5de5d62e85960665a13a4c489b02baeb58a10c53a249beef05ceaf21ea801813a559ff17d7b61158aa417211c135bcb8bdcb1701ca
+  languageName: node
+  linkType: hard
+
+"goober@npm:^2.1.16":
+  version: 2.1.18
+  resolution: "goober@npm:2.1.18"
+  peerDependencies:
+    csstype: ^3.0.10
+  checksum: 10/eca3db81a709a03f6ec9bb2624027e157c0b6fab6dccbe53b2ddd25a155a7e6e23a0b864574c33bdb0a05e0d0b865de8cc5151401e5a00d63f51be08fe7ccde6
   languageName: node
   linkType: hard
 
@@ -33219,10 +33237,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lodash-es@npm:4.17.23":
-  version: 4.17.23
-  resolution: "lodash-es@npm:4.17.23"
-  checksum: 10/1feae200df22eb0bd93ca86d485e77784b8a9fb1d13e91b66e9baa7a7e5e04be088c12a7e20c2250fc0bd3db1bc0ef0affc7d9e3810b6af2455a3c6bf6dde59e
+"lodash-es@npm:^4.18.1":
+  version: 4.18.1
+  resolution: "lodash-es@npm:4.18.1"
+  checksum: 10/8bfad225ef09ef42b04283cdaf7830efcc2ba29ae41b56501c74422155ee1ccaa1f0f6e8319def3451a1fe54dec501c8e4bee622bae2b2d98ac993731e0a5cce
   languageName: node
   linkType: hard
 
@@ -33345,17 +33363,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lodash@npm:4.17.23":
-  version: 4.17.23
-  resolution: "lodash@npm:4.17.23"
-  checksum: 10/82504c88250f58da7a5a4289f57a4f759c44946c005dd232821c7688b5fcfbf4a6268f6a6cdde4b792c91edd2f3b5398c1d2a0998274432cff76def48735e233
+"lodash@npm:4.18.1":
+  version: 4.18.1
+  resolution: "lodash@npm:4.18.1"
+  checksum: 10/306fea53dfd39dad1f03d45ba654a2405aebd35797b673077f401edb7df2543623dc44b9effbb98f69b32152295fff725a4cec99c684098947430600c6af0c3f
   languageName: node
   linkType: hard
 
-"lodash@patch:lodash@npm%3A4.17.23#~/.yarn/patches/lodash-npm-4.17.23-50bdb1c01a.patch":
-  version: 4.17.23
-  resolution: "lodash@patch:lodash@npm%3A4.17.23#~/.yarn/patches/lodash-npm-4.17.23-50bdb1c01a.patch::version=4.17.23&hash=a4d321"
-  checksum: 10/ad28307e4f9f861b41cf44698060db233716d62b046f15351e67a7650a0cdba997b79cbf63ebc1dc917c6b369dfae68208604cc70a2dc2318a0ac38a904b78af
+"lodash@patch:lodash@npm%3A4.18.1#~/.yarn/patches/lodash-npm-4.18.1-a64c3070ac.patch":
+  version: 4.18.1
+  resolution: "lodash@patch:lodash@npm%3A4.18.1#~/.yarn/patches/lodash-npm-4.18.1-a64c3070ac.patch::version=4.18.1&hash=fc7b0f"
+  checksum: 10/0df77010e2c22c1077cc632de9b09a4343b69e40a49765db0ee2d0847563372a4037c2f7aee2a129f8a69c74bf560c17c8000a66133ab34ea62b7b2285192aa5
   languageName: node
   linkType: hard
 
@@ -34056,7 +34074,7 @@ __metadata:
     "@metamask/delegation-controller": "npm:^2.0.2"
     "@metamask/delegation-core": "npm:^0.2.0-rc.1"
     "@metamask/delegation-deployments": "npm:^0.15.0"
-    "@metamask/design-system-react": "npm:^0.11.0"
+    "@metamask/design-system-react": "npm:^0.12.0"
     "@metamask/design-system-tailwind-preset": "npm:^0.6.1"
     "@metamask/design-tokens": "npm:^8.2.2"
     "@metamask/eip-5792-middleware": "npm:3.0.0"
@@ -34157,9 +34175,9 @@ __metadata:
     "@metamask/test-dapp-solana": "npm:^0.3.1"
     "@metamask/test-dapp-tron": "npm:^0.3.1"
     "@metamask/test-snaps": "npm:^3.4.1"
-    "@metamask/transaction-controller": "npm:^63.0.0"
+    "@metamask/transaction-controller": "npm:^63.3.1"
     "@metamask/transaction-pay-controller": "npm:^19.0.0"
-    "@metamask/tron-wallet-snap": "npm:1.22.1"
+    "@metamask/tron-wallet-snap": "npm:^1.25.0"
     "@metamask/user-operation-controller": "npm:^41.1.0"
     "@metamask/utils": "npm:^11.10.0"
     "@ngraveio/bc-ur": "npm:^1.1.13"
@@ -34255,6 +34273,7 @@ __metadata:
     "@types/xml2js": "npm:^0"
     "@types/yargs": "npm:^17.0.32"
     "@types/yargs-parser": "npm:^21.0.3"
+    "@types/yazl": "npm:^3.3.0"
     "@typescript-eslint/eslint-plugin": "npm:^8.1.0"
     "@typescript-eslint/parser": "npm:^8.1.0"
     "@viem/anvil": "npm:^0.0.10"
@@ -34330,7 +34349,6 @@ __metadata:
     fast-glob: "npm:^3.2.2"
     fast-json-patch: "npm:^3.1.1"
     fast-json-stable-stringify: "npm:^2.1.0"
-    fflate: "npm:^0.8.2"
     fs-extra: "npm:^8.1.0"
     fuse.js: "npm:^3.2.0"
     ganache: "patch:ganache@npm%3A7.9.2#~/.yarn/patches/ganache-npm-7.9.2-a70dc8da34.patch"
@@ -34375,7 +34393,7 @@ __metadata:
     lightweight-charts: "npm:^5.1.0"
     localforage: "npm:^1.9.0"
     lockfile-lint: "npm:^4.10.6"
-    lodash: "npm:^4.17.23"
+    lodash: "npm:^4.18.1"
     loglevel: "npm:^1.8.1"
     loose-envify: "npm:^1.4.0"
     lottie-web: "npm:^5.12.2"
@@ -34419,6 +34437,7 @@ __metadata:
     react-devtools-core: "npm:^6.1.5"
     react-dom: "npm:^17.0.2"
     react-focus-lock: "npm:^2.9.4"
+    react-hot-toast: "npm:^2.6.0"
     react-idle-timer: "npm:4.5.6"
     react-markdown: "npm:^6.0.3"
     react-popper: "npm:^2.2.3"
@@ -34489,6 +34508,7 @@ __metadata:
     yaml: "npm:^2.4.1"
     yargs: "npm:^17.7.2"
     yargs-parser: "npm:^21.1.1"
+    yazl: "npm:^3.3.1"
   languageName: unknown
   linkType: soft
 
@@ -38791,6 +38811,19 @@ __metadata:
   peerDependencies:
     react: ">=16.3.0"
   checksum: 10/eff25231384bb0a229870a0552839953a59af17f0ff5e8bca1b8c8fdf19a329e4c00c7fa2fcedc8be5d73f5c7bebb30cf9a32ea58efc7c8f726a10dba51f48a2
+  languageName: node
+  linkType: hard
+
+"react-hot-toast@npm:^2.6.0":
+  version: 2.6.0
+  resolution: "react-hot-toast@npm:2.6.0"
+  dependencies:
+    csstype: "npm:^3.1.3"
+    goober: "npm:^2.1.16"
+  peerDependencies:
+    react: ">=16"
+    react-dom: ">=16"
+  checksum: 10/825ebbaa03c63dc2f22795ac8d535b40f1066c3ace5b792d0de740070693f195b910c98f46a00f7f6195f804ecf41b03201f6ff6950a540098dd2b7a0069df5b
   languageName: node
   linkType: hard
 
@@ -46862,6 +46895,15 @@ __metadata:
   dependencies:
     buffer-crc32: "npm:~0.2.3"
   checksum: 10/498ea4c6bca26130608c44db166e2f63b3437b94b7ad020ca0c161268d29517e8517146e91e51b78da100ad62feadc1a1a85aaa94aab0b2dc29b355ec75bc8f0
+  languageName: node
+  linkType: hard
+
+"yazl@npm:^3.3.1":
+  version: 3.3.1
+  resolution: "yazl@npm:3.3.1"
+  dependencies:
+    buffer-crc32: "npm:^1.0.0"
+  checksum: 10/021e6c553ea826b90bd20a109ec293f2c2a02ac7c3c361f637e49c4c746b554a0c8e9380b984e12dfee66ca40894836dd8389bec83de2224eafa2eee8cf7be42
   languageName: node
   linkType: hard
 

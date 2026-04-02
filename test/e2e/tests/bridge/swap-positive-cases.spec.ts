@@ -13,7 +13,7 @@ describe('Swap tests', function (this: Suite) {
       {
         ...getBridgeFixtures(
           this.test?.fullTitle(),
-          BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
+          { ...BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED, refreshRate: 30000 },
           false,
           true,
         ),

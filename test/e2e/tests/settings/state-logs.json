@@ -364,6 +364,45 @@
           }
         ]
       },
+      "tron:728126428/slip44:195-ready-for-withdrawal": {
+        "name": "string",
+        "symbol": "string",
+        "fungible": "boolean",
+        "iconUrl": "string",
+        "units": [
+          {
+            "name": "string",
+            "symbol": "string",
+            "decimals": "number"
+          }
+        ]
+      },
+      "tron:728126428/slip44:195-in-lock-period": {
+        "name": "string",
+        "symbol": "string",
+        "fungible": "boolean",
+        "iconUrl": "string",
+        "units": [
+          {
+            "name": "string",
+            "symbol": "string",
+            "decimals": "number"
+          }
+        ]
+      },
+      "tron:728126428/slip44:195-staking-rewards": {
+        "name": "string",
+        "symbol": "string",
+        "fungible": "boolean",
+        "iconUrl": "string",
+        "units": [
+          {
+            "name": "string",
+            "symbol": "string",
+            "decimals": "number"
+          }
+        ]
+      },
       "tron:728126428/slip44:energy": {
         "name": "string",
         "symbol": "string",
@@ -471,6 +510,42 @@
           "amount": "string"
         },
         "tron:2494104990/slip44:195-staked-for-energy": {
+          "unit": "string",
+          "amount": "string"
+        },
+        "tron:728126428/slip44:195-ready-for-withdrawal": {
+          "unit": "string",
+          "amount": "string"
+        },
+        "tron:3448148188/slip44:195-ready-for-withdrawal": {
+          "unit": "string",
+          "amount": "string"
+        },
+        "tron:2494104990/slip44:195-ready-for-withdrawal": {
+          "unit": "string",
+          "amount": "string"
+        },
+        "tron:728126428/slip44:195-staking-rewards": {
+          "unit": "string",
+          "amount": "string"
+        },
+        "tron:3448148188/slip44:195-staking-rewards": {
+          "unit": "string",
+          "amount": "string"
+        },
+        "tron:2494104990/slip44:195-staking-rewards": {
+          "unit": "string",
+          "amount": "string"
+        },
+        "tron:728126428/slip44:195-in-lock-period": {
+          "unit": "string",
+          "amount": "string"
+        },
+        "tron:3448148188/slip44:195-in-lock-period": {
+          "unit": "string",
+          "amount": "string"
+        },
+        "tron:2494104990/slip44:195-in-lock-period": {
           "unit": "string",
           "amount": "string"
         },
