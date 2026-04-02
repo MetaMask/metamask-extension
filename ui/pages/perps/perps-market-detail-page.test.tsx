@@ -182,6 +182,10 @@ jest.mock('../../hooks/perps/usePerpsTransactionHistory', () => ({
   }),
 }));
 
+jest.mock('../../components/app/perps/perps-tutorial-modal', () => ({
+  PerpsTutorialModal: () => null,
+}));
+
 const mockUseParams = jest.fn().mockReturnValue({ symbol: 'ETH' });
 const mockUseNavigate = jest.fn();
 const mockNavigateComponent = jest.fn();
