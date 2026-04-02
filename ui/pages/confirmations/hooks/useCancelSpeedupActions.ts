@@ -20,10 +20,10 @@ export function useCancelSpeedupActions(onClose: () => void) {
   const clearError = useCallback(() => setError(null), []);
 
   const submitTransaction = useCallback(
-    async (action: () => Promise<unknown>, isCancel: boolean) => {
+    async (action: () => void, isCancel: boolean) => {
       onClose();
       try {
-        await action();
+        await Promise.resolve(action());
       } catch (err) {
         setError({ message: (err as Error).message, isCancel });
       }

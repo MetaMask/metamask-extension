@@ -254,12 +254,9 @@ type CancelSpeedupModalProps = {
   dataTestId?: string;
   effectiveTransaction: TransactionMeta;
   isInitialGasReady: boolean;
-  cancelTransaction: () => Promise<unknown>;
-  speedUpTransaction: () => Promise<unknown>;
-  submitTransaction: (
-    action: () => Promise<unknown>,
-    isCancel: boolean,
-  ) => Promise<void>;
+  cancelTransaction: () => void;
+  speedUpTransaction: () => void;
+  submitTransaction: (action: () => void, isCancel: boolean) => Promise<void>;
 };
 
 const GasFeesSectionSkeleton = () => (
@@ -323,10 +320,7 @@ type CancelSpeedupContentProps = {
   transaction: TransactionMeta;
   editGasMode: EditGasModes;
   onClose: () => void;
-  submitTransaction: (
-    action: () => Promise<unknown>,
-    isCancel: boolean,
-  ) => Promise<void>;
+  submitTransaction: (action: () => void, isCancel: boolean) => Promise<void>;
 };
 
 const CancelSpeedupContent = ({

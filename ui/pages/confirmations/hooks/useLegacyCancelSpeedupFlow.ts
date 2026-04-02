@@ -98,7 +98,7 @@ export function useLegacyCancelSpeedupFlow({
     );
     const gasLimit =
       transaction.txParams?.gas ?? transaction.txParams?.gasLimit;
-    dispatch(
+    return dispatch(
       createCancelTransaction(transaction.id, {
         gasPrice,
         gas: gasLimit as string,
@@ -114,7 +114,7 @@ export function useLegacyCancelSpeedupFlow({
     );
     const gasLimit =
       transaction.txParams?.gas ?? transaction.txParams?.gasLimit;
-    dispatch(
+    return dispatch(
       createSpeedUpTransaction(transaction.id, {
         gasPrice,
         gas: gasLimit as string,
