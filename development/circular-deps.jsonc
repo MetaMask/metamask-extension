@@ -8,6 +8,10 @@
 
 [
   [
+    "app/scripts/lib/transaction/tempo-tx-utils.ts",
+    "app/scripts/lib/transaction/util.ts"
+  ],
+  [
     "shared/lib/selectors/account.ts",
     "shared/lib/selectors/index.ts",
     "ui/ducks/metamask/metamask.js",
