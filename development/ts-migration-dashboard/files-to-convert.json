@@ -270,7 +270,6 @@
   "shared/lib/get-first-preferred-lang-code.js",
   "shared/lib/hexstring-utils.test.js",
   "shared/lib/mv3.utils.js",
-  "shared/lib/object.utils.js",
   "shared/lib/provider-injection.js",
   "shared/lib/sentry-release.js",
   "shared/lib/storage-helpers.js",

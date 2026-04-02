@@ -72,9 +72,9 @@ export const SettingsV2Root = ({ onBeforeNavigate }: SettingsV2RootProps) => {
             <Text
               variant={TextVariant.BodyMd}
               color={TextColor.TextAlternative}
-              className="px-4 pt-3 pb-2 capitalize"
+              className="px-4 pt-3 pb-2"
             >
-              {titleKeys.map((key) => t(key)).join(' & ')}
+              {titleKeys.map((key) => t(key))}
             </Text>
             <Box flexDirection={BoxFlexDirection.Column} className="w-full">
               {items.map((item) => (
