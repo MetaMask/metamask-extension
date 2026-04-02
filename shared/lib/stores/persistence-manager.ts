@@ -10,7 +10,7 @@ import {
   MetaMetricsEventName,
 } from '../../constants/metametrics';
 import { StorageWriteErrorType } from '../../constants/app-state';
-import { IndexedDBStore } from '../indexeddb-store';
+import { IndexedDBStore } from './indexeddb-store';
 import type {
   MetaMaskStateType,
   MetaMaskStorageStructure,

@@ -1,5 +1,5 @@
 import 'fake-indexeddb/auto';
-import { IndexedDBStore } from './indexeddb-store'; // Adjust the import path to your file
+import { IndexedDBStore } from './indexeddb-store';
 
 describe('IndexedDBStore', () => {
   const dbName = 'test-db';
