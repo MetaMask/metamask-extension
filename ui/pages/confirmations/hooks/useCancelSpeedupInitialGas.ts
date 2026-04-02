@@ -48,7 +48,7 @@ export function useCancelSpeedupInitialGas({
   updateTransactionToTenPercentIncreasedGasFee,
   appIsLoading,
   currentModal,
-}: UseCancelSpeedupInitialGasParams): void {
+}: UseCancelSpeedupInitialGasParams): { isInitialGasReady: boolean } {
   const appliedInitialGasForTransactionIdRef = useRef<string | null>(null);
   const storedPreviousGasForTransactionIdRef = useRef<string | null>(null);
   const dispatch = useDispatch();
@@ -128,4 +128,8 @@ export function useCancelSpeedupInitialGas({
     updateTransactionUsingEstimate,
     updateTransactionToTenPercentIncreasedGasFee,
   ]);
+
+  return {
+    isInitialGasReady: Boolean(effectiveTransaction.previousGas),
+  };
 }

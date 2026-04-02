@@ -2,6 +2,7 @@ import { version as VERSION } from '../../package.json';
 import { getArtifactLinks, buildArtifactsBody } from './artifacts';
 import { buildBundleSizeDiffSection } from './bundle-size';
 import { buildPerformanceBenchmarksSection } from './performance-benchmarks';
+import { buildTestPlanSection } from './test-plan';
 import { buildSectionWithFallback, postCommentWithMetamaskBot } from './utils';
 
 start().catch(console.error);
@@ -67,10 +68,10 @@ async function start(): Promise<void> {
 
   // Add AI-generated test plan section when a test plan was generated.
   if (TEST_PLAN_VERSION) {
-    const testPlanFileName = `test-plan-${TEST_PLAN_VERSION}.json`;
-    const testPlanUrl = `${HOST_URL}/build-test-plan/builds/${testPlanFileName}`;
-    const testPlanLink = `<a href="${testPlanUrl}">${testPlanFileName}</a>`;
-    commentBody += `AI generated test plan: ${testPlanLink}\n\n`;
+    commentBody += await buildSectionWithFallback(
+      () => buildTestPlanSection(HOST_URL, TEST_PLAN_VERSION),
+      'AI Test Plan',
+    );
   }
 
   await postCommentWithMetamaskBot({

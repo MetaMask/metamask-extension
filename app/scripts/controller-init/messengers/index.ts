@@ -6,7 +6,7 @@ import {
 import {
   getCronjobControllerMessenger,
   getExecutionServiceMessenger,
-  getMultichainRouterMessenger,
+  getMultichainRoutingServiceMessenger,
   getRateLimitControllerInitMessenger,
   getRateLimitControllerMessenger,
   getSnapControllerInitMessenger,
@@ -14,7 +14,7 @@ import {
   getSnapInsightsControllerMessenger,
   getSnapInterfaceControllerMessenger,
   getSnapsNameProviderMessenger,
-  getSnapsRegistryMessenger,
+  getSnapRegistryControllerMessenger,
   getWebSocketServiceMessenger,
 } from './snaps';
 import {
@@ -234,15 +234,11 @@ export type { AppStateControllerMessenger } from './app-state-controller-messeng
 export { getAppStateControllerMessenger } from './app-state-controller-messenger';
 export type { ApprovalControllerMessenger } from './approval-controller-messenger';
 export { getApprovalControllerMessenger } from './approval-controller-messenger';
-export type {
-  BridgeControllerMessenger,
-  BridgeControllerInitMessenger,
-} from './bridge-controller-messenger';
+export type { BridgeControllerInitMessenger } from './bridge-controller-messenger';
 export {
   getBridgeControllerMessenger,
   getBridgeControllerInitMessenger,
 } from './bridge-controller-messenger';
-export type { BridgeStatusControllerMessenger } from './bridge-status-controller-messenger';
 export { getBridgeStatusControllerMessenger } from './bridge-status-controller-messenger';
 export type {
   CurrencyRateControllerMessenger,
@@ -577,8 +573,8 @@ export const CONTROLLER_MESSENGERS = {
     getMessenger: getMultichainNetworkControllerMessenger,
     getInitMessenger: noop,
   },
-  MultichainRouter: {
-    getMessenger: getMultichainRouterMessenger,
+  MultichainRoutingService: {
+    getMessenger: getMultichainRoutingServiceMessenger,
     getInitMessenger: noop,
   },
   NameController: {
@@ -653,8 +649,8 @@ export const CONTROLLER_MESSENGERS = {
     getMessenger: getSnapsNameProviderMessenger,
     getInitMessenger: noop,
   },
-  SnapsRegistry: {
-    getMessenger: getSnapsRegistryMessenger,
+  SnapRegistryController: {
+    getMessenger: getSnapRegistryControllerMessenger,
     getInitMessenger: noop,
   },
   SnapController: {
