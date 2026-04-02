@@ -78,6 +78,7 @@ import * as metamaskControllerUtils from '../../shared/lib/metamask-controller-u
 import { ReferralStatus } from './controllers/preferences-controller';
 import { METAMASK_COOKIE_HANDLER } from './constants/stream';
 import {
+  getAuthorizedScopesByOrigin,
   getOriginsWithSessionProperty,
   getPermittedAccountsForScopesByOrigin,
 } from './controllers/permissions';
@@ -308,6 +309,7 @@ jest.mock('../../shared/lib/mv3.utils', () => ({
 
 jest.mock('./controllers/permissions', () => ({
   ...jest.requireActual('./controllers/permissions'),
+  getAuthorizedScopesByOrigin: jest.fn(() => new Map()),
   getOriginsWithSessionProperty: jest.fn(),
   getPermittedAccountsForScopesByOrigin: jest.fn(() => new Map()),
 }));
@@ -2177,6 +2179,109 @@ describe('MetaMaskController', () => {
             'addr2',
           ]),
         ).toStrictEqual(['addr1', 'addr2']);
+      });
+    });
+
+    describe('#sortAccountIdsByLastSelected', () => {
+      const setupParseMock = (mapping) => {
+        jest.mocked(parseCaipAccountId).mockImplementation((id) => mapping[id]);
+      };
+
+      it('returns the input as-is when there is one account or less', () => {
+        expect(
+          metamaskController.sortAccountIdsByLastSelected(['eip155:1:0xaaa']),
+        ).toStrictEqual(['eip155:1:0xaaa']);
+
+        expect(
+          metamaskController.sortAccountIdsByLastSelected([]),
+        ).toStrictEqual([]);
+      });
+
+      it('sorts CAIP account IDs by their address lastSelected value', () => {
+        setupParseMock({
+          'eip155:1:0xaaa': { address: '0xaaa' },
+          'eip155:1:0xccc': { address: '0xccc' },
+          'eip155:1:0xbbb': { address: '0xbbb' },
+        });
+        jest
+          .spyOn(metamaskController, 'sortMultichainAccountsByLastSelected')
+          .mockReturnValue(['0xccc', '0xbbb', '0xaaa']);
+
+        const result = metamaskController.sortAccountIdsByLastSelected([
+          'eip155:1:0xaaa',
+          'eip155:1:0xccc',
+          'eip155:1:0xbbb',
+        ]);
+
+        expect(
+          metamaskController.sortMultichainAccountsByLastSelected,
+        ).toHaveBeenCalledWith(['0xaaa', '0xccc', '0xbbb']);
+
+        expect(result).toStrictEqual([
+          'eip155:1:0xccc',
+          'eip155:1:0xbbb',
+          'eip155:1:0xaaa',
+        ]);
+      });
+
+      it('deduplicates addresses across different chains before sorting', () => {
+        setupParseMock({
+          'eip155:1:0xaaa': { address: '0xaaa' },
+          'eip155:137:0xaaa': { address: '0xaaa' },
+          'eip155:1:0xbbb': { address: '0xbbb' },
+        });
+        const sortSpy = jest
+          .spyOn(metamaskController, 'sortMultichainAccountsByLastSelected')
+          .mockImplementation((addresses) => addresses);
+
+        metamaskController.sortAccountIdsByLastSelected([
+          'eip155:1:0xaaa',
+          'eip155:137:0xaaa',
+          'eip155:1:0xbbb',
+        ]);
+
+        expect(sortSpy).toHaveBeenCalledWith(['0xaaa', '0xbbb']);
+      });
+
+      it('preserves relative order of account IDs sharing the same address', () => {
+        setupParseMock({
+          'eip155:1:0xaaa': { address: '0xaaa' },
+          'eip155:137:0xaaa': { address: '0xaaa' },
+          'eip155:1:0xbbb': { address: '0xbbb' },
+          'eip155:137:0xbbb': { address: '0xbbb' },
+        });
+        jest
+          .spyOn(metamaskController, 'sortMultichainAccountsByLastSelected')
+          .mockReturnValue(['0xbbb', '0xaaa']);
+
+        const result = metamaskController.sortAccountIdsByLastSelected([
+          'eip155:1:0xaaa',
+          'eip155:137:0xaaa',
+          'eip155:1:0xbbb',
+          'eip155:137:0xbbb',
+        ]);
+
+        expect(result).toStrictEqual([
+          'eip155:1:0xbbb',
+          'eip155:137:0xbbb',
+          'eip155:1:0xaaa',
+          'eip155:137:0xaaa',
+        ]);
+      });
+
+      it('does not mutate the original array', () => {
+        setupParseMock({
+          'eip155:1:0xaaa': { address: '0xaaa' },
+          'eip155:1:0xbbb': { address: '0xbbb' },
+        });
+        jest
+          .spyOn(metamaskController, 'sortMultichainAccountsByLastSelected')
+          .mockReturnValue(['0xbbb', '0xaaa']);
+
+        const original = ['eip155:1:0xaaa', 'eip155:1:0xbbb'];
+        metamaskController.sortAccountIdsByLastSelected(original);
+
+        expect(original).toStrictEqual(['eip155:1:0xaaa', 'eip155:1:0xbbb']);
       });
     });
 
@@ -5688,6 +5793,76 @@ describe('MetaMaskController', () => {
           metamaskController.discoverAndCreateAccounts,
         ).toHaveBeenCalledWith(id);
       });
+    });
+  });
+
+  describe('selectedAccountGroupChange subscription for wallet_sessionChanged', () => {
+    let metamaskController;
+
+    beforeEach(() => {
+      metamaskController = new MetaMaskController({
+        showUserConfirmation: noop,
+        encryptor: mockEncryptor,
+        initState: cloneDeep(firstTimeState),
+        initLangCode: 'en_US',
+        platform: {
+          showTransactionNotification: () => undefined,
+          getVersion: () => 'foo',
+          switchToAnotherURL: jest.fn(),
+        },
+        browser: browserPolyfillMock,
+        infuraProjectId: 'foo',
+        isFirstMetaMaskControllerSetup: true,
+        cronjobControllerStorageManager:
+          createMockCronjobControllerStorageManager(),
+        controllerMessenger: new Messenger({
+          namespace: MOCK_ANY_NAMESPACE,
+        }),
+      });
+    });
+
+    it('notifies wallet_sessionChanged for each authorized origin', () => {
+      jest.useFakeTimers();
+
+      const authA = {
+        requiredScopes: {},
+        optionalScopes: {},
+        sessionProperties: {},
+      };
+      const authB = {
+        requiredScopes: {},
+        optionalScopes: {},
+        sessionProperties: {},
+      };
+
+      jest.mocked(getAuthorizedScopesByOrigin).mockReturnValue(
+        new Map([
+          ['https://a.example', authA],
+          ['https://b.example', authB],
+        ]),
+      );
+      jest
+        .spyOn(metamaskController, '_notifyAuthorizationChange')
+        .mockImplementation(() => undefined);
+
+      metamaskController.controllerMessenger.publish(
+        'AccountTreeController:selectedAccountGroupChange',
+        'group-1',
+      );
+      // TODO: Remove this setTimeout once https://github.com/MetaMask/core/pull/8261 is released
+      jest.advanceTimersByTime(1000);
+
+      expect(
+        metamaskController._notifyAuthorizationChange,
+      ).toHaveBeenCalledWith('https://a.example', authA);
+      expect(
+        metamaskController._notifyAuthorizationChange,
+      ).toHaveBeenCalledWith('https://b.example', authB);
+      expect(
+        metamaskController._notifyAuthorizationChange,
+      ).toHaveBeenCalledTimes(2);
+
+      jest.useRealTimers();
     });
   });
 
