@@ -21,7 +21,7 @@ export const DownloadStateLogsItem = () => {
       <Button
         data-testid="advanced-setting-state-logs-button"
         onClick={() => setShowModal(true)}
-        className="text-text-default !bg-transparent p-0 text-left"
+        className="text-text-default !bg-transparent p-0 text-left mx-4"
       >
         {t(PRIVACY_ITEMS['download-state-logs'])}
       </Button>
