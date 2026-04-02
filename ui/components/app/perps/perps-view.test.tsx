@@ -55,6 +55,10 @@ jest.mock('../../../hooks/perps/stream', () => ({
   }),
 }));
 
+jest.mock('./perps-tutorial-modal', () => ({
+  PerpsTutorialModal: () => null,
+}));
+
 const mockStore = configureStore({
   metamask: {
     ...mockState.metamask,

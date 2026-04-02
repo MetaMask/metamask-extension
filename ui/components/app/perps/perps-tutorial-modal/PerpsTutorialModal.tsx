@@ -77,6 +77,7 @@ const PerpsTutorialModal: React.FC<PerpsTutorialModalProps> = ({ onClose }) => {
   }, [dispatch, isLastStep, currentStepIndex]);
 
   const handleSkip = useCallback(() => {
+    dispatch(markTutorialCompleted());
     dispatch(setTutorialModalOpen(false));
     submitRequestToBackground('perpsMarkTutorialCompleted', []);
   }, [dispatch]);

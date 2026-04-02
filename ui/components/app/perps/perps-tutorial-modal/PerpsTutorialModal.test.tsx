@@ -219,6 +219,9 @@ describe('PerpsTutorialModal', () => {
       fireEvent.click(screen.getByTestId('perps-tutorial-skip-button'));
 
       expect(mockDispatch).toHaveBeenCalledWith({
+        type: 'perpsTutorial/markTutorialCompleted',
+      });
+      expect(mockDispatch).toHaveBeenCalledWith({
         type: 'perpsTutorial/setTutorialModalOpen',
         payload: false,
       });
