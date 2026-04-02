@@ -1,7 +1,10 @@
 import React from 'react';
 import type { Provider } from '@metamask/network-controller';
 import { act, render } from '@testing-library/react';
-import { formatChainIdToCaip } from '@metamask/bridge-controller';
+import {
+  formatChainIdToCaip,
+  QuoteStreamCompleteReason,
+} from '@metamask/bridge-controller';
 import * as reactRouterUtils from 'react-router-dom';
 import { userEvent } from '@testing-library/user-event';
 import { Provider as ReduxProvider } from 'react-redux';
@@ -17,7 +20,6 @@ import {
   HardwareConnectionPermissionState,
   HardwareWalletProvider,
 } from '../../../contexts/hardware-wallets';
-import { useBridgeUnavailableQuotesReason } from '../hooks/useBridgeUnavailableQuotesReason';
 import PrepareBridgePage from './prepare-bridge-page';
 
 // Mock the bridge hooks
@@ -27,12 +29,6 @@ jest.mock('../hooks/useGasIncluded7702', () => ({
 
 jest.mock('../hooks/useIsSendBundleSupported', () => ({
   useIsSendBundleSupported: jest.fn().mockReturnValue(false),
-}));
-
-jest.mock('../hooks/useBridgeUnavailableQuotesReason', () => ({
-  useBridgeUnavailableQuotesReason: jest
-    .fn()
-    .mockReturnValue('noOptionsAvailableMessage'),
 }));
 
 const mockUseHardwareWalletConfig = jest.fn();
@@ -62,15 +58,8 @@ describe('PrepareBridgePage', () => {
     global.ethereumProvider = provider as unknown as Provider;
   });
 
-  const mockUseBridgeUnavailableQuotesReason = jest.mocked(
-    useBridgeUnavailableQuotesReason,
-  );
-
   beforeEach(() => {
     jest.clearAllMocks();
-    mockUseBridgeUnavailableQuotesReason.mockReturnValue(
-      'noOptionsAvailableMessage',
-    );
     mockUseHardwareWalletConfig.mockReturnValue({
       isHardwareWalletAccount: false,
       walletType: null,
@@ -369,13 +358,10 @@ describe('PrepareBridgePage', () => {
     expect(input).toHaveDisplayValue('2.131');
   });
 
-  it('should render error banner with reason from useBridgeUnavailableQuotesReason when no quotes are available', async () => {
+  it('should render error banner with reason from getBridgeUnavailableQuoteReason when no quotes are available', async () => {
     jest
       .spyOn(reactRouterUtils, 'useSearchParams')
       .mockReturnValue([{ get: () => '0x3103910' }, jest.fn()] as never);
-
-    const unavailableReason = 'No quotes available. Try a smaller amount.';
-    mockUseBridgeUnavailableQuotesReason.mockReturnValue(unavailableReason);
 
     const mockStore = createBridgeMockStore({
       featureFlagOverrides: {
@@ -433,6 +419,7 @@ describe('PrepareBridgePage', () => {
         quoteStreamComplete: {
           hasQuotes: false,
           quoteCount: 0,
+          reason: QuoteStreamCompleteReason.AMOUNT_TOO_HIGH,
         },
       },
     });
@@ -450,7 +437,7 @@ describe('PrepareBridgePage', () => {
 
     expect(getByTestId('bridge-no-options-available')).toBeInTheDocument();
     expect(getByTestId('bridge-no-options-available')).toHaveTextContent(
-      unavailableReason,
+      'No quotes available. Try a smaller amount.',
     );
   });
 });

@@ -48,6 +48,7 @@ import {
   getValidatedFromValue,
   getIsSrcAssetPickerOpen,
   getIsDestAssetPickerOpen,
+  getBridgeUnavailableQuoteReason,
 } from '../../../ducks/bridge/selectors';
 import {
   AvatarFavicon,
@@ -98,7 +99,6 @@ import type { BridgeToken } from '../../../ducks/bridge/types';
 import { useLatestBalance } from '../../../hooks/bridge/useLatestBalance';
 import { useGasIncluded7702 } from '../hooks/useGasIncluded7702';
 import { useIsSendBundleSupported } from '../hooks/useIsSendBundleSupported';
-import { useBridgeUnavailableQuotesReason } from '../hooks/useBridgeUnavailableQuotesReason';
 import { BridgeInputGroup } from './bridge-input-group';
 import { PrepareBridgePageFooter } from './prepare-bridge-page-footer';
 import { DestinationAccountPickerModal } from './components/destination-account-picker-modal';
@@ -152,7 +152,7 @@ const PrepareBridgePage = ({
   const wasTxDeclined = useSelector(getWasTxDeclined);
   const isSrcAssetPickerOpen = useSelector(getIsSrcAssetPickerOpen);
   const isDestAssetPickerOpen = useSelector(getIsDestAssetPickerOpen);
-  const bridgeUnavailableQuotesReason = useBridgeUnavailableQuotesReason();
+  const bridgeUnavailableQuotesReason = useSelector(getBridgeUnavailableQuoteReason);
 
   // Determine if the current quote is expired or does not match the currently
   // selected destination asset/chain.
@@ -652,7 +652,7 @@ const PrepareBridgePage = ({
             <Column paddingInline={4}>
               <BannerAlert
                 severity={BannerAlertSeverity.Danger}
-                description={bridgeUnavailableQuotesReason}
+                description={t(bridgeUnavailableQuotesReason)}
                 data-testid="bridge-error-banner"
                 descriptionProps={{
                   'data-testid': 'bridge-no-options-available',

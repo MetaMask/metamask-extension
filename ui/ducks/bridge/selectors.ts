@@ -104,6 +104,7 @@ import {
   getMaybeHexChainId,
 } from './utils';
 import type { BridgeNetwork, BridgeState } from './types';
+import { getQuoteStreamReasonString } from '../../pages/bridge/utils/getQuoteStreamReasonString';
 
 const FALLBACK_CHAIN_ID = CHAIN_IDS.MAINNET;
 
@@ -1012,3 +1013,11 @@ export const getIsDestAssetPickerOpen = (state: BridgeAppState) =>
   state.bridge.isDestAssetPickerOpen;
 
 export const getBridgeState = (state: BridgeAppState) => state.bridge;
+
+export const getBridgeUnavailableQuoteReason = createSelector(
+  [getQuoteStreamComplete],
+  (quoteStreamComplete) =>
+    quoteStreamComplete?.reason
+      ? getQuoteStreamReasonString(quoteStreamComplete.reason)
+      : 'noOptionsAvailableMessage'
+);

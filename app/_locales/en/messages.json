@@ -1302,31 +1302,31 @@
   "bridgeValidationInsufficientGasTitle": {
     "message": "More $1 needed for gas"
   },
-  "bridge_quote_stream_complete_amount_too_high": {
+  "bridgeQuoteStreamCompleteAmountTooHigh": {
     "message": "No quotes available. Try a smaller amount."
   },
-  "bridge_quote_stream_complete_amount_too_low": {
+  "bridgeQuoteStreamCompleteAmountTooLow": {
     "message": "No quotes available. Try a larger amount."
   },
-  "bridge_quote_stream_complete_retry": {
+  "bridgeQuoteStreamCompleteRetry": {
     "message": "Unable to get a quote right now. Try again."
   },
-  "bridge_quote_stream_complete_rwa_geo_restricted": {
+  "bridgeQuoteStreamCompleteRwaGeoRestricted": {
     "message": "This swap isn't available in your region."
   },
-  "bridge_quote_stream_complete_rwa_market_unavailable": {
+  "bridgeQuoteStreamCompleteRwaMarketUnavailable": {
     "message": "The market for this asset is currently unavailable. Try again later."
   },
-  "bridge_quote_stream_complete_rwa_native_token_unsupported": {
+  "bridgeQuoteStreamCompleteRwaNativeTokenUnsupported": {
     "message": "Swaps between this token and real-world assets aren't supported yet. Try using a different token."
   },
-  "bridge_quote_stream_complete_slippage_too_high": {
+  "bridgeQuoteStreamCompleteSlippageTooHigh": {
     "message": "Slippage is too high. Try lowering your slippage setting."
   },
-  "bridge_quote_stream_complete_slippage_too_low": {
+  "bridgeQuoteStreamCompleteSlippageTooLow": {
     "message": "Slippage is too low. Try increasing your slippage setting."
   },
-  "bridge_quote_stream_complete_token_not_supported": {
+  "bridgeQuoteStreamCompleteTokenNotSupported": {
     "message": "This token isn't supported. Try using a different token."
   },
   "bridged": {
