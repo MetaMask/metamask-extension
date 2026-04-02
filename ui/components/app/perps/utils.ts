@@ -193,7 +193,7 @@ type TpslPriceOutput = {
 };
 
 const normalizePriceInput = (value?: string | null): string | undefined => {
-  const cleanedValue = value?.replace(/,/gu, '').trim() ?? '';
+  const cleanedValue = value?.replaceAll(',', '').trim() ?? '';
   return cleanedValue === '' ? undefined : cleanedValue;
 };
 

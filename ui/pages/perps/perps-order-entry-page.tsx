@@ -141,14 +141,14 @@ function formStateToOrderParams(
   existingPositionSize?: string,
 ): OrderParams {
   const isBuy = formState.direction === 'long';
-  const marginAmount = parseFloat(formState.amount) || 0;
+  const marginAmount = Number.parseFloat(formState.amount) || 0;
   const positionSize =
     currentPrice > 0 ? (marginAmount * formState.leverage) / currentPrice : 0;
   const size =
     mode === 'close' && existingPositionSize
-      ? Math.abs(parseFloat(existingPositionSize)).toString()
+      ? Math.abs(Number.parseFloat(existingPositionSize)).toString()
       : positionSize.toString();
-  const cleanAmount = formState.amount.replace(/,/gu, '');
+  const cleanAmount = formState.amount.replaceAll(',', '');
 
   const params: OrderParams = {
     symbol: formState.asset,
@@ -161,13 +161,13 @@ function formStateToOrderParams(
   };
 
   if (formState.type === 'limit' && formState.limitPrice) {
-    params.price = formState.limitPrice.replace(/,/gu, '');
+    params.price = formState.limitPrice.replaceAll(',', '');
   }
   if (formState.autoCloseEnabled && formState.takeProfitPrice) {
-    params.takeProfitPrice = formState.takeProfitPrice.replace(/,/gu, '');
+    params.takeProfitPrice = formState.takeProfitPrice.replaceAll(',', '');
   }
   if (formState.autoCloseEnabled && formState.stopLossPrice) {
-    params.stopLossPrice = formState.stopLossPrice.replace(/,/gu, '');
+    params.stopLossPrice = formState.stopLossPrice.replaceAll(',', '');
   }
   if (mode === 'close') {
     params.reduceOnly = true;
@@ -250,9 +250,9 @@ const PerpsOrderEntryPage: React.FC = () => {
     if (orderType !== 'limit' || !orderFormState) {
       return false;
     }
-    const cleaned = orderFormState.limitPrice?.replace(/,/gu, '') ?? '';
-    const parsed = parseFloat(cleaned);
-    return !cleaned || isNaN(parsed) || parsed <= 0;
+    const cleaned = orderFormState.limitPrice?.replaceAll(',', '') ?? '';
+    const parsed = Number.parseFloat(cleaned);
+    return !cleaned || Number.isNaN(parsed) || parsed <= 0;
   }, [orderType, orderFormState]);
 
   const market = useMemo(() => {
@@ -368,12 +368,12 @@ const PerpsOrderEntryPage: React.FC = () => {
       return 0;
     }
     const lastCandle = candleData.candles.at(-1);
-    return lastCandle?.close ? parseFloat(lastCandle.close) : 0;
+    return lastCandle?.close ? Number.parseFloat(lastCandle.close) : 0;
   }, [candleData]);
 
   const currentPrice = chartCurrentPrice > 0 ? chartCurrentPrice : marketPrice;
 
-  const availableBalance = account ? parseFloat(account.availableBalance) : 0;
+  const availableBalance = account ? Number.parseFloat(account.availableBalance) : 0;
 
   const isLimitPriceUnfavorable = useMemo(() => {
     if (orderType !== 'limit' || !orderFormState) {
@@ -487,7 +487,7 @@ const PerpsOrderEntryPage: React.FC = () => {
 
     const directionLabel = (() => {
       if (orderMode === 'close' && position?.size) {
-        return parseFloat(position.size) >= 0
+        return Number.parseFloat(position.size) >= 0
           ? t('perpsLong')
           : t('perpsShort');
       }
@@ -518,7 +518,7 @@ const PerpsOrderEntryPage: React.FC = () => {
       return undefined;
     }
 
-    const absoluteSize = Math.abs(parseFloat(position.size));
+    const absoluteSize = Math.abs(Number.parseFloat(position.size));
     if (Number.isNaN(absoluteSize)) {
       return undefined;
     }
@@ -537,8 +537,8 @@ const PerpsOrderEntryPage: React.FC = () => {
       return undefined;
     }
 
-    const unrealizedPnl = parseFloat(position.unrealizedPnl);
-    const marginUsed = parseFloat(position.marginUsed);
+    const unrealizedPnl = Number.parseFloat(position.unrealizedPnl);
+    const marginUsed = Number.parseFloat(position.marginUsed);
     let pnlRatio: number | undefined;
 
     if (
@@ -632,7 +632,7 @@ const PerpsOrderEntryPage: React.FC = () => {
 
       if (orderMode === 'modify' && position) {
         const marginAmount =
-          parseFloat(orderFormState.amount.replace(/,/gu, '')) || 0;
+          Number.parseFloat(orderFormState.amount.replaceAll(',', '')) || 0;
 
         if (marginAmount > 0) {
           // Add to position: place order with additional size + TP/SL

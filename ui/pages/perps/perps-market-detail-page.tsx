@@ -1000,7 +1000,7 @@ const PerpsMarketDetailPage: React.FC = () => {
                   >
                     {/* Controller/mobile ROE is percent (e.g. 15.79), formatter expects ratio. */}
                     {formatPercentWithMinThreshold(
-                      parseFloat(position.returnOnEquity) / 100,
+                      Number.parseFloat(position.returnOnEquity) / 100,
                     )}
                   </Text>
                 </Box>

@@ -11,7 +11,6 @@ import { Box } from '@metamask/design-system-react';
 import { Toast } from '../../../multichain/toast';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
-  PERPS_TOAST_KEYS,
   type PerpsToastKey,
   type PerpsToastVariant,
 } from './perps-toast.constants';
@@ -22,7 +21,7 @@ import {
   type PerpsToastPresentation,
 } from './perps-toast.presentation';
 
-export { PERPS_TOAST_KEYS };
+export { PERPS_TOAST_KEYS } from './perps-toast.constants';
 export type { PerpsToastKey, PerpsToastVariant };
 
 export type PerpsToastRouteState = {
