@@ -22,11 +22,10 @@ const { fromIniFile } = require('./config');
 module.exports = createManifestTasks;
 
 async function loadManifestFlags() {
-  const iniResult = await fromIniFile(
+  const { definitions } = await fromIniFile(
     path.resolve(__dirname, '..', '..', '.metamaskrc'),
   );
-  const manifestOverridesPath =
-    iniResult?.definitions?.get('MANIFEST_OVERRIDES');
+  const manifestOverridesPath = definitions.get('MANIFEST_OVERRIDES');
   // default to undefined so that the manifest plugin can check if it was set
   let manifestFlags;
   if (manifestOverridesPath) {
