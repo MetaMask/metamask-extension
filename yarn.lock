@@ -6161,11 +6161,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/design-system-react@npm:^0.11.0":
-  version: 0.11.0
-  resolution: "@metamask/design-system-react@npm:0.11.0"
+"@metamask/design-system-react@npm:^0.12.0":
+  version: 0.12.0
+  resolution: "@metamask/design-system-react@npm:0.12.0"
   dependencies:
-    "@metamask/design-system-shared": "npm:^0.4.0"
+    "@metamask/design-system-shared": "npm:^0.5.0"
     "@metamask/jazzicon": "npm:^2.0.0"
     "@radix-ui/react-slot": "npm:^1.1.0"
     blo: "npm:^2.0.0"
@@ -6176,16 +6176,16 @@ __metadata:
     "@metamask/utils": ^11.10.0
     react: ^17.0.0 || ^18.0.0
     react-dom: ^17.0.0 || ^18.0.0
-  checksum: 10/f73cc6d61d3997d7c6f6a4e922841802343b5328828bd6186a22d1ff1ee94ef780f8705329c3e3c9a69a46279ed964d6cf0bbb9f4a48a90a4fbb9fa9f9786e7a
+  checksum: 10/f3b839c442645c97401e928cb6f4831ec507331df1527e39659593ee163366d9ebc916ce402d5056e0112af684cdbe7158525c784f3aa25c010d55546c5346a0
   languageName: node
   linkType: hard
 
-"@metamask/design-system-shared@npm:^0.4.0":
-  version: 0.4.0
-  resolution: "@metamask/design-system-shared@npm:0.4.0"
+"@metamask/design-system-shared@npm:^0.5.0":
+  version: 0.5.0
+  resolution: "@metamask/design-system-shared@npm:0.5.0"
   dependencies:
     "@metamask/utils": "npm:^11.10.0"
-  checksum: 10/e7799c011360295b6ae1cb458cd069e2df2ce27e836a6c604c3f2488ef7b76d00709afadc5c9462e47cb81a379751fd9da8684dcc704244e180870aa293cdd2b
+  checksum: 10/9b37df0e330429ecee6bc8fabe7aef0b9575383d5a86808b34ae76283c8938540a27c32f0cde9b72fdf076fbba1b926f00b58b8ec5699f3c87631b502972c870
   languageName: node
   linkType: hard
 
@@ -33237,10 +33237,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lodash-es@npm:4.17.23":
-  version: 4.17.23
-  resolution: "lodash-es@npm:4.17.23"
-  checksum: 10/1feae200df22eb0bd93ca86d485e77784b8a9fb1d13e91b66e9baa7a7e5e04be088c12a7e20c2250fc0bd3db1bc0ef0affc7d9e3810b6af2455a3c6bf6dde59e
+"lodash-es@npm:^4.18.1":
+  version: 4.18.1
+  resolution: "lodash-es@npm:4.18.1"
+  checksum: 10/8bfad225ef09ef42b04283cdaf7830efcc2ba29ae41b56501c74422155ee1ccaa1f0f6e8319def3451a1fe54dec501c8e4bee622bae2b2d98ac993731e0a5cce
   languageName: node
   linkType: hard
 
@@ -33363,17 +33363,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lodash@npm:4.17.23":
-  version: 4.17.23
-  resolution: "lodash@npm:4.17.23"
-  checksum: 10/82504c88250f58da7a5a4289f57a4f759c44946c005dd232821c7688b5fcfbf4a6268f6a6cdde4b792c91edd2f3b5398c1d2a0998274432cff76def48735e233
+"lodash@npm:4.18.1":
+  version: 4.18.1
+  resolution: "lodash@npm:4.18.1"
+  checksum: 10/306fea53dfd39dad1f03d45ba654a2405aebd35797b673077f401edb7df2543623dc44b9effbb98f69b32152295fff725a4cec99c684098947430600c6af0c3f
   languageName: node
   linkType: hard
 
-"lodash@patch:lodash@npm%3A4.17.23#~/.yarn/patches/lodash-npm-4.17.23-50bdb1c01a.patch":
-  version: 4.17.23
-  resolution: "lodash@patch:lodash@npm%3A4.17.23#~/.yarn/patches/lodash-npm-4.17.23-50bdb1c01a.patch::version=4.17.23&hash=a4d321"
-  checksum: 10/ad28307e4f9f861b41cf44698060db233716d62b046f15351e67a7650a0cdba997b79cbf63ebc1dc917c6b369dfae68208604cc70a2dc2318a0ac38a904b78af
+"lodash@patch:lodash@npm%3A4.18.1#~/.yarn/patches/lodash-npm-4.18.1-a64c3070ac.patch":
+  version: 4.18.1
+  resolution: "lodash@patch:lodash@npm%3A4.18.1#~/.yarn/patches/lodash-npm-4.18.1-a64c3070ac.patch::version=4.18.1&hash=fc7b0f"
+  checksum: 10/0df77010e2c22c1077cc632de9b09a4343b69e40a49765db0ee2d0847563372a4037c2f7aee2a129f8a69c74bf560c17c8000a66133ab34ea62b7b2285192aa5
   languageName: node
   linkType: hard
 
@@ -34074,7 +34074,7 @@ __metadata:
     "@metamask/delegation-controller": "npm:^2.0.2"
     "@metamask/delegation-core": "npm:^0.2.0-rc.1"
     "@metamask/delegation-deployments": "npm:^0.15.0"
-    "@metamask/design-system-react": "npm:^0.11.0"
+    "@metamask/design-system-react": "npm:^0.12.0"
     "@metamask/design-system-tailwind-preset": "npm:^0.6.1"
     "@metamask/design-tokens": "npm:^8.2.2"
     "@metamask/eip-5792-middleware": "npm:3.0.0"
@@ -34393,7 +34393,7 @@ __metadata:
     lightweight-charts: "npm:^5.1.0"
     localforage: "npm:^1.9.0"
     lockfile-lint: "npm:^4.10.6"
-    lodash: "npm:^4.17.23"
+    lodash: "npm:^4.18.1"
     loglevel: "npm:^1.8.1"
     loose-envify: "npm:^1.4.0"
     lottie-web: "npm:^5.12.2"
