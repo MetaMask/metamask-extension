@@ -48,12 +48,12 @@ The **`pageLoadBenchmark`** preset measures Core Web Vitals against the test dap
 - **Implementation:** `test/e2e/benchmarks/flows/dapp-page-load/` — Playwright spec, `PageLoadBenchmark` runner, stats aggregation, and unit tests. The Playwright **`benchmark`** project sets `testDir` to this folder (`playwright.config.ts`). `run-benchmark.ts` points at `dapp-page-load-benchmark.spec.ts`.
 - **CI:** **Chrome + Browserify only** (job id `benchmarks-page-load`, check name **`chrome-browserify-pageLoadBenchmark`**, same `browser-buildType-preset` style as other `run-benchmarks` matrix rows). Results merge into the same performance benchmark artifacts / `performance_data.json` as Selenium presets. Output artifact: `benchmark-chrome-browserify-pageLoadBenchmark.json`.
 
-| File | Role |
-| ---- | ---- |
-| `dapp-page-load-benchmark.ts` | `PageLoadBenchmark` — browser, extension, dapp server, sampling |
-| `dapp-page-load-stats.ts` | Aggregate samples → `TimerStatistics` / `BenchmarkResults` JSON |
-| `dapp-page-load-stats.test.ts` | Unit tests for aggregation |
-| `dapp-page-load-benchmark.spec.ts` | Playwright test entry |
+| File                               | Role                                                            |
+| ---------------------------------- | --------------------------------------------------------------- |
+| `dapp-page-load-benchmark.ts`      | `PageLoadBenchmark` — browser, extension, dapp server, sampling |
+| `dapp-page-load-stats.ts`          | Aggregate samples → `TimerStatistics` / `BenchmarkResults` JSON |
+| `dapp-page-load-stats.test.ts`     | Unit tests for aggregation                                      |
+| `dapp-page-load-benchmark.spec.ts` | Playwright test entry                                           |
 
 **Metrics:** page load time, DOM content loaded, first paint, first contentful paint, largest contentful paint.
 
@@ -89,12 +89,12 @@ The **`pageLoadBenchmark`** preset measures Core Web Vitals against the test dap
 
 Each benchmark belongs to a category and has a `BENCHMARK_TYPE`:
 
-| Category           | Directory       | BENCHMARK_TYPE   | Description                                               |
-| ------------------ | --------------- | ---------------- | --------------------------------------------------------- |
-| **Startup**        | `startup/`      | `BENCHMARK`      | Extension cold-start and initialization times             |
-| **Interaction**    | `interaction/`  | `USER_ACTION`    | Single discrete user interaction timings                  |
-| **User Journey**   | `user-journey/` | `PERFORMANCE`    | Multi-step E2E user flows with multiple timers            |
-| **Dapp Page Load** | `dapp-page-load/` | `PERFORMANCE` | Playwright-based dapp page load metrics (Core Web Vitals) |
+| Category           | Directory         | BENCHMARK_TYPE | Description                                               |
+| ------------------ | ----------------- | -------------- | --------------------------------------------------------- |
+| **Startup**        | `startup/`        | `BENCHMARK`    | Extension cold-start and initialization times             |
+| **Interaction**    | `interaction/`    | `USER_ACTION`  | Single discrete user interaction timings                  |
+| **User Journey**   | `user-journey/`   | `PERFORMANCE`  | Multi-step E2E user flows with multiple timers            |
+| **Dapp Page Load** | `dapp-page-load/` | `PERFORMANCE`  | Playwright-based dapp page load metrics (Core Web Vitals) |
 
 ### 1. Create a new file in the appropriate subdirectory
 
