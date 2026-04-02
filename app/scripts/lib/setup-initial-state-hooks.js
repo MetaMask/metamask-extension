@@ -5,8 +5,8 @@ import { maskObject } from '../../../shared/lib/object.utils';
 import ExtensionPlatform from '../platforms/extension';
 import { SENTRY_BACKGROUND_STATE } from '../constants/sentry-state';
 import { PersistenceManager } from '../../../shared/lib/stores/persistence-manager';
-import { FixtureExtensionStore } from './stores/fixture-extension-store';
-import ExtensionStore from './stores/extension-store';
+import { FixtureExtensionStore } from '../../../shared/lib/stores/fixture-extension-store';
+import ExtensionStore from '../../../shared/lib/stores/extension-store';
 import { trackVaultCorruptionEvent } from './state-corruption/track-vault-corruption';
 import { trackEarlySegmentEvent } from './segment/early-segment-tracking';
 

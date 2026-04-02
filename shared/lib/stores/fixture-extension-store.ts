@@ -1,7 +1,7 @@
 import browser from 'webextension-polyfill';
 import log from 'loglevel';
-import getFetchWithTimeout from '../../../../shared/lib/fetch-with-timeout';
-import type { MetaMaskStorageStructure } from '../../../../shared/lib/stores/base-store';
+import getFetchWithTimeout from '../fetch-with-timeout';
+import type { MetaMaskStorageStructure } from './base-store';
 import ExtensionStore from './extension-store';
 
 const fetchWithTimeout = getFetchWithTimeout();

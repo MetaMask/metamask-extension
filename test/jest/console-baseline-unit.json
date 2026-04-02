@@ -50,7 +50,7 @@
     "app/scripts/lib/snap-keyring/utils/isBlockedUrl.test.ts": {
       "Test errors: Fetch failures": 2
     },
-    "app/scripts/lib/stores/browser-storage-adapter.test.ts": {
+    "shared/lib/stores/browser-storage-adapter.test.ts": {
       "error: StorageService: Failed to clear namespace": 1,
       "error: StorageService: Failed to get item:": 1,
       "error: StorageService: Failed to get keys": 1,

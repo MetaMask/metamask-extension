@@ -23,11 +23,11 @@ jest.mock('../../../shared/lib/object.utils', () => ({
   maskObject: jest.fn((obj) => obj),
 }));
 
-jest.mock('./stores/extension-store', () => {
+jest.mock('../../../shared/lib/stores/extension-store', () => {
   return jest.fn().mockImplementation(() => ({}));
 });
 
-jest.mock('./stores/fixture-extension-store', () => ({
+jest.mock('../../../shared/lib/stores/fixture-extension-store', () => ({
   FixtureExtensionStore: jest.fn().mockImplementation(() => ({})),
 }));
 
@@ -84,7 +84,7 @@ describe('setup-initial-state-hooks', () => {
     it('detects browserify MV3 background (app-init.js)', async () => {
       setSelfHref('chrome-extension://abc123/scripts/app-init.js');
       const { FixtureExtensionStore } = jest.requireMock(
-        './stores/fixture-extension-store',
+        '../../../shared/lib/stores/fixture-extension-store',
       );
 
       await importFresh();
@@ -97,7 +97,7 @@ describe('setup-initial-state-hooks', () => {
     it('detects webpack MV3 background (service-worker.js)', async () => {
       setSelfHref('chrome-extension://abc123/service-worker.js');
       const { FixtureExtensionStore } = jest.requireMock(
-        './stores/fixture-extension-store',
+        '../../../shared/lib/stores/fixture-extension-store',
       );
 
       await importFresh();
@@ -110,7 +110,7 @@ describe('setup-initial-state-hooks', () => {
     it('detects Firefox MV2 background (background.html)', async () => {
       setSelfHref('moz-extension://abc123/background.html');
       const { FixtureExtensionStore } = jest.requireMock(
-        './stores/fixture-extension-store',
+        '../../../shared/lib/stores/fixture-extension-store',
       );
 
       await importFresh();
@@ -123,7 +123,7 @@ describe('setup-initial-state-hooks', () => {
     it('returns false for UI context (home.html)', async () => {
       setSelfHref('chrome-extension://abc123/home.html');
       const { FixtureExtensionStore } = jest.requireMock(
-        './stores/fixture-extension-store',
+        '../../../shared/lib/stores/fixture-extension-store',
       );
 
       await importFresh();
@@ -136,7 +136,7 @@ describe('setup-initial-state-hooks', () => {
     it('returns false for popup UI (popup.html)', async () => {
       setSelfHref('chrome-extension://abc123/popup.html');
       const { FixtureExtensionStore } = jest.requireMock(
-        './stores/fixture-extension-store',
+        '../../../shared/lib/stores/fixture-extension-store',
       );
 
       await importFresh();
