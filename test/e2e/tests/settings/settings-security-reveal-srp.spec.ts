@@ -19,14 +19,14 @@ describe('Reveal SRP through settings', function () {
       async ({ driver }) => {
         await login(driver);
 
-        // navigate to security & privacy settings
+        // navigate to security and password settings
         await new HeaderNavbar(driver).openSettingsPage();
         const settingsPage = new SettingsPage(driver);
         await settingsPage.checkPageIsLoaded();
-        await settingsPage.goToPrivacySettings();
+        await settingsPage.goToSecurityAndPasswordSettings();
 
         const privacySettings = new PrivacySettings(driver);
-        await privacySettings.checkPageIsLoaded();
+        await privacySettings.checkSecurityAndPasswordPageIsLoaded();
         await privacySettings.openRevealSrpQuiz();
         await privacySettings.completeRevealSrpQuiz();
         await privacySettings.fillPasswordToRevealSrp(
@@ -46,14 +46,14 @@ describe('Reveal SRP through settings', function () {
       async ({ driver }) => {
         await login(driver);
 
-        // navigate to security & privacy settings
+        // navigate to security and password settings
         await new HeaderNavbar(driver).openSettingsPage();
         const settingsPage = new SettingsPage(driver);
         await settingsPage.checkPageIsLoaded();
-        await settingsPage.goToPrivacySettings();
+        await settingsPage.goToSecurityAndPasswordSettings();
 
         const privacySettings = new PrivacySettings(driver);
-        await privacySettings.checkPageIsLoaded();
+        await privacySettings.checkSecurityAndPasswordPageIsLoaded();
 
         // fill password to reveal SRP and check the displayed SRP
         await privacySettings.openRevealSrpQuiz();
@@ -78,14 +78,14 @@ describe('Reveal SRP through settings', function () {
       async ({ driver }) => {
         await login(driver);
 
-        // Navigate to security & privacy settings
+        // Navigate to security and password settings
         await new HeaderNavbar(driver).openSettingsPage();
         const settingsPage = new SettingsPage(driver);
         await settingsPage.checkPageIsLoaded();
-        await settingsPage.goToPrivacySettings();
+        await settingsPage.goToSecurityAndPasswordSettings();
 
         const privacySettings = new PrivacySettings(driver);
-        await privacySettings.checkPageIsLoaded();
+        await privacySettings.checkSecurityAndPasswordPageIsLoaded();
 
         // fill password to reveal SRP and check the displayed SRP QR code
         await privacySettings.openRevealSrpQuiz();

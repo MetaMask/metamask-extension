@@ -1492,7 +1492,7 @@
     "ui/pages/settings-v2/assets-tab/assets-tab.test.tsx": {
       "React: componentWill* lifecycle deprecations": 1
     },
-    "ui/pages/settings-v2/developer-options-tab/developer-options-tab.test.tsx": {
+    "ui/pages/settings-v2/developer-tools-tab/developer-tools-tab.test.tsx": {
       "React: componentWill* lifecycle deprecations": 1
     },
     "ui/pages/settings-v2/preferences-and-display-tab/account-identicon-item.test.tsx": {

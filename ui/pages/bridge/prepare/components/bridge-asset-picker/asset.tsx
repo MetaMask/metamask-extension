@@ -77,10 +77,10 @@ export const BridgeAsset = React.forwardRef(
         backgroundColor={
           selected ? BackgroundColor.primaryMuted : BackgroundColor.transparent
         }
-        className={`bridge-asset${selected ? '--selected' : ''}`}
+        className={`cursor-pointer bridge-asset${selected ? '--selected' : ''}`}
         height={BlockSize.Max}
         width={BlockSize.Full}
-        data-testid={'bridge-asset'}
+        data-testid={`bridge-asset--${asset.assetId}`}
       >
         {selected && (
           <Box

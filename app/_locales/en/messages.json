@@ -69,6 +69,9 @@
   "about": {
     "message": "About"
   },
+  "aboutMetaMask": {
+    "message": "About MetaMask"
+  },
   "accept": {
     "message": "Accept"
   },
@@ -1420,7 +1423,7 @@
     "message": "Clear activity tab data"
   },
   "clearActivityDescription": {
-    "message": "This resets the account's nonce and erases data from the activity tab in your wallet. Only the current account and network will be affected. Your balances and incoming transactions won't change."
+    "message": "Resets the account's nonce and erases data from the activity tab in your wallet. Only the current account and network will be affected. Your balances and incoming transactions won't change."
   },
   "clearFilters": {
     "message": "Clear filters"
@@ -2105,6 +2108,9 @@
   "debitCreditPurchaseOptions": {
     "message": "Debit or credit card purchase options"
   },
+  "debug": {
+    "message": "Debug"
+  },
   "decimal": {
     "message": "Token decimal"
   },
@@ -2263,6 +2269,9 @@
   "delete": {
     "message": "Delete"
   },
+  "deleteActivityAndNonceData": {
+    "message": "Delete activity and nonce data"
+  },
   "deleteMetaMetricsData": {
     "message": "Delete MetaMetrics data"
   },
@@ -2343,6 +2352,9 @@
   },
   "developerOptions": {
     "message": "Developer options"
+  },
+  "developerTools": {
+    "message": "Developer tools"
   },
   "disabledGasOptionToolTipMessage": {
     "message": "“$1” is disabled because it does not meet the minimum of a 10% increase from the original gas fee.",
@@ -3170,6 +3182,10 @@
   "hardwareWalletLegacyDescription": {
     "message": "(legacy)",
     "description": "Text representing the MEW path"
+  },
+  "hardwareWalletLookingForDevice": {
+    "message": "Looking for your $1...",
+    "description": "$1 is the hardware wallet type"
   },
   "hardwareWalletSubmissionWarningStep1": {
     "message": "Be sure your $1 is plugged in and to select the Ethereum app."
@@ -6679,7 +6695,7 @@
     "message": "Security and password"
   },
   "securityAndPrivacy": {
-    "message": "Security & privacy"
+    "message": "Security and privacy"
   },
   "securityChangePassword": {
     "message": "Change password"
@@ -8826,6 +8842,9 @@
   "transaction": {
     "message": "transaction"
   },
+  "transactionConfirmed": {
+    "message": "Transaction confirmed"
+  },
   "transactionDataFunction": {
     "message": "Function"
   },
@@ -8837,6 +8856,9 @@
   },
   "transactionErrorNoContract": {
     "message": "Trying to call a function on a non-contract address."
+  },
+  "transactionFailed": {
+    "message": "Transaction failed"
   },
   "transactionFee": {
     "message": "Transaction fee"
@@ -8878,12 +8900,18 @@
   "transactionShield": {
     "message": "Transaction Shield"
   },
+  "transactionSubmitted": {
+    "message": "Transaction submitted"
+  },
   "transactionTotalGasFee": {
     "message": "Total gas fee",
     "description": "Label for the total gas fee incurred in the transaction."
   },
   "transactions": {
     "message": "Transactions"
+  },
+  "transactionsAndAssets": {
+    "message": "Transactions and assets"
   },
   "transfer": {
     "message": "Transfer"
