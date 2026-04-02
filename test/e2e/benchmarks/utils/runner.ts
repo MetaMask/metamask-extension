@@ -107,7 +107,7 @@ export async function runBenchmarkWithIterations(
         }
         const timerDurations = timerMap.get(timer.id);
         if (timerDurations) {
-          timerDurations.push(timer.duration);
+          timerDurations.push(timer.value);
         }
       }
     }
@@ -143,7 +143,7 @@ export async function runBenchmarkWithIterations(
   const perRunTotalDurations: number[] = [];
   for (const result of allResults) {
     if (result.success && result.timers.length > 0) {
-      const runTotal = result.timers.reduce((acc, t) => acc + t.duration, 0);
+      const runTotal = result.timers.reduce((acc, t) => acc + t.value, 0);
       perRunTotalDurations.push(runTotal);
     }
   }

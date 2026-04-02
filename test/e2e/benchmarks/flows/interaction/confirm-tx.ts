@@ -55,6 +55,6 @@ export async function run(): Promise<BenchmarkRunResult> {
       },
     );
 
-    return [{ id: 'confirm_tx', duration: loadingTimes }];
+    return [{ id: 'confirm_tx', value: loadingTimes }];
   }, BENCHMARK_TYPE.USER_ACTION);
 }

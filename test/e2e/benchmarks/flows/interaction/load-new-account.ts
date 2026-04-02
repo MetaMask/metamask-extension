@@ -45,6 +45,6 @@ export async function run(): Promise<BenchmarkRunResult> {
       },
     );
 
-    return [{ id: 'load_new_account', duration: loadingTimes }];
+    return [{ id: 'load_new_account', value: loadingTimes }];
   }, BENCHMARK_TYPE.USER_ACTION);
 }

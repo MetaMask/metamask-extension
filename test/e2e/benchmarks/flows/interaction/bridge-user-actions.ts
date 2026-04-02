@@ -98,9 +98,9 @@ export async function run(): Promise<BenchmarkRunResult> {
     );
 
     return [
-      { id: 'bridge_load_page', duration: loadPage },
-      { id: 'bridge_load_asset_picker', duration: loadAssetPicker },
-      { id: 'bridge_search_token', duration: searchToken },
+      { id: 'bridge_load_page', value: loadPage },
+      { id: 'bridge_load_asset_picker', value: loadAssetPicker },
+      { id: 'bridge_search_token', value: searchToken },
     ];
   }, BENCHMARK_TYPE.USER_ACTION);
 }
