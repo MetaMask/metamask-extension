@@ -58,7 +58,7 @@ const ThemeSubPage = () => {
             alignItems={BoxAlignItems.Center}
             className={`w-full cursor-pointer border-0 p-4 ${
               isSelected
-                ? 'bg-background-muted hover:bg-muted-hover'
+                ? 'bg-muted hover:bg-muted-hover'
                 : 'bg-background-default hover:bg-background-default-hover'
             }`}
             onClick={() => handleSelect(value)}

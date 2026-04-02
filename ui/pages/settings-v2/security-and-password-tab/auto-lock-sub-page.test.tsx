@@ -70,9 +70,7 @@ describe('AutoLockSubPage', () => {
   it('highlights the currently selected option', () => {
     renderWithProvider(<AutoLockSubPage />, createMockStore(5));
 
-    expect(screen.getByTestId('auto-lock-option-5')).toHaveClass(
-      'bg-background-muted',
-    );
+    expect(screen.getByTestId('auto-lock-option-5')).toHaveClass('bg-muted');
   });
 
   it('dispatches setAutoLockTimeLimit and navigates on click', () => {
