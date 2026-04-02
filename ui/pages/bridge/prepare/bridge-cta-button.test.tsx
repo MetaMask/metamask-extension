@@ -384,6 +384,8 @@ describe('BridgeCTAButton', () => {
         <BridgeCTAButton
           onFetchNewQuotes={jest.fn()}
           onOpenPriceImpactWarningModal={mockOnOpenPriceImpactWarningModal}
+          onOpenRecipientModal={jest.fn()}
+          onOpenMarketClosedModal={jest.fn()}
         />
       </HardwareWalletProvider>,
       { wrapper: Wrapper },
