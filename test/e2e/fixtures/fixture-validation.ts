@@ -42,7 +42,7 @@ const getFixtureIgnoredKeys = (): string[] => [
   'data.SnapController.snaps',
   'data.SnapController.snapStates',
   'data.SnapController.unencryptedSnapStates',
-  'data.SnapsRegistry',
+  'data.SnapRegistryController',
   // Subject Metadata
   'data.SubjectMetadataController.subjectMetadata',
   // Locale-related keys
@@ -69,6 +69,7 @@ const getFixtureIgnoredKeys = (): string[] => [
   'data.RemoteFeatureFlagController.thresholdCache',
   'data.RemoteFeatureFlagController.rawRemoteFeatureFlags',
   // Entire objects/controllers ignored (dynamic or impractical to validate)
+  'data.AccountTreeController.selectedAccountGroup', // Entropy source is random and non-deterministic, and the selected group can change on each run.
   'data.AccountsController.internalAccounts.accounts',
   'data.AuthenticationController',
   'data.MetaMetricsController',
@@ -89,6 +90,8 @@ const getFixtureIgnoredKeys = (): string[] => [
   'data.ProfileMetricsController.syncQueue',
   // non-EVM account IDs ARE NOT deterministic and each keyring has metadata (with source of randomness)
   'data.KeyringController.vault',
+  // PerpsController is conditionally included in build via PERPS_ENABLED env var
+  'data.PerpsController',
 ];
 
 /**

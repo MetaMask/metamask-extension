@@ -30,11 +30,19 @@ export const ConfirmContext = createContext<ConfirmContextType | undefined>(
 export const ConfirmContextProvider: React.FC<{
   children: ReactElement;
   confirmationId?: string;
-}> = ({ children, confirmationId }) => {
+  /** When provided, injects this as currentConfirmation (e.g. for gas modal opened from cancel-speedup). Skips route sync and navigation. */
+  currentConfirmationOverride?: Confirmation;
+}> = ({ children, confirmationId, currentConfirmationOverride }) => {
   const [isScrollToBottomCompleted, setIsScrollToBottomCompleted] =
     useState(true);
-  const { currentConfirmation } = useCurrentConfirmation(confirmationId);
-  useSyncConfirmPath(currentConfirmation);
+  const { currentConfirmation: currentConfirmationFromHook } =
+    useCurrentConfirmation(confirmationId);
+  const currentConfirmation =
+    currentConfirmationOverride ?? currentConfirmationFromHook;
+
+  useSyncConfirmPath(
+    currentConfirmationOverride === undefined ? currentConfirmation : undefined,
+  );
   const navigate = useNavigate();
   const previousConfirmation = usePrevious(currentConfirmation);
   const shouldNavigateHomeRef = useRef(false);
@@ -48,15 +56,19 @@ export const ConfirmContextProvider: React.FC<{
    * We also skip navigation if the hardware wallet error modal is visible to allow for retry functionality.
    */
   useEffect(() => {
+    if (currentConfirmationOverride !== undefined) {
+      return;
+    }
     if (previousConfirmation && !currentConfirmation) {
       shouldNavigateHomeRef.current = true;
     }
 
     if (shouldNavigateHomeRef.current && !isHardwareWalletErrorModalVisible) {
       shouldNavigateHomeRef.current = false;
-      navigate(`${DEFAULT_ROUTE}?tab=activity`, { replace: true });
+      navigate(DEFAULT_ROUTE, { replace: true });
     }
   }, [
+    currentConfirmationOverride,
     previousConfirmation,
     currentConfirmation,
     navigate,

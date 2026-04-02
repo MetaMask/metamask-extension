@@ -24,11 +24,10 @@ import type {
   PermissionControllerStateChange,
 } from '@metamask/permission-controller';
 import type {
-  GetRunnableSnaps,
-  HandleSnapRequest,
+  SnapControllerGetRunnableSnapsAction,
+  SnapControllerHandleRequestAction,
 } from '@metamask/snaps-controllers';
 import { AuthenticationControllerGetBearerTokenAction } from '@metamask/profile-sync-controller/auth';
-import { MetaMetricsControllerTrackEventAction } from '../../../controllers/metametrics-controller';
 import { RootMessenger } from '../../../lib/messenger';
 
 /**
@@ -142,8 +141,8 @@ type AccountsControllerAccountBalancesUpdatedEvent = {
  * @see SnapDataSource in @metamask/assets-controller
  */
 type SnapDataSourceActions =
-  | GetRunnableSnaps
-  | HandleSnapRequest
+  | SnapControllerGetRunnableSnapsAction
+  | SnapControllerHandleRequestAction
   | GetPermissions;
 
 /**
@@ -263,8 +262,7 @@ type PreferencesControllerGetStateAction = {
  */
 type AllowedInitializationActions =
   | AuthenticationControllerGetBearerTokenAction
-  | HandleSnapRequest
-  | MetaMetricsControllerTrackEventAction
+  | SnapControllerHandleRequestAction
   | PreferencesControllerGetStateAction;
 
 /**
@@ -292,7 +290,6 @@ export function getAssetsControllerInitMessenger(
     actions: [
       'AuthenticationController:getBearerToken',
       'SnapController:handleRequest',
-      'MetaMetricsController:trackEvent',
       'PreferencesController:getState',
     ],
   });

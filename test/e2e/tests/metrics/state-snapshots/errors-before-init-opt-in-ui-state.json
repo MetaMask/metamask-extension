@@ -8,7 +8,8 @@
     "AccountTreeController": {
       "accountGroupsMetadata": "object",
       "accountWalletsMetadata": "object",
-      "hasAccountTreeSyncingSyncedAtLeastOnce": "boolean"
+      "hasAccountTreeSyncingSyncedAtLeastOnce": "boolean",
+      "selectedAccountGroup": "string"
     },
     "AccountsController": {
       "internalAccounts": { "accounts": "object", "selectedAccount": "string" }
@@ -191,6 +192,7 @@
     "PPOMController": { "storageMetadata": {} },
     "PermissionController": { "subjects": "object" },
     "PermissionLogController": { "permissionHistory": "object" },
+    "PerpsController": "object",
     "PhishingController": {
       "addressScanCache": "object",
       "tokenScanCache": "object",
@@ -217,7 +219,6 @@
         "dismissSmartAccountSuggestionEnabled": "boolean",
         "featureNotificationsEnabled": "boolean",
         "hideZeroBalanceTokens": false,
-        "petnamesEnabled": "boolean",
         "privacyMode": "boolean",
         "showConfirmationAdvancedDetails": false,
         "showDefaultAddress": "boolean",
@@ -282,7 +283,7 @@
       "unencryptedSnapStates": "object"
     },
     "SnapInterfaceController": { "interfaces": "object" },
-    "SnapsRegistry": {
+    "SnapRegistryController": {
       "database": "object",
       "databaseUnavailable": "boolean",
       "lastUpdated": "number",
@@ -312,5 +313,5 @@
     },
     "config": "object"
   },
-  "meta": { "storageKind": "split", "version": 199 }
+  "meta": { "storageKind": "split", "version": 202 }
 }

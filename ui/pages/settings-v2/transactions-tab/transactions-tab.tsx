@@ -10,7 +10,7 @@ import { SettingItemConfig } from '../types';
 import {
   SettingsTab,
   createToggleItem,
-  type ToggleItemConfig,
+  createDescriptionWithLearnMore,
 } from '../shared';
 import {
   getIsSecurityAlertsEnabled,
@@ -27,34 +27,17 @@ import {
   setUseTransactionSimulations,
 } from '../../../store/actions';
 import type { MetaMaskReduxState } from '../../../store/store';
+import { TRANSACTION_ITEMS } from '../search-config';
 
 const selectIsDisabledByShieldSubscription = (state: MetaMaskReduxState) =>
   getIsActiveShieldSubscription(
     state as unknown as Parameters<typeof getIsActiveShieldSubscription>[0],
   );
 
-const descriptionWithLearnMore =
-  (
-    descriptionKey: string,
-    href: string,
-  ): ToggleItemConfig['formatDescription'] =>
-  (t) =>
-    t(descriptionKey, [
-      <a
-        key="learn_more_link"
-        href={href}
-        rel="noopener noreferrer"
-        target="_blank"
-        className="font-medium text-primary-default"
-      >
-        {t('learnMoreUpperCase')}
-      </a>,
-    ]);
-
 const TransactionSimulationsItem = createToggleItem({
   name: 'TransactionSimulationsItem',
-  titleKey: 'simulationsSettingSubHeader',
-  formatDescription: descriptionWithLearnMore(
+  titleKey: TRANSACTION_ITEMS['estimate-balance-changes'],
+  formatDescription: createDescriptionWithLearnMore(
     'simulationsSettingDescriptionV2',
     TRANSACTION_SIMULATIONS_LEARN_MORE_LINK,
   ),
@@ -67,14 +50,15 @@ const TransactionSimulationsItem = createToggleItem({
 
 const SecurityAlertsItem = createToggleItem({
   name: 'SecurityAlertsItem',
-  titleKey: 'securityAlerts',
-  formatDescription: descriptionWithLearnMore(
+  titleKey: TRANSACTION_ITEMS['security-alerts'],
+  formatDescription: createDescriptionWithLearnMore(
     'securityAlertsDescriptionV2',
     SECURITY_ALERTS_LEARN_MORE_LINK,
   ),
   selector: getIsSecurityAlertsEnabled,
   action: setSecurityAlertsEnabled,
   dataTestId: 'transactions-security-alerts-toggle',
+  containerDataTestId: 'securityAlert',
   disabledSelector: selectIsDisabledByShieldSubscription,
   trackEvent: {
     event: MetaMetricsEventName.SettingsUpdated,
@@ -88,8 +72,8 @@ const SecurityAlertsItem = createToggleItem({
 
 const SmartTransactionsItem = createToggleItem({
   name: 'SmartTransactionsItem',
-  titleKey: 'smartTransactions',
-  formatDescription: descriptionWithLearnMore(
+  titleKey: TRANSACTION_ITEMS['smart-transactions'],
+  formatDescription: createDescriptionWithLearnMore(
     'stxOptInDescriptionV2',
     SMART_TRANSACTIONS_LEARN_MORE_URL,
   ),
@@ -100,7 +84,7 @@ const SmartTransactionsItem = createToggleItem({
 
 const SmartAccountRequestsFromDappsItem = createToggleItem({
   name: 'SmartAccountRequestsFromDappsItem',
-  titleKey: 'smartAccountRequestsFromDapps',
+  titleKey: TRANSACTION_ITEMS['smart-account-requests-from-dapps'],
   descriptionKey: 'smartAccountRequestsFromDappsDescription',
   selector: (state: MetaMaskReduxState) =>
     !getPreferences(state)?.dismissSmartAccountSuggestionEnabled,
@@ -110,7 +94,7 @@ const SmartAccountRequestsFromDappsItem = createToggleItem({
 
 const ProposedNicknamesItem = createToggleItem({
   name: 'ProposedNicknamesItem',
-  titleKey: 'externalNameSourcesSetting',
+  titleKey: TRANSACTION_ITEMS['proposed-nicknames'],
   descriptionKey: 'externalNameSourcesSettingDescriptionV2',
   selector: (state: MetaMaskReduxState) =>
     Boolean(getUseExternalNameSources(state)),
@@ -120,12 +104,13 @@ const ProposedNicknamesItem = createToggleItem({
 
 const ShowHexDataItem = createToggleItem({
   name: 'ShowHexDataItem',
-  titleKey: 'showHexData',
+  titleKey: TRANSACTION_ITEMS['show-hex-data'],
   descriptionKey: 'showHexDataDescription',
   selector: (state: MetaMaskReduxState) =>
     Boolean(state.metamask?.featureFlags?.sendHexData),
   action: (value: boolean) => setFeatureFlag('sendHexData', value, ''),
   dataTestId: 'transactions-show-hex-data-toggle',
+  containerDataTestId: 'transactions-settings-hex-data-toggle',
 });
 
 const TRANSACTION_SETTING_ITEMS: SettingItemConfig[] = [
@@ -137,11 +122,7 @@ const TRANSACTION_SETTING_ITEMS: SettingItemConfig[] = [
     component: SmartAccountRequestsFromDappsItem,
   },
   { id: 'proposed-nicknames', component: ProposedNicknamesItem },
-  {
-    id: 'show-hex-data',
-    component: ShowHexDataItem,
-    hasDividerBefore: true,
-  },
+  { id: 'show-hex-data', component: ShowHexDataItem, hasDividerBefore: true },
 ];
 
 const TransactionsTab = () => <SettingsTab items={TRANSACTION_SETTING_ITEMS} />;

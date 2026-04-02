@@ -90,9 +90,12 @@ For new test code, use `FixtureBuilderV2` by default.
 - `withCurrencyController`
 - `withKeyringController`
 - `withMetaMetricsController`
+- `withMultichainAssetsRatesController`
+- `withMultichainRatesController`
 - `withNameController`
 - `withNetworkController`
 - `withNetworkEnablementController`
+- `withNftController`
 - `withOnboardingController`
 - `withPermissionController`
 - `withPreferencesController`
@@ -105,19 +108,31 @@ For new test code, use `FixtureBuilderV2` by default.
 **Custom convenience methods**:
 
 - `withConversionRateDisabled`
+- `withConversionRates`
+- `withCurrencyRates`
+- `withKeyringControllerAdditionalAccountVault`
+- `withKeyringControllerMultiSRP`
+- `withKeyringControllerOldVault`
 - `withEnabledNetworks`
 - `withLedgerAccount`
 - `withNetworkControllerDoubleNode`
 - `withNetworkControllerTripleNode`
+- `withNftControllerERC1155`
+- `withNftControllerERC721`
 - `withNoNames`
 - `withPermissionControllerConnectedToTestDapp`
-- `withPetnamesDisabled`
+- `withPreferencesControllerTxSimulationsDisabled`
 - `withSelectedNetwork`
 - `withSelectedNetworkControllerPerDomain`
 - `withShowNativeTokenAsMainBalanceDisabled`
 - `withShowNativeTokenAsMainBalanceEnabled`
 - `withSmartTransactionsOptedOut`
+- `withSnapController`
+- `withSnapControllerOnStartLifecycleSnap`
+- `withSnapsPrivacyWarningAlreadyShown`
+- `withStorageServiceData`
 - `withTokensControllerERC20`
+- `withTokenListControllerStorageServiceData`
 - `withTransactionControllerApprovedTransaction`
 - `withTransactionControllerCompletedAndIncomingTransaction`
 - `withTransactionControllerCompletedTransaction`

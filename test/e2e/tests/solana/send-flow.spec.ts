@@ -8,7 +8,7 @@ import NonEvmHomepage from '../../page-objects/pages/home/non-evm-homepage';
 import { SOLANA_MAINNET_SCOPE } from '../../constants';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { withFixtures } from '../../helpers';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 import { switchToNetworkFromNetworkSelect } from '../../page-objects/flows/network.flow';
 import { buildSolanaTestSpecificMock } from './common-solana';
 
@@ -23,8 +23,9 @@ describe('Send flow', function (this: Suite) {
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
         const homePage = new NonEvmHomepage(driver);
+        await homePage.waitForNonEvmAccountsLoaded();
         const sendPage = new SendPage(driver);
 
         await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Solana');
@@ -59,8 +60,9 @@ describe('Send flow', function (this: Suite) {
         }),
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
         const homePage = new NonEvmHomepage(driver);
+        await homePage.waitForNonEvmAccountsLoaded();
         const sendPage = new SendPage(driver);
 
         await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Solana');
@@ -108,8 +110,9 @@ describe('Send flow', function (this: Suite) {
         }),
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
         const homePage = new NonEvmHomepage(driver);
+        await homePage.waitForNonEvmAccountsLoaded();
         const sendPage = new SendPage(driver);
 
         await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Solana');

@@ -21,7 +21,7 @@ import {
 import { useTransactionPayToken } from '../../../hooks/pay/useTransactionPayToken';
 import { useConfirmContext } from '../../../context/confirm';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import { hasTransactionType } from '../../../utils/transaction-pay';
+import { hasTransactionType } from '../../../../../../shared/lib/transactions.utils';
 
 const SAME_CHAIN_DURATION_SECONDS = '< 10';
 

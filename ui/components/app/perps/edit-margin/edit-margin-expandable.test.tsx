@@ -1,24 +1,26 @@
-import React from 'react';
 import { screen, fireEvent, waitFor } from '@testing-library/react';
-import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
-import configureStore from '../../../../store/store';
+import React from 'react';
+
 import mockState from '../../../../../test/data/mock-state.json';
 import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
+import configureStore from '../../../../store/store';
 import { mockPositions, mockAccountState } from '../mocks';
 import { EditMarginExpandable } from './edit-margin-expandable';
 
-const mockGetPerpsController = jest.fn();
 const mockGetPerpsStreamManager = jest.fn();
+const mockSubmitRequestToBackground = jest.fn();
 
-jest.mock('../../../../providers/perps', () => ({
-  getPerpsController: (...args: unknown[]) => mockGetPerpsController(...args),
+jest.mock('../../../../store/background-connection', () => ({
+  submitRequestToBackground: (...args: unknown[]) =>
+    mockSubmitRequestToBackground(...args),
 }));
 
 jest.mock('../../../../hooks/perps/usePerpsEligibility', () => ({
   usePerpsEligibility: () => ({ isEligible: true }),
 }));
 
-jest.mock('../../../../providers/perps/PerpsStreamManager', () => ({
+jest.mock('../../../../providers/perps', () => ({
   getPerpsStreamManager: () => mockGetPerpsStreamManager(),
 }));
 
@@ -32,7 +34,6 @@ const defaultProps = {
   position: mockPositions[0],
   account: mockAccountState,
   currentPrice: 2900,
-  selectedAddress: '0x123',
   isExpanded: true,
   onToggle: jest.fn(),
 };
@@ -40,9 +41,14 @@ const defaultProps = {
 describe('EditMarginExpandable', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    mockGetPerpsController.mockResolvedValue({
-      updateMargin: jest.fn().mockResolvedValue({ success: true }),
-      getPositions: jest.fn().mockResolvedValue(mockPositions),
+    mockSubmitRequestToBackground.mockImplementation((method: string) => {
+      if (method === 'perpsUpdateMargin') {
+        return Promise.resolve({ success: true });
+      }
+      if (method === 'perpsGetPositions') {
+        return Promise.resolve(mockPositions);
+      }
+      return Promise.resolve(undefined);
     });
     mockGetPerpsStreamManager.mockReturnValue({
       pushPositionsWithOverrides: jest.fn(),
@@ -66,16 +72,16 @@ describe('EditMarginExpandable', () => {
       ).toBeInTheDocument();
     });
 
-    it('renders amount input and preset buttons when expanded', () => {
+    it('renders amount input and margin slider when expanded', () => {
       renderWithProvider(
         <EditMarginExpandable {...defaultProps} isExpanded />,
         mockStore,
       );
 
       expect(screen.getByPlaceholderText('0.00')).toBeInTheDocument();
-      expect(screen.getByText('25%')).toBeInTheDocument();
-      expect(screen.getByText('50%')).toBeInTheDocument();
-      expect(screen.getByText(messages.max.message)).toBeInTheDocument();
+      expect(
+        screen.getByTestId('perps-margin-amount-slider'),
+      ).toBeInTheDocument();
     });
 
     it('renders confirm button with Add Margin when in add mode', () => {
@@ -88,18 +94,18 @@ describe('EditMarginExpandable', () => {
       expect(buttons.length).toBeGreaterThanOrEqual(1);
     });
 
-    it('shows Available balance in add mode', () => {
+    it('shows Available to add label in add mode', () => {
       renderWithProvider(
         <EditMarginExpandable {...defaultProps} isExpanded />,
         mockStore,
       );
 
       expect(
-        screen.getByText(messages.perpsAvailableBalance.message),
+        screen.getByText(messages.perpsAvailableToAdd.message),
       ).toBeInTheDocument();
     });
 
-    it('shows Max removable when Remove is selected', () => {
+    it('shows Available to subtract when Remove is selected', () => {
       renderWithProvider(
         <EditMarginExpandable {...defaultProps} isExpanded />,
         mockStore,
@@ -108,7 +114,7 @@ describe('EditMarginExpandable', () => {
       fireEvent.click(screen.getByText(messages.perpsRemoveMargin.message));
 
       expect(
-        screen.getByText(messages.perpsMaxRemovable.message),
+        screen.getByText(messages.perpsAvailableToSubtract.message),
       ).toBeInTheDocument();
     });
   });
@@ -123,7 +129,7 @@ describe('EditMarginExpandable', () => {
       fireEvent.click(screen.getByText(messages.perpsRemoveMargin.message));
 
       expect(
-        screen.getByText(messages.perpsMaxRemovable.message),
+        screen.getByText(messages.perpsAvailableToSubtract.message),
       ).toBeInTheDocument();
     });
 
@@ -137,36 +143,58 @@ describe('EditMarginExpandable', () => {
       fireEvent.click(screen.getByText(messages.perpsAddMargin.message));
 
       expect(
-        screen.getByText(messages.perpsAvailableBalance.message),
+        screen.getByText(messages.perpsAvailableToAdd.message),
       ).toBeInTheDocument();
     });
   });
 
-  describe('preset buttons', () => {
-    it('sets amount when a preset is clicked', () => {
+  describe('slider', () => {
+    it('does not underflow at max slider value for IEEE-754 edge balances', () => {
       renderWithProvider(
-        <EditMarginExpandable {...defaultProps} isExpanded />,
+        <EditMarginExpandable
+          {...defaultProps}
+          account={{ ...mockAccountState, availableBalance: '1.15' }}
+          isExpanded
+        />,
         mockStore,
       );
 
-      fireEvent.click(screen.getByText('25%'));
+      fireEvent.keyDown(screen.getByRole('slider'), {
+        key: 'End',
+        code: 'End',
+      });
 
-      const input = screen.getByPlaceholderText('0.00');
-      expect(input).toHaveValue();
-      expect(parseFloat((input as HTMLInputElement).value)).toBeGreaterThan(0);
+      expect(screen.getByPlaceholderText('0.00')).toHaveValue('1.15');
+      expect(
+        screen.getByRole('button', { name: /Add Margin/iu }),
+      ).not.toBeDisabled();
+    });
+
+    it('keeps add margin submit enabled when max slider value floors to 2dp', () => {
+      renderWithProvider(
+        <EditMarginExpandable
+          {...defaultProps}
+          account={{ ...mockAccountState, availableBalance: '3.066' }}
+          isExpanded
+        />,
+        mockStore,
+      );
+
+      fireEvent.keyDown(screen.getByRole('slider'), {
+        key: 'End',
+        code: 'End',
+      });
+
+      expect(screen.getByPlaceholderText('0.00')).toHaveValue('3.06');
+      expect(
+        screen.getByRole('button', { name: /Add Margin/iu }),
+      ).not.toBeDisabled();
     });
   });
 
   describe('submit', () => {
     it('calls controller updateMargin and onToggle on successful submit', async () => {
       const onToggle = jest.fn();
-      const updateMargin = jest.fn().mockResolvedValue({ success: true });
-      const getPositions = jest.fn().mockResolvedValue(mockPositions);
-
-      mockGetPerpsController.mockResolvedValue({
-        updateMargin,
-        getPositions,
-      });
 
       renderWithProvider(
         <EditMarginExpandable
@@ -186,11 +214,10 @@ describe('EditMarginExpandable', () => {
       fireEvent.click(confirmButton);
 
       await waitFor(() => {
-        expect(mockGetPerpsController).toHaveBeenCalledWith('0x123');
-        expect(updateMargin).toHaveBeenCalledWith({
-          symbol: mockPositions[0].symbol,
-          amount: '100',
-        });
+        expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+          'perpsUpdateMargin',
+          [{ symbol: mockPositions[0].symbol, amount: '100' }],
+        );
       });
       await waitFor(() => {
         expect(onToggle).toHaveBeenCalled();
@@ -198,13 +225,6 @@ describe('EditMarginExpandable', () => {
     });
 
     it('does not call updateMargin when amount is empty', () => {
-      const updateMargin = jest.fn().mockResolvedValue({ success: true });
-
-      mockGetPerpsController.mockResolvedValue({
-        updateMargin,
-        getPositions: jest.fn().mockResolvedValue(mockPositions),
-      });
-
       renderWithProvider(
         <EditMarginExpandable {...defaultProps} isExpanded />,
         mockStore,
@@ -216,17 +236,18 @@ describe('EditMarginExpandable', () => {
       expect(confirmButton).toBeDisabled();
       fireEvent.click(confirmButton);
 
-      expect(updateMargin).not.toHaveBeenCalled();
+      expect(mockSubmitRequestToBackground).not.toHaveBeenCalledWith(
+        'perpsUpdateMargin',
+        expect.any(Array),
+      );
     });
   });
 
   describe('error display', () => {
     it('shows error message when updateMargin fails', async () => {
-      mockGetPerpsController.mockResolvedValue({
-        updateMargin: jest
-          .fn()
-          .mockResolvedValue({ success: false, error: 'Insufficient balance' }),
-        getPositions: jest.fn().mockResolvedValue(mockPositions),
+      mockSubmitRequestToBackground.mockResolvedValueOnce({
+        success: false,
+        error: 'Insufficient balance',
       });
 
       renderWithProvider(

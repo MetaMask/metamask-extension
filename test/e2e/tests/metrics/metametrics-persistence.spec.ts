@@ -5,7 +5,7 @@ import { MOCK_META_METRICS_ID } from '../../constants';
 import HomePage from '../../page-objects/pages/home/homepage';
 import PrivacySettings from '../../page-objects/pages/settings/privacy-settings';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 
 describe('MetaMetrics ID persistence', function () {
   it('MetaMetrics ID should persist when the user opts-out and then opts-in again of MetaMetrics collection', async function () {
@@ -20,7 +20,7 @@ describe('MetaMetrics ID persistence', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         let uiState = await getCleanAppState(driver);
 

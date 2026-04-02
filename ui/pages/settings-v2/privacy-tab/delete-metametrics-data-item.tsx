@@ -20,6 +20,7 @@ import {
 } from '../../../selectors';
 import { Toast, ToastContainer } from '../../../components/multichain/toast';
 import { BorderRadius } from '../../../helpers/constants/design-system';
+import { PRIVACY_ITEMS } from '../search-config';
 import DeleteMetametricsModal from './delete-metametrics-modal';
 import DeletionInProgressModal from './deletion-in-progress-modal';
 
@@ -58,7 +59,7 @@ export const DeleteMetametricsDataItem = () => {
   return (
     <>
       <Button
-        data-testid="delete-metametrics-button"
+        data-testid="delete-metametrics-data-button"
         onClick={() =>
           isDataDeletionInProgress
             ? setShowDeletionInProgressModal(true)
@@ -67,7 +68,7 @@ export const DeleteMetametricsDataItem = () => {
         disabled={!isMetaMetricsEnabled}
         className="text-error-default !bg-transparent p-0 text-left"
       >
-        {t('deleteMetaMetricsData')}
+        {t(PRIVACY_ITEMS['delete-metametrics-data'])}
       </Button>
       {showDeleteModal && (
         <DeleteMetametricsModal

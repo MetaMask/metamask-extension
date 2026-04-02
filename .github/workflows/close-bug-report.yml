@@ -10,17 +10,65 @@ on:
 jobs:
   close-bug-report:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 5
+    # Only run for release branch closing
     if: github.event.pull_request.merged == true && startsWith(github.event.pull_request.head.ref, 'release/')
     steps:
-      - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v3
-        with:
-          is-high-risk-environment: false
-          skip-allow-scripts: true
-
       - name: Close release bug report issue
+        uses: actions/github-script@v8
         env:
-          BUG_REPORT_REPO: MetaMask-planning
           BUG_REPORT_TOKEN: ${{ secrets.BUG_REPORT_TOKEN }}
-        run: yarn run close-release-bug-report-issue
+        with:
+          script: |
+            const branchName = context.payload.pull_request.head.ref;
+            const match = branchName.match(/^release\/(\d+\.\d+\.\d+)$/);
+            if (!match) {
+              core.setFailed(`Failed to extract version number from branch name: ${branchName}`);
+              return;
+            }
+            const version = match[1];
+            const repoOwner = context.repo.owner;
+            const bugReportRepo = 'MetaMask-planning';
+
+            // Use BUG_REPORT_TOKEN for cross-repo access
+            const { getOctokit } = require('@actions/github');
+            const bugReportOctokit = getOctokit(process.env.BUG_REPORT_TOKEN);
+
+            // Find the open bug report issue
+            const searchQuery = [
+              `repo:${repoOwner}/${bugReportRepo}`,
+              'type:issue',
+              'is:open',
+              'in:title',
+              `v${version} Bug Report`,
+            ].join(' ');
+            const result = await bugReportOctokit.graphql(`
+              query FindBugReport($searchQuery: String!) {
+                search(query: $searchQuery, type: ISSUE, first: 1) {
+                  nodes {
+                    ... on Issue { id, title }
+                  }
+                }
+              }
+            `, { searchQuery });
+
+            const issue = result.search.nodes[0];
+            if (!issue) {
+              throw new Error(`No open bug report issue found for release ${version} on ${repoOwner}/${bugReportRepo}`);
+            }
+            if (issue.title.toLowerCase() !== `v${version} Bug Report`.toLowerCase()) {
+              throw new Error(`Unexpected bug report title: "${issue.title}" instead of "v${version} Bug Report"`);
+            }
+
+            console.log(`Closing bug report issue "${issue.title}" (id: ${issue.id})`);
+
+            // Close the issue
+            await bugReportOctokit.graphql(`
+              mutation CloseIssue($issueId: ID!) {
+                updateIssue(input: {id: $issueId, state: CLOSED}) {
+                  clientMutationId
+                }
+              }
+            `, { issueId: issue.id });
+
+            console.log(`Issue ${issue.id} successfully closed`);

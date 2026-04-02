@@ -47,7 +47,6 @@ const initialState = {
     showFiatInTestnets: false,
     showTestNetworks: false,
     smartTransactionsOptInStatus: true,
-    petnamesEnabled: true,
     featureNotificationsEnabled: false,
     privacyMode: false,
     showMultiRpcModal: false,

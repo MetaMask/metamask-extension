@@ -12,7 +12,7 @@ export const mockOrderFormDefaults: OrderFormState = {
   asset: 'BTC',
   direction: 'long',
   amount: '',
-  leverage: 1,
+  leverage: 3,
   balancePercent: 0,
   takeProfitPrice: '',
   stopLossPrice: '',

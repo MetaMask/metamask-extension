@@ -5,7 +5,13 @@
  * Shown to users who haven't seen the education content before.
  */
 
-import React, { useCallback, useState } from 'react';
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import {
@@ -30,6 +36,15 @@ import {
   TextButton,
   TextButtonSize,
 } from '@metamask/design-system-react';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
+import {
+  MUSD_EVENTS_CONSTANTS,
+  type MusdEducationButtonClickedEventProperties,
+} from '../../../components/app/musd/musd-events';
 import { ThemeType } from '../../../../shared/constants/preferences';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useTheme } from '../../../hooks/useTheme';
@@ -69,8 +84,27 @@ const MusdEducationScreen: React.FC = () => {
   const dispatch = useDispatch();
   const theme = useTheme();
   const [searchParams] = useSearchParams();
+  const { trackEvent } = useContext(MetaMetricsContext);
 
   const isDeeplink = searchParams.get(MUSD_DEEPLINK_PARAM) === 'true';
+
+  // Track education screen display on mount (fire-once guard)
+  const hasTrackedDisplayRef = useRef(false);
+  useEffect(() => {
+    if (hasTrackedDisplayRef.current) {
+      return;
+    }
+    hasTrackedDisplayRef.current = true;
+
+    trackEvent({
+      event: MetaMetricsEventName.MusdFullscreenAnnouncementDisplayed,
+      category: MetaMetricsEventCategory.MusdConversion,
+      properties: {
+        location:
+          MUSD_EVENTS_CONSTANTS.EVENT_LOCATIONS.CONVERSION_EDUCATION_SCREEN,
+      },
+    });
+  }, [trackEvent]);
 
   const { startConversionFlow } = useMusdConversion();
   const { isBlocked: isGeoBlocked } = useMusdGeoBlocking();
@@ -92,6 +126,36 @@ const MusdEducationScreen: React.FC = () => {
   const isDeeplinkNoTokensGoToBuy =
     isDeeplink && !hasEligibleConversionTokens && canBuyMusdInRegion;
 
+  // Determine button labels - must be before callbacks that use them
+  let primaryButtonLabel = t('musdEducationGetStarted') as string;
+  if (isDeeplinkNoTokensGoToBuy) {
+    primaryButtonLabel = t('musdBuyMusd') as string;
+  } else if (isDeeplinkNoTokensContinueHome || isGeoBlocked) {
+    primaryButtonLabel = t('continue') as string;
+  }
+  const secondaryButtonLabel = t('musdEducationNotNow') as string;
+
+  /**
+   * Determine redirect destination for analytics
+   */
+  const getRedirectDestination =
+    useCallback((): MusdEducationButtonClickedEventProperties['redirects_to'] => {
+      if (isDeeplinkNoTokensGoToBuy) {
+        return MUSD_EVENTS_CONSTANTS.REDIRECT_DESTINATIONS
+          .BUY_SCREEN as MusdEducationButtonClickedEventProperties['redirects_to'];
+      }
+      if (isDeeplinkNoTokensContinueHome || isGeoBlocked) {
+        return MUSD_EVENTS_CONSTANTS.REDIRECT_DESTINATIONS
+          .HOME_SCREEN as MusdEducationButtonClickedEventProperties['redirects_to'];
+      }
+      return MUSD_EVENTS_CONSTANTS.REDIRECT_DESTINATIONS
+        .CUSTOM_AMOUNT_SCREEN as MusdEducationButtonClickedEventProperties['redirects_to'];
+    }, [
+      isDeeplinkNoTokensGoToBuy,
+      isDeeplinkNoTokensContinueHome,
+      isGeoBlocked,
+    ]);
+
   /**
    * Handle primary CTA click.
    * - Deeplink + no tokens + can buy: open buy flow then go home ("Buy mUSD").
@@ -100,6 +164,23 @@ const MusdEducationScreen: React.FC = () => {
    * - Otherwise (including deeplink + has tokens): start conversion flow ("Get started").
    */
   const handleContinue = useCallback(async () => {
+    /* eslint-disable @typescript-eslint/naming-convention */
+    const eventProperties: MusdEducationButtonClickedEventProperties = {
+      location:
+        MUSD_EVENTS_CONSTANTS.EVENT_LOCATIONS.CONVERSION_EDUCATION_SCREEN,
+      button_type: MUSD_EVENTS_CONSTANTS.BUTTON_TYPES.PRIMARY,
+      button_text: primaryButtonLabel,
+      redirects_to: getRedirectDestination(),
+    };
+    /* eslint-enable @typescript-eslint/naming-convention */
+
+    // Track primary button click
+    trackEvent({
+      event: MetaMetricsEventName.MusdFullscreenAnnouncementButtonClicked,
+      category: MetaMetricsEventCategory.MusdConversion,
+      properties: eventProperties,
+    });
+
     dispatch(setMusdConversionEducationSeen(true));
 
     if (isDeeplinkNoTokensGoToBuy) {
@@ -148,6 +229,9 @@ const MusdEducationScreen: React.FC = () => {
     openBuyCryptoInPdapp,
     startConversionFlow,
     defaultPaymentToken,
+    trackEvent,
+    primaryButtonLabel,
+    getRedirectDestination,
   ]);
 
   /**
@@ -155,21 +239,38 @@ const MusdEducationScreen: React.FC = () => {
    * Marks education as seen and navigates home.
    */
   const handleSkip = useCallback(() => {
+    /* eslint-disable @typescript-eslint/naming-convention */
+    const eventProperties: MusdEducationButtonClickedEventProperties = {
+      location:
+        MUSD_EVENTS_CONSTANTS.EVENT_LOCATIONS.CONVERSION_EDUCATION_SCREEN,
+      button_type: MUSD_EVENTS_CONSTANTS.BUTTON_TYPES.SECONDARY,
+      button_text: secondaryButtonLabel,
+      redirects_to: MUSD_EVENTS_CONSTANTS.REDIRECT_DESTINATIONS.HOME_SCREEN,
+    };
+    /* eslint-enable @typescript-eslint/naming-convention */
+
+    // Track secondary button click
+    trackEvent({
+      event: MetaMetricsEventName.MusdFullscreenAnnouncementButtonClicked,
+      category: MetaMetricsEventCategory.MusdConversion,
+      properties: eventProperties,
+    });
+
     dispatch(setMusdConversionEducationSeen(true));
     navigate(DEFAULT_ROUTE);
-  }, [dispatch, navigate]);
-
-  let primaryButtonLabel = t('musdEducationGetStarted');
-  if (isDeeplinkNoTokensGoToBuy) {
-    primaryButtonLabel = t('musdBuyMusd');
-  } else if (isDeeplinkNoTokensContinueHome || isGeoBlocked) {
-    primaryButtonLabel = t('continue');
-  }
+  }, [dispatch, navigate, trackEvent, secondaryButtonLabel]);
 
   return (
     <Box
       className="musd-education-screen"
-      style={{ display: 'flex', flexDirection: 'column', height: '100%' }}
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        flex: 1,
+        minHeight: 0,
+        width: '100%',
+        overflow: 'hidden',
+      }}
       flexDirection={BoxFlexDirection.Column}
       backgroundColor={BoxBackgroundColor.BackgroundDefault}
     >
@@ -179,6 +280,7 @@ const MusdEducationScreen: React.FC = () => {
         justifyContent={BoxJustifyContent.End}
         paddingTop={3}
         paddingRight={4}
+        style={{ flexShrink: 0 }}
       >
         <ButtonIcon
           iconName={IconName.Close}
@@ -190,70 +292,103 @@ const MusdEducationScreen: React.FC = () => {
         />
       </Box>
 
-      {/* Main content – vertically centered */}
+      {/* Main content – scrolls on short viewports; CTAs stay pinned below */}
       <Box
         flexDirection={BoxFlexDirection.Column}
-        alignItems={BoxAlignItems.Center}
-        justifyContent={BoxJustifyContent.Center}
         paddingLeft={4}
         paddingRight={4}
-        style={{ flex: 1 }}
+        style={{ flex: 1, minHeight: 0, overflowY: 'auto' }}
       >
-        {/* Hero headline */}
-        <Box marginBottom={3}>
-          <Text
-            variant={TextVariant.DisplayMd}
-            fontFamily={FontFamily.Hero}
-            textAlign={TextAlign.Center}
-            color={TextColor.TextDefault}
-            textTransform={TextTransform.Uppercase}
-          >
-            {t('musdEducationHeadline', [String(MUSD_CONVERSION_APY)])}
-          </Text>
-        </Box>
-
-        {/* Body copy */}
-        <Box marginBottom={4}>
-          <Text
-            variant={TextVariant.BodyMd}
-            textAlign={TextAlign.Center}
-            color={TextColor.TextAlternative}
-          >
-            {t('musdBonusExplanation', [
-              String(MUSD_CONVERSION_APY),
-              <TextButton key="terms-link" size={TextButtonSize.BodyMd} asChild>
-                <a
-                  href={MUSD_CONVERSION_BONUS_TERMS_OF_USE}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  {t('musdTermsApply')}
-                </a>
-              </TextButton>,
-            ])}
-          </Text>
-        </Box>
-
-        {/* Central illustration */}
+        {/* Inner wrapper – safe center: vertically centers when content fits; start-aligns when it would overflow (Chromium). */}
         <Box
-          justifyContent={BoxJustifyContent.Center}
+          flexDirection={BoxFlexDirection.Column}
           alignItems={BoxAlignItems.Center}
+          style={{
+            minHeight: '100%',
+            // `safe center` avoids unsafe flex centering that clips the top of the hero when scrolling.
+            justifyContent: 'safe center',
+          }}
         >
-          <img
-            src={
-              theme === ThemeType.dark
-                ? MUSD_EDUCATION_COIN_IMAGE_DARK
-                : MUSD_EDUCATION_COIN_IMAGE_LIGHT
-            }
-            alt={t('musdGetMusd') as string}
-            width={252}
-            height={252}
-          />
+          {/* Hero headline */}
+          <Box marginBottom={3}>
+            <Text
+              variant={TextVariant.DisplayMd}
+              fontFamily={FontFamily.Hero}
+              textAlign={TextAlign.Center}
+              color={TextColor.TextDefault}
+              textTransform={TextTransform.Uppercase}
+              style={{ whiteSpace: 'pre-line' }}
+            >
+              {t('musdEducationHeadline', [String(MUSD_CONVERSION_APY)])}
+            </Text>
+          </Box>
+
+          {/* Body copy */}
+          <Box marginBottom={4}>
+            <Text
+              variant={TextVariant.BodyMd}
+              textAlign={TextAlign.Center}
+              color={TextColor.TextAlternative}
+              style={{ whiteSpace: 'pre-line' }}
+            >
+              {t('musdBonusExplanation', [
+                String(MUSD_CONVERSION_APY),
+                <TextButton
+                  key="terms-link"
+                  size={TextButtonSize.BodyMd}
+                  asChild
+                >
+                  <a
+                    href={MUSD_CONVERSION_BONUS_TERMS_OF_USE}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={() => {
+                      const properties = {
+                        location: 'conversion_education_screen',
+                        url: MUSD_CONVERSION_BONUS_TERMS_OF_USE,
+                      };
+
+                      trackEvent({
+                        event: MetaMetricsEventName.MusdBonusTermsOfUsePressed,
+                        category: MetaMetricsEventCategory.MusdConversion,
+                        properties,
+                      });
+                    }}
+                  >
+                    {t('musdTermsApply')}
+                  </a>
+                </TextButton>,
+              ])}
+            </Text>
+          </Box>
+
+          {/* Central illustration */}
+          <Box
+            justifyContent={BoxJustifyContent.Center}
+            alignItems={BoxAlignItems.Center}
+          >
+            <img
+              src={
+                theme === ThemeType.dark
+                  ? MUSD_EDUCATION_COIN_IMAGE_DARK
+                  : MUSD_EDUCATION_COIN_IMAGE_LIGHT
+              }
+              alt={t('musdGetMusd') as string}
+              width={252}
+              height={252}
+              style={{ maxWidth: '100%', height: 'auto' }}
+            />
+          </Box>
         </Box>
       </Box>
 
       {/* Footer actions – full-width buttons with padding to match Figma */}
-      <Box flexDirection={BoxFlexDirection.Column} gap={2} padding={4}>
+      <Box
+        flexDirection={BoxFlexDirection.Column}
+        gap={2}
+        padding={4}
+        style={{ flexShrink: 0 }}
+      >
         <Box style={{ width: '100%' }}>
           <Button
             variant={ButtonVariant.Primary}
@@ -275,7 +410,7 @@ const MusdEducationScreen: React.FC = () => {
             style={{ width: '100%', color: 'var(--color-text-default)' }}
             data-testid="musd-education-not-now-button"
           >
-            {t('musdEducationNotNow')}
+            {secondaryButtonLabel}
           </Button>
         </Box>
       </Box>

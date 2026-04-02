@@ -36,11 +36,11 @@ import { MultichainTransactionsController } from '@metamask/multichain-transacti
 import {
   CronjobController,
   ExecutionService,
-  JsonSnapsRegistry,
-  MultichainRouter,
+  MultichainRoutingService,
   SnapController,
   SnapInsightsController,
   SnapInterfaceController,
+  SnapRegistryController,
   WebSocketService,
 } from '@metamask/snaps-controllers';
 import {
@@ -71,7 +71,6 @@ import { PermissionLogController } from '@metamask/permission-log-controller';
 import { AnnouncementController } from '@metamask/announcement-controller';
 import { PhishingController } from '@metamask/phishing-controller';
 import { LoggingController } from '@metamask/logging-controller';
-import { ErrorReportingService } from '@metamask/error-reporting-service';
 import { StorageService } from '@metamask/storage-service';
 import { AddressBookController } from '@metamask/address-book-controller';
 import {
@@ -91,6 +90,7 @@ import {
   ProfileMetricsController,
   ProfileMetricsService,
 } from '@metamask/profile-metrics-controller';
+import { PerpsController } from '@metamask/perps-controller';
 import OnboardingController from '../controllers/onboarding';
 import { PreferencesController } from '../controllers/preferences-controller';
 import { InstitutionalSnapController } from '../controllers/institutional-snap/InstitutionalSnapController';
@@ -138,12 +138,10 @@ export type Controller =
   | EncryptionPublicKeyController
   | EncryptionPublicKeyManager
   | EnsController
-  | ErrorReportingService
   | StorageService
   | ExecutionService
   | GasFeeController
   | GatorPermissionsController
-  | JsonSnapsRegistry
   | KeyringController
   | LoggingController
   | MetaMetricsController
@@ -153,7 +151,7 @@ export type Controller =
   | MultichainBalancesController
   | MultichainTransactionsController
   | MultichainNetworkController
-  | MultichainRouter
+  | MultichainRoutingService
   | NameController
   | NetworkController
   | NetworkOrderController
@@ -166,6 +164,7 @@ export type Controller =
       CaveatSpecificationConstraint
     >
   | PermissionLogController
+  | PerpsController
   | PhishingController
   | PPOMController
   | PreferencesController
@@ -183,6 +182,7 @@ export type Controller =
   | SnapInterfaceController
   | SnapInsightsController
   | SnapKeyringBuilder
+  | SnapRegistryController
   | SubscriptionController
   | SnapsNameProvider
   | SubjectMetadataController
@@ -239,7 +239,6 @@ export type ControllerFlatState = AccountOrderController['state'] &
   EnsController['state'] &
   GasFeeController['state'] &
   GatorPermissionsController['state'] &
-  JsonSnapsRegistry['state'] &
   KeyringController['state'] &
   LoggingController['state'] &
   MetaMetricsController['state'] &
@@ -258,6 +257,7 @@ export type ControllerFlatState = AccountOrderController['state'] &
     CaveatSpecificationConstraint
   >['state'] &
   PermissionLogController['state'] &
+  PerpsController['state'] &
   PhishingController['state'] &
   PPOMController['state'] &
   PreferencesController['state'] &
@@ -272,6 +272,7 @@ export type ControllerFlatState = AccountOrderController['state'] &
   SnapController['state'] &
   SnapInsightsController['state'] &
   SnapInterfaceController['state'] &
+  SnapRegistryController['state'] &
   SubscriptionController['state'] &
   TokenBalancesController['state'] &
   TokenDetectionController['state'] &

@@ -1,0 +1,86 @@
+import { Story, Canvas, ArgsTable } from '@storybook/addon-docs';
+import { HeaderSearch } from './header-search';
+
+# HeaderSearch
+
+The `HeaderSearch` component provides a search input header with two layout variants. It wraps `TextFieldSearch` with navigation controls appropriate for each context.
+
+<Canvas>
+  <Story id="components-componentlibrary-headersearch--screen" />
+</Canvas>
+
+## Props
+
+<ArgsTable of={HeaderSearch} />
+
+### Variants
+
+`HeaderSearch` supports two variants via the `variant` prop:
+
+- **`Screen`** — Displays a back arrow button on the left and the search field on the right. Use this when the search opens as a full screen or replaces the current view.
+- **`Inline`** — Displays the search field on the left and a close button on the right. Use this when the search appears inline within the current view.
+
+### Screen
+
+The `Screen` variant renders an `ArrowLeft` back button before the search field. Use `onClickBackButton` to handle navigation.
+
+<Canvas>
+  <Story id="components-componentlibrary-headersearch--screen" />
+</Canvas>
+
+```jsx
+import { HeaderSearch, HeaderSearchVariant } from '../../component-library';
+
+<HeaderSearch
+  variant={HeaderSearchVariant.Screen}
+  onClickBackButton={() => console.log('back')}
+  textFieldSearchProps={{
+    value: '',
+    placeholder: 'Search',
+    onChangeText: (text) => console.log(text),
+    onClickClearButton: () => console.log('clear'),
+  }}
+/>;
+```
+
+### Inline
+
+The `Inline` variant renders a `Close` button after the search field. Use `onClickCancelButton` to dismiss the search.
+
+<Canvas>
+  <Story id="components-componentlibrary-headersearch--inline" />
+</Canvas>
+
+```jsx
+import { HeaderSearch, HeaderSearchVariant } from '../../component-library';
+
+<HeaderSearch
+  variant={HeaderSearchVariant.Inline}
+  onClickCancelButton={() => console.log('cancel')}
+  textFieldSearchProps={{
+    value: '',
+    placeholder: 'Search',
+    onChangeText: (text) => console.log(text),
+    onClickClearButton: () => console.log('clear'),
+  }}
+/>;
+```
+
+### With Value
+
+Both variants support pre-filled search values via `textFieldSearchProps.value`.
+
+<Canvas>
+  <Story id="components-componentlibrary-headersearch--screen-with-value" />
+</Canvas>
+
+<Canvas>
+  <Story id="components-componentlibrary-headersearch--inline-with-value" />
+</Canvas>
+
+### textFieldSearchProps
+
+The `textFieldSearchProps` prop accepts all `TextFieldSearch` props plus two convenience callbacks:
+
+- **`onChangeText`** — Called with the input string value on change (instead of the full event).
+- **`onClickClearButton`** — Called when the clear button is clicked.

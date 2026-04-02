@@ -7,16 +7,18 @@ import {
   setSkipDeepLinkInterstitial,
 } from '../../../store/actions';
 import type { MetaMaskReduxState } from '../../../store/store';
+import { PRIVACY_ITEMS } from '../search-config';
 import { ThirdPartyApisItem } from './third-party-apis-item';
 import { BasicFunctionalityToggleItem } from './basic-functionality-item';
 import { MetametricsToggleItem } from './metametrics-item';
 import { DataCollectionToggleItem } from './data-collection-item';
 import { DeleteMetametricsDataItem } from './delete-metametrics-data-item';
 import { DownloadStateLogsItem } from './download-state-logs-item';
+import { ExportYourDataItem } from './export-your-data-item';
 
 const BatchAccountBalanceRequestsToggleItem = createToggleItem({
   name: 'BatchAccountBalanceRequestsToggleItem',
-  titleKey: 'useMultiAccountBalanceChecker',
+  titleKey: PRIVACY_ITEMS['batch-account-balance-requests'],
   descriptionKey: 'useMultiAccountBalanceCheckerSettingDescriptionV2',
   selector: (state: MetaMaskReduxState) =>
     state.metamask.useMultiAccountBalanceChecker,
@@ -26,7 +28,7 @@ const BatchAccountBalanceRequestsToggleItem = createToggleItem({
 
 const SkipLinkConfirmationToggleItem = createToggleItem({
   name: 'SkipLinkConfirmationToggleItem',
-  titleKey: 'skipLinkConfirmationScreens',
+  titleKey: PRIVACY_ITEMS['skip-link-confirmation'],
   descriptionKey: 'skipLinkConfirmationScreensDescription',
   selector: (state: MetaMaskReduxState) =>
     Boolean(getPreferences(state).skipDeepLinkInterstitial),
@@ -54,6 +56,10 @@ const PRIVACY_SETTING_ITEMS: SettingItemConfig[] = [
     id: 'download-state-logs',
     component: DownloadStateLogsItem,
     hasDividerBefore: true,
+  },
+  {
+    id: 'export-your-data',
+    component: ExportYourDataItem,
   },
 ];
 

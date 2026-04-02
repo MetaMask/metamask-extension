@@ -69,6 +69,7 @@ const mockAccountGroups: AccountGroupWithInternalAccounts[] = [
       entropy: {
         groupIndex: 0,
       },
+      lastSelected: 0,
     },
     accounts: [mockEvmAccount1, mockSolAccount1],
     walletName: 'Test Wallet',
@@ -84,6 +85,7 @@ const mockAccountGroups: AccountGroupWithInternalAccounts[] = [
       entropy: {
         groupIndex: 1,
       },
+      lastSelected: 0,
     },
     accounts: [mockEvmAccount2, mockSolAccount2],
     walletName: 'Test Wallet',
@@ -158,8 +160,8 @@ const createMockState = (overrides = {}) => ({
         accounts: [mockSolAccount1.address, mockSolAccount2.address],
       },
     ],
+    selectedAccountGroup: MOCK_GROUP_ID_1,
     accountTree: {
-      selectedAccountGroup: MOCK_GROUP_ID_1,
       wallets: {
         [MOCK_WALLET_ID]: {
           id: MOCK_WALLET_ID,
@@ -181,6 +183,7 @@ const createMockState = (overrides = {}) => ({
                 entropy: {
                   groupIndex: 0,
                 },
+                lastSelected: 0,
               },
               accounts: [mockEvmAccount1.id, mockSolAccount1.id],
             },
@@ -194,6 +197,7 @@ const createMockState = (overrides = {}) => ({
                 entropy: {
                   groupIndex: 1,
                 },
+                lastSelected: 0,
               },
               accounts: [mockEvmAccount2.id, mockSolAccount2.id],
             },

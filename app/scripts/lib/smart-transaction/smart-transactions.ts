@@ -1,9 +1,9 @@
 import {
-  AcceptRequest,
-  AddApprovalRequest,
-  EndFlow,
-  StartFlow,
-  UpdateRequestState,
+  ApprovalControllerAcceptRequestAction,
+  ApprovalControllerAddRequestAction,
+  ApprovalControllerEndFlowAction,
+  ApprovalControllerStartFlowAction,
+  ApprovalControllerUpdateRequestStateAction,
 } from '@metamask/approval-controller';
 import {
   SmartTransactionsController,
@@ -45,11 +45,11 @@ import { getClientForTransactionMetadata, sanitizeOrigin } from './utils';
 const namespace = 'SmartTransactions';
 
 export type AllowedActions =
-  | AddApprovalRequest
-  | UpdateRequestState
-  | StartFlow
-  | AcceptRequest
-  | EndFlow;
+  | ApprovalControllerAddRequestAction
+  | ApprovalControllerUpdateRequestStateAction
+  | ApprovalControllerStartFlowAction
+  | ApprovalControllerAcceptRequestAction
+  | ApprovalControllerEndFlowAction;
 export type AllowedEvents = SmartTransactionsControllerSmartTransactionEvent;
 
 export type SmartTransactionHookMessenger = Messenger<

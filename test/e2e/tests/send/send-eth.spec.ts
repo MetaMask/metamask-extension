@@ -15,7 +15,6 @@ import { TransactionEnvelopeType } from '@metamask/transaction-controller';
 import { Mockttp } from 'mockttp';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import ActivityListPage from '../../page-objects/pages/home/activity-list';
-import FixtureBuilder from '../../fixtures/fixture-builder';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import HomePage from '../../page-objects/pages/home/homepage';
 import SendPage from '../../page-objects/pages/send/send-page';
@@ -24,9 +23,14 @@ import TokenTransferTransactionConfirmation from '../../page-objects/pages/confi
 import TestDapp from '../../page-objects/pages/test-dapp';
 import { Driver } from '../../webdriver/driver';
 import { Anvil } from '../../seeder/anvil';
-import { DAPP_PATH, DAPP_URL, WINDOW_TITLES } from '../../constants';
+import {
+  DAPP_PATH,
+  DAPP_URL,
+  NETWORK_CLIENT_ID,
+  WINDOW_TITLES,
+} from '../../constants';
 import { veryLargeDelayMs, withFixtures } from '../../helpers';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 import { mockLookupSnap } from '../../mock-response-data/snaps/snap-binary-mocks';
 import { openTestSnapClickButtonAndInstall } from '../../page-objects/flows/install-test-snap.flow';
 import { createInternalTransaction } from '../../page-objects/flows/transaction';
@@ -47,7 +51,7 @@ describe('Send ETH', function () {
           driver: Driver;
           localNodes?: Anvil[];
         }) => {
-          await loginWithBalanceValidation(driver, localNodes?.[0]);
+          await login(driver, { localNode: localNodes?.[0] });
 
           const homePage = new HomePage(driver);
           const sendPage = new SendPage(driver);
@@ -62,6 +66,7 @@ describe('Send ETH', function () {
 
           await sendTokenConfirmPage.clickOnConfirm();
 
+          await homePage.goToActivityList();
           await activityListPage.checkTransactionActivityByText('Sent');
           await activityListPage.checkCompletedTxNumberDisplayedInActivity(1);
           await activityListPage.checkTxAmountInActivity('-1 ETH');
@@ -82,7 +87,7 @@ describe('Send ETH', function () {
           driver: Driver;
           localNodes?: Anvil[];
         }) => {
-          await loginWithBalanceValidation(driver, localNodes?.[0]);
+          await login(driver, { localNode: localNodes?.[0] });
 
           const testDapp = new TestDapp(driver);
           const homePage = new HomePage(driver);
@@ -136,10 +141,11 @@ describe('Send ETH', function () {
           title: this.test?.fullTitle(),
         },
         async ({ driver }) => {
-          await loginWithBalanceValidation(driver);
+          await login(driver);
 
           const sendTokenConfirmationPage = new SendTokenConfirmPage(driver);
           const activityListPage = new ActivityListPage(driver);
+          const homePage = new HomePage(driver);
 
           await createInternalTransaction({
             driver,
@@ -150,6 +156,7 @@ describe('Send ETH', function () {
           });
 
           await sendTokenConfirmationPage.clickOnConfirm();
+          await homePage.goToActivityList();
           await activityListPage.checkTransactionActivityByText('Sent');
           await activityListPage.checkCompletedTxNumberDisplayedInActivity(1);
           await activityListPage.checkTxAmountInActivity('-1 ETH');
@@ -165,16 +172,17 @@ describe('Send ETH', function () {
           dappOptions: {
             customDappPaths: [DAPP_PATH.TEST_SNAPS],
           },
-          fixtures: new FixtureBuilder({
-            inputChainId: CHAIN_IDS.MAINNET,
-          }).build(),
+          fixtures: new FixtureBuilderV2()
+            .withSelectedNetwork(NETWORK_CLIENT_ID.MAINNET)
+            .withSnapsPrivacyWarningAlreadyShown()
+            .build(),
           title: this.test?.fullTitle(),
           testSpecificMock: (mockServer: Mockttp) => {
             mockLookupSnap(mockServer);
           },
         },
         async ({ driver }) => {
-          await loginWithBalanceValidation(driver);
+          await login(driver);
 
           await openTestSnapClickButtonAndInstall(
             driver,

@@ -415,9 +415,8 @@
     },
     "preferences": {
       "defaultAddressScope": "eip155",
-      "showDefaultAddress": false,
+      "showDefaultAddress": true,
       "hideZeroBalanceTokens": false,
-      "petnamesEnabled": false,
       "showExtensionInFullSizeView": false,
       "showFiatInTestnets": false,
       "showNativeTokenAsMainBalance": true,
@@ -532,8 +531,8 @@
         ]
       }
     },
+    "selectedAccountGroup": "entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0",
     "accountTree": {
-      "selectedAccountGroup": "entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0",
       "wallets": {
         "entropy:01JKAF3DSGM3AB87EM9N0K41AJ": {
           "id": "entropy:01JKAF3DSGM3AB87EM9N0K41AJ",
@@ -552,7 +551,8 @@
                   "groupIndex": 0
                 },
                 "hidden": false,
-                "pinned": false
+                "pinned": false,
+                "lastSelected": 0
               }
             }
           },
@@ -575,6 +575,7 @@
                 "name": "Account 2",
                 "hidden": false,
                 "pinned": false,
+                "lastSelected": 0,
                 "entropy": {
                   "groupIndex": 0
                 }
@@ -599,7 +600,8 @@
               "metadata": {
                 "name": "Ledger Account 1",
                 "hidden": false,
-                "pinned": false
+                "pinned": false,
+                "lastSelected": 0
               }
             }
           },
@@ -621,7 +623,8 @@
               "metadata": {
                 "name": "Another Snap Account 1",
                 "hidden": false,
-                "pinned": false
+                "pinned": false,
+                "lastSelected": 0
               }
             }
           },
@@ -643,7 +646,8 @@
               "metadata": {
                 "name": "Snap Account 1",
                 "hidden": false,
-                "pinned": false
+                "pinned": false,
+                "lastSelected": 0
               }
             }
           },

@@ -1,7 +1,7 @@
 import { TransactionType } from '@metamask/transaction-controller';
 import { renderHook } from '@testing-library/react-hooks';
 import { useDispatch } from 'react-redux';
-// eslint-disable-next-line import/no-restricted-paths
+// eslint-disable-next-line import-x/no-restricted-paths
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import {
   ENVIRONMENT_TYPE_POPUP,

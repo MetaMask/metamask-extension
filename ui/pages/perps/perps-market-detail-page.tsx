@@ -26,8 +26,8 @@ import {
   ButtonSize,
 } from '@metamask/design-system-react';
 import { brandColor } from '@metamask/design-tokens';
-import type { PriceUpdate } from '@metamask/perps-controller';
-import { getIsPerpsEnabled } from '../../selectors/perps/feature-flags';
+import type { Position, PriceUpdate } from '@metamask/perps-controller';
+import { getIsPerpsExperienceAvailable } from '../../selectors/perps/feature-flags';
 import { getSelectedInternalAccount } from '../../selectors/accounts';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import {
@@ -42,8 +42,8 @@ import {
   usePerpsLiveCandles,
 } from '../../hooks/perps/stream';
 import { usePerpsEligibility } from '../../hooks/perps';
-import { getPerpsController } from '../../providers/perps';
-import { getPerpsStreamManager } from '../../providers/perps/PerpsStreamManager';
+import { getPerpsStreamManager } from '../../providers/perps';
+import { submitRequestToBackground } from '../../store/background-connection';
 import { OrderCard } from '../../components/app/perps/order-card';
 import { PerpsTokenLogo } from '../../components/app/perps/perps-token-logo';
 import {
@@ -62,6 +62,7 @@ import {
   safeDecodeURIComponent,
   getChangeColor,
 } from '../../components/app/perps/utils';
+import { normalizeMarketDetailsOrders } from '../../components/app/perps/utils/orderUtils';
 import { PerpsDetailPageSkeleton } from '../../components/app/perps/perps-skeletons';
 import { Skeleton } from '../../components/component-library/skeleton';
 import { Popover, PopoverPosition } from '../../components/component-library';
@@ -72,6 +73,11 @@ import { UpdateTPSLModal } from '../../components/app/perps/update-tpsl';
 import { ClosePositionModal } from '../../components/app/perps/close-position';
 import InfoTooltip from '../../components/ui/info-tooltip/info-tooltip';
 import { BorderRadius } from '../../helpers/constants/design-system';
+import type { MetaMaskReduxState } from '../../store/store';
+import {
+  type PerpsState,
+  selectPerpsIsWatchlistMarket,
+} from '../../selectors/perps-controller';
 
 /**
  * Calculate the funding countdown string (time until next UTC hour).
@@ -171,7 +177,7 @@ const PerpsMarketDetailPage: React.FC = () => {
   const t = useI18nContext();
   const navigate = useNavigate();
   const { symbol } = useParams<{ symbol: string }>();
-  const isPerpsEnabled = useSelector(getIsPerpsEnabled);
+  const isPerpsExperienceAvailable = useSelector(getIsPerpsExperienceAvailable);
   const selectedAccount = useSelector(getSelectedInternalAccount);
   const selectedAddress = selectedAccount?.address;
   const { isEligible } = usePerpsEligibility();
@@ -197,8 +203,10 @@ const PerpsMarketDetailPage: React.FC = () => {
     return safeDecodeURIComponent(symbol);
   }, [symbol]);
 
+  const [showSizeInFiat, setShowSizeInFiat] = useState(false);
+
   // Subscribe to live price data for current symbol (provides oracle price, live funding, OI)
-  // Uses getPerpsController (module singleton) since this page is outside PerpsControllerProvider
+  // Uses background streaming via perpsActivatePriceStream + PerpsStreamManager
   const [livePrice, setLivePrice] = useState<PriceUpdate | undefined>(
     undefined,
   );
@@ -208,43 +216,33 @@ const PerpsMarketDetailPage: React.FC = () => {
       return undefined;
     }
 
-    let unsubscribe: (() => void) | undefined;
-    let cancelled = false;
+    // Activate background price stream for this symbol
+    submitRequestToBackground('perpsActivatePriceStream', [
+      { symbols: [decodedSymbol] },
+    ]).catch(() => {
+      // Controller not ready yet, skip silently
+    });
 
-    const subscribe = async () => {
-      try {
-        const controller = await getPerpsController(selectedAddress);
-        if (cancelled) {
-          return;
-        }
-        unsubscribe = controller.subscribeToPrices({
-          symbols: [decodedSymbol],
-          includeMarketData: true,
-          callback: (priceUpdates) => {
-            const update = priceUpdates.find((p) => p.symbol === decodedSymbol);
-            if (update) {
-              const ts = (update as { timestamp?: number }).timestamp;
-              const mark = (update as { markPrice?: string }).markPrice;
-              setLivePrice({
-                symbol: update.symbol,
-                price: update.price,
-                timestamp: ts ?? Date.now(),
-                markPrice: mark ?? update.price,
-              });
-            }
-          },
-          throttleMs: 1000,
+    // Subscribe to price updates from the stream manager
+    const streamManager = getPerpsStreamManager();
+    const unsubscribe = streamManager.prices.subscribe((priceUpdates) => {
+      const update = priceUpdates.find((p) => p.symbol === decodedSymbol);
+      if (update) {
+        const ts = (update as { timestamp?: number }).timestamp;
+        const mark = (update as { markPrice?: string }).markPrice;
+        setLivePrice({
+          symbol: update.symbol,
+          price: update.price,
+          timestamp: ts ?? Date.now(),
+          percentChange24h: update.percentChange24h,
+          markPrice: mark ?? update.price,
         });
-      } catch {
-        // Controller not ready yet, skip silently
       }
-    };
-
-    subscribe();
+    });
 
     return () => {
-      cancelled = true;
-      unsubscribe?.();
+      submitRequestToBackground('perpsDeactivatePriceStream', []);
+      unsubscribe();
     };
   }, [decodedSymbol, selectedAddress]);
 
@@ -283,34 +281,26 @@ const PerpsMarketDetailPage: React.FC = () => {
     positionRef.current = position;
   }, [position]);
 
-  // Find user-placed limit orders resting on the orderbook for this market.
-  // Excludes all position-attached orders:
-  // - isTrigger: TP/SL trigger orders
-  // - reduceOnly: close/reduce orders tied to positions
-  // - triggerPrice: any order with a trigger condition (TP/SL variant)
-  // - detailedOrderType containing "Take Profit" or "Stop" (belt-and-suspenders)
+  // Filter and sort open orders for this market, then normalize for display.
+  // Normalization adds synthetic TP/SL rows for parent orders and filters out
+  // full-position TP/SL (those stay on the position card / auto-close section).
   const orders = useMemo(() => {
     if (!decodedSymbol) {
       return [];
     }
-    return allOrders.filter((order) => {
-      if (order.symbol.toLowerCase() !== decodedSymbol.toLowerCase()) {
-        return false;
-      }
-      if (order.status !== 'open') {
-        return false;
-      }
-      // Exclude position-attached orders
-      if (order.isTrigger || order.reduceOnly || order.triggerPrice) {
-        return false;
-      }
-      const detailed = order.detailedOrderType?.toLowerCase() ?? '';
-      if (detailed.includes('take profit') || detailed.includes('stop')) {
-        return false;
-      }
-      return true;
+    const marketOrders = allOrders
+      .filter(
+        (order) =>
+          order.symbol.toLowerCase() === decodedSymbol.toLowerCase() &&
+          order.status === 'open',
+      )
+      .sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+
+    return normalizeMarketDetailsOrders({
+      orders: marketOrders,
+      existingPosition: position,
     });
-  }, [decodedSymbol, allOrders]);
+  }, [decodedSymbol, allOrders, position]);
 
   // Candle period state and chart ref
   const [selectedPeriod, setSelectedPeriod] = useState<CandlePeriod>(
@@ -344,6 +334,9 @@ const PerpsMarketDetailPage: React.FC = () => {
   const [isCloseModalOpen, setIsCloseModalOpen] = useState(false);
   const modifyMenuRef = useRef<HTMLDivElement>(null);
   const marginMenuRef = useRef<HTMLDivElement>(null);
+  const isInWatchlist = useSelector((state: MetaMaskReduxState) =>
+    selectPerpsIsWatchlistMarket(state as PerpsState, decodedSymbol ?? ''),
+  );
 
   // Parse fallback price from market data (used before candle stream is ready)
   const marketPrice = useMemo(() => {
@@ -377,10 +370,9 @@ const PerpsMarketDetailPage: React.FC = () => {
     return market?.price ?? '$0.00';
   }, [chartCurrentPrice, market, formatNumber]);
 
-  // 24h change from market data.
-  // TODO: When PerpsControllerProvider is available in the route tree,
-  // subscribe to usePerpsLivePrices for live 24h change updates.
-  const displayChange = market?.change24hPercent ?? '';
+  // 24h change prefers live stream updates when available, with market-data fallback.
+  const displayChange =
+    livePrice?.percentChange24h ?? market?.change24hPercent ?? '';
 
   // Build price lines for chart overlay (current price + TP, Entry, SL)
   // Current price line is always shown; TP/Entry/SL only when position exists.
@@ -579,13 +571,26 @@ const PerpsMarketDetailPage: React.FC = () => {
     setIsTPSLModalOpen(false);
   }, []);
 
+  const handleFavoriteClick = useCallback(() => {
+    if (!decodedSymbol) {
+      return;
+    }
+    submitRequestToBackground('perpsToggleWatchlistMarket', [
+      decodedSymbol,
+    ]).catch((e) => {
+      console.warn('[Perps] Toggle watchlist failed:', e);
+    });
+  }, [decodedSymbol]);
+
   // Refetch positions when tab becomes visible (catch changes made elsewhere)
   useEffect(() => {
     const handleVisibility = async () => {
       if (document.visibilityState === 'visible' && selectedAddress) {
         try {
-          const controller = await getPerpsController(selectedAddress);
-          const positions = await controller.getPositions({ skipCache: true });
+          const positions = await submitRequestToBackground<Position[]>(
+            'perpsGetPositions',
+            [{ skipCache: true }],
+          );
           getPerpsStreamManager().pushPositionsWithOverrides(positions);
         } catch (e) {
           console.warn('[Perps] Visibility refetch failed:', e);
@@ -602,7 +607,7 @@ const PerpsMarketDetailPage: React.FC = () => {
   const handleOrderClick = useCallback(() => undefined, []);
 
   // Guard: redirect if perps feature is disabled
-  if (!isPerpsEnabled) {
+  if (!isPerpsExperienceAvailable) {
     return <Navigate to={DEFAULT_ROUTE} replace />;
   }
 
@@ -766,16 +771,20 @@ const PerpsMarketDetailPage: React.FC = () => {
 
         <Box
           data-testid="perps-market-detail-favorite-button"
-          aria-label={t('perpsAddToFavorites')}
+          aria-label={
+            isInWatchlist
+              ? t('perpsRemoveFromFavorites')
+              : t('perpsAddToFavorites')
+          }
           className="p-2 cursor-pointer"
-          onClick={() => {
-            // TODO: Handle favorite toggle
-          }}
+          onClick={handleFavoriteClick}
         >
           <Icon
-            name={IconName.Star}
+            name={isInWatchlist ? IconName.StarFilled : IconName.Star}
             size={IconSize.Md}
-            color={IconColor.IconAlternative}
+            color={
+              isInWatchlist ? IconColor.IconDefault : IconColor.IconAlternative
+            }
           />
         </Box>
       </Box>
@@ -923,7 +932,7 @@ const PerpsMarketDetailPage: React.FC = () => {
                   className="flex-1 cursor-pointer rounded-xl bg-muted px-4 py-3 hover:bg-muted-hover active:bg-muted-pressed"
                   flexDirection={BoxFlexDirection.Column}
                   onClick={() => {
-                    // TODO: Handle size card press
+                    setShowSizeInFiat((prev) => !prev);
                   }}
                 >
                   <Box paddingBottom={1}>
@@ -938,7 +947,13 @@ const PerpsMarketDetailPage: React.FC = () => {
                     variant={TextVariant.BodyMd}
                     fontWeight={FontWeight.Medium}
                   >
-                    {`${formatNumber(Math.abs(parseFloat(position.size)), { maximumSignificantDigits: 4 })} ${getDisplayName(position.symbol)}`}
+                    {showSizeInFiat && Boolean(position.entryPrice)
+                      ? formatCurrencyWithMinThreshold(
+                          Math.abs(parseFloat(position.size)) *
+                            parseFloat(position.entryPrice.replace(/,/gu, '')),
+                          'USD',
+                        )
+                      : `${formatNumber(Math.abs(parseFloat(position.size)), { maximumSignificantDigits: 4 })} ${getDisplayName(position.symbol)}`}
                   </Text>
                 </Box>
 
@@ -1605,41 +1620,38 @@ const PerpsMarketDetailPage: React.FC = () => {
           position={position}
           account={account}
           currentPrice={currentPrice}
-          selectedAddress={selectedAddress}
           mode={marginModalMode}
         />
       )}
 
       {/* Reverse position modal (from Modify menu) */}
-      {position && selectedAddress && isReverseModalOpen && (
+      {position && isReverseModalOpen && (
         <ReversePositionModal
           isOpen={isReverseModalOpen}
           onClose={handleCloseReverseModal}
           position={position}
           currentPrice={currentPrice}
-          selectedAddress={selectedAddress}
         />
       )}
 
       {/* TP/SL update modal (from Auto Close row) */}
-      {position && selectedAddress && isTPSLModalOpen && (
+      {position && isTPSLModalOpen && (
         <UpdateTPSLModal
+          key={position.symbol}
           isOpen={isTPSLModalOpen}
           onClose={handleCloseTPSLModal}
           position={position}
           currentPrice={currentPrice}
-          selectedAddress={selectedAddress}
         />
       )}
 
       {/* Close position modal */}
-      {position && selectedAddress && isCloseModalOpen && (
+      {position && isCloseModalOpen && (
         <ClosePositionModal
           isOpen={isCloseModalOpen}
           onClose={() => setIsCloseModalOpen(false)}
           position={position}
           currentPrice={currentPrice}
-          selectedAddress={selectedAddress}
         />
       )}
     </Box>

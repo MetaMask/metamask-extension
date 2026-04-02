@@ -267,7 +267,7 @@
   "preferences": {
     "defaultAddressScope": "eip155",
     "hideZeroBalanceTokens": false,
-    "showDefaultAddress": false,
+    "showDefaultAddress": true,
     "showExtensionInFullSizeView": false,
     "showFiatInTestnets": false,
     "showTestNetworks": false,

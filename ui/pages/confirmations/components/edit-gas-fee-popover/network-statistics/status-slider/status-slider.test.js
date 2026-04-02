@@ -1,22 +1,20 @@
 import React from 'react';
 
 import { renderWithProvider } from '../../../../../../../test/lib/render-helpers-navigate';
-import { GasFeeContext } from '../../../../../../contexts/gasFee';
 import configureStore from '../../../../../../store/store';
 import { enLocale as messages } from '../../../../../../../test/lib/i18n-helpers';
 
 import StatusSlider from './status-slider';
 
-const renderComponent = ({ networkCongestion }) => {
-  const component = (
-    <GasFeeContext.Provider value={{ gasFeeEstimates: { networkCongestion } }}>
-      <StatusSlider />
-    </GasFeeContext.Provider>
-  );
+const renderComponent = ({ networkCongestion } = {}) => {
+  const gasFeeEstimates =
+    networkCongestion === undefined ? undefined : { networkCongestion };
 
   const store = configureStore();
-
-  return renderWithProvider(component, store);
+  return renderWithProvider(
+    <StatusSlider gasFeeEstimates={gasFeeEstimates} />,
+    store,
+  );
 };
 
 describe('StatusSlider', () => {

@@ -7,6 +7,7 @@ import {
   MetaMetricsContextProp,
   MetaMetricsEventCategory,
   MetaMetricsEventName,
+  MetaMetricsUserTrait,
 } from '../../../shared/constants/metametrics';
 import TermsOfUsePopup from '../../components/app/terms-of-use-popup';
 import RecoveryPhraseReminder from '../../components/app/recovery-phrase-reminder';
@@ -678,7 +679,7 @@ export default class Home extends PureComponent {
         category: MetaMetricsEventCategory.Home,
         event: MetaMetricsEventName.AnalyticsPreferenceSelected,
         properties: {
-          has_marketing_consent: false,
+          [MetaMetricsUserTrait.HasMarketingConsent]: false,
           location: 'marketing_consent_modal',
         },
       });
@@ -690,7 +691,7 @@ export default class Home extends PureComponent {
         category: MetaMetricsEventCategory.Home,
         event: MetaMetricsEventName.AnalyticsPreferenceSelected,
         properties: {
-          has_marketing_consent: consent,
+          [MetaMetricsUserTrait.HasMarketingConsent]: consent,
           location: 'marketing_consent_modal',
         },
       });

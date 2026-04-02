@@ -6,12 +6,13 @@
 
 // This import sets up global functions required for Sentry to function.
 // It must be run first in case an error is thrown later during initialization.
-// eslint-disable-next-line import/order -- intentional first import for Sentry
+// eslint-disable-next-line import-x/order -- intentional first import for Sentry
 import { persistenceManager } from './lib/setup-initial-state-hooks';
 
 // Import this very early, so globalThis.INFURA_PROJECT_ID_FROM_MANIFEST_FLAGS is always defined
 import '../../shared/constants/infura-project-id';
 
+import { lightTheme } from '@metamask/design-tokens';
 import { finished } from 'readable-stream';
 import log from 'loglevel';
 import browser from 'webextension-polyfill';
@@ -85,7 +86,7 @@ import { setupMultiplex } from './lib/stream-utils';
 import rawFirstTimeState from './first-time-state';
 import { onUpdate } from './on-update';
 
-/* eslint-enable import/first */
+/* eslint-enable import-x/first */
 
 import { COOKIE_ID_MARKETING_WHITELIST_ORIGINS } from './constants/marketing-site-whitelist';
 import {
@@ -113,6 +114,7 @@ const lazyListener =
 
 // eslint-disable-next-line @metamask/design-tokens/color-no-hex
 const BADGE_COLOR_APPROVAL = '#0376C9';
+const BADGE_COLOR_FAILED = lightTheme.colors.error.default;
 const BADGE_MAX_COUNT = 9;
 
 const inTest = process.env.IN_TEST;
@@ -180,6 +182,7 @@ let openPopupCount = 0;
 let notificationIsOpen = false;
 let uiIsTriggering = false;
 let openSidePanelCount = 0;
+let failedTxCount = 0;
 const openMetamaskTabsIDs = {};
 const requestAccountTabIds = {};
 let controller;
@@ -1628,6 +1631,7 @@ export function setupController(
       updateRemoteFeatureFlags(controller);
 
       if (processName === ENVIRONMENT_TYPE_POPUP) {
+        clearFailedTxBadge();
         openPopupCount += 1;
         finished(portStream, () => {
           openPopupCount -= 1;
@@ -1638,6 +1642,7 @@ export function setupController(
       }
 
       if (processName === ENVIRONMENT_TYPE_SIDEPANEL) {
+        clearFailedTxBadge();
         openSidePanelCount += 1;
         // Refresh appActiveTab when sidepanel opens to ensure it has the current tab info
         // This handles the case where user connected to dapp while sidepanel was closed
@@ -1822,6 +1827,53 @@ export function setupController(
     updateBadge,
   );
 
+  controller.controllerMessenger.subscribe(
+    'TransactionController:transactionFailed',
+    onTransactionFailed,
+  );
+
+  controller.controllerMessenger.subscribe(
+    'TransactionController:transactionDropped',
+    onTransactionFailed,
+  );
+
+  function onTransactionFailed() {
+    failedTxCount += 1;
+    const popupFile = isFirefox ? 'popup.html' : 'popup-init.html';
+    try {
+      if (isManifestV3) {
+        browser.action.setPopup({ popup: `${popupFile}?tab=activity` });
+        browser.sidePanel?.setOptions?.({
+          path: 'sidepanel.html?tab=activity',
+        });
+      } else {
+        browser.browserAction.setPopup({ popup: `${popupFile}?tab=activity` });
+      }
+    } catch (e) {
+      console.error('Error setting failed tx badge popup:', e);
+    }
+    updateBadge();
+  }
+
+  function clearFailedTxBadge() {
+    if (!failedTxCount) {
+      return;
+    }
+    failedTxCount = 0;
+    const popupFile = isFirefox ? 'popup.html' : 'popup-init.html';
+    try {
+      if (isManifestV3) {
+        browser.action.setPopup({ popup: popupFile });
+        browser.sidePanel?.setOptions?.({ path: 'sidepanel.html' });
+      } else {
+        browser.browserAction.setPopup({ popup: popupFile });
+      }
+    } catch (e) {
+      console.error('Error clearing failed tx badge popup:', e);
+    }
+    updateBadge();
+  }
+
   /**
    * Formats a count for display as a badge label.
    *
@@ -1841,10 +1893,13 @@ export function setupController(
     const pendingApprovalCount = getPendingApprovalCount();
 
     let label = '';
-    const badgeColor = BADGE_COLOR_APPROVAL;
+    let badgeColor = BADGE_COLOR_APPROVAL;
 
     if (pendingApprovalCount) {
       label = getBadgeLabel(pendingApprovalCount, BADGE_MAX_COUNT);
+    } else if (failedTxCount) {
+      label = getBadgeLabel(failedTxCount, BADGE_MAX_COUNT);
+      badgeColor = BADGE_COLOR_FAILED;
     }
 
     try {

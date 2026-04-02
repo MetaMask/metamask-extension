@@ -1,18 +1,20 @@
 import { Mockttp } from 'mockttp';
+import { toHex } from '@metamask/controller-utils';
 import { withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixtures/fixture-builder';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
+import { login } from '../../page-objects/flows/login.flow';
 import ShieldPlanPage from '../../page-objects/pages/settings/shield/shield-plan-page';
 import HomePage from '../../page-objects/pages/home/homepage';
 import ShieldSubscriptionApprovePage from '../../page-objects/pages/settings/shield/shield-subscription-approve-page';
 import ShieldDetailPage from '../../page-objects/pages/settings/shield/shield-detail-page';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import { ShieldMockttpService } from '../../helpers/shield/mocks';
+import { NETWORK_CLIENT_ID } from '../../constants';
 
 // Local fixture for card payment tests
 function createShieldFixtureCard() {
-  return new FixtureBuilder()
-    .withNetworkControllerOnMainnet()
+  return new FixtureBuilderV2()
+    .withSelectedNetwork(NETWORK_CLIENT_ID.MAINNET)
     .withEnabledNetworks({
       eip155: {
         '0x1': true,
@@ -32,25 +34,13 @@ function createShieldFixtureCard() {
           ],
         },
       },
-    })
-    .withAccountTracker({
-      accountsByChainId: {
-        '0x1': {
-          '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': {
-            balance: '0x15af1d78b58c40000', // 25 ETH
-          },
-        },
-      },
-    })
-    .withAppStateController({
-      showShieldEntryModalOnce: null, // set the initial state to null so that the modal is shown
     });
 }
 
 // Local fixture for crypto payment tests
 function createShieldFixtureCrypto() {
-  return new FixtureBuilder()
-    .withNetworkControllerOnMainnet()
+  return new FixtureBuilderV2()
+    .withSelectedNetwork(NETWORK_CLIENT_ID.MAINNET)
     .withEnabledNetworks({
       eip155: {
         '0x1': true,
@@ -83,23 +73,11 @@ function createShieldFixtureCrypto() {
       tokenBalances: {
         '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': {
           '0x1': {
-            '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48': '100000000', // 100 USDC (6 decimals)
-            '0xdac17f958d2ee523a2206206994597c13d831ec7': '100000000', // 100 USDT (6 decimals)
+            '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48': toHex(100000000), // 100 USDC (6 decimals)
+            '0xdac17f958d2ee523a2206206994597c13d831ec7': toHex(100000000), // 100 USDT (6 decimals)
           },
         },
       },
-    })
-    .withAccountTracker({
-      accountsByChainId: {
-        '0x1': {
-          '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': {
-            balance: '0x15af1d78b58c40000', // 25 ETH
-          },
-        },
-      },
-    })
-    .withAppStateController({
-      showShieldEntryModalOnce: null, // set the initial state to null so that the modal is shown
     });
 }
 
@@ -117,7 +95,7 @@ describe('Shield Subscription Tests', function () {
             },
           },
           async ({ driver }) => {
-            await loginWithBalanceValidation(driver);
+            await login(driver);
 
             const homePage = new HomePage(driver);
 
@@ -147,7 +125,7 @@ describe('Shield Subscription Tests', function () {
             },
           },
           async ({ driver }) => {
-            await loginWithBalanceValidation(driver);
+            await login(driver);
 
             const homePage = new HomePage(driver);
 
@@ -181,7 +159,7 @@ describe('Shield Subscription Tests', function () {
             },
           },
           async ({ driver }) => {
-            await loginWithBalanceValidation(driver);
+            await login(driver);
 
             const homePage = new HomePage(driver);
             await homePage.headerNavbar.openSettingsPage();
@@ -218,7 +196,7 @@ describe('Shield Subscription Tests', function () {
             },
           },
           async ({ driver }) => {
-            await loginWithBalanceValidation(driver);
+            await login(driver);
 
             const homePage = new HomePage(driver);
             await homePage.headerNavbar.openSettingsPage();
@@ -265,7 +243,7 @@ describe('Shield Subscription Tests', function () {
             ],
           },
           async ({ driver, localNodes }) => {
-            await loginWithBalanceValidation(driver, localNodes[0]);
+            await login(driver, { localNode: localNodes[0] });
 
             const homePage = new HomePage(driver);
 
@@ -321,7 +299,7 @@ describe('Shield Subscription Tests', function () {
             ],
           },
           async ({ driver, localNodes }) => {
-            await loginWithBalanceValidation(driver, localNodes[0]);
+            await login(driver, { localNode: localNodes[0] });
 
             const homePage = new HomePage(driver);
             await homePage.headerNavbar.openSettingsPage();
@@ -367,7 +345,7 @@ describe('Shield Subscription Tests', function () {
           },
         },
         async ({ driver }) => {
-          await loginWithBalanceValidation(driver);
+          await login(driver);
 
           const homePage = new HomePage(driver);
           await homePage.checkShieldEntryModalIsDisplayed();
@@ -394,7 +372,7 @@ describe('Shield Subscription Tests', function () {
           },
         },
         async ({ driver }) => {
-          await loginWithBalanceValidation(driver);
+          await login(driver);
 
           const homePage = new HomePage(driver);
 

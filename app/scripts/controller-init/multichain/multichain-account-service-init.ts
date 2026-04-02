@@ -1,9 +1,8 @@
 import {
   MultichainAccountService,
-  AccountProviderWrapper,
   SOL_ACCOUNT_PROVIDER_NAME,
-  BtcAccountProvider,
-  TrxAccountProvider,
+  TRX_ACCOUNT_PROVIDER_NAME,
+  BTC_ACCOUNT_PROVIDER_NAME,
 } from '@metamask/multichain-account-service';
 import { ControllerInitFunction } from '../types';
 import {
@@ -11,7 +10,6 @@ import {
   MultichainAccountServiceInitMessenger,
 } from '../messengers/accounts';
 import { previousValueComparator } from '../../lib/util';
-import { isMultichainFeatureEnabled } from '../../../../shared/lib/multichain-feature-flags';
 import { trace } from '../../../../shared/lib/trace';
 
 /**
@@ -41,24 +39,19 @@ export const MultichainAccountServiceInit: ControllerInitFunction<
     },
     createAccounts: {
       timeoutMs: 3000,
+      batched: false,
+    },
+    resyncAccounts: {
+      autoRemoveExtraSnapAccounts: false,
     },
   };
 
-  const btcProvider = new AccountProviderWrapper(
-    controllerMessenger,
-    new BtcAccountProvider(controllerMessenger, snapAccountProviderConfig),
-  );
-
-  const trxProvider = new AccountProviderWrapper(
-    controllerMessenger,
-    new TrxAccountProvider(controllerMessenger, snapAccountProviderConfig),
-  );
-
   const controller = new MultichainAccountService({
     messenger: controllerMessenger,
-    providers: [btcProvider, trxProvider],
     providerConfigs: {
       [SOL_ACCOUNT_PROVIDER_NAME]: snapAccountProviderConfig,
+      [BTC_ACCOUNT_PROVIDER_NAME]: snapAccountProviderConfig,
+      [TRX_ACCOUNT_PROVIDER_NAME]: snapAccountProviderConfig,
     },
     config: {
       // @ts-expect-error Controller uses string for names rather than enum
@@ -89,72 +82,6 @@ export const MultichainAccountServiceInit: ControllerInitFunction<
 
       return true;
     }, preferencesState),
-  );
-
-  // Handle Bitcoin + Tron provider feature flag using previousValueComparator pattern
-  const initialRemoteFeatureFlagsState = initMessenger.call(
-    'RemoteFeatureFlagController:getState',
-  );
-
-  const initialBitcoinEnabled = isMultichainFeatureEnabled(
-    initialRemoteFeatureFlagsState?.remoteFeatureFlags?.bitcoinAccounts,
-  );
-  btcProvider.setEnabled(initialBitcoinEnabled);
-
-  const initialTronEnabled = isMultichainFeatureEnabled(
-    initialRemoteFeatureFlagsState?.remoteFeatureFlags?.tronAccounts,
-  );
-  trxProvider.setEnabled(initialTronEnabled);
-
-  controllerMessenger.subscribe(
-    'RemoteFeatureFlagController:stateChange',
-    previousValueComparator((prevState, currState) => {
-      const prevBitcoinEnabled = isMultichainFeatureEnabled(
-        prevState?.remoteFeatureFlags?.bitcoinAccounts,
-      );
-      const currBitcoinEnabled = isMultichainFeatureEnabled(
-        currState?.remoteFeatureFlags?.bitcoinAccounts,
-      );
-
-      if (prevBitcoinEnabled !== currBitcoinEnabled) {
-        // Enable/disable Bitcoin provider based on feature flag
-        btcProvider.setEnabled(currBitcoinEnabled);
-
-        // Trigger wallet alignment when Bitcoin accounts are enabled
-        // This will create Bitcoin accounts for existing wallets
-        if (currBitcoinEnabled) {
-          controller.alignWallets().catch((error) => {
-            console.error(
-              'Failed to align wallets after enabling Bitcoin provider:',
-              error,
-            );
-          });
-        }
-        // Note: When disabled, no action needed as the provider won't create new accounts
-      }
-
-      const prevTronEnabled = isMultichainFeatureEnabled(
-        prevState?.remoteFeatureFlags?.tronAccounts,
-      );
-      const currTronEnabled = isMultichainFeatureEnabled(
-        currState?.remoteFeatureFlags?.tronAccounts,
-      );
-
-      if (prevTronEnabled !== currTronEnabled) {
-        trxProvider.setEnabled(currTronEnabled);
-
-        if (currTronEnabled) {
-          controller.alignWallets().catch((error) => {
-            console.error(
-              'Failed to align wallets after enabling Tron provider:',
-              error,
-            );
-          });
-        }
-      }
-
-      return true;
-    }, initialRemoteFeatureFlagsState),
   );
 
   return {
