@@ -60,7 +60,10 @@ function createPerformance(): PerpsPerformance {
 function createTracer(): PerpsTracer {
   const pendingSpans = new Map<
     string,
-    { setAttribute: (key: string, value: PerpsTraceValue) => void; end: () => void }
+    {
+      setAttribute: (key: string, value: PerpsTraceValue) => void;
+      end: () => void;
+    }
   >();
 
   return {
