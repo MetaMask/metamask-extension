@@ -356,7 +356,7 @@ describe('PersistenceManager', () => {
         unknown
       >;
 
-      /* eslint-disable jest/prefer-strict-equal -- see "calls localStore.setKeyValues with pending pairs" */
+      /* eslint-disable jest/prefer-strict-equal -- persist() uses structuredClone for map values; toEqual matches deep shape (stricter than toMatchObject); toStrictEqual fails on prototype */
       expect(retryMap.get('meta')).toEqual({ version: 10 });
       expect(retryMap.get('FooController')).toEqual({ foo: 'bar' });
       /* eslint-enable jest/prefer-strict-equal */
