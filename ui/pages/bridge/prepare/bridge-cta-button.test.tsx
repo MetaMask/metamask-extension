@@ -455,7 +455,6 @@ describe('BridgeCTAButton', () => {
     ['market is closed (no quotes)', 'Market closed'],
     [
       'recipient address is not set (no quotes)',
-      'Select a destination account',
       { fromTokenInputValue: null },
       { needsDestinationAddress: true },
     ],
