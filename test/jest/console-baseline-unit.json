@@ -50,13 +50,6 @@
     "app/scripts/lib/snap-keyring/utils/isBlockedUrl.test.ts": {
       "Test errors: Fetch failures": 2
     },
-    "shared/lib/stores/browser-storage-adapter.test.ts": {
-      "error: StorageService: Failed to clear namespace": 1,
-      "error: StorageService: Failed to get item:": 1,
-      "error: StorageService: Failed to get keys": 1,
-      "error: StorageService: Failed to remove item:": 1,
-      "error: StorageService: Failed to set item:": 1
-    },
     "app/scripts/metamask-controller.actions.test.js": {
       "Test errors: Fetch failures": 4,
       "Third-party: Bindings failed, using pure JS": 1,
@@ -198,6 +191,13 @@
     },
     "shared/lib/shield/shield.test.ts": {
       "error: Failed to get bearer token": 1
+    },
+    "shared/lib/stores/browser-storage-adapter.test.ts": {
+      "error: StorageService: Failed to clear namespace": 1,
+      "error: StorageService: Failed to get item:": 1,
+      "error: StorageService: Failed to get keys": 1,
+      "error: StorageService: Failed to remove item:": 1,
+      "error: StorageService: Failed to set item:": 1
     },
     "shared/lib/transaction.utils.test.js": {
       "Third-party: Bindings failed, using pure JS": 1,
