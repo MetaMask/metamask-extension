@@ -33,7 +33,7 @@ export const SettingsSelectItem = ({
   return (
     <Link
       to={to}
-      className="block rounded-lg hover:bg-background-default-hover"
+      className="block hover:bg-background-default-hover"
       data-testid={dataTestId}
     >
       <Box
@@ -41,6 +41,7 @@ export const SettingsSelectItem = ({
         justifyContent={BoxJustifyContent.Between}
         alignItems={BoxAlignItems.Center}
         paddingVertical={3}
+        paddingHorizontal={4}
       >
         <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
           {label}

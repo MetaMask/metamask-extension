@@ -3,15 +3,15 @@
 exports[`Assets Tab snapshot matches snapshot 1`] = `
 <div>
   <div
-    class="pb-4 px-4 overflow-y-auto"
+    class="pb-4 overflow-y-auto"
   >
     <div>
       <a
-        class="block rounded-lg hover:bg-background-default-hover"
+        class="block hover:bg-background-default-hover"
         href="/settings/assets/currency"
       >
         <div
-          class="flex flex-row items-center justify-between py-3"
+          class="flex flex-row items-center justify-between px-4 py-3"
         >
           <p
             class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
@@ -42,7 +42,7 @@ exports[`Assets Tab snapshot matches snapshot 1`] = `
     </div>
     <div>
       <div
-        class="flex flex-col gap-1 py-3"
+        class="flex flex-col gap-1 px-4 py-3"
       >
         <div
           class="flex flex-row items-center justify-between"
@@ -92,11 +92,11 @@ exports[`Assets Tab snapshot matches snapshot 1`] = `
       </div>
     </div>
     <div
-      class="bg-muted my-2 h-px w-full"
+      class="bg-muted my-2 h-px w-full mx-4"
     />
     <div>
       <div
-        class="flex flex-col gap-1 py-3"
+        class="flex flex-col gap-1 px-4 py-3"
       >
         <div
           class="flex flex-row items-center justify-between"
@@ -144,11 +144,11 @@ exports[`Assets Tab snapshot matches snapshot 1`] = `
       </div>
     </div>
     <div
-      class="bg-muted my-2 h-px w-full"
+      class="bg-muted my-2 h-px w-full mx-4"
     />
     <div>
       <div
-        class="flex flex-col gap-1 py-3"
+        class="flex flex-col gap-1 px-4 py-3"
       >
         <div
           class="flex flex-row items-center justify-between"
@@ -202,7 +202,7 @@ exports[`Assets Tab snapshot matches snapshot 1`] = `
     </div>
     <div>
       <div
-        class="flex flex-col gap-1 py-3"
+        class="flex flex-col gap-1 px-4 py-3"
       >
         <div
           class="flex flex-row items-center justify-between"
@@ -258,7 +258,7 @@ exports[`Assets Tab snapshot matches snapshot 1`] = `
     </div>
     <div>
       <div
-        class="flex flex-col gap-1 py-3"
+        class="flex flex-col gap-1 px-4 py-3"
       >
         <div
           class="flex flex-row items-center justify-between"
