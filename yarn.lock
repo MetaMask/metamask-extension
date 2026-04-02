@@ -11772,6 +11772,21 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@sentry/react@npm:8.33.1":
+  version: 8.33.1
+  resolution: "@sentry/react@npm:8.33.1"
+  dependencies:
+    "@sentry/browser": "npm:8.33.1"
+    "@sentry/core": "npm:8.33.1"
+    "@sentry/types": "npm:8.33.1"
+    "@sentry/utils": "npm:8.33.1"
+    hoist-non-react-statics: "npm:^3.3.2"
+  peerDependencies:
+    react: ^16.14.0 || 17.x || 18.x || 19.x
+  checksum: 10/d88c333de24d87f0ed7312aa342518216dedcca4502e16834d36a2058a3592e20b6091d77662dd5e2e777d875c4217aa80635303a15909cf010769fc9a7e79bc
+  languageName: node
+  linkType: hard
+
 "@sentry/types@npm:8.33.1, @sentry/types@npm:^8.33.1":
   version: 8.33.1
   resolution: "@sentry/types@npm:8.33.1"
@@ -34200,6 +34215,7 @@ __metadata:
     "@sentry/browser": "patch:@sentry/browser@npm%3A8.33.1#~/.yarn/patches/@sentry-browser-npm-8.33.1-4405cafca3.patch"
     "@sentry/cli": "npm:^2.56.0"
     "@sentry/node": "npm:^10.30.0"
+    "@sentry/react": "npm:8.33.1"
     "@sentry/types": "npm:^8.33.1"
     "@sentry/utils": "npm:^8.33.1"
     "@slack/types": "npm:^2.14.0"

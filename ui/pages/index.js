@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react';
+import React, { PureComponent, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { Provider } from 'react-redux';
 import {
@@ -6,9 +6,15 @@ import {
   RouterProvider,
   createHashRouter,
   useRouteError,
+  useLocation,
+  useNavigationType,
+  createRoutesFromChildren,
+  matchRoutes,
 } from 'react-router-dom';
+import * as Sentry from '@sentry/react';
 import { QueryClientProvider } from '@tanstack/react-query';
 import { captureException } from '../../shared/lib/sentry';
+import setupSentry from '../../shared/lib/sentry/setupSentry';
 import { I18nProvider, LegacyI18nProvider } from '../contexts/i18n';
 import {
   MetaMetricsProvider,
@@ -74,7 +80,19 @@ function RouteErrorBoundary() {
   return <ErrorPage error={error} />;
 }
 
-const router = createHashRouter([
+const sentryCreateHashRouter = Sentry.wrapCreateBrowserRouter(createHashRouter);
+
+globalThis.sentry = setupSentry([
+  Sentry.reactRouterV6BrowserTracingIntegration({
+    useEffect,
+    useLocation,
+    useNavigationType,
+    createRoutesFromChildren,
+    matchRoutes,
+  }),
+]);
+
+const router = sentryCreateHashRouter([
   {
     element: <AppProviders />,
     errorElement: <RouteErrorBoundary />,

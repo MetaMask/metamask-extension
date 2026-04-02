@@ -1,11 +1,11 @@
 import { createModuleLogger } from '@metamask/utils';
-import * as Sentry from '@sentry/browser';
+import * as Sentry from '@sentry/react';
 import { logger } from '@sentry/utils';
 import browser from 'webextension-polyfill';
-import { sentryLogger as log } from '../../../shared/lib/sentry';
-import { isManifestV3 } from '../../../shared/lib/mv3.utils';
-import { getManifestFlags } from '../../../shared/lib/manifestFlags';
-import { getSentryRelease } from '../../../shared/lib/sentry-release';
+import { sentryLogger as log } from '../sentry';
+import { isManifestV3 } from '../mv3.utils';
+import { getManifestFlags } from '../manifestFlags';
+import { getSentryRelease } from '../sentry-release';
 import extractEthjsErrorMessage from './extractEthjsErrorMessage';
 import { filterEvents } from './sentry-filter-events';
 import { getInstallType, initInstallType } from './install-type';
@@ -37,7 +37,7 @@ export const ERROR_URL_ALLOWLIST = {
   SEGMENT: 'segment.io',
 };
 
-export default function setupSentry() {
+export default function setupSentry(extraIntegrations = []) {
   if (!RELEASE) {
     throw new Error('Missing release');
   }
@@ -54,7 +54,7 @@ export default function setupSentry() {
   initInstallType();
 
   integrateLogging();
-  setSentryClient();
+  setSentryClient(extraIntegrations);
 
   return {
     ...Sentry,
@@ -62,9 +62,32 @@ export default function setupSentry() {
   };
 }
 
-function getClientOptions() {
+function getClientOptions(extraIntegrations = []) {
   const environment = getSentryEnvironment();
   const sentryTarget = getSentryTarget();
+
+  const integrations = [
+    Sentry.dedupeIntegration(),
+    Sentry.extraErrorDataIntegration(),
+    filterEvents({ getMetaMetricsEnabled, log }),
+    ...extraIntegrations,
+  ];
+
+  // Only add default browserTracingIntegration if no other tracing/routing integration is provided
+  if (
+    !extraIntegrations.some(
+      (i) => i.name.includes('Tracing') || i.name.includes('Routing'),
+    )
+  ) {
+    integrations.push(
+      Sentry.browserTracingIntegration({
+        shouldCreateSpanForRequest: (url) => {
+          // Do not create spans for outgoing requests to a 'sentry.io' domain.
+          return !url.match(/^https?:\/\/([\w\d.@-]+\.)?sentry\.io(\/|$)/u);
+        },
+      }),
+    );
+  }
 
   return {
     beforeBreadcrumb: beforeBreadcrumb(),
@@ -73,17 +96,7 @@ function getClientOptions() {
     dist: isManifestV3 ? 'mv3' : 'mv2',
     dsn: sentryTarget,
     environment,
-    integrations: [
-      Sentry.dedupeIntegration(),
-      Sentry.extraErrorDataIntegration(),
-      Sentry.browserTracingIntegration({
-        shouldCreateSpanForRequest: (url) => {
-          // Do not create spans for outgoing requests to a 'sentry.io' domain.
-          return !url.match(/^https?:\/\/([\w\d.@-]+\.)?sentry\.io(\/|$)/u);
-        },
-      }),
-      filterEvents({ getMetaMetricsEnabled, log }),
-    ],
+    integrations,
     release: RELEASE,
     // Client reports are automatically sent when a page's visibility changes to
     // "hidden", but cancelled (with an Error) that gets logged to the console.
@@ -278,8 +291,8 @@ async function getMetaMetricsEnabled() {
   }
 }
 
-function setSentryClient() {
-  const clientOptions = getClientOptions();
+function setSentryClient(extraIntegrations = []) {
+  const clientOptions = getClientOptions(extraIntegrations);
   const { dsn, environment, release, tracesSampleRate } = clientOptions;
 
   /**

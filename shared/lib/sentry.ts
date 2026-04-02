@@ -1,5 +1,5 @@
 import { createModuleLogger, createProjectLogger } from '@metamask/utils';
-import type * as Sentry from '@sentry/browser';
+import type * as Sentry from '@sentry/react';
 
 const projectLogger = createProjectLogger('sentry');
 
