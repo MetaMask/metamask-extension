@@ -2,6 +2,7 @@ import { formatChainIdToCaip } from '@metamask/bridge-controller';
 import {
   createBridgeMockStore,
   MOCK_EVM_ACCOUNT,
+  MOCK_EXTERNAL_SOLANA_ADDRESS,
 } from '../../../test/data/bridge/mock-bridge-store';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
@@ -266,6 +267,51 @@ describe('Bridge asset selectors', () => {
           "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp": 212.89214978478,
         }
       `);
+    });
+
+    it('returns empty results when address does not belong to any account group', () => {
+      const state = createBridgeMockStore({
+        featureFlagOverrides: {
+          bridgeConfig: {
+            refreshRate: 30000,
+            priceImpactThreshold: {
+              normal: 1,
+              gasless: 2,
+            },
+            maxRefreshCount: 5,
+            support: true,
+            chains: {
+              [CHAIN_IDS.MAINNET]: {
+                isActiveSrc: true,
+                isActiveDest: true,
+              },
+            },
+            chainRanking: [{ chainId: formatChainIdToCaip(CHAIN_IDS.MAINNET) }],
+          },
+        },
+      });
+
+      const externalAddress = MOCK_EXTERNAL_SOLANA_ADDRESS;
+      const accountGroups = getAccountGroupsByAddress(state, [externalAddress]);
+
+      expect(accountGroups).toHaveLength(0);
+
+      const [accountGroup] = accountGroups;
+      expect(accountGroup).toBeUndefined();
+
+      const assetsWithBalance = accountGroup
+        ? getBridgeSortedAssets(state, accountGroup.id)
+        : [];
+      const balanceByAssetId = accountGroup
+        ? getBridgeAssetsByAssetId(state, accountGroup.id)
+        : {};
+      const balanceByChainId = accountGroup
+        ? getBridgeBalancesByChainId(state, accountGroup.id)
+        : {};
+
+      expect(assetsWithBalance).toEqual([]);
+      expect(balanceByAssetId).toEqual({});
+      expect(balanceByChainId).toEqual({});
     });
   });
 });
