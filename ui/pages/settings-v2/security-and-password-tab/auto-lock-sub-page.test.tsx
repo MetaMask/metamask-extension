@@ -93,7 +93,9 @@ describe('AutoLockSubPage', () => {
       category: MetaMetricsEventCategory.Settings,
       event: MetaMetricsEventName.SettingsUpdated,
       properties: {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         auto_lock_time_limit_minutes: 1,
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         previous_auto_lock_time_limit_minutes: 0,
       },
     });
