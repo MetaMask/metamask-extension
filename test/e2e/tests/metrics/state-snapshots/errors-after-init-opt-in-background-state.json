@@ -1,7 +1,7 @@
 {
   "AccountOrderController": {
-    "hiddenAccountList": {},
-    "pinnedAccountList": {}
+    "hiddenAccountList": "object",
+    "pinnedAccountList": "object"
   },
   "AccountTracker": { "accountsByChainId": "object" },
   "AccountTreeController": {
@@ -105,7 +105,7 @@
     "quoteRequest": {
       "srcTokenAddress": "0x0000000000000000000000000000000000000000"
     },
-    "quotes": {},
+    "quotes": "object",
     "quotesInitialLoadTime": null,
     "quotesLastFetched": null,
     "quotesLoadingStatus": null,
@@ -220,15 +220,7 @@
     "nativeAssetIdentifiers": "object"
   },
   "NetworkOrderController": {
-    "orderedNetworkList": {
-      "0": "object",
-      "1": "object",
-      "2": "object",
-      "3": "object",
-      "4": "object",
-      "5": "object",
-      "6": "object"
-    }
+    "orderedNetworkList": "object"
   },
   "NftController": {
     "allNftContracts": "object",
@@ -259,7 +251,7 @@
     "onboardingTabs": "object",
     "seedPhraseBackedUp": null
   },
-  "PPOMController": { "storageMetadata": {} },
+  "PPOMController": { "storageMetadata": "object" },
   "PermissionController": { "subjects": "object" },
   "PermissionLogController": {
     "permissionActivityLog": "object",
