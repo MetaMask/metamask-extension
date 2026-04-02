@@ -6,7 +6,7 @@ on:
       iterations:
         description: Benchmark iterations per scenario
         required: false
-        default: '3'
+        default: '7'
   pull_request:
     paths:
       - .github/workflows/firefox-buildwebdriver-benchmark-temp.yml
@@ -39,7 +39,7 @@ jobs:
     env:
       HEADLESS: false
       INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
-      ITERATIONS: ${{ inputs.iterations || '3' }}
+      ITERATIONS: ${{ inputs.iterations || '7' }}
       SELENIUM_BROWSER: firefox
     steps:
       - name: Checkout harness branch
@@ -131,6 +131,7 @@ jobs:
           );
 
           const scenarios = ['cold', 'warmUnchanged', 'warmManifestUpdate'];
+          const metrics = ['mean', 'median', 'p95'];
           const phases = [
             ['builderBuildMs', 'builder.build'],
             ['addonSetupMs', 'addonSetup'],
@@ -148,20 +149,25 @@ jobs:
           for (const scenario of scenarios) {
             console.log(`## ${scenario}`);
             console.log('');
-            console.log('| Phase | main | candidate | delta |');
-            console.log('| --- | ---: | ---: | ---: |');
-            for (const [key, label] of phases) {
-              const mainValue = main.scenarios[scenario].summary[key];
-              const candidateValue = candidate.scenarios[scenario].summary[key];
-              const delta = candidateValue - mainValue;
-              const formattedDelta =
-                `${delta >= 0 ? '+' : ''}${delta.toFixed(1)} ms`;
-              console.log(
-                `| ${label} | ${mainValue.toFixed(1)} ms | ${candidateValue.toFixed(
-                  1,
-                )} ms | ${formattedDelta} |`,
-              );
+            for (const metric of metrics) {
+              console.log(`### ${metric}`);
+              console.log('');
+              console.log('| Phase | main | candidate | delta |');
+              console.log('| --- | ---: | ---: | ---: |');
+              for (const [key, label] of phases) {
+                const mainValue = main.scenarios[scenario].summary[key][metric];
+                const candidateValue =
+                  candidate.scenarios[scenario].summary[key][metric];
+                const delta = candidateValue - mainValue;
+                const formattedDelta =
+                  `${delta >= 0 ? '+' : ''}${delta.toFixed(1)} ms`;
+                console.log(
+                  `| ${label} | ${mainValue.toFixed(1)} ms | ${candidateValue.toFixed(
+                    1,
+                  )} ms | ${formattedDelta} |`,
+                );
+              }
+              console.log('');
             }
-            console.log('');
           }
           EOF

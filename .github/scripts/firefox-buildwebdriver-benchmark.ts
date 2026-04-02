@@ -21,9 +21,15 @@ type PhaseSample = {
 
 type ScenarioName = 'cold' | 'warmUnchanged' | 'warmManifestUpdate';
 
+type PhaseSummary = {
+  mean: number;
+  median: number;
+  p95: number;
+};
+
 type ScenarioResult = {
   samples: PhaseSample[];
-  summary: Record<keyof PhaseSample, number>;
+  summary: Record<keyof PhaseSample, PhaseSummary>;
 };
 
 type BenchmarkResult = {
@@ -73,17 +79,38 @@ function mean(values: number[]) {
   return values.reduce((sum, value) => sum + value, 0) / values.length;
 }
 
+function percentile(values: number[], percentileValue: number) {
+  const sorted = [...values].sort((left, right) => left - right);
+  const index = Math.min(
+    sorted.length - 1,
+    Math.ceil((percentileValue / 100) * sorted.length) - 1,
+  );
+  return sorted[index];
+}
+
+function summarizePhase(values: number[]): PhaseSummary {
+  return {
+    mean: mean(values),
+    median: percentile(values, 50),
+    p95: percentile(values, 95),
+  };
+}
+
 function summarize(samples: PhaseSample[]) {
   return {
-    addonSetupMs: mean(samples.map(({ addonSetupMs }) => addonSetupMs)),
-    builderBuildMs: mean(samples.map(({ builderBuildMs }) => builderBuildMs)),
-    getInternalIdMs: mean(
+    addonSetupMs: summarizePhase(
+      samples.map(({ addonSetupMs }) => addonSetupMs),
+    ),
+    builderBuildMs: summarizePhase(
+      samples.map(({ builderBuildMs }) => builderBuildMs),
+    ),
+    getInternalIdMs: summarizePhase(
       samples.map(({ getInternalIdMs }) => getInternalIdMs),
     ),
-    installExtensionMs: mean(
+    installExtensionMs: summarizePhase(
       samples.map(({ installExtensionMs }) => installExtensionMs),
     ),
-    totalMs: mean(samples.map(({ totalMs }) => totalMs)),
+    totalMs: summarizePhase(samples.map(({ totalMs }) => totalMs)),
   };
 }
 
@@ -254,6 +281,7 @@ async function main() {
   console.log(`Firefox buildWebDriver benchmark for ${refLabel} (${gitSha})`);
   console.log(
     'Scenario'.padEnd(22) +
+      'metric'.padStart(10) +
       'builder.build'.padStart(16) +
       'addonSetup'.padStart(16) +
       'installExtension'.padStart(20) +
@@ -265,14 +293,17 @@ async function main() {
     ScenarioName,
     ScenarioResult,
   ][]) {
-    console.log(
-      name.padEnd(22) +
-        formatMs(scenario.summary.builderBuildMs).padStart(16) +
-        formatMs(scenario.summary.addonSetupMs).padStart(16) +
-        formatMs(scenario.summary.installExtensionMs).padStart(20) +
-        formatMs(scenario.summary.getInternalIdMs).padStart(16) +
-        formatMs(scenario.summary.totalMs).padStart(12),
-    );
+    for (const metric of ['mean', 'median', 'p95'] as const) {
+      console.log(
+        (metric === 'mean' ? name : '').padEnd(22) +
+          metric.padStart(10) +
+          formatMs(scenario.summary.builderBuildMs[metric]).padStart(16) +
+          formatMs(scenario.summary.addonSetupMs[metric]).padStart(16) +
+          formatMs(scenario.summary.installExtensionMs[metric]).padStart(20) +
+          formatMs(scenario.summary.getInternalIdMs[metric]).padStart(16) +
+          formatMs(scenario.summary.totalMs[metric]).padStart(12),
+      );
+    }
   }
 
   if (out) {
