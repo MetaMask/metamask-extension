@@ -247,6 +247,7 @@
     "@ledgerhq/errors": "^6.21.0",
     "@trezor/connect-web": "~9.6.0",
     "nanoid@npm:^5.1.5": "^3.3.8",
+    "lodash": "patch:lodash@npm%3A4.18.1#~/.yarn/patches/lodash-npm-4.18.1-a64c3070ac.patch",
     "dompurify": "patch:dompurify@npm%3A3.2.5#~/.yarn/patches/dompurify-npm-3.2.5-d9af707abe.patch",
     "jsonpath-plus": "^10.3.0",
     "@metamask/jazzicon@npm:^2.0.0": "patch:@metamask/jazzicon@npm%3A2.0.0#~/.yarn/patches/@metamask-jazzicon-npm-2.0.0-36957be38d.patch",

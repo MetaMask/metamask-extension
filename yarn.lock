@@ -33363,17 +33363,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lodash@npm:4.17.21":
-  version: 4.17.21
-  resolution: "lodash@npm:4.17.21"
-  checksum: 10/c08619c038846ea6ac754abd6dd29d2568aa705feb69339e836dfa8d8b09abbb2f859371e86863eda41848221f9af43714491467b5b0299122431e202bb0c532
-  languageName: node
-  linkType: hard
-
-"lodash@npm:^4, lodash@npm:^4.16.4, lodash@npm:^4.17.11, lodash@npm:^4.17.14, lodash@npm:^4.17.15, lodash@npm:^4.17.19, lodash@npm:^4.17.20, lodash@npm:^4.17.21, lodash@npm:^4.18.1, lodash@npm:^4.7.0":
+"lodash@npm:4.18.1":
   version: 4.18.1
   resolution: "lodash@npm:4.18.1"
   checksum: 10/306fea53dfd39dad1f03d45ba654a2405aebd35797b673077f401edb7df2543623dc44b9effbb98f69b32152295fff725a4cec99c684098947430600c6af0c3f
+  languageName: node
+  linkType: hard
+
+"lodash@patch:lodash@npm%3A4.18.1#~/.yarn/patches/lodash-npm-4.18.1-a64c3070ac.patch":
+  version: 4.18.1
+  resolution: "lodash@patch:lodash@npm%3A4.18.1#~/.yarn/patches/lodash-npm-4.18.1-a64c3070ac.patch::version=4.18.1&hash=fc7b0f"
+  checksum: 10/0df77010e2c22c1077cc632de9b09a4343b69e40a49765db0ee2d0847563372a4037c2f7aee2a129f8a69c74bf560c17c8000a66133ab34ea62b7b2285192aa5
   languageName: node
   linkType: hard
 
