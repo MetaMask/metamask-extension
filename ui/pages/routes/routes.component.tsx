@@ -56,6 +56,7 @@ import {
   SETUP_2FA_ROUTE,
   MANAGE_2FA_ROUTE,
   RECOVER_2FA_ROUTE,
+  LINK_2FA_ROUTE,
   MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE,
   MULTICHAIN_ACCOUNT_PRIVATE_KEY_LIST_PAGE_ROUTE,
   ADD_WALLET_PAGE_ROUTE,
@@ -142,6 +143,7 @@ import { AccountList } from '../multichain-accounts/account-list';
 import { Setup2FAPage } from '../setup-2fa';
 import { Manage2FAPage } from '../manage-2fa';
 import { Recover2FAPage } from '../recover-2fa';
+import { Link2FAPage } from '../link-2fa';
 import { AddWalletPage } from '../multichain-accounts/add-wallet-page';
 import { WalletDetailsPage } from '../multichain-accounts/wallet-details-page';
 import { MultichainReviewPermissions } from '../../components/multichain-accounts/permissions/permission-review-page/multichain-review-permissions-page';
@@ -597,6 +599,13 @@ export const routeConfig = [
   createRouteWithLayout({
     path: RECOVER_2FA_ROUTE,
     component: Recover2FAPage,
+    layout: RootLayout,
+    authenticated: true,
+    basicFunctionalityRequired: false,
+  }),
+  createRouteWithLayout({
+    path: LINK_2FA_ROUTE,
+    component: Link2FAPage,
     layout: RootLayout,
     authenticated: true,
     basicFunctionalityRequired: false,

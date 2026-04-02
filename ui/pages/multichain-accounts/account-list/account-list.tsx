@@ -42,7 +42,7 @@ import {
   getAllPermittedAccountsForCurrentTab,
   getShowDefaultAddress,
 } from '../../../selectors';
-import { DEFAULT_ROUTE, MANAGE_2FA_ROUTE, PREVIOUS_ROUTE, SETUP_2FA_ROUTE } from '../../../helpers/constants/routes';
+import { DEFAULT_ROUTE, LINK_2FA_ROUTE, MANAGE_2FA_ROUTE, PREVIOUS_ROUTE, RECOVER_2FA_ROUTE, SETUP_2FA_ROUTE } from '../../../helpers/constants/routes';
 import { AddWalletModal } from '../../../components/multichain-accounts/add-wallet-modal';
 import { useAccountsOperationsLoadingStates } from '../../../hooks/accounts/useAccountsOperationsLoadingStates';
 import {
@@ -69,6 +69,7 @@ export const AccountList = () => {
   const { selectedAccountGroup } = accountTree;
   const [searchPattern, setSearchPattern] = useState<string>('');
   const [twoFAMenuOpen, setTwoFAMenuOpen] = useState(false);
+  const [twoFAOptionsOpen, setTwoFAOptionsOpen] = useState(false);
   const groupsMetadata = useSelector(getNormalizedGroupsMetadata);
   const permittedAccounts = useSelector(getAllPermittedAccountsForCurrentTab);
   const showDefaultAddress = useSelector(getShowDefaultAddress);
@@ -289,7 +290,7 @@ export const AccountList = () => {
             variant={ButtonVariant.Secondary}
             size={ButtonSize.Lg}
             isFullWidth
-            onClick={() => navigate(SETUP_2FA_ROUTE)}
+            onClick={() => setTwoFAOptionsOpen(true)}
             data-testid="account-list-add-2fa-wallet-button"
           >
             <Box gap={2} display={Display.Flex} alignItems={AlignItems.center} justifyContent={JustifyContent.center} width={BlockSize.Full}>
@@ -307,6 +308,58 @@ export const AccountList = () => {
         isOpen={isAddWalletModalOpen}
         onClose={handleCloseAddWalletModal}
       />
+      {twoFAOptionsOpen && (
+        <Box
+          display={Display.Flex}
+          className="fixed inset-0 z-[100] flex-col justify-end"
+          style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}
+          onClick={() => setTwoFAOptionsOpen(false)}
+        >
+          <Box
+            backgroundColor={BackgroundColor.backgroundDefault}
+            className="rounded-t-2xl"
+            padding={4}
+            onClick={(e: React.MouseEvent) => e.stopPropagation()}
+          >
+            <Box display={Display.Flex} justifyContent={JustifyContent.center} className="mb-3">
+              <Box className="w-9 h-1 rounded-full" style={{ backgroundColor: 'var(--color-border-default)' }} />
+            </Box>
+            <Text variant={TextVariant.headingSm} fontWeight={FontWeight.Bold} className="mb-4">
+              {t('add2FAWallet')}
+            </Text>
+            <Box display={Display.Flex} flexDirection={FlexDirection.Column} gap={2}>
+              {[
+                { icon: IconName.Add, titleKey: 'twoFAOptionsCreate', descKey: 'twoFAOptionsCreateDesc', route: SETUP_2FA_ROUTE },
+                { icon: IconName.QrCode, titleKey: 'twoFAOptionsLink', descKey: 'twoFAOptionsLinkDesc', route: LINK_2FA_ROUTE },
+                { icon: IconName.Refresh, titleKey: 'twoFAOptionsRecover', descKey: 'twoFAOptionsRecoverDesc', route: RECOVER_2FA_ROUTE },
+              ].map((option) => (
+                <Box
+                  key={option.titleKey}
+                  display={Display.Flex}
+                  flexDirection={FlexDirection.Row}
+                  alignItems={AlignItems.center}
+                  gap={3}
+                  padding={3}
+                  className="rounded-xl cursor-pointer hover:bg-background-default-hover"
+                  onClick={() => { setTwoFAOptionsOpen(false); navigate(option.route); }}
+                >
+                  <Box
+                    className="rounded-full p-2 shrink-0"
+                    style={{ backgroundColor: 'var(--color-background-muted)' }}
+                  >
+                    <Icon name={option.icon} color={IconColor.IconDefault} size={IconSize.Sm} />
+                  </Box>
+                  <Box display={Display.Flex} flexDirection={FlexDirection.Column} className="flex-1 min-w-0">
+                    <Text variant={TextVariant.bodyMdMedium}>{t(option.titleKey)}</Text>
+                    <Text variant={TextVariant.bodyXs} color={TextColor.textAlternative}>{t(option.descKey)}</Text>
+                  </Box>
+                  <Icon name={IconName.ArrowRight} color={IconColor.IconMuted} size={IconSize.Sm} />
+                </Box>
+              ))}
+            </Box>
+          </Box>
+        </Box>
+      )}
     </Page>
   );
 };

@@ -1,5 +1,4 @@
 import React, { useState, useCallback, useRef, useEffect } from 'react';
-import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import {
   Box,
@@ -29,28 +28,23 @@ import {
   FormTextFieldSize,
 } from '../../components/component-library';
 import { useI18nContext } from '../../hooks/useI18nContext';
-import { getIsSocialLoginFlow } from '../../selectors';
 import { ACCOUNT_LIST_PAGE_ROUTE, DEFAULT_ROUTE, MANAGE_2FA_ROUTE } from '../../helpers/constants/routes';
 
 const successPhoneImage = './images/2fa-success-phone.png';
 
-type FactorId = 'email' | 'sms' | 'social' | 'authenticator' | 'passkeys' | 'mobile';
+type FactorId = 'email' | 'sms' | 'authenticator' | 'passkeys' | 'mobile';
 
 const FACTOR_META: Record<FactorId, { nameKey: string; icon: IconName }> = {
-  email: { nameKey: 'twoFAFactorEmailOtp', icon: IconName.Mail },
-  sms: { nameKey: 'twoFAFactorSmsOtp', icon: IconName.Sms },
-  social: { nameKey: 'twoFAFactorSocialLogin', icon: IconName.Global },
   authenticator: { nameKey: 'twoFAFactorAuthenticator', icon: IconName.SecurityKey },
   passkeys: { nameKey: 'twoFAFactorPasskeys', icon: IconName.Fingerprint },
+  email: { nameKey: 'twoFAFactorEmailOtp', icon: IconName.Mail },
+  sms: { nameKey: 'twoFAFactorSmsOtp', icon: IconName.Sms },
   mobile: { nameKey: 'twoFAFactorMobileDevice', icon: IconName.Mobile },
 };
 
-const CLOUD_FACTORS: FactorId[] = ['email', 'social'];
-const ALL_FACTORS: FactorId[] = ['email', 'authenticator', 'social', 'mobile', 'passkeys', 'sms'];
-const NON_SOCIAL_CLOUD_FACTORS: FactorId[] = ['email'];
-const CUBIST_RECOVERY_IDS: FactorId[] = ['email', 'social', 'passkeys'];
+const ALL_FACTORS: FactorId[] = ['authenticator', 'passkeys', 'email', 'sms'];
 
-type Step = 'intro' | 'identity-pick' | 'identity-verify' | 'second-pick' | 'second-verify' | 'recovery-pick' | 'recovery-verify' | 'recovering' | 'success';
+type Step = 'intro' | 'identity-pick' | 'identity-verify' | 'second-pick' | 'second-verify' | 'recovering' | 'success';
 
 function getProgressStage(step: Step): number {
   if (step === 'identity-pick' || step === 'identity-verify') return 1;
@@ -204,34 +198,6 @@ function VerifyFactorModal({ factorId, onVerified, onClose, t }: {
     );
   }
 
-  // Social Login — provider picker
-  if (factorId === 'social') {
-    return (
-      <Box backgroundColor={BoxBackgroundColor.BackgroundDefault} className="absolute inset-0 z-50 flex flex-col">
-        {header}
-        <Box className="flex-1" paddingHorizontal={4}>
-          <Text variant={TextVariant.HeadingMd} fontWeight={FontWeight.Bold}>{t('twoFAFactorSocialLogin')}</Text>
-          <Text color={TextColor.TextAlternative} variant={TextVariant.BodySm} className="mt-1 mb-6">{t('twoFASocialPickProvider')}</Text>
-          <Box flexDirection={BoxFlexDirection.Column} gap={2}>
-            {[
-              { nameKey: 'twoFAFactorGoogle', icon: IconName.Global },
-            ].map((provider) => (
-              <Box key={provider.nameKey} flexDirection={BoxFlexDirection.Row} alignItems={BoxAlignItems.Center} gap={3} padding={4}
-                borderColor={BoxBorderColor.BorderMuted} className="rounded-xl border cursor-pointer hover:bg-background-default-hover"
-                onClick={onVerified}>
-                <Box backgroundColor={BoxBackgroundColor.BackgroundMuted} className="rounded-full p-1.5 shrink-0">
-                  <Icon name={provider.icon} color={IconColor.IconDefault} size={IconSize.Sm} />
-                </Box>
-                <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium} className="flex-1">{t(provider.nameKey)}</Text>
-                <Icon name={IconName.ArrowRight} size={IconSize.Sm} color={IconColor.IconMuted} />
-              </Box>
-            ))}
-          </Box>
-        </Box>
-      </Box>
-    );
-  }
-
   // Authenticator — OTP only
   if (factorId === 'authenticator') {
     return (
@@ -330,24 +296,12 @@ export const Recover2FAPage: React.FC = () => {
   const t = useI18nContext();
   const navigate = useNavigate();
 
-  const isSocialUser = useSelector(getIsSocialLoginFlow);
+  const isMobileLinked = typeof window !== 'undefined' && localStorage.getItem('mm-2fa-mobile-linked') === 'true';
 
-  const storedRecovery: FactorId[] = (() => {
-    try {
-      return JSON.parse(localStorage.getItem('mm-2fa-configured-recovery') || '[]') as FactorId[];
-    } catch {
-      return [];
-    }
-  })();
-
-  // Recovery factors for social user: their configured recovery factors (excluding social),
-  // falling back to non-social cloud factors if nothing stored
-  // Mobile can never be a recovery factor
-  const RECOVERY_EXCLUDED: FactorId[] = ['mobile'];
-
-  const socialRecoveryFactors: FactorId[] = storedRecovery.length > 0
-    ? storedRecovery.filter((id) => id !== 'social' && !RECOVERY_EXCLUDED.includes(id))
-    : NON_SOCIAL_CLOUD_FACTORS;
+  const availableFactors: FactorId[] = [
+    ...ALL_FACTORS,
+    ...(isMobileLinked ? ['mobile' as FactorId] : []),
+  ];
 
   const [step, setStep] = useState<Step>('intro');
   const [identityFactor, setIdentityFactor] = useState<FactorId | null>(null);
@@ -363,7 +317,6 @@ export const Recover2FAPage: React.FC = () => {
     const backMap: Partial<Record<Step, Step>> = {
       'identity-pick': 'intro',
       'second-pick': 'identity-pick',
-      'recovery-pick': 'intro',
     };
     const prev = backMap[step];
     if (prev) { setStep(prev); setVerifyModalFactor(null); }
@@ -393,14 +346,8 @@ export const Recover2FAPage: React.FC = () => {
     }
   }, [verifyModalFactor]);
 
-  const handleRecoveryFactorVerified = useCallback(() => {
-    if (verifyModalFactor) {
-      setVerifyModalFactor(null);
-      setStep('recovering');
-    }
-  }, [verifyModalFactor]);
 
-  const secondFactors = ALL_FACTORS.filter((id) => id !== identityFactor && !RECOVERY_EXCLUDED.includes(id) && CUBIST_RECOVERY_IDS.includes(id));
+  const secondFactors = availableFactors.filter((id) => id !== identityFactor);
 
   // ─── Intro ─────────────────────────────────────────────────────────
 
@@ -422,7 +369,7 @@ export const Recover2FAPage: React.FC = () => {
             variant={ButtonVariant.Primary}
             size={ButtonSize.Lg}
             isFullWidth
-            onClick={() => setStep(isSocialUser ? 'recovery-pick' : 'identity-pick')}
+            onClick={() => setStep('identity-pick')}
           >
             {t('twoFAStartRecovery')}
           </Button>
@@ -439,7 +386,7 @@ export const Recover2FAPage: React.FC = () => {
         <FactorPickerScreen
           title={t('twoFARecoverVerifyIdentity')}
           subtitle={t('twoFARecoverVerifyIdentitySubtitle')}
-          factors={CLOUD_FACTORS}
+          factors={availableFactors}
           onSelect={(id) => { setVerifyModalFactor(id); }}
           onBack={handleBack}
           onClose={handleClose}
@@ -472,35 +419,6 @@ export const Recover2FAPage: React.FC = () => {
         {verifyModalFactor && (
           <VerifyFactorModal factorId={verifyModalFactor} onVerified={handleSecondVerified}
             onClose={() => setVerifyModalFactor(null)} t={t} />
-        )}
-      </Box>
-    );
-  }
-
-  // ─── Social Login: Single-Step Recovery Factor Picker ──────────────
-
-  if (step === 'recovery-pick') {
-    return (
-      <Box backgroundColor={BoxBackgroundColor.BackgroundDefault} className="flex flex-col h-full relative">
-        <FactorPickerScreen
-          title={t('twoFARecoverRecoveryFactorTitle')}
-          subtitle={t('twoFARecoverRecoveryFactorSubtitle')}
-          note={t('twoFARecoverSocialNote')}
-          factors={socialRecoveryFactors}
-          onSelect={(id) => setVerifyModalFactor(id)}
-          onBack={handleBack}
-          onClose={handleClose}
-          stage={1}
-          singleStep
-          t={t}
-        />
-        {verifyModalFactor && (
-          <VerifyFactorModal
-            factorId={verifyModalFactor}
-            onVerified={handleRecoveryFactorVerified}
-            onClose={() => setVerifyModalFactor(null)}
-            t={t}
-          />
         )}
       </Box>
     );

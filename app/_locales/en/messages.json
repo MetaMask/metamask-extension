@@ -304,6 +304,60 @@
   "twoFAManageWallet": {
     "message": "Manage 2FA Wallet"
   },
+  "twoFASimulateAddFunds": {
+    "message": "Simulate: Add Funds"
+  },
+  "twoFARecoveryPromptTitle": {
+    "message": "Protect your funds"
+  },
+  "twoFARecoveryPromptBody": {
+    "message": "You've received funds in your 2FA wallet. Set up a recovery method so you can restore access if you lose this device."
+  },
+  "twoFARecoveryPromptSetup": {
+    "message": "Set up recovery"
+  },
+  "twoFARecoveryPromptLater": {
+    "message": "Remind me later"
+  },
+  "twoFAOptionsCreate": {
+    "message": "Create new 2FA wallet"
+  },
+  "twoFAOptionsCreateDesc": {
+    "message": "Set up a new wallet with 2FA protection"
+  },
+  "twoFAOptionsLink": {
+    "message": "Link from another device"
+  },
+  "twoFAOptionsLinkDesc": {
+    "message": "Scan a QR code to link an existing 2FA wallet"
+  },
+  "twoFAOptionsRecover": {
+    "message": "Recover your 2FA wallet"
+  },
+  "twoFAOptionsRecoverDesc": {
+    "message": "Restore access using your recovery factors"
+  },
+  "twoFALink2FATitle": {
+    "message": "Link 2FA Wallet"
+  },
+  "twoFALinkScanTitle": {
+    "message": "Scan from your other device"
+  },
+  "twoFALinkScanSubtitle": {
+    "message": "Open MetaMask on the device where your 2FA wallet is set up and scan this code."
+  },
+  "twoFALinkScanDone": {
+    "message": "I've scanned it"
+  },
+  "twoFALinkRestoredTitle": {
+    "message": "2FA Wallet restored!"
+  },
+  "twoFALinkRestoredSubtitle": {
+    "message": "Your 2FA wallet has been linked to this extension. You can now sign transactions and manage your funds."
+  },
+  "twoFALinkGoToWallet": {
+    "message": "Go to wallet"
+  },
   "twoFAConfiguredMethods": {
     "message": "Configured methods"
   },
@@ -410,7 +464,7 @@
     "message": "Signing methods"
   },
   "twoFARecoveryMethods": {
-    "message": "Backup methods"
+    "message": "Recovery factors"
   },
   "twoFAFactorAuthenticator": {
     "message": "Authenticator App"
@@ -447,6 +501,48 @@
   },
   "twoFAMobileDeviceLink": {
     "message": "Link device"
+  },
+  "twoFALinkMobileTitle": {
+    "message": "Link MetaMask Mobile"
+  },
+  "twoFALinkMobileSubtitle": {
+    "message": "Your phone becomes a powerful security layer — useful for both signing and recovery."
+  },
+  "twoFALinkMobileBenefit1Title": {
+    "message": "Approve transactions"
+  },
+  "twoFALinkMobileBenefit1Desc": {
+    "message": "Confirm sends and swaps with a tap on your phone — no codes needed."
+  },
+  "twoFALinkMobileBenefit2Title": {
+    "message": "Aid wallet recovery"
+  },
+  "twoFALinkMobileBenefit2Desc": {
+    "message": "If you lose access to this extension, you can use mobile to restore the 2FA wallet on a new device."
+  },
+  "twoFALinkMobileBenefit3Title": {
+    "message": "End-to-end encrypted"
+  },
+  "twoFALinkMobileBenefit3Desc": {
+    "message": "The link between your devices is encrypted. MetaMask never sees your key shares."
+  },
+  "twoFALinkMobileButton": {
+    "message": "Link MetaMask Mobile"
+  },
+  "twoFALinkMobileSkip": {
+    "message": "Skip for now"
+  },
+  "twoFALinkMobileScanTitle": {
+    "message": "Scan with MetaMask Mobile"
+  },
+  "twoFALinkMobileScanSubtitle": {
+    "message": "Open MetaMask on your phone and scan this code to link your device."
+  },
+  "twoFALinkMobileScanDone": {
+    "message": "I've scanned it"
+  },
+  "twoFAMobileLinkedRole": {
+    "message": "Signing + Recovery factor"
   },
   "twoFARecommended": {
     "message": "Recommended"
@@ -551,6 +647,18 @@
   "twoFAPasskeysCreate": {
     "message": "Create Passkey"
   },
+  "twoFAIdentifierLabel": {
+    "message": "Email or username"
+  },
+  "twoFAIdentifierPlaceholder": {
+    "message": "Enter email or username"
+  },
+  "twoFAAuthenticatorIdentifierSubtitle": {
+    "message": "Enter your email or username to link your authenticator app"
+  },
+  "twoFAPasskeysIdentifierSubtitle": {
+    "message": "Enter your email or username to register this passkey"
+  },
   "twoFASigningDoneTitle": {
     "message": "Signing factor set up"
   },
@@ -569,6 +677,15 @@
   "twoFAConfiguredFactors": {
     "message": "Configured factors"
   },
+  "twoFAActiveDevice": {
+    "message": "Active device"
+  },
+  "twoFADeviceExtension": {
+    "message": "MetaMask Extension"
+  },
+  "twoFADeviceRole": {
+    "message": "Device key share"
+  },
   "twoFASuccessInfoBanner": {
     "message": "Two-factor authentication applies only to this wallet. Your other accounts are not affected. Every transaction from this wallet will require verification from your signing factor."
   },
@@ -585,7 +702,7 @@
     "message": "Signing factor"
   },
   "twoFARecoveryFactor": {
-    "message": "Backup factor"
+    "message": "Recovery factor"
   },
   "twoFADeviceFactor": {
     "message": "Current device"
@@ -597,13 +714,16 @@
     "message": "Go to Wallet"
   },
   "twoFAAdd2FAVerification": {
-    "message": "Add 2FA verification"
+    "message": "Set up 2FA verification"
   },
   "twoFAStepSigning": {
-    "message": "Signing method"
+    "message": "1. Transaction verification"
+  },
+  "twoFAStepLinkMobile": {
+    "message": "2. Link Mobile"
   },
   "twoFAStepRecovery": {
-    "message": "Backup method"
+    "message": "3. Recovery"
   },
   "twoFAStepDone": {
     "message": "Complete"
@@ -629,10 +749,10 @@
     "description": "$1 is the current factor number, $2 is the total"
   },
   "twoFASetupRecoveryFactor": {
-    "message": "Add backup verification"
+    "message": "Add recovery factor"
   },
   "twoFARecoveryPickerSubtitleNew": {
-    "message": "Choose a backup method to help restore access to your 2FA wallet. To recover your wallet on a new device, you'll need to verify with both your signing method and your backup method."
+    "message": "Required alongside your signing method to restore your 2FA wallet on a new device."
   },
   "twoFALearnMore": {
     "message": "Learn more"
@@ -659,7 +779,7 @@
     "message": "Set up at least one verification method to continue"
   },
   "twoFAAtLeastOneRecovery": {
-    "message": "Set up at least one backup method to create your wallet"
+    "message": "Set up at least one recovery factor to create your wallet"
   },
   "twoFACanAddMoreLater": {
     "message": "You can setup more methods later in settings"
@@ -677,16 +797,16 @@
     "message": "This applies only to this wallet. Your other accounts are not affected"
   },
   "twoFALearnMoreRecoveryTitle": {
-    "message": "How backup methods work"
+    "message": "How recovery factors work"
   },
   "twoFALearnMoreRecoveryPoint1": {
-    "message": "If you lose access to your device, your backup method helps restore access to your wallet. You'll need both your signing method and your backup method to recover your 2FA wallet on a new device."
+    "message": "If you lose access to your device, your recovery factor — together with your signing method — is needed to restore your 2FA wallet on a new device."
   },
   "twoFALearnMoreRecoveryPoint2": {
-    "message": "Your backup method helps re-create the key shares on your new device without ever exposing the full key."
+    "message": "Your recovery factor helps re-create the key shares on your new device without ever exposing the full key."
   },
   "twoFALearnMoreRecoveryPoint3": {
-    "message": "Your backup method is separate from your signing method — it's only used for account restoration, not for transaction verification."
+    "message": "Your recovery factor is separate from your signing method — it's only used for account restoration, not for transaction verification."
   },
   "twoFAGotIt": {
     "message": "Got it"
@@ -716,7 +836,7 @@
     "message": "2FA Verification"
   },
   "twoFARecoveryFactors": {
-    "message": "Backup"
+    "message": "Recovery factor"
   },
   "addAHardwareWallet": {
     "message": "Add a hardware wallet"

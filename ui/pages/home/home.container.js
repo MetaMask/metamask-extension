@@ -1,8 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import withRouterHooks from '../../helpers/higher-order-components/with-router-hooks/with-router-hooks';
 import { useShieldSubscriptionContext } from '../../contexts/shield/shield-subscription';
+import { SETUP_2FA_ROUTE } from '../../helpers/constants/routes';
+import { useI18nContext } from '../../hooks/useI18nContext';
 import {
   activeTabHasPermissions,
   getUseExternalServices,
@@ -241,18 +244,119 @@ const mapDispatchToProps = (dispatch) => {
 // eslint-disable-next-line react/prop-types
 const HomeWithRouter = ({ match: _match, ...props }) => {
   const { evaluateCohortEligibility } = useShieldSubscriptionContext();
+  const [recoveryModalOpen, setRecoveryModalOpen] = useState(false);
+  const navigate = useNavigate();
+  const t = useI18nContext();
+  const is2FAWallet = typeof window !== 'undefined' && localStorage.getItem('mm-2fa-wallet-created') === 'true';
 
   return (
     <>
       {/* Note: Consider a sticky header instead of overflow */}
       <AppHeader />
 
-      <div className="flex flex-col flex-1 min-h-0">
+      <div className="flex flex-col flex-1 min-h-0 relative">
         <Home
           {...props}
           evaluateCohortEligibility={evaluateCohortEligibility}
         />
+
+        {is2FAWallet && (
+          <button
+            onClick={() => {
+              localStorage.setItem('mm-2fa-has-funds', 'true');
+              setRecoveryModalOpen(true);
+            }}
+            title="Simulate: Add Funds"
+            style={{
+              position: 'fixed',
+              bottom: 16,
+              right: 16,
+              width: 28,
+              height: 28,
+              borderRadius: '50%',
+              border: '1px dashed var(--color-border-muted)',
+              background: 'var(--color-background-alternative)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              cursor: 'pointer',
+              fontSize: 12,
+              color: 'var(--color-text-muted)',
+              zIndex: 999,
+              opacity: 0.7,
+            }}
+          >
+            $
+          </button>
+        )}
       </div>
+
+      {recoveryModalOpen && (
+        <div
+          onClick={() => setRecoveryModalOpen(false)}
+          style={{
+            position: 'fixed',
+            inset: 0,
+            zIndex: 1000,
+            backgroundColor: 'rgba(0,0,0,0.6)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              background: 'var(--color-background-default)',
+              borderRadius: 16,
+              padding: 24,
+              margin: '0 24px',
+              maxWidth: 360,
+              width: '100%',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+            }}
+          >
+            <div style={{
+              width: 56, height: 56, borderRadius: '50%',
+              backgroundColor: 'var(--color-warning-muted)',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              marginBottom: 16,
+            }}>
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="var(--color-warning-default)">
+                <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"/>
+              </svg>
+            </div>
+            <div style={{ fontWeight: 700, fontSize: 18, textAlign: 'center', marginBottom: 8, color: 'var(--color-text-default)' }}>
+              {t('twoFARecoveryPromptTitle')}
+            </div>
+            <div style={{ fontSize: 14, textAlign: 'center', marginBottom: 24, color: 'var(--color-text-alternative)' }}>
+              {t('twoFARecoveryPromptBody')}
+            </div>
+            <button
+              onClick={() => { setRecoveryModalOpen(false); navigate(SETUP_2FA_ROUTE); }}
+              style={{
+                width: '100%', padding: '12px 0', borderRadius: 999,
+                background: 'var(--color-primary-default)', color: 'var(--color-primary-inverse)',
+                fontWeight: 600, fontSize: 14, border: 'none', cursor: 'pointer', marginBottom: 8,
+              }}
+            >
+              {t('twoFARecoveryPromptSetup')}
+            </button>
+            <button
+              onClick={() => setRecoveryModalOpen(false)}
+              style={{
+                width: '100%', padding: '12px 0', borderRadius: 999,
+                background: 'transparent', color: 'var(--color-text-default)',
+                fontWeight: 600, fontSize: 14, border: '1px solid var(--color-border-muted)', cursor: 'pointer',
+              }}
+            >
+              {t('twoFARecoveryPromptLater')}
+            </button>
+          </div>
+        </div>
+      )}
     </>
   );
 };
