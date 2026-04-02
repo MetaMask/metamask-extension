@@ -179,22 +179,7 @@ export const ActivityList = ({ filter }: Props) => {
     isFetchingNextPage,
   ]);
 
-  // Filter to only pending transactions for nonce tracking (speed-up/cancel).
-  // Confirmed local transactions remain in the display list but don't affect
-  // earliestNonce calculation, which is used to determine if a tx can be speed up
-  // or cancelled (requires it to be the earliest pending tx in the chain).
-  const pendingLocalTransactions = useMemo(
-    () =>
-      localTransactions.filter(
-        ({ primaryTransaction }) =>
-          primaryTransaction.status in PENDING_STATUS_HASH,
-      ),
-    [localTransactions],
-  );
-
-  const earliestNonceByChain = useEarliestNonceByChain(
-    pendingLocalTransactions,
-  );
+  const earliestNonceByChain = useEarliestNonceByChain(localTransactions);
 
   const handleItemClick = (transaction: TransactionViewModel) => {
     setSelectedItem(transaction);
