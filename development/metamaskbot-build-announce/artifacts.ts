@@ -248,7 +248,7 @@ async function discoverBundleArtifacts(hostUrl: string): Promise<string> {
  * @param options.version - The extension version string (from package.json).
  * @param options.shortSha - Abbreviated commit hash.
  * @param options.artifacts - Artifact links from getArtifactLinks.
- * @param options.postNewBuilds - Whether to include extension build links.
+ * @param options.buildsFromSha - The short SHA of the commit that produced the builds (differs from shortSha when builds are reused).
  * @param options.lavamoatPolicyChanged - Whether to include the LavaMoat viz link.
  * @returns Collapsible HTML string.
  */
@@ -257,21 +257,19 @@ export async function buildArtifactsBody({
   version,
   shortSha,
   artifacts,
-  postNewBuilds,
+  buildsFromSha,
   lavamoatPolicyChanged,
 }: {
   hostUrl: string;
   version: string;
   shortSha: string;
   artifacts: ArtifactLinks;
-  postNewBuilds: boolean;
+  buildsFromSha: string;
   lavamoatPolicyChanged: boolean;
 }): Promise<string> {
   const contentRows: string[] = [];
 
-  if (postNewBuilds) {
-    contentRows.push(...formatBuildLinks(getBuildLinks({ hostUrl, version })));
-  }
+  contentRows.push(...formatBuildLinks(getBuildLinks({ hostUrl, version })));
 
   if (lavamoatPolicyChanged) {
     contentRows.push(`lavamoat build viz: ${artifacts.link('depViz')}`);
@@ -295,5 +293,8 @@ export async function buildArtifactsBody({
     .map((row) => `<li>${row}</li>`)
     .join('\n')}</ul>`;
 
-  return `<details><summary>Builds ready [${shortSha}]</summary>${hiddenContent}</details>\n\n`;
+  const reusedTag =
+    buildsFromSha === shortSha ? '' : ` [reused from ${buildsFromSha}]`;
+
+  return `<details><summary>Builds ready [${shortSha}]${reusedTag}</summary>${hiddenContent}</details>\n\n`;
 }

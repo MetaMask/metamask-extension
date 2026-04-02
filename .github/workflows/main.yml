@@ -40,6 +40,7 @@ env:
 permissions:
   contents: write # required for releases
   id-token: write # required for s3 uploads
+  statuses: write # required for build-source-hash and ci-status-gate
 
 jobs:
   get-requirements:
@@ -386,7 +387,7 @@ jobs:
     secrets: inherit
 
   run-benchmarks:
-    if: ${{ needs.get-requirements.outputs.needs-benchmarks == 'true' }}
+    if: ${{ needs.get-requirements.outputs.needs-benchmarks == 'true' && needs.get-requirements.outputs.builds-from-run == github.run_id }}
     uses: ./.github/workflows/run-benchmarks.yml
     needs:
       - get-requirements
@@ -442,6 +443,7 @@ jobs:
     needs:
       - get-requirements
       - build-dist-browserify
+    if: ${{ needs.get-requirements.outputs.builds-from-run == github.run_id }}
     runs-on: ubuntu-latest
     timeout-minutes: 30
     environment: ${{ github.ref_name == 'main' && 'default-branch' || null }}
@@ -524,7 +526,7 @@ jobs:
 
   build-storybook:
     name: Build storybook
-    if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
+    if: ${{ needs.get-requirements.outputs.skip-everything != 'true' && needs.get-requirements.outputs.builds-from-run == github.run_id }}
     needs:
       - get-requirements
     uses: ./.github/workflows/build-storybook.yml
@@ -532,7 +534,7 @@ jobs:
 
   build-ts-migration-dashboard:
     name: Build ts migration dashboard
-    if: ${{ github.event_name != 'merge_group' && needs.get-requirements.outputs.skip-everything != 'true' }}
+    if: ${{ github.event_name != 'merge_group' && needs.get-requirements.outputs.skip-everything != 'true' && needs.get-requirements.outputs.builds-from-run == github.run_id }}
     needs:
       - get-requirements
     uses: ./.github/workflows/build-ts-migration-dashboard.yml
@@ -544,7 +546,7 @@ jobs:
       - get-requirements
       - prep-deps
       - build-dist-browserify
-    if: ${{ needs.get-requirements.outputs.skip-everything != 'true' && github.event_name != 'merge_group' }}
+    if: ${{ needs.get-requirements.outputs.skip-everything != 'true' && needs.get-requirements.outputs.builds-from-run == github.run_id && github.event_name != 'merge_group' }}
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
@@ -720,7 +722,8 @@ jobs:
     uses: ./.github/workflows/publish-prerelease.yml
     with:
       lavamoat-policy-changed: ${{ needs.build-lavamoat-viz.outputs.lavamoat-policy-changed == 'true' }}
-      post-new-builds: ${{ needs.get-requirements.outputs.builds-from-run == github.run_id }}
+      builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
+      builds-from-sha: ${{ needs.get-requirements.outputs.builds-from-sha }}
     secrets:
       PR_COMMENT_TOKEN: ${{ secrets.PR_COMMENT_TOKEN }}
       E2E_OPENAI_API_KEY: ${{ secrets.E2E_OPENAI_API_KEY }}
@@ -824,5 +827,4 @@ jobs:
     uses: ./.github/workflows/ci-status-gate.yml
     with:
       needs-json: ${{ toJson(needs) }}
-      builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
     secrets: inherit

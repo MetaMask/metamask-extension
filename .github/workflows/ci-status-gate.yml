@@ -26,10 +26,6 @@ on:
         description: JSON-encoded needs context from the caller (toJson(needs)). Used to check that all upstream jobs passed.
         required: true
         type: string
-      builds-from-run:
-        description: Run ID that produced the build artifacts. Used to warn when builds come from a different run (builds-from-run shortcut).
-        required: true
-        type: string
 
 jobs:
   gate:
@@ -49,7 +45,6 @@ jobs:
         uses: actions/github-script@v8
         env:
           NEEDS_JSON: ${{ inputs.needs-json }}
-          BUILDS_FROM_RUN: ${{ inputs.builds-from-run }}
         with:
           script: |
             const needs = JSON.parse(process.env.NEEDS_JSON);
@@ -63,12 +58,6 @@ jobs:
                 core.error(`${job} did not succeed (result: ${result})`);
                 allPassed = false;
               }
-            }
-
-            if (process.env.BUILDS_FROM_RUN && process.env.BUILDS_FROM_RUN !== process.env.RUN_ID) {
-              core.warning(`Builds were used from a different GHA run: ${process.env.BUILDS_FROM_RUN}`);
-              core.info('Right now you can use this feature to test and iterate faster, but to merge a PR, you have to disable it.');
-              allPassed = false;
             }
 
             core.setOutput('checkResult', allPassed ? 'success' : 'failure');

@@ -12,6 +12,9 @@ on:
       builds-from-run:
         description: The github.run_id to get builds from
         value: ${{ jobs.detect-changes.outputs.builds-from-run }}
+      builds-from-sha:
+        description: The HEAD commit SHA of the run providing builds (for PR comment annotation)
+        value: ${{ jobs.detect-changes.outputs.builds-from-sha }}
       needs-lint:
         description: Whether lint job is needed
         value: ${{ jobs.detect-changes.outputs.needs-lint }}
@@ -38,6 +41,9 @@ env:
   BRANCH: ${{ github.head_ref || github.ref_name }}
   IS_RUN_EVERYTHING_BRANCH: ${{ (github.head_ref || github.ref_name) == 'main' || (github.head_ref || github.ref_name) == 'stable' }}
   RUN_ID: ${{ github.run_id }}
+  # For a `pull_request` event, the base branch is `github.event.pull_request.base.ref`.
+  # For a `push` event on release/* branches, fall back to `stable`; otherwise `main`.
+  BASE_BRANCH: ${{ github.event.pull_request.base.ref || (startsWith(github.ref_name, 'release/') && 'stable') || 'main' }}
   IS_FORK: ${{ github.event.pull_request.head.repo.fork || github.event.repository.fork }}
   EVENT_NAME: ${{ github.event_name }}
   PR_NUMBER: ${{ github.event.pull_request.number }}
@@ -51,7 +57,8 @@ jobs:
     outputs:
       needs-locales: ${{ steps.set-needs-locales.outputs.needs-locales || 'false' }}
       skip-everything: ${{ steps.set-skip-everything.outputs.skip-everything || 'false' }}
-      builds-from-run: ${{ steps.identify-builds.outputs.builds-from-run || env.RUN_ID }}
+      builds-from-run: ${{ steps.find-reusable-builds.outputs.builds-from-run || env.RUN_ID }}
+      builds-from-sha: ${{ steps.find-reusable-builds.outputs.builds-from-sha || env.HEAD_COMMIT_HASH }}
       needs-lint: ${{ steps.set-needs-lint.outputs.needs-lint || 'false' }}
       needs-unit-and-integration: ${{ steps.set-needs-unit-and-integration.outputs.needs-unit-and-integration || 'false' }}
       needs-releases: ${{ steps.set-needs-releases.outputs.needs-releases || 'false'}}
@@ -88,11 +95,176 @@ jobs:
             fi
           fi
 
-      # Do this before we use dorny/paths-filter, which might checkout other commits
-      - name: 'Look for `[builds-from-run: <run>]` in the last commit message'
-        id: identify-builds
-        if: ${{ env.IS_RUN_EVERYTHING_BRANCH != 'true' && steps.check-skip-merge-queue.outputs.up-to-date != 'true' }}
-        run: .github/scripts/identify-builds-from-run.sh "${HEAD_COMMIT_HASH}"
+      # Compute a content hash of all build-affecting source files.
+      # Used to detect when builds can be reused from a prior run.
+      # IMPORTANT: We hash from HEAD_COMMIT_HASH (the PR head), not the merge
+      # commit that actions/checkout creates. This ensures the hash is stable
+      # across pushes even when the base branch advances.
+      - name: Compute build-source hash
+        id: compute-build-hash
+        if: ${{ steps.check-skip-merge-queue.outputs.up-to-date != 'true' }}
+        run: |
+          BUILD_HASH=$(
+            git ls-tree -r "${HEAD_COMMIT_HASH}" -- \
+              .github/workflows/run-build.yml \
+              .storybook/ \
+              app/ \
+              development/build/ \
+              development/webpack/ \
+              lavamoat/ \
+              shared/ \
+              types/ \
+              ui/ \
+              .browserslistrc \
+              babel.config.js \
+              builds.yml \
+              package.json \
+              tailwind.config.js \
+              tsconfig.json \
+              yarn.lock \
+            | git hash-object --stdin
+          )
+          echo "build-hash=$BUILD_HASH" >> "$GITHUB_OUTPUT"
+          echo "-> Build-source hash: $BUILD_HASH"
+
+      # Post the hash as a commit status so future runs can look it up by SHA.
+      - name: Post build-source-hash commit status
+        if: ${{ steps.compute-build-hash.outputs.build-hash }}
+        uses: actions/github-script@v8
+        env:
+          BUILD_HASH: ${{ steps.compute-build-hash.outputs.build-hash }}
+          HEAD_COMMIT_HASH: ${{ env.HEAD_COMMIT_HASH }}
+        with:
+          script: |
+            await github.rest.repos.createCommitStatus({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              sha: process.env.HEAD_COMMIT_HASH,
+              state: 'success',
+              context: 'build-source-hash',
+              description: process.env.BUILD_HASH,
+              target_url: `${process.env.GITHUB_SERVER_URL}/${context.repo.owner}/${context.repo.repo}/actions/runs/${process.env.RUN_ID}`,
+            });
+            core.info(`Posted build-source-hash: ${process.env.BUILD_HASH}`);
+
+      # Find a prior run whose builds match the current source hash.
+      # Checks same branch first, then base branch (main).
+      # Skipped on main, stable, and direct pushes to release/* (too high-risk to skip builds).
+      - name: Find reusable builds from prior run
+        id: find-reusable-builds
+        if: ${{ env.IS_RUN_EVERYTHING_BRANCH != 'true' && !(!github.head_ref && startsWith(github.ref_name, 'release/')) && steps.compute-build-hash.outputs.build-hash && steps.check-skip-merge-queue.outputs.up-to-date != 'true' }}
+        uses: actions/github-script@v8
+        env:
+          BUILD_HASH: ${{ steps.compute-build-hash.outputs.build-hash }}
+          BASE_BRANCH: ${{ env.BASE_BRANCH }}
+        with:
+          script: |
+            const { repo: { owner, repo } } = context;
+            const buildHash = process.env.BUILD_HASH;
+            const currentRunId = parseInt(process.env.RUN_ID, 10);
+            const branch = process.env.BRANCH;
+
+            async function findMatchingRun(searchBranch) {
+              core.info(`Searching branch '${searchBranch}' for matching build hash...`);
+
+              let runs;
+              try {
+                const resp = await github.rest.actions.listWorkflowRuns({
+                  owner,
+                  repo,
+                  workflow_id: 'main.yml',
+                  branch: searchBranch,
+                  per_page: 10,
+                });
+                runs = resp.data.workflow_runs ?? [];
+              } catch (err) {
+                core.warning(`API error listing runs for '${searchBranch}': ${err.message}`);
+                return false;
+              }
+
+              const allowedStatuses = new Set(['completed', 'in_progress']);
+              for (const run of runs) {
+                if (!allowedStatuses.has(run.status)) continue;
+                if (run.id === currentRunId) continue;
+
+                try {
+                  // Use the combined status endpoint — it de-duplicates and returns only
+                  // the latest status per context, avoiding pagination issues when bots
+                  // (e.g. policy-bot) create 100+ entries that push ours off page 1.
+                  const { data: { statuses } } = await github.rest.repos.getCombinedStatusForRef({
+                    owner,
+                    repo,
+                    ref: run.head_sha,
+                  });
+                  const hashStatus = statuses.find(s => s.context === 'build-source-hash');
+
+                  if (hashStatus?.description !== buildHash) {
+                    core.info(`-> Run ${run.id} (SHA: ${run.head_sha}): hash ${hashStatus?.description ?? 'not found'} — skipping`);
+                    continue;
+                  }
+
+                  // Verify that build artifacts still exist (one API call for all artifacts)
+                  const { data: { artifacts } } = await github.rest.actions.listWorkflowRunArtifacts({
+                    owner,
+                    repo,
+                    run_id: run.id,
+                    per_page: 100,
+                  });
+                  const artifactNames = new Set(artifacts.map(a => a.name));
+
+                  // IMPORTANT: Keep this list in sync with every `build-name:` value
+                  // in main.yml. If a build job is added or removed there, update here too.
+                  const required = [
+                    'build-dist-browserify',
+                    'build-dist-mv2-browserify',
+                    'build-beta-browserify',
+                    'build-beta-mv2-browserify',
+                    'build-flask-browserify',
+                    'build-flask-mv2-browserify',
+                    'build-test-browserify',
+                    'build-test-mv2-browserify',
+                    'build-test-flask-browserify',
+                    'build-test-flask-mv2-browserify',
+                    'build-dist-webpack',
+                    'build-dist-mv2-webpack',
+                    'build-beta-webpack',
+                    'build-beta-mv2-webpack',
+                    'build-flask-webpack',
+                    'build-flask-mv2-webpack',
+                    'build-test-webpack',
+                    'build-test-mv2-webpack',
+                    'build-test-flask-webpack',
+                    'build-test-flask-mv2-webpack',
+                  ];
+                  const missing = required.filter(name => !artifactNames.has(name));
+
+                  if (missing.length === 0) {
+                    core.info(`-> Found matching run: ${run.id} (SHA: ${run.head_sha})`);
+                    core.setOutput('builds-from-run', String(run.id));
+                    core.setOutput('builds-from-sha', run.head_sha);
+                    return true;
+                  }
+                  core.info(`-> Run ${run.id} matches hash but missing artifacts: ${missing.join(', ')}. Skipping.`);
+                } catch (err) {
+                  core.warning(`API error checking run ${run.id}: ${err.message}`);
+                  continue;
+                }
+              }
+              return false;
+            }
+
+            try {
+              const baseBranch = process.env.BASE_BRANCH;
+              // Try same branch first, then fall back to base branch
+              if (!(await findMatchingRun(branch))) {
+                core.info(`No match on '${branch}', trying '${baseBranch}'...`);
+                if (!(await findMatchingRun(baseBranch))) {
+                  core.info('No reusable builds found. Builds will run fresh.');
+                }
+              }
+            } catch (err) {
+              core.warning(`Build reuse lookup failed: ${err.message}. Builds will run fresh.`);
+            }
 
       - id: filter
         if: ${{ steps.check-skip-merge-queue.outputs.up-to-date != 'true' }}

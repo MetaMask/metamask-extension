@@ -48,31 +48,34 @@ describe('buildArtifactsBody', () => {
   const makeArtifacts = () =>
     getArtifactLinks(HOST, 'MetaMask', 'metamask-extension', '99');
 
-  it('includes build links when postNewBuilds is true', async () => {
+  it('includes build links when builds are fresh (buildsFromSha matches shortSha)', async () => {
     const result = await buildArtifactsBody({
       hostUrl: HOST,
       version: VERSION,
       shortSha: 'abc1234',
       artifacts: makeArtifacts(),
-      postNewBuilds: true,
+      buildsFromSha: 'abc1234',
       lavamoatPolicyChanged: false,
     });
 
     expect(result).toContain(`metamask-chrome-${VERSION}.zip`);
     expect(result).toContain('build-dist-webpack');
+    expect(result).toContain('Builds ready [abc1234]');
+    expect(result).not.toContain('reused from');
   });
 
-  it('omits build links when postNewBuilds is false', async () => {
+  it('includes build links and reused tag when builds are reused', async () => {
     const result = await buildArtifactsBody({
       hostUrl: HOST,
       version: VERSION,
-      shortSha: 'abc1234',
+      shortSha: 'def5678',
       artifacts: makeArtifacts(),
-      postNewBuilds: false,
+      buildsFromSha: 'abc1234',
       lavamoatPolicyChanged: false,
     });
 
-    expect(result).not.toContain(`metamask-chrome-${VERSION}.zip`);
+    expect(result).toContain(`metamask-chrome-${VERSION}.zip`);
+    expect(result).toContain('Builds ready [def5678] [reused from abc1234]');
   });
 
   it('includes lavamoat viz link when lavamoatPolicyChanged is true', async () => {
@@ -81,7 +84,7 @@ describe('buildArtifactsBody', () => {
       version: VERSION,
       shortSha: 'abc1234',
       artifacts: makeArtifacts(),
-      postNewBuilds: false,
+      buildsFromSha: 'abc1234',
       lavamoatPolicyChanged: true,
     });
 
@@ -94,7 +97,7 @@ describe('buildArtifactsBody', () => {
       version: VERSION,
       shortSha: 'abc1234',
       artifacts: makeArtifacts(),
-      postNewBuilds: false,
+      buildsFromSha: 'abc1234',
       lavamoatPolicyChanged: false,
     });
 
@@ -102,5 +105,17 @@ describe('buildArtifactsBody', () => {
     expect(result).toContain('Builds ready [abc1234]');
     expect(result).toContain('bundle size:');
     expect(result).toContain('storybook:');
+  });
+
+  it('uses allArtifacts link with the runId passed to getArtifactLinks', () => {
+    const links = getArtifactLinks(
+      HOST,
+      'MetaMask',
+      'metamask-extension',
+      '55',
+    );
+    expect(links.allArtifacts.url).toBe(
+      'https://github.com/MetaMask/metamask-extension/actions/runs/55#artifacts',
+    );
   });
 });
