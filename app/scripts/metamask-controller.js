@@ -1975,6 +1975,20 @@ export default class MetamaskController extends EventEmitter {
     this.controllerMessenger.subscribe(
       `${this.accountTreeController.name}:selectedAccountGroupChange`,
       (groupId) => {
+        const authorizationsByOrigin = getAuthorizedScopesByOrigin(
+          this.permissionController.state,
+        );
+
+        // TODO: Remove this setTimeout once https://github.com/MetaMask/core/pull/8261 is released
+        setTimeout(() => {
+          for (const [
+            origin,
+            authorization,
+          ] of authorizationsByOrigin.entries()) {
+            this._notifyAuthorizationChange(origin, authorization);
+          }
+        }, 1000);
+
         // TODO: Move this logic to the SnapKeyring directly.
         // Forward selected accounts to the Snap keyring, so each Snaps can fetch those accounts.
         // eslint-disable-next-line no-void
@@ -7761,6 +7775,8 @@ export default class MetamaskController extends EventEmitter {
               ),
             },
           }),
+        sortAccountIdsByLastSelected:
+          this.sortAccountIdsByLastSelected.bind(this),
       }),
     );
 
@@ -8824,18 +8840,53 @@ export default class MetamaskController extends EventEmitter {
   }
 
   async _notifyAuthorizationChange(origin, newAuthorization) {
+    const sessionScopes = getSessionScopes(newAuthorization, {
+      getNonEvmSupportedMethods: this.getNonEvmSupportedMethods.bind(this),
+      sortAccountIdsByLastSelected:
+        this.sortAccountIdsByLastSelected.bind(this),
+    });
+
     this.notifyConnections(
       origin,
       {
         method: MultichainApiNotifications.sessionChanged,
         params: {
-          sessionScopes: getSessionScopes(newAuthorization, {
-            getNonEvmSupportedMethods:
-              this.getNonEvmSupportedMethods.bind(this),
-          }),
+          sessionScopes,
         },
       },
       API_TYPE.CAIP_MULTICHAIN,
+    );
+  }
+
+  /**
+   * Sorts CAIP account IDs by the associated account address lastSelected value.
+   *
+   * @param {string[]} accountIds - CAIP account IDs to sort.
+   * @returns {string[]} Sorted CAIP account IDs.
+   */
+  sortAccountIdsByLastSelected(accountIds) {
+    if (accountIds.length < 2) {
+      return accountIds;
+    }
+
+    const addressByCaipAccountId = new Map(
+      accountIds.map((caipAccountId) => {
+        const { address } = parseCaipAccountId(caipAccountId);
+        return [caipAccountId, address];
+      }),
+    );
+
+    const addresses = [...new Set(addressByCaipAccountId.values())];
+    const sortedAddresses =
+      this.sortMultichainAccountsByLastSelected(addresses);
+    const rankByAddress = new Map(
+      sortedAddresses.map((address, index) => [address, index]),
+    );
+
+    return [...accountIds].sort(
+      (firstAccountId, secondAccountId) =>
+        rankByAddress.get(addressByCaipAccountId.get(firstAccountId)) -
+        rankByAddress.get(addressByCaipAccountId.get(secondAccountId)),
     );
   }
 
