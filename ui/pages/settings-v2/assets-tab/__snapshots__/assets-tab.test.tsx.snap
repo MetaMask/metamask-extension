@@ -6,26 +6,26 @@ exports[`Assets Tab snapshot matches snapshot 1`] = `
     class="pb-4 px-4 overflow-y-auto"
   >
     <div>
-      <div
-        class="flex flex-row items-center justify-between py-3"
+      <a
+        class="block rounded-lg hover:bg-background-default-hover"
+        href="/settings/assets/currency"
       >
-        <p
-          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
-        >
-          Local currency
-        </p>
         <div
-          class="flex flex-row gap-1 items-center"
+          class="flex flex-row items-center justify-between py-3"
         >
           <p
-            class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+            class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
           >
-            USD
+            Local currency
           </p>
-          <a
-            class="flex ml-1"
-            href="/settings/assets/currency"
+          <div
+            class="flex flex-row gap-1 items-center"
           >
+            <p
+              class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+            >
+              USD
+            </p>
             <svg
               class="inline-block w-4 h-4 text-icon-alternative"
               fill="currentColor"
@@ -36,9 +36,9 @@ exports[`Assets Tab snapshot matches snapshot 1`] = `
                 d="m8.887 22-1.775-1.775L15.337 12 7.112 3.775 8.887 2l10 10z"
               />
             </svg>
-          </a>
+          </div>
         </div>
-      </div>
+      </a>
     </div>
     <div>
       <div
