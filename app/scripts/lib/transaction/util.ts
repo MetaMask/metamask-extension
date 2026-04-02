@@ -520,7 +520,7 @@ export async function addTransactionSendCallExtraOptions({
       return {};
     }
     const { chainId: currentRequestChainId } = networkConfiguration;
-    if (isTempoChain(currentRequestChainId)) {
+    if (!isTempoChain(currentRequestChainId)) {
       return {};
     }
     const isEip7702SupportedByAccount = await accountSupports7702(
