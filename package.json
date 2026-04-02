@@ -283,7 +283,7 @@
     "@keystonehq/bc-ur-registry-eth": "^0.22.1",
     "@lavamoat/lavadome-react": "0.0.20",
     "@lavamoat/snow": "^2.0.4",
-    "@lavamoat/webpack": "patch:@lavamoat/webpack@npm%3A1.5.8#~/.yarn/patches/@lavamoat-webpack-npm-1.5.8-6de0ed59e1.patch",
+    "@lavamoat/webpack": "2.1.0",
     "@ledgerhq/errors": "^6.21.0",
     "@ledgerhq/hw-app-eth": "^6.42.0",
     "@ledgerhq/hw-transport": "^6.31.0",
