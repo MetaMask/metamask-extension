@@ -373,7 +373,9 @@ const PerpsOrderEntryPage: React.FC = () => {
 
   const currentPrice = chartCurrentPrice > 0 ? chartCurrentPrice : marketPrice;
 
-  const availableBalance = account ? Number.parseFloat(account.availableBalance) : 0;
+  const availableBalance = account
+    ? Number.parseFloat(account.availableBalance)
+    : 0;
 
   const isLimitPriceUnfavorable = useMemo(() => {
     if (orderType !== 'limit' || !orderFormState) {
