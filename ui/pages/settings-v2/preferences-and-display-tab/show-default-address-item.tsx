@@ -89,6 +89,7 @@ export const ShowDefaultAddressItem = () => {
         selectedOption={defaultAddressScope}
         onChange={handleDropdownChange}
         data-testid="default-address-scope-dropdown"
+        className="mx-4"
       />
     </Box>
   );

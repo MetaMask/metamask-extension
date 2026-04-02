@@ -192,6 +192,8 @@ export const BackupAndSyncToggle = () => {
     <Box
       marginTop={4}
       marginBottom={4}
+      paddingLeft={4}
+      paddingRight={4}
       className="privacy-settings__setting__wrapper"
       id="backup-and-sync-toggle"
       data-testid={backupAndSyncToggleTestIds.container}
