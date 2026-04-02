@@ -12,8 +12,6 @@
 name: RC Slack notify
 
 on:
-  # Only enqueue this workflow when Main ran for a release/* branch (not every push to main/stable/PRs).
-  # The job `if` still requires success + push + same repo + release/ prefix + gate (auto-rc-builds).
   workflow_run:
     workflows:
       - Main
@@ -85,13 +83,19 @@ jobs:
         if: >-
           github.event_name == 'workflow_dispatch' ||
           (github.event_name == 'workflow_run' && steps.gate.outputs.skip == 'false')
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          INPUT_RUN_ID: ${{ inputs.github_run_id }}
+          INPUT_SEMVER: ${{ inputs.semver }}
+          WORKFLOW_RUN_ID: ${{ github.event.workflow_run.id }}
+          GATE_SEMVER: ${{ steps.gate.outputs.semver }}
         run: |
-          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
-            echo "run_id=${{ inputs.github_run_id }}" >> "$GITHUB_OUTPUT"
-            echo "semver=${{ inputs.semver }}" >> "$GITHUB_OUTPUT"
+          if [[ "$EVENT_NAME" == "workflow_dispatch" ]]; then
+            echo "run_id=${INPUT_RUN_ID}" >> "$GITHUB_OUTPUT"
+            echo "semver=${INPUT_SEMVER}" >> "$GITHUB_OUTPUT"
           else
-            echo "run_id=${{ github.event.workflow_run.id }}" >> "$GITHUB_OUTPUT"
-            echo "semver=${{ steps.gate.outputs.semver }}" >> "$GITHUB_OUTPUT"
+            echo "run_id=${WORKFLOW_RUN_ID}" >> "$GITHUB_OUTPUT"
+            echo "semver=${GATE_SEMVER}" >> "$GITHUB_OUTPUT"
           fi
 
       - name: Checkout and setup

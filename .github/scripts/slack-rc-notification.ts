@@ -58,18 +58,45 @@ function escapeSlackMrkdwn(text: string | undefined | null): string {
     .replace(/>/g, '&gt;');
 }
 
+/**
+ * Changelog lines use GitHub-style `(#12345)` PR refs. Some lines use markdown
+ * `[#123](https://github.com/org/repo/pull/123)`. After escaping the line for Slack,
+ * turn those into mrkdwn links. Parentheses stay plain text around the link: `(<url|#123>)`.
+ */
+function linkifyChangelogPrRefs(text: string, repoBaseUrl: string): string {
+  let out = text.replace(/\(#(\d+)\)/g, (_match, prNumber: string) => {
+    return `(<${repoBaseUrl}/pull/${prNumber}|#${prNumber}>)`;
+  });
+  out = out.replace(
+    /\[#(\d+)\]\((https:\/\/github\.com\/[^/]+\/[^/]+\/pull\/\d+)\)/g,
+    (_match, prNumber: string, url: string) => {
+      return `(<${url}|#${prNumber}>)`;
+    },
+  );
+  return out;
+}
+
 function getExtensionMainBuildLinks(
   hostUrl: string,
   packageVersion: string,
 ): MainBrowserLinks {
-  const full = getBuildLinks({ hostUrl: hostUrl.replace(/\/$/, ''), version: packageVersion });
+  const full = getBuildLinks({
+    hostUrl: hostUrl.replace(/\/$/, ''),
+    version: packageVersion,
+  });
   return {
     browserify: full.browserify.main,
     webpack: full.webpack.main,
   };
 }
 
-function extractChangelogEntries(version: string): Record<string, unknown[]> | null {
+/**
+ * `@metamask/auto-changelog` `getReleaseChanges` returns each line as a plain string
+ * (not `{ description, prNumbers }`). See `Changelog.getReleaseChanges` → `string[]`.
+ */
+function extractChangelogEntries(
+  version: string,
+): Record<string, string[]> | null {
   const changelogPath = path.join(REPO_ROOT, 'CHANGELOG.md');
 
   let changelogContent: string;
@@ -85,10 +112,9 @@ function extractChangelogEntries(version: string): Record<string, unknown[]> | n
     const changelog = parseChangelog({
       changelogContent,
       repoUrl: REPO_URL,
-      shouldExtractPrLinks: true,
     });
 
-    return (changelog.getReleaseChanges(version) as Record<string, unknown[]> | undefined) ?? null;
+    return changelog.getReleaseChanges(version) ?? null;
   } catch (error) {
     const err = error as Error;
     console.error(`Failed to parse CHANGELOG.md: ${err.message}`);
@@ -96,47 +122,70 @@ function extractChangelogEntries(version: string): Record<string, unknown[]> | n
   }
 }
 
+function changelogLineToText(entry: unknown): string {
+  if (typeof entry === 'string') {
+    return entry;
+  }
+  if (entry && typeof entry === 'object' && 'description' in entry) {
+    const d = (entry as { description: unknown }).description;
+    if (typeof d === 'string') {
+      return d;
+    }
+  }
+  return '';
+}
+
 function formatChangesForSlack(
-  changes: Record<string, unknown[]>,
+  changes: Record<string, string[]>,
   maxEntries = 15,
 ): string {
   const formattedEntries: string[] = [];
 
+  /** Keep a Changelog — https://keepachangelog.com/en/1.0.0/ */
   const categoryOrder = [
     'Added',
-    'Fixed',
     'Changed',
     'Deprecated',
     'Removed',
+    'Fixed',
+    'Security',
     'Uncategorized',
   ];
 
-  for (const category of categoryOrder) {
-    const entries = (changes[category] || []) as {
-      description: string;
-      prNumbers?: number[];
-    }[];
+  const knownCategories = new Set(categoryOrder);
+  const extraCategories = Object.keys(changes)
+    .filter((k) => !knownCategories.has(k))
+    .sort((a, b) => a.localeCompare(b));
+
+  const categoriesToIterate = [...categoryOrder, ...extraCategories];
+
+  outer: for (const category of categoriesToIterate) {
+    const entries = changes[category] ?? [];
     for (const entry of entries) {
       if (formattedEntries.length >= maxEntries) {
-        break;
+        break outer;
       }
 
-      let description = escapeSlackMrkdwn(entry.description);
-
-      if (entry.prNumbers && entry.prNumbers.length > 0) {
-        const prLinks = entry.prNumbers
-          .map((prNum) => `<${REPO_URL}/pull/${prNum}|#${prNum}>`)
-          .join(', ');
-        description = `${description} (${prLinks})`;
+      const line = changelogLineToText(entry).trim();
+      if (line === '') {
+        continue;
       }
 
+      const description = linkifyChangelogPrRefs(
+        escapeSlackMrkdwn(line),
+        REPO_URL,
+      );
       formattedEntries.push(`• ${description}`);
     }
   }
 
-  const allEntriesCount = Object.values(changes)
-    .flat()
-    .filter(Boolean).length;
+  const allEntriesCount = categoriesToIterate.reduce((sum, category) => {
+    const entries = changes[category];
+    if (!Array.isArray(entries)) {
+      return sum;
+    }
+    return sum + entries.filter(Boolean).length;
+  }, 0);
   const remaining = allEntriesCount - formattedEntries.length;
 
   if (remaining > 0) {
@@ -151,7 +200,12 @@ function isValidUrl(url: string | undefined): boolean {
     return false;
   }
   const trimmed = url.trim().toLowerCase();
-  if (trimmed === '' || trimmed === 'n/a' || trimmed === 'null' || trimmed === 'undefined') {
+  if (
+    trimmed === '' ||
+    trimmed === 'n/a' ||
+    trimmed === 'null' ||
+    trimmed === 'undefined'
+  ) {
     return false;
   }
   try {
@@ -165,7 +219,9 @@ function isValidUrl(url: string | undefined): boolean {
 function readPackageVersion(): string | null {
   try {
     const pkgPath = path.join(REPO_ROOT, 'package.json');
-    const pkg = JSON.parse(readFileSync(pkgPath, 'utf8')) as { version: string };
+    const pkg = JSON.parse(readFileSync(pkgPath, 'utf8')) as {
+      version: string;
+    };
     return pkg.version;
   } catch (e) {
     const err = e as Error;
@@ -183,8 +239,15 @@ function buildSlackMessage(options: {
   hasChangelog: boolean;
   actionsRunUrl: string | undefined;
 }): SlackPayload {
-  const { semver, packageVersion, runId, links, changelogText, hasChangelog, actionsRunUrl } =
-    options;
+  const {
+    semver,
+    packageVersion,
+    runId,
+    links,
+    changelogText,
+    hasChangelog,
+    actionsRunUrl,
+  } = options;
 
   const buildIdLabel = runId ? `run ${runId}` : 'unknown run';
 
@@ -383,13 +446,17 @@ async function main(): Promise<void> {
   const missingVars = requiredForPost.filter((v) => !process.env[v]);
 
   if (missingVars.length > 0 && !dryRun) {
-    console.warn(`⚠️ Missing required environment variables: ${missingVars.join(', ')}`);
+    console.warn(
+      `⚠️ Missing required environment variables: ${missingVars.join(', ')}`,
+    );
     console.warn('Skipping Slack notification (non-critical)');
     return;
   }
 
   if (dryRun && missingVars.length > 0) {
-    console.warn(`⚠️ DRY_RUN: missing ${missingVars.join(', ')} — printing payload only`);
+    console.warn(
+      `⚠️ DRY_RUN: missing ${missingVars.join(', ')} — printing payload only`,
+    );
   }
 
   const botToken = process.env.SLACK_BOT_TOKEN;
@@ -414,7 +481,9 @@ async function main(): Promise<void> {
   const expectedChannelName = channelOverride ?? getSlackChannel(semver);
   const isOverride = Boolean(channelOverride);
 
-  console.log(`\n📣 Preparing Slack notification for Extension RC v${semver} (run ${runId})`);
+  console.log(
+    `\n📣 Preparing Slack notification for Extension RC v${semver} (run ${runId})`,
+  );
   if (isOverride) {
     console.log(
       `🧪 Channel override (SLACK_RC_CHANNEL / SLACK_CHANNEL / TEST_CHANNEL): ${expectedChannelName}`,
@@ -430,9 +499,7 @@ async function main(): Promise<void> {
   let hasChangelog = false;
 
   if (changes) {
-    const totalChanges = Object.values(changes)
-      .flat()
-      .filter(Boolean).length;
+    const totalChanges = Object.values(changes).flat().filter(Boolean).length;
     console.log(`   Found ${totalChanges} changelog entries for v${semver}`);
 
     if (totalChanges > 0) {
@@ -443,9 +510,9 @@ async function main(): Promise<void> {
     console.log('   ⚠️ Could not read changelog for this version');
   }
 
-  const [owner, repo] = (process.env.GITHUB_REPOSITORY || 'MetaMask/metamask-extension').split(
-    '/',
-  );
+  const [owner, repo] = (
+    process.env.GITHUB_REPOSITORY || 'MetaMask/metamask-extension'
+  ).split('/');
   const actionsRunUrl =
     runId && owner && repo
       ? `https://github.com/${owner}/${repo}/actions/runs/${runId}`
