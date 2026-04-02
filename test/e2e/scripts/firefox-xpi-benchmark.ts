@@ -5,31 +5,12 @@ import os from 'os';
 import path from 'path';
 import { performance as perf } from 'perf_hooks';
 import process from 'process';
-import { createRequire } from 'module';
-
-const require = createRequire(import.meta.url);
+import { getOrBuildXpi, buildXpi } from '../helpers/xpi';
 
 const MANIFEST_FILE_NAME = 'manifest.json';
 const DEFAULT_ITERATIONS = 2;
-
-type FirefoxDriverInternal = {
-  _buildXpiTemplate: (
-    absDir: string,
-    xpiPath: string,
-    manifestBuffer: Buffer,
-  ) => Promise<string>;
-  _patchManifest: (xpiPath: string, manifestBuffer: Buffer) => Promise<void>;
-  _buildXpi: (
-    addonDir: string,
-    xpiPath: string,
-    options?: {
-      buffer?: Buffer;
-      mode?: number;
-      mtime?: Date;
-    },
-  ) => Promise<unknown>;
-  _getOrBuildXpi: (addonDir: string) => Promise<string>;
-};
+const HASH_SIZE = 44;
+const MANIFEST_SIZE = 64 * 1024;
 
 type BenchmarkSample = {
   iteration: number;
@@ -47,8 +28,6 @@ type BenchmarkSummary = {
   samples: number;
   outputSizeBytes?: number;
 };
-
-const FirefoxDriver = require('../webdriver/firefox') as FirefoxDriverInternal;
 
 function parseArgs(argv: string[]) {
   let addonDir = 'dist/firefox';
@@ -124,6 +103,19 @@ function readManifestTemplate(addonDir: string) {
   return fs.readFileSync(path.join(addonDir, MANIFEST_FILE_NAME), 'utf8');
 }
 
+function getManifestHash(addonDir: string) {
+  return nodeCrypto.hash('sha256', getPaddedManifest(addonDir), 'base64');
+}
+
+function getPaddedManifest(addonDir: string) {
+  const manifest = Buffer.allocUnsafe(MANIFEST_SIZE);
+  manifest.fill(
+    0x20,
+    fs.readFileSync(path.join(addonDir, MANIFEST_FILE_NAME)).copy(manifest),
+  );
+  return manifest;
+}
+
 function writeManifestVariant(
   addonDir: string,
   manifestTemplate: string,
@@ -142,6 +134,16 @@ function writeManifestVariant(
     path.join(addonDir, MANIFEST_FILE_NAME),
     JSON.stringify(manifest, null, 2),
   );
+}
+
+function createScenarioAddonDir(
+  benchmarkRoot: string,
+  sourceAddonDir: string,
+  name: string,
+) {
+  const addonDir = path.join(benchmarkRoot, name);
+  fs.cpSync(sourceAddonDir, addonDir, { recursive: true });
+  return addonDir;
 }
 
 async function measure<ResultType>(
@@ -264,11 +266,17 @@ function recordSample(
 }
 
 async function runOptimizedEndToEndBenchmark(
-  addonDir: string,
+  sourceAddonDir: string,
+  benchmarkRoot: string,
   manifestTemplate: string,
   iteration: number,
   samples: BenchmarkSample[],
 ) {
+  const addonDir = createScenarioAddonDir(
+    benchmarkRoot,
+    sourceAddonDir,
+    `optimized-e2e-${iteration}`,
+  );
   clearDriverCaches(addonDir);
   writeManifestVariant(
     addonDir,
@@ -276,9 +284,7 @@ async function runOptimizedEndToEndBenchmark(
     `optimized-create-${iteration}`,
   );
 
-  const createMeasurement = await measure(() =>
-    FirefoxDriver._getOrBuildXpi(addonDir),
-  );
+  const createMeasurement = await measure(() => getOrBuildXpi(addonDir));
   recordSample(
     samples,
     iteration,
@@ -287,9 +293,7 @@ async function runOptimizedEndToEndBenchmark(
     createMeasurement.result,
   );
 
-  const cachedMeasurement = await measure(() =>
-    FirefoxDriver._getOrBuildXpi(addonDir),
-  );
+  const cachedMeasurement = await measure(() => getOrBuildXpi(addonDir));
   recordSample(
     samples,
     iteration,
@@ -303,9 +307,7 @@ async function runOptimizedEndToEndBenchmark(
     manifestTemplate,
     `optimized-update-${iteration}`,
   );
-  const updateMeasurement = await measure(() =>
-    FirefoxDriver._getOrBuildXpi(addonDir),
-  );
+  const updateMeasurement = await measure(() => getOrBuildXpi(addonDir));
   recordSample(
     samples,
     iteration,
@@ -316,12 +318,17 @@ async function runOptimizedEndToEndBenchmark(
 }
 
 async function runOptimizedInternalBenchmark(
-  addonDir: string,
+  sourceAddonDir: string,
   benchmarkRoot: string,
   manifestTemplate: string,
   iteration: number,
   samples: BenchmarkSample[],
 ) {
+  const addonDir = createScenarioAddonDir(
+    benchmarkRoot,
+    sourceAddonDir,
+    `optimized-internal-${iteration}`,
+  );
   clearDriverCaches(addonDir);
   writeManifestVariant(
     addonDir,
@@ -329,27 +336,13 @@ async function runOptimizedInternalBenchmark(
     `optimized-template-create-${iteration}`,
   );
 
-  const templatePath = path.join(
-    benchmarkRoot,
-    `optimized-template-${iteration}.xpi`,
-  );
-  const createManifestBuffer = fs.readFileSync(
-    path.join(addonDir, MANIFEST_FILE_NAME),
-  );
-
-  const templateBuildMeasurement = await measure(() =>
-    FirefoxDriver._buildXpiTemplate(
-      addonDir,
-      templatePath,
-      createManifestBuffer,
-    ),
-  );
+  const templateBuildMeasurement = await measure(() => getOrBuildXpi(addonDir));
   recordSample(
     samples,
     iteration,
     'optimized.templateBuild',
     templateBuildMeasurement.durationMs,
-    templatePath,
+    templateBuildMeasurement.result,
   );
 
   writeManifestVariant(
@@ -357,19 +350,13 @@ async function runOptimizedInternalBenchmark(
     manifestTemplate,
     `optimized-template-update-${iteration}`,
   );
-  const updateManifestBuffer = fs.readFileSync(
-    path.join(addonDir, MANIFEST_FILE_NAME),
-  );
-
-  const manifestPatchMeasurement = await measure(() =>
-    FirefoxDriver._patchManifest(templatePath, updateManifestBuffer),
-  );
+  const manifestPatchMeasurement = await measure(() => getOrBuildXpi(addonDir));
   recordSample(
     samples,
     iteration,
     'optimized.manifestPatch',
     manifestPatchMeasurement.durationMs,
-    templatePath,
+    manifestPatchMeasurement.result,
   );
 }
 
@@ -390,8 +377,14 @@ async function runFullYazlBenchmark(
     benchmarkRoot,
     `yazl-full-create-${iteration}.xpi`,
   );
+  const createManifestBuffer = getPaddedManifest(addonDir);
   const createMeasurement = await measure(() =>
-    FirefoxDriver._buildXpi(addonDir, createPath),
+    buildXpi(
+      addonDir,
+      createPath,
+      createManifestBuffer,
+      getManifestHash(addonDir),
+    ),
   );
   recordSample(
     samples,
@@ -411,8 +404,14 @@ async function runFullYazlBenchmark(
     benchmarkRoot,
     `yazl-full-update-${iteration}.xpi`,
   );
+  const updateManifestBuffer = getPaddedManifest(addonDir);
   const updateMeasurement = await measure(() =>
-    FirefoxDriver._buildXpi(addonDir, updatePath),
+    buildXpi(
+      addonDir,
+      updatePath,
+      updateManifestBuffer,
+      getManifestHash(addonDir),
+    ),
   );
   recordSample(
     samples,
@@ -500,6 +499,7 @@ async function main() {
 
       await runOptimizedEndToEndBenchmark(
         workspaceAddonDir,
+        benchmarkRoot,
         manifestTemplate,
         iteration,
         samples,

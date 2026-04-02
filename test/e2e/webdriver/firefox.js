@@ -1,9 +1,6 @@
-const nodeCrypto = require('crypto');
-const { finished } = require('stream/promises');
 const fs = require('fs');
 const os = require('os');
 const path = require('path');
-const zlib = require('zlib');
 const {
   Builder,
   By,
@@ -11,18 +8,9 @@ const {
   ThenableWebDriver, // eslint-disable-line no-unused-vars -- this is imported for JSDoc
 } = require('selenium-webdriver');
 const firefox = require('selenium-webdriver/firefox');
-const { ZipFile } = require('yazl');
 const { retry } = require('../../../development/lib/retry');
 const { isHeadless } = require('../../helpers/env');
-
-const MANIFEST_FILE_NAME = 'manifest.json';
-const XPI_TEMPLATE_VERSION = 2;
-const MANIFEST_SLOT_SIZE = 64 * 1024;
-const EOCD_SIZE = 22;
-const CD_OFFSET_IN_EOCD = 16;
-const DATA_OFFSET = 30 + MANIFEST_FILE_NAME.length;
-const CD_CRC32_OFFSET = 16;
-const LFH_CRC32_OFFSET = 14;
+const { getOrBuildXpi } = require('../helpers/xpi');
 
 /**
  * The prefix for temporary Firefox profiles. All Firefox profiles used for e2e tests
@@ -111,7 +99,7 @@ class FirefoxDriver {
     // Pre-build an XPI and cache it across test runs.
     // Without this, installAddon() zips the 348MB unpacked dir on every call,
     // adding ~10s of overhead per test.
-    const xpiPath = await FirefoxDriver._getOrBuildXpi('dist/firefox');
+    const xpiPath = await getOrBuildXpi('dist/firefox');
     const installedExtensionId = await fxDriver.installExtension(xpiPath);
     const internalExtensionId = await fxDriver.getInternalId();
 
@@ -124,137 +112,6 @@ class FirefoxDriver {
       extensionId: installedExtensionId,
       extensionUrl: `moz-extension://${internalExtensionId}`,
     };
-  }
-
-  /**
-   * Returns the path to a cached XPI for the given unpacked extension directory.
-   * Builds the XPI on first call; reuses it as long as no file in the directory
-   * is newer than the cached XPI. The cache filename is derived from the
-   * directory path so different addon dirs get independent caches.
-   *
-   * @param {string} addonDir - Path to the unpacked extension directory
-   * @returns {Promise<string>} Path to the XPI file
-   */
-  static async _getOrBuildXpi(addonDir) {
-    const absDir = path.resolve(addonDir);
-    const dirHash = nodeCrypto
-      .createHash('sha256')
-      .update(absDir)
-      .digest('hex')
-      .slice(0, 12);
-    const manifest = fs.readFileSync(path.join(absDir, MANIFEST_FILE_NAME));
-    const tmpName = `metamask-e2e-${dirHash}-v${XPI_TEMPLATE_VERSION}.xpi`;
-    const xpiPath = path.join(os.tmpdir(), tmpName);
-
-    try {
-      const xpiMtime = fs.statSync(xpiPath).mtimeMs;
-      if (!FirefoxDriver._hasNewerFile(absDir, xpiMtime, MANIFEST_FILE_NAME)) {
-        await FirefoxDriver._patchManifest(xpiPath, manifest);
-        return xpiPath;
-      }
-    } catch {
-      console.log('[Firefox E2E] Cache cold, building XPI');
-    }
-
-    return FirefoxDriver._buildXpiTemplate(absDir, xpiPath, manifest);
-  }
-
-  static async _buildXpiTemplate(addonDir, xpiPath, manifest) {
-    const manifestPath = path.join(addonDir, MANIFEST_FILE_NAME);
-    const manifestStats = fs.statSync(manifestPath);
-    const paddedManifest = FirefoxDriver._pad(manifest, MANIFEST_SLOT_SIZE);
-    const tempXpiPath = `${xpiPath}.${process.pid}-${Date.now()}.tmp`;
-
-    try {
-      await FirefoxDriver._buildXpi(addonDir, tempXpiPath, {
-        buffer: paddedManifest,
-        mode: manifestStats.mode,
-        mtime: manifestStats.mtime,
-      });
-      fs.renameSync(tempXpiPath, xpiPath);
-    } catch (error) {
-      fs.rmSync(tempXpiPath, { force: true });
-      throw error;
-    }
-
-    return xpiPath;
-  }
-
-  static async _patchManifest(xpiPath, manifest) {
-    const paddedManifest = FirefoxDriver._pad(manifest, MANIFEST_SLOT_SIZE);
-    const crc32 = Buffer.allocUnsafe(4);
-    crc32.writeUInt32LE(zlib.crc32(paddedManifest), 0);
-    await using fileHandle = await fs.promises.open(xpiPath, 'r+');
-    const { size } = await fileHandle.stat();
-    const eocd = Buffer.allocUnsafe(EOCD_SIZE);
-    await fileHandle.read(eocd, 0, eocd.length, size - eocd.length);
-    const cdOffset = eocd.readUInt32LE(CD_OFFSET_IN_EOCD);
-    for (const [buffer, position] of [
-      [paddedManifest, DATA_OFFSET],
-      [crc32, LFH_CRC32_OFFSET],
-      [crc32, cdOffset + CD_CRC32_OFFSET],
-    ]) {
-      await fileHandle.write(buffer, 0, buffer.length, position);
-    }
-  }
-
-  static _pad(manifest, capacity) {
-    return Buffer.concat([
-      manifest,
-      Buffer.alloc(capacity - manifest.length, 0x20),
-    ]);
-  }
-
-  static async _buildXpi(addonDir, xpiPath, manifest = {}) {
-    const zipFile = new ZipFile();
-    await using outputStream = fs.createWriteStream(xpiPath);
-    zipFile.outputStream.once('error', (error) => outputStream.destroy(error));
-    zipFile.outputStream.pipe(outputStream);
-    if (manifest.buffer) {
-      zipFile.addBuffer(manifest.buffer, MANIFEST_FILE_NAME, {
-        compress: false,
-        mode: manifest.mode,
-        mtime: manifest.mtime,
-      });
-    }
-    const readDirOptions = { recursive: true, withFileTypes: true };
-    for (const entry of fs.readdirSync(addonDir, readDirOptions)) {
-      if (entry.isFile()) {
-        const absPath = path.join(entry.parentPath, entry.name);
-        const relPath = path.relative(addonDir, absPath);
-        if (!manifest.buffer || relPath !== MANIFEST_FILE_NAME) {
-          zipFile.addFile(absPath, relPath, { compress: false });
-        }
-      }
-    }
-    zipFile.end();
-    await finished(outputStream);
-  }
-
-  /**
-   * Checks whether any file inside `dir` has an mtime newer than `thresholdMs`.
-   * Returns early on the first match for speed.
-   *
-   * @param {string} dir - Directory to scan
-   * @param {number} thresholdMs - mtime threshold in milliseconds
-   * @param {string} [skipFile] - Filename to skip (checked at top-level only)
-   * @returns {boolean} true if at least one file is newer
-   */
-  static _hasNewerFile(dir, thresholdMs, skipFile) {
-    for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
-      if (skipFile && entry.name === skipFile) {
-        continue;
-      }
-      const fullPath = path.join(dir, entry.name);
-      if (entry.isDirectory()) {
-        if (FirefoxDriver._hasNewerFile(fullPath, thresholdMs)) {
-          return true;
-        }
-      } else if (fs.statSync(fullPath).mtimeMs > thresholdMs) {
-        return true;
-      }
-    }
-    return false;
   }
 
   /**
