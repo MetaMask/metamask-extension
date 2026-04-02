@@ -370,7 +370,7 @@ exports[`AssetPage should render a native asset 1`] = `
                 class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
               >
                 <a
-                  class="inline-flex items-center justify-center font-medium min-w-20 overflow-hidden relative duration-100 ease-linear active:ease-[cubic-bezier(0.3,0.8,0.3,1)] h-auto rounded-none bg-transparent px-0 transform-none transition-none active:scale-100 text-primary-default hover:bg-hover hover:text-primary-default-hover hover:underline hover:decoration-primary-default-hover hover:decoration-2 hover:underline-offset-4 active:bg-pressed active:text-primary-default-pressed active:decoration-primary-default-pressed asset-page__spending-caps"
+                  class="inline-flex items-center justify-center font-medium min-w-20 overflow-hidden relative duration-100 ease-linear active:ease-[cubic-bezier(0.3,0.8,0.3,1)] h-auto rounded-none bg-transparent px-0 transform-none transition-none active:scale-100 text-primary-default hover:text-primary-default-hover hover:underline hover:decoration-primary-default-hover hover:decoration-2 hover:underline-offset-4 active:text-primary-default-pressed active:decoration-primary-default-pressed asset-page__spending-caps"
                   href="https://portfolio.test/?metamaskEntry=asset_page&metametricsId=&metricsEnabled=false&marketingEnabled=false&accountAddress=cf8dace4-9439-4bd4-b3a8-88c821c8fcb3&tab=spending-caps"
                   rel="noopener noreferrer"
                   target="_blank"
@@ -800,7 +800,7 @@ exports[`AssetPage should render an ERC20 asset without prices 1`] = `
                 class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
               >
                 <a
-                  class="inline-flex items-center justify-center font-medium min-w-20 overflow-hidden relative duration-100 ease-linear active:ease-[cubic-bezier(0.3,0.8,0.3,1)] h-auto rounded-none bg-transparent px-0 transform-none transition-none active:scale-100 text-primary-default hover:bg-hover hover:text-primary-default-hover hover:underline hover:decoration-primary-default-hover hover:decoration-2 hover:underline-offset-4 active:bg-pressed active:text-primary-default-pressed active:decoration-primary-default-pressed asset-page__spending-caps"
+                  class="inline-flex items-center justify-center font-medium min-w-20 overflow-hidden relative duration-100 ease-linear active:ease-[cubic-bezier(0.3,0.8,0.3,1)] h-auto rounded-none bg-transparent px-0 transform-none transition-none active:scale-100 text-primary-default hover:text-primary-default-hover hover:underline hover:decoration-primary-default-hover hover:decoration-2 hover:underline-offset-4 active:text-primary-default-pressed active:decoration-primary-default-pressed asset-page__spending-caps"
                   href="https://portfolio.test/?metamaskEntry=asset_page&metametricsId=&metricsEnabled=false&marketingEnabled=false&accountAddress=cf8dace4-9439-4bd4-b3a8-88c821c8fcb3&tab=spending-caps"
                   rel="noopener noreferrer"
                   target="_blank"
@@ -1225,7 +1225,7 @@ exports[`AssetPage should render an ERC20 token with prices 1`] = `
                 class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
               >
                 <a
-                  class="inline-flex items-center justify-center font-medium min-w-20 overflow-hidden relative duration-100 ease-linear active:ease-[cubic-bezier(0.3,0.8,0.3,1)] h-auto rounded-none bg-transparent px-0 transform-none transition-none active:scale-100 text-primary-default hover:bg-hover hover:text-primary-default-hover hover:underline hover:decoration-primary-default-hover hover:decoration-2 hover:underline-offset-4 active:bg-pressed active:text-primary-default-pressed active:decoration-primary-default-pressed asset-page__spending-caps"
+                  class="inline-flex items-center justify-center font-medium min-w-20 overflow-hidden relative duration-100 ease-linear active:ease-[cubic-bezier(0.3,0.8,0.3,1)] h-auto rounded-none bg-transparent px-0 transform-none transition-none active:scale-100 text-primary-default hover:text-primary-default-hover hover:underline hover:decoration-primary-default-hover hover:decoration-2 hover:underline-offset-4 active:text-primary-default-pressed active:decoration-primary-default-pressed asset-page__spending-caps"
                   href="https://portfolio.test/?metamaskEntry=asset_page&metametricsId=&metricsEnabled=false&marketingEnabled=false&accountAddress=cf8dace4-9439-4bd4-b3a8-88c821c8fcb3&tab=spending-caps"
                   rel="noopener noreferrer"
                   target="_blank"

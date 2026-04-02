@@ -35,7 +35,7 @@ class BridgeQuotePage {
 
   private lineaNetwork = '[data-testid="Linea"]';
 
-  public tokenButton = '[data-testid="bridge-asset"]';
+  public tokenButton = '[data-testid^="bridge-asset--"]';
 
   private submitButton = { text: 'Swap', tag: 'button' };
 
