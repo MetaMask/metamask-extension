@@ -289,6 +289,9 @@
     "ui/components/app/perps/close-position/close-position-modal.test.tsx": {
       "React: Act warnings (component updates not wrapped)": 2
     },
+    "ui/components/app/perps/perps-tutorial-modal/PerpsTutorialModal.test.tsx": {
+      "MetaMask: Background connection not initialized": 2
+    },
     "ui/components/app/perps/order-entry/components/auto-close-section/auto-close-section.test.tsx": {
       "React: componentWill* lifecycle deprecations": 1
     },
