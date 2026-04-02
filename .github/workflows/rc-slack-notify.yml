@@ -12,11 +12,15 @@
 name: RC Slack notify
 
 on:
+  # Only enqueue this workflow when Main ran for a release/* branch (not every push to main/stable/PRs).
+  # The job `if` still requires success + push + same repo + release/ prefix + gate (auto-rc-builds).
   workflow_run:
     workflows:
       - Main
     types:
       - completed
+    branches:
+      - 'release/**'
   workflow_dispatch:
     inputs:
       head_sha:
