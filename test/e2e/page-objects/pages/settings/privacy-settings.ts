@@ -190,6 +190,7 @@ class PrivacySettings {
   async downloadStateLogs(): Promise<void> {
     console.log('Downloading state logs on privacy settings page');
     await this.driver.clickElement(this.downloadStateLogsButton);
+    await this.driver.waitForSelector(this.downloadStateLogsModalButton);
     await this.driver.clickElement(this.downloadStateLogsModalButton);
   }
 
