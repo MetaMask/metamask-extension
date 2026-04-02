@@ -1019,7 +1019,7 @@ export default class MetamaskController extends EventEmitter {
         }),
       ),
       wallet_sendCalls: createAsyncMiddleware(async (req, res) => {
-        const addTransactionExtraOptions = addTransactionSendCallExtraOptions({
+        const addTransactionExtraOptions = await addTransactionSendCallExtraOptions({
           req,
           networkController: this.networkController,
           keyringController: this.keyringController,
