@@ -206,8 +206,6 @@ describe('SmartTransactionsController Init', () => {
       getAccountType: jest.fn().mockResolvedValue('EthereumAccount'),
       getDeviceModel: jest.fn().mockResolvedValue('Ledger Nano S'),
       getHardwareTypeForMetric: jest.fn().mockResolvedValue('Ledger'),
-      trace: jest.fn((_request, fn) => fn?.()),
-      trackEvent: jest.fn(),
       ...options,
     } as TestInitRequest;
 

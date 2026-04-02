@@ -12,6 +12,7 @@ import { SmartTransactionsControllerInitMessenger } from '../messengers/smart-tr
 // This import is only used for the type.
 // eslint-disable-next-line import-x/no-restricted-paths
 import type { MetaMaskReduxState } from '../../../../ui/store/store';
+import { trace } from '../../../../shared/lib/trace';
 
 type SmartTransactionsControllerInitRequest = ControllerInitRequest<
   SmartTransactionsControllerMessenger,
@@ -22,7 +23,6 @@ type SmartTransactionsControllerInitRequest = ControllerInitRequest<
   getAccountType: (address: string) => Promise<string>;
   getDeviceModel: (address: string) => Promise<string>;
   getHardwareTypeForMetric: (address: string) => Promise<string>;
-  trace: TraceCallback;
 };
 
 export const SmartTransactionsControllerInit: ControllerInitFunction<
@@ -38,7 +38,6 @@ export const SmartTransactionsControllerInit: ControllerInitFunction<
     getAccountType,
     getDeviceModel,
     getHardwareTypeForMetric,
-    trace,
   } = request as SmartTransactionsControllerInitRequest;
 
   /**
@@ -102,7 +101,7 @@ export const SmartTransactionsControllerInit: ControllerInitFunction<
         deviceModel,
       };
     },
-    trace,
+    trace: trace as TraceCallback,
   });
 
   return {
