@@ -11,6 +11,7 @@ import { getBridgeAssetsByAssetId } from '../../ducks/bridge/asset-selectors';
 import { getAccountGroupsByAddress } from '../../selectors/multichain-accounts/account-tree';
 import { fetchPopularTokens } from '../../pages/bridge/utils/tokens';
 import { useAsyncResult } from '../useAsync';
+import { EMPTY_OBJECT } from '../../selectors/shared';
 
 /**
  * Returns a sorted token list from the bridge api
@@ -37,7 +38,9 @@ export const usePopularTokens = ({
     getAccountGroupsByAddress(state, [accountAddress]),
   );
   const ownedAssetsByAssetId = useSelector((state: BridgeAppState) =>
-    accountGroup ? getBridgeAssetsByAssetId(state, accountGroup.id) : {},
+    accountGroup
+      ? getBridgeAssetsByAssetId(state, accountGroup.id)
+      : EMPTY_OBJECT,
   );
 
   const abortControllerRef = useRef<AbortController | null>(null);

@@ -12,6 +12,7 @@ import { getAccountGroupsByAddress } from '../../selectors/multichain-accounts/a
 import { fetchTokensBySearchQuery } from '../../pages/bridge/utils/tokens';
 import { getBearerToken } from '../../store/actions';
 import { useAsyncResult } from '../useAsync';
+import { EMPTY_OBJECT } from '../../selectors/shared';
 
 /**
  * Returns a list of tokens from the bridge api that match the search query
@@ -37,7 +38,9 @@ export const useTokenSearchResults = ({
     getAccountGroupsByAddress(state, [accountAddress]),
   );
   const ownedAssetsByAssetId = useSelector((state: BridgeAppState) =>
-    accountGroup ? getBridgeAssetsByAssetId(state, accountGroup.id) : {},
+    accountGroup
+      ? getBridgeAssetsByAssetId(state, accountGroup.id)
+      : EMPTY_OBJECT,
   );
 
   const abortControllerRef = useRef<AbortController>(new AbortController());

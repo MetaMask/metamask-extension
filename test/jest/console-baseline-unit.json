@@ -562,12 +562,6 @@
     "ui/hooks/accounts/useAccountsOperationsLoadingStates.test.ts": {
       "MetaMask: Background connection not initialized": 2
     },
-    "ui/hooks/bridge/usePopularTokens.test.ts": {
-      "React: Act warnings (component updates not wrapped)": 8
-    },
-    "ui/hooks/bridge/useTokenSearchResults.test.ts": {
-      "React: Act warnings (component updates not wrapped)": 1
-    },
     "ui/hooks/gator-permissions/useGatorPermissionTokenInfo.test.tsx": {
       "React: Act warnings (component updates not wrapped)": 10,
       "Reselect: Identity function warnings": 1

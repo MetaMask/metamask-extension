@@ -47,6 +47,7 @@ import { type BridgeToken } from '../../../../../ducks/bridge/types';
 import { toBridgeToken } from '../../../../../ducks/bridge/utils';
 import { MarketClosedModal } from '../../../../../components/app/assets/market-closed-modal';
 import { useRWAToken } from '../../../hooks/useRWAToken';
+import { EMPTY_ARRAY } from '../../../../../selectors/shared';
 import { NetworkPicker } from './network-picker';
 import { BridgeAssetList } from './lazy-asset-list';
 
@@ -78,7 +79,7 @@ export const BridgeAssetPicker = ({
     getAccountGroupsByAddress(state, [accountAddress]),
   );
   const assetsWithBalance = useSelector((state: BridgeAppState) =>
-    accountGroup ? getBridgeSortedAssets(state, accountGroup.id) : [],
+    accountGroup ? getBridgeSortedAssets(state, accountGroup.id) : EMPTY_ARRAY,
   );
 
   const t = useI18nContext();
