@@ -62,7 +62,7 @@ export const SETTINGS_V2_ROOT_SECTIONS: readonly {
     paths: [SECURITY_AND_PASSWORD_ROUTE, PRIVACY_ROUTE, BACKUPANDSYNC_ROUTE],
   },
   {
-    titleKeys: ['transactions', 'assets'],
+    titleKeys: ['transactionsAndAssets'],
     paths: [TRANSACTION_SHIELD_ROUTE, ASSETS_ROUTE, TRANSACTIONS_ROUTE],
   },
   {
