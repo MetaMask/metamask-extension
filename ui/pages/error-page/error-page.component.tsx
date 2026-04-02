@@ -107,6 +107,7 @@ const ErrorPage: React.FC<ErrorPageProps> = ({ error }) => {
             color={TextColor.inherit}
             variant={TextVariant.headingMd}
             marginBottom={4}
+            data-testid="error-page-title"
           >
             {t('errorPageTitle')}
           </Text>

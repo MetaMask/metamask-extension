@@ -34,8 +34,8 @@ import { getBridgeState } from '../../ducks/bridge/selectors';
 import type { MinimalAsset } from '../../pages/bridge/utils/tokens';
 import type { BridgeState, BridgeToken } from '../../ducks/bridge/types';
 import {
+  resetBridgeController,
   trackUnifiedSwapBridgeEvent,
-  resetBridgeControllerAndCache,
 } from '../../ducks/bridge/actions';
 
 export type BridgeNavigationOptions = Omit<NavigateOptions, 'state'> & {
@@ -57,7 +57,7 @@ export type BridgeNavigationOptions = Omit<NavigateOptions, 'state'> & {
         })
       | null;
     /**
-     * If this is set, the user will not be redirected back to the home page regardless of
+     * If this is set, the user will be redirected back to the home page regardless of
      * the presence of a bridgeState or token. Used to prevent redirecting back to the bridge
      * page after transaction submission.
      */
@@ -243,7 +243,7 @@ export const useBridgeNavigation = () => {
   }, [state]);
 
   const navigateToDefaultRoute = useCallback(async () => {
-    dispatch(resetBridgeControllerAndCache());
+    dispatch(resetBridgeController());
     const isFromTransactionShield = new URLSearchParams(search || '').get(
       BridgeQueryParams.IsFromTransactionShield,
     );

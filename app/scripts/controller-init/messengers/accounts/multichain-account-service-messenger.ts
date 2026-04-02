@@ -10,7 +10,7 @@ import {
 import {
   SnapControllerStateChangeEvent,
   SnapControllerGetStateAction,
-  HandleSnapRequest as SnapControllerHandleRequestAction,
+  SnapControllerHandleRequestAction,
 } from '@metamask/snaps-controllers';
 import {
   KeyringControllerWithKeyringAction,
