@@ -749,7 +749,7 @@ exports[`BridgeInputGroup should search for tokens 1`] = `
             <div
               class="mm-box mm-container mm-container--max-width-undefined cursor-pointer bridge-asset mm-box--padding-4 mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--width-full mm-box--height-max mm-box--background-color-transparent mm-box--rounded-none"
               data-index="0"
-              data-testid="bridge-asset"
+              data-testid="bridge-asset--eip155:1/erc20:0xaf88d065e77c8cC2239327C5EDb3A432268e5831"
               style="position: absolute; top: 0px; left: 0px; transform: translateY(0px);"
             >
               <div
@@ -843,7 +843,7 @@ exports[`BridgeInputGroup should search for tokens 1`] = `
             <div
               class="mm-box mm-container mm-container--max-width-undefined cursor-pointer bridge-asset mm-box--padding-4 mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--width-full mm-box--height-max mm-box--background-color-transparent mm-box--rounded-none"
               data-index="1"
-              data-testid="bridge-asset"
+              data-testid="bridge-asset--eip155:1/erc20:0xaf88d065e77c8cC2239327C5EDb3A432268e5832"
               style="position: absolute; top: 0px; left: 0px; transform: translateY(78px);"
             >
               <div
@@ -1131,7 +1131,7 @@ exports[`BridgeInputGroup should search for tokens 5`] = `
             <div
               class="mm-box mm-container mm-container--max-width-undefined cursor-pointer bridge-asset mm-box--padding-4 mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--width-full mm-box--height-max mm-box--background-color-transparent mm-box--rounded-none"
               data-index="0"
-              data-testid="bridge-asset"
+              data-testid="bridge-asset--eip155:1/erc20:0xaf88d065e77c8cC2239327C5EDb3A432268e5831"
               style="position: absolute; top: 0px; left: 0px; transform: translateY(0px);"
             >
               <div
@@ -1225,7 +1225,7 @@ exports[`BridgeInputGroup should search for tokens 5`] = `
             <div
               class="mm-box mm-container mm-container--max-width-undefined cursor-pointer bridge-asset mm-box--padding-4 mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--width-full mm-box--height-max mm-box--background-color-transparent mm-box--rounded-none"
               data-index="1"
-              data-testid="bridge-asset"
+              data-testid="bridge-asset--eip155:1/erc20:0xaf88d065e77c8cC2239327C5EDb3A432268e5832"
               style="position: absolute; top: 0px; left: 0px; transform: translateY(78px);"
             >
               <div
@@ -1319,7 +1319,7 @@ exports[`BridgeInputGroup should search for tokens 5`] = `
             <div
               class="mm-box mm-container mm-container--max-width-undefined cursor-pointer bridge-asset mm-box--padding-4 mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--width-full mm-box--height-max mm-box--background-color-transparent mm-box--rounded-none"
               data-index="2"
-              data-testid="bridge-asset"
+              data-testid="bridge-asset--eip155:59144/erc20:0xaf88d065e77c8cC2239327C5EDb3A432268e5833"
               style="position: absolute; top: 0px; left: 0px; transform: translateY(156px);"
             >
               <div
