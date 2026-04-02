@@ -94,6 +94,7 @@ import {
   isTokenTradingOpenAt,
 } from '../../pages/bridge/hooks/useRWAToken';
 import { formatPriceImpact } from '../../pages/bridge/utils/price-impact';
+import { getQuoteStreamReasonString } from '../../pages/bridge/utils/getQuoteStreamReasonString';
 import {
   exchangeRateFromMarketData,
   tokenPriceInNativeAsset,
@@ -104,7 +105,6 @@ import {
   getMaybeHexChainId,
 } from './utils';
 import type { BridgeNetwork, BridgeState } from './types';
-import { getQuoteStreamReasonString } from '../../pages/bridge/utils/getQuoteStreamReasonString';
 
 const FALLBACK_CHAIN_ID = CHAIN_IDS.MAINNET;
 
