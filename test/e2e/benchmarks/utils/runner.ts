@@ -107,7 +107,7 @@ export async function runBenchmarkWithIterations(
         }
         const timerDurations = timerMap.get(timer.id);
         if (timerDurations) {
-          timerDurations.push(timer.duration);
+          timerDurations.push(timer.value);
         }
       }
     }
@@ -148,7 +148,7 @@ export async function runBenchmarkWithIterations(
       // the timed steps and would double-count if summed.
       const runTotal = result.timers
         .filter((t) => !t.unit)
-        .reduce((acc, t) => acc + t.duration, 0);
+        .reduce((acc, t) => acc + t.value, 0);
       perRunTotalDurations.push(runTotal);
     }
   }
