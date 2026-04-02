@@ -125,7 +125,7 @@ export const ImportSrp = () => {
           data-testid="import-srp-confirm"
           onClick={importWallet}
           disabled={!secretRecoveryPhrase.trim() || Boolean(srpError)}
-          className="w-full"
+          className="w-full import-srp__continue-button"
         >
           {t('continue')}
         </Button>
