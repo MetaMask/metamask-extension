@@ -27,17 +27,17 @@ import {
   RecurringInterval,
 } from '@metamask/subscription-controller';
 import { HardwareKeyringType } from '../../../../shared/constants/hardware-wallets';
-import {
-  RewardsControllerActions,
-  RewardsControllerEvents,
-  RewardsControllerMessenger,
-} from '../../messenger-client-init/messengers';
 import { getRootMessenger } from '../../lib/messenger';
 import {
   EstimatedPointsDto,
   EstimatePointsDto,
   SeasonDtoState,
 } from '../../../../shared/types/rewards';
+import {
+  RewardsControllerActions,
+  RewardsControllerEvents,
+  RewardsControllerMessenger,
+} from './rewards-controller.types';
 import {
   RewardsController,
   getRewardsControllerDefaultState,
@@ -74,7 +74,7 @@ import {
   RewardsDataServiceGenerateChallengeAction,
   RewardsDataServiceSiweLoginAction,
   RewardsDataServiceSiweJoinAction,
-} from './rewards-data-service-types';
+} from './rewards-data-service-method-action-types';
 
 type AllActions = MessengerActions<RewardsControllerMessenger>;
 

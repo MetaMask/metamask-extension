@@ -37,7 +37,7 @@ import {
   RewardsDataServiceGetSeasonMetadataAction,
   RewardsDataServiceGetDiscoverSeasonsAction,
   RewardsDataServiceGenerateChallengeAction,
-} from './rewards-data-service-types';
+} from './rewards-data-service-method-action-types';
 import { RewardsControllerMethodActions } from './rewards-controller-method-action-types';
 
 export type LoginResponseDto = {
