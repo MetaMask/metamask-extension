@@ -36,7 +36,14 @@ import {
   addTransaction,
   stripSingleLeadingZero,
 } from './util';
-import { checkIsValidTempoTransaction } from './tempo-tx-utils';
+import { getTempoTransactionBatchArgs } from './tempo-tx-utils';
+
+jest.mock('./tempo-tx-utils', () => ({
+  ...jest.requireActual('./tempo-tx-utils'),
+  getTempoTransactionBatchArgs: jest.fn(),
+}));
+const realGetTempoTransactionBatchArgsImpl =
+  jest.requireActual('./tempo-tx-utils').getTempoTransactionBatchArgs;
 
 jest.mock('../ppom/ppom-util');
 jest.mock('../trust-signals/security-alerts-api');
@@ -49,11 +56,6 @@ jest.mock('uuid', () => {
     v4: jest.fn(),
   };
 });
-
-jest.mock('./tempo-tx-utils', () => ({
-  ...jest.requireActual('./tempo-tx-utils'),
-  checkIsValidTempoTransaction: jest.fn(),
-}));
 
 const SECURITY_ALERT_ID_MOCK = '123';
 const BATCHID_MOCK = '0xmockBatchId' as Hex;
@@ -183,6 +185,9 @@ describe('Transaction Utils', () => {
   beforeEach(() => {
     jest.resetAllMocks();
 
+    (getTempoTransactionBatchArgs as jest.Mock).mockImplementation(
+      realGetTempoTransactionBatchArgsImpl,
+    );
     request = cloneDeep(TRANSACTION_REQUEST_MOCK);
     transactionController = createTransactionControllerMock();
     userOperationController = createUserOperationControllerMock();
@@ -873,10 +878,12 @@ describe('Transaction Utils', () => {
         expect(result).toEqual(BATCH_TRANSACTION_META_MOCK.hash);
       });
 
-      it('does not call addTransactionBatch if checkIsValidTempoTransaction throws', async () => {
-        (checkIsValidTempoTransaction as jest.Mock).mockImplementation(() => {
-          throw new Error('Tempo Transaction: Mock error');
-        });
+      it('does not call addTransactionBatch if getTempoTransactionBatchArgs throws', async () => {
+        (getTempoTransactionBatchArgs as jest.Mock).mockImplementationOnce(
+          () => {
+            throw new Error('Tempo Transaction: Mock error');
+          },
+        );
 
         await expect(addDappTransaction(tempoDappRequest)).rejects.toThrow(
           `Tempo Transaction: Mock error`,

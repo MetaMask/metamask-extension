@@ -16,6 +16,7 @@ import { addHexPrefix } from 'ethereumjs-util';
 import { PPOMController } from '@metamask/ppom-validator';
 
 import { KeyringController } from '@metamask/keyring-controller';
+import log from 'loglevel';
 import {
   generateSecurityAlertId,
   handlePPOMError,
@@ -42,10 +43,8 @@ import {
 import { getTransactionDataRecipient } from '../../../../shared/lib/transaction.utils';
 import { accountSupports7702 } from '../account-supports-7702';
 import {
-  buildBatchTransactionsFromTempoTransactionCalls,
-  checkIsValidTempoTransaction,
-  getTempoConfig,
-  getTempoExtraOptionsForChain,
+  getTempoEvmTransactionArgs,
+  getTempoTransactionBatchArgs,
   isTempoChain,
   isTempoTransactionType,
 } from './tempo-tx-utils';
@@ -143,39 +142,32 @@ export async function addDappTransaction(
 async function addTransactionOnTempo(
   request: FinalAddTransactionRequest,
 ): AddTransactionResult {
-  const { chainId } = request;
-  const tempoConfig = getTempoConfig();
-  const chainTempoConfig = tempoConfig.perChainConfig[chainId];
-
-  if (!chainTempoConfig) {
-    throw new Error(`Tempo transactions not supported for chain: ${chainId}`);
+  const { chainId, keyringController } = request;
+  const isEip7702SupportedByAccount = await accountSupports7702(
+    request.transactionParams.from,
+    keyringController as Parameters<typeof accountSupports7702>[1],
+  );
+  if (!isEip7702SupportedByAccount) {
+    log.debug(
+      'addTransactionOnTempo: Tempo chain but wallet does not support 7702. Falling back to legacy transactions',
+    );
+    return addTransactionWithController(request);
   }
+
   // Classic transaction, we simply set pathUSD as default
   // and add excludeNativeTokenForFee to signal to ignore native.
   if (!isTempoTransactionType(request.transactionParams)) {
-    return addTransactionWithController({
-      ...request,
-      transactionOptions: {
-        ...request.transactionOptions,
-        ...getTempoExtraOptionsForChain(chainId),
-      },
-    });
+    return addTransactionWithController(
+      getTempoEvmTransactionArgs({ request, chainId }),
+    );
   }
   // Checks and infer Tempo Transaction format for supported fields.
-  checkIsValidTempoTransaction(request.transactionParams);
-  const { networkClientId, transactionController, transactionParams } = request;
-  const result = await transactionController.addTransactionBatch({
-    ...request.transactionOptions,
-    from: request.transactionParams.from as Hex,
-    transactions: buildBatchTransactionsFromTempoTransactionCalls(
-      request.transactionParams,
-    ),
-    // If no token is provided, we force a default one so we don't fall in
-    // fee preference algo: https://docs.tempo.xyz/protocol/fees/spec-fee#fee-token-preferences
-    gasFeeToken: transactionParams.feeToken || chainTempoConfig.defaultFeeToken,
-    excludeNativeTokenForFee: true,
-    networkClientId,
-  });
+  // checkIsValidTempoTransaction(request.transactionParams);
+  const { transactionController } = request;
+
+  const result = await transactionController.addTransactionBatch(
+    getTempoTransactionBatchArgs({ request, chainId }),
+  );
   const { batchId } = result;
   // We've got a batchId but we want to return a tx hash to the dApp
   const transactionMeta = getTransactionByBatchId(
@@ -227,17 +219,7 @@ async function addTransactionOrUserOperation(
   const { selectedAccount } = request;
   const isTempoChainId = isTempoChain(request.chainId);
   if (isTempoChainId) {
-    const { keyringController } = request;
-    const isEip7702SupportedByAccount = await accountSupports7702(
-      request.transactionParams.from,
-      keyringController as Parameters<typeof accountSupports7702>[1],
-    );
-    if (isEip7702SupportedByAccount) {
-      return addTransactionOnTempo(request);
-    }
-    console.warn(
-      'addTransactionOrUserOperation: Tempo chain but wallet does not support 7702. Falling back to legacy transactions',
-    );
+    return addTransactionOnTempo(request);
   }
 
   const isSmartContractAccount =

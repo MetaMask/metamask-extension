@@ -1,5 +1,6 @@
 import { TransactionParams } from '@metamask/transaction-controller';
 import { Hex } from '@metamask/utils';
+import { FinalAddTransactionRequest } from './util';
 
 // Seem to be set by dApps only for batch calls.
 // For single-txs, this type doesn't appear.
@@ -99,4 +100,48 @@ export function checkIsValidTempoTransaction(
   ) {
     throw new Error(`Tempo Transaction: Missing or invalid field 'calls'`);
   }
+}
+
+export function getTempoEvmTransactionArgs({
+  request,
+  chainId,
+}: {
+  request: FinalAddTransactionRequest;
+  chainId: Hex;
+}) {
+  return {
+    ...request,
+    transactionOptions: {
+      ...request.transactionOptions,
+      ...getTempoExtraOptionsForChain(chainId),
+    },
+  };
+}
+
+export function getTempoTransactionBatchArgs({
+  request,
+  chainId,
+}: {
+  request: FinalAddTransactionRequest;
+  chainId: Hex;
+}) {
+  const chainTempoConfig = getTempoConfig().perChainConfig[chainId];
+  if (!chainTempoConfig) {
+    throw new Error(`Tempo transactions not supported for chain: ${chainId}`);
+  }
+  checkIsValidTempoTransaction(request.transactionParams);
+  // const chainTempoConfig = getTempoConfig().perChainConfig[chainId];
+  return {
+    ...request.transactionOptions,
+    from: request.transactionParams.from as Hex,
+    transactions: buildBatchTransactionsFromTempoTransactionCalls(
+      request.transactionParams,
+    ),
+    // If no token is provided, we force a default one so we don't fall in
+    // fee preference algo: https://docs.tempo.xyz/protocol/fees/spec-fee#fee-token-preferences
+    gasFeeToken:
+      request.transactionParams.feeToken || chainTempoConfig.defaultFeeToken,
+    excludeNativeTokenForFee: true,
+    networkClientId: request.networkClientId,
+  };
 }
