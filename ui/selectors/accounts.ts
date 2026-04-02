@@ -51,7 +51,7 @@ export const getInternalAccounts = createSelector(
 );
 
 export const getAccountIdByAddress = (state: AccountsState) =>
-  state.metamask.accountIdByAddress;
+  state.metamask.accountIdByAddress ?? {};
 
 export const getInternalAccountByAddress = createSelector(
   [
