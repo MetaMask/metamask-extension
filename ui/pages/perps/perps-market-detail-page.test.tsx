@@ -399,6 +399,9 @@ describe('PerpsMarketDetailPage', () => {
 
       expect(getByText(messages.perpsDetails.message)).toBeInTheDocument();
       expect(getByText(messages.perpsDirection.message)).toBeInTheDocument();
+      expect(getByText(messages.perpsLeverage.message)).toBeInTheDocument();
+      // ETH mock position has leverage.value = 3
+      expect(getByText('3x')).toBeInTheDocument();
       expect(getByText(messages.perpsEntryPrice.message)).toBeInTheDocument();
       // 'Liquidation price' appears in both the Details section and the
       // Edit Margin expandable, so use getAllByText
