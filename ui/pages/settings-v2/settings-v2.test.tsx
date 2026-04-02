@@ -88,6 +88,12 @@ describe('SettingsV2', () => {
       expect(
         await screen.findByText(messages.theme.message),
       ).toBeInTheDocument();
+      expect(
+        screen.getByText(messages.securityAndPrivacy.message),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByText(messages.transactionsAndAssets.message),
+      ).toBeInTheDocument();
     });
 
     it('treats trailing-slash fullscreen settings route as the root route', async () => {
@@ -117,7 +123,7 @@ describe('SettingsV2', () => {
       });
     });
 
-    it('navigates to home when back is clicked at settings root', async () => {
+    it('navigates to home with the global menu drawer open when back is clicked at settings root', async () => {
       renderSettingsV2(mockStore);
 
       const backButton = await screen.findByTestId(
@@ -127,7 +133,26 @@ describe('SettingsV2', () => {
       fireEvent.click(backButton);
 
       await waitFor(() => {
-        expect(mockNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE);
+        expect(mockNavigate).toHaveBeenCalledWith(
+          `${DEFAULT_ROUTE}?drawerOpen=true`,
+        );
+      });
+    });
+
+    it('navigates to home with the drawer open when back is clicked at settings root regardless of settings URL query', async () => {
+      mockPathname = `${SETTINGS_V2_ROUTE}?drawerOpen=true`;
+      renderSettingsV2(mockStore);
+
+      const backButton = await screen.findByTestId(
+        'settings-v2-header-back-button',
+      );
+
+      fireEvent.click(backButton);
+
+      await waitFor(() => {
+        expect(mockNavigate).toHaveBeenCalledWith(
+          `${DEFAULT_ROUTE}?drawerOpen=true`,
+        );
       });
     });
 
