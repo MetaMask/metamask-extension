@@ -63,6 +63,7 @@ const mockStore = configureStore({
   metamask: {
     ...mockState.metamask,
     isTestnet: false,
+    isFirstTimeUser: { testnet: false, mainnet: false },
     watchlistMarkets: {
       testnet: [],
       mainnet: ['BTC', 'ETH'],
