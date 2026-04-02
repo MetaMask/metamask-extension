@@ -120,5 +120,6 @@ jobs:
           SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
           # Dispatch: workflow input. Automated runs: optional vars.SLACK_RC_CHANNEL to test destinations.
           SLACK_RC_CHANNEL: ${{ github.event_name == 'workflow_dispatch' && inputs.test_channel || vars.SLACK_RC_CHANNEL || '' }}
+          # AWS_CLOUDFRONT_URL: full origin (https://…); if empty, artifact links are skipped.
           HOST_URL: ${{ vars.AWS_CLOUDFRONT_URL }}/${{ github.event.repository.name }}/${{ steps.notif.outputs.run_id }}
         run: yarn exec tsx ./.github/scripts/slack-rc-notification.ts

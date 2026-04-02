@@ -236,7 +236,7 @@ function buildSlackMessage(options: {
     actionsRunUrl,
   } = options;
 
-  const buildIdLabel = runId ? `run ${runId}` : 'unknown run';
+  const buildIdLabel = `run ${runId}`;
 
   const b = links.browserify;
   const w = links.webpack;
@@ -447,21 +447,25 @@ async function main(): Promise<void> {
   }
 
   const botToken = process.env.SLACK_BOT_TOKEN;
-  const hostUrl = process.env.HOST_URL?.trim();
+  const trimmedHostUrl = process.env.HOST_URL?.trim() ?? '';
   const channelOverride = getChannelOverride();
 
   const packageVersion = packageJson.version ?? semver;
 
-  const links: MainBrowserLinks = hostUrl
-    ? getExtensionMainBuildLinks(hostUrl, packageVersion)
+  const hostUrlOk = trimmedHostUrl !== '' && isValidUrl(trimmedHostUrl);
+
+  const links: MainBrowserLinks = hostUrlOk
+    ? getExtensionMainBuildLinks(trimmedHostUrl, packageVersion)
     : {
         browserify: { chrome: '', firefox: '' },
         webpack: { chrome: '', firefox: '' },
       };
 
-  if (!hostUrl) {
+  if (!hostUrlOk) {
     console.warn(
-      '⚠️ HOST_URL not set — download links will show as unavailable (in CI this is AWS_CLOUDFRONT_URL/repo/GITHUB_RUN_ID)',
+      trimmedHostUrl === ''
+        ? '⚠️ HOST_URL unset — artifact links omitted'
+        : `⚠️ Invalid HOST_URL (expect https://…; check AWS_CLOUDFRONT_URL): ${trimmedHostUrl}`,
     );
   }
 
@@ -472,9 +476,7 @@ async function main(): Promise<void> {
     `\n📣 Preparing Slack notification for Extension RC v${semver} (run ${runId})`,
   );
   if (isOverride) {
-    console.log(
-      `🧪 Channel override (SLACK_RC_CHANNEL / SLACK_CHANNEL / TEST_CHANNEL): ${expectedChannelName}`,
-    );
+    console.log(`🧪 Channel override: ${expectedChannelName}`);
   } else {
     console.log(`📍 Target channel: ${expectedChannelName}`);
   }
