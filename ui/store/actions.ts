@@ -28,6 +28,7 @@ import { PayloadAction } from '@reduxjs/toolkit';
 import { GasFeeController } from '@metamask/gas-fee-controller';
 import { PermissionsRequest } from '@metamask/permission-controller';
 import { NonEmptyArray } from '@metamask/controller-utils';
+import type { PhishingDetectionScanResult } from '@metamask/phishing-controller';
 import {
   SetNameRequest,
   UpdateProposedNamesRequest,
@@ -146,6 +147,7 @@ import {
   MetaMetricsEventName,
   MetaMetricsEventAccountType,
   MetaMetricsUserTraits,
+  MetaMetricsUserTrait,
 } from '../../shared/constants/metametrics';
 import { parseSmartTransactionsError } from '../pages/swaps/swaps.util';
 import { isEqualCaseInsensitive } from '../../shared/lib/string-utils';
@@ -863,10 +865,15 @@ export async function setShieldSubscriptionError(
  * Fetches and restores the seed phrase from the metadata store using the social login and restore the vault using the seed phrase.
  *
  * @param password - The password.
+ * @param trackEvent - The track event function from MetaMetrics context.
  * @returns The seed phrase.
  */
 export function restoreSocialBackupAndGetSeedPhrase(
   password: string,
+  trackEvent?: (
+    payload: MetaMetricsEventPayload,
+    options?: MetaMetricsEventOptions,
+  ) => Promise<void>,
 ): ThunkAction<Promise<string>, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
     try {
@@ -879,6 +886,16 @@ export function restoreSocialBackupAndGetSeedPhrase(
       // sync marketing consent with metametrics
       const marketingConsent = await getMarketingConsent();
       dispatch(setDataCollectionForMarketing(marketingConsent));
+
+      await trackEvent?.({
+        category: MetaMetricsEventCategory.Onboarding,
+        event: MetaMetricsEventName.AnalyticsPreferenceSelected,
+        properties: {
+          [MetaMetricsUserTrait.IsMetricsOptedIn]: true,
+          [MetaMetricsUserTrait.HasMarketingConsent]: marketingConsent,
+          location: 'onboarding_social_login_rehydration',
+        },
+      });
 
       dispatch(hideWarning());
       await forceUpdateMetamaskState(dispatch);
@@ -1428,7 +1445,9 @@ export function connectHardware(
     const { ledgerTransportType } = getState().metamask;
 
     dispatch(
-      showLoadingIndication(`Looking for your ${capitalize(deviceName)}...`),
+      showLoadingIndication(
+        t('hardwareWalletLookingForDevice', [capitalize(deviceName)]),
+      ),
     );
 
     let accounts: { address: string }[];
@@ -1493,9 +1512,9 @@ export function connectHardware(
 }
 
 export function unlockHardwareWalletAccounts(
-  indexes: string[],
+  indexes: number[],
   deviceName: HardwareDeviceNames,
-  hdPath: string,
+  hdPath: string | null,
   hdPathDescription: string,
 ): ThunkAction<Promise<undefined>, MetaMaskReduxState, unknown, AnyAction> {
   log.debug(
@@ -2173,6 +2192,12 @@ export function updateSnap(
 
 export async function getPhishingResult(website: string) {
   return await submitRequestToBackground('getPhishingResult', [website]);
+}
+
+export async function scanUrlForPhishing(
+  origin: string,
+): Promise<PhishingDetectionScanResult | null> {
+  return await submitRequestToBackground('scanUrlForPhishing', [origin]);
 }
 
 // TODO: Clean this up.

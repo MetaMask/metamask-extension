@@ -13,6 +13,8 @@ export type PageLoadBenchmarkOptions = {
   browserLoads?: number;
   pageLoads?: number;
   retries?: number;
+  platform?: string;
+  buildType?: string;
 };
 
 type NavigationMetric = {

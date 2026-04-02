@@ -6,6 +6,7 @@ import {
   isCrossChain,
 } from '@metamask/bridge-controller';
 import type { QuoteMetadata, QuoteResponse } from '@metamask/bridge-controller';
+import { useNavigate } from 'react-router-dom';
 import { isHardwareWallet } from '../../../../shared/lib/selectors';
 import { captureException } from '../../../../shared/lib/sentry';
 import {
@@ -27,6 +28,8 @@ import {
 } from '../../../contexts/hardware-wallets/HardwareWalletContext';
 import { isUserRejectedHardwareWalletError } from '../../../contexts/hardware-wallets/rpcErrorUtils';
 import { useBridgeNavigation } from '../../../hooks/bridge/useBridgeNavigation';
+import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
+import { type MetaMaskReduxDispatch } from '../../../store/store';
 import { useEnableMissingNetwork } from './useEnableMissingNetwork';
 
 const ALLOWANCE_RESET_ERROR = 'Eth USDT allowance reset failed';
@@ -60,12 +63,10 @@ const isHardwareWalletUserRejection = (error: unknown): boolean => {
 };
 
 export default function useSubmitBridgeTransaction() {
-  const {
-    navigateToBridgePage,
-    navigateToHwSigningPage,
-    navigateToActivityPage,
-  } = useBridgeNavigation();
-  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { navigateToBridgePage, navigateToHwSigningPage } =
+    useBridgeNavigation();
+  const dispatch = useDispatch<MetaMaskReduxDispatch>();
   const hardwareWalletUsed = useSelector(isHardwareWallet);
 
   const smartTransactionsEnabled = useSelector(getIsStxEnabled);
@@ -130,25 +131,23 @@ export default function useSubmitBridgeTransaction() {
             accountAddress: fromAccount.address,
           }),
         );
-        navigateToActivityPage();
-        return;
-      }
-
-      await dispatch(
-        submitBridgeTx(
-          fromAccount.address,
-          quoteResponse,
-          smartTransactionsEnabled,
-          getQuotesReceivedProperties(
+      } else {
+        await dispatch(
+          submitBridgeTx(
+            fromAccount.address,
             quoteResponse,
-            // @ts-expect-error 'market_closed' will be added to QuoteWarning in the controller
-            warnings,
-            true,
-            recommendedQuote,
-            fromTokenBalanceInUsd,
+            smartTransactionsEnabled,
+            getQuotesReceivedProperties(
+              quoteResponse,
+              // @ts-expect-error 'market_closed' will be added to QuoteWarning in the controller
+              warnings,
+              true,
+              recommendedQuote,
+              fromTokenBalanceInUsd,
+            ),
           ),
-        ),
-      );
+        );
+      }
     } catch (e) {
       captureException(e);
       if (hardwareWalletUsed && isHardwareWalletUserRejection(e)) {
@@ -160,7 +159,10 @@ export default function useSubmitBridgeTransaction() {
       setIsSubmitting(false);
     }
 
-    navigateToActivityPage();
+    navigate(DEFAULT_ROUTE, {
+      state: { stayOnHomePage: true },
+      replace: true,
+    });
   };
 
   return {

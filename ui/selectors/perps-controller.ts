@@ -10,6 +10,8 @@ export type PerpsState = {
 };
 
 const EMPTY_ARRAY: never[] = [];
+const EMPTY_TRADE_CONFIGURATIONS: PerpsControllerState['tradeConfigurations'] =
+  { testnet: {}, mainnet: {} };
 
 export const selectPerpsIsEligible = (state: PerpsState): boolean =>
   state.metamask.isEligible ?? false;
@@ -109,3 +111,6 @@ export const selectPerpsPerpsBalances = (state: PerpsState) =>
 
 export const selectPerpsMarketFilterPreferences = (state: PerpsState) =>
   state.metamask.marketFilterPreferences ?? null;
+
+export const selectPerpsTradeConfigurations = (state: PerpsState) =>
+  state.metamask.tradeConfigurations ?? EMPTY_TRADE_CONFIGURATIONS;

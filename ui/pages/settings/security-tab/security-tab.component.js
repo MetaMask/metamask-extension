@@ -13,6 +13,7 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventKeyType,
   MetaMetricsEventName,
+  MetaMetricsUserTrait,
 } from '../../../../shared/constants/metametrics';
 import {
   IPFS_DEFAULT_GATEWAY_URL,
@@ -190,8 +191,8 @@ export default class SecurityTab extends PureComponent {
         category: MetaMetricsEventCategory.Settings,
         event: MetaMetricsEventName.AnalyticsPreferenceSelected,
         properties: {
-          is_metrics_opted_in: true,
-          has_marketing_consent: Boolean(value),
+          [MetaMetricsUserTrait.IsMetricsOptedIn]: true,
+          [MetaMetricsUserTrait.HasMarketingConsent]: Boolean(value),
           location: 'Settings',
         },
       });
