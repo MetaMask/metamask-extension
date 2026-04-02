@@ -48,7 +48,13 @@ const ChangePasswordSteps = {
   ChangePasswordLoading: 3,
 };
 
-const ChangePassword = () => {
+type ChangePasswordProps = {
+  redirectRoute?: string;
+};
+
+const ChangePassword = ({
+  redirectRoute = SECURITY_ROUTE,
+}: ChangePasswordProps) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -114,7 +120,7 @@ const ChangePassword = () => {
       });
 
       // upon successful password change, go back to the settings page
-      navigate(SECURITY_ROUTE);
+      navigate(redirectRoute);
       dispatch(setShowPasswordChangeToast(PasswordChangeToastType.Success));
     } catch (error) {
       console.error(error);

@@ -64,9 +64,10 @@ export const verifySrp = async (
   await new HeaderNavbar(driver).openSettingsPage();
   const settingsPage = new SettingsPage(driver);
   await settingsPage.checkPageIsLoaded();
-  await settingsPage.goToPrivacySettings();
+  await settingsPage.goToSecurityAndPasswordSettings();
 
   const privacySettings = new PrivacySettings(driver);
+  await privacySettings.checkSecurityAndPasswordPageIsLoaded();
   await privacySettings.openRevealSrpQuiz(srpIndex);
   await privacySettings.completeRevealSrpQuiz();
   await privacySettings.fillPasswordToRevealSrp(WALLET_PASSWORD);

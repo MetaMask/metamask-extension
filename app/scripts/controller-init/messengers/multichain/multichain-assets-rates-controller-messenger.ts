@@ -14,11 +14,11 @@ import {
   KeyringControllerLockEvent,
   KeyringControllerUnlockEvent,
 } from '@metamask/keyring-controller';
-import { HandleSnapRequest } from '@metamask/snaps-controllers';
+import { SnapControllerHandleRequestAction } from '@metamask/snaps-controllers';
 import { RootMessenger } from '../../../lib/messenger';
 
 type Actions =
-  | HandleSnapRequest
+  | SnapControllerHandleRequestAction
   | AccountsControllerListMultichainAccountsAction
   | GetCurrencyRateState
   | MultichainAssetsControllerGetStateAction

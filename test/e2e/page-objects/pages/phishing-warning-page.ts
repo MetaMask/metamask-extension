@@ -60,16 +60,20 @@ class PhishingWarningPage {
           )) as WebElement;
           await this.driver.switchToFrame(iframe as unknown as string);
           await this.checkPageIsLoaded();
+          await this.driver.clickElement(this.openWarningInNewTabLink);
           return true;
         } catch {
-          // Switch back to default content before retrying, in case we're stuck in the iframe context that was replaced on load
-          await this.driver.switchToDefaultContent();
+          try {
+            // Switch back to default content before retrying, in case we're stuck in the iframe context that was replaced on load
+            await this.driver.switchToDefaultContent();
+          } catch {
+            // context may already be discarded
+          }
           return false;
         }
       },
       { interval: 1000, timeout: 10000 },
     );
-    await this.driver.clickElement(this.openWarningInNewTabLink);
   }
 
   async clickProceedAnywayButton(): Promise<void> {

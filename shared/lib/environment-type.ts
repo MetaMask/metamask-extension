@@ -39,3 +39,13 @@ const getEnvironmentTypeMemo = memoize((url: string) => {
  */
 export const getEnvironmentType = (url = window.location.href): string =>
   getEnvironmentTypeMemo(url);
+
+export const isInteractiveUI = (url = globalThis.location.href) => {
+  const environmentType = getEnvironmentType(url);
+
+  return (
+    environmentType === ENVIRONMENT_TYPE_POPUP ||
+    environmentType === ENVIRONMENT_TYPE_SIDEPANEL ||
+    environmentType === ENVIRONMENT_TYPE_FULLSCREEN
+  );
+};

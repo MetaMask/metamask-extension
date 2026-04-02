@@ -23,6 +23,7 @@ const ShowNetworkTokenToggleItem = createToggleItem({
   selector: getShowNativeTokenAsMainBalance,
   action: setShowNativeTokenAsMainBalancePreference,
   dataTestId: 'show-native-token-as-main-balance',
+  containerDataTestId: 'show-native-token-as-main-balance-toggle',
   trackEvent: {
     event: MetaMetricsEventName.SettingsUpdated,
     properties: (newValue) => ({
@@ -47,6 +48,7 @@ const AutodetectTokensToggleItem = createToggleItem({
   selector: getUseTokenDetection,
   action: setUseTokenDetection,
   dataTestId: 'autodetect-tokens',
+  containerDataTestId: 'autodetect-tokens',
 });
 
 /** Registry of setting items for the Assets page. Add new items here */
@@ -67,6 +69,8 @@ const ASSET_SETTING_ITEMS: SettingItemConfig[] = [
   { id: 'autodetect-tokens', component: AutodetectTokensToggleItem },
 ];
 
-const AssetsTab = () => <SettingsTab items={ASSET_SETTING_ITEMS} />;
+const AssetsTab = () => {
+  return <SettingsTab items={ASSET_SETTING_ITEMS} />;
+};
 
 export default AssetsTab;

@@ -1,6 +1,7 @@
 import { ReadableStream as ReadableStreamWeb } from 'stream/web';
+import { strict as assert } from 'assert';
 import { Readable } from 'stream';
-import { Mockttp } from 'mockttp';
+import { MockedEndpoint, Mockttp } from 'mockttp';
 import { type FeatureFlagResponse } from '@metamask/bridge-controller';
 
 import { emptyHtmlPage } from '../../mock-e2e';
@@ -15,6 +16,7 @@ import ActivityListPage from '../../page-objects/pages/home/activity-list';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import HomePage from '../../page-objects/pages/home/homepage';
 import { MOCK_META_METRICS_ID } from '../../constants';
+import { getEventPayloads } from '../../helpers';
 import { mockSegment } from '../metrics/mocks/segment';
 import {
   ETH_CONVERSION_RATE_USD,
@@ -36,6 +38,8 @@ import {
   MOCK_BRIDGE_ETH_TO_WETH_LINEA,
   MOCK_SWAP_API_AGGREGATOR_LINEA,
   SSE_RESPONSE_HEADER,
+  EXPECTED_INPUT_CHANGES,
+  BRIDGE_REFRESH_RATE,
 } from './constants';
 import MOCK_SWAP_QUOTES_ETH_MUSD from './mocks/swap-quotes-eth-musd.json';
 
@@ -123,6 +127,8 @@ export const bridgeTransaction = async ({
   await homePage.startSwapFlow();
 
   const bridgePage = new BridgeQuotePage(driver);
+
+  await bridgePage.checkAssetsAreSelected('ETH', 'mUSD');
   await bridgePage.enterBridgeQuote(quote);
   await bridgePage.waitForQuote();
   await bridgePage.checkExpectedNetworkFeeIsDisplayed();
@@ -310,6 +316,19 @@ const toBridgeTokenResponse = (
       token.assetId ?? `eip155:${chainId}/erc20:${token.address.toLowerCase()}`,
   };
 };
+
+async function mockHistoricalPrices(mockServer: Mockttp) {
+  return mockServer.forGet(/historical-prices/u).thenCallback(() => ({
+    statusCode: 200,
+    json: {
+      prices: [
+        { timestamp: 1717566000000, price: 1 },
+        { timestamp: 1717566322300, price: 2 },
+        { timestamp: 1717566611338, price: 3 },
+      ],
+    },
+  }));
+}
 
 async function mockGetPopularTokens(mockServer: Mockttp) {
   return await mockServer.forPost(/getTokens\/popular/u).thenCallback(() => ({
@@ -995,6 +1014,7 @@ export const getBridgeFixtures = (
         await mockSwapTokensLinea(mockServer),
         await mockSwapTokensArbitrum(mockServer),
         await mockSwapAggregatorMetadataArbitrum(mockServer),
+        await mockHistoricalPrices(mockServer),
       ];
 
       standardMocks.push(...(await mockSearchTokens(mockServer)));
@@ -1299,4 +1319,83 @@ export const getBridgeL2Fixtures = (
     ],
     title,
   };
+};
+
+export const checkInputChangedEvents = async (
+  type: keyof typeof EXPECTED_INPUT_CHANGES,
+  driver: Driver,
+  mockedEndpoints: MockedEndpoint[],
+  startIndex: number = 0,
+): Promise<number> => {
+  const expectedInputChanges = EXPECTED_INPUT_CHANGES[type];
+
+  const receivedInputChanges = (await getEventPayloads(driver, mockedEndpoints))
+    .filter((e) => e?.event === EventTypes.SwapBridgeInputChanged)
+    .slice(startIndex)
+    .map((event) => ({
+      [event.properties.input]: event.properties.input_value,
+    }));
+  assert.equal(
+    receivedInputChanges.length,
+    expectedInputChanges.length,
+    `Should have ${expectedInputChanges.length} input change events, but got ${receivedInputChanges.length}`,
+  );
+  expectedInputChanges
+    .flatMap(Object.entries)
+    .forEach(([expectedKey, expectedValue], index) => {
+      const receivedInputChange = receivedInputChanges.find(
+        (event: { [key: string]: string }) =>
+          event[expectedKey] === expectedValue,
+      );
+      assert.equal(
+        Boolean(receivedInputChange),
+        true,
+        `Expected input change ${expectedKey} with value ${expectedValue} not found at index ${index}`,
+      );
+    });
+
+  return expectedInputChanges.length;
+};
+
+export const checkQuoteRequestsAreNotMadeAfterTimestamp = async (
+  driver: Driver,
+  timestamp: number,
+  mockedEndpoints: ({
+    rule: {
+      matchers: { type: string; regexSource: string }[];
+      requestCount: number;
+    };
+  } & MockedEndpoint)[],
+) => {
+  await driver.delay(2 * BRIDGE_REFRESH_RATE + 1000);
+
+  // Find all getQuote mocked endpoints
+  const getQuoteMocks = mockedEndpoints.filter(
+    ({ rule: { matchers, requestCount } }) =>
+      matchers.some(
+        (matcher) =>
+          matcher.type === 'regex-path' &&
+          matcher.regexSource.includes('getQuote') &&
+          requestCount > 0,
+      ),
+  );
+
+  // Filter requests made after the timestamp
+  for (const mock of getQuoteMocks) {
+    const seenRequests = await mock.getSeenRequests();
+    assert.equal(
+      seenRequests.length > 0,
+      true,
+      'At least one request should be made to getQuote',
+    );
+
+    const seenRequestsAfterTimestamp = seenRequests.filter(
+      (request) => request.timingEvents.startTime > timestamp,
+    );
+    assert.equal(
+      seenRequestsAfterTimestamp.length,
+      0,
+      'No requests should be made to getQuote after timestamp',
+    );
+  }
 };

@@ -6,104 +6,55 @@ exports[`PreferencesAndDisplayTab snapshot matches snapshot 1`] = `
     class="pb-4 px-4 overflow-y-auto"
   >
     <div>
-      <div
-        class="flex flex-row items-center justify-between py-3"
+      <a
+        class="block rounded-lg hover:bg-background-default-hover"
+        href="/settings/preferences-and-display/theme"
       >
-        <p
-          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
-        >
-          Theme
-        </p>
         <div
-          class="flex flex-row gap-1 items-center"
+          class="flex flex-row items-center justify-between py-3"
         >
           <p
-            class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+            class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
           >
-            System
+            Theme
           </p>
-          <a
-            class="flex ml-1"
-            href="/settings-v2/preferences-and-display/theme"
-          >
-            <svg
-              class="inline-block w-4 h-4 text-icon-alternative"
-              fill="currentColor"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="m8.887 22-1.775-1.775L15.337 12 7.112 3.775 8.887 2l10 10z"
-              />
-            </svg>
-          </a>
-        </div>
-      </div>
-    </div>
-    <div>
-      <div
-        class="flex flex-row items-center justify-between py-3"
-      >
-        <p
-          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
-        >
-          Language
-        </p>
-        <div
-          class="flex flex-row gap-1 items-center"
-        >
-          <a
-            class="flex ml-1"
-            href="/settings-v2/preferences-and-display/language"
-          >
-            <svg
-              class="inline-block w-4 h-4 text-icon-alternative"
-              fill="currentColor"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="m8.887 22-1.775-1.775L15.337 12 7.112 3.775 8.887 2l10 10z"
-              />
-            </svg>
-          </a>
-        </div>
-      </div>
-    </div>
-    <div>
-      <div
-        class="flex flex-row items-center justify-between py-3"
-      >
-        <p
-          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
-        >
-          Account icon
-        </p>
-        <div
-          class="flex flex-row gap-1 items-center"
-        >
           <div
-            class="flex flex-row gap-2 items-center"
+            class="flex flex-row gap-1 items-center"
           >
-            <div
-              class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-md h-6 w-6"
-            >
-              <img
-                alt="maskicon"
-                height="24"
-                src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'/%3E"
-                width="24"
-              />
-            </div>
             <p
               class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
             >
-              Polycons
+              System
             </p>
+            <svg
+              class="inline-block w-4 h-4 text-icon-alternative"
+              fill="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="m8.887 22-1.775-1.775L15.337 12 7.112 3.775 8.887 2l10 10z"
+              />
+            </svg>
           </div>
-          <a
-            class="flex ml-1"
-            href="/settings-v2/preferences-and-display/account-identicon"
+        </div>
+      </a>
+    </div>
+    <div>
+      <a
+        class="block rounded-lg hover:bg-background-default-hover"
+        href="/settings/preferences-and-display/language"
+      >
+        <div
+          class="flex flex-row items-center justify-between py-3"
+        >
+          <p
+            class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+          >
+            Language
+          </p>
+          <div
+            class="flex flex-row gap-1 items-center"
           >
             <svg
               class="inline-block w-4 h-4 text-icon-alternative"
@@ -115,9 +66,58 @@ exports[`PreferencesAndDisplayTab snapshot matches snapshot 1`] = `
                 d="m8.887 22-1.775-1.775L15.337 12 7.112 3.775 8.887 2l10 10z"
               />
             </svg>
-          </a>
+          </div>
         </div>
-      </div>
+      </a>
+    </div>
+    <div>
+      <a
+        class="block rounded-lg hover:bg-background-default-hover"
+        href="/settings/preferences-and-display/account-identicon"
+      >
+        <div
+          class="flex flex-row items-center justify-between py-3"
+        >
+          <p
+            class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+          >
+            Account icon
+          </p>
+          <div
+            class="flex flex-row gap-1 items-center"
+          >
+            <div
+              class="flex flex-row gap-2 items-center"
+            >
+              <div
+                class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-md h-6 w-6"
+              >
+                <img
+                  alt="maskicon"
+                  height="24"
+                  src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'/%3E"
+                  width="24"
+                />
+              </div>
+              <p
+                class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+              >
+                Polycons
+              </p>
+            </div>
+            <svg
+              class="inline-block w-4 h-4 text-icon-alternative"
+              fill="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="m8.887 22-1.775-1.775L15.337 12 7.112 3.775 8.887 2l10 10z"
+              />
+            </svg>
+          </div>
+        </div>
+      </a>
     </div>
     <div />
     <div

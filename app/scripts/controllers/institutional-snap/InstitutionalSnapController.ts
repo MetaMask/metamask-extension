@@ -4,7 +4,7 @@ import {
   TransactionMeta,
   TransactionStatus,
 } from '@metamask/transaction-controller';
-import type { HandleSnapRequest } from '@metamask/snaps-controllers';
+import type { SnapControllerHandleRequestAction } from '@metamask/snaps-controllers';
 import { HandlerType } from '@metamask/snaps-utils';
 import {
   BaseController,
@@ -25,10 +25,12 @@ const SNAP_ID = INSTITUTIONAL_WALLET_SNAP_ID;
 
 const controllerName = 'InstitutionalSnapController';
 
-type SnapRPCRequest = Parameters<HandleSnapRequest['handler']>[0];
+type SnapRPCRequest = Parameters<
+  SnapControllerHandleRequestAction['handler']
+>[0];
 
 export type AllowedActions =
-  | HandleSnapRequest
+  | SnapControllerHandleRequestAction
   | AccountsControllerGetAccountByAddressAction
   | TransactionControllerUpdateCustodialTransactionAction;
 

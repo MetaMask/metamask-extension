@@ -66,7 +66,6 @@ export const getTransactionBreakdownData = ({
         destinationTokenDecimals,
         undefined,
         undefined,
-        // @ts-expect-error TODO: fix this, ported directly from original code
         null,
       );
 
