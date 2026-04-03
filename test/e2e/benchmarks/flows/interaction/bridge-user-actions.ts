@@ -15,9 +15,13 @@ import {
 } from '../../../tests/bridge/constants';
 import { Driver } from '../../../webdriver/driver';
 import { buildLongTaskTimerResults } from '../../utils/long-task-helper';
-import { BENCHMARK_PERSONA, BENCHMARK_TYPE } from '../../utils/constants';
-import type { BenchmarkRunResult, LongTaskStepResult } from '../../utils/types';
-import { runUserActionBenchmark } from '../../utils/runner';
+import {
+  BENCHMARK_PERSONA,
+  BENCHMARK_TYPE,
+  runUserActionBenchmark,
+  collectWebVitals,
+} from '../../utils';
+import type { BenchmarkRunResult, LongTaskStepResult } from '../../utils';
 
 export const testTitle = 'benchmark-user-actions-bridge-user-actions';
 export const persona = BENCHMARK_PERSONA.STANDARD;
@@ -47,6 +51,7 @@ export async function run(): Promise<BenchmarkRunResult> {
     let loadAssetPicker: number = 0;
     let searchToken: number = 0;
     const steps: LongTaskStepResult[] = [];
+    let webVitals;
 
     const fixtureBuilder = new FixtureBuilder()
       .withNetworkControllerOnMainnet()
@@ -123,12 +128,21 @@ export async function run(): Promise<BenchmarkRunResult> {
           longTaskMaxDuration: longTaskData?.maxDuration ?? 0,
           tbt: longTaskData?.tbt ?? 0,
         });
+
+        try {
+          webVitals = await collectWebVitals(driver);
+        } catch (error) {
+          console.error('Error collecting web vitals:', error);
+        }
       },
     );
 
-    return [
-      ...steps.map((s) => ({ id: s.id, duration: s.duration })),
-      ...buildLongTaskTimerResults(steps),
-    ];
+    return {
+      timers: [
+        ...steps.map((s) => ({ id: s.id, duration: s.duration })),
+        ...buildLongTaskTimerResults(steps),
+      ],
+      webVitals,
+    };
   }, BENCHMARK_TYPE.USER_ACTION);
 }

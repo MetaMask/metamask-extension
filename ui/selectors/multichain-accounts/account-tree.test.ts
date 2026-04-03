@@ -260,6 +260,46 @@ describe('Multichain Accounts Selectors', () => {
   });
 
   describe('getWalletsWithAccounts', () => {
+    it('filters out account IDs that have no matching entry in internalAccounts (state corruption)', () => {
+      // Inject a stale/orphaned account ID into an existing group to simulate corruption
+      const corruptedState = {
+        ...typedMockState,
+        metamask: {
+          ...typedMockState.metamask,
+          accountTree: {
+            ...typedMockState.metamask.accountTree,
+            wallets: {
+              ...typedMockState.metamask.accountTree.wallets,
+              [ENTROPY_WALLET_1_ID]: {
+                ...typedMockState.metamask.accountTree.wallets[
+                  ENTROPY_WALLET_1_ID as unknown as keyof typeof typedMockState.metamask.accountTree.wallets
+                ],
+                groups: {
+                  [ENTROPY_GROUP_1_ID]: {
+                    ...typedMockState.metamask.accountTree.wallets[
+                      ENTROPY_WALLET_1_ID as unknown as keyof typeof typedMockState.metamask.accountTree.wallets
+                    ].groups[ENTROPY_GROUP_1_ID],
+                    accounts: [
+                      ACCOUNT_1_ID,
+                      'stale-orphaned-account-id-that-does-not-exist',
+                    ],
+                  },
+                },
+              },
+            },
+          },
+        },
+      } as unknown as typeof typedMockState;
+
+      expect(() => getWalletsWithAccounts(corruptedState)).not.toThrow();
+      const result = getWalletsWithAccounts(corruptedState);
+      const accounts =
+        result[ENTROPY_WALLET_1_ID]?.groups[ENTROPY_GROUP_1_ID]?.accounts;
+      // Orphaned account ID must be filtered out; only the valid account remains
+      expect(accounts).toHaveLength(1);
+      expect(accounts?.[0].id).toBe(ACCOUNT_1_ID);
+    });
+
     it('returns wallets with accounts and their metadata', () => {
       const result = getWalletsWithAccounts(typedMockState);
 
@@ -609,6 +649,72 @@ describe('Multichain Accounts Selectors', () => {
         nonExistentAddress,
       );
 
+      expect(result).toBeNull();
+    });
+
+    it('does not throw when the account tree references orphaned account IDs (state corruption)', () => {
+      const corruptedState = {
+        ...typedMockState,
+        metamask: {
+          ...typedMockState.metamask,
+          accountTree: {
+            ...typedMockState.metamask.accountTree,
+            wallets: {
+              ...typedMockState.metamask.accountTree.wallets,
+              [ENTROPY_WALLET_1_ID]: {
+                ...typedMockState.metamask.accountTree.wallets[
+                  ENTROPY_WALLET_1_ID as unknown as keyof typeof typedMockState.metamask.accountTree.wallets
+                ],
+                groups: {
+                  [ENTROPY_GROUP_1_ID]: {
+                    ...typedMockState.metamask.accountTree.wallets[
+                      ENTROPY_WALLET_1_ID as unknown as keyof typeof typedMockState.metamask.accountTree.wallets
+                    ].groups[ENTROPY_GROUP_1_ID],
+                    accounts: ['stale-orphaned-account-id-that-does-not-exist'],
+                  },
+                },
+              },
+            },
+          },
+        },
+      } as unknown as typeof typedMockState;
+
+      expect(() =>
+        getWalletIdAndNameByAccountAddress(corruptedState, ACCOUNT_1_ADDRESS),
+      ).not.toThrow();
+    });
+
+    it('returns null when all accounts in the tree are orphaned (state corruption)', () => {
+      const corruptedState = {
+        ...typedMockState,
+        metamask: {
+          ...typedMockState.metamask,
+          accountTree: {
+            ...typedMockState.metamask.accountTree,
+            wallets: {
+              ...typedMockState.metamask.accountTree.wallets,
+              [ENTROPY_WALLET_1_ID]: {
+                ...typedMockState.metamask.accountTree.wallets[
+                  ENTROPY_WALLET_1_ID as unknown as keyof typeof typedMockState.metamask.accountTree.wallets
+                ],
+                groups: {
+                  [ENTROPY_GROUP_1_ID]: {
+                    ...typedMockState.metamask.accountTree.wallets[
+                      ENTROPY_WALLET_1_ID as unknown as keyof typeof typedMockState.metamask.accountTree.wallets
+                    ].groups[ENTROPY_GROUP_1_ID],
+                    accounts: ['stale-orphaned-account-id-that-does-not-exist'],
+                  },
+                },
+              },
+            },
+          },
+        },
+      } as unknown as typeof typedMockState;
+
+      const result = getWalletIdAndNameByAccountAddress(
+        corruptedState,
+        ACCOUNT_1_ADDRESS,
+      );
       expect(result).toBeNull();
     });
   });

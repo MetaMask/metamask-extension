@@ -36,14 +36,20 @@ import {
   mockBenchmarkEndpoints,
 } from '../../mocks/performance-mocks';
 import { shouldUseMockedRequests } from '../../utils/mock-config';
-import { BENCHMARK_PERSONA, BENCHMARK_TYPE } from '../../utils/constants';
-import type { BenchmarkRunResult, LongTaskStepResult } from '../../utils/types';
+import {
+  BENCHMARK_PERSONA,
+  BENCHMARK_TYPE,
+  collectWebVitals,
+} from '../../utils';
+import type { WebVitalsMetrics } from '../../../../../shared/constants/benchmarks';
+import type { BenchmarkRunResult, LongTaskStepResult } from '../../utils';
 
 export const testTitle = 'benchmark-onboarding-import-wallet';
 export const persona = BENCHMARK_PERSONA.POWER_USER;
 
 export async function runOnboardingImportWalletBenchmark(): Promise<BenchmarkRunResult> {
   const steps: LongTaskStepResult[] = [];
+  let webVitals: WebVitalsMetrics | undefined;
   try {
     await withFixtures(
       {
@@ -186,17 +192,25 @@ export async function runOnboardingImportWalletBenchmark(): Promise<BenchmarkRun
             },
           ),
         );
+
+        try {
+          webVitals = await collectWebVitals(driver);
+        } catch (error) {
+          console.error('Error collecting web vitals:', error);
+        }
       },
     );
 
     return {
       timers: [...collectTimerResults(), ...buildLongTaskTimerResults(steps)],
+      webVitals,
       success: true,
       benchmarkType: BENCHMARK_TYPE.PERFORMANCE,
     };
   } catch (error) {
     return {
       timers: [...collectTimerResults(), ...buildLongTaskTimerResults(steps)],
+      webVitals,
       success: false,
       error: error instanceof Error ? error.message : String(error),
       benchmarkType: BENCHMARK_TYPE.PERFORMANCE,
