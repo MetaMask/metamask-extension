@@ -9,22 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [13.26.0]
 
-### Uncategorized
+### Added
 
-- Remove useBlockie (#40544)
-- Fixed a bug that was causing issues with TRC20 token transfers (#41103)
-- Tweak survey banner (#41403)
-- Fixes design and estimate calculation for add/remove margin flows. (#41285)
-- Remove deprecated Snap methods `snap_getCurrencyRate` and `snap_experimentalProviderRequest`. (#41313)
 - Warned users on outdated Chrome, Edge, Firefox, and Opera versions to update before support is removed. We will be dropping (#41063)
   official support for Firefox on Windows 7-8.1 and macOS 10.12-10.14 in
   the next release.
-- Filter out native token transfers (#41164)
-
-### Added
-
-- Fixed Bitcoin PSBT build errors now include the underlying cause for better diagnostics (#41422)
-- Added export data button (#41427)
 - Transaction toast notification (#40886)
 - Enabled settings v2 to replace legacy settings (#41194)
 - Added banners localization (#41387)
@@ -38,22 +27,33 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added real-time dapp scanning warning with acknowledgment checkbox on the SRP reveal page for malicious websites (#40209)
 - Adds dapp connection control bar (#40617)
 - Add asset verified badge in swaps asset picker (#41169)
+- Added export data button (#41427)
+- Close all positions / cancel all open orders functionality (#41287)
+
+### Changed
+
+- Remove useBlockie (#40544)
+- Tweak survey banner (#41403)
+- Remove deprecated Snap methods `snap_getCurrencyRate` and `snap_experimentalProviderRequest`. (#41313)
+- Dapp connection control bar style adjustments (#41390)
 
 ### Fixed
 
+- Fixed a bug that was causing issues with TRC20 token transfers (#41103)
+- Fixed design and estimate calculation for add/remove margin flows (#41285)
+- Filter out native token transfers (#41164)
+- Fixed Bitcoin PSBT build errors now include the underlying cause for better diagnostics (#41422)
 - Fixed an issue where choosing Try again on some error screens could show the browser’s default page inside the MetaMask window (#41364)
   instead of restarting the extension.
 - Fixed a crash that could occur for users with corrupted wallet state after a password reset or Snap keyring usage. (#41405)
-- Localize `Looking for your <device>` mesage (#41417)
+- Localize `Looking for your <device>` message (#41417)
 - Fixed Review Permissions screen incorrectly showing non-EVM networks instead of the requested testnet during chain switch (#41236)
 - Update tooltip icon in claimable bonus row for Firefox compatibility (#41404)
 - Asset list and select quotes list improvements (#41155)
 - Reset bridge page inputs after submitting transaction (#41222)
 - Fix close position modal design, address partial close bugfix (#41279)
 - Fixed position size display to show USD value instead of token units (#41380)
-- Close all positions / cancel all open orders functionality (#41287)
-- Dapp connection control bar style adjustments (#41390)
-- Fixes tpsl form reset bug (#41283)
+- Fixed TP/SL form reset bug (#41283)
 
 ## [13.25.0]
 
