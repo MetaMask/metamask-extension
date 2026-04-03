@@ -1,3 +1,4 @@
+import { caip25CaveatBuilder } from '@metamask/chain-agnostic-permission';
 import {
   CaveatSpecificationConstraint,
   PermissionController,
@@ -14,6 +15,8 @@ import {
   PermissionControllerMessenger,
 } from './messengers';
 import { ControllerInitFunction } from './types';
+
+type Caip25CaveatBuilderOptions = Parameters<typeof caip25CaveatBuilder>[0];
 
 /**
  * Initialize the permission controller.
@@ -38,24 +41,27 @@ export const PermissionControllerInit: ControllerInitFunction<
 
   const controller = new PermissionController({
     state: persistedState.PermissionController,
+    // Runtime messenger is built via getPermissionControllerMessenger; PermissionController's
+    // constructor type is narrower (registerActionHandler handler unions).
+    // @ts-expect-error Messenger not assignable to PermissionControllerMessenger (handler variance).
     messenger: controllerMessenger,
     caveatSpecifications: getCaveatSpecifications({
       listAccounts: initMessenger.call.bind(
         initMessenger,
         'AccountsController:listAccounts',
-      ),
+      ) as unknown as Caip25CaveatBuilderOptions['listAccounts'],
       findNetworkClientIdByChainId: initMessenger.call.bind(
         initMessenger,
         'NetworkController:findNetworkClientIdByChainId',
-      ),
+      ) as unknown as Caip25CaveatBuilderOptions['findNetworkClientIdByChainId'],
       isNonEvmScopeSupported: initMessenger.call.bind(
         initMessenger,
         'MultichainRoutingService:isSupportedScope',
-      ),
+      ) as unknown as Caip25CaveatBuilderOptions['isNonEvmScopeSupported'],
       getNonEvmAccountAddresses: initMessenger.call.bind(
         initMessenger,
         'MultichainRoutingService:getSupportedAccounts',
-      ),
+      ) as unknown as Caip25CaveatBuilderOptions['getNonEvmAccountAddresses'],
     }),
     permissionSpecifications: {
       ...getPermissionSpecifications(),

@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useContext, useMemo } from 'react';
 import { useDispatch, useSelector, shallowEqual } from 'react-redux';
 import {
   Button,
@@ -34,6 +34,9 @@ import {
   useHardwareWalletState,
 } from '../../../contexts/hardware-wallets';
 import { setWasTxDeclined } from '../../../ducks/bridge/actions';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { trackHardwareWalletRecoveryConnectCtaClicked } from '../../../helpers/utils/track-hardware-wallet-recovery-connect-cta-clicked';
+import { MetaMetricsHardwareWalletRecoveryLocation } from '../../../../shared/constants/metametrics';
 
 export const BridgeCTAButton = ({
   onFetchNewQuotes,
@@ -80,6 +83,8 @@ export const BridgeCTAButton = ({
   const wasTxDeclined = useSelector(getWasTxDeclined);
 
   const isTxSubmittable = useIsTxSubmittable();
+
+  const { trackEvent } = useContext(MetaMetricsContext);
 
   const { isHardwareWalletAccount, walletType } = useHardwareWalletConfig();
   const { connectionState } = useHardwareWalletState();
@@ -206,6 +211,13 @@ export const BridgeCTAButton = ({
           if (isPriceImpactError) {
             onOpenPriceImpactWarningModal();
           } else {
+            if (isHardwareWalletAccount && !isHardwareWalletReady) {
+              trackHardwareWalletRecoveryConnectCtaClicked(trackEvent, {
+                location: MetaMetricsHardwareWalletRecoveryLocation.Swaps,
+                walletType,
+                connectionState,
+              });
+            }
             await submitBridgeTransaction(activeQuote);
           }
         }

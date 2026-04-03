@@ -1,6 +1,10 @@
 import { PermissionController } from '@metamask/permission-controller';
 import { getRootMessenger } from '../lib/messenger';
-import { ControllerInitRequest } from './types';
+import type {
+  ControllerByName,
+  ControllerInitRequest,
+  ControllerName,
+} from './types';
 import { buildControllerInitRequestMock } from './test/utils';
 import {
   getPermissionControllerInitMessenger,
@@ -26,21 +30,23 @@ function getInitRequestMock(): jest.Mocked<
     initMessenger: getPermissionControllerInitMessenger(baseMessenger),
   };
 
-  requestMock.getController.mockImplementation((controllerName: string) => {
-    if (controllerName === 'ApprovalController') {
-      return {
-        addAndShowApprovalRequest: jest.fn(),
-      };
-    }
+  requestMock.getController.mockImplementation(
+    <Name extends ControllerName>(name: Name): ControllerByName[Name] => {
+      if (name === 'ApprovalController') {
+        return {
+          addAndShowApprovalRequest: jest.fn(),
+        } as ControllerByName[Name];
+      }
 
-    if (controllerName === 'KeyringController') {
-      return {
-        addNewKeyring: jest.fn(),
-      };
-    }
+      if (name === 'KeyringController') {
+        return {
+          addNewKeyring: jest.fn(),
+        } as ControllerByName[Name];
+      }
 
-    throw new Error(`Controller "${controllerName}" not found.`);
-  });
+      throw new Error(`Controller "${String(name)}" not found.`);
+    },
+  );
 
   return requestMock;
 }

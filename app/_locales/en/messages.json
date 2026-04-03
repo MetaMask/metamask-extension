@@ -4027,6 +4027,9 @@
     "message": "+ $1 more accounts",
     "description": "$1 is the number of accounts"
   },
+  "moreCapital": {
+    "message": "More"
+  },
   "moreNetworks": {
     "message": "+ $1 more networks",
     "description": "$1 is the number of networks"
