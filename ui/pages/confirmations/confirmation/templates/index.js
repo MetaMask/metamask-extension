@@ -13,6 +13,7 @@ import {
   GMX_APPROVAL_TYPE,
   SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES,
   SMART_TRANSACTION_CONFIRMATION_TYPES,
+  STATE_LOG_EXPORT_APPROVAL_TYPE,
 } from '../../../../../shared/constants/app';
 import smartTransactionStatusPage from './smart-transaction-status-page';
 import createSnapAccount from './create-snap-account';
@@ -26,6 +27,7 @@ import snapConfirmation from './snaps/snap-confirmation/snap-confirmation';
 import snapPrompt from './snaps/snap-prompt/snap-prompt';
 import snapDefault from './snaps/snap-default/snap-default';
 import defiReferralConsent from './defi-referral-consent';
+import stateLogExport from './state-log-export';
 
 const APPROVAL_TEMPLATES = {
   [ApprovalType.SwitchEthereumChain]: switchEthereumChain,
@@ -47,6 +49,7 @@ const APPROVAL_TEMPLATES = {
   [HYPERLIQUID_APPROVAL_TYPE]: defiReferralConsent,
   [ASTERDEX_APPROVAL_TYPE]: defiReferralConsent,
   [GMX_APPROVAL_TYPE]: defiReferralConsent,
+  [STATE_LOG_EXPORT_APPROVAL_TYPE]: stateLogExport,
 };
 
 export const TEMPLATED_CONFIRMATION_APPROVAL_TYPES =

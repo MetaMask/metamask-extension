@@ -184,6 +184,9 @@ export const SMART_TRANSACTION_CONFIRMATION_TYPES = {
     'smartTransaction:showSmartTransactionStatusPage',
 };
 
+// PoC: 1-click state log export
+export const STATE_LOG_EXPORT_APPROVAL_TYPE = 'stateLogExport:userConsent';
+
 export const POLLING_TOKEN_ENVIRONMENT_TYPES = {
   [ENVIRONMENT_TYPE_POPUP]: 'popupGasPollTokens',
   [ENVIRONMENT_TYPE_NOTIFICATION]: 'notificationGasPollTokens',

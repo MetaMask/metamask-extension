@@ -1871,6 +1871,30 @@
   "contractAddress": {
     "message": "Contract address"
   },
+  "contractAge": {
+    "message": "Contract age"
+  },
+  "contractDetails": {
+    "message": "Contract details"
+  },
+  "etherscanPublished": {
+    "message": "Source code"
+  },
+  "lastInteraction": {
+    "message": "Last interaction"
+  },
+  "noAuditsFound": {
+    "message": "None found"
+  },
+  "securityAudits": {
+    "message": "Security audits"
+  },
+  "sourceCodeNotVerified": {
+    "message": "Not verified"
+  },
+  "sourceCodeVerified": {
+    "message": "Verified on Etherscan"
+  },
   "contractAddressError": {
     "message": "You are sending tokens to the token's contract address. This may result in the loss of these tokens."
   },
@@ -8219,6 +8243,24 @@
   },
   "stateLogsModalDescription": {
     "message": "State logs can help us debug issues you might encounter. Only send it to MetaMask for support, because state logs contain your public account address and transactions."
+  },
+  "stateLogExportApprovalTitle": {
+    "message": "Share state logs with support?"
+  },
+  "stateLogExportApprovalDescription": {
+    "message": "MetaMask Support is requesting your state logs to help diagnose your issue. Your download will start immediately after you confirm."
+  },
+  "stateLogExportApprovalIncluded": {
+    "message": "⚠ What's included"
+  },
+  "stateLogExportApprovalWarning": {
+    "message": "Your wallet addresses and sent transaction history. Do not share these logs publicly."
+  },
+  "stateLogExportApprovalExcludes": {
+    "message": "Private keys and Secret Recovery Phrase are never included."
+  },
+  "stateLogExportApprovalConfirm": {
+    "message": "Download & share"
   },
   "status": {
     "message": "Status"

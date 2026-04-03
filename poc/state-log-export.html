@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MetaMask Support — State Log Export PoC</title>
+    <style>
+      :root {
+        --blue: #0376c9;
+        --blue-dark: #024f8a;
+        --green: #1a7a4a;
+        --red: #d73a49;
+        --grey-bg: #f2f4f6;
+        --grey-border: #d6d9dc;
+        --text: #1a1a1a;
+        --text-secondary: #6a737d;
+      }
+      * { box-sizing: border-box; margin: 0; padding: 0; }
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        background: var(--grey-bg);
+        color: var(--text);
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 24px;
+      }
+      .card {
+        background: #fff;
+        border: 1px solid var(--grey-border);
+        border-radius: 12px;
+        max-width: 560px;
+        width: 100%;
+        padding: 32px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+      }
+      .logo {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 24px;
+      }
+      .logo svg { width: 32px; height: 32px; }
+      .logo-text { font-size: 16px; font-weight: 600; color: var(--text-secondary); }
+      h1 { font-size: 22px; font-weight: 700; margin-bottom: 8px; }
+      .subtitle { color: var(--text-secondary); font-size: 14px; margin-bottom: 24px; line-height: 1.5; }
+      .detection-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 13px;
+        font-weight: 500;
+        padding: 4px 10px;
+        border-radius: 20px;
+        margin-bottom: 24px;
+      }
+      .detection-badge.found { background: #e6f4ec; color: var(--green); }
+      .detection-badge.not-found { background: #fdecea; color: var(--red); }
+      .detection-badge.checking { background: #f0f4ff; color: var(--blue); }
+      .dot { width: 8px; height: 8px; border-radius: 50%; background: currentColor; }
+
+      .pii-warning {
+        background: #fff8e1;
+        border: 1px solid #f9c846;
+        border-radius: 8px;
+        padding: 12px 16px;
+        font-size: 13px;
+        line-height: 1.5;
+        margin-bottom: 24px;
+      }
+      .pii-warning strong { display: block; margin-bottom: 4px; }
+
+      .consent-row {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        margin-bottom: 24px;
+      }
+      .consent-row input[type="checkbox"] {
+        margin-top: 3px;
+        width: 16px;
+        height: 16px;
+        flex-shrink: 0;
+        cursor: pointer;
+      }
+      .consent-row label { font-size: 13px; line-height: 1.5; cursor: pointer; }
+
+      .btn {
+        width: 100%;
+        padding: 13px 20px;
+        border: none;
+        border-radius: 8px;
+        font-size: 15px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background 0.15s, opacity 0.15s;
+      }
+      .btn-primary {
+        background: var(--blue);
+        color: #fff;
+      }
+      .btn-primary:hover:not(:disabled) { background: var(--blue-dark); }
+      .btn-primary:disabled { opacity: 0.45; cursor: not-allowed; }
+
+      .status {
+        margin-top: 16px;
+        padding: 12px 16px;
+        border-radius: 8px;
+        font-size: 13px;
+        font-weight: 500;
+        display: none;
+      }
+      .status.success { background: #e6f4ec; color: var(--green); display: block; }
+      .status.error { background: #fdecea; color: var(--red); display: block; }
+      .status.loading { background: #f0f4ff; color: var(--blue); display: block; }
+
+      .divider { border: none; border-top: 1px solid var(--grey-border); margin: 24px 0; }
+      .fallback { font-size: 12px; color: var(--text-secondary); text-align: center; }
+      .fallback a { color: var(--blue); text-decoration: none; }
+      .fallback a:hover { text-decoration: underline; }
+    </style>
+  </head>
+  <body>
+    <div class="card">
+      <div class="logo">
+        <!-- Fox icon approximation -->
+        <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect width="32" height="32" rx="8" fill="#F6851B"/>
+          <text x="6" y="22" font-size="18" fill="white">🦊</text>
+        </svg>
+        <span class="logo-text">MetaMask Support</span>
+      </div>
+
+      <h1>Share your state logs</h1>
+      <p class="subtitle">
+        Our support team needs your wallet state logs to investigate your issue.
+        This is a 1-click export — no copy-paste required.
+      </p>
+
+      <div id="detectionBadge" class="detection-badge checking">
+        <span class="dot"></span>
+        <span id="detectionText">Checking for MetaMask…</span>
+      </div>
+
+      <p style="font-size:13px;color:#6a737d;margin-bottom:24px;">
+        MetaMask will show you a confirmation dialog before anything is exported.
+        Your private keys and Secret Recovery Phrase are never included.
+      </p>
+
+      <button class="btn btn-primary" id="exportBtn" disabled>
+        Share State Logs with Support
+      </button>
+
+      <div id="status" class="status"></div>
+
+      <hr class="divider" />
+      <p class="fallback">
+        Can't use 1-click export?
+        <a href="https://support.metamask.io/configure/wallet/how-to-download-state-logs/" target="_blank">
+          Manual instructions →
+        </a>
+      </p>
+    </div>
+
+    <script>
+      const exportBtn = document.getElementById('exportBtn');
+      const statusEl = document.getElementById('status');
+      const badge = document.getElementById('detectionBadge');
+      const badgeText = document.getElementById('detectionText');
+
+      let metamaskDetected = false;
+
+      // Detect MetaMask via window.ethereum
+      function detectMetaMask() {
+        const detected = typeof window.ethereum !== 'undefined' && window.ethereum.isMetaMask;
+        metamaskDetected = detected;
+        if (detected) {
+          badge.className = 'detection-badge found';
+          badgeText.textContent = 'MetaMask detected';
+        } else {
+          badge.className = 'detection-badge not-found';
+          badgeText.textContent = 'MetaMask not detected — install it to use 1-click export';
+        }
+        exportBtn.disabled = !metamaskDetected;
+      }
+
+      // Wait a tick for inpage.js to inject window.ethereum
+      setTimeout(detectMetaMask, 200);
+
+      function setStatus(type, message) {
+        statusEl.className = `status ${type}`;
+        statusEl.textContent = message;
+      }
+
+      exportBtn.addEventListener('click', () => {
+        if (!metamaskDetected) return;
+
+        exportBtn.disabled = true;
+        setStatus('loading', 'MetaMask is asking for your confirmation…');
+
+        // postMessage to content script bridge — no secrets in this message
+        window.postMessage({ type: 'METAMASK_REQUEST_STATE_LOGS' }, '*');
+      });
+
+      // Listen for responses from the content script bridge
+      window.addEventListener('message', (event) => {
+        if (event.source !== window) return;
+
+        if (event.data?.type === 'METAMASK_STATE_LOGS_SUCCESS') {
+          setStatus('success', '✓ State logs downloaded. Attach the file to your support ticket.');
+          exportBtn.disabled = false;
+        }
+
+        if (event.data?.type === 'METAMASK_STATE_LOGS_DENIED') {
+          setStatus('', '');
+          exportBtn.disabled = false;
+        }
+
+        if (event.data?.type === 'METAMASK_STATE_LOGS_ERROR') {
+          setStatus('error', `Export failed: ${event.data.error ?? 'unknown error'}. Try the manual method below.`);
+          exportBtn.disabled = false;
+        }
+      });
+    </script>
+  </body>
+</html>

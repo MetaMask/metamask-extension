@@ -27,6 +27,7 @@ import {
   ENVIRONMENT_TYPE_SIDEPANEL,
   PLATFORM_FIREFOX,
   MESSAGE_TYPE,
+  STATE_LOG_EXPORT_APPROVAL_TYPE,
 } from '../../shared/constants/app';
 import { EXTENSION_MESSAGES } from '../../shared/constants/messages';
 import { BACKGROUND_LIVENESS_METHOD } from '../../shared/constants/ui-initialization';
@@ -2338,3 +2339,42 @@ if (inTest) {
     return Promise.resolve();
   });
 }
+
+// PoC: 1-click state log export bridge
+// Receives request from content script, opens the native MetaMask approval popup
+// for user consent, then returns the sanitised state only after the user approves.
+browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  if (message.type !== 'METAMASK_REQUEST_STATE_LOGS') {
+    return false; // not handled
+  }
+  // Only respond to content script messages (sender.tab is absent for externally_connectable)
+  if (!sender.tab) {
+    return false;
+  }
+
+  isInitialized
+    .then(async () => {
+      const origin = sender.tab?.url
+        ? new URL(sender.tab.url).origin
+        : 'unknown';
+
+      // addAndShowApprovalRequest opens notification.html (the MetaMask popup)
+      // and blocks until the user approves or rejects via the stateLogExport template.
+      await controller.approvalController.addAndShowApprovalRequest({
+        id: crypto.randomUUID(),
+        origin,
+        type: STATE_LOG_EXPORT_APPROVAL_TYPE,
+        requestData: {},
+      });
+
+      // Approval resolved — user confirmed. Now return the sanitised state.
+      const state = controller.getState();
+      sendResponse({ stateString: JSON.stringify(state, null, 2) });
+    })
+    .catch((err) => {
+      // Covers both initialisation failures and user rejection (providerErrors.userRejectedRequest)
+      sendResponse({ denied: true, error: err.message });
+    });
+
+  return true; // keep channel open for async sendResponse
+});
