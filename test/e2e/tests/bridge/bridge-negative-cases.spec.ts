@@ -157,7 +157,7 @@ describe('Bridge functionality', function (this: Suite) {
 
         const bridgePage = await enterBridgeQuote(driver);
         await bridgePage.submitQuote();
-        await bridgePage.checkTransactionFailedAndViewActivity();
+        await homePage.goToActivityList();
 
         const activityList = new ActivityListPage(driver);
         await activityList.checkPendingBridgeTransactionActivity();
@@ -196,7 +196,7 @@ describe('Bridge functionality', function (this: Suite) {
 
         const bridgePage = await enterBridgeQuote(driver);
         await bridgePage.submitQuote();
-        await bridgePage.checkTransactionFailedAndViewActivity();
+        await homePage.goToActivityList();
 
         const activityList = new ActivityListPage(driver);
         await activityList.checkFailedTxNumberDisplayedInActivity();
@@ -235,7 +235,7 @@ describe('Bridge functionality', function (this: Suite) {
 
         const bridgePage = await enterBridgeQuote(driver);
         await bridgePage.submitQuote();
-        await bridgePage.checkTransactionFailedAndViewActivity();
+        await homePage.goToActivityList();
 
         const activityList = new ActivityListPage(driver);
         await activityList.checkFailedTxNumberDisplayedInActivity();

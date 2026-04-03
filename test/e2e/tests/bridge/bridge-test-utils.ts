@@ -113,7 +113,6 @@ export const bridgeTransaction = async ({
   expectedSwapTokens,
   expectedDestAmount,
   submitDelay,
-  withSmartTransactions = true,
 }: {
   driver: Driver;
   quote: BridgeQuote;
@@ -123,7 +122,6 @@ export const bridgeTransaction = async ({
   expectedSwapTokens?: Pick<BridgeQuote, 'tokenFrom' | 'tokenTo'>;
   expectedDestAmount: string;
   submitDelay?: number;
-  withSmartTransactions?: boolean;
 }) => {
   // Navigate to Bridge page
   const homePage = new HomePage(driver);
@@ -141,11 +139,7 @@ export const bridgeTransaction = async ({
   }
   await bridgePage.submitQuote();
 
-  if (withSmartTransactions) {
-    await bridgePage.checkTransactionCompleteAndViewActivity();
-  } else {
-    await homePage.goToActivityList();
-  }
+  await homePage.goToActivityList();
 
   const activityList = new ActivityListPage(driver);
   await activityList.checkCompletedBridgeTransactionActivity(
