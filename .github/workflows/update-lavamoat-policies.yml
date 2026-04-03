@@ -18,7 +18,7 @@ jobs:
       COMMENT_ID: ${{ github.event.comment.id }}
     outputs:
       IS_FORK: ${{ steps.is-fork.outputs.IS_FORK }}
-      FAILED_LAVAMOAT_VALIDATION_JOB_IDS: ${{ steps.find-failed-lavamoat-validation-job-ids.outputs.FAILED_LAVAMOAT_VALIDATION_JOB_IDS }}
+      JOB_IDS: ${{ steps.find-failed-lavamoat-validation-job-ids.outputs.JOB_IDS }}
     steps:
       - name: Determine whether this PR is from a fork
         id: is-fork
@@ -51,17 +51,17 @@ jobs:
 
           if [ -z "$RUN_ID" ]; then
             echo "No CI run found"
-            echo "FAILED_LAVAMOAT_VALIDATION_JOB_IDS=" >> "$GITHUB_OUTPUT"
+            echo "JOB_IDS=" >> "$GITHUB_OUTPUT"
             exit 0
           fi
 
           echo "Found run ${RUN_ID}, looking for failed lavamoat validation job ids..."
 
-          FAILED_LAVAMOAT_VALIDATION_JOB_IDS=$(gh api "/repos/${REPO}/actions/runs/${RUN_ID}/jobs" --paginate \
+          JOB_IDS=$(gh api "/repos/${REPO}/actions/runs/${RUN_ID}/jobs" --paginate \
             --jq '[.jobs[] | select(.workflow_name == "Validate LavaMoat policies") | select(.steps[]? | select(.name == "Check working tree" and .conclusion == "failure")) | .id] | map(tostring) | join(",")')
 
-          echo "FAILED_LAVAMOAT_VALIDATION_JOB_IDS=${FAILED_LAVAMOAT_VALIDATION_JOB_IDS}" >> "$GITHUB_OUTPUT"
-          echo "Failed job IDs: ${FAILED_LAVAMOAT_VALIDATION_JOB_IDS:-none}"
+          echo "JOB_IDS=${JOB_IDS}" >> "$GITHUB_OUTPUT"
+          echo "Failed job IDs: ${JOB_IDS:-none}"
 
   apply-and-commit:
     name: Apply policy diffs and commit
@@ -73,26 +73,26 @@ jobs:
       GITHUB_TOKEN: ${{ secrets.LAVAMOAT_UPDATE_TOKEN }}
       REPO: ${{ github.repository }}
       PR_NUMBER: ${{ github.event.issue.number }}
-      FAILED_LAVAMOAT_VALIDATION_JOB_IDS: ${{ needs.prepare.outputs.FAILED_LAVAMOAT_VALIDATION_JOB_IDS }}
+      JOB_IDS: ${{ needs.prepare.outputs.JOB_IDS }}
       ACTION_RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
     steps:
       - name: Checkout repository
-        if: ${{ env.FAILED_LAVAMOAT_VALIDATION_JOB_IDS }}
+        if: ${{ env.JOB_IDS }}
         uses: actions/checkout@v6
         with:
           token: ${{ secrets.LAVAMOAT_UPDATE_TOKEN }}
 
       - name: Checkout pull request
-        if: ${{ env.FAILED_LAVAMOAT_VALIDATION_JOB_IDS }}
+        if: ${{ env.JOB_IDS }}
         run: gh pr checkout "${PR_NUMBER}"
 
       - name: Extract and apply policy diffs from validation logs
-        if: ${{ env.FAILED_LAVAMOAT_VALIDATION_JOB_IDS }}
+        if: ${{ env.JOB_IDS }}
         id: apply-diffs
         run: |
           HAS_CHANGES=false
 
-          IFS=',' read -ra JOB_IDS <<< "$FAILED_LAVAMOAT_VALIDATION_JOB_IDS"
+          IFS=',' read -ra JOB_IDS <<< "$JOB_IDS"
           for JOB_ID in "${JOB_IDS[@]}"; do
             echo "Extracting diff from job ${JOB_ID}..."
 
@@ -177,7 +177,7 @@ jobs:
           echo -e 'Policies updated.  \n👀 Please review the diff for suspicious new powers.  \n\n> [!TIP]  \n> Follow the policy review process outlined in the [LavaMoat Policy Review Process doc](https://github.com/MetaMask/metamask-extension/blob/main/docs/lavamoat-policy-review-process.md) before expecting an approval from Policy Reviewers.  \n🧠 Learn how to read policy diffs: https://lavamoat.github.io/guides/policy-diff/#what-to-look-for-when-reviewing-a-policy-diff \n\n' | cat - does_diff_diff.txt | gh pr comment "${PR_NUMBER}" --body-file -
 
       - name: Post comment (no policy changes)
-        if: ${{ !env.FAILED_LAVAMOAT_VALIDATION_JOB_IDS || steps.apply-diffs.outputs.HAS_CHANGES == 'false' }}
+        if: ${{ !env.JOB_IDS || steps.apply-diffs.outputs.HAS_CHANGES == 'false' }}
         run: |
           gh pr comment "${PR_NUMBER}" --body "No policy changes"
 
