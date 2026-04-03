@@ -18,7 +18,7 @@ jobs:
       COMMENT_ID: ${{ github.event.comment.id }}
     outputs:
       IS_FORK: ${{ steps.is-fork.outputs.IS_FORK }}
-      RUN_ID: ${{ steps.find-run.outputs.RUN_ID }}
+      FAILED_LAVAMOAT_VALIDATION_JOB_IDS: ${{ steps.find-failed-lavamoat-validation-job-ids.outputs.FAILED_LAVAMOAT_VALIDATION_JOB_IDS }}
     steps:
       - name: Determine whether this PR is from a fork
         id: is-fork
@@ -34,24 +34,34 @@ jobs:
             "/repos/${REPO}/issues/comments/${COMMENT_ID}/reactions" \
             -f content='+1'
 
-      - name: Find latest validation run
+      - name: Find failed lavamoat validation job ids
         if: ${{ steps.is-fork.outputs.IS_FORK == 'false' }}
-        id: find-run
+        id: find-failed-lavamoat-validation-job-ids
         run: |
           HEAD_SHA=$(gh pr view "${PR_NUMBER}" --repo "${REPO}" --json headRefOid --jq '.headRefOid')
           echo "Looking for main.yml run for commit ${HEAD_SHA}..."
 
-          RUN_JSON=$(gh run list \
+          RUN_ID=$(gh run list \
             --workflow=main.yml \
             --repo "${REPO}" \
             --commit="${HEAD_SHA}" \
             --limit=1 \
-            --json databaseId,status)
+            --json databaseId \
+            --jq '.[0].databaseId // empty')
 
-          RUN_ID=$(echo "$RUN_JSON" | jq -r '.[0].databaseId // empty')
+          if [ -z "$RUN_ID" ]; then
+            echo "No CI run found"
+            echo "FAILED_LAVAMOAT_VALIDATION_JOB_IDS=" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
 
-          echo "RUN_ID=${RUN_ID}" >> "$GITHUB_OUTPUT"
-          echo "Found run ${RUN_ID}"
+          echo "Found run ${RUN_ID}, looking for failed lavamoat validation job ids..."
+
+          FAILED_LAVAMOAT_VALIDATION_JOB_IDS=$(gh api "/repos/${REPO}/actions/runs/${RUN_ID}/jobs" --paginate \
+            --jq '[.jobs[] | select(.workflow_name == "Validate LavaMoat policies") | select(.conclusion == "failure") | .id] | map(tostring) | join(",")')
+
+          echo "FAILED_LAVAMOAT_VALIDATION_JOB_IDS=${FAILED_LAVAMOAT_VALIDATION_JOB_IDS}" >> "$GITHUB_OUTPUT"
+          echo "Failed job IDs: ${FAILED_LAVAMOAT_VALIDATION_JOB_IDS:-none}"
 
   apply-and-commit:
     name: Apply policy diffs and commit
@@ -63,92 +73,47 @@ jobs:
       GITHUB_TOKEN: ${{ secrets.LAVAMOAT_UPDATE_TOKEN }}
       REPO: ${{ github.repository }}
       PR_NUMBER: ${{ github.event.issue.number }}
-      RUN_ID: ${{ needs.prepare.outputs.RUN_ID }}
+      FAILED_LAVAMOAT_VALIDATION_JOB_IDS: ${{ needs.prepare.outputs.FAILED_LAVAMOAT_VALIDATION_JOB_IDS }}
       ACTION_RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
     steps:
-      - name: Check if validation jobs are ready
-        id: check-run
-        run: |
-          if [ -z "${RUN_ID}" ]; then
-            gh pr comment "${PR_NUMBER}" --repo "${REPO}" --body "No CI run found for the latest commit. Please ensure CI has run before requesting a policy update."
-            echo "READY=false" >> "$GITHUB_OUTPUT"
-            exit 0
-          fi
-
-          # Check whether all validate-lavamoat jobs have completed (ignore the overall run status)
-          STATUSES=$(gh api "/repos/${REPO}/actions/runs/${RUN_ID}/jobs" --paginate \
-            --jq '.jobs[] | select(.name | contains("Validate LavaMoat")) | .status')
-
-          if [ -z "$STATUSES" ]; then
-            gh pr comment "${PR_NUMBER}" --repo "${REPO}" --body "No LavaMoat validation jobs found in the CI run. Please ensure CI has run before requesting a policy update."
-            echo "READY=false" >> "$GITHUB_OUTPUT"
-            exit 0
-          fi
-
-          NOT_COMPLETED=$(echo "$STATUSES" | grep -v '^completed$' || true)
-          if [ -n "$NOT_COMPLETED" ]; then
-            gh pr comment "${PR_NUMBER}" --repo "${REPO}" --body "LavaMoat validation jobs are still running. Please wait for them to complete before requesting a policy update."
-            echo "READY=false" >> "$GITHUB_OUTPUT"
-          else
-            echo "READY=true" >> "$GITHUB_OUTPUT"
-          fi
-
       - name: Checkout repository
-        if: ${{ steps.check-run.outputs.READY == 'true' }}
+        if: ${{ env.FAILED_LAVAMOAT_VALIDATION_JOB_IDS }}
         uses: actions/checkout@v6
         with:
           token: ${{ secrets.LAVAMOAT_UPDATE_TOKEN }}
 
       - name: Checkout pull request
-        if: ${{ steps.check-run.outputs.READY == 'true' }}
+        if: ${{ env.FAILED_LAVAMOAT_VALIDATION_JOB_IDS }}
         run: gh pr checkout "${PR_NUMBER}"
 
       - name: Extract and apply policy diffs from validation logs
-        if: ${{ steps.check-run.outputs.READY == 'true' }}
+        if: ${{ env.FAILED_LAVAMOAT_VALIDATION_JOB_IDS }}
         id: apply-diffs
         run: |
-          # Get all validate-lavamoat jobs from the CI run
-          gh api "/repos/${REPO}/actions/runs/${RUN_ID}/jobs" --paginate \
-            --jq '.jobs[] | select(.name | contains("Validate LavaMoat")) | [(.id | tostring), .conclusion, .name] | @tsv' \
-            > /tmp/validate-jobs.tsv
-
-          if [ ! -s /tmp/validate-jobs.tsv ]; then
-            echo "No LavaMoat validation jobs found in run ${RUN_ID}"
-            echo "HAS_CHANGES=false" >> "$GITHUB_OUTPUT"
-            exit 0
-          fi
-
-          echo "Found validation jobs:"
-          cat /tmp/validate-jobs.tsv
-
           HAS_CHANGES=false
 
-          while IFS=$'\t' read -r JOB_ID JOB_CONCLUSION JOB_NAME; do
-            if [ "$JOB_CONCLUSION" != "failure" ]; then
-              echo "Job '${JOB_NAME}' did not fail (conclusion: ${JOB_CONCLUSION}) — skipping"
-              continue
-            fi
-
-            echo "Extracting diff from '${JOB_NAME}' (job ${JOB_ID})..."
+          IFS=',' read -ra JOB_IDS <<< "$FAILED_LAVAMOAT_VALIDATION_JOB_IDS"
+          for JOB_ID in "${JOB_IDS[@]}"; do
+            echo "Extracting diff from job ${JOB_ID}..."
 
             # Download job logs and extract the git diff output.
-            # `|| true` prevents pipefail from aborting when the logs
-            # contain no diff (e.g. the job failed for a non-policy reason).
             gh api "/repos/${REPO}/actions/jobs/${JOB_ID}/logs" \
               | sed -n '/^.*diff --git/,/^.*::error::Working tree dirty/p' \
               | grep -v '::error::' \
               | sed 's/^[0-9T:.Z-]* //' \
               > /tmp/policy.patch \
               || true
+            # `|| true` prevents pipefail from aborting when the logs
+            # contain no diff (e.g. the job failed for a non-policy reason).
 
             if [ -s /tmp/policy.patch ]; then
-              echo "Applying patch from '${JOB_NAME}' ($(wc -l < /tmp/policy.patch) lines)..."
+              echo "Applying patch from job ${JOB_ID} ($(wc -l < /tmp/policy.patch) lines)..."
               git apply /tmp/policy.patch
               HAS_CHANGES=true
             else
-              echo "::warning::No diff found in '${JOB_NAME}' logs"
+              echo "::warning::No diff found in job ${JOB_ID} logs"
             fi
-          done < /tmp/validate-jobs.tsv
+          done
 
           echo "HAS_CHANGES=${HAS_CHANGES}" >> "$GITHUB_OUTPUT"
 
@@ -219,11 +184,11 @@ jobs:
           echo -e 'Policies updated.  \n👀 Please review the diff for suspicious new powers.  \n\n> [!TIP]  \n> Follow the policy review process outlined in the [LavaMoat Policy Review Process doc](https://github.com/MetaMask/metamask-extension/blob/main/docs/lavamoat-policy-review-process.md) before expecting an approval from Policy Reviewers.  \n🧠 Learn how to read policy diffs: https://lavamoat.github.io/guides/policy-diff/#what-to-look-for-when-reviewing-a-policy-diff \n\n' | cat - does_diff_diff.txt | gh pr comment "${PR_NUMBER}" --body-file -
 
       - name: Post comment (no policy changes)
-        if: ${{ steps.apply-diffs.outputs.HAS_CHANGES == 'false' }}
+        if: ${{ !env.FAILED_LAVAMOAT_VALIDATION_JOB_IDS || steps.apply-diffs.outputs.HAS_CHANGES == 'false' }}
         run: |
           gh pr comment "${PR_NUMBER}" --body "No policy changes"
 
       - name: Post comment if the update failed
-        if: ${{ failure() && steps.check-run.outputs.READY == 'true' }}
+        if: ${{ failure() }}
         run: |
           gh pr comment "${PR_NUMBER}" --repo "${REPO}" --body "Policy update failed. You can [review the logs or retry the policy update here](${ACTION_RUN_URL})"
