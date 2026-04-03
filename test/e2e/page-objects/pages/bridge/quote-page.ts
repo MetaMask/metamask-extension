@@ -49,6 +49,8 @@ class BridgeQuotePage {
 
   private gasIncludedIndicator = '[data-testid="network-fees-included"]';
 
+  private gasSponsoredIndicator = '[data-testid="network-fees-sponsored"]';
+
   private maxButton = { text: 'Max' };
 
   private networkSelector = '[data-testid="multichain-asset-picker__network"]';
@@ -319,6 +321,18 @@ class BridgeQuotePage {
       throw e;
     }
     console.log('Gas fees included indicator is displayed');
+  }
+
+  async checkGasSponsoredIsDisplayed(): Promise<void> {
+    try {
+      await this.driver.waitForSelector(this.gasSponsoredIndicator, {
+        timeout: 30000,
+      });
+    } catch (e) {
+      console.log('Expected "Gas fees sponsored" indicator is not present');
+      throw e;
+    }
+    console.log('Gas fees sponsored indicator is displayed');
   }
 
   async clickMaxButton(): Promise<void> {

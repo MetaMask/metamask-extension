@@ -45,6 +45,7 @@ import {
 import MOCK_SWAP_QUOTES_ETH_MUSD from './mocks/swap-quotes-eth-musd.json';
 import MOCK_SWAP_QUOTES_ETH_USDC_GAS_INCLUDED from './mocks/swap-quotes-eth-usdc-gas-included.json';
 import MOCK_SWAP_QUOTES_USDC_DAI_GAS_INCLUDED from './mocks/swap-quotes-usdc-dai-gas-included.json';
+import MOCK_SWAP_QUOTES_ETH_USDC_GAS_SPONSORED from './mocks/swap-quotes-eth-usdc-gas-sponsored.json';
 
 export class BridgePage {
   driver: Driver;
@@ -1832,62 +1833,156 @@ const STX_UUID = '0d506aaa-5e38-4cab-ad09-2039cb7a0f33';
 const STX_TRANSACTION_HASH =
   '0xec9d6214684d6dc191133ae4a7ec97db3e521fff9cfe5c4f48a84cb6c93a5fa5';
 
-async function mockSmartTransactionApis(mockServer: Mockttp) {
-  await mockServer
-    .forPost('https://transaction.api.cx.metamask.io/networks/1/getFees')
-    .thenJson(200, {
-      blockNumber: 20728974,
-      baseFeePerGas: '0x2e90edd000',
-      tradeTxFees: {
-        cancelFees: [],
-        feeEstimate: 42000000000000,
-        fees: [{ maxFeePerGas: 20000000000, maxPriorityFeePerGas: 10 }],
-        gasLimit: 21000,
-        gasUsed: 21000,
-      },
-      approvalTxFees: {
-        cancelFees: [],
-        feeEstimate: 42000000000000,
-        fees: [{ maxFeePerGas: 20000000000, maxPriorityFeePerGas: 10 }],
-        gasLimit: 21000,
-        gasUsed: 21000,
-      },
-    });
+const STX_MAINNET_SENTINEL_URL =
+  'https://tx-sentinel-ethereum-mainnet.api.cx.metamask.io';
+
+const STX_MAINNET_NETWORK_CONFIG = {
+  smartTransactionsNetworks: {
+    '0x1': {
+      extensionActive: true,
+      sentinelUrl: STX_MAINNET_SENTINEL_URL,
+      expectedDeadline: 45,
+      maxDeadline: 160,
+    },
+  },
+};
+
+/**
+ * Mocks STX service endpoints for bridge/swap tests.
+ *
+ * submitTransactions forwards each raw signed tx to Anvil
+ * via eth_sendRawTransaction. Anvil mines it immediately, so the real tx hash is
+ * on-chain and eth_getTransactionReceipt returns a genuine receipt — which is what
+ * the extension's TransactionController needs to mark the transaction as Confirmed.
+ */
+async function mockSmartTransactionsForBridge(
+  mockServer: Mockttp,
+  chainId: number = 1,
+  sentinelUrl: string = STX_MAINNET_SENTINEL_URL,
+  batchStatusOverride?: Record<string, unknown>,
+) {
+  const ANVIL_RPC_URL = 'http://localhost:8545';
+
+  let latestMinedHash = STX_TRANSACTION_HASH;
 
   await mockServer
-    .forGet('https://transaction.api.cx.metamask.io/networks/1/batchStatus')
-    .withQuery({ uuids: STX_UUID })
-    .once()
-    .thenJson(200, {
-      [STX_UUID]: {
-        uuid: STX_UUID,
-        status: 'pending',
-      },
-    });
-
-  await mockServer
-    .forGet('https://transaction.api.cx.metamask.io/networks/1/batchStatus')
-    .withQuery({ uuids: STX_UUID })
-    .once()
-    .thenJson(200, {
-      [STX_UUID]: {
-        uuid: STX_UUID,
-        status: 'success',
-        statusMetadata: {
-          minedHash: STX_TRANSACTION_HASH,
-          minedAt: new Date().toISOString(),
-          isSettled: true,
-        },
-      },
-    });
+    .forGet(`${sentinelUrl}/network`)
+    .always()
+    .thenCallback(() => ({
+      ok: true,
+      statusCode: 200,
+      json: { smartTransactions: true },
+    }));
 
   await mockServer
     .forPost(
-      'https://transaction.api.cx.metamask.io/networks/1/submitTransactions',
+      `https://transaction.api.cx.metamask.io/networks/${chainId}/getFees`,
     )
-    .thenJson(200, {
-      uuid: STX_UUID,
-      txHashes: [STX_TRANSACTION_HASH],
+    .always()
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: {
+        blockNumber: 20728974,
+        id: '19d4eea3-8a49-463e-9e9c-099f9d9571ca',
+        txs: [
+          {
+            cancelFees: [],
+            return: '0x',
+            status: 1,
+            gasUsed: 190780,
+            gasLimit: 239420,
+            fees: [
+              {
+                maxFeePerGas: 4667609171,
+                maxPriorityFeePerGas: 1000000004,
+                gas: 239420,
+                balanceNeeded: 1217518987960240,
+                currentBalance: 7519823030829194,
+                error: '',
+              },
+            ],
+            feeEstimate: 627603309182220,
+            baseFeePerGas: 2289670348,
+            maxFeeEstimate: 1117518987720820,
+          },
+        ],
+      },
+    }));
+
+  await mockServer
+    .forPost(
+      `https://transaction.api.cx.metamask.io/networks/${chainId}/submitTransactions`,
+    )
+    .always()
+    .thenCallback(async (req) => {
+      let rawTxs: string[] = [];
+      try {
+        const body = (await req.body.getJson()) as { rawTxs?: string[] };
+        rawTxs = body?.rawTxs ?? [];
+      } catch {
+        // ignore JSON parse errors
+      }
+
+      const txHashes: string[] = [];
+      for (let i = 0; i < rawTxs.length; i++) {
+        try {
+          const response = await fetch(ANVIL_RPC_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              jsonrpc: '2.0',
+              method: 'eth_sendRawTransaction',
+              params: [rawTxs[i]],
+              id: i + 1,
+            }),
+          });
+          const data = (await response.json()) as { result?: string };
+          if (data.result) {
+            txHashes.push(data.result);
+          }
+        } catch {
+          // non-fatal: extension computes txHashes locally from rawTxs anyway
+        }
+      }
+
+      if (txHashes.length > 0) {
+        latestMinedHash = txHashes[txHashes.length - 1];
+      }
+
+      return {
+        statusCode: 200,
+        json: {
+          uuid: STX_UUID,
+          txHashes: txHashes.length > 0 ? txHashes : [STX_TRANSACTION_HASH],
+        },
+      };
+    });
+
+  await mockServer
+    .forGet(
+      `https://transaction.api.cx.metamask.io/networks/${chainId}/batchStatus`,
+    )
+    .always()
+    .thenCallback((req) => {
+      const uuid = new URL(req.url).searchParams.get('uuids') ?? STX_UUID;
+      return {
+        statusCode: 200,
+        json: {
+          [uuid]: {
+            cancellationFeeWei: 0,
+            cancellationReason: 'not_cancelled',
+            deadlineRatio: 0,
+            isSettled: true,
+            minedTx: 'success',
+            wouldRevertMessage: null,
+            minedHash: latestMinedHash,
+            timedOut: true,
+            proxied: false,
+            type: 'sentinel',
+            ...batchStatusOverride,
+          },
+        },
+      };
     });
 }
 
@@ -1919,31 +2014,150 @@ export const getGasIncludedSwapFixtures = (title?: string) => {
   return {
     forceBip44Version: false,
     fixtures: fixtureBuilder.build(),
-    testSpecificMock: async (mockServer: Mockttp) => [
-      await mockPortfolioPage(mockServer),
-      await mockGetTxStatus(mockServer),
-      await mockTopAssetsLinea(mockServer),
-      await mockTopAssetsArbitrum(mockServer),
-      await mockTokensEthereum(mockServer),
-      await mockTokensLinea(mockServer),
-      await mockGetTokenArbitrum(mockServer),
-      await mockGetPopularTokens(mockServer),
-      await mockGasIncludedSwapETHtoUSDC(mockServer),
-      await mockGasIncludedSwapUSDCtoDAI(mockServer),
-      await mockFeatureFlags(mockServer, GAS_INCLUDED_SWAP_FEATURE_FLAGS),
-      await mockAccountsTransactions(mockServer),
-      await mockAccountsBalances(mockServer),
-      await mockPriceSpotPrices(mockServer),
-      await mockPriceSpotPricesV3(mockServer),
-      await mockGasPricesMainnet(mockServer),
-      await mockHistoricalPrices(mockServer),
-      await mockSentinelNetworks(mockServer),
-      await mockSmartTransactionApis(mockServer),
-      ...(await mockSearchTokens(mockServer)),
-    ],
+    testSpecificMock: async (mockServer: Mockttp) => {
+      const mocks = [
+        await mockPortfolioPage(mockServer),
+        await mockGetTxStatus(mockServer),
+        await mockTopAssetsLinea(mockServer),
+        await mockTopAssetsArbitrum(mockServer),
+        await mockTokensEthereum(mockServer),
+        await mockTokensLinea(mockServer),
+        await mockGetTokenArbitrum(mockServer),
+        await mockGetPopularTokens(mockServer),
+        await mockGasIncludedSwapETHtoUSDC(mockServer),
+        await mockGasIncludedSwapUSDCtoDAI(mockServer),
+        await mockFeatureFlags(mockServer, GAS_INCLUDED_SWAP_FEATURE_FLAGS),
+        await mockAccountsTransactions(mockServer),
+        await mockAccountsBalances(mockServer),
+        await mockPriceSpotPrices(mockServer),
+        await mockPriceSpotPricesV3(mockServer),
+        await mockGasPricesMainnet(mockServer),
+        await mockHistoricalPrices(mockServer),
+        await mockSentinelNetworks(mockServer),
+        ...(await mockSearchTokens(mockServer)),
+      ];
+
+      await mockSmartTransactionsForBridge(mockServer);
+
+      return mocks;
+    },
     manifestFlags: {
       remoteFeatureFlags: {
         bridgeConfig: GAS_INCLUDED_SWAP_FEATURE_FLAGS,
+        ...STX_MAINNET_NETWORK_CONFIG,
+      },
+      testing: { disableSmartTransactionsOverride: true },
+    },
+    ethConversionInUsd: ETH_CONVERSION_RATE_USD,
+    smartContract: SMART_CONTRACTS.HST,
+    localNodeOptions: [
+      {
+        type: 'anvil' as const,
+        options: {
+          chainId: 1,
+          hardfork: 'london',
+          loadState:
+            './test/e2e/seeder/network-states/with100Usdc100Usdt50Dai.json',
+        },
+      },
+    ],
+    title,
+  };
+};
+
+async function mockGasSponsoredSwapETHtoUSDC(mockServer: Mockttp) {
+  return await mockServer
+    .forGet(/getQuoteStream/u)
+    .once()
+    .withQuery({
+      srcTokenAddress: '0x0000000000000000000000000000000000000000',
+      destTokenAddress: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
+    })
+    .thenStream(
+      200,
+      mockSseEventSource(MOCK_SWAP_QUOTES_ETH_USDC_GAS_SPONSORED),
+      SSE_RESPONSE_HEADER,
+    );
+}
+
+async function mockSentinelNetworksRelayOnly(mockServer: Mockttp) {
+  return await mockServer
+    .forGet(
+      'https://tx-sentinel-ethereum-mainnet.api.cx.metamask.io/networks',
+    )
+    .always()
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: {
+        '1': {
+          network: 'ethereum-mainnet',
+          explorer: 'https://etherscan.io',
+          confirmations: true,
+          smartTransactions: true,
+          relayTransactions: true,
+          hidden: false,
+          sendBundle: false,
+        },
+      },
+    }));
+}
+
+export const getGasless7702SwapFixtures = (title?: string) => {
+  const fixtureBuilder = new FixtureBuilder({
+    inputChainId: CHAIN_IDS.MAINNET,
+  })
+    .withCurrencyController(MOCK_CURRENCY_RATES)
+    .withBridgeControllerDefaultState()
+    .withTokensControllerERC20({ chainId: 1 })
+    .withEnabledNetworks({
+      eip155: {
+        '0x1': true,
+        '0xe708': true,
+        '0xa4b1': true,
+      },
+    });
+
+  return {
+    forceBip44Version: false,
+    fixtures: fixtureBuilder.build(),
+    testSpecificMock: async (mockServer: Mockttp) => {
+      const mocks = [
+        await mockPortfolioPage(mockServer),
+        await mockGetTxStatus(mockServer),
+        await mockTopAssetsLinea(mockServer),
+        await mockTopAssetsArbitrum(mockServer),
+        await mockTokensEthereum(mockServer),
+        await mockTokensLinea(mockServer),
+        await mockGetTokenArbitrum(mockServer),
+        await mockGetPopularTokens(mockServer),
+        await mockGasSponsoredSwapETHtoUSDC(mockServer),
+        await mockFeatureFlags(mockServer, GAS_INCLUDED_SWAP_FEATURE_FLAGS),
+        await mockAccountsTransactions(mockServer),
+        await mockAccountsBalances(mockServer),
+        await mockPriceSpotPrices(mockServer),
+        await mockPriceSpotPricesV3(mockServer),
+        await mockGasPricesMainnet(mockServer),
+        await mockHistoricalPrices(mockServer),
+        await mockSentinelNetworksRelayOnly(mockServer),
+        ...(await mockSearchTokens(mockServer)),
+      ];
+
+      await mockSmartTransactionsForBridge(mockServer);
+
+      return mocks;
+    },
+    manifestFlags: {
+      remoteFeatureFlags: {
+        bridgeConfig: GAS_INCLUDED_SWAP_FEATURE_FLAGS,
+        smartTransactionsNetworks: {
+          '0x1': {
+            maxDeadline: 160,
+            sentinelUrl: STX_MAINNET_SENTINEL_URL,
+            expectedDeadline: 45,
+            extensionActive: true,
+            gaslessBridgeWith7702Enabled: true,
+          },
+        },
       },
       testing: { disableSmartTransactionsOverride: true },
     },
