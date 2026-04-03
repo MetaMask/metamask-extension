@@ -102,6 +102,7 @@ export class BridgePage {
  * @param testParams.expectedDestAmount - The expected quoted destination amounts in the quote page
  * @param testParams.submitDelay - The delay to wait before submitting the transaction, must be less than the refresh interval of the stream
  * @param testParams.expectedStatus - The expected state of the transaction
+ * @param testParams.withSmartTransactions
  */
 export const bridgeTransaction = async ({
   driver,
@@ -142,6 +143,8 @@ export const bridgeTransaction = async ({
 
   if (withSmartTransactions) {
     await bridgePage.checkTransactionCompleteAndViewActivity();
+  } else {
+    await homePage.goToActivityList();
   }
 
   const activityList = new ActivityListPage(driver);
@@ -544,7 +547,7 @@ const emitLine = (controller: ReadableStreamDefaultController, line: string) =>
  * @param delay - The delay to wait between emitting each quote
  * @returns The Readable stream
  */
-const mockSseEventSource = (mockQuotes: unknown[], delay: number = 2000) => {
+function mockSseEventSource(mockQuotes: unknown[], delay: number = 2000) {
   let index = 0;
   return Readable.fromWeb(
     new ReadableStreamWeb({
@@ -561,7 +564,7 @@ const mockSseEventSource = (mockQuotes: unknown[], delay: number = 2000) => {
       },
     }),
   );
-};
+}
 
 async function mockFeatureFlags(
   mockServer: Mockttp,
@@ -575,7 +578,11 @@ async function mockFeatureFlags(
         ok: true,
         statusCode: 200,
         json: [
-          { bridgeConfig: featureFlags, extensionUxPna25: true, ...additionalFlags },
+          {
+            bridgeConfig: featureFlags,
+            extensionUxPna25: true,
+            ...additionalFlags,
+          },
         ],
       };
     });
@@ -1064,6 +1071,10 @@ const STX_TRANSACTION_HASH =
  * via eth_sendRawTransaction. Anvil mines it immediately, so the real tx hash is
  * on-chain and eth_getTransactionReceipt returns a genuine receipt — which is what
  * the extension's TransactionController needs to mark the transaction as Confirmed.
+ * @param mockServer
+ * @param chainId
+ * @param sentinelUrl
+ * @param batchStatusOverride
  */
 async function mockSmartTransactionsForBridge(
   mockServer: Mockttp,
@@ -1420,7 +1431,11 @@ export const getQuoteNegativeCasesFixtures = (
     testSpecificMock: async (mockServer: Mockttp) => {
       const mocks = [
         await mockTopAssetsLinea(mockServer),
-        await mockGetQuoteInvalid(mockServer, options, featureFlags.sse?.enabled),
+        await mockGetQuoteInvalid(
+          mockServer,
+          options,
+          featureFlags.sse?.enabled,
+        ),
         await mockTokensLinea(mockServer),
         await mockGetPopularTokens(mockServer),
         await mockPriceSpotPrices(mockServer),
@@ -1776,7 +1791,11 @@ export const getBridgeL2Fixtures = (
       mocks.push(...(await mockSearchTokens(mockServer)));
 
       if (withSmartTransactions) {
-        await mockSmartTransactionsForBridge(mockServer, 59144, LINEA_SENTINEL_URL);
+        await mockSmartTransactionsForBridge(
+          mockServer,
+          59144,
+          LINEA_SENTINEL_URL,
+        );
       }
 
       return mocks.filter(Boolean);

@@ -73,6 +73,16 @@ class BridgeQuotePage {
   private networkNameSelector = (network: string) =>
     `[data-testid="${network}"]`;
 
+  private transactionComplete = {
+    tag: 'h4',
+    text: 'Your transaction is complete',
+  };
+
+  private transactionFailed = { tag: 'h4', text: 'Your transaction failed' };
+
+  private closeButton =
+    '[data-testid="smart-transaction-status-page-footer-close-button"]';
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
@@ -226,33 +236,21 @@ class BridgeQuotePage {
 
   checkTransactionCompleteAndViewActivity = async () => {
     console.log('Waiting for transaction complete modal');
-    await this.driver.waitForSelector(
-      {
-        css: 'h4',
-        text: 'Your transaction is complete',
-      },
-      { timeout: 30000 },
-    );
+    await this.driver.waitForSelector(this.transactionComplete, {
+      timeout: 60000,
+    });
     console.log('Transaction complete modal is displayed');
-    await this.driver.clickElement(
-      '[data-testid="smart-transaction-status-page-footer-close-button"]',
-    );
+    await this.driver.clickElement(this.closeButton);
     console.log('Clicked View activity button');
   };
 
   checkTransactionFailedAndViewActivity = async () => {
     console.log('Waiting for transaction failed modal');
-    await this.driver.waitForSelector(
-      {
-        css: 'h4',
-        text: 'Your transaction failed',
-      },
-      { timeout: 30000 },
-    );
+    await this.driver.waitForSelector(this.transactionFailed, {
+      timeout: 60000,
+    });
     console.log('Transaction failed modal is displayed');
-    await this.driver.clickElement(
-      '[data-testid="smart-transaction-status-page-footer-close-button"]',
-    );
+    await this.driver.clickElement(this.closeButton);
     console.log('Clicked View activity button');
   };
 

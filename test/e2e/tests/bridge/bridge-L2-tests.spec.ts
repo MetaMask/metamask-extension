@@ -8,7 +8,11 @@ describe('Bridge tests', function (this: Suite) {
   this.timeout(120000); // Needs a higher timeout as it's a longer tests
   it('should execute bridge transactions on L2 networks', async function () {
     await withFixtures(
-      getBridgeL2Fixtures(this.test?.fullTitle(), BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED, true),
+      getBridgeL2Fixtures(
+        this.test?.fullTitle(),
+        BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
+        true,
+      ),
       async ({ driver }) => {
         await login(driver, { expectedBalance: '$225,730.11' });
 

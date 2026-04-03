@@ -705,7 +705,9 @@ export async function mockSmartTransactionBatchRequests(
   }
 }
 
-export async function mockSmartTransactionRequestsBase(mockServer: MockttpServer) {
+export async function mockSmartTransactionRequestsBase(
+  mockServer: MockttpServer,
+) {
   await mockMultiNetworkBalancePolling(mockServer);
 
   await mockServerJsonRpc(mockServer, [
