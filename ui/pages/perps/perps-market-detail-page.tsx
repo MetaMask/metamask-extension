@@ -44,6 +44,7 @@ import {
 import { usePerpsEligibility } from '../../hooks/perps';
 import { getPerpsStreamManager } from '../../providers/perps';
 import { submitRequestToBackground } from '../../store/background-connection';
+import { usePerpsMeasurement } from '../../hooks/perps/usePerpsMeasurement';
 import { OrderCard } from '../../components/app/perps/order-card';
 import { PerpsTokenLogo } from '../../components/app/perps/perps-token-logo';
 import {
@@ -194,6 +195,8 @@ const PerpsMarketDetailPage: React.FC = () => {
   const { account } = usePerpsLiveAccount();
   const { markets: allMarkets, isInitialLoading: marketsLoading } =
     usePerpsLiveMarketData();
+
+  usePerpsMeasurement('PerpsMarketDetailLoaded', !marketsLoading);
 
   // Safely decode the symbol from URL
   const decodedSymbol = useMemo(() => {

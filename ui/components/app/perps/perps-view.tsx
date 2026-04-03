@@ -18,6 +18,8 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { submitRequestToBackground } from '../../../store/background-connection';
 import { getPerpsStreamManager } from '../../../providers/perps';
 
+import { usePerpsMeasurement } from '../../../hooks/perps/usePerpsMeasurement';
+import { usePerpsLifecycleBreadcrumbs } from '../../../hooks/perps/usePerpsLifecycleBreadcrumbs';
 import { usePerpsDepositConfirmation } from './hooks/usePerpsDepositConfirmation';
 import { usePerpsWithdrawNavigation } from './hooks/usePerpsWithdrawNavigation';
 import { PerpsBalanceDropdown } from './perps-balance-dropdown';
@@ -149,6 +151,9 @@ export const PerpsView: React.FC = () => {
 
   const hasPositions = positions.length > 0;
   const isLoading = positionsLoading || ordersLoading || marketsLoading;
+
+  usePerpsMeasurement('PerpsTabLoaded', !isLoading);
+  usePerpsLifecycleBreadcrumbs();
 
   // Limit markets to 5 for explore sections
   const cryptoMarkets = useMemo(() => {

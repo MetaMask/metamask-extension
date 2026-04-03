@@ -5431,6 +5431,12 @@
     "message": "Available to trade",
     "description": "Label for the available balance that can be used for trading"
   },
+  "perpsBatchCancelFailed": {
+    "message": "Could not cancel all orders. Try again."
+  },
+  "perpsBatchCloseFailed": {
+    "message": "Could not close all positions. Try again."
+  },
   "perpsCancelAllOrders": {
     "message": "Cancel all"
   },
@@ -5461,6 +5467,9 @@
   "perpsConfirmCloseShort": {
     "message": "Close Short"
   },
+  "perpsConnectionTimeout": {
+    "message": "Connection timed out. Try again."
+  },
   "perpsContactSupport": {
     "message": "Contact support"
   },
@@ -5472,6 +5481,9 @@
   },
   "perpsDepositActivityTitle": {
     "message": "Funded Perps"
+  },
+  "perpsDepositFailed": {
+    "message": "Deposit could not be completed. Try again."
   },
   "perpsDepositTitle": {
     "message": "Funded perps account"
@@ -5553,6 +5565,9 @@
   "perpsIncreasedPosition": {
     "message": "Increased position"
   },
+  "perpsInsufficientMargin": {
+    "message": "Insufficient margin to complete this action."
+  },
   "perpsLearnBasics": {
     "message": "Learn the basics of perps"
   },
@@ -5617,6 +5632,9 @@
   "perpsMore": {
     "message": "More"
   },
+  "perpsNetworkError": {
+    "message": "Network error. Check your connection and try again."
+  },
   "perpsNoMarketsFound": {
     "message": "No markets found"
   },
@@ -5628,6 +5646,12 @@
   },
   "perpsOpenInterestTooltip": {
     "message": "The combined value of all open positions for this perp"
+  },
+  "perpsOrderFailed": {
+    "message": "Order could not be submitted. Try again."
+  },
+  "perpsOrderRejected": {
+    "message": "Order rejected. Try again."
   },
   "perpsOpenLong": {
     "message": "Open Long $1",
@@ -5686,6 +5710,9 @@
   "perpsRemoveMarginDescription": {
     "message": "Withdraw excess margin from position"
   },
+  "perpsRateLimitExceeded": {
+    "message": "Too many requests. Wait a moment and try again."
+  },
   "perpsReturn": {
     "message": "Return"
   },
@@ -5704,6 +5731,12 @@
   },
   "perpsSearchMarkets": {
     "message": "Search markets"
+  },
+  "perpsServiceUnavailable": {
+    "message": "Service temporarily unavailable. Try again later."
+  },
+  "perpsSlippageExceeded": {
+    "message": "Transaction failed due to price movement. Try again."
   },
   "perpsSeeAll": {
     "message": "See All"

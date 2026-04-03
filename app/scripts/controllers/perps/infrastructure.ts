@@ -6,6 +6,7 @@
  */
 
 import { createProjectLogger } from '@metamask/utils';
+import type * as Sentry from '@sentry/browser';
 import type {
   PerpsPlatformDependencies,
   PerpsCacheInvalidator,
@@ -29,8 +30,27 @@ const debugLog = createProjectLogger('perps');
 
 function createLogger(): PerpsLogger {
   return {
-    error: (error) => {
-      captureException(error);
+    error: (error, options) => {
+      const withScope = globalThis.sentry?.withScope;
+      if (!withScope) {
+        captureException(error);
+        return;
+      }
+      withScope((scope: Sentry.Scope) => {
+        scope.setTag('feature', 'perps');
+        if (options?.tags) {
+          for (const [k, v] of Object.entries(options.tags)) {
+            scope.setTag(k, String(v));
+          }
+        }
+        if (options?.context) {
+          scope.setContext(options.context.name, options.context.data);
+        }
+        if (options?.extras) {
+          scope.setExtras(options.extras);
+        }
+        captureException(error);
+      });
     },
   };
 }

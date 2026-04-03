@@ -27,13 +27,175 @@ describe('createPerpsInfrastructure', () => {
   });
 
   describe('logger', () => {
-    it('forwards errors to captureException', () => {
-      const { logger } = createPerpsInfrastructure();
-      const error = new Error('test error');
+    describe('when sentry.withScope is not available', () => {
+      it('falls back to captureException without scope', () => {
+        const { logger } = createPerpsInfrastructure();
+        const error = new Error('test error');
 
-      logger.error(error);
+        logger.error(error);
 
-      expect(mockCaptureException).toHaveBeenCalledWith(error);
+        expect(mockCaptureException).toHaveBeenCalledWith(error);
+      });
+
+      it('does not throw when options are provided but withScope is unavailable', () => {
+        const { logger } = createPerpsInfrastructure();
+        const error = new Error('test error');
+
+        expect(() =>
+          logger.error(error, {
+            tags: { provider: 'hyperliquid' },
+            context: {
+              name: 'PerpsController',
+              data: { method: 'placeOrder' },
+            },
+            extras: { orderId: '123' },
+          }),
+        ).not.toThrow();
+      });
+    });
+
+    describe('when sentry.withScope is available', () => {
+      it('always sets the feature:perps tag', () => {
+        const mockScope = {
+          setTag: jest.fn(),
+          setContext: jest.fn(),
+          setExtras: jest.fn(),
+        };
+        const withScope = jest.fn((cb: (scope: typeof mockScope) => void) =>
+          cb(mockScope),
+        );
+        (globalThis as Record<string, unknown>).sentry = { withScope };
+
+        const { logger } = createPerpsInfrastructure();
+        logger.error(new Error('test'));
+
+        expect(mockScope.setTag).toHaveBeenCalledWith('feature', 'perps');
+      });
+
+      it('forwards errors to captureException inside the scope', () => {
+        const mockScope = {
+          setTag: jest.fn(),
+          setContext: jest.fn(),
+          setExtras: jest.fn(),
+        };
+        const withScope = jest.fn((cb: (scope: typeof mockScope) => void) =>
+          cb(mockScope),
+        );
+        (globalThis as Record<string, unknown>).sentry = { withScope };
+
+        const { logger } = createPerpsInfrastructure();
+        const error = new Error('test error');
+        logger.error(error);
+
+        expect(mockCaptureException).toHaveBeenCalledWith(error);
+      });
+
+      it('sets extra tags from options on the scope', () => {
+        const mockScope = {
+          setTag: jest.fn(),
+          setContext: jest.fn(),
+          setExtras: jest.fn(),
+        };
+        const withScope = jest.fn((cb: (scope: typeof mockScope) => void) =>
+          cb(mockScope),
+        );
+        (globalThis as Record<string, unknown>).sentry = { withScope };
+
+        const { logger } = createPerpsInfrastructure();
+        logger.error(new Error('test'), {
+          tags: { provider: 'hyperliquid', network: 'mainnet' },
+        });
+
+        expect(mockScope.setTag).toHaveBeenCalledWith(
+          'provider',
+          'hyperliquid',
+        );
+        expect(mockScope.setTag).toHaveBeenCalledWith('network', 'mainnet');
+      });
+
+      it('converts numeric tag values to strings', () => {
+        const mockScope = {
+          setTag: jest.fn(),
+          setContext: jest.fn(),
+          setExtras: jest.fn(),
+        };
+        const withScope = jest.fn((cb: (scope: typeof mockScope) => void) =>
+          cb(mockScope),
+        );
+        (globalThis as Record<string, unknown>).sentry = { withScope };
+
+        const { logger } = createPerpsInfrastructure();
+        logger.error(new Error('test'), { tags: { retryCount: 3 } });
+
+        expect(mockScope.setTag).toHaveBeenCalledWith('retryCount', '3');
+      });
+
+      it('sets Sentry context from options', () => {
+        const mockScope = {
+          setTag: jest.fn(),
+          setContext: jest.fn(),
+          setExtras: jest.fn(),
+        };
+        const withScope = jest.fn((cb: (scope: typeof mockScope) => void) =>
+          cb(mockScope),
+        );
+        (globalThis as Record<string, unknown>).sentry = { withScope };
+
+        const { logger } = createPerpsInfrastructure();
+        logger.error(new Error('test'), {
+          context: {
+            name: 'PerpsController',
+            data: { method: 'placeOrder', orderId: 'abc123' },
+          },
+        });
+
+        expect(mockScope.setContext).toHaveBeenCalledWith('PerpsController', {
+          method: 'placeOrder',
+          orderId: 'abc123',
+        });
+      });
+
+      it('sets Sentry extras from options', () => {
+        const mockScope = {
+          setTag: jest.fn(),
+          setContext: jest.fn(),
+          setExtras: jest.fn(),
+        };
+        const withScope = jest.fn((cb: (scope: typeof mockScope) => void) =>
+          cb(mockScope),
+        );
+        (globalThis as Record<string, unknown>).sentry = { withScope };
+
+        const { logger } = createPerpsInfrastructure();
+        logger.error(new Error('test'), {
+          extras: { requestPayload: '{"coin":"ETH"}' },
+        });
+
+        expect(mockScope.setExtras).toHaveBeenCalledWith({
+          requestPayload: '{"coin":"ETH"}',
+        });
+      });
+
+      it('works correctly when options are omitted', () => {
+        const mockScope = {
+          setTag: jest.fn(),
+          setContext: jest.fn(),
+          setExtras: jest.fn(),
+        };
+        const withScope = jest.fn((cb: (scope: typeof mockScope) => void) =>
+          cb(mockScope),
+        );
+        (globalThis as Record<string, unknown>).sentry = { withScope };
+
+        const { logger } = createPerpsInfrastructure();
+        const error = new Error('bare error');
+        logger.error(error);
+
+        expect(mockScope.setTag).toHaveBeenCalledWith('feature', 'perps');
+        expect(mockScope.setContext).not.toHaveBeenCalled();
+        expect(mockScope.setExtras).not.toHaveBeenCalled();
+        expect(mockCaptureException).toHaveBeenCalledWith(error);
+      });
     });
   });
 
@@ -198,10 +360,7 @@ describe('createPerpsInfrastructure', () => {
           data: { result: 'success', latency: 42 },
         });
 
-        expect(mockSpan.setAttribute).toHaveBeenCalledWith(
-          'result',
-          'success',
-        );
+        expect(mockSpan.setAttribute).toHaveBeenCalledWith('result', 'success');
         expect(mockSpan.setAttribute).toHaveBeenCalledWith('latency', 42);
         expect(mockSpan.end).toHaveBeenCalled();
       });
