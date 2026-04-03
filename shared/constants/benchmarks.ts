@@ -23,6 +23,79 @@ export const BENCHMARK_TYPE = {
 export type BenchmarkType =
   (typeof BENCHMARK_TYPE)[keyof typeof BENCHMARK_TYPE];
 
+/** Web Vitals rating per web.dev thresholds */
+export type WebVitalsRating = 'good' | 'needs-improvement' | 'poor';
+
+/**
+ * Core Web Vitals metrics from the web-vitals library.
+ * INP requires actual user interactions to measure meaningful data.
+ */
+export type WebVitalsMetrics = {
+  /** Interaction to Next Paint in milliseconds */
+  inp: number | null;
+  /** First Contentful Paint in milliseconds (always available on extension pages) */
+  fcp: number | null;
+  /** Largest Contentful Paint in milliseconds (null on chrome-extension:// pages) */
+  lcp: number | null;
+  /** Cumulative Layout Shift (unitless score) */
+  cls: number | null;
+  /** Rating for INP metric */
+  inpRating: WebVitalsRating | null;
+  /** Rating for FCP metric */
+  fcpRating: WebVitalsRating | null;
+  /** Rating for LCP metric */
+  lcpRating: WebVitalsRating | null;
+  /** Rating for CLS metric */
+  clsRating: WebVitalsRating | null;
+};
+
+/** Distribution of rating buckets across benchmark runs */
+export type RatingDistribution = {
+  good: number;
+  'needs-improvement': number;
+  poor: number;
+  null: number;
+};
+
+/** Per-metric statistics (mean, percentiles, etc.) */
+export type TimerStatistics = {
+  id: string;
+  mean: number;
+  min: number;
+  max: number;
+  stdDev: number;
+  cv: number;
+  p50: number;
+  p75: number;
+  p95: number;
+  p99: number;
+  samples: number;
+  outliers: number;
+  dataQuality: 'good' | 'poor' | 'unreliable';
+};
+
+/** Per-metric aggregated web vitals with full statistical analysis */
+export type WebVitalsAggregated = {
+  inp: TimerStatistics | null;
+  fcp: TimerStatistics | null;
+  lcp: TimerStatistics | null;
+  cls: TimerStatistics | null;
+  ratings: {
+    inp: RatingDistribution;
+    fcp: RatingDistribution;
+    lcp: RatingDistribution;
+    cls: RatingDistribution;
+  };
+};
+
+export type WebVitalsRun = WebVitalsMetrics & { iteration: number };
+
+/** Full web vitals summary: per-run snapshots for Sentry spans + aggregated stats */
+export type WebVitalsSummary = {
+  runs: WebVitalsRun[];
+  aggregated: WebVitalsAggregated;
+};
+
 export type BenchmarkResults = {
   testTitle: string;
   persona: Persona;
@@ -35,6 +108,7 @@ export type BenchmarkResults = {
   stdDev: StatisticalResult;
   p75: StatisticalResult;
   p95: StatisticalResult;
+  webVitals?: WebVitalsSummary;
 };
 
 export const STAT_KEY = {
