@@ -1,14 +1,22 @@
 /**
  * This symbol matches all object properties when used in a mask
  */
-export const AllProperties = Symbol('*');
+export const AllProperties: unique symbol = Symbol('*');
+
+type MaskValue = boolean | ObjectMask | readonly unknown[];
+
+export type ObjectMask = {
+  [key: string]: MaskValue;
+} & {
+  [AllProperties]?: MaskValue;
+};
 
 /**
  * Return a "masked" copy of the given object. The returned object includes
  * only the properties present in the mask.
  *
  * The mask is an object that mirrors the structure of the given object, except
- * the only values are `true`, `false, a sub-mask, or the 'AllProperties"
+ * the only values are `true`, `false`, a sub-mask, or the `AllProperties`
  * symbol. `true` implies the property should be included, and `false` will
  * exclude it. A sub-mask implies the property should be further masked
  * according to that sub-mask. The "AllProperties" symbol is used for objects
@@ -17,15 +25,20 @@ export const AllProperties = Symbol('*');
  *
  * If a property is excluded, its type is included instead.
  *
- * @param {object} object - The object to mask
- * @param {{[key: string]: object | boolean} & { [AllProperties]?: boolean }} mask - The mask to apply to the object
+ * @param object - The object to mask
+ * @param mask - The mask to apply to the object
+ * @returns A masked copy of the given object
  */
-export function maskObject(object, mask) {
+export function maskObject(
+  object: unknown,
+  mask: ObjectMask,
+): Record<string, unknown> | string | null {
   // make sure the object is actually an object, if not, just return its type
   if (typeof object !== 'object' || object === null) {
-    // As typeof null (misleadingly) returns “object,” it would be more readable to display “null” instead of “object.”
+    // As typeof null (misleadingly) returns "object," it would be more readable to display "null" instead of "object."
     return object === null ? null : typeof object;
   }
+  const obj = object as Record<string, unknown>;
   const maskKeys = Reflect.ownKeys(mask);
   const maskAllProperties = maskKeys.includes(AllProperties);
 
@@ -34,17 +47,20 @@ export function maskObject(object, mask) {
       throw new Error('AllProperties mask key does not support sibling keys');
     }
   }
-  return Object.keys(object).reduce((state, key) => {
+  return Object.keys(obj).reduce<Record<string, unknown>>((state, key) => {
     const maskKey = maskAllProperties ? mask[AllProperties] : mask[key];
     if (maskKey === true) {
-      state[key] = object[key];
+      state[key] = obj[key];
+    } else if (Array.isArray(maskKey)) {
+      // Array masks (e.g. empty `[]` in Sentry state) — surface typeof only, like `false`.
+      state[key] = obj[key] === null ? null : typeof obj[key];
     } else if (maskKey && typeof maskKey === 'object') {
-      state[key] = maskObject(object[key], maskKey);
+      state[key] = maskObject(obj[key], maskKey as ObjectMask);
     } else if (maskKey === undefined || maskKey === false) {
-      // As typeof null (misleadingly) returns “object,” it would be more readable to display “null” instead of “object.”
-      state[key] = object[key] === null ? null : typeof object[key];
+      // As typeof null (misleadingly) returns "object," it would be more readable to display "null" instead of "object."
+      state[key] = obj[key] === null ? null : typeof obj[key];
     } else {
-      throw new Error(`Unsupported mask entry: ${maskKey}`);
+      throw new Error(`Unsupported mask entry: ${String(maskKey)}`);
     }
     return state;
   }, {});
