@@ -1,8 +1,11 @@
 import { Hex } from '@metamask/utils';
 import { TransactionParams } from '@metamask/transaction-controller';
+import { KeyringController } from '@metamask/keyring-controller';
+import { NetworkController } from '@metamask/network-controller';
 import {
   buildBatchTransactionsFromTempoTransactionCalls,
   checkIsValidTempoTransaction,
+  getAddTransactionSendCallExtraOptions,
   isTempoChain,
   isTempoTransactionType,
 } from './tempo-tx-utils';
@@ -188,6 +191,41 @@ describe('tempo-tx-utils', () => {
     });
     it('return false for Polygon Mainnet', () => {
       expect(isTempoChain('0x89')).toBe(false);
+    });
+  });
+
+  describe('addTransactionSendCallExtraOptions', () => {
+    it('non-reg: returns {} if controllers are uninitalized', async () => {
+      expect(
+        await getAddTransactionSendCallExtraOptions({
+          keyringController: {} as KeyringController,
+          networkController: {} as NetworkController,
+          req: {
+            networkClientId: '123',
+            params: [{ from: '0x123' }],
+          },
+        }),
+      ).toEqual({});
+    });
+
+    it('tempo: returns Tempo params if Tempo chain', async () => {
+      expect(
+        await getAddTransactionSendCallExtraOptions({
+          keyringController: {} as KeyringController,
+          networkController: {
+            getNetworkConfigurationByNetworkClientId: () => ({
+              chainId: '0x1079',
+            }),
+          } as unknown as NetworkController,
+          req: {
+            networkClientId: '123',
+            params: [{ from: '0x123' }],
+          },
+        }),
+      ).toEqual({
+        excludeNativeTokenForFee: true,
+        gasFeeToken: '0x20c0000000000000000000000000000000000000',
+      });
     });
   });
 });

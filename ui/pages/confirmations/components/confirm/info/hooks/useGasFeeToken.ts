@@ -8,6 +8,7 @@ import { BigNumber } from 'bignumber.js';
 import { useSelector } from 'react-redux';
 import { Interface } from '@ethersproject/abi';
 import { abiERC20 } from '@metamask/metamask-eth-abis';
+import { getNativeTokenAddress } from '@metamask/assets-controllers';
 import { NATIVE_TOKEN_ADDRESS } from '../../../../../../../shared/constants/transaction';
 import { getNetworkConfigurationsByChainId } from '../../../../../../../shared/lib/selectors/networks';
 import { getCurrencyRates } from '../../../../../../ducks/metamask/metamask';
@@ -16,12 +17,12 @@ import { useFiatFormatter } from '../../../../../../hooks/useFiatFormatter';
 import { useEthFiatAmount } from '../../../../../../hooks/useEthFiatAmount';
 import {
   getShouldShowFiat,
-  selectNetworkConfigurationByChainId,
   selectTransactionAvailableBalance,
 } from '../../../../../../selectors';
 import { formatAmount } from '../../../simulation-details/formatAmount';
 import { useConfirmContext } from '../../../../context/confirm';
 import { useFeeCalculations } from './useFeeCalculations';
+import { useNativeCurrencySymbol } from './useNativeCurrencySymbol';
 
 export const RATE_WEI_NATIVE = '0xDE0B6B3A7640000'; // 1x10^18
 
@@ -109,7 +110,7 @@ function useNativeGasFeeToken(): GasFeeToken {
   const { currentConfirmation: transactionMeta } =
     useConfirmContext<TransactionMeta>();
 
-  const { id: transactionId, txParams } = transactionMeta ?? {};
+  const { id: transactionId, txParams, chainId } = transactionMeta ?? {};
 
   const { estimatedFeeNativeHex } = useFeeCalculations(
     transactionMeta?.txParams
@@ -117,15 +118,12 @@ function useNativeGasFeeToken(): GasFeeToken {
       : ({ txParams: {} } as TransactionMeta),
   );
 
-  const networkConfiguration = useSelector((state) =>
-    selectNetworkConfigurationByChainId(state, transactionMeta?.chainId),
-  );
-
   const balance = useSelector((state) =>
     selectTransactionAvailableBalance(state, transactionId),
   );
 
-  const { nativeCurrency } = networkConfiguration ?? {};
+  const { nativeCurrencySymbol } = useNativeCurrencySymbol(chainId);
+  const tokenAddress = getNativeTokenAddress(chainId) ?? NATIVE_TOKEN_ADDRESS;
   const { gas, maxFeePerGas, maxPriorityFeePerGas } = txParams ?? {};
 
   return {
@@ -138,8 +136,8 @@ function useNativeGasFeeToken(): GasFeeToken {
     maxPriorityFeePerGas: maxPriorityFeePerGas as Hex,
     rateWei: RATE_WEI_NATIVE,
     recipient: NATIVE_TOKEN_ADDRESS,
-    symbol: nativeCurrency,
-    tokenAddress: NATIVE_TOKEN_ADDRESS,
+    symbol: nativeCurrencySymbol,
+    tokenAddress,
   };
 }
 

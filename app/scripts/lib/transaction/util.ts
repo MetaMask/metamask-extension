@@ -164,7 +164,6 @@ async function addTransactionOnTempo(
     );
   }
   // Checks and infer Tempo Transaction format for supported fields.
-  // checkIsValidTempoTransaction(request.transactionParams);
   const { transactionController } = request;
 
   const result = await transactionController.addTransactionBatch(
@@ -178,9 +177,15 @@ async function addTransactionOnTempo(
   );
 
   if (!transactionMeta) {
-    throw new Error(`Batch ${batchId}: No matching transaction found.`);
+    log.debug(`Batch ${batchId}: No matching transaction found.`);
+    throw new Error(
+      `Tempo Transaction: Unable to determine if transaction was successful.`,
+    );
   } else if (!transactionMeta.hash) {
-    throw new Error(`Batch ${batchId}: Hash missing from transaction object.`);
+    log.debug(`Batch ${batchId}: Hash missing from transaction object.`);
+    throw new Error(
+      `Tempo Transaction: Unable to determine if transaction was successful.`,
+    );
   }
 
   return {
@@ -488,57 +493,4 @@ function isInternalAccount(
   );
 
   return internalSet.has(normalized);
-}
-
-export async function addTransactionSendCallExtraOptions({
-  req,
-  networkController,
-  keyringController,
-}: {
-  req: {
-    networkClientId: string;
-    params?: [{ from: string }];
-  };
-  networkController: NetworkController;
-  keyringController: KeyringController;
-}) {
-  /**
-   * Gets chain-specific parameters that need to be injected in addTransaction/addTransactionBatch.
-   * Done initially for Tempo.
-   * Done gracefully - silencing errors - so it doesn't impact previous behavior.
-   * Skipped in case of account not supporting EIP-7702, such as hardware wallets.
-   */
-  try {
-    const networkConfiguration =
-      networkController.getNetworkConfigurationByNetworkClientId(
-        req.networkClientId,
-      );
-    if (!networkConfiguration) {
-      log.debug(
-        `addTransactionSendCallExtraOptions: No networkConfiguration for networkClientId ${req.networkClientId}`,
-      );
-      return {};
-    }
-    const { chainId: currentRequestChainId } = networkConfiguration;
-    if (!isTempoChain(currentRequestChainId)) {
-      return {};
-    }
-    const isEip7702SupportedByAccount = await accountSupports7702(
-      req.params?.[0]?.from,
-      keyringController,
-    );
-    if (!isEip7702SupportedByAccount) {
-      log.debug(
-        'addTransactionSendCallExtraOptions: Tempo chain but wallet does not support 7702. Falling back to legacy transactions',
-      );
-      return {};
-    }
-    return getTempoExtraOptionsForChain(currentRequestChainId);
-  } catch (err) {
-    log.debug(
-      'addTransactionSendCallExtraOptions: Error while getting addTransaction extra options',
-      err,
-    );
-    return {};
-  }
 }

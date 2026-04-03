@@ -1,5 +1,9 @@
 import { TransactionParams } from '@metamask/transaction-controller';
 import { Hex } from '@metamask/utils';
+import { NetworkController } from '@metamask/network-controller';
+import { KeyringController } from '@metamask/keyring-controller';
+import log from 'loglevel';
+import { accountSupports7702 } from '../account-supports-7702';
 import type { FinalAddTransactionRequest } from './util';
 
 // Seem to be set by dApps only for batch calls.
@@ -9,7 +13,7 @@ const TEMPO_TRANSACTION_TYPE: Hex = '0x76';
 type TempoConfig = {
   perChainConfig: {
     [key: Hex]: {
-      defaultFeeToken: Hex;
+      defaultFeeToken: { symbol: string; address: Hex };
     };
   };
 };
@@ -17,10 +21,16 @@ type TempoConfig = {
 const TEMPO_CONFIG: TempoConfig = {
   perChainConfig: {
     '0x1079': {
-      defaultFeeToken: '0x20c0000000000000000000000000000000000000',
+      defaultFeeToken: {
+        address: '0x20c0000000000000000000000000000000000000',
+        symbol: 'pathUSD',
+      },
     },
     '0xa5bf': {
-      defaultFeeToken: '0x20c0000000000000000000000000000000000000',
+      defaultFeeToken: {
+        address: '0x20c0000000000000000000000000000000000000',
+        symbol: 'pathUSD',
+      },
     },
   },
 } as const;
@@ -42,10 +52,6 @@ type TempoTransactionParams = {
   feeToken?: Hex;
 };
 
-export function getTempoConfig() {
-  return TEMPO_CONFIG;
-}
-
 export function isTempoChain(chainId: Hex) {
   return TEMPO_CHAINS.includes(chainId);
 }
@@ -54,13 +60,13 @@ export function getTempoExtraOptionsForChain(
   chainId: Hex,
 ): { gasFeeToken: Hex; excludeNativeTokenForFee: true } | {} {
   const tempoConfigForChain =
-    isTempoChain(chainId) && getTempoConfig().perChainConfig[chainId];
+    isTempoChain(chainId) && TEMPO_CONFIG.perChainConfig[chainId];
   if (!tempoConfigForChain) {
     return {};
   }
   return {
     excludeNativeTokenForFee: true,
-    gasFeeToken: tempoConfigForChain.defaultFeeToken,
+    gasFeeToken: tempoConfigForChain.defaultFeeToken.address,
   };
 }
 
@@ -125,22 +131,76 @@ export function getTempoTransactionBatchArgs({
   request: FinalAddTransactionRequest;
   chainId: Hex;
 }) {
-  const chainTempoConfig = getTempoConfig().perChainConfig[chainId];
+  const chainTempoConfig = TEMPO_CONFIG.perChainConfig[chainId];
   if (!chainTempoConfig) {
     throw new Error(`Tempo transactions not supported for chain: ${chainId}`);
   }
   checkIsValidTempoTransaction(request.transactionParams);
   return {
     ...request.transactionOptions,
-    from: request.transactionParams.from as Hex,
+    from: request.transactionParams.from,
     transactions: buildBatchTransactionsFromTempoTransactionCalls(
       request.transactionParams,
     ),
     // If no token is provided, we force a default one so we don't fall in
     // fee preference algo: https://docs.tempo.xyz/protocol/fees/spec-fee#fee-token-preferences
     gasFeeToken:
-      request.transactionParams.feeToken || chainTempoConfig.defaultFeeToken,
+      request.transactionParams.feeToken ||
+      chainTempoConfig.defaultFeeToken.address,
     excludeNativeTokenForFee: true,
     networkClientId: request.networkClientId,
   };
+}
+
+export async function getAddTransactionSendCallExtraOptions({
+  req,
+  networkController,
+  keyringController,
+}: {
+  req: {
+    networkClientId: string;
+    params?: [{ from: string }];
+  };
+  networkController: NetworkController;
+  keyringController: KeyringController;
+}) {
+  /**
+   * Gets chain-specific parameters that need to be injected in addTransaction/addTransactionBatch.
+   * Done initially for Tempo.
+   * Done gracefully - silencing errors - so it doesn't impact previous behavior.
+   * Skipped in case of account not supporting EIP-7702, such as hardware wallets.
+   */
+  try {
+    const networkConfiguration =
+      networkController.getNetworkConfigurationByNetworkClientId(
+        req.networkClientId,
+      );
+    if (!networkConfiguration) {
+      log.debug(
+        `addTransactionSendCallExtraOptions: No networkConfiguration for networkClientId ${req.networkClientId}`,
+      );
+      return {};
+    }
+    const { chainId: currentRequestChainId } = networkConfiguration;
+    if (!isTempoChain(currentRequestChainId)) {
+      return {};
+    }
+    const isEip7702SupportedByAccount = await accountSupports7702(
+      req.params?.[0]?.from,
+      keyringController,
+    );
+    if (!isEip7702SupportedByAccount) {
+      log.debug(
+        'addTransactionSendCallExtraOptions: Tempo chain but wallet does not support 7702. Falling back to legacy transactions',
+      );
+      return {};
+    }
+    return getTempoExtraOptionsForChain(currentRequestChainId);
+  } catch (err) {
+    log.debug(
+      'addTransactionSendCallExtraOptions: Error while getting addTransaction extra options',
+      err,
+    );
+    return {};
+  }
 }

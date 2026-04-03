@@ -17,7 +17,6 @@ import { useHasInsufficientBalance } from '../../useHasInsufficientBalance';
 import { useTransactionPayHasSourceAmount } from '../../pay/useTransactionPayHasSourceAmount';
 import { useTransactionPayPrimaryRequiredToken } from '../../pay/useTransactionPayData';
 import { useTransactionPayToken } from '../../pay/useTransactionPayToken';
-import { CHAIN_ID_TO_CURRENCY_SYMBOL_MAP } from '../../../../../../shared/constants/network';
 
 export function useInsufficientBalanceAlerts({
   ignoreGasFeeToken,
@@ -26,12 +25,8 @@ export function useInsufficientBalanceAlerts({
 } = {}): Alert[] {
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
-  const {
-    selectedGasFeeToken,
-    gasFeeTokens,
-    excludeNativeTokenForFee,
-    chainId,
-  } = currentConfirmation ?? {};
+  const { selectedGasFeeToken, gasFeeTokens, excludeNativeTokenForFee } =
+    currentConfirmation ?? {};
   const { hasInsufficientBalance, nativeCurrency } =
     useHasInsufficientBalance();
   const isSimulationEnabled = useSelector(getUseTransactionSimulations);
@@ -88,20 +83,6 @@ export function useInsufficientBalanceAlerts({
     shouldCheckGaslessConditions &&
     !isSponsoredTransaction;
 
-  // Created for Tempo to have `pathUSD` displayed instead of `USD`
-  // in the missing token alerts. This is because the chain will be
-  // added with `USD` as native symbol which doesn't exist.
-  // Meanwhile, pathUSD is considered as default gas token.
-  const nativeSymbolToDisplay = useMemo(() => {
-    if (!excludeNativeTokenForFee) {
-      return nativeCurrency;
-    }
-    const localConfigSymbol =
-      CHAIN_ID_TO_CURRENCY_SYMBOL_MAP[
-        chainId as keyof typeof CHAIN_ID_TO_CURRENCY_SYMBOL_MAP
-      ];
-    return localConfigSymbol ?? nativeCurrency;
-  }, [excludeNativeTokenForFee, nativeCurrency, chainId]);
   return useMemo(() => {
     if (!showAlert) {
       return [];
@@ -112,20 +93,18 @@ export function useInsufficientBalanceAlerts({
         actions: [
           {
             key: AlertActionKey.Buy,
-            label: t('alertActionBuyWithNativeCurrency', [
-              nativeSymbolToDisplay,
-            ]),
+            label: t('alertActionBuyWithNativeCurrency', [nativeCurrency]),
           },
         ],
         field: RowAlertKey.EstimatedFee,
         isBlocking: true,
         key: 'insufficientBalance',
         message: t('alertMessageInsufficientBalanceWithNativeCurrency', [
-          nativeSymbolToDisplay,
+          nativeCurrency,
         ]),
         reason: t('alertReasonInsufficientBalance'),
         severity: Severity.Danger,
       },
     ];
-  }, [nativeSymbolToDisplay, showAlert, t]);
+  }, [nativeCurrency, showAlert, t]);
 }

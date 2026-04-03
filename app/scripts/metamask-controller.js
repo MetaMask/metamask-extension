@@ -293,11 +293,7 @@ import {
 } from './controllers/permissions';
 import createRPCMethodTrackingMiddleware from './lib/createRPCMethodTrackingMiddleware';
 import { getAccountsBySnapId } from './lib/snap-keyring';
-import {
-  addDappTransaction,
-  addTransaction,
-  addTransactionSendCallExtraOptions,
-} from './lib/transaction/util';
+import { addDappTransaction, addTransaction } from './lib/transaction/util';
 import { addTypedMessage, addPersonalMessage } from './lib/signature/util';
 import {
   METAMASK_CAIP_MULTICHAIN_PROVIDER,
@@ -443,6 +439,7 @@ import {
 import { MessengerSubscriptions } from './lib/MessengerSubscriptions';
 import { ProfileMetricsControllerInit } from './controller-init/profile-metrics-controller-init';
 import { ProfileMetricsServiceInit } from './controller-init/profile-metrics-service-init';
+import { getAddTransactionSendCallExtraOptions } from './lib/transaction/tempo-tx-utils';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -1020,7 +1017,7 @@ export default class MetamaskController extends EventEmitter {
       ),
       wallet_sendCalls: createAsyncMiddleware(async (req, res) => {
         const addTransactionExtraOptions =
-          await addTransactionSendCallExtraOptions({
+          await getAddTransactionSendCallExtraOptions({
             req,
             networkController: this.networkController,
             keyringController: this.keyringController,

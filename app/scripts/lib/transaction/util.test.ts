@@ -9,8 +9,6 @@ import {
 import { UserOperationController } from '@metamask/user-operation-controller';
 import { cloneDeep } from 'lodash';
 import { Hex } from '@metamask/utils';
-import { NetworkController } from '@metamask/network-controller';
-import { KeyringController } from '@metamask/keyring-controller';
 import {
   generateSecurityAlertId,
   validateRequestWithPPOM,
@@ -36,7 +34,6 @@ import {
   AddTransactionRequest,
   addDappTransaction,
   addTransaction,
-  addTransactionSendCallExtraOptions,
   stripSingleLeadingZero,
 } from './util';
 import { getTempoTransactionBatchArgs } from './tempo-tx-utils';
@@ -907,41 +904,6 @@ describe('Transaction Utils', () => {
       expect(stripSingleLeadingZero('0x0123')).toBe('0x123');
       expect(stripSingleLeadingZero('0x0abcdef')).toBe('0xabcdef');
       expect(stripSingleLeadingZero('0x0001')).toBe('0x001');
-    });
-  });
-
-  describe('addTransactionSendCallExtraOptions', () => {
-    it('non-reg: returns {} if controllers are uninitalized', async () => {
-      expect(
-        await addTransactionSendCallExtraOptions({
-          keyringController: {} as KeyringController,
-          networkController: {} as NetworkController,
-          req: {
-            networkClientId: '123',
-            params: [{ from: '0x123' }],
-          },
-        }),
-      ).toEqual({});
-    });
-
-    it('tempo: returns Tempo params if Tempo chain', async () => {
-      expect(
-        await addTransactionSendCallExtraOptions({
-          keyringController: {} as KeyringController,
-          networkController: {
-            getNetworkConfigurationByNetworkClientId: () => ({
-              chainId: '0x1079',
-            }),
-          } as unknown as NetworkController,
-          req: {
-            networkClientId: '123',
-            params: [{ from: '0x123' }],
-          },
-        }),
-      ).toEqual({
-        excludeNativeTokenForFee: true,
-        gasFeeToken: '0x20c0000000000000000000000000000000000000',
-      });
     });
   });
 });
