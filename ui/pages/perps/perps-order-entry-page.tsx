@@ -59,7 +59,7 @@ import {
   CandlePeriod,
   TimeDuration,
 } from '../../components/app/perps/constants/chartConfig';
-import { usePerpsEligibility } from '../../hooks/perps';
+import { usePerpsEligibility, usePerpsEventTracking } from '../../hooks/perps';
 import { useFormatters } from '../../hooks/useFormatters';
 import { usePerpsDepositConfirmation } from '../../components/app/perps/hooks/usePerpsDepositConfirmation';
 import { getPerpsStreamManager } from '../../providers/perps';
@@ -77,10 +77,6 @@ import {
 } from '../../components/app/perps/order-entry/limit-price-warnings';
 import { PerpsDetailPageSkeleton } from '../../components/app/perps/perps-skeletons';
 import {
-  isLimitPriceUnfavorable as checkLimitPriceUnfavorable,
-  isNearLiquidationPrice as checkNearLiquidationPrice,
-} from '../../components/app/perps/order-entry/limit-price-warnings';
-import {
   OrderEntry,
   DirectionTabs,
   OrderSummary,
@@ -89,34 +85,6 @@ import {
   type OrderMode,
   type OrderCalculations,
 } from '../../components/app/perps/order-entry';
-import { PerpsDetailPageSkeleton } from '../../components/app/perps/perps-skeletons';
-import {
-  getDisplayName,
-  getChangeColor,
-  safeDecodeURIComponent,
-} from '../../components/app/perps/utils';
-import { formatFlooredDecimals } from '../../components/app/perps/utils/number';
-import {
-  DEFAULT_ROUTE,
-  PERPS_MARKET_DETAIL_ROUTE,
-} from '../../helpers/constants/routes';
-import { usePerpsEligibility, usePerpsEventTracking } from '../../hooks/perps';
-import {
-  usePerpsLivePositions,
-  usePerpsLiveAccount,
-  usePerpsLiveMarketData,
-  usePerpsLiveCandles,
-} from '../../hooks/perps/stream';
-import { useFormatters } from '../../hooks/useFormatters';
-import { useI18nContext } from '../../hooks/useI18nContext';
-import { getPerpsStreamManager } from '../../providers/perps';
-import { getSelectedInternalAccount } from '../../selectors/accounts';
-import {
-  selectPerpsTradeConfigurations,
-  selectPerpsIsTestnet,
-} from '../../selectors/perps-controller';
-import { getIsPerpsExperienceAvailable } from '../../selectors/perps/feature-flags';
-import { submitRequestToBackground } from '../../store/background-connection';
 import {
   PERPS_TOAST_KEYS,
   type PerpsToastKey,
