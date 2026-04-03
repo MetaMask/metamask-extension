@@ -8,7 +8,6 @@ import { BigNumber } from 'bignumber.js';
 import { useSelector } from 'react-redux';
 import { Interface } from '@ethersproject/abi';
 import { abiERC20 } from '@metamask/metamask-eth-abis';
-import { getNativeTokenAddress } from '@metamask/assets-controllers';
 import { NATIVE_TOKEN_ADDRESS } from '../../../../../../../shared/constants/transaction';
 import { getNetworkConfigurationsByChainId } from '../../../../../../../shared/lib/selectors/networks';
 import { getCurrencyRates } from '../../../../../../ducks/metamask/metamask';
@@ -123,7 +122,6 @@ function useNativeGasFeeToken(): GasFeeToken {
   );
 
   const { nativeCurrencySymbol } = useNativeCurrencySymbol(chainId);
-  const tokenAddress = getNativeTokenAddress(chainId) ?? NATIVE_TOKEN_ADDRESS;
   const { gas, maxFeePerGas, maxPriorityFeePerGas } = txParams ?? {};
 
   return {
@@ -137,7 +135,7 @@ function useNativeGasFeeToken(): GasFeeToken {
     rateWei: RATE_WEI_NATIVE,
     recipient: NATIVE_TOKEN_ADDRESS,
     symbol: nativeCurrencySymbol,
-    tokenAddress,
+    tokenAddress: NATIVE_TOKEN_ADDRESS,
   };
 }
 
