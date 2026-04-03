@@ -5,6 +5,9 @@ import { OperationSafener } from './operation-safener';
 import { PersistenceManager } from './stores/persistence-manager';
 import { MetaMaskStateType } from './stores/base-store';
 
+/** Time before `runtime.reload()` so popup/notification UIs can `window.close()` first (issue #29151). */
+const RELOAD_AFTER_EVACUATE_MS = 150;
+
 /**
  * Creates a request-safe reload mechanism for the given persistence manager.
  *
@@ -54,11 +57,16 @@ export function getRequestSafeReload<Type extends PersistenceManager>(
     /**
      * Requests a safe reload of the browser. It prevents any new updates from
      * being sent to the persistence manager, and waits for any
-     * pending updates to complete before calling `browser.runtime.reload()`.
+     * pending updates to complete before scheduling `browser.runtime.reload()`
+     * after a short delay. The delay lets popup/notification windows call
+     * `window.close()` before reload so Chromium does not show normal tab
+     * content inside that window (see GitHub issue #29151).
      */
     requestSafeReload: async () => {
       await operationSafener.evacuate();
-      browser.runtime.reload();
+      globalThis.setTimeout(() => {
+        browser.runtime.reload();
+      }, RELOAD_AFTER_EVACUATE_MS);
     },
 
     /**
