@@ -411,4 +411,3 @@ export const getBridgeBalancesByChainId = createSelector(
       return acc;
     }, {}),
 );
-
