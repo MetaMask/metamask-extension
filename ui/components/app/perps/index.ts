@@ -4,6 +4,7 @@ export { PerpsRecentActivity } from './perps-recent-activity';
 export type { PerpsRecentActivityProps } from './perps-recent-activity';
 export { PerpsView } from './perps-view';
 export { PerpsViewStreamBoundary } from './perps-view-stream-boundary';
+export { PerpsToastProvider, usePerpsToast } from './perps-toast';
 export { PerpsTutorialModal } from './perps-tutorial-modal';
 export { PerpsWatchlist } from './perps-watchlist';
 export { PerpsPositionsOrders } from './perps-positions-orders';
