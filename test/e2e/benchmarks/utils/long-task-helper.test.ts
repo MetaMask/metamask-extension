@@ -82,10 +82,10 @@ describe('long-task-helper', () => {
       const results = buildLongTaskTimerResults([]);
 
       expect(results).toEqual([
-        { id: 'longTaskCount', duration: 0, unit: 'count' },
-        { id: 'longTaskTotalDuration', duration: 0, unit: 'ms' },
-        { id: 'longTaskMaxDuration', duration: 0, unit: 'ms' },
-        { id: 'tbt', duration: 0, unit: 'ms' },
+        { id: 'longTaskCount', value: 0, unit: 'count' },
+        { id: 'longTaskTotalDuration', value: 0, unit: 'ms' },
+        { id: 'longTaskMaxDuration', value: 0, unit: 'ms' },
+        { id: 'tbt', value: 0, unit: 'ms' },
       ]);
     });
 
@@ -104,10 +104,10 @@ describe('long-task-helper', () => {
       const results = buildLongTaskTimerResults(steps);
 
       expect(results).toEqual([
-        { id: 'longTaskCount', duration: 3, unit: 'count' },
-        { id: 'longTaskTotalDuration', duration: 250, unit: 'ms' },
-        { id: 'longTaskMaxDuration', duration: 120, unit: 'ms' },
-        { id: 'tbt', duration: 100, unit: 'ms' },
+        { id: 'longTaskCount', value: 3, unit: 'count' },
+        { id: 'longTaskTotalDuration', value: 250, unit: 'ms' },
+        { id: 'longTaskMaxDuration', value: 120, unit: 'ms' },
+        { id: 'tbt', value: 100, unit: 'ms' },
       ]);
     });
 
@@ -142,10 +142,10 @@ describe('long-task-helper', () => {
       const results = buildLongTaskTimerResults(steps);
 
       expect(results).toEqual([
-        { id: 'longTaskCount', duration: 8, unit: 'count' },
-        { id: 'longTaskTotalDuration', duration: 660, unit: 'ms' },
-        { id: 'longTaskMaxDuration', duration: 150, unit: 'ms' },
-        { id: 'tbt', duration: 260, unit: 'ms' },
+        { id: 'longTaskCount', value: 8, unit: 'count' },
+        { id: 'longTaskTotalDuration', value: 660, unit: 'ms' },
+        { id: 'longTaskMaxDuration', value: 150, unit: 'ms' },
+        { id: 'tbt', value: 260, unit: 'ms' },
       ]);
     });
 
@@ -172,7 +172,7 @@ describe('long-task-helper', () => {
       const results = buildLongTaskTimerResults(steps);
       const maxEntry = results.find((r) => r.id === 'longTaskMaxDuration');
 
-      expect(maxEntry?.duration).toBe(200);
+      expect(maxEntry?.value).toBe(200);
     });
 
     it('handles steps with zero long tasks', () => {

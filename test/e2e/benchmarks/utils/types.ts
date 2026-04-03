@@ -9,7 +9,8 @@ import type {
 
 export type TimerResult = {
   id: string;
-  duration: number;
+  /** Numeric value: duration in ms, or a count when unit is 'count'. */
+  value: number;
   /** Defaults to 'ms'. Non-duration entries (e.g. counts) use 'count'. */
   unit?: 'ms' | 'count';
 };

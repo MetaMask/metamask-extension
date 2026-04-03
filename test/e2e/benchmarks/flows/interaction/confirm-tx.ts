@@ -81,7 +81,7 @@ export async function run(): Promise<BenchmarkRunResult> {
 
     return {
       timers: [
-        ...steps.map((s) => ({ id: s.id, duration: s.duration })),
+        ...steps.map((s) => ({ id: s.id, value: s.duration })),
         ...buildLongTaskTimerResults(steps),
       ],
       webVitals,
