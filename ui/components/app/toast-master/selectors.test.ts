@@ -17,6 +17,7 @@ import {
 } from '../../../selectors';
 import { getCaip25CaveatValueFromPermissions } from '../../../pages/permissions-connect/connect-page/utils';
 import { supportsChainIds } from '../../../hooks/useAccountGroupsForPermissions';
+import { selectSelectedAccountGroup } from '../../../selectors/multichain-accounts/account-tree';
 import { AccountGroupWithInternalAccounts } from '../../../selectors/multichain-accounts/account-tree.types';
 import { createMockInternalAccount } from '../../../../test/jest/mocks';
 import { StorageWriteErrorType } from '../../../../shared/constants/app-state';
@@ -49,6 +50,10 @@ jest.mock('../../../hooks/useAccountGroupsForPermissions', () => ({
   supportsChainIds: jest.fn(),
 }));
 
+jest.mock('../../../selectors/multichain-accounts/account-tree', () => ({
+  selectSelectedAccountGroup: jest.fn(),
+}));
+
 const mockGetAlertEnabledness = getAlertEnabledness as jest.MockedFunction<
   typeof getAlertEnabledness
 >;
@@ -77,8 +82,12 @@ const mockIsInternalAccountInPermittedAccountIds =
   isInternalAccountInPermittedAccountIds as jest.MockedFunction<
     typeof isInternalAccountInPermittedAccountIds
   >;
+const mockGetSelectedAccountGroupWithAccounts =
+  selectSelectedAccountGroup as jest.MockedFunction<
+    typeof selectSelectedAccountGroup
+  >;
 
-describe('#selectShowConnectAccountGroupToast', () => {
+describe('#selectShowConnectSelectedAccountGroupToast', () => {
   const mockAccount1 = createMockInternalAccount({
     id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
     address: '0x742d35Cc6634C0532925a3b8D4F25dE8B8C5C8B4',
@@ -140,7 +149,8 @@ describe('#selectShowConnectAccountGroupToast', () => {
     appState: {},
     metamask: {},
     activeTab: { origin: 'https://example.com' },
-  } as const;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } as any;
 
   afterEach(() => {
     jest.clearAllMocks();
@@ -164,8 +174,9 @@ describe('#selectShowConnectAccountGroupToast', () => {
       mockAccount2,
       mockAccount3,
     ]);
+    mockGetSelectedAccountGroupWithAccounts.mockReturnValue(accountGroup);
 
-    const result = selectShowConnectAccountGroupToast(baseState, accountGroup);
+    const result = selectShowConnectAccountGroupToast(baseState);
 
     // Assert
     expect(result).toBe(true);
@@ -189,8 +200,9 @@ describe('#selectShowConnectAccountGroupToast', () => {
       mockAccount2,
       mockAccount3,
     ]);
+    mockGetSelectedAccountGroupWithAccounts.mockReturnValue(accountGroup);
 
-    const result = selectShowConnectAccountGroupToast(baseState, accountGroup);
+    const result = selectShowConnectAccountGroupToast(baseState);
 
     expect(result).toBe(false);
   });
@@ -212,8 +224,9 @@ describe('#selectShowConnectAccountGroupToast', () => {
       mockAccount2,
       mockAccount3,
     ]);
+    mockGetSelectedAccountGroupWithAccounts.mockReturnValue(accountGroup);
 
-    const result = selectShowConnectAccountGroupToast(baseState, accountGroup);
+    const result = selectShowConnectAccountGroupToast(baseState);
 
     expect(result).toBe(false);
   });
@@ -239,12 +252,9 @@ describe('#selectShowConnectAccountGroupToast', () => {
       ...baseState,
       activeTab: { origin: null },
     };
+    mockGetSelectedAccountGroupWithAccounts.mockReturnValue(accountGroup);
 
-    const result = selectShowConnectAccountGroupToast(
-      // @ts-expect-error - Testing null origin case
-      stateWithoutOrigin,
-      accountGroup,
-    );
+    const result = selectShowConnectAccountGroupToast(stateWithoutOrigin);
 
     expect(result).toBeFalsy();
   });
@@ -257,8 +267,9 @@ describe('#selectShowConnectAccountGroupToast', () => {
       mockAccount2,
       mockAccount3,
     ]);
+    mockGetSelectedAccountGroupWithAccounts.mockReturnValue(accountGroup);
 
-    const result = selectShowConnectAccountGroupToast(baseState, accountGroup);
+    const result = selectShowConnectAccountGroupToast(baseState);
 
     expect(result).toBe(false);
   });
@@ -287,8 +298,9 @@ describe('#selectShowConnectAccountGroupToast', () => {
       mockAccount2,
       mockAccount3,
     ]);
+    mockGetSelectedAccountGroupWithAccounts.mockReturnValue(accountGroup);
 
-    const result = selectShowConnectAccountGroupToast(baseState, accountGroup);
+    const result = selectShowConnectAccountGroupToast(baseState);
 
     expect(result).toBe(false);
   });
@@ -316,8 +328,9 @@ describe('#selectShowConnectAccountGroupToast', () => {
       mockAccount2,
       mockAccount3,
     ]);
+    mockGetSelectedAccountGroupWithAccounts.mockReturnValue(accountGroup);
 
-    const result = selectShowConnectAccountGroupToast(baseState, accountGroup);
+    const result = selectShowConnectAccountGroupToast(baseState);
 
     expect(result).toBe(true);
   });
@@ -339,8 +352,9 @@ describe('#selectShowConnectAccountGroupToast', () => {
       mockAccount2,
       mockAccount3,
     ]);
+    mockGetSelectedAccountGroupWithAccounts.mockReturnValue(accountGroup);
 
-    const result = selectShowConnectAccountGroupToast(baseState, accountGroup);
+    const result = selectShowConnectAccountGroupToast(baseState);
 
     expect(result).toBe(true);
     expect(mockGetCaip25CaveatValueFromPermissions).not.toHaveBeenCalled();
@@ -367,8 +381,9 @@ describe('#selectShowConnectAccountGroupToast', () => {
       mockAccount2,
       mockAccount3,
     ]);
+    mockGetSelectedAccountGroupWithAccounts.mockReturnValue(accountGroup);
 
-    const result = selectShowConnectAccountGroupToast(baseState, accountGroup);
+    const result = selectShowConnectAccountGroupToast(baseState);
 
     expect(result).toBe(true);
   });
@@ -388,11 +403,9 @@ describe('#selectShowConnectAccountGroupToast', () => {
     mockIsInternalAccountInPermittedAccountIds.mockReturnValue(false);
 
     const emptyAccountGroup = createMockAccountGroup('empty', []);
+    mockGetSelectedAccountGroupWithAccounts.mockReturnValue(emptyAccountGroup);
 
-    const result = selectShowConnectAccountGroupToast(
-      baseState,
-      emptyAccountGroup,
-    );
+    const result = selectShowConnectAccountGroupToast(baseState);
 
     expect(result).toBe(true);
   });

@@ -546,6 +546,13 @@ export const getSelectedAccountGroup = (
   state: MultichainAccountsState,
 ): AccountGroupId => state.metamask.selectedAccountGroup;
 
+export const selectSelectedAccountGroup = createSelector(
+  getSelectedAccountGroup,
+  getAccountGroupWithInternalAccounts,
+  (selectedGroupId, accountGroups) =>
+    accountGroups.find((group) => group.id === selectedGroupId),
+);
+
 /**
  * Get an internal account from the account tree by its selected account group and CAIP chain ID.
  *
@@ -800,6 +807,13 @@ export const getIconSeedAddressByAccountGroupId =
       return accounts[0].address;
     },
   );
+
+export const selectSeedAddressForSelectedAccountGroup = (
+  state: MultichainAccountsState,
+) => {
+  const groupId = getSelectedAccountGroup(state);
+  return getIconSeedAddressByAccountGroupId(state, groupId);
+};
 
 /**
  * Get the address and scopes for the account group that matches the user's default address scope

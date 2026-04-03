@@ -2,7 +2,7 @@ import React from 'react';
 import { type BridgeHistoryItem } from '@metamask/bridge-status-controller';
 import { render } from '@testing-library/react';
 import { useSelector } from 'react-redux';
-import { toast } from 'react-hot-toast';
+import { toast } from '../../../../shared/lib/toast';
 import {
   selectEvmTransactionsForToast,
   selectNonEvmTransactionsForToast,
@@ -12,7 +12,7 @@ import { ToastListener } from './toast-listener';
 
 jest.mock('react-redux', () => ({ useSelector: jest.fn() }));
 
-jest.mock('react-hot-toast', () => ({
+jest.mock('../../../../shared/lib/toast', () => ({
   toast: {
     loading: jest.fn(),
     success: jest.fn(),

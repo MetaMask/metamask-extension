@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
-import { toast } from 'react-hot-toast';
 import { useSelector } from 'react-redux';
+import { toast } from '../../../../shared/lib/toast';
 import {
   selectNonEvmTransactionsForToast,
   selectEvmTransactionsForToast,
@@ -9,11 +9,21 @@ import { selectBridgeHistoryForToast } from '../../../ducks/bridge-status/select
 import { useTransactionLifecycle } from '../../../hooks/useTransactionLifecycle';
 import { useNonEvmTransactionLifecycle } from '../../../hooks/useNonEvmTransactionLifecycle';
 import { useBridgeHistoryLifecycle } from '../../../hooks/useBridgeHistoryLifecycle';
+import {
+  TransactionStatus,
+  useTransactionDisplay,
+} from '../../../helpers/utils/transaction-display';
+import { useConnectAccountToast } from '../../../hooks/useConnectAccountToast';
 import { ToastContent } from './toast';
 import type { Handlers } from './types';
 
 type EvmTx = ReturnType<typeof selectEvmTransactionsForToast>[number];
 type NonEvmTx = ReturnType<typeof selectNonEvmTransactionsForToast>[number];
+
+const Content = ({ status }: { status: TransactionStatus }) => {
+  const { title } = useTransactionDisplay(status);
+  return <ToastContent title={title} />;
+};
 
 /**
  * Watches EVM transactions for status transitions and shows toast notifications
@@ -24,17 +34,17 @@ function useEvmTransactionToasts() {
   const handlers = useMemo<Handlers<EvmTx>>(
     () => ({
       onPending: (tx) => {
-        toast.loading(<ToastContent status="pending" />, {
+        toast.loading(<Content status="pending" />, {
           id: `tx-${tx.id}`,
         });
       },
       onSuccess: (tx) => {
-        toast.success(<ToastContent status="success" />, {
+        toast.success(<Content status="success" />, {
           id: `tx-${tx.id}`,
         });
       },
       onFailure: (tx) => {
-        toast.error(<ToastContent status="failed" />, {
+        toast.error(<Content status="failed" />, {
           id: `tx-${tx.id}`,
         });
       },
@@ -54,17 +64,17 @@ function useNonEvmTransactionToasts() {
   const handlers = useMemo<Handlers<NonEvmTx>>(
     () => ({
       onPending: (tx) => {
-        toast.loading(<ToastContent status="pending" />, {
+        toast.loading(<Content status="pending" />, {
           id: `non-evm-tx-${tx.id}`,
         });
       },
       onSuccess: (tx) => {
-        toast.success(<ToastContent status="success" />, {
+        toast.success(<Content status="success" />, {
           id: `non-evm-tx-${tx.id}`,
         });
       },
       onFailure: (tx) => {
-        toast.error(<ToastContent status="failed" />, {
+        toast.error(<Content status="failed" />, {
           id: `non-evm-tx-${tx.id}`,
         });
       },
@@ -84,17 +94,17 @@ function useBridgeHistoryToasts() {
   const handlers = useMemo(
     () => ({
       onPending: (key: string) => {
-        toast.loading(<ToastContent status="pending" />, {
+        toast.loading(<Content status="pending" />, {
           id: `bridge-tx-${key}`,
         });
       },
       onSuccess: (key: string) => {
-        toast.success(<ToastContent status="success" />, {
+        toast.success(<Content status="success" />, {
           id: `bridge-tx-${key}`,
         });
       },
       onFailure: (key: string) => {
-        toast.error(<ToastContent status="failed" />, {
+        toast.error(<Content status="failed" />, {
           id: `bridge-tx-${key}`,
         });
       },
@@ -109,6 +119,7 @@ export function ToastListener() {
   useEvmTransactionToasts();
   useNonEvmTransactionToasts();
   useBridgeHistoryToasts();
+  useConnectAccountToast();
 
   return null;
 }

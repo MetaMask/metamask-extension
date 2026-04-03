@@ -20,9 +20,10 @@ import {
   ClaimSubmitToastType,
   StorageWriteErrorType,
 } from '../../../../shared/constants/app-state';
-import { AccountGroupWithInternalAccounts } from '../../../selectors/multichain-accounts/account-tree.types';
 import { getCaip25CaveatValueFromPermissions } from '../../../pages/permissions-connect/connect-page/utils';
 import { supportsChainIds } from '../../../hooks/useAccountGroupsForPermissions';
+import { selectSelectedAccountGroup } from '../../../selectors/multichain-accounts/account-tree';
+import type { MultichainAccountsState } from '../../../selectors/multichain-accounts/account-tree.types';
 import { getIsPrivacyToastRecent } from './utils';
 
 type State = {
@@ -113,9 +114,13 @@ export function selectNftDetectionEnablementToast(
 // If there is more than one connected account to activeTabOrigin,
 // *BUT* the current account is not one of them, show the banner
 export function selectShowConnectAccountGroupToast(
-  state: State & Pick<MetaMaskReduxState, 'activeTab'>,
-  accountGroup: AccountGroupWithInternalAccounts,
+  state: MetaMaskReduxState & MultichainAccountsState,
 ): boolean {
+  const accountGroup = selectSelectedAccountGroup(state);
+  if (!accountGroup) {
+    return false;
+  }
+
   const allowShowAccountSetting = getAlertEnabledness(state).unconnectedAccount;
   const connectedAccounts = getAllPermittedAccountsForCurrentTab(state);
   const activeTabOrigin = getOriginOfCurrentTab(state);
@@ -135,7 +140,6 @@ export function selectShowConnectAccountGroupToast(
 
   const showConnectAccountToast =
     allowShowAccountSetting &&
-    accountGroup &&
     isAccountSupported &&
     activeTabOrigin &&
     connectedAccounts.length > 0 &&

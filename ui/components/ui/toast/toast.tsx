@@ -1,17 +1,21 @@
 import React from 'react';
 import { useLocation } from 'react-router-dom';
-import { toast, ToastBar, Toaster as ToasterBase } from 'react-hot-toast';
 import {
+  Button,
   ButtonIcon,
   ButtonIconSize,
+  ButtonSize,
+  ButtonVariant,
   IconName,
+  TextVariant,
 } from '@metamask/design-system-react';
+import {
+  toast,
+  ToastBar,
+  Toaster as ToasterBase,
+} from '../../../../shared/lib/toast';
 import { isInteractiveUI } from '../../../../shared/lib/environment-type';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
-import {
-  useTransactionDisplay,
-  type TransactionStatus,
-} from '../../../helpers/utils/transaction-display';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { StatusIcon } from '../icon/status-icon';
 
@@ -49,14 +53,16 @@ export function Toaster() {
     >
       {(item) => (
         <ToastBar toast={item} position={item.position ?? 'bottom-center'}>
-          {({ message }) => (
+          {({ icon, message }) => (
             <>
-              <StatusIcon
-                state={
-                  statusMap[item.type as keyof typeof statusMap] ??
-                  statusMap.loading
-                }
-              />
+              {icon || (
+                <StatusIcon
+                  state={
+                    statusMap[item.type as keyof typeof statusMap] ??
+                    statusMap.loading
+                  }
+                />
+              )}
 
               {message}
 
@@ -64,6 +70,7 @@ export function Toaster() {
                 ariaLabel={t('close')}
                 iconName={IconName.Close}
                 size={ButtonIconSize.Sm}
+                className="self-start"
                 onClick={() => toast.dismiss(item.id)}
               />
             </>
@@ -74,12 +81,32 @@ export function Toaster() {
   );
 }
 
-export const ToastContent = ({ status }: { status: TransactionStatus }) => {
-  const { title } = useTransactionDisplay(status);
-
+export const ToastContent = ({
+  title,
+  actionText,
+  onActionClick,
+}: {
+  title: string;
+  actionText?: string;
+  onActionClick?: () => void;
+}) => {
   return (
     <div>
       <p className="text-m-body-md">{title}</p>
+
+      {onActionClick && (
+        <Button
+          variant={ButtonVariant.Secondary}
+          size={ButtonSize.Sm}
+          className="mt-2 rounded-lg"
+          textProps={{
+            variant: TextVariant.BodySm,
+          }}
+          onClick={onActionClick}
+        >
+          {actionText}
+        </Button>
+      )}
     </div>
   );
 };
