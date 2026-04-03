@@ -120,6 +120,10 @@ const manifestPlugin = new ManifestPlugin({
       }
     : {}),
   buildType: args.type,
+  // We want to set a build ID for test builds to make it easier for tooling to
+  // know if the build contents have changed. Can be useful during testing or
+  // development.
+  setBuildId: args.test,
 });
 
 const plugins: WebpackPluginInstance[] = [

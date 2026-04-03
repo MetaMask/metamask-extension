@@ -632,11 +632,23 @@ export class ManifestPlugin<Z extends boolean> {
         }
       }
 
-      // cache the resolved manifests as RawSource
-      this.manifestSources.set(
-        browser,
-        new RawSource(JSON.stringify(manifest, null, 2)),
-      );
+      if (this.options.setBuildId) {
+        // if we edit the real `manifest` we change the compilation hash
+        const manifestForEmit = structuredClone(manifest);
+        manifestForEmit.build_id = compilation.fullHash;
+
+        // cache the resolved manifests as RawSource
+        this.manifestSources.set(
+          browser,
+          new RawSource(JSON.stringify(manifestForEmit, null, 2)),
+        );
+      } else {
+        // cache the resolved manifests as RawSource
+        this.manifestSources.set(
+          browser,
+          new RawSource(JSON.stringify(manifest, null, 2)),
+        );
+      }
     }
   }
 
