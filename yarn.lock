@@ -5048,9 +5048,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@lavamoat/webpack@npm:2.1.0":
-  version: 2.1.0
-  resolution: "@lavamoat/webpack@npm:2.1.0"
+"@lavamoat/webpack@npm:2.1.1":
+  version: 2.1.1
+  resolution: "@lavamoat/webpack@npm:2.1.1"
   dependencies:
     "@babel/parser": "npm:7.28.3"
     "@lavamoat/aa": "npm:^5.0.0"
@@ -5061,7 +5061,7 @@ __metadata:
     ses: "npm:1.15.0"
   peerDependencies:
     webpack: ^5.80.2
-  checksum: 10/8f8207bd5f6a7afd55f43c2e991daf891761189543c75f3a10ff07579e6df127db4288f2084ff941403318c9dd0b2d984e67f7f4bb01f3071fcce12f30875b34
+  checksum: 10/90e343c99b55f1aba45bf6aba3e3500bd0678bc9be53c96373c5f26d9eadf65fc09ad003196e5b6d6d65be374ea978aa7ca1207118f2e1faff2f33477452cc58
   languageName: node
   linkType: hard
 
@@ -33947,7 +33947,7 @@ __metadata:
     "@lavamoat/lavadome-react": "npm:0.0.20"
     "@lavamoat/lavapack": "npm:^7.0.22"
     "@lavamoat/snow": "npm:^2.0.4"
-    "@lavamoat/webpack": "npm:2.1.0"
+    "@lavamoat/webpack": "npm:2.1.1"
     "@ledgerhq/errors": "npm:^6.21.0"
     "@ledgerhq/hw-app-eth": "npm:^6.42.0"
     "@ledgerhq/hw-transport": "npm:^6.31.0"
