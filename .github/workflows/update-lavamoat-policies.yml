@@ -58,7 +58,7 @@ jobs:
           echo "Found run ${RUN_ID}, looking for failed lavamoat validation job ids..."
 
           FAILED_LAVAMOAT_VALIDATION_JOB_IDS=$(gh api "/repos/${REPO}/actions/runs/${RUN_ID}/jobs" --paginate \
-            --jq '[.jobs[] | select(.workflow_name == "Validate LavaMoat policies") | select(.conclusion == "failure") | .id] | map(tostring) | join(",")')
+            --jq '[.jobs[] | select(.workflow_name == "Validate LavaMoat policies") | select(.steps[]? | select(.name == "Check working tree" and .conclusion == "failure")) | .id] | map(tostring) | join(",")')
 
           echo "FAILED_LAVAMOAT_VALIDATION_JOB_IDS=${FAILED_LAVAMOAT_VALIDATION_JOB_IDS}" >> "$GITHUB_OUTPUT"
           echo "Failed job IDs: ${FAILED_LAVAMOAT_VALIDATION_JOB_IDS:-none}"
@@ -96,23 +96,16 @@ jobs:
           for JOB_ID in "${JOB_IDS[@]}"; do
             echo "Extracting diff from job ${JOB_ID}..."
 
-            # Download job logs and extract the git diff output.
+            # Download job logs and extract the git diff output
             gh api "/repos/${REPO}/actions/jobs/${JOB_ID}/logs" \
               | sed -n '/^.*diff --git/,/^.*::error::Working tree dirty/p' \
               | grep -v '::error::' \
               | sed 's/^[0-9T:.Z-]* //' \
-              > /tmp/policy.patch \
-              || true
-            # `|| true` prevents pipefail from aborting when the logs
-            # contain no diff (e.g. the job failed for a non-policy reason).
+              > /tmp/policy.patch
 
-            if [ -s /tmp/policy.patch ]; then
-              echo "Applying patch from job ${JOB_ID} ($(wc -l < /tmp/policy.patch) lines)..."
-              git apply /tmp/policy.patch
-              HAS_CHANGES=true
-            else
-              echo "::warning::No diff found in job ${JOB_ID} logs"
-            fi
+            echo "Applying patch from job ${JOB_ID} ($(wc -l < /tmp/policy.patch) lines)..."
+            git apply /tmp/policy.patch
+            HAS_CHANGES=true
           done
 
           echo "HAS_CHANGES=${HAS_CHANGES}" >> "$GITHUB_OUTPUT"
