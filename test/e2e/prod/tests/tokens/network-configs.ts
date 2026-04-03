@@ -450,17 +450,17 @@ export const NETWORK_CONFIGS: NetworkConfig[] = [
   //   tokenlistUrl: 'https://raw.githubusercontent.com/okx/xlayer-tokenlist/main/xlayer.tokenlist.json',
   //   blockExplorerUrl: 'https://www.oklink.com/xlayer',
   // },
-  // {
-  //   networkId: 'Chiliz',
-  //   networkName: 'Chiliz Chain',
-  //   chainId: 88888,
-  //   symbol: 'CHZ',
-  //   rpcUrl: 'https://rpc.ankr.com/chiliz',
-  //   rpcName: 'Chiliz RPC',
-  //   tokenlistUrl:
-  //     'https://raw.githubusercontent.com/chiliz-c hain/token-list/main/tokenlist.json',
-  //   blockExplorerUrl: 'https://scan.chiliz.com',
-  // },
+  {
+    networkId: 'Chiliz',
+    networkName: 'Chiliz Chain',
+    chainId: 88888,
+    symbol: 'CHZ',
+    rpcUrl: 'https://rpc.ankr.com/chiliz',
+    rpcName: 'Chiliz RPC',
+    tokenlistUrl:
+      'https://raw.githubusercontent.com/chiliz-c hain/token-list/main/tokenlist.json',
+    blockExplorerUrl: 'https://scan.chiliz.com',
+  },
   // {
   //   networkId: 'Tempo Mainnet',
   //   networkName: 'Tempo Mainnet',
