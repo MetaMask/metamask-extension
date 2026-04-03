@@ -1257,6 +1257,28 @@ const PerpsMarketDetailPage: React.FC = () => {
                   </Text>
                 </Box>
 
+                {/* Leverage Row */}
+                <Box
+                  className="bg-muted px-4 py-3"
+                  flexDirection={BoxFlexDirection.Row}
+                  justifyContent={BoxJustifyContent.Between}
+                  alignItems={BoxAlignItems.Center}
+                  data-testid="perps-position-leverage"
+                >
+                  <Text
+                    variant={TextVariant.BodySm}
+                    color={TextColor.TextAlternative}
+                  >
+                    {t('perpsLeverage')}
+                  </Text>
+                  <Text
+                    variant={TextVariant.BodySm}
+                    fontWeight={FontWeight.Medium}
+                  >
+                    {position.leverage.value}x
+                  </Text>
+                </Box>
+
                 {/* Entry Price Row */}
                 <Box
                   className="bg-muted px-4 py-3"
