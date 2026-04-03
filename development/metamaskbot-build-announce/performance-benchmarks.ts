@@ -14,6 +14,7 @@ import type {
   BenchmarkResults,
   ComparisonKey,
   StatisticalResult,
+  WebVitalsSummary,
 } from '../../shared/constants/benchmarks';
 import {
   STARTUP_PRESETS,
@@ -50,6 +51,7 @@ export type BenchmarkEntry = {
   stdDev: StatisticalResult;
   p75: StatisticalResult;
   p95: StatisticalResult;
+  webVitals?: WebVitalsSummary;
   artifactUrl?: string;
 };
 
@@ -186,6 +188,7 @@ export function extractEntries(
       stdDev: raw.stdDev,
       p75: raw.p75,
       p95: raw.p95,
+      ...(raw.webVitals ? { webVitals: raw.webVitals } : {}),
       artifactUrl,
     }));
 }
@@ -240,9 +243,39 @@ export async function fetchBenchmarkEntries(
   return { entries: allEntries, missingPresets };
 }
 
+const CWV_METRICS: {
+  key: 'inp' | 'fcp' | 'lcp' | 'cls';
+  label: string;
+  unit: string;
+  good: number;
+  poor: number;
+}[] = [
+  { key: 'inp', label: 'INP', unit: 'ms', good: 200, poor: 500 },
+  { key: 'fcp', label: 'FCP', unit: 'ms', good: 1800, poor: 3000 },
+  { key: 'lcp', label: 'LCP', unit: 'ms', good: 2500, poor: 4000 },
+  { key: 'cls', label: 'CLS', unit: '', good: 0.1, poor: 0.25 },
+];
+
+function getCwvIcon(value: number, good: number, poor: number): string {
+  if (value <= good) {
+    return HEALTH_ICON[EntryHealth.Pass];
+  }
+  if (value <= poor) {
+    return HEALTH_ICON[EntryHealth.Warn];
+  }
+  return HEALTH_ICON[EntryHealth.Fail];
+}
+
+function formatCwvValue(value: number, unit: string): string {
+  if (unit === 'ms') {
+    return value >= 1000
+      ? `${(value / 1000).toFixed(1)}s`
+      : `${Math.round(value)}ms`;
+  }
+  return value.toFixed(3);
+}
+
 /**
- * Computes the worst EntryHealth for a benchmark entry using the absolute gate only.
- *
  * Validates P75/P95 against THRESHOLD_REGISTRY limits.
  * Fail violation → EntryHealth.Fail; Warn violation → EntryHealth.Warn.
  * Returns Pass when no threshold is registered or all values are within limits.
@@ -258,6 +291,9 @@ export function computeEntryHealth(
   entry: BenchmarkEntry,
   _baselineMetrics: HistoricalBaselineReference[string] | undefined,
 ): EntryHealth {
+  let health: EntryHealth = EntryHealth.Pass;
+
+  // Timer threshold checks
   const thresholdConfig = THRESHOLD_REGISTRY[entry.benchmarkName];
   if (thresholdConfig) {
     const { violations } = validateResultThresholds(
@@ -268,10 +304,24 @@ export function computeEntryHealth(
       return EntryHealth.Fail;
     }
     if (violations.some((v) => v.severity === THRESHOLD_SEVERITY.Warn)) {
-      return EntryHealth.Warn;
+      health = EntryHealth.Warn;
     }
   }
-  return EntryHealth.Pass;
+
+  // CWV checks: warn on "needs-improvement" or worse (p75 > good threshold).
+  // Does not fail — informational only until team calibrates expectations.
+  const agg = entry.webVitals?.aggregated;
+  if (agg) {
+    for (const { key, good } of CWV_METRICS) {
+      const s = agg[key];
+      if (s && s.max > 0 && s.p75 > good) {
+        health = EntryHealth.Warn;
+        break;
+      }
+    }
+  }
+
+  return health;
 }
 
 /**
@@ -456,7 +506,7 @@ function formatTimerDetails(
   const thresholdConfig = THRESHOLD_REGISTRY[entry.benchmarkName];
 
   const entries = Object.entries(entry.mean)
-    .map(([metricName, meanValue]) => {
+    .map(([metricName]) => {
       let icon = HEALTH_ICON[EntryHealth.Pass];
       let hasIssue = false;
 
@@ -536,9 +586,6 @@ function buildRelativeDeltaSection(
   const lines: string[] = [];
 
   for (const entry of entries) {
-    // Try the current key format first (e.g. pageLoad/startupStandardHome).
-    // TODO: remove the legacy fallback once PR #41217 has merged into main and
-    // the historical stats file has fully transitioned to the new key format
     const baselineMetrics =
       resolveBaseline(baseline, entry.presetName, entry.benchmarkName) ??
       (entry.presetName.startsWith('startup')
@@ -581,6 +628,45 @@ function buildRelativeDeltaSection(
 
   return `<p><b>📈 Results compared to the previous 5 runs on main</b></p><ul>${lines.join('')}</ul>\n`;
 }
+
+/**
+ * Builds a separate CWV subsection showing P75 values and rating distributions.
+ * Shown independently of baseline — absolute values are meaningful for CWV
+ * due to universal thresholds (INP <200ms, LCP <2500ms, etc.).
+ * TODO: transition to delta-only format once CWV baseline data accumulates.
+ * @param entries
+ */
+function buildCwvSection(entries: BenchmarkEntry[]): string {
+  const lines: string[] = [];
+
+  for (const entry of entries) {
+    const agg = entry.webVitals?.aggregated;
+    if (!agg) {
+      continue;
+    }
+    for (const { key, label, unit, good, poor } of CWV_METRICS) {
+      const s = agg[key];
+      if (!s || s.max === 0) {
+        continue;
+      }
+      if (s.p75 <= good) {
+        continue;
+      }
+      const icon = getCwvIcon(s.p75, good, poor);
+      lines.push(
+        `<li>${icon} <code>${entry.benchmarkName}/${label}</code>: p75 ${formatCwvValue(s.p75, unit)}</li>`,
+      );
+    }
+  }
+
+  if (lines.length === 0) {
+    return '';
+  }
+
+  const legend = `${HEALTH_ICON[EntryHealth.Pass]} good · ${HEALTH_ICON[EntryHealth.Warn]} needs improvement · ${HEALTH_ICON[EntryHealth.Fail]} poor (<a href="https://web.dev/articles/vitals">web.dev thresholds</a>)`;
+  return `<p><b>🌐 Core Web Vitals</b> — ${legend}</p><ul>${lines.join('')}</ul>\n`;
+}
+
 export function buildBenchmarkSection(
   result: FetchBenchmarkResult,
   summary: string,
@@ -674,7 +760,9 @@ export function buildBenchmarkSection(
     }
 
     const deltaSection = buildRelativeDeltaSection(entries, baseline);
-    const sectionContent = warningHtml + sectionBody + deltaSection;
+    const cwvSection = buildCwvSection(entries);
+    const sectionContent =
+      warningHtml + sectionBody + deltaSection + cwvSection;
     return sectionContent
       ? `<details><summary><b>${summary}${sectionBadge}</b></summary>\n${sectionContent}</details>\n`
       : '';
