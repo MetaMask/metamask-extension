@@ -1,8 +1,4 @@
-import React, {
-  useState,
-  useCallback,
-  useMemo,
-} from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 import {
   PERPS_EVENT_PROPERTY,
   PERPS_EVENT_VALUE,

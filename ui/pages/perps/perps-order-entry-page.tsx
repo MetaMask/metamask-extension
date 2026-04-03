@@ -768,7 +768,10 @@ const PerpsOrderEntryPage: React.FC = () => {
         );
         if (!result.success) {
           const message = result.error || 'Failed to update TP/SL';
-          reportTransactionFailure(MetaMetricsEventName.PerpsRiskManagement, message);
+          reportTransactionFailure(
+            MetaMetricsEventName.PerpsRiskManagement,
+            message,
+          );
           throw new Error(result.error ?? 'Failed to update TP/SL');
         }
         track(MetaMetricsEventName.PerpsRiskManagement, {
@@ -791,7 +794,10 @@ const PerpsOrderEntryPage: React.FC = () => {
       );
       if (!result.success) {
         const message = result.error || 'Failed to place order';
-        reportTransactionFailure(MetaMetricsEventName.PerpsTradeTransaction, message);
+        reportTransactionFailure(
+          MetaMetricsEventName.PerpsTradeTransaction,
+          message,
+        );
         throw new Error(result.error ?? 'Failed to place order');
       }
 
@@ -844,7 +850,8 @@ const PerpsOrderEntryPage: React.FC = () => {
       });
       if (!specificFailureTracked) {
         track(MetaMetricsEventName.PerpsError, {
-          [PERPS_EVENT_PROPERTY.ERROR_TYPE]: PERPS_EVENT_VALUE.ERROR_TYPE.BACKEND,
+          [PERPS_EVENT_PROPERTY.ERROR_TYPE]:
+            PERPS_EVENT_VALUE.ERROR_TYPE.BACKEND,
           [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: errorMessage,
         });
       }
