@@ -1828,169 +1828,6 @@ async function mockGasIncludedSwapUSDCtoDAI(mockServer: Mockttp) {
     );
 }
 
-const STX_UUID = '0d506aaa-5e38-4cab-ad09-2039cb7a0f33';
-const STX_TRANSACTION_HASH =
-  '0xec9d6214684d6dc191133ae4a7ec97db3e521fff9cfe5c4f48a84cb6c93a5fa5';
-
-const STX_MAINNET_SENTINEL_URL =
-  'https://tx-sentinel-ethereum-mainnet.api.cx.metamask.io';
-
-const STX_MAINNET_NETWORK_CONFIG = {
-  smartTransactionsNetworks: {
-    '0x1': {
-      extensionActive: true,
-      sentinelUrl: STX_MAINNET_SENTINEL_URL,
-      expectedDeadline: 45,
-      maxDeadline: 160,
-    },
-  },
-};
-
-/**
- * Mocks STX service endpoints for bridge/swap tests.
- *
- * submitTransactions forwards each raw signed tx to Anvil
- * via eth_sendRawTransaction. Anvil mines it immediately, so the real tx hash is
- * on-chain and eth_getTransactionReceipt returns a genuine receipt — which is what
- * the extension's TransactionController needs to mark the transaction as Confirmed.
- *
- * @param mockServer - The Mockttp server instance
- * @param chainId - The chain ID to mock STX endpoints for
- * @param sentinelUrl - The sentinel base URL for this chain
- * @param batchStatusOverride - Optional overrides for the batchStatus response
- */
-async function mockSmartTransactionsForBridge(
-  mockServer: Mockttp,
-  chainId: number = 1,
-  sentinelUrl: string = STX_MAINNET_SENTINEL_URL,
-  batchStatusOverride?: Record<string, unknown>,
-) {
-  const ANVIL_RPC_URL = 'http://localhost:8545';
-
-  let latestMinedHash = STX_TRANSACTION_HASH;
-
-  await mockServer
-    .forGet(`${sentinelUrl}/network`)
-    .always()
-    .thenCallback(() => ({
-      ok: true,
-      statusCode: 200,
-      json: { smartTransactions: true },
-    }));
-
-  await mockServer
-    .forPost(
-      `https://transaction.api.cx.metamask.io/networks/${chainId}/getFees`,
-    )
-    .always()
-    .thenCallback(() => ({
-      statusCode: 200,
-      json: {
-        blockNumber: 20728974,
-        id: '19d4eea3-8a49-463e-9e9c-099f9d9571ca',
-        txs: [
-          {
-            cancelFees: [],
-            return: '0x',
-            status: 1,
-            gasUsed: 190780,
-            gasLimit: 239420,
-            fees: [
-              {
-                maxFeePerGas: 4667609171,
-                maxPriorityFeePerGas: 1000000004,
-                gas: 239420,
-                balanceNeeded: 1217518987960240,
-                currentBalance: 7519823030829194,
-                error: '',
-              },
-            ],
-            feeEstimate: 627603309182220,
-            baseFeePerGas: 2289670348,
-            maxFeeEstimate: 1117518987720820,
-          },
-        ],
-      },
-    }));
-
-  await mockServer
-    .forPost(
-      `https://transaction.api.cx.metamask.io/networks/${chainId}/submitTransactions`,
-    )
-    .always()
-    .thenCallback(async (req) => {
-      let rawTxs: string[] = [];
-      try {
-        const body = (await req.body.getJson()) as { rawTxs?: string[] };
-        rawTxs = body?.rawTxs ?? [];
-      } catch {
-        // ignore JSON parse errors
-      }
-
-      const txHashes: string[] = [];
-      for (let i = 0; i < rawTxs.length; i++) {
-        try {
-          const response = await fetch(ANVIL_RPC_URL, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              jsonrpc: '2.0',
-              method: 'eth_sendRawTransaction',
-              params: [rawTxs[i]],
-              id: i + 1,
-            }),
-          });
-          const data = (await response.json()) as { result?: string };
-          if (data.result) {
-            txHashes.push(data.result);
-          }
-        } catch {
-          // non-fatal: extension computes txHashes locally from rawTxs anyway
-        }
-      }
-
-      if (txHashes.length > 0) {
-        latestMinedHash = txHashes[txHashes.length - 1];
-      }
-
-      return {
-        statusCode: 200,
-        json: {
-          uuid: STX_UUID,
-          txHashes: txHashes.length > 0 ? txHashes : [STX_TRANSACTION_HASH],
-        },
-      };
-    });
-
-  await mockServer
-    .forGet(
-      `https://transaction.api.cx.metamask.io/networks/${chainId}/batchStatus`,
-    )
-    .always()
-    .thenCallback((req) => {
-      const uuid = new URL(req.url).searchParams.get('uuids') ?? STX_UUID;
-      return {
-        statusCode: 200,
-        json: {
-          [uuid]: {
-            cancellationFeeWei: 0,
-            cancellationReason: 'not_cancelled',
-            deadlineRatio: 0,
-            isSettled: true,
-            minedTx: 'success',
-            wouldRevertMessage: null,
-            minedHash: latestMinedHash,
-            timedOut: true,
-            proxied: false,
-            type: 'sentinel',
-            ...batchStatusOverride,
-          },
-        },
-      };
-    });
-}
-
-
 export const getGasIncludedSwapFixtures = (title?: string) => {
   const fixtureBuilder = new FixtureBuilder({
     inputChainId: CHAIN_IDS.MAINNET,
@@ -2021,7 +1858,11 @@ export const getGasIncludedSwapFixtures = (title?: string) => {
         await mockGetPopularTokens(mockServer),
         await mockGasIncludedSwapETHtoUSDC(mockServer),
         await mockGasIncludedSwapUSDCtoDAI(mockServer),
-        await mockFeatureFlags(mockServer, BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED),
+        await mockFeatureFlags(
+          mockServer,
+          BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
+          STX_MAINNET_NETWORK_CONFIG,
+        ),
         await mockAccountsTransactions(mockServer),
         await mockAccountsBalances(mockServer),
         await mockPriceSpotPrices(mockServer),
@@ -2041,7 +1882,6 @@ export const getGasIncludedSwapFixtures = (title?: string) => {
         bridgeConfig: BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
         ...STX_MAINNET_NETWORK_CONFIG,
       },
-      testing: { disableSmartTransactionsOverride: true },
     },
     ethConversionInUsd: ETH_CONVERSION_RATE_USD,
     smartContract: SMART_CONTRACTS.HST,
@@ -2124,7 +1964,17 @@ export const getGasless7702SwapFixtures = (title?: string) => {
         await mockGetTokenArbitrum(mockServer),
         await mockGetPopularTokens(mockServer),
         await mockGasSponsoredSwapETHtoUSDC(mockServer),
-        await mockFeatureFlags(mockServer, BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED),
+        await mockFeatureFlags(mockServer, BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED, {
+          smartTransactionsNetworks: {
+            '0x1': {
+              maxDeadline: 160,
+              sentinelUrl: STX_MAINNET_SENTINEL_URL,
+              expectedDeadline: 45,
+              extensionActive: true,
+              gaslessBridgeWith7702Enabled: true,
+            },
+          },
+        }),
         await mockAccountsTransactions(mockServer),
         await mockAccountsBalances(mockServer),
         await mockPriceSpotPrices(mockServer),
@@ -2152,7 +2002,6 @@ export const getGasless7702SwapFixtures = (title?: string) => {
           },
         },
       },
-      testing: { disableSmartTransactionsOverride: true },
     },
     ethConversionInUsd: ETH_CONVERSION_RATE_USD,
     smartContract: SMART_CONTRACTS.HST,
