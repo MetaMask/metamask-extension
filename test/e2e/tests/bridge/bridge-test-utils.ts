@@ -1702,7 +1702,11 @@ export const getBridgeL2Fixtures = (
       mocks.push(...(await mockSearchTokens(mockServer)));
 
       if (withSmartTransactions) {
-        await mockSmartTransactionsForBridge(mockServer, 59144, STX_LINEA_SENTINEL_URL);
+        await mockSmartTransactionsForBridge(
+          mockServer,
+          59144,
+          STX_LINEA_SENTINEL_URL,
+        );
       }
 
       return mocks.filter(Boolean);
