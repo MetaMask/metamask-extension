@@ -1,5 +1,6 @@
 import {
   PerpsController,
+  type PerpsControllerMessenger as PackagePerpsControllerMessenger,
   type RawLedgerUpdate,
   type UserHistoryItem,
 } from '@metamask/perps-controller';
@@ -52,7 +53,8 @@ export const PerpsControllerInit: ControllerInitFunction<
     persistedState.PreferencesController?.useExternalServices ?? false;
 
   const controller = new PerpsController({
-    messenger: controllerMessenger,
+    messenger:
+      controllerMessenger as unknown as PackagePerpsControllerMessenger,
     state: persistedState.PerpsController,
     infrastructure,
     clientConfig: {
