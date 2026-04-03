@@ -138,7 +138,7 @@ export const CancelOrderModal: React.FC<CancelOrderModalProps> = ({
                 variant={TextVariant.BodyMd}
                 fontWeight={FontWeight.Medium}
               >
-                {order.symbol}
+                {displayName}
               </Text>
             </Box>
 

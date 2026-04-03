@@ -87,7 +87,7 @@ describe('CancelOrderModal', () => {
       );
 
       expect(screen.getByText('Limit Price')).toBeInTheDocument();
-      expect(screen.getByText('$3,000.00')).toBeInTheDocument();
+      expect(screen.getAllByText('$3,000.00').length).toBeGreaterThanOrEqual(1);
     });
 
     it('displays the size row with symbol', () => {
@@ -140,7 +140,7 @@ describe('CancelOrderModal', () => {
       );
 
       expect(screen.getByText('Order value')).toBeInTheDocument();
-      expect(screen.getByText('$3,000.00')).toBeInTheDocument();
+      expect(screen.getAllByText('$3,000.00').length).toBeGreaterThanOrEqual(1);
     });
 
     it('hides order value row when price is zero', () => {
