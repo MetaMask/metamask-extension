@@ -3,7 +3,6 @@ import React, {
   useMemo,
   useCallback,
   useEffect,
-  useRef,
 } from 'react';
 import {
   PERPS_EVENT_PROPERTY,
@@ -56,28 +55,23 @@ const PerpsActivityPage: React.FC = () => {
   const isPerpsExperienceAvailable = useSelector(getIsPerpsExperienceAvailable);
   const [activeFilter, setActiveFilter] =
     useState<PerpsTransactionFilter>('trade');
-  const { track } = usePerpsEventTracking();
-  const screenViewTrackedRef = useRef(false);
-
   // Fetch real transaction data from the Perps controller
   const { transactions, isLoading, error, refetch } =
     usePerpsTransactionHistory();
+
+  usePerpsEventTracking({
+    eventName: MetaMetricsEventName.PerpsScreenViewed,
+    conditions: !isLoading,
+    properties: {
+      [PERPS_EVENT_PROPERTY.SCREEN_TYPE]:
+        PERPS_EVENT_VALUE.SCREEN_TYPE.ACTIVITY,
+    },
+  });
 
   // Refetch on mount to ensure fresh data
   useEffect(() => {
     refetch();
   }, [refetch]);
-
-  useEffect(() => {
-    if (isLoading || screenViewTrackedRef.current) {
-      return;
-    }
-    screenViewTrackedRef.current = true;
-    track(MetaMetricsEventName.PerpsScreenViewed, {
-      [PERPS_EVENT_PROPERTY.SCREEN_TYPE]:
-        PERPS_EVENT_VALUE.SCREEN_TYPE.ACTIVITY,
-    });
-  }, [isLoading, track]);
 
   // Filter options for dropdown
   const filterOptions: DropdownOption<PerpsTransactionFilter>[] = useMemo(

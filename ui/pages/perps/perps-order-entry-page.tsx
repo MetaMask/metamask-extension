@@ -161,7 +161,6 @@ const PerpsOrderEntryPage: React.FC = () => {
   const selectedAddress = selectedAccount?.address;
   const { isEligible } = usePerpsEligibility();
   const { track } = usePerpsEventTracking();
-  const tradingScreenTrackedRef = useRef(false);
   const orderTypeInteractionSkippedRef = useRef(false);
   const trackRef = useRef(track);
   trackRef.current = track;
@@ -180,6 +179,16 @@ const PerpsOrderEntryPage: React.FC = () => {
     }
     return safeDecodeURIComponent(symbol);
   }, [symbol]);
+
+  usePerpsEventTracking({
+    eventName: MetaMetricsEventName.PerpsScreenViewed,
+    conditions: !marketsLoading && Boolean(decodedSymbol),
+    properties: {
+      [PERPS_EVENT_PROPERTY.SCREEN_TYPE]: PERPS_EVENT_VALUE.SCREEN_TYPE.TRADING,
+      ...(decodedSymbol && { [PERPS_EVENT_PROPERTY.ASSET]: decodedSymbol }),
+    },
+    resetKey: decodedSymbol,
+  });
 
   // Same candle stream as market detail (default 5m) so header price matches chart line.
   const { candleData } = usePerpsLiveCandles({
@@ -233,21 +242,6 @@ const PerpsOrderEntryPage: React.FC = () => {
       (m) => m.symbol.toLowerCase() === decodedSymbol.toLowerCase(),
     );
   }, [decodedSymbol, allMarkets]);
-
-  useEffect(() => {
-    tradingScreenTrackedRef.current = false;
-  }, [decodedSymbol]);
-
-  useEffect(() => {
-    if (marketsLoading || !decodedSymbol || tradingScreenTrackedRef.current) {
-      return;
-    }
-    tradingScreenTrackedRef.current = true;
-    track(MetaMetricsEventName.PerpsScreenViewed, {
-      [PERPS_EVENT_PROPERTY.SCREEN_TYPE]: PERPS_EVENT_VALUE.SCREEN_TYPE.TRADING,
-      [PERPS_EVENT_PROPERTY.ASSET]: decodedSymbol,
-    });
-  }, [marketsLoading, decodedSymbol, track]);
 
   useEffect(() => {
     if (!orderTypeInteractionSkippedRef.current) {

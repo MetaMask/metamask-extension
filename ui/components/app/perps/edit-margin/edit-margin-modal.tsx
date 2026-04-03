@@ -1,4 +1,4 @@
-import React, { useRef, useCallback, useState, useEffect } from 'react';
+import React, { useRef, useCallback, useState } from 'react';
 import {
   PERPS_EVENT_PROPERTY,
   PERPS_EVENT_VALUE,
@@ -48,29 +48,20 @@ export const EditMarginModal: React.FC<EditMarginModalProps> = ({
   mode,
 }) => {
   const t = useI18nContext();
-  const { track } = usePerpsEventTracking();
-  const marginScreenTrackedRef = useRef(false);
-  const title = mode === 'add' ? t('perpsAddMargin') : t('perpsRemoveMargin');
-  const saveRef = useRef<(() => void) | null>(null);
-  const [saveEnabled, setSaveEnabled] = useState(false);
-
-  useEffect(() => {
-    if (!isOpen) {
-      marginScreenTrackedRef.current = false;
-      return;
-    }
-    if (marginScreenTrackedRef.current) {
-      return;
-    }
-    marginScreenTrackedRef.current = true;
-    track(MetaMetricsEventName.PerpsScreenViewed, {
+  usePerpsEventTracking({
+    eventName: MetaMetricsEventName.PerpsScreenViewed,
+    conditions: isOpen,
+    properties: {
       [PERPS_EVENT_PROPERTY.SCREEN_TYPE]:
         mode === 'add'
           ? PERPS_EVENT_VALUE.SCREEN_TYPE.ADD_MARGIN
           : PERPS_EVENT_VALUE.SCREEN_TYPE.REMOVE_MARGIN,
       [PERPS_EVENT_PROPERTY.ASSET]: position.symbol,
-    });
-  }, [isOpen, mode, position.symbol, track]);
+    },
+  });
+  const title = mode === 'add' ? t('perpsAddMargin') : t('perpsRemoveMargin');
+  const saveRef = useRef<(() => void) | null>(null);
+  const [saveEnabled, setSaveEnabled] = useState(false);
 
   const handleSave = useCallback(() => {
     saveRef.current?.();

@@ -2,8 +2,6 @@ import React, {
   useState,
   useCallback,
   useMemo,
-  useRef,
-  useEffect,
 } from 'react';
 import {
   PERPS_EVENT_PROPERTY,
@@ -160,7 +158,6 @@ export const MarketListView: React.FC = () => {
   const isPerpsExperienceAvailable = useSelector(getIsPerpsExperienceAvailable);
   const allowedHip3Sources = useSelector(getHip3AllowedSourcesSet);
   const { track } = usePerpsEventTracking();
-  const screenViewTrackedRef = useRef(false);
 
   // Use stream hooks for real-time market data
   const { markets: allMarkets, isInitialLoading: marketsLoading } =
@@ -193,16 +190,14 @@ export const MarketListView: React.FC = () => {
   // Use stream loading state
   const isLoading = marketsLoading;
 
-  useEffect(() => {
-    if (isLoading || screenViewTrackedRef.current) {
-      return;
-    }
-    screenViewTrackedRef.current = true;
-    track(MetaMetricsEventName.PerpsScreenViewed, {
+  usePerpsEventTracking({
+    eventName: MetaMetricsEventName.PerpsScreenViewed,
+    conditions: !isLoading,
+    properties: {
       [PERPS_EVENT_PROPERTY.SCREEN_TYPE]:
         PERPS_EVENT_VALUE.SCREEN_TYPE.MARKET_LIST,
-    });
-  }, [isLoading, track]);
+    },
+  });
 
   // Check if there are any uncategorized HIP-3 markets (for showing "New" filter)
   const hasUncategorizedMarkets = useMemo(() => {

@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useEffect, useRef } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import {
   PERPS_EVENT_PROPERTY,
   PERPS_EVENT_VALUE,
@@ -51,10 +51,23 @@ const PerpsTutorialModal: React.FC<PerpsTutorialModalProps> = ({ onClose }) => {
   const dispatch = useDispatch();
   const theme = useTheme();
   const { track } = usePerpsEventTracking();
-  const tutorialOpenTrackedRef = useRef(false);
+  usePerpsEventTracking({
+    eventName: MetaMetricsEventName.PerpsScreenViewed,
+    conditions: isOpen,
+    properties: {
+      [PERPS_EVENT_PROPERTY.SCREEN_TYPE]:
+        PERPS_EVENT_VALUE.SCREEN_TYPE.TUTORIAL,
+    },
+  });
+  usePerpsEventTracking({
+    eventName: MetaMetricsEventName.PerpsUiInteraction,
+    conditions: isOpen,
+    properties: {
+      [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
+        PERPS_EVENT_VALUE.INTERACTION_TYPE.TUTORIAL_STARTED,
+    },
+  });
   const isPopup = getEnvironmentType() === ENVIRONMENT_TYPE_POPUP;
-
-  // Use a shorter height for popup to avoid scroll
   const modalHeight = useMemo(() => (isPopup ? '580px' : '675px'), [isPopup]);
 
   const currentStepIndex = useMemo(
@@ -66,25 +79,6 @@ const PerpsTutorialModal: React.FC<PerpsTutorialModalProps> = ({ onClose }) => {
     () => currentStepIndex === TUTORIAL_STEPS_ORDER.length - 1,
     [currentStepIndex],
   );
-
-  useEffect(() => {
-    if (!isOpen) {
-      tutorialOpenTrackedRef.current = false;
-      return;
-    }
-    if (tutorialOpenTrackedRef.current) {
-      return;
-    }
-    tutorialOpenTrackedRef.current = true;
-    track(MetaMetricsEventName.PerpsScreenViewed, {
-      [PERPS_EVENT_PROPERTY.SCREEN_TYPE]:
-        PERPS_EVENT_VALUE.SCREEN_TYPE.TUTORIAL,
-    });
-    track(MetaMetricsEventName.PerpsUiInteraction, {
-      [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
-        PERPS_EVENT_VALUE.INTERACTION_TYPE.TUTORIAL_STARTED,
-    });
-  }, [isOpen, track]);
 
   const handleClose = useCallback(() => {
     dispatch(setTutorialModalOpen(false));

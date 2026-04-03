@@ -3,7 +3,6 @@ import React, {
   useMemo,
   useCallback,
   useEffect,
-  useRef,
 } from 'react';
 import {
   PERPS_EVENT_PROPERTY,
@@ -62,7 +61,15 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
 }) => {
   const t = useI18nContext();
   const { track } = usePerpsEventTracking();
-  const positionCloseScreenTrackedRef = useRef(false);
+  usePerpsEventTracking({
+    eventName: MetaMetricsEventName.PerpsScreenViewed,
+    conditions: isOpen,
+    properties: {
+      [PERPS_EVENT_PROPERTY.SCREEN_TYPE]:
+        PERPS_EVENT_VALUE.SCREEN_TYPE.POSITION_CLOSE,
+      [PERPS_EVENT_PROPERTY.ASSET]: position.symbol,
+    },
+  });
   const { formatCurrencyWithMinThreshold } = useFormatters();
 
   const [closePercent, setClosePercent] = useState(100);
@@ -76,22 +83,6 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
       setError(null);
     }
   }, [isOpen]);
-
-  useEffect(() => {
-    if (!isOpen) {
-      positionCloseScreenTrackedRef.current = false;
-      return;
-    }
-    if (positionCloseScreenTrackedRef.current) {
-      return;
-    }
-    positionCloseScreenTrackedRef.current = true;
-    track(MetaMetricsEventName.PerpsScreenViewed, {
-      [PERPS_EVENT_PROPERTY.SCREEN_TYPE]:
-        PERPS_EVENT_VALUE.SCREEN_TYPE.POSITION_CLOSE,
-      [PERPS_EVENT_PROPERTY.ASSET]: position.symbol,
-    });
-  }, [isOpen, position.symbol, track]);
 
   const displayName = getDisplayName(position.symbol);
 

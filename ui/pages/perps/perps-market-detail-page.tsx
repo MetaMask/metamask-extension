@@ -188,7 +188,6 @@ const PerpsMarketDetailPage: React.FC = () => {
   const selectedAddress = selectedAccount?.address;
   const { isEligible } = usePerpsEligibility();
   const { track } = usePerpsEventTracking();
-  const assetDetailScreenTrackedRef = useRef(false);
   const {
     formatCurrencyWithMinThreshold,
     formatNumber,
@@ -210,6 +209,19 @@ const PerpsMarketDetailPage: React.FC = () => {
     }
     return safeDecodeURIComponent(symbol);
   }, [symbol]);
+
+  usePerpsEventTracking({
+    eventName: MetaMetricsEventName.PerpsScreenViewed,
+    conditions: !marketsLoading && Boolean(decodedSymbol),
+    properties: {
+      [PERPS_EVENT_PROPERTY.SCREEN_TYPE]:
+        PERPS_EVENT_VALUE.SCREEN_TYPE.ASSET_DETAILS,
+      ...(decodedSymbol && {
+        [PERPS_EVENT_PROPERTY.ASSET]: decodedSymbol,
+      }),
+    },
+    resetKey: decodedSymbol,
+  });
 
   const [showSizeInFiat, setShowSizeInFiat] = useState(false);
 
@@ -614,26 +626,6 @@ const PerpsMarketDetailPage: React.FC = () => {
     return () =>
       document.removeEventListener('visibilitychange', handleVisibility);
   }, [selectedAddress]);
-
-  useEffect(() => {
-    assetDetailScreenTrackedRef.current = false;
-  }, [decodedSymbol]);
-
-  useEffect(() => {
-    if (
-      marketsLoading ||
-      !decodedSymbol ||
-      assetDetailScreenTrackedRef.current
-    ) {
-      return;
-    }
-    assetDetailScreenTrackedRef.current = true;
-    track(MetaMetricsEventName.PerpsScreenViewed, {
-      [PERPS_EVENT_PROPERTY.SCREEN_TYPE]:
-        PERPS_EVENT_VALUE.SCREEN_TYPE.ASSET_DETAILS,
-      [PERPS_EVENT_PROPERTY.ASSET]: decodedSymbol,
-    });
-  }, [marketsLoading, decodedSymbol, track]);
 
   // No-op handler for order cards - orders on detail page are already
   // filtered to current market, so clicking should not navigate anywhere

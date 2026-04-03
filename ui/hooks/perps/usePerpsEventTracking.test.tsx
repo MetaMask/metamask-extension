@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/naming-convention -- MetaMetrics event properties use snake_case */
 import React from 'react';
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook, act } from '@testing-library/react-hooks';
 import { PERPS_EVENT_PROPERTY } from '@metamask/perps-controller';
 
 import { MetaMetricsContext } from '../../contexts/metametrics';
@@ -83,7 +83,28 @@ describe('usePerpsEventTracking', () => {
       });
     });
 
-    it('does not send the event again when conditions toggles after the first fire', () => {
+    it('does not send the event again on re-renders while conditions stays true', () => {
+      const { rerender } = renderHook(
+        ({ conditions }: { conditions: boolean }) =>
+          usePerpsEventTracking({
+            eventName: MetaMetricsEventName.PerpsScreenViewed,
+            conditions,
+          }),
+        {
+          wrapper,
+          initialProps: { conditions: true },
+        },
+      );
+
+      expect(mockTrackEvent).toHaveBeenCalledTimes(1);
+
+      rerender({ conditions: true });
+      rerender({ conditions: true });
+
+      expect(mockTrackEvent).toHaveBeenCalledTimes(1);
+    });
+
+    it('fires again after conditions cycles false then true (modal re-open)', () => {
       const { rerender } = renderHook(
         ({ conditions }: { conditions: boolean }) =>
           usePerpsEventTracking({
@@ -101,7 +122,65 @@ describe('usePerpsEventTracking', () => {
       rerender({ conditions: false });
       rerender({ conditions: true });
 
+      expect(mockTrackEvent).toHaveBeenCalledTimes(2);
+    });
+
+    it('fires again when resetKey changes while conditions stays true', () => {
+      const { rerender } = renderHook(
+        ({
+          conditions,
+          resetKey,
+        }: {
+          conditions: boolean;
+          resetKey: string;
+        }) =>
+          usePerpsEventTracking({
+            eventName: MetaMetricsEventName.PerpsScreenViewed,
+            conditions,
+            resetKey,
+          }),
+        {
+          wrapper,
+          initialProps: { conditions: true, resetKey: 'BTC' },
+        },
+      );
+
       expect(mockTrackEvent).toHaveBeenCalledTimes(1);
+
+      act(() => {
+        rerender({ conditions: true, resetKey: 'ETH' });
+      });
+
+      expect(mockTrackEvent).toHaveBeenCalledTimes(2);
+    });
+
+    it('does not fire again when resetKey changes while conditions is false', () => {
+      const { rerender } = renderHook(
+        ({
+          conditions,
+          resetKey,
+        }: {
+          conditions: boolean;
+          resetKey: string;
+        }) =>
+          usePerpsEventTracking({
+            eventName: MetaMetricsEventName.PerpsScreenViewed,
+            conditions,
+            resetKey,
+          }),
+        {
+          wrapper,
+          initialProps: { conditions: false, resetKey: 'BTC' },
+        },
+      );
+
+      expect(mockTrackEvent).not.toHaveBeenCalled();
+
+      act(() => {
+        rerender({ conditions: false, resetKey: 'ETH' });
+      });
+
+      expect(mockTrackEvent).not.toHaveBeenCalled();
     });
   });
 });
