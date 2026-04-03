@@ -11,7 +11,10 @@ import type {
   WebVitalsRun,
   WebVitalsSummary,
 } from '../../../../shared/constants/benchmarks';
-import { BENCHMARK_PERSONA } from '../../../../shared/constants/benchmarks';
+import {
+  BENCHMARK_BUILD_TYPES,
+  BENCHMARK_PERSONA,
+} from '../../../../shared/constants/benchmarks';
 import {
   ALL_METRICS,
   DEFAULT_NUM_BROWSER_LOADS,
@@ -182,8 +185,6 @@ export async function runBenchmarkWithIterations(
       aggregated: aggregateWebVitals(webVitalsRuns),
     };
   }
-  // Extract benchmarkType from the first result (same across all iterations)
-  const benchmarkType = allResults.find((r) => r.benchmarkType)?.benchmarkType;
 
   return {
     name,
@@ -198,28 +199,23 @@ export async function runBenchmarkWithIterations(
     thresholdViolations: thresholdResult?.violations ?? [],
     thresholdsPassed: thresholdResult?.passed ?? true,
     ...(webVitalsSummary && { webVitals: webVitalsSummary }),
-    benchmarkType,
   };
 }
 
 /**
  * Convert BenchmarkSummary (from runBenchmarkWithIterations) to BenchmarkResults format
- * for consistent output with send-to-sentry.ts
+ * for consistent output with send-to-sentry.ts. `buildType` is always webpack.
  *
  * @param summary
  * @param testTitle
  * @param persona
- * @param benchmarkType
  * @param platform
- * @param buildType
  */
 export function convertSummaryToResults(
   summary: BenchmarkSummary,
   testTitle: string,
   persona: Persona = BENCHMARK_PERSONA.STANDARD,
-  benchmarkType?: BenchmarkType,
   platform?: string,
-  buildType?: string,
 ): BenchmarkResults {
   const mean: StatisticalResult = {};
   const min: StatisticalResult = {};
@@ -240,9 +236,8 @@ export function convertSummaryToResults(
   return {
     testTitle,
     persona,
-    benchmarkType,
     platform,
-    buildType,
+    buildType: BENCHMARK_BUILD_TYPES.WEBPACK,
     mean,
     min,
     max,

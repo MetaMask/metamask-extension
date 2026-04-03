@@ -36,10 +36,9 @@ yarn test:e2e:benchmark --preset userJourneyOnboardingNew --out results.json
 | `pageLoadBenchmark`            | Playwright dapp page load       | `dapp-page-load-benchmark.spec.ts`                               |
 | `all`                          | All benchmarks                  | Everything above                                                 |
 
-### User journey benchmarks: browserify vs webpack
+### User journey benchmarks
 
-- **PRs:** User journey benchmarks run on **Chrome + Browserify** only.
-- **Push to main/release:** User journey benchmarks also run on **Chrome + Webpack** (separate `benchmarks-webpack-perf` job) so we can compare build systems before releasing webpack to production.
+- User journey presets run on **Chrome and Firefox** with the **webpack** test build (`build-test-webpack` / `build-test-mv2-webpack` in CI), same as startup and interaction benchmarks.
 
 ### Special CI Requirements
 
@@ -141,7 +140,7 @@ Each benchmark entry becomes a **Sentry Structured Log** (`Sentry.logger.info`):
 - **Message:** `<benchmarkType>.<presetName>` — e.g. `performance.userJourneyOnboardingImport`, `userAction.interactionUserActions`, `benchmark.startupStandardHome`
 - **Attributes:**
   - `ci.branch`, `ci.commitHash`, `ci.prNumber` — Git/CI context
-  - `ci.browser`, `ci.buildType` — e.g. `chrome` / `browserify`
+  - `ci.browser` — e.g. `chrome` or `firefox`
   - `ci.persona` — `standard` or `powerUser`
   - `ci.testTitle` — human-readable test name from the benchmark file
   - Metric values, namespaced by stat type:
@@ -156,7 +155,6 @@ attributes: {
   "ci.branch":      "main",
   "ci.commitHash":  "abc1234",
   "ci.browser":     "chrome",
-  "ci.buildType":   "browserify",
   "ci.persona":     "standard",
   "ci.testTitle":   "benchmark-standard-home",
   "benchmark.mean.uiStartup":          1443,

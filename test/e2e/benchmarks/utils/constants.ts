@@ -282,7 +282,7 @@ const BENCHMARK_THRESHOLDS = {
   confirmTx: CONFIRM_TX,
   bridgeUserActions: BRIDGE_USER_ACTIONS,
 
-  // User journey benchmarks (chrome-browserify in PRs, chrome-webpack on main/release)
+  // User journey benchmarks (webpack)
   onboardingImportWallet: ONBOARDING_IMPORT_WALLET,
   onboardingNewWallet: ONBOARDING_NEW_WALLET,
   importSrpHome: IMPORT_SRP_HOME,
@@ -301,7 +301,7 @@ const BENCHMARK_THRESHOLDS = {
  *
  * To add a new benchmark:
  * - Add to BENCHMARK_THRESHOLDS with a camelCase key matching the filename
- * - All benchmarks now use simple keys; platform/buildType are stored as data fields
+ * - All benchmarks now use simple keys; platform/  buildType are stored as data fields
  */
 export const THRESHOLD_REGISTRY: Record<string, ThresholdConfig> = {
   ...BENCHMARK_THRESHOLDS,

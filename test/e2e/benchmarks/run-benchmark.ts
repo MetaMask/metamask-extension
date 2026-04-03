@@ -14,9 +14,10 @@ import {
   getFirstParentDirectoryThatExists,
   isWritable,
 } from '../../helpers/file';
-import type {
-  BenchmarkResults,
-  ThresholdViolation,
+import {
+  BENCHMARK_BUILD_TYPES,
+  type BenchmarkResults,
+  type ThresholdViolation,
 } from '../../../shared/constants/benchmarks';
 import { toCamelCase } from '../../../shared/lib/string-utils';
 import { runBenchmarkWithIterations, convertSummaryToResults } from './utils';
@@ -42,27 +43,22 @@ function supportsIterations(filePath: string): boolean {
 }
 
 /**
- * Extracts platform and buildType from output filename.
- * Expected format: benchmark-{platform}-{buildType}-{preset}.json
- * @param outputFilename - Output filename from --out arg
- * @returns Object with platform and buildType, or empty object if not found
+ * Extracts browser platform from `--out` filename.
+ * Expected format: `benchmark-{platform}-webpack-{preset}.json`.
+ *
+ * @param outputFilename - Output path from `--out`
+ * @returns Platform name, or `undefined` if the filename does not match
  */
-function extractPlatformBuildType(outputFilename?: string): {
-  platform?: string;
-  buildType?: string;
-} {
+function extractPlatformFromBenchmarkOutputFilename(
+  outputFilename?: string,
+): string | undefined {
   if (!outputFilename) {
-    return {};
+    return undefined;
   }
 
   const outputBasename = path.basename(outputFilename, '.json');
-  const match = outputBasename.match(/^benchmark-([^-]+)-([^-]+)-/u);
-  if (match) {
-    const [, platform, buildType] = match;
-    return { platform, buildType };
-  }
-
-  return {};
+  const match = outputBasename.match(/^benchmark-([^-]+)-webpack-/u);
+  return match?.[1];
 }
 
 /**
@@ -176,7 +172,7 @@ async function runBenchmarkFile(
     );
   }
 
-  const { platform, buildType } = extractPlatformBuildType(outputFilename);
+  const platform = extractPlatformFromBenchmarkOutputFilename(outputFilename);
 
   let result: BenchmarkResults;
   let violations: ThresholdViolation[];
@@ -202,19 +198,12 @@ async function runBenchmarkFile(
     );
 
     violations = summary.thresholdViolations;
-    result = convertSummaryToResults(
-      summary,
-      testTitle,
-      persona,
-      summary.benchmarkType,
-      platform,
-      buildType,
-    );
+    result = convertSummaryToResults(summary, testTitle, persona, platform);
   } else {
     result = (await runFn({
       ...options,
       platform,
-      buildType,
+      buildType: BENCHMARK_BUILD_TYPES.WEBPACK,
     })) as BenchmarkResults;
     violations = validateResultThresholds(result, thresholdConfig).violations;
   }

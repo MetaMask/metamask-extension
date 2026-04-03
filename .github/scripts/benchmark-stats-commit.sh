@@ -56,12 +56,13 @@ assemble_performance_data() {
         exit 1
     fi
 
-    # Page load presets run on ALL browser/buildType combinations (chrome/firefox × browserify/webpack).
+    # Page load presets run on ALL browser/buildType combinations (chrome/firefox × webpack).
     # They are stored under the "pageLoad" group, keyed as "{browser}-{buildType}-{preset}"
-    # so each combination has its own historical entry (e.g. "chrome-browserify-standardHome").
+    # so each combination has its own historical entry (e.g. "chrome-webpack-standardHome").
     #
-    # User action and performance presets only run on chrome-browserify (the canonical production
-    # target) and are stored under their own preset key (e.g. "userActions", "performanceAssets").
+    # Interaction and other non-page-load presets: chrome-webpack is stored under the preset key.
+    # User journey presets also merge firefox-webpack runs: inner JSON keys are prefixed
+    # `firefox-webpack-` so they sit alongside chrome keys (see resolveBaseline in utils.ts).
     local PAGE_LOAD_PRESETS=("startupStandardHome" "startupPowerUserHome")
 
     local presets_json="{}"
@@ -80,7 +81,7 @@ assemble_performance_data() {
 
         # Filename format: benchmark-{browser}-{buildType}-{preset}.json
         # browser:   chrome | firefox
-        # buildType: browserify | webpack
+        # buildType: webpack
         local base_name browser build_type preset_name
         base_name=$(basename "${file}" .json | sed 's/^benchmark-//')
         browser=$(echo "${base_name}" | cut -d'-' -f1)
@@ -108,18 +109,28 @@ assemble_performance_data() {
                 --arg key "${page_load_key}" \
                 --argjson data "${preset_data}" \
                 '. + {($key): $data}')
-        elif [[ "${browser}" == "chrome" && "${build_type}" == "browserify" ]]; then
-            # For user action and performance presets, only store chrome-browserify —
-            # that is what the PR comment displays.
+        elif [[ "${build_type}" == "webpack" ]]; then
             local preset_data
             preset_data=$(jq . "${file}")
-            echo "  Adding preset '${preset_name}' (chrome-browserify)" >&2
-            presets_json=$(echo "${presets_json}" | jq \
-                --arg key "${preset_name}" \
-                --argjson data "${preset_data}" \
-                '. + {($key): $data}')
+            if [[ "${browser}" == "chrome" ]]; then
+                echo "  Merging preset '${preset_name}' (chrome-webpack)" >&2
+                presets_json=$(echo "${presets_json}" | jq \
+                    --arg key "${preset_name}" \
+                    --argjson data "${preset_data}" \
+                    '.[$key] = (.[$key] // {}) * $data')
+            elif [[ "${browser}" == "firefox" && "${preset_name}" == userJourney* ]]; then
+                preset_data=$(echo "${preset_data}" | jq 'with_entries(.key |= "firefox-webpack-" + .)')
+                echo "  Merging preset '${preset_name}' (firefox-webpack user journey)" >&2
+                presets_json=$(echo "${presets_json}" | jq \
+                    --arg key "${preset_name}" \
+                    --argjson data "${preset_data}" \
+                    '.[$key] = (.[$key] // {}) * $data')
+            else
+                echo "  Skipping ${browser}-${build_type}-${preset_name} (non-page-load, non-canonical)" >&2
+                continue
+            fi
         else
-            echo "  Skipping ${browser}-${build_type}-${preset_name} (non-page-load, non-canonical)" >&2
+            echo "  Skipping ${browser}-${build_type}-${preset_name} (non-page-load, non-webpack)" >&2
             continue
         fi
 

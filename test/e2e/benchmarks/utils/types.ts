@@ -84,8 +84,6 @@ export type BenchmarkSummary = {
   exclusionRate: number;
   thresholdViolations: ThresholdViolation[];
   thresholdsPassed: boolean;
-  /** Benchmark type extracted from the first successful run */
-  benchmarkType?: BenchmarkType;
   /** Web vitals per-run data and aggregated statistics */
   webVitals?: WebVitalsSummary;
 };

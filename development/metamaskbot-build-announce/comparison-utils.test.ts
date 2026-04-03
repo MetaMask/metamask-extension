@@ -366,12 +366,10 @@ describe('THRESHOLD_REGISTRY', () => {
     expect(THRESHOLD_REGISTRY.loadNewAccount).toBeDefined();
     expect(THRESHOLD_REGISTRY.confirmTx).toBeDefined();
     expect(THRESHOLD_REGISTRY.bridgeUserActions).toBeDefined();
-    expect(
-      THRESHOLD_REGISTRY['chrome-browserify-loadNewAccount'],
-    ).toBeUndefined();
+    expect(THRESHOLD_REGISTRY['chrome-webpack-loadNewAccount']).toBeUndefined();
   });
 
-  it('has platform-agnostic keys for user journey (chrome-browserify + chrome-webpack)', () => {
+  it('has platform-agnostic keys for user journey (no per-platform threshold keys)', () => {
     expect(THRESHOLD_REGISTRY.onboardingImportWallet).toBeDefined();
     expect(THRESHOLD_REGISTRY.swap).toBeDefined();
     expect(THRESHOLD_REGISTRY['chrome-webpack-swap']).toBeUndefined();
@@ -381,7 +379,7 @@ describe('THRESHOLD_REGISTRY', () => {
     expect(THRESHOLD_REGISTRY.startupStandardHome).toBeDefined();
     expect(THRESHOLD_REGISTRY.startupPowerUserHome).toBeDefined();
     expect(
-      THRESHOLD_REGISTRY['chrome-browserify-startupStandardHome'],
+      THRESHOLD_REGISTRY['chrome-webpack-startupStandardHome'],
     ).toBeUndefined();
     expect(
       THRESHOLD_REGISTRY['firefox-webpack-startupPowerUserHome'],

@@ -3,7 +3,7 @@
  * Sends benchmark results to Sentry. Called by CI after benchmark.ts completes.
  *
  * Reads JSON from --results and sends metrics as Sentry structured logs with
- * attributes for filtering (ci.browser, ci.buildType, ci.persona, etc.).
+ * attributes for filtering (ci.browser, ci.persona, etc.).
  *
  * Timer-based benchmark data goes through structured logs (existing path).
  * Web vitals data goes through spans with measurements (separate path),
@@ -142,11 +142,6 @@ async function main() {
       default: 'chrome',
       description: 'Browser used (chrome or firefox)',
     })
-    .option('buildType', {
-      type: 'string',
-      default: 'browserify',
-      description: 'Build type (browserify or webpack)',
-    })
     .parse();
 
   const SENTRY_DSN = process.env.SENTRY_DSN_PERFORMANCE;
@@ -206,7 +201,6 @@ async function main() {
     'ci.prNumber': process.env.PR_NUMBER || 'none',
     'ci.commitHash': process.env.HEAD_COMMIT_HASH || getGitCommitHash(),
     'ci.browser': argv.browser,
-    'ci.buildType': argv.buildType,
   };
 
   let sentCount = 0;
