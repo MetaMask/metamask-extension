@@ -42,4 +42,43 @@ describe('Gas included swap tests', function (this: Suite) {
       },
     );
   });
+
+  it('swaps USDC to DAI with gas included using ERC20 source token', async function () {
+    await withFixtures(
+      getGasIncludedSwapFixtures(this.test?.fullTitle()),
+      async ({ driver }) => {
+        await login(driver, { expectedBalance: '$225,730.11' });
+
+        const homePage = new HomePage(driver);
+        await homePage.checkPageIsLoaded();
+
+        await homePage.startSwapFlow();
+
+        const bridgePage = new BridgeQuotePage(driver);
+        await bridgePage.checkPageIsLoaded();
+
+        await bridgePage.selectSrcToken('USDC');
+        await bridgePage.selectDestToken('DAI');
+
+        await bridgePage.clickMaxButton();
+
+        await bridgePage.waitForQuote();
+        await bridgePage.checkGasIncludedIsDisplayed();
+
+        await bridgePage.submitQuote();
+
+        await homePage.goToActivityList();
+        const activityList = new ActivityListPage(driver);
+        await activityList.checkCompletedBridgeTransactionActivity(2);
+        await activityList.checkTxAction({
+          action: 'Swap USDC to DAI',
+          confirmedTx: 1,
+        });
+        await activityList.checkTxAction({
+          action: 'Approve USDC for swaps',
+          confirmedTx: 2,
+        });
+      },
+    );
+  });
 });

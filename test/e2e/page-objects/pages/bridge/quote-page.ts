@@ -358,6 +358,16 @@ class BridgeQuotePage {
     `);
   }
 
+  async selectSrcToken(token: string): Promise<void> {
+    await this.driver.waitForSelector(this.sourceAssetPickerButton);
+    await this.driver.clickElement(this.sourceAssetPickerButton);
+    await this.driver.fill(this.assetPrickerSearchInput, token);
+    await this.driver.clickElementAndWaitToDisappear({
+      text: token,
+      css: this.tokenButton,
+    });
+  }
+
   async selectDestToken(token: string): Promise<void> {
     await this.driver.waitForSelector(this.destinationAssetPickerButton);
     await this.driver.clickElement(this.destinationAssetPickerButton);
@@ -366,7 +376,6 @@ class BridgeQuotePage {
       text: token,
       css: this.tokenButton,
     });
-    console.log(`Selected destination token: ${token}`);
   }
 
   async selectNetwork(network: string): Promise<void> {
