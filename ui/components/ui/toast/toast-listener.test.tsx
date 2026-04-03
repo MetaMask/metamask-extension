@@ -10,7 +10,15 @@ import {
 import { selectBridgeHistoryForToast } from '../../../ducks/bridge-status/selectors';
 import { ToastListener } from './toast-listener';
 
-jest.mock('react-redux', () => ({ useSelector: jest.fn() }));
+jest.mock('react-redux', () => ({
+  useSelector: jest.fn(),
+  useDispatch: jest.fn(() => jest.fn()),
+  batch: jest.fn((fn) => fn()),
+}));
+
+jest.mock('../../../hooks/useConnectAccountToast', () => ({
+  useConnectAccountToast: jest.fn(),
+}));
 
 jest.mock('../../../../shared/lib/toast', () => ({
   toast: {
@@ -24,6 +32,8 @@ jest.mock('../../../../shared/lib/toast', () => ({
 jest.mock('../../../selectors', () => ({
   selectEvmTransactionsForToast: jest.fn(),
   selectNonEvmTransactionsForToast: jest.fn(),
+  getOriginOfCurrentTab: jest.fn(),
+  getPermissions: jest.fn(),
 }));
 
 jest.mock('../../../ducks/bridge-status/selectors', () => ({
