@@ -11,9 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Warned users on outdated Chrome, Edge, Firefox, and Opera versions to update before support is removed. We will be dropping (#41063)
-  official support for Firefox on Windows 7-8.1 and macOS 10.12-10.14 in
-  the next release.
+- Added warnings for outdated Chrome, Edge, Firefox, and Opera to update before support ends, and announced that official Firefox support on Windows 7–8.1 and macOS 10.12–10.14 will end in the next release (#41063)
 - Transaction toast notification (#40886)
 - Enabled settings v2 to replace legacy settings (#41194)
 - Added banners localization (#41387)
