@@ -348,7 +348,11 @@ export const calculateTimerStatistics = (
 ): TimerStatistics => {
   const maxDuration = options?.maxDurationMs ?? MAX_METRIC_DURATION_MS;
   const minDuration = options?.minDurationMs ?? MIN_METRIC_DURATION_MS;
-  const sanityResult = filterBySanityChecks(durations, maxDuration, minDuration);
+  const sanityResult = filterBySanityChecks(
+    durations,
+    maxDuration,
+    minDuration,
+  );
   const { filtered, outlierCount } = detectOutliers(sanityResult.filtered);
   const sorted = [...filtered].sort((a, b) => a - b);
   const mean = calculateMean(filtered);

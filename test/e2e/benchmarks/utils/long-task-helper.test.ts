@@ -200,12 +200,12 @@ describe('long-task-helper', () => {
       expect(results).toHaveLength(4);
       expect(results).toContainEqual({
         id: 'longTaskCount',
-        duration: 2,
+        value: 2,
         unit: 'count',
       });
       expect(results).toContainEqual({
         id: 'longTaskMaxDuration',
-        duration: 110,
+        value: 110,
         unit: 'ms',
       });
     });
