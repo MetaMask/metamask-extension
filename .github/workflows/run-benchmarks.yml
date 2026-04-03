@@ -130,7 +130,7 @@ jobs:
           ${{ matrix.pageType == 'startupPowerUserHome' && format('yarn test:e2e:benchmark --preset startupPowerUserHome --browserLoads 10 --pageLoads 10 --out test-artifacts/benchmarks/benchmark-{0}-{1}-startupPowerUserHome.json --retries 2', matrix.browser, matrix.buildType) || format('yarn test:e2e:benchmark --preset {2} --out test-artifacts/benchmarks/benchmark-{0}-{1}-{2}.json --retries 2', matrix.browser, matrix.buildType, matrix.pageType) }}
         shell: bash
 
-      - name: Send benchmark results to Sentry
+      - name: Send benchmark results to Sentry (main/release only)
         if: >-
           ${{
             vars.SENTRY_DSN_PERFORMANCE &&
@@ -207,7 +207,7 @@ jobs:
       - name: Run dapp page load benchmarks
         run: yarn test:e2e:benchmark --preset=pageLoadBenchmark
 
-      - name: Send benchmark results to Sentry
+      - name: Send benchmark results to Sentry (main/release only)
         if: >-
           ${{
             vars.SENTRY_DSN_PERFORMANCE &&
