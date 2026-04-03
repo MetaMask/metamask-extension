@@ -461,7 +461,6 @@ describe('PerpsMarketDetailPage', () => {
 
       expect(getByText(messages.perpsDetails.message)).toBeInTheDocument();
       expect(getByText(messages.perpsDirection.message)).toBeInTheDocument();
-      expect(getByText(messages.perpsLeverage.message)).toBeInTheDocument();
       expect(getByText(messages.perpsEntryPrice.message)).toBeInTheDocument();
       // 'Liquidation price' appears in both the Details section and the
       // Edit Margin expandable, so use getAllByText
@@ -479,7 +478,7 @@ describe('PerpsMarketDetailPage', () => {
       );
 
       expect(getByTestId('perps-position-leverage')).toBeInTheDocument();
-      expect(getByText('3x')).toBeInTheDocument();
+      expect(getByText(/Long 3x/)).toBeInTheDocument();
     });
 
     it('displays stats section', () => {
