@@ -61,7 +61,7 @@ import { SubscriptionServiceAction } from '../../services/subscription/types';
 import {
   InstitutionalSnapControllerBeforeCheckPendingTransactionHookAction,
   InstitutionalSnapControllerPublishHookAction,
-} from './accounts/institutional-snap-controller-messenger';
+} from '../../controllers/institutional-snap/InstitutionalSnapController-method-action-types';
 
 type AllowedActions = MessengerActions<TransactionControllerMessenger>;
 
