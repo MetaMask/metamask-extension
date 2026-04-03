@@ -34,6 +34,7 @@ import type {
   BenchmarkFunction,
   BenchmarkRunResult,
   BenchmarkSummary,
+  MeasurePageResult,
   Metrics,
   UserActionMeasurement,
 } from './types';
@@ -212,6 +213,7 @@ export async function runBenchmarkWithIterations(
  * @param benchmarkType - Optional benchmark category
  * @param platform - Optional platform label
  * @param buildType - Optional build label
+ * @param webVitals - Optional aggregated web vitals (from {@link BenchmarkSummary.webVitals})
  */
 export function convertTimerStatisticsToBenchmarkResults(
   timers: TimerStatistics[],
@@ -220,6 +222,7 @@ export function convertTimerStatisticsToBenchmarkResults(
   benchmarkType?: BenchmarkType,
   platform?: string,
   buildType?: string,
+  webVitals?: WebVitalsSummary,
 ): BenchmarkResults {
   const mean: StatisticalResult = {};
   const min: StatisticalResult = {};
@@ -249,7 +252,7 @@ export function convertTimerStatisticsToBenchmarkResults(
     stdDev,
     p75,
     p95,
-    ...(summary.webVitals && { webVitals: summary.webVitals }),
+    ...(webVitals && { webVitals }),
   };
 }
 
@@ -279,15 +282,9 @@ export function convertSummaryToResults(
     benchmarkType,
     platform,
     buildType,
+    summary.webVitals,
   );
 }
-
-export type MeasurePageResult = {
-  metrics: Metrics[];
-  title: string;
-  persona: Persona;
-  webVitalsRuns?: WebVitalsMetrics[];
-};
 
 export async function runPageLoadBenchmark(
   measurePageFn: (

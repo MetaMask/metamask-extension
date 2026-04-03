@@ -23,61 +23,23 @@ yarn test:e2e:benchmark --preset userJourneyOnboardingNew --out results.json
 
 ### Available Presets
 
-| Preset                         | Description                     | Benchmarks                                                       |
-| ------------------------------ | ------------------------------- | ---------------------------------------------------------------- |
-| `startupStandardHome`          | Standard user cold-start        | `standard-home.ts`                                               |
-| `startupPowerUserHome`         | Power user cold-start           | `power-user-home.ts`                                             |
+| Preset                         | Description                     | Benchmarks                                                      |
+| ------------------------------ | ------------------------------- | --------------------------------------------------------------- |
+| `startupStandardHome`          | Standard user cold-start        | `standard-home.ts`                                              |
+| `startupPowerUserHome`         | Power user cold-start           | `power-user-home.ts`                                            |
 | `interactionUserActions`       | Single-action interaction times | `load-new-account.ts`, `confirm-tx.ts`, `bridge-user-actions.ts` |
-| `userJourneyOnboardingImport`  | Import wallet onboarding        | `onboarding-import-wallet.ts`                                    |
-| `userJourneyOnboardingNew`     | New wallet onboarding           | `onboarding-new-wallet.ts`                                       |
-| `userJourneyAssets`            | Asset detail page loads         | `asset-details.ts`, `solana-asset-details.ts`                    |
-| `userJourneyAccountManagement` | Login from home (import SRP)    | `import-srp-home.ts`                                             |
-| `userJourneyTransactions`      | Send and swap transaction flows | `send-transactions.ts`, `swap.ts`                                |
-| `pageLoadBenchmark`            | Dapp page load (Playwright)     | `dapp-page-load/` (see below)                                    |
-| `all`                          | All benchmarks                  | Everything above                                                 |
+| `userJourneyOnboardingImport`  | Import wallet onboarding        | `onboarding-import-wallet.ts`                                   |
+| `userJourneyOnboardingNew`     | New wallet onboarding           | `onboarding-new-wallet.ts`                                      |
+| `userJourneyAssets`            | Asset detail page loads         | `asset-details.ts`, `solana-asset-details.ts`                   |
+| `userJourneyAccountManagement` | Login from home (import SRP)    | `import-srp-home.ts`                                            |
+| `userJourneyTransactions`      | Send and swap transaction flows | `send-transactions.ts`, `swap.ts`                               |
+| `pageLoadBenchmark`            | Dapp page load (Playwright)     | `dapp-page-load/`                                    |
+| `all`                          | All benchmarks                  | Everything above                                                |
 
 ### User journey benchmarks: browserify vs webpack
 
 - **PRs:** User journey benchmarks run on **Chrome + Browserify** only.
 - **Push to main/release:** User journey benchmarks also run on **Chrome + Webpack** (extra `benchmarks` matrix rows with `mainOnly: true` in `run-benchmarks.yml`) so we can compare build systems before releasing webpack to production.
-
-### Dapp page load (`pageLoadBenchmark`) — Playwright
-
-The **`pageLoadBenchmark`** preset measures Core Web Vitals against the test dapp using **Playwright**, not the Selenium **`run()`** pattern used by other flows in this directory. Strategy notes: [gist](https://gist.github.com/ffmcgee725/2c4f67a5a3d6255ea985635510d19d47).
-
-- **Implementation:** `test/e2e/benchmarks/flows/dapp-page-load/` — Playwright spec, `PageLoadBenchmark` runner, stats aggregation, and unit tests. The Playwright **`benchmark`** project sets `testDir` to this folder (`playwright.config.ts`). `run-benchmark.ts` points at `dapp-page-load-benchmark.spec.ts`.
-- **CI:** **Chrome + Browserify only** (job id `benchmarks-page-load`, check name **`chrome-browserify-pageLoadBenchmark`**, same `browser-buildType-preset` style as other `run-benchmarks` matrix rows). Results merge into the same performance benchmark artifacts / `performance_data.json` as Selenium presets. Output artifact: `benchmark-chrome-browserify-pageLoadBenchmark.json`.
-
-| File                               | Role                                                            |
-| ---------------------------------- | --------------------------------------------------------------- |
-| `dapp-page-load-benchmark.ts`      | `PageLoadBenchmark` — browser, extension, dapp server, sampling |
-| `dapp-page-load-stats.ts`          | Aggregate samples → `TimerStatistics` / `BenchmarkResults` JSON |
-| `dapp-page-load-stats.test.ts`     | Unit tests for aggregation                                      |
-| `dapp-page-load-benchmark.spec.ts` | Playwright test entry                                           |
-
-**Metrics:** page load time, DOM content loaded, first paint, first contentful paint, largest contentful paint.
-
-**Run (same preset as above):** `yarn test:e2e:benchmark --preset pageLoadBenchmark` (or `--preset all`). First-time Playwright may need `yarn playwright install chromium`; the extension should be built (`yarn build:test`). To invoke Playwright directly: `yarn playwright test --project=benchmark` (optional: `BENCHMARK_BROWSER_LOADS`, `BENCHMARK_PAGE_LOADS`). Debug: `DEBUG=pw:api yarn playwright test --project=benchmark`.
-
-**Output file:** `test-artifacts/benchmarks/benchmark-chrome-browserify-pageLoadBenchmark.json` — example shape:
-
-```json
-{
-  "dappPageLoad": {
-    "testTitle": "dappPageLoad",
-    "persona": "powerUser",
-    "benchmarkType": "performance",
-    "mean": { "pageLoadTime": 1200, "domContentLoaded": 400 },
-    "stdDev": { ... },
-    "p75": { ... },
-    "p95": { ... },
-    "min": { ... },
-    "max": { ... }
-  }
-}
-```
-
-**Troubleshooting:** extension build failures, timeouts (raise `playwright.config.ts` benchmark project timeout), memory (lower browser/page loads), network access to the dapp. Questions: Consensys Slack `#wallet-api-sdk`.
 
 ### Special CI Requirements
 

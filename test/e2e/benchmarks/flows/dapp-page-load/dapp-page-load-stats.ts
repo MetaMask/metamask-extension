@@ -2,14 +2,11 @@ import {
   BENCHMARK_PERSONA,
   BENCHMARK_TYPE,
   type BenchmarkResults,
+  type TimerStatistics,
 } from '../../../../../shared/constants/benchmarks';
 import { calculateTimerStatistics } from '../../utils/statistics';
 import { convertTimerStatisticsToBenchmarkResults } from '../../utils/runner';
-import type {
-  DappPageLoadSample,
-  DappPageLoadStats,
-  TimerStatistics,
-} from '../../utils/types';
+import type { DappPageLoadSample, DappPageLoadStats } from '../../utils/types';
 
 const DAPP_PAGE_LOAD_BENCHMARK_KEY = 'dappPageLoad';
 

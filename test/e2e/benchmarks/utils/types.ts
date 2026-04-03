@@ -39,6 +39,13 @@ export type Metrics = {
   numNetworkReqs: number;
 };
 
+export type MeasurePageResult = {
+  metrics: Metrics[];
+  title: string;
+  persona: Persona;
+  webVitalsRuns?: WebVitalsMetrics[];
+};
+
 /** User action result with testTitle, persona, timing metrics, and Core Web Vitals. */
 export type UserActionResult = {
   testTitle: string;
