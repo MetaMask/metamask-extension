@@ -399,12 +399,25 @@ describe('PerpsMarketDetailPage', () => {
 
       expect(getByText(messages.perpsDetails.message)).toBeInTheDocument();
       expect(getByText(messages.perpsDirection.message)).toBeInTheDocument();
+      expect(getByText(messages.perpsLeverage.message)).toBeInTheDocument();
       expect(getByText(messages.perpsEntryPrice.message)).toBeInTheDocument();
       // 'Liquidation price' appears in both the Details section and the
       // Edit Margin expandable, so use getAllByText
       expect(
         getAllByText(messages.perpsLiquidationPrice.message).length,
       ).toBeGreaterThanOrEqual(1);
+    });
+
+    it('displays leverage value in position details', () => {
+      const store = mockStore(createMockState(true));
+
+      const { getByTestId, getByText } = renderWithProvider(
+        <PerpsMarketDetailPage />,
+        store,
+      );
+
+      expect(getByTestId('perps-position-leverage')).toBeInTheDocument();
+      expect(getByText('3x')).toBeInTheDocument();
     });
 
     it('displays stats section', () => {
