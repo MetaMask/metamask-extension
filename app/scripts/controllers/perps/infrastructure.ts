@@ -53,6 +53,12 @@ function createDebugLogger(): PerpsDebugLogger {
 
 function createMetrics(deps: InfrastructureDeps): PerpsMetrics {
   return {
+    // Always return true here: opt-in filtering is handled upstream by
+    // MetaMetricsController.trackEvent, which no-ops when the user hasn't
+    // consented to analytics. Mobile delegates this check to
+    // analytics.isEnabled() directly, but on extension the MetaMetrics
+    // layer is the single source of truth for consent enforcement.
+
     isEnabled: () => true,
     trackPerpsEvent: (
       event: PerpsAnalyticsEvent,
