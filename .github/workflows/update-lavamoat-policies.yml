@@ -19,7 +19,6 @@ jobs:
     outputs:
       IS_FORK: ${{ steps.is-fork.outputs.IS_FORK }}
       RUN_ID: ${{ steps.find-run.outputs.RUN_ID }}
-      RUN_STATUS: ${{ steps.find-run.outputs.RUN_STATUS }}
     steps:
       - name: Determine whether this PR is from a fork
         id: is-fork
@@ -50,11 +49,9 @@ jobs:
             --json databaseId,status)
 
           RUN_ID=$(echo "$RUN_JSON" | jq -r '.[0].databaseId // empty')
-          RUN_STATUS=$(echo "$RUN_JSON" | jq -r '.[0].status // empty')
 
           echo "RUN_ID=${RUN_ID}" >> "$GITHUB_OUTPUT"
-          echo "RUN_STATUS=${RUN_STATUS}" >> "$GITHUB_OUTPUT"
-          echo "Found run ${RUN_ID} with status ${RUN_STATUS}"
+          echo "Found run ${RUN_ID}"
 
   apply-and-commit:
     name: Apply policy diffs and commit
@@ -67,17 +64,30 @@ jobs:
       REPO: ${{ github.repository }}
       PR_NUMBER: ${{ github.event.issue.number }}
       RUN_ID: ${{ needs.prepare.outputs.RUN_ID }}
-      RUN_STATUS: ${{ needs.prepare.outputs.RUN_STATUS }}
       ACTION_RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
     steps:
-      - name: Check if validation run is ready
+      - name: Check if validation jobs are ready
         id: check-run
         run: |
           if [ -z "${RUN_ID}" ]; then
             gh pr comment "${PR_NUMBER}" --repo "${REPO}" --body "No CI run found for the latest commit. Please ensure CI has run before requesting a policy update."
             echo "READY=false" >> "$GITHUB_OUTPUT"
-          elif [ "${RUN_STATUS}" != "completed" ]; then
-            gh pr comment "${PR_NUMBER}" --repo "${REPO}" --body "CI is still running (status: ${RUN_STATUS}). Please wait for it to complete before requesting a policy update."
+            exit 0
+          fi
+
+          # Check whether all validate-lavamoat jobs have completed (ignore the overall run status)
+          STATUSES=$(gh api "/repos/${REPO}/actions/runs/${RUN_ID}/jobs" --paginate \
+            --jq '.jobs[] | select(.name | contains("Validate LavaMoat")) | .status')
+
+          if [ -z "$STATUSES" ]; then
+            gh pr comment "${PR_NUMBER}" --repo "${REPO}" --body "No LavaMoat validation jobs found in the CI run. Please ensure CI has run before requesting a policy update."
+            echo "READY=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          NOT_COMPLETED=$(echo "$STATUSES" | grep -v '^completed$' || true)
+          if [ -n "$NOT_COMPLETED" ]; then
+            gh pr comment "${PR_NUMBER}" --repo "${REPO}" --body "LavaMoat validation jobs are still running. Please wait for them to complete before requesting a policy update."
             echo "READY=false" >> "$GITHUB_OUTPUT"
           else
             echo "READY=true" >> "$GITHUB_OUTPUT"
