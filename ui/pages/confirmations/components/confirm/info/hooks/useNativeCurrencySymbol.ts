@@ -29,7 +29,9 @@ export const useNativeCurrencySymbol = (chainId?: Hex | CaipChainId) => {
       return { nativeCurrencySymbol: 'ETH' };
     }
     const caipChainId = (
-      chainId.startsWith('0x') ? `eip155:${parseInt(chainId, 16)}` : chainId
+      chainId.startsWith('0x')
+        ? `eip155:${Number.parseInt(chainId, 16)}`
+        : chainId
     ) as CaipChainId;
     const nativeCurrencySymbol =
       currencySymbolOverrides[caipChainId] ??

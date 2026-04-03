@@ -17,7 +17,6 @@ import { PPOMController } from '@metamask/ppom-validator';
 
 import { KeyringController } from '@metamask/keyring-controller';
 import log from 'loglevel';
-import { NetworkController } from '@metamask/network-controller';
 import {
   generateSecurityAlertId,
   handlePPOMError,
@@ -45,7 +44,6 @@ import { getTransactionDataRecipient } from '../../../../shared/lib/transaction.
 import { accountSupports7702 } from '../account-supports-7702';
 import {
   getTempoEvmTransactionArgs,
-  getTempoExtraOptionsForChain,
   getTempoTransactionBatchArgs,
   isTempoChain,
   isTempoTransactionType,

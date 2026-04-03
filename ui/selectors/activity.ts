@@ -1,9 +1,6 @@
 import { createSelector } from 'reselect';
 import { type TransactionMeta } from '@metamask/transaction-controller';
-import {
-  PENDING_STATUS_HASH,
-  EXCLUDED_TRANSACTION_TYPES,
-} from '../helpers/constants/transactions';
+import { EXCLUDED_TRANSACTION_TYPES } from '../helpers/constants/transactions';
 import type { TransactionGroup } from '../../shared/lib/multichain/types';
 import { CHAIN_ID_TO_CURRENCY_SYMBOL_MAP } from '../../shared/constants/network';
 import { NATIVE_TOKEN_ADDRESS } from '../../shared/constants/transaction';
