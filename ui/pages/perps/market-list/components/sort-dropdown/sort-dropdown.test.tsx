@@ -142,13 +142,13 @@ describe('SortDropdown', () => {
     it('includes volume option', () => {
       const option = SORT_FIELD_OPTIONS.find((opt) => opt.id === 'volume');
       expect(option).toBeDefined();
-      expect(option?.field).toBe('volume');
+      expect(option?.id).toBe('volume');
     });
 
     it('includes priceChange option', () => {
       const option = SORT_FIELD_OPTIONS.find((opt) => opt.id === 'priceChange');
       expect(option).toBeDefined();
-      expect(option?.field).toBe('priceChange');
+      expect(option?.id).toBe('priceChange');
     });
 
     it('includes openInterest option', () => {
@@ -156,13 +156,13 @@ describe('SortDropdown', () => {
         (opt) => opt.id === 'openInterest',
       );
       expect(option).toBeDefined();
-      expect(option?.field).toBe('openInterest');
+      expect(option?.id).toBe('openInterest');
     });
 
     it('includes fundingRate option', () => {
       const option = SORT_FIELD_OPTIONS.find((opt) => opt.id === 'fundingRate');
       expect(option).toBeDefined();
-      expect(option?.field).toBe('fundingRate');
+      expect(option?.id).toBe('fundingRate');
     });
 
     it('all options have labelKey for i18n', () => {

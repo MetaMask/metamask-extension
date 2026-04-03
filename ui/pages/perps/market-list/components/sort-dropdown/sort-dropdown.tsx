@@ -33,26 +33,13 @@ import type { SortField, SortDirection } from '../../../utils/sortMarkets';
 export type SortOption = {
   id: SortField;
   labelKey: string;
-  field: SortField;
 };
 
 export const SORT_FIELD_OPTIONS: SortOption[] = [
-  { id: 'volume', labelKey: 'perpsSortByVolume', field: 'volume' },
-  {
-    id: 'priceChange',
-    labelKey: 'perpsSortByPriceChange',
-    field: 'priceChange',
-  },
-  {
-    id: 'openInterest',
-    labelKey: 'perpsSortByOpenInterest',
-    field: 'openInterest',
-  },
-  {
-    id: 'fundingRate',
-    labelKey: 'perpsSortByFundingRate',
-    field: 'fundingRate',
-  },
+  { id: 'volume', labelKey: 'perpsSortByVolume' },
+  { id: 'priceChange', labelKey: 'perpsSortByPriceChange' },
+  { id: 'openInterest', labelKey: 'perpsSortByOpenInterest' },
+  { id: 'fundingRate', labelKey: 'perpsSortByFundingRate' },
 ];
 
 export type SortDropdownProps = {
