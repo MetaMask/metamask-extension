@@ -9,15 +9,21 @@ import { login } from '../../../page-objects/flows/login.flow';
 import {
   BENCHMARK_PERSONA,
   type BenchmarkResults,
+  type WebVitalsMetrics,
 } from '../../../../../shared/constants/benchmarks';
-import type { Metrics, PageLoadBenchmarkOptions } from '../../utils/types';
-import { runPageLoadBenchmark, type MeasurePageResult } from '../../utils';
+import { runPageLoadBenchmark, collectWebVitals } from '../../utils';
+import type {
+  Metrics,
+  PageLoadBenchmarkOptions,
+  MeasurePageResult,
+} from '../../utils/types';
 
 async function measurePageStandard(
   pageName: string,
   pageLoads: number,
 ): Promise<MeasurePageResult> {
   const metrics: Metrics[] = [];
+  const webVitalsRuns: WebVitalsMetrics[] = [];
   const title = 'measurePageStandard';
   const persona = BENCHMARK_PERSONA.STANDARD;
   await withFixtures(
@@ -37,10 +43,16 @@ async function measurePageStandard(
         const metricsThisLoad = await driver.collectMetrics();
         metricsThisLoad.numNetworkReqs = getNetworkReport().numNetworkReqs;
         metrics.push(metricsThisLoad);
+
+        try {
+          webVitalsRuns.push(await collectWebVitals(driver));
+        } catch (error) {
+          console.error(`Error collecting web vitals for ${pageName}:`, error);
+        }
       }
     },
   );
-  return { metrics, title, persona };
+  return { metrics, title, persona, webVitalsRuns };
 }
 
 export async function run(

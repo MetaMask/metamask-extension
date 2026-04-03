@@ -20,8 +20,10 @@ import {
 import {
   BENCHMARK_PERSONA,
   BENCHMARK_TYPE,
+  type WebVitalsMetrics,
 } from '../../../../../shared/constants/benchmarks';
 import { WITH_STATE_POWER_USER } from '../../utils/constants';
+import { collectWebVitals } from '../../utils';
 import type { BenchmarkRunResult } from '../../utils/types';
 
 const ETH_TOKEN_ADDRESS = '0x0000000000000000000000000000000000000000';
@@ -29,6 +31,7 @@ export const testTitle = 'benchmark-asset-details-power-user';
 export const persona = BENCHMARK_PERSONA.POWER_USER;
 
 export async function runAssetDetailsBenchmark(): Promise<BenchmarkRunResult> {
+  let webVitals: WebVitalsMetrics | undefined;
   try {
     await withFixtures(
       {
@@ -83,17 +86,25 @@ export async function runAssetDetailsBenchmark(): Promise<BenchmarkRunResult> {
           await assetListPage.checkPriceChartLoaded(ETH_TOKEN_ADDRESS);
         });
         performanceTracker.addTimer(timer);
+
+        try {
+          webVitals = await collectWebVitals(driver);
+        } catch (error) {
+          console.error('Error collecting web vitals:', error);
+        }
       },
     );
 
     return {
       timers: collectTimerResults(),
+      webVitals,
       success: true,
       benchmarkType: BENCHMARK_TYPE.PERFORMANCE,
     };
   } catch (error) {
     return {
       timers: collectTimerResults(),
+      webVitals,
       success: false,
       error: error instanceof Error ? error.message : String(error),
       benchmarkType: BENCHMARK_TYPE.PERFORMANCE,

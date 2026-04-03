@@ -12,8 +12,8 @@ import {
   BENCHMARK_PERSONA,
   BENCHMARK_TYPE,
 } from '../../../../../shared/constants/benchmarks';
+import { runUserActionBenchmark, collectWebVitals } from '../../utils';
 import type { BenchmarkRunResult } from '../../utils/types';
-import { runUserActionBenchmark } from '../../utils/runner';
 
 export const testTitle = 'benchmark-user-actions-confirm-tx';
 export const persona = BENCHMARK_PERSONA.STANDARD;
@@ -21,6 +21,7 @@ export const persona = BENCHMARK_PERSONA.STANDARD;
 export async function run(): Promise<BenchmarkRunResult> {
   return runUserActionBenchmark(async () => {
     let loadingTimes: number = 0;
+    let webVitals;
 
     await withFixtures(
       {
@@ -55,9 +56,18 @@ export async function run(): Promise<BenchmarkRunResult> {
         const timestampAfterAction = new Date();
         loadingTimes =
           timestampAfterAction.getTime() - timestampBeforeAction.getTime();
+
+        try {
+          webVitals = await collectWebVitals(driver);
+        } catch (error) {
+          console.error('Error collecting web vitals:', error);
+        }
       },
     );
 
-    return [{ id: 'confirm_tx', duration: loadingTimes }];
+    return {
+      timers: [{ id: 'confirm_tx', duration: loadingTimes }],
+      webVitals,
+    };
   }, BENCHMARK_TYPE.USER_ACTION);
 }
