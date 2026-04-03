@@ -1,5 +1,5 @@
 const runtimeManifest =
-  global.chrome?.runtime.getManifest() ||
+  global.chrome?.runtime?.getManifest() ||
   global.browser?.runtime?.getManifest();
 
 /**
@@ -11,7 +11,7 @@ const runtimeManifest =
  */
 export const isManifestV3: boolean = runtimeManifest
   ? runtimeManifest.manifest_version === 3
-  : // Our build system sets ENABLE_MV3, but in a Node.js context (e.g. unit tests) it can be a string
+  : // In a Node.js context (e.g. unit tests), ENABLE_MV3 is a string or undefined
     process.env.ENABLE_MV3 === 'true' || process.env.ENABLE_MV3 === undefined;
 
 /**
