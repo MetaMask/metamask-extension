@@ -28,6 +28,7 @@ import {
   AddAddressSecurityAlertResponse,
   GetAddressSecurityAlertResponse,
 } from '../../../../shared/lib/trust-signals';
+import { accountSupports7702 } from '../account-supports-7702';
 import {
   AddDappTransactionRequest,
   AddTransactionOptions,
@@ -56,6 +57,10 @@ jest.mock('uuid', () => {
     v4: jest.fn(),
   };
 });
+
+jest.mock('../account-supports-7702', () => ({
+  accountSupports7702: jest.fn().mockResolvedValue(true),
+}));
 
 const SECURITY_ALERT_ID_MOCK = '123';
 const BATCHID_MOCK = '0xmockBatchId' as Hex;
@@ -184,6 +189,8 @@ describe('Transaction Utils', () => {
 
   beforeEach(() => {
     jest.resetAllMocks();
+
+    (accountSupports7702 as jest.Mock).mockResolvedValue(true);
 
     (getTempoTransactionBatchArgs as jest.Mock).mockImplementation(
       realGetTempoTransactionBatchArgsImpl,
@@ -887,6 +894,16 @@ describe('Transaction Utils', () => {
 
         await expect(addDappTransaction(tempoDappRequest)).rejects.toThrow(
           `Tempo Transaction: Mock error`,
+        );
+        expect(
+          request.transactionController.addTransactionBatch,
+        ).not.toHaveBeenCalled();
+      });
+
+      it('does not call addTransactionBatch if accountSupports7702 resolves to false', async () => {
+        (accountSupports7702 as jest.Mock).mockResolvedValueOnce(false);
+        await expect(addDappTransaction(tempoDappRequest)).rejects.toThrow(
+          `Wallet not supported for Tempo Transactions.`,
         );
         expect(
           request.transactionController.addTransactionBatch,

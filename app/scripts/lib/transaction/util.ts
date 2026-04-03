@@ -149,19 +149,22 @@ async function addTransactionOnTempo(
     request.transactionParams.from,
     keyringController as Parameters<typeof accountSupports7702>[1],
   );
-  if (!isEip7702SupportedByAccount) {
-    log.debug(
-      'addTransactionOnTempo: Tempo chain but wallet does not support 7702. Falling back to legacy transactions',
-    );
-    return addTransactionWithController(request);
-  }
 
   // Classic transaction, we simply set pathUSD as default
   // and add excludeNativeTokenForFee to signal to ignore native.
   if (!isTempoTransactionType(request.transactionParams)) {
+    if (!isEip7702SupportedByAccount) {
+      log.debug(
+        'addTransactionOnTempo: Tempo chain but wallet does not support 7702. Falling back to legacy transactions',
+      );
+      return addTransactionWithController(request);
+    }
     return addTransactionWithController(
       getTempoEvmTransactionArgs({ request, chainId }),
     );
+    // Tempo transaction 0x76 + hardware wallet wont work for now.
+  } else if (!isEip7702SupportedByAccount) {
+    throw new Error('Wallet not supported for Tempo Transactions.');
   }
   // Checks and infer Tempo Transaction format for supported fields.
   const { transactionController } = request;
