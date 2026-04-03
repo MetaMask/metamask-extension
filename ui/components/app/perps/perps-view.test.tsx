@@ -24,6 +24,12 @@ jest.mock('../../../store/background-connection', () => ({
     mockSubmitRequestToBackground(...args),
 }));
 
+jest.mock('./perps-toast', () => ({
+  PerpsToastProvider: ({ children }: { children: React.ReactNode }) => (
+    <div data-testid="perps-toast-provider-mock">{children}</div>
+  ),
+}));
+
 jest.mock('../../../providers/perps', () => ({
   getPerpsStreamManager: () => mockGetPerpsStreamManager(),
   usePerpsController: () => ({
@@ -84,7 +90,7 @@ describe('PerpsView', () => {
     it('renders the perps tab view', () => {
       renderWithProvider(<PerpsView />, mockStore);
 
-      expect(screen.getByTestId('perps-tab-view')).toBeInTheDocument();
+      expect(screen.getByTestId('perps-view')).toBeInTheDocument();
     });
 
     it('renders the balance dropdown', () => {
@@ -190,6 +196,14 @@ describe('PerpsView', () => {
   });
 
   describe('component structure', () => {
+    it('does not own a PerpsToastProvider wrapper', () => {
+      renderWithProvider(<PerpsView />, mockStore);
+
+      expect(
+        screen.queryByTestId('perps-toast-provider-mock'),
+      ).not.toBeInTheDocument();
+    });
+
     it('renders positions before orders', () => {
       renderWithProvider(<PerpsView />, mockStore);
 
@@ -201,7 +215,7 @@ describe('PerpsView', () => {
       expect(ordersSection).toBeInTheDocument();
 
       // Positions should come before orders in the DOM
-      const view = screen.getByTestId('perps-tab-view');
+      const view = screen.getByTestId('perps-view');
       const children = view.querySelectorAll('[data-testid]');
       const childTestIds = Array.from(children).map((child) =>
         child.getAttribute('data-testid'),
