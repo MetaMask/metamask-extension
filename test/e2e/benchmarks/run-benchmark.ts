@@ -19,6 +19,11 @@ import {
   type BenchmarkResults,
   type ThresholdViolation,
 } from '../../../shared/constants/benchmarks';
+import {
+  DEFAULT_BENCHMARK_BROWSER_LOADS,
+  DEFAULT_BENCHMARK_ITERATIONS,
+  DEFAULT_BENCHMARK_PAGE_LOADS,
+} from '../../../shared/constants/benchmarks';
 import { toCamelCase } from '../../../shared/lib/string-utils';
 import { runBenchmarkWithIterations, convertSummaryToResults } from './utils';
 import {
@@ -26,6 +31,9 @@ import {
   STARTUP_PRESETS,
   INTERACTION_PRESETS,
   USER_JOURNEY_PRESETS,
+  DAPP_PAGE_LOAD_PRESETS,
+  DAPP_PAGE_LOAD_BENCHMARK_SPEC_PATH,
+  DAPP_PAGE_LOAD_BENCHMARK_SPEC_BASENAME,
 } from './utils/constants';
 import {
   validateResultThresholds,
@@ -43,22 +51,41 @@ function supportsIterations(filePath: string): boolean {
 }
 
 /**
- * Extracts browser platform from `--out` filename.
- * Expected format: `benchmark-{platform}-webpack-{preset}.json`.
- *
- * @param outputFilename - Output path from `--out`
- * @returns Platform name, or `undefined` if the filename does not match
+ * Playwright benchmark specs are run via `yarn playwright test` (not imported as modules).
+ * Includes specs under `test/e2e/playwright/...` and the colocated dapp page-load spec.
+ * @param filePath
  */
-function extractPlatformFromBenchmarkOutputFilename(
-  outputFilename?: string,
-): string | undefined {
+function isPlaywrightBenchmarkFile(filePath: string): boolean {
+  const normalized = filePath.replace(/\\/gu, '/');
+  return (
+    normalized.includes('/playwright/') ||
+    normalized.endsWith(`/${DAPP_PAGE_LOAD_BENCHMARK_SPEC_BASENAME}`) ||
+    normalized.endsWith(DAPP_PAGE_LOAD_BENCHMARK_SPEC_BASENAME)
+  );
+}
+
+/**
+ * Extracts platform and buildType from output filename.
+ * Expected format: benchmark-{platform}-{buildType}-{preset}.json
+ * @param outputFilename - Output filename from --out arg
+ * @returns Object with platform and buildType, or empty object if not found
+ */
+function extractPlatformBuildType(outputFilename?: string): {
+  platform?: string;
+  buildType?: string;
+} {
   if (!outputFilename) {
-    return undefined;
+    return {};
   }
 
   const outputBasename = path.basename(outputFilename, '.json');
-  const match = outputBasename.match(/^benchmark-([^-]+)-webpack-/u);
-  return match?.[1];
+  const match = outputBasename.match(/^benchmark-([^-]+)-([^-]+)-/u);
+  if (match) {
+    const [, platform, buildType] = match;
+    return { platform, buildType };
+  }
+
+  return {};
 }
 
 /**
@@ -130,10 +157,8 @@ const PRESETS: Record<string, string[]> = {
     `${BENCHMARK_DIR}/interaction/confirm-tx.ts`,
     `${BENCHMARK_DIR}/interaction/bridge-user-actions.ts`,
   ],
-  // Playwright page-load benchmark (for local use; CI runs this separately)
-  pageLoadBenchmark: [
-    'test/e2e/playwright/benchmark/dapp-page-load-benchmark.spec.ts',
-  ],
+  // Dapp page-load benchmark (Playwright-based; runs separately in CI)
+  [DAPP_PAGE_LOAD_PRESETS.PAGE_LOAD]: [DAPP_PAGE_LOAD_BENCHMARK_SPEC_PATH],
 };
 
 PRESETS.all = Object.values(PRESETS).flat();
@@ -152,7 +177,7 @@ async function runBenchmarkFile(
   const absolutePath = pathToFileURL(path.resolve(filePath)).href;
   const fileName = path.basename(filePath, path.extname(filePath));
 
-  if (filePath.includes('/playwright/')) {
+  if (isPlaywrightBenchmarkFile(filePath)) {
     await runPlaywrightBenchmark(filePath);
     return undefined; // Playwright writes its own output file
   }
@@ -172,7 +197,7 @@ async function runBenchmarkFile(
     );
   }
 
-  const platform = extractPlatformFromBenchmarkOutputFilename(outputFilename);
+  const { platform, buildType } = extractPlatformBuildType(outputFilename);
 
   let result: BenchmarkResults;
   let violations: ThresholdViolation[];
@@ -203,7 +228,7 @@ async function runBenchmarkFile(
     result = (await runFn({
       ...options,
       platform,
-      buildType: BENCHMARK_BUILD_TYPES.WEBPACK,
+      buildType: buildType ?? BENCHMARK_BUILD_TYPES.WEBPACK,
     })) as BenchmarkResults;
     violations = validateResultThresholds(result, thresholdConfig).violations;
   }
@@ -260,18 +285,18 @@ async function main(): Promise<void> {
     })
     .option('iterations', {
       alias: 'i',
-      default: 5,
+      default: DEFAULT_BENCHMARK_ITERATIONS,
       description:
         'Number of iterations (for performance and user-action benchmarks)',
       type: 'number',
     })
     .option('browserLoads', {
-      default: 10,
+      default: DEFAULT_BENCHMARK_BROWSER_LOADS,
       description: 'Number of browser loads (for page load benchmarks)',
       type: 'number',
     })
     .option('pageLoads', {
-      default: 10,
+      default: DEFAULT_BENCHMARK_PAGE_LOADS,
       description:
         'Number of page loads per browser (for page load benchmarks)',
       type: 'number',
@@ -332,7 +357,7 @@ async function main(): Promise<void> {
         argv.out,
       );
       // Playwright benchmarks write their own output file, skip storing
-      if (filePath.includes('/playwright/')) {
+      if (isPlaywrightBenchmarkFile(filePath)) {
         continue;
       }
       allResults[resultKey] = result;

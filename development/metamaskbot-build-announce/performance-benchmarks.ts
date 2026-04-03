@@ -5,6 +5,7 @@ import {
   BENCHMARK_PLATFORMS,
   BENCHMARK_BUILD_TYPES,
   ALL_BENCHMARK_COMBOS,
+  BENCHMARK_ANNOUNCE_SECTIONS,
   STAT_KEY,
   DEFAULT_RELATIVE_THRESHOLDS,
   THRESHOLD_SEVERITY,
@@ -19,6 +20,7 @@ import {
   STARTUP_PRESETS,
   INTERACTION_PRESETS,
   USER_JOURNEY_PRESETS,
+  DAPP_PAGE_LOAD_PRESETS,
   THRESHOLD_REGISTRY,
 } from '../../test/e2e/benchmarks/utils/constants';
 import { validateResultThresholds } from '../../test/e2e/benchmarks/utils/statistics';
@@ -91,6 +93,10 @@ const HEALTH_ICON: Record<EntryHealth, string> = {
 const USER_JOURNEY_BENCHMARK_PLATFORMS = [
   BENCHMARK_PLATFORMS.CHROME,
   BENCHMARK_PLATFORMS.FIREFOX,
+] as const;
+
+const DAPP_PAGE_LOAD_BENCHMARK_PLATFORMS = [
+  BENCHMARK_PLATFORMS.CHROME,
 ] as const;
 
 /**
@@ -962,25 +968,35 @@ export async function buildPerformanceBenchmarksSection(
       ? `${process.env.GITHUB_SERVER_URL}/${process.env.GITHUB_REPOSITORY}/actions/runs/${benchmarkRunId}`
       : undefined;
 
-  const [interactionResult, startupResult, userJourneyResult, baselineResult] =
-    await Promise.all([
-      fetchBenchmarkEntries(
-        hostUrl,
-        Object.values(INTERACTION_PRESETS),
-        ENTRY_BENCHMARK_PLATFORMS,
-      ),
-      fetchBenchmarkEntries(
-        hostUrl,
-        Object.values(STARTUP_PRESETS),
-        Object.values(BENCHMARK_PLATFORMS),
-      ),
-      fetchBenchmarkEntries(
-        hostUrl,
-        Object.values(USER_JOURNEY_PRESETS),
-        USER_JOURNEY_BENCHMARK_PLATFORMS,
-      ),
-      fetchHistoricalPerformanceDataFromMain(),
-    ]);
+  const [
+    interactionResult,
+    startupResult,
+    userJourneyResult,
+    dappPageLoadResult,
+    baselineResult,
+  ] = await Promise.all([
+    fetchBenchmarkEntries(
+      hostUrl,
+      Object.values(INTERACTION_PRESETS),
+      ENTRY_BENCHMARK_PLATFORMS,
+    ),
+    fetchBenchmarkEntries(
+      hostUrl,
+      Object.values(STARTUP_PRESETS),
+      Object.values(BENCHMARK_PLATFORMS),
+    ),
+    fetchBenchmarkEntries(
+      hostUrl,
+      Object.values(USER_JOURNEY_PRESETS),
+      USER_JOURNEY_BENCHMARK_PLATFORMS,
+    ),
+    fetchBenchmarkEntries(
+      hostUrl,
+      Object.values(DAPP_PAGE_LOAD_PRESETS),
+      DAPP_PAGE_LOAD_BENCHMARK_PLATFORMS,
+    ),
+    fetchHistoricalPerformanceDataFromMain(),
+  ]);
 
   const resolvedBaseline = baselineResult?.baseline ?? undefined;
   const baselineCommit = baselineResult?.latestCommit;
@@ -990,32 +1006,40 @@ export async function buildPerformanceBenchmarksSection(
     ...startupResult.entries,
     ...interactionResult.entries,
     ...userJourneyResult.entries,
+    ...dappPageLoadResult.entries,
   ];
 
   if (
     allEntries.length === 0 &&
     interactionResult.missingPresets.length === 0 &&
     startupResult.missingPresets.length === 0 &&
-    userJourneyResult.missingPresets.length === 0
+    userJourneyResult.missingPresets.length === 0 &&
+    dappPageLoadResult.missingPresets.length === 0
   ) {
     return '';
   }
 
   const interactionHtml = buildBenchmarkSection(
     interactionResult,
-    'Interaction Benchmarks',
+    BENCHMARK_ANNOUNCE_SECTIONS.interaction.title,
     resolvedBaseline,
     runUrl,
   );
   const startupHtml = buildBenchmarkSection(
     startupResult,
-    'Startup Benchmarks',
+    BENCHMARK_ANNOUNCE_SECTIONS.startup.title,
     resolvedBaseline,
     runUrl,
   );
   const userJourneyHtml = buildBenchmarkSection(
     userJourneyResult,
-    'User Journey Benchmarks',
+    BENCHMARK_ANNOUNCE_SECTIONS.userJourney.title,
+    resolvedBaseline,
+    runUrl,
+  );
+  const dappPageLoadHtml = buildBenchmarkSection(
+    dappPageLoadResult,
+    BENCHMARK_ANNOUNCE_SECTIONS.dappPageLoad.title,
     resolvedBaseline,
     runUrl,
   );
@@ -1057,7 +1081,8 @@ export async function buildPerformanceBenchmarksSection(
 
   // Plain text only inside <summary> (no block elements like <p>).
   const summaryLine = `${sectionTitle} (Total: ${HEALTH_ICON[EntryHealth.Pass]} ${passes} pass · ${HEALTH_ICON[EntryHealth.Warn]} ${warnings} warn · ${HEALTH_ICON[EntryHealth.Fail]} ${failures} fail)`;
-  const subsectionsHtml = interactionHtml + startupHtml + userJourneyHtml;
+  const subsectionsHtml =
+    interactionHtml + startupHtml + userJourneyHtml + dappPageLoadHtml;
   const content =
     commitInfo + matrixHtml + regressionDetailsHtml + subsectionsHtml;
 

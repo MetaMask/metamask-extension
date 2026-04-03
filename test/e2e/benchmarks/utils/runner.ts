@@ -203,6 +203,56 @@ export async function runBenchmarkWithIterations(
 }
 
 /**
+ * Builds {@link BenchmarkResults} from aggregated timer rows (shared by iteration-based
+ * benchmarks and the Playwright dapp page-load pipeline).
+ * @param timers
+ * @param testTitle
+ * @param persona
+ * @param benchmarkType
+ * @param platform
+ * @param webVitals
+ */
+export function convertTimerStatisticsToBenchmarkResults(
+  timers: TimerStatistics[],
+  testTitle: string,
+  persona: Persona = BENCHMARK_PERSONA.STANDARD,
+  benchmarkType?: BenchmarkType,
+  platform?: string,
+  webVitals?: WebVitalsSummary,
+): BenchmarkResults {
+  const mean: StatisticalResult = {};
+  const min: StatisticalResult = {};
+  const max: StatisticalResult = {};
+  const stdDev: StatisticalResult = {};
+  const p75: StatisticalResult = {};
+  const p95: StatisticalResult = {};
+
+  for (const timer of timers) {
+    mean[timer.id] = timer.mean;
+    min[timer.id] = timer.min;
+    max[timer.id] = timer.max;
+    stdDev[timer.id] = timer.stdDev;
+    p75[timer.id] = timer.p75;
+    p95[timer.id] = timer.p95;
+  }
+
+  return {
+    testTitle,
+    persona,
+    ...(benchmarkType === undefined ? {} : { benchmarkType }),
+    platform,
+    buildType: BENCHMARK_BUILD_TYPES.WEBPACK,
+    mean,
+    min,
+    max,
+    stdDev,
+    p75,
+    p95,
+    ...(webVitals && { webVitals }),
+  };
+}
+
+/**
  * Convert BenchmarkSummary (from runBenchmarkWithIterations) to BenchmarkResults format
  * for consistent output with send-to-sentry.ts. `buildType` is always webpack.
  *
@@ -217,35 +267,14 @@ export function convertSummaryToResults(
   persona: Persona = BENCHMARK_PERSONA.STANDARD,
   platform?: string,
 ): BenchmarkResults {
-  const mean: StatisticalResult = {};
-  const min: StatisticalResult = {};
-  const max: StatisticalResult = {};
-  const stdDev: StatisticalResult = {};
-  const p75: StatisticalResult = {};
-  const p95: StatisticalResult = {};
-
-  for (const timer of summary.timers) {
-    mean[timer.id] = timer.mean;
-    min[timer.id] = timer.min;
-    max[timer.id] = timer.max;
-    stdDev[timer.id] = timer.stdDev;
-    p75[timer.id] = timer.p75;
-    p95[timer.id] = timer.p95;
-  }
-
-  return {
+  return convertTimerStatisticsToBenchmarkResults(
+    summary.timers,
     testTitle,
     persona,
+    undefined,
     platform,
-    buildType: BENCHMARK_BUILD_TYPES.WEBPACK,
-    mean,
-    min,
-    max,
-    stdDev,
-    p75,
-    p95,
-    ...(summary.webVitals && { webVitals: summary.webVitals }),
-  };
+    summary.webVitals,
+  );
 }
 
 export type MeasurePageResult = {

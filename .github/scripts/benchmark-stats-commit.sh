@@ -38,7 +38,7 @@ SAFE_BRANCH="${RAW_BRANCH//\//-}"
 
 # Assemble the commit data based on mode
 assemble_dapp_page_load_data() {
-    local benchmark_file="${BENCHMARK_FILE:-test-artifacts/benchmarks/dapp-page-load-benchmark-results.json}"
+    local benchmark_file="${BENCHMARK_FILE:-test-artifacts/benchmarks/benchmark-chrome-webpack-pageLoadBenchmark.json}"
 
     jq . "${benchmark_file}" > /dev/null || {
         echo "Error: Benchmark JSON is invalid: ${benchmark_file}" >&2

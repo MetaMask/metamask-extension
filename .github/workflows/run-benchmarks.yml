@@ -186,8 +186,8 @@ jobs:
       - name: Upload benchmark results (github artifacts)
         uses: actions/upload-artifact@v6
         with:
-          name: dapp-page-load-benchmark-results
-          path: test-artifacts/benchmarks/dapp-page-load-benchmark-results.json
+          name: benchmark-chrome-webpack-pageLoadBenchmark.json
+          path: test-artifacts/benchmarks/benchmark-chrome-webpack-pageLoadBenchmark.json
 
   # Pushes benchmark results (performance + dapp page-load) to extension_benchmark_stats
   # for historical comparison in PR comments. Runs on main/release branch pushes only.
@@ -238,7 +238,7 @@ jobs:
         uses: actions/download-artifact@v7
         continue-on-error: true
         with:
-          name: dapp-page-load-benchmark-results
+          name: benchmark-chrome-webpack-pageLoadBenchmark.json
           path: test-artifacts/benchmarks/
 
       - name: Commit dapp page-load stats to extension_benchmark_stats
@@ -247,4 +247,4 @@ jobs:
         run: .github/scripts/benchmark-stats-commit.sh
         env:
           BENCHMARK_DATA_TYPE: dapp-page-load
-          BENCHMARK_FILE: test-artifacts/benchmarks/dapp-page-load-benchmark-results.json
+          BENCHMARK_FILE: test-artifacts/benchmarks/benchmark-chrome-webpack-pageLoadBenchmark.json

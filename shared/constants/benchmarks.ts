@@ -201,6 +201,7 @@ export const BENCHMARK_PLATFORMS = {
 } as const;
 
 export const BENCHMARK_BUILD_TYPES = {
+  BROWSERIFY: 'browserify',
   WEBPACK: 'webpack',
 } as const;
 
@@ -214,3 +215,6 @@ export const ALL_BENCHMARK_COMBOS: readonly string[] = Object.values(
 
 export const ENTRY_BENCHMARK_PLATFORMS: readonly (typeof BENCHMARK_PLATFORMS)[keyof typeof BENCHMARK_PLATFORMS][] =
   [BENCHMARK_PLATFORMS.CHROME];
+
+export const ENTRY_BENCHMARK_BUILD_TYPES: readonly (typeof BENCHMARK_BUILD_TYPES)[keyof typeof BENCHMARK_BUILD_TYPES][] =
+  [BENCHMARK_BUILD_TYPES.BROWSERIFY];

@@ -2,15 +2,24 @@ import { promises as fs } from 'fs';
 import { execSync, spawn, ChildProcess } from 'child_process';
 import path from 'path';
 import { chromium, type BrowserContext, Browser } from '@playwright/test';
-import { mean } from 'lodash';
-import { DAPP_URL } from '../../constants';
+import {
+  DEFAULT_BENCHMARK_BROWSER_LOADS,
+  DEFAULT_BENCHMARK_PAGE_LOADS,
+} from '../../../../../shared/constants/benchmarks';
+import type {
+  DappPageLoadMetric,
+  DappPageLoadSample,
+  DappPageLoadStats,
+} from '../../utils/types';
+import { DAPP_URL } from '../../../constants';
+import { aggregateDappPageLoadStatistics } from './dapp-page-load-stats';
 
 declare global {
   /**
    * We override Performance interface to make sure Typescript allows us to access memory property without
    * any type issues, and to make sure we do not need to typecast when accessing said property which is deprecated and not supported in some browsers
    * since our benchmark runs on Chrome only for now, that is not an issue, since Chrome fully supports the API
-   * docs: https://developer.mozilla.org/en-US/docs/Web/API/Performance/memory#browser_compatibility
+   * docs: https://developer.mozilla.org/en-US/docs/Web/API/Performance/memory#browser-compatibility
    */
   // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
   interface Performance {
@@ -21,99 +30,6 @@ declare global {
     };
   }
 }
-
-/**
- * Performance metrics collected during page load benchmarking.
- * All time values are in milliseconds unless otherwise specified.
- */
-export type BenchmarkMetrics = {
-  /**
-   * Total time from navigation start to load event end.
-   * Represents the complete page load time including all resources.
-   */
-  pageLoadTime: number;
-  /**
-   * Time from navigation start to DOM content loaded event end.
-   * Indicates when the initial HTML document has been completely loaded and parsed.
-   */
-  domContentLoaded: number;
-  /**
-   * Time from navigation start to first paint.
-   * The first time any pixel is painted to the screen.
-   */
-  firstPaint: number;
-  /**
-   * Time from navigation start to first contentful paint.
-   * The first time any content (text, images, etc.) is painted to the screen.
-   * This is a key Core Web Vital metric.
-   */
-  firstContentfulPaint: number;
-  /**
-   * Time from navigation start to largest contentful paint.
-   * The time when the largest content element becomes visible.
-   * This is a key Core Web Vital metric for perceived loading speed.
-   */
-  largestContentfulPaint: number;
-  /**
-   * Memory usage statistics (optional, only available in Chrome).
-   * All values are in bytes.
-   */
-  memoryUsage?: {
-    /**
-     * Currently used JavaScript heap size.
-     * Represents the amount of memory actively used by JavaScript objects.
-     */
-    usedJSHeapSize: number;
-    /**
-     * Total allocated JavaScript heap size.
-     * The total amount of memory allocated for the JavaScript heap.
-     */
-    totalJSHeapSize: number;
-    /**
-     * Maximum JavaScript heap size limit.
-     * The maximum amount of memory that can be allocated for the JavaScript heap.
-     */
-    jsHeapSizeLimit: number;
-  };
-};
-
-/**
- * Individual benchmark measurement result for a single page load test.
- * Contains the raw performance metrics for one specific test run.
- */
-export type BenchmarkResult = {
-  /** URL of the page that was tested */
-  page: string;
-  /** Sequential run number for this test iteration */
-  run: number;
-  /** Performance metrics collected during this test run */
-  metrics: BenchmarkMetrics;
-  /** Timestamp when this measurement was taken */
-  timestamp: number;
-};
-
-/**
- * Statistical summary of benchmark results for a specific page.
- * Contains aggregated statistics across multiple test runs for performance analysis.
- */
-export type BenchmarkSummary = {
-  /** URL of the page that was tested */
-  page: string;
-  /** Number of test samples collected for this page */
-  samples: number;
-  /** Mean (average) values for each performance metric */
-  mean: Partial<BenchmarkMetrics>;
-  /** 95th percentile values for each performance metric */
-  p95: Partial<BenchmarkMetrics>;
-  /** 99th percentile values for each performance metric */
-  p99: Partial<BenchmarkMetrics>;
-  /** Minimum values for each performance metric */
-  min: Partial<BenchmarkMetrics>;
-  /** Maximum values for each performance metric */
-  max: Partial<BenchmarkMetrics>;
-  /** Standard deviation values for each performance metric */
-  standardDeviation: Partial<BenchmarkMetrics>;
-};
 
 /**
  * Main class for conducting page load performance benchmarks using Playwright.
@@ -130,7 +46,7 @@ export class PageLoadBenchmark {
   private extensionPath: string;
 
   /** Collection of all benchmark results from test runs */
-  private results: BenchmarkResult[] = [];
+  private results: DappPageLoadSample[] = [];
 
   /** Dapp server process running in background */
   private dappServerProcess: ChildProcess | undefined;
@@ -287,7 +203,7 @@ export class PageLoadBenchmark {
   async measurePageLoad(
     url: string,
     runNumber: number,
-  ): Promise<BenchmarkResult> {
+  ): Promise<DappPageLoadSample> {
     const page = await this.context?.newPage();
 
     if (!page) {
@@ -308,7 +224,7 @@ export class PageLoadBenchmark {
     await page.waitForLoadState('networkidle');
 
     // Collect performance metrics
-    const metrics: BenchmarkMetrics = await page.evaluate(() => {
+    const metrics: DappPageLoadMetric = await page.evaluate(() => {
       const navigation = performance.getEntriesByType(
         'navigation',
       )[0] as PerformanceNavigationTiming;
@@ -336,7 +252,7 @@ export class PageLoadBenchmark {
       };
     });
 
-    const result: BenchmarkResult = {
+    const result: DappPageLoadSample = {
       page: url === DAPP_URL ? 'Localhost MetaMask Test Dapp' : url,
       run: runNumber,
       metrics,
@@ -355,13 +271,13 @@ export class PageLoadBenchmark {
    * and measures each URL multiple times to gather statistical data.
    *
    * @param urls - Array of URLs to test
-   * @param browserLoads - Number of browser load iterations (default: 10)
-   * @param pageLoads - Number of page loads per browser load (default: 10)
+   * @param browserLoads - Number of browser load iterations (default: {@link DEFAULT_BENCHMARK_BROWSER_LOADS})
+   * @param pageLoads - Number of page loads per browser load (default: {@link DEFAULT_BENCHMARK_PAGE_LOADS})
    */
   async runBenchmark(
     urls: string[],
-    browserLoads: number = 10,
-    pageLoads: number = 10,
+    browserLoads: number = DEFAULT_BENCHMARK_BROWSER_LOADS,
+    pageLoads: number = DEFAULT_BENCHMARK_PAGE_LOADS,
   ) {
     console.log(
       `Starting benchmark: ${browserLoads} browser loads, ${pageLoads} page loads per browser`,
@@ -397,108 +313,8 @@ export class PageLoadBenchmark {
    *
    * @returns Array of statistical summaries, one for each tested page
    */
-  calculateStatistics(): BenchmarkSummary[] {
-    const summaries: BenchmarkSummary[] = [];
-
-    const resultsByPage = this.results.reduce(
-      (acc, result) => {
-        if (!acc[result.page]) {
-          acc[result.page] = [];
-        }
-        acc[result.page].push(result);
-        return acc;
-      },
-      {} as Record<string, BenchmarkResult[]>,
-    );
-
-    for (const [page, pageResults] of Object.entries(resultsByPage)) {
-      const metrics = pageResults.map((r) => r.metrics);
-      const metricKeys = Object.keys(metrics[0]) as (keyof Omit<
-        BenchmarkMetrics,
-        'memoryUsage'
-      >)[];
-
-      const summary: BenchmarkSummary = {
-        page,
-        samples: metrics.length,
-        mean: {},
-        p95: {},
-        p99: {},
-        min: {},
-        max: {},
-        standardDeviation: {},
-      };
-
-      for (const key of metricKeys) {
-        const values = metrics
-          .map((m) => m[key])
-          .filter((v) => typeof v === 'number') as number[];
-        if (values.length > 0) {
-          summary.mean[key] = mean(values);
-          summary.p95[key] = this.calculatePercentile(values, 95);
-          summary.p99[key] = this.calculatePercentile(values, 99);
-          summary.min[key] = Math.min(...values);
-          summary.max[key] = Math.max(...values);
-          summary.standardDeviation[key] =
-            this.calculateStandardDeviation(values);
-        }
-      }
-
-      summaries.push(summary);
-    }
-
-    return summaries;
-  }
-
-  /**
-   * Calculates the specified percentile value from an array of numbers.
-   * Uses the nearest-rank method for percentile calculation.
-   *
-   * @param values - Array of numeric values
-   * @param percentile - Percentile to calculate (0-100)
-   * @returns The value at the specified percentile
-   */
-  private calculatePercentile(values: number[], percentile: number): number {
-    const sorted = [...values].sort((a, b) => a - b);
-    const index = Math.floor((percentile / 100) * sorted.length);
-    return sorted[index];
-  }
-
-  /**
-   * Calculates the standard deviation of an array of numbers.
-   * Uses the population standard deviation formula.
-   *
-   * @param values - Array of numeric values
-   * @returns The standard deviation value
-   */
-  private calculateStandardDeviation(values: number[]): number {
-    const calculatedMean = mean(values);
-    const squaredDiffs = values.map((val) => Math.pow(val - calculatedMean, 2));
-    const variance = mean(squaredDiffs);
-    return Math.sqrt(variance);
-  }
-
-  /**
-   * Saves benchmark results to a JSON file with comprehensive metadata.
-   * Includes timestamp, git commit SHA, and statistical summaries.
-   *
-   * @param outputPath - File path where results should be saved
-   * @throws {Error} If file writing fails or git command fails
-   */
-  async saveResults(outputPath: string) {
-    const commitSha = execSync('git rev-parse --short HEAD', {
-      cwd: __dirname,
-      encoding: 'utf8',
-    }).slice(0, 7);
-
-    const output = {
-      timestamp: new Date().getTime(),
-      commit: commitSha,
-      summary: this.calculateStatistics(),
-    };
-
-    await fs.writeFile(outputPath, JSON.stringify(output, null, 2));
-    console.log(`Results saved to ${outputPath}`);
+  calculateStatistics(): DappPageLoadStats[] {
+    return aggregateDappPageLoadStatistics(this.results);
   }
 
   /**
