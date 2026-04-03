@@ -11,8 +11,10 @@ const runtimeManifest =
  */
 export const isManifestV3: boolean = runtimeManifest
   ? runtimeManifest.manifest_version === 3
-  : // In a Node.js context (e.g. unit tests), ENABLE_MV3 is a string or undefined
-    process.env.ENABLE_MV3 === 'true' || process.env.ENABLE_MV3 === undefined;
+ : // Our build system sets this as a boolean, but in a Node.js context (e.g. unit tests) it can be a string
+    process.env.ENABLE_MV3 === true ||
+    process.env.ENABLE_MV3 === 'true' ||
+    process.env.ENABLE_MV3 === undefined;
 
 /**
  * A boolean indicating whether the browser supports the offscreen document api.
