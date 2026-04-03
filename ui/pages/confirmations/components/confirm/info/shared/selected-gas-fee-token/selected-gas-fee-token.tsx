@@ -23,6 +23,7 @@ import { useSelectedGasFeeToken } from '../../hooks/useGasFeeToken';
 import { GasFeeTokenIcon, GasFeeTokenIconSize } from '../gas-fee-token-icon';
 import { useIsGaslessSupported } from '../../../../../hooks/gas/useIsGaslessSupported';
 import { useIsInsufficientBalance } from '../../../../../hooks/useIsInsufficientBalance';
+import { useNativeCurrencySymbol } from '../../hooks/useNativeCurrencySymbol';
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -64,10 +65,6 @@ export function SelectedGasFeeToken() {
     ? hasGasFeeTokens && nonNativeGasFeeTokensLength > 1
     : hasGasFeeTokens;
 
-  const networkConfiguration = useSelector(getNetworkConfigurationsByChainId)?.[
-    chainId
-  ];
-
   const handleClick = useCallback(() => {
     if (!hasMoreThanOneGasFeeTokenToChooseFrom) {
       return;
@@ -76,7 +73,8 @@ export function SelectedGasFeeToken() {
     setIsModalOpen(true);
   }, [hasMoreThanOneGasFeeTokenToChooseFrom]);
 
-  const nativeTicker = networkConfiguration?.nativeCurrency;
+  const { nativeCurrencySymbol: nativeTicker } =
+    useNativeCurrencySymbol(chainId);
   const gasFeeToken = useSelectedGasFeeToken();
   const symbol = gasFeeToken?.symbol ?? nativeTicker;
 
