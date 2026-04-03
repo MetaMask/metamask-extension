@@ -8,18 +8,20 @@ const DUMMY_MESSAGE = {
 };
 const FLUSH_INTERVAL = 10000;
 
-global.setImmediate = (arg) => {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+(global as any).setImmediate = (arg: () => void) => {
   arg();
 };
 
-global.fetch = () =>
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+(global as any).fetch = () =>
   Promise.resolve({
     ok: true,
     json: () => Promise.resolve({ success: true }),
-  });
+  } as Response);
 
 describe('Analytics', function () {
-  let analytics;
+  let analytics: Analytics;
 
   beforeEach(() => {
     analytics = new Analytics(DUMMY_KEY);
@@ -27,7 +29,7 @@ describe('Analytics', function () {
 
   describe('#flush', function () {
     it('first message is immediately flushed', function () {
-      const mock = jest.fn(analytics.flush);
+      const mock = jest.fn(analytics.flush.bind(analytics));
       analytics.flush = mock;
       analytics.track(DUMMY_MESSAGE);
       expect(analytics.queue).toHaveLength(0);
@@ -36,7 +38,7 @@ describe('Analytics', function () {
 
     it('after first message it is called when queue size equals flushAt value', function () {
       analytics = new Analytics(DUMMY_KEY, { flushAt: 3 });
-      const mock = jest.fn(analytics.flush);
+      const mock = jest.fn(analytics.flush.bind(analytics));
       analytics.flush = mock;
       analytics.track(DUMMY_MESSAGE);
       analytics.track(DUMMY_MESSAGE);
@@ -48,7 +50,7 @@ describe('Analytics', function () {
 
     it('except for first message it is called until queue size is less than flushAt value', function () {
       analytics = new Analytics(DUMMY_KEY, { flushAt: 3 });
-      const mock = jest.fn(analytics.flush);
+      const mock = jest.fn(analytics.flush.bind(analytics));
       analytics.flush = mock;
       analytics.track(DUMMY_MESSAGE);
       analytics.track(DUMMY_MESSAGE);
@@ -60,7 +62,7 @@ describe('Analytics', function () {
     it('after first message it is called after flushInterval is elapsed', function () {
       jest.useFakeTimers();
       analytics = new Analytics(DUMMY_KEY, { flushInterval: FLUSH_INTERVAL });
-      const mock = jest.fn(analytics.flush);
+      const mock = jest.fn(analytics.flush.bind(analytics));
       analytics.flush = mock;
       analytics.track(DUMMY_MESSAGE);
       analytics.track(DUMMY_MESSAGE);
@@ -72,7 +74,7 @@ describe('Analytics', function () {
     it('after first message it is not called until flushInterval is elapsed', function () {
       jest.useFakeTimers();
       analytics = new Analytics(DUMMY_KEY, { flushInterval: FLUSH_INTERVAL });
-      const mock = jest.fn(analytics.flush);
+      const mock = jest.fn(analytics.flush.bind(analytics));
       analytics.flush = mock;
       analytics.track(DUMMY_MESSAGE);
       analytics.track(DUMMY_MESSAGE);
