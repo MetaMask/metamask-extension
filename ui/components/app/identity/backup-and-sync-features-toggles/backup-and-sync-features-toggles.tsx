@@ -186,6 +186,8 @@ export const BackupAndSyncFeaturesToggles = () => {
     <Box
       marginTop={4}
       marginBottom={4}
+      paddingLeft={4}
+      paddingRight={4}
       className="privacy-settings__setting__wrapper"
       data-testid={backupAndSyncFeaturesTogglesTestIds.container}
     >
@@ -193,7 +195,7 @@ export const BackupAndSyncFeaturesToggles = () => {
         {t('backupAndSyncManageWhatYouSync')}
       </Text>
       <Text
-        variant={TextVariant.bodySm}
+        variant={TextVariant.bodyMd}
         color={TextColor.textAlternative}
         as="div"
         marginBottom={4}

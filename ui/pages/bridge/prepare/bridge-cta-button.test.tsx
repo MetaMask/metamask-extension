@@ -6,8 +6,11 @@ import {
   formatChainIdToCaip,
 } from '@metamask/bridge-controller';
 import { userEvent } from '@testing-library/user-event';
-import { act } from '@testing-library/react';
-import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
+import { act, render, waitFor } from '@testing-library/react';
+import {
+  createProviderWrapper,
+  renderWithProvider,
+} from '../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../store/store';
 import { createBridgeMockStore } from '../../../../test/data/bridge/mock-bridge-store';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
@@ -22,12 +25,24 @@ import {
   HardwareWalletType,
 } from '../../../contexts/hardware-wallets';
 import { setBackgroundConnection } from '../../../store/background-connection';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+  MetaMetricsHardwareWalletRecoveryLocation,
+} from '../../../../shared/constants/metametrics';
+import { trackHardwareWalletRecoveryConnectCtaClicked } from '../../../helpers/utils/track-hardware-wallet-recovery-connect-cta-clicked';
+import * as useSubmitBridgeTransactionModule from '../hooks/useSubmitBridgeTransaction';
 import { BridgeCTAButton } from './bridge-cta-button';
+
+const mockTrackHardwareWalletRecoveryConnectCtaClicked = jest.mocked(
+  trackHardwareWalletRecoveryConnectCtaClicked,
+);
 
 const mockUseHardwareWalletConfig = jest.fn();
 const mockUseHardwareWalletActions = jest.fn();
 const mockUseHardwareWalletState = jest.fn();
 const mockOnOpenPriceImpactWarningModal = jest.fn();
+const mockResetState = jest.fn();
 
 jest.mock('../../../contexts/hardware-wallets', () => ({
   ...jest.requireActual('../../../contexts/hardware-wallets'),
@@ -35,6 +50,9 @@ jest.mock('../../../contexts/hardware-wallets', () => ({
   useHardwareWalletActions: () => mockUseHardwareWalletActions(),
   useHardwareWalletState: () => mockUseHardwareWalletState(),
 }));
+jest.mock(
+  '../../../helpers/utils/track-hardware-wallet-recovery-connect-cta-clicked',
+);
 
 const baseHardwareWalletConfig = {
   isHardwareWalletAccount: false,
@@ -48,11 +66,13 @@ setBackgroundConnection({
   submitTx: jest.fn(),
   setEnabledAllPopularNetworks: jest.fn(),
   getStatePatches: jest.fn(),
+  resetState: () => mockResetState(),
 } as never);
 
 describe('BridgeCTAButton', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockTrackHardwareWalletRecoveryConnectCtaClicked.mockReset();
     mockUseHardwareWalletConfig.mockReturnValue(baseHardwareWalletConfig);
     mockUseHardwareWalletActions.mockReturnValue({
       ensureDeviceReady: jest.fn().mockResolvedValue(true),
@@ -87,6 +107,7 @@ describe('BridgeCTAButton', () => {
     expect(container).toMatchSnapshot();
 
     expect(getByText(messages.swapSelectToken.message)).toBeInTheDocument();
+    expect(mockResetState).not.toHaveBeenCalled();
   });
 
   it('should render the component when amount is missing', () => {
@@ -297,6 +318,78 @@ describe('BridgeCTAButton', () => {
 
     expect(getByText('Connect Ledger')).toBeInTheDocument();
     expect(getByRole('button')).not.toBeDisabled();
+  });
+
+  it('calls recovery CTA analytics when hardware wallet user submits while device is disconnected', async () => {
+    const mockSubmitBridgeTransaction = jest.fn().mockResolvedValue(undefined);
+    const useSubmitSpy = jest
+      .spyOn(useSubmitBridgeTransactionModule, 'default')
+      .mockImplementation(() => ({
+        submitBridgeTransaction: mockSubmitBridgeTransaction,
+        isSubmitting: false,
+      }));
+
+    const mockTrackEvent = jest.fn().mockResolvedValue(undefined);
+    const connectionState = { status: ConnectionStatus.Disconnected as const };
+    mockUseHardwareWalletConfig.mockReturnValue({
+      ...baseHardwareWalletConfig,
+      isHardwareWalletAccount: true,
+      walletType: HardwareWalletType.Ledger,
+    });
+    mockUseHardwareWalletState.mockReturnValue({
+      connectionState,
+    });
+
+    const mockStore = createBridgeMockStore({
+      featureFlagOverrides: {
+        bridgeConfig: {
+          chainRanking: [
+            { chainId: formatChainIdToCaip(CHAIN_IDS.MAINNET) },
+            { chainId: formatChainIdToCaip(CHAIN_IDS.OPTIMISM) },
+            { chainId: formatChainIdToCaip(CHAIN_IDS.LINEA_MAINNET) },
+          ],
+        },
+      },
+      bridgeSliceOverrides: {
+        fromTokenInputValue: '1',
+        fromToken: toBridgeToken(getNativeAssetForChainId(CHAIN_IDS.MAINNET)),
+        toToken: toBridgeToken(
+          getNativeAssetForChainId(CHAIN_IDS.LINEA_MAINNET),
+        ),
+      },
+      bridgeStateOverrides: {
+        quotes: mockBridgeQuotesNativeErc20 as unknown as QuoteResponse[],
+        quotesLastFetched: Date.now(),
+        quotesLoadingStatus: RequestStatus.FETCHED,
+      },
+    });
+    const store = configureStore(mockStore);
+    const Wrapper = createProviderWrapper(store, '/', () => mockTrackEvent);
+
+    const { getByRole } = render(
+      <HardwareWalletProvider>
+        <BridgeCTAButton
+          onFetchNewQuotes={jest.fn()}
+          onOpenPriceImpactWarningModal={mockOnOpenPriceImpactWarningModal}
+        />
+      </HardwareWalletProvider>,
+      { wrapper: Wrapper },
+    );
+
+    await act(async () => {
+      await userEvent.click(getByRole('button'));
+    });
+
+    expect(
+      mockTrackHardwareWalletRecoveryConnectCtaClicked,
+    ).toHaveBeenCalledWith(mockTrackEvent, {
+      location: MetaMetricsHardwareWalletRecoveryLocation.Swaps,
+      walletType: HardwareWalletType.Ledger,
+      connectionState,
+    });
+    expect(mockSubmitBridgeTransaction).toHaveBeenCalledTimes(1);
+
+    useSubmitSpy.mockRestore();
   });
 
   it('should disable the component when quotes are loading and there are no existing quotes', () => {

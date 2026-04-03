@@ -77,9 +77,14 @@ export const IpfsGatewayItem = () => {
         value={ipfsToggle}
         onToggle={handleToggle}
         dataTestId="ipfs-gateway-toggle"
+        containerDataTestId="ipfsToggle"
       />
       {ipfsToggle && (
-        <Box flexDirection={BoxFlexDirection.Column} gap={1}>
+        <Box
+          flexDirection={BoxFlexDirection.Column}
+          gap={1}
+          marginHorizontal={4}
+        >
           <FormTextField
             value={ipfsGatewayValue}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) =>

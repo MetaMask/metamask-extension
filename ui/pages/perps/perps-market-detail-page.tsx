@@ -6,7 +6,12 @@ import React, {
   useEffect,
 } from 'react';
 import { useSelector } from 'react-redux';
-import { Navigate, useNavigate, useParams } from 'react-router-dom';
+import {
+  Navigate,
+  useLocation,
+  useNavigate,
+  useParams,
+} from 'react-router-dom';
 import {
   Box,
   BoxFlexDirection,
@@ -62,6 +67,7 @@ import {
   safeDecodeURIComponent,
   getChangeColor,
 } from '../../components/app/perps/utils';
+import { normalizeMarketDetailsOrders } from '../../components/app/perps/utils/orderUtils';
 import { PerpsDetailPageSkeleton } from '../../components/app/perps/perps-skeletons';
 import { Skeleton } from '../../components/component-library/skeleton';
 import { Popover, PopoverPosition } from '../../components/component-library';
@@ -70,6 +76,11 @@ import { EditMarginModal } from '../../components/app/perps/edit-margin';
 import { ReversePositionModal } from '../../components/app/perps/reverse-position';
 import { UpdateTPSLModal } from '../../components/app/perps/update-tpsl';
 import { ClosePositionModal } from '../../components/app/perps/close-position';
+import {
+  PERPS_TOAST_KEYS,
+  type PerpsToastKey,
+  usePerpsToast,
+} from '../../components/app/perps/perps-toast';
 import InfoTooltip from '../../components/ui/info-tooltip/info-tooltip';
 import { BorderRadius } from '../../helpers/constants/design-system';
 import type { MetaMaskReduxState } from '../../store/store';
@@ -167,6 +178,49 @@ const PopoverMenuItem: React.FC<PopoverMenuItemProps> = ({
   </Box>
 );
 
+const PERPS_TOAST_KEY_SET: Set<string> = new Set(
+  Object.values(PERPS_TOAST_KEYS),
+);
+
+const isPerpsToastKey = (value: unknown): value is PerpsToastKey => {
+  return typeof value === 'string' && PERPS_TOAST_KEY_SET.has(value);
+};
+
+type ParsedPerpsToastRouteState = {
+  perpsToastDescription?: string;
+  perpsToastKey: PerpsToastKey;
+  remainingState?: Record<string, unknown>;
+};
+
+const parsePerpsToastRouteState = (
+  state: unknown,
+): ParsedPerpsToastRouteState | null => {
+  if (!state || typeof state !== 'object') {
+    return null;
+  }
+
+  const routeState = state as Record<string, unknown>;
+  if (!isPerpsToastKey(routeState.perpsToastKey)) {
+    return null;
+  }
+
+  const { perpsToastKey, perpsToastDescription, ...remainingState } =
+    routeState;
+
+  const routeToastDescription =
+    typeof perpsToastDescription === 'string' && perpsToastDescription
+      ? perpsToastDescription
+      : undefined;
+
+  return {
+    perpsToastKey,
+    ...(routeToastDescription
+      ? { perpsToastDescription: routeToastDescription }
+      : {}),
+    ...(Object.keys(remainingState).length > 0 ? { remainingState } : {}),
+  };
+};
+
 /**
  * PerpsMarketDetailPage component
  * Displays detailed market information for a specific perps market
@@ -175,6 +229,7 @@ const PopoverMenuItem: React.FC<PopoverMenuItemProps> = ({
 const PerpsMarketDetailPage: React.FC = () => {
   const t = useI18nContext();
   const navigate = useNavigate();
+  const location = useLocation();
   const { symbol } = useParams<{ symbol: string }>();
   const isPerpsExperienceAvailable = useSelector(getIsPerpsExperienceAvailable);
   const selectedAccount = useSelector(getSelectedInternalAccount);
@@ -186,6 +241,32 @@ const PerpsMarketDetailPage: React.FC = () => {
     formatPercentWithMinThreshold,
   } = useFormatters();
   const fundingCountdown = useFundingCountdown();
+  const { replacePerpsToastByKey } = usePerpsToast();
+
+  useEffect(() => {
+    const parsedRouteState = parsePerpsToastRouteState(location.state);
+    if (!parsedRouteState) {
+      return;
+    }
+
+    replacePerpsToastByKey({
+      key: parsedRouteState.perpsToastKey,
+      ...(parsedRouteState.perpsToastDescription
+        ? { description: parsedRouteState.perpsToastDescription }
+        : {}),
+    });
+
+    navigate(`${location.pathname}${location.search}`, {
+      replace: true,
+      state: parsedRouteState.remainingState ?? undefined,
+    });
+  }, [
+    location.pathname,
+    location.search,
+    location.state,
+    navigate,
+    replacePerpsToastByKey,
+  ]);
 
   // Use stream hooks for real-time data
   const { positions: allPositions } = usePerpsLivePositions();
@@ -201,6 +282,8 @@ const PerpsMarketDetailPage: React.FC = () => {
     }
     return safeDecodeURIComponent(symbol);
   }, [symbol]);
+
+  const [showSizeInFiat, setShowSizeInFiat] = useState(false);
 
   // Subscribe to live price data for current symbol (provides oracle price, live funding, OI)
   // Uses background streaming via perpsActivatePriceStream + PerpsStreamManager
@@ -278,34 +361,26 @@ const PerpsMarketDetailPage: React.FC = () => {
     positionRef.current = position;
   }, [position]);
 
-  // Find user-placed limit orders resting on the orderbook for this market.
-  // Excludes all position-attached orders:
-  // - isTrigger: TP/SL trigger orders
-  // - reduceOnly: close/reduce orders tied to positions
-  // - triggerPrice: any order with a trigger condition (TP/SL variant)
-  // - detailedOrderType containing "Take Profit" or "Stop" (belt-and-suspenders)
+  // Filter and sort open orders for this market, then normalize for display.
+  // Normalization adds synthetic TP/SL rows for parent orders and filters out
+  // full-position TP/SL (those stay on the position card / auto-close section).
   const orders = useMemo(() => {
     if (!decodedSymbol) {
       return [];
     }
-    return allOrders.filter((order) => {
-      if (order.symbol.toLowerCase() !== decodedSymbol.toLowerCase()) {
-        return false;
-      }
-      if (order.status !== 'open') {
-        return false;
-      }
-      // Exclude position-attached orders
-      if (order.isTrigger || order.reduceOnly || order.triggerPrice) {
-        return false;
-      }
-      const detailed = order.detailedOrderType?.toLowerCase() ?? '';
-      if (detailed.includes('take profit') || detailed.includes('stop')) {
-        return false;
-      }
-      return true;
+    const marketOrders = allOrders
+      .filter(
+        (order) =>
+          order.symbol.toLowerCase() === decodedSymbol.toLowerCase() &&
+          order.status === 'open',
+      )
+      .sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+
+    return normalizeMarketDetailsOrders({
+      orders: marketOrders,
+      existingPosition: position,
     });
-  }, [decodedSymbol, allOrders]);
+  }, [decodedSymbol, allOrders, position]);
 
   // Candle period state and chart ref
   const [selectedPeriod, setSelectedPeriod] = useState<CandlePeriod>(
@@ -923,8 +998,9 @@ const PerpsMarketDetailPage: React.FC = () => {
                         : TextColor.ErrorDefault
                     }
                   >
+                    {/* Controller/mobile ROE is percent (e.g. 15.79), formatter expects ratio. */}
                     {formatPercentWithMinThreshold(
-                      parseFloat(position.returnOnEquity),
+                      Number.parseFloat(position.returnOnEquity) / 100,
                     )}
                   </Text>
                 </Box>
@@ -937,7 +1013,7 @@ const PerpsMarketDetailPage: React.FC = () => {
                   className="flex-1 cursor-pointer rounded-xl bg-muted px-4 py-3 hover:bg-muted-hover active:bg-muted-pressed"
                   flexDirection={BoxFlexDirection.Column}
                   onClick={() => {
-                    // TODO: Handle size card press
+                    setShowSizeInFiat((prev) => !prev);
                   }}
                 >
                   <Box paddingBottom={1}>
@@ -952,7 +1028,13 @@ const PerpsMarketDetailPage: React.FC = () => {
                     variant={TextVariant.BodyMd}
                     fontWeight={FontWeight.Medium}
                   >
-                    {`${formatNumber(Math.abs(parseFloat(position.size)), { maximumSignificantDigits: 4 })} ${getDisplayName(position.symbol)}`}
+                    {showSizeInFiat && Boolean(position.entryPrice)
+                      ? formatCurrencyWithMinThreshold(
+                          Math.abs(parseFloat(position.size)) *
+                            parseFloat(position.entryPrice.replace(/,/gu, '')),
+                          'USD',
+                        )
+                      : `${formatNumber(Math.abs(parseFloat(position.size)), { maximumSignificantDigits: 4 })} ${getDisplayName(position.symbol)}`}
                   </Text>
                 </Box>
 

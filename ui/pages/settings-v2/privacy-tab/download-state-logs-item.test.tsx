@@ -40,7 +40,7 @@ describe('DownloadStateLogsItem', () => {
     renderWithProvider(<DownloadStateLogsItem />, mockStore);
 
     expect(
-      screen.getByTestId('download-state-logs-button'),
+      screen.getByTestId('advanced-setting-state-logs-button'),
     ).toBeInTheDocument();
     expect(
       screen.getByText(messages.downloadStateLogs.message),
@@ -50,7 +50,7 @@ describe('DownloadStateLogsItem', () => {
   it('opens modal when button is clicked', async () => {
     renderWithProvider(<DownloadStateLogsItem />, mockStore);
 
-    fireEvent.click(screen.getByTestId('download-state-logs-button'));
+    fireEvent.click(screen.getByTestId('advanced-setting-state-logs-button'));
 
     await waitFor(() => {
       expect(
@@ -65,7 +65,7 @@ describe('DownloadStateLogsItem', () => {
 
     renderWithProvider(<DownloadStateLogsItem />, mockStore);
 
-    fireEvent.click(screen.getByTestId('download-state-logs-button'));
+    fireEvent.click(screen.getByTestId('advanced-setting-state-logs-button'));
 
     await waitFor(() => {
       expect(screen.getByText(messages.download.message)).toBeInTheDocument();
@@ -90,7 +90,7 @@ describe('DownloadStateLogsItem', () => {
 
     renderWithProvider(<DownloadStateLogsItem />, mockStore);
 
-    fireEvent.click(screen.getByTestId('download-state-logs-button'));
+    fireEvent.click(screen.getByTestId('advanced-setting-state-logs-button'));
 
     await waitFor(() => {
       expect(screen.getByText(messages.download.message)).toBeInTheDocument();
@@ -116,7 +116,7 @@ describe('DownloadStateLogsItem', () => {
 
     renderWithProvider(<DownloadStateLogsItem />, mockStore);
 
-    fireEvent.click(screen.getByTestId('download-state-logs-button'));
+    fireEvent.click(screen.getByTestId('advanced-setting-state-logs-button'));
 
     await waitFor(() => {
       expect(screen.getByText(messages.download.message)).toBeInTheDocument();

@@ -79,10 +79,31 @@ export function mockWebpack(
     ]),
     getAsset: mock.fn((name) => assets[name]),
     updateAsset: mock.fn(
-      (name: string, fn: (source: sources.Source) => sources.Source) => {
-        return fn(assets[name].source);
+      (
+        name: string,
+        newSourceOrFunction:
+          | sources.Source
+          | ((source: sources.Source) => sources.Source),
+      ) => {
+        assets[name].source =
+          typeof newSourceOrFunction === 'function'
+            ? newSourceOrFunction(assets[name].source)
+            : newSourceOrFunction;
       },
     ),
+    renameAsset: mock.fn((name: string, newFile: string) => {
+      const asset = assets[name];
+      delete assets[name];
+      assets[newFile] = {
+        ...asset,
+        name: newFile,
+      };
+
+      for (const chunk of compilation.chunks) {
+        chunk.files.delete(name);
+        chunk.files.add(newFile);
+      }
+    }),
     deleteAsset: mock.fn((name: string) => {
       delete assets[name];
     }),
