@@ -1,3 +1,4 @@
+import { Caip25CaveatType } from '@metamask/chain-agnostic-permission';
 import { PermissionController } from '@metamask/permission-controller';
 import { getRootMessenger } from '../lib/messenger';
 import type {
@@ -30,23 +31,21 @@ function getInitRequestMock(): jest.Mocked<
     initMessenger: getPermissionControllerInitMessenger(baseMessenger),
   };
 
-  requestMock.getController.mockImplementation(
-    <Name extends ControllerName>(name: Name): ControllerByName[Name] => {
-      if (name === 'ApprovalController') {
-        return {
-          addAndShowApprovalRequest: jest.fn(),
-        } as ControllerByName[Name];
-      }
+  requestMock.getController.mockImplementation((name: ControllerName) => {
+    if (name === 'ApprovalController') {
+      return {
+        addAndShowApprovalRequest: jest.fn(),
+      } as unknown as ControllerByName['ApprovalController'];
+    }
 
-      if (name === 'KeyringController') {
-        return {
-          addNewKeyring: jest.fn(),
-        } as ControllerByName[Name];
-      }
+    if (name === 'KeyringController') {
+      return {
+        addNewKeyring: jest.fn(),
+      } as unknown as ControllerByName['KeyringController'];
+    }
 
-      throw new Error(`Controller "${String(name)}" not found.`);
-    },
-  );
+    throw new Error(`Controller "${String(name)}" not found.`);
+  });
 
   return requestMock;
 }
@@ -68,5 +67,29 @@ describe('PermissionControllerInit', () => {
       permissionSpecifications: expect.any(Object),
       unrestrictedMethods: expect.any(Array),
     });
+  });
+
+  it('passes persisted PermissionController state when present', () => {
+    jest.mocked(PermissionController).mockClear();
+    const request = getInitRequestMock();
+    const permissionState = { subjects: {} };
+    request.persistedState = {
+      PermissionController: permissionState,
+    };
+
+    PermissionControllerInit(request);
+
+    const constructorArgs = jest
+      .mocked(PermissionController)
+      .mock.calls.at(-1)?.[0];
+    expect(constructorArgs?.state).toBe(permissionState);
+  });
+
+  it('includes CAIP-25 caveat specification in caveatSpecifications passed to PermissionController', () => {
+    jest.mocked(PermissionController).mockClear();
+    PermissionControllerInit(getInitRequestMock());
+    const caveatSpecifications = jest.mocked(PermissionController).mock
+      .calls[0][0].caveatSpecifications as Record<string, unknown>;
+    expect(caveatSpecifications).toHaveProperty(Caip25CaveatType);
   });
 });
