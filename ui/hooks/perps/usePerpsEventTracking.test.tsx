@@ -127,13 +127,7 @@ describe('usePerpsEventTracking', () => {
 
     it('fires again when resetKey changes while conditions stays true', () => {
       const { rerender } = renderHook(
-        ({
-          conditions,
-          resetKey,
-        }: {
-          conditions: boolean;
-          resetKey: string;
-        }) =>
+        ({ conditions, resetKey }: { conditions: boolean; resetKey: string }) =>
           usePerpsEventTracking({
             eventName: MetaMetricsEventName.PerpsScreenViewed,
             conditions,
@@ -156,13 +150,7 @@ describe('usePerpsEventTracking', () => {
 
     it('does not fire again when resetKey changes while conditions is false', () => {
       const { rerender } = renderHook(
-        ({
-          conditions,
-          resetKey,
-        }: {
-          conditions: boolean;
-          resetKey: string;
-        }) =>
+        ({ conditions, resetKey }: { conditions: boolean; resetKey: string }) =>
           usePerpsEventTracking({
             eventName: MetaMetricsEventName.PerpsScreenViewed,
             conditions,

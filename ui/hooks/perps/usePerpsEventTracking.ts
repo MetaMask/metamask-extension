@@ -59,14 +59,15 @@ export function usePerpsEventTracking(
 
   // Reset the fire-once guard when resetKey changes so the event fires again
   // for a new subject (e.g. a different market symbol) even if conditions
-  // stays true.
+  // stays true. Inline ref comparison during render is the canonical React
+  // pattern for "reset when prop changes" — no useEffect needed, and no
+  // eslint-disable comment that would cause the React Compiler to skip this hook.
   const resetKey = options?.resetKey;
-  useEffect(() => {
+  const prevResetKeyRef = useRef(resetKey);
+  if (prevResetKeyRef.current !== resetKey) {
+    prevResetKeyRef.current = resetKey;
     hasFiredDeclarativeRef.current = false;
-    // resetKey is intentionally the only dependency: we want to reset the
-    // guard exactly when the key changes, not on every render.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [resetKey]);
+  }
 
   useEffect(() => {
     if (!options) {
