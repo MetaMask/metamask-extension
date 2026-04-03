@@ -9,7 +9,6 @@ import {
   webpack,
   Compiler,
   WebpackPluginInstance,
-  type Stats,
 } from 'webpack';
 import { noop, type Manifest } from '../utils/helpers';
 import { ManifestPlugin } from '../utils/plugins/ManifestPlugin';
@@ -26,85 +25,47 @@ function getWebpackInstance(config: Configuration) {
   return webpack(config);
 }
 
-function createDeferred<T>() {
-  let resolveDeferred: ((value: T | PromiseLike<T>) => void) | undefined;
-  let rejectDeferred: ((reason?: unknown) => void) | undefined;
-  const promise = new Promise<T>((nextResolve, nextReject) => {
-    resolveDeferred = nextResolve;
-    rejectDeferred = nextReject;
-  });
-
-  return {
-    promise,
-    resolve(value: T | PromiseLike<T>) {
-      if (!resolveDeferred) {
-        throw new Error('Deferred promise was not initialized.');
-      }
-      resolveDeferred(value);
-    },
-    reject(reason?: unknown) {
-      if (!rejectDeferred) {
-        throw new Error('Deferred promise was not initialized.');
-      }
-      rejectDeferred(reason);
-    },
-  };
-}
-
 async function withWatching<T>(
   config: Configuration,
-  callback: (context: {
-    waitForNextBuild: (trigger?: () => void) => Promise<Stats>;
-    invalidateAfter: (trigger: () => void) => Promise<Stats>;
-  }) => Promise<T>,
+  callback: (
+    waitForBuild: (trigger?: () => void) => Promise<void>,
+  ) => Promise<T>,
 ) {
   const compiler = webpack(config);
-  let deferredBuild = createDeferred<Stats>();
+  // @typescript-expect-error - sigh.
+  const initialBuild = Promise.withResolvers<void>();
   const watchHandle = compiler.watch({}, (error, stats) => {
     if (error) {
-      deferredBuild.reject(error);
+      initialBuild.reject(error);
       return;
     }
     if (!stats) {
-      deferredBuild.reject(
+      initialBuild.reject(
         new Error('Webpack finished watch build without returning stats.'),
       );
       return;
     }
-    deferredBuild.resolve(stats);
+    initialBuild.resolve();
   });
-  if (!watchHandle) {
-    throw new Error('Webpack did not return a watch handle.');
-  }
+  assert(watchHandle, 'Webpack did not return a watch handle.');
   const watching = watchHandle;
 
-  const waitForNextBuild = async (trigger?: () => void) => {
-    const currentBuild = deferredBuild;
-    trigger?.();
-    const stats = await currentBuild.promise;
-    deferredBuild = createDeferred<Stats>();
-    return stats;
-  };
+  const waitForBuild = (trigger?: () => void) =>
+    trigger
+      ? new Promise<void>((resolveBuild, rejectBuild) => {
+          trigger();
+          watching.invalidate((error) =>
+            error ? rejectBuild(error) : resolveBuild(),
+          );
+        })
+      : initialBuild.promise;
 
   try {
-    return await callback({
-      waitForNextBuild,
-      invalidateAfter: async (trigger) =>
-        await waitForNextBuild(() => {
-          trigger();
-          watching.invalidate();
-        }),
-    });
+    return await callback(waitForBuild);
   } finally {
-    await new Promise<void>((resolveClose, rejectClose) => {
-      watching.close((error) => {
-        if (error) {
-          rejectClose(error);
-          return;
-        }
-        resolveClose();
-      });
-    });
+    await new Promise<void>((resolveClose, rejectClose) =>
+      watching.close((error) => (error ? rejectClose(error) : resolveClose())),
+    );
   }
 }
 
@@ -352,100 +313,71 @@ ${Object.entries(env)
   });
 
   it('keeps build_id stable for no-op watch rebuilds and changes it for real edits', async () => {
-    const tempDirectory = fs.mkdtempSync(
+    using tempDirectory = fs.mkdtempDisposableSync(
       join(tmpdir(), 'manifest-plugin-watch-test-'),
     );
-    const manifestDirectory = join(tempDirectory, 'manifest', 'v3');
-    const sourceFilePath = join(tempDirectory, 'index.js');
-    const outputPath = join(tempDirectory, 'dist');
+    const manifestDirectory = join(tempDirectory.path, 'manifest', 'v3');
+    const sourceFilePath = join(tempDirectory.path, 'index.js');
+    const outputPath = join(tempDirectory.path, 'dist');
+    const manifestPath = join(outputPath, 'chrome', 'manifest.json');
 
     const readBuildId = () =>
       (
-        JSON.parse(
-          fs.readFileSync(join(outputPath, 'chrome', 'manifest.json'), 'utf8'),
-        ) as Manifest & { build_id?: string }
+        JSON.parse(fs.readFileSync(manifestPath, 'utf8')) as Manifest & {
+          build_id?: string;
+        }
       ).build_id;
 
-    try {
-      fs.mkdirSync(manifestDirectory, { recursive: true });
-      fs.writeFileSync(
-        join(manifestDirectory, '_base.json'),
-        JSON.stringify(
-          {
+    const manifest = { manifest_version: 3, name: 'test', version: '1.0.0' };
+    const baseManifestPath = join(manifestDirectory, '_base.json');
+    const writeSource = (source: string | NodeJS.ArrayBufferView) =>
+      fs.writeFileSync(sourceFilePath, source);
+    fs.mkdirSync(manifestDirectory, { recursive: true });
+    fs.writeFileSync(baseManifestPath, JSON.stringify(manifest));
+    writeSource('console.log("v1");\n');
+
+    await withWatching(
+      {
+        mode: 'development',
+        context: tempDirectory.path,
+        entry: { app: sourceFilePath },
+        output: { path: outputPath },
+        plugins: [
+          new ManifestPlugin({
+            browsers: ['chrome'],
             manifest_version: 3,
-            name: 'watch-test',
-            version: '1.0.0',
-          },
-          null,
-          2,
-        ),
-      );
-      fs.writeFileSync(sourceFilePath, 'console.log("v1");\n');
+            version: '1.0.0.0',
+            versionName: '1.0.0',
+            description: null,
+            buildType: 'main',
+            zip: false,
+            setBuildId: true,
+          }),
+        ],
+      },
+      async (waitForBuild) => {
+        await waitForBuild();
+        const firstBuildId = readBuildId();
+        assert.ok(firstBuildId, 'expected initial build_id');
 
-      await withWatching(
-        {
-          mode: 'development',
-          context: tempDirectory,
-          cache: false,
-          devtool: false,
-          entry: {
-            app: {
-              import: [sourceFilePath],
-              filename: 'scripts/app.js',
-            },
-          },
-          output: {
-            path: outputPath,
-            clean: true,
-            filename: '[name].js',
-          },
-          plugins: [
-            new ManifestPlugin({
-              browsers: ['chrome'],
-              manifest_version: 3,
-              version: '1.0.0.0',
-              versionName: '1.0.0',
-              description: null,
-              buildType: 'main',
-              zip: false,
-              setBuildId: true,
-            }),
-          ],
-          infrastructureLogging: {
-            level: 'error',
-          },
-        },
-        async ({ waitForNextBuild, invalidateAfter }) => {
-          await waitForNextBuild();
-          const firstBuildId = readBuildId();
-          assert.ok(firstBuildId, 'expected initial build_id');
+        await waitForBuild(() => writeSource(fs.readFileSync(sourceFilePath)));
+        const secondBuildId = readBuildId();
 
-          await invalidateAfter(() => {
-            const current = fs.readFileSync(sourceFilePath, 'utf8');
-            fs.writeFileSync(sourceFilePath, current);
-          });
-          const secondBuildId = readBuildId();
+        await waitForBuild(() => writeSource('console.log("v2");\n'));
+        const thirdBuildId = readBuildId();
 
-          await invalidateAfter(() => {
-            fs.writeFileSync(sourceFilePath, 'console.log("v2");\n');
-          });
-          const thirdBuildId = readBuildId();
-
-          assert.strictEqual(
-            secondBuildId,
-            firstBuildId,
-            'expected no-op watch rebuild to keep the same build_id',
-          );
-          assert.notStrictEqual(
-            thirdBuildId,
-            secondBuildId,
-            'expected real file changes to produce a new build_id',
-          );
-        },
-      );
-    } finally {
-      fs.rmSync(tempDirectory, { recursive: true, force: true });
-    }
+        assert.strictEqual(
+          secondBuildId,
+          firstBuildId,
+          'expected no-op watch rebuild to keep the same build_id',
+        );
+        assert.notStrictEqual(
+          thirdBuildId,
+          secondBuildId,
+          'expected real file changes to produce a new build_id',
+        );
+      },
+    );
   });
 
   it('keeps the MYX provider ignore only while the warning still exists', async () => {
