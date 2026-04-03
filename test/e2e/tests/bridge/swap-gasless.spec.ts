@@ -9,7 +9,7 @@ import {
   getGasless7702SwapFixtures,
 } from './bridge-test-utils';
 
-describe('Gas included swap tests', function (this: Suite) {
+describe('Gasless swap tests', function (this: Suite) {
   this.timeout(160000);
 
   it('swaps ETH to USDC with gas included via Max button', async function () {
