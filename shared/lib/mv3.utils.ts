@@ -1,7 +1,6 @@
-/* eslint-disable import-x/unambiguous -- Not an external module and not of concern */
-
 const runtimeManifest =
-  global.chrome?.runtime.getManifest() || global.browser?.runtime.getManifest();
+  global.chrome?.runtime.getManifest() ||
+  global.browser?.runtime?.getManifest();
 
 /**
  * A boolean indicating whether the manifest of the current extension is set to manifest version 3.
@@ -10,19 +9,20 @@ const runtimeManifest =
  * If this function is running in Node doing a build job, it will read process.env.ENABLE_MV3.
  * If this function is running in Node doing an E2E test, it will `fs.readFileSync` the manifest.json file.
  */
-const isManifestV3 = runtimeManifest
+export const isManifestV3: boolean = runtimeManifest
   ? runtimeManifest.manifest_version === 3
-  : // Our build system sets this as a boolean, but in a Node.js context (e.g. unit tests) it can be a string
-    process.env.ENABLE_MV3 === true ||
-    process.env.ENABLE_MV3 === 'true' ||
-    process.env.ENABLE_MV3 === undefined;
+  : // Our build system sets ENABLE_MV3, but in a Node.js context (e.g. unit tests) it can be a string
+    process.env.ENABLE_MV3 === 'true' || process.env.ENABLE_MV3 === undefined;
 
 /**
  * A boolean indicating whether the browser supports the offscreen document api.
  * This is only available in when the manifest is version 3, and only in chromium
  * versions 109 and higher. As of June 7, 2024, it is not available in firefox.
  */
-const isOffscreenAvailable = Boolean(global.chrome?.offscreen);
+export const isOffscreenAvailable: boolean = Boolean(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  (global.chrome as any)?.offscreen,
+);
 
 /**
  * A boolean indicating whether the current extension's manifest is version 3
@@ -30,10 +30,5 @@ const isOffscreenAvailable = Boolean(global.chrome?.offscreen);
  * happen to users on MetaMask versions 11.16.7 and higher, who are using a
  * chromium browser with a version below 109.
  */
-const isMv3ButOffscreenDocIsMissing = isManifestV3 && !isOffscreenAvailable;
-
-module.exports = {
-  isManifestV3,
-  isOffscreenAvailable,
-  isMv3ButOffscreenDocIsMissing,
-};
+export const isMv3ButOffscreenDocIsMissing: boolean =
+  isManifestV3 && !isOffscreenAvailable;
