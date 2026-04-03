@@ -41,6 +41,7 @@ import {
   EXPECTED_INPUT_CHANGES,
   BRIDGE_REFRESH_RATE,
   DEFAULT_BRIDGE_FEATURE_FLAGS,
+  BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
 } from './constants';
 import MOCK_SWAP_QUOTES_ETH_MUSD from './mocks/swap-quotes-eth-musd.json';
 import MOCK_SWAP_QUOTES_ETH_USDC_GAS_INCLUDED from './mocks/swap-quotes-eth-usdc-gas-included.json';
@@ -1779,9 +1780,7 @@ export const checkInputChangedEvents = async (
 
 async function mockSentinelNetworks(mockServer: Mockttp) {
   return await mockServer
-    .forGet(
-      'https://tx-sentinel-ethereum-mainnet.api.cx.metamask.io/networks',
-    )
+    .forGet('https://tx-sentinel-ethereum-mainnet.api.cx.metamask.io/networks')
     .always()
     .thenCallback(() => ({
       statusCode: 200,
@@ -1854,6 +1853,11 @@ const STX_MAINNET_NETWORK_CONFIG = {
  * via eth_sendRawTransaction. Anvil mines it immediately, so the real tx hash is
  * on-chain and eth_getTransactionReceipt returns a genuine receipt — which is what
  * the extension's TransactionController needs to mark the transaction as Confirmed.
+ *
+ * @param mockServer - The Mockttp server instance
+ * @param chainId - The chain ID to mock STX endpoints for
+ * @param sentinelUrl - The sentinel base URL for this chain
+ * @param batchStatusOverride - Optional overrides for the batchStatus response
  */
 async function mockSmartTransactionsForBridge(
   mockServer: Mockttp,
@@ -1986,15 +1990,6 @@ async function mockSmartTransactionsForBridge(
     });
 }
 
-export const GAS_INCLUDED_SWAP_FEATURE_FLAGS: FeatureFlagResponse & {
-  minimumVersion: string;
-} = {
-  ...DEFAULT_BRIDGE_FEATURE_FLAGS,
-  sse: {
-    enabled: true,
-    minimumVersion: '13.2.0',
-  },
-};
 
 export const getGasIncludedSwapFixtures = (title?: string) => {
   const fixtureBuilder = new FixtureBuilder({
@@ -2026,7 +2021,7 @@ export const getGasIncludedSwapFixtures = (title?: string) => {
         await mockGetPopularTokens(mockServer),
         await mockGasIncludedSwapETHtoUSDC(mockServer),
         await mockGasIncludedSwapUSDCtoDAI(mockServer),
-        await mockFeatureFlags(mockServer, GAS_INCLUDED_SWAP_FEATURE_FLAGS),
+        await mockFeatureFlags(mockServer, BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED),
         await mockAccountsTransactions(mockServer),
         await mockAccountsBalances(mockServer),
         await mockPriceSpotPrices(mockServer),
@@ -2043,7 +2038,7 @@ export const getGasIncludedSwapFixtures = (title?: string) => {
     },
     manifestFlags: {
       remoteFeatureFlags: {
-        bridgeConfig: GAS_INCLUDED_SWAP_FEATURE_FLAGS,
+        bridgeConfig: BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
         ...STX_MAINNET_NETWORK_CONFIG,
       },
       testing: { disableSmartTransactionsOverride: true },
@@ -2082,9 +2077,7 @@ async function mockGasSponsoredSwapETHtoUSDC(mockServer: Mockttp) {
 
 async function mockSentinelNetworksRelayOnly(mockServer: Mockttp) {
   return await mockServer
-    .forGet(
-      'https://tx-sentinel-ethereum-mainnet.api.cx.metamask.io/networks',
-    )
+    .forGet('https://tx-sentinel-ethereum-mainnet.api.cx.metamask.io/networks')
     .always()
     .thenCallback(() => ({
       statusCode: 200,
@@ -2131,7 +2124,7 @@ export const getGasless7702SwapFixtures = (title?: string) => {
         await mockGetTokenArbitrum(mockServer),
         await mockGetPopularTokens(mockServer),
         await mockGasSponsoredSwapETHtoUSDC(mockServer),
-        await mockFeatureFlags(mockServer, GAS_INCLUDED_SWAP_FEATURE_FLAGS),
+        await mockFeatureFlags(mockServer, BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED),
         await mockAccountsTransactions(mockServer),
         await mockAccountsBalances(mockServer),
         await mockPriceSpotPrices(mockServer),
@@ -2148,7 +2141,7 @@ export const getGasless7702SwapFixtures = (title?: string) => {
     },
     manifestFlags: {
       remoteFeatureFlags: {
-        bridgeConfig: GAS_INCLUDED_SWAP_FEATURE_FLAGS,
+        bridgeConfig: BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
         smartTransactionsNetworks: {
           '0x1': {
             maxDeadline: 160,

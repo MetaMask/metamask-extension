@@ -83,7 +83,6 @@ describe('Gas included swap tests', function (this: Suite) {
           confirmedTx: 0,
           txIndex: 2,
         });
-
       },
     );
   });
