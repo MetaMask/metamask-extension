@@ -72,12 +72,15 @@ describe('Gas included swap tests', function (this: Suite) {
         await activityList.checkCompletedBridgeTransactionActivity(2);
         await activityList.checkTxAction({
           action: 'Swap USDC to DAI',
-          confirmedTx: 1,
+          confirmedTx: 0,
+          txIndex: 1,
         });
         await activityList.checkTxAction({
           action: 'Approve USDC for swaps',
-          confirmedTx: 2,
+          confirmedTx: 0,
+          txIndex: 2,
         });
+
       },
     );
   });
