@@ -60,7 +60,6 @@
   "app/scripts/lib/setup-initial-state-hooks.js",
   "app/scripts/lib/setupSentry.js",
   "app/scripts/lib/setupSentry.test.js",
-  "app/scripts/lib/stream-utils.js",
   "app/scripts/lib/util.test.js",
   "app/scripts/lockdown-install.js",
   "app/scripts/lockdown-more.js",
