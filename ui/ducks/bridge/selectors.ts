@@ -782,7 +782,6 @@ const _getBaseValidationErrors = createDeepEqualSelector(
       isTxAlertLoading: txAlertStatus === RequestStatus.LOADING,
       isNoQuotesAvailable:
         quoteStreamCompleteData?.hasQuotes === false ||
-        // TODO: do we still need this check?
         Boolean(
           !activeQuote &&
             isValidQuoteRequest(quoteRequest) &&
