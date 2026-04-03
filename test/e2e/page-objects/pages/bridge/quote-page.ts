@@ -240,7 +240,10 @@ class BridgeQuotePage {
       timeout: 60000,
     });
     console.log('Transaction complete modal is displayed');
-    await this.driver.clickElement(this.closeButton);
+    const closeButton = await this.driver.waitForSelector(this.closeButton, {
+      timeout: 60000,
+    });
+    await closeButton.click();
     console.log('Clicked View activity button');
   };
 
@@ -250,7 +253,10 @@ class BridgeQuotePage {
       timeout: 60000,
     });
     console.log('Transaction failed modal is displayed');
-    await this.driver.clickElement(this.closeButton);
+    const closeButton = await this.driver.waitForSelector(this.closeButton, {
+      timeout: 60000,
+    });
+    await closeButton.click();
     console.log('Clicked View activity button');
   };
 
