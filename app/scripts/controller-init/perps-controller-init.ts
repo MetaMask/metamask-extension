@@ -39,7 +39,10 @@ export const PerpsControllerInit: ControllerInitFunction<
     persistedState.PreferencesController?.useExternalServices ?? false;
 
   const controller = new PerpsController({
-    // Extension messenger delegates MetaMetrics; package allowed-actions union does not yet include it.
+    // TODO: Remove cast once @metamask/perps-controller adds
+    // MetaMetricsController:trackEvent to its allowed-actions union.
+    // The extension messenger is a superset of the package messenger type;
+    // the cast is safe until the package type catches up.
     messenger: controllerMessenger as PackagePerpsControllerMessenger,
     state: persistedState.PerpsController,
     infrastructure,
