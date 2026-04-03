@@ -44,6 +44,8 @@ jest.mock('../../store/actions.ts', () => ({
   tryUnlockMetamask: () => mockTryUnlockMetamask,
   markPasswordForgotten: () => mockMarkPasswordForgotten,
   resetWallet: () => mockResetWallet,
+  isPasskeyEnrolled: jest.fn().mockResolvedValue(false),
+  getPasskeyRecord: jest.fn().mockResolvedValue(null),
 }));
 
 const mockElement = document.createElement('svg');

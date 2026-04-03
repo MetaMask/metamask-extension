@@ -141,6 +141,7 @@ import {
   getAccountTrackerControllerMessenger,
 } from './account-tracker-controller-messenger';
 import { getOnboardingControllerMessenger } from './onboarding-controller-messenger';
+import { getPasskeyControllerMessenger } from './passkey-controller-messenger';
 import {
   getRemoteFeatureFlagControllerInitMessenger,
   getRemoteFeatureFlagControllerMessenger,
@@ -321,6 +322,8 @@ export {
 } from './name-controller-messenger';
 export type { OnboardingControllerMessenger } from './onboarding-controller-messenger';
 export { getOnboardingControllerMessenger } from './onboarding-controller-messenger';
+export type { PasskeyControllerMessenger } from './passkey-controller-messenger';
+export { getPasskeyControllerMessenger } from './passkey-controller-messenger';
 export type { PreferencesControllerMessenger } from './preferences-controller-messenger';
 export { getPreferencesControllerMessenger } from './preferences-controller-messenger';
 export type {
@@ -610,6 +613,10 @@ export const CONTROLLER_MESSENGERS = {
   },
   OnboardingController: {
     getMessenger: getOnboardingControllerMessenger,
+    getInitMessenger: noop,
+  },
+  PasskeyController: {
+    getMessenger: getPasskeyControllerMessenger,
     getInitMessenger: noop,
   },
   PermissionController: {

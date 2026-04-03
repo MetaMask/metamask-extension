@@ -92,6 +92,7 @@ import {
   ProfileMetricsService,
 } from '@metamask/profile-metrics-controller';
 import { PerpsController } from '@metamask/perps-controller';
+import { PasskeyController } from '@metamask/passkey-controller';
 import OnboardingController from '../controllers/onboarding';
 import { PreferencesController } from '../controllers/preferences-controller';
 import { InstitutionalSnapController } from '../controllers/institutional-snap/InstitutionalSnapController';
@@ -162,6 +163,7 @@ export type Controller =
   | NotificationServicesPushController
   | OAuthService
   | OnboardingController
+  | PasskeyController
   | PermissionController<
       PermissionSpecificationConstraint,
       CaveatSpecificationConstraint
@@ -255,6 +257,7 @@ export type ControllerFlatState = AccountOrderController['state'] &
   NetworkController['state'] &
   NetworkOrderController['state'] &
   OnboardingController['state'] &
+  PasskeyController['state'] &
   PermissionController<
     PermissionSpecificationConstraint,
     CaveatSpecificationConstraint

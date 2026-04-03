@@ -130,6 +130,7 @@ import {
 } from '@metamask/seedless-onboarding-controller';
 import { PRODUCT_TYPES } from '@metamask/subscription-controller';
 import { isSnapId } from '@metamask/snaps-utils';
+import { buildPasskeyRecord } from '@metamask/passkey-controller';
 import {
   findAtomicBatchSupportForChain,
   checkEip7702Support,
@@ -398,6 +399,7 @@ import {
 import { ConnectivityControllerInit } from './controller-init/connectivity';
 import { AccountTrackerControllerInit } from './controller-init/account-tracker-controller-init';
 import { OnboardingControllerInit } from './controller-init/onboarding-controller-init';
+import { PasskeyControllerInit } from './controller-init/passkey-controller-init';
 import { RemoteFeatureFlagControllerInit } from './controller-init/remote-feature-flag-controller-init';
 import { BridgeControllerInit } from './controller-init/bridge-controller-init';
 import { BridgeStatusControllerInit } from './controller-init/bridge-status-controller-init';
@@ -594,6 +596,7 @@ export default class MetamaskController extends EventEmitter {
       SubjectMetadataController: SubjectMetadataControllerInit,
       AppStateController: AppStateControllerInit,
       OnboardingController: OnboardingControllerInit,
+      PasskeyController: PasskeyControllerInit,
       RemoteFeatureFlagController: RemoteFeatureFlagControllerInit,
       NetworkController: NetworkControllerInit,
       MetaMetricsController: MetaMetricsControllerInit,
@@ -733,6 +736,7 @@ export default class MetamaskController extends EventEmitter {
     this.ppomController = controllersByName.PPOMController;
     this.phishingController = controllersByName.PhishingController;
     this.onboardingController = controllersByName.OnboardingController;
+    this.passkeyController = controllersByName.PasskeyController;
     this.accountTrackerController = controllersByName.AccountTrackerController;
     this.txController = controllersByName.TransactionController;
     this.smartTransactionsController =
@@ -2800,7 +2804,23 @@ export default class MetamaskController extends EventEmitter {
 
       // vault management
       submitPassword: this.submitPassword.bind(this),
+      submitEncryptionKey: this.submitEncryptionKey.bind(this),
       verifyPassword: this.verifyPassword.bind(this),
+
+      // passkey (UI runs WebAuthn ceremony; background builds record — encryption key never sent to UI)
+      completePasskeyEnrollment: this.completePasskeyEnrollment.bind(this),
+      setPasskeyRecord: this.passkeyController.setPasskeyRecord.bind(
+        this.passkeyController,
+      ),
+      getPasskeyRecord: this.passkeyController.getPasskeyRecord.bind(
+        this.passkeyController,
+      ),
+      isPasskeyEnrolled: this.passkeyController.isPasskeyEnrolled.bind(
+        this.passkeyController,
+      ),
+      removePasskey: this.passkeyController.removePasskey.bind(
+        this.passkeyController,
+      ),
 
       // network management
       setActiveNetwork: async (id) => {
@@ -4247,6 +4267,45 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
+   * Completes passkey enrollment after the UI runs WebAuthn credential creation.
+   * Exports the vault encryption key only in the background, builds the passkey
+   * record, and persists it. The encryption key is never exposed to the UI.
+   *
+   * @param {object} ceremonyPayload - Serializable WebAuthn creation outcome from the UI.
+   * @param {number[]} ceremonyPayload.credentialId - Raw credential id bytes.
+   * @param {number[]} ceremonyPayload.userHandle - User handle bytes.
+   * @param {boolean} ceremonyPayload.prfEnabled - Whether the PRF extension was enabled.
+   * @param {number[]} [ceremonyPayload.prfFirst] - First PRF output bytes when present.
+   * @param {number[]} prfSaltBytes - PRF salt bytes from prepareCreationParams().
+   * @returns {Promise<void>}
+   */
+  async completePasskeyEnrollment(ceremonyPayload, prfSaltBytes) {
+    const encryptionKey = await this.keyringController.exportEncryptionKey();
+    const { encryptionSalt } = this.keyringController.state;
+    if (!encryptionSalt) {
+      throw new Error('Missing encryption salt for passkey enrollment');
+    }
+    const { credentialId, userHandle, prfEnabled, prfFirst } = ceremonyPayload;
+    const ceremonyResult = {
+      credentialId: new Uint8Array(credentialId),
+      userHandle: new Uint8Array(userHandle),
+      prfEnabled,
+      prfFirst:
+        Array.isArray(prfFirst) && prfFirst.length > 0
+          ? new Uint8Array(prfFirst).buffer
+          : undefined,
+    };
+    const prfSalt = new Uint8Array(prfSaltBytes);
+    const record = await buildPasskeyRecord(
+      encryptionKey,
+      encryptionSalt,
+      ceremonyResult,
+      prfSalt,
+    );
+    this.passkeyController.setPasskeyRecord(record);
+  }
+
+  /**
    * Syncs the keyring encryption key with the seedless onboarding controller.
    *
    * @returns {Promise<void>}
@@ -5064,9 +5123,10 @@ export default class MetamaskController extends EventEmitter {
    * is up to date with known accounts once the vault is decrypted.
    *
    * @param {string} encryptionKey - The user's encryption key
+   * @param {string} [encryptionSalt] - Optional salt (e.g. from passkey enrollment record)
    */
-  async submitEncryptionKey(encryptionKey) {
-    await this.submitPasswordOrEncryptionKey({ encryptionKey });
+  async submitEncryptionKey(encryptionKey, encryptionSalt) {
+    await this.submitPasswordOrEncryptionKey({ encryptionKey, encryptionSalt });
   }
 
   /**
@@ -5077,15 +5137,23 @@ export default class MetamaskController extends EventEmitter {
    * @param {object} params - The function parameters.
    * @param {string} params.password - The user's password.
    * @param {string} params.encryptionKey - The user's encryption key.
+   * @param {string} [params.encryptionSalt] - Optional salt for encryption key unlock.
    */
-  async submitPasswordOrEncryptionKey({ password, encryptionKey }) {
+  async submitPasswordOrEncryptionKey({
+    password,
+    encryptionKey,
+    encryptionSalt,
+  }) {
     const isSocialLoginFlow = this.onboardingController.getIsSocialLoginFlow();
 
     // Before attempting to unlock the keyrings, we need the offscreen to have loaded.
     await this.offscreenPromise;
 
     if (encryptionKey) {
-      await this.keyringController.submitEncryptionKey(encryptionKey);
+      await this.keyringController.submitEncryptionKey(
+        encryptionKey,
+        encryptionSalt,
+      );
     } else {
       await this.keyringController.submitPassword(password);
       if (isSocialLoginFlow) {

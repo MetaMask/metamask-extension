@@ -1,6 +1,8 @@
 import React, {
   Suspense,
+  useCallback,
   useEffect,
+  useRef,
   useState,
   useContext,
   useMemo,
@@ -104,6 +106,8 @@ const toRelativePath = (path: string) =>
 export default function OnboardingFlow() {
   const [secretRecoveryPhrase, setSecretRecoveryPhrase] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  /** Vault password for passkey enrollment on the biometrics screen only; cleared after setup or skip. */
+  const biometricsVaultPasswordRef = useRef<string | null>(null);
   const dispatch = useDispatch<MetaMaskReduxDispatch>();
   const location = useLocation();
   const { pathname, search } = location;
@@ -275,6 +279,14 @@ export default function OnboardingFlow() {
     return await dispatch(createNewVaultAndRestore(password, srp));
   };
 
+  const stagePasswordForBiometrics = useCallback((password: string) => {
+    biometricsVaultPasswordRef.current = password;
+  }, []);
+
+  const clearBiometricsVaultPassword = useCallback(() => {
+    biometricsVaultPasswordRef.current = null;
+  }, []);
+
   const isFullPage =
     pathname === ONBOARDING_WELCOME_ROUTE ||
     pathname === ONBOARDING_UNLOCK_ROUTE ||
@@ -351,12 +363,18 @@ export default function OnboardingFlow() {
                   createNewAccount={handleCreateNewAccount}
                   importWithRecoveryPhrase={handleImportWithRecoveryPhrase}
                   secretRecoveryPhrase={secretRecoveryPhrase}
+                  stagePasswordForBiometrics={stagePasswordForBiometrics}
                 />
               }
             />
             <Route
               path={toRelativePath(ONBOARDING_BIOMETRICS_ROUTE)}
-              element={<Biometrics />}
+              element={
+                <Biometrics
+                  getVaultPassword={() => biometricsVaultPasswordRef.current}
+                  clearVaultPassword={clearBiometricsVaultPassword}
+                />
+              }
             />
             <Route
               path={toRelativePath(ONBOARDING_REVEAL_SRP_ROUTE)}

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback, useState } from 'react';
 import {
   Box,
   Text,
@@ -15,24 +15,92 @@ import {
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import {
+  prepareCreationParams,
+  type CredentialCreationResult,
+} from '@metamask/passkey-controller';
+import {
   ONBOARDING_REVIEW_SRP_ROUTE,
   ONBOARDING_METAMETRICS,
 } from '../../../helpers/constants/routes';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getFirstTimeFlowType } from '../../../selectors';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
+import { PasskeyCeremonyExtensionAdapter } from '../../../../shared/lib/passkey/PasskeyCeremonyExtensionAdapter';
+import { completePasskeyEnrollment } from '../../../store/actions';
 
-export default function Biometrics() {
+function uint8ArrayToNumberArray(bytes: Uint8Array): number[] {
+  return Array.from(bytes);
+}
+
+function credentialCreationResultToPayload(result: CredentialCreationResult): {
+  credentialId: number[];
+  userHandle: number[];
+  prfEnabled: boolean;
+  prfFirst?: number[];
+} {
+  const base = {
+    credentialId: uint8ArrayToNumberArray(result.credentialId),
+    userHandle: uint8ArrayToNumberArray(result.userHandle),
+    prfEnabled: result.prfEnabled,
+  };
+  if (result.prfFirst === undefined) {
+    return base;
+  }
+  return {
+    ...base,
+    prfFirst: uint8ArrayToNumberArray(new Uint8Array(result.prfFirst)),
+  };
+}
+
+export type BiometricsProps = {
+  getVaultPassword: () => string | null;
+  clearVaultPassword: () => void;
+};
+
+export default function Biometrics({
+  getVaultPassword,
+  clearVaultPassword,
+}: BiometricsProps) {
   const navigate = useNavigate();
   const t = useI18nContext();
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
-  const handleMaybeLater = () => {
+  const [isEnrolling, setIsEnrolling] = useState(false);
+
+  const goToNextStep = useCallback(() => {
+    clearVaultPassword();
     navigate(
       firstTimeFlowType === FirstTimeFlowType.create
         ? ONBOARDING_REVIEW_SRP_ROUTE
         : ONBOARDING_METAMETRICS,
       { replace: true },
     );
+  }, [clearVaultPassword, firstTimeFlowType, navigate]);
+
+  const handleMaybeLater = () => {
+    goToNextStep();
+  };
+
+  const handleSetUpBiometrics = async () => {
+    const password = getVaultPassword();
+    if (!password) {
+      goToNextStep();
+      return;
+    }
+    setIsEnrolling(true);
+    try {
+      const adapter = new PasskeyCeremonyExtensionAdapter();
+      const params = prepareCreationParams();
+      const result = await adapter.createCredential(params);
+      await completePasskeyEnrollment(
+        credentialCreationResultToPayload(result),
+        uint8ArrayToNumberArray(params.prfSalt),
+      );
+    } catch {
+      // User cancelled or authenticator unavailable — continue onboarding
+    } finally {
+      setIsEnrolling(false);
+      goToNextStep();
+    }
   };
 
   return (
@@ -71,13 +139,18 @@ export default function Biometrics() {
           variant={ButtonVariant.Primary}
           size={ButtonSize.Lg}
           className="w-full"
+          data-testid="biometrics-set-up-button"
+          disabled={isEnrolling}
+          onClick={handleSetUpBiometrics}
         >
-          {t('setUpBiometrics')}
+          {isEnrolling ? t('unlocking') : t('setUpBiometrics')}
         </Button>
         <Button
           variant={ButtonVariant.Tertiary}
           size={ButtonSize.Md}
           className="w-full"
+          data-testid="biometrics-maybe-later-button"
+          disabled={isEnrolling}
           onClick={handleMaybeLater}
         >
           {t('maybeLater')}

@@ -9091,6 +9091,15 @@
     "message": "Unlock to reveal",
     "description": "Label used for Private Keys row on multichain account details page."
   },
+  "unlockWithPasskey": {
+    "message": "Unlock with Passkey"
+  },
+  "unlocking": {
+    "message": "Unlocking..."
+  },
+  "passkeyUnlockFailed": {
+    "message": "Passkey unlock failed. Try your password."
+  },
   "unlockWithBiometrics": {
     "message": "Unlock with biometrics"
   },

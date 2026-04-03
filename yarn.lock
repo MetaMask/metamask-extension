@@ -7498,6 +7498,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/passkey-controller@portal:../mm-core/packages/passkey-controller::locator=metamask-crx%40workspace%3A.":
+  version: 0.0.0-use.local
+  resolution: "@metamask/passkey-controller@portal:../mm-core/packages/passkey-controller::locator=metamask-crx%40workspace%3A."
+  dependencies:
+    "@metamask/base-controller": "npm:^9.0.0"
+    "@metamask/messenger": "npm:^0.3.0"
+  languageName: node
+  linkType: soft
+
 "@metamask/permission-controller@npm:^12.2.0, @metamask/permission-controller@npm:^12.2.1":
   version: 12.2.1
   resolution: "@metamask/permission-controller@npm:12.2.1"
@@ -34074,6 +34083,7 @@ __metadata:
     "@metamask/notification-services-controller": "npm:^22.0.0"
     "@metamask/object-multiplex": "npm:^2.0.0"
     "@metamask/obs-store": "npm:^9.0.0"
+    "@metamask/passkey-controller": "portal:../mm-core/packages/passkey-controller"
     "@metamask/permission-controller": "npm:^12.2.1"
     "@metamask/permission-log-controller": "npm:^5.0.0"
     "@metamask/permissions-kernel-snap": "npm:^1.1.0"

@@ -9,6 +9,7 @@ import {
   ONBOARDING_METAMETRICS,
   ONBOARDING_COMPLETION_ROUTE,
   ONBOARDING_REVIEW_SRP_ROUTE,
+  ONBOARDING_BIOMETRICS_ROUTE,
   ONBOARDING_WELCOME_ROUTE,
 } from '../../../helpers/constants/routes';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
@@ -387,7 +388,7 @@ describe('Onboarding Create Password', () => {
 
       await waitFor(() => {
         expect(mockUseNavigate).toHaveBeenCalledWith(
-          ONBOARDING_REVIEW_SRP_ROUTE,
+          ONBOARDING_BIOMETRICS_ROUTE,
           {
             replace: true,
           },
@@ -455,9 +456,12 @@ describe('Onboarding Create Password', () => {
       );
 
       await waitFor(() => {
-        expect(mockUseNavigate).toHaveBeenCalledWith(ONBOARDING_METAMETRICS, {
-          replace: true,
-        });
+        expect(mockUseNavigate).toHaveBeenCalledWith(
+          ONBOARDING_BIOMETRICS_ROUTE,
+          {
+            replace: true,
+          },
+        );
       });
     });
   });

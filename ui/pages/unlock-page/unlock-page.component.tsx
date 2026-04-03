@@ -34,6 +34,10 @@ import {
   IconSize,
 } from '@metamask/design-system-react';
 import {
+  prepareAssertionParams,
+  unwrapEncryptionKeyFromAssertion,
+} from '@metamask/passkey-controller';
+import {
   FormTextField,
   TextFieldType,
   FormTextFieldSize,
@@ -61,6 +65,12 @@ import LoginErrorModal from '../onboarding-flow/welcome/login-error-modal';
 import { LOGIN_ERROR } from '../onboarding-flow/welcome/types';
 import ConnectionsRemovedModal from '../../components/app/connections-removed-modal';
 import { captureException } from '../../../shared/lib/sentry';
+import { PasskeyCeremonyExtensionAdapter } from '../../../shared/lib/passkey/PasskeyCeremonyExtensionAdapter';
+import {
+  getPasskeyRecord,
+  isPasskeyEnrolled,
+  submitEncryptionKey,
+} from '../../store/actions';
 import { getCaretCoordinates } from './unlock-page.util';
 import ResetPasswordModal from './reset-password-modal';
 import FormattedCounter from './formatted-counter';
@@ -95,6 +105,8 @@ type UnlockPageState = {
   showLoginErrorModal: boolean;
   showConnectionsRemovedModal: boolean;
   showPasswordForm: boolean;
+  passkeyAvailable: boolean;
+  passkeyInProgress: boolean;
 };
 
 type UnlockPageContext = {
@@ -209,6 +221,8 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
     showLoginErrorModal: false,
     showConnectionsRemovedModal: false,
     showPasswordForm: false,
+    passkeyAvailable: false,
+    passkeyInProgress: false,
   };
 
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
@@ -248,6 +262,12 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
 
   async componentDidMount() {
     const { isOnboardingCompleted, isSocialLoginFlow } = this.props;
+    try {
+      const enrolled = await isPasskeyEnrolled();
+      this.setState({ passkeyAvailable: enrolled });
+    } catch {
+      this.setState({ passkeyAvailable: false });
+    }
     if (isOnboardingCompleted) {
       await this.props.checkIsSeedlessPasswordOutdated();
     } else if (isSocialLoginFlow) {
@@ -523,6 +543,63 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
     );
   };
 
+  handlePasskeyUnlock = async () => {
+    if (
+      this.state.isLocked ||
+      this.state.isSubmitting ||
+      this.state.passkeyInProgress
+    ) {
+      return;
+    }
+    this.setState({ error: null, passkeyInProgress: true });
+    try {
+      const record = await getPasskeyRecord();
+      if (!record) {
+        this.setState({
+          error: (this.context as UnlockPageContext).t('passkeyUnlockFailed'),
+          passkeyInProgress: false,
+          showPasswordForm: true,
+        });
+        return;
+      }
+      const adapter = new PasskeyCeremonyExtensionAdapter();
+      const params = prepareAssertionParams(record);
+      const assertion = await adapter.getAssertion(params);
+      const encryptionKey = await unwrapEncryptionKeyFromAssertion(
+        record,
+        assertion,
+      );
+      await submitEncryptionKey(encryptionKey, record.encryptionSalt);
+      await this.props.forceUpdateMetamaskState();
+
+      let redirectTo = DEFAULT_ROUTE;
+      const fromLocation = this.props.location.state?.from;
+      if (fromLocation?.pathname) {
+        const search = fromLocation.search || '';
+        redirectTo = fromLocation.pathname + search;
+      }
+      this.props.navigate(redirectTo);
+
+      (this.context as UnlockPageContext).trackEvent?.({
+        category: MetaMetricsEventCategory.Navigation,
+        event: MetaMetricsEventName.AppUnlocked,
+        properties: { method: 'passkey' },
+      });
+    } catch (err) {
+      const message =
+        err instanceof Error
+          ? err.message
+          : (this.context as UnlockPageContext).t('passkeyUnlockFailed');
+      this.setState({
+        error: message,
+        passkeyInProgress: false,
+        showPasswordForm: true,
+      });
+    } finally {
+      this.setState({ passkeyInProgress: false });
+    }
+  };
+
   onForgotPasswordOrLoginWithDiffMethods = async () => {
     const { isSocialLoginFlow, navigate, isOnboardingCompleted } = this.props;
 
@@ -620,6 +697,7 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
       password,
       error,
       isLocked,
+      isSubmitting,
       showResetPasswordModal,
       showLoginErrorModal,
       showConnectionsRemovedModal,
@@ -748,6 +826,25 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
                   {this.context.t('unlock')}
                 </Button>
 
+                {this.state.passkeyAvailable && (
+                  <Button
+                    variant={ButtonVariant.Secondary}
+                    size={ButtonSize.Lg}
+                    type="button"
+                    data-testid="unlock-with-passkey"
+                    disabled={
+                      isLocked ||
+                      this.state.isSubmitting ||
+                      this.state.passkeyInProgress
+                    }
+                    onClick={this.handlePasskeyUnlock}
+                  >
+                    {this.state.passkeyInProgress
+                      ? t('unlocking')
+                      : t('unlockWithPasskey')}
+                  </Button>
+                )}
+
                 <Button
                   variant={ButtonVariant.Tertiary}
                   data-testid="unlock-forgot-password-button"
@@ -813,8 +910,14 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
                   className="w-full"
                   type="button"
                   data-testid="unlock-biometrics"
+                  disabled={
+                    isLocked || isSubmitting || this.state.passkeyInProgress
+                  }
+                  onClick={this.handlePasskeyUnlock}
                 >
-                  {t('unlockWithBiometrics')}
+                  {this.state.passkeyInProgress
+                    ? t('unlocking')
+                    : t('unlockWithBiometrics')}
                 </Button>
                 <Button
                   variant={ButtonVariant.Tertiary}

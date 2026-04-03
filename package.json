@@ -366,6 +366,7 @@
     "@metamask/notification-services-controller": "^22.0.0",
     "@metamask/object-multiplex": "^2.0.0",
     "@metamask/obs-store": "^9.0.0",
+    "@metamask/passkey-controller": "portal:../mm-core/packages/passkey-controller",
     "@metamask/permission-controller": "^12.2.1",
     "@metamask/permission-log-controller": "^5.0.0",
     "@metamask/permissions-kernel-snap": "^1.1.0",

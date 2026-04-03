@@ -88,6 +88,7 @@ import {
   CreateClaimRequest,
   SubmitClaimConfig,
 } from '@metamask/claims-controller';
+import { PasskeyRecord } from '@metamask/passkey-controller';
 import { toHardwareWalletError } from '../contexts/hardware-wallets/rpcErrorUtils';
 import { HardwareWalletType } from '../contexts/hardware-wallets/types';
 import { ModalType } from '../selectors/subscription/subscription';
@@ -1141,6 +1142,56 @@ export function unlockAndGetSeedPhrase(
 
 export function submitPassword(password: string): Promise<void> {
   return submitRequestToBackground('submitPassword', [password]);
+}
+
+export function submitEncryptionKey(
+  encryptionKey: string,
+  encryptionSalt?: string,
+): Promise<void> {
+  return submitRequestToBackground('submitEncryptionKey', [
+    encryptionKey,
+    encryptionSalt,
+  ]);
+}
+
+/** Serializable WebAuthn credential creation outcome (for background bridge). */
+export type PasskeyEnrollmentCeremonyPayload = {
+  credentialId: number[];
+  userHandle: number[];
+  prfEnabled: boolean;
+  prfFirst?: number[];
+};
+
+/**
+ * Completes passkey enrollment in the background after the UI runs WebAuthn creation.
+ * The vault encryption key is never returned to the UI.
+ * @param ceremony
+ * @param prfSalt
+ */
+export function completePasskeyEnrollment(
+  ceremony: PasskeyEnrollmentCeremonyPayload,
+  prfSalt: number[],
+): Promise<void> {
+  return submitRequestToBackground('completePasskeyEnrollment', [
+    ceremony,
+    prfSalt,
+  ]);
+}
+
+export function setPasskeyRecord(record: PasskeyRecord): Promise<void> {
+  return submitRequestToBackground('setPasskeyRecord', [record]);
+}
+
+export function getPasskeyRecord(): Promise<PasskeyRecord | null> {
+  return submitRequestToBackground('getPasskeyRecord', []);
+}
+
+export function isPasskeyEnrolled(): Promise<boolean> {
+  return submitRequestToBackground<boolean>('isPasskeyEnrolled', []);
+}
+
+export function removePasskey(): Promise<void> {
+  return submitRequestToBackground('removePasskey', []);
 }
 
 /**
