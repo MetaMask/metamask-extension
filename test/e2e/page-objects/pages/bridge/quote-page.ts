@@ -224,6 +224,38 @@ class BridgeQuotePage {
     await this.driver.clickElement(this.submitButton);
   };
 
+  checkTransactionCompleteAndViewActivity = async () => {
+    console.log('Waiting for transaction complete modal');
+    await this.driver.waitForSelector(
+      {
+        css: 'h4',
+        text: 'Your transaction is complete',
+      },
+      { timeout: 30000 },
+    );
+    console.log('Transaction complete modal is displayed');
+    await this.driver.clickElement(
+      '[data-testid="smart-transaction-status-page-footer-close-button"]',
+    );
+    console.log('Clicked View activity button');
+  };
+
+  checkTransactionFailedAndViewActivity = async () => {
+    console.log('Waiting for transaction failed modal');
+    await this.driver.waitForSelector(
+      {
+        css: 'h4',
+        text: 'Your transaction failed',
+      },
+      { timeout: 30000 },
+    );
+    console.log('Transaction failed modal is displayed');
+    await this.driver.clickElement(
+      '[data-testid="smart-transaction-status-page-footer-close-button"]',
+    );
+    console.log('Clicked View activity button');
+  };
+
   confirmBridgeTransaction = async () => {
     await this.driver.clickElement(this.confirmButton);
   };
