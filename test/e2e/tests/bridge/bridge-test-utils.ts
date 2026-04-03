@@ -102,7 +102,6 @@ export class BridgePage {
  * @param testParams.expectedDestAmount - The expected quoted destination amounts in the quote page
  * @param testParams.submitDelay - The delay to wait before submitting the transaction, must be less than the refresh interval of the stream
  * @param testParams.expectedStatus - The expected state of the transaction
- * @param testParams.withSmartTransactions
  */
 export const bridgeTransaction = async ({
   driver,
@@ -1057,6 +1056,33 @@ const STX_UUID = '0d506aaa-5e38-4cab-ad09-2039cb7a0f33';
 const STX_TRANSACTION_HASH =
   '0xec9d6214684d6dc191133ae4a7ec97db3e521fff9cfe5c4f48a84cb6c93a5fa5';
 
+const STX_MAINNET_SENTINEL_URL =
+  'https://tx-sentinel-ethereum-mainnet.api.cx.metamask.io';
+const STX_LINEA_SENTINEL_URL =
+  'https://tx-sentinel-linea-mainnet.api.cx.metamask.io';
+
+const STX_MAINNET_NETWORK_CONFIG = {
+  smartTransactionsNetworks: {
+    '0x1': {
+      extensionActive: true,
+      sentinelUrl: STX_MAINNET_SENTINEL_URL,
+      expectedDeadline: 45,
+      maxDeadline: 160,
+    },
+  },
+};
+
+const STX_LINEA_NETWORK_CONFIG = {
+  smartTransactionsNetworks: {
+    '0xe708': {
+      extensionActive: true,
+      sentinelUrl: STX_LINEA_SENTINEL_URL,
+      expectedDeadline: 45,
+      maxDeadline: 160,
+    },
+  },
+};
+
 /**
  * Mocks the STX (Smart Transaction) service endpoints for bridge tests.
  *
@@ -1073,7 +1099,7 @@ const STX_TRANSACTION_HASH =
 async function mockSmartTransactionsForBridge(
   mockServer: Mockttp,
   chainId: number = 1,
-  sentinelUrl: string = 'https://tx-sentinel-ethereum-mainnet.api.cx.metamask.io',
+  sentinelUrl: string = STX_MAINNET_SENTINEL_URL,
   batchStatusOverride?: Record<string, unknown>,
 ) {
   const ANVIL_RPC_URL = 'http://localhost:8545';
@@ -1115,7 +1141,7 @@ async function mockSmartTransactionsForBridge(
                 maxPriorityFeePerGas: 1000000004,
                 gas: 239420,
                 balanceNeeded: 1217518987960240,
-                currentBalance: 751982303082919400,
+                currentBalance: 7519823030829194,
                 error: '',
               },
             ],
@@ -1295,19 +1321,7 @@ export const getBridgeFixtures = (
         await mockFeatureFlags(
           mockServer,
           featureFlags,
-          withSmartTransactions
-            ? {
-                smartTransactionsNetworks: {
-                  '0x1': {
-                    extensionActive: true,
-                    sentinelUrl:
-                      'https://tx-sentinel-ethereum-mainnet.api.cx.metamask.io',
-                    expectedDeadline: 45,
-                    maxDeadline: 160,
-                  },
-                },
-              }
-            : {},
+          withSmartTransactions ? STX_MAINNET_NETWORK_CONFIG : {},
         ),
         await mockAccountsTransactions(mockServer),
         await mockAccountsBalances(mockServer),
@@ -1363,19 +1377,7 @@ export const getBridgeFixtures = (
     manifestFlags: {
       remoteFeatureFlags: {
         bridgeConfig: featureFlags,
-        ...(withSmartTransactions
-          ? {
-              smartTransactionsNetworks: {
-                '0x1': {
-                  extensionActive: true,
-                  sentinelUrl:
-                    'https://tx-sentinel-ethereum-mainnet.api.cx.metamask.io',
-                  expectedDeadline: 45,
-                  maxDeadline: 160,
-                },
-              },
-            }
-          : {}),
+        ...(withSmartTransactions ? STX_MAINNET_NETWORK_CONFIG : {}),
       },
       ...(withSmartTransactions
         ? {}
@@ -1436,19 +1438,7 @@ export const getQuoteNegativeCasesFixtures = (
         await mockFeatureFlags(
           mockServer,
           featureFlags,
-          withSmartTransactions
-            ? {
-                smartTransactionsNetworks: {
-                  '0x1': {
-                    extensionActive: true,
-                    sentinelUrl:
-                      'https://tx-sentinel-ethereum-mainnet.api.cx.metamask.io',
-                    expectedDeadline: 45,
-                    maxDeadline: 160,
-                  },
-                },
-              }
-            : {},
+          withSmartTransactions ? STX_MAINNET_NETWORK_CONFIG : {},
         ),
       ].concat(...(await mockSearchTokens(mockServer)));
 
@@ -1461,19 +1451,7 @@ export const getQuoteNegativeCasesFixtures = (
     manifestFlags: {
       remoteFeatureFlags: {
         bridgeConfig: featureFlags,
-        ...(withSmartTransactions
-          ? {
-              smartTransactionsNetworks: {
-                '0x1': {
-                  extensionActive: true,
-                  sentinelUrl:
-                    'https://tx-sentinel-ethereum-mainnet.api.cx.metamask.io',
-                  expectedDeadline: 45,
-                  maxDeadline: 160,
-                },
-              },
-            }
-          : {}),
+        ...(withSmartTransactions ? STX_MAINNET_NETWORK_CONFIG : {}),
       },
       ...(withSmartTransactions
         ? {}
@@ -1498,6 +1476,7 @@ export const getBridgeNegativeCasesFixtures = (
   featureFlags: Partial<FeatureFlagResponse> = {},
   title?: string,
   withSmartTransactions: boolean = true,
+  batchStatusOverride?: Record<string, unknown>,
 ) => {
   const fixtureBuilder = new FixtureBuilder({
     inputChainId: CHAIN_IDS.MAINNET,
@@ -1528,19 +1507,7 @@ export const getBridgeNegativeCasesFixtures = (
         await mockFeatureFlags(
           mockServer,
           featureFlags,
-          withSmartTransactions
-            ? {
-                smartTransactionsNetworks: {
-                  '0x1': {
-                    extensionActive: true,
-                    sentinelUrl:
-                      'https://tx-sentinel-ethereum-mainnet.api.cx.metamask.io',
-                    expectedDeadline: 45,
-                    maxDeadline: 160,
-                  },
-                },
-              }
-            : {},
+          withSmartTransactions ? STX_MAINNET_NETWORK_CONFIG : {},
         ),
       ].concat(...(await mockSearchTokens(mockServer)));
 
@@ -1548,8 +1515,8 @@ export const getBridgeNegativeCasesFixtures = (
         await mockSmartTransactionsForBridge(
           mockServer,
           1,
-          'https://tx-sentinel-ethereum-mainnet.api.cx.metamask.io',
-          { minedTx: 'reverted' },
+          STX_MAINNET_SENTINEL_URL,
+          batchStatusOverride,
         );
       }
 
@@ -1558,19 +1525,7 @@ export const getBridgeNegativeCasesFixtures = (
     manifestFlags: {
       remoteFeatureFlags: {
         bridgeConfig: featureFlags,
-        ...(withSmartTransactions
-          ? {
-              smartTransactionsNetworks: {
-                '0x1': {
-                  extensionActive: true,
-                  sentinelUrl:
-                    'https://tx-sentinel-ethereum-mainnet.api.cx.metamask.io',
-                  expectedDeadline: 45,
-                  maxDeadline: 160,
-                },
-              },
-            }
-          : {}),
+        ...(withSmartTransactions ? STX_MAINNET_NETWORK_CONFIG : {}),
       },
       ...(withSmartTransactions
         ? {}
@@ -1623,19 +1578,7 @@ export const getInsufficientFundsFixtures = (
         await mockFeatureFlags(
           mockServer,
           featureFlags,
-          withSmartTransactions
-            ? {
-                smartTransactionsNetworks: {
-                  '0x1': {
-                    extensionActive: true,
-                    sentinelUrl:
-                      'https://tx-sentinel-ethereum-mainnet.api.cx.metamask.io',
-                    expectedDeadline: 45,
-                    maxDeadline: 160,
-                  },
-                },
-              }
-            : {},
+          withSmartTransactions ? STX_MAINNET_NETWORK_CONFIG : {},
         ),
       ].concat(...(await mockSearchTokens(mockServer)));
 
@@ -1648,19 +1591,7 @@ export const getInsufficientFundsFixtures = (
     manifestFlags: {
       remoteFeatureFlags: {
         bridgeConfig: featureFlags,
-        ...(withSmartTransactions
-          ? {
-              smartTransactionsNetworks: {
-                '0x1': {
-                  extensionActive: true,
-                  sentinelUrl:
-                    'https://tx-sentinel-ethereum-mainnet.api.cx.metamask.io',
-                  expectedDeadline: 45,
-                  maxDeadline: 160,
-                },
-              },
-            }
-          : {}),
+        ...(withSmartTransactions ? STX_MAINNET_NETWORK_CONFIG : {}),
       },
       ...(withSmartTransactions
         ? {}
@@ -1735,9 +1666,6 @@ export const getBridgeL2Fixtures = (
     fixtureBuilder.withPreferencesControllerSmartTransactionsOptedOut();
   }
 
-  const LINEA_SENTINEL_URL =
-    'https://tx-sentinel-linea-mainnet.api.cx.metamask.io';
-
   return {
     fixtures: fixtureBuilder.build(),
     testSpecificMock: async (mockServer: Mockttp) => {
@@ -1760,18 +1688,7 @@ export const getBridgeL2Fixtures = (
         await mockFeatureFlags(
           mockServer,
           featureFlags,
-          withSmartTransactions
-            ? {
-                smartTransactionsNetworks: {
-                  '0xe708': {
-                    extensionActive: true,
-                    sentinelUrl: LINEA_SENTINEL_URL,
-                    expectedDeadline: 45,
-                    maxDeadline: 160,
-                  },
-                },
-              }
-            : {},
+          withSmartTransactions ? STX_LINEA_NETWORK_CONFIG : {},
         ),
         await mockAccountsBalances(mockServer),
         await mockSwapAggregatorMetadataLinea(mockServer),
@@ -1785,11 +1702,7 @@ export const getBridgeL2Fixtures = (
       mocks.push(...(await mockSearchTokens(mockServer)));
 
       if (withSmartTransactions) {
-        await mockSmartTransactionsForBridge(
-          mockServer,
-          59144,
-          LINEA_SENTINEL_URL,
-        );
+        await mockSmartTransactionsForBridge(mockServer, 59144, STX_LINEA_SENTINEL_URL);
       }
 
       return mocks.filter(Boolean);
@@ -1797,18 +1710,7 @@ export const getBridgeL2Fixtures = (
     manifestFlags: {
       remoteFeatureFlags: {
         bridgeConfig: featureFlags,
-        ...(withSmartTransactions
-          ? {
-              smartTransactionsNetworks: {
-                '0xe708': {
-                  extensionActive: true,
-                  sentinelUrl: LINEA_SENTINEL_URL,
-                  expectedDeadline: 45,
-                  maxDeadline: 160,
-                },
-              },
-            }
-          : {}),
+        ...(withSmartTransactions ? STX_LINEA_NETWORK_CONFIG : {}),
       },
       ...(withSmartTransactions
         ? {}

@@ -182,6 +182,8 @@ describe('Bridge functionality', function (this: Suite) {
           },
           BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
           this.test?.fullTitle(),
+          true,
+          { minedTx: 'reverted' },
         ),
       },
       async ({ driver, localNodes }) => {
@@ -221,6 +223,8 @@ describe('Bridge functionality', function (this: Suite) {
           },
           BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
           this.test?.fullTitle(),
+          true,
+          { minedTx: 'reverted' },
         ),
       },
       async ({ driver, localNodes }) => {
