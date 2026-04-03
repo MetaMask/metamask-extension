@@ -167,7 +167,7 @@ export const PerpsView: React.FC = () => {
       <Box
         flexDirection={BoxFlexDirection.Column}
         gap={4}
-        data-testid="perps-tab-view-loading"
+        data-testid="perps-view-loading"
       >
         <PerpsControlBarSkeleton />
         <PerpsSectionSkeleton cardCount={5} showStartTradeCta />
@@ -183,7 +183,7 @@ export const PerpsView: React.FC = () => {
     <Box
       flexDirection={BoxFlexDirection.Column}
       gap={4}
-      data-testid="perps-tab-view"
+      data-testid="perps-view"
     >
       {/* Balance header with Add funds / Withdraw dropdown */}
       <PerpsBalanceDropdown
@@ -192,13 +192,13 @@ export const PerpsView: React.FC = () => {
         onWithdraw={triggerWithdraw}
       />
 
+      {/* Positions + Orders sections */}
       {batchActionError ? (
         <Text variant={TextVariant.BodySm} color={TextColor.ErrorDefault}>
           {batchActionError}
         </Text>
       ) : null}
 
-      {/* Positions + Orders sections */}
       <PerpsPositionsOrders
         positions={positions}
         orders={orders}
