@@ -1,10 +1,17 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
+import { TokenFeatureType } from '@metamask/bridge-controller';
 import { getEventPayloads, withFixtures } from '../../helpers';
 import { login } from '../../page-objects/flows/login.flow';
 import HomePage from '../../page-objects/pages/home/homepage';
+import BridgeQuotePage from '../../page-objects/pages/bridge/quote-page';
 import { BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED } from './constants';
-import { bridgeTransaction, getBridgeFixtures } from './bridge-test-utils';
+import {
+  bridgeTransaction,
+  getBridgeFixtures,
+  verifySubmittedSwapTransaction,
+} from './bridge-test-utils';
 
 describe('Swap tests', function (this: Suite) {
   this.timeout(160000); // This test is very long, so we need an unusually high timeout
@@ -15,6 +22,7 @@ describe('Swap tests', function (this: Suite) {
           this.test?.fullTitle(),
           { ...BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED, refreshRate: 30000 },
           false,
+          true,
         ),
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
@@ -57,7 +65,7 @@ describe('Swap tests', function (this: Suite) {
         requestedToCompletedEvents.forEach((e, idx) => {
           assert.ok(
             e.event === expectedEvents[idx],
-            `${e.event} event validation failed`,
+            `${e.event} event validation failed at index ${idx}`,
           );
         });
 
@@ -94,6 +102,7 @@ describe('Swap tests', function (this: Suite) {
         this.test?.fullTitle(),
         BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
         false,
+        true,
       ),
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
         await login(driver, { expectedBalance: '$225,730.11' });
@@ -148,6 +157,221 @@ describe('Swap tests', function (this: Suite) {
         //   quotesReceivedEvent.properties.usd_quoted_gas === 23.15898006845514,
         //   `Quoted gas validation failed. Actual value: ${quotesReceivedEvent.properties.usd_quoted_gas}`,
         // );
+      },
+    );
+  });
+
+  it('submits swap with token alert', async function () {
+    await withFixtures(
+      {
+        ...getBridgeFixtures(
+          this.test?.fullTitle(),
+          { ...BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED, refreshRate: 30000 },
+          false,
+          true,
+          true,
+          [
+            {
+              type: TokenFeatureType.MALICIOUS,
+              feature_id: 'HONEYPOT',
+              description: 'Token alert 1',
+            },
+          ],
+        ),
+      },
+      async ({ driver }) => {
+        await login(driver);
+
+        const homePage = new HomePage(driver);
+        await homePage.startSwapFlow();
+
+        console.log('Requesting swap quote');
+        const bridgePage = new BridgeQuotePage(driver);
+        await bridgePage.enterBridgeQuote({
+          amount: '1',
+        });
+        await bridgePage.waitForQuote();
+
+        await bridgePage.submitQuoteWithWarning(1);
+        await bridgePage.rejectModal();
+        console.log('Rejected token alert modal');
+
+        await bridgePage.submitQuoteWithWarning();
+        await bridgePage.approveModal();
+        console.log('Approved token alert modal and submitted swap');
+
+        await verifySubmittedSwapTransaction({
+          driver,
+          quote: {
+            amount: '1',
+          },
+          expectedTransactionsCount: 1,
+          expectedStatus: 'success',
+          expectedSwapTokens: {
+            tokenFrom: 'ETH',
+            tokenTo: 'MUSD',
+          },
+        });
+      },
+    );
+  });
+
+  it('submits swap with price impact error and multiple token alerts', async function () {
+    await withFixtures(
+      {
+        ...getBridgeFixtures(
+          this.test?.fullTitle(),
+          {
+            ...BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
+            refreshRate: 30000,
+            priceImpactThreshold: {
+              ...BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED.priceImpactThreshold,
+              gasless: 0.01,
+              normal: 0.01,
+              warning: 0.25,
+              error: 0.0001,
+            },
+          },
+          false,
+          true,
+          true,
+          [
+            {
+              type: TokenFeatureType.MALICIOUS,
+              feature_id: 'HONEYPOT',
+              description: 'Token alert 1',
+            },
+            {
+              type: TokenFeatureType.WARNING,
+              feature_id: 'AIRDROP_PATTERN',
+              description: 'Token alert 2',
+            },
+            {
+              type: TokenFeatureType.MALICIOUS,
+              feature_id: 'UNKNOWN_TOKEN_ALERT',
+              description: 'Token alert 3',
+            },
+            {
+              type: TokenFeatureType.INFO,
+              feature_id: 'CONCENTRATED_SUPPLY_DISTRIBUTION',
+              description: 'Token alert 4',
+            },
+          ],
+        ),
+      },
+      async ({ driver }) => {
+        await login(driver);
+
+        const homePage = new HomePage(driver);
+        await homePage.startSwapFlow();
+
+        const bridgePage = new BridgeQuotePage(driver);
+
+        console.log('Requesting swap quote');
+        await bridgePage.enterBridgeQuote({
+          amount: '1',
+        });
+        await bridgePage.waitForQuote();
+        await bridgePage.checkPriceImpactModalIsDisplayed();
+
+        await bridgePage.submitQuoteWithWarning(3);
+        await bridgePage.rejectModal();
+        console.log('Rejected first token alert modal');
+
+        await bridgePage.submitQuoteWithWarning();
+        await bridgePage.approveModal();
+        await bridgePage.rejectModal();
+        console.log('Rejected second token alert modal');
+
+        await bridgePage.submitQuoteWithWarning();
+        await bridgePage.approveModal();
+        await bridgePage.approveModal();
+        await bridgePage.approveModal();
+        await bridgePage.rejectModal();
+        console.log('Rejected price impact modal');
+
+        await bridgePage.dismissTokenAlert();
+        console.log('Dismissed token alert modal');
+
+        await bridgePage.submitQuoteWithWarning(2);
+        console.log('Verified that 2 token alerts are still displayed');
+        await bridgePage.approveModal();
+        await bridgePage.approveModal();
+        await bridgePage.approveModal();
+        console.log('Approved token alert modals');
+        await bridgePage.approveModal();
+        console.log('Approved price impact modal and submitted swap');
+
+        await verifySubmittedSwapTransaction({
+          driver,
+          quote: {
+            amount: '1',
+          },
+          expectedTransactionsCount: 1,
+          expectedStatus: 'success',
+          expectedSwapTokens: {
+            tokenFrom: 'ETH',
+            tokenTo: 'MUSD',
+          },
+        });
+      },
+    );
+  });
+
+  it('submits swap with price impact error', async function () {
+    await withFixtures(
+      {
+        ...getBridgeFixtures(
+          this.test?.fullTitle(),
+          {
+            ...BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
+            refreshRate: 30000,
+            priceImpactThreshold: {
+              ...BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED.priceImpactThreshold,
+              gasless: 0.01,
+              normal: 0.01,
+              warning: 0.25,
+              error: 0.0001,
+            },
+          },
+          false,
+          true,
+        ),
+      },
+      async ({ driver }) => {
+        await login(driver);
+
+        const homePage = new HomePage(driver);
+        await homePage.startSwapFlow();
+
+        const bridgePage = new BridgeQuotePage(driver);
+
+        console.log('Requesting swap quote');
+        await bridgePage.enterBridgeQuote({
+          amount: '1',
+        });
+        await bridgePage.waitForQuote();
+
+        await bridgePage.submitQuoteWithWarning();
+        await bridgePage.rejectModal();
+        console.log('Rejected price impact modal');
+
+        await bridgePage.submitQuoteWithWarning();
+        await bridgePage.approveModal();
+        console.log('Approved price impact modal and submitted swap');
+
+        await verifySubmittedSwapTransaction({
+          driver,
+          quote: {
+            amount: '1',
+          },
+          expectedTransactionsCount: 1,
+          expectedStatus: 'success',
+          expectedSwapTokens: {
+            tokenFrom: 'ETH',
+            tokenTo: 'MUSD',
+          },
+        });
       },
     );
   });

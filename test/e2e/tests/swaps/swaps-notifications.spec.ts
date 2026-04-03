@@ -14,50 +14,29 @@ import {
   DEFAULT_BRIDGE_FEATURE_FLAGS,
 } from '../bridge/constants';
 import { checkNotification } from './shared';
+import { TokenFeatureType } from '@metamask/bridge-controller';
 
-const UNSTABLE_TOKEN_PRICE_TITLE = 'Unstable token price';
+const UNSTABLE_TOKEN_PRICE_TITLE = 'Malicious token';
 const UNSTABLE_TOKEN_PRICE_DESCRIPTION =
   'The price of this token in USD is highly volatile, indicating a high risk of losing significant value by interacting with it.';
-
-const getBridgeFixturesWithTokenAlertWarning = (title?: string) => {
-  const fixtures = getBridgeFixtures(
-    title,
-    BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
-    false,
-  );
-
-  return {
-    ...fixtures,
-    testSpecificMock: async (mockServer: Mockttp) => {
-      const baseMocks = fixtures.testSpecificMock
-        ? await fixtures.testSpecificMock(mockServer)
-        : [];
-
-      return [
-        ...baseMocks,
-        await mockServer
-          .forPost('https://security-alerts.api.cx.metamask.io/token/scan')
-          .always()
-          .thenJson(200, {
-            features: [
-              {
-                // This maps to "Unstable token price" in i18n.
-                // eslint-disable-next-line @typescript-eslint/naming-convention
-                feature_id: 'UNSTABLE_TOKEN_PRICE',
-                type: 'Warning',
-                description: 'Unstable price warning',
-              },
-            ],
-          }),
-      ];
-    },
-  };
-};
 
 describe('Swaps - notifications', function () {
   it('shows token risk warning banner for unstable token price', async function () {
     await withFixtures(
-      getBridgeFixturesWithTokenAlertWarning(this.test?.fullTitle()),
+      getBridgeFixtures(
+        this.test?.fullTitle(),
+        { ...BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED, refreshRate: 30000 },
+        false,
+        true,
+        true,
+        [
+          {
+            type: TokenFeatureType.MALICIOUS,
+            feature_id: 'HONEYPOT',
+            description: UNSTABLE_TOKEN_PRICE_DESCRIPTION,
+          },
+        ],
+      ),
       async ({ driver, mockedEndpoint }) => {
         await login(driver, { expectedBalance: '$225,730.11' });
         const homePage = new HomePage(driver);
@@ -80,8 +59,8 @@ describe('Swaps - notifications', function () {
           request.url.includes('security-alerts.api.cx.metamask.io/token/scan'),
         );
         assert.ok(
-          tokenScanRequests.length > 0,
-          'Security alerts token/scan endpoint was not called',
+          tokenScanRequests.length === 0,
+          'Security alerts token/scan endpoint was called',
         );
 
         await bridgeQuotePage.checkTokenRiskWarningIsDisplayed(

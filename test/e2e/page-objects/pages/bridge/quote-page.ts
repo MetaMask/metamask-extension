@@ -80,6 +80,21 @@ class BridgeQuotePage {
   private networkNameSelector = (network: string) =>
     `[data-testid="${network}"]`;
 
+  private warningModal = '[data-testid="bridge-warning-modal"]';
+
+  private warningModalProceedButton =
+    '[data-testid="bridge-warning-modal-proceed-button"]';
+
+  private warningModalCancelButton =
+    '[data-testid="bridge-warning-modal-cancel-button"]';
+
+  private closeButton = '[aria-label="Close"]';
+
+  private tokenWarningAlert = '[data-testid="bridge-token-warning-alert"]';
+
+  private priceImpactQuoteCardButton =
+    '[data-testid="price-impact-warning-button"]';
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
@@ -229,6 +244,57 @@ class BridgeQuotePage {
 
   submitQuote = async () => {
     await this.driver.clickElement(this.submitButton);
+  };
+
+  checkPriceImpactModalIsDisplayed = async () => {
+    const priceImpactButton = await this.driver.waitForSelector(
+      this.priceImpactQuoteCardButton,
+      {
+        timeout: 30000,
+      },
+    );
+    await priceImpactButton.click();
+    await this.driver.waitForSelector(this.warningModal, { timeout: 2000 });
+    await this.driver.clickElementAndWaitToDisappear(
+      this.warningModalCancelButton,
+    );
+  };
+
+  dismissTokenAlert = async (expectedNumberOfAlerts?: number) => {
+    await this.closeModal();
+    if (expectedNumberOfAlerts) {
+      const tokenAlerts = await this.driver.findElements(
+        this.tokenWarningAlert,
+      );
+      assert.equal(
+        tokenAlerts.length,
+        expectedNumberOfAlerts,
+        `Expected ${expectedNumberOfAlerts} token alerts, but found ${tokenAlerts.length}`,
+      );
+    }
+  };
+
+  submitQuoteWithWarning = async (warningCount: number = 0) => {
+    if (warningCount) {
+      await this.driver.elementCountBecomesN(
+        this.tokenWarningAlert,
+        warningCount,
+      );
+    }
+    await this.submitQuote();
+    await this.driver.waitForSelector(this.warningModal, { timeout: 2000 });
+  };
+
+  approveModal = async () => {
+    await this.driver.clickElement(this.warningModalProceedButton);
+  };
+
+  rejectModal = async () => {
+    await this.driver.clickElement(this.warningModalCancelButton);
+  };
+
+  closeModal = async () => {
+    await this.driver.clickElement(this.closeButton);
   };
 
   confirmBridgeTransaction = async () => {
