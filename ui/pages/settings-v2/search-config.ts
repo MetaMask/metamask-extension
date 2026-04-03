@@ -63,6 +63,7 @@ export const PRIVACY_ITEMS = {
   'data-collection': 'dataCollectionForMarketing',
   'delete-metametrics-data': 'deleteMetaMetricsData',
   'download-state-logs': 'downloadStateLogs',
+  'export-your-data': 'exportYourData',
 } as const;
 
 export const THIRD_PARTY_API_ITEMS = {
@@ -89,7 +90,6 @@ export const BACKUP_AND_SYNC_ITEMS = {
 } as const;
 
 export const EXPERIMENTAL_ITEMS = {
-  notifications: 'notificationsFeatureToggle',
   'keyring-snaps': 'addSnapAccountToggle',
   'watch-account': 'watchEthereumAccountsToggle',
 } as const;

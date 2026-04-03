@@ -121,7 +121,7 @@ export default function InfoTab(): React.ReactElement {
           <Box ref={settingsRefs[8]} {...linkItemProps}>
             <TextButton asChild {...linkProps}>
               <a
-                href="https://metamask.io/beta-terms.html"
+                href="https://metamask.io/beta-terms"
                 target="_blank"
                 rel="noopener noreferrer"
               >
@@ -184,6 +184,7 @@ export default function InfoTab(): React.ReactElement {
       paddingTop={3}
       paddingBottom={6}
       gap={4}
+      paddingHorizontal={4}
     >
       <Box>
         <img

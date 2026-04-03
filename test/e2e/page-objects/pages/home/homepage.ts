@@ -103,6 +103,9 @@ class HomePage {
 
   private readonly srpAddedToast = '.toasts-container__banner-base';
 
+  private readonly srpAddedToastCloseButton =
+    '.toasts-container__banner-base button[aria-label="Close"]';
+
   private readonly surveyToast = '[data-testid="survey-toast"]';
 
   private readonly tokensTab = {
@@ -558,6 +561,11 @@ class HomePage {
     // await this.driver.waitForSelector({
     //   text: `Wallet ${srpNumber} imported`,
     // });
+  }
+
+  async dismissSrpAddedToast(): Promise<void> {
+    console.log('Dismiss SRP added toast');
+    await this.driver.clickElementSafe(this.srpAddedToastCloseButton, 3000);
   }
 
   async checkNoSurveyToastIsDisplayed(): Promise<void> {

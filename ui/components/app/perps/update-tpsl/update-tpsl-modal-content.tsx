@@ -1,4 +1,11 @@
-import React, { useState, useCallback, useMemo, useLayoutEffect } from 'react';
+import React, {
+  useState,
+  useCallback,
+  useMemo,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+} from 'react';
 import {
   Box,
   BoxAlignItems,
@@ -8,10 +15,6 @@ import {
   TextVariant,
   TextColor,
   FontWeight,
-  Icon,
-  IconName,
-  IconSize,
-  IconColor,
 } from '@metamask/design-system-react';
 import {
   PERPS_EVENT_PROPERTY,
@@ -32,7 +35,10 @@ import {
 import { MetaMetricsEventName } from '../../../../../shared/constants/metametrics';
 import { submitRequestToBackground } from '../../../../store/background-connection';
 import { getPerpsStreamManager } from '../../../../providers/perps';
-import type { Position } from '../types';
+import { usePerpsToast } from '../perps-toast';
+import { PERPS_TOAST_KEYS } from '../perps-toast/perps-toast-provider';
+import type { Position, PerpsBackgroundResult } from '../types';
+import { normalizeTpslPrices } from '../utils';
 
 const TP_PRESETS = [10, 25, 50, 100];
 const SL_PRESETS = [10, 25, 50, 75];
@@ -83,6 +89,7 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
   const { track } = usePerpsEventTracking();
   const { formatNumber, formatCurrencyWithMinThreshold } = useFormatters();
   const { isEligible } = usePerpsEligibility();
+  const { replacePerpsToastByKey } = usePerpsToast();
 
   const [editingTpPrice, setEditingTpPrice] = useState(
     () => position.takeProfitPrice ?? '',
@@ -91,7 +98,7 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
     () => position.stopLossPrice ?? '',
   );
   const [isSaving, setIsSaving] = useState(false);
-  const [tpslError, setTpslError] = useState<string | null>(null);
+  const isMountedRef = useRef(true);
 
   const entryPriceForEdit = useMemo(() => {
     if (position?.entryPrice) {
@@ -201,6 +208,12 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
     return signedSize * (exitPrice - entryPriceForEdit);
   }, [editingSlPrice, signedSize, entryPriceForEdit]);
 
+  useEffect(() => {
+    return () => {
+      isMountedRef.current = false;
+    };
+  }, []);
+
   const handleTpPresetClick = useCallback(
     (percent: number) => {
       const newPrice = percentToPriceForEdit(percent, true);
@@ -272,20 +285,24 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
       return;
     }
     setIsSaving(true);
-    setTpslError(null);
+
+    const { takeProfitPrice: cleanTpPrice, stopLossPrice: cleanSlPrice } =
+      normalizeTpslPrices({
+        takeProfitPrice: editingTpPrice,
+        stopLossPrice: editingSlPrice,
+      });
+
     try {
-      const cleanTpPrice = editingTpPrice.replaceAll(',', '').trim();
-      const cleanSlPrice = editingSlPrice.replaceAll(',', '').trim();
-      const result = await submitRequestToBackground<{
-        success: boolean;
-        error?: string;
-      }>('perpsUpdatePositionTPSL', [
-        {
-          symbol: position.symbol,
-          takeProfitPrice: cleanTpPrice || undefined,
-          stopLossPrice: cleanSlPrice || undefined,
-        },
-      ]);
+      const result = await submitRequestToBackground<PerpsBackgroundResult>(
+        'perpsUpdatePositionTPSL',
+        [
+          {
+            symbol: position.symbol,
+            takeProfitPrice: cleanTpPrice,
+            stopLossPrice: cleanSlPrice,
+          },
+        ],
+      );
       if (!result.success) {
         const failMessage = result.error || 'Failed to update TP/SL';
         track(MetaMetricsEventName.PerpsRiskManagement, {
@@ -293,7 +310,10 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
           [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.FAILED,
           [PERPS_EVENT_PROPERTY.FAILURE_REASON]: failMessage,
         });
-        setTpslError(failMessage);
+        replacePerpsToastByKey({
+          key: PERPS_TOAST_KEYS.UPDATE_FAILED,
+          description: failMessage,
+        });
         return;
       }
       track(MetaMetricsEventName.PerpsRiskManagement, {
@@ -303,20 +323,21 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
       const streamManager = getPerpsStreamManager();
       streamManager.setOptimisticTPSL(
         position.symbol,
-        cleanTpPrice || undefined,
-        cleanSlPrice || undefined,
+        cleanTpPrice,
+        cleanSlPrice,
       );
       const currentPositions = streamManager.positions.getCachedData();
       const optimisticallyUpdatedPositions = currentPositions.map((p) =>
         p.symbol === position.symbol
           ? {
               ...p,
-              takeProfitPrice: cleanTpPrice || undefined,
-              stopLossPrice: cleanSlPrice || undefined,
+              takeProfitPrice: cleanTpPrice,
+              stopLossPrice: cleanSlPrice,
             }
           : p,
       );
       streamManager.positions.pushData(optimisticallyUpdatedPositions);
+
       setTimeout(async () => {
         try {
           const freshPositions = await submitRequestToBackground<
@@ -327,15 +348,32 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
           console.warn('[Perps] Delayed TP/SL refetch failed:', e);
         }
       }, 2500);
+
+      replacePerpsToastByKey({
+        key: PERPS_TOAST_KEYS.UPDATE_SUCCESS,
+      });
       onClose();
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : 'An unknown error occurred';
-      setTpslError(errorMessage);
+      replacePerpsToastByKey({
+        key: PERPS_TOAST_KEYS.UPDATE_FAILED,
+        description: errorMessage,
+      });
     } finally {
-      setIsSaving(false);
+      if (isMountedRef.current) {
+        setIsSaving(false);
+      }
     }
-  }, [isEligible, position, editingTpPrice, editingSlPrice, onClose, track]);
+  }, [
+    editingSlPrice,
+    editingTpPrice,
+    isEligible,
+    onClose,
+    position,
+    replacePerpsToastByKey,
+    track,
+  ]);
 
   useLayoutEffect(() => {
     onSubmitStateChange?.({
@@ -569,24 +607,6 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
           </Box>
         )}
       </Box>
-
-      {tpslError && (
-        <Box
-          className="bg-error-muted rounded-lg px-3 py-2"
-          flexDirection={BoxFlexDirection.Row}
-          alignItems={BoxAlignItems.Center}
-          gap={2}
-        >
-          <Icon
-            name={IconName.Warning}
-            size={IconSize.Sm}
-            color={IconColor.ErrorDefault}
-          />
-          <Text variant={TextVariant.BodySm} color={TextColor.ErrorDefault}>
-            {tpslError}
-          </Text>
-        </Box>
-      )}
     </Box>
   );
 };

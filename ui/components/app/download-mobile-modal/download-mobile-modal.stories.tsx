@@ -1,6 +1,6 @@
 import React from 'react';
 import { useArgs } from '@storybook/client-api';
-import { Button } from '../../component-library';
+import { Button } from '@metamask/design-system-react';
 import DownloadMobileModal from './download-mobile-modal';
 
 export default {

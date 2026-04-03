@@ -1445,7 +1445,9 @@ export function connectHardware(
     const { ledgerTransportType } = getState().metamask;
 
     dispatch(
-      showLoadingIndication(`Looking for your ${capitalize(deviceName)}...`),
+      showLoadingIndication(
+        t('hardwareWalletLookingForDevice', [capitalize(deviceName)]),
+      ),
     );
 
     let accounts: { address: string }[];
@@ -4699,26 +4701,6 @@ export async function getMarketingConsent() {
     logErrorWithMessage(getErrorMessage(error));
     return false;
   }
-}
-
-/**
- * @deprecated Use setAvatarType instead
- * @param val - Boolean value for blockie preference
- */
-export function setUseBlockie(
-  val: boolean,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
-    dispatch(showLoadingIndication());
-    log.debug(`background.setUseBlockie`);
-    try {
-      await submitRequestToBackground('setUseBlockie', [val]);
-    } catch (err) {
-      dispatch(displayWarning(err));
-    } finally {
-      dispatch(hideLoadingIndication());
-    }
-  };
 }
 
 export function setAvatarType(value: string) {
