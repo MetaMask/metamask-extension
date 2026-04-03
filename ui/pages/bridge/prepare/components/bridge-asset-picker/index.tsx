@@ -41,7 +41,7 @@ import {
 } from '../../../../../helpers/constants/design-system';
 import { getAccountGroupsByAddress } from '../../../../../selectors/multichain-accounts/account-tree';
 import { type BridgeAppState } from '../../../../../ducks/bridge/selectors';
-import { getOwnedAssetsWithBalanceByAssetId } from '../../../../../ducks/bridge/asset-selectors';
+import { getBridgeSortedAssets } from '../../../../../ducks/bridge/asset-selectors';
 import { usePopularTokens } from '../../../../../hooks/bridge/usePopularTokens';
 import { type BridgeToken } from '../../../../../ducks/bridge/types';
 import { toBridgeToken } from '../../../../../ducks/bridge/utils';
@@ -78,7 +78,7 @@ export const BridgeAssetPicker = ({
     getAccountGroupsByAddress(state, [accountAddress]),
   );
   const assetsWithBalance = useSelector((state: BridgeAppState) =>
-    getOwnedAssetsWithBalanceByAssetId(state, accountAddress),
+    getBridgeSortedAssets(state, accountGroup?.id),
   );
 
   const t = useI18nContext();

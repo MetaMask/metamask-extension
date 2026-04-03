@@ -30,11 +30,8 @@ import {
   getAssetsMetadata,
   getAssetsRates,
 } from '../../selectors/assets';
-import {
-  getAccountGroupsByAddress,
-  getInternalAccountByGroupAndCaip,
-} from '../../selectors/multichain-accounts/account-tree';
-import { EMPTY_ARRAY, EMPTY_OBJECT } from '../../selectors/shared';
+import { getInternalAccountByGroupAndCaip } from '../../selectors/multichain-accounts/account-tree';
+import { EMPTY_ARRAY } from '../../selectors/shared';
 import { type BridgeAppState, getFromChains } from './selectors';
 import { type BridgeToken } from './types';
 import { getMaybeHexChainId } from './utils';
@@ -321,17 +318,23 @@ const getNonEvmAssetsWithBalance = createSelector(
 // Combines EVM and non-EVM assets and appends tokenFiatAmount to each asset
 const getBridgeAssetsForAccountGroupId = createSelector(
   [
+    (_: BridgeAppState, id: AccountGroupId | undefined) => id,
     getEvmAssetsWithBalance,
     getEvmExchangeRates,
     getNonEvmAssetsWithBalance,
     getAssetsRates,
   ],
   (
+    id,
     evmAssetsWithBalance,
     evmExchangeRatesByAssetId,
     nonEvmAssetsWithBalance,
     nonEvmExchangeRatesByAssetId,
   ): BridgeToken[] => {
+    if (!id) {
+      return EMPTY_ARRAY as unknown as BridgeToken[];
+    }
+
     const evmAssetsWithFiatBalances = evmAssetsWithBalance.map((asset) => ({
       ...asset,
       tokenFiatAmount: new BigNumber(asset.balance ?? '0')
@@ -409,22 +412,3 @@ export const getBridgeBalancesByChainId = createSelector(
     }, {}),
 );
 
-export const getOwnedAssetsByAssetId = (
-  state: BridgeAppState,
-  accountAddress: string,
-) => {
-  const [accountGroup] = getAccountGroupsByAddress(state, [accountAddress]);
-  return accountGroup
-    ? getBridgeAssetsByAssetId(state, accountGroup.id)
-    : EMPTY_OBJECT;
-};
-
-export const getOwnedAssetsWithBalanceByAssetId = (
-  state: BridgeAppState,
-  accountAddress: string,
-) => {
-  const [accountGroup] = getAccountGroupsByAddress(state, [accountAddress]);
-  return accountGroup
-    ? getBridgeSortedAssets(state, accountGroup.id)
-    : EMPTY_ARRAY;
-};

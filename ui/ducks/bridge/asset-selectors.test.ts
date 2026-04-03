@@ -2,18 +2,14 @@ import { formatChainIdToCaip } from '@metamask/bridge-controller';
 import {
   createBridgeMockStore,
   MOCK_EVM_ACCOUNT,
-  MOCK_EXTERNAL_SOLANA_ADDRESS,
 } from '../../../test/data/bridge/mock-bridge-store';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
 import { getAccountGroupsByAddress } from '../../selectors/multichain-accounts/account-tree';
-import { EMPTY_ARRAY, EMPTY_OBJECT } from '../../selectors/shared';
 import {
   getBridgeBalancesByChainId,
   getBridgeAssetsByAssetId,
   getBridgeSortedAssets,
-  getOwnedAssetsByAssetId,
-  getOwnedAssetsWithBalanceByAssetId,
 } from './asset-selectors';
 
 describe('Bridge asset selectors', () => {
@@ -272,7 +268,7 @@ describe('Bridge asset selectors', () => {
       `);
     });
 
-    it('returns empty results when address does not belong to any account group', () => {
+    it('returns empty results when accountGroupId is undefined', () => {
       const state = createBridgeMockStore({
         featureFlagOverrides: {
           bridgeConfig: {
@@ -294,149 +290,15 @@ describe('Bridge asset selectors', () => {
         },
       });
 
-      const externalAddress = MOCK_EXTERNAL_SOLANA_ADDRESS;
-      const accountGroups = getAccountGroupsByAddress(state, [externalAddress]);
-
-      expect(accountGroups).toHaveLength(0);
-
-      const [accountGroup] = accountGroups;
+      // Simulate the caller pattern: accountGroup is undefined when address has no matching group
+      const [accountGroup] = getAccountGroupsByAddress(state, [
+        'non-existent-address',
+      ]);
       expect(accountGroup).toBeUndefined();
 
-      const assetsWithBalance = accountGroup
-        ? getBridgeSortedAssets(state, accountGroup.id)
-        : [];
-      const balanceByAssetId = accountGroup
-        ? getBridgeAssetsByAssetId(state, accountGroup.id)
-        : {};
-      const balanceByChainId = accountGroup
-        ? getBridgeBalancesByChainId(state, accountGroup.id)
-        : {};
-
-      expect(assetsWithBalance).toEqual([]);
-      expect(balanceByAssetId).toEqual({});
-      expect(balanceByChainId).toEqual({});
-    });
-  });
-
-  describe('getOwnedAssetsByAssetId', () => {
-    it('returns assets keyed by lowercased asset ID for a known account address', () => {
-      const state = createBridgeMockStore({
-        featureFlagOverrides: {
-          bridgeConfig: {
-            refreshRate: 30000,
-            priceImpactThreshold: { normal: 1, gasless: 2 },
-            maxRefreshCount: 5,
-            support: true,
-            chains: {
-              [CHAIN_IDS.MAINNET]: { isActiveSrc: true, isActiveDest: true },
-              [CHAIN_IDS.OPTIMISM]: { isActiveSrc: true, isActiveDest: true },
-            },
-            chainRanking: [
-              { chainId: formatChainIdToCaip(CHAIN_IDS.MAINNET) },
-              { chainId: formatChainIdToCaip(CHAIN_IDS.OPTIMISM) },
-            ],
-          },
-        },
-      });
-
-      const [accountGroup] = getAccountGroupsByAddress(state, [
-        MOCK_EVM_ACCOUNT.address,
-      ]);
-
-      const result = getOwnedAssetsByAssetId(state, MOCK_EVM_ACCOUNT.address);
-
-      expect(result).toEqual(getBridgeAssetsByAssetId(state, accountGroup.id));
-      expect(Object.keys(result)).toEqual(
-        expect.arrayContaining([expect.stringMatching(/^eip155:/u)]),
-      );
-    });
-
-    it('returns EMPTY_OBJECT when address does not belong to any account group', () => {
-      const state = createBridgeMockStore({
-        featureFlagOverrides: {
-          bridgeConfig: {
-            refreshRate: 30000,
-            priceImpactThreshold: { normal: 1, gasless: 2 },
-            maxRefreshCount: 5,
-            support: true,
-            chains: {
-              [CHAIN_IDS.MAINNET]: { isActiveSrc: true, isActiveDest: true },
-            },
-            chainRanking: [{ chainId: formatChainIdToCaip(CHAIN_IDS.MAINNET) }],
-          },
-        },
-      });
-
-      const result = getOwnedAssetsByAssetId(
-        state,
-        MOCK_EXTERNAL_SOLANA_ADDRESS,
-      );
-
-      expect(result).toBe(EMPTY_OBJECT);
-    });
-  });
-
-  describe('getOwnedAssetsWithBalanceByAssetId', () => {
-    it('returns sorted assets for a known account address', () => {
-      const state = createBridgeMockStore({
-        featureFlagOverrides: {
-          bridgeConfig: {
-            refreshRate: 30000,
-            priceImpactThreshold: { normal: 1, gasless: 2 },
-            maxRefreshCount: 5,
-            support: true,
-            chains: {
-              [CHAIN_IDS.MAINNET]: { isActiveSrc: true, isActiveDest: true },
-              [CHAIN_IDS.OPTIMISM]: { isActiveSrc: true, isActiveDest: true },
-            },
-            chainRanking: [
-              { chainId: formatChainIdToCaip(CHAIN_IDS.MAINNET) },
-              { chainId: formatChainIdToCaip(CHAIN_IDS.OPTIMISM) },
-            ],
-          },
-        },
-      });
-
-      const [accountGroup] = getAccountGroupsByAddress(state, [
-        MOCK_EVM_ACCOUNT.address,
-      ]);
-
-      const result = getOwnedAssetsWithBalanceByAssetId(
-        state,
-        MOCK_EVM_ACCOUNT.address,
-      );
-
-      expect(result).toEqual(getBridgeSortedAssets(state, accountGroup.id));
-      expect(result.length).toBeGreaterThan(0);
-      for (let i = 1; i < result.length; i++) {
-        expect(result[i - 1].tokenFiatAmount ?? 0).toBeGreaterThanOrEqual(
-          result[i].tokenFiatAmount ?? 0,
-        );
-      }
-    });
-
-    it('returns EMPTY_ARRAY when address does not belong to any account group', () => {
-      const state = createBridgeMockStore({
-        featureFlagOverrides: {
-          bridgeConfig: {
-            refreshRate: 30000,
-            priceImpactThreshold: { normal: 1, gasless: 2 },
-            maxRefreshCount: 5,
-            support: true,
-            chains: {
-              [CHAIN_IDS.MAINNET]: { isActiveSrc: true, isActiveDest: true },
-            },
-            chainRanking: [{ chainId: formatChainIdToCaip(CHAIN_IDS.MAINNET) }],
-          },
-        },
-      });
-
-      const result = getOwnedAssetsWithBalanceByAssetId(
-        state,
-        MOCK_EXTERNAL_SOLANA_ADDRESS,
-      );
-
-      expect(result).toBe(EMPTY_ARRAY);
+      expect(getBridgeSortedAssets(state, accountGroup?.id)).toEqual([]);
+      expect(getBridgeAssetsByAssetId(state, accountGroup?.id)).toEqual({});
+      expect(getBridgeBalancesByChainId(state, accountGroup?.id)).toEqual({});
     });
   });
 });

@@ -7,7 +7,8 @@ import { BRIDGE_API_BASE_URL } from '../../../shared/constants/bridge';
 import { BridgeToken } from '../../ducks/bridge/types';
 import { toBridgeToken } from '../../ducks/bridge/utils';
 import { type BridgeAppState } from '../../ducks/bridge/selectors';
-import { getOwnedAssetsByAssetId } from '../../ducks/bridge/asset-selectors';
+import { getBridgeAssetsByAssetId } from '../../ducks/bridge/asset-selectors';
+import { getAccountGroupsByAddress } from '../../selectors/multichain-accounts/account-tree';
 import { fetchTokensBySearchQuery } from '../../pages/bridge/utils/tokens';
 import { getBearerToken } from '../../store/actions';
 import { useAsyncResult } from '../useAsync';
@@ -32,8 +33,11 @@ export const useTokenSearchResults = ({
   accountAddress: string;
   assetsToInclude: BridgeToken[];
 }) => {
+  const [accountGroup] = useSelector((state: BridgeAppState) =>
+    getAccountGroupsByAddress(state, [accountAddress]),
+  );
   const ownedAssetsByAssetId = useSelector((state: BridgeAppState) =>
-    getOwnedAssetsByAssetId(state, accountAddress),
+    getBridgeAssetsByAssetId(state, accountGroup?.id),
   );
 
   const abortControllerRef = useRef<AbortController>(new AbortController());
