@@ -117,12 +117,15 @@ jobs:
 
             echo "Extracting diff from '${JOB_NAME}' (job ${JOB_ID})..."
 
-            # Download job logs and extract the git diff output
+            # Download job logs and extract the git diff output.
+            # `|| true` prevents pipefail from aborting when the logs
+            # contain no diff (e.g. the job failed for a non-policy reason).
             gh api "/repos/${REPO}/actions/jobs/${JOB_ID}/logs" \
               | sed -n '/^.*diff --git/,/^.*::error::Working tree dirty/p' \
               | grep -v '::error::' \
               | sed 's/^[0-9T:.Z-]* //' \
-              > /tmp/policy.patch
+              > /tmp/policy.patch \
+              || true
 
             if [ -s /tmp/policy.patch ]; then
               echo "Applying patch from '${JOB_NAME}' ($(wc -l < /tmp/policy.patch) lines)..."
