@@ -47,6 +47,10 @@ class BridgeQuotePage {
 
   private backButton = '[aria-label="Back"]';
 
+  private gasIncludedIndicator = '[data-testid="network-fees-included"]';
+
+  private maxButton = { text: 'Max' };
+
   private networkSelector = '[data-testid="multichain-asset-picker__network"]';
 
   private networkFees = '[data-testid="network-fees"]';
@@ -305,6 +309,24 @@ class BridgeQuotePage {
     console.log('Price matches expected format');
   }
 
+  async checkGasIncludedIsDisplayed(): Promise<void> {
+    try {
+      await this.driver.waitForSelector(this.gasIncludedIndicator, {
+        timeout: 30000,
+      });
+    } catch (e) {
+      console.log('Expected "Gas fees included" indicator is not present');
+      throw e;
+    }
+    console.log('Gas fees included indicator is displayed');
+  }
+
+  async clickMaxButton(): Promise<void> {
+    await this.driver.waitForSelector(this.maxButton, { timeout: 30000 });
+    await this.driver.clickElement(this.maxButton);
+    console.log('Clicked Max button');
+  }
+
   checkDestAmount = async (amount: string) => {
     const destAmount = await this.driver.findElement(this.destinationAmount);
     assert.equal(await destAmount.getAttribute('value'), amount);
@@ -334,6 +356,17 @@ class BridgeQuotePage {
       const input = document.querySelector('${this.slippageCustomInput}');
       if (input) { input.blur(); }
     `);
+  }
+
+  async selectDestToken(token: string): Promise<void> {
+    await this.driver.waitForSelector(this.destinationAssetPickerButton);
+    await this.driver.clickElement(this.destinationAssetPickerButton);
+    await this.driver.fill(this.assetPrickerSearchInput, token);
+    await this.driver.clickElementAndWaitToDisappear({
+      text: token,
+      css: this.tokenButton,
+    });
+    console.log(`Selected destination token: ${token}`);
   }
 
   async selectNetwork(network: string): Promise<void> {
