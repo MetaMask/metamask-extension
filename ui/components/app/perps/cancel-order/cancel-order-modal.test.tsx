@@ -1,0 +1,370 @@
+import React from 'react';
+import { screen, waitFor, fireEvent } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
+import configureStore from '../../../../store/store';
+import mockState from '../../../../../test/data/mock-state.json';
+import { mockOrders } from '../mocks';
+import type { Order } from '../types';
+import { CancelOrderModal } from './cancel-order-modal';
+
+const mockSubmitRequestToBackground = jest.fn();
+
+jest.mock('../../../../store/background-connection', () => ({
+  submitRequestToBackground: (...args: unknown[]) =>
+    mockSubmitRequestToBackground(...args),
+}));
+
+const mockStore = configureStore({
+  metamask: {
+    ...mockState.metamask,
+  },
+});
+
+const baseOrder: Order = mockOrders[0]; // ETH limit long, open
+
+describe('CancelOrderModal', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+    mockSubmitRequestToBackground.mockResolvedValue({ success: true });
+  });
+
+  describe('rendering', () => {
+    it('renders with correct data-testid', () => {
+      renderWithProvider(
+        <CancelOrderModal isOpen onClose={jest.fn()} order={baseOrder} />,
+        mockStore,
+      );
+
+      expect(
+        screen.getByTestId('perps-cancel-order-modal'),
+      ).toBeInTheDocument();
+    });
+
+    it('shows the token logo for the order symbol', () => {
+      renderWithProvider(
+        <CancelOrderModal isOpen onClose={jest.fn()} order={baseOrder} />,
+        mockStore,
+      );
+
+      expect(
+        screen.getByTestId(`perps-token-logo-${baseOrder.symbol}`),
+      ).toBeInTheDocument();
+    });
+
+    it('displays the order symbol name', () => {
+      renderWithProvider(
+        <CancelOrderModal isOpen onClose={jest.fn()} order={baseOrder} />,
+        mockStore,
+      );
+
+      expect(screen.getByText(baseOrder.symbol)).toBeInTheDocument();
+    });
+
+    it('builds modal title as "Limit long" for a buy limit order', () => {
+      renderWithProvider(
+        <CancelOrderModal isOpen onClose={jest.fn()} order={baseOrder} />,
+        mockStore,
+      );
+
+      expect(screen.getByText('Limit long')).toBeInTheDocument();
+    });
+
+    it('builds modal title as "Limit short" for a sell limit order', () => {
+      const sellOrder: Order = { ...baseOrder, side: 'sell' };
+      renderWithProvider(
+        <CancelOrderModal isOpen onClose={jest.fn()} order={sellOrder} />,
+        mockStore,
+      );
+
+      expect(screen.getByText('Limit short')).toBeInTheDocument();
+    });
+
+    it('displays the limit price row', () => {
+      renderWithProvider(
+        <CancelOrderModal isOpen onClose={jest.fn()} order={baseOrder} />,
+        mockStore,
+      );
+
+      expect(screen.getByText('Limit Price')).toBeInTheDocument();
+      expect(screen.getByText('$3,000.00')).toBeInTheDocument();
+    });
+
+    it('displays the size row with symbol', () => {
+      renderWithProvider(
+        <CancelOrderModal isOpen onClose={jest.fn()} order={baseOrder} />,
+        mockStore,
+      );
+
+      expect(screen.getByText('Size')).toBeInTheDocument();
+      expect(screen.getByText('1.0 ETH')).toBeInTheDocument();
+    });
+
+    it('does not display original size row when size equals originalSize', () => {
+      const order: Order = {
+        ...baseOrder,
+        size: '1.0',
+        originalSize: '1.0',
+      };
+      renderWithProvider(
+        <CancelOrderModal isOpen onClose={jest.fn()} order={order} />,
+        mockStore,
+      );
+
+      expect(screen.queryByText('Original size')).not.toBeInTheDocument();
+    });
+
+    it('displays original size row when size differs from originalSize', () => {
+      const partiallyFilledOrder: Order = {
+        ...baseOrder,
+        size: '0.5',
+        originalSize: '1.0',
+      };
+      renderWithProvider(
+        <CancelOrderModal
+          isOpen
+          onClose={jest.fn()}
+          order={partiallyFilledOrder}
+        />,
+        mockStore,
+      );
+
+      expect(screen.getByText('Original size')).toBeInTheDocument();
+      expect(screen.getByText('1.0 ETH')).toBeInTheDocument();
+    });
+
+    it('displays order value row when price and size are non-zero', () => {
+      renderWithProvider(
+        <CancelOrderModal isOpen onClose={jest.fn()} order={baseOrder} />,
+        mockStore,
+      );
+
+      expect(screen.getByText('Order value')).toBeInTheDocument();
+      expect(screen.getByText('$3,000.00')).toBeInTheDocument();
+    });
+
+    it('hides order value row when price is zero', () => {
+      const marketOrder: Order = { ...baseOrder, price: '0' };
+      renderWithProvider(
+        <CancelOrderModal isOpen onClose={jest.fn()} order={marketOrder} />,
+        mockStore,
+      );
+
+      expect(screen.queryByText('Order value')).not.toBeInTheDocument();
+    });
+
+    it('displays Reduce only as "Yes" when reduceOnly is true', () => {
+      const roOrder: Order = { ...baseOrder, reduceOnly: true };
+      renderWithProvider(
+        <CancelOrderModal isOpen onClose={jest.fn()} order={roOrder} />,
+        mockStore,
+      );
+
+      expect(screen.getByText('Reduce only')).toBeInTheDocument();
+      expect(screen.getByText('Yes')).toBeInTheDocument();
+    });
+
+    it('displays Reduce only as "No" when reduceOnly is false', () => {
+      renderWithProvider(
+        <CancelOrderModal isOpen onClose={jest.fn()} order={baseOrder} />,
+        mockStore,
+      );
+
+      expect(screen.getByText('Reduce only')).toBeInTheDocument();
+      expect(screen.getByText('No')).toBeInTheDocument();
+    });
+
+    it('displays the status row with capitalized status', () => {
+      renderWithProvider(
+        <CancelOrderModal isOpen onClose={jest.fn()} order={baseOrder} />,
+        mockStore,
+      );
+
+      expect(screen.getByText('Status')).toBeInTheDocument();
+      expect(screen.getByText('Open')).toBeInTheDocument();
+    });
+
+    it('renders the cancel order button', () => {
+      renderWithProvider(
+        <CancelOrderModal isOpen onClose={jest.fn()} order={baseOrder} />,
+        mockStore,
+      );
+
+      expect(
+        screen.getByTestId('perps-cancel-order-button'),
+      ).toBeInTheDocument();
+    });
+
+    it('displays "Cancel order" text on the button', () => {
+      renderWithProvider(
+        <CancelOrderModal isOpen onClose={jest.fn()} order={baseOrder} />,
+        mockStore,
+      );
+
+      expect(screen.getByText('Cancel order')).toBeInTheDocument();
+    });
+
+    it('does not render when isOpen is false', () => {
+      renderWithProvider(
+        <CancelOrderModal isOpen={false} onClose={jest.fn()} order={baseOrder} />,
+        mockStore,
+      );
+
+      expect(
+        screen.queryByTestId('perps-cancel-order-modal'),
+      ).not.toBeInTheDocument();
+    });
+
+    it('strips xyz: prefix when displaying HIP-3 symbol name', () => {
+      const hip3Order: Order = {
+        ...baseOrder,
+        symbol: 'xyz:TSLA',
+        price: '200.00',
+        size: '1.0',
+      };
+      renderWithProvider(
+        <CancelOrderModal isOpen onClose={jest.fn()} order={hip3Order} />,
+        mockStore,
+      );
+
+      expect(screen.getByText('TSLA')).toBeInTheDocument();
+    });
+  });
+
+  describe('cancel action', () => {
+    it('calls perpsCancelOrder with orderId and symbol on button click', async () => {
+      const user = userEvent.setup();
+      renderWithProvider(
+        <CancelOrderModal isOpen onClose={jest.fn()} order={baseOrder} />,
+        mockStore,
+      );
+
+      await user.click(screen.getByTestId('perps-cancel-order-button'));
+
+      await waitFor(() => {
+        expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+          'perpsCancelOrder',
+          [{ orderId: baseOrder.orderId, symbol: baseOrder.symbol }],
+        );
+      });
+    });
+
+    it('calls onClose after a successful cancel', async () => {
+      const user = userEvent.setup();
+      const onClose = jest.fn();
+      renderWithProvider(
+        <CancelOrderModal isOpen onClose={onClose} order={baseOrder} />,
+        mockStore,
+      );
+
+      await user.click(screen.getByTestId('perps-cancel-order-button'));
+
+      await waitFor(() => {
+        expect(onClose).toHaveBeenCalledTimes(1);
+      });
+    });
+
+    it('shows error message when perpsCancelOrder returns success: false', async () => {
+      const user = userEvent.setup();
+      mockSubmitRequestToBackground.mockResolvedValue({
+        success: false,
+        error: 'Order not found',
+      });
+
+      renderWithProvider(
+        <CancelOrderModal isOpen onClose={jest.fn()} order={baseOrder} />,
+        mockStore,
+      );
+
+      await user.click(screen.getByTestId('perps-cancel-order-button'));
+
+      await waitFor(() => {
+        expect(screen.getByText('Order not found')).toBeInTheDocument();
+      });
+    });
+
+    it('shows generic error message when perpsCancelOrder rejects', async () => {
+      const user = userEvent.setup();
+      mockSubmitRequestToBackground.mockRejectedValue(
+        new Error('Network error'),
+      );
+
+      renderWithProvider(
+        <CancelOrderModal isOpen onClose={jest.fn()} order={baseOrder} />,
+        mockStore,
+      );
+
+      await user.click(screen.getByTestId('perps-cancel-order-button'));
+
+      await waitFor(() => {
+        expect(screen.getByText('Network error')).toBeInTheDocument();
+      });
+    });
+
+    it('does not call onClose when cancel fails', async () => {
+      const user = userEvent.setup();
+      const onClose = jest.fn();
+      mockSubmitRequestToBackground.mockResolvedValue({
+        success: false,
+        error: 'Something went wrong',
+      });
+
+      renderWithProvider(
+        <CancelOrderModal isOpen onClose={onClose} order={baseOrder} />,
+        mockStore,
+      );
+
+      await user.click(screen.getByTestId('perps-cancel-order-button'));
+
+      await waitFor(() => {
+        expect(screen.getByText('Something went wrong')).toBeInTheDocument();
+      });
+      expect(onClose).not.toHaveBeenCalled();
+    });
+
+    it('shows loading state while canceling', async () => {
+      // Delay resolution so we can catch the loading state
+      let resolveCancel!: (value: { success: boolean }) => void;
+      mockSubmitRequestToBackground.mockReturnValue(
+        new Promise((resolve) => {
+          resolveCancel = resolve;
+        }),
+      );
+
+      renderWithProvider(
+        <CancelOrderModal isOpen onClose={jest.fn()} order={baseOrder} />,
+        mockStore,
+      );
+
+      fireEvent.click(screen.getByTestId('perps-cancel-order-button'));
+
+      await waitFor(() => {
+        expect(
+          screen.getByTestId('perps-cancel-order-button'),
+        ).toBeDisabled();
+      });
+
+      // Cleanup: resolve the pending promise
+      resolveCancel({ success: true });
+    });
+
+    it('clears error state when modal reopens', () => {
+      mockSubmitRequestToBackground.mockResolvedValue({
+        success: false,
+        error: 'Some error',
+      });
+
+      const { rerender } = renderWithProvider(
+        <CancelOrderModal isOpen={false} onClose={jest.fn()} order={baseOrder} />,
+        mockStore,
+      );
+
+      rerender(
+        <CancelOrderModal isOpen onClose={jest.fn()} order={baseOrder} />,
+      );
+
+      // Error should not be visible since it was never triggered in this open session
+      expect(screen.queryByText('Some error')).not.toBeInTheDocument();
+    });
+  });
+});

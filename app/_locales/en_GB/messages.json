@@ -5434,6 +5434,9 @@
   "perpsCancelAllOrders": {
     "message": "Cancel all"
   },
+  "perpsCancelOrder": {
+    "message": "Cancel order"
+  },
   "perpsCloseAll": {
     "message": "Close all"
   },
@@ -5649,6 +5652,18 @@
   "perpsOraclePriceTooltip": {
     "message": "The median of external prices reported by validators, used for computing funding rate"
   },
+  "perpsOrderDate": {
+    "message": "Date"
+  },
+  "perpsOrderOriginalSize": {
+    "message": "Original size"
+  },
+  "perpsOrderStatus": {
+    "message": "Status"
+  },
+  "perpsOrderValue": {
+    "message": "Order value"
+  },
   "perpsOrders": {
     "message": "Orders"
   },
@@ -5672,6 +5687,9 @@
   },
   "perpsReduceExposureDescriptionShort": {
     "message": "Decrease the size of your short position"
+  },
+  "perpsReduceOnly": {
+    "message": "Reduce only"
   },
   "perpsRemoveFromFavorites": {
     "message": "Remove from favorites"
