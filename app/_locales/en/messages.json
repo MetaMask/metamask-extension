@@ -5434,6 +5434,24 @@
   "perpsCancelAllOrders": {
     "message": "Cancel all"
   },
+  "perpsCancelOrder": {
+    "message": "Cancel order"
+  },
+  "perpsOrderDate": {
+    "message": "Date"
+  },
+  "perpsOrderOriginalSize": {
+    "message": "Original size"
+  },
+  "perpsOrderValue": {
+    "message": "Order value"
+  },
+  "perpsReduceOnly": {
+    "message": "Reduce only"
+  },
+  "perpsOrderStatus": {
+    "message": "Status"
+  },
   "perpsCloseAll": {
     "message": "Close all"
   },
