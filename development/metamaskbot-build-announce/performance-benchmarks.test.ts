@@ -291,7 +291,7 @@ describe('fetchBenchmarkEntries', () => {
     ]);
 
     expect(entries).toHaveLength(0);
-    expect(missingPresets[0]).toContain('interactionUserActions');
+    expect(missingPresets[0]).toBe('chrome/webpack/interactionUserActions');
   });
 
   it('uses custom platforms (2 × 1 = 2 combinations)', async () => {
@@ -304,8 +304,8 @@ describe('fetchBenchmarkEntries', () => {
     );
 
     expect(missingPresets).toHaveLength(2);
-    expect(missingPresets).toContain('chrome/myPreset');
-    expect(missingPresets).toContain('firefox/myPreset');
+    expect(missingPresets).toContain('chrome/webpack/myPreset');
+    expect(missingPresets).toContain('firefox/webpack/myPreset');
   });
 });
 

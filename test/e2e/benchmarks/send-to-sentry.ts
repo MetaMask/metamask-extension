@@ -3,7 +3,7 @@
  * Sends benchmark results to Sentry. Called by CI after benchmark.ts completes.
  *
  * Reads JSON from --results and sends metrics as Sentry structured logs with
- * attributes for filtering (ci.browser, ci.persona, etc.).
+ * attributes for filtering (ci.browser, ci.platform, ci.buildType, ci.persona, etc.).
  *
  * Timer-based benchmark data goes through structured logs (existing path).
  * Web vitals data goes through spans with measurements (separate path),
@@ -20,6 +20,7 @@ import { isNullOrUndefined } from '@metamask/utils';
 import { hideBin } from 'yargs/helpers';
 import yargs from 'yargs/yargs';
 import {
+  BENCHMARK_BUILD_TYPES,
   BENCHMARK_PERSONA,
   BENCHMARK_TYPE,
   STAT_KEY,
@@ -43,6 +44,52 @@ const WEB_VITALS_METRICS = [
   { key: 'lcp', ratingKey: 'lcpRating' },
   { key: 'cls', ratingKey: 'clsRating' },
 ] as const;
+
+/**
+ * Browser / bundler dimensions for Sentry Logs Explorer filters (`ci.browser`,
+ * `ci.platform`, `ci.buildType`), aligned with benchmark JSON and metamaskbot
+ * `buildSentryLogsUrl` options.
+ *
+ * @param benchmark - Result row including optional `platform` and `buildType`
+ * @param browserFallback - Usually the `--browser` CLI value when JSON omits `platform`
+ */
+function ciBrowserPlatformBuildType(
+  benchmark: Pick<BenchmarkResults, 'platform' | 'buildType'>,
+  browserFallback: string,
+): Record<string, string> {
+  const platform = benchmark.platform ?? browserFallback;
+  return {
+    'ci.browser': platform,
+    'ci.platform': platform,
+    'ci.buildType': benchmark.buildType ?? BENCHMARK_BUILD_TYPES.WEBPACK,
+  };
+}
+
+/**
+ * Same as {@link ciBrowserPlatformBuildType} for user-action rows, which may
+ * omit `platform` / `buildType` on the object.
+ *
+ * @param userAction - Flat result object
+ * @param browserFallback - `--browser` CLI default
+ */
+function ciBrowserPlatformBuildTypeUserAction(
+  userAction: UserActionResult,
+  browserFallback: string,
+): Record<string, string> {
+  const platform =
+    typeof userAction.platform === 'string'
+      ? userAction.platform
+      : browserFallback;
+  const buildType =
+    typeof userAction.buildType === 'string'
+      ? userAction.buildType
+      : BENCHMARK_BUILD_TYPES.WEBPACK;
+  return {
+    'ci.browser': platform,
+    'ci.platform': platform,
+    'ci.buildType': buildType,
+  };
+}
 
 /**
  * Send web vitals to Sentry as spans — separate from timer-based structured logs.
@@ -198,12 +245,11 @@ async function main() {
     release: `metamask-extension@${version}`,
   });
 
-  // CI metadata
+  // CI metadata (browser / platform / buildType are merged per result below)
   const baseCiAttributes = {
     'ci.branch': process.env.GITHUB_REF_NAME || getGitBranch(),
     'ci.prNumber': process.env.PR_NUMBER || 'none',
     'ci.commitHash': process.env.HEAD_COMMIT_HASH || getGitCommitHash(),
-    'ci.browser': argv.browser,
   };
 
   let sentCount = 0;
@@ -235,9 +281,14 @@ async function main() {
         }
       }
 
+      const ciEnv = {
+        ...baseCiAttributes,
+        ...ciBrowserPlatformBuildType(benchmark, argv.browser),
+      };
+
       // Timer data: structured logs (existing path, unchanged)
       Sentry.logger.info(message, {
-        ...baseCiAttributes,
+        ...ciEnv,
         'ci.persona': benchmark.persona || BENCHMARK_PERSONA.STANDARD,
         'ci.testTitle': benchmark.testTitle,
         ...allMetrics,
@@ -251,7 +302,7 @@ async function main() {
           benchmark.webVitals,
           benchmark.persona || BENCHMARK_PERSONA.STANDARD,
           benchmark.testTitle,
-          baseCiAttributes,
+          ciEnv,
         );
       }
       sentCount += 1;
@@ -260,6 +311,11 @@ async function main() {
       const userAction = value as UserActionResult;
       const type = userAction.benchmarkType || BENCHMARK_TYPE.USER_ACTION;
       const message = `${type}.${name}`;
+
+      const ciEnvUserAction = {
+        ...baseCiAttributes,
+        ...ciBrowserPlatformBuildTypeUserAction(userAction, argv.browser),
+      };
 
       // Web vitals: send per-run span for user action benchmarks
       if (userAction.webVitals) {
@@ -273,7 +329,7 @@ async function main() {
           webVitalsSummary,
           userAction.persona || BENCHMARK_PERSONA.STANDARD,
           userAction.testTitle,
-          baseCiAttributes,
+          ciEnvUserAction,
         );
       }
 
@@ -291,7 +347,7 @@ async function main() {
       }
 
       Sentry.logger.info(message, {
-        ...baseCiAttributes,
+        ...ciEnvUserAction,
         'ci.persona': userAction.persona || BENCHMARK_PERSONA.STANDARD,
         'ci.testTitle': userAction.testTitle,
         ...metrics,

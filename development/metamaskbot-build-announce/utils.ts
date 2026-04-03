@@ -99,13 +99,17 @@ const ENTRY_KEY_SEPARATOR = '|';
 const COMBO_SEPARATOR = '-';
 
 /**
- * Builds a platform–bundler combo string (bundler is always webpack).
+ * Builds a platform–bundler combo string.
  *
  * @param platform - Browser platform (e.g., 'chrome', 'firefox').
+ * @param [buildType] - Bundler id (e.g., 'webpack', 'browserify'). Defaults to webpack.
  * @returns Combo string (e.g., 'chrome-webpack').
  */
-export function buildCombo(platform: string): string {
-  return `${platform}${COMBO_SEPARATOR}${BENCHMARK_BUILD_TYPES.WEBPACK}`;
+export function buildCombo(
+  platform: string,
+  buildType: string = BENCHMARK_BUILD_TYPES.WEBPACK,
+): string {
+  return `${platform}${COMBO_SEPARATOR}${buildType}`;
 }
 
 /**
@@ -114,10 +118,15 @@ export function buildCombo(platform: string): string {
  *
  * @param benchmarkName - Benchmark name (e.g., 'loadNewAccount').
  * @param platform - Browser platform (e.g., 'chrome').
+ * @param [buildType] - Bundler id. Defaults to webpack.
  * @returns Entry key (e.g., 'loadNewAccount|chrome-webpack').
  */
-export function buildEntryKey(benchmarkName: string, platform: string): string {
-  return `${benchmarkName}${ENTRY_KEY_SEPARATOR}${buildCombo(platform)}`;
+export function buildEntryKey(
+  benchmarkName: string,
+  platform: string,
+  buildType: string = BENCHMARK_BUILD_TYPES.WEBPACK,
+): string {
+  return `${benchmarkName}${ENTRY_KEY_SEPARATOR}${buildCombo(platform, buildType)}`;
 }
 
 /**
@@ -125,13 +134,15 @@ export function buildEntryKey(benchmarkName: string, platform: string): string {
  *
  * @param platform - Browser platform (e.g., 'chrome').
  * @param preset - Preset name (e.g., 'interactionUserActions').
+ * @param [buildType] - Bundler id. Defaults to webpack.
  * @returns Artifact filename (e.g., 'benchmark-chrome-webpack-interactionUserActions.json').
  */
 export function buildArtifactFilename(
   platform: string,
   preset: string,
+  buildType: string = BENCHMARK_BUILD_TYPES.WEBPACK,
 ): string {
-  return `benchmark-${platform}-${BENCHMARK_BUILD_TYPES.WEBPACK}-${preset}.json`;
+  return `benchmark-${platform}-${buildType}-${preset}.json`;
 }
 
 /**
@@ -140,14 +151,16 @@ export function buildArtifactFilename(
  * @param hostUrl - Base URL for artifacts (e.g., 'https://ci.example.com').
  * @param platform - Browser platform (e.g., 'chrome').
  * @param preset - Preset name (e.g., 'interactionUserActions').
+ * @param [buildType] - Bundler id. Defaults to webpack.
  * @returns Full artifact URL.
  */
 export function buildArtifactUrl(
   hostUrl: string,
   platform: string,
   preset: string,
+  buildType: string = BENCHMARK_BUILD_TYPES.WEBPACK,
 ): string {
-  return `${hostUrl}/benchmarks/${buildArtifactFilename(platform, preset)}`;
+  return `${hostUrl}/benchmarks/${buildArtifactFilename(platform, preset, buildType)}`;
 }
 
 /**
@@ -165,22 +178,27 @@ function mapPresetToBaselineKey(presetName: string): string {
 
 /**
  * For user journey presets on Firefox, historical stats store inner keys as
- * `firefox-webpack-<fileBase>` (see benchmark-stats-commit.sh) so they merge
+ * `firefox-<buildType>-<fileBase>` (see benchmark-stats-commit.sh) so they merge
  * with Chrome keys under the same preset.
  * @param presetName
  * @param benchmarkName
  * @param platform
+ * @param buildType
  */
 function mapUserJourneyBenchmarkNameForBaseline(
   presetName: string,
   benchmarkName: string,
   platform?: string,
+  buildType?: string,
 ): string {
   if (
     presetName.startsWith('userJourney') &&
     platform === BENCHMARK_PLATFORMS.FIREFOX
   ) {
-    return `${buildCombo(BENCHMARK_PLATFORMS.FIREFOX)}-${benchmarkName}`;
+    return `${buildCombo(
+      BENCHMARK_PLATFORMS.FIREFOX,
+      buildType ?? BENCHMARK_BUILD_TYPES.WEBPACK,
+    )}-${benchmarkName}`;
   }
   return benchmarkName;
 }
@@ -195,6 +213,7 @@ function mapUserJourneyBenchmarkNameForBaseline(
  * @param presetName - Preset name (e.g., 'startupStandardHome', 'interactionUserActions').
  * @param benchmarkName - Benchmark name (e.g., 'loadNewAccount', 'chrome-webpack-startupStandardHome').
  * @param platform - Browser (e.g. `firefox`) for user journey baseline key disambiguation.
+ * @param buildType - Bundler id for user journey Firefox key prefix when applicable.
  * @returns Baseline metrics or undefined if not found.
  *
  * @example
@@ -212,12 +231,14 @@ export function resolveBaseline(
   presetName: string,
   benchmarkName: string,
   platform?: string,
+  buildType?: string,
 ): HistoricalBaselineReference[string] | undefined {
   const baselinePresetKey = mapPresetToBaselineKey(presetName);
   const mappedBenchmarkName = mapUserJourneyBenchmarkNameForBaseline(
     presetName,
     benchmarkName,
     platform,
+    buildType,
   );
   const key = `${baselinePresetKey}/${mappedBenchmarkName}`;
   return baseline[key];

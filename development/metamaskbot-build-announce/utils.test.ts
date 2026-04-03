@@ -151,7 +151,7 @@ describe('postCommentWithMetamaskBot', () => {
 });
 
 describe('artifact utilities', () => {
-  it('builds combo, entry key, filename and URL', () => {
+  it('builds combo, entry key, filename and URL (defaults to webpack)', () => {
     expect(buildCombo('chrome')).toBe('chrome-webpack');
     expect(buildEntryKey('loadNewAccount', 'chrome')).toBe(
       'loadNewAccount|chrome-webpack',
@@ -168,6 +168,16 @@ describe('artifact utilities', () => {
     ).toBe(
       'https://ci.example.com/benchmarks/benchmark-chrome-webpack-interactionUserActions.json',
     );
+  });
+
+  it('accepts an explicit buildType (e.g. browserify)', () => {
+    expect(buildCombo('chrome', 'browserify')).toBe('chrome-browserify');
+    expect(buildEntryKey('loadNewAccount', 'chrome', 'browserify')).toBe(
+      'loadNewAccount|chrome-browserify',
+    );
+    expect(
+      buildArtifactFilename('chrome', 'interactionUserActions', 'browserify'),
+    ).toBe('benchmark-chrome-browserify-interactionUserActions.json');
   });
 });
 

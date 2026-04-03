@@ -2,6 +2,7 @@ import { readFile } from 'fs/promises';
 import { join } from 'path';
 import {
   ENTRY_BENCHMARK_PLATFORMS,
+  ENTRY_BENCHMARK_BUILD_TYPES,
   BENCHMARK_PLATFORMS,
   BENCHMARK_BUILD_TYPES,
   ALL_BENCHMARK_COMBOS,
@@ -47,6 +48,8 @@ export type BenchmarkEntry = {
   benchmarkName: string;
   presetName: string;
   platform: string;
+  /** Bundler dimension (e.g. webpack, browserify). Defaults to webpack when omitted. */
+  buildType?: string;
   mean: StatisticalResult;
   stdDev: StatisticalResult;
   p75: StatisticalResult;
@@ -90,6 +93,10 @@ const HEALTH_ICON: Record<EntryHealth, string> = {
   [EntryHealth.Pass]: COMPARISON_SEVERITY.Pass.icon,
 };
 
+function entryBuildType(entry: BenchmarkEntry): string {
+  return entry.buildType ?? BENCHMARK_BUILD_TYPES.WEBPACK;
+}
+
 const USER_JOURNEY_BENCHMARK_PLATFORMS = [
   BENCHMARK_PLATFORMS.CHROME,
   BENCHMARK_PLATFORMS.FIREFOX,
@@ -100,19 +107,25 @@ const DAPP_PAGE_LOAD_BENCHMARK_PLATFORMS = [
 ] as const;
 
 /**
- * Fetches benchmark JSON artifact for a given preset/platform (webpack).
+ * Fetches benchmark JSON artifact for a given preset/platform/buildType.
  * Reads from local filesystem (BENCHMARK_RESULTS_DIR env) when set,
  * otherwise falls back to fetching from hostUrl (S3/CloudFront).
  *
  * @param hostUrl - Base URL for CI artifacts.
  * @param platform - Browser platform (e.g. 'chrome').
  * @param preset - Benchmark preset name.
+ * @param [buildType] - Bundler id. Defaults to webpack.
  * @returns Parsed JSON or null.
  */
 export async function fetchBenchmarkJson<
   Result = Record<string, BenchmarkResults>,
->(hostUrl: string, platform: string, preset: string): Promise<Result | null> {
-  const fileName = buildArtifactFilename(platform, preset);
+>(
+  hostUrl: string,
+  platform: string,
+  preset: string,
+  buildType: string = BENCHMARK_BUILD_TYPES.WEBPACK,
+): Promise<Result | null> {
+  const fileName = buildArtifactFilename(platform, preset, buildType);
   const localDir = process.env.BENCHMARK_RESULTS_DIR;
 
   if (localDir) {
@@ -143,6 +156,7 @@ export async function fetchBenchmarkJson<
  * @param presetName - The preset name these entries were fetched under.
  * @param platform - Browser platform (e.g. 'chrome').
  * @param artifactUrl
+ * @param [buildType] - Bundler id for this artifact; also used when JSON rows omit `buildType`.
  * @returns Flat BenchmarkEntry array with only the fields we render.
  */
 export function extractEntries(
@@ -150,6 +164,7 @@ export function extractEntries(
   presetName = '',
   platform = '',
   artifactUrl?: string,
+  buildType: string = BENCHMARK_BUILD_TYPES.WEBPACK,
 ): BenchmarkEntry[] {
   const hasValidMean = (
     entry: [string, BenchmarkResults | null],
@@ -164,6 +179,7 @@ export function extractEntries(
       benchmarkName: name,
       presetName,
       platform,
+      buildType: raw.buildType ?? buildType,
       mean: raw.mean,
       stdDev: raw.stdDev,
       p75: raw.p75,
@@ -179,32 +195,43 @@ export function extractEntries(
  * @param hostUrl - Base URL for CI artifacts.
  * @param presets - Preset names to fetch.
  * @param platforms - Platforms to fetch (defaults to ENTRY_BENCHMARK_PLATFORMS).
+ * @param buildTypes - Bundler ids to fetch per platform (defaults to webpack only).
  * @returns Entries and a list of missing preset descriptions.
  */
 export async function fetchBenchmarkEntries(
   hostUrl: string,
   presets: string[],
   platforms: readonly string[] = ENTRY_BENCHMARK_PLATFORMS,
+  buildTypes: readonly string[] = [BENCHMARK_BUILD_TYPES.WEBPACK],
 ): Promise<FetchBenchmarkResult> {
   const fetches = platforms.flatMap((platform) =>
-    presets.map(async (preset) => {
-      const data = await fetchBenchmarkJson(hostUrl, platform, preset);
-      return { platform, preset, data };
-    }),
+    buildTypes.flatMap((buildType) =>
+      presets.map(async (preset) => {
+        const data = await fetchBenchmarkJson(
+          hostUrl,
+          platform,
+          preset,
+          buildType,
+        );
+        return { platform, preset, buildType, data };
+      }),
+    ),
   );
 
   const results = await Promise.all(fetches);
   const allEntries: BenchmarkEntry[] = [];
   const missingPresets: string[] = [];
 
-  for (const { platform, preset, data } of results) {
+  for (const { platform, preset, buildType, data } of results) {
     if (data) {
       const artifactUrl = process.env.BENCHMARK_RESULTS_DIR
         ? undefined
-        : buildArtifactUrl(hostUrl, platform, preset);
-      allEntries.push(...extractEntries(data, preset, platform, artifactUrl));
+        : buildArtifactUrl(hostUrl, platform, preset, buildType);
+      allEntries.push(
+        ...extractEntries(data, preset, platform, artifactUrl, buildType),
+      );
     } else {
-      missingPresets.push(`${platform}/${preset}`);
+      missingPresets.push(`${platform}/${buildType}/${preset}`);
     }
   }
 
@@ -379,12 +406,12 @@ function getEntryRegressions(
 }
 
 /**
- * Aggregates the worst EntryHealth per "presetName|platform-webpack" key
+ * Aggregates the worst EntryHealth per "presetName|platform-buildType" key
  * across all provided entries.
  *
  * @param entries - Benchmark entries to aggregate.
  * @param baseline - Historical baseline (optional).
- * @returns Map from "preset|platform-webpack" to worst EntryHealth.
+ * @returns Map from entry key to worst EntryHealth.
  */
 function buildHealthMap(
   entries: BenchmarkEntry[],
@@ -398,10 +425,15 @@ function buildHealthMap(
           entry.presetName,
           entry.benchmarkName,
           entry.platform,
+          entryBuildType(entry),
         )
       : undefined;
     const health = computeEntryHealth(entry, baselineMetrics);
-    const key = buildEntryKey(entry.benchmarkName, entry.platform);
+    const key = buildEntryKey(
+      entry.benchmarkName,
+      entry.platform,
+      entryBuildType(entry),
+    );
     const existing = map.get(key);
     if (!existing || HEALTH_ORDER[health] > HEALTH_ORDER[existing]) {
       map.set(key, health);
@@ -418,11 +450,9 @@ function buildHealthMap(
  * @param benchmarkName
  */
 function extractDisplayName(benchmarkName: string): string {
+  const buildTypes = Object.values(BENCHMARK_BUILD_TYPES).join('|');
   const match = benchmarkName.match(
-    new RegExp(
-      `^(?:chrome|firefox)-${BENCHMARK_BUILD_TYPES.WEBPACK}-(.+)$`,
-      'u',
-    ),
+    new RegExp(`^(?:chrome|firefox)-(?:${buildTypes})-(.+)$`, 'u'),
   );
   return match ? match[1] : benchmarkName;
 }
@@ -564,12 +594,15 @@ function buildRelativeDeltaSection(
         entry.presetName,
         entry.benchmarkName,
         entry.platform,
+        entryBuildType(entry),
       ) ??
       (entry.presetName.startsWith('startup')
         ? resolveBaseline(
             baseline,
             entry.presetName,
-            `${buildCombo(entry.platform)}-${entry.benchmarkName}`,
+            `${buildCombo(entry.platform, entryBuildType(entry))}-${
+              entry.benchmarkName
+            }`,
           )
         : undefined);
     if (!baselineMetrics) {
@@ -670,13 +703,19 @@ export function buildBenchmarkSection(
     const entryLookup = new Map<string, BenchmarkEntry>();
     for (const entry of entries) {
       entryLookup.set(
-        buildEntryKey(entry.benchmarkName, entry.platform),
+        buildEntryKey(
+          entry.benchmarkName,
+          entry.platform,
+          entryBuildType(entry),
+        ),
         entry,
       );
     }
 
     const benchmarkNames = [...new Set(entries.map((e) => e.benchmarkName))];
-    const usedCombos = new Set(entries.map((e) => buildCombo(e.platform)));
+    const usedCombos = new Set(
+      entries.map((e) => buildCombo(e.platform, entryBuildType(e))),
+    );
     const orderedCombos = ALL_BENCHMARK_COMBOS.filter((c) => usedCombos.has(c));
 
     let sectionBody = '';
@@ -699,6 +738,7 @@ export function buildBenchmarkSection(
                     entry.presetName,
                     benchmarkName,
                     entry.platform,
+                    entryBuildType(entry),
                   )
                 : undefined;
               const health = computeEntryHealth(entry, baselineMetrics);
@@ -758,7 +798,7 @@ type MatrixCellData = {
 };
 
 /**
- * Builds a summary health matrix table: benchmarkName rows × platform-webpack columns.
+ * Builds a summary health matrix table: benchmarkName rows × platform-buildType columns.
  * Each cell shows the health icon and the worst metric(percentile) that triggered it.
  * Only rows with at least one 🔴 Fail are included.
  *
@@ -778,10 +818,15 @@ function buildHealthMatrixHtml(
           entry.presetName,
           entry.benchmarkName,
           entry.platform,
+          entryBuildType(entry),
         )
       : undefined;
     const health = computeEntryHealth(entry, baselineMetrics);
-    const key = buildEntryKey(entry.benchmarkName, entry.platform);
+    const key = buildEntryKey(
+      entry.benchmarkName,
+      entry.platform,
+      entryBuildType(entry),
+    );
     const existing = cellMap.get(key);
     if (existing && HEALTH_ORDER[health] <= HEALTH_ORDER[existing.health]) {
       continue;
@@ -805,7 +850,9 @@ function buildHealthMatrixHtml(
     cellMap.set(key, { health, label });
   }
 
-  const usedCombos = new Set(allEntries.map((e) => buildCombo(e.platform)));
+  const usedCombos = new Set(
+    allEntries.map((e) => buildCombo(e.platform, entryBuildType(e))),
+  );
   const orderedCombos = ALL_BENCHMARK_COMBOS.filter((c) => usedCombos.has(c));
 
   const allBenchmarks = [...new Set(allEntries.map((e) => e.benchmarkName))];
@@ -835,7 +882,8 @@ function buildHealthMatrixHtml(
           const icon = HEALTH_ICON[data.health];
           const entry = allEntries.find(
             (e) =>
-              e.benchmarkName === benchmark && buildCombo(e.platform) === combo,
+              e.benchmarkName === benchmark &&
+              buildCombo(e.platform, entryBuildType(e)) === combo,
           );
           const logHref = entry?.artifactUrl;
           const label = data.label ? `${icon} ${data.label}` : icon;
@@ -923,6 +971,7 @@ function buildFailingItemsHtml(
             entry.presetName,
             entry.benchmarkName,
             entry.platform,
+            entryBuildType(entry),
           )
         : undefined;
       if (computeEntryHealth(entry, baselineMetrics) !== EntryHealth.Fail) {
@@ -933,7 +982,10 @@ function buildFailingItemsHtml(
       const logHref = entry.artifactUrl ?? runUrl;
       const logAnchor = logHref ? ` <a href="${logHref}">[Show logs]</a>` : '';
       return [
-        `<li><b>${entry.benchmarkName}</b> · ${buildCombo(entry.platform)}${labelPart}${logAnchor}</li>`,
+        `<li><b>${entry.benchmarkName}</b> · ${buildCombo(
+          entry.platform,
+          entryBuildType(entry),
+        )}${labelPart}${logAnchor}</li>`,
       ];
     })
     .join('');
@@ -979,6 +1031,7 @@ export async function buildPerformanceBenchmarksSection(
       hostUrl,
       Object.values(INTERACTION_PRESETS),
       ENTRY_BENCHMARK_PLATFORMS,
+      ENTRY_BENCHMARK_BUILD_TYPES,
     ),
     fetchBenchmarkEntries(
       hostUrl,

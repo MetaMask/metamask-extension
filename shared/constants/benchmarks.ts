@@ -218,3 +218,10 @@ export const ENTRY_BENCHMARK_PLATFORMS: readonly (typeof BENCHMARK_PLATFORMS)[ke
 
 export const ENTRY_BENCHMARK_BUILD_TYPES: readonly (typeof BENCHMARK_BUILD_TYPES)[keyof typeof BENCHMARK_BUILD_TYPES][] =
   [BENCHMARK_BUILD_TYPES.BROWSERIFY];
+
+export const BENCHMARK_ANNOUNCE_SECTIONS = {
+  interaction: { title: '🎯 Interaction' },
+  startup: { title: '🔌 Startup' },
+  userJourney: { title: '🧭 User Journey' },
+  dappPageLoad: { title: '🌐 Dapp page load' },
+} as const;
