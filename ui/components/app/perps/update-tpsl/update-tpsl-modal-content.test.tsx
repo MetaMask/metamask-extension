@@ -1,5 +1,5 @@
 import React from 'react';
-import { screen, fireEvent, waitFor } from '@testing-library/react';
+import { screen, fireEvent, waitFor, act } from '@testing-library/react';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../../store/store';
 import mockState from '../../../../../test/data/mock-state.json';
@@ -12,6 +12,11 @@ import {
 
 const mockSubmitRequestToBackground = jest.fn();
 const mockGetPerpsStreamManager = jest.fn();
+const mockReplacePerpsToastByKey = jest.fn();
+
+jest.mock('../../../../providers/perps', () => ({
+  getPerpsStreamManager: () => mockGetPerpsStreamManager(),
+}));
 
 jest.mock('../../../../store/background-connection', () => ({
   submitRequestToBackground: (...args: unknown[]) =>
@@ -22,8 +27,10 @@ jest.mock('../../../../hooks/perps/usePerpsEligibility', () => ({
   usePerpsEligibility: () => ({ isEligible: true }),
 }));
 
-jest.mock('../../../../providers/perps', () => ({
-  getPerpsStreamManager: () => mockGetPerpsStreamManager(),
+jest.mock('../perps-toast', () => ({
+  usePerpsToast: () => ({
+    replacePerpsToastByKey: mockReplacePerpsToastByKey,
+  }),
 }));
 
 const mockStore = configureStore({
@@ -82,6 +89,7 @@ function renderTpslModalContent(
 describe('UpdateTPSLModalContent', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockReplacePerpsToastByKey.mockReset();
     mockSubmitRequestToBackground.mockImplementation((method: string) => {
       if (method === 'perpsUpdatePositionTPSL') {
         return Promise.resolve({ success: true });
@@ -89,7 +97,7 @@ describe('UpdateTPSLModalContent', () => {
       if (method === 'perpsGetPositions') {
         return Promise.resolve(mockPositions);
       }
-      return Promise.resolve(undefined);
+      return Promise.resolve({ success: true });
     });
     mockGetPerpsStreamManager.mockReturnValue({
       setOptimisticTPSL: jest.fn(),
@@ -358,18 +366,8 @@ describe('UpdateTPSLModalContent', () => {
   });
 
   describe('submit', () => {
-    it('calls updatePositionTPSL and onClose on successful save', async () => {
+    it('calls perpsUpdatePositionTPSL and onClose on successful save', async () => {
       const onClose = jest.fn();
-
-      mockSubmitRequestToBackground.mockImplementation((method: string) => {
-        if (method === 'perpsUpdatePositionTPSL') {
-          return Promise.resolve({ success: true });
-        }
-        if (method === 'perpsGetPositions') {
-          return Promise.resolve(mockPositions);
-        }
-        return Promise.resolve(undefined);
-      });
 
       renderTpslModalContent({ onClose });
 
@@ -394,16 +392,6 @@ describe('UpdateTPSLModalContent', () => {
     });
 
     it('sends undefined for empty TP/SL prices (clearing them)', async () => {
-      mockSubmitRequestToBackground.mockImplementation((method: string) => {
-        if (method === 'perpsUpdatePositionTPSL') {
-          return Promise.resolve({ success: true });
-        }
-        if (method === 'perpsGetPositions') {
-          return Promise.resolve(mockPositions);
-        }
-        return Promise.resolve(undefined);
-      });
-
       renderTpslModalContent({ position: positionWithoutTPSL });
 
       const saveButton = screen.getByText(messages.perpsSaveChanges.message);
@@ -448,10 +436,55 @@ describe('UpdateTPSLModalContent', () => {
         expect(pushData).toHaveBeenCalled();
       });
     });
+
+    it('runs delayed refetch reconciliation after modal closes', async () => {
+      jest.useFakeTimers();
+      try {
+        const pushPositionsWithOverrides = jest.fn();
+        mockGetPerpsStreamManager.mockReturnValue({
+          setOptimisticTPSL: jest.fn(),
+          positions: {
+            getCachedData: jest.fn().mockReturnValue(mockPositions),
+            pushData: jest.fn(),
+          },
+          pushPositionsWithOverrides,
+        });
+
+        const onClose = jest.fn();
+        const { unmount } = renderTpslModalContent({ onClose });
+        onClose.mockImplementation(() => {
+          unmount();
+        });
+
+        fireEvent.click(screen.getByText(messages.perpsSaveChanges.message));
+
+        await waitFor(() => {
+          expect(onClose).toHaveBeenCalledTimes(1);
+        });
+
+        await act(async () => {
+          jest.advanceTimersByTime(2500);
+        });
+
+        await waitFor(() => {
+          expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+            'perpsGetPositions',
+            [{ skipCache: true }],
+          );
+        });
+        await waitFor(() => {
+          expect(pushPositionsWithOverrides).toHaveBeenCalledWith(
+            mockPositions,
+          );
+        });
+      } finally {
+        jest.useRealTimers();
+      }
+    });
   });
 
   describe('error handling', () => {
-    it('displays an error when updatePositionTPSL fails', async () => {
+    it('shows toast error when perpsUpdatePositionTPSL fails', async () => {
       mockSubmitRequestToBackground.mockImplementation((method: string) => {
         if (method === 'perpsUpdatePositionTPSL') {
           return Promise.resolve({ success: false, error: 'Server error' });
@@ -459,7 +492,7 @@ describe('UpdateTPSLModalContent', () => {
         if (method === 'perpsGetPositions') {
           return Promise.resolve(mockPositions);
         }
-        return Promise.resolve(undefined);
+        return Promise.resolve({ success: true });
       });
 
       renderTpslModalContent();
@@ -467,25 +500,30 @@ describe('UpdateTPSLModalContent', () => {
       fireEvent.click(screen.getByText(messages.perpsSaveChanges.message));
 
       await waitFor(() => {
-        expect(screen.getByText('Server error')).toBeInTheDocument();
+        expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
+          key: 'perpsToastUpdateFailed',
+          description: 'Server error',
+        });
       });
+      expect(screen.queryByText('Server error')).not.toBeInTheDocument();
     });
 
-    it('displays a generic error when an exception is thrown', async () => {
-      mockSubmitRequestToBackground.mockImplementation((method: string) => {
-        if (method === 'perpsUpdatePositionTPSL') {
-          return Promise.reject(new Error('Network failure'));
-        }
-        return Promise.resolve(undefined);
-      });
+    it('shows generic toast error when an exception is thrown', async () => {
+      mockSubmitRequestToBackground.mockRejectedValue(
+        new Error('Network failure'),
+      );
 
       renderTpslModalContent();
 
       fireEvent.click(screen.getByText(messages.perpsSaveChanges.message));
 
       await waitFor(() => {
-        expect(screen.getByText('Network failure')).toBeInTheDocument();
+        expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
+          key: 'perpsToastUpdateFailed',
+          description: 'Network failure',
+        });
       });
+      expect(screen.queryByText('Network failure')).not.toBeInTheDocument();
     });
 
     it('does not call onClose when save fails', async () => {
@@ -497,7 +535,7 @@ describe('UpdateTPSLModalContent', () => {
         if (method === 'perpsGetPositions') {
           return Promise.resolve(mockPositions);
         }
-        return Promise.resolve(undefined);
+        return Promise.resolve({ success: true });
       });
 
       renderTpslModalContent({ onClose });
@@ -505,7 +543,10 @@ describe('UpdateTPSLModalContent', () => {
       fireEvent.click(screen.getByText(messages.perpsSaveChanges.message));
 
       await waitFor(() => {
-        expect(screen.getByText('fail')).toBeInTheDocument();
+        expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
+          key: 'perpsToastUpdateFailed',
+          description: 'fail',
+        });
       });
       expect(onClose).not.toHaveBeenCalled();
     });

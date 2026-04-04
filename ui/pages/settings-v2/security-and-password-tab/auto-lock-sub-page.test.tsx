@@ -1,10 +1,14 @@
 import React from 'react';
-import { fireEvent, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import mockState from '../../../../test/data/mock-state.json';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
 import { setBackgroundConnection } from '../../../store/background-connection';
 import { SECURITY_AND_PASSWORD_ROUTE } from '../../../helpers/constants/routes';
 import AutoLockSubPage from './auto-lock-sub-page';
@@ -74,10 +78,27 @@ describe('AutoLockSubPage', () => {
   });
 
   it('dispatches setAutoLockTimeLimit and navigates on click', () => {
-    renderWithProvider(<AutoLockSubPage />, createMockStore());
+    const trackEvent = jest.fn().mockResolvedValue(undefined);
+    renderWithProvider(
+      <AutoLockSubPage />,
+      createMockStore(),
+      '/',
+      render,
+      () => trackEvent,
+    );
 
     fireEvent.click(screen.getByText(messages.autoLockAfter1Minute.message));
 
+    expect(trackEvent).toHaveBeenCalledWith({
+      category: MetaMetricsEventCategory.Settings,
+      event: MetaMetricsEventName.SettingsUpdated,
+      properties: {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        auto_lock_time_limit_minutes: 1,
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        previous_auto_lock_time_limit_minutes: 0,
+      },
+    });
     expect(mockSetAutoLockTimeLimit).toHaveBeenCalledWith(1);
     expect(mockNavigate).toHaveBeenCalledWith(SECURITY_AND_PASSWORD_ROUTE);
   });

@@ -2570,10 +2570,6 @@ export default class MetamaskController extends EventEmitter {
           assetsController.setSelectedCurrency(currencyCode);
         }
       },
-      // @deprecated Use setAvatarType instead
-      setUseBlockie: preferencesController.setUseBlockie.bind(
-        preferencesController,
-      ),
       setAvatarType: (avatarType) =>
         preferencesController.setPreference('avatarType', avatarType),
       setUsePhishDetect: preferencesController.setUsePhishDetect.bind(

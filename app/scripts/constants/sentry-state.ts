@@ -276,7 +276,6 @@ export const SENTRY_BACKGROUND_STATE: SentryBackgroundControllerMasks = {
     addressSecurityAlertResponses: false,
     use4ByteResolution: true,
     useAddressBarEnsResolution: true,
-    useBlockie: true,
     useCurrencyRateCheck: true,
     useMultiAccountBalanceChecker: true,
     useNftDetection: true,
