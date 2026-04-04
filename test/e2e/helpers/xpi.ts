@@ -21,7 +21,6 @@ const LFH_CRC32_OFFSET = 14;
  * Reads the manifest file from the given extension directory, pads it to a
  * fixed size, and computes its hash.
  * @param absExtDir - Absolute path to the unpacked extension directory
- * @returns An object containing the padded manifest buffer and its hash string
  * @throws Will throw an error if the manifest file cannot be read or is too large
  */
 async function getManifest(absExtDir: string) {
@@ -47,7 +46,6 @@ async function getManifest(absExtDir: string) {
  * independent caches.
  *
  * @param extDir - Path to the unpacked extension directory
- * @returns Path to the XPI file
  * @throws Will throw an error if the manifest file cannot be read or is too
  * large, or if the XPI build process fails.
  */
