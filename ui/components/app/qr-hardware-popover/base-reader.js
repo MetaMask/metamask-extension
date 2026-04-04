@@ -18,6 +18,26 @@ const READY_STATE = {
   READY: 'READY',
 };
 
+export const SCAN_ERROR_TYPE = {
+  NON_UR: 'NON_UR', // State 3
+  WRONG_UR_TYPE: 'WRONG_UR_TYPE', // State 4
+  UR_DECODE_ERROR: 'UR_DECODE_ERROR', // State 5
+};
+
+// Expected UR types per context
+const PAIRING_UR_TYPES = ['crypto-hdkey', 'crypto-account'];
+const SIGNING_UR_TYPES = ['eth-signature'];
+
+/**
+ * Extract the UR type from a ur: URI string.
+ * Handles both single-part (`ur:type/data`) and multi-part (`ur:type/seq-of-total/data`).
+ * Returns the type in lowercase, or null if unparseable.
+ */
+function extractUrType(data) {
+  const match = data.match(/^ur:([a-z0-9-]+)\//i);
+  return match ? match[1].toLowerCase() : null;
+}
+
 const BaseReader = ({
   isReadingWallet,
   handleCancel,
@@ -29,6 +49,8 @@ const BaseReader = ({
   const [error, setError] = useState(null);
   const [urDecoder, setURDecoder] = useState(new URDecoder());
   const [progress, setProgress] = useState(0);
+  // Content-level scan errors — scanner stays active behind the overlay
+  const [scanError, setScanError] = useState(null);
 
   const mounted = useRef(false);
   const permissionStatusRef = useRef(null);
@@ -36,6 +58,7 @@ const BaseReader = ({
   const reset = () => {
     setReady(READY_STATE.ACCESSING_CAMERA);
     setError(null);
+    setScanError(null);
     setURDecoder(new URDecoder());
     setProgress(0);
   };
@@ -141,24 +164,93 @@ const BaseReader = ({
     }
   }, [ready, checkEnvironment]);
 
+  const handleScanError = (e) => {
+    if (e.scanErrorType === SCAN_ERROR_TYPE.WRONG_UR_TYPE) {
+      console.log(
+        `[QR Scan] Wrong UR type from handleSuccess: received "${e.urType}", context=${isReadingWallet ? 'pairing' : 'signing'}`,
+      );
+      setScanError({
+        type: SCAN_ERROR_TYPE.WRONG_UR_TYPE,
+        urType: e.urType,
+      });
+      // Reset decoder so scanner can process new QR codes
+      setURDecoder(new URDecoder());
+      setProgress(0);
+      return;
+    }
+    // Other errors (e.g. mismatched sign ID) — use legacy error flow
+    console.warn('[QR Scan] handleSuccess error (legacy path):', e.message, e);
+    setError(e);
+  };
+
   const handleScan = (data) => {
     try {
       if (!data || urDecoder.isComplete()) {
         return;
       }
+
+      // State 3: Non-UR QR code scanned
+      if (!data.toLowerCase().startsWith('ur:')) {
+        console.log(
+          `[QR Scan] Non-UR QR code detected: "${data.substring(0, 80)}"`,
+        );
+        setScanError({ type: SCAN_ERROR_TYPE.NON_UR });
+        return;
+      }
+
+      // Early type detection — extract UR type from the URI before feeding
+      // to the decoder. This catches wrong-type animated QR codes immediately
+      // instead of waiting for the full multi-part decode to complete.
+      const urType = extractUrType(data);
+      const expectedTypes = isReadingWallet
+        ? PAIRING_UR_TYPES
+        : SIGNING_UR_TYPES;
+
+      console.log(
+        `[QR Scan] UR part scanned — type="${urType}", expected=[${expectedTypes}], data="${data.substring(0, 80)}..."`,
+      );
+
+      if (urType && !expectedTypes.includes(urType)) {
+        console.log(
+          `[QR Scan] Wrong UR type detected early: "${urType}" not in [${expectedTypes}]`,
+        );
+        setScanError({
+          type: SCAN_ERROR_TYPE.WRONG_UR_TYPE,
+          urType,
+        });
+        // Don't feed this to the decoder — it's the wrong type entirely
+        return;
+      }
+
       urDecoder.receivePart(data);
-      setProgress(urDecoder.estimatedPercentComplete());
+
+      // Valid UR part received — auto-dismiss any content error overlay
+      setScanError(null);
+
+      const currentProgress = urDecoder.estimatedPercentComplete();
+      setProgress(currentProgress);
+      console.log(
+        `[QR Scan] Progress: ${Math.floor(currentProgress * 100)}%`,
+      );
+
       if (urDecoder.isComplete()) {
         const result = urDecoder.resultUR();
-        handleSuccess(result).catch(setError);
+        console.log(
+          `[QR Scan] UR decode complete — type="${result.type}", context=${isReadingWallet ? 'pairing' : 'signing'}`,
+        );
+
+        // Wrap in Promise.resolve to handle both sync throws and async rejections
+        Promise.resolve()
+          .then(() => handleSuccess(result))
+          .catch(handleScanError);
       }
     } catch (e) {
-      if (isReadingWallet) {
-        setErrorTitle(t('QRHardwareUnknownQRCodeTitle'));
-      } else {
-        setErrorTitle(t('QRHardwareInvalidTransactionTitle'));
-      }
-      setError(new Error(t('unknownQrCode')));
+      // State 5: UR decode error — data started with ur: but decode failed
+      console.warn('[QR Scan] UR decode error:', e.message, e);
+      setScanError({ type: SCAN_ERROR_TYPE.UR_DECODE_ERROR });
+      // Reset decoder so scanner can retry
+      setURDecoder(new URDecoder());
+      setProgress(0);
     }
   };
 
@@ -184,12 +276,6 @@ const BaseReader = ({
     if (error.type === 'NO_WEBCAM_FOUND') {
       title = t('noWebcamFoundTitle');
       msg = t('noWebcamFound');
-    } else if (error.message === t('unknownQrCode')) {
-      if (isReadingWallet) {
-        msg = t('QRHardwareUnknownWalletQRCode');
-      } else {
-        msg = t('unknownQrCode');
-      }
     } else if (error.message === t('QRHardwareMismatchedSignId')) {
       msg = t('QRHardwareMismatchedSignId');
     } else {
@@ -220,6 +306,68 @@ const BaseReader = ({
           submitButtonType="confirm"
         />
       </>
+    );
+  };
+
+  const getScanErrorContent = () => {
+    switch (scanError.type) {
+      case SCAN_ERROR_TYPE.NON_UR:
+        return {
+          title: isReadingWallet
+            ? t('qrHardwareNonUrPairingTitle')
+            : t('qrHardwareNonUrSigningTitle'),
+          description: isReadingWallet
+            ? t('qrHardwareNonUrPairingDescription')
+            : t('qrHardwareNonUrSigningDescription'),
+        };
+      case SCAN_ERROR_TYPE.WRONG_UR_TYPE:
+        return {
+          title: isReadingWallet
+            ? t('qrHardwareWrongUrTypePairingTitle')
+            : t('qrHardwareWrongUrTypeSigningTitle'),
+          description: isReadingWallet
+            ? t('qrHardwareWrongUrTypePairingDescription')
+            : t('qrHardwareWrongUrTypeSigningDescription'),
+        };
+      case SCAN_ERROR_TYPE.UR_DECODE_ERROR:
+        return {
+          title: t('qrHardwareUrDecodeErrorTitle'),
+          description: t('qrHardwareUrDecodeErrorDescription'),
+        };
+      default:
+        return { title: '', description: '' };
+    }
+  };
+
+  const dismissScanError = () => {
+    setScanError(null);
+    // Reset decoder in case it completed with wrong data
+    setURDecoder(new URDecoder());
+    setProgress(0);
+  };
+
+  const renderScanErrorOverlay = () => {
+    if (!scanError) {
+      return null;
+    }
+    const { title, description } = getScanErrorContent();
+    return (
+      <div
+        className="qr-scanner__scan-error-overlay"
+        data-testid="qr-scanner__scan-error-overlay"
+      >
+        <div className="qr-scanner__scan-error-overlay__title">{title}</div>
+        <div className="qr-scanner__scan-error-overlay__description">
+          {description}
+        </div>
+        <button
+          className="qr-scanner__scan-error-overlay__retry-button"
+          onClick={dismissScanError}
+          data-testid="qr-scanner__scan-error-retry"
+        >
+          {t('tryAgain')}
+        </button>
+      </div>
     );
   };
 
@@ -298,6 +446,7 @@ const BaseReader = ({
               onError={handleCameraError}
             />
           )}
+          {renderScanErrorOverlay()}
         </div>
         {progress > 0 && (
           <div

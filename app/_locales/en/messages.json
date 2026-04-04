@@ -40,6 +40,36 @@
   "QRHardwareUnknownWalletQRCode": {
     "message": "Invalid QR code. Please scan the sync QR code of the hardware wallet."
   },
+  "qrHardwareNonUrPairingTitle": {
+    "message": "That's not a wallet sync QR code"
+  },
+  "qrHardwareNonUrPairingDescription": {
+    "message": "On your hardware wallet, look for the option to connect or sync with MetaMask, then scan the QR code it displays."
+  },
+  "qrHardwareNonUrSigningTitle": {
+    "message": "That's not a signature QR code"
+  },
+  "qrHardwareNonUrSigningDescription": {
+    "message": "Approve the transaction on your hardware wallet, then scan the QR code it displays."
+  },
+  "qrHardwareWrongUrTypePairingTitle": {
+    "message": "Unrecognized QR code format"
+  },
+  "qrHardwareWrongUrTypePairingDescription": {
+    "message": "This QR code uses a format MetaMask doesn't support. On your hardware wallet, make sure you select MetaMask as the connected wallet before syncing."
+  },
+  "qrHardwareWrongUrTypeSigningTitle": {
+    "message": "Wrong QR code type"
+  },
+  "qrHardwareWrongUrTypeSigningDescription": {
+    "message": "That looks like a wallet sync QR code, not a signature. Approve the transaction on your hardware wallet and scan the QR code it displays."
+  },
+  "qrHardwareUrDecodeErrorTitle": {
+    "message": "Couldn't read QR code"
+  },
+  "qrHardwareUrDecodeErrorDescription": {
+    "message": "The QR code couldn't be decoded. Make sure the full QR code is visible and well-lit. If the issue persists, check for firmware updates on your hardware wallet."
+  },
   "QRHardwareWalletImporterTitle": {
     "message": "Scan QR code"
   },

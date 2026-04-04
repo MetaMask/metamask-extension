@@ -2,7 +2,7 @@ import React from 'react';
 import { ETHSignature } from '@keystonehq/bc-ur-registry-eth';
 import * as uuid from 'uuid';
 import PropTypes from 'prop-types';
-import BaseReader from '../base-reader';
+import BaseReader, { SCAN_ERROR_TYPE } from '../base-reader';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 
 const Reader = ({
@@ -17,9 +17,12 @@ const Reader = ({
   };
 
   const handleSuccess = async (ur) => {
+    // State 4: Valid UR but wrong type for signing
     if (ur.type !== 'eth-signature') {
-      setErrorTitle(t('QRHardwareInvalidTransactionTitle'));
-      throw new Error(t('unknownQrCode'));
+      const err = new Error(`Wrong UR type for signing: ${ur.type}`);
+      err.scanErrorType = SCAN_ERROR_TYPE.WRONG_UR_TYPE;
+      err.urType = ur.type;
+      throw err;
     }
     const ethSignature = ETHSignature.fromCBOR(ur.cbor);
     const buffer = ethSignature.getRequestId();
