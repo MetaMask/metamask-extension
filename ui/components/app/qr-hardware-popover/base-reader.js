@@ -49,6 +49,8 @@ const BaseReader = ({
   const [error, setError] = useState(null);
   const [urDecoder, setURDecoder] = useState(new URDecoder());
   const [progress, setProgress] = useState(0);
+  // True once we've received at least one UR part — shows "scanning" feedback
+  const [isScanning, setIsScanning] = useState(false);
   // Content-level scan errors — scanner stays active behind the overlay
   const [scanError, setScanError] = useState(null);
 
@@ -61,6 +63,7 @@ const BaseReader = ({
     setScanError(null);
     setURDecoder(new URDecoder());
     setProgress(0);
+    setIsScanning(false);
   };
 
   const settingsUrl = useMemo(() => WebcamUtils.getCameraSettingsUrl(), []);
@@ -210,6 +213,10 @@ const BaseReader = ({
         `[QR Scan] UR part scanned — type="${urType}", expected=[${expectedTypes}], data="${data.substring(0, 80)}..."`,
       );
 
+      // Show scanning feedback as soon as we recognise a valid ur: prefix
+      setIsScanning(true);
+      setScanError(null);
+
       if (urType && !expectedTypes.includes(urType)) {
         console.log(
           `[QR Scan] Wrong UR type detected early: "${urType}" not in [${expectedTypes}]`,
@@ -223,9 +230,6 @@ const BaseReader = ({
       }
 
       urDecoder.receivePart(data);
-
-      // Valid UR part received — auto-dismiss any content error overlay
-      setScanError(null);
 
       const currentProgress = urDecoder.estimatedPercentComplete();
       setProgress(currentProgress);
@@ -432,10 +436,14 @@ const BaseReader = ({
       return renderPermissionDenied();
     }
 
-    const message =
-      ready === READY_STATE.READY
-        ? t('QRHardwareScanInstructions')
-        : t('accessingYourCamera');
+    let message;
+    if (ready !== READY_STATE.READY) {
+      message = t('accessingYourCamera');
+    } else if (isScanning) {
+      message = t('QRHardwareScanning');
+    } else {
+      message = t('QRHardwareScanInstructions');
+    }
 
     return (
       <>
@@ -448,7 +456,7 @@ const BaseReader = ({
           )}
           {renderScanErrorOverlay()}
         </div>
-        {progress > 0 && (
+        {isScanning && (
           <div
             className="qr-scanner__progress"
             data-testid="qr-reader-progress-bar"

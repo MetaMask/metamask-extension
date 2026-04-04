@@ -19,6 +19,9 @@
   "QRHardwareScanInstructions": {
     "message": "Place the QR code in front of your camera. The screen is blurred, but it will not affect the reading."
   },
+  "QRHardwareScanning": {
+    "message": "Scanning QR code…"
+  },
   "QRHardwareSignRequestCancel": {
     "message": "Reject"
   },
