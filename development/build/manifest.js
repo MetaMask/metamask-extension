@@ -1,6 +1,8 @@
+const nodeCrypto = require('node:crypto');
 const { promises: fs } = require('fs');
 const path = require('path');
-const childProcess = require('child_process');
+const childProcess = require('node:child_process');
+const watch = require('gulp-watch');
 const { mergeWith, cloneDeep } = require('lodash');
 const { isManifestV3 } = require('../../shared/lib/mv3.utils');
 
@@ -105,30 +107,36 @@ function createManifestTasks({
   });
 
   // testDev: add perms
-  const envTestDev = createTaskForModifyManifestForEnvironment((manifest) => {
-    manifest.permissions = [
-      ...new Set([
-        ...manifest.permissions,
-        'webRequestBlocking',
-        'http://localhost/*',
-        'tabs', // test builds need tabs permission for switchToWindowWithTitle
-      ]),
-    ];
-    loadManifestKey(manifest);
-  });
+  const envTestDev = createTaskForModifyManifestForEnvironment(
+    (manifest) => {
+      manifest.permissions = [
+        ...new Set([
+          ...manifest.permissions,
+          'webRequestBlocking',
+          'http://localhost/*',
+          'tabs', // test builds need tabs permission for switchToWindowWithTitle
+        ]),
+      ];
+      loadManifestKey(manifest);
+    },
+    { setBuildId: true, watchBuildId: true },
+  );
 
   // test: add permissions
-  const envTest = createTaskForModifyManifestForEnvironment((manifest) => {
-    manifest.permissions = [
-      ...new Set([
-        ...manifest.permissions,
-        'webRequestBlocking',
-        'http://localhost/*',
-        'tabs', // test builds need tabs permission for switchToWindowWithTitle
-      ]),
-    ];
-    loadManifestKey(manifest);
-  });
+  const envTest = createTaskForModifyManifestForEnvironment(
+    (manifest) => {
+      manifest.permissions = [
+        ...new Set([
+          ...manifest.permissions,
+          'webRequestBlocking',
+          'http://localhost/*',
+          'tabs', // test builds need tabs permission for switchToWindowWithTitle
+        ]),
+      ];
+      loadManifestKey(manifest);
+    },
+    { setBuildId: true },
+  );
 
   const envScriptDist = createTaskForModifyManifestForEnvironment(
     (manifest) => {
@@ -163,9 +171,14 @@ function createManifestTasks({
   return { prod, dev, testDev, test, scriptDist };
 
   // helper for modifying each platform's manifest.json in place
-  function createTaskForModifyManifestForEnvironment(transformFn) {
-    return () => {
-      return Promise.all(
+  function createTaskForModifyManifestForEnvironment(
+    transformFn,
+    { setBuildId = false, watchBuildId = false } = {},
+  ) {
+    const updateManifests = async () => {
+      const buildId = setBuildId ? nodeCrypto.randomUUID() : undefined;
+
+      await Promise.all(
         browserPlatforms.map(async (platform) => {
           const manifestPath = path.join(
             '.',
@@ -175,10 +188,29 @@ function createManifestTasks({
           );
           const manifest = await readJson(manifestPath);
           transformFn(manifest);
+          if (buildId) {
+            manifest.build_id = buildId;
+          }
 
           await writeJson(manifest, manifestPath);
         }),
       );
+    };
+
+    return async () => {
+      await updateManifests();
+
+      if (!watchBuildId) {
+        return;
+      }
+
+      watch('./dist/*/**/*', { ignoreInitial: true }, async (event) => {
+        if (path.basename(event.path) === 'manifest.json') {
+          return;
+        }
+
+        await updateManifests();
+      });
     };
   }
 

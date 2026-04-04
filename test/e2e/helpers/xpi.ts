@@ -40,9 +40,11 @@ async function getManifest(absExtDir: string) {
 
 /**
  * Returns the path to a cached XPI for the given unpacked extension directory.
- * Builds the XPI on first call; reuses it as long as no file in the directory
- * is newer than the cached XPI. The cache filename is derived from the
- * directory path so different addon dirs get independent caches.
+ * Builds the XPI on first call, then reuses it as long as the manifest hash
+ * matches the cached archive comment. Test builds include a build_id in the
+ * manifest so non-manifest rebuilds also invalidate the cache. The cache
+ * filename is derived from the directory path so different addon dirs get
+ * independent caches.
  *
  * @param extDir - Path to the unpacked extension directory
  * @returns Path to the XPI file
