@@ -27,7 +27,14 @@ const LFH_CRC32_OFFSET = 14;
 async function getManifest(absExtDir: string) {
   const manifest = Buffer.allocUnsafe(MANIFEST_SIZE);
   await using fd = await open(join(absExtDir, MANIFEST_FILE_NAME));
-  manifest.fill(0x20, (await fd.read(manifest, 0, MANIFEST_SIZE, 0)).bytesRead);
+  const { bytesRead } = await fd.read(manifest, 0, MANIFEST_SIZE, 0);
+  if (
+    bytesRead === MANIFEST_SIZE &&
+    (await fd.read(Buffer.allocUnsafe(1), 0, 1, MANIFEST_SIZE)).bytesRead
+  ) {
+    throw new Error(`Manifest file is too large (${MANIFEST_SIZE} bytes max)`);
+  }
+  manifest.fill(0x20, bytesRead);
   return { manifest, manifestHash: hash('sha256', manifest, 'base64') };
 }
 
