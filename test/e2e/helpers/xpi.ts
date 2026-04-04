@@ -1,7 +1,7 @@
 import { hash } from 'node:crypto';
 import { resolve, join, relative } from 'node:path';
 import { tmpdir } from 'node:os';
-import fs, { readFileSync, renameSync, rmSync } from 'node:fs';
+import fs, { renameSync, rmSync } from 'node:fs';
 import { open, type FileHandle } from 'node:fs/promises';
 import { finished } from 'node:stream/promises';
 import { crc32 } from 'node:zlib';
