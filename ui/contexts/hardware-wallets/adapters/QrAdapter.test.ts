@@ -1,0 +1,119 @@
+import {
+  Category,
+  ErrorCode,
+  HardwareWalletError,
+  Severity,
+} from '@metamask/hw-wallet-sdk';
+import { CameraPermissionState } from '../constants';
+import { DeviceEvent, type HardwareWalletAdapterOptions } from '../types';
+import * as webConnectionUtils from '../webConnectionUtils';
+import { QrAdapter } from './QrAdapter';
+
+jest.mock('../webConnectionUtils', () => ({
+  ...jest.requireActual('../webConnectionUtils'),
+  checkCameraPermission: jest.fn(),
+}));
+
+const mockCheckCameraPermission =
+  webConnectionUtils.checkCameraPermission as jest.MockedFunction<
+    typeof webConnectionUtils.checkCameraPermission
+  >;
+
+describe('QrAdapter', () => {
+  let adapter: QrAdapter;
+  let mockOptions: HardwareWalletAdapterOptions;
+
+  const createMockOptions = (): HardwareWalletAdapterOptions => ({
+    onDisconnect: jest.fn(),
+    onAwaitingConfirmation: jest.fn(),
+    onDeviceLocked: jest.fn(),
+    onAppNotOpen: jest.fn(),
+    onDeviceEvent: jest.fn(),
+  });
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+    mockOptions = createMockOptions();
+    adapter = new QrAdapter(mockOptions);
+  });
+
+  afterEach(() => {
+    jest.resetAllMocks();
+    adapter.destroy();
+  });
+
+  it('connect marks adapter as connected', async () => {
+    await adapter.connect();
+    expect(adapter.isConnected()).toBe(true);
+  });
+
+  it('disconnect emits disconnected event', async () => {
+    await adapter.connect();
+    await adapter.disconnect();
+
+    expect(adapter.isConnected()).toBe(false);
+    expect(mockOptions.onDeviceEvent).toHaveBeenCalledWith({
+      event: DeviceEvent.Disconnected,
+    });
+  });
+
+  it('ensureDeviceReady returns true when camera permission is granted', async () => {
+    mockCheckCameraPermission.mockResolvedValue(CameraPermissionState.Granted);
+    await expect(adapter.ensureDeviceReady()).resolves.toBe(true);
+  });
+
+  it('ensureDeviceReady throws PermissionCameraDenied when camera permission is denied', async () => {
+    mockCheckCameraPermission.mockResolvedValue(CameraPermissionState.Denied);
+
+    await expect(adapter.ensureDeviceReady()).rejects.toThrow(
+      HardwareWalletError,
+    );
+
+    expect(mockOptions.onDeviceEvent).toHaveBeenCalledWith(
+      expect.objectContaining({
+        event: DeviceEvent.ConnectionFailed,
+        error: expect.objectContaining({
+          code: ErrorCode.PermissionCameraDenied,
+        }),
+      }),
+    );
+  });
+
+  it('ensureDeviceReady throws PermissionCameraPromptDismissed when camera permission is prompt', async () => {
+    mockCheckCameraPermission.mockResolvedValue(CameraPermissionState.Prompt);
+
+    await expect(adapter.ensureDeviceReady()).rejects.toThrow(
+      HardwareWalletError,
+    );
+
+    expect(mockOptions.onDeviceEvent).toHaveBeenCalledWith(
+      expect.objectContaining({
+        event: DeviceEvent.ConnectionFailed,
+        error: expect.objectContaining({
+          code: ErrorCode.PermissionCameraPromptDismissed,
+        }),
+      }),
+    );
+  });
+
+  it('maps unexpected errors to hardware wallet errors and emits device event', async () => {
+    const unknownError = new HardwareWalletError('Unknown error', {
+      code: ErrorCode.Unknown,
+      severity: Severity.Err,
+      category: Category.Unknown,
+      userMessage: 'Unknown',
+    });
+    mockCheckCameraPermission.mockRejectedValue(unknownError);
+
+    await expect(adapter.ensureDeviceReady()).rejects.toThrow(
+      HardwareWalletError,
+    );
+
+    expect(mockOptions.onDeviceEvent).toHaveBeenCalledWith(
+      expect.objectContaining({
+        event: DeviceEvent.ConnectionFailed,
+        error: expect.any(HardwareWalletError),
+      }),
+    );
+  });
+});

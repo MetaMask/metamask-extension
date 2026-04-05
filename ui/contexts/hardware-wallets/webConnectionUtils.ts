@@ -2,6 +2,7 @@ import {
   LEDGER_USB_VENDOR_ID,
   TREZOR_USB_VENDOR_IDS,
 } from '../../../shared/constants/hardware-wallets';
+import { CameraPermissionState } from './constants';
 import { HardwareWalletType, HardwareConnectionPermissionState } from './types';
 
 /**
@@ -23,6 +24,18 @@ export function isWebUsbAvailable(): boolean {
     typeof window !== 'undefined' &&
     typeof window.navigator !== 'undefined' &&
     'usb' in window.navigator
+  );
+}
+
+/**
+ * Check if camera APIs are available in the current browser.
+ */
+export function isCameraAvailable(): boolean {
+  return (
+    typeof window !== 'undefined' &&
+    typeof window.navigator !== 'undefined' &&
+    typeof window.navigator.mediaDevices !== 'undefined' &&
+    typeof window.navigator.mediaDevices.getUserMedia === 'function'
   );
 }
 
@@ -84,8 +97,41 @@ export async function checkHardwareWalletPermission(
       return await checkWebHidPermission(walletType);
     case HardwareWalletType.Trezor:
       return await checkWebUsbPermission(walletType);
+    case HardwareWalletType.Qr:
+      return await checkCameraPermissionState();
     default:
       return HardwareConnectionPermissionState.Denied;
+  }
+}
+
+/**
+ * Check camera permission state.
+ */
+export async function checkCameraPermissionState(): Promise<HardwareConnectionPermissionState> {
+  if (!isCameraAvailable()) {
+    return HardwareConnectionPermissionState.Denied;
+  }
+
+  try {
+    const { permissions } = window.navigator;
+    if (!permissions?.query) {
+      return HardwareConnectionPermissionState.Prompt;
+    }
+
+    const result = await permissions.query({
+      name: 'camera' as PermissionName,
+    });
+
+    switch (result.state) {
+      case CameraPermissionState.Granted:
+        return HardwareConnectionPermissionState.Granted;
+      case CameraPermissionState.Denied:
+        return HardwareConnectionPermissionState.Denied;
+      default:
+        return HardwareConnectionPermissionState.Prompt;
+    }
+  } catch {
+    return HardwareConnectionPermissionState.Unknown;
   }
 }
 
@@ -165,8 +211,53 @@ export async function requestHardwareWalletPermission(
       return requestWebHidPermission(walletType);
     case HardwareWalletType.Trezor:
       return requestWebUsbPermission(walletType);
+    case HardwareWalletType.Qr:
+      return requestCameraPermission();
     default:
       return false;
+  }
+}
+
+/**
+ * Request camera permission from the user.
+ */
+export async function requestCameraPermission(): Promise<boolean> {
+  if (!isCameraAvailable()) {
+    return false;
+  }
+
+  try {
+    const stream = await window.navigator.mediaDevices.getUserMedia({
+      video: true,
+    });
+
+    stream.getTracks().forEach((track) => track.stop());
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * Return browser camera permission state.
+ */
+export async function checkCameraPermission(): Promise<PermissionState> {
+  if (!isCameraAvailable()) {
+    return CameraPermissionState.Denied;
+  }
+
+  try {
+    const { permissions } = window.navigator;
+    if (!permissions?.query) {
+      return CameraPermissionState.Prompt;
+    }
+
+    const result = await permissions.query({
+      name: 'camera' as PermissionName,
+    });
+    return result.state;
+  } catch {
+    return CameraPermissionState.Prompt;
   }
 }
 
