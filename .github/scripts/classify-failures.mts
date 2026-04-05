@@ -577,17 +577,7 @@ for (const job of blockerJobs) {
     blockedBy = job.name;
     // Tag remaining unclassified blockers as cascade
     const remaining = blockerJobs.slice(blockerJobs.indexOf(job) + 1);
-    for (const rem of remaining) {
-      const { category: cat, unmatched: um } = matchCategory(rem.name);
-      classifications.push({
-        jobName: rem.name,
-        jobId: rem.id,
-        category: cat,
-        jobRetryable: false,
-        reason: `Cascade — blocked by ${blockedBy}`,
-        unmatched: um,
-      });
-    }
+    tagCascade(remaining, false, `Cascade — blocked by ${blockedBy}`);
     break;
   }
 }
