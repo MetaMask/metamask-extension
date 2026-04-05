@@ -175,6 +175,8 @@ function createManifestTasks({
     transformFn,
     { setBuildId = false, watchBuildId = false } = {},
   ) {
+    let updateQueue = Promise.resolve();
+
     const updateManifests = async () => {
       const buildId = setBuildId ? nodeCrypto.randomUUID() : undefined;
 
@@ -197,19 +199,22 @@ function createManifestTasks({
       );
     };
 
+    const queueManifestUpdate = () =>
+      (updateQueue = updateQueue.catch(() => undefined).then(updateManifests));
+
     return async () => {
-      await updateManifests();
+      await queueManifestUpdate();
 
       if (!watchBuildId) {
         return;
       }
 
-      watch('./dist/*/**/*', { ignoreInitial: true }, async (event) => {
+      watch('./dist/*/**/*', { ignoreInitial: true }, (event) => {
         if (path.basename(event.path) === 'manifest.json') {
           return;
         }
 
-        await updateManifests();
+        queueManifestUpdate().catch(console.error);
       });
     };
   }
