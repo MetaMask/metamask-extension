@@ -96,38 +96,31 @@ export async function buildXpi(
   const tmpPath = `${xpiPath}.${process.pid}-${Date.now()}.tmp`;
 
   try {
-    const zipFile = new ZipFile();
-    await using outputStream = fs.createWriteStream(tmpPath);
-    zipFile.outputStream.once('error', (error) => outputStream.destroy(error));
-    zipFile.outputStream.pipe(outputStream);
+    {
+      await using stream = fs.createWriteStream(tmpPath);
+      const zip = new ZipFile();
+      zip.outputStream.once('error', stream.destroy.bind(stream)).pipe(stream);
 
-    // must be first entry to ensure fixed offsets for patching later
-    zipFile.addBuffer(manifest, MANIFEST_FILE_NAME, { compress: false });
-    for (const entry of fs.readdirSync(absExtDir, {
-      recursive: true,
-      withFileTypes: true,
-    })) {
-      if (entry.isFile()) {
-        const absPath = join(entry.parentPath, entry.name);
-        const relPath = relative(absExtDir, absPath);
-        if (relPath !== MANIFEST_FILE_NAME) {
-          zipFile.addFile(absPath, relPath, {
-            compress: true,
-            compressionLevel: 1,
-          });
+      // must be first entry to ensure fixed offsets for patching later
+      zip.addBuffer(manifest, MANIFEST_FILE_NAME, { compress: false });
+      const readOptions = { recursive: true, withFileTypes: true } as const;
+      for (const entry of fs.readdirSync(absExtDir, readOptions)) {
+        if (entry.isFile()) {
+          const absPath = join(entry.parentPath, entry.name);
+          const relPath = relative(absExtDir, absPath);
+          if (relPath !== MANIFEST_FILE_NAME) {
+            const zipOptions = { compress: true, compressionLevel: 1 };
+            zip.addFile(absPath, relPath, zipOptions);
+          }
         }
       }
+      zip.end({ forceZip64Format: false, comment: manifestHash });
+      await finished(stream);
     }
-    zipFile.end({
-      forceZip64Format: false,
-      comment: manifestHash,
-    });
-    await finished(outputStream);
 
     renameSync(tmpPath, xpiPath);
-  } catch (error) {
+  } finally {
     rmSync(tmpPath, { force: true });
-    throw error;
   }
 }
 
