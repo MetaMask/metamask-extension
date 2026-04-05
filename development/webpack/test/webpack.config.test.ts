@@ -32,7 +32,7 @@ async function withWatching<T>(
   ) => Promise<T>,
 ) {
   const compiler = webpack(config);
-  // @typescript-expect-error - sigh.
+  // @ts-expect-error - Node types need to be updated.
   const initialBuild = Promise.withResolvers<void>();
   const watchHandle = compiler.watch({}, (error, stats) => {
     if (error) {
