@@ -1,5 +1,4 @@
 import ObjectMultiplex from '@metamask/object-multiplex';
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-expect-error types/readable-stream.d.ts does not get picked up by ts-node
 import { pipeline, Duplex } from 'readable-stream';
 
