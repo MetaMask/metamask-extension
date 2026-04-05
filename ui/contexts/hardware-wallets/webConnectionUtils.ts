@@ -31,11 +31,13 @@ export function isWebUsbAvailable(): boolean {
  * Check if camera APIs are available in the current browser.
  */
 export function isCameraAvailable(): boolean {
+  if (typeof globalThis.window === 'undefined') {
+    return false;
+  }
+  const { navigator } = globalThis;
   return (
-    typeof window !== 'undefined' &&
-    typeof window.navigator !== 'undefined' &&
-    typeof window.navigator.mediaDevices !== 'undefined' &&
-    typeof window.navigator.mediaDevices.getUserMedia === 'function'
+    typeof navigator.mediaDevices !== 'undefined' &&
+    typeof navigator.mediaDevices.getUserMedia === 'function'
   );
 }
 
@@ -53,7 +55,8 @@ async function queryCameraPermissionDomState(): Promise<PermissionState | null> 
   }
 
   try {
-    const { permissions } = window.navigator;
+    const { navigator } = globalThis;
+    const { permissions } = navigator;
     if (!permissions?.query) {
       return CameraPermissionState.Prompt;
     }
@@ -243,7 +246,8 @@ export async function requestCameraPermission(): Promise<boolean> {
   }
 
   try {
-    const stream = await window.navigator.mediaDevices.getUserMedia({
+    const { navigator } = globalThis;
+    const stream = await navigator.mediaDevices.getUserMedia({
       video: true,
     });
 
