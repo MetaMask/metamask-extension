@@ -37,6 +37,7 @@ import type {
   BenchmarkFunction,
   BenchmarkRunResult,
   BenchmarkSummary,
+  MeasurePageResult,
   Metrics,
   UserActionMeasurement,
 } from './types';
@@ -276,13 +277,6 @@ export function convertSummaryToResults(
     summary.webVitals,
   );
 }
-
-export type MeasurePageResult = {
-  metrics: Metrics[];
-  title: string;
-  persona: Persona;
-  webVitalsRuns?: WebVitalsMetrics[];
-};
 
 export async function runPageLoadBenchmark(
   measurePageFn: (
