@@ -424,7 +424,10 @@ export const isCryptoMarket = (market: PerpsMarketData): boolean => {
  * Primary: unrealizedPnl / marginUsed.
  * Fallback: returnOnEquity (percent) converted to a ratio.
  *
- * @param position - Must have `unrealizedPnl`, `marginUsed`, and `returnOnEquity` as strings.
+ * @param position - Position values used to compute the PnL ratio.
+ * @param position.unrealizedPnl - Unrealized profit and loss as a string.
+ * @param position.marginUsed - Margin used as a string.
+ * @param position.returnOnEquity - Return on equity percentage as a string.
  * @returns The PnL ratio (e.g. 0.15 for +15 %) or `undefined`.
  */
 export const getPositionPnlRatio = (position: {
