@@ -23,6 +23,7 @@ jest.mock('../perps-toast', () => ({
   PERPS_TOAST_KEYS: {
     CLOSE_FAILED: 'perpsToastCloseFailed',
     CLOSE_IN_PROGRESS: 'perpsToastCloseInProgress',
+    PARTIAL_CLOSE_SUCCESS: 'perpsToastPartialCloseSuccess',
     TRADE_SUCCESS: 'perpsToastTradeSuccess',
   },
   usePerpsToast: () => ({
@@ -135,7 +136,7 @@ describe('ClosePositionModal', () => {
       });
     });
 
-    it('emits trade success toast on successful close', async () => {
+    it('emits trade success toast on full close (100%)', async () => {
       const user = userEvent.setup();
 
       renderWithProvider(
@@ -175,6 +176,104 @@ describe('ClosePositionModal', () => {
       await waitFor(() => {
         const successCall = mockReplacePerpsToastByKey.mock.calls.find(
           ([arg]: [{ key: string }]) => arg.key === 'perpsToastTradeSuccess',
+        );
+        expect(successCall).toBeDefined();
+        expect(successCall[0].description).toBeDefined();
+      });
+    });
+
+    it('emits partial close success toast when closePercent < 100', async () => {
+      const user = userEvent.setup();
+
+      renderWithProvider(
+        <ClosePositionModal
+          isOpen
+          onClose={jest.fn()}
+          position={basePosition}
+          currentPrice={2900}
+        />,
+        mockStore,
+      );
+
+      // Move slider left to get a partial close
+      const slider = within(
+        screen.getByTestId('close-amount-slider'),
+      ).getByRole('slider');
+      slider.focus();
+      await user.keyboard('{ArrowLeft}');
+
+      await user.click(screen.getByTestId('perps-close-position-modal-submit'));
+
+      await waitFor(() => {
+        expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith(
+          expect.objectContaining({
+            key: 'perpsToastPartialCloseSuccess',
+          }),
+        );
+      });
+    });
+
+    it('does not emit trade success toast on partial close', async () => {
+      const user = userEvent.setup();
+
+      renderWithProvider(
+        <ClosePositionModal
+          isOpen
+          onClose={jest.fn()}
+          position={basePosition}
+          currentPrice={2900}
+        />,
+        mockStore,
+      );
+
+      const slider = within(
+        screen.getByTestId('close-amount-slider'),
+      ).getByRole('slider');
+      slider.focus();
+      await user.keyboard('{ArrowLeft}');
+
+      await user.click(screen.getByTestId('perps-close-position-modal-submit'));
+
+      await waitFor(() => {
+        expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith(
+          expect.objectContaining({
+            key: 'perpsToastPartialCloseSuccess',
+          }),
+        );
+      });
+
+      // Verify TRADE_SUCCESS was NOT called (only in-progress and partial success)
+      const tradeSuccessCall = mockReplacePerpsToastByKey.mock.calls.find(
+        ([arg]: [{ key: string }]) => arg.key === 'perpsToastTradeSuccess',
+      );
+      expect(tradeSuccessCall).toBeUndefined();
+    });
+
+    it('includes PnL subtitle on partial close when computable', async () => {
+      const user = userEvent.setup();
+
+      renderWithProvider(
+        <ClosePositionModal
+          isOpen
+          onClose={jest.fn()}
+          position={basePosition}
+          currentPrice={2900}
+        />,
+        mockStore,
+      );
+
+      const slider = within(
+        screen.getByTestId('close-amount-slider'),
+      ).getByRole('slider');
+      slider.focus();
+      await user.keyboard('{ArrowLeft}');
+
+      await user.click(screen.getByTestId('perps-close-position-modal-submit'));
+
+      await waitFor(() => {
+        const successCall = mockReplacePerpsToastByKey.mock.calls.find(
+          ([arg]: [{ key: string }]) =>
+            arg.key === 'perpsToastPartialCloseSuccess',
         );
         expect(successCall).toBeDefined();
         expect(successCall[0].description).toBeDefined();

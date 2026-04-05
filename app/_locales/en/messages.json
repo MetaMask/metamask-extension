@@ -5825,6 +5825,10 @@
     "message": "Order submitted",
     "description": "In-progress toast text shown while a perps order is being submitted"
   },
+  "perpsToastPartialCloseSuccess": {
+    "message": "Position reduced",
+    "description": "Success toast text shown when a perps position is partially closed"
+  },
   "perpsToastReverseFailed": {
     "message": "Failed to reverse position",
     "description": "Error toast text shown when reversing a perps position fails"

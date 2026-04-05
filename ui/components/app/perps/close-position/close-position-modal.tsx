@@ -168,8 +168,13 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
         }
       }
 
+      const successKey =
+        closePercent >= 100
+          ? PERPS_TOAST_KEYS.TRADE_SUCCESS
+          : PERPS_TOAST_KEYS.PARTIAL_CLOSE_SUCCESS;
+
       replacePerpsToastByKey({
-        key: PERPS_TOAST_KEYS.TRADE_SUCCESS,
+        key: successKey,
         ...(description ? { description } : {}),
       });
       onClose();
