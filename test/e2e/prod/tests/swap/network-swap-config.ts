@@ -41,6 +41,7 @@ export interface Token {
  * Swap quotation snapshot (values captured before/after token switch)
  */
 export interface QuotationSnapshot {
+  fromAmount: string;
   toAmount: string;
   networkFeeSponsored: string;
   slippageValue: string;

@@ -241,7 +241,7 @@ export async function performSwapFlow(
   // Step 2: Try clicking Swap from token details, fallback to homepage swap if missing
   console.log(`[HELPER] Step 2: Clicking Swap button`);
   let clickedSwap = false;
-  const swapSelectors: Array<string | { text: string; css: string }> = [
+  const swapSelectors: (string | { text: string; css: string })[] = [
     '[data-testid="eth-overview-swap"]',
     { text: 'Swap', css: '.icon-button' },
     '[aria-label="Swap"]',
@@ -272,19 +272,74 @@ export async function performSwapFlow(
   }
   await driver.delay(PROD_DELAYS.API_RESPONSE);
 
+  await configureSwapPairInCurrentSwapPage(driver, {
+    sourceTokenSymbol,
+    destinationTokenAddress,
+    destinationTokenSymbol,
+    fromAmount,
+  });
+
+  console.log(
+    `[HELPER] Swap flow completed: ${sourceTokenSymbol} → ${destinationTokenSymbol}`,
+  );
+}
+
+/**
+ * Configure source, destination, and amount while already on the swap page.
+ *
+ * @param driver - Playwright Driver instance
+ * @param options - Swap pair options to configure in current swap UI
+ * @param options.sourceTokenSymbol - Source token symbol to ensure selected
+ * @param options.destinationTokenAddress - Destination token address to search and select
+ * @param options.destinationTokenSymbol - Destination token symbol for logging
+ * @param options.fromAmount - Amount to fill in from-amount input
+ */
+export async function configureSwapPairInCurrentSwapPage(
+  driver: Driver,
+  options: {
+    sourceTokenSymbol: string;
+    destinationTokenAddress: string;
+    destinationTokenSymbol: string;
+    fromAmount?: number;
+  },
+): Promise<void> {
+  const {
+    sourceTokenSymbol,
+    destinationTokenAddress,
+    destinationTokenSymbol,
+    fromAmount = DEFAULT_SWAP_AMOUNT,
+  } = options;
+
   // Step 3: Ensure source token is selected in swap UI
   console.log(`[HELPER] Step 3: Selecting source token (${sourceTokenSymbol})`);
   const sourceButton = '[data-testid="bridge-source-button"]';
   const searchInput = '[data-testid="bridge-asset-picker-search-input"]';
-  const bridgeAsset = '[data-testid="bridge-asset"]';
+  // Note: actual data-testid format is `bridge-asset--{caipAssetId}` so we use ^= starts-with
+  const bridgeAsset = '[data-testid^="bridge-asset--"]';
 
   await driver.waitForSelector(sourceButton);
-  await driver.clickElement(sourceButton);
-  await driver.waitForSelector(searchInput);
-  await driver.fill(searchInput, sourceTokenSymbol);
-  await driver.waitForSelector({ css: bridgeAsset, text: sourceTokenSymbol });
-  await driver.clickElement({ css: bridgeAsset, text: sourceTokenSymbol });
-  await driver.delay(PROD_DELAYS.API_RESPONSE);
+
+  // Check if source token is already selected – skip picker if so
+  let sourceAlreadySelected = false;
+  try {
+    await driver.waitForSelector(
+      { css: sourceButton, text: sourceTokenSymbol },
+      { timeout: 3000 },
+    );
+    sourceAlreadySelected = true;
+    console.log(`[HELPER] Source token ${sourceTokenSymbol} already selected, skipping picker`);
+  } catch (_e) {
+    // Need to select it
+  }
+
+  if (!sourceAlreadySelected) {
+    await driver.clickElement(sourceButton);
+    await driver.waitForSelector(searchInput);
+    await driver.fill(searchInput, sourceTokenSymbol);
+    await driver.waitForSelector({ css: bridgeAsset, text: sourceTokenSymbol });
+    await driver.clickElement({ css: bridgeAsset, text: sourceTokenSymbol });
+    await driver.delay(PROD_DELAYS.API_RESPONSE);
+  }
 
   // Step 4: Click bridge-destination-button to open token selector
   console.log(`[HELPER] Step 4: Opening destination token selector`);
@@ -302,11 +357,27 @@ export async function performSwapFlow(
   await driver.fill(searchInput, destinationTokenAddress);
   await driver.delay(PROD_DELAYS.API_RESPONSE);
 
-  // Select the token from search results
+  // Select the token from search results.
+  // When searching by contract address, the UI may show an "Import tokens"
+  // button instead of a direct result if the token isn't whitelisted.
   console.log(`[HELPER] Selecting token from search results`);
-  const tokenOption = '[data-testid="bridge-asset"]';
-  await driver.waitForSelector(tokenOption);
-  await driver.clickElement(tokenOption);
+  const importButton = '[data-testid="import-tokens-import-button"]';
+
+  // ES2020-compatible alternative to Promise.any:
+  // check for import prompt briefly, then fall through to asset
+  let importPromptShown = false;
+  try {
+    await driver.waitForSelector(importButton, { timeout: 3000 });
+    importPromptShown = true;
+  } catch (_e) {
+    // No import prompt — token is directly available in results
+  }
+  if (importPromptShown) {
+    console.log(`[HELPER] Import token prompt detected, clicking import`);
+    await driver.clickElement(importButton);
+  }
+  await driver.waitForSelector(bridgeAsset);
+  await driver.clickElement(bridgeAsset);
   await driver.delay(PROD_DELAYS.API_RESPONSE);
 
   // Step 6: Fill from-amount
@@ -317,7 +388,7 @@ export async function performSwapFlow(
   await driver.delay(PROD_DELAYS.API_RESPONSE);
 
   console.log(
-    `[HELPER] Swap flow completed: ${sourceTokenSymbol} → ${destinationTokenSymbol}`,
+    `[HELPER] Swap page configured: ${sourceTokenSymbol} → ${destinationTokenSymbol}`,
   );
 }
 
@@ -341,6 +412,7 @@ export async function captureQuotationValues(
   console.log(`[HELPER] Capturing quotation values...`);
 
   const snapshot: QuotationSnapshot = {
+    fromAmount: '',
     toAmount: '',
     networkFeeSponsored: '',
     slippageValue: '',
@@ -350,57 +422,114 @@ export async function captureQuotationValues(
   };
 
   try {
-    // 1. Capture to-amount
-    const toAmountElement = '[data-testid="to-amount"]';
-      try {
-        const toAmountEl = await driver.findElement(toAmountElement);
-        snapshot.toAmount = await toAmountEl.getText();
-        console.log(`  [✓] to-amount: ${snapshot.toAmount}`);
-      } catch (e) {
-        console.warn(`  [⚠] to-amount not found`);
-      }
+    // 1. Capture exact from-amount via input value attribute
+    const fromAmountElement = '[data-testid="from-amount"]';
+    try {
+      const fromAmountEl = await driver.findElement(fromAmountElement);
+      snapshot.fromAmount = (await fromAmountEl.getAttribute('value')) || '';
+      console.log(`  [✓] from-amount(value): ${snapshot.fromAmount}`);
+    } catch (_e) {
+      console.warn(`  [⚠] from-amount not found`);
+    }
 
-    // 2. Capture network-fees-sponsored
-    const feesElement = '[data-testid="network-fees-sponsored"]';
-      try {
-        const feesEl = await driver.findElement(feesElement);
-        snapshot.networkFeeSponsored = await feesEl.getText();
+    // 2. Capture exact to-amount via input value attribute
+    const toAmountElement = '[data-testid="to-amount"]';
+    try {
+      const toAmountEl = await driver.findElement(toAmountElement);
+      snapshot.toAmount = (await toAmountEl.getAttribute('value')) || '';
+      console.log(`  [✓] to-amount(value): ${snapshot.toAmount}`);
+    } catch (_e) {
+      console.warn(`  [⚠] to-amount not found`);
+    }
+
+    // 3. Capture network fee using OR condition:
+    // Prefer sponsored label; fallback to actual network-fees value.
+    const feesSponsoredElement = '[data-testid="network-fees-sponsored"]';
+    const networkFeesElement = '[data-testid="network-fees"]';
+    try {
+      const feesSponsoredEl = await driver.findElement(feesSponsoredElement);
+      snapshot.networkFeeSponsored = (await feesSponsoredEl.getText()) || '';
+      if (snapshot.networkFeeSponsored) {
         console.log(
           `  [✓] network-fees-sponsored: ${snapshot.networkFeeSponsored}`,
         );
-      } catch (e) {
-        console.warn(`  [⚠] network-fees-sponsored not found`);
       }
-
-    // 3. Capture slippage value (XPath: //*[@data-testid="slippage-edit-button"]/../p)
-    const slippageXPath = '//*[@data-testid="slippage-edit-button"]/../p';
-    try {
-        const slippageEl = await driver.findElement(slippageXPath);
-        snapshot.slippageValue = await slippageEl.getText();
-        console.log(`  [✓] slippage-value: ${snapshot.slippageValue}`);
-    } catch (e) {
-      console.warn(`  [⚠] slippage-value not found at XPath`);
+    } catch (_e) {
+      // fallback below
     }
-
-    // 4. Capture price impact (XPath: //*[text()='Price impact']/../../div[2]/p)
-    const priceImpactXPath = `//*[text()='Price impact']/../../div[2]/p`;
-    try {
-        const priceEl = await driver.findElement(priceImpactXPath);
-        snapshot.priceImpact = await priceEl.getText();
-        console.log(`  [✓] price-impact: ${snapshot.priceImpact}`);
-    } catch (e) {
-      console.warn(`  [⚠] price-impact not found at XPath`);
-    }
-
-    // 5. Capture minimum-received
-    const minimumElement = '[data-testid="minimum-received"]';
+    if (!snapshot.networkFeeSponsored) {
       try {
-        const minimumEl = await driver.findElement(minimumElement);
-        snapshot.minimumReceived = await minimumEl.getText();
-        console.log(`  [✓] minimum-received: ${snapshot.minimumReceived}`);
-      } catch (e) {
-        console.warn(`  [⚠] minimum-received not found`);
+        const networkFeesEl = await driver.findElement(networkFeesElement);
+        snapshot.networkFeeSponsored = (await networkFeesEl.getText()) || '';
+        if (snapshot.networkFeeSponsored) {
+          console.log(`  [✓] network-fees: ${snapshot.networkFeeSponsored}`);
+        }
+      } catch (_e) {
+        console.warn(
+          `  [⚠] neither network-fees-sponsored nor network-fees was found`,
+        );
       }
+    }
+
+    // 4. Capture slippage value (e.g., "2%")
+    const slippageXpaths = [
+      // Closest percent text before the slippage edit button
+      '//*[@data-testid="slippage-edit-button"]/preceding::*[contains(@class,"mm-text") and contains(normalize-space(.), "%")][1]',
+      // Legacy structure fallback
+      '//*[@data-testid="slippage-edit-button"]/../p',
+    ];
+    for (const slippageXPath of slippageXpaths) {
+      try {
+        const slippageEl = await driver.findElement(slippageXPath);
+        const slippageText = (await slippageEl.getText()) || '';
+        const slippageMatch = slippageText.match(/\d+(?:\.\d+)?%/u);
+        snapshot.slippageValue = slippageMatch?.[0] || slippageText;
+        if (snapshot.slippageValue) {
+          console.log(`  [✓] slippage-value: ${snapshot.slippageValue}`);
+          break;
+        }
+      } catch (_e) {
+        // try next xpath
+      }
+    }
+    if (!snapshot.slippageValue) {
+      console.warn(`  [⚠] slippage-value not found`);
+    }
+
+    // 5. Capture price impact value (e.g., "0.86%")
+    const priceImpactXpaths = [
+      // Match translated/whitespace variants of "Price impact" and read nearest percent value after it
+      '//*[contains(normalize-space(.), "Price impact")]/following::*[contains(@class,"mm-text") and contains(normalize-space(.), "%")][1]',
+      // Legacy structure fallback
+      '//*[normalize-space(text())="Price impact"]/../../div[2]/p',
+    ];
+    for (const priceImpactXPath of priceImpactXpaths) {
+      try {
+        const priceEl = await driver.findElement(priceImpactXPath);
+        const priceText = (await priceEl.getText()) || '';
+        const priceMatch = priceText.match(/\d+(?:\.\d+)?%/u);
+        snapshot.priceImpact = priceMatch?.[0] || priceText;
+        if (snapshot.priceImpact) {
+          console.log(`  [✓] price-impact: ${snapshot.priceImpact}`);
+          break;
+        }
+      } catch (_e) {
+        // try next xpath
+      }
+    }
+    if (!snapshot.priceImpact) {
+      console.warn(`  [⚠] price-impact not found`);
+    }
+
+    // 6. Capture minimum-received
+    const minimumElement = '[data-testid="minimum-received"]';
+    try {
+      const minimumEl = await driver.findElement(minimumElement);
+      snapshot.minimumReceived = (await minimumEl.getText()) || '';
+      console.log(`  [✓] minimum-received: ${snapshot.minimumReceived}`);
+    } catch (_e) {
+      console.warn(`  [⚠] minimum-received not found`);
+    }
   } catch (error) {
     console.error(`[ERROR] Failed to capture quotation values:`, error);
     throw error;
@@ -441,19 +570,30 @@ export async function switchTokensAndCapture(
 /**
  * Navigate back to previous page (home/token details)
  *
- * Clicks the back button and waits for navigation
+ * Clicks the back button and waits for navigation.
+ * Returns true when a back click happened, false when no back button was found.
  * @param driver - Playwright Driver instance
+ * @param options - Optional timeout override for finding the back button
+ * @param options.timeout - Max wait for locating the back button
  */
-export async function navigateBack(driver: Driver): Promise<void> {
+export async function navigateBack(
+  driver: Driver,
+  options: { timeout?: number } = {},
+): Promise<boolean> {
+  const { timeout = 3000 } = options;
+
   console.log(`[HELPER] Navigating back...`);
   const backButton = '[aria-label="Back"]';
-  const backExists = await driver.findElement(backButton);
-  if (backExists) {
+
+  try {
+    await driver.findElement(backButton, timeout);
     await driver.clickElement(backButton);
     await driver.delay(PROD_DELAYS.API_RESPONSE);
     console.log(`[HELPER] Back navigation completed`);
-  } else {
+    return true;
+  } catch (_error) {
     console.warn(`[WARN] Back button not found`);
+    return false;
   }
 }
 
@@ -482,16 +622,37 @@ export async function generateQuotationReport(
   const reportName = `swap-quotations-${networkName}-${timestamp}.json`;
   const reportPath = path.join(
     process.cwd(),
-    'test-artifacts',
+    'test',
+    'e2e',
+    'prod',
+    'tests',
+    'swap',
     reportName,
   );
 
-  // Ensure test-artifacts directory exists
+  // Ensure report directory exists
   const artifactDir = path.dirname(reportPath);
   try {
     await fs.mkdir(artifactDir, { recursive: true });
   } catch (e) {
     // Directory might already exist
+  }
+
+  // Keep only the newest report by removing older swap-quotation JSON files.
+  try {
+    const existingFiles = await fs.readdir(artifactDir);
+    const staleReports = existingFiles.filter(
+      (fileName) =>
+        fileName.startsWith('swap-quotations-') &&
+        fileName.endsWith('.json') &&
+        fileName !== reportName,
+    );
+
+    await Promise.all(
+      staleReports.map((fileName) => fs.unlink(path.join(artifactDir, fileName))),
+    );
+  } catch (error) {
+    console.warn('[WARN] Failed to clean old swap quotation reports:', error);
   }
 
   // Calculate statistics
