@@ -40,6 +40,192 @@ import { CloseAmountSection } from '../order-entry';
 import { PERPS_TOAST_KEYS, usePerpsToast } from '../perps-toast';
 import type { Position } from '../types';
 
+type ClosePositionParams = {
+  symbol: string;
+  orderType: 'market';
+  currentPrice: number;
+  size?: string;
+};
+
+type CloseToastConfig = {
+  key: string;
+  description?: string;
+};
+
+type CloseToastTranslation = (key: string, vars?: unknown[]) => string;
+
+type FormatNumber = (
+  value: number,
+  options?: {
+    minimumFractionDigits?: number;
+    maximumFractionDigits?: number;
+  },
+) => string;
+
+type FormatCurrencyWithMinThreshold = (
+  value: number,
+  currency: string,
+) => string;
+
+type FormatPercentWithMinThreshold = (value: number) => string | undefined;
+
+const buildCloseRequestParams = ({
+  symbol,
+  currentPrice,
+  isPartialClose,
+  closeSize,
+}: {
+  symbol: string;
+  currentPrice: number;
+  isPartialClose: boolean;
+  closeSize: number;
+}): ClosePositionParams => {
+  if (!isPartialClose) {
+    return {
+      symbol,
+      orderType: 'market',
+      currentPrice,
+    };
+  }
+
+  return {
+    symbol,
+    orderType: 'market',
+    currentPrice,
+    size: closeSize.toString(),
+  };
+};
+
+const getPartialCloseDescription = ({
+  positionSize,
+  closeSize,
+  displayName,
+  t,
+  formatNumber,
+}: {
+  positionSize: string;
+  closeSize: number;
+  displayName: string;
+  t: CloseToastTranslation;
+  formatNumber: FormatNumber;
+}) => {
+  const directionLabel = t(
+    getPositionDirection(positionSize) === 'long' ? 'perpsLong' : 'perpsShort',
+  ).toLowerCase();
+
+  return t('perpsToastOrderPlacementSubtitle', [
+    directionLabel,
+    formatNumber(closeSize, {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 4,
+    }),
+    displayName,
+  ]);
+};
+
+const getCloseInProgressToastConfig = ({
+  isPartialClose,
+  positionSize,
+  closeSize,
+  displayName,
+  t,
+  formatNumber,
+}: {
+  isPartialClose: boolean;
+  positionSize: string;
+  closeSize: number;
+  displayName: string;
+  t: CloseToastTranslation;
+  formatNumber: FormatNumber;
+}): CloseToastConfig => {
+  if (!isPartialClose) {
+    return { key: PERPS_TOAST_KEYS.CLOSE_IN_PROGRESS };
+  }
+
+  return {
+    key: PERPS_TOAST_KEYS.PARTIAL_CLOSE_IN_PROGRESS,
+    description: getPartialCloseDescription({
+      positionSize,
+      closeSize,
+      displayName,
+      t,
+      formatNumber,
+    }),
+  };
+};
+
+const getCloseSuccessToastConfig = ({
+  isPartialClose,
+  position,
+  t,
+  formatPercentWithMinThreshold,
+}: {
+  isPartialClose: boolean;
+  position: Position;
+  t: CloseToastTranslation;
+  formatPercentWithMinThreshold: FormatPercentWithMinThreshold;
+}): CloseToastConfig => {
+  const pnlRatio = getPositionPnlRatio(position);
+  const formattedPnl =
+    pnlRatio !== undefined && !Number.isNaN(pnlRatio)
+      ? formatPercentWithMinThreshold(pnlRatio)
+      : undefined;
+
+  return {
+    key: isPartialClose
+      ? PERPS_TOAST_KEYS.PARTIAL_CLOSE_SUCCESS
+      : PERPS_TOAST_KEYS.TRADE_SUCCESS,
+    ...(formattedPnl
+      ? {
+          description: t('perpsToastClosePnlSubtitle', [formattedPnl]),
+        }
+      : {}),
+  };
+};
+
+const getCloseFailureToastConfig = ({
+  error,
+  isPartialClose,
+  t,
+  formatCurrencyWithMinThreshold,
+}: {
+  error: unknown;
+  isPartialClose: boolean;
+  t: CloseToastTranslation;
+  formatCurrencyWithMinThreshold: FormatCurrencyWithMinThreshold;
+}): { errorMessage: string; toast: CloseToastConfig } => {
+  const isOrderSizeMinError =
+    error instanceof Error && error.message === 'ORDER_SIZE_MIN';
+
+  let errorMessage = 'An unknown error occurred';
+
+  if (isOrderSizeMinError) {
+    errorMessage = t('perpsClosePartialMinNotional', [
+      formatCurrencyWithMinThreshold(PERPS_MIN_MARKET_ORDER_USD, 'USD'),
+    ]);
+  } else if (error instanceof Error) {
+    errorMessage = error.message;
+  }
+
+  if (isPartialClose) {
+    return {
+      errorMessage,
+      toast: {
+        key: PERPS_TOAST_KEYS.PARTIAL_CLOSE_FAILED,
+        description: t('perpsToastPositionStillActive'),
+      },
+    };
+  }
+
+  return {
+    errorMessage,
+    toast: {
+      key: PERPS_TOAST_KEYS.CLOSE_FAILED,
+      description: errorMessage,
+    },
+  };
+};
+
 export type ClosePositionModalProps = {
   isOpen: boolean;
   onClose: () => void;
@@ -140,105 +326,57 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
     setIsSubmitting(true);
     setError(null);
 
-    if (isPartialClose) {
-      const directionLabel = t(
-        getPositionDirection(position.size) === 'long'
-          ? 'perpsLong'
-          : 'perpsShort',
-      ).toLowerCase();
-      replacePerpsToastByKey({
-        key: PERPS_TOAST_KEYS.PARTIAL_CLOSE_IN_PROGRESS,
-        description: t('perpsToastOrderPlacementSubtitle', [
-          directionLabel,
-          formatNumber(closeSize, {
-            minimumFractionDigits: 0,
-            maximumFractionDigits: 4,
-          }),
-          displayName,
-        ]),
-      });
-    } else {
-      replacePerpsToastByKey({ key: PERPS_TOAST_KEYS.CLOSE_IN_PROGRESS });
-    }
+    replacePerpsToastByKey(
+      getCloseInProgressToastConfig({
+        isPartialClose,
+        positionSize: position.size,
+        closeSize,
+        displayName,
+        t,
+        formatNumber,
+      }),
+    );
 
     try {
-      const params: {
-        symbol: string;
-        orderType: 'market';
-        currentPrice: number;
-        size?: string;
-      } = {
-        symbol: position.symbol,
-        orderType: 'market',
-        currentPrice,
-      };
-
-      if (closePercent < 100) {
-        params.size = closeSize.toString();
-      }
-
       const result = await submitRequestToBackground<{
         success: boolean;
         error?: string;
-      }>('perpsClosePosition', [params]);
+      }>('perpsClosePosition', [
+        buildCloseRequestParams({
+          symbol: position.symbol,
+          currentPrice,
+          isPartialClose,
+          closeSize,
+        }),
+      ]);
       if (!result.success) {
         throw new Error(result.error || 'Failed to close position');
       }
 
-      // Build optional PnL subtitle for the success toast.
-      const pnlRatio = getPositionPnlRatio(position);
-      let description: string | undefined;
-      if (pnlRatio !== undefined && !Number.isNaN(pnlRatio)) {
-        const formattedPnl = formatPercentWithMinThreshold(pnlRatio);
-        if (formattedPnl) {
-          description = t('perpsToastClosePnlSubtitle', [formattedPnl]);
-        }
-      }
-
-      const successKey =
-        closePercent >= 100
-          ? PERPS_TOAST_KEYS.TRADE_SUCCESS
-          : PERPS_TOAST_KEYS.PARTIAL_CLOSE_SUCCESS;
-
-      replacePerpsToastByKey({
-        key: successKey,
-        ...(description ? { description } : {}),
-      });
+      replacePerpsToastByKey(
+        getCloseSuccessToastConfig({
+          isPartialClose,
+          position,
+          t,
+          formatPercentWithMinThreshold,
+        }),
+      );
       onClose();
     } catch (err) {
-      if (err instanceof Error && err.message === 'ORDER_SIZE_MIN') {
-        const minNotionalMsg = t('perpsClosePartialMinNotional', [
-          formatCurrencyWithMinThreshold(PERPS_MIN_MARKET_ORDER_USD, 'USD'),
-        ]);
-        setError(minNotionalMsg);
-        replacePerpsToastByKey({
-          key: isPartialClose
-            ? PERPS_TOAST_KEYS.PARTIAL_CLOSE_FAILED
-            : PERPS_TOAST_KEYS.CLOSE_FAILED,
-          description: isPartialClose
-            ? t('perpsToastPositionStillActive')
-            : minNotionalMsg,
-        });
-      } else {
-        const errorMsg =
-          err instanceof Error ? err.message : 'An unknown error occurred';
-        setError(errorMsg);
-        replacePerpsToastByKey({
-          key: isPartialClose
-            ? PERPS_TOAST_KEYS.PARTIAL_CLOSE_FAILED
-            : PERPS_TOAST_KEYS.CLOSE_FAILED,
-          description: isPartialClose
-            ? t('perpsToastPositionStillActive')
-            : errorMsg,
-        });
-      }
+      const { errorMessage, toast } = getCloseFailureToastConfig({
+        error: err,
+        isPartialClose,
+        t,
+        formatCurrencyWithMinThreshold,
+      });
+      setError(errorMessage);
+      replacePerpsToastByKey(toast);
     } finally {
       setIsSubmitting(false);
     }
   }, [
     isSubmitDisabled,
     position,
-    closePercent,
     closeSize,
     currentPrice,
     displayName,

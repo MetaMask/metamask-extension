@@ -326,7 +326,7 @@ describe('ReversePositionModal', () => {
     it('emits reverse in-progress toast on submit', () => {
       // Never resolve so we can assert the in-progress toast fires
       mockSubmitRequestToBackground.mockImplementation(
-        () => new Promise(() => {}),
+        () => new Promise(() => undefined),
       );
 
       renderWithProvider(<ReversePositionModal {...defaultProps} />, mockStore);
