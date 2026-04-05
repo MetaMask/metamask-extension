@@ -27,12 +27,13 @@ import {
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useFormatters } from '../../../../hooks/useFormatters';
 import { submitRequestToBackground } from '../../../../store/background-connection';
-import { getDisplayName } from '../utils';
+import { getDisplayName, getPositionPnlRatio } from '../utils';
 import {
   PERPS_MARKET_ORDER_FEE_RATE,
   PERPS_MIN_MARKET_ORDER_USD,
 } from '../constants';
 import { CloseAmountSection } from '../order-entry';
+import { PERPS_TOAST_KEYS, usePerpsToast } from '../perps-toast';
 import type { Position } from '../types';
 
 export type ClosePositionModalProps = {
@@ -49,7 +50,9 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
   currentPrice,
 }) => {
   const t = useI18nContext();
-  const { formatCurrencyWithMinThreshold } = useFormatters();
+  const { formatCurrencyWithMinThreshold, formatPercentWithMinThreshold } =
+    useFormatters();
+  const { replacePerpsToastByKey } = usePerpsToast();
 
   const [closePercent, setClosePercent] = useState(100);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -129,6 +132,8 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
     setIsSubmitting(true);
     setError(null);
 
+    replacePerpsToastByKey({ key: PERPS_TOAST_KEYS.CLOSE_IN_PROGRESS });
+
     try {
       const params: {
         symbol: string;
@@ -152,31 +157,55 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
       if (!result.success) {
         throw new Error(result.error || 'Failed to close position');
       }
+
+      // Build optional PnL subtitle for the success toast.
+      const pnlRatio = getPositionPnlRatio(position);
+      let description: string | undefined;
+      if (pnlRatio !== undefined && !Number.isNaN(pnlRatio)) {
+        const formattedPnl = formatPercentWithMinThreshold(pnlRatio);
+        if (formattedPnl) {
+          description = t('perpsToastClosePnlSubtitle', [formattedPnl]);
+        }
+      }
+
+      replacePerpsToastByKey({
+        key: PERPS_TOAST_KEYS.TRADE_SUCCESS,
+        ...(description ? { description } : {}),
+      });
       onClose();
     } catch (err) {
       if (err instanceof Error && err.message === 'ORDER_SIZE_MIN') {
-        setError(
-          t('perpsClosePartialMinNotional', [
-            formatCurrencyWithMinThreshold(PERPS_MIN_MARKET_ORDER_USD, 'USD'),
-          ]),
-        );
+        const minNotionalMsg = t('perpsClosePartialMinNotional', [
+          formatCurrencyWithMinThreshold(PERPS_MIN_MARKET_ORDER_USD, 'USD'),
+        ]);
+        setError(minNotionalMsg);
+        replacePerpsToastByKey({
+          key: PERPS_TOAST_KEYS.CLOSE_FAILED,
+          description: minNotionalMsg,
+        });
       } else {
-        setError(
-          err instanceof Error ? err.message : 'An unknown error occurred',
-        );
+        const errorMsg =
+          err instanceof Error ? err.message : 'An unknown error occurred';
+        setError(errorMsg);
+        replacePerpsToastByKey({
+          key: PERPS_TOAST_KEYS.CLOSE_FAILED,
+          description: errorMsg,
+        });
       }
     } finally {
       setIsSubmitting(false);
     }
   }, [
     isSubmitDisabled,
-    position.symbol,
+    position,
     closePercent,
     closeSize,
     currentPrice,
     onClose,
     t,
     formatCurrencyWithMinThreshold,
+    formatPercentWithMinThreshold,
+    replacePerpsToastByKey,
   ]);
 
   const handlePercentChange = useCallback((percent: number) => {
