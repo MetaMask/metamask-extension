@@ -1,9 +1,4 @@
-import {
-  Category,
-  ErrorCode,
-  HardwareWalletError,
-  Severity,
-} from '@metamask/hw-wallet-sdk';
+import { ErrorCode, HardwareWalletError } from '@metamask/hw-wallet-sdk';
 import { CameraPermissionState } from '../constants';
 import { DeviceEvent, type HardwareWalletAdapterOptions } from '../types';
 import * as webConnectionUtils from '../webConnectionUtils';
@@ -97,13 +92,9 @@ describe('QrAdapter', () => {
   });
 
   it('maps unexpected errors to hardware wallet errors and emits device event', async () => {
-    const unknownError = new HardwareWalletError('Unknown error', {
-      code: ErrorCode.Unknown,
-      severity: Severity.Err,
-      category: Category.Unknown,
-      userMessage: 'Unknown',
-    });
-    mockCheckCameraPermission.mockRejectedValue(unknownError);
+    mockCheckCameraPermission.mockRejectedValue(
+      new Error('Unable to read camera permission'),
+    );
 
     await expect(adapter.ensureDeviceReady()).rejects.toThrow(
       HardwareWalletError,
@@ -112,7 +103,9 @@ describe('QrAdapter', () => {
     expect(mockOptions.onDeviceEvent).toHaveBeenCalledWith(
       expect.objectContaining({
         event: DeviceEvent.ConnectionFailed,
-        error: expect.any(HardwareWalletError),
+        error: expect.objectContaining({
+          code: ErrorCode.Unknown,
+        }),
       }),
     );
   });

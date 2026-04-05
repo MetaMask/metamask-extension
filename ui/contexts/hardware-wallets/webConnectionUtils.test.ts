@@ -305,6 +305,14 @@ describe('webConnectionUtils', () => {
       expect(isCameraAvailable()).toBe(true);
     });
 
+    it('returns false when window is undefined', () => {
+      setupUndefinedWindow();
+
+      expect(isCameraAvailable()).toBe(false);
+
+      restoreWindow();
+    });
+
     it('returns false when mediaDevices is not available', () => {
       Object.defineProperty(window.navigator, 'mediaDevices', {
         value: undefined,
@@ -382,6 +390,10 @@ describe('webConnectionUtils', () => {
     });
 
     it('checkCameraPermission returns prompt when permissions API is unavailable', async () => {
+      // Camera capture APIs must remain available; otherwise isCameraAvailable() short-circuits
+      // to denied and this test would not exercise the permissions branch.
+      expect(isCameraAvailable()).toBe(true);
+
       Object.defineProperty(window.navigator, 'permissions', {
         value: undefined,
         writable: true,
@@ -390,6 +402,48 @@ describe('webConnectionUtils', () => {
 
       await expect(checkCameraPermission()).resolves.toBe(
         CameraPermissionState.Prompt,
+      );
+    });
+
+    it('checkCameraPermission returns prompt when permissions.query is missing', async () => {
+      expect(isCameraAvailable()).toBe(true);
+
+      Object.defineProperty(window.navigator, 'permissions', {
+        value: {},
+        writable: true,
+        configurable: true,
+      });
+
+      await expect(checkCameraPermission()).resolves.toBe(
+        CameraPermissionState.Prompt,
+      );
+    });
+
+    it('checkCameraPermissionState returns Prompt when permissions API is unavailable', async () => {
+      expect(isCameraAvailable()).toBe(true);
+
+      Object.defineProperty(window.navigator, 'permissions', {
+        value: undefined,
+        writable: true,
+        configurable: true,
+      });
+
+      await expect(checkCameraPermissionState()).resolves.toBe(
+        HardwareConnectionPermissionState.Prompt,
+      );
+    });
+
+    it('checkCameraPermission returns denied when camera APIs are unavailable', async () => {
+      Object.defineProperty(window.navigator, 'mediaDevices', {
+        value: undefined,
+        writable: true,
+        configurable: true,
+      });
+
+      expect(isCameraAvailable()).toBe(false);
+
+      await expect(checkCameraPermission()).resolves.toBe(
+        CameraPermissionState.Denied,
       );
     });
 
