@@ -1,5 +1,5 @@
 import React from 'react';
-import { screen, waitFor, within } from '@testing-library/react';
+import { fireEvent, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../../store/store';
@@ -23,6 +23,8 @@ jest.mock('../perps-toast', () => ({
   PERPS_TOAST_KEYS: {
     CLOSE_FAILED: 'perpsToastCloseFailed',
     CLOSE_IN_PROGRESS: 'perpsToastCloseInProgress',
+    PARTIAL_CLOSE_FAILED: 'perpsToastPartialCloseFailed',
+    PARTIAL_CLOSE_IN_PROGRESS: 'perpsToastPartialCloseInProgress',
     PARTIAL_CLOSE_SUCCESS: 'perpsToastPartialCloseSuccess',
     TRADE_SUCCESS: 'perpsToastTradeSuccess',
   },
@@ -114,10 +116,11 @@ describe('ClosePositionModal', () => {
   });
 
   describe('toast emission', () => {
-    it('emits close in-progress toast on submit', async () => {
-      const user = userEvent.setup();
+    it('emits close in-progress toast on full close submit', async () => {
       // Delay resolution so we can assert the in-progress toast fires first
-      mockSubmitRequestToBackground.mockReturnValue(new Promise(() => {}));
+      mockSubmitRequestToBackground.mockReturnValue(
+        new Promise(() => undefined),
+      );
 
       renderWithProvider(
         <ClosePositionModal
@@ -129,15 +132,17 @@ describe('ClosePositionModal', () => {
         mockStore,
       );
 
-      await user.click(screen.getByTestId('perps-close-position-modal-submit'));
+      fireEvent.click(screen.getByTestId('perps-close-position-modal-submit'));
 
       expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
         key: 'perpsToastCloseInProgress',
       });
     });
 
-    it('emits trade success toast on full close (100%)', async () => {
-      const user = userEvent.setup();
+    it('emits partial close in-progress toast with position subtitle', async () => {
+      mockSubmitRequestToBackground.mockReturnValue(
+        new Promise(() => undefined),
+      );
 
       renderWithProvider(
         <ClosePositionModal
@@ -149,7 +154,34 @@ describe('ClosePositionModal', () => {
         mockStore,
       );
 
-      await user.click(screen.getByTestId('perps-close-position-modal-submit'));
+      const slider = within(
+        screen.getByTestId('close-amount-slider'),
+      ).getByRole('slider');
+      slider.focus();
+      fireEvent.keyDown(slider, { key: 'ArrowLeft' });
+
+      fireEvent.click(screen.getByTestId('perps-close-position-modal-submit'));
+
+      expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith(
+        expect.objectContaining({
+          key: 'perpsToastPartialCloseInProgress',
+          description: expect.stringMatching(/long .* ETH/u),
+        }),
+      );
+    });
+
+    it('emits trade success toast on full close (100%)', async () => {
+      renderWithProvider(
+        <ClosePositionModal
+          isOpen
+          onClose={jest.fn()}
+          position={basePosition}
+          currentPrice={2900}
+        />,
+        mockStore,
+      );
+
+      fireEvent.click(screen.getByTestId('perps-close-position-modal-submit'));
 
       await waitFor(() => {
         expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith(
@@ -159,8 +191,6 @@ describe('ClosePositionModal', () => {
     });
 
     it('includes the PnL subtitle when computable', async () => {
-      const user = userEvent.setup();
-
       renderWithProvider(
         <ClosePositionModal
           isOpen
@@ -171,7 +201,7 @@ describe('ClosePositionModal', () => {
         mockStore,
       );
 
-      await user.click(screen.getByTestId('perps-close-position-modal-submit'));
+      fireEvent.click(screen.getByTestId('perps-close-position-modal-submit'));
 
       await waitFor(() => {
         const successCall = mockReplacePerpsToastByKey.mock.calls.find(
@@ -183,8 +213,6 @@ describe('ClosePositionModal', () => {
     });
 
     it('emits partial close success toast when closePercent < 100', async () => {
-      const user = userEvent.setup();
-
       renderWithProvider(
         <ClosePositionModal
           isOpen
@@ -200,9 +228,9 @@ describe('ClosePositionModal', () => {
         screen.getByTestId('close-amount-slider'),
       ).getByRole('slider');
       slider.focus();
-      await user.keyboard('{ArrowLeft}');
+      fireEvent.keyDown(slider, { key: 'ArrowLeft' });
 
-      await user.click(screen.getByTestId('perps-close-position-modal-submit'));
+      fireEvent.click(screen.getByTestId('perps-close-position-modal-submit'));
 
       await waitFor(() => {
         expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith(
@@ -214,8 +242,6 @@ describe('ClosePositionModal', () => {
     });
 
     it('does not emit trade success toast on partial close', async () => {
-      const user = userEvent.setup();
-
       renderWithProvider(
         <ClosePositionModal
           isOpen
@@ -230,9 +256,9 @@ describe('ClosePositionModal', () => {
         screen.getByTestId('close-amount-slider'),
       ).getByRole('slider');
       slider.focus();
-      await user.keyboard('{ArrowLeft}');
+      fireEvent.keyDown(slider, { key: 'ArrowLeft' });
 
-      await user.click(screen.getByTestId('perps-close-position-modal-submit'));
+      fireEvent.click(screen.getByTestId('perps-close-position-modal-submit'));
 
       await waitFor(() => {
         expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith(
@@ -250,8 +276,6 @@ describe('ClosePositionModal', () => {
     });
 
     it('includes PnL subtitle on partial close when computable', async () => {
-      const user = userEvent.setup();
-
       renderWithProvider(
         <ClosePositionModal
           isOpen
@@ -266,9 +290,9 @@ describe('ClosePositionModal', () => {
         screen.getByTestId('close-amount-slider'),
       ).getByRole('slider');
       slider.focus();
-      await user.keyboard('{ArrowLeft}');
+      fireEvent.keyDown(slider, { key: 'ArrowLeft' });
 
-      await user.click(screen.getByTestId('perps-close-position-modal-submit'));
+      fireEvent.click(screen.getByTestId('perps-close-position-modal-submit'));
 
       await waitFor(() => {
         const successCall = mockReplacePerpsToastByKey.mock.calls.find(
@@ -280,8 +304,7 @@ describe('ClosePositionModal', () => {
       });
     });
 
-    it('emits close failed toast on background failure', async () => {
-      const user = userEvent.setup();
+    it('emits close failed toast on full close background failure', async () => {
       mockSubmitRequestToBackground.mockResolvedValue({
         success: false,
         error: 'Insufficient balance',
@@ -297,7 +320,7 @@ describe('ClosePositionModal', () => {
         mockStore,
       );
 
-      await user.click(screen.getByTestId('perps-close-position-modal-submit'));
+      fireEvent.click(screen.getByTestId('perps-close-position-modal-submit'));
 
       await waitFor(() => {
         expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
@@ -307,8 +330,39 @@ describe('ClosePositionModal', () => {
       });
     });
 
-    it('emits localized min-notional failure description for ORDER_SIZE_MIN', async () => {
-      const user = userEvent.setup();
+    it('emits partial close failed toast with active-position subtitle', async () => {
+      mockSubmitRequestToBackground.mockResolvedValue({
+        success: false,
+        error: 'Insufficient balance',
+      });
+
+      renderWithProvider(
+        <ClosePositionModal
+          isOpen
+          onClose={jest.fn()}
+          position={basePosition}
+          currentPrice={2900}
+        />,
+        mockStore,
+      );
+
+      const slider = within(
+        screen.getByTestId('close-amount-slider'),
+      ).getByRole('slider');
+      slider.focus();
+      fireEvent.keyDown(slider, { key: 'ArrowLeft' });
+
+      fireEvent.click(screen.getByTestId('perps-close-position-modal-submit'));
+
+      await waitFor(() => {
+        expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
+          key: 'perpsToastPartialCloseFailed',
+          description: 'Your position is still active',
+        });
+      });
+    });
+
+    it('emits localized min-notional failure description for full-close ORDER_SIZE_MIN', async () => {
       mockSubmitRequestToBackground.mockRejectedValue(
         new Error('ORDER_SIZE_MIN'),
       );
@@ -323,7 +377,7 @@ describe('ClosePositionModal', () => {
         mockStore,
       );
 
-      await user.click(screen.getByTestId('perps-close-position-modal-submit'));
+      fireEvent.click(screen.getByTestId('perps-close-position-modal-submit'));
 
       await waitFor(() => {
         expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith(
@@ -332,6 +386,37 @@ describe('ClosePositionModal', () => {
             description: expect.stringMatching(PARTIAL_MIN_NOTIONAL_PATTERN),
           }),
         );
+      });
+    });
+
+    it('emits active-position subtitle for partial-close ORDER_SIZE_MIN', async () => {
+      mockSubmitRequestToBackground.mockRejectedValue(
+        new Error('ORDER_SIZE_MIN'),
+      );
+
+      renderWithProvider(
+        <ClosePositionModal
+          isOpen
+          onClose={jest.fn()}
+          position={basePosition}
+          currentPrice={2900}
+        />,
+        mockStore,
+      );
+
+      const slider = within(
+        screen.getByTestId('close-amount-slider'),
+      ).getByRole('slider');
+      slider.focus();
+      fireEvent.keyDown(slider, { key: 'ArrowLeft' });
+
+      fireEvent.click(screen.getByTestId('perps-close-position-modal-submit'));
+
+      await waitFor(() => {
+        expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
+          key: 'perpsToastPartialCloseFailed',
+          description: 'Your position is still active',
+        });
       });
     });
   });

@@ -27,7 +27,11 @@ import {
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useFormatters } from '../../../../hooks/useFormatters';
 import { submitRequestToBackground } from '../../../../store/background-connection';
-import { getDisplayName, getPositionPnlRatio } from '../utils';
+import {
+  getDisplayName,
+  getPositionDirection,
+  getPositionPnlRatio,
+} from '../utils';
 import {
   PERPS_MARKET_ORDER_FEE_RATE,
   PERPS_MIN_MARKET_ORDER_USD,
@@ -50,8 +54,11 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
   currentPrice,
 }) => {
   const t = useI18nContext();
-  const { formatCurrencyWithMinThreshold, formatPercentWithMinThreshold } =
-    useFormatters();
+  const {
+    formatCurrencyWithMinThreshold,
+    formatNumber,
+    formatPercentWithMinThreshold,
+  } = useFormatters();
   const { replacePerpsToastByKey } = usePerpsToast();
 
   const [closePercent, setClosePercent] = useState(100);
@@ -67,6 +74,7 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
   }, [isOpen]);
 
   const displayName = getDisplayName(position.symbol);
+  const isPartialClose = closePercent < 100;
 
   const positionSize = useMemo(
     () => Math.abs(parseFloat(position.size)) || 0,
@@ -132,7 +140,26 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
     setIsSubmitting(true);
     setError(null);
 
-    replacePerpsToastByKey({ key: PERPS_TOAST_KEYS.CLOSE_IN_PROGRESS });
+    if (isPartialClose) {
+      const directionLabel = t(
+        getPositionDirection(position.size) === 'long'
+          ? 'perpsLong'
+          : 'perpsShort',
+      ).toLowerCase();
+      replacePerpsToastByKey({
+        key: PERPS_TOAST_KEYS.PARTIAL_CLOSE_IN_PROGRESS,
+        description: t('perpsToastOrderPlacementSubtitle', [
+          directionLabel,
+          formatNumber(closeSize, {
+            minimumFractionDigits: 0,
+            maximumFractionDigits: 4,
+          }),
+          displayName,
+        ]),
+      });
+    } else {
+      replacePerpsToastByKey({ key: PERPS_TOAST_KEYS.CLOSE_IN_PROGRESS });
+    }
 
     try {
       const params: {
@@ -185,16 +212,24 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
         ]);
         setError(minNotionalMsg);
         replacePerpsToastByKey({
-          key: PERPS_TOAST_KEYS.CLOSE_FAILED,
-          description: minNotionalMsg,
+          key: isPartialClose
+            ? PERPS_TOAST_KEYS.PARTIAL_CLOSE_FAILED
+            : PERPS_TOAST_KEYS.CLOSE_FAILED,
+          description: isPartialClose
+            ? t('perpsToastPositionStillActive')
+            : minNotionalMsg,
         });
       } else {
         const errorMsg =
           err instanceof Error ? err.message : 'An unknown error occurred';
         setError(errorMsg);
         replacePerpsToastByKey({
-          key: PERPS_TOAST_KEYS.CLOSE_FAILED,
-          description: errorMsg,
+          key: isPartialClose
+            ? PERPS_TOAST_KEYS.PARTIAL_CLOSE_FAILED
+            : PERPS_TOAST_KEYS.CLOSE_FAILED,
+          description: isPartialClose
+            ? t('perpsToastPositionStillActive')
+            : errorMsg,
         });
       }
     } finally {
@@ -206,6 +241,9 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
     closePercent,
     closeSize,
     currentPrice,
+    displayName,
+    formatNumber,
+    isPartialClose,
     onClose,
     t,
     formatCurrencyWithMinThreshold,
