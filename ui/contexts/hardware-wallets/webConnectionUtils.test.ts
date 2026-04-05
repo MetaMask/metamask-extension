@@ -393,6 +393,22 @@ describe('webConnectionUtils', () => {
       );
     });
 
+    it('checkCameraPermissionState returns Unknown when permissions.query rejects', async () => {
+      getMockedPermissions().query.mockRejectedValue(new Error('query failed'));
+
+      await expect(checkCameraPermissionState()).resolves.toBe(
+        HardwareConnectionPermissionState.Unknown,
+      );
+    });
+
+    it('checkCameraPermission rejects when permissions.query rejects', async () => {
+      getMockedPermissions().query.mockRejectedValue(new Error('query failed'));
+
+      await expect(checkCameraPermission()).rejects.toThrow(
+        'Unable to determine camera permission state',
+      );
+    });
+
     it('requestCameraPermission returns true and closes stream tracks on success', async () => {
       const stop = jest.fn();
       const mockTrack = { stop } as unknown as MediaStreamTrack;

@@ -39,6 +39,34 @@ export function isCameraAvailable(): boolean {
   );
 }
 
+/** Message for the error thrown by {@link checkCameraPermission} when the probe fails. */
+const CAMERA_PERMISSION_PROBE_FAILED_MESSAGE =
+  'Unable to determine camera permission state';
+
+/**
+ * Shared probe for the browser camera permission. Returns `null` when
+ * `permissions.query` throws so callers can map to `Unknown` vs surface an error.
+ */
+async function queryCameraPermissionDomState(): Promise<PermissionState | null> {
+  if (!isCameraAvailable()) {
+    return CameraPermissionState.Denied;
+  }
+
+  try {
+    const { permissions } = window.navigator;
+    if (!permissions?.query) {
+      return CameraPermissionState.Prompt;
+    }
+
+    const result = await permissions.query({
+      name: 'camera' as PermissionName,
+    });
+    return result.state;
+  } catch {
+    return null;
+  }
+}
+
 /**
  * Check if a device matches the vendor filters for a specific hardware wallet type
  *
@@ -105,33 +133,21 @@ export async function checkHardwareWalletPermission(
 }
 
 /**
- * Check camera permission state.
+ * Check camera permission state for hardware-wallet permission UI.
  */
 export async function checkCameraPermissionState(): Promise<HardwareConnectionPermissionState> {
-  if (!isCameraAvailable()) {
-    return HardwareConnectionPermissionState.Denied;
+  const domState = await queryCameraPermissionDomState();
+  if (domState === null) {
+    return HardwareConnectionPermissionState.Unknown;
   }
 
-  try {
-    const { permissions } = window.navigator;
-    if (!permissions?.query) {
+  switch (domState) {
+    case CameraPermissionState.Granted:
+      return HardwareConnectionPermissionState.Granted;
+    case CameraPermissionState.Denied:
+      return HardwareConnectionPermissionState.Denied;
+    default:
       return HardwareConnectionPermissionState.Prompt;
-    }
-
-    const result = await permissions.query({
-      name: 'camera' as PermissionName,
-    });
-
-    switch (result.state) {
-      case CameraPermissionState.Granted:
-        return HardwareConnectionPermissionState.Granted;
-      case CameraPermissionState.Denied:
-        return HardwareConnectionPermissionState.Denied;
-      default:
-        return HardwareConnectionPermissionState.Prompt;
-    }
-  } catch {
-    return HardwareConnectionPermissionState.Unknown;
   }
 }
 
@@ -239,26 +255,17 @@ export async function requestCameraPermission(): Promise<boolean> {
 }
 
 /**
- * Return browser camera permission state.
+ * Return browser camera permission state for adapter readiness checks.
+ *
+ * @throws {Error} When the permission probe fails (equivalent to
+ * `HardwareConnectionPermissionState.Unknown` from `checkCameraPermissionState`).
  */
 export async function checkCameraPermission(): Promise<PermissionState> {
-  if (!isCameraAvailable()) {
-    return CameraPermissionState.Denied;
+  const domState = await queryCameraPermissionDomState();
+  if (domState === null) {
+    throw new Error(CAMERA_PERMISSION_PROBE_FAILED_MESSAGE);
   }
-
-  try {
-    const { permissions } = window.navigator;
-    if (!permissions?.query) {
-      return CameraPermissionState.Prompt;
-    }
-
-    const result = await permissions.query({
-      name: 'camera' as PermissionName,
-    });
-    return result.state;
-  } catch {
-    return CameraPermissionState.Prompt;
-  }
+  return domState;
 }
 
 /**
