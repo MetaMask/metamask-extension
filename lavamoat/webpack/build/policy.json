@@ -923,6 +923,13 @@
         "Buffer": true
       }
     },
+    "yazl>buffer-crc32": {
+      "globals": {
+        "Buffer.alloc": true,
+        "Buffer.from": true,
+        "Buffer.isBuffer": true
+      }
+    },
     "terser>source-map-support>buffer-from": {
       "globals": {
         "Buffer": true
@@ -1632,20 +1639,6 @@
       },
       "packages": {
         "copy-webpack-plugin>tinyglobby>picomatch": true
-      }
-    },
-    "fflate": {
-      "builtin": {
-        "worker_threads.Worker": true
-      },
-      "globals": {
-        "TextDecoder": true,
-        "TextEncoder": true,
-        "onmessage": "write",
-        "postMessage": true,
-        "queueMicrotask": true,
-        "setImmediate": true,
-        "setTimeout": true
       }
     },
     "chokidar>braces>fill-range": {
@@ -3698,6 +3691,27 @@
       },
       "globals": {
         "process": true
+      }
+    },
+    "yazl": {
+      "builtin": {
+        "events.EventEmitter": true,
+        "events.errorMonitor": true,
+        "fs.createReadStream": true,
+        "fs.stat": true,
+        "stream.PassThrough": true,
+        "stream.Transform": true,
+        "util.inherits": true,
+        "zlib.DeflateRaw": true,
+        "zlib.deflateRaw": true
+      },
+      "globals": {
+        "Buffer": true,
+        "setImmediate": true,
+        "utf8FileName.length": true
+      },
+      "packages": {
+        "yazl>buffer-crc32": true
       }
     }
   }

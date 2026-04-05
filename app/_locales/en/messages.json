@@ -69,6 +69,9 @@
   "about": {
     "message": "About"
   },
+  "aboutMetaMask": {
+    "message": "About MetaMask"
+  },
   "accept": {
     "message": "Accept"
   },
@@ -398,9 +401,6 @@
   "advanced": {
     "message": "Advanced"
   },
-  "advancedBaseGasFeeToolTip": {
-    "message": "When your transaction gets included in the block, any difference between your max base fee and the actual base fee will be refunded. Total amount is calculated as max base fee (in GWEI) * gas limit."
-  },
   "advancedDetailsDataDesc": {
     "message": "Data"
   },
@@ -416,10 +416,6 @@
   "advancedEIP1559ModalTitle": {
     "message": "Advanced network fee"
   },
-  "advancedGasFeeDefaultOptIn": {
-    "message": "Save these values as my default for the $1 network.",
-    "description": "$1 is the current network name."
-  },
   "advancedGasPriceModalTitle": {
     "message": "Advanced network fee"
   },
@@ -431,9 +427,6 @@
   },
   "advancedPermissionsSmallCase": {
     "message": "advanced permissions"
-  },
-  "advancedPriorityFeeToolTip": {
-    "message": "Priority fee (aka “miner tip”) goes directly to miners and incentivizes them to prioritize your transaction."
   },
   "airDropPatternDescription": {
     "message": "The token's on-chain history reveals prior instances of suspicious airdrop activities."
@@ -1354,9 +1347,6 @@
   "cancel": {
     "message": "Cancel"
   },
-  "cancelPopoverTitle": {
-    "message": "Cancel transaction"
-  },
   "cancelTransactionDescription": {
     "message": "This transaction will be canceled and this network fee will replace the original."
   },
@@ -1433,7 +1423,7 @@
     "message": "Clear activity tab data"
   },
   "clearActivityDescription": {
-    "message": "This resets the account's nonce and erases data from the activity tab in your wallet. Only the current account and network will be affected. Your balances and incoming transactions won't change."
+    "message": "Resets the account's nonce and erases data from the activity tab in your wallet. Only the current account and network will be affected. Your balances and incoming transactions won't change."
   },
   "clearFilters": {
     "message": "Clear filters"
@@ -2008,9 +1998,6 @@
   "currentQuestion": {
     "message": "Question $1 of 2"
   },
-  "currentTitle": {
-    "message": "Current:"
-  },
   "currentlyUnavailable": {
     "message": "Unavailable on this network"
   },
@@ -2070,12 +2057,6 @@
   "dappSuggestedHigh": {
     "message": "Site suggested"
   },
-  "dappSuggestedHighShortLabel": {
-    "message": "Site (high)"
-  },
-  "dappSuggestedShortLabel": {
-    "message": "Site"
-  },
   "dappSwapAdvantage": {
     "message": "Save and earn with MetaMask Swaps"
   },
@@ -2126,6 +2107,9 @@
   },
   "debitCreditPurchaseOptions": {
     "message": "Debit or credit card purchase options"
+  },
+  "debug": {
+    "message": "Debug"
   },
   "decimal": {
     "message": "Token decimal"
@@ -2285,6 +2269,9 @@
   "delete": {
     "message": "Delete"
   },
+  "deleteActivityAndNonceData": {
+    "message": "Delete activity and nonce data"
+  },
   "deleteMetaMetricsData": {
     "message": "Delete MetaMetrics data"
   },
@@ -2366,6 +2353,9 @@
   "developerOptions": {
     "message": "Developer options"
   },
+  "developerTools": {
+    "message": "Developer tools"
+  },
   "disabledGasOptionToolTipMessage": {
     "message": "“$1” is disabled because it does not meet the minimum of a 10% increase from the original gas fee.",
     "description": "$1 is gas estimate type which can be market or aggressive"
@@ -2445,9 +2435,6 @@
   },
   "dontShowThisAgain": {
     "message": "Don't show this again"
-  },
-  "downArrow": {
-    "message": "down arrow"
   },
   "download": {
     "message": "Download"
@@ -2541,22 +2528,6 @@
   "editGasLimitOutOfBounds": {
     "message": "Gas limit must be at least $1"
   },
-  "editGasLimitOutOfBoundsV2": {
-    "message": "Gas limit must be greater than $1 and less than $2",
-    "description": "$1 is the minimum limit for gas and $2 is the maximum limit"
-  },
-  "editGasLimitTooltip": {
-    "message": "Gas limit is the maximum units of gas you are willing to use. Units of gas are a multiplier to “Max priority fee” and “Max fee”."
-  },
-  "editGasMaxBaseFeeGWEIImbalance": {
-    "message": "Max base fee cannot be lower than priority fee"
-  },
-  "editGasMaxBaseFeeHigh": {
-    "message": "Max base fee is higher than necessary"
-  },
-  "editGasMaxBaseFeeLow": {
-    "message": "Max base fee is low for current network conditions"
-  },
   "editGasMaxFeeHigh": {
     "message": "Max fee is higher than necessary"
   },
@@ -2569,29 +2540,14 @@
   "editGasMaxPriorityFeeBelowMinimum": {
     "message": "Max priority fee must be greater than 0 GWEI"
   },
-  "editGasMaxPriorityFeeBelowMinimumV2": {
-    "message": "Priority fee must be greater than 0."
-  },
   "editGasMaxPriorityFeeHigh": {
     "message": "Max priority fee is higher than necessary. You may pay more than needed."
-  },
-  "editGasMaxPriorityFeeHighV2": {
-    "message": "Priority fee is higher than necessary. You may pay more than needed"
   },
   "editGasMaxPriorityFeeLow": {
     "message": "Max priority fee is low for current network conditions"
   },
-  "editGasMaxPriorityFeeLowV2": {
-    "message": "Priority fee is low for current network conditions"
-  },
   "editGasPriceTooLow": {
     "message": "Gas price must be greater than 0"
-  },
-  "editGasPriceTooltip": {
-    "message": "This network requires a “Gas price” field when submitting a transaction. Gas price is the amount you will pay pay per unit of gas."
-  },
-  "editGasTitle": {
-    "message": "Edit priority"
   },
   "editGasTooLow": {
     "message": "Unknown processing time"
@@ -3005,24 +2961,11 @@
   "gas": {
     "message": "Gas"
   },
-  "gasDisplayAcknowledgeDappButtonText": {
-    "message": "Edit suggested gas fee"
-  },
-  "gasDisplayDappWarning": {
-    "message": "This gas fee has been suggested by $1. Overriding this may cause a problem with your transaction. Please reach out to $1 if you have questions.",
-    "description": "$1 represents the Dapp's origin"
-  },
   "gasLimit": {
     "message": "Gas limit"
   },
-  "gasLimitRecommended": {
-    "message": "Recommended gas limit is $1. If the gas limit is less than that, it may fail."
-  },
   "gasLimitTooLow": {
     "message": "Gas limit must be at least 21000"
-  },
-  "gasLimitV2": {
-    "message": "Gas limit"
   },
   "gasPrice": {
     "message": "Gas price"
@@ -3239,6 +3182,10 @@
   "hardwareWalletLegacyDescription": {
     "message": "(legacy)",
     "description": "Text representing the MEW path"
+  },
+  "hardwareWalletLookingForDevice": {
+    "message": "Looking for your $1...",
+    "description": "$1 is the hardware wallet type"
   },
   "hardwareWalletSubmissionWarningStep1": {
     "message": "Be sure your $1 is plugged in and to select the Ethereum app."
@@ -3784,9 +3731,6 @@
     "message": "The ledger device was not connected. If you wish to connect your Ledger, please click 'Continue' again and approve HID connection",
     "description": "An error message shown to the user during the hardware connect flow."
   },
-  "levelArrow": {
-    "message": "level arrow"
-  },
   "lightTheme": {
     "message": "Light"
   },
@@ -4082,6 +4026,9 @@
   "moreAccounts": {
     "message": "+ $1 more accounts",
     "description": "$1 is the number of accounts"
+  },
+  "moreCapital": {
+    "message": "More"
   },
   "moreNetworks": {
     "message": "+ $1 more networks",
@@ -5469,10 +5416,16 @@
     "description": "is the available balance amount"
   },
   "perpsAvailableBalance": {
-    "message": "Available balance"
+    "message": "Available Perps balance: "
+  },
+  "perpsAvailableToAdd": {
+    "message": "Available to add"
   },
   "perpsAvailableToClose": {
     "message": "Available to close"
+  },
+  "perpsAvailableToSubtract": {
+    "message": "Available to subtract"
   },
   "perpsAvailableToTrade": {
     "message": "Available to trade",
@@ -5489,6 +5442,9 @@
   },
   "perpsCloseLong": {
     "message": "Close Long"
+  },
+  "perpsClosePartialMinNotional": {
+    "message": "Partial closes must be at least $1 in USD value. Increase the close amount or set the slider to 100%."
   },
   "perpsClosePosition": {
     "message": "Close position"
@@ -5612,8 +5568,17 @@
   "perpsLimitPrice": {
     "message": "Limit Price"
   },
+  "perpsLimitPriceAboveCurrentPrice": {
+    "message": "Limit price is above current price"
+  },
+  "perpsLimitPriceBelowCurrentPrice": {
+    "message": "Limit price is below current price"
+  },
+  "perpsLimitPriceNearLiquidation": {
+    "message": "Current price is near the estimated liquidation price"
+  },
   "perpsLiquidationDistance": {
-    "message": "Liq. distance"
+    "message": "Liquidation distance"
   },
   "perpsLiquidationPrice": {
     "message": "Liquidation price"
@@ -5639,12 +5604,6 @@
   },
   "perpsMarkets": {
     "message": "Markets"
-  },
-  "perpsMax": {
-    "message": "Max"
-  },
-  "perpsMaxRemovable": {
-    "message": "Max removable"
   },
   "perpsMid": {
     "message": "Mid"
@@ -5698,9 +5657,6 @@
   },
   "perpsPosition": {
     "message": "Position"
-  },
-  "perpsPositionSize": {
-    "message": "Position Size"
   },
   "perpsPositions": {
     "message": "Positions"
@@ -5820,6 +5776,78 @@
     "message": "Take Profit",
     "description": "Label for take profit price input"
   },
+  "perpsToastCloseFailed": {
+    "message": "Failed to close position",
+    "description": "Error toast text shown when closing a perps position fails"
+  },
+  "perpsToastCloseInProgress": {
+    "message": "Closing position",
+    "description": "In-progress toast text shown while closing a perps position"
+  },
+  "perpsToastClosePnlSubtitle": {
+    "message": "Your PnL is $1",
+    "description": "$1 is the formatted PnL percentage for a closed position"
+  },
+  "perpsToastMarginAddSuccess": {
+    "message": "Added $1 $2 margin",
+    "description": "$1 is the amount and $2 is the asset symbol for successful margin addition"
+  },
+  "perpsToastMarginAdjustmentFailed": {
+    "message": "Margin adjustment failed",
+    "description": "Error toast text shown when adding or removing margin fails"
+  },
+  "perpsToastMarginAdjustmentFailedDescriptionFallback": {
+    "message": "Unable to adjust margin. Please try again.",
+    "description": "Fallback description shown when margin adjustment fails without a usable error message."
+  },
+  "perpsToastMarginRemoveSuccess": {
+    "message": "Removed $1 $2 margin",
+    "description": "$1 is the amount and $2 is the asset symbol for successful margin removal"
+  },
+  "perpsToastOrderFailed": {
+    "message": "Order failed",
+    "description": "Error toast text shown when placing a perps order fails"
+  },
+  "perpsToastOrderFailedDescriptionFallback": {
+    "message": "Your funds have been returned to you",
+    "description": "Fallback order failure subtitle shown when no specific order error is available"
+  },
+  "perpsToastOrderFilled": {
+    "message": "Order filled",
+    "description": "Success toast text shown when a perps market order is filled"
+  },
+  "perpsToastOrderPlaced": {
+    "message": "Order placed",
+    "description": "Success toast text shown when a perps limit order is accepted"
+  },
+  "perpsToastOrderPlacementSubtitle": {
+    "message": "$1 $2 $3",
+    "description": "$1 is the order direction, $2 is the position size amount, and $3 is the asset symbol"
+  },
+  "perpsToastOrderSubmitted": {
+    "message": "Order submitted",
+    "description": "In-progress toast text shown while a perps order is being submitted"
+  },
+  "perpsToastSubmitInProgress": {
+    "message": "Submitting your trade",
+    "description": "In-progress toast text shown while a perps trade is being submitted"
+  },
+  "perpsToastTradeSuccess": {
+    "message": "Position closed",
+    "description": "Success toast text shown when a perps position is closed"
+  },
+  "perpsToastUpdateFailed": {
+    "message": "Failed to update TP/SL",
+    "description": "Error toast text shown when updating TP/SL settings fails"
+  },
+  "perpsToastUpdateInProgress": {
+    "message": "Updating TP/SL...",
+    "description": "In-progress toast text shown while updating TP/SL settings"
+  },
+  "perpsToastUpdateSuccess": {
+    "message": "TP/SL updated successfully",
+    "description": "Success toast text shown when TP/SL settings are updated"
+  },
   "perpsTotalBalance": {
     "message": "Total Balance"
   },
@@ -5888,6 +5916,51 @@
   },
   "perpsWithdraw": {
     "message": "Withdraw"
+  },
+  "perpsWithdrawEstimatedTime": {
+    "message": "Estimated time"
+  },
+  "perpsWithdrawFailed": {
+    "message": "Withdrawal could not be completed. Try again."
+  },
+  "perpsWithdrawFee": {
+    "message": "Provider Fee"
+  },
+  "perpsWithdrawInsufficient": {
+    "message": "Amount exceeds your available Perps balance."
+  },
+  "perpsWithdrawInvalidAmount": {
+    "message": "Enter a valid amount."
+  },
+  "perpsWithdrawMinNotice": {
+    "message": "Minimum withdrawal: $1 USDC",
+    "description": "$1 is the minimum amount (e.g. 1.01)"
+  },
+  "perpsWithdrawMinutesApprox": {
+    "message": "~$1 min",
+    "description": "$1 is the estimated number of minutes"
+  },
+  "perpsWithdrawNoAccount": {
+    "message": "No account selected. Select an account and try again."
+  },
+  "perpsWithdrawReceive": {
+    "message": "Receive"
+  },
+  "perpsWithdrawRoutesError": {
+    "message": "Could not load withdrawal limits. Try again later."
+  },
+  "perpsWithdrawToastErrorTitle": {
+    "message": "Withdrawal failed"
+  },
+  "perpsWithdrawToastSuccessDescription": {
+    "message": "We are processing $1. Funds typically arrive within a few minutes.",
+    "description": "$1 is the formatted withdrawal amount"
+  },
+  "perpsWithdrawToastSuccessTitle": {
+    "message": "Withdrawal submitted"
+  },
+  "perpsYouReceive": {
+    "message": "You receive"
   },
   "perpsYouWillReceive": {
     "message": "You'll receive"
@@ -6693,7 +6766,7 @@
     "message": "Security and password"
   },
   "securityAndPrivacy": {
-    "message": "Security & privacy"
+    "message": "Security and privacy"
   },
   "securityChangePassword": {
     "message": "Change password"
@@ -7992,15 +8065,6 @@
   "speedUpCancellation": {
     "message": "Speed up this cancellation"
   },
-  "speedUpExplanation": {
-    "message": "We’ve updated the gas fee based on current network conditions and have increased it by at least 10% (required by the network)."
-  },
-  "speedUpPopoverTitle": {
-    "message": "Speed up transaction"
-  },
-  "speedUpTooltipText": {
-    "message": "New gas fee"
-  },
   "speedUpTransactionDescription": {
     "message": "This network fee will replace the original."
   },
@@ -8609,9 +8673,6 @@
   "swapSource": {
     "message": "Liquidity source"
   },
-  "swapSuggested": {
-    "message": "Swap suggested"
-  },
   "swapSuggestedGasSettingToolTipMessage": {
     "message": "Swaps are complex and time sensitive transactions. We recommend this gas fee for a good balance between cost and confidence of a successful Swap."
   },
@@ -8852,6 +8913,9 @@
   "transaction": {
     "message": "transaction"
   },
+  "transactionConfirmed": {
+    "message": "Transaction confirmed"
+  },
   "transactionDataFunction": {
     "message": "Function"
   },
@@ -8863,6 +8927,9 @@
   },
   "transactionErrorNoContract": {
     "message": "Trying to call a function on a non-contract address."
+  },
+  "transactionFailed": {
+    "message": "Transaction failed"
   },
   "transactionFee": {
     "message": "Transaction fee"
@@ -8904,12 +8971,18 @@
   "transactionShield": {
     "message": "Transaction Shield"
   },
+  "transactionSubmitted": {
+    "message": "Transaction submitted"
+  },
   "transactionTotalGasFee": {
     "message": "Total gas fee",
     "description": "Label for the total gas fee incurred in the transaction."
   },
   "transactions": {
     "message": "Transactions"
+  },
+  "transactionsAndAssets": {
+    "message": "Transactions and assets"
   },
   "transfer": {
     "message": "Transfer"
@@ -9031,9 +9104,6 @@
   "tutorial": {
     "message": "Tutorial"
   },
-  "twelveHrTitle": {
-    "message": "12hr:"
-  },
   "txAlertTitle": {
     "message": "This transaction will be reverted"
   },
@@ -9119,9 +9189,6 @@
   },
   "unstableTokenPriceTitle": {
     "message": "Unstable token price"
-  },
-  "upArrow": {
-    "message": "up arrow"
   },
   "update": {
     "message": "Update"

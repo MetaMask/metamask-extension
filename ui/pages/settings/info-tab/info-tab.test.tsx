@@ -47,7 +47,7 @@ describe('InfoTab', () => {
       });
       expect(attributionsLink).toHaveAttribute(
         'href',
-        `https://raw.githubusercontent.com/MetaMask/metamask-extension/vMOCK_VERSION/attribution.txt`,
+        'https://raw.githubusercontent.com/MetaMask/metamask-extension/main/attribution.txt',
       );
     });
 

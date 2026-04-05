@@ -1,4 +1,7 @@
-import { SnapController } from '@metamask/snaps-controllers';
+import {
+  SnapController,
+  SnapControllerMessenger,
+} from '@metamask/snaps-controllers';
 import {
   MOCK_ANY_NAMESPACE,
   Messenger,
@@ -14,7 +17,6 @@ import {
   getSnapControllerInitMessenger,
   getSnapControllerMessenger,
   SnapControllerInitMessenger,
-  SnapControllerMessenger,
 } from '../messengers/snaps';
 import { getRootMessenger } from '../../lib/messenger';
 import { SnapControllerInit } from './snap-controller-init';

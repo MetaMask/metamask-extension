@@ -3,29 +3,29 @@
 exports[`Assets Tab snapshot matches snapshot 1`] = `
 <div>
   <div
-    class="pb-4 px-4 overflow-y-auto"
+    class="pb-4 overflow-y-auto"
   >
     <div>
-      <div
-        class="flex flex-row items-center justify-between py-3"
+      <a
+        class="block hover:bg-background-default-hover"
+        href="/settings/assets/currency"
       >
-        <p
-          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
-        >
-          Local currency
-        </p>
         <div
-          class="flex flex-row gap-1 items-center"
+          class="flex flex-row items-center justify-between px-4 py-3"
         >
           <p
-            class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+            class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
           >
-            USD
+            Local currency
           </p>
-          <a
-            class="flex ml-1"
-            href="/settings-v2/assets/currency"
+          <div
+            class="flex flex-row gap-1 items-center"
           >
+            <p
+              class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+            >
+              USD
+            </p>
             <svg
               class="inline-block w-4 h-4 text-icon-alternative"
               fill="currentColor"
@@ -36,13 +36,13 @@ exports[`Assets Tab snapshot matches snapshot 1`] = `
                 d="m8.887 22-1.775-1.775L15.337 12 7.112 3.775 8.887 2l10 10z"
               />
             </svg>
-          </a>
+          </div>
         </div>
-      </div>
+      </a>
     </div>
     <div>
       <div
-        class="flex flex-col gap-1 py-3"
+        class="flex flex-col gap-1 px-4 py-3"
       >
         <div
           class="flex flex-row items-center justify-between"
@@ -52,7 +52,9 @@ exports[`Assets Tab snapshot matches snapshot 1`] = `
           >
             Show native token as main balance
           </p>
-          <div>
+          <div
+            data-testid="show-native-token-as-main-balance-toggle"
+          >
             <label
               class="toggle-button toggle-button--on"
               tabindex="0"
@@ -90,11 +92,11 @@ exports[`Assets Tab snapshot matches snapshot 1`] = `
       </div>
     </div>
     <div
-      class="bg-muted my-2 h-px w-full"
+      class="bg-muted my-2 h-px w-full mx-4"
     />
     <div>
       <div
-        class="flex flex-col gap-1 py-3"
+        class="flex flex-col gap-1 px-4 py-3"
       >
         <div
           class="flex flex-row items-center justify-between"
@@ -142,11 +144,11 @@ exports[`Assets Tab snapshot matches snapshot 1`] = `
       </div>
     </div>
     <div
-      class="bg-muted my-2 h-px w-full"
+      class="bg-muted my-2 h-px w-full mx-4"
     />
     <div>
       <div
-        class="flex flex-col gap-1 py-3"
+        class="flex flex-col gap-1 px-4 py-3"
       >
         <div
           class="flex flex-row items-center justify-between"
@@ -200,7 +202,7 @@ exports[`Assets Tab snapshot matches snapshot 1`] = `
     </div>
     <div>
       <div
-        class="flex flex-col gap-1 py-3"
+        class="flex flex-col gap-1 px-4 py-3"
       >
         <div
           class="flex flex-row items-center justify-between"
@@ -210,7 +212,9 @@ exports[`Assets Tab snapshot matches snapshot 1`] = `
           >
             Autodetect NFTs
           </p>
-          <div>
+          <div
+            data-testid="use-nft-detection"
+          >
             <label
               class="toggle-button toggle-button--on"
               tabindex="0"
@@ -236,7 +240,7 @@ exports[`Assets Tab snapshot matches snapshot 1`] = `
                   />
                 </div>
                 <input
-                  data-testid="use-nft-detection"
+                  data-testid="use-nft-detection-input"
                   style="border: 0px; height: 1px; margin: -1px; overflow: hidden; padding: 0px; position: absolute; width: 1px;"
                   type="checkbox"
                   value="true"
@@ -254,7 +258,7 @@ exports[`Assets Tab snapshot matches snapshot 1`] = `
     </div>
     <div>
       <div
-        class="flex flex-col gap-1 py-3"
+        class="flex flex-col gap-1 px-4 py-3"
       >
         <div
           class="flex flex-row items-center justify-between"
@@ -264,7 +268,9 @@ exports[`Assets Tab snapshot matches snapshot 1`] = `
           >
             Autodetect tokens
           </p>
-          <div>
+          <div
+            data-testid="autodetect-tokens"
+          >
             <label
               class="toggle-button toggle-button--on"
               tabindex="0"

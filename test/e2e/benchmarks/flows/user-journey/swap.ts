@@ -19,9 +19,14 @@ import {
   getTestSpecificMock,
   shouldUseMockedRequests,
 } from '../../utils/mock-config';
-import { BENCHMARK_PERSONA, WITH_STATE_POWER_USER } from '../../utils';
-import { BENCHMARK_TYPE } from '../../utils/constants';
-import type { BenchmarkRunResult } from '../../utils/types';
+import {
+  BENCHMARK_PERSONA,
+  BENCHMARK_TYPE,
+  WITH_STATE_POWER_USER,
+  collectWebVitals,
+} from '../../utils';
+import type { WebVitalsMetrics } from '../../../../../shared/constants/benchmarks';
+import type { BenchmarkRunResult } from '../../utils';
 import { registerSwapInterceptor } from '../../mocks/swap-mocks';
 
 export const testTitle = 'benchmark-swap-power-user';
@@ -30,6 +35,7 @@ const SOLANA_USDC_CONTRACT_ADDRESS =
   'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v';
 
 export async function runSwapBenchmark(): Promise<BenchmarkRunResult> {
+  let webVitals: WebVitalsMetrics | undefined;
   try {
     const branchMock = getTestSpecificMock();
 
@@ -104,17 +110,25 @@ export async function runSwapBenchmark(): Promise<BenchmarkRunResult> {
           await swapPage.checkQuoteIsDisplayed({ timeout: 60000 });
         });
         performanceTracker.addTimer(timerQuoteFetching);
+
+        try {
+          webVitals = await collectWebVitals(driver);
+        } catch (error) {
+          console.error('Error collecting web vitals:', error);
+        }
       },
     );
 
     return {
       timers: collectTimerResults(),
+      webVitals,
       success: true,
       benchmarkType: BENCHMARK_TYPE.PERFORMANCE,
     };
   } catch (error) {
     return {
       timers: collectTimerResults(),
+      webVitals,
       success: false,
       error: error instanceof Error ? error.message : String(error),
       benchmarkType: BENCHMARK_TYPE.PERFORMANCE,

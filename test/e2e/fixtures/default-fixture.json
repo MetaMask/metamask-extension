@@ -72,7 +72,8 @@
     "AccountTreeController": {
       "accountGroupsMetadata": {},
       "accountWalletsMetadata": {},
-      "hasAccountTreeSyncingSyncedAtLeastOnce": true
+      "hasAccountTreeSyncingSyncedAtLeastOnce": true,
+      "selectedAccountGroup": "entropy:01KMMTZZ3ZEF3008S2RXXR2CXS/0"
     },
     "AccountsController": {
       "internalAccounts": {
@@ -170,7 +171,7 @@
       "announcements": {}
     },
     "AppMetadataController": {
-      "currentMigrationVersion": 200,
+      "currentMigrationVersion": 202,
       "firstTimeInfo": {},
       "previousAppVersion": "",
       "previousMigrationVersion": 0
@@ -918,7 +919,6 @@
       "theme": "os",
       "use4ByteResolution": true,
       "useAddressBarEnsResolution": true,
-      "useBlockie": false,
       "useCurrencyRateCheck": true,
       "useExternalNameSources": true,
       "useExternalServices": true,
@@ -1072,6 +1072,6 @@
   },
   "meta": {
     "storageKind": "split",
-    "version": 200
+    "version": 202
   }
 }
