@@ -11,7 +11,7 @@ const runtimeManifest =
  */
 export const isManifestV3: boolean = runtimeManifest
   ? runtimeManifest.manifest_version === 3
- : // Our build system sets this as a boolean, but in a Node.js context (e.g. unit tests) it can be a string
+  : // Our build system sets this as a boolean, but in a Node.js context (e.g. unit tests) it can be a string
     process.env.ENABLE_MV3 === true ||
     process.env.ENABLE_MV3 === 'true' ||
     process.env.ENABLE_MV3 === undefined;
