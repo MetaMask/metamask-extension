@@ -115,10 +115,10 @@ export const CancelOrderModal: React.FC<CancelOrderModalProps> = ({
       if (!result?.success) {
         throw new Error(result?.error ?? t('somethingWentWrong'));
       }
+      setIsSubmitting(false);
       onClose();
     } catch (err) {
       setError(err instanceof Error ? err.message : t('somethingWentWrong'));
-    } finally {
       setIsSubmitting(false);
     }
   }, [order.orderId, order.symbol, onClose, t]);
