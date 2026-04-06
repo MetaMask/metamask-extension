@@ -29,7 +29,7 @@ import { isSignedDecimalInput, isUnsignedDecimalInput } from '../../utils';
  * - Preset percentage buttons for quick selection
  * - Direction-aware calculations (long vs short)
  * - RoE (Return on Equity) percentage: a leverage-adjusted percentage where
- *   RoE% = priceChange% * leverage, matching mobile behavior
+ * RoE% = priceChange% * leverage, matching mobile behavior
  *
  * @param props - Component props
  * @param props.enabled - Whether auto-close is enabled
