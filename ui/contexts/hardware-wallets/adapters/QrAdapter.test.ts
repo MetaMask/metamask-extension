@@ -52,9 +52,32 @@ describe('QrAdapter', () => {
     });
   });
 
+  it('disconnect calls onDisconnect when onDeviceEvent throws', async () => {
+    await adapter.connect();
+    const handlerError = new Error('onDeviceEvent failed');
+    jest.mocked(mockOptions.onDeviceEvent).mockImplementation(() => {
+      throw handlerError;
+    });
+
+    await adapter.disconnect();
+
+    expect(mockOptions.onDisconnect).toHaveBeenCalledWith(handlerError);
+  });
+
   it('ensureDeviceReady returns true when camera permission is granted', async () => {
     mockCheckCameraPermission.mockResolvedValue(CameraPermissionState.Granted);
     await expect(adapter.ensureDeviceReady()).resolves.toBe(true);
+  });
+
+  it('ensureDeviceReady does not call connect again when already connected', async () => {
+    mockCheckCameraPermission.mockResolvedValue(CameraPermissionState.Granted);
+    await adapter.connect();
+    const connectSpy = jest.spyOn(adapter, 'connect');
+
+    await expect(adapter.ensureDeviceReady()).resolves.toBe(true);
+
+    expect(connectSpy).not.toHaveBeenCalled();
+    connectSpy.mockRestore();
   });
 
   it('ensureDeviceReady throws PermissionCameraDenied when camera permission is denied', async () => {

@@ -22,6 +22,7 @@ import {
   getConnectedDevices,
   subscribeToWebHidEvents,
   subscribeToWebUsbEvents,
+  subscribeToHardwareWalletEvents,
 } from './webConnectionUtils';
 
 // Default device identifiers for testing
@@ -322,6 +323,16 @@ describe('webConnectionUtils', () => {
 
       expect(isCameraAvailable()).toBe(false);
     });
+
+    it('returns false when getUserMedia is not a function', () => {
+      Object.defineProperty(window.navigator, 'mediaDevices', {
+        value: {},
+        writable: true,
+        configurable: true,
+      });
+
+      expect(isCameraAvailable()).toBe(false);
+    });
   });
 
   describe('checkHardwareWalletPermission', () => {
@@ -478,6 +489,16 @@ describe('webConnectionUtils', () => {
       getMockedMediaDevices().getUserMedia.mockRejectedValue(
         new Error('Permission denied'),
       );
+
+      await expect(requestCameraPermission()).resolves.toBe(false);
+    });
+
+    it('requestCameraPermission returns false when camera APIs are unavailable', async () => {
+      Object.defineProperty(window.navigator, 'mediaDevices', {
+        value: undefined,
+        writable: true,
+        configurable: true,
+      });
 
       await expect(requestCameraPermission()).resolves.toBe(false);
     });
@@ -1309,6 +1330,24 @@ describe('webConnectionUtils', () => {
         'disconnect',
         disconnectHandler,
       );
+    });
+  });
+
+  describe('subscribeToHardwareWalletEvents', () => {
+    it('returns a no-op unsubscribe for QR wallet type', () => {
+      const mockOnConnect = jest.fn();
+      const mockOnDisconnect = jest.fn();
+
+      const unsubscribe = subscribeToHardwareWalletEvents(
+        HardwareWalletType.Qr,
+        mockOnConnect,
+        mockOnDisconnect,
+      );
+
+      expect(typeof unsubscribe).toBe('function');
+      expect(() => unsubscribe()).not.toThrow();
+      expect(getMockedHid().addEventListener).not.toHaveBeenCalled();
+      expect(getMockedUsb().addEventListener).not.toHaveBeenCalled();
     });
   });
 
