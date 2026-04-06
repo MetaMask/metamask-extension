@@ -52,6 +52,8 @@ export const getInternalAccounts = createSelector(
   (accounts) => Object.values(accounts),
 );
 
+// Uses EMPTY_OBJECT to preserve referential equality when accountIdByAddress
+// is undefined, so downstream createSelector consumers don't recompute.
 export const getAccountIdByAddress = (state: AccountsState) =>
   state.metamask.accountIdByAddress ?? EMPTY_OBJECT;
 
