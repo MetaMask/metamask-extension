@@ -125,7 +125,7 @@ function parseJsonOrNdjson(text: string): unknown[] {
 function spawnYarnAudit(environment: 'production' | 'development'): string {
   const result = spawnSync(
     YARN_BIN,
-    ['npm audit', '--recursive', '--environment', environment, '--json'],
+    ['npm', 'audit', '--recursive', '--environment', environment, '--json'],
     {
       encoding: 'utf8',
       shell: YARN_SHELL,
