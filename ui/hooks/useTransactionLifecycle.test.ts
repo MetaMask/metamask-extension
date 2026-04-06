@@ -8,10 +8,6 @@ const pending = (id: string): Tx => ({
   id,
   status: TransactionStatus.submitted,
 });
-const approved = (id: string): Tx => ({
-  id,
-  status: TransactionStatus.approved,
-});
 const confirmed = (id: string): Tx => ({
   id,
   status: TransactionStatus.confirmed,
