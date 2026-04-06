@@ -16,7 +16,6 @@ import {
 import {
   selectTutorialModalOpen,
   selectTutorialActiveStep,
-  setTutorialModalOpen,
   setTutorialActiveStep,
   markTutorialCompleted,
   PerpsTutorialStep,
@@ -61,8 +60,8 @@ const PerpsTutorialModal: React.FC<PerpsTutorialModalProps> = ({ onClose }) => {
   );
 
   const handleClose = useCallback(() => {
-    dispatch(setTutorialModalOpen(false));
-    dispatch(setTutorialActiveStep(PerpsTutorialStep.WhatArePerps));
+    dispatch(markTutorialCompleted());
+    submitRequestToBackground('perpsMarkTutorialCompleted', []);
     onClose?.();
   }, [dispatch, onClose]);
 
