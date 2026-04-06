@@ -5,7 +5,7 @@ import { DAY } from '../../constants/time';
 import { formatPermissionPeriodDuration } from './format-permission-period-duration';
 import { MAX_UINT256 } from './permission-constants';
 import type {
-  PermissionContext,
+  PermissionRenderContext,
   PermissionSchemaEntry,
   PermissionSchemaRegistry,
   SchemaSection,
@@ -15,7 +15,7 @@ import type {
 // Helpers
 // ---------------------------------------------------------------------------
 
-const getData = (ctx: PermissionContext): Record<string, unknown> =>
+const getData = (ctx: PermissionRenderContext): Record<string, unknown> =>
   ctx.permission.data;
 
 const requireStartTime = (permission: {

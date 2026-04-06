@@ -8,7 +8,7 @@ export type {
   JustificationField,
   NetworkField,
   OriginField,
-  PermissionContext,
+  PermissionRenderContext,
   PermissionSchemaEntry,
   PermissionSchemaRegistry,
   SchemaElement,

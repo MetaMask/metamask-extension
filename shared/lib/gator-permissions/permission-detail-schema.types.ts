@@ -10,7 +10,7 @@ export type I18nFunction = (
  * The context object passed to all accessor functions in the schema.
  * Built by each renderer from decoded permission data plus pre-resolved async data.
  */
-export type PermissionContext = {
+export type PermissionRenderContext = {
   /** The permission object from the decoded permission. */
   permission: {
     type: string;
@@ -51,35 +51,35 @@ export type AmountField = {
   type: 'amount';
   labelKey: string;
   /** Raw hex or BigNumber value. Each renderer formats this for its view. */
-  getValue: (ctx: PermissionContext) => Hex | BigNumber;
+  getValue: (ctx: PermissionRenderContext) => Hex | BigNumber;
   /** For ERC20 amounts, returns the token contract address. */
-  getTokenAddress?: (ctx: PermissionContext) => Hex;
+  getTokenAddress?: (ctx: PermissionRenderContext) => Hex;
   tooltip?: string;
-  isVisible?: (ctx: PermissionContext) => boolean;
+  isVisible?: (ctx: PermissionRenderContext) => boolean;
 };
 
 /** A plain text row. */
 export type TextField = {
   type: 'text';
   labelKey: string;
-  getValue: (ctx: PermissionContext) => string;
+  getValue: (ctx: PermissionRenderContext) => string;
   tooltip?: string;
-  visible?: (ctx: PermissionContext) => boolean;
+  visible?: (ctx: PermissionRenderContext) => boolean;
 };
 
 /** A date/time row. */
 export type DateField = {
   type: 'date';
   labelKey: string;
-  getTimestamp: (ctx: PermissionContext) => number;
+  getTimestamp: (ctx: PermissionRenderContext) => number;
   tooltip?: string;
-  visible?: (ctx: PermissionContext) => boolean;
+  visible?: (ctx: PermissionRenderContext) => boolean;
 };
 
 /** An expiry row. Renderers handle the "never expires" case. */
 export type ExpiryField = {
   type: 'expiry';
-  visible?: (ctx: PermissionContext) => boolean;
+  visible?: (ctx: PermissionRenderContext) => boolean;
 };
 
 /** Stream parameters for total exposure calculation. */
@@ -93,8 +93,8 @@ export type TotalExposureStreamParams = {
 /** Total exposure row for stream permissions. */
 export type TotalExposureField = {
   type: 'totalExposure';
-  getStreamParams: (ctx: PermissionContext) => TotalExposureStreamParams;
-  visible?: (ctx: PermissionContext) => boolean;
+  getStreamParams: (ctx: PermissionRenderContext) => TotalExposureStreamParams;
+  visible?: (ctx: PermissionRenderContext) => boolean;
 };
 
 /** A visual divider between rows. */
@@ -109,7 +109,7 @@ export type DividerElement = {
 /** Displays the justification text. */
 export type JustificationField = {
   type: 'justification';
-  visible?: (ctx: PermissionContext) => boolean;
+  visible?: (ctx: PermissionRenderContext) => boolean;
 };
 
 /** Displays the "signing in with" row (account selector). */
@@ -127,8 +127,8 @@ export type OriginField = {
 export type AddressField = {
   type: 'address';
   labelKey: string;
-  getAddress: (ctx: PermissionContext) => string | undefined;
-  visible?: (ctx: PermissionContext) => boolean;
+  getAddress: (ctx: PermissionRenderContext) => string | undefined;
+  visible?: (ctx: PermissionRenderContext) => boolean;
 };
 
 /** Displays the network row. */

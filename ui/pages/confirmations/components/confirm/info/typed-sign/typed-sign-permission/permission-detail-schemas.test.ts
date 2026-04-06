@@ -1,12 +1,12 @@
 import { PERMISSION_SCHEMAS } from './permission-detail-schemas';
-import type { PermissionContext } from './permission-detail-schema.types';
+import type { PermissionRenderContext } from './permission-detail-schema.types';
 import { MAX_UINT256 } from './typed-sign-permission-util';
 
-const mockT = ((key: string) => key) as PermissionContext['t'];
+const mockT = ((key: string) => key) as PermissionRenderContext['t'];
 
 function buildCtx(
-  overrides: Partial<PermissionContext> = {},
-): PermissionContext {
+  overrides: Partial<PermissionRenderContext> = {},
+): PermissionRenderContext {
   return {
     permission: { type: 'test', data: {} },
     expiry: null,
@@ -152,7 +152,7 @@ describe('PERMISSION_SCHEMAS', () => {
           type: 'native-token-periodic',
           data: { periodAmount: '0x1', periodDuration: 86400, startTime: 1 },
         },
-        t: tSpy as unknown as PermissionContext['t'],
+        t: tSpy as unknown as PermissionRenderContext['t'],
       });
       const freqField = schema.sections[2].elements[1];
       if (freqField.type === 'text') {

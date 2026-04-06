@@ -4,7 +4,7 @@ import { PERMISSION_SCHEMAS } from '../../../../../../shared/lib/gator-permissio
 import type {
   AmountField,
   I18nFunction,
-  PermissionContext,
+  PermissionRenderContext,
   SchemaElement,
   SchemaSection,
 } from '../../../../../../shared/lib/gator-permissions/permission-detail-schema.types';
@@ -107,7 +107,7 @@ function schemaElementDomKey(
 function renderElement(
   sectionTestId: string,
   element: SchemaElement,
-  ctx: PermissionContext,
+  ctx: PermissionRenderContext,
   tokenSymbol: string,
   tokenDecimals: number | undefined,
   loading: boolean,
@@ -186,7 +186,7 @@ function renderElement(
 function renderAmountElement(
   rowKey: string,
   element: AmountField,
-  ctx: PermissionContext,
+  ctx: PermissionRenderContext,
   tokenSymbol: string,
   tokenDecimals: number | undefined,
   loading: boolean,
@@ -212,7 +212,7 @@ function renderAmountElement(
 
 function renderExpiryElement(
   rowKey: string,
-  ctx: PermissionContext,
+  ctx: PermissionRenderContext,
   rules?: GatorPermissionRule[] | null,
 ): React.ReactNode {
   let displayValue: string;
@@ -241,7 +241,7 @@ function renderExpiryElement(
 
 function renderSection(
   section: SchemaSection,
-  ctx: PermissionContext,
+  ctx: PermissionRenderContext,
   tokenSymbol: string,
   tokenDecimals: number | undefined,
   loading: boolean,
@@ -310,7 +310,7 @@ export const ReviewPermissionRenderer: React.FC<
     return null;
   }
 
-  const ctx: PermissionContext = {
+  const ctx: PermissionRenderContext = {
     permission: { type: permissionType, data: permissionData },
     expiry,
     chainId,

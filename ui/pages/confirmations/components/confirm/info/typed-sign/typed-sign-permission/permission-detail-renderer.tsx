@@ -27,7 +27,7 @@ import { SigningInWithRow } from '../../shared/sign-in-with-row/sign-in-with-row
 import type {
   AmountField,
   I18nFunction,
-  PermissionContext,
+  PermissionRenderContext,
   PermissionSchemaEntry,
   SchemaElement,
   SchemaSection,
@@ -49,7 +49,7 @@ import { TotalExposure } from './total-exposure';
 function useNativeTokenData(
   chainId: Hex,
   resolution: TokenResolution,
-): PermissionContext['tokenInfo'] {
+): PermissionRenderContext['tokenInfo'] {
   const { symbol, decimals } = useSelector((state: MetaMaskReduxState) =>
     getNativeTokenInfo(state.metamask.networkConfigurationsByChainId, chainId),
   );
@@ -96,7 +96,7 @@ function useErc20DecimalsResolved(
 
 function renderAmountField(
   element: AmountField,
-  ctx: PermissionContext,
+  ctx: PermissionRenderContext,
   index: number,
 ): React.ReactNode {
   // If the field has getTokenAddress, it's an ERC20 amount
@@ -116,7 +116,7 @@ function renderAmountField(
 
   // Native token amount — tokenInfo is guaranteed to be set for native schemas
   const tokenInfo = ctx.tokenInfo as NonNullable<
-    PermissionContext['tokenInfo']
+    PermissionRenderContext['tokenInfo']
   >;
   return (
     <NativeAmountRow
@@ -133,7 +133,7 @@ function renderAmountField(
 
 function renderElement(
   element: SchemaElement,
-  ctx: PermissionContext,
+  ctx: PermissionRenderContext,
   schemaEntry: PermissionSchemaEntry,
   ownerId: string,
   index: number,
@@ -241,7 +241,7 @@ function renderElement(
 
 function renderTotalExposure(
   element: TotalExposureField,
-  ctx: PermissionContext,
+  ctx: PermissionRenderContext,
   schemaEntry: PermissionSchemaEntry,
   index: number,
 ): React.ReactNode {
@@ -249,7 +249,7 @@ function renderTotalExposure(
 
   if (schemaEntry.tokenVariant === 'native') {
     const tokenInfo = ctx.tokenInfo as NonNullable<
-      PermissionContext['tokenInfo']
+      PermissionRenderContext['tokenInfo']
     >;
     return (
       <TotalExposure
@@ -290,7 +290,7 @@ function renderTotalExposure(
 
 function renderSection(
   section: SchemaSection,
-  ctx: PermissionContext,
+  ctx: PermissionRenderContext,
   schemaEntry: PermissionSchemaEntry,
   ownerId: string,
 ): React.ReactNode {
@@ -338,7 +338,7 @@ export const PermissionDetailRenderer: React.FC<{
   );
 
   // Build tokenInfo from whichever resolution path is active
-  let tokenInfo: PermissionContext['tokenInfo'];
+  let tokenInfo: PermissionRenderContext['tokenInfo'];
   if (nativeToken) {
     tokenInfo = nativeToken;
   } else if (erc20Decimals === undefined) {
@@ -347,7 +347,7 @@ export const PermissionDetailRenderer: React.FC<{
     tokenInfo = { symbol: '', decimals: erc20Decimals };
   }
 
-  const ctx: PermissionContext = {
+  const ctx: PermissionRenderContext = {
     permission,
     expiry,
     chainId,
