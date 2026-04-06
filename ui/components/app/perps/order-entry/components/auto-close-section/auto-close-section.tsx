@@ -8,7 +8,7 @@ import {
   BoxAlignItems,
   FontWeight,
 } from '@metamask/design-system-react';
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 
 import {
   BorderRadius,
@@ -28,6 +28,8 @@ import { isSignedDecimalInput, isUnsignedDecimalInput } from '../../utils';
  * - Bidirectional input: Enter price ($) or percentage (%), the other updates automatically
  * - Preset percentage buttons for quick selection
  * - Direction-aware calculations (long vs short)
+ * - RoE (Return on Equity) percentage: a leverage-adjusted percentage where
+ *   RoE% = priceChange% * leverage, matching mobile behavior
  *
  * @param props - Component props
  * @param props.enabled - Whether auto-close is enabled
@@ -39,6 +41,7 @@ import { isSignedDecimalInput, isUnsignedDecimalInput } from '../../utils';
  * @param props.direction - Current order direction
  * @param props.currentPrice - Current asset price (used as entry price for new orders)
  * @param props.entryPrice - Position entry price (modify mode - use for accurate % calc)
+ * @param props.leverage - Leverage multiplier for RoE% calculation
  */
 export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
   enabled,
@@ -50,19 +53,32 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
   direction,
   currentPrice,
   entryPrice: entryPriceProp,
+  leverage,
 }) => {
   const t = useI18nContext();
 
   // In modify mode use position's entry price; otherwise use current price
   const entryPrice = entryPriceProp ?? currentPrice;
 
-  // Keep percent inputs in dot-decimal format to match strict input policy.
-  const formatPercent = useCallback(
-    (value: number): string => value.toFixed(1),
-    [],
-  );
+  // Raw percent strings preserved while the user is actively typing in percent fields.
+  // When focused, these strings are shown verbatim to prevent mid-keystroke reformatting.
+  const [rawTpPercent, setRawTpPercent] = useState('');
+  const [rawSlPercent, setRawSlPercent] = useState('');
+  const [isTpPercentFocused, setIsTpPercentFocused] = useState(false);
+  const [isSlPercentFocused, setIsSlPercentFocused] = useState(false);
 
-  // Calculate percentage from price
+  /**
+   * Format a numeric RoE% value for blurred display.
+   * Integers: no decimal ("25"), non-integers: 2 decimal places ("25.50").
+   */
+  const formatPercent = useCallback((value: number): string => {
+    return value % 1 === 0 ? value.toFixed(0) : value.toFixed(2);
+  }, []);
+
+  /**
+   * Convert a target price to a RoE% for display.
+   * RoE% = ((targetPrice - entryPrice) / entryPrice) * leverage * 100
+   */
   const priceToPercent = useCallback(
     (price: string, isTP: boolean): string => {
       if (!price || !entryPrice) {
@@ -74,32 +90,36 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
       }
 
       const diff = priceNum - entryPrice;
-      const percentChange = (diff / entryPrice) * 100;
+      const percentChange = (diff / entryPrice) * leverage * 100;
 
-      // For long: TP is above entry (positive %), SL is below entry (show as positive loss %)
-      // For short: TP is below entry (show as positive profit %), SL is above entry (show as positive loss %)
+      // For long: TP is above entry (positive RoE%), SL is below entry (show as positive loss%)
+      // For short: TP is below entry (show as positive profit%), SL is above entry (show as positive loss%)
       if (direction === 'long') {
         return formatPercent(isTP ? percentChange : -percentChange);
       }
       return formatPercent(isTP ? -percentChange : percentChange);
     },
-    [entryPrice, direction, formatPercent],
+    [entryPrice, leverage, direction, formatPercent],
   );
 
-  // Calculate price from percentage
+  /**
+   * Convert a RoE% to a target price.
+   * targetPrice = entryPrice * (1 + roePercent / (leverage * 100))
+   */
   const percentToPrice = useCallback(
     (percent: number, isTP: boolean): string => {
       if (!entryPrice || percent === 0) {
         return '';
       }
 
-      // For long: TP = entry * (1 + %), SL = entry * (1 - %)
-      // For short: TP = entry * (1 - %), SL = entry * (1 + %)
+      // For long: TP = entry * (1 + roe/lev), SL = entry * (1 - roe/lev)
+      // For short: TP = entry * (1 - roe/lev), SL = entry * (1 + roe/lev)
+      const priceChangeRatio = percent / (leverage * 100);
       let multiplier: number;
       if (direction === 'long') {
-        multiplier = isTP ? 1 + percent / 100 : 1 - percent / 100;
+        multiplier = isTP ? 1 + priceChangeRatio : 1 - priceChangeRatio;
       } else {
-        multiplier = isTP ? 1 - percent / 100 : 1 + percent / 100;
+        multiplier = isTP ? 1 - priceChangeRatio : 1 + priceChangeRatio;
       }
 
       const price = entryPrice * multiplier;
@@ -108,7 +128,7 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
         ? normalizedPrice.toString()
         : '';
     },
-    [entryPrice, direction],
+    [entryPrice, leverage, direction],
   );
 
   const handleToggle = useCallback(
@@ -149,6 +169,7 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
     (event: React.ChangeEvent<HTMLInputElement>) => {
       const { value } = event.target;
       if (value === '' || isSignedDecimalInput(value)) {
+        setRawTpPercent(value);
         const numValue = parseFloat(value);
         if (value === '' || value === '-') {
           onTakeProfitPriceChange('');
@@ -160,6 +181,18 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
     },
     [onTakeProfitPriceChange, percentToPrice],
   );
+
+  const handleTpPercentFocus = useCallback(() => {
+    // Seed raw value from current derived percent so the cursor lands on existing content
+    const derived = priceToPercent(takeProfitPrice, true);
+    setRawTpPercent(derived);
+    setIsTpPercentFocused(true);
+  }, [priceToPercent, takeProfitPrice]);
+
+  const handleTpPercentBlur = useCallback(() => {
+    setIsTpPercentFocused(false);
+    setRawTpPercent('');
+  }, []);
 
   // Handle SL price input change
   const handleSlPriceChange = useCallback(
@@ -193,6 +226,7 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
     (event: React.ChangeEvent<HTMLInputElement>) => {
       const { value } = event.target;
       if (value === '' || isSignedDecimalInput(value)) {
+        setRawSlPercent(value);
         const numValue = parseFloat(value);
         if (value === '' || value === '-') {
           onStopLossPriceChange('');
@@ -205,7 +239,18 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
     [onStopLossPriceChange, percentToPrice],
   );
 
-  // Calculate current percentages for display
+  const handleSlPercentFocus = useCallback(() => {
+    const derived = priceToPercent(stopLossPrice, false);
+    setRawSlPercent(derived);
+    setIsSlPercentFocused(true);
+  }, [priceToPercent, stopLossPrice]);
+
+  const handleSlPercentBlur = useCallback(() => {
+    setIsSlPercentFocused(false);
+    setRawSlPercent('');
+  }, []);
+
+  // Calculate current RoE percentages for display (used when fields are not focused)
   const tpPercent = useMemo(
     () => priceToPercent(takeProfitPrice, true),
     [priceToPercent, takeProfitPrice],
@@ -285,9 +330,11 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
               <Box className="flex-1">
                 <TextField
                   size={TextFieldSize.Sm}
-                  value={tpPercent}
+                  value={isTpPercentFocused ? rawTpPercent : tpPercent}
                   onChange={handleTpPercentChange}
-                  placeholder="0.0"
+                  onFocus={handleTpPercentFocus}
+                  onBlur={handleTpPercentBlur}
+                  placeholder="0"
                   borderRadius={BorderRadius.MD}
                   borderWidth={0}
                   backgroundColor={BackgroundColor.backgroundMuted}
@@ -355,9 +402,11 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
               <Box className="flex-1">
                 <TextField
                   size={TextFieldSize.Sm}
-                  value={slPercent}
+                  value={isSlPercentFocused ? rawSlPercent : slPercent}
                   onChange={handleSlPercentChange}
-                  placeholder="0.0"
+                  onFocus={handleSlPercentFocus}
+                  onBlur={handleSlPercentBlur}
+                  placeholder="0"
                   borderRadius={BorderRadius.MD}
                   borderWidth={0}
                   backgroundColor={BackgroundColor.backgroundMuted}
