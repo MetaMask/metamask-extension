@@ -17,6 +17,7 @@ import {
   FontWeight,
 } from '@metamask/design-system-react';
 import type { Position as PerpsPosition } from '@metamask/perps-controller';
+import { FEE_RATES } from '@metamask/perps-controller';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { TextField, TextFieldSize } from '../../../component-library';
 import {
@@ -35,6 +36,16 @@ import { normalizeTpslPrices } from '../utils';
 // RoE (Return on Equity) preset percentages - matching mobile
 const TP_PRESETS = [10, 25, 50, 100];
 const SL_PRESETS = [5, 10, 25, 50];
+
+/**
+ * Format a RoE% value for blurred display.
+ * Integers show no decimal ("25"), non-integers show 2 decimal places ("25.50").
+ * @param value - The numeric percentage value to format
+ */
+function formatEditPercent(value: number): string {
+  const abs = Math.abs(value);
+  return abs % 1 === 0 ? abs.toFixed(0) : abs.toFixed(2);
+}
 
 function getPnlDisplayColor(pnl: number): TextColor {
   if (pnl > 0) {
@@ -127,19 +138,6 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
   );
 
   /**
-   * Format a RoE% value for blurred display.
-   * Integers show no decimal ("25"), non-integers show 2 decimal places ("25.50").
-   */
-  const formatEditPercent = useCallback(
-    (value: number): string => {
-      const abs = Math.abs(value);
-      return abs % 1 === 0 ? abs.toFixed(0) : abs.toFixed(2);
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [],
-  );
-
-  /**
    * Convert a target price to a RoE% for display.
    * RoE% = ((targetPrice - entryPrice) / entryPrice) * leverage * 100
    */
@@ -154,14 +152,13 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
         return '';
       }
       const diff = priceNum - entryPriceForEdit;
-      const percentChange =
-        (diff / entryPriceForEdit) * leverageForEdit * 100;
+      const percentChange = (diff / entryPriceForEdit) * leverageForEdit * 100;
       if (positionDirection === 'long') {
         return formatEditPercent(isTP ? percentChange : -percentChange);
       }
       return formatEditPercent(isTP ? -percentChange : percentChange);
     },
-    [entryPriceForEdit, leverageForEdit, positionDirection, formatEditPercent],
+    [entryPriceForEdit, leverageForEdit, positionDirection],
   );
 
   /**
@@ -176,13 +173,9 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
       const priceChangeRatio = percent / (leverageForEdit * 100);
       let multiplier: number;
       if (positionDirection === 'long') {
-        multiplier = isTP
-          ? 1 + priceChangeRatio
-          : 1 - priceChangeRatio;
+        multiplier = isTP ? 1 + priceChangeRatio : 1 - priceChangeRatio;
       } else {
-        multiplier = isTP
-          ? 1 - priceChangeRatio
-          : 1 + priceChangeRatio;
+        multiplier = isTP ? 1 - priceChangeRatio : 1 + priceChangeRatio;
       }
       const price = entryPriceForEdit * multiplier;
       return formatEditPrice(price);
@@ -214,7 +207,9 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
     if (Number.isNaN(exitPrice) || exitPrice <= 0 || !entryPriceForEdit) {
       return null;
     }
-    return signedSize * (exitPrice - entryPriceForEdit);
+    const grossPnl = signedSize * (exitPrice - entryPriceForEdit);
+    const closingFee = Math.abs(signedSize) * exitPrice * FEE_RATES.taker;
+    return grossPnl - closingFee;
   }, [editingTpPrice, signedSize, entryPriceForEdit]);
 
   const estimatedPnlAtSl = useMemo(() => {
@@ -226,7 +221,9 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
     if (Number.isNaN(exitPrice) || exitPrice <= 0 || !entryPriceForEdit) {
       return null;
     }
-    return signedSize * (exitPrice - entryPriceForEdit);
+    const grossPnl = signedSize * (exitPrice - entryPriceForEdit);
+    const closingFee = Math.abs(signedSize) * exitPrice * FEE_RATES.taker;
+    return grossPnl - closingFee;
   }, [editingSlPrice, signedSize, entryPriceForEdit]);
 
   useEffect(() => {
