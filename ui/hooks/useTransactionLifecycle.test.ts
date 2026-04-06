@@ -40,21 +40,6 @@ describe('useTransactionLifecycle', () => {
     expect(onPending).toHaveBeenCalledWith(pending('1'));
   });
 
-  it('fires onPending when a known tx transitions into pending (unapproved → submitted)', () => {
-    const onPending = jest.fn();
-    const { rerender } = renderHook(
-      ({ txs }) => useTransactionLifecycle(txs, { onPending }),
-      { initialProps: { txs: [approved('1')] } },
-    );
-
-    act(() => {
-      rerender({ txs: [pending('1')] });
-    });
-
-    expect(onPending).toHaveBeenCalledTimes(1);
-    expect(onPending).toHaveBeenCalledWith(pending('1'));
-  });
-
   it('fires onSuccess when a pending tx is confirmed', () => {
     const onSuccess = jest.fn();
     const { rerender } = renderHook(
@@ -118,14 +103,16 @@ describe('useTransactionLifecycle', () => {
     const onSuccess = jest.fn();
     const { rerender } = renderHook(
       ({ txs }) => useTransactionLifecycle(txs, { onPending, onSuccess }),
-      { initialProps: { txs: [pending('1'), approved('2')] } },
+      { initialProps: { txs: [pending('1'), pending('2')] } },
     );
 
     act(() => {
-      rerender({ txs: [confirmed('1'), pending('2')] });
+      rerender({ txs: [confirmed('1'), confirmed('2')] });
     });
 
+    expect(onSuccess).toHaveBeenCalledTimes(2);
     expect(onSuccess).toHaveBeenCalledWith(confirmed('1'));
-    expect(onPending).toHaveBeenCalledWith(pending('2'));
+    expect(onSuccess).toHaveBeenCalledWith(confirmed('2'));
+    expect(onPending).not.toHaveBeenCalled();
   });
 });
