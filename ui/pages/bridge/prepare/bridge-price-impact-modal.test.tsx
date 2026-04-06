@@ -233,23 +233,17 @@ describe('BridgePriceImpactModal', () => {
 
     it('shows the fiat loss banner when isPriceImpactError is true and fiat amount is available', () => {
       const { queryByText } = renderModalWithFiat('submit-cta', '0.9');
-      expect(
-        queryByText(/you will lose/i),
-      ).toBeInTheDocument();
+      expect(queryByText(/you will lose/i)).toBeInTheDocument();
     });
 
     it('does not show the fiat loss banner when isPriceImpactError is false (warning)', () => {
       const { queryByText } = renderModalWithFiat('quote-card', '0.07');
-      expect(
-        queryByText(/you will lose/i),
-      ).not.toBeInTheDocument();
+      expect(queryByText(/you will lose/i)).not.toBeInTheDocument();
     });
 
     it('does not show the fiat loss banner when fiat amount is unavailable (no exchange rates)', () => {
       const { queryByText } = renderModal('submit-cta', '0.9');
-      expect(
-        queryByText(/you will lose/i),
-      ).not.toBeInTheDocument();
+      expect(queryByText(/you will lose/i)).not.toBeInTheDocument();
     });
   });
 });
