@@ -2,8 +2,8 @@ import { promises as fs } from 'fs';
 import path from 'path';
 import { mean as calculateMean } from 'lodash';
 import {
+  BenchmarkMetrics,
   BenchmarkSummary,
-  NumericBenchmarkMetrics,
 } from '../../test/e2e/page-objects/benchmark/dapp-page-load-benchmark';
 
 export type BenchmarkOutput = {
@@ -31,7 +31,6 @@ enum KeyMetrics {
   PageLoadTime = 'pageLoadTime',
   DomContentLoaded = 'domContentLoaded',
   FirstContentfulPaint = 'firstContentfulPaint',
-  TotalBlockingTime = 'tbt',
 }
 
 /**
@@ -44,7 +43,6 @@ const EMOJI_RENDERING_THRESHOLDS: Record<
   [KeyMetrics.PageLoadTime]: { good: 1000, warning: 2000 },
   [KeyMetrics.DomContentLoaded]: { good: 1200, warning: 2500 },
   [KeyMetrics.FirstContentfulPaint]: { good: 800, warning: 1500 },
-  [KeyMetrics.TotalBlockingTime]: { good: 300, warning: 900 },
 };
 
 /**
@@ -54,7 +52,6 @@ const SIGNIFICANT_PERCENT_INCREASE_THRESHOLDS: Record<string, number> = {
   [KeyMetrics.PageLoadTime]: 0.25,
   [KeyMetrics.DomContentLoaded]: 0.2,
   [KeyMetrics.FirstContentfulPaint]: 1.5,
-  [KeyMetrics.TotalBlockingTime]: 0.25,
 };
 
 /**
@@ -97,12 +94,12 @@ export function aggregateHistoricalBenchmarkData(
     const pageData: BenchmarkSummary = {
       page: pageName,
       samples: 0, // Not used downstream
-      mean: {},
-      standardDeviation: {},
-      min: {},
-      max: {},
-      p95: {},
-      p99: {},
+      mean: {} as BenchmarkMetrics,
+      standardDeviation: {} as BenchmarkMetrics,
+      min: {} as BenchmarkMetrics,
+      max: {} as BenchmarkMetrics,
+      p95: {} as BenchmarkMetrics,
+      p99: {} as BenchmarkMetrics,
     };
 
     // Collect mean values for key metrics across all commits
@@ -116,7 +113,9 @@ export function aggregateHistoricalBenchmarkData(
         // Only collect key metrics
         Object.values(KeyMetrics).forEach((metricKey) => {
           const metricValue =
-            pageSummary.mean[metricKey as keyof NumericBenchmarkMetrics];
+            pageSummary.mean[
+              metricKey as keyof Omit<BenchmarkMetrics, 'memoryUsage'>
+            ];
           if (typeof metricValue === 'number') {
             if (!metricMeans[metricKey]) {
               metricMeans[metricKey] = [];
@@ -132,8 +131,9 @@ export function aggregateHistoricalBenchmarkData(
       const values = metricMeans[metricKey];
       if (values.length > 0) {
         const calculatedMean = calculateMean(values);
-        pageData.mean[metricKey as keyof NumericBenchmarkMetrics] =
-          calculatedMean;
+        pageData.mean[
+          metricKey as keyof Omit<BenchmarkMetrics, 'memoryUsage'>
+        ] = calculatedMean;
       }
     });
 
@@ -328,9 +328,12 @@ export function getMetricValues(
   summary: BenchmarkSummary,
   metric: string,
 ): { mean: number; stdDev: number } | null {
-  const meanValue = summary.mean[metric as keyof NumericBenchmarkMetrics];
+  const meanValue =
+    summary.mean[metric as keyof Omit<BenchmarkMetrics, 'memoryUsage'>];
   const stdDevValue =
-    summary.standardDeviation[metric as keyof NumericBenchmarkMetrics];
+    summary.standardDeviation[
+      metric as keyof Omit<BenchmarkMetrics, 'memoryUsage'>
+    ];
 
   if (typeof meanValue !== 'number') {
     return null;
@@ -474,10 +477,14 @@ export function generateBenchmarkComment(
         continue;
       }
 
-      const minValue = pageSummary.min[metric as keyof NumericBenchmarkMetrics];
-      const maxValue = pageSummary.max[metric as keyof NumericBenchmarkMetrics];
-      const p95Value = pageSummary.p95[metric as keyof NumericBenchmarkMetrics];
-      const p99Value = pageSummary.p99[metric as keyof NumericBenchmarkMetrics];
+      const minValue =
+        pageSummary.min[metric as keyof Omit<BenchmarkMetrics, 'memoryUsage'>];
+      const maxValue =
+        pageSummary.max[metric as keyof Omit<BenchmarkMetrics, 'memoryUsage'>];
+      const p95Value =
+        pageSummary.p95[metric as keyof Omit<BenchmarkMetrics, 'memoryUsage'>];
+      const p99Value =
+        pageSummary.p99[metric as keyof Omit<BenchmarkMetrics, 'memoryUsage'>];
 
       comment += `| ${metric} | ${formatTime(currentValues.mean)} | ${formatTime(currentValues.stdDev)} | ${formatTime(minValue || 0)} | ${formatTime(maxValue || 0)} | ${formatTime(p95Value || 0)} | ${formatTime(p99Value || 0)} |\n`;
     }

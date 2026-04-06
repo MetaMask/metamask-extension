@@ -75,39 +75,7 @@ export type BenchmarkMetrics = {
      */
     jsHeapSizeLimit: number;
   };
-  /**
-   * Total count of long tasks (>50ms) observed.
-   * Part of Long Task metrics for measuring main thread blocking.
-   */
-  longTaskCount?: number;
-  /**
-   * Sum of all long task durations in milliseconds.
-   */
-  longTaskTotalDuration?: number;
-  /**
-   * Maximum single long task duration in milliseconds.
-   */
-  longTaskMaxDuration?: number;
-  /**
-   * Total Blocking Time in milliseconds (sum of duration - 50ms for each task).
-   * TBT is a key Core Web Vital proxy metric.
-   */
-  tbt?: number;
-  /**
-   * TBT rating based on Lighthouse thresholds ('good' | 'needs-improvement' | 'poor').
-   * Non-numeric, excluded from statistical aggregation.
-   */
-  tbtRating?: 'good' | 'needs-improvement' | 'poor';
 };
-
-/**
- * Numeric-only benchmark metrics for statistical aggregation.
- * Excludes object-typed properties (memoryUsage) and non-numeric fields (tbtRating).
- */
-export type NumericBenchmarkMetrics = Omit<
-  BenchmarkMetrics,
-  'memoryUsage' | 'tbtRating'
->;
 
 /**
  * Individual benchmark measurement result for a single page load test.
@@ -134,17 +102,17 @@ export type BenchmarkSummary = {
   /** Number of test samples collected for this page */
   samples: number;
   /** Mean (average) values for each performance metric */
-  mean: Partial<NumericBenchmarkMetrics>;
+  mean: Partial<BenchmarkMetrics>;
   /** 95th percentile values for each performance metric */
-  p95: Partial<NumericBenchmarkMetrics>;
+  p95: Partial<BenchmarkMetrics>;
   /** 99th percentile values for each performance metric */
-  p99: Partial<NumericBenchmarkMetrics>;
+  p99: Partial<BenchmarkMetrics>;
   /** Minimum values for each performance metric */
-  min: Partial<NumericBenchmarkMetrics>;
+  min: Partial<BenchmarkMetrics>;
   /** Maximum values for each performance metric */
-  max: Partial<NumericBenchmarkMetrics>;
+  max: Partial<BenchmarkMetrics>;
   /** Standard deviation values for each performance metric */
-  standardDeviation: Partial<NumericBenchmarkMetrics>;
+  standardDeviation: Partial<BenchmarkMetrics>;
 };
 
 /**
@@ -340,11 +308,6 @@ export class PageLoadBenchmark {
     await page.waitForLoadState('networkidle');
 
     // Collect performance metrics
-    // Long task metrics are not collected on dapp pages. The extension's
-    // PerformanceObserver runs on chrome-extension:// pages and is not
-    // accessible here. Dapp page long tasks reflect the dapp's own JS,
-    // not the extension's. Long task/TBT metrics are collected only in
-    // Selenium-based startup/journey/interaction benchmarks via stateHooks.
     const metrics: BenchmarkMetrics = await page.evaluate(() => {
       const navigation = performance.getEntriesByType(
         'navigation',
@@ -450,9 +413,10 @@ export class PageLoadBenchmark {
 
     for (const [page, pageResults] of Object.entries(resultsByPage)) {
       const metrics = pageResults.map((r) => r.metrics);
-      const metricKeys = Object.keys(metrics[0]).filter(
-        (k) => k !== 'memoryUsage' && k !== 'tbtRating',
-      ) as (keyof NumericBenchmarkMetrics)[];
+      const metricKeys = Object.keys(metrics[0]) as (keyof Omit<
+        BenchmarkMetrics,
+        'memoryUsage'
+      >)[];
 
       const summary: BenchmarkSummary = {
         page,
