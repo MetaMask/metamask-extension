@@ -4558,6 +4558,9 @@
   "nickname": {
     "message": "Nickname"
   },
+  "no": {
+    "message": "No"
+  },
   "noAccountsFound": {
     "message": "No accounts found for the given search query"
   },
@@ -9457,9 +9460,6 @@
   },
   "year": {
     "message": "year"
-  },
-  "no": {
-    "message": "No"
   },
   "yes": {
     "message": "Yes"
