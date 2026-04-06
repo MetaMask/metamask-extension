@@ -999,8 +999,8 @@ describe('PerpsMarketDetailPage', () => {
         screen.getByTestId('perps-cancel-order-modal'),
       ).toBeInTheDocument();
 
-      // ModalHeader renders a close button with aria-label="Close"
-      const closeButton = screen.getByLabelText('Close');
+      // ModalHeader renders a close button with localized aria-label
+      const closeButton = screen.getByLabelText(messages.close.message);
       fireEvent.click(closeButton);
 
       expect(

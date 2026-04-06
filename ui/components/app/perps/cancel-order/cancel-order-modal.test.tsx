@@ -2,6 +2,7 @@ import React from 'react';
 import { screen, waitFor, fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import configureStore from '../../../../store/store';
 import mockState from '../../../../../test/data/mock-state.json';
 import { mockOrders } from '../mocks';
@@ -86,7 +87,7 @@ describe('CancelOrderModal', () => {
         mockStore,
       );
 
-      expect(screen.getByText('Limit Price')).toBeInTheDocument();
+      expect(screen.getByText(messages.perpsLimitPrice.message)).toBeInTheDocument();
       expect(screen.getAllByText('$3,000.00').length).toBeGreaterThanOrEqual(1);
     });
 
@@ -96,7 +97,7 @@ describe('CancelOrderModal', () => {
         mockStore,
       );
 
-      expect(screen.getByText('Size')).toBeInTheDocument();
+      expect(screen.getByText(messages.perpsSize.message)).toBeInTheDocument();
       expect(screen.getByText('1.0 ETH')).toBeInTheDocument();
     });
 
@@ -111,7 +112,9 @@ describe('CancelOrderModal', () => {
         mockStore,
       );
 
-      expect(screen.queryByText('Original size')).not.toBeInTheDocument();
+      expect(
+        screen.queryByText(messages.perpsOrderOriginalSize.message),
+      ).not.toBeInTheDocument();
     });
 
     it('displays original size row when size differs from originalSize', () => {
@@ -129,7 +132,9 @@ describe('CancelOrderModal', () => {
         mockStore,
       );
 
-      expect(screen.getByText('Original size')).toBeInTheDocument();
+      expect(
+        screen.getByText(messages.perpsOrderOriginalSize.message),
+      ).toBeInTheDocument();
       expect(screen.getByText('1.0 ETH')).toBeInTheDocument();
     });
 
@@ -139,7 +144,7 @@ describe('CancelOrderModal', () => {
         mockStore,
       );
 
-      expect(screen.getByText('Order value')).toBeInTheDocument();
+      expect(screen.getByText(messages.perpsOrderValue.message)).toBeInTheDocument();
       expect(screen.getAllByText('$3,000.00').length).toBeGreaterThanOrEqual(1);
     });
 
@@ -150,7 +155,9 @@ describe('CancelOrderModal', () => {
         mockStore,
       );
 
-      expect(screen.queryByText('Order value')).not.toBeInTheDocument();
+      expect(
+        screen.queryByText(messages.perpsOrderValue.message),
+      ).not.toBeInTheDocument();
     });
 
     it('displays Reduce only as "Yes" when reduceOnly is true', () => {
@@ -160,8 +167,8 @@ describe('CancelOrderModal', () => {
         mockStore,
       );
 
-      expect(screen.getByText('Reduce only')).toBeInTheDocument();
-      expect(screen.getByText('Yes')).toBeInTheDocument();
+      expect(screen.getByText(messages.perpsReduceOnly.message)).toBeInTheDocument();
+      expect(screen.getByText(messages.yes.message)).toBeInTheDocument();
     });
 
     it('displays Reduce only as "No" when reduceOnly is false', () => {
@@ -170,7 +177,8 @@ describe('CancelOrderModal', () => {
         mockStore,
       );
 
-      expect(screen.getByText('Reduce only')).toBeInTheDocument();
+      expect(screen.getByText(messages.perpsReduceOnly.message)).toBeInTheDocument();
+      // Reduce-only false branch is still a hardcoded "No" in the component (no locale key).
       expect(screen.getByText('No')).toBeInTheDocument();
     });
 
@@ -180,8 +188,8 @@ describe('CancelOrderModal', () => {
         mockStore,
       );
 
-      expect(screen.getByText('Status')).toBeInTheDocument();
-      expect(screen.getByText('Open')).toBeInTheDocument();
+      expect(screen.getByText(messages.perpsOrderStatus.message)).toBeInTheDocument();
+      expect(screen.getByText(messages.perpsStatusOpen.message)).toBeInTheDocument();
     });
 
     it('renders the cancel order button', () => {
@@ -201,7 +209,7 @@ describe('CancelOrderModal', () => {
         mockStore,
       );
 
-      expect(screen.getByText('Cancel order')).toBeInTheDocument();
+      expect(screen.getByText(messages.perpsCancelOrder.message)).toBeInTheDocument();
     });
 
     it('does not render when isOpen is false', () => {
@@ -317,7 +325,9 @@ describe('CancelOrderModal', () => {
       await user.click(screen.getByTestId('perps-cancel-order-button'));
 
       await waitFor(() => {
-        expect(screen.getByText('Something went wrong')).toBeInTheDocument();
+        expect(
+          screen.getByText(messages.hardwareWalletErrorUnknownErrorTitle.message),
+        ).toBeInTheDocument();
       });
       expect(onClose).not.toHaveBeenCalled();
     });
