@@ -25,6 +25,7 @@ import {
   MetaMetricsEventAccountType,
   MetaMetricsEventCategory,
   MetaMetricsEventName,
+  MetaMetricsUserTrait,
 } from '../../../../shared/constants/metametrics';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
@@ -265,6 +266,18 @@ export default function CreatePassword({
       },
     });
     if (isSocialLoginFlow) {
+      // track analytics preference selected event for social login users
+      // as social login users will not see the metametrics screen
+      trackEvent({
+        category: MetaMetricsEventCategory.Onboarding,
+        event: MetaMetricsEventName.AnalyticsPreferenceSelected,
+        properties: {
+          [MetaMetricsUserTrait.IsMetricsOptedIn]: true,
+          [MetaMetricsUserTrait.HasMarketingConsent]: termsChecked,
+          location: 'onboarding_create_password',
+        },
+      });
+
       if (termsChecked) {
         dispatch(setMarketingConsent(true));
         dispatch(setDataCollectionForMarketing(true));

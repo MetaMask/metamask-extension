@@ -123,6 +123,20 @@ jest.mock('../../providers/perps', () => ({
   }),
 }));
 
+const mockReplacePerpsToastByKey = jest.fn();
+jest.mock('../../components/app/perps/perps-toast', () => {
+  const { PERPS_TOAST_KEYS } = jest.requireActual(
+    '../../components/app/perps/perps-toast/perps-toast-provider',
+  );
+
+  return {
+    PERPS_TOAST_KEYS,
+    usePerpsToast: () => ({
+      replacePerpsToastByKey: mockReplacePerpsToastByKey,
+    }),
+  };
+});
+
 jest.mock('../../hooks/perps', () => ({
   usePerpsEligibility: () => ({ isEligible: true }),
   usePerpsOrderForm: jest.fn(),
@@ -184,11 +198,17 @@ jest.mock('../../hooks/perps/usePerpsTransactionHistory', () => ({
 
 const mockUseParams = jest.fn().mockReturnValue({ symbol: 'ETH' });
 const mockUseNavigate = jest.fn();
+const mockUseLocation = jest.fn().mockReturnValue({
+  pathname: '/perps/market/ETH',
+  search: '',
+  state: null,
+});
 const mockNavigateComponent = jest.fn();
 
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockUseNavigate,
+  useLocation: () => mockUseLocation(),
   useParams: () => mockUseParams(),
   Navigate: (props: { to: string; replace?: boolean }) => {
     mockNavigateComponent(props);
@@ -209,6 +229,7 @@ describe('PerpsMarketDetailPage', () => {
     metamask: {
       ...mockState.metamask,
       remoteFeatureFlags: {
+        ...mockState.metamask.remoteFeatureFlags,
         perpsEnabledVersion: perpsEnabled
           ? { enabled: true, minimumVersion: '0.0.0' }
           : { enabled: false, minimumVersion: '99.99.99' },
@@ -218,8 +239,14 @@ describe('PerpsMarketDetailPage', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    mockReplacePerpsToastByKey.mockReset();
     mockUseParams.mockReturnValue({ symbol: 'ETH' });
     latestPriceSubscriber = undefined;
+    mockUseLocation.mockReturnValue({
+      pathname: '/perps/market/ETH',
+      search: '',
+      state: null,
+    });
   });
 
   describe('when perps feature is enabled', () => {
@@ -232,6 +259,36 @@ describe('PerpsMarketDetailPage', () => {
       );
 
       expect(getByTestId('perps-market-detail-page')).toBeInTheDocument();
+    });
+
+    it('renders return using percent semantics from controller values', () => {
+      const store = mockStore(createMockState(true));
+      renderWithProvider(<PerpsMarketDetailPage />, store);
+
+      expect(screen.getByText(/15\.79%/u)).toBeInTheDocument();
+    });
+
+    it('shows handed-off perps toast and clears route state', () => {
+      mockUseLocation.mockReturnValue({
+        pathname: '/perps/market/ETH',
+        search: '',
+        state: {
+          perpsToastKey: 'perpsToastOrderPlaced',
+          perpsToastDescription: 'Long 0.5 ETH',
+        },
+      });
+      const store = mockStore(createMockState(true));
+
+      renderWithProvider(<PerpsMarketDetailPage />, store);
+
+      expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
+        key: 'perpsToastOrderPlaced',
+        description: 'Long 0.5 ETH',
+      });
+      expect(mockUseNavigate).toHaveBeenCalledWith('/perps/market/ETH', {
+        replace: true,
+        state: undefined,
+      });
     });
 
     it('displays market symbol and price', () => {
@@ -696,6 +753,69 @@ describe('PerpsMarketDetailPage', () => {
       fireEvent.click(presetButton as HTMLElement);
 
       expect(screen.getByDisplayValue('49,500.00')).toBeInTheDocument();
+    });
+
+    it('shows TP/SL success toast without in-progress toast when saving', async () => {
+      const store = mockStore(createMockState(true));
+      renderWithProvider(<PerpsMarketDetailPage />, store);
+
+      fireEvent.click(screen.getByText(messages.perpsAutoClose.message));
+
+      await act(async () => {
+        fireEvent.click(screen.getByText(messages.perpsSaveChanges.message));
+      });
+
+      await waitFor(() => {
+        expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+          'perpsUpdatePositionTPSL',
+          [
+            expect.objectContaining({
+              symbol: 'ETH',
+            }),
+          ],
+        );
+      });
+
+      expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
+        key: 'perpsToastUpdateSuccess',
+      });
+      expect(mockReplacePerpsToastByKey).not.toHaveBeenCalledWith({
+        key: 'perpsToastUpdateInProgress',
+      });
+    });
+
+    it('shows TP/SL failure toast when saving fails', async () => {
+      const consoleErrorSpy = jest
+        .spyOn(console, 'error')
+        .mockImplementation(() => undefined);
+      mockSubmitRequestToBackground.mockImplementation((method: string) => {
+        if (method === 'perpsUpdatePositionTPSL') {
+          return Promise.resolve({
+            success: false,
+            error: 'TP/SL rejected',
+          });
+        }
+        return Promise.resolve({ success: true });
+      });
+
+      const store = mockStore(createMockState(true));
+      renderWithProvider(<PerpsMarketDetailPage />, store);
+
+      fireEvent.click(screen.getByText(messages.perpsAutoClose.message));
+
+      await act(async () => {
+        fireEvent.click(screen.getByText(messages.perpsSaveChanges.message));
+      });
+
+      await waitFor(() => {
+        expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
+          key: 'perpsToastUpdateFailed',
+          description: 'TP/SL rejected',
+        });
+      });
+
+      expect(screen.queryByText('TP/SL rejected')).not.toBeInTheDocument();
+      consoleErrorSpy.mockRestore();
     });
   });
 

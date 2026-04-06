@@ -1,8 +1,14 @@
 const { strict: assert } = require('assert');
-const FixtureBuilder = require('../../fixtures/fixture-builder');
+const {
+  default: FixtureBuilderV2,
+} = require('../../fixtures/fixture-builder-v2');
 const { withFixtures, getEventPayloads } = require('../../helpers');
 const { login } = require('../../page-objects/flows/login.flow');
-const { DAPP_URL, WINDOW_TITLES } = require('../../constants');
+const {
+  DAPP_URL_LOCALHOST,
+  NETWORK_CLIENT_ID,
+  WINDOW_TITLES,
+} = require('../../constants');
 const { mockServerJsonRpc } = require('./mocks/mock-server-json-rpc');
 const { MOCK_META_METRICS_ID } = require('./constants');
 
@@ -253,11 +259,16 @@ describe('Confirmation Security Alert - Blockaid', function () {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
-        fixtures: new FixtureBuilder()
-          .withNetworkControllerOnMainnet()
-          .withPermissionControllerConnectedToTestDapp()
-          .withPreferencesController({
-            securityAlertsEnabled: true,
+        fixtures: new FixtureBuilderV2()
+          .withSelectedNetwork(NETWORK_CLIENT_ID.MAINNET)
+          .withPermissionControllerConnectedToTestDapp({
+            useLocalhostHostname: true,
+            chainIds: [1],
+          })
+          .withEnabledNetworks({
+            eip155: {
+              '0x1': true,
+            },
           })
           .withMetaMetricsController({
             metaMetricsId: MOCK_META_METRICS_ID,
@@ -269,8 +280,8 @@ describe('Confirmation Security Alert - Blockaid', function () {
       },
 
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
-        await login(driver);
-        await driver.openNewPage(DAPP_URL);
+        await login(driver, { expectedBalance: '1.37T ETH' });
+        await driver.openNewPage(DAPP_URL_LOCALHOST);
 
         // Click TestDapp button for transaction
         await driver.clickElement('#maliciousApprovalButton');

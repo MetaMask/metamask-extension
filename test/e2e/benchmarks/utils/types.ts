@@ -1,6 +1,9 @@
 import type {
   Persona,
   BenchmarkType,
+  WebVitalsMetrics,
+  WebVitalsSummary,
+  TimerStatistics,
   ThresholdViolation,
 } from '../../../../shared/constants/benchmarks';
 
@@ -13,6 +16,8 @@ export type PageLoadBenchmarkOptions = {
   browserLoads?: number;
   pageLoads?: number;
   retries?: number;
+  platform?: string;
+  buildType?: string;
 };
 
 type NavigationMetric = {
@@ -34,12 +39,13 @@ export type Metrics = {
   numNetworkReqs: number;
 };
 
-/** User action result with testTitle, persona and numeric timing metrics. */
+/** User action result with testTitle, persona, timing metrics, and Core Web Vitals. */
 export type UserActionResult = {
   testTitle: string;
   persona: Persona;
+  webVitals?: WebVitalsMetrics;
   benchmarkType?: BenchmarkType;
-  [key: string]: string | number | undefined;
+  [key: string]: string | number | WebVitalsMetrics | undefined;
 };
 
 export type BenchmarkArguments = {
@@ -57,25 +63,11 @@ export type NetworkReport = {
 
 export type BenchmarkRunResult = {
   timers: TimerResult[];
+  /** Per-run web vitals snapshot captured at end of measurement */
+  webVitals?: WebVitalsMetrics;
   success: boolean;
   error?: string;
   benchmarkType?: BenchmarkType;
-};
-
-export type TimerStatistics = {
-  id: string;
-  mean: number;
-  min: number;
-  max: number;
-  stdDev: number;
-  cv: number; // Coefficient of Variation
-  p50: number;
-  p75: number;
-  p95: number;
-  p99: number;
-  samples: number;
-  outliers: number;
-  dataQuality: 'good' | 'poor' | 'unreliable';
 };
 
 export type BenchmarkSummary = {
@@ -94,6 +86,8 @@ export type BenchmarkSummary = {
   thresholdsPassed: boolean;
   /** Benchmark type extracted from the first successful run */
   benchmarkType?: BenchmarkType;
+  /** Web vitals per-run data and aggregated statistics */
+  webVitals?: WebVitalsSummary;
 };
 
 export type PerformanceBenchmarkResults = {
@@ -102,3 +96,9 @@ export type PerformanceBenchmarkResults = {
 };
 
 export type BenchmarkFunction = () => Promise<BenchmarkRunResult>;
+
+/** Return type for user-action measurement functions inside flows */
+export type UserActionMeasurement = {
+  timers: TimerResult[];
+  webVitals?: WebVitalsMetrics;
+};

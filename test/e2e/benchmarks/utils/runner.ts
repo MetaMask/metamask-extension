@@ -6,13 +6,19 @@ import type {
   Persona,
   StatisticalResult,
   ThresholdConfig,
+  TimerStatistics,
+  WebVitalsMetrics,
+  WebVitalsRun,
+  WebVitalsSummary,
 } from '../../../../shared/constants/benchmarks';
+import { BENCHMARK_PERSONA } from '../../../../shared/constants/benchmarks';
 import {
   ALL_METRICS,
   DEFAULT_NUM_BROWSER_LOADS,
   DEFAULT_NUM_PAGE_LOADS,
 } from './constants';
 import {
+  aggregateWebVitals,
   calcMaxResult,
   calcMeanResult,
   calcMinResult,
@@ -29,8 +35,7 @@ import type {
   BenchmarkRunResult,
   BenchmarkSummary,
   Metrics,
-  TimerResult,
-  TimerStatistics,
+  UserActionMeasurement,
 } from './types';
 import { performanceTracker } from './performance-tracker';
 
@@ -96,9 +101,12 @@ export async function runBenchmarkWithIterations(
     }
   }
 
-  // Aggregate timer results
+  // Aggregate timer results and collect per-run web vitals
   const timerMap = new Map<string, number[]>();
-  for (const result of allResults) {
+  const webVitalsRuns: WebVitalsRun[] = [];
+
+  for (let idx = 0; idx < allResults.length; idx++) {
+    const result = allResults[idx];
     if (result.success) {
       for (const timer of result.timers) {
         if (!timerMap.has(timer.id)) {
@@ -108,6 +116,10 @@ export async function runBenchmarkWithIterations(
         if (timerDurations) {
           timerDurations.push(timer.duration);
         }
+      }
+
+      if (result.webVitals) {
+        webVitalsRuns.push({ ...result.webVitals, iteration: idx });
       }
     }
   }
@@ -162,6 +174,14 @@ export async function runBenchmarkWithIterations(
 
   const thresholdResult = validateThresholds(timerStats, thresholdConfig);
 
+  // Aggregate web vitals if any runs reported them
+  let webVitalsSummary: WebVitalsSummary | undefined;
+  if (webVitalsRuns.length > 0) {
+    webVitalsSummary = {
+      runs: webVitalsRuns,
+      aggregated: aggregateWebVitals(webVitalsRuns),
+    };
+  }
   // Extract benchmarkType from the first result (same across all iterations)
   const benchmarkType = allResults.find((r) => r.benchmarkType)?.benchmarkType;
 
@@ -175,8 +195,9 @@ export async function runBenchmarkWithIterations(
     excludedDueToQuality,
     exclusionRatePassed: overallExclusionCheck.passed,
     exclusionRate: overallExclusionCheck.rate,
-    thresholdViolations: thresholdResult.violations,
-    thresholdsPassed: thresholdResult.passed,
+    thresholdViolations: thresholdResult?.violations ?? [],
+    thresholdsPassed: thresholdResult?.passed ?? true,
+    ...(webVitalsSummary && { webVitals: webVitalsSummary }),
     benchmarkType,
   };
 }
@@ -189,12 +210,16 @@ export async function runBenchmarkWithIterations(
  * @param testTitle
  * @param persona
  * @param benchmarkType
+ * @param platform
+ * @param buildType
  */
 export function convertSummaryToResults(
   summary: BenchmarkSummary,
   testTitle: string,
-  persona: Persona = 'standard',
+  persona: Persona = BENCHMARK_PERSONA.STANDARD,
   benchmarkType?: BenchmarkType,
+  platform?: string,
+  buildType?: string,
 ): BenchmarkResults {
   const mean: StatisticalResult = {};
   const min: StatisticalResult = {};
@@ -216,12 +241,15 @@ export function convertSummaryToResults(
     testTitle,
     persona,
     benchmarkType,
+    platform,
+    buildType,
     mean,
     min,
     max,
     stdDev,
     p75,
     p95,
+    ...(summary.webVitals && { webVitals: summary.webVitals }),
   };
 }
 
@@ -229,6 +257,7 @@ export type MeasurePageResult = {
   metrics: Metrics[];
   title: string;
   persona: Persona;
+  webVitalsRuns?: WebVitalsMetrics[];
 };
 
 export async function runPageLoadBenchmark(
@@ -240,25 +269,38 @@ export async function runPageLoadBenchmark(
     browserLoads?: number;
     pageLoads?: number;
     retries?: number;
+    platform?: string;
+    buildType?: string;
   },
 ): Promise<BenchmarkResults> {
   const {
     browserLoads = DEFAULT_NUM_BROWSER_LOADS,
     pageLoads = DEFAULT_NUM_PAGE_LOADS,
     retries = 0,
+    platform,
+    buildType,
   } = options;
 
   const pageName = 'home';
   let runResults: Metrics[] = [];
+  let allWebVitalsRuns: WebVitalsRun[] = [];
   let testTitle = '';
-  let resultPersona: Persona = 'standard';
+  let resultPersona: Persona = BENCHMARK_PERSONA.STANDARD;
 
   for (let i = 0; i < browserLoads; i += 1) {
     console.log('Starting browser load', i + 1, 'of', browserLoads);
-    const { metrics, title, persona } = await retry({ retries }, () =>
-      measurePageFn(pageName, pageLoads),
+    const { metrics, title, persona, webVitalsRuns } = await retry(
+      { retries },
+      () => measurePageFn(pageName, pageLoads),
     );
     runResults = runResults.concat(metrics);
+    if (webVitalsRuns) {
+      const indexed = webVitalsRuns.map((wv: WebVitalsMetrics, j: number) => ({
+        ...wv,
+        iteration: i * pageLoads + j,
+      }));
+      allWebVitalsRuns = allWebVitalsRuns.concat(indexed);
+    }
     testTitle = title;
     resultPersona = persona;
   }
@@ -283,25 +325,36 @@ export async function runPageLoadBenchmark(
       .sort((a, b) => a - b);
   }
 
+  let webVitals: WebVitalsSummary | undefined;
+  if (allWebVitalsRuns.length > 0) {
+    webVitals = {
+      runs: allWebVitalsRuns,
+      aggregated: aggregateWebVitals(allWebVitalsRuns),
+    };
+  }
+
   return {
     testTitle,
     persona: resultPersona,
+    platform,
+    buildType,
     mean: calcMeanResult(result),
     min: calcMinResult(result),
     max: calcMaxResult(result),
     stdDev: calcStdDevResult(result),
     p75: calcPResult(result, 75),
     p95: calcPResult(result, 95),
+    ...(webVitals && { webVitals }),
   };
 }
 
 export async function runUserActionBenchmark(
-  measureFn: () => Promise<TimerResult[]>,
+  measureFn: () => Promise<UserActionMeasurement>,
   benchmarkType?: BenchmarkType,
 ): Promise<BenchmarkRunResult> {
   try {
-    const timers = await measureFn();
-    return { timers, success: true, benchmarkType };
+    const { timers, webVitals } = await measureFn();
+    return { timers, webVitals, success: true, benchmarkType };
   } catch (error) {
     return {
       timers: [],

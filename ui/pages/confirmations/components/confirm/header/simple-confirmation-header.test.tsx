@@ -1,10 +1,11 @@
 import React from 'react';
 import { DefaultRootState } from 'react-redux';
-import { fireEvent } from '@testing-library/react';
+import { act, fireEvent } from '@testing-library/react';
 import { TransactionType } from '@metamask/transaction-controller';
 
 import { getMockConfirmStateForTransaction } from '../../../../../../test/data/confirmations/helper';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../test/data/confirmations/contract-interaction';
+import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
 import { renderWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
 import configureStore from '../../../../../store/store';
 import * as ConfirmActions from '../../../hooks/useConfirmActions';
@@ -80,12 +81,34 @@ describe('<SimpleConfirmationHeader />', () => {
       ).toBeInTheDocument();
     });
 
+    it('exposes an accessible name on the mUSD bonus info control', () => {
+      const { getByRole } = render(TransactionType.musdConversion);
+
+      expect(
+        getByRole('button', {
+          name: messages.musdConversionBonusTooltipAria.message,
+        }),
+      ).toBeInTheDocument();
+    });
+
     it('shows tooltip when info button is clicked', () => {
       const { getByTestId } = render(TransactionType.musdConversion);
 
       fireEvent.click(getByTestId('musd-conversion-header-tooltip-button'));
 
       expect(getByTestId('musd-conversion-header-tooltip')).toBeInTheDocument();
+    });
+
+    it('shows Powered by Relay attribution in the mUSD bonus tooltip', async () => {
+      const { getByTestId, getByText } = render(TransactionType.musdConversion);
+
+      await act(async () => {
+        fireEvent.click(getByTestId('musd-conversion-header-tooltip-button'));
+      });
+
+      expect(
+        getByText(messages.musdBonusPoweredByRelay.message),
+      ).toBeInTheDocument();
     });
   });
 

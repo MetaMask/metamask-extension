@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   Chart,
   LineElement,
@@ -14,14 +14,7 @@ import {
 import { Line } from 'react-chartjs-2';
 import classnames from 'clsx';
 import { brandColor } from '@metamask/design-tokens';
-import {
-  Hex,
-  isCaipAssetType,
-  isHexString,
-  KnownCaipNamespace,
-  toCaipAssetType,
-  hexToNumber,
-} from '@metamask/utils';
+import { Hex } from '@metamask/utils';
 import { trim } from 'lodash';
 import { Duration } from 'luxon';
 import { useTheme } from '../../../../hooks/useTheme';
@@ -43,7 +36,6 @@ import { TokenFiatDisplayInfo } from '../../../../components/app/assets/types';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useHistoricalPrices } from '../../hooks/useHistoricalPrices';
 import { loadingOpacity } from '../../util';
-import { useChartTimeRanges } from '../../hooks/useChartTimeRanges';
 import ChartTooltip from './chart-tooltip';
 import { CrosshairPlugin } from './crosshair-plugin';
 import { AssetChartEmptyState } from './asset-chart-empty-state';
@@ -139,27 +131,7 @@ const getTranslatedTimeRangeLabel = (
   );
 };
 
-export function convertAddressToAssetCaipType(
-  address: string,
-  chainId: string,
-) {
-  if (isCaipAssetType(address)) {
-    return address;
-  }
-
-  // Create EIP155 EVM asset type
-  if (isHexString(address) && isHexString(chainId)) {
-    return toCaipAssetType(
-      KnownCaipNamespace.Eip155,
-      hexToNumber(chainId).toString(),
-      'erc20',
-      address,
-    );
-  }
-
-  // Unsupported CAIP asset type
-  return undefined;
-}
+const TIME_RANGES = ['P1D', 'P1W', 'P1M', 'P3M', 'P1Y', 'P1000Y'];
 
 // A chart showing historic prices for a native or token asset
 const AssetChart = ({
@@ -178,13 +150,8 @@ const AssetChart = ({
   const t = useI18nContext();
   const theme = useTheme();
 
-  const caipAssetType = useMemo(() => {
-    return convertAddressToAssetCaipType(address, chainId);
-  }, [address, chainId]);
-  const timeRanges = useChartTimeRanges(caipAssetType, currency);
-
   const [selectedTimeRange, setSelectedTimeRange] = useState<string>(
-    timeRanges[0] ?? 'P1D',
+    TIME_RANGES[0],
   );
 
   const {
@@ -329,7 +296,7 @@ const AssetChart = ({
           marginLeft={3}
           marginRight={3}
         >
-          {timeRanges.map((timeRange) => (
+          {TIME_RANGES.map((timeRange) => (
             <ButtonBase
               key={timeRange}
               className={classnames('time-range-button', {

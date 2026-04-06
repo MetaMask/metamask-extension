@@ -362,8 +362,8 @@ const state = {
     isInitialized: true,
     isUnlocked: true,
     rpcUrl: 'https://rawtestrpc.metamask.io/',
+    selectedAccountGroup: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0',
     accountTree: {
-      selectedAccountGroup: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0',
       wallets: {
         'entropy:01JKAF3DSGM3AB87EM9N0K41AJ': {
           id: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ',
@@ -383,6 +383,7 @@ const state = {
                 },
                 hidden: false,
                 pinned: false,
+                lastSelected: 0,
               },
             },
           },
@@ -763,7 +764,6 @@ const state = {
     balances: {},
     conversionRates: {},
     networkConfigurationsByChainId: {},
-    useBlockie: false,
     featureFlags: {},
     slides: [],
     currentLocale: 'en',
