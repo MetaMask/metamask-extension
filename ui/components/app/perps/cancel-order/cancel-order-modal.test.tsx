@@ -186,8 +186,7 @@ describe('CancelOrderModal', () => {
       expect(
         screen.getByText(messages.perpsReduceOnly.message),
       ).toBeInTheDocument();
-      // Reduce-only false branch is still a hardcoded "No" in the component (no locale key).
-      expect(screen.getByText('No')).toBeInTheDocument();
+      expect(screen.getByText(messages.no.message)).toBeInTheDocument();
     });
 
     it('displays the status row with capitalized status', () => {
@@ -343,11 +342,7 @@ describe('CancelOrderModal', () => {
       await user.click(screen.getByTestId('perps-cancel-order-button'));
 
       await waitFor(() => {
-        expect(
-          screen.getByText(
-            messages.hardwareWalletErrorUnknownErrorTitle.message,
-          ),
-        ).toBeInTheDocument();
+        expect(screen.getByText('Something went wrong')).toBeInTheDocument();
       });
       expect(onClose).not.toHaveBeenCalled();
     });

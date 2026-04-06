@@ -9458,6 +9458,9 @@
   "year": {
     "message": "year"
   },
+  "no": {
+    "message": "No"
+  },
   "yes": {
     "message": "Yes"
   },

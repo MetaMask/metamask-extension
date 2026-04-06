@@ -1,4 +1,5 @@
 import React, { useState, useCallback, useEffect, useMemo } from 'react';
+import { useSelector } from 'react-redux';
 import {
   Box,
   BoxFlexDirection,
@@ -28,6 +29,7 @@ import {
 } from '../../../component-library';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useFormatters } from '../../../../hooks/useFormatters';
+import { getCurrentLocale } from '../../../../ducks/locale/locale';
 import { submitRequestToBackground } from '../../../../store/background-connection';
 import { PerpsTokenLogo } from '../perps-token-logo';
 import { getDisplayName, formatOrderType } from '../utils';
@@ -54,6 +56,7 @@ export const CancelOrderModal: React.FC<CancelOrderModalProps> = ({
 }) => {
   const t = useI18nContext();
   const { formatCurrencyWithMinThreshold } = useFormatters();
+  const currentLocale = useSelector(getCurrentLocale);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -70,14 +73,14 @@ export const CancelOrderModal: React.FC<CancelOrderModalProps> = ({
 
   const formattedDate = useMemo(() => {
     const date = new Date(order.timestamp);
-    return date.toLocaleString('en-US', {
+    return date.toLocaleString(currentLocale ?? 'en-US', {
       month: 'short',
       day: 'numeric',
       hour: 'numeric',
       minute: '2-digit',
       hour12: true,
     });
-  }, [order.timestamp]);
+  }, [order.timestamp, currentLocale]);
 
   const formattedPrice = useMemo(() => {
     const price = parseFloat(order.price) || 0;
@@ -265,7 +268,7 @@ export const CancelOrderModal: React.FC<CancelOrderModalProps> = ({
                   variant={TextVariant.BodySm}
                   fontWeight={FontWeight.Medium}
                 >
-                  {order.reduceOnly ? t('yes') : 'No'}
+                  {order.reduceOnly ? t('yes') : t('no')}
                 </Text>
               </Box>
 
