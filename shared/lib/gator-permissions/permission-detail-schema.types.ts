@@ -55,7 +55,7 @@ export type AmountField = {
   /** For ERC20 amounts, returns the token contract address. */
   getTokenAddress?: (ctx: PermissionContext) => Hex;
   tooltip?: string;
-  visible?: (ctx: PermissionContext) => boolean;
+  isVisible?: (ctx: PermissionContext) => boolean;
 };
 
 /** A plain text row. */
