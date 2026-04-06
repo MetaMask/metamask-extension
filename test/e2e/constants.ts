@@ -236,6 +236,27 @@ export const DEFAULT_TRON_ADDRESS_2 = 'TEcjynxEx7bPfDByW1uwPgsLCBhqynvpQx';
 /* Default TRON address created using test SRP */
 export const DEFAULT_TRON_ADDRESS_SHORT = 'TJ3Q...vGS3';
 
+/*
+ * TRON addresses derived from the E2E test SRP
+ * ("spread raise short crane omit tent fringe mandate neglect detail suspect cradle")
+ * using BIP44 path m/44'/195'/0'/0/{index}
+ */
+
+/** Tron account at derivation index 0 (same as DEFAULT_TRON_ADDRESS) */
+export const TRON_ACCOUNT_INDEX_0 = 'TJ3QZbBREK1Xybe1jf4nR9Attb8i54vGS3';
+
+/** Tron account at derivation index 1 */
+export const TRON_ACCOUNT_INDEX_1 = 'TQMPuQSHEiUevynTJSCDeh3QSBwJeFKC6W';
+
+/** Tron account at derivation index 2 */
+export const TRON_ACCOUNT_INDEX_2 = 'TRQwNiQKov6hQ3pEKVGj2t8ge8YM9vu8ZY';
+
+/** Tron account at derivation index 3 */
+export const TRON_ACCOUNT_INDEX_3 = 'TR5uG9oGNSr5hKcCLdN5zF498BTij5Yz1x';
+
+/** Tron account at derivation index 4 */
+export const TRON_ACCOUNT_INDEX_4 = 'THbDj5zszwXFqBuzexjXF71uEU58BVcp3A';
+
 /* Account types */
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention

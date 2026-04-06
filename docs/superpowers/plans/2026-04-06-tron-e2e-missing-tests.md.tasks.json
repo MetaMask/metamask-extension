@@ -1,0 +1,45 @@
+{
+  "planPath": "docs/superpowers/plans/2026-04-06-tron-e2e-missing-tests.md",
+  "tasks": [
+    {
+      "id": 0,
+      "subject": "Task 1: Add staking mock helpers to common-tron.ts",
+      "status": "pending",
+      "description": "**Goal:** Provide reusable mock functions for the staking-related API endpoints the snap calls.\n\n**Files:**\n- Modify: `test/e2e/tests/tron/mocks/common-tron.ts`\n\n**Acceptance Criteria:**\n- [ ] TRX_STAKED_ENERGY_SUN, TRX_STAKED_BANDWIDTH_SUN, TRX_IN_LOCK_PERIOD_SUN, TRX_READY_FOR_WITHDRAWAL_SUN, STAKING_REWARDS_SUN constants exported\n- [ ] mockGetAccountWithStaking returns frozenV2 + unfrozenV2 with both future (In Lock Period) and past (Ready for Withdrawal) entries\n- [ ] mockTronGetReward mocks POST /wallet/getreward returning { reward: STAKING_REWARDS_SUN }\n- [ ] mockFreezeBalance, mockUnfreezeBalance, mockWithdrawExpireUnfreeze, mockWithdrawBlockRewards all added\n- [ ] mockTronApisWithStaking composes all mocks\n\n**Verify:** `yarn tsc --noEmit` → no errors\n\n```json:metadata\n{\"files\": [\"test/e2e/tests/tron/mocks/common-tron.ts\"], \"verifyCommand\": \"yarn tsc --noEmit\", \"acceptanceCriteria\": [\"staking constants exported\", \"mockGetAccountWithStaking with both lock+withdrawal entries\", \"mockTronGetReward added\", \"mockTronApisWithStaking composes all mocks\"]}\n```"
+    },
+    {
+      "id": 1,
+      "subject": "Task 2: Staking asset display tests",
+      "status": "pending",
+      "blockedBy": [0],
+      "description": "**Goal:** Verify staked TRX virtual assets appear in the MetaMask token list.\n\n**Context:** Staking flows are Portfolio-only — no staking UI exists in the extension. These tests only verify that keyring API assets are displayed correctly.\n\n**Files:**\n- Create: `test/e2e/tests/tron/staking-assets.spec.ts`\n\n**Acceptance Criteria:**\n- [ ] 'Staked for Energy' token visible (name from TRX_STAKED_FOR_ENERGY_METADATA.name)\n- [ ] 'Staked for Bandwidth' token visible\n- [ ] 'In Lock Period' token visible (unfrozenV2 with future expire_time)\n- [ ] 'Ready for Withdrawal' token visible (unfrozenV2 with past expire_time)\n- [ ] All 3 tests use mockTronApisWithStaking\n\n**Verify:** `yarn test:e2e --grep \"Tron staking assets\"` → all 3 pass\n\n```json:metadata\n{\"files\": [\"test/e2e/tests/tron/staking-assets.spec.ts\"], \"verifyCommand\": \"yarn test:e2e --grep \\\"Tron staking assets\\\"\", \"acceptanceCriteria\": [\"Staked for Energy visible\", \"Staked for Bandwidth visible\", \"In Lock Period visible\", \"Ready for Withdrawal visible\"]}\n```"
+    },
+    {
+      "id": 2,
+      "subject": "Task 3: Send edge cases — insufficient balance and fee breakdown",
+      "status": "pending",
+      "description": "**Goal:** Tests for the insufficient balance error and Bandwidth/Energy fee labels in TRX send confirmation.\n\n**Files:**\n- Modify: `test/e2e/tests/send/send-tron.spec.ts`\n\n**Acceptance Criteria:**\n- [ ] Sending 9999 TRX shows Insufficient funds error without reaching confirmation\n- [ ] Sending 1 TRX shows Bandwidth and Energy labels in the snap confirmation dialog\n- [ ] Both use mockTronApis\n\n**Verify:** `yarn test:e2e --grep \"Send Tron\"` → all tests pass\n\n```json:metadata\n{\"files\": [\"test/e2e/tests/send/send-tron.spec.ts\"], \"verifyCommand\": \"yarn test:e2e --grep \\\"Send Tron\\\"\", \"acceptanceCriteria\": [\"Insufficient funds error shown for 9999 TRX\", \"Bandwidth and Energy fee labels in confirmation\"]}\n```"
+    },
+    {
+      "id": 3,
+      "subject": "Task 4: Send edge case — unactivated account activation fee",
+      "status": "pending",
+      "blockedBy": [2],
+      "description": "**Goal:** Verify that sending to a never-activated Tron address shows the 1 TRX activation fee.\n\n**Files:**\n- Modify: `test/e2e/tests/tron/mocks/common-tron.ts` (add TRON_UNACTIVATED_ADDRESS, mockUnactivatedRecipientAccount)\n- Modify: `test/e2e/tests/send/send-tron.spec.ts`\n\n**Acceptance Criteria:**\n- [ ] TRON_UNACTIVATED_ADDRESS exported\n- [ ] mockUnactivatedRecipientAccount returns data: [] for that address\n- [ ] Test confirms dialog shows '1 TRX' activation fee entry\n\n**Verify:** `yarn test:e2e --grep \"unactivated\"` → passes\n\n```json:metadata\n{\"files\": [\"test/e2e/tests/tron/mocks/common-tron.ts\", \"test/e2e/tests/send/send-tron.spec.ts\"], \"verifyCommand\": \"yarn test:e2e --grep \\\"unactivated\\\"\", \"acceptanceCriteria\": [\"TRON_UNACTIVATED_ADDRESS exported\", \"mock returns empty data array\", \"1 TRX fee shown in confirmation\"]}\n```"
+    },
+    {
+      "id": 4,
+      "subject": "Task 5: Transaction activity — swap and stake entries",
+      "status": "pending",
+      "description": "**Goal:** Extend activity list spec for swap and stake transaction action labels.\n\n**Files:**\n- Modify: `test/e2e/tests/tron/mocks/common-tron.ts` (add mockTronGetTransactionsWithStake, mockTronGetTransactionsWithSwap)\n- Modify: `test/e2e/tests/tron/transaction-activity-list.spec.ts`\n\n**Acceptance Criteria:**\n- [ ] FreezeBalanceV2Contract tx shows 'Stake' action label\n- [ ] TriggerSmartContract + call_value + internal TRC20 shows 'Swap' action label\n- [ ] Override mocks registered BEFORE mockTronApis (mockttp first-match-wins)\n- [ ] All 6 activity tests pass\n\n**Verify:** `yarn test:e2e --grep \"Tron transaction activity\"` → all 6 pass\n\n```json:metadata\n{\"files\": [\"test/e2e/tests/tron/mocks/common-tron.ts\", \"test/e2e/tests/tron/transaction-activity-list.spec.ts\"], \"verifyCommand\": \"yarn test:e2e --grep \\\"Tron transaction activity\\\"\", \"acceptanceCriteria\": [\"stake tx shows Stake action\", \"swap tx shows Swap action\", \"all 6 activity tests pass\"]}\n```"
+    },
+    {
+      "id": 5,
+      "subject": "Task 6: Asset display — staking rewards and in-lock-period detail pages",
+      "status": "pending",
+      "blockedBy": [1],
+      "description": "**Goal:** Extend asset-display.spec.ts for staking rewards and in-lock-period detail page amounts.\n\n**Files:**\n- Modify: `test/e2e/tests/tron/asset-display.spec.ts`\n\n**Acceptance Criteria:**\n- [ ] Staking Rewards detail shows correct amount (STAKING_REWARDS_SUN / SUN_PER_TRX to 4 dp)\n- [ ] In Lock Period detail shows '5.000 TRX' (TRX_IN_LOCK_PERIOD_SUN = 5_000_000)\n- [ ] Both use mockTronApisWithStaking\n- [ ] All 5 asset display tests pass\n\n**Verify:** `yarn test:e2e --grep \"Tron asset display\"` → all 5 pass\n\n```json:metadata\n{\"files\": [\"test/e2e/tests/tron/asset-display.spec.ts\"], \"verifyCommand\": \"yarn test:e2e --grep \\\"Tron asset display\\\"\", \"acceptanceCriteria\": [\"Staking Rewards amount correct\", \"In Lock Period shows 5.000 TRX\", \"all 5 asset display tests pass\"]}\n```"
+    }
+  ],
+  "lastUpdated": "2026-04-06T00:00:00.000Z"
+}

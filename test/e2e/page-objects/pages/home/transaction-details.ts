@@ -5,6 +5,8 @@ class TransactionDetailsPage {
 
   private readonly solanaExplorerUrl = 'https://solscan.io';
 
+  private readonly tronExplorerUrl = 'https://tronscan.org/#';
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
@@ -29,6 +31,9 @@ class TransactionDetailsPage {
 
   private readonly hashLink = (txHash: string) =>
     `a[href='${this.solanaExplorerUrl}/tx/${txHash}']`;
+
+  private readonly linkContaining = (partialHref: string) =>
+    `a[href*='${partialHref}']`;
 
   private readonly status = (status: string) => ({
     tag: 'p',
@@ -67,6 +72,25 @@ class TransactionDetailsPage {
   async checkAddressInActivityLog(address: string): Promise<void> {
     console.log(`Checking address ${address} in activity log`);
     await this.driver.waitForSelector(this.addressInActivityLog(address));
+  }
+
+  async checkLinkContainsHref(partialHref: string): Promise<void> {
+    console.log(`Checking link contains href: ${partialHref}`);
+    await this.driver.waitForSelector(this.linkContaining(partialHref));
+  }
+
+  async checkTronTransactionHashLink(txHash: string): Promise<void> {
+    console.log(`Checking Tron transaction hash link: ${txHash}`);
+    await this.driver.waitForSelector(
+      this.linkContaining(`${this.tronExplorerUrl}/transaction/${txHash}`),
+    );
+  }
+
+  async checkTronTransactionFromToLink(address: string): Promise<void> {
+    console.log(`Checking Tron from/to address link: ${address}`);
+    await this.driver.waitForSelector(
+      this.linkContaining(`${this.tronExplorerUrl}/address/${address}`),
+    );
   }
 }
 

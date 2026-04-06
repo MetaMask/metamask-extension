@@ -3,6 +3,23 @@ import { Mockttp, MockedEndpoint } from 'mockttp';
 
 export const TRON_ACCOUNT_ADDRESS = 'TJ3QZbBREK1Xybe1jf4nR9Attb8i54vGS3';
 export const TRON_RECIPIENT_ADDRESS = 'TK3xRFq22eEiATz6kfamDeAAQrPdfdGPeq';
+
+// Transaction detail fixtures for E2E test assertions (mirrors commonSolanaTxConfirmedDetailsFixture pattern)
+export const tronTrc20TransferDetailsFixture = {
+  status: 'Confirmed',
+  amount: '-50,000 HTX',
+  txHash:
+    '0f757bc78562fc03c305d84ce83ddde8dd3c71a76dd014cecc96656bd432c5d1',
+  fromAddress: TRON_ACCOUNT_ADDRESS,
+  toAddress: TRON_RECIPIENT_ADDRESS,
+};
+
+export const tronNativeTransferDetailsFixture = {
+  status: 'Confirmed',
+  // 3rd native tx: 2,000,000 SUN = 2 TRX (sent from account)
+  txHash:
+    'e51e01e4a0d0f6b4720f489375c09e12c57e64d53ea82094b9cc2ef1d665d562',
+};
 export const TRON_CHAIN_ID = 'tron:728126428';
 export const TRON_MOCK_TRANSACTION_EXPIRATION_MESSAGE =
   '5472616e73616374696f6e2065787069726564';
@@ -1039,6 +1056,115 @@ export async function mockBridgeGetTronQuoteEmpty(
     }));
 }
 
+/**
+ * Mocks GET /v1/accounts/{address}/transactions for a specific address,
+ * returning a single transfer transaction to simulate on-chain activity.
+ * Used in discovery tests to make the Tron snap "discover" an account at a
+ * given BIP44 derivation index.
+ *
+ * @param mockServer
+ * @param address - The Tron address to mock activity for
+ */
+export async function mockTronGetTransactionsForAddress(
+  mockServer: Mockttp,
+  address: string,
+): Promise<MockedEndpoint> {
+  return mockServer
+    .forGet(tronInfuraUrl(`/v1/accounts/${address}/transactions`))
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: {
+        data: [
+          {
+            ret: [{ contractRet: 'SUCCESS', fee: 0 }],
+            txID: `discovery-tx-${address.slice(0, 8)}`,
+            net_usage: 265,
+            energy_usage: 0,
+            blockNumber: 77819893,
+            block_timestamp: 1764121368000,
+            energy_fee: 0,
+            energy_usage_total: 0,
+            raw_data: {
+              contract: [
+                {
+                  parameter: {
+                    value: {
+                      amount: 1,
+                      owner_address: '4158bf0e3296b05798df14af89749955daa753e946',
+                      to_address: address,
+                    },
+                    type_url:
+                      'type.googleapis.com/protocol.TransferContract',
+                  },
+                  type: 'TransferContract',
+                },
+              ],
+              ref_block_bytes: '6fe2',
+              ref_block_hash: '21899808c649f863',
+              expiration: 1764121425000,
+              timestamp: 1764121365678,
+            },
+            internal_transactions: [],
+          },
+        ],
+        success: true,
+        meta: {
+          at: Date.now(),
+          page_size: 1,
+        },
+      },
+    }));
+}
+
+/**
+ * Mocks GET /v1/accounts/{address}/transactions/trc20 for a specific address,
+ * returning empty data (no TRC20 transactions during discovery).
+ *
+ * @param mockServer
+ * @param address - The Tron address to mock
+ */
+export async function mockTronGetTrc20TransactionsForAddress(
+  mockServer: Mockttp,
+  address: string,
+): Promise<MockedEndpoint> {
+  return mockServer
+    .forGet(
+      tronInfuraUrl(`/v1/accounts/${address}/transactions/trc20`),
+    )
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: {
+        data: [],
+        success: true,
+        meta: { at: Date.now(), page_size: 0 },
+      },
+    }));
+}
+
+/**
+ * Mocks any GET /v1/accounts/{address} request with a zero-balance response.
+ * Used for multi-account tests where different addresses beyond the primary are queried.
+ *
+ * @param mockServer
+ */
+export async function mockTronGetAccountWildcard(
+  mockServer: Mockttp,
+): Promise<MockedEndpoint> {
+  return mockServer
+    .forGet(tronInfuraUrl('/v1/accounts/[^/]+'))
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: {
+        data: [],
+        success: true,
+        meta: {
+          at: Date.now(),
+          page_size: 0,
+        },
+      },
+    }));
+}
+
 export async function mockTronApis(
   mockServer: Mockttp,
   mockZeroBalance?: boolean,
@@ -1050,6 +1176,85 @@ export async function mockTronApis(
     await mockTronGetAccountResource(mockServer),
     await mockTronGetTrc20Transactions(mockServer),
     await mockTronGetTransactions(mockServer),
+    await mockExchangeRates(mockServer),
+    await mockFiatExchangeRates(mockServer),
+    await mockTronSpotPrices(mockServer),
+    await mockTrxNativeSpotPrices(mockServer),
+    await mockTronAssets(mockServer),
+    await mockBroadTransaction(mockServer),
+  ];
+}
+
+/**
+ * Like mockTronApis but uses a wildcard account mock to handle requests for
+ * any Tron address (needed for multi-account generation tests).
+ *
+ * @param mockServer
+ */
+export async function mockTronApisMultiAccount(
+  mockServer: Mockttp,
+): Promise<MockedEndpoint[]> {
+  return [
+    await mockTronFeatureFlags(mockServer),
+    await mockTronGetBlock(mockServer),
+    await mockTronGetAccountWildcard(mockServer),
+    await mockTronGetAccountResource(mockServer),
+    await mockTronGetTrc20Transactions(mockServer),
+    await mockTronGetTransactions(mockServer),
+    await mockExchangeRates(mockServer),
+    await mockFiatExchangeRates(mockServer),
+    await mockTronSpotPrices(mockServer),
+    await mockTrxNativeSpotPrices(mockServer),
+    await mockTronAssets(mockServer),
+    await mockBroadTransaction(mockServer),
+  ];
+}
+
+/**
+ * Like mockTronApisMultiAccount but also registers specific-address transaction
+ * mocks for the given addresses BEFORE the wildcard catch-all. This is used in
+ * discovery tests: for each address in `addressesWithActivity` the snap will
+ * "see" one native transaction and therefore consider the account discovered;
+ * all other addresses fall through to the wildcard and return empty.
+ *
+ * @param mockServer
+ * @param addressesWithActivity - Tron addresses that should appear to have on-chain activity
+ */
+export async function mockTronApisDiscovery(
+  mockServer: Mockttp,
+  addressesWithActivity: string[],
+): Promise<MockedEndpoint[]> {
+  const specificMocks: MockedEndpoint[] = [];
+
+  // Register specific-address mocks first (mockttp matches in registration order)
+  for (const address of addressesWithActivity) {
+    specificMocks.push(
+      await mockTronGetTransactionsForAddress(mockServer, address),
+    );
+    specificMocks.push(
+      await mockTronGetTrc20TransactionsForAddress(mockServer, address),
+    );
+  }
+
+  return [
+    ...specificMocks,
+    await mockTronFeatureFlags(mockServer),
+    await mockTronGetBlock(mockServer),
+    await mockTronGetAccountWildcard(mockServer),
+    await mockTronGetAccountResource(mockServer),
+    // Wildcard transaction fallback (no activity for any other address)
+    await mockServer
+      .forGet(tronInfuraUrl('/v1/accounts/[^/]+/transactions/trc20'))
+      .thenCallback(() => ({
+        statusCode: 200,
+        json: { data: [], success: true, meta: { at: Date.now(), page_size: 0 } },
+      })),
+    await mockServer
+      .forGet(tronInfuraUrl('/v1/accounts/[^/]+/transactions'))
+      .thenCallback(() => ({
+        statusCode: 200,
+        json: { data: [], success: true, meta: { at: Date.now(), page_size: 0 } },
+      })),
     await mockExchangeRates(mockServer),
     await mockFiatExchangeRates(mockServer),
     await mockTronSpotPrices(mockServer),
