@@ -167,8 +167,10 @@ export const PerpsView: React.FC = () => {
   // Guards on both the backend isFirstTimeUser flag (stable once propagated) and
   // the local tutorialCompleted flag so that a skip/complete before the backend
   // state propagates doesn't reopen the modal on the next effect run.
+  // Explicitly skips when isFirstTimeUser is undefined so that unhydrated
+  // controller state is never treated as "first-time user = true".
   useEffect(() => {
-    if (isLoading || tutorialCompleted) {
+    if (isLoading || tutorialCompleted || isFirstTimeUser === undefined) {
       return;
     }
     const networkKey = isTestnet ? 'testnet' : 'mainnet';

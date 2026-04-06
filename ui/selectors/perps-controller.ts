@@ -12,10 +12,7 @@ export type PerpsState = {
 const EMPTY_ARRAY: never[] = [];
 const EMPTY_TRADE_CONFIGURATIONS: PerpsControllerState['tradeConfigurations'] =
   { testnet: {}, mainnet: {} };
-const DEFAULT_IS_FIRST_TIME_USER: PerpsControllerState['isFirstTimeUser'] = {
-  testnet: true,
-  mainnet: true,
-};
+
 const DEFAULT_HAS_PLACED_FIRST_ORDER: PerpsControllerState['hasPlacedFirstOrder'] =
   { testnet: false, mainnet: false };
 const DEFAULT_WATCHLIST_MARKETS: PerpsControllerState['watchlistMarkets'] = {
@@ -63,7 +60,7 @@ export const selectPerpsWithdrawalProgress = (state: PerpsState) =>
   state.metamask.withdrawalProgress ?? null;
 
 export const selectPerpsIsFirstTimeUser = (state: PerpsState) =>
-  state.metamask.isFirstTimeUser ?? DEFAULT_IS_FIRST_TIME_USER;
+  state.metamask.isFirstTimeUser;
 
 export const selectPerpsHasPlacedFirstOrder = (state: PerpsState) =>
   state.metamask.hasPlacedFirstOrder ?? DEFAULT_HAS_PLACED_FIRST_ORDER;
