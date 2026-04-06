@@ -80,11 +80,11 @@ describe('useTransactionLifecycle', () => {
     expect(onPending).not.toHaveBeenCalled();
   });
 
-  it('does not fire handlers for a tx that was already confirmed in the first snapshot', () => {
+  it('does not fire onSuccess when a tx first appears already confirmed', () => {
     const onSuccess = jest.fn();
     const { rerender } = renderHook(
       ({ txs }) => useTransactionLifecycle(txs, { onSuccess }),
-      { initialProps: { txs: [confirmed('1')] } },
+      { initialProps: { txs: [] as Tx[] } },
     );
 
     act(() => {
