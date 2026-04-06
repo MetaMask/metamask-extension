@@ -14,7 +14,7 @@
 
   & b,
   & strong {
-    font-weight: 600;
+    font-weight: 700;
   }
 
   @each $variant in map.keys(design-system.$typography-variants) {
