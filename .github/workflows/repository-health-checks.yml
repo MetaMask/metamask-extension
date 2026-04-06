@@ -47,7 +47,7 @@ jobs:
       - name: Run audit and triage
         if: ${{ !cancelled() }}
         env:
-          IS_FORK_PR: ${{ github.event.pull_request.head.repo.fork || 'false' }}
+          IS_FORK_PR: ${{ github.event.pull_request.head.repo.full_name != github.repository }}
         run: node .github/scripts/yarn-audit-and-triage.mts --output-file /tmp/audit-current.json
 
       # Upload the current audit output as the new baseline when merging to main.
