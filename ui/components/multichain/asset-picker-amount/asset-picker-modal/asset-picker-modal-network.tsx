@@ -103,7 +103,7 @@ export const AssetPickerModalNetwork = ({
       (networks ?? Object.values(allNetworks) ?? []).sort(
         (a, b) => balanceByChainId[b.chainId] - balanceByChainId[a.chainId],
       ),
-    [],
+    [allNetworks, balanceByChainId, networks],
   );
 
   const [nonTestNetworks, testNetworks] = useMemo(

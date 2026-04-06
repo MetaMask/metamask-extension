@@ -41,6 +41,7 @@ export const useSendNfts = () => {
     return allNfts;
   }, [
     // using accountGroupWithInternalAccounts as dependency is somehow causing repeated renders
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     accountGroupWithInternalAccounts?.length,
     chainNetworkNAmeAndImageMap,
     nftsOwnedByAccounts,

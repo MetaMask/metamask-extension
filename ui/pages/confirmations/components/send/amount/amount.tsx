@@ -62,7 +62,7 @@ export const Amount = ({
       fiatMode
         ? `${formatToFixedDecimals(value, 5)} ${asset?.symbol}`
         : getFiatDisplayValue(amount),
-    [amount, fiatMode, getFiatDisplayValue, value],
+    [amount, fiatMode, getFiatDisplayValue, value, asset?.symbol],
   );
 
   const onChange = useCallback(

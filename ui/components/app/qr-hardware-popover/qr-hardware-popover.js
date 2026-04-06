@@ -35,6 +35,7 @@ const QRHardwarePopover = () => {
   // the confirmTransaction's life cycle is not consistent with QR hardware wallet;
   // the confirmTransaction will change after the previous tx is confirmed or cancel,
   // we want to block the changing by sign request id;
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const _txData = useMemo(() => {
     return txData;
   }, [activeScanRequest?.requestId]);

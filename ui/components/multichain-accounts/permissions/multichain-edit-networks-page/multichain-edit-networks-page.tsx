@@ -54,7 +54,10 @@ export const MultichainEditNetworksPage: React.FC<
 }) => {
   const t = useI18nContext();
   const { trackEvent } = useContext(MetaMetricsContext);
-  const allNetworks = [...nonTestNetworks, ...testNetworks];
+  const allNetworks = useMemo(
+    () => [...nonTestNetworks, ...testNetworks],
+    [nonTestNetworks, testNetworks],
+  );
 
   const [selectedChainIds, setSelectedChainIds] = useState(
     defaultSelectedChainIds,

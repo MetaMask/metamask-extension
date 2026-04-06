@@ -117,6 +117,7 @@ export const BridgeAssetPicker = ({
         (a) => a.assetId?.toLowerCase(),
       ).map((token) => toBridgeToken(token)),
     // Ignore warnings about assetsWithBalance to prevent re-fetching token list excessively
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [chainIdsSet, accountGroup.id, accountAddress],
   );
 

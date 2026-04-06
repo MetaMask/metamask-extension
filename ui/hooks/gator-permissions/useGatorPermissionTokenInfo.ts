@@ -159,7 +159,6 @@ export function useGatorPermissionTokenInfo(
     fetchedTokenInfo,
     chainId,
     isFetching,
-    error,
   ]);
 
   return { ...result, error };

@@ -30,7 +30,7 @@ export const useContactRecipients = (): Recipient[] => {
           ),
         })) ?? []
     );
-  }, [addressBook, chainId, isEvmSendType]);
+  }, [addressBook, chainId, isEvmSendType, accountAddressSeedIconMap]);
 
   return contacts;
 };

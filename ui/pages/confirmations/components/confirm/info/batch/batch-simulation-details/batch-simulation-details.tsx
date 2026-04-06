@@ -73,7 +73,7 @@ export function BatchSimulationDetails() {
         balanceChanges: finalBalanceChanges ?? [],
       },
     ];
-  }, [approveBalanceChanges, handleEdit]);
+  }, [approveBalanceChanges, handleEdit, t]);
 
   if (
     transactionMeta?.type === TransactionType.revokeDelegation ||

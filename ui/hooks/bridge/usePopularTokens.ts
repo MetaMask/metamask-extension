@@ -74,7 +74,7 @@ export const usePopularTokens = ({
         ],
       ),
     );
-  }, [tokenList, assetsToInclude, ownedAssetsByAssetId]);
+  }, [tokenList, ownedAssetsByAssetId]);
 
   useEffect(() => {
     return () => {

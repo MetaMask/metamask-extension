@@ -62,31 +62,31 @@ export const AggregatedPercentageOverviewCrossChains = ({
     selectAnyEnabledNetworksAreAvailable,
   );
 
-  const getPerChainTotalFiat1dAgo = (
-    chainId: string,
-    tokenFiatBalances: (string | undefined)[],
-    tokensWithBalances: TokenWithBalance[],
-  ) => {
-    const totalPerChain1dAgoERC20 = tokensWithBalances.reduce(
-      (total1dAgo: number, item: { address: string }, idx: number) => {
-        const found =
-          crossChainMarketData?.[chainId as Hex]?.[
-            toChecksumAddress(item.address) as Hex
-          ];
-
-        const tokenFiat1dAgo = getCalculatedTokenAmount1dAgo(
-          tokenFiatBalances[idx],
-          found?.pricePercentChange1d,
-        );
-        return total1dAgo + Number(tokenFiat1dAgo);
-      },
-      0,
-    );
-
-    return totalPerChain1dAgoERC20;
-  };
-
   const totalFiat1dAgoCrossChains = useMemo(() => {
+    const getPerChainTotalFiat1dAgo = (
+      chainId: string,
+      tokenFiatBalances: (string | undefined)[],
+      tokensWithBalances: TokenWithBalance[],
+    ) => {
+      const totalPerChain1dAgoERC20 = tokensWithBalances.reduce(
+        (total1dAgo: number, item: { address: string }, idx: number) => {
+          const found =
+            crossChainMarketData?.[chainId as Hex]?.[
+              toChecksumAddress(item.address) as Hex
+            ];
+
+          const tokenFiat1dAgo = getCalculatedTokenAmount1dAgo(
+            tokenFiatBalances[idx],
+            found?.pricePercentChange1d,
+          );
+          return total1dAgo + Number(tokenFiat1dAgo);
+        },
+        0,
+      );
+
+      return totalPerChain1dAgoERC20;
+    };
+
     return tokenFiatBalancesCrossChains.reduce(
       (
         total1dAgoCrossChains: number,

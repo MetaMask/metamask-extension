@@ -182,7 +182,7 @@ const DecodedSimulation: React.FC<object> = () => {
         />
       )),
     );
-  }, [decodingData?.stateChanges]);
+  }, [decodingData?.stateChanges, chainId]);
 
   return (
     <StaticSimulation
