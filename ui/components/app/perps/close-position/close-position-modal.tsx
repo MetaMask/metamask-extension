@@ -37,7 +37,11 @@ import {
   PERPS_MIN_MARKET_ORDER_USD,
 } from '../constants';
 import { CloseAmountSection } from '../order-entry';
-import { PERPS_TOAST_KEYS, usePerpsToast } from '../perps-toast';
+import {
+  PERPS_TOAST_KEYS,
+  usePerpsToast,
+  type PerpsToastKeyConfig,
+} from '../perps-toast';
 import type { Position } from '../types';
 
 type ClosePositionParams = {
@@ -47,10 +51,7 @@ type ClosePositionParams = {
   size?: string;
 };
 
-type CloseToastConfig = {
-  key: string;
-  description?: string;
-};
+type CloseToastConfig = Pick<PerpsToastKeyConfig, 'key' | 'description'>;
 
 type CloseToastTranslation = (key: string, vars?: unknown[]) => string;
 
@@ -239,7 +240,7 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
   position,
   currentPrice,
 }) => {
-  const t = useI18nContext();
+  const t = useI18nContext() as CloseToastTranslation;
   const {
     formatCurrencyWithMinThreshold,
     formatNumber,
