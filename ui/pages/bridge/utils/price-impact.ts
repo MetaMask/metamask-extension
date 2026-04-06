@@ -1,4 +1,3 @@
-import { QuoteMetadata } from '@metamask/bridge-controller';
 import { formatCurrencyAmount } from './quote';
 
 /**
@@ -52,7 +51,13 @@ export function formatPriceImpactPercentage(
  * @returns Formatted fiat impact string, or `undefined` when either fiat value is unavailable.
  */
 export function formatPriceImpactFiat(
-  activeQuote: QuoteMetadata | null | undefined,
+  activeQuote:
+    | {
+        sentAmount?: { valueInCurrency?: string | number | null } | null;
+        toTokenAmount?: { valueInCurrency?: string | number | null } | null;
+      }
+    | null
+    | undefined,
   currentCurrency: string,
 ): string | undefined {
   if (!activeQuote) {
