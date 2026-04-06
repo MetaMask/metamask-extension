@@ -1,6 +1,7 @@
 import { spawnSync } from 'child_process';
 import { createHash } from 'crypto';
 import { appendFileSync, existsSync, writeFileSync } from 'fs';
+import { getGitHubToken } from './github-token.mts';
 
 type YarnSeverity =
   | 'info'
@@ -307,12 +308,18 @@ function getRepoFromEnv(): { owner: string; repo: string } | null {
   return { owner, repo };
 }
 
-function getGitHubToken(): string | null {
-  return process.env.GITHUB_TOKEN ?? null;
-}
-
 function sha256Short(text: string): string {
   return createHash('sha256').update(text).digest('hex').slice(0, 10);
+}
+
+function githubHeaders(token: string): Record<string, string> {
+  return {
+    Authorization: `Bearer ${token}`,
+    Accept: 'application/vnd.github+json',
+    'X-GitHub-Api-Version': '2022-11-28',
+    'Content-Type': 'application/json',
+    'User-Agent': 'yarn-audit-and-triage',
+  };
 }
 
 async function searchIssueByTitle({
@@ -330,12 +337,7 @@ async function searchIssueByTitle({
   const url = `https://api.github.com/search/issues?q=${encodeURIComponent(q)}`;
 
   const response = await fetch(url, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-      Accept: 'application/vnd.github+json',
-      'X-GitHub-Api-Version': '2022-11-28',
-      'User-Agent': 'yarn-audit-and-triage',
-    },
+    headers: githubHeaders(token),
   });
 
   if (!response.ok) {
@@ -367,13 +369,7 @@ async function createIssueViaRest({
     `https://api.github.com/repos/${owner}/${repo}/issues`,
     {
       method: 'POST',
-      headers: {
-        Authorization: `Bearer ${token}`,
-        Accept: 'application/vnd.github+json',
-        'X-GitHub-Api-Version': '2022-11-28',
-        'Content-Type': 'application/json',
-        'User-Agent': 'yarn-audit-and-triage',
-      },
+      headers: githubHeaders(token),
       body: JSON.stringify({
         title,
         body,
@@ -551,7 +547,11 @@ async function main() {
 
   // Write the current advisories to disk for use by the audit-diff step.
   if (outputFileArg) {
-    writeFileSync(outputFileArg, JSON.stringify(triage.advisories, null, 2), 'utf8');
+    writeFileSync(
+      outputFileArg,
+      JSON.stringify(triage.advisories, null, 2),
+      'utf8',
+    );
   }
 
   const prodAdvisories = advisories.filter((a) => a.affectsProduction);

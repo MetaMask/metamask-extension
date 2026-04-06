@@ -1,4 +1,5 @@
 import { readFileSync } from 'fs';
+import { getGitHubToken } from './github-token.mts';
 
 // ---------------------------------------------------------------------------
 // CLI args
@@ -25,7 +26,7 @@ const skipIfNoBaseline = args.includes('--skip-if-no-baseline');
 // Environment
 // ---------------------------------------------------------------------------
 
-const token = process.env.GITHUB_TOKEN ?? '';
+const token = getGitHubToken();
 const repository = process.env.GITHUB_REPOSITORY ?? '';
 // On `pull_request` events GITHUB_SHA is the ephemeral merge commit, not the
 // PR head. The workflow step passes the real head SHA via GITHUB_HEAD_SHA.
