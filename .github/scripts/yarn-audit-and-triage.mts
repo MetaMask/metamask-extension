@@ -49,7 +49,6 @@ type TriageSummary = {
   advisories: ParsedAdvisory[];
   deprecations: DeprecationFinding[];
   decisions: {
-    blockPullRequests: boolean;
     blockReleaseCandidate: boolean;
   };
 };
@@ -69,6 +68,12 @@ const SLACK_HIGHLIGHT = process.env.SLACK_HIGHLIGHT !== 'false';
 
 const YARN_BIN = 'yarn';
 const YARN_SHELL = process.platform === 'win32';
+
+const IS_FORK_PR = process.env.IS_FORK_PR === 'true';
+const outputFileArg = (() => {
+  const idx = process.argv.indexOf('--output-file');
+  return idx !== -1 ? (process.argv[idx + 1] ?? null) : null;
+})();
 
 function normalizeSeverity(severity: YarnSeverity | undefined): YarnSeverity {
   if (severity === 'moderate') {
@@ -460,27 +465,15 @@ function writeStepSummary(summary: string) {
 }
 
 function decide(summary: Omit<TriageSummary, 'decisions'>): TriageSummary {
-  // Rules (implemented from the comment):
+  // Rules:
   // - high sev development dependency advisory:
   //   - if Issue includes `ReDoS` or `DoS`, recategorize as low
-  //   - otherwise: Block all PRs, triage immediately
+  //   - otherwise: fork PRs exit non-zero; internal PRs get a failing check
+  //     run posted by yarn-audit-diff.mts via the Checks API
   // - low/medium sev development dependency advisory OR any deprecation:
-  //   - Create issue, highlight in daily Slack message (we surface as warnings)
+  //   - Create issue (push to main only), highlight in daily Slack message
   // - Any severity production dependency advisory:
   //   - Block RC until resolved
-
-  const isPullRequestContext =
-    process.env.GITHUB_EVENT_NAME === 'pull_request' ||
-    Boolean(process.env.GITHUB_HEAD_REF);
-
-  const blockPullRequests =
-    isPullRequestContext &&
-    summary.advisories.some(
-      (advisory) =>
-        advisory.isDevOnly &&
-        advisory.originalSeverity === 'high' &&
-        advisory.matchedIssueRule === 'none',
-    );
 
   const blockReleaseCandidate =
     summary.isReleaseBranch &&
@@ -489,7 +482,6 @@ function decide(summary: Omit<TriageSummary, 'decisions'>): TriageSummary {
   return {
     ...summary,
     decisions: {
-      blockPullRequests,
       blockReleaseCandidate,
     },
   };
@@ -557,6 +549,11 @@ async function main() {
     deprecations,
   });
 
+  // Write the current advisories to disk for use by the audit-diff step.
+  if (outputFileArg) {
+    writeFileSync(outputFileArg, JSON.stringify(triage.advisories, null, 2), 'utf8');
+  }
+
   const prodAdvisories = advisories.filter((a) => a.affectsProduction);
   const devAdvisories = advisories.filter((a) => a.isDevOnly);
   const downgraded = advisories.filter(
@@ -623,14 +620,7 @@ async function main() {
     summaryLines.push('');
   }
 
-  if (triage.decisions.blockPullRequests) {
-    summaryLines.push('### Decision');
-    summaryLines.push('');
-    summaryLines.push(
-      '- **BLOCK PRs**: High severity dev dependency advisory (not ReDoS/DoS).',
-    );
-    summaryLines.push('');
-  } else if (triage.decisions.blockReleaseCandidate) {
+  if (triage.decisions.blockReleaseCandidate) {
     summaryLines.push('### Decision');
     summaryLines.push('');
     summaryLines.push(
@@ -661,9 +651,12 @@ async function main() {
   }
 
   // Create an issue for non-blocking but track-worthy findings.
+  // Only run on push to main — not on PRs, not on other branches.
   if (
     CREATE_TRACKING_ISSUE &&
-    (trackOnlyDev.length > 0 || deprecations.length > 0)
+    (trackOnlyDev.length > 0 || deprecations.length > 0) &&
+    process.env.GITHUB_EVENT_NAME === 'push' &&
+    BRANCH === 'main'
   ) {
     const repo = getRepoFromEnv();
     const token = getGitHubToken();
@@ -755,10 +748,11 @@ async function main() {
     }
   }
 
-  if (
-    triage.decisions.blockPullRequests ||
-    triage.decisions.blockReleaseCandidate
-  ) {
+  // Fork PRs: exit non-zero if any advisory exists (no Checks API available).
+  // Internal PRs: always exit 0; the audit-diff step gates them via check run.
+  if (IS_FORK_PR && advisories.length > 0) {
+    process.exitCode = 1;
+  } else if (triage.decisions.blockReleaseCandidate) {
     process.exitCode = 1;
   }
 }
