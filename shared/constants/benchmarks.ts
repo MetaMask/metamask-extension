@@ -225,3 +225,22 @@ export const BENCHMARK_ANNOUNCE_SECTIONS = {
   userJourney: { title: '🧭 User Journey' },
   dappPageLoad: { title: '🌐 Dapp page load' },
 } as const;
+
+/**
+ * Default `--iterations` for benchmarks aggregated via iteration (interaction, user journey, etc.).
+ * Startup and dapp page-load flows use browser/page loads instead.
+ * @see test/e2e/benchmarks/flows/README.md
+ */
+export const DEFAULT_BENCHMARK_ITERATIONS = 5;
+
+/**
+ * Default `--browserLoads` for startup and page-load benchmarks.
+ * @see `.github/workflows/run-benchmarks.yml` (`BENCHMARK_BROWSER_LOADS`)
+ */
+export const DEFAULT_BENCHMARK_BROWSER_LOADS = 10;
+
+/**
+ * Default `--pageLoads` per browser for startup and page-load benchmarks.
+ * @see `.github/workflows/run-benchmarks.yml` (`BENCHMARK_PAGE_LOADS`)
+ */
+export const DEFAULT_BENCHMARK_PAGE_LOADS = 10;
